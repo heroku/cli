@@ -1,0 +1,21 @@
+{
+  "name": "heroku-redis",
+  "version": "0.0.1",
+  "description": "heroku plugin to manage heroku redis",
+  "main": "index.js",
+  "author": "Jeff Dickey @dickeyxxx",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dickeyxxx/heroku-redis"
+  },
+  "bugs": {
+    "url": "https://github.com/dickeyxxx/heroku-redis/issues"
+  },
+  "keywords": [
+    "heroku-plugin"
+  ],
+  "license": "ISC",
+  "scripts": {
+    "test": "mocha"
+  }
+}
