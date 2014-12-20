@@ -65,7 +65,8 @@ func updateNeeded() bool {
 	}
 	f, err := os.Stat(binPath)
 	if err != nil {
-		must(err)
+		Errln("WARNING: Error autoupdating. The CLI will not be able to update itself.")
+		return false
 	}
 	// TODO: Increase the autoupdate time later
 	return f.ModTime().Add(2 * time.Minute).Before(time.Now())
