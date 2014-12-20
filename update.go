@@ -66,7 +66,8 @@ func updateNeeded() bool {
 	if err != nil {
 		must(err)
 	}
-	return f.ModTime().Add(20 * time.Minute).Before(time.Now())
+	// TODO: Increase the autoupdate time later
+	return f.ModTime().Add(2 * time.Minute).Before(time.Now())
 }
 
 type manifest struct {
