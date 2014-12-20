@@ -112,7 +112,7 @@ func runFn(module, topic, command string) func(ctx *Context) {
 		if err := cmd.Run(); err != nil {
 			Errf("Error in %s\n", ctx.Command.Plugin)
 			if Channel != "?" {
-				nodeErr := errors.New(fmt.Sprintf("%s: %s\n%s", ctx.Command.Plugin, ctx.Command, stderr.String()))
+				nodeErr := errors.New(fmt.Sprintf("%s %s\n%s", ctx.Command.Plugin, ctx.Command, stderr.String()))
 				rollbar.ErrorWithStack(rollbar.ERR, nodeErr, rollbar.Stack{}, &rollbar.Field{"version", Version})
 				rollbar.Wait()
 			}
