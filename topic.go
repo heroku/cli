@@ -16,6 +16,7 @@ func (t *Topic) String() string {
 // TopicSet is a slice of Topic structs with some helper methods.
 type TopicSet []*Topic
 
+// ByName returns a topic in the set matching the name.
 func (topics TopicSet) ByName(name string) *Topic {
 	for _, topic := range topics {
 		if topic.Name == name {
@@ -25,12 +26,26 @@ func (topics TopicSet) ByName(name string) *Topic {
 	return nil
 }
 
-func (topic *Topic) Commands() []*Command {
+// Commands returns all of the commands under the topic.
+func (t *Topic) Commands() []*Command {
 	commands := make([]*Command, 0, len(cli.Commands))
 	for _, c := range cli.Commands {
-		if c.Topic == topic.Name {
+		if c.Topic == t.Name {
 			commands = append(commands, c)
 		}
 	}
 	return commands
+}
+
+// Merge will replace empty data on the topic with data from the passed topic.
+func (t *Topic) Merge(other *Topic) {
+	if t.Name == "" {
+		t.Name = other.Name
+	}
+	if t.ShortHelp == "" {
+		t.ShortHelp = other.ShortHelp
+	}
+	if t.Help == "" {
+		t.Help = other.Help
+	}
 }

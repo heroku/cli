@@ -34,8 +34,8 @@ func init() {
 
 func main() {
 	defer handlePanic()
-	updateIfNeeded()
-	setupNode()
+	UpdateIfNeeded()
+	SetupNode()
 	cli.LoadPlugins(GetPlugins())
 	cli.Run(os.Args)
 }

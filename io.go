@@ -73,6 +73,15 @@ func Println(a ...interface{}) {
 	fmt.Fprintln(Stdout, a...)
 }
 
+// Log is used to print debugging information
+// It will be added to the logfile in ~/.heroku or printed out if HEROKU_DEBUG is set.
+func Log(a ...interface{}) {
+	logger.Print(a...)
+	if debugging {
+		fmt.Fprint(Stderr, a...)
+	}
+}
+
 // Logln is used to print debugging information
 // It will be added to the logfile in ~/.heroku or printed out if HEROKU_DEBUG is set.
 func Logln(a ...interface{}) {

@@ -64,6 +64,7 @@ var commandsListCmd = &Command{
 // CommandSet is a slice of Command structs with some helper methods.
 type CommandSet []*Command
 
+// ByTopicAndCommand returns a command that matches the passed topic and command.
 func (commands CommandSet) ByTopicAndCommand(topic, command string) *Command {
 	for _, c := range commands {
 		if c.Topic == topic && c.Command == command {
