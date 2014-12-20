@@ -25,7 +25,11 @@ var updateCmd = &Command{
 	ShortHelp: "updates heroku-cli",
 	Args:      []Arg{{Name: "channel", Optional: true}},
 	Run: func(ctx *Context) {
-		fmt.Printf("foo")
+		channel := ctx.Args["channel"]
+		if channel == "" {
+			channel = "master"
+		}
+		fmt.Printf("updating to ", channel)
 	},
 }
 
