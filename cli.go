@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"fmt"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -73,7 +72,6 @@ func (cli *Cli) parseCmd(cmd string) (topic *Topic, command *Command) {
 	if topic == nil {
 		return nil, nil
 	}
-	fmt.Println(tc)
 	if len(tc) == 2 {
 		return topic, getCommand(tc[0], tc[1], cli.Commands)
 	}

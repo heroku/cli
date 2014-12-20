@@ -11,6 +11,7 @@ var versionTopic = &Topic{
 }
 
 var versionCmd = &Command{
+	Topic:     "version",
 	ShortHelp: "print the version",
 	Run: func(ctx *Context) {
 		fmt.Printf("heroku-cli/%s (%s-%s) %s\n", Version, runtime.GOARCH, runtime.GOOS, runtime.Version())
