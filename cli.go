@@ -2,7 +2,13 @@ package main
 
 import (
 	"errors"
+	"os"
+	"path/filepath"
+	"runtime"
 	"strings"
+	"time"
+
+	"github.com/bgentry/go-netrc/netrc"
 )
 
 var HelpErr = errors.New("help")
@@ -10,6 +16,36 @@ var HelpErr = errors.New("help")
 type Cli struct {
 	Topics   []*Topic
 	Commands []*Command
+}
+
+func (cli *Cli) Run(args []string) {
+	ctx, err := cli.Parse(args[1:])
+	if err != nil {
+		if err == HelpErr {
+			help()
+		}
+		Errln(err)
+		Errf("USAGE: %s %s\n", args[0], commandSignature(ctx.Topic, ctx.Command))
+		os.Exit(2)
+	}
+	if ctx.Command.NeedsApp {
+		if ctx.App == "" {
+			ctx.App = app()
+		}
+		if app := os.Getenv("HEROKU_APP"); app != "" {
+			ctx.App = app
+		}
+		if ctx.App == "" {
+			AppNeededWarning()
+		}
+	}
+	if ctx.Command.NeedsAuth {
+		ctx.Auth.Username, ctx.Auth.Password = auth()
+	}
+	Logf("Running %s\n", ctx)
+	before := time.Now()
+	ctx.Command.Run(ctx)
+	Logf("Finished in %s\n", (time.Since(before)))
 }
 
 func (cli *Cli) Parse(args []string) (ctx *Context, err error) {
@@ -97,4 +133,28 @@ func parseArgs(command *Command, args []string) (result map[string]string, appNa
 		}
 	}
 	return result, appName, nil
+}
+
+func app() string {
+	app, err := appFromGitRemote(remoteFromGitConfig())
+	if err != nil {
+		panic(err)
+	}
+	return app
+}
+
+func auth() (user, password string) {
+	netrc, err := netrc.ParseFile(netrcPath())
+	if err != nil {
+		panic(err)
+	}
+	auth := netrc.FindMachine("api.heroku.com")
+	return auth.Login, auth.Password
+}
+
+func netrcPath() string {
+	if runtime.GOOS == "windows" {
+		return filepath.Join(HomeDir, "_netrc")
+	}
+	return filepath.Join(HomeDir, ".netrc")
 }
