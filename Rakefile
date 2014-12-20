@@ -91,7 +91,7 @@ def manifest
     @manifest[:builds][target[:os]] ||= {}
     @manifest[:builds][target[:os]][target[:arch]] = {
       url: remote_url(target[:os], target[:arch]),
-      sha1: sha_digest("dist/#{target[:os]}/#{target[:arch]}/heroku")
+      sha1: sha_digest("dist/#{target[:os]}/#{target[:arch]}/heroku-cli")
     }
   end
 
