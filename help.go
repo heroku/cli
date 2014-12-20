@@ -35,7 +35,7 @@ func help() {
 }
 
 func printTopicCommandsHelp(topic *Topic) {
-	commands := cli.commandsForTopic(topic.Name)
+	commands := topic.Commands()
 	if len(commands) > 0 {
 		Errf("\nCommands for %s, type \"heroku help %s:COMMAND\" for more details:\n\n", topic.Name, topic.Name)
 		for _, command := range nonHiddenCommands(commands) {

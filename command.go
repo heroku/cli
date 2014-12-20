@@ -53,8 +53,22 @@ var commandsListCmd = &Command{
 	Topic:     "commands",
 	ShortHelp: "list all commands",
 	Run: func(ctx *Context) {
-		for _, command := range PluginCommands() {
-			Printf("%s:%s\n", command.Topic, command.Command)
+		for _, plugin := range GetPlugins() {
+			for _, command := range plugin.Commands {
+				Printf("%s:%s\n", command.Topic, command.Command)
+			}
 		}
 	},
+}
+
+// CommandSet is a slice of Command structs with some helper methods.
+type CommandSet []*Command
+
+func (commands CommandSet) ByTopicAndCommand(topic, command string) *Command {
+	for _, c := range commands {
+		if c.Topic == topic && c.Command == command {
+			return c
+		}
+	}
+	return nil
 }

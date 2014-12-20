@@ -16,8 +16,8 @@ var ErrHelp = errors.New("help")
 
 // Cli handles parsing and dispatching of commands
 type Cli struct {
-	Topics   []*Topic
-	Commands []*Command
+	Topics   TopicSet
+	Commands CommandSet
 }
 
 // Run parses command line arguments and runs the associated command or help.
@@ -68,42 +68,14 @@ func (cli *Cli) Parse(args []string) (ctx *Context, err error) {
 
 func (cli *Cli) parseCmd(cmd string) (topic *Topic, command *Command) {
 	tc := strings.SplitN(cmd, ":", 2)
-	topic = getTopic(tc[0], cli.Topics)
+	topic = cli.Topics.ByName(tc[0])
 	if topic == nil {
 		return nil, nil
 	}
 	if len(tc) == 2 {
-		return topic, getCommand(tc[0], tc[1], cli.Commands)
+		return topic, cli.Commands.ByTopicAndCommand(tc[0], tc[1])
 	}
-	return topic, getCommand(tc[0], "", cli.Commands)
-}
-
-func getTopic(name string, topics []*Topic) *Topic {
-	for _, topic := range topics {
-		if topic.Name == name {
-			return topic
-		}
-	}
-	return nil
-}
-
-func getCommand(topic, command string, commands []*Command) *Command {
-	for _, c := range commands {
-		if c.Topic == topic && c.Command == command {
-			return c
-		}
-	}
-	return nil
-}
-
-func (cli *Cli) commandsForTopic(topic string) []*Command {
-	commands := make([]*Command, 0, len(cli.Commands))
-	for _, c := range cli.Commands {
-		if c.Topic == topic {
-			commands = append(commands, c)
-		}
-	}
-	return commands
+	return topic, cli.Commands.ByTopicAndCommand(tc[0], "")
 }
 
 func parseArgs(command *Command, args []string) (result map[string]string, appName string, err error) {
@@ -161,4 +133,24 @@ func netrcPath() string {
 		return filepath.Join(HomeDir, "_netrc")
 	}
 	return filepath.Join(HomeDir, ".netrc")
+}
+
+func (cli *Cli) AddTopic(topic *Topic) bool {
+	if cli.Topics.ByName(topic.Name) != nil {
+		Errln("WARNING: topic %s has already been defined", topic.Name)
+		return false
+	}
+	cli.Topics = append(cli.Topics, topic)
+	return true
+}
+
+func (cli *Cli) AddCommand(command *Command) bool {
+	if cli.Topics.ByName(command.Topic) == nil {
+		cli.Topics = append(cli.Topics, &Topic{Name: command.Topic})
+	}
+	if cli.Commands.ByTopicAndCommand(command.Topic, command.Command) != nil {
+		return false
+	}
+	cli.Commands = append(cli.Commands, command)
+	return true
 }
