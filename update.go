@@ -29,7 +29,7 @@ var updateCmd = &Command{
 		if channel == "" {
 			channel = "master"
 		}
-		fmt.Printf("updating to ", channel)
+		Print("updating to ", channel)
 	},
 }
 
