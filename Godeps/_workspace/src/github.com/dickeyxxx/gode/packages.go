@@ -53,6 +53,15 @@ func (c *Client) InstallPackage(name string) error {
 	return cmd.Run()
 }
 
+// RemovePackage removes an npm package.
+func (c *Client) RemovePackage(name string) error {
+	cmd, err := c.execNpm("remove", name)
+	if err != nil {
+		return err
+	}
+	return cmd.Run()
+}
+
 func (c *Client) execNpm(args ...string) (*exec.Cmd, error) {
 	nodePath, err := filepath.Rel(c.RootPath, c.nodePath())
 	if err != nil {
