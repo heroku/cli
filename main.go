@@ -55,7 +55,7 @@ func handlePanic() {
 		debug.PrintStack()
 		Errln("ERROR:", err)
 		if Channel != "?" {
-			rollbar.Error(rollbar.ERR, err, &rollbar.Field{"version", Version})
+			rollbar.Error(rollbar.ERR, err)
 			rollbar.Wait()
 		}
 		Exit(1)
