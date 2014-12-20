@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"path/filepath"
@@ -9,14 +10,19 @@ import (
 )
 
 // Used to mock stdout for testing
-var Stdout os.Stdout
+var Stdout io.Writer
 
 // Used to mock stderr for testing
-var Stderr os.Stderr
+var Stderr io.Writer
 
 var logger = newLogger(AppDir + "/cli.log")
 var exitFn = os.Exit
 var debugging = isDebugging()
+
+func init() {
+	Stdout = os.Stdout
+	Stderr = os.Stderr
+}
 
 func newLogger(path string) *log.Logger {
 	err := os.MkdirAll(filepath.Dir(path), 0777)
