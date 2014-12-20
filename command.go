@@ -8,6 +8,7 @@ import "strings"
 type Command struct {
 	Topic     string
 	Command   string
+	Plugin    string
 	ShortHelp string
 	Help      string
 	Hidden    bool

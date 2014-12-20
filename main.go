@@ -33,6 +33,9 @@ func init() {
 		pluginsListCmd,
 		pluginsInstallCmd,
 	}
+	rollbar.Platform = "client"
+	rollbar.Token = "b40226d5e8a743cf963ca320f7be17bd"
+	rollbar.Environment = Channel
 }
 
 func main() {
@@ -49,19 +52,12 @@ func handlePanic() {
 		if !ok {
 			err = errors.New(rec.(string))
 		}
+		debug.PrintStack()
 		Errln("ERROR:", err)
-		Logln(string(debug.Stack()))
 		if Channel != "?" {
-			sendErrorToRollbar(err)
+			rollbar.Error(rollbar.ERR, err, &rollbar.Field{"version", Version})
+			rollbar.Wait()
 		}
 		Exit(1)
 	}
-}
-
-func sendErrorToRollbar(err error) {
-	rollbar.Platform = "client"
-	rollbar.Token = "b40226d5e8a743cf963ca320f7be17bd"
-	rollbar.Environment = Channel
-	rollbar.Error(rollbar.ERR, err, &rollbar.Field{"version", Version})
-	rollbar.Wait()
 }
