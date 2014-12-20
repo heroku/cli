@@ -114,7 +114,7 @@ def upload_string(bucket, s, remote, opts={})
 end
 
 def upload_manifest(bucket)
-  print 'setting manifest:'
+  puts 'setting manifest:'
   ap manifest
   upload_string(bucket, JSON.dump(manifest), "heroku-cli/#{CHANNEL}/manifest.json", content_type: 'application/json', cache_control: "public,max-age=300")
 end
