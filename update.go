@@ -33,7 +33,7 @@ var updateCmd = &Command{
 	},
 }
 
-var binPath = filepath.Join(AppDir, "heroku")
+var binPath = filepath.Join(AppDir, "heroku-cli")
 
 // UpdateIfNeeded checks for and performs an autoupdate if there is a new version out.
 func UpdateIfNeeded() {
