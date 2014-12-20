@@ -51,11 +51,17 @@ func handlePanic() {
 		}
 		Errln("ERROR:", err)
 		Logln(string(debug.Stack()))
-		rollbar.Token = "b40226d5e8a743cf963ca320f7be17bd"
-		rollbar.Environment = Channel
-		rollbar.Message("version", Version)
-		rollbar.Error(rollbar.ERR, err)
-		rollbar.Wait()
+		if Channel != "?" {
+			sendErrorToRollbar(err)
+		}
 		Exit(1)
 	}
+}
+
+func sendErrorToRollbar(err error) {
+	rollbar.Platform = "client"
+	rollbar.Token = "b40226d5e8a743cf963ca320f7be17bd"
+	rollbar.Environment = Channel
+	rollbar.Error(rollbar.ERR, err, &rollbar.Field{"version", Version})
+	rollbar.Wait()
 }
