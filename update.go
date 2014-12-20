@@ -47,7 +47,7 @@ func updateIfNeeded() {
 	}
 	Errf("Updating to %s... ", manifest.Version)
 	build := manifest.Builds[runtime.GOOS][runtime.GOARCH]
-	update(build.Url, build.Sha1)
+	update(build.URL, build.Sha1)
 	Errln("done")
 	execBin()
 	os.Exit(0)
@@ -67,7 +67,7 @@ func updateNeeded() bool {
 type manifest struct {
 	Channel, Version string
 	Builds           map[string]map[string]struct {
-		Url, Sha1 string
+		URL, Sha1 string
 	}
 }
 

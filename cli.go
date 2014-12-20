@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -11,17 +12,21 @@ import (
 	"github.com/bgentry/go-netrc/netrc"
 )
 
-var HelpErr = errors.New("help")
+// ErrHelp means the user didn't type a valid command and we need to display help.
+var ErrHelp = errors.New("help")
 
+// Cli handles parsing and dispatching of commands
 type Cli struct {
 	Topics   []*Topic
 	Commands []*Command
 }
 
+// Run parses command line arguments and runs the associated command or help.
+// Also does lookups for app name and/or auth token if the command needs it.
 func (cli *Cli) Run(args []string) {
 	ctx, err := cli.Parse(args[1:])
 	if err != nil {
-		if err == HelpErr {
+		if err == ErrHelp {
 			help()
 		}
 		Errln(err)
@@ -48,14 +53,15 @@ func (cli *Cli) Run(args []string) {
 	Logf("Finished in %s\n", (time.Since(before)))
 }
 
+// Parse finds the topic, command and arguments the user made
 func (cli *Cli) Parse(args []string) (ctx *Context, err error) {
 	ctx = &Context{}
 	if len(args) == 0 {
-		return ctx, HelpErr
+		return ctx, ErrHelp
 	}
 	ctx.Topic, ctx.Command = cli.parseCmd(args[0])
 	if ctx.Command == nil {
-		return ctx, HelpErr
+		return ctx, ErrHelp
 	}
 	ctx.Args, ctx.App, err = parseArgs(ctx.Command, args[1:])
 	return ctx, err
@@ -67,11 +73,11 @@ func (cli *Cli) parseCmd(cmd string) (topic *Topic, command *Command) {
 	if topic == nil {
 		return nil, nil
 	}
+	fmt.Println(tc)
 	if len(tc) == 2 {
 		return topic, getCommand(tc[0], tc[1], cli.Commands)
-	} else {
-		return topic, getCommand(tc[0], "", cli.Commands)
 	}
+	return topic, getCommand(tc[0], "", cli.Commands)
 }
 
 func getTopic(name string, topics []*Topic) *Topic {
@@ -109,7 +115,7 @@ func parseArgs(command *Command, args []string) (result map[string]string, appNa
 	for i := 0; i < len(args); i++ {
 		switch {
 		case args[i] == "help" || args[i] == "--help" || args[i] == "-h":
-			return nil, "", HelpErr
+			return nil, "", ErrHelp
 		case args[i] == "--":
 			parseFlags = false
 		case args[i] == "-a" || args[i] == "--app":
