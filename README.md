@@ -7,7 +7,7 @@ For more about Heroku see <https://www.heroku.com/home>
 
 To get started see <https://devcenter.heroku.com/start>
 
-[![Build Status](https://travis-ci.org/heroku/heroku-cli.svg?branch=master)](https://travis-ci.org/heroku/heroku-cli)
+[![Build Status](https://travis-ci.org/heroku/heroku-cli.svg?branch=dev)](https://travis-ci.org/heroku/heroku-cli)
 [![Code Coverage](http://gocover.io/_badge/github.com/heroku/heroku-cli)](http://gocover.io/github.com/heroku/heroku-cli)
 
 Released under the MIT license.
