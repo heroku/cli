@@ -36,7 +36,7 @@ end
 desc "deploy heroku-cli"
 task :deploy => :build do
   abort 'branch is dirty' if CHANNEL == 'dirty'
-  abort "#{CHANNEL} not a channel branch (dev/release)" unless %w(dev release).include?(CHANNEL)
+  abort "#{CHANNEL} not a channel branch (dev/master)" unless %w(dev master).include?(CHANNEL)
   puts "deploying #{VERSION} to #{BUCKET_NAME}.s3.amazonaws.com/heroku-cli/#{CHANNEL}..."
   bucket = get_s3_bucket
   cache_control = "public,max-age=31536000"
