@@ -15,6 +15,19 @@ import (
 	"time"
 )
 
+var updateTopic = &Topic{
+	Name:      "update",
+	ShortHelp: "update heroku-cli",
+}
+
+var updateCmd = &Command{
+	ShortHelp: "updates heroku-cli",
+	Args:      []Arg{{Name: "channel", Optional: true}},
+	Run: func(ctx *Context) {
+		fmt.Printf("foo")
+	},
+}
+
 var binPath = filepath.Join(AppDir, "heroku")
 
 func updateIfNeeded() {
