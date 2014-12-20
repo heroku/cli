@@ -1,11 +1,16 @@
 language: go
 go:
-  - 1.3
+  - 1.4
 install:
   - export PATH=$PATH:$HOME/gopath/bin
-  - go get -v -u github.com/kr/godep
+  - go get -u github.com/kr/godep
+  - go get -u github.com/golang/lint/golint
+  - go get -u golang.org/x/tools/cmd/vet
   - godep get
   - godep go build -v ./...
 script:
-  - godep go test ./...
+  - godep go test -v ./...
   - test -z "$(go fmt ./...)"
+  - echo "TODO: make golint cause a failure"
+  - golint ./...
+  - go vet ./...
