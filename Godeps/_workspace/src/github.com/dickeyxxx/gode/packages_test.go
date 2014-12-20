@@ -8,7 +8,7 @@ import (
 
 func TestPackages(t *testing.T) {
 	c := setup()
-	must(os.RemoveAll(filepath.Join(c.RootPath, "lib")))
+	must(os.RemoveAll(filepath.Join(c.RootPath, "node_modules")))
 	must(c.InstallPackage("request"))
 	packages, err := c.Packages()
 	must(err)
@@ -20,9 +20,26 @@ func TestPackages(t *testing.T) {
 	t.Fatalf("package did not install")
 }
 
+func TestRemovePackage(t *testing.T) {
+	c := setup()
+	must(os.RemoveAll(filepath.Join(c.RootPath, "node_modules")))
+	must(c.InstallPackage("request"))
+	packages, err := c.Packages()
+	must(err)
+	if len(packages) != 1 {
+		t.Fatalf("package did not install correctly")
+	}
+	must(c.RemovePackage("request"))
+	packages, err = c.Packages()
+	must(err)
+	if len(packages) != 0 {
+		t.Fatalf("package did not remove correctly")
+	}
+}
+
 func TestPackagesGithubPackage(t *testing.T) {
 	c := setup()
-	must(os.RemoveAll(filepath.Join(c.RootPath, "lib")))
+	must(os.RemoveAll(filepath.Join(c.RootPath, "node_modules")))
 	must(c.InstallPackage("dickeyxxx/heroku-production-check"))
 	packages, err := c.Packages()
 	must(err)
