@@ -9,6 +9,9 @@ import (
 // This is set by a build flag in the `Rakefile`.
 // If it is set to `dev` it will not autoupdate.
 var Version = "dev"
+
+// The channel the CLI was built on.
+// This is set by a build flag in the `Rakefile` based on the git branch.
 var Channel = "?"
 
 var cli = &Cli{}

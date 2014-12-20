@@ -44,6 +44,7 @@ func getPackageCommands(name string) []*Command {
 	return commands
 }
 
+// PluginCommands goes through all the node plugins and returns the commands found in all of them
 func PluginCommands() (commands []*Command) {
 	packages, err := node.Packages()
 	must(err)

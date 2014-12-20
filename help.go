@@ -87,7 +87,8 @@ func nonHiddenCommands(from []*Command) []*Command {
 	return to
 }
 
-func AppNeededWarning() {
+// AppNeededError shows an error message that the user did not specify an app but the command requires an app.
+func AppNeededError() {
 	Errln(" !    No app specified.")
 	Errln(" !    Run this command from an app folder or specify which app to use with --app APP.")
 	os.Exit(3)
