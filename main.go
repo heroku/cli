@@ -26,6 +26,7 @@ func init() {
 	cli.Commands = []*Command{
 		commandsListCmd,
 		versionCmd,
+		updateCmd,
 		pluginsListCmd,
 		pluginsInstallCmd,
 	}
