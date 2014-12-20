@@ -1,0 +1,11 @@
+language: go
+go:
+  - 1.3
+install:
+  - export PATH=$PATH:$HOME/gopath/bin
+  - go get -v -u github.com/kr/godep
+  - godep get
+  - godep go build -v ./...
+script:
+  - godep go test ./...
+  - test -z "$(go fmt ./...)"
