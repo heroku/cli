@@ -135,15 +135,20 @@ func netrcPath() string {
 	return filepath.Join(HomeDir, ".netrc")
 }
 
-func (cli *Cli) AddTopic(topic *Topic) bool {
-	if cli.Topics.ByName(topic.Name) != nil {
-		Errln("WARNING: topic %s has already been defined", topic.Name)
-		return false
+// AddTopic adds a Topic to the set of topics.
+// It will return false if a topic exists with the same name.
+func (cli *Cli) AddTopic(topic *Topic) {
+	existing := cli.Topics.ByName(topic.Name)
+	if existing != nil {
+		existing.Merge(topic)
+	} else {
+		cli.Topics = append(cli.Topics, topic)
 	}
-	cli.Topics = append(cli.Topics, topic)
-	return true
 }
 
+// AddCommand adds a Command to the set of commands.
+// It will return false if a command exists with the same topic and command name.
+// It will also add an empty topic if there is not one already.
 func (cli *Cli) AddCommand(command *Command) bool {
 	if cli.Topics.ByName(command.Topic) == nil {
 		cli.Topics = append(cli.Topics, &Topic{Name: command.Topic})

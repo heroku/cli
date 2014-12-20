@@ -3,18 +3,27 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"path/filepath"
 
 	"github.com/dickeyxxx/gode"
 )
 
+// Plugin represents a javascript plugin
+type Plugin struct {
+	Topics   TopicSet   `json:"topics"`
+	Commands CommandSet `json:"commands"`
+}
+
 var node = gode.NewClient(AppDir)
 
-func setupNode() {
+// SetupNode sets up node and npm in ~/.heroku
+func SetupNode() {
 	node.Registry = "http://54.173.158.18"
 	if !node.IsSetup() {
-		Err("setting up plugins... ")
+		Log("setting up plugins... ")
 		must(node.Setup())
-		Errln("done")
+		Logln("done")
 	}
 }
 
@@ -22,9 +31,7 @@ func setupNode() {
 func (cli *Cli) LoadPlugins(plugins []Plugin) {
 	for _, plugin := range plugins {
 		for _, topic := range plugin.Topics {
-			if !cli.AddTopic(topic) {
-				Errln("WARNING: topic %s has already been defined", topic)
-			}
+			cli.AddTopic(topic)
 		}
 		for _, command := range plugin.Commands {
 			if !cli.AddCommand(command) {
@@ -78,12 +85,6 @@ var pluginsListCmd = &Command{
 	},
 }
 
-type Plugin struct {
-	*gode.Package
-	Topics   TopicSet   `json:"topics"`
-	Commands CommandSet `json:"commands"`
-}
-
 func runFn(module, topic, command string) func(ctx *Context) {
 	return func(ctx *Context) {
 		ctxJSON, err := json.Marshal(ctx)
@@ -124,11 +125,20 @@ func getPlugin(name string) *Plugin {
 
 // GetPlugins goes through all the node plugins and returns them in Go stucts
 func GetPlugins() []Plugin {
-	packages, err := node.Packages()
-	must(err)
-	plugins := make([]Plugin, 0, len(packages))
-	for _, pkg := range packages {
-		plugins = append(plugins, *getPlugin(pkg.Name))
+	names := PluginNames()
+	plugins := make([]Plugin, 0, len(names))
+	for _, name := range names {
+		plugins = append(plugins, *getPlugin(name))
 	}
 	return plugins
+}
+
+// PluginNames just lists the files in ~/.heroku/node_modules
+func PluginNames() []string {
+	files, _ := ioutil.ReadDir(filepath.Join(AppDir, "node_modules"))
+	names := make([]string, 0, len(files))
+	for _, f := range files {
+		names = append(names, f.Name())
+	}
+	return names
 }
