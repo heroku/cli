@@ -1,8 +1,11 @@
 package main
 
 import (
+	"errors"
 	"os"
 	"runtime/debug"
+
+	"github.com/stvp/rollbar"
 )
 
 // The built version.
@@ -41,9 +44,18 @@ func main() {
 }
 
 func handlePanic() {
-	if e := recover(); e != nil {
-		Errln("ERROR:", e)
+	if rec := recover(); rec != nil {
+		err, ok := rec.(error)
+		if !ok {
+			err = errors.New(rec.(string))
+		}
+		Errln("ERROR:", err)
 		Logln(string(debug.Stack()))
+		rollbar.Token = "b40226d5e8a743cf963ca320f7be17bd"
+		rollbar.Environment = Channel
+		rollbar.Message("version", Version)
+		rollbar.Error(rollbar.ERR, err)
+		rollbar.Wait()
 		Exit(1)
 	}
 }

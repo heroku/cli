@@ -21,6 +21,7 @@ dirty = `git status 2> /dev/null | tail -n1`.chomp != 'nothing to commit, workin
 CHANNEL = dirty ? 'dirty' : `git rev-parse --abbrev-ref HEAD`.chomp
 CLOUDFRONT_HOST = 'd1gvo455cekpjp.cloudfront.net'
 LABEL = "heroku-cli/#{VERSION} (#{CHANNEL})"
+REVISION=`git log -n 1 --pretty=format:"%H"`
 
 desc "build heroku-cli"
 task :build do
@@ -50,6 +51,7 @@ task :release => :build do
     end
   end.map(&:join)
   upload_manifest(bucket)
+  notify_rollbar
   puts "released #{VERSION}"
 end
 
@@ -117,4 +119,16 @@ def upload_manifest(bucket)
   puts 'setting manifest:'
   ap manifest
   upload_string(bucket, JSON.dump(manifest), "heroku-cli/#{CHANNEL}/manifest.json", content_type: 'application/json', cache_control: "public,max-age=300")
+end
+
+def notify_rollbar
+  unless ENV['ROLLBAR_TOKEN']
+    $stderr.puts 'ROLLBAR_TOKEN not set, skipping rollbar deploy notification'
+    return
+  end
+  Net::HTTP.post('https://api.rollbar.com/api/1/deploy/',
+                 environment: CHANNEL,
+                 local_username: `whoami`.chomp,
+                 revision: REVISION,
+                 access_token: ENV['ROLLBAR_TOKEN'])
 end
