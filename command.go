@@ -2,6 +2,9 @@ package main
 
 import "strings"
 
+// Command represents a CLI command.
+// For example, in the command `heroku apps:create` the command would be `create`.
+// They must have a Topic name that links to a real topic's name.
 type Command struct {
 	Topic     string
 	Command   string
@@ -19,6 +22,8 @@ func (c *Command) String() string {
 	return c.Topic + ":" + c.Command
 }
 
+// Arg defines an argument for a command.
+// These will be parsed in Go and passed to the Run method in the Context struct.
 type Arg struct {
 	Name     string
 	Optional bool
@@ -31,6 +36,8 @@ func (a *Arg) String() string {
 	return strings.ToUpper(a.Name)
 }
 
+// Flag defines a flag for a command.
+// These will be parsed in Go and passed to the Run method in the Context struct.
 type Flag struct {
 	Name    string
 	Char    rune

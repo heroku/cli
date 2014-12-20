@@ -41,7 +41,7 @@ func (cli *Cli) Run(args []string) {
 			ctx.App = app
 		}
 		if ctx.App == "" {
-			AppNeededWarning()
+			AppNeededError()
 		}
 	}
 	if ctx.Command.NeedsAuth {
