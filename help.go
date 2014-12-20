@@ -22,7 +22,7 @@ func help() {
 		Errf("USAGE: heroku %s:COMMAND [--app APP] [command-specific-options]\n\n", ctx.Topic.Name)
 		Errln(ctx.Topic.Help)
 		printTopicCommandsHelp(ctx.Topic)
-	case ctx.Command.Name == "":
+	case ctx.Command.Command == "":
 		Errf("USAGE: heroku %s\n\n", commandSignature(ctx.Topic, ctx.Command))
 		Errln(ctx.Command.Help)
 		// This is a root command so show the other commands in the topic
@@ -35,9 +35,10 @@ func help() {
 }
 
 func printTopicCommandsHelp(topic *Topic) {
-	if len(topic.Commands) > 0 {
+	commands := cli.commandsForTopic(topic.Name)
+	if len(commands) > 0 {
 		Errf("\nCommands for %s, type \"heroku help %s:COMMAND\" for more details:\n\n", topic.Name, topic.Name)
-		for _, command := range nonHiddenCommands(topic.Commands) {
+		for _, command := range nonHiddenCommands(commands) {
 			Errf(" heroku %-30s # %s\n", commandSignature(topic, command), command.ShortHelp)
 		}
 	}
@@ -45,8 +46,8 @@ func printTopicCommandsHelp(topic *Topic) {
 
 func commandSignature(topic *Topic, command *Command) string {
 	cmd := topic.Name
-	if command.Name != "" {
-		cmd = cmd + ":" + command.Name
+	if command.Command != "" {
+		cmd = cmd + ":" + command.Command
 	}
 	cmd = cmd + commandArgs(command)
 	if command.NeedsApp {
@@ -66,7 +67,7 @@ func commandArgs(command *Command) string {
 	}
 	return args
 }
-func nonHiddenTopics(from map[string]*Topic) []*Topic {
+func nonHiddenTopics(from []*Topic) []*Topic {
 	to := make([]*Topic, 0, len(from))
 	for _, topic := range from {
 		if !topic.Hidden {

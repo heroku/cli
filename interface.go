@@ -39,7 +39,7 @@ func getPackageCommands(name string) []*Command {
 	must(cmd.Wait())
 	commands := response["commands"]
 	for _, command := range commands {
-		command.Run = runFn(name, command.Topic, command.Name)
+		command.Run = runFn(name, command.Topic, command.Command)
 	}
 	return commands
 }

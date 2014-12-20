@@ -8,18 +8,8 @@ import (
 var HelpErr = errors.New("help")
 
 type Cli struct {
-	Topics map[string]*Topic
-}
-
-func (cli *Cli) AddCommand(cmd *Command) {
-	if cli.Topics[cmd.Topic] == nil {
-		cli.Topics[cmd.Topic] = &Topic{Name: cmd.Topic}
-		return
-	}
-	dest := cli.Topics[cmd.Topic]
-	if dest.GetCommand(cmd.Name) == nil {
-		dest.Commands = append(dest.Commands, cmd)
-	}
+	Topics   []*Topic
+	Commands []*Command
 }
 
 func (cli *Cli) Parse(args []string) (ctx *Context, err error) {
@@ -37,15 +27,43 @@ func (cli *Cli) Parse(args []string) (ctx *Context, err error) {
 
 func (cli *Cli) parseCmd(cmd string) (topic *Topic, command *Command) {
 	tc := strings.SplitN(cmd, ":", 2)
-	topic = cli.Topics[tc[0]]
+	topic = getTopic(tc[0], cli.Topics)
 	if topic == nil {
 		return nil, nil
 	}
 	if len(tc) == 2 {
-		return topic, topic.GetCommand(tc[1])
+		return topic, getCommand(tc[0], tc[1], cli.Commands)
 	} else {
-		return topic, topic.GetCommand("")
+		return topic, getCommand(tc[0], "", cli.Commands)
 	}
+}
+
+func getTopic(name string, topics []*Topic) *Topic {
+	for _, topic := range topics {
+		if topic.Name == name {
+			return topic
+		}
+	}
+	return nil
+}
+
+func getCommand(topic, command string, commands []*Command) *Command {
+	for _, c := range commands {
+		if c.Topic == topic && c.Command == command {
+			return c
+		}
+	}
+	return nil
+}
+
+func (cli *Cli) commandsForTopic(topic string) []*Command {
+	commands := make([]*Command, 0, len(cli.Commands))
+	for _, c := range cli.Commands {
+		if c.Topic == topic {
+			commands = append(commands, c)
+		}
+	}
+	return commands
 }
 
 func parseArgs(command *Command, args []string) (result map[string]string, appName string, err error) {

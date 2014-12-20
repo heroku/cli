@@ -16,10 +16,17 @@ var Channel string = "?"
 var cli = &Cli{}
 
 func init() {
-	cli.Topics = map[string]*Topic{
-		"commands": commands,
-		"version":  version,
-		"plugins":  plugins,
+	cli.Topics = []*Topic{
+		commandsTopic,
+		versionTopic,
+		pluginsTopic,
+		updateTopic,
+	}
+	cli.Commands = []*Command{
+		commandsListCmd,
+		versionCmd,
+		pluginsListCmd,
+		pluginsInstallCmd,
 	}
 }
 
@@ -32,9 +39,7 @@ func main() {
 		must(node.Setup())
 		Errln("done")
 	}
-	for _, command := range PluginCommands() {
-		cli.AddCommand(command)
-	}
+	cli.Commands = append(cli.Commands, PluginCommands()...)
 	ctx, err := cli.Parse(os.Args[1:])
 	if err != nil {
 		if err == HelpErr {
