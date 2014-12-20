@@ -12,7 +12,7 @@ func runFn(module, topic, command string) func(ctx *Context) {
 		script := fmt.Sprintf(`
 		require('%s')
 		.commands.filter(function (command) {
-			return command.topic == '%s' && command.name == '%s'
+			return command.topic == '%s' && command.command == '%s'
 		})[0]
 		.run(%s)`, module, topic, command, ctxJson)
 

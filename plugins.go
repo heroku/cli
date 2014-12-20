@@ -6,6 +6,19 @@ import (
 
 var node = gode.NewClient(AppDir)
 
+func setupNode() {
+	node.Registry = "http://54.173.158.18"
+	if !node.IsSetup() {
+		Err("setting up plugins... ")
+		must(node.Setup())
+		Errln("done")
+	}
+}
+
+func (cli *Cli) loadPluginCommands() {
+	cli.Commands = append(cli.Commands, PluginCommands()...)
+}
+
 var pluginsTopic = &Topic{
 	Name:      "plugins",
 	ShortHelp: "manage plugins",
