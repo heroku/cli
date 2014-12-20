@@ -8,7 +8,8 @@
 		},
 		{
 			"ImportPath": "github.com/dickeyxxx/gode",
-			"Rev": "52ffc100dee500b1836f929ae55f7082f131a4ea"
+			"Comment": "v1.0.0-5-g7d0291e",
+			"Rev": "7d0291ef0bf97e6ff20c0e5243c7f9f9ebea834f"
 		}
 	]
 }
