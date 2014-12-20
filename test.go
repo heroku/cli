@@ -2,7 +2,7 @@ package main
 
 import "bytes"
 
-func Mock() {
+func mock() {
 	var stderr bytes.Buffer
 	var stdout bytes.Buffer
 	Stderr = &stderr
@@ -12,10 +12,10 @@ func Mock() {
 	}
 }
 
-func GetMockStderr() string {
+func getMockStderr() string {
 	return Stderr.(*bytes.Buffer).String()
 }
 
-func GetMockStdout() string {
+func getMockStdout() string {
 	return Stdout.(*bytes.Buffer).String()
 }

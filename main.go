@@ -5,8 +5,11 @@ import (
 	"runtime/debug"
 )
 
-var Version string = "dev"
-var Channel string = "?"
+// The built version.
+// This is set by a build flag in the `Rakefile`.
+// If it is set to `dev` it will not autoupdate.
+var Version = "dev"
+var Channel = "?"
 
 var cli = &Cli{}
 

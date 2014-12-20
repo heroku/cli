@@ -7,14 +7,14 @@ import (
 
 func runFn(module, topic, command string) func(ctx *Context) {
 	return func(ctx *Context) {
-		ctxJson, err := json.Marshal(ctx)
+		ctxJSON, err := json.Marshal(ctx)
 		must(err)
 		script := fmt.Sprintf(`
 		require('%s')
 		.commands.filter(function (command) {
 			return command.topic == '%s' && command.command == '%s'
 		})[0]
-		.run(%s)`, module, topic, command, ctxJson)
+		.run(%s)`, module, topic, command, ctxJSON)
 
 		cmd := node.RunScript(script)
 		cmd.Stdout = Stdout
