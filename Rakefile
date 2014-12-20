@@ -126,9 +126,9 @@ def notify_rollbar
     $stderr.puts 'ROLLBAR_TOKEN not set, skipping rollbar deploy notification'
     return
   end
-  Net::HTTP.post('https://api.rollbar.com/api/1/deploy/',
-                 environment: CHANNEL,
-                 local_username: `whoami`.chomp,
-                 revision: REVISION,
-                 access_token: ENV['ROLLBAR_TOKEN'])
+  Net::HTTP.post_form(URI.parse('https://api.rollbar.com/api/1/deploy/'),
+                      environment: CHANNEL,
+                      local_username: `whoami`.chomp,
+                      revision: REVISION,
+                      access_token: ENV['ROLLBAR_TOKEN'])
 end
