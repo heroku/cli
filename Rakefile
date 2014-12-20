@@ -20,24 +20,24 @@ dirty = `git status 2> /dev/null | tail -n1`.chomp != 'nothing to commit, workin
 CHANNEL = dirty ? 'dirty' : `git rev-parse --abbrev-ref HEAD`.chomp
 CLOUDFRONT_HOST = 'd1gvo455cekpjp.cloudfront.net'
 
-puts "hk: #{VERSION}"
+puts "heroku-cli: #{VERSION}"
 
-desc "build hk"
+desc "build heroku-cli"
 task :build do
   FileUtils.mkdir_p 'dist'
   TARGETS.each do |target|
-    path = "./dist/hk_#{target[:os]}_#{target[:arch]}"
+    path = "./dist/#{filename(target[:os], target[:arch])}"
     puts "building #{path}"
     build(target[:os], target[:arch], path)
     gzip(path)
   end
 end
 
-desc "deploy hk"
+desc "deploy heroku-cli"
 task :deploy => :build do
   abort 'branch is dirty' if CHANNEL == 'dirty'
   abort "#{CHANNEL} not a channel branch (dev/release)" unless %w(dev release).include?(CHANNEL)
-  puts "deploying #{VERSION} to #{BUCKET_NAME}.s3.amazonaws.com/hk/#{CHANNEL}..."
+  puts "deploying #{VERSION} to #{BUCKET_NAME}.s3.amazonaws.com/heroku-cli/#{CHANNEL}..."
   bucket = get_s3_bucket
   cache_control = "public,max-age=31536000"
   TARGETS.each do |target|
@@ -83,11 +83,11 @@ def upload_string(bucket, s, remote, opts={})
 end
 
 def filename(os, arch)
-  "hk_#{os}_#{arch}"
+  "heroku_#{os}_#{arch}"
 end
 
 def remote_path(os, arch)
-  "hk/#{CHANNEL}/#{VERSION}/#{filename(os, arch)}"
+  "heroku-cli/#{CHANNEL}/#{VERSION}/#{filename(os, arch)}"
 end
 
 def remote_url(os, arch)
@@ -106,7 +106,7 @@ def manifest
     @manifest[:builds][target[:os]] ||= {}
     @manifest[:builds][target[:os]][target[:arch]] = {
       url: remote_url(target[:os], target[:arch]),
-      sha1: sha_digest("dist/hk_#{target[:os]}_#{target[:arch]}")
+      sha1: sha_digest("dist/#{filename(target[:os],target[:arch])}")
     }
   end
   @manifest
@@ -115,6 +115,6 @@ end
 def set_manifest(bucket)
   puts 'setting manifest:'
   p manifest
-  upload_string(bucket, JSON.dump(manifest), "hk/#{CHANNEL}/manifest.json", content_type: 'application/json', cache_control: "public,max-age=300")
+  upload_string(bucket, JSON.dump(manifest), "heroku-cli/#{CHANNEL}/manifest.json", content_type: 'application/json', cache_control: "public,max-age=300")
   puts "deployed #{VERSION}"
 end

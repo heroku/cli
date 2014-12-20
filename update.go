@@ -15,7 +15,7 @@ import (
 	"time"
 )
 
-var binPath = filepath.Join(AppDir, "hk")
+var binPath = filepath.Join(AppDir, "heroku")
 
 func updateIfNeeded() {
 	if !updateNeeded() {
@@ -59,7 +59,7 @@ type manifest struct {
 }
 
 func getUpdateManifest() manifest {
-	res, err := http.Get("https://d1gvo455cekpjp.cloudfront.net/hk/" + Channel + "/manifest.json")
+	res, err := http.Get("https://d1gvo455cekpjp.cloudfront.net/heroku-cli/" + Channel + "/manifest.json")
 	if err != nil {
 		panic(err)
 	}
