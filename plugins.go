@@ -71,6 +71,11 @@ var pluginsInstallCmd = &Command{
 		name := ctx.Args["name"]
 		Errf("Installing plugin %s... ", name)
 		must(node.InstallPackage(name))
+		plugin := getPlugin(name)
+		if plugin == nil || len(plugin.Commands) == 0 {
+			Err("This does not appear to be a Heroku plugin, uninstalling... ")
+			must(node.RemovePackage(name))
+		}
 		Errln("done")
 	},
 }
@@ -171,7 +176,10 @@ func GetPlugins() []Plugin {
 	names := PluginNames()
 	plugins := make([]Plugin, 0, len(names))
 	for _, name := range names {
-		plugins = append(plugins, *getPlugin(name))
+		plugin := getPlugin(name)
+		if plugin != nil {
+			plugins = append(plugins, *plugin)
+		}
 	}
 	return plugins
 }
