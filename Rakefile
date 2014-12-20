@@ -43,7 +43,7 @@ task :release => :build do
   cache_control = "public,max-age=31536000"
   TARGETS.map do |target|
     Thread.new do
-      from = "./dist/#{target[:os]}/#{target[:arch]}/heroku"
+      from = "./dist/#{target[:os]}/#{target[:arch]}/heroku-cli"
       to = remote_path(target[:os], target[:arch])
       upload_file(bucket, from, to, content_type: 'binary/octet-stream', cache_control: cache_control)
       upload_file(bucket, from + '.gz', to + '.gz', content_type: 'binary/octet-stream', content_encoding: 'gzip', cache_control: cache_control)
@@ -56,7 +56,7 @@ task :release => :build do
 end
 
 def build(os, arch)
-  path = "./dist/#{os}/#{arch}/heroku"
+  path = "./dist/#{os}/#{arch}/heroku-cli"
   ldflags = "-X main.Version #{VERSION} -X main.Channel #{CHANNEL}"
   args = "-o #{path} -ldflags \"#{ldflags}\""
   system("GOOS=#{os} GOARCH=#{arch} go build #{args}")
@@ -72,7 +72,7 @@ def sha_digest(path)
 end
 
 def remote_path(os, arch)
-  "heroku-cli/#{CHANNEL}/#{VERSION}/#{os}/#{arch}"
+  "heroku-cli/#{CHANNEL}/#{VERSION}/#{os}/#{arch}/heroku-cli"
 end
 
 def remote_url(os, arch)
