@@ -24,21 +24,20 @@ LABEL = "heroku-cli/#{VERSION} (#{CHANNEL})"
 
 desc "build heroku-cli"
 task :build do
-  print "building  #{LABEL}... "
+  puts "building  #{LABEL}..."
   FileUtils.mkdir_p 'dist'
   TARGETS.map do |target|
     Thread.new do
       build(target[:os], target[:arch])
     end
   end.map(&:join)
-  puts 'done'
 end
 
 desc "release heroku-cli"
 task :release => :build do
   abort 'branch is dirty' if CHANNEL == 'dirty'
   abort "#{CHANNEL} not a channel branch (dev/master)" unless %w(dev master).include?(CHANNEL)
-  print "releasing #{LABEL}... "
+  puts "releasing #{LABEL}..."
   bucket = get_s3_bucket
   cache_control = "public,max-age=31536000"
   TARGETS.map do |target|
@@ -50,7 +49,6 @@ task :release => :build do
       upload_string(bucket, from, to + ".sha1", content_type: 'text/plain', cache_control: cache_control)
     end
   end.map(&:join)
-  puts 'done'
   upload_manifest(bucket)
   puts "released #{VERSION}"
 end
