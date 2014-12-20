@@ -1,0 +1,14 @@
+{
+	"ImportPath": "github.com/heroku/heroku-cli",
+	"GoVersion": "go1.4",
+	"Deps": [
+		{
+			"ImportPath": "github.com/bgentry/go-netrc/netrc",
+			"Rev": "9fd32a8b3d3d3f9d43c341bfe098430e07609480"
+		},
+		{
+			"ImportPath": "github.com/dickeyxxx/gode",
+			"Rev": "52ffc100dee500b1836f929ae55f7082f131a4ea"
+		}
+	]
+}
