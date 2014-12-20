@@ -1,12 +1,20 @@
 package main
 
 import (
+	"bufio"
+	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"io"
 	"io/ioutil"
+	"os"
+	"os/exec"
 	"path/filepath"
+	"syscall"
 
 	"github.com/dickeyxxx/gode"
+	"github.com/stvp/rollbar"
 )
 
 // Plugin represents a javascript plugin
@@ -98,9 +106,44 @@ func runFn(module, topic, command string) func(ctx *Context) {
 
 		cmd := node.RunScript(script)
 		cmd.Stdout = Stdout
-		cmd.Stderr = Stderr
-		must(cmd.Run())
+		r, w, _ := os.Pipe()
+		cmd.Stderr = w
+		stderr := captureText(r)
+		if err := cmd.Run(); err != nil {
+			Errf("Error in %s\n", ctx.Command.Plugin)
+			if Channel != "?" {
+				nodeErr := errors.New(fmt.Sprintf("%s: %s\n%s", ctx.Command.Plugin, ctx.Command, stderr.String()))
+				rollbar.ErrorWithStack(rollbar.ERR, nodeErr, rollbar.Stack{}, &rollbar.Field{"version", Version})
+				rollbar.Wait()
+			}
+			// Exit with the same exit code
+			Exit(getExitCode(err))
+		}
 	}
+}
+
+func captureText(r io.Reader) *bytes.Buffer {
+	var b bytes.Buffer
+	go func() {
+		scanner := bufio.NewScanner(r)
+		for scanner.Scan() {
+			b.WriteString(scanner.Text() + "\n")
+			Errln(scanner.Text())
+		}
+	}()
+	return &b
+}
+
+func getExitCode(err error) int {
+	exitErr, ok := err.(*exec.ExitError)
+	if !ok {
+		panic(err)
+	}
+	status, ok := exitErr.Sys().(syscall.WaitStatus)
+	if !ok {
+		panic(err)
+	}
+	return status.ExitStatus()
 }
 
 func getPlugin(name string) *Plugin {
@@ -118,6 +161,7 @@ func getPlugin(name string) *Plugin {
 	}
 	must(cmd.Wait())
 	for _, command := range plugin.Commands {
+		command.Plugin = name
 		command.Run = runFn(name, command.Topic, command.Command)
 	}
 	return &plugin
