@@ -45,3 +45,10 @@ if err != nil {
     panic(err)
 }
 ```
+
+Meta
+----
+
+* [Changelog](CHANGELOG)
+* [License (ISC)](LICENSE)
+* [Contributors](https://github.com/dickeyxxx/gode/graphs/contributors)

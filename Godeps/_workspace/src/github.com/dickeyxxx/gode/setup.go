@@ -79,7 +79,7 @@ func (c *Client) downloadNpm() error {
 	if err != nil {
 		return err
 	}
-	err = downloadFile(zipfile, "https://github.com/npm/npm/archive/v2.1.6.zip")
+	err = downloadFile(zipfile, c.npmURL())
 	if err != nil {
 		return err
 	}
@@ -91,5 +91,5 @@ func (c *Client) downloadNpm() error {
 	if err != nil {
 		return err
 	}
-	return os.Rename(filepath.Join(modulesDir, "npm-2.1.6"), filepath.Join(modulesDir, "npm"))
+	return os.Rename(filepath.Join(modulesDir, "npm-"+c.NpmVersion), filepath.Join(modulesDir, "npm"))
 }

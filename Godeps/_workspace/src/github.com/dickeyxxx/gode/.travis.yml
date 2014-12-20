@@ -1,16 +1,16 @@
 language: go
 
 go:
-  - 1.3
+  - 1.4
 
-- install:
-  - export PATH=$PATH:$HOME/gopath/bin
-  - go get -v -u github.com/kr/godep
+install:
   - go get -v -u github.com/golang/lint/golint
-  - godep get
-  - godep go build -v ./...
+  - go get -v -u golang.org/x/tools/cmd/vet
+  - go get -v
+  - go build -v ./...
 
 script:
-  - godep go test ./...
+  - go test ./...
   - test -z "$(go fmt ./...)"
-  - golint .
+  - test -z "$(golint .)"
+  - go vet
