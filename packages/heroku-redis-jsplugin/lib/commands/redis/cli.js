@@ -26,9 +26,10 @@ function cli (redis) {
 
 module.exports = {
   topic: 'redis',
-  name: 'cli',
+  command: 'cli',
   needsApp: true,
   needsAuth: true,
+  shortHelp: 'opens a redis prompt',
   run: function(context) {
     var heroku = new Heroku({token: context.auth.password});
     heroku.apps(context.app).configVars().info()
