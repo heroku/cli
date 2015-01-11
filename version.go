@@ -14,9 +14,10 @@ var versionCmd = &Command{
 	Topic:     "version",
 	ShortHelp: "print the version",
 	Run: func(ctx *Context) {
-		fmt.Printf("heroku-cli/%s (%s-%s) %s\n", Version, runtime.GOARCH, runtime.GOOS, runtime.Version())
+		fmt.Printf("heroku-cli/%s (%s-%s) %s", Version, runtime.GOARCH, runtime.GOOS, runtime.Version())
 		if Channel != "master" {
-			fmt.Printf("channel: %s\n", Channel)
+			fmt.Printf(" %s", Channel)
 		}
+		fmt.Println()
 	},
 }
