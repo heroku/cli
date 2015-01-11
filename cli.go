@@ -6,13 +6,15 @@ import (
 	"path/filepath"
 	"runtime"
 	"strings"
-	"time"
 
 	"github.com/bgentry/go-netrc/netrc"
 )
 
 // ErrHelp means the user didn't type a valid command and we need to display help.
 var ErrHelp = errors.New("help")
+
+// ErrAppNeeded means the command needs an app context and one was not found.
+var ErrAppNeeded = errors.New(" !    No app specified.\n !    Run this command from an app folder or specify which app to use with --app APP")
 
 // Cli handles parsing and dispatching of commands
 type Cli struct {
@@ -22,16 +24,16 @@ type Cli struct {
 
 // Run parses command line arguments and runs the associated command or help.
 // Also does lookups for app name and/or auth token if the command needs it.
-func (cli *Cli) Run(args []string) {
-	ctx, err := cli.Parse(args[1:])
-	if err != nil {
-		if err == ErrHelp {
-			help()
-		}
-		Errln(err)
-		Errf("USAGE: %s %s\n", args[0], commandSignature(ctx.Topic, ctx.Command))
-		os.Exit(2)
+func (cli *Cli) Run(args []string) (err error) {
+	ctx := &Context{}
+	if len(args) == 0 {
+		return ErrHelp
 	}
+	ctx.Topic, ctx.Command = cli.ParseCmd(args[1])
+	if ctx.Command == nil {
+		return ErrHelp
+	}
+	ctx.Args, ctx.App, err = parseArgs(ctx.Command, args[2:])
 	if ctx.Command.NeedsApp {
 		if ctx.App == "" {
 			ctx.App = app()
@@ -40,33 +42,18 @@ func (cli *Cli) Run(args []string) {
 			ctx.App = app
 		}
 		if ctx.App == "" {
-			AppNeededError()
+			return ErrAppNeeded
 		}
 	}
 	if ctx.Command.NeedsAuth {
 		ctx.Auth.Username, ctx.Auth.Password = auth()
 	}
-	Logf("Running %s\n", ctx)
-	before := time.Now()
 	ctx.Command.Run(ctx)
-	Logf("Finished in %s\n", (time.Since(before)))
+	return nil
 }
 
-// Parse finds the topic, command and arguments the user made
-func (cli *Cli) Parse(args []string) (ctx *Context, err error) {
-	ctx = &Context{}
-	if len(args) == 0 {
-		return ctx, ErrHelp
-	}
-	ctx.Topic, ctx.Command = cli.parseCmd(args[0])
-	if ctx.Command == nil {
-		return ctx, ErrHelp
-	}
-	ctx.Args, ctx.App, err = parseArgs(ctx.Command, args[1:])
-	return ctx, err
-}
-
-func (cli *Cli) parseCmd(cmd string) (topic *Topic, command *Command) {
+// ParseCmd parses the command argument into a topic and command
+func (cli *Cli) ParseCmd(cmd string) (topic *Topic, command *Command) {
 	tc := strings.SplitN(cmd, ":", 2)
 	topic = cli.Topics.ByName(tc[0])
 	if topic == nil {
