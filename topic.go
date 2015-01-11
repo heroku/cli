@@ -3,10 +3,10 @@ package main
 // Topic represents a CLI topic.
 // For example, in the command `heroku apps:create` the topic would be `apps`.
 type Topic struct {
-	Name      string
-	ShortHelp string
-	Help      string
-	Hidden    bool
+	Name      string `json:"name"`
+	ShortHelp string `json:"shortHelp"`
+	Help      string `json:"help"`
+	Hidden    bool   `json:"hidden"`
 }
 
 func (t *Topic) String() string {

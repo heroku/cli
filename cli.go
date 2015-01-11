@@ -82,7 +82,19 @@ func parseArgs(command *Command, args []string) (result map[string]string, appNa
 			}
 			appName = args[i]
 		case parseFlags && strings.HasPrefix(args[i], "-"):
-			// TODO
+			for _, flag := range command.Flags {
+				if args[i] == "-"+string(flag.Char) || args[i] == "--"+flag.Name {
+					if flag.HasValue {
+						i++
+						if len(args) < i || strings.HasPrefix(args[i], "-") {
+							return nil, "", errors.New("--" + flag.Name + " requires a value")
+						}
+						result[flag.Name] = args[i]
+					} else {
+						result[flag.Name] = "True"
+					}
+				}
+			}
 		case numArgs == len(command.Args):
 			return nil, "", errors.New("Unexpected argument: " + strings.Join(args[numArgs:], " "))
 		default:
