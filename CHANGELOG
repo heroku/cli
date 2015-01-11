@@ -1,3 +1,9 @@
+4.0.1
+=====
+Skip plugin loading for core commands
+Implemented update command
+Removed updating text
+
 4.0.0
 =====
 
