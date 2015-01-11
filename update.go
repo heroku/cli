@@ -51,10 +51,12 @@ func UpdateIfNeeded() {
 		Errf("Out of date: You are running %s but %s is out.\n", Version, manifest.Version)
 		return
 	}
-	Errf("Updating to %s... ", manifest.Version)
+	// Leave out updating text until heroku-cli is used in place of ruby cli
+	// So it doesn't confuse users with 2 different version numbers
+	//Errf("Updating to %s... ", manifest.Version)
 	build := manifest.Builds[runtime.GOOS][runtime.GOARCH]
 	update(build.URL, build.Sha1)
-	Errln("done")
+	//Errln("done")
 	execBin()
 	os.Exit(0)
 }
