@@ -29,7 +29,11 @@ var updateCmd = &Command{
 		if channel == "" {
 			channel = "master"
 		}
-		Print("updating to ", channel)
+		manifest := getUpdateManifest(channel)
+		build := manifest.Builds[runtime.GOOS][runtime.GOARCH]
+		Errf("updating to %s (%s)... ", manifest.Version, manifest.Channel)
+		update(build.URL, build.Sha1)
+		Errln("done")
 	},
 }
 
@@ -41,7 +45,7 @@ func UpdateIfNeeded() {
 		return
 	}
 	// TODO: update plugins
-	manifest := getUpdateManifest()
+	manifest := getUpdateManifest(Channel)
 	if manifest.Version == Version {
 		// Set timestamp of bin so we don't update again
 		os.Chtimes(binPath, time.Now(), time.Now())
@@ -81,8 +85,8 @@ type manifest struct {
 	}
 }
 
-func getUpdateManifest() manifest {
-	res, err := http.Get("https://d1gvo455cekpjp.cloudfront.net/heroku-cli/" + Channel + "/manifest.json")
+func getUpdateManifest(channel string) manifest {
+	res, err := http.Get("https://d1gvo455cekpjp.cloudfront.net/heroku-cli/" + channel + "/manifest.json")
 	if err != nil {
 		panic(err)
 	}
