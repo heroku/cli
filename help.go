@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bytes"
+	"fmt"
 	"os"
 	"strings"
 )
@@ -52,24 +54,39 @@ func commandSignature(topic *Topic, command *Command) string {
 	if command.Command != "" {
 		cmd = cmd + ":" + command.Command
 	}
-	cmd = cmd + commandArgs(command)
+	cmd = cmd + argsString(command.Args) + flagsString(command.Flags)
 	if command.NeedsApp {
 		cmd = cmd + " --app APP"
 	}
 	return cmd
 }
 
-func commandArgs(command *Command) string {
-	args := ""
-	for _, arg := range command.Args {
-		if arg.Optional {
-			args = args + " [" + strings.ToUpper(arg.Name) + "]"
+func flagsString(flags []Flag) string {
+	var buffer bytes.Buffer
+	for _, flag := range flags {
+		var s string
+		if flag.Char != 0 {
+			s = fmt.Sprintf(" [-%s (--%s)]", string(flag.Char), flag.Name)
 		} else {
-			args = args + " " + strings.ToUpper(arg.Name)
+			s = fmt.Sprintf(" [--%s]", flag.Name)
+		}
+		buffer.WriteString(s)
+	}
+	return buffer.String()
+}
+
+func argsString(args []Arg) string {
+	var buffer bytes.Buffer
+	for _, arg := range args {
+		if arg.Optional {
+			buffer.WriteString(" [" + strings.ToUpper(arg.Name) + "]")
+		} else {
+			buffer.WriteString(" " + strings.ToUpper(arg.Name))
 		}
 	}
-	return args
+	return buffer.String()
 }
+
 func nonHiddenTopics(from []*Topic) []*Topic {
 	to := make([]*Topic, 0, len(from))
 	for _, topic := range from {
