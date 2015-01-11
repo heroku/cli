@@ -42,8 +42,19 @@ func main() {
 	defer handlePanic()
 	UpdateIfNeeded()
 	SetupNode()
-	cli.LoadPlugins(GetPlugins())
-	cli.Run(os.Args)
+	err := cli.Run(os.Args)
+	if err == ErrHelp {
+		// Command wasn't found so load the plugins and try again
+		cli.LoadPlugins(GetPlugins())
+		err = cli.Run(os.Args)
+	}
+	if err == ErrHelp {
+		help()
+	}
+	if err != nil {
+		Errln(err)
+		os.Exit(2)
+	}
 }
 
 func handlePanic() {

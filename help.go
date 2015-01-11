@@ -6,30 +6,33 @@ import (
 )
 
 func help() {
-	args := os.Args[1:]
-	if len(args) > 0 && args[0] == "help" {
-		args = args[1:]
+	var cmd string
+	if len(os.Args) > 0 {
+		cmd = os.Args[1]
+		if len(os.Args) > 2 && cmd == "help" {
+			cmd = os.Args[2]
+		}
 	}
-	ctx, _ := cli.Parse(args)
+	topic, command := cli.ParseCmd(cmd)
 	switch {
-	case ctx.Topic == nil:
+	case topic == nil:
 		Errf("USAGE: heroku COMMAND [--app APP] [command-specific-options]\n\n")
 		Errf("Help topics, type \"heroku help TOPIC\" for more details:\n\n")
 		for _, topic := range nonHiddenTopics(cli.Topics) {
 			Errf("  heroku %-30s# %s\n", topic.Name, topic.ShortHelp)
 		}
-	case ctx.Command == nil:
-		Errf("USAGE: heroku %s:COMMAND [--app APP] [command-specific-options]\n\n", ctx.Topic.Name)
-		Errln(ctx.Topic.Help)
-		printTopicCommandsHelp(ctx.Topic)
-	case ctx.Command.Command == "":
-		Errf("USAGE: heroku %s\n\n", commandSignature(ctx.Topic, ctx.Command))
-		Errln(ctx.Command.Help)
+	case command == nil:
+		Errf("USAGE: heroku %s:COMMAND [--app APP] [command-specific-options]\n\n", topic.Name)
+		Errln(topic.Help)
+		printTopicCommandsHelp(topic)
+	case command.Command == "":
+		Errf("USAGE: heroku %s\n\n", commandSignature(topic, command))
+		Errln(command.Help)
 		// This is a root command so show the other commands in the topic
-		printTopicCommandsHelp(ctx.Topic)
+		printTopicCommandsHelp(topic)
 	default:
-		Errf("USAGE: heroku %s\n\n", commandSignature(ctx.Topic, ctx.Command))
-		Errln(ctx.Command.Help)
+		Errf("USAGE: heroku %s\n\n", commandSignature(topic, command))
+		Errln(command.Help)
 	}
 	os.Exit(2)
 }
@@ -85,11 +88,4 @@ func nonHiddenCommands(from []*Command) []*Command {
 		}
 	}
 	return to
-}
-
-// AppNeededError shows an error message that the user did not specify an app but the command requires an app.
-func AppNeededError() {
-	Errln(" !    No app specified.")
-	Errln(" !    Run this command from an app folder or specify which app to use with --app APP.")
-	os.Exit(3)
 }
