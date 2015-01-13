@@ -52,10 +52,6 @@ func (cli *Cli) LoadPlugins(plugins []Plugin) {
 var pluginsTopic = &Topic{
 	Name:        "plugins",
 	Description: "manage plugins",
-	Help: `Manage the Heroku CLI Plugins
-
-  Example:
-  $ heroku plugins:install dickeyxxx/heroku-production-check`,
 }
 
 var pluginsInstallCmd = &Command{

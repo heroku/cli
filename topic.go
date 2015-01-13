@@ -5,7 +5,6 @@ package main
 type Topic struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
-	Help        string `json:"help"`
 	Hidden      bool   `json:"hidden"`
 }
 
@@ -44,8 +43,5 @@ func (t *Topic) Merge(other *Topic) {
 	}
 	if t.Description == "" {
 		t.Description = other.Description
-	}
-	if t.Help == "" {
-		t.Help = other.Help
 	}
 }
