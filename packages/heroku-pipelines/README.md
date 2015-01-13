@@ -82,4 +82,9 @@ exports.commands = [
 ];
 ```
 
+Running the plugin
+==================
+
+Now you can run the plugin with `heroku hello:world`. If it isn't working, check to make sure the plugin is being loaded by running `heroku plugins`. If it's not there, check to make sure it's symlinked to `~/.heroku/node_modules` and you have the CLI JavaScript dependencies setup (see above).
+
 Note the help is automatically setup for `heroku help hello` and `heroku help hello:world`.
