@@ -6,10 +6,10 @@
   "author": "Jeff Dickey @dickeyxxx",
   "repository": {
     "type": "git",
-    "url": "https://github.com/dickeyxxx/heroku-hello-world"
+    "url": "https://github.com/heroku/heroku-hello-world"
   },
   "bugs": {
-    "url": "https://github.com/dickeyxxx/heroku-hello-world/issues"
+    "url": "https://github.com/heroku/heroku-hello-world/issues"
   },
   "keywords": [
     "heroku-plugin"
