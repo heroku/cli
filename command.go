@@ -14,6 +14,7 @@ type Command struct {
 	Topic       string             `json:"topic"`
 	Command     string             `json:"command"`
 	Plugin      string             `json:"plugin"`
+	Usage       string             `json:"usage"`
 	Description string             `json:"description"`
 	Help        string             `json:"help"`
 	Hidden      bool               `json:"hidden"`
@@ -31,13 +32,33 @@ func (c *Command) String() string {
 	return c.Topic + ":" + c.Command
 }
 
-// Usage prints out the example help text for the command
-func (c *Command) Usage() string {
+func commandUsage(c *Command) string {
 	text := c.String() + argsString(c.Args) + flagsString(c.Flags)
 	if c.NeedsApp {
 		text = text + " --app APP"
 	}
 	return text
+}
+
+// CommandSet is a slice of Command structs with some helper methods.
+type CommandSet []*Command
+
+// ByTopicAndCommand returns a command that matches the passed topic and command.
+func (commands CommandSet) ByTopicAndCommand(topic, command string) *Command {
+	for _, c := range commands {
+		if c.Topic == topic && c.Command == command {
+			return c
+		}
+	}
+	return nil
+}
+
+func (commands CommandSet) loadUsages() {
+	for _, c := range commands {
+		if c.Usage == "" {
+			c.Usage = commandUsage(c)
+		}
+	}
 }
 
 // Arg defines an argument for a command.
@@ -99,40 +120,21 @@ var commandsListCmd = &Command{
 	Description: "list all commands",
 	Flags:       []Flag{{Name: "json"}},
 	Run: func(ctx *Context) {
+		if ctx.Args["json"] != "True" {
+			// TODO: remove this and make json default
+			for _, command := range cli.Commands {
+				if command.Command == "" {
+					Printf("%s\n", command.Topic)
+				} else {
+					Printf("%s:%s\n", command.Topic, command.Command)
+				}
+			}
+			return
+		}
 		cli.LoadPlugins(GetPlugins())
-		if ctx.Args["json"] == "True" {
-			printCommandJSON(cli.Topics, cli.Commands)
-		} else {
-			printCommands(cli.Commands)
-		}
+		cli.Commands.loadUsages()
+		doc := map[string]interface{}{"topics": cli.Topics, "commands": cli.Commands}
+		s, _ := json.Marshal(doc)
+		Println(string(s))
 	},
-}
-
-func printCommandJSON(topics TopicSet, commands CommandSet) {
-	doc := map[string]interface{}{"topics": topics, "commands": commands}
-	s, _ := json.Marshal(doc)
-	Println(string(s))
-}
-
-func printCommands(commands CommandSet) {
-	for _, command := range cli.Commands {
-		if command.Command == "" {
-			Printf("%s\n", command.Topic)
-		} else {
-			Printf("%s:%s\n", command.Topic, command.Command)
-		}
-	}
-}
-
-// CommandSet is a slice of Command structs with some helper methods.
-type CommandSet []*Command
-
-// ByTopicAndCommand returns a command that matches the passed topic and command.
-func (commands CommandSet) ByTopicAndCommand(topic, command string) *Command {
-	for _, c := range commands {
-		if c.Topic == topic && c.Command == command {
-			return c
-		}
-	}
-	return nil
 }

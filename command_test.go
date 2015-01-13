@@ -1,13 +1,16 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
+	"fmt"
 	"testing"
 
 	c "github.com/smartystreets/goconvey/convey"
 )
 
 func TestCommand(t *testing.T) {
-	c.Convey("Usage", t, func() {
+	c.Convey("Usage()", t, func() {
 		c.Convey("basic", func() {
 			cmd := &Command{
 				Topic:   "apps",
@@ -62,5 +65,15 @@ func TestCommand(t *testing.T) {
 			}
 			c.So(cmd.Usage(), c.ShouldEqual, "apps:info [--foo]")
 		})
+	})
+
+	c.Convey("commands", t, func() {
+		stdout := &bytes.Buffer{}
+		Stdout = stdout
+		commandsListCmd.Run(&Context{})
+		var result map[string]interface{}
+		fmt.Println(stdout.String())
+		json.Unmarshal(stdout.Bytes(), &result)
+		c.So(result["commands"], c.ShouldEqual, `{"name":"commads",`)
 	})
 }
