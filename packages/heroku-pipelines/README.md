@@ -8,7 +8,7 @@ Toolbelt 4.0 plugins are node npm packages that export `topics` and `commands`. 
 This is a short walkthrough to make a simple hello world plugin. For a more complete example, check out the [RedisCloud example plugin](https://github.com/heroku/heroku-rediscloud-plugin-example).
 
 Setting up your CLI
-===================
+-------------------
 
 Because the Heroku CLI only installs the JavaScript dependencies on demand, you may need to setup your CLI first. Simply install a JavaScript plugin and it will setup automatically:
 
@@ -17,7 +17,7 @@ $ heroku plugins:install heroku-hello-world
 ```
 
 Creating the package
-====================
+--------------------
 
 Create a new directory for your plugin and symlink it to `~/.heroku/node_modules`:
 
@@ -83,7 +83,7 @@ exports.commands = [
 ```
 
 Running the plugin
-==================
+------------------
 
 Now you can run the plugin with `heroku hello:world`. If it isn't working, check to make sure the plugin is being loaded by running `heroku plugins`. If it's not there, check to make sure it's symlinked to `~/.heroku/node_modules` and you have the CLI JavaScript dependencies setup (see above).
 
