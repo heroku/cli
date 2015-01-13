@@ -21,7 +21,6 @@ func help() {
 		}
 	case command == nil:
 		Errf("USAGE: heroku %s:COMMAND [--app APP] [command-specific-options]\n\n", topic.Name)
-		Errln(topic.Help)
 		printTopicCommandsHelp(topic)
 	case command.Command == "":
 		Errf("USAGE: heroku %s\n\n", command.Usage)
