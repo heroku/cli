@@ -26,7 +26,7 @@ type Cli struct {
 // Also does lookups for app name and/or auth token if the command needs it.
 func (cli *Cli) Run(args []string) (err error) {
 	ctx := &Context{}
-	if len(args) == 0 {
+	if len(args) < 2 {
 		return ErrHelp
 	}
 	ctx.Topic, ctx.Command = cli.ParseCmd(args[1])

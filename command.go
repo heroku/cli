@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
+	"fmt"
 	"strings"
 )
 
@@ -9,21 +11,33 @@ import (
 // For example, in the command `heroku apps:create` the command would be `create`.
 // They must have a Topic name that links to a real topic's name.
 type Command struct {
-	Topic     string             `json:"topic"`
-	Command   string             `json:"command"`
-	Plugin    string             `json:"plugin"`
-	ShortHelp string             `json:"shortHelp"`
-	Help      string             `json:"help"`
-	Hidden    bool               `json:"hidden"`
-	NeedsApp  bool               `json:"needsApp"`
-	NeedsAuth bool               `json:"needsAuth"`
-	Args      []Arg              `json:"args"`
-	Flags     []Flag             `json:"flags"`
-	Run       func(ctx *Context) `json:"-"`
+	Topic       string             `json:"topic"`
+	Command     string             `json:"command"`
+	Plugin      string             `json:"plugin"`
+	Description string             `json:"description"`
+	Help        string             `json:"help"`
+	Hidden      bool               `json:"hidden"`
+	NeedsApp    bool               `json:"needsApp"`
+	NeedsAuth   bool               `json:"needsAuth"`
+	Args        []Arg              `json:"args"`
+	Flags       []Flag             `json:"flags"`
+	Run         func(ctx *Context) `json:"-"`
 }
 
 func (c *Command) String() string {
+	if c.Command == "" {
+		return c.Topic
+	}
 	return c.Topic + ":" + c.Command
+}
+
+// Usage prints out the example help text for the command
+func (c *Command) Usage() string {
+	text := c.String() + argsString(c.Args) + flagsString(c.Flags)
+	if c.NeedsApp {
+		text = text + " --app APP"
+	}
+	return text
 }
 
 // Arg defines an argument for a command.
@@ -40,6 +54,18 @@ func (a *Arg) String() string {
 	return strings.ToUpper(a.Name)
 }
 
+func argsString(args []Arg) string {
+	var buffer bytes.Buffer
+	for _, arg := range args {
+		if arg.Optional {
+			buffer.WriteString(" [" + strings.ToUpper(arg.Name) + "]")
+		} else {
+			buffer.WriteString(" " + strings.ToUpper(arg.Name))
+		}
+	}
+	return buffer.String()
+}
+
 // Flag defines a flag for a command.
 // These will be parsed in Go and passed to the Run method in the Context struct.
 type Flag struct {
@@ -48,15 +74,30 @@ type Flag struct {
 	HasValue bool   `json:"hasValue"`
 }
 
+func flagsString(flags []Flag) string {
+	var buffer bytes.Buffer
+	for _, flag := range flags {
+		var s string
+		if flag.Char != 0 {
+			s = fmt.Sprintf(" [-%s (--%s)]", string(flag.Char), flag.Name)
+		} else {
+			s = fmt.Sprintf(" [--%s]", flag.Name)
+		}
+		buffer.WriteString(s)
+	}
+	return buffer.String()
+}
+
 var commandsTopic = &Topic{
-	Name:      "commands",
-	ShortHelp: "list all commands",
+	Name:        "commands",
+	Description: "list all commands",
+	Hidden:      true,
 }
 
 var commandsListCmd = &Command{
-	Topic:     "commands",
-	ShortHelp: "list all commands",
-	Flags:     []Flag{{Name: "json"}},
+	Topic:       "commands",
+	Description: "list all commands",
+	Flags:       []Flag{{Name: "json"}},
 	Run: func(ctx *Context) {
 		cli.LoadPlugins(GetPlugins())
 		if ctx.Args["json"] == "True" {
