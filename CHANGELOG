@@ -1,3 +1,7 @@
+4.1.0
+=====
+Added help and other metadata to commands output
+
 4.0.1
 =====
 Skip plugin loading for core commands
