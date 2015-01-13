@@ -1,15 +1,10 @@
 package main
 
-import (
-	"bytes"
-	"fmt"
-	"os"
-	"strings"
-)
+import "os"
 
 func help() {
 	var cmd string
-	if len(os.Args) > 0 {
+	if len(os.Args) > 1 {
 		cmd = os.Args[1]
 		if len(os.Args) > 2 && cmd == "help" {
 			cmd = os.Args[2]
@@ -21,19 +16,19 @@ func help() {
 		Errf("USAGE: heroku COMMAND [--app APP] [command-specific-options]\n\n")
 		Errf("Help topics, type \"heroku help TOPIC\" for more details:\n\n")
 		for _, topic := range nonHiddenTopics(cli.Topics) {
-			Errf("  heroku %-30s# %s\n", topic.Name, topic.ShortHelp)
+			Errf("  heroku %-30s# %s\n", topic.Name, topic.Description)
 		}
 	case command == nil:
 		Errf("USAGE: heroku %s:COMMAND [--app APP] [command-specific-options]\n\n", topic.Name)
 		Errln(topic.Help)
 		printTopicCommandsHelp(topic)
 	case command.Command == "":
-		Errf("USAGE: heroku %s\n\n", commandSignature(topic, command))
+		Errf("USAGE: heroku %s\n\n", command.Usage())
 		Errln(command.Help)
 		// This is a root command so show the other commands in the topic
 		printTopicCommandsHelp(topic)
 	default:
-		Errf("USAGE: heroku %s\n\n", commandSignature(topic, command))
+		Errf("USAGE: heroku %s\n\n", command.Usage())
 		Errln(command.Help)
 	}
 	os.Exit(2)
@@ -44,47 +39,9 @@ func printTopicCommandsHelp(topic *Topic) {
 	if len(commands) > 0 {
 		Errf("\nCommands for %s, type \"heroku help %s:COMMAND\" for more details:\n\n", topic.Name, topic.Name)
 		for _, command := range nonHiddenCommands(commands) {
-			Errf(" heroku %-30s # %s\n", commandSignature(topic, command), command.ShortHelp)
+			Errf(" heroku %-30s # %s\n", command.Usage(), command.Description)
 		}
 	}
-}
-
-func commandSignature(topic *Topic, command *Command) string {
-	cmd := topic.Name
-	if command.Command != "" {
-		cmd = cmd + ":" + command.Command
-	}
-	cmd = cmd + argsString(command.Args) + flagsString(command.Flags)
-	if command.NeedsApp {
-		cmd = cmd + " --app APP"
-	}
-	return cmd
-}
-
-func flagsString(flags []Flag) string {
-	var buffer bytes.Buffer
-	for _, flag := range flags {
-		var s string
-		if flag.Char != 0 {
-			s = fmt.Sprintf(" [-%s (--%s)]", string(flag.Char), flag.Name)
-		} else {
-			s = fmt.Sprintf(" [--%s]", flag.Name)
-		}
-		buffer.WriteString(s)
-	}
-	return buffer.String()
-}
-
-func argsString(args []Arg) string {
-	var buffer bytes.Buffer
-	for _, arg := range args {
-		if arg.Optional {
-			buffer.WriteString(" [" + strings.ToUpper(arg.Name) + "]")
-		} else {
-			buffer.WriteString(" " + strings.ToUpper(arg.Name))
-		}
-	}
-	return buffer.String()
 }
 
 func nonHiddenTopics(from []*Topic) []*Topic {

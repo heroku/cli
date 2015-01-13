@@ -6,13 +6,13 @@ import (
 )
 
 var versionTopic = &Topic{
-	Name:      "version",
-	ShortHelp: "print the version",
+	Name:        "version",
+	Description: "print the version",
 }
 
 var versionCmd = &Command{
-	Topic:     "version",
-	ShortHelp: "print the version",
+	Topic:       "version",
+	Description: "print the version",
 	Run: func(ctx *Context) {
 		fmt.Printf("heroku-cli/%s (%s-%s) %s", Version, runtime.GOARCH, runtime.GOOS, runtime.Version())
 		if Channel != "master" {

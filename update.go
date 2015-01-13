@@ -16,14 +16,14 @@ import (
 )
 
 var updateTopic = &Topic{
-	Name:      "update",
-	ShortHelp: "update heroku-cli",
+	Name:        "update",
+	Description: "update heroku-cli",
 }
 
 var updateCmd = &Command{
-	Topic:     "update",
-	ShortHelp: "updates heroku-cli",
-	Args:      []Arg{{Name: "channel", Optional: true}},
+	Topic:       "update",
+	Description: "updates heroku-cli",
+	Args:        []Arg{{Name: "channel", Optional: true}},
 	Run: func(ctx *Context) {
 		channel := ctx.Args["channel"]
 		if channel == "" {

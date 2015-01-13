@@ -3,10 +3,10 @@ package main
 // Topic represents a CLI topic.
 // For example, in the command `heroku apps:create` the topic would be `apps`.
 type Topic struct {
-	Name      string `json:"name"`
-	ShortHelp string `json:"shortHelp"`
-	Help      string `json:"help"`
-	Hidden    bool   `json:"hidden"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Help        string `json:"help"`
+	Hidden      bool   `json:"hidden"`
 }
 
 func (t *Topic) String() string {
@@ -42,8 +42,8 @@ func (t *Topic) Merge(other *Topic) {
 	if t.Name == "" {
 		t.Name = other.Name
 	}
-	if t.ShortHelp == "" {
-		t.ShortHelp = other.ShortHelp
+	if t.Description == "" {
+		t.Description = other.Description
 	}
 	if t.Help == "" {
 		t.Help = other.Help

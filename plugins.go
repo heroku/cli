@@ -50,8 +50,8 @@ func (cli *Cli) LoadPlugins(plugins []Plugin) {
 }
 
 var pluginsTopic = &Topic{
-	Name:      "plugins",
-	ShortHelp: "manage plugins",
+	Name:        "plugins",
+	Description: "manage plugins",
 	Help: `Manage the Heroku CLI Plugins
 
   Example:
@@ -59,10 +59,10 @@ var pluginsTopic = &Topic{
 }
 
 var pluginsInstallCmd = &Command{
-	Topic:     "plugins",
-	Command:   "install",
-	Args:      []Arg{{Name: "name"}},
-	ShortHelp: "Installs a plugin into the CLI",
+	Topic:       "plugins",
+	Command:     "install",
+	Args:        []Arg{{Name: "name"}},
+	Description: "Installs a plugin into the CLI",
 	Help: `Install a Heroku plugin
 
   Example:
@@ -82,8 +82,8 @@ var pluginsInstallCmd = &Command{
 }
 
 var pluginsListCmd = &Command{
-	Topic:     "plugins",
-	ShortHelp: "Lists the installed plugins",
+	Topic:       "plugins",
+	Description: "Lists the installed plugins",
 	Help: `Lists installed plugins
 
   Example:
