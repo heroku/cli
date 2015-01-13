@@ -10,6 +10,7 @@ func help() {
 			cmd = os.Args[2]
 		}
 	}
+	cli.Commands.loadUsages()
 	topic, command := cli.ParseCmd(cmd)
 	switch {
 	case topic == nil:
@@ -23,12 +24,12 @@ func help() {
 		Errln(topic.Help)
 		printTopicCommandsHelp(topic)
 	case command.Command == "":
-		Errf("USAGE: heroku %s\n\n", command.Usage())
+		Errf("USAGE: heroku %s\n\n", command.Usage)
 		Errln(command.Help)
 		// This is a root command so show the other commands in the topic
 		printTopicCommandsHelp(topic)
 	default:
-		Errf("USAGE: heroku %s\n\n", command.Usage())
+		Errf("USAGE: heroku %s\n\n", command.Usage)
 		Errln(command.Help)
 	}
 	os.Exit(2)
@@ -39,7 +40,7 @@ func printTopicCommandsHelp(topic *Topic) {
 	if len(commands) > 0 {
 		Errf("\nCommands for %s, type \"heroku help %s:COMMAND\" for more details:\n\n", topic.Name, topic.Name)
 		for _, command := range nonHiddenCommands(commands) {
-			Errf(" heroku %-30s # %s\n", command.Usage(), command.Description)
+			Errf(" heroku %-30s # %s\n", command.Usage, command.Description)
 		}
 	}
 }
