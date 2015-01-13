@@ -5,7 +5,7 @@ Heroku Hello World
 
 Toolbelt 4.0 plugins are node npm packages that export `topics` and `commands`. You can write these yourself and try them out either by symlinking to `~/.heroku/node_modules` (good while developing) or by publishing them to npmjs.org and installing with `heroku plugins:install NPM_PACKAGE_NAME` (good for releasing).
 
-This is a short walkthrough to make a simple hello world plugin. For a more complete example, check out the [RedisCloud example plugin](https://github.com/dickeyxxx/heroku-rediscloud-plugin-example).
+This is a short walkthrough to make a simple hello world plugin. For a more complete example, check out the [RedisCloud example plugin](https://github.com/heroku/heroku-rediscloud-plugin-example).
 
 Setting up your CLI
 ===================
