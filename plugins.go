@@ -71,8 +71,6 @@ var pluginsInstallCmd = &Command{
 			return
 		}
 		Errf("Installing plugin %s... ", name)
-		fmt.Println(len(name))
-
 		must(node.InstallPackage(name))
 		plugin := getPlugin(name)
 		if plugin == nil || len(plugin.Commands) == 0 {
