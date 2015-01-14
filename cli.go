@@ -34,6 +34,9 @@ func (cli *Cli) Run(args []string) (err error) {
 		return ErrHelp
 	}
 	ctx.Args, ctx.App, err = parseArgs(ctx.Command, args[2:])
+	if err != nil {
+		return err
+	}
 	if ctx.Command.NeedsApp {
 		if ctx.App == "" {
 			ctx.App = app()
