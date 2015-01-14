@@ -1,4 +1,3 @@
-require 'awesome_print'
 require 'digest'
 require 'aws-sdk'
 
@@ -116,8 +115,7 @@ def upload_string(bucket, s, remote, opts={})
 end
 
 def upload_manifest(bucket)
-  puts 'setting manifest:'
-  ap manifest
+  puts 'uploading manifest...'
   upload_string(bucket, JSON.dump(manifest), "heroku-cli/#{CHANNEL}/manifest.json", content_type: 'application/json', cache_control: "public,max-age=300")
 end
 
