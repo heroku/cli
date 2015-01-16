@@ -1,6 +1,7 @@
 package main
 
 import (
+	"os"
 	"os/user"
 	"path/filepath"
 )
@@ -12,6 +13,10 @@ var HomeDir = homeDir()
 var AppDir = filepath.Join(HomeDir, ".heroku")
 
 func homeDir() string {
+	home := os.Getenv("HOME")
+	if home != "" {
+		return home
+	}
 	user, err := user.Current()
 	if err != nil {
 		panic(err)
