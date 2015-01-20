@@ -1,6 +1,15 @@
+require_relative 'v3_dogwood'
+
 module Heroku
   class API
-    ACCEPT_V3_DOGWOOD = { 'Accept' => 'application/vnd.heroku+json; version=3.dogwood'}
+    def get_spaces
+      request(
+        :method => :get,
+        :expects => [200, 206],
+        :headers  => ACCEPT_V3_DOGWOOD,
+        :path => "/spaces"
+      )
+    end
 
     def post_space(body)
       request(

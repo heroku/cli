@@ -2,6 +2,20 @@ require 'heroku/api/spaces'
 Excon.defaults[:ssl_verify_peer] = false
 class Heroku::Command::Spaces < Heroku::Command::Base
 
+  # spaces
+  #
+  # lists available spaces
+  #
+  def index
+    validate_arguments!
+
+    @spaces = api.get_spaces().body
+
+    display_header 'Spaces'
+    cols = %w(Name Organization State)
+    display_table(@spaces.map{|s| for_display(s)}, cols, cols)
+  end
+
   # spaces:info
   #
   # show info about a space
@@ -74,12 +88,16 @@ class Heroku::Command::Spaces < Heroku::Command::Base
     name
   end
 
-  def style(space)
-    styled_header space['name']
-    details = {
-      'Owner' => space['organization']['name'],
+  def for_display(space)
+    {
+      'Name' => space['name'],
+      'Organization' => space['organization']['name'],
       'State' => space['state']
     }
-    styled_hash(details)
+  end
+
+  def style(space)
+    styled_header(space['name'])
+    styled_hash(for_display(space), ['Organization', 'State'])
   end
 end
