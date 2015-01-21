@@ -66,6 +66,10 @@ var pluginsInstallCmd = &Command{
 
 	Run: func(ctx *Context) {
 		name := ctx.Args["name"]
+		if len(name) == 0 {
+			Errln("Must specify a plugin name")
+			return
+		}
 		Errf("Installing plugin %s... ", name)
 		must(node.InstallPackage(name))
 		plugin := getPlugin(name)
