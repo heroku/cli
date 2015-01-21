@@ -166,7 +166,8 @@ class Heroku::Command::Dapps < Heroku::Command::Base
     info = api.post_organization_app(params).body
 
     begin
-      action("Creating #{info['name']}", :org => !!org) do
+      space_action = info['space'] ? " in space #{info['space']['name']}" : ''
+      action("Creating #{info['name']}#{space_action}", :org => !!org) do
         if info['create_status'] == 'creating'
           Timeout::timeout(options[:timeout].to_i) do
             loop do
