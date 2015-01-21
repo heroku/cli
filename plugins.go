@@ -107,6 +107,7 @@ func runFn(module, topic, command string) func(ctx *Context) {
 
 		cmd := node.RunScript(script)
 		cmd.Stdout = Stdout
+		cmd.Stdin = os.Stdin
 		r, w, _ := os.Pipe()
 		cmd.Stderr = w
 		stderr := captureText(r)
