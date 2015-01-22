@@ -1,26 +1,34 @@
 var url = require('url');
 var Heroku = require('heroku-client');
-var redis = require('redis');
 var readline = require('readline');
+var net = require('net');
 
-function cli (redis) {
-  var io = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-  });
-  io.prompt();
+// TODO: print using this protocol http://redis.io/topics/protocol
+function startsWith (a, b) {
+  return a.indexOf(b) === -1;
+}
 
-  redis.on('quit', function () {
-    io.close();
-  });
-
-  io.on('line', function (line) {
-    line = line.split(' ');
-    redis.send_command(line[0], line.slice(1), function (err, val) {
-      if (err) { throw err; }
-      console.log(val);
+function cli (url) {
+  var io = readline.createInterface(process.stdin, process.stdout);
+  io.setPrompt(url.host + '> ');
+  var client = net.connect({port: url.port, host: url.hostname}, function () {
+    client.write('AUTH ' + url.auth.split(':')[1] + '\n', function () {
       io.prompt();
     });
+  });
+  io.on('line', function (line) {
+    client.write(line + '\n');
+  });
+  io.on('close', function () {
+    console.log();
+    client.write('quit\n');
+  });
+  client.on('data', function (data) {
+    process.stdout.write(data.toString());
+    io.prompt();
+  });
+  client.on('end', function () {
+    console.log('disconnected from server');
   });
 }
 
@@ -33,14 +41,15 @@ module.exports = {
   run: function(context) {
     var heroku = new Heroku({token: context.auth.password});
     heroku.apps(context.app).configVars().info()
-    .then(function (configVars) { return configVars.REDIS_URL; })
-    .then(url.parse)
-    .then(function (url) {
-      return redis.createClient(url.port, url.hostname, {
-        auth_pass: url.auth.split(':')[1]
-      });
+    .then(function (config) {
+      var url = config.REDIS_URL;
+      if (!url) {
+        console.error('App does not have REDIS_URL');
+        process.exit(1);
+      }
+      return url;
     })
-    .then(cli)
-    .done();
+    .then(url.parse)
+    .then(cli);
   }
 };
