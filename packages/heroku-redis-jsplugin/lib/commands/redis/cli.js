@@ -38,6 +38,7 @@ module.exports = {
   needsApp: true,
   needsAuth: true,
   shortHelp: 'opens a redis prompt',
+  args: [{name: 'database', optional: true}],
   run: function(context) {
     var heroku = new Heroku({token: context.auth.password});
     heroku.apps(context.app).configVars().info()
