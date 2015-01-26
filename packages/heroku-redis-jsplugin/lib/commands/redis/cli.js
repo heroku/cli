@@ -3,6 +3,8 @@ var Heroku = require('heroku-client');
 var readline = require('readline');
 var net = require('net');
 
+var api = require('./shared.js')
+
 // TODO: print using this protocol http://redis.io/topics/protocol
 function startsWith (a, b) {
   return a.indexOf(b) === -1;
@@ -41,13 +43,24 @@ module.exports = {
   args: [{name: 'database', optional: true}],
   run: function(context) {
     var heroku = new Heroku({token: context.auth.password});
+    var filter = api.make_config_var_filter(context.args.database)
     heroku.apps(context.app).configVars().info()
-    .then(function (config) {
-      var url = config.REDIS_URL;
-      if (!url) {
-        console.error('App does not have REDIS_URL');
+    .then(filter)
+    .then(function (servers) {
+      if (servers.length == 0) {
+        console.error('No redis servers found')
+        process.exit(1);
+      } else if (servers.length > 1) {
+        var names = []
+        for (var i=0; i<servers.length; i++) {
+          names.push(servers[i].name);
+        }
+        console.error('Please specify a single server. Found: '+names.join(', '))
         process.exit(1);
       }
+      var name = servers[0].name;
+      var url = servers[0].url
+      console.log('Connecting to: '+name)
       return url;
     })
     .then(url.parse)

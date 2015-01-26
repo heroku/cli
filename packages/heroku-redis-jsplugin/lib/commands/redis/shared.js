@@ -20,16 +20,12 @@ function request(context, path, method) {
 function make_addons_filter(filter) {
   if (filter) {
     filter = filter.toUpperCase();
-    var p = PREFIX.toUpperCase();
-    if (filter.indexOf(p) != 0) {
-      filter = p+"_"+filter+"_URL";
-    }
   }
 
   function matches (addon) {
     for (var i=0; i<addon.config_vars.length; i++) {
       var cfg_name = addon.config_vars[i].toUpperCase()
-      if (cfg_name == filter) {
+      if (cfg_name.indexOf(filter) >= 0) {
         return true;
       }
     }
@@ -52,9 +48,30 @@ function make_addons_filter(filter) {
   return on_response
 }
 
+function make_config_var_filter(filter) {
+  if (filter) {
+    filter = filter.toUpperCase();
+  }
+
+  function on_response(config_vars) {
+    var servers = [];
+
+    for (var name in config_vars) {
+      var url = config_vars[name] 
+      if ((url.indexOf('redis:') == 0) && (!filter || name.indexOf(filter) >= 0)) {
+        servers.push({url: url, name: name}) 
+      }
+    }
+    return servers
+  }
+
+  return on_response
+}
+
 module.exports = {
   request: request,
   make_addons_filter: make_addons_filter,
+  make_config_var_filter: make_config_var_filter,
 }
 
 
