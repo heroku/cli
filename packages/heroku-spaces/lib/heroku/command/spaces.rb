@@ -11,6 +11,11 @@ class Heroku::Command::Spaces < Heroku::Command::Base
 
     @spaces = api.get_spaces().body
 
+    if @spaces.empty?
+      display('You do not have any spaces.')
+      return
+    end
+
     display_header 'Spaces'
     cols = %w(Name Organization State)
     display_table(@spaces.map{|s| for_display(s)}, cols, cols)
