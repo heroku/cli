@@ -28,6 +28,7 @@ class Heroku::Command::Spaces < Heroku::Command::Base
   # --space SPACE   # name of space
   #
   def info
+    require_argument! :space
     validate_arguments!
 
     space = api.get_space(options[:space]).body
@@ -42,6 +43,7 @@ class Heroku::Command::Spaces < Heroku::Command::Base
   #
   def create
     name = extract_name_arg!
+    require_argument! :org
     validate_arguments!
 
     action("Creating space #{name} in organization #{options[:org]}") do
@@ -58,6 +60,7 @@ class Heroku::Command::Spaces < Heroku::Command::Base
   #
   def rename
     name = extract_name_arg!
+    require_argument! :space
     validate_arguments!
 
     action("Renaming space #{options[:space]} to #{name}") do
@@ -74,6 +77,7 @@ class Heroku::Command::Spaces < Heroku::Command::Base
   # --space SPACE   # name of space
   #
   def destroy
+    require_argument! :space
     validate_arguments!
 
     action("Destroying space #{options[:space]}") do
@@ -91,6 +95,13 @@ class Heroku::Command::Spaces < Heroku::Command::Base
       exit(1)
     end
     name
+  end
+
+  def require_argument!(arg)
+    return if options.key?(arg)
+    output_with_bang("An argument for \"--#{arg.to_s }\" must be provided.")
+    Heroku::Command.run(current_command, ['--help'])
+    exit(1)
   end
 
   def for_display(space)
