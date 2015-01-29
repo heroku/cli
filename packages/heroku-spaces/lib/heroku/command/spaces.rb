@@ -12,7 +12,7 @@ class Heroku::Command::Spaces < Heroku::Command::Base
     @spaces = api.get_spaces().body
 
     if @spaces.empty?
-      display('You do not have any spaces.')
+      display('You do not have access to any spaces.')
       return
     end
 
