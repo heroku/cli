@@ -2,6 +2,7 @@ var url = require('url');
 var Heroku = require('heroku-client');
 var readline = require('readline');
 var net = require('net');
+var spawn = require('child_process').spawn;
 
 var api = require('./shared.js');
 
@@ -26,6 +27,7 @@ function cli (url) {
   });
   client.on('end', function () {
     console.log('disconnected from server');
+    process.exit(0);
   });
 }
 
@@ -59,6 +61,13 @@ module.exports = {
       return url;
     })
     .then(url.parse)
-    .then(cli);
+    .then(function (url) {
+      var s = spawn('redis-cli', ['-h', url.hostname, '-p', url.port, '-a', url.auth.split(':')[1]], {
+        stdio: [0, 1, 2]
+      });
+      s.on('error', function () {
+        cli(url);
+      });
+    });
   }
 };
