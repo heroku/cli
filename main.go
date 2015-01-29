@@ -63,9 +63,10 @@ func handlePanic() {
 		if !ok {
 			err = errors.New(rec.(string))
 		}
-		debug.PrintStack()
 		Errln("ERROR:", err)
-		if Channel != "?" {
+		if Channel == "?" {
+			debug.PrintStack()
+		} else {
 			rollbar.Error(rollbar.ERR, err)
 			rollbar.Wait()
 		}
