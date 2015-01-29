@@ -81,19 +81,19 @@ var pluginsInstallCmd = &Command{
 	},
 }
 
-var pluginsRemoveCmd = &Command{
+var pluginsUninstallCmd = &Command{
 	Topic:       "plugins",
-	Command:     "remove",
+	Command:     "uninstall",
 	Args:        []Arg{{Name: "name"}},
-	Description: "Removes a plugin from the CLI",
-	Help: `Remove a Heroku plugin
+	Description: "Uninstalls a plugin from the CLI",
+	Help: `Uninstalls a Heroku plugin
 
   Example:
-  $ heroku plugins:remove heroku-production-status`,
+  $ heroku plugins:uninstall heroku-production-status`,
 
 	Run: func(ctx *Context) {
 		name := ctx.Args["name"]
-		Errf("Removing plugin %s... ", name)
+		Errf("Uninstalling plugin %s... ", name)
 		must(node.RemovePackage(name))
 		Errln("done")
 	},
