@@ -10,6 +10,20 @@
 			"ImportPath": "github.com/dickeyxxx/gode",
 			"Comment": "v1.1.0",
 			"Rev": "db3d0f4f745dca66f26657c8ed8bac35c9f8bf96"
+		},
+		{
+			"ImportPath": "github.com/jtolds/gls",
+			"Rev": "f1ac7f4f24f50328e6bc838ca4437d1612a0243c"
+		},
+		{
+			"ImportPath": "github.com/smartystreets/goconvey/convey",
+			"Comment": "1.5.0-359-g8298bc7",
+			"Rev": "8298bc7d36389ffd3e57b85d9797850d8c2382a9"
+		},
+		{
+			"ImportPath": "github.com/stvp/rollbar",
+			"Comment": "v0.3.1-1-g443e3c6",
+			"Rev": "443e3c6cbe1512f2a5881d74e761628721c289b5"
 		}
 	]
 }
