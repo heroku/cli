@@ -13,6 +13,7 @@
   "maxdepth": 5,
   "maxparams": 5,
   "maxstatements": 25,
+  "multistr": true,
   "newcap": true,
   "noarg": true,
   "node": true,

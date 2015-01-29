@@ -1,23 +1,15 @@
+var columnify = require('columnify');
 var Heroku = require('heroku-client');
 var Q = require('q');
 
-var api = require('./shared.js')
+var api = require('./shared.js');
 
-function format_addon(addon, info) {
-  var width = 0;
-  for (var i=0; i < info.length; i++) {
-    width = Math.max(width, info[i].name.length)
-  }
-
-  var out = []
-  out.push("=== "+addon.config_vars[0])
-
-  for (var i=0; i < info.length; i++) {
-    padding = ": "+Array(width-info[i].name.length+1).join(" ");
-    out.push(info[i].name+padding+info[i].values.join(" "));
-  }
-  
-  return out;
+function getAddonInfo (context, addon) {
+  var deferred = Q.defer();
+  api.request(context, addon.name).then(function (info) {
+    deferred.resolve({addon: addon, info: info});
+  });
+  return deferred.promise;
 }
 
 module.exports = {
@@ -30,22 +22,20 @@ module.exports = {
   run: function(context) {
     var filter = api.make_addons_filter(context.args.database);
     var heroku = new Heroku({token: context.auth.password});
-    
+
     heroku.apps(context.app).addons().list()
     .then(filter)
     .then(function(addons) {
-      var out = []
-      for(var i=0; i<addons.length; i++) {
-        var r = api.request(context, addons[i].name).then(function (addon, result) {
-          var text = format_addon(addon, result.info);
-          console.log(text.join("\n"));
-            
-          }.bind(this, addons[i])
-        );
-        out.push(r);
-      }
-      return Q.allSettled(out)
-    }).done();
+      return Q.all(addons.map(function (addon) {
+        return getAddonInfo(context, addon);
+      }));
+    })
+    .then(function (addons) {
+      addons.forEach(function (addon) {
+        console.log("=== " + addon.addon.config_vars[0]);
+        console.log(columnify(addon.info.info, { showHeaders: false }));
+      });
+    })
+    .done();
   }
 };
-

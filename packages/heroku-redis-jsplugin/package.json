@@ -19,14 +19,15 @@
     "test": "jshint . && mocha"
   },
   "dependencies": {
+    "columnify": "^1.4.1",
     "heroku-cli-util": "^1.4.0",
-    "heroku-client": "^1.9.0",
-    "q": "^1.1.2",
-    "redis": "^0.12.1",
-    "spade": "^0.50.4"
+    "heroku-client": "^1.9.1",
+    "q": "^1.1.2"
   },
   "devDependencies": {
+    "chai": "*",
     "jshint": "*",
+    "mocha": "*",
     "netrc": "*"
   }
 }
