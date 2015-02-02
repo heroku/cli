@@ -124,7 +124,9 @@ func app() string {
 func auth() (user, password string) {
 	netrc, err := netrc.ParseFile(netrcPath())
 	if err != nil {
-		panic(err)
+		Errln("Error parsing netrc at " + netrcPath())
+		Errln(err.Error())
+		os.Exit(1)
 	}
 	auth := netrc.FindMachine("api.heroku.com")
 	return auth.Login, auth.Password
