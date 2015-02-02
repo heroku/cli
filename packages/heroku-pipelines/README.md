@@ -10,6 +10,8 @@ This is a short walkthrough to make a simple hello world plugin. For a more comp
 Setting up your CLI
 -------------------
 
+**Note: These Node.js plugins are available in the current Ruby CLI. No need to download a separate Toolbelt 4.0 CLI.**
+
 Because the Heroku CLI only installs the JavaScript dependencies on demand, you may need to setup your CLI first. Simply install a JavaScript plugin and it will setup automatically:
 
 ```
