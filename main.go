@@ -68,9 +68,15 @@ func handlePanic() {
 		if Channel == "?" {
 			debug.PrintStack()
 		} else {
-			rollbar.Error(rollbar.ERR, err)
+			rollbar.Error(rollbar.ERR, err, rollbarFields()...)
 			rollbar.Wait()
 		}
 		Exit(1)
+	}
+}
+
+func rollbarFields() []*rollbar.Field {
+	return []*rollbar.Field{
+		{"Version", Version},
 	}
 }
