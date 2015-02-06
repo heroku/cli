@@ -75,7 +75,7 @@ def remote_path(os, arch)
 end
 
 def remote_url(os, arch)
-  "https://#{CLOUDFRONT_HOST}/#{remote_path(os, arch)}"
+  "http://#{CLOUDFRONT_HOST}/#{remote_path(os, arch)}"
 end
 
 def manifest
