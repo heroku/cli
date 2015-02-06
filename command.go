@@ -12,7 +12,7 @@ import (
 // They must have a Topic name that links to a real topic's name.
 type Command struct {
 	Topic       string             `json:"topic"`
-	Command     string             `json:"command"`
+	Command     string             `json:"command,omitempty"`
 	Plugin      string             `json:"plugin"`
 	Usage       string             `json:"usage"`
 	Description string             `json:"description"`
