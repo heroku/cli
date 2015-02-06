@@ -180,7 +180,8 @@ func getPlugin(name string) *Plugin {
 	var plugin Plugin
 	err = json.NewDecoder(output).Decode(&plugin)
 	if err != nil {
-		Errln("Error reading plugin:", name)
+		Errf("Error reading plugin: %s. See %s for more information.\n", name, ErrLogPath)
+		Logln(err)
 		return nil
 	}
 	must(cmd.Wait())

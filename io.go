@@ -15,7 +15,9 @@ var Stdout io.Writer
 // Used to mock stderr for testing
 var Stderr io.Writer
 
-var logger = newLogger(AppDir + "/cli.log")
+// ErrLogPath is the location of the error log
+var ErrLogPath = filepath.Join(AppDir, "error.log")
+var errLogger = newLogger(ErrLogPath)
 var exitFn = os.Exit
 var debugging = isDebugging()
 
@@ -39,44 +41,40 @@ func Exit(code int) {
 
 // Err just calls `fmt.Fprint(Stderr, a...)` but can be mocked out for testing.
 func Err(a ...interface{}) {
-	logger.Print(a...)
+	errLogger.Print(a...)
 	fmt.Fprint(Stderr, a...)
 }
 
 // Errf just calls `fmt.Fprintf(Stderr, a...)` but can be mocked out for testing.
 func Errf(format string, a ...interface{}) {
-	logger.Printf(format, a...)
+	errLogger.Printf(format, a...)
 	fmt.Fprintf(Stderr, format, a...)
 }
 
 // Errln just calls `fmt.Fprintln(Stderr, a...)` but can be mocked out for testing.
 func Errln(a ...interface{}) {
-	logger.Println(a...)
+	errLogger.Println(a...)
 	fmt.Fprintln(Stderr, a...)
 }
 
 // Print is used to replace `fmt.Print()` but can be mocked out for testing.
 func Print(a ...interface{}) {
-	logger.Print(a...)
 	fmt.Fprint(Stdout, a...)
 }
 
 // Printf is used to replace `fmt.Printf()` but can be mocked out for testing.
 func Printf(format string, a ...interface{}) {
-	logger.Printf(format, a...)
 	fmt.Fprintf(Stdout, format, a...)
 }
 
 // Println is used to replace `fmt.Println()` but can be mocked out for testing.
 func Println(a ...interface{}) {
-	logger.Println(a...)
 	fmt.Fprintln(Stdout, a...)
 }
 
 // Log is used to print debugging information
 // It will be added to the logfile in ~/.heroku or printed out if HEROKU_DEBUG is set.
 func Log(a ...interface{}) {
-	logger.Print(a...)
 	if debugging {
 		fmt.Fprint(Stderr, a...)
 	}
@@ -85,7 +83,7 @@ func Log(a ...interface{}) {
 // Logln is used to print debugging information
 // It will be added to the logfile in ~/.heroku or printed out if HEROKU_DEBUG is set.
 func Logln(a ...interface{}) {
-	logger.Println(a...)
+	errLogger.Println(a...)
 	if debugging {
 		fmt.Fprintln(Stderr, a...)
 	}
@@ -94,7 +92,7 @@ func Logln(a ...interface{}) {
 // Logf is used to print debugging information
 // It will be added to the logfile in ~/.heroku or printed out if HEROKU_DEBUG is set.
 func Logf(format string, a ...interface{}) {
-	logger.Printf(format, a...)
+	errLogger.Printf(format, a...)
 	if debugging {
 		fmt.Fprintf(Stderr, format, a...)
 	}

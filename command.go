@@ -91,7 +91,7 @@ func argsString(args []Arg) string {
 // These will be parsed in Go and passed to the Run method in the Context struct.
 type Flag struct {
 	Name     string `json:"name"`
-	Char     rune   `json:"char"`
+	Char     string `json:"char"`
 	HasValue bool   `json:"hasValue"`
 }
 
@@ -99,7 +99,7 @@ func flagsString(flags []Flag) string {
 	var buffer bytes.Buffer
 	for _, flag := range flags {
 		var s string
-		if flag.Char != 0 {
+		if flag.Char != "" {
 			s = fmt.Sprintf(" [-%s (--%s)]", string(flag.Char), flag.Name)
 		} else {
 			s = fmt.Sprintf(" [--%s]", flag.Name)
