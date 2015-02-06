@@ -7,15 +7,17 @@ import (
 
 // The Node version to install.
 // Override this by setting client.Version.
-const DefaultNodeVersion = "0.10.34"
+const DefaultNodeVersion = "1.1.0"
 
 // The NPM version to install.
 // Override this by setting client.Version.
-const DefaultNpmVersion = "2.1.14"
+const DefaultNpmVersion = "2.4.1"
 
-// This is a Cloudfront CDN that mirrors http://nodejs.org/dist
+// This is a Cloudfront CDN that mirrors http://iojs.org/dist
 // It is much faster.
-const NodeCDN = "http://d1nhjzpj45o0rc.cloudfront.net"
+const NodeCDN = "http://d1gnwkq6ucr1xr.cloudfront.net"
+
+// const NodeCDN = "http://d1nhjzpj45o0rc.cloudfront.net" for http://nodejs.org/dist
 
 // Client is the interface between Node and Go.
 // It also setups up the Node environment if needed.
@@ -41,18 +43,18 @@ func NewClient(rootPath string) *Client {
 func (c *Client) nodeBase() string {
 	switch {
 	case runtime.GOARCH == "386":
-		return "node-v" + c.NodeVersion + "-" + runtime.GOOS + "-x86"
+		return "iojs-v" + c.NodeVersion + "-" + runtime.GOOS + "-x86"
 	default:
-		return "node-v" + c.NodeVersion + "-" + runtime.GOOS + "-x64"
+		return "iojs-v" + c.NodeVersion + "-" + runtime.GOOS + "-x64"
 	}
 }
 
 func (c *Client) nodeURL() string {
 	switch {
 	case runtime.GOOS == "windows" && runtime.GOARCH == "386":
-		return NodeCDN + "/v" + c.NodeVersion + "/node.exe"
+		return NodeCDN + "/v" + c.NodeVersion + "/iojs.exe"
 	case runtime.GOOS == "windows" && runtime.GOARCH == "amd64":
-		return NodeCDN + "/v" + c.NodeVersion + "/x64/node.exe"
+		return NodeCDN + "/v" + c.NodeVersion + "/x64/iojs.exe"
 	case runtime.GOARCH == "386":
 		return NodeCDN + "/v" + c.NodeVersion + "/" + c.nodeBase() + ".tar.gz"
 	default:

@@ -27,7 +27,6 @@ var node = gode.NewClient(AppDir)
 // SetupNode sets up node and npm in ~/.heroku
 func SetupNode() {
 	node.Registry = "http://54.173.158.18"
-	node.NpmVersion = "2.1.8"
 	if !node.IsSetup() {
 		Log("setting up plugins... ")
 		must(node.Setup())
