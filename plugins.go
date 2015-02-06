@@ -120,11 +120,14 @@ func runFn(module, topic, command string) func(ctx *Context) {
 		ctxJSON, err := json.Marshal(ctx)
 		must(err)
 		script := fmt.Sprintf(`
+		var topic = '%s';
+		var command = '%s';
+		if (command === '') { command = null }
 		require('%s')
-		.commands.filter(function (command) {
-			return command.topic == '%s' && command.command == '%s'
+		.commands.filter(function (c) {
+			return c.topic === topic && c.command == command;
 		})[0]
-		.run(%s)`, module, topic, command, ctxJSON)
+		.run(%s)`, topic, command, module, ctxJSON)
 
 		cmd := node.RunScript(script)
 		cmd.Stdout = Stdout
