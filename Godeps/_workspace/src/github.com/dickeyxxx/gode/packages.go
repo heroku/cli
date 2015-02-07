@@ -62,6 +62,15 @@ func (c *Client) RemovePackage(name string) error {
 	return cmd.Run()
 }
 
+// UpdatePackages updates all packages.
+func (c *Client) UpdatePackages() error {
+	cmd, err := c.execNpm("update")
+	if err != nil {
+		return err
+	}
+	return cmd.Run()
+}
+
 func (c *Client) execNpm(args ...string) (*exec.Cmd, error) {
 	nodePath, err := filepath.Rel(c.RootPath, c.nodePath())
 	if err != nil {

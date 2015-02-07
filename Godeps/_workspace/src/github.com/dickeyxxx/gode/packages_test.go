@@ -37,6 +37,12 @@ func TestRemovePackage(t *testing.T) {
 	}
 }
 
+func TestUpdatePackages(t *testing.T) {
+	c := setup()
+	must(c.InstallPackage("request"))
+	must(c.UpdatePackages())
+}
+
 func TestPackagesGithubPackage(t *testing.T) {
 	c := setup()
 	must(os.RemoveAll(filepath.Join(c.RootPath, "node_modules")))
