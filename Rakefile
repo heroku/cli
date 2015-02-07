@@ -35,8 +35,8 @@ end
 
 desc "release heroku-cli"
 task :release => :build do
-  #abort 'branch is dirty' if CHANNEL == 'dirty'
-  #abort "#{CHANNEL} not a channel branch (dev/master)" unless %w(dev master).include?(CHANNEL)
+  abort 'branch is dirty' if CHANNEL == 'dirty'
+  abort "#{CHANNEL} not a channel branch (dev/master)" unless %w(dev master).include?(CHANNEL)
   puts "releasing #{LABEL}..."
   cache_control = "public,max-age=31536000"
   TARGETS.map do |target|
