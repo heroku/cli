@@ -29,6 +29,9 @@ var updateCmd = &Command{
 		if channel == "" {
 			channel = "master"
 		}
+		Errf("updating plugins... ")
+		node.UpdatePackages()
+		Errln("done")
 		manifest := getUpdateManifest(channel)
 		build := manifest.Builds[runtime.GOOS][runtime.GOARCH]
 		Errf("updating to %s (%s)... ", manifest.Version, manifest.Channel)
@@ -50,7 +53,7 @@ func UpdateIfNeeded() {
 	if !updateNeeded() {
 		return
 	}
-	// TODO: update plugins
+	node.UpdatePackages()
 	manifest := getUpdateManifest(Channel)
 	if manifest.Version == Version {
 		// Set timestamp of bin so we don't update again
