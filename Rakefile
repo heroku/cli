@@ -35,21 +35,18 @@ end
 
 desc "release heroku-cli"
 task :release => :build do
-  abort 'branch is dirty' if CHANNEL == 'dirty'
-  abort "#{CHANNEL} not a channel branch (dev/master)" unless %w(dev master).include?(CHANNEL)
+  #abort 'branch is dirty' if CHANNEL == 'dirty'
+  #abort "#{CHANNEL} not a channel branch (dev/master)" unless %w(dev master).include?(CHANNEL)
   puts "releasing #{LABEL}..."
-  bucket = get_s3_bucket
   cache_control = "public,max-age=31536000"
   TARGETS.map do |target|
-    Thread.new do
-      from = "./dist/#{target[:os]}/#{target[:arch]}/heroku-cli"
-      to = remote_path(target[:os], target[:arch])
-      upload_file(bucket, from, to, content_type: 'binary/octet-stream', cache_control: cache_control)
-      upload_file(bucket, from + '.gz', to + '.gz', content_type: 'binary/octet-stream', content_encoding: 'gzip', cache_control: cache_control)
-      upload_string(bucket, from, to + ".sha1", content_type: 'text/plain', cache_control: cache_control)
-    end
-  end.map(&:join)
-  upload_manifest(bucket)
+    from = "./dist/#{target[:os]}/#{target[:arch]}/heroku-cli"
+    to = remote_path(target[:os], target[:arch])
+    upload_file(from, to, content_type: 'binary/octet-stream', cache_control: cache_control)
+    upload_file(from + '.gz', to + '.gz', content_type: 'binary/octet-stream', content_encoding: 'gzip', cache_control: cache_control)
+    upload(from, to + ".sha1", content_type: 'text/plain', cache_control: cache_control)
+  end
+  upload_manifest()
   notify_rollbar
   puts "released #{VERSION}"
 end
@@ -71,7 +68,7 @@ def sha_digest(path)
 end
 
 def remote_path(os, arch)
-  "heroku-cli/#{CHANNEL}/#{VERSION}/#{os}/#{arch}/heroku-cli"
+  "#{CHANNEL}/#{VERSION}/#{os}/#{arch}/heroku-cli"
 end
 
 def remote_url(os, arch)
@@ -97,26 +94,26 @@ def manifest
   @manifest
 end
 
-def get_s3_bucket
-  s3 = Aws::S3::Client.new(region: 'us-west-2', access_key_id: ENV['HEROKU_RELEASE_ACCESS'], secret_access_key: ENV['HEROKU_RELEASE_SECRET'])
-  s3.buckets[BUCKET_NAME]
+def s3_client
+  @s3_client ||= Aws::S3::Client.new(region: 'us-west-2', access_key_id: ENV['HEROKU_RELEASE_ACCESS'], secret_access_key: ENV['HEROKU_RELEASE_SECRET'])
 end
 
-def upload_file(bucket, local, remote, opts={})
-  obj = bucket.objects[remote]
-  obj.write(Pathname.new(local), opts)
-  obj.acl = :public_read
+def upload_file(local, remote, opts={})
+  upload(File.new(local), remote, opts)
 end
 
-def upload_string(bucket, s, remote, opts={})
-  obj = bucket.objects[remote]
-  obj.write(s, opts)
-  obj.acl = :public_read
+def upload(body, remote, opts={})
+  s3_client.put_object({
+    key: remote,
+    body: body,
+    acl: 'public-read',
+    bucket: BUCKET_NAME
+  }.merge(opts))
 end
 
-def upload_manifest(bucket)
+def upload_manifest()
   puts 'uploading manifest...'
-  upload_string(bucket, JSON.dump(manifest), "heroku-cli/#{CHANNEL}/manifest.json", content_type: 'application/json', cache_control: "public,max-age=300")
+  upload(JSON.dump(manifest), "#{CHANNEL}/manifest.json", content_type: 'application/json', cache_control: "public,max-age=300")
 end
 
 def notify_rollbar
