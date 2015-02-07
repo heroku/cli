@@ -1,3 +1,7 @@
+4.3.1
+=====
+Switched to aws-sdk 2 for releases
+
 4.3.0
 =====
 Switch to iojs (gode 2.0.1)
