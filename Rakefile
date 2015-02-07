@@ -12,9 +12,6 @@ TARGETS = [
   {os: 'windows', arch: '386'}
 ]
 
-ENV['AWS_ACCESS_KEY_ID'] = ENV['HEROKU_RELEASE_ACCESS']
-ENV['AWS_SECRET_ACCESS_KEY'] = ENV['HEROKU_RELEASE_SECRET']
-
 VERSION = `./version`.chomp
 dirty = `git status 2> /dev/null | tail -n1`.chomp != 'nothing to commit, working directory clean'
 CHANNEL = dirty ? 'dirty' : `git rev-parse --abbrev-ref HEAD`.chomp
