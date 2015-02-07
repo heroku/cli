@@ -1,3 +1,7 @@
+2.1.0 2015-02-06
+----------------
+Added UpdatePackages function
+
 2.0.2 2015-02-06
 ----------------
 Fixed iojs Windows URLs
