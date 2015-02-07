@@ -98,7 +98,7 @@ def manifest
 end
 
 def get_s3_bucket
-  s3 = AWS::S3.new(region: 'us-west-2', access_key_id: ENV['HEROKU_RELEASE_ACCESS'], secret_access_key: ENV['HEROKU_RELEASE_SECRET'])
+  s3 = Aws::S3::Client.new(region: 'us-west-2', access_key_id: ENV['HEROKU_RELEASE_ACCESS'], secret_access_key: ENV['HEROKU_RELEASE_SECRET'])
   s3.buckets[BUCKET_NAME]
 end
 
