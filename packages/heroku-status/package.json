@@ -1,0 +1,27 @@
+{
+  "name": "heroku-status",
+  "version": "0.0.1",
+  "description": "CLI Plugin for Heroku Status",
+  "main": "index.js",
+  "author": "Raul Barroso @raulb",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/raulb/heroku-status"
+  },
+  "bugs": {
+    "url": "https://github.com/raulb/heroku-status/issues"
+  },
+  "keywords": [
+    "heroku-plugin",
+    "heroku-status"
+  ],
+  "license": "ISC",
+  "homepage": "https://github.com/raulb/heroku-status",
+  "scripts": {
+    "test": "jshint"
+  },
+  "dependencies": {
+    "colors": "^1.0.3",
+    "request": "^2.48.0"
+  }
+}
