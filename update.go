@@ -39,6 +39,12 @@ var updateCmd = &Command{
 
 var binPath = filepath.Join(AppDir, "heroku-cli")
 
+func init() {
+	if runtime.GOOS == "windows" {
+		binPath = binPath + ".exe"
+	}
+}
+
 // UpdateIfNeeded checks for and performs an autoupdate if there is a new version out.
 func UpdateIfNeeded() {
 	if !updateNeeded() {
