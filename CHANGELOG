@@ -1,3 +1,8 @@
+4.3.2
+=====
+Updated release URLs
+Updated gode to 2.0.1
+
 4.3.1
 =====
 Switched to aws-sdk 2 for releases

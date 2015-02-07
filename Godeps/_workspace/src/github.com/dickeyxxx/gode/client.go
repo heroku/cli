@@ -46,9 +46,9 @@ func (c *Client) nodeBase() string {
 func (c *Client) nodeURL() string {
 	switch {
 	case runtime.GOOS == "windows" && runtime.GOARCH == "386":
-		return "https://iojs.org/dist/v" + c.NodeVersion + "/iojs.exe"
+		return "https://iojs.org/dist/v" + c.NodeVersion + "/win-x86/iojs.exe"
 	case runtime.GOOS == "windows" && runtime.GOARCH == "amd64":
-		return "https://iojs.org/dist/v" + c.NodeVersion + "/x64/iojs.exe"
+		return "https://iojs.org/dist/v" + c.NodeVersion + "/win-x64/iojs.exe"
 	case runtime.GOARCH == "386":
 		return "https://iojs.org/dist/v" + c.NodeVersion + "/" + c.nodeBase() + ".tar.gz"
 	default:
