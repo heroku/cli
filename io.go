@@ -28,9 +28,13 @@ func init() {
 
 func newLogger(path string) *log.Logger {
 	err := os.MkdirAll(filepath.Dir(path), 0777)
-	must(err)
+	if err != nil {
+		panic(err)
+	}
 	file, err := os.OpenFile(path, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0644)
-	must(err)
+	if err != nil {
+		panic(err)
+	}
 	return log.New(file, "", log.LstdFlags)
 }
 
@@ -104,10 +108,4 @@ func isDebugging() bool {
 		return true
 	}
 	return false
-}
-
-func must(err error) {
-	if err != nil {
-		panic(err)
-	}
 }

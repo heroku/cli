@@ -30,7 +30,9 @@ var updateCmd = &Command{
 			channel = "master"
 		}
 		Errf("updating plugins... ")
-		must(node.UpdatePackages())
+		if err := node.UpdatePackages(); err != nil {
+			panic(err)
+		}
 		Errln("done")
 		manifest := getUpdateManifest(channel)
 		build := manifest.Builds[runtime.GOOS][runtime.GOARCH]

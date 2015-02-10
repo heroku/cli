@@ -29,7 +29,9 @@ func SetupNode() {
 	node.Registry = "http://54.173.158.18"
 	if !node.IsSetup() {
 		Log("setting up plugins... ")
-		must(node.Setup())
+		if err := node.Setup(); err != nil {
+			panic(err)
+		}
 		Logln("done")
 	}
 }
@@ -70,11 +72,15 @@ var pluginsInstallCmd = &Command{
 			return
 		}
 		Errf("Installing plugin %s... ", name)
-		must(node.InstallPackage(name))
+		if err := node.InstallPackage(name); err != nil {
+			panic(err)
+		}
 		plugin := getPlugin(name)
 		if plugin == nil || len(plugin.Commands) == 0 {
 			Err("This does not appear to be a Heroku plugin, uninstalling... ")
-			must(node.RemovePackage(name))
+			if err := (node.RemovePackage(name)); err != nil {
+				panic(err)
+			}
 		}
 		Errln("done")
 	},
@@ -93,7 +99,9 @@ var pluginsUninstallCmd = &Command{
 	Run: func(ctx *Context) {
 		name := ctx.Args["name"]
 		Errf("Uninstalling plugin %s... ", name)
-		must(node.RemovePackage(name))
+		if err := node.RemovePackage(name); err != nil {
+			panic(err)
+		}
 		Errln("done")
 	},
 }
@@ -108,7 +116,9 @@ var pluginsListCmd = &Command{
 
 	Run: func(ctx *Context) {
 		packages, err := node.Packages()
-		must(err)
+		if err != nil {
+			panic(err)
+		}
 		for _, pkg := range packages {
 			Println(pkg.Name, pkg.Version)
 		}
@@ -118,7 +128,9 @@ var pluginsListCmd = &Command{
 func runFn(module, topic, command string) func(ctx *Context) {
 	return func(ctx *Context) {
 		ctxJSON, err := json.Marshal(ctx)
-		must(err)
+		if err != nil {
+			panic(err)
+		}
 		script := fmt.Sprintf(`
 		var topic = '%s';
 		var command = '%s';
@@ -177,8 +189,12 @@ func getPlugin(name string) *Plugin {
 	cmd := node.RunScript(script)
 	cmd.Stderr = Stderr
 	output, err := cmd.StdoutPipe()
-	must(err)
-	must(cmd.Start())
+	if err != nil {
+		panic(err)
+	}
+	if err := cmd.Start(); err != nil {
+		panic(err)
+	}
 	var plugin Plugin
 	err = json.NewDecoder(output).Decode(&plugin)
 	if err != nil {
@@ -186,7 +202,9 @@ func getPlugin(name string) *Plugin {
 		Logln(err)
 		return nil
 	}
-	must(cmd.Wait())
+	if err := cmd.Wait(); err != nil {
+		panic(err)
+	}
 	for _, command := range plugin.Commands {
 		command.Plugin = name
 		command.Run = runFn(name, command.Topic, command.Command)
