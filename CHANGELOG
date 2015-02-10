@@ -1,3 +1,9 @@
+4.3.3
+=====
+Added autoupdating of plugins
+Fixed bug with windows updating
+Fixed bug with existing iojs setup directories
+
 4.3.2
 =====
 Updated release URLs
