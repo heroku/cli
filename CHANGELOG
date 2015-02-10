@@ -1,3 +1,7 @@
+4.3.4
+=====
+Fixed bug when setting up node into existing directories
+
 4.3.3
 =====
 Added autoupdating of plugins
