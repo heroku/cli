@@ -1,3 +1,7 @@
+2.1.1 2015-02-10
+----------------
+Fixed bug where setup directories already exist
+
 2.1.0 2015-02-06
 ----------------
 Added UpdatePackages function
