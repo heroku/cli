@@ -1,3 +1,7 @@
+2.1.2 2015-02-10
+----------------
+Fixed bug where untar directories already exist
+
 2.1.1 2015-02-10
 ----------------
 Fixed bug where setup directories already exist
