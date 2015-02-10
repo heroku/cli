@@ -19,7 +19,7 @@ func extractTar(archive *tar.Reader, path string) error {
 		path := filepath.Join(path, hdr.Name)
 		switch {
 		case hdr.FileInfo().IsDir():
-			if err := os.Mkdir(path, hdr.FileInfo().Mode()); err != nil {
+			if err := os.MkdirAll(path, hdr.FileInfo().Mode()); err != nil {
 				return err
 			}
 		case hdr.Linkname != "":
