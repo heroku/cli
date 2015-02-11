@@ -3,7 +3,9 @@
 Heroku Hello World
 ==================
 
-Toolbelt 4.0 plugins are node npm packages that export `topics` and `commands`. You can write these yourself and try them out either by symlinking to `~/.heroku/node_modules` (good while developing) or by publishing them to npmjs.org and installing with `heroku plugins:install NPM_PACKAGE_NAME` (good for releasing).
+Toolbelt 4.0 plugins are iojs npm packages that export `topics` and `commands`. You can write these yourself and try them out either by symlinking to `~/.heroku/node_modules` (good while developing) or by publishing them to npmjs.org and installing with `heroku plugins:install NPM_PACKAGE_NAME` (good for releasing).
+
+The plugins will be run with iojs v1.1.0 no matter what version of iojs/node is installed on the machine (if any).
 
 This is a short walkthrough to make a simple hello world plugin. For a more complete example, check out the [RedisCloud example plugin](https://github.com/heroku/heroku-rediscloud-plugin-example).
 
