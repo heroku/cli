@@ -24,7 +24,7 @@
     "heroku-client": "^1.9.1",
     "q": "^1.1.2"
   },
-  "devDependencies": {
+  "devDependencies": {	
     "chai": "*",
     "jshint": "*",
     "mocha": "*",

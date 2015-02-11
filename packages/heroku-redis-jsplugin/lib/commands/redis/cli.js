@@ -26,7 +26,7 @@ function cli (url) {
     io.prompt();
   });
   client.on('end', function () {
-    console.log('disconnected from server');
+    console.log('disconnected from database');
     process.exit(0);
   });
 }
@@ -43,20 +43,20 @@ module.exports = {
     var filter = api.make_config_var_filter(context.args.database);
     heroku.apps(context.app).configVars().info()
     .then(filter)
-    .then(function (servers) {
-      if (servers.length === 0) {
-        console.error('No redis servers found');
+    .then(function (addons) {
+      if (addons.length === 0) {
+        console.error('No redis databases found');
         process.exit(1);
-      } else if (servers.length > 1) {
+      } else if (addons.length > 1) {
         var names = [];
-        for (var i=0; i<servers.length; i++) {
-          names.push(servers[i].name);
+        for (var i=0; i<addons.length; i++) {
+          names.push(addons[i].name);
         }
-        console.error('Please specify a single server. Found: '+names.join(', '));
+        console.error('Please specify a single database. Found: '+names.join(', '));
         process.exit(1);
       }
-      var name = servers[0].name;
-      var url = servers[0].url;
+      var name = addons[0].name;
+      var url = addons[0].url;
       console.log('Connecting to: '+name);
       return url;
     })
