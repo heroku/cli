@@ -1,6 +1,6 @@
 {
   "name": "heroku-redis",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "heroku plugin to manage heroku redis",
   "main": "index.js",
   "author": "Jeff Dickey @dickeyxxx",
@@ -24,7 +24,7 @@
     "heroku-client": "^1.9.1",
     "q": "^1.1.2"
   },
-  "devDependencies": {	
+  "devDependencies": {
     "chai": "*",
     "jshint": "*",
     "mocha": "*",
