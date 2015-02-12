@@ -13,6 +13,8 @@ import (
 	"path/filepath"
 	"runtime"
 	"time"
+
+	"github.com/nightlyone/lockfile"
 )
 
 var updateTopic = &Topic{
@@ -43,6 +45,7 @@ var updateCmd = &Command{
 }
 
 var binPath = filepath.Join(AppDir, "heroku-cli")
+var updateLockPath = filepath.Join(AppDir, "updating.lock")
 
 func init() {
 	if runtime.GOOS == "windows" {
@@ -114,6 +117,16 @@ func updatable() bool {
 }
 
 func update(url, sha1 string) {
+	lock, err := lockfile.New(updateLockPath)
+	if err != nil {
+		Errln("Cannot initialize update lockfile.")
+		panic(err)
+	}
+	err = lock.TryLock()
+	if err != nil {
+		panic(err)
+	}
+	defer lock.Unlock()
 	tmp, err := downloadBin(url)
 	if err != nil {
 		panic(err)
