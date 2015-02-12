@@ -16,6 +16,10 @@
 			"Rev": "f1ac7f4f24f50328e6bc838ca4437d1612a0243c"
 		},
 		{
+			"ImportPath": "github.com/nightlyone/lockfile",
+			"Rev": "a814545ba90bdd65edfdeac274fdc26fe4722c83"
+		},
+		{
 			"ImportPath": "github.com/smartystreets/goconvey/convey",
 			"Comment": "1.5.0-359-g8298bc7",
 			"Rev": "8298bc7d36389ffd3e57b85d9797850d8c2382a9"
