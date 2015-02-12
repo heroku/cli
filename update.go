@@ -85,8 +85,7 @@ func updateNeeded() bool {
 		Errln("WARNING: Error autoupdating. The CLI will not be able to update itself.")
 		return false
 	}
-	// TODO: Increase the autoupdate time later
-	return f.ModTime().Add(2 * time.Minute).Before(time.Now())
+	return f.ModTime().Add(60 * time.Minute).Before(time.Now())
 }
 
 type manifest struct {
