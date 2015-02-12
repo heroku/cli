@@ -1,3 +1,11 @@
+4.4.0
+=====
+Added FreeBSD support
+Better warnings when autoupdate fails
+Fixed autoupdating on Windows
+Added lockfile for updates
+Ignore run errors if a new CLI fails after an autoupdate
+
 4.3.4
 =====
 Fixed bug when setting up node into existing directories
