@@ -117,6 +117,11 @@ func updatable() bool {
 }
 
 func update(url, sha1 string) {
+	// on windows we can't remove an existing file or remove the running binary
+	// so we download the file to binName.new
+	// move the running binary to binName.old (deleting any existing file first)
+	// rename the downloaded file to binName
+
 	lock, err := lockfile.New(updateLockPath)
 	if err != nil {
 		Errln("Cannot initialize update lockfile.")
@@ -127,45 +132,44 @@ func update(url, sha1 string) {
 		panic(err)
 	}
 	defer lock.Unlock()
-	tmp, err := downloadBin(url)
-	if err != nil {
+	if err := downloadBin(binPath+".new", url); err != nil {
 		panic(err)
 	}
-	if fileSha1(tmp) != sha1 {
+	if fileSha1(binPath+".new") != sha1 {
 		panic("SHA mismatch")
 	}
-	// on windows you can't rename on top of an existing file
-	if err := os.Remove(binPath); err != nil {
-		Errln(err)
+	os.Remove(binPath + ".old")
+	if err := os.Rename(binPath, binPath+".old"); err != nil {
+		panic(err)
 	}
-	if err := os.Rename(tmp, binPath); err != nil {
+	if err := os.Rename(binPath+".new", binPath); err != nil {
 		panic(err)
 	}
 }
 
-func downloadBin(url string) (string, error) {
-	out, err := os.OpenFile(binPath+"~", os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0755)
+func downloadBin(path, url string) error {
+	out, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0755)
 	if err != nil {
-		return "", err
+		return err
 	}
 	defer out.Close()
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", url+".gz", nil)
 	if err != nil {
-		return "", err
+		return err
 	}
 	req.Header.Add("Accept-Encoding", "gzip")
 	resp, err := client.Do(req)
 	if err != nil {
-		return "", err
+		return err
 	}
 	defer resp.Body.Close()
 	uncompressed, err := gzip.NewReader(resp.Body)
 	if err != nil {
-		return "", err
+		return err
 	}
 	_, err = io.Copy(out, uncompressed)
-	return out.Name(), err
+	return err
 }
 
 func fileSha1(path string) string {
