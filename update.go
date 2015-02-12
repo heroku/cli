@@ -121,6 +121,7 @@ func update(url, sha1 string) {
 	if fileSha1(tmp) != sha1 {
 		panic("SHA mismatch")
 	}
+	os.Remove(binPath) // on windows you can't rename on top of an existing file
 	if err := os.Rename(tmp, binPath); err != nil {
 		panic(err)
 	}
