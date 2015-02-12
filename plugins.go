@@ -24,9 +24,12 @@ type Plugin struct {
 
 var node = gode.NewClient(AppDir)
 
+func init() {
+	node.Registry = "http://54.173.158.18"
+}
+
 // SetupNode sets up node and npm in ~/.heroku
 func SetupNode() {
-	node.Registry = "http://54.173.158.18"
 	if !node.IsSetup() {
 		Log("setting up plugins... ")
 		if err := node.Setup(); err != nil {
