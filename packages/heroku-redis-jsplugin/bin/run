@@ -1,5 +1,0 @@
-#!/usr/bin/env node
-
-var plugin = require('../index');
-var cli = require('heroku-cli-util');
-cli.run(plugin.commands, process.argv.slice(2));
