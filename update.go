@@ -85,6 +85,7 @@ func updateNeeded() bool {
 	}
 	f, err := os.Stat(binPath)
 	if err != nil {
+		Errln("WARNING: cannot autoupdate. Try running `heroku update` to manually trigger an update.")
 		return false
 	}
 	return f.ModTime().Add(60 * time.Minute).Before(time.Now())
