@@ -46,6 +46,7 @@ var updateCmd = &Command{
 
 var binPath = filepath.Join(AppDir, "heroku-cli")
 var updateLockPath = filepath.Join(AppDir, "updating.lock")
+var autoupdateFile = filepath.Join(AppDir, "autoupdate")
 
 func init() {
 	if runtime.GOOS == "windows" {
@@ -58,11 +59,12 @@ func UpdateIfNeeded() {
 	if !updateNeeded() {
 		return
 	}
-	node.UpdatePackages()
+	touchAutoupdateFile()
+	lock := getUpdateLock()
+	defer lock.Unlock()
 	manifest := getUpdateManifest(Channel)
+	node.UpdatePackages()
 	if manifest.Version == Version {
-		// Set timestamp of bin so we don't update again
-		os.Chtimes(binPath, time.Now(), time.Now())
 		return
 	}
 	if !updatable() {
@@ -79,16 +81,45 @@ func UpdateIfNeeded() {
 	os.Exit(0)
 }
 
+// Attempts to get the lockfile
+// Blocks if unavailable
+func getUpdateLock() lockfile.Lockfile {
+	lock, err := lockfile.New(updateLockPath)
+	if err != nil {
+		Errln("Cannot initialize update lockfile.")
+		panic(err)
+	}
+	start := time.Now()
+	for {
+		if lock.TryLock() == nil {
+			return lock
+		}
+		time.Sleep(10 * time.Millisecond)
+		if time.Since(start) > 30*time.Second {
+			Errln("ERROR: Can't get update lock file")
+			Errln("You may need to delete " + updateLockPath + " if this message stays.")
+			os.Exit(1)
+		}
+	}
+}
+
 func updateNeeded() bool {
 	if Version == "dev" {
 		return false
 	}
-	f, err := os.Stat(binPath)
+	f, err := os.Stat(autoupdateFile)
 	if err != nil {
-		Errln("WARNING: cannot autoupdate. Try running `heroku update` to manually trigger an update.")
-		return false
+		return true
 	}
-	return f.ModTime().Add(60 * time.Minute).Before(time.Now())
+	return time.Since(f.ModTime()) > 1*time.Hour
+}
+
+func touchAutoupdateFile() {
+	out, err := os.OpenFile(autoupdateFile, os.O_WRONLY|os.O_CREATE, 0644)
+	if err != nil {
+		panic(err)
+	}
+	out.WriteString("")
 }
 
 type manifest struct {
@@ -121,17 +152,6 @@ func update(url, sha1 string) {
 	// so we download the file to binName.new
 	// move the running binary to binName.old (deleting any existing file first)
 	// rename the downloaded file to binName
-
-	lock, err := lockfile.New(updateLockPath)
-	if err != nil {
-		Errln("Cannot initialize update lockfile.")
-		panic(err)
-	}
-	err = lock.TryLock()
-	if err != nil {
-		panic(err)
-	}
-	defer lock.Unlock()
 	if err := downloadBin(binPath+".new", url); err != nil {
 		panic(err)
 	}
