@@ -1,3 +1,9 @@
+4.6.0
+=====
+Block on update lock instead of simply failing
+Sync stderr from node modules
+Upgraded iojs to 1.2.0
+
 4.5.1
 =====
 Fixed bug that prevented autoupdating of private plugins
