@@ -1,11 +1,8 @@
 package main
 
 import (
-	"bufio"
-	"bytes"
 	"encoding/json"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -13,7 +10,6 @@ import (
 	"syscall"
 
 	"github.com/dickeyxxx/gode"
-	"github.com/stvp/rollbar"
 )
 
 // Plugin represents a javascript plugin
@@ -149,32 +145,11 @@ func runFn(module, topic, command string) func(ctx *Context) {
 		cmd := node.RunScript(script)
 		cmd.Stdout = Stdout
 		cmd.Stdin = os.Stdin
-		r, w, _ := os.Pipe()
-		cmd.Stderr = w
-		stderr := captureText(r)
+		cmd.Stderr = os.Stderr
 		if err := cmd.Run(); err != nil {
-			Errf("Error in %s\n", ctx.Command.Plugin)
-			if Channel != "?" {
-				nodeErr := fmt.Errorf("%s %s\n%s", ctx.Command.Plugin, ctx.Command, stderr.String())
-				rollbar.ErrorWithStack(rollbar.ERR, nodeErr, rollbar.Stack{})
-				rollbar.Wait()
-			}
-			// Exit with the same exit code
 			Exit(getExitCode(err))
 		}
 	}
-}
-
-func captureText(r io.Reader) *bytes.Buffer {
-	var b bytes.Buffer
-	go func() {
-		scanner := bufio.NewScanner(r)
-		for scanner.Scan() {
-			b.WriteString(scanner.Text() + "\n")
-			Errln(scanner.Text())
-		}
-	}()
-	return &b
 }
 
 func getExitCode(err error) int {
