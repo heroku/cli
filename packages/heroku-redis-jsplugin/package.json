@@ -19,6 +19,7 @@
     "test": "jshint ."
   },
   "dependencies": {
+    "co": "^4.4.0",
     "columnify": "^1.4.1",
     "heroku-client": "^1.9.1",
     "q": "^1.1.2"

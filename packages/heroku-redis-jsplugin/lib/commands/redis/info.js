@@ -1,16 +1,8 @@
-var columnify = require('columnify');
-var Heroku = require('heroku-client');
-var Q = require('q');
-
-var api = require('./shared.js');
-
-function getAddonInfo (context, addon) {
-  var deferred = Q.defer();
-  api.request(context, addon.name).then(function (info) {
-    deferred.resolve({addon: addon, info: info});
-  });
-  return deferred.promise;
-}
+'use strict';
+let co = require('co');
+let columnify = require('columnify');
+let Heroku = require('heroku-client');
+let api = require('./shared.js');
 
 module.exports = {
   topic: 'redis',
@@ -20,22 +12,26 @@ module.exports = {
   args: [{name: 'database', optional: true}],
   shortHelp: 'gets information about redis',
   run: function(context) {
-    var filter = api.make_addons_filter(context.args.database);
-    var heroku = new Heroku({token: context.auth.password});
-
-    heroku.apps(context.app).addons().list()
-    .then(filter)
-    .then(function(addons) {
-      return Q.all(addons.map(function (addon) {
-        return getAddonInfo(context, addon);
-      }));
-    })
-    .then(function (addons) {
-      addons.forEach(function (addon) {
-        console.log("=== " + addon.addon.config_vars[0]);
-        console.log(columnify(addon.info.info, { showHeaders: false }));
+    co(function *() {
+      let heroku = new Heroku({token: context.auth.password});
+      let addons = yield heroku.apps(context.app).addons().list();
+      // filter out non-redis addons
+      addons = api.make_addons_filter(context.args.database)(addons);
+      // get info for each db
+      let databases = yield addons.map(function (addon) {
+        return {
+          addon: addon,
+          redis: api.request(context, addon.name)
+        };
       });
-    })
-    .done();
+      // print out the info of the addon and redis db info
+      databases.forEach(function (db) {
+        console.log(`=== ${db.addon.config_vars[0]}`);
+        console.log(columnify(db.redis.info, { showHeaders: false }));
+      });
+    }).catch(function (err) {
+      console.error(err.stack);
+      process.exit(1);
+    });
   }
 };
