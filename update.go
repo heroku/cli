@@ -96,9 +96,8 @@ func getUpdateLock() lockfile.Lockfile {
 		}
 		time.Sleep(10 * time.Millisecond)
 		if time.Since(start) > 30*time.Second {
-			Errln("ERROR: Can't get update lock file")
-			Errln("You may need to delete " + updateLockPath + " if this message stays.")
-			os.Exit(1)
+			// In a timeout, assume the last updating process timed out
+			os.Remove(updateLockPath)
 		}
 	}
 }
