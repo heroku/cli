@@ -5,10 +5,40 @@ let request = require('request');
 let spawn   = require('child_process').spawn;
 
 const foregoVersion = '0.16.1';
-const foregoFilename = `forego-${foregoVersion}`;
+let foregoFilename = `forego-${foregoVersion}`;
+
+if (process.platform === 'windows') {
+  foregoFilename = `forego-${foregoVersion}.exe`;
+}
 
 function foregoURL() {
-  return `https://godist.herokuapp.com/projects/ddollar/forego/releases/${foregoVersion}/darwin-amd64/forego`;
+  let arch, platform;
+  let filename = 'forego';
+  switch (process.arch) {
+    case 'x64':
+      arch = 'amd64';
+    break;
+    case 'ia32':
+      arch = '386';
+    break;
+    default:
+      throw new Error(`Unsupported architecture: ${process.arch}`);
+  }
+  switch (process.platform) {
+    case 'darwin':
+      platform = 'darwin';
+    break;
+    case 'linux':
+      platform = 'linux';
+    break;
+    case 'win32':
+      platform = 'windows';
+      filename = 'forego.exe';
+    break;
+    default:
+      throw new Error(`Unsupported architecture: ${process.arch}`);
+  }
+  return `https://godist.herokuapp.com/projects/ddollar/forego/releases/${foregoVersion}/${platform}-${arch}/${filename}`;
 }
 
 function handleErr (err) {
@@ -19,12 +49,12 @@ function handleErr (err) {
 function downloadForego (path, cb) {
   process.stderr.write(`Downloading ${foregoFilename} to ${path}... `);
   request(foregoURL(), function (err) {
+    if (err) { handleErr(err); }
     console.error('done');
-    cb(err);
+    // for some reason this seems necessary
+    setTimeout(cb, 500);
   })
-  .pipe(fs.createWriteStream(path, {
-    mode: 0o0755
-  }));
+  .pipe(fs.createWriteStream(path, {mode: 0o0755}));
 }
 
 function ensureSetup (path, cb) {
@@ -64,8 +94,7 @@ module.exports = {
   ],
   run: function (ctx) {
     var foregoPath = path.join(ctx.herokuDir, foregoFilename);
-    ensureSetup(foregoPath, function (err) {
-      if (err) { handleErr(err); }
+    ensureSetup(foregoPath, function () {
       start({path: foregoPath, cwd: ctx.cwd, args: ctx.args});
     });
   }
