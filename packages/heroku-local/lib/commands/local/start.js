@@ -4,16 +4,23 @@ let path    = require('path');
 let request = require('request');
 let spawn   = require('child_process').spawn;
 
+const foregoVersion = '0.16.1';
+const foregoFilename = `forego-${foregoVersion}`;
+
+function foregoURL() {
+  return `https://godist.herokuapp.com/projects/ddollar/forego/releases/${foregoVersion}/darwin-amd64/forego`;
+}
+
 function handleErr (err) {
   console.error(err.stack);
   process.exit(1);
 }
 
 function downloadForego (path, cb) {
-  let url = 'https://godist.herokuapp.com/projects/ddollar/forego/releases/current/darwin-amd64/forego';
-  request(url)
-  .on('response', function () {
-    cb();
+  process.stderr.write(`Downloading ${foregoFilename} to ${path}... `);
+  request(foregoURL(), function (err) {
+    console.error('done');
+    cb(err);
   })
   .pipe(fs.createWriteStream(path, {
     mode: 0o0755
@@ -36,7 +43,7 @@ function start (opts) {
     args.push(opts.args.processname);
   }
   console.log(opts.args);
-  spawn('forego', args, {
+  spawn(opts.path, args, {
     cwd: opts.cwd,
     stdio: [0, 1, 2]
   });
@@ -56,10 +63,10 @@ module.exports = {
     {name: 'r', char: 'r', hasValue: true}
   ],
   run: function (ctx) {
-    var foregoPath = path.join(ctx.herokuDir, 'forego');
+    var foregoPath = path.join(ctx.herokuDir, foregoFilename);
     ensureSetup(foregoPath, function (err) {
       if (err) { handleErr(err); }
-      start({cwd: ctx.cwd, args: ctx.args});
+      start({path: foregoPath, cwd: ctx.cwd, args: ctx.args});
     });
   }
 };
