@@ -31,7 +31,11 @@ function ensureSetup (path, cb) {
 }
 
 function start (opts) {
-  spawn('forego', ['start'], {
+  let args = ['start'];
+  if (opts.processName) {
+    args.push(opts.processName);
+  }
+  spawn('forego', args, {
     cwd: opts.cwd,
     stdio: [0, 1, 2]
   });
@@ -42,11 +46,12 @@ module.exports = {
   command: 'start',
   description: 'run heroku app locally',
   help: 'TODO',
+  args: [{name: 'processname', optional: true}],
   run: function (ctx) {
     var foregoPath = path.join(ctx.herokuDir, 'forego');
     ensureSetup(foregoPath, function (err) {
       if (err) { handleErr(err); }
-      start({cwd: ctx.cwd});
+      start({cwd: ctx.cwd, processName: ctx.args.processname});
     });
   }
 };
