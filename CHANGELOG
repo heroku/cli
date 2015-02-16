@@ -1,3 +1,7 @@
+4.6.3
+=====
+Fix autoupdater from updating on every run
+
 4.6.2
 =====
 Added herokuDir to js context object
