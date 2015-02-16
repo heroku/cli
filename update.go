@@ -120,7 +120,7 @@ func touchAutoupdateFile() {
 	if err != nil {
 		panic(err)
 	}
-	out.WriteString("")
+	out.WriteString(time.Now().String())
 }
 
 type manifest struct {
