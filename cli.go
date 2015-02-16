@@ -52,6 +52,7 @@ func (cli *Cli) Run(args []string) (err error) {
 		ctx.Auth.Username, ctx.Auth.Password = auth()
 	}
 	ctx.Cwd, _ = os.Getwd()
+	ctx.HerokuDir = AppDir
 	ctx.Command.Run(ctx)
 	return nil
 }
