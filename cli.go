@@ -51,6 +51,7 @@ func (cli *Cli) Run(args []string) (err error) {
 	if ctx.Command.NeedsAuth {
 		ctx.Auth.Username, ctx.Auth.Password = auth()
 	}
+	ctx.Cwd, _ = os.Getwd()
 	ctx.Command.Run(ctx)
 	return nil
 }
