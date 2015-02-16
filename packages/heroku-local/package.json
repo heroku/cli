@@ -14,5 +14,8 @@
   "keywords": [
     "heroku-plugin"
   ],
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "request": "^2.53.0"
+  }
 }
