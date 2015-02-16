@@ -1,3 +1,8 @@
+4.6.1
+=====
+Added current working directory to js context object
+Changed update lockfile to just delete instead of error out
+
 4.6.0
 =====
 Block on update lock instead of simply failing
