@@ -1,3 +1,7 @@
+4.6.2
+=====
+Added herokuDir to js context object
+
 4.6.1
 =====
 Added current working directory to js context object
