@@ -1,8 +1,3 @@
-// TODO: Fix this in status.
-
-// 1. The response should be lower case (Development -> development)
-// 2. I should add an endpoint that returns the possible status colors (red, yellow, green...) (?)
-
 var api = require('request').defaults({
   json: true,
   headers: { 'Accept': 'application/vnd.heroku+json;' }
@@ -12,21 +7,16 @@ var colors = require('colors');
 var timeago = require('timeago');
 var dateFormat = require('dateformat');
 
+function capitalize(str) {
+  return str.substr(0, 1).toUpperCase() + str.substr(1);
+}
+
 function printStatus(status) {
-  var message;
-  var color = colors.green;
-  switch(status) {
-    case 'green':
-      message =  'No known issues at this time.';
-      break;
-    case 'red':
-      color = colors.red;
-      message = 'Red';
-      break;
-    case 'yellow': // ?
-      color = color.yellow;
-      message = 'Yellow';
-      break;
+  var message = capitalize(status);
+  var color = colors[status];
+
+  if (status === 'green') {
+    message =  'No known issues at this time.';
   }
   return (color(message));
 }
@@ -49,11 +39,10 @@ module.exports = {
       console.log('Production: %s', printStatus(response.status.Production));
 
       response.issues.forEach(function(incident) {
-        console.log('\n=== %s %s', incident.title, dateFormat(incident.created_at, "UTC:h:MM:ss TT Z"));
+        console.log('\n=== %s %s (%s)', incident.title, dateFormat(incident.created_at, "UTC:h:MM:ss TT Z"), incident.full_url);
 
         incident.updates.forEach(function(update) {
-          var updateType = update.update_type.substr(0, 1).toUpperCase() + update.update_type.substr(1); // Capitalize first letter
-          console.log('%s (%s) [%s] %s\n', dateFormat(incident.created_at, "UTC:h:MM:ss TT Z"), timeago(update.updated_at), updateType, update.contents)
+          console.log('%s (%s) [%s] %s\n', dateFormat(incident.created_at, "UTC:h:MM:ss TT Z"), timeago(update.updated_at), capitalize(update.update_type), update.contents)
         });
       });
     });
