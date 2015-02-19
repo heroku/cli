@@ -25,6 +25,17 @@ Development: No known issues at this time.
 Production: No known issues at this time.
 ```
 
+or, if there were a real incident...
+
+```bash
+=== Heroku Status
+Development: Yellow
+Production: Yellow
+
+=== Increased Platform Latency 7:04:22 PM UTC
+7:04:22 PM UTC (42 minutes ago) [Issue] We are experiencing a network connectivity issue with our upstream provider. We will post another update as to the status in an hour if not sooner.
+```
+
 More about https://devcenter.heroku.com/articles/heroku-status
 
 
