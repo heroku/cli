@@ -3,7 +3,7 @@ var api = require('request').defaults({
   headers: { 'Accept': 'application/vnd.heroku+json;' }
 });
 
-var colors = require('colors');
+var chalk = require('chalk');
 var timeago = require('timeago');
 var dateFormat = require('dateformat');
 
@@ -13,12 +13,12 @@ function capitalize(str) {
 
 function printStatus(status) {
   var message = capitalize(status);
-  var color = colors[status];
+  var colorize = chalk['bg'+capitalize(status)].white;
 
   if (status === 'green') {
     message =  'No known issues at this time.';
   }
-  return (color(message));
+  return (colorize(' ' + message + ' '));
 }
 
 module.exports = {
@@ -35,8 +35,8 @@ module.exports = {
     }, function (err, _, response) {
       if (err) { throw err; }
       console.log('=== Heroku Status');
+      console.log(`Production:  ${printStatus(response.status.Production)}`);
       console.log(`Development: ${printStatus(response.status.Development)}`);
-      console.log(`Production: ${printStatus(response.status.Production)}`);
 
       response.issues.forEach(function(incident) {
         console.log(`\n=== ${incident.title} ${dateFormat(incident.created_at, "UTC:h:MM:ss TT Z")} (${incident.full_url})`);
