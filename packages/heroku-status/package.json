@@ -22,6 +22,8 @@
   },
   "dependencies": {
     "colors": "^1.0.3",
-    "request": "^2.48.0"
+    "request": "^2.48.0",
+    "dateformat": "^1.0.11",
+    "timeago": "^0.2.0"
   }
 }
