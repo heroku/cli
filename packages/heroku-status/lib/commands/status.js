@@ -35,14 +35,14 @@ module.exports = {
     }, function (err, _, response) {
       if (err) { throw err; }
       console.log('=== Heroku Status');
-      console.log('Development: %s', printStatus(response.status.Development));
-      console.log('Production: %s', printStatus(response.status.Production));
+      console.log(`Development: ${printStatus(response.status.Development)}`);
+      console.log(`Production: ${printStatus(response.status.Production)}`);
 
       response.issues.forEach(function(incident) {
-        console.log('\n=== %s %s (%s)', incident.title, dateFormat(incident.created_at, "UTC:h:MM:ss TT Z"), incident.full_url);
+        console.log(`\n=== ${incident.title} ${dateFormat(incident.created_at, "UTC:h:MM:ss TT Z")} (${incident.full_url})`);
 
         incident.updates.forEach(function(update) {
-          console.log('%s (%s) [%s] %s\n', dateFormat(incident.created_at, "UTC:h:MM:ss TT Z"), timeago(update.updated_at), capitalize(update.update_type), update.contents)
+          console.log(`[${capitalize(update.update_type)}] ${dateFormat(incident.created_at, "UTC:h:MM:ss TT Z")} (${timeago(update.updated_at)}) \n${update.contents}\n `)
         });
       });
     });
