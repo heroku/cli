@@ -1,3 +1,8 @@
+4.6.4
+=====
+Fixed issue where autoupdate lock wouldn't be released
+Fixed issue where autoupdate file would be touched when an update was incomplete
+
 4.6.3
 =====
 Fix autoupdater from updating on every run
