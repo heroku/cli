@@ -56,11 +56,11 @@ func init() {
 
 // UpdateIfNeeded checks for and performs an autoupdate if there is a new version out.
 func UpdateIfNeeded() {
+	lock := getUpdateLock()
 	if !updateNeeded() {
 		return
 	}
-	touchAutoupdateFile()
-	lock := getUpdateLock()
+	defer touchAutoupdateFile()
 	defer lock.Unlock()
 	manifest := getUpdateManifest(Channel)
 	node.UpdatePackages()
@@ -77,6 +77,10 @@ func UpdateIfNeeded() {
 	build := manifest.Builds[runtime.GOOS][runtime.GOARCH]
 	update(build.URL, build.Sha1)
 	//Errln("done")
+
+	// these are deferred but won't be called because of os.Exit
+	touchAutoupdateFile()
+	lock.Unlock()
 	execBin()
 	os.Exit(0)
 }
