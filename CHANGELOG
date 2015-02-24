@@ -1,3 +1,7 @@
+4.6.5
+=====
+Fixed issue where autoupdate lock wouldn't be released
+
 4.6.4
 =====
 Fixed issue where autoupdate lock wouldn't be released
