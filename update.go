@@ -57,11 +57,11 @@ func init() {
 // UpdateIfNeeded checks for and performs an autoupdate if there is a new version out.
 func UpdateIfNeeded() {
 	lock := getUpdateLock()
+	defer lock.Unlock()
 	if !updateNeeded() {
 		return
 	}
 	defer touchAutoupdateFile()
-	defer lock.Unlock()
 	manifest := getUpdateManifest(Channel)
 	node.UpdatePackages()
 	if manifest.Version == Version {
