@@ -1,3 +1,9 @@
+4.7.0
+=====
+Improved help on commands
+Added description field for command flags
+Fixed issue when deleting update lock file
+
 4.6.5
 =====
 Fixed issue where autoupdate lock wouldn't be released
