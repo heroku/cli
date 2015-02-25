@@ -103,7 +103,7 @@ func parseArgs(command *Command, args []string) (result map[string]string, appNa
 		case numArgs == len(command.Args):
 			return nil, "", errors.New("Unexpected argument: " + strings.Join(args[numArgs:], " "))
 		default:
-			result[command.Args[i].Name] = args[i]
+			result[command.Args[numArgs].Name] = args[i]
 			numArgs++
 		}
 	}
