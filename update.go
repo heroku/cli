@@ -101,9 +101,7 @@ func getUpdateLock() lockfile.Lockfile {
 		time.Sleep(10 * time.Millisecond)
 		if time.Since(start) > 30*time.Second {
 			// In a timeout, assume the last updating process timed out
-			if err := os.Remove(updateLockPath); err != nil {
-				panic(err)
-			}
+			os.Remove(updateLockPath)
 		}
 	}
 }
