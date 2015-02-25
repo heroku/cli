@@ -85,10 +85,10 @@ func argsString(args []Arg) string {
 // Flag defines a flag for a command.
 // These will be parsed in Go and passed to the Run method in the Context struct.
 type Flag struct {
-	Name     string `json:"name"`
-	Char     string `json:"char"`
-	Help     string `json:"help"`
-	HasValue bool   `json:"hasValue"`
+	Name        string `json:"name"`
+	Char        string `json:"char"`
+	Description string `json:"description"`
+	HasValue    bool   `json:"hasValue"`
 }
 
 func (f *Flag) String() string {

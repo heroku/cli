@@ -54,7 +54,7 @@ func printCommandHelp(command *Command) {
 	if len(command.Flags) > 1 {
 		Println()
 		for _, flag := range command.Flags {
-			Printf("%-20s # %s\n", flag.String(), flag.Help)
+			Printf("%-20s # %s\n", flag.String(), flag.Description)
 		}
 		Println()
 	}
