@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"strings"
 )
 
@@ -33,11 +32,7 @@ func (c *Command) String() string {
 }
 
 func commandUsage(c *Command) string {
-	text := c.String() + argsString(c.Args) + flagsString(c.Flags)
-	if c.NeedsApp {
-		text = text + " --app APP"
-	}
-	return text
+	return c.String() + argsString(c.Args)
 }
 
 // CommandSet is a slice of Command structs with some helper methods.
@@ -92,21 +87,27 @@ func argsString(args []Arg) string {
 type Flag struct {
 	Name     string `json:"name"`
 	Char     string `json:"char"`
+	Help     string `json:"help"`
 	HasValue bool   `json:"hasValue"`
 }
 
-func flagsString(flags []Flag) string {
-	var buffer bytes.Buffer
-	for _, flag := range flags {
-		var s string
-		if flag.Char != "" {
-			s = fmt.Sprintf(" [-%s (--%s)]", string(flag.Char), flag.Name)
-		} else {
-			s = fmt.Sprintf(" [--%s]", flag.Name)
-		}
-		buffer.WriteString(s)
+func (f *Flag) String() string {
+	s := " "
+	switch {
+	case f.Char != "" && f.Name != "":
+		s = s + "-" + f.Char + ", --" + f.Name
+		break
+	case f.Char != "":
+		s = s + "-" + f.Char
+		break
+	case f.Name != "":
+		s = s + "--" + f.Name
+		break
 	}
-	return buffer.String()
+	if f.HasValue {
+		s = s + " " + strings.ToUpper(f.Name)
+	}
+	return s
 }
 
 var commandsTopic = &Topic{
