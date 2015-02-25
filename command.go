@@ -96,13 +96,10 @@ func (f *Flag) String() string {
 	switch {
 	case f.Char != "" && f.Name != "":
 		s = s + "-" + f.Char + ", --" + f.Name
-		break
 	case f.Char != "":
 		s = s + "-" + f.Char
-		break
 	case f.Name != "":
 		s = s + "--" + f.Name
-		break
 	}
 	if f.HasValue {
 		s = s + " " + strings.ToUpper(f.Name)
