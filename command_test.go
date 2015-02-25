@@ -22,14 +22,6 @@ func TestCommand(t *testing.T) {
 			}
 			c.So(commandUsage(cmd), c.ShouldEqual, "apps")
 		})
-		c.Convey("with app", func() {
-			cmd := &Command{
-				Topic:    "apps",
-				Command:  "info",
-				NeedsApp: true,
-			}
-			c.So(commandUsage(cmd), c.ShouldEqual, "apps:info --app APP")
-		})
 		c.Convey("with required argument", func() {
 			cmd := &Command{
 				Topic:   "apps",
@@ -53,14 +45,6 @@ func TestCommand(t *testing.T) {
 				Args:    []Arg{{Name: "foo"}, {Name: "bar"}},
 			}
 			c.So(commandUsage(cmd), c.ShouldEqual, "apps:info FOO BAR")
-		})
-		c.Convey("with a flag argument", func() {
-			cmd := &Command{
-				Topic:   "apps",
-				Command: "info",
-				Flags:   []Flag{{Name: "foo"}},
-			}
-			c.So(commandUsage(cmd), c.ShouldEqual, "apps:info [--foo]")
 		})
 	})
 }
