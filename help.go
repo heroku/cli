@@ -1,6 +1,9 @@
 package main
 
-import "os"
+import (
+	"os"
+	"strings"
+)
 
 func help() {
 	var cmd string
@@ -14,22 +17,23 @@ func help() {
 	topic, command := cli.ParseCmd(cmd)
 	switch {
 	case topic == nil:
-		Errf("USAGE: heroku COMMAND [--app APP] [command-specific-options]\n\n")
-		Errf("Help topics, type \"heroku help TOPIC\" for more details:\n\n")
+		Printf("Usage: heroku COMMAND [--app APP] [command-specific-options]\n\n")
+		Printf("Help topics, type \"heroku help TOPIC\" for more details:\n\n")
 		for _, topic := range nonHiddenTopics(cli.Topics) {
-			Errf("  heroku %-30s# %s\n", topic.Name, topic.Description)
+			Printf("  heroku %-30s# %s\n", topic.Name, topic.Description)
 		}
 	case command == nil:
-		Errf("USAGE: heroku %s:COMMAND [--app APP] [command-specific-options]\n\n", topic.Name)
+		Printf("Usage: heroku %s:COMMAND [--app APP] [command-specific-options]\n\n", topic.Name)
 		printTopicCommandsHelp(topic)
 	case command.Command == "":
-		Errf("USAGE: heroku %s\n\n", command.Usage)
-		Errln(command.Help)
+		printCommandHelp(command)
 		// This is a root command so show the other commands in the topic
-		printTopicCommandsHelp(topic)
+		// if there are any
+		if len(topic.Commands()) > 1 {
+			printTopicCommandsHelp(topic)
+		}
 	default:
-		Errf("USAGE: heroku %s\n\n", command.Usage)
-		Errln(command.Help)
+		printCommandHelp(command)
 	}
 	os.Exit(2)
 }
@@ -37,10 +41,22 @@ func help() {
 func printTopicCommandsHelp(topic *Topic) {
 	commands := topic.Commands()
 	if len(commands) > 0 {
-		Errf("\nCommands for %s, type \"heroku help %s:COMMAND\" for more details:\n\n", topic.Name, topic.Name)
+		Printf("\nCommands for %s, type \"heroku help %s:COMMAND\" for more details:\n\n", topic.Name, topic.Name)
 		for _, command := range nonHiddenCommands(commands) {
-			Errf(" heroku %-30s # %s\n", command.Usage, command.Description)
+			Printf(" heroku %-30s # %s\n", command.Usage, command.Description)
 		}
+	}
+}
+
+func printCommandHelp(command *Command) {
+	Printf("Usage: heroku %s\n\n", command.Usage)
+	Println(indent(command.Help))
+	if len(command.Flags) > 1 {
+		Println()
+		for _, flag := range command.Flags {
+			Printf("%-20s # %s\n", flag.String(), flag.Help)
+		}
+		Println()
 	}
 }
 
@@ -62,4 +78,8 @@ func nonHiddenCommands(from []*Command) []*Command {
 		}
 	}
 	return to
+}
+
+func indent(s string) string {
+	return " " + strings.Join(strings.Split(s, "\n"), "\n ")
 }
