@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 	"os/exec"
+	"os/signal"
 	"path/filepath"
 	"syscall"
 
@@ -142,6 +143,9 @@ func runFn(module, topic, command string) func(ctx *Context) {
 		})[0]
 		.run(%s)`, topic, command, module, ctxJSON)
 
+		// swallow sigint since the plugin will handle it
+		swallowSignal(os.Interrupt)
+
 		cmd := node.RunScript(script)
 		cmd.Stdout = Stdout
 		cmd.Stdin = os.Stdin
@@ -150,6 +154,14 @@ func runFn(module, topic, command string) func(ctx *Context) {
 			Exit(getExitCode(err))
 		}
 	}
+}
+
+func swallowSignal(s os.Signal) {
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, s)
+	go func() {
+		<-c
+	}()
 }
 
 func getExitCode(err error) int {
