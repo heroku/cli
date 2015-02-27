@@ -50,9 +50,10 @@ Forego.prototype = {
   },
 
   ensureSetup: function (cb) {
+    let forego = this;
     fs.open(this.path, 'r', function (err) {
       if (err) {
-        this.download(cb);
+        forego.download(cb);
       } else {
         cb();
       }
