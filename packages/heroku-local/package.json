@@ -1,6 +1,6 @@
 {
   "name": "heroku-local",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "run heroku apps locally",
   "main": "index.js",
   "author": "Jeff Dickey @dickeyxxx",
