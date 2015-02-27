@@ -61,7 +61,7 @@ Forego.prototype = {
   },
 
   download: function (cb) {
-    process.stderr.write(`Downloading ${this.filename} ${this.dir}... `);
+    process.stderr.write(`Downloading ${this.filename} to ${this.dir}... `);
     request(this.url(), function (err) {
       if (err) { cb(err); }
       console.error('done');
