@@ -50,18 +50,7 @@ func printTopicCommandsHelp(topic *Topic) {
 
 func printCommandHelp(command *Command) {
 	Printf("Usage: heroku %s\n\n", command.Usage)
-	Println(indent(command.Help))
-	if len(command.Flags) > 1 {
-		Println()
-		for _, flag := range command.Flags {
-			if flag.Description == "" {
-				Println(flag.String())
-			} else {
-				Printf("%-20s # %s\n", flag.String(), flag.Description)
-			}
-		}
-		Println()
-	}
+	Println(indent(command.buildFullHelp()))
 }
 
 func nonHiddenTopics(from []*Topic) []*Topic {

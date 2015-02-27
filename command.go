@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"strings"
 )
 
@@ -16,6 +17,7 @@ type Command struct {
 	Usage       string             `json:"usage"`
 	Description string             `json:"description"`
 	Help        string             `json:"help"`
+	FullHelp    string             `json:"fullHelp"`
 	Hidden      bool               `json:"hidden"`
 	NeedsApp    bool               `json:"needsApp"`
 	NeedsAuth   bool               `json:"needsAuth"`
@@ -35,6 +37,22 @@ func commandUsage(c *Command) string {
 	return c.String() + argsString(c.Args)
 }
 
+func (c *Command) buildFullHelp() string {
+	if len(c.Flags) == 0 {
+		return c.Help
+	}
+	lines := make([]string, 0, len(c.Flags))
+	lines = append(lines, "")
+	for _, flag := range c.Flags {
+		if flag.Description == "" {
+			lines = append(lines, flag.String())
+		} else {
+			lines = append(lines, fmt.Sprintf("%-20s # %s", flag.String(), flag.Description))
+		}
+	}
+	return c.Help + "\n" + strings.Join(lines, "\n") + "\n"
+}
+
 // CommandSet is a slice of Command structs with some helper methods.
 type CommandSet []*Command
 
@@ -52,6 +70,14 @@ func (commands CommandSet) loadUsages() {
 	for _, c := range commands {
 		if c.Usage == "" {
 			c.Usage = commandUsage(c)
+		}
+	}
+}
+
+func (commands CommandSet) loadFullHelp() {
+	for _, c := range commands {
+		if c.FullHelp == "" {
+			c.FullHelp = c.buildFullHelp()
 		}
 	}
 }
@@ -131,6 +157,7 @@ var commandsListCmd = &Command{
 		}
 		cli.LoadPlugins(GetPlugins())
 		cli.Commands.loadUsages()
+		cli.Commands.loadFullHelp()
 		doc := map[string]interface{}{"topics": cli.Topics, "commands": cli.Commands}
 		s, _ := json.Marshal(doc)
 		Println(string(s))
