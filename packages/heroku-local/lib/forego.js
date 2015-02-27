@@ -19,6 +19,10 @@ function Forego(dir) {
 }
 
 Forego.prototype = {
+  version: function () {
+    spawn(this.path, ['version'], { stdio: [0, 1, 2] });
+  },
+
   start: function (opts) {
     let args = ['start'];
     if (opts.args.processname) {

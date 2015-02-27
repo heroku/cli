@@ -10,7 +10,13 @@ module.exports = {
   topic: 'local',
   command: 'start',
   description: 'run heroku app locally',
-  help: 'Start the application specified by a Procfile (defaults to ./Procfile)',
+  help: `Start the application specified by a Procfile (defaults to ./Procfile)
+
+Examples:
+
+  heroku local:start
+  heroku local:start web
+  heroku local:start -f Procfile.test -e .env.test`,
   args: [{name: 'processname', optional: true}],
   flags: [
     {name: 'procfile', char: 'f', hasValue: true},
