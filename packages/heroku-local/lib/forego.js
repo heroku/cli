@@ -8,10 +8,11 @@ const foregoVersion = '0.16.1';
 
 function Forego(dir) {
   this.dir = dir;
-  this.filename = `forego-${foregoVersion}`;
 
   if (process.platform === 'windows') {
     this.filename = `forego-${foregoVersion}.exe`;
+  } else {
+    this.filename = `forego-${foregoVersion}`;
   }
 
   this.path = path.join(this.dir, this.filename);
