@@ -1,3 +1,9 @@
+4.8.0
+=====
+Added full help field for commands
+Hide flag description if empty
+Swallow sigint while a plugin is running
+
 4.7.0
 =====
 Improved help on commands
