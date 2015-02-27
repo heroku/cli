@@ -62,7 +62,7 @@ Forego.prototype = {
 
   download: function (cb) {
     process.stderr.write(`Downloading ${this.filename} ${this.dir}... `);
-    request(this.foregoURL(), function (err) {
+    request(this.url(), function (err) {
       if (err) { cb(err); }
       console.error('done');
       // for some reason this seems necessary
