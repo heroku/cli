@@ -42,7 +42,6 @@ func (c *Command) buildFullHelp() string {
 		return c.Help
 	}
 	lines := make([]string, 0, len(c.Flags))
-	lines = append(lines, "")
 	for _, flag := range c.Flags {
 		if flag.Description == "" {
 			lines = append(lines, flag.String())
@@ -50,7 +49,7 @@ func (c *Command) buildFullHelp() string {
 			lines = append(lines, fmt.Sprintf("%-20s # %s", flag.String(), flag.Description))
 		}
 	}
-	return c.Help + "\n" + strings.Join(lines, "\n") + "\n"
+	return strings.Join(lines, "\n") + "\n\n" + c.Help
 }
 
 // CommandSet is a slice of Command structs with some helper methods.
