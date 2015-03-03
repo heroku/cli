@@ -18,7 +18,7 @@ function printStatus(status) {
   if (status === 'green') {
     message =  'No known issues at this time.';
   }
-  return (colorize(' ' + message + ' '));
+  return (colorize(` ${message} `));
 }
 
 module.exports = {
