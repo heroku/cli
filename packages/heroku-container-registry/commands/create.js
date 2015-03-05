@@ -1,6 +1,7 @@
 var fs = require('fs');
 var path = require('path');
 var _ = require('lodash');
+var child = require('child_process');
 
 const TEMPLATE_PATH = path.resolve(__dirname, '../templates/Dockerfile');
 
@@ -9,7 +10,7 @@ module.exports = function(topic) {
     topic: topic,
     command: 'create',
     description: 'creates a cedar-14 based Dockerfile',
-    help: 'help text for ' + topic + ':create',
+    help: `help text for ${topic}:create`,
     run: create
   };
 };
@@ -19,18 +20,26 @@ function create(env) {
   var dockerfileTemplate = fs.readFileSync(TEMPLATE_PATH, { encoding: 'utf8' });
   var compiled = _.template(dockerfileTemplate);
 
-  createDockerfile()
-    .then(buildImage);
+  startB2D();
+  buildImage(writeDockerfile());
 
-  function createDockerfile() {
-    console.log('creating Dockerfile...');
-
-    var dockerfile = compiled({ engines_node: '0.10.36' });
-    fs.writeFileSync(outPath, dockerfile, { encoding: 'utf8' });
-    return Promise.resolve();
+  function startB2D() {
+    console.log('starting boot2docker...');
+    child.execSync('boot2docker start');
   }
 
-  function buildImage() {
+  function writeDockerfile() {
+    console.log('creating Dockerfile...');
+    var dockerfile = compiled({ node_engine: '0.10.36' });
+    fs.writeFileSync(outPath, dockerfile, { encoding: 'utf8' });
+    return outPath;
+  }
+
+  function buildImage(dockerfile) {
     console.log('building image...');
+    var build = child.execSync(`docker build --force-rm ${env.cwd}`, { encoding: 'utf8' });
+    var tokens = build.split(' ');
+    var id = tokens[tokens.length - 1];
+    console.log(`image id: ${id}`);
   }
 }

@@ -11,11 +11,10 @@ module.exports = function(topic) {
     topic: topic,
     command: 'install',
     description: 'installs boot2docker',
-    help: 'help text for ' + topic + ':install',
+    help: `help text for ${topic}:install`,
     run: function() {
       downloadB2D()
         .then(installB2D)
-        .then(initB2D)
         .catch(onFailure);
     }
   };
@@ -40,22 +39,13 @@ function downloadB2D() {
 }
 
 function installB2D(pkg) {
-  console.log('installing...');
-
   try {
+    console.log('installing...');
     child.execSync('open -W ' + pkg);
-    return Promise.resolve();
-  }
-  catch (e) {
-    return Promise.reject(e);
-  }
-}
-
-function initB2D() {
-  console.log('initializing boot2docker vm...');
-
-  try {
+    console.log('initializing boot2docker vm...');
     child.execSync('boot2docker init');
+    console.log('upgrading boot2docker...');
+    child.execSync('boot2docker upgrade');
     return Promise.resolve();
   }
   catch (e) {
