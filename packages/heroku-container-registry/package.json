@@ -14,7 +14,9 @@
   "license": "ISC",
   "dependencies": {
     "download": "4.0.1",
+    "lodash": "3.3.1",
     "open": "0.0.5",
-    "request": "2.53.0"
+    "request": "2.53.0",
+    "underscore": "1.8.2"
   }
 }

@@ -2,7 +2,7 @@ var tmpdir = require('os').tmpdir;
 var path = require('path');
 var fs = require('fs');
 var request = require('request');
-var open = require('open');
+var child = require('child_process');
 
 const BOOT2DOCKER_PKG = 'https://github.com/boot2docker/osx-installer/releases/download/v1.5.0/Boot2Docker-1.5.0.pkg';
 
@@ -15,6 +15,7 @@ module.exports = function(topic) {
     run: function() {
       downloadB2D()
         .then(installB2D)
+        .then(initB2D)
         .catch(onFailure);
     }
   };
@@ -24,16 +25,16 @@ function downloadB2D() {
   console.log('downloading...');
 
   return new Promise(function(resolve, reject) {
-    var outFile = path.join(tmpdir(), 'boot2docker.pkg');
-    var outStream = fs.createWriteStream(outFile);
+    var outPath = path.join(tmpdir(), 'boot2docker.pkg');
+    var outStream = fs.createWriteStream(outPath);
 
     outStream
-      .on('error', reject);
+      .on('error', reject)
+      .on('close', resolve.bind(this, outPath));
 
     request
       .get(BOOT2DOCKER_PKG)
       .on('error', reject)
-      .on('end', resolve.bind(this, outFile))
       .pipe(outStream);
   });
 }
@@ -41,10 +42,25 @@ function downloadB2D() {
 function installB2D(pkg) {
   console.log('installing...');
 
-  return new Promise(function(resolve, reject) {
-    open(pkg);
-    resolve();
-  });
+  try {
+    child.execSync('open -W ' + pkg);
+    return Promise.resolve();
+  }
+  catch (e) {
+    return Promise.reject(e);
+  }
+}
+
+function initB2D() {
+  console.log('initializing boot2docker vm...');
+
+  try {
+    child.execSync('boot2docker init');
+    return Promise.resolve();
+  }
+  catch (e) {
+    return Promise.reject(e);
+  }
 }
 
 function onFailure(err) {
