@@ -1,0 +1,20 @@
+{
+  "name": "docker-plugin",
+  "version": "0.0.1",
+  "description": "Docker plugin for the Heroku CLI",
+  "main": "index.js",
+  "scripts": {},
+  "keywords": [
+    "heroku",
+    "docker",
+    "cli",
+    "heroku-plugin"
+  ],
+  "author": "Hunter Loftis <hunter@hunterloftis.com>",
+  "license": "ISC",
+  "dependencies": {
+    "download": "4.0.1",
+    "open": "0.0.5",
+    "request": "2.53.0"
+  }
+}
