@@ -12,7 +12,7 @@ module.exports = function(topic) {
     command: 'install',
     description: 'installs boot2docker',
     help: `help text for ${topic}:install`,
-    run: function() {
+    run: function(context) {
       downloadB2D()
         .then(installB2D)
         .catch(onFailure);

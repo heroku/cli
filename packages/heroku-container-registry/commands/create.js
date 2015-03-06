@@ -15,13 +15,9 @@ module.exports = function(topic) {
   };
 };
 
-function create(env) {
-  var outPath = path.join(env.cwd, 'Dockerfile');
-  var dockerfileTemplate = fs.readFileSync(TEMPLATE_PATH, { encoding: 'utf8' });
-  var compiled = _.template(dockerfileTemplate);
-
+function create(context) {
   startB2D();
-  buildImage(writeDockerfile());
+  saveId(buildImage(writeDockerfile()));
 
   function startB2D() {
     console.log('starting boot2docker...');
@@ -30,6 +26,9 @@ function create(env) {
 
   function writeDockerfile() {
     console.log('creating Dockerfile...');
+    var outPath = path.join(context.cwd, 'Dockerfile');
+    var dockerfileTemplate = fs.readFileSync(TEMPLATE_PATH, { encoding: 'utf8' });
+    var compiled = _.template(dockerfileTemplate);
     var dockerfile = compiled({ node_engine: '0.10.36' });
     fs.writeFileSync(outPath, dockerfile, { encoding: 'utf8' });
     return outPath;
@@ -37,9 +36,18 @@ function create(env) {
 
   function buildImage(dockerfile) {
     console.log('building image...');
-    var build = child.execSync(`docker build --force-rm ${env.cwd}`, { encoding: 'utf8' });
-    var tokens = build.split(' ');
+    var build = child.execSync(`docker build --force-rm ${context.cwd}`, { encoding: 'utf8' });
+    var tokens = build.trim().split(' ');
     var id = tokens[tokens.length - 1];
-    console.log(`image id: ${id}`);
+    return id;
+  }
+
+  function saveId(id) {
+    console.log('saving state...');
+    var statePath = path.join(context.herokuDir, 'docker.json');
+    var state = JSON.stringify({ id: id });
+    console.log('state:', state);
+    console.log('saving state to:', statePath);
+    fs.writeFileSync(statePath, state, { encoding: 'utf8' });
   }
 }
