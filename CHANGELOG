@@ -1,3 +1,8 @@
+4.10.0
+=====
+Upgraded iojs to 1.4.3
+Added variableArgs for commands
+
 4.9.0
 =====
 Upgraded iojs to 1.4.1
