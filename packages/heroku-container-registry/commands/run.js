@@ -1,6 +1,7 @@
 var child = require('child_process');
 var fs = require('fs');
 var path = require('path');
+var state = require('../lib/state');
 
 module.exports = function(topic) {
   return {
@@ -11,8 +12,8 @@ module.exports = function(topic) {
     variableArgs: true,
     run: function(context) {
       startB2D();
-      var imageId = getImageId(context.herokuDir);
-      runCommand(context.args);
+      var imageId = state.get(context.cwd).imageId;
+      runCommand(imageId, context.args);
     }
   };
 };
@@ -22,13 +23,9 @@ function startB2D() {
   child.execSync('boot2docker start');
 }
 
-function getImageId(dir) {
-  var statePath = path.join(dir, 'docker.json');
-  var state = JSON.parse(fs.readFileSync(statePath, { encoding: 'utf8' }));
-  
-}
-
 function runCommand(imageId, args) {
   var command = args.join(' ');
-  child.execSync(`docker run --rm -it ${imageId} ${command}`);
+  child.execSync(`docker run --rm -it ${imageId} ${command}`, {
+    stdio: [0, 1, 2]
+  });
 }
