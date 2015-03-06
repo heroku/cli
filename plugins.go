@@ -23,8 +23,8 @@ var node = gode.NewClient(AppDir)
 
 func init() {
 	node.Registry = "http://54.173.158.18"
-	node.NodeVersion = "1.4.1"
-	node.NpmVersion = "2.6.0"
+	node.NodeVersion = "1.4.3"
+	node.NpmVersion = "2.6.1"
 }
 
 // SetupNode sets up node and npm in ~/.heroku
