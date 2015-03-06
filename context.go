@@ -4,12 +4,12 @@ package main
 // It contains information about the user's command arguments
 // as well as Heroku information like the auth token and app name (if requested).
 type Context struct {
-	Topic     *Topic            `json:"topic"`
-	Command   *Command          `json:"command"`
-	App       string            `json:"app"`
-	Args      map[string]string `json:"args"`
-	Cwd       string            `json:"cwd"`
-	HerokuDir string            `json:"herokuDir"`
+	Topic     *Topic      `json:"topic"`
+	Command   *Command    `json:"command"`
+	App       string      `json:"app"`
+	Args      interface{} `json:"args"`
+	Cwd       string      `json:"cwd"`
+	HerokuDir string      `json:"herokuDir"`
 	Auth      struct {
 		Username string `json:"username"`
 		Password string `json:"password"`

@@ -11,19 +11,20 @@ import (
 // For example, in the command `heroku apps:create` the command would be `create`.
 // They must have a Topic name that links to a real topic's name.
 type Command struct {
-	Topic       string             `json:"topic"`
-	Command     string             `json:"command,omitempty"`
-	Plugin      string             `json:"plugin"`
-	Usage       string             `json:"usage"`
-	Description string             `json:"description"`
-	Help        string             `json:"help"`
-	FullHelp    string             `json:"fullHelp"`
-	Hidden      bool               `json:"hidden"`
-	NeedsApp    bool               `json:"needsApp"`
-	NeedsAuth   bool               `json:"needsAuth"`
-	Args        []Arg              `json:"args"`
-	Flags       []Flag             `json:"flags"`
-	Run         func(ctx *Context) `json:"-"`
+	Topic        string             `json:"topic"`
+	Command      string             `json:"command,omitempty"`
+	Plugin       string             `json:"plugin"`
+	Usage        string             `json:"usage"`
+	Description  string             `json:"description"`
+	Help         string             `json:"help"`
+	FullHelp     string             `json:"fullHelp"`
+	Hidden       bool               `json:"hidden"`
+	NeedsApp     bool               `json:"needsApp"`
+	NeedsAuth    bool               `json:"needsAuth"`
+	VariableArgs bool               `json:"variableArgs"`
+	Args         []Arg              `json:"args"`
+	Flags        []Flag             `json:"flags"`
+	Run          func(ctx *Context) `json:"-"`
 }
 
 func (c *Command) String() string {
@@ -143,8 +144,7 @@ var commandsListCmd = &Command{
 	Description: "list all commands",
 	Flags:       []Flag{{Name: "json"}},
 	Run: func(ctx *Context) {
-		if ctx.Args["json"] != "True" {
-			// TODO: remove this and make json default
+		if ctx.Args.(map[string]string)["json"] != "True" {
 			for _, command := range cli.Commands {
 				if command.Command == "" {
 					Printf("%s\n", command.Topic)
