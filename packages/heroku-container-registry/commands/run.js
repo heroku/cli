@@ -13,7 +13,7 @@ module.exports = function(topic) {
     run: function(context) {
       startB2D();
       var imageId = state.get(context.cwd).imageId;
-      runCommand(imageId, context.args);
+      runCommand(imageId, context.cwd, context.args);
     }
   };
 };
@@ -23,9 +23,10 @@ function startB2D() {
   child.execSync('boot2docker start');
 }
 
-function runCommand(imageId, args) {
+function runCommand(imageId, cwd, args) {
   var command = args.join(' ');
-  child.execSync(`docker run --rm -it ${imageId} ${command}`, {
+  child.execSync(`docker run -v ${cwd}:/app/src -w /app/src --rm -it ${imageId} ${command}`, {
     stdio: [0, 1, 2]
   });
+
 }
