@@ -1,6 +1,9 @@
 var fs = require('fs');
 var path = require('path');
 var _ = require('lodash');
+var mkdirp = require('mkdirp');
+
+const STATE_PATH = '.heroku/docker.json';
 
 module.exports = {
   set: setState,
@@ -8,16 +11,16 @@ module.exports = {
 };
 
 function setState(stateDir, newState) {
-  var state = getState(stateDir);
-  var statePath = path.join(stateDir, 'docker.json');
-  _.extend(state, newState);
-  fs.writeFileSync(statePath, JSON.stringify(state), { encoding: 'utf8' });
+  var stateFile = path.join(stateDir, STATE_PATH);
+  mkdirp.sync(path.dirname(stateFile));
+  var state = _.extend(getState(stateDir), newState);
+  fs.writeFileSync(stateFile, JSON.stringify(state), { encoding: 'utf8' });
 }
 
 function getState(stateDir) {
-  var statePath = path.join(stateDir, 'docker.json');
+  var stateFile = path.join(stateDir, STATE_PATH);
   try {
-    return JSON.parse(fs.readFileSync(statePath, { encoding: 'utf8' }));
+    return JSON.parse(fs.readFileSync(stateFile, { encoding: 'utf8' }));
   }
   catch (e) {
     return {};
