@@ -33,7 +33,11 @@ func (cli *Cli) Run(args []string) (err error) {
 	if ctx.Command == nil {
 		return ErrHelp
 	}
-	ctx.Args, ctx.App, err = parseArgs(ctx.Command, args[2:])
+	if ctx.Command.VariableArgs {
+		ctx.Args, ctx.App, err = parseVarArgs(ctx.Command, args[2:])
+	} else {
+		ctx.Args, ctx.App, err = parseArgs(ctx.Command, args[2:])
+	}
 	if err != nil {
 		return err
 	}
@@ -70,13 +74,33 @@ func (cli *Cli) ParseCmd(cmd string) (topic *Topic, command *Command) {
 	return topic, cli.Commands.ByTopicAndCommand(tc[0], "")
 }
 
+func parseVarArgs(command *Command, args []string) (result []string, appName string, err error) {
+	result = args
+	parseFlags := true
+	for i := 0; i < len(args); i++ {
+		switch {
+		case parseFlags && (args[i] == "help" || args[i] == "--help" || args[i] == "-h"):
+			return nil, "", ErrHelp
+		case args[i] == "--":
+			parseFlags = false
+		case args[i] == "-a" || args[i] == "--app":
+			i++
+			if len(args) == i {
+				return nil, "", errors.New("Must specify app name")
+			}
+			appName = args[i]
+		}
+	}
+	return result, appName, nil
+}
+
 func parseArgs(command *Command, args []string) (result map[string]string, appName string, err error) {
 	result = map[string]string{}
 	numArgs := 0
 	parseFlags := true
 	for i := 0; i < len(args); i++ {
 		switch {
-		case args[i] == "help" || args[i] == "--help" || args[i] == "-h":
+		case parseFlags && (args[i] == "help" || args[i] == "--help" || args[i] == "-h"):
 			return nil, "", ErrHelp
 		case args[i] == "--":
 			parseFlags = false

@@ -68,7 +68,7 @@ var pluginsInstallCmd = &Command{
   $ heroku plugins:install dickeyxxx/heroku-production-status`,
 
 	Run: func(ctx *Context) {
-		name := ctx.Args["name"]
+		name := ctx.Args.(map[string]string)["name"]
 		if len(name) == 0 {
 			Errln("Must specify a plugin name")
 			return
@@ -99,7 +99,7 @@ var pluginsUninstallCmd = &Command{
   $ heroku plugins:uninstall heroku-production-status`,
 
 	Run: func(ctx *Context) {
-		name := ctx.Args["name"]
+		name := ctx.Args.(map[string]string)["name"]
 		Errf("Uninstalling plugin %s... ", name)
 		if err := node.RemovePackage(name); err != nil {
 			panic(err)
