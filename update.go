@@ -57,18 +57,26 @@ func init() {
 // UpdateIfNeeded checks for and performs an autoupdate if there is a new version out.
 func UpdateIfNeeded() {
 	lock := getUpdateLock()
-	defer lock.Unlock()
 	if !updateNeeded() {
+		lock.Unlock()
 		return
 	}
-	defer touchAutoupdateFile()
 	manifest := getUpdateManifest(Channel)
-	node.UpdatePackages()
+	doneUpdatingPlugins := make(chan bool)
+	go func() {
+		node.UpdatePackages()
+		doneUpdatingPlugins <- true
+	}()
 	if manifest.Version == Version {
+		<-doneUpdatingPlugins
+		touchAutoupdateFile()
+		lock.Unlock()
 		return
 	}
 	if !updatable() {
 		Errf("Out of date: You are running %s but %s is out.\n", Version, manifest.Version)
+		<-doneUpdatingPlugins
+		lock.Unlock()
 		return
 	}
 	// Leave out updating text until heroku-cli is used in place of ruby cli
@@ -76,6 +84,7 @@ func UpdateIfNeeded() {
 	//Errf("Updating to %s... ", manifest.Version)
 	build := manifest.Builds[runtime.GOOS][runtime.GOARCH]
 	update(build.URL, build.Sha1)
+	<-doneUpdatingPlugins
 	//Errln("done")
 
 	// these are deferred but won't be called because of os.Exit
