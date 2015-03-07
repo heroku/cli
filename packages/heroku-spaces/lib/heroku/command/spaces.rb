@@ -17,7 +17,7 @@ class Heroku::Command::Spaces < Heroku::Command::Base
     end
 
     display_header 'Spaces'
-    cols = %w(Name Organization State)
+    cols = ['Name', 'Organization', 'State', 'Created At']
     display_table(@spaces.map{|s| for_display(s)}, cols, cols)
   end
 
@@ -107,14 +107,15 @@ class Heroku::Command::Spaces < Heroku::Command::Base
 
   def for_display(space)
     {
-      'Name' => space['name'],
+      'Name'         => space['name'],
       'Organization' => space['organization']['name'],
-      'State' => space['state']
+      'State'        => space['state'],
+      'Created At'   => time_ago(space['created_at']),
     }
   end
 
   def style(space)
     styled_header(space['name'])
-    styled_hash(for_display(space), ['Organization', 'State'])
+    styled_hash(for_display(space), ['Organization', 'State', 'Created At'])
   end
 end
