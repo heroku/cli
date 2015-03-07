@@ -1,0 +1,6 @@
+FROM <%= runImageId %>
+
+ONBUILD COPY . /app/src
+ONBUILD RUN npm install
+
+CMD [ "npm", "start" ]

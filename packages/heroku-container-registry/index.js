@@ -8,8 +8,8 @@ module.exports = {
   commands: [
     require('./commands/install')(TOPIC),
     require('./commands/create')(TOPIC),
-    require('./commands/build')(TOPIC),
     require('./commands/run')(TOPIC),
+    require('./commands/build')(TOPIC),
     require('./commands/release')(TOPIC)
   ]
 };
