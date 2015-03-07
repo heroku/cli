@@ -61,12 +61,12 @@ func UpdateIfNeeded() {
 		lock.Unlock()
 		return
 	}
-	manifest := getUpdateManifest(Channel)
 	doneUpdatingPlugins := make(chan bool)
 	go func() {
 		node.UpdatePackages()
 		doneUpdatingPlugins <- true
 	}()
+	manifest := getUpdateManifest(Channel)
 	if manifest.Version == Version {
 		<-doneUpdatingPlugins
 		touchAutoupdateFile()
