@@ -80,7 +80,7 @@ class Heroku::Command::Spaces < Heroku::Command::Base
     require_argument! :space
     validate_arguments!
 
-    confirm
+    return unless confirm
     action("Destroying space #{options[:space]}") do
       @space = api.delete_space(options[:space]).body
     end
