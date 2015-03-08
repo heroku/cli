@@ -6,8 +6,7 @@ var uuid = require('node-uuid');
 
 module.exports = {
   startB2D: startB2D,
-  buildImageFromTemplate: buildImageFromTemplate,
-  startImage: startImage
+  buildImageFromTemplate: buildImageFromTemplate
 };
 
 function startB2D() {
@@ -35,17 +34,10 @@ function writeDockerfile(dir, templatePath, values) {
 }
 
 function buildImage(dir, dockerfile) {
-  console.log('building image...');
+  console.log('building image (this can take a while)...');
   var build = child.execSync(`docker build --force-rm --file="${dockerfile}" ${dir}`, { encoding: 'utf8' });
   var tokens = build.trim().split(' ');
   var id = tokens[tokens.length - 1];
   console.log(build);
   return id;
-}
-
-function startImage(imageId) {
-  console.log('starting image...');
-  child.execSync(`docker run --rm -it ${imageId}`, {
-    stdio: [0, 1, 2]
-  });
 }

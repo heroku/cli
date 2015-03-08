@@ -7,6 +7,7 @@ WORKDIR /app
 ENV HOME /app
 ENV PATH /app/heroku/node/bin:$PATH
 ENV NODE_ENGINE <%= node_engine %>
+ENV PORT 3000
 
 RUN mkdir -p /app/heroku
 RUN mkdir -p /app/src
@@ -17,3 +18,4 @@ WORKDIR /app/src
 
 ONBUILD COPY . /app/src
 ONBUILD RUN npm install
+ONBUILD EXPOSE 3000

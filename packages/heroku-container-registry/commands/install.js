@@ -15,13 +15,14 @@ module.exports = function(topic) {
     run: function(context) {
       downloadB2D()
         .then(installB2D)
+        .then(forwardPorts)
         .catch(onFailure);
     }
   };
 };
 
 function downloadB2D() {
-  console.log('downloading...');
+  console.log('downloading (this can take a while)...');
 
   return new Promise(function(resolve, reject) {
     var outPath = path.join(tmpdir(), 'boot2docker.pkg');
@@ -46,6 +47,17 @@ function installB2D(pkg) {
     child.execSync('boot2docker init');
     console.log('upgrading boot2docker...');
     child.execSync('boot2docker upgrade');
+    return Promise.resolve();
+  }
+  catch (e) {
+    return Promise.reject(e);
+  }
+}
+
+function forwardPorts() {
+  console.log('forwarding port 3000...');
+  try {
+    child.execSync(`VBoxManage modifyvm "boot2docker-vm" --natpf1 "tcp-port3000,tcp,,3000,,3000";`);
     return Promise.resolve();
   }
   catch (e) {
