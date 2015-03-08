@@ -9,7 +9,7 @@ module.exports = {
     require('./commands/install')(TOPIC),
     require('./commands/create')(TOPIC),
     require('./commands/run')(TOPIC),
-    require('./commands/build')(TOPIC),
+    require('./commands/start')(TOPIC),
     require('./commands/release')(TOPIC)
   ]
 };

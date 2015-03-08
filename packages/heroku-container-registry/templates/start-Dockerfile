@@ -1,0 +1,3 @@
+FROM <%= runImageId %>
+
+CMD [ "npm", "start" ]
