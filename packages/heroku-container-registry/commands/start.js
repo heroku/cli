@@ -19,6 +19,7 @@ module.exports = function(topic) {
       });
       state.set(context.cwd, { startImageId: startImageId });
       startImage(startImageId);
+      // TODO: create profile.d script for things like PATH to node/npm bins
     }
   };
 };

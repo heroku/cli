@@ -26,16 +26,13 @@ function downloadB2D() {
 
   return new Promise(function(resolve, reject) {
     var outPath = path.join(tmpdir(), 'boot2docker.pkg');
-    var outStream = fs.createWriteStream(outPath);
-
-    outStream
-      .on('error', reject)
-      .on('close', resolve.bind(this, outPath));
 
     request
       .get(BOOT2DOCKER_PKG)
       .on('error', reject)
-      .pipe(outStream);
+      .pipe(fs.createWriteStream(outPath))
+      .on('error', reject)
+      .on('finish', resolve.bind(this, outPath));
   });
 }
 
