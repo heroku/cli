@@ -22,7 +22,7 @@ module.exports = function(topic) {
 function runCommand(imageId, cwd, args) {
   console.log('running command...');
   var command = args.join(' ');
-  child.execSync(`docker run -v -p 3000:3000 ${cwd}:/app/src -w /app/src --rm -it ${imageId} ${command}`, {
+  child.execSync(`docker run -p 3000:3000 -v ${cwd}:/app/src -w /app/src --rm -it ${imageId} ${command}`, {
     stdio: [0, 1, 2]
   });
 }

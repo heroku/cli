@@ -8,6 +8,10 @@ var state = require('../lib/state');
 var docker = require('../lib/docker');
 var agent = require('superagent');
 
+process.on('uncaughtException', function(err) {
+  console.log('err:', err.stack);
+});
+
 module.exports = function(topic) {
   return {
     topic: topic,
@@ -38,7 +42,7 @@ function release(context) {
     try {
       var slugPath = os.tmpdir();
       var imageId = state.get(context.cwd).startImageId;
-      var containerId = child.execSync(`docker run -d ${imageId} tar cfz /tmp/slug.tgz --exclude='.*' /app`, {
+      var containerId = child.execSync(`docker run -d ${imageId} tar cfvz /tmp/slug.tgz -C / --exclude=.git --exclude=.heroku ./app`, {
         encoding: 'utf8'
       }).trim();
       child.execSync(`docker wait ${containerId}`);
@@ -52,6 +56,7 @@ function release(context) {
   }
 
   function createRemoteSlug(slugPath) {
+    console.log('local slug path:', slugPath);
     console.log('creating remote slug...');
     var slugInfo = app.slugs().create({
       process_types: {
@@ -65,38 +70,28 @@ function release(context) {
     console.log('uploading slug...');
     var slugPath = slug[0];
     var slugInfo = slug[1];
-
-    console.log('slugPath:', slugPath);
-    console.log('slugUrl:', slugInfo.blob.url);
+    var size = fs.statSync(slugPath).size;
 
     return new Promise(function(resolve, reject) {
-      var contentType = 'binary/octet-stream';
-      console.log('content-type:', contentType);
       var outStream = request({
         method: 'PUT',
         url: slugInfo.blob.url,
         headers: {
-          'content-type': contentType
+          'content-type': '',
+          'content-length': size
         }
       });
 
       fs.createReadStream(slugPath)
         .on('error', reject)
         .pipe(outStream)
-        .on('response', function(res) {
-          console.log('response from s3:', res.statusCode, res.statusMessage);
-        })
-        .on('close', function() {
-          console.log('s3 closed');
-        })
         .on('error', reject)
-        .on('finish', resolve.bind(this, slugInfo.id));
+        .on('response', resolve.bind(this, slugInfo.id));
     });
   }
 
-  function releaseSlug(id, response) {
+  function releaseSlug(id) {
     console.log('releasing slug...');
-    process.exit();
     return app.releases().create({
       slug: id
     });
