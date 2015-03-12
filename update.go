@@ -68,7 +68,11 @@ func UpdateIfNeeded() {
 	}()
 	manifest := getUpdateManifest(Channel)
 	if manifest.Version == Version {
-		<-doneUpdatingPlugins
+		select {
+		case <-time.After(time.Second * 30):
+			Errln("Timed out while updating")
+		case <-doneUpdatingPlugins:
+		}
 		touchAutoupdateFile()
 		lock.Unlock()
 		return
@@ -84,7 +88,11 @@ func UpdateIfNeeded() {
 	//Errf("Updating to %s... ", manifest.Version)
 	build := manifest.Builds[runtime.GOOS][runtime.GOARCH]
 	update(build.URL, build.Sha1)
-	<-doneUpdatingPlugins
+	select {
+	case <-time.After(time.Second * 30):
+		Errln("Timed out while updating")
+	case <-doneUpdatingPlugins:
+	}
 	//Errln("done")
 
 	// these are deferred but won't be called because of os.Exit
