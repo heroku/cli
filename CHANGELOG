@@ -1,3 +1,9 @@
+4.11.0
+=====
+Moved npm server to elastic IP
+Updated iojs to 1.5.1
+Added timeout for plugin updating
+
 4.10.1
 =====
 Improved updating performance
