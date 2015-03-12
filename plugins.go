@@ -22,7 +22,7 @@ type Plugin struct {
 var node = gode.NewClient(AppDir)
 
 func init() {
-	node.Registry = "http://54.152.183.160"
+	node.Registry = "http://174.129.255.150:4873"
 	node.NodeVersion = "1.5.1"
 	node.NpmVersion = "2.7.0"
 }
