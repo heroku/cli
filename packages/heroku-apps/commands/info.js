@@ -4,8 +4,13 @@ let co = require('co');
 let Heroku = require('heroku-client');
 let filesize = require('filesize');
 let _ = require('lodash');
+let S = require('string');
 
-function line(name, value) {
+function shellLine(name, value) {
+  return `${S(name).slugify()}=${value}`;
+}
+
+function outputLine(name, value) {
   if (name) {
     name = name + ':';
   }
@@ -15,10 +20,16 @@ function line(name, value) {
 module.exports = {
   topic: '_apps',
   command: 'info',
+  description: 'show detailed app information',
   needsApp: true,
   needsAuth: true,
+  flags: [{name: 'shell', char: 's', description: 'output more shell friendly key/value pairs'}],
   run: function (context) {
     co(function *() {
+      let line = outputLine;
+      if (context.args.shell) {
+        line = shellLine;
+      }
       let heroku = new Heroku({token: context.auth.password});
       console.log(`=== ${context.app}`);
       let info = yield {
@@ -34,15 +45,19 @@ module.exports = {
       console.log(line('Git URL', info.app.git_url));
       console.log(line('Owner', info.app.owner.email));
       console.log(line('Region', info.app.region.name));
-      console.log(line('Repo Size', filesize(info.app.repo_size, {round: 0})));
-      console.log(line('Slug Size', filesize(info.app.slug_size, {round: 0})));
+      if (context.args.shell) {
+        console.log(line('Repo Size', info.app.repo_size));
+        console.log(line('Slug Size', info.app.slug_size));
+      } else {
+        console.log(line('Repo Size', filesize(info.app.repo_size, {round: 0})));
+        console.log(line('Slug Size', filesize(info.app.slug_size, {round: 0})));
+      }
       console.log(line('Stack', info.app.stack.name));
       console.log(line('Web URL', info.app.web_url));
-      console.log(line('Dynos', ''));
+      console.log(line('Dynos', info.dynos.length));
       _.forOwn(_.countBy(info.dynos, 'type'), function (count, type) {
         console.log(line(`  ${type}`, count));
       });
-      console.log(line('  total', info.dynos.length));
     }).catch(function (err) {
       console.error(err.stack);
     });

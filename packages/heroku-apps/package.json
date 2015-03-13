@@ -24,7 +24,8 @@
     "filesize": "^3.1.2",
     "heroku-client": "^1.9.1",
     "lodash": "^3.5.0",
-    "sprintf-js": "^1.0.2"
+    "sprintf-js": "^1.0.2",
+    "string": "^3.0.0"
   },
   "devDependencies": {
     "jshint": "*"
