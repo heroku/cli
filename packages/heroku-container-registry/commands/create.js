@@ -15,6 +15,7 @@ module.exports = function(topic) {
     help: `help text for ${topic}:create`,
     run: function(context) {
       docker.startB2D();
+      // TODO: parse package.json, look for engines.node, use that or default to 0.10.36
       var imageId = docker.buildImageFromTemplate(context.cwd, TEMPLATE_PATH, {
         node_engine: '0.10.36'
       });
