@@ -1,5 +1,5 @@
 {
-  "name": "docker-plugin",
+  "name": "heroku-docker",
   "version": "0.0.1",
   "description": "Docker plugin for the Heroku CLI",
   "main": "index.js",

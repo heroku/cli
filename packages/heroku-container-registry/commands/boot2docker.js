@@ -9,7 +9,7 @@ const BOOT2DOCKER_PKG = 'https://github.com/boot2docker/osx-installer/releases/d
 module.exports = function(topic) {
   return {
     topic: topic,
-    command: 'install',
+    command: 'boot2docker',
     description: 'installs boot2docker',
     help: `help text for ${topic}:install`,
     run: function(context) {
