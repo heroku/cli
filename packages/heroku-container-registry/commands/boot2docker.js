@@ -55,7 +55,7 @@ function installB2D(pkg) {
 function forwardPorts() {
   console.log('forwarding port 3000...');
   try {
-    child.execSync(`VBoxManage modifyvm "boot2docker-vm" --natpf1 "tcp-port3000,tcp,,3000,,3000"; || true`);
+    child.execSync(`VBoxManage modifyvm "boot2docker-vm" --natpf1 "tcp-port3000,tcp,,3000,,3000" || true`);
     return Promise.resolve();
   }
   catch (e) {
