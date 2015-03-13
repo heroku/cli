@@ -21,7 +21,10 @@
   "homepage": "https://github.com/heroku/heroku-apps",
   "dependencies": {
     "co": "^4.4.0",
-    "heroku-client": "^1.9.1"
+    "filesize": "^3.1.2",
+    "heroku-client": "^1.9.1",
+    "lodash": "^3.5.0",
+    "sprintf-js": "^1.0.2"
   },
   "devDependencies": {
     "jshint": "*"
