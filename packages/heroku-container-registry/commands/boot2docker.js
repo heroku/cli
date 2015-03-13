@@ -16,6 +16,7 @@ module.exports = function(topic) {
       downloadB2D()
         .then(installB2D)
         .then(forwardPorts)
+        .then(showMessage)
         .catch(onFailure);
     }
   };
@@ -54,12 +55,19 @@ function installB2D(pkg) {
 function forwardPorts() {
   console.log('forwarding port 3000...');
   try {
-    child.execSync(`VBoxManage modifyvm "boot2docker-vm" --natpf1 "tcp-port3000,tcp,,3000,,3000";`);
+    child.execSync(`VBoxManage modifyvm "boot2docker-vm" --natpf1 "tcp-port3000,tcp,,3000,,3000"; || true`);
     return Promise.resolve();
   }
   catch (e) {
     return Promise.reject(e);
   }
+}
+
+function showMessage() {
+  console.log('Remember to always start boot2docker before using this plugin:\n');
+  console.log('boot2docker start');
+  console.log('$(boot2docker shellinit)');
+  return Promise.resolve();
 }
 
 function onFailure(err) {

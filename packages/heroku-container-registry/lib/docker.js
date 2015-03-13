@@ -10,9 +10,8 @@ module.exports = {
 };
 
 function startB2D() {
-  console.log('starting boot2docker...');
-  child.execSync('boot2docker start');
-  child.execSync('$(boot2docker shellinit)');
+  // console.log('starting boot2docker...');
+  // child.execSync('boot2docker start');
 }
 
 function buildImageFromTemplate(dir, templatePath, values) {

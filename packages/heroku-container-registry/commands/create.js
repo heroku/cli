@@ -11,7 +11,7 @@ module.exports = function(topic) {
   return {
     topic: topic,
     command: 'create',
-    description: 'creates a cedar-14 based Dockerfile',
+    description: 'creates a local development environment',
     help: `help text for ${topic}:create`,
     run: function(context) {
       docker.startB2D();
