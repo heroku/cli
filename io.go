@@ -7,6 +7,8 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/mgutz/ansi"
 )
 
 // Used to mock stdout for testing
@@ -20,6 +22,7 @@ var ErrLogPath = filepath.Join(AppDir, "error.log")
 var errLogger = newLogger(ErrLogPath)
 var exitFn = os.Exit
 var debugging = isDebugging()
+var red = ansi.ColorFunc("red")
 
 func init() {
 	Stdout = os.Stdout
@@ -100,6 +103,11 @@ func Logf(format string, a ...interface{}) {
 	if debugging {
 		fmt.Fprintf(Stderr, format, a...)
 	}
+}
+
+// PrintError is a helper that prints out formatted error messages in red text
+func PrintError(e error) {
+	Errln(red(" !   "), red(e.Error()))
 }
 
 func isDebugging() bool {
