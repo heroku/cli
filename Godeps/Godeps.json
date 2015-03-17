@@ -1,6 +1,6 @@
 {
 	"ImportPath": "github.com/heroku/heroku-cli",
-	"GoVersion": "go1.4.1",
+	"GoVersion": "go1.4.2",
 	"Deps": [
 		{
 			"ImportPath": "github.com/bgentry/go-netrc/netrc",
@@ -8,8 +8,8 @@
 		},
 		{
 			"ImportPath": "github.com/dickeyxxx/gode",
-			"Comment": "v2.1.2",
-			"Rev": "68a209ba59b8050e22821132701da6206eb61ab2"
+			"Comment": "v2.2.0",
+			"Rev": "501bd980a0ca2f8f2eb7bb98d1da66f168125710"
 		},
 		{
 			"ImportPath": "github.com/jtolds/gls",
