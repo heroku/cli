@@ -150,7 +150,7 @@ type manifest struct {
 }
 
 func getUpdateManifest(channel string) manifest {
-	res, err := http.Get("http://d1gvo455cekpjp.cloudfront.net/" + channel + "/manifest.json")
+	res, err := http.Get("https://d1gvo455cekpjp.cloudfront.net/" + channel + "/manifest.json")
 	if err != nil {
 		panic(err)
 	}
