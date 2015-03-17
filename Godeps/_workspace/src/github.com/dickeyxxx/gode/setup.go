@@ -29,7 +29,7 @@ func (c *Client) Setup() error {
 }
 
 func (c *Client) setupUnix() error {
-	err := os.MkdirAll(filepath.Join(c.RootPath, "node_modules"), 0777)
+	err := os.MkdirAll(filepath.Join(c.RootPath, "node_modules"), 0755)
 	if err != nil {
 		return err
 	}
@@ -54,7 +54,7 @@ func (c *Client) setupWindows() error {
 }
 
 func downloadFile(path, url string) error {
-	if err := os.MkdirAll(filepath.Dir(path), 0777); err != nil {
+	if err := os.MkdirAll(filepath.Dir(path), 0755); err != nil {
 		return err
 	}
 	resp, err := http.Get(url)
@@ -74,7 +74,7 @@ func downloadFile(path, url string) error {
 func (c *Client) downloadNpm() error {
 	modulesDir := filepath.Join(c.RootPath, c.nodeBase(), "lib", "node_modules")
 	zipfile := filepath.Join(modulesDir, "npm.zip")
-	if err := os.MkdirAll(modulesDir, 0777); err != nil {
+	if err := os.MkdirAll(modulesDir, 0755); err != nil {
 		return err
 	}
 	err := downloadFile(zipfile, c.npmURL())

@@ -10,7 +10,7 @@ func TestSetup(t *testing.T) {
 	if testing.Short() {
 		t.Skip("skipping in short mode")
 	}
-	err := os.MkdirAll("tmp", 0777)
+	err := os.MkdirAll("tmp", 0755)
 	must(err)
 	dir, err := ioutil.TempDir("tmp", "gode")
 	must(err)
@@ -26,7 +26,7 @@ func TestWindowsSetup(t *testing.T) {
 	if testing.Short() {
 		t.Skip("skipping in short mode")
 	}
-	err := os.MkdirAll("tmp", 0777)
+	err := os.MkdirAll("tmp", 0755)
 	must(err)
 	dir, err := ioutil.TempDir("tmp", "gode")
 	must(err)
