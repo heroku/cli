@@ -1,3 +1,7 @@
+2.2.1 2015-03-19
+----------------
+Set npm auto-auth to false
+
 2.2.0 2015-03-17
 ----------------
 Set npm cache folder inside Client.RootPath
