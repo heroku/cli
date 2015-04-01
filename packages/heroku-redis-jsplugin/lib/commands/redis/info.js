@@ -21,14 +21,23 @@ module.exports = {
       let databases = yield addons.map(function (addon) {
         return {
           addon: addon,
-          redis: api.request(context, addon.name)
+          redis: api.request(context, addon.name).catch(function (err) {
+            if (err.statusCode !== 404) {
+              throw(err);
+            }
+            return null;
+          })
         };
       });
+
       // print out the info of the addon and redis db info
-      databases.forEach(function (db) {
-        console.log(`=== ${db.addon.config_vars[0]}`);
-        console.log(columnify(db.redis.info, { showHeaders: false }));
-      });
+      for (let db of databases) {
+          if (db.redis === null) {
+            continue
+          }
+          console.log(`=== ${db.addon.config_vars[0]}`);
+          console.log(columnify(db.redis.info, { showHeaders: false }));
+      }
     }).catch(function (err) {
       console.error(err.stack);
       process.exit(1);
