@@ -1,0 +1,35 @@
+{
+  "name": "heroku-access",
+  "version": "0.0.1",
+  "description": "CLI to manage access in Heroku Applications",
+  "main": "index.js",
+  "author": "Raul Barroso @raulb",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/heroku/heroku-access"
+  },
+  "bugs": {
+    "url": "https://github.com/heroku/heroku-access/issues"
+  },
+  "keywords": [
+    "heroku-plugin"
+  ],
+  "license": "ISC",
+  "homepage": "https://github.com/heroku/heroku-access",
+  "scripts": {
+    "test": "jshint . && mocha"
+  },
+  "dependencies": {
+    "co": "*",
+    "heroku-client": "*",
+    "columnify": "*",
+    "lodash": "*"
+  },
+  "devDependencies": {
+    "chai": "*",
+    "jshint": "*",
+    "mocha": "*",
+    "nock": "*",
+    "netrc": "*"
+  }
+}
