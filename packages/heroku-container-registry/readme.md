@@ -45,13 +45,20 @@ echo 'console.log("Hello, world!");' > server.js
 Now run it in your development container:
 
 ```
-heroku docker:start
+heroku docker:run node server.js
 ```
 
 # Upgrade to an actual server
 
+Create a package.json with `npm init` (keep all default settings):
+
 ```
-heroku docker:run npm init # keep all defaults
+heroku docker:run npm init
+```
+
+Install express:
+
+```
 heroku docker:run npm install --save express
 ```
 
@@ -75,8 +82,9 @@ function onListen(err) {
 
 ```
 heroku docker:start
-open http://localhost:3000
 ```
+
+Now open [http://localhost:3000](http://localhost:3000).
 
 # Release your app to Heroku
 
