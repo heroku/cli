@@ -22,3 +22,4 @@ WORKDIR /app/src
 ONBUILD COPY . /app/src
 ONBUILD RUN npm install
 ONBUILD EXPOSE 3000
+ONBUILD CMD [ "npm", "start" ]

@@ -1,4 +1,5 @@
 link:
+	mkdir -p ~/.heroku/node_modules
 	ln -s "$(shell pwd)" ~/.heroku/node_modules/
 
 unlink:

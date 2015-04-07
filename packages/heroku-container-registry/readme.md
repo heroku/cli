@@ -6,7 +6,7 @@ Heroku CLI Docker Plugin
 heroku plugins:install heroku-docker
 ```
 
-# Set up boot2docker
+# (Optional) Set up boot2docker
 
 ```
 heroku docker:boot2docker
@@ -19,7 +19,13 @@ $(boot2docker shellinit)
 ```
 mkdir myproject
 cd myproject
-heroku docker:create
+heroku docker:create --template node
+```
+
+This creates the default node Dockerfile:
+
+```
+cat Dockerfile
 ```
 
 Ensure the environment works:
@@ -30,7 +36,7 @@ heroku docker:run node --version
 
 # Start with hello world
 
-In your favorite text editor, create a 1-line server.js file:
+Echo out a simple server.js:
 
 ```
 echo 'console.log("Hello, world!");' > server.js
@@ -39,7 +45,7 @@ echo 'console.log("Hello, world!");' > server.js
 Now run it in your development container:
 
 ```
-heroku docker:run node server.js
+heroku docker:start
 ```
 
 # Upgrade to an actual server
@@ -49,7 +55,7 @@ heroku docker:run npm init # keep all defaults
 heroku docker:run npm install --save express
 ```
 
-In server.js:
+Now replace server.js with:
 
 ```js
 var PORT = process.env.PORT || 3000;
@@ -65,14 +71,7 @@ function onListen(err) {
 }
 ```
 
-Now connect to the server in your development container:
-
-```
-heroku docker:run node server.js
-open http://localhost:3000
-```
-
-# Simulate a Heroku build, locally
+# Simulate Heroku, locally
 
 ```
 heroku docker:start

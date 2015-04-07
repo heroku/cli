@@ -64,6 +64,7 @@ function forwardPorts() {
 }
 
 function showMessage() {
+  console.log('\n\n');
   console.log('Remember to always start boot2docker before using this plugin:\n');
   console.log('boot2docker start');
   console.log('$(boot2docker shellinit)');

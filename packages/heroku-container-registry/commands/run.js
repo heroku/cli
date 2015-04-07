@@ -12,7 +12,6 @@ module.exports = function(topic) {
     help: `help text for ${topic}:run`,
     variableArgs: true,
     run: function(context) {
-      docker.startB2D();
       var imageId = state.get(context.cwd).runImageId;
       runCommand(imageId, context.cwd, context.args);
     }
@@ -20,7 +19,6 @@ module.exports = function(topic) {
 };
 
 function runCommand(imageId, cwd, args) {
-  console.log('running command...');
   var command = args.join(' ');
   child.execSync(`docker run -p 3000:3000 -v ${cwd}:/app/src -w /app/src --rm -it ${imageId} ${command} || true`, {
     stdio: [0, 1, 2]

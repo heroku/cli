@@ -5,31 +5,26 @@ var _ = require('lodash');
 var uuid = require('node-uuid');
 
 module.exports = {
-  startB2D: startB2D,
-  buildImageFromTemplate: buildImageFromTemplate
+  buildEphemeralImage: buildEphemeralImage,
+  writeDockerfile: writeDockerfile,
+  buildImage: buildImage
 };
 
-function startB2D() {
-  // console.log('starting boot2docker...');
-  // child.execSync('boot2docker start');
-}
-
-function buildImageFromTemplate(dir, templatePath, values) {
-  var dockerfile = writeDockerfile(dir, templatePath, values);
+function buildEphemeralImage(dir, contents) {
+  var filename = `Dockerfile-${uuid.v1()}`;
+  var dockerfile = path.join(dir, filename);
+  fs.writeFileSync(dockerfile, contents, { encoding: 'utf8' });
   var imageId = buildImage(dir, dockerfile);
   fs.unlinkSync(dockerfile);
   return imageId;
 }
 
-function writeDockerfile(dir, templatePath, values) {
+function writeDockerfile(filePath, templatePath, values) {
   console.log('creating Dockerfile...');
-  var filename = `Dockerfile-${uuid.v1()}`;
   var template = fs.readFileSync(templatePath, { encoding: 'utf8' });
   var compiled = _.template(template);
   var dockerfile = compiled(values || {});
-  var filePath = path.join(dir, filename);
   fs.writeFileSync(filePath, dockerfile, { encoding: 'utf8' });
-  return filePath;
 }
 
 function buildImage(dir, dockerfile) {

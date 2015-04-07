@@ -28,8 +28,6 @@ function release(context) {
   var heroku = new Heroku({ token: context.auth.password });
   var app = heroku.apps(context.app);
 
-  docker.startB2D();
-
   app.info()
     .then(createLocalSlug)
     .then(createRemoteSlug)

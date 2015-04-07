@@ -12,14 +12,11 @@ module.exports = function(topic) {
     description: 'builds a Node.js app based on the cedar-14 image',
     help: `help text for ${topic}:start`,
     run: function(context) {
-      docker.startB2D();
       var runImageId = state.get(context.cwd).runImageId;
-      var startImageId = docker.buildImageFromTemplate(context.cwd, TEMPLATE_PATH, {
-        runImageId: runImageId
-      });
+      var startDockerfile = `FROM ${runImageId}`;
+      var startImageId = docker.buildEphemeralImage(context.cwd, startDockerfile);
       state.set(context.cwd, { startImageId: startImageId });
       startImage(startImageId);
-      // TODO: create profile.d script for things like PATH to node/npm bins
     }
   };
 };
