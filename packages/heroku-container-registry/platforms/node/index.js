@@ -13,9 +13,16 @@ module.exports = {
     var templatePath = path.resolve(__dirname, 'Dockerfile.t');
     var template = fs.readFileSync(templatePath, { encoding: 'utf8' });
     var compiled = _.template(template);
-    // TODO: read node engine from package.json in dir
+    var pkg = path.resolve(dir, 'package.json');
+    var contents = fs.readFileSync(pkg, { format: 'utf8' });
+    var engine = getEngines(contents).node || '0.10.38';
     return compiled({
-      node_engine: '0.10.38'
+      node_engine: engine
     });
   }
 };
+
+function getEngines(jsonString) {
+  var json = JSON.parse(jsonString);
+  return json.engines || {};
+}
