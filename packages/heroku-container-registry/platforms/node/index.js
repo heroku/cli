@@ -3,6 +3,8 @@ var path = require('path');
 var _ = require('lodash');
 var exists = require('is-there');
 
+const DEFAULT_ENGINE = '0.12.2';
+
 module.exports = {
   name: 'node',
   detect: function(dir) {
@@ -14,7 +16,7 @@ module.exports = {
     var template = fs.readFileSync(templatePath, { encoding: 'utf8' });
     var compiled = _.template(template);
     var pkg = path.resolve(dir, 'package.json');
-    var engine = getEngines(pkg).node || '0.10.38';
+    var engine = getEngines(pkg).node || DEFAULT_ENGINE;
     return compiled({
       node_engine: engine
     });

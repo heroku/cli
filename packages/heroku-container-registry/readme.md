@@ -29,10 +29,10 @@ an image for local development, so you can run things like `npm install`.
 It performs checks in this order:
 
 1. Is a template explicitly provided like `--template node`? If so, use that one.
-2. Does a `Dockerfile` already exist? If so, leave the `Dockerfile` and just update the image.
+2. Does a Dockerfile already exist? If so, leave the Dockerfile and just update the image.
 3. Do any of our supported platforms detect files like `package.json`? Use what was detected.
 
-You now have a `Dockerfile`:
+You now have a Dockerfile:
 
 ```
 cat Dockerfile
