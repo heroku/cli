@@ -6,13 +6,15 @@ Heroku CLI Docker Plugin
 heroku plugins:install heroku-docker
 ```
 
-# (Optional) Set up boot2docker
+# Set up boot2docker
+
+Install [boot2docker](http://boot2docker.io/) and make sure it works in your shell:
 
 ```
-heroku docker:boot2docker
-boot2docker start
-$(boot2docker shellinit)
+docker ps
 ```
+
+(should run without erroring)
 
 # Create a local development environment
 
@@ -22,7 +24,15 @@ cd myproject
 heroku docker:create --template node
 ```
 
-This creates the default node Dockerfile:
+`docker:create` creates a Dockerfile and uses that Dockerfile to build
+an image for local development, so you can run things like `npm install`.
+It performs checks in this order:
+
+1. Is a template explicitly provided like `--template node`? If so, use that one.
+2. Does a `Dockerfile` already exist? If so, leave the `Dockerfile` and just update the image.
+3. Do any of our supported platforms detect files like `package.json`? Use what was detected.
+
+You now have a `Dockerfile`:
 
 ```
 cat Dockerfile
@@ -34,18 +44,24 @@ Ensure the environment works:
 heroku docker:run node --version
 ```
 
-# Start with hello world
-
-Echo out a simple server.js:
+You can also operate within a shell:
 
 ```
-echo 'console.log("Hello, world!");' > server.js
+heroku docker:run bash
+```
+
+# Start with hello world
+
+Echo out a simple JS file:
+
+```
+echo 'console.log("Hello, world!");' > hello.js
 ```
 
 Now run it in your development container:
 
 ```
-heroku docker:run node server.js
+heroku docker:run node hello.js
 ```
 
 # Upgrade to an actual server
@@ -62,7 +78,7 @@ Install express:
 heroku docker:run npm install --save express
 ```
 
-Now replace server.js with:
+Now write server.js:
 
 ```js
 var PORT = process.env.PORT || 3000;
