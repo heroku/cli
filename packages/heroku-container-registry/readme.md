@@ -73,10 +73,10 @@ heroku docker:run npm init --yes
 ```
 
 I'll bet you expected `--yes` to just use defaults for everything and not
-prompt you for an author. Well you clearly haven't been using node and npm
-for very long, then! We JavaScripters are masters of the ruse.
+prompt you for an author. Well you clearly haven't been using node for very long!
+We JavaScripters are masters of the ruse.
 This isn't just another nambly-pambly environment that follows conventions and
-does what you tell it to, oh no.
+does what you tell it to, oh no. We bring *excitement* to the command line!
 
 (Just leave author blank, or whatever. It doesn't matter)
 
@@ -108,12 +108,14 @@ function onListen(err) {
 heroku docker:start
 ```
 
-Now check it out! While the server is running, open a new terminal:
+Now check it out! While the server is running, open a new terminal
+and ensure that it has a correct `$DOCKER_HOST`:
 
 ```
 docker ps
 ```
-(ensures this terminal has a correct `$DOCKER_HOST`)
+
+Then open your running app:
 
 ```
 heroku docker:open
