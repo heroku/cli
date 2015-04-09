@@ -216,6 +216,10 @@ heroku open
 Congratulations! You have a Node.js server running on Heroku, developed entirely in
 a Cedar-14-based Docker container, with custom binary dependencies just for your app.
 
+You can see an example here:
+
+- [https://docker-gm.herokuapp.com](https://docker-gm.herokuapp.com/?text=Heroku%2BDocker)
+
 # Clean up
 
 As you can see with `docker images`, over time you'll accumulate a lot of Docker images.
