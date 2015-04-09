@@ -198,7 +198,7 @@ heroku docker:start
 heroku docker:open
 ```
 
-Now, the `gm` binary will be bundled with your app's slug.
+With those Dockerfile changes, the `gm` binary will be bundled with your app's slug.
 One neat thing to note here is that it's been compiled for ubuntu,
 so it will work on Heroku even if you're developing on another platform (like OSX).
 
