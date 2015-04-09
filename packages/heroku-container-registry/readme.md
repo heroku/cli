@@ -167,9 +167,12 @@ Now try it:
 
 ```
 heroku docker:start
+heroku docker:open
 ```
 
-Oh yeah - Heroku's cedar-14 stack doesn't ship with GraphicsMagick!
+Error!?
+Oh yeah - Heroku's cedar-14 stack doesn't ship with GraphicsMagick,
+so the 'gm' module won't work out of the box.
 Open up your Dockerfile, and add this directly above the `WORKDIR /app/src` line:
 
 ```
