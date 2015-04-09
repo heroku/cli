@@ -215,3 +215,14 @@ heroku open
 
 Congratulations! You have a Node.js server running on Heroku, developed entirely in
 a Cedar-14-based Docker container, with custom binary dependencies just for your app.
+
+# Clean up
+
+As you can see with `docker images`, over time you'll accumulate a lot of Docker images.
+To clean them up, run:
+
+```
+heroku docker:clean
+```
+
+(this probably has side-effects, hasn't been tested much so far ;)
