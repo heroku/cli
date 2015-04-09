@@ -10,6 +10,12 @@ docker ps
 
 (should run without errors)
 
+# Uninstall any existing plugin
+
+```
+heroku plugins:uninstall heroku-docker
+```
+
 # Install the plugin
 
 ```
@@ -206,3 +212,6 @@ heroku create
 heroku docker:release
 heroku open
 ```
+
+Congratulations! You have a Node.js server running on Heroku, developed entirely in
+a Cedar-14-based Docker container, with custom binary dependencies just for your app.
