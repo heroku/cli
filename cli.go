@@ -147,15 +147,28 @@ func app() string {
 	return app
 }
 
-func auth() (user, password string) {
-	netrc, err := netrc.ParseFile(netrcPath())
+func getNetrc() *netrc.Netrc {
+	n, err := netrc.ParseFile(netrcPath())
 	if err != nil {
+		if _, ok := err.(*os.PathError); ok {
+			// File not found
+			return &netrc.Netrc{}
+		}
 		Errln("Error parsing netrc at " + netrcPath())
 		Errln(err.Error())
 		os.Exit(1)
 	}
-	auth := netrc.FindMachine("api.heroku.com")
-	return auth.Login, auth.Password
+	return n
+}
+
+func auth() (user, password string) {
+	netrc := getNetrc()
+	machine := netrc.FindMachine("api.heroku.com")
+	if machine == nil {
+		login()
+		return auth()
+	}
+	return machine.Login, machine.Password
 }
 
 func netrcPath() string {
