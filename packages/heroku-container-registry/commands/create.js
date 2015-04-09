@@ -41,6 +41,8 @@ function createImage(dir) {
     console.error('Error: No Dockerfile found');
     process.exit();
   }
-  var imageId = docker.buildImage(dir, dockerfile);
-  state.set(dir, { runImageId: imageId });
+  docker.buildImage(dir, dockerfile)
+    .then(function(imageId) {
+      state.set(dir, { runImageId: imageId });
+    });
 }

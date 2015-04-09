@@ -14,7 +14,7 @@ function setState(stateDir, newState) {
   var stateFile = path.join(stateDir, STATE_PATH);
   mkdirp.sync(path.dirname(stateFile));
   var state = _.extend(getState(stateDir), newState);
-  fs.writeFileSync(stateFile, JSON.stringify(state), { encoding: 'utf8' });
+  fs.writeFileSync(stateFile, JSON.stringify(state, null, '  ') + '\n', { encoding: 'utf8' });
 }
 
 function getState(stateDir) {
