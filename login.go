@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/franela/goreq"
-	"github.com/howeyc/gopass"
+	"golang.org/x/crypto/ssh/terminal"
 )
 
 var loginTopic = &Topic{
@@ -61,7 +61,11 @@ func getEmail() (email string) {
 
 func getPassword() string {
 	Print("Password (typing will be hidden): ")
-	password := string(gopass.GetPasswd())
+	raw, err := terminal.ReadPassword(0)
+	if err != nil {
+		panic(err)
+	}
+	password := string(raw)
 	if password == "" {
 		return getPassword()
 	}
