@@ -28,10 +28,8 @@ task :build do
   puts "building  #{LABEL}..."
   FileUtils.mkdir_p 'dist'
   TARGETS.map do |target|
-    Thread.new do
-      build(target[:os], target[:arch])
-    end
-  end.map(&:join)
+    build(target[:os], target[:arch])
+  end
 end
 
 desc "release heroku-cli"
@@ -53,6 +51,7 @@ task :release => :build do
 end
 
 def build(os, arch)
+  puts "Building #{os}-#{arch}"
   path = "./dist/#{os}/#{arch}/heroku-cli"
   ldflags = "-X main.Version #{VERSION} -X main.Channel #{CHANNEL}"
   args = "-o #{path} -ldflags \"#{ldflags}\""
