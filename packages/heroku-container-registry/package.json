@@ -1,6 +1,6 @@
 {
   "name": "heroku-docker",
-  "version": "0.0.4",
+  "version": "0.0.6",
   "description": "Docker plugin for the Heroku CLI",
   "main": "index.js",
   "scripts": {},
