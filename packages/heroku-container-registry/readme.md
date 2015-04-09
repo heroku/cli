@@ -1,11 +1,5 @@
 Heroku CLI Docker Plugin
 
-# Install the plugin
-
-```
-heroku plugins:install heroku-docker
-```
-
 # Set up boot2docker
 
 Install [boot2docker](http://boot2docker.io/) and make sure it works in your shell:
@@ -14,7 +8,13 @@ Install [boot2docker](http://boot2docker.io/) and make sure it works in your she
 docker ps
 ```
 
-(should run without erroring)
+(should run without errors)
+
+# Install the plugin
+
+```
+heroku plugins:install heroku-docker
+```
 
 # Create a local development environment
 

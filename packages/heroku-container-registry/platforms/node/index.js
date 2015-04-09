@@ -14,15 +14,20 @@ module.exports = {
     var template = fs.readFileSync(templatePath, { encoding: 'utf8' });
     var compiled = _.template(template);
     var pkg = path.resolve(dir, 'package.json');
-    var contents = fs.readFileSync(pkg, { format: 'utf8' });
-    var engine = getEngines(contents).node || '0.10.38';
+    var engine = getEngines(pkg).node || '0.10.38';
     return compiled({
       node_engine: engine
     });
   }
 };
 
-function getEngines(jsonString) {
-  var json = JSON.parse(jsonString);
-  return json.engines || {};
+function getEngines(pkg) {
+  try {
+    var contents = fs.readFileSync(pkg, { format: 'utf8' });
+    var json = JSON.parse(contents);
+    return json.engines || {};
+  }
+  catch (e) {
+    return {};
+  }
 }
