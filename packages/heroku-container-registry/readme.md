@@ -69,16 +69,8 @@ heroku docker:run node hello.js
 Create a package.json with `npm init` (keep all default settings):
 
 ```
-heroku docker:run npm init --yes
+heroku docker:run npm init
 ```
-
-I'll bet you expected `--yes` to just use defaults for everything and not
-prompt you for an author. Well you clearly haven't been using node for very long!
-We JavaScripters are masters of the ruse.
-This isn't just another nambly-pambly environment that follows conventions and
-does what you tell it to, oh no. We bring *excitement* to the command line!
-
-(Just leave author blank, or whatever. It doesn't matter)
 
 Install express:
 
