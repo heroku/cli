@@ -189,17 +189,12 @@ Now, build a new development image and start your server:
 ```
 heroku docker:create
 heroku docker:start
+heroku docker:open
 ```
 
 Now, the `gm` binary will be bundled with your app's slug.
 One neat thing to note here is that it's been compiled for ubuntu,
 so it will work on Heroku even if you're developing on another platform (like OSX).
-
-Test it out to see your new graphics-capable server in action:
-
-```
-heroku docker:open
-```
 
 Add a querystring like ?text=Node.js to dynamically create new images.
 
