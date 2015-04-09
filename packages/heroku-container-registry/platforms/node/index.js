@@ -3,7 +3,7 @@ var path = require('path');
 var _ = require('lodash');
 var exists = require('is-there');
 
-const DEFAULT_ENGINE = '0.12.2';
+const DEFAULT_ENGINE = '0.10.38';
 
 module.exports = {
   name: 'node',
