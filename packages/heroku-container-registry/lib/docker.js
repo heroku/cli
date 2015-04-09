@@ -11,16 +11,12 @@ module.exports = {
 };
 
 function buildEphemeralImage(dir, contents) {
-  return new Promise(function(resolve, reject) {
-    var filename = `Dockerfile-${uuid.v1()}`;
-    var dockerfile = path.join(dir, filename);
-    fs.writeFileSync(dockerfile, contents, { encoding: 'utf8' });
-    buildImage(dir, dockerfile)
-      .then(function(imageId) {
-        fs.unlinkSync(dockerfile);
-        resolve(imageId);
-      });
-  });
+  var filename = `Dockerfile-${uuid.v1()}`;
+  var dockerfile = path.join(dir, filename);
+  fs.writeFileSync(dockerfile, contents, { encoding: 'utf8' });
+  var imageId = buildImage(dir, dockerfile);
+  fs.unlinkSync(dockerfile);
+  return imageId;
 }
 
 function writeDockerfile(filePath, templatePath, values) {
@@ -33,23 +29,9 @@ function writeDockerfile(filePath, templatePath, values) {
 
 function buildImage(dir, dockerfile) {
   console.log('building image...');
-
-  return new Promise(function(resolve, reject) {
-    var args = `build --force-rm --file="${dockerfile}" ${dir}`.split(' ');
-    var build = child.spawn('docker', args);
-    var stdout = '';
-
-    build.stdout.on('data', function(chunk) {
-      stdout += chunk;
-    });
-
-    build.stdout.on('end', function() {
-      var tokens = stdout.trim().split(' ');
-      var id = tokens[tokens.length - 1];
-      resolve(id);
-    });
-
-    build.stdout.pipe(process.stdout);
-    build.stderr.pipe(process.stderr);
+  var tag = `heroku-docker-${uuid.v1()}`;
+  var build = child.execSync(`docker build --force-rm --file="${dockerfile}" --tag="${tag}" ${dir}`, {
+    stdio: [0, 1, 2]
   });
+  return tag;
 }

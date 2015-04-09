@@ -14,11 +14,9 @@ module.exports = function(topic) {
     run: function(context) {
       var runImageId = state.get(context.cwd).runImageId;
       var startDockerfile = `FROM ${runImageId}`;
-      docker.buildEphemeralImage(context.cwd, startDockerfile)
-        .then(function(startImageId) {
-          state.set(context.cwd, { startImageId: startImageId });
-          startImage(startImageId);
-        });
+      var startImageId = docker.buildEphemeralImage(context.cwd, startDockerfile);
+      state.set(context.cwd, { startImageId: startImageId });
+      startImage(startImageId);
     }
   };
 };
