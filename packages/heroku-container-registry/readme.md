@@ -179,7 +179,7 @@ heroku docker:open
 Error!?
 Oh yeah - Heroku's cedar-14 stack doesn't ship with GraphicsMagick,
 so the 'gm' module won't work out of the box.
-Open up your Dockerfile, and add this directly above the `WORKDIR /app/src` line:
+Open up your Dockerfile, and add this directly above the *2nd* WORKDIR line (`WORKDIR /app/src`):
 
 ```
 RUN curl -s http://78.108.103.11/MIRROR/ftp/GraphicsMagick/1.3/GraphicsMagick-1.3.21.tar.gz | tar xvz -C /tmp
