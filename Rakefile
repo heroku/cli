@@ -55,7 +55,8 @@ def build(os, arch)
   path = "./dist/#{os}/#{arch}/heroku-cli"
   ldflags = "-X main.Version #{VERSION} -X main.Channel #{CHANNEL}"
   args = "-o #{path} -ldflags \"#{ldflags}\""
-  system("GOOS=#{os} GOARCH=#{arch} go build #{args}")
+  ok = system("GOOS=#{os} GOARCH=#{arch} go build #{args}")
+  exit 1 unless ok
   gzip(path)
 end
 
