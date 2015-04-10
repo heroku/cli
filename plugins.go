@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -187,11 +188,14 @@ func getPlugin(name string) *Plugin {
 	if err := cmd.Start(); err != nil {
 		panic(err)
 	}
+	buf := new(bytes.Buffer)
+	buf.ReadFrom(output)
+	s := buf.String()
 	var plugin Plugin
-	err = json.NewDecoder(output).Decode(&plugin)
+	err = json.Unmarshal(buf.Bytes(), &plugin)
 	if err != nil {
 		Errf("Error reading plugin: %s. See %s for more information.\n", name, ErrLogPath)
-		Logln(err)
+		Logln(err, "\n", s)
 		return nil
 	}
 	if err := cmd.Wait(); err != nil {
