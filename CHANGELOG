@@ -1,3 +1,8 @@
+4.13.2
+=====
+Fixed issue with npm errors not showing up in error log
+Hide stderr output from error log
+
 4.13.1
 =====
 Updated iojs to 1.6.4
