@@ -48,19 +48,16 @@ func Exit(code int) {
 
 // Err just calls `fmt.Fprint(Stderr, a...)` but can be mocked out for testing.
 func Err(a ...interface{}) {
-	errLogger.Print(a...)
 	fmt.Fprint(Stderr, a...)
 }
 
 // Errf just calls `fmt.Fprintf(Stderr, a...)` but can be mocked out for testing.
 func Errf(format string, a ...interface{}) {
-	errLogger.Printf(format, a...)
 	fmt.Fprintf(Stderr, format, a...)
 }
 
 // Errln just calls `fmt.Fprintln(Stderr, a...)` but can be mocked out for testing.
 func Errln(a ...interface{}) {
-	errLogger.Println(a...)
 	fmt.Fprintln(Stderr, a...)
 }
 
