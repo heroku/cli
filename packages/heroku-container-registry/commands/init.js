@@ -10,37 +10,29 @@ var platforms = require('../platforms');
 module.exports = function(topic) {
   return {
     topic: topic,
-    command: 'create',
-    description: 'creates a local development environment',
-    help: `help text for ${topic}:create`,
+    command: 'init',
+    description: 'creates a Dockerfile for local development',
+    help: `help text for ${topic}:init`,
     flags: [
       { name: 'template', description: 'create a Dockerfile based on a language template', hasValue: true }
     ],
     run: function(context) {
       createDockerfile(context.cwd, context.args.template);
-      createImage(context.cwd);
     }
   };
 };
 
 function createDockerfile(dir, lang) {
-  var dockerfile = path.join(dir, 'Dockerfile');
+  var dockerfile = path.join(dir, docker.filename);
   var platform = lang ? platforms.find(lang) : platforms.detect(dir);
   if (!platform) return;
 
   var contents = platform.getDockerfile(dir);
   if (contents) {
     fs.writeFileSync(dockerfile, contents);
-    console.log(`Wrote Dockerfile for ${platform.name} apps`);
+    console.log(`Wrote Dockerfile (${platform.name})`);
   }
-}
-
-function createImage(dir) {
-  var dockerfile = path.join(dir, 'Dockerfile');
-  if (!exists.sync(dockerfile)) {
-    console.error('Error: No Dockerfile found');
-    process.exit();
+  else {
+    console.log('Nothing to write');
   }
-  var imageId = docker.buildImage(dir, dockerfile);
-  state.set(dir, { runImageId: imageId });
 }

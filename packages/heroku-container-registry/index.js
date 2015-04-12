@@ -1,3 +1,5 @@
+var pkg = require('./package.json');
+
 const TOPIC = 'docker';
 
 module.exports = {
@@ -5,11 +7,20 @@ module.exports = {
     name: TOPIC,
     description: 'Develop for Heroku locally, with Docker'
   }],
-  commands: [
-    require('./commands/create')(TOPIC),
-    require('./commands/run')(TOPIC),
+  commands: [{
+      topic: TOPIC,
+      description: 'Develop for Heroku locally, with Docker',
+      help: `help text for ${TOPIC}`,
+      run: function(context) {
+        console.log(pkg.version);
+      }
+    },
+
+    require('./commands/init')(TOPIC),
+    require('./commands/exec')(TOPIC),
     require('./commands/start')(TOPIC),
     require('./commands/release')(TOPIC),
+
     require('./commands/open')(TOPIC),
     require('./commands/clean')(TOPIC)
   ]

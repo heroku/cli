@@ -4,7 +4,8 @@ const PLATFORMS = [
   require('./docker'),
   require('./node'),
   require('./ruby'),
-  require('./scala')
+  require('./scala'),
+  require('./minimal')
 ];
 
 module.exports = {

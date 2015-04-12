@@ -12,10 +12,7 @@ module.exports = function(topic) {
     description: 'builds a Node.js app based on the cedar-14 image',
     help: `help text for ${topic}:start`,
     run: function(context) {
-      var runImageId = state.get(context.cwd).runImageId;
-      var startDockerfile = `FROM ${runImageId}`;
-      var startImageId = docker.buildEphemeralImage(context.cwd, startDockerfile);
-      state.set(context.cwd, { startImageId: startImageId });
+      var startImageId = docker.ensureStartImage(context.cwd);
       startImage(startImageId);
     }
   };

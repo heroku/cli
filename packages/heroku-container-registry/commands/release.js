@@ -39,7 +39,7 @@ function release(context) {
     console.log('creating local slug...');
     try {
       var slugPath = os.tmpdir();
-      var imageId = state.get(context.cwd).startImageId;
+      var imageId = docker.ensureStartImage(context.cwd);
       var containerId = child.execSync(`docker run -d ${imageId} tar cfvz /tmp/slug.tgz -C / --exclude=.git --exclude=.heroku ./app`, {
         encoding: 'utf8'
       }).trim();
@@ -54,7 +54,6 @@ function release(context) {
   }
 
   function createRemoteSlug(slugPath) {
-    console.log('local slug path:', slugPath);
     console.log('creating remote slug...');
     var slugInfo = app.slugs().create({
       process_types: {
