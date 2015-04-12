@@ -5,3 +5,8 @@ link:
 
 unlink:
 	unlink ~/.heroku/node_modules/$(shell basename $(shell pwd))
+
+patch:
+	npm version patch
+	git push
+	npm publish
