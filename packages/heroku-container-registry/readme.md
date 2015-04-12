@@ -32,8 +32,8 @@ heroku plugins:install heroku-docker
 
 ## Tutorials
 
-- [Starting a new Node.js project](blob/master/docs/new-project.md)
-- [Dockerizing Heroku's Node.js getting started project](blob/master/docs/node-getting-started.md)
+- [Starting a new Node.js project](docs/new-project.md)
+- [Dockerizing Heroku's Node.js getting started project](docs/node-getting-started.md)
 
 ## Hacking on the plugin
 
