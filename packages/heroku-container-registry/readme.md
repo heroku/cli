@@ -2,7 +2,7 @@
 
 Develop with Docker. Deploy to Heroku.
 
-## Set up boot2docker (OSX only)
+## OSX Prerequisite: boot2docker or similar
 
 If you already have some mechanism of hosting Docker locally, you can skip this step.
 If you're new to Docker on OSX, we recommend
@@ -29,6 +29,11 @@ You can do this init in your bash profile; that's out of scope for these docs.
 heroku plugins:uninstall heroku-docker
 heroku plugins:install heroku-docker
 ```
+
+## Tutorials
+
+- [blob/master/docs/new-project.md](Starting a new Node.js project)
+- [blob/master/docs/node-getting-started.md](Dockerizing Heroku's Node.js getting started project)
 
 ## Hacking on the plugin
 
