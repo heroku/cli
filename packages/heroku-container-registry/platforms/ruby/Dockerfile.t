@@ -18,8 +18,8 @@ RUN echo "cd /app/src" >> /app/.profile.d/ruby.sh
 
 WORKDIR /app/src
 
-COPY . /app/src
-RUN gem install bundler
-RUN bundle install
-EXPOSE 3000
-CMD rackup -p $PORT -o 0.0.0.0
+ONBUILD COPY . /app/src
+ONBUILD RUN gem install bundler
+ONBUILD RUN bundle install
+ONBUILD EXPOSE 3000
+ONBUILD CMD rackup -p $PORT -o 0.0.0.0
