@@ -28,13 +28,13 @@ exposes the following fields:
 
 The name of the platform (node, java, etc).
 
-### `detect(dir) {Function}`
+### `detect(dir) {Function:Boolean}`
 
 A function that returns `true` only if you detect that your platform is
 probably present in `dir`. For example, the node platform checks for
 the presence of a `package.json` file.
 
-### `getDockerfile(dir) {Function}`
+### `getDockerfile(dir) {Function:String}`
 
 A function that returns the contents of a Dockerfile as a string.
 This Dockerfile will be used as the executable Dockerfile for
