@@ -24,17 +24,17 @@ All of the language support is in [/platforms](/platforms).
 To support a new platform, create a new directory with an index.js that
 exposes the following fields:
 
-### String name
+### `name {String}`
 
 The name of the platform (node, java, etc).
 
-### Function detect(dir)
+### `detect(dir) {Function}`
 
 A function that returns `true` only if you detect that your platform is
 probably present in `dir`. For example, the node platform checks for
 the presence of a `package.json` file.
 
-### Function getDockerfile(dir)
+### `getDockerfile(dir) {Function}`
 
 A function that returns the contents of a Dockerfile as a string.
 This Dockerfile will be used as the executable Dockerfile for
