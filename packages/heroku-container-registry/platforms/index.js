@@ -3,7 +3,8 @@ var _ = require('lodash');
 const PLATFORMS = [
   require('./docker'),
   require('./node'),
-  require('./ruby')
+  require('./ruby'),
+  require('./scala')
 ];
 
 module.exports = {
