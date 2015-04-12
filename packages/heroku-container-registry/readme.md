@@ -34,15 +34,7 @@ heroku plugins:install heroku-docker
 
 - [Starting a new Node.js project](docs/new-project.md)
 - [Dockerizing Heroku's Node.js getting started project](docs/node-getting-started.md)
-
-## Hacking on the plugin
-
-Want to add language support? Awesome!
-Clone the repo and then use the makefile to create links for local development:
-
-```
-make link
-```
+- [Hacking on this plugin](docs/hacking.md)
 
 ## Plugin API
 
