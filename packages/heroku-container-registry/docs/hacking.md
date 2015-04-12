@@ -52,8 +52,8 @@ Thus, when you write your Dockerfile, if you want commands to be run
 only in the `start` and `release` phases, you should prefix those commands
 with `ONBUILD`.
 
-The best way to start is by checking out the example Dockerfile templates
-that already exist in /platforms.
+The best way to start is by checking out the
+[existing code in platforms](/platforms).
 
 ## Documentation
 
