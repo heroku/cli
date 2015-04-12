@@ -1,7 +1,8 @@
 # Hacking on the plugin
 
 You want to add new language support? Awesome!
-We're in the very early stages of exploring the possibilities of Docker + Heroku.
+We're in the very early stages of exploring the possibilities of Docker + Heroku,
+so all ideas are welcome.
 
 The simplest way to get started is to clone the repo and symlink it to your
 local Heroku client:
