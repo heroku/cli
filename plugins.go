@@ -31,6 +31,8 @@ func init() {
 // SetupNode sets up node and npm in ~/.heroku
 func SetupNode() {
 	if !node.IsSetup() {
+		lock := getUpdateLock()
+		defer lock.Unlock()
 		Log("setting up plugins... ")
 		if err := node.Setup(); err != nil {
 			panic(err)
