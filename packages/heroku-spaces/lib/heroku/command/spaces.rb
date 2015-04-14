@@ -107,6 +107,7 @@ class Heroku::Command::Spaces < Heroku::Command::Base
 
   def for_display(space)
     {
+      'ID'           => space['id'],
       'Name'         => space['name'],
       'Organization' => space['organization']['name'],
       'State'        => space['state'],
@@ -116,6 +117,6 @@ class Heroku::Command::Spaces < Heroku::Command::Base
 
   def style(space)
     styled_header(space['name'])
-    styled_hash(for_display(space), ['Organization', 'State', 'Created At'])
+    styled_hash(for_display(space), ['ID', 'Organization', 'State', 'Created At'])
   end
 end
