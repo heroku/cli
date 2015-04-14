@@ -1,3 +1,7 @@
+4.13.3
+=====
+Fixed race condition while setting up gode
+
 4.13.2
 =====
 Fixed issue with npm errors not showing up in error log
