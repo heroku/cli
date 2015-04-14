@@ -192,7 +192,6 @@ func downloadBin(path, url string) error {
 	if err != nil {
 		return err
 	}
-	defer out.Close()
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", url+".gz", nil)
 	if err != nil {
@@ -209,7 +208,10 @@ func downloadBin(path, url string) error {
 		return err
 	}
 	_, err = io.Copy(out, uncompressed)
-	return err
+	if err != nil {
+		return err
+	}
+	return out.Close()
 }
 
 func fileSha1(path string) string {
