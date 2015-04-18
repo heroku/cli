@@ -20,23 +20,29 @@ Create apps in Dogwood spaces.
     $ heroku spaces:create trapezia --org nasa
     Creating space trapezia in organization nasa... done
     === trapezia
+    ID:           81c55b1d-3c23-4f38-8625-f3d5cafa0827
     Organization: nasa
     State:        allocating
+    Created At:   2015/04/08 23:23:29
 
 #### Info
 
     $ heroku spaces:info --space trapezia
     === trapezia
+    ID:           81c55b1d-3c23-4f38-8625-f3d5cafa0827
     Organization: nasa
-    State:        allocating
+    State:        allocated
+    Outbound IPs: 123.123.123.123, 246.246.246.246
+    Created At:   2015/04/08 23:23:29
 
 #### List
 
     $ heroku spaces
     === Spaces
-    Name      Organization   State
-    trapezia  nasa           allocating
-    galaxy    roscosmos      allocated
+    Name     Organization  State      Created At
+    -------  ------------  ---------- -------------------
+    trapezia nasa          allocating 2015/04/08 23:23:29
+    galaxy   roscosmos     allocated  2015/03/02 11:16:33
 
 #### Rename
 
@@ -47,9 +53,6 @@ Create apps in Dogwood spaces.
 
     $ heroku spaces:destroy --space trapezia
     Destroying space trapezia... done
-    === trapezia
-    Organization: nasa
-    State:        deleting
 
 ### Dogwood Apps
 

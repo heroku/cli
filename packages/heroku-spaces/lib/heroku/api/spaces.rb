@@ -28,6 +28,15 @@ module Heroku
         :headers  => ACCEPT_V3_DOGWOOD,
         :path => "/spaces/#{space_identity}"
       )
+      end
+
+    def get_space_nat(space_identity)
+      request(
+        :method => :get,
+        :expects => [200],
+        :headers  => ACCEPT_V3_DOGWOOD,
+        :path => "/spaces/#{space_identity}/nat"
+      )
     end
 
     def patch_space(space_identity, body)
