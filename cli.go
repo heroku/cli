@@ -104,6 +104,15 @@ func parseArgs(command *Command, args []string) (result map[string]string, appNa
 			return nil, "", ErrHelp
 		case args[i] == "--":
 			parseFlags = false
+		case args[i] == "-r" || args[i] == "--remote":
+			i++
+			if len(args) == i {
+				return nil, "", errors.New("Must specify remote name")
+			}
+			appName, err = appFromGitRemote(args[i])
+			if err != nil {
+				panic(err)
+			}
 		case args[i] == "-a" || args[i] == "--app":
 			i++
 			if len(args) == i {
