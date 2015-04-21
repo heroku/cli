@@ -1,3 +1,8 @@
+4.14.0
+=====
+Added -r flag to get app name via git remote
+Ensure updating error is bubbled up
+
 4.13.3
 =====
 Fixed race condition while setting up gode
