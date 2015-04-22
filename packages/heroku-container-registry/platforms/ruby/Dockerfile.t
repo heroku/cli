@@ -5,21 +5,36 @@ USER app
 WORKDIR /app
 
 ENV HOME /app
-ENV PATH /app/heroku/ruby/bin:$PATH
 ENV RUBY_ENGINE <%= ruby_engine %>
+ENV BUNDLER_VERSION 1.7.12
+ENV NODE_ENGINE 0.10.38
 ENV PORT 3000
 
 RUN mkdir -p /app/heroku/ruby
-RUN mkdir -p /app/src
-RUN mkdir -p /app/.profile.d
-RUN curl -s https://s3-external-1.amazonaws.com/heroku-buildpack-ruby/cedar-14/ruby-$RUBY_ENGINE.tgz | tar xvz -C /app/heroku/ruby
-RUN echo "export PATH=\"/app/heroku/ruby/bin:/app/bin" > /app/.profile.d/ruby.sh
-RUN echo "cd /app/src" >> /app/.profile.d/ruby.sh
+RUN curl -s https://s3-external-1.amazonaws.com/heroku-buildpack-ruby/cedar-14/ruby-$RUBY_ENGINE.tgz | tar xz -C /app/heroku/ruby
+ENV PATH /app/heroku/ruby/bin:$PATH
 
-WORKDIR /app/src
+RUN mkdir -p /app/heroku/bundler
+RUN mkdir -p /app/src/vendor/bundle
+RUN curl -s https://s3-external-1.amazonaws.com/heroku-buildpack-ruby/bundler-$BUNDLER_VERSION.tgz | tar xz -C /app/heroku/bundler
+ENV PATH /app/heroku/bundler/bin:$PATH
+ENV GEM_PATH=/app/heroku/bundler:$GEM_PATH
+ENV GEM_HOME=/app/src/vendor/bundle
+
+RUN mkdir -p /app/heroku/node
+RUN curl -s https://s3pository.heroku.com/node/v$NODE_ENGINE/node-v$NODE_ENGINE-linux-x64.tar.gz | tar --strip-components=1 -xz -C /app/heroku/node
+ENV PATH /app/heroku/node/bin:$PATH
 
 ONBUILD COPY . /app/src
-ONBUILD RUN gem install bundler
-ONBUILD RUN bundle install
+ONBUILD WORKDIR /app/src
+ONBUILD RUN bundle install # TODO: desirable if --path parameter were passed
+
+ONBUILD RUN mkdir -p /app/.profile.d
+ONBUILD RUN echo "export PATH=\"/app/heroku/ruby/bin:/app/heroku/bundler/bin:/app/heroku/node/bin:\$PATH\"" > /app/.profile.d/ruby.sh
+ONBUILD RUN echo "export GEM_PATH=\"/app/heroku/bundler:/app/heroku/src/vendor/bundle:\$GEM_PATH\"" >> /app/.profile.d/ruby.sh
+ONBUILD RUN echo "export GEM_HOME=\"/app/src/vendor/bundle\"" >> /app/.profile.d/ruby.sh
+
+ONBUILD RUN echo "cd /app/src" >> /app/.profile.d/ruby.sh
+
 ONBUILD EXPOSE 3000
-ONBUILD CMD rackup -p $PORT -o 0.0.0.0
+ONBUILD CMD bundle exec puma -C config/puma.rb # TODO: This is broken
