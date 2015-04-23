@@ -8,8 +8,8 @@ Create apps in Dogwood spaces.
 
 ## Basic Usage
 
-    $ heroku spaces:create trapezia --org nasa
-    $ heroku dapps:create protostar --space trapezia
+    $ heroku spaces:create my-space-name --org my-org-name
+    $ heroku dapps:create my-app-name --space my-space-name
 
 ## Commands
 
@@ -17,20 +17,20 @@ Create apps in Dogwood spaces.
 
 #### Create
 
-    $ heroku spaces:create trapezia --org nasa
-    Creating space trapezia in organization nasa... done
-    === trapezia
+    $ heroku spaces:create my-space-name --org my-org-name
+    Creating space my-space-name in organization my-org-name... done
+    === my-space-name
     ID:           81c55b1d-3c23-4f38-8625-f3d5cafa0827
-    Organization: nasa
+    Organization: my-org-name
     State:        allocating
     Created At:   2015/04/08 23:23:29
 
 #### Info
 
-    $ heroku spaces:info --space trapezia
-    === trapezia
+    $ heroku spaces:info --space my-space-name
+    === my-space-name
     ID:           81c55b1d-3c23-4f38-8625-f3d5cafa0827
-    Organization: nasa
+    Organization: my-org-name
     State:        allocated
     Outbound IPs: 123.123.123.123, 246.246.246.246
     Created At:   2015/04/08 23:23:29
@@ -39,20 +39,21 @@ Create apps in Dogwood spaces.
 
     $ heroku spaces
     === Spaces
-    Name     Organization  State      Created At
-    -------  ------------  ---------- -------------------
-    trapezia nasa          allocating 2015/04/08 23:23:29
-    galaxy   roscosmos     allocated  2015/03/02 11:16:33
+    Name                Organization  State      Created At
+    -------             ------------  ---------- -------------------
+    my-space-name       my-org-name   allocating 2015/04/08 23:23:29
+    my-other-space-name my-org-name   allocated  2015/03/02 11:16:33
 
 #### Rename
 
-    $ heroku spaces:rename nebula --space trapezia
-    Renaming space trapezia to nebula... done
+    $ heroku spaces:rename my-new-space-name --space my-space-name
+    Renaming space my-space-name to my-new-space-name... done
     
 #### Destroy
 
-    $ heroku spaces:destroy --space trapezia
-    Destroying space trapezia... done
+    $ heroku spaces:destroy --space my-space-name
+    Are you sure you wish to continue? (y/n) y
+    Destroying space my-space-name... done
 
 ### Dogwood Apps
 
