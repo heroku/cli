@@ -39,7 +39,13 @@ module.exports = {
   shortHelp: 'opens a redis prompt',
   args: [{name: 'database', optional: true}],
   run: function(context) {
-    var heroku = new Heroku({token: context.auth.password});
+    var heroku = new Heroku({
+      token: context.auth.password,
+      headers: {
+        'Accept': 'application/vnd.heroku+json; version=3.switzerland'
+      }
+    });
+
     var filter = api.make_config_var_filter(context.args.database);
     heroku.apps(context.app).configVars().info()
     .then(filter)

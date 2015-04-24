@@ -11,8 +11,12 @@ module.exports = {
   flags: [{name: 'reset', char: 'r'}],
   shortHelp: 'display credentials information',
   run: function(context) {
-    var heroku = new Heroku({token: context.auth.password});
-
+    var heroku = new Heroku({
+      token: context.auth.password,
+      headers: {
+        'Accept': 'application/vnd.heroku+json; version=3.switzerland'
+      }
+    });
     if (context.args.reset) {
       var addonsFilter = api.make_addons_filter(context.args.database);
       heroku.apps(context.app).addons().list()

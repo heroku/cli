@@ -13,7 +13,12 @@ module.exports = {
   shortHelp: 'gets information about redis',
   run: function(context) {
     co(function *() {
-      let heroku = new Heroku({token: context.auth.password});
+      let heroku = new Heroku({
+        token: context.auth.password,
+        headers: {
+          'Accept': 'application/vnd.heroku+json; version=3.switzerland'
+        }
+      });
       let addons = yield heroku.apps(context.app).addons().list();
       // filter out non-redis addons
       addons = api.make_addons_filter(context.args.database)(addons);
