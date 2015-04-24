@@ -49,7 +49,7 @@ func (cli *Cli) LoadPlugins(plugins []Plugin) {
 		}
 		for _, command := range plugin.Commands {
 			if !cli.AddCommand(command) {
-				Errln("WARNING: command %s has already been defined", command)
+				Errf("WARNING: command %s has already been defined\n", command)
 			}
 		}
 	}
