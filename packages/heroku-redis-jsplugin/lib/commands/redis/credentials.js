@@ -7,7 +7,7 @@ module.exports = {
   command: 'credentials',
   needsApp: true,
   needsAuth: true,
-  args: [{name: 'database', optional: false}],
+  args: [{name: 'database', optional: true}],
   flags: [{name: 'reset', char: 'r'}],
   shortHelp: 'display credentials information',
   run: function(context) {
@@ -25,13 +25,20 @@ module.exports = {
           if (addons.length === 0) {
             console.error('No redis databases found');
             process.exit(1);
-          } else {
-            var addon = addons[0];
-            api.request(context, addon.name + '/credentials_rotation', 'POST')
-              .done(function() {
-                console.log('Resetting credentials for ' + addon.name);
-              });
+          } else if (addons.length > 1) {
+            var names = [];
+            for (var i=0; i<addons.length; i++) {
+              names.push(addons[i].name);
+            }
+            console.error('Please specify a single database. Found: ' + names.join(', '));
+            process.exit(1);
           }
+          var name = addons[0].name;
+          console.log('Resetting credentials for ' + name);
+          return name;
+        })
+        .then(function (name) {
+          api.request(context, name + '/credentials_rotation', 'POST')
         })
         .done();
     } else {
