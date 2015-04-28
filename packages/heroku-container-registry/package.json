@@ -14,6 +14,7 @@
   "author": "Hunter Loftis <hunter@hunterloftis.com>",
   "license": "ISC",
   "dependencies": {
+    "heroku-cli-util": "^1.7.0",
     "heroku-client": "^1.9.1",
     "is-there": "^1.1.0",
     "lodash": "3.3.1",
@@ -23,6 +24,7 @@
     "progress": "^1.1.8",
     "request": "2.53.0",
     "request-progress": "^0.3.1",
-    "superagent": "^0.21.0"
+    "superagent": "^0.21.0",
+    "yamljs": "^0.2.1"
   }
 }
