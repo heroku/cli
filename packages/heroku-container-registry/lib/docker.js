@@ -4,6 +4,7 @@ var fs = require('fs');
 var _ = require('lodash');
 var uuid = require('node-uuid');
 var crypto = require('crypto');
+var util = require('heroku-cli-util');
 
 const FILENAME = 'Dockerfile';
 
@@ -25,15 +26,29 @@ function buildImage(dir, id, dockerfile) {
 
 function ensureExecImage(dir) {
   var dockerfile = path.join(dir, FILENAME);
-  var contents = fs.readFileSync(dockerfile, { encoding: 'utf8' });
-  var hash = createHash(contents);
-  var imageId = getImageId(hash);
-  imageExists(imageId) || buildImage(dir, imageId);
-  return imageId;
+  try {
+    var contents = fs.readFileSync(dockerfile, { encoding: 'utf8' });
+    var hash = createHash(contents);
+    var imageId = getImageId(hash);
+    imageExists(imageId) || buildImage(dir, imageId);
+    return imageId;
+  }
+  catch (e) {
+    if (e.code === 'ENOENT') {
+      util.error('No Dockerfile found, did you run `heroku docker:init`?');
+      return;
+    }
+    else {
+      throw e;
+    }
+  }
 }
 
 function ensureStartImage(dir) {
   var execImageId = ensureExecImage(dir);
+  if (!execImageId) {
+    return;
+  }
   var contents = `FROM ${execImageId}`;
   var imageId = `${execImageId}-start`;
   var filename = `.Dockerfile-${uuid.v1()}`;

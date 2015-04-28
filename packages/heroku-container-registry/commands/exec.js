@@ -13,6 +13,9 @@ module.exports = function(topic) {
     variableArgs: true,
     run: function(context) {
       var imageId = docker.ensureExecImage(context.cwd);
+      if (!imageId) {
+	return;
+      }
       runCommand(imageId, context.cwd, context.args);
     }
   };

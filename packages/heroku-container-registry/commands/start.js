@@ -13,6 +13,9 @@ module.exports = function(topic) {
     help: 'Start local Docker app container',
     run: function(context) {
       var startImageId = docker.ensureStartImage(context.cwd);
+      if (!startImageId) {
+	return;
+      }
       startImage(startImageId);
     }
   };
