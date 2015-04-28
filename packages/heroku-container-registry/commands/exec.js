@@ -3,6 +3,7 @@ var fs = require('fs');
 var path = require('path');
 var state = require('../lib/state');
 var docker = require('../lib/docker');
+var envutil = require('../lib/env-util');
 
 module.exports = function(topic) {
   return {
@@ -22,8 +23,9 @@ module.exports = function(topic) {
 };
 
 function runCommand(imageId, cwd, args) {
+  var envArgComponent = envutil.getFormattedEnvArgComponent(cwd);
   var command = args.join(' ');
-  var execString = `docker run -p 3000:3000 -v ${cwd}:/app/src -w /app/src --rm -it ${imageId} ${command} || true`;
+  var execString = `docker run -p 3000:3000 -v ${cwd}:/app/src -w /app/src --rm -it ${envArgComponent} ${imageId} ${command} || true`;
   child.execSync(execString, {
     stdio: [0, 1, 2]
   });
