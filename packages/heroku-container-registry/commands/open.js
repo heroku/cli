@@ -5,8 +5,8 @@ module.exports = function(topic) {
   return {
     topic: topic,
     command: 'open',
-    description: 'open the local web process in a web browser',
-    help: `help text for ${topic}:open`,
+    description: 'load web app in browser',
+    help: 'Open default web browser and load app started with `start`',
     run: open
   }
 };

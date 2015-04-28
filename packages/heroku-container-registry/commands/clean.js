@@ -6,8 +6,8 @@ module.exports = function(topic) {
   return {
     topic: topic,
     command: 'clean',
-    description: 'clean up heroku-docker images',
-    help: `help text for ${topic}:clean`,
+    description: 'clean up docker images',
+    help: 'Clean up and remove local Heroku-created Docker images',
     run: function(context) {
       var stdout = child.execSync(`docker images`, { encoding: 'utf8' });
       var images = _.map(_.filter(stdout.split('\n'), isImage), lineToId);

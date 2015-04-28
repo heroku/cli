@@ -9,8 +9,8 @@ module.exports = function(topic) {
   return {
     topic: topic,
     command: 'start',
-    description: 'builds a Node.js app based on the cedar-14 image',
-    help: `help text for ${topic}:start`,
+    description: 'start docker app container',
+    help: 'Start local Docker app container',
     run: function(context) {
       var startImageId = docker.ensureStartImage(context.cwd);
       startImage(startImageId);

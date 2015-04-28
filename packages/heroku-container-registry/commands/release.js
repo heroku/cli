@@ -18,8 +18,8 @@ module.exports = function(topic) {
   return {
     topic: topic,
     command: 'release',
-    description: 'creates a slug tarball from the built image and releases it to your Heroku app',
-    help: `help text for ${topic}:release`,
+    description: 'create and release slug to app',
+    help: 'Create slug tarball from Docker image and release it to Heroku app',
     needsApp: true,
     needsAuth: true,
     run: release

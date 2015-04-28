@@ -12,8 +12,8 @@ module.exports = function(topic) {
   return {
     topic: topic,
     command: 'init',
-    description: 'creates a Dockerfile for local development',
-    help: `help text for ${topic}:init`,
+    description: 'create Dockerfile for app',
+    help: 'Creates a Dockerfile matching the language and framework for the app',
     flags: [
       { name: 'template', description: 'create a Dockerfile based on a language template', hasValue: true }
     ],
