@@ -45,8 +45,7 @@ function attachToRendezvous(uri) {
     console.error('timed out');
   });
   c.on('end', function () {
-    h.error('Could not find exit status');
-    process.exit(1);
+    process.exit(0);
   });
 }
 
@@ -55,7 +54,7 @@ module.exports = function run (context) {
     heroku = new Heroku({token: context.auth.password});
     let command = context.args.join(' ');
     process.stdout.write(`Running \`${command}\` attached to terminal... `);
-    if (true) {
+    if (context.flags['exit-code']) {
       command = buildCommandWithExitStatus(command);
     }
     let dyno = yield startDyno(context.app, command);
