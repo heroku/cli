@@ -34,9 +34,9 @@ func (cli *Cli) Run(args []string) (err error) {
 		return ErrHelp
 	}
 	if ctx.Command.VariableArgs {
-		ctx.Args, ctx.App, err = parseVarArgs(ctx.Command, args[2:])
+		ctx.Args, ctx.Flags, ctx.App, err = parseVarArgs(ctx.Command, args[2:])
 	} else {
-		ctx.Args, ctx.App, err = parseArgs(ctx.Command, args[2:])
+		ctx.Args, ctx.Flags, ctx.App, err = parseArgs(ctx.Command, args[2:])
 	}
 	if err != nil {
 		return err
@@ -75,82 +75,68 @@ func (cli *Cli) ParseCmd(cmd string) (topic *Topic, command *Command) {
 	return topic, cli.Commands.ByTopicAndCommand(tc[0], "")
 }
 
-func parseVarArgs(command *Command, args []string) (result []string, appName string, err error) {
+func parseVarArgs(command *Command, args []string) (result []string, flags map[string]string, appName string, err error) {
 	result = make([]string, 0, len(args))
+	flags = map[string]string{}
 	parseFlags := true
 	for i := 0; i < len(args); i++ {
 		switch {
-		case !parseFlags:
-			result = append(result, args[i])
-		case args[i] == "help" || args[i] == "--help" || args[i] == "-h":
-			return nil, "", ErrHelp
-		case args[i] == "--":
+		case parseFlags && (args[i] == "--"):
 			parseFlags = false
-		case args[i] == "-a" || args[i] == "--app":
+		case parseFlags && (args[i] == "help" || args[i] == "--help" || args[i] == "-h"):
+			return nil, nil, "", ErrHelp
+		case parseFlags && (args[i] == "-a" || args[i] == "--app"):
 			i++
 			if len(args) == i {
-				return nil, "", errors.New("Must specify app name")
+				return nil, nil, "", errors.New("Must specify app name")
 			}
 			appName = args[i]
-		default:
-			result = append(result, args[i])
-		}
-	}
-	return result, appName, nil
-}
-
-func parseArgs(command *Command, args []string) (result map[string]string, appName string, err error) {
-	result = map[string]string{}
-	numArgs := 0
-	parseFlags := true
-	for i := 0; i < len(args); i++ {
-		switch {
-		case parseFlags && (args[i] == "help" || args[i] == "--help" || args[i] == "-h"):
-			return nil, "", ErrHelp
-		case args[i] == "--":
-			parseFlags = false
-		case args[i] == "-r" || args[i] == "--remote":
+		case parseFlags && (args[i] == "-r" || args[i] == "--remote"):
 			i++
 			if len(args) == i {
-				return nil, "", errors.New("Must specify remote name")
+				return nil, nil, "", errors.New("Must specify remote name")
 			}
 			appName, err = appFromGitRemote(args[i])
 			if err != nil {
 				panic(err)
 			}
-		case args[i] == "-a" || args[i] == "--app":
-			i++
-			if len(args) == i {
-				return nil, "", errors.New("Must specify app name")
-			}
-			appName = args[i]
 		case parseFlags && strings.HasPrefix(args[i], "-"):
 			for _, flag := range command.Flags {
 				if args[i] == "-"+string(flag.Char) || args[i] == "--"+flag.Name {
 					if flag.HasValue {
 						i++
 						if len(args) < i || strings.HasPrefix(args[i], "-") {
-							return nil, "", errors.New("--" + flag.Name + " requires a value")
+							return nil, nil, "", errors.New("--" + flag.Name + " requires a value")
 						}
-						result[flag.Name] = args[i]
+						flags[flag.Name] = args[i]
 					} else {
-						result[flag.Name] = "True"
+						flags[flag.Name] = "True"
 					}
 				}
 			}
-		case numArgs == len(command.Args):
-			return nil, "", errors.New("Unexpected argument: " + strings.Join(args[numArgs:], " "))
 		default:
-			result[command.Args[numArgs].Name] = args[i]
-			numArgs++
+			result = append(result, args[i])
 		}
+	}
+	return result, flags, appName, nil
+}
+
+func parseArgs(command *Command, args []string) (result, flags map[string]string, appName string, err error) {
+	result = map[string]string{}
+	args, flags, appName, err = parseVarArgs(command, args)
+	flags = map[string]string{}
+	if len(args) > len(command.Args) {
+		return nil, nil, "", errors.New("Unexpected argument: " + strings.Join(args[len(command.Args):], " "))
+	}
+	for i, arg := range args {
+		result[command.Args[i].Name] = arg
 	}
 	for _, arg := range command.Args {
 		if !arg.Optional && result[arg.Name] == "" {
-			return nil, "", errors.New("Missing argument: " + strings.ToUpper(arg.Name))
+			return nil, nil, "", errors.New("Missing argument: " + strings.ToUpper(arg.Name))
 		}
 	}
-	return result, appName, nil
+	return result, flags, appName, nil
 }
 
 func app() string {
