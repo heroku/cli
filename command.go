@@ -144,21 +144,21 @@ var commandsListCmd = &Command{
 	Description: "list all commands",
 	Flags:       []Flag{{Name: "json"}},
 	Run: func(ctx *Context) {
-		if ctx.Args.(map[string]string)["json"] != "True" {
-			for _, command := range cli.Commands {
-				if command.Command == "" {
-					Printf("%s\n", command.Topic)
-				} else {
-					Printf("%s:%s\n", command.Topic, command.Command)
-				}
-			}
+		if ctx.Flags["json"] == true {
+			cli.LoadPlugins(GetPlugins())
+			cli.Commands.loadUsages()
+			cli.Commands.loadFullHelp()
+			doc := map[string]interface{}{"topics": cli.Topics, "commands": cli.Commands}
+			s, _ := json.Marshal(doc)
+			Println(string(s))
 			return
 		}
-		cli.LoadPlugins(GetPlugins())
-		cli.Commands.loadUsages()
-		cli.Commands.loadFullHelp()
-		doc := map[string]interface{}{"topics": cli.Topics, "commands": cli.Commands}
-		s, _ := json.Marshal(doc)
-		Println(string(s))
+		for _, command := range cli.Commands {
+			if command.Command == "" {
+				Printf("%s\n", command.Topic)
+			} else {
+				Printf("%s:%s\n", command.Topic, command.Command)
+			}
+		}
 	},
 }

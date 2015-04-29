@@ -75,9 +75,9 @@ func (cli *Cli) ParseCmd(cmd string) (topic *Topic, command *Command) {
 	return topic, cli.Commands.ByTopicAndCommand(tc[0], "")
 }
 
-func parseVarArgs(command *Command, args []string) (result []string, flags map[string]string, appName string, err error) {
+func parseVarArgs(command *Command, args []string) (result []string, flags map[string]interface{}, appName string, err error) {
 	result = make([]string, 0, len(args))
-	flags = map[string]string{}
+	flags = map[string]interface{}{}
 	parseFlags := true
 	for i := 0; i < len(args); i++ {
 		switch {
@@ -110,7 +110,7 @@ func parseVarArgs(command *Command, args []string) (result []string, flags map[s
 						}
 						flags[flag.Name] = args[i]
 					} else {
-						flags[flag.Name] = "True"
+						flags[flag.Name] = true
 					}
 				}
 			}
@@ -121,10 +121,9 @@ func parseVarArgs(command *Command, args []string) (result []string, flags map[s
 	return result, flags, appName, nil
 }
 
-func parseArgs(command *Command, args []string) (result, flags map[string]string, appName string, err error) {
+func parseArgs(command *Command, args []string) (result map[string]string, flags map[string]interface{}, appName string, err error) {
 	result = map[string]string{}
 	args, flags, appName, err = parseVarArgs(command, args)
-	flags = map[string]string{}
 	if len(args) > len(command.Args) {
 		return nil, nil, "", errors.New("Unexpected argument: " + strings.Join(args[len(command.Args):], " "))
 	}
