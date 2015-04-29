@@ -76,11 +76,13 @@ func (cli *Cli) ParseCmd(cmd string) (topic *Topic, command *Command) {
 }
 
 func parseVarArgs(command *Command, args []string) (result []string, appName string, err error) {
-	result = args
+	result = make([]string, 0, len(args))
 	parseFlags := true
 	for i := 0; i < len(args); i++ {
 		switch {
-		case parseFlags && (args[i] == "help" || args[i] == "--help" || args[i] == "-h"):
+		case !parseFlags:
+			result = append(result, args[i])
+		case args[i] == "help" || args[i] == "--help" || args[i] == "-h":
 			return nil, "", ErrHelp
 		case args[i] == "--":
 			parseFlags = false
@@ -90,6 +92,8 @@ func parseVarArgs(command *Command, args []string) (result []string, appName str
 				return nil, "", errors.New("Must specify app name")
 			}
 			appName = args[i]
+		default:
+			result = append(result, args[i])
 		}
 	}
 	return result, appName, nil
