@@ -31,9 +31,9 @@ module.exports = function(topic) {
 
       cli.log('\nstarting container...');
       if (procName === 'web') {
-	cli.log('web process will be available at', colors.yellow.underline(getURL()));
+        cli.log('web process will be available at', colors.yellow.underline(getURL()));
       }
-      docker.runImage(startImageId, context.cwd, command, false);
+      return docker.runImage(startImageId, context.cwd, command, false);
     }
   };
 };

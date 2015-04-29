@@ -12,6 +12,7 @@ module.exports = function(topic) {
       var stdout = child.execSync(`docker images`, { encoding: 'utf8' });
       var images = _.map(_.filter(stdout.split('\n'), isImage), lineToId);
       images.forEach(removeImage);
+      return images;
     }
   }
 };

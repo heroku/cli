@@ -4,13 +4,16 @@ var fs = require('fs');
 var _ = require('lodash');
 var uuid = require('node-uuid');
 var crypto = require('crypto');
-var util = require('heroku-cli-util');
+var os = require('os');
+var cli = require('heroku-cli-util');
 var directory = require('./directory');
+require('prototypes');
 
 const FILENAME = 'Dockerfile';
 
 module.exports = {
   filename: FILENAME,
+  silent: false,
   buildImage: buildImage,
   ensureExecImage: ensureExecImage,
   ensureStartImage: ensureStartImage,
@@ -19,19 +22,22 @@ module.exports = {
 
 function runImage(imageId, cwd, command, mount) {
   if (!imageId) return;
-  var mountComponent = mount ? `-v ${cwd}:/app/src` : '';
+  var mountDir = crossPlatformCwd(cwd);
+  var mountComponent = mount ? `-v "${mountDir}:/app/src"` : '';
   var envArgComponent = directory.getFormattedEnvArgComponent(cwd);
-  var runCommand = `docker run -w /app/src -p 3000:3000 --rm -it ${mountComponent} ${envArgComponent} ${imageId} sh -c '${command}' || true`;
-  child.execSync(runCommand, {
-    stdio: [0, 1, 2]
+  var runCommand = `docker run -w /app/src -p 3000:3000 --rm -it ${mountComponent} ${envArgComponent} ${imageId} sh -c "${command}" || true`;
+  var result = child.execSync(runCommand, {
+    stdio: this.silent ? [0, 'pipe', 'pipe'] : 'inherit'
   });
+  return Buffer.isBuffer(result) ?
+    result.toString().trim() : result;
 }
 
 function buildImage(dir, id, dockerfile) {
-  console.log('building image...');
+  cli.log('building image...');
   var dockerfile = dockerfile || path.join(dir, FILENAME);
-  var build = child.execSync(`docker build --force-rm --file="${dockerfile}" --tag="${id}" ${dir}`, {
-    stdio: [0, 1, 2]
+  var build = child.execSync(`docker build --force-rm --file="${dockerfile}" --tag="${id}" "${dir}"`, {
+    stdio: this.silent ? [0, 'pipe', 'pipe'] : 'inherit'
   });
   return id;
 }
@@ -42,12 +48,12 @@ function ensureExecImage(dir) {
     var contents = fs.readFileSync(dockerfile, { encoding: 'utf8' });
     var hash = createHash(contents);
     var imageId = getImageId(hash);
-    imageExists(imageId) || buildImage(dir, imageId);
+    imageExists(imageId) || this.buildImage(dir, imageId);
     return imageId;
   }
   catch (e) {
     if (e.code === 'ENOENT') {
-      util.error('No Dockerfile found, did you run `heroku docker:init`?');
+      cli.error('No Dockerfile found, did you run `heroku docker:init`?');
       return;
     }
     else {
@@ -57,7 +63,7 @@ function ensureExecImage(dir) {
 }
 
 function ensureStartImage(dir) {
-  var execImageId = ensureExecImage(dir);
+  var execImageId = this.ensureExecImage(dir);
   if (!execImageId) {
     return;
   }
@@ -67,7 +73,7 @@ function ensureStartImage(dir) {
   var filepath = path.join(dir, filename);
   fs.writeFileSync(filepath, contents, { encoding: 'utf8' });
   try {
-    buildImage(dir, imageId, filepath);
+    this.buildImage(dir, imageId, filepath);
   }
   catch (e) {
     fs.unlinkSync(filepath);
@@ -103,4 +109,14 @@ function getAllImages() {
   function lineToId(line) {
     return line.split(' ')[0];
   }
+}
+
+function crossPlatformCwd(cwd){
+    if (os.platform() == 'win32') {
+        // this is due to how volumes are mounted by boot2docker/virtualbox
+        var p = path.parse(cwd);
+        return path.posix.sep + p.root.split(':')[0].toLowerCase() + path.posix.sep
+          + p.dir.substring(p.root.length).replaceAll(path.sep, path.posix.sep) + path.posix.sep + p.base;
+    }
+    return cwd;
 }

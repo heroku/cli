@@ -44,7 +44,7 @@ function release(context) {
       var slugPath = os.tmpdir();
       var imageId = docker.ensureStartImage(context.cwd);
       if (!imageId) {
-	return Promise.reject();
+	      return Promise.reject();
       }
 
       var containerId = child.execSync(`docker run -d ${imageId} tar cfvz /tmp/slug.tgz -C / --exclude=.git --exclude=.heroku ./app`, {

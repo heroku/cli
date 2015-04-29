@@ -17,7 +17,7 @@ module.exports = function(topic) {
       { name: 'template', description: 'create a Dockerfile based on a language template', hasValue: true }
     ],
     run: function(context) {
-      createDockerfile(context.cwd, context.args.template);
+      return createDockerfile(context.cwd, context.args.template);
     }
   };
 };
@@ -40,4 +40,5 @@ function createDockerfile(dir, lang) {
 
   fs.writeFileSync(dockerfile, contents);
   util.log(`Wrote Dockerfile (${platform.name})`);
+  return platform.name;
 }
