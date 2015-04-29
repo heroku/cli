@@ -1,9 +1,8 @@
 var child = require('child_process');
 var fs = require('fs');
 var path = require('path');
-var state = require('../lib/state');
 var docker = require('../lib/docker');
-var envutil = require('../lib/env-util');
+var directory = require('../lib/directory');
 
 module.exports = function(topic) {
   return {
@@ -13,20 +12,10 @@ module.exports = function(topic) {
     help: 'Run command in Docker container with the current working directory mounted',
     variableArgs: true,
     run: function(context) {
-      var imageId = docker.ensureExecImage(context.cwd);
-      if (!imageId) {
-	return;
-      }
-      runCommand(imageId, context.cwd, context.args);
+      var execImageId = docker.ensureExecImage(context.cwd);
+      if (!execImageId) return;
+      var command = context.args.join(' ');
+      docker.runImage(execImageId, context.cwd, command, true);
     }
   };
 };
-
-function runCommand(imageId, cwd, args) {
-  var envArgComponent = envutil.getFormattedEnvArgComponent(cwd);
-  var command = args.join(' ');
-  var execString = `docker run -p 3000:3000 -v ${cwd}:/app/src -w /app/src --rm -it ${envArgComponent} ${imageId} ${command} || true`;
-  child.execSync(execString, {
-    stdio: [0, 1, 2]
-  });
-}

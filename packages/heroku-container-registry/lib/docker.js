@@ -5,6 +5,7 @@ var _ = require('lodash');
 var uuid = require('node-uuid');
 var crypto = require('crypto');
 var util = require('heroku-cli-util');
+var directory = require('./directory');
 
 const FILENAME = 'Dockerfile';
 
@@ -12,8 +13,19 @@ module.exports = {
   filename: FILENAME,
   buildImage: buildImage,
   ensureExecImage: ensureExecImage,
-  ensureStartImage: ensureStartImage
+  ensureStartImage: ensureStartImage,
+  runImage: runImage
 };
+
+function runImage(imageId, cwd, command, mount) {
+  if (!imageId) return;
+  var mountComponent = mount ? `-v ${cwd}:/app/src` : '';
+  var envArgComponent = directory.getFormattedEnvArgComponent(cwd);
+  var runCommand = `docker run -w /app/src -p 3000:3000 --rm -it ${mountComponent} ${envArgComponent} ${imageId} sh -c '${command}' || true`;
+  child.execSync(runCommand, {
+    stdio: [0, 1, 2]
+  });
+}
 
 function buildImage(dir, id, dockerfile) {
   console.log('building image...');

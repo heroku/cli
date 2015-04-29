@@ -23,4 +23,3 @@ ONBUILD RUN chmod +x /app/target/universal/stage/bin/$APP_NAME
 ONBUILD USER app
 
 ONBUILD EXPOSE 3000
-ONBUILD CMD /app/target/universal/stage/bin/$APP_NAME -Dhttp.port=$PORT

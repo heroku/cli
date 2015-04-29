@@ -15,4 +15,3 @@ WORKDIR /app/src
 
 ONBUILD COPY . /app/src
 ONBUILD EXPOSE 3000
-ONBUILD CMD [ "echo", "Minimal Dockerfile" ]

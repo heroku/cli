@@ -4,15 +4,10 @@ var os = require('os');
 var fs = require('fs');
 var Heroku = require('heroku-client');
 var request = require('request');
-var state = require('../lib/state');
-var docker = require('../lib/docker');
 var agent = require('superagent');
 var util = require('heroku-cli-util');
-var yaml = require('yamljs');
-
-process.on('uncaughtException', function(err) {
-  console.log('err:', err.stack);
-});
+var directory = require('../lib/directory');
+var docker = require('../lib/docker');
 
 module.exports = function(topic) {
   return {
@@ -29,12 +24,9 @@ module.exports = function(topic) {
 function release(context) {
   var heroku = new Heroku({ token: context.auth.password });
   var app = heroku.apps(context.app);
+  var procfile = directory.readProcfile(context.cwd);
 
-  var procfilePath = path.join(context.cwd, 'Procfile');
-  try {
-    fs.statSync(procfilePath);
-  }
-  catch (e) {
+  if (!procfile) {
     util.error('Procfile required. Aborting');
     return;
   }
@@ -70,9 +62,8 @@ function release(context) {
 
   function createRemoteSlug(slugPath) {
     console.log('creating remote slug...');
-    var procfileEntries = yaml.load(procfilePath);
     var slugInfo = app.slugs().create({
-      process_types: procfileEntries
+      process_types: procfile
     });
     return Promise.all([slugPath, slugInfo])
   }

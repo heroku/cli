@@ -1,14 +1,16 @@
 var fs = require('fs');
 var dotenv = require('dotenv');
 var path = require('path');
+var yaml = require('yamljs');
 
 module.exports = {
-  getFormattedEnvArgComponent: getFormattedEnvArgComponent 
+  getFormattedEnvArgComponent: getFormattedEnvArgComponent,
+  readProcfile: readProcfile
 };
 
 function getFormattedEnvArgComponent(cwd) {
   var envParameters = [];
-  
+
   try {
     var dotenvPath = path.join(cwd, '.env');
     var dotenvEntries = dotenv.parse(fs.readFileSync(dotenvPath));
@@ -26,4 +28,12 @@ function getFormattedEnvArgComponent(cwd) {
   }
 
   return envParameters.join(' ');
+}
+
+function readProcfile(cwd) {
+  try {
+    var procfilePath = path.join(cwd, 'Procfile');
+    return yaml.load(procfilePath);
+  }
+  catch (e) {}
 }

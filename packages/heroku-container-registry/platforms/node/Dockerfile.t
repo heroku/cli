@@ -23,4 +23,3 @@ ONBUILD RUN echo "export PATH=\"/app/heroku/node/bin:/app/bin:/app/node_modules/
 ONBUILD RUN echo "cd /app/src" >> /app/.profile.d/nodejs.sh
 
 ONBUILD EXPOSE 3000
-ONBUILD CMD [ "npm", "start" ]

@@ -37,4 +37,3 @@ ONBUILD RUN echo "export GEM_HOME=\"/app/src/vendor/bundle\"" >> /app/.profile.d
 ONBUILD RUN echo "cd /app/src" >> /app/.profile.d/ruby.sh
 
 ONBUILD EXPOSE 3000
-ONBUILD CMD bundle exec puma -C config/puma.rb # TODO: This is broken

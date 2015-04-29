@@ -3,10 +3,9 @@ var path = require('path');
 var child = require('child_process');
 var _ = require('lodash');
 var exists = require('is-there');
-var state = require('../lib/state');
+var util = require('heroku-cli-util');
 var docker = require('../lib/docker');
 var platforms = require('../platforms');
-var util = require('heroku-cli-util');
 
 module.exports = function(topic) {
   return {
