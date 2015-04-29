@@ -109,21 +109,32 @@ func parseVarArgs(command *Command, args []string) (result []string, flags map[s
 							return nil, nil, "", errors.New("--" + flag.Name + " requires a value")
 						}
 						flags[flag.Name] = args[i]
+						continue
 					} else {
 						flags[flag.Name] = true
+						continue
 					}
 				}
+			}
+			if command.VariableArgs {
+				result = append(result, args[i])
+			} else {
+				return nil, nil, "", errors.New("Unexpected flag: " + args[i])
 			}
 		default:
 			result = append(result, args[i])
 		}
 	}
+	Println(result)
 	return result, flags, appName, nil
 }
 
 func parseArgs(command *Command, args []string) (result map[string]string, flags map[string]interface{}, appName string, err error) {
 	result = map[string]string{}
 	args, flags, appName, err = parseVarArgs(command, args)
+	if err != nil {
+		return nil, nil, "", err
+	}
 	if len(args) > len(command.Args) {
 		return nil, nil, "", errors.New("Unexpected argument: " + strings.Join(args[len(command.Args):], " "))
 	}
