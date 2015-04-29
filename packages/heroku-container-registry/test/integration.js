@@ -57,7 +57,6 @@ describe('basic integration', function() {
     before(function(done) {
       cli.console.mock();
       this.result = start.run({ cwd: cwd, args: [] });
-      console.log('this.result:', this.result);
       done();
     });
 
