@@ -1,3 +1,7 @@
+4.15.5
+======
+Fixed bug with required flags
+
 4.15.4
 ======
 Ensured flags always get parsed even when they do not match required flags
