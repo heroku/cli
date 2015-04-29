@@ -1,3 +1,7 @@
+4.15.2
+======
+Added flags to context instead of combining them with args
+
 4.15.1
 ======
 Fixed arg parsing for variableArgs
