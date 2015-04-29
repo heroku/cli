@@ -72,3 +72,7 @@ Creates any containers necessary for the build automatically.
 ### `docker:clean`
 
 Removes all Heroku-Docker images from the Docker host.
+
+## Testing
+
+`npm test`
