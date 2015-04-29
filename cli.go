@@ -57,6 +57,7 @@ func (cli *Cli) Run(args []string) (err error) {
 	}
 	ctx.Cwd, _ = os.Getwd()
 	ctx.HerokuDir = AppDir
+	ctx.Debug = debugging
 	ctx.Command.Run(ctx)
 	return nil
 }
