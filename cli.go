@@ -101,6 +101,7 @@ func parseVarArgs(command *Command, args []string) (result []string, flags map[s
 				panic(err)
 			}
 		case parseFlags && strings.HasPrefix(args[i], "-"):
+			foundFlag := false
 			for _, flag := range command.Flags {
 				if args[i] == "-"+string(flag.Char) || args[i] == "--"+flag.Name {
 					if flag.HasValue {
@@ -109,23 +110,24 @@ func parseVarArgs(command *Command, args []string) (result []string, flags map[s
 							return nil, nil, "", errors.New("--" + flag.Name + " requires a value")
 						}
 						flags[flag.Name] = args[i]
-						continue
+						foundFlag = true
 					} else {
 						flags[flag.Name] = true
-						continue
+						foundFlag = true
 					}
 				}
 			}
-			if command.VariableArgs {
-				result = append(result, args[i])
-			} else {
-				return nil, nil, "", errors.New("Unexpected flag: " + args[i])
+			if !foundFlag {
+				if command.VariableArgs {
+					result = append(result, args[i])
+				} else {
+					return nil, nil, "", errors.New("Unexpected flag: " + args[i])
+				}
 			}
 		default:
 			result = append(result, args[i])
 		}
 	}
-	Println(result)
 	return result, flags, appName, nil
 }
 
