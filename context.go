@@ -10,6 +10,7 @@ type Context struct {
 	Args      interface{} `json:"args"`
 	Cwd       string      `json:"cwd"`
 	HerokuDir string      `json:"herokuDir"`
+	Debug     bool        `json:"debug"`
 	Auth      struct {
 		Username string `json:"username"`
 		Password string `json:"password"`
