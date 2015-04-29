@@ -1,3 +1,9 @@
+4.15.0
+=====
+Updated iojs to 1.8.1
+Added debugging flag for plugins
+Fixed duplicate command warning
+
 4.14.0
 =====
 Added -r flag to get app name via git remote
