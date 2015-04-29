@@ -1,15 +1,52 @@
 'use strict';
-let net = require('net');
+let tls = require('tls');
 let url = require('url');
 let Heroku = require('heroku-client');
+let h = require('heroku-cli-util');
 let co = require('co');
 let errors = require('./errors');
 let heroku;
 
+function buildCommandWithExitStatus(command) {
+  return `${command}; echo heroku-command-exit-status $?`;
+}
+
 function startDyno(app, command) {
   return heroku.apps(app).dynos().create({
     command: command,
-    attach: true
+    attach: true,
+    env: {
+      "COLUMNS": "80",
+      "LINES": "24"
+    }
+  });
+}
+
+function attachToRendezvous(uri) {
+  let c = tls.connect(uri.port, uri.hostname);
+  c.setEncoding('utf8');
+  c.on('connect', function () {
+    c.write(uri.path.substr(1) + '\r\n');
+  });
+  let firstLine = true;
+  c.on('data', function (data) {
+    // discard first line
+    if (firstLine) { firstLine = false; return; }
+    //console.dir(data);
+    data = data.replace('\r\n', '\n');
+    let exitCode = data.match(/^heroku-command-exit-status (\d+)$/m);
+    if (exitCode) {
+      process.stdout.write(data.replace(/^heroku-command-exit-status \d+$/m, ''));
+      process.exit(exitCode[1]);
+    }
+    process.stdout.write(data);
+  });
+  c.on('timeout', function () {
+    console.error('timed out');
+  });
+  c.on('end', function () {
+    h.error('Could not find exit status');
+    process.exit(1);
   });
 }
 
@@ -18,24 +55,11 @@ module.exports = function run (context) {
     heroku = new Heroku({token: context.auth.password});
     let command = context.args.join(' ');
     process.stdout.write(`Running \`${command}\` attached to terminal... `);
+    if (true) {
+      command = buildCommandWithExitStatus(command);
+    }
     let dyno = yield startDyno(context.app, command);
     console.log(`up, ${dyno.name}`);
-    let uri = url.parse(dyno.attach_url);
-    let client = net.connect(uri.port, uri.hostname, function () {
-      client.write(uri.path.substr(1) + '\r\n');
-    });
-    client.on('data', function (data) {
-      console.log('data');
-      console.log(data.toString());
-    });
-    client.on('timeout', function () {
-      console.error('timed out');
-    });
-    client.on('end', function (e) {
-      console.log('disconnected', e);
-    });
-    client.on('close', function (e) {
-      console.log('closed', e);
-    });
+    attachToRendezvous(url.parse(dyno.attach_url));
   }).catch(errors.handleErr);
 };
