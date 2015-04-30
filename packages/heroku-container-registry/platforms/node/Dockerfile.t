@@ -12,14 +12,13 @@ RUN mkdir -p /app/heroku/node
 RUN curl -s https://s3pository.heroku.com/node/v$NODE_ENGINE/node-v$NODE_ENGINE-linux-x64.tar.gz | tar --strip-components=1 -xz -C /app/heroku/node
 ENV PATH /app/heroku/node/bin:$PATH
 
+RUN mkdir -p /app/.profile.d
+RUN echo "export PATH=\"/app/heroku/node/bin:/app/bin:/app/node_modules/.bin:\$PATH\"" > /app/.profile.d/nodejs.sh
+RUN echo "cd /app/src" >> /app/.profile.d/nodejs.sh
+
+EXPOSE 3000
+
 ONBUILD RUN mkdir -p /app/src
-ONBUILD WORKDIR /app/src
 ONBUILD COPY . /app/src
-
+ONBUILD WORKDIR /app/src
 ONBUILD RUN npm install
-
-ONBUILD RUN mkdir -p /app/.profile.d
-ONBUILD RUN echo "export PATH=\"/app/heroku/node/bin:/app/bin:/app/node_modules/.bin:\$PATH\"" > /app/.profile.d/nodejs.sh
-ONBUILD RUN echo "cd /app/src" >> /app/.profile.d/nodejs.sh
-
-ONBUILD EXPOSE 3000
