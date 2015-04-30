@@ -25,9 +25,12 @@ RUN mkdir -p /app/heroku/node
 RUN curl -s https://s3pository.heroku.com/node/v$NODE_ENGINE/node-v$NODE_ENGINE-linux-x64.tar.gz | tar --strip-components=1 -xz -C /app/heroku/node
 ENV PATH /app/heroku/node/bin:$PATH
 
-ONBUILD COPY . /app/src
 ONBUILD WORKDIR /app/src
+ONBUILD COPY Gemfile /app/src/
+ONBUILD COPY Gemfile.lock /app/src/
 ONBUILD RUN bundle install # TODO: desirable if --path parameter were passed
+
+ONBUILD COPY . /app/src
 
 ONBUILD RUN mkdir -p /app/.profile.d
 ONBUILD RUN echo "export PATH=\"/app/heroku/ruby/bin:/app/heroku/bundler/bin:/app/heroku/node/bin:\$PATH\"" > /app/.profile.d/ruby.sh
