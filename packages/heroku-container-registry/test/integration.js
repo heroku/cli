@@ -7,6 +7,7 @@ var cli = require('heroku-cli-util');
 var child = require('child_process');
 var stream = require('stream');
 
+var fixtures = require('./fixtures');
 var docker = require('../lib/docker');
 var init = require('../commands/init')('test');
 var exec = require('../commands/exec')('test');
@@ -14,19 +15,22 @@ var start = require('../commands/start')('test');
 var release = require('../commands/release')('test');
 var clean = require('../commands/clean')('clean');
 
-describe('basic integration', function() {
-  var cwd = createFixture('basic');
-  docker.silent = true;
+describe('integration (basic-node)', function() {
+
+  before(function() {
+    this.cwd = fixtures.create('basic-node');
+    docker.silent = true;
+  });
 
   after(function() {
-    fse.removeSync(path.join(__dirname, 'tmp'));
+    fixtures.destroy();
   });
 
   describe('init', function() {
 
     before(function(done) {
       cli.console.mock();
-      this.result = init.run({ cwd: cwd, args: {} });
+      this.result = init.run({ cwd: this.cwd, args: {} });
       done();
     });
 
@@ -35,7 +39,7 @@ describe('basic integration', function() {
     });
 
     it('creates a Dockerfile', function() {
-      var Dockerfile = path.join(cwd, 'Dockerfile');
+      var Dockerfile = path.join(this.cwd, 'Dockerfile');
       assert.ok(fse.existsSync(Dockerfile));
     });
   });
@@ -44,12 +48,12 @@ describe('basic integration', function() {
 
     before(function(done) {
       cli.console.mock();
-      exec.run({ cwd: cwd, args: ['npm', 'install'] });
+      exec.run({ cwd: this.cwd, args: ['npm', 'install'] });
       done();
     });
 
     it('creates node_modules', function() {
-      var node_modules = path.join(cwd, 'node_modules');
+      var node_modules = path.join(this.cwd, 'node_modules');
       assert.ok(fse.existsSync(node_modules));
     });
   });
@@ -58,7 +62,7 @@ describe('basic integration', function() {
 
     before(function(done) {
       cli.console.mock();
-      this.result = start.run({ cwd: cwd, args: [] });
+      this.result = start.run({ cwd: this.cwd, args: [] });
       done();
     });
 
@@ -74,7 +78,7 @@ describe('basic integration', function() {
       this.app = new MockApp();
       this.req = new MockRequest();
       release.run({
-        cwd: cwd,
+        cwd: this.cwd,
         heroku: {},
         request: this.req.stream,
         app: this.app
@@ -112,14 +116,6 @@ describe('basic integration', function() {
     });
   });
 });
-
-function createFixture(name) {
-  var source = path.join(__dirname, 'fixtures', name);
-  var dest = path.join(__dirname, 'tmp', uuid.v1());
-  fse.ensureDirSync(dest);
-  fse.copySync(source, dest);
-  return dest;
-}
 
 function MockApp() {
   this.process_types = undefined;
