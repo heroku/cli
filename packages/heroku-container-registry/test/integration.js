@@ -5,11 +5,13 @@ var path = require('path');
 var uuid = require('uuid');
 var cli = require('heroku-cli-util');
 var child = require('child_process');
+var stream = require('stream');
 
 var docker = require('../lib/docker');
 var init = require('../commands/init')('test');
 var exec = require('../commands/exec')('test');
 var start = require('../commands/start')('test');
+var release = require('../commands/release')('test');
 var clean = require('../commands/clean')('clean');
 
 describe('basic integration', function() {
@@ -65,6 +67,31 @@ describe('basic integration', function() {
     });
   });
 
+  describe('release', function() {
+
+    before(function(done) {
+      cli.console.mock();
+      this.app = new MockApp();
+      this.req = new MockRequest();
+      release.run({
+        cwd: cwd,
+        heroku: {},
+        request: this.req.stream,
+        app: this.app
+      }).then(done, done);
+    });
+
+    it('creates a slug', function() {
+      assert.equal(this.app.id, this.app.response.id);
+      assert.equal(this.app.process_types.web, "echo 'here is the web process'");
+    });
+
+    it('releases a slug', function() {
+      assert.ok(this.req.size > 9000000 && this.req.size < 12000000); // between 9 and 12 MB
+      assert.equal(this.req.url, this.app.response.blob.url);
+    });
+  });
+
   describe('clean', function() {
 
     before(function(done) {
@@ -92,4 +119,58 @@ function createFixture(name) {
   fse.ensureDirSync(dest);
   fse.copySync(source, dest);
   return dest;
+}
+
+function MockApp() {
+  this.process_types = undefined;
+  this.id = undefined;
+  this.response = {
+    id: 'slug-id-123',
+    blob: { url: 'http://api.heroku.com/slug/123' }
+  };
+}
+
+MockApp.prototype.info = function() {
+  return Promise.resolve();
+};
+
+MockApp.prototype.slugs = function() {
+  return {
+    create: this.createSlug.bind(this)
+  };
+};
+
+MockApp.prototype.createSlug = function(obj) {
+  this.process_types = obj.process_types;
+  return this.response;
+};
+
+MockApp.prototype.releases = function() {
+  return {
+    create: this.createRelease.bind(this)
+  };
+};
+
+MockApp.prototype.createRelease = function(obj) {
+  this.id = obj.slug;
+};
+
+function MockRequest() {
+  var self = this;
+  self.url = undefined;
+  self.size = 0;
+
+  self.stream = function(options) {
+    var length = parseInt(options.headers['content-length'], 10);
+    self.url = options.url;
+    return new stream.Writable({
+      write: function(chunk, encoding, next) {
+        self.size += chunk.length;
+        if (self.size >= length) {
+          this.emit('response');
+        }
+        next();
+      }
+    });
+  }
 }

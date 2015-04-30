@@ -5,7 +5,7 @@ var fs = require('fs');
 var Heroku = require('heroku-client');
 var request = require('request');
 var agent = require('superagent');
-var util = require('heroku-cli-util');
+var cli = require('heroku-cli-util');
 var directory = require('../lib/directory');
 var docker = require('../lib/docker');
 
@@ -22,24 +22,25 @@ module.exports = function(topic) {
 };
 
 function release(context) {
-  var heroku = new Heroku({ token: context.auth.password });
-  var app = heroku.apps(context.app);
   var procfile = directory.readProcfile(context.cwd);
 
+  var heroku = context.heroku || new Heroku({ token: context.auth.password });
+  var app = context.heroku ? context.app : heroku.apps(context.app);
+  request = context.request || request;
+
   if (!procfile) {
-    util.error('Procfile required. Aborting');
+    cli.error('Procfile required. Aborting');
     return;
   }
 
-  app.info()
+  return app.info()
     .then(createLocalSlug)
     .then(createRemoteSlug)
     .then(uploadSlug)
-    .then(releaseSlug)
-    .catch(onErr);
+    .then(releaseSlug);
 
   function createLocalSlug() {
-    console.log('creating local slug...');
+    cli.log('creating local slug...');
     try {
       var slugPath = os.tmpdir();
       var imageId = docker.ensureStartImage(context.cwd);
@@ -61,7 +62,7 @@ function release(context) {
   }
 
   function createRemoteSlug(slugPath) {
-    console.log('creating remote slug...');
+    cli.log('creating remote slug...');
     var slugInfo = app.slugs().create({
       process_types: procfile
     });
@@ -69,7 +70,7 @@ function release(context) {
   }
 
   function uploadSlug(slug) {
-    console.log('uploading slug...');
+    cli.log('uploading slug...');
     var slugPath = slug[0];
     var slugInfo = slug[1];
     var size = fs.statSync(slugPath).size;
@@ -93,14 +94,9 @@ function release(context) {
   }
 
   function releaseSlug(id) {
-    console.log('releasing slug...');
+    cli.log('releasing slug...');
     return app.releases().create({
       slug: id
     });
-  }
-
-  function onErr(err) {
-    console.log('caught err:', err.stack);
-    console.log('body:', err.body);
   }
 }
