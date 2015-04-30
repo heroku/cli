@@ -54,7 +54,7 @@ based on Heroku's Cedar-14 stack.
 Mounts the current directory into a container built from the Dockerfile,
 then executes the provided command.
 
-### `docker:start [ process type ]`
+### `docker:start [process type]`
 
 Copies the current directory into a container built from the Dockerfile,
 then executes the process type specified (`web` by default).
