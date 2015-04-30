@@ -12,6 +12,6 @@
     "node": "0.12.2"
   },
   "dependencies": {
-    "express": "*"
+    "lodash": "3.7.0"
   }
 }
