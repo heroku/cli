@@ -41,7 +41,6 @@ Cedar-14 stack:
 
 ```
 heroku docker:start
-heroku docker:open
 ```
 
 Finally, you could open a shell in Docker to manipulate the project with

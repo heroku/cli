@@ -20,8 +20,6 @@ module.exports = {
     require('./commands/exec')(TOPIC),
     require('./commands/start')(TOPIC),
     require('./commands/release')(TOPIC),
-
-    require('./commands/open')(TOPIC),
     require('./commands/clean')(TOPIC)
   ]
 };

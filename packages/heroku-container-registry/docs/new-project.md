@@ -67,25 +67,8 @@ function sayHi(req, res, next) {
 heroku docker:start
 ```
 
-While the server is running, open a new terminal
-and ensure that it has a correct `$DOCKER_HOST`:
-
-```
-docker ps
-```
-
-You should see your running container:
-
-```
-CONTAINER ID        IMAGE                                                       COMMAND             CREATED             STATUS              PORTS                    NAMES
-b556b7a29c3e        heroku-docker-2e793bb0-deed-11e4-8006-8d1a6e069a60:latest   "npm start"         12 seconds ago      Up 11 seconds       0.0.0.0:3000->3000/tcp   jovial_thompson
-```
-
-Then open your app in a browser:
-
-```
-heroku docker:open
-```
+While the server is running, open the provided URL
+in a browser.
 
 # Customize your stack
 
@@ -131,13 +114,12 @@ Now try it:
 
 ```
 heroku docker:start
-heroku docker:open
 ```
 
-**Error!?**
-Oh yeah - Heroku's cedar-14 stack doesn't ship with GraphicsMagick,
+When you vist the URL, an error will appear in your console.
+Why? Heroku's cedar-14 stack doesn't ship with GraphicsMagick,
 so the 'gm' module won't work out of the box.
-Open up your Dockerfile, and add this directly above the *2nd* WORKDIR line (`WORKDIR /app/src`):
+Open up your Dockerfile, and add this directly above the first ONBUILD command:
 
 ```
 RUN curl -s http://78.108.103.11/MIRROR/ftp/GraphicsMagick/1.3/GraphicsMagick-1.3.21.tar.gz | tar xvz -C /tmp
@@ -152,14 +134,13 @@ Now try it again with the updated Dockerfile (new images will automatically be b
 
 ```
 heroku docker:start
-heroku docker:open
 ```
 
-With those Dockerfile changes, the `gm` binary will be bundled with your app's slug.
-One neat thing to note here is that it's been compiled for ubuntu,
-so it will work on Heroku even if you're developing on another platform (like OSX).
+With those Dockerfile changes, the `gm` binary will be bundled with your app's slug!
+One neat thing to note here is that it's been compiled for Ubuntu,
+so it will work on Heroku even if you're developing on another platform (like OSX or Windows).
 
-Add a querystring like ?text=Node.js to dynamically create new images.
+Add a querystring like ?text=Node.js to the URL to create dynamic images.
 
 # Release your app to Heroku
 

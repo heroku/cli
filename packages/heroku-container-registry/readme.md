@@ -54,14 +54,12 @@ based on Heroku's Cedar-14 stack.
 Mounts the current directory into a container built from the Dockerfile,
 then executes the provided command.
 
-### `docker:start`
+### `docker:start [ process type ]`
 
 Copies the current directory into a container built from the Dockerfile,
-then executes the Dockerfile's default command to start the app.
+then executes the process type specified (`web` by default).
 
-### `docker:open`
-
-Opens the container running in the current directory in the default browser.
+When starting a `web` process, `docker:start` provides the web server's URL.
 
 ### `docker:release`
 
@@ -76,3 +74,6 @@ Removes all Heroku-Docker images from the Docker host.
 ## Testing
 
 `npm test`
+
+- Assumes that `docker` is accessible
+- Assumes that it's being run in a directory that the docker host (like boot2docker) can mount

@@ -18,6 +18,12 @@ make unlink
 heroku plugins:install heroku-docker
 ```
 
+While developing, you can run the basic test suite:
+
+```
+npm test
+```
+
 ## Platform API
 
 All of the language support is in [/platforms](/platforms).
