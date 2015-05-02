@@ -6,7 +6,7 @@ Get the project:
 
 ```
 git clone https://github.com/heroku/ruby-getting-started
-cd github.com/heroku/ruby-getting-started
+cd ruby-getting-started
 ```
 
 Ensure that you can connect to Docker in this shell:
