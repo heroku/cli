@@ -58,3 +58,9 @@ heroku docker:exec bash
 ```
 heroku docker:exec bundle install
 ```
+
+You can even make it really easy to speed up the assets pipeline by precompiling locally
+
+```
+heroku docker:exec RAILS_ENV=production bundle exec rake assets:precompile
+```
