@@ -40,10 +40,10 @@ func BuildStack(skip int) Stack {
 	return stack
 }
 
-// Create a fingerprint that uniqely identify a given message. We use the full
-// callstack, including file names. That ensure that there are no false duplicates
-// but also means that after changing the code (adding/removing lines), the
-// fingerprints will change. It's a trade-off.
+// Create a fingerprint that uniquely identify a given message. We use the full
+// callstack, including file names. That ensure that there are no false
+// duplicates but also means that after changing the code (adding/removing
+// lines), the fingerprints will change. It's a trade-off.
 func (s Stack) Fingerprint() string {
 	hash := crc32.NewIEEE()
 	for _, frame := range s {
