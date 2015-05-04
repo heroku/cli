@@ -23,7 +23,7 @@ type Plugin struct {
 var node = gode.NewClient(AppDir)
 
 func init() {
-	node.Registry = "http://d3nfsbmspisrno.cloudfront.net"
+	node.Registry = "https://d3nfsbmspisrno.cloudfront.net"
 	node.NodeVersion = "1.8.1"
 	node.NpmVersion = "2.8.3"
 }
