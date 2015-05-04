@@ -1,6 +1,7 @@
-# Hacking on the plugin
+# Contributing
 
 You want to add new language support? Awesome!
+Figured out a way to seamlessly integrate with docker-compose and addons? Even better!
 We're in the very early stages of exploring the possibilities of Docker + Heroku,
 so all ideas are welcome.
 
@@ -71,7 +72,4 @@ example that doesn't require the user to install anything new.
 
 ## Pull requests
 
-When your changes are ready, just send a PR - I'm aggressively
-merging them even when they're works in progress so we can keep momentum up.
-
-And thank you!
+When your changes are ready, just send a PR!
