@@ -1,75 +1,18 @@
-# Heroku CLI Docker Plugin
+# Heroku Toolbelt Docker local dev plugin
 
 Develop with Docker. Deploy to Heroku.
 
-## OSX Prerequisite: boot2docker or similar
+## Installation
 
-If you already have some mechanism of hosting Docker locally, you can skip this step.
-If you're new to Docker on OSX, we recommend
-[installing boot2docker](http://boot2docker.io/).
+    heroku plugins:install heroku-docker
 
-Before using Heroku-Docker, you should make sure `docker` works in your shell:
+A working local Docker installation is required. Docker 1.6 or later is recommended and 1.6 is required on Windows. We recommend [Boot2docker](http://boot2docker.io/) for users on OS X and Windows.
 
-```
-docker ps
-```
-
-If you see errors there, you may need to initialize boot2docker:
-
-```
-boot2docker stop && boot2docker start
-$(boot2docker shellinit)
-```
-
-You can do this init in your bash profile; that's out of scope for these docs.
-
-## Install the latest plugin
-
-```
-heroku plugins:uninstall heroku-docker
-heroku plugins:install heroku-docker
-```
-
-## Tutorials
-
-- [Starting a new Node.js project](docs/new-project.md)
-- [Dockerizing Heroku's Node.js getting started project](docs/node-getting-started.md)
-- [Hacking on this plugin](docs/hacking.md)
-
-## Plugin API
-
-### `docker:init [--template <templateName>]`
-
-Initializes a Dockerfile in the current directory.
-
-If --template is provided, uses that Dockerfile template.
-All templates are in /platforms.
-If no template is provided,
-runs `detect` on each platform to see if a platform can be detected.
-If nothing is detected, creates a Dockerfile from a default 'minimal' template
-based on Heroku's Cedar-14 stack.
-
-### `docker:exec <command string>`
-
-Mounts the current directory into a container built from the Dockerfile,
-then executes the provided command.
-
-### `docker:start [process type]`
-
-Copies the current directory into a container built from the Dockerfile,
-then executes the process type specified (`web` by default).
-
-When starting a `web` process, `docker:start` provides the web server's URL.
-
-### `docker:release`
-
-Builds a slug within the local container then releases it to a Heroku app
-via the Heroku Platform API.
-Creates any containers necessary for the build automatically.
-
-### `docker:clean`
-
-Removes all Heroku-Docker images from the Docker host.
+See the following Dev Center guides for details on how to user the plugin:
+ 
+ * [Introduction: Local Development with Docker](https://devcenter.heroku.com/articles/introduction-local-development-with-docker?preview=1)
+ * [Getting started with Node.js and Heroku local Docker dev](https://devcenter.heroku.com/articles/getting-started-with-node-js-and-heroku-local-docker-dev?preview=1)
+ * [Getting started with Ruby and Heroku local Docker dev](https://devcenter.heroku.com/articles/getting-started-with-ruby-and-heroku-local-docker-dev?preview=1)
 
 ## Testing
 
