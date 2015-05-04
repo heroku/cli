@@ -14,7 +14,7 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/nightlyone/lockfile"
+	"github.com/dickeyxxx/golock"
 )
 
 var updateTopic = &Topic{
@@ -54,76 +54,46 @@ func init() {
 	}
 }
 
-// UpdateIfNeeded checks for and performs an autoupdate if there is a new version out.
-func UpdateIfNeeded() {
-	lock := getUpdateLock()
-	if !updateNeeded() {
-		lock.Unlock()
-		return
+// Update updates the CLI and plugins
+func Update() {
+	if err := golock.Lock(updateLockPath); err != nil {
+		panic(err)
 	}
+	defer golock.Unlock(updateLockPath)
+	touchAutoupdateFile()
 	doneUpdatingPlugins := make(chan bool)
+	done := make(chan bool)
 	go func() {
 		node.UpdatePackages()
 		doneUpdatingPlugins <- true
 	}()
+	go func() {
+		updateCLI()
+		<-doneUpdatingPlugins // wait till plugins are done
+		done <- true
+	}()
+	select {
+	case <-time.After(time.Second * 30):
+		Errln("Timed out while updating")
+	case <-done:
+	}
+}
+
+func updateCLI() {
 	manifest := getUpdateManifest(Channel)
 	if manifest.Version == Version {
-		select {
-		case <-time.After(time.Second * 30):
-			Errln("Timed out while updating")
-		case <-doneUpdatingPlugins:
-		}
-		touchAutoupdateFile()
-		lock.Unlock()
 		return
 	}
 	if !updatable() {
 		Errf("Out of date: You are running %s but %s is out.\n", Version, manifest.Version)
-		<-doneUpdatingPlugins
-		lock.Unlock()
 		return
 	}
-	// Leave out updating text until heroku-cli is used in place of ruby cli
-	// So it doesn't confuse users with 2 different version numbers
-	//Errf("Updating to %s... ", manifest.Version)
 	build := manifest.Builds[runtime.GOOS][runtime.GOARCH]
 	update(build.URL, build.Sha1)
-	select {
-	case <-time.After(time.Second * 30):
-		Errln("Timed out while updating")
-	case <-doneUpdatingPlugins:
-	}
-	//Errln("done")
-
-	// these are deferred but won't be called because of os.Exit
-	touchAutoupdateFile()
-	lock.Unlock()
-	execBin()
-	os.Exit(0)
 }
 
-// Attempts to get the lockfile
-// Blocks if unavailable
-func getUpdateLock() lockfile.Lockfile {
-	lock, err := lockfile.New(updateLockPath)
-	if err != nil {
-		Errln("Cannot initialize update lockfile.")
-		panic(err)
-	}
-	start := time.Now()
-	for {
-		if lock.TryLock() == nil {
-			return lock
-		}
-		time.Sleep(10 * time.Millisecond)
-		if time.Since(start) > 30*time.Second {
-			// In a timeout, assume the last updating process timed out
-			os.Remove(updateLockPath)
-		}
-	}
-}
-
-func updateNeeded() bool {
+// IsUpdateNeeded checks if an update is available
+func IsUpdateNeeded() bool {
 	if Version == "dev" {
 		return false
 	}
@@ -222,7 +192,7 @@ func fileSha1(path string) string {
 	return fmt.Sprintf("%x", sha1.Sum(data))
 }
 
-func execBin() {
+func reexecBin() {
 	cmd := exec.Command(binPath, os.Args[1:]...)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
