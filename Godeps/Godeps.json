@@ -29,8 +29,8 @@
 		},
 		{
 			"ImportPath": "github.com/smartystreets/goconvey/convey",
-			"Comment": "1.5.0-359-g8298bc7",
-			"Rev": "8298bc7d36389ffd3e57b85d9797850d8c2382a9"
+			"Comment": "1.5.0-390-g7a3785c",
+			"Rev": "7a3785c3002a330211525464d402c07b2afce5a7"
 		},
 		{
 			"ImportPath": "github.com/stvp/rollbar",
