@@ -28,9 +28,18 @@ ENV PATH /app/heroku/node/bin:$PATH
 ONBUILD WORKDIR /app/src
 ONBUILD COPY Gemfile /app/src/
 ONBUILD COPY Gemfile.lock /app/src/
+
+ONBUILD USER root
+ONBUILD RUN chown app /app/src/Gemfile* # ensure user can modify the Gemfile.lock
+ONBUILD USER app
+
 ONBUILD RUN bundle install # TODO: desirable if --path parameter were passed
 
 ONBUILD COPY . /app/src
+
+ONBUILD USER root
+ONBUILD RUN chown -R app /app
+ONBUILD USER app
 
 ONBUILD RUN mkdir -p /app/.profile.d
 ONBUILD RUN echo "export PATH=\"/app/heroku/ruby/bin:/app/heroku/bundler/bin:/app/heroku/node/bin:\$PATH\"" > /app/.profile.d/ruby.sh
