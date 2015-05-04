@@ -41,7 +41,11 @@ func init() {
 
 func main() {
 	defer handlePanic()
-	UpdateIfNeeded()
+	if IsUpdateNeeded() {
+		Update()
+		reexecBin()
+		os.Exit(0)
+	}
 	SetupNode()
 	err := cli.Run(os.Args)
 	if err == ErrHelp {
