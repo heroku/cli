@@ -1,3 +1,8 @@
+4.16.0
+======
+Improved locking around updates
+Load plugins over SSL
+
 4.15.6
 ======
 Use Cloudfront for updating/downloading plugins
