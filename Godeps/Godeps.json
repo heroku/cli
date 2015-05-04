@@ -12,6 +12,11 @@
 			"Rev": "b57f3d4d220d522b0cdce84cf693c85fa081d6f2"
 		},
 		{
+			"ImportPath": "github.com/dickeyxxx/golock",
+			"Comment": "v1.0.0",
+			"Rev": "81cedee99bbcf74827e24f71084f3d36bca29cac"
+		},
+		{
 			"ImportPath": "github.com/franela/goreq",
 			"Rev": "be149fea9861ab2af7e72f1bd6eb21135e7c7319"
 		},
@@ -24,8 +29,9 @@
 			"Rev": "22ddafb24adc4786c83841aa3021349818c898e4"
 		},
 		{
-			"ImportPath": "github.com/nightlyone/lockfile",
-			"Rev": "a814545ba90bdd65edfdeac274fdc26fe4722c83"
+			"ImportPath": "github.com/smartystreets/assertions",
+			"Comment": "1.5.0-380-g4727d76",
+			"Rev": "4727d767ce8a81811c40eedc2a836c85aebb4d09"
 		},
 		{
 			"ImportPath": "github.com/smartystreets/goconvey/convey",
