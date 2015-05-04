@@ -12,6 +12,7 @@ import (
 	"syscall"
 
 	"github.com/dickeyxxx/gode"
+	"github.com/dickeyxxx/golock"
 )
 
 // Plugin represents a javascript plugin
@@ -31,8 +32,10 @@ func init() {
 // SetupNode sets up node and npm in ~/.heroku
 func SetupNode() {
 	if !node.IsSetup() {
-		lock := getUpdateLock()
-		defer lock.Unlock()
+		if err := golock.Lock(updateLockPath); err != nil {
+			panic(err)
+		}
+		defer golock.Unlock(updateLockPath)
 		Log("setting up plugins... ")
 		if err := node.Setup(); err != nil {
 			panic(err)
