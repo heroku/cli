@@ -44,7 +44,6 @@ func main() {
 	if IsUpdateNeeded() {
 		Update()
 		reexecBin()
-		os.Exit(0)
 	}
 	SetupNode()
 	err := cli.Run(os.Args)

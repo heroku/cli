@@ -12,6 +12,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
+	"syscall"
 	"time"
 
 	"github.com/dickeyxxx/golock"
@@ -193,9 +194,17 @@ func fileSha1(path string) string {
 }
 
 func reexecBin() {
-	cmd := exec.Command(binPath, os.Args[1:]...)
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	cmd.Run()
+	if runtime.GOOS == "windows" {
+		cmd := exec.Command(binPath, os.Args[1:]...)
+		cmd.Stdin = os.Stdin
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+		cmd.Run()
+		os.Exit(0)
+	} else {
+		if err := syscall.Exec(binPath, os.Args, os.Environ()); err != nil {
+			panic(err)
+		}
+		os.Exit(99) // should never happen
+	}
 }
