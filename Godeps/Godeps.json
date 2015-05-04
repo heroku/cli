@@ -18,11 +18,11 @@
 		},
 		{
 			"ImportPath": "github.com/franela/goreq",
-			"Rev": "be149fea9861ab2af7e72f1bd6eb21135e7c7319"
+			"Rev": "d3fcae0b28a21ef57b19c6bc784c9034a92b6abf"
 		},
 		{
 			"ImportPath": "github.com/jtolds/gls",
-			"Rev": "f1ac7f4f24f50328e6bc838ca4437d1612a0243c"
+			"Rev": "9a4a02dbe491bef4bab3c24fd9f3087d6c4c6690"
 		},
 		{
 			"ImportPath": "github.com/mgutz/ansi",
@@ -40,12 +40,12 @@
 		},
 		{
 			"ImportPath": "github.com/stvp/rollbar",
-			"Comment": "v0.3.1-1-g443e3c6",
-			"Rev": "443e3c6cbe1512f2a5881d74e761628721c289b5"
+			"Comment": "v0.3.1-4-g3f10961",
+			"Rev": "3f10961d0bdb493ad6a6ecec9fb16d97c33d593e"
 		},
 		{
 			"ImportPath": "golang.org/x/crypto/ssh/terminal",
-			"Rev": "c57d4a71915a248dbad846d60825145062b4c18e"
+			"Rev": "59435533c88bd0b1254c738244da1fe96b59d05d"
 		}
 	]
 }
