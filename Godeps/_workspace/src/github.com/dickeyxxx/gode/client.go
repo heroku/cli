@@ -34,7 +34,8 @@ func NewClient(rootPath string) *Client {
 	return client
 }
 
-func (c *Client) nodeBase() string {
+// NodeBase returns the directory name for the node install
+func (c *Client) NodeBase() string {
 	switch {
 	case runtime.GOARCH == "386":
 		return "iojs-v" + c.NodeVersion + "-" + runtime.GOOS + "-ia32"
@@ -52,16 +53,16 @@ func (c *Client) nodeURL() string {
 	case runtime.GOARCH == "386":
 		return "https://iojs.org/dist/v" + c.NodeVersion + "/iojs-v" + c.NodeVersion + "-" + runtime.GOOS + "-x86.tar.gz"
 	default:
-		return "https://iojs.org/dist/v" + c.NodeVersion + "/" + c.nodeBase() + ".tar.gz"
+		return "https://iojs.org/dist/v" + c.NodeVersion + "/" + c.NodeBase() + ".tar.gz"
 	}
 }
 
 func (c *Client) nodePath() string {
 	switch {
 	case runtime.GOOS == "windows":
-		return filepath.Join(c.RootPath, c.nodeBase(), "bin", "node.exe")
+		return filepath.Join(c.RootPath, c.NodeBase(), "bin", "node.exe")
 	default:
-		return filepath.Join(c.RootPath, c.nodeBase(), "bin", "node")
+		return filepath.Join(c.RootPath, c.NodeBase(), "bin", "node")
 	}
 }
 
@@ -70,5 +71,5 @@ func (c *Client) npmURL() string {
 }
 
 func (c *Client) npmPath() string {
-	return filepath.Join(c.RootPath, c.nodeBase(), "lib", "node_modules", "npm", "cli.js")
+	return filepath.Join(c.RootPath, c.NodeBase(), "lib", "node_modules", "npm", "cli.js")
 }

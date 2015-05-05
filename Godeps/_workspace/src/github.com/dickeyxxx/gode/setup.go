@@ -72,7 +72,7 @@ func downloadFile(path, url string) error {
 }
 
 func (c *Client) downloadNpm() error {
-	modulesDir := filepath.Join(c.RootPath, c.nodeBase(), "lib", "node_modules")
+	modulesDir := filepath.Join(c.RootPath, c.NodeBase(), "lib", "node_modules")
 	zipfile := filepath.Join(modulesDir, "npm.zip")
 	if err := os.MkdirAll(modulesDir, 0755); err != nil {
 		return err
