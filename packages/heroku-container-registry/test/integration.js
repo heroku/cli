@@ -62,7 +62,7 @@ describe('integration (basic-node)', function() {
 
     before(function(done) {
       cli.console.mock();
-      this.result = start.run({ cwd: this.cwd, args: [] });
+      this.result = start.run({ cwd: this.cwd, args: [] }).trim();
       done();
     });
 

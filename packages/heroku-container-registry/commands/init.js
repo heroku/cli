@@ -25,10 +25,7 @@ module.exports = function(topic) {
 function createDockerfile(dir, lang) {
   var dockerfile = path.join(dir, docker.filename);
   var platform = lang ? platforms.find(lang) : platforms.detect(dir);
-  if (!platform) {
-    util.error('No appropriate language or framework detected, overwrite with `--template`');
-    return;
-  }
+  if (!platform) throw new Error('No appropriate language or framework detected, overwrite with `--template`');
 
   var contents = platform.getDockerfile(dir);
 

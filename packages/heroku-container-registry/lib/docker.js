@@ -17,28 +17,48 @@ module.exports = {
   buildImage: buildImage,
   ensureExecImage: ensureExecImage,
   ensureStartImage: ensureStartImage,
-  runImage: runImage
+  imageExists: imageExists,
+  getAllImages: getAllImages,
+  runImage: runImage,
+  execSync: execSync
 };
+
+function execSync(command, streamOutput) {
+  var stdio = (streamOutput && !this.silent) ? [ 0, 1, 'pipe'] : [ 0, 'pipe', 'pipe' ];
+  try {
+    return child.execSync(`docker ${command}`, {
+      encoding: 'utf8',
+      stdio: stdio
+    });
+  }
+  catch (e) {
+    var msg = e.message.toLowerCase();
+    // TODO: more specific error messages
+    if (msg.indexOf('/var/run/docker.sock') >= 0) {
+      throw new Error('Unable to send commands to docker. Have you started docker (and boot2docker if necessary)?');
+    }
+    else if (msg.indexOf('an error occurred trying to connect') >= 0) {
+      throw new Error('Unable to send commands to docker. Have you started docker (and boot2docker if necessary)?');
+    }
+    else {
+      throw e;
+    }
+  }
+}
 
 function runImage(imageId, cwd, command, mount) {
   if (!imageId) return;
   var mountDir = crossPlatformCwd(cwd);
   var mountComponent = mount ? `-v "${mountDir}:/app/src"` : '';
   var envArgComponent = directory.getFormattedEnvArgComponent(cwd);
-  var runCommand = `docker run -w /app/src -p 3000:3000 --rm -it ${mountComponent} ${envArgComponent} ${imageId} sh -c "${command}" || true`;
-  var result = child.execSync(runCommand, {
-    stdio: this.silent ? [0, 'pipe', 'pipe'] : 'inherit'
-  });
-  return Buffer.isBuffer(result) ?
-    result.toString().trim() : result;
+  var runCommand = `run -w /app/src -p 3000:3000 --rm -it ${mountComponent} ${envArgComponent} ${imageId} sh -c "${command}" || true`;
+  return this.execSync(runCommand, true);
 }
 
 function buildImage(dir, id, dockerfile) {
   cli.log('building image...');
   var dockerfile = dockerfile || path.join(dir, FILENAME);
-  var build = child.execSync(`docker build --force-rm --file="${dockerfile}" --tag="${id}" "${dir}"`, {
-    stdio: this.silent ? [0, 'pipe', 'pipe'] : 'inherit'
-  });
+  this.execSync(`build --force-rm --file="${dockerfile}" --tag="${id}" "${dir}"`, true);
   return id;
 }
 
@@ -48,7 +68,7 @@ function ensureExecImage(dir) {
     var contents = fs.readFileSync(dockerfile, { encoding: 'utf8' });
     var hash = createHash(contents);
     var imageId = getImageId(hash);
-    imageExists(imageId) || this.buildImage(dir, imageId);
+    this.imageExists(imageId) || this.buildImage(dir, imageId);
     return imageId;
   }
   catch (e) {
@@ -95,11 +115,12 @@ function getImageId(hash) {
 }
 
 function imageExists(id) {
-  return getAllImages().indexOf(id) !== -1;
+  return this.getAllImages().indexOf(id) !== -1;
 }
 
 function getAllImages() {
-  var stdout = child.execSync(`docker images`, { encoding: 'utf8' });
+  var stdout = this.execSync('images', false);
+  if (!stdout) return [];
   return _.map(_.filter(stdout.split('\n'), isImage), lineToId);
 
   function isImage(line) {
@@ -112,11 +133,11 @@ function getAllImages() {
 }
 
 function crossPlatformCwd(cwd){
-    if (os.platform() == 'win32') {
-        // this is due to how volumes are mounted by boot2docker/virtualbox
-        var p = path.parse(cwd);
-        return path.posix.sep + p.root.split(':')[0].toLowerCase() + path.posix.sep
-          + p.dir.substring(p.root.length).replaceAll(path.sep, path.posix.sep) + path.posix.sep + p.base;
-    }
-    return cwd;
+  if (os.platform() == 'win32') {
+    // this is due to how volumes are mounted by boot2docker/virtualbox
+    var p = path.parse(cwd);
+    return path.posix.sep + p.root.split(':')[0].toLowerCase() + path.posix.sep
+      + p.dir.substring(p.root.length).replaceAll(path.sep, path.posix.sep) + path.posix.sep + p.base;
+  }
+  return cwd;
 }

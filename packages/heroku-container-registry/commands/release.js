@@ -8,6 +8,7 @@ var agent = require('superagent');
 var cli = require('heroku-cli-util');
 var directory = require('../lib/directory');
 var docker = require('../lib/docker');
+var safely = require('../lib/safely');
 
 module.exports = function(topic) {
   return {
@@ -17,7 +18,7 @@ module.exports = function(topic) {
     help: 'Create slug tarball from Docker image and release it to Heroku app',
     needsApp: true,
     needsAuth: true,
-    run: release
+    run: safely(release)
   };
 };
 
@@ -28,10 +29,7 @@ function release(context) {
   var app = context.heroku ? context.app : heroku.apps(context.app);
   request = context.request || request;
 
-  if (!procfile) {
-    cli.error('Procfile required. Aborting');
-    return;
-  }
+  if (!procfile) throw new Error('Procfile required. Aborting');
 
   return app.info()
     .then(createLocalSlug)
@@ -44,9 +42,7 @@ function release(context) {
     try {
       var slugPath = os.tmpdir();
       var imageId = docker.ensureStartImage(context.cwd);
-      if (!imageId) {
-	      return Promise.reject();
-      }
+      if (!imageId) return Promise.reject(new Error('Unable to find a start image'));
 
       var containerId = child.execSync(`docker run -d ${imageId} tar cfvz /tmp/slug.tgz -C / --exclude=.git --exclude=.heroku ./app`, {
         encoding: 'utf8'
