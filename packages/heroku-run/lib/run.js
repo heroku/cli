@@ -1,24 +1,28 @@
 'use strict';
 let tls = require('tls');
 let url = require('url');
+let tty = require('tty');
 let Heroku = require('heroku-client');
-let h = require('heroku-cli-util');
 let co = require('co');
 let errors = require('./errors');
+let term = require('./term');
 let heroku;
 
 function buildCommandWithExitStatus(command) {
   return `${command}; echo heroku-command-exit-status $?`;
 }
 
-function startDyno(app, command) {
+function* startDyno(app, command) {
+  let env = {};
+  if (tty.isatty(0)) {
+    let size = yield term.getTermSize();
+    env.COLUMNS = size.COLUMNS;
+    env.LINES = size.LINES;
+  }
   return heroku.apps(app).dynos().create({
     command: command,
     attach: true,
-    env: {
-      "COLUMNS": "80",
-      "LINES": "24"
-    }
+    env: env
   });
 }
 
@@ -32,7 +36,6 @@ function attachToRendezvous(uri) {
   c.on('data', function (data) {
     // discard first line
     if (firstLine) { firstLine = false; return; }
-    //console.dir(data);
     data = data.replace('\r\n', '\n');
     let exitCode = data.match(/^heroku-command-exit-status (\d+)$/m);
     if (exitCode) {
