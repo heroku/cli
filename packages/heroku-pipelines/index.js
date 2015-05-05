@@ -13,8 +13,8 @@ exports.commands = [
       {name: 'user', char: 'u', description: 'user to say hello to', hasValue: true}
     ],
     run: function (context) {
-      if (context.args.user) {
-        console.log(`Hello, ${context.args.user}!`);
+      if (context.flags.user) {
+        console.log(`Hello, ${context.flags.user}!`);
       } else {
         console.log('Hello, World!');
       }
