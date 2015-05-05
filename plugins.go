@@ -9,6 +9,7 @@ import (
 	"os/exec"
 	"os/signal"
 	"path/filepath"
+	"strings"
 	"syscall"
 
 	"github.com/dickeyxxx/gode"
@@ -40,7 +41,18 @@ func SetupNode() {
 		if err := node.Setup(); err != nil {
 			panic(err)
 		}
+		clearOldNodeInstalls()
 		Logln("done")
+	}
+}
+
+func clearOldNodeInstalls() {
+	files, _ := ioutil.ReadDir(AppDir)
+	for _, f := range files {
+		name := f.Name()
+		if name != node.NodeBase() && strings.HasPrefix(name, "iojs-v") {
+			os.RemoveAll(filepath.Join(AppDir, name))
+		}
 	}
 }
 
