@@ -51,10 +51,10 @@ module.exports = function run (context) {
   co(function* () {
     heroku = new Heroku({token: context.auth.password});
     let command = context.args.join(' ');
-    process.stdout.write(`Running \`${command}\` attached to terminal... `);
+    process.stderr.write(`Running \`${command}\` attached to terminal... `);
     command = `${command}; echo heroku-command-exit-status $?`;
     let dyno = yield startDyno(context.app, command);
-    console.log(`up, ${dyno.name}`);
+    console.error(`up, ${dyno.name}`);
     attachToRendezvous(url.parse(dyno.attach_url));
   }).catch(errors.handleErr);
 };
