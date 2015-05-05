@@ -22,16 +22,6 @@ function attachToRendezvous(uri) {
   process.stdin.setEncoding('utf8');
   c.on('connect', function () {
     c.write(uri.path.substr(1) + '\r\n');
-    if (!tty.isatty(0)) {
-      setTimeout(function () {
-        process.stdin.on('readable', function () {
-          c.write(String(process.stdin.read()));
-        });
-        process.stdin.on('end', function () {
-          c.end();
-        });
-      }, 10000);
-    }
   });
   if (tty.isatty(0)) {
     process.stdin.setRawMode(true);
