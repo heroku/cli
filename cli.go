@@ -174,6 +174,10 @@ func getNetrc() *netrc.Netrc {
 }
 
 func auth() (user, password string) {
+	key := os.Getenv("HEROKU_API_KEY")
+	if key != "" {
+		return "", key
+	}
 	netrc := getNetrc()
 	machine := netrc.FindMachine("api.heroku.com")
 	if machine == nil {
