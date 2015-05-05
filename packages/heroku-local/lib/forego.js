@@ -29,19 +29,19 @@ Forego.prototype = {
     if (opts.args.processname) {
       args.push(opts.args.processname);
     }
-    if (opts.args.procfile) {
-      args.push('-f', opts.args.procfile);
+    if (opts.flags.procfile) {
+      args.push('-f', opts.flags.procfile);
     }
-    if (opts.args.env) {
-      args.push('-e', opts.args.env);
+    if (opts.flags.env) {
+      args.push('-e', opts.flags.env);
     }
-    if (opts.args.concurrency) {
-      args.push('-c', opts.args.concurrency);
+    if (opts.flags.concurrency) {
+      args.push('-c', opts.flags.concurrency);
     }
-    if (opts.args.port) {
-      args.push('-p', opts.args.port);
+    if (opts.flags.port) {
+      args.push('-p', opts.flags.port);
     }
-    if (opts.args.r) {
+    if (opts.flags.r) {
       args.push('-r');
     }
     spawn(this.path, args, {

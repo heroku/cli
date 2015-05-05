@@ -28,7 +28,7 @@ Examples:
     let forego = new Forego(ctx.herokuDir);
     forego.ensureSetup(function (err) {
       if (err) { handleErr(err); }
-      forego.start({cwd: ctx.cwd, args: ctx.args});
+      forego.start({cwd: ctx.cwd, args: ctx.args, flags: ctx.flags});
     });
   }
 };
