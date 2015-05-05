@@ -25,8 +25,8 @@ var node = gode.NewClient(AppDir)
 
 func init() {
 	node.Registry = "https://d3nfsbmspisrno.cloudfront.net"
-	node.NodeVersion = "1.8.1"
-	node.NpmVersion = "2.8.3"
+	node.NodeVersion = "2.0.0"
+	node.NpmVersion = "2.9.0"
 }
 
 // SetupNode sets up node and npm in ~/.heroku
