@@ -31,6 +31,7 @@ func init() {
 		versionCmd,
 		updateCmd,
 		pluginsListCmd,
+		pluginsLinkCmd,
 		pluginsInstallCmd,
 		pluginsUninstallCmd,
 	}
