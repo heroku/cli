@@ -106,6 +106,44 @@ var pluginsInstallCmd = &Command{
 	},
 }
 
+var pluginsLinkCmd = &Command{
+	Topic:       "plugins",
+	Command:     "link",
+	Description: "Links a local plugin into CLI",
+	Args:        []Arg{{Name: "path"}},
+	Help: `Links a local plugin into CLI.
+	This is useful when developing plugins locally.
+	It simply symlinks the specified path into ~/.heroku/node_modules
+
+  Example:
+	$ heroku plugins:link .`,
+
+	Run: func(ctx *Context) {
+		path, err := filepath.Abs(ctx.Args.(map[string]string)["path"])
+		if err != nil {
+			panic(err)
+		}
+		if _, err := os.Stat(path); err != nil {
+			panic(err)
+		}
+		name := filepath.Base(path)
+		newPath := filepath.Join(ctx.HerokuDir, "node_modules", name)
+		os.Remove(newPath)
+		os.RemoveAll(newPath)
+		err = os.Symlink(path, newPath)
+		if err != nil {
+			panic(err)
+		}
+		plugin := getPlugin(name)
+		if plugin == nil || len(plugin.Commands) == 0 {
+			Errln(name + " does not appear to be a Heroku plugin")
+			if err := os.Remove(newPath); err != nil {
+				panic(err)
+			}
+		}
+	},
+}
+
 var pluginsUninstallCmd = &Command{
 	Topic:       "plugins",
 	Command:     "uninstall",
