@@ -8,6 +8,17 @@ let errors = require('./errors');
 let term = require('./term');
 let heroku;
 
+function buildCommand(args) {
+  let cmd = '';
+  for (let arg of args) {
+    if (arg.indexOf(' ') !== -1) {
+      arg = `"${arg}"`;
+    }
+    cmd = cmd + " " + arg;
+  }
+  return cmd.trim();
+}
+
 function startDyno(app, command) {
   return heroku.apps(app).dynos().create({
     command: command,
@@ -50,7 +61,7 @@ function attachToRendezvous(uri) {
 module.exports = function run (context) {
   co(function* () {
     heroku = new Heroku({token: context.auth.password});
-    let command = context.args.join(' ');
+    let command = buildCommand(context.args);
     process.stderr.write(`Running \`${command}\` attached to terminal... `);
     command = `${command}; echo heroku-command-exit-status $?`;
     let dyno = yield startDyno(context.app, command);
