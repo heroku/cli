@@ -50,6 +50,7 @@ func init() {
 func Update(channel string) {
 	Errln("updating cli...")
 	Logln("updating cli...")
+	touchAutoupdateFile()
 	if err := golock.Lock(updateLockPath); err != nil {
 		panic(err)
 	}
@@ -65,7 +66,6 @@ func Update(channel string) {
 		Errln("Timed out while updating")
 		Logln("Timed out while updating")
 	case <-done:
-		touchAutoupdateFile()
 	}
 	Errln("done updating")
 	Logln("done updating")
@@ -213,7 +213,7 @@ func reexecBin() {
 
 // TriggerBackgroundUpdate will trigger an update to the client in the background
 func TriggerBackgroundUpdate() {
-	if err := exec.Command("./heroku-cli", "update").Start(); err != nil {
+	if err := exec.Command(binPath, "update").Start(); err != nil {
 		panic(err)
 	}
 }
