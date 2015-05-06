@@ -49,7 +49,7 @@ func init() {
 // Update updates the CLI and plugins
 func Update(channel string) {
 	Errln("updating cli...")
-	Logln("updating")
+	Logln("updating cli...")
 	if err := golock.Lock(updateLockPath); err != nil {
 		panic(err)
 	}
@@ -67,13 +67,16 @@ func Update(channel string) {
 	case <-done:
 		touchAutoupdateFile()
 	}
+	Errln("done updating")
 	Logln("done updating")
 }
 
 func updatePlugins() {
+	Errln("updating plugins")
 	Logln("updating plugins")
 	b, _ := node.UpdatePackages()
 	if len(b) > 0 {
+		Errln("clearing plugins cache")
 		Logln("clearing plugins cache")
 		ClearPluginCache()
 		WritePluginCache(GetPlugins())
@@ -90,6 +93,7 @@ func updateCLI(channel string) {
 		return
 	}
 	Logln("updating from %s to %s (%s)", Version, manifest.Version, manifest.Channel)
+	Errln("updating from %s to %s (%s)", Version, manifest.Version, manifest.Channel)
 	build := manifest.Builds[runtime.GOOS][runtime.GOARCH]
 	// on windows we can't remove an existing file or remove the running binary
 	// so we download the file to binName.new
