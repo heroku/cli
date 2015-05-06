@@ -1,0 +1,29 @@
+{
+  "name": "heroku-git",
+  "version": "0.0.0",
+  "description": "Heroku CLI plugin to manage local git repos.",
+  "main": "index.js",
+  "scripts": {
+    "test": "jshint ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/heroku/heroku-git.git"
+  },
+  "keywords": [
+    "heroku-plugin"
+  ],
+  "author": "Jeff Dickey (@dickeyxxx)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/heroku/heroku-git/issues"
+  },
+  "homepage": "https://github.com/heroku/heroku-git",
+  "dependencies": {
+    "chalk": "^1.0.0",
+    "heroku-cli-util": "^1.10.3"
+  },
+  "devDependencies": {
+    "jshint": "*"
+  }
+}
