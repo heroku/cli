@@ -1,3 +1,7 @@
+4.19.1 2015-06-05
+=================
+Fixed bug with updating lockfile on Windows
+
 4.19.0
 ======
 Added --debugger flag to debug plugins with node-inspector
