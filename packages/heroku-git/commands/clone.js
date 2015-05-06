@@ -7,7 +7,6 @@ module.exports = {
   command: 'clone',
   needsAuth: true,
   args: [
-    {name: 'APP', optional: true},
     {name: 'DIRECTORY', optional: true}
   ],
   flags: [
@@ -16,7 +15,7 @@ module.exports = {
     {name: 'ssh-git', description: 'use SSH git protocol'},
   ],
   run: h.command(function* (context, heroku) {
-    let appName = context.flags.app || context.args.APP;
+    let appName = context.flags.app;
     if (!appName) {
       return h.error('Specify an app with --app');
     }

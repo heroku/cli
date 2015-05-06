@@ -11,16 +11,13 @@ module.exports = {
   topic: 'git',
   command: 'remote',
   needsAuth: true,
-  args: [
-    {name: 'APP', optional: true}
-  ],
   flags: [
     {name: 'app', char: 'a', hasValue: true},
     {name: 'remote', char: 'r', hasValue: true},
     {name: 'ssh-git'},
   ],
   run: h.command(function* (context, heroku) {
-    let appName = context.flags.app || context.args.APP;
+    let appName = context.flags.app;
     if (!appName) {
       return h.error('Specify an app with --app');
     }
