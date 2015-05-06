@@ -4,6 +4,7 @@ const PLATFORMS = [
   require('./node'),
   require('./ruby'),
   require('./scala'),
+  require('./python'),
   require('./minimal')
 ];
 
