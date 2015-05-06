@@ -92,8 +92,8 @@ func updateCLI(channel string) {
 		Errf("Out of date: You are running %s but %s is out.\n", Version, manifest.Version)
 		return
 	}
-	Logln("updating from %s to %s (%s)", Version, manifest.Version, manifest.Channel)
-	Errln("updating from %s to %s (%s)", Version, manifest.Version, manifest.Channel)
+	Logf("updating from %s to %s (%s)\n", Version, manifest.Version, manifest.Channel)
+	Errf("updating from %s to %s (%s)\n", Version, manifest.Version, manifest.Channel)
 	build := manifest.Builds[runtime.GOOS][runtime.GOARCH]
 	// on windows we can't remove an existing file or remove the running binary
 	// so we download the file to binName.new
