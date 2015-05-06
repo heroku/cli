@@ -85,13 +85,13 @@ func parseVarArgs(command *Command, args []string) (result []string, flags map[s
 			parseFlags = false
 		case parseFlags && (args[i] == "help" || args[i] == "--help" || args[i] == "-h"):
 			return nil, nil, "", ErrHelp
-		case parseFlags && (args[i] == "-a" || args[i] == "--app"):
+		case command.NeedsApp && parseFlags && (args[i] == "-a" || args[i] == "--app"):
 			i++
 			if len(args) == i {
 				return nil, nil, "", errors.New("Must specify app name")
 			}
 			appName = args[i]
-		case parseFlags && (args[i] == "-r" || args[i] == "--remote"):
+		case command.NeedsApp && parseFlags && (args[i] == "-r" || args[i] == "--remote"):
 			i++
 			if len(args) == i {
 				return nil, nil, "", errors.New("Must specify remote name")
