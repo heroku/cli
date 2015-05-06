@@ -38,7 +38,7 @@ func SetupNode() {
 			panic(err)
 		}
 		defer golock.Unlock(updateLockPath)
-		Logln("setting up iojs", node.NodeVersion)
+		Debugln("setting up iojs", node.NodeVersion)
 		if err := node.Setup(); err != nil {
 			panic(err)
 		}
@@ -201,14 +201,38 @@ func runFn(module, topic, command string) func(ctx *Context) {
 			panic(err)
 		}
 		script := fmt.Sprintf(`
+		var module = '%s';
 		var topic = '%s';
 		var command = '%s';
+		process.on('uncaughtException', function (err) {
+			console.error(' !   Error in ' + module + ':')
+			if (err.message) {
+				console.error(' !   ' + err.message);
+			} else {
+				console.error(' !   ' + err);
+			}
+			if (err.stack) {
+				var logPath = '%s';
+				var fs = require('fs');
+				var log = function (line) {
+					var d = new Date().toISOString()
+					.replace(/T/, ' ')
+					.replace(/-/g, '/')
+					.replace(/\..+/, '');
+					fs.appendFileSync(logPath, d + ' ' + line + '\n');
+				}
+				log('Error during ' + topic + ':' + command);
+				log(err.stack);
+				console.error(' !   See ' + logPath + ' for more info.');
+			}
+			process.exit(1);
+		});
 		if (command === '') { command = null }
-		require('%s')
+		require(module)
 		.commands.filter(function (c) {
 			return c.topic === topic && c.command == command;
 		})[0]
-		.run(%s)`, topic, command, module, ctxJSON)
+		.run(%s)`, module, topic, command, ErrLogPath, ctxJSON)
 
 		// swallow sigint since the plugin will handle it
 		swallowSignal(os.Interrupt)

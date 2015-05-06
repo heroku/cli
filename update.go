@@ -48,8 +48,6 @@ func init() {
 
 // Update updates the CLI and plugins
 func Update(channel string) {
-	Errln("updating cli...")
-	Logln("updating cli...")
 	touchAutoupdateFile()
 	if err := golock.Lock(updateLockPath); err != nil {
 		panic(err)
@@ -64,36 +62,34 @@ func Update(channel string) {
 	select {
 	case <-time.After(time.Second * 120):
 		Errln("Timed out while updating")
-		Logln("Timed out while updating")
 	case <-done:
 	}
-	Errln("done updating")
-	Logln("done updating")
 }
 
 func updatePlugins() {
-	Errln("updating plugins")
-	Logln("updating plugins")
+	Err("updating plugins... ")
 	b, _ := node.UpdatePackages()
+	Errln("done")
 	if len(b) > 0 {
-		Errln("clearing plugins cache")
-		Logln("clearing plugins cache")
+		Err("rebuilding plugins cache... ")
 		ClearPluginCache()
 		WritePluginCache(GetPlugins())
+		Errln("done")
 	}
 }
 
 func updateCLI(channel string) {
+	Err("checking for CLI update... ")
 	manifest := getUpdateManifest(channel)
 	if manifest.Version == Version && manifest.Channel == Channel {
+		Errf("already on latest version %s\n", Version)
 		return
 	}
 	if !updatable() {
-		Errf("Out of date: You are running %s but %s is out.\n", Version, manifest.Version)
+		Errf("Out of date: You are running %s but %s is out\n", Version, manifest.Version)
 		return
 	}
-	Logf("updating from %s to %s (%s)\n", Version, manifest.Version, manifest.Channel)
-	Errf("updating from %s to %s (%s)\n", Version, manifest.Version, manifest.Channel)
+	Errf("updating from %s to %s (%s)... ", Version, manifest.Version, manifest.Channel)
 	build := manifest.Builds[runtime.GOOS][runtime.GOARCH]
 	// on windows we can't remove an existing file or remove the running binary
 	// so we download the file to binName.new
@@ -112,6 +108,7 @@ func updateCLI(channel string) {
 	if err := os.Rename(binPath+".new", binPath); err != nil {
 		panic(err)
 	}
+	Errln("done")
 	reexecBin()
 }
 
