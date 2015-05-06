@@ -103,6 +103,7 @@ var pluginsInstallCmd = &Command{
 				panic(err)
 			}
 		}
+		ClearPluginCache()
 		WritePluginCache(GetPlugins())
 		Errln("done")
 	},
