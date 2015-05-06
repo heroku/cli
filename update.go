@@ -81,9 +81,11 @@ func Update() {
 }
 
 func updatePlugins() {
-	node.UpdatePackages()
-	ClearPluginCache()
-	WritePluginCache(GetPlugins())
+	b, _ := node.UpdatePackages()
+	if len(b) > 0 {
+		ClearPluginCache()
+		WritePluginCache(GetPlugins())
+	}
 }
 
 func updateCLI() {
