@@ -1,4 +1,8 @@
-4.19.1 2015-06-05
+4.19.2 2015-05-06
+=================
+Updated gode to 2.3.2
+
+4.19.1 2015-05-06
 =================
 Fixed bug with updating lockfile on Windows
 
