@@ -91,6 +91,7 @@ func updateCLI(channel string) {
 	Logln("updating from %s to %s (%s)", Version, manifest.Version, manifest.Channel)
 	build := manifest.Builds[runtime.GOOS][runtime.GOARCH]
 	update(build.URL, build.Sha1)
+	reexecBin()
 }
 
 // IsUpdateNeeded checks if an update is available
