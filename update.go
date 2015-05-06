@@ -109,6 +109,7 @@ func updateCLI(channel string) {
 		panic(err)
 	}
 	Errln("done")
+	golock.Unlock(updateLockPath)
 	reexecBin()
 }
 
