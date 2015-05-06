@@ -90,7 +90,23 @@ func updateCLI(channel string) {
 	}
 	Logln("updating from %s to %s (%s)", Version, manifest.Version, manifest.Channel)
 	build := manifest.Builds[runtime.GOOS][runtime.GOARCH]
-	update(build.URL, build.Sha1)
+	// on windows we can't remove an existing file or remove the running binary
+	// so we download the file to binName.new
+	// move the running binary to binName.old (deleting any existing file first)
+	// rename the downloaded file to binName
+	if err := downloadBin(binPath+".new", build.URL); err != nil {
+		panic(err)
+	}
+	if fileSha1(binPath+".new") != build.Sha1 {
+		panic("SHA mismatch")
+	}
+	os.Remove(binPath + ".old")
+	if err := os.Rename(binPath, binPath+".old"); err != nil {
+		panic(err)
+	}
+	if err := os.Rename(binPath+".new", binPath); err != nil {
+		panic(err)
+	}
 	reexecBin()
 }
 
@@ -137,26 +153,6 @@ func updatable() bool {
 		Errln(err)
 	}
 	return path == binPath
-}
-
-func update(url, sha1 string) {
-	// on windows we can't remove an existing file or remove the running binary
-	// so we download the file to binName.new
-	// move the running binary to binName.old (deleting any existing file first)
-	// rename the downloaded file to binName
-	if err := downloadBin(binPath+".new", url); err != nil {
-		panic(err)
-	}
-	if fileSha1(binPath+".new") != sha1 {
-		panic("SHA mismatch")
-	}
-	os.Remove(binPath + ".old")
-	if err := os.Rename(binPath, binPath+".old"); err != nil {
-		panic(err)
-	}
-	if err := os.Rename(binPath+".new", binPath); err != nil {
-		panic(err)
-	}
 }
 
 func downloadBin(path, url string) error {
