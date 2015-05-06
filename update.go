@@ -30,18 +30,9 @@ var updateCmd = &Command{
 	Run: func(ctx *Context) {
 		channel := ctx.Args.(map[string]string)["channel"]
 		if channel == "" {
-			channel = "master"
+			channel = Channel
 		}
-		Errf("updating plugins... ")
-		start := time.Now()
-		updatePlugins()
-		Errln("done. Took", time.Since(start).String())
-		manifest := getUpdateManifest(channel)
-		build := manifest.Builds[runtime.GOOS][runtime.GOARCH]
-		Errf("updating to %s (%s)... ", manifest.Version, manifest.Channel)
-		start = time.Now()
-		update(build.URL, build.Sha1)
-		Errln("done. Took", time.Since(start).String())
+		Update(channel)
 	},
 }
 
@@ -56,61 +47,84 @@ func init() {
 }
 
 // Update updates the CLI and plugins
-func Update() {
+func Update(channel string) {
+	Errln("updating cli...")
+	Logln("updating cli...")
+	touchAutoupdateFile()
 	if err := golock.Lock(updateLockPath); err != nil {
 		panic(err)
 	}
 	defer golock.Unlock(updateLockPath)
-	touchAutoupdateFile()
-	doneUpdatingPlugins := make(chan bool)
 	done := make(chan bool)
 	go func() {
+		updateCLI(channel)
 		updatePlugins()
-		doneUpdatingPlugins <- true
-	}()
-	go func() {
-		updateCLI()
-		<-doneUpdatingPlugins // wait till plugins are done
 		done <- true
 	}()
 	select {
-	case <-time.After(time.Second * 30):
+	case <-time.After(time.Second * 120):
 		Errln("Timed out while updating")
+		Logln("Timed out while updating")
 	case <-done:
 	}
+	Errln("done updating")
+	Logln("done updating")
 }
 
 func updatePlugins() {
+	Errln("updating plugins")
+	Logln("updating plugins")
 	b, _ := node.UpdatePackages()
 	if len(b) > 0 {
+		Errln("clearing plugins cache")
+		Logln("clearing plugins cache")
 		ClearPluginCache()
 		WritePluginCache(GetPlugins())
 	}
 }
 
-func updateCLI() {
-	manifest := getUpdateManifest(Channel)
-	if manifest.Version == Version {
+func updateCLI(channel string) {
+	manifest := getUpdateManifest(channel)
+	if manifest.Version == Version && manifest.Channel == Channel {
 		return
 	}
 	if !updatable() {
 		Errf("Out of date: You are running %s but %s is out.\n", Version, manifest.Version)
 		return
 	}
+	Logf("updating from %s to %s (%s)\n", Version, manifest.Version, manifest.Channel)
+	Errf("updating from %s to %s (%s)\n", Version, manifest.Version, manifest.Channel)
 	build := manifest.Builds[runtime.GOOS][runtime.GOARCH]
-	update(build.URL, build.Sha1)
+	// on windows we can't remove an existing file or remove the running binary
+	// so we download the file to binName.new
+	// move the running binary to binName.old (deleting any existing file first)
+	// rename the downloaded file to binName
+	if err := downloadBin(binPath+".new", build.URL); err != nil {
+		panic(err)
+	}
+	if fileSha1(binPath+".new") != build.Sha1 {
+		panic("SHA mismatch")
+	}
+	os.Remove(binPath + ".old")
+	if err := os.Rename(binPath, binPath+".old"); err != nil {
+		panic(err)
+	}
+	if err := os.Rename(binPath+".new", binPath); err != nil {
+		panic(err)
+	}
+	reexecBin()
 }
 
 // IsUpdateNeeded checks if an update is available
-func IsUpdateNeeded() bool {
-	if Version == "dev" {
-		return false
-	}
+func IsUpdateNeeded(t string) bool {
 	f, err := os.Stat(autoupdateFile)
 	if err != nil {
 		return true
 	}
-	return time.Since(f.ModTime()) > 1*time.Hour
+	if t == "soft" {
+		return time.Since(f.ModTime()) > 1*time.Hour
+	}
+	return time.Since(f.ModTime()) > 168*time.Hour
 }
 
 func touchAutoupdateFile() {
@@ -144,26 +158,6 @@ func updatable() bool {
 		Errln(err)
 	}
 	return path == binPath
-}
-
-func update(url, sha1 string) {
-	// on windows we can't remove an existing file or remove the running binary
-	// so we download the file to binName.new
-	// move the running binary to binName.old (deleting any existing file first)
-	// rename the downloaded file to binName
-	if err := downloadBin(binPath+".new", url); err != nil {
-		panic(err)
-	}
-	if fileSha1(binPath+".new") != sha1 {
-		panic("SHA mismatch")
-	}
-	os.Remove(binPath + ".old")
-	if err := os.Rename(binPath, binPath+".old"); err != nil {
-		panic(err)
-	}
-	if err := os.Rename(binPath+".new", binPath); err != nil {
-		panic(err)
-	}
 }
 
 func downloadBin(path, url string) error {
@@ -214,5 +208,12 @@ func reexecBin() {
 			panic(err)
 		}
 		os.Exit(99) // should never happen
+	}
+}
+
+// TriggerBackgroundUpdate will trigger an update to the client in the background
+func TriggerBackgroundUpdate() {
+	if err := exec.Command(binPath, "update").Start(); err != nil {
+		panic(err)
 	}
 }

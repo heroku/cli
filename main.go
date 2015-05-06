@@ -43,9 +43,8 @@ func init() {
 
 func main() {
 	defer handlePanic()
-	if IsUpdateNeeded() {
-		Update()
-		reexecBin()
+	if IsUpdateNeeded("hard") {
+		Update(Channel)
 	}
 	SetupNode()
 	err := cli.Run(os.Args)
@@ -53,6 +52,9 @@ func main() {
 		// Command wasn't found so load the plugins and try again
 		cli.LoadPlugins(GetPlugins())
 		err = cli.Run(os.Args)
+	}
+	if IsUpdateNeeded("soft") {
+		TriggerBackgroundUpdate()
 	}
 	if err == ErrHelp {
 		help()
