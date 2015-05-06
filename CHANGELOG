@@ -1,3 +1,10 @@
+4.18.0
+======
+Added soft background updating
+Cache plugin information
+Made path optional for plugins:link
+Performance tweaks
+
 4.17.3
 ======
 Only parse remote or app when command needs it
