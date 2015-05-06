@@ -48,6 +48,7 @@ func init() {
 
 // Update updates the CLI and plugins
 func Update(channel string) {
+	Errln("updating cli...")
 	Logln("updating")
 	if err := golock.Lock(updateLockPath); err != nil {
 		panic(err)
