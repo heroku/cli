@@ -18,6 +18,7 @@ import (
 
 // Plugin represents a javascript plugin
 type Plugin struct {
+	Name     string     `json:"string"`
 	Topics   TopicSet   `json:"topics"`
 	Commands CommandSet `json:"commands"`
 }
@@ -102,6 +103,7 @@ var pluginsInstallCmd = &Command{
 				panic(err)
 			}
 		}
+		WritePluginCache(GetPlugins())
 		Errln("done")
 	},
 }
@@ -260,19 +262,25 @@ func getPlugin(name string) *Plugin {
 	if err := cmd.Wait(); err != nil {
 		panic(err)
 	}
-	for _, command := range plugin.Commands {
-		command.Plugin = name
-		command.Run = runFn(name, command.Topic, command.Command)
-	}
+	plugin.Name = name
 	return &plugin
 }
 
 // GetPlugins goes through all the node plugins and returns them in Go stucts
 func GetPlugins() []Plugin {
+	cache := FetchPluginCache()
 	names := PluginNames()
+	symlinkedNames := SymlinkedPluginNames()
 	plugins := make([]Plugin, 0, len(names))
 	for _, name := range names {
-		plugin := getPlugin(name)
+		plugin := cache[name]
+		if plugin == nil || includes(symlinkedNames, name) {
+			plugin = getPlugin(name)
+		}
+		for _, command := range plugin.Commands {
+			command.Plugin = name
+			command.Run = runFn(name, command.Topic, command.Command)
+		}
 		if plugin != nil {
 			plugins = append(plugins, *plugin)
 		}
@@ -288,4 +296,25 @@ func PluginNames() []string {
 		names = append(names, f.Name())
 	}
 	return names
+}
+
+// SymlinkedPluginNames returns all the plugins that are symlinked
+func SymlinkedPluginNames() []string {
+	files, _ := ioutil.ReadDir(filepath.Join(AppDir, "node_modules"))
+	names := make([]string, 0, len(files))
+	for _, f := range files {
+		if !f.Mode().IsDir() {
+			names = append(names, f.Name())
+		}
+	}
+	return names
+}
+
+func includes(list []string, a string) bool {
+	for _, b := range list {
+		if b == a {
+			return true
+		}
+	}
+	return false
 }
