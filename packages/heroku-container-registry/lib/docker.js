@@ -51,7 +51,8 @@ function runImage(imageId, cwd, command, mount) {
   var mountDir = crossPlatformCwd(cwd);
   var mountComponent = mount ? `-v "${mountDir}:/app/src"` : '';
   var envArgComponent = directory.getFormattedEnvArgComponent(cwd);
-  var runCommand = `run -w /app/src -p 3000:3000 --rm -it ${mountComponent} ${envArgComponent} ${imageId} sh -c "${command}" || true`;
+  var commandWithEnv = command.replace("$", "\$")
+  var runCommand = `run -p 3000:3000 --rm -it ${mountComponent} ${envArgComponent} ${imageId} sh -c "${commandWithEnv}" || true`;
   return this.execSync(runCommand, true);
 }
 

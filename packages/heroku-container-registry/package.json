@@ -19,6 +19,7 @@
     "chai": "^2.3.0",
     "colors": "^1.0.3",
     "dotenv": "^1.1.0",
+    "glob": "^5.0.5",
     "heroku-cli-util": "^1.8.1",
     "heroku-client": "^1.9.1",
     "is-there": "^1.1.0",
