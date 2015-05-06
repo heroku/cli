@@ -43,7 +43,6 @@ func init() {
 
 func main() {
 	defer handlePanic()
-	WaitForUpdates()
 	if IsUpdateNeeded("hard") {
 		Update(Channel)
 		reexecBin()

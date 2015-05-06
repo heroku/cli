@@ -215,14 +215,3 @@ func TriggerBackgroundUpdate() {
 		panic(err)
 	}
 }
-
-// WaitForUpdates just checks to see if the update lockfile is in use
-// if it is, it will wait for it to be released
-func WaitForUpdates() {
-	if err := golock.Lock(updateLockPath); err != nil {
-		panic(err)
-	}
-	if err := golock.Unlock(updateLockPath); err != nil {
-		panic(err)
-	}
-}
