@@ -1,15 +1,16 @@
-var url = require('url');
-var Heroku = require('heroku-client');
-var readline = require('readline');
-var net = require('net');
-var spawn = require('child_process').spawn;
+'use strict';
+let url = require('url');
+let readline = require('readline');
+let net = require('net');
+let spawn = require('child_process').spawn;
+let h = require('heroku-cli-util');
 
-var api = require('./shared.js');
+let api = require('./shared.js');
 
 function cli (url) {
-  var io = readline.createInterface(process.stdin, process.stdout);
+  let io = readline.createInterface(process.stdin, process.stdout);
   io.setPrompt(url.host + '> ');
-  var client = net.connect({port: url.port, host: url.hostname}, function () {
+  let client = net.connect({port: url.port, host: url.hostname}, function () {
     client.write('AUTH ' + url.auth.split(':')[1] + '\n', function () {
       io.prompt();
     });
@@ -38,42 +39,25 @@ module.exports = {
   needsAuth: true,
   shortHelp: 'opens a redis prompt',
   args: [{name: 'database', optional: true}],
-  run: function(context) {
-    var heroku = new Heroku({
-      token: context.auth.password,
-      headers: {
-        'Accept': 'application/vnd.heroku+json; version=3.switzerland'
-      }
+  run: h.command(function* (context, heroku) {
+    let filter = api.make_config_var_filter(context.args.database);
+    let addons = filter(yield heroku.apps(context.app).configVars().info());
+    if (addons.length === 0) {
+      h.error('No redis databases found');
+      process.exit(1);
+    } else if (addons.length > 1) {
+      let names = addons.map(function (addon) { return addon.name; });
+      h.error('Please specify a single database. Found: '+names.join(', '));
+      process.exit(1);
+    }
+    let name = addons[0].name;
+    let redisUrl = url.parse(addons[0].url);
+    console.log('Connecting to: '+name);
+    let s = spawn('redis-cli', ['-h', redisUrl.hostname, '-p', redisUrl.port, '-a', redisUrl.auth.split(':')[1]], {
+      stdio: [0, 1, 2]
     });
-
-    var filter = api.make_config_var_filter(context.args.database);
-    heroku.apps(context.app).configVars().info()
-    .then(filter)
-    .then(function (addons) {
-      if (addons.length === 0) {
-        console.error('No redis databases found');
-        process.exit(1);
-      } else if (addons.length > 1) {
-        var names = [];
-        for (var i=0; i<addons.length; i++) {
-          names.push(addons[i].name);
-        }
-        console.error('Please specify a single database. Found: '+names.join(', '));
-        process.exit(1);
-      }
-      var name = addons[0].name;
-      var url = addons[0].url;
-      console.log('Connecting to: '+name);
-      return url;
-    })
-    .then(url.parse)
-    .then(function (url) {
-      var s = spawn('redis-cli', ['-h', url.hostname, '-p', url.port, '-a', url.auth.split(':')[1]], {
-        stdio: [0, 1, 2]
-      });
-      s.on('error', function () {
-        cli(url);
-      });
+    s.on('error', function () {
+      cli(redisUrl);
     });
-  }
+  })
 };

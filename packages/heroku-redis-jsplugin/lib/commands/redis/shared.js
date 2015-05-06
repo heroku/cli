@@ -1,8 +1,9 @@
+'use strict';
 var Heroku = require('heroku-client');
 
-var HOST = "redis-api.heroku.com";
-var PATH =  "/redis/v0/databases";
-var ADDON = "heroku-redis";
+const HOST = "redis-api.heroku.com";
+const PATH =  "/redis/v0/databases";
+const ADDON = "heroku-redis";
 
 function request(context, path, method) {
   return Heroku.request( {
