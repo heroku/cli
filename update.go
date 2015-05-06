@@ -30,7 +30,7 @@ var updateCmd = &Command{
 	Run: func(ctx *Context) {
 		channel := ctx.Args.(map[string]string)["channel"]
 		if channel == "" {
-			channel = "master"
+			channel = Channel
 		}
 		Update(channel)
 	},
