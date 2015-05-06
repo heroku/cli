@@ -1,3 +1,3 @@
 #!/bin/sh
 SHA=`git rev-parse --short HEAD`
-echo 4.18.0-$SHA
+echo 4.19.0-$SHA
