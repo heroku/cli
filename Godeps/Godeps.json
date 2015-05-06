@@ -8,13 +8,13 @@
 		},
 		{
 			"ImportPath": "github.com/dickeyxxx/gode",
-			"Comment": "v2.3.0",
-			"Rev": "6bc47919b538073e7f57f6b498c47530c0f33292"
+			"Comment": "v2.3.1-1-g965ec03",
+			"Rev": "965ec038a71048c2bcb9ddad4666e1f266ced8b7"
 		},
 		{
 			"ImportPath": "github.com/dickeyxxx/golock",
-			"Comment": "v1.0.0",
-			"Rev": "81cedee99bbcf74827e24f71084f3d36bca29cac"
+			"Comment": "v1.0.0-2-g082e98a",
+			"Rev": "082e98a198a8d61f4ac79e20a5ca56bf4195310e"
 		},
 		{
 			"ImportPath": "github.com/franela/goreq",
