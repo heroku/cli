@@ -9,7 +9,7 @@ function includes (array, item) {
 
 module.exports = {
   topic: 'git',
-  command: '_remote',
+  command: 'remote',
   needsAuth: true,
   args: [
     {name: 'APP', optional: true}

@@ -4,7 +4,7 @@ let h = require('heroku-cli-util');
 
 module.exports = {
   topic: 'git',
-  command: '_clone',
+  command: 'clone',
   needsAuth: true,
   args: [
     {name: 'APP', optional: true},
