@@ -3,7 +3,7 @@ let h = require('heroku-cli-util');
 let chalk = require('chalk');
 
 module.exports = {
-  topic: '_maintenance',
+  topic: 'maintenance',
   command: 'on',
   needsApp: true,
   needsAuth: true,

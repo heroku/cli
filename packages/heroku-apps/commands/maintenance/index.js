@@ -2,7 +2,7 @@
 let h = require('heroku-cli-util');
 
 module.exports = {
-  topic: '_maintenance',
+  topic: 'maintenance',
   needsApp: true,
   needsAuth: true,
   run: h.command(function* (context, heroku) {
