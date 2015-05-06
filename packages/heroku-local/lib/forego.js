@@ -45,31 +45,35 @@ Forego.prototype = {
       args.push('-r');
     }
     spawn(this.path, args, {
-      cwd: opts.cwd,
       stdio: [0, 1, 2]
     });
   },
 
-  ensureSetup: function (cb) {
+  ensureSetup: function () {
     let forego = this;
-    fs.open(this.path, 'r', function (err) {
-      if (err) {
-        forego.download(cb);
-      } else {
-        cb();
-      }
+    return new Promise(function (fulfill, reject) {
+      fs.open(forego.path, 'r', function (err) {
+        if (err) {
+          forego.download().then(fulfill, reject);
+        } else {
+          fulfill();
+        }
+      });
     });
   },
 
-  download: function (cb) {
-    process.stderr.write(`Downloading ${this.filename} to ${this.dir}... `);
-    request(this.url(), function (err) {
-      if (err) { cb(err); }
-      console.error('done');
-      // for some reason this seems necessary
-      setTimeout(cb, 500);
-    })
-    .pipe(fs.createWriteStream(this.path, {mode: 0o0755}));
+  download: function () {
+    let forego = this;
+    return new Promise(function (fulfill, reject) {
+      process.stderr.write(`Downloading ${forego.filename} to ${forego.dir}... `);
+      request(forego.url(), function (err) {
+        if (err) { reject(err); }
+        console.error('done');
+        // for some reason this seems necessary
+        setTimeout(fulfill, 500);
+      })
+      .pipe(fs.createWriteStream(forego.path, {mode: 0o0755}));
+    });
   },
 
   url: function() {

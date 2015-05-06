@@ -5,5 +5,5 @@ exports.topics = [{
 
 exports.commands = [
   require('./lib/commands/local'),
-  require('./lib/commands/local/version')
+  require('./lib/commands/version')
 ];

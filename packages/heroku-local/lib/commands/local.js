@@ -1,10 +1,6 @@
 'use strict';
-let Forego  = require('../../forego');
-
-function handleErr (err) {
-  console.error(err.stack);
-  process.exit(1);
-}
+let Forego  = require('../forego');
+let h = require('heroku-cli-util');
 
 module.exports = {
   topic: 'local',
@@ -24,11 +20,9 @@ Examples:
     {name: 'port', char: 'p', hasValue: true},
     {name: 'r', char: 'r', hasValue: false}
   ],
-  run: function (ctx) {
+  run: h.command(function* (ctx) {
     let forego = new Forego(ctx.herokuDir);
-    forego.ensureSetup(function (err) {
-      if (err) { handleErr(err); }
-      forego.start({cwd: ctx.cwd, args: ctx.args, flags: ctx.flags});
-    });
-  }
+    yield forego.ensureSetup();
+    forego.start({args: ctx.args, flags: ctx.flags});
+  })
 };
