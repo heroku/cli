@@ -60,7 +60,7 @@ func Update(channel string) {
 		done <- true
 	}()
 	select {
-	case <-time.After(time.Second * 30):
+	case <-time.After(time.Second * 60):
 		Errln("Timed out while updating")
 	case <-done:
 		touchAutoupdateFile()
