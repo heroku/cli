@@ -1,3 +1,5 @@
+'use strict';
+
 var api = require('request').defaults({
   json: true,
   headers: { 'Accept': 'application/vnd.heroku+json;' }
@@ -27,10 +29,10 @@ module.exports = {
   help: 'Example: heroku _status',
   needsAuth: false,
   run: function (context) {
-
+    let host = process.env.HEROKU_STATUS_HOST || 'status.heroku.com';
     api = api.defaults({auth: context.auth});
     api.get({
-      uri: 'https://status.heroku.com/api/v3/current-status/',
+      uri: `https://${host}/api/v3/current-status/`,
       json: true
     }, function (err, _, response) {
       if (err) { throw err; }
@@ -42,9 +44,9 @@ module.exports = {
         console.log(`\n=== ${incident.title} ${dateFormat(incident.created_at, "UTC:h:MM:ss TT Z")} (${incident.full_url})`);
 
         incident.updates.forEach(function(update) {
-          console.log(`[${capitalize(update.update_type)}] ${dateFormat(incident.created_at, "UTC:h:MM:ss TT Z")} (${timeago(update.updated_at)}) \n${update.contents}\n `)
+          console.log(`[${capitalize(update.update_type)}] ${dateFormat(incident.created_at, "UTC:h:MM:ss TT Z")} (${timeago(update.updated_at)}) \n${update.contents}\n `);
         });
       });
     });
   }
-}
+};
