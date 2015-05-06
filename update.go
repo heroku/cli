@@ -62,9 +62,11 @@ func Update(channel string) {
 	select {
 	case <-time.After(time.Second * 60):
 		Errln("Timed out while updating")
+		Logln("Timed out while updating")
 	case <-done:
 		touchAutoupdateFile()
 	}
+	Logln("done updating")
 }
 
 func updatePlugins() {
