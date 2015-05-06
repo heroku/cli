@@ -97,7 +97,7 @@ func writeLockfile(path string, pid int) error {
 func isPidActive(pid int) (bool, error) {
 	p, err := os.FindProcess(pid)
 	if err != nil {
-		return false, err
+		return false, nil
 	}
 	err = p.Signal(os.Signal(syscall.Signal(0)))
 	if err == nil {

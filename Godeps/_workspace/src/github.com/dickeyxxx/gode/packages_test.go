@@ -40,7 +40,8 @@ func TestRemovePackage(t *testing.T) {
 func TestUpdatePackages(t *testing.T) {
 	c := setup()
 	must(c.InstallPackage("request"))
-	must(c.UpdatePackages())
+	_, err := c.UpdatePackages()
+	must(err)
 }
 
 func TestPackagesGithubPackage(t *testing.T) {

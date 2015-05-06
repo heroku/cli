@@ -1,0 +1,16 @@
+language: go
+
+go:
+  - 1.4
+
+install:
+  - go get -v -u github.com/golang/lint/golint
+  - go get -v -u golang.org/x/tools/cmd/vet
+  - go get -v
+  - go build -v ./...
+
+script:
+  - go test ./...
+  - test -z "$(go fmt ./...)"
+  - test -z "$(golint .)"
+  - go vet
