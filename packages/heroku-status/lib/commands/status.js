@@ -15,7 +15,7 @@ function capitalize(str) {
 
 function printStatus(status) {
   var message = capitalize(status);
-  var colorize = chalk['bg'+capitalize(status)].white;
+  var colorize = chalk[status];
 
   if (status === 'green') {
     message =  'No known issues at this time.';
