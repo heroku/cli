@@ -100,6 +100,8 @@ func parseVarArgs(command *Command, args []string) (result []string, flags map[s
 			if err != nil {
 				panic(err)
 			}
+		case parseFlags && (args[i] == "--debugger"):
+			flags["debugger"] = true
 		case parseFlags && strings.HasPrefix(args[i], "-"):
 			foundFlag := false
 			for _, flag := range command.Flags {

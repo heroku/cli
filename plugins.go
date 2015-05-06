@@ -211,6 +211,7 @@ func runFn(module, topic, command string) func(ctx *Context) {
 		var module = '%s';
 		var topic = '%s';
 		var command = '%s';
+		var ctx = %s;
 		process.on('uncaughtException', function (err) {
 			console.error(' !   Error in ' + module + ':')
 			if (err.message) {
@@ -235,16 +236,19 @@ func runFn(module, topic, command string) func(ctx *Context) {
 			process.exit(1);
 		});
 		if (command === '') { command = null }
-		require(module)
+		var cmd = require(module)
 		.commands.filter(function (c) {
 			return c.topic === topic && c.command == command;
-		})[0]
-		.run(%s)`, module, topic, command, ErrLogPath, ctxJSON)
+		})[0];
+		cmd.run(ctx);`, module, topic, command, ctxJSON, ErrLogPath)
 
 		// swallow sigint since the plugin will handle it
 		swallowSignal(os.Interrupt)
 
 		cmd := node.RunScript(script)
+		if ctx.Flags["debugger"] == true {
+			cmd = node.DebugScript(script)
+		}
 		cmd.Stdout = Stdout
 		cmd.Stdin = os.Stdin
 		cmd.Stderr = os.Stderr
@@ -263,15 +267,16 @@ func swallowSignal(s os.Signal) {
 }
 
 func getExitCode(err error) int {
-	exitErr, ok := err.(*exec.ExitError)
-	if !ok {
+	switch e := err.(type) {
+	case *exec.ExitError:
+		status, ok := e.Sys().(syscall.WaitStatus)
+		if !ok {
+			panic(err)
+		}
+		return status.ExitStatus()
+	default:
 		panic(err)
 	}
-	status, ok := exitErr.Sys().(syscall.WaitStatus)
-	if !ok {
-		panic(err)
-	}
-	return status.ExitStatus()
 }
 
 func getPlugin(name string) *Plugin {
@@ -330,7 +335,19 @@ func PluginNames() []string {
 	files, _ := ioutil.ReadDir(filepath.Join(AppDir, "node_modules"))
 	names := make([]string, 0, len(files))
 	for _, f := range files {
-		names = append(names, f.Name())
+		if !ignorePlugin(f.Name()) {
+			names = append(names, f.Name())
+		}
 	}
 	return names
+}
+
+func ignorePlugin(plugin string) bool {
+	ignored := []string{".bin", "node-inspector"}
+	for _, p := range ignored {
+		if plugin == p {
+			return true
+		}
+	}
+	return false
 }
