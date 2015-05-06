@@ -110,7 +110,7 @@ var pluginsLinkCmd = &Command{
 	Topic:       "plugins",
 	Command:     "link",
 	Description: "Links a local plugin into CLI",
-	Args:        []Arg{{Name: "path"}},
+	Args:        []Arg{{Name: "path", Optional: true}},
 	Help: `Links a local plugin into CLI.
 	This is useful when developing plugins locally.
 	It simply symlinks the specified path into ~/.heroku/node_modules
@@ -119,7 +119,11 @@ var pluginsLinkCmd = &Command{
 	$ heroku plugins:link .`,
 
 	Run: func(ctx *Context) {
-		path, err := filepath.Abs(ctx.Args.(map[string]string)["path"])
+		path := ctx.Args.(map[string]string)["path"]
+		if path == "" {
+			path = "."
+		}
+		path, err := filepath.Abs(path)
 		if err != nil {
 			panic(err)
 		}
