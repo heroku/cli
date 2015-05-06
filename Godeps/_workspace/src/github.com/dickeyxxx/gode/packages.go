@@ -63,12 +63,12 @@ func (c *Client) RemovePackage(name string) error {
 }
 
 // UpdatePackages updates all packages.
-func (c *Client) UpdatePackages() error {
+func (c *Client) UpdatePackages() ([]byte, error) {
 	cmd, err := c.execNpm("update")
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return cmd.Run()
+	return cmd.Output()
 }
 
 func (c *Client) execNpm(args ...string) (*exec.Cmd, error) {
