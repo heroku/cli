@@ -2,11 +2,8 @@
 let tls = require('tls');
 let url = require('url');
 let tty = require('tty');
-let Heroku = require('heroku-client');
-let co = require('co');
-let errors = require('./errors');
 let term = require('./term');
-let heroku;
+let h = require('heroku-cli-util');
 
 function buildCommand(args) {
   let cmd = '';
@@ -19,7 +16,7 @@ function buildCommand(args) {
   return cmd.trim();
 }
 
-function startDyno(app, command) {
+function startDyno(heroku, app, command) {
   return heroku.apps(app).dynos().create({
     command: command,
     attach: true,
@@ -58,14 +55,11 @@ function attachToRendezvous(uri) {
   });
 }
 
-module.exports = function run (context) {
-  co(function* () {
-    heroku = new Heroku({token: context.auth.password});
-    let command = buildCommand(context.args);
-    process.stderr.write(`Running \`${command}\` attached to terminal... `);
-    command = `${command}; echo heroku-command-exit-status $?`;
-    let dyno = yield startDyno(context.app, command);
-    console.error(`up, ${dyno.name}`);
-    attachToRendezvous(url.parse(dyno.attach_url));
-  }).catch(errors.handleErr);
-};
+module.exports = h.command(function* (context, heroku) {
+  let command = buildCommand(context.args);
+  process.stderr.write(`Running \`${command}\` attached to terminal... `);
+  command = `${command}; echo heroku-command-exit-status $?`;
+  let dyno = yield startDyno(heroku, context.app, command);
+  console.error(`up, ${dyno.name}`);
+  attachToRendezvous(url.parse(dyno.attach_url));
+});

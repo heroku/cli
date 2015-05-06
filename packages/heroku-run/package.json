@@ -20,9 +20,7 @@
   },
   "homepage": "https://github.com/heroku/heroku-run",
   "dependencies": {
-    "co": "^4.4.0",
-    "heroku-cli-util": "^1.8.1",
-    "heroku-client": "^1.10.0"
+    "heroku-cli-util": "^1.10.3"
   },
   "devDependencies": {
     "jshint": "*"

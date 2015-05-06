@@ -14,7 +14,7 @@ exports.commands = [
     needsAuth: true,
     needsApp: true,
     flags: [
-      {name: 'exit-code', description: 'raise same exit code from dyno process'},
+      {name: 'exit-code', description: 'placeholder'},
     ],
     run: run
   }
