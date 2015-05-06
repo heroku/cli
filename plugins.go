@@ -38,12 +38,11 @@ func SetupNode() {
 			panic(err)
 		}
 		defer golock.Unlock(updateLockPath)
-		Log("setting up plugins... ")
+		Logln("setting up iojs", node.NodeVersion)
 		if err := node.Setup(); err != nil {
 			panic(err)
 		}
 		clearOldNodeInstalls()
-		Logln("done")
 	}
 }
 
@@ -148,6 +147,11 @@ var pluginsLinkCmd = &Command{
 				panic(err)
 			}
 		}
+		Println("symlinked", name)
+		Err("Updating plugin cache... ")
+		ClearPluginCache()
+		WritePluginCache(GetPlugins())
+		Errln("done")
 	},
 }
 
@@ -271,11 +275,10 @@ func getPlugin(name string) *Plugin {
 func GetPlugins() []Plugin {
 	cache := FetchPluginCache()
 	names := PluginNames()
-	symlinkedNames := SymlinkedPluginNames()
 	plugins := make([]Plugin, 0, len(names))
 	for _, name := range names {
 		plugin := cache[name]
-		if plugin == nil || includes(symlinkedNames, name) {
+		if plugin == nil {
 			plugin = getPlugin(name)
 		}
 		for _, command := range plugin.Commands {
@@ -297,25 +300,4 @@ func PluginNames() []string {
 		names = append(names, f.Name())
 	}
 	return names
-}
-
-// SymlinkedPluginNames returns all the plugins that are symlinked
-func SymlinkedPluginNames() []string {
-	files, _ := ioutil.ReadDir(filepath.Join(AppDir, "node_modules"))
-	names := make([]string, 0, len(files))
-	for _, f := range files {
-		if !f.Mode().IsDir() {
-			names = append(names, f.Name())
-		}
-	}
-	return names
-}
-
-func includes(list []string, a string) bool {
-	for _, b := range list {
-		if b == a {
-			return true
-		}
-	}
-	return false
 }
