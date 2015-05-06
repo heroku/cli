@@ -38,12 +38,11 @@ func SetupNode() {
 			panic(err)
 		}
 		defer golock.Unlock(updateLockPath)
-		Log("setting up plugins... ")
+		Logln("setting up iojs", node.NodeVersion)
 		if err := node.Setup(); err != nil {
 			panic(err)
 		}
 		clearOldNodeInstalls()
-		Logln("done")
 	}
 }
 
