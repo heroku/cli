@@ -18,7 +18,7 @@ import (
 
 // Plugin represents a javascript plugin
 type Plugin struct {
-	Name     string     `json:"string"`
+	Name     string     `json:"name"`
 	Topics   TopicSet   `json:"topics"`
 	Commands CommandSet `json:"commands"`
 }
@@ -147,7 +147,14 @@ var pluginsLinkCmd = &Command{
 				panic(err)
 			}
 		}
-		Println("symlinked", name)
+		if name != plugin.Name {
+			path = newPath
+			newPath = filepath.Join(ctx.HerokuDir, "node_modules", plugin.Name)
+			os.Remove(newPath)
+			os.RemoveAll(newPath)
+			os.Rename(path, newPath)
+		}
+		Println("symlinked", plugin.Name)
 		Err("Updating plugin cache... ")
 		ClearPluginCache()
 		WritePluginCache(GetPlugins())
@@ -268,7 +275,10 @@ func getExitCode(err error) int {
 }
 
 func getPlugin(name string) *Plugin {
-	script := `console.log(JSON.stringify(require('` + name + `')))`
+	script := `
+	var plugin = require('` + name + `');
+	plugin.name = require('` + name + `/package.json').name;
+	console.log(JSON.stringify(plugin))`
 	cmd := node.RunScript(script)
 	cmd.Stderr = Stderr
 	output, err := cmd.StdoutPipe()
@@ -291,7 +301,6 @@ func getPlugin(name string) *Plugin {
 	if err := cmd.Wait(); err != nil {
 		panic(err)
 	}
-	plugin.Name = name
 	return &plugin
 }
 
