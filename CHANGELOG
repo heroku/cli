@@ -1,3 +1,7 @@
+4.17.3
+======
+Only parse remote or app when command needs it
+
 4.17.2
 ======
 Added plugins:link command
