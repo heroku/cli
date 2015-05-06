@@ -9,24 +9,25 @@ function includes (array, item) {
 
 module.exports = {
   topic: 'git',
-  command: 'remote',
+  command: '_remote',
   needsAuth: true,
+  args: [
+    {name: 'APP', optional: true}
+  ],
   flags: [
     {name: 'app', char: 'a', hasValue: true},
     {name: 'remote', char: 'r', hasValue: true},
     {name: 'ssh-git'},
   ],
   run: h.command(function* (context, heroku) {
-    let appName = context.flags.app;
+    let appName = context.flags.app || context.args.APP;
     if (!appName) {
       return h.error('Specify an app with --app');
     }
     let app = yield heroku.apps(appName).info();
     let remote = context.flags.remote || (yield git.remoteFromGitConfig()) || 'heroku';
     let remotes = yield git.exec('remote');
-    let url = context.flags['ssh-git'] ?
-      `git@${h.gitHost()}:${app.name}.git` :
-      `https://${h.httpGitHost()}/${app.name}.git`;
+    let url = context.flags['ssh-git'] ? git.sshGitUrl(app.name) : git.httpGitUrl(app.name);
     if (includes(remotes.split('\n'), remote)) {
       yield git.exec(`remote set-url ${remote} ${url}`);
     } else {
