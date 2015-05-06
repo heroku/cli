@@ -60,7 +60,7 @@ func Update(channel string) {
 		done <- true
 	}()
 	select {
-	case <-time.After(time.Second * 60):
+	case <-time.After(time.Second * 120):
 		Errln("Timed out while updating")
 		Logln("Timed out while updating")
 	case <-done:
