@@ -33,15 +33,15 @@ var updateCmd = &Command{
 			channel = "master"
 		}
 		Errf("updating plugins... ")
-		if err := node.UpdatePackages(); err != nil {
-			panic(err)
-		}
-		Errln("done")
+		start := time.Now()
+		updatePlugins()
+		Errln("done. Took", time.Since(start).String())
 		manifest := getUpdateManifest(channel)
 		build := manifest.Builds[runtime.GOOS][runtime.GOARCH]
 		Errf("updating to %s (%s)... ", manifest.Version, manifest.Channel)
+		start = time.Now()
 		update(build.URL, build.Sha1)
-		Errln("done")
+		Errln("done. Took", time.Since(start).String())
 	},
 }
 
@@ -65,7 +65,7 @@ func Update() {
 	doneUpdatingPlugins := make(chan bool)
 	done := make(chan bool)
 	go func() {
-		node.UpdatePackages()
+		updatePlugins()
 		doneUpdatingPlugins <- true
 	}()
 	go func() {
@@ -78,6 +78,12 @@ func Update() {
 		Errln("Timed out while updating")
 	case <-done:
 	}
+}
+
+func updatePlugins() {
+	node.UpdatePackages()
+	ClearPluginCache()
+	WritePluginCache(GetPlugins())
 }
 
 func updateCLI() {
