@@ -13,6 +13,7 @@ exports.commands = [
     variableArgs: true,
     needsAuth: true,
     needsApp: true,
+    hidden: true,
     flags: [
       {name: 'exit-code', description: 'placeholder'},
     ],
