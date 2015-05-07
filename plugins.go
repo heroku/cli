@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -94,7 +93,7 @@ var pluginsInstallCmd = &Command{
 		if err := node.InstallPackage(name); err != nil {
 			panic(err)
 		}
-		plugin := getPlugin(name)
+		plugin := getPlugin(name, false)
 		if plugin == nil || len(plugin.Commands) == 0 {
 			Err("This does not appear to be a Heroku plugin, uninstalling... ")
 			if err := (node.RemovePackage(name)); err != nil {
@@ -139,7 +138,7 @@ var pluginsLinkCmd = &Command{
 		if err != nil {
 			panic(err)
 		}
-		plugin := getPlugin(name)
+		plugin := getPlugin(name, false)
 		if plugin == nil || len(plugin.Commands) == 0 {
 			Errln(name + " does not appear to be a Heroku plugin")
 			if err := os.Remove(newPath); err != nil {
@@ -280,33 +279,28 @@ func getExitCode(err error) int {
 	}
 }
 
-func getPlugin(name string) *Plugin {
+func getPlugin(name string, attemptReinstall bool) *Plugin {
 	script := `
 	var plugin = require('` + name + `');
 	plugin.name = require('` + name + `/package.json').name;
 	console.log(JSON.stringify(plugin))`
 	cmd := node.RunScript(script)
-	cmd.Stderr = Stderr
-	output, err := cmd.StdoutPipe()
+	output, err := cmd.CombinedOutput()
 	if err != nil {
-		panic(err)
-	}
-	if err := cmd.Start(); err != nil {
-		panic(err)
-	}
-	buf := new(bytes.Buffer)
-	buf.ReadFrom(output)
-	s := buf.String()
-	var plugin Plugin
-	err = json.Unmarshal(buf.Bytes(), &plugin)
-	if err != nil {
+		if attemptReinstall {
+			Errf("Error reading plugin %s. Reinstalling... ", name)
+			if err := node.InstallPackage(name); err != nil {
+				panic(err)
+			}
+			Errln("done")
+			return getPlugin(name, false)
+		}
 		Errf("Error reading plugin: %s. See %s for more information.\n", name, ErrLogPath)
-		Logln(err, "\n", s)
+		Logln(err, "\n", output)
 		return nil
 	}
-	if err := cmd.Wait(); err != nil {
-		panic(err)
-	}
+	var plugin Plugin
+	json.Unmarshal([]byte(output), &plugin)
 	return &plugin
 }
 
@@ -318,7 +312,7 @@ func GetPlugins() []Plugin {
 	for _, name := range names {
 		plugin := cache[name]
 		if plugin == nil {
-			plugin = getPlugin(name)
+			plugin = getPlugin(name, true)
 		}
 		if plugin != nil {
 			for _, command := range plugin.Commands {
