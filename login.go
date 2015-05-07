@@ -25,10 +25,10 @@ var loginCmd = &Command{
 
 func login() {
 	Println("Enter your Heroku credentials.")
-	email := getEmail()
+	email := getString("Email: ")
 	password := getPassword()
 
-	token, err := createOauthToken(email, password)
+	token, err := createOauthToken(email, password, "")
 	if err != nil {
 		PrintError(err)
 		return
@@ -48,15 +48,16 @@ func saveOauthToken(email, token string) {
 	ioutil.WriteFile(netrcPath(), body, 0600)
 }
 
-func getEmail() (email string) {
-	Print("Email: ")
-	if _, err := fmt.Scanln(&email); err != nil {
+func getString(prompt string) string {
+	var s string
+	Print(prompt)
+	if _, err := fmt.Scanln(&s); err != nil {
 		if err.Error() == "unexpected newline" {
-			return getEmail()
+			return getString(prompt)
 		}
 		panic(err)
 	}
-	return email
+	return s
 }
 
 func getPassword() string {
@@ -69,11 +70,12 @@ func getPassword() string {
 	if password == "" {
 		return getPassword()
 	}
+	Println()
 	return password
 }
 
-func createOauthToken(email, password string) (string, error) {
-	res, err := goreq.Request{
+func createOauthToken(email, password, secondFactor string) (string, error) {
+	req := goreq.Request{
 		Uri:               "https://api.heroku.com/oauth/authorizations",
 		Method:            "POST",
 		Accept:            "application/vnd.heroku+json; version=3",
@@ -84,7 +86,11 @@ func createOauthToken(email, password string) (string, error) {
 			"description": "Toolbelt CLI login from " + time.Now().UTC().Format(time.RFC3339),
 			"expires_in":  60 * 60 * 24 * 30, // 30 days
 		},
-	}.Do()
+	}
+	if secondFactor != "" {
+		req.AddHeader("Heroku-Two-Factor-Code", secondFactor)
+	}
+	res, err := req.Do()
 	if err != nil {
 		panic(err)
 	}
@@ -97,6 +103,9 @@ func createOauthToken(email, password string) (string, error) {
 	}
 	var doc Doc
 	res.Body.FromJsonTo(&doc)
+	if doc.ID == "two_factor" {
+		return createOauthToken(email, password, getString("Two-factor code: "))
+	}
 	if res.StatusCode != 201 {
 		return "", errors.New(doc.Message)
 	}
