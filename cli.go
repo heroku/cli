@@ -156,7 +156,8 @@ func parseArgs(command *Command, args []string) (result map[string]string, flags
 func app() string {
 	app, err := appFromGitRemote(remoteFromGitConfig())
 	if err != nil {
-		panic(err)
+		PrintError(err)
+		os.Exit(1)
 	}
 	return app
 }
