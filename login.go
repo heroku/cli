@@ -42,6 +42,7 @@ func saveOauthToken(email, token string) {
 	netrc.NewMachine("api.heroku.com", email, token, "")
 	netrc.NewMachine("git.heroku.com", email, token, "")
 	body, err := netrc.MarshalText()
+	body = append(body, '\n')
 	if err != nil {
 		panic(err)
 	}
