@@ -1,3 +1,8 @@
+4.19.5 2015-05-07
+=================
+Attempt to reinstall plugins that were not fully installed
+Show warning if updating
+
 4.19.4 2015-05-07
 =================
 Allow multiple git remotes for app if they have the same value
