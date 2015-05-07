@@ -119,7 +119,7 @@ func IsUpdateNeeded(t string) bool {
 		return true
 	}
 	if t == "soft" {
-		return time.Since(f.ModTime()) > 1*time.Hour
+		return time.Since(f.ModTime()) > 4*time.Hour
 	}
 	return time.Since(f.ModTime()) > 168*time.Hour
 }
