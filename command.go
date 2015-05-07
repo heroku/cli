@@ -154,6 +154,9 @@ var commandsListCmd = &Command{
 			return
 		}
 		for _, command := range cli.Commands {
+			if command.Hidden {
+				continue
+			}
 			if command.Command == "" {
 				Printf("%s\n", command.Topic)
 			} else {
