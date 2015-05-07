@@ -21,6 +21,7 @@ module.exports = {
   topic: '_apps',
   command: 'info',
   description: 'show detailed app information',
+  hidden: true,
   needsApp: true,
   needsAuth: true,
   flags: [{name: 'shell', char: 's', description: 'output more shell friendly key/value pairs'}],
