@@ -144,8 +144,8 @@ var commandsListCmd = &Command{
 	Description: "list all commands",
 	Flags:       []Flag{{Name: "json"}},
 	Run: func(ctx *Context) {
+		cli.LoadPlugins(GetPlugins())
 		if ctx.Flags["json"] == true {
-			cli.LoadPlugins(GetPlugins())
 			cli.Commands.loadUsages()
 			cli.Commands.loadFullHelp()
 			doc := map[string]interface{}{"topics": cli.Topics, "commands": cli.Commands}
