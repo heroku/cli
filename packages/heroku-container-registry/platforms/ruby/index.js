@@ -26,7 +26,7 @@ module.exports = {
 
 function getEngines(gemfile) {
   try {
-    var contents = fs.readFileSync(gemfile, { format: 'utf8' });
+    var contents = fs.readFileSync(gemfile, { encoding: 'utf8' });
     var match = contents.match(ENGINE_MATCHER)
 
     if (match) {
