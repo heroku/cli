@@ -50,9 +50,7 @@ func init() {
 // Update updates the CLI and plugins
 func Update(channel string) {
 	touchAutoupdateFile()
-	if err := golock.Lock(updateLockPath); err != nil {
-		panic(err)
-	}
+	golock.Lock(updateLockPath)
 	defer golock.Unlock(updateLockPath)
 	done := make(chan bool)
 	go func() {
