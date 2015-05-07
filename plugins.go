@@ -322,11 +322,11 @@ func GetPlugins() []Plugin {
 		if plugin == nil {
 			plugin = getPlugin(name)
 		}
-		for _, command := range plugin.Commands {
-			command.Plugin = name
-			command.Run = runFn(name, command.Topic, command.Command)
-		}
 		if plugin != nil {
+			for _, command := range plugin.Commands {
+				command.Plugin = name
+				command.Run = runFn(name, command.Topic, command.Command)
+			}
 			plugins = append(plugins, *plugin)
 		}
 	}
