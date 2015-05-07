@@ -34,6 +34,7 @@ module.exports = {
       }
       console.log(`=== ${db.addon.config_vars[0]}`);
       console.log(columnify(db.redis.info, { showHeaders: false }));
+      console.log();
     }
   })
 };
