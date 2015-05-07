@@ -287,7 +287,7 @@ func getPlugin(name string, attemptReinstall bool) *Plugin {
 	cmd := node.RunScript(script)
 	output, err := cmd.CombinedOutput()
 	if err != nil {
-		if attemptReinstall {
+		if attemptReinstall && strings.Contains(string(output), "Error: Cannot find module") {
 			Errf("Error reading plugin %s. Reinstalling... ", name)
 			if err := node.InstallPackage(name); err != nil {
 				panic(err)
