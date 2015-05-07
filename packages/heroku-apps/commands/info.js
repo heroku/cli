@@ -18,8 +18,8 @@ function outputLine(name, value) {
 }
 
 module.exports = {
-  topic: '_apps',
-  command: 'info',
+  topic: 'apps',
+  command: '_info',
   description: 'show detailed app information',
   hidden: true,
   needsApp: true,
