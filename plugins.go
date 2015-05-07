@@ -34,9 +34,7 @@ func init() {
 // SetupNode sets up node and npm in ~/.heroku
 func SetupNode() {
 	if !node.IsSetup() {
-		if err := golock.Lock(updateLockPath); err != nil {
-			panic(err)
-		}
+		golock.Lock(updateLockPath)
 		defer golock.Unlock(updateLockPath)
 		Debugln("setting up iojs", node.NodeVersion)
 		if err := node.Setup(); err != nil {
