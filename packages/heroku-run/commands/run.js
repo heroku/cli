@@ -20,7 +20,7 @@ function env () {
   let c = {};
   if (tty.isatty(1)) {
     c.COLUMNS = process.stdout.columns;
-    c.ROWS    = process.stdout.rows;
+    c.LINES   = process.stdout.rows;
   }
   return c;
 }
