@@ -1,3 +1,8 @@
+4.19.4 2015-05-07
+=================
+Allow multiple git remotes for app if they have the same value
+Added version (user agent) to context
+
 4.19.3 2015-05-07
 =================
 Removed red text from errors
