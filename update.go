@@ -25,6 +25,7 @@ var updateTopic = &Topic{
 
 var updateCmd = &Command{
 	Topic:       "update",
+	Hidden:      true,
 	Description: "updates heroku-cli",
 	Args:        []Arg{{Name: "channel", Optional: true}},
 	Run: func(ctx *Context) {

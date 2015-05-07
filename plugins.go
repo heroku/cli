@@ -78,6 +78,7 @@ var pluginsTopic = &Topic{
 var pluginsInstallCmd = &Command{
 	Topic:       "plugins",
 	Command:     "install",
+	Hidden:      true,
 	Args:        []Arg{{Name: "name"}},
 	Description: "Installs a plugin into the CLI",
 	Help: `Install a Heroku plugin
@@ -165,6 +166,7 @@ var pluginsLinkCmd = &Command{
 var pluginsUninstallCmd = &Command{
 	Topic:       "plugins",
 	Command:     "uninstall",
+	Hidden:      true,
 	Args:        []Arg{{Name: "name"}},
 	Description: "Uninstalls a plugin from the CLI",
 	Help: `Uninstalls a Heroku plugin
@@ -184,6 +186,7 @@ var pluginsUninstallCmd = &Command{
 
 var pluginsListCmd = &Command{
 	Topic:       "plugins",
+	Hidden:      true,
 	Description: "Lists the installed plugins",
 	Help: `Lists installed plugins
 
