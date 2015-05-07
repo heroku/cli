@@ -1,3 +1,18 @@
+4.19.3 2015-05-07
+=================
+Removed red text from errors
+Fixed login for 2fa
+Added newline to netrc
+Load plugins into commands list
+Hide hidden commands on commands list
+Hide commands that should not override
+Fixed null reference exception when loading plugins
+Ignore errors from lockfile issues
+
+4.19.2 2015-05-06
+=================
+Updated gode to 2.3.2
+
 4.19.2 2015-05-06
 =================
 Updated gode to 2.3.2
