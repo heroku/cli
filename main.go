@@ -43,6 +43,7 @@ func init() {
 
 func main() {
 	defer handlePanic()
+	WarnIfUpdating()
 	if IsUpdateNeeded("hard") {
 		Update(Channel)
 	}

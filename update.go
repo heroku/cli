@@ -214,3 +214,10 @@ func TriggerBackgroundUpdate() {
 		panic(err)
 	}
 }
+
+// WarnIfUpdating prints to stderr if the CLI is updating
+func WarnIfUpdating() {
+	if exists, _ := fileExists(updateLockPath); exists {
+		Errln("WARNING: CLI is updating")
+	}
+}
