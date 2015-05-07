@@ -1,9 +1,9 @@
 'use strict';
-let tls = require('tls');
-let url = require('url');
-let tty = require('tty');
-let term = require('./term');
-let h = require('heroku-cli-util');
+let tls   = require('tls');
+let url   = require('url');
+let tty   = require('tty');
+let h     = require('heroku-cli-util');
+let chalk = require('chalk');
 
 function buildCommand(args) {
   let cmd = '';
@@ -16,11 +16,20 @@ function buildCommand(args) {
   return cmd.trim();
 }
 
+function env () {
+  let c = {};
+  if (tty.isatty(1)) {
+    c.COLUMNS = process.stdout.columns;
+    c.ROWS    = process.stdout.rows;
+  }
+  return c;
+}
+
 function startDyno(heroku, app, command) {
   return heroku.apps(app).dynos().create({
     command: command,
     attach: true,
-    env: tty.isatty(1) ? term.getTermSize() : {}
+    env: env(),
   });
 }
 
@@ -55,11 +64,26 @@ function attachToRendezvous(uri) {
   });
 }
 
-module.exports = h.command(function* (context, heroku) {
-  let command = buildCommand(context.args);
-  process.stderr.write(`Running \`${command}\` attached to terminal... `);
-  command = `${command}; echo heroku-command-exit-status $?`;
-  let dyno = yield startDyno(heroku, context.app, command);
-  console.error(`up, ${dyno.name}`);
-  attachToRendezvous(url.parse(dyno.attach_url));
-});
+module.exports = {
+  topic: 'run',
+  help: `run a one-off process inside a Heroku dyno`,
+  variableArgs: true,
+  needsAuth: true,
+  needsApp: true,
+  hidden: true,
+  flags: [
+    {name: 'exit-code', description: 'placeholder'},
+  ],
+  run: h.command(function* (context, heroku) {
+    let command = buildCommand(context.args);
+    if (!command) {
+      h.error('Usage: heroku run COMMAND\n\nExample: heroku run bash');
+      process.exit(1);
+    }
+    process.stderr.write(`Running ${chalk.blue(command)} attached to terminal... `);
+    command = `${command}; echo heroku-command-exit-status $?`;
+    let dyno = yield startDyno(heroku, context.app, command);
+    console.error(`up, ${chalk.blue(dyno.name)}`);
+    attachToRendezvous(url.parse(dyno.attach_url));
+  }),
+};
