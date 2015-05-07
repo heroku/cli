@@ -37,7 +37,7 @@ module.exports = {
   command: 'cli',
   needsApp: true,
   needsAuth: true,
-  shortHelp: 'opens a redis prompt',
+  description: 'opens a redis prompt',
   args: [{name: 'database', optional: true}],
   run: h.command(function* (context, heroku) {
     let filter = api.make_config_var_filter(context.args.database);

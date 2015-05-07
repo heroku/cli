@@ -9,7 +9,7 @@ module.exports = {
   needsApp: true,
   needsAuth: true,
   args: [{name: 'database', optional: true}],
-  shortHelp: 'gets information about redis',
+  description: 'gets information about redis',
   run: h.command(function *(context, heroku) {
     let addons = yield heroku.apps(context.app).addons().list();
     // filter out non-redis addons

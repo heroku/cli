@@ -9,7 +9,7 @@ module.exports = {
   needsAuth: true,
   args: [{name: 'database', optional: true}],
   flags: [{name: 'reset'}],
-  shortHelp: 'display credentials information',
+  description: 'display credentials information',
   run: h.command(function* (context, heroku) {
     if (context.flags.reset) {
       let addonsFilter = api.make_addons_filter(context.args.database);

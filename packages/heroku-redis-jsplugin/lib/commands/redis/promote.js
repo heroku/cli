@@ -8,7 +8,7 @@ module.exports = {
   needsApp: true,
   needsAuth: true,
   args: [{name: 'database', optional: false}],
-  shortHelp: 'sets DATABASE as your REDIS_URL',
+  description: 'sets DATABASE as your REDIS_URL',
   run: h.command(function* (context, heroku) {
     let addonsFilter = api.make_addons_filter(context.args.database);
     let addons = addonsFilter(yield heroku.apps(context.app).addons().list());
