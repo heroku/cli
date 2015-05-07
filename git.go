@@ -108,13 +108,27 @@ func appFromGitRemote(remote string) (string, error) {
 	if err != nil {
 		return "", nil // hide this error
 	}
-	if len(remotes) > 1 {
+	remoteValues := uniqueMapValues(remotes)
+	if len(remoteValues) > 1 {
 		return "", errMultipleHerokuRemotes
 	}
 	for _, v := range remotes {
 		return v, nil
 	}
 	return "", nil
+}
+
+func uniqueMapValues(m map[string]string) []string {
+	n := make([]string, 0, len(m))
+	ref := make(map[string]bool, len(m))
+	for _, v := range m {
+		if _, ok := ref[v]; !ok {
+			ref[v] = true
+			n = append(n, v)
+		}
+	}
+
+	return n
 }
 
 func isNotFound(err error) bool {
