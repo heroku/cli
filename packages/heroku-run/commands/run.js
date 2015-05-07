@@ -25,11 +25,12 @@ function env () {
   return c;
 }
 
-function startDyno(heroku, app, command) {
+function startDyno(heroku, app, size, command) {
   return heroku.apps(app).dynos().create({
-    command: command,
-    attach: true,
-    env: env(),
+    command:  command,
+    attach:   true,
+    size:     size,
+    env:      env(),
   });
 }
 
@@ -79,6 +80,7 @@ module.exports = {
   needsApp: true,
   hidden: true,
   flags: [
+    {name: 'size', char: 's', description: 'dyno size', hasValue: true},
     {name: 'exit-code', description: 'placeholder'},
   ],
   run: h.command(function* (context, heroku) {
@@ -87,10 +89,9 @@ module.exports = {
       h.error('Usage: heroku run COMMAND\n\nExample: heroku run bash');
       process.exit(1);
     }
-    process.stderr.write(`Running ${chalk.blue(command)} attached to terminal... `);
-    command = `${command}; echo heroku-command-exit-status $?`;
-    let dyno = yield startDyno(heroku, context.app, command);
-    console.error(`up, ${chalk.blue(dyno.name)}`);
+    let p = startDyno(heroku, context.app, context.flags.size, `${command}; echo heroku-command-exit-status $?`);
+    let dyno = yield h.action(`Running ${chalk.cyan.bold(command)} attached to terminal`, p, {success: false});
+    console.error(`up, ${chalk.cyan.bold(dyno.name)}`);
     attachToRendezvous(url.parse(dyno.attach_url));
   }),
 };
