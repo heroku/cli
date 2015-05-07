@@ -18,5 +18,6 @@ See the following Dev Center guides for details on how to user the plugin:
 
 `npm test`
 
+- Requires io.js
 - Assumes that `docker` is accessible
 - Assumes that it's being run in a directory that the docker host (like boot2docker) can mount
