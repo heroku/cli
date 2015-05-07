@@ -40,14 +40,17 @@ function attachToRendezvous(uri) {
   c.on('connect', function () {
     c.write(uri.path.substr(1) + '\r\n');
   });
-  if (tty.isatty(0)) {
-    process.stdin.setRawMode(true);
-    process.stdin.pipe(c);
-  }
   let firstLine = true;
   c.on('data', function (data) {
     // discard first line
-    if (firstLine) { firstLine = false; return; }
+    if (firstLine) {
+      firstLine = false;
+      if (tty.isatty(0)) {
+        process.stdin.setRawMode(true);
+        process.stdin.pipe(c);
+      }
+      return;
+    }
     data = data.replace('\r\n', '\n');
     let exitCode = data.match(/^heroku-command-exit-status (\d+)$/m);
     if (exitCode) {
@@ -61,6 +64,10 @@ function attachToRendezvous(uri) {
   });
   c.on('end', function () {
     process.exit(0);
+  });
+  c.on('error', h.errorHandler());
+  process.on('SIGINT', function () {
+    c.end();
   });
 }
 
