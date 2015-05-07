@@ -15,19 +15,6 @@ module.exports = {
     var templatePath = path.resolve(__dirname, 'Dockerfile.t');
     var template = fs.readFileSync(templatePath, { encoding: 'utf8' });
     var compiled = _.template(template);
-    var appName = getAppName(dir);
-    return compiled({
-      app_name: appName
-    });
+    return compiled({});
   }
 };
-
-function getAppName(dir) {
-  var f = null
-  fs.readdirSync(path.join(dir, 'target/universal/stage/bin/')).forEach(function(file) {
-    if (path.extname(file) == '') {
-      f = file;
-    }
-  });
-  return f;
-}

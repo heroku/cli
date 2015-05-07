@@ -6,7 +6,6 @@ WORKDIR /app
 
 ENV HOME /app
 ENV PATH /app/heroku/jdk/bin:$PATH
-ENV APP_NAME <%= app_name %>
 ENV PORT 3000
 
 RUN mkdir -p /app/heroku/jdk
