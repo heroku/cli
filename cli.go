@@ -99,7 +99,7 @@ func parseVarArgs(command *Command, args []string) (result []string, flags map[s
 			}
 			appName, err = appFromGitRemote(args[i])
 			if err != nil {
-				panic(err)
+				return nil, nil, "", err
 			}
 		case parseFlags && (args[i] == "--debugger"):
 			flags["debugger"] = true
