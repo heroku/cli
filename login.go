@@ -84,9 +84,7 @@ func createOauthToken(email, password, secondFactor string) (string, error) {
 		req.AddHeader("Heroku-Two-Factor-Code", secondFactor)
 	}
 	res, err := req.Do()
-	if err != nil {
-		panic(err)
-	}
+	ExitIfError(err)
 	type Doc struct {
 		ID          string
 		Message     string
