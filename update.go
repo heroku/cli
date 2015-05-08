@@ -9,7 +9,6 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
-	"syscall"
 	"time"
 
 	"github.com/dickeyxxx/golock"
@@ -103,7 +102,7 @@ func updateCLI(channel string) {
 	}
 	Errln("done")
 	golock.Unlock(updateLockPath)
-	reexecBin()
+	execBin(binPath, os.Args)
 }
 
 // IsUpdateNeeded checks if an update is available
@@ -178,22 +177,6 @@ func fileSha1(path string) string {
 		panic(err)
 	}
 	return fmt.Sprintf("%x", sha1.Sum(data))
-}
-
-func reexecBin() {
-	if runtime.GOOS == "windows" {
-		cmd := exec.Command(binPath, os.Args[1:]...)
-		cmd.Stdin = os.Stdin
-		cmd.Stdout = os.Stdout
-		cmd.Stderr = os.Stderr
-		cmd.Run()
-		os.Exit(0)
-	} else {
-		if err := syscall.Exec(binPath, os.Args, os.Environ()); err != nil {
-			panic(err)
-		}
-		os.Exit(99) // should never happen
-	}
 }
 
 // TriggerBackgroundUpdate will trigger an update to the client in the background
