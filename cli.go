@@ -14,7 +14,7 @@ import (
 var ErrHelp = errors.New("help")
 
 // ErrAppNeeded means the command needs an app context and one was not found.
-var ErrAppNeeded = errors.New(" !    No app specified.\n !    Run this command from an app folder or specify which app to use with --app APP")
+var ErrAppNeeded = errors.New("No app specified.\nRun this command from an app folder or specify which app to use with --app APP")
 
 // Cli handles parsing and dispatching of commands
 type Cli struct {
