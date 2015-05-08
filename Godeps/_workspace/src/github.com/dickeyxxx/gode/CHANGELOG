@@ -1,3 +1,7 @@
+2.3.5 2015-05-08
+----------------
+Fixed bug with file in use on windows
+
 2.3.4 2015-05-08
 ----------------
 Use temp directories when setting up
