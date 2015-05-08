@@ -69,9 +69,7 @@ func (c *Client) downloadFile(path, url string) error {
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
 	file, err := os.Create(tmp)
-	defer file.Close()
 	if err != nil {
 		return err
 	}
@@ -79,6 +77,8 @@ func (c *Client) downloadFile(path, url string) error {
 	if err != nil {
 		return err
 	}
+	file.Close()
+	resp.Body.Close()
 	err = os.MkdirAll(filepath.Dir(path), 0755)
 	if err != nil {
 		return err
