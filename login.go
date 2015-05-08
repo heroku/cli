@@ -6,8 +6,8 @@ import (
 	"io/ioutil"
 	"time"
 
+	"github.com/bgentry/speakeasy"
 	"github.com/franela/goreq"
-	"golang.org/x/crypto/ssh/terminal"
 )
 
 var loginTopic = &Topic{
@@ -62,16 +62,10 @@ func getString(prompt string) string {
 }
 
 func getPassword() string {
-	Print("Password (typing will be hidden): ")
-	raw, err := terminal.ReadPassword(0)
+	password, err := speakeasy.Ask("Password (typing will be hidden): ")
 	if err != nil {
-		panic(err)
+		PrintError(err)
 	}
-	password := string(raw)
-	if password == "" {
-		return getPassword()
-	}
-	Println()
 	return password
 }
 

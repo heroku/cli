@@ -7,6 +7,10 @@
 			"Rev": "9fd32a8b3d3d3f9d43c341bfe098430e07609480"
 		},
 		{
+			"ImportPath": "github.com/bgentry/speakeasy",
+			"Rev": "5dfe43257d1f86b96484e760f2f0c4e2559089c7"
+		},
+		{
 			"ImportPath": "github.com/dickeyxxx/gode",
 			"Comment": "v2.3.1-1-g965ec03",
 			"Rev": "965ec038a71048c2bcb9ddad4666e1f266ced8b7"
@@ -38,10 +42,6 @@
 			"ImportPath": "github.com/stvp/rollbar",
 			"Comment": "v0.3.1-4-g3f10961",
 			"Rev": "3f10961d0bdb493ad6a6ecec9fb16d97c33d593e"
-		},
-		{
-			"ImportPath": "golang.org/x/crypto/ssh/terminal",
-			"Rev": "59435533c88bd0b1254c738244da1fe96b59d05d"
 		}
 	]
 }
