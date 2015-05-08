@@ -24,11 +24,11 @@ function remoteFromGitConfig () {
 }
 
 function sshGitUrl(app) {
-  return `git@${h.gitHost()}:${app}.git`;
+  return `git@${h.config.git_host}:${app}.git`;
 }
 
 function httpGitUrl(app) {
-  return `https://${h.httpGitHost()}/${app}.git`;
+  return `https://${h.config.http_git_host}/${app}.git`;
 }
 
 exports.exec = exec;
