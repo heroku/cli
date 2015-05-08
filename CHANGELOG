@@ -1,3 +1,9 @@
+4.19.9 2015-05-07
+=================
+Ensure update removes lock file
+Removed panics in place of simpler errors
+Made netrc reading less strict
+
 4.19.8 2015-05-07
 =================
 Exec plugins instead of spawning processes
