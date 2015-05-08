@@ -1,3 +1,7 @@
+4.19.8 2015-05-07
+=================
+Exec plugins instead of spawning processes
+
 4.19.7 2015-05-07
 =================
 Switch to speakeasy for passwords
