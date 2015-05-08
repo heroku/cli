@@ -7,7 +7,7 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/bgentry/go-netrc/netrc"
+	"github.com/dickeyxxx/go-netrc/netrc"
 )
 
 // ErrHelp means the user didn't type a valid command and we need to display help.

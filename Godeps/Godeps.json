@@ -3,17 +3,17 @@
 	"GoVersion": "go1.4.2",
 	"Deps": [
 		{
-			"ImportPath": "github.com/bgentry/go-netrc/netrc",
-			"Rev": "9fd32a8b3d3d3f9d43c341bfe098430e07609480"
-		},
-		{
 			"ImportPath": "github.com/bgentry/speakeasy",
 			"Rev": "5dfe43257d1f86b96484e760f2f0c4e2559089c7"
 		},
 		{
+			"ImportPath": "github.com/dickeyxxx/go-netrc/netrc",
+			"Rev": "2d5e848ab112ea1057d677faa405da9d49c86535"
+		},
+		{
 			"ImportPath": "github.com/dickeyxxx/gode",
-			"Comment": "v2.3.1-1-g965ec03",
-			"Rev": "965ec038a71048c2bcb9ddad4666e1f266ced8b7"
+			"Comment": "v2.3.2",
+			"Rev": "a2bd6b9835badfe4e0e57760c9f57f7a3b4013d9"
 		},
 		{
 			"ImportPath": "github.com/dickeyxxx/golock",
