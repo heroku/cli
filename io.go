@@ -108,6 +108,14 @@ func PrintError(e error) {
 	Errln(" !   " + e.Error())
 }
 
+// ExitIfError calls PrintError and exits if e is not null
+func ExitIfError(e error) {
+	if e != nil {
+		PrintError(e)
+		os.Exit(1)
+	}
+}
+
 func isDebugging() bool {
 	debug := strings.ToUpper(os.Getenv("HEROKU_DEBUG"))
 	if debug == "TRUE" || debug == "1" {
