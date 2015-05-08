@@ -90,7 +90,7 @@ module.exports = {
     }
     let p = startDyno(heroku, context.app, context.flags.size, `${command}; echo heroku-command-exit-status $?`);
     let dyno = yield h.action(`Running ${h.color.cyan.bold(command)} attached to terminal`, p, {success: false});
-    console.error(`up, ${h.color.cyan.bold(dyno.name)}`);
+    console.error(`up, ${dyno.name}`);
     attachToRendezvous(url.parse(dyno.attach_url));
   }),
 };
