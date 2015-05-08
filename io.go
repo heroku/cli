@@ -105,7 +105,10 @@ func Debugln(a ...interface{}) {
 
 // PrintError is a helper that prints out formatted error messages in red text
 func PrintError(e error) {
-	Errln(" !   " + e.Error())
+	bang := " !   "
+	msg := strings.TrimSpace(e.Error())
+	msg = strings.Join(strings.Split(msg, "\n"), "\n"+bang)
+	Errln(bang + msg)
 }
 
 // ExitIfError calls PrintError and exits if e is not null

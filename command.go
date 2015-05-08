@@ -108,31 +108,6 @@ func argsString(args []Arg) string {
 	return buffer.String()
 }
 
-// Flag defines a flag for a command.
-// These will be parsed in Go and passed to the Run method in the Context struct.
-type Flag struct {
-	Name        string `json:"name"`
-	Char        string `json:"char"`
-	Description string `json:"description"`
-	HasValue    bool   `json:"hasValue"`
-}
-
-func (f *Flag) String() string {
-	s := " "
-	switch {
-	case f.Char != "" && f.Name != "":
-		s = s + "-" + f.Char + ", --" + f.Name
-	case f.Char != "":
-		s = s + "-" + f.Char
-	case f.Name != "":
-		s = s + "--" + f.Name
-	}
-	if f.HasValue {
-		s = s + " " + strings.ToUpper(f.Name)
-	}
-	return s
-}
-
 var commandsTopic = &Topic{
 	Name:        "commands",
 	Description: "list all commands",
