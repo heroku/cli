@@ -1,7 +1,6 @@
 'use strict';
 let git = require('../lib/git');
 let h = require('heroku-cli-util');
-let chalk = require('chalk');
 
 function includes (array, item) {
   return array.indexOf(item) !== -1;
@@ -33,6 +32,6 @@ module.exports = {
     } else {
       yield git.exec(`remote add ${remote} ${url}`);
     }
-    console.log(`set git remote ${chalk.cyan(remote)} to ${chalk.cyan(url)}`);
+    console.log(`set git remote ${h.color.cyan(remote)} to ${h.color.cyan(url)}`);
   })
 };

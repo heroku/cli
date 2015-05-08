@@ -20,7 +20,6 @@
   },
   "homepage": "https://github.com/heroku/heroku-git",
   "dependencies": {
-    "chalk": "^1.0.0",
     "heroku-cli-util": "^3.5.0"
   },
   "devDependencies": {
