@@ -12,8 +12,8 @@
 		},
 		{
 			"ImportPath": "github.com/dickeyxxx/gode",
-			"Comment": "v2.3.5",
-			"Rev": "6a5a9161596b538169b486aa2142b4e59968ac61"
+			"Comment": "v2.3.5-3-gfac32f2",
+			"Rev": "fac32f29dbdbdfff9ae1c85c4ec1bc2d851c0d0d"
 		},
 		{
 			"ImportPath": "github.com/dickeyxxx/golock",
