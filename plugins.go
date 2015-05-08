@@ -91,15 +91,13 @@ var pluginsInstallCmd = &Command{
 			return
 		}
 		Errf("Installing plugin %s... ", name)
-		if err := node.InstallPackage(name); err != nil {
-			panic(err)
-		}
+		err := node.InstallPackage(name)
+		ExitIfError(err)
 		plugin := getPlugin(name, false)
 		if plugin == nil || len(plugin.Commands) == 0 {
 			Err("This does not appear to be a Heroku plugin, uninstalling... ")
-			if err := (node.RemovePackage(name)); err != nil {
-				panic(err)
-			}
+			err := (node.RemovePackage(name))
+			ExitIfError(err)
 		}
 		ClearPluginCache()
 		WritePluginCache(GetPlugins())
@@ -175,9 +173,8 @@ var pluginsUninstallCmd = &Command{
 	Run: func(ctx *Context) {
 		name := ctx.Args.(map[string]string)["name"]
 		Errf("Uninstalling plugin %s... ", name)
-		if err := node.RemovePackage(name); err != nil {
-			panic(err)
-		}
+		err := node.RemovePackage(name)
+		ExitIfError(err)
 		Errln("done")
 	},
 }
