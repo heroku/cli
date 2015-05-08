@@ -42,52 +42,68 @@ func (c *Client) setupUnix() error {
 	if err != nil {
 		return err
 	}
-	return extractTar(tar.NewReader(uncompressed), c.RootPath)
-}
-
-func (c *Client) setupWindows() error {
-	err := downloadFile(c.nodePath(), c.nodeURL())
+	tmpDir := c.tmpDir("node")
+	extractTar(tar.NewReader(uncompressed), tmpDir)
+	err = os.Rename(filepath.Join(tmpDir, c.NodeBase()), filepath.Join(c.RootPath, c.NodeBase()))
 	if err != nil {
 		return err
 	}
-	return c.downloadNpm()
+	return os.Remove(tmpDir)
 }
 
-func downloadFile(path, url string) error {
-	if err := os.MkdirAll(filepath.Dir(path), 0755); err != nil {
+func (c *Client) setupWindows() error {
+	os.RemoveAll(filepath.Join(c.RootPath, c.NodeBase()))
+	modulesDir := filepath.Join(c.RootPath, c.NodeBase(), "lib", "node_modules")
+	if err := os.MkdirAll(modulesDir, 0755); err != nil {
 		return err
 	}
+	if err := c.downloadNpm(modulesDir); err != nil {
+		return err
+	}
+	return c.downloadFile(c.nodePath(), c.nodeURL())
+}
+
+func (c *Client) downloadFile(path, url string) error {
+	tmp := filepath.Join(c.tmpDir("download"), "file")
 	resp, err := http.Get(url)
 	if err != nil {
 		return err
 	}
 	defer resp.Body.Close()
-	file, err := os.Create(path)
+	file, err := os.Create(tmp)
 	defer file.Close()
 	if err != nil {
 		return err
 	}
 	_, err = io.Copy(file, resp.Body)
-	return err
+	if err != nil {
+		return err
+	}
+	err = os.MkdirAll(filepath.Dir(path), 0755)
+	if err != nil {
+		return err
+	}
+	err = os.Rename(tmp, path)
+	if err != nil {
+		return err
+	}
+	return os.RemoveAll(filepath.Dir(tmp))
 }
 
-func (c *Client) downloadNpm() error {
-	modulesDir := filepath.Join(c.RootPath, c.NodeBase(), "lib", "node_modules")
-	zipfile := filepath.Join(modulesDir, "npm.zip")
-	if err := os.MkdirAll(modulesDir, 0755); err != nil {
-		return err
-	}
-	err := downloadFile(zipfile, c.npmURL())
+func (c *Client) downloadNpm(modulesDir string) error {
+	tmpDir := c.tmpDir("node")
+	zipfile := filepath.Join(tmpDir, "npm.zip")
+	err := c.downloadFile(zipfile, c.npmURL())
 	if err != nil {
 		return err
 	}
-	err = extractZip(zipfile, modulesDir)
+	err = extractZip(zipfile, tmpDir)
 	if err != nil {
 		return err
 	}
-	err = os.Remove(zipfile)
+	os.Rename(filepath.Join(tmpDir, "npm-"+c.NpmVersion), filepath.Join(modulesDir, "npm"))
 	if err != nil {
 		return err
 	}
-	return os.Rename(filepath.Join(modulesDir, "npm-"+c.NpmVersion), filepath.Join(modulesDir, "npm"))
+	return os.RemoveAll(tmpDir)
 }

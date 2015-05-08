@@ -1,3 +1,7 @@
+2.3.4 2015-05-08
+----------------
+Use temp directories when setting up
+
 2.3.3 2015-05-08
 ----------------
 Always use 32-bit for windows

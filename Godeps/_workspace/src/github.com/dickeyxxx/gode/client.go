@@ -1,6 +1,8 @@
 package gode
 
 import (
+	"io/ioutil"
+	"os"
 	"path/filepath"
 	"runtime"
 )
@@ -70,4 +72,17 @@ func (c *Client) npmURL() string {
 
 func (c *Client) npmPath() string {
 	return filepath.Join(c.RootPath, c.NodeBase(), "lib", "node_modules", "npm", "cli.js")
+}
+
+func (c *Client) tmpDir(prefix string) string {
+	root := filepath.Join(c.RootPath, "tmp")
+	err := os.MkdirAll(root, 0755)
+	if err != nil {
+		panic(err)
+	}
+	dir, err := ioutil.TempDir(root, prefix)
+	if err != nil {
+		panic(err)
+	}
+	return dir
 }
