@@ -1,3 +1,8 @@
+4.19.10 2015-05-07
+=================
+Updated gode
+Updated iojs to 2.0.1
+
 4.19.9 2015-05-07
 =================
 Ensure update removes lock file
