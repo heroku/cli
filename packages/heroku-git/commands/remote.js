@@ -33,6 +33,6 @@ module.exports = {
     } else {
       yield git.exec(`remote add ${remote} ${url}`);
     }
-    console.log(`set git remote ${chalk.blue(remote)} to ${chalk.blue(url)}`);
+    console.log(`set git remote ${chalk.cyan(remote)} to ${chalk.cyan(url)}`);
   })
 };
