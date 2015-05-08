@@ -9,6 +9,7 @@ import (
 	"os/signal"
 	"path/filepath"
 	"runtime"
+	"strconv"
 	"strings"
 	"syscall"
 
@@ -206,10 +207,12 @@ func runFn(module, topic, command string) func(ctx *Context) {
 			panic(err)
 		}
 		script := fmt.Sprintf(`
+		'use strict';
 		var module = '%s';
 		var topic = '%s';
 		var command = '%s';
 		var ctx = %s;
+		var logPath = %s;
 		process.on('uncaughtException', function (err) {
 			console.error(' !   Error in ' + module + ':')
 			if (err.message) {
@@ -218,7 +221,6 @@ func runFn(module, topic, command string) func(ctx *Context) {
 				console.error(' !   ' + err);
 			}
 			if (err.stack) {
-				var logPath = '%s';
 				var fs = require('fs');
 				var log = function (line) {
 					var d = new Date().toISOString()
@@ -238,7 +240,7 @@ func runFn(module, topic, command string) func(ctx *Context) {
 		.commands.filter(function (c) {
 			return c.topic === topic && c.command == command;
 		})[0];
-		cmd.run(ctx);`, module, topic, command, ctxJSON, ErrLogPath)
+		cmd.run(ctx);`, module, topic, command, ctxJSON, strconv.Quote(ErrLogPath))
 
 		// swallow sigint since the plugin will handle it
 		swallowSignal(os.Interrupt)
