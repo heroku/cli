@@ -30,9 +30,9 @@ func gitHTTPSURLPre() string {
 }
 
 func gitRemotes() (map[string]string, error) {
-	b, err := exec.Command("git", "remote", "-v").Output()
+	b, err := exec.Command("git", "remote", "-v").CombinedOutput()
 	if err != nil {
-		return nil, err
+		return nil, errors.New(string(b))
 	}
 
 	return parseGitRemoteOutput(b)
@@ -81,7 +81,9 @@ func remoteFromGitConfig() string {
 	return strings.TrimSpace(string(b))
 }
 
-var errMultipleHerokuRemotes = errors.New("multiple apps in git remotes")
+func errMultipleHerokuRemotes(remotes []string) error {
+	return errors.New("multiple apps in git remotes\nremotes: " + strings.Join(remotes, " "))
+}
 
 func appFromGitRemote(remote string) (string, error) {
 	if remote != "" {
@@ -89,7 +91,11 @@ func appFromGitRemote(remote string) (string, error) {
 		if err != nil {
 			if isNotFound(err) {
 				wdir, _ := os.Getwd()
-				return "", fmt.Errorf("could not find git remote "+remote+" in %s", wdir)
+				remotes, err := gitRemotes()
+				if err != nil {
+					return "", err
+				}
+				return "", fmt.Errorf("could not find git remote "+remote+" in %s\nremotes: %s", wdir, strings.Join(mapKeys(remotes), " "))
 			}
 			return "", err
 		}
@@ -110,7 +116,7 @@ func appFromGitRemote(remote string) (string, error) {
 	}
 	remoteValues := uniqueMapValues(remotes)
 	if len(remoteValues) > 1 {
-		return "", errMultipleHerokuRemotes
+		return "", errMultipleHerokuRemotes(mapKeys(remotes))
 	}
 	for _, v := range remotes {
 		return v, nil
@@ -127,7 +133,14 @@ func uniqueMapValues(m map[string]string) []string {
 			n = append(n, v)
 		}
 	}
+	return n
+}
 
+func mapKeys(m map[string]string) []string {
+	n := make([]string, 0, len(m))
+	for k := range m {
+		n = append(n, k)
+	}
 	return n
 }
 

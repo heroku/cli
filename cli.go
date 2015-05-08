@@ -14,7 +14,7 @@ import (
 var ErrHelp = errors.New("help")
 
 // ErrAppNeeded means the command needs an app context and one was not found.
-var ErrAppNeeded = errors.New(" !    No app specified.\n !    Run this command from an app folder or specify which app to use with --app APP")
+var ErrAppNeeded = errors.New("No app specified.\nRun this command from an app folder or specify which app to use with --app APP")
 
 // Cli handles parsing and dispatching of commands
 type Cli struct {
@@ -80,52 +80,43 @@ func parseVarArgs(command *Command, args []string) (result []string, flags map[s
 	result = make([]string, 0, len(args))
 	flags = map[string]interface{}{}
 	parseFlags := true
+	possibleFlags := []*Flag{debuggerFlag}
+	if command.NeedsApp {
+		possibleFlags = append(possibleFlags, appFlag, remoteFlag)
+	}
 	for i := 0; i < len(args); i++ {
 		switch {
 		case parseFlags && (args[i] == "--"):
 			parseFlags = false
 		case parseFlags && (args[i] == "help" || args[i] == "--help" || args[i] == "-h"):
 			return nil, nil, "", ErrHelp
-		case command.NeedsApp && parseFlags && (args[i] == "-a" || args[i] == "--app"):
-			i++
-			if len(args) == i {
-				return nil, nil, "", errors.New("Must specify app name")
-			}
-			appName = args[i]
-		case command.NeedsApp && parseFlags && (args[i] == "-r" || args[i] == "--remote"):
-			i++
-			if len(args) == i {
-				return nil, nil, "", errors.New("Must specify remote name")
-			}
-			appName, err = appFromGitRemote(args[i])
-			if err != nil {
-				return nil, nil, "", err
-			}
-		case parseFlags && (args[i] == "--debugger"):
-			flags["debugger"] = true
 		case parseFlags && strings.HasPrefix(args[i], "-"):
-			foundFlag := false
-			for _, flag := range command.Flags {
-				if args[i] == "-"+string(flag.Char) || args[i] == "--"+flag.Name {
-					if flag.HasValue {
-						i++
-						if len(args) < i || strings.HasPrefix(args[i], "-") {
-							return nil, nil, "", errors.New("--" + flag.Name + " requires a value")
-						}
-						flags[flag.Name] = args[i]
-						foundFlag = true
-					} else {
-						flags[flag.Name] = true
-						foundFlag = true
-					}
+			flag, val, err := parseFlag(args[i], possibleFlags)
+			if err != nil && strings.HasSuffix(err.Error(), "needs a value") {
+				i++
+				if len(args) == i {
+					return nil, nil, "", err
 				}
+				flag, val, err = parseFlag(args[i-1]+"="+args[i], possibleFlags)
 			}
-			if !foundFlag {
-				if command.VariableArgs {
-					result = append(result, args[i])
-				} else {
-					return nil, nil, "", errors.New("Unexpected flag: " + args[i])
+			switch {
+			case err != nil:
+				return nil, nil, "", err
+			case flag == nil && command.VariableArgs:
+				result = append(result, args[i])
+			case flag == nil:
+				return nil, nil, "", errors.New("Unexpected flag: " + args[i])
+			case flag == appFlag:
+				appName = val
+			case flag == remoteFlag:
+				appName, err = appFromGitRemote(args[i])
+				if err != nil {
+					return nil, nil, "", err
 				}
+			case flag.HasValue:
+				flags[flag.Name] = val
+			default:
+				flags[flag.Name] = true
 			}
 		default:
 			result = append(result, args[i])
