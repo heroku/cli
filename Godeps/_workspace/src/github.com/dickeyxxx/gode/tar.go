@@ -2,6 +2,7 @@ package gode
 
 import (
 	"archive/tar"
+	"fmt"
 	"io"
 	"os"
 	"path/filepath"
@@ -24,7 +25,9 @@ func extractTar(archive *tar.Reader, path string) error {
 			}
 		case hdr.Linkname != "":
 			if err := os.Symlink(hdr.Linkname, path); err != nil {
-				return err
+				// just warn for now
+				fmt.Fprintln(os.Stderr, err)
+				// return err
 			}
 		default:
 			if err := extractFile(archive, hdr, path); err != nil {
