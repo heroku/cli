@@ -136,9 +136,7 @@ func getUpdateManifest(channel string) manifest {
 	res, err := goreq.Request{
 		Uri: "https://d1gvo455cekpjp.cloudfront.net/" + channel + "/manifest.json",
 	}.Do()
-	if err != nil {
-		panic(err)
-	}
+	ExitIfError(err)
 	var m manifest
 	res.Body.FromJsonTo(&m)
 	return m
