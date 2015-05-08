@@ -8,6 +8,7 @@ import (
 	"os/exec"
 	"os/signal"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"syscall"
 
@@ -249,11 +250,23 @@ func runFn(module, topic, command string) func(ctx *Context) {
 		if ctx.Flags["debugger"] == true {
 			cmd = node.DebugScript(script)
 		}
-		cmd.Stdout = Stdout
+		os.Chdir(cmd.Dir)
+		execBin(cmd.Path, cmd.Args)
+	}
+}
+
+func execBin(bin string, args []string) {
+	if runtime.GOOS == "windows" {
+		cmd := exec.Command(bin, args[1:]...)
 		cmd.Stdin = os.Stdin
+		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 		if err := cmd.Run(); err != nil {
-			Exit(getExitCode(err))
+			os.Exit(getExitCode(err))
+		}
+	} else {
+		if err := syscall.Exec(bin, args, os.Environ()); err != nil {
+			panic(err)
 		}
 	}
 }
