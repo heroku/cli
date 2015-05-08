@@ -16,7 +16,10 @@ See the following Dev Center guides for details on how to user the plugin:
 
 ## Testing
 
-`npm test`
+```
+npm install
+npm test
+```
 
 - Requires io.js
 - Assumes that `docker` is accessible
