@@ -1,13 +1,10 @@
 package main
 
 import (
-	"compress/gzip"
 	"crypto/sha1"
-	"encoding/json"
 	"fmt"
 	"io"
 	"io/ioutil"
-	"net/http"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -16,6 +13,7 @@ import (
 	"time"
 
 	"github.com/dickeyxxx/golock"
+	"github.com/franela/goreq"
 )
 
 var updateTopic = &Topic{
@@ -78,17 +76,15 @@ func updatePlugins() {
 }
 
 func updateCLI(channel string) {
-	Err("checking for CLI update... ")
 	manifest := getUpdateManifest(channel)
 	if manifest.Version == Version && manifest.Channel == Channel {
-		Errf("already on latest version %s\n", Version)
 		return
 	}
 	if !updatable() {
 		Errf("Out of date: You are running %s but %s is out\n", Version, manifest.Version)
 		return
 	}
-	Errf("updating from %s to %s (%s)... ", Version, manifest.Version, manifest.Channel)
+	Errf("updating v4 CLI to %s (%s)... ", manifest.Version, manifest.Channel)
 	build := manifest.Builds[runtime.GOOS][runtime.GOARCH]
 	// on windows we can't remove an existing file or remove the running binary
 	// so we download the file to binName.new
@@ -101,9 +97,7 @@ func updateCLI(channel string) {
 		panic("SHA mismatch")
 	}
 	os.Remove(binPath + ".old")
-	if err := os.Rename(binPath, binPath+".old"); err != nil {
-		panic(err)
-	}
+	os.Rename(binPath, binPath+".old")
 	if err := os.Rename(binPath+".new", binPath); err != nil {
 		panic(err)
 	}
@@ -140,12 +134,14 @@ type manifest struct {
 }
 
 func getUpdateManifest(channel string) manifest {
-	res, err := http.Get("https://d1gvo455cekpjp.cloudfront.net/" + channel + "/manifest.json")
+	res, err := goreq.Request{
+		Uri: "https://d1gvo455cekpjp.cloudfront.net/" + channel + "/manifest.json",
+	}.Do()
 	if err != nil {
 		panic(err)
 	}
 	var m manifest
-	json.NewDecoder(res.Body).Decode(&m)
+	res.Body.FromJsonTo(&m)
 	return m
 }
 
@@ -162,22 +158,14 @@ func downloadBin(path, url string) error {
 	if err != nil {
 		return err
 	}
-	client := &http.Client{}
-	req, err := http.NewRequest("GET", url+".gz", nil)
+	res, err := goreq.Request{
+		Uri: url + ".gz",
+	}.Do()
 	if err != nil {
 		return err
 	}
-	req.Header.Add("Accept-Encoding", "gzip")
-	resp, err := client.Do(req)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
-	uncompressed, err := gzip.NewReader(resp.Body)
-	if err != nil {
-		return err
-	}
-	_, err = io.Copy(out, uncompressed)
+	defer res.Body.Close()
+	_, err = io.Copy(out, res.Body)
 	if err != nil {
 		return err
 	}
