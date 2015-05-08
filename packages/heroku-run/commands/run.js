@@ -3,7 +3,6 @@ let tls   = require('tls');
 let url   = require('url');
 let tty   = require('tty');
 let h     = require('heroku-cli-util');
-let chalk = require('chalk');
 
 function buildCommand(args) {
   let cmd = '';
@@ -90,8 +89,8 @@ module.exports = {
       process.exit(1);
     }
     let p = startDyno(heroku, context.app, context.flags.size, `${command}; echo heroku-command-exit-status $?`);
-    let dyno = yield h.action(`Running ${chalk.cyan.bold(command)} attached to terminal`, p, {success: false});
-    console.error(`up, ${chalk.cyan.bold(dyno.name)}`);
+    let dyno = yield h.action(`Running ${h.color.cyan.bold(command)} attached to terminal`, p, {success: false});
+    console.error(`up, ${h.color.cyan.bold(dyno.name)}`);
     attachToRendezvous(url.parse(dyno.attach_url));
   }),
 };

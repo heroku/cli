@@ -20,8 +20,7 @@
   },
   "homepage": "https://github.com/heroku/heroku-run",
   "dependencies": {
-    "chalk": "^1.0.0",
-    "heroku-cli-util": "^3.1.0"
+    "heroku-cli-util": "^3.5.0"
   },
   "devDependencies": {
     "jshint": "*"
