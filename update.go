@@ -46,13 +46,13 @@ func init() {
 
 // Update updates the CLI and plugins
 func Update(channel string) {
-	touchAutoupdateFile()
 	golock.Lock(updateLockPath)
 	defer golock.Unlock(updateLockPath)
 	done := make(chan bool)
 	go func() {
 		updateCLI(channel)
 		updatePlugins()
+		touchAutoupdateFile()
 		done <- true
 	}()
 	select {
@@ -101,8 +101,6 @@ func updateCLI(channel string) {
 		panic(err)
 	}
 	Errln("done")
-	golock.Unlock(updateLockPath)
-	execBin(binPath, os.Args)
 }
 
 // IsUpdateNeeded checks if an update is available

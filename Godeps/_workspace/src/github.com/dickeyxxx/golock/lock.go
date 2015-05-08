@@ -42,15 +42,8 @@ func Lock(path string) error {
 	}
 }
 
-// Unlock will release the lock on a file if it is the owner of it
+// Unlock will release the lock on a file
 func Unlock(path string) error {
-	pid, err := readLockfile(path)
-	if err != nil {
-		return err
-	}
-	if pid != os.Getpid() {
-		return ErrNotOwner
-	}
 	return os.Remove(path)
 }
 

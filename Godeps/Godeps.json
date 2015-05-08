@@ -17,8 +17,8 @@
 		},
 		{
 			"ImportPath": "github.com/dickeyxxx/golock",
-			"Comment": "v1.0.0-2-g082e98a",
-			"Rev": "082e98a198a8d61f4ac79e20a5ca56bf4195310e"
+			"Comment": "v1.0.0-3-g4121076",
+			"Rev": "41210765bf2c6815e195d1192af6da935cd79b95"
 		},
 		{
 			"ImportPath": "github.com/franela/goreq",
