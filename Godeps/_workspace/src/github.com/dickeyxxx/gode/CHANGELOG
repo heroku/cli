@@ -1,3 +1,7 @@
+2.3.6 2015-05-08
+----------------
+Fixed bugs with downloading existing files
+
 2.3.5 2015-05-08
 ----------------
 Fixed bug with file in use on windows
