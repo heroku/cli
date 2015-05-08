@@ -61,7 +61,7 @@ func main() {
 		help()
 	}
 	if err != nil {
-		Errln(err)
+		PrintError(err)
 		os.Exit(2)
 	}
 }
