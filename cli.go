@@ -82,7 +82,8 @@ func parseVarArgs(command *Command, args []string) (result []string, flags map[s
 	parseFlags := true
 	possibleFlags := []*Flag{debuggerFlag}
 	for _, flag := range command.Flags {
-		possibleFlags = append(possibleFlags, &flag)
+		f := flag
+		possibleFlags = append(possibleFlags, &f)
 	}
 	if command.NeedsApp {
 		possibleFlags = append(possibleFlags, appFlag, remoteFlag)
