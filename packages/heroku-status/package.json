@@ -6,17 +6,17 @@
   "author": "Raul Barroso @raulb",
   "repository": {
     "type": "git",
-    "url": "https://github.com/raulb/heroku-status"
+    "url": "https://github.com/heroku/heroku-status"
   },
   "bugs": {
-    "url": "https://github.com/raulb/heroku-status/issues"
+    "url": "https://github.com/heroku/heroku-status/issues"
   },
   "keywords": [
     "heroku-plugin",
     "heroku-status"
   ],
   "license": "ISC",
-  "homepage": "https://github.com/raulb/heroku-status",
+  "homepage": "https://github.com/heroku/heroku-status",
   "scripts": {
     "test": "jshint"
   },
