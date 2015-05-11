@@ -19,7 +19,7 @@ Available commands
 -------------------
 
 ```bash
-$ heroku _status
+$ heroku status
 === Heroku Status
 Development: No known issues at this time.
 Production: No known issues at this time.
@@ -28,7 +28,7 @@ Production: No known issues at this time.
 or, if there were a real incident...
 
 ```bash
-$ heroku _status
+$ heroku status
 === Heroku Status
 Development: Yellow
 Production: Yellow

@@ -24,9 +24,9 @@ function printStatus(status) {
 }
 
 module.exports = {
-  topic: '_status',
+  topic: 'status',
   description: 'Display current status of Heroku Platform',
-  help: 'Example: heroku _status',
+  help: 'Example: heroku status',
   needsAuth: false,
   run: function (context) {
     let host = process.env.HEROKU_STATUS_HOST || 'status.heroku.com';

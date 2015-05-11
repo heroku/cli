@@ -1,5 +1,5 @@
 exports.topics = [{
-  name: '_status',
+  name: 'status',
   description: 'Status of Heroku Platform'
 }];
 
