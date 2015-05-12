@@ -206,13 +206,14 @@ func runFn(module, topic, command string) func(ctx *Context) {
 		}
 		script := fmt.Sprintf(`
 		'use strict';
-		var module = '%s';
+		var moduleName = '%s';
+		var module = require(moduleName);
 		var topic = '%s';
 		var command = '%s';
 		var ctx = %s;
 		var logPath = %s;
 		process.on('uncaughtException', function (err) {
-			console.error(' !   Error in ' + module + ':')
+			console.error(' !   Error in ' + moduleName + ':')
 			if (err.message) {
 				console.error(' !   ' + err.message);
 			} else {
@@ -234,8 +235,7 @@ func runFn(module, topic, command string) func(ctx *Context) {
 			process.exit(1);
 		});
 		if (command === '') { command = null }
-		var cmd = require(module)
-		.commands.filter(function (c) {
+		var cmd = module.commands.filter(function (c) {
 			return c.topic === topic && c.command == command;
 		})[0];
 		cmd.run(ctx);`, module, topic, command, ctxJSON, strconv.Quote(ErrLogPath))
