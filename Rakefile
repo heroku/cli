@@ -24,7 +24,7 @@ REVISION=`git log -n 1 --pretty=format:"%H"`
 
 desc "build heroku-cli"
 task :build do
-  puts "building  #{LABEL}..."
+  puts "building #{LABEL}..."
   FileUtils.mkdir_p 'dist'
   TARGETS.map do |target|
     build(target[:os], target[:arch])
