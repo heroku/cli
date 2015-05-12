@@ -308,7 +308,7 @@ func getPlugin(name string, attemptReinstall bool) *Plugin {
 			return getPlugin(name, false)
 		}
 		Errf("Error reading plugin: %s. See %s for more information.\n", name, ErrLogPath)
-		Logln(err, "\n", output)
+		Logln(err, "\n", string(output))
 		return nil
 	}
 	var plugin Plugin
