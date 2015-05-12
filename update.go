@@ -100,6 +100,7 @@ func updateCLI(channel string) {
 	if err := os.Rename(binPath+".new", binPath); err != nil {
 		panic(err)
 	}
+	os.Remove(binPath + ".old")
 	Errln("done")
 }
 
