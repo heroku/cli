@@ -186,6 +186,7 @@ func TriggerBackgroundUpdate() {
 // WarnIfUpdating prints to stderr if the CLI is updating
 func WarnIfUpdating() {
 	if exists, _ := fileExists(updateLockPath); exists {
-		Errln("WARNING: CLI is updating")
+		// Disable since v3 calls CLI twice
+		//Errln("WARNING: CLI is updating")
 	}
 }
