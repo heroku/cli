@@ -38,9 +38,7 @@ func SetupNode() {
 		golock.Lock(updateLockPath)
 		defer golock.Unlock(updateLockPath)
 		Debugln("setting up iojs", node.NodeVersion)
-		if err := node.Setup(); err != nil {
-			panic(err)
-		}
+		ExitIfError(node.Setup())
 		clearOldNodeInstalls()
 	}
 }
