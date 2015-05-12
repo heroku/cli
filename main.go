@@ -85,10 +85,14 @@ func handlePanic() {
 }
 
 func rollbarFields() []*rollbar.Field {
+	var cmd string
+	if len(os.Args) > 1 {
+		cmd = os.Args[1]
+	}
 	return []*rollbar.Field{
 		{"Version", Version},
 		{"GOOS", runtime.GOOS},
 		{"GOARCH", runtime.GOARCH},
-		{"command", os.Args[:1]},
+		{"command", cmd},
 	}
 }
