@@ -1,3 +1,10 @@
+4.19.16 2015-05-11
+==================
+Reduced panics to errors for setup errors
+Added debug info to rollbar
+Fixed output of plugin install errors to log
+Clean up .old update files
+
 4.19.15 2015-05-08
 ==================
 Updated gode to 2.3.6
