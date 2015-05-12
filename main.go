@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"os"
+	"runtime"
 	"runtime/debug"
 
 	"github.com/stvp/rollbar"
@@ -86,5 +87,8 @@ func handlePanic() {
 func rollbarFields() []*rollbar.Field {
 	return []*rollbar.Field{
 		{"Version", Version},
+		{"GOOS", runtime.GOOS},
+		{"GOARCH", runtime.GOARCH},
+		{"command", os.Args[:1]},
 	}
 }
