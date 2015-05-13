@@ -2,16 +2,16 @@
 let child_process = require('child_process');
 let h = require('heroku-cli-util');
 
-function exec (cmd) {
+function exec (args) {
   return new Promise(function (fulfill, reject) {
-    child_process.exec(`git ${cmd}`, function (error, stdout) {
+    child_process.execFile('git', args, function (error, stdout) {
       if (error) { return reject(error); }
       fulfill(stdout.trim());
     });
   });
 }
 
-function spawn (cmd, args) {
+function spawn (args) {
   return new Promise(function (fulfill, reject) {
     let s = child_process.spawn('git', args, {stdio: [0,1,2]});
     s.on('error', reject);
@@ -20,7 +20,7 @@ function spawn (cmd, args) {
 }
 
 function remoteFromGitConfig () {
-  return exec('config heroku.remote').catch(function () {});
+  return exec(['config', 'heroku.remote']).catch(function () {});
 }
 
 function sshGitUrl(app) {

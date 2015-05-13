@@ -10,27 +10,25 @@ module.exports = {
   topic: 'git',
   command: 'remote',
   needsAuth: true,
-  args: [
-    {name: 'APP', optional: true},
-  ],
+  variableArgs: true,
   flags: [
     {name: 'app', char: 'a', hasValue: true},
     {name: 'remote', char: 'r', hasValue: true},
     {name: 'ssh-git'},
   ],
   run: h.command(function* (context, heroku) {
-    let appName = context.flags.app || context.args.APP;
+    let appName = context.flags.app || context.args.shift();
     if (!appName) {
       return h.error('Specify an app with --app');
     }
     let app = yield heroku.apps(appName).info();
     let remote = context.flags.remote || (yield git.remoteFromGitConfig()) || 'heroku';
-    let remotes = yield git.exec('remote');
+    let remotes = yield git.exec(['remote']);
     let url = context.flags['ssh-git'] ? git.sshGitUrl(app.name) : git.httpGitUrl(app.name);
     if (includes(remotes.split('\n'), remote)) {
-      yield git.exec(`remote set-url ${remote} ${url}`);
+      yield git.exec(['remote', 'set-url', remote, url].concat(context.args));
     } else {
-      yield git.exec(`remote add ${remote} ${url}`);
+      yield git.exec(['remote', 'add', remote, url].concat(context.args));
     }
     console.log(`set git remote ${h.color.cyan(remote)} to ${h.color.cyan(url)}`);
   })
