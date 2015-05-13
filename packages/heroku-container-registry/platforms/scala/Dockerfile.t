@@ -2,22 +2,25 @@ FROM heroku/cedar:14
 
 RUN useradd -d /app -m app
 USER app
-WORKDIR /app
+WORKDIR /app/src
 
 ENV HOME /app
-ENV PATH /app/heroku/jdk/bin:$PATH
+ENV PATH /app/bin:/app/.jdk/bin:$PATH
+ENV JAVA_HOME /app/.jdk:$PATH
 ENV PORT 3000
 
-RUN mkdir -p /app/heroku/jdk
+RUN mkdir -p /app/.jdk
 RUN mkdir -p /app/.profile.d
-RUN curl -s http://lang-jvm.s3.amazonaws.com/jdk/openjdk1.8.0_40-cedar14.tar.gz | tar xz -C /app/heroku/jdk
-RUN echo "export JAVA_HOME=\"/app/heroku/jdk" > /app/.profile.d/jdk.sh
-RUN echo "export PATH=\"/app/heroku/jdk/bin:\$PATH" >> /app/.profile.d/jdk.sh
+RUN curl -s -L <%= jdk_url %> | tar xz -C /app/.jdk
 
-ONBUILD COPY target /app/target
+RUN mkdir -p /app/bin
+RUN curl -s -L https://raw.githubusercontent.com/paulp/sbt-extras/master/sbt -o /app/bin/sbt
+RUN chmod +x /app/bin/sbt
+
+ONBUILD COPY target /app/src/target
 
 ONBUILD USER root
-ONBUILD RUN chown -R app /app/target
+ONBUILD RUN chown -R app /app/src/target
 ONBUILD USER app
 
 ONBUILD EXPOSE 3000
