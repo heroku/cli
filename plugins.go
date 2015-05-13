@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -300,7 +301,7 @@ func getPlugin(name string, attemptReinstall bool) *Plugin {
 		if attemptReinstall && strings.Contains(string(output), "Error: Cannot find module") {
 			Errf("Error reading plugin %s. Reinstalling... ", name)
 			if err := node.InstallPackage(name); err != nil {
-				panic(err)
+				panic(errors.New(string(output)))
 			}
 			Errln("done")
 			return getPlugin(name, false)
