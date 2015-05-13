@@ -54,7 +54,7 @@ function attachToRendezvous(uri) {
     data = data.replace('\r\n', '\n');
     let exitCode = data.match(/^heroku-command-exit-status (\d+)$/m);
     if (exitCode) {
-      process.stdout.write(data.replace(/^heroku-command-exit-status \d+$/m, ''));
+      process.stdout.write(data.replace(/^heroku-command-exit-status \d+$\n/m, ''));
       process.exit(exitCode[1]);
     }
     process.stdout.write(data);
