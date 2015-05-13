@@ -1,3 +1,10 @@
+4.19.17 2015-05-13
+==================
+Updated gode to 2.3.7
+Better check to see if gode is setup
+Disabled update notification
+Changed module requiring in JS call to make debugging simpler
+
 4.19.16 2015-05-11
 ==================
 Reduced panics to errors for setup errors
