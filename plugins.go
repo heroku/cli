@@ -95,9 +95,8 @@ var pluginsInstallCmd = &Command{
 		ExitIfError(err)
 		plugin := getPlugin(name, false)
 		if plugin == nil || len(plugin.Commands) == 0 {
-			Err("This does not appear to be a Heroku plugin, uninstalling... ")
-			err := (node.RemovePackage(name))
-			ExitIfError(err)
+			Err("\nThis does not appear to be a Heroku plugin, uninstalling... ")
+			ExitIfError(node.RemovePackage(name))
 		}
 		ClearPluginCache()
 		WritePluginCache(GetPlugins())
