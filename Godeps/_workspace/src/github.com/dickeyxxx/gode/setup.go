@@ -12,8 +12,11 @@ import (
 
 // IsSetup returns true if node is setup in the client's RootPath directory
 func (c *Client) IsSetup() bool {
-	// TODO: better check if it is setup
-	exists, _ := fileExists(c.nodePath())
+	if exists, _ := fileExists(c.nodePath()); !exists {
+		return false
+	}
+
+	exists, _ := fileExists(c.npmPath())
 	return exists
 }
 
