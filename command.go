@@ -44,6 +44,9 @@ func (c *Command) buildFullHelp() string {
 	}
 	lines := make([]string, 0, len(c.Flags))
 	for _, flag := range c.Flags {
+		if flag.Hidden {
+			continue
+		}
 		if flag.Description == "" {
 			lines = append(lines, flag.String())
 		} else {
@@ -87,6 +90,7 @@ func (commands CommandSet) loadFullHelp() {
 type Arg struct {
 	Name     string `json:"name"`
 	Optional bool   `json:"optional"`
+	Hidden   bool   `json:"hidden"`
 }
 
 func (a *Arg) String() string {
@@ -99,6 +103,9 @@ func (a *Arg) String() string {
 func argsString(args []Arg) string {
 	var buffer bytes.Buffer
 	for _, arg := range args {
+		if arg.Hidden {
+			continue
+		}
 		if arg.Optional {
 			buffer.WriteString(" [" + strings.ToUpper(arg.Name) + "]")
 		} else {

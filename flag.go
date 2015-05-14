@@ -12,6 +12,7 @@ type Flag struct {
 	Char        string `json:"char"`
 	Description string `json:"description"`
 	HasValue    bool   `json:"hasValue"`
+	Hidden      bool   `json:"hidden"`
 }
 
 var appFlag = &Flag{
