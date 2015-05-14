@@ -9,12 +9,18 @@ function includes (array, item) {
 module.exports = {
   topic: 'git',
   command: 'remote',
+  description: 'adds a git remote to an app repo',
+  help: `extra arguments will be passed to git remote add
+
+Examples:
+
+  $ heroku git:remote -a example set git remote heroku to https://git.heroku.com/example.git`,
   needsAuth: true,
   variableArgs: true,
   flags: [
-    {name: 'app', char: 'a', hasValue: true},
-    {name: 'remote', char: 'r', hasValue: true},
-    {name: 'ssh-git'},
+    {name: 'app', char: 'a', hasValue: true, description: 'the Heroku app to use'},
+    {name: 'remote', char: 'r', hasValue: true, description: 'the git remote to create'},
+    {name: 'ssh-git', description: 'use SSH git protocol'},
   ],
   run: cli.command(function* (context, heroku) {
     let appName = context.flags.app || context.args.shift();

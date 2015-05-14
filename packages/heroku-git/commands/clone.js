@@ -5,12 +5,19 @@ let h = require('heroku-cli-util');
 module.exports = {
   topic: 'git',
   command: 'clone',
+  description: 'clones a heroku app to your local machine at DIRECTORY (defaults to app name)',
+  help: `Examples:
+
+  $ heroku git:clone -a example
+  Cloning into 'example'...
+  remote: Counting objects: 42, done.
+  ...`,
   needsAuth: true,
   args: [
-    {name: 'DIRECTORY', optional: true}
+    {name: 'DIRECTORY', optional: true, description: 'where to clone the app'}
   ],
   flags: [
-    {name: 'app', char: 'a', hasValue: true},
+    {name: 'app', char: 'a', hasValue: true, description: 'the Heroku app to use'},
     {name: 'remote', char: 'r', hasValue: true, description: 'the git remote to create, default "heroku"'},
     {name: 'ssh-git', description: 'use SSH git protocol'},
   ],
