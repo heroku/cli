@@ -1,6 +1,6 @@
 'use strict';
 let git = require('../lib/git');
-let h = require('heroku-cli-util');
+let cli = require('heroku-cli-util');
 
 function includes (array, item) {
   return array.indexOf(item) !== -1;
@@ -16,10 +16,10 @@ module.exports = {
     {name: 'remote', char: 'r', hasValue: true},
     {name: 'ssh-git'},
   ],
-  run: h.command(function* (context, heroku) {
+  run: cli.command(function* (context, heroku) {
     let appName = context.flags.app || context.args.shift();
     if (!appName) {
-      return h.error('Specify an app with --app');
+      return cli.error('Specify an app with --app');
     }
     let app = yield heroku.apps(appName).info();
     let remote = context.flags.remote || (yield git.remoteFromGitConfig()) || 'heroku';
@@ -30,6 +30,6 @@ module.exports = {
     } else {
       yield git.exec(['remote', 'add', remote, url].concat(context.args));
     }
-    cli.log(`set git remote ${h.color.cyan(remote)} to ${h.color.cyan(url)}`);
+    cli.log(`set git remote ${cli.color.cyan(remote)} to ${cli.color.cyan(url)}`);
   })
 };
