@@ -22,7 +22,7 @@ We are in the process of migrating commands over, some you can try out include: 
 Architecture
 ============
 
-The v4 CLI is written both in Go and iojs. The core part of the CLI is this project and manages an iojs installation in `~/.heroku`. It handles taking in arguments, updating itself and plugins, as well as some core commands like `heroku login`.
+The v4 CLI is written both in Go and iojs. The core part of the CLI is this Go project and manages an iojs installation in `~/.heroku`. It handles taking in arguments, updating itself and iojs plugins, as well as some core commands like `heroku login`.
 
 Most commands are plugins. An example of one would be [heroku-git](https://github.com/heroku/heroku-git). You can install it with `heroku plugins:install` and use it with `heroku git:remote`. When you install it, it uses npm to install the plugin into `~/.heroku/node_plugins/heroku-git`. Then, the commands become available to the v4 CLI.
 
