@@ -212,6 +212,7 @@ func runFn(module, topic, command string) func(ctx *Context) {
 		var command = '%s';
 		var ctx = %s;
 		var logPath = %s;
+		process.chdir(ctx.cwd);
 		process.on('uncaughtException', function (err) {
 			console.error(' !   Error in ' + moduleName + ':')
 			if (err.message) {
