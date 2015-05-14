@@ -1,3 +1,11 @@
+4.19.18 2015-05-14
+==================
+Added hidden flag and arg support
+Added basic command completion
+Set cwd before loading plugin
+Fixed uninstalling output
+Show npm output when install fails
+
 4.19.17 2015-05-13
 ==================
 Updated gode to 2.3.7
