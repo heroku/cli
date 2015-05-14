@@ -1,6 +1,6 @@
 'use strict';
 let child_process = require('child_process');
-let h = require('heroku-cli-util');
+let cli           = require('heroku-cli-util');
 
 function exec (args) {
   return new Promise(function (fulfill, reject) {
@@ -20,15 +20,15 @@ function spawn (args) {
 }
 
 function remoteFromGitConfig () {
-  return exec(['config', 'heroku.remote']).catch(function () {});
+  return exports.exec(['config', 'heroku.remote']).catch(function () {});
 }
 
 function sshGitUrl(app) {
-  return `git@${h.config.git_host}:${app}.git`;
+  return `git@${cli.config.git_host}:${app}.git`;
 }
 
 function httpGitUrl(app) {
-  return `https://${h.config.http_git_host}/${app}.git`;
+  return `https://${cli.config.http_git_host}/${app}.git`;
 }
 
 exports.exec = exec;
