@@ -1,3 +1,9 @@
+4.19.20 2015-05-15
+==================
+Many bug fixes around updating
+Append plugin info to user agent
+Fixed signal swallowing on password prompt
+
 4.19.19 2015-05-14
 ==================
 Added support for .gpg netrc files
