@@ -1,3 +1,8 @@
+2.3.8 2015-05-15
+----------------
+Use stderr content as error messages
+Added updatepackage()
+
 2.3.7 2015-05-13
 ----------------
 Check if npm is setup in IsSetup()
