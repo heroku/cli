@@ -2,6 +2,8 @@ package main
 
 import (
 	"crypto/sha1"
+	"crypto/tls"
+	"crypto/x509"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -12,7 +14,7 @@ import (
 	"time"
 
 	"github.com/dickeyxxx/golock"
-	"github.com/franela/goreq"
+	"github.com/dickeyxxx/goreq"
 )
 
 var updateTopic = &Topic{
@@ -43,6 +45,23 @@ func init() {
 	if runtime.GOOS == "windows" {
 		binPath = binPath + ".exe"
 	}
+	goreq.DefaultTransport.TLSClientConfig = &tls.Config{RootCAs: getCACerts()}
+}
+
+func getCACerts() *x509.CertPool {
+	certs := x509.NewCertPool()
+	path := filepath.Join(AppDir, "cacert.pem")
+	data, err := ioutil.ReadFile(path)
+	if err != nil {
+		PrintError(err)
+		return nil
+	}
+	ok := certs.AppendCertsFromPEM(data)
+	if !ok {
+		Warn("Error parsing " + path)
+		return nil
+	}
+	return certs
 }
 
 // Update updates the CLI and plugins
