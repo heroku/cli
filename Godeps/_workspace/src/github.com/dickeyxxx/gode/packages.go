@@ -71,6 +71,15 @@ func (c *Client) UpdatePackages() ([]byte, error) {
 	return cmd.Output()
 }
 
+// UpdatePackage updates a package.
+func (c *Client) UpdatePackage(name string) ([]byte, error) {
+	cmd, err := c.execNpm("update", name)
+	if err != nil {
+		return nil, err
+	}
+	return cmd.Output()
+}
+
 func (c *Client) execNpm(args ...string) (*exec.Cmd, error) {
 	if err := os.MkdirAll(filepath.Join(c.RootPath, "node_modules"), 0755); err != nil {
 		return nil, err
