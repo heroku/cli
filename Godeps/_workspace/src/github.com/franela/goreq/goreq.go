@@ -208,15 +208,15 @@ func prepareRequestBody(b interface{}) (io.Reader, error) {
 	}
 }
 
-var defaultDialer = &net.Dialer{Timeout: 1000 * time.Millisecond}
-var defaultTransport = &http.Transport{Dial: defaultDialer.Dial, Proxy: http.ProxyFromEnvironment}
-var defaultClient = &http.Client{Transport: defaultTransport}
+var DefaultDialer = &net.Dialer{Timeout: 1000 * time.Millisecond}
+var DefaultTransport = &http.Transport{Dial: DefaultDialer.Dial, Proxy: http.ProxyFromEnvironment}
+var DefaultClient = &http.Client{Transport: DefaultTransport}
 
 var proxyTransport *http.Transport
 var proxyClient *http.Client
 
 func SetConnectTimeout(duration time.Duration) {
-	defaultDialer.Timeout = duration
+	DefaultDialer.Timeout = duration
 }
 
 func (r *Request) AddHeader(name string, value string) {
@@ -241,8 +241,8 @@ func (r Request) WithCookie(c *http.Cookie) Request {
 }
 
 func (r Request) Do() (*Response, error) {
-	var transport = defaultTransport
-	var client = defaultClient
+	var transport = DefaultTransport
+	var client = DefaultClient
 	var resUri string
 	var redirectFailed bool
 
@@ -264,7 +264,7 @@ func (r Request) Do() (*Response, error) {
 			return nil, &Error{Err: err}
 		}
 		if proxyTransport == nil {
-			proxyTransport = &http.Transport{Dial: defaultDialer.Dial, Proxy: http.ProxyURL(proxyUrl)}
+			proxyTransport = &http.Transport{Dial: DefaultDialer.Dial, Proxy: http.ProxyURL(proxyUrl)}
 			proxyClient = &http.Client{Transport: proxyTransport}
 		} else {
 			proxyTransport.Proxy = http.ProxyURL(proxyUrl)

@@ -73,6 +73,7 @@ func createOauthToken(email, password, secondFactor string) (string, error) {
 		Uri:               "https://api.heroku.com/oauth/authorizations",
 		Method:            "POST",
 		Accept:            "application/vnd.heroku+json; version=3",
+		ShowDebug:         debugging,
 		BasicAuthUsername: email,
 		BasicAuthPassword: password,
 		Body: map[string]interface{}{

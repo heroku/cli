@@ -14,7 +14,7 @@ import (
 	"time"
 
 	"github.com/dickeyxxx/golock"
-	"github.com/dickeyxxx/goreq"
+	"github.com/franela/goreq"
 )
 
 var updateTopic = &Topic{
@@ -45,6 +45,7 @@ func init() {
 	if runtime.GOOS == "windows" {
 		binPath = binPath + ".exe"
 	}
+	goreq.SetConnectTimeout(5 * time.Second)
 	goreq.DefaultTransport.TLSClientConfig = &tls.Config{RootCAs: getCACerts()}
 }
 
@@ -110,7 +111,6 @@ func updatePlugins(fast bool) {
 }
 
 func updateCLI(channel string) {
-	goreq.SetConnectTimeout(5 * time.Second)
 	manifest, err := getUpdateManifest(channel)
 	if err != nil {
 		Warn("Error updating CLI")
@@ -174,7 +174,8 @@ type manifest struct {
 
 func getUpdateManifest(channel string) (*manifest, error) {
 	res, err := goreq.Request{
-		Uri: "https://d1gvo455cekpjp.cloudfront.net/" + channel + "/manifest.json",
+		Uri:       "https://d1gvo455cekpjp.cloudfront.net/" + channel + "/manifest.json",
+		ShowDebug: debugging,
 	}.Do()
 	if err != nil {
 		return nil, err
@@ -198,7 +199,8 @@ func downloadBin(path, url string) error {
 		return err
 	}
 	res, err := goreq.Request{
-		Uri: url + ".gz",
+		Uri:       url + ".gz",
+		ShowDebug: debugging,
 	}.Do()
 	if err != nil {
 		return err
