@@ -108,6 +108,7 @@ func PrintError(e error) {
 	Warn(e.Error())
 }
 
+// Warn shows a message with excalamation points prepended to stderr
 func Warn(msg string) {
 	bang := " !   "
 	msg = strings.TrimSpace(msg)
