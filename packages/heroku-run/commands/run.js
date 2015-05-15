@@ -2,7 +2,7 @@
 let tls   = require('tls');
 let url   = require('url');
 let tty   = require('tty');
-let h     = require('heroku-cli-util');
+let cli   = require('heroku-cli-util');
 
 function buildCommand(args) {
   let cmd = '';
@@ -52,9 +52,10 @@ function attachToRendezvous(uri) {
       return;
     }
     data = data.replace('\r\n', '\n');
-    let exitCode = data.match(/^heroku-command-exit-status (\d+)$/m);
+    cli.debug(data);
+    let exitCode = data.match(/heroku-command-exit-status (\d+)/m);
     if (exitCode) {
-      process.stdout.write(data.replace(/^heroku-command-exit-status \d+$\n/m, ''));
+      process.stdout.write(data.replace(/^heroku-command-exit-status \d+$\n?/m, ''));
       process.exit(exitCode[1]);
     }
     process.stdout.write(data);
@@ -65,7 +66,7 @@ function attachToRendezvous(uri) {
   c.on('end', function () {
     process.exit(0);
   });
-  c.on('error', h.errorHandler());
+  c.on('error', cli.errorHandler());
   process.on('SIGINT', function () {
     c.end();
   });
@@ -82,14 +83,14 @@ module.exports = {
     {name: 'size', char: 's', description: 'dyno size', hasValue: true},
     {name: 'exit-code', description: 'placeholder'},
   ],
-  run: h.command(function* (context, heroku) {
+  run: cli.command(function* (context, heroku) {
     let command = buildCommand(context.args);
     if (!command) {
-      h.error('Usage: heroku run COMMAND\n\nExample: heroku run bash');
+      cli.error('Usage: heroku run COMMAND\n\nExample: heroku run bash');
       process.exit(1);
     }
     let p = startDyno(heroku, context.app, context.flags.size, `${command}; echo heroku-command-exit-status $?`);
-    let dyno = yield h.action(`Running ${h.color.cyan.bold(command)} attached to terminal`, p, {success: false});
+    let dyno = yield cli.action(`Running ${cli.color.cyan.bold(command)} attached to terminal`, p, {success: false});
     console.error(`up, ${dyno.name}`);
     attachToRendezvous(url.parse(dyno.attach_url));
   }),
