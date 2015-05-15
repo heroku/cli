@@ -48,6 +48,10 @@ func init() {
 func Update(channel string) {
 	golock.Lock(updateLockPath)
 	defer golock.Unlock(updateLockPath)
+	if !IsUpdateNeeded("soft") {
+		// update no longer needed
+		return
+	}
 	done := make(chan bool)
 	go func() {
 		touchAutoupdateFile()
