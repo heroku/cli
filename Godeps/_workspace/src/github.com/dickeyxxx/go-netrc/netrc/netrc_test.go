@@ -130,6 +130,16 @@ func TestParseFile(t *testing.T) {
 	}
 }
 
+func TestParseFileGPG(t *testing.T) {
+	n, err := ParseFile("examples/good.netrc.gpg")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if n.FindMachine("mail.google.com").Name != "mail.google.com" {
+		t.Error("error parsing gpg")
+	}
+}
+
 func TestFindMachine(t *testing.T) {
 	m, err := FindMachine("examples/good.netrc", "ray")
 	if err != nil {
