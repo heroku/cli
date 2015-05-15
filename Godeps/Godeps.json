@@ -3,10 +3,6 @@
 	"GoVersion": "go1.4.2",
 	"Deps": [
 		{
-			"ImportPath": "github.com/bgentry/speakeasy",
-			"Rev": "5dfe43257d1f86b96484e760f2f0c4e2559089c7"
-		},
-		{
 			"ImportPath": "github.com/dickeyxxx/go-netrc/netrc",
 			"Rev": "86d2489fe365ee82808af242883d1c4bd268e727"
 		},
@@ -19,6 +15,10 @@
 			"ImportPath": "github.com/dickeyxxx/golock",
 			"Comment": "v1.0.0-3-g4121076",
 			"Rev": "41210765bf2c6815e195d1192af6da935cd79b95"
+		},
+		{
+			"ImportPath": "github.com/dickeyxxx/speakeasy",
+			"Rev": "7a13a299270d38d736b2b218d68081374e33f608"
 		},
 		{
 			"ImportPath": "github.com/franela/goreq",

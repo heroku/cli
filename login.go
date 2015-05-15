@@ -3,9 +3,10 @@ package main
 import (
 	"errors"
 	"fmt"
+	"os"
 	"time"
 
-	"github.com/bgentry/speakeasy"
+	"github.com/dickeyxxx/speakeasy"
 	"github.com/franela/goreq"
 )
 
@@ -45,12 +46,16 @@ func saveOauthToken(email, token string) {
 
 func getString(prompt string) string {
 	var s string
-	Print(prompt)
+	Err(prompt)
 	if _, err := fmt.Scanln(&s); err != nil {
 		if err.Error() == "unexpected newline" {
 			return getString(prompt)
 		}
-		panic(err)
+		if err.Error() == "EOF" {
+			Errln()
+			os.Exit(1)
+		}
+		ExitIfError(err)
 	}
 	return s
 }

@@ -19,9 +19,9 @@ import (
 const sttyArg0 = "/bin/stty"
 
 var (
-	sttyArgvEOff []string           = []string{"stty", "-echo"}
-	sttyArgvEOn  []string           = []string{"stty", "echo"}
-	ws           syscall.WaitStatus = 0
+	sttyArgvEOff = []string{"stty", "-echo"}
+	sttyArgvEOn  = []string{"stty", "echo"}
+	ws           syscall.WaitStatus
 )
 
 // getPassword gets input hidden from the terminal from a user. This is
@@ -29,7 +29,6 @@ var (
 // finally turning on terminal echo.
 func getPassword() (password string, err error) {
 	sig := make(chan os.Signal, 10)
-	brk := make(chan bool)
 
 	// File descriptors for stdin, stdout, and stderr.
 	fd := []uintptr{os.Stdin.Fd(), os.Stdout.Fd(), os.Stderr.Fd()}
@@ -38,7 +37,11 @@ func getPassword() (password string, err error) {
 	// watch for these signals so we can turn back on echo if need be.
 	signal.Notify(sig, syscall.SIGHUP, syscall.SIGINT, syscall.SIGKILL, syscall.SIGQUIT,
 		syscall.SIGTERM)
-	go catchSignal(fd, sig, brk)
+	go func() {
+		<-sig
+		echoOn(fd)
+		os.Exit(-1)
+	}()
 
 	// Turn off the terminal echo.
 	pid, err := echoOff(fd)
@@ -47,8 +50,8 @@ func getPassword() (password string, err error) {
 	}
 
 	// Turn on the terminal echo and stop listening for signals.
-	defer close(brk)
 	defer echoOn(fd)
+	defer signal.Stop(sig)
 
 	syscall.Wait4(pid, &ws, 0, nil)
 
@@ -77,17 +80,5 @@ func echoOn(fd []uintptr) {
 	pid, e := syscall.ForkExec(sttyArg0, sttyArgvEOn, &syscall.ProcAttr{Dir: "", Files: fd})
 	if e == nil {
 		syscall.Wait4(pid, &ws, 0, nil)
-	}
-}
-
-// catchSignal tries to catch SIGKILL, SIGQUIT and SIGINT so that we can turn
-// terminal echo back on before the program ends. Otherwise the user is left
-// with echo off on their terminal.
-func catchSignal(fd []uintptr, sig chan os.Signal, brk chan bool) {
-	select {
-	case <-sig:
-		echoOn(fd)
-		os.Exit(-1)
-	case <-brk:
 	}
 }
