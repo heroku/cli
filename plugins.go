@@ -204,8 +204,10 @@ var pluginsListCmd = &Command{
 func runFn(module, topic, command string) func(ctx *Context) {
 	return func(ctx *Context) {
 		lockfile := updateLockPath + "." + module
-		golock.Lock(lockfile)
-		golock.Unlock(lockfile)
+		if exists, _ := fileExists(lockfile); exists {
+			golock.Lock(lockfile)
+			golock.Unlock(lockfile)
+		}
 		ctx.Version = ctx.Version + " " + module + " iojs-v" + node.NodeVersion
 		ctxJSON, err := json.Marshal(ctx)
 		if err != nil {
