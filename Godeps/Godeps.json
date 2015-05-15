@@ -22,7 +22,7 @@
 		},
 		{
 			"ImportPath": "github.com/franela/goreq",
-			"Rev": "d3fcae0b28a21ef57b19c6bc784c9034a92b6abf"
+			"Rev": "686be00ba088d812fcfb7d3d9a2887aecc6e1aa6"
 		},
 		{
 			"ImportPath": "github.com/jtolds/gls",
