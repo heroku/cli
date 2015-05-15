@@ -50,9 +50,9 @@ func Update(channel string) {
 	defer golock.Unlock(updateLockPath)
 	done := make(chan bool)
 	go func() {
+		touchAutoupdateFile()
 		updateCLI(channel)
 		updatePlugins()
-		touchAutoupdateFile()
 		done <- true
 	}()
 	select {
