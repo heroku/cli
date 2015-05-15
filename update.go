@@ -178,9 +178,7 @@ func fileSha1(path string) string {
 
 // TriggerBackgroundUpdate will trigger an update to the client in the background
 func TriggerBackgroundUpdate() {
-	if err := exec.Command(binPath, "update").Start(); err != nil {
-		panic(err)
-	}
+	exec.Command(binPath, "update").Start()
 }
 
 // WarnIfUpdating prints to stderr if the CLI is updating
