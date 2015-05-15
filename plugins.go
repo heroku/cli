@@ -200,6 +200,7 @@ var pluginsListCmd = &Command{
 
 func runFn(module, topic, command string) func(ctx *Context) {
 	return func(ctx *Context) {
+		ctx.Version = ctx.Version + " " + module + " iojs-v" + node.NodeVersion
 		ctxJSON, err := json.Marshal(ctx)
 		if err != nil {
 			panic(err)
