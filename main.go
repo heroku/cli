@@ -47,15 +47,15 @@ func main() {
 	if IsUpdateNeeded("hard") {
 		Update(Channel, true)
 	}
+	if IsUpdateNeeded("soft") {
+		TriggerBackgroundUpdate()
+	}
 	SetupNode()
 	err := cli.Run(os.Args)
 	if err == ErrHelp {
 		// Command wasn't found so load the plugins and try again
 		cli.LoadPlugins(GetPlugins())
 		err = cli.Run(os.Args)
-	}
-	if IsUpdateNeeded("soft") {
-		TriggerBackgroundUpdate()
 	}
 	if err == ErrHelp {
 		help()
