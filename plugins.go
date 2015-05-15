@@ -149,6 +149,7 @@ var pluginsLinkCmd = &Command{
 			if err := os.Remove(newPath); err != nil {
 				panic(err)
 			}
+			return
 		}
 		if name != plugin.Name {
 			path = newPath
