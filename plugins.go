@@ -22,6 +22,7 @@ import (
 type Plugin struct {
 	Name     string     `json:"name"`
 	Topics   TopicSet   `json:"topics"`
+	Topic    *Topic     `json:"topic"`
 	Commands CommandSet `json:"commands"`
 }
 
@@ -62,6 +63,9 @@ func (cli *Cli) LoadPlugins(plugins []Plugin) {
 	for _, plugin := range plugins {
 		for _, topic := range plugin.Topics {
 			cli.AddTopic(topic)
+		}
+		if plugin.Topic != nil {
+			cli.AddTopic(plugin.Topic)
 		}
 		for _, command := range plugin.Commands {
 			if !cli.AddCommand(command) {
