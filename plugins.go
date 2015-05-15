@@ -212,6 +212,7 @@ func runFn(module, topic, command string) func(ctx *Context) {
 			golock.Lock(lockfile)
 			golock.Unlock(lockfile)
 		}
+		ctx.Dev = isPluginSymlinked(module)
 		ctx.Version = ctx.Version + " " + module + " iojs-v" + node.NodeVersion
 		ctxJSON, err := json.Marshal(ctx)
 		if err != nil {
@@ -220,35 +221,48 @@ func runFn(module, topic, command string) func(ctx *Context) {
 		script := fmt.Sprintf(`
 		'use strict';
 		var moduleName = '%s';
-		var module = require(moduleName);
 		var topic = '%s';
 		var command = '%s';
 		var ctx = %s;
 		var logPath = %s;
 		process.chdir(ctx.cwd);
-		process.on('uncaughtException', function (err) {
-			console.error(' !   Error in ' + moduleName + ':')
-			if (err.message) {
-				console.error(' !   ' + err.message);
-			} else {
-				console.error(' !   ' + err);
-			}
-			if (err.stack) {
-				var fs = require('fs');
-				var log = function (line) {
-					var d = new Date().toISOString()
-					.replace(/T/, ' ')
-					.replace(/-/g, '/')
-					.replace(/\..+/, '');
-					fs.appendFileSync(logPath, d + ' ' + line + '\n');
+		function repair (name) {
+			console.error('Attempting to repair ' + name + '...');
+			require('child_process')
+			.spawnSync('heroku', ['plugins:install', name],
+			{stdio: [0,1,2]});
+			console.error('Repair complete. Try running your command again.');
+		}
+		if (!ctx.dev) {
+			process.on('uncaughtException', function (err) {
+				console.error(' !   Error in ' + moduleName + ':')
+				if (err.message) {
+					console.error(' !   ' + err.message);
+					if (err.message.indexOf('Cannot find module') != -1) {
+						repair(moduleName);
+						process.exit(1);
+					}
+				} else {
+					console.error(' !   ' + err);
 				}
-				log('Error during ' + topic + ':' + command);
-				log(err.stack);
-				console.error(' !   See ' + logPath + ' for more info.');
-			}
-			process.exit(1);
-		});
+				if (err.stack) {
+					var fs = require('fs');
+					var log = function (line) {
+						var d = new Date().toISOString()
+						.replace(/T/, ' ')
+						.replace(/-/g, '/')
+						.replace(/\..+/, '');
+						fs.appendFileSync(logPath, d + ' ' + line + '\n');
+					}
+					log('Error during ' + topic + ':' + command);
+					log(err.stack);
+					console.error(' !   See ' + logPath + ' for more info.');
+				}
+				process.exit(1);
+			});
+		}
 		if (command === '') { command = null }
+		var module = require(moduleName);
 		var cmd = module.commands.filter(function (c) {
 			return c.topic === topic && c.command == command;
 		})[0];
@@ -369,4 +383,13 @@ func ignorePlugin(plugin string) bool {
 		}
 	}
 	return false
+}
+
+func isPluginSymlinked(plugin string) bool {
+	path := filepath.Join(AppDir, "node_modules", plugin)
+	fi, err := os.Lstat(path)
+	if err != nil {
+		panic(err)
+	}
+	return fi.Mode()&os.ModeSymlink != 0
 }

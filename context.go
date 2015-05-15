@@ -13,6 +13,7 @@ type Context struct {
 	HerokuDir string                 `json:"herokuDir"`
 	Debug     bool                   `json:"debug"`
 	Version   string                 `json:"version"`
+	Dev       bool                   `json:"dev"`
 	Auth      struct {
 		Username string `json:"username"`
 		Password string `json:"password"`
