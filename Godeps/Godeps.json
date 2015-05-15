@@ -8,8 +8,8 @@
 		},
 		{
 			"ImportPath": "github.com/dickeyxxx/gode",
-			"Comment": "v2.3.7-1-g24b427c",
-			"Rev": "24b427c2bd8aa4dc7d39e0aefb3474e9017cb7dd"
+			"Comment": "v2.3.8",
+			"Rev": "07665c572c9773a36fd6827c51f1db6ebba1d0f7"
 		},
 		{
 			"ImportPath": "github.com/dickeyxxx/golock",

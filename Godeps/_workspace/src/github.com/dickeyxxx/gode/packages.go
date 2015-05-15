@@ -1,10 +1,13 @@
 package gode
 
 import (
+	"bytes"
 	"encoding/json"
+	"errors"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 )
 
 // Package represents an npm package.
@@ -15,26 +18,13 @@ type Package struct {
 
 // Packages returns a list of npm packages installed.
 func (c *Client) Packages() ([]Package, error) {
-	cmd, err := c.execNpm("list", "--json", "--depth=0")
+	stdout, stderr, err := c.execNpm("list", "--json", "--depth=0")
 	if err != nil {
-		return nil, err
+		return nil, errors.New(stderr)
 	}
 	var response map[string]map[string]Package
-	output, err := cmd.StdoutPipe()
-	if err != nil {
-		return nil, err
-	}
-	err = cmd.Start()
-	if err != nil {
-		return nil, err
-	}
-	err = json.NewDecoder(output).Decode(&response)
-	if err != nil {
-		return nil, err
-	}
-	err = cmd.Wait()
-	if err != nil {
-		return nil, err
+	if err := json.Unmarshal([]byte(stdout), &response); err != nil {
+		return nil, errors.New(stderr)
 	}
 	packages := make([]Package, 0, len(response["dependencies"]))
 	for name, p := range response["dependencies"] {
@@ -46,58 +36,64 @@ func (c *Client) Packages() ([]Package, error) {
 
 // InstallPackage installs an npm package.
 func (c *Client) InstallPackage(name string) error {
-	cmd, err := c.execNpm("install", name)
+	_, stderr, err := c.execNpm("install", name)
 	if err != nil {
-		return err
+		if strings.Contains(stderr, "no such package available") {
+			return errors.New("no such package available")
+		}
+		return errors.New(stderr)
 	}
-	return cmd.Run()
+	return nil
 }
 
 // RemovePackage removes an npm package.
 func (c *Client) RemovePackage(name string) error {
-	cmd, err := c.execNpm("remove", name)
+	_, stderr, err := c.execNpm("remove", name)
 	if err != nil {
-		return err
+		return errors.New(stderr)
 	}
-	return cmd.Run()
+	return nil
 }
 
 // UpdatePackages updates all packages.
-func (c *Client) UpdatePackages() ([]byte, error) {
-	cmd, err := c.execNpm("update")
+func (c *Client) UpdatePackages() (string, error) {
+	stdout, stderr, err := c.execNpm("update")
 	if err != nil {
-		return nil, err
+		return stdout, errors.New(stderr)
 	}
-	return cmd.Output()
+	return stdout, nil
 }
 
 // UpdatePackage updates a package.
-func (c *Client) UpdatePackage(name string) ([]byte, error) {
-	cmd, err := c.execNpm("update", name)
+func (c *Client) UpdatePackage(name string) (string, error) {
+	stdout, stderr, err := c.execNpm("update", name)
 	if err != nil {
-		return nil, err
+		return stdout, errors.New(stderr)
 	}
-	return cmd.Output()
+	return stdout, nil
 }
 
-func (c *Client) execNpm(args ...string) (*exec.Cmd, error) {
+func (c *Client) execNpm(args ...string) (string, string, error) {
 	if err := os.MkdirAll(filepath.Join(c.RootPath, "node_modules"), 0755); err != nil {
-		return nil, err
+		return "", "", err
 	}
 	nodePath, err := filepath.Rel(c.RootPath, c.nodePath())
 	if err != nil {
-		return nil, err
+		return "", "", err
 	}
 	npmPath, err := filepath.Rel(c.RootPath, c.npmPath())
 	if err != nil {
-		return nil, err
+		return "", "", err
 	}
 	args = append([]string{npmPath}, args...)
 	cmd := exec.Command(nodePath, args...)
 	cmd.Dir = c.RootPath
 	cmd.Env = c.environ()
-	cmd.Stderr = os.Stderr
-	return cmd, nil
+	var stdout, stderr bytes.Buffer
+	cmd.Stdout = &stdout
+	cmd.Stderr = &stderr
+	err = cmd.Run()
+	return stdout.String(), stderr.String(), err
 }
 
 func (c *Client) environ() []string {
