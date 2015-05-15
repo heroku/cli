@@ -1,3 +1,8 @@
+4.19.21 2015-05-15
+==================
+Attempt to repair plugin on module loading error
+Fixed error handling on plugins:link
+
 4.19.20 2015-05-15
 ==================
 Many bug fixes around updating
