@@ -44,9 +44,8 @@ func init() {
 
 func main() {
 	defer handlePanic()
-	WarnIfUpdating()
 	if IsUpdateNeeded("hard") {
-		Update(Channel, false)
+		Update(Channel, true)
 	}
 	SetupNode()
 	err := cli.Run(os.Args)

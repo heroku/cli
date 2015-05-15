@@ -31,7 +31,7 @@ var updateCmd = &Command{
 		if channel == "" {
 			channel = Channel
 		}
-		Update(channel, ctx.Flags["background"] == true)
+		Update(channel, ctx.Flags["background"] != true)
 	},
 }
 
@@ -46,18 +46,12 @@ func init() {
 }
 
 // Update updates the CLI and plugins
-func Update(channel string, force bool) {
-	golock.Lock(updateLockPath)
-	defer golock.Unlock(updateLockPath)
-	if force && !IsUpdateNeeded("soft") {
-		// update no longer needed
-		return
-	}
+func Update(channel string, fast bool) {
 	done := make(chan bool)
 	go func() {
 		touchAutoupdateFile()
 		updateCLI(channel)
-		updatePlugins()
+		updatePlugins(fast)
 		done <- true
 	}()
 	select {
@@ -67,11 +61,28 @@ func Update(channel string, force bool) {
 	}
 }
 
-func updatePlugins() {
+func updatePlugins(fast bool) {
+	updated := false
 	Err("updating plugins... ")
-	b, _ := node.UpdatePackages()
+	if fast {
+		b, _ := node.UpdatePackages()
+		if len(b) > 0 {
+			updated = true
+		}
+	} else {
+		packages, _ := node.Packages()
+		for _, pkg := range packages {
+			lockfile := updateLockPath + "." + pkg.Name
+			golock.Lock(lockfile)
+			b, _ := node.UpdatePackage(pkg.Name)
+			golock.Unlock(lockfile)
+			if len(b) > 0 {
+				updated = true
+			}
+		}
+	}
 	Errln("done")
-	if len(b) > 0 {
+	if updated {
 		Err("rebuilding plugins cache... ")
 		ClearPluginCache()
 		WritePluginCache(GetPlugins())
@@ -192,12 +203,4 @@ func fileSha1(path string) string {
 // TriggerBackgroundUpdate will trigger an update to the client in the background
 func TriggerBackgroundUpdate() {
 	exec.Command(binPath, "update", "--background").Start()
-}
-
-// WarnIfUpdating prints to stderr if the CLI is updating
-func WarnIfUpdating() {
-	if exists, _ := fileExists(updateLockPath); exists {
-		// Disable since v3 calls CLI twice
-		//Errln("WARNING: CLI is updating")
-	}
 }

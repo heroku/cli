@@ -38,6 +38,9 @@ func SetupNode() {
 	if !node.IsSetup() {
 		golock.Lock(updateLockPath)
 		defer golock.Unlock(updateLockPath)
+		if node.IsSetup() {
+			return
+		}
 		Debugln("setting up iojs", node.NodeVersion)
 		ExitIfError(node.Setup())
 		clearOldNodeInstalls()
@@ -200,6 +203,9 @@ var pluginsListCmd = &Command{
 
 func runFn(module, topic, command string) func(ctx *Context) {
 	return func(ctx *Context) {
+		lockfile := updateLockPath + "." + module
+		golock.Lock(lockfile)
+		golock.Unlock(lockfile)
 		ctx.Version = ctx.Version + " " + module + " iojs-v" + node.NodeVersion
 		ctxJSON, err := json.Marshal(ctx)
 		if err != nil {
