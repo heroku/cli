@@ -75,7 +75,13 @@ func updatePlugins() {
 }
 
 func updateCLI(channel string) {
-	manifest := getUpdateManifest(channel)
+	goreq.SetConnectTimeout(5 * time.Second)
+	manifest, err := getUpdateManifest(channel)
+	if err != nil {
+		Warn("Error updating CLI")
+		PrintError(err)
+		return
+	}
 	if manifest.Version == Version && manifest.Channel == Channel {
 		return
 	}
@@ -131,14 +137,16 @@ type manifest struct {
 	}
 }
 
-func getUpdateManifest(channel string) manifest {
+func getUpdateManifest(channel string) (*manifest, error) {
 	res, err := goreq.Request{
 		Uri: "https://d1gvo455cekpjp.cloudfront.net/" + channel + "/manifest.json",
 	}.Do()
-	ExitIfError(err)
+	if err != nil {
+		return nil, err
+	}
 	var m manifest
 	res.Body.FromJsonTo(&m)
-	return m
+	return &m, nil
 }
 
 func updatable() bool {
