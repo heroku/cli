@@ -25,12 +25,13 @@ var updateCmd = &Command{
 	Hidden:      true,
 	Description: "updates heroku-cli",
 	Args:        []Arg{{Name: "channel", Optional: true}},
+	Flags:       []Flag{{Name: "background", Hidden: true}},
 	Run: func(ctx *Context) {
 		channel := ctx.Args.(map[string]string)["channel"]
 		if channel == "" {
 			channel = Channel
 		}
-		Update(channel)
+		Update(channel, ctx.Flags["background"] == true)
 	},
 }
 
@@ -45,10 +46,10 @@ func init() {
 }
 
 // Update updates the CLI and plugins
-func Update(channel string) {
+func Update(channel string, force bool) {
 	golock.Lock(updateLockPath)
 	defer golock.Unlock(updateLockPath)
-	if !IsUpdateNeeded("soft") {
+	if force && !IsUpdateNeeded("soft") {
 		// update no longer needed
 		return
 	}
@@ -190,7 +191,7 @@ func fileSha1(path string) string {
 
 // TriggerBackgroundUpdate will trigger an update to the client in the background
 func TriggerBackgroundUpdate() {
-	exec.Command(binPath, "update").Start()
+	exec.Command(binPath, "update", "--background").Start()
 }
 
 // WarnIfUpdating prints to stderr if the CLI is updating
