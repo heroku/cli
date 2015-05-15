@@ -187,10 +187,14 @@ func auth() (user, password string) {
 }
 
 func netrcPath() string {
+	base := filepath.Join(HomeDir, ".netrc")
 	if runtime.GOOS == "windows" {
-		return filepath.Join(HomeDir, "_netrc")
+		base = filepath.Join(HomeDir, "_netrc")
 	}
-	return filepath.Join(HomeDir, ".netrc")
+	if exists, _ := fileExists(base + ".gpg"); exists {
+		base = base + ".gpg"
+	}
+	return base
 }
 
 // AddTopic adds a Topic to the set of topics.

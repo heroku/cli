@@ -3,7 +3,6 @@ package main
 import (
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"time"
 
 	"github.com/bgentry/speakeasy"
@@ -41,10 +40,7 @@ func saveOauthToken(email, token string) {
 	netrc := getNetrc()
 	netrc.NewMachine("api.heroku.com", email, token, "")
 	netrc.NewMachine("git.heroku.com", email, token, "")
-	body, err := netrc.MarshalText()
-	body = append(body, '\n')
-	ExitIfError(err)
-	ioutil.WriteFile(netrcPath(), body, 0600)
+	ExitIfError(netrc.Save())
 }
 
 func getString(prompt string) string {

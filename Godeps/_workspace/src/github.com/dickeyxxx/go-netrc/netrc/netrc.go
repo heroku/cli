@@ -7,6 +7,8 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
+	"os/exec"
+	"path/filepath"
 	"strings"
 	"sync"
 	"unicode"
@@ -41,6 +43,7 @@ type Netrc struct {
 	machines   []*Machine
 	macros     Macros
 	updateLock sync.Mutex
+	Filename   string
 }
 
 // FindMachine returns the Machine in n named by name. If a machine named by
@@ -478,12 +481,38 @@ func parse(r io.Reader, pos int) (*Netrc, error) {
 // ParseFile opens the file at filename and then passes its io.Reader to
 // Parse().
 func ParseFile(filename string) (*Netrc, error) {
+	if filepath.Ext(filename) == ".gpg" {
+		return parseGPGFile(filename)
+	}
 	fd, err := os.Open(filename)
 	if err != nil {
 		return nil, err
 	}
 	defer fd.Close()
-	return Parse(fd)
+	netrc, err := Parse(fd)
+	if err != nil {
+		return nil, err
+	}
+	netrc.Filename = filename
+	return netrc, nil
+}
+
+func parseGPGFile(filename string) (*Netrc, error) {
+	cmd := exec.Command("gpg", "--batch", "--quiet", "--decrypt", filename)
+	stdout, err := cmd.StdoutPipe()
+	if err != nil {
+		return nil, err
+	}
+	err = cmd.Start()
+	if err != nil {
+		return nil, err
+	}
+	netrc, err := Parse(stdout)
+	if err != nil {
+		return nil, err
+	}
+	netrc.Filename = filename
+	return netrc, nil
 }
 
 // Parse parses from the the Reader r as a netrc file and returns the set of
@@ -507,4 +536,30 @@ func FindMachine(filename, name string) (m *Machine, err error) {
 		return nil, err
 	}
 	return n.FindMachine(name), nil
+}
+
+func (netrc *Netrc) Save() error {
+	body, err := netrc.MarshalText()
+	if err != nil {
+		return err
+	}
+	body = append(body, '\n')
+	if filepath.Ext(netrc.Filename) == ".gpg" {
+		cmd := exec.Command("gpg", "-a", "--batch", "--default-recipient-self", "-e")
+		stdin, err := cmd.StdinPipe()
+		if err != nil {
+			return err
+		}
+		if err != nil {
+			return err
+		}
+		stdin.Write([]byte(body))
+		stdin.Close()
+		cmd.Stderr = os.Stderr
+		body, err = cmd.Output()
+		if err != nil {
+			return err
+		}
+	}
+	return ioutil.WriteFile(netrc.Filename, body, 0600)
 }
