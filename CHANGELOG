@@ -1,3 +1,7 @@
+4.19.19 2015-05-14
+==================
+Added support for .gpg netrc files
+
 4.19.18 2015-05-14
 ==================
 Added hidden flag and arg support
