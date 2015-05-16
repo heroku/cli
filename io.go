@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/mgutz/ansi"
+	"golang.org/x/crypto/ssh/terminal"
 )
 
 // Used to mock stdout for testing
@@ -112,7 +112,7 @@ func PrintError(e error) {
 
 // Warn shows a message with excalamation points prepended to stderr
 func Warn(msg string) {
-	bang := ansi.Color(" ▸    ", "yellow")
+	bang := yellow(" ▸    ")
 	msg = strings.TrimSpace(msg)
 	msg = strings.Join(strings.Split(msg, "\n"), "\n"+bang)
 	Errln(bang + msg)
@@ -120,7 +120,7 @@ func Warn(msg string) {
 
 // Error shows a message with excalamation points prepended to stderr
 func Error(msg string) {
-	bang := ansi.Color(" ▸    ", "red")
+	bang := red(" ▸    ")
 	msg = strings.TrimSpace(msg)
 	msg = strings.Join(strings.Split(msg, "\n"), "\n"+bang)
 	Errln(bang + msg)
@@ -140,4 +140,22 @@ func isDebugging() bool {
 		return true
 	}
 	return false
+}
+
+func yellow(s string) string {
+	if istty() {
+		return "\x1b[33m" + s + "\x1b[39m"
+	}
+	return s
+}
+
+func red(s string) string {
+	if istty() {
+		return "\x1b[31m" + s + "\x1b[39m"
+	}
+	return s
+}
+
+func istty() bool {
+	return terminal.IsTerminal(int(os.Stdin.Fd()))
 }

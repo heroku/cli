@@ -29,10 +29,6 @@
 			"Rev": "9a4a02dbe491bef4bab3c24fd9f3087d6c4c6690"
 		},
 		{
-			"ImportPath": "github.com/mgutz/ansi",
-			"Rev": "22ddafb24adc4786c83841aa3021349818c898e4"
-		},
-		{
 			"ImportPath": "github.com/smartystreets/assertions",
 			"Comment": "1.5.0-380-g4727d76",
 			"Rev": "4727d767ce8a81811c40eedc2a836c85aebb4d09"
@@ -46,6 +42,10 @@
 			"ImportPath": "github.com/stvp/rollbar",
 			"Comment": "v0.3.1-4-g3f10961",
 			"Rev": "3f10961d0bdb493ad6a6ecec9fb16d97c33d593e"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/ssh/terminal",
+			"Rev": "59435533c88bd0b1254c738244da1fe96b59d05d"
 		}
 	]
 }
