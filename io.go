@@ -7,6 +7,8 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/mgutz/ansi"
 )
 
 // Used to mock stdout for testing
@@ -105,12 +107,20 @@ func Debugln(a ...interface{}) {
 
 // PrintError is a helper that prints out formatted error messages in red text
 func PrintError(e error) {
-	Warn(e.Error())
+	Error(e.Error())
 }
 
 // Warn shows a message with excalamation points prepended to stderr
 func Warn(msg string) {
-	bang := " !   "
+	bang := ansi.Color(" ▸    ", "yellow")
+	msg = strings.TrimSpace(msg)
+	msg = strings.Join(strings.Split(msg, "\n"), "\n"+bang)
+	Errln(bang + msg)
+}
+
+// Error shows a message with excalamation points prepended to stderr
+func Error(msg string) {
+	bang := ansi.Color(" ▸    ", "red")
 	msg = strings.TrimSpace(msg)
 	msg = strings.Join(strings.Split(msg, "\n"), "\n"+bang)
 	Errln(bang + msg)
