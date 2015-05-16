@@ -65,6 +65,9 @@ func (cli *Cli) Run(args []string) (err error) {
 
 // ParseCmd parses the command argument into a topic and command
 func (cli *Cli) ParseCmd(cmd string) (topic *Topic, command *Command) {
+	if cmd == "--version" || cmd == "-v" {
+		return versionTopic, versionCmd
+	}
 	tc := strings.SplitN(cmd, ":", 2)
 	topic = cli.Topics.ByName(tc[0])
 	if topic == nil {
