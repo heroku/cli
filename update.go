@@ -83,6 +83,10 @@ func Update(channel string, fast bool) {
 
 func updatePlugins(fast bool) {
 	updated := false
+	plugins := PluginNames()
+	if len(plugins) == 0 {
+		return
+	}
 	Err("updating plugins... ")
 	if fast {
 		b, _ := node.UpdatePackages()
@@ -90,11 +94,10 @@ func updatePlugins(fast bool) {
 			updated = true
 		}
 	} else {
-		packages, _ := node.Packages()
-		for _, pkg := range packages {
-			lockfile := updateLockPath + "." + pkg.Name
+		for _, name := range plugins {
+			lockfile := updateLockPath + "." + name
 			golock.Lock(lockfile)
-			b, _ := node.UpdatePackage(pkg.Name)
+			b, _ := node.UpdatePackage(name)
 			golock.Unlock(lockfile)
 			if len(b) > 0 {
 				updated = true
