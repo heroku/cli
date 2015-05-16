@@ -59,8 +59,8 @@ func (cli *Cli) Run(args []string) (err error) {
 	ctx.HerokuDir = AppDir
 	ctx.Debug = debugging
 	ctx.Version = version()
-	ctx.Command.Run(ctx)
 	ctx.SupportsColor = supportsColor()
+	ctx.Command.Run(ctx)
 	return nil
 }
 
