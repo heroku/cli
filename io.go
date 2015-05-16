@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 
 	"golang.org/x/crypto/ssh/terminal"
@@ -143,19 +144,35 @@ func isDebugging() bool {
 }
 
 func yellow(s string) string {
-	if istty() {
+	if supportsColor() {
 		return "\x1b[33m" + s + "\x1b[39m"
 	}
 	return s
 }
 
 func red(s string) string {
-	if istty() {
+	if supportsColor() {
 		return "\x1b[31m" + s + "\x1b[39m"
 	}
 	return s
 }
 
+func windows() bool {
+	return runtime.GOOS == "windows"
+}
+
 func istty() bool {
 	return terminal.IsTerminal(int(os.Stdin.Fd()))
+}
+
+func supportsColor() bool {
+	if !istty() || windows() {
+		return false
+	}
+	for _, arg := range os.Args {
+		if arg == "--no-color" {
+			return false
+		}
+	}
+	return os.Getenv("COLOR") != "false"
 }
