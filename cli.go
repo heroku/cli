@@ -60,6 +60,7 @@ func (cli *Cli) Run(args []string) (err error) {
 	ctx.Debug = debugging
 	ctx.Version = version()
 	ctx.Command.Run(ctx)
+	ctx.SupportsColor = supportsColor()
 	return nil
 }
 
@@ -97,6 +98,8 @@ func parseVarArgs(command *Command, args []string) (result []string, flags map[s
 			parseFlags = false
 		case parseFlags && (args[i] == "help" || args[i] == "--help" || args[i] == "-h"):
 			return nil, nil, "", ErrHelp
+		case parseFlags && (args[i] == "--no-color"):
+			continue
 		case parseFlags && strings.HasPrefix(args[i], "-"):
 			flag, val, err := parseFlag(args[i], possibleFlags)
 			if err != nil && strings.HasSuffix(err.Error(), "needs a value") {
