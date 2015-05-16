@@ -66,7 +66,7 @@ function attachToRendezvous(uri) {
     process.exit(0);
   });
   c.on('error', cli.errorHandler());
-  process.on('SIGINT', function () {
+  process.once('SIGINT', function () {
     c.end();
   });
 }
