@@ -150,6 +150,8 @@ func updateCLI(channel string) {
 		Errf("Out of date: You are running %s but %s is out\n", Version, manifest.Version)
 		return
 	}
+	golock.Lock(updateLockPath)
+	defer golock.Unlock(updateLockPath)
 	Errf("updating v4 CLI to %s (%s)... ", manifest.Version, manifest.Channel)
 	build := manifest.Builds[runtime.GOOS][runtime.GOARCH]
 	// on windows we can't remove an existing file or remove the running binary
