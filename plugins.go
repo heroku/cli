@@ -45,6 +45,7 @@ func SetupNode() {
 		Debugln("setting up iojs", node.NodeVersion)
 		ExitIfError(node.Setup())
 		clearOldNodeInstalls()
+		Debugln("done setting up iojs")
 	}
 }
 
