@@ -54,8 +54,12 @@ func getCACerts() *x509.CertPool {
 	path := filepath.Join(AppDir, "cacert.pem")
 	data, err := ioutil.ReadFile(path)
 	if err != nil {
-		PrintError(err)
-		return nil
+		downloadCert(path)
+		data, err = ioutil.ReadFile(path)
+		if err != nil {
+			PrintError(err)
+			return nil
+		}
 	}
 	ok := certs.AppendCertsFromPEM(data)
 	if !ok {
@@ -63,6 +67,25 @@ func getCACerts() *x509.CertPool {
 		return nil
 	}
 	return certs
+}
+
+func downloadCert(path string) {
+	f, err := os.Create(path)
+	if err != nil {
+		PrintError(err)
+		return
+	}
+	res, err := goreq.Request{
+		Uri:       "https://raw.githubusercontent.com/bagder/ca-bundle/master/ca-bundle.crt",
+		ShowDebug: debugging,
+	}.Do()
+	if err != nil {
+		PrintError(err)
+		return
+	}
+	defer res.Body.Close()
+	defer f.Close()
+	io.Copy(f, res.Body)
 }
 
 // Update updates the CLI and plugins
