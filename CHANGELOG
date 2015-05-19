@@ -1,3 +1,15 @@
+4.19.22 2015-05-19
+==================
+Use ~/.heroku/cacert.pem
+Added some debugging output under HEROKU_DEBUG
+Skip plugin updating if there are none
+Changed help exit code to 0
+Added description to help
+Added --version command
+New error/warning output
+Added supportsColor to context
+Fixed remote error display with no remotes
+
 4.19.21 2015-05-15
 ==================
 Attempt to repair plugin on module loading error
