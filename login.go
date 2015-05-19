@@ -39,8 +39,8 @@ func login() {
 
 func saveOauthToken(email, token string) {
 	netrc := getNetrc()
-	netrc.NewMachine("api.heroku.com", email, token, "")
-	netrc.NewMachine("git.heroku.com", email, token, "")
+	netrc.NewMachine(herokuAPIHost(), email, token, "")
+	netrc.NewMachine(herokuGitHost(), email, token, "")
 	ExitIfError(netrc.Save())
 }
 
@@ -70,12 +70,13 @@ func getPassword() string {
 
 func createOauthToken(email, password, secondFactor string) (string, error) {
 	req := goreq.Request{
-		Uri:               "https://api.heroku.com/oauth/authorizations",
+		Uri:               "https://" + herokuAPIHost() + "/oauth/authorizations",
 		Method:            "POST",
 		Accept:            "application/vnd.heroku+json; version=3",
 		ShowDebug:         debugging,
 		BasicAuthUsername: email,
 		BasicAuthPassword: password,
+		Insecure:          !shouldVerifyHost(),
 		Body: map[string]interface{}{
 			"scope":       []string{"global"},
 			"description": "Toolbelt CLI login from " + time.Now().UTC().Format(time.RFC3339),
