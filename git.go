@@ -95,7 +95,11 @@ func appFromGitRemote(remote string) (string, error) {
 				if err != nil {
 					return "", err
 				}
-				return "", fmt.Errorf("could not find git remote "+remote+" in %s\nremotes: %s", wdir, strings.Join(mapKeys(remotes), " "))
+				msg := fmt.Sprintf("could not find git remote %s in %s", remote, wdir)
+				if len(remotes) != 0 {
+					msg = fmt.Sprintf("%s\nremotes: %s", msg, strings.Join(mapKeys(remotes), " "))
+				}
+				return "", errors.New(msg)
 			}
 			return "", err
 		}
