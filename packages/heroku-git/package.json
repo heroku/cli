@@ -25,7 +25,6 @@
   },
   "devDependencies": {
     "chai": "^2.3.0",
-    "heroku-client": "^1.10.1",
     "jshint": "*",
     "mocha": "^2.2.4",
     "nock": "^2.0.1",
