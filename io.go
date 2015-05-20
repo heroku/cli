@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"runtime/debug"
 	"strings"
 
 	"golang.org/x/crypto/ssh/terminal"
@@ -109,6 +110,9 @@ func Debugln(a ...interface{}) {
 // PrintError is a helper that prints out formatted error messages in red text
 func PrintError(e error) {
 	Error(e.Error())
+	if debugging {
+		debug.PrintStack()
+	}
 }
 
 // Warn shows a message with excalamation points prepended to stderr
