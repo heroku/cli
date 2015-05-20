@@ -162,7 +162,7 @@ func windows() bool {
 }
 
 func istty() bool {
-	return terminal.IsTerminal(int(os.Stdin.Fd()))
+	return terminal.IsTerminal(int(os.Stdout.Fd()))
 }
 
 func supportsColor() bool {
