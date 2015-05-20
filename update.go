@@ -260,5 +260,7 @@ func fileSha1(path string) string {
 
 // TriggerBackgroundUpdate will trigger an update to the client in the background
 func TriggerBackgroundUpdate() {
-	exec.Command(binPath, "update", "--background").Start()
+	if IsUpdateNeeded("background") {
+		exec.Command(binPath, "update", "--background").Start()
+	}
 }
