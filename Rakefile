@@ -1,5 +1,6 @@
 require 'digest'
 require 'aws-sdk'
+require 'json'
 
 BUCKET_NAME = 'heroku-cli'
 
