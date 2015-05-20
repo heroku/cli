@@ -17,7 +17,7 @@ func help() {
 	topic, command := cli.ParseCmd(cmd)
 	switch {
 	case topic == nil:
-		Println("heroku is the CLI for managing apps hosted on heroku.com\n")
+		Print("heroku is the CLI for managing apps hosted on heroku.com\n\n")
 		Printf("Usage: heroku COMMAND [--app APP] [command-specific-options]\n\n")
 		Printf("Help topics, type \"heroku help TOPIC\" for more details:\n\n")
 		for _, topic := range nonHiddenTopics(cli.Topics) {
