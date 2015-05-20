@@ -94,11 +94,11 @@ func downloadCert(path string) {
 
 // Update updates the CLI and plugins
 func Update(channel string, t string) {
+	if !IsUpdateNeeded(t) {
+		return
+	}
 	done := make(chan bool)
 	go func() {
-		if !IsUpdateNeeded(t) {
-			return
-		}
 		touchAutoupdateFile()
 		updateCLI(channel)
 		updatePlugins(t)
