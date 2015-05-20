@@ -1,3 +1,7 @@
+4.19.27 2015-05-20
+==================
+Fixed bug with no netrc file
+
 4.19.26 2015-05-20
 ==================
 Print call stack if HEROKU_DEBUG=true
