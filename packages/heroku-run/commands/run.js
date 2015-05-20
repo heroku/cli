@@ -52,6 +52,10 @@ function readStdin(c) {
         c.write(chunk, next);
       },
       flush: function (done) {
+        // TODO: this sends the EOF signal to rendezvous
+        // too early if the stdin input is large
+        // ideally rendezvous could wait to receive input
+        // while it is processing
         c.write("\x04", done);
       }
     }));
