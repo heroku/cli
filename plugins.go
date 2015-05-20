@@ -30,7 +30,7 @@ var node = gode.NewClient(AppDir)
 
 func init() {
 	node.Registry = "https://d3nfsbmspisrno.cloudfront.net"
-	node.NodeVersion = "2.0.1"
+	node.NodeVersion = "2.0.2"
 	node.NpmVersion = "2.9.0"
 }
 
