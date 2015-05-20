@@ -1,3 +1,7 @@
+4.19.26 2015-05-20
+==================
+Print call stack if HEROKU_DEBUG=true
+
 4.19.25 2015-05-20
 ==================
 Fixed bug with update timeouts even when no update is done
