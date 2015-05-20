@@ -33,7 +33,11 @@ var updateCmd = &Command{
 		if channel == "" {
 			channel = Channel
 		}
-		Update(channel, ctx.Flags["background"] != true)
+		t := "foreground"
+		if ctx.Flags["background"] == true {
+			t = "background"
+		}
+		Update(channel, t)
 	},
 }
 
@@ -89,12 +93,15 @@ func downloadCert(path string) {
 }
 
 // Update updates the CLI and plugins
-func Update(channel string, fast bool) {
+func Update(channel string, t string) {
 	done := make(chan bool)
 	go func() {
+		if !IsUpdateNeeded(t) {
+			return
+		}
 		touchAutoupdateFile()
 		updateCLI(channel)
-		updatePlugins(fast)
+		updatePlugins(t)
 		done <- true
 	}()
 	select {
@@ -104,14 +111,14 @@ func Update(channel string, fast bool) {
 	}
 }
 
-func updatePlugins(fast bool) {
+func updatePlugins(t string) {
 	updated := false
 	plugins := PluginNames()
 	if len(plugins) == 0 {
 		return
 	}
 	Err("updating plugins... ")
-	if fast {
+	if t == "foreground" || t == "block" {
 		b, _ := node.UpdatePackages()
 		if len(b) > 0 {
 			updated = true
@@ -119,9 +126,9 @@ func updatePlugins(fast bool) {
 	} else {
 		for _, name := range plugins {
 			lockfile := updateLockPath + "." + name
-			golock.Lock(lockfile)
+			LogIfError(golock.Lock(lockfile))
 			b, _ := node.UpdatePackage(name)
-			golock.Unlock(lockfile)
+			LogIfError(golock.Unlock(lockfile))
 			if len(b) > 0 {
 				updated = true
 			}
@@ -150,7 +157,7 @@ func updateCLI(channel string) {
 		Errf("Out of date: You are running %s but %s is out\n", Version, manifest.Version)
 		return
 	}
-	golock.Lock(updateLockPath)
+	LogIfError(golock.Lock(updateLockPath))
 	defer golock.Unlock(updateLockPath)
 	Errf("updating v4 CLI to %s (%s)... ", manifest.Version, manifest.Channel)
 	build := manifest.Builds[runtime.GOOS][runtime.GOARCH]
@@ -179,10 +186,12 @@ func IsUpdateNeeded(t string) bool {
 	if err != nil {
 		return true
 	}
-	if t == "soft" {
+	if t == "background" {
 		return time.Since(f.ModTime()) > 4*time.Hour
+	} else if t == "block" {
+		return time.Since(f.ModTime()) > 168*time.Hour
 	}
-	return time.Since(f.ModTime()) > 168*time.Hour
+	return true
 }
 
 func touchAutoupdateFile() {
@@ -251,5 +260,7 @@ func fileSha1(path string) string {
 
 // TriggerBackgroundUpdate will trigger an update to the client in the background
 func TriggerBackgroundUpdate() {
-	exec.Command(binPath, "update", "--background").Start()
+	if IsUpdateNeeded("background") {
+		exec.Command(binPath, "update", "--background").Start()
+	}
 }
