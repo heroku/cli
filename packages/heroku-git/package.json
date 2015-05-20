@@ -21,7 +21,7 @@
   },
   "homepage": "https://github.com/heroku/heroku-git",
   "dependencies": {
-    "heroku-cli-util": "^3.6.6"
+    "heroku-cli-util": "^3.6.7"
   },
   "devDependencies": {
     "chai": "^2.3.0",
