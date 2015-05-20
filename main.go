@@ -44,13 +44,11 @@ func init() {
 
 func main() {
 	defer handlePanic()
-	if IsUpdateNeeded("hard") {
-		Update(Channel, true)
-	}
-	if IsUpdateNeeded("soft") {
+	Update(Channel, "block")
+	SetupNode()
+	if IsUpdateNeeded("background") {
 		TriggerBackgroundUpdate()
 	}
-	SetupNode()
 	err := cli.Run(os.Args)
 	if err == ErrHelp {
 		// Command wasn't found so load the plugins and try again
