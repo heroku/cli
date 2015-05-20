@@ -37,7 +37,7 @@ func init() {
 // SetupNode sets up node and npm in ~/.heroku
 func SetupNode() {
 	if !node.IsSetup() {
-		golock.Lock(updateLockPath)
+		LogIfError(golock.Lock(updateLockPath))
 		defer golock.Unlock(updateLockPath)
 		if node.IsSetup() {
 			return
@@ -54,7 +54,7 @@ func clearOldNodeInstalls() {
 	for _, f := range files {
 		name := f.Name()
 		if name != node.NodeBase() && strings.HasPrefix(name, "iojs-v") {
-			os.RemoveAll(filepath.Join(AppDir, name))
+			LogIfError(os.RemoveAll(filepath.Join(AppDir, name)))
 		}
 	}
 }

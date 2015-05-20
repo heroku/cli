@@ -135,6 +135,13 @@ func ExitIfError(e error) {
 	}
 }
 
+// LogIfError logs out an error if one arises
+func LogIfError(e error) {
+	if e != nil {
+		Logln(e.Error())
+	}
+}
+
 func isDebugging() bool {
 	debug := strings.ToUpper(os.Getenv("HEROKU_DEBUG"))
 	if debug == "TRUE" || debug == "1" {
