@@ -65,7 +65,7 @@ function attachToRendezvous(uri) {
     process.stdout.write(data);
   });
   c.on('timeout', function () {
-    console.error('timed out');
+    cli.error('timed out');
   });
   c.on('end', function () {
     process.exit(0);
