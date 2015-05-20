@@ -52,8 +52,8 @@ function attachToRendezvous(uri) {
       firstLine = false;
       if (tty.isatty(0)) {
         process.stdin.setRawMode(true);
-        process.stdin.pipe(c);
       }
+      process.stdin.pipe(c);
       return;
     }
     data = data.replace('\r\n', '\n');
