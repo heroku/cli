@@ -1,6 +1,10 @@
 language: go
 go:
   - 1.4
+before_install:
+  - sudo add-apt-repository ppa:duggan/bats --yes
+  - sudo apt-get update -qq
+  - sudo apt-get install -qq bats
 install:
   - export PATH=$PATH:$HOME/gopath/bin
   - go get -u github.com/kr/godep
@@ -14,3 +18,4 @@ script:
   - golint ./...
   - test -z "$(golint ./...)"
   - go vet ./...
+  - bats test
