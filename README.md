@@ -1,7 +1,7 @@
 ![](https://d4yt8xl9b7in.cloudfront.net/assets/home/logotype-heroku.png) Next Gen Heroku CLI
 ==========
 
-[![Build Status](https://travis-ci.org/heroku/heroku-cli.svg?branch=dev)](https://travis-ci.org/heroku/heroku-cli)
+[![Circle CI](https://circleci.com/gh/heroku/heroku-cli/tree/master.svg?style=svg)](https://circleci.com/gh/heroku/heroku-cli/tree/master)
 [![MIT License](https://img.shields.io/github/license/heroku/heroku-cli.svg)](https://github.com/heroku/heroku-cli/blob/master/LICENSE)
 
 The Heroku CLI is used to manage Heroku apps from the command line.
