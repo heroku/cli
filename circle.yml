@@ -1,0 +1,16 @@
+dependencies:
+  post:
+    - if [ ! -d ~/bats ]; then git clone https://github.com/sstephenson/bats.git ~/bats; fi
+    - go get github.com/kr/godep
+    - go get github.com/golang/lint
+    - go get golang.org/x/tools/cmd/vet
+    - godep get
+  cache_directories:
+    - "~/bats"
+test:
+  post:
+    - godep go build -v ./...
+    - test -z "$(go fmt ./...)"
+    - test -z "$(golint ./...)"
+    - go vet ./...
+    - ~/bats/bin/bats test
