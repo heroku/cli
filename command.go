@@ -16,6 +16,7 @@ type Command struct {
 	Plugin       string             `json:"plugin"`
 	Usage        string             `json:"usage"`
 	Description  string             `json:"description"`
+	Default      bool               `json:"default"`
 	Help         string             `json:"help"`
 	FullHelp     string             `json:"fullHelp"`
 	Hidden       bool               `json:"hidden"`
@@ -62,8 +63,10 @@ type CommandSet []*Command
 // ByTopicAndCommand returns a command that matches the passed topic and command.
 func (commands CommandSet) ByTopicAndCommand(topic, command string) *Command {
 	for _, c := range commands {
-		if c.Topic == topic && c.Command == command {
-			return c
+		if c.Topic == topic {
+			if c.Command == command || c.Default && command == "" {
+				return c
+			}
 		}
 	}
 	return nil
