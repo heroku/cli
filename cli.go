@@ -46,9 +46,6 @@ func (cli *Cli) Run(args []string) (err error) {
 		if ctx.App == "" {
 			ctx.App = app()
 		}
-		if app := os.Getenv("HEROKU_APP"); app != "" {
-			ctx.App = app
-		}
 		if ctx.App == "" {
 			return ErrAppNeeded
 		}
@@ -157,6 +154,10 @@ func parseArgs(command *Command, args []string) (result map[string]string, flags
 }
 
 func app() string {
+	app := os.Getenv("HEROKU_APP")
+	if app != "" {
+		return app
+	}
 	app, err := appFromGitRemote(remoteFromGitConfig())
 	if err != nil {
 		PrintError(err)
