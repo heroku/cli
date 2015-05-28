@@ -358,6 +358,7 @@ func GetPlugins() []Plugin {
 			for _, command := range plugin.Commands {
 				command.Plugin = name
 				command.Run = runFn(name, command.Topic, command.Command)
+				command.Help = strings.TrimSpace(command.Help)
 			}
 			plugins = append(plugins, *plugin)
 		}
