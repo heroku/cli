@@ -42,7 +42,7 @@ func (c *Client) NodeBase() string {
 	case runtime.GOARCH == "386":
 		return "iojs-v" + c.NodeVersion + "-" + runtime.GOOS + "-ia32"
 	case runtime.GOARCH == "arm":
-		return "iojs-v" + c.NodeVersion + "-armv7l"
+		return "iojs-v" + c.NodeVersion + "-" + runtime.GOOS + "-armv7l"
 	default:
 		return "iojs-v" + c.NodeVersion + "-" + runtime.GOOS + "-x64"
 	}
