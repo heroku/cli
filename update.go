@@ -11,6 +11,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
+	"strings"
 	"time"
 
 	"github.com/dickeyxxx/golock"
@@ -125,7 +126,7 @@ func updatePlugins(t string) {
 		}
 	} else {
 		for _, name := range plugins {
-			lockfile := updateLockPath + "." + name
+			lockfile := updateLockPath + "." + strings.Replace(name, "/", "-", -1)
 			LogIfError(golock.Lock(lockfile))
 			b, _ := node.UpdatePackage(name)
 			LogIfError(golock.Unlock(lockfile))
