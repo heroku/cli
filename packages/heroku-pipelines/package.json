@@ -14,5 +14,9 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/heroku/heroku-hello-world"
+  },
+  "dependencies": {
+    "co": "^4.5.4",
+    "heroku-cli-util": "^4.0.3"
   }
 }

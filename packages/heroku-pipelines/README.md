@@ -60,6 +60,7 @@ This is the entry point of the application where the plugin will find the plugin
 We specified this to be the entry point in `package.json` under the `main` attribute. (Although `index.js` is the default anyways)
 
 ```js
+'use strict';
 exports.topic = {
   name: 'hello',
   description: 'a topic for the hello world plugin'
@@ -70,10 +71,31 @@ exports.commands = [
 ];
 ```
 
-index.js
---------
+commands/hello/world.js
+-----------------------
+
+Now create the command at `commands/hello/world.js`:
 
 ```js
+'use strict';
+module.exports = {
+  topic: 'hello',
+  command: 'world',
+  description: 'tells you hello',
+  help: 'help text for hello:world',
+  run: function (context) {
+    console.log('Hello, World!');
+  }
+};
+```
+
+Using command line flags
+------------------------
+
+One way to get input from the user for a command is to declare a flag. In our case, we'll add a `--user` flag to get the user's name.
+
+```js
+'use strict';
 module.exports = {
   topic: 'hello',
   command: 'world',
@@ -92,6 +114,30 @@ module.exports = {
 };
 ```
 
+Run `heroku plugins:link` to refresh the plugin metadata then `heroku hello:world --user=jeff` to test the flag.
+
+Warnings
+--------
+
+heroku-cli-util is an npm package with a set of various helpers useful for building plugins. One example helper that it includes is warning and error helpers.
+
+First install the library:
+
+```
+$ npm install --save heroku-cli-util
+```
+
+Then use it in any plugin code:
+
+```js
+'use strict';
+let cli = require('heroku-cli-util');
+cli.warning('this is a warning message!');
+cli.error('this is an error message!');
+```
+
+[See the readme for heroku-cli-util for more documentation.](https://github.com/heroku/heroku-cli-util)
+
 Installing the plugin
 ---------------------
 
@@ -106,6 +152,170 @@ $ heroku plugins:link .
 symlinked heroku-hello-world
 Updating plugin cache... done
 ```
+
+Using the Heroku API
+--------------------
+
+To use the Heroku API, we'll add a new command to this plugin to get information about an app. First, reference the command from `index.js`:
+
+```js
+'use strict';
+exports.topic = {
+  name: 'hello',
+  description: 'a topic for the hello world plugin'
+};
+
+exports.commands = [
+  require('./commands/hello/world.js'),
+  require('./commands/hello/app.js')
+];
+```
+
+Now we can use the properties `needsApp` and `needsAuth` to get an app name and API key, respectively. These will be available in the context object. The CLI will ensure there is an app context (from git remote, HEROKU\_APP or from --app) and the user is logged in.
+
+```js
+'use strict';
+let cli = require('heroku-cli-util');
+
+module.exports = {
+  topic: 'hello',
+  command: 'app',
+  description: 'tells you hello',
+  help: 'help text for hello:world',
+  needsApp: true,
+  needsAuth: true,
+  run: function (context) {
+    cli.debug(context);
+  }
+};
+```
+
+Install `heroku-cli-util` if you haven't already and re-link the plugin to reset the cache:
+
+```
+$ npm install --save heroku-cli-util
+$ heroku plugins:link
+```
+
+Now you can see the current app is available at `context.app`. The Heroku API key is available at `context.auth.password`. You could use this to create an instance of [heroku-client](https://www.npmjs.com/package/heroku-client) yourself, but [heroku-cli-util](https://www.npmjs.com/package/heroku-cli-util) comes with a helper to make that easier. In addition, the helper will perform some error handling to prompt for 2fa tokens and show cleaner error messages from the API.
+
+Add the following to get the app info from the API:
+
+```js
+'use strict';
+let cli = require('heroku-cli-util');
+
+module.exports = {
+  topic: 'hello',
+  command: 'app',
+  description: 'tells you hello',
+  help: 'help text for hello:world',
+  needsApp: true,
+  needsAuth: true,
+  run: cli.command(function (context, heroku) {
+    // heroku is an instance of heroku-client
+    heroku.apps(context.app).info(function (err, app) {
+      if (err) { throw err; }
+      cli.debug(app);
+    });
+  })
+};
+```
+
+Preventing callback hell
+------------------------
+
+The code above works, but when you need to make many sequential API requests, it can make the code verbose. For instance, if we wanted to list out the config vars for the app as well, we would have to next another callback function as well as check for errors:
+
+```js
+'use strict';
+let cli = require('heroku-cli-util');
+
+module.exports = {
+  topic: 'hello',
+  command: 'app',
+  description: 'tells you hello',
+  help: 'help text for hello:world',
+  needsApp: true,
+  needsAuth: true,
+  run: cli.command(function (context, heroku) {
+    heroku.apps(context.app).info(function (err, app) {
+      if (err) { throw err; }
+      cli.debug(app);
+      heroku.apps(context.app).configVars().info(function (err, config) {
+        if (err) { throw err; }
+        cli.debug(config);
+      });
+    });
+  })
+};
+```
+
+This can quickly become untenable. To make this easier, `heroku-client` will return a promise when it is not called with a function callback. Here is the same code instead with promises:
+
+```js
+'use strict';
+let cli = require('heroku-cli-util');
+
+module.exports = {
+  topic: 'hello',
+  command: 'app',
+  description: 'tells you hello',
+  help: 'help text for hello:world',
+  needsApp: true,
+  needsAuth: true,
+  run: cli.command(function (context, heroku) {
+    return heroku.apps(context.app).info()
+    .then(function (app) {
+      cli.debug(app);
+      return heroku.apps(context.app).configVars().info();
+    })
+    .then(function (config) {
+      cli.debug(config);
+    });
+  })
+};
+```
+
+In addition to having a flatter structure, by returning the promise in the main run function, we will allow `cli.command()` to cleanly handle any API error that comes up.
+
+Using Generators with co
+------------------------
+
+To continue cleaning up our asynchronous code, we can use [co](https://www.npmjs.com/package/co) which takes advantage of ES6 generators to write asynchronous code that appears synchronous.
+
+First install `co`:
+
+```
+$ npm install --save co
+```
+
+Then use `co` to wrap your commands and replace the promise `then`s with `yield` calls:
+
+```js
+'use strict';
+let cli = require('heroku-cli-util');
+let co  = require('co');
+
+module.exports = {
+  topic: 'hello',
+  command: 'app',
+  description: 'tells you hello',
+  help: 'help text for hello:world',
+  needsApp: true,
+  needsAuth: true,
+  run: cli.command(function (context, heroku) {
+    return co(function* () {
+      let app = yield heroku.apps(context.app).info();
+      cli.debug(app);
+      let config = yield heroku.apps(context.app).configVars().info();
+      cli.debug(config);
+    });
+  })
+};
+```
+
+This code runs the same as before just reads more nicely. Most plugins will be written using `co` and generators like this.
 
 Running the plugin
 ------------------
