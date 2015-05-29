@@ -39,8 +39,10 @@ func NewClient(rootPath string) *Client {
 // NodeBase returns the directory name for the node install
 func (c *Client) NodeBase() string {
 	switch {
-	case runtime.GOARCH == "386" || runtime.GOOS == "windows":
+	case runtime.GOARCH == "386":
 		return "iojs-v" + c.NodeVersion + "-" + runtime.GOOS + "-ia32"
+	case runtime.GOARCH == "arm":
+		return "iojs-v" + c.NodeVersion + "-armv7l"
 	default:
 		return "iojs-v" + c.NodeVersion + "-" + runtime.GOOS + "-x64"
 	}
@@ -52,6 +54,8 @@ func (c *Client) nodeURL() string {
 		return "https://iojs.org/dist/v" + c.NodeVersion + "/win-x86/iojs.exe"
 	case runtime.GOARCH == "386":
 		return "https://iojs.org/dist/v" + c.NodeVersion + "/iojs-v" + c.NodeVersion + "-" + runtime.GOOS + "-x86.tar.gz"
+	case runtime.GOARCH == "arm":
+		return "https://iojs.org/dist/v" + c.NodeVersion + "/iojs-v" + c.NodeVersion + "-" + runtime.GOOS + "-armv7l.tar.gz"
 	default:
 		return "https://iojs.org/dist/v" + c.NodeVersion + "/" + c.NodeBase() + ".tar.gz"
 	}
