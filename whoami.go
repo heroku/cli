@@ -1,7 +1,5 @@
 package main
 
-import "github.com/franela/goreq"
-
 var authTopic = &Topic{
 	Name:        "auth",
 	Description: "authentication (login/logout)",
@@ -18,14 +16,9 @@ var whoamiCmd = &Command{
 	email@example.com`,
 	NeedsAuth: true,
 	Run: func(ctx *Context) {
-		req := goreq.Request{
-			Uri:       "https://" + herokuAPIHost() + "/account",
-			Method:    "GET",
-			Accept:    "application/vnd.heroku+json; version=3",
-			ShowDebug: debugging,
-			Insecure:  !shouldVerifyHost(),
-		}
-		req.AddHeader("Authorization", "Bearer "+ctx.Auth.Password)
+		req := apiRequest(ctx.Auth.Password)
+		req.Method = "GET"
+		req.Uri = req.Uri + "/account"
 		res, err := req.Do()
 		ExitIfError(err)
 		var doc map[string]interface{}
