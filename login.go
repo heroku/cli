@@ -23,6 +23,15 @@ var loginCmd = &Command{
 	},
 }
 
+var authLoginCmd = &Command{
+	Topic:       "auth",
+	Command:     "login",
+	Description: "Login with your Heroku credentials.",
+	Run: func(ctx *Context) {
+		login()
+	},
+}
+
 func login() {
 	Println("Enter your Heroku credentials.")
 	email := getString("Email: ")

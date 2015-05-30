@@ -37,6 +37,8 @@ func init() {
 		pluginsInstallCmd,
 		pluginsUninstallCmd,
 		whoamiCmd,
+		loginCmd,
+		authLoginCmd,
 	}
 	rollbar.Platform = "client"
 	rollbar.Token = "b40226d5e8a743cf963ca320f7be17bd"
