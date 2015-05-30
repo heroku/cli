@@ -42,7 +42,7 @@ func login() {
 		return
 	}
 	saveOauthToken(email, token)
-	Println("Logged in")
+	Println("Logged in as " + cyan(email))
 }
 
 func saveOauthToken(email, token string) {
