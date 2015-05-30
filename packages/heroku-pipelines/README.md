@@ -63,6 +63,7 @@ We specified this to be the entry point in `package.json` under the `main` attri
 'use strict';
 exports.topic = {
   name: 'hello',
+  // this is the help text that shows up under `heroku help`
   description: 'a topic for the hello world plugin'
 };
 
