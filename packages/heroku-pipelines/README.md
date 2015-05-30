@@ -351,7 +351,8 @@ module.exports = {
   topic: 'kitchen',
   command: 'sink',
   description: 'example command with many options set', // short help when listing many commands
-  help: // put long help and examples here `
+  // put long help and examples here
+  help: `
   Example kitchen sink plugin.
 
 Examples:
