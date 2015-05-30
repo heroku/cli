@@ -14,9 +14,17 @@ var whoamiCmd = &Command{
 
   $ heroku auth:whoami
 	email@example.com`,
-	NeedsAuth: true,
 	Run: func(ctx *Context) {
-		req := apiRequest(ctx.Auth.Password)
+		// don't use needsToken since this should fail if
+		// not logged in. Should not show a login prompt.
+		ctx.APIToken = apiToken()
+
+		if ctx.APIToken == "" {
+			Println("not logged in")
+			Exit(100)
+		}
+
+		req := apiRequest(ctx.APIToken)
 		req.Method = "GET"
 		req.Uri = req.Uri + "/account"
 		res, err := req.Do()
