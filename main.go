@@ -26,6 +26,7 @@ func init() {
 		versionTopic,
 		pluginsTopic,
 		updateTopic,
+		authTopic,
 	}
 	cli.Commands = []*Command{
 		commandsListCmd,
@@ -35,6 +36,7 @@ func init() {
 		pluginsLinkCmd,
 		pluginsInstallCmd,
 		pluginsUninstallCmd,
+		whoamiCmd,
 	}
 	rollbar.Platform = "client"
 	rollbar.Token = "b40226d5e8a743cf963ca320f7be17bd"
