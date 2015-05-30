@@ -358,20 +358,20 @@ Examples:
 
   $ heroku kitchen:sink large-pot --temperature=110 --drain
 `,
-  default: true,    // use `heroku kitchen` or `heroku kitchen:sink`
+  default: true,    // use heroku kitchen or heroku kitchen:sink
   hidden: true,     // hide in help
-  needsApp: true,   // needs an app context (--app or Heroku git remote) `context.app`
-  needsToken: true, // needs to be logged into Heroku. Allows `cli.command` to return API instance
+  needsApp: true,   // needs an app context (--app or Heroku git remote) context.app
+  needsToken: true, // needs to be logged into Heroku. Allows cli.command to return API instance
   flags: [
     {
-      // get this flag value with `context.flags.temperature`
+      // get this flag value with context.flags.temperature
       name: 'temperature',  // --temperature
       char: 't',            // -t
       hasValue: true        // flag expects a value to be provided (such as --temperature=110)
       description: 'temperature of faucet' // help text
     },
     {
-      // get this flag value with `context.flags.drain`
+      // get this flag value with context.flags.drain
       name: 'drain',  // --drain
       char: 'd',      // -d
       hasValue: true  // flag is just a boolean value
@@ -380,12 +380,12 @@ Examples:
   ],
 
   // set variableArgs to true if your command needs a variable amount of arguments.
-  // if true, ignores anything in the `args` array and does no argument validation.
+  // if true, ignores anything in the args array and does no argument validation.
   variableArgs: false,
 
   args: [
     {
-      // get this argument with `context.args.DISH`
+      // get this argument with context.args.DISH
       name: 'DISH',   // name of argument
       optional: true, // argument can be empty
       hidden: true    // do not show argument in help
