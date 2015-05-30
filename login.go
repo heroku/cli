@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/dickeyxxx/speakeasy"
-	"github.com/franela/goreq"
 )
 
 var loginTopic = &Topic{
@@ -79,19 +78,15 @@ func getPassword() string {
 }
 
 func createOauthToken(email, password, secondFactor string) (string, error) {
-	req := goreq.Request{
-		Uri:               "https://" + herokuAPIHost() + "/oauth/authorizations",
-		Method:            "POST",
-		Accept:            "application/vnd.heroku+json; version=3",
-		ShowDebug:         debugging,
-		BasicAuthUsername: email,
-		BasicAuthPassword: password,
-		Insecure:          !shouldVerifyHost(),
-		Body: map[string]interface{}{
-			"scope":       []string{"global"},
-			"description": "Toolbelt CLI login from " + time.Now().UTC().Format(time.RFC3339),
-			"expires_in":  60 * 60 * 24 * 30, // 30 days
-		},
+	req := apiRequest("")
+	req.Method = "POST"
+	req.Uri = req.Uri + "/oauth/authorizations"
+	req.BasicAuthUsername = email
+	req.BasicAuthPassword = password
+	req.Body = map[string]interface{}{
+		"scope":       []string{"global"},
+		"description": "Toolbelt CLI login from " + time.Now().UTC().Format(time.RFC3339),
+		"expires_in":  60 * 60 * 24 * 30, // 30 days
 	}
 	if secondFactor != "" {
 		req.AddHeader("Heroku-Two-Factor-Code", secondFactor)
