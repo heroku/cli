@@ -90,6 +90,40 @@ module.exports = {
 };
 ```
 
+Installing the plugin
+---------------------
+
+While plugins on npmjs.org can be installed with `heroku plugins:install`, developing plugins locally you will want to use `heroku plugins:link .`. This will symlink the plugin into `~/.heroku/node_modules`, validate the plugin actually outputs a command without errors, and refreshes the plugin cache.
+
+Metadata about a plugin (such as flags, arguments, help text) will be cached until the plugin is linked again. For this reason you may need to run `heroku plugins:link .` again if you change plugin code. Any code inside the `run` section of a command will not need to be re-cached.
+
+To setup this plugin locally, go to the root of your plugin directory and link the plugin:
+
+```
+$ heroku plugins:link .
+symlinked heroku-hello-world
+Updating plugin cache... done
+```
+
+Running the plugin
+------------------
+
+Now that you have linked the plugin, you can run it:
+
+```
+$ heroku hello:world
+Hello, World!
+```
+
+Note the help is automatically setup for `heroku help hello` and `heroku help hello:world`:
+
+```
+$ heroku help hello:world
+Usage: heroku hello:world
+
+  help text for hello:world
+```
+
 Using command line flags
 ------------------------
 
@@ -117,6 +151,17 @@ module.exports = {
 
 Run `heroku plugins:link` to refresh the plugin metadata then `heroku hello:world --user=jeff` to test the flag.
 
+You can also check to see if the flag is setup correctly by using help:
+
+```
+$ heroku help hello:world
+Usage: heroku hello:world
+
+   -u, --user USER     # user to say hello to
+
+  help text for hello:world
+```
+
 Warnings
 --------
 
@@ -138,21 +183,6 @@ cli.error('this is an error message!');
 ```
 
 [See the readme for heroku-cli-util for more documentation.](https://github.com/heroku/heroku-cli-util)
-
-Installing the plugin
----------------------
-
-While plugins on npmjs.org can be installed with `heroku plugins:install`, developing plugins locally you will want to use `heroku plugins:link .`. This will symlink the plugin into `~/.heroku/node_modules`, validate the plugin actually outputs a command without errors, and refreshes the plugin cache.
-
-Metadata about a plugin (such as flags, arguments, help text) will be cached until the plugin is linked again. For this reason you may need to run `heroku plugins:link .` again if you change plugin code. Any code inside the `run` section of a command will not need to be re-cached.
-
-To setup this plugin locally, go to the root of your plugin directory and link the plugin:
-
-```
-$ heroku plugins:link .
-symlinked heroku-hello-world
-Updating plugin cache... done
-```
 
 Using the Heroku API
 --------------------
@@ -317,13 +347,6 @@ module.exports = {
 ```
 
 This code runs the same as before just reads more nicely. Most plugins will be written using `co` and generators like this.
-
-Running the plugin
-------------------
-
-Now that you have linked the plugin, you can run it with `heroku hello:world`. sure the plugin is being loaded by running `heroku plugins`. If it's not there, check to make sure it's symlinked to `~/.heroku/node_modules` and you have the CLI JavaScript dependencies setup (see above).
-
-Note the help is automatically setup for `heroku help hello` and `heroku help hello:world`.
 
 Default command
 ---------------
