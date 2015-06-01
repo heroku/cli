@@ -51,7 +51,8 @@ func (cli *Cli) Run(args []string) (err error) {
 		}
 	}
 	if ctx.Command.NeedsAuth {
-		ctx.Auth.Username, ctx.Auth.Password = auth()
+		ctx.APIToken = auth()
+		ctx.Auth.Password = ctx.APIToken
 	}
 	ctx.Cwd, _ = os.Getwd()
 	ctx.HerokuDir = AppDir
@@ -180,18 +181,26 @@ func getNetrc() *netrc.Netrc {
 	return n
 }
 
-func auth() (user, password string) {
-	key := os.Getenv("HEROKU_API_KEY")
-	if key != "" {
-		return "", key
-	}
-	netrc := getNetrc()
-	machine := netrc.FindMachine(herokuAPIHost())
-	if machine == nil {
+func auth() (password string) {
+	token := apiToken()
+	if token == "" {
 		login()
 		return auth()
 	}
-	return machine.Login, machine.Password
+	return token
+}
+
+func apiToken() string {
+	key := os.Getenv("HEROKU_API_KEY")
+	if key != "" {
+		return key
+	}
+	netrc := getNetrc()
+	machine := netrc.FindMachine(herokuAPIHost())
+	if machine != nil {
+		return machine.Password
+	}
+	return ""
 }
 
 func netrcPath() string {
