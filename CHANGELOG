@@ -1,3 +1,7 @@
+4.20.2  2015-06-01
+==================
+Fixed git url in netrc
+
 4.20.1  2015-06-01
 ==================
 Added missing login topic
