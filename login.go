@@ -48,9 +48,11 @@ func login() {
 
 func saveOauthToken(email, token string) {
 	netrc := getNetrc()
+	netrc.RemoveMachine(apiHost())
+	netrc.RemoveMachine(httpGitHost())
 	netrc.Filename = netrcPath()
-	netrc.NewMachine(herokuAPIHost(), email, token, "")
-	netrc.NewMachine(herokuGitHost(), email, token, "")
+	netrc.NewMachine(apiHost(), email, token, "")
+	netrc.NewMachine(httpGitHost(), email, token, "")
 	ExitIfError(netrc.Save())
 }
 

@@ -11,14 +11,29 @@ import (
 	"syscall"
 )
 
-func gitHost() string {
-	if herokuGitHost := os.Getenv("HEROKU_GIT_HOST"); herokuGitHost != "" {
-		return herokuGitHost
-	}
-	if herokuHost := os.Getenv("HEROKU_HOST"); herokuHost != "" {
-		return herokuHost
+func host() string {
+	if host := os.Getenv("HEROKU_HOST"); host != "" {
+		return host
 	}
 	return "heroku.com"
+}
+
+func apiHost() string {
+	return "api." + host()
+}
+
+func gitHost() string {
+	if host := os.Getenv("HEROKU_GIT_HOST"); host != "" {
+		return host
+	}
+	return host()
+}
+
+func httpGitHost() string {
+	if host := os.Getenv("HEROKU_HTTP_GIT_HOST"); host != "" {
+		return host
+	}
+	return "git." + host()
 }
 
 func gitURLPre() string {
@@ -26,7 +41,7 @@ func gitURLPre() string {
 }
 
 func gitHTTPSURLPre() string {
-	return "https://git.heroku.com/"
+	return "https://" + httpGitHost() + "/"
 }
 
 func gitRemotes() (map[string]string, error) {
