@@ -26,8 +26,8 @@ func init() {
 		versionTopic,
 		pluginsTopic,
 		updateTopic,
-		//authTopic,
-		loginTopic,
+		authTopic,
+		//loginTopic,
 	}
 	cli.Commands = []*Command{
 		commandsListCmd,
