@@ -1,3 +1,7 @@
+4.20.3  2015-06-02
+==================
+Hide v4 login command due to sudo issues
+
 4.20.2  2015-06-01
 ==================
 Fixed git url in netrc
