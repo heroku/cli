@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"net/url"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -196,7 +195,7 @@ func apiToken() string {
 		return key
 	}
 	netrc := getNetrc()
-	machine := netrc.FindMachine(herokuAPIHost())
+	machine := netrc.FindMachine(apiHost())
 	if machine != nil {
 		return machine.Password
 	}
@@ -237,25 +236,4 @@ func (cli *Cli) AddCommand(command *Command) bool {
 	}
 	cli.Commands = append(cli.Commands, command)
 	return true
-}
-
-func herokuAPIHost() string {
-	env := os.Getenv("HEROKU_API_URL")
-	if env == "" {
-		return "api.heroku.com"
-	}
-	apiURL, err := url.Parse(env)
-	ExitIfError(err)
-	return apiURL.Host
-}
-
-func herokuGitHost() string {
-	if herokuAPIHost() == "api.heroku.com" {
-		return "git.heroku.com"
-	}
-	return "git." + herokuAPIHost()
-}
-
-func shouldVerifyHost() bool {
-	return !strings.HasSuffix(herokuAPIHost(), "herokudev.com")
 }
