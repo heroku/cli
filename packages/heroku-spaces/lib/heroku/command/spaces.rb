@@ -40,6 +40,7 @@ class Heroku::Command::Spaces < Heroku::Command::Base
   # create a new space
   #
   # -o --org ORGANIZATION
+  #    --channel CHANNEL    # HIDDEN
   #
   def create
     name = extract_name_arg!
@@ -47,7 +48,7 @@ class Heroku::Command::Spaces < Heroku::Command::Base
     validate_arguments!
 
     action("Creating space #{name} in organization #{options[:org]}") do
-      @space = api.post_space(name: name, organization: options[:org]).body
+      @space = api.post_space(name: name, organization: options[:org], channel_name: options[:channel]).body
     end
     style @space
   end
