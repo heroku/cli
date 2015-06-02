@@ -251,7 +251,7 @@ func herokuAPIHost() string {
 
 func herokuGitHost() string {
 	if herokuAPIHost() == "api.heroku.com" {
-		return "api.heroku.com"
+		return "git.heroku.com"
 	}
 	return "git." + herokuAPIHost()
 }
