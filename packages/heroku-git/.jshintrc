@@ -25,14 +25,12 @@
   "undef": true,
   "unused": true,
   "globals": {
-    "cli": true,
-    "nock": true
+    "cli": true
   },
   "predef": [
     "afterEach",
     "beforeEach",
     "describe",
-    "it",
-    "sinon"
+    "it"
   ]
 }

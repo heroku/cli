@@ -21,13 +21,16 @@
   },
   "homepage": "https://github.com/heroku/heroku-git",
   "dependencies": {
-    "heroku-cli-util": "^4.0.2"
+    "co": "^4.5.4",
+    "heroku-cli-util": "^5.0.2"
   },
   "devDependencies": {
-    "chai": "^2.3.0",
+    "chai": "^3.0.0",
     "jshint": "*",
     "mocha": "^2.2.4",
     "nock": "^2.0.1",
-    "sinon": "^1.14.1"
+    "proxyquire": "^1.5.0",
+    "sinon": "^1.14.1",
+    "sinon-chai": "^2.8.0"
   }
 }

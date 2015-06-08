@@ -1,28 +1,24 @@
 'use strict';
 
-let nock  = require('nock');
-let clone = require('../commands/clone');
-let git   = require('../lib/git');
+let sinon      = require('sinon');
+let nock       = require('nock');
+let expect     = require('chai').expect;
+let proxyquire = require('proxyquire');
+let git        = require('./mock/git');
+let clone      = proxyquire('../commands/clone', {'../lib/git': function () { return git; }});
 
 describe('git:clone', function () {
-  beforeEach(function () {
-    this.git = sinon.mock(git);
-  });
-
-  afterEach(function () {
-    this.git.verify();
-    this.git.restore();
-  });
-
   it('clones the repo', function () {
+    let spawn = sinon.spy(git, "spawn");
     nock('https://api.heroku.com')
     .get('/apps/myapp')
     .reply(200, {name: 'myapp'});
 
-    this.git.expects("spawn")
-    .withExactArgs(["clone", "-o", "heroku", "https://git.heroku.com/myapp.git", "myapp"])
-    .returns(Promise.resolve());
-
-    return clone.run({flags: {app: "myapp"}, args: []});
+    return clone.run({flags: {app: "myapp"}, args: []})
+    .then(function () {
+      expect(spawn).to.have.been.calledWith([
+        "clone", "-o", "heroku", "https://git.heroku.com/myapp.git", "myapp"
+      ]);
+    });
   });
 });
