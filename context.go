@@ -16,6 +16,9 @@ type Context struct {
 	Dev           bool                   `json:"dev"`
 	SupportsColor bool                   `json:"supportsColor"`
 	APIToken      string                 `json:"apiToken"`
+	APIHost       string                 `json:"apiHost"`
+	GitHost       string                 `json:"gitHost"`
+	HTTPGitHost   string                 `json:"httpGitHost"`
 	Auth          struct {
 		Password string `json:"password"`
 	} `json:"auth"`
