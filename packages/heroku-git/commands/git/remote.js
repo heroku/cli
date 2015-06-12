@@ -2,7 +2,7 @@
 
 let co  = require('co');
 let cli = require('heroku-cli-util');
-let git = require('../lib/git');
+let git = require('../../lib/git');
 
 function includes (array, item) {
   return array.indexOf(item) !== -1;

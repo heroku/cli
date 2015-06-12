@@ -4,7 +4,7 @@ let sinon      = require('sinon');
 let nock       = require('nock');
 let proxyquire = require('proxyquire');
 let git        = require('./mock/git');
-let remote     = proxyquire('../commands/remote', {'../lib/git': function () { return git; }});
+let remote     = proxyquire('../commands/git/remote', {'../../lib/git': function () { return git; }});
 let expect     = require('chai').expect;
 
 describe('git:remote', function () {

@@ -5,6 +5,6 @@ exports.topics = [
 ];
 
 exports.commands = [
-  require('./commands/remote'),
-  require('./commands/clone')
+  require('./commands/git/remote'),
+  require('./commands/git/clone')
 ];

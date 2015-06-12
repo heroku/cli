@@ -5,7 +5,7 @@ let nock       = require('nock');
 let expect     = require('chai').expect;
 let proxyquire = require('proxyquire');
 let git        = require('./mock/git');
-let clone      = proxyquire('../commands/clone', {'../lib/git': function () { return git; }});
+let clone      = proxyquire('../commands/git/clone', {'../../lib/git': function () { return git; }});
 
 describe('git:clone', function () {
   it('clones the repo', function () {
