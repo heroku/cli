@@ -364,6 +364,17 @@ module.exports = {
 
 Alternatively, you can leave out the command property completely. This would be useful if you didn't want to have 2 ways to access the same command such as [heroku-fork](https://github.com/heroku/heroku-fork).
 
+Debugging Tips
+--------------
+
+Use `cli.debug()` from `heroku-cli-util` to pretty-print an object.
+
+Run a command with `HEROKU_DEBUG=1` to print debugging statements. This also sets `context.debug`.
+
+Inspect `~/.heroku/error.log` for extra error output.
+
+Run a command with `--debugger` to debug with [node-inspector](https://github.com/node-inspector/node-inspector).
+
 All command options
 -------------------
 
