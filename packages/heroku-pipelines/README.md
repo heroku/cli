@@ -55,7 +55,7 @@ Including the keyword `heroku-plugin` in `package.json` will later help us find 
 index.js
 --------
 
-This is the entry point of the application where the plugin will find the plugin's code. It exposes a list of topics and commands the plugin provides.
+This is the entry point of the application where the CLI will find the plugin's code. It exposes a list of topics and commands the plugin provides.
 
 We specified this to be the entry point in `package.json` under the `main` attribute. (Although `index.js` is the default anyways)
 
