@@ -1,7 +1,5 @@
-heroku-git
-==========
+# heroku-git [![Circle CI](https://circleci.com/gh/heroku/heroku-git/tree/master.svg?style=svg)](https://circleci.com/gh/heroku/heroku-git/tree/master)
 
-[![Circle CI](https://circleci.com/gh/heroku/heroku-git/tree/master.svg?style=svg)](https://circleci.com/gh/heroku/heroku-git/tree/master)
 [![License](https://img.shields.io/github/license/heroku/heroku-git.svg)](https://github.com/heroku/heroku-git/blob/master/LICENSE)
 
 Heroku CLI plugin to manage local git repos.
