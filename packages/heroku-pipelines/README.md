@@ -35,10 +35,7 @@ This is some metadata for the package:
   "description": "basic example heroku plugin",
   "main": "index.js",
   "author": "Jeff Dickey @dickeyxxx",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/heroku/heroku-hello-world"
-  },
+  "repository": "heroku/heroku-hello-world",
   "bugs": {
     "url": "https://github.com/heroku/heroku-hello-world/issues"
   },
