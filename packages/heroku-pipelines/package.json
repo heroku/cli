@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "co": "^4.5.4",
-    "heroku-cli-util": "^4.0.3"
+    "heroku-cli-util": "^5.0.2"
   },
   "devDependencies": {
     "chai": "^3.0.0",
