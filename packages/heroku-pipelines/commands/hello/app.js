@@ -1,5 +1,5 @@
-
 'use strict';
+
 let cli = require('heroku-cli-util');
 let co  = require('co');
 
