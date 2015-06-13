@@ -16,7 +16,7 @@ describe('hello:app', function () {
   it('does stuff', function () {
     let self   = this;
     let app    = {name: 'myapp', web_url: 'https://myapp.herokuapp.com/'};
-    let config = {};
+    let config = {FOO: 'bar'};
 
     nock('https://api.heroku.com')
     .get('/apps/myapp')
