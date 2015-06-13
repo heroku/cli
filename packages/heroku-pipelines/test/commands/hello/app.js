@@ -13,7 +13,8 @@ describe('hello:app', function () {
   afterEach(function () {
     this.cliDebug.restore();
   });
-  it('does stuff', function () {
+
+  it('displays the app info and config vars', function () {
     let self   = this;
     let app    = {name: 'myapp', web_url: 'https://myapp.herokuapp.com/'};
     let config = {FOO: 'bar'};
