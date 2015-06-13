@@ -1,7 +1,6 @@
-[![npm version](https://badge.fury.io/js/heroku-hello-world.svg)](http://badge.fury.io/js/heroku-hello-world)
+# Heroku Hello World [![Circle CI](https://circleci.com/gh/heroku/heroku-hello-world/tree/master.svg?style=svg)](https://circleci.com/gh/heroku/heroku-hello-world/tree/master)
 
-Heroku Hello World
-==================
+[![npm version](https://badge.fury.io/js/heroku-hello-world.svg)](http://badge.fury.io/js/heroku-hello-world)
 
 Toolbelt 4.0 plugins are Node.js npm packages that export `topics` and `commands`. You can write these yourself and try them out either by symlinking the plugin `heroku plugins:link .` (good while developing) or by publishing them to npmjs.org and installing with `heroku plugins:install NPM_PACKAGE_NAME` (good for releasing).
 

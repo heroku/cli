@@ -25,7 +25,7 @@
   "undef": true,
   "unused": true,
   "globals": {
-    "expect": true
+    "cli": true
   },
   "predef": [
     "$",
@@ -41,7 +41,6 @@
     "document",
     "element",
     "inject",
-    "it",
-    "sinon"
+    "it"
   ]
 }
