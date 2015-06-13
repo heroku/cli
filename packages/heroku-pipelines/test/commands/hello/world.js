@@ -1,7 +1,7 @@
 'use strict';
 
 let cli    = require('heroku-cli-util');
-let cmd    = require('../../commands/hello/world');
+let cmd    = require('../../../commands/hello/world');
 
 describe('hello:world', function () {
   beforeEach(function () {

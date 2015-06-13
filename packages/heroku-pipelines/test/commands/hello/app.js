@@ -3,7 +3,7 @@
 let cli    = require('heroku-cli-util');
 let nock   = require('nock');
 let sinon  = require('sinon');
-let cmd    = require('../../commands/hello/app');
+let cmd    = require('../../../commands/hello/app');
 
 describe('hello:app', function () {
   beforeEach(function () {
