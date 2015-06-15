@@ -100,12 +100,6 @@ func (c *Client) environ() []string {
 	env := append(os.Environ(), "NPM_CONFIG_SPIN=false")
 	env = append(env, "NPM_CONFIG_AUTO_AUTH=false")
 	env = append(env, "NPM_CONFIG_CACHE="+filepath.Join(c.RootPath, ".npm-cache"))
-	if os.Getenv("HTTP_PROXY") != "" {
-		env = append(env, "HTTP_PROXY="+os.Getenv("HTTP_PROXY"))
-	}
-	if os.Getenv("HTTPS_PROXY") != "" {
-		env = append(env, "HTTPS_PROXY="+os.Getenv("HTTPS_PROXY"))
-	}
 	if c.Registry != "" {
 		env = append(env, "NPM_CONFIG_REGISTRY="+c.Registry)
 	}
