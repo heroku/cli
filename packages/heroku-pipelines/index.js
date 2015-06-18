@@ -1,10 +1,11 @@
 exports.topic = {
-  name: 'hello',
+  name: 'pipelines',
   // this is the help text that shows up under `heroku help`
-  description: 'a topic for the hello world plugin'
+  description: 'manage collections of apps in pipelines'
 };
 
 exports.commands = [
-  require('./commands/hello/world'),
-  require('./commands/hello/app')
+  require('./commands/pipelines/create'),
+  require('./commands/pipelines/list'),
+  require('./commands/pipelines/show')
 ];
