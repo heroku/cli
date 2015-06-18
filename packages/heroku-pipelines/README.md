@@ -71,6 +71,9 @@ $ heroku pipelines:diff -r staging
 Comparing example-staging to example... done
 example-staging ahead by 1 commit:
   73ab415  2012-01-01  A super important fix  (Joe Developer)
+Comparing example-staging to example-admin... done
+example-staging ahead by 1 commit:
+  73ab415  2012-01-01  A super important fix  (Joe Developer)
 ```
 
 #### Promote an app in a pipeline
