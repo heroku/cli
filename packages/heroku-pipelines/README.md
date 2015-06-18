@@ -25,9 +25,9 @@ Adding example to example pipeline as production... done
 #### Fork production into a new staging app
 
 ```bash
-$ heroku fork -a example example-admin —remote admin
+$ heroku fork -a example example-admin --remote admin
 ...
-$ heroku fork -a example example-staging —remote staging
+$ heroku fork -a example example-staging --remote staging
 ...
 ```
 
@@ -59,7 +59,7 @@ Source repo: heroku/example
 Staging:     example-staging
 Production:  example
              example-admin
-Flow:        example-staging —> example, example-admin
+Flow:        example-staging --> example, example-admin
 ```
 
 #### Show diff
