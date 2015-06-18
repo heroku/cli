@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "columnify": "^1.4.1",
-    "heroku-cli-util": "^5.0.0",
+    "heroku-cli-util": "^5.2.0",
     "heroku-client": "^1.10.0"
   },
   "devDependencies": {

@@ -39,7 +39,7 @@ module.exports = {
   needsAuth: true,
   description: 'opens a redis prompt',
   args: [{name: 'database', optional: true}],
-  flags: [{name: 'confirm', char: 'c'}],
+  flags: [{name: 'confirm', char: 'c', hasValue: true}],
   run: h.command(function* (context, heroku) {
     yield h.confirmApp(context.app, context.flags.confirm, "WARNING: Insecure Action\nAll data, including the redis password, will be unencrypted.");
     let filter = api.make_config_var_filter(context.args.database);
