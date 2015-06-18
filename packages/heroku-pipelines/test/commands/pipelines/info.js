@@ -8,13 +8,28 @@ describe('pipelines:info', function () {
     cli.mockConsole();
   });
 
-  it('says "Hello, World!" when no user is specified', function () {
-    cmd.run({flags: {}});
-    cli.stdout.should.equal('Hello, World!\n');
+  it('displays the app info and config vars', function () {
+    let self     = this;
+    let pipeline = {name: 'example', source_type: 'github', source_repo: 'heroku/example'};
+    let apps     = [{name: 'example-staging', stage: 'staging'}, {name: 'example', stage: 'production'}, {name: 'example-admin', stage: 'production'}];
+
+    nock('https://api.heroku.com')
+    .get('/pipelines/example')
+    .reply(200, pipeline);
+
+    nock('https://api.heroku.com')
+    .get('/pipelines/example/apps')
+    .reply(200, apps);
+
+    return cmd.run({app: 'example'})
+    .then(function () {
+      self.cliDebug.should.have.been.calledWith(pipeline);
+      self.cliDebug.should.have.been.calledWith(apps);
+    });
   });
 
-  it('says "Hello, Jeff!" when the user is "Jeff"', function () {
-    cmd.run({flags: {user: 'Jeff'}});
-    cli.stdout.should.equal('Hello, Jeff!\n');
+  it('says "example" when the user is "example"', function () {
+    cmd.run({args: {pipeline: 'example'}});
+    cli.stdout.should.containe('example');
   });
 });
