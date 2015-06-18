@@ -1,9 +1,9 @@
 'use strict';
 
 let cli = require('heroku-cli-util');
-let cmd = require('../../../commands/hello/world');
+let cmd = require('../../../commands/pipelines/info');
 
-describe('hello:world', function () {
+describe('pipelines:info', function () {
   beforeEach(function () {
     cli.mockConsole();
   });

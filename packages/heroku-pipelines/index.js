@@ -6,6 +6,6 @@ exports.topic = {
 
 exports.commands = [
   require('./commands/pipelines/create'),
-  require('./commands/pipelines/list'),
-  require('./commands/pipelines/show')
+  require('./commands/pipelines/info'),
+  require('./commands/pipelines/list')
 ];

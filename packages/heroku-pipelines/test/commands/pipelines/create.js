@@ -3,9 +3,9 @@
 let cli   = require('heroku-cli-util');
 let nock  = require('nock');
 let sinon = require('sinon');
-let cmd   = require('../../../commands/hello/app');
+let cmd   = require('../../../commands/pipelines/create');
 
-describe('hello:app', function () {
+describe('pipelines:create', function () {
   beforeEach(function () {
     this.cliDebug = sinon.stub(cli, 'debug');
   });

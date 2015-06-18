@@ -5,10 +5,10 @@ let cli = require('heroku-cli-util');
 
 module.exports = {
   topic: 'pipelines',
-  command: 'show',
-  description: 'show pipeline details',
+  command: 'info',
+  description: 'show detailed pipeline info',
   default: true,
-  help: 'show pipeline details',
+  help: 'show detailed pipeline info',
   args: [
     {name: 'pipeline', description: 'pipeline to show', optional: true}
   ],

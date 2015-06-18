@@ -59,13 +59,15 @@ module.exports = {
   help: 'Create a new pipeline. Pipeline name will be inferred from the app name if not specified. The stage of the app will be guessed based on it\'s name if not specified.\n\nExample:\n  $ heroku pipelines:create -a example-staging\n  Creating example pipeline... done\n  Adding example-staging to example pipeline as staging... done',
   needsApp: true,
   needsAuth: true,
+  args: [
+    {name: 'name', description: 'name of pipeline, defaults to basename of app', optional: true}
+  ],
   flags: [
-    {name: 'name', char: 'n', description: 'name of pipeline, defaults to basename of app', hasValue: true},
     {name: 'stage', char: 's', description: 'stage of first app in pipeline', hasValue: true}
   ],
   run: cli.command(function* (context, heroku) {
     let guesses = infer(context.app);
-    let name = context.flags.name || guesses[0];
+    let name = context.args.name || guesses[0];
     let stage = context.flags.stage || guesses[1];
     let promise = Promise.resolve(); // heroku.pipelines().create({name: name});
     let pipeline = yield cli.action(`Creating ${name} pipeline`, promise);
