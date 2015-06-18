@@ -1,32 +1,94 @@
 'use strict';
-let url = require('url');
-let readline = require('readline');
-let net = require('net');
-let spawn = require('child_process').spawn;
-let cli = require('heroku-cli-util');
 let api = require('./shared.js');
+let cli = require('heroku-cli-util');
+let net = require('net');
+let parser = require('./parser.js');
+let readline = require('readline');
+let spawn = require('child_process').spawn;
+let tls = require('tls');
+let url = require('url');
 
-function nativeCLI(url) {
+const REPLY_OK = 'OK';
+
+function nativeCLI(redis) {
   let io = readline.createInterface(process.stdin, process.stdout);
-  io.setPrompt(url.host + '> ');
-  let client = net.connect({port: url.port, host: url.hostname}, function () {
-    client.write(`AUTH ${url.auth.split(':')[1]}\n`, function () {
-      io.prompt();
+  let reply = new parser();
+  let status = 'normal';
+  let uri = url.parse(redis.resource_url);
+  let client;
+
+  io.setPrompt(uri.host + '> ');
+
+  if (redis.plan.indexOf('hobby') == 0) {
+    client = net.connect({port: uri.port, host: uri.hostname}, function () {
+      client.write(`AUTH ${uri.auth.split(':')[1]}\n`);
     });
+  } else {
+    client = tls.connect({port: parseInt(uri.port, 10) + 1, host: uri.hostname, rejectUnauthorized: false}, function () {
+      client.write(`AUTH ${uri.auth.split(':')[1]}\n`);
+    });
+  }
+
+  reply.on('reply', function (reply) {
+    switch (status) {
+    case 'monitoring':
+      if (reply !== REPLY_OK) {
+        console.log(reply);
+      }
+      break;
+    case 'subscriber':
+      if (Array.isArray(reply)) {
+        reply.forEach(function (value, i) {
+          console.log(`${i+1}) ${value}`);
+        });
+      } else {
+        console.log(reply);
+      }
+      break;
+    default:
+      if (Array.isArray(reply)) {
+        reply.forEach(function (value, i) {
+          console.log(`${i+1}) ${value}`);
+        });
+      } else {
+        console.log(reply);
+      }
+      io.prompt();
+      break;
+    }
+  });
+  reply.on('reply error', function (reply) {
+    console.log(reply.message);
+    io.prompt();
+  });
+  reply.on('error', function (err) {
+    client.emit('error', err);
   });
   io.on('line', function (line) {
+    switch (line.split(' ')[0]) {
+    case 'MONITOR':
+      status = 'monitoring';
+      break;
+    case 'PSUBSCRIBE':
+    case 'SUBSCRIBE':
+      status = 'subscriber';
+      break;
+    }
     client.write(`${line}\n`);
   });
   io.on('close', function () {
     console.log();
-    client.write('quit\n');
+    client.write('QUIT\n');
   });
   client.on('data', function (data) {
-    process.stdout.write(data.toString());
-    io.prompt();
+    reply.execute(data);
+  });
+  client.on('error', function(error) {
+    cli.error(error);
+    process.exit(1);
   });
   client.on('end', function () {
-    console.log('disconnected from database');
+    console.log('\nDisconnected from database.');
     process.exit(0);
   });
 }
@@ -38,7 +100,10 @@ module.exports = {
   needsAuth: true,
   description: 'opens a redis prompt',
   args: [{name: 'database', optional: true}],
-  flags: [{name: 'confirm', char: 'c', hasValue: true}],
+  flags: [
+    {name: 'confirm', char: 'c', hasValue: true},
+    {name: 'builtin'}
+  ],
   run: cli.command(function* (context, heroku) {
     yield cli.confirmApp(context.app, context.flags.confirm, 'WARNING: Insecure action.\nAll data, including the Redis password, will not be encrypted.');
     let addonsFilter = api.make_addons_filter(context.args.database);
@@ -52,15 +117,21 @@ module.exports = {
       cli.error(`Please specify a single instance. Found: ${names.join(', ')}`);
       process.exit(1);
     }
+
     let addon = addons[0];
     let redis = yield api.request(context, addon.name);
-    let redisUrl = url.parse(redis.resource_url);
+
     console.log(`Connecting to ${addon.name} (${addon.config_vars.join(', ')}):`);
-    let s = spawn('redis-cli', ['-h', redisUrl.hostname, '-p', redisUrl.port, '-a', redisUrl.auth.split(':')[1]], {
-      stdio: [0, 1, 2]
-    });
-    s.on('error', function () {
-      nativeCLI(redisUrl);
-    });
+    if (context.flags.builtin) {
+      nativeCLI(redis);
+    } else {
+      let uri = url.parse(redis.resource_url);
+      let s = spawn('redis-cli', ['-h', uri.hostname, '-p', uri.port, '-a', uri.auth.split(':')[1]], {
+        stdio: [0, 1, 2]
+      });
+      s.on('error', function () {
+        nativeCLI(redis);
+      });
+    }
   })
 };

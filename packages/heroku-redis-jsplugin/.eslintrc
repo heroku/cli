@@ -16,7 +16,8 @@
             2,
             "always"
         ],
-        "no-console": 0
+        "no-console": 0,
+        "no-constant-condition": 1,
     },
     "env": {
         "es6": true,
