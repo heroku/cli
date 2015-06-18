@@ -77,7 +77,8 @@ example-staging ahead by 1 commit:
 
 ```bash
 $ heroku pipelines:promote -r staging
-Promoting example-staging to example (production)... done
+Promoting example-staging to example (production)... done, v23
+Promoting example-staging to example-admin (production)... done, v54
 ```
 
 #### Rename pipeline
