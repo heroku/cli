@@ -14,11 +14,12 @@ $ heroku plugins:install heroku-pipelines
 
 ### [Using Pipelines](https://devcenter.heroku.com/articles/pipelines)
 
-#### Create a pipelines
+#### Create a pipeline
 
 ```bash
-$ heroku pipelines:create -a example # -n name and -s stage are optional and implied from app name
+$ heroku pipelines:create -a example # NAME and -s STAGE are optional and implied from app name
 Creating example pipeline... done
+Adding example to example pipeline as production... done
 ```
 
 #### Fork production into a new staging app
@@ -51,7 +52,7 @@ sushi   github:heroku/sushi
 #### Show pipeline detail
 
 ```bash
-$ heroku pipelines:show example
+$ heroku pipelines:info example
 === example
 Source type: github
 Source repo: heroku/example
