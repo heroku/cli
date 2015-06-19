@@ -22,6 +22,9 @@ $ heroku plugins:install heroku-pipelines
 
 ```bash
 $ heroku pipelines:create -a example # NAME and -s STAGE are optional and implied from app name
+$ heroku pipelines:create -a example
+? Pipeline name: example
+? Stage of example: production
 Creating example pipeline... done
 Adding example to example pipeline as production... done
 ```
@@ -41,7 +44,8 @@ $ heroku fork -a example example-staging --remote staging
 $ heroku pipelines:add example -a example-admin -s production
 Adding example-admin to example pipeline as production... done
 
-$ heroku pipelines:add example -a example-staging
+$ h pipelines:add -a example-staging example
+? Stage of example-staging: staging
 Adding example-staging to example pipeline as staging... done
 ```
 
