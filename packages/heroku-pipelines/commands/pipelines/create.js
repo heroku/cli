@@ -1,7 +1,8 @@
 'use strict';
 
 let cli = require('heroku-cli-util');
-//let co  = require('co');
+let co  = require('co');
+let inquirer = require("inquirer");
 
 function infer(app) {
   // Set defaults
@@ -66,14 +67,42 @@ module.exports = {
     {name: 'stage', char: 's', description: 'stage of first app in pipeline', hasValue: true}
   ],
   run: cli.command(function* (context, heroku) {
+    var name, stage;
     let guesses = infer(context.app);
-    let name = context.args.name || guesses[0];
-    let stage = context.flags.stage || guesses[1];
-    let promise = Promise.resolve(); // heroku.pipelines().create({name: name});
-    let pipeline = yield cli.action(`Creating ${name} pipeline`, promise);
-    //cli.debug(pipeline);
-    promise = Promise.resolve(); // heroku.app(context.app).update({pipeline: pipeline});
-    let app = yield cli.action(`Adding ${context.app} to ${name} pipeline as ${stage}`, promise);
-    //cli.debug(app);
+    let questions = [];
+
+    if (context.args.name) {
+      name = context.args.name;
+    } else {
+      questions.push({
+        type: "input",
+        name: "name",
+        message: "Pipline name",
+        default: guesses[0]
+      });
+    }
+    if (context.flags.stage) {
+      stage = context.flags.stage;
+    } else {
+      questions.push({
+        type: "list",
+        name: "stage",
+        message: `Stage of ${context.app}`,
+        choices: ["review", "development", "test", "qa", "staging", "production"],
+        default: guesses[1]
+      });
+    }
+    inquirer.prompt( questions, function ( answers ) {
+      if (answers.name) name = answers.name;
+      if (answers.stage) stage = answers.stage;
+      co(function* () {
+        let promise = Promise.resolve(); // heroku.pipelines().create({name: name});
+        let pipeline = yield cli.action(`Creating ${name} pipeline`, promise);
+        //cli.debug(pipeline);
+        promise = Promise.resolve(); // heroku.app(context.app).update({pipeline: pipeline});
+        let app = yield cli.action(`Adding ${context.app} to ${name} pipeline as ${stage}`, promise);
+        //cli.debug(app);
+      });
+    });
   })
 };
