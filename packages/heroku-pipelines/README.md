@@ -70,6 +70,17 @@ Production:  example
 Flow:        example-staging --> example, example-admin
 ```
 
+#### Show status
+
+```bash
+$ git commit -m "A super important fix"
+$ git push staging
+$ heroku pipelines:status -r production
+Comparing example to master... done
+example-staging behind by 1 commit:
+  73ab415  2012-01-01  A super important fix  (Joe Developer)
+```
+
 #### Show diff
 
 ```bash
