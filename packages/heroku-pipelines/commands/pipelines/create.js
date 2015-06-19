@@ -77,7 +77,7 @@ module.exports = {
       questions.push({
         type: "input",
         name: "name",
-        message: "Pipline name",
+        message: "Pipeline name",
         default: guesses[0]
       });
     }
