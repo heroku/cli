@@ -1,6 +1,8 @@
 package main
 
 import (
+	"encoding/json"
+	"os"
 	"strings"
 
 	"github.com/franela/goreq"
@@ -15,6 +17,13 @@ func apiRequest(authToken string) *goreq.Request {
 	}
 	if authToken != "" {
 		req.AddHeader("Authorization", "Bearer "+authToken)
+	}
+	if os.Getenv("HEROKU_HEADERS") != "" {
+		var h map[string]string
+		json.Unmarshal([]byte(os.Getenv("HEROKU_HEADERS")), &h)
+		for k, v := range h {
+			req.AddHeader(k, v)
+		}
 	}
 	return &req
 }
