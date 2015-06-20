@@ -6,6 +6,7 @@ let filesize = require('filesize');
 let _ = require('lodash');
 let S = require('string');
 let cli = require('heroku-cli-util');
+let extend = require('util')._extend;
 
 function shellLine(name, value) {
   return `${S(name).slugify()}=${value}`;
@@ -52,7 +53,7 @@ function* run (context, heroku) {
   });
 }
 
-module.exports = {
+let cmd = {
   topic: 'apps',
   command: '_info',
   description: 'show detailed app information',
@@ -62,3 +63,8 @@ module.exports = {
   flags: [{name: 'shell', char: 's', description: 'output more shell friendly key/value pairs'}],
   run: cli.command(co.wrap(run))
 };
+
+module.exports.apps = cmd;
+module.exports.root = extend({}, cmd);
+module.exports.root.topic = '_info';
+delete module.exports.root.command;
