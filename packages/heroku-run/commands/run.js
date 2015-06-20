@@ -1,4 +1,6 @@
 'use strict';
+
+let co     = require('co');
 let tls    = require('tls');
 let url    = require('url');
 let tty    = require('tty');
@@ -100,6 +102,18 @@ function attachToRendezvous(uri) {
   });
 }
 
+function* run (context, heroku) {
+  let command = buildCommand(context.args);
+  if (!command) {
+    cli.error('Usage: heroku run COMMAND\n\nExample: heroku run bash');
+    process.exit(1);
+  }
+  let p = startDyno(heroku, context.app, context.flags.size, `${command}; echo heroku-command-exit-status $?`);
+  let dyno = yield cli.action(`Running ${cli.color.cyan.bold(command)} on ${context.app}`, {success: false}, p);
+  console.error(`up, ${dyno.name}`);
+  attachToRendezvous(url.parse(dyno.attach_url));
+}
+
 module.exports = {
   topic: 'run',
   help: `run a one-off process inside a Heroku dyno`,
@@ -111,15 +125,5 @@ module.exports = {
     {name: 'size', char: 's', description: 'dyno size', hasValue: true},
     {name: 'exit-code', description: 'placeholder'},
   ],
-  run: cli.command(function* (context, heroku) {
-    let command = buildCommand(context.args);
-    if (!command) {
-      cli.error('Usage: heroku run COMMAND\n\nExample: heroku run bash');
-      process.exit(1);
-    }
-    let p = startDyno(heroku, context.app, context.flags.size, `${command}; echo heroku-command-exit-status $?`);
-    let dyno = yield cli.action(`Running ${cli.color.cyan.bold(command)} on ${context.app}`, {success: false}, p);
-    console.error(`up, ${dyno.name}`);
-    attachToRendezvous(url.parse(dyno.attach_url));
-  }),
+  run: cli.command(co.wrap(run))
 };
