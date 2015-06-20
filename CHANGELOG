@@ -1,3 +1,7 @@
+4.20.8  2015-06-19
+==================
+Use new Heroku npm registry
+
 4.20.7  2015-06-08
 ==================
 Added apiHost, gitHost, and httpGitHost to context
