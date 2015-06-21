@@ -42,6 +42,7 @@ func init() {
 		//loginCmd,
 		authLoginCmd,
 		twoFactorCmd,
+		twoFactorDisableCmd,
 		twoFactorGenerateCmd,
 	}
 	rollbar.Platform = "client"

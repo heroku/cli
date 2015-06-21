@@ -25,9 +25,10 @@ var twoFactorCmd = &Command{
 }
 
 var twoFactorGenerateCmd = &Command{
-	Topic:     "twofactor",
-	Command:   "generate-recovery-codes",
-	NeedsAuth: true,
+	Topic:       "twofactor",
+	Command:     "generate-recovery-codes",
+	Description: "Generates and replaces recovery codes",
+	NeedsAuth:   true,
 	Run: func(ctx *Context) {
 		req := apiRequest(ctx.APIToken)
 		req.Method = "POST"
@@ -42,5 +43,24 @@ var twoFactorGenerateCmd = &Command{
 		for _, code := range codes {
 			Println(code)
 		}
+	},
+}
+
+var twoFactorDisableCmd = &Command{
+	Topic:       "twofactor",
+	Command:     "disable",
+	Description: "Disable two-factor authentication for your account",
+	NeedsAuth:   true,
+	Run: func(ctx *Context) {
+		req := apiRequest(ctx.APIToken)
+		req.Method = "PATCH"
+		req.Uri = req.Uri + "/account/"
+		req.Body = map[string]interface{}{
+			"two_factor_authentication": "false",
+			"password":                  getPassword(),
+		}
+		_, err := req.Do()
+		ExitIfError(err)
+		Println("disabled two-factor authentication")
 	},
 }
