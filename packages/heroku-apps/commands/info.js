@@ -55,9 +55,8 @@ function* run (context, heroku) {
 
 let cmd = {
   topic: 'apps',
-  command: '_info',
+  command: 'info',
   description: 'show detailed app information',
-  hidden: true,
   needsApp: true,
   needsAuth: true,
   flags: [{name: 'shell', char: 's', description: 'output more shell friendly key/value pairs'}],
@@ -66,5 +65,5 @@ let cmd = {
 
 module.exports.apps = cmd;
 module.exports.root = extend({}, cmd);
-module.exports.root.topic = '_info';
+module.exports.root.topic = 'info';
 delete module.exports.root.command;

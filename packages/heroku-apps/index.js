@@ -5,7 +5,7 @@ exports.topics = [{
 
 exports.commands = [
   require('./commands/info').apps,
-  //require('./commands/info').root,
+  require('./commands/info').root,
   require('./commands/maintenance/on'),
   require('./commands/maintenance/off'),
   require('./commands/maintenance/index')
