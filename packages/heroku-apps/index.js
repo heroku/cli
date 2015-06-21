@@ -8,5 +8,6 @@ exports.commands = [
   require('./commands/info').root,
   require('./commands/maintenance/on'),
   require('./commands/maintenance/off'),
-  require('./commands/maintenance/index')
+  require('./commands/maintenance/index'),
+  require('./commands/stack'),
 ];
