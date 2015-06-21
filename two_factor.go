@@ -23,3 +23,24 @@ var twoFactorCmd = &Command{
 		}
 	},
 }
+
+var twoFactorGenerateCmd = &Command{
+	Topic:     "twofactor",
+	Command:   "generate-recovery-codes",
+	NeedsAuth: true,
+	Run: func(ctx *Context) {
+		req := apiRequest(ctx.APIToken)
+		req.Method = "POST"
+		req.Uri = req.Uri + "/account/recovery-codes"
+		req.AddHeader("Heroku-Password", getPassword())
+		req.AddHeader("Heroku-Two-Factor-Code", getString("Two-factor code: "))
+		res, err := req.Do()
+		ExitIfError(err)
+		var codes []interface{}
+		res.Body.FromJsonTo(&codes)
+		Println("Recovery codes:")
+		for _, code := range codes {
+			Println(code)
+		}
+	},
+}
