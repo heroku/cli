@@ -59,8 +59,14 @@ var twoFactorDisableCmd = &Command{
 			"two_factor_authentication": "false",
 			"password":                  getPassword(),
 		}
-		_, err := req.Do()
+		res, err := req.Do()
 		ExitIfError(err)
+		if res.StatusCode != 200 {
+			var doc map[string]string
+			res.Body.FromJsonTo(&doc)
+			Error(doc["message"])
+			return
+		}
 		Println("disabled two-factor authentication")
 	},
 }
