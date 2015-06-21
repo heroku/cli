@@ -5,7 +5,7 @@ var api = require('request').defaults({
   headers: { 'Accept': 'application/vnd.heroku+json;' }
 });
 
-let h          = require('heroku-cli-util');
+let cli        = require('heroku-cli-util');
 var timeago    = require('timeago');
 var dateFormat = require('dateformat');
 
@@ -15,7 +15,7 @@ function capitalize(str) {
 
 function printStatus(status) {
   var message = capitalize(status);
-  var colorize = h.color[status];
+  var colorize = cli.color[status];
 
   if (status === 'green') {
     message =  'No known issues at this time.';
@@ -27,7 +27,7 @@ module.exports = {
   topic: 'status',
   description: 'Display current status of Heroku Platform',
   help: 'Example: heroku status',
-  run: h.command(function () {
+  run: cli.command(function () {
     let host = process.env.HEROKU_STATUS_HOST || 'status.heroku.com';
     api.get(`https://${host}/api/v3/current-status/`,
             function (err, _, response) {
