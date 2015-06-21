@@ -27,6 +27,7 @@ func init() {
 		pluginsTopic,
 		updateTopic,
 		authTopic,
+		twoFactorTopic,
 		//loginTopic,
 	}
 	cli.Commands = []*Command{
@@ -40,6 +41,7 @@ func init() {
 		whoamiCmd,
 		//loginCmd,
 		authLoginCmd,
+		twoFactorCmd,
 	}
 	rollbar.Platform = "client"
 	rollbar.Token = "b40226d5e8a743cf963ca320f7be17bd"
