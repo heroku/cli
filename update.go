@@ -4,6 +4,7 @@ import (
 	"crypto/sha1"
 	"crypto/tls"
 	"crypto/x509"
+	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -241,6 +242,10 @@ func downloadBin(path, url string) error {
 	}.Do()
 	if err != nil {
 		return err
+	}
+	if res.StatusCode != 200 {
+		b, _ := res.Body.ToString()
+		return errors.New(b)
 	}
 	defer res.Body.Close()
 	_, err = io.Copy(out, res.Body)
