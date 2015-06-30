@@ -48,12 +48,23 @@ module.exports = {
       if (answers.name) name = answers.name;
       if (answers.stage) stage = answers.stage;
       co(function* () {
-        let promise = Promise.resolve(); // heroku.pipelines().create({name: name});
+        let promise = heroku.request({
+          method: 'POST',
+          path: '/pipelines',
+          body: {name: name},
+          headers: { 'Accept': 'application/vnd.heroku+json; version=3.pipelines' }
+        }); // heroku.pipelines().create({name: name});
+
         let pipeline = yield cli.action(`Creating ${name} pipeline`, promise);
-        //cli.debug(pipeline);
-        promise = Promise.resolve(); // heroku.app(context.app).update({pipeline: pipeline});
-        let app = yield cli.action(`Adding ${context.app} to ${name} pipeline as ${stage}`, promise);
-        //cli.debug(app);
+        cli.hush(pipeline);
+        promise = heroku.request({
+          method: 'POST',
+          path: `/apps/${context.app}/pipeline-couplings`,
+          body: {pipeline: {id: pipeline.id}, stage: stage},
+          headers: { 'Accept': 'application/vnd.heroku+json; version=3.pipelines' }
+        }); // heroku.apps(app_id).pipline_couplings().create(body);
+        let app = yield cli.action(`Adding ${context.app} to ${pipeline.id} pipeline as ${stage}`, promise);
+        cli.hush(app);
       });
     });
   })
