@@ -37,9 +37,15 @@ module.exports = {
     inquirer.prompt( questions, function ( answers ) {
       if (answers.stage) stage = answers.stage;
       co(function* () {
-        let promise = Promise.resolve(); // heroku.app(context.app).update({pipeline: pipeline});
+        let promise = heroku.request({
+          method: 'POST',
+          path: `/apps/${context.app}/pipeline-couplings`,
+          body: {pipeline: {id: context.args.pipeline}, stage: stage},
+          headers: { 'Accept': 'application/vnd.heroku+json; version=3.pipelines' }
+        }); // heroku.apps(app_id).pipline_couplings().create(body);
+
         let app = yield cli.action(`Adding ${context.app} to ${context.args.pipeline} pipeline as ${stage}`, promise);
-        //cli.debug(app);
+        cli.hush(app);
       });
     });
   })
