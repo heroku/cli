@@ -1,6 +1,7 @@
 'use strict';
 
-let cli = require('heroku-cli-util');
+let cli     = require('heroku-cli-util');
+let helpers = require('../../lib/helpers.js');
 //let co  = require('co');
 
 module.exports = {
@@ -27,27 +28,25 @@ module.exports = {
       headers: { 'Accept': 'application/vnd.heroku+json; version=3.pipelines' }
     }); // heroku.pipelines(pipeline_id).apps;
     cli.hush(apps);
-    cli.log(`=== ${pipeline.name} Apps`)
-    for (var app in apps) {
-      cli.log(`${apps[app].name} (${apps[app].coupling.stage})`);
-    }
+    helpers.styled_header(pipeline.name);
+    //for (var app in apps) {
+    //  cli.log(`${apps[app].name} (${apps[app].coupling.stage})`);
+    //}
     // Sort Apps by stage, name
     // Display in table
-    if(0) {
     let stages={};
     for (var app in apps) {
-      let stage = apps[app].coupling.stage;
-      if(stages[stage]) {
-        stages[apps[app].coupling.stage].push(apps[app].name);
-      } else {
-        stages[apps[app].coupling.stage] = [apps[app].name];
+      if (apps.hasOwnProperty(app)) {
+        let stage = apps[app].coupling.stage;
+        if(stages[stage]) {
+          stages[apps[app].coupling.stage].push(apps[app].name);
+        } else {
+          stages[apps[app].coupling.stage] = [apps[app].name];
+        }
       }
     }
-    for (var stage in stages) {
-      cli.log(`${stage}: ${stages[stage]}`)
-    }
-    }
-
+    // Pass in sort order for stages
+    helpers.styled_hash(stages, ["review", "development", "test", "qa", "staging", "production"]);
 
 //    let pipeline = context.args.pipeline || "example";
 //    cli.log(`=== ${pipeline}`);

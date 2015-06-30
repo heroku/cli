@@ -18,7 +18,8 @@
   "dependencies": {
     "co": "^4.5.4",
     "heroku-cli-util": "^5.1.0",
-    "inquirer": "^0.8.5"
+    "inquirer": "^0.8.5",
+    "string-just": "0.0.2"
   },
   "devDependencies": {
     "chai": "^3.0.0",
