@@ -15,7 +15,7 @@ module.exports = {
   run: cli.command(function* (context, heroku) {
     if(!context.flags.stage) {
       cli.error('Stage must be specified with -s');
-      return(-1);
+      process.exit(1);
     }
     let promise = heroku.request({
       method: 'PATCH',
