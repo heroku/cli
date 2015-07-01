@@ -28,7 +28,7 @@ module.exports = {
       headers: { 'Accept': 'application/vnd.heroku+json; version=3.pipelines' }
     }); // heroku.pipelines(pipeline_id).apps;
     cli.hush(apps);
-    helpers.styled_header(pipeline.name);
+    helpers.styledHeader(pipeline.name);
     //for (var app in apps) {
     //  cli.log(`${apps[app].name} (${apps[app].coupling.stage})`);
     //}
@@ -46,7 +46,7 @@ module.exports = {
       }
     }
     // Pass in sort order for stages
-    helpers.styled_hash(stages, ["review", "development", "test", "qa", "staging", "production"]);
+    helpers.styledHash(stages, ["review", "development", "test", "qa", "staging", "production"]);
 
 //    let pipeline = context.args.pipeline || "example";
 //    cli.log(`=== ${pipeline}`);

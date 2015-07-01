@@ -116,3 +116,17 @@ Renaming example pipeline to www... done
 $ heroku pipelines:destroy www
 Destroying www pipeline... done
 ```
+
+#### Rename pipeline
+
+```bash
+$ heroku pipelines:rename example example2
+Renaming example pipeline to example2... done
+```
+
+#### Update apps in a pipeline
+
+```bash
+$ heroku pipelines:update -s staging -a example-admin
+Changing example-admin to staging... done
+```
