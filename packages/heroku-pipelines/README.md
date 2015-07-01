@@ -1,4 +1,4 @@
-# Heroku Pipelines Plugin for Heroku Toolbelt [![Circle CI](https://circleci.com/gh/heroku/heroku-pipelines/tree/master.svg?style=svg)](https://circleci.com/gh/heroku/heroku-pipelines/tree/master)
+# Pipelines Plugin for Heroku Toolbelt [![Circle CI](https://circleci.com/gh/heroku/heroku-pipelines/tree/master.svg?style=svg)](https://circleci.com/gh/heroku/heroku-pipelines/tree/master)
 
 [![npm version](https://badge.fury.io/js/heroku-pipelines.svg)](http://badge.fury.io/js/heroku-pipelines)
 
