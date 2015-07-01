@@ -117,13 +117,6 @@ $ heroku pipelines:destroy www
 Destroying www pipeline... done
 ```
 
-#### Rename pipeline
-
-```bash
-$ heroku pipelines:rename example example2
-Renaming example pipeline to example2... done
-```
-
 #### Update apps in a pipeline
 
 ```bash
