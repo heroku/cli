@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -86,6 +87,9 @@ func (c *Client) execNpm(args ...string) (string, string, error) {
 		return "", "", err
 	}
 	args = append([]string{npmPath}, args...)
+	if debugging() {
+		args = append(args, "--loglevel=silly")
+	}
 	cmd := exec.Command(nodePath, args...)
 	cmd.Dir = c.RootPath
 	cmd.Env = c.environ()
@@ -93,6 +97,9 @@ func (c *Client) execNpm(args ...string) (string, string, error) {
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
 	err = cmd.Run()
+	if debugging() {
+		fmt.Fprintln(os.Stderr, stderr.String())
+	}
 	return stdout.String(), stderr.String(), err
 }
 
@@ -104,4 +111,9 @@ func (c *Client) environ() []string {
 		env = append(env, "NPM_CONFIG_REGISTRY="+c.Registry)
 	}
 	return env
+}
+
+func debugging() bool {
+	e := os.Getenv("GODE_DEBUG")
+	return e == "1" || e == "true"
 }
