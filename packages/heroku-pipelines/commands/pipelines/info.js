@@ -1,8 +1,6 @@
 'use strict';
 
 let cli     = require('heroku-cli-util');
-let helpers = require('../../lib/helpers.js');
-//let co  = require('co');
 
 module.exports = {
   topic: 'pipelines',
@@ -28,7 +26,7 @@ module.exports = {
       headers: { 'Accept': 'application/vnd.heroku+json; version=3.pipelines' }
     }); // heroku.pipelines(pipeline_id).apps;
     cli.hush(apps);
-    helpers.styledHeader(pipeline.name);
+    cli.styledHeader(pipeline.name);
     //for (var app in apps) {
     //  cli.log(`${apps[app].name} (${apps[app].coupling.stage})`);
     //}
@@ -46,7 +44,7 @@ module.exports = {
       }
     }
     // Pass in sort order for stages
-    helpers.styledHash(stages, ["review", "development", "test", "qa", "staging", "production"]);
+    cli.styledHash(stages, ["review", "development", "test", "qa", "staging", "production"]);
 
 //    let pipeline = context.args.pipeline || "example";
 //    cli.log(`=== ${pipeline}`);
