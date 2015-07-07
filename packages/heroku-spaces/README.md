@@ -1,6 +1,6 @@
 # heroku-spaces
 
-Create apps in Dogwood spaces.
+Create apps in Spaces.
 
 ## Installation
 
@@ -55,7 +55,7 @@ Create apps in Dogwood spaces.
     Are you sure you wish to continue? (y/n) y
     Destroying space my-space-name... done
 
-### Dogwood Apps
+### Dapps namespace
 
 Calling this command `dapps` instead of adding to `apps` to avoid brittle monkey patching in this prototype.
 Once this is merged into the main CLI, `--spaces` would just be part of the `apps` command.
