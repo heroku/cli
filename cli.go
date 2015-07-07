@@ -41,11 +41,11 @@ func (cli *Cli) Run(args []string) (err error) {
 	if err != nil {
 		return err
 	}
-	if ctx.Command.NeedsApp {
+	if ctx.Command.NeedsApp || ctx.Command.WantsApp {
 		if ctx.App == "" {
 			ctx.App = app()
 		}
-		if ctx.App == "" {
+		if ctx.App == "" && ctx.Command.NeedsApp {
 			return ErrAppNeeded
 		}
 	}
@@ -90,7 +90,7 @@ func parseVarArgs(command *Command, args []string) (result []string, flags map[s
 		f := flag
 		possibleFlags = append(possibleFlags, &f)
 	}
-	if command.NeedsApp {
+	if command.NeedsApp || command.WantsApp {
 		possibleFlags = append(possibleFlags, appFlag, remoteFlag)
 	}
 	for i := 0; i < len(args); i++ {
