@@ -216,7 +216,7 @@ func runFn(plugin *Plugin, module, topic, command string) func(ctx *Context) {
 			golock.Unlock(lockfile)
 		}
 		ctx.Dev = isPluginSymlinked(module)
-		ctx.Version = ctx.Version + " " + module + "-v" + plugin.Version + " iojs-v" + node.NodeVersion
+		ctx.Version = ctx.Version + " " + module + "/" + plugin.Version + " iojs-v" + node.NodeVersion
 		ctxJSON, err := json.Marshal(ctx)
 		if err != nil {
 			panic(err)
