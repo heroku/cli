@@ -21,32 +21,25 @@ function Forego(dir) {
 
 Forego.prototype = {
   version: function () {
-    spawn(this.path, ['version'], { stdio: [0, 1, 2] });
+    spawn(this.path, ['version'], { stdio: 'inherit' });
   },
 
   start: function (opts) {
     let args = ['start'];
-    if (opts.args.processname) {
-      args.push(opts.args.processname);
-    }
-    if (opts.flags.procfile) {
-      args.push('-f', opts.flags.procfile);
-    }
-    if (opts.flags.env) {
-      args.push('-e', opts.flags.env);
-    }
-    if (opts.flags.concurrency) {
-      args.push('-c', opts.flags.concurrency);
-    }
-    if (opts.flags.port) {
-      args.push('-p', opts.flags.port);
-    }
-    if (opts.flags.r) {
-      args.push('-r');
-    }
-    spawn(this.path, args, {
-      stdio: [0, 1, 2]
-    });
+    if (opts.flags.procfile)    args.push('-f', opts.flags.procfile);
+    if (opts.flags.env)         args.push('-e', opts.flags.env);
+    if (opts.flags.concurrency) args.push('-c', opts.flags.concurrency);
+    if (opts.flags.port)        args.push('-p', opts.flags.port);
+    if (opts.flags.r)           args.push('-r');
+    if (opts.args.processname)  args.push(opts.args.processname);
+    spawn(this.path, args, {stdio: 'inherit'});
+  },
+
+  run: function (args, opts) {
+    if (opts.flags.env)  args.unshift('-e', opts.flags.env);
+    if (opts.flags.port) args.unshift('-p', opts.flags.port);
+    args.unshift('run');
+    spawn(this.path, args, {stdio: 'inherit'});
   },
 
   ensureSetup: function () {

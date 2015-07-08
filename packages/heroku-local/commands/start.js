@@ -1,10 +1,19 @@
 'use strict';
-let Forego  = require('../forego');
-let h = require('heroku-cli-util');
+
+let Forego  = require('../lib/forego');
+let cli     = require('heroku-cli-util');
+
+function* run (context) {
+  let forego = new Forego(context.herokuDir);
+  yield forego.ensureSetup();
+  forego.start({args: context.args, flags: context.flags});
+}
 
 module.exports = {
   topic: 'local',
+  command: 'start',
   description: 'run heroku app locally',
+  default: true,
   help: `Start the application specified by a Procfile (defaults to ./Procfile)
 
 Examples:
@@ -20,9 +29,5 @@ Examples:
     {name: 'port', char: 'p', hasValue: true},
     {name: 'r', char: 'r', hasValue: false}
   ],
-  run: h.command(function* (ctx) {
-    let forego = new Forego(ctx.herokuDir);
-    yield forego.ensureSetup();
-    forego.start({args: ctx.args, flags: ctx.flags});
-  })
+  run: cli.command(run)
 };
