@@ -21,6 +21,7 @@ import (
 // Plugin represents a javascript plugin
 type Plugin struct {
 	Name     string     `json:"name"`
+	Version  string     `json:"version"`
 	Topics   TopicSet   `json:"topics"`
 	Topic    *Topic     `json:"topic"`
 	Commands CommandSet `json:"commands"`
@@ -207,7 +208,7 @@ var pluginsListCmd = &Command{
 	},
 }
 
-func runFn(module, topic, command string) func(ctx *Context) {
+func runFn(plugin *Plugin, module, topic, command string) func(ctx *Context) {
 	return func(ctx *Context) {
 		lockfile := updateLockPath + "." + module
 		if exists, _ := fileExists(lockfile); exists {
@@ -215,7 +216,7 @@ func runFn(module, topic, command string) func(ctx *Context) {
 			golock.Unlock(lockfile)
 		}
 		ctx.Dev = isPluginSymlinked(module)
-		ctx.Version = ctx.Version + " " + module + " iojs-v" + node.NodeVersion
+		ctx.Version = ctx.Version + " " + module + "-v" + plugin.Version + " iojs-v" + node.NodeVersion
 		ctxJSON, err := json.Marshal(ctx)
 		if err != nil {
 			panic(err)
@@ -322,7 +323,11 @@ func getExitCode(err error) int {
 func getPlugin(name string, attemptReinstall bool) *Plugin {
 	script := `
 	var plugin = require('` + name + `');
-	plugin.name = require('` + name + `/package.json').name;
+	var pjson  = require('` + name + `/package.json');
+
+	plugin.name    = pjson.name;
+	plugin.version = pjson.version;
+
 	console.log(JSON.stringify(plugin))`
 	cmd := node.RunScript(script)
 	output, err := cmd.CombinedOutput()
@@ -357,7 +362,7 @@ func GetPlugins() []Plugin {
 		if plugin != nil {
 			for _, command := range plugin.Commands {
 				command.Plugin = name
-				command.Run = runFn(name, command.Topic, command.Command)
+				command.Run = runFn(plugin, name, command.Topic, command.Command)
 				command.Help = strings.TrimSpace(command.Help)
 			}
 			plugins = append(plugins, *plugin)
