@@ -16,7 +16,7 @@
   ],
   "license": "ISC",
   "dependencies": {
-    "heroku-cli-util": "^5.3.0",
+    "heroku-cli-util": "^5.4.0",
     "request": "^2.53.0"
   }
 }
