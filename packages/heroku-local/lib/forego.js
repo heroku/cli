@@ -30,7 +30,7 @@ Forego.prototype = {
     if (opts.flags.env)         args.push('-e', opts.flags.env);
     if (opts.flags.concurrency) args.push('-c', opts.flags.concurrency);
     if (opts.flags.port)        args.push('-p', opts.flags.port);
-    if (opts.flags.r)           args.push('-r');
+    if (opts.flags.restart)     args.push('-r');
     if (opts.args.processname)  args.push(opts.args.processname);
     spawn(this.path, args, {stdio: 'inherit'});
   },
