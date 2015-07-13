@@ -35,7 +35,8 @@ function release(context) {
     .then(createLocalSlug)
     .then(createRemoteSlug)
     .then(uploadSlug)
-    .then(releaseSlug);
+    .then(releaseSlug)
+    .then(showMessage);
 
   function createLocalSlug() {
     cli.log('creating local slug...');
@@ -91,8 +92,20 @@ function release(context) {
 
   function releaseSlug(id) {
     cli.log('releasing slug...');
-    return app.releases().create({
-      slug: id
+
+    return heroku.request({
+      method: 'POST',
+      path: `${ app.path }/releases`,
+      headers: {
+        'Heroku-Deploy-Type': 'heroku-docker'
+      },
+      body: {
+        slug: id
+      }
     });
+  }
+
+  function showMessage(results) {
+    console.log(`Successfully released ${ results.app.name }!`);
   }
 }
