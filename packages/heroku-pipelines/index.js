@@ -11,6 +11,7 @@ exports.commands = [
   require('./commands/pipelines/info'),
   require('./commands/pipelines/list'),
   require('./commands/pipelines/promote'),
+  require('./commands/pipelines/remove'),
   require('./commands/pipelines/rename'),
   require('./commands/pipelines/status'),
   require('./commands/pipelines/update')

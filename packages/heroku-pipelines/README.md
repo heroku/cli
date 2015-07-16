@@ -123,3 +123,10 @@ Destroying www pipeline... done
 $ heroku pipelines:update -s staging -a example-admin
 Changing example-admin to staging... done
 ```
+
+#### Remove app from a pipeline
+
+```bash
+$ heroku pipelines:remove -a example-admin
+Removing example-admin... done
+```
