@@ -10,7 +10,7 @@ module.exports = {
   needsApp: false,
   needsAuth: true,
   args: [
-    {name: 'pipeline', description: 'current name of pipeline', optional: false}
+    {name: 'pipeline', description: 'name of pipeline', optional: false}
   ],
   run: cli.command(function* (context, heroku) {
     let promise = heroku.request({
