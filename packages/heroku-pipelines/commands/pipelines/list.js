@@ -9,10 +9,16 @@ module.exports = {
   description: 'list pipelines',
   default: true,
   help: 'list pipelines you have access to',
-  flags: [
-    {name: 'org', char: 'o', description: 'org to list pipelines for', hasValue: true}
-  ],
+  needsAuth: true,
   run: cli.command(function* (context, heroku) {
-    cli.log("example github:heroku/example\nsushi   github:heroku/sushi");
+    let pipelines = yield heroku.request({
+      method: 'GET',
+      path: "/pipelines",
+      headers: { 'Accept': 'application/vnd.heroku+json; version=3.pipelines' }
+    }); // heroku.pipelines().list();
+    cli.hush(pipelines);
+    for (var pipeline in pipelines) {
+      cli.log(`${pipelines[pipeline].name}`);
+    }
   })
 };
