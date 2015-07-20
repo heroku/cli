@@ -27,13 +27,17 @@ module.exports = {
       };
     });
 
+    var columnOptions = {showHeaders: false};
+
     // print out the info of the addon and redis db info
     for (let db of databases) {
       if (db.redis === null) {
         continue;
       }
+
       console.log(`=== ${db.addon.config_vars[0]}`);
-      console.log(columnify(db.redis.info, { showHeaders: false }));
+      console.log(columnify(db.redis.info, columnOptions));
+      console.log(columnify([{name: 'Resource', values: [db.addon.name]}], columnOptions));
       console.log();
     }
   })
