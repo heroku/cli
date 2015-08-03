@@ -1,4 +1,5 @@
-[![Build Status](https://travis-ci.org/franela/goreq.png?branch=master)](https://travis-ci.org/franela/goreq)
+[![Build Status](https://img.shields.io/travis/franela/goreq/master.svg)](https://travis-ci.org/franela/goreq)
+[![GoDoc](https://godoc.org/github.com/franela/goreq?status.svg)](https://godoc.org/github.com/franela/goreq)
 
 GoReq
 =======
@@ -14,6 +15,7 @@ Simple and sane HTTP request library for Go language.
 - [What can I do with it?](#user-content-what-can-i-do-with-it)
   - [Making requests with different methods](#user-content-making-requests-with-different-methods)
   - [GET](#user-content-get)
+    - [Tags](#user-content-tags)
   - [POST](#user-content-post)
     - [Sending payloads in the Body](#user-content-sending-payloads-in-the-body)
   - [Specifiying request headers](#user-content-specifiying-request-headers)
@@ -119,6 +121,71 @@ res, err := goreq.Request{
 
 The sample above will send `http://localhost:3000/?limit=3&field=somefield&field=someotherfield`
 
+### Tags
+
+Struct field `url` tag is mainly used as the request parameter name.
+Tags can be comma separated multiple values, 1st value is for naming and rest has special meanings.
+
+- special tag for 1st value
+    - `-`: value is ignored if set this
+
+- special tag for rest 2nd value
+    - `omitempty`: zero-value is ignored if set this
+    - `squash`: the fields of embedded struct is used for parameter
+
+#### Tag Examples
+
+```go
+type Place struct {
+    Country string `url:"country"`
+    City    string `url:"city"`
+    ZipCode string `url:"zipcode,omitempty"`
+}
+
+type Person struct {
+    Place `url:",squash"`
+
+    FirstName string `url:"first_name"`
+    LastName  string `url:"last_name"`
+    Age       string `url:"age,omitempty"`
+    Password  string `url:"-"`
+}
+
+johnbull := Person{
+	Place: Place{ // squash the embedded struct value
+		Country: "UK",
+		City:    "London",
+		ZipCode: "SW1",
+	},
+	FirstName: "John",
+	LastName:  "Doe",
+	Age:       "35",
+	Password:  "my-secret", // ignored for parameter
+}
+
+goreq.Request{
+	Uri:         "http://localhost/",
+	QueryString: johnbull,
+}.Do()
+// =>  `http://localhost/?first_name=John&last_name=Doe&age=35&country=UK&city=London&zip_code=SW1`
+
+
+// age and zipcode will be ignored because of `omitempty`
+// but firstname isn't.
+samurai := Person{
+	Place: Place{ // squash the embedded struct value
+		Country: "Japan",
+		City:    "Tokyo",
+	},
+	LastName: "Yagyu",
+}
+
+goreq.Request{
+	Uri:         "http://localhost/",
+	QueryString: samurai,
+}.Do()
+// =>  `http://localhost/?first_name=&last_name=yagyu&country=Japan&city=Tokyo`
+```
 
 
 #### POST
