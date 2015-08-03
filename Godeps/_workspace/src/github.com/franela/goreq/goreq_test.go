@@ -353,7 +353,7 @@ func TestRequest(t *testing.T) {
 					Expect(err).Should(BeNil())
 
 					jar.SetCookies(uri, []*http.Cookie{
-						&http.Cookie{
+						{
 							Name:  "bar",
 							Value: "foo",
 							Path:  "/",
@@ -813,6 +813,22 @@ func TestRequest(t *testing.T) {
 		})
 
 		g.Describe("Misc", func() {
+			g.It("Should set default golang user agent when not explicitly passed", func() {
+				ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+					Expect(r.Header.Get("User-Agent")).ShouldNot(BeZero())
+					Expect(r.Host).Should(Equal("foobar.com"))
+
+					w.WriteHeader(200)
+				}))
+				defer ts.Close()
+
+				req := Request{Uri: ts.URL, Host: "foobar.com"}
+				res, err := req.Do()
+				Expect(err).ShouldNot(HaveOccurred())
+
+				Expect(res.StatusCode).Should(Equal(200))
+			})
+
 			g.It("Should offer to set request headers", func() {
 				ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 					Expect(r.Header.Get("User-Agent")).Should(Equal("foobaragent"))
@@ -833,16 +849,18 @@ func TestRequest(t *testing.T) {
 				Expect(res.StatusCode).Should(Equal(200))
 			})
 
-			g.It("Should set default golang user agent when not explicitly passed", func() {
+			g.It("Should call hook before request", func() {
 				ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-					Expect(r.Header.Get("User-Agent")).Should(Equal("Go 1.1 package http"))
-					Expect(r.Host).Should(Equal("foobar.com"))
+					Expect(r.Header.Get("X-Custom")).Should(Equal("foobar"))
 
 					w.WriteHeader(200)
 				}))
 				defer ts.Close()
 
-				req := Request{Uri: ts.URL, Host: "foobar.com"}
+				hook := func(goreq *Request, httpreq *http.Request) {
+					httpreq.Header.Add("X-Custom", "foobar")
+				}
+				req := Request{Uri: ts.URL, OnBeforeRequest: hook}
 				res, _ := req.Do()
 
 				Expect(res.StatusCode).Should(Equal(200))
@@ -872,7 +890,7 @@ func TestRequest(t *testing.T) {
 				}
 				res, _ := req.Do()
 
-				Expect(DefaultTransport.TLSClientConfig.InsecureSkipVerify).Should(Equal(true))
+				Expect(DefaultTransport.(*http.Transport).TLSClientConfig.InsecureSkipVerify).Should(Equal(true))
 				Expect(res.StatusCode).Should(Equal(200))
 			})
 
@@ -884,6 +902,27 @@ func TestRequest(t *testing.T) {
 				request, _ := req.NewRequest()
 				Expect(request).ShouldNot(BeNil())
 				Expect(request.Host).Should(Equal(req.Host))
+			})
+
+			g.It("Response should allow to cancel in-flight request", func() {
+				unblockc := make(chan bool)
+				ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+					fmt.Fprintf(w, "Hello")
+					w.(http.Flusher).Flush()
+					<-unblockc
+				}))
+				defer ts.Close()
+				defer close(unblockc)
+
+				req := Request{
+					Insecure: true,
+					Uri:      ts.URL,
+					Host:     "foobar.com",
+				}
+				res, _ := req.Do()
+				res.CancelRequest()
+				_, err := ioutil.ReadAll(res.Body)
+				g.Assert(err != nil).IsTrue()
 			})
 		})
 
@@ -904,7 +943,7 @@ func TestRequest(t *testing.T) {
 				ts.Close()
 			})
 			g.It("Should throw an error when FromJsonTo fails", func() {
-				res, _ := Request{Method: "POST", Uri: ts.URL, Body: `{"foo": "bar"`}.Do()
+				res, _ := Request{Method: "POST", Uri: ts.URL, Body: `{"foo" "bar"}`}.Do()
 				var foobar map[string]string
 
 				err := res.Body.FromJsonTo(&foobar)
@@ -929,6 +968,7 @@ func TestRequest(t *testing.T) {
 					if r.Method == "GET" && r.URL.Path == "/" {
 						lastReq = r
 						w.Header().Add("x-forwarded-for", "test")
+						w.Header().Add("Set-Cookie", "foo=bar")
 						w.WriteHeader(200)
 						w.Write([]byte(""))
 					} else if r.Method == "GET" && r.URL.Path == "/redirect_test/301" {
@@ -969,6 +1009,18 @@ func TestRequest(t *testing.T) {
 				Expect(res.Header.Get("x-forwarded-for")).Should(Equal("test"))
 				Expect(lastReq).ShouldNot(BeNil())
 				Expect(lastReq.Header.Get("Proxy-Authorization")).Should(Equal("Basic dXNlcjpwYXNz"))
+			})
+
+			g.It("Should propagate cookies", func() {
+				proxiedHost, _ := url.Parse("http://www.google.com")
+				jar, _ := cookiejar.New(nil)
+				res, err := Request{Uri: proxiedHost.String(), Proxy: ts.URL, CookieJar: jar}.Do()
+				Expect(err).Should(BeNil())
+				Expect(res.Header.Get("x-forwarded-for")).Should(Equal("test"))
+
+				Expect(jar.Cookies(proxiedHost)).Should(HaveLen(1))
+				Expect(jar.Cookies(proxiedHost)[0].Name).Should(Equal("foo"))
+				Expect(jar.Cookies(proxiedHost)[0].Value).Should(Equal("bar"))
 			})
 
 		})
@@ -1037,10 +1089,17 @@ func Test_paramParse(t *testing.T) {
 		Qux  string `url:"-"`
 	}
 
+	type EmbedForm struct {
+		AnnotedForm `url:",squash"`
+		Form        `url:",squash"`
+		Corge       string `url:"corge"`
+	}
+
 	g := Goblin(t)
 	RegisterFailHandler(func(m string, _ ...int) { g.Fail(m) })
 	var form = Form{}
 	var aform = AnnotedForm{}
+	var eform = EmbedForm{}
 	var values = url.Values{}
 	const result = "a=1&b=2"
 	g.Describe("QueryString ParamParse", func() {
@@ -1051,6 +1110,9 @@ func Test_paramParse(t *testing.T) {
 			aform.Foo = "xyz"
 			aform.Norf = "abc"
 			aform.Qux = "def"
+			eform.Form = form
+			eform.AnnotedForm = aform
+			eform.Corge = "xxx"
 			values.Add("a", "1")
 			values.Add("b", "2")
 		})
@@ -1076,6 +1138,11 @@ func Test_paramParse(t *testing.T) {
 			Expect(err).Should(BeNil())
 			Expect(str).Should(Equal(result))
 		})
+		g.It("Should accept embedded struct", func() {
+			str, err := paramParse(eform)
+			Expect(err).Should(BeNil())
+			Expect(str).Should(Equal("a=1&b=2&corge=xxx&foo_bar=xyz&norf=abc"))
+		})
 		g.It("Should accept interface{} which forcely converted by struct", func() {
 			str, err := paramParse(interface{}(&form))
 			Expect(err).Should(BeNil())
@@ -1088,7 +1155,7 @@ func Test_paramParse(t *testing.T) {
 			Expect(str).Should(Equal(result))
 		})
 		g.It("Should accept &url.Values", func() {
-			str, err := paramParse(values)
+			str, err := paramParse(&values)
 			Expect(err).Should(BeNil())
 			Expect(str).Should(Equal(result))
 		})
