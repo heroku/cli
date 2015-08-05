@@ -5,7 +5,7 @@ const HOST = process.env.HEROKU_REDIS_HOST || "redis-api.heroku.com" ;
 const PATH =  "/redis/v0/databases";
 const ADDON = process.env.HEROKU_REDIS_ADDON_NAME || "heroku-redis";
 
-function request(context, path, method) {
+function request(context, path, method, body) {
   return Heroku.request( {
     method: method || "GET",
     path: PATH+"/"+path,
@@ -14,6 +14,7 @@ function request(context, path, method) {
     headers: {
       'Accept': 'application/json',
     },
+    body: body,
   });
 }
 
