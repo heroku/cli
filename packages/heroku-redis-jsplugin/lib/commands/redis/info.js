@@ -33,8 +33,6 @@ module.exports = {
         continue;
       }
 
-      db.redis.info.push({name: 'Resource', values: [db.addon.name]})
-
       console.log(`=== ${db.addon.config_vars[0]}`);
       console.log(columnify(db.redis.info, {showHeaders: false}));
       console.log();
