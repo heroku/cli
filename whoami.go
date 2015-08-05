@@ -29,6 +29,10 @@ var whoamiCmd = &Command{
 		req.Uri = req.Uri + "/account"
 		res, err := req.Do()
 		ExitIfError(err)
+		if res.StatusCode != 200 {
+			Println("not logged in")
+			Exit(100)
+		}
 		var doc map[string]interface{}
 		res.Body.FromJsonTo(&doc)
 		Println(doc["email"])
