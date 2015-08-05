@@ -24,7 +24,6 @@ function make_addons_filter(filter) {
   }
 
   function matches(addon) {
-    console.log(addon);
     for (var i=0; i<addon.config_vars.length; i++) {
       var cfg_name = addon.config_vars[i].toUpperCase();
       if (cfg_name.indexOf(filter) >= 0) {
