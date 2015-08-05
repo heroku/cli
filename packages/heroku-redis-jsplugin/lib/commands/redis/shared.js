@@ -22,12 +22,16 @@ function make_addons_filter(filter) {
     filter = filter.toUpperCase();
   }
 
-  function matches (addon) {
+  function matches(addon) {
+    console.log(addon);
     for (var i=0; i<addon.config_vars.length; i++) {
       var cfg_name = addon.config_vars[i].toUpperCase();
       if (cfg_name.indexOf(filter) >= 0) {
         return true;
       }
+    }
+    if (addon.name.toUpperCase().indexOf(filter) >= 0) {
+      return true;
     }
     return false;
   }
