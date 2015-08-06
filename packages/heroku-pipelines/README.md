@@ -6,11 +6,7 @@ An experimental Heroku CLI plugin for [continuous delivery](http://en.wikipedia.
 
 This plugin is used to set up a collection of apps sharing a common codebase where the latest slug of one app can be promoted to the app(s) in the following stage. The promotion only copies the upstream build artifact and leaves the downstream app's config vars, add-ons, and Git repo untouched.
 
-Read more about Toolbelt 4.0 plugins [here](https://github.com/heroku/heroku-hello-world#heroku-hello-world).
-
 ## How to install this plugin
-
-**Note: These Node.js plugins are available in the current Ruby CLI. No need to download a separate Toolbelt 4.0 CLI.**
 
 ```
 $ heroku plugins:install heroku-pipelines
