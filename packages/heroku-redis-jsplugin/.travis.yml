@@ -3,3 +3,5 @@ sudo: false
 node_js:
   - "0.11"
   - "0.10"
+notifications:
+  email: false
