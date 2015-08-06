@@ -55,7 +55,7 @@ module.exports = {
     let addon = addons[0];
     let redis = yield api.request(context, addon.name);
     let redisUrl = url.parse(redis.resource_url);
-    console.log(`Connecting to ${addon.name} (${addon.config_vars[0]}):`);
+    console.log(`Connecting to ${addon.name} (${addon.config_vars.join(', ')}):`);
     let s = spawn('redis-cli', ['-h', redisUrl.hostname, '-p', redisUrl.port, '-a', redisUrl.auth.split(':')[1]], {
       stdio: [0, 1, 2]
     });
