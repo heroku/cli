@@ -13,23 +13,19 @@ module.exports = {
   ],
   run: cli.command(function* (context, heroku) {
     let pipeline_id = context.args.pipeline;
-    let path = `/pipelines/${pipeline_id}`;
     let pipeline = yield heroku.request({
       method: 'GET',
-      path: path,
+      path: `/pipelines/${pipeline_id}`,
       headers: { 'Accept': 'application/vnd.heroku+json; version=3.pipelines' }
-    }); // heroku.pipelines(pipeline_id);
+    }); // heroku.pipelines(pipeline_id).info();
     cli.hush(pipeline);
     let apps = yield heroku.request({
       method: 'GET',
       path: `/pipelines/${pipeline_id}/apps`,
       headers: { 'Accept': 'application/vnd.heroku+json; version=3.pipelines' }
-    }); // heroku.pipelines(pipeline_id).apps;
+    }); // heroku.pipelines(pipeline_id).apps();
     cli.hush(apps);
     cli.styledHeader(pipeline.name);
-    //for (var app in apps) {
-    //  cli.log(`${apps[app].name} (${apps[app].coupling.stage})`);
-    //}
     // Sort Apps by stage, name
     // Display in table
     let stages={};
