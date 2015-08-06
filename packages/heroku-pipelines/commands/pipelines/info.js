@@ -21,7 +21,7 @@ module.exports = {
     cli.hush(pipeline);
     let apps = yield heroku.request({
       method: 'GET',
-      path: `/pipelines/${pipeline_id}/apps`,
+      path: `/pipelines/${pipeline.id}/apps`,
       headers: { 'Accept': 'application/vnd.heroku+json; version=3.pipelines' }
     }); // heroku.pipelines(pipeline_id).apps();
     cli.hush(apps);
