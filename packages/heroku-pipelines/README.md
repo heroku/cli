@@ -18,7 +18,6 @@ $ heroku plugins:install heroku-pipelines
 
 ```bash
 $ heroku pipelines:create -a example # NAME and -s STAGE are optional and implied from app name
-$ heroku pipelines:create -a example
 ? Pipeline name: example
 ? Stage of example: production
 Creating example pipeline... done
@@ -48,7 +47,7 @@ Adding example-staging to example pipeline as staging... done
 #### List pipelines
 
 ```bash
-$ heroku pipelines:list
+$ heroku pipelines:list # Repo isn't yet returned
 example github:heroku/example
 sushi   github:heroku/sushi
 ```
@@ -56,7 +55,7 @@ sushi   github:heroku/sushi
 #### Show pipeline detail
 
 ```bash
-$ heroku pipelines:info example
+$ heroku pipelines:info example # Source and Flow aren't returned yet
 === example
 Source type: github
 Source repo: heroku/example
@@ -82,7 +81,7 @@ example-staging behind by 1 commit:
 ```bash
 $ git commit -m "A super important fix"
 $ git push staging
-$ heroku pipelines:diff -r staging
+$ heroku pipelines:diff -r staging # Not implemented yet
 Comparing example-staging to example... done
 example-staging ahead by 1 commit:
   73ab415  2012-01-01  A super important fix  (Joe Developer)
@@ -94,7 +93,7 @@ example-staging ahead by 1 commit:
 #### Promote an app in a pipeline
 
 ```bash
-$ heroku pipelines:promote -r staging
+$ heroku pipelines:promote -r staging # Not implemented yet
 Promoting example-staging to example (production)... done, v23
 Promoting example-staging to example-admin (production)... done, v54
 ```
@@ -109,7 +108,7 @@ Renaming example pipeline to www... done
 #### Destroy pipeline
 
 ```bash
-$ heroku pipelines:destroy www
+$ heroku pipelines:destroy www # Not working yet
 Destroying www pipeline... done
 ```
 
