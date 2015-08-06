@@ -4,19 +4,18 @@ let readline = require('readline');
 let net = require('net');
 let spawn = require('child_process').spawn;
 let h = require('heroku-cli-util');
-
 let api = require('./shared.js');
 
-function cli (url) {
+function cli(url) {
   let io = readline.createInterface(process.stdin, process.stdout);
   io.setPrompt(url.host + '> ');
   let client = net.connect({port: url.port, host: url.hostname}, function () {
-    client.write('AUTH ' + url.auth.split(':')[1] + '\n', function () {
+    client.write(`AUTH ${url.auth.split(':')[1]}\n`, function () {
       io.prompt();
     });
   });
   io.on('line', function (line) {
-    client.write(line + '\n');
+    client.write(`${line}\n`);
   });
   io.on('close', function () {
     console.log();
@@ -41,7 +40,7 @@ module.exports = {
   args: [{name: 'database', optional: true}],
   flags: [{name: 'confirm', char: 'c', hasValue: true}],
   run: h.command(function* (context, heroku) {
-    yield h.confirmApp(context.app, context.flags.confirm, "WARNING: Insecure Action\nAll data, including the redis password, will be unencrypted.");
+    yield h.confirmApp(context.app, context.flags.confirm, 'WARNING: Insecure Action\nAll data, including the redis password, will be unencrypted.');
     let filter = api.make_config_var_filter(context.args.database);
     let addons = filter(yield heroku.apps(context.app).configVars().info());
     if (addons.length === 0) {
@@ -49,12 +48,12 @@ module.exports = {
       process.exit(1);
     } else if (addons.length > 1) {
       let names = addons.map(function (addon) { return addon.name; });
-      h.error('Please specify a single database. Found: '+names.join(', '));
+      h.error(`Please specify a single database. Found: ${names.join(', ')}`);
       process.exit(1);
     }
-    let name = addons[0].name;
-    let redisUrl = url.parse(addons[0].url);
-    console.log('Connecting to: '+name);
+    let addon = addons[0];
+    let redisUrl = url.parse(addon.url);
+    console.log(`Connecting to: ${addon.name}`);
     let s = spawn('redis-cli', ['-h', redisUrl.hostname, '-p', redisUrl.port, '-a', redisUrl.auth.split(':')[1]], {
       stdio: [0, 1, 2]
     });

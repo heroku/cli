@@ -12,7 +12,7 @@ module.exports = {
   run: h.command(function* (context, heroku) {
     let addonsFilter = api.make_addons_filter(context.args.database);
     let redisFilter = api.make_addons_filter('REDIS_URL');
-    let addonsList = heroku.apps(context.app).addons().list()
+    let addonsList = heroku.apps(context.app).addons().list();
     let redis = redisFilter(yield addonsList);
     let addons = addonsFilter(yield addonsList);
     if (addons.length === 0) {
@@ -20,11 +20,11 @@ module.exports = {
       process.exit(1);
     } else if (addons.length > 1) {
       let names = addons.map(function (addon) { return addon.name; });
-      h.error('Please specify a single database. Found: ' + names.join(', '));
+      h.error(`Please specify a single database. Found: ${names.join(', ')}`);
       process.exit(1);
     }
     // Check if REDIS_URL is singlehandly assigned
-    if (redis.length == 1 && redis[0].config_vars.length == 1) {
+    if (redis.length === 1 && redis[0].config_vars.length === 1) {
       let attachment = redis[0];
       yield heroku.post('/addon-attachments', {
         app: { name: context.app },
@@ -32,11 +32,11 @@ module.exports = {
         confirm: context.app
       });
     }
-    let name = addons[0].name;
-    console.log('Promoting ' + name + ' to REDIS_URL on '+ context.app);
+    let addon = addons[0];
+    console.log(`Promoting ${addon.name} to REDIS_URL on ${context.app}`);
     yield heroku.post('/addon-attachments', {
       app: { name: context.app },
-      addon: { name: name },
+      addon: { name: addon.name },
       confirm: context.app,
       name: 'REDIS'
     });

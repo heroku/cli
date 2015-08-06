@@ -1,20 +1,20 @@
 'use strict';
 var Heroku = require('heroku-client');
 
-const HOST = process.env.HEROKU_REDIS_HOST || "redis-api.heroku.com" ;
-const PATH =  "/redis/v0/databases";
-const ADDON = process.env.HEROKU_REDIS_ADDON_NAME || "heroku-redis";
+const HOST  = process.env.HEROKU_REDIS_HOST || 'redis-api.heroku.com' ;
+const PATH  = '/redis/v0/databases';
+const ADDON = process.env.HEROKU_REDIS_ADDON_NAME || 'heroku-redis';
 
 function request(context, path, method, body) {
   return Heroku.request( {
-    method: method || "GET",
-    path: PATH+"/"+path,
+    method: method || 'GET',
+    path: `${PATH}/${path}`,
     host: HOST,
-    auth: context.auth.username+":"+context.auth.password,
+    auth: `${context.auth.username}:${context.auth.password}`,
     headers: {
-      'Accept': 'application/json',
+      'Accept': 'application/json'
     },
-    body: body,
+    body: body
   });
 }
 
@@ -24,7 +24,7 @@ function make_addons_filter(filter) {
   }
 
   function matches(addon) {
-    for (var i=0; i<addon.config_vars.length; i++) {
+    for (var i = 0; i < addon.config_vars.length; i++) {
       var cfg_name = addon.config_vars[i].toUpperCase();
       if (cfg_name.indexOf(filter) >= 0) {
         return true;
@@ -38,7 +38,7 @@ function make_addons_filter(filter) {
 
   function on_response(addons) {
     var redis_addons = [];
-    for (var i=0; i < addons.length; i++) {
+    for (var i = 0; i < addons.length; i++) {
       var addon = addons[i];
       var service = addon.addon_service.name;
 
@@ -77,5 +77,5 @@ function make_config_var_filter(filter) {
 module.exports = {
   request: request,
   make_addons_filter: make_addons_filter,
-  make_config_var_filter: make_config_var_filter,
+  make_config_var_filter: make_config_var_filter
 };
