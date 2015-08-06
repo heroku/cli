@@ -41,8 +41,9 @@ module.exports = {
   flags: [{name: 'confirm', char: 'c', hasValue: true}],
   run: h.command(function* (context, heroku) {
     yield h.confirmApp(context.app, context.flags.confirm, 'WARNING: Insecure Action\nAll data, including the redis password, will be unencrypted.');
-    let filter = api.make_config_var_filter(context.args.database);
-    let addons = filter(yield heroku.apps(context.app).configVars().info());
+    let addonsFilter = api.make_addons_filter(context.args.database);
+    let addonsList = heroku.apps(context.app).addons().list();
+    let addons = addonsFilter(yield addonsList);
     if (addons.length === 0) {
       h.error('No redis databases found');
       process.exit(1);
@@ -52,8 +53,9 @@ module.exports = {
       process.exit(1);
     }
     let addon = addons[0];
-    let redisUrl = url.parse(addon.url);
-    console.log(`Connecting to: ${addon.name}`);
+    let redis = yield api.request(context, addon.name);
+    let redisUrl = url.parse(redis.resource_url);
+    console.log(`Connecting to ${addon.name} (${addon.config_vars[0]}):`);
     let s = spawn('redis-cli', ['-h', redisUrl.hostname, '-p', redisUrl.port, '-a', redisUrl.auth.split(':')[1]], {
       stdio: [0, 1, 2]
     });
