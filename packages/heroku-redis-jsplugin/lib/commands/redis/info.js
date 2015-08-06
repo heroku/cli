@@ -1,7 +1,7 @@
 'use strict';
 let columnify = require('columnify');
 let api = require('./shared.js');
-let h = require('heroku-cli-util');
+let cli = require('heroku-cli-util');
 
 module.exports = {
   topic: 'redis',
@@ -10,7 +10,7 @@ module.exports = {
   needsAuth: true,
   args: [{name: 'database', optional: true}],
   description: 'gets information about redis',
-  run: h.command(function *(context, heroku) {
+  run: cli.command(function *(context, heroku) {
     let addons = yield heroku.apps(context.app).addons().list();
     // filter out non-redis addons
     addons = api.make_addons_filter(context.args.database)(addons);

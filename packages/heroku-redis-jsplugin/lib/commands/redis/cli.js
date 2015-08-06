@@ -3,10 +3,10 @@ let url = require('url');
 let readline = require('readline');
 let net = require('net');
 let spawn = require('child_process').spawn;
-let h = require('heroku-cli-util');
+let cli = require('heroku-cli-util');
 let api = require('./shared.js');
 
-function cli(url) {
+function nativeCLI(url) {
   let io = readline.createInterface(process.stdin, process.stdout);
   io.setPrompt(url.host + '> ');
   let client = net.connect({port: url.port, host: url.hostname}, function () {
@@ -39,17 +39,17 @@ module.exports = {
   description: 'opens a redis prompt',
   args: [{name: 'database', optional: true}],
   flags: [{name: 'confirm', char: 'c', hasValue: true}],
-  run: h.command(function* (context, heroku) {
-    yield h.confirmApp(context.app, context.flags.confirm, 'WARNING: Insecure Action\nAll data, including the redis password, will be unencrypted.');
+  run: cli.command(function* (context, heroku) {
+    yield cli.confirmApp(context.app, context.flags.confirm, 'WARNING: Insecure Action\nAll data, including the redis password, will be unencrypted.');
     let addonsFilter = api.make_addons_filter(context.args.database);
     let addonsList = heroku.apps(context.app).addons().list();
     let addons = addonsFilter(yield addonsList);
     if (addons.length === 0) {
-      h.error('No redis databases found');
+      cli.error('No redis databases found');
       process.exit(1);
     } else if (addons.length > 1) {
       let names = addons.map(function (addon) { return addon.name; });
-      h.error(`Please specify a single database. Found: ${names.join(', ')}`);
+      cli.error(`Please specify a single database. Found: ${names.join(', ')}`);
       process.exit(1);
     }
     let addon = addons[0];
@@ -60,7 +60,7 @@ module.exports = {
       stdio: [0, 1, 2]
     });
     s.on('error', function () {
-      cli(redisUrl);
+      nativeCLI(redisUrl);
     });
   })
 };
