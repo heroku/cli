@@ -41,14 +41,5 @@ module.exports = {
     }
     // Pass in sort order for stages
     cli.styledHash(stages, ["review", "development", "test", "qa", "staging", "production"]);
-
-//    let pipeline = context.args.pipeline || "example";
-//    cli.log(`=== ${pipeline}`);
-//    cli.log("Source type: github");
-//    cli.log("Source repo: heroku/example");
-//    cli.log("Staging:     example-staging");
-//    cli.log("Production:  example");
-//    cli.log("             example-admin");
-//    cli.log("Flow:        example-staging —> example, example-admin");
   })
 };

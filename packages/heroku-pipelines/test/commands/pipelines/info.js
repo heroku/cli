@@ -1,35 +1,31 @@
 'use strict';
 
-let cli = require('heroku-cli-util');
-let cmd = require('../../../commands/pipelines/info');
+let cli   = require('heroku-cli-util');
+let nock  = require('nock');
+let cmd   = require('../../../commands/pipelines/info');
 
 describe('pipelines:info', function () {
   beforeEach(function () {
     cli.mockConsole();
   });
 
-  it('displays the app info and config vars', function () {
+  it('displays the pipeline info and apps', function () {
     let self     = this;
-    let pipeline = {name: 'example', source_type: 'github', source_repo: 'heroku/example'};
-    let apps     = [{name: 'example-staging', stage: 'staging'}, {name: 'example', stage: 'production'}, {name: 'example-admin', stage: 'production'}];
+    let pipeline = {name: 'example', id: '0123'};
+    let apps     = [{name: 'example-staging', coupling: {stage: 'staging'}, pipeline: pipeline}, {name: 'example', coupling: {stage: 'production'}, pipeline: pipeline}, {name: 'example-admin', coupling: {stage: 'production'}, pipeline: pipeline}];
 
     nock('https://api.heroku.com')
     .get('/pipelines/example')
     .reply(200, pipeline);
 
     nock('https://api.heroku.com')
-    .get('/pipelines/example/apps')
+    .get('/pipelines/0123/apps')
     .reply(200, apps);
 
-    return cmd.run({app: 'example'})
+    return cmd.run({args: {pipeline: 'example'}})
     .then(function () {
-      self.cliDebug.should.have.been.calledWith(pipeline);
-      self.cliDebug.should.have.been.calledWith(apps);
+      cli.stdout.should.contain('Staging:');
+      cli.stdout.should.contain('example-staging');
     });
-  });
-
-  it('says "example" when the user is "example"', function () {
-    cmd.run({args: {pipeline: 'example'}});
-    cli.stdout.should.containe('example');
   });
 });

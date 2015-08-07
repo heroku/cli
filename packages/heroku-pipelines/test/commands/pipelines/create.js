@@ -2,35 +2,30 @@
 
 let cli   = require('heroku-cli-util');
 let nock  = require('nock');
-let sinon = require('sinon');
 let cmd   = require('../../../commands/pipelines/create');
 
 describe('pipelines:create', function () {
   beforeEach(function () {
-    this.cliDebug = sinon.stub(cli, 'debug');
+    cli.mockConsole();
   });
 
-  afterEach(function () {
-    this.cliDebug.restore();
-  });
-
-  it('displays the app info and config vars', function () {
-    let self   = this;
-    let app    = {name: 'myapp', web_url: 'https://myapp.herokuapp.com/'};
-    let config = {FOO: 'bar'};
+  it('displays the pipeline name and app stage', function () {
+    let self              = this;
+    let pipeline          = {name: 'example', id: '0123'};
+    let pipeline_coupling = { id: '0123', stage: "production" };
 
     nock('https://api.heroku.com')
-    .get('/apps/myapp')
-    .reply(200, app);
+    .post('/pipelines')
+    .reply(201, pipeline);
 
     nock('https://api.heroku.com')
-    .get('/apps/myapp/config-vars')
-    .reply(200, config);
+    .post('/apps/example/pipeline-couplings')
+    .reply(201, pipeline_coupling);
 
-    return cmd.run({app: 'myapp'})
+    return cmd.run({app: 'example', args: {name: 'example'}, flags: {stage: 'production'}})
     .then(function () {
-      self.cliDebug.should.have.been.calledWith(app);
-      self.cliDebug.should.have.been.calledWith(config);
+      cli.stdout.should.contain('example');
+      cli.stdout.should.contain('production');
     });
   });
 });

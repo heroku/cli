@@ -62,8 +62,8 @@ module.exports = {
           body: {pipeline: {id: pipeline.id}, stage: stage},
           headers: { 'Accept': 'application/vnd.heroku+json; version=3.pipelines' }
         }); // heroku.apps(app_id).pipline_couplings().create(body);
-        let app = yield cli.action(`Adding ${context.app} to ${pipeline.name} pipeline as ${stage}`, promise);
-        cli.hush(app);
+        let coupling = yield cli.action(`Adding ${context.app} to ${pipeline.name} pipeline as ${stage}`, promise);
+        cli.hush(coupling);
       });
     });
   })
