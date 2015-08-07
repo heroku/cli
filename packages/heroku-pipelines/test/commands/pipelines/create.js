@@ -24,8 +24,8 @@ describe('pipelines:create', function () {
 
     return cmd.run({app: 'example', args: {name: 'example'}, flags: {stage: 'production'}})
     .then(function () {
-      cli.stdout.should.contain('example');
-      cli.stdout.should.contain('production');
+      cli.stderr.should.contain('example');
+      cli.stderr.should.contain('production');
     });
   });
 });
