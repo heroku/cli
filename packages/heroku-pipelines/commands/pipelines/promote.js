@@ -48,9 +48,9 @@ module.exports = {
       heroku.request({
         method: 'GET',
         path: `/apps/${app}/releases`,
-        headers: { 'Accept': V3_HEADER, 'Range':  'version ..; order=desc,max=1;' }
+        headers: { 'Accept': V3_HEADER, 'Range':  'version ..; order=desc,max=1' },
+        partial: true
       }));
-    cli.hush(releases);
 
     const sourceRelease = releases[0];
 
