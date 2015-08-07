@@ -16,11 +16,11 @@ module.exports = {
     let redis = redisFilter(yield addonsList);
     let addons = addonsFilter(yield addonsList);
     if (addons.length === 0) {
-      cli.error('No redis database found');
+      cli.error('No Redis instance found.');
       process.exit(1);
     } else if (addons.length > 1) {
       let names = addons.map(function (addon) { return addon.name; });
-      cli.error(`Please specify a single database. Found: ${names.join(', ')}`);
+      cli.error(`Please specify a single instance. Found: ${names.join(', ')}`);
       process.exit(1);
     }
     // Check if REDIS_URL is singlehandly assigned

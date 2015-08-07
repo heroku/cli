@@ -14,11 +14,11 @@ module.exports = {
     let addonsFilter = api.make_addons_filter(context.args.database);
     let addons = addonsFilter(yield heroku.apps(context.app).addons().list());
     if (addons.length === 0) {
-      cli.error('No redis databases found');
+      cli.error('No Redis instances found.');
       process.exit(1);
     } else if (addons.length > 1) {
       let names = addons.map(function (addon) { return addon.name; });
-      cli.error(`Please specify a single database. Found: ${names.join(', ')}`);
+      cli.error(`Please specify a single instance. Found: ${names.join(', ')}`);
       process.exit(1);
     }
     let addon = addons[0];
@@ -28,7 +28,7 @@ module.exports = {
     } else {
       let redis = yield api.request(context, addon.name);
       if (addons.length === 0) {
-        cli.error('No redis databases found');
+        cli.error('No Redis instances found.');
         process.exit(1);
       } else {
         console.log(redis.resource_url);

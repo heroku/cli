@@ -40,16 +40,16 @@ module.exports = {
   args: [{name: 'database', optional: true}],
   flags: [{name: 'confirm', char: 'c', hasValue: true}],
   run: cli.command(function* (context, heroku) {
-    yield cli.confirmApp(context.app, context.flags.confirm, 'WARNING: Insecure Action\nAll data, including the redis password, will be unencrypted.');
+    yield cli.confirmApp(context.app, context.flags.confirm, 'WARNING: Insecure action.\nAll data, including the Redis password, will not be encrypted.');
     let addonsFilter = api.make_addons_filter(context.args.database);
     let addonsList = heroku.apps(context.app).addons().list();
     let addons = addonsFilter(yield addonsList);
     if (addons.length === 0) {
-      cli.error('No redis databases found');
+      cli.error('No Redis instances found.');
       process.exit(1);
     } else if (addons.length > 1) {
       let names = addons.map(function (addon) { return addon.name; });
-      cli.error(`Please specify a single database. Found: ${names.join(', ')}`);
+      cli.error(`Please specify a single instance. Found: ${names.join(', ')}`);
       process.exit(1);
     }
     let addon = addons[0];

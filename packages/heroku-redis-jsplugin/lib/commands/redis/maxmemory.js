@@ -14,10 +14,10 @@ module.exports = {
 
     noeviction      # returns errors when memory limit is reached
     allkeys-lru     # removes less recently used keys first
-    volatile-lru    # removes less recently used keys first that have an expire set
+    volatile-lru    # removes less recently used keys first that have an expiry set
     allkeys-random  # evicts random keys
-    volatile-random # evicts random keys but only those that have an expire set
-    volatile-ttl    # only evict keys with an expire set and a short ttl
+    volatile-random # evicts random keys but only those that have an expiry set
+    volatile-ttl    # only evicts keys with an expiry set and a short TTL
   `,
   run: cli.command(function* (context, heroku) {
     if (!context.flags.policy) {
@@ -31,7 +31,7 @@ module.exports = {
       process.exit(1);
     } else if (addons.length > 1) {
       let names = addons.map(function (addon) { return addon.name; });
-      cli.error(`Please specify a single database. Found: ${names.join(', ')}`);
+      cli.error(`Please specify a single instance. Found: ${names.join(', ')}`);
       process.exit(1);
     }
     let addon = addons[0];
