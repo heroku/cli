@@ -1,7 +1,10 @@
 'use strict';
 
 let cli = require('heroku-cli-util');
-let co  = require('co');
+
+const PROMOTION_ORDER = ["development", "staging", "production"];
+const V3_HEADER = 'application/vnd.heroku+json; version=3';
+const PIPELINES_HEADER = V3_HEADER + '.pipelines';
 
 module.exports = {
   topic: 'pipelines',
@@ -10,40 +13,66 @@ module.exports = {
   help: "promote an app's slug down the pipeline",
   needsApp: true,
   needsAuth: true,
-  flags: [
-    {name: 'stage', char: 's', description: 'stage of first app in pipeline', hasValue: true}
-  ],
   run: cli.command(function* (context, heroku) {
-    var stage;
+    const app = context.app;
 
-    stage = context.flags.stage;
-    let promise = heroku.request({
+    const coupling = yield cli.action(`Fetching app info`, heroku.request({
       method: 'GET',
-      path: `/apps/${context.app}/pipeline-couplings`,
-      headers: { 'Accept': 'application/vnd.heroku+json; version=3.pipelines' }
+      path: `/apps/${app}/pipeline-couplings`,
+      headers: { 'Accept': PIPELINES_HEADER }
+    }));
+
+    const allApps = yield cli.action(`Fetching apps from ${coupling.pipeline.name}`,
+      heroku.request({
+        method: 'GET',
+        path: `/pipelines/${coupling.pipeline.id}/apps`,
+        headers: { 'Accept': PIPELINES_HEADER }
+      }));
+
+    const sourceStage = coupling.stage;
+    const targetStage = PROMOTION_ORDER[PROMOTION_ORDER.indexOf(sourceStage) + 1];
+
+    if (targetStage == null || PROMOTION_ORDER.indexOf(sourceStage) < 0) {
+      throw new Error(`Cannot promote ${app} from '${sourceStage}' stage`);
+    }
+
+    const targetApps = allApps.filter(function(app) {
+      return app.coupling.stage === targetStage;
     });
-    let coupling = yield cli.action(`Fetching app info`, promise);
 
-    promise = heroku.request({
-      method: 'GET',
-      path: `/pipelines/${coupling.pipeline.id}/apps`,
-      headers: { 'Accept': 'application/vnd.heroku+json; version=3.pipelines' }
-    }); // heroku.pipelines(pipeline_id).apps;
-    let apps = yield cli.action(`Fetching apps from ${coupling.pipeline.id}`, promise);
-
-    //let order = ["review", "development", "test", "qa", "staging", "production"];
-
-    let next_apps = [];
-    for (var app in apps) {
-      if (apps.hasOwnProperty(app)) {
-        if (apps[app].coupling.stage == stage) next_apps.push(app);
-      }
+    if (targetApps.length < 1) {
+      throw new Error(`Cannot promote from ${app} as there are no downstream apps in $(targetStage) stage`);
     }
-    cli.debug(next_apps);
-    for (var app in next_apps) {
-      if (keys.hasOwnProperty(app)) {
-        cli.log(`Promoting ${context.app} to ${app.name} (${stage})... done, v2`);
-      }
+
+    const releases = yield cli.action(`Fetching latest release from ${app}`,
+      heroku.request({
+        method: 'GET',
+        path: `/apps/${app}/releases`,
+        headers: { 'Accept': V3_HEADER, 'Range':  'version ..; order=desc,max=1;' }
+      }));
+    cli.hush(releases);
+
+    const sourceRelease = releases[0];
+
+    if (sourceRelease == null) {
+      throw new Error(`Cannot promote from ${app} as it has no builds yet`);
     }
+
+    const sourceSlug = sourceRelease.slug.id;
+
+    yield targetApps.map(function(targetApp) {
+      const promotion = heroku.request({
+        method: 'POST',
+        path: `/apps/${targetApp.id}/releases`,
+        headers: {
+          'Accept': V3_HEADER,
+          'Heroku-Deploy-Type': 'pipeline-promote',
+          'Heroku-Deploy-Source': app
+        },
+        body: { slug: sourceSlug }
+      });
+
+      return cli.action(`Promoting to ${targetApp.name}`, promotion);
+    });
   })
 };

@@ -93,7 +93,7 @@ example-staging ahead by 1 commit:
 #### Promote an app in a pipeline
 
 ```bash
-$ heroku pipelines:promote -r staging # Not implemented yet
+$ heroku pipelines:promote -r staging
 Promoting example-staging to example (production)... done, v23
 Promoting example-staging to example-admin (production)... done, v54
 ```
