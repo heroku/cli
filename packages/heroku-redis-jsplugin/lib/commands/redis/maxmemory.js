@@ -36,7 +36,7 @@ module.exports = {
     }
     let addon = addons[0];
     let config = yield api.request(context, addon.name + '/config', 'PATCH', { maxmemory_policy: context.flags.policy });
-    console.log(`Max-memory policy for ${addon.name} (${addon.config_vars.join(', ')}) set to ${config.maxmemory_policy.value}.`);
+    console.log(`Maxmemory policy for ${addon.name} (${addon.config_vars.join(', ')}) set to ${config.maxmemory_policy.value}.`);
     console.log(`${config.maxmemory_policy.value} ${config.maxmemory_policy.values[config.maxmemory_policy.value]}.`);
   })
 };
