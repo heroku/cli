@@ -58,6 +58,7 @@ func Update(channel string, t string) {
 	done := make(chan bool)
 	go func() {
 		touchAutoupdateFile()
+		updateNode()
 		updateCLI(channel)
 		updatePlugins(t)
 		done <- true
