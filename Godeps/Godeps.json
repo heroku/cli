@@ -7,11 +7,6 @@
 			"Rev": "86d2489fe365ee82808af242883d1c4bd268e727"
 		},
 		{
-			"ImportPath": "github.com/dickeyxxx/gode",
-			"Comment": "v2.3.13",
-			"Rev": "0ae7c2c769f93d9448bcc27fd3fab73d504cdbb9"
-		},
-		{
 			"ImportPath": "github.com/dickeyxxx/golock",
 			"Comment": "v1.0.0-3-g4121076",
 			"Rev": "41210765bf2c6815e195d1192af6da935cd79b95"
