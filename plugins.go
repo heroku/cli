@@ -10,6 +10,7 @@ import (
 	"os/signal"
 	"path/filepath"
 	"runtime"
+	"sort"
 	"strconv"
 	"strings"
 	"syscall"
@@ -27,12 +28,17 @@ type Plugin struct {
 	Commands CommandSet `json:"commands"`
 }
 
+const nodeVersion = "3.0.0"
+const npmVersion = "2.13.3"
+
 var node = gode.NewClient(AppDir)
 
 func init() {
 	node.Registry = "https://d1wpeoceq2hoqd.cloudfront.net"
-	node.NodeVersion = "2.3.3"
-	node.NpmVersion = "2.11.3"
+	node.NodeVersion = getLatestInstalledNodeVersion()
+	if node.NodeVersion == "" {
+		node.NodeVersion = nodeVersion
+	}
 }
 
 // SetupNode sets up node and npm in ~/.heroku
@@ -43,18 +49,46 @@ func SetupNode() {
 		if node.IsSetup() {
 			return
 		}
-		Debugln("setting up iojs", node.NodeVersion)
+		Errf("setting up iojs-v%s...", node.NodeVersion)
 		ExitIfError(node.Setup())
 		clearOldNodeInstalls()
-		Debugln("done setting up iojs")
+		Errln(" done.")
 	}
 }
 
-func clearOldNodeInstalls() {
+func updateNode() {
+	registry := node.Registry
+	node = gode.NewClient(AppDir)
+	node.Registry = registry
+	node.NodeVersion = nodeVersion
+	node.NpmVersion = npmVersion
+	SetupNode()
+}
+
+func getNodeInstalls() []string {
+	nodes := []string{}
 	files, _ := ioutil.ReadDir(AppDir)
 	for _, f := range files {
 		name := f.Name()
-		if name != node.NodeBase() && strings.HasPrefix(name, "iojs-v") {
+		if strings.HasPrefix(name, "iojs-v") {
+			nodes = append(nodes, name)
+		}
+	}
+	sort.Strings(nodes)
+	return nodes
+}
+
+func getLatestInstalledNodeVersion() string {
+	nodes := getNodeInstalls()
+	if len(nodes) == 0 {
+		return ""
+	}
+	return strings.Split(nodes[len(nodes)-1], "-")[1][1:]
+}
+
+func clearOldNodeInstalls() {
+	for _, name := range getNodeInstalls() {
+		if name != node.NodeBase() {
 			LogIfError(os.RemoveAll(filepath.Join(AppDir, name)))
 		}
 	}
