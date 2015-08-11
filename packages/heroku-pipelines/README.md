@@ -6,6 +6,8 @@ An experimental Heroku CLI plugin for [continuous delivery](http://en.wikipedia.
 
 This plugin is used to set up a collection of apps sharing a common codebase where the latest slug of one app can be promoted to the app(s) in the following stage. The promotion only copies the upstream build artifact and leaves the downstream app's config vars, add-ons, and Git repo untouched.
 
+Note: This is a second iteration on pipelines which is completely independent of the previous implementation. This plugin can be installed along side with the [previous one](https://github.com/heroku/heroku-pipeline). They will not conflict, nor interact at all. You will have to manually migrate your pipelines from the old experiment to the new one.
+
 ## How to install this plugin
 
 ```
