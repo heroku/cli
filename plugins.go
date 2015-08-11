@@ -14,8 +14,8 @@ import (
 	"strings"
 	"syscall"
 
-	"github.com/dickeyxxx/gode"
 	"github.com/dickeyxxx/golock"
+	"github.com/heroku/heroku-cli/gode"
 )
 
 // Plugin represents a javascript plugin

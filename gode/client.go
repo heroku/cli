@@ -39,10 +39,10 @@ func NewClient(rootPath string) *Client {
 // NodeBase returns the directory name for the node install
 func (c *Client) NodeBase() string {
 	switch {
-	case runtime.GOARCH == "386":
-		return "iojs-v" + c.NodeVersion + "-" + runtime.GOOS + "-ia32"
 	case runtime.GOARCH == "arm":
 		return "iojs-v" + c.NodeVersion + "-" + runtime.GOOS + "-armv7l"
+	case runtime.GOARCH == "386":
+		return "iojs-v" + c.NodeVersion + "-" + runtime.GOOS + "-x86"
 	default:
 		return "iojs-v" + c.NodeVersion + "-" + runtime.GOOS + "-x64"
 	}
