@@ -1,3 +1,9 @@
+4.21.0  2015-08-11
+==================
+Asynchronously update iojs versions
+Fixed auth:whoami for invalid api keys
+Updated iojs to 3.0.0
+
 4.20.12  2015-08-03
 ===================
 Added more info to user agent
