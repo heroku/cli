@@ -21,6 +21,7 @@ type Command struct {
 	FullHelp     string             `json:"fullHelp"`
 	Hidden       bool               `json:"hidden"`
 	NeedsApp     bool               `json:"needsApp"`
+	WantsApp     bool               `json:"wantsApp"`
 	NeedsAuth    bool               `json:"needsAuth"`
 	VariableArgs bool               `json:"variableArgs"`
 	Args         []Arg              `json:"args"`
