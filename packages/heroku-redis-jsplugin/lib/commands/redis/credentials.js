@@ -12,7 +12,7 @@ module.exports = {
   description: 'display credentials information',
   run: cli.command(function* (context, heroku) {
     let addonsFilter = api.make_addons_filter(context.args.database);
-    let addons = addonsFilter(yield heroku.apps(context.app).addons().list());
+    let addons = addonsFilter(yield heroku.apps(context.app).addons().listByApp());
     if (addons.length === 0) {
       cli.error('No Redis instances found.');
       process.exit(1);

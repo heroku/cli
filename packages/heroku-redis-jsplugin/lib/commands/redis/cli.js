@@ -107,7 +107,7 @@ module.exports = {
   run: cli.command(function* (context, heroku) {
     yield cli.confirmApp(context.app, context.flags.confirm, 'WARNING: Insecure action.\nAll data, including the Redis password, will not be encrypted.');
     let addonsFilter = api.make_addons_filter(context.args.database);
-    let addonsList = heroku.apps(context.app).addons().list();
+    let addonsList = heroku.apps(context.app).addons().listByApp();
     let addons = addonsFilter(yield addonsList);
     if (addons.length === 0) {
       cli.error('No Redis instances found.');

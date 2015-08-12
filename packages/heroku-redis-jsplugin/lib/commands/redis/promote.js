@@ -12,7 +12,7 @@ module.exports = {
   run: cli.command(function* (context, heroku) {
     let addonsFilter = api.make_addons_filter(context.args.database);
     let redisFilter = api.make_addons_filter('REDIS_URL');
-    let addonsList = heroku.apps(context.app).addons().list();
+    let addonsList = heroku.apps(context.app).addons().listByApp();
     let redis = redisFilter(yield addonsList);
     let addons = addonsFilter(yield addonsList);
     if (addons.length === 0) {

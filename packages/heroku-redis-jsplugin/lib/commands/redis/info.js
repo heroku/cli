@@ -11,7 +11,7 @@ module.exports = {
   args: [{name: 'database', optional: true}],
   description: 'gets information about redis',
   run: cli.command(function *(context, heroku) {
-    let addons = yield heroku.apps(context.app).addons().list();
+    let addons = yield heroku.apps(context.app).addons().listByApp();
     // filter out non-redis addons
     addons = api.make_addons_filter(context.args.database)(addons);
     // get info for each db

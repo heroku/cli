@@ -17,7 +17,7 @@ module.exports = {
       process.exit(1);
     }
     let addonsFilter = api.make_addons_filter(context.args.database);
-    let addons = addonsFilter(yield heroku.apps(context.app).addons().list());
+    let addons = addonsFilter(yield heroku.apps(context.app).addons().listByApp());
     if (addons.length === 0) {
       cli.error('No Redis instances found.');
       process.exit(1);
