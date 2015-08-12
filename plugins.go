@@ -49,7 +49,7 @@ func SetupNode() {
 		if node.IsSetup() {
 			return
 		}
-		Errf("setting up iojs-v%s...", node.NodeVersion)
+		Errf("Setting up iojs-v%s...", node.NodeVersion)
 		ExitIfError(node.Setup())
 		clearOldNodeInstalls()
 		Errln(" done.")
