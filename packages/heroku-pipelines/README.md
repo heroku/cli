@@ -26,7 +26,7 @@ Creating example pipeline... done
 Adding example to example pipeline as production... done
 ```
 
-#### Fork production into a new staging app
+#### Fork production into new admin and staging apps
 
 ```bash
 $ heroku fork --from example --to example-admin --skip-pg
