@@ -29,9 +29,11 @@ Adding example to example pipeline as production... done
 #### Fork production into a new staging app
 
 ```bash
-$ heroku fork -a example example-admin --remote admin
+$ heroku fork --from example --to example-admin --skip-pg
+$ git remote rename heroku admin
 ...
-$ heroku fork -a example example-staging --remote staging
+$ heroku fork --from example --to example-staging --skip-pg
+$ git remote rename heroku staging
 ...
 ```
 
