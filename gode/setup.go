@@ -4,10 +4,11 @@ import (
 	"archive/tar"
 	"compress/gzip"
 	"io"
-	"net/http"
 	"os"
 	"path/filepath"
 	"runtime"
+
+	"github.com/franela/goreq"
 )
 
 // IsSetup returns true if node is setup in the client's RootPath directory
@@ -36,7 +37,7 @@ func (c *Client) setupUnix() error {
 	if err != nil {
 		return err
 	}
-	resp, err := http.Get(c.nodeURL())
+	resp, err := goreq.Request{Uri: c.nodeURL()}.Do()
 	if err != nil {
 		return err
 	}
@@ -70,7 +71,7 @@ func (c *Client) setupWindows() error {
 
 func (c *Client) downloadFile(path, url string) error {
 	tmp := filepath.Join(c.tmpDir("download"), "file")
-	resp, err := http.Get(url)
+	resp, err := goreq.Request{Uri: url}.Do()
 	if err != nil {
 		return err
 	}
