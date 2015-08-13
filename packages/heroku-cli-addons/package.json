@@ -1,0 +1,24 @@
+{
+  "name": "heroku-cli-addons",
+  "version": "0.1.0",
+  "description": "`heroku addons:*` commands",
+  "main": "index.js",
+  "author": "Bo Jeanes @bjeanes",
+  "homepage": "https://github.com/heroku/heroku-cli-addons",
+  "repository": "https://github.com/heroku/heroku-cli-addons",
+  "bugs": {
+    "url": "https://github.com/heroku/heroku-cli-addons/issues"
+  },
+  "keywords": [
+    "heroku-plugin"
+  ],
+  "license": "ISC",
+  "dependencies": {
+    "co": "^4.6.0",
+    "heroku-cli-util": "^5.4.3",
+    "heroku-git": "^2.4.0",
+    "lodash": "^3.10.1",
+    "printf": "^0.2.3",
+    "tab": "^0.1.0"
+  }
+}
