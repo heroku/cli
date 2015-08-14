@@ -4,6 +4,7 @@ import (
 	"archive/tar"
 	"compress/gzip"
 	"io"
+	"net/http"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -71,7 +72,9 @@ func (c *Client) setupWindows() error {
 
 func (c *Client) downloadFile(path, url string) error {
 	tmp := filepath.Join(c.tmpDir("download"), "file")
-	resp, err := goreq.Request{Uri: url}.Do()
+	// TODO: make this work with goreq
+	// right now it fails because the body is closed for some reason
+	resp, err := http.Get(url)
 	if err != nil {
 		return err
 	}
