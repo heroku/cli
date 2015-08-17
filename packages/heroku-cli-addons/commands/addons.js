@@ -6,10 +6,12 @@ let printf = require('printf');
 let _      = require('lodash');
 let table  = require('../lib/table');
 
-let cyan = cli.color.cyan,
-    magenta = cli.color.magenta,
-    green = cli.color.green,
-    dim = cli.color.dim;
+let dim = cli.color.dim;
+let colorize = {
+    app:        cli.color.cyan,
+    attachment: cli.color.green,
+    addon:      cli.color.magenta,
+};
 
 
 // Gets *all* attachments and add-ons and filters locally because the API
@@ -80,11 +82,11 @@ function displayAll(addons) {
         columns: [{
             key:   'app.name',
             label: 'Owning App',
-            ansi:  magenta,
+            ansi:  colorize.app,
         }, {
             key:   'name',
             label: 'Add-on',
-            ansi:  cyan,
+            ansi:  colorize.addon,
         }, {
             key:   'plan.name',
             label: 'Plan',
@@ -100,10 +102,10 @@ function displayAll(addons) {
 
 function formatAttachment(attachment, app, isFirst) {
     let ch = isFirst ? '└' : '├';
-    let attName = [green(attachment.name)];
+    let attName = [colorize.attachment(attachment.name)];
 
     if(attachment.app.name != app) {
-        attName = dim(magenta(attachment.app.name) + '::') + attName;
+        attName = dim(colorize.app(attachment.app.name) + '::') + attName;
     }
 
     return printf(' %s─ %s', ch, attName);
@@ -124,7 +126,7 @@ function displayForApp(app, addons) {
         columns: [{
             key:   'name',
             label: 'Add-on',
-            ansi:  cyan,
+            ansi:  colorize.addon,
 
             // customize column width to factor in the attachment list
             calcWidth: nestedCalcWidther('name',
@@ -140,7 +142,7 @@ function displayForApp(app, addons) {
                 if(addon.app.name == app) {
                     return formatPrice(addon.plan.price);
                 } else {
-                    return dim(printf('(billed to %s app)', magenta(addon.app.name)));
+                    return dim(printf('(billed to %s app)', colorize.app(addon.app.name)));
                 }
             },
         }],
