@@ -52,7 +52,7 @@ function* addonGetter(api, app) {
         let inaccessibleAddon = {
             app: atts[0].addon.app,
             name: atts[0].addon.name,
-            plan: {name: '?'},
+            plan: {name: '?', price: {cents: '?', unit: 'month'}},
             attachments: atts
         };
 
@@ -65,7 +65,8 @@ function* addonGetter(api, app) {
 }
 
 function formatPrice(price) {
-    if(!price.cents) { return 'free'; }
+    if(!price.cents)       { return 'free'; }
+    if(price.cents == '?') { return '?'; }
 
     let fmt = price.cents % 100 == 0 ? '$%.0f/%s' : '$%.02f/%s'
     return printf(fmt, price.cents / 100, price.unit);
@@ -87,10 +88,12 @@ function displayAll(addons) {
         }, {
             key:   'plan.name',
             label: 'Plan',
+            ansi:  function(s) { return _.trimRight(s) == '?' ? dim(s) : s; },
         }, {
             key:       'plan.price',
             label:     'Price',
             formatter: formatPrice,
+            ansi:  function(s) { return _.trimRight(s) == '?' ? dim(s) : s; },
         }],
     });
 }

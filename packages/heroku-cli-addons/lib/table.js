@@ -24,7 +24,7 @@ function table(data, options) {
         col.formatter = col.formatter || function(cell) { return cell.toString(); };
         col.ansi      = col.ansi      || _.identity;
         col.calcWidth = col.calcWidth || function(row) {
-            return col.get(row).length;
+            return stripAnsi(col.get(row)).length;
         };
 
         col.get = col.get || function(row) {
