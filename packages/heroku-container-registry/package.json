@@ -1,11 +1,13 @@
 {
   "name": "heroku-docker",
-  "version": "0.0.24",
-  "description": "Docker plugin for the Heroku CLI",
+  "version": "1.0.0",
+  "topic": "docker",
+  "description": "Use Docker to build and deploy Heroku apps",
   "main": "index.js",
   "repository": "https://github.com/heroku/heroku-docker",
   "scripts": {
-    "test": "mocha --timeout 30000"
+    "test": "mocha --timeout 30000",
+    "depcheck": "depcheck || true"
   },
   "keywords": [
     "heroku",
@@ -16,10 +18,8 @@
   "author": "Hunter Loftis <hunter@hunterloftis.com>",
   "license": "ISC",
   "dependencies": {
-    "chai": "^2.3.0",
-    "colors": "^1.0.3",
+    "camelcase": "1.0.2",
     "dotenv": "^1.1.0",
-    "glob": "^5.0.5",
     "heroku-cli-util": "^1.8.1",
     "heroku-client": "^1.9.1",
     "is-there": "^1.1.0",
@@ -27,16 +27,12 @@
     "mkdirp": "^0.5.0",
     "mocha": "^2.2.4",
     "node-uuid": "^1.4.3",
-    "open": "0.0.5",
-    "progress": "^1.1.8",
-    "prototypes": "^0.3.4",
+    "progress": "1.1.8",
     "request": "2.53.0",
-    "request-progress": "^0.3.1",
     "superagent": "^0.21.0",
-    "yamljs": "^0.2.1"
+    "yamljs": "0.2.2"
   },
   "devDependencies": {
-    "fs-extra": "^0.18.2",
-    "uuid": "^2.0.1"
+    "depcheck": "0.4.7"
   }
 }

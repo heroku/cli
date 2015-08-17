@@ -1,14 +1,19 @@
 var cli = require('heroku-cli-util');
 
 module.exports = function safely(fn) {
-  return function() {
-    try {
-      var result = fn.apply(this, arguments);
-      if (result && result.catch) result.catch(onError);
-      return result;
+  return function(context) {
+    if (context.debug) {
+      return fn(context);
     }
-    catch (e) {
-      onError(e);
+    else {
+      try {
+        var result = fn(context);
+        if (result && result.catch) result.catch(onError);
+        return result;
+      }
+      catch (e) {
+        onError(e);
+      }
     }
   }
 };

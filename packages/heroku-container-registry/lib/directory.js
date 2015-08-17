@@ -4,31 +4,9 @@ var path = require('path');
 var yaml = require('yamljs');
 
 module.exports = {
-  getFormattedEnvArgComponent: getFormattedEnvArgComponent,
-  readProcfile: readProcfile
+  readProcfile: readProcfile,
+  determineMountDir: determineMountDir
 };
-
-function getFormattedEnvArgComponent(cwd) {
-  var envParameters = [];
-
-  try {
-    var dotenvPath = path.join(cwd, '.env');
-    var dotenvEntries = dotenv.parse(fs.readFileSync(dotenvPath));
-    envParameters = Object.keys(dotenvEntries).map(function(key) {
-      return '-e ' + key + '=' + dotenvEntries[key];
-    });
-  }
-  catch (e) {
-    if (e.code === 'ENOENT') {
-      // no .env file
-    }
-    else {
-      throw e;
-    }
-  }
-
-  return envParameters.join(' ');
-}
 
 function readProcfile(cwd) {
   try {
@@ -36,4 +14,9 @@ function readProcfile(cwd) {
     return yaml.load(procfilePath);
   }
   catch (e) {}
+}
+
+function determineMountDir(dir) {
+  var appJSON = JSON.parse(fs.readFileSync(path.join(dir, 'app.json'), { encoding: 'utf8' }));
+  return path.join('/app/user', appJSON.mount_dir || '');
 }
