@@ -38,5 +38,6 @@ For now, since this isn't published on `npm`, you can install it like so:
 ``` sh-session
 $ git clone https://github.com/heroku/heroku-cli-addons.git heroku-cli-addons
 $ cd heroku-cli-addons
+$ npm install                # dependencies
 $ heroku plugins:link
 ```
