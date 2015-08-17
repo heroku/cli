@@ -4,6 +4,7 @@ let cli    = require('heroku-cli-util');
 let co     = require('co');
 let printf = require('printf');
 let _      = require('lodash');
+let table  = require('../lib/table');
 
 let cyan = cli.color.cyan,
     magenta = cli.color.magenta,
@@ -84,30 +85,19 @@ function displayAll(addons) {
 }
 
 function displayForApp(app, addons) {
-    let fmt = [
-        cyan('%-40s'),    // addon
-        '%-30s',          // plan
-        '%-10s\n'         // price
-    ].join(' ');
-
-    printf(process.stdout, cli.color.bold(cli.color.stripColor(fmt)), 'Add-on', 'Plan', 'Price');
-    console.log();
-    addons.forEach(function(addon) {
-        printf(process.stdout, fmt, addon.name, addon.plan.name, formatPrice(addon.plan.price));
-
-        addon.attachments.forEach(function(attachment, idx) {
-            let ch = (idx == addon.attachments.length - 1) ? '└' : '├';
-            let attName = [cli.color.green(attachment.name)];
-
-            if(app ? (attachment.app.name != app) : (attachment.app.name != addon.app.name)) {
-                attName.unshift(magenta(attachment.app.name))
-            }
-
-            console.log(ch + '── ' + attName.join('::'));
-        });
-
-        console.log();
-    });
+    table(addons, {
+        columns: [{
+            key: 'name',
+            label: 'Add-on',
+        }, {
+            key: 'plan.name',
+            label: 'Plan',
+        }, {
+            key: 'plan.price',
+            label: 'Price',
+            formatter: formatPrice,
+        }]
+    })
 }
 
 let run = cli.command(function(ctx, api) {
