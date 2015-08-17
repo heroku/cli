@@ -49,7 +49,8 @@ function* addonGetter(api, app) {
 function formatPrice(price) {
     if(!price.cents) { return 'free'; }
 
-    return '$' + (price.cents / 100.0).toFixed(2) + '/' + price.unit;
+    let fmt = price.cents % 100 == 0 ? '$%.0f/%s' : '$%.02f/%s'
+    return printf(fmt, price.cents / 100, price.unit);
 };
 
 function displayAll(addons) {
