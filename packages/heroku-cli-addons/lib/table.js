@@ -1,12 +1,15 @@
 'use strict';
 
-let printf = require('printf');
-let _      = require('lodash');
+let stripAnsi = require('heroku-cli-util').color.stripColor;
+let printf    = require('printf');
+let _         = require('lodash');
 
 function table(data, options) {
-    options     = options || {};
-    let colSep  = options.colSep || ' ';
-    let printRow = function(cells) {
+    options        = options             || {};
+    let colSep     = options.colSep      || '  ';
+    let after      = options.after       || _.noop;
+    let headerAnsi = _.ary(options.headerAnsi || _.identity, 1);
+    let printRow   = function(cells) {
         console.log(cells.join(colSep));
     };
 
@@ -18,21 +21,19 @@ function table(data, options) {
 
     for(let col of columns) {
         col.label     = col.label     || col.key.toString();
-        col.after     = col.after     || function() {};
         col.formatter = col.formatter || function(cell) { return cell.toString(); };
+        col.ansi      = col.ansi      || _.identity;
         col.calcWidth = col.calcWidth || function(row) {
             return col.get(row).length;
         };
 
-        col.get = function(row) {
+        col.get = col.get || function(row) {
             let getValue = typeof col.key === 'string'
                 ? _.property(col.key)
                 : col.key;
             return col.formatter(getValue(row));
         };
     };
-
-    let afterFn = options.after || function(){};
 
     // analytics about data
     for(let row of data) {
@@ -43,15 +44,17 @@ function table(data, options) {
 
     // printing
     let headers = columns.map(function(col) { return printf('%-*s', col.label, col.width);});
-    printRow(headers);
-    printRow(headers.map(function(hdr) { return hdr.replace(/./g, '-'); }));
+    printRow(headers.map(headerAnsi));
+    console.log()
+    // printRow(headers.map(function(hdr) { return hdr.replace(/./g, '-'); }));
 
     for(let row of data) {
         let rowToPrint = columns.map(function(col) {
-            return printf('%-*s', col.get(row), col.width);
+            return col.ansi(printf('%-*s', col.get(row), col.width));
         });
 
         printRow(rowToPrint);
+        after(row, options);
     };
 }
 

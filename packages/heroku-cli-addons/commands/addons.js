@@ -8,25 +8,17 @@ let table  = require('../lib/table');
 
 let cyan = cli.color.cyan,
     magenta = cli.color.magenta,
-    green = cli.color.green;
+    green = cli.color.green,
+    dim = cli.color.dim;
 
+
+// Gets *all* attachments and add-ons and filters locally because the API
+// returns *owned* items not associated items.
 function* addonGetter(api, app) {
     let attachments, addons;
 
-    if(app) {
-        attachments = api.apps(app).addonAttachments().listByApp();
-    //     addons      = api.request({
-    //         method:  'GET',
-    //         path:    ['', 'apps', app, 'addons'].join('/'),
-    //         headers: {'Accept-Expansion': 'addon_service,plan'}
-    //     });
-    } else {
-        attachments = api.addonAttachments().list();
-    }
-
-    // have to get all for now because API only returns owned add-ons at the
-    // /apps/:app/addons endpoint
-    addons      = api.request({
+    attachments = api.addonAttachments().list();
+    addons = api.request({
         method:  'GET',
         path:    '/addons',
         headers: {'Accept-Expansion': 'addon_service,plan'}
@@ -35,13 +27,38 @@ function* addonGetter(api, app) {
     // Get addons and attachments in parallel
     let items = yield [addons, attachments];
 
+    function isRelevantToApp(addon) {
+        return !app
+            || addon.app.name == app
+            || _.any(addon.attachments, function(att) { return att.app.name == app });
+    }
+
     attachments = _.groupBy(items[1], _.property('addon.id'));
-    addons      = items[0].filter(function(addon) {
-        return !!attachments[addon.id];
+
+    addons = [];
+    items[0].forEach(function(addon) {
+        addon.attachments = attachments[addon.id];
+
+        // TODO: display remaining attachments (i.e., for which we can't access
+        //       add-on details)
+        delete attachments[addon.id];
+
+        if(isRelevantToApp(addon)) {
+            addons.push(addon);
+        }
     });
 
-    addons.forEach(function(addon) {
-        addon.attachments = attachments[addon.id];
+    _.values(attachments).forEach(function(atts) {
+        let inaccessibleAddon = {
+            app: atts[0].addon.app,
+            name: atts[0].addon.name,
+            plan: {name: '?'},
+            attachments: atts
+        };
+
+        if(isRelevantToApp(inaccessibleAddon)) {
+            addons.push(inaccessibleAddon);
+        }
     });
 
     return addons;
@@ -55,59 +72,91 @@ function formatPrice(price) {
 };
 
 function displayAll(addons) {
-    let fmt = [
+    addons = _.sortByAll(addons, 'app.name', 'plan.name', 'addon.name')
 
-        magenta('%-30s'), // app
-        cyan('%-40s'),    // addon
-        '%-30s',          // plan
-        '%-10s\n'         // price
-    ].join(' ');
-
-    printf(process.stdout, cli.color.bold(cli.color.stripColor(fmt)), 'App', 'Add-on', 'Plan', 'Price');
-    console.log();
-    addons.forEach(function(addon) {
-        let displayApp = addon.app.name == app ? '' : addon.app.name
-        printf(process.stdout, fmt, displayApp, addon.name, addon.plan.name, formatPrice(addon.plan.price));
-
-        addon.attachments.forEach(function(attachment, idx) {
-            let ch = (idx == addon.attachments.length - 1) ? '└' : '├';
-            let attName = [cli.color.green(attachment.name)];
-
-            if(app ? (attachment.app.name != app) : (attachment.app.name != addon.app.name)) {
-                attName.unshift(magenta(attachment.app.name))
-            }
-
-            console.log(ch + '── ' + attName.join('::'));
-        });
-
-        console.log();
+    table(addons, {
+        headerAnsi: cli.color.bold,
+        columns: [{
+            key:   'app.name',
+            label: 'Owning App',
+            ansi:  magenta,
+        }, {
+            key:   'name',
+            label: 'Add-on',
+            ansi:  cyan,
+        }, {
+            key:   'plan.name',
+            label: 'Plan',
+        }, {
+            key:       'plan.price',
+            label:     'Price',
+            formatter: formatPrice,
+        }],
     });
 }
 
+function formatAttachment(attachment, app, isFirst) {
+    let ch = isFirst ? '└' : '├';
+    let attName = [green(attachment.name)];
+
+    if(attachment.app.name != app) {
+        attName = dim(magenta(attachment.app.name) + '::') + attName;
+    }
+
+    return printf(' %s─ %s', ch, attName);
+}
+
 function displayForApp(app, addons) {
+    let nestedCalcWidther = function(path, nestedPath, fn) {
+        return function(row) {
+            let nestedWidth = _.max(_.get(row, nestedPath).map(_.compose(_.property('length'),
+                                                                         cli.color.stripColor,
+                                                                         fn)));
+            return Math.max(_.get(row, path).length, nestedWidth);
+        }
+    };
+
     table(addons, {
+        headerAnsi: cli.color.bold,
         columns: [{
-            key: 'name',
+            key:   'name',
             label: 'Add-on',
+            ansi:  cyan,
+
+            // customize column width to factor in the attachment list
+            calcWidth: nestedCalcWidther('name',
+                                         'attachments',
+                                         _.partial(formatAttachment, _, app)),
         }, {
-            key: 'plan.name',
+            key:   'plan.name',
             label: 'Plan',
+            ansi:  function(s) { return _.trimRight(s) == '?' ? dim(s) : s; }
         }, {
-            key: 'plan.price',
-            label: 'Price',
-            formatter: formatPrice,
-        }]
+            label:     'Price',
+            get: function(addon) {
+                if(addon.app.name == app) {
+                    return formatPrice(addon.plan.price);
+                } else {
+                    return dim(printf('(billed to %s app)', magenta(addon.app.name)));
+                }
+            },
+        }],
+
+        after: function(addon, options) {
+            addon.attachments.forEach(function(attachment, idx) {
+                let isFirst = (idx == addon.attachments.length - 1)
+                console.log(formatAttachment(attachment, app, isFirst));
+            });
+        }
     })
 }
 
 let run = cli.command(function(ctx, api) {
     return co(function*() {
-        let addons = yield co(addonGetter(api, ctx.app));
-
         if(!ctx.flags.all && ctx.app) {
-            displayForApp(ctx.app, addons);
+            displayForApp(ctx.app, yield co(addonGetter(api, ctx.app)));
         } else {
-            displayAll(addons);
+            displayAll(yield co(addonGetter(api)));
         }
     });
 });
