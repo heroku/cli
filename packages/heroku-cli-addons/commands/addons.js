@@ -2,33 +2,12 @@
 
 let cli    = require('heroku-cli-util');
 let co     = require('co');
-let exec   = require('child_process').exec;
 let printf = require('printf');
 let _      = require('lodash');
 
 let cyan = cli.color.cyan,
     magenta = cli.color.magenta,
     green = cli.color.green;
-
-// If needsApp is false, the app information isn't passed in even when it *is*
-// present but if needsApp is true, the command doesn't run when the information
-// is ommitted. So, we have to manually discover the app ourselves:
-function resolveApp(ctx, cb) {
-    let app = ctx.app || ctx.flags.app || process.env.HEROKU_APP;
-
-    if(app) {
-        cb(null, app);
-    } else {
-        exec('git config --local remote.heroku.url', {cwd: ctx.cwd}, function(e, out, _) {
-            if(e) {
-                cb(null, undefined);
-            } else {
-                app = out.match(/([^\/]+)\.git$/m)[1];
-                cb(null, app);
-            }
-        })
-    }
-};
 
 function* addonGetter(api, app) {
     let attachments, addons;
