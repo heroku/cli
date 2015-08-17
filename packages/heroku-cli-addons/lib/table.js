@@ -45,8 +45,7 @@ function table(data, options) {
     // printing
     let headers = columns.map(function(col) { return printf('%-*s', col.label, col.width);});
     printRow(headers.map(headerAnsi));
-    console.log()
-    // printRow(headers.map(function(hdr) { return hdr.replace(/./g, '-'); }));
+    printRow(headers.map(function(hdr) { return hdr.replace(/./g, '─'); }));
 
     for(let row of data) {
         let rowToPrint = columns.map(function(col) {
