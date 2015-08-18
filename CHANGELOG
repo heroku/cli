@@ -1,3 +1,7 @@
+4.21.4  2015-08-18
+==================
+Fix staging urls with goreq
+
 4.21.3  2015-08-14
 ==================
 Fix windows iojs download
