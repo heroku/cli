@@ -4,14 +4,34 @@ let stripAnsi = require('heroku-cli-util').color.stripColor;
 let printf    = require('printf');
 let _         = require('lodash');
 
+let defaults = {
+    colSep:     '  ',
+    after:      _.noop,
+    headerAnsi: _.identity,
+    printLine:  console.log,
+    printRow:   function(cells) {
+        this.printLine(cells.join(this.colSep));
+    }
+};
+
+let colDefaults = {
+    ansi:      _.identity,
+    formatter: _.partialRight(_.result, 'toString'),
+    width:     0,
+    label:     function() { return this.key.toString(); },
+
+    calcWidth: function(row) {
+        return stripAnsi(this.get(row)).length;
+    },
+
+    get: function(row) {
+        return this.formatter(_.get(row, _.result(this, 'key')));
+    },
+}
+
+
 function table(data, options) {
-    options        = options             || {};
-    let colSep     = options.colSep      || '  ';
-    let after      = options.after       || _.noop;
-    let headerAnsi = _.ary(options.headerAnsi || _.identity, 1);
-    let printRow   = function(cells) {
-        console.log(cells.join(colSep));
-    };
+    _.defaults(options, defaults);
 
     let columns = options.columns ||
         _.keys(data[0] || {})
@@ -20,42 +40,32 @@ function table(data, options) {
         });
 
     for(let col of columns) {
-        col.label     = col.label     || col.key.toString();
-        col.formatter = col.formatter || function(cell) { return cell.toString(); };
-        col.ansi      = col.ansi      || _.identity;
-        col.calcWidth = col.calcWidth || function(row) {
-            return stripAnsi(col.get(row)).length;
-        };
-
-        col.get = col.get || function(row) {
-            let getValue = typeof col.key === 'string'
-                ? _.property(col.key)
-                : col.key;
-            return col.formatter(getValue(row));
-        };
+        _.defaults(col, colDefaults);
     };
 
     // analytics about data
     for(let row of data) {
         for(let col of columns) {
-            col.width = Math.max(col.label.length, col.width || 0, col.calcWidth(row));
+            col.width = Math.max(col.label.length, col.width, col.calcWidth(row));
         };
     };
 
     // printing
-    let headers = columns.map(function(col) { return printf('%-*s', col.label, col.width);});
-    printRow(headers.map(headerAnsi));
-    printRow(headers.map(function(hdr) { return hdr.replace(/./g, '─'); }));
+    let headers = columns.map(function(col) {
+        return printf('%-*s', _.result(col, 'label'), col.width);
+    });
+
+    options.printRow(headers.map(_.ary(options.headerAnsi, 1)));
+    options.printRow(headers.map(function(hdr) { return hdr.replace(/./g, '─'); }));
 
     for(let row of data) {
         let rowToPrint = columns.map(function(col) {
             return col.ansi(printf('%-*s', col.get(row), col.width));
         });
 
-        printRow(rowToPrint);
-        after(row, options);
+        options.printRow(rowToPrint);
+        options.after(row, options);
     };
 }
-
 
 module.exports = table;

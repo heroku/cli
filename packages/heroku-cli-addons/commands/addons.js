@@ -4,7 +4,7 @@ let cli    = require('heroku-cli-util');
 let co     = require('co');
 let printf = require('printf');
 let _      = require('lodash');
-let table  = require('../lib/table');
+let _table  = require('../lib/table');
 
 let dim = cli.color.dim;
 let colorize = {
@@ -13,6 +13,11 @@ let colorize = {
     addon:      cli.color.magenta,
 };
 
+function table(data, options) {
+    return _table(data, _.merge(options, {
+        printLine: cli.log
+    }));
+}
 
 // Gets *all* attachments and add-ons and filters locally because the API
 // returns *owned* items not associated items.
