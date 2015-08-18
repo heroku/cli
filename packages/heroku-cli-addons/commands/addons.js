@@ -184,13 +184,14 @@ let run = cli.command(function(ctx, api) {
     });
 });
 
+let topic = '_addons';
 module.exports = {
-    topic:     '_addons',
+    topic:     topic,
     default:   true,
     needsAuth: true,
     preauth:   true,
     wantsApp:  true,
-    args:      [{name: 'addon', optional: true}],
+    // args:      [{name: 'addon', optional: true}],
     flags:     [{
         name:        'all',
         char:        'A',
@@ -199,7 +200,37 @@ module.exports = {
     }],
 
     run:         run,
-    usage:       'heroku addons [--all|--app APP]',
+    usage:       `${topic} [--all|--app APP]`,
     description: 'Lists your add-ons and attachments',
-    help:        ``.replace(/^\s*/mg,''),
+    help:        `The default filter applied depends on whether you are in a Heroku app
+directory. If so, the --app flag is implied. If not, the default of --all
+is implied. Explicitly providing either flag overrides the default
+behaviour.
+
+Examples:
+
+  $ heroku ${topic} --all
+  $ heroku ${topic} --app acme-inc-website
+
+Identifying specific add-ons:
+
+  Add-ons have canonical names (ADDON_NAME in these command help texts).
+  They also application-specific names called aliases or attachments. In
+  many cases, these names can be used interchangeably when unambiguous.
+
+  For example, given a fictional \`slowdb\` add-on named \`slowdb-cubed-1531\`
+  attached as \`FOO_DB\` to \`app1\` and BAR_DB to \`app2\`, the following
+  invocations are considered equivalent:
+
+  $ heroku addons:upgrade slowdb             slowdb:premium
+  $ heroku addons:upgrade --app app1 FOO_DB  slowdb:premium
+  $ heroku addons:upgrade app1::FOO_DB       slowdb:premium
+  $ heroku addons:upgrade app2::BAR_DB       slowdb:premium
+  $ heroku addons:upgrade acme-inc-datastore slowdb:premium
+
+  If the name used is ambiguous (e.g. if you used \`slowdb\` with more than
+  one add-on of that type installed), the command will error due to
+  ambiguity and a more specific identifier will need to be chosen.
+
+  For more information, read https://devcenter.heroku.com/articles/add-ons.`,
 };
