@@ -97,6 +97,7 @@ function displayAll(addons) {
             formatter: formatPrice,
             ansi:  function(s) { return _.trimRight(s) == '?' ? dim(s) : s; },
         }],
+
     });
 }
 
@@ -120,6 +121,13 @@ function displayForApp(app, addons) {
             return Math.max(_.get(row, path).length, nestedWidth);
         }
     };
+
+    function isForeignApp(attOrAddon) { return attOrAddon.app.name != app }
+
+    addons = _.sortByAll(addons,
+                         isForeignApp,
+                         'plan.name',
+                         'addon.name');
 
     table(addons, {
         headerAnsi: cli.color.bold,
@@ -148,7 +156,12 @@ function displayForApp(app, addons) {
         }],
 
         after: function(addon, options) {
-            addon.attachments.forEach(function(attachment, idx) {
+            let atts = _.sortByAll(addon.attachments,
+                                   isForeignApp,
+                                   'app.name',
+                                   'name');
+
+            atts.forEach(function(attachment, idx) {
                 let isFirst = (idx == addon.attachments.length - 1)
                 console.log(formatAttachment(attachment, app, isFirst));
             });
