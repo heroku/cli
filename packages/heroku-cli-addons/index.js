@@ -1,8 +1,8 @@
 'use strict';
 
 exports.topic = {
-    name: 'addons',
-    description: '...',
+    name: '_addons',
+    description: 'manage add-ons',
 };
 
 exports.commands = [
