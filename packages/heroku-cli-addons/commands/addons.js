@@ -106,14 +106,21 @@ function displayAll(addons) {
     });
 }
 
-function formatAttachment(attachment, app, isFirst) {
-    let ch = isFirst ? '└' : '├';
-    let attName = [colorize.attachment(attachment.name)];
+function formatAttachment(attachment, showApp) {
+    if(showApp === undefined) { showApp = true; }
 
-    if(attachment.app.name != app) {
-        attName = dim(colorize.app(attachment.app.name) + '::') + attName;
+    let attName = colorize.attachment(attachment.name);
+
+    if(showApp) {
+        return dim(colorize.app(attachment.app.name) + '::') + attName;
+    } else {
+        return attName;
     }
+}
 
+function renderAttachment(attachment, app, isFirst) {
+    let ch = isFirst ? '└' : '├';
+    let attName = formatAttachment(attachment, attachment.app.name != app);
     return printf(' %s─ %s', ch, attName);
 }
 
@@ -142,9 +149,10 @@ function displayForApp(app, addons) {
             ansi:  colorize.addon,
 
             // customize column width to factor in the attachment list
+            // TODO: make this just be `width`, which can either be a static number or a function which returns a number
             calcWidth: nestedCalcWidther('name',
                                          'attachments',
-                                         _.partial(formatAttachment, _, app)),
+                                         _.partial(renderAttachment, _, app)),
         }, {
             key:   'plan.name',
             label: 'Plan',
@@ -168,7 +176,7 @@ function displayForApp(app, addons) {
 
             atts.forEach(function(attachment, idx) {
                 let isFirst = (idx == addon.attachments.length - 1)
-                console.log(formatAttachment(attachment, app, isFirst));
+                console.log(renderAttachment(attachment, app, isFirst));
             });
         }
     })
