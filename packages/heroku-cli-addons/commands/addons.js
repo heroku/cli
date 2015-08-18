@@ -167,7 +167,7 @@ let run = cli.command(function(ctx, api) {
 });
 
 module.exports = {
-    topic:     'addons',
+    topic:     '_addons',
     default:   true,
     needsAuth: true,
     preauth:   true,

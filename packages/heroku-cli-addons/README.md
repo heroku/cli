@@ -1,13 +1,16 @@
 # heroku-cli-addons
 
-This re-implements the `heroku addons [--app APP|--all]` command in Node with a new
-UX which aims to make the concepts clearer and the relationships between them more
-accessible.
+This re-implements the `heroku addons [--app APP|--all]` command in Node with a
+new UX which aims to make the concepts clearer and the relationships between
+them more accessible.
+
+> Note: the commands are in the `_addons` namespace to avoid conflicting with
+> the regular `addons` namespace until completed.
 
 E.g.:
 
 ``` sh-session
-$ heroku addons -a addons-reports
+$ heroku _addons -a addons-reports
 Add-on                              Plan                              Price
 ──────────────────────────────────  ────────────────────────────────  ───────────────────────────
 flowing-tidily-5466                 heroku-postgresql:kappa           (billed to addons app)
@@ -42,7 +45,8 @@ $ npm install                # dependencies
 $ heroku plugins:link
 ```
 
-If you run into any problems, open an issue. You can remove the plugin in the meantime if it's borked:
+If you run into any problems, open an issue. You can remove the plugin in the
+meantime if it's borked:
 
 ``` sh-session
 $ rm ~/.heroku/node_modules/heroku-cli-addons
