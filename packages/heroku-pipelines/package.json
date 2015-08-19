@@ -18,7 +18,7 @@
   "dependencies": {
     "bluebird": "^2.9.34",
     "co": "^4.5.4",
-    "heroku-cli-util": "^5.4.4",
+    "heroku-cli-util": "^5.4.5",
     "inflection": "^1.7.1",
     "inquirer": "^0.8.5",
     "string-just": "0.0.2",
