@@ -4,6 +4,7 @@ let cli = require('heroku-cli-util');
 let co  = require('co');
 let inquirer = require("inquirer");
 let infer = require('../../lib/infer');
+let disambiguate = require('../../lib/disambiguate');
 
 module.exports = {
   topic: 'pipelines',
@@ -23,6 +24,8 @@ module.exports = {
     let guesses = infer(context.app);
     let questions = [];
 
+    let pipeline = yield disambiguate(heroku, context.args.pipeline);
+
     if (context.flags.stage) {
       stage = context.flags.stage;
     } else {
@@ -40,7 +43,7 @@ module.exports = {
         let promise = heroku.request({
           method: 'POST',
           path: `/apps/${context.app}/pipeline-couplings`,
-          body: {pipeline: {id: context.args.pipeline}, stage: stage},
+          body: {pipeline: {id: pipeline.id}, stage: stage},
           headers: { 'Accept': 'application/vnd.heroku+json; version=3.pipelines' }
         }); // heroku.apps(app_id).pipline_couplings().create(body);
 

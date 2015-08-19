@@ -10,7 +10,7 @@ module.exports = {
   needsApp: true,
   needsAuth: true,
   flags: [
-    {name: 'stage', char: 's', description: 'new stage of app', hasValue: true, optional: false}
+    {name: 'stage', char: 's', description: 'new stage of app', hasValue: true}
   ],
   run: cli.command(function* (context, heroku) {
     if(!context.flags.stage) {

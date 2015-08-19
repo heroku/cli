@@ -14,18 +14,17 @@ describe('pipelines:create', function () {
     let pipeline          = {name: 'example', id: '0123'};
     let pipeline_coupling = { id: '0123', stage: "production" };
 
-    nock('https://api.heroku.com')
-    .post('/pipelines')
-    .reply(201, pipeline);
-
-    nock('https://api.heroku.com')
-    .post('/apps/example/pipeline-couplings')
-    .reply(201, pipeline_coupling);
+    let heroku = nock('https://api.heroku.com')
+      .post('/pipelines')
+      .reply(201, pipeline)
+      .post('/apps/example/pipeline-couplings')
+      .reply(201, pipeline_coupling);
 
     return cmd.run({app: 'example', args: {name: 'example'}, flags: {stage: 'production'}})
     .then(function () {
-      cli.stderr.should.contain('example');
-      cli.stderr.should.contain('production');
+      cli.stderr.should.contain('Creating example pipeline... done');
+      cli.stderr.should.contain('Adding example to example pipeline as production... done');
+      heroku.done();
     });
   });
 });

@@ -2,18 +2,19 @@
 
 let cli   = require('heroku-cli-util');
 let nock  = require('nock');
-let cmd   = require('../../../commands/pipelines/info');
+let cmd   = require('../../../commands/pipelines/add');
 
-describe('pipelines:info', function () {
+describe('pipelines:create', function () {
   beforeEach(function () {
     cli.mockConsole();
   });
 
-  it('displays the pipeline info and apps', function () {
+  it('displays the right messages', function () {
     let self      = this;
     let pipeline  = {name: 'example', id: '0123'};
     let pipelines = [pipeline];
     let apps      = [{name: 'example-staging', coupling: {stage: 'staging'}, pipeline: pipeline}, {name: 'example', coupling: {stage: 'production'}, pipeline: pipeline}, {name: 'example-admin', coupling: {stage: 'production'}, pipeline: pipeline}];
+    let pipeline_coupling = { id: '0123', stage: "production" };
 
     nock('https://api.heroku.com')
       .get('/pipelines')
@@ -21,13 +22,12 @@ describe('pipelines:info', function () {
       .reply(200, pipelines);
 
     nock('https://api.heroku.com')
-      .get('/pipelines/0123/apps')
-      .reply(200, apps);
+      .post('/apps/example/pipeline-couplings')
+      .reply(201, pipeline_coupling);
 
-    return cmd.run({args: {pipeline: 'example'}})
+    return cmd.run({app: 'example', args: {pipeline: 'example'}, flags: {stage: 'production'}})
     .then(function () {
-      cli.stdout.should.contain('Staging:');
-      cli.stdout.should.contain('example-staging');
+      cli.stderr.should.contain('Adding example to example pipeline as production... done');
     });
   });
 });

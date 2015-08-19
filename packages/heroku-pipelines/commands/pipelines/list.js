@@ -1,7 +1,6 @@
 'use strict';
 
 let cli = require('heroku-cli-util');
-//let co  = require('co');
 
 module.exports = {
   topic: 'pipelines',

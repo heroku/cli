@@ -2,6 +2,7 @@
 
 let cli = require('heroku-cli-util');
 let co  = require('co');
+let disambiguate = require('../../lib/disambiguate');
 
 module.exports = {
   topic: 'pipelines',
@@ -12,6 +13,8 @@ module.exports = {
   needsAuth: true,
   run: cli.command(function* (context, heroku) {
     var name;
+
+    let pipeline = yield disambiguate(heroku, context.args.pipeline);
 
     name = context.app;
     cli.log(`Comparing ${context.app} to master... done`)

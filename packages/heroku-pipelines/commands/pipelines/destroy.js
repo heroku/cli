@@ -1,6 +1,7 @@
 'use strict';
 
 let cli = require('heroku-cli-util');
+let disambiguate = require('../../lib/disambiguate');
 
 module.exports = {
   topic: 'pipelines',
@@ -13,13 +14,13 @@ module.exports = {
     {name: 'pipeline', description: 'name of pipeline', optional: false}
   ],
   run: cli.command(function* (context, heroku) {
+    let pipeline = yield disambiguate(heroku, context.args.pipeline);
     let promise = heroku.request({
       method: 'DELETE',
-      path: `/pipelines/${context.args.pipeline}`,
+      path: `/pipelines/${pipeline.id}`,
       body: {name: context.args.name},
       headers: { 'Accept': 'application/vnd.heroku+json; version=3.pipelines' }
     }); // heroku.pipelines(pipeline).destroy(body);
-    let pipeline = yield cli.action(`Destroying ${context.args.pipeline} pipeline`, promise);
-    cli.hush(pipeline);
+    pipeline = yield cli.action(`Destroying ${context.args.pipeline} pipeline`, promise);
   })
 };

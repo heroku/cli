@@ -55,7 +55,6 @@ module.exports = {
           headers: { 'Accept': 'application/vnd.heroku+json; version=3.pipelines' }
         }); // heroku.pipelines().create({name: name});
         let pipeline = yield cli.action(`Creating ${name} pipeline`, promise);
-        cli.hush(pipeline);
         promise = heroku.request({
           method: 'POST',
           path: `/apps/${context.app}/pipeline-couplings`,
@@ -63,7 +62,6 @@ module.exports = {
           headers: { 'Accept': 'application/vnd.heroku+json; version=3.pipelines' }
         }); // heroku.apps(app_id).pipline_couplings().create(body);
         let coupling = yield cli.action(`Adding ${context.app} to ${pipeline.name} pipeline as ${stage}`, promise);
-        cli.hush(coupling);
       });
     });
   })

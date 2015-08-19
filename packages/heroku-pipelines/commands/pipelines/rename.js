@@ -1,6 +1,7 @@
 'use strict';
 
 let cli = require('heroku-cli-util');
+let disambiguate = require('../../lib/disambiguate');
 
 module.exports = {
   topic: 'pipelines',
@@ -14,13 +15,13 @@ module.exports = {
     {name: 'name', description: 'new name of pipeline', optional: false}
   ],
   run: cli.command(function* (context, heroku) {
+    let pipeline = yield disambiguate(heroku, context.args.pipeline);
     let promise = heroku.request({
       method: 'PATCH',
-      path: `/pipelines/${context.args.pipeline}`,
+      path: `/pipelines/${pipeline.id}`,
       body: {name: context.args.name},
       headers: { 'Accept': 'application/vnd.heroku+json; version=3.pipelines' }
     }); // heroku.pipelines(pipeline).update(body);
-    let pipeline = yield cli.action(`Renaming ${context.args.pipeline} pipeline to ${context.args.name}`, promise);
-    cli.hush(pipeline);
+    pipeline = yield cli.action(`Renaming ${pipeline.name} pipeline to ${context.args.name}`, promise);
   })
 };
