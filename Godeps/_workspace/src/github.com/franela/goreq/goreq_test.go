@@ -878,7 +878,7 @@ func TestRequest(t *testing.T) {
 				req.Do()
 			})
 			g.It("Should change transport TLS config if Request.Insecure is set", func() {
-				ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				ts := httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 					w.WriteHeader(200)
 				}))
 				defer ts.Close()
@@ -890,10 +890,30 @@ func TestRequest(t *testing.T) {
 				}
 				res, _ := req.Do()
 
-				Expect(DefaultTransport.(*http.Transport).TLSClientConfig.InsecureSkipVerify).Should(Equal(true))
+				Expect(DefaultClient.Transport.(*http.Transport).TLSClientConfig.InsecureSkipVerify).Should(Equal(true))
 				Expect(res.StatusCode).Should(Equal(200))
 			})
+			g.It("Should work if a different transport is specified", func() {
+				ts := httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+					w.WriteHeader(200)
+				}))
+				defer ts.Close()
+				var currentTransport = DefaultTransport
+				DefaultTransport = &http.Transport{Dial: DefaultDialer.Dial}
 
+				req := Request{
+					Insecure: true,
+					Uri:      ts.URL,
+					Host:     "foobar.com",
+				}
+				res, _ := req.Do()
+
+				Expect(DefaultClient.Transport.(*http.Transport).TLSClientConfig.InsecureSkipVerify).Should(Equal(true))
+				Expect(res.StatusCode).Should(Equal(200))
+
+				DefaultTransport = currentTransport
+
+			})
 			g.It("GetRequest should return the underlying httpRequest ", func() {
 				req := Request{
 					Host: "foobar.com",

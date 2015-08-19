@@ -22,6 +22,7 @@ func init() {
 		Proxy:           http.ProxyFromEnvironment,
 		TLSClientConfig: &tls.Config{RootCAs: getCACerts()},
 	}
+	goreq.DefaultClient.Transport = goreq.DefaultTransport
 }
 
 func apiRequest(authToken string) *goreq.Request {
