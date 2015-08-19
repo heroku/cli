@@ -72,7 +72,7 @@ func Update(channel string, t string) {
 
 func updatePlugins(t string) {
 	updated := false
-	plugins := PluginNames()
+	plugins := PluginNamesNotSymlinked()
 	if len(plugins) == 0 {
 		return
 	}
