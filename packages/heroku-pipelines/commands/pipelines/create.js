@@ -2,8 +2,61 @@
 
 let cli = require('heroku-cli-util');
 let co  = require('co');
-let inquirer = require("inquirer");
 let infer = require('../../lib/infer');
+
+function prompt(questions) {
+  let inquirer = require('inquirer');
+  return new Promise(function (fulfill) {
+    inquirer.prompt(questions, function (answers) {
+      fulfill(answers);
+    });
+  });
+}
+
+function* run(context, heroku) {
+  var name, stage;
+  let guesses = infer(context.app);
+  let questions = [];
+
+  if (context.args.name) {
+    name = context.args.name;
+  } else {
+    questions.push({
+      type: "input",
+      name: "name",
+      message: "Pipeline name",
+      default: guesses[0]
+    });
+  }
+  if (context.flags.stage) {
+    stage = context.flags.stage;
+  } else {
+    questions.push({
+      type: "list",
+      name: "stage",
+      message: `Stage of ${context.app}`,
+      choices: ["review", "development", "test", "qa", "staging", "production"],
+      default: guesses[1]
+    });
+  }
+  let answers = yield prompt(questions);
+  if (answers.name) name = answers.name;
+  if (answers.stage) stage = answers.stage;
+  let promise = heroku.request({
+    method: 'POST',
+    path: '/pipelines',
+    body: {name: name},
+    headers: { 'Accept': 'application/vnd.heroku+json; version=3.pipelines' }
+  }); // heroku.pipelines().create({name: name});
+  let pipeline = yield cli.action(`Creating ${name} pipeline`, promise);
+  promise = heroku.request({
+    method: 'POST',
+    path: `/apps/${context.app}/pipeline-couplings`,
+    body: {pipeline: {id: pipeline.id}, stage: stage},
+    headers: { 'Accept': 'application/vnd.heroku+json; version=3.pipelines' }
+  }); // heroku.apps(app_id).pipline_couplings().create(body);
+  let coupling = yield cli.action(`Adding ${context.app} to ${pipeline.name} pipeline as ${stage}`, promise);
+};
 
 module.exports = {
   topic: 'pipelines',
@@ -18,51 +71,5 @@ module.exports = {
   flags: [
     {name: 'stage', char: 's', description: 'stage of first app in pipeline', hasValue: true}
   ],
-  run: cli.command(function* (context, heroku) {
-    var name, stage;
-    let guesses = infer(context.app);
-    let questions = [];
-
-    if (context.args.name) {
-      name = context.args.name;
-    } else {
-      questions.push({
-        type: "input",
-        name: "name",
-        message: "Pipeline name",
-        default: guesses[0]
-      });
-    }
-    if (context.flags.stage) {
-      stage = context.flags.stage;
-    } else {
-      questions.push({
-        type: "list",
-        name: "stage",
-        message: `Stage of ${context.app}`,
-        choices: ["review", "development", "test", "qa", "staging", "production"],
-        default: guesses[1]
-      });
-    }
-    inquirer.prompt( questions, function ( answers ) {
-      if (answers.name) name = answers.name;
-      if (answers.stage) stage = answers.stage;
-      co(function* () {
-        let promise = heroku.request({
-          method: 'POST',
-          path: '/pipelines',
-          body: {name: name},
-          headers: { 'Accept': 'application/vnd.heroku+json; version=3.pipelines' }
-        }); // heroku.pipelines().create({name: name});
-        let pipeline = yield cli.action(`Creating ${name} pipeline`, promise);
-        promise = heroku.request({
-          method: 'POST',
-          path: `/apps/${context.app}/pipeline-couplings`,
-          body: {pipeline: {id: pipeline.id}, stage: stage},
-          headers: { 'Accept': 'application/vnd.heroku+json; version=3.pipelines' }
-        }); // heroku.apps(app_id).pipline_couplings().create(body);
-        let coupling = yield cli.action(`Adding ${context.app} to ${pipeline.name} pipeline as ${stage}`, promise);
-      });
-    });
-  })
+  run: cli.command(co.wrap(run))
 };
