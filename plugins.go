@@ -417,6 +417,18 @@ func PluginNames() []string {
 	return names
 }
 
+// PluginNamesNotSymlinked returns all the plugins that are not symlinked
+func PluginNamesNotSymlinked() []string {
+	a := PluginNames()
+	b := make([]string, 0, len(a))
+	for _, plugin := range a {
+		if !isPluginSymlinked(plugin) {
+			b = append(b, plugin)
+		}
+	}
+	return b
+}
+
 func ignorePlugin(plugin string) bool {
 	ignored := []string{".bin", "node-inspector"}
 	for _, p := range ignored {
