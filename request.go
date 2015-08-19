@@ -17,12 +17,7 @@ import (
 
 func init() {
 	goreq.SetConnectTimeout(5 * time.Second)
-	goreq.DefaultTransport = &http.Transport{
-		Dial:            goreq.DefaultDialer.Dial,
-		Proxy:           http.ProxyFromEnvironment,
-		TLSClientConfig: &tls.Config{RootCAs: getCACerts()},
-	}
-	goreq.DefaultClient.Transport = goreq.DefaultTransport
+	goreq.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{RootCAs: getCACerts()}
 }
 
 func apiRequest(authToken string) *goreq.Request {
