@@ -68,8 +68,6 @@ function* addonGetter(api, app) {
     items[0].forEach(function(addon) {
         addon.attachments = attachments[addon.id];
 
-        // TODO: display remaining attachments (i.e., for which we can't access
-        //       add-on details)
         delete attachments[addon.id];
 
         if(isRelevantToApp(addon)) {
