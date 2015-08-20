@@ -129,3 +129,7 @@ Changing example-admin to staging... done
 $ heroku pipelines:remove -a example-admin
 Removing example-admin... done
 ```
+
+### TODO
+
+* `pipelines:open PIPELINE`
