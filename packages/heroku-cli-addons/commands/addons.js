@@ -25,7 +25,7 @@ function* addonGetter(api, app) {
     let attachments, addons;
 
     if(app) { // don't disploy attachments globally
-        let sudoHeaders = JSON.parse(process.env.HEROKU_HEADERS);
+        let sudoHeaders = JSON.parse(process.env.HEROKU_HEADERS || '{}');
         if(sudoHeaders['X-Heroku-Sudo'] && !sudoHeaders['X-Heroku-Sudo-User']) {
             // because the root /addon-attachments endpoint won't include relevant
             // attachments when sudo-ing for another app, we will use the more
