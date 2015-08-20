@@ -24,8 +24,30 @@ function table(data, options) {
 function* addonGetter(api, app) {
     let attachments, addons;
 
-    attachments = api.addonAttachments().list();
-    addons = api.request({
+    if(app) { // don't desploy attachments globally
+        let sudoHeaders = JSON.parse(process.env.HEROKU_HEADERS);
+        if(sudoHeaders['X-Heroku-Sudo'] && !sudoHeaders['X-Heroku-Sudo-User']) {
+            // because the root /addon-attachments endpoint won't include relevant
+            // attachments when sudo-ing for another app, we will use the more
+            // specific API call and sacrifice listing foreign attachments.
+            addons = api.request({
+                method:  'GET',
+                path:    `/apps/${app}/addons`,
+                headers: {'Accept-Expansion': 'addon_service,plan'},
+            });
+
+            attachments = api.request({
+                method:  'GET',
+                path:    `/apps/${app}/addon-attachments`,
+            });
+        } else {
+            // In order to display all foreign attachments, we'll get out entire
+            // attachment list
+            attachments = api.addonAttachments().list();
+        }
+    }
+
+    addons = addons || api.request({
         method:  'GET',
         path:    '/addons',
         headers: {'Accept-Expansion': 'addon_service,plan'}
