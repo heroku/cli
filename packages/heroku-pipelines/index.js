@@ -1,18 +1,14 @@
+var fs = require("fs");
+var path = require("path");
+
 exports.topic = {
   name: 'pipelines',
   // this is the help text that shows up under `heroku help`
   description: 'manage collections of apps in pipelines'
 };
 
-exports.commands = [
-  require('./commands/pipelines/add'),
-  require('./commands/pipelines/create'),
-  require('./commands/pipelines/destroy'),
-  require('./commands/pipelines/info'),
-  require('./commands/pipelines/list'),
-  require('./commands/pipelines/promote'),
-  require('./commands/pipelines/remove'),
-  require('./commands/pipelines/rename'),
-  require('./commands/pipelines/status'),
-  require('./commands/pipelines/update')
-];
+var normalizedPath = path.join(__dirname, "commands/pipelines");
+
+exports.commands = fs.readdirSync(normalizedPath).map(function(file) {
+  return require("./commands/pipelines/" + file);
+});

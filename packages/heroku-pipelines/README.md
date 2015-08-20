@@ -129,7 +129,14 @@ Changing example-admin to staging... done
 $ heroku pipelines:remove -a example-admin
 Removing example-admin... done
 ```
+#### Open a pipeline in Dashboard
+
+```bash
+$ heroku pipelines:open example
+Opening dashboard... done
+```
 
 ### TODO
 
-* `pipelines:open PIPELINE`
+* `heroku pipelines:destroy PIPELINE`
+* `heroku pipelines:diff [-a APP | -r REMOTE]`
