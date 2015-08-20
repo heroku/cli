@@ -26,7 +26,7 @@ function* run (context, heroku) {
   }
   console.log(`=== ${context.app}`);
   let info = yield {
-    addons: heroku.apps(context.app).addons().list(),
+    addons: heroku.apps(context.app).addons().listByApp(),
     app: heroku.apps(context.app).info(),
     dynos: heroku.apps(context.app).dynos().list()
   };
