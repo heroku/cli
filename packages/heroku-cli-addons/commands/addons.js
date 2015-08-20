@@ -6,12 +6,17 @@ let printf = require('printf');
 let _      = require('lodash');
 let _table  = require('../lib/table');
 
-let dim = cli.color.dim;
-let colorize = {
-    app:        cli.color.cyan,
-    attachment: cli.color.green,
-    addon:      cli.color.magenta,
-};
+let styles = {
+    app: 'cyan',
+    attachment: 'green',
+    addon: 'magenta',
+}
+
+// style given text or return a function that styles text according to provided style
+function style(s, t) {
+    if(!t) {return function(text) { return style(s, text); };}
+    return cli.color[styles[s] || s](t);
+}
 
 function table(data, options) {
     return _table(data, _.merge(options, {
@@ -107,20 +112,20 @@ function displayAll(addons) {
         columns: [{
             key:   'app.name',
             label: 'Owning App',
-            ansi:  colorize.app,
+            ansi:  style('app'),
         }, {
             key:   'name',
             label: 'Add-on',
-            ansi:  colorize.addon,
+            ansi:  style('addon'),
         }, {
             key:   'plan.name',
             label: 'Plan',
-            ansi:  function(s) { return _.trimRight(s) == '?' ? dim(s) : s; },
+            ansi:  function(s) { return _.trimRight(s) == '?' ? style('dim', s) : s; },
         }, {
             key:       'plan.price',
             label:     'Price',
             formatter: formatPrice,
-            ansi:  function(s) { return _.trimRight(s) == '?' ? dim(s) : s; },
+            ansi:  function(s) { return _.trimRight(s) == '?' ? style('dim', s) : s; },
         }],
 
     });
@@ -129,10 +134,10 @@ function displayAll(addons) {
 function formatAttachment(attachment, showApp) {
     if(showApp === undefined) { showApp = true; }
 
-    let attName = colorize.attachment(attachment.name);
+    let attName = style('attachment', attachment.name);
 
     if(showApp) {
-        return dim(colorize.app(attachment.app.name) + '::') + attName;
+        return style('dim', style('app', attachment.app.name) + '::') + attName;
     } else {
         return attName;
     }
@@ -141,7 +146,7 @@ function formatAttachment(attachment, showApp) {
 function renderAttachment(attachment, app, isFirst) {
     let line = isFirst ? '└─' : '├─';
     let attName = formatAttachment(attachment, attachment.app.name != app);
-    return printf(' %s %s', dim(line), attName);
+    return printf(' %s %s', style('dim', line), attName);
 }
 
 function displayForApp(app, addons) {
@@ -166,7 +171,7 @@ function displayForApp(app, addons) {
         columns: [{
             key:   'name',
             label: 'Add-on',
-            ansi:  colorize.addon,
+            ansi:  style('addon'),
 
             // customize column width to factor in the attachment list
             // TODO: make this just be `width`, which can either be a static number or a function which returns a number
@@ -183,7 +188,7 @@ function displayForApp(app, addons) {
                 if(addon.app.name == app) {
                     return formatPrice(addon.plan.price);
                 } else {
-                    return dim(printf('(billed to %s app)', colorize.app(addon.app.name)));
+                    return dim(printf('(billed to %s app)', style('app', addon.app.name)));
                 }
             },
         }],
