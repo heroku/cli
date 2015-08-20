@@ -1,6 +1,6 @@
 {
   "name": "heroku-git",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "description": "Heroku CLI plugin to manage local git repos.",
   "main": "index.js",
   "scripts": {
