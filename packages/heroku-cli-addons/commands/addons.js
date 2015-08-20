@@ -24,7 +24,7 @@ function table(data, options) {
 function* addonGetter(api, app) {
     let attachments, addons;
 
-    if(app) { // don't desploy attachments globally
+    if(app) { // don't disploy attachments globally
         let sudoHeaders = JSON.parse(process.env.HEROKU_HEADERS);
         if(sudoHeaders['X-Heroku-Sudo'] && !sudoHeaders['X-Heroku-Sudo-User']) {
             // because the root /addon-attachments endpoint won't include relevant
