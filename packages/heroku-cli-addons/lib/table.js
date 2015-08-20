@@ -43,13 +43,18 @@ function table(data, options) {
             return {key: k};
         });
 
-    let defaultsApplied = false
+    let defaultsApplied = false;
     for(let row of data) {
         for(let col of columns) {
             if(!defaultsApplied) { _.defaults(col, colDefaults); }
-            col.width = Math.max(col.label.length, col.width, col.calcWidth(row));
+
+            col.width = Math.max(
+                col.label.length,
+                col.width,
+                col.calcWidth(row)
+            );
         };
-        defaultsApplied = true
+        defaultsApplied = true;
     };
 
     options.printHeader(columns.map(function(col) {
