@@ -139,9 +139,9 @@ function formatAttachment(attachment, showApp) {
 }
 
 function renderAttachment(attachment, app, isFirst) {
-    let ch = isFirst ? '└' : '├';
+    let line = isFirst ? '└─' : '├─';
     let attName = formatAttachment(attachment, attachment.app.name != app);
-    return printf(' %s─ %s', ch, attName);
+    return printf(' %s %s', dim(line), attName);
 }
 
 function displayForApp(app, addons) {
