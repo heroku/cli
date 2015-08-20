@@ -1,6 +1,6 @@
 {
   "name": "heroku-docker",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "topic": "docker",
   "description": "Use Docker to build and deploy Heroku apps",
   "main": "index.js",
