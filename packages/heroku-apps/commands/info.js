@@ -51,6 +51,11 @@ function* run (context, heroku) {
   _.forOwn(_.countBy(info.dynos, 'type'), function (count, type) {
     console.log(line(`  ${type}`, count));
   });
+  if (context.flags.extended) {
+    console.log("\n\n--- Extended Information ---\n\n");
+    let extended = (yield heroku.request({path: `/apps/${context.app}?extended=true`})).extended;
+    cli.debug(extended);
+  }
 }
 
 let cmd = {
@@ -59,7 +64,10 @@ let cmd = {
   description: 'show detailed app information',
   needsApp: true,
   needsAuth: true,
-  flags: [{name: 'shell', char: 's', description: 'output more shell friendly key/value pairs'}],
+  flags: [
+    {name: 'shell', char: 's', description: 'output more shell friendly key/value pairs'},
+    {name: 'extended', char: 'x', hidden: true}
+  ],
   run: cli.command(co.wrap(run))
 };
 
