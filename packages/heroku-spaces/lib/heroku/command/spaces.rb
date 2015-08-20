@@ -17,7 +17,7 @@ class Heroku::Command::Spaces < Heroku::Command::Base
     end
 
     display_header 'Spaces'
-    cols = ['Name', 'Organization', 'State', 'Created At']
+    cols = ['Name', 'Organization', 'Region', 'State', 'Created At']
     display_table(@spaces.map{|s| for_display(s)}, cols, cols)
   end
 
@@ -41,7 +41,7 @@ class Heroku::Command::Spaces < Heroku::Command::Base
   #
   # -o --org ORGANIZATION
   #    --channel CHANNEL    # HIDDEN
-  #    --region REGION      # HIDDEN
+  #    --region REGION
   #
   def create
     name = extract_name_arg!
@@ -121,6 +121,7 @@ class Heroku::Command::Spaces < Heroku::Command::Base
       'ID'           => space['id'],
       'Name'         => space['name'],
       'Organization' => space['organization']['name'],
+      'Region'       => space['region']['name'],
       'State'        => space['state'],
       'Created At'   => time_ago(space['created_at']),
       'Outbound IPs' => if nat['state'] == 'enabled'
@@ -136,6 +137,7 @@ class Heroku::Command::Spaces < Heroku::Command::Base
     keys = []
     keys << 'ID'
     keys << 'Organization'
+    keys << 'Region'
     keys << 'State'
     keys << 'Outbound IPs' if extras[:nat]
     keys << 'Created At'
