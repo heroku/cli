@@ -11,6 +11,10 @@ let defaults = {
     printLine:  console.log,
     printRow:   function(cells) {
         this.printLine(cells.join(this.colSep));
+    },
+    printHeader: function(cells) {
+        this.printRow(cells.map(_.ary(this.headerAnsi, 1)));
+        this.printRow(cells.map(function(hdr) { return hdr.replace(/./g, '─'); }));
     }
 };
 
@@ -39,24 +43,18 @@ function table(data, options) {
             return {key: k};
         });
 
-    for(let col of columns) {
-        _.defaults(col, colDefaults);
-    };
-
-    // analytics about data
+    let defaultsApplied = false
     for(let row of data) {
         for(let col of columns) {
+            if(!defaultsApplied) { _.defaults(col, colDefaults); }
             col.width = Math.max(col.label.length, col.width, col.calcWidth(row));
         };
+        defaultsApplied = true
     };
 
-    // printing
-    let headers = columns.map(function(col) {
+    options.printHeader(columns.map(function(col) {
         return printf('%-*s', _.result(col, 'label'), col.width);
-    });
-
-    options.printRow(headers.map(_.ary(options.headerAnsi, 1)));
-    options.printRow(headers.map(function(hdr) { return hdr.replace(/./g, '─'); }));
+    }))
 
     for(let row of data) {
         let rowToPrint = columns.map(function(col) {
