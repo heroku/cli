@@ -16,7 +16,7 @@ import (
 )
 
 func init() {
-	goreq.SetConnectTimeout(5 * time.Second)
+	goreq.SetConnectTimeout(15 * time.Second)
 	goreq.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{RootCAs: getCACerts()}
 }
 
