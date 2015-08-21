@@ -54,7 +54,7 @@ end
 def build(os, arch)
   puts "Building #{os}-#{arch}"
   path = "./dist/#{os}/#{arch}/heroku-cli"
-  ldflags = "-X main.Version #{VERSION} -X main.Channel #{CHANNEL}"
+  ldflags = "-X=main.Version=#{VERSION} -X=main.Channel=#{CHANNEL}"
   args = "-o #{path} -ldflags \"#{ldflags}\""
   ok = system("GOOS=#{os} GOARCH=#{arch} go build #{args}")
   exit 1 unless ok
