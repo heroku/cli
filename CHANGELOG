@@ -1,3 +1,8 @@
+4.21.5  2015-08-21
+==================
+Only update plugins that are not symlinked
+Increased connection timeout
+
 4.21.4  2015-08-18
 ==================
 Fix staging urls with goreq
