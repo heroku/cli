@@ -447,3 +447,42 @@ func isPluginSymlinked(plugin string) bool {
 	}
 	return fi.Mode()&os.ModeSymlink != 0
 }
+
+// SetupBuiltinPlugins ensures all the builtinPlugins are installed
+func SetupBuiltinPlugins() {
+	plugins := difference(BuiltinPlugins, PluginNames())
+	if len(plugins) == 0 {
+		return
+	}
+	noun := "plugins"
+	if len(plugins) == 1 {
+		noun = "plugin"
+	}
+	Errf("Installing core %s %s...", noun, strings.Join(plugins, ", "))
+	err := node.InstallPackage(plugins...)
+	if err != nil {
+		Errln()
+		PrintError(err)
+		return
+	}
+	Errln(" done")
+}
+
+func difference(a, b []string) []string {
+	res := make([]string, 0, len(a))
+	for _, aa := range a {
+		if !contains(b, aa) {
+			res = append(res, aa)
+		}
+	}
+	return res
+}
+
+func contains(arr []string, s string) bool {
+	for _, a := range arr {
+		if a == s {
+			return true
+		}
+	}
+	return false
+}
