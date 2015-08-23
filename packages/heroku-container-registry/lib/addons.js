@@ -13,7 +13,7 @@ module.exports = {
   },
   'mongolab': {
     image: 'mongo',
-    env: { "MONGOHQ_URL": 'mongolab:27017' }
+    env: { "MONGOLAB_URI": 'mongolab:27017' }
   },
   'memcachedcloud': {
     image: 'memcached',
