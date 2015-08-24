@@ -24,6 +24,18 @@ Additional commands, type "heroku help COMMAND" for more details:
   docker:release  #  create and release slug to app
 ```
 
+For help with a particular command:
+
+```
+$ heroku help docker:init
+Usage: heroku docker:init
+
+   -i, --image IMAGE   # the Docker image from which to inherit
+   -f, --force         # overwrite existing Dockerfile and docker-compose.yml
+
+  Creates a Dockerfile and docker-compose.yml for the app specified in app.json
+```
+
 ## Developing and contributing
 
 Checkout the plugin source code and tell the Heroku CLI to use your local version of the plugin (instead of the default one distributed with NPM).
