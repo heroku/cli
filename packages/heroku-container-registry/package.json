@@ -6,7 +6,7 @@
   "main": "index.js",
   "repository": "https://github.com/heroku/heroku-docker",
   "scripts": {
-    "test": "mocha --timeout 30000",
+    "test": "mocha",
     "depcheck": "depcheck || true"
   },
   "keywords": [
@@ -22,10 +22,9 @@
     "dotenv": "^1.1.0",
     "heroku-cli-util": "^1.8.1",
     "heroku-client": "^1.9.1",
-    "is-there": "^1.1.0",
+    "is-there": "4.0.0",
     "lodash": "3.3.1",
     "mkdirp": "^0.5.0",
-    "mocha": "^2.2.4",
     "node-uuid": "^1.4.3",
     "progress": "1.1.8",
     "request": "2.53.0",
@@ -33,6 +32,11 @@
     "yamljs": "0.2.2"
   },
   "devDependencies": {
-    "depcheck": "0.4.7"
+    "chai": "3.2.0",
+    "depcheck": "0.4.7",
+    "dir-compare": "0.0.2",
+    "fs-extra": "0.23.1",
+    "mocha": "^2.2.4",
+    "wrench": "1.5.8"
   }
 }

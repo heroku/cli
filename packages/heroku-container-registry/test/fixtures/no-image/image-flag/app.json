@@ -1,0 +1,5 @@
+{
+  "name": "no-image",
+  "addons": [],
+  "image": "heroku/ruby"
+}

@@ -4,9 +4,25 @@ Heroku Toolbelt plugin to help configure, test and release apps to Heroku using 
 
 ## Installation
 
-    $ heroku plugins:install heroku-docker
+```
+$ heroku plugins:install heroku-docker
+```
+
+## Use
 
 See the [Dev Center Documentation](https://devcenter.heroku.com/articles/introduction-local-development-with-docker) for details of use.
+
+```
+$ heroku help docker
+Usage: heroku docker
+
+  Use Docker to build and deploy Heroku apps
+
+Additional commands, type "heroku help COMMAND" for more details:
+
+  docker:init     #  create Dockerfile and docker-compose.yml
+  docker:release  #  create and release slug to app
+```
 
 ## Developing and contributing
 

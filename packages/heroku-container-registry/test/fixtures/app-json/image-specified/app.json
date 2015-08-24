@@ -1,0 +1,5 @@
+{
+  "name": "basic",
+  "image": "heroku/java",
+  "addons": []
+}
