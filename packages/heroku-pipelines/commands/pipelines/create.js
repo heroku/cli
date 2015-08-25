@@ -47,8 +47,8 @@ function* run(context, heroku) {
     body: {pipeline: {id: pipeline.id}, stage: stage},
     headers: { 'Accept': 'application/vnd.heroku+json; version=3.pipelines' }
   }); // heroku.apps(app_id).pipline_couplings().create(body);
-  let coupling = yield cli.action(`Adding ${context.app} to ${pipeline.name} pipeline as ${stage}`, promise);
-};
+  yield cli.action(`Adding ${context.app} to ${pipeline.name} pipeline as ${stage}`, promise);
+}
 
 module.exports = {
   topic: 'pipelines',

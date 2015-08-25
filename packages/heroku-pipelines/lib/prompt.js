@@ -7,4 +7,4 @@ module.exports = function prompt(questions) {
       fulfill(answers);
     });
   });
-}
+};

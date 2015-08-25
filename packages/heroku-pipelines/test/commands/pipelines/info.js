@@ -10,7 +10,6 @@ describe('pipelines:info', function () {
   });
 
   it('displays the pipeline info and apps', function () {
-    let self      = this;
     let pipeline  = {name: 'example', id: '0123'};
     let pipelines = [pipeline];
     let apps      = [{name: 'example-staging', coupling: {stage: 'staging'}, pipeline: pipeline}, {name: 'example', coupling: {stage: 'production'}, pipeline: pipeline}, {name: 'example-admin', coupling: {stage: 'production'}, pipeline: pipeline}];

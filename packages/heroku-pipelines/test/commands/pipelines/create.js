@@ -10,7 +10,6 @@ describe('pipelines:create', function () {
   });
 
   it('displays the pipeline name and app stage', function () {
-    let self              = this;
     let pipeline          = {name: 'example', id: '0123'};
     let pipeline_coupling = { id: '0123', stage: "production" };
 

@@ -1,7 +1,6 @@
 'use strict';
 
 let cli = require('heroku-cli-util');
-let co  = require('co');
 let infer = require('../../lib/infer');
 let disambiguate = require('../../lib/disambiguate');
 let prompt = require('../../lib/prompt');
@@ -45,6 +44,6 @@ module.exports = {
       body: {pipeline: {id: pipeline.id}, stage: stage},
       headers: { 'Accept': 'application/vnd.heroku+json; version=3.pipelines' }
     }); // heroku.apps(app_id).pipline_couplings().create(body);
-    let coupling = yield cli.action(`Adding ${context.app} to ${pipeline.name} pipeline as ${stage}`, promise);
+    yield cli.action(`Adding ${context.app} to ${pipeline.name} pipeline as ${stage}`, promise);
   })
 };

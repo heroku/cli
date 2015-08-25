@@ -32,7 +32,7 @@ module.exports = {
     const sourceStage = coupling.stage;
     const targetStage = PROMOTION_ORDER[PROMOTION_ORDER.indexOf(sourceStage) + 1];
 
-    if (targetStage == null || PROMOTION_ORDER.indexOf(sourceStage) < 0) {
+    if (targetStage === null || PROMOTION_ORDER.indexOf(sourceStage) < 0) {
       throw new Error(`Cannot promote ${app} from '${sourceStage}' stage`);
     }
 
@@ -54,7 +54,7 @@ module.exports = {
 
     const sourceRelease = releases[0];
 
-    if (sourceRelease == null) {
+    if (sourceRelease === null) {
       throw new Error(`Cannot promote from ${app} as it has no builds yet`);
     }
 

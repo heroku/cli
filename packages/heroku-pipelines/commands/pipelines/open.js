@@ -2,13 +2,7 @@
 
 let cli = require('heroku-cli-util');
 let disambiguate = require('../../lib/disambiguate');
-var util = require('util')
 var exec = require('child_process').exec;
-let co  = require('co');
-
-function puts(error, stdout, stderr) {
-  console.log(stdout)
-};
 
 module.exports = {
   topic: 'pipelines',
