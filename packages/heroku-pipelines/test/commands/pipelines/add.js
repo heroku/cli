@@ -4,7 +4,7 @@ let cli   = require('heroku-cli-util');
 let nock  = require('nock');
 let cmd   = require('../../../commands/pipelines/add');
 
-describe('pipelines:create', function () {
+describe('pipelines:add', function () {
   beforeEach(function () {
     cli.mockConsole();
   });
