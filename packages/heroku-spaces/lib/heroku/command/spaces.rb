@@ -6,10 +6,18 @@ class Heroku::Command::Spaces < Heroku::Command::Base
   #
   # lists available spaces
   #
+  # -o --org ORGANIZATION # filter by org
+  #
   def index
     validate_arguments!
 
     @spaces = api.get_spaces().body
+
+    if options[:org]
+      @spaces.select! do |space|
+        space['organization']['name'] == options[:org]
+      end
+    end
 
     if @spaces.empty?
       display('You do not have access to any spaces.')
