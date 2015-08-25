@@ -7,14 +7,12 @@ let disambiguate = require('../../lib/disambiguate');
 module.exports = {
   topic: 'pipelines',
   command: 'status',
-  description: 'status of a pipeline',
+  description: 'status of a app in a pipeline',
   help: 'Status of an app in a pipeline.',
   needsApp: true,
   needsAuth: true,
   run: cli.command(function* (context, heroku) {
     var name;
-
-    let pipeline = yield disambiguate(heroku, context.args.pipeline);
 
     name = context.app;
     cli.log(`Comparing ${context.app} to master... done`)
