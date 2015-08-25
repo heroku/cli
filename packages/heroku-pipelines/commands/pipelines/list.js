@@ -16,7 +16,9 @@ module.exports = {
       headers: { 'Accept': 'application/vnd.heroku+json; version=3.pipelines' }
     }); // heroku.pipelines().list();
     for (var pipeline in pipelines) {
-      cli.log(`${pipelines[pipeline].name}`);
+      if (pipelines.hasOwnProperty(pipeline)) {
+        cli.log(`${pipelines[pipeline].name}`);
+      }
     }
   })
 };
