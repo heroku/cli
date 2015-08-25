@@ -2,9 +2,9 @@
 
 let cli = require('heroku-cli-util');
 let co  = require('co');
-let inquirer = require("inquirer");
 let infer = require('../../lib/infer');
 let disambiguate = require('../../lib/disambiguate');
+let prompt = require('../../lib/prompt');
 
 module.exports = {
   topic: 'pipelines',
@@ -37,18 +37,14 @@ module.exports = {
         default: guesses[1]
       });
     }
-    inquirer.prompt( questions, function ( answers ) {
-      if (answers.stage) stage = answers.stage;
-      co(function* () {
-        let promise = heroku.request({
-          method: 'POST',
-          path: `/apps/${context.app}/pipeline-couplings`,
-          body: {pipeline: {id: pipeline.id}, stage: stage},
-          headers: { 'Accept': 'application/vnd.heroku+json; version=3.pipelines' }
-        }); // heroku.apps(app_id).pipline_couplings().create(body);
-
-        let app = yield cli.action(`Adding ${context.app} to ${context.args.pipeline} pipeline as ${stage}`, promise);
-      });
-    });
+    let answers = yield prompt(questions);
+    if (answers.stage) stage = answers.stage;
+    let promise = heroku.request({
+      method: 'POST',
+      path: `/apps/${context.app}/pipeline-couplings`,
+      body: {pipeline: {id: pipeline.id}, stage: stage},
+      headers: { 'Accept': 'application/vnd.heroku+json; version=3.pipelines' }
+    }); // heroku.apps(app_id).pipline_couplings().create(body);
+    let coupling = yield cli.action(`Adding ${context.app} to ${pipeline.name} pipeline as ${stage}`, promise);
   })
 };

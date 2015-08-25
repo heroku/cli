@@ -3,15 +3,7 @@
 let cli = require('heroku-cli-util');
 let co  = require('co');
 let infer = require('../../lib/infer');
-
-function prompt(questions) {
-  let inquirer = require('inquirer');
-  return new Promise(function (fulfill) {
-    inquirer.prompt(questions, function (answers) {
-      fulfill(answers);
-    });
-  });
-}
+let prompt = require('../../lib/prompt');
 
 function* run(context, heroku) {
   var name, stage;
