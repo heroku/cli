@@ -48,7 +48,6 @@ module.exports = {
         }); // heroku.apps(app_id).pipline_couplings().create(body);
 
         let app = yield cli.action(`Adding ${context.app} to ${context.args.pipeline} pipeline as ${stage}`, promise);
-        cli.hush(app);
       });
     });
   })
