@@ -15,7 +15,6 @@ module.exports = {
       path: "/pipelines",
       headers: { 'Accept': 'application/vnd.heroku+json; version=3.pipelines' }
     }); // heroku.pipelines().list();
-    cli.hush(pipelines);
     for (var pipeline in pipelines) {
       cli.log(`${pipelines[pipeline].name}`);
     }
