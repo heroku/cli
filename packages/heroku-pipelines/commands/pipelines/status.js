@@ -9,12 +9,12 @@ module.exports = {
   help: 'Status of an app in a pipeline.',
   needsApp: true,
   needsAuth: true,
-  run: cli.command(function* (context, heroku) {
+  run: function (context) {
     var name;
 
     name = context.app;
     cli.log(`Comparing ${context.app} to master... done`);
     cli.log(`${name} behind by 1 commit:`);
     cli.log("  73ab415  2012-01-01  A super important fix  (Joe Developer)");
-  })
+  }
 };

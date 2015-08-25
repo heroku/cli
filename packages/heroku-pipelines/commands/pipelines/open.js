@@ -17,7 +17,7 @@ module.exports = {
   run: cli.command(function* (context, heroku) {
     let pipeline = yield disambiguate(heroku, context.args.pipeline);
     let promise = new Promise(function (fulfill) {
-      exec(`open https://dashboard.heroku.com/pipelines/${pipeline.id}`, function(error, stdout, stderr) {
+      exec(`open https://dashboard.heroku.com/pipelines/${pipeline.id}`, function(error, stdout) {
         fulfill(stdout);
       });
     });
