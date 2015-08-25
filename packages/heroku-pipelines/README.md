@@ -74,7 +74,7 @@ Flow:        example-staging --> example, example-admin
 ```bash
 $ git commit -m "A super important fix"
 $ git push staging
-$ heroku pipelines:status -r production
+$ heroku pipelines:status -r production # Not implemented yet
 Comparing example to master... done
 example-staging behind by 1 commit:
   73ab415  2012-01-01  A super important fix  (Joe Developer)
@@ -105,7 +105,7 @@ Promoting example-staging to example-admin (production)... done, v54
 #### Rename pipeline
 
 ```bash
-$ heroku pipelines:rename example www
+$ heroku pipelines:rename example www # Not working yet
 Renaming example pipeline to www... done
 ```
 
@@ -139,4 +139,8 @@ Opening dashboard... done
 ### TODO
 
 * `heroku pipelines:destroy PIPELINE`
+* `heroku pipelines:rename PIPELINE NAME`
 * `heroku pipelines:diff [-a APP | -r REMOTE]`
+* `heorku pipelines:status [-a APP | -r REMOTE]`
+* `heroku pipelines:list` with repo
+* `heroku pipelines:info` with full information
