@@ -28,7 +28,7 @@ type Plugin struct {
 	Commands CommandSet `json:"commands"`
 }
 
-const nodeVersion = "3.0.0"
+const nodeVersion = "3.2.0"
 const npmVersion = "2.13.3"
 
 var node = gode.NewClient(AppDir)
