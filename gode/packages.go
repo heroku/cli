@@ -36,8 +36,9 @@ func (c *Client) Packages() ([]Package, error) {
 }
 
 // InstallPackage installs an npm package.
-func (c *Client) InstallPackage(name string) error {
-	_, stderr, err := c.execNpm("install", name)
+func (c *Client) InstallPackage(packages ...string) error {
+	args := append([]string{"install"}, packages...)
+	_, stderr, err := c.execNpm(args...)
 	if err != nil {
 		if strings.Contains(stderr, "no such package available") {
 			return errors.New("no such package available")
