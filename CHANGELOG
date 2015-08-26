@@ -1,3 +1,13 @@
+4.22.0  2015-08-26
+==================
+Added builtin plugins:
+  * heroku-apps
+  * heroku-fork
+  * heroku-git
+  * heroku-local
+  * heroku-run
+  * heroku-status
+
 4.21.7  2015-08-25
 ==================
 Updated iojs to 3.2.0
