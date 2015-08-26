@@ -3,6 +3,7 @@ package gode
 import (
 	"archive/tar"
 	"compress/gzip"
+	"errors"
 	"io"
 	"net/http"
 	"os"
@@ -43,6 +44,10 @@ func (c *Client) setupUnix() error {
 		return err
 	}
 	defer resp.Body.Close()
+	if resp.StatusCode != 200 {
+		msg, _ := resp.Body.ToString()
+		return errors.New(msg)
+	}
 	uncompressed, err := gzip.NewReader(resp.Body)
 	if err != nil {
 		return err
