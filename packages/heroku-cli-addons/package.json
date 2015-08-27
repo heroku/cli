@@ -22,8 +22,10 @@
     "tab": "^0.1.0"
   },
   "devDependencies": {
+    "chai": "^3.2.0",
     "jshint": "^2.8.0",
-    "mocha": "^2.2.5"
+    "mocha": "^2.2.5",
+    "nock": "^2.10.0"
   },
   "scripts": {
     "test": "jshint lib commands && mocha"
