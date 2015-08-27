@@ -110,4 +110,25 @@ describe('table()', function() {
                      Jane Doe   J. D.     [[AUSTRALIA]]
                      Bob Smith  B. S.     [[USA]]`);
     });
+
+    it('takes nested keys', function() {
+        function fmtCountry(country) {
+            return `${country.name} (${country.code})`;
+        }
+
+        let out = table([{name: {given: 'Jane', family: 'Doe'},
+                          country: {name: 'Australia', code: 'AUS'}},
+                         {name: {given: 'Bob', family: 'Smith'},
+                          country: {name: 'United States of America', code: 'USA'}}],
+
+                        {columns: [{key: 'name.given', label: 'Given name'},
+                                   {key: 'name.family', label: 'Family name'},
+                                   {key: 'country', label: 'Country', formatter: fmtCountry}]});
+
+        expectOutput(out, `
+                     Given name  Family name  Country
+                     ──────────  ───────────  ──────────────────────────────
+                     Jane        Doe          Australia (AUS)
+                     Bob         Smith        United States of America (USA)`);
+    });
 });
