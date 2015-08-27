@@ -70,7 +70,7 @@ function* addonGetter(api, app) {
         let inaccessibleAddon = {
             app: atts[0].addon.app,
             name: atts[0].addon.name,
-            plan: {name: '?', price: {cents: '?', unit: 'month'}},
+            plan: {name: '?'},
             attachments: atts
         };
 

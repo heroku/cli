@@ -19,4 +19,8 @@ describe('util.formatPrice', function() {
     it('formats as dollars without cents when whole dollars', function() {
         expect(util.formatPrice({cents: 1200, unit: 'month'})).to.eq('$12/month');
     });
+
+    it('returns undefined when no pricing information given', function() {
+        expect(util.formatPrice(null)).to.eq(undefined);
+    });
 });
