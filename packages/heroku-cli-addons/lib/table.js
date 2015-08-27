@@ -33,7 +33,30 @@ let colDefaults = {
     },
 };
 
-
+/**
+ * Generates a Unicode table and feeds it into configured printer.
+ *
+ * Top-level arguments:
+ *
+ * @arg {Object[]} data - the records to format as a table.
+ * @arg {Object} options - configuration for the table.
+ *
+ * @arg {Object[]} [options.columns] - Options for formatting and finding values for table columns.
+ * @arg {function(string)} [options.headerAnsi] - Zero-width formattter for entire header.
+ * @arg {string} [options.colSep] - Separator between columns.
+ * @arg {function(row, options)} [options.after] - Function called after each row is printed.
+ * @arg {function(string)} [options.printLine] - Function responsible for printing to terminal.
+ * @arg {function(cells)} [options.printHeader] - Function to print header cells as a row.
+ * @arg {function(cells)} [options.printRow] - Function to print cells as a row.
+ *
+ * @arg {function(row)|string} [options.columns[].key] - Path to the value in the row or function to retrieve the pre-formatted value for the cell.
+ * @arg {function(string)} [options.columns[].label] - Header name for column.
+ * @arg {function(string)} [options.columns[].ansi] - Zero-width formatter (e.g. ANSI coloring).
+ * @arg {function(string)} [options.columns[].formatter] - Formatter for column value.
+ * @arg {function(row)} [options.columns[].calcWidth] - Given the row whole; should return the width for the current column.
+ * @arg {function(row)} [options.columns[].get] - Function to return a value to be presented in cell without formatting.
+ *
+ */
 function table(data, options) {
     _.defaults(options, defaults);
 
