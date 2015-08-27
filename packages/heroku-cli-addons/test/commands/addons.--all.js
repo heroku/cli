@@ -1,6 +1,6 @@
 'use strict';
 
-let fixtures = require('../fixtures')
+let fixtures = require('../fixtures');
 let cli    = require('heroku-cli-util');
 let nock   = require('nock');
 let expect = require('chai').expect;

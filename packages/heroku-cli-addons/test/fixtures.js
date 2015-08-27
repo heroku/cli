@@ -59,4 +59,4 @@ module.exports = {
             "updated_at":"2015-06-25T16:10:02Z"
         },
     }
-}
+};

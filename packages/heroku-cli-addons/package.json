@@ -28,6 +28,6 @@
     "nock": "^2.10.0"
   },
   "scripts": {
-    "test": "jshint lib commands && mocha"
+    "test": "jshint lib commands test && mocha"
   }
 }
