@@ -10,7 +10,7 @@ let styles = {
     app: 'cyan',
     attachment: 'green',
     addon: 'magenta',
-}
+};
 
 // style given text or return a function that styles text according to provided style
 function style(s, t) {
@@ -62,9 +62,9 @@ function* addonGetter(api, app) {
     let items = yield [addons, attachments];
 
     function isRelevantToApp(addon) {
-        return !app
-            || addon.app.name == app
-            || _.any(addon.attachments, function(att) { return att.app.name == app });
+        return !app ||
+            addon.app.name === app ||
+            _.any(addon.attachments, function(att) { return att.app.name === app; });
     }
 
     attachments = _.groupBy(items[1], _.property('addon.id'));
@@ -98,14 +98,14 @@ function* addonGetter(api, app) {
 
 function formatPrice(price) {
     if(!price.cents)       { return 'free'; }
-    if(price.cents == '?') { return '?'; }
+    if(price.cents === '?') { return '?'; }
 
-    let fmt = price.cents % 100 == 0 ? '$%.0f/%s' : '$%.02f/%s'
+    let fmt = price.cents % 100 === 0 ? '$%.0f/%s' : '$%.02f/%s';
     return printf(fmt, price.cents / 100, price.unit);
-};
+}
 
 function displayAll(addons) {
-    addons = _.sortByAll(addons, 'app.name', 'plan.name', 'addon.name')
+    addons = _.sortByAll(addons, 'app.name', 'plan.name', 'addon.name');
 
     table(addons, {
         headerAnsi: cli.color.bold,
@@ -120,12 +120,12 @@ function displayAll(addons) {
         }, {
             key:   'plan.name',
             label: 'Plan',
-            ansi:  function(s) { return _.trimRight(s) == '?' ? style('dim', s) : s; },
+            ansi:  function(s) { return _.trimRight(s) === '?' ? style('dim', s) : s; },
         }, {
             key:       'plan.price',
             label:     'Price',
             formatter: formatPrice,
-            ansi:  function(s) { return _.trimRight(s) == '?' ? style('dim', s) : s; },
+            ansi:  function(s) { return _.trimRight(s) === '?' ? style('dim', s) : s; },
         }],
 
     });
@@ -145,7 +145,7 @@ function formatAttachment(attachment, showApp) {
 
 function renderAttachment(attachment, app, isFirst) {
     let line = isFirst ? '└─' : '├─';
-    let attName = formatAttachment(attachment, attachment.app.name != app);
+    let attName = formatAttachment(attachment, attachment.app.name !== app);
     return printf(' %s %s', style('dim', line), attName);
 }
 
@@ -156,10 +156,10 @@ function displayForApp(app, addons) {
                                                                          cli.color.stripColor,
                                                                          fn)));
             return Math.max(_.get(row, path).length, nestedWidth);
-        }
+        };
     };
 
-    function isForeignApp(attOrAddon) { return attOrAddon.app.name != app }
+    function isForeignApp(attOrAddon) { return attOrAddon.app.name !== app; }
 
     addons = _.sortByAll(addons,
                          isForeignApp,
@@ -181,11 +181,11 @@ function displayForApp(app, addons) {
         }, {
             key:   'plan.name',
             label: 'Plan',
-            ansi:  function(s) { return _.trimRight(s) == '?' ? style('dim', s) : s; }
+            ansi:  function(s) { return _.trimRight(s) === '?' ? style('dim', s) : s; }
         }, {
             label:     'Price',
             get: function(addon) {
-                if(addon.app.name == app) {
+                if(addon.app.name === app) {
                     return formatPrice(addon.plan.price);
                 } else {
                     return style('dim', printf('(billed to %s app)', style('app', addon.app.name)));
@@ -193,18 +193,18 @@ function displayForApp(app, addons) {
             },
         }],
 
-        after: function(addon, options) {
+        after: function(addon) {
             let atts = _.sortByAll(addon.attachments,
                                    isForeignApp,
                                    'app.name',
                                    'name');
 
             atts.forEach(function(attachment, idx) {
-                let isFirst = (idx == addon.attachments.length - 1)
+                let isFirst = (idx === addon.attachments.length - 1);
                 console.log(renderAttachment(attachment, app, isFirst));
             });
         }
-    })
+    });
 }
 
 let run = cli.command(function(ctx, api) {

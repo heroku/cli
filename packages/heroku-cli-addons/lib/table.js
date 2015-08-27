@@ -31,7 +31,7 @@ let colDefaults = {
     get: function(row) {
         return this.formatter(_.get(row, _.result(this, 'key')));
     },
-}
+};
 
 
 function table(data, options) {
@@ -53,13 +53,13 @@ function table(data, options) {
                 col.width,
                 col.calcWidth(row)
             );
-        };
+        }
         defaultsApplied = true;
-    };
+    }
 
     options.printHeader(columns.map(function(col) {
         return printf('%-*s', _.result(col, 'label'), col.width);
-    }))
+    }));
 
     for(let row of data) {
         let rowToPrint = columns.map(function(col) {
@@ -68,7 +68,7 @@ function table(data, options) {
 
         options.printRow(rowToPrint);
         options.after(row, options);
-    };
+    }
 }
 
 module.exports = table;
