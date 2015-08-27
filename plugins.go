@@ -134,7 +134,7 @@ var pluginsInstallCmd = &Command{
 			return
 		}
 		Errf("Installing plugin %s... ", name)
-		err := node.InstallPackage(name)
+		err := installPlugins(name)
 		ExitIfError(err)
 		plugin := getPlugin(name, false)
 		if plugin == nil || len(plugin.Commands) == 0 {
@@ -368,7 +368,7 @@ func getPlugin(name string, attemptReinstall bool) *Plugin {
 	if err != nil {
 		if attemptReinstall && strings.Contains(string(output), "Error: Cannot find module") {
 			Errf("Error reading plugin %s. Reinstalling... ", name)
-			if err := node.InstallPackage(name); err != nil {
+			if err := installPlugins(name); err != nil {
 				panic(errors.New(string(output)))
 			}
 			Errln("done")
@@ -459,7 +459,7 @@ func SetupBuiltinPlugins() {
 		noun = "plugin"
 	}
 	Errf("Installing core %s %s...", noun, strings.Join(plugins, ", "))
-	err := node.InstallPackage(plugins...)
+	err := installPlugins(plugins...)
 	if err != nil {
 		Errln()
 		PrintError(err)
@@ -485,4 +485,17 @@ func contains(arr []string, s string) bool {
 		}
 	}
 	return false
+}
+
+func installPlugins(plugins ...string) error {
+	for _, plugin := range plugins {
+		lockfile := updateLockPath + "." + plugin
+		LogIfError(golock.Lock(lockfile))
+	}
+	err := node.InstallPackage(plugins...)
+	for _, plugin := range plugins {
+		lockfile := updateLockPath + "." + plugin
+		LogIfError(golock.Unlock(lockfile))
+	}
+	return err
 }
