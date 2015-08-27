@@ -60,11 +60,11 @@ let colDefaults = {
 function table(data, options) {
     _.defaults(options, defaults);
 
-    let columns = options.columns ||
-        _.keys(data[0] || {})
-        .map(function(k) {
-            return {key: k};
-        });
+    let columns = options.columns || _.keys(data[0] || {});
+
+    if(typeof columns[0] === 'string') {
+        columns = columns.map(function(k) { return {key: k}; });
+    }
 
     let defaultsApplied = false;
     for(let row of data) {
