@@ -5,6 +5,7 @@ let co     = require('co');
 let printf = require('printf');
 let _      = require('lodash');
 let _table  = require('../lib/table');
+let util   = require('../lib/util');
 
 let styles = {
     app: 'cyan',
@@ -23,6 +24,8 @@ function table(data, options) {
         printLine: cli.log
     }));
 }
+
+let formatPrice = util.formatPrice;
 
 // Gets *all* attachments and add-ons and filters locally because the API
 // returns *owned* items not associated items.
@@ -94,14 +97,6 @@ function* addonGetter(api, app) {
     });
 
     return addons;
-}
-
-function formatPrice(price) {
-    if(!price.cents)       { return 'free'; }
-    if(price.cents === '?') { return '?'; }
-
-    let fmt = price.cents % 100 === 0 ? '$%.0f/%s' : '$%.02f/%s';
-    return printf(fmt, price.cents / 100, price.unit);
 }
 
 function displayAll(addons) {
