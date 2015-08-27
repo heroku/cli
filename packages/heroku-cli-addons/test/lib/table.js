@@ -131,4 +131,23 @@ describe('table()', function() {
                      Jane        Doe          Australia (AUS)
                      Bob         Smith        United States of America (USA)`);
     });
+
+    it('calls callback after each row', function() {
+        let out = table([{Name: 'Jane Doe', Country: 'Australia', pets: ['Spot', 'Scruffy']},
+                         {Name: 'Bob Smith', Country: 'USA', pets: []}],
+                        {columns: ['Name'],
+                         after: function(row, opts) {
+                             row.pets.forEach(function(pet) {
+                                 opts.printLine(`-> ${pet}`);
+                             });
+                         }});
+
+        expectOutput(out, `
+                     Name
+                     ─────────
+                     Jane Doe
+                     -> Spot
+                     -> Scruffy
+                     Bob Smith`);
+    });
 });
