@@ -57,7 +57,7 @@ function* addonGetter(api, app) {
 
     addons = [];
     items[0].forEach(function(addon) {
-        addon.attachments = attachments[addon.id];
+        addon.attachments = attachments[addon.id] || [];
 
         delete attachments[addon.id];
 
