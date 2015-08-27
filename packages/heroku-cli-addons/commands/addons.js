@@ -4,28 +4,11 @@ let cli    = require('heroku-cli-util');
 let co     = require('co');
 let printf = require('printf');
 let _      = require('lodash');
-let _table  = require('../lib/table');
 let util   = require('../lib/util');
 
-let styles = {
-    app: 'cyan',
-    attachment: 'green',
-    addon: 'magenta',
-};
-
-// style given text or return a function that styles text according to provided style
-function style(s, t) {
-    if(!t) {return function(text) { return style(s, text); };}
-    return cli.color[styles[s] || s](t);
-}
-
-function table(data, options) {
-    return _table(data, _.merge(options, {
-        printLine: cli.log
-    }));
-}
-
-let formatPrice = util.formatPrice;
+let table       = util.table,
+    style       = util.style,
+    formatPrice = util.formatPrice;
 
 // Gets *all* attachments and add-ons and filters locally because the API
 // returns *owned* items not associated items.

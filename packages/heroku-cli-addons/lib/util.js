@@ -1,8 +1,29 @@
 'use strict';
 
+let cli    = require('heroku-cli-util');
+let merge  = require('lodash').merge;
 let printf = require('printf');
+let table  = require('./table');
+
+let styles = {
+    app: 'cyan',
+    attachment: 'green',
+    addon: 'magenta',
+};
 
 module.exports = {
+    // style given text or return a function that styles text according to provided style
+    style: function style(s, t) {
+        if(!t) {return function(text) { return style(s, text); };}
+        return cli.color[styles[s] || s](t);
+    },
+
+    table: function(data, options) {
+        return table(data, merge(options, {
+            printLine: cli.log
+        }));
+    },
+
     formatPrice: function(price) {
         if(!price.cents)       { return 'free'; }
         if(price.cents === '?') { return '?'; }
