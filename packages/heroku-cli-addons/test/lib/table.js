@@ -87,4 +87,27 @@ describe('table()', function() {
                      Jane Doe  | Australia
                      Bob Smith | USA`);
     });
+
+    it('takes custom column formatters', function() {
+        function initials(name) {
+            return name.match(/\b\w/g).join('. ') + '.';
+        }
+
+        function highlight(str) {
+            return `[[${str.toUpperCase()}]]`;
+        }
+
+        let out = table([{Name: 'Jane Doe', Country: 'Australia'},
+                         {Name: 'Bob Smith', Country: 'USA'}],
+
+                        {columns: [{key: 'Name'},
+                                   {key: 'Name', label: 'Initials', formatter: initials},
+                                   {key: 'Country', formatter: highlight}]});
+
+        expectOutput(out, `
+                     Name       Initials  Country
+                     ─────────  ────────  ─────────────
+                     Jane Doe   J. D.     [[AUSTRALIA]]
+                     Bob Smith  B. S.     [[USA]]`);
+    });
 });
