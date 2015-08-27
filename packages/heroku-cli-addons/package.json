@@ -22,9 +22,10 @@
     "tab": "^0.1.0"
   },
   "devDependencies": {
-    "jshint": "^2.8.0"
+    "jshint": "^2.8.0",
+    "mocha": "^2.2.5"
   },
   "scripts": {
-    "test": "jshint lib commands"
+    "test": "jshint lib commands && mocha"
   }
 }
