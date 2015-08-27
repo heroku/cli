@@ -1,3 +1,8 @@
+4.22.1  2015-08-27
+==================
+Fix race condition when installing plugins
+Correct error when iojs tarball fails to download
+
 4.22.0  2015-08-26
 ==================
 Added builtin plugins:
