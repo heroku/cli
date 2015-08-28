@@ -87,7 +87,6 @@ function* run (context, heroku) {
 let cmd = {
   topic: 'apps',
   command: 'info',
-  default: true,
   description: `show detailed app information
 
  -s, --shell  # output more shell friendly key/value pairs
