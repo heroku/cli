@@ -10,25 +10,21 @@ let util     = require('util');
 
 function* run (context, heroku) {
   function getInfo(app) {
+    let appUrl = `/apps/${app}`;
+    if (context.flags.extended) appUrl += '?extended=true';
     return {
       addons: heroku.apps(app).addons().listByApp(),
-      app: heroku.apps(app).info(),
+      app: heroku.request({path: appUrl}),
       dynos: heroku.apps(app).dynos().list(),
       collaborators: heroku.apps(app).collaborators().list()
     };
-  }
-
-  function* printExtended() {
-    console.log("\n\n--- Extended Information ---\n\n");
-    let extended = (yield heroku.request({path: `/apps/${context.app}?extended=true`})).extended;
-    cli.debug(extended);
   }
 
   let info = yield getInfo(context.app);
   let addons = _(info.addons).pluck('plan.name').sort().value();
   let collaborators = _(info.collaborators).pluck('user.email').pull(info.app.owner.email).sort().value();
 
-  function* print() {
+  function print() {
     let data = {};
     data.addons = addons;
     data.collaborators = collaborators;
@@ -51,7 +47,8 @@ function* run (context, heroku) {
     cli.styledObject(data);
 
     if (context.flags.extended) {
-      yield printExtended();
+      console.log("\n\n--- Extended Information ---\n\n");
+      cli.debug(info.app);
     }
   }
 
@@ -77,10 +74,16 @@ function* run (context, heroku) {
     print('dynos', util.inspect(_(info.dynos).countBy('type').value()));
   }
 
+  function json() {
+    console.log(JSON.stringify(info, null, 2));
+  }
+
   if (context.flags.shell) {
     shell();
+  } else if (context.flags.json) {
+    json();
   } else {
-    yield print();
+    print();
   }
 }
 
@@ -107,7 +110,8 @@ Examples:
   needsAuth: true,
   flags: [
     {name: 'shell', char: 's', description: 'output more shell friendly key/value pairs'},
-    {name: 'extended', char: 'x', hidden: true}
+    {name: 'extended', char: 'x', hidden: true},
+    {name: 'json', char: 'j'}
   ],
   run: cli.command(co.wrap(run))
 };
