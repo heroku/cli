@@ -81,7 +81,7 @@ function table(data, options) {
     }
 
     options.printHeader(columns.map(function(col) {
-        let label = _.result(col, 'label')
+        let label = _.result(col, 'label');
         return printf('%-*s', label, col.width || label.length );
     }));
 
