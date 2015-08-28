@@ -1,7 +1,6 @@
 'use strict';
 
 let _table       = require('../../lib/table');
-let expect       = require('chai').expect;
 let expectOutput = require('../util').expectOutput;
 
 function table(data, options) {
