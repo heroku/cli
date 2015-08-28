@@ -1,67 +1,109 @@
 'use strict';
 
-let sprintf = require('sprintf-js');
-let co = require('co');
+let _        = require('lodash');
+let S        = require('string');
+let co       = require('co');
+let cli      = require('heroku-cli-util');
+let extend   = require('util')._extend;
 let filesize = require('filesize');
-let _ = require('lodash');
-let S = require('string');
-let cli = require('heroku-cli-util');
-let extend = require('util')._extend;
-
-function shellLine(name, value) {
-  return `${S(name).slugify()}=${value}`;
-}
-
-function outputLine(name, value) {
-  if (name) {
-    name = name + ':';
-  }
-  return sprintf.sprintf('%-15s%s', name, value);
-}
+let util     = require('util');
 
 function* run (context, heroku) {
-  let line = outputLine;
-  if (context.args.shell) {
-    line = shellLine;
+  function getInfo(app) {
+    return {
+      addons: heroku.apps(app).addons().listByApp(),
+      app: heroku.apps(app).info(),
+      dynos: heroku.apps(app).dynos().list(),
+      collaborators: heroku.apps(app).collaborators().list()
+    };
   }
-  console.log(`=== ${context.app}`);
-  let info = yield {
-    addons: heroku.apps(context.app).addons().listByApp(),
-    app: heroku.apps(context.app).info(),
-    dynos: heroku.apps(context.app).dynos().list()
-  };
-  let header = 'Addons';
-  for (let addon of info.addons) {
-    console.log(line(header, addon.plan.name));
-    header = '';
-  }
-  console.log(line('Git URL', info.app.git_url));
-  console.log(line('Owner', info.app.owner.email));
-  console.log(line('Region', info.app.region.name));
-  if (context.args.shell) {
-    console.log(line('Repo Size', info.app.repo_size));
-    console.log(line('Slug Size', info.app.slug_size));
-  } else {
-    console.log(line('Repo Size', filesize(info.app.repo_size, {round: 0})));
-    console.log(line('Slug Size', filesize(info.app.slug_size, {round: 0})));
-  }
-  console.log(line('Stack', info.app.stack.name));
-  console.log(line('Web URL', info.app.web_url));
-  console.log(line('Dynos', info.dynos.length));
-  _.forOwn(_.countBy(info.dynos, 'type'), function (count, type) {
-    console.log(line(`  ${type}`, count));
-  });
-  if (context.flags.extended) {
+
+  function* printExtended() {
     console.log("\n\n--- Extended Information ---\n\n");
     let extended = (yield heroku.request({path: `/apps/${context.app}?extended=true`})).extended;
     cli.debug(extended);
+  }
+
+  let info = yield getInfo(context.app);
+  let addons = _(info.addons).pluck('plan.name').sort().value();
+  let collaborators = _(info.collaborators).pluck('user.email').pull(info.app.owner.email).sort().value();
+
+  function* print() {
+    let data = {};
+    data.addons = addons;
+    data.collaborators = collaborators;
+
+    if (info.app.archived_at) data.archived_at = cli.formatDate(info.app.archived_at);
+    if (info.app.cron_finished_at) data.cron_finished_at = cli.formatDate(info.app.cron_finished_at);
+    if (info.app.cron_next_run) data.cron_next_run = cli.formatDate(info.app.cron_next_run);
+    if (info.app.database_size) data.database_size = filesize(info.app.database_size, {round: 0});
+    if (info.app.create_status !== 'complete') data.create_status = info.app.create_status;
+
+    data['Git URL'] = info.app.git_url;
+    data['Web URL'] = info.app.web_url;
+    data.repo_size = filesize(info.app.repo_size, {round: 0});
+    data.slug_size = filesize(info.app.slug_size, {round: 0});
+    data.owner = info.app.owner.email;
+    data.region = info.app.region.name;
+    data.dynos = _(info.dynos).countBy('type').value();
+
+    cli.styledHeader(info.app.name);
+    cli.styledObject(data);
+
+    if (context.flags.extended) {
+      yield printExtended();
+    }
+  }
+
+  function shell() {
+    function print(k, v) {
+      cli.log(`${S(k).slugify()}=${v}`);
+    }
+    print('addons', addons);
+    print('collaborators', collaborators);
+
+    if (info.app.archived_at) print('archived_at', cli.formatDate(info.app.archived_at));
+    if (info.app.cron_finished_at) print('cron_finished_at', cli.formatDate(info.app.cron_finished_at));
+    if (info.app.cron_next_run) print('cron_next_run', cli.formatDate(info.app.cron_next_run));
+    if (info.app.database_size) print('database_size', filesize(info.app.database_size, {round: 0}));
+    if (info.app.create_status !== 'complete') print('create_status', info.app.create_status);
+
+    print('git_url', info.app.git_url);
+    print('web_url', info.app.web_url);
+    print('repo_size', filesize(info.app.repo_size, {round: 0}));
+    print('slug_size', filesize(info.app.slug_size, {round: 0}));
+    print('owner', info.app.owner.email);
+    print('region', info.app.region.name);
+    print('dynos', util.inspect(_(info.dynos).countBy('type').value()));
+  }
+
+  if (context.flags.shell) {
+    shell();
+  } else {
+    yield print();
   }
 }
 
 let cmd = {
   topic: 'apps',
   command: 'info',
-  description: 'show detailed app information',
+  default: true,
+  description: `show detailed app information
+
+ -s, --shell  # output more shell friendly key/value pairs
+
+Examples:
+
+ $ heroku apps:info
+ === example
+ Git URL:   https://git.heroku.com/example.git
+ Repo Size: 5M
+ ...
+
+ $ heroku apps:info --shell
+ git_url=https://git.heroku.com/example.git
+ repo_size=5000000
+ ...`,
   needsApp: true,
   needsAuth: true,
   flags: [
