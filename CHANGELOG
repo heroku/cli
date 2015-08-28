@@ -1,3 +1,7 @@
+4.22.2  2015-08-27
+==================
+Use https for npm download
+
 4.22.1  2015-08-27
 ==================
 Fix race condition when installing plugins
