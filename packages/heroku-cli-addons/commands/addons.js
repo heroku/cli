@@ -85,6 +85,11 @@ function* addonGetter(api, app) {
 function displayAll(addons) {
     addons = _.sortByAll(addons, 'app.name', 'plan.name', 'addon.name');
 
+    if(addons.length === 0) {
+        cli.log("No add-ons.");
+        return;
+    }
+
     table(addons, {
         headerAnsi: cli.color.bold,
         columns: [{

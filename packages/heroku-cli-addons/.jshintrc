@@ -32,6 +32,7 @@
     "afterEach",
     "beforeEach",
     "describe",
+    "context",
     "it",
     "sinon"
   ]
