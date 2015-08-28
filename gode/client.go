@@ -71,7 +71,7 @@ func (c *Client) nodePath() string {
 }
 
 func (c *Client) npmURL() string {
-	return "http://github.com/npm/npm/archive/v" + c.NpmVersion + ".zip"
+	return "https://github.com/npm/npm/archive/v" + c.NpmVersion + ".zip"
 }
 
 func (c *Client) npmPath() string {
