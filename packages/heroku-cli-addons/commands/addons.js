@@ -16,17 +16,17 @@ function* addonGetter(api, app) {
     let attachments, addons;
 
     if(app) { // don't disploy attachments globally
+        addons = api.request({
+            method:  'GET',
+            path:    `/apps/${app}/addons`,
+            headers: {'Accept-Expansion': 'addon_service,plan'},
+        });
+
         let sudoHeaders = JSON.parse(process.env.HEROKU_HEADERS || '{}');
         if(sudoHeaders['X-Heroku-Sudo'] && !sudoHeaders['X-Heroku-Sudo-User']) {
             // because the root /addon-attachments endpoint won't include relevant
             // attachments when sudo-ing for another app, we will use the more
             // specific API call and sacrifice listing foreign attachments.
-            addons = api.request({
-                method:  'GET',
-                path:    `/apps/${app}/addons`,
-                headers: {'Accept-Expansion': 'addon_service,plan'},
-            });
-
             attachments = api.request({
                 method:  'GET',
                 path:    `/apps/${app}/addon-attachments`,
@@ -36,13 +36,13 @@ function* addonGetter(api, app) {
             // attachment list
             attachments = api.addonAttachments().list();
         }
+    } else {
+        addons = api.request({
+            method:  'GET',
+            path:    '/addons',
+            headers: {'Accept-Expansion': 'addon_service,plan'}
+        });
     }
-
-    addons = addons || api.request({
-        method:  'GET',
-        path:    '/addons',
-        headers: {'Accept-Expansion': 'addon_service,plan'}
-    });
 
     // Get addons and attachments in parallel
     let items = yield [addons, attachments];
@@ -133,6 +133,11 @@ function renderAttachment(attachment, app, isFirst) {
 }
 
 function displayForApp(app, addons) {
+    if(addons.length === 0) {
+        cli.log(`No add-ons for app ${app}.`);
+        return;
+    }
+
     let nestedCalcWidther = function(path, nestedPath, fn) {
         return function(row) {
             let nestedWidth = _.max(_.get(row, nestedPath).map(_.compose(_.property('length'),

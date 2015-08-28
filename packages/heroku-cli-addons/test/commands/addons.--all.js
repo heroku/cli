@@ -42,7 +42,6 @@ describe('addons --all', function() {
     context('with add-ons', function() {
         beforeEach(function() {
             nock('https://api.heroku.com')
-                .persist()
                 .matchHeader('Accept-Expansion', function(val) {
                     let vals = val.split(',');
                     return vals.indexOf('addon_service') > -1 && vals.indexOf('plan') > -1;
