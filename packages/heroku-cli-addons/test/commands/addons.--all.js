@@ -1,18 +1,11 @@
 'use strict';
 
 let fixtures = require('../fixtures');
-let cli    = require('heroku-cli-util');
-let nock   = require('nock');
-let expect = require('chai').expect;
-let cmd    = require('../../commands/addons');
-
-function stripIndents(str) {
-    return str.replace(/\A\n|^\s+|\s+$/mg, '');
-}
-
-function expectOutput(output) {
-    return expect(stripIndents(cli.stdout)).to.equal(stripIndents(output));
-}
+let util     = require('../util');
+let cli      = require('heroku-cli-util');
+let nock     = require('nock');
+let expect   = require('chai').expect;
+let cmd      = require('../../commands/addons');
 
 describe('addons --all', function() {
     beforeEach(function() { cli.mockConsole(); });
@@ -60,7 +53,7 @@ describe('addons --all', function() {
 
         it('prints add-ons in a table', function() {
             return cmd.run({flags: {}}).then(function() {
-                expectOutput(
+                util.expectOutput(cli.stdout,
                     `Owning App    Add-on     Plan                         Price
                     ────────────  ─────────  ───────────────────────────  ─────────
                     acme-inc-api  api-redis  heroku-redis:premium-2       $60/month
@@ -80,7 +73,7 @@ describe('addons --all', function() {
     it('prints message when there are no add-ons', function() {
         nock('https://api.heroku.com').get('/addons').reply(200, []);
         return cmd.run({flags: {}}).then(function() {
-            expectOutput(`No add-ons.`);
+            util.expectOutput(cli.stdout, `No add-ons.`);
         });
     });
 });

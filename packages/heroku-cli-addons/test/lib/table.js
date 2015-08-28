@@ -1,15 +1,8 @@
 'use strict';
 
-let _table = require('../../lib/table');
-let expect = require('chai').expect;
-
-function stripIndents(str) {
-    return str.replace(/\A\n|^\s+|\s+$/mg, '');
-}
-
-function expectOutput(actual, expected) {
-    return expect(stripIndents(actual)).to.equal(stripIndents(expected));
-}
+let _table       = require('../../lib/table');
+let expect       = require('chai').expect;
+let expectOutput = require('../util').expectOutput;
 
 function table(data, options) {
     let out = '';
