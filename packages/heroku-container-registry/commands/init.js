@@ -156,7 +156,7 @@ function readFile(dir, filename, transform) {
 function writeFile(dir, filename, contents) {
   try {
     var file = path.join(dir, filename);
-    fs.writeFileSync(file, contents, { encoding: 'utf8' });
+    fs.writeFileSync(file, contents + "\n", { encoding: 'utf8' });
     `Wrote ${ filename }`
   }
   catch (e) {

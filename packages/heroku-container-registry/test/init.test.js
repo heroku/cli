@@ -11,14 +11,24 @@ describe('init', function() {
   describe('with a Procfile', function() {
 
     describe('and an --image flag', function() {
-      it('generates an app.json, Dockerfile, and docker-compose.yml', function() {
-        var test = fixture('basic');
+      before(function() {
+        this.fixture = fixture('basic');
         init.run({
           debug: true,
-          cwd: test.cwd,
+          cwd: this.fixture.cwd,
           flags: { image: 'heroku/nodejs' }
         });
-        assert.equal(test.diff('image-flag'), '[]');
+      });
+      it('generates an app.json, Dockerfile, and docker-compose.yml', function() {
+        assert.equal(this.fixture.diff('image-flag'), '[]');
+      });
+      it('adds newlines to each file so @friism will be able to sleep', function() {
+        var appJSON = fs.readFileSync(path.join(this.fixture.cwd, 'app.json'), { encoding: 'utf8' });
+        var dockerfile = fs.readFileSync(path.join(this.fixture.cwd, 'Dockerfile'), { encoding: 'utf8' });
+        var compose = fs.readFileSync(path.join(this.fixture.cwd, 'docker-compose.yml'), { encoding: 'utf8' });
+        assert.equal(appJSON.slice(-1), "\n");
+        assert.equal(dockerfile.slice(-1), "\n");
+        assert.equal(compose.slice(-1), "\n");
       });
     });
 
