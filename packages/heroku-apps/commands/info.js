@@ -92,8 +92,6 @@ let cmd = {
   command: 'info',
   description: `show detailed app information
 
- -s, --shell  # output more shell friendly key/value pairs
-
 Examples:
 
  $ heroku apps:info
