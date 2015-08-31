@@ -430,7 +430,7 @@ func PluginNamesNotSymlinked() []string {
 }
 
 func ignorePlugin(plugin string) bool {
-	ignored := []string{".bin", "node-inspector"}
+	ignored := []string{".bin", ".DS_Store", "node-inspector"}
 	for _, p := range ignored {
 		if plugin == p {
 			return true
