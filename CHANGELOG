@@ -1,3 +1,7 @@
+4.22.3  2015-08-31
+==================
+Ignore .DS_Store as a plugin
+
 4.22.2  2015-08-27
 ==================
 Use https for npm download
