@@ -181,7 +181,7 @@ var pluginsLinkCmd = &Command{
 		}
 		plugin := getPlugin(name, false)
 		if plugin == nil || len(plugin.Commands) == 0 {
-			Errln(name + " does not appear to be a Heroku plugin")
+			Errln(name + " does not appear to be a Heroku plugin.\nDid you run `npm install`?")
 			if err := os.Remove(newPath); err != nil {
 				panic(err)
 			}
