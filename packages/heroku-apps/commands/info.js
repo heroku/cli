@@ -42,6 +42,7 @@ function* run (context, heroku) {
     data.owner = info.app.owner.email;
     data.region = info.app.region.name;
     data.dynos = _(info.dynos).countBy('type').value();
+    data.stack = info.app.stack.name;
 
     cli.styledHeader(info.app.name);
     cli.styledObject(data);
@@ -72,6 +73,7 @@ function* run (context, heroku) {
     print('owner', info.app.owner.email);
     print('region', info.app.region.name);
     print('dynos', util.inspect(_(info.dynos).countBy('type').value()));
+    print('stack', info.app.stack.name);
   }
 
   function json() {
