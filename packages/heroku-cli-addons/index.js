@@ -6,5 +6,6 @@ exports.topic = {
 };
 
 exports.commands = [
-    require('./commands/addons')
+    require('./commands/addons'),
+    require('./commands/addons/show')
 ];
