@@ -119,11 +119,13 @@ function formatAttachment(attachment, showApp) {
 
     let attName = style('attachment', attachment.name);
 
+    let output = [attName];
     if(showApp) {
-        return style('dim', style('app', attachment.app.name) + '::') + attName;
-    } else {
-        return attName;
+        let appInfo = `(on ${style('app', attachment.app.name)} app)`;
+        output.push(style('dim', appInfo));
     }
+
+    return output.join(' ');
 }
 
 function renderAttachment(attachment, app, isFirst) {
