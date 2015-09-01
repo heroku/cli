@@ -1,7 +1,6 @@
 'use strict';
 
 let stripAnsi = require('heroku-cli-util').color.stripColor;
-let printf    = require('printf');
 let _         = require('lodash');
 
 let defaults = {
@@ -32,6 +31,13 @@ let colDefaults = {
         return this.formatter(_.get(row, _.result(this, 'key')));
     },
 };
+
+function pad(string, length) {
+    let visibleLength = stripAnsi(string).length;
+    let diff = length - visibleLength;
+
+    return string + _.repeat(' ', Math.max(0, diff));
+}
 
 /**
  * Generates a Unicode table and feeds it into configured printer.
@@ -82,13 +88,17 @@ function table(data, options) {
 
     options.printHeader(columns.map(function(col) {
         let label = _.result(col, 'label');
-        return printf('%-*s', label, col.width || label.length );
+        return pad(label, col.width || label.length );
     }));
 
+    function rowCellFn(row) {
+        return function(col) {
+            return col.ansi(pad(col.get(row), col.width));
+        };
+    }
+
     for(let row of data) {
-        let rowToPrint = columns.map(function(col) {
-            return col.ansi(printf('%-*s', col.get(row), col.width));
-        });
+        let rowToPrint = columns.map(rowCellFn(row));
 
         options.printRow(rowToPrint);
         options.after(row, options);

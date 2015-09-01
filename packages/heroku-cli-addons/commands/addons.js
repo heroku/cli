@@ -138,16 +138,19 @@ function displayForApp(app, addons) {
         return;
     }
 
-    let nestedCalcWidther = function(path, nestedPath, fn) {
-        return function(row) {
-            let nestedWidth = _.max(_.get(row, nestedPath).map(_.compose(_.property('length'),
-                                                                         cli.color.stripColor,
-                                                                         fn)));
-            return Math.max(_.get(row, path).length, nestedWidth);
-        };
-    };
-
     function isForeignApp(attOrAddon) { return attOrAddon.app.name !== app; }
+
+    function presentAddon(addon) {
+        let name    = style('addon', addon.name);
+        let service = addon.addon_service.name;
+
+        // return `${service} (${name})`;
+        return `${name} (${service})`;
+    }
+
+    cli.log(`The following table shows ${style('addon', 'add-ons')} and the ` +
+            `${style('attachment', 'attachments')} to the current app (${app}) ` +
+            `or other ${style('app', 'apps')}.\n`);
 
     addons = _.sortByAll(addons,
                          isForeignApp,
@@ -157,22 +160,30 @@ function displayForApp(app, addons) {
     table(addons, {
         headerAnsi: cli.color.bold,
         columns: [{
-            key:   'name',
-            label: 'Add-on',
-            ansi:  style('addon'),
+            label:     'Add-on',
+            get:       presentAddon,
+            calcWidth: function(addon) { // customize column width to factor in the attachment list
+                let addonLength      = cli.color.stripColor(presentAddon(addon)).length;
+                let attachmentLength = _.max(
+                    _.map(addon.attachments, function(att) {
+                        return cli.color.stripColor(renderAttachment(att, app)).length;
+                    }));
 
-            // customize column width to factor in the attachment list
-            // TODO: make this just be `width`, which can either be a static number or a function which returns a number
-            calcWidth: nestedCalcWidther('name',
-                                         'attachments',
-                                         _.partial(renderAttachment, _, app)),
+                return Math.max(addonLength, attachmentLength);
+            }
         }, {
-            key:   'plan.name',
             label: 'Plan',
-            ansi:  function(s) { return _.trimRight(s) === '?' ? style('dim', s) : s; }
+            get:   function(addon) {
+                let name = addon.plan.name;
+                if(name === '?') {
+                    return style('dim', '?');
+                } else {
+                    return name.replace(/^[^:]+:/, '');
+                }
+            },
         }, {
-            label:     'Price',
-            get: function(addon) {
+            label: 'Price',
+            get:   function(addon) {
                 if(addon.app.name === app) {
                     return formatPrice(addon.plan.price);
                 } else {
@@ -187,10 +198,14 @@ function displayForApp(app, addons) {
                                    'app.name',
                                    'name');
 
+            // Print each attachment under the add-on
             atts.forEach(function(attachment, idx) {
                 let isFirst = (idx === addon.attachments.length - 1);
-                console.log(renderAttachment(attachment, app, isFirst));
+                cli.log(renderAttachment(attachment, app, isFirst));
             });
+
+            // Separate each add-on row by a blank line
+            cli.log("");
         }
     });
 }
