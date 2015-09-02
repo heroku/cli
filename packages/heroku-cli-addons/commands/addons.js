@@ -154,7 +154,7 @@ function displayForApp(app, addons) {
                          isForeignApp,
                          'plan.name',
                          'addon.name');
-
+    cli.log ();
     table(addons, {
         headerAnsi: cli.color.bold,
         columns: [{
@@ -209,7 +209,7 @@ function displayForApp(app, addons) {
 
     cli.log(`The table above shows ${style('addon', 'add-ons')} and the ` +
             `${style('attachment', 'attachments')} to the current app (${app}) ` +
-            `or other ${style('app', 'apps')}.`);
+            `or other ${style('app', 'apps')}.\n`);
 
 }
 
