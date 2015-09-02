@@ -121,7 +121,7 @@ function formatAttachment(attachment, showApp) {
 
     let output = [attName];
     if(showApp) {
-        let appInfo = `(on ${style('app', attachment.app.name)} app)`;
+        let appInfo = `➞  to ${style('app', attachment.app.name)} app`;
         output.push(style('dim', appInfo));
     }
 
