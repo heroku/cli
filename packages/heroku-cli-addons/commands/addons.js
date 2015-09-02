@@ -146,8 +146,8 @@ function displayForApp(app, addons) {
         let name    = style('addon', addon.name);
         let service = addon.addon_service.name;
 
-        // return `${service} (${name})`;
-        return `${name} (${service})`;
+        return `${service} (${name})`;
+        // return `${name} (${service})`;
     }
 
     cli.log(`The following table shows ${style('addon', 'add-ons')} and the ` +
