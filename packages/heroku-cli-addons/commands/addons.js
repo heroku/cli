@@ -150,10 +150,6 @@ function displayForApp(app, addons) {
         // return `${name} (${service})`;
     }
 
-    cli.log(`The following table shows ${style('addon', 'add-ons')} and the ` +
-            `${style('attachment', 'attachments')} to the current app (${app}) ` +
-            `or other ${style('app', 'apps')}.\n`);
-
     addons = _.sortByAll(addons,
                          isForeignApp,
                          'plan.name',
@@ -210,6 +206,11 @@ function displayForApp(app, addons) {
             cli.log("");
         }
     });
+
+    cli.log(`The table above shows ${style('addon', 'add-ons')} and the ` +
+            `${style('attachment', 'attachments')} to the current app (${app}) ` +
+            `or other ${style('app', 'apps')}.`);
+
 }
 
 let run = cli.command(function(ctx, api) {
