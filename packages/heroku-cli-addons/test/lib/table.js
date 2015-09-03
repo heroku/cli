@@ -142,4 +142,20 @@ describe('table()', function() {
                      -> Scruffy
                      Bob Smith`);
     });
+
+    it('handles multi-line cells', function() {
+        let out = table([{Name: 'Jane Doe', 'Favourite Pizza Toppings': "Garlic\nPepperoni\nHam\nPineapple"},
+                         {Name: 'Bob Smith', 'Favourite Pizza Toppings': "Pumpkin\r\nSpinach\nGarlic"}]);
+
+        expectOutput(out, `
+                     Name       Favourite Pizza Toppings
+                     ─────────  ────────────────────────
+                     Jane Doe   Garlic
+                                Pepperoni
+                                Ham
+                                Pineapple
+                     Bob Smith  Pumpkin
+                                Spinach
+                                Garlic`);
+    });
 });

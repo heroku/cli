@@ -24,7 +24,9 @@ let colDefaults = {
     label:     function() { return this.key.toString(); },
 
     calcWidth: function(row) {
-        return stripAnsi(this.get(row)).length;
+        let lines = stripAnsi(this.get(row)).split(/[\r\n]+/);
+        let lineLengths = lines.map(_.property('length'));
+        return Math.max.apply(Math, lineLengths);
     },
 
     get: function(row) {
@@ -74,6 +76,7 @@ function table(data, options) {
 
     let defaultsApplied = false;
     for(let row of data) {
+        row.height = 1;
         for(let col of columns) {
             if(!defaultsApplied) { _.defaults(col, colDefaults); }
 
@@ -81,6 +84,12 @@ function table(data, options) {
                 col.label.length,
                 col.width,
                 col.calcWidth(row)
+            );
+
+            row.height = Math.max(
+                row.height,
+                col.get(row).
+                    split(/[\r\n]+/).length
             );
         }
         defaultsApplied = true;
@@ -91,16 +100,17 @@ function table(data, options) {
         return pad(label, col.width || label.length );
     }));
 
-    function rowCellFn(row) {
-        return function(col) {
-            return col.ansi(pad(col.get(row), col.width));
-        };
+    function getNthLineOfCell(n, row, col) {
+        // TODO memoize this
+        let lines = col.get(row).split(/[\r\n]+/);
+        return pad(lines[n] || '', col.width);
     }
 
     for(let row of data) {
-        let rowToPrint = columns.map(rowCellFn(row));
-
-        options.printRow(rowToPrint);
+        for(let i = 0; i < row.height; i++) {
+            let cells = columns.map(_.partial(getNthLineOfCell, i, row));
+            options.printRow(cells);
+        }
         options.after(row, options);
     }
 }
