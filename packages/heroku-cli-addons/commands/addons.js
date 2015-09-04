@@ -146,8 +146,20 @@ function displayForApp(app, addons) {
         let name    = style('addon', addon.name);
         let service = addon.addon_service.name;
 
-        return `${service} (${name})`;
-        // return `${name} (${service})`;
+        let addonLine = `${service} (${name})`;
+
+        let atts = _.sortByAll(addon.attachments,
+                               isForeignApp,
+                               'app.name',
+                               'name');
+
+        // render each attachment under the add-on
+        let attLines = atts.map(function(attachment, idx) {
+            let isFirst = (idx === addon.attachments.length - 1);
+            return renderAttachment(attachment, app, isFirst);
+        });
+
+        return [addonLine].concat(attLines).join("\n");
     }
 
     addons = _.sortByAll(addons,
@@ -160,15 +172,6 @@ function displayForApp(app, addons) {
         columns: [{
             label:     'Add-on',
             get:       presentAddon,
-            calcWidth: function(addon) { // customize column width to factor in the attachment list
-                let addonLength      = cli.color.stripColor(presentAddon(addon)).length;
-                let attachmentLength = _.max(
-                    _.map(addon.attachments, function(att) {
-                        return cli.color.stripColor(renderAttachment(att, app)).length;
-                    }));
-
-                return Math.max(addonLength, attachmentLength);
-            }
         }, {
             label: 'Plan',
             get:   function(addon) {
@@ -190,27 +193,13 @@ function displayForApp(app, addons) {
             },
         }],
 
-        after: function(addon) {
-            let atts = _.sortByAll(addon.attachments,
-                                   isForeignApp,
-                                   'app.name',
-                                   'name');
-
-            // Print each attachment under the add-on
-            atts.forEach(function(attachment, idx) {
-                let isFirst = (idx === addon.attachments.length - 1);
-                cli.log(renderAttachment(attachment, app, isFirst));
-            });
-
-            // Separate each add-on row by a blank line
-            cli.log("");
-        }
+        // Separate each add-on row by a blank line
+        after: function() { cli.log(""); }
     });
 
     cli.log(`The table above shows ${style('addon', 'add-ons')} and the ` +
             `${style('attachment', 'attachments')} to the current app (${app}) ` +
             `or other ${style('app', 'apps')}.\n`);
-
 }
 
 let run = cli.command(function(ctx, api) {
