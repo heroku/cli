@@ -93,8 +93,8 @@ describe('table()', function() {
                          {Name: 'Bob Smith', Country: 'USA'}],
 
                         {columns: [{key: 'Name'},
-                                   {key: 'Name', label: 'Initials', formatter: initials},
-                                   {key: 'Country', formatter: highlight}]});
+                                   {key: 'Name', label: 'Initials', format: initials},
+                                   {key: 'Country', format: highlight}]});
 
         expectOutput(out, `
                      Name       Initials  Country
@@ -115,7 +115,7 @@ describe('table()', function() {
 
                         {columns: [{key: 'name.given', label: 'Given name'},
                                    {key: 'name.family', label: 'Family name'},
-                                   {key: 'country', label: 'Country', formatter: fmtCountry}]});
+                                   {key: 'country', label: 'Country', format: fmtCountry}]});
 
         expectOutput(out, `
                      Given name  Family name  Country

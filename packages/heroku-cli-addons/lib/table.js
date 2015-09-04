@@ -18,21 +18,29 @@ let defaults = {
 };
 
 let colDefaults = {
-    ansi:      _.identity,
-    formatter: _.partialRight(_.result, 'toString'),
-    width:     0,
-    label:     function() { return this.key.toString(); },
-
-    calcWidth: function(row) {
-        let lines = stripAnsi(this.get(row)).split(/[\r\n]+/);
-        let lineLengths = lines.map(_.property('length'));
-        return Math.max.apply(Math, lineLengths);
-    },
+    format: _.partialRight(_.result, 'toString'),
+    width:  0,
+    label:  function() { return this.key.toString(); },
 
     get: function(row) {
-        return this.formatter(_.get(row, _.result(this, 'key')));
+        let value;
+        let path = _.result(this, 'key');
+
+        if(!path) {
+            value = row;
+        } else {
+            value = _.get(row, path);
+        }
+
+        return this.format(value);
     },
 };
+
+function calcWidth(cell) {
+    let lines = stripAnsi(cell).split(/[\r\n]+/);
+    let lineLengths = lines.map(_.property('length'));
+    return Math.max.apply(Math, lineLengths);
+}
 
 function pad(string, length) {
     let visibleLength = stripAnsi(string).length;
@@ -59,9 +67,7 @@ function pad(string, length) {
  *
  * @arg {function(row)|string} [options.columns[].key] - Path to the value in the row or function to retrieve the pre-formatted value for the cell.
  * @arg {function(string)} [options.columns[].label] - Header name for column.
- * @arg {function(string)} [options.columns[].ansi] - Zero-width formatter (e.g. ANSI coloring).
- * @arg {function(string)} [options.columns[].formatter] - Formatter for column value.
- * @arg {function(row)} [options.columns[].calcWidth] - Given the row whole; should return the width for the current column.
+ * @arg {function(string)} [options.columns[].format] - Formatter function for column value.
  * @arg {function(row)} [options.columns[].get] - Function to return a value to be presented in cell without formatting.
  *
  */
@@ -80,16 +86,17 @@ function table(data, options) {
         for(let col of columns) {
             if(!defaultsApplied) { _.defaults(col, colDefaults); }
 
+            let cell = col.get(row);
+
             col.width = Math.max(
                 col.label.length,
                 col.width,
-                col.calcWidth(row)
+                calcWidth(cell)
             );
 
             row.height = Math.max(
                 row.height,
-                col.get(row).
-                    split(/[\r\n]+/).length
+                cell.split(/[\r\n]+/).length
             );
         }
         defaultsApplied = true;

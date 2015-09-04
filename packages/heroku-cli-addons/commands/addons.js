@@ -70,7 +70,7 @@ function* addonGetter(api, app) {
         let inaccessibleAddon = {
             app: atts[0].addon.app,
             name: atts[0].addon.name,
-            plan: {name: '?'},
+            plan: {},
             attachments: atts
         };
 
@@ -93,22 +93,27 @@ function displayAll(addons) {
     table(addons, {
         headerAnsi: cli.color.bold,
         columns: [{
-            key:   'app.name',
-            label: 'Owning App',
-            ansi:  style('app'),
+            key:    'app.name',
+            label:  'Owning App',
+            format: style('app'),
         }, {
-            key:   'name',
-            label: 'Add-on',
-            ansi:  style('addon'),
+            key:    'name',
+            label:  'Add-on',
+            format: style('addon'),
         }, {
-            key:   'plan.name',
-            label: 'Plan',
-            ansi:  function(s) { return _.trimRight(s) === '?' ? style('dim', s) : s; },
+            key:    'plan.name',
+            label:  'Plan',
+            format: function(plan) {
+                if(typeof plan === 'undefined') return style('dim', '?');
+                return plan;
+            },
         }, {
-            key:       'plan.price',
-            label:     'Price',
-            formatter: formatPrice,
-            ansi:  function(s) { return _.trimRight(s) === '?' ? style('dim', s) : s; },
+            key:    'plan.price',
+            label:  'Price',
+            format: function(price) {
+                if(typeof price === 'undefined') return style('dim', '?');
+                return formatPrice(price);
+            }
         }],
 
     });
@@ -166,25 +171,22 @@ function displayForApp(app, addons) {
                          isForeignApp,
                          'plan.name',
                          'addon.name');
-    cli.log ();
+    cli.log();
     table(addons, {
         headerAnsi: cli.color.bold,
         columns: [{
-            label:     'Add-on',
-            get:       presentAddon,
+            label: 'Add-on',
+            format: presentAddon,
         }, {
             label: 'Plan',
-            get:   function(addon) {
-                let name = addon.plan.name;
-                if(name === '?') {
-                    return style('dim', '?');
-                } else {
-                    return name.replace(/^[^:]+:/, '');
-                }
+            key: 'plan.name',
+            format: function(name) {
+                if(name === undefined) { return style('dim', name); }
+                return name.replace(/^[^:]+:/, '');
             },
         }, {
             label: 'Price',
-            get:   function(addon) {
+            format: function(addon) {
                 if(addon.app.name === app) {
                     return formatPrice(addon.plan.price);
                 } else {
