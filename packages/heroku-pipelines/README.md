@@ -69,51 +69,12 @@ Production:  example
 Flow:        example-staging --> example, example-admin
 ```
 
-#### Show status
-
-```bash
-$ git commit -m "A super important fix"
-$ git push staging
-$ heroku pipelines:status -r production # Not implemented yet
-Comparing example to master... done
-example-staging behind by 1 commit:
-  73ab415  2012-01-01  A super important fix  (Joe Developer)
-```
-
-#### Show diff
-
-```bash
-$ git commit -m "A super important fix"
-$ git push staging
-$ heroku pipelines:diff -r staging # Not implemented yet
-Comparing example-staging to example... done
-example-staging ahead by 1 commit:
-  73ab415  2012-01-01  A super important fix  (Joe Developer)
-Comparing example-staging to example-admin... done
-example-staging ahead by 1 commit:
-  73ab415  2012-01-01  A super important fix  (Joe Developer)
-```
-
 #### Promote an app in a pipeline
 
 ```bash
 $ heroku pipelines:promote -r staging
 Promoting example-staging to example (production)... done, v23
 Promoting example-staging to example-admin (production)... done, v54
-```
-
-#### Rename pipeline
-
-```bash
-$ heroku pipelines:rename example www # Not working yet
-Renaming example pipeline to www... done
-```
-
-#### Destroy pipeline
-
-```bash
-$ heroku pipelines:destroy www # Not working yet
-Destroying www pipeline... done
 ```
 
 #### Update apps in a pipeline
