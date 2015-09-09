@@ -16,7 +16,7 @@
   "dependencies": {
     "co": "^4.6.0",
     "heroku-cli-util": "^5.4.3",
-    "lodash": "^3.10.",
+    "lodash": "^3.10.1",
     "printf": "^0.2.3"
   },
   "devDependencies": {
