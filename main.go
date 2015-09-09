@@ -67,6 +67,7 @@ func init() {
 
 func main() {
 	defer handlePanic()
+	runtime.GOMAXPROCS(1) // more procs causes runtime: failed to create new OS thread on Ubuntu
 	Update(Channel, "block")
 	SetupNode()
 	SetupBuiltinPlugins()
