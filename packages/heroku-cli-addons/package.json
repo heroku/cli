@@ -1,6 +1,6 @@
 {
   "name": "heroku-cli-addons",
-  "version": "0.0.1-pre.2",
+  "version": "0.0.1-pre.3",
   "description": "`heroku addons:*` commands",
   "main": "index.js",
   "author": "Bo Jeanes @bjeanes",
