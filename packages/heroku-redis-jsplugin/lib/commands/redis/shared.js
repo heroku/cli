@@ -55,30 +55,7 @@ function make_addons_filter(filter) {
   return on_response;
 }
 
-function make_config_var_filter(filter) {
-  if (filter) {
-    filter = filter.toUpperCase();
-  }
-
-  function on_response(config_vars) {
-    let servers = [];
-
-    for (let name in config_vars) {
-      if (config_vars.hasOwnProperty(name)) {
-        let url = config_vars[name];
-        if ((url.indexOf('redis:') === 0) && (!filter || name.indexOf(filter) >= 0)) {
-          servers.push({url: url, name: name});
-        }
-      }
-    }
-    return servers;
-  }
-
-  return on_response;
-}
-
 module.exports = {
   request: request,
-  make_addons_filter: make_addons_filter,
-  make_config_var_filter: make_config_var_filter
+  make_addons_filter: make_addons_filter
 };
