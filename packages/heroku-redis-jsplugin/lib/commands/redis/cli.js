@@ -88,7 +88,7 @@ function nativeCLI(redis) {
     process.exit(1);
   });
   client.on('end', function () {
-    console.log('\nDisconnected from database.');
+    console.log('\nDisconnected from instance.');
     process.exit(0);
   });
 }
