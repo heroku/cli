@@ -1,6 +1,6 @@
 {
   "name": "heroku-cli-addons",
-  "version": "0.1.0",
+  "version": "0.0.1-pre.0",
   "description": "`heroku addons:*` commands",
   "main": "index.js",
   "author": "Bo Jeanes @bjeanes",
@@ -26,6 +26,9 @@
     "nock": "^2.10.0"
   },
   "scripts": {
-    "test": "jshint lib commands && mocha && jshint test"
+    "test": "jshint lib commands && mocha && jshint test",
+
+    "preversion": "npm test",
+    "postversion": "git push && git push --tags"
   }
 }
