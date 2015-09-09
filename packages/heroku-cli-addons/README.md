@@ -41,7 +41,13 @@ reference types by consistent colours and dimming non-critical information:
 
 ## Install
 
-For now, since this isn't published on `npm`, you can install it like so:
+### Latest published version
+
+``` sh-session
+$ heroku plugins:install heroku-cli-addons
+```
+
+### Latest dev version
 
 ``` sh-session
 $ git clone https://github.com/heroku/heroku-cli-addons.git heroku-cli-addons
