@@ -62,3 +62,12 @@ meantime if it's borked:
 ``` sh-session
 $ rm ~/.heroku/node_modules/heroku-cli-addons
 ```
+
+## Developing
+
+```sh-session
+$ npm install              # install all dependencies
+$ npm test                 # run the tests
+$ npm version --prerelease # bump the version number and push to git
+$ npm publish --tag pre    # publish latest pre-release on npm
+```
