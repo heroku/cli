@@ -39,6 +39,8 @@ Forego.prototype = {
     if (opts.flags.env)  args.unshift('-e', opts.flags.env);
     if (opts.flags.port) args.unshift('-p', opts.flags.port);
     args.unshift('run');
+    // TODO: find out why spring does not work
+    process.env['DISABLE_SPRING'] = 1;
     spawn(this.path, args, {stdio: 'inherit'});
   },
 
