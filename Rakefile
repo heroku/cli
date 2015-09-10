@@ -8,6 +8,7 @@ TARGETS = [
   {os: 'darwin', arch: 'amd64'},
   {os: 'linux', arch: 'arm'},
   {os: 'linux', arch: 'amd64'},
+  {os: 'linux', arch: '386', go386: '387'},
   {os: 'linux', arch: '386'},
   {os: 'openbsd', arch: 'amd64'},
   {os: 'openbsd', arch: '386'},
@@ -29,7 +30,7 @@ task :build do
   puts "building #{LABEL}..."
   FileUtils.mkdir_p 'dist'
   TARGETS.map do |target|
-    build(target[:os], target[:arch])
+    build(target)
   end
 end
 
@@ -51,12 +52,14 @@ task :release => :build do
   puts "released #{VERSION}"
 end
 
-def build(os, arch)
-  puts "Building #{os}-#{arch}"
-  path = "./dist/#{os}/#{arch}/heroku-cli"
+def build(target)
+  puts "Building #{target[:os]}-#{target[:arch]}"
+  path = "./dist/#{target[:os]}/#{target[:arch]}/heroku-cli"
   ldflags = "-X=main.Version=#{VERSION} -X=main.Channel=#{CHANNEL}"
   args = "-o #{path} -ldflags \"#{ldflags}\""
-  ok = system("GOOS=#{os} GOARCH=#{arch} go build #{args}")
+  vars = ["GOOS=#{target[:os]}", "GOARCH=#{target[:arch]}"]
+  vars << "GO386=#{target[:go386]}" if target[:go386]
+  ok = system("#{vars.join(' ')} go build #{args}")
   exit 1 unless ok
   gzip(path)
 end
