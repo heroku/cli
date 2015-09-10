@@ -59,6 +59,7 @@ func (cli *Cli) Run(args []string) (err error) {
 	ctx.Version = version()
 	ctx.SupportsColor = supportsColor()
 	ctx.APIHost = apiHost()
+	ctx.APIURL = apiURL()
 	ctx.GitHost = gitHost()
 	ctx.HTTPGitHost = httpGitHost()
 	ctx.Command.Run(ctx)

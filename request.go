@@ -22,10 +22,10 @@ func init() {
 
 func apiRequest(authToken string) *goreq.Request {
 	req := goreq.Request{
-		Uri:       "https://" + apiHost(),
+		Uri:       apiURL(),
 		Accept:    "application/vnd.heroku+json; version=3",
 		ShowDebug: debugging,
-		Insecure:  !shouldVerifyHost(apiHost()),
+		Insecure:  !shouldVerifyHost(apiURL()),
 	}
 	if authToken != "" {
 		req.AddHeader("Authorization", "Bearer "+authToken)
