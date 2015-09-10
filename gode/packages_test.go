@@ -7,10 +7,10 @@ import (
 )
 
 func TestPackages(t *testing.T) {
-	c := setup()
-	must(os.RemoveAll(filepath.Join(c.RootPath, "node_modules")))
-	must(c.InstallPackage("request"))
-	packages, err := c.Packages()
+	setup()
+	must(os.RemoveAll(filepath.Join(rootPath, "node_modules")))
+	must(InstallPackage("request"))
+	packages, err := Packages()
 	must(err)
 	for _, pkg := range packages {
 		if pkg.Name == "request" {
@@ -21,16 +21,16 @@ func TestPackages(t *testing.T) {
 }
 
 func TestRemovePackage(t *testing.T) {
-	c := setup()
-	must(os.RemoveAll(filepath.Join(c.RootPath, "node_modules")))
-	must(c.InstallPackage("request"))
-	packages, err := c.Packages()
+	setup()
+	must(os.RemoveAll(filepath.Join(rootPath, "node_modules")))
+	must(InstallPackage("request"))
+	packages, err := Packages()
 	must(err)
 	if len(packages) != 1 {
 		t.Fatalf("package did not install correctly")
 	}
-	must(c.RemovePackage("request"))
-	packages, err = c.Packages()
+	must(RemovePackage("request"))
+	packages, err = Packages()
 	must(err)
 	if len(packages) != 0 {
 		t.Fatalf("package did not remove correctly")
@@ -38,17 +38,17 @@ func TestRemovePackage(t *testing.T) {
 }
 
 func TestUpdatePackages(t *testing.T) {
-	c := setup()
-	must(c.InstallPackage("request"))
-	_, err := c.UpdatePackages()
+	setup()
+	must(InstallPackage("request"))
+	_, err := UpdatePackages()
 	must(err)
 }
 
 func TestPackagesGithubPackage(t *testing.T) {
-	c := setup()
-	must(os.RemoveAll(filepath.Join(c.RootPath, "node_modules")))
-	must(c.InstallPackage("dickeyxxx/heroku-production-check"))
-	packages, err := c.Packages()
+	setup()
+	must(os.RemoveAll(filepath.Join(rootPath, "node_modules")))
+	must(InstallPackage("dickeyxxx/heroku-production-check"))
+	packages, err := Packages()
 	must(err)
 	for _, pkg := range packages {
 		if pkg.Name == "heroku-production-check" {

@@ -14,6 +14,7 @@ import (
 
 	"github.com/dickeyxxx/golock"
 	"github.com/franela/goreq"
+	"github.com/heroku/heroku-cli/gode"
 )
 
 var updateTopic = &Topic{
@@ -58,7 +59,7 @@ func Update(channel string, t string) {
 	done := make(chan bool)
 	go func() {
 		touchAutoupdateFile()
-		updateNode()
+		PrintError(gode.Setup())
 		updateCLI(channel)
 		updatePlugins(t)
 		done <- true
@@ -78,7 +79,7 @@ func updatePlugins(t string) {
 	}
 	Err("updating plugins... ")
 	if t == "foreground" || t == "block" {
-		b, _ := node.UpdatePackages()
+		b, _ := gode.UpdatePackages()
 		if len(b) > 0 {
 			updated = true
 		}
@@ -86,7 +87,7 @@ func updatePlugins(t string) {
 		for _, name := range plugins {
 			lockfile := updateLockPath + "." + name
 			LogIfError(golock.Lock(lockfile))
-			b, _ := node.UpdatePackage(name)
+			b, _ := gode.UpdatePackage(name)
 			LogIfError(golock.Unlock(lockfile))
 			if len(b) > 0 {
 				updated = true
