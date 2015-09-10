@@ -16,7 +16,8 @@ type Context struct {
 	Dev           bool                   `json:"dev"`
 	SupportsColor bool                   `json:"supportsColor"`
 	APIToken      string                 `json:"apiToken"`
-	APIHost       string                 `json:"apiHost"`
+	APIHost       string                 `json:"apiHost"` // deprecated in favor of apiUrl
+	APIURL        string                 `json:"apiUrl"`
 	GitHost       string                 `json:"gitHost"`
 	HTTPGitHost   string                 `json:"httpGitHost"`
 	Auth          struct {

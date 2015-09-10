@@ -19,10 +19,15 @@ func host() string {
 }
 
 func apiHost() string {
-	if apiHost := os.Getenv("HEROKU_API_HOST"); apiHost != "" {
-		return apiHost
-	}
 	return "api." + host()
+}
+
+func apiURL() string {
+	h := host()
+	if strings.HasPrefix(h, "http") {
+		return h
+	}
+	return "https://api." + h
 }
 
 func gitHost() string {
