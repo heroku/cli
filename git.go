@@ -19,6 +19,9 @@ func host() string {
 }
 
 func apiHost() string {
+	if apiHost := os.Getenv("HEROKU_API_HOST"); apiHost != "" {
+		return apiHost
+	}
 	return "api." + host()
 }
 
