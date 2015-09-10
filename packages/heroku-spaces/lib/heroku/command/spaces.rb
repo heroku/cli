@@ -47,9 +47,9 @@ class Heroku::Command::Spaces < Heroku::Command::Base
   #
   # create a new space
   #
-  # -o --org ORGANIZATION
+  # -o --org ORGANIZATION   # organization name
   #    --channel CHANNEL    # HIDDEN
-  #    --region REGION
+  #    --region REGION      # region name
   #
   def create
     name = extract_name_arg!
