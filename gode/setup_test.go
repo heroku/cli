@@ -4,6 +4,9 @@ import (
 	"io/ioutil"
 	"os"
 	"testing"
+	"time"
+
+	"github.com/franela/goreq"
 )
 
 func TestSetup(t *testing.T) {
@@ -15,10 +18,28 @@ func TestSetup(t *testing.T) {
 	dir, err := ioutil.TempDir("tmp", "gode")
 	must(err)
 	defer os.RemoveAll(dir)
-	c := NewClient(dir)
-	must(c.Setup())
-	if !c.IsSetup() {
-		t.Fail()
+	SetRootPath(dir)
+	must(Setup())
+	if !IsSetup() {
+		t.Fatal("IsSetup() returned false")
+	}
+}
+
+func TestSetupInvalidSha(t *testing.T) {
+	if testing.Short() {
+		t.Skip("skipping in short mode")
+	}
+	err := os.MkdirAll("tmp", 0755)
+	must(err)
+	dir, err := ioutil.TempDir("tmp", "gode")
+	must(err)
+	defer os.RemoveAll(dir)
+	SetRootPath(dir)
+	target := targets[0]
+	target.Sha = "INVALID"
+	err = target.setup()
+	if err != errInvalidSha {
+		t.Fatal("Setup with invalid SHA")
 	}
 }
 
@@ -30,11 +51,12 @@ func TestWindowsSetup(t *testing.T) {
 	must(err)
 	dir, err := ioutil.TempDir("tmp", "gode")
 	must(err)
-	defer os.RemoveAll(dir)
-	c := NewClient(dir)
-	must(c.setupWindows())
-	if !c.IsSetup() {
-		t.Fail()
+	//defer os.RemoveAll(dir)
+	SetRootPath(dir)
+	target := getWindowsTarget()
+	must(target.setup())
+	if !target.isSetup() {
+		t.Fatal("IsSetup() returned false")
 	}
 }
 
@@ -44,8 +66,17 @@ func must(err error) {
 	}
 }
 
-func setup() *Client {
-	c := NewClient("tmp")
-	must(c.Setup())
-	return c
+func setup() {
+	goreq.SetConnectTimeout(15 * time.Second)
+	SetRootPath("tmp")
+	must(Setup())
+}
+
+func getWindowsTarget() *Target {
+	for _, t := range targets {
+		if t.OS == "windows" {
+			return &t
+		}
+	}
+	return nil
 }
