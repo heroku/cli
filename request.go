@@ -20,10 +20,9 @@ func init() {
 	goreq.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{RootCAs: getCACerts()}
 }
 
-func apiRequest(authToken string) *goreq.Request {
+func apiRequestBase(authToken string) *goreq.Request {
 	req := goreq.Request{
 		Uri:       "https://" + apiHost(),
-		Accept:    "application/vnd.heroku+json; version=3",
 		ShowDebug: debugging,
 		Insecure:  !shouldVerifyHost(apiHost()),
 	}
@@ -38,6 +37,12 @@ func apiRequest(authToken string) *goreq.Request {
 		}
 	}
 	return &req
+}
+
+func apiRequest(authToken string) *goreq.Request {
+	req := apiRequestBase(authToken)
+	req.AddHeader("Accept", "application/vnd.heroku+json; version=3")
+	return req
 }
 
 func shouldVerifyHost(host string) bool {

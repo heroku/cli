@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"net/url"
 	"os"
 	"time"
 
@@ -37,7 +38,9 @@ func login() {
 	email := getString("Email: ")
 	password := getPassword()
 
-	token, err := createOauthToken(email, password, "")
+	token, err := v2login(email, password, "")
+	// TODO: use createOauthToken (v3 API)
+	// token, err := createOauthToken(email, password, "")
 	if err != nil {
 		PrintError(err)
 		return
@@ -78,6 +81,29 @@ func getPassword() string {
 		PrintError(err)
 	}
 	return password
+}
+
+func v2login(email, password, secondFactor string) (string, error) {
+	req := apiRequestBase("")
+	req.Method = "POST"
+	req.Uri = req.Uri + "/login?username=" + url.QueryEscape(email) + "&password=" + url.QueryEscape(password)
+	if secondFactor != "" {
+		req.AddHeader("Heroku-Two-Factor-Code", secondFactor)
+	}
+	res, err := req.Do()
+	ExitIfError(err)
+	type Doc struct {
+		APIKey string `json:"api_key"`
+	}
+	var doc Doc
+	res.Body.FromJsonTo(&doc)
+	//if doc.ID == "two_factor" {
+	//return v2login(email, password, getString("Two-factor code: "))
+	//}
+	if res.StatusCode != 200 {
+		return "", errors.New("Authentication failure.")
+	}
+	return doc.APIKey, nil
 }
 
 func createOauthToken(email, password, secondFactor string) (string, error) {
