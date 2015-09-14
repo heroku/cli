@@ -17,7 +17,6 @@ var loginTopic = &Topic{
 
 var loginCmd = &Command{
 	Topic:       "login",
-	Hidden:      true,
 	Description: "Login with your Heroku credentials.",
 	Run: func(ctx *Context) {
 		login()

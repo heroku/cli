@@ -39,7 +39,7 @@ func init() {
 		authTopic,
 		twoFactorTopic,
 		twoFactorTopicAlias,
-		//loginTopic,
+		loginTopic,
 	}
 	cli.Commands = []*Command{
 		commandsListCmd,
@@ -50,7 +50,7 @@ func init() {
 		pluginsInstallCmd,
 		pluginsUninstallCmd,
 		whoamiCmd,
-		//loginCmd,
+		loginCmd,
 		authLoginCmd,
 		twoFactorCmd,
 		twoFactorCmdAlias,
