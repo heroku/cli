@@ -190,6 +190,7 @@ var pluginsLinkCmd = &Command{
 		if name != plugin.Name {
 			path = newPath
 			newPath = filepath.Join(ctx.HerokuDir, "node_modules", plugin.Name)
+			os.MkdirAll(filepath.Dir(newPath), 0755)
 			os.Remove(newPath)
 			os.RemoveAll(newPath)
 			os.Rename(path, newPath)
@@ -407,11 +408,12 @@ func GetPlugins() []Plugin {
 
 // PluginNames just lists the files in ~/.heroku/node_modules
 func PluginNames() []string {
-	files, _ := ioutil.ReadDir(filepath.Join(AppDir, "node_modules"))
-	names := make([]string, 0, len(files))
-	for _, f := range files {
-		if !ignorePlugin(f.Name()) {
-			names = append(names, f.Name())
+	packages, err := node.Packages()
+	ExitIfError(err)
+	names := make([]string, 0, len(packages))
+	for _, p := range packages {
+		if !ignorePlugin(p.Name) {
+			names = append(names, p.Name)
 		}
 	}
 	return names
