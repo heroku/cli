@@ -96,9 +96,9 @@ func v2login(email, password, secondFactor string) (string, error) {
 	}
 	var doc Doc
 	res.Body.FromJsonTo(&doc)
-	//if doc.ID == "two_factor" {
-	//return v2login(email, password, getString("Two-factor code: "))
-	//}
+	if res.StatusCode == 403 {
+		return v2login(email, password, getString("Two-factor code: "))
+	}
 	if res.StatusCode != 200 {
 		return "", errors.New("Authentication failure.")
 	}
