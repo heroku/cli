@@ -83,7 +83,7 @@ function readData(c) {
   };
 }
 
-function attachToRendezvous(uri) {
+function attachToRendezvous(uri, opts) {
   let c = tls.connect(uri.port, uri.hostname);
   c.setEncoding('utf8');
   c.on('connect', function () {
@@ -94,7 +94,7 @@ function attachToRendezvous(uri) {
     cli.error('timed out');
   });
   c.on('end', function () {
-    process.exit(-1);
+    process.exit(opts.exitCode);
   });
   c.on('error', cli.errorHandler());
   process.once('SIGINT', function () {
@@ -108,10 +108,14 @@ function* run (context, heroku) {
     cli.error('Usage: heroku run COMMAND\n\nExample: heroku run bash');
     process.exit(1);
   }
-  let p = startDyno(heroku, context.app, context.flags.size, `${command}; echo heroku-command-exit-status $?`);
+  let sh = context.flags['exit-code'] ? `${command}; echo heroku-command-exit-status $?` : command;
+  cli.debug(context)
+  let p = startDyno(heroku, context.app, context.flags.size, sh);
   let dyno = yield cli.action(`Running ${cli.color.cyan.bold(command)} on ${context.app}`, {success: false}, p);
   console.error(`up, ${dyno.name}`);
-  attachToRendezvous(url.parse(dyno.attach_url));
+  attachToRendezvous(url.parse(dyno.attach_url), {
+    exitCode: context.flags['exit-code'] ? -1 : 0 // exit with -1 if the stream ends and heroku-command-exit-status is empty
+  });
 }
 
 module.exports = {
