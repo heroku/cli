@@ -34,12 +34,12 @@ let run = cli.command(function(ctx, api) {
 let topic = '_addons';
 module.exports = {
     topic:       topic,
-    command:     'show',
+    command:     'info',
     wantsApp:    true,
     needsAuth:   true,
     preauth:     true,
     args:        [{name: 'addon'}],
     run:         run,
-    usage:       `${topic}:show ADDON`,
-    description: 'Show details about an add-on and its attachments.'
+    usage:       `${topic}:info ADDON`,
+    description: 'Show info about an add-on and its attachments.'
 };

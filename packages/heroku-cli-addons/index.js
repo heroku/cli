@@ -7,5 +7,5 @@ exports.topic = {
 
 exports.commands = [
     require('./commands/addons'),
-    require('./commands/addons/show')
+    require('./commands/addons/info')
 ];
