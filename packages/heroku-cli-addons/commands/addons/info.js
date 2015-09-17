@@ -4,6 +4,7 @@ let cli    = require('heroku-cli-util');
 let co     = require('co');
 
 let formatPrice = require('../../lib/util').formatPrice;
+let style       = require('../../lib/util').style;
 
 let run = cli.command(function(ctx, api) {
     return co(function*() {
@@ -18,14 +19,17 @@ let run = cli.command(function(ctx, api) {
             path: `/addons/${addon.id}/addon-attachments`,
         });
 
-        cli.styledHeader(addon.name);
+        cli.styledHeader(style('addon', addon.name));
         cli.styledHash({
             Plan: addon.plan.name,
             Price: formatPrice(addon.plan.price),
             Attachments: addon.attachments.map(function(att) {
-                return `${att.app.name}::${att.name}`;
+                return [
+                    style('app', att.app.name),
+                    style('attachment', att.name)
+                ].join('::');
             }).sort(),
-            'Owning app': addon.app.name,
+            'Owning app': style('app', addon.app.name),
             'Installed at': (new Date(addon.created_at)).toString(),
         });
     });
