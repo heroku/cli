@@ -140,8 +140,7 @@ func downloadNpm(modulesDir string) error {
 	if err != nil {
 		return err
 	}
-	return nil
-	//return os.RemoveAll(tmpDir)
+	return os.RemoveAll(tmpDir)
 }
 
 // gets the currently running os and arch target
