@@ -51,7 +51,7 @@ func TestWindowsSetup(t *testing.T) {
 	must(err)
 	dir, err := ioutil.TempDir("tmp", "gode")
 	must(err)
-	//defer os.RemoveAll(dir)
+	defer os.RemoveAll(dir)
 	SetRootPath(dir)
 	target := getWindowsTarget()
 	must(target.setup())
