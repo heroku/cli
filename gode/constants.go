@@ -1,6 +1,8 @@
 package gode
 
 //
+// DO NOT EDIT
+//
 // THIS FILE IS GENERATED WITH ./set-node-version
 //
 
