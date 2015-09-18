@@ -133,6 +133,11 @@ func parseVarArgs(command *Command, args []string) (result []string, flags map[s
 			result = append(result, args[i])
 		}
 	}
+	for _, flag := range command.Flags {
+		if flag.Required && flags[flag.Name] == nil {
+			return nil, nil, "", errors.New("Required flag: " + flag.String())
+		}
+	}
 	return result, flags, appName, nil
 }
 
