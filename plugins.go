@@ -37,6 +37,14 @@ func SetupNode() {
 	}
 }
 
+func updateNode() {
+	if gode.NeedsUpdate() {
+		Errf("Setting up node-v%s...", gode.Version)
+		PrintError(gode.Setup())
+		Errln("done")
+	}
+}
+
 // LoadPlugins loads the topics and commands from the JavaScript plugins into the CLI
 func (cli *Cli) LoadPlugins(plugins []Plugin) {
 	for _, plugin := range plugins {
