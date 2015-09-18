@@ -77,7 +77,7 @@ func updatePlugins(t string) {
 	if len(plugins) == 0 {
 		return
 	}
-	Err("updating plugins... ")
+	Err("Updating plugins... ")
 	if t == "foreground" || t == "block" {
 		b, _ := gode.UpdatePackages()
 		if len(b) > 0 {
@@ -119,7 +119,7 @@ func updateCLI(channel string) {
 	}
 	LogIfError(golock.Lock(updateLockPath))
 	defer golock.Unlock(updateLockPath)
-	Errf("updating v4 CLI to %s (%s)... ", manifest.Version, manifest.Channel)
+	Errf("Updating v4 CLI to %s (%s)... ", manifest.Version, manifest.Channel)
 	build := manifest.Builds[runtime.GOOS][runtime.GOARCH]
 	// on windows we can't remove an existing file or remove the running binary
 	// so we download the file to binName.new
