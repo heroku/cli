@@ -193,7 +193,6 @@ func runFn(plugin *Plugin, module, topic, command string) func(ctx *Context) {
 			golock.Unlock(lockfile)
 		}
 		ctx.Dev = isPluginSymlinked(module)
-		ctx.Version = ctx.Version + " " + module + "/" + plugin.Version + " node-v" + gode.Version
 		ctxJSON, err := json.Marshal(ctx)
 		if err != nil {
 			panic(err)
@@ -201,9 +200,11 @@ func runFn(plugin *Plugin, module, topic, command string) func(ctx *Context) {
 		script := fmt.Sprintf(`
 		'use strict';
 		var moduleName = '%s';
+		var moduleVersion = '%s';
 		var topic = '%s';
 		var command = '%s';
 		var ctx = %s;
+		ctx.version = ctx.version + ' ' + moduleName + '/' + moduleVersion + ' node-' + process.version;
 		var logPath = %s;
 		process.chdir(ctx.cwd);
 		function repair (name) {
@@ -246,7 +247,7 @@ func runFn(plugin *Plugin, module, topic, command string) func(ctx *Context) {
 		var cmd = module.commands.filter(function (c) {
 			return c.topic === topic && c.command == command;
 		})[0];
-		cmd.run(ctx);`, module, topic, command, ctxJSON, strconv.Quote(ErrLogPath))
+		cmd.run(ctx);`, module, plugin.Version, topic, command, ctxJSON, strconv.Quote(ErrLogPath))
 
 		// swallow sigint since the plugin will handle it
 		swallowSignal(os.Interrupt)
