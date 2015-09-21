@@ -170,7 +170,7 @@ type manifest struct {
 
 func getUpdateManifest(channel string) (*manifest, error) {
 	res, err := goreq.Request{
-		Uri:       "https://d1gvo455cekpjp.cloudfront.net/" + channel + "/manifest.json",
+		Uri:       "https://cli-assets.heroku.com/" + channel + "/manifest.json",
 		ShowDebug: debugging,
 	}.Do()
 	if err != nil {
