@@ -21,7 +21,7 @@ TARGETS = [
 VERSION = `./version`.chomp
 dirty = `git status 2> /dev/null | tail -n1`.chomp != 'nothing to commit, working directory clean'
 CHANNEL = dirty ? 'dirty' : `git rev-parse --abbrev-ref HEAD`.chomp
-CLOUDFRONT_HOST = 'd1gvo455cekpjp.cloudfront.net'
+CLOUDFRONT_HOST = 'cli-assets.heroku.com'
 LABEL = "heroku-cli/#{VERSION} (#{CHANNEL})"
 REVISION=`git log -n 1 --pretty=format:"%H"`
 
