@@ -22,9 +22,9 @@ func init() {
 
 func apiRequestBase(authToken string) *goreq.Request {
 	req := goreq.Request{
-		Uri:       "https://" + apiHost(),
+		Uri:       apiURL(),
 		ShowDebug: debugging,
-		Insecure:  !shouldVerifyHost(apiHost()),
+		Insecure:  !shouldVerifyHost(apiURL()),
 	}
 	if authToken != "" {
 		req.AddHeader("Authorization", "Bearer "+authToken)
