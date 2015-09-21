@@ -1,0 +1,92 @@
+#!/usr/bin/env node
+'use strict';
+
+let crypto = require('crypto');
+let fs     = require('fs');
+let https  = require('https');
+
+const outputPath = '/./gode/constants.go';
+const version = '4.1.0';
+const npmVersion = '2.14.3';
+const npmURL = `https://github.com/npm/npm/archive/v${npmVersion}.zip`;
+const urlBase = `https://nodejs.org/download/release/v${version}`;
+
+let npmSha;
+let targets = [
+  {arch: '386',   os: 'linux',   url: urlBase+`/node-v${version}-linux-x86.tar.gz`,   base: `node-v${version}-linux-x86`},
+  {arch: 'amd64', os: 'linux',   url: urlBase+`/node-v${version}-linux-x64.tar.gz`,   base: `node-v${version}-linux-x64`},
+  {arch: 'arm',   os: 'linux',   url: urlBase+`/node-v${version}-linux-armv7.tar.gz`, base: `node-v${version}-linux-armv7`},
+  {arch: 'amd64', os: 'darwin',  url: urlBase+`/node-v${version}-darwin-x64.tar.gz`,  base: `node-v${version}-darwin-x64`},
+  {arch: '386',   os: 'windows', url: urlBase+`/win-x86/node.exe`,                    base: `node-v${version}-windows-x86`},
+  {arch: 'amd64', os: 'windows', url: urlBase+`/win-x64/node.exe`,                    base: `node-v${version}-windows-x64`},
+];
+
+function sha (path) {
+  return new Promise(function (fulfill) {
+    let fd   = fs.createReadStream(path);
+    let hash = crypto.createHash('sha256');
+    hash.setEncoding('hex');
+    fd.on('end', function () {
+      hash.end();
+      fulfill(hash.read());
+    });
+    fd.pipe(hash);
+  });
+}
+
+function download (url, path) {
+  return new Promise(function (fulfill, reject) {
+    https.get(url, function (res) {
+      if (res.statusCode >= 300 && res.statusCode <= 399) return fulfill(download(res.headers.location, path));
+      if (res.statusCode <= 199 || res.statusCode >= 400) return reject(new Error(res.statusCode));
+      res.pipe(fs.createWriteStream(path));
+      res.on('end', fulfill);
+    })
+  });
+}
+
+function processTarget(target) {
+  let path = `./tmp/${target.arch}-${target.os}-v${version}`;
+  return download(target.url, path)
+  .then(()    => sha(path))
+  .then((sha) => target.sha = sha)
+}
+
+function processNpm() {
+  let path = './tmp/npm.zip';
+  return download(npmURL, path)
+  .then(()    => sha(path))
+  .then((sha) => npmSha = sha);
+}
+
+function output () {
+  let output = `package gode
+
+//
+// DO NOT EDIT
+//
+// THIS FILE IS GENERATED WITH ./set-node-version
+//
+
+// Version is the requested node version
+const Version = "${version}"
+
+// NpmVersion is the requested npm version
+const NpmVersion = "${npmVersion}"
+
+const npmSha = "${npmSha}"
+const npmURL = "${npmURL}"
+
+var targets = []Target{
+`;
+  for (let target of targets) output += `\t{"${target.arch}", "${target.os}", "${target.url}", "${target.base}", "${target.sha}"},\n`;
+  output += '}\n';
+  return output;
+}
+
+console.log(`Setting node version to ${version} and npm to ${npmVersion}...`);
+Promise.all(targets.map(processTarget))
+.then(processNpm)
+.then(() => fs.writeFileSync(__dirname + outputPath, output()))
+.then(function () { console.log(`${outputPath} updated`); })
+.catch(function (err) { console.error(err.stack); process.exit(1); });
