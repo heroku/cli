@@ -14,6 +14,7 @@ import (
 
 	"github.com/dickeyxxx/golock"
 	"github.com/franela/goreq"
+	"github.com/heroku/heroku-cli/gode"
 )
 
 var updateTopic = &Topic{
@@ -58,8 +59,8 @@ func Update(channel string, t string) {
 	done := make(chan bool)
 	go func() {
 		touchAutoupdateFile()
-		updateNode()
 		updateCLI(channel)
+		updateNode()
 		updatePlugins(t)
 		done <- true
 	}()
@@ -76,9 +77,9 @@ func updatePlugins(t string) {
 	if len(plugins) == 0 {
 		return
 	}
-	Err("updating plugins... ")
+	Err("Updating plugins... ")
 	if t == "foreground" || t == "block" {
-		b, _ := node.UpdatePackages()
+		b, _ := gode.UpdatePackages()
 		if len(b) > 0 {
 			updated = true
 		}
@@ -86,7 +87,7 @@ func updatePlugins(t string) {
 		for _, name := range plugins {
 			lockfile := updateLockPath + "." + name
 			LogIfError(golock.Lock(lockfile))
-			b, _ := node.UpdatePackage(name)
+			b, _ := gode.UpdatePackage(name)
 			LogIfError(golock.Unlock(lockfile))
 			if len(b) > 0 {
 				updated = true
@@ -118,7 +119,7 @@ func updateCLI(channel string) {
 	}
 	LogIfError(golock.Lock(updateLockPath))
 	defer golock.Unlock(updateLockPath)
-	Errf("updating v4 CLI to %s (%s)... ", manifest.Version, manifest.Channel)
+	Errf("Updating v4 CLI to %s (%s)... ", manifest.Version, manifest.Channel)
 	build := manifest.Builds[runtime.GOOS][runtime.GOARCH]
 	// on windows we can't remove an existing file or remove the running binary
 	// so we download the file to binName.new
@@ -170,7 +171,7 @@ type manifest struct {
 
 func getUpdateManifest(channel string) (*manifest, error) {
 	res, err := goreq.Request{
-		Uri:       "https://d1gvo455cekpjp.cloudfront.net/" + channel + "/manifest.json",
+		Uri:       "https://cli-assets.heroku.com/" + channel + "/manifest.json",
 		ShowDebug: debugging,
 	}.Do()
 	if err != nil {

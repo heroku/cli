@@ -10,7 +10,6 @@ import (
 	"os/signal"
 	"path/filepath"
 	"runtime"
-	"sort"
 	"strconv"
 	"strings"
 	"syscall"
@@ -28,69 +27,21 @@ type Plugin struct {
 	Commands CommandSet `json:"commands"`
 }
 
-const nodeVersion = "3.2.0"
-const npmVersion = "2.13.3"
-
-var node = gode.NewClient(AppDir)
-
-func init() {
-	node.Registry = "https://d1wpeoceq2hoqd.cloudfront.net"
-	node.NodeVersion = getLatestInstalledNodeVersion()
-	if node.NodeVersion == "" {
-		node.NodeVersion = nodeVersion
-	}
-}
-
 // SetupNode sets up node and npm in ~/.heroku
 func SetupNode() {
-	if !node.IsSetup() {
-		LogIfError(golock.Lock(updateLockPath))
-		defer golock.Unlock(updateLockPath)
-		if node.IsSetup() {
-			return
-		}
-		Errf("Setting up iojs-v%s...", node.NodeVersion)
-		ExitIfError(node.Setup())
-		clearOldNodeInstalls()
+	gode.SetRootPath(AppDir)
+	if !gode.IsSetup() {
+		Errf("Setting up node-v%s...", gode.Version)
+		ExitIfError(gode.Setup())
 		Errln(" done")
 	}
 }
 
 func updateNode() {
-	registry := node.Registry
-	node = gode.NewClient(AppDir)
-	node.Registry = registry
-	node.NodeVersion = nodeVersion
-	node.NpmVersion = npmVersion
-	SetupNode()
-}
-
-func getNodeInstalls() []string {
-	nodes := []string{}
-	files, _ := ioutil.ReadDir(AppDir)
-	for _, f := range files {
-		name := f.Name()
-		if strings.HasPrefix(name, "iojs-v") {
-			nodes = append(nodes, name)
-		}
-	}
-	sort.Strings(nodes)
-	return nodes
-}
-
-func getLatestInstalledNodeVersion() string {
-	nodes := getNodeInstalls()
-	if len(nodes) == 0 {
-		return ""
-	}
-	return strings.Split(nodes[len(nodes)-1], "-")[1][1:]
-}
-
-func clearOldNodeInstalls() {
-	for _, name := range getNodeInstalls() {
-		if name != node.NodeBase() {
-			LogIfError(os.RemoveAll(filepath.Join(AppDir, name)))
-		}
+	if gode.NeedsUpdate() {
+		Errf("Setting up node-v%s...", gode.Version)
+		PrintError(gode.Setup())
+		Errln("done")
 	}
 }
 
@@ -139,7 +90,7 @@ var pluginsInstallCmd = &Command{
 		plugin := getPlugin(name, false)
 		if plugin == nil || len(plugin.Commands) == 0 {
 			Err("\nThis does not appear to be a Heroku plugin, uninstalling... ")
-			ExitIfError(node.RemovePackage(name))
+			ExitIfError(gode.RemovePackage(name))
 		}
 		ClearPluginCache()
 		WritePluginCache(GetPlugins())
@@ -216,7 +167,7 @@ var pluginsUninstallCmd = &Command{
 	Run: func(ctx *Context) {
 		name := ctx.Args.(map[string]string)["name"]
 		Errf("Uninstalling plugin %s... ", name)
-		err := node.RemovePackage(name)
+		err := gode.RemovePackage(name)
 		ExitIfError(err)
 		Errln("done")
 	},
@@ -232,7 +183,7 @@ var pluginsListCmd = &Command{
   $ heroku plugins`,
 
 	Run: func(ctx *Context) {
-		packages, err := node.Packages()
+		packages, err := gode.Packages()
 		if err != nil {
 			panic(err)
 		}
@@ -250,7 +201,6 @@ func runFn(plugin *Plugin, module, topic, command string) func(ctx *Context) {
 			golock.Unlock(lockfile)
 		}
 		ctx.Dev = isPluginSymlinked(module)
-		ctx.Version = ctx.Version + " " + module + "/" + plugin.Version + " iojs-v" + node.NodeVersion
 		ctxJSON, err := json.Marshal(ctx)
 		if err != nil {
 			panic(err)
@@ -258,9 +208,11 @@ func runFn(plugin *Plugin, module, topic, command string) func(ctx *Context) {
 		script := fmt.Sprintf(`
 		'use strict';
 		var moduleName = '%s';
+		var moduleVersion = '%s';
 		var topic = '%s';
 		var command = '%s';
 		var ctx = %s;
+		ctx.version = ctx.version + ' ' + moduleName + '/' + moduleVersion + ' node-' + process.version;
 		var logPath = %s;
 		process.chdir(ctx.cwd);
 		function repair (name) {
@@ -303,14 +255,14 @@ func runFn(plugin *Plugin, module, topic, command string) func(ctx *Context) {
 		var cmd = module.commands.filter(function (c) {
 			return c.topic === topic && c.command == command;
 		})[0];
-		cmd.run(ctx);`, module, topic, command, ctxJSON, strconv.Quote(ErrLogPath))
+		cmd.run(ctx);`, module, plugin.Version, topic, command, ctxJSON, strconv.Quote(ErrLogPath))
 
 		// swallow sigint since the plugin will handle it
 		swallowSignal(os.Interrupt)
 
-		cmd := node.RunScript(script)
+		cmd := gode.RunScript(script)
 		if ctx.Flags["debugger"] == true {
-			cmd = node.DebugScript(script)
+			cmd = gode.DebugScript(script)
 		}
 		os.Chdir(cmd.Dir)
 		execBin(cmd.Path, cmd.Args)
@@ -363,7 +315,7 @@ func getPlugin(name string, attemptReinstall bool) *Plugin {
 	plugin.version = pjson.version;
 
 	console.log(JSON.stringify(plugin))`
-	cmd := node.RunScript(script)
+	cmd := gode.RunScript(script)
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		if attemptReinstall && strings.Contains(string(output), "Error: Cannot find module") {
@@ -492,7 +444,7 @@ func installPlugins(plugins ...string) error {
 		lockfile := updateLockPath + "." + plugin
 		LogIfError(golock.Lock(lockfile))
 	}
-	err := node.InstallPackage(plugins...)
+	err := gode.InstallPackage(plugins...)
 	for _, plugin := range plugins {
 		lockfile := updateLockPath + "." + plugin
 		LogIfError(golock.Unlock(lockfile))

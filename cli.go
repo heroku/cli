@@ -87,6 +87,7 @@ func parseVarArgs(command *Command, args []string) (result []string, flags map[s
 	flags = map[string]interface{}{}
 	parseFlags := true
 	possibleFlags := []*Flag{debuggerFlag}
+	populateFlagsFromEnvVars(command.Flags, flags)
 	for _, flag := range command.Flags {
 		f := flag
 		possibleFlags = append(possibleFlags, &f)
@@ -132,6 +133,11 @@ func parseVarArgs(command *Command, args []string) (result []string, flags map[s
 			}
 		default:
 			result = append(result, args[i])
+		}
+	}
+	for _, flag := range command.Flags {
+		if flag.Required && flags[flag.Name] == nil {
+			return nil, nil, "", errors.New("Required flag: " + flag.String())
 		}
 	}
 	return result, flags, appName, nil
@@ -240,4 +246,15 @@ func (cli *Cli) AddCommand(command *Command) bool {
 	}
 	cli.Commands = append(cli.Commands, command)
 	return true
+}
+
+func populateFlagsFromEnvVars(flagDefinitons []Flag, flags map[string]interface{}) {
+	for _, flag := range flagDefinitons {
+		if strings.ToLower(flag.Name) == "user" && os.Getenv("HEROKU_USER") != "" {
+			flags[flag.Name] = os.Getenv("HEROKU_USER")
+		}
+		if strings.ToLower(flag.Name) == "force" && os.Getenv("HEROKU_FORCE") == "1" {
+			flags[flag.Name] = true
+		}
+	}
 }

@@ -5,41 +5,63 @@ import (
 	"compress/gzip"
 	"errors"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"path/filepath"
 	"runtime"
 
+	"github.com/dickeyxxx/golock"
 	"github.com/franela/goreq"
 )
 
-// IsSetup returns true if node is setup in the client's RootPath directory
-func (c *Client) IsSetup() bool {
-	if exists, _ := fileExists(c.nodePath()); !exists {
+var errInvalidSha = errors.New("Invalid SHA")
+
+// IsSetup returns true if node is setup in RootPath
+func IsSetup() bool {
+	return isSetup(nodePath, npmPath)
+}
+
+func isSetup(nodePath, npmPath string) bool {
+	if exists, _ := fileExists(nodePath); !exists {
 		return false
 	}
 
-	exists, _ := fileExists(c.npmPath())
+	exists, _ := fileExists(npmPath)
 	return exists
 }
 
-// Setup downloads and sets up node in the client's RootPath directory
-func (c *Client) Setup() error {
-	if c.IsSetup() {
+// Setup downloads and sets up node in the RootPath directory
+func Setup() error {
+	golock.Lock(lockPath)
+	defer golock.Unlock(lockPath)
+	t := findTarget()
+	if t == nil {
+		return errors.New(`node does not offer a prebuilt binary for your OS.
+You'll need to compile the tarball from nodejs.org and place it in ~/.heroku/node-v` + Version + `
+You'll also need to extract npm to ~/.heroku/node-v` + Version + `/lib/node_modules/npm`)
+	}
+	if t.isSetup() {
 		return nil
 	}
-	if runtime.GOOS == "windows" {
-		return c.setupWindows()
+	if err := t.setup(); err != nil {
+		return err
 	}
-	return c.setupUnix()
+	SetRootPath(rootPath) // essentially sets this node as the current one
+	return t.clearOldNodeInstalls()
 }
 
-func (c *Client) setupUnix() error {
-	err := os.MkdirAll(filepath.Join(c.RootPath, "node_modules"), 0755)
+// NeedsUpdate returns true if it is using a node that isn't the latest version
+func NeedsUpdate() bool {
+	return !findTarget().isSetup()
+}
+
+func (t *Target) setupUnix() error {
+	err := os.MkdirAll(filepath.Join(rootPath, "node_modules"), 0755)
 	if err != nil {
 		return err
 	}
-	resp, err := goreq.Request{Uri: c.nodeURL()}.Do()
+	resp, err := goreq.Request{Uri: t.URL}.Do()
 	if err != nil {
 		return err
 	}
@@ -48,35 +70,43 @@ func (c *Client) setupUnix() error {
 		msg, _ := resp.Body.ToString()
 		return errors.New(msg)
 	}
-	uncompressed, err := gzip.NewReader(resp.Body)
+
+	getSha, stream := computeSha(resp.Body)
+	uncompressed, err := gzip.NewReader(stream)
 	if err != nil {
 		return err
 	}
-	tmpDir := c.tmpDir("node")
+	tmpDir := tmpDir("node")
 	extractTar(tar.NewReader(uncompressed), tmpDir)
-	newDir := filepath.Join(c.RootPath, c.NodeBase())
+	if getSha() != t.Sha {
+		return errInvalidSha
+	}
+	newDir := t.basePath()
 	os.RemoveAll(newDir)
-	err = os.Rename(filepath.Join(tmpDir, c.NodeBase()), newDir)
-	if err != nil {
+	if err := os.Rename(filepath.Join(tmpDir, t.Base), newDir); err != nil {
 		return err
 	}
 	return os.Remove(tmpDir)
 }
 
-func (c *Client) setupWindows() error {
-	os.RemoveAll(filepath.Join(c.RootPath, c.NodeBase()))
-	modulesDir := filepath.Join(c.RootPath, c.NodeBase(), "lib", "node_modules")
+func (t *Target) setupWindows() error {
+	os.RemoveAll(t.basePath())
+	if err := setupNpm(t.basePath()); err != nil {
+		return err
+	}
+	return downloadFile(t.nodePath(), t.URL, t.Sha)
+}
+
+func setupNpm(base string) error {
+	modulesDir := filepath.Join(base, "lib", "node_modules")
 	if err := os.MkdirAll(modulesDir, 0755); err != nil {
 		return err
 	}
-	if err := c.downloadNpm(modulesDir); err != nil {
-		return err
-	}
-	return c.downloadFile(c.nodePath(), c.nodeURL())
+	return downloadNpm(modulesDir)
 }
 
-func (c *Client) downloadFile(path, url string) error {
-	tmp := filepath.Join(c.tmpDir("download"), "file")
+func downloadFile(path, url, sha string) error {
+	tmp := filepath.Join(tmpDir("download"), "file")
 	// TODO: make this work with goreq
 	// right now it fails because the body is closed for some reason
 	resp, err := http.Get(url)
@@ -87,12 +117,16 @@ func (c *Client) downloadFile(path, url string) error {
 	if err != nil {
 		return err
 	}
-	_, err = io.Copy(file, resp.Body)
+	getSha, stream := computeSha(resp.Body)
+	_, err = io.Copy(file, stream)
 	if err != nil {
 		return err
 	}
 	file.Close()
 	resp.Body.Close()
+	if getSha() != sha {
+		return errInvalidSha
+	}
 	err = os.MkdirAll(filepath.Dir(path), 0755)
 	if err != nil {
 		return err
@@ -105,10 +139,10 @@ func (c *Client) downloadFile(path, url string) error {
 	return os.RemoveAll(filepath.Dir(tmp))
 }
 
-func (c *Client) downloadNpm(modulesDir string) error {
-	tmpDir := c.tmpDir("node")
+func downloadNpm(modulesDir string) error {
+	tmpDir := tmpDir("node")
 	zipfile := filepath.Join(tmpDir, "npm.zip")
-	err := c.downloadFile(zipfile, c.npmURL())
+	err := downloadFile(zipfile, npmURL, npmSha)
 	if err != nil {
 		return err
 	}
@@ -116,9 +150,32 @@ func (c *Client) downloadNpm(modulesDir string) error {
 	if err != nil {
 		return err
 	}
-	os.Rename(filepath.Join(tmpDir, "npm-"+c.NpmVersion), filepath.Join(modulesDir, "npm"))
+	os.Rename(filepath.Join(tmpDir, "npm-"+NpmVersion), filepath.Join(modulesDir, "npm"))
 	if err != nil {
 		return err
 	}
 	return os.RemoveAll(tmpDir)
+}
+
+// gets the currently running os and arch target
+func findTarget() *Target {
+	for _, t := range targets {
+		if runtime.GOARCH == t.Arch && runtime.GOOS == t.OS {
+			return &t
+		}
+	}
+	return nil
+}
+
+func tmpDir(prefix string) string {
+	root := filepath.Join(rootPath, "tmp")
+	err := os.MkdirAll(root, 0755)
+	if err != nil {
+		panic(err)
+	}
+	dir, err := ioutil.TempDir(root, prefix)
+	if err != nil {
+		panic(err)
+	}
+	return dir
 }
