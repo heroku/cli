@@ -18,8 +18,8 @@ type Package struct {
 }
 
 // Packages returns a list of npm packages installed.
-func (c *Client) Packages() ([]Package, error) {
-	stdout, stderr, err := c.execNpm("list", "--json", "--depth=0")
+func Packages() ([]Package, error) {
+	stdout, stderr, err := execNpm("list", "--json", "--depth=0")
 	if err != nil {
 		return nil, errors.New(stderr)
 	}
@@ -36,9 +36,9 @@ func (c *Client) Packages() ([]Package, error) {
 }
 
 // InstallPackage installs an npm package.
-func (c *Client) InstallPackage(packages ...string) error {
+func InstallPackage(packages ...string) error {
 	args := append([]string{"install"}, packages...)
-	_, stderr, err := c.execNpm(args...)
+	_, stderr, err := execNpm(args...)
 	if err != nil {
 		if strings.Contains(stderr, "no such package available") {
 			return errors.New("no such package available")
@@ -49,8 +49,8 @@ func (c *Client) InstallPackage(packages ...string) error {
 }
 
 // RemovePackage removes an npm package.
-func (c *Client) RemovePackage(name string) error {
-	_, stderr, err := c.execNpm("remove", name)
+func RemovePackage(name string) error {
+	_, stderr, err := execNpm("remove", name)
 	if err != nil {
 		return errors.New(stderr)
 	}
@@ -58,8 +58,8 @@ func (c *Client) RemovePackage(name string) error {
 }
 
 // UpdatePackages updates all packages.
-func (c *Client) UpdatePackages() (string, error) {
-	stdout, stderr, err := c.execNpm("update")
+func UpdatePackages() (string, error) {
+	stdout, stderr, err := execNpm("update")
 	if err != nil {
 		return stdout, errors.New(stderr)
 	}
@@ -67,23 +67,23 @@ func (c *Client) UpdatePackages() (string, error) {
 }
 
 // UpdatePackage updates a package.
-func (c *Client) UpdatePackage(name string) (string, error) {
-	stdout, stderr, err := c.execNpm("update", name)
+func UpdatePackage(name string) (string, error) {
+	stdout, stderr, err := execNpm("update", name)
 	if err != nil {
 		return stdout, errors.New(stderr)
 	}
 	return stdout, nil
 }
 
-func (c *Client) execNpm(args ...string) (string, string, error) {
-	if err := os.MkdirAll(filepath.Join(c.RootPath, "node_modules"), 0755); err != nil {
+func execNpm(args ...string) (string, string, error) {
+	if err := os.MkdirAll(filepath.Join(rootPath, "node_modules"), 0755); err != nil {
 		return "", "", err
 	}
-	nodePath, err := filepath.Rel(c.RootPath, c.nodePath())
+	nodePath, err := filepath.Rel(rootPath, nodePath)
 	if err != nil {
 		return "", "", err
 	}
-	npmPath, err := filepath.Rel(c.RootPath, c.npmPath())
+	npmPath, err := filepath.Rel(rootPath, npmPath)
 	if err != nil {
 		return "", "", err
 	}
@@ -92,8 +92,8 @@ func (c *Client) execNpm(args ...string) (string, string, error) {
 		args = append(args, "--loglevel=silly")
 	}
 	cmd := exec.Command(nodePath, args...)
-	cmd.Dir = c.RootPath
-	cmd.Env = c.environ()
+	cmd.Dir = rootPath
+	cmd.Env = environ()
 	var stdout, stderr bytes.Buffer
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
@@ -104,13 +104,11 @@ func (c *Client) execNpm(args ...string) (string, string, error) {
 	return stdout.String(), stderr.String(), err
 }
 
-func (c *Client) environ() []string {
+func environ() []string {
 	env := append(os.Environ(), "NPM_CONFIG_SPIN=false")
 	env = append(env, "NPM_CONFIG_AUTO_AUTH=false")
-	env = append(env, "NPM_CONFIG_CACHE="+filepath.Join(c.RootPath, ".npm-cache"))
-	if c.Registry != "" {
-		env = append(env, "NPM_CONFIG_REGISTRY="+c.Registry)
-	}
+	env = append(env, "NPM_CONFIG_CACHE="+filepath.Join(rootPath, ".npm-cache"))
+	env = append(env, "NPM_CONFIG_REGISTRY="+registry)
 	return env
 }
 
