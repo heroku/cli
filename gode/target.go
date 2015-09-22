@@ -32,9 +32,15 @@ func (t *Target) isSetup() bool {
 
 func (t *Target) setup() error {
 	if t.OS == "windows" {
-		return t.setupWindows()
+		if err := t.setupWindows(); err != nil {
+			return err
+		}
+	} else {
+		if err := t.setupUnix(); err != nil {
+			return err
+		}
 	}
-	return t.setupUnix()
+	return downloadNpm(t.npmPath())
 }
 
 func (t *Target) clearOldNodeInstalls() error {
