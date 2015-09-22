@@ -56,8 +56,8 @@ function s3upload (local, remote) {
   return new Promise(function (fulfill, reject) {
     knox.putFile(local, key, {
       'x-amz-acl': 'public-read',
-      'x-amz-meta-Cache-Control': 'max-age=86400',
-      'Cache-Control': 'max-age=86400',
+      'x-amz-meta-Cache-Control': 'public,max-age=86400',
+      'Cache-Control': 'public,max-age=86400',
     }, function (err, res) {
       if (err) return reject(err);
       res.resume();
