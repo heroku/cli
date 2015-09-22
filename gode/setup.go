@@ -38,8 +38,7 @@ func Setup() error {
 	t := findTarget()
 	if t == nil {
 		return errors.New(`node does not offer a prebuilt binary for your OS.
-You'll need to compile the tarball from nodejs.org and place it in ~/.heroku/node-v` + Version + `
-You'll also need to extract npm to ~/.heroku/node-v` + Version + `/lib/node_modules/npm`)
+You'll need to compile the tarball from nodejs.org and place it in ~/.heroku/node-v` + Version)
 	}
 	if t.isSetup() {
 		return nil
@@ -74,7 +73,6 @@ func (t *Target) setupUnix() error {
 		msg, _ := resp.Body.ToString()
 		return errors.New(msg)
 	}
-
 	getSha, stream := computeSha(resp.Body)
 	uncompressed, err := gzip.NewReader(stream)
 	if err != nil {
@@ -95,18 +93,10 @@ func (t *Target) setupUnix() error {
 
 func (t *Target) setupWindows() error {
 	os.RemoveAll(t.basePath())
-	if err := setupNpm(t.basePath()); err != nil {
+	if err := os.MkdirAll(t.basePath(), 0755); err != nil {
 		return err
 	}
 	return downloadFile(t.nodePath(), t.URL, t.Sha)
-}
-
-func setupNpm(base string) error {
-	modulesDir := filepath.Join(base, "lib", "node_modules")
-	if err := os.MkdirAll(modulesDir, 0755); err != nil {
-		return err
-	}
-	return downloadNpm(modulesDir)
 }
 
 func downloadFile(path, url, sha string) error {
@@ -143,7 +133,9 @@ func downloadFile(path, url, sha string) error {
 	return os.RemoveAll(filepath.Dir(tmp))
 }
 
-func downloadNpm(modulesDir string) error {
+func downloadNpm(npmPath string) error {
+	modulesDir := filepath.Dir(filepath.Dir(npmPath))
+	os.MkdirAll(modulesDir, 0755)
 	tmpDir := tmpDir("node")
 	zipfile := filepath.Join(tmpDir, "npm.zip")
 	err := downloadFile(zipfile, npmURL, npmSha)
@@ -154,6 +146,7 @@ func downloadNpm(modulesDir string) error {
 	if err != nil {
 		return err
 	}
+	os.RemoveAll(filepath.Join(modulesDir, "npm"))
 	os.Rename(filepath.Join(tmpDir, "npm-"+NpmVersion), filepath.Join(modulesDir, "npm"))
 	if err != nil {
 		return err
