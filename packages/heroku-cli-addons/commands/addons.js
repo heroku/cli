@@ -19,7 +19,7 @@ function* addonGetter(api, app) {
         addons = api.request({
             method:  'GET',
             path:    `/apps/${app}/addons`,
-            headers: {'Accept-Expansion': 'addon_service,plan'},
+            headers: {'Accept-Expansion': 'addon_service,plan'}
         });
 
         let sudoHeaders = JSON.parse(process.env.HEROKU_HEADERS || '{}');
@@ -29,7 +29,7 @@ function* addonGetter(api, app) {
             // specific API call and sacrifice listing foreign attachments.
             attachments = api.request({
                 method:  'GET',
-                path:    `/apps/${app}/addon-attachments`,
+                path:    `/apps/${app}/addon-attachments`
             });
         } else {
             // In order to display all foreign attachments, we'll get out entire
@@ -66,10 +66,16 @@ function* addonGetter(api, app) {
         }
     });
 
+    // Any attachments left didn't have a corresponding add-on record in API.
+    // This is probably normal (because we are asking API for all attachments)
+    // but it could also be due to certain types of permissions issues, so check
+    // if the attachment looks relevant to the app, and then render whatever
+    // information we can.
     _.values(attachments).forEach(function(atts) {
         let inaccessibleAddon = {
             app: atts[0].addon.app,
             name: atts[0].addon.name,
+            addon_service: {},
             plan: {},
             attachments: atts
         };
@@ -151,6 +157,10 @@ function displayForApp(app, addons) {
         let name    = style('addon', addon.name);
         let service = addon.addon_service.name;
 
+        if(service === undefined) {
+            service = style('dim', '?');
+        }
+
         let addonLine = `${service} (${name})`;
 
         let atts = _.sortByAll(addon.attachments,
@@ -170,20 +180,21 @@ function displayForApp(app, addons) {
     addons = _.sortByAll(addons,
                          isForeignApp,
                          'plan.name',
-                         'addon.name');
+                         'name');
+
     cli.log();
     table(addons, {
         headerAnsi: cli.color.bold,
         columns: [{
             label: 'Add-on',
-            format: presentAddon,
+            format: presentAddon
         }, {
             label: 'Plan',
             key: 'plan.name',
             format: function(name) {
-                if(name === undefined) { return style('dim', name); }
+                if(name === undefined) { return style('dim', '?'); }
                 return name.replace(/^[^:]+:/, '');
-            },
+            }
         }, {
             label: 'Price',
             format: function(addon) {
@@ -192,7 +203,7 @@ function displayForApp(app, addons) {
                 } else {
                     return style('dim', printf('(billed to %s app)', style('app', addon.app.name)));
                 }
-            },
+            }
         }],
 
         // Separate each add-on row by a blank line
@@ -262,5 +273,5 @@ Identifying specific add-ons:
   one add-on of that type installed), the command will error due to
   ambiguity and a more specific identifier will need to be chosen.
 
-  For more information, read https://devcenter.heroku.com/articles/add-ons.`,
+  For more information, read https://devcenter.heroku.com/articles/add-ons.`
 };
