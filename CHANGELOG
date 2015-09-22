@@ -1,3 +1,7 @@
+4.23.3  2015-09-22
+==================
+Fixed issue with update causing node to download to current directory
+
 4.23.2  2015-09-22
 ==================
 Bug fix for HEROKU_HOST values starting with 'http*'
