@@ -1,22 +1,21 @@
 'use strict';
-let fs      = require('fs');
-let path    = require('path');
-let request = require('request');
-let spawn   = require('child_process').spawn;
 
-const foregoVersion = '0.16.1';
+let cli      = require('heroku-cli-util');
+let fs       = require('fs');
+let path     = require('path');
+let download = require('./download');
+let sha      = require('./sha');
+let spawn    = require('child_process').spawn;
+
+let target = require('../download_info.json').filter(function (target) {
+  if (target.arch === process.arch && target.platform === process.platform) return target;
+})[0];
+
+if (!target) { console.error(`No forego binaries are available for ${process.arch} ${process.platform}.`); process.exit(1); }
 
 function Forego(dir) {
   this.dir = dir;
-
-  if (process.platform === 'windows') {
-    this.filename = `forego-${foregoVersion}.exe`;
-  } else {
-    this.filename = `forego-${foregoVersion}`;
-  }
-
-  this.path = path.join(this.dir, this.filename);
-
+  this.path = path.join(this.dir, target.filename);
 }
 
 Forego.prototype = {
@@ -40,7 +39,7 @@ Forego.prototype = {
     if (opts.flags.port) args.unshift('-p', opts.flags.port);
     args.unshift('run');
     // TODO: find out why spring does not work
-    process.env['DISABLE_SPRING'] = 1;
+    process.env.DISABLE_SPRING = 1;
     spawn(this.path, args, {stdio: 'inherit'});
   },
 
@@ -59,46 +58,21 @@ Forego.prototype = {
 
   download: function () {
     let forego = this;
-    return new Promise(function (fulfill, reject) {
-      process.stderr.write(`Downloading ${forego.filename} to ${forego.dir}... `);
-      request(forego.url(), function (err) {
-        if (err) { reject(err); }
-        console.error('done');
-        // for some reason this seems necessary
-        setTimeout(fulfill, 500);
-      })
-      .pipe(fs.createWriteStream(forego.path, {mode: 0o0755}));
-    });
+    return cli.action(`Downloading ${target.filename} to ${forego.dir}...`,
+                      download.file(target.url, forego.path, {mode: 0o0755})
+                      .then(function () { return forego.verify(); })
+                     );
   },
 
-  url: function() {
-    let arch, platform;
-    let filename = 'forego';
-    switch (process.arch) {
-      case 'x64':
-        arch = 'amd64';
-      break;
-      case 'ia32':
-        arch = '386';
-      break;
-      default:
-        throw new Error(`Unsupported architecture: ${process.arch}`);
-    }
-    switch (process.platform) {
-      case 'darwin':
-        platform = 'darwin';
-      break;
-      case 'linux':
-        platform = 'linux';
-      break;
-      case 'win32':
-        platform = 'windows';
-        filename = 'forego.exe';
-      break;
-      default:
-        throw new Error(`Unsupported architecture: ${process.arch}`);
-    }
-    return `https://godist.herokuapp.com/projects/ddollar/forego/releases/${foregoVersion}/${platform}-${arch}/${filename}`;
+  verify: function () {
+    let forego = this;
+    return sha.file(forego.path)
+    .then(function (sha) {
+      if (sha !== target.sha) {
+        fs.unlinkSync(forego.path);
+        throw new Error(`SHA mismatch. Expected ${sha} to be ${target.sha}.`);
+      }
+    });
   }
 };
 

@@ -21,11 +21,12 @@
   "noempty": true,
   "nonbsp": true,
   "nonew": true,
+  "noyield": true,
   "trailing": true,
   "undef": true,
   "unused": true,
   "globals": {
-    "expect": true
+    "Promise": true
   },
   "predef": [
     "$",
@@ -41,7 +42,6 @@
     "document",
     "element",
     "inject",
-    "it",
-    "sinon"
+    "it"
   ]
 }
