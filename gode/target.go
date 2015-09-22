@@ -39,7 +39,7 @@ func (t *Target) setup() error {
 	if err := t.setupUnix(); err != nil {
 		return err
 	}
-	return downloadNpm(t.basePath())
+	return downloadNpm(t.npmPath())
 }
 
 func (t *Target) clearOldNodeInstalls() error {
