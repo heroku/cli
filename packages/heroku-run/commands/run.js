@@ -109,7 +109,6 @@ function* run (context, heroku) {
     process.exit(1);
   }
   let sh = context.flags['exit-code'] ? `${command}; echo heroku-command-exit-status $?` : command;
-  cli.debug(context)
   let p = startDyno(heroku, context.app, context.flags.size, sh);
   let dyno = yield cli.action(`Running ${cli.color.cyan.bold(command)} on ${context.app}`, {success: false}, p);
   console.error(`up, ${dyno.name}`);
