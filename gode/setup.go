@@ -38,8 +38,7 @@ func Setup() error {
 	t := findTarget()
 	if t == nil {
 		return errors.New(`node does not offer a prebuilt binary for your OS.
-You'll need to compile the tarball from nodejs.org and place it in ~/.heroku/node-v` + Version + `
-You'll also need to extract npm to ~/.heroku/node-v` + Version + `/lib/node_modules/npm`)
+You'll need to compile the tarball from nodejs.org and place it in ~/.heroku/node-v` + Version)
 	}
 	if t.isSetup() {
 		return nil
@@ -95,18 +94,7 @@ func (t *Target) setupUnix() error {
 
 func (t *Target) setupWindows() error {
 	os.RemoveAll(t.basePath())
-	if err := setupNpm(t.basePath()); err != nil {
-		return err
-	}
 	return downloadFile(t.nodePath(), t.URL, t.Sha)
-}
-
-func setupNpm(base string) error {
-	modulesDir := filepath.Join(base, "lib", "node_modules")
-	if err := os.MkdirAll(modulesDir, 0755); err != nil {
-		return err
-	}
-	return downloadNpm(modulesDir)
 }
 
 func downloadFile(path, url, sha string) error {
