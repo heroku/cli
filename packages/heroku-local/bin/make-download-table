@@ -11,11 +11,11 @@ const version = '0.16.1';
 const urlBase = `https://godist.herokuapp.com/projects/ddollar/forego/releases/${version}`;
 
 let targets = [
-  {arch: 'x64',  platform: 'darwin',  url: urlBase+'/darwin-amd64/forego',      filename: `forego-${version}`},
-  {arch: 'x64',  platform: 'linux',   url: urlBase+'/linux-amd64/forego',       filename: `forego-${version}`},
-  {arch: 'ia32', platform: 'linux',   url: urlBase+'/linux-386/forego',         filename: `forego-${version}`},
-  {arch: 'x64',  platform: 'windows', url: urlBase+'/windows-amd64/forego.exe', filename: `forego-${version}.exe`},
-  {arch: 'ia32', platform: 'windows', url: urlBase+'/windows-386/forego.exe',   filename: `forego-${version}.exe`},
+  {arch: 'x64',  platform: 'darwin', url: urlBase+'/darwin-amd64/forego',      filename: `forego-${version}`},
+  {arch: 'x64',  platform: 'linux',  url: urlBase+'/linux-amd64/forego',       filename: `forego-${version}`},
+  {arch: 'ia32', platform: 'linux',  url: urlBase+'/linux-386/forego',         filename: `forego-${version}`},
+  {arch: 'x64',  platform: 'win32',  url: urlBase+'/windows-amd64/forego.exe', filename: `forego-${version}.exe`},
+  {arch: 'ia32', platform: 'win32',  url: urlBase+'/windows-386/forego.exe',   filename: `forego-${version}.exe`},
 ];
 
 Promise.all(targets.map(function (target) {
