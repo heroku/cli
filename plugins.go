@@ -38,6 +38,7 @@ func SetupNode() {
 }
 
 func updateNode() {
+	gode.SetRootPath(AppDir)
 	if gode.NeedsUpdate() {
 		Errf("Setting up node-v%s...", gode.Version)
 		PrintError(gode.Setup())
