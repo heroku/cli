@@ -53,7 +53,11 @@ You'll also need to extract npm to ~/.heroku/node-v` + Version + `/lib/node_modu
 
 // NeedsUpdate returns true if it is using a node that isn't the latest version
 func NeedsUpdate() bool {
-	return !findTarget().isSetup()
+	target := findTarget()
+	if target == nil {
+		return false
+	}
+	return target.isSetup()
 }
 
 func (t *Target) setupUnix() error {
