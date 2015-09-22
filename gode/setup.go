@@ -131,8 +131,9 @@ func downloadFile(path, url, sha string) error {
 	return os.RemoveAll(filepath.Dir(tmp))
 }
 
-func downloadNpm(modulesDir string) error {
-	os.MkdirAll(filepath.Dir(filepath.Dir(modulesDir)), 0755)
+func downloadNpm(npmPath string) error {
+	modulesDir := filepath.Dir(filepath.Dir(npmPath))
+	os.MkdirAll(modulesDir, 0755)
 	tmpDir := tmpDir("node")
 	zipfile := filepath.Join(tmpDir, "npm.zip")
 	err := downloadFile(zipfile, npmURL, npmSha)
@@ -143,6 +144,7 @@ func downloadNpm(modulesDir string) error {
 	if err != nil {
 		return err
 	}
+	os.RemoveAll(filepath.Join(modulesDir, "npm"))
 	os.Rename(filepath.Join(tmpDir, "npm-"+NpmVersion), filepath.Join(modulesDir, "npm"))
 	if err != nil {
 		return err

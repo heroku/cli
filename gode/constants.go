@@ -10,10 +10,10 @@ package gode
 const Version = "4.1.0"
 
 // NpmVersion is the requested npm version
-const NpmVersion = "2.14.3"
+const NpmVersion = "3.3.3"
 
-const npmSha = "0578ad05ca5ace2cbeff0c765ee629dd17bfb8cb22cc9fac44477e3cd33eddc4"
-const npmURL = "https://github.com/npm/npm/archive/v2.14.3.zip"
+const npmSha = "12f7b4a147685311e478464c45e1221ef361155089d7b2f10b7ba808d4cb8f6d"
+const npmURL = "https://github.com/npm/npm/archive/v3.3.3.zip"
 
 var targets = []Target{
 	{"386", "linux", "https://nodejs.org/download/release/v4.1.0/node-v4.1.0-linux-x86.tar.gz", "node-v4.1.0-linux-x86", "2ceaf5e66993da50e4514ddc5c270dc15ee712d00c29a2108655d9d259b3b9bb"},
