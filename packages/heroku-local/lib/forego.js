@@ -58,7 +58,7 @@ Forego.prototype = {
 
   download: function () {
     let forego = this;
-    return cli.action(`Downloading ${target.filename} to ${forego.dir}...`,
+    return cli.action(`Downloading ${target.filename} to ${forego.dir}`,
                       download.file(target.url, forego.path, {mode: 0o0755})
                       .then(function () { return forego.verify(); })
                      );
