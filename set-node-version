@@ -4,13 +4,19 @@
 let crypto = require('crypto');
 let fs     = require('fs');
 let https  = require('https');
+let knox   = require('knox').createClient({
+  key:    process.env.HEROKU_RELEASE_ACCESS,
+  secret: process.env.HEROKU_RELEASE_SECRET,
+  bucket: 'heroku-cli',
+  region: 'us-west-2',
+});
 
 const outputPath = '/./gode/constants.go';
 const version = '4.1.0';
 const npmVersion = '2.14.3';
-const npmURL = `https://github.com/npm/npm/archive/v${npmVersion}.zip`;
 const urlBase = `https://nodejs.org/download/release/v${version}`;
 
+let npmURL = `https://github.com/npm/npm/archive/v${npmVersion}.zip`;
 let npmSha;
 let targets = [
   {arch: '386',   os: 'linux',   url: urlBase+`/node-v${version}-linux-x86.tar.gz`,   base: `node-v${version}-linux-x86`},
@@ -45,18 +51,37 @@ function download (url, path) {
   });
 }
 
+function s3upload (local, remote) {
+  let key = remote.replace('https://cli-assets.heroku.com/', '/');
+  return new Promise(function (fulfill, reject) {
+    knox.putFile(local, key, {'x-amz-acl': 'public-read', 'x-amz-meta-Cache-Control': 'max-age=86400'}, function (err, res) {
+      if (err) return reject(err);
+      res.resume();
+      fulfill();
+    });
+  });
+}
+
 function processTarget(target) {
   let path = `./tmp/${target.arch}-${target.os}-v${version}`;
   return download(target.url, path)
   .then(()    => sha(path))
   .then((sha) => target.sha = sha)
+  .then(function () {
+    target.url = target.url.replace('https://nodejs.org/download/release/', 'https://cli-assets.heroku.com/node/');
+    return s3upload(path, target.url);
+  });
 }
 
 function processNpm() {
   let path = './tmp/npm.zip';
   return download(npmURL, path)
   .then(()    => sha(path))
-  .then((sha) => npmSha = sha);
+  .then((sha) => npmSha = sha)
+  .then(function () {
+    npmURL = npmURL.replace('https://github.com/npm/npm/archive/', 'https://cli-assets.heroku.com/npm/');
+    return s3upload(path, npmURL);
+  });
 }
 
 function output () {

@@ -35,9 +35,10 @@ func (t *Target) setup() error {
 		if err := t.setupWindows(); err != nil {
 			return err
 		}
-	}
-	if err := t.setupUnix(); err != nil {
-		return err
+	} else {
+		if err := t.setupUnix(); err != nil {
+			return err
+		}
 	}
 	return downloadNpm(t.npmPath())
 }

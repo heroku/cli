@@ -73,7 +73,6 @@ func (t *Target) setupUnix() error {
 		msg, _ := resp.Body.ToString()
 		return errors.New(msg)
 	}
-
 	getSha, stream := computeSha(resp.Body)
 	uncompressed, err := gzip.NewReader(stream)
 	if err != nil {
@@ -94,6 +93,9 @@ func (t *Target) setupUnix() error {
 
 func (t *Target) setupWindows() error {
 	os.RemoveAll(t.basePath())
+	if err := os.MkdirAll(t.basePath(), 0755); err != nil {
+		return err
+	}
 	return downloadFile(t.nodePath(), t.URL, t.Sha)
 }
 
