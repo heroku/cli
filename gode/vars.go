@@ -53,5 +53,5 @@ func nodePathFromBase(base string) string {
 }
 
 func npmPathFromBase(base string) string {
-	return filepath.Join(base, "lib", "node_modules", "npm", "cli.js")
+	return filepath.Join(base, "npm", "cli.js")
 }
