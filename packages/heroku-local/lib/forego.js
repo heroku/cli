@@ -11,8 +11,6 @@ let target = require('../download_info.json').filter(function (target) {
   if (target.arch === process.arch && target.platform === process.platform) return target;
 })[0];
 
-if (!target) { console.error(`No forego binaries are available for ${process.arch} ${process.platform}.`); process.exit(1); }
-
 function Forego(dir) {
   this.dir = dir;
   this.path = path.join(this.dir, target.filename);
@@ -44,6 +42,8 @@ Forego.prototype = {
   },
 
   ensureSetup: function () {
+    if (!target) { console.error(`No forego binaries are available for ${process.arch} ${process.platform}.`); process.exit(1); }
+
     let forego = this;
     return new Promise(function (fulfill, reject) {
       fs.open(forego.path, 'r', function (err) {
