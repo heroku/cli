@@ -123,7 +123,6 @@ module.exports = {
   variableArgs: true,
   needsAuth: true,
   needsApp: true,
-  hidden: true,
   flags: [
     {name: 'size', char: 's', description: 'dyno size', hasValue: true},
     {name: 'exit-code', description: 'placeholder'},
