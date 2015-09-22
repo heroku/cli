@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"net/url"
 	"os"
 	"os/exec"
 	"strings"
@@ -19,6 +20,15 @@ func host() string {
 }
 
 func apiHost() string {
+	h := host()
+	if strings.HasPrefix(h, "http") {
+		u, err := url.Parse(h)
+		if err != nil {
+			Errln(err)
+		} else {
+			return u.Host
+		}
+	}
 	return "api." + host()
 }
 
