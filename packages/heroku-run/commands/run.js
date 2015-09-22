@@ -84,7 +84,7 @@ function readData(c) {
 }
 
 function attachToRendezvous(uri, opts) {
-  let c = tls.connect(uri.port, uri.hostname);
+  let c = tls.connect(uri.port, uri.hostname, {rejectUnauthorized: opts.rejectUnauthorized});
   c.setEncoding('utf8');
   c.on('connect', function () {
     c.write(uri.path.substr(1) + '\r\n');
@@ -113,7 +113,8 @@ function* run (context, heroku) {
   let dyno = yield cli.action(`Running ${cli.color.cyan.bold(command)} on ${context.app}`, {success: false}, p);
   console.error(`up, ${dyno.name}`);
   attachToRendezvous(url.parse(dyno.attach_url), {
-    exitCode: context.flags['exit-code'] ? -1 : 0 // exit with -1 if the stream ends and heroku-command-exit-status is empty
+    exitCode: context.flags['exit-code'] ? -1 : 0, // exit with -1 if the stream ends and heroku-command-exit-status is empty
+    rejectUnauthorized: heroku.options.rejectUnauthorized,
   });
 }
 
