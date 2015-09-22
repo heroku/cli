@@ -7,7 +7,7 @@ let https  = require('https');
 
 const outputPath = '/./gode/constants.go';
 const version = '4.1.0';
-const npmVersion = '3.3.3';
+const npmVersion = '2.14.3';
 const npmURL = `https://github.com/npm/npm/archive/v${npmVersion}.zip`;
 const urlBase = `https://nodejs.org/download/release/v${version}`;
 
