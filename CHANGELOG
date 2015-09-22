@@ -1,3 +1,7 @@
+4.23.2  2015-09-22
+==================
+Bug fix for HEROKU_HOST values starting with 'http*'
+
 4.23.1  2015-09-22
 ==================
 Move node and npm to CDN host
