@@ -56,7 +56,7 @@ func NeedsUpdate() bool {
 	if target == nil {
 		return false
 	}
-	return target.isSetup()
+	return !target.isSetup()
 }
 
 func (t *Target) setupUnix() error {
