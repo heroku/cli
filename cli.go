@@ -7,7 +7,7 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/dickeyxxx/go-netrc/netrc"
+	"github.com/dickeyxxx/netrc"
 )
 
 // ErrHelp means the user didn't type a valid command and we need to display help.
@@ -177,11 +177,11 @@ func app() string {
 }
 
 func getNetrc() *netrc.Netrc {
-	n, err := netrc.ParseFile(netrcPath())
+	n, err := netrc.Parse(netrcPath())
 	if err != nil {
 		if _, ok := err.(*os.PathError); ok {
 			// File not found
-			return &netrc.Netrc{}
+			return &netrc.Netrc{Path: netrcPath()}
 		}
 		Errln("Error parsing netrc at " + netrcPath())
 		Errln(err.Error())
@@ -205,9 +205,9 @@ func apiToken() string {
 		return key
 	}
 	netrc := getNetrc()
-	machine := netrc.FindMachine(apiHost())
+	machine := netrc.Machine(apiHost())
 	if machine != nil {
-		return machine.Password
+		return machine.Get("password")
 	}
 	return ""
 }
