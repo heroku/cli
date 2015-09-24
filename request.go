@@ -51,7 +51,7 @@ func shouldVerifyHost(host string) bool {
 
 func getCACerts() *x509.CertPool {
 	certs := x509.NewCertPool()
-	path := filepath.Join(AppDir, "cacert.pem")
+	path := filepath.Join(AppDir(), "cacert.pem")
 	data, err := ioutil.ReadFile(path)
 	if err != nil {
 		downloadCert(path)

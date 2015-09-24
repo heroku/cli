@@ -4,13 +4,22 @@ import (
 	"os"
 	"os/user"
 	"path/filepath"
+	"runtime"
 )
 
 // The user's home directory
 var HomeDir = homeDir()
 
-// The user's Heroku directory we use to cache dependencies, store plugins, write log files (among other things).
-var AppDir = filepath.Join(HomeDir, ".heroku")
+// AppDir is the .heroku path
+func AppDir() string {
+	if runtime.GOOS == "windows" {
+		dir := os.Getenv("LOCALAPPDIR")
+		if dir != "" {
+			return filepath.Join(dir, "heroku")
+		}
+	}
+	return filepath.Join(HomeDir, ".heroku")
+}
 
 func homeDir() string {
 	home := os.Getenv("HOME")

@@ -41,14 +41,12 @@ var updateCmd = &Command{
 	},
 }
 
-var binPath = filepath.Join(AppDir, "heroku-cli")
-var updateLockPath = filepath.Join(AppDir, "updating.lock")
-var autoupdateFile = filepath.Join(AppDir, "autoupdate")
+var binPath string
+var updateLockPath = filepath.Join(AppDir(), "updating.lock")
+var autoupdateFile = filepath.Join(AppDir(), "autoupdate")
 
 func init() {
-	if runtime.GOOS == "windows" {
-		binPath = binPath + ".exe"
-	}
+	binPath = os.Args[0]
 }
 
 // Update updates the CLI and plugins
