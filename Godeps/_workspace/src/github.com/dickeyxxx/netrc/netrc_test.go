@@ -145,3 +145,10 @@ func (s *NetrcSuite) TestPermissive(c *C) {
 	body, _ := ioutil.ReadFile(f.Path)
 	c.Check(f.Render(), Equals, string(body))
 }
+
+func (s *NetrcSuite) TestRemoveFromComplicated(c *C) {
+	f, err := netrc.Parse("./examples/complicated.netrc")
+	c.Assert(err, IsNil)
+	f.RemoveMachine("git.heroku.com")
+	c.Assert(f.Machine("git.heroku.com"), IsNil)
+}
