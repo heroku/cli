@@ -12,7 +12,7 @@ Commands
 heroku run
 ----------
 
-MISSING DESCRIPTION
+run a one-off process inside a heroku dyno
 
 `-s, --size` dyno size
 
