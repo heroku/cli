@@ -12,7 +12,7 @@ describe('addons --app', function() {
         addons      = addons || [];
         attachments = attachments || [];
 
-        nock('https://api.heroku.com')
+        nock('https://api.heroku.com', {reqheaders: {'Accept-Expansion': 'addon_service,plan'}})
             .get(`/apps/${appName}/addons`)
             .reply(200, addons);
 
