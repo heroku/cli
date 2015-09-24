@@ -1,15 +1,15 @@
 {
 	"ImportPath": "github.com/heroku/heroku-cli",
-	"GoVersion": "go1.4.2",
+	"GoVersion": "go1.5.1",
 	"Deps": [
-		{
-			"ImportPath": "github.com/dickeyxxx/go-netrc/netrc",
-			"Rev": "86d2489fe365ee82808af242883d1c4bd268e727"
-		},
 		{
 			"ImportPath": "github.com/dickeyxxx/golock",
 			"Comment": "v1.0.0-3-g4121076",
 			"Rev": "41210765bf2c6815e195d1192af6da935cd79b95"
+		},
+		{
+			"ImportPath": "github.com/dickeyxxx/netrc",
+			"Rev": "5d33d71c36d8fa33a643e65e5845a077ca9314c0"
 		},
 		{
 			"ImportPath": "github.com/dickeyxxx/speakeasy",
