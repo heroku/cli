@@ -41,11 +41,15 @@ func commandUsage(c *Command) string {
 }
 
 func (c *Command) buildFullHelp() string {
-	if len(c.Flags) == 0 {
+	flags := c.Flags
+	if c.NeedsApp || c.WantsApp {
+		flags = append(flags, *appFlag, *remoteFlag)
+	}
+	if len(flags) == 0 {
 		return c.Help
 	}
-	lines := make([]string, 0, len(c.Flags))
-	for _, flag := range c.Flags {
+	lines := make([]string, 0, len(flags))
+	for _, flag := range flags {
 		if flag.Hidden {
 			continue
 		}

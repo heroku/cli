@@ -17,15 +17,17 @@ type Flag struct {
 }
 
 var appFlag = &Flag{
-	Name:     "app",
-	Char:     "a",
-	HasValue: true,
+	Name:        "app",
+	Char:        "a",
+	HasValue:    true,
+	Description: "app to run command against",
 }
 
 var remoteFlag = &Flag{
-	Name:     "remote",
-	Char:     "r",
-	HasValue: true,
+	Name:        "remote",
+	Char:        "r",
+	HasValue:    true,
+	Description: "git remote of app to run command against",
 }
 
 var debuggerFlag = &Flag{
