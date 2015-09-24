@@ -126,7 +126,7 @@ module.exports = {
   needsApp: true,
   flags: [
     {name: 'size', char: 's', description: 'dyno size', hasValue: true},
-    {name: 'exit-code', description: 'placeholder'},
+    {name: 'exit-code', description: 'passthrough the exit code of the remote command'},
   ],
   run: cli.command(co.wrap(run))
 };
