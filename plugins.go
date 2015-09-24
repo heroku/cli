@@ -30,7 +30,7 @@ type Plugin struct {
 
 // SetupNode sets up node and npm in ~/.heroku
 func SetupNode() {
-	gode.SetRootPath(AppDir)
+	gode.SetRootPath(AppDir())
 	if !gode.IsSetup() {
 		Errf("Setting up node-v%s...", gode.Version)
 		ExitIfError(gode.Setup())
@@ -39,7 +39,7 @@ func SetupNode() {
 }
 
 func updateNode() {
-	gode.SetRootPath(AppDir)
+	gode.SetRootPath(AppDir())
 	if gode.NeedsUpdate() {
 		Errf("Setting up node-v%s...", gode.Version)
 		PrintError(gode.Setup())
@@ -363,7 +363,7 @@ func GetPlugins() []Plugin {
 
 // PluginNames just lists the files in ~/.heroku/node_modules
 func PluginNames() []string {
-	files, _ := ioutil.ReadDir(filepath.Join(AppDir, "node_modules"))
+	files, _ := ioutil.ReadDir(filepath.Join(AppDir(), "node_modules"))
 	names := make([]string, 0, len(files))
 	for _, f := range files {
 		if !ignorePlugin(f.Name()) {
@@ -396,7 +396,7 @@ func ignorePlugin(plugin string) bool {
 }
 
 func isPluginSymlinked(plugin string) bool {
-	path := filepath.Join(AppDir, "node_modules", plugin)
+	path := filepath.Join(AppDir(), "node_modules", plugin)
 	fi, err := os.Lstat(path)
 	if err != nil {
 		panic(err)

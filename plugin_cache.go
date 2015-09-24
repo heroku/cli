@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 )
 
-var pluginCachePath = filepath.Join(AppDir, "plugin-cache.json")
+var pluginCachePath = filepath.Join(AppDir(), "plugin-cache.json")
 
 // ClearPluginCache deletes the plugin cache
 func ClearPluginCache() {
