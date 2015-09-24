@@ -73,6 +73,9 @@ func (n *Netrc) RemoveMachine(name string) {
 	for i, machine := range n.machines {
 		if machine.Name == name {
 			n.machines = append(n.machines[:i], n.machines[i+1:]...)
+			// continue removing but start over since the indexes changed
+			n.RemoveMachine(name)
+			return
 		}
 	}
 }
