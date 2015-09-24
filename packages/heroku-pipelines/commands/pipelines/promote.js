@@ -9,8 +9,8 @@ const PIPELINES_HEADER = V3_HEADER + '.pipelines';
 module.exports = {
   topic: 'pipelines',
   command: 'promote',
-  description: "promote an app's slug down the pipeline",
-  help: "promote an app's slug down the pipeline",
+  description: "promote the latest release of this app to its downstream app(s)",
+  help: "Promote the latest release of this app to its downstream app(s)\n\nExample:\n  $ heroku pipelines:promote -a example-staging\n  Promoting example-staging to example (production)... done, v23\n  Promoting example-staging to example-admin (production)... done, v54",
   needsApp: true,
   needsAuth: true,
   run: cli.command(function* (context, heroku) {
