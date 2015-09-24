@@ -120,7 +120,16 @@ function* run (context, heroku) {
 
 module.exports = {
   topic: 'run',
-  help: `run a one-off process inside a Heroku dyno`,
+  help: `run a one-off process inside a Heroku dyno
+Example:
+
+  $ heroku run bash
+  Running bash on app... up, run.1
+  ~ $
+
+  $ heroku run -s hobby -- myscript.sh -a arg1 -s arg2
+  Running myscript.sh -a arg1 -s arg2 on app... up, run.1
+`,
   variableArgs: true,
   needsAuth: true,
   needsApp: true,
