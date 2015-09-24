@@ -24,7 +24,7 @@ function buildCommand(args) {
 }
 
 function env () {
-  let c = {};
+  let c = {TERM: process.env.TERM};
   if (tty.isatty(1)) {
     c.COLUMNS = process.stdout.columns;
     c.LINES   = process.stdout.rows;
