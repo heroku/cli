@@ -15,6 +15,7 @@ var lockPath string
 var nodePath string
 var npmPath string
 
+// SetRootPath sets the root for gode
 func SetRootPath(root string) {
 	rootPath = root
 	base := filepath.Join(root, getLatestInstalledNode())
@@ -28,7 +29,12 @@ func getLatestInstalledNode() string {
 	if len(nodes) == 0 {
 		return ""
 	}
-	return nodes[len(nodes)-1]
+	latest := nodes[len(nodes)-1]
+	// ignore ancient versions
+	if strings.HasPrefix(latest, "node-v0") || strings.HasPrefix(latest, "iojs-v") {
+		return ""
+	}
+	return latest
 }
 
 func getNodeInstalls() []string {
@@ -36,7 +42,7 @@ func getNodeInstalls() []string {
 	files, _ := ioutil.ReadDir(rootPath)
 	for _, f := range files {
 		name := f.Name()
-		if strings.HasPrefix(name, "node-v") || strings.HasPrefix(name, "iojs-v") {
+		if f.IsDir() && (strings.HasPrefix(name, "node-v") || strings.HasPrefix(name, "iojs-v")) {
 			nodes = append(nodes, name)
 		}
 	}
