@@ -100,6 +100,9 @@ func parseVarArgs(command *Command, args []string) (result []string, flags map[s
 		case parseFlags && (args[i] == "--"):
 			parseFlags = false
 		case parseFlags && (args[i] == "help" || args[i] == "--help" || args[i] == "-h"):
+			if i > 1 && args[i] == "help" && (args[i-1] == "-a" || args[i-1] == "--app") {
+				break
+			}
 			return nil, nil, "", ErrHelp
 		case parseFlags && (args[i] == "--no-color"):
 			continue
