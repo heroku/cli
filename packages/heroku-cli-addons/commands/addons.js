@@ -215,15 +215,21 @@ function displayForApp(app, addons) {
             `or other ${style('app', 'apps')}.\n`);
 }
 
-let run = cli.command(function(ctx, api) {
-    return co(function*() {
-        if(!ctx.flags.all && ctx.app) {
-            displayForApp(ctx.app, yield co(addonGetter(api, ctx.app)));
-        } else {
-            displayAll(yield co(addonGetter(api)));
-        }
-    });
-});
+function displayJSON (addons) {
+  cli.log(JSON.stringify(addons, null, 2));
+}
+
+function* run (ctx, api) {
+  if(!ctx.flags.all && ctx.app) {
+    let addons = yield co(addonGetter(api, ctx.app));
+    if (ctx.flags.json) displayJSON(addons);
+    else displayForApp(ctx.app, addons);
+  } else {
+    let addons = yield co(addonGetter(api));
+    if (ctx.flags.json) displayJSON(addons);
+    else displayAll(addons);
+  }
+}
 
 let topic = '_addons';
 module.exports = {
@@ -233,16 +239,23 @@ module.exports = {
     preauth:   true,
     wantsApp:  true,
     // args:      [{name: 'addon', optional: true}],
-    flags:     [{
+    flags:     [
+      {
         name:        'all',
         char:        'A',
         hasValue:    false,
-        description: 'Show add-ons and attachments for all accessible apps'
-    }],
+        description: 'show add-ons and attachments for all accessible apps'
+      },
+      {
+        name:        'json',
+        hasValue:    false,
+        description: 'return add-ons in json format'
+      }
+    ],
 
-    run:         run,
+    run:         cli.command(co.wrap(run)),
     usage:       `${topic} [--all|--app APP]`,
-    description: 'Lists your add-ons and attachments',
+    description: 'lists your add-ons and attachments',
     help:        `The default filter applied depends on whether you are in a Heroku app
 directory. If so, the --app flag is implied. If not, the default of --all
 is implied. Explicitly providing either flag overrides the default

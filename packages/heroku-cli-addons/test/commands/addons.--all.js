@@ -44,6 +44,15 @@ describe('addons --all', function() {
                 expect(cli.stdout.indexOf('www-db')).to.be.lt(cli.stdout.indexOf('www-redis'));
             });
         });
+
+      context('--json', function () {
+          it('prints the output in json format', function () {
+              return cmd.run({flags: {json: true}})
+              .then(function() {
+                  expect(JSON.parse(cli.stdout)[0].name).to.eq('www-db');
+              });
+          });
+       });
     });
 
     it('prints message when there are no add-ons', function() {
