@@ -93,6 +93,18 @@ func (commands CommandSet) loadFullHelp() {
 	}
 }
 
+func (commands CommandSet) Len() int {
+	return len(commands)
+}
+
+func (commands CommandSet) Less(i, j int) bool {
+	return commands[i].Command < commands[j].Command
+}
+
+func (commands CommandSet) Swap(i, j int) {
+	commands[i], commands[j] = commands[j], commands[i]
+}
+
 // Arg defines an argument for a command.
 // These will be parsed in Go and passed to the Run method in the Context struct.
 type Arg struct {
