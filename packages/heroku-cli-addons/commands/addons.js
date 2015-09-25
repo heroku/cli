@@ -231,7 +231,7 @@ function* run (ctx, api) {
   }
 }
 
-let topic = '_addons';
+let topic = 'addons';
 module.exports = {
     topic:     topic,
     default:   true,

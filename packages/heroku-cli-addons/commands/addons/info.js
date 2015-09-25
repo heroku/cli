@@ -35,7 +35,7 @@ let run = cli.command(function(ctx, api) {
     });
 });
 
-let topic = '_addons';
+let topic = 'addons';
 module.exports = {
     topic:       topic,
     command:     'info',

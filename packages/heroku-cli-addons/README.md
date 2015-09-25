@@ -4,13 +4,10 @@ This re-implements the `heroku addons [--app APP|--all]` command in Node with a
 new UX which aims to make the concepts clearer and the relationships between
 them more accessible.
 
-> Note: the commands are in the `_addons` namespace to avoid conflicting with
-> the regular `addons` namespace until completed.
-
 Example output:
 
 ``` sh-session
-$ heroku _addons -a addons-reports
+$ heroku addons -a addons-reports
 Add-on                              Plan                              Price
 ──────────────────────────────────  ────────────────────────────────  ───────────────────────────
 flowing-tidily-5466                 heroku-postgresql:kappa           (billed to addons app)

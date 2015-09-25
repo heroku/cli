@@ -1,7 +1,7 @@
 'use strict';
 
 exports.topic = {
-    name: '_addons',
+    name: 'addons',
     description: 'manage add-ons',
 };
 
