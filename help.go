@@ -1,9 +1,6 @@
 package main
 
-import (
-	"os"
-	"strings"
-)
+import "os"
 
 func help() {
 	var cmd string
@@ -51,7 +48,7 @@ func printTopicCommandsHelp(topic *Topic) {
 
 func printCommandHelp(command *Command) {
 	Printf("Usage: heroku %s\n\n", command.Usage)
-	Println(indent(command.buildFullHelp()))
+	Println(command.buildFullHelp())
 }
 
 func nonHiddenTopics(from []*Topic) []*Topic {
@@ -72,8 +69,4 @@ func nonHiddenCommands(from []*Command) []*Command {
 		}
 	}
 	return to
-}
-
-func indent(s string) string {
-	return " " + strings.Join(strings.Split(s, "\n"), "\n ")
 }
