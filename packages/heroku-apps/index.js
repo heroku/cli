@@ -11,6 +11,7 @@ exports.commands = [
   require('./commands/maintenance/index'),
   require('./commands/maintenance/off'),
   require('./commands/maintenance/on'),
+  require('./commands/ps'),
   require('./commands/stack'),
   require('./commands/stack/set'),
 ];
