@@ -31,33 +31,33 @@ var BuiltinPlugins = []string{
 }
 
 func init() {
-	cli.Topics = []*Topic{
-		commandsTopic,
-		versionTopic,
-		pluginsTopic,
-		updateTopic,
+	cli.Topics = TopicSet{
 		authTopic,
+		commandsTopic,
+		loginTopic,
+		pluginsTopic,
 		twoFactorTopic,
 		twoFactorTopicAlias,
-		loginTopic,
+		updateTopic,
+		versionTopic,
 	}
-	cli.Commands = []*Command{
-		commandsListCmd,
-		versionCmd,
-		updateCmd,
-		pluginsListCmd,
-		pluginsLinkCmd,
-		pluginsInstallCmd,
-		pluginsUninstallCmd,
-		whoamiCmd,
-		loginCmd,
+	cli.Commands = CommandSet{
 		authLoginCmd,
+		commandsListCmd,
+		loginCmd,
+		pluginsInstallCmd,
+		pluginsLinkCmd,
+		pluginsListCmd,
+		pluginsUninstallCmd,
 		twoFactorCmd,
 		twoFactorCmdAlias,
 		twoFactorDisableCmd,
 		twoFactorDisableCmdAlias,
 		twoFactorGenerateCmd,
 		twoFactorGenerateCmdAlias,
+		updateCmd,
+		versionCmd,
+		whoamiCmd,
 	}
 	rollbar.Platform = "client"
 	rollbar.Token = "b40226d5e8a743cf963ca320f7be17bd"

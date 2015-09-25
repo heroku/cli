@@ -54,8 +54,8 @@ func printCommandHelp(command *Command) {
 	Println(indent(command.buildFullHelp()))
 }
 
-func nonHiddenTopics(from []*Topic) []*Topic {
-	to := make([]*Topic, 0, len(from))
+func nonHiddenTopics(from TopicSet) TopicSet {
+	to := make(TopicSet, 0, len(from))
 	for _, topic := range from {
 		if !topic.Hidden {
 			to = append(to, topic)

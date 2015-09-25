@@ -10,6 +10,7 @@ import (
 	"os/signal"
 	"path/filepath"
 	"runtime"
+	"sort"
 	"strconv"
 	"strings"
 	"syscall"
@@ -61,6 +62,8 @@ func (cli *Cli) LoadPlugins(plugins []Plugin) {
 			}
 		}
 	}
+	sort.Sort(cli.Topics)
+	sort.Sort(cli.Commands)
 }
 
 var pluginsTopic = &Topic{
