@@ -6,8 +6,8 @@ let disambiguate = require('../../lib/disambiguate');
 module.exports = {
   topic: 'pipelines',
   command: 'info',
-  description: 'show detailed pipeline info',
-  help: 'show detailed pipeline info',
+  description: 'show list of apps in a pipeline',
+  help: 'List apps in a pipeline.\n\n  Example:\n  $ heroku pipelines:info example\n  === example\n  Staging:     example-staging\n  Production:  example\n               example-admin',
   needsAuth: true,
   args: [
     {name: 'pipeline', description: 'pipeline to show', optional: false}

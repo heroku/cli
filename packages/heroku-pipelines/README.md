@@ -43,7 +43,7 @@ $ git remote rename heroku staging
 $ heroku pipelines:add example -a example-admin -s production
 Adding example-admin to example pipeline as production... done
 
-$ h pipelines:add -a example-staging example
+$ heroku pipelines:add -a example-staging example
 ? Stage of example-staging: staging
 Adding example-staging to example pipeline as staging... done
 ```
@@ -90,21 +90,6 @@ Changing example-admin to staging... done
 $ heroku pipelines:remove -a example-admin
 Removing example-admin... done
 ```
-
-#### Rename pipeline
-
-```bash
-$ heroku pipelines:rename example www
-Renaming example pipeline to www... done
-```
-
-#### Destroy pipeline
-
-```bash
-$ heroku pipelines:destroy www
-Destroying www pipeline... done
-```
-
 #### Open a pipeline in Dashboard
 
 ```bash

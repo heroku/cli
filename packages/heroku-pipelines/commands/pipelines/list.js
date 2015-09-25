@@ -6,8 +6,8 @@ module.exports = {
   topic: 'pipelines',
   command: 'list',
   description: 'list pipelines',
+  help: 'List pipelines you have access to.\n\n  Example:\n  $ heroku pipelines:list\n  example\n  sushi',
   default: true,
-  help: 'list pipelines you have access to',
   needsAuth: true,
   run: cli.command(function* (context, heroku) {
     let pipelines = yield heroku.request({
