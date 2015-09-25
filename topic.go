@@ -45,3 +45,15 @@ func (t *Topic) Merge(other *Topic) {
 		t.Description = other.Description
 	}
 }
+
+func (t TopicSet) Len() int {
+	return len(t)
+}
+
+func (t TopicSet) Less(i, j int) bool {
+	return t[i].Name < t[j].Name
+}
+
+func (t TopicSet) Swap(i, j int) {
+	t[i], t[j] = t[j], t[i]
+}
