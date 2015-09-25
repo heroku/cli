@@ -99,7 +99,7 @@ func parseVarArgs(command *Command, args []string) (result []string, flags map[s
 		switch {
 		case parseFlags && (args[i] == "--"):
 			parseFlags = false
-		case parseFlags && (args[i] == "help" || args[i] == "--help" || args[i] == "-h"):
+		case parseFlags && (args[i] == "--help" || args[i] == "-h"):
 			return nil, nil, "", ErrHelp
 		case parseFlags && (args[i] == "--no-color"):
 			continue
