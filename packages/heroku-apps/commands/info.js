@@ -92,7 +92,8 @@ function* run (context, heroku) {
 let cmd = {
   topic: 'apps',
   command: 'info',
-  description: `show detailed app information
+  description: 'show detailed app information',
+  help: `show detailed app information
 
 Examples:
 
