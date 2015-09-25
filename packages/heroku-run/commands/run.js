@@ -122,7 +122,8 @@ module.exports = {
   topic: 'run',
   description: 'run a one-off process inside a heroku dyno',
   help: `run a one-off process inside a Heroku dyno
-Example:
+
+Examples:
 
   $ heroku run bash
   Running bash on app... up, run.1
