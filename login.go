@@ -75,9 +75,7 @@ func getString(prompt string) string {
 
 func getPassword() string {
 	password, err := speakeasy.Ask("Password (typing will be hidden): ")
-	if err != nil {
-		PrintError(err)
-	}
+	ExitIfError(err)
 	return password
 }
 
