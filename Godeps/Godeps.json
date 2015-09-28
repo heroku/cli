@@ -12,12 +12,12 @@
 			"Rev": "3acf1b3de25d89c7688c63bb45f6b07f566555ec"
 		},
 		{
-			"ImportPath": "github.com/franela/goreq",
-			"Rev": "72c51a544272e007ab3da4f7d9ac959b7af7af03"
+			"ImportPath": "github.com/dickeyxxx/speakeasy",
+			"Rev": "7a13a299270d38d736b2b218d68081374e33f608"
 		},
 		{
-			"ImportPath": "github.com/howeyc/gopass",
-			"Rev": "10b54de414cc9693221d5ff2ae14fd2fbf1b0ac1"
+			"ImportPath": "github.com/franela/goreq",
+			"Rev": "72c51a544272e007ab3da4f7d9ac959b7af7af03"
 		},
 		{
 			"ImportPath": "github.com/jtolds/gls",
@@ -40,7 +40,7 @@
 		},
 		{
 			"ImportPath": "golang.org/x/crypto/ssh/terminal",
-			"Rev": "e74b0352e547e3830f8471e7ae9609239c52606f"
+			"Rev": "59435533c88bd0b1254c738244da1fe96b59d05d"
 		}
 	]
 }
