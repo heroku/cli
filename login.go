@@ -7,7 +7,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/howeyc/gopass"
+	"github.com/dickeyxxx/speakeasy"
 )
 
 var loginTopic = &Topic{
@@ -74,8 +74,9 @@ func getString(prompt string) string {
 }
 
 func getPassword() string {
-	Err("Password (typing will be hidden): ")
-	return string(gopass.GetPasswd())
+	password, err := speakeasy.Ask("Password (typing will be hidden): ")
+	ExitIfError(err)
+	return password
 }
 
 func v2login(email, password, secondFactor string) (string, error) {
