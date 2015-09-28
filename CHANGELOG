@@ -1,3 +1,7 @@
+4.24.2  2015-09-28
+==================
+Switch to gopass
+
 4.24.1  2015-09-28
 ==================
 Exit if error reading password
