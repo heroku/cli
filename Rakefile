@@ -27,9 +27,10 @@ REVISION=`git log -n 1 --pretty=format:"%H"`
 
 desc "build heroku-cli"
 task :build do
-  puts "building #{LABEL}..."
+  puts "Building #{LABEL}..."
   FileUtils.mkdir_p 'dist'
-  TARGETS.map do |target|
+  TARGETS.each do |target|
+    puts "  * #{target[:os]}-#{target[:arch]}"
     build(target)
   end
 end
@@ -38,9 +39,10 @@ desc "release heroku-cli"
 task :release => :build do
   abort 'branch is dirty' if CHANNEL == 'dirty'
   abort "#{CHANNEL} not a channel branch (dev/master)" unless %w(dev master).include?(CHANNEL)
-  puts "releasing #{LABEL}..."
+  puts "Releasing #{LABEL}..."
   cache_control = "public,max-age=31536000"
-  TARGETS.map do |target|
+  TARGETS.each do |target|
+    puts "  * #{target[:os]}-#{target[:arch]}"
     from = "./dist/#{target[:os]}/#{target[:arch]}/heroku-cli"
     to = remote_path(target[:os], target[:arch])
     upload_file(from, to, content_type: 'binary/octet-stream', cache_control: cache_control)
@@ -49,11 +51,10 @@ task :release => :build do
   end
   upload_manifest()
   notify_rollbar
-  puts "released #{VERSION}"
+  puts "Released #{VERSION}"
 end
 
 def build(target)
-  puts "Building #{target[:os]}-#{target[:arch]}"
   path = "./dist/#{target[:os]}/#{target[:arch]}/heroku-cli"
   ldflags = "-X=main.Version=#{VERSION} -X=main.Channel=#{CHANNEL}"
   args = "-o #{path} -ldflags \"#{ldflags}\""
@@ -116,7 +117,7 @@ def upload(body, remote, opts={})
   }.merge(opts))
 end
 
-def upload_manifest()
+def upload_manifest
   puts 'uploading manifest...'
   upload(JSON.dump(manifest), "#{CHANNEL}/manifest.json", content_type: 'application/json', cache_control: "public,max-age=60")
 end
