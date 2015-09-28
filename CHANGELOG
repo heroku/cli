@@ -1,3 +1,10 @@
+4.24.0  2015-09-28
+==================
+Move windows dir to LOCALAPPDIR
+Disable help from 'help' argument (handled in v3)
+Sort topics/commands by name
+Fix help indentation
+
 4.23.7  2015-09-24
 ==================
 Updated node to 4.1.1
