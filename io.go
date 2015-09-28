@@ -20,7 +20,7 @@ var Stdout io.Writer
 var Stderr io.Writer
 
 // ErrLogPath is the location of the error log
-var ErrLogPath = filepath.Join(AppDir, "error.log")
+var ErrLogPath = filepath.Join(AppDir(), "error.log")
 var errLogger = newLogger(ErrLogPath)
 var exitFn = os.Exit
 var debugging = isDebugging()
