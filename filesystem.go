@@ -13,7 +13,7 @@ var HomeDir = homeDir()
 // AppDir is the .heroku path
 func AppDir() string {
 	if runtime.GOOS == "windows" {
-		dir := os.Getenv("LOCALAPPDIR")
+		dir := os.Getenv("LOCALAPPDATA")
 		if dir != "" {
 			return filepath.Join(dir, "heroku")
 		}
