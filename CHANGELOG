@@ -1,3 +1,7 @@
+4.24.3  2015-09-28
+==================
+Switch back to speakeasy (no openbsd support)
+
 4.24.2  2015-09-28
 ==================
 Switch to gopass
