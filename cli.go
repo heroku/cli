@@ -54,7 +54,7 @@ func (cli *Cli) Run(args []string) (err error) {
 		ctx.Auth.Password = ctx.APIToken
 	}
 	ctx.Cwd, _ = os.Getwd()
-	ctx.HerokuDir = AppDir
+	ctx.HerokuDir = AppDir()
 	ctx.Debug = debugging
 	ctx.Version = version()
 	ctx.SupportsColor = supportsColor()
