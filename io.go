@@ -128,10 +128,17 @@ func Warn(msg string) {
 
 // Error shows a message with excalamation points prepended to stderr
 func Error(msg string) {
-	bang := red(" ▸    ")
+	bang := red(" " + errorArrow() + "    ")
 	msg = strings.TrimSpace(msg)
 	msg = strings.Join(strings.Split(msg, "\n"), "\n"+bang)
 	Errln(bang + msg)
+}
+
+func errorArrow() string {
+	if windows() {
+		return "!"
+	}
+	return "▸"
 }
 
 // ExitIfError calls PrintError and exits if e is not null
