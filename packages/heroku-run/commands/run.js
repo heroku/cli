@@ -23,8 +23,15 @@ function buildCommand(args) {
   return cmd.trim();
 }
 
-function env () {
+function env (flag) {
   let c = {TERM: process.env.TERM};
+  if (flag) {
+    for (let v of flag.split(';')) {
+      let m = v.match(/^\s*([\w\.\-]+)\s*=\s*(.*)?\s*$/);
+      if (m) c[m[1]] = m[2];
+      else cli.warn(`env flag ${v} appears invalid. Avoid using ';' in values.`);
+    }
+  }
   if (tty.isatty(1)) {
     c.COLUMNS = process.stdout.columns;
     c.LINES   = process.stdout.rows;
@@ -32,12 +39,12 @@ function env () {
   return c;
 }
 
-function startDyno(heroku, app, size, command) {
+function startDyno(heroku, app, size, command, envFlag) {
   return heroku.apps(app).dynos().create({
     command:  command,
     attach:   true,
     size:     size,
-    env:      env(),
+    env:      env(envFlag),
   });
 }
 
@@ -109,7 +116,7 @@ function* run (context, heroku) {
     process.exit(1);
   }
   let sh = context.flags['exit-code'] ? `${command}; echo heroku-command-exit-status $?` : command;
-  let p = startDyno(heroku, context.app, context.flags.size, sh);
+  let p = startDyno(heroku, context.app, context.flags.size, sh, context.flags.env);
   let dyno = yield cli.action(`Running ${cli.color.cyan.bold(command)} on ${context.app}`, {success: false}, p);
   console.error(`up, ${dyno.name}`);
   attachToRendezvous(url.parse(dyno.attach_url), {
@@ -138,6 +145,7 @@ Examples:
   flags: [
     {name: 'size', char: 's', description: 'dyno size', hasValue: true},
     {name: 'exit-code', description: 'passthrough the exit code of the remote command'},
+    {name: 'env', description: "environment variables to set (use ';' to split multiple vars)", hasValue: true},
   ],
   run: cli.command(co.wrap(run))
 };
