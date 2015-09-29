@@ -128,8 +128,7 @@ function* run (context, heroku) {
 module.exports = {
   topic: 'run',
   description: 'run a one-off process inside a heroku dyno',
-  help: `run a one-off process inside a Heroku dyno
-
+  help: `
 Examples:
 
   $ heroku run bash
