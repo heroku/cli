@@ -421,6 +421,8 @@ func SetupBuiltinPlugins() {
 		PrintError(err)
 		return
 	}
+	ClearPluginCache()
+	WritePluginCache(GetPlugins())
 	Errln(" done")
 }
 
