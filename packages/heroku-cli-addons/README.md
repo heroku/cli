@@ -1,4 +1,4 @@
-# heroku-cli-addons [![Build Status](https://magnum.travis-ci.com/heroku/heroku-cli-addons.svg?token=pQdifXgTsrqE4ysvJdYD&branch=master)](https://magnum.travis-ci.com/heroku/heroku-cli-addons)
+# heroku-cli-addons [![Build Status](https://travis-ci.org/heroku/heroku-cli-addons.svg?branch=master)](https://travis-ci.org/heroku/heroku-cli-addons)
 
 This re-implements the `heroku addons [--app APP|--all]` command in Node with a
 new UX which aims to make the concepts clearer and the relationships between
