@@ -1,4 +1,4 @@
-4.24.6  2015-09-30
+4.25.0  2015-09-30
 ==================
 Added message when failed to read password
 Fixed updates in LOCALAPPDATA directory on windows
