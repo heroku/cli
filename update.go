@@ -112,10 +112,6 @@ func updateCLI(channel string) {
 	if manifest.Version == Version && manifest.Channel == Channel {
 		return
 	}
-	if !updatable() {
-		Errf("Out of date: You are running %s but %s is out\n", Version, manifest.Version)
-		return
-	}
 	LogIfError(golock.Lock(updateLockPath))
 	defer golock.Unlock(updateLockPath)
 	Errf("Updating Heroku v4 CLI to %s (%s)... ", manifest.Version, manifest.Channel)
@@ -179,14 +175,6 @@ func getUpdateManifest(channel string) (*manifest, error) {
 	var m manifest
 	res.Body.FromJsonTo(&m)
 	return &m, nil
-}
-
-func updatable() bool {
-	path, err := filepath.Abs(os.Args[0])
-	if err != nil {
-		Errln(err)
-	}
-	return path == binPath
 }
 
 func downloadBin(path, url string) error {
