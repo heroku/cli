@@ -122,7 +122,7 @@ func parseVarArgs(command *Command, args []string) (result []string, flags map[s
 			case flag == appFlag:
 				appName = val
 			case flag == remoteFlag:
-				appName, err = appFromGitRemote(args[i])
+				appName, err = appFromGitRemote(val)
 				if err != nil {
 					return nil, nil, "", err
 				}
