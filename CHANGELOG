@@ -1,3 +1,7 @@
+4.25.1  2015-09-30
+==================
+Fixed arg parsing for --remote=foo with equals sign
+
 4.25.0  2015-09-30
 ==================
 Added message when failed to read password
