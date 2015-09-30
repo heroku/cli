@@ -42,7 +42,7 @@ Forego.prototype = {
   },
 
   ensureSetup: function () {
-    if (!target) { console.error(`No forego binaries are available for ${process.arch} ${process.platform}.`); process.exit(1); }
+    if (!target) { console.error(`No forego binaries are available for ${process.arch} ${process.platform}.\nYou can alternatively use forego by compiling it yourself. https://github.com/ddollar/forego`); process.exit(1); }
 
     let forego = this;
     return new Promise(function (fulfill, reject) {
