@@ -75,7 +75,16 @@ func getString(prompt string) string {
 
 func getPassword() string {
 	password, err := speakeasy.Ask("Password (typing will be hidden): ")
-	ExitIfError(err)
+	if err != nil {
+		if err.Error() == "The handle is invalid." {
+			Errln(`Login is currently incompatible with git bash/cygwin
+In the meantime, login via cmd.exe
+https://github.com/heroku/heroku-cli/issues/84`)
+			Exit(1)
+		} else {
+			ExitIfError(err)
+		}
+	}
 	return password
 }
 
