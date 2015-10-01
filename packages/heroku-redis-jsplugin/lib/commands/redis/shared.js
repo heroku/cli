@@ -7,14 +7,16 @@ const PATH  = '/redis/v0/databases';
 const ADDON = process.env.HEROKU_REDIS_ADDON_NAME || 'heroku-redis';
 
 function request(context, path, method, body) {
+  let headers = { 'Accept': 'application/json' };
+  if (process.env.HEROKU_HEADERS) {
+    cli.extend(headers, JSON.parse(process.env.HEROKU_HEADERS));
+  }
   return Heroku.request( {
     method: method || 'GET',
     path: `${PATH}/${path}`,
     host: HOST,
     auth: `${context.auth.username}:${context.auth.password}`,
-    headers: cli.extend({
-      'Accept': 'application/json'
-    }, JSON.parse(process.env.HEROKU_HEADERS)),
+    headers: headers,
     body: body
   });
 }
