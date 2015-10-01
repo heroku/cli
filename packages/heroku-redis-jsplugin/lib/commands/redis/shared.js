@@ -27,8 +27,8 @@ function make_addons_filter(filter) {
   }
 
   function matches(addon) {
-    for (var i = 0; i < addon.config_vars.length; i++) {
-      var cfg_name = addon.config_vars[i].toUpperCase();
+    for (let i = 0; i < addon.config_vars.length; i++) {
+      let cfg_name = addon.config_vars[i].toUpperCase();
       if (cfg_name.indexOf(filter) >= 0) {
         return true;
       }
@@ -40,10 +40,10 @@ function make_addons_filter(filter) {
   }
 
   function on_response(addons) {
-    var redis_addons = [];
-    for (var i = 0; i < addons.length; i++) {
-      var addon = addons[i];
-      var service = addon.addon_service.name;
+    let redis_addons = [];
+    for (let i = 0; i < addons.length; i++) {
+      let addon = addons[i];
+      let service = addon.addon_service.name;
 
       if (service.indexOf(ADDON) === 0 && (!filter || matches(addon))) {
         redis_addons.push(addon);
@@ -61,11 +61,11 @@ function make_config_var_filter(filter) {
   }
 
   function on_response(config_vars) {
-    var servers = [];
+    let servers = [];
 
-    for (var name in config_vars) {
+    for (let name in config_vars) {
       if (config_vars.hasOwnProperty(name)) {
-        var url = config_vars[name];
+        let url = config_vars[name];
         if ((url.indexOf('redis:') === 0) && (!filter || name.indexOf(filter) >= 0)) {
           servers.push({url: url, name: name});
         }
