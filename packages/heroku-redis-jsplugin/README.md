@@ -12,4 +12,4 @@ heroku plugins:install heroku-redis
 
 ## Usage
 
-CLI commands are described in the Heroku Redis devcenter article.
+CLI commands are described in the [Heroku Redis devcenter article](https://devcenter.heroku.com/articles/heroku-redis#using-the-cli).
