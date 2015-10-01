@@ -1,1 +1,15 @@
 # heroku-redis-jsplugin
+
+An Heroku CLI plugin for managing Heroku Redis instances.
+
+## Installation
+
+Use ``plugins:install`` to install it:
+
+```console
+heroku plugins:install heroku-redis
+```
+
+## Usage
+
+CLI commands are described in the Heroku Redis devcenter article.
