@@ -1,5 +1,6 @@
 'use strict';
-var Heroku = require('heroku-client');
+let Heroku = require('heroku-client');
+let cli = require('heroku-cli-util');
 
 const HOST  = process.env.HEROKU_REDIS_HOST || 'redis-api.heroku.com' ;
 const PATH  = '/redis/v0/databases';
@@ -11,9 +12,9 @@ function request(context, path, method, body) {
     path: `${PATH}/${path}`,
     host: HOST,
     auth: `${context.auth.username}:${context.auth.password}`,
-    headers: {
+    headers: cli.extend({
       'Accept': 'application/json'
-    },
+    }, JSON.parse(process.env.HEROKU_HEADERS)),
     body: body
   });
 }
