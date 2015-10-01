@@ -3,6 +3,7 @@ package gode
 import (
 	"fmt"
 	"io/ioutil"
+	"os"
 	"os/exec"
 	"path/filepath"
 )
@@ -34,4 +35,9 @@ func DebugScript(script string) *exec.Cmd {
 	cmd := exec.Command(path, "debug.js")
 	cmd.Dir = rootPath
 	return cmd
+}
+
+// ClearCache clears the npm cache
+func ClearCache() {
+	os.RemoveAll(cachePath())
 }

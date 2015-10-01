@@ -107,7 +107,7 @@ func execNpm(args ...string) (string, string, error) {
 func environ() []string {
 	env := append(os.Environ(), "NPM_CONFIG_SPIN=false")
 	env = append(env, "NPM_CONFIG_AUTO_AUTH=false")
-	env = append(env, "NPM_CONFIG_CACHE="+filepath.Join(rootPath, ".npm-cache"))
+	env = append(env, "NPM_CONFIG_CACHE="+cachePath())
 	env = append(env, "NPM_CONFIG_REGISTRY="+registry)
 	return env
 }

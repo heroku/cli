@@ -61,3 +61,7 @@ func nodePathFromBase(base string) string {
 func npmPathFromBase(base string) string {
 	return filepath.Join(base, "lib", "node_modules", "npm", "cli.js")
 }
+
+func cachePath() string {
+	return filepath.Join(rootPath, ".npm-cache")
+}
