@@ -146,6 +146,7 @@ module.exports = {
   needsAuth: true,
   description: 'opens a redis prompt',
   args: [{name: 'database', optional: true}],
+  flags: [{name: 'confirm', char: 'c', hasValue: true}],
   run: cli.command({preauth: true}, function* (context, heroku) {
     let addonsFilter = api.make_addons_filter(context.args.database);
     let addonsList = heroku.apps(context.app).addons().listByApp();
@@ -163,6 +164,11 @@ module.exports = {
 
     let addon = addons[0];
     let redis = yield api.request(context, addon.name);
+    let hobby = redis.plan.indexOf('hobby') == 0;
+
+    if (hobby) {
+      yield cli.confirmApp(context.app, context.flags.confirm, 'WARNING: Insecure action.\nAll data, including the Redis password, will not be encrypted.');
+    }
 
     let vars = {};
     addon.config_vars.forEach(function (key) { vars[key] = config[key]; });
