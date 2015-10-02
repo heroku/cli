@@ -6,7 +6,7 @@
   "author": "Heroku",
   "repository": {
     "type": "git",
-    "url": "https://github.com/heroku-redis-jsplugin/heroku-redis"
+    "url": "https://github.com/heroku/heroku-redis-jsplugin"
   },
   "bugs": {
     "url": "https://github.com/heroku/heroku-redis-jsplugin/issues"
