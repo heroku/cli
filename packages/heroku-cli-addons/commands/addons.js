@@ -238,7 +238,6 @@ module.exports = {
     needsAuth: true,
     preauth:   true,
     wantsApp:  true,
-    // args:      [{name: 'addon', optional: true}],
     flags:     [
       {
         name:        'all',
@@ -259,32 +258,74 @@ module.exports = {
     help:        `The default filter applied depends on whether you are in a Heroku app
 directory. If so, the --app flag is implied. If not, the default of --all
 is implied. Explicitly providing either flag overrides the default
-behaviour.
+behavior.
 
 Examples:
 
   $ heroku ${topic} --all
-  $ heroku ${topic} --app acme-inc-website
+  $ heroku ${topic} --app acme-inc-www
 
-Identifying specific add-ons:
+Overview of Add-ons:
 
-  Add-ons have canonical names (ADDON_NAME in these command help texts).
-  They also application-specific names called aliases or attachments. In
-  many cases, these names can be used interchangeably when unambiguous.
+  Add-ons are created with the \`addons:create\` command, providing a reference
+  to an add-on service (such as \`heroku-postgresql\`) or a service and plan
+  (such as \`heroku-postgresql:hobby-dev\`).
 
-  For example, given a fictional \`slowdb\` add-on named \`slowdb-cubed-1531\`
-  attached as \`FOO_DB\` to \`app1\` and BAR_DB to \`app2\`, the following
-  invocations are considered equivalent:
+  At creation, each add-on is given a globally unique name. In addition, each
+  add-on has at least one attachment alias to each application which uses the
+  add-on. In all cases, the owning application will be attached to the add-on.
+  An attachment alias is unique to its application, and is used as a prefix to
+  any environment variables it exports to the application.
 
-  $ heroku addons:upgrade slowdb             slowdb:premium
-  $ heroku addons:upgrade --app app1 FOO_DB  slowdb:premium
-  $ heroku addons:upgrade app1::FOO_DB       slowdb:premium
-  $ heroku addons:upgrade app2::BAR_DB       slowdb:premium
-  $ heroku addons:upgrade acme-inc-datastore slowdb:premium
+  In this example, a \`heroku-postgresql\` add-on is created and its given name
+  is \`postgresql-deep-6913\` with a default attachment alias of \`DATABASE\`:
 
-  If the name used is ambiguous (e.g. if you used \`slowdb\` with more than
-  one add-on of that type installed), the command will error due to
-  ambiguity and a more specific identifier will need to be chosen.
+    $ heroku addons:create heroku-postgresql --app my-app
+    Creating postgresql-deep-6913... done, (free)
+    Adding postgresql-deep-6913 to my-app... done
+    Setting DATABASE_URL and restarting my-app... done, v5
+    Database has been created and is available
+
+    $ heroku addons --app my-app
+    Add-on                                     Plan       Price
+    ─────────────────────────────────────────  ─────────  ─────
+    heroku-postgresql (postgresql-deep-6913)   hobby-dev  free
+    └─ as DATABASE
+
+  The add-on name and, in some cases, the attachment alias can be specified by
+  the user. For instance, we can add a second database to the app, specifying
+  both these identifiers:
+
+    $ heroku addons:create heroku-postgresql --app my-app --name main-db --as PRIMARY_DB
+    Creating main-db... done, (free)
+    Adding main-db to my-app... done
+    Setting PRIMARY_DB_URL and restarting my-app... done, v6
+    Database has been created and is available
+
+    $ heroku addons --app my-app
+    Add-on                                     Plan       Price
+    ─────────────────────────────────────────  ─────────  ─────
+    heroku-postgresql (main-db)                hobby-dev  free
+    └─ as PRIMARY_DB
+
+    heroku-postgresql (postgresql-deep-6913)   hobby-dev  free
+    └─ as DATABASE
+
+  Attachment aliases can also be specified when making attachments:
+
+    $ heroku addons:attach main-db --app my-app --as ANOTHER_NAME
+    Attaching main-db as ANOTHER_NAME to my-app... done
+    Setting ANOTHER_NAME vars and restarting my-app... done, v7
+
+    $ heroku addons --app my-app
+    Add-on                                     Plan       Price
+    ─────────────────────────────────────────  ─────────  ─────
+    heroku-postgresql (main-db)                hobby-dev  free
+    ├─ as PRIMARY_DB
+    └─ as ANOTHER_NAME
+
+    heroku-postgresql (postgresql-deep-6913)   hobby-dev  free
+    └─ as DATABASE
 
   For more information, read https://devcenter.heroku.com/articles/add-ons.`
 };
