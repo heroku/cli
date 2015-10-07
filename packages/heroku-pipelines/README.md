@@ -90,6 +90,21 @@ Changing example-admin to staging... done
 $ heroku pipelines:remove -a example-admin
 Removing example-admin... done
 ```
+
+#### Rename pipeline
+
+```bash
+$ heroku pipelines:rename example www
+Renaming example pipeline to www... done
+```
+
+#### Destroy pipeline
+
+```bash
+$ heroku pipelines:destroy www
+Destroying www pipeline... done
+```
+
 #### Open a pipeline in Dashboard
 
 ```bash
@@ -99,8 +114,6 @@ Opening dashboard... done
 
 ### TODO
 
-* `heroku pipelines:destroy PIPELINE`
-* `heroku pipelines:rename PIPELINE NAME`
 * `heroku pipelines:diff [-a APP | -r REMOTE]`
 * `heorku pipelines:status [-a APP | -r REMOTE]`
 * `heroku pipelines:list` with repo
