@@ -19,7 +19,7 @@ function* run (context, heroku) {
 }
 
 module.exports = {
-  topic: '_stack',
+  topic: 'stack',
   command: 'set',
   needsApp: true,
   needsAuth: true,
