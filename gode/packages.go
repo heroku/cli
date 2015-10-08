@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -89,18 +88,17 @@ func execNpm(args ...string) (string, string, error) {
 	}
 	args = append([]string{npmPath}, args...)
 	if debugging() {
-		args = append(args, "--loglevel=silly")
+		args = append(args, "--loglevel="+os.Getenv("GODE_DEBUG"))
 	}
 	cmd := exec.Command(nodePath, args...)
 	cmd.Dir = rootPath
 	cmd.Env = environ()
 	var stdout, stderr bytes.Buffer
 	cmd.Stdout = &stdout
-	cmd.Stderr = &stderr
-	err = cmd.Run()
 	if debugging() {
-		fmt.Fprintln(os.Stderr, stderr.String())
+		cmd.Stderr = os.Stderr
 	}
+	err = cmd.Run()
 	return stdout.String(), stderr.String(), err
 }
 
@@ -114,5 +112,5 @@ func environ() []string {
 
 func debugging() bool {
 	e := os.Getenv("GODE_DEBUG")
-	return e == "1" || e == "true"
+	return e != "" && e != "0" && e != "false"
 }
