@@ -43,7 +43,7 @@ func updateNode() {
 	if gode.NeedsUpdate() {
 		Errf("Setting up node-v%s...", gode.Version)
 		PrintError(gode.Setup())
-		Errln("done")
+		Errln(" done")
 	}
 }
 
