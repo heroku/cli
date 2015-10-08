@@ -58,8 +58,8 @@ $ rm ~/.heroku/node_modules/heroku-cli-addons
 ## Developing
 
 ```sh-session
-$ npm install              # install all dependencies
-$ npm test                 # run the tests
-$ npm version --prerelease # bump the version number and push to git
-$ npm publish --tag pre    # publish latest pre-release on npm
+$ npm install                     # install all dependencies
+$ npm test                        # run the tests
+$ npm version <major|minor|patch> # bump the version number and push to git
+$ npm publish [--tag pre]         # publish latest on npm (optionally as pre-release)
 ```
