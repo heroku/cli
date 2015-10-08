@@ -73,8 +73,14 @@ Flow:        example-staging --> example, example-admin
 
 ```bash
 $ heroku pipelines:promote -r staging
-Promoting example-staging to example (production)... done, v23
-Promoting example-staging to example-admin (production)... done, v54
+Fetching app info... done
+Fetching apps from my-pipeline... done
+Starting promotion to production... done
+Waiting for promotion to complete... done
+
+Promotion successful
+My-App:    succeeded
+My-App-Eu: succeeded
 ```
 
 #### Update apps in a pipeline
