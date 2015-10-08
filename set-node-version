@@ -12,7 +12,7 @@ let knox   = require('knox').createClient({
 });
 
 const outputPath = '/./gode/constants.go';
-const version = '4.1.1';
+const version = '4.1.2';
 const npmVersion = '2.14.4';
 const urlBase = `https://nodejs.org/download/release/v${version}`;
 
