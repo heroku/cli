@@ -7,7 +7,6 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"strings"
 )
 
 // Package represents an npm package.
@@ -37,12 +36,9 @@ func Packages() ([]Package, error) {
 // InstallPackage installs an npm package.
 func InstallPackage(packages ...string) error {
 	args := append([]string{"install"}, packages...)
-	_, stderr, err := execNpm(args...)
+	_, _, err := execNpm(args...)
 	if err != nil {
-		if strings.Contains(stderr, "no such package available") {
-			return errors.New("no such package available")
-		}
-		return errors.New(stderr)
+		return errors.New("Error installing package. Try running again with GODE_DEBUG=info to see more output.")
 	}
 	return nil
 }

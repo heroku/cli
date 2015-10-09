@@ -97,17 +97,17 @@ func v2login(email, password, secondFactor string) (string, error) {
 	}
 	res, err := req.Do()
 	ExitIfError(err)
-	type Doc struct {
-		APIKey string `json:"api_key"`
-	}
-	var doc Doc
-	res.Body.FromJsonTo(&doc)
 	if res.StatusCode == 403 {
 		return v2login(email, password, getString("Two-factor code: "))
 	}
 	if res.StatusCode != 200 {
 		return "", errors.New("Authentication failure.")
 	}
+	type Doc struct {
+		APIKey string `json:"api_key"`
+	}
+	var doc Doc
+	ExitIfError(res.Body.FromJsonTo(&doc))
 	return doc.APIKey, nil
 }
 
