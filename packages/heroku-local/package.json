@@ -16,8 +16,7 @@
   ],
   "license": "ISC",
   "dependencies": {
-    "heroku-cli-util": "5.4.10",
-    "request": "2.63.0"
+    "heroku-cli-util": "5.4.10"
   },
   "devDependencies": {
     "jshint": "^2.8.0"
