@@ -12,8 +12,8 @@ let knox   = require('knox').createClient({
 });
 
 const outputPath = '/./gode/constants.go';
-const version = '4.1.2';
-const npmVersion = '2.14.4';
+const version = '4.2.0';
+const npmVersion = '2.14.7';
 const urlBase = `https://nodejs.org/download/release/v${version}`;
 
 let npmURL = `https://github.com/npm/npm/archive/v${npmVersion}.zip`;
