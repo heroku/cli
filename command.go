@@ -46,6 +46,9 @@ func (c *Command) buildFullHelp() string {
 		flags = append(flags, *appFlag, *remoteFlag)
 	}
 	lines := make([]string, 0, len(flags))
+	if c.Description != "" {
+		lines = append(lines, c.Description, "")
+	}
 	if len(flags) > 0 {
 		for _, flag := range flags {
 			if flag.Hidden {
@@ -58,9 +61,6 @@ func (c *Command) buildFullHelp() string {
 			}
 		}
 		lines = append(lines, "")
-	}
-	if c.Description != "" {
-		lines = append(lines, c.Description)
 	}
 	if c.Help != "" {
 		lines = append(lines, c.Help)
