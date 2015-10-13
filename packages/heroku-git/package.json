@@ -22,7 +22,7 @@
   "homepage": "https://github.com/heroku/heroku-git",
   "dependencies": {
     "co": "4.6.0",
-    "heroku-cli-util": "5.4.5"
+    "heroku-cli-util": "5.4.10"
   },
   "devDependencies": {
     "chai": "^3.0.0",
