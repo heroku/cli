@@ -92,13 +92,15 @@ function readData(c) {
 
 function attachToRendezvous(uri, opts) {
   let c = tls.connect(uri.port, uri.hostname, {rejectUnauthorized: opts.rejectUnauthorized});
+  c.setTimeout(1000*60*20);
   c.setEncoding('utf8');
   c.on('connect', function () {
     c.write(uri.path.substr(1) + '\r\n');
   });
   c.on('data', readData(c));
   c.on('timeout', function () {
-    cli.error('timed out');
+    cli.error('connection timed out');
+    process.exit(opts.exitCode);
   });
   c.on('end', function () {
     process.exit(opts.exitCode);
