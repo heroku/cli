@@ -45,21 +45,27 @@ func (c *Command) buildFullHelp() string {
 	if c.NeedsApp || c.WantsApp {
 		flags = append(flags, *appFlag, *remoteFlag)
 	}
-	if len(flags) == 0 {
-		return c.Help
-	}
 	lines := make([]string, 0, len(flags))
-	for _, flag := range flags {
-		if flag.Hidden {
-			continue
+	if len(flags) > 0 {
+		for _, flag := range flags {
+			if flag.Hidden {
+				continue
+			}
+			if flag.Description == "" {
+				lines = append(lines, flag.String())
+			} else {
+				lines = append(lines, fmt.Sprintf("%-20s # %s", flag.String(), flag.Description))
+			}
 		}
-		if flag.Description == "" {
-			lines = append(lines, flag.String())
-		} else {
-			lines = append(lines, fmt.Sprintf("%-20s # %s", flag.String(), flag.Description))
-		}
+		lines = append(lines, "")
 	}
-	return strings.Join(lines, "\n") + "\n\n" + c.Help
+	if c.Description != "" {
+		lines = append(lines, c.Description)
+	}
+	if c.Help != "" {
+		lines = append(lines, c.Help)
+	}
+	return strings.TrimSuffix(strings.Join(lines, "\n"), "\n")
 }
 
 // CommandSet is a slice of Command structs with some helper methods.
