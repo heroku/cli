@@ -15,8 +15,8 @@ function* run (context, heroku) {
     return {
       addons: heroku.apps(app).addons().listByApp(),
       app: heroku.request({path: appUrl}),
-      dynos: heroku.apps(app).dynos().list(),
-      collaborators: heroku.apps(app).collaborators().list()
+      dynos: heroku.apps(app).dynos().list().catch(() => []),
+      collaborators: heroku.apps(app).collaborators().list().catch(() => []),
     };
   }
 
