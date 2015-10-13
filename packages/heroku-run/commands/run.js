@@ -54,6 +54,14 @@ function readStdin(c) {
   if (tty.isatty(0)) {
     stdin.setRawMode(true);
     stdin.pipe(c);
+    let sigints = 0;
+    stdin.on('data', function (c) {
+      if (c === '\u0003') sigints++;
+      if (sigints >= 5) {
+        cli.error('forcing dyno disconnect');
+        process.exit(1);
+      }
+    });
   } else {
     stdin.pipe(new stream.Transform({
       objectMode: true,
