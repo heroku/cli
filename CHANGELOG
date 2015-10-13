@@ -1,3 +1,9 @@
+4.25.3  2015-10-10
+==================
+Update node to 4.2.1
+Help output tweaks
+Fix error handling with npm install errors
+
 4.25.2  2015-10-08
 ==================
 Updated node to 4.1.2
