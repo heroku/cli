@@ -27,6 +27,13 @@ function* run (context, heroku) {
 
 module.exports = {
   topic: 'stack',
+  description: 'show the list of available stacks',
+  help: `Example:
+
+   $ heroku stack
+   === example Available Stacks
+   cedar-10
+   * cedar-14`,
   needsApp: true,
   needsAuth: true,
   run: cli.command(co.wrap(run))
