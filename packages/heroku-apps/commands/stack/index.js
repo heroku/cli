@@ -12,7 +12,7 @@ function map (stack) {
 
 function* run (context, heroku) {
   let app = yield heroku.apps(context.app).info();
-  cli.header(`${app.name} Available Stacks`);
+  cli.styledHeader(`${app.name} Available Stacks`);
   let stacks = yield heroku.stacks().list();
   for (let stack of stacks) {
     if (stack.name === app.stack.name) {

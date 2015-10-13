@@ -1,7 +1,13 @@
-exports.topics = [{
-  name: 'apps',
-  description: 'manage apps'
-}];
+exports.topics = [
+  {
+    name: 'apps',
+    description: 'manage apps'
+  },
+  {
+    name: 'stack',
+    description: 'manage the stack for an app'
+  }
+];
 
 exports.commands = [
   require('./commands/info').apps,
