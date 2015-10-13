@@ -4,6 +4,7 @@ let h = require('heroku-cli-util');
 module.exports = {
   topic: 'maintenance',
   command: 'on',
+  description: 'put the app into maintenance mode',
   needsApp: true,
   needsAuth: true,
   run: h.command(function* (context, heroku) {

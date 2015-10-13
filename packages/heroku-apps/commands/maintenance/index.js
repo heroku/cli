@@ -3,6 +3,7 @@ let h = require('heroku-cli-util');
 
 module.exports = {
   topic: 'maintenance',
+  description: 'display the current maintenance status of app',
   needsApp: true,
   needsAuth: true,
   run: h.command(function* (context, heroku) {

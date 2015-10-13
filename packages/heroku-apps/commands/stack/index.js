@@ -30,10 +30,10 @@ module.exports = {
   description: 'show the list of available stacks',
   help: `Example:
 
-   $ heroku stack
-   === example Available Stacks
+ $ heroku stack
+ === example Available Stacks
    cedar-10
-   * cedar-14`,
+ * cedar-14`,
   needsApp: true,
   needsAuth: true,
   run: cli.command(co.wrap(run))
