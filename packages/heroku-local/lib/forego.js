@@ -12,6 +12,7 @@ let target = require('../download_info.json').filter(function (target) {
 })[0];
 
 function Forego(dir) {
+  if (!target) { console.error(`No forego binaries are available for ${process.arch} ${process.platform}.\nYou can alternatively use forego by compiling it yourself. https://github.com/ddollar/forego`); process.exit(1); }
   this.dir = dir;
   this.path = path.join(this.dir, target.filename);
 }
@@ -42,8 +43,6 @@ Forego.prototype = {
   },
 
   ensureSetup: function () {
-    if (!target) { console.error(`No forego binaries are available for ${process.arch} ${process.platform}.\nYou can alternatively use forego by compiling it yourself. https://github.com/ddollar/forego`); process.exit(1); }
-
     let forego = this;
     return new Promise(function (fulfill, reject) {
       fs.open(forego.path, 'r', function (err) {
