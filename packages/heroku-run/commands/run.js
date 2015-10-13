@@ -54,10 +54,11 @@ function readStdin(c) {
   if (tty.isatty(0)) {
     stdin.setRawMode(true);
     stdin.pipe(c);
-    let sigints = 0;
+    let sigints = [];
     stdin.on('data', function (c) {
-      if (c === '\u0003') sigints++;
-      if (sigints >= 5) {
+      if (c === '\u0003') sigints.push(new Date());
+      sigints = sigints.filter(d => d > new Date() - 1000);
+      if (sigints.length >= 3) {
         cli.error('forcing dyno disconnect');
         process.exit(1);
       }
@@ -106,10 +107,6 @@ function attachToRendezvous(uri, opts) {
     c.write(uri.path.substr(1) + '\r\n');
   });
   c.on('data', readData(c));
-  c.on('timeout', function () {
-    cli.error('connection timed out');
-    process.exit(opts.exitCode);
-  });
   c.on('end', function () {
     process.exit(opts.exitCode);
   });
