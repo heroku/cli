@@ -1,8 +1,4 @@
-exports.topics = [
-  {
-    name: 'git'
-  }
-];
+exports.topic = { name: 'git', description: 'manage local git repository for app'};
 
 exports.commands = [
   require('./commands/git/remote'),
