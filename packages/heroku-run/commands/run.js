@@ -58,7 +58,7 @@ function readStdin(c) {
     stdin.on('data', function (c) {
       if (c === '\u0003') sigints.push(new Date());
       sigints = sigints.filter(d => d > new Date() - 1000);
-      if (sigints.length >= 3) {
+      if (sigints.length >= 4) {
         cli.error('forcing dyno disconnect');
         process.exit(1);
       }
@@ -107,9 +107,7 @@ function attachToRendezvous(uri, opts) {
     c.write(uri.path.substr(1) + '\r\n');
   });
   c.on('data', readData(c));
-  c.on('end', function () {
-    process.exit(opts.exitCode);
-  });
+  c.on('close', () => process.exit(opts.exitCode));
   c.on('error', cli.errorHandler());
   process.once('SIGINT', function () {
     c.end();
