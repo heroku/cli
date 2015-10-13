@@ -26,7 +26,7 @@ function* run (context, heroku) {
 }
 
 module.exports = {
-  topic: '_stack',
+  topic: 'stack',
   needsApp: true,
   needsAuth: true,
   run: cli.command(co.wrap(run))
