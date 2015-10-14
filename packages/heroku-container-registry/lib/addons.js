@@ -18,5 +18,13 @@ module.exports = {
   'memcachedcloud': {
     image: 'memcached',
     env: { 'MEMCACHEDCLOUD_SERVERS': 'memcachedcloud:11211' }
+  },
+  'cleardb': {
+    image: 'mysql',
+    env: {
+      'MYSQL_DATABASE': 'cleardb',
+      'MYSQL_ALLOW_EMPTY_PASSWORD': 'yes',
+      'CLEARDB_DATABASE_URL': 'mysql://root:@cleardb:3306/cleardb'
+    }
   }
 };
