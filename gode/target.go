@@ -26,7 +26,7 @@ func (t *Target) npmPath() string {
 	return npmPathFromBase(t.basePath())
 }
 
-func (t *Target) isSetup() bool {
+func (t *Target) isSetup() (bool, error) {
 	return isSetup(t.nodePath(), t.npmPath())
 }
 

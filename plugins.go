@@ -31,7 +31,9 @@ type Plugin struct {
 // SetupNode sets up node and npm in ~/.heroku
 func SetupNode() {
 	gode.SetRootPath(AppDir())
-	if !gode.IsSetup() {
+	setup, err := gode.IsSetup()
+	PrintError(err)
+	if !setup {
 		Errf("Setting up node-v%s...", gode.Version)
 		ExitIfError(gode.Setup())
 		Errln(" done")
@@ -40,7 +42,9 @@ func SetupNode() {
 
 func updateNode() {
 	gode.SetRootPath(AppDir())
-	if gode.NeedsUpdate() {
+	needsUpdate, err := gode.NeedsUpdate()
+	PrintError(err)
+	if needsUpdate {
 		Errf("Setting up node-v%s...", gode.Version)
 		PrintError(gode.Setup())
 		Errln(" done")
