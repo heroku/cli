@@ -1,3 +1,7 @@
+4.25.5  2015-10-15
+==================
+Use os.Stat for file exist check on windows
+
 4.25.4  2015-10-15
 ==================
 Raise error when checking if file exists
