@@ -18,17 +18,16 @@ import (
 var errInvalidSha = errors.New("Invalid SHA")
 
 // IsSetup returns true if node is setup in RootPath
-func IsSetup() bool {
+func IsSetup() (bool, error) {
 	return isSetup(nodePath, npmPath)
 }
 
-func isSetup(nodePath, npmPath string) bool {
-	if exists, _ := fileExists(nodePath); !exists {
-		return false
+func isSetup(nodePath, npmPath string) (bool, error) {
+	exists, err := fileExists(nodePath)
+	if !exists {
+		return exists, err
 	}
-
-	exists, _ := fileExists(npmPath)
-	return exists
+	return fileExists(npmPath)
 }
 
 // Setup downloads and sets up node in the RootPath directory
@@ -40,7 +39,11 @@ func Setup() error {
 		return errors.New(`node does not offer a prebuilt binary for your OS.
 You'll need to compile the tarball from nodejs.org and place it in ~/.heroku/node-v` + Version)
 	}
-	if t.isSetup() {
+	exists, err := t.isSetup()
+	if err != nil {
+		return err
+	}
+	if exists {
 		return nil
 	}
 	if err := t.setup(); err != nil {
@@ -51,12 +54,13 @@ You'll need to compile the tarball from nodejs.org and place it in ~/.heroku/nod
 }
 
 // NeedsUpdate returns true if it is using a node that isn't the latest version
-func NeedsUpdate() bool {
+func NeedsUpdate() (bool, error) {
 	target := findTarget()
 	if target == nil {
-		return false
+		return false, nil
 	}
-	return !target.isSetup()
+	exists, err := target.isSetup()
+	return !exists, err
 }
 
 func (t *Target) setupUnix() error {
