@@ -184,10 +184,9 @@ var pluginsUninstallCmd = &Command{
 var pluginsListCmd = &Command{
 	Topic:       "plugins",
 	Hidden:      true,
-	Description: "Lists the installed plugins",
-	Help: `Lists installed plugins
-
-  Example:
+	Description: "Lists installed plugins",
+	Help: `
+Example:
   $ heroku plugins`,
 
 	Run: func(ctx *Context) {
