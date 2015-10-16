@@ -317,6 +317,7 @@ func getExitCode(err error) int {
 func getPlugin(name string, attemptReinstall bool) *Plugin {
 	script := `
 	var plugin = require('` + name + `');
+	if (!plugin.commands) plugin = {}; // not a real plugin
 	var pjson  = require('` + name + `/package.json');
 
 	plugin.name    = pjson.name;
