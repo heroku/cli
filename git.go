@@ -51,6 +51,15 @@ func httpGitHost() string {
 	if host := os.Getenv("HEROKU_HTTP_GIT_HOST"); host != "" {
 		return host
 	}
+	h := host()
+	if strings.HasPrefix(h, "http") {
+		u, err := url.Parse(h)
+		if err != nil {
+			Errln(err)
+		} else {
+			return u.Host
+		}
+	}
 	return "git." + host()
 }
 
