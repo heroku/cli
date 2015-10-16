@@ -20,7 +20,7 @@ func TestSetup(t *testing.T) {
 	defer os.RemoveAll(dir)
 	SetRootPath(dir)
 	must(Setup())
-	if !IsSetup() {
+	if setup, _ := IsSetup(); !setup {
 		t.Fatal("IsSetup() returned false")
 	}
 }
@@ -55,7 +55,7 @@ func TestWindowsSetup(t *testing.T) {
 	SetRootPath(dir)
 	target := getWindowsTarget()
 	must(target.setup())
-	if !target.isSetup() {
+	if setup, _ := target.isSetup(); !setup {
 		t.Fatal("IsSetup() returned false")
 	}
 }
