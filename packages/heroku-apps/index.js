@@ -2,6 +2,7 @@ exports.topics = [
   { name: 'apps',        description: 'manage apps' },
   { name: 'info',        hidden: true, },
   { name: 'maintenance', description: 'manage maintenance mode for an app' },
+  { name: 'ps',          description: 'manage dynos (dynos, workers)' },
   { name: 'stack',       description: 'manage the stack for an app' },
 ];
 

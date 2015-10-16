@@ -1,33 +1,87 @@
 'use strict';
 
-let cli = require('heroku-cli-util');
-let co  = require('co');
+let cli      = require('heroku-cli-util');
+let co       = require('co');
+let _        = require('lodash');
+let strftime = require('strftime');
 
 function printJSON (data) {
   cli.log(JSON.stringify(data.dynos, null, 2));
 }
 
-function print (data) {
-  cli.log(data.quota);
+function timeAgo (since) {
+  let elapsed = Math.floor((new Date() - since)/1000);
+  let message = strftime('%Y/%m/%d %H:%M:%S', since);
+  if (elapsed <= 60) return `${message} (~ ${Math.floor(elapsed)}s ago)`;
+  else if (elapsed <= 60*60) return `${message} (~ ${Math.floor(elapsed/60)}m ago)`;
+  else if (elapsed <= 60*60*25) return `${message} (~ ${Math.floor(elapsed/60/60)}h ago)`;
+  else return message;
+}
+
+function timeRemaining (from, to) {
+  let secs  = Math.floor(to/1000 - from/1000);
+  let mins  = Math.floor(secs / 60);
+  let hours = Math.floor(mins / 60);
+  if (hours > 0) return `${hours}h ${mins % 60}m`;
+  if (mins > 0)  return `${mins}m ${secs % 60}s`;
+  if (secs > 0)  return `${secs}s`;
+  return '';
+}
+
+function printQuota (quota) {
+  let lbl;
+  if (quota.allow_until) lbl = 'Free quota left';
+  else if (quota.deny_until) lbl = 'Free quota exhausted. Unidle available in';
+  if (lbl) {
+    let timestamp = quota.allow_until ? new Date(quota.allow_until) : new Date(quota.deny_until);
+    let time = timeRemaining(new Date(), timestamp);
+    console.log(`${lbl}: ${time}`);
+  }
+}
+
+function printDynos (dynos) {
+  let dynosByCommand = _.reduce(dynos, function (dynosByCommand, dyno) {
+    let since = timeAgo(new Date(dyno.updated_at));
+    let size = dyno.size || '1X';
+
+    if (dyno.type === 'run') {
+      let key = `run: one-off processes`;
+      if (dynosByCommand[key] === undefined) dynosByCommand[key] = [];
+      dynosByCommand[key].push(`${dyno.name} (${size}): ${dyno.state} ${since}: \`${dyno.command}\``);
+    } else {
+      let key = `${dyno.type} (${size}): \`${dyno.command}\``;
+      if (dynosByCommand[key] === undefined) dynosByCommand[key] = [];
+      dynosByCommand[key].push(`${dyno.name}: ${dyno.state} ${since}`);
+    }
+    return dynosByCommand;
+  }, {});
+  for (let key of Object.keys(dynosByCommand).sort()) {
+    cli.styledHeader(key);
+    for (let dyno of dynosByCommand[key]) cli.log(dyno);
+    cli.log();
+  }
 }
 
 function* run (context, heroku) {
+  let suffix = context.flags.extended ? '?extended=true' : '';
   let data = yield {
-    quota: heroku.request({path: `/apps/${context.app}/actions/get-quota`, method: 'post', headers: {accept: 'application/vnd.heroku+json; version=3.app-quotas'}}),
-    dynos: heroku.request({path: `/apps/${context.app}/dynos`}),
+    quota: heroku.request({path: `/apps/${context.app}/actions/get-quota${suffix}`, method: 'post', headers: {accept: 'application/vnd.heroku+json; version=3.app-quotas'}}),
+    dynos: heroku.request({path: `/apps/${context.app}/dynos${suffix}`}),
   };
   if (context.flags.json) {
     printJSON(data);
   } else {
-    print(data);
+    printQuota(data.quota);
+    printDynos(data.dynos);
   }
 }
 
 module.exports = {
-  topic: '_ps',
+  topic: 'ps',
   description: 'list dynos for an app',
   flags: [
     {name: 'json', description: 'display as json'},
+    {name: 'extended', char: 'x', hidden: true},
   ],
   help: `
 Example:
