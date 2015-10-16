@@ -1,3 +1,7 @@
+4.26.1  2015-10-16
+==================
+Fix cache for packages that are not plugins
+
 4.26.0  2015-10-16
 ==================
 Updated npm to 3.3.8 from 2.14.7
