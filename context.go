@@ -12,6 +12,7 @@ type Context struct {
 	Cwd           string                 `json:"cwd"`
 	HerokuDir     string                 `json:"herokuDir"`
 	Debug         bool                   `json:"debug"`
+	DebugHeaders  bool                   `json:"debugHeaders"`
 	Version       string                 `json:"version"`
 	Dev           bool                   `json:"dev"`
 	SupportsColor bool                   `json:"supportsColor"`
