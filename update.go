@@ -137,6 +137,9 @@ func updateCLI(channel string) {
 
 // IsUpdateNeeded checks if an update is available
 func IsUpdateNeeded(t string) bool {
+	if Channel == "?" {
+		return false
+	}
 	f, err := os.Stat(autoupdateFile)
 	if err != nil {
 		return true
