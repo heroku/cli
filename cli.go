@@ -261,9 +261,5 @@ func populateFlagsFromEnvVars(flagDefinitons []Flag, flags map[string]interface{
 }
 
 func processTitle(ctx *Context) string {
-	title := "heroku " + ctx.Command.String()
-	if ctx.App != "" {
-		return title + " [" + ctx.App + "]"
-	}
-	return title
+	return "heroku " + strings.Join(os.Args[1:], " ")
 }
