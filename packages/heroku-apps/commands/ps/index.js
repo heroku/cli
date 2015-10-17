@@ -4,6 +4,7 @@ let cli      = require('heroku-cli-util');
 let co       = require('co');
 let _        = require('lodash');
 let strftime = require('strftime');
+let util     = require('util');
 
 function printJSON (data) {
   cli.log(JSON.stringify(data.dynos, null, 2));
@@ -51,13 +52,20 @@ function printDynos (dynos) {
     } else {
       let key = `${dyno.type} (${size}): \`${dyno.command}\``;
       if (dynosByCommand[key] === undefined) dynosByCommand[key] = [];
-      dynosByCommand[key].push(`${dyno.name}: ${dyno.state} ${since}`);
+      let item = `${dyno.name}: ${dyno.state} ${since}`;
+      if (dyno.extended) item = `${item}\n${util.inspect(dyno.extended)}`;
+      dynosByCommand[key].push(item);
     }
     return dynosByCommand;
   }, {});
   for (let key of Object.keys(dynosByCommand).sort()) {
     cli.styledHeader(key);
-    for (let dyno of dynosByCommand[key]) cli.log(dyno);
+    for (let dyno of dynosByCommand[key]) {
+      cli.log(dyno);
+      if (dyno.extended) {
+        cli.styledObject(dyno.extended);
+      }
+    }
     cli.log();
   }
 }
