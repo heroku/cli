@@ -190,12 +190,10 @@ Example:
   $ heroku plugins`,
 
 	Run: func(ctx *Context) {
-		packages, err := gode.Packages()
-		if err != nil {
-			panic(errors.New("Error listing plugins\nGet more debugging output with GODE_DEBUG=info"))
-		}
-		for _, pkg := range packages {
-			Println(pkg.Name, pkg.Version)
+		for _, plugin := range GetPlugins() {
+			if len(plugin.Commands) > 0 {
+				Println(plugin.Name, plugin.Version)
+			}
 		}
 	},
 }
