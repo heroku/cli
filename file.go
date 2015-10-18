@@ -1,19 +1,9 @@
 package main
 
-import (
-	"os"
-	"runtime"
-)
+import "os"
 
 func fileExists(path string) (bool, error) {
-	var err error
-	if runtime.GOOS == "windows" {
-		// Windows doesn't seem to like using os.Stat
-		_, err = os.Open(path)
-	} else {
-		_, err = os.Stat(path)
-	}
-	if err != nil {
+	if _, err := os.Stat(path); err != nil {
 		if os.IsNotExist(err) {
 			return false, nil
 		}
