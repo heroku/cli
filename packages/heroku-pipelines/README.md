@@ -120,7 +120,6 @@ Opening dashboard... done
 
 ### TODO
 
-* `heroku pipelines:diff [-a APP | -r REMOTE]`
 * `heorku pipelines:status [-a APP | -r REMOTE]`
 * `heroku pipelines:list` with repo
 * `heroku pipelines:info` with full information

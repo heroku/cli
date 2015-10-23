@@ -21,6 +21,7 @@
     "heroku-cli-util": "^5.4.5",
     "inflection": "^1.7.1",
     "inquirer": "^0.8.5",
+    "request": "^2.64.0",
     "string-just": "0.0.2",
     "validator": "^4.0.2"
   },
