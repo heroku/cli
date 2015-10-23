@@ -69,6 +69,16 @@ Production:  example
 Flow:        example-staging --> example, example-admin
 ```
 
+#### Diff an app in a pipeline
+
+```bash
+$ heroku pipelines:diff -a my-app-staging
+Fetching apps from pipeline... done
+Fetching release info for all apps... done
+
+my-app-staging is up to date with my-app
+```
+
 #### Promote an app in a pipeline
 
 ```bash
