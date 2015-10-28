@@ -40,10 +40,7 @@ func login() {
 	token, err := v2login(email, password, "")
 	// TODO: use createOauthToken (v3 API)
 	// token, err := createOauthToken(email, password, "")
-	if err != nil {
-		PrintError(err)
-		return
-	}
+	ExitIfError(err)
 	saveOauthToken(email, token)
 	Println("Logged in as " + cyan(email))
 }
