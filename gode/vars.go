@@ -31,7 +31,7 @@ func getLatestInstalledNode() string {
 	}
 	latest := nodes[len(nodes)-1]
 	// ignore ancient versions
-	if strings.HasPrefix(latest, "node-v0") || strings.HasPrefix(latest, "iojs-v") {
+	if strings.HasPrefix(latest, "node-v0") {
 		return ""
 	}
 	return latest
@@ -42,7 +42,7 @@ func getNodeInstalls() []string {
 	files, _ := ioutil.ReadDir(rootPath)
 	for _, f := range files {
 		name := f.Name()
-		if f.IsDir() && (strings.HasPrefix(name, "node-v") || strings.HasPrefix(name, "iojs-v")) {
+		if f.IsDir() && strings.HasPrefix(name, "node-v") {
 			nodes = append(nodes, name)
 		}
 	}
