@@ -2,6 +2,7 @@ package gode
 
 import (
 	"io/ioutil"
+	"os"
 	"path/filepath"
 	"runtime"
 	"sort"
@@ -20,6 +21,10 @@ func SetRootPath(root string) {
 	rootPath = root
 	base := filepath.Join(root, getLatestInstalledNode())
 	nodePath = nodePathFromBase(base)
+	herokuNodePath := os.Getenv("HEROKU_NODE_PATH")
+	if herokuNodePath != "" {
+		nodePath = herokuNodePath
+	}
 	npmPath = npmPathFromBase(base)
 	lockPath = filepath.Join(rootPath, "node.lock")
 }
