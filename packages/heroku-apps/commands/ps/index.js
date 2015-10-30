@@ -4,7 +4,8 @@ let cli      = require('heroku-cli-util');
 let co       = require('co');
 let _        = require('lodash');
 let strftime = require('strftime');
-let util     = require('util');
+
+let trunc = s => _.trunc(s, {length: 35, omission: '…'});
 
 function printJSON (data) {
   cli.log(JSON.stringify(data.dynos, null, 2));
@@ -40,6 +41,25 @@ function printQuota (quota) {
   }
 }
 
+function printExtended (dynos) {
+  cli.debug(dynos);
+  cli.table(dynos, {
+    columns: [
+      {key: 'id', label: 'ID'},
+      {key: 'name', label: 'Process'},
+      {key: 'state', label: 'State', format: (state, row) => `${state} ${timeAgo(new Date(row.updated_at))}`},
+      {key: 'extended.region', label: 'Region'},
+      {key: 'extended.instance', label: 'Instance'},
+      {key: 'extended.port', label: 'Port'},
+      {key: 'extended.az', label: 'AZ'},
+      {key: 'release.version', label: 'Release'},
+      {key: 'command', label: 'Command', format: trunc},
+      {key: 'extended.route', label: 'Route'},
+      {key: 'size', label: 'Size'},
+    ]
+  });
+}
+
 function printDynos (dynos) {
   let dynosByCommand = _.reduce(dynos, function (dynosByCommand, dyno) {
     let since = timeAgo(new Date(dyno.updated_at));
@@ -48,24 +68,18 @@ function printDynos (dynos) {
     if (dyno.type === 'run') {
       let key = `run: one-off processes`;
       if (dynosByCommand[key] === undefined) dynosByCommand[key] = [];
-      dynosByCommand[key].push(`${dyno.name} (${size}): ${dyno.state} ${since}: \`${dyno.command}\``);
+      dynosByCommand[key].push(`${dyno.name} (${size}): ${dyno.state} ${since}: ${dyno.command}`);
     } else {
-      let key = `${dyno.type} (${size}): \`${dyno.command}\``;
+      let key = `${dyno.type} (${size}): ${dyno.command}`;
       if (dynosByCommand[key] === undefined) dynosByCommand[key] = [];
       let item = `${dyno.name}: ${dyno.state} ${since}`;
-      if (dyno.extended) item = `${item}\n${util.inspect(dyno.extended)}`;
       dynosByCommand[key].push(item);
     }
     return dynosByCommand;
   }, {});
   for (let key of Object.keys(dynosByCommand).sort()) {
     cli.styledHeader(key);
-    for (let dyno of dynosByCommand[key]) {
-      cli.log(dyno);
-      if (dyno.extended) {
-        cli.styledObject(dyno.extended);
-      }
-    }
+    for (let dyno of dynosByCommand[key]) cli.log(dyno);
     cli.log();
   }
 }
@@ -78,6 +92,8 @@ function* run (context, heroku) {
   };
   if (context.flags.json) {
     printJSON(data);
+  } if (context.flags.extended) {
+    printExtended(data.dynos);
   } else {
     printQuota(data.quota);
     printDynos(data.dynos);
