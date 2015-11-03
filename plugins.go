@@ -328,7 +328,7 @@ func getPlugin(name string, attemptReinstall bool) *Plugin {
 		if attemptReinstall && strings.Contains(string(output), "Error: Cannot find module") {
 			Errf("Error reading plugin %s. Reinstalling... ", name)
 			if err := installPlugins(name); err != nil {
-				panic(errors.New(string(output)))
+				panic(errors.New(name + ": " + string(output)))
 			}
 			Errln("done")
 			return getPlugin(name, false)
