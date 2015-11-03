@@ -34,10 +34,14 @@ func SetupNode() {
 	setup, err := gode.IsSetup()
 	PrintError(err)
 	if !setup {
-		Errf("Setting up node-v%s...", gode.Version)
-		ExitIfError(gode.Setup())
-		Errln(" done")
+		setupNode()
 	}
+}
+
+func setupNode() {
+	Err("heroku-cli: Adding dependencies...")
+	PrintError(gode.Setup())
+	Errln(" done")
 }
 
 func updateNode() {
@@ -45,9 +49,7 @@ func updateNode() {
 	needsUpdate, err := gode.NeedsUpdate()
 	PrintError(err)
 	if needsUpdate {
-		Errf("Setting up node-v%s...", gode.Version)
-		PrintError(gode.Setup())
-		Errln(" done")
+		setupNode()
 	}
 }
 
@@ -413,11 +415,7 @@ func SetupBuiltinPlugins() {
 	if len(plugins) == 0 {
 		return
 	}
-	noun := "plugins"
-	if len(plugins) == 1 {
-		noun = "plugin"
-	}
-	Errf("Installing core %s %s...", noun, strings.Join(plugins, ", "))
+	Err("heroku-cli: Installing core plugins...")
 	err := installPlugins(plugins...)
 	if err != nil {
 		Errln()
