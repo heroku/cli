@@ -46,7 +46,7 @@ func apiRequest(authToken string) *goreq.Request {
 }
 
 func shouldVerifyHost(host string) bool {
-	return !strings.HasSuffix(host, "herokudev.com")
+	return !(os.Getenv("HEROKU_SSL_VERIFY") == "disable" || strings.HasSuffix(host, "herokudev.com"))
 }
 
 func getCACerts() *x509.CertPool {
