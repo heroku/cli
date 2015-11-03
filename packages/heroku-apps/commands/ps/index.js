@@ -42,7 +42,6 @@ function printQuota (quota) {
 }
 
 function printExtended (dynos) {
-  cli.debug(dynos);
   cli.table(dynos, {
     columns: [
       {key: 'id', label: 'ID'},
