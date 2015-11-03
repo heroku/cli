@@ -10,13 +10,13 @@ let util     = require('util');
 
 function* run (context, heroku) {
   function getInfo(app) {
-    let appUrl = `/apps/${app}`;
-    if (context.flags.extended) appUrl += '?extended=true';
+    // TODO: Remove variant and consolidate extended/app calls into one when the API no longer requires the variant
     return {
       addons: heroku.apps(app).addons().listByApp(),
-      app: heroku.request({path: appUrl}),
+      app: heroku.request({path: `/apps/${app}`, headers: {'Accept': 'application/vnd.heroku+json; version=3.dogwood'}}),
       dynos: heroku.apps(app).dynos().list().catch(() => []),
       collaborators: heroku.apps(app).collaborators().list().catch(() => []),
+      extended: context.flags.extended ? heroku.request({path: `/apps/${app}?extended=true`}) : {},
     };
   }
 
@@ -34,6 +34,7 @@ function* run (context, heroku) {
     if (info.app.cron_next_run) data.cron_next_run = cli.formatDate(info.app.cron_next_run);
     if (info.app.database_size) data.database_size = filesize(info.app.database_size, {round: 0});
     if (info.app.create_status !== 'complete') data.create_status = info.app.create_status;
+    if (info.app.space) data.space = info.app.space.name;
 
     data['Git URL'] = info.app.git_url;
     data['Web URL'] = info.app.web_url;
@@ -49,7 +50,7 @@ function* run (context, heroku) {
 
     if (context.flags.extended) {
       console.log("\n\n--- Extended Information ---\n\n");
-      cli.debug(info.app);
+      cli.debug(info.extended.extended);
     }
   }
 
