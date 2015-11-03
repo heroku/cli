@@ -2,6 +2,7 @@ package gode
 
 import (
 	"io/ioutil"
+	"os"
 	"path/filepath"
 	"runtime"
 	"sort"
@@ -20,6 +21,10 @@ func SetRootPath(root string) {
 	rootPath = root
 	base := filepath.Join(root, getLatestInstalledNode())
 	nodePath = nodePathFromBase(base)
+	herokuNodePath := os.Getenv("HEROKU_NODE_PATH")
+	if herokuNodePath != "" {
+		nodePath = herokuNodePath
+	}
 	npmPath = npmPathFromBase(base)
 	lockPath = filepath.Join(rootPath, "node.lock")
 }
@@ -31,7 +36,7 @@ func getLatestInstalledNode() string {
 	}
 	latest := nodes[len(nodes)-1]
 	// ignore ancient versions
-	if strings.HasPrefix(latest, "node-v0") || strings.HasPrefix(latest, "iojs-v") {
+	if strings.HasPrefix(latest, "node-v0") {
 		return ""
 	}
 	return latest
@@ -42,7 +47,7 @@ func getNodeInstalls() []string {
 	files, _ := ioutil.ReadDir(rootPath)
 	for _, f := range files {
 		name := f.Name()
-		if f.IsDir() && (strings.HasPrefix(name, "node-v") || strings.HasPrefix(name, "iojs-v")) {
+		if f.IsDir() && strings.HasPrefix(name, "node-v") {
 			nodes = append(nodes, name)
 		}
 	}
