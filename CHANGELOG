@@ -1,3 +1,14 @@
+4.27.0  2015-11-02
+==================
+Show plugin name when it fails
+Fix fileExists on some windows machines
+Use system tmp dir instead of ~/.heroku/tmp
+Use HEROKU_NODE_PATH env var
+Remove iojs compatibility
+Return nonzero status on login failure
+Use HEROKU_DEBUG_HEADERS
+Simplified process title
+
 4.26.1  2015-10-16
 ==================
 Fix cache for packages that are not plugins
