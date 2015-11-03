@@ -91,7 +91,7 @@ function* run (context, heroku) {
   };
   if (context.flags.json) {
     printJSON(data);
-  } if (context.flags.extended) {
+  } else if (context.flags.extended) {
     printExtended(data.dynos);
   } else {
     printQuota(data.quota);
