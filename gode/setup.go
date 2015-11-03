@@ -169,7 +169,12 @@ func findTarget() *Target {
 }
 
 func tmpDir(prefix string) string {
-	dir, err := ioutil.TempDir("", prefix)
+	root := filepath.Join(rootPath, "tmp")
+	err := os.MkdirAll(root, 0755)
+	if err != nil {
+		panic(err)
+	}
+	dir, err := ioutil.TempDir(root, prefix)
 	if err != nil {
 		panic(err)
 	}
