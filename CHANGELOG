@@ -1,3 +1,11 @@
+4.27.2  2015-11-04
+==================
+Json escape process title string
+Show npm error message on failure
+node v5.0.0
+Ignore '.staging' plugin
+Added hidden which command
+
 4.27.1  2015-11-02
 ==================
 Reverted system tmp dir PR
