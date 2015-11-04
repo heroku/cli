@@ -5,6 +5,7 @@ exports.topics = [
   { name: 'maintenance', description: 'manage maintenance mode for an app' },
   { name: 'ps',          description: 'manage dynos (dynos, workers)' },
   { name: 'stack',       description: 'manage the stack for an app' },
+  { name: 'buildpacks',  description: 'manage the buildpacks for an app' },
 ];
 
 exports.commands = [
@@ -21,4 +22,9 @@ exports.commands = [
   require('./commands/ps'),
   require('./commands/stack'),
   require('./commands/stack/set'),
+  require('./commands/buildpacks'),
+  require('./commands/buildpacks/add.js'),
+  require('./commands/buildpacks/set.js'),
+  require('./commands/buildpacks/clear.js'),
+  require('./commands/buildpacks/remove.js'),
 ];
