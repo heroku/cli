@@ -31,6 +31,7 @@ function timeRemaining (from, to) {
 }
 
 function printQuota (quota) {
+  if (!quota) return;
   let lbl;
   if (quota.allow_until) lbl = 'Free quota left';
   else if (quota.deny_until) lbl = 'Free quota exhausted. Unidle available in';
@@ -86,7 +87,10 @@ function printDynos (dynos) {
 function* run (context, heroku) {
   let suffix = context.flags.extended ? '?extended=true' : '';
   let data = yield {
-    quota: heroku.request({path: `/apps/${context.app}/actions/get-quota${suffix}`, method: 'post', headers: {accept: 'application/vnd.heroku+json; version=3.app-quotas'}}),
+    quota: heroku.request({
+      path: `/apps/${context.app}/actions/get-quota${suffix}`,
+      method: 'post', headers: {accept: 'application/vnd.heroku+json; version=3.app-quotas'}
+    }).catch(() => {}),
     dynos: heroku.request({path: `/apps/${context.app}/dynos${suffix}`}),
   };
   if (context.flags.json) {
