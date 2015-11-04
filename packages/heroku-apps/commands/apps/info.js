@@ -26,24 +26,24 @@ function* run (context, heroku) {
 
   function print() {
     let data = {};
-    data.addons = addons;
-    data.collaborators = collaborators;
+    data.Addons = addons;
+    data.Collaborators = collaborators;
 
-    if (info.app.archived_at) data.archived_at = cli.formatDate(info.app.archived_at);
-    if (info.app.cron_finished_at) data.cron_finished_at = cli.formatDate(info.app.cron_finished_at);
-    if (info.app.cron_next_run) data.cron_next_run = cli.formatDate(info.app.cron_next_run);
-    if (info.app.database_size) data.database_size = filesize(info.app.database_size, {round: 0});
-    if (info.app.create_status !== 'complete') data.create_status = info.app.create_status;
-    if (info.app.space) data.space = info.app.space.name;
+    if (info.app.archived_at) data['Archived At'] = cli.formatDate(info.app.archived_at);
+    if (info.app.cron_finished_at) data['Cron Finished At'] = cli.formatDate(info.app.cron_finished_at);
+    if (info.app.cron_next_run) data['Cron Next Run'] = cli.formatDate(info.app.cron_next_run);
+    if (info.app.database_size) data['Database Size'] = filesize(info.app.database_size, {round: 0});
+    if (info.app.create_status !== 'complete') data['Create Status'] = info.app.create_status;
+    if (info.app.space) data['Space'] = info.app.space.name;
 
     data['Git URL'] = info.app.git_url;
     data['Web URL'] = info.app.web_url;
-    data.repo_size = filesize(info.app.repo_size, {round: 0});
-    data.slug_size = filesize(info.app.slug_size, {round: 0});
-    data.owner = info.app.owner.email;
-    data.region = info.app.region.name;
-    data.dynos = _(info.dynos).countBy('type').value();
-    data.stack = info.app.stack.name;
+    data['Repo Size'] = filesize(info.app.repo_size, {round: 0});
+    data['Slug Size'] = filesize(info.app.slug_size, {round: 0});
+    data['Owner'] = info.app.owner.email;
+    data['Region'] = info.app.region.name;
+    data['Dynos'] = _(info.dynos).countBy('type').value();
+    data['Stack'] = info.app.stack.name;
 
     cli.styledHeader(info.app.name);
     cli.styledObject(data);
