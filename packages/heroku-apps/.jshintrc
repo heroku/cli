@@ -21,6 +21,7 @@
   "noempty": true,
   "nonbsp": true,
   "nonew": true,
+  "noyield": true,
   "sub": true,
   "trailing": true,
   "undef": true,
