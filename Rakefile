@@ -59,7 +59,7 @@ def build(target)
   args = "-o #{path} -ldflags \"#{ldflags}\""
   vars = ["GOOS=#{target[:os]}", "GOARCH=#{target[:arch]}"]
   vars << "GO386=#{target[:go386]}" if target[:go386]
-  ok = system("#{vars.join(' ')} go build #{args}")
+  ok = system("#{vars.join(' ')} godep go build #{args}")
   exit 1 unless ok
   gzip(path)
 end
