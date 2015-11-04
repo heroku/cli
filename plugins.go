@@ -330,6 +330,7 @@ func getPlugin(name string, attemptReinstall bool) *Plugin {
 	if err != nil {
 		if attemptReinstall && strings.Contains(string(output), "Error: Cannot find module") {
 			Errf("Error reading plugin %s. Reinstalling... ", name)
+			gode.ClearCache()
 			if err := installPlugins(name); err != nil {
 				panic(errors.New(name + ": " + string(output)))
 			}
