@@ -212,13 +212,14 @@ func runFn(plugin *Plugin, module, topic, command string) func(ctx *Context) {
 		if err != nil {
 			panic(err)
 		}
+		title, _ := json.Marshal(processTitle(ctx))
 		script := fmt.Sprintf(`
 		'use strict';
 		var moduleName = '%s';
 		var moduleVersion = '%s';
 		var topic = '%s';
 		var command = '%s';
-		process.title = '%s';
+		process.title = %s;
 		var ctx = %s;
 		ctx.version = ctx.version + ' ' + moduleName + '/' + moduleVersion + ' node-' + process.version;
 		var logPath = %s;
@@ -263,7 +264,7 @@ func runFn(plugin *Plugin, module, topic, command string) func(ctx *Context) {
 		var cmd = module.commands.filter(function (c) {
 			return c.topic === topic && c.command == command;
 		})[0];
-		cmd.run(ctx);`, module, plugin.Version, topic, command, processTitle(ctx), ctxJSON, strconv.Quote(ErrLogPath))
+		cmd.run(ctx);`, module, plugin.Version, topic, command, string(title), ctxJSON, strconv.Quote(ErrLogPath))
 
 		// swallow sigint since the plugin will handle it
 		swallowSignal(os.Interrupt)
