@@ -36,9 +36,9 @@ func Packages() ([]Package, error) {
 // InstallPackage installs an npm package.
 func InstallPackage(packages ...string) error {
 	args := append([]string{"install"}, packages...)
-	_, _, err := execNpm(args...)
+	_, stderr, err := execNpm(args...)
 	if err != nil {
-		return errors.New("Error installing package. Try running again with GODE_DEBUG=info to see more output.")
+		return errors.New("Error installing package. \n" + stderr + "\nTry running again with GODE_DEBUG=info to see more output.")
 	}
 	return nil
 }
@@ -93,6 +93,8 @@ func execNpm(args ...string) (string, string, error) {
 	cmd.Stdout = &stdout
 	if debugging() {
 		cmd.Stderr = os.Stderr
+	} else {
+		cmd.Stderr = &stderr
 	}
 	err = cmd.Run()
 	return stdout.String(), stderr.String(), err
