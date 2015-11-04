@@ -42,6 +42,7 @@ func init() {
 		twoFactorTopicAlias,
 		updateTopic,
 		versionTopic,
+		whichTopic,
 	}
 	cli.Commands = CommandSet{
 		authLoginCmd,
@@ -60,6 +61,7 @@ func init() {
 		twoFactorGenerateCmdAlias,
 		updateCmd,
 		versionCmd,
+		whichCmd,
 		whoamiCmd,
 	}
 	rollbar.Platform = "client"
