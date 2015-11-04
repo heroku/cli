@@ -7,19 +7,19 @@ package gode
 //
 
 // Version is the requested node version
-const Version = "4.2.1"
+const Version = "5.0.0"
 
 // NpmVersion is the requested npm version
-const NpmVersion = "3.3.8"
+const NpmVersion = "3.3.10"
 
-const npmSha = "da1b3285dcf7403e51a454181feb36bbe73c112922628fc19c99de7340741d15"
-const npmURL = "https://cli-assets.heroku.com/npm/v3.3.8.zip"
+const npmSha = "dc06125df1214af5900a82435908681955e379905aa38bd9b1ec950134c28162"
+const npmURL = "https://cli-assets.heroku.com/npm/v3.3.10.zip"
 
 var targets = []Target{
-	{"386", "linux", "https://cli-assets.heroku.com/node/v4.2.1/node-v4.2.1-linux-x86.tar.gz", "node-v4.2.1-linux-x86", "97b5ccea7044073c87a21bcc4b0762f4a6bd77db9cc958206f684ecdfeb89b1f"},
-	{"amd64", "linux", "https://cli-assets.heroku.com/node/v4.2.1/node-v4.2.1-linux-x64.tar.gz", "node-v4.2.1-linux-x64", "e766e387934e17daaad92d0460ed76f756655da62b627a5c9cc07faea4a0b824"},
-	{"arm", "linux", "https://cli-assets.heroku.com/node/v4.2.1/node-v4.2.1-linux-armv7l.tar.gz", "node-v4.2.1-linux-armv7l", "fb4fbef9306962e800804ab5ba615c06bba28deb4e7a3e945a291dba986ef816"},
-	{"amd64", "darwin", "https://cli-assets.heroku.com/node/v4.2.1/node-v4.2.1-darwin-x64.tar.gz", "node-v4.2.1-darwin-x64", "658686795fac9669d411ac5c5be2da8159058e386767322d8d8151dcdb4810b9"},
-	{"386", "windows", "https://cli-assets.heroku.com/node/v4.2.1/win-x86/node.exe", "node-v4.2.1-windows-x86", "c22fcbf2f1db7ff3cd71b4c771f277fe8d75caff8689a3be50aeee1a7682820e"},
-	{"amd64", "windows", "https://cli-assets.heroku.com/node/v4.2.1/win-x64/node.exe", "node-v4.2.1-windows-x64", "92744bfa525cd51ea3bf5ac810a9e3e9306f6fe4ac44847a8aefdd674701e8e6"},
+	{"386", "linux", "https://cli-assets.heroku.com/node/v5.0.0/node-v5.0.0-linux-x86.tar.gz", "node-v5.0.0-linux-x86", "6484c4cac1724f2818354e3f2a8ede66308617b648cd3db624596b8cd58b5f6b"},
+	{"amd64", "linux", "https://cli-assets.heroku.com/node/v5.0.0/node-v5.0.0-linux-x64.tar.gz", "node-v5.0.0-linux-x64", "ef73b59048a0ed11d01633f0061627b7a9879257deb9add2255e4d0808f8b671"},
+	{"arm", "linux", "https://cli-assets.heroku.com/node/v5.0.0/node-v5.0.0-linux-armv7l.tar.gz", "node-v5.0.0-linux-armv7l", "6bf5f19cac9f01cb31b7088685d9d6df6d24c9c2a4531ace839387763b8a28ec"},
+	{"amd64", "darwin", "https://cli-assets.heroku.com/node/v5.0.0/node-v5.0.0-darwin-x64.tar.gz", "node-v5.0.0-darwin-x64", "26f3e42df814b9b42f0b0045901c84eb79233d8196d0dcdf77a6a3c975c6f25d"},
+	{"386", "windows", "https://cli-assets.heroku.com/node/v5.0.0/win-x86/node.exe", "node-v5.0.0-windows-x86", "b2a5caab041d6e0a3fefc3a0b557df71ce9174c9ca344e5a690b9accb9f76d84"},
+	{"amd64", "windows", "https://cli-assets.heroku.com/node/v5.0.0/win-x64/node.exe", "node-v5.0.0-windows-x64", "27c819be0958fdb4b63be29fb032525965e997da8e0f6b4a6e9123350b7b22e0"},
 }
