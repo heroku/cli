@@ -77,7 +77,7 @@ function printDynos (dynos) {
     }
     return dynosByCommand;
   }, {});
-  for (let key of Object.keys(dynosByCommand).sort()) {
+  for (let key of Object.keys(dynosByCommand)) {
     cli.styledHeader(key);
     for (let dyno of dynosByCommand[key]) cli.log(dyno);
     cli.log();
