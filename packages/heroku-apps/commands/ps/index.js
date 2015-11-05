@@ -7,6 +7,9 @@ let strftime = require('strftime');
 
 let trunc = s => _.trunc(s, {length: 35, omission: '…'});
 
+// gets the process number from a string like web.19 => 19
+let getProcessNum = s => parseInt(s.split('.', 2)[1]);
+
 function printJSON (data) {
   cli.log(JSON.stringify(data.dynos, null, 2));
 }
@@ -14,9 +17,9 @@ function printJSON (data) {
 function timeAgo (since) {
   let elapsed = Math.floor((new Date() - since)/1000);
   let message = strftime('%Y/%m/%d %H:%M:%S', since);
-  if (elapsed <= 60) return `${message} (~ ${Math.floor(elapsed)}s ago)`;
-  else if (elapsed <= 60*60) return `${message} (~ ${Math.floor(elapsed/60)}m ago)`;
-  else if (elapsed <= 60*60*25) return `${message} (~ ${Math.floor(elapsed/60/60)}h ago)`;
+  if (elapsed < 60) return `${message} (~ ${Math.floor(elapsed)}s ago)`;
+  else if (elapsed < 60*60) return `${message} (~ ${Math.floor(elapsed/60)}m ago)`;
+  else if (elapsed < 60*60*25) return `${message} (~ ${Math.floor(elapsed/60/60)}h ago)`;
   else return message;
 }
 
@@ -43,6 +46,7 @@ function printQuota (quota) {
 }
 
 function printExtended (dynos) {
+  dynos = _.sortByAll(dynos, ['type'], a => getProcessNum(a.name));
   cli.table(dynos, {
     columns: [
       {key: 'id', label: 'ID'},
@@ -77,11 +81,12 @@ function printDynos (dynos) {
     }
     return dynosByCommand;
   }, {});
-  for (let key of Object.keys(dynosByCommand)) {
+  _.forEach(dynosByCommand, function (dynos, key) {
     cli.styledHeader(key);
-    for (let dyno of dynosByCommand[key]) cli.log(dyno);
+    dynos = dynos.sort((a, b) => getProcessNum(a) - getProcessNum(b));
+    for (let dyno of dynos) cli.log(dyno);
     cli.log();
-  }
+  });
 }
 
 function* run (context, heroku) {
@@ -89,7 +94,7 @@ function* run (context, heroku) {
   let data = yield {
     quota: heroku.request({
       path: `/apps/${context.app}/actions/get-quota${suffix}`,
-      method: 'post', headers: {accept: 'application/vnd.heroku+json; version=3.app-quotas'}
+      method: 'post', headers: {Accept: 'application/vnd.heroku+json; version=3.app-quotas'}
     }).catch(() => {}),
     dynos: heroku.request({path: `/apps/${context.app}/dynos${suffix}`}),
   };
