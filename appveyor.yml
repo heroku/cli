@@ -1,0 +1,19 @@
+clone_folder: C:\gopath\src\github.com\heroku\heroku-cli
+
+environment:
+  GOPATH: C:\gopath
+  PATH: C:\gopath\bin;%PATH%
+
+install:
+  - go get -t -d -v ./...
+  - go build -v
+  - go get github.com/kr/godep
+  - go get github.com/golang/lint
+  - go get golang.org/x/tools/cmd/vet
+  - godep get
+
+build: off
+
+test_script:
+  - go test -v -race ./...
+  - godep go build -v ./...
