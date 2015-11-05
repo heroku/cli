@@ -21,11 +21,12 @@ import (
 
 // Plugin represents a javascript plugin
 type Plugin struct {
-	Name     string     `json:"name"`
-	Version  string     `json:"version"`
-	Topics   TopicSet   `json:"topics"`
-	Topic    *Topic     `json:"topic"`
-	Commands CommandSet `json:"commands"`
+	Name            string     `json:"name"`
+	Version         string     `json:"version"`
+	PostInstallHelp string     `json:"postInstallHelp"`
+	Topics          TopicSet   `json:"topics"`
+	Topic           *Topic     `json:"topic"`
+	Commands        CommandSet `json:"commands"`
 }
 
 // SetupNode sets up node and npm in ~/.heroku
@@ -105,6 +106,9 @@ var pluginsInstallCmd = &Command{
 		ClearPluginCache()
 		WritePluginCache(GetPlugins())
 		Errln("done")
+		if plugin.PostInstallHelp != "" {
+			Println(strings.TrimSpace(plugin.PostInstallHelp))
+		}
 	},
 }
 
