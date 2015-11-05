@@ -6,12 +6,16 @@ let co          = require('co');
 
 function* run (context, heroku) {
   let configVars = yield heroku.request({path: `/apps/${context.app}/config-vars`});
-  if (context.flags.shell) {
-    let v = configVars[context.args.key];
-    v = process.stdout.isTTY ? shellescape([v]) : v;
-    cli.log(`${context.args.key}=${v}`);
+  let v = configVars[context.args.key];
+  if (v === undefined) {
+    cli.log(''); // match v3 output for missing
   } else {
-    cli.log(configVars[context.args.key]);
+    if (context.flags.shell) {
+      v = process.stdout.isTTY ? shellescape([v]) : v;
+      cli.log(`${context.args.key}=${v}`);
+    } else {
+      cli.log(v);
+    }
   }
 }
 
