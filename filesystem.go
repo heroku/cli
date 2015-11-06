@@ -7,7 +7,7 @@ import (
 	"runtime"
 )
 
-// The user's home directory
+// HomeDir is the user's home directory
 var HomeDir = homeDir()
 
 // AppDir is the .heroku path
