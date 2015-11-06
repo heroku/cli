@@ -2,7 +2,7 @@ package gode
 
 import "fmt"
 
-func ExampleClient_RunScript() {
+func ExampleRunScript() {
 	SetRootPath("tmp")
 	err := Setup()
 	if err != nil {
