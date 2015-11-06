@@ -13,10 +13,10 @@ import (
 	"golang.org/x/crypto/ssh/terminal"
 )
 
-// Used to mock stdout for testing
+// Stdout is used to mock stdout for testing
 var Stdout io.Writer
 
-// Used to mock stderr for testing
+// Stderr is to mock stderr for testing
 var Stderr io.Writer
 
 // ErrLogPath is the location of the error log
