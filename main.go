@@ -9,12 +9,12 @@ import (
 	"github.com/stvp/rollbar"
 )
 
-// The built version.
+// Version is the version of the v4 cli.
 // This is set by a build flag in the `Rakefile`.
 // If it is set to `dev` it will not autoupdate.
 var Version = "dev"
 
-// The channel the CLI was built on.
+// Channel is the git branch the code was compiled on.
 // This is set by a build flag in the `Rakefile` based on the git branch.
 var Channel = "?"
 
