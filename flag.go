@@ -61,7 +61,7 @@ func parseFlag(input string, flags []*Flag) (*Flag, string, error) {
 		return parseFlag(key[:2]+"="+key[2:], flags)
 	}
 	for _, flag := range flags {
-		if key == "-"+flag.Char || key == "--"+flag.Name {
+		if (flag.Char != "" && key == "-"+flag.Char) || key == "--"+flag.Name {
 			if flag.HasValue {
 				if value == "" {
 					return nil, "", errors.New(flag.String() + " needs a value")
