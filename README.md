@@ -2,6 +2,7 @@
 ==========
 
 [![Circle CI](https://circleci.com/gh/heroku/heroku-cli/tree/master.svg?style=svg)](https://circleci.com/gh/heroku/heroku-cli/tree/master)
+[<img src="https://ci.appveyor.com/api/projects/status/github/heroku/heroku-cli?svg=true&branch=master" alt="Appveyor" height="18"/>](https://ci.appveyor.com/project/Heroku/heroku-cli?branch=master)
 [![MIT License](https://img.shields.io/github/license/heroku/heroku-cli.svg)](https://github.com/heroku/heroku-cli/blob/master/LICENSE)
 
 The Heroku CLI is used to manage Heroku apps from the command line.
