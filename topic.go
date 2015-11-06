@@ -46,14 +46,14 @@ func (t *Topic) Merge(other *Topic) {
 	}
 }
 
-func (t TopicSet) Len() int {
-	return len(t)
+func (topics TopicSet) Len() int {
+	return len(topics)
 }
 
-func (t TopicSet) Less(i, j int) bool {
-	return t[i].Name < t[j].Name
+func (topics TopicSet) Less(i, j int) bool {
+	return topics[i].Name < topics[j].Name
 }
 
-func (t TopicSet) Swap(i, j int) {
-	t[i], t[j] = t[j], t[i]
+func (topics TopicSet) Swap(i, j int) {
+	topics[i], topics[j] = topics[j], topics[i]
 }
