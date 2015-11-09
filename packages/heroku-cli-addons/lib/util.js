@@ -3,7 +3,6 @@
 let cli    = require('heroku-cli-util');
 let merge  = require('lodash').merge;
 let printf = require('printf');
-let table  = require('./table');
 
 let styles = {
     app: 'cyan',
@@ -19,7 +18,7 @@ module.exports = {
     },
 
     table: function(data, options) {
-        return table(data, merge(options, {
+        return cli.table(data, merge(options, {
             printLine: cli.log
         }));
     },
