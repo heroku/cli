@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/url"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/dickeyxxx/speakeasy"
@@ -88,11 +89,18 @@ https://github.com/heroku/heroku-cli/issues/84`)
 func v2login(email, password, secondFactor string) (string, error) {
 	req := apiRequestBase("")
 	req.Method = "POST"
-	req.Uri = req.Uri + "/login?username=" + url.QueryEscape(email) + "&password=" + url.QueryEscape(password)
+
+	queryPassword := "&password=" + url.QueryEscape(password)
+	req.Uri = req.Uri + "/login?username=" + url.QueryEscape(email) + queryPassword
 	if secondFactor != "" {
 		req.AddHeader("Heroku-Two-Factor-Code", secondFactor)
 	}
 	res, err := req.Do()
+	if err != nil {
+		errorStr := err.Error()
+		errorStr = strings.Replace(errorStr, queryPassword, "&password=XXXXXXXX", -1)
+		err = errors.New(errorStr)
+	}
 	ExitIfError(err)
 	if res.StatusCode == 403 {
 		return v2login(email, password, getString("Two-factor code: "))
