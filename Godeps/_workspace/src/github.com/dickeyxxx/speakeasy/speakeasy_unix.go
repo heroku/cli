@@ -12,17 +12,24 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"os/exec"
 	"strings"
 	"syscall"
 )
-
-const sttyArg0 = "/bin/stty"
 
 var (
 	sttyArgvEOff = []string{"stty", "-echo"}
 	sttyArgvEOn  = []string{"stty", "echo"}
 	ws           syscall.WaitStatus
 )
+
+func getSttyArg0() (string, error) {
+	sttyArg0, err := exec.LookPath("stty")
+	if err != nil {
+		return "", fmt.Errorf("failed finding stty executable for password entry:\n\t%s", err)
+	}
+	return sttyArg0, nil
+}
 
 // getPassword gets input hidden from the terminal from a user. This is
 // accomplished by turning off terminal echo, reading input from the user and
@@ -67,6 +74,11 @@ func getPassword() (password string, err error) {
 
 // echoOff turns off the terminal echo.
 func echoOff(fd []uintptr) (int, error) {
+	sttyArg0, sttyErr := getSttyArg0()
+	if sttyErr != nil {
+		return 0, sttyErr
+	}
+
 	pid, err := syscall.ForkExec(sttyArg0, sttyArgvEOff, &syscall.ProcAttr{Dir: "", Files: fd})
 	if err != nil {
 		return 0, fmt.Errorf("failed turning off console echo for password entry:\n\t%s", err)
@@ -76,6 +88,11 @@ func echoOff(fd []uintptr) (int, error) {
 
 // echoOn turns back on the terminal echo.
 func echoOn(fd []uintptr) {
+	sttyArg0, sttyErr := getSttyArg0()
+	if sttyErr != nil {
+		return;
+	}
+
 	// Turn on the terminal echo.
 	pid, e := syscall.ForkExec(sttyArg0, sttyArgvEOn, &syscall.ProcAttr{Dir: "", Files: fd})
 	if e == nil {
