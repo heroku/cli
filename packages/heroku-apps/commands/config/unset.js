@@ -1,8 +1,9 @@
 'use strict';
 
-let cli = require('heroku-cli-util');
-let co  = require('co');
-let _   = require('lodash');
+let cli    = require('heroku-cli-util');
+let co     = require('co');
+let _      = require('lodash');
+let extend = require('util')._extend;
 
 function* run (context, heroku) {
   if (context.args.length === 0) {
@@ -15,10 +16,11 @@ function* run (context, heroku) {
     // body will be like {FOO: null, BAR: null}
     body: _.reduce(context.args, (vars, v) => {vars[v] = null; return vars;}, {})
   });
-  yield cli.action(`Unsetting ${context.args.join(', ')} and restarting ${context.app}`, p);
+  let vars = context.args.map(v => cli.color.green(v)).join(', ');
+  yield cli.action(`Unsetting ${vars} and restarting ${cli.color.app(context.app)}`, p);
 }
 
-module.exports = {
+let cmd = {
   topic: 'config',
   command: 'unset',
   description: 'unset one or more config vars',
@@ -35,3 +37,7 @@ module.exports = {
   variableArgs: true,
   run: cli.command(co.wrap(run))
 };
+
+module.exports.unset = cmd;
+module.exports.remove = extend({}, cmd);
+module.exports.remove.command = 'remove';

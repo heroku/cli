@@ -1,7 +1,7 @@
 'use strict';
 
 let nock   = require('nock');
-let cmd    = require('../../../commands/config/unset');
+let cmd    = require('../../../commands/config/unset').unset;
 let expect = require('chai').expect;
 
 describe('config:unset', function() {
