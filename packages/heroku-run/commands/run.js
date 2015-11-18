@@ -39,12 +39,18 @@ function env (flag) {
   return c;
 }
 
+let warning;
 function startDyno(heroku, app, size, command, envFlag) {
-  return heroku.apps(app).dynos().create({
-    command:  command,
-    attach:   true,
-    size:     size,
-    env:      env(envFlag),
+  return heroku.request({
+    path: `/apps/${app}/dynos`,
+    method: 'POST',
+    middleware: (res, cb) => {warning = res.headers['warning-message']; cb();},
+    body: {
+      command:  command,
+      attach:   true,
+      size:     size,
+      env:      env(envFlag),
+    }
   });
 }
 
@@ -104,7 +110,9 @@ function attachToRendezvous(uri, opts) {
   c.setTimeout(1000*60*20);
   c.setEncoding('utf8');
   c.on('connect', function () {
-    c.write(uri.path.substr(1) + '\r\n');
+    c.write(uri.path.substr(1) + '\r\n', function () {
+      console.error(` up, ${opts.dyno.name}`);
+    });
   });
   c.on('data', readData(c));
   c.on('close', () => process.exit(opts.exitCode));
@@ -121,12 +129,19 @@ function* run (context, heroku) {
     process.exit(1);
   }
   let sh = context.flags['exit-code'] ? `${command}; echo heroku-command-exit-status $?` : command;
-  let p = startDyno(heroku, context.app, context.flags.size, sh, context.flags.env);
-  let dyno = yield cli.action(`Running ${cli.color.cyan.bold(command)} on ${context.app}`, {success: false}, p);
-  console.error(`up, ${dyno.name}`);
+  process.stderr.write(`Running ${cli.color.cyan.bold(command)} on ${context.app}...`);
+  let dyno = yield startDyno(heroku, context.app, context.flags.size, sh, context.flags.env);
+  if (warning) {
+    cli.console.error(cli.color.bold.yellow('!'));
+    cli.warn(warning);
+    cli.console.writeError('Connecting to dyno...');
+  } else {
+    cli.console.writeError('.');
+  }
   attachToRendezvous(url.parse(dyno.attach_url), {
     exitCode: context.flags['exit-code'] ? -1 : 0, // exit with -1 if the stream ends and heroku-command-exit-status is empty
     rejectUnauthorized: heroku.options.rejectUnauthorized,
+    dyno: dyno,
   });
 }
 
@@ -137,11 +152,11 @@ module.exports = {
 Examples:
 
   $ heroku run bash
-  Running bash on app... up, run.1
+  Running bash on app.... up, run.1
   ~ $
 
   $ heroku run -s hobby -- myscript.sh -a arg1 -s arg2
-  Running myscript.sh -a arg1 -s arg2 on app... up, run.1
+  Running myscript.sh -a arg1 -s arg2 on app.... up, run.1
 `,
   variableArgs: true,
   needsAuth: true,
