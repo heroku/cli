@@ -18,6 +18,10 @@ func AppDir() string {
 			return filepath.Join(dir, "heroku")
 		}
 	}
+	dir := os.Getenv("XDG_DATA_HOME")
+	if dir != "" {
+		return filepath.Join(dir, "heroku")
+	}
 	return filepath.Join(HomeDir, ".heroku")
 }
 
