@@ -6,6 +6,7 @@ import (
 	"errors"
 	"io"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -50,6 +51,7 @@ You'll need to compile the tarball from nodejs.org and place it in ~/.heroku/nod
 		return err
 	}
 	SetRootPath(rootPath) // essentially sets this node as the current one
+	addPackageJSON()
 	return t.clearOldNodeInstalls()
 }
 
@@ -179,4 +181,19 @@ func tmpDir(prefix string) string {
 		panic(err)
 	}
 	return dir
+}
+
+func addPackageJSON() {
+	path := filepath.Join(rootPath, "package.json")
+	if exists, _ := fileExists(path); exists {
+		return
+	}
+	d := []byte(`{
+		"description": "Heroku CLI Plugins",
+		"repository": "heroku/heroku-cli",
+		"license": "ISC"
+	}`)
+	if err := ioutil.WriteFile(path, d, 0644); err != nil {
+		log.Println(err)
+	}
 }
