@@ -149,3 +149,13 @@ func createOauthToken(email, password, secondFactor string) (string, error) {
 	}
 	return doc.AccessToken.Token, nil
 }
+
+var authTokenCmd = &Command{
+	Topic:       "auth",
+	Command:     "token",
+	Description: "Display your API token.",
+	NeedsAuth:   true,
+	Run: func(ctx *Context) {
+		Println(ctx.APIToken)
+	},
+}

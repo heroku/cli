@@ -46,6 +46,7 @@ func init() {
 	}
 	cli.Commands = CommandSet{
 		authLoginCmd,
+		authTokenCmd,
 		commandsListCmd,
 		debugErrlogCmd,
 		loginCmd,
