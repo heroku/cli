@@ -22,7 +22,7 @@ function kolkrabbiRequest(url, token) {
     json: true
   }).spread(function (res, body) {
     if (res.statusCode === 404) {
-      let err = new Error('404');
+      let err = new Error(`404 ${url}`);
       err.name = 'NOT_FOUND';
       throw err;
     } else if (res.statusCode >= 400) {
