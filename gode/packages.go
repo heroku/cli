@@ -70,17 +70,17 @@ func UpdatePackage(name string) (string, error) {
 	return stdout, nil
 }
 
-func execNpm(args ...string) (string, string, error) {
+func npmCmd(args ...string) (*exec.Cmd, error) {
 	if err := os.MkdirAll(filepath.Join(rootPath, "node_modules"), 0755); err != nil {
-		return "", "", err
+		return nil, err
 	}
 	nodePath, err := filepath.Rel(rootPath, nodePath)
 	if err != nil {
-		return "", "", err
+		return nil, err
 	}
 	npmPath, err := filepath.Rel(rootPath, npmPath)
 	if err != nil {
-		return "", "", err
+		return nil, err
 	}
 	args = append([]string{npmPath}, args...)
 	if debugging() {
@@ -89,11 +89,20 @@ func execNpm(args ...string) (string, string, error) {
 	cmd := exec.Command(nodePath, args...)
 	cmd.Dir = rootPath
 	cmd.Env = environ()
+	return cmd, nil
+}
+
+func execNpm(args ...string) (string, string, error) {
+	cmd, err := npmCmd(args...)
+	if err != nil {
+		return "", "", err
+	}
 	var stdout, stderr bytes.Buffer
-	cmd.Stdout = &stdout
 	if debugging() {
+		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 	} else {
+		cmd.Stdout = &stdout
 		cmd.Stderr = &stderr
 	}
 	err = cmd.Run()
@@ -101,8 +110,7 @@ func execNpm(args ...string) (string, string, error) {
 }
 
 func environ() []string {
-	env := append(os.Environ(), "NPM_CONFIG_SPIN=false")
-	env = append(env, "NPM_CONFIG_AUTO_AUTH=false")
+	env := append(os.Environ(), "NPM_CONFIG_AUTO_AUTH=false")
 	env = append(env, "NPM_CONFIG_CACHE="+filepath.Join(rootPath, ".npm-cache"))
 	env = append(env, "NPM_CONFIG_REGISTRY="+registry)
 	return env
