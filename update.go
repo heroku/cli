@@ -96,8 +96,7 @@ func updatePlugins(t string) {
 	Errln("done")
 	if updated {
 		Err("rebuilding plugins cache... ")
-		ClearPluginCache()
-		WritePluginCache(GetPlugins())
+		UpdatePluginCache()
 		Errln("done")
 	}
 }
