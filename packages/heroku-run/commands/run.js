@@ -1,37 +1,16 @@
 'use strict';
 
-let co     = require('co');
-let tls    = require('tls');
-let url    = require('url');
-let tty    = require('tty');
-let stream = require('stream');
-let cli    = require('heroku-cli-util');
-
-function buildCommand(args) {
-  if (args.length === 1) {
-    // do not add quotes around arguments if there is only one argument
-    // `heroku run "rake test"` should work like `heroku run rake test`
-    return args[0];
-  }
-  let cmd = '';
-  for (let arg of args) {
-    if (arg.indexOf(' ') !== -1) {
-      arg = `"${arg}"`;
-    }
-    cmd = cmd + " " + arg;
-  }
-  return cmd.trim();
-}
+let co      = require('co');
+let tls     = require('tls');
+let url     = require('url');
+let tty     = require('tty');
+let stream  = require('stream');
+let cli     = require('heroku-cli-util');
+let helpers = require('../lib/helpers');
 
 function env (flag) {
-  let c = {TERM: process.env.TERM};
-  if (flag) {
-    for (let v of flag.split(';')) {
-      let m = v.match(/^\s*([\w\.\-]+)\s*=\s*(.*)?\s*$/);
-      if (m) c[m[1]] = m[2];
-      else cli.warn(`env flag ${v} appears invalid. Avoid using ';' in values.`);
-    }
-  }
+  let c = flag ? helpers.buildEnvFromFlag(flag) : {};
+  c.TERM = process.env.TERM;
   if (tty.isatty(1)) {
     c.COLUMNS = process.stdout.columns;
     c.LINES   = process.stdout.rows;
@@ -123,7 +102,7 @@ function attachToRendezvous(uri, opts) {
 }
 
 function* run (context, heroku) {
-  let command = buildCommand(context.args);
+  let command = helpers.buildCommand(context.args);
   if (!command) {
     cli.error('Usage: heroku run COMMAND\n\nExample: heroku run bash');
     process.exit(1);
