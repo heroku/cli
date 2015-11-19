@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"os/signal"
@@ -54,7 +53,7 @@ func updateNode() {
 }
 
 // LoadPlugins loads the topics and commands from the JavaScript plugins into the CLI
-func (cli *Cli) LoadPlugins(plugins []Plugin) {
+func (cli *Cli) LoadPlugins(plugins map[string]*Plugin) {
 	for _, plugin := range plugins {
 		for _, topic := range plugin.Topics {
 			cli.AddTopic(topic)
@@ -102,8 +101,7 @@ var pluginsInstallCmd = &Command{
 			Err("\nThis does not appear to be a Heroku plugin, uninstalling... ")
 			ExitIfError(gode.RemovePackage(name))
 		}
-		ClearPluginCache()
-		WritePluginCache(GetPlugins())
+		AddPluginsToCache(plugin)
 		Errln("done")
 	},
 }
@@ -157,8 +155,7 @@ var pluginsLinkCmd = &Command{
 		}
 		Println("symlinked", plugin.Name)
 		Err("Updating plugin cache... ")
-		ClearPluginCache()
-		WritePluginCache(GetPlugins())
+		AddPluginsToCache(plugin)
 		Errln("done")
 	},
 }
@@ -200,14 +197,14 @@ Example:
 	},
 }
 
-func runFn(plugin *Plugin, module, topic, command string) func(ctx *Context) {
+func runFn(plugin *Plugin, topic, command string) func(ctx *Context) {
 	return func(ctx *Context) {
-		lockfile := updateLockPath + "." + module
+		lockfile := updateLockPath + "." + plugin.Name
 		if exists, _ := fileExists(lockfile); exists {
 			golock.Lock(lockfile)
 			golock.Unlock(lockfile)
 		}
-		ctx.Dev = isPluginSymlinked(module)
+		ctx.Dev = isPluginSymlinked(plugin.Name)
 		ctxJSON, err := json.Marshal(ctx)
 		if err != nil {
 			panic(err)
@@ -264,7 +261,7 @@ func runFn(plugin *Plugin, module, topic, command string) func(ctx *Context) {
 		var cmd = module.commands.filter(function (c) {
 			return c.topic === topic && c.command == command;
 		})[0];
-		cmd.run(ctx);`, module, plugin.Version, topic, command, string(title), ctxJSON, strconv.Quote(ErrLogPath))
+		cmd.run(ctx);`, plugin.Name, plugin.Version, topic, command, string(title), ctxJSON, strconv.Quote(ErrLogPath))
 
 		// swallow sigint since the plugin will handle it
 		swallowSignal(os.Interrupt)
@@ -342,39 +339,30 @@ func getPlugin(name string, attemptReinstall bool) *Plugin {
 	}
 	var plugin Plugin
 	json.Unmarshal([]byte(output), &plugin)
+	for _, command := range plugin.Commands {
+		command.Plugin = plugin.Name
+		command.Help = strings.TrimSpace(command.Help)
+	}
 	return &plugin
 }
 
 // GetPlugins goes through all the node plugins and returns them in Go stucts
-func GetPlugins() []Plugin {
-	cache := FetchPluginCache()
-	names := PluginNames()
-	plugins := make([]Plugin, 0, len(names))
-	for _, name := range names {
-		plugin := cache[name]
-		if plugin == nil {
-			plugin = getPlugin(name, true)
-		}
-		if plugin != nil {
-			for _, command := range plugin.Commands {
-				command.Plugin = name
-				command.Run = runFn(plugin, name, command.Topic, command.Command)
-				command.Help = strings.TrimSpace(command.Help)
-			}
-			plugins = append(plugins, *plugin)
+func GetPlugins() map[string]*Plugin {
+	plugins := FetchPluginCache()
+	for _, plugin := range plugins {
+		for _, command := range plugin.Commands {
+			command.Run = runFn(plugin, command.Topic, command.Command)
 		}
 	}
 	return plugins
 }
 
-// PluginNames just lists the files in ~/.heroku/node_modules
+// PluginNames lists all the plugin names
 func PluginNames() []string {
-	files, _ := ioutil.ReadDir(filepath.Join(AppDir(), "node_modules"))
-	names := make([]string, 0, len(files))
-	for _, f := range files {
-		if !ignorePlugin(f.Name()) {
-			names = append(names, f.Name())
-		}
+	plugins := FetchPluginCache()
+	names := make([]string, 0, len(plugins))
+	for _, plugin := range plugins {
+		names = append(names, plugin.Name)
 	}
 	return names
 }
@@ -391,16 +379,6 @@ func PluginNamesNotSymlinked() []string {
 	return b
 }
 
-func ignorePlugin(plugin string) bool {
-	ignored := []string{".bin", ".DS_Store", "node-inspector", ".staging"}
-	for _, p := range ignored {
-		if plugin == p {
-			return true
-		}
-	}
-	return false
-}
-
 func isPluginSymlinked(plugin string) bool {
 	path := filepath.Join(AppDir(), "node_modules", plugin)
 	fi, err := os.Lstat(path)
@@ -412,19 +390,22 @@ func isPluginSymlinked(plugin string) bool {
 
 // SetupBuiltinPlugins ensures all the builtinPlugins are installed
 func SetupBuiltinPlugins() {
-	plugins := difference(BuiltinPlugins, PluginNames())
-	if len(plugins) == 0 {
+	pluginNames := difference(BuiltinPlugins, PluginNames())
+	if len(pluginNames) == 0 {
 		return
 	}
 	Err("heroku-cli: Installing core plugins...")
-	err := installPlugins(plugins...)
+	err := installPlugins(pluginNames...)
 	if err != nil {
 		Errln()
 		PrintError(err)
 		return
 	}
-	ClearPluginCache()
-	WritePluginCache(GetPlugins())
+	plugins := make([]*Plugin, 0, len(pluginNames))
+	for _, name := range pluginNames {
+		plugins = append(plugins, getPlugin(name, false))
+	}
+	AddPluginsToCache(plugins...)
 	Errln(" done")
 }
 
