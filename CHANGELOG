@@ -1,3 +1,9 @@
+4.27.4  2015-11-19
+==================
+Fix issue with slow plugin reading
+Enable color on windows
+Show message on login if user is behind proxy
+
 4.27.3  2015-11-18
 ==================
 use godep
