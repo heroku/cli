@@ -28,7 +28,7 @@ function* run () {
     headers: { 'Accept': 'application/vnd.heroku+json;' },
   });
 
-  console.log('=== Heroku Status');
+  cli.styledHeader('Heroku Status');
   console.log(`Production:  ${printStatus(response.status.Production)}`);
   console.log(`Development: ${printStatus(response.status.Development)}`);
 
