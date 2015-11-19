@@ -105,8 +105,11 @@ func v2login(email, password, secondFactor string) (string, error) {
 	if res.StatusCode == 403 {
 		return v2login(email, password, getString("Two-factor code: "))
 	}
-	if res.StatusCode != 200 {
+	if res.StatusCode == 404 {
 		return "", errors.New("Authentication failure.")
+	}
+	if res.StatusCode != 200 {
+		return "", errors.New("Invalid response from API.\nAre you behind a proxy?\nhttps://devcenter.heroku.com/articles/using-the-cli#using-an-http-proxy")
 	}
 	type Doc struct {
 		APIKey string `json:"api_key"`
