@@ -174,21 +174,21 @@ func isDebuggingHeaders() bool {
 }
 
 func yellow(s string) string {
-	if supportsColor() {
+	if supportsColor() && !windows() {
 		return "\x1b[33m" + s + "\x1b[39m"
 	}
 	return s
 }
 
 func red(s string) string {
-	if supportsColor() {
+	if supportsColor() && !windows() {
 		return "\x1b[31m" + s + "\x1b[39m"
 	}
 	return s
 }
 
 func cyan(s string) string {
-	if supportsColor() {
+	if supportsColor() && !windows() {
 		return "\x1b[36m" + s + "\x1b[39m"
 	}
 	return s
@@ -203,7 +203,7 @@ func istty() bool {
 }
 
 func supportsColor() bool {
-	if !istty() || windows() {
+	if !istty() {
 		return false
 	}
 	for _, arg := range os.Args {
