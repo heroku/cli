@@ -101,7 +101,6 @@ var pluginsInstallCmd = &Command{
 			Err("\nThis does not appear to be a Heroku plugin, uninstalling... ")
 			ExitIfError(gode.RemovePackage(name))
 		}
-		AddPluginsToCache(plugin)
 		Errln("done")
 	},
 }
@@ -204,6 +203,7 @@ func runFn(plugin *Plugin, topic, command string) func(ctx *Context) {
 			golock.Lock(lockfile)
 			golock.Unlock(lockfile)
 		}
+		checkIfPluginIsInstalled(plugin.Name)
 		ctx.Dev = isPluginSymlinked(plugin.Name)
 		ctxJSON, err := json.Marshal(ctx)
 		if err != nil {
@@ -401,11 +401,6 @@ func SetupBuiltinPlugins() {
 		PrintError(err)
 		return
 	}
-	plugins := make([]*Plugin, 0, len(pluginNames))
-	for _, name := range pluginNames {
-		plugins = append(plugins, getPlugin(name, false))
-	}
-	AddPluginsToCache(plugins...)
 	Errln(" done")
 }
 
@@ -428,15 +423,26 @@ func contains(arr []string, s string) bool {
 	return false
 }
 
-func installPlugins(plugins ...string) error {
-	for _, plugin := range plugins {
-		lockfile := updateLockPath + "." + plugin
+func installPlugins(names ...string) error {
+	for _, name := range names {
+		lockfile := updateLockPath + "." + name
 		LogIfError(golock.Lock(lockfile))
 	}
-	err := gode.InstallPackage(plugins...)
-	for _, plugin := range plugins {
-		lockfile := updateLockPath + "." + plugin
+	err := gode.InstallPackage(names...)
+	plugins := make([]*Plugin, 0, len(names))
+	for _, name := range names {
+		plugins = append(plugins, getPlugin(name, false))
+	}
+	AddPluginsToCache(plugins...)
+	for _, name := range names {
+		lockfile := updateLockPath + "." + name
 		LogIfError(golock.Unlock(lockfile))
 	}
 	return err
+}
+
+func checkIfPluginIsInstalled(plugin string) {
+	if exists, _ := fileExists(filepath.Join(AppDir(), "node_modules", plugin)); !exists {
+		installPlugins(plugin)
+	}
 }
