@@ -1,3 +1,7 @@
+4.27.5  2015-11-20
+==================
+Quick fix for nil plugin pointer problem
+
 4.27.4  2015-11-19
 ==================
 Fix issue with slow plugin reading
