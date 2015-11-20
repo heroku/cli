@@ -1,6 +1,7 @@
 4.27.5  2015-11-20
 ==================
 Quick fix for nil plugin pointer problem
+Bug fix when plugin was missing but inside ~/.heroku/plugin-cache.json
 
 4.27.4  2015-11-19
 ==================
