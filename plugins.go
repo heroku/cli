@@ -362,7 +362,9 @@ func PluginNames() []string {
 	plugins := FetchPluginCache()
 	names := make([]string, 0, len(plugins))
 	for _, plugin := range plugins {
-		names = append(names, plugin.Name)
+		if plugin != nil {
+			names = append(names, plugin.Name)
+		}
 	}
 	return names
 }
