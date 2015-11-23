@@ -189,7 +189,7 @@ Example:
 
 	Run: func(ctx *Context) {
 		for _, plugin := range GetPlugins() {
-			if len(plugin.Commands) > 0 {
+			if plugin != nil && len(plugin.Commands) > 0 {
 				Println(plugin.Name, plugin.Version)
 			}
 		}
@@ -349,8 +349,10 @@ func getPlugin(name string, attemptReinstall bool) *Plugin {
 // GetPlugins goes through all the node plugins and returns them in Go stucts
 func GetPlugins() map[string]*Plugin {
 	plugins := FetchPluginCache()
-	for _, plugin := range plugins {
-		if plugin != nil {
+	for name, plugin := range plugins {
+		if plugin == nil {
+			delete(plugins, name)
+		} else {
 			for _, command := range plugin.Commands {
 				command.Run = runFn(plugin, command.Topic, command.Command)
 			}
