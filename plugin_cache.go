@@ -21,7 +21,9 @@ func UpdatePluginCache() {
 func AddPluginsToCache(plugins ...*Plugin) {
 	cache := FetchPluginCache()
 	for _, plugin := range plugins {
-		cache[plugin.Name] = plugin
+		if plugin != nil {
+			cache[plugin.Name] = plugin
+		}
 	}
 	savePluginCache(cache)
 }
