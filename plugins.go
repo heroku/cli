@@ -350,8 +350,10 @@ func getPlugin(name string, attemptReinstall bool) *Plugin {
 func GetPlugins() map[string]*Plugin {
 	plugins := FetchPluginCache()
 	for _, plugin := range plugins {
-		for _, command := range plugin.Commands {
-			command.Run = runFn(plugin, command.Topic, command.Command)
+		if plugin != nil {
+			for _, command := range plugin.Commands {
+				command.Run = runFn(plugin, command.Topic, command.Command)
+			}
 		}
 	}
 	return plugins
