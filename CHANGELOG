@@ -1,3 +1,7 @@
+4.27.6  2015-11-21
+==================
+Skip adding null plugins to cache
+
 4.27.5  2015-11-20
 ==================
 Quick fix for nil plugin pointer problem
