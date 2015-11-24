@@ -152,10 +152,8 @@ var pluginsLinkCmd = &Command{
 			os.RemoveAll(newPath)
 			os.Rename(path, newPath)
 		}
-		Println("symlinked", plugin.Name)
-		Err("Updating plugin cache... ")
+		Println("Symlinked", plugin.Name)
 		AddPluginsToCache(plugin)
-		Errln("done")
 	},
 }
 
