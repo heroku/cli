@@ -8,7 +8,7 @@ TARGETS = [
   {os: 'windows', arch: '386'},
   {os: 'windows', arch: 'amd64'},
   {os: 'darwin', arch: 'amd64'},
-  {os: 'linux', arch: 'arm'},
+  {os: 'linux', arch: 'arm', goarm: '6'},
   {os: 'linux', arch: 'amd64'},
   {os: 'linux', arch: '386', go386: '387'},
   {os: 'openbsd', arch: 'amd64'},
@@ -59,6 +59,7 @@ def build(target)
   args = "-o #{path} -ldflags \"#{ldflags}\""
   vars = ["GOOS=#{target[:os]}", "GOARCH=#{target[:arch]}"]
   vars << "GO386=#{target[:go386]}" if target[:go386]
+  vars << "GOARM=#{target[:goarm]}" if target[:goarm]
   ok = system("#{vars.join(' ')} godep go build #{args}")
   exit 1 unless ok
   gzip(path)
