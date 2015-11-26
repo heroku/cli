@@ -1,5 +1,4 @@
 'use strict';
-let columnify = require('columnify');
 let api = require('./shared.js');
 let cli = require('heroku-cli-util');
 
@@ -34,9 +33,11 @@ module.exports = {
         continue;
       }
 
-      console.log(`=== ${db.addon.name} (${db.addon.config_vars.join(', ')})`);
-      console.log(columnify(db.redis.info, {showHeaders: false}));
-      console.log();
+      cli.styledHeader(`${db.addon.name} (${db.addon.config_vars.join(', ')})`);
+      cli.styledHash(db.redis.info.reduce(function(memo, row) {
+        memo[row.name] = row.values;
+        return memo;
+      }, {}), db.redis.info.map(function(row) { return row.name }));
     }
   })
 };

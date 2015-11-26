@@ -19,9 +19,8 @@
     "test": "eslint ."
   },
   "dependencies": {
-    "columnify": "1.5.2",
-    "heroku-cli-util": "5.4.10",
-    "heroku-client": "2.2.2",
+    "heroku-cli-util": "5.6.3",
+    "heroku-client": "2.4.0",
     "ioredis": "1.9.0",
     "ssh2": "0.4.11"
   },
