@@ -8,6 +8,7 @@ module.exports = {
   command: 'info',
   needsApp: true,
   needsAuth: true,
+  default: true,
   args: [{name: 'database', optional: true}],
   description: 'gets information about redis',
   run: cli.command(function *(context, heroku) {
