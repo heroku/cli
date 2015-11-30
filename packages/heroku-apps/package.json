@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/heroku/heroku-apps",
   "dependencies": {
+    "bluebird-queue": "0.0.8",
     "co": "4.6.0",
     "filesize": "3.1.4",
     "heroku-cli-util": "5.6.3",
