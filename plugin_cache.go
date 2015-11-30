@@ -12,7 +12,7 @@ var pluginCachePath = filepath.Join(AppDir(), "plugin-cache.json")
 func UpdatePluginCache() {
 	cache := FetchPluginCache()
 	for name := range cache {
-		cache[name] = getPlugin(name, false)
+		cache[name] = getPlugin(name, true)
 	}
 	savePluginCache(cache)
 }

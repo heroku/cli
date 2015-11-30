@@ -96,7 +96,7 @@ var pluginsInstallCmd = &Command{
 		Errf("Installing plugin %s... ", name)
 		err := installPlugins(name)
 		ExitIfError(err)
-		plugin := getPlugin(name, false)
+		plugin := getPlugin(name, true)
 		if plugin == nil || len(plugin.Commands) == 0 {
 			Err("\nThis does not appear to be a Heroku plugin, uninstalling... ")
 			ExitIfError(gode.RemovePackage(name))
@@ -435,7 +435,7 @@ func installPlugins(names ...string) error {
 	err := gode.InstallPackage(names...)
 	plugins := make([]*Plugin, 0, len(names))
 	for _, name := range names {
-		plugins = append(plugins, getPlugin(name, false))
+		plugins = append(plugins, getPlugin(name, true))
 	}
 	AddPluginsToCache(plugins...)
 	for _, name := range names {
