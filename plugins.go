@@ -8,7 +8,6 @@ import (
 	"os/exec"
 	"os/signal"
 	"path/filepath"
-	"runtime"
 	"sort"
 	"strconv"
 	"strings"
@@ -218,7 +217,6 @@ func runFn(plugin *Plugin, topic, command string) func(ctx *Context) {
 		var ctx = %s;
 		ctx.version = ctx.version + ' ' + moduleName + '/' + moduleVersion + ' node-' + process.version;
 		var logPath = %s;
-		process.chdir(ctx.cwd);
 		function repair (name) {
 			console.error('Attempting to repair ' + name + '...');
 			require('child_process')
@@ -265,26 +263,14 @@ func runFn(plugin *Plugin, topic, command string) func(ctx *Context) {
 		swallowSignal(os.Interrupt)
 
 		cmd := gode.RunScript(script)
-		if ctx.Flags["debugger"] == true {
-			cmd = gode.DebugScript(script)
-		}
-		os.Chdir(cmd.Dir)
-		execBin(cmd.Path, cmd.Args)
-	}
-}
-
-func execBin(bin string, args []string) {
-	if runtime.GOOS == "windows" {
-		cmd := exec.Command(bin, args[1:]...)
 		cmd.Stdin = os.Stdin
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
+		if ctx.Flags["debugger"] == true {
+			cmd = gode.DebugScript(script)
+		}
 		if err := cmd.Run(); err != nil {
 			os.Exit(getExitCode(err))
-		}
-	} else {
-		if err := syscall.Exec(bin, args, os.Environ()); err != nil {
-			panic(err)
 		}
 	}
 }
