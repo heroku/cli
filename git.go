@@ -67,6 +67,10 @@ func gitURLPre() string {
 	return "git@" + gitHost() + ":"
 }
 
+func gitAltURLPre() string {
+	return "ssh://git@" + gitHost() + "/"
+}
+
 func gitHTTPSURLPre() string {
 	return "https://" + httpGitHost() + "/"
 }
@@ -86,6 +90,8 @@ func appNameFromGitURL(remote string) string {
 		return remote[len(gitHTTPSURLPre()) : len(remote)-len(".git")]
 	case strings.HasPrefix(remote, gitURLPre()) && strings.HasSuffix(remote, ".git"):
 		return remote[len(gitURLPre()) : len(remote)-len(".git")]
+	case strings.HasPrefix(remote, gitAltURLPre()) && strings.HasSuffix(remote, ".git"):
+		return remote[len(gitAltURLPre()) : len(remote)-len(".git")]
 	default:
 		return ""
 	}
