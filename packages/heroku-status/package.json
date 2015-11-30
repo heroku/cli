@@ -22,8 +22,8 @@
   },
   "dependencies": {
     "co": "4.6.0",
-    "dateformat": "1.0.12",
     "heroku-cli-util": "5.6.1",
+    "strftime": "0.9.2",
     "timeago": "0.2.0"
   }
 }

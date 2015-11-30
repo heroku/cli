@@ -3,7 +3,7 @@
 let cli        = require('heroku-cli-util');
 let http       = require('../lib/http');
 let timeago    = require('timeago');
-let dateFormat = require('dateformat');
+let strftime   = require('strftime');
 let co         = require('co');
 
 function capitalize(str) {
@@ -33,10 +33,10 @@ function* run () {
   console.log(`Development: ${printStatus(response.status.Development)}`);
 
   response.issues.forEach(function(incident) {
-    console.log(`\n=== ${incident.title} ${dateFormat(incident.created_at, "UTC:h:MM:ss TT Z")} (${incident.full_url})`);
+    console.log(`\n=== ${incident.title} ${strftime('%l:%M %p', incident.created_at)} (${incident.full_url})`);
 
     incident.updates.forEach(function(update) {
-      console.log(`[${capitalize(update.update_type)}] ${dateFormat(incident.created_at, "UTC:h:MM:ss TT Z")} (${timeago(update.updated_at)}) \n${update.contents}\n `);
+      console.log(`[${capitalize(update.update_type)}] ${strftime('%l:%M %p', incident.created_at)} (${timeago(update.updated_at)}) \n${update.contents}\n `);
     });
   });
 }
