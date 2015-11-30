@@ -1,3 +1,9 @@
+4.27.7  2015-11-30
+==================
+Retry plugin install on failure
+Fix ARMv6 builds (Raspberry pi)
+Added --sso flag for login
+
 4.27.6  2015-11-21
 ==================
 Skip adding null plugins to cache
