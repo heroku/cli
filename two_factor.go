@@ -57,7 +57,7 @@ func twoFactorGenerateRun(ctx *Context) {
 	req := apiRequest(ctx.APIToken)
 	req.Method = "POST"
 	req.Uri = req.Uri + "/account/recovery-codes"
-	req.AddHeader("Heroku-Password", getPassword())
+	req.AddHeader("Heroku-Password", getPassword("Password (typing will be hidden): "))
 	req.AddHeader("Heroku-Two-Factor-Code", getString("Two-factor code: "))
 	res, err := req.Do()
 	ExitIfError(err)
@@ -91,7 +91,7 @@ func twoFactorDisableRun(ctx *Context) {
 	req.Uri = req.Uri + "/account/"
 	req.Body = map[string]interface{}{
 		"two_factor_authentication": "false",
-		"password":                  getPassword(),
+		"password":                  getPassword("Password (typing will be hidden):"),
 	}
 	res, err := req.Do()
 	ExitIfError(err)
