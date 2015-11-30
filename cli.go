@@ -194,7 +194,7 @@ func getNetrc() *netrc.Netrc {
 func auth() (password string) {
 	token := apiToken()
 	if token == "" {
-		login()
+		interactiveLogin()
 		return auth()
 	}
 	return token

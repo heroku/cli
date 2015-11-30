@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/dickeyxxx/speakeasy"
+	"github.com/toqueteos/webbrowser"
 )
 
 var loginTopic = &Topic{
@@ -19,24 +20,73 @@ var loginTopic = &Topic{
 var loginCmd = &Command{
 	Topic:       "login",
 	Description: "Login with your Heroku credentials.",
-	Run: func(ctx *Context) {
-		login()
+	Flags: []Flag{
+		{Name: "sso", Description: "login for enterprise users under SSO"},
 	},
+	Run: login,
 }
 
 var authLoginCmd = &Command{
 	Topic:       "auth",
 	Command:     "login",
 	Description: "Login with your Heroku credentials.",
-	Run: func(ctx *Context) {
-		login()
+	Flags: []Flag{
+		{Name: "sso", Description: "login for enterprise users under SSO"},
 	},
+	Run: login,
 }
 
-func login() {
+func login(ctx *Context) {
+	if ctx.Flags["sso"] == true {
+		ssoLogin()
+	} else {
+		interactiveLogin()
+	}
+}
+
+func ssoLogin() {
+	url := os.Getenv("SSO_URL")
+	if url == "" {
+		org := os.Getenv("HEROKU_ORGANIZATION")
+		for org == "" {
+			org = getString("Enter your organization name: ")
+		}
+		url = "https://sso.heroku.com/saml/" + org + "/init?cli=true"
+	}
+	Err("Opening browser for login...")
+	err := webbrowser.Open(url)
+	if err != nil {
+		Errln(" " + err.Error() + ".\nNavigate to " + cyan(url))
+	} else {
+		Errln(" done")
+	}
+	token := getPassword("Enter your access token (typing will be hidden): ")
+	user := getUserFromToken(token)
+	if user == "" {
+		ExitIfError(errors.New("Access token invalid."))
+	}
+	saveOauthToken(user, token)
+	Println("Logged in as " + cyan(user))
+}
+
+func getUserFromToken(token string) string {
+	req := apiRequest(token)
+	req.Method = "GET"
+	req.Uri = req.Uri + "/account"
+	res, err := req.Do()
+	ExitIfError(err)
+	if res.StatusCode != 200 {
+		return ""
+	}
+	var doc map[string]interface{}
+	res.Body.FromJsonTo(&doc)
+	return doc["email"].(string)
+}
+
+func interactiveLogin() {
 	Println("Enter your Heroku credentials.")
 	email := getString("Email: ")
-	password := getPassword()
+	password := getPassword("Password (typing will be hidden): ")
 
 	token, err := v2login(email, password, "")
 	// TODO: use createOauthToken (v3 API)
@@ -71,8 +121,8 @@ func getString(prompt string) string {
 	return s
 }
 
-func getPassword() string {
-	password, err := speakeasy.Ask("Password (typing will be hidden): ")
+func getPassword(prompt string) string {
+	password, err := speakeasy.Ask(prompt)
 	if err != nil {
 		if err.Error() == "The handle is invalid." {
 			Errln(`Login is currently incompatible with git bash/cygwin
