@@ -55,7 +55,7 @@ describe('heroku buildpacks:remove', function() {
         expect(cli.stdout).to.equal(
 `Buildpack removed.
 `);
-        expect(unwrap(cli.stderr)).to.equal(' ▸    The LANGUAGE_PACK_URL config var is still set and will be used for the next release\n');
+        expect(unwrap(cli.stderr)).to.equal(' ▸    WARNING: The LANGUAGE_PACK_URL config var is still set and will be used for the next release\n');
       });
     });
 
@@ -76,7 +76,7 @@ describe('heroku buildpacks:remove', function() {
         expect(cli.stdout).to.equal(
 `Buildpack removed.
 `);
-        expect(unwrap(cli.stderr)).to.equal(' ▸    The BUILDPACK_URL config var is still set and will be used for the next release\n');
+        expect(unwrap(cli.stderr)).to.equal(' ▸    WARNING: The BUILDPACK_URL config var is still set and will be used for the next release\n');
       });
     });
 
