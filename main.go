@@ -76,8 +76,8 @@ func main() {
 	runtime.GOMAXPROCS(1) // more procs causes runtime: failed to create new OS thread on Ubuntu
 	Update(Channel, "block")
 	SetupNode()
-	SetupBuiltinPlugins()
 	err := cli.Run(os.Args)
+	SetupBuiltinPlugins()
 	TriggerBackgroundUpdate()
 	if err == ErrHelp {
 		// Command wasn't found so load the plugins and try again
