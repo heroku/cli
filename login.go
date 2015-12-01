@@ -26,6 +26,18 @@ var loginCmd = &Command{
 	Run: login,
 }
 
+var loginQuietCmd = &Command{
+	Topic:       "login",
+	Command:     "quiet",
+	Description: "Login with your Heroku credentials supplied on the command line.",
+	Flags:       []Flag{},
+	Args: []Arg{
+		{Name: "email"},
+		{Name: "password"},
+	},
+	Run: quietLogin,
+}
+
 var authLoginCmd = &Command{
 	Topic:       "auth",
 	Command:     "login",
@@ -41,6 +53,16 @@ func login(ctx *Context) {
 		ssoLogin()
 	} else {
 		interactiveLogin()
+	}
+}
+
+func quietLogin(ctx *Context) {
+	email := ctx.Args.(map[string]string)["email"]
+	passw := ctx.Args.(map[string]string)["password"]
+	if email == "" || passw == "" {
+		ExitIfError(errors.New("Quiet login requires email and password arguments"))
+	} else {
+		loginImpl(email, passw, "")
 	}
 }
 
@@ -88,7 +110,11 @@ func interactiveLogin() {
 	email := getString("Email: ")
 	password := getPassword("Password (typing will be hidden): ")
 
-	token, err := v2login(email, password, "")
+	loginImpl(email, password, "")
+}
+
+func loginImpl(email string, password string, secondFactor string) {
+	token, err := v2login(email, password, secondFactor)
 	// TODO: use createOauthToken (v3 API)
 	// token, err := createOauthToken(email, password, "")
 	ExitIfError(err)
