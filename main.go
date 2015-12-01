@@ -50,6 +50,7 @@ func init() {
 		commandsListCmd,
 		debugErrlogCmd,
 		loginCmd,
+        loginQuietCmd,
 		pluginsInstallCmd,
 		pluginsLinkCmd,
 		pluginsListCmd,
