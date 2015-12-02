@@ -1,4 +1,4 @@
-require_relative 'v3_dogwood'
+require_relative 'v3'
 
 module Heroku
   class API
@@ -6,7 +6,7 @@ module Heroku
       request(
         :method => :get,
         :expects => [200, 206],
-        :headers  => ACCEPT_V3_DOGWOOD,
+        :headers => ACCEPT_V3,
         :path => "/spaces"
       )
     end
@@ -16,7 +16,7 @@ module Heroku
         :method => :post,
         :body => MultiJson.dump(body),
         :expects => [201],
-        :headers  => ACCEPT_V3_DOGWOOD,
+        :headers => ACCEPT_V3,
         :path => "/spaces"
       )
     end
@@ -25,7 +25,7 @@ module Heroku
       request(
         :method => :get,
         :expects => [200],
-        :headers  => ACCEPT_V3_DOGWOOD,
+        :headers => ACCEPT_V3,
         :path => "/spaces/#{space_identity}"
       )
       end
@@ -34,7 +34,7 @@ module Heroku
       request(
         :method => :get,
         :expects => [200],
-        :headers  => ACCEPT_V3_DOGWOOD,
+        :headers => ACCEPT_V3,
         :path => "/spaces/#{space_identity}/nat"
       )
     end
@@ -44,7 +44,7 @@ module Heroku
         :method => :patch,
         :body => MultiJson.dump(body),
         :expects => [200],
-        :headers  => ACCEPT_V3_DOGWOOD,
+        :headers => ACCEPT_V3,
         :path => "/spaces/#{space_identity}"
       )
     end
@@ -53,7 +53,7 @@ module Heroku
       request(
         :method => :delete,
         :expects => [200],
-        :headers  => ACCEPT_V3_DOGWOOD,
+        :headers => ACCEPT_V3,
         :path => "/spaces/#{space_identity}"
       )
     end
