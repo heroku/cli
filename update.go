@@ -51,7 +51,7 @@ func init() {
 
 // Update updates the CLI and plugins
 func Update(channel string, t string) {
-	Debugln("running from " + binPath)
+	Debugln("running " + version() + " from " + binPath)
 	if !IsUpdateNeeded(t) {
 		return
 	}
