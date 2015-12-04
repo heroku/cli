@@ -1,3 +1,10 @@
+4.27.8  2015-12-04
+==================
+Show symlinked plugins on `heroku plugins`
+Skip checking symlinks of nil plugins
+Fix ssh git urls when HEROKU_HOST is set
+Show version in HEROKU_DEBUG output
+
 4.27.7  2015-11-30
 ==================
 Retry plugin install on failure
