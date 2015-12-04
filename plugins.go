@@ -387,7 +387,7 @@ func isPluginSymlinked(plugin string) bool {
 	path := filepath.Join(AppDir(), "node_modules", plugin)
 	fi, err := os.Lstat(path)
 	if err != nil {
-		panic(err)
+		return false
 	}
 	return fi.Mode()&os.ModeSymlink != 0
 }
