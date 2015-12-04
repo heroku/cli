@@ -188,7 +188,11 @@ Example:
 	Run: func(ctx *Context) {
 		for _, plugin := range GetPlugins() {
 			if plugin != nil && len(plugin.Commands) > 0 {
-				Println(plugin.Name, plugin.Version)
+				symlinked := ""
+				if isPluginSymlinked(plugin.Name) {
+					symlinked = " (symlinked)"
+				}
+				Println(plugin.Name, plugin.Version, symlinked)
 			}
 		}
 	},
