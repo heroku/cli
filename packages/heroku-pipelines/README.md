@@ -93,6 +93,16 @@ My-App:    succeeded
 My-App-Eu: succeeded
 ```
 
+#### Promote to specified apps in a pipeline
+```bash
+$ heroku pipelines:promote -a example-staging --to my-production-app1,my-production-app2
+Starting promotion to apps: my-production-app1,my-production-app2... done
+Waiting for promotion to complete... done
+Promotion successful
+my-production-app1: succeeded
+my-production-app2: succeeded
+```
+
 #### Update apps in a pipeline
 
 ```bash
