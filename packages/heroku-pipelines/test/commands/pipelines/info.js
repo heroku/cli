@@ -25,7 +25,7 @@ describe('pipelines:info', function () {
 
     return cmd.run({args: {pipeline: 'example'}})
     .then(function () {
-      cli.stdout.should.contain('Staging:');
+      cli.stdout.should.contain('staging:');
       cli.stdout.should.contain('example-staging');
     });
   });

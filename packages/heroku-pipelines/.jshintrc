@@ -41,6 +41,7 @@
     "document",
     "element",
     "inject",
-    "it"
+    "it",
+    "context"
   ]
 }

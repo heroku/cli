@@ -47,6 +47,27 @@ describe('pipelines:promote', function() {
     status: 'pending'
   };
 
+  function mockPromotionTargets() {
+    let pollCount = 0;
+    return nock(api)
+      .get(`/pipeline-promotions/${promotion.id}/promotion-targets`)
+      .twice()
+      .reply(200, function() {
+        pollCount++;
+
+        return [{
+          app: { id: targetApp1.id },
+          status: 'successful',
+          error_message: null
+        }, {
+          app: { id: targetApp2.id },
+          // Return failed on the second poll loop
+          status: pollCount > 1 ? 'failed' : 'pending',
+          error_message: pollCount > 1 ? 'Because reasons' : null
+        }];
+      });
+  }
+
   beforeEach(function () {
     cli.mockConsole();
 
@@ -69,29 +90,50 @@ describe('pipelines:promote', function() {
       ]
     }).reply(201, promotion);
 
-    let pollCount = 0;
-    nock(api)
-      .get(`/pipeline-promotions/${promotion.id}/promotion-targets`)
-      .twice()
-      .reply(200, function() {
-        pollCount++;
+    mockPromotionTargets();
 
-        return [{
-          app: { id: targetApp1.id },
-          status: 'successful',
-          error_message: null
-        }, {
-          app: { id: targetApp2.id },
-          // Return failed on the second poll loop
-          status: pollCount > 1 ? 'failed' : 'pending',
-          error_message: pollCount > 1 ? 'Because reasons' : null
-        }];
-      });
-
-    return cmd.run({ app: sourceApp.name }).then(function() {
+    return cmd.run({ app: sourceApp.name}).then(function() {
       req.done();
       expect(cli.stdout).to.contain('failed');
       expect(cli.stdout).to.contain('Because reasons');
+    });
+  });
+
+  context('passing a `to` flag', function() {
+    let req;
+
+    beforeEach(function() {
+      req = nock(api).post('/pipeline-promotions', {
+        pipeline: { id: pipeline.id },
+        source:   { app: { id: sourceApp.id } },
+        targets:  [
+          { app: { id: targetApp1.id } }
+        ]
+      }).reply(201, promotion);
+
+      mockPromotionTargets();
+    });
+
+    it('can promote by app name', function() {
+      return cmd.run({
+        app: sourceApp.name,
+        flags: { to: targetApp1.name }
+      }).then(function() {
+        req.done();
+        expect(cli.stdout).to.contain('failed');
+        expect(cli.stdout).to.contain('Because reasons');
+      });
+    });
+
+    it('can promote by app id', function() {
+      return cmd.run({
+        app: sourceApp.name,
+        flags: { to: targetApp1.id }
+      }).then(function() {
+        req.done();
+        expect(cli.stdout).to.contain('failed');
+        expect(cli.stdout).to.contain('Because reasons');
+      });
     });
   });
 });
