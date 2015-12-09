@@ -213,3 +213,10 @@ func supportsColor() bool {
 	}
 	return os.Getenv("COLOR") != "false"
 }
+
+func plural(word string, count int) string {
+	if count == 1 {
+		return word
+	}
+	return word + "s"
+}

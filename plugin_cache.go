@@ -8,15 +8,6 @@ import (
 
 var pluginCachePath = filepath.Join(AppDir(), "plugin-cache.json")
 
-// UpdatePluginCache updates all the plugins in ~/.heroku/plugin-cache.json
-func UpdatePluginCache() {
-	cache := FetchPluginCache()
-	for name := range cache {
-		cache[name] = getPlugin(name, true)
-	}
-	savePluginCache(cache)
-}
-
 // AddPluginsToCache adds/updates a set of plugins to ~/.heroku/plugin-cache.json
 func AddPluginsToCache(plugins ...*Plugin) {
 	cache := FetchPluginCache()
