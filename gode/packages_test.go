@@ -37,11 +37,14 @@ func TestRemovePackage(t *testing.T) {
 	}
 }
 
-func TestUpdatePackages(t *testing.T) {
+func TestOutdatedPackages(t *testing.T) {
 	setup()
-	must(InstallPackage("request"))
-	_, err := UpdatePackages()
+	must(InstallPackage("heroku-cli-util@1.0.0"))
+	packages, err := OutdatedPackages("heroku-cli-util")
 	must(err)
+	if packages["heroku-cli-util"] == "" {
+		t.Fatal("heroku-cli-util not found")
+	}
 }
 
 func TestPackagesGithubPackage(t *testing.T) {

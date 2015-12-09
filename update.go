@@ -60,7 +60,7 @@ func Update(channel string, t string) {
 		touchAutoupdateFile()
 		updateCLI(channel)
 		updateNode()
-		updatePlugins(t)
+		updatePlugins()
 		done <- true
 	}()
 	select {
@@ -70,38 +70,34 @@ func Update(channel string, t string) {
 	}
 }
 
-func updatePlugins(t string) {
-	updated := false
+func updatePlugins() {
 	plugins := PluginNamesNotSymlinked()
 	if len(plugins) == 0 {
 		return
 	}
 	Err("Updating plugins... ")
-	if t == "foreground" || t == "block" {
-		b, _ := gode.UpdatePackages()
-		if len(b) > 0 {
-			updated = true
-		}
-	} else {
-		for _, name := range plugins {
+	packages, err := gode.OutdatedPackages(plugins...)
+	PrintError(err)
+	if len(packages) > 0 {
+		for name, version := range packages {
 			lockfile := updateLockPath + "." + name
 			LogIfError(golock.Lock(lockfile))
-			b, _ := gode.UpdatePackage(name)
+			err := gode.InstallPackage(name + "@" + version)
+			PrintError(err)
+			AddPluginsToCache(getPlugin(name, true))
 			LogIfError(golock.Unlock(lockfile))
-			if len(b) > 0 {
-				updated = true
-			}
 		}
-	}
-	Errln("done")
-	if updated {
-		Err("rebuilding plugins cache... ")
-		UpdatePluginCache()
-		Errln("done")
+		Errf("done. Updated %d %s.\n", len(packages), plural("package", len(packages)))
+	} else {
+		Errln("no plugins to update.")
 	}
 }
 
 func updateCLI(channel string) {
+	if channel == "?" {
+		// do not update dev version
+		return
+	}
 	manifest, err := getUpdateManifest(channel)
 	if err != nil {
 		Warn("Error updating CLI")
@@ -136,9 +132,6 @@ func updateCLI(channel string) {
 
 // IsUpdateNeeded checks if an update is available
 func IsUpdateNeeded(t string) bool {
-	if Channel == "?" {
-		return false
-	}
 	f, err := os.Stat(autoupdateFile)
 	if err != nil {
 		return true
