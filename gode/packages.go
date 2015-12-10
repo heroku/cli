@@ -52,22 +52,20 @@ func RemovePackage(name string) error {
 	return nil
 }
 
-// UpdatePackages updates all packages.
-func UpdatePackages() (string, error) {
-	stdout, stderr, err := execNpm("update")
+// OutdatedPackages returns a map of packages and their latest version
+func OutdatedPackages(names ...string) (map[string]string, error) {
+	args := append([]string{"outdated", "--json"}, names...)
+	stdout, stderr, err := execNpm(args...)
 	if err != nil {
-		return stdout, errors.New(stderr)
+		return nil, errors.New(stderr)
 	}
-	return stdout, nil
-}
-
-// UpdatePackage updates a package.
-func UpdatePackage(name string) (string, error) {
-	stdout, stderr, err := execNpm("update", name)
-	if err != nil {
-		return stdout, errors.New(stderr)
+	var outdated map[string]struct{ Latest string }
+	json.Unmarshal([]byte(stdout), &outdated)
+	packages := make(map[string]string, len(outdated))
+	for name, versions := range outdated {
+		packages[name] = versions.Latest
 	}
-	return stdout, nil
+	return packages, nil
 }
 
 func npmCmd(args ...string) (*exec.Cmd, error) {
