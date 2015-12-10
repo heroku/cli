@@ -152,6 +152,7 @@ var commandsListCmd = &Command{
 	Description: "list all commands",
 	Flags:       []Flag{{Name: "json"}},
 	Run: func(ctx *Context) {
+		SetupBuiltinPlugins()
 		cli.LoadPlugins(GetPlugins())
 		if ctx.Flags["json"] == true {
 			cli.Commands.loadUsages()
