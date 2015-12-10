@@ -1,6 +1,6 @@
 {
   "name": "heroku-status",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "CLI Plugin for Heroku Status",
   "main": "index.js",
   "author": "Raul Barroso @raulb",
