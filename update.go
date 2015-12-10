@@ -139,7 +139,7 @@ func IsUpdateNeeded(t string) bool {
 	if t == "background" {
 		return time.Since(f.ModTime()) > 4*time.Hour
 	} else if t == "block" {
-		return time.Since(f.ModTime()) > 336*time.Hour
+		return time.Since(f.ModTime()) > 2160*time.Hour // 90 days
 	}
 	return true
 }
