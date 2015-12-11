@@ -84,7 +84,11 @@ func getUserFromToken(token string) string {
 }
 
 func interactiveLogin() {
-	Println("Enter your Heroku credentials.")
+	if apiHost() == "api.heroku.com" {
+		Println("Enter your Heroku credentials.")
+	} else {
+		Printf("Enter your Heroku credentials for %s.\n", apiHost())
+	}
 	email := getString("Email: ")
 	password := getPassword("Password (typing will be hidden): ")
 
