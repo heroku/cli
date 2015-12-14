@@ -1,18 +1,14 @@
 package gode
 
-import (
-	"fmt"
-	"os"
-)
+import "fmt"
 
 func ExampleRunScript() {
-	SetRootPath(os.TempDir())
+	SetRootPath("tmp")
 	err := Setup()
 	if err != nil {
 		panic(err)
 	}
-	cmd := RunScript(`console.log("hello world!")`)
-	output, err := cmd.CombinedOutput()
+	output, err := RunScript(`console.log("hello world!")`).CombinedOutput()
 	if err != nil {
 		panic(err)
 	}
