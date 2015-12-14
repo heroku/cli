@@ -1,3 +1,11 @@
+4.27.9  2015-12-14
+==================
+Increase blocking update intervals to 90 days
+Ensure plugins always update
+Setup builtin plugins before running commands command
+Remove script from process title
+Show devcloud on login prompt
+
 4.27.8  2015-12-04
 ==================
 Show symlinked plugins on `heroku plugins`
