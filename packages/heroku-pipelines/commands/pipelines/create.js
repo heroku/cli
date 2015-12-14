@@ -4,6 +4,7 @@ let cli = require('heroku-cli-util');
 let co  = require('co');
 let infer = require('../../lib/infer');
 let prompt = require('../../lib/prompt');
+let stages = require('../../lib/stages').names;
 
 function* run(context, heroku) {
   var name, stage;
@@ -27,7 +28,7 @@ function* run(context, heroku) {
       type: "list",
       name: "stage",
       message: `Stage of ${context.app}`,
-      choices: ["review", "development", "test", "qa", "staging", "production"],
+      choices: stages,
       default: guesses[1]
     });
   }

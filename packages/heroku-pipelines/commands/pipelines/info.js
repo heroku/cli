@@ -2,6 +2,7 @@
 
 let cli          = require('heroku-cli-util');
 let disambiguate = require('../../lib/disambiguate');
+let stageNames   = require('../../lib/stages').names;
 
 module.exports = {
   topic: 'pipelines',
@@ -23,7 +24,7 @@ module.exports = {
     // Sort Apps by stage, name
     // Display in table
     let stages={};
-    for (var app in apps) {
+    for (let app in apps) {
       if (apps.hasOwnProperty(app)) {
         let stage = apps[app].coupling.stage;
         if(stages[stage]) {
@@ -34,6 +35,6 @@ module.exports = {
       }
     }
     // Pass in sort order for stages
-    cli.styledHash(stages, ["review", "development", "test", "qa", "staging", "production"]);
+    cli.styledHash(stages, stageNames);
   })
 };

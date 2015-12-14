@@ -4,6 +4,7 @@ let cli = require('heroku-cli-util');
 let infer = require('../../lib/infer');
 let disambiguate = require('../../lib/disambiguate');
 let prompt = require('../../lib/prompt');
+let stageNames = require('../../lib/stages').names;
 
 module.exports = {
   topic: 'pipelines',
@@ -32,7 +33,7 @@ module.exports = {
         type: "list",
         name: "stage",
         message: `Stage of ${context.app}`,
-        choices: ["review", "development", "test", "qa", "staging", "production"],
+        choices: stageNames,
         default: guesses[1]
       });
     }
