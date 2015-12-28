@@ -28,7 +28,7 @@ module Heroku
         :headers => ACCEPT_V3,
         :path => "/spaces/#{space_identity}"
       )
-      end
+    end
 
     def get_space_nat(space_identity)
       request(
