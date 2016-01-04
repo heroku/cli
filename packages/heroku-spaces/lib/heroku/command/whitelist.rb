@@ -48,7 +48,7 @@ class Heroku::Command::Whitelist < Heroku::Command::Base
     validate_arguments!
 
     whitelist = api.get_whitelist(options[:space]).body
-    rules = whitelist.fetch(:rules, [])
+    rules = whitelist.fetch("rules", [])
 
     exists = rules.find {|rs| rs[:source] == options[:source]}
     if exists
@@ -63,7 +63,7 @@ class Heroku::Command::Whitelist < Heroku::Command::Base
 
     new_rule = {action: 'allow', source: options[:source]}
     rules << new_rule
-    whitelist[:rules] = rules
+    whitelist["rules"] = rules
 
     new_whitelist = api.put_whitelist(options[:space], whitelist).body
     style new_whitelist
@@ -102,7 +102,7 @@ class Heroku::Command::Whitelist < Heroku::Command::Base
     end
 
     if rules.length != original_length
-      whitelist[:rules] = rules
+      whitelist["rules"] = rules
       new_whitelist = api.put_whitelist(options[:space], whitelist).body
       style new_whitelist
       display_delay
