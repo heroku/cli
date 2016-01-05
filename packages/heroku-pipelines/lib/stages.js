@@ -5,7 +5,7 @@ const STAGES = [
   },
   {
     name: 'development',
-    inferRegex: /-(dev|development)$/
+    inferRegex: /-(dev|development|uat|tst|test|qa)$/
   },
   {
     name: 'staging',
