@@ -1,3 +1,7 @@
+4.27.10 2016-01-08
+==================
+Added heroku-spaces to core plugins
+
 4.27.9  2015-12-14
 ==================
 Increase blocking update intervals to 90 days
