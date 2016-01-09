@@ -22,12 +22,13 @@ var cli = &Cli{}
 
 // BuiltinPlugins are the core plugins that will be autoinstalled
 var BuiltinPlugins = []string{
-	"heroku-cli-addons",
 	"heroku-apps",
+	"heroku-cli-addons",
 	"heroku-fork",
 	"heroku-git",
 	"heroku-local",
 	"heroku-run",
+	"heroku-spaces",
 	"heroku-status",
 }
 
