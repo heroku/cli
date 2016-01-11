@@ -1,0 +1,32 @@
+{
+  "name": "heroku-spaces",
+  "version": "2.0.6",
+  "description": "Heroku plugin to manage Heroku Private Spaces",
+  "main": "index.js",
+  "author": "Heroku",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/heroku/heroku-spaces"
+  },
+  "bugs": {
+    "url": "https://github.com/heroku/heroku-spaces/issues"
+  },
+  "keywords": [
+    "heroku-plugin"
+  ],
+  "license": "ISC",
+  "scripts": {
+    "test": "jshint . && mocha"
+  },
+  "dependencies": {
+    "co": "4.6.0",
+    "heroku-cli-util": "5.7.3",
+    "lodash": "3.10.1"
+  },
+  "devDependencies": {
+    "chai": "3.4.1",
+    "jshint": "*",
+    "mocha": "*",
+    "nock": "*"
+  }
+}
