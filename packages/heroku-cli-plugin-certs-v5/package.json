@@ -1,0 +1,32 @@
+{
+  "name": "heroku-sni",
+  "version": "1.0.0",
+  "description": "heroku sni plugin",
+  "main": "index.js",
+  "author": "Ransom Briggs rbriggs@heroku.com",
+  "repository": "heroku/heroku-sni",
+  "bugs": {
+    "url": "https://github.com/heroku/heroku-sni/issues"
+  },
+  "scripts": {
+    "test": "mocha && jshint ."
+  },
+  "dependencies": {
+    "co": "4.6.0",
+    "heroku-cli-util": "5.6.3",
+    "lodash": "3.10.1",
+    "moment": "2.10.6"
+  },
+  "devDependencies": {
+    "chai": "^3.3.0",
+    "jshint": "*",
+    "mocha": "^2.3.3",
+    "nock": "3.2.0",
+    "sinon": "1.17.2",
+    "sinon-chai": "2.8.0"
+  },
+  "keywords": [
+    "heroku-plugin"
+  ],
+  "license": "ISC"
+}
