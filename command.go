@@ -22,6 +22,8 @@ type Command struct {
 	Hidden       bool               `json:"hidden"`
 	NeedsApp     bool               `json:"needsApp"`
 	WantsApp     bool               `json:"wantsApp"`
+	NeedsOrg     bool               `json:"needsOrg"`
+	WantsOrg     bool               `json:"wantsOrg"`
 	NeedsAuth    bool               `json:"needsAuth"`
 	VariableArgs bool               `json:"variableArgs"`
 	Args         []Arg              `json:"args"`
@@ -44,6 +46,9 @@ func (c *Command) buildFullHelp() string {
 	flags := c.Flags
 	if c.NeedsApp || c.WantsApp {
 		flags = append(flags, *appFlag, *remoteFlag)
+	}
+	if c.NeedsOrg || c.WantsOrg {
+		flags = append(flags, *orgFlag)
 	}
 	lines := make([]string, 0, len(flags))
 	if c.Description != "" {

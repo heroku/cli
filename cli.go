@@ -16,6 +16,9 @@ var ErrHelp = errors.New("help")
 // ErrAppNeeded means the command needs an app context and one was not found.
 var ErrAppNeeded = errors.New("No app specified.\nRun this command from an app folder or specify which app to use with --app APP")
 
+// ErrOrgNeeded means the command needs an org context and one was not found.
+var ErrOrgNeeded = errors.New("No org specified.\nRun this command with --org or by setting HEROKU_ORGANIZATION")
+
 // Cli handles parsing and dispatching of commands
 type Cli struct {
 	Topics   TopicSet
@@ -47,6 +50,16 @@ func (cli *Cli) Run(args []string) (err error) {
 		}
 		if ctx.App == "" && ctx.Command.NeedsApp {
 			return ErrAppNeeded
+		}
+	}
+	if ctx.Command.NeedsOrg || ctx.Command.WantsOrg {
+		if org, ok := ctx.Flags["org"].(string); ok {
+			ctx.Org = org
+		} else {
+			ctx.Org = os.Getenv("HEROKU_ORGANIZATION")
+		}
+		if ctx.Org == "" && ctx.Command.NeedsOrg {
+			return ErrOrgNeeded
 		}
 	}
 	if ctx.Command.NeedsAuth {
@@ -95,6 +108,9 @@ func parseVarArgs(command *Command, args []string) (result []string, flags map[s
 	}
 	if command.NeedsApp || command.WantsApp {
 		possibleFlags = append(possibleFlags, appFlag, remoteFlag)
+	}
+	if command.NeedsOrg || command.WantsOrg {
+		possibleFlags = append(possibleFlags, orgFlag)
 	}
 	for i := 0; i < len(args); i++ {
 		switch {
