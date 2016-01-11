@@ -30,6 +30,13 @@ var remoteFlag = &Flag{
 	Description: "git remote of app to run command against",
 }
 
+var orgFlag = &Flag{
+	Name:        "org",
+	Char:        "o",
+	HasValue:    true,
+	Description: "organization to use",
+}
+
 var debuggerFlag = &Flag{
 	Name: "debugger",
 }
