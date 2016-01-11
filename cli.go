@@ -57,9 +57,9 @@ func (cli *Cli) Run(args []string) (err error) {
 			ctx.Org = org
 		} else {
 			ctx.Org = os.Getenv("HEROKU_ORGANIZATION")
-			if ctx.Org == "" && ctx.Command.NeedsOrg {
-				return ErrOrgNeeded
-			}
+		}
+		if ctx.Org == "" && ctx.Command.NeedsOrg {
+			return ErrOrgNeeded
 		}
 	}
 	if ctx.Command.NeedsAuth {
