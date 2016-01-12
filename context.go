@@ -7,7 +7,7 @@ type Context struct {
 	Topic         *Topic                 `json:"topic"`
 	Command       *Command               `json:"command"`
 	App           string                 `json:"app"`
-	Org           string                 `json:"org"`
+	Org           string                 `json:"org,omitempty"`
 	Args          interface{}            `json:"args"`
 	Flags         map[string]interface{} `json:"flags"`
 	Cwd           string                 `json:"cwd"`
