@@ -20,7 +20,9 @@ function* run (context, heroku) {
     };
   }
 
-  let info = yield getInfo(context.app);
+  let app = context.args.app || context.app;
+  if (!app) throw new Error('No app specified.\nUSAGE: heroku info my-app');
+  let info = yield getInfo(app);
   let addons = _(info.addons).pluck('plan.name').sort().value();
   let collaborators = _(info.collaborators).pluck('user.email').pull(info.app.owner.email).sort().value();
 
@@ -108,8 +110,9 @@ Examples:
  git_url=https://git.heroku.com/example.git
  repo_size=5000000
  ...`,
-  needsApp: true,
+  wantsApp: true,
   needsAuth: true,
+  args:  [{name: 'app', hidden: true, optional: true}],
   flags: [
     {name: 'shell', char: 's', description: 'output more shell friendly key/value pairs'},
     {name: 'extended', char: 'x', hidden: true},

@@ -1,5 +1,6 @@
 exports.topics = [
   { name: 'apps',        description: 'manage apps' },
+  { name: 'create',      hidden: true },
   { name: 'buildpacks',  description: 'manage the buildpacks for an app' },
   { name: 'config',      description: 'manage app config vars' },
   { name: 'domains',     description: 'manage the domains for an app' },
@@ -10,6 +11,8 @@ exports.topics = [
 ];
 
 exports.commands = [
+  require('./commands/apps/create').apps,
+  require('./commands/apps/create').root,
   require('./commands/apps/info').apps,
   require('./commands/apps/info').root,
   require('./commands/buildpacks'),
