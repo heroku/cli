@@ -11,8 +11,7 @@ function* run (context, heroku) {
     cli.log(''); // match v3 output for missing
   } else {
     if (context.flags.shell) {
-      v = process.stdout.isTTY ? shellescape([v]) : v;
-      cli.log(`${context.args.key}=${v}`);
+      cli.log(`${context.args.key}=${shellescape([v])}`);
     } else {
       cli.log(v);
     }

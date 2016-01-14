@@ -9,8 +9,7 @@ function* run (context, heroku) {
   let configVars = yield heroku.request({path: `/apps/${context.app}/config-vars`});
   if (context.flags.shell) {
     _.forEach(configVars, function (v, k) {
-      v = process.stdout.isTTY ? shellescape([v]) : v;
-      cli.log(`${k}=${v}`);
+      cli.log(`${k}=${shellescape([v])}`);
     });
   } else if (context.flags.json) {
     cli.log(JSON.stringify(configVars, null, 2));
