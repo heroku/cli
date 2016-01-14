@@ -1,3 +1,7 @@
+4.27.13 2016-01-14
+==================
+Fix updating to reexec to load new code during update process
+
 4.27.12 2016-01-14
 ==================
 Skip org from json when empty
