@@ -8,5 +8,6 @@ exports.topic = {
 exports.commands = [
     require('./commands/addons'),
     require('./commands/addons/info'),
-    require('./commands/addons/rename')
+    require('./commands/addons/open'),
+    require('./commands/addons/rename'),
 ];
