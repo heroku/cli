@@ -43,11 +43,14 @@ function* run (context, heroku) {
     }));
   }
 
-  let app = yield cli.action(`Creating ${cli.color.magenta(name) || 'app'}`, {success: false}, createApp());
+  let app = yield cli.action(`Creating ${name ? cli.color.magenta(name) : 'app'}`, {success: false}, createApp());
+
   if (context.flags.region) cli.console.error(`done, region is ${cli.color.yellow(app.region.name)}`);
-  else cli.console.error(`done, stack is ${app.stack.name}`);
+  else                      cli.console.error(`done, stack is ${app.stack.name}`);
+
   if (context.flags.addons)    yield addAddons(app, context.flags.addons.split(','));
   if (context.flags.buildpack) yield addBuildpack(app, context.flags.buildpack);
+
   let remoteUrl = context.flags['ssh-git'] ? git.sshGitUrl(app.name) : git.gitUrl(app.name);
   if (!context.flags['no-remote']) yield git.createRemote(context.flags.remote || 'heroku', remoteUrl);
   cli.log(`${cli.color.cyan(app.web_url)} | ${cli.color.green(remoteUrl)}`);
