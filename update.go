@@ -128,6 +128,8 @@ func updateCLI(channel string) {
 	}
 	os.Remove(binPath + ".old")
 	Errln("done")
+	clearAutoupdateFile() // force full update
+	reexec()              // reexec to finish updating with new code
 }
 
 // IsUpdateNeeded checks if an update is available
@@ -150,6 +152,11 @@ func touchAutoupdateFile() {
 		panic(err)
 	}
 	out.WriteString(time.Now().String())
+}
+
+// forces a full update on the next run
+func clearAutoupdateFile() {
+	PrintError(os.Remove(autoupdateFile))
 }
 
 type manifest struct {
@@ -209,4 +216,14 @@ func TriggerBackgroundUpdate() {
 	if IsUpdateNeeded("background") {
 		exec.Command(binPath, "update", "--background").Start()
 	}
+}
+
+// restarts the CLI with the same arguments
+func reexec() {
+	Debugln("reexecing new CLI...")
+	cmd := exec.Command(binPath, os.Args[1:]...)
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	os.Exit(getExitCode(cmd.Run()))
 }

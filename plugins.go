@@ -290,6 +290,8 @@ func swallowSignal(s os.Signal) {
 
 func getExitCode(err error) int {
 	switch e := err.(type) {
+	case nil:
+		return 0
 	case *exec.ExitError:
 		status, ok := e.Sys().(syscall.WaitStatus)
 		if !ok {
