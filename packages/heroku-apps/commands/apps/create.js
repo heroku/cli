@@ -86,7 +86,7 @@ let cmd = {
     {name: 'addons', hasValue: true, description: 'comma-delimited list of addons to install'},
     {name: 'buildpack', char: 'b', hasValue: true, description: 'buildpack url to use for this app'},
     {name: 'no-remote', char: 'n', description: 'do not create a git remote'},
-    {name: 'remote', char: 'r', description: 'the git remtoe to create, default "heroku"'},
+    {name: 'remote', char: 'r', hasValue: true, description: 'the git remtoe to create, default "heroku"'},
     {name: 'stack', char: 's', hasValue: true, description: 'the stack to create the app on'},
     {name: 'space', hasValue: true, description: 'the private space to create the app in'},
     {name: 'region', hasValue: true, description: 'specify region for the app to run in'},
