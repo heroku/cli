@@ -9,7 +9,7 @@ function* run (context, heroku) {
   let rules = yield lib.getRules(space);
   rules.rules = rules.rules || [];
   if (rules.rules.find(rs => rs.source === context.args.source)) throw new Error(`A rule already exists for ${context.args.source}.`);
-  if (rules.rules.length === 0) yield cli.confirmApp(space, context.flags.confirm, `Traffic from everywhere except ${cli.color.red(context.args.source)} will be able to access apps in this space.`);
+  if (rules.rules.length === 0) yield cli.confirmApp(space, context.flags.confirm, `Traffic from ${cli.color.red(context.args.source)} will be allowed to make web requests to web dynos, all other inbound traffic denied.`);
   rules.rules.push({action: 'allow', source: context.args.source});
   rules = yield lib.putRules(space, rules);
   lib.displayRules(rules);
