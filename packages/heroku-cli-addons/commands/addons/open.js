@@ -30,7 +30,7 @@ function writeTemplate (ctx, sso, path) {
   </head>
 
   <body>
-    <h3>Opening ${ctx.args.addon} on ${ctx.app}...</h3>
+    <h3>Opening ${ctx.args.addon}${ctx.app ? ` on ${ctx.app}` : ''}...</h3>
     <form method="POST" action="${sso.action}">
     </form>
 
