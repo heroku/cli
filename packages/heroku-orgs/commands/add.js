@@ -25,13 +25,12 @@ module.exports = {
   help: 'heroku access:add user@email.com --app APP # Add a collaborator to your app\n\n! BETA: heroku access:add user@email.com --app APP --privileges view, deploy, manage, operate # privileges must be comma separated\n! If you want more information about Heroku Enterprise, please contact sales@heroku.com',
   args: [{name: 'user', optional: false}],
   flags: [
-    {name: 'app', char: 'a', description: 'app you want to add the user', hasValue: true},
     {name: 'privileges', description: 'list of privileges comma separated', hasValue: true, optional: true}
   ],
 
   run: function (context) {
     let appName;
-    let privileges = context.args.privileges;
+    let privileges = context.flags.privileges;
 
     appName = context.app;
 

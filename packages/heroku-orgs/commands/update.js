@@ -14,7 +14,6 @@ module.exports = {
   help: '! BETA: heroku access:update user@email.com --app APP --privileges view,deploy,manage,operate # privileges must be comma separated\n! If you want more information about Heroku Enterprise, please contact sales@heroku.com',
   args: [{name: 'user', optional: false}],
   flags: [
-    {name: 'app', char: 'a', description: 'app you want to add the user', hasValue: true},
     {name: 'privileges', description: 'list of privileges comma separated', hasValue: true, optional: false}
   ],
 

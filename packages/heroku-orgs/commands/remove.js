@@ -12,9 +12,6 @@ module.exports = {
   description: 'Remove users from your app',
   help: 'heroku access:remove user@email.com --app APP',
   args: [{name: 'user', optional: false}],
-  flags: [
-    {name: 'app', char: 'a', description: 'app from you want to remove the user', hasValue: true}
-  ],
 
   run: function (context) {
     let appName;

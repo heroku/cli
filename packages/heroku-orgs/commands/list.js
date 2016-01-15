@@ -18,7 +18,7 @@ function printAccess(app, collaborators) {
     data = { email: email, role: role || 'collaborator' };
 
     if ((Utils.isOrgApp(app.owner.email) && (orgFlags.indexOf('org-access-controls') !== -1))) {
-      data.privileges = _.map(_.sortByAll(collab.privileges, 'name'), 'name');
+      data.privileges = _.map(_.sortBy(collab.privileges, 'name'), 'name');
     }
 
     if (!/herokumanager\.com$/.test(email)) {
