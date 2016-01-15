@@ -3,8 +3,8 @@ package convey
 import (
 	"fmt"
 
-	"github.com/jtolds/gls"
-	"github.com/smartystreets/goconvey/convey/reporting"
+	"github.com/heroku/heroku-cli/Godeps/_workspace/src/github.com/jtolds/gls"
+	"github.com/heroku/heroku-cli/Godeps/_workspace/src/github.com/smartystreets/goconvey/convey/reporting"
 )
 
 type conveyErr struct {

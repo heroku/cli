@@ -13,7 +13,7 @@ import (
 	"strings"
 	"syscall"
 
-	"github.com/dickeyxxx/golock"
+	"github.com/heroku/heroku-cli/Godeps/_workspace/src/github.com/dickeyxxx/golock"
 	"github.com/heroku/heroku-cli/gode"
 )
 

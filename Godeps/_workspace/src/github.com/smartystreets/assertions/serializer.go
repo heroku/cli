@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/smartystreets/goconvey/convey/reporting"
+	"github.com/heroku/heroku-cli/Godeps/_workspace/src/github.com/smartystreets/goconvey/convey/reporting"
 )
 
 type Serializer interface {

@@ -19,7 +19,7 @@ import (
 	"path"
 	"runtime"
 
-	"github.com/smartystreets/assertions/internal/oglematchers"
+	"github.com/heroku/heroku-cli/Godeps/_workspace/src/github.com/smartystreets/assertions/internal/oglematchers"
 )
 
 func getCallerForAlias() (fileName string, lineNumber int) {

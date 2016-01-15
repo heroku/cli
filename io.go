@@ -10,7 +10,7 @@ import (
 	"runtime/debug"
 	"strings"
 
-	"golang.org/x/crypto/ssh/terminal"
+	"github.com/heroku/heroku-cli/Godeps/_workspace/src/golang.org/x/crypto/ssh/terminal"
 )
 
 // Stdout is used to mock stdout for testing

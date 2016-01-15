@@ -13,7 +13,7 @@ import (
 	runtime "runtime"
 	unsafe "unsafe"
 
-	oglemock "github.com/smartystreets/assertions/internal/oglemock"
+	oglemock "github.com/heroku/heroku-cli/Godeps/_workspace/src/github.com/smartystreets/assertions/internal/oglemock"
 )
 
 type MockImage interface {

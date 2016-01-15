@@ -18,7 +18,7 @@ package ogletest
 import (
 	"sync"
 
-	"github.com/smartystreets/assertions/internal/oglemock"
+	"github.com/heroku/heroku-cli/Godeps/_workspace/src/github.com/smartystreets/assertions/internal/oglemock"
 )
 
 // TestInfo represents information about a currently running or previously-run
