@@ -14,9 +14,9 @@ import (
 	runtime "runtime"
 	unsafe "unsafe"
 
-	oglemock "github.com/smartystreets/assertions/internal/oglemock"
-	complicated_pkg "github.com/smartystreets/assertions/internal/oglemock/generate/test_cases/complicated_pkg"
-	tony "github.com/smartystreets/assertions/internal/oglemock/generate/test_cases/renamed_pkg"
+	oglemock "github.com/heroku/heroku-cli/Godeps/_workspace/src/github.com/smartystreets/assertions/internal/oglemock"
+	complicated_pkg "github.com/heroku/heroku-cli/Godeps/_workspace/src/github.com/smartystreets/assertions/internal/oglemock/generate/test_cases/complicated_pkg"
+	tony "github.com/heroku/heroku-cli/Godeps/_workspace/src/github.com/smartystreets/assertions/internal/oglemock/generate/test_cases/renamed_pkg"
 )
 
 type MockComplicatedThing interface {

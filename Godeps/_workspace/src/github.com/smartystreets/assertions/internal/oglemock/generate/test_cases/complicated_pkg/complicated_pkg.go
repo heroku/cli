@@ -22,7 +22,7 @@ import (
 	"io"
 	"net"
 
-	"github.com/smartystreets/assertions/internal/oglemock/generate/test_cases/renamed_pkg"
+	"github.com/heroku/heroku-cli/Godeps/_workspace/src/github.com/smartystreets/assertions/internal/oglemock/generate/test_cases/renamed_pkg"
 )
 
 type Byte uint8

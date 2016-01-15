@@ -19,10 +19,10 @@ import (
 	"image/color"
 	"testing"
 
-	. "github.com/smartystreets/assertions/internal/oglematchers"
-	"github.com/smartystreets/assertions/internal/oglemock"
-	. "github.com/smartystreets/assertions/internal/ogletest"
-	"github.com/smartystreets/assertions/internal/ogletest/test_cases/mock_image"
+	. "github.com/heroku/heroku-cli/Godeps/_workspace/src/github.com/smartystreets/assertions/internal/oglematchers"
+	"github.com/heroku/heroku-cli/Godeps/_workspace/src/github.com/smartystreets/assertions/internal/oglemock"
+	. "github.com/heroku/heroku-cli/Godeps/_workspace/src/github.com/smartystreets/assertions/internal/ogletest"
+	"github.com/heroku/heroku-cli/Godeps/_workspace/src/github.com/smartystreets/assertions/internal/ogletest/test_cases/mock_image"
 )
 
 ////////////////////////////////////////////////////////////////////////

@@ -3,7 +3,7 @@
 // packages from this project as they serve internal purposes.
 package convey
 
-import "github.com/smartystreets/goconvey/convey/reporting"
+import "github.com/heroku/heroku-cli/Godeps/_workspace/src/github.com/smartystreets/goconvey/convey/reporting"
 
 ////////////////////////////////// suite //////////////////////////////////
 

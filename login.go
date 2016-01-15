@@ -8,8 +8,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/dickeyxxx/speakeasy"
-	"github.com/toqueteos/webbrowser"
+	"github.com/heroku/heroku-cli/Godeps/_workspace/src/github.com/dickeyxxx/speakeasy"
+	"github.com/heroku/heroku-cli/Godeps/_workspace/src/github.com/toqueteos/webbrowser"
 )
 
 var loginTopic = &Topic{

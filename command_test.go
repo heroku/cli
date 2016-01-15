@@ -3,7 +3,7 @@ package main
 import (
 	"testing"
 
-	c "github.com/smartystreets/goconvey/convey"
+	c "github.com/heroku/heroku-cli/Godeps/_workspace/src/github.com/smartystreets/goconvey/convey"
 )
 
 func TestCommand(t *testing.T) {

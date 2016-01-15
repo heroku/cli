@@ -16,7 +16,7 @@
 package ogletest
 
 import (
-	"github.com/smartystreets/assertions/internal/oglematchers"
+	"github.com/heroku/heroku-cli/Godeps/_workspace/src/github.com/smartystreets/assertions/internal/oglematchers"
 )
 
 // AssertThat is identical to ExpectThat, except that in the event of failure

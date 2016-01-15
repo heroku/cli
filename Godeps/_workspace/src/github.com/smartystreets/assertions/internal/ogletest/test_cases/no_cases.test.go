@@ -19,7 +19,7 @@ import (
 	"fmt"
 	"testing"
 
-	. "github.com/smartystreets/assertions/internal/ogletest"
+	. "github.com/heroku/heroku-cli/Godeps/_workspace/src/github.com/smartystreets/assertions/internal/ogletest"
 )
 
 func TestNoCases(t *testing.T) { RunTests(t) }

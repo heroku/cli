@@ -16,8 +16,8 @@
 package oglematchers_test
 
 import (
-	. "github.com/smartystreets/assertions/internal/oglematchers"
-	. "github.com/smartystreets/assertions/internal/ogletest"
+	. "github.com/heroku/heroku-cli/Godeps/_workspace/src/github.com/smartystreets/assertions/internal/oglematchers"
+	. "github.com/heroku/heroku-cli/Godeps/_workspace/src/github.com/smartystreets/assertions/internal/ogletest"
 )
 
 ////////////////////////////////////////////////////////////////////////

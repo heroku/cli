@@ -21,7 +21,7 @@ import (
 	"reflect"
 	"sync"
 
-	"github.com/smartystreets/assertions/internal/oglematchers"
+	"github.com/heroku/heroku-cli/Godeps/_workspace/src/github.com/smartystreets/assertions/internal/oglematchers"
 )
 
 // InternalExpectation is exported for purposes of testing only. You should not

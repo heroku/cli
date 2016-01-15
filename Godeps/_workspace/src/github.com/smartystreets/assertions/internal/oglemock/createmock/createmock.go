@@ -32,7 +32,7 @@ import (
 
 	// Ensure that the generate package, which is used by the generated code, is
 	// installed by goinstall.
-	_ "github.com/smartystreets/assertions/internal/oglemock/generate"
+	_ "github.com/heroku/heroku-cli/Godeps/_workspace/src/github.com/smartystreets/assertions/internal/oglemock/generate"
 )
 
 // A template for generated code that is used to print the result.
