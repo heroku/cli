@@ -93,21 +93,15 @@ function* run (ctx, api) {
   let id  = ctx.args.addon;
 
   try {
+    // first check to see if there is an attachment matching this app/id combo
+    let attachment = yield getAppAttachment(ctx.app, id);
+    yield open(attachment.web_url);
+  } catch (err) {
+    if (err.statusCode !== 404) throw err;
+
+    // no attachment found, check for addon instead
     let addon = yield getAppAddon(ctx.app, id);
     yield open(addon.web_url);
-  } catch (addonErr) {
-    // if ambiguous or not found
-    // check to see if it is an attachment
-    if (addonErr.statusCode === 422 || addonErr.statusCode === 404) {
-      try {
-        let addon = yield getAppAttachment(ctx.app, id);
-        yield open(addon.web_url);
-      } catch (attachmentErr) {
-        // not found, but show the error message from the addon request instead
-        if (attachmentErr.statusCode === 404) throw addonErr;
-        else throw attachmentErr;
-      }
-    } else throw addonErr;
   }
 }
 
