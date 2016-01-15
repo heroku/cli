@@ -142,6 +142,18 @@ describe('init', function() {
         assert.equal(test.diff('with-force'), '[]');
       });
     });
+
+    describe('with the --dockerfile flag', function() {
+      it('keeps Dockerfile', function() {
+        var test = fixture('has-dockerfile');
+        init.run({
+          debug: true,
+          cwd: test.cwd,
+          flags: { dockerfile: 'Dockerfile' }
+        });
+        assert.equal(test.diff('with-force'), '[]');
+      });
+    });
   });
 
   describe('with existing docker-compose.yml', function() {

@@ -22,7 +22,8 @@ module.exports = function(topic) {
     help: 'Creates a Dockerfile and docker-compose.yml for the app specified in app.json',
     flags: [
       { name: 'image', char: 'i', description: 'the Docker image from which to inherit', hasValue: true },
-      { name: 'force', char: 'f', description: 'overwrite existing Dockerfile and docker-compose.yml', hasValue: false }
+      { name: 'force', char: 'f', description: 'overwrite existing Dockerfile and docker-compose.yml', hasValue: false },
+      { name: 'dockerfile', char: 'd', description: 'use existing Dockerfile', hasValue: true }
     ],
     run: safely(init)
   };
@@ -31,7 +32,7 @@ module.exports = function(topic) {
 function init(context) {
   // Check preconditions
   abortOnMissing(context.cwd, 'Procfile');
-  abortOnClobber(context.cwd, docker.filename, context.flags.force);
+  abortOnClobber(context.cwd, docker.filename, context.flags.force || context.flags.dockerfile);
   abortOnClobber(context.cwd, docker.composeFilename, context.flags.force);
 
   // Inputs (Procfile & app.json)
@@ -42,11 +43,13 @@ function init(context) {
 
   // Outputs (app.json & Dockerfile & docker-compose.yml)
   appJSON.image = context.flags.image || appJSON.image;
-  var dockerfile = createDockerfile(appJSON.image);
+  var dockerfile = context.flags.dockerfile ?
+    readFile(context.cwd, context.flags.dockerfile) :
+    createDockerfile(appJSON.image);
   var dockerCompose = createDockerCompose(procfile, appJSON.addons, appJSON.mount_dir);
 
   // All went well; write all files
-  writeFile(context.cwd, 'app.json', JSON.stringify(appJSON, null, '  '));
+  writeFile(context.cwd, 'app.json', JSON.stringify(appJSON, null, '  ') + "\n");
   writeFile(context.cwd, docker.filename, dockerfile);
   writeFile(context.cwd, docker.composeFilename, dockerCompose);
 }
@@ -156,7 +159,7 @@ function readFile(dir, filename, transform) {
 function writeFile(dir, filename, contents) {
   try {
     var file = path.join(dir, filename);
-    fs.writeFileSync(file, contents + "\n", { encoding: 'utf8' });
+    fs.writeFileSync(file, contents, { encoding: 'utf8' });
     `Wrote ${ filename }`
   }
   catch (e) {
