@@ -19,7 +19,7 @@ function open (url) {
 
 const ssoPath = '/tmp/heroku-sso.html';
 
-function writeTemplate (ctx, sso, path) {
+function writeSudoTemplate (ctx, sso, path) {
   return new Promise(function (fulfill, reject) {
     let html = `<!DOCTYPE HTML>
 <html>
@@ -63,7 +63,7 @@ let sudo = co.wrap(function* (ctx, api) {
   if (sso.method === 'get') {
     yield open(sso.action);
   } else {
-    yield writeTemplate(ctx, sso, ssoPath);
+    yield writeSudoTemplate(ctx, sso, ssoPath);
     yield open(`file://${ssoPath}`);
   }
 });
