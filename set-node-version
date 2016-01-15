@@ -11,9 +11,13 @@ let knox   = require('knox').createClient({
   region: 'us-west-2',
 });
 
+// CHANGE THESE ONLY AND RUN SCRIPT
+// ==========================
+const version = '5.4.1';
+const npmVersion = '3.5.3';
+// ==========================
+
 const outputPath = '/./gode/constants.go';
-const version = '5.0.0';
-const npmVersion = '3.3.10';
 const urlBase = `https://nodejs.org/download/release/v${version}`;
 
 let npmURL = `https://github.com/npm/npm/archive/v${npmVersion}.zip`;
