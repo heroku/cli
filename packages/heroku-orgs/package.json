@@ -1,6 +1,6 @@
 {
   "name": "heroku-access",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "CLI to manage access in Heroku Applications",
   "main": "index.js",
   "author": "Raul Barroso @raulb",
