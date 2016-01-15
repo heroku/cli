@@ -71,39 +71,37 @@ let sudo = co.wrap(function* (ctx, api) {
 function* run (ctx, api) {
   if (process.env.HEROKU_SUDO) return sudo(ctx, api);
 
-  function openAddon (id) {
-    return api.get(`/addons/${encodeURIComponent(id)}`)
-    .then(a => open(a.web_url));
+  function getAddon (id) {
+    return api.get(`/addons/${encodeURIComponent(id)}`);
   }
 
-  function openAppAddon (app, id) {
-    if (!app || id.indexOf('::') !== -1) return openAddon(id);
+  function getAppAddon (app, id) {
+    if (!app || id.indexOf('::') !== -1) return getAddon(id);
     return api.get(`/apps/${app}/addons/${encodeURIComponent(id)}`)
-    .catch(function (err) { if (err.statusCode === 404) return openAddon(id); else throw err; })
-    .then(a => open(a.web_url));
+    .catch(function (err) { if (err.statusCode === 404) return getAddon(id); else throw err; });
   }
 
-  function openAttachment(id) {
-    return api.get(`/addon-attachments/${encodeURIComponent(id)}`)
-    .then(a => open(a.web_url));
+  function getAttachment(id) {
+    return api.get(`/addon-attachments/${encodeURIComponent(id)}`);
   }
 
-  function openAppAttachment(app, id) {
-    if (!app || id.indexOf('::') !== -1) return openAttachment(id);
-    return api.get(`/apps/${ctx.app}/addon-attachments/${encodeURIComponent(id)}`)
-    .then(a => open(a.web_url));
+  function getAppAttachment(app, id) {
+    if (!app || id.indexOf('::') !== -1) return getAttachment(id);
+    return api.get(`/apps/${ctx.app}/addon-attachments/${encodeURIComponent(id)}`);
   }
 
   let id  = ctx.args.addon;
 
   try {
-    yield openAppAddon(ctx.app, id);
+    let addon = yield getAppAddon(ctx.app, id);
+    yield open(addon.web_url);
   } catch (addonErr) {
     // if ambiguous or not found
     // check to see if it is an attachment
     if (addonErr.statusCode === 422 || addonErr.statusCode === 404) {
       try {
-        yield openAppAttachment(ctx.app, id);
+        let addon = yield getAppAttachment(ctx.app, id);
+        yield open(addon.web_url);
       } catch (attachmentErr) {
         // not found, but show the error message from the addon request instead
         if (attachmentErr.statusCode === 404) throw addonErr;
