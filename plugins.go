@@ -185,6 +185,7 @@ Example:
   $ heroku plugins`,
 
 	Run: func(ctx *Context) {
+		SetupBuiltinPlugins()
 		var plugins []string
 		for _, plugin := range GetPlugins() {
 			if plugin != nil && len(plugin.Commands) > 0 {
