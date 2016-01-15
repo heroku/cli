@@ -2,6 +2,7 @@ package gode
 
 import (
 	"io/ioutil"
+	"log"
 	"os"
 	"testing"
 	"time"
@@ -62,6 +63,7 @@ func TestWindowsSetup(t *testing.T) {
 
 func must(err error) {
 	if err != nil {
+		log.Println(err)
 		panic(err)
 	}
 }
