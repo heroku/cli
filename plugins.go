@@ -172,6 +172,7 @@ var pluginsUninstallCmd = &Command{
 		Errf("Uninstalling plugin %s... ", name)
 		err := gode.RemovePackage(name)
 		ExitIfError(err)
+		RemovePluginFromCache(name)
 		Errln("done")
 	},
 }
