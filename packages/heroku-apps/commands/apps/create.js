@@ -63,11 +63,14 @@ let cmd = {
   help: `Examples:
 
  $ heroku apps:create
- Creating floating-dragon-42... done, stack is cedar
- http://floating-dragon-42.heroku.com/ | https://git.heroku.com/floating-dragon-42.git
+ Creating app... done, stack is cedar-14
+ https://floating-dragon-42.heroku.com/ | https://git.heroku.com/floating-dragon-42.git
+
+ # or just
+ $ heroku create
 
  # specify a buildpack
- $ heroku create --buildpack https://github.com/some/buildpack.git
+ $ heroku apps:create --buildpack https://github.com/some/buildpack.git
 
  # specify a name
  $ heroku apps:create example
