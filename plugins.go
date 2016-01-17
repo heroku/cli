@@ -231,6 +231,8 @@ func runFn(plugin *Plugin, topic, command string) func(ctx *Context) {
 		}
 		if (!ctx.dev) {
 			process.on('uncaughtException', function (err) {
+				// ignore EPIPE errors (usually from piping to head)
+				if (err.code === "EPIPE") return;
 				console.error(' !   Error in ' + moduleName + ':')
 				if (err.message) {
 					console.error(' !   ' + err.message);
