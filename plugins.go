@@ -426,6 +426,9 @@ func installPlugins(names ...string) error {
 		LogIfError(golock.Lock(lockfile))
 	}
 	err := gode.InstallPackage(names...)
+	if err != nil {
+		return err
+	}
 	plugins := make([]*Plugin, 0, len(names))
 	for _, name := range names {
 		plugins = append(plugins, getPlugin(name, true))
@@ -435,7 +438,7 @@ func installPlugins(names ...string) error {
 		lockfile := updateLockPath + "." + name
 		LogIfError(golock.Unlock(lockfile))
 	}
-	return err
+	return nil
 }
 
 func checkIfPluginIsInstalled(plugin string) {
