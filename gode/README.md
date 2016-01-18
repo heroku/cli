@@ -40,7 +40,7 @@ fmt.Println(string(output))
 Or install packages:
 
 ```go
-err := c.InstallPackage("request")
+err := c.InstallPackages("request")
 if err != nil {
     panic(err)
 }

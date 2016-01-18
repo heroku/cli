@@ -157,8 +157,7 @@ var pluginsUninstallCmd = &Command{
 	Run: func(ctx *Context) {
 		name := ctx.Args.(map[string]string)["name"]
 		Errf("Uninstalling plugin %s... ", name)
-		err := gode.RemovePackage(name)
-		ExitIfError(err)
+		ExitIfError(gode.RemovePackages(name))
 		RemovePluginFromCache(name)
 		Errln("done")
 	},
@@ -360,7 +359,9 @@ func SetupBuiltinPlugins() {
 	Err("heroku-cli: Installing core plugins...")
 	if err := installPlugins(pluginNames...); err != nil {
 		// retry once
-		Errln("heroku-cli: Installing core plugins (retry)...")
+		PrintError(gode.RemovePackages(pluginNames...))
+		PrintError(gode.ClearCache())
+		Err("\rheroku-cli: Installing core plugins (retrying)...")
 		ExitIfError(installPlugins(pluginNames...))
 	}
 	Errln(" done")
@@ -389,7 +390,12 @@ func installPlugins(names ...string) error {
 	for _, name := range names {
 		lockPlugin(name)
 	}
-	err := gode.InstallPackage(names...)
+	defer func() {
+		for _, name := range names {
+			unlockPlugin(name)
+		}
+	}()
+	err := gode.InstallPackages(names...)
 	if err != nil {
 		return err
 	}
@@ -402,9 +408,6 @@ func installPlugins(names ...string) error {
 		plugins = append(plugins, plugin)
 	}
 	AddPluginsToCache(plugins...)
-	for _, name := range names {
-		unlockPlugin(name)
-	}
 	return nil
 }
 
