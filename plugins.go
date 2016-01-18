@@ -282,7 +282,7 @@ func getExitCode(err error) int {
 func ParsePlugin(name string) (*Plugin, error) {
 	script := `
 	var plugin = require('` + name + `');
-	if (!plugin.commands) plugin = {}; // not a real plugin
+	if (!plugin.commands) throw new Error('Contains no commands. Is this a real plugin?');
 	var pjson  = require('` + name + `/package.json');
 
 	plugin.name    = pjson.name;
@@ -292,18 +292,7 @@ func ParsePlugin(name string) (*Plugin, error) {
 	cmd := gode.RunScript(script)
 	output, err := cmd.CombinedOutput()
 	if err != nil {
-		//if attemptReinstall && strings.Contains(string(output), "Error: Cannot find module") {
-		//Logln(string(output))
-		//Errf("Error reading plugin %s. Reinstalling... ", name)
-		//if err := installPlugins(name); err != nil {
-		//panic(errors.New(name + ": " + string(output)))
-		//}
-		//Errln("done")
-		//return getPlugin(name, false)
-		//}
-		Errf("Error reading plugin: %s. See %s for more information.\n", name, ErrLogPath)
-		Logln(err, "\n", string(output))
-		return nil, err
+		return nil, fmt.Errorf("Error reading plugin: %s\n%s\n%s", name, err, string(output))
 	}
 	var plugin Plugin
 	json.Unmarshal([]byte(output), &plugin)
@@ -369,7 +358,11 @@ func SetupBuiltinPlugins() {
 		return
 	}
 	Err("heroku-cli: Installing core plugins...")
-	PrintError(installPlugins(pluginNames...))
+	if err := installPlugins(pluginNames...); err != nil {
+		// retry once
+		Errln("heroku-cli: Installing core plugins (retry)...")
+		ExitIfError(installPlugins(pluginNames...))
+	}
 	Errln(" done")
 }
 

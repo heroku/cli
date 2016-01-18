@@ -68,6 +68,17 @@ func OutdatedPackages(names ...string) (map[string]string, error) {
 	return packages, nil
 }
 
+// ClearCache clears the npm cache
+func ClearCache() error {
+	cmd, err := npmCmd("cache", "clean")
+	if err != nil {
+		return err
+	}
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	return cmd.Run()
+}
+
 func npmCmd(args ...string) (*exec.Cmd, error) {
 	if err := os.MkdirAll(filepath.Join(rootPath, "node_modules"), 0755); err != nil {
 		return nil, err
