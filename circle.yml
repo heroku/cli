@@ -4,10 +4,14 @@ dependencies:
     - go get github.com/kr/godep
     - go get github.com/golang/lint
     - go get golang.org/x/tools/cmd/vet
+    - go get github.com/jstemmer/go-junit-report
     - godep get
+    - mkdir -p $CIRCLE_TEST_REPORTS/go
   cache_directories:
     - "~/bats"
 test:
+  override:
+    - go test -v -race ./... | go-junit-report > $CIRCLE_TEST_REPORTS/go/results.xml
   post:
     - godep go build -v ./...
     - test -z "$(go fmt ./...)"
