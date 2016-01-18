@@ -19,6 +19,13 @@ func AddPluginsToCache(plugins ...*Plugin) {
 	savePluginCache(cache)
 }
 
+// RemovePluginFromCache will take a plugin and remove it from the list
+func RemovePluginFromCache(name string) {
+	cache := FetchPluginCache()
+	delete(cache, name)
+	savePluginCache(cache)
+}
+
 func savePluginCache(cache map[string]*Plugin) {
 	f, err := os.Create(pluginCachePath)
 	if err != nil {

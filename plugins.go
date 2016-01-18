@@ -129,7 +129,7 @@ var pluginsLinkCmd = &Command{
 			panic(err)
 		}
 		name := filepath.Base(path)
-		newPath := filepath.Join(ctx.HerokuDir, "node_modules", name)
+		newPath := pluginPath(name)
 		os.Remove(newPath)
 		os.RemoveAll(newPath)
 		err = os.Symlink(path, newPath)
@@ -146,7 +146,7 @@ var pluginsLinkCmd = &Command{
 		}
 		if name != plugin.Name {
 			path = newPath
-			newPath = filepath.Join(ctx.HerokuDir, "node_modules", plugin.Name)
+			newPath = pluginPath(plugin.Name)
 			os.Remove(newPath)
 			os.RemoveAll(newPath)
 			os.Rename(path, newPath)
@@ -172,6 +172,7 @@ var pluginsUninstallCmd = &Command{
 		Errf("Uninstalling plugin %s... ", name)
 		err := gode.RemovePackage(name)
 		ExitIfError(err)
+		RemovePluginFromCache(name)
 		Errln("done")
 	},
 }
@@ -185,14 +186,20 @@ Example:
   $ heroku plugins`,
 
 	Run: func(ctx *Context) {
+		SetupBuiltinPlugins()
+		var plugins []string
 		for _, plugin := range GetPlugins() {
 			if plugin != nil && len(plugin.Commands) > 0 {
 				symlinked := ""
 				if isPluginSymlinked(plugin.Name) {
 					symlinked = " (symlinked)"
 				}
-				Println(plugin.Name, plugin.Version, symlinked)
+				plugins = append(plugins, fmt.Sprintf("%s %s %s", plugin.Name, plugin.Version, symlinked))
 			}
+		}
+		sort.Strings(plugins)
+		for _, plugin := range plugins {
+			Println(plugin)
 		}
 	},
 }
@@ -204,7 +211,6 @@ func runFn(plugin *Plugin, topic, command string) func(ctx *Context) {
 			golock.Lock(lockfile)
 			golock.Unlock(lockfile)
 		}
-		checkIfPluginIsInstalled(plugin.Name)
 		ctx.Dev = isPluginSymlinked(plugin.Name)
 		ctxJSON, err := json.Marshal(ctx)
 		if err != nil {
@@ -341,7 +347,7 @@ func getPlugin(name string, attemptReinstall bool) *Plugin {
 func GetPlugins() map[string]*Plugin {
 	plugins := FetchPluginCache()
 	for name, plugin := range plugins {
-		if plugin == nil {
+		if plugin == nil || !pluginExists(name) {
 			delete(plugins, name)
 		} else {
 			for _, command := range plugin.Commands {
@@ -441,8 +447,11 @@ func installPlugins(names ...string) error {
 	return nil
 }
 
-func checkIfPluginIsInstalled(plugin string) {
-	if exists, _ := fileExists(filepath.Join(AppDir(), "node_modules", plugin)); !exists {
-		installPlugins(plugin)
-	}
+func pluginExists(plugin string) bool {
+	exists, _ := fileExists(pluginPath(plugin))
+	return exists
+}
+
+func pluginPath(plugin string) string {
+	return filepath.Join(AppDir(), "node_modules", plugin)
 }
