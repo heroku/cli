@@ -323,6 +323,7 @@ func getPlugin(name string, attemptReinstall bool) *Plugin {
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		if attemptReinstall && strings.Contains(string(output), "Error: Cannot find module") {
+			Logln(string(output))
 			Errf("Error reading plugin %s. Reinstalling... ", name)
 			if err := installPlugins(name); err != nil {
 				panic(errors.New(name + ": " + string(output)))
