@@ -80,12 +80,13 @@ func updatePlugins() {
 	PrintError(err)
 	if len(packages) > 0 {
 		for name, version := range packages {
-			lockfile := updateLockPath + "." + name
-			LogIfError(golock.Lock(lockfile))
+			lockPlugin(name)
 			err := gode.InstallPackage(name + "@" + version)
 			PrintError(err)
-			AddPluginsToCache(getPlugin(name, true))
-			LogIfError(golock.Unlock(lockfile))
+			plugin, err := ParsePlugin(name)
+			PrintError(err)
+			AddPluginsToCache(plugin)
+			unlockPlugin(name)
 		}
 		Errf("done. Updated %d %s.\n", len(packages), plural("package", len(packages)))
 	} else {
