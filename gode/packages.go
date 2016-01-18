@@ -33,7 +33,7 @@ func Packages() ([]Package, error) {
 	return packages, nil
 }
 
-// InstallPackage installs a npm packages.
+// InstallPackages installs a npm packages.
 func InstallPackages(packages ...string) error {
 	args := append([]string{"install"}, packages...)
 	_, stderr, err := execNpm(args...)
