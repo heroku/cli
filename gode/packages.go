@@ -33,8 +33,8 @@ func Packages() ([]Package, error) {
 	return packages, nil
 }
 
-// InstallPackage installs an npm package.
-func InstallPackage(packages ...string) error {
+// InstallPackage installs a npm packages.
+func InstallPackages(packages ...string) error {
 	args := append([]string{"install"}, packages...)
 	_, stderr, err := execNpm(args...)
 	if err != nil {
@@ -43,9 +43,10 @@ func InstallPackage(packages ...string) error {
 	return nil
 }
 
-// RemovePackage removes an npm package.
-func RemovePackage(name string) error {
-	_, stderr, err := execNpm("remove", name)
+// RemovePackages removes a npm packages.
+func RemovePackages(packages ...string) error {
+	args := append([]string{"remove"}, packages...)
+	_, stderr, err := execNpm(args...)
 	if err != nil {
 		return errors.New(stderr)
 	}

@@ -81,8 +81,7 @@ func updatePlugins() {
 	if len(packages) > 0 {
 		for name, version := range packages {
 			lockPlugin(name)
-			err := gode.InstallPackage(name + "@" + version)
-			PrintError(err)
+			PrintError(gode.InstallPackages(name + "@" + version))
 			plugin, err := ParsePlugin(name)
 			PrintError(err)
 			AddPluginsToCache(plugin)
