@@ -10,6 +10,7 @@ import (
 	"runtime/debug"
 	"strings"
 
+	"github.com/heroku/heroku-cli/Godeps/_workspace/src/github.com/lunixbochs/vtclean"
 	"github.com/heroku/heroku-cli/Godeps/_workspace/src/golang.org/x/crypto/ssh/terminal"
 )
 
@@ -84,19 +85,19 @@ func Println(a ...interface{}) {
 // Log is used to print debugging information
 // It will be added to the logfile in ~/.heroku or printed out if HEROKU_DEBUG is set.
 func Log(a ...interface{}) {
-	errLogger.Print(a...)
+	errLogger.Print(vtclean.Clean(fmt.Sprint(a...), false))
 }
 
 // Logln is used to print debugging information
 // It will be added to the logfile in ~/.heroku
 func Logln(a ...interface{}) {
-	errLogger.Println(a...)
+	Log(fmt.Sprintln(a...))
 }
 
 // Logf is used to print debugging information
 // It will be added to the logfile in ~/.heroku
 func Logf(format string, a ...interface{}) {
-	errLogger.Printf(format, a...)
+	Log(fmt.Sprintf(format, a...))
 }
 
 // Debugln is used to print debugging information
@@ -113,7 +114,7 @@ func PrintError(e error) {
 	if e == nil {
 		return
 	}
-	Error(e.Error())
+	Error("\n" + e.Error())
 	if debugging {
 		debug.PrintStack()
 	}
