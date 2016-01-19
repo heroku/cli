@@ -39,6 +39,9 @@ func (c *Command) String() string {
 }
 
 func commandUsage(c *Command) string {
+	if c.Usage != "" {
+		return c.Usage
+	}
 	return c.String() + argsString(c.Args)
 }
 
@@ -86,6 +89,21 @@ https://devcenter.heroku.com/articles/using-the-cli#app-commands`,
 	)
 }
 
+func (c *Command) unexpectedArgumentsErr(args []string) error {
+	cmd := "heroku " + c.String()
+	return fmt.Errorf(
+		`Error: Unexpected %s %s
+Usage: %s
+You gave this command too many arguments. Try the command again without these extra arguments.
+
+See more information with %s`,
+		plural("argument", len(args)),
+		yellow(strings.Join(args, " ")),
+		cyan("heroku "+commandUsage(c)),
+		cyan(cmd+" --help"),
+	)
+}
+
 // CommandSet is a slice of Command structs with some helper methods.
 type CommandSet []*Command
 
@@ -103,9 +121,7 @@ func (commands CommandSet) ByTopicAndCommand(topic, command string) *Command {
 
 func (commands CommandSet) loadUsages() {
 	for _, c := range commands {
-		if c.Usage == "" {
-			c.Usage = commandUsage(c)
-		}
+		c.Usage = commandUsage(c)
 	}
 }
 
