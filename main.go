@@ -89,7 +89,7 @@ func main() {
 		help()
 	}
 	if err != nil {
-		PrintError(err)
+		PrintError(err, false)
 		os.Exit(2)
 	}
 }

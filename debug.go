@@ -23,9 +23,9 @@ var debugErrlogCmd = &Command{
 			numS = "30"
 		}
 		num, err := strconv.Atoi(numS)
-		ExitIfError(err)
+		ExitIfError(err, false)
 		body, err := ioutil.ReadFile(ErrLogPath)
-		ExitIfError(err)
+		ExitIfError(err, false)
 		lines := strings.Split(string(body), "\n")
 		start := len(lines) - num - 1
 		if start < 0 {

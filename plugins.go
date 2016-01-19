@@ -29,7 +29,7 @@ type Plugin struct {
 func SetupNode() {
 	gode.SetRootPath(AppDir())
 	setup, err := gode.IsSetup()
-	PrintError(err)
+	PrintError(err, false)
 	if !setup {
 		setupNode()
 	}
@@ -37,14 +37,14 @@ func SetupNode() {
 
 func setupNode() {
 	Err("heroku-cli: Adding dependencies...")
-	PrintError(gode.Setup())
+	PrintError(gode.Setup(), true)
 	Errln(" done")
 }
 
 func updateNode() {
 	gode.SetRootPath(AppDir())
 	needsUpdate, err := gode.NeedsUpdate()
-	PrintError(err)
+	PrintError(err, true)
 	if needsUpdate {
 		setupNode()
 	}
@@ -92,7 +92,7 @@ var pluginsInstallCmd = &Command{
 			return
 		}
 		Errf("Installing plugin %s... ", name)
-		ExitIfError(installPlugins(name))
+		ExitIfError(installPlugins(name), true)
 		Errln("done")
 	},
 }
@@ -130,7 +130,7 @@ var pluginsLinkCmd = &Command{
 			panic(err)
 		}
 		plugin, err := ParsePlugin(name)
-		ExitIfError(err)
+		ExitIfError(err, false)
 		if name != plugin.Name {
 			path = newPath
 			newPath = pluginPath(plugin.Name)
@@ -157,7 +157,7 @@ var pluginsUninstallCmd = &Command{
 	Run: func(ctx *Context) {
 		name := ctx.Args.(map[string]string)["name"]
 		Errf("Uninstalling plugin %s... ", name)
-		ExitIfError(gode.RemovePackages(name))
+		ExitIfError(gode.RemovePackages(name), true)
 		RemovePluginFromCache(name)
 		Errln("done")
 	},
@@ -361,10 +361,10 @@ func SetupBuiltinPlugins() {
 	Err("heroku-cli: Installing core plugins...")
 	if err := installPlugins(pluginNames...); err != nil {
 		// retry once
-		PrintError(gode.RemovePackages(pluginNames...))
-		PrintError(gode.ClearCache())
+		PrintError(gode.RemovePackages(pluginNames...), true)
+		PrintError(gode.ClearCache(), true)
 		Err("\rheroku-cli: Installing core plugins (retrying)...")
-		ExitIfError(installPlugins(pluginNames...))
+		ExitIfError(installPlugins(pluginNames...), true)
 	}
 	Errln(" done")
 }

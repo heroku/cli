@@ -27,7 +27,7 @@ func twoFactorRun(ctx *Context) {
 	req.Method = "GET"
 	req.Uri = req.Uri + "/account"
 	res, err := req.Do()
-	ExitIfError(err)
+	ExitIfError(err, false)
 	var doc map[string]bool
 	res.Body.FromJsonTo(&doc)
 	if doc["two_factor_authentication"] {
@@ -60,7 +60,7 @@ func twoFactorGenerateRun(ctx *Context) {
 	req.AddHeader("Heroku-Password", getPassword("Password (typing will be hidden): "))
 	req.AddHeader("Heroku-Two-Factor-Code", getString("Two-factor code: "))
 	res, err := req.Do()
-	ExitIfError(err)
+	ExitIfError(err, false)
 	var codes []interface{}
 	res.Body.FromJsonTo(&codes)
 	Println("Recovery codes:")
@@ -94,7 +94,7 @@ func twoFactorDisableRun(ctx *Context) {
 		"password":                  getPassword("Password (typing will be hidden):"),
 	}
 	res, err := req.Do()
-	ExitIfError(err)
+	ExitIfError(err, false)
 	if res.StatusCode != 200 {
 		var doc map[string]string
 		res.Body.FromJsonTo(&doc)

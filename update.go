@@ -77,13 +77,13 @@ func updatePlugins() {
 	}
 	Err("Updating plugins... ")
 	packages, err := gode.OutdatedPackages(plugins...)
-	PrintError(err)
+	PrintError(err, true)
 	if len(packages) > 0 {
 		for name, version := range packages {
 			lockPlugin(name)
-			PrintError(gode.InstallPackages(name + "@" + version))
+			PrintError(gode.InstallPackages(name+"@"+version), true)
 			plugin, err := ParsePlugin(name)
-			PrintError(err)
+			PrintError(err, true)
 			AddPluginsToCache(plugin)
 			unlockPlugin(name)
 		}
@@ -101,7 +101,7 @@ func updateCLI(channel string) {
 	manifest, err := getUpdateManifest(channel)
 	if err != nil {
 		Warn("Error updating CLI")
-		PrintError(err)
+		PrintError(err, false)
 		return
 	}
 	if manifest.Version == Version && manifest.Channel == Channel {
@@ -156,7 +156,7 @@ func touchAutoupdateFile() {
 
 // forces a full update on the next run
 func clearAutoupdateFile() {
-	PrintError(os.Remove(autoupdateFile))
+	PrintError(os.Remove(autoupdateFile), true)
 }
 
 type manifest struct {
