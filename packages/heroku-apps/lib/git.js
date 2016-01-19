@@ -24,7 +24,7 @@ module.exports = function (context) {
 
   function createRemote (remote, url) {
     return hasGitRemote(remote)
-    .then(exists => !exists ? git(['remote', 'add', remote, url]) : console.log('exists'));
+    .then(exists => !exists ? git(['remote', 'add', remote, url]) : null);
   }
 
   return {
