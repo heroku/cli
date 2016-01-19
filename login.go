@@ -63,7 +63,7 @@ func ssoLogin() {
 	token := getPassword("Enter your access token (typing will be hidden): ")
 	user := getUserFromToken(token)
 	if user == "" {
-		ExitIfError(errors.New("Access token invalid."))
+		ExitIfError(errors.New("Access token invalid."), false)
 	}
 	saveOauthToken(user, token)
 	Println("Logged in as " + cyan(user))
@@ -74,7 +74,7 @@ func getUserFromToken(token string) string {
 	req.Method = "GET"
 	req.Uri = req.Uri + "/account"
 	res, err := req.Do()
-	ExitIfError(err)
+	ExitIfError(err, false)
 	if res.StatusCode != 200 {
 		return ""
 	}
@@ -95,7 +95,7 @@ func interactiveLogin() {
 	token, err := v2login(email, password, "")
 	// TODO: use createOauthToken (v3 API)
 	// token, err := createOauthToken(email, password, "")
-	ExitIfError(err)
+	ExitIfError(err, false)
 	saveOauthToken(email, token)
 	Println("Logged in as " + cyan(email))
 }
@@ -106,7 +106,7 @@ func saveOauthToken(email, token string) {
 	netrc.RemoveMachine(httpGitHost())
 	netrc.AddMachine(apiHost(), email, token)
 	netrc.AddMachine(httpGitHost(), email, token)
-	ExitIfError(netrc.Save())
+	ExitIfError(netrc.Save(), false)
 }
 
 func getString(prompt string) string {
@@ -120,7 +120,7 @@ func getString(prompt string) string {
 			Errln()
 			os.Exit(1)
 		}
-		ExitIfError(err)
+		ExitIfError(err, false)
 	}
 	return s
 }
@@ -134,7 +134,7 @@ In the meantime, login via cmd.exe
 https://github.com/heroku/heroku-cli/issues/84`)
 			Exit(1)
 		} else {
-			ExitIfError(err)
+			ExitIfError(err, false)
 		}
 	}
 	return password
@@ -155,7 +155,7 @@ func v2login(email, password, secondFactor string) (string, error) {
 		errorStr = strings.Replace(errorStr, queryPassword, "&password=XXXXXXXX", -1)
 		err = errors.New(errorStr)
 	}
-	ExitIfError(err)
+	ExitIfError(err, false)
 	if res.StatusCode == 403 {
 		return v2login(email, password, getString("Two-factor code: "))
 	}
@@ -169,7 +169,7 @@ func v2login(email, password, secondFactor string) (string, error) {
 		APIKey string `json:"api_key"`
 	}
 	var doc Doc
-	ExitIfError(res.Body.FromJsonTo(&doc))
+	ExitIfError(res.Body.FromJsonTo(&doc), false)
 	return doc.APIKey, nil
 }
 
@@ -188,7 +188,7 @@ func createOauthToken(email, password, secondFactor string) (string, error) {
 		req.AddHeader("Heroku-Two-Factor-Code", secondFactor)
 	}
 	res, err := req.Do()
-	ExitIfError(err)
+	ExitIfError(err, false)
 	type Doc struct {
 		ID          string
 		Message     string

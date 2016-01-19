@@ -187,7 +187,7 @@ func app() string {
 	}
 	app, err := appFromGitRemote(remoteFromGitConfig())
 	if err != nil {
-		PrintError(err)
+		PrintError(err, false)
 		os.Exit(1)
 	}
 	return app
