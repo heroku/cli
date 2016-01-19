@@ -96,9 +96,7 @@ let cmd = {
   topic: 'apps',
   command: 'info',
   description: 'show detailed app information',
-  help: `show detailed app information
-
-Examples:
+  help: `Examples:
 
  $ heroku apps:info
  === example
