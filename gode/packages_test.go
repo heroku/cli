@@ -9,7 +9,7 @@ import (
 func TestPackages(t *testing.T) {
 	setup()
 	must(os.RemoveAll(filepath.Join(rootPath, "node_modules")))
-	must(InstallPackage("request"))
+	must(InstallPackages("request"))
 	packages, err := Packages()
 	must(err)
 	for _, pkg := range packages {
@@ -23,13 +23,13 @@ func TestPackages(t *testing.T) {
 func TestRemovePackage(t *testing.T) {
 	setup()
 	must(os.RemoveAll(filepath.Join(rootPath, "node_modules")))
-	must(InstallPackage("request"))
+	must(InstallPackages("request"))
 	packages, err := Packages()
 	must(err)
 	if len(packages) != 1 {
 		t.Fatalf("package did not install correctly")
 	}
-	must(RemovePackage("request"))
+	must(RemovePackages("request"))
 	packages, err = Packages()
 	must(err)
 	if len(packages) != 0 {
@@ -39,7 +39,7 @@ func TestRemovePackage(t *testing.T) {
 
 func TestOutdatedPackages(t *testing.T) {
 	setup()
-	must(InstallPackage("heroku-cli-util@1.0.0"))
+	must(InstallPackages("heroku-cli-util@1.0.0"))
 	packages, err := OutdatedPackages("heroku-cli-util")
 	must(err)
 	if packages["heroku-cli-util"] == "" {
@@ -50,7 +50,7 @@ func TestOutdatedPackages(t *testing.T) {
 func TestPackagesGithubPackage(t *testing.T) {
 	setup()
 	must(os.RemoveAll(filepath.Join(rootPath, "node_modules")))
-	must(InstallPackage("dickeyxxx/heroku-production-check"))
+	must(InstallPackages("dickeyxxx/heroku-production-check"))
 	packages, err := Packages()
 	must(err)
 	for _, pkg := range packages {

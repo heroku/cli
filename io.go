@@ -114,7 +114,8 @@ func PrintError(e error) {
 	if e == nil {
 		return
 	}
-	Error("\n" + e.Error())
+	Errln()
+	Error(e.Error())
 	if debugging {
 		debug.PrintStack()
 	}

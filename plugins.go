@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"os"
 	"os/exec"
@@ -93,13 +92,7 @@ var pluginsInstallCmd = &Command{
 			return
 		}
 		Errf("Installing plugin %s... ", name)
-		err := installPlugins(name)
-		ExitIfError(err)
-		plugin := getPlugin(name, true)
-		if plugin == nil || len(plugin.Commands) == 0 {
-			Err("\nThis does not appear to be a Heroku plugin, uninstalling... ")
-			ExitIfError(gode.RemovePackage(name))
-		}
+		ExitIfError(installPlugins(name))
 		Errln("done")
 	},
 }
@@ -136,14 +129,8 @@ var pluginsLinkCmd = &Command{
 		if err != nil {
 			panic(err)
 		}
-		plugin := getPlugin(name, false)
-		if plugin == nil || len(plugin.Commands) == 0 {
-			Errln(name + " does not appear to be a Heroku plugin.\nDid you run " + cyan("npm install") + "?")
-			if err := os.Remove(newPath); err != nil {
-				panic(err)
-			}
-			return
-		}
+		plugin, err := ParsePlugin(name)
+		ExitIfError(err)
 		if name != plugin.Name {
 			path = newPath
 			newPath = pluginPath(plugin.Name)
@@ -170,8 +157,7 @@ var pluginsUninstallCmd = &Command{
 	Run: func(ctx *Context) {
 		name := ctx.Args.(map[string]string)["name"]
 		Errf("Uninstalling plugin %s... ", name)
-		err := gode.RemovePackage(name)
-		ExitIfError(err)
+		ExitIfError(gode.RemovePackages(name))
 		RemovePluginFromCache(name)
 		Errln("done")
 	},
@@ -206,11 +192,7 @@ Example:
 
 func runFn(plugin *Plugin, topic, command string) func(ctx *Context) {
 	return func(ctx *Context) {
-		lockfile := updateLockPath + "." + plugin.Name
-		if exists, _ := fileExists(lockfile); exists {
-			golock.Lock(lockfile)
-			golock.Unlock(lockfile)
-		}
+		readLockPlugin(plugin.Name)
 		ctx.Dev = isPluginSymlinked(plugin.Name)
 		ctxJSON, err := json.Marshal(ctx)
 		if err != nil {
@@ -228,25 +210,10 @@ func runFn(plugin *Plugin, topic, command string) func(ctx *Context) {
 		ctx.version = ctx.version + ' ' + moduleName + '/' + moduleVersion + ' node-' + process.version;
 		var logPath = %s;
 		process.chdir(ctx.cwd);
-		function repair (name) {
-			console.error('Attempting to repair ' + name + '...');
-			require('child_process')
-			.spawnSync('heroku', ['plugins:install', name],
-			{stdio: [0,1,2]});
-			console.error('Repair complete. Try running your command again.');
-		}
 		if (!ctx.dev) {
 			process.on('uncaughtException', function (err) {
 				console.error(' !   Error in ' + moduleName + ':')
-				if (err.message) {
-					console.error(' !   ' + err.message);
-					if (err.message.indexOf('Cannot find module') != -1) {
-						repair(moduleName);
-						process.exit(1);
-					}
-				} else {
-					console.error(' !   ' + err);
-				}
+				console.error(' !   ' + err.message || err);
 				if (err.stack) {
 					var fs = require('fs');
 					var log = function (line) {
@@ -309,10 +276,12 @@ func getExitCode(err error) int {
 	}
 }
 
-func getPlugin(name string, attemptReinstall bool) *Plugin {
+// ParsePlugin requires the plugin's node module
+// to get the commands and metadata
+func ParsePlugin(name string) (*Plugin, error) {
 	script := `
 	var plugin = require('` + name + `');
-	if (!plugin.commands) plugin = {}; // not a real plugin
+	if (!plugin.commands) throw new Error('Contains no commands. Is this a real plugin?');
 	var pjson  = require('` + name + `/package.json');
 
 	plugin.name    = pjson.name;
@@ -322,17 +291,7 @@ func getPlugin(name string, attemptReinstall bool) *Plugin {
 	cmd := gode.RunScript(script)
 	output, err := cmd.CombinedOutput()
 	if err != nil {
-		if attemptReinstall && strings.Contains(string(output), "Error: Cannot find module") {
-			Errf("Error reading plugin %s. Reinstalling... ", name)
-			if err := installPlugins(name); err != nil {
-				panic(errors.New(name + ": " + string(output)))
-			}
-			Errln("done")
-			return getPlugin(name, false)
-		}
-		Errf("Error reading plugin: %s. See %s for more information.\n", name, ErrLogPath)
-		Logln(err, "\n", string(output))
-		return nil
+		return nil, fmt.Errorf("Error reading plugin: %s\n%s\n%s", name, err, string(output))
 	}
 	var plugin Plugin
 	json.Unmarshal([]byte(output), &plugin)
@@ -340,7 +299,7 @@ func getPlugin(name string, attemptReinstall bool) *Plugin {
 		command.Plugin = plugin.Name
 		command.Help = strings.TrimSpace(command.Help)
 	}
-	return &plugin
+	return &plugin, nil
 }
 
 // GetPlugins goes through all the node plugins and returns them in Go stucts
@@ -398,11 +357,12 @@ func SetupBuiltinPlugins() {
 		return
 	}
 	Err("heroku-cli: Installing core plugins...")
-	err := installPlugins(pluginNames...)
-	if err != nil {
-		Errln()
-		PrintError(err)
-		return
+	if err := installPlugins(pluginNames...); err != nil {
+		// retry once
+		PrintError(gode.RemovePackages(pluginNames...))
+		PrintError(gode.ClearCache())
+		Err("\rheroku-cli: Installing core plugins (retrying)...")
+		ExitIfError(installPlugins(pluginNames...))
 	}
 	Errln(" done")
 }
@@ -428,22 +388,26 @@ func contains(arr []string, s string) bool {
 
 func installPlugins(names ...string) error {
 	for _, name := range names {
-		lockfile := updateLockPath + "." + name
-		LogIfError(golock.Lock(lockfile))
+		lockPlugin(name)
 	}
-	err := gode.InstallPackage(names...)
+	defer func() {
+		for _, name := range names {
+			unlockPlugin(name)
+		}
+	}()
+	err := gode.InstallPackages(names...)
 	if err != nil {
 		return err
 	}
 	plugins := make([]*Plugin, 0, len(names))
 	for _, name := range names {
-		plugins = append(plugins, getPlugin(name, true))
+		plugin, err := ParsePlugin(name)
+		if err != nil {
+			return err
+		}
+		plugins = append(plugins, plugin)
 	}
 	AddPluginsToCache(plugins...)
-	for _, name := range names {
-		lockfile := updateLockPath + "." + name
-		LogIfError(golock.Unlock(lockfile))
-	}
 	return nil
 }
 
@@ -452,6 +416,26 @@ func pluginExists(plugin string) bool {
 	return exists
 }
 
+// directory location of plugin
 func pluginPath(plugin string) string {
 	return filepath.Join(AppDir(), "node_modules", plugin)
+}
+
+// lock a plugin for reading
+func readLockPlugin(name string) {
+	lockfile := updateLockPath + "." + name
+	if exists, _ := fileExists(lockfile); exists {
+		lockPlugin(name)
+		unlockPlugin(name)
+	}
+}
+
+// lock a plugin for writing
+func lockPlugin(name string) {
+	LogIfError(golock.Lock(updateLockPath + "." + name))
+}
+
+// unlock a plugin
+func unlockPlugin(name string) {
+	LogIfError(golock.Unlock(updateLockPath + "." + name))
 }

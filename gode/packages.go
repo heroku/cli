@@ -33,8 +33,8 @@ func Packages() ([]Package, error) {
 	return packages, nil
 }
 
-// InstallPackage installs an npm package.
-func InstallPackage(packages ...string) error {
+// InstallPackages installs a npm packages.
+func InstallPackages(packages ...string) error {
 	args := append([]string{"install"}, packages...)
 	_, stderr, err := execNpm(args...)
 	if err != nil {
@@ -43,9 +43,10 @@ func InstallPackage(packages ...string) error {
 	return nil
 }
 
-// RemovePackage removes an npm package.
-func RemovePackage(name string) error {
-	_, stderr, err := execNpm("remove", name)
+// RemovePackages removes a npm packages.
+func RemovePackages(packages ...string) error {
+	args := append([]string{"remove"}, packages...)
+	_, stderr, err := execNpm(args...)
 	if err != nil {
 		return errors.New(stderr)
 	}
@@ -66,6 +67,17 @@ func OutdatedPackages(names ...string) (map[string]string, error) {
 		packages[name] = versions.Latest
 	}
 	return packages, nil
+}
+
+// ClearCache clears the npm cache
+func ClearCache() error {
+	cmd, err := npmCmd("cache", "clean")
+	if err != nil {
+		return err
+	}
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	return cmd.Run()
 }
 
 func npmCmd(args ...string) (*exec.Cmd, error) {
