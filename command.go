@@ -73,6 +73,19 @@ func (c *Command) buildFullHelp() string {
 	return strings.TrimSuffix(strings.Join(lines, "\n"), "\n")
 }
 
+func (c *Command) appNeededErr() error {
+	return fmt.Errorf(
+		`Error: No app specified
+Usage: %s
+We don't know which app to run this on.
+Run this command from inside an app folder or specify which app to use with %s
+
+https://devcenter.heroku.com/articles/using-the-cli#app-commands`,
+		cyan("heroku "+commandUsage(c)+" --app APP"),
+		cyan("--app APP"),
+	)
+}
+
 // CommandSet is a slice of Command structs with some helper methods.
 type CommandSet []*Command
 
