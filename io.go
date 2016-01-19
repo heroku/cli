@@ -189,6 +189,13 @@ func red(s string) string {
 	return s
 }
 
+func green(s string) string {
+	if supportsColor() && !windows() {
+		return "\x1b[32m" + s + "\x1b[39m"
+	}
+	return s
+}
+
 func cyan(s string) string {
 	if supportsColor() && !windows() {
 		return "\x1b[36m" + s + "\x1b[39m"
