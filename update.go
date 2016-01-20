@@ -108,7 +108,10 @@ func updateCLI(channel string) {
 		return
 	}
 	LogIfError(golock.Lock(updateLockPath))
-	defer golock.Unlock(updateLockPath)
+	unlock := func() {
+		golock.Unlock(updateLockPath)
+	}
+	defer unlock()
 	Errf("Updating Heroku v4 CLI to %s (%s)... ", manifest.Version, manifest.Channel)
 	build := manifest.Builds[runtime.GOOS][runtime.GOARCH]
 	// on windows we can't remove an existing file or remove the running binary
@@ -128,6 +131,7 @@ func updateCLI(channel string) {
 	}
 	os.Remove(binPath + ".old")
 	Errln("done")
+	unlock()
 	clearAutoupdateFile() // force full update
 	reexec()              // reexec to finish updating with new code
 }
