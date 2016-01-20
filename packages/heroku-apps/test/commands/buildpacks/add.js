@@ -246,5 +246,14 @@ Run git push heroku master to create a new release using these buildpacks.
       });
     });
 
+    it('# returns an error message when i == 0', function() {
+      return assert_exit(1, buildpacks.run({
+        app: 'example', args: {url: 'http://github.com/bar/bar'},
+        flags: {index: '0'},
+      })).then(function() {
+        expect(cli.stderr).to.equal(' ▸    Invalid index. Must be greater than 0.\n');
+      });
+    });
+
   });
 });

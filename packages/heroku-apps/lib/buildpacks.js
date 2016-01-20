@@ -9,7 +9,7 @@ function BuildpackCommand(context, heroku, command, action) {
 
   if (context.flags && context.flags.index) {
     let index = parseInt(context.flags.index);
-    if (isNaN(index) || index < 0) {
+    if (isNaN(index) || index <= 0) {
       error.exit(1, "Invalid index. Must be greater than 0.");
     }
     this.index = index;
