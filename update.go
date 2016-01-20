@@ -15,6 +15,7 @@ import (
 	"github.com/heroku/heroku-cli/Godeps/_workspace/src/github.com/dickeyxxx/golock"
 	"github.com/heroku/heroku-cli/Godeps/_workspace/src/github.com/franela/goreq"
 	"github.com/heroku/heroku-cli/gode"
+	"github.com/kardianos/osext"
 )
 
 var updateTopic = &Topic{
@@ -46,7 +47,7 @@ var updateLockPath = filepath.Join(AppDir(), "updating.lock")
 var autoupdateFile = filepath.Join(AppDir(), "autoupdate")
 
 func init() {
-	binPath = os.Args[0]
+	binPath, _ = osext.Executable()
 }
 
 // Update updates the CLI and plugins
@@ -156,6 +157,7 @@ func touchAutoupdateFile() {
 		panic(err)
 	}
 	out.WriteString(time.Now().String())
+	out.Close()
 }
 
 // forces a full update on the next run
