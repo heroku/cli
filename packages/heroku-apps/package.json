@@ -22,8 +22,8 @@
   "dependencies": {
     "bluebird-queue": "0.0.8",
     "co": "4.6.0",
-    "filesize": "3.1.4",
-    "heroku-cli-util": "5.6.3",
+    "filesize": "3.1.6",
+    "heroku-cli-util": "5.7.3",
     "lodash": "3.10.1",
     "shell-escape": "0.2.0",
     "strftime": "0.9.2",
