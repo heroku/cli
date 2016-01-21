@@ -11,6 +11,7 @@ function* run (context, heroku) {
     cli.log('No oauth clients.');
   } else {
     cli.table(clients, {
+      printHeader: null,
       columns: [
         {key: 'name'},
         {key: 'id'},
