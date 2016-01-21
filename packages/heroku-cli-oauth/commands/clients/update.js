@@ -2,14 +2,14 @@
 
 let cli  = require('heroku-cli-util');
 let co   = require('co');
-let lib  = require('../lib');
+let lib  = require('../../lib');
 
 let empty = o => Object.keys(o).length === 0;
 
 function getUpdates (o) {
   let updates = {};
 
-  if (o.url)  updates.redirect_uri = o.url;
+  if (o.url)  updates.redirect_uri = lib.validateURL(o.url);
   if (o.name) updates.name = o.name;
 
   if (empty(updates)) throw new Error('No changes provided');
@@ -24,7 +24,7 @@ function* run (context, heroku) {
     body: getUpdates(context.flags),
   });
 
-  yield cli.action(`Updating ${id}`, request);
+  yield cli.action(`Updating ${cli.color.cyan(id)}`, request);
 }
 
 module.exports = {

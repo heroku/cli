@@ -6,6 +6,7 @@ exports.topic = {
 };
 
 exports.commands = [
+  require('./commands/authorizations'),
   require('./commands/clients'),
   require('./commands/clients/create'),
   require('./commands/clients/info'),

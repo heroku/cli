@@ -2,7 +2,7 @@
 
 let co  = require('co');
 let cli = require('heroku-cli-util');
-let lib = require('../lib');
+let lib = require('../../lib');
 
 function* run (context, heroku) {
   let url = context.args['redirect_uri'];

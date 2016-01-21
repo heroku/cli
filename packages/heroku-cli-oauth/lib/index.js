@@ -15,6 +15,7 @@ function validateURL (uri) {
   let u = url.parse(uri);
   if (!u.protocol) throw new Error('Invalid URL');
   if (insecureURL(u)) throw new Error("Unsupported callback URL. Clients have to use HTTPS.");
+  return uri;
 }
 
 module.exports = {
