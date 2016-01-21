@@ -11,8 +11,8 @@ import (
 	"path/filepath"
 	"runtime"
 
-	"github.com/dickeyxxx/golock"
-	"github.com/franela/goreq"
+	"github.com/heroku/heroku-cli/Godeps/_workspace/src/github.com/dickeyxxx/golock"
+	"github.com/heroku/heroku-cli/Godeps/_workspace/src/github.com/franela/goreq"
 )
 
 var errInvalidSha = errors.New("Invalid SHA")
