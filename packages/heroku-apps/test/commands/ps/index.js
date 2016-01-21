@@ -6,7 +6,7 @@ let expect   = require('chai').expect;
 let strftime = require('strftime');
 
 let hourAgo = new Date(new Date() - 60 * 60 * 1000);
-let hourAgoStr = strftime('%Y/%m/%d %H:%M:%S', hourAgo);
+let hourAgoStr = strftime('%Y/%m/%d %H:%M:%S %z', hourAgo);
 
 describe('ps', function() {
   beforeEach(() => cli.mockConsole());

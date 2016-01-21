@@ -3,7 +3,7 @@
 let cli      = require('heroku-cli-util');
 let co       = require('co');
 let _        = require('lodash');
-let strftime = require('strftime');
+let time     = require('../../lib/time');
 
 let trunc = s => _.trunc(s, {length: 35, omission: '…'});
 
@@ -14,25 +14,6 @@ function printJSON (data) {
   cli.log(JSON.stringify(data.dynos, null, 2));
 }
 
-function timeAgo (since) {
-  let elapsed = Math.floor((new Date() - since)/1000);
-  let message = strftime('%Y/%m/%d %H:%M:%S', since);
-  if (elapsed < 60) return `${message} (~ ${Math.floor(elapsed)}s ago)`;
-  else if (elapsed < 60*60) return `${message} (~ ${Math.floor(elapsed/60)}m ago)`;
-  else if (elapsed < 60*60*25) return `${message} (~ ${Math.floor(elapsed/60/60)}h ago)`;
-  else return message;
-}
-
-function timeRemaining (from, to) {
-  let secs  = Math.floor(to/1000 - from/1000);
-  let mins  = Math.floor(secs / 60);
-  let hours = Math.floor(mins / 60);
-  if (hours > 0) return `${hours}h ${mins % 60}m`;
-  if (mins > 0)  return `${mins}m ${secs % 60}s`;
-  if (secs > 0)  return `${secs}s`;
-  return '';
-}
-
 function printQuota (quota) {
   if (!quota) return;
   let lbl;
@@ -40,7 +21,7 @@ function printQuota (quota) {
   else if (quota.deny_until) lbl = 'Free quota exhausted. Unidle available in';
   if (lbl) {
     let timestamp = quota.allow_until ? new Date(quota.allow_until) : new Date(quota.deny_until);
-    let time = timeRemaining(new Date(), timestamp);
+    let time = time.remaining(new Date(), timestamp);
     console.log(`${lbl}: ${time}`);
   }
 }
@@ -51,7 +32,7 @@ function printExtended (dynos) {
     columns: [
       {key: 'id', label: 'ID'},
       {key: 'name', label: 'Process'},
-      {key: 'state', label: 'State', format: (state, row) => `${state} ${timeAgo(new Date(row.updated_at))}`},
+      {key: 'state', label: 'State', format: (state, row) => `${state} ${time.ago(new Date(row.updated_at))}`},
       {key: 'extended.region', label: 'Region'},
       {key: 'extended.instance', label: 'Instance'},
       {key: 'extended.port', label: 'Port'},
@@ -66,7 +47,7 @@ function printExtended (dynos) {
 
 function printDynos (dynos) {
   let dynosByCommand = _.reduce(dynos, function (dynosByCommand, dyno) {
-    let since = timeAgo(new Date(dyno.updated_at));
+    let since = time.ago(new Date(dyno.updated_at));
     let size = dyno.size || '1X';
 
     if (dyno.type === 'run') {
