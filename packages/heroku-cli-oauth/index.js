@@ -10,4 +10,5 @@ exports.commands = [
   require('./commands/create'),
   require('./commands/info'),
   require('./commands/update'),
+  require('./commands/destroy'),
 ];
