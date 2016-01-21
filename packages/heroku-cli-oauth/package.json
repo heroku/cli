@@ -24,6 +24,9 @@
     "heroku-cli-util": "5.7.3"
   },
   "devDependencies": {
-    "jshint": "*"
+    "chai": "3.4.1",
+    "jshint": "*",
+    "mocha": "2.3.4",
+    "nock": "5.2.1"
   }
 }
