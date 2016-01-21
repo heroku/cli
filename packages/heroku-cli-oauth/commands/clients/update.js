@@ -2,7 +2,7 @@
 
 let cli  = require('heroku-cli-util');
 let co   = require('co');
-let lib  = require('../../lib');
+let lib  = require('../../lib/clients');
 
 let empty = o => Object.keys(o).length === 0;
 

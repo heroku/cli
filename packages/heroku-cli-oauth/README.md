@@ -16,23 +16,6 @@ To create a client:
 ``` bash
 $ heroku clients:create "Amazing" https://amazing-client.herokuapp.com/auth/heroku/callback
 Creating Amazing... done
-Get details with heroku clients:info 36120128-fee7-455e-8b7f-807aee130946
-$ heroku clients:info 36120128-fee7-455e-8b7f-807aee130946
-=== Amazing
-created_at:         2016-01-21T02:11:57Z
-id:                 36120128-fee7-455e-8b7f-807aee130946
-name:               Amazing
-redirect_uri:       https://amazing-client.herokuapp.com/auth/heroku/callback
-secret:             a14cf558-60b8-44f2-a804-3b249b48aa57
-updated_at:         2016-01-21T02:11:57Z
-```
-
-Or use the `-s / --shell` option to pipe output straight to your `.env` file:
-
-``` bash
-$ heroku clients:info --shell 36120128-fee7-455e-8b7f-807aee130946 >> .env
-$ cat .env
-...
 HEROKU_OAUTH_ID=3e304bda-d376-4278-bdea-6d6c08aa1359
 HEROKU_OAUTH_SECRET=e6a5f58f-f8a9-49f1-a1a6-d1dd98930ef6
 ```
@@ -42,6 +25,18 @@ See OAuth clients under your account with:
 ``` bash
 $ heroku clients
 Amazing  3e304bda-d376-4278-bdea-6d6c08aa1359  https://amazing-client.herokuapp.com/auth/heroku/callback
+```
+
+Get details about a client:
+```bash
+$ heroku clients:info 36120128-fee7-455e-8b7f-807aee130946
+=== Amazing
+created_at:         2016-01-21T02:11:57Z
+id:                 36120128-fee7-455e-8b7f-807aee130946
+name:               Amazing
+redirect_uri:       https://amazing-client.herokuapp.com/auth/heroku/callback
+secret:             a14cf558-60b8-44f2-a804-3b249b48aa57
+updated_at:         2016-01-21T02:11:57Z
 ```
 
 Update clients:
