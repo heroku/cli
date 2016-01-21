@@ -6,9 +6,9 @@ exports.topic = {
 };
 
 exports.commands = [
-  require('./commands'),
-  require('./commands/create'),
-  require('./commands/info'),
-  require('./commands/update'),
-  require('./commands/destroy'),
+  require('./commands/clients'),
+  require('./commands/clients/create'),
+  require('./commands/clients/info'),
+  require('./commands/clients/update'),
+  require('./commands/clients/destroy'),
 ];
