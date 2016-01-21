@@ -16,7 +16,8 @@ function* run (context, heroku) {
     }
   });
   let client = yield cli.action(`Creating ${context.args.name}`, request);
-  cli.log(`Get details with ${cli.color.cyan('heroku clients:info ' + client.id)}`);
+  cli.log(`HEROKU_OAUTH_ID=${client.id}`);
+  cli.log(`HEROKU_OAUTH_SECRET=${client.secret}`);
 }
 
 module.exports = {

@@ -2,7 +2,6 @@
 
 let nock   = require('nock');
 let cmd    = require('../../commands/clients/info');
-let expect = require('chai').expect;
 
 describe('clients:info', function() {
   beforeEach(() => cli.mockConsole());
