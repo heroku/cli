@@ -1,4 +1,5 @@
 # Heroku OAuth
+[![Build Status](https://travis-ci.org/heroku/heroku-oauth.svg?branch=master)](https://travis-ci.org/heroku/heroku-oauth)
 
 Command line plugin for managing OAuth clients, authorizations and tokens.
 
