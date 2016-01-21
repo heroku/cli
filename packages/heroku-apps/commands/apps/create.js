@@ -52,7 +52,7 @@ function* run (context, heroku) {
   if (context.flags.buildpack) yield addBuildpack(app, context.flags.buildpack);
 
   let remoteUrl = context.flags['ssh-git'] ? git.sshGitUrl(app.name) : git.gitUrl(app.name);
-  if (!context.flags['no-remote']) yield git.createRemote(context.flags.remote || 'heroku', remoteUrl);
+  if (git.inGitRepo() && !context.flags['no-remote']) yield git.createRemote(context.flags.remote || 'heroku', remoteUrl);
   cli.log(`${cli.color.cyan(app.web_url)} | ${cli.color.green(remoteUrl)}`);
 }
 

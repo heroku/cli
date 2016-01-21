@@ -1,6 +1,7 @@
 'use strict';
 
 let exec = require('child_process').execFile;
+let fs   = require('fs');
 
 module.exports = function (context) {
   let sshGitUrl = app => `git@${context.gitHost}:${app}.git`;
@@ -27,9 +28,19 @@ module.exports = function (context) {
     .then(exists => !exists ? git(['remote', 'add', remote, url]) : null);
   }
 
+  function inGitRepo () {
+    try {
+      fs.lstatSync('.git');
+      return true;
+    } catch (err) {
+      if (err.code !== 'ENOENT') throw err;
+    }
+  }
+
   return {
     sshGitUrl,
     gitUrl,
     createRemote,
+    inGitRepo,
   };
 };

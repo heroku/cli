@@ -21,7 +21,7 @@ myapp.herokuapp.com
 === myapp Custom Domains
 Domain Name  DNS Target
 ───────────  ──────────
-myapp.com    myapp.com 
+myapp.com    myapp.com
 `))
     .then(() => api.done());
   });
