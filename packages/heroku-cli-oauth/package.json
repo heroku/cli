@@ -1,0 +1,29 @@
+{
+  "name": "heroku-oauth",
+  "version": "0.0.0",
+  "description": "Heroku CLI plugin to manage OAuth clients.",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha && jshint ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/heroku/heroku-oauth.git"
+  },
+  "keywords": [
+    "heroku-plugin"
+  ],
+  "author": "Jeff Dickey (@dickeyxxx)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/heroku/heroku-oauth/issues"
+  },
+  "homepage": "https://github.com/heroku/heroku-oauth",
+  "dependencies": {
+    "co": "4.6.0",
+    "heroku-cli-util": "5.7.3"
+  },
+  "devDependencies": {
+    "jshint": "*"
+  }
+}
