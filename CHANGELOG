@@ -1,3 +1,7 @@
+4.27.15 2016-01-21
+==================
+Fixed goreq timeouts when downloading node
+
 4.27.14 2016-01-19
 ==================
 Fixed builtin plugin retry logic
