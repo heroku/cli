@@ -7,4 +7,5 @@ exports.topic = {
 
 exports.commands = [
   require('./commands'),
+  require('./commands/info'),
 ];

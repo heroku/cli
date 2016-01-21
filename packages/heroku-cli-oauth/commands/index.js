@@ -4,10 +4,7 @@ let co  = require('co');
 let cli = require('heroku-cli-util');
 
 function* run (context, heroku) {
-  let clients = yield heroku.request({
-    path: '/oauth/clients',
-    headers: {Range: null},
-  });
+  let clients = yield heroku.get('/oauth/clients');
   if (context.flags.json) {
     cli.log(JSON.stringify(clients, null, 2));
   } else if (clients.length === 0) {
