@@ -21,6 +21,9 @@ import (
 	"time"
 )
 
+type itimeout interface {
+	Timeout() bool
+}
 type Request struct {
 	headers           []headerTuple
 	cookies           []*http.Cookie
@@ -59,13 +62,13 @@ type Response struct {
 }
 
 func (r Response) CancelRequest() {
-	cancelRequest(r.req)
+	cancelRequest(DefaultTransport, r.req)
 
 }
 
-func cancelRequest(r *http.Request) {
-	if transport, ok := DefaultTransport.(transportRequestCanceler); ok {
-		transport.CancelRequest(r)
+func cancelRequest(transport interface{}, r *http.Request) {
+	if tp, ok := transport.(transportRequestCanceler); ok {
+		tp.CancelRequest(r)
 	}
 }
 
@@ -169,6 +172,7 @@ func paramParseStruct(v *url.Values, query interface{}) error {
 		s = s.Elem()
 		t = s.Type()
 	}
+
 	if t.Kind() != reflect.Struct {
 		return errors.New("Can not parse QueryString.")
 	}
@@ -345,12 +349,8 @@ func (r Request) Do() (*Response, error) {
 	}
 
 	timeout := false
-	var timer *time.Timer
 	if r.Timeout > 0 {
-		timer = time.AfterFunc(r.Timeout, func() {
-			cancelRequest(req)
-			timeout = true
-		})
+		client.Timeout = r.Timeout
 	}
 
 	if r.ShowDebug {
@@ -365,18 +365,15 @@ func (r Request) Do() (*Response, error) {
 		r.OnBeforeRequest(&r, req)
 	}
 	res, err := client.Do(req)
-	if timer != nil {
-		timer.Stop()
-	}
 
 	if err != nil {
 		if !timeout {
-			switch err := err.(type) {
-			case *net.OpError:
-				timeout = err.Timeout()
-			case *url.Error:
-				if op, ok := err.Err.(*net.OpError); ok {
-					timeout = op.Timeout()
+			if t, ok := err.(itimeout); ok {
+				timeout = t.Timeout()
+			}
+			if ue, ok := err.(*url.Error); ok {
+				if t, ok := ue.Err.(itimeout); ok {
+					timeout = t.Timeout()
 				}
 			}
 		}
