@@ -26,7 +26,7 @@ function* run (context, heroku) {
 module.exports = {
   topic: 'trusted-ips',
   command: 'remove',
-  description: 'Remove a ranges from the list of trusted IP ranges',
+  description: 'Remove a range from the list of trusted IP ranges',
   help: `
 Uses CIDR notation.
 
