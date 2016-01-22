@@ -4,7 +4,8 @@
   "description": "Heroku CLI plugin to manage apps.",
   "main": "index.js",
   "scripts": {
-    "test": "mocha && jshint ."
+    "test": "mocha && jshint .",
+    "preversion": "npm test"
   },
   "repository": {
     "type": "git",
