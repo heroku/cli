@@ -138,8 +138,8 @@ func remoteFromGitConfig() string {
 	return strings.TrimSpace(string(b))
 }
 
-func errMultipleHerokuRemotes(remotes []string) error {
-	return errors.New("multiple apps in git remotes\nremotes: " + strings.Join(remotes, " "))
+func errMultipleHerokuApps(apps []string) error {
+	return errors.New("multiple apps in git remotes\napps: " + strings.Join(apps, " "))
 }
 
 func appFromGitRemote(remote string) (string, error) {
@@ -177,7 +177,7 @@ func appFromGitRemote(remote string) (string, error) {
 	}
 	remoteValues := uniqueMapValues(remotes)
 	if len(remoteValues) > 1 {
-		return "", errMultipleHerokuRemotes(mapKeys(remotes))
+		return "", errMultipleHerokuApps(remoteValues)
 	}
 	for _, v := range remotes {
 		return v, nil
