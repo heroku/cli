@@ -15,7 +15,7 @@
   "license": "ISC",
   "dependencies": {
     "co": "4.6.0",
-    "heroku-cli-util": "5.6.1",
+    "heroku-cli-util": "5.7.3",
     "lodash": "3.10.1",
     "opn": "3.0.3",
     "printf": "0.2.3"
@@ -24,7 +24,7 @@
     "chai": "^3.2.0",
     "jshint": "^2.8.0",
     "mocha": "^2.2.5",
-    "nock": "^2.10.0",
+    "nock": "5.2.1",
     "proxyquire": "1.7.3"
   },
   "scripts": {
