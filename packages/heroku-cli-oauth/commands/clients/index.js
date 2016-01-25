@@ -13,7 +13,7 @@ function* run (context, heroku) {
     cli.table(clients, {
       printHeader: null,
       columns: [
-        {key: 'name'},
+        {key: 'name', format: name => cli.color.green(name)},
         {key: 'id'},
         {key: 'redirect_uri'},
       ]
