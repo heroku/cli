@@ -11,11 +11,10 @@ function* run (context, heroku) {
     cli.log(JSON.stringify(regions, 0, 2));
   } else {
     cli.table(regions, {
-      printHeader: null,
       columns: [
-        {key: 'name', format: n => cli.color.green(n)},
-        {key: 'description'},
-        {key: 'private_capable', format: c => c ? 'Private Spaces' : 'Common Runtime'},
+        {key: 'name', label: 'ID', format: n => cli.color.green(n)},
+        {key: 'description', label: 'Location'},
+        {key: 'private_capable', label: 'Runtime', format: c => c ? 'Private Spaces' : 'Common Runtime'},
       ]
     });
   }

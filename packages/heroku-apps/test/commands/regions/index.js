@@ -16,7 +16,9 @@ describe('regions', function() {
         {name: 'oregon', description: 'Oregon, United States', private_capable: true},
       ]);
     return cmd.run({flags: {}})
-    .then(() => expect(cli.stdout).to.equal(`oregon  Oregon, United States  Private Spaces
+    .then(() => expect(cli.stdout).to.equal(`ID      Location               Runtime
+──────  ─────────────────────  ──────────────
+oregon  Oregon, United States  Private Spaces
 eu      Europe                 Common Runtime
 us      United States          Common Runtime
 `))
