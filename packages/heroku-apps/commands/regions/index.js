@@ -1,19 +1,21 @@
 'use strict';
 
-let cli         = require('heroku-cli-util');
-let co          = require('co');
+let cli = require('heroku-cli-util');
+let co  = require('co');
+let _   = require('lodash');
 
 function* run (context, heroku) {
   let regions = yield heroku.get(`/regions`);
+  regions = _.sortBy(regions, ['private_capable', 'name']);
   if (context.flags.json) {
     cli.log(JSON.stringify(regions, 0, 2));
   } else {
-    cli.styledHeader('Regions');
     cli.table(regions, {
       printHeader: null,
       columns: [
         {key: 'name', format: n => cli.color.green(n)},
         {key: 'description'},
+        {key: 'private_capable', format: c => c ? 'Private Spaces' : 'Common Runtime'},
       ]
     });
   }
