@@ -8,6 +8,7 @@ import (
 	"net/url"
 	"os"
 	"os/exec"
+	"sort"
 	"strings"
 	"syscall"
 )
@@ -139,7 +140,42 @@ func remoteFromGitConfig() string {
 }
 
 func errMultipleHerokuRemotes(remotes []string) error {
-	return errors.New("multiple apps in git remotes\nremotes: " + strings.Join(remotes, " "))
+	sort.Strings(remotes)
+	cmd := "heroku " + strings.Join(os.Args[1:], " ")
+	remote := remotes[0]
+	if remote == "heroku" {
+		// easier to understand the concept of --remote when
+		// not using the `heroku` remote
+		remote = remotes[1]
+	}
+	app, _ := appFromGitRemote(remote)
+	return fmt.Errorf(`Error: Multiple apps in git remotes
+Usage: %s
+   or: %s
+
+Your local git repository has more than 1 app referenced in git remotes.
+Because of this, we can't determine which app you want to run this command against.
+Specify the app you want with %s or %s.
+
+Heroku remotes in repo:
+%s
+
+https://devcenter.heroku.com/articles/multiple-environments`,
+		cyan(cmd+" --remote "+remote),
+		cyan(cmd+" --app "+app),
+		cyan("--app"),
+		cyan("--remote"),
+		remoteList(remotes),
+	)
+}
+
+func remoteList(remotes []string) string {
+	lines := make([]string, 0, len(remotes))
+	for _, remote := range remotes {
+		app, _ := appFromGitRemote(remote)
+		lines = append(lines, fmt.Sprintf("%-25s (%s)", yellow(remote), green(app)))
+	}
+	return strings.Join(lines, "\n")
 }
 
 func appFromGitRemote(remote string) (string, error) {
