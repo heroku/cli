@@ -174,7 +174,9 @@ func v2login(email, password, secondFactor string) (string, error) {
 	case 404:
 		return "", errors.New("Authentication failed.\nEmail or password is not valid.\nCheck your credentials on https://dashboard.heroku.com")
 	default:
-		return "", errors.New("Invalid response from API.\nAre you behind a proxy?\nhttps://devcenter.heroku.com/articles/using-the-cli#using-an-http-proxy")
+		body, err := res.Body.ToString()
+		PrintError(err, false)
+		return "", fmt.Errorf("Invalid response from API.\nHTTP %d\n%s\n\nAre you behind a proxy?\nhttps://devcenter.heroku.com/articles/using-the-cli#using-an-http-proxy", res.StatusCode, body)
 	}
 }
 
