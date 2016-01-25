@@ -156,21 +156,28 @@ func v2login(email, password, secondFactor string) (string, error) {
 		err = errors.New(errorStr)
 	}
 	ExitIfError(err, false)
-	if res.StatusCode == 403 {
+	switch res.StatusCode {
+	case 200:
+		var response struct {
+			APIKey string `json:"api_key"`
+		}
+		ExitIfError(res.Body.FromJsonTo(&response), false)
+		return response.APIKey, nil
+	case 401:
+		var response struct {
+			Error string `json:"error"`
+		}
+		ExitIfError(res.Body.FromJsonTo(&response), false)
+		return "", errors.New(response.Error)
+	case 403:
 		return v2login(email, password, getString("Two-factor code: "))
+	case 404:
+		return "", errors.New("Authentication failed.\nEmail or password is not valid.\nCheck your credentials on https://dashboard.heroku.com")
+	default:
+		body, err := res.Body.ToString()
+		PrintError(err, false)
+		return "", fmt.Errorf("Invalid response from API.\nHTTP %d\n%s\n\nAre you behind a proxy?\nhttps://devcenter.heroku.com/articles/using-the-cli#using-an-http-proxy", res.StatusCode, body)
 	}
-	if res.StatusCode == 404 {
-		return "", errors.New("Authentication failure.")
-	}
-	if res.StatusCode != 200 {
-		return "", errors.New("Invalid response from API.\nAre you behind a proxy?\nhttps://devcenter.heroku.com/articles/using-the-cli#using-an-http-proxy")
-	}
-	type Doc struct {
-		APIKey string `json:"api_key"`
-	}
-	var doc Doc
-	ExitIfError(res.Body.FromJsonTo(&doc), false)
-	return doc.APIKey, nil
 }
 
 func createOauthToken(email, password, secondFactor string) (string, error) {
