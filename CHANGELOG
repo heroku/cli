@@ -1,3 +1,10 @@
+4.27.16 2016-01-25
+==================
+Improve error messages
+Show invalid login failure http responses
+Catch 2fa login errors
+Improve debugging info with HEROKU_DEBUG=1
+
 4.27.15 2016-01-21
 ==================
 Fixed goreq timeouts when downloading node
