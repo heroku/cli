@@ -109,6 +109,15 @@ func Debugln(a ...interface{}) {
 	}
 }
 
+// Debugf is used to print debugging information
+// It will be added to the logfile in ~/.heroku and stderr if HEROKU_DEBUG is set.
+func Debugf(f string, a ...interface{}) {
+	Logf(f, a...)
+	if debugging {
+		fmt.Fprintf(Stderr, f, a...)
+	}
+}
+
 // PrintError is a helper that prints out formatted error messages in red text
 func PrintError(e error, newline bool) {
 	if e == nil {
