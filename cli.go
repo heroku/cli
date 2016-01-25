@@ -132,7 +132,7 @@ func parseVarArgs(command *Command, args []string) (result []string, flags map[s
 			case flag == nil && command.VariableArgs:
 				result = append(result, args[i])
 			case flag == nil:
-				return nil, nil, "", errors.New("Unexpected flag: " + args[i])
+				return nil, nil, "", command.unexpectedFlagErr(args[i])
 			case flag == appFlag:
 				appName = val
 			case flag == remoteFlag:
