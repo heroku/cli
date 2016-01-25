@@ -164,7 +164,7 @@ func parseArgs(command *Command, args []string) (result map[string]string, flags
 		return nil, nil, "", err
 	}
 	if len(args) > len(command.Args) {
-		return nil, nil, "", errors.New("Unexpected argument: " + strings.Join(args[len(command.Args):], " "))
+		return nil, nil, "", command.unexpectedArgumentsErr(args[len(command.Args):])
 	}
 	for i, arg := range args {
 		result[command.Args[i].Name] = arg
