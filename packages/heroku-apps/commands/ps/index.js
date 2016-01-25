@@ -5,7 +5,7 @@ let co       = require('co');
 let _        = require('lodash');
 let time     = require('../../lib/time');
 
-let trunc = s => _.trunc(s, {length: 35, omission: '…'});
+let trunc = s => _.truncate(s, {length: 35, omission: '…'});
 
 // gets the process number from a string like web.19 => 19
 let getProcessNum = s => parseInt(s.split('.', 2)[1]);
@@ -27,7 +27,7 @@ function printQuota (quota) {
 }
 
 function printExtended (dynos) {
-  dynos = _.sortByAll(dynos, ['type'], a => getProcessNum(a.name));
+  dynos = _.sortBy(dynos, ['type'], a => getProcessNum(a.name));
   cli.table(dynos, {
     columns: [
       {key: 'id', label: 'ID'},

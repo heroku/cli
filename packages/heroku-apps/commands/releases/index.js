@@ -6,7 +6,7 @@ let _    = require('lodash');
 let time = require('../../lib/time');
 
 let width = () => process.stdout.columns > 80 ? process.stdout.columns : 80;
-let trunc = s => _.trunc(s, {length: width()-60, omission: '…'});
+let trunc = s => _.truncate(s, {length: width()-60, omission: '…'});
 
 function* run (context, heroku) {
   let url = `/apps/${context.app}/releases`;

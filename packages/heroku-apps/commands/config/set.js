@@ -21,7 +21,7 @@ function* run (context, heroku) {
     body: vars,
   });
   let configVars = yield cli.action(`Setting config vars and restarting ${cli.color.app(context.app)}`, p);
-  configVars = _.pick(configVars, (_, k) => vars[k]);
+  configVars = _.pickBy(configVars, (_, k) => vars[k]);
   cli.styledObject(configVars);
 }
 

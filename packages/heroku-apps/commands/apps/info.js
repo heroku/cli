@@ -23,8 +23,8 @@ function* run (context, heroku) {
   let app = context.args.app || context.app;
   if (!app) throw new Error('No app specified.\nUSAGE: heroku info my-app');
   let info = yield getInfo(app);
-  let addons = _(info.addons).pluck('plan.name').sort().value();
-  let collaborators = _(info.collaborators).pluck('user.email').pull(info.app.owner.email).sort().value();
+  let addons = _(info.addons).map('plan.name').sort().value();
+  let collaborators = _(info.collaborators).map('user.email').pull(info.app.owner.email).sort().value();
 
   function print() {
     let data = {};
