@@ -2,9 +2,13 @@ package main
 
 import (
 	"errors"
+	"fmt"
+	"net/http"
+	"net/url"
 	"os"
 	"runtime"
 	"runtime/debug"
+	"strings"
 
 	"github.com/heroku/heroku-cli/Godeps/_workspace/src/github.com/stvp/rollbar"
 )
@@ -75,6 +79,7 @@ func init() {
 func main() {
 	defer handlePanic()
 	runtime.GOMAXPROCS(1) // more procs causes runtime: failed to create new OS thread on Ubuntu
+	ShowDebugInfo()
 	Update(Channel, "block")
 	SetupNode()
 	err := cli.Run(os.Args)
@@ -122,4 +127,28 @@ func rollbarFields() []*rollbar.Field {
 		{"GOARCH", runtime.GOARCH},
 		{"command", cmd},
 	}
+}
+
+// ShowDebugInfo prints debugging information if HEROKU_DEBUG=1
+func ShowDebugInfo() {
+	if !isDebugging() {
+		return
+	}
+	info := []string{version(), binPath}
+	if len(os.Args) > 1 {
+		info = append(info, fmt.Sprintf("cmd: %s", os.Args[1]))
+	}
+	proxy := getProxy()
+	if proxy != nil {
+		info = append(info, fmt.Sprintf("proxy: %s", proxy))
+	}
+	Debugln(strings.Join(info, " "))
+}
+
+func getProxy() *url.URL {
+	req, err := http.NewRequest("GET", "https://api.heroku.com", nil)
+	PrintError(err, false)
+	proxy, err := http.ProxyFromEnvironment(req)
+	PrintError(err, false)
+	return proxy
 }
