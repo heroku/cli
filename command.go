@@ -45,7 +45,7 @@ func commandUsage(c *Command) string {
 	return c.String() + argsString(c.Args)
 }
 
-func (c *Command) buildFullHelp() string {
+func (c *Command) buildFlagHelp() string {
 	flags := c.Flags
 	if c.NeedsApp || c.WantsApp {
 		flags = append(flags, *appFlag, *remoteFlag)
@@ -54,26 +54,62 @@ func (c *Command) buildFullHelp() string {
 		flags = append(flags, *orgFlag)
 	}
 	lines := make([]string, 0, len(flags))
-	if c.Description != "" {
-		lines = append(lines, c.Description, "")
-	}
-	if len(flags) > 0 {
-		for _, flag := range flags {
-			if flag.Hidden {
-				continue
-			}
-			if flag.Description == "" {
-				lines = append(lines, flag.String())
-			} else {
-				lines = append(lines, fmt.Sprintf("%-20s # %s", flag.String(), flag.Description))
-			}
+	for _, flag := range flags {
+		if flag.Hidden {
+			continue
 		}
-		lines = append(lines, "")
+		if flag.Description == "" {
+			lines = append(lines, flag.String())
+		} else {
+			lines = append(lines, fmt.Sprintf("%-20s # %s", flag.String(), flag.Description))
+		}
+	}
+	return strings.Join(lines, "\n")
+}
+
+func (c *Command) buildFullHelp() string {
+	sections := make([]string, 0, 3)
+	if c.Description != "" {
+		sections = append(sections, c.Description)
+	}
+	flagHelp := c.buildFlagHelp()
+	if flagHelp != "" {
+		sections = append(sections, flagHelp)
 	}
 	if c.Help != "" {
-		lines = append(lines, c.Help)
+		sections = append(sections, c.Help)
 	}
-	return strings.TrimSuffix(strings.Join(lines, "\n"), "\n")
+	return strings.TrimSuffix(strings.Join(sections, "\n\n"), "\n")
+}
+
+func (c *Command) unexpectedFlagErr(flag string) error {
+	flagHelp := c.buildFlagHelp()
+	cmd := "heroku " + c.String()
+	if flagHelp == "" {
+		return fmt.Errorf(
+			`Error: Unexpected flag %s
+Usage: %s
+This command does not take any flags.
+
+See more information with %s`,
+			yellow(flag),
+			cyan("heroku "+commandUsage(c)),
+			cyan(cmd+" --help"),
+		)
+	}
+	return fmt.Errorf(
+		`Error: Unexpected flag %s
+Usage: %s
+
+This flag is invalid for this command. Here are the accepted flags:
+%s
+
+See more information with %s`,
+		yellow(flag),
+		cyan("heroku "+commandUsage(c)),
+		flagHelp,
+		cyan(cmd+" --help"),
+	)
 }
 
 func (c *Command) appNeededErr() error {
