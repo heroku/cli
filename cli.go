@@ -13,9 +13,6 @@ import (
 // ErrHelp means the user didn't type a valid command and we need to display help.
 var ErrHelp = errors.New("help")
 
-// ErrAppNeeded means the command needs an app context and one was not found.
-var ErrAppNeeded = errors.New("No app specified.\nRun this command from an app folder or specify which app to use with --app APP")
-
 // ErrOrgNeeded means the command needs an org context and one was not found.
 var ErrOrgNeeded = errors.New("No org specified.\nRun this command with --org or by setting HEROKU_ORGANIZATION")
 
@@ -49,7 +46,7 @@ func (cli *Cli) Run(args []string) (err error) {
 			ctx.App = app()
 		}
 		if ctx.App == "" && ctx.Command.NeedsApp {
-			return ErrAppNeeded
+			return ctx.Command.appNeededErr()
 		}
 	}
 	if ctx.Command.NeedsOrg || ctx.Command.WantsOrg {
