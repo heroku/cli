@@ -4,14 +4,18 @@ let cli         = require('heroku-cli-util');
 let co          = require('co');
 
 function* run (context, heroku) {
-  let regions = yield heroku.request({path: `/regions`});
+  let regions = yield heroku.get(`/regions`);
   if (context.flags.json) {
     cli.log(JSON.stringify(regions, 0, 2));
   } else {
     cli.styledHeader('Regions');
-    for (let region of regions) {
-      cli.log(`${cli.color.green(region.name)}  ${region.description}`);
-    }
+    cli.table(regions, {
+      printHeader: null,
+      columns: [
+        {key: 'name', format: n => cli.color.green(n)},
+        {key: 'description'},
+      ]
+    });
   }
 }
 
