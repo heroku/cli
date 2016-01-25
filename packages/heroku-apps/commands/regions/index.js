@@ -25,7 +25,7 @@ module.exports = {
   description: 'list available regions for deployment',
   needsAuth: true,
   flags: [
-    {name: 'json', description: 'output config vars in json format'},
+    {name: 'json', description: 'output in json format'},
   ],
   run: cli.command(co.wrap(run))
 };
