@@ -1,7 +1,7 @@
-exports.topics = [{
+exports.topic = {
   name: 'status',
-  description: 'Status of Heroku Platform'
-}];
+  description: 'status of the Heroku platform',
+};
 
 exports.commands = [
   require('./commands/status')

@@ -1,7 +1,7 @@
-[![npm version](https://badge.fury.io/js/heroku-status.svg)](http://badge.fury.io/js/heroku-status)
-
 CLI Plugin for [Heroku Status](https://status.heroku.com)
 ===========
+[![npm version](https://badge.fury.io/js/heroku-status.svg)](http://badge.fury.io/js/heroku-status)
+[![Build Status](https://travis-ci.org/heroku/heroku-status.svg?branch=master)](https://travis-ci.org/heroku/heroku-status)
 
 Read more about Toolbelt 4.0 plugins [here](https://github.com/heroku/heroku-hello-world#heroku-hello-world).
 
