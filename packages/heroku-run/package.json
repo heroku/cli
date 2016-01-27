@@ -21,7 +21,7 @@
   "homepage": "https://github.com/heroku/heroku-run",
   "dependencies": {
     "co": "4.6.0",
-    "heroku-cli-util": "5.6.3"
+    "heroku-cli-util": "5.7.4"
   },
   "devDependencies": {
     "jshint": "*"
