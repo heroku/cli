@@ -4,6 +4,11 @@
   "description": "run heroku apps locally",
   "main": "index.js",
   "author": "Jeff Dickey @dickeyxxx",
+  "scripts": {
+    "test": "jshint .",
+    "preversion": "npm test",
+    "postversion": "npm publish && git push && git push --tags"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/heroku/heroku-local"
