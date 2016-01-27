@@ -25,7 +25,7 @@
     "bluebird-queue": "0.0.8",
     "co": "4.6.0",
     "filesize": "3.2.0",
-    "heroku-cli-util": "5.7.3",
+    "heroku-cli-util": "5.7.4",
     "lodash": "4.0.1",
     "shell-escape": "0.2.0",
     "strftime": "0.9.2",
