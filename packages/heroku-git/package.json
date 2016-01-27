@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "jshint . && mocha",
-    "debug": "node-debug _mocha"
+    "debug": "node-debug _mocha",
+    "preversion": "npm test",
+    "postversion": "npm publish && git push && git push --tags"
   },
   "repository": {
     "type": "git",
