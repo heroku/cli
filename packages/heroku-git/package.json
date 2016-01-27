@@ -22,13 +22,13 @@
   "homepage": "https://github.com/heroku/heroku-git",
   "dependencies": {
     "co": "4.6.0",
-    "heroku-cli-util": "5.6.3"
+    "heroku-cli-util": "5.7.4"
   },
   "devDependencies": {
     "chai": "^3.0.0",
     "jshint": "*",
     "mocha": "^2.2.4",
-    "nock": "^2.0.1",
+    "nock": "7.0.2",
     "proxyquire": "^1.5.0",
     "sinon": "^1.14.1",
     "sinon-chai": "^2.8.0"
