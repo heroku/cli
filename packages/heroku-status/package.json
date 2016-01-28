@@ -25,6 +25,7 @@
   "dependencies": {
     "co": "4.6.0",
     "heroku-cli-util": "5.7.4",
+    "lodash": "4.0.1",
     "moment": "2.11.1"
   },
   "devDependencies": {

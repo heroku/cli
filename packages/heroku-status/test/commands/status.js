@@ -39,9 +39,10 @@ Development:  No known issues at this time.
         expect(`Production:   Red
 Development:  No known issues at this time.
 
-=== incident title ${moment(time).format('LT')} (https://status.heroku.com)
-[Update type] ${moment(time).format('LT')} (5 minutes ago)
+=== incident title ${moment(time).format('LT')} https://status.heroku.com
+update type  ${moment(time).format('LT')} (5 minutes ago)
 update contents
+
 `).to.eq(cli.stdout);
       })
       .then(() => api.done());
