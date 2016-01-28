@@ -4,11 +4,22 @@ let cli = require('heroku-cli-util');
 let co  = require('co');
 
 function* run(context, heroku) {
-  let space = context.flags.space || context.args.space;
-  if (!space) throw new Error('Space name required.\nUSAGE: heroku spaces:destroy my-space');
-  yield cli.confirmApp(space, context.flags.confirm, `Destructive Action\nThis command will destroy the space ${cli.color.bold.red(space)}`);
-  let request = heroku.delete(`/spaces/${space}`);
-  yield cli.action(`Destroying space ${cli.color.cyan(space)}`, request);
+  let lib = require('../lib/spaces')();
+  let spaceName = context.flags.space || context.args.space;
+  if (!spaceName) throw new Error('Space name required.\nUSAGE: heroku spaces:destroy my-space');
+  let natWarning = ``;
+
+  let space = yield heroku.get(`/spaces/${spaceName}`);
+  if (space.state === 'allocated') {
+    space.outbound_ips = yield heroku.get(`/spaces/${spaceName}/nat`);
+    if (space.outbound_ips && space.outbound_ips.state === 'enabled') {
+      natWarning = `\nThe Outbound IPs for this space will be reused!\nEnsure that external services no longer trust (whitelist) these Outbound IPs: ${lib.displayNat(space.outbound_ips)}`;
+    }
+  }
+
+  yield cli.confirmApp(spaceName, context.flags.confirm, `Destructive Action\nThis command will destroy the space ${cli.color.bold.red(spaceName)}\n${natWarning}\n`);
+  let request = heroku.delete(`/spaces/${spaceName}`);
+  yield cli.action(`Destroying space ${cli.color.cyan(spaceName)}`, request);
 }
 
 module.exports = {

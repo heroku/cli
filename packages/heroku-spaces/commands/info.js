@@ -3,13 +3,8 @@
 let cli = require('heroku-cli-util');
 let co  = require('co');
 
-function displayNat (nat) {
-  if (!nat) return;
-  if (nat.state !== 'enabled') return nat.state;
-  return nat.sources.join(', ');
-}
-
 function* run(context, heroku) {
+  let lib = require('../lib/spaces')();
   let spaceName = context.flags.space || context.args.space;
   if (!spaceName) throw new Error('Space name required.\nUSAGE: heroku spaces:info my-space');
   let space = yield heroku.get(`/spaces/${spaceName}`);
@@ -25,7 +20,7 @@ function* run(context, heroku) {
       Organization:    space.organization.name,
       Region:          space.region.name,
       State:           space.state,
-      'Outbound IPs':  displayNat(space.outbound_ips),
+      'Outbound IPs':  lib.displayNat(space.outbound_ips),
       'Created at':    space.created_at,
     }, ['ID', 'Organization', 'Region', 'State', 'Outbound IPs', 'Created at']);
   }
