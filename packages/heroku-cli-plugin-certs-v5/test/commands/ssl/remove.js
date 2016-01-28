@@ -2,7 +2,7 @@
 
 let expect = require('chai').expect;
 let nock   = require('nock');
-let certs = require('../../../commands/sni/remove.js');
+let certs = require('../../../commands/ssl/remove.js');
 let error  = require('../../../lib/error.js');            
 
 let endpoint            = require('../../stubs/sni-endpoints.js').endpoint;

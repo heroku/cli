@@ -1,12 +1,12 @@
 {
-  "name": "heroku-sni",
+  "name": "heroku-ssl",
   "version": "1.0.0",
-  "description": "heroku sni plugin",
+  "description": "heroku ssl plugin",
   "main": "index.js",
   "author": "Ransom Briggs rbriggs@heroku.com",
-  "repository": "heroku/heroku-sni",
+  "repository": "heroku/heroku-ssl",
   "bugs": {
-    "url": "https://github.com/heroku/heroku-sni/issues"
+    "url": "https://github.com/heroku/heroku-ssl/issues"
   },
   "scripts": {
     "test": "mocha && jshint ."

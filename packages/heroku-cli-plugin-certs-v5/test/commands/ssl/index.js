@@ -2,7 +2,7 @@
 
 let expect = require('chai').expect;
 let nock   = require('nock');
-let certs = require('../../../commands/sni/index.js');
+let certs = require('../../../commands/ssl/index.js');
 
 let endpoint            = require('../../stubs/sni-endpoints.js').endpoint;
 let endpoint2           = require('../../stubs/sni-endpoints.js').endpoint2;
@@ -39,7 +39,7 @@ akita-7777  akita-7777.herokussl.com  heroku.com      2013-08-01 21:34 UTC  True
       expect(cli.stderr).to.equal('');
       expect(cli.stdout).to.equal(
 `example has no SSL Endpoints.
-Use \`heroku _sni:add CRT KEY\` to add one.
+Use \`heroku _ssl:add CRT KEY\` to add one.
 `);
     });
   });

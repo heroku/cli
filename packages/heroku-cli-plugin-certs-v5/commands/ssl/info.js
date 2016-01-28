@@ -16,7 +16,7 @@ function* run(context, heroku) {
 }
 
 module.exports = {
-  topic: '_sni',
+  topic: '_ssl',
   command: 'info',
   args: [
     {name: 'name', optional: false}

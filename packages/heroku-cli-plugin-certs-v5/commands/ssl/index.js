@@ -11,7 +11,7 @@ function* run(context, heroku) {
   });
 
   if (certs.length === 0) {
-    cli.log(`${context.app} has no SSL Endpoints.\nUse \`heroku _sni:add CRT KEY\` to add one.`);
+    cli.log(`${context.app} has no SSL Endpoints.\nUse \`heroku _ssl:add CRT KEY\` to add one.`);
   } else {
     let mapped = certs.filter(function(f) { return f.ssl_cert; }).map(function(f) { 
       return {
@@ -33,7 +33,7 @@ function* run(context, heroku) {
 }
 
 module.exports = {
-  topic: '_sni',
+  topic: '_ssl',
   description: 'List ssl endpoints for an app.',
   needsApp: true,
   needsAuth: true,

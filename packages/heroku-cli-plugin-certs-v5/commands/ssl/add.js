@@ -34,7 +34,7 @@ function* run(context, heroku) {
 }
 
 module.exports = {
-  topic: '_sni',
+  topic: '_ssl',
   command: 'add',
   args: [
     {name: 'CRT', optional: false},

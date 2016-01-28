@@ -18,7 +18,7 @@ function* run(context) {
 }
 
 module.exports = {
-  topic: '_sni',
+  topic: '_ssl',
   command: 'key',
   description: 'Print the correct key for the given certificate.',
   help: 'You must pass one single certificate, and one or more keys.\nThe first key that signs the certificate will be printed back.',

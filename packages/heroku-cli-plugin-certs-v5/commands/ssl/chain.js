@@ -18,7 +18,7 @@ function* run(context) {
 }
 
 module.exports = {
-  topic: '_sni',
+  topic: '_ssl',
   command: 'chain',
   description: 'Print the ordered and complete chain for the given certificate.',
   needsApp: true,

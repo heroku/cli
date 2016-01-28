@@ -5,7 +5,7 @@ let nock   = require('nock');
 var fs     = require('fs');
 var sinon  = require('sinon');
 
-let certs = require('../../../commands/sni/add.js');
+let certs = require('../../../commands/ssl/add.js');
 
 let endpoint            = require('../../stubs/sni-endpoints.js').endpoint;
 let endpoint_warning    = require('../../stubs/sni-endpoints.js').endpoint_warning;

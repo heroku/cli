@@ -96,7 +96,7 @@ function* run(context, heroku) {
 
     cli.console.error('Your key and self-signed certificate have been generated.');
     cli.console.error('Next, run:');
-    cli.console.error(`$ heroku _sni:${command} ${crtfile} ${keyfile}`);
+    cli.console.error(`$ heroku _ssl:${command} ${crtfile} ${keyfile}`);
   } else {
     let csrfile = `${domain}.csr`;
 
@@ -105,12 +105,12 @@ function* run(context, heroku) {
     cli.console.error('Your key and certificate signing request have been generated.');
     cli.console.error(`Submit the CSR in \'${csrfile}\' to your preferred certificate authority.`);
     cli.console.error('When you\'ve received your certificate, run:');
-    cli.console.error(`$ heroku _sni:${command} CERTFILE ${keyfile}`);
+    cli.console.error(`$ heroku _ssl:${command} CERTFILE ${keyfile}`);
   }
 }
 
 module.exports = {
-  topic: '_sni',
+  topic: '_ssl',
   command: 'generate',
   args: [
     {name: 'domain', optional: false},

@@ -23,7 +23,7 @@ function* run(context, heroku) {
 }
 
 module.exports = {
-  topic: '_sni',
+  topic: '_ssl',
   command: 'remove',
   args: [
     { name: 'name', optional: false }
