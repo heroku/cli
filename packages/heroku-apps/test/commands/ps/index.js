@@ -18,7 +18,7 @@ describe('ps', function() {
         {command: 'npm start', size: 'Free', name: 'web.1', type: 'web', updated_at: hourAgo, state: 'up'},
       ]);
     return cmd.run({app: 'myapp', flags: {}})
-    .then(() => expect(cli.stdout).to.equal(`=== web (Free): npm start
+    .then(() => expect(cli.stdout).to.equal(`=== web (Free): npm start (1)
 web.1: up ${hourAgoStr} (~ 1h ago)
 
 `))

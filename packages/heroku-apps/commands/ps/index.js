@@ -63,7 +63,7 @@ function printDynos (dynos) {
     return dynosByCommand;
   }, {});
   _.forEach(dynosByCommand, function (dynos, key) {
-    cli.styledHeader(key);
+    cli.styledHeader(`${key} (${dynos.length})`);
     dynos = dynos.sort((a, b) => getProcessNum(a) - getProcessNum(b));
     for (let dyno of dynos) cli.log(dyno);
     cli.log();
