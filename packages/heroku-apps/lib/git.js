@@ -28,6 +28,11 @@ module.exports = function (context) {
     .then(exists => !exists ? git(['remote', 'add', remote, url]) : null);
   }
 
+  function listRemotes () {
+    return git(['remote', '-v'])
+    .then(remotes => remotes.trim().split('\n').map(r => r.split(/\s/)));
+  }
+
   function inGitRepo () {
     try {
       fs.lstatSync('.git');
@@ -37,10 +42,16 @@ module.exports = function (context) {
     }
   }
 
+  function rmRemote (remote) {
+    return git(['remote', 'rm', remote]);
+  }
+
   return {
     sshGitUrl,
     gitUrl,
     createRemote,
+    listRemotes,
+    rmRemote,
     inGitRepo,
   };
 };
