@@ -38,6 +38,7 @@ func init() {
 		commandsTopic,
 		debugTopic,
 		loginTopic,
+		logoutTopic,
 		pluginsTopic,
 		twoFactorTopic,
 		twoFactorTopicAlias,
@@ -47,10 +48,12 @@ func init() {
 	}
 	cli.Commands = CommandSet{
 		authLoginCmd,
+		authLogoutCmd,
 		authTokenCmd,
 		commandsListCmd,
 		debugErrlogCmd,
 		loginCmd,
+		logoutCmd,
 		pluginsInstallCmd,
 		pluginsLinkCmd,
 		pluginsListCmd,
