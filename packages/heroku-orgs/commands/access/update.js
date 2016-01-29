@@ -1,7 +1,7 @@
 'use strict';
 
 var Heroku      = require('heroku-client');
-var Utils       = require('../lib/utils');
+var Utils       = require('../../lib/utils');
 var co          = require('co');
 var heroku;
 

@@ -1,35 +1,36 @@
 {
-  "name": "heroku-access",
+  "name": "heroku-orgs",
   "version": "0.0.2",
-  "description": "CLI to manage access in Heroku Applications",
+  "description": "CLI to manage orgs in Heroku Applications",
   "main": "index.js",
   "author": "Raul Barroso @raulb",
   "repository": {
     "type": "git",
-    "url": "https://github.com/heroku/heroku-access"
+    "url": "https://github.com/heroku/heroku-orgs"
   },
   "bugs": {
-    "url": "https://github.com/heroku/heroku-access/issues"
+    "url": "https://github.com/heroku/heroku-orgs/issues"
   },
   "keywords": [
     "heroku-plugin"
   ],
   "license": "ISC",
-  "homepage": "https://github.com/heroku/heroku-access",
+  "homepage": "https://github.com/heroku/heroku-orgs",
   "scripts": {
-    "test": "jshint . && mocha"
+    "test": "jshint . && mocha",
+    "preversion": "npm test",
+    "postversion": "npm publish && git push && git push --tags"
   },
   "dependencies": {
-    "co": "*",
-    "heroku-client": "*",
-    "columnify": "*",
-    "lodash": "*"
+    "co": "4.6.0",
+    "columnify": "1.5.4",
+    "heroku-cli-util": "5.7.4",
+    "lodash": "4.0.1"
   },
   "devDependencies": {
     "chai": "*",
     "jshint": "*",
     "mocha": "*",
-    "nock": "*",
-    "netrc": "*"
+    "nock": "*"
   }
 }
