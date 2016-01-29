@@ -1,7 +1,7 @@
-[![npm version](https://badge.fury.io/js/heroku-access.svg)](http://badge.fury.io/js/heroku-access)
-
 Heroku Access Plugin for Heroku Toolbelt 4.0
 ===========
+[![npm version](https://badge.fury.io/js/heroku-access.svg)](http://badge.fury.io/js/heroku-access)
+[![Build Status](https://travis-ci.org/heroku/heroku-orgs.svg?branch=master)](https://travis-ci.org/heroku/heroku-orgs)
 
 Read more about Toolbelt 4.0 plugins [here](https://github.com/heroku/heroku-hello-world#heroku-hello-world).
 
