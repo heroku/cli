@@ -8,16 +8,19 @@ let ssl_doctor = require('../../lib/ssl_doctor.js');
 let display_warnings = require('../../lib/display_warnings.js');
 
 function* run(context, heroku) {
-  let pem_file = context.args.CRT;
-  let key_file = context.args.KEY;
-
-  var res = yield {
-    pem: readFile(pem_file),
-    key: readFile(key_file)
+  var files = yield {
+    crt: readFile(context.args.CRT),
+    key: readFile(context.args.KEY)
   };
 
-  if (! context.flags.bypass) {
-    res = JSON.parse(yield ssl_doctor('resolve-chain-and-key', [res.pem, res.key]));
+  var crt, key;
+  if (context.flags.bypass) {
+    crt = files.crt;
+    key = files.key;
+  } else {
+    let res = JSON.parse(yield ssl_doctor('resolve-chain-and-key', [files.crt, files.key]));
+    crt = res.pem;
+    key = res.key;
   }
 
   let name = context.args.name;
@@ -26,7 +29,7 @@ function* run(context, heroku) {
     path: `/apps/${context.app}/sni-endpoints/${name}`,
     method: 'PATCH',
     headers: {'Accept': 'application/vnd.heroku+json; version=3.sni_ssl_cert'},
-    body: {certificate_chain: res.pem, private_key: res.key}
+    body: {certificate_chain: crt, private_key: key}
   }));
 
   display_warnings(cert);

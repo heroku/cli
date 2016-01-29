@@ -8,22 +8,25 @@ let ssl_doctor = require('../../lib/ssl_doctor.js');
 let display_warnings = require('../../lib/display_warnings.js');
 
 function* run(context, heroku) {
-  let cert_file = context.args.CRT;
-  let key_file = context.args.KEY;
-
-  var res = yield {
-    pem: readFile(cert_file),
-    key: readFile(key_file)
+  var files = yield {
+    crt: readFile(context.args.CRT),
+    key: readFile(context.args.KEY)
   };
 
-  if (! context.flags.bypass) {
-    res = JSON.parse(yield ssl_doctor('resolve-chain-and-key', [res.pem, res.key]));
+  var crt, key;
+  if (context.flags.bypass) {
+    crt = files.crt;
+    key = files.key;
+  } else {
+    let res = JSON.parse(yield ssl_doctor('resolve-chain-and-key', [files.crt, files.key]));
+    crt = res.pem;
+    key = res.key;
   }
 
   let cert = yield cli.action(`Adding SSL Endpoint to ${context.app}`, {}, heroku.request({
     path: `/apps/${context.app}/sni-endpoints`,
     method: 'POST',
-    body: {certificate_chain: res.pem, private_key: res.key, app: context.app},
+    body: {certificate_chain: crt, private_key: key, app: context.app},
     headers: {'Accept': 'application/vnd.heroku+json; version=3.sni_ssl_cert'}
   }));
 
