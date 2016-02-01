@@ -20,7 +20,7 @@ describe('pipelines:add', function () {
       .reply(200, pipelines);
 
     nock('https://api.heroku.com')
-      .post('/apps/example/pipeline-couplings')
+      .post('/pipeline-couplings')
       .reply(201, pipeline_coupling);
 
     return cmd.run({app: 'example', args: {pipeline: 'example'}, flags: {stage: 'production'}})

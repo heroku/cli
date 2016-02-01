@@ -16,7 +16,7 @@ describe('pipelines:create', function () {
     let heroku = nock('https://api.heroku.com')
       .post('/pipelines')
       .reply(201, pipeline)
-      .post('/apps/example/pipeline-couplings')
+      .post('/pipeline-couplings')
       .reply(201, pipeline_coupling);
 
     return cmd.run({app: 'example', args: {name: 'example'}, flags: {stage: 'production'}})

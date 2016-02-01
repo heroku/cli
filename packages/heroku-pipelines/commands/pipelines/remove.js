@@ -2,6 +2,8 @@
 
 let cli = require('heroku-cli-util');
 
+const removeCoupling = require('../../lib/api').removeCoupling;
+
 module.exports = {
   topic: 'pipelines',
   command: 'remove',
@@ -10,12 +12,8 @@ module.exports = {
   needsApp: true,
   needsAuth: true,
   run: cli.command(function* (context, heroku) {
-    let promise = heroku.request({
-      method: 'DELETE',
-      path: `/apps/${context.app}/pipeline-couplings`,
-      headers: { 'Accept': 'application/vnd.heroku+json; version=3.pipelines' }
-    }); // heroku.apps(app).pipeline-couplings().destroy();
-    let pipeline = yield cli.action(`Removing ${context.app}`, promise);
-    cli.hush(pipeline);
+    const app = context.app;
+
+    yield cli.action(`Removing ${app}`, removeCoupling(heroku, app));
   })
 };

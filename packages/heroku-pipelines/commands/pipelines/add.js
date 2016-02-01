@@ -6,6 +6,8 @@ let disambiguate = require('../../lib/disambiguate');
 let prompt = require('../../lib/prompt');
 let stageNames = require('../../lib/stages').names;
 
+const createCoupling = require('../../lib/api').createCoupling;
+
 module.exports = {
   topic: 'pipelines',
   command: 'add',
@@ -20,6 +22,8 @@ module.exports = {
     {name: 'stage', char: 's', description: 'stage of first app in pipeline', hasValue: true}
   ],
   run: cli.command(function* (context, heroku) {
+    const app = context.app;
+
     var stage;
     let guesses = infer(context.app);
     let questions = [];
@@ -32,19 +36,15 @@ module.exports = {
       questions.push({
         type: "list",
         name: "stage",
-        message: `Stage of ${context.app}`,
+        message: `Stage of ${app}`,
         choices: stageNames,
         default: guesses[1]
       });
     }
     let answers = yield prompt(questions);
     if (answers.stage) stage = answers.stage;
-    let promise = heroku.request({
-      method: 'POST',
-      path: `/apps/${context.app}/pipeline-couplings`,
-      body: {pipeline: {id: pipeline.id}, stage: stage},
-      headers: { 'Accept': 'application/vnd.heroku+json; version=3.pipelines' }
-    }); // heroku.apps(app_id).pipline_couplings().create(body);
-    yield cli.action(`Adding ${context.app} to ${pipeline.name} pipeline as ${stage}`, promise);
+
+    yield cli.action(`Adding ${app} to ${pipeline.name} pipeline as ${stage}`,
+                    createCoupling(heroku, pipeline, app, stage));
   })
 };

@@ -108,71 +108,74 @@ function* diff(targetApp, downstreamApp, githubToken, herokuUserAgent) {
   }
 }
 
+function* run(context, heroku) {
+  // jshint maxstatements:65
+  const targetAppName = context.app;
+  let coupling;
+  try {
+    coupling = yield heroku.request({
+      method: 'GET',
+      path: `/apps/${targetAppName}/pipeline-couplings`,
+      headers: { 'Accept': PIPELINES_HEADER }
+    });
+  } catch (err) {
+    return cli.error(`This app (${targetAppName}) does not seem to be a part of any pipeline`);
+  }
+  const targetAppId = coupling.app.id;
+
+  const allApps = yield cli.action(`Fetching apps from pipeline`,
+    heroku.request({
+      method: 'GET',
+      path: `/pipelines/${coupling.pipeline.id}/apps`,
+      headers: { 'Accept': PIPELINES_HEADER }
+    }));
+
+  const sourceStage = coupling.stage;
+  const downstreamStage = PROMOTION_ORDER[PROMOTION_ORDER.indexOf(sourceStage) + 1];
+  if (downstreamStage === null || PROMOTION_ORDER.indexOf(sourceStage) < 0) {
+    return cli.error(`Unable to diff ${targetAppName}`);
+  }
+  const downstreamApps = allApps.filter(function(app) {
+    return app.coupling.stage === downstreamStage;
+  });
+
+  if (downstreamApps.length < 1) {
+    return cli.error(`Cannot diff ${targetAppName} as there are no downstream apps configured`);
+  }
+
+  // Fetch GitHub repo/latest release hash for [target, downstream[0], .., downstream[n]] apps
+  const wrappedGetAppInfo = co.wrap(getAppInfo);
+  const appInfoPromises = [wrappedGetAppInfo(heroku, targetAppName, targetAppId)];
+  downstreamApps.forEach(function (app) {
+    appInfoPromises.push(wrappedGetAppInfo(heroku, app.name, app.id));
+  });
+  const appInfo = yield cli.action(`Fetching release info for all apps`,
+    bluebird.all(appInfoPromises));
+
+  // Verify the target app
+  let targetAppInfo = appInfo[0];
+  if (targetAppInfo.repo === null) {
+    return cli.error(`${targetAppName} does not seem to be connected to GitHub!`);
+  } else if (targetAppInfo.hash === null) {
+    return cli.error(`No release was found for ${targetAppName}, unable to diff`);
+  }
+
+  // Fetch GitHub token for the user
+  const githubAccount = yield kolkrabbiRequest(`/account/github/token`, heroku.options.token);
+
+  // Diff [{target, downstream[0]}, {target, downstream[1]}, .., {target, downstream[n]}]
+  const downstreamAppsInfo = appInfo.slice(1);
+  for (let downstreamAppInfo of downstreamAppsInfo) {
+    yield diff(
+      targetAppInfo, downstreamAppInfo, githubAccount.github.token, heroku.options.userAgent);
+  }
+}
+
 module.exports = {
   topic: 'pipelines',
   command: 'diff',
   description: 'compares the latest release of this app its downstream app(s)',
   needsAuth: true,
   needsApp: true,
-  run: cli.command(function* (context, heroku) {
-    const targetAppName = context.app;
-    let coupling;
-    try {
-      coupling = yield heroku.request({
-        method: 'GET',
-        path: `/apps/${targetAppName}/pipeline-couplings`,
-        headers: { 'Accept': PIPELINES_HEADER }
-      });
-    } catch (err) {
-      return cli.error(`This app (${targetAppName}) does not seem to be a part of any pipeline`);
-    }
-    const targetAppId = coupling.app.id;
-
-    const allApps = yield cli.action(`Fetching apps from pipeline`,
-      heroku.request({
-        method: 'GET',
-        path: `/pipelines/${coupling.pipeline.id}/apps`,
-        headers: { 'Accept': PIPELINES_HEADER }
-      }));
-
-    const sourceStage = coupling.stage;
-    const downstreamStage = PROMOTION_ORDER[PROMOTION_ORDER.indexOf(sourceStage) + 1];
-    if (downstreamStage === null || PROMOTION_ORDER.indexOf(sourceStage) < 0) {
-      return cli.error(`Unable to diff ${targetAppName}`);
-    }
-    const downstreamApps = allApps.filter(function(app) {
-      return app.coupling.stage === downstreamStage;
-    });
-
-    if (downstreamApps.length < 1) {
-      return cli.error(`Cannot diff ${targetAppName} as there are no downstream apps configured`);
-    }
-
-    // Fetch GitHub repo/latest release hash for [target, downstream[0], .., downstream[n]] apps
-    const wrappedGetAppInfo = co.wrap(getAppInfo);
-    const appInfoPromises = [wrappedGetAppInfo(heroku, targetAppName, targetAppId)];
-    downstreamApps.forEach(function (app) {
-      appInfoPromises.push(wrappedGetAppInfo(heroku, app.name, app.id));
-    });
-    const appInfo = yield cli.action(`Fetching release info for all apps`,
-      bluebird.all(appInfoPromises));
-
-    // Verify the target app
-    let targetAppInfo = appInfo[0];
-    if (targetAppInfo.repo === null) {
-      return cli.error(`${targetAppName} does not seem to be connected to GitHub!`);
-    } else if (targetAppInfo.hash === null) {
-      return cli.error(`No release was found for ${targetAppName}, unable to diff`);
-    }
-
-    // Fetch GitHub token for the user
-    const githubAccount = yield kolkrabbiRequest(`/account/github/token`, heroku.options.token);
-
-    // Diff [{target, downstream[0]}, {target, downstream[1]}, .., {target, downstream[n]}]
-    const downstreamAppsInfo = appInfo.slice(1);
-    for (let downstreamAppInfo of downstreamAppsInfo) {
-      yield diff(
-        targetAppInfo, downstreamAppInfo, githubAccount.github.token, heroku.options.userAgent);
-    }
-  })
+  run: cli.command(co.wrap(run))
 };
