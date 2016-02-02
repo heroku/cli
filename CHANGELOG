@@ -1,3 +1,8 @@
+4.27.17 2016-02-02
+==================
+Add netgo tag to build flags
+make sure plugins have commands
+
 4.27.16 2016-01-25
 ==================
 Improve error messages
