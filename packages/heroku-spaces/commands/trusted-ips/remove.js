@@ -12,12 +12,6 @@ function* run (context, heroku) {
   let originalLength = rules.rules.length;
   rules.rules = rules.rules.filter(r => r.source !== context.args.source);
   if (rules.rules.length === originalLength) throw new Error(`No IP range matching ${context.args.source} was found.`);
-  if (rules.rules.length === 0) {
-    yield cli.confirmApp(
-      space,
-      context.flags.confirm,
-      `You are removing the last trusted IP range. Web traffic from any source will not able to access apps in this space.`);
-  }
   rules = yield lib.putRules(space, rules);
   cli.log(`Removed ${cli.color.cyan.bold(context.args.source)} from trusted IP ranges on ${cli.color.cyan.bold(space)}`);
   cli.warn('It may take a few moments for the changes to take effect.');
