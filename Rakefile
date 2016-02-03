@@ -65,6 +65,16 @@ def build(target)
   vars << "GOARM=#{target[:goarm]}" if target[:goarm]
   ok = system("#{vars.join(' ')} go build #{args.join(' ')}")
   exit 1 unless ok
+  if target[:os] === 'windows'
+    # sign executable
+    ok = system "osslsigncode -pkcs12 resources/exe/heroku-codesign-cert.pfx \
+    -pass '#{ENV['HEROKU_WINDOWS_SIGNING_PASS']}' \
+    -n 'Heroku Toolbelt' \
+    -i https://toolbelt.heroku.com/ \
+    -in #{path} \
+    -out #{path} > /dev/null"
+    exit 2 unless ok
+  end
   gzip(path)
 end
 
