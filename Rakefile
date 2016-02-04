@@ -76,7 +76,7 @@ def build(target)
     unless ok
       $stderr.puts "Unable to sign Windows binaries, please following the full release instructions"
       $stderr.puts "https://github.com/heroku/heroku/blob/master/RELEASE-FULL.md#windows-release"
-      exit 2 unless ok
+      exit 2
     end
   end
   gzip(path)
