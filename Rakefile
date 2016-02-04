@@ -74,7 +74,7 @@ def build(target)
     -in #{path} \
     -out #{path} > /dev/null"
     unless ok
-      $stderr.puts "Unable to sign Windows binaries, please following the full release instructions"
+      $stderr.puts "Unable to sign Windows binaries, please follow the full release instructions"
       $stderr.puts "https://github.com/heroku/heroku/blob/master/RELEASE-FULL.md#windows-release"
       exit 2
     end
