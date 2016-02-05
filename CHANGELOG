@@ -1,3 +1,7 @@
+4.27.19 2016-02-05
+==================
+Move login parameters from query to post body
+
 4.27.18 2016-02-03
 ==================
 Sign heroku-cli executable on windows
