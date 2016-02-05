@@ -1,9 +1,5 @@
 const STAGES = [
   {
-    name: 'review',
-    inferRegex:  /-pr-(\d+)$/
-  },
-  {
     name: 'development',
     inferRegex: /-(dev|development|uat|tst|test|qa)$/
   },
