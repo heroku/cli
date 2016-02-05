@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net/url"
 	"os"
-	"strings"
 	"time"
 
 	"github.com/heroku/heroku-cli/Godeps/_workspace/src/github.com/dickeyxxx/speakeasy"
@@ -144,17 +143,19 @@ func v2login(email, password, secondFactor string) (string, error) {
 	req := apiRequestBase("")
 	req.Method = "POST"
 
-	queryPassword := "&password=" + url.QueryEscape(password)
-	req.Uri = req.Uri + "/login?username=" + url.QueryEscape(email) + queryPassword
+	req.Uri = req.Uri + "/login"
+	req.ContentType = "application/x-www-form-urlencoded"
+	req.ShowDebug = false
+
+	data := url.Values{}
+	data.Set("username", email)
+	data.Set("password", password)
+	req.Body = data.Encode()
+
 	if secondFactor != "" {
 		req.AddHeader("Heroku-Two-Factor-Code", secondFactor)
 	}
 	res, err := req.Do()
-	if err != nil {
-		errorStr := err.Error()
-		errorStr = strings.Replace(errorStr, queryPassword, "&password=XXXXXXXX", -1)
-		err = errors.New(errorStr)
-	}
 	ExitIfError(err, false)
 	switch res.StatusCode {
 	case 200:
