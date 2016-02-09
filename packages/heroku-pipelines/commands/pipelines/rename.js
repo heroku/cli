@@ -21,7 +21,7 @@ module.exports = {
       method: 'PATCH',
       path: `/pipelines/${pipeline.id}`,
       body: {name: context.args.name},
-      headers: { 'Accept': 'application/vnd.heroku+json; version=3.pipelines' }
+      headers: { 'Accept': 'application/vnd.heroku+json; version=3' }
     }); // heroku.pipelines(pipeline).update(body);
 
     yield cli.action(`Renaming ${pipeline.name} pipeline to ${context.args.name}`, promise);

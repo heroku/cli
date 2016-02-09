@@ -43,7 +43,7 @@ function* run(context, heroku) {
     method: 'POST',
     path: '/pipelines',
     body: {name: name},
-    headers: { 'Accept': 'application/vnd.heroku+json; version=3.pipelines' }
+    headers: { 'Accept': 'application/vnd.heroku+json; version=3' }
   }); // heroku.pipelines().create({name: name});
   let pipeline = yield cli.action(`Creating ${name} pipeline`, promise);
 

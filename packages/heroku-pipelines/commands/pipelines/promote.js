@@ -24,7 +24,7 @@ function pollPromotionStatus(heroku, id) {
   return heroku.request({
     method: 'GET',
     path: `/pipeline-promotions/${id}/promotion-targets`,
-    headers: { 'Accept': PIPELINES_HEADER, }
+    headers: { 'Accept': V3_HEADER, }
   }).then(function(targets) {
     if (targets.every(isComplete)) { return targets; }
 
@@ -36,7 +36,7 @@ function* getCoupling(heroku, app) {
   return yield cli.action(`Fetching app info`, heroku.request({
     method: 'GET',
     path: `/apps/${app}/pipeline-couplings`,
-    headers: { 'Accept': PIPELINES_HEADER }
+    headers: { 'Accept': V3_HEADER }
   }));
 }
 
@@ -53,7 +53,7 @@ function* promote(heroku, promotionActionName, pipelineId, sourceAppId, targetAp
   return yield cli.action(promotionActionName, heroku.request({
     method: 'POST',
     path: `/pipeline-promotions`,
-    headers: { 'Accept': PIPELINES_HEADER, },
+    headers: { 'Accept': V3_HEADER, },
     body: {
       pipeline: { id: pipelineId },
       source:   { app: { id: sourceAppId } },

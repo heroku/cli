@@ -13,7 +13,7 @@ module.exports = {
     let pipelines = yield heroku.request({
       method: 'GET',
       path: "/pipelines",
-      headers: { 'Accept': 'application/vnd.heroku+json; version=3.pipelines' }
+      headers: { 'Accept': 'application/vnd.heroku+json; version=3' }
     }); // heroku.pipelines().list();
     for (var pipeline in pipelines) {
       if (pipelines.hasOwnProperty(pipeline)) {

@@ -116,7 +116,7 @@ function* run(context, heroku) {
     coupling = yield heroku.request({
       method: 'GET',
       path: `/apps/${targetAppName}/pipeline-couplings`,
-      headers: { 'Accept': PIPELINES_HEADER }
+      headers: { 'Accept': V3_HEADER }
     });
   } catch (err) {
     return cli.error(`This app (${targetAppName}) does not seem to be a part of any pipeline`);

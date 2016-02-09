@@ -1,21 +1,20 @@
 const V3_HEADER = 'application/vnd.heroku+json; version=3';
-const PIPELINES_HEADER = V3_HEADER + '.pipelines';
 
 function getCoupling(heroku, app) {
   return heroku.request({
     method: 'GET',
     path: `/apps/${app}/pipeline-couplings`,
-    headers: { 'Accept': PIPELINES_HEADER }
+    headers: { 'Accept': V3_HEADER }
   });
 }
 
 function postCoupling(heroku, pipeline, app, stage) {
-    return heroku.request({
-      method: 'POST',
-      path: '/pipeline-couplings',
-      body: {app: app, pipeline: pipeline, stage: stage},
-      headers: { 'Accept': PIPELINES_HEADER }
-    });
+  return heroku.request({
+    method: 'POST',
+    path: '/pipeline-couplings',
+    body: {app: app, pipeline: pipeline, stage: stage},
+    headers: { 'Accept': V3_HEADER }
+  });
 }
 
 function patchCoupling(heroku, id, stage) {
@@ -23,7 +22,7 @@ function patchCoupling(heroku, id, stage) {
     method: 'PATCH',
     path: `/pipeline-couplings/${id}`,
     body: {stage: stage},
-    headers: { 'Accept': PIPELINES_HEADER }
+    headers: { 'Accept': V3_HEADER }
   });
 }
 
@@ -31,7 +30,7 @@ function deleteCoupling(heroku, id) {
   return heroku.request({
     method: 'DELETE',
     path: `/pipeline-couplings/${id}`,
-    headers: { 'Accept': PIPELINES_HEADER }
+    headers: { 'Accept': V3_HEADER }
   });
 }
 
