@@ -35,7 +35,7 @@ heroku/ruby
     });
   });
 
-  it('# maps buildpack s3 to names', function() {
+  it('# does not map buildpack s3 to names', function() {
     stub_get('https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/ruby.tgz');
 
     return buildpacks.run({app: 'example'})
@@ -43,7 +43,7 @@ heroku/ruby
       expect(cli.stderr).to.equal('');
       expect(cli.stdout).to.equal(
 `=== example Buildpack URL
-heroku/ruby
+https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/ruby.tgz
 `);
     });
   });

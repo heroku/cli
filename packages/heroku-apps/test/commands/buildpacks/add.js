@@ -38,12 +38,12 @@ Run git push heroku master to create a new release using this buildpack.
       });
     });
 
-    it('# maps buildpack urns', function() {
+    it('# does not map buildpack urns', function() {
       stub_get();
 
       let mock = nock('https://api.heroku.com')
       .put('/apps/example/buildpack-installations', {
-        updates: [{buildpack: 'heroku/ruby'}]
+        updates: [{buildpack: 'urn:buildpack:heroku/ruby'}]
       })
       .reply(200, [{buildpack: {url: 'urn:buildpack:heroku/ruby', name: 'heroku/ruby'}, ordinal: 0}]);
 
@@ -144,6 +144,16 @@ Run git push heroku master to create a new release using these buildpacks.
         app: 'example', args: {url: 'http://github.com/foobar/foobar'},
       })).then(function() {
         expect(unwrap(cli.stderr)).to.equal(' ▸    The buildpack http://github.com/foobar/foobar is already set on your app.\n');
+      });
+    });
+
+    it('# errors out on unmapped codon urls', function() {
+      stub_get('https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/jvm-common.tgz');
+
+      return assert_exit(1, buildpacks.run({
+        app: 'example', args: {url: 'https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/jvm-common.tgz'},
+      })).then(function() {
+        expect(unwrap(cli.stderr)).to.equal(' ▸    The buildpack https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/jvm-common.tgz is already set on your app.\n');
       });
     });
 

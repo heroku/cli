@@ -17,19 +17,14 @@ function BuildpackCommand(context, heroku, command, action) {
     this.index = null;
   }
 
-  this.url    = context.args && context.args.url && this.mapBuildpackUrl(context.args.url);
+  this.url    = context.args && context.args.url;
   this.action = action;
   this.command = command;
 }
 
-BuildpackCommand.prototype.mapBuildpackUrl = function(url) {
-  return url.replace(/^urn:buildpack:/, '').replace(/^https:\/\/codon-buildpacks\.s3\.amazonaws\.com\/buildpacks\/heroku\/(.*)\.tgz$/, 'heroku/$1');
-};
-
 BuildpackCommand.prototype.mapBuildpackResponse = function(buildpacks) {
-  let buildpackCommand = this;
   return buildpacks.map(function(bp) {
-    bp.buildpack.url = buildpackCommand.mapBuildpackUrl(bp.buildpack.url);
+    bp.buildpack.url = bp.buildpack.url.replace(/^urn:buildpack:/, '');
     return bp;
   });
 };
@@ -91,7 +86,8 @@ BuildpackCommand.prototype.findIndex = function(buildpacks) {
 
 BuildpackCommand.prototype.findUrl = function findUrl(buildpacks) {
   let url = this.url;
-  return _.findIndex(buildpacks, function(b) { return b.buildpack.url === url; });
+  let mappedUrl = this.url.replace(/^urn:buildpack:/, '').replace(/^https:\/\/codon-buildpacks\.s3\.amazonaws\.com\/buildpacks\/heroku\/(.*)\.tgz$/, 'heroku/$1');
+  return _.findIndex(buildpacks, function(b) { return b.buildpack.url === url || b.buildpack.url === mappedUrl; });
 };
 
 BuildpackCommand.prototype.display = function (buildpacks, indent) {
