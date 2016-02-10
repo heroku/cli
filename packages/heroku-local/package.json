@@ -21,7 +21,8 @@
   ],
   "license": "ISC",
   "dependencies": {
-    "heroku-cli-util": "5.7.4"
+    "heroku-cli-util": "5.7.4",
+    "tunnel-agent": "^0.4.0"
   },
   "devDependencies": {
     "jshint": "^2.8.0"
