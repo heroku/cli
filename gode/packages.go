@@ -123,6 +123,7 @@ func environ() []string {
 	env := append(os.Environ(), "NPM_CONFIG_ALWAYS_AUTH=false")
 	env = append(env, "NPM_CONFIG_CACHE="+filepath.Join(rootPath, ".npm-cache"))
 	env = append(env, "NPM_CONFIG_REGISTRY="+registry)
+	env = append(env, "NPM_CONFIG_GLOBAL=false")
 	return env
 }
 
