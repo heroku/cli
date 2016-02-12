@@ -4,6 +4,12 @@ var isOrgApp = function (owner) {
 
 module.exports.isOrgApp = isOrgApp;
 
+var roleName = function(role) {
+  return role === 'viewer' ? 'member' : role;
+};
+
+module.exports.roleName = roleName;
+
 var getOwner = function(owner) {
   if (isOrgApp(owner)) {
     return owner.split('@herokumanager.com')[0];

@@ -13,5 +13,9 @@ exports.commands = [
   require('./commands/apps/join'),
   require('./commands/apps/leave'),
   require('./commands/apps/lock'),
-  require('./commands/apps/unlock')
+  require('./commands/apps/unlock'),
+  require('./commands/members'),
+  require('./commands/members/add').add,
+  require('./commands/members/add').set,
+  require('./commands/members/remove')
 ];

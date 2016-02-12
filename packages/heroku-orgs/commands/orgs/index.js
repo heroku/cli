@@ -1,8 +1,9 @@
 'use strict';
 
-let cli = require('heroku-cli-util');
-let co  = require('co');
-let _   = require('lodash');
+let cli     = require('heroku-cli-util');
+let co      = require('co');
+let _       = require('lodash');
+let Utils   = require('../../lib/utils');
 
 function printJSON (orgs) {
   cli.log(JSON.stringify(orgs, null, 2));
@@ -13,7 +14,7 @@ function print (orgs) {
   cli.table(orgs, {
     columns: [
       {key: 'name', label: 'Organization', format: o => cli.color.green(o)},
-      {key: 'role', label: 'Role', format: r => r === 'viewer' ?  'member': r},
+      {key: 'role', label: 'Role', format: r => Utils.roleName(r)},
     ],
     printHeader: false
   });
