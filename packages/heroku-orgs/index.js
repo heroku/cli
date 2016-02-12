@@ -1,6 +1,7 @@
 exports.topics = [
   {name: 'access', description: 'CLI to manage access in Heroku Applications'},
   {name: 'orgs',   description: 'manage organizations'},
+  {name: 'sharing', hidden: true}
 ];
 
 exports.commands = [
@@ -17,5 +18,7 @@ exports.commands = [
   require('./commands/members'),
   require('./commands/members/add').add,
   require('./commands/members/add').set,
-  require('./commands/members/remove')
+  require('./commands/members/remove'),
+  require('./commands/apps/transfer'),
+  require('./commands/apps/transfer').sharing
 ];
