@@ -31,6 +31,7 @@ var BuiltinPlugins = []string{
 	"heroku-fork",
 	"heroku-git",
 	"heroku-local",
+	"heroku-pipelines",
 	"heroku-run",
 	"heroku-spaces",
 	"heroku-status",
