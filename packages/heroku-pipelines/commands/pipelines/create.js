@@ -55,7 +55,7 @@ module.exports = {
   topic: 'pipelines',
   command: 'create',
   description: 'create a new pipeline',
-  help: 'Create a new pipeline. An existing app must be specified as the first app in the pipeline. The pipeline name will be inferred from the app name if not specified. The stage of the app will be guessed based on its name if not specified.\n\nExample:\n  $ heroku pipelines:create -a example-staging\n  ? Pipeline name: example\n  ? Stage of example-staging: staging\n  Creating example pipeline... done\n  Adding example-staging to example pipeline as staging... done',
+  help: 'An existing app must be specified as the first app in the pipeline.\nThe pipeline name will be inferred from the app name if not specified.\nThe stage of the app will be guessed based on its name if not specified.\n\nExample:\n  $ heroku pipelines:create -a example-staging\n  ? Pipeline name: example\n  ? Stage of example-staging: staging\n  Creating example pipeline... done\n  Adding example-staging to example pipeline as staging... done',
   needsApp: true,
   needsAuth: true,
   args: [

@@ -8,7 +8,7 @@ module.exports = {
   topic: 'pipelines',
   command: 'remove',
   description: 'remove this app from its pipeline',
-  help: 'Remove this app from its pipeline.\n\n  Example:\n  $ heroku pipelines:remove -a example-admin\n  Removing example-admin... done',
+  help: 'Example:\n  $ heroku pipelines:remove -a example-admin\n  Removing example-admin... done',
   needsApp: true,
   needsAuth: true,
   run: cli.command(function* (context, heroku) {

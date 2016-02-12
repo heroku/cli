@@ -97,15 +97,22 @@ function* diff(targetApp, downstreamApp, githubToken, herokuUserAgent) {
     return;
   }
 
-  cli.log(`\n${targetApp.name} is ahead of ${downstreamApp.name} by ${body.ahead_by} commit${body.ahead_by === 1 ? '' : 's'}:`);
-  for (let i = body.commits.length - 1; i >= 0; i--) {
-    let commit = body.commits[i];
-    let abbreviatedHash = commit.sha.substring(0, 7);
-    let authoredDate = commit.commit.author.date;
-    let authorName = commit.commit.author.name;
-    let message = commit.commit.message.split('\n')[0];
-    cli.log(`  ${abbreviatedHash}  ${authoredDate}  ${message} (${authorName})`);
-  }
+  cli.log("");
+  cli.styledHeader(`${targetApp.name} is ahead of ${downstreamApp.name} by ${body.ahead_by} commit${body.ahead_by === 1 ? '' : 's'}`);
+  let mapped = body.commits.map(function(commit) {
+    return {
+      sha: commit.sha.substring(0, 7),
+      date: commit.commit.author.date,
+      author: commit.commit.author.name,
+      message: commit.commit.message.split('\n')[0]
+    };
+  }).reverse();
+  cli.table(mapped, {columns: [
+    {key: 'sha', label: 'SHA'},
+    {key: 'date', label: 'Date'},
+    {key: 'author', label: 'Author'},
+    {key: 'message', label: 'Message'}
+  ]});
 }
 
 function* run(context, heroku) {
@@ -155,7 +162,8 @@ function* run(context, heroku) {
   // Verify the target app
   let targetAppInfo = appInfo[0];
   if (targetAppInfo.repo === null) {
-    return cli.error(`${targetAppName} does not seem to be connected to GitHub!`);
+    let command = `heroku pipelines:open ${coupling.pipeline.name}`;
+    return cli.error(`${targetAppName} does not seem to be connected to GitHub!\nRun ${cli.color.cyan(command)} and "Connect to GitHub".`);
   } else if (targetAppInfo.hash === null) {
     return cli.error(`No release was found for ${targetAppName}, unable to diff`);
   }

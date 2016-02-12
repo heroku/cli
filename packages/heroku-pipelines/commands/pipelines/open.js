@@ -7,8 +7,8 @@ var exec = require('child_process').exec;
 module.exports = {
   topic: 'pipelines',
   command: 'open',
-  description: 'open a pipeline',
-  help: 'Open a pipeline in Dashboard.\n\n  Example:\n  $ heroku pipelines:open example\n  Opening dashboard... done',
+  description: 'open a pipeline in dashboard',
+  help: 'Example:\n  $ heroku pipelines:open example\n  Opening dashboard... done',
   needsApp: false,
   needsAuth: true,
   args: [

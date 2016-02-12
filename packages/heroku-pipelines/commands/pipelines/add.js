@@ -12,7 +12,7 @@ module.exports = {
   topic: 'pipelines',
   command: 'add',
   description: 'add this app to a pipeline',
-  help: 'Add this app to a pipeline. The app and pipeline names must be specified. The stage of the app will be guessed based on its name if not specified.\n\n Example:\n  $ heroku pipelines:add example -a example-admin -s production\n  Adding example-admin to example pipeline as production... done',
+  help: 'The app and pipeline names must be specified.\nThe stage of the app will be guessed based on its name if not specified.\n\nExample:\n  $ heroku pipelines:add example -a example-admin -s production\n  Adding example-admin to example pipeline as production... done',
   needsApp: true,
   needsAuth: true,
   args: [
