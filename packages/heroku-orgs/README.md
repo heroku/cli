@@ -19,7 +19,6 @@ $ heroku plugins:install heroku-orgs
 
 ```bash
 $ heroku orgs
-
 Usage: heroku orgs
 
 list the organizations that you are a member of
@@ -38,7 +37,6 @@ open the organization interface in a browser window
 
 ```bash
 $ heroku apps:join
-
 Usage: heroku apps:join
 
 add yourself to an organization app
@@ -49,7 +47,6 @@ add yourself to an organization app
 
 ```
 $ heroku apps:leave
-
 Usage: heroku apps:leave
 
 remove yourself from an organization app
@@ -60,7 +57,6 @@ remove yourself from an organization app
  
  ```bash
 $ heroku apps:lock
-
 Usage: heroku apps:lock
 
 prevent organization members from joining an app
@@ -71,7 +67,6 @@ prevent organization members from joining an app
 
 ```bash
 $ heroku apps:unlock
-
 Usage: heroku apps:unlock
 
 unlock an app so any organization member can join
@@ -82,7 +77,6 @@ unlock an app so any organization member can join
  
  ```bash
 $ heroku members
-
 list members of an organization
 
  -r, --role ROLE     # filter by role
@@ -98,7 +92,6 @@ Additional commands, type "heroku help COMMAND" for more details:
  
  ```bash
  $ heroku members:add
- 
 Usage: heroku members:add EMAIL
 
 adds a user to an organization
@@ -109,7 +102,6 @@ adds a user to an organization
  
  ```bash
  $ heroku members:set
- 
 Usage: heroku members:set EMAIL
 
 sets a members role in an organization
@@ -120,7 +112,6 @@ sets a members role in an organization
  
  ```bash
  $ heroku members:remove
- 
  Usage: heroku members:remove EMAIL
 
 removes a user from an organization
@@ -130,7 +121,6 @@ removes a user from an organization
 
 ```bash
 $ heroku apps:transfer
-
 Usage: heroku apps:transfer RECIPIENT
 
 transfer an app to another user or organization
