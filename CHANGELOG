@@ -1,3 +1,8 @@
+4.27.21 2016-02-12
+==================
+Set npm config onload-script=false
+Add heroku-pipelines as a default package
+
 4.27.20 2016-02-11
 ==================
 Set global=false so that cwd node_modules is used
