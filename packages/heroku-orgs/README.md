@@ -27,4 +27,4 @@ list the organizations that you are a member of
  --json              # output in json format
 ```
 
-**WIP** work in progress...
+**work in progress...**
