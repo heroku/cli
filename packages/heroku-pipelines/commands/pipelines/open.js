@@ -2,13 +2,12 @@
 
 let cli = require('heroku-cli-util');
 let disambiguate = require('../../lib/disambiguate');
-var exec = require('child_process').exec;
 
 module.exports = {
   topic: 'pipelines',
   command: 'open',
   description: 'open a pipeline in dashboard',
-  help: 'Example:\n  $ heroku pipelines:open example\n  Opening dashboard... done',
+  help: 'Example:\n  $ heroku pipelines:open example',
   needsApp: false,
   needsAuth: true,
   args: [
@@ -16,12 +15,6 @@ module.exports = {
   ],
   run: cli.command(function* (context, heroku) {
     let pipeline = yield disambiguate(heroku, context.args.pipeline);
-    let promise = new Promise(function (fulfill) {
-      exec(`open https://dashboard.heroku.com/pipelines/${pipeline.id}`, function(error, stdout) {
-        fulfill(stdout);
-      });
-    });
-    let output = yield cli.action("Opening dashboard", promise);
-    if (output) console.log(output);
+    yield cli.open(`https://dashboard.heroku.com/pipelines/${pipeline.id}`);
   })
 };
