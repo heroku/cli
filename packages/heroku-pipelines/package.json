@@ -16,14 +16,14 @@
     "test": "mocha && jshint ."
   },
   "dependencies": {
-    "bluebird": "^2.9.34",
-    "co": "^4.5.4",
-    "heroku-cli-util": "^5.4.5",
-    "inflection": "^1.7.1",
-    "inquirer": "^0.8.5",
-    "request": "^2.64.0",
+    "bluebird": "2.10.2",
+    "co": "4.6.0",
+    "heroku-cli-util": "5.8.0",
+    "inflection": "1.8.0",
+    "inquirer": "0.12.0",
+    "request": "2.69.0",
     "string-just": "0.0.2",
-    "validator": "^4.0.2"
+    "validator": "4.8.0"
   },
   "devDependencies": {
     "chai": "^3.0.0",
