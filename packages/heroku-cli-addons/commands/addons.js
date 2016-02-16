@@ -236,7 +236,6 @@ module.exports = {
     topic:     topic,
     default:   true,
     needsAuth: true,
-    preauth:   true,
     wantsApp:  true,
     flags:     [
       {
@@ -252,7 +251,7 @@ module.exports = {
       }
     ],
 
-    run:         cli.command(co.wrap(run)),
+    run:         cli.command({preauth: true}, co.wrap(run)),
     usage:       `${topic} [--all|--app APP]`,
     description: 'lists your add-ons and attachments',
     help:        `The default filter applied depends on whether you are in a Heroku app

@@ -6,7 +6,7 @@ let co     = require('co');
 let formatPrice = require('../../lib/util').formatPrice;
 let style       = require('../../lib/util').style;
 
-let run = cli.command(function(ctx, api) {
+let run = cli.command({preauth: true}, function(ctx, api) {
     return co(function*() {
         let addon = yield api.request({
             method:  'GET',
@@ -41,7 +41,6 @@ module.exports = {
     command:     'info',
     wantsApp:    true,
     needsAuth:   true,
-    preauth:     true,
     args:        [{name: 'addon'}],
     run:         run,
     usage:       `${topic}:info ADDON`,

@@ -3,7 +3,7 @@
 let cli = require('heroku-cli-util');
 let co  = require('co');
 
-let run = cli.command(function (ctx, api) {
+let run = cli.command({preauth: true}, function (ctx, api) {
     return co(function* () {
         let addon    = yield api.get(`/addons/${ctx.args.addon}`);
         let addonUrl = `/apps/${addon.app.id}/addons/${addon.id}`;
@@ -24,7 +24,6 @@ module.exports = {
     command:     'rename',
     wantsApp:    true,
     needsAuth:   true,
-    preauth:     true,
     args:        [{name: 'addon'}, {name: 'name'}],
     run:         run,
     usage:       `${topic}:rename ADDON NEW_NAME`,

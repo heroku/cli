@@ -111,6 +111,6 @@ module.exports = {
   wantsApp:    true,
   needsAuth:   true,
   args:        [{name: 'addon'}],
-  run:         cli.command(co.wrap(run)),
+  run:         cli.command({preauth: true}, co.wrap(run)),
   description: `open an add-on's dashboard in your browser`
 };
