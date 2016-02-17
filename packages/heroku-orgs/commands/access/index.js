@@ -86,7 +86,7 @@ function* run (context, heroku) {
 
 module.exports = {
   topic:        'access',
-  description:  'TODO',
+  description:  'list who has access to an application',
   needsAuth:    true,
   needsApp:     true,
   flags: [
