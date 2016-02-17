@@ -24,7 +24,7 @@ module.exports = function (heroku) {
       cli.styledHeader(`Trusted IP Ranges`);
       for (let rule of ruleset.rules) cli.log(rule.source);
     } else {
-      cli.styledHeader(`There are no trusted IP ranges for ${space}. All web traffic to apps is blocked.`);
+      cli.styledHeader(`${space} has no trusted IP ranges. All inbound web requests to dynos are blocked.`);
     }
   }
 
