@@ -54,7 +54,7 @@ remove yourself from an organization app
  -a, --app APP       # app to run command against
  -r, --remote REMOTE # git remote of app to run command against
  ```
- 
+
  ```bash
 $ heroku apps:lock
 Usage: heroku apps:lock
@@ -74,7 +74,7 @@ unlock an app so any organization member can join
  -a, --app APP       # app to run command against
  -r, --remote REMOTE # git remote of app to run command against
  ```
- 
+
  ```bash
 $ heroku members
 list members of an organization
@@ -89,7 +89,7 @@ Additional commands, type "heroku help COMMAND" for more details:
   members:remove EMAIL [--org ORG]             #  removes a member from an org
   members:set NAME [--org ORG] [--role ROLE]   #  change role of member in org
  ```
- 
+
  ```bash
  $ heroku members:add
 Usage: heroku members:add EMAIL
@@ -99,7 +99,7 @@ adds a user to an organization
  -r, --role ROLE     # member role (admin, collaborator, member, owner)
  -o, --org ORG       # organization to use
  ```
- 
+
  ```bash
  $ heroku members:set
 Usage: heroku members:set EMAIL
@@ -109,7 +109,7 @@ sets a members role in an organization
  -r, --role ROLE     # member role (admin, collaborator, member, owner)
  -o, --org ORG       # organization to use
  ```
- 
+
  ```bash
  $ heroku members:remove
  Usage: heroku members:remove EMAIL
@@ -136,4 +136,15 @@ Examples:
 
   $ heroku apps:transfer acme-widgets
   Transferring example to acme-widgets... done
-  ```
+```
+
+```bash
+$ heroku access
+Usage: heroku access
+
+list who has access to an application
+
+ --json              # output in json format
+ -a, --app APP       # app to run command against
+ -r, --remote REMOTE # git remote of app to run command against
+```
