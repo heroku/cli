@@ -7,3 +7,8 @@ exports.commands = [
   require('./lib/commands/redis/timeout'),
   require('./lib/commands/redis/maxmemory')
 ];
+
+exports.topic = {
+  name: 'redis',
+  description: 'manage heroku redis instances'
+}
