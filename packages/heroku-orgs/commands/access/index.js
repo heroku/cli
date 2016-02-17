@@ -1,6 +1,7 @@
 'use strict';
 
 let cli       = require('heroku-cli-util');
+let extend      = require('util')._extend;
 let _         = require('lodash');
 let Utils     = require('../../lib/utils');
 let co        = require('co');
@@ -84,7 +85,7 @@ function* run (context, heroku) {
   else                    printAccess(app, collaborators);
 }
 
-module.exports = {
+let cmd = {
   topic:        'access',
   description:  'list who has access to an application',
   needsAuth:    true,
@@ -93,4 +94,13 @@ module.exports = {
     {name: 'json', description: 'output in json format'},
   ],
   run:          cli.command(co.wrap(run))
+};
+
+module.exports = cmd;
+module.exports.sharing = extend({}, cmd);
+module.exports.sharing.hidden = true;
+module.exports.sharing.topic = 'sharing';
+module.exports.sharing.run = function () {
+  cli.error(`This command is now ${cli.color.cyan('heroku access')}`);
+  process.exit(1);
 };

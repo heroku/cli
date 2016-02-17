@@ -6,6 +6,7 @@ exports.topics = [
 
 exports.commands = [
   require('./commands/access'),
+  require('./commands/access').sharing,
   require('./commands/access/add'),
   require('./commands/access/remove'),
   require('./commands/access/update'),
