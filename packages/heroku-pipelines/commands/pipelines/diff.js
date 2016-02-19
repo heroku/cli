@@ -1,9 +1,9 @@
 'use strict';
 
-let cli          = require('heroku-cli-util');
-let co           = require('co');
-let bluebird     = require('bluebird');
-let request      = bluebird.promisify(require('request'));
+let cli      = require('heroku-cli-util');
+let co       = require('co');
+let bluebird = require('bluebird');
+let got      = require('got');
 
 const PROMOTION_ORDER = ['development', 'staging', 'production'];
 const V3_HEADER = 'application/vnd.heroku+json; version=3';
@@ -13,24 +13,22 @@ const KOLKRABBI_BASE_URL = 'https://kolkrabbi.heroku.com';
 // Helper functions
 
 function kolkrabbiRequest(url, token) {
-  return request({
-    method: 'GET',
-    url: KOLKRABBI_BASE_URL + url,
+  return got.get(KOLKRABBI_BASE_URL + url, {
     headers: {
       authorization: 'Bearer ' + token
     },
     json: true
-  }).spread(function (res, body) {
-    if (res.statusCode === 404) {
-      let err = new Error(`404 ${url}`);
-      err.name = 'NOT_FOUND';
-      throw err;
-    } else if (res.statusCode >= 400) {
-      // TODO: This could potentially catch some 4xx errors that we might want to handle with a
-      // specific error message
-      throw new Error('failed to fetch diff because of an internal server error.');
+  })
+  .then(res => res.body)
+  .catch(err => {
+    switch (err.statusCode) {
+      case 404:
+        err = new Error(`404 ${url}`);
+        err.name = 'NOT_FOUND';
+        throw err;
+      default:
+        throw err;
     }
-    return body;
   });
 }
 
@@ -80,39 +78,35 @@ function* diff(targetApp, downstreamApp, githubToken, herokuUserAgent) {
   }
 
   // Do the actual Github diff
-  const githubDiff = yield request({
-    url: `https://api.github.com/repos/${targetApp.repo}/compare/${downstreamApp.hash}...${targetApp.hash}`,
-    headers: {
-      authorization: 'token ' + githubToken,
-      'user-agent': herokuUserAgent
-    },
-    json: true
-  });
-  const res = githubDiff[0];
-  const body = githubDiff[1];
-  if (res.statusCode !== 200) {
-    cli.hush({ statusCode: res.statusCode, body: body });
+  try {
+    const res = yield got.get(`https://api.github.com/repos/${targetApp.repo}/compare/${downstreamApp.hash}...${targetApp.hash}`, {
+      headers: {
+        authorization: 'token ' + githubToken,
+        'user-agent': herokuUserAgent
+      },
+      json: true
+    });
+    cli.log("");
+    cli.styledHeader(`${targetApp.name} is ahead of ${downstreamApp.name} by ${res.body.ahead_by} commit${res.body.ahead_by === 1 ? '' : 's'}`);
+    let mapped = res.body.commits.map(function(commit) {
+      return {
+        sha: commit.sha.substring(0, 7),
+        date: commit.commit.author.date,
+        author: commit.commit.author.name,
+        message: commit.commit.message.split('\n')[0]
+      };
+    }).reverse();
+    cli.table(mapped, {columns: [
+      {key: 'sha', label: 'SHA'},
+      {key: 'date', label: 'Date'},
+      {key: 'author', label: 'Author'},
+      {key: 'message', label: 'Message'}
+    ]});
+  } catch (err) {
+    cli.hush(err);
     cli.log(`\n${targetApp.name} was not compared to ${downstreamApp.name} because we were unable to perform a diff`);
     cli.log(`are you sure you have pushed your latest commits to GitHub?`);
-    return;
   }
-
-  cli.log("");
-  cli.styledHeader(`${targetApp.name} is ahead of ${downstreamApp.name} by ${body.ahead_by} commit${body.ahead_by === 1 ? '' : 's'}`);
-  let mapped = body.commits.map(function(commit) {
-    return {
-      sha: commit.sha.substring(0, 7),
-      date: commit.commit.author.date,
-      author: commit.commit.author.name,
-      message: commit.commit.message.split('\n')[0]
-    };
-  }).reverse();
-  cli.table(mapped, {columns: [
-    {key: 'sha', label: 'SHA'},
-    {key: 'date', label: 'Date'},
-    {key: 'author', label: 'Author'},
-    {key: 'message', label: 'Message'}
-  ]});
 }
 
 function* run(context, heroku) {

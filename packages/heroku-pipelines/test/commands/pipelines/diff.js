@@ -107,21 +107,26 @@ describe('pipelines:diff', function () {
     beforeEach(function () {
       mockPipelineCoupling();
       mockApps();
+      nock(kolkrabbiApi)
+        .get(`/apps/${downstreamApp1.id}/github`)
+        .reply(200, downstreamApp1Github)
+        .get(`/apps/${downstreamApp2.id}/github`)
+        .reply(200, downstreamApp2Github);
     });
 
-    it('should return an error if the app is not connected to GitHub', function () {
+    it('should return an error if the target app is not connected to GitHub', function () {
       const req = nock(kolkrabbiApi)
         .get(`/apps/${targetApp.id}/github`)
         .reply(404, { message: 'Not found.' });
 
-        return cmd.run({ app: targetApp.name })
-        .then(function () {
-          req.done();
-          expect(cli.stderr).to.contain('connected to GitHub');
-        });
+      return cmd.run({ app: targetApp.name })
+      .then(function () {
+        req.done();
+        expect(cli.stderr).to.contain('connected to GitHub');
+      });
     });
 
-    it('should return an error if the app has no release', function () {
+    it('should return an error if the target app has no release', function () {
       nock(kolkrabbiApi)
         .get(`/apps/${targetApp.id}/github`)
         .reply(200, targetGithubApp);
