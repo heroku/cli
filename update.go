@@ -189,6 +189,7 @@ func downloadBin(path, url string) error {
 	if err != nil {
 		return err
 	}
+	defer out.Close()
 	res, err := goreq.Request{
 		Uri:       url + ".gz",
 		ShowDebug: debugging,
@@ -202,10 +203,7 @@ func downloadBin(path, url string) error {
 	}
 	defer res.Body.Close()
 	_, err = io.Copy(out, res.Body)
-	if err != nil {
-		return err
-	}
-	return out.Close()
+	return err
 }
 
 func fileSha1(path string) string {
