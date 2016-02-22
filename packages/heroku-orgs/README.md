@@ -148,3 +148,17 @@ list who has access to an application
  -a, --app APP       # app to run command against
  -r, --remote REMOTE # git remote of app to run command against
 ```
+
+
+```bash
+$ heroku acesss:update
+
+Usage: heroku access:update EMAIL
+Update existing collaborators in an org app
+
+ --privileges PRIVILEGES # comma-delimited list of privileges to update (deploy,manage,operate,view)
+ -a, --app APP       # app to run command against
+ -r, --remote REMOTE # git remote of app to run command against
+
+heroku access:update user@email.com --app APP --privileges deploy,manage,operate,view
+```
