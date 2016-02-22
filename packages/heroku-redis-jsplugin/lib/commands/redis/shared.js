@@ -3,7 +3,6 @@ let Heroku = require('heroku-client');
 let cli = require('heroku-cli-util');
 
 const HOST  = process.env.HEROKU_REDIS_HOST || 'redis-api.heroku.com' ;
-const PATH  = '/redis/v0/databases';
 const ADDON = process.env.HEROKU_REDIS_ADDON_NAME || 'heroku-redis';
 
 function request(context, path, method, body) {
@@ -13,7 +12,7 @@ function request(context, path, method, body) {
   }
   return Heroku.request( {
     method: method || 'GET',
-    path: `${PATH}/${path}`,
+    path: path,
     host: HOST,
     auth: `${context.auth.username}:${context.auth.password}`,
     headers: headers,

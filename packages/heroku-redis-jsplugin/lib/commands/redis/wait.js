@@ -22,7 +22,7 @@ module.exports = {
     }
     let addon = addons[0];
     let interval = setInterval(function () {
-      api.request(context, addon.name + '/wait', 'GET').then(function(status) {
+      api.request(context, `/redis/v0/databases/${addon.name}/wait`, 'GET').then(function(status) {
         if (!status['waiting?']) {
           clearInterval(interval);
         }

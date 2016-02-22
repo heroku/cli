@@ -18,7 +18,7 @@ module.exports = {
     let databases = yield addons.map(function* (addon) {
       return yield {
         addon: addon,
-        redis: api.request(context, addon.name).catch(function (err) {
+        redis: api.request(context, `/redis/v0/databases/${addon.name}`).catch(function (err) {
           if (err.statusCode !== 404) {
             throw(err);
           }
@@ -37,7 +37,7 @@ module.exports = {
       cli.styledHash(db.redis.info.reduce(function(memo, row) {
         memo[row.name] = row.values;
         return memo;
-      }, {}), db.redis.info.map(function(row) { return row.name }));
+      }, {}), db.redis.info.map(function(row) { return row.name; }));
     }
   })
 };

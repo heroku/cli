@@ -163,7 +163,7 @@ module.exports = {
     let config = yield heroku.apps(context.app).configVars().info();
 
     let addon = addons[0];
-    let redis = yield api.request(context, addon.name);
+    let redis = yield api.request(context, `/redis/v0/databases/${addon.name}`);
     let hobby = redis.plan.indexOf('hobby') == 0;
 
     if (hobby) {

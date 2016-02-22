@@ -8,7 +8,7 @@ module.exports = {
   needsApp: true,
   needsAuth: true,
   args: [{name: 'database', optional: true}],
-  flags: [{name: 'seconds', char: 's', hasValue: true}],
+  flags: [{name: 'seconds', char: 's', description: 'set timeout value', hasValue: true}],
   description: 'set the number of seconds to wait before killing idle connections',
   help: 'Sets the number of seconds to wait before killing idle connections. A value of zero means that connections will not be closed.',
   run: cli.command(function* (context, heroku) {
@@ -27,7 +27,7 @@ module.exports = {
       process.exit(1);
     }
     let addon = addons[0];
-    let config = yield api.request(context, addon.name + '/config', 'PATCH', { timeout: parseInt(context.flags.seconds, 10) });
+    let config = yield api.request(context, `/redis/v0/databases/${addon.name}/config`, 'PATCH', { timeout: parseInt(context.flags.seconds, 10) });
     console.log(`Timeout for ${addon.name} (${addon.config_vars.join(', ')}) set to ${config.timeout.value} seconds.`);
     if (config.timeout.value === 0) {
       console.log('Connections to the Redis instance can idle indefinitely.');

@@ -8,7 +8,7 @@ module.exports = {
   needsApp: true,
   needsAuth: true,
   args: [{name: 'database', optional: true}],
-  flags: [{name: 'policy', char: 'p', hasValue: true, optional: false}],
+  flags: [{name: 'policy', char: 'p', description: 'set policy name', hasValue: true, optional: false}],
   description: 'set the key eviction policy',
   help: `Set the key eviction policy when instance reaches its storage limit. Available policies for key eviction include:
 
@@ -35,7 +35,7 @@ module.exports = {
       process.exit(1);
     }
     let addon = addons[0];
-    let config = yield api.request(context, addon.name + '/config', 'PATCH', { maxmemory_policy: context.flags.policy });
+    let config = yield api.request(context, `/redis/v0/databases/${addon.name}/config`, 'PATCH', { maxmemory_policy: context.flags.policy });
     console.log(`Maxmemory policy for ${addon.name} (${addon.config_vars.join(', ')}) set to ${config.maxmemory_policy.value}.`);
     console.log(`${config.maxmemory_policy.value} ${config.maxmemory_policy.values[config.maxmemory_policy.value]}.`);
   })
