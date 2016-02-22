@@ -1,50 +1,42 @@
 'use strict';
 
-var Heroku      = require('heroku-client');
-var Utils       = require('../../lib/utils');
-var co          = require('co');
-var heroku;
+let cli           = require('heroku-cli-util');
+let Utils         = require('../../lib/utils');
+let error         = require('../../lib/error');
+let co            = require('co');
+
+function* run (context, heroku) {
+  let appName     = context.app;
+  let privileges  = context.flags.privileges;
+  let appInfo = yield heroku.apps(appName).info();
+
+  if (!Utils.isOrgApp(appInfo.owner.email)) error.exit(1, `Error: cannot update privileges. The app ${cli.color.cyan(appName)} is not owned by an organization`);
+
+  let request = heroku.request({
+    method: 'PATCH',
+    path: `/organizations/apps/${appName}/collaborators/${context.args.email}`,
+    headers: {
+      Accept: 'application/vnd.heroku+json; version=3.org-privileges',
+    },
+    body: {
+      privileges: privileges.split(",")
+    }
+  });
+  yield cli.action(`Updating ${context.args.email} in application ${appName} with ${privileges} privileges`, request);
+}
 
 module.exports = {
   topic: 'access',
   needsAuth: true,
   needsApp: true,
   command: 'update',
-  description: 'Update existing collaborators',
-  help: '! BETA: heroku access:update user@email.com --app APP --privileges view,deploy,manage,operate # privileges must be comma separated\n! If you want more information about Heroku Enterprise, please contact sales@heroku.com',
-  args: [{name: 'user', optional: false}],
+  description: 'Update existing collaborators in an org app',
+  help: 'heroku access:update user@email.com --app APP --privileges deploy,manage,operate,view',
+  args:  [{name: 'email', optional: false}],
   flags: [
-    {name: 'privileges', description: 'list of privileges comma separated', hasValue: true, optional: false}
+    {
+      name: 'privileges', hasValue: true, required: true, description: 'comma-delimited list of privileges to update (deploy,manage,operate,view)'
+    },
   ],
-
-  run: function (context) {
-    let appName;
-    let privileges = context.args.privileges;
-
-    appName = context.app;
-
-    co(function* () {
-      heroku = new Heroku({token: context.auth.password});
-      let appInfo = yield heroku.apps(appName).info();
-
-      if (Utils.isOrgApp(appInfo.owner.email) && privileges) {
-        heroku.request({
-          method: 'PATCH',
-          path: `/organizations/apps/${appName}/collaborators/${context.args.user}`,
-          headers: {
-            'accept': 'application/vnd.heroku+json; version=3.org-privileges',
-          },
-          body: {
-            privileges: privileges.split(",")
-          }
-        }, function(err) {
-          if (err) { console.error(err); }
-          console.log(`Updating ${context.args.user} in application ${appName} with ${privileges} privileges... done`);
-        });
-      }
-
-    }).catch(function (err) {
-      console.error(err);
-    });
-  }
+  run: cli.command(co.wrap(run))
 };

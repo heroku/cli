@@ -1,5 +1,5 @@
 var isOrgApp = function (owner) {
-  return (/herokumanager\.com$/.test(owner));
+  return (/@herokumanager\.com$/.test(owner));
 };
 
 module.exports.isOrgApp = isOrgApp;
