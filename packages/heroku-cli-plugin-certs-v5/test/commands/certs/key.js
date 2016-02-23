@@ -5,7 +5,7 @@ let nock   = require('nock');
 var fs     = require('fs');
 var sinon  = require('sinon');
 
-let certs = require('../../../commands/ssl/key.js');
+let certs = require('../../../commands/certs/key.js');
 let assert_exit = require('../../assert_exit.js');
 let error  = require('../../../lib/error.js');
 
@@ -22,12 +22,12 @@ describe('heroku certs:key', function() {
 
   afterEach(function() {
     fs.readFile.restore();
-  }); 
-  
+  });
+
   it('# validates that at least one argument is passed', function() {
     return assert_exit(1, certs.run({app: 'example', args: ['foo']})).then(function() {
       expect(cli.stderr).to.equal(
-` ▸    Usage: heroku certs:key CRT KEY [KEY ...]
+` ▸    Usage: heroku _certs:key CRT KEY [KEY ...]
  ▸    Must specify one certificate file and at least one key file.
 `);
       expect(cli.stdout).to.equal('');

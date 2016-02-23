@@ -5,7 +5,7 @@ let nock   = require('nock');
 var fs     = require('fs');
 var sinon  = require('sinon');
 
-let certs = require('../../../commands/ssl/chain.js');
+let certs = require('../../../commands/certs/chain.js');
 let assert_exit = require('../../assert_exit.js');
 let error  = require('../../../lib/error.js');
 
@@ -22,8 +22,8 @@ describe('heroku certs:chain', function() {
 
   afterEach(function() {
     fs.readFile.restore();
-  }); 
-  
+  });
+
   it('# validates that at least one argument is passed', function() {
     return assert_exit(1, certs.run({app: 'example', args: []})).then(function() {
       expect(cli.stderr).to.equal(

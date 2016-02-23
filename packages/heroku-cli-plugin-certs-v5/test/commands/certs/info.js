@@ -2,8 +2,8 @@
 
 let expect = require('chai').expect;
 let nock   = require('nock');
-let certs = require('../../../commands/ssl/info.js');
-let error  = require('../../../lib/error.js');            
+let certs = require('../../../commands/certs/info.js');
+let error  = require('../../../lib/error.js');
 
 let endpoint            = require('../../stubs/sni-endpoints.js').endpoint;
 let certificate_details = require('../../stubs/sni-endpoints.js').certificate_details;

@@ -12,7 +12,7 @@ function* run(context, heroku) {
   yield cli.confirmApp(context.app, context.flags.confirm, `Potentially Destructive Action\nThis command will remove the endpoint ${name} from ${context.app}.`);
 
   cli.log(`Removing SSL Endpoint ${name} from ${context.app}...`);
-  
+
   yield heroku.request({
     path: `/apps/${context.app}/sni-endpoints/${name}`,
     method: 'DELETE',
@@ -23,15 +23,15 @@ function* run(context, heroku) {
 }
 
 module.exports = {
-  topic: '_ssl',
+  topic: '_certs',
   command: 'remove',
   args: [
     { name: 'name', optional: false }
   ],
   flags: [{
-    name: 'confirm', 
+    name: 'confirm',
     hasValue: true,
-    optional: true, 
+    optional: true,
     hidden: true
   }],
   description: 'Remove an SSL Endpoint from an app.',

@@ -8,7 +8,7 @@ let readFile = require('../../lib/read_file.js');
 
 function* run(context) {
   if (context.args.length < 2) {
-    error.exit(1, 'Usage: heroku certs:key CRT KEY [KEY ...]\nMust specify one certificate file and at least one key file.');
+    error.exit(1, 'Usage: heroku _certs:key CRT KEY [KEY ...]\nMust specify one certificate file and at least one key file.');
   }
 
   let res = yield context.args.map(function(arg) { return readFile(arg); });
@@ -18,7 +18,7 @@ function* run(context) {
 }
 
 module.exports = {
-  topic: '_ssl',
+  topic: '_certs',
   command: 'key',
   description: 'Print the correct key for the given certificate.',
   help: 'You must pass one single certificate, and one or more keys.\nThe first key that signs the certificate will be printed back.',

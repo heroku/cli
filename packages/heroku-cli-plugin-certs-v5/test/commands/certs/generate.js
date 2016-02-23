@@ -11,7 +11,7 @@ chai.use(sinonChai);
 let cli    = require('heroku-cli-util');
 let child_process = require('child_process');
 
-let certs = require('../../../commands/ssl/generate.js');
+let certs = require('../../../commands/certs/generate.js');
 let endpoint = require('../../stubs/sni-endpoints.js').endpoint;
 
 let EventEmitter = require('events').EventEmitter;
@@ -59,12 +59,12 @@ describe('heroku certs:generate', function() {
     return certs.run({app: 'example', args: {domain: 'example.com'}, flags: {}}).then(function() {
       // assert(spy.withArgs('Owner of this certificate').calledOnce);
       // mock.done();
-     
+
       expect(owner).to.have.been.called;
       expect(country).to.have.been.called;
       expect(area).to.have.been.called;
       expect(city).to.have.been.called;
-      
+
       expect(cli.stdout).to.equal('');
 
       expect(child_process.spawn).to.have.been.calledWith('openssl', ['req', '-new', '-newkey', 'rsa:2048', '-nodes', '-keyout', 'example.com.key', '-out', 'example.com.csr', '-subj', '/C=US/ST=California/L=San Francisco/O=Heroku/CN=example.com']);
@@ -74,7 +74,7 @@ describe('heroku certs:generate', function() {
   it('# not emitted if any part of subject is specified', function() {
     return certs.run({app: 'example', args: {domain: 'example.com'}, flags: {owner: 'Heroku'}}).then(function() {
       expect(cli.prompt).to.have.not.been.called;
-      
+
       expect(cli.stdout).to.equal('');
 
       expect(child_process.spawn).to.have.been.calledWith('openssl', ['req', '-new', '-newkey', 'rsa:2048', '-nodes', '-keyout', 'example.com.key', '-out', 'example.com.csr', '-subj', '/O=Heroku/CN=example.com']);
@@ -85,7 +85,7 @@ describe('heroku certs:generate', function() {
   it('# not emitted if --now is specified', function() {
     return certs.run({app: 'example', args: {domain: 'example.com'}, flags: {now: true}}).then(function() {
       expect(cli.prompt).to.have.not.been.called;
-      
+
       expect(cli.stdout).to.equal('');
 
       expect(child_process.spawn).to.have.been.calledWith('openssl', ['req', '-new', '-newkey', 'rsa:2048', '-nodes', '-keyout', 'example.com.key', '-out', 'example.com.csr', '-subj', '/CN=example.com']);
@@ -96,7 +96,7 @@ describe('heroku certs:generate', function() {
   it('# not emitted if --subject is specified', function() {
     return certs.run({app: 'example', args: {domain: 'example.com'}, flags: {subject: 'SOMETHING'}}).then(function() {
       expect(cli.prompt).to.have.not.been.called;
-      
+
       expect(cli.stdout).to.equal('');
 
       expect(child_process.spawn).to.have.been.calledWith('openssl', ['req', '-new', '-newkey', 'rsa:2048', '-nodes', '-keyout', 'example.com.key', '-out', 'example.com.csr', '-subj', 'SOMETHING']);
@@ -106,14 +106,14 @@ describe('heroku certs:generate', function() {
   it('# without --selfsigned does not request a self-signed certificate', function() {
     return certs.run({app: 'example', args: {domain: 'example.com'}, flags: {now: true}}).then(function() {
       expect(cli.prompt).to.have.not.been.called;
-      
+
       expect(cli.stdout).to.equal('');
 
       expect(cli.stderr).to.equal(
 `Your key and certificate signing request have been generated.
 Submit the CSR in 'example.com.csr' to your preferred certificate authority.
 When you've received your certificate, run:
-$ heroku _ssl:add CERTFILE example.com.key
+$ heroku _certs:add CERTFILE example.com.key
 `);
 
       expect(child_process.spawn).to.have.been.calledWith('openssl', ['req', '-new', '-newkey', 'rsa:2048', '-nodes', '-keyout', 'example.com.key', '-out', 'example.com.csr', '-subj', '/CN=example.com']);
@@ -123,13 +123,13 @@ $ heroku _ssl:add CERTFILE example.com.key
   it('# with --selfsigned does request a self-signed certificate', function() {
     return certs.run({app: 'example', args: {domain: 'example.com'}, flags: {now: true, selfsigned: true}}).then(function() {
       expect(cli.prompt).to.have.not.been.called;
-      
+
       expect(cli.stdout).to.equal('');
 
       expect(cli.stderr).to.equal(
 `Your key and self-signed certificate have been generated.
 Next, run:
-$ heroku _ssl:add example.com.crt example.com.key
+$ heroku _certs:add example.com.crt example.com.key
 `);
 
       expect(child_process.spawn).to.have.been.calledWith('openssl', ['req', '-new', '-newkey', 'rsa:2048', '-nodes', '-keyout', 'example.com.key', '-out', 'example.com.crt', '-subj', '/CN=example.com', '-x509']);
@@ -139,14 +139,14 @@ $ heroku _ssl:add example.com.crt example.com.key
   it('# suggests next step should be certs:update when domain is known', function() {
     return certs.run({app: 'example', args: {domain: 'example.org'}, flags: {now: true}}).then(function() {
       expect(cli.prompt).to.have.not.been.called;
-      
+
       expect(cli.stdout).to.equal('');
 
       expect(cli.stderr).to.equal(
 `Your key and certificate signing request have been generated.
 Submit the CSR in 'example.org.csr' to your preferred certificate authority.
 When you've received your certificate, run:
-$ heroku _ssl:update CERTFILE example.org.key
+$ heroku _certs:update CERTFILE example.org.key
 `);
 
       expect(child_process.spawn).to.have.been.calledWith('openssl', ['req', '-new', '-newkey', 'rsa:2048', '-nodes', '-keyout', 'example.org.key', '-out', 'example.org.csr', '-subj', '/CN=example.org']);
@@ -156,14 +156,14 @@ $ heroku _ssl:update CERTFILE example.org.key
   it('# key size can be changed using keysize', function() {
     return certs.run({app: 'example', args: {domain: 'example.org'}, flags: {now: true, keysize: '4096'}}).then(function() {
       expect(cli.prompt).to.have.not.been.called;
-      
+
       expect(cli.stdout).to.equal('');
 
       expect(cli.stderr).to.equal(
 `Your key and certificate signing request have been generated.
 Submit the CSR in 'example.org.csr' to your preferred certificate authority.
 When you've received your certificate, run:
-$ heroku _ssl:update CERTFILE example.org.key
+$ heroku _certs:update CERTFILE example.org.key
 `);
 
       expect(child_process.spawn).to.have.been.calledWith('openssl', ['req', '-new', '-newkey', 'rsa:4096', '-nodes', '-keyout', 'example.org.key', '-out', 'example.org.csr', '-subj', '/CN=example.org']);
@@ -173,4 +173,3 @@ $ heroku _ssl:update CERTFILE example.org.key
 });
 
 /*jshint +W030 */
-

@@ -23,31 +23,30 @@ function* run(context, heroku) {
     key = res.key;
   }
 
-  let name = context.args.name;
-
-  let cert = yield cli.action(`Updating SSL Endpoint ${name} for ${context.app}`, {}, heroku.request({
-    path: `/apps/${context.app}/sni-endpoints/${name}`,
-    method: 'PATCH',
-    headers: {'Accept': 'application/vnd.heroku+json; version=3.sni_ssl_cert'},
-    body: {certificate_chain: crt, private_key: key}
+  let cert = yield cli.action(`Adding SSL Endpoint to ${context.app}`, {}, heroku.request({
+    path: `/apps/${context.app}/sni-endpoints`,
+    method: 'POST',
+    body: {certificate_chain: crt, private_key: key, app: context.app},
+    headers: {'Accept': 'application/vnd.heroku+json; version=3.sni_ssl_cert'}
   }));
 
   display_warnings(cert);
-  certificate_details(cert, 'Updated certificate details:');
+  cli.log(`${context.app} now served by ${cert.cname}`);
+
+  certificate_details(cert);
 }
 
 module.exports = {
-  topic: '_ssl',
-  command: 'update',
+  topic: '_certs',
+  command: 'add',
   args: [
-    {name: 'name', optional: false},
     {name: 'CRT', optional: false},
     {name: 'KEY', optional: false},
   ],
   flags: [
     {name: 'bypass', description: 'bypass the trust chain completion step', hasValue: false}
   ],
-  description: 'Update an SSL Endpoint on an app.',
+  description: 'Add an ssl endpoint to an app.',
   needsApp: true,
   needsAuth: true,
   run: cli.command(co.wrap(run)),

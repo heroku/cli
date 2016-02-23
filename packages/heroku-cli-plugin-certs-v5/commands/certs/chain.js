@@ -8,7 +8,7 @@ let readFile = require('../../lib/read_file.js');
 
 function* run(context) {
   if (context.args.length === 0) {
-    error.exit(1, 'Usage: heroku _certs:chain CRT [CRT ...]\nMust specify at least one certificate file.');
+    error.exit(1, 'Usage: heroku certs:chain CRT [CRT ...]\nMust specify at least one certificate file.');
   }
 
   let res = yield context.args.map(function(arg) { return readFile(arg); });

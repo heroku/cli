@@ -6,12 +6,12 @@ exports.topic = {
 };
 
 exports.commands = [
-  require('./commands/ssl/index.js'),
-  require('./commands/ssl/add.js'),
-  require('./commands/ssl/chain.js'),
-  require('./commands/ssl/generate.js'),
-  require('./commands/ssl/info.js'),
-  require('./commands/ssl/key.js'),
-  require('./commands/ssl/remove.js'),
-  require('./commands/ssl/update.js'),
+  require('./commands/certs/index.js'),
+  require('./commands/certs/add.js'),
+  require('./commands/certs/chain.js'),
+  require('./commands/certs/generate.js'),
+  require('./commands/certs/info.js'),
+  require('./commands/certs/key.js'),
+  require('./commands/certs/remove.js'),
+  require('./commands/certs/update.js'),
 ];
