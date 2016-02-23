@@ -23,8 +23,8 @@ describe('heroku certs', function() {
       expect(cli.stdout).to.equal(
 `Name        Endpoint                  Common Name(s)  Expires               Trusted
 ──────────  ────────────────────────  ──────────────  ────────────────────  ───────
-tokyo-1050  tokyo-1050.herokussl.com  example.org     2013-08-01 21:34 UTC  False
-akita-7777  akita-7777.herokussl.com  heroku.com      2013-08-01 21:34 UTC  True
+tokyo-1050  tokyo-1050.herokussl.com  example.org     2013-08-01 21:34 UTC  False  
+akita-7777  akita-7777.herokussl.com  heroku.com      2013-08-01 21:34 UTC  True   
 `);
     });
   });
