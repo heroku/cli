@@ -1,17 +1,21 @@
-# Pipelines Plugin for Heroku Toolbelt [![Circle CI](https://circleci.com/gh/heroku/heroku-pipelines/tree/master.svg?style=svg)](https://circleci.com/gh/heroku/heroku-pipelines/tree/master)
+# Pipelines Plugin for Heroku Toolbelt
 
-[![npm version](https://badge.fury.io/js/heroku-pipelines.svg)](http://badge.fury.io/js/heroku-pipelines)
+[![npm
+version](https://img.shields.io/npm/v/heroku-pipelines.svg)](https://www.npmjs.com/package/heroku-pipelines)
+[![build status](https://img.shields.io/circleci/project/heroku/heroku-pipelines.svg)](https://circleci.com/gh/heroku/heroku-pipelines)
 
-An experimental Heroku CLI plugin for [continuous delivery](http://en.wikipedia.org/wiki/Continuous_delivery) on Heroku.
+A Heroku CLI plugin for [continuous delivery](https://www.heroku.com/continuous-delivery) on Heroku.
 
 This plugin is used to set up a collection of apps sharing a common codebase where the latest slug of one app can be promoted to the app(s) in the following stage. The promotion only copies the upstream build artifact and leaves the downstream app's config vars, add-ons, and Git repo untouched.
 
-Note: This is a second iteration on pipelines which is completely independent of the previous implementation. This plugin can be installed along side with the [previous one](https://github.com/heroku/heroku-pipeline). They will not conflict, nor interact at all. You will have to manually migrate your pipelines from the old experiment to the new one.
-
 ## How to install this plugin
 
+This plugin is installed by default with the 
+[Heroku Toolbelt](https://toolbelt.heroku.com/). You do not need to install it 
+yourself. Just update your Toolbelt and plugins:
+
 ```
-$ heroku plugins:install heroku-pipelines
+$ heroku update
 ```
 
 ### [Using Pipelines](https://devcenter.heroku.com/articles/pipelines)
@@ -24,17 +28,6 @@ $ heroku pipelines:create -a example # NAME and -s STAGE are optional and implie
 ? Stage of example: production
 Creating example pipeline... done
 Adding example to example pipeline as production... done
-```
-
-#### Fork production into new admin and staging apps
-
-```bash
-$ heroku fork --from example --to example-admin --skip-pg
-$ git remote rename heroku admin
-...
-$ heroku fork --from example --to example-staging --skip-pg
-$ git remote rename heroku staging
-...
 ```
 
 #### Add apps to a pipeline
@@ -140,6 +133,6 @@ Opening dashboard... done
 
 ### TODO
 
-* `heorku pipelines:status [-a APP | -r REMOTE]`
+* `heroku pipelines:status [-a APP | -r REMOTE]`
 * `heroku pipelines:list` with repo
 * `heroku pipelines:info` with full information
