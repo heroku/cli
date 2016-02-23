@@ -1,3 +1,7 @@
+4.27.22 2016-02-23
+==================
+Fix rare update download error
+
 4.27.21 2016-02-12
 ==================
 Set npm config onload-script=false
