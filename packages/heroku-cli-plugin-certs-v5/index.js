@@ -13,5 +13,6 @@ exports.commands = [
   require('./commands/certs/info.js'),
   require('./commands/certs/key.js'),
   require('./commands/certs/remove.js'),
+  require('./commands/certs/rollback.js'),
   require('./commands/certs/update.js'),
 ];

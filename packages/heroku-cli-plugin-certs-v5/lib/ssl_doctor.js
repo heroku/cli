@@ -1,46 +1,54 @@
 'use strict';
 
 let cli = require('heroku-cli-util');
-let url = require('url');
-let https = require('https');
-
-function concat(stream, callback) {
-  var strings = [];
-  stream.on('data', function (data) {
-    strings.push(data);
-  });
-  stream.on('end', function () {
-    callback(strings.join(''));
-  });
-}
+let got    = require('got');
+let url    = require('url');
+let https  = require('https');
+let tunnel  = require('tunnel-agent');
 
 module.exports = function(path, parts, message) {
   let logMessage = message || 'Resolving trust chain';
-  return cli.action(logMessage, {}, new Promise(function(fulfill, reject) {
-    let ssl_doctor = process.env.SSL_DOCTOR_URL || 'https://ssl-doctor.herokuapp.com/';
 
-    let post_data = parts.join('\n');
+  let ssl_doctor = process.env.SSL_DOCTOR_URL || 'https://ssl-doctor.herokuapp.com/';
 
-    let post_options = url.parse(ssl_doctor + path);
-    post_options.method = 'POST';
-    post_options.headers = {
+  let post_data = parts.join('\n');
+
+  let httpsProxy = process.env.HTTPS_PROXY || process.env.https_proxy;
+  let agent;
+  if (httpsProxy) {
+    cli.hush(`proxy set to ${httpsProxy}`);
+    let proxy = url.parse(httpsProxy);
+
+    agent = tunnel.httpsOverHttp({
+      proxy: {
+        host: proxy.hostname,
+        port: proxy.port || 8080
+      }
+    });
+  } else {
+    agent = new https.Agent();
+  }
+
+  let post_options = {
+    method: 'POST',
+    headers: {
       'content-type': 'application/octet-stream',
       'content-length': Buffer.byteLength(post_data)
-    };
+    },
+    body: post_data
+  };
 
-    let req = https.request(post_options, function(res) {
-      concat(res, function(data) {
-        if (res.statusCode === 200) {
-          fulfill(data);
-        } else {
-          reject(new Error(data));
-        }
-      });
-    });
-    req.write(post_data);
-    req.end();
-    req.on('error', function(err) {
-      reject(err);
-    });
-  }));
+  let promise = got(ssl_doctor + path, post_options).
+  then(function(response) {
+    return response.body;
+  }).
+  catch(function(error) {
+    if (error.response && error.response.body) {
+      throw new Error(error.response.body);
+    } else {
+      throw error;
+    }
+  });
+
+  return cli.action(logMessage, {}, promise);
 };

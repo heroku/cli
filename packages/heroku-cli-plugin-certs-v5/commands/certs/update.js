@@ -7,7 +7,11 @@ let certificate_details = require('../../lib/certificate_details.js');
 let ssl_doctor = require('../../lib/ssl_doctor.js');
 let display_warnings = require('../../lib/display_warnings.js');
 
+let flags = require('../../lib/flags.js');
+
 function* run(context, heroku) {
+  let endpoint = (yield flags(context, heroku)).endpoint;
+
   var files = yield {
     crt: readFile(context.args.CRT),
     key: readFile(context.args.KEY)
@@ -23,12 +27,12 @@ function* run(context, heroku) {
     key = res.key;
   }
 
-  let name = context.args.name;
+  yield cli.confirmApp(context.app, context.flags.confirm, `Potentially Destructive Action\nThis command will change the certificate of endpoint ${endpoint.name} (${endpoint.cname}) from ${context.app}.`);
 
-  let cert = yield cli.action(`Updating SSL Endpoint ${name} for ${context.app}`, {}, heroku.request({
-    path: `/apps/${context.app}/sni-endpoints/${name}`,
+  let cert = yield cli.action(`Updating SSL Endpoint ${endpoint.name} (${endpoint.cname}) for ${context.app}`, {}, heroku.request({
+    path: endpoint._meta.path,
     method: 'PATCH',
-    headers: {'Accept': 'application/vnd.heroku+json; version=3.sni_ssl_cert'},
+    headers: {'Accept': `application/vnd.heroku+json; version=3.${endpoint._meta.variant}`},
     body: {certificate_chain: crt, private_key: key}
   }));
 
@@ -40,12 +44,14 @@ module.exports = {
   topic: '_certs',
   command: 'update',
   args: [
-    {name: 'name', optional: false},
     {name: 'CRT', optional: false},
     {name: 'KEY', optional: false},
   ],
   flags: [
-    {name: 'bypass', description: 'bypass the trust chain completion step', hasValue: false}
+    {name: 'bypass', description: 'bypass the trust chain completion step', hasValue: false},
+    {name: 'confirm', hasValue: true, hidden: true},
+    {name: 'name', hasValue: true, description: 'name to check info on'}, 
+    {name: 'endpoint', hasValue: true, description: 'endpoint to check info on'}
   ],
   description: 'Update an SSL Endpoint on an app.',
   needsApp: true,

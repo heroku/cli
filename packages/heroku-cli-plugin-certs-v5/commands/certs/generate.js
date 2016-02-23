@@ -3,6 +3,7 @@
 let co      = require('co');
 let cli     = require('heroku-cli-util');
 let openssl = require('../../lib/openssl.js');
+let endpoints = require('../../lib/endpoints.js');
 
 function valEmpty(val) {
   if (val) {
@@ -82,10 +83,7 @@ function* run(context, heroku) {
   let keysize = context.flags.keysize || 2048;
   let keyfile = `${domain}.key`;
 
-  let certs = yield heroku.request({
-    path: `/apps/${context.app}/sni-endpoints`,
-    headers: {'Accept': 'application/vnd.heroku+json; version=3.sni_ssl_cert'}
-  });
+  let certs = (yield endpoints.endpoints(context.app, heroku)).all;
 
   var command = getCommand(certs, domain);
 

@@ -32,6 +32,10 @@ describe('heroku certs:generate', function() {
     .get('/apps/example/sni-endpoints')
     .reply(200, [endpoint]);
 
+    nock('https://api.heroku.com')
+    .get('/apps/example/ssl-endpoints')
+    .reply(200, []);
+
     // stub cli here using sinon
     // if this works, remove proxyquire
     sinon.stub(cli, 'prompt');
@@ -57,9 +61,6 @@ describe('heroku certs:generate', function() {
     let city = mockPrompt('City of owner', 'San Francisco');
 
     return certs.run({app: 'example', args: {domain: 'example.com'}, flags: {}}).then(function() {
-      // assert(spy.withArgs('Owner of this certificate').calledOnce);
-      // mock.done();
-
       expect(owner).to.have.been.called;
       expect(country).to.have.been.called;
       expect(area).to.have.been.called;
@@ -136,7 +137,34 @@ $ heroku _certs:add example.com.crt example.com.key
     });
   });
 
-  it('# suggests next step should be certs:update when domain is known', function() {
+  it('# suggests next step should be certs:update when domain is known in sni', function() {
+    return certs.run({app: 'example', args: {domain: 'example.org'}, flags: {now: true}}).then(function() {
+      expect(cli.prompt).to.have.not.been.called;
+
+      expect(cli.stdout).to.equal('');
+
+      expect(cli.stderr).to.equal(
+`Your key and certificate signing request have been generated.
+Submit the CSR in 'example.org.csr' to your preferred certificate authority.
+When you've received your certificate, run:
+$ heroku _certs:update CERTFILE example.org.key
+`);
+
+      expect(child_process.spawn).to.have.been.calledWith('openssl', ['req', '-new', '-newkey', 'rsa:2048', '-nodes', '-keyout', 'example.org.key', '-out', 'example.org.csr', '-subj', '/CN=example.org']);
+    });
+  });
+
+  it('# suggests next step should be certs:update when domain is known in ssl', function() {
+    nock.cleanAll();
+
+    nock('https://api.heroku.com')
+    .get('/apps/example/ssl-endpoints')
+    .reply(200, [endpoint]);
+
+    nock('https://api.heroku.com')
+    .get('/apps/example/sni-endpoints')
+    .reply(200, []);
+
     return certs.run({app: 'example', args: {domain: 'example.org'}, flags: {now: true}}).then(function() {
       expect(cli.prompt).to.have.not.been.called;
 
