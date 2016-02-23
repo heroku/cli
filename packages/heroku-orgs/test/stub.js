@@ -31,6 +31,22 @@ function postCollaborators() {
 
 module.exports.postCollaborators = postCollaborators;
 
+function deleteCollaboratorsOrgApp(app, email) {
+  return nock('https://api.heroku.com:443', {
+    reqheaders: {Accept: 'application/vnd.heroku+json; version=3.org-privileges'}
+  })
+  .delete(`/organizations/apps/${app}/collaborators/${email}`).reply(200, {});
+}
+
+module.exports.deleteCollaboratorsOrgApp = deleteCollaboratorsOrgApp;
+
+function deleteCollaboratorsPersonalApp(app, email) {
+  return nock('https://api.heroku.com:443', {})
+  .delete(`/apps/${app}/collaborators/${email}`).reply(200, {});
+}
+
+module.exports.deleteCollaboratorsPersonalApp = deleteCollaboratorsPersonalApp;
+
 function getOrgApp() {
   return nock('https://api.heroku.com:443')
   .get('/apps/myapp')

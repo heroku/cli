@@ -177,3 +177,15 @@ heroku access:add user@email.com --app APP # Add a collaborator to your app
 
 heroku access:add user@email.com --app APP --privileges view, deploy, manage, operate # privileges must be comma separated
 ```
+
+```bash
+$ heroku access:remove EMAIL [--app APP]
+Usage: heroku access:remove EMAIL
+
+Remove users from your app
+
+ -a, --app APP       # app to run command against
+ -r, --remote REMOTE # git remote of app to run command against
+
+heroku access:remove user@email.com --app APP
+```

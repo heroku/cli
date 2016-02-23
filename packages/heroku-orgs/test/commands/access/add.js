@@ -9,7 +9,7 @@ let api;
 let apiPrivilegesVariant;
 let apiV2;
 
-describe('heroku access:update', () => {
+describe('heroku access:add', () => {
   context('with an org app with user privileges', () => {
     beforeEach(() => {
       cli.mockConsole();
