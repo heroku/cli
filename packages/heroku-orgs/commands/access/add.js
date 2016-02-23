@@ -1,19 +1,45 @@
 'use strict';
 
-var Heroku      = require('heroku-client');
-var Utils       = require('../../lib/utils');
-var co          = require('co');
-var heroku;
+let cli           = require('heroku-cli-util');
+let Utils         = require('../../lib/utils');
+let co            = require('co');
+let error         = require('../../lib/error');
 
-function printOutput(user, app, privileges) {
-  let message = `Adding ${user} to application ${app}`;
+function* run(context, heroku) {
+  let appName = context.app;
+  let privileges = context.flags.privileges || "";
+  let appInfo = yield heroku.apps(appName).info();
+  let output = `Adding ${cli.color.cyan(context.args.email)} access to the app ${cli.color.magenta(appName)}`;
+  let request;
 
-  if (privileges){
-    message += ` with ${privileges} privileges`;
+  if (Utils.isOrgApp(appInfo.owner.email)) {
+    let orgName = Utils.getOwner(appInfo.owner.email);
+    let orgInfo = yield heroku.request({
+      method: 'GET',
+      path: `/v1/organization/${orgName}`,
+      headers: { Accept: 'application/vnd.heroku+json; version=2' }
+    });
+
+    if (orgInfo.flags.indexOf('org-access-controls') !== -1) {
+      output += ` with ${cli.color.green(privileges)} privileges`;
+      if (!privileges) error.exit(1, `Missing argument: privileges`);
+    }
+
+    request = heroku.request({
+      method: 'POST',
+      path: `/organizations/apps/${appName}/collaborators`,
+      headers: {
+        Accept: 'application/vnd.heroku+json; version=3.org-privileges',
+      },
+      body: {
+        user: context.args.email,
+        privileges: privileges.split(",")
+      }
+    });
+  } else {
+    request = heroku.apps(appName).collaborators().create({ user: context.args.email });
   }
-
-  message += `... done`;
-  console.log(message);
+  yield cli.action(`${output}`, request);
 }
 
 module.exports = {
@@ -21,49 +47,11 @@ module.exports = {
   needsAuth: true,
   needsApp: true,
   command: 'add',
-  description: 'Add new users to your app using specific privileges',
-  help: 'heroku access:add user@email.com --app APP # Add a collaborator to your app\n\n! BETA: heroku access:add user@email.com --app APP --privileges view, deploy, manage, operate # privileges must be comma separated\n! If you want more information about Heroku Enterprise, please contact sales@heroku.com',
-  args: [{name: 'user', optional: false}],
+  description: 'Add new users to your app',
+  help: 'heroku access:add user@email.com --app APP # Add a collaborator to your app\n\nheroku access:add user@email.com --app APP --privileges view, deploy, manage, operate # privileges must be comma separated',
+  args: [{name: 'email', optional: false}],
   flags: [
     {name: 'privileges', description: 'list of privileges comma separated', hasValue: true, optional: true}
   ],
-
-  run: function (context) {
-    let appName;
-    let privileges = context.flags.privileges;
-
-    appName = context.app;
-
-    co(function* () {
-      heroku = new Heroku({token: context.auth.password});
-      let appInfo = yield heroku.apps(appName).info();
-
-      // Move most of this logic to Utils
-      if (Utils.isOrgApp(appInfo.owner.email)) {
-        heroku.request({
-          method: 'POST',
-          path: `/organizations/apps/${appName}/collaborators`,
-          headers: {
-            'accept': 'application/vnd.heroku+json; version=3.org-privileges',
-          },
-          body: {
-            user: context.args.user,
-            privileges: privileges.split(",")
-          }
-        }, function(err) {
-          if (err) { throw err; }
-          printOutput(context.args.user, appName, privileges);
-        });
-      } else {
-        heroku.apps(appName).collaborators().create({ user: context.args.user }, function (err) {
-          if (err) { throw err; }
-          printOutput(context.args.user, appName);
-        });
-      }
-
-    }).catch(function (err) {
-      console.error(err);
-    });
-  }
+  run: cli.command(co.wrap(run))
 };
-

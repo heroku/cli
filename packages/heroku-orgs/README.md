@@ -27,7 +27,7 @@ list the organizations that you are a member of
 ```
 
 ```bash
-$ heroku orgs:open
+$ heroku orgs:open -o ORG
 Usage: heroku orgs:open
 
 open the organization interface in a browser window
@@ -36,7 +36,7 @@ open the organization interface in a browser window
 ```
 
 ```bash
-$ heroku apps:join
+$ heroku apps:join [--app APP]
 Usage: heroku apps:join
 
 add yourself to an organization app
@@ -45,8 +45,8 @@ add yourself to an organization app
  -r, --remote REMOTE # git remote of app to run command against
  ```
 
-```
-$ heroku apps:leave
+```bash
+$ heroku apps:leave [--app APP]
 Usage: heroku apps:leave
 
 remove yourself from an organization app
@@ -56,7 +56,7 @@ remove yourself from an organization app
  ```
 
  ```bash
-$ heroku apps:lock
+$ heroku apps:lock [--app APP]
 Usage: heroku apps:lock
 
 prevent organization members from joining an app
@@ -66,7 +66,7 @@ prevent organization members from joining an app
  ```
 
 ```bash
-$ heroku apps:unlock
+$ heroku apps:unlock [--app APP]
 Usage: heroku apps:unlock
 
 unlock an app so any organization member can join
@@ -91,7 +91,7 @@ Additional commands, type "heroku help COMMAND" for more details:
  ```
 
  ```bash
- $ heroku members:add
+ $ heroku members:add EMAIL -o ORG
 Usage: heroku members:add EMAIL
 
 adds a user to an organization
@@ -101,7 +101,7 @@ adds a user to an organization
  ```
 
  ```bash
- $ heroku members:set
+ $ heroku members:set EMAIL -r ROLE -o ORG
 Usage: heroku members:set EMAIL
 
 sets a members role in an organization
@@ -111,7 +111,7 @@ sets a members role in an organization
  ```
 
  ```bash
- $ heroku members:remove
+$ heroku members:remove EMAIL -o ORG
  Usage: heroku members:remove EMAIL
 
 removes a user from an organization
@@ -120,7 +120,7 @@ removes a user from an organization
 ```
 
 ```bash
-$ heroku apps:transfer
+$ heroku apps:transfer RECIPIENT [--app APP]
 Usage: heroku apps:transfer RECIPIENT
 
 transfer an app to another user or organization
@@ -139,7 +139,7 @@ Examples:
 ```
 
 ```bash
-$ heroku access
+$ heroku access [--app APP]
 Usage: heroku access
 
 list who has access to an application
@@ -151,7 +151,7 @@ list who has access to an application
 
 
 ```bash
-$ heroku acesss:update
+$ heroku acesss:update EMAIL [--app APP]
 
 Usage: heroku access:update EMAIL
 Update existing collaborators in an org app
@@ -161,4 +161,19 @@ Update existing collaborators in an org app
  -r, --remote REMOTE # git remote of app to run command against
 
 heroku access:update user@email.com --app APP --privileges deploy,manage,operate,view
+```
+
+```bash
+$ heroku access:add EMAIL [--app APP] [--privileges view,deploy,manage,operate]
+Usage: heroku access:add EMAIL
+
+Add new users to your app
+
+ --privileges PRIVILEGES # list of privileges comma separated
+ -a, --app APP       # app to run command against
+ -r, --remote REMOTE # git remote of app to run command against
+
+heroku access:add user@email.com --app APP # Add a collaborator to your app
+
+heroku access:add user@email.com --app APP --privileges view, deploy, manage, operate # privileges must be comma separated
 ```

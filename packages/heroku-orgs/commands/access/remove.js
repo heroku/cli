@@ -22,11 +22,10 @@ module.exports = {
       heroku = new Heroku({token: context.auth.password});
       yield heroku.apps(appName).collaborators(context.args.user).delete(function (err) {
         if (err) { throw err; }
-        console.log(`Removing ${context.args.user} from application ${appName}...done`);
+        console.log(`Removing ${context.args.user} from application appName...done`);
       });
     }).catch(function (err) {
       console.error(err);
     });
   }
 };
-

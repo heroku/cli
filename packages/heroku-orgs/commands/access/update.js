@@ -22,7 +22,7 @@ function* run (context, heroku) {
       privileges: privileges.split(",")
     }
   });
-  yield cli.action(`Updating ${context.args.email} in application ${appName} with ${privileges} privileges`, request);
+  yield cli.action(`Updating ${context.args.email} in application ${cli.color.cyan(appName)} with ${privileges} privileges`, request);
 }
 
 module.exports = {
