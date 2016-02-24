@@ -151,7 +151,7 @@ list who has access to an application
 
 
 ```bash
-$ heroku acesss:update EMAIL [--app APP]
+$ heroku access:update EMAIL [--app APP]
 
 Usage: heroku access:update EMAIL
 Update existing collaborators in an org app
