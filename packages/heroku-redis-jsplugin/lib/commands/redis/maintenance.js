@@ -27,6 +27,11 @@ module.exports = {
       process.exit(1);
     }
     let addon = addons[0];
+    
+    if (addon.plan.name.match(/hobby/) != null) {
+      cli.error('redis:maintenance is not available for hobby-dev instances');
+      process.exit(1);
+    }
 
     if (context.flags.window) {
       if (context.flags.window.match(/[A-Za-z]{3,10} \d\d?:[03]0/) == null) {
