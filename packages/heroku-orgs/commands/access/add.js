@@ -4,6 +4,7 @@ let cli           = require('heroku-cli-util');
 let Utils         = require('../../lib/utils');
 let co            = require('co');
 let error         = require('../../lib/error');
+let extend        = require('util')._extend;
 
 function* run(context, heroku) {
   let appName = context.app;
@@ -42,7 +43,7 @@ function* run(context, heroku) {
   yield cli.action(`${output}`, request);
 }
 
-module.exports = {
+let cmd = {
   topic: 'access',
   needsAuth: true,
   needsApp: true,
@@ -54,4 +55,12 @@ module.exports = {
     {name: 'privileges', description: 'list of privileges comma separated', hasValue: true, optional: true}
   ],
   run: cli.command(co.wrap(run))
+};
+
+module.exports = cmd;
+module.exports.sharing = extend({}, cmd);
+module.exports.sharing.hidden = true;
+module.exports.sharing.topic = 'sharing';
+module.exports.sharing.run = function () {
+  cli.error(`This command is now ${cli.color.cyan('heroku access:add')}`);  process.exit(1);
 };
