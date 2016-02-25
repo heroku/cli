@@ -49,7 +49,7 @@ let cmd = {
   needsApp: true,
   command: 'add',
   description: 'Add new users to your app',
-  help: 'heroku access:add user@email.com --app APP # Add a collaborator to your app\n\nheroku access:add user@email.com --app APP --privileges view, deploy, manage, operate # privileges must be comma separated',
+  help: 'heroku access:add user@email.com --app APP # Add a collaborator to your app\n\nheroku access:add user@email.com --app APP --privileges view,deploy,manage,operate # privileges must be comma separated',
   args: [{name: 'email', optional: false}],
   flags: [
     {name: 'privileges', description: 'list of privileges comma separated', hasValue: true, optional: true}
