@@ -165,7 +165,7 @@ Add new users to your app
 
 heroku access:add user@email.com --app APP # Add a collaborator to your app
 
-heroku access:add user@email.com --app APP --privileges view, deploy, manage, operate # privileges must be comma separated
+heroku access:add user@email.com --app APP --privileges view,deploy,manage,operate # privileges must be comma separated
 ```
 
 ```bash
