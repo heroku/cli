@@ -5,16 +5,6 @@ Heroku Orgs CLI
 
 [Dev Center: Developing CLI Plugins](https://devcenter.heroku.com/articles/developing-toolbelt-plug-ins)
 
-
-How to install this plugin
--------------------
-
-**Note: These Node.js plugins are available in the current Ruby CLI. No need to download a separate Toolbelt 4.0 CLI.**
-
-```
-$ heroku plugins:install heroku-orgs
-```
-
 ### Commands
 
 ```bash
