@@ -1,3 +1,8 @@
+4.27.24 2016-02-25
+==================
+Added heroku-orgs core plugin
+Added auth:logout
+
 4.27.23 2016-02-23
 ==================
 Update node to 5.7.0
