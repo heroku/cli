@@ -13,12 +13,12 @@ import (
 
 var loginTopic = &Topic{
 	Name:        "login",
-	Description: "Login with your Heroku credentials.",
+	Description: "login with your Heroku credentials.",
 }
 
 var loginCmd = &Command{
 	Topic:       "login",
-	Description: "Login with your Heroku credentials.",
+	Description: "login with your Heroku credentials.",
 	Flags: []Flag{
 		{Name: "sso", Description: "login for enterprise users under SSO"},
 	},
@@ -28,7 +28,7 @@ var loginCmd = &Command{
 var authLoginCmd = &Command{
 	Topic:       "auth",
 	Command:     "login",
-	Description: "Login with your Heroku credentials.",
+	Description: "login with your Heroku credentials.",
 	Flags: []Flag{
 		{Name: "sso", Description: "login for enterprise users under SSO"},
 	},
@@ -218,9 +218,35 @@ func createOauthToken(email, password, secondFactor string) (string, error) {
 var authTokenCmd = &Command{
 	Topic:       "auth",
 	Command:     "token",
-	Description: "Display your API token.",
+	Description: "display your API token.",
 	NeedsAuth:   true,
 	Run: func(ctx *Context) {
 		Println(ctx.APIToken)
 	},
+}
+
+var logoutTopic = &Topic{
+	Name:        "logout",
+	Description: "clear your local Heroku credentials",
+}
+
+var logoutCmd = &Command{
+	Topic:       "logout",
+	Description: "clear your local Heroku credentials",
+	Run:         logout,
+}
+
+var authLogoutCmd = &Command{
+	Topic:       "auth",
+	Command:     "logout",
+	Description: "clear your local Heroku credentials",
+	Run:         logout,
+}
+
+func logout(ctx *Context) {
+	netrc := getNetrc()
+	netrc.RemoveMachine(apiHost())
+	netrc.RemoveMachine(httpGitHost())
+	ExitIfError(netrc.Save(), false)
+	Println("Local credentails cleared.")
 }
