@@ -243,7 +243,7 @@ func truncateErrorLog() {
 		return
 	}
 	lines := strings.Split(string(body), "\n")
-	lines = lines[maxint(len(lines)-100, 0) : len(lines)-1]
+	lines = lines[maxint(len(lines)-1000, 0) : len(lines)-1]
 	err = ioutil.WriteFile(ErrLogPath, []byte(strings.Join(lines, "\n")+"\n"), 0644)
 	PrintError(err, false)
 }
