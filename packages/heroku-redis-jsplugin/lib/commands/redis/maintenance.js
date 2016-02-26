@@ -51,7 +51,7 @@ module.exports = {
         process.exit(1);
       }
 
-      let maintenance = yield api.request(context, addon.name + '/maintenance', 'POST');
+      let maintenance = yield api.request(context, `/client/v11/databases/${addon.name}/maintenance`, 'POST');
       console.log(maintenance.message);
       process.exit(0);
     }
