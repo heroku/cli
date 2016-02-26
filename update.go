@@ -10,6 +10,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
+	"strings"
 	"time"
 
 	"github.com/heroku/heroku-cli/Godeps/_workspace/src/github.com/dickeyxxx/golock"
@@ -61,6 +62,7 @@ func Update(channel string, t string) {
 		updateCLI(channel)
 		updateNode()
 		updatePlugins()
+		truncateErrorLog()
 		done <- true
 	}()
 	select {
@@ -229,4 +231,23 @@ func reexec() {
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	os.Exit(getExitCode(cmd.Run()))
+}
+
+func truncateErrorLog() {
+	Debugln("truncating error log...")
+	body, err := ioutil.ReadFile(ErrLogPath)
+	if err != nil {
+		PrintError(err, false)
+		return
+	}
+	lines := strings.Split(string(body), "\n")
+	lines = lines[maxint(len(lines)-100, 0) : len(lines)-1]
+	ioutil.WriteFile(ErrLogPath, []byte(strings.Join(lines, "\n")+"\n"), 0644)
+}
+
+func maxint(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
 }
