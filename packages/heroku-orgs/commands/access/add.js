@@ -12,6 +12,7 @@ function* run(context, heroku) {
   let appInfo = yield heroku.apps(appName).info();
   let output = `Adding ${cli.color.cyan(context.args.email)} access to the app ${cli.color.magenta(appName)}`;
   let request;
+  let orgFlags = [];
 
   if (Utils.isOrgApp(appInfo.owner.email)) {
     let orgName = Utils.getOwner(appInfo.owner.email);
@@ -20,11 +21,12 @@ function* run(context, heroku) {
       path: `/v1/organization/${orgName}`,
       headers: { Accept: 'application/vnd.heroku+json; version=2' }
     });
+    orgFlags = orgInfo.flags;
+  }
 
-    if (orgInfo.flags.indexOf('org-access-controls') !== -1) {
-      output += ` with ${cli.color.green(privileges)} privileges`;
-      if (!privileges) error.exit(1, `Missing argument: privileges`);
-    }
+  if (orgFlags.indexOf('org-access-controls') !== -1) {
+    output += ` with ${cli.color.green(privileges)} privileges`;
+    if (!privileges) error.exit(1, `Missing argument: privileges`);
 
     request = heroku.request({
       method: 'POST',

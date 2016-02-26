@@ -48,7 +48,7 @@ describe('heroku access:add', () => {
     beforeEach(() => {
       cli.mockConsole();
       api = stub.getOrgApp();
-      apiPrivilegesVariant = stub.postCollaboratorsWithPrivileges();
+      apiPrivilegesVariant = stub.postCollaborators();
       apiV2 = stub.orgFlags([]);
     });
     afterEach(()  => nock.cleanAll());
