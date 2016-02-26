@@ -46,6 +46,7 @@ var updateCmd = &Command{
 var binPath string
 var updateLockPath = filepath.Join(AppDir(), "updating.lock")
 var autoupdateFile = filepath.Join(AppDir(), "autoupdate")
+var tmpPath = filepath.Join(AppDir(), "tmp")
 
 func init() {
 	binPath, _ = osext.Executable()
@@ -63,6 +64,7 @@ func Update(channel string, t string) {
 		updateNode()
 		updatePlugins()
 		truncateErrorLog()
+		cleanTmpDir()
 		done <- true
 	}()
 	select {
@@ -242,7 +244,8 @@ func truncateErrorLog() {
 	}
 	lines := strings.Split(string(body), "\n")
 	lines = lines[maxint(len(lines)-100, 0) : len(lines)-1]
-	ioutil.WriteFile(ErrLogPath, []byte(strings.Join(lines, "\n")+"\n"), 0644)
+	err = ioutil.WriteFile(ErrLogPath, []byte(strings.Join(lines, "\n")+"\n"), 0644)
+	PrintError(err, false)
 }
 
 func maxint(a, b int) int {
@@ -250,4 +253,20 @@ func maxint(a, b int) int {
 		return a
 	}
 	return b
+}
+
+func cleanTmpDir() {
+	Debugln("cleaning up tmp dirs...")
+	dirs, err := ioutil.ReadDir(tmpPath)
+	if err != nil {
+		PrintError(err, false)
+		return
+	}
+	for _, dir := range dirs {
+		if time.Since(dir.ModTime()) > 24*time.Hour {
+			path := filepath.Join(tmpPath, dir.Name())
+			Debugln("deleting " + path)
+			PrintError(os.RemoveAll(path), false)
+		}
+	}
 }
