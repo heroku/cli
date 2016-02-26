@@ -10,6 +10,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
+	"strings"
 	"time"
 
 	"github.com/heroku/heroku-cli/Godeps/_workspace/src/github.com/dickeyxxx/golock"
@@ -45,6 +46,7 @@ var updateCmd = &Command{
 var binPath string
 var updateLockPath = filepath.Join(AppDir(), "updating.lock")
 var autoupdateFile = filepath.Join(AppDir(), "autoupdate")
+var tmpPath = filepath.Join(AppDir(), "tmp")
 
 func init() {
 	binPath, _ = osext.Executable()
@@ -61,6 +63,8 @@ func Update(channel string, t string) {
 		updateCLI(channel)
 		updateNode()
 		updatePlugins()
+		truncateErrorLog()
+		cleanTmpDir()
 		done <- true
 	}()
 	select {
@@ -229,4 +233,40 @@ func reexec() {
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	os.Exit(getExitCode(cmd.Run()))
+}
+
+func truncateErrorLog() {
+	Debugln("truncating error log...")
+	body, err := ioutil.ReadFile(ErrLogPath)
+	if err != nil {
+		PrintError(err, false)
+		return
+	}
+	lines := strings.Split(string(body), "\n")
+	lines = lines[maxint(len(lines)-1000, 0) : len(lines)-1]
+	err = ioutil.WriteFile(ErrLogPath, []byte(strings.Join(lines, "\n")+"\n"), 0644)
+	PrintError(err, false)
+}
+
+func maxint(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
+
+func cleanTmpDir() {
+	Debugln("cleaning up tmp dirs...")
+	dirs, err := ioutil.ReadDir(tmpPath)
+	if err != nil {
+		PrintError(err, false)
+		return
+	}
+	for _, dir := range dirs {
+		if time.Since(dir.ModTime()) > 24*time.Hour {
+			path := filepath.Join(tmpPath, dir.Name())
+			Debugln("deleting " + path)
+			PrintError(os.RemoveAll(path), false)
+		}
+	}
 }
