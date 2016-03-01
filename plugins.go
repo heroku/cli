@@ -306,22 +306,22 @@ func ParsePlugin(name string) (*Plugin, error) {
 
 // GetPlugins goes through all the node plugins and returns them in Go stucts
 func GetPlugins() map[string]*Plugin {
-	plugins := FetchPluginCache()
-	for name, plugin := range plugins {
+	cache := FetchPluginCache()
+	for name, plugin := range cache.Plugins {
 		if plugin == nil || !pluginExists(name) {
-			delete(plugins, name)
+			delete(cache.Plugins, name)
 		} else {
 			for _, command := range plugin.Commands {
 				command.Run = runFn(plugin, command.Topic, command.Command)
 			}
 		}
 	}
-	return plugins
+	return cache.Plugins
 }
 
 // PluginNames lists all the plugin names
 func PluginNames() []string {
-	plugins := FetchPluginCache()
+	plugins := FetchPluginCache().Plugins
 	names := make([]string, 0, len(plugins))
 	for _, plugin := range plugins {
 		if plugin != nil && len(plugin.Commands) > 0 {

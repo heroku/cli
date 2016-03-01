@@ -13,7 +13,7 @@ func AddPluginsToCache(plugins ...*Plugin) {
 	cache := FetchPluginCache()
 	for _, plugin := range plugins {
 		if plugin != nil {
-			cache[plugin.Name] = plugin
+			cache.Plugins[plugin.Name] = plugin
 		}
 	}
 	savePluginCache(cache)
@@ -22,11 +22,11 @@ func AddPluginsToCache(plugins ...*Plugin) {
 // RemovePluginFromCache will take a plugin and remove it from the list
 func RemovePluginFromCache(name string) {
 	cache := FetchPluginCache()
-	delete(cache, name)
+	delete(cache.Plugins, name)
 	savePluginCache(cache)
 }
 
-func savePluginCache(cache map[string]*Plugin) {
+func savePluginCache(cache PluginCache) {
 	f, err := os.Create(pluginCachePath)
 	if err != nil {
 		panic(err)
@@ -36,18 +36,30 @@ func savePluginCache(cache map[string]*Plugin) {
 	}
 }
 
+const pluginCacheVersion = 1
+
+// PluginCache is the cache document at ~/.heroku/plugin-cache.json
+type PluginCache struct {
+	Version int                `json:"version"`
+	Plugins map[string]*Plugin `json:"plugins"`
+}
+
 // FetchPluginCache returns the plugins from the cache
-func FetchPluginCache() map[string]*Plugin {
-	plugins := make(map[string]*Plugin, 100)
+func FetchPluginCache() PluginCache {
+	newCache := PluginCache{pluginCacheVersion, make(map[string]*Plugin, 100)}
 	if exists, _ := fileExists(pluginCachePath); !exists {
-		return plugins
+		return newCache
 	}
 	f, err := os.Open(pluginCachePath)
 	if err != nil {
-		return plugins
+		return newCache
 	}
-	if err := json.NewDecoder(f).Decode(&plugins); err != nil {
+	var cache PluginCache
+	if err := json.NewDecoder(f).Decode(&cache); err != nil {
 		panic(err)
 	}
-	return plugins
+	if cache.Version != pluginCacheVersion {
+		return newCache
+	}
+	return cache
 }
