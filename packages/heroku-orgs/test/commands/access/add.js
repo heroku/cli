@@ -14,16 +14,25 @@ describe('heroku access:add', () => {
     beforeEach(() => {
       cli.mockConsole();
       api = stub.getOrgApp();
-      apiPrivilegesVariant = stub.postCollaboratorsWithPrivileges(['view', 'deploy']);
+      apiPrivilegesVariant = stub.postCollaboratorsWithPrivileges(['deploy', 'view']);
       apiV2 = stub.orgFlags(['org-access-controls']);
 
     });
     afterEach(()  => nock.cleanAll());
 
-    it('adds user to the app with privileges', () => {
-      return cmd.run({app: 'myapp', args: {email: 'raulb@heroku.com'}, flags: { privileges: 'view,deploy' }})
+    it('adds user to the app with privileges, and view is implicit', () => {
+      return cmd.run({app: 'myapp', args: {email: 'raulb@heroku.com'}, flags: { privileges: 'deploy' }})
       .then(() => expect(``).to.eq(cli.stdout))
-        .then(() => expect(`Adding raulb@heroku.com access to the app myapp with view,deploy privileges... done\n`).to.eq(cli.stderr))
+        .then(() => expect(`Adding raulb@heroku.com access to the app myapp with deploy,view privileges... done\n`).to.eq(cli.stderr))
+        .then(() => api.done())
+        .then(() => apiV2.done())
+        .then(() => apiPrivilegesVariant.done());
+    });
+
+    it('adds user to the app with privileges, even specifying the view privilege', () => {
+      return cmd.run({app: 'myapp', args: {email: 'raulb@heroku.com'}, flags: { privileges: 'deploy,view' }})
+      .then(() => expect(``).to.eq(cli.stdout))
+        .then(() => expect(`Adding raulb@heroku.com access to the app myapp with deploy,view privileges... done\n`).to.eq(cli.stderr))
         .then(() => api.done())
         .then(() => apiV2.done())
         .then(() => apiPrivilegesVariant.done());

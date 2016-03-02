@@ -1,14 +1,15 @@
 'use strict';
 
-let cli           = require('heroku-cli-util');
-let Utils         = require('../../lib/utils');
-let co            = require('co');
-let error         = require('../../lib/error');
-let extend        = require('util')._extend;
+let cli    = require('heroku-cli-util');
+let _      = require('lodash');
+let Utils  = require('../../lib/utils');
+let co     = require('co');
+let error  = require('../../lib/error');
+let extend = require('util')._extend;
 
 function* run(context, heroku) {
   let appName = context.app;
-  let privileges = context.flags.privileges || "";
+  let privileges = context.flags.privileges || '';
   let appInfo = yield heroku.apps(appName).info();
   let output = `Adding ${cli.color.cyan(context.args.email)} access to the app ${cli.color.magenta(appName)}`;
   let request;
@@ -25,8 +26,14 @@ function* run(context, heroku) {
   }
 
   if (orgFlags.indexOf('org-access-controls') !== -1) {
-    output += ` with ${cli.color.green(privileges)} privileges`;
     if (!privileges) error.exit(1, `Missing argument: privileges`);
+
+    privileges = privileges.split(",");
+
+    // Give implicit `view` access
+    privileges.push('view');
+    privileges = _.uniq(privileges.sort());
+    output += ` with ${cli.color.green(privileges)} privileges`;
 
     request = heroku.request({
       method: 'POST',
@@ -36,7 +43,7 @@ function* run(context, heroku) {
       },
       body: {
         user: context.args.email,
-        privileges: privileges.split(",")
+        privileges: privileges
       }
     });
   } else {
@@ -51,7 +58,7 @@ let cmd = {
   needsApp: true,
   command: 'add',
   description: 'Add new users to your app',
-  help: 'heroku access:add user@email.com --app APP # Add a collaborator to your app\n\nheroku access:add user@email.com --app APP --privileges view,deploy,manage,operate # privileges must be comma separated',
+  help: 'heroku access:add user@email.com --app APP # Add a collaborator to your app\n\nheroku access:add user@email.com --app APP --privileges deploy,manage,operate # privileges must be comma separated',
   args: [{name: 'email', optional: false}],
   flags: [
     {name: 'privileges', description: 'list of privileges comma separated', hasValue: true, optional: true}

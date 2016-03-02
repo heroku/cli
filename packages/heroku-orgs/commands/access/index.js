@@ -1,7 +1,7 @@
 'use strict';
 
 let cli       = require('heroku-cli-util');
-let extend      = require('util')._extend;
+let extend    = require('util')._extend;
 let _         = require('lodash');
 let Utils     = require('../../lib/utils');
 let co        = require('co');
