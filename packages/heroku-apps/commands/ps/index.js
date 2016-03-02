@@ -21,8 +21,8 @@ function printQuota (quota) {
   else if (quota.deny_until) lbl = 'Free quota exhausted. Unidle available in';
   if (lbl) {
     let timestamp = quota.allow_until ? new Date(quota.allow_until) : new Date(quota.deny_until);
-    let time = time.remaining(new Date(), timestamp);
-    console.log(`${lbl}: ${time}`);
+    let timeRemaining = time.remaining(new Date(), timestamp);
+    cli.log(`${lbl}: ${timeRemaining}`);
   }
 }
 
