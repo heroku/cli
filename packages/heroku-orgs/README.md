@@ -192,6 +192,6 @@ $ npm test
 #### Deploy
 
 ```
-$ npm publish patch
+$ npm version patch
 ```
 
