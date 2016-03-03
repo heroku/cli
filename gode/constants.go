@@ -10,10 +10,10 @@ package gode
 const Version = "5.7.1"
 
 // NpmVersion is the requested npm version
-const NpmVersion = "3.6.0"
+const NpmVersion = "3.3.10"
 
-const npmSha = "192f2ae39682f379566e0100cbe4c523ba07cd7b37efdae8ce0c65b05773bf72"
-const npmURL = "https://cli-assets.heroku.com/npm/v3.6.0.zip"
+const npmSha = "dc06125df1214af5900a82435908681955e379905aa38bd9b1ec950134c28162"
+const npmURL = "https://cli-assets.heroku.com/npm/v3.3.10.zip"
 
 var targets = []Target{
 	{"386", "linux", "https://cli-assets.heroku.com/node/v5.7.1/node-v5.7.1-linux-x86.tar.gz", "node-v5.7.1-linux-x86", "4382b7366f3448d42f09d63f7dfccf45bf67f8be94d2bfe7203bdc79d0ae64e8"},
