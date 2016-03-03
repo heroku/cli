@@ -76,7 +76,7 @@ func downloadCert(path string) {
 		return
 	}
 	res, err := goreq.Request{
-		Uri:       "https://raw.githubusercontent.com/bagder/ca-bundle/master/ca-bundle.crt",
+		Uri:       "https://cli-assets.heroku.com/cacert.pem",
 		ShowDebug: debugging,
 	}.Do()
 	if err != nil {
