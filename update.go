@@ -79,7 +79,7 @@ func updatePlugins() {
 	if len(plugins) == 0 {
 		return
 	}
-	Err("Updating plugins... ")
+	Err("heroku-cli: Updating plugins... ")
 	packages, err := gode.OutdatedPackages(plugins...)
 	PrintError(err, true)
 	if len(packages) > 0 {
@@ -116,7 +116,11 @@ func updateCLI(channel string) {
 		golock.Unlock(updateLockPath)
 	}
 	defer unlock()
-	Errf("Updating Heroku v4 CLI to %s (%s)... ", manifest.Version, manifest.Channel)
+	if manifest.Channel == "master" {
+		Errf("heroku-cli: Updating to %s... ", manifest.Version)
+	} else {
+		Errf("heroku-cli: Updating to %s (%s)... ", manifest.Version, manifest.Channel)
+	}
 	build := manifest.Builds[runtime.GOOS][runtime.GOARCH]
 	// on windows we can't remove an existing file or remove the running binary
 	// so we download the file to binName.new
