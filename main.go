@@ -85,7 +85,11 @@ func main() {
 	defer handlePanic()
 	runtime.GOMAXPROCS(1) // more procs causes runtime: failed to create new OS thread on Ubuntu
 	ShowDebugInfo()
-	Update(Channel, "block")
+	if !(len(os.Args) >= 2 && os.Args[1] == "update") {
+		// skip blocking update if the command is to update
+		// otherwise it will update twice
+		Update(Channel, "block")
+	}
 	SetupNode()
 	err := cli.Run(os.Args)
 	SetupBuiltinPlugins()
