@@ -291,12 +291,16 @@ func ParsePlugin(name string) (*Plugin, error) {
 
 	console.log(JSON.stringify(plugin))`
 	cmd := gode.RunScript(script)
-	output, err := cmd.CombinedOutput()
+	cmd.Stderr = Stderr
+	output, err := cmd.Output()
 	if err != nil {
-		return nil, fmt.Errorf("Error reading plugin: %s\n%s\n%s", name, err, string(output))
+		return nil, fmt.Errorf("Error reading plugin: %s\n%s", name, err)
 	}
 	var plugin Plugin
-	json.Unmarshal([]byte(output), &plugin)
+	err = json.Unmarshal([]byte(output), &plugin)
+	if err != nil {
+		return nil, fmt.Errorf("Error parsing plugin: %s\n%s\n%s", name, err, string(output))
+	}
 	for _, command := range plugin.Commands {
 		command.Plugin = plugin.Name
 		command.Help = strings.TrimSpace(command.Help)
