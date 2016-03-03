@@ -10,6 +10,6 @@ function* run () {
 module.exports = {
   topic:        'orgs',
   command:      'default',
-  hidden:       'true',
+  hidden:       true,
   run:          cli.command(co.wrap(run))
 };
