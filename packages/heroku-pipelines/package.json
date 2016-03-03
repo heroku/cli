@@ -13,7 +13,9 @@
   "license": "ISC",
   "main": "index.js",
   "scripts": {
-    "test": "mocha && jshint ."
+    "test": "mocha && jshint .",
+    "preversion": "npm test",
+    "postversion": "npm publish && git push && git push --tags"
   },
   "dependencies": {
     "bluebird": "2.10.2",
