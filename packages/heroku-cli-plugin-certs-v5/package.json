@@ -1,12 +1,12 @@
 {
-  "name": "heroku-ssl",
+  "name": "heroku-certs",
   "version": "1.0.0",
   "description": "heroku ssl plugin",
   "main": "index.js",
   "author": "Ransom Briggs rbriggs@heroku.com",
-  "repository": "heroku/heroku-ssl",
+  "repository": "heroku/heroku-certs",
   "bugs": {
-    "url": "https://github.com/heroku/heroku-ssl/issues"
+    "url": "https://github.com/heroku/heroku-certs/issues"
   },
   "scripts": {
     "test": "mocha && jshint ."
