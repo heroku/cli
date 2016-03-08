@@ -7,12 +7,15 @@ let Utils     = require('../../lib/utils');
 let co        = require('co');
 let orgFlags;
 
+function orgHasGranularPermissions(orgFlags) {
+  return _.includes(orgFlags, 'org-access-controls') || _.includes(orgFlags, 'static-permissions');
+}
 function printJSON (collaborators) {
   cli.log(JSON.stringify(collaborators, null, 2));
 }
 
 function printAccess (app, collaborators) {
-  let showPrivileges = Utils.isOrgApp(app.owner.email) && (orgFlags.indexOf('org-access-controls') !== -1);
+  let showPrivileges = Utils.isOrgApp(app.owner.email) && (orgHasGranularPermissions(orgFlags));
   collaborators = _.chain(collaborators)
   .sortBy(c => c.email || c.user.email)
   .reject(c => /herokumanager\.com$/.test(c.user.email))
@@ -56,7 +59,7 @@ function* run (context, heroku) {
     });
 
     orgFlags = orgInfo.flags;
-    if (orgFlags.indexOf('org-access-controls') !== -1) {
+    if (orgHasGranularPermissions(orgFlags)) {
       try {
         let admins = yield heroku.get(`/organizations/${orgName}/members`);
         admins = _.filter(admins, { 'role': 'admin' });

@@ -25,7 +25,7 @@ function* run(context, heroku) {
     orgFlags = orgInfo.flags;
   }
 
-  if (orgFlags.indexOf('org-access-controls') !== -1) {
+  if (_.includes(orgFlags, 'org-access-controls')) {
     if (!privileges) error.exit(1, `Missing argument: privileges`);
 
     privileges = privileges.split(",");

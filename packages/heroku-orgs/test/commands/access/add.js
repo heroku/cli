@@ -4,7 +4,8 @@ let cmd           = require('../../../commands/access/add');
 let error         = require('../../../lib/error');
 let assert_exit   = require('../../assert_exit');
 let unwrap        = require('../../unwrap');
-let stub          = require('../../stub');
+let stubGet       = require('../../stub/get');
+let stubPost      = require('../../stub/post');
 let api;
 let apiPrivilegesVariant;
 let apiV2;
@@ -13,9 +14,9 @@ describe('heroku access:add', () => {
   context('with an org app with user privileges', () => {
     beforeEach(() => {
       cli.mockConsole();
-      api = stub.getOrgApp();
-      apiPrivilegesVariant = stub.postCollaboratorsWithPrivileges(['deploy', 'view']);
-      apiV2 = stub.orgFlags(['org-access-controls']);
+      api = stubGet.orgApp();
+      apiPrivilegesVariant = stubPost.collaboratorsWithPrivileges(['deploy', 'view']);
+      apiV2 = stubGet.orgFlags(['org-access-controls']);
 
     });
     afterEach(()  => nock.cleanAll());
@@ -56,9 +57,9 @@ describe('heroku access:add', () => {
   context('with an org app without user privileges', () => {
     beforeEach(() => {
       cli.mockConsole();
-      api = stub.getOrgApp();
-      apiPrivilegesVariant = stub.postCollaborators();
-      apiV2 = stub.orgFlags([]);
+      api = stubGet.orgApp();
+      apiPrivilegesVariant = stubPost.collaborators();
+      apiV2 = stubGet.orgFlags([]);
     });
     afterEach(()  => nock.cleanAll());
 
@@ -75,8 +76,8 @@ describe('heroku access:add', () => {
   context('with a non org app', () => {
     beforeEach(() => {
       cli.mockConsole();
-      api = stub.getPersonalApp();
-      apiPrivilegesVariant = stub.postCollaborators();
+      api = stubGet.personalApp();
+      apiPrivilegesVariant = stubPost.collaborators();
     });
     afterEach(()  => nock.cleanAll());
 

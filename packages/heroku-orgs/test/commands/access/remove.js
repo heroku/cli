@@ -1,14 +1,14 @@
 'use strict';
 
 let cmd           = require('../../../commands/access/remove');
-let stub          = require('../../stub');
+let stubDelete    = require('../../stub/delete');
 let api;
 
 describe('heroku access:remove', () => {
   context('with either a personal or org app', () => {
     beforeEach(() => {
       cli.mockConsole();
-      api = stub.deleteCollaboratorsPersonalApp('myapp','raulb@heroku.com');
+      api = stubDelete.collaboratorsPersonalApp('myapp','raulb@heroku.com');
     });
     afterEach(()  => nock.cleanAll());
 
