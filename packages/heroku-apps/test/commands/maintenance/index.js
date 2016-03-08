@@ -8,7 +8,7 @@ describe('maintenance', () => {
   // redirects to cli.stdout/cli.stderr instead
   beforeEach(() => cli.mockConsole());
 
-  it('shows the maintenance is on', () => {
+  it('shows that maintenance is on', () => {
     // mock out API
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp')
@@ -24,7 +24,7 @@ describe('maintenance', () => {
     .then(() => api.done());
   });
 
-  it('shows the maintenance is off', () => {
+  it('shows that maintenance is off', () => {
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp')
       .reply(200, {maintenance: false});
