@@ -17,7 +17,14 @@ import (
 
 func init() {
 	goreq.SetConnectTimeout(15 * time.Second)
-	goreq.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{RootCAs: getCACerts()}
+	if !useSystemCerts() {
+		goreq.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{RootCAs: getCACerts()}
+	}
+}
+
+func useSystemCerts() bool {
+	e := os.Getenv("HEROKU_USE_SYSTEM_CERTS")
+	return e != "false" && e != "0"
 }
 
 func apiRequestBase(authToken string) *goreq.Request {
@@ -76,7 +83,7 @@ func downloadCert(path string) {
 		return
 	}
 	res, err := goreq.Request{
-		Uri:       "https://raw.githubusercontent.com/bagder/ca-bundle/master/ca-bundle.crt",
+		Uri:       "https://cli-assets.heroku.com/cacert.pem",
 		ShowDebug: debugging,
 	}.Do()
 	if err != nil {
