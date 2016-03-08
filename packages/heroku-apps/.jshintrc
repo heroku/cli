@@ -33,19 +33,11 @@
     "commands": true
   },
   "predef": [
-    "$",
-    "React",
     "after",
     "afterEach",
-    "angular",
     "before",
     "beforeEach",
-    "browser",
-    "by",
     "describe",
-    "document",
-    "element",
-    "inject",
     "it",
     "sinon"
   ]
