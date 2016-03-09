@@ -1,3 +1,12 @@
+4.27.26 2016-03-09
+==================
+Update node to 5.7.1
+Add updating output prefix
+Fix double updating bug
+Fix bugs with plugin parsing
+Use our server for cacert.pem file
+Allow HEROKU_USE_SYSTEM_CERT=false to use custom cacert.pem
+
 4.27.25 2016-03-01
 ==================
 Remove netgo flag to try and fix DNS errors
