@@ -16,21 +16,18 @@ describe('pipelines:promote', function() {
   const sourceApp = {
     id: '123-source-app-456',
     name: 'example-staging',
-    coupling: { stage: 'staging' },
     pipeline: pipeline
   };
 
   const targetApp1 = {
     id: '123-target-app-456',
     name: 'example-production',
-    coupling: { stage: 'production' },
     pipeline: pipeline
   };
 
   const targetApp2 = {
     id: '456-target-app-789',
     name: 'example-production-eu',
-    coupling: { stage: 'production' },
     pipeline: pipeline
   };
 
@@ -39,6 +36,20 @@ describe('pipelines:promote', function() {
     id: '123-source-app-456',
     pipeline: pipeline,
     stage: 'staging'
+  };
+
+  const targetCoupling1 = {
+    app: targetApp1,
+    id: '123-target-app-456',
+    pipeline: pipeline,
+    stage: 'production'
+  };
+
+  const targetCoupling2 = {
+    app: targetApp2,
+    id: '456-target-app-789',
+    pipeline: pipeline,
+    stage: 'production'
   };
 
   const promotion = {
@@ -76,7 +87,11 @@ describe('pipelines:promote', function() {
       .reply(200, sourceCoupling);
 
     nock(api)
-      .get(`/pipelines/${pipeline.id}/apps`)
+      .get(`/pipelines/${pipeline.id}/pipeline-couplings`)
+      .reply(200, [sourceCoupling, targetCoupling1, targetCoupling2]);
+
+    nock(api)
+      .post(`/filters/apps`)
       .reply(200, [sourceApp, targetApp1, targetApp2]);
   });
 

@@ -7,12 +7,20 @@ const promise = require('bluebird');
 const sinon   = require('sinon');
 
 describe('pipelines:open', () => {
-  beforeEach(() => cli.mockConsole());
+  let openStub, pipeline;
+
+  beforeEach(() => {
+    cli.mockConsole();
+
+    openStub = sinon.stub(cli, 'open').returns(promise.resolve());
+    pipeline = { id: '0123', name: 'Rigel' };
+  });
+
+  afterEach(function() {
+    openStub.restore();
+  });
 
   it('opens the url', () => {
-    const openStub = sinon.stub(cli, 'open').returns(promise.resolve());
-    const pipeline = { id: '0123', name: 'Rigel' };
-
     nock('https://api.heroku.com')
       .get(`/pipelines?eq[name]=${pipeline.name}`)
       .reply(200, [pipeline]);

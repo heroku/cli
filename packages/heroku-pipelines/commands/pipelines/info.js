@@ -1,8 +1,9 @@
 'use strict';
 
-let cli          = require('heroku-cli-util');
-let disambiguate = require('../../lib/disambiguate');
-let stageNames   = require('../../lib/stages').names;
+const cli             = require('heroku-cli-util');
+const disambiguate    = require('../../lib/disambiguate');
+const stageNames      = require('../../lib/stages').names;
+const listPipelineApps = require('../../lib/api').listPipelineApps;
 
 module.exports = {
   topic: 'pipelines',
@@ -14,12 +15,10 @@ module.exports = {
     {name: 'pipeline', description: 'pipeline to show', optional: false}
   ],
   run: cli.command(function* (context, heroku) {
-    let pipeline = yield disambiguate(heroku, context.args.pipeline);
-    let apps = yield heroku.request({
-      method: 'GET',
-      path: `/pipelines/${pipeline.id}/apps`,
-      headers: { 'Accept': 'application/vnd.heroku+json; version=3.pipelines' }
-    }); // heroku.pipelines(pipeline_id).apps();
+    const pipeline = yield disambiguate(heroku, context.args.pipeline);
+
+    const apps = yield listPipelineApps(heroku, pipeline.id);
+
     cli.styledHeader(pipeline.name);
     // Sort Apps by stage, name
     // Display in table

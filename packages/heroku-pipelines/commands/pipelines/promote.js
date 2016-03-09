@@ -4,9 +4,12 @@ const assert = require('assert');
 const cli = require('heroku-cli-util');
 const BBPromise = require('bluebird');
 
+const api              = require('../../lib/api');
+const keyBy            = require('../../lib/key-by');
+const listPipelineApps = api.listPipelineApps;
+const V3_HEADER        = api.V3_HEADER;
+
 const PROMOTION_ORDER = ["development", "staging", "production"];
-const V3_HEADER = 'application/vnd.heroku+json; version=3';
-const PIPELINES_HEADER = V3_HEADER + '.pipelines';
 
 function isComplete(promotionTarget) {
   return promotionTarget.status !== 'pending';
@@ -42,11 +45,7 @@ function* getCoupling(heroku, app) {
 
 function* getApps(heroku, pipeline) {
   return yield cli.action(`Fetching apps from ${pipeline.name}`,
-    heroku.request({
-      method: 'GET',
-      path: `/pipelines/${pipeline.id}/apps`,
-      headers: { 'Accept': PIPELINES_HEADER }
-    }));
+    listPipelineApps(heroku, pipeline.id));
 }
 
 function* promote(heroku, promotionActionName, pipelineId, sourceAppId, targetApps) {
@@ -142,10 +141,7 @@ module.exports = {
     const pollLoop = pollPromotionStatus(heroku, promotion.id);
     const promotionTargets = yield cli.action('Waiting for promotion to complete', pollLoop);
 
-    const appsByID = allApps.reduce(function(memo, app) {
-      memo[app.id] = app;
-      return memo;
-    }, {});
+    const appsByID = keyBy(allApps, 'id');
 
     const styledTargets = promotionTargets.reduce(function(memo, target) {
       const app = appsByID[target.app.id];

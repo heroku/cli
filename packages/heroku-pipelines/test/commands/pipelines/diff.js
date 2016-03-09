@@ -18,8 +18,14 @@ describe('pipelines:diff', function () {
   const targetApp = {
     id: '123-target-app-456',
     name: 'example-staging',
-    coupling: { stage: 'staging' },
     pipeline: pipeline
+  };
+
+  const targetCoupling = {
+    app: targetApp,
+    id: '123-target-app-456',
+    pipeline: pipeline,
+    stage: 'staging'
   };
 
   const targetGithubApp = {
@@ -29,8 +35,14 @@ describe('pipelines:diff', function () {
   const downstreamApp1 = {
     id: '123-downstream-app-1-456',
     name: 'example-production-eu',
-    coupling: { stage: 'production' },
     pipeline: pipeline
+  };
+
+  const downstreamCoupling1 = {
+    app: downstreamApp1,
+    id: '123-target-app-456',
+    pipeline: pipeline,
+    stage: 'production'
   };
 
   const downstreamApp1Github = {
@@ -40,19 +52,18 @@ describe('pipelines:diff', function () {
   const downstreamApp2 = {
     id: '123-downstream-app-2-456',
     name: 'example-production-us',
-    coupling: { stage: 'production' },
     pipeline: pipeline
+  };
+
+  const downstreamCoupling2 = {
+    app: downstreamApp2,
+    id: '123-target-app-456',
+    pipeline: pipeline,
+    stage: 'production'
   };
 
   const downstreamApp2Github = {
     repo: 'heroku/some-other-app'
-  };
-
-  const targetCoupling = {
-    app: targetApp,
-    id: '123-target-app-456',
-    pipeline: pipeline,
-    stage: 'staging'
   };
 
   function mockPipelineCoupling() {
@@ -63,7 +74,11 @@ describe('pipelines:diff', function () {
 
   function mockApps() {
     nock(api)
-      .get(`/pipelines/${pipeline.id}/apps`)
+      .get(`/pipelines/${pipeline.id}/pipeline-couplings`)
+      .reply(200, [targetCoupling, downstreamCoupling1, downstreamCoupling2]);
+
+    nock(api)
+      .post(`/filters/apps`)
       .reply(200, [targetApp, downstreamApp1, downstreamApp2]);
   }
 
@@ -93,7 +108,11 @@ describe('pipelines:diff', function () {
     it('should return an error', function () {
       mockPipelineCoupling();
       nock(api)
-        .get(`/pipelines/${pipeline.id}/apps`)
+        .get(`/pipelines/${pipeline.id}/pipeline-couplings`)
+        .reply(200, [targetCoupling]);
+
+      nock(api)
+        .post(`/filters/apps`)
         .reply(200, [targetApp]);
 
       return cmd.run({ app: targetApp.name })
