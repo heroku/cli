@@ -92,7 +92,7 @@ Usage: %s
 This command does not take any flags.
 
 See more information with %s`,
-			yellow(flag),
+			red(flag),
 			cyan("heroku "+commandUsage(c)),
 			cyan(cmd+" --help"),
 		)
@@ -105,7 +105,7 @@ This flag is invalid for this command. Here are the accepted flags:
 %s
 
 See more information with %s`,
-		yellow(flag),
+		red(flag),
 		cyan("heroku "+commandUsage(c)),
 		flagHelp,
 		cyan(cmd+" --help"),
@@ -134,7 +134,7 @@ You gave this command too many arguments. Try the command again without these ex
 
 See more information with %s`,
 		plural("argument", len(args)),
-		yellow(strings.Join(args, " ")),
+		red(strings.Join(args, " ")),
 		cyan("heroku "+commandUsage(c)),
 		cyan(cmd+" --help"),
 	)
