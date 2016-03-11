@@ -36,6 +36,9 @@ var authLoginCmd = &Command{
 }
 
 func login(ctx *Context) {
+	if os.Getenv("HEROKU_API_KEY") != "" {
+		Warn("HEROKU_API_KEY is set")
+	}
 	if ctx.Flags["sso"] == true {
 		ssoLogin()
 	} else {
@@ -244,6 +247,9 @@ var authLogoutCmd = &Command{
 }
 
 func logout(ctx *Context) {
+	if os.Getenv("HEROKU_API_KEY") != "" {
+		Warn("HEROKU_API_KEY is set")
+	}
 	netrc := getNetrc()
 	netrc.RemoveMachine(apiHost())
 	netrc.RemoveMachine(httpGitHost())
