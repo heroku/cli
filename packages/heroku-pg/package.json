@@ -1,0 +1,34 @@
+{
+  "name": "heroku-pg",
+  "version": "1.0.0",
+  "description": "Heroku CLI plugin to manage Postgres.",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha && jshint .",
+    "preversion": "npm test",
+    "postversion": "npm publish && git push && git push --tags"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/heroku/heroku-pg.git"
+  },
+  "keywords": [
+    "heroku-plugin"
+  ],
+  "author": "Jeff Dickey (@dickeyxxx)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/heroku/heroku-pg/issues"
+  },
+  "homepage": "https://github.com/heroku/heroku-pg",
+  "dependencies": {
+    "co": "4.6.0",
+    "heroku-cli-util": "5.8.3"
+  },
+  "devDependencies": {
+    "chai": "^3.3.0",
+    "jshint": "*",
+    "mocha": "^2.3.3",
+    "nock": "7.2.2"
+  }
+}
