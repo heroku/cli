@@ -25,7 +25,7 @@ function* run (context, heroku) {
       columns: [
         {key: 'version',     format: v => cli.color.green('v'+v)},
         {key: 'description', format: trunc},
-        {key: 'user',        format: u => cli.color.magenta(u.email)},
+        {key: 'user',        format: u => cli.color.magenta(u.email.replace(/@addons\.heroku\.com$/,''))},
         {key: 'created_at',  format: t => time.ago(new Date(t))},
         {key: 'extended.slug_id'},
         {key: 'extended.slug_uuid'},
