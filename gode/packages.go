@@ -45,7 +45,22 @@ func InstallPackages(packages ...string) error {
 
 // RemovePackages removes a npm packages.
 func RemovePackages(packages ...string) error {
-	args := append([]string{"remove"}, packages...)
+	installedPackages, err := Packages()
+	if err != nil {
+		return err
+	}
+	toRemove := make([]string, 0, len(installedPackages))
+	for _, a := range installedPackages {
+		for _, b := range packages {
+			if a.Name == b {
+				toRemove = append(toRemove, b)
+			}
+		}
+	}
+	if len(toRemove) == 0 {
+		return nil
+	}
+	args := append([]string{"remove"}, toRemove...)
 	_, stderr, err := execNpm(args...)
 	if err != nil {
 		return errors.New(stderr)
