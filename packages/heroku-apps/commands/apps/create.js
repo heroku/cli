@@ -43,7 +43,15 @@ function* run (context, heroku) {
     }));
   }
 
-  let app = yield cli.action(`Creating ${name ? cli.color.magenta(name) : 'app'}`, {success: false}, createApp());
+  function createText(name, space) {
+    let text = `Creating ${name ? cli.color.magenta(name) : 'app'}`;
+    if (space) {
+      text += ` in space ${space}`;
+    }
+    return text;
+  }
+
+  let app = yield cli.action(createText(name, context.flags.space), {success: false}, createApp());
 
   if (context.flags.region) cli.console.error(`done, region is ${cli.color.yellow(app.region.name)}`);
   else                      cli.console.error(`done, stack is ${app.stack.name}`);
