@@ -50,8 +50,8 @@ module.exports = {
   flags: [
     {name: 'bypass', description: 'bypass the trust chain completion step', hasValue: false},
     {name: 'confirm', hasValue: true, hidden: true},
-    {name: 'name', hasValue: true, description: 'name to check info on'}, 
-    {name: 'endpoint', hasValue: true, description: 'endpoint to check info on'}
+    {name: 'name', hasValue: true, description: 'name to update'}, 
+    {name: 'endpoint', hasValue: true, description: 'endpoint to update'}
   ],
   description: 'Update an SSL Endpoint on an app.',
   needsApp: true,

@@ -30,8 +30,8 @@ module.exports = {
   command: 'rollback',
   flags: [
     {name: 'confirm', hasValue: true, optional: true, hidden: true},
-    {name: 'name', hasValue: true, description: 'name to check info on'}, 
-    {name: 'endpoint', hasValue: true, description: 'endpoint to check info on'}
+    {name: 'name', hasValue: true, description: 'name to rollback'}, 
+    {name: 'endpoint', hasValue: true, description: 'endpoint to rollback'}
   ],
   description: 'Rollback an SSL Endpoint from an app.',
   needsApp: true,

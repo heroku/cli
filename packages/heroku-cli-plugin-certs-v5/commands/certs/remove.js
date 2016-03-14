@@ -27,8 +27,8 @@ module.exports = {
   command: 'remove',
   flags: [
     {name: 'confirm', hasValue: true, hidden: true },
-    {name: 'name', hasValue: true, description: 'name to check info on'}, 
-    {name: 'endpoint', hasValue: true, description: 'endpoint to check info on'}
+    {name: 'name', hasValue: true, description: 'name to remove'}, 
+    {name: 'endpoint', hasValue: true, description: 'endpoint to remove'}
   ],
   description: 'Remove an SSL Endpoint from an app.',
   needsApp: true,
