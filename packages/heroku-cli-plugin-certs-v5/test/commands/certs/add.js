@@ -43,7 +43,7 @@ describe('heroku certs:add', function() {
       })
       .reply(200, endpoint);
   
-      return certs.run({app: 'example', args: {CRT: 'pem_file', KEY: 'key_file'}, flags: {bypass: true, endpoint: true}}).then(function() {
+      return certs.run({app: 'example', args: {CRT: 'pem_file', KEY: 'key_file'}, flags: {bypass: true, type: 'endpoint'}}).then(function() {
         mock_ssl.done();
         expect(cli.stderr).to.equal('Adding SSL Endpoint to example... done\n');
         expect(cli.stdout).to.equal(
@@ -239,19 +239,23 @@ ${certificate_details}
 
     return assert_exit(1, certs.run({app: 'example', args: {CRT: 'pem_file', KEY: 'key_file'}, flags: {bypass: true}})).then(function() {
       mock_ssl.done();
-      expect(cli.stderr).to.equal(' ▸    Must pass either --sni or --endpoint\n');
+      expect(cli.stderr).to.equal(' ▸    Must pass either --type with either \'endpoint\' or \'sni\'\n');
       expect(cli.stdout).to.equal('');
     });
   });
 
-  it('# errors out if both flags set', function() {
-    return assert_exit(1, certs.run({app: 'example', args: {CRT: 'pem_file', KEY: 'key_file'}, flags: {bypass: true, sni: true, endpoint: true}})).then(function() {
-      expect(cli.stderr).to.equal(' ▸    Must pass just one of --sni or --endpoint\n');
+  it('# errors out if type is not known', function() {
+    nock('https://api.heroku.com')
+    .get('/apps/example/ssl-endpoints')
+    .reply(200, []);
+
+    return assert_exit(1, certs.run({app: 'example', args: {CRT: 'pem_file', KEY: 'key_file'}, flags: {bypass: true, type: 'foo'}})).then(function() {
+      expect(cli.stderr).to.equal(' ▸    Must pass either --type with either \'endpoint\' or \'sni\'\n');
       expect(cli.stdout).to.equal('');
     });
   });
 
-  it('# creates an SNI endpoint if SSL addon and passed --sni', function() {
+  it('# creates an SNI endpoint if SSL addon and passed --type sni', function() {
     nock('https://api.heroku.com')
     .get('/apps/example/ssl-endpoints')
     .reply(200, []);
@@ -271,7 +275,7 @@ ${certificate_details}
     })
     .reply(200, endpoint);
 
-    return certs.run({app: 'example', args: {CRT: 'pem_file', KEY: 'key_file'}, flags: {bypass: true, sni: true}}).then(function() {
+    return certs.run({app: 'example', args: {CRT: 'pem_file', KEY: 'key_file'}, flags: {bypass: true, type: 'sni'}}).then(function() {
       mock_sni.done();
       expect(cli.stderr).to.equal('Adding SSL Endpoint to example... done\n');
       expect(cli.stdout).to.equal(
@@ -282,7 +286,7 @@ ${certificate_details}
     });
   });
 
-  it('# creates an SSL endpoint if SSL addon and passed --endpoint', function() {
+  it('# creates an SSL endpoint if SSL addon and passed --type endpoint', function() {
     nock('https://api.heroku.com')
     .get('/apps/example/ssl-endpoints')
     .reply(200, []);
@@ -302,7 +306,7 @@ ${certificate_details}
     })
     .reply(200, endpoint);
 
-    return certs.run({app: 'example', args: {CRT: 'pem_file', KEY: 'key_file'}, flags: {bypass: true, endpoint: true}}).then(function() {
+    return certs.run({app: 'example', args: {CRT: 'pem_file', KEY: 'key_file'}, flags: {bypass: true, type: 'endpoint'}}).then(function() {
       mock_sni.done();
       expect(cli.stderr).to.equal('Adding SSL Endpoint to example... done\n');
       expect(cli.stdout).to.equal(

@@ -12,14 +12,12 @@ let error = require('../../lib/error.js');
 function* run(context, heroku) {
   var meta;
 
-  if (context.flags.endpoint && context.flags.sni) {
-    error.exit(1, 'Must pass just one of --sni or --endpoint');
-  } else if (context.flags.endpoint) {
+  if (context.flags.type === 'endpoint') {
     meta = endpoints.meta(context.app, 'ssl');
-  } else if (context.flags.sni || ! (yield endpoints.hasAddon(context.app, heroku))) {
+  } else if (context.flags.type === 'sni' || ! (yield endpoints.hasAddon(context.app, heroku))) {
     meta = endpoints.meta(context.app, 'sni');
   } else {
-    error.exit(1, 'Must pass either --sni or --endpoint');
+    error.exit(1, 'Must pass either --type with either \'endpoint\' or \'sni\'');
   }
 
   var files = yield {
@@ -59,8 +57,7 @@ module.exports = {
   ],
   flags: [
     {name: 'bypass', description: 'bypass the trust chain completion step', hasValue: false},
-    {name: 'sni', description: 'create an SNI cert', hasValue: false},
-    {name: 'endpoint', description: 'create an Endpoint cert', hasValue: false}
+    {name: 'type', description: 'type to create, either \'sni\' or \'endpoint\'', hasValue: true},
   ],
   description: 'Add an ssl endpoint to an app.',
   needsApp: true,
