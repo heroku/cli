@@ -9,7 +9,9 @@
     "url": "https://github.com/heroku/heroku-certs/issues"
   },
   "scripts": {
-    "test": "mocha && jshint ."
+    "test": "mocha && jshint .",
+    "preversion": "npm test",
+    "postversion": "npm publish && git push && git push --tags"
   },
   "dependencies": {
     "co": "4.6.0",
