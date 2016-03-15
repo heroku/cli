@@ -13,6 +13,7 @@ let certificate_details = require('../../stubs/sni-endpoints.js').certificate_de
 
 let error = require('../../../lib/error.js');
 let assert_exit = require('../../assert_exit.js');
+let unwrap = require('../../unwrap.js');
 
 describe('heroku certs:add', function() {
   beforeEach(function() {
@@ -196,7 +197,7 @@ ${certificate_details}
     return certs.run({app: 'example', args: {CRT: 'pem_file', KEY: 'key_file'}, flags: {bypass: true}}).then(function() {
       mock_sni.done();
       mock_ssl.done();
-      expect(cli.stderr).to.equal('Adding SSL Endpoint to example... done\n ▸    WARNING: ssl_cert provides no domain(s) that are configured for this Heroku app\n');
+      expect(unwrap(cli.stderr)).to.equal('Adding SSL Endpoint to example... done WARNING: ssl_cert provides no domain(s) that are configured for this Heroku app\n');
     });
   });
 

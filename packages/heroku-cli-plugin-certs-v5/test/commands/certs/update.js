@@ -14,6 +14,7 @@ let shared_sni  = require('./shared_sni.js');
 let endpoint            = require('../../stubs/sni-endpoints.js').endpoint;
 let endpoint_warning    = require('../../stubs/sni-endpoints.js').endpoint_warning;
 let certificate_details = require('../../stubs/sni-endpoints.js').certificate_details;
+let unwrap = require('../../unwrap.js');
 
 describe('heroku certs:update', function() {
   beforeEach(function() {
@@ -155,7 +156,7 @@ ${certificate_details}
 
     return certs.run({app: 'example', args: {name: 'tokyo-1050', CRT: 'pem_file', KEY: 'key_file'}, flags: {bypass: true, confirm: 'example'}}).then(function() {
       mock.done();
-      expect(cli.stderr).to.equal('Updating SSL Endpoint tokyo-1050 (tokyo-1050.herokussl.com) for example... done\n ▸    WARNING: ssl_cert provides no domain(s) that are configured for this Heroku app\n');
+      expect(unwrap(cli.stderr)).to.equal('Updating SSL Endpoint tokyo-1050 (tokyo-1050.herokussl.com) for example... done WARNING: ssl_cert provides no domain(s) that are configured for this Heroku app\n');
     });
   });
 
