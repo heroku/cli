@@ -1,16 +1,17 @@
 'use strict';
 
-let readFile = require('../../lib/read_file.js');
 let co      = require('co');
 let cli     = require('heroku-cli-util');
+
+let error               = require('../../lib/error.js');
+let readFile            = require('../../lib/read_file.js');
+let endpoints           = require('../../lib/endpoints.js');
+let ssl_doctor          = require('../../lib/ssl_doctor.js');
+let display_warnings    = require('../../lib/display_warnings.js');
 let certificate_details = require('../../lib/certificate_details.js');
-let ssl_doctor = require('../../lib/ssl_doctor.js');
-let display_warnings = require('../../lib/display_warnings.js');
-let endpoints = require('../../lib/endpoints.js');
-let error = require('../../lib/error.js');
 
 function* run(context, heroku) {
-  var meta;
+  let meta;
 
   if (context.flags.type === 'endpoint') {
     meta = endpoints.meta(context.app, 'ssl');
@@ -20,12 +21,12 @@ function* run(context, heroku) {
     error.exit(1, 'Must pass either --type with either \'endpoint\' or \'sni\'');
   }
 
-  var files = yield {
+  let files = yield {
     crt: readFile(context.args.CRT),
     key: readFile(context.args.KEY)
   };
 
-  var crt, key;
+  let crt, key;
   if (context.flags.bypass) {
     crt = files.crt;
     key = files.key;

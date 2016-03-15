@@ -2,13 +2,14 @@
 
 let co      = require('co');
 let cli     = require('heroku-cli-util');
-let flags = require('../../lib/flags.js');
-let error = require('../../lib/error.js');
+
+let flags               = require('../../lib/flags.js').select;
+let error               = require('../../lib/error.js');
+let display_warnings    = require('../../lib/display_warnings.js');
 let certificate_details = require('../../lib/certificate_details.js');
-let display_warnings = require('../../lib/display_warnings.js');
 
 function* run(context, heroku) {
-  var endpoint = (yield flags(context, heroku)).endpoint;
+  let endpoint = yield flags(context, heroku);
   if (endpoint._meta.type === 'SNI') {
     error.exit(1, 'SNI Endpoints cannot be rolled back, please update with a new cert.');
   }

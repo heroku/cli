@@ -2,12 +2,12 @@
 
 let co      = require('co');
 let cli     = require('heroku-cli-util');
-let flags = require('../../lib/flags.js');
+
+let flags = require('../../lib/flags.js').selectAndList;
 
 function* run(context, heroku) {
-  let f = (yield flags(context, heroku));
-
-  let endpoint = f.endpoint;
+  let selectAndList = yield flags(context, heroku);
+  let endpoint = selectAndList.endpoint;
 
   yield cli.confirmApp(context.app, context.flags.confirm, `Potentially Destructive Action\nThis command will remove the endpoint ${endpoint.name} (${endpoint.cname}) from ${context.app}.`);
 
@@ -17,7 +17,7 @@ function* run(context, heroku) {
     headers: {'Accept': `application/vnd.heroku+json; version=3.${endpoint._meta.variant}`}
   }));
 
-  if (f.endpoints.ssl_certs.hasAddon) {
+  if (selectAndList.endpoints.ssl_certs.hasAddon) {
     cli.log('NOTE: Billing is still active. Remove SSL Endpoint add-on to stop billing.');
   }
 }

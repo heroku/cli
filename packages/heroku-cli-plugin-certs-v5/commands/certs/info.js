@@ -2,12 +2,12 @@
 
 let co      = require('co');
 let cli     = require('heroku-cli-util');
-let flags   = require('../../lib/flags.js');
 
+let flags               = require('../../lib/flags.js').select;
 let certificate_details = require('../../lib/certificate_details.js');
 
 function* run(context, heroku) {
-  let endpoint = (yield flags(context, heroku)).endpoint;
+  let endpoint = yield flags(context, heroku);
 
   let cert = yield cli.action(`Fetching SSL Endpoint ${endpoint.name} info for ${context.app}`, {}, heroku.request({
     path: endpoint._meta.path,

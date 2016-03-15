@@ -2,9 +2,10 @@
 
 let co      = require('co');
 let cli     = require('heroku-cli-util');
+
+let error      = require('../../lib/error.js');
+let readFile   = require('../../lib/read_file.js');
 let ssl_doctor = require('../../lib/ssl_doctor.js');
-let error = require('../../lib/error.js');
-let readFile = require('../../lib/read_file.js');
 
 function* run(context) {
   if (context.args.length < 2) {

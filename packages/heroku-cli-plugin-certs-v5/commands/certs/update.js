@@ -1,23 +1,23 @@
 'use strict';
 
-let readFile = require('../../lib/read_file.js');
 let co      = require('co');
 let cli     = require('heroku-cli-util');
-let certificate_details = require('../../lib/certificate_details.js');
-let ssl_doctor = require('../../lib/ssl_doctor.js');
-let display_warnings = require('../../lib/display_warnings.js');
 
-let flags = require('../../lib/flags.js');
+let flags               = require('../../lib/flags.js').select;
+let readFile            = require('../../lib/read_file.js');
+let ssl_doctor          = require('../../lib/ssl_doctor.js');
+let display_warnings    = require('../../lib/display_warnings.js');
+let certificate_details = require('../../lib/certificate_details.js');
 
 function* run(context, heroku) {
-  let endpoint = (yield flags(context, heroku)).endpoint;
+  let endpoint = yield flags(context, heroku);
 
-  var files = yield {
+  let files = yield {
     crt: readFile(context.args.CRT),
     key: readFile(context.args.KEY)
   };
 
-  var crt, key;
+  let crt, key;
   if (context.flags.bypass) {
     crt = files.crt;
     key = files.key;

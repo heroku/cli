@@ -3,7 +3,7 @@
 let ssl_endpoints = require('./endpoints.js').endpoints;
 let error = require('./error.js');
 
-module.exports = function*(context, heroku) {
+function* selectAndList(context, heroku) {
   if (context.flags.endpoint && context.flags.name) {
     error.exit(1, 'Specified both --name and --endpoint, please use just one');
   }
@@ -45,4 +45,14 @@ module.exports = function*(context, heroku) {
   }
 
   return {endpoint: endpoints[0], endpoints: ssl_endpoints_all};
+}
+
+function* select(context, heroku) {
+  let selectList = yield selectAndList(context, heroku);
+  return selectList.endpoint;
+}
+
+module.exports = {
+  select,
+  selectAndList
 };

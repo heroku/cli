@@ -64,6 +64,11 @@ function* endpoints(app, heroku) {
   return {all: certs, ssl_certs: all_certs.ssl_certs, sni_certs: all_certs.sni_certs};
 }
 
+function* all(app, heroku) {
+  let certs = yield endpoints(app, heroku);
+  return certs.all;
+}
+
 function* hasAddon(app, heroku) {
   let ssl_certs = yield sslCertsPromise(app, heroku);
   return ssl_certs.hasAddon;
@@ -72,5 +77,6 @@ function* hasAddon(app, heroku) {
 module.exports = {
   endpoints,
   hasAddon,
-  meta
+  meta,
+  all
 };

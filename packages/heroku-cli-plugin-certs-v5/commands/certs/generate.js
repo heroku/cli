@@ -2,8 +2,9 @@
 
 let co      = require('co');
 let cli     = require('heroku-cli-util');
-let openssl = require('../../lib/openssl.js');
-let endpoints = require('../../lib/endpoints.js');
+
+let openssl   = require('../../lib/openssl.js');
+let endpoints = require('../../lib/endpoints.js').all;
 
 function valEmpty(val) {
   if (val) {
@@ -16,12 +17,12 @@ function valEmpty(val) {
 function getSubject(context) {
   let domain = context.args.domain;
 
-  var owner = context.flags.owner;
-  var country = context.flags.country;
-  var area = context.flags.area;
-  var city = context.flags.city;
+  let owner = context.flags.owner;
+  let country = context.flags.country;
+  let area = context.flags.area;
+  let city = context.flags.city;
 
-  var subject = context.flags.subject;
+  let subject = context.flags.subject;
 
   if (valEmpty(subject)) {
     subject = '';
@@ -49,7 +50,7 @@ function getSubject(context) {
 
 function requiresPrompt(context) {
   if (valEmpty(context.flags.subject)) {
-    let args =[context.flags.owner, context.flags.country, context.flags.area, context.flags.city];
+    let args = [context.flags.owner, context.flags.country, context.flags.area, context.flags.city];
     if (! context.flags.now && args.every(function (v) { return valEmpty(v); })) {
       return true;
     }
@@ -83,7 +84,7 @@ function* run(context, heroku) {
   let keysize = context.flags.keysize || 2048;
   let keyfile = `${domain}.key`;
 
-  let certs = (yield endpoints.endpoints(context.app, heroku)).all;
+  let certs = yield endpoints(context.app, heroku);
 
   var command = getCommand(certs, domain);
 
