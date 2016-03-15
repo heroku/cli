@@ -24,9 +24,9 @@ module.exports = {
     let addon = addons[0];
     if (context.flags.reset) {
       console.log(`Resetting credentials for ${addon.name}`);
-      yield api.request(context, `${addon.name}/credentials_rotation`, 'POST');
+      yield api.request(context, `/redis/v0/databases/${addon.name}/credentials_rotation`, 'POST');
     } else {
-      let redis = yield api.request(context, addon.name);
+      let redis = yield api.request(context, `/redis/v0/databases/${addon.name}`);
       if (addons.length === 0) {
         cli.error('No Redis instances found.');
         process.exit(1);
