@@ -3,7 +3,7 @@
 let co      = require('co');
 let cli     = require('heroku-cli-util');
 
-let flags               = require('../../lib/flags.js').select;
+let flags               = require('../../lib/flags.js');
 let certificate_details = require('../../lib/certificate_details.js');
 
 function* run(context, heroku) {

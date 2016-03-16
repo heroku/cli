@@ -1,7 +1,6 @@
 'use strict';
 
 let expect = require('chai').expect;
-let assert = require('chai').assert;
 let nock   = require('nock');
 let certs = require('../../../commands/certs/index.js');
 
@@ -53,56 +52,6 @@ akita-7777  akita-7777.herokussl.com  heroku.com      2013-08-01 21:34 UTC  True
       });
     });
   });
-
-  it('# does not freak out if ssl addon not available', function() {
-    let mock_sni = nock('https://api.heroku.com')
-    .get('/apps/example/sni-endpoints')
-    .reply(200, []);
-
-    let mock_ssl = nock('https://api.heroku.com')
-    .get('/apps/example/ssl-endpoints')
-    .reply(403, {
-        "id":"ssl_endpoint_addon_required",
-        "error":"The SSL Endpoint add-on needs to be installed on this app to manage endpoints."
-    });
-
-    return certs.run({app: 'example'}).then(function() {
-      mock_sni.done();
-      mock_ssl.done();
-      expect(cli.stderr).to.equal('');
-      expect(cli.stdout).to.equal(
-`example has no SSL Endpoints.
-Use \`heroku _certs:add CRT KEY\` to add one.
-`);
-    });
-  });
-
-  it('# freaks out if error is not addon required', function() {
-    let mock_sni = nock('https://api.heroku.com')
-    .get('/apps/example/sni-endpoints')
-    .reply(200, []);
-
-    let mock_ssl = nock('https://api.heroku.com')
-    .get('/apps/example/ssl-endpoints')
-    .reply(403, {
-      "id":"serious_error",
-      "error":"This is a serious error"
-    });
-
-    var threw_error = false;
-    return certs.run({
-      app: 'example', args: []
-    }).catch(function(err) {
-      threw_error = true;
-      mock_ssl.done();
-      mock_sni.done();
-
-      expect("serious_error").to.equal(err.body.id);
-    }).then(function() {
-      assert(threw_error, "Expected an error to be thrown when not ssl_addon_error");
-    });
-  });
-
 
   it('# shows a mix of certs ordered by name', function() {
     let mock_sni = nock('https://api.heroku.com', {

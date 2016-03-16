@@ -1,16 +1,14 @@
 'use strict';
 
-let ssl_endpoints = require('./endpoints.js').endpoints;
+let all_endpoints = require('./endpoints.js').all;
 let error = require('./error.js');
 
-function* selectAndList(context, heroku) {
+module.exports = function*(context, heroku) {
   if (context.flags.endpoint && context.flags.name) {
     error.exit(1, 'Specified both --name and --endpoint, please use just one');
   }
 
-  let ssl_endpoints_all = yield ssl_endpoints(context.app, heroku);
-
-  var endpoints = ssl_endpoints_all.all;
+  var endpoints = yield all_endpoints(context.app, heroku);
 
   if (endpoints.length === 0) {
     error.exit(1, `${context.app} has no SSL endpoints`);
@@ -44,15 +42,5 @@ function* selectAndList(context, heroku) {
     error.exit(1, 'Record not found.');
   }
 
-  return {endpoint: endpoints[0], endpoints: ssl_endpoints_all};
-}
-
-function* select(context, heroku) {
-  let selectList = yield selectAndList(context, heroku);
-  return selectList.endpoint;
-}
-
-module.exports = {
-  select,
-  selectAndList
+  return endpoints[0];
 };

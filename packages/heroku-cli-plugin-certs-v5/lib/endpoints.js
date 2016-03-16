@@ -5,13 +5,7 @@ function sslCertsPromise(app, heroku) {
     path: `/apps/${app}/ssl-endpoints`,
     headers: {'Accept': 'application/vnd.heroku+json; version=3.ssl_cert'}
   }).then(function(data) {
-    return {certs: data, hasAddon: true};          
-  }).catch(function(err) {
-    if (err.body && err.body.id === 'ssl_endpoint_addon_required') {
-      return {certs: [], hasAddon: false};
-    } else {
-      throw err;
-    }
+    return data;
   });
 }
 
@@ -20,7 +14,7 @@ function sniCertsPromise(app, heroku) {
     path: `/apps/${app}/sni-endpoints`,
     headers: {'Accept': 'application/vnd.heroku+json; version=3.sni_ssl_cert'}
   }).then(function(data) {
-    return {certs: data};          
+    return data;          
   });
 }
 
@@ -43,39 +37,40 @@ function meta(app, t, name) {
   return {path, type, variant};
 }
 
-function* endpoints(app, heroku) {
+function* all(app, heroku) {
   let all_certs = yield {
     ssl_certs: sslCertsPromise(app, heroku),
     sni_certs: sniCertsPromise(app, heroku)
   };
 
-  all_certs.sni_certs.certs.forEach(function(cert) {
+  all_certs.sni_certs.forEach(function(cert) {
     cert._meta = meta(app, 'sni', cert.name);
   });
 
-  all_certs.ssl_certs.certs.forEach(function(cert) { 
+  all_certs.ssl_certs.forEach(function(cert) { 
     cert._meta = meta(app, 'ssl', cert.name);
   });
 
-  let certs = all_certs.ssl_certs.certs.concat(all_certs.sni_certs.certs).sort(function(a, b) {
+  return all_certs.ssl_certs.concat(all_certs.sni_certs).sort(function(a, b) {
     return a.name < b.name;
   });
-
-  return {all: certs, ssl_certs: all_certs.ssl_certs, sni_certs: all_certs.sni_certs};
-}
-
-function* all(app, heroku) {
-  let certs = yield endpoints(app, heroku);
-  return certs.all;
 }
 
 function* hasAddon(app, heroku) {
-  let ssl_certs = yield sslCertsPromise(app, heroku);
-  return ssl_certs.hasAddon;
+  return yield heroku.request({
+    path: `/apps/${app}/addons/ssl%3Aendpoint`,
+  }).then(function() {
+    return true;
+  }).catch(function(err) {
+    if (err.statusCode === 404 && err.body && err.body.id === 'not_found' && err.body.resource === 'addon') {
+      return false;
+    } else {
+      throw err;
+    }
+  });
 }
 
 module.exports = {
-  endpoints,
   hasAddon,
   meta,
   all

@@ -3,7 +3,7 @@
 let co      = require('co');
 let cli     = require('heroku-cli-util');
 
-let flags               = require('../../lib/flags.js').select;
+let flags               = require('../../lib/flags.js');
 let readFile            = require('../../lib/read_file.js');
 let ssl_doctor          = require('../../lib/ssl_doctor.js');
 let display_warnings    = require('../../lib/display_warnings.js');

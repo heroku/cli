@@ -78,10 +78,10 @@ ${certificate_details}
     .reply(200, {pem: 'pem content', key: 'key content'});
 
     let mock_ssl = nock('https://api.heroku.com')
-    .get('/apps/example/ssl-endpoints')
-    .reply(403, {
-        "id":"ssl_endpoint_addon_required",
-        "error":"The SSL Endpoint add-on needs to be installed on this app to manage endpoints."
+    .get('/apps/example/addons/ssl%3Aendpoint')
+    .reply(404, {
+        "id":"not_found",
+        "resource":"addon"
     });
 
     let mock_sni = nock('https://api.heroku.com')
@@ -121,10 +121,10 @@ ${certificate_details}
     .reply(422, "No certificate given is a domain name certificate.");
 
     let mock_ssl = nock('https://api.heroku.com')
-    .get('/apps/example/ssl-endpoints')
-    .reply(403, {
-        "id":"ssl_endpoint_addon_required",
-        "error":"The SSL Endpoint add-on needs to be installed on this app to manage endpoints."
+    .get('/apps/example/addons/ssl%3Aendpoint')
+    .reply(404, {
+        "id":"not_found",
+        "resource":"addon"
     });
 
     return certs.run({app: 'example', args: {CRT: 'pem_file', KEY: 'key_file'}, flags: {}})
@@ -149,10 +149,10 @@ ${certificate_details}
       .callsArgWithAsync(1, null, 'key content');
 
     let mock_ssl = nock('https://api.heroku.com')
-    .get('/apps/example/ssl-endpoints')
-    .reply(403, {
-        "id":"ssl_endpoint_addon_required",
-        "error":"The SSL Endpoint add-on needs to be installed on this app to manage endpoints."
+    .get('/apps/example/addons/ssl%3Aendpoint')
+    .reply(404, {
+        "id":"not_found",
+        "resource":"addon"
     });
 
     let mock_sni = nock('https://api.heroku.com')
@@ -182,10 +182,10 @@ ${certificate_details}
       .callsArgWithAsync(1, null, 'key content');
 
     let mock_ssl = nock('https://api.heroku.com')
-    .get('/apps/example/ssl-endpoints')
-    .reply(403, {
-        "id":"ssl_endpoint_addon_required",
-        "error":"The SSL Endpoint add-on needs to be installed on this app to manage endpoints."
+    .get('/apps/example/addons/ssl%3Aendpoint')
+    .reply(404, {
+        "id":"not_found",
+        "resource":"addon"
     });
 
     let mock_sni = nock('https://api.heroku.com')
@@ -203,10 +203,10 @@ ${certificate_details}
 
   it('# automatically creates an SNI endpoint if no SSL addon', function() {
     nock('https://api.heroku.com')
-    .get('/apps/example/ssl-endpoints')
-    .reply(403, {
-        "id":"ssl_endpoint_addon_required",
-        "error":"The SSL Endpoint add-on needs to be installed on this app to manage endpoints."
+    .get('/apps/example/addons/ssl%3Aendpoint')
+    .reply(404, {
+        "id":"not_found",
+        "resource":"addon"
     });
 
     fs.readFile
@@ -234,23 +234,24 @@ ${certificate_details}
   });
 
   it('# errors out if there is an SSL addon and no flags set', function() {
-    let mock_ssl = nock('https://api.heroku.com')
-    .get('/apps/example/ssl-endpoints')
-    .reply(200, []);
+    let mock_addons = nock('https://api.heroku.com')
+    .get('/apps/example/addons/ssl%3Aendpoint')
+    .reply(200, {});
 
     return assert_exit(1, certs.run({app: 'example', args: {CRT: 'pem_file', KEY: 'key_file'}, flags: {bypass: true}})).then(function() {
-      mock_ssl.done();
+      mock_addons.done();
       expect(cli.stderr).to.equal(' ▸    Must pass either --type with either \'endpoint\' or \'sni\'\n');
       expect(cli.stdout).to.equal('');
     });
   });
 
   it('# errors out if type is not known', function() {
-    nock('https://api.heroku.com')
-    .get('/apps/example/ssl-endpoints')
-    .reply(200, []);
+    let mock_ssl = nock('https://api.heroku.com')
+    .get('/apps/example/addons/ssl%3Aendpoint')
+    .reply(200, {});
 
     return assert_exit(1, certs.run({app: 'example', args: {CRT: 'pem_file', KEY: 'key_file'}, flags: {bypass: true, type: 'foo'}})).then(function() {
+      mock_ssl.done();
       expect(cli.stderr).to.equal(' ▸    Must pass either --type with either \'endpoint\' or \'sni\'\n');
       expect(cli.stdout).to.equal('');
     });
