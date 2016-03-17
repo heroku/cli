@@ -13,7 +13,7 @@ module.exports = function(path, parts, message) {
 
   let post_data = parts.join('\n');
 
-  let httpsProxy = process.env.HTTPS_PROXY || process.env.https_proxy;
+  let httpsProxy = process.env.HTTPS_PROXY || process.env.https_proxy || process.env.HTTP_PROXY || process.env.http_proxy;
   let agent;
   if (httpsProxy) {
     cli.hush(`proxy set to ${httpsProxy}`);
@@ -35,7 +35,8 @@ module.exports = function(path, parts, message) {
       'content-type': 'application/octet-stream',
       'content-length': Buffer.byteLength(post_data)
     },
-    body: post_data
+    body: post_data,
+    agent: agent
   };
 
   let promise = got(ssl_doctor + path, post_options).
