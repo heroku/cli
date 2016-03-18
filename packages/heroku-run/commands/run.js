@@ -65,11 +65,12 @@ function readStdin(c) {
   }
 }
 
-function readData(c) {
+function readData(c, opts) {
   let firstLine = true;
   return function (data) {
     // discard first line
     if (firstLine) {
+      console.error(` up, ${opts.dyno.name}`);
       firstLine = false;
       readStdin(c);
       return;
@@ -89,11 +90,9 @@ function attachToRendezvous(uri, opts) {
   c.setTimeout(1000*60*20);
   c.setEncoding('utf8');
   c.on('connect', function () {
-    c.write(uri.path.substr(1) + '\r\n', function () {
-      console.error(` up, ${opts.dyno.name}`);
-    });
+    c.write(uri.path.substr(1) + '\r\n', () => cli.console.writeError('.'));
   });
-  c.on('data', readData(c));
+  c.on('data', readData(c, opts));
   c.on('close', () => process.exit(opts.exitCode));
   c.on('error', cli.errorHandler());
   process.once('SIGINT', function () {
