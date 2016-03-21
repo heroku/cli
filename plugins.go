@@ -36,9 +36,7 @@ func SetupNode() {
 }
 
 func setupNode() {
-	Err("heroku-cli: Adding dependencies...")
 	PrintError(gode.Setup(), true)
-	Errln(" done")
 }
 
 func updateNode() {

@@ -29,6 +29,10 @@
 			"Rev": "99af041082fef905a67c12a5c484d8da26ade604"
 		},
 		{
+			"ImportPath": "github.com/mitchellh/ioprogress",
+			"Rev": "8163955264568045f462ae7e2d6d07b2001fc997"
+		},
+		{
 			"ImportPath": "github.com/stvp/rollbar",
 			"Comment": "v0.3.1-4-g3f10961",
 			"Rev": "3f10961d0bdb493ad6a6ecec9fb16d97c33d593e"
