@@ -10,8 +10,8 @@ import (
 	"runtime/debug"
 	"strings"
 
-	"github.com/heroku/heroku-cli/Godeps/_workspace/src/github.com/lunixbochs/vtclean"
-	"github.com/heroku/heroku-cli/Godeps/_workspace/src/golang.org/x/crypto/ssh/terminal"
+	"github.com/lunixbochs/vtclean"
+	"golang.org/x/crypto/ssh/terminal"
 )
 
 // Stdout is used to mock stdout for testing

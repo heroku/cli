@@ -7,7 +7,7 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/heroku/heroku-cli/Godeps/_workspace/src/github.com/dickeyxxx/netrc"
+	"github.com/dickeyxxx/netrc"
 )
 
 // ErrHelp means the user didn't type a valid command and we need to display help.
