@@ -1,50 +1,22 @@
 package main
 
-import (
-	"testing"
-
-	c "github.com/heroku/heroku-cli/Godeps/_workspace/src/github.com/smartystreets/goconvey/convey"
-)
+import "testing"
 
 func TestCommand(t *testing.T) {
-	c.Convey("commandUsage()", t, func() {
-		c.Convey("basic", func() {
-			cmd := &Command{
-				Topic:   "apps",
-				Command: "info",
-			}
-			c.So(commandUsage(cmd), c.ShouldEqual, "apps:info")
-		})
-		c.Convey("topic root command", func() {
-			cmd := &Command{
-				Topic:   "apps",
-				Command: "",
-			}
-			c.So(commandUsage(cmd), c.ShouldEqual, "apps")
-		})
-		c.Convey("with required argument", func() {
-			cmd := &Command{
-				Topic:   "apps",
-				Command: "info",
-				Args:    []Arg{{Name: "foo"}},
-			}
-			c.So(commandUsage(cmd), c.ShouldEqual, "apps:info FOO")
-		})
-		c.Convey("with optional argument", func() {
-			cmd := &Command{
-				Topic:   "apps",
-				Command: "info",
-				Args:    []Arg{{Name: "foo", Optional: true}},
-			}
-			c.So(commandUsage(cmd), c.ShouldEqual, "apps:info [FOO]")
-		})
-		c.Convey("with multiple arguments", func() {
-			cmd := &Command{
-				Topic:   "apps",
-				Command: "info",
-				Args:    []Arg{{Name: "foo"}, {Name: "bar"}},
-			}
-			c.So(commandUsage(cmd), c.ShouldEqual, "apps:info FOO BAR")
-		})
-	})
+	tests := []struct {
+		Title    string
+		Command  *Command
+		Expected string
+	}{
+		{"basic", &Command{Topic: "apps", Command: "info"}, "apps:info"},
+		{"topic root command", &Command{Topic: "apps", Command: ""}, "apps"},
+		{"with required argument", &Command{Topic: "apps", Command: "info", Args: []Arg{{Name: "foo"}}}, "apps:info FOO"},
+		{"with optional argument", &Command{Topic: "apps", Command: "info", Args: []Arg{{Name: "foo", Optional: true}}}, "apps:info [FOO]"},
+		{"with multiple arguments", &Command{Topic: "apps", Command: "info", Args: []Arg{{Name: "foo"}, {Name: "bar"}}}, "apps:info FOO BAR"},
+	}
+	for _, test := range tests {
+		if commandUsage(test.Command) != test.Expected {
+			t.Error(test.Title)
+		}
+	}
 }
