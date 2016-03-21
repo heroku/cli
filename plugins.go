@@ -154,6 +154,9 @@ var pluginsUninstallCmd = &Command{
 
 	Run: func(ctx *Context) {
 		name := ctx.Args.(map[string]string)["name"]
+		if !contains(PluginNames(), name) {
+			panic(name + " is not installed")
+		}
 		Errf("Uninstalling plugin %s... ", name)
 		ExitIfError(gode.RemovePackages(name), true)
 		RemovePluginFromCache(name)
