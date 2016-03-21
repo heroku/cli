@@ -10,7 +10,7 @@ import (
 	"runtime/debug"
 	"strings"
 
-	"github.com/heroku/heroku-cli/Godeps/_workspace/src/github.com/stvp/rollbar"
+	"github.com/stvp/rollbar"
 )
 
 // Version is the version of the v4 cli.
