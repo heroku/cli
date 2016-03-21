@@ -1,7 +1,6 @@
 'use strict';
 
 let cli   = require('heroku-cli-util');
-let https = require('https');
 let liner = require('../lib/line_transform');
 
 const COLORS = [
@@ -37,15 +36,13 @@ function colorize (line) {
 
 function readLogs (logplexURL) {
   return new Promise(function (fulfill, reject) {
-    https.get(logplexURL, function (res) {
-      if (res.statusCode !== 200) cli.warn(`Expected logplex response to be 200, got ${res.statusCode}`);
-      res.setEncoding('utf8');
-      liner.setEncoding('utf8');
-      res.pipe(liner);
-      liner.on('data', line => cli.log(colorize(line)));
-      res.on('close', fulfill);
-    })
-    .on('error', reject);
+    let res = cli.got.stream(logplexURL);
+    res.setEncoding('utf8');
+    liner.setEncoding('utf8');
+    res.pipe(liner);
+    liner.on('data', line => cli.log(colorize(line)));
+    res.on('close', fulfill);
+    res.on('error', reject);
   });
 }
 
