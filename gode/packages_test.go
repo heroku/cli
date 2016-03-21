@@ -37,6 +37,23 @@ func TestRemovePackage(t *testing.T) {
 	}
 }
 
+func TestRemoveNotInstalledPackage(t *testing.T) {
+	setup()
+	must(os.RemoveAll(filepath.Join(rootPath, "node_modules")))
+	must(InstallPackages("request"))
+	packages, err := Packages()
+	must(err)
+	if len(packages) != 1 {
+		t.Fatalf("package did not install correctly")
+	}
+	must(RemovePackages("request", "notinstalledpackage"))
+	packages, err = Packages()
+	must(err)
+	if len(packages) != 0 {
+		t.Fatalf("package did not remove correctly")
+	}
+}
+
 func TestOutdatedPackages(t *testing.T) {
 	setup()
 	must(InstallPackages("heroku-cli-util@1.0.0"))
