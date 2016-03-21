@@ -4,7 +4,9 @@
   "description": "Heroku CLI plugin to run one-off dyno processes.",
   "main": "index.js",
   "scripts": {
-    "test": "jshint ."
+    "test": "jshint .",
+    "preversion": "npm test",
+    "postversion": "npm publish && git push && git push --tags"
   },
   "repository": {
     "type": "git",
