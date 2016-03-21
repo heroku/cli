@@ -107,12 +107,12 @@ function* run (context, heroku) {
     process.exit(1);
   }
   let sh = context.flags['exit-code'] ? `${command}; echo heroku-command-exit-status $?` : command;
-  process.stderr.write(`Running ${cli.color.cyan.bold(command)} on ${context.app}...`);
+  process.stderr.write(`Running ${cli.color.cyan.bold(command)} on ${context.app}..`);
   let dyno = yield startDyno(heroku, context.app, context.flags.size, sh, context.flags.env);
   if (warning) {
     cli.console.error(cli.color.bold.yellow('!'));
     cli.warn(warning);
-    cli.console.writeError('Connecting to dyno...');
+    cli.console.writeError('Connecting to dyno..');
   } else {
     cli.console.writeError('.');
   }
