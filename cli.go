@@ -109,6 +109,7 @@ func parseVarArgs(command *Command, args []string) (result []string, flags map[s
 	if command.NeedsOrg || command.WantsOrg {
 		possibleFlags = append(possibleFlags, orgFlag)
 	}
+	warnAboutDuplicateFlags(possibleFlags)
 	for i := 0; i < len(args); i++ {
 		switch {
 		case parseFlags && (args[i] == "--"):
@@ -275,4 +276,18 @@ func populateFlagsFromEnvVars(flagDefinitons []Flag, flags map[string]interface{
 
 func processTitle(ctx *Context) string {
 	return "heroku " + strings.Join(os.Args[1:], " ")
+}
+
+func warnAboutDuplicateFlags(flags []*Flag) {
+	for _, a := range flags {
+		for _, b := range flags {
+			if a == b {
+				continue
+			}
+			if (a.Char != "" && a.Char == b.Char) ||
+				(a.Name != "" && a.Name == b.Name) {
+				Errf("Flag conflict: %s conflicts with %s\n", a, b)
+			}
+		}
+	}
 }
