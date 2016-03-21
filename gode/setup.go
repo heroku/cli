@@ -10,9 +10,11 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"strconv"
 
 	"github.com/dickeyxxx/golock"
 	"github.com/franela/goreq"
+	"github.com/mitchellh/ioprogress"
 )
 
 var errInvalidSha = errors.New("Invalid SHA")
@@ -77,7 +79,13 @@ func (t *Target) setupUnix() error {
 		msg, _ := resp.Body.ToString()
 		return errors.New(msg)
 	}
-	getSha, stream := computeSha(resp.Body)
+	size, _ := strconv.Atoi(resp.Header.Get("Content-Length"))
+	progress := &ioprogress.Reader{
+		Reader:   resp.Body,
+		Size:     int64(size),
+		DrawFunc: ioprogress.DrawTerminalf(os.Stderr, progressDrawFn),
+	}
+	getSha, stream := computeSha(progress)
 	uncompressed, err := gzip.NewReader(stream)
 	if err != nil {
 		return err
@@ -103,6 +111,10 @@ func (t *Target) setupWindows() error {
 	return downloadFile(t.nodePath(), t.URL, t.Sha)
 }
 
+func progressDrawFn(progress, total int64) string {
+	return "heroku-cli: Adding dependencies... " + ioprogress.DrawTextFormatBytes(progress, total)
+}
+
 func downloadFile(path, url, sha string) error {
 	tmp := filepath.Join(tmpDir("download"), "file")
 	// TODO: make this work with goreq
@@ -111,11 +123,17 @@ func downloadFile(path, url, sha string) error {
 	if err != nil {
 		return err
 	}
+	size, _ := strconv.Atoi(resp.Header.Get("Content-Length"))
+	progress := &ioprogress.Reader{
+		Reader:   resp.Body,
+		Size:     int64(size),
+		DrawFunc: ioprogress.DrawTerminalf(os.Stderr, progressDrawFn),
+	}
 	file, err := os.Create(tmp)
 	if err != nil {
 		return err
 	}
-	getSha, stream := computeSha(resp.Body)
+	getSha, stream := computeSha(progress)
 	_, err = io.Copy(file, stream)
 	if err != nil {
 		return err
