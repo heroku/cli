@@ -65,7 +65,7 @@ describe('heroku certs:remove', function() {
       mock_ssl.done();
       mock_sni.done();
       mock.done();
-      expect(cli.stderr).to.equal('Removing SSL Endpoint tokyo-1050 (tokyo-1050.herokussl.com) from example... done\n');
+      expect(cli.stderr).to.equal('Removing SSL certificate tokyo-1050 (tokyo-1050.herokussl.com) from example... done\n');
       expect(cli.stdout).to.equal('');
     });
   });
@@ -95,7 +95,7 @@ describe('heroku certs:remove', function() {
       mock_ssl.done();
       mock_sni.done();
       mock.done();
-      expect(cli.stderr).to.equal('Removing SSL Endpoint tokyo-1050 (tokyo-1050.herokussl.com) from example... done\n');
+      expect(cli.stderr).to.equal('Removing SSL certificate tokyo-1050 (tokyo-1050.herokussl.com) from example... done\n');
       expect(cli.stdout).to.equal('NOTE: Billing is still active. Remove SSL Endpoint add-on to stop billing.\n');
     });
   });
@@ -133,7 +133,7 @@ describe('heroku certs:remove', function() {
   };
 
   let stderr = function() {
-    return `Removing SSL Endpoint ${endpoint.name} (${endpoint.cname}) from example... done\n`;
+    return `Removing SSL certificate ${endpoint.name} (${endpoint.cname}) from example... done\n`;
   };
 
   let stdout = function() {

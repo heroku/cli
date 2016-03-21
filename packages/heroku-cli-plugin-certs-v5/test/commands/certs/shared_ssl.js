@@ -23,7 +23,7 @@ exports.shouldHandleArgs = function(command, txt, certs, callback, options)  {
       nock.cleanAll();
     });
   
-    it('allows an SSL endpoint to be specified using --name', function() {
+    it('allows an SSL certificate to be specified using --name', function() {
       let mock_ssl = nock('https://api.heroku.com')
       .get('/apps/example/ssl-endpoints')
       .reply(200, [endpoint]);
@@ -63,7 +63,7 @@ exports.shouldHandleArgs = function(command, txt, certs, callback, options)  {
       });
     });
 
-    it('# allows an SSL endpoint to be specified using --endpoint', function() {
+    it('# allows an SSL certificate to be specified using --endpoint', function() {
       let mock_ssl = nock('https://api.heroku.com')
       .get('/apps/example/ssl-endpoints')
       .reply(200, [endpoint]);

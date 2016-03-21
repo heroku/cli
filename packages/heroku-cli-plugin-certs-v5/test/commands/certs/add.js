@@ -24,7 +24,7 @@ describe('heroku certs:add', function() {
   });
 
   describe('(ported)', function() {
-    it('# adds an SSL endpoint if passed --endpoint', function() {
+    it('# adds an SSL endpoint if passed --type endpoint', function() {
       nock('https://api.heroku.com')
       .get('/apps/example/ssl-endpoints')
       .reply(200, []);
@@ -46,7 +46,7 @@ describe('heroku certs:add', function() {
   
       return certs.run({app: 'example', args: {CRT: 'pem_file', KEY: 'key_file'}, flags: {bypass: true, type: 'endpoint'}}).then(function() {
         mock_ssl.done();
-        expect(cli.stderr).to.equal('Adding SSL Endpoint to example... done\n');
+        expect(cli.stderr).to.equal('Adding SSL certificate to example... done\n');
         expect(cli.stdout).to.equal(
 `example now served by tokyo-1050.herokussl.com
 Certificate details:
@@ -94,7 +94,7 @@ ${certificate_details}
       ssl_doctor.done();
       mock_ssl.done();
       mock_sni.done();
-      expect(cli.stderr).to.equal('Resolving trust chain... done\nAdding SSL Endpoint to example... done\n');
+      expect(cli.stderr).to.equal('Resolving trust chain... done\nAdding SSL certificate to example... done\n');
       expect(cli.stdout).to.equal(
 `example now served by tokyo-1050.herokussl.com
 Certificate details:
@@ -164,7 +164,7 @@ ${certificate_details}
     return certs.run({app: 'example', args: {CRT: 'pem_file', KEY: 'key_file'}, flags: {bypass: true}}).then(function() {
       mock_sni.done();
       mock_ssl.done();
-      expect(cli.stderr).to.equal('Adding SSL Endpoint to example... done\n');
+      expect(cli.stderr).to.equal('Adding SSL certificate to example... done\n');
       expect(cli.stdout).to.equal(
 `example now served by tokyo-1050.herokussl.com
 Certificate details:
@@ -197,7 +197,7 @@ ${certificate_details}
     return certs.run({app: 'example', args: {CRT: 'pem_file', KEY: 'key_file'}, flags: {bypass: true}}).then(function() {
       mock_sni.done();
       mock_ssl.done();
-      expect(unwrap(cli.stderr)).to.equal('Adding SSL Endpoint to example... done WARNING: ssl_cert provides no domain(s) that are configured for this Heroku app\n');
+      expect(unwrap(cli.stderr)).to.equal('Adding SSL certificate to example... done WARNING: ssl_cert provides no domain(s) that are configured for this Heroku app\n');
     });
   });
 
@@ -224,7 +224,7 @@ ${certificate_details}
 
     return certs.run({app: 'example', args: {CRT: 'pem_file', KEY: 'key_file'}, flags: {bypass: true}}).then(function() {
       mock.done();
-      expect(cli.stderr).to.equal('Adding SSL Endpoint to example... done\n');
+      expect(cli.stderr).to.equal('Adding SSL certificate to example... done\n');
       expect(cli.stdout).to.equal(
 `example now served by tokyo-1050.herokussl.com
 Certificate details:
@@ -279,7 +279,7 @@ ${certificate_details}
 
     return certs.run({app: 'example', args: {CRT: 'pem_file', KEY: 'key_file'}, flags: {bypass: true, type: 'sni'}}).then(function() {
       mock_sni.done();
-      expect(cli.stderr).to.equal('Adding SSL Endpoint to example... done\n');
+      expect(cli.stderr).to.equal('Adding SSL certificate to example... done\n');
       expect(cli.stdout).to.equal(
 `example now served by tokyo-1050.herokussl.com
 Certificate details:
@@ -288,7 +288,7 @@ ${certificate_details}
     });
   });
 
-  it('# creates an SSL endpoint if SSL addon and passed --type endpoint', function() {
+  it('# creates an SSL certificate if SSL addon and passed --type endpoint', function() {
     nock('https://api.heroku.com')
     .get('/apps/example/ssl-endpoints')
     .reply(200, []);
@@ -310,7 +310,7 @@ ${certificate_details}
 
     return certs.run({app: 'example', args: {CRT: 'pem_file', KEY: 'key_file'}, flags: {bypass: true, type: 'endpoint'}}).then(function() {
       mock_sni.done();
-      expect(cli.stderr).to.equal('Adding SSL Endpoint to example... done\n');
+      expect(cli.stderr).to.equal('Adding SSL certificate to example... done\n');
       expect(cli.stdout).to.equal(
 `example now served by tokyo-1050.herokussl.com
 Certificate details:

@@ -36,7 +36,7 @@ function* run(context, heroku) {
     key = res.key;
   }
 
-  let cert = yield cli.action(`Adding SSL Endpoint to ${context.app}`, {}, heroku.request({
+  let cert = yield cli.action(`Adding SSL certificate to ${context.app}`, {}, heroku.request({
     path: meta.path,
     method: 'POST',
     body: {certificate_chain: crt, private_key: key},
@@ -60,7 +60,7 @@ module.exports = {
     {name: 'bypass', description: 'bypass the trust chain completion step', hasValue: false},
     {name: 'type', description: 'type to create, either \'sni\' or \'endpoint\'', hasValue: true},
   ],
-  description: 'Add an ssl endpoint to an app.',
+  description: 'Add an SSL certificate to an app.',
   needsApp: true,
   needsAuth: true,
   run: cli.command(co.wrap(run)),

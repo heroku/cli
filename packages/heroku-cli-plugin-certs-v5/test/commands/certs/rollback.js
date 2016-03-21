@@ -62,7 +62,7 @@ describe('heroku certs:rollback', function() {
   };
 
   let stderr = function() {
-    return `Rolling back SSL Endpoint tokyo-1050 (tokyo-1050.herokussl.com) for example... done\n`;
+    return `Rolling back SSL certificate tokyo-1050 (tokyo-1050.herokussl.com) for example... done\n`;
   };
 
   let stdout = function(certificate_details) {

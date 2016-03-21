@@ -10,7 +10,7 @@ function* run(context, heroku) {
   let certs = yield endpoints(context.app, heroku);
 
   if (certs.length === 0) {
-    cli.log(`${context.app} has no SSL Endpoints.\nUse \`heroku _certs:add CRT KEY\` to add one.`);
+    cli.log(`${context.app} has no SSL certificates.\nUse \`heroku _certs:add CRT KEY\` to add one.`);
   } else {
     let mapped = certs.filter(function(f) { return f.ssl_cert; }).map(function(f) {
       return {
@@ -35,7 +35,7 @@ function* run(context, heroku) {
 
 module.exports = {
   topic: '_certs',
-  description: 'List ssl endpoints for an app.',
+  description: 'List SSL certificates for an app.',
   needsApp: true,
   needsAuth: true,
   run: cli.command(co.wrap(run)),

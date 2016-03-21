@@ -11,7 +11,7 @@ module.exports = function*(context, heroku) {
   var endpoints = yield all_endpoints(context.app, heroku);
 
   if (endpoints.length === 0) {
-    error.exit(1, `${context.app} has no SSL endpoints`);
+    error.exit(1, `${context.app} has no SSL certificates`);
   }
 
   if (context.flags.endpoint) {

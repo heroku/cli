@@ -34,7 +34,7 @@ describe('heroku certs:info ported', function() {
       mock_ssl.done();
       mock_sni.done();
       mock.done();
-      expect(cli.stderr).to.equal('Fetching SSL Endpoint tokyo-1050 info for example... done\n');
+      expect(cli.stderr).to.equal('Fetching SSL certificate tokyo-1050 info for example... done\n');
       expect(cli.stdout).to.equal(`Certificate details:
 ${certificate_details}
 `);
@@ -53,7 +53,7 @@ describe('heroku', function() {
   };
 
   let stderr = function(endpoint) {
-    return `Fetching SSL Endpoint ${endpoint.name} info for example... done\n`;
+    return `Fetching SSL certificate ${endpoint.name} info for example... done\n`;
   };
 
   let stdout = function(certificate_details) {
