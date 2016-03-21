@@ -9,6 +9,7 @@ function* run (context, heroku) {
   let git = require('../../lib/git')(context);
 
   let app = context.args.app || context.app;
+  if (!app) throw new Error('No app specified.\nUSAGE: heroku apps:destroy APPNAME');
   yield heroku.get(`/apps/${app}`);
   yield cli.confirmApp(app, context.flags.confirm);
   let request = heroku.request({
