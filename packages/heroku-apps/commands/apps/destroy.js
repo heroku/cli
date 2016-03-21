@@ -2,7 +2,6 @@
 
 let co     = require('co');
 let cli    = require('heroku-cli-util');
-let extend = require('util')._extend;
 let _      = require('lodash');
 
 function* run (context, heroku) {
@@ -11,7 +10,7 @@ function* run (context, heroku) {
   let app = context.args.app || context.app;
   if (!app) throw new Error('No app specified.\nUSAGE: heroku apps:destroy APPNAME');
   yield heroku.get(`/apps/${app}`);
-  yield cli.confirmApp(app, context.flags.confirm);
+  yield cli.confirmApp(app, context.flags.confirm, `WARNING: This will delete ${cli.color.bold.red(app)} including all add-ons.`);
   let request = heroku.request({
     method: 'DELETE',
     path:   `/apps/${app}`,
@@ -43,8 +42,5 @@ let cmd = {
 };
 
 module.exports.apps = cmd;
-module.exports.root = extend({}, cmd);
-module.exports.root.topic = 'destroy';
-module.exports.delete = extend({}, cmd);
-module.exports.delete.command = 'delete';
-delete module.exports.root.command;
+module.exports.root   = Object.assign({}, cmd, {topic: 'destroy', command: null});
+module.exports.delete = Object.assign({}, cmd, {topic: 'apps',    command: 'delete'});
