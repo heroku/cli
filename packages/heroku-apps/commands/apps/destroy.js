@@ -44,4 +44,6 @@ let cmd = {
 module.exports.apps = cmd;
 module.exports.root = extend({}, cmd);
 module.exports.root.topic = 'destroy';
+module.exports.delete = extend({}, cmd);
+module.exports.delete.command = 'delete';
 delete module.exports.root.command;

@@ -17,6 +17,7 @@ exports.commands = [
   require('./commands/apps/create').apps,
   require('./commands/apps/create').root,
   require('./commands/apps/destroy').apps,
+  require('./commands/apps/destroy').delete,
   require('./commands/apps/destroy').root,
   require('./commands/apps/info').apps,
   require('./commands/apps/info').root,
