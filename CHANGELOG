@@ -1,3 +1,10 @@
+4.28.0  2015-03-21
+==================
+Show progress when installing node
+Show warning if HEROKU_API_KEY is set
+Show error highlights in red
+Warn if duplicate flags are used on a command
+
 4.27.26 2016-03-09
 ==================
 Update node to 5.7.1
