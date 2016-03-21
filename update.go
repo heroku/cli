@@ -13,10 +13,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/heroku/heroku-cli/Godeps/_workspace/src/github.com/dickeyxxx/golock"
-	"github.com/heroku/heroku-cli/Godeps/_workspace/src/github.com/franela/goreq"
-	"github.com/heroku/heroku-cli/Godeps/_workspace/src/github.com/kardianos/osext"
+	"github.com/dickeyxxx/golock"
+	"github.com/franela/goreq"
 	"github.com/heroku/heroku-cli/gode"
+	"github.com/kardianos/osext"
 )
 
 var updateTopic = &Topic{
