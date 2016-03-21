@@ -1,7 +1,6 @@
 'use strict';
 
 let cli    = require('heroku-cli-util');
-let http   = require('../lib/http');
 let moment = require('moment');
 let co     = require('co');
 let _      = require('lodash');
@@ -20,13 +19,18 @@ function printStatus(status) {
   return colorize(message);
 }
 
-function* run () {
-  let response = yield http.getJson({
-    hostname: process.env.HEROKU_STATUS_HOST || 'status.heroku.com',
+function* run (context) {
+  let host = process.env.HEROKU_STATUS_HOST || 'https://status.heroku.com';
+  let response = (yield cli.got(host + '/api/v3/current-status', {
     path: '/api/v3/current-status',
-    method: 'GET',
+    json: true,
     headers: { 'Accept': 'application/vnd.heroku+json;' },
-  });
+  })).body;
+
+  if (context.flags.json) {
+    cli.styledJSON(response);
+    return;
+  }
 
   cli.log(`Production:   ${printStatus(response.status.Production)}`);
   cli.log(`Development:  ${printStatus(response.status.Development)}`);
@@ -46,5 +50,8 @@ function* run () {
 module.exports = {
   topic: 'status',
   description: 'display current status of Heroku platform',
+  flags: [
+    {name: 'json', description: 'output in json format'},
+  ],
   run: cli.command(co.wrap(run))
 };

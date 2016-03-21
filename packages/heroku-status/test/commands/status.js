@@ -14,7 +14,7 @@ describe('heroku status', () => {
       .get('/api/v3/current-status')
       .reply(200, {status: {Production:"green", Development:"green"}, issues:[]});
 
-      return cmd.run({})
+      return cmd.run({flags: {}})
       .then(() => {
         expect(`Production:   No known issues at this time.
 Development:  No known issues at this time.
@@ -34,7 +34,7 @@ Development:  No known issues at this time.
         ]}
       ]});
 
-      return cmd.run({})
+      return cmd.run({flags: {}})
       .then(() => {
         expect(`Production:   Red
 Development:  No known issues at this time.
