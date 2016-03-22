@@ -24,9 +24,9 @@
   "dependencies": {
     "bluebird-queue": "0.0.8",
     "co": "4.6.0",
-    "filesize": "3.2.0",
-    "heroku-cli-util": "5.7.4",
-    "lodash": "4.0.1",
+    "filesize": "3.2.1",
+    "heroku-cli-util": "5.9.0",
+    "lodash": "4.6.1",
     "shell-escape": "0.2.0",
     "strftime": "0.9.2",
     "string": "3.3.1"
@@ -35,6 +35,6 @@
     "chai": "^3.3.0",
     "jshint": "*",
     "mocha": "^2.3.3",
-    "nock": "6.0.1"
+    "nock": "7.5.0"
   }
 }
