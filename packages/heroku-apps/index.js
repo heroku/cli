@@ -12,6 +12,7 @@ exports.topics = [
   { name: 'ps',          description: 'manage dynos (dynos, workers)' },
   { name: 'regions',     description: 'list available regions' },
   { name: 'releases',    description: 'manage app releases' },
+  { name: 'scale',       hidden: true },
   { name: 'stack',       description: 'manage the stack of an app' },
 ];
 
@@ -53,6 +54,8 @@ exports.commands = [
   require('./commands/maintenance/off'),
   require('./commands/maintenance/on'),
   require('./commands/ps'),
+  require('./commands/ps/scale').ps,
+  require('./commands/ps/scale').root,
   require('./commands/regions'),
   require('./commands/releases'),
   require('./commands/releases/rollback'),
