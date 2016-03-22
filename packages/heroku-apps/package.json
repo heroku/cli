@@ -1,6 +1,6 @@
 {
   "name": "heroku-apps",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "Heroku CLI plugin to manage apps.",
   "main": "index.js",
   "scripts": {
