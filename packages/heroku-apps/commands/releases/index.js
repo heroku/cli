@@ -38,7 +38,7 @@ function* run (context, heroku) {
     cli.table(releases, {
       printHeader: false,
       columns: [
-        {key: 'version',     format: v => cli.color.green('v'+v)},
+        {key: 'version',     label: '', format: v => cli.color.green('v'+v)},
         {key: 'description', format: trunc},
         {key: 'user',        format: u => cli.color.magenta(u.email)},
         {key: 'created_at',  format: t => time.ago(new Date(t))},
