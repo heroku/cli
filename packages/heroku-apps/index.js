@@ -50,7 +50,6 @@ exports.commands = [
   require('./commands/labs/enable'),
   require('./commands/labs/info'),
   require('./commands/maintenance'),
-  require('./commands/maintenance/index'),
   require('./commands/maintenance/off'),
   require('./commands/maintenance/on'),
   require('./commands/ps'),
