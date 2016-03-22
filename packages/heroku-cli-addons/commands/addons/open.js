@@ -90,6 +90,11 @@ function* run (ctx, api) {
     return api.get(`/apps/${ctx.app}/addon-attachments/${encodeURIComponent(id)}`);
   }
 
+  function* getAppAddonAttachment (addon, app) {
+    const attachments = yield api.get(`/addons/${encodeURIComponent(addon.id)}/addon-attachments`);
+    return attachments.find(att => att.app.name === app);
+  }
+
   let id  = ctx.args.addon;
 
   try {
@@ -101,7 +106,17 @@ function* run (ctx, api) {
 
     // no attachment found, check for addon instead
     let addon = yield getAppAddon(ctx.app, id);
-    yield open(addon.web_url);
+
+    // If we were passed an add-on slug, there still could be an attachment
+    // to the context app. Try to find and use it so `context_app` is set
+    // correctly in the SSO payload.
+    let attachment = yield getAppAddonAttachment(addon, ctx.app);
+
+    if (attachment) {
+      yield open(attachment.web_url);
+    } else {
+      yield open(addon.web_url);
+    }
   }
 }
 
