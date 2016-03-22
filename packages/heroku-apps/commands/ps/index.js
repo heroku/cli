@@ -55,15 +55,16 @@ function printDynos (dynos) {
       if (dynosByCommand[key] === undefined) dynosByCommand[key] = [];
       dynosByCommand[key].push(`${dyno.name} (${size}): ${dyno.state} ${since}: ${dyno.command}`);
     } else {
-      let key = `${dyno.type} (${size}): ${dyno.command}`;
+      let key = `${cli.color.green(dyno.type)} (${cli.color.cyan(size)}): ${dyno.command}`;
       if (dynosByCommand[key] === undefined) dynosByCommand[key] = [];
-      let item = `${dyno.name}: ${dyno.state} ${since}`;
+      let state = dyno.state === 'up' ? cli.color.green(dyno.state) : cli.color.yellow(dyno.state);
+      let item = `${dyno.name}: ${cli.color.green(state)} ${cli.color.gray(since)}`;
       dynosByCommand[key].push(item);
     }
     return dynosByCommand;
   }, {});
   _.forEach(dynosByCommand, function (dynos, key) {
-    cli.styledHeader(`${key} (${dynos.length})`);
+    cli.styledHeader(`${key} (${cli.color.yellow(dynos.length)})`);
     dynos = dynos.sort((a, b) => getProcessNum(a) - getProcessNum(b));
     for (let dyno of dynos) cli.log(dyno);
     cli.log();
