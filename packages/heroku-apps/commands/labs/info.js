@@ -1,0 +1,47 @@
+'use strict';
+
+let cli = require('heroku-cli-util');
+let co  = require('co');
+
+function printJSON (feature) {
+  cli.log(JSON.stringify(feature, null, 2));
+}
+
+function print (feature) {
+  cli.styledHeader(feature.name);
+  cli.styledObject({
+    Description:  feature.description,
+    Enabled:      feature.enabled ? cli.color.green(feature.enabled) : cli.color.red(feature.enabled),
+    Docs:         feature.doc_url,
+  });
+}
+
+function* run (context, heroku) {
+  let feature;
+  try {
+    feature = yield heroku.get(`/account/features/${context.args.feature}`);
+  } catch (err) {
+    if (err.statusCode !== 404) throw err;
+    // might be an app feature
+    if (!context.app) throw err;
+    feature = yield heroku.get(`/apps/${context.app}/features/${context.args.feature}`);
+  }
+  if (context.flags.json) {
+    printJSON(feature);
+  } else {
+    print(feature);
+  }
+}
+
+module.exports = {
+  topic: 'labs',
+  command: 'info',
+  description: 'show feature info',
+  args: [{name: 'feature'}],
+  flags: [
+    {name: 'json', description: 'display as json'},
+  ],
+  needsAuth: true,
+  wantsApp: true,
+  run: cli.command(co.wrap(run))
+};
