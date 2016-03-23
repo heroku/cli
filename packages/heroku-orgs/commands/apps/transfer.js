@@ -3,7 +3,7 @@
 let cli         = require('heroku-cli-util');
 let co          = require('co');
 let extend      = require('util')._extend;
-let lock        = require('./lock.js');
+let lock        = require('./lock.js').apps;
 
 function* run (context, heroku) {
   let app    = context.app;

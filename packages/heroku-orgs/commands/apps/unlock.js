@@ -15,7 +15,7 @@ This app is not locked.`);
   yield cli.action(`Unlocking ${cli.color.cyan(app.name)}`, request);
 }
 
-module.exports = {
+let cmd = {
   topic:        'apps',
   command:      'unlock',
   description:  'unlock an app so any organization member can join',
@@ -23,3 +23,6 @@ module.exports = {
   needsApp:     true,
   run:          cli.command(co.wrap(run))
 };
+
+module.exports.apps = cmd;
+module.exports.root = Object.assign({}, cmd, {topic: 'unlock', command: null});

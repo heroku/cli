@@ -1,6 +1,6 @@
 'use strict';
 
-let cmd = require('../../../commands/apps/unlock');
+let cmd = require('../../../commands/apps/unlock').apps;
 
 describe('heroku apps:unlock', () => {
   beforeEach(() => cli.mockConsole());

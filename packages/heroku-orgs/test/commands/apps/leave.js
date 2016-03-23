@@ -1,6 +1,6 @@
 'use strict';
 
-let cmd = require('../../../commands/apps/leave');
+let cmd = require('../../../commands/apps/leave').apps;
 
 describe('heroku apps:leave', () => {
   beforeEach(() => cli.mockConsole());

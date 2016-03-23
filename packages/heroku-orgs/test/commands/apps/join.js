@@ -1,6 +1,6 @@
 'use strict';
 
-let cmd = require('../../../commands/apps/join');
+let cmd = require('../../../commands/apps/join').apps;
 
 describe('heroku apps:join', () => {
   beforeEach(() => cli.mockConsole());

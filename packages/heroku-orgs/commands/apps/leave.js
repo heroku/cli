@@ -27,7 +27,7 @@ function* run (context, heroku) {
   yield cli.action(`Leaving ${cli.color.cyan(context.app)}`, request);
 }
 
-module.exports = {
+let cmd = {
   topic:        'apps',
   command:      'leave',
   description:  'remove yourself from an organization app',
@@ -35,3 +35,6 @@ module.exports = {
   needsApp:     true,
   run:          cli.command(co.wrap(run))
 };
+
+module.exports.apps = cmd;
+module.exports.root = Object.assign({}, cmd, {topic: 'leave', command: null});

@@ -1,7 +1,11 @@
 exports.topics = [
   {name: 'access', description: 'CLI to manage access in Heroku Applications'},
   {name: 'orgs',   description: 'manage organizations'},
-  {name: 'sharing', hidden: true}
+  {name: 'sharing', hidden: true},
+  {name: 'join', hidden: true},
+  {name: 'leave', hidden: true},
+  {name: 'lock', hidden: true},
+  {name: 'unlock', hidden: true}
 ];
 
 exports.commands = [
@@ -15,10 +19,14 @@ exports.commands = [
   require('./commands/orgs'),
   require('./commands/orgs/default'),
   require('./commands/orgs/open'),
-  require('./commands/apps/join'),
-  require('./commands/apps/leave'),
-  require('./commands/apps/lock'),
-  require('./commands/apps/unlock'),
+  require('./commands/apps/join').apps,
+  require('./commands/apps/join').root,
+  require('./commands/apps/leave').apps,
+  require('./commands/apps/leave').root,
+  require('./commands/apps/lock').apps,
+  require('./commands/apps/lock').root,
+  require('./commands/apps/unlock').apps,
+  require('./commands/apps/unlock').root,
   require('./commands/members'),
   require('./commands/members/add').add,
   require('./commands/members/add').set,

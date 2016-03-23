@@ -15,7 +15,7 @@ This app is already locked.`);
   yield cli.action(`Locking ${cli.color.cyan(app.name)}`, request);
 }
 
-module.exports = {
+let cmd = {
   topic:        'apps',
   command:      'lock',
   description:  'prevent organization members from joining an app',
@@ -23,3 +23,6 @@ module.exports = {
   needsApp:     true,
   run:          cli.command(co.wrap(run))
 };
+
+module.exports.apps = cmd;
+module.exports.root = Object.assign({}, cmd, {topic: 'lock', command: null});

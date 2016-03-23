@@ -17,7 +17,7 @@ function* run (context, heroku) {
   }
 }
 
-module.exports = {
+let cmd = {
   topic:        'apps',
   command:      'join',
   description:  'add yourself to an organization app',
@@ -25,3 +25,6 @@ module.exports = {
   needsApp:     true,
   run:          cli.command(co.wrap(run))
 };
+
+module.exports.apps = cmd;
+module.exports.root = Object.assign({}, cmd, {topic: 'join', command: null});
