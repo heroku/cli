@@ -12,24 +12,25 @@ import (
 
 // Package represents an npm package.
 type Package struct {
-	Name    string `json:"name"`
 	Version string `json:"version"`
 }
 
-// Packages returns a list of npm packages installed.
-func Packages() ([]Package, error) {
+func getPackages() ([]string, error) {
 	stdout, stderr, err := execNpm("list", "--json", "--depth=0")
 	if err != nil {
 		return nil, errors.New(stderr)
 	}
-	var response map[string]map[string]Package
+	var response map[string]interface{}
 	if err := json.Unmarshal([]byte(stdout), &response); err != nil {
-		return nil, errors.New(stderr)
+		return nil, err
 	}
-	packages := make([]Package, 0, len(response["dependencies"]))
-	for name, p := range response["dependencies"] {
-		p.Name = name
-		packages = append(packages, p)
+	dependencies, ok := response["dependencies"].(map[string]interface{})
+	if !ok {
+		dependencies = map[string]interface{}{}
+	}
+	packages := make([]string, 0, len(dependencies))
+	for name, _ := range dependencies {
+		packages = append(packages, name)
 	}
 	return packages, nil
 }
@@ -46,14 +47,14 @@ func InstallPackages(packages ...string) error {
 
 // RemovePackages removes a npm packages.
 func RemovePackages(packages ...string) error {
-	installedPackages, err := Packages()
+	installedPackages, err := getPackages()
 	if err != nil {
 		return err
 	}
 	toRemove := make([]string, 0, len(installedPackages))
 	for _, a := range installedPackages {
 		for _, b := range packages {
-			if a.Name == b {
+			if a == b {
 				toRemove = append(toRemove, b)
 			}
 		}
