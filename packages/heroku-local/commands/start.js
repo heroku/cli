@@ -25,9 +25,9 @@ Examples:
   flags: [
     {name: 'procfile',    char: 'f', hasValue: true,  description: 'use a different Procfile'},
     {name: 'env',         char: 'e', hasValue: true,  description: 'location of env file (defaults to .env)'},
-    {name: 'concurrency', char: 'c', hasValue: true,  description: 'number of processes to start'},
     {name: 'port',        char: 'p', hasValue: true,  description: 'port to listen on'},
-    {name: 'restart',     char: 'r', hasValue: false, description: 'restart process if it dies'}
+    {name: 'restart',     char: 'r', hasValue: false, hidden: true, description: 'restart process if it dies'},
+    {name: 'concurrency', char: 'c', hasValue: true,  hidden: true, description: 'number of processes to start'},
   ],
   run: cli.command(run)
 };

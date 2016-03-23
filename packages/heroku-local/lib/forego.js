@@ -26,9 +26,19 @@ Forego.prototype = {
     let args = ['start'];
     if (opts.flags.procfile)    args.push('-f', opts.flags.procfile);
     if (opts.flags.env)         args.push('-e', opts.flags.env);
-    if (opts.flags.concurrency) args.push('-c', opts.flags.concurrency);
     if (opts.flags.port)        args.push('-p', opts.flags.port);
-    if (opts.flags.restart)     args.push('-r');
+    if (opts.flags.restart) {
+      cli.warn(`--restart is deprecated in heroku local.
+Use forego directly to continue using this flag.
+https://github.com/ddollar/forego`);
+      args.push('-r');
+    }
+    if (opts.flags.concurrency) {
+      cli.warn(`--concurrency is deprecated in heroku local.
+Use forego directly to continue using this flag.
+https://github.com/ddollar/forego`);
+      args.push('-c', opts.flags.concurrency);
+    }
     if (opts.args.processname)  args.push(opts.args.processname);
     spawn(this.path, args, {stdio: 'inherit'});
   },
