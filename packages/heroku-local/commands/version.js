@@ -1,18 +1,16 @@
 'use strict';
 
-let Forego  = require('../lib/forego');
 let cli = require('heroku-cli-util');
 
-function* run (context) {
-  let forego = new Forego(context.herokuDir);
-  yield forego.ensureSetup();
-  forego.version();
+function* run () {
+  process.argv = ['heroku', 'heroku', '--version'];
+  require('foreman/nf.js');
 }
 
 module.exports = {
   topic: 'local',
   command: 'version',
-  description: 'display forego version',
-  help: 'Display forego version',
+  description: 'display node-foreman version',
+  help: 'Display node-foreman version',
   run: cli.command(run)
 };

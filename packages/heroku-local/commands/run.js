@@ -1,16 +1,21 @@
 'use strict';
 
-let Forego  = require('../lib/forego');
-let cli     = require('heroku-cli-util');
+let cli = require('heroku-cli-util');
 
 function* run (context) {
   if (context.args.length < 1) {
     cli.error('Usage: heroku local:run [COMMAND]\nMust specify command to run');
     process.exit(-1);
   }
-  let forego = new Forego(context.herokuDir);
-  yield forego.ensureSetup();
-  forego.run(context.args, {flags: context.flags});
+
+  process.argv = ['heroku', 'heroku local:run', 'run'];
+
+  if (context.flags.env)  process.argv.push('--env',  context.flags.env);
+  if (context.flags.port) process.argv.push('--port', context.flags.port);
+
+  process.argv.push(...context.args);
+
+  require('foreman/nf.js');
 }
 
 module.exports = {

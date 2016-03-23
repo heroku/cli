@@ -1,12 +1,19 @@
 'use strict';
 
-let Forego  = require('../lib/forego');
-let cli     = require('heroku-cli-util');
+let cli = require('heroku-cli-util');
 
 function* run (context) {
-  let forego = new Forego(context.herokuDir);
-  yield forego.ensureSetup();
-  forego.start({args: context.args, flags: context.flags});
+  if (context.flags.restart)     throw new Error('--restart is no longer available\nUse forego instead: https://github.com/ddollar/forego');
+  if (context.flags.concurrency) throw new Error('--concurrency is no longer available\nUse forego instead: https://github.com/ddollar/forego');
+
+  process.argv = ['heroku', 'heroku local', 'start'];
+
+  if (context.flags.procfile)   process.argv.push('--procfile', context.flags.procfile);
+  if (context.flags.env)        process.argv.push('--env',      context.flags.env);
+  if (context.flags.port)       process.argv.push('--port',     context.flags.port);
+  if (context.args.processname) process.argv.push(context.args.processname);
+
+  require('foreman/nf.js');
 }
 
 module.exports = {

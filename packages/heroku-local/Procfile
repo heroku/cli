@@ -1,2 +1,2 @@
-web: echo "it works (web)!"
+web: echo "it works (web)! port: $PORT"
 worker: echo "it works (worker)!"
