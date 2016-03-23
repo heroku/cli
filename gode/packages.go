@@ -67,7 +67,7 @@ func RemovePackages(packages ...string) error {
 	if err != nil {
 		return errors.New(stderr)
 	}
-	return nil
+	return removePackageFromPackageJSON(toRemove...)
 }
 
 // OutdatedPackages returns a map of packages and their latest version
@@ -177,12 +177,31 @@ func AddPackagesToPackageJSON(packages ...string) error {
 	}
 	pjson["name"] = "heroku"
 	pjson["private"] = true
-	dependencies, ok := pjson["dependencies"].(map[string]string)
+	dependencies, ok := pjson["dependencies"].(map[string]interface{})
 	if !ok {
-		dependencies = map[string]string{}
+		dependencies = map[string]interface{}{}
 	}
 	for _, dep := range packages {
 		dependencies[dep] = "*"
+	}
+	pjson["dependencies"] = dependencies
+	return savePackageJSON(path, pjson)
+}
+
+func removePackageFromPackageJSON(packages ...string) error {
+	path := filepath.Join(rootPath, "package.json")
+	pjson, err := readPackageJSON(path)
+	if err != nil {
+		return err
+	}
+	pjson["name"] = "heroku"
+	pjson["private"] = true
+	dependencies, ok := pjson["dependencies"].(map[string]interface{})
+	if !ok {
+		dependencies = map[string]interface{}{}
+	}
+	for _, dep := range packages {
+		delete(dependencies, dep)
 	}
 	pjson["dependencies"] = dependencies
 	return savePackageJSON(path, pjson)
