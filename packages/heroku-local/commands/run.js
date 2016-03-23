@@ -13,6 +13,7 @@ function* run (context) {
   if (context.flags.env)  process.argv.push('--env',  context.flags.env);
   if (context.flags.port) process.argv.push('--port', context.flags.port);
 
+  process.argv.push('--'); // disable node-foreman flag parsing
   process.argv.push(...context.args);
 
   require('foreman/nf.js');
