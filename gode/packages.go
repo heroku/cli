@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -40,7 +41,7 @@ func InstallPackages(packages ...string) error {
 	if err != nil {
 		return errors.New("Error installing package. \n" + stderr + "\nTry running again with GODE_DEBUG=info to see more output.")
 	}
-	return nil
+	return AddPackagesToPackageJSON(packages...)
 }
 
 // RemovePackages removes a npm packages.
@@ -82,6 +83,24 @@ func OutdatedPackages(names ...string) (map[string]string, error) {
 		packages[name] = versions.Latest
 	}
 	return packages, nil
+}
+
+// Prune runs `npm prune`
+func Prune() error {
+	_, stderr, err := execNpm("prune")
+	if err != nil {
+		return errors.New("prune error: " + stderr)
+	}
+	return nil
+}
+
+// Dedupe runs `npm dedupe`
+func Dedupe() error {
+	_, stderr, err := execNpm("dedupe")
+	if err != nil {
+		return errors.New("dedupe error: " + stderr)
+	}
+	return nil
 }
 
 // ClearCache clears the npm cache
@@ -146,4 +165,50 @@ func environ() []string {
 func debugging() bool {
 	e := os.Getenv("GODE_DEBUG")
 	return e != "" && e != "0" && e != "false"
+}
+
+// AddPackagesToPackageJSON ensures that packages are inside the package.json file
+func AddPackagesToPackageJSON(packages ...string) error {
+	path := filepath.Join(rootPath, "package.json")
+	pjson, err := readPackageJSON(path)
+	if err != nil {
+		return err
+	}
+	pjson["name"] = "heroku"
+	pjson["private"] = true
+	dependencies, ok := pjson["dependencies"].(map[string]string)
+	if !ok {
+		dependencies = map[string]string{}
+	}
+	for _, dep := range packages {
+		dependencies[dep] = "*"
+	}
+	pjson["dependencies"] = dependencies
+	return savePackageJSON(path, pjson)
+}
+
+func readPackageJSON(path string) (pjson map[string]interface{}, err error) {
+	if exists, _ := fileExists(path); !exists {
+		return map[string]interface{}{}, nil
+	}
+	data, err := ioutil.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+	err = json.Unmarshal(data, &pjson)
+	return pjson, err
+}
+
+func savePackageJSON(path string, pjson map[string]interface{}) error {
+	file, err := os.Create(path)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+	b, err := json.MarshalIndent(pjson, "", "  ")
+	if err != nil {
+		return err
+	}
+	_, err = file.Write(b)
+	return err
 }

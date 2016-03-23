@@ -80,6 +80,12 @@ func updatePlugins() {
 		return
 	}
 	Err("heroku-cli: Updating plugins... ")
+	PrintError(gode.AddPackagesToPackageJSON(PluginNames()...), true)
+	if !anyPluginsSymlinked() {
+		// deduping breaks if there are any symlinked plugins
+		PrintError(gode.Prune(), true)
+		PrintError(gode.Dedupe(), true)
+	}
 	packages, err := gode.OutdatedPackages(plugins...)
 	PrintError(err, true)
 	if len(packages) > 0 {
