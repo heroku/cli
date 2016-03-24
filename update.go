@@ -61,7 +61,6 @@ func Update(channel string, t string) {
 	go func() {
 		touchAutoupdateFile()
 		updateCLI(channel)
-		updateNode()
 		updatePlugins()
 		truncateErrorLog()
 		cleanTmpDir()

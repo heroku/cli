@@ -11,7 +11,7 @@ import (
 // RunScript runs a given script in node
 // Returns an *os/exec.Cmd instance
 func RunScript(script string) *exec.Cmd {
-	cmd := exec.Command(nodePath, "-e", script)
+	cmd := exec.Command(target.nodePath(), "-e", script)
 	cmd.Env = append(os.Environ(), "NODE_PATH="+modulesDir())
 	cmd.Dir = rootPath
 	return cmd
