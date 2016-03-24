@@ -99,11 +99,11 @@ func npmCmd(args ...string) (*exec.Cmd, error) {
 	if err := os.MkdirAll(filepath.Join(rootPath, "node_modules"), 0755); err != nil {
 		return nil, err
 	}
-	nodePath, err := filepath.Rel(rootPath, nodePath)
+	nodePath, err := filepath.Rel(rootPath, target.nodePath())
 	if err != nil {
 		return nil, err
 	}
-	npmPath, err := filepath.Rel(rootPath, npmPath)
+	npmPath, err := filepath.Rel(rootPath, target.npmPath())
 	if err != nil {
 		return nil, err
 	}

@@ -36,9 +36,9 @@ func TestSetupInvalidSha(t *testing.T) {
 	must(err)
 	defer os.RemoveAll(dir)
 	SetRootPath(dir)
-	target := targets[0]
+	target = &targets[0]
 	target.Sha = "INVALID"
-	err = target.setup()
+	err = Setup()
 	if err != errInvalidSha {
 		t.Fatal("Setup with invalid SHA")
 	}
@@ -54,9 +54,9 @@ func TestWindowsSetup(t *testing.T) {
 	must(err)
 	defer os.RemoveAll(dir)
 	SetRootPath(dir)
-	target := getWindowsTarget()
-	must(target.setup())
-	if setup, _ := target.isSetup(); !setup {
+	target = getWindowsTarget()
+	must(Setup())
+	if setup, _ := IsSetup(); !setup {
 		t.Fatal("IsSetup() returned false")
 	}
 }
