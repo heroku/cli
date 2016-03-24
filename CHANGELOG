@@ -1,3 +1,7 @@
+4.28.2  2015-03-24
+==================
+Fix error when in plugins cache & not node_modules
+
 4.28.1  2015-03-21
 ==================
 Fix retry uninstalling of core plugins
