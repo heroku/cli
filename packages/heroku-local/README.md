@@ -7,10 +7,10 @@ To use:
 
 ```
 $ heroku local
-forego  | starting web.1 on port 5000
+12:47:17 PM web.1 | listening on 3000
 ```
 
-This command internally uses [forego](https://github.com/ddollar/forego) to run the app locally.
+This command internally uses [node-foreman](https://github.com/strongloop/node-foreman) to run the app locally.
 
 Help
 =======
@@ -32,11 +32,9 @@ Usage: heroku local [PROCESSNAME]
 
  -f, --procfile PROCFILE
  -e, --env ENV
- -c, --concurrency CONCURRENCY
  -p, --port PORT
- -r, --r
 
 Additional commands, type "heroku help COMMAND" for more details:
 
-  local:version  #  display forego version
+  local:version  #  display node-foreman version
 ```
