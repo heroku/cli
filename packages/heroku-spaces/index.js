@@ -11,6 +11,8 @@ exports.commands = [
   require('./commands/destroy'),
   require('./commands/info'),
   require('./commands/rename'),
+  require('./commands/drains/get'),
+  require('./commands/drains/set'),
   require('./commands/trusted-ips'),
   require('./commands/trusted-ips/add'),
   require('./commands/trusted-ips/remove'),

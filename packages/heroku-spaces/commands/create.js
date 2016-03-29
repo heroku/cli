@@ -14,6 +14,7 @@ function* run(context, heroku) {
       organization: context.flags.org,
       channel_name: context.flags.channel,
       region: context.flags.region,
+      log_drain_url: context.flags['log-drain-url'],
     }
   });
   space = yield cli.action(`Creating space ${cli.color.green(space)} in organization ${cli.color.cyan(context.flags.org)}`, request);
@@ -50,6 +51,7 @@ Example:
     {name: 'org', char: 'o', required: true, hasValue: true, description: 'organization name'},
     {name: 'channel', hasValue: true, hidden: true},
     {name: 'region', hasValue: true, description: 'region name'},
+    {name: 'log-drain-url', hasValue: true, hidden: true, description: 'direct log drain url'},
   ],
   run: cli.command(co.wrap(run))
 };
