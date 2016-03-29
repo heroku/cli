@@ -1,6 +1,6 @@
 {
   "name": "heroku-spaces",
-  "version": "2.0.14",
+  "version": "2.1.0",
   "description": "Heroku plugin to manage Heroku Private Spaces",
   "main": "index.js",
   "author": "Heroku",
