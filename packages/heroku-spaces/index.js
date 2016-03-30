@@ -1,9 +1,9 @@
 'use strict';
 
-exports.topic = {
-  name: 'spaces',
-  description: 'manage heroku private spaces',
-};
+exports.topics = [
+  {name: 'spaces',      description: 'manage heroku private spaces'},
+  {name: 'trusted-ips', description: 'list trusted IP ranges for a space'},
+];
 
 exports.commands = [
   require('./commands'),
