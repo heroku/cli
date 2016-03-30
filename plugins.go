@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 	"os/exec"
@@ -155,7 +156,7 @@ var pluginsUninstallCmd = &Command{
 	Run: func(ctx *Context) {
 		name := ctx.Args.(map[string]string)["name"]
 		if !contains(PluginNames(), name) {
-			panic(name + " is not installed")
+			ExitIfError(errors.New(name+" is not installed"), false)
 		}
 		Errf("Uninstalling plugin %s... ", name)
 		ExitIfError(gode.RemovePackages(name), true)
