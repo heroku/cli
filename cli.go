@@ -43,7 +43,10 @@ func (cli *Cli) Run(args []string) (err error) {
 	}
 	if ctx.Command.NeedsApp || ctx.Command.WantsApp {
 		if ctx.App == "" {
-			ctx.App = app()
+			ctx.App, err = app()
+			if err != nil && ctx.Command.NeedsApp {
+				ExitIfError(err, false)
+			}
 		}
 		if ctx.App == "" && ctx.Command.NeedsApp {
 			return ctx.Command.appNeededErr()
@@ -178,17 +181,12 @@ func parseArgs(command *Command, args []string) (result map[string]string, flags
 	return result, flags, appName, nil
 }
 
-func app() string {
+func app() (string, error) {
 	app := os.Getenv("HEROKU_APP")
 	if app != "" {
-		return app
+		return app, nil
 	}
-	app, err := appFromGitRemote(remoteFromGitConfig())
-	if err != nil {
-		PrintError(err, false)
-		os.Exit(1)
-	}
-	return app
+	return appFromGitRemote(remoteFromGitConfig())
 }
 
 func getNetrc() *netrc.Netrc {
