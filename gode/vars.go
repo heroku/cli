@@ -9,12 +9,19 @@ import (
 	"strings"
 )
 
-const registry = "https://cli-npm.heroku.com"
+var registry string
 
 var rootPath string
 var lockPath string
 var nodePath string
 var npmPath string
+
+func init() {
+	registry = os.Getenv("HEROKU_NPM_REGISTRY")
+	if registry == "" {
+		registry = "https://cli-npm.heroku.com"
+	}
+}
 
 // SetRootPath sets the root for gode
 func SetRootPath(root string) {
