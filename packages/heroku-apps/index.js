@@ -3,6 +3,7 @@ exports.topics = [
   { name: 'buildpacks',  description: 'manage the buildpacks for an app' },
   { name: 'config',      description: 'manage app config vars' },
   { name: 'create',      hidden: true },
+  { name: 'destroy',     hidden: true },
   { name: 'domains',     description: 'manage the domains for an app' },
   { name: 'drains',      description: 'list all log drains' },
   { name: 'features',    description: 'manage optional features' },
@@ -13,6 +14,7 @@ exports.topics = [
   { name: 'ps',          description: 'manage dynos (dynos, workers)' },
   { name: 'regions',     description: 'list available regions' },
   { name: 'releases',    description: 'manage app releases' },
+  { name: 'rename',      hidden: true },
   { name: 'scale',       hidden: true },
   { name: 'stack',       description: 'manage the stack of an app' },
 ];
