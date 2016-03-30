@@ -2,7 +2,7 @@
 
 exports.topics = [
   {name: 'spaces',      description: 'manage heroku private spaces'},
-  {name: 'trusted-ips', description: 'list trusted IP ranges for a space'},
+  {name: 'trusted-ips', hidden: true},
 ];
 
 exports.commands = [
