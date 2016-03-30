@@ -35,6 +35,7 @@
     "chai": "^3.3.0",
     "jshint": "*",
     "mocha": "^2.3.3",
+    "mocha-junit-reporter": "1.10.0",
     "nock": "7.5.0"
   }
 }

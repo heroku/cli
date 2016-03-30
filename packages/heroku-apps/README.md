@@ -1,5 +1,4 @@
 heroku-apps
 ===========
 
-[![Build Status](https://travis-ci.org/heroku/heroku-apps.svg?branch=master)](https://travis-ci.org/heroku/heroku-apps)
-
+[![Circle CI](https://circleci.com/gh/heroku/heroku-apps.svg?style=svg)](https://circleci.com/gh/heroku/heroku-apps)
