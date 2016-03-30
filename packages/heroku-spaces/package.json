@@ -16,7 +16,9 @@
   ],
   "license": "ISC",
   "scripts": {
-    "test": "jshint . && mocha"
+    "test": "jshint . && mocha",
+    "preversion": "npm test",
+    "postversion": "npm publish && git push && git push --tags"
   },
   "dependencies": {
     "co": "4.6.0",
