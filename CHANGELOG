@@ -1,3 +1,8 @@
+4.28.3  2016-03-31
+==================
+remove code allowing use of old node versions #231
+prevent uninstall error from sending to rollbar #232
+
 4.28.2  2015-03-24
 ==================
 Fix error when in plugins cache & not node_modules
