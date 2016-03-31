@@ -9,7 +9,6 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"sort"
 	"strconv"
 	"strings"
 
@@ -185,7 +184,6 @@ func getNodeInstalls() []string {
 			nodes = append(nodes, name)
 		}
 	}
-	sort.Strings(nodes)
 	return nodes
 }
 
