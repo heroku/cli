@@ -2,19 +2,11 @@
 
 let cli = require('heroku-cli-util');
 let co  = require('co');
-let opn = require('opn');
 let fs  = require('fs');
 
 function open (url) {
   cli.log(`Opening ${cli.color.cyan(url)}...`);
-  return new Promise(function (fulfill, reject) {
-    opn(url, {wait: false}, function (err) {
-      if (!err) return fulfill();
-      cli.error('Cannot open page.');
-      cli.error(err);
-      reject(new Error(`Open ${cli.color.cyan(url)} in your browser.`));
-    });
-  });
+  return cli.open(url);
 }
 
 const ssoPath = '/tmp/heroku-sso.html';

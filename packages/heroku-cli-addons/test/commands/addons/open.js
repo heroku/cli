@@ -1,10 +1,9 @@
 'use strict';
 
 let cli        = require('heroku-cli-util');
+cli.open       = require('../../opn');
 let nock       = require('nock');
-let proxyquire = require('proxyquire');
-let opnMock    = require('../../opn');
-let cmd        = proxyquire('../../../commands/addons/open', {'opn': opnMock});
+let cmd        = commands.find(c => c.topic === 'addons' && c.command === 'open');
 let expect     = require('chai').expect;
 
 describe('addons:open', function() {
@@ -20,7 +19,7 @@ describe('addons:open', function() {
        .reply(200, []);
 
     return cmd.run({app: 'myapp', args: {addon: 'slowdb'}})
-      .then(() => expect(opnMock.url).to.equal('http://slowdb'))
+      .then(() => expect(cli.open.url).to.equal('http://slowdb'))
       .then(() => expect(cli.stdout).to.equal('Opening http://slowdb...\n'))
       .then(() => api.done());
   });
@@ -43,7 +42,7 @@ describe('addons:open', function() {
          {app: {name: 'myapp-2'}, web_url: 'http://myapp-2-slowdb'}]);
 
     return cmd.run({app: 'myapp-2', args: {addon: 'slowdb'}})
-      .then(() => expect(opnMock.url).to.equal('http://myapp-2-slowdb'))
+      .then(() => expect(cli.open.url).to.equal('http://myapp-2-slowdb'))
       .then(() => expect(cli.stdout).to.equal('Opening http://myapp-2-slowdb...\n'))
       .then(() => api.done());
   });

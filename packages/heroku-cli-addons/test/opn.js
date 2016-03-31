@@ -1,8 +1,8 @@
 'use strict';
 
-let opn = function (url, opts, cb) {
+let opn = function (url) {
   opn.url = url;
-  cb();
+  return new Promise(ok => ok());
 };
 
 module.exports = opn;
