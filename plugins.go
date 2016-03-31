@@ -32,20 +32,7 @@ func SetupNode() {
 	setup, err := gode.IsSetup()
 	PrintError(err, false)
 	if !setup {
-		setupNode()
-	}
-}
-
-func setupNode() {
-	PrintError(gode.Setup(), true)
-}
-
-func updateNode() {
-	gode.SetRootPath(AppDir())
-	needsUpdate, err := gode.NeedsUpdate()
-	PrintError(err, true)
-	if needsUpdate {
-		setupNode()
+		PrintError(gode.Setup(), true)
 	}
 }
 
