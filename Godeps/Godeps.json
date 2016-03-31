@@ -34,8 +34,8 @@
 		},
 		{
 			"ImportPath": "github.com/stvp/rollbar",
-			"Comment": "v0.3.1-4-g3f10961",
-			"Rev": "3f10961d0bdb493ad6a6ecec9fb16d97c33d593e"
+			"Comment": "v0.4.0-2-gee2624c",
+			"Rev": "ee2624c2e9c86346c38536cb0e87a4eeebf25d11"
 		},
 		{
 			"ImportPath": "github.com/toqueteos/webbrowser",

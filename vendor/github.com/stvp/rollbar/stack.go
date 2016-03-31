@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	knownFilePathPatterns []string = []string{
+	knownFilePathPatterns = []string{
 		"github.com/",
 		"code.google.com/",
 		"bitbucket.org/",
@@ -17,14 +17,17 @@ var (
 	}
 )
 
+// Frame is a single line of executed code in a Stack.
 type Frame struct {
 	Filename string `json:"filename"`
 	Method   string `json:"method"`
 	Line     int    `json:"lineno"`
 }
 
+// Stack represents a stacktrace as a slice of Frames.
 type Stack []Frame
 
+// BuildStack builds a full stacktrace for the current execution location.
 func BuildStack(skip int) Stack {
 	stack := make(Stack, 0)
 
@@ -40,10 +43,9 @@ func BuildStack(skip int) Stack {
 	return stack
 }
 
-// Create a fingerprint that uniquely identify a given message. We use the full
-// callstack, including file names. That ensure that there are no false
-// duplicates but also means that after changing the code (adding/removing
-// lines), the fingerprints will change. It's a trade-off.
+// Fingerprint builds a string that uniquely identifies a Rollbar item using
+// the full stacktrace. The fingerprint is used to ensure (to a reasonable
+// degree) that items are coalesced by Rollbar in a smart way.
 func (s Stack) Fingerprint() string {
 	hash := crc32.NewIEEE()
 	for _, frame := range s {
