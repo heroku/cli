@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -11,24 +12,25 @@ import (
 
 // Package represents an npm package.
 type Package struct {
-	Name    string `json:"name"`
 	Version string `json:"version"`
 }
 
-// Packages returns a list of npm packages installed.
-func Packages() ([]Package, error) {
+func getPackages() ([]string, error) {
 	stdout, stderr, err := execNpm("list", "--json", "--depth=0")
 	if err != nil {
 		return nil, errors.New(stderr)
 	}
-	var response map[string]map[string]Package
+	var response map[string]interface{}
 	if err := json.Unmarshal([]byte(stdout), &response); err != nil {
-		return nil, errors.New(stderr)
+		return nil, err
 	}
-	packages := make([]Package, 0, len(response["dependencies"]))
-	for name, p := range response["dependencies"] {
-		p.Name = name
-		packages = append(packages, p)
+	dependencies, ok := response["dependencies"].(map[string]interface{})
+	if !ok {
+		dependencies = map[string]interface{}{}
+	}
+	packages := make([]string, 0, len(dependencies))
+	for name, _ := range dependencies {
+		packages = append(packages, name)
 	}
 	return packages, nil
 }
@@ -40,19 +42,19 @@ func InstallPackages(packages ...string) error {
 	if err != nil {
 		return errors.New("Error installing package. \n" + stderr + "\nTry running again with GODE_DEBUG=info to see more output.")
 	}
-	return nil
+	return AddPackagesToPackageJSON(packages...)
 }
 
 // RemovePackages removes a npm packages.
 func RemovePackages(packages ...string) error {
-	installedPackages, err := Packages()
+	installedPackages, err := getPackages()
 	if err != nil {
 		return err
 	}
 	toRemove := make([]string, 0, len(installedPackages))
 	for _, a := range installedPackages {
 		for _, b := range packages {
-			if a.Name == b {
+			if a == b {
 				toRemove = append(toRemove, b)
 			}
 		}
@@ -65,7 +67,7 @@ func RemovePackages(packages ...string) error {
 	if err != nil {
 		return errors.New(stderr)
 	}
-	return nil
+	return removePackageFromPackageJSON(toRemove...)
 }
 
 // OutdatedPackages returns a map of packages and their latest version
@@ -82,6 +84,24 @@ func OutdatedPackages(names ...string) (map[string]string, error) {
 		packages[name] = versions.Latest
 	}
 	return packages, nil
+}
+
+// Prune runs `npm prune`
+func Prune() error {
+	_, stderr, err := execNpm("prune")
+	if err != nil {
+		return errors.New("prune error: " + stderr)
+	}
+	return nil
+}
+
+// Dedupe runs `npm dedupe`
+func Dedupe() error {
+	_, stderr, err := execNpm("dedupe")
+	if err != nil {
+		return errors.New("dedupe error: " + stderr)
+	}
+	return nil
 }
 
 // ClearCache clears the npm cache
@@ -146,4 +166,69 @@ func environ() []string {
 func debugging() bool {
 	e := os.Getenv("GODE_DEBUG")
 	return e != "" && e != "0" && e != "false"
+}
+
+// AddPackagesToPackageJSON ensures that packages are inside the package.json file
+func AddPackagesToPackageJSON(packages ...string) error {
+	path := filepath.Join(rootPath, "package.json")
+	pjson, err := readPackageJSON(path)
+	if err != nil {
+		return err
+	}
+	pjson["name"] = "heroku"
+	pjson["private"] = true
+	dependencies, ok := pjson["dependencies"].(map[string]interface{})
+	if !ok {
+		dependencies = map[string]interface{}{}
+	}
+	for _, dep := range packages {
+		dependencies[dep] = "*"
+	}
+	pjson["dependencies"] = dependencies
+	return savePackageJSON(path, pjson)
+}
+
+func removePackageFromPackageJSON(packages ...string) error {
+	path := filepath.Join(rootPath, "package.json")
+	pjson, err := readPackageJSON(path)
+	if err != nil {
+		return err
+	}
+	pjson["name"] = "heroku"
+	pjson["private"] = true
+	dependencies, ok := pjson["dependencies"].(map[string]interface{})
+	if !ok {
+		dependencies = map[string]interface{}{}
+	}
+	for _, dep := range packages {
+		delete(dependencies, dep)
+	}
+	pjson["dependencies"] = dependencies
+	return savePackageJSON(path, pjson)
+}
+
+func readPackageJSON(path string) (pjson map[string]interface{}, err error) {
+	if exists, _ := fileExists(path); !exists {
+		return map[string]interface{}{}, nil
+	}
+	data, err := ioutil.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+	err = json.Unmarshal(data, &pjson)
+	return pjson, err
+}
+
+func savePackageJSON(path string, pjson map[string]interface{}) error {
+	file, err := os.Create(path)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+	b, err := json.MarshalIndent(pjson, "", "  ")
+	if err != nil {
+		return err
+	}
+	_, err = file.Write(b)
+	return err
 }

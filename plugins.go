@@ -349,6 +349,15 @@ func PluginNamesNotSymlinked() []string {
 	return b
 }
 
+func anyPluginsSymlinked() bool {
+	for _, plugin := range PluginNames() {
+		if isPluginSymlinked(plugin) {
+			return true
+		}
+	}
+	return false
+}
+
 func isPluginSymlinked(plugin string) bool {
 	path := filepath.Join(AppDir(), "node_modules", plugin)
 	fi, err := os.Lstat(path)
