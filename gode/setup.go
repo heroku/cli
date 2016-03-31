@@ -9,8 +9,8 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"runtime"
 	"strconv"
+	"strings"
 
 	"github.com/dickeyxxx/golock"
 	"github.com/franela/goreq"
@@ -21,56 +21,42 @@ var errInvalidSha = errors.New("Invalid SHA")
 
 // IsSetup returns true if node is setup in RootPath
 func IsSetup() (bool, error) {
-	return isSetup(nodePath, npmPath)
-}
-
-func isSetup(nodePath, npmPath string) (bool, error) {
-	exists, err := fileExists(nodePath)
+	exists, err := fileExists(target.nodePath())
 	if !exists {
 		return exists, err
 	}
-	return fileExists(npmPath)
+	return fileExists(target.npmPath())
 }
 
 // Setup downloads and sets up node in the RootPath directory
 func Setup() error {
 	golock.Lock(lockPath)
 	defer golock.Unlock(lockPath)
-	t := findTarget()
-	if t == nil {
+	if target == nil {
 		return errors.New(`node does not offer a prebuilt binary for your OS.
 You'll need to compile the tarball from nodejs.org and place it in ~/.heroku/node-v` + Version)
 	}
-	exists, err := t.isSetup()
-	if err != nil {
+	if target.OS == "windows" {
+		if err := setupWindows(); err != nil {
+			return err
+		}
+	} else {
+		if err := setupUnix(); err != nil {
+			return err
+		}
+	}
+	if err := downloadNpm(target.npmPath()); err != nil {
 		return err
 	}
-	if exists {
-		return nil
-	}
-	if err := t.setup(); err != nil {
-		return err
-	}
-	SetRootPath(rootPath) // essentially sets this node as the current one
-	return t.clearOldNodeInstalls()
+	return clearOldNodeInstalls()
 }
 
-// NeedsUpdate returns true if it is using a node that isn't the latest version
-func NeedsUpdate() (bool, error) {
-	target := findTarget()
-	if target == nil {
-		return false, nil
-	}
-	exists, err := target.isSetup()
-	return !exists, err
-}
-
-func (t *Target) setupUnix() error {
+func setupUnix() error {
 	err := os.MkdirAll(filepath.Join(rootPath, "node_modules"), 0755)
 	if err != nil {
 		return err
 	}
-	resp, err := goreq.Request{Uri: t.URL}.Do()
+	resp, err := goreq.Request{Uri: target.URL}.Do()
 	if err != nil {
 		return err
 	}
@@ -92,23 +78,23 @@ func (t *Target) setupUnix() error {
 	}
 	tmpDir := tmpDir("node")
 	extractTar(tar.NewReader(uncompressed), tmpDir)
-	if getSha() != t.Sha {
+	if getSha() != target.Sha {
 		return errInvalidSha
 	}
-	newDir := t.basePath()
+	newDir := target.basePath()
 	os.RemoveAll(newDir)
-	if err := os.Rename(filepath.Join(tmpDir, t.Base), newDir); err != nil {
+	if err := os.Rename(filepath.Join(tmpDir, target.Base), newDir); err != nil {
 		return err
 	}
 	return os.Remove(tmpDir)
 }
 
-func (t *Target) setupWindows() error {
-	os.RemoveAll(t.basePath())
-	if err := os.MkdirAll(t.basePath(), 0755); err != nil {
+func setupWindows() error {
+	os.RemoveAll(target.basePath())
+	if err := os.MkdirAll(target.basePath(), 0755); err != nil {
 		return err
 	}
-	return downloadFile(t.nodePath(), t.URL, t.Sha)
+	return downloadFile(target.nodePath(), target.URL, target.Sha)
 }
 
 func progressDrawFn(progress, total int64) string {
@@ -176,16 +162,6 @@ func downloadNpm(npmPath string) error {
 	return os.RemoveAll(tmpDir)
 }
 
-// gets the currently running os and arch target
-func findTarget() *Target {
-	for _, t := range targets {
-		if runtime.GOARCH == t.Arch && runtime.GOOS == t.OS {
-			return &t
-		}
-	}
-	return nil
-}
-
 func tmpDir(prefix string) string {
 	root := filepath.Join(rootPath, "tmp")
 	err := os.MkdirAll(root, 0755)
@@ -197,4 +173,25 @@ func tmpDir(prefix string) string {
 		panic(err)
 	}
 	return dir
+}
+
+func getNodeInstalls() []string {
+	nodes := []string{}
+	files, _ := ioutil.ReadDir(rootPath)
+	for _, f := range files {
+		name := f.Name()
+		if f.IsDir() && strings.HasPrefix(name, "node-v") {
+			nodes = append(nodes, name)
+		}
+	}
+	return nodes
+}
+
+func clearOldNodeInstalls() error {
+	for _, name := range getNodeInstalls() {
+		if name != target.Base {
+			return os.RemoveAll(filepath.Join(rootPath, name))
+		}
+	}
+	return nil
 }
