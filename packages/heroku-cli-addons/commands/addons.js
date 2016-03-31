@@ -50,10 +50,10 @@ function* addonGetter(api, app) {
     function isRelevantToApp(addon) {
         return !app ||
             addon.app.name === app ||
-            _.any(addon.attachments, function(att) { return att.app.name === app; });
+            _.some(addon.attachments, att => att.app.name === app);
     }
 
-    attachments = _.groupBy(items[1], _.property('addon.id'));
+    attachments = _.groupBy(items[1], 'addon.id');
 
     addons = [];
     items[0].forEach(function(addon) {
@@ -89,7 +89,7 @@ function* addonGetter(api, app) {
 }
 
 function displayAll(addons) {
-    addons = _.sortByAll(addons, 'app.name', 'plan.name', 'addon.name');
+    addons = _.sortBy(addons, 'app.name', 'plan.name', 'addon.name');
 
     if(addons.length === 0) {
         cli.log("No add-ons.");
@@ -163,10 +163,10 @@ function displayForApp(app, addons) {
 
         let addonLine = `${service} (${name})`;
 
-        let atts = _.sortByAll(addon.attachments,
-                               isForeignApp,
-                               'app.name',
-                               'name');
+        let atts = _.sortBy(addon.attachments,
+                            isForeignApp,
+                            'app.name',
+                            'name');
 
         // render each attachment under the add-on
         let attLines = atts.map(function(attachment, idx) {
@@ -177,10 +177,10 @@ function displayForApp(app, addons) {
         return [addonLine].concat(attLines).join("\n");
     }
 
-    addons = _.sortByAll(addons,
-                         isForeignApp,
-                         'plan.name',
-                         'name');
+    addons = _.sortBy(addons,
+                      isForeignApp,
+                      'plan.name',
+                      'name');
 
     cli.log();
     table(addons, {
