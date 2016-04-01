@@ -1,11 +1,9 @@
 package gode
 
 import (
-	"archive/tar"
 	"compress/gzip"
 	"errors"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -13,7 +11,6 @@ import (
 	"strings"
 
 	"github.com/dickeyxxx/golock"
-	"github.com/franela/goreq"
 	"github.com/mitchellh/ioprogress"
 )
 
@@ -21,88 +18,54 @@ var errInvalidSha = errors.New("Invalid SHA")
 
 // IsSetup returns true if node is setup in RootPath
 func IsSetup() (bool, error) {
-	exists, err := fileExists(target.nodePath())
+	exists, err := fileExists(nodeBinPath)
 	if !exists {
 		return exists, err
 	}
-	return fileExists(target.npmPath())
+	return fileExists(npmBinPath)
 }
 
 // Setup downloads and sets up node in the RootPath directory
 func Setup() error {
 	golock.Lock(lockPath)
 	defer golock.Unlock(lockPath)
-	if target == nil {
+	if setup, _ := IsSetup(); setup {
+		return nil
+	}
+	if t == nil {
 		return errors.New(`node does not offer a prebuilt binary for your OS.
-You'll need to compile the tarball from nodejs.org and place it in ~/.heroku/node-v` + Version)
+You'll need to compile the tarball from nodejs.org and place the binary at ` + nodeBinPath)
 	}
-	if target.OS == "windows" {
-		if err := setupWindows(); err != nil {
-			return err
-		}
-	} else {
-		if err := setupUnix(); err != nil {
-			return err
-		}
+	if err := downloadFile(nodeBinPath, t.URL, t.Sha, true); err != nil {
+		return err
 	}
-	if err := downloadNpm(target.npmPath()); err != nil {
+	if err := os.Chmod(nodeBinPath, 0755); err != nil {
+		return err
+	}
+	if err := downloadNpm(); err != nil {
+		return err
+	}
+	if err := os.MkdirAll(modulesDir, 0755); err != nil {
 		return err
 	}
 	return clearOldNodeInstalls()
 }
 
-func setupUnix() error {
-	err := os.MkdirAll(filepath.Join(rootPath, "node_modules"), 0755)
-	if err != nil {
+func downloadNpm() error {
+	tmpDir := tmpDir()
+	zipfile := filepath.Join(tmpDir, "npm.zip")
+	if err := downloadFile(zipfile, npmURL, npmSha, false); err != nil {
 		return err
 	}
-	resp, err := goreq.Request{Uri: target.URL}.Do()
-	if err != nil {
+	if err := extractZip(zipfile, tmpDir); err != nil {
 		return err
 	}
-	defer resp.Body.Close()
-	if resp.StatusCode != 200 {
-		msg, _ := resp.Body.ToString()
-		return errors.New(msg)
-	}
-	size, _ := strconv.Atoi(resp.Header.Get("Content-Length"))
-	progress := &ioprogress.Reader{
-		Reader:   resp.Body,
-		Size:     int64(size),
-		DrawFunc: ioprogress.DrawTerminalf(os.Stderr, progressDrawFn),
-	}
-	getSha, stream := computeSha(progress)
-	uncompressed, err := gzip.NewReader(stream)
-	if err != nil {
-		return err
-	}
-	tmpDir := tmpDir("node")
-	extractTar(tar.NewReader(uncompressed), tmpDir)
-	if getSha() != target.Sha {
-		return errInvalidSha
-	}
-	newDir := target.basePath()
-	os.RemoveAll(newDir)
-	if err := os.Rename(filepath.Join(tmpDir, target.Base), newDir); err != nil {
-		return err
-	}
-	return os.Remove(tmpDir)
+	os.RemoveAll(filepath.Join(modulesDir, "npm"))
+	os.Rename(filepath.Join(tmpDir, "npm-"+NpmVersion), npmBasePath)
+	return os.RemoveAll(tmpDir)
 }
 
-func setupWindows() error {
-	os.RemoveAll(target.basePath())
-	if err := os.MkdirAll(target.basePath(), 0755); err != nil {
-		return err
-	}
-	return downloadFile(target.nodePath(), target.URL, target.Sha)
-}
-
-func progressDrawFn(progress, total int64) string {
-	return "heroku-cli: Adding dependencies... " + ioprogress.DrawTextFormatBytes(progress, total)
-}
-
-func downloadFile(path, url, sha string) error {
-	tmp := filepath.Join(tmpDir("download"), "file")
+func downloadFile(path, url, sha string, gunzip bool) error {
 	// TODO: make this work with goreq
 	// right now it fails because the body is closed for some reason
 	resp, err := http.Get(url)
@@ -115,13 +78,22 @@ func downloadFile(path, url, sha string) error {
 		Size:     int64(size),
 		DrawFunc: ioprogress.DrawTerminalf(os.Stderr, progressDrawFn),
 	}
+	tmp := filepath.Join(tmpDir(), "file")
 	file, err := os.Create(tmp)
 	if err != nil {
 		return err
 	}
+	var reader io.Reader
 	getSha, stream := computeSha(progress)
-	_, err = io.Copy(file, stream)
-	if err != nil {
+	if gunzip {
+		reader, err = gzip.NewReader(stream)
+		if err != nil {
+			return err
+		}
+	} else {
+		reader = stream
+	}
+	if _, err = io.Copy(file, reader); err != nil {
 		return err
 	}
 	file.Close()
@@ -129,8 +101,7 @@ func downloadFile(path, url, sha string) error {
 	if getSha() != sha {
 		return errInvalidSha
 	}
-	err = os.MkdirAll(filepath.Dir(path), 0755)
-	if err != nil {
+	if err = os.MkdirAll(filepath.Dir(path), 0755); err != nil {
 		return err
 	}
 	os.Remove(path)
@@ -141,56 +112,23 @@ func downloadFile(path, url, sha string) error {
 	return os.RemoveAll(filepath.Dir(tmp))
 }
 
-func downloadNpm(npmPath string) error {
-	modulesDir := filepath.Dir(filepath.Dir(npmPath))
-	os.MkdirAll(modulesDir, 0755)
-	tmpDir := tmpDir("node")
-	zipfile := filepath.Join(tmpDir, "npm.zip")
-	err := downloadFile(zipfile, npmURL, npmSha)
-	if err != nil {
-		return err
-	}
-	err = extractZip(zipfile, tmpDir)
-	if err != nil {
-		return err
-	}
-	os.RemoveAll(filepath.Join(modulesDir, "npm"))
-	os.Rename(filepath.Join(tmpDir, "npm-"+NpmVersion), filepath.Join(modulesDir, "npm"))
-	if err != nil {
-		return err
-	}
-	return os.RemoveAll(tmpDir)
-}
-
-func tmpDir(prefix string) string {
-	root := filepath.Join(rootPath, "tmp")
-	err := os.MkdirAll(root, 0755)
-	if err != nil {
-		panic(err)
-	}
-	dir, err := ioutil.TempDir(root, prefix)
-	if err != nil {
-		panic(err)
-	}
-	return dir
-}
-
-func getNodeInstalls() []string {
-	nodes := []string{}
-	files, _ := ioutil.ReadDir(rootPath)
-	for _, f := range files {
-		name := f.Name()
-		if f.IsDir() && strings.HasPrefix(name, "node-v") {
-			nodes = append(nodes, name)
-		}
-	}
-	return nodes
+func progressDrawFn(progress, total int64) string {
+	return "heroku-cli: Adding dependencies... " + ioprogress.DrawTextFormatBytes(progress, total)
 }
 
 func clearOldNodeInstalls() error {
-	for _, name := range getNodeInstalls() {
-		if name != target.Base {
-			return os.RemoveAll(filepath.Join(rootPath, name))
+	for _, name := range getDirsWithPrefix(rootPath, "node-") {
+		if !strings.HasPrefix(name, "node-"+NodeVersion) {
+			if err := os.RemoveAll(filepath.Join(rootPath, name)); err != nil {
+				return err
+			}
+		}
+	}
+	for _, name := range getDirsWithPrefix(rootPath, "npm-") {
+		if name != "npm-"+NpmVersion {
+			if err := os.RemoveAll(filepath.Join(rootPath, name)); err != nil {
+				return err
+			}
 		}
 	}
 	return nil

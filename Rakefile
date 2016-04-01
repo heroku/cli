@@ -2,7 +2,7 @@ require 'digest'
 require 'aws-sdk'
 require 'json'
 
-BUCKET_NAME = 'heroku-cli'
+BUCKET_NAME = 'heroku-cli-assets'
 
 TARGETS = [
   {os: 'windows', arch: '386'},
@@ -44,9 +44,7 @@ task :release => :build do
     puts "  * #{target[:os]}-#{target[:arch]}"
     from = "./dist/#{target[:os]}/#{target[:arch]}/heroku-cli"
     to = remote_path(target[:os], target[:arch])
-    upload_file(from, to, content_type: 'binary/octet-stream', cache_control: cache_control)
     upload_file(from + '.gz', to + '.gz', content_type: 'binary/octet-stream', content_encoding: 'gzip', cache_control: cache_control)
-    upload(from, to + ".sha1", content_type: 'text/plain', cache_control: cache_control)
   end
   upload_manifest()
   notify_rollbar
@@ -116,7 +114,7 @@ def manifest
 end
 
 def s3_client
-  @s3_client ||= Aws::S3::Client.new(region: 'us-west-2', access_key_id: ENV['HEROKU_RELEASE_ACCESS'], secret_access_key: ENV['HEROKU_RELEASE_SECRET'])
+  @s3_client ||= Aws::S3::Client.new(region: 'us-east-1')
 end
 
 def upload_file(local, remote, opts={})

@@ -1,0 +1,172 @@
+#!/usr/bin/env node
+'use strict';
+
+const Promise     = require('bluebird');
+const crypto      = require('crypto');
+const https       = require('https');
+const tar         = require('tar');
+const fs          = require('mz/fs');
+const path        = require('path');
+const observatory = require('observatory');
+const AWS         = require('aws-sdk');
+const zlib        = require('zlib');
+const s3          = new AWS.S3();
+
+// CHANGE THESE ONLY AND RUN SCRIPT
+// ==========================
+const nodeVersion = '5.10.0';
+const npmVersion = '3.8.3';
+// ==========================
+
+const outputPath = './gode/constants.go';
+const urlBase    = `https://nodejs.org/download/release/v${nodeVersion}`;
+const npmBase    = `npm-${npmVersion}`;
+let npmURL       = `https://github.com/npm/npm/archive/v${npmVersion}.zip`;
+let npmSha;
+
+let targets = [
+  {arch: '386',   os: 'linux',   url: urlBase+`/node-v${nodeVersion}-linux-x86.tar.gz`,    base: `node-v${nodeVersion}-linux-x86`},
+  {arch: 'amd64', os: 'linux',   url: urlBase+`/node-v${nodeVersion}-linux-x64.tar.gz`,    base: `node-v${nodeVersion}-linux-x64`},
+  {arch: 'arm',   os: 'linux',   url: urlBase+`/node-v${nodeVersion}-linux-armv7l.tar.gz`, base: `node-v${nodeVersion}-linux-armv7l`},
+  {arch: 'amd64', os: 'darwin',  url: urlBase+`/node-v${nodeVersion}-darwin-x64.tar.gz`,   base: `node-v${nodeVersion}-darwin-x64`},
+  {arch: '386',   os: 'windows', url: urlBase+`/win-x86/node.exe`},
+  {arch: 'amd64', os: 'windows', url: urlBase+`/win-x64/node.exe`},
+];
+
+let rimraf = dir => new Promise((ok, fail) => require('rimraf')(dir, err => err ? fail(err) : ok()));
+
+function download (url, file) {
+  return new Promise(function (fulfill, reject) {
+    https.get(url, function (res) {
+      if (res.statusCode >= 300 && res.statusCode <= 399) return fulfill(download(res.headers.location, file));
+      if (res.statusCode <= 199 || res.statusCode >= 400) return reject(new Error(`${res.statusCode}:${url}`));
+      res.pipe(fs.createWriteStream(file));
+      res.on('end', fulfill);
+    });
+  });
+}
+
+function sha (file) {
+  return new Promise(function (fulfill) {
+    let fd   = fs.createReadStream(file);
+    let hash = crypto.createHash('sha256');
+    hash.setEncoding('hex');
+    fd.on('end', function () {
+      hash.end();
+      fulfill(hash.read());
+    });
+    fd.pipe(hash);
+  });
+}
+
+function s3upload (local, key) {
+  return new Promise((ok, fail) => {
+    s3.upload({
+      Bucket:       'heroku-cli-assets',
+      Key:          key,
+      Body:         fs.createReadStream(local),
+      CacheControl: 'public,max-age=86400',
+    }, err => err ? fail(err) : ok());
+  });
+}
+
+function extractTarball (from, to) {
+  return new Promise((ok, fail) => {
+    let extractor = tar.Extract({path: to}).on('error', fail).on('end', ok);
+    fs.createReadStream(from).pipe(zlib.createGunzip()).pipe(extractor);
+  });
+}
+
+function gzip (file) {
+  return new Promise((ok, fail) => {
+    fs.createReadStream(file)
+      .on('error', fail)
+      .on('end', ok)
+    .pipe(zlib.createGzip())
+    .pipe(fs.createWriteStream(file+'.gz'));
+  });
+}
+
+function processTarget(target) {
+  let filename = `node-${nodeVersion}-${target.os}-${target.arch}`;
+  if (target.os === 'windows') filename += '.exe';
+  let file = `./tmp/${filename}`;
+  let task = observatory.add(filename);
+
+  function extractNode (archive, file, base) {
+    let tmp = file+'.tmp';
+    return rimraf(tmp)
+    .then(() => extractTarball(archive, tmp))
+    .then(() => fs.rename(path.join(tmp, base, 'bin', 'node'), file))
+    .then(() => rimraf(tmp))
+    .then(() => rimraf(archive));
+  }
+
+  return rimraf(file)
+  .then(() => task.status('downloading'))
+  .then(() => download(target.url, target.os === 'windows' ? file : file+'.tar.gz'))
+  .then(() => task.status('extracting'))
+  .then(() => target.os !== 'windows' ? extractNode(file+'.tar.gz', file, target.base) : null)
+  .then(() => task.status('gzipping'))
+  .then(() => gzip(file)).then(() => filename += '.gz').then(() => file += '.gz')
+  .then(() => task.status('determining sha'))
+  .then(() => sha(file).then(sha => target.sha = sha))
+  .then(() => target.url = `https://cli-assets.heroku.com/node/v${nodeVersion}/${filename}`)
+  .then(() => task.status('uploading'))
+  .then(() => s3upload(file, `node/v${nodeVersion}/${filename}`))
+  .then(() => task.done('done'));
+}
+
+function processNpm() {
+  let task = observatory.add(npmBase);
+  let filename = `v${npmVersion}.zip`;
+  let file = `./tmp/${filename}`;
+  task.status('downloading');
+  return download(npmURL, file)
+  .then(() => task.status('determining sha'))
+  .then(() => sha(file).then(sha => npmSha = sha))
+  .then(() => npmURL = `https://cli-assets.heroku.com/npm/${filename}`)
+  .then(() => task.status('uploading'))
+  .then(() => s3upload(file, `npm/${filename}`))
+  .then(() => task.done('done'));
+}
+
+function output () {
+  let output = `package gode
+
+//
+// DO NOT EDIT
+//
+// THIS FILE IS GENERATED WITH ./set-node-version
+//
+
+// NodeVersion is the requested node version
+const NodeVersion = "${nodeVersion}"
+
+// NpmVersion is the requested npm version
+const NpmVersion = "${npmVersion}"
+
+const npmSha = "${npmSha}"
+const npmURL = "${npmURL}"
+const npmBase = "${npmBase}"
+
+type target struct {
+\tArch     string
+\tOS       string
+\tURL      string
+\tSha      string
+}
+
+var targets = []target{
+`;
+  for (let target of targets) output += `\t{"${target.arch}", "${target.os}", "${target.url}", "${target.sha}"},\n`;
+  output += "}\n";
+  return output;
+}
+
+console.log(`Setting node version to ${nodeVersion} and npm to ${npmVersion}...`);
+require('mkdirp').sync('tmp');
+Promise.all(Promise.map(targets, processTarget), processNpm())
+.then(() => fs.writeFile(outputPath, output()))
+.then(() => console.log(`${outputPath} updated`))
+.catch(err => { console.error(err.stack); process.exit(1); });

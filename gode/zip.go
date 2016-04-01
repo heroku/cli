@@ -3,6 +3,7 @@ package gode
 import (
 	"archive/zip"
 	"io"
+	"log"
 	"os"
 	"path/filepath"
 )
@@ -21,7 +22,9 @@ func extractZip(zipfile, root string) error {
 				return err
 			}
 		default:
-			extractZipFile(path, f)
+			if err := extractZipFile(path, f); err != nil {
+				log.Printf("Error extracting npm: [%s] %v", path, err)
+			}
 		}
 	}
 	return nil

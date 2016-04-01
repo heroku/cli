@@ -93,7 +93,7 @@ func updatePlugins() {
 		}
 		Errf(" done. Updated %d %s.\n", len(packages), plural("package", len(packages)))
 	} else {
-		Errln("no plugins to update.")
+		Errln(" no plugins to update.")
 	}
 }
 
