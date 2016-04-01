@@ -25,9 +25,9 @@ func DebugScript(script string) *exec.Cmd {
 	}
 	path := filepath.Join(rootPath, "node_modules", ".bin", "node-debug")
 	if _, err := exec.LookPath(path); err != nil {
-		fmt.Print("Installing node-inspector... ")
+		fmt.Print("Installing node-inspector...")
 		InstallPackages("node-inspector")
-		fmt.Println("done")
+		fmt.Println(" done")
 	}
 	cmd := exec.Command(path, "debug.js")
 	cmd.Dir = rootPath
