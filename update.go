@@ -79,7 +79,7 @@ func updatePlugins() {
 	if len(plugins) == 0 {
 		return
 	}
-	Err("heroku-cli: Updating plugins... ")
+	Err("heroku-cli: Updating plugins...")
 	packages, err := gode.OutdatedPackages(plugins...)
 	PrintError(err, true)
 	if len(packages) > 0 {
@@ -91,7 +91,7 @@ func updatePlugins() {
 			AddPluginsToCache(plugin)
 			unlockPlugin(name)
 		}
-		Errf("done. Updated %d %s.\n", len(packages), plural("package", len(packages)))
+		Errf(" done. Updated %d %s.\n", len(packages), plural("package", len(packages)))
 	} else {
 		Errln("no plugins to update.")
 	}
@@ -117,9 +117,9 @@ func updateCLI(channel string) {
 	}
 	defer unlock()
 	if manifest.Channel == "master" {
-		Errf("heroku-cli: Updating to %s... ", manifest.Version)
+		Errf("heroku-cli: Updating to %s...", manifest.Version)
 	} else {
-		Errf("heroku-cli: Updating to %s (%s)... ", manifest.Version, manifest.Channel)
+		Errf("heroku-cli: Updating to %s (%s)...", manifest.Version, manifest.Channel)
 	}
 	build := manifest.Builds[runtime.GOOS][runtime.GOARCH]
 	// on windows we can't remove an existing file or remove the running binary
@@ -138,7 +138,7 @@ func updateCLI(channel string) {
 		panic(err)
 	}
 	os.Remove(binPath + ".old")
-	Errln("done")
+	Errln(" done")
 	unlock()
 	clearAutoupdateFile() // force full update
 	reexec()              // reexec to finish updating with new code

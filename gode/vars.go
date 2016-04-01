@@ -1,6 +1,7 @@
 package gode
 
 import (
+	"os"
 	"path/filepath"
 	"runtime"
 )
