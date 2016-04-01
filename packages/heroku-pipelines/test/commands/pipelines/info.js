@@ -48,22 +48,34 @@ describe('pipelines:info', function () {
   });
 
   it('displays the pipeline info and apps', function () {
-    nock('https://api.heroku.com')
-      .get('/pipelines')
-      .query(true)
-      .reply(200, pipelines);
+    let api = nock('https://api.heroku.com')
+    .get('/pipelines')
+    .query(true)
+    .reply(200, pipelines)
+    .get('/pipelines/0123/pipeline-couplings')
+    .reply(200, couplings)
+    .post('/filters/apps')
+    .reply(200, apps);
 
-    nock('https://api.heroku.com')
-      .get('/pipelines/0123/pipeline-couplings')
-      .reply(200, couplings);
-
-    nock('https://api.heroku.com')
-      .post('/filters/apps')
-      .reply(200, apps);
-
-    return cmd.run({ args: { pipeline: 'example' } }).then(() => {
+    return cmd.run({ args: { pipeline: 'example' }, flags: {} }).then(() => {
       cli.stdout.should.contain('staging:');
       cli.stdout.should.contain('example-staging');
-    });
+    })
+    .then(() => api.done());
+  });
+
+  it('displays json format', function () {
+    let api = nock('https://api.heroku.com')
+    .get('/pipelines')
+    .query(true)
+    .reply(200, pipelines)
+    .get('/pipelines/0123/pipeline-couplings')
+    .reply(200, couplings)
+    .post('/filters/apps')
+    .reply(200, apps);
+
+    return cmd.run({ args: { pipeline: 'example' }, flags: {json: true}})
+    .then(() => JSON.parse(cli.stdout).pipeline.name.should.eq('example'))
+    .then(() =>  api.done());
   });
 });

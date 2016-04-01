@@ -8,19 +8,18 @@ module.exports = {
   description: 'list pipelines you have access to',
   help: 'Example:\n  $ heroku pipelines:list\n  === My Pipelines\n  example\n  sushi',
   default: true,
+  flags: [
+    {name: 'json', description: 'output in json format'},
+  ],
   needsAuth: true,
   run: cli.command(function* (context, heroku) {
-    let pipelines = yield heroku.request({
-      method: 'GET',
-      path: "/pipelines",
-      headers: { 'Accept': 'application/vnd.heroku+json; version=3' }
-    }); // heroku.pipelines().list();
+    let pipelines = yield heroku.get('/pipelines');
 
-    cli.styledHeader(`My Pipelines`);
-    for (var pipeline in pipelines) {
-      if (pipelines.hasOwnProperty(pipeline)) {
-        cli.log(`${pipelines[pipeline].name}`);
-      }
+    if (context.flags.json) {
+      cli.styledJSON(pipelines);
+    } else {
+      cli.styledHeader(`My Pipelines`);
+      for (let pipeline of pipelines) cli.log(pipeline.name);
     }
   })
 };

@@ -14,12 +14,14 @@ module.exports = {
   args: [
     {name: 'pipeline', description: 'pipeline to show', optional: false}
   ],
+  flags: [
+    {name: 'json', description: 'output in json format'},
+  ],
   run: cli.command(function* (context, heroku) {
     const pipeline = yield disambiguate(heroku, context.args.pipeline);
 
     const apps = yield listPipelineApps(heroku, pipeline.id);
 
-    cli.styledHeader(pipeline.name);
     // Sort Apps by stage, name
     // Display in table
     let stages={};
@@ -33,7 +35,12 @@ module.exports = {
         }
       }
     }
-    // Pass in sort order for stages
-    cli.styledHash(stages, stageNames);
+
+    if (context.flags.json) {
+      cli.styledJSON({pipeline, apps});
+    } else {
+      cli.styledHeader(pipeline.name);
+      cli.styledHash(stages, stageNames);
+    }
   })
 };
