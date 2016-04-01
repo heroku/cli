@@ -3,7 +3,6 @@
 const cli      = require('heroku-cli-util');
 const co       = require('co');
 const bluebird = require('bluebird');
-const got      = require('got');
 
 const api             = require('../../lib/api');
 const listPipelineApps = api.listPipelineApps;
@@ -15,7 +14,7 @@ const KOLKRABBI_BASE_URL = 'https://kolkrabbi.heroku.com';
 // Helper functions
 
 function kolkrabbiRequest(url, token) {
-  return got.get(KOLKRABBI_BASE_URL + url, {
+  return cli.got.get(KOLKRABBI_BASE_URL + url, {
     headers: {
       authorization: 'Bearer ' + token
     },
@@ -81,7 +80,7 @@ function* diff(targetApp, downstreamApp, githubToken, herokuUserAgent) {
 
   // Do the actual Github diff
   try {
-    const res = yield got.get(`https://api.github.com/repos/${targetApp.repo}/compare/${downstreamApp.hash}...${targetApp.hash}`, {
+    const res = yield cli.got.get(`https://api.github.com/repos/${targetApp.repo}/compare/${downstreamApp.hash}...${targetApp.hash}`, {
       headers: {
         authorization: 'token ' + githubToken,
         'user-agent': herokuUserAgent

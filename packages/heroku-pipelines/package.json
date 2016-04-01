@@ -18,10 +18,9 @@
     "postversion": "npm publish && git push && git push --tags"
   },
   "dependencies": {
-    "bluebird": "2.10.2",
+    "bluebird": "3.3.4",
     "co": "4.6.0",
-    "got": "6.1.1",
-    "heroku-cli-util": "5.8.0",
+    "heroku-cli-util": "5.9.3",
     "inflection": "1.8.0",
     "inquirer": "0.12.0",
     "string-just": "0.0.2",
