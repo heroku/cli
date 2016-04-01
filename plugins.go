@@ -77,9 +77,9 @@ var pluginsInstallCmd = &Command{
 			Errln("Must specify a plugin name")
 			return
 		}
-		Errf("Installing plugin %s... ", name)
+		Errf("Installing plugin %s...", name)
 		ExitIfError(installPlugins(name), true)
-		Errln("done")
+		Errln(" done")
 	},
 }
 
@@ -145,10 +145,10 @@ var pluginsUninstallCmd = &Command{
 		if !contains(PluginNames(), name) {
 			ExitIfError(errors.New(name+" is not installed"), false)
 		}
-		Errf("Uninstalling plugin %s... ", name)
+		Errf("Uninstalling plugin %s...", name)
 		ExitIfError(gode.RemovePackages(name), true)
 		RemovePluginFromCache(name)
-		Errln("done")
+		Errln(" done")
 	},
 }
 
