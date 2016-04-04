@@ -1,6 +1,7 @@
 package main
 
 import (
+	"container/list"
 	"crypto/tls"
 	"crypto/x509"
 	"encoding/json"
@@ -11,7 +12,6 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
-	"container/list"
 
 	"github.com/franela/goreq"
 )
@@ -19,7 +19,7 @@ import (
 func init() {
 	goreq.SetConnectTimeout(15 * time.Second)
 	certs := getCACerts()
-	if (certs != nil) {
+	if certs != nil {
 		goreq.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{RootCAs: certs}
 	}
 }
@@ -60,7 +60,7 @@ func shouldVerifyHost(host string) bool {
 
 func getCACerts() *x509.CertPool {
 	paths := list.New()
-	if ! useSystemCerts() {
+	if !useSystemCerts() {
 		path := filepath.Join(AppDir(), "cacert.pem")
 		if _, err := os.Stat(path); os.IsNotExist(err) {
 			downloadCert(path)
@@ -92,7 +92,7 @@ func getCACerts() *x509.CertPool {
 
 	certs := x509.NewCertPool()
 	Debugln("Adding the following trusted certificate authorities")
-	for e := paths.Front() ; e != nil; e = e.Next() {
+	for e := paths.Front(); e != nil; e = e.Next() {
 		path := e.Value.(string)
 		Debugln("  " + path)
 		data, err := ioutil.ReadFile(path)
