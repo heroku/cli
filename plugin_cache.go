@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 )
@@ -27,11 +28,11 @@ func RemovePluginFromCache(name string) {
 }
 
 func savePluginCache(cache map[string]*Plugin) {
-	f, err := os.Create(pluginCachePath)
+	data, err := json.MarshalIndent(cache, "", "  ")
 	if err != nil {
 		panic(err)
 	}
-	if err := json.NewEncoder(f).Encode(cache); err != nil {
+	if err := ioutil.WriteFile(pluginCachePath, data, 0644); err != nil {
 		panic(err)
 	}
 }
