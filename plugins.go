@@ -291,6 +291,9 @@ func ParsePlugin(name string) (*Plugin, error) {
 		return nil, fmt.Errorf("Error parsing plugin: %s\n%s\n%s", name, err, string(output))
 	}
 	for _, command := range plugin.Commands {
+		if command == nil {
+			continue
+		}
 		command.Plugin = plugin.Name
 		command.Help = strings.TrimSpace(command.Help)
 	}
