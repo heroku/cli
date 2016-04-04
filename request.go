@@ -1,6 +1,7 @@
 package main
 
 import (
+	"container/list"
 	"crypto/tls"
 	"crypto/x509"
 	"encoding/json"
@@ -17,8 +18,9 @@ import (
 
 func init() {
 	goreq.SetConnectTimeout(15 * time.Second)
-	if !useSystemCerts() {
-		goreq.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{RootCAs: getCACerts()}
+	certs := getCACerts()
+	if certs != nil {
+		goreq.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{RootCAs: certs}
 	}
 }
 
@@ -57,21 +59,52 @@ func shouldVerifyHost(host string) bool {
 }
 
 func getCACerts() *x509.CertPool {
+	paths := list.New()
+	if !useSystemCerts() {
+		path := filepath.Join(AppDir(), "cacert.pem")
+		if _, err := os.Stat(path); os.IsNotExist(err) {
+			downloadCert(path)
+		}
+		paths.PushBack(path)
+	}
+
+	ssl_cert_file := os.Getenv("SSL_CERT_FILE")
+	if ssl_cert_file != "" {
+		paths.PushBack(ssl_cert_file)
+	}
+
+	ssl_cert_dir := os.Getenv("SSL_CERT_DIR")
+	if ssl_cert_dir != "" {
+		files, err := ioutil.ReadDir(ssl_cert_dir)
+		if err != nil {
+			Warn("Error opening " + ssl_cert_dir)
+			return nil
+		}
+		for _, file := range files {
+			path := filepath.Join(ssl_cert_dir, file.Name())
+			paths.PushBack(path)
+		}
+	}
+
+	if paths.Len() == 0 {
+		return nil
+	}
+
 	certs := x509.NewCertPool()
-	path := filepath.Join(AppDir(), "cacert.pem")
-	data, err := ioutil.ReadFile(path)
-	if err != nil {
-		downloadCert(path)
-		data, err = ioutil.ReadFile(path)
+	Debugln("Adding the following trusted certificate authorities")
+	for e := paths.Front(); e != nil; e = e.Next() {
+		path := e.Value.(string)
+		Debugln("  " + path)
+		data, err := ioutil.ReadFile(path)
 		if err != nil {
 			PrintError(err, false)
 			return nil
 		}
-	}
-	ok := certs.AppendCertsFromPEM(data)
-	if !ok {
-		Warn("Error parsing " + path)
-		return nil
+		ok := certs.AppendCertsFromPEM(data)
+		if !ok {
+			Warn("Error parsing " + path)
+			return nil
+		}
 	}
 	return certs
 }
