@@ -17,6 +17,7 @@ import (
 	"github.com/franela/goreq"
 	"github.com/heroku/heroku-cli/gode"
 	"github.com/kardianos/osext"
+	"github.com/ulikunitz/xz"
 )
 
 var updateTopic = &Topic{
@@ -93,7 +94,7 @@ func updatePlugins() {
 		}
 		Errf(" done. Updated %d %s.\n", len(packages), plural("package", len(packages)))
 	} else {
-		Errln("no plugins to update.")
+		Errln(" no plugins to update.")
 	}
 }
 
@@ -199,7 +200,7 @@ func downloadBin(path, url string) error {
 	}
 	defer out.Close()
 	res, err := goreq.Request{
-		Uri:       url + ".gz",
+		Uri:       url + ".xz",
 		ShowDebug: debugging,
 	}.Do()
 	if err != nil {
@@ -210,7 +211,11 @@ func downloadBin(path, url string) error {
 		return errors.New(b)
 	}
 	defer res.Body.Close()
-	_, err = io.Copy(out, res.Body)
+	uncompressed, err := xz.NewReader(res.Body)
+	if err != nil {
+		return err
+	}
+	_, err = io.Copy(out, uncompressed)
 	return err
 }
 

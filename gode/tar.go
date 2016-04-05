@@ -2,13 +2,13 @@ package gode
 
 import (
 	"archive/tar"
-	"fmt"
 	"io"
 	"os"
 	"path/filepath"
 )
 
-func extractTar(archive *tar.Reader, path string) error {
+func extractTar(f io.Reader, path string) error {
+	archive := tar.NewReader(f)
 	for {
 		hdr, err := archive.Next()
 		if err == io.EOF {
@@ -24,11 +24,7 @@ func extractTar(archive *tar.Reader, path string) error {
 				return err
 			}
 		case hdr.Linkname != "":
-			if err := os.Symlink(hdr.Linkname, path); err != nil {
-				// just warn for now
-				fmt.Fprintln(os.Stderr, err)
-				// return err
-			}
+			os.Symlink(hdr.Linkname, path)
 		default:
 			if err := extractFile(archive, hdr, path); err != nil {
 				return err
@@ -38,6 +34,9 @@ func extractTar(archive *tar.Reader, path string) error {
 }
 
 func extractFile(archive *tar.Reader, hdr *tar.Header, path string) error {
+	if err := os.MkdirAll(filepath.Dir(path), 0755); err != nil {
+		return err
+	}
 	file, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, hdr.FileInfo().Mode())
 	if err != nil {
 		return err

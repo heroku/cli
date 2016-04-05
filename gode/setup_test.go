@@ -26,9 +26,9 @@ func TestSetup(t *testing.T) {
 	}
 }
 
-func TestSetupInvalidSha(t *testing.T) {
+func TestSetupInvalidSha(test *testing.T) {
 	if testing.Short() {
-		t.Skip("skipping in short mode")
+		test.Skip("skipping in short mode")
 	}
 	err := os.MkdirAll("tmp", 0755)
 	must(err)
@@ -36,17 +36,17 @@ func TestSetupInvalidSha(t *testing.T) {
 	must(err)
 	defer os.RemoveAll(dir)
 	SetRootPath(dir)
-	target = &targets[0]
-	target.Sha = "INVALID"
+	t = &targets[0]
+	t.Sha = "INVALID"
 	err = Setup()
 	if err != errInvalidSha {
-		t.Fatal("Setup with invalid SHA")
+		test.Fatal("Setup with invalid SHA")
 	}
 }
 
-func TestWindowsSetup(t *testing.T) {
+func TestWindowsSetup(test *testing.T) {
 	if testing.Short() {
-		t.Skip("skipping in short mode")
+		test.Skip("skipping in short mode")
 	}
 	err := os.MkdirAll("tmp", 0755)
 	must(err)
@@ -54,10 +54,10 @@ func TestWindowsSetup(t *testing.T) {
 	must(err)
 	defer os.RemoveAll(dir)
 	SetRootPath(dir)
-	target = getWindowsTarget()
+	t = getWindowsTarget()
 	must(Setup())
 	if setup, _ := IsSetup(); !setup {
-		t.Fatal("IsSetup() returned false")
+		test.Fatal("IsSetup() returned false")
 	}
 }
 
@@ -74,7 +74,7 @@ func setup() {
 	must(Setup())
 }
 
-func getWindowsTarget() *Target {
+func getWindowsTarget() *target {
 	for _, t := range targets {
 		if t.OS == "windows" {
 			return &t

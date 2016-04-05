@@ -43,6 +43,21 @@
 			"Rev": "21fc9f95c83442fd164094666f7cb4f9fdd56cd6"
 		},
 		{
+			"ImportPath": "github.com/ulikunitz/xz",
+			"Comment": "v0.4.1",
+			"Rev": "f852725cf3ed4e7dca9bd458fe881ff02b27eae4"
+		},
+		{
+			"ImportPath": "github.com/ulikunitz/xz/internal/hash",
+			"Comment": "v0.4.1",
+			"Rev": "f852725cf3ed4e7dca9bd458fe881ff02b27eae4"
+		},
+		{
+			"ImportPath": "github.com/ulikunitz/xz/lzma",
+			"Comment": "v0.4.1",
+			"Rev": "f852725cf3ed4e7dca9bd458fe881ff02b27eae4"
+		},
+		{
 			"ImportPath": "golang.org/x/crypto/ssh/terminal",
 			"Rev": "59435533c88bd0b1254c738244da1fe96b59d05d"
 		}
