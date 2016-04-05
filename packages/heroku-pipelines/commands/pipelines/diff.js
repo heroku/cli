@@ -80,7 +80,8 @@ function* diff(targetApp, downstreamApp, githubToken, herokuUserAgent) {
 
   // Do the actual Github diff
   try {
-    const res = yield cli.got.get(`https://api.github.com/repos/${targetApp.repo}/compare/${downstreamApp.hash}...${targetApp.hash}`, {
+    const path = `${targetApp.repo}/compare/${downstreamApp.hash}...${targetApp.hash}`;
+    const res = yield cli.got.get(`https://api.github.com/repos/${path}`, {
       headers: {
         authorization: 'token ' + githubToken,
         'user-agent': herokuUserAgent
@@ -103,6 +104,7 @@ function* diff(targetApp, downstreamApp, githubToken, herokuUserAgent) {
       {key: 'author', label: 'Author'},
       {key: 'message', label: 'Message'}
     ]});
+    cli.log(`\nhttps://github.com/${path}`);
   } catch (err) {
     cli.hush(err);
     cli.log(`\n${targetApp.name} was not compared to ${downstreamApp.name} because we were unable to perform a diff`);
