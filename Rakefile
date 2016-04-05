@@ -45,6 +45,7 @@ task :release => :build do
     from = "./dist/#{target[:os]}/#{target[:arch]}/heroku-cli"
     to = remote_path(target[:os], target[:arch])
     upload_file(from + '.gz', to + '.gz', content_type: 'binary/octet-stream', content_encoding: 'gzip', cache_control: cache_control)
+    upload_file(from + '.xz', to + '.xz', content_type: 'binary/octet-stream', cache_control: cache_control)
   end
   upload_manifest()
   notify_rollbar
@@ -76,10 +77,15 @@ def build(target)
     system "mv", "#{path}.signed", path
   end
   gzip(path)
+  xz(path)
 end
 
 def gzip(path)
   system("gzip --keep -f #{path}")
+end
+
+def xz(path)
+  system("xz --keep -f #{path}")
 end
 
 def sha_digest(path)

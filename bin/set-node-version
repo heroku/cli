@@ -11,17 +11,19 @@ const observatory = require('observatory');
 const AWS         = require('aws-sdk');
 const zlib        = require('zlib');
 const s3          = new AWS.S3();
+const lzma        = require('lzma-native');
+const mkdirp      = require('mkdirp');
 
 // CHANGE THESE ONLY AND RUN SCRIPT
 // ==========================
 const nodeVersion = '5.10.0';
-const npmVersion = '3.8.3';
+const npmVersion = '3.8.5';
 // ==========================
 
 const outputPath = './gode/constants.go';
 const urlBase    = `https://nodejs.org/download/release/v${nodeVersion}`;
 const npmBase    = `npm-${npmVersion}`;
-let npmURL       = `https://github.com/npm/npm/archive/v${npmVersion}.zip`;
+let npmURL       = `https://github.com/npm/npm/archive/v${npmVersion}.tar.gz`;
 let npmSha;
 
 let targets = [
@@ -40,8 +42,7 @@ function download (url, file) {
     https.get(url, function (res) {
       if (res.statusCode >= 300 && res.statusCode <= 399) return fulfill(download(res.headers.location, file));
       if (res.statusCode <= 199 || res.statusCode >= 400) return reject(new Error(`${res.statusCode}:${url}`));
-      res.pipe(fs.createWriteStream(file));
-      res.on('end', fulfill);
+      res.pipe(fs.createWriteStream(file).on('close', fulfill));
     });
   });
 }
@@ -77,13 +78,13 @@ function extractTarball (from, to) {
   });
 }
 
-function gzip (file) {
+function xz (file) {
   return new Promise((ok, fail) => {
-    fs.createReadStream(file)
-      .on('error', fail)
-      .on('end', ok)
-    .pipe(zlib.createGzip())
-    .pipe(fs.createWriteStream(file+'.gz'));
+    let input = fs.createReadStream(file).on('error', fail);
+    let output = fs.createWriteStream(file.endsWith('.gz') ? file.replace(/.gz$/, '.xz') : file+'.xz').on('close', ok);
+    let compress = lzma.createCompressor().on('error', fail);
+    if (file.endsWith('.gz')) input = input.pipe(zlib.createGunzip());
+    input.pipe(compress).pipe(output);
   });
 }
 
@@ -107,8 +108,8 @@ function processTarget(target) {
   .then(() => download(target.url, target.os === 'windows' ? file : file+'.tar.gz'))
   .then(() => task.status('extracting'))
   .then(() => target.os !== 'windows' ? extractNode(file+'.tar.gz', file, target.base) : null)
-  .then(() => task.status('gzipping'))
-  .then(() => gzip(file)).then(() => filename += '.gz').then(() => file += '.gz')
+  .then(() => task.status('xzipping'))
+  .then(() => xz(file)).then(() => filename += '.xz').then(() => file += '.xz')
   .then(() => task.status('determining sha'))
   .then(() => sha(file).then(sha => target.sha = sha))
   .then(() => target.url = `https://cli-assets.heroku.com/node/v${nodeVersion}/${filename}`)
@@ -119,15 +120,17 @@ function processTarget(target) {
 
 function processNpm() {
   let task = observatory.add(npmBase);
-  let filename = `v${npmVersion}.zip`;
-  let file = `./tmp/${filename}`;
+  let tarGZFilename = `v${npmVersion}.tar.gz`;
+  let tarXZFilename = `v${npmVersion}.tar.xz`;
   task.status('downloading');
-  return download(npmURL, file)
+  download(npmURL, `./tmp/${tarGZFilename}`)
+  .then(() => task.status('xzipping'))
+  .then(() => xz(`./tmp/${tarGZFilename}`))
   .then(() => task.status('determining sha'))
-  .then(() => sha(file).then(sha => npmSha = sha))
-  .then(() => npmURL = `https://cli-assets.heroku.com/npm/${filename}`)
+  .then(() => sha(`./tmp/${tarXZFilename}`).then(sha => npmSha = sha))
+  .then(() => npmURL = `https://cli-assets.heroku.com/npm/${tarXZFilename}`)
   .then(() => task.status('uploading'))
-  .then(() => s3upload(file, `npm/${filename}`))
+  .then(() => s3upload(`./tmp/${tarXZFilename}`, `npm/${tarXZFilename}`))
   .then(() => task.done('done'));
 }
 
@@ -151,10 +154,10 @@ const npmURL = "${npmURL}"
 const npmBase = "${npmBase}"
 
 type target struct {
-\tArch     string
-\tOS       string
-\tURL      string
-\tSha      string
+\tArch string
+\tOS   string
+\tURL  string
+\tSha  string
 }
 
 var targets = []target{
@@ -165,7 +168,7 @@ var targets = []target{
 }
 
 console.log(`Setting node version to ${nodeVersion} and npm to ${npmVersion}...`);
-require('mkdirp').sync('tmp');
+mkdirp.sync('tmp');
 Promise.all(Promise.map(targets, processTarget), processNpm())
 .then(() => fs.writeFile(outputPath, output()))
 .then(() => console.log(`${outputPath} updated`))

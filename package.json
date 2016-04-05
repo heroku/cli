@@ -2,8 +2,11 @@
   "name": "heroku-cli",
   "private": true,
   "dependencies": {
+    "adm-zip": "0.4.7",
     "aws-sdk": "2.3.0",
     "bluebird": "3.3.4",
+    "fstream": "1.0.8",
+    "lzma-native": "1.1.0",
     "mkdirp": "0.5.1",
     "mz": "2.4.0",
     "observatory": "1.0.0",

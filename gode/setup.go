@@ -1,17 +1,18 @@
 package gode
 
 import (
-	"compress/gzip"
 	"errors"
+	"fmt"
 	"io"
-	"net/http"
 	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
 
 	"github.com/dickeyxxx/golock"
+	"github.com/franela/goreq"
 	"github.com/mitchellh/ioprogress"
+	"github.com/ulikunitz/xz"
 )
 
 var errInvalidSha = errors.New("Invalid SHA")
@@ -36,7 +37,7 @@ func Setup() error {
 		return errors.New(`node does not offer a prebuilt binary for your OS.
 You'll need to compile the tarball from nodejs.org and place the binary at ` + nodeBinPath)
 	}
-	if err := downloadFile(nodeBinPath, t.URL, t.Sha, true); err != nil {
+	if err := downloadFile(nodeBinPath, t.URL, t.Sha); err != nil {
 		return err
 	}
 	if err := os.Chmod(nodeBinPath, 0755); err != nil {
@@ -52,25 +53,28 @@ You'll need to compile the tarball from nodejs.org and place the binary at ` + n
 }
 
 func downloadNpm() error {
+	reader, getSha, err := downloadXZ(npmURL)
+	if err != nil {
+		return err
+	}
 	tmpDir := tmpDir()
-	zipfile := filepath.Join(tmpDir, "npm.zip")
-	if err := downloadFile(zipfile, npmURL, npmSha, false); err != nil {
+
+	if err := extractTar(reader, tmpDir); err != nil {
 		return err
 	}
-	if err := extractZip(zipfile, tmpDir); err != nil {
-		return err
+	if getSha() != npmSha {
+		return errInvalidSha
 	}
-	os.RemoveAll(filepath.Join(modulesDir, "npm"))
+	os.RemoveAll(filepath.Join(npmBasePath))
 	os.Rename(filepath.Join(tmpDir, "npm-"+NpmVersion), npmBasePath)
 	return os.RemoveAll(tmpDir)
 }
 
-func downloadFile(path, url, sha string, gunzip bool) error {
-	// TODO: make this work with goreq
-	// right now it fails because the body is closed for some reason
-	resp, err := http.Get(url)
+func downloadXZ(url string) (io.Reader, func() string, error) {
+	req := goreq.Request{Uri: url}
+	resp, err := req.Do()
 	if err != nil {
-		return err
+		return nil, nil, err
 	}
 	size, _ := strconv.Atoi(resp.Header.Get("Content-Length"))
 	progress := &ioprogress.Reader{
@@ -78,26 +82,25 @@ func downloadFile(path, url, sha string, gunzip bool) error {
 		Size:     int64(size),
 		DrawFunc: ioprogress.DrawTerminalf(os.Stderr, progressDrawFn),
 	}
+	getSha, reader := computeSha(progress)
+	uncompressed, err := xz.NewReader(reader)
+	return uncompressed, getSha, nil
+}
+
+func downloadFile(path, url, sha string) error {
+	reader, getSha, err := downloadXZ(url)
+	if err != nil {
+		return err
+	}
 	tmp := filepath.Join(tmpDir(), "file")
 	file, err := os.Create(tmp)
 	if err != nil {
 		return err
 	}
-	var reader io.Reader
-	getSha, stream := computeSha(progress)
-	if gunzip {
-		reader, err = gzip.NewReader(stream)
-		if err != nil {
-			return err
-		}
-	} else {
-		reader = stream
-	}
 	if _, err = io.Copy(file, reader); err != nil {
 		return err
 	}
 	file.Close()
-	resp.Body.Close()
 	if getSha() != sha {
 		return errInvalidSha
 	}
@@ -113,7 +116,7 @@ func downloadFile(path, url, sha string, gunzip bool) error {
 }
 
 func progressDrawFn(progress, total int64) string {
-	return "heroku-cli: Adding dependencies... " + ioprogress.DrawTextFormatBytes(progress, total)
+	return fmt.Sprintf("heroku-cli: Adding dependencies... %15s", ioprogress.DrawTextFormatBytes(progress, total))
 }
 
 func clearOldNodeInstalls() error {
