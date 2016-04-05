@@ -1,3 +1,6 @@
+/*
+Package gode runs a sandboxed node installation to run node code and install npm packages.
+*/
 package gode
 
 import (
@@ -6,11 +9,14 @@ import (
 	"runtime"
 )
 
+var t *target
 var registry string
-
 var rootPath string
 var lockPath string
-var target *Target
+var modulesDir string
+var nodeBinPath string
+var npmBasePath string
+var npmBinPath string
 
 func init() {
 	registry = os.Getenv("HEROKU_NPM_REGISTRY")
@@ -21,16 +27,22 @@ func init() {
 
 // SetRootPath sets the root for gode
 func SetRootPath(root string) {
-	for _, t := range targets {
-		if runtime.GOARCH == t.Arch && runtime.GOOS == t.OS {
-			target = &t
+	for _, target := range targets {
+		if runtime.GOARCH == target.Arch && runtime.GOOS == target.OS {
+			t = &target
 			break
 		}
 	}
 	rootPath = root
 	lockPath = filepath.Join(rootPath, "node.lock")
-}
-
-func modulesDir() string {
-	return filepath.Join(rootPath, "node_modules")
+	modulesDir = filepath.Join(rootPath, "node_modules")
+	nodeBinPath = os.Getenv("HEROKU_NODE_PATH")
+	if nodeBinPath == "" {
+		nodeBinPath = filepath.Join(rootPath, "node-"+NodeVersion+"-"+t.OS+"-"+t.Arch, "node")
+		if t.OS == "windows" {
+			nodeBinPath += ".exe"
+		}
+	}
+	npmBasePath = filepath.Join(rootPath, npmBase)
+	npmBinPath = filepath.Join(npmBasePath, "cli.js")
 }

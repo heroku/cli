@@ -1,5 +1,5 @@
 dependencies:
-  pre:
+  override:
     - if [ ! -d ~/bats ]; then git clone https://github.com/sstephenson/bats.git ~/bats; fi
     - go get github.com/golang/lint
     - go get golang.org/x/tools/cmd/vet
