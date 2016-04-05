@@ -76,6 +76,9 @@ func downloadXZ(url string) (io.Reader, func() string, error) {
 	if err != nil {
 		return nil, nil, err
 	}
+	if err := getHTTPError(resp); err != nil {
+		return nil, nil, err
+	}
 	size, _ := strconv.Atoi(resp.Header.Get("Content-Length"))
 	progress := &ioprogress.Reader{
 		Reader:   resp.Body,
@@ -135,4 +138,13 @@ func clearOldNodeInstalls() error {
 		}
 	}
 	return nil
+}
+
+func getHTTPError(resp *goreq.Response) error {
+	if resp.StatusCode < 400 {
+		return nil
+	}
+	var body string
+	body = resp.Header.Get("Content-Type")
+	return fmt.Errorf("%s: %s", resp.Status, body)
 }
