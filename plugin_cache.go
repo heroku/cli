@@ -48,7 +48,7 @@ func FetchPluginCache() map[string]*Plugin {
 		return plugins
 	}
 	if err := json.NewDecoder(f).Decode(&plugins); err != nil {
-		panic(err)
+		PrintError(err, false)
 	}
 	return plugins
 }
