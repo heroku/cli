@@ -1,3 +1,10 @@
+4.29.0  2016-04-05
+==================
+Use xz instead of gzip for updates and node downloads (much smaller downloads)
+Update node to 5.10.0, npm to 3.8.3
+Handle bug with invalid plugin cache json
+Added SSL_CERT_DIR and SSL_CERT_FILE to trusted certs
+
 4.28.3  2016-03-31
 ==================
 remove code allowing use of old node versions #231
