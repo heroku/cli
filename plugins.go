@@ -422,7 +422,9 @@ func pluginPath(plugin string) string {
 // lock a plugin for reading
 func readLockPlugin(name string) {
 	lockfile := updateLockPath + "." + name
-	if exists, _ := fileExists(lockfile); exists {
+	locked, err := golock.IsLocked(lockfile)
+	LogIfError(err)
+	if locked {
 		lockPlugin(name)
 		unlockPlugin(name)
 	}

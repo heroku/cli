@@ -1,11 +1,10 @@
 language: go
 
 go:
-  - 1.4
+  - 1.6
 
 install:
   - go get -v -u github.com/golang/lint/golint
-  - go get -v -u golang.org/x/tools/cmd/vet
   - go get -v
   - go build -v ./...
 
