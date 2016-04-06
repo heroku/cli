@@ -83,6 +83,7 @@ func init() {
 
 func main() {
 	defer handlePanic()
+	ensureCwdExists()
 	runtime.GOMAXPROCS(1) // more procs causes runtime: failed to create new OS thread on Ubuntu
 	ShowDebugInfo()
 	if !(len(os.Args) >= 2 && os.Args[1] == "update") {
