@@ -130,12 +130,11 @@ func updateCLI(channel string) {
 	}
 	build := manifest.Builds[runtime.GOOS][runtime.GOARCH]
 	// on windows we can't remove an existing file or remove the running binary
-	// so we download the file to binName.new.10029
-	// move the running binary to binName.old.10029 (deleting any existing file first)
+	// so we download the file to binName.new
+	// move the running binary to binName.old (deleting any existing file first)
 	// rename the downloaded file to binName
-	s := randomIntString(100000)
-	tmpBinPathNew := binPath + ".new." + s
-	tmpBinPathOld := binPath + ".old." + s
+	tmpBinPathNew := binPath + ".new"
+	tmpBinPathOld := binPath + ".old"
 	if err := downloadBin(tmpBinPathNew, build.URL); err != nil {
 		panic(err)
 	}
