@@ -5,8 +5,8 @@
 	"Deps": [
 		{
 			"ImportPath": "github.com/dickeyxxx/golock",
-			"Comment": "v1.0.0-3-g4121076",
-			"Rev": "41210765bf2c6815e195d1192af6da935cd79b95"
+			"Comment": "v1.1.0",
+			"Rev": "ae2e6b7e683fc65b06e64361d9386c7278b677a0"
 		},
 		{
 			"ImportPath": "github.com/dickeyxxx/netrc",

@@ -112,6 +112,12 @@ func updateCLI(channel string) {
 	if manifest.Version == Version && manifest.Channel == Channel {
 		return
 	}
+	locked, err := golock.IsLocked(updateLockPath)
+	LogIfError(err)
+	if locked {
+		Warn("Update in progress")
+		return
+	}
 	LogIfError(golock.Lock(updateLockPath))
 	unlock := func() {
 		golock.Unlock(updateLockPath)
@@ -124,21 +130,24 @@ func updateCLI(channel string) {
 	}
 	build := manifest.Builds[runtime.GOOS][runtime.GOARCH]
 	// on windows we can't remove an existing file or remove the running binary
-	// so we download the file to binName.new
-	// move the running binary to binName.old (deleting any existing file first)
+	// so we download the file to binName.new.10029
+	// move the running binary to binName.old.10029 (deleting any existing file first)
 	// rename the downloaded file to binName
-	if err := downloadBin(binPath+".new", build.URL); err != nil {
+	s := randomIntString(100000)
+	tmpBinPathNew := binPath + ".new." + s
+	tmpBinPathOld := binPath + ".old." + s
+	if err := downloadBin(tmpBinPathNew, build.URL); err != nil {
 		panic(err)
 	}
-	if fileSha1(binPath+".new") != build.Sha1 {
+	if fileSha1(tmpBinPathNew) != build.Sha1 {
 		panic("SHA mismatch")
 	}
-	os.Remove(binPath + ".old")
-	os.Rename(binPath, binPath+".old")
-	if err := os.Rename(binPath+".new", binPath); err != nil {
+	os.Remove(tmpBinPathOld)
+	os.Rename(binPath, tmpBinPathOld)
+	if err := os.Rename(tmpBinPathNew, binPath); err != nil {
 		panic(err)
 	}
-	os.Remove(binPath + ".old")
+	os.Remove(tmpBinPathOld)
 	Errln(" done")
 	unlock()
 	clearAutoupdateFile() // force full update
