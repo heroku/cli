@@ -1,3 +1,7 @@
+4.29.1  2016-04-06
+==================
+Update node to 5.10.1
+
 4.29.0  2016-04-05
 ==================
 Use xz instead of gzip for updates and node downloads (much smaller downloads)
