@@ -18,7 +18,7 @@ var ErrTimeout = errors.New("Timed out")
 // not used for LockWithTimeout
 var ErrBusy = errors.New("Locked by other process")
 
-// ErrReadlingLockfile means it could not read the pid out of
+// ErrReadingLockfile means it could not read the pid out of
 // an existing lockfile
 var ErrReadingLockfile = errors.New("Error reading lockfile")
 
@@ -47,19 +47,32 @@ func Unlock(path string) error {
 	return os.Remove(path)
 }
 
-func tryLock(path string, mypid int) error {
+// IsLocked returns true if the lock file is currently
+// locked by an active process
+func IsLocked(path string) (bool, error) {
 	pid, err := readLockfile(path)
 	if err != nil {
-		return err
+		return false, err
 	}
 	if pid != 0 {
 		active, err := isPidActive(pid)
 		if err != nil {
-			return err
+			return false, err
 		}
 		if active {
-			return ErrBusy
+			return true, nil
 		}
+	}
+	return false, nil
+}
+
+func tryLock(path string, mypid int) error {
+	locked, err := IsLocked(path)
+	if err != nil {
+		return err
+	}
+	if locked {
+		return ErrBusy
 	}
 	err = writeLockfile(path, mypid)
 	if err != nil {
