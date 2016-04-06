@@ -7,13 +7,13 @@ package gode
 //
 
 // NodeVersion is the requested node version
-const NodeVersion = "5.10.0"
+const NodeVersion = "5.10.1"
 
 // NpmVersion is the requested npm version
 const NpmVersion = "3.8.5"
 
 const npmSha = "d92201d52f1d03497f3eef174f3b2309211de5a013938dfcac5eae1d64f8af2c"
-const npmURL = "https://heroku-cli-assets.s3.amazonaws.com/npm/v3.8.5.tar.xz"
+const npmURL = "https://cli-assets.heroku.com/npm/v3.8.5.tar.xz"
 const npmBase = "npm-3.8.5"
 
 type target struct {
@@ -24,10 +24,10 @@ type target struct {
 }
 
 var targets = []target{
-	{"386", "linux", "https://cli-assets.heroku.com/node/v5.10.0/node-5.10.0-linux-386.xz", "fe2d1ab5f70482d30616efb5dd19b56b105db33e404f7f6c7e891a7876b14831"},
-	{"amd64", "linux", "https://cli-assets.heroku.com/node/v5.10.0/node-5.10.0-linux-amd64.xz", "f42ec483b8eb8e76897783fc6fe7b9370a881840b930930c4e1863156aff9f80"},
-	{"arm", "linux", "https://cli-assets.heroku.com/node/v5.10.0/node-5.10.0-linux-arm.xz", "45547afb4642c49d546d46ae8c772bb630375d098cb1716809f1b770ca7e1664"},
-	{"amd64", "darwin", "https://cli-assets.heroku.com/node/v5.10.0/node-5.10.0-darwin-amd64.xz", "e2609153d8ce4ee8898ac72f43379d09606134db0a1d6b4df8a58319a85aa204"},
-	{"386", "windows", "https://cli-assets.heroku.com/node/v5.10.0/node-5.10.0-windows-386.exe.xz", "a486782de0b4cdddf3011986136082e4bcd67a1e2c5db0a7b6a24b05afeec6f7"},
-	{"amd64", "windows", "https://cli-assets.heroku.com/node/v5.10.0/node-5.10.0-windows-amd64.exe.xz", "4b19ef6e209c8703b709dd30295721a1e0146644537689e0f988d3a99b2ed41a"},
+	{"386", "linux", "https://cli-assets.heroku.com/node/v5.10.1/node-5.10.1-linux-386.xz", "2ff69ca8608e290732c58d70624bf12533a13fae9c64f2a4b00a278ee8b1fa88"},
+	{"amd64", "linux", "https://cli-assets.heroku.com/node/v5.10.1/node-5.10.1-linux-amd64.xz", "6aa697a5daf7a9ab95c5657af69c63290b2ac729169991b13246f6018d5b0dc8"},
+	{"arm", "linux", "https://cli-assets.heroku.com/node/v5.10.1/node-5.10.1-linux-arm.xz", "0c4ac5df3c43b5b6027af8a56f14d07d6e459869e1142215288e4d1f46ed60f7"},
+	{"amd64", "darwin", "https://cli-assets.heroku.com/node/v5.10.1/node-5.10.1-darwin-amd64.xz", "73c96d7781513d7999597dacffefb1f00332bb1d376cc0a24cd72a99c10705ca"},
+	{"386", "windows", "https://cli-assets.heroku.com/node/v5.10.1/node-5.10.1-windows-386.exe.xz", "7d2b33dcde294900f672b51560f5b0b83c9348270db2fdd1f7ab154e2f86b6d1"},
+	{"amd64", "windows", "https://cli-assets.heroku.com/node/v5.10.1/node-5.10.1-windows-amd64.exe.xz", "7bb93bf229b5295547000b1282a2b860ecdbeb63249ab0bff8645e81cb9552a5"},
 }

@@ -16,7 +16,7 @@ const mkdirp      = require('mkdirp');
 
 // CHANGE THESE ONLY AND RUN SCRIPT
 // ==========================
-const nodeVersion = '5.10.0';
+const nodeVersion = '5.10.1';
 const npmVersion = '3.8.5';
 // ==========================
 
