@@ -87,7 +87,7 @@ func downloadXZ(url string) (io.Reader, func() string, error) {
 	}
 	getSha, reader := computeSha(progress)
 	uncompressed, err := xz.NewReader(reader)
-	return uncompressed, getSha, nil
+	return uncompressed, getSha, err
 }
 
 func downloadFile(path, url, sha string) error {
