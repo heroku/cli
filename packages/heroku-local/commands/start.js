@@ -6,7 +6,7 @@ function* run (context) {
   if (context.flags.restart)     throw new Error('--restart is no longer available\nUse forego instead: https://github.com/ddollar/forego');
   if (context.flags.concurrency) throw new Error('--concurrency is no longer available\nUse forego instead: https://github.com/ddollar/forego');
 
-  process.argv = ['heroku', 'heroku local', 'start'];
+  process.argv = ['', 'heroku local', 'start'];
 
   if (context.flags.procfile)   process.argv.push('--procfile', context.flags.procfile);
   if (context.flags.env)        process.argv.push('--env',      context.flags.env);

@@ -8,7 +8,7 @@ function* run (context) {
     process.exit(-1);
   }
 
-  process.argv = ['heroku', 'heroku local:run', 'run'];
+  process.argv = ['', 'heroku local:run', 'run'];
 
   if (context.flags.env)  process.argv.push('--env',  context.flags.env);
   if (context.flags.port) process.argv.push('--port', context.flags.port);

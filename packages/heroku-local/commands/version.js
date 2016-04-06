@@ -3,7 +3,7 @@
 let cli = require('heroku-cli-util');
 
 function* run () {
-  process.argv = ['heroku', 'heroku', '--version'];
+  process.argv = ['', 'heroku local', '--version'];
   require('foreman/nf.js');
 }
 
