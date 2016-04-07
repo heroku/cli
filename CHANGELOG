@@ -1,3 +1,7 @@
+4.29.3  2016-04-06
+==================
+Added analytics (submission only)
+
 4.29.2  2016-04-06
 ==================
 Fix race condition in updater
