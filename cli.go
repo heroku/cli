@@ -236,6 +236,19 @@ func netrcPath() string {
 	return base
 }
 
+func netrcLogin() string {
+	key := os.Getenv("HEROKU_API_KEY")
+	if key != "" {
+		return ""
+	}
+	netrc := getNetrc()
+	machine := netrc.Machine(apiHost())
+	if machine != nil {
+		return machine.Get("login")
+	}
+	return ""
+}
+
 // AddTopic adds a Topic to the set of topics.
 // It will return false if a topic exists with the same name.
 func (cli *Cli) AddTopic(topic *Topic) {
