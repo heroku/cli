@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"os/user"
 	"path/filepath"
@@ -35,4 +36,17 @@ func homeDir() string {
 		panic(err)
 	}
 	return user.HomeDir
+}
+
+func ensureCwdExists() {
+	cwd, err := os.Getwd()
+	Errln(cwd)
+	ExitIfError(err, false)
+	_, err = os.Stat(cwd)
+	if err != nil {
+		if os.IsNotExist(err) {
+			ExitIfError(fmt.Errorf("The directory you are in (%s) does not exist.", cwd), false)
+		}
+		ExitIfError(err, false)
+	}
 }
