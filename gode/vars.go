@@ -38,7 +38,7 @@ func SetRootPath(root string) {
 	modulesDir = filepath.Join(rootPath, "node_modules")
 	nodeBinPath = os.Getenv("HEROKU_NODE_PATH")
 	if nodeBinPath == "" {
-		nodeBinPath = filepath.Join(rootPath, "node-"+NodeVersion+"-"+t.OS+"-"+t.Arch, "node")
+		nodeBinPath = filepath.Join(rootPath, "node-"+NodeVersion+"-"+runtime.GOOS+"-"+runtime.GOARCH, "node")
 		if t.OS == "windows" {
 			nodeBinPath += ".exe"
 		}
