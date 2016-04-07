@@ -9,6 +9,7 @@ import (
 	"runtime"
 	"runtime/debug"
 	"strings"
+	"sync"
 
 	"github.com/stvp/rollbar"
 )
@@ -83,6 +84,7 @@ func init() {
 
 func main() {
 	defer handlePanic()
+	var wg sync.WaitGroup
 	runtime.GOMAXPROCS(1) // more procs causes runtime: failed to create new OS thread on Ubuntu
 	ShowDebugInfo()
 	if !(len(os.Args) >= 2 && os.Args[1] == "update") {
@@ -91,6 +93,8 @@ func main() {
 		Update(Channel, "block")
 	}
 	SetupNode()
+	wg.Add(1)
+	go RecordAnalytics(&wg)
 	err := cli.Run(os.Args)
 	SetupBuiltinPlugins()
 	TriggerBackgroundUpdate()
@@ -106,6 +110,7 @@ func main() {
 		PrintError(err, false)
 		os.Exit(2)
 	}
+	wg.Wait()
 }
 
 func handlePanic() {

@@ -34,6 +34,7 @@ func apiRequestBase(authToken string) *goreq.Request {
 		Uri:       apiURL(),
 		ShowDebug: debugging,
 		Insecure:  !shouldVerifyHost(apiURL()),
+		UserAgent: version(),
 	}
 	if authToken != "" {
 		req.AddHeader("Authorization", "Bearer "+authToken)
