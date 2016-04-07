@@ -8,119 +8,130 @@ let stream  = require('stream');
 let cli     = require('heroku-cli-util');
 let helpers = require('../lib/helpers');
 
-function env (flag) {
-  let c = flag ? helpers.buildEnvFromFlag(flag) : {};
-  c.TERM = process.env.TERM;
-  if (tty.isatty(1)) {
-    c.COLUMNS = process.stdout.columns;
-    c.LINES   = process.stdout.rows;
+class Run {
+  run (context, heroku) {
+    return co(function* () {
+      this.heroku = heroku;
+      this.app = context.app;
+      this.command = helpers.buildCommand(context.args);
+      this.flags = context.flags;
+      if (!this.command) throw new Error('Usage: heroku run COMMAND\n\nExample: heroku run bash');
+
+      this.dyno = yield this.startDyno();
+      this.updateStatus('starting');
+
+      this.attachToRendezvous();
+    }.bind(this));
   }
-  return c;
-}
 
-let warning;
-function startDyno(heroku, app, size, command, envFlag) {
-  return heroku.request({
-    path: `/apps/${app}/dynos`,
-    method: 'POST',
-    middleware: (res, cb) => {warning = res.headers['warning-message']; cb();},
-    body: {
-      command:  command,
-      attach:   true,
-      size:     size,
-      env:      env(envFlag),
+  env () {
+    let c = this.flags.env ? helpers.buildEnvFromFlag(this.flags.env) : {};
+    c.TERM = process.env.TERM;
+    if (tty.isatty(1)) {
+      c.COLUMNS = process.stdout.columns;
+      c.LINES   = process.stdout.rows;
     }
-  });
-}
+    return c;
+  }
 
-function readStdin(c) {
-  let stdin = process.stdin;
-  stdin.setEncoding('utf8');
-  if (tty.isatty(0)) {
-    stdin.setRawMode(true);
-    stdin.pipe(c);
-    let sigints = [];
-    stdin.on('data', function (c) {
-      if (c === '\u0003') sigints.push(new Date());
-      sigints = sigints.filter(d => d > new Date() - 1000);
-      if (sigints.length >= 4) {
-        cli.error('forcing dyno disconnect');
-        process.exit(1);
+  updateStatus (status, stop) {
+    let msg = `Running ${cli.color.cyan.bold(this.command)} on ${this.app}... `;
+    if (status) msg += `${cli.color.blue(status)}, ${this.dyno.name}`;
+    if (!this.spinner) {
+      this.spinner = new cli.Spinner({text: msg});
+      this.spinner.start();
+    }
+    else this.spinner.update(msg);
+    if (stop) {
+      this.spinner.stop();
+      cli.console.error();
+    }
+  }
+
+  startDyno () {
+    let command = this.flags['exit-code'] ? `${this.command}; echo heroku-command-exit-status $?` : this.command;
+    return this.heroku.request({
+      path: `/apps/${this.app}/dynos`,
+      method: 'POST',
+      middleware: (res, cb) => {
+        let msg = res.headers['warning-message'];
+        if (msg) cli.warn(msg);
+        cb();
+      },
+      body: {
+        command:  command,
+        attach:   true,
+        size:     this.flags.size,
+        env:      this.env(),
       }
     });
-  } else {
-    stdin.pipe(new stream.Transform({
-      objectMode: true,
-      transform: function (chunk, _, next) {
-        c.write(chunk, next);
-      },
-      flush: function (done) {
-        // TODO: this sends the EOF signal to rendezvous
-        // too early if the stdin input is large
-        // ideally rendezvous could wait to receive input
-        // while it is processing
-        c.write("\x04", done);
+  }
+
+  attachToRendezvous() {
+    let uri = url.parse(this.dyno.attach_url);
+    let c = tls.connect(uri.port, uri.hostname, {rejectUnauthorized: this.heroku.options.rejectUnauthorized});
+    c.setTimeout(1000*60*20);
+    c.setEncoding('utf8');
+    c.on('connect', () => {
+      c.write(uri.path.substr(1) + '\r\n', () => this.updateStatus('connecting'));
+    });
+    c.on('data', this.readData(c));
+    c.on('close', () => process.exit(this.flags['exit-code'] ? -1 : 0));
+    c.on('error', cli.errorHandler());
+    process.once('SIGINT', () => c.end());
+  }
+
+  readData (c) {
+    let firstLine = true;
+    return data => {
+      // discard first line
+      if (firstLine) {
+        this.updateStatus('up', true);
+        firstLine = false;
+        this.readStdin(c);
+        return;
       }
-    }));
+      data = data.replace('\r\n', '\n');
+      let exitCode = data.match(/heroku-command-exit-status (\d+)/m);
+      if (exitCode) {
+        process.stdout.write(data.replace(/^heroku-command-exit-status \d+$\n?/m, ''));
+        process.exit(exitCode[1]);
+      }
+      process.stdout.write(data);
+    };
   }
-}
 
-function readData(c, opts) {
-  let firstLine = true;
-  return function (data) {
-    // discard first line
-    if (firstLine) {
-      console.error(` up, ${opts.dyno.name}`);
-      firstLine = false;
-      readStdin(c);
-      return;
+  readStdin (c) {
+    let stdin = process.stdin;
+    stdin.setEncoding('utf8');
+    if (tty.isatty(0)) {
+      stdin.setRawMode(true);
+      stdin.pipe(c);
+      let sigints = [];
+      stdin.on('data', function (c) {
+        if (c === '\u0003') sigints.push(new Date());
+        sigints = sigints.filter(d => d > new Date() - 1000);
+        if (sigints.length >= 4) {
+          cli.error('forcing dyno disconnect');
+          process.exit(1);
+        }
+      });
+    } else {
+      stdin.pipe(new stream.Transform({
+        objectMode: true,
+        transform: function (chunk, _, next) {
+          c.write(chunk, next);
+        },
+        flush: function (done) {
+          // TODO: this sends the EOF signal to rendezvous
+          // too early if the stdin input is large
+          // ideally rendezvous could wait to receive input
+          // while it is processing
+          c.write("\x04", done);
+        }
+      }));
     }
-    data = data.replace('\r\n', '\n');
-    let exitCode = data.match(/heroku-command-exit-status (\d+)/m);
-    if (exitCode) {
-      process.stdout.write(data.replace(/^heroku-command-exit-status \d+$\n?/m, ''));
-      process.exit(exitCode[1]);
-    }
-    process.stdout.write(data);
-  };
-}
-
-function attachToRendezvous(uri, opts) {
-  let c = tls.connect(uri.port, uri.hostname, {rejectUnauthorized: opts.rejectUnauthorized});
-  c.setTimeout(1000*60*20);
-  c.setEncoding('utf8');
-  c.on('connect', function () {
-    c.write(uri.path.substr(1) + '\r\n', () => cli.console.writeError('.'));
-  });
-  c.on('data', readData(c, opts));
-  c.on('close', () => process.exit(opts.exitCode));
-  c.on('error', cli.errorHandler());
-  process.once('SIGINT', function () {
-    c.end();
-  });
-}
-
-function* run (context, heroku) {
-  let command = helpers.buildCommand(context.args);
-  if (!command) {
-    cli.error('Usage: heroku run COMMAND\n\nExample: heroku run bash');
-    process.exit(1);
   }
-  let sh = context.flags['exit-code'] ? `${command}; echo heroku-command-exit-status $?` : command;
-  process.stderr.write(`Running ${cli.color.cyan.bold(command)} on ${context.app}..`);
-  let dyno = yield startDyno(heroku, context.app, context.flags.size, sh, context.flags.env);
-  if (warning) {
-    cli.console.error(cli.color.bold.yellow('!'));
-    cli.warn(warning);
-    cli.console.writeError('Connecting to dyno..');
-  } else {
-    cli.console.writeError('.');
-  }
-  attachToRendezvous(url.parse(dyno.attach_url), {
-    exitCode: context.flags['exit-code'] ? -1 : 0, // exit with -1 if the stream ends and heroku-command-exit-status is empty
-    rejectUnauthorized: heroku.options.rejectUnauthorized,
-    dyno: dyno,
-  });
 }
 
 module.exports = {
@@ -144,5 +155,5 @@ Examples:
     {name: 'exit-code', description: 'passthrough the exit code of the remote command'},
     {name: 'env', description: "environment variables to set (use ';' to split multiple vars)", hasValue: true},
   ],
-  run: cli.command(co.wrap(run))
+  run: cli.command((context, heroku) => (new Run()).run(context, heroku))
 };
