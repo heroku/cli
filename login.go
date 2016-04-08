@@ -254,5 +254,5 @@ func logout(ctx *Context) {
 	netrc.RemoveMachine(apiHost())
 	netrc.RemoveMachine(httpGitHost())
 	ExitIfError(netrc.Save(), false)
-	Println("Local credentails cleared.")
+	Println("Local credentials cleared.")
 }
