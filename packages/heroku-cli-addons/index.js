@@ -11,4 +11,5 @@ exports.commands = [
     require('./commands/addons/open'),
     require('./commands/addons/plans'),
     require('./commands/addons/rename'),
+    require('./commands/addons/services'),
 ];
