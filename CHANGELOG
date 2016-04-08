@@ -1,3 +1,7 @@
+4.29.4  2016-04-07
+==================
+Look for `node` on `PATH` if node does not offer a pre-compiled binary
+
 4.29.3  2016-04-06
 ==================
 Added analytics (submission only)
