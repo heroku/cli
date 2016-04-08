@@ -5,6 +5,7 @@ package gode
 
 import (
 	"os"
+	"os/exec"
 	"path/filepath"
 	"runtime"
 )
@@ -38,9 +39,17 @@ func SetRootPath(root string) {
 	modulesDir = filepath.Join(rootPath, "node_modules")
 	nodeBinPath = os.Getenv("HEROKU_NODE_PATH")
 	if nodeBinPath == "" {
-		nodeBinPath = filepath.Join(rootPath, "node-"+NodeVersion+"-"+runtime.GOOS+"-"+runtime.GOARCH, "node")
-		if t.OS == "windows" {
-			nodeBinPath += ".exe"
+		if t == nil {
+			var err error
+			nodeBinPath, err = exec.LookPath("node")
+			if err != nil {
+				panic(err)
+			}
+		} else {
+			nodeBinPath = filepath.Join(rootPath, "node-"+NodeVersion+"-"+runtime.GOOS+"-"+runtime.GOARCH, "node")
+			if runtime.GOOS == "windows" {
+				nodeBinPath += ".exe"
+			}
 		}
 	}
 	npmBasePath = filepath.Join(rootPath, npmBase)

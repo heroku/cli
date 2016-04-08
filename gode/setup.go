@@ -33,18 +33,18 @@ func Setup() error {
 	if setup, _ := IsSetup(); setup {
 		return nil
 	}
-	if t == nil {
-		return errors.New(`node does not offer a prebuilt binary for your OS.
-You'll need to compile the tarball from nodejs.org and place the binary at ` + nodeBinPath)
+	if exists, _ := fileExists(nodeBinPath); !exists {
+		if err := downloadFile(nodeBinPath, t.URL, t.Sha); err != nil {
+			return err
+		}
+		if err := os.Chmod(nodeBinPath, 0755); err != nil {
+			return err
+		}
 	}
-	if err := downloadFile(nodeBinPath, t.URL, t.Sha); err != nil {
-		return err
-	}
-	if err := os.Chmod(nodeBinPath, 0755); err != nil {
-		return err
-	}
-	if err := downloadNpm(); err != nil {
-		return err
+	if exists, _ := fileExists(npmBinPath); !exists {
+		if err := downloadNpm(); err != nil {
+			return err
+		}
 	}
 	if err := os.MkdirAll(modulesDir, 0755); err != nil {
 		return err
