@@ -5,6 +5,8 @@ import (
 	"os"
 	"path/filepath"
 	"sync"
+
+	"github.com/dickeyxxx/golock"
 )
 
 var analyticsPath = filepath.Join(HomeDir, ".heroku", "analytics.json")
@@ -40,6 +42,13 @@ func RecordAnalytics(wg *sync.WaitGroup) {
 		// do not record if less than 10 analytics
 		return
 	}
+	lockfile := filepath.Join(AppDir(), "analytics.lock")
+	if locked, _ := golock.IsLocked(lockfile); locked {
+		// skip if already updating
+		return
+	}
+	golock.Lock(lockfile)
+	defer golock.Unlock(lockfile)
 	req := apiRequestBase("")
 	req.Uri = "https://cli-analytics.heroku.com/record"
 	req.Method = "POST"
