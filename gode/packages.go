@@ -99,19 +99,11 @@ func npmCmd(args ...string) (*exec.Cmd, error) {
 	if err := os.MkdirAll(filepath.Join(rootPath, "node_modules"), 0755); err != nil {
 		return nil, err
 	}
-	nodePath, err := filepath.Rel(rootPath, nodeBinPath)
-	if err != nil {
-		return nil, err
-	}
-	npmPath, err := filepath.Rel(rootPath, npmBinPath)
-	if err != nil {
-		return nil, err
-	}
-	args = append([]string{npmPath}, args...)
+	args = append([]string{npmBinPath}, args...)
 	if debugging() {
 		args = append(args, "--loglevel="+os.Getenv("GODE_DEBUG"))
 	}
-	cmd := exec.Command(nodePath, args...)
+	cmd := exec.Command(nodeBinPath, args...)
 	cmd.Dir = rootPath
 	cmd.Env = environ()
 	return cmd, nil
