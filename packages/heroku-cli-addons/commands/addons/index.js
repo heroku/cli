@@ -4,7 +4,7 @@ let cli    = require('heroku-cli-util');
 let co     = require('co');
 let printf = require('printf');
 let _      = require('lodash');
-let util   = require('../lib/util');
+let util   = require('../../lib/util');
 
 let table       = util.table,
     style       = util.style,

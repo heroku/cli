@@ -27,7 +27,8 @@
   "globals": {
     "cli": true,
     "nock": true,
-    "commands": true
+    "commands": true,
+    "expect": true
   },
   "predef": [
     "afterEach",
