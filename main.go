@@ -9,7 +9,6 @@ import (
 	"runtime"
 	"runtime/debug"
 	"strings"
-	"sync"
 
 	"github.com/stvp/rollbar"
 )
@@ -84,7 +83,12 @@ func init() {
 
 func main() {
 	defer handlePanic()
-	var wg sync.WaitGroup
+	handleSignal(os.Interrupt, func() {
+		if !swallowSigint {
+			showCursor()
+			os.Exit(1)
+		}
+	})
 	runtime.GOMAXPROCS(1) // more procs causes runtime: failed to create new OS thread on Ubuntu
 	ShowDebugInfo()
 	if !(len(os.Args) >= 2 && os.Args[1] == "update") {
@@ -92,9 +96,8 @@ func main() {
 		// otherwise it will update twice
 		Update(Channel, "block")
 	}
+	SubmitAnalytics()
 	SetupNode()
-	wg.Add(1)
-	go RecordAnalytics(&wg)
 	err := cli.Run(os.Args)
 	SetupBuiltinPlugins()
 	TriggerBackgroundUpdate()
@@ -107,10 +110,10 @@ func main() {
 		help()
 	}
 	if err != nil {
-		PrintError(err, false)
-		os.Exit(2)
+		PrintError(err)
+		Exit(2)
 	}
-	wg.Wait()
+	Exit(0)
 }
 
 func handlePanic() {
@@ -162,8 +165,8 @@ func ShowDebugInfo() {
 
 func getProxy() *url.URL {
 	req, err := http.NewRequest("GET", "https://api.heroku.com", nil)
-	PrintError(err, false)
+	PrintError(err)
 	proxy, err := http.ProxyFromEnvironment(req)
-	PrintError(err, false)
+	PrintError(err)
 	return proxy
 }

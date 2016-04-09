@@ -5,10 +5,12 @@ import (
 	"io"
 	"log"
 	"os"
+	"os/signal"
 	"path/filepath"
 	"runtime"
 	"runtime/debug"
 	"strings"
+	"sync"
 
 	"github.com/lunixbochs/vtclean"
 	"golang.org/x/crypto/ssh/terminal"
@@ -26,6 +28,9 @@ var errLogger = newLogger(ErrLogPath)
 var exitFn = os.Exit
 var debugging = isDebugging()
 var debuggingHeaders = isDebuggingHeaders()
+var swallowSigint = false
+var errorPrefix = ""
+var wg sync.WaitGroup
 
 func init() {
 	Stdout = os.Stdout
@@ -46,6 +51,9 @@ func newLogger(path string) *log.Logger {
 
 // Exit just calls os.Exit, but can be mocked out for testing
 func Exit(code int) {
+	currentAnalyticsCommand.RecordEnd(code)
+	showCursor()
+	wg.Wait()
 	exitFn(code)
 }
 
@@ -119,14 +127,13 @@ func Debugf(f string, a ...interface{}) {
 }
 
 // PrintError is a helper that prints out formatted error messages in red text
-func PrintError(e error, newline bool) {
+func PrintError(e error) {
 	if e == nil {
 		return
 	}
-	if newline {
-		Errln()
-	}
+	Err(errorPrefix)
 	Error(e.Error())
+	Logln(string(debug.Stack()))
 	if debugging {
 		debug.PrintStack()
 	}
@@ -156,10 +163,10 @@ func errorArrow() string {
 }
 
 // ExitIfError calls PrintError and exits if e is not null
-func ExitIfError(e error, newline bool) {
+func ExitIfError(e error) {
 	if e != nil {
-		PrintError(e, newline)
-		os.Exit(1)
+		PrintError(e)
+		Exit(1)
 	}
 }
 
@@ -167,6 +174,7 @@ func ExitIfError(e error, newline bool) {
 func LogIfError(e error) {
 	if e != nil {
 		Logln(e.Error())
+		Logln(string(debug.Stack()))
 	}
 }
 
@@ -239,4 +247,37 @@ func plural(word string, count int) string {
 		return word
 	}
 	return word + "s"
+}
+
+func showCursor() {
+	if supportsColor() && !windows() {
+		Print("\u001b[?25h")
+	}
+}
+
+func hideCursor() {
+	if supportsColor() && !windows() {
+		Print("\u001b[?25l")
+	}
+}
+
+func action(text, done string, fn func()) {
+	Err(text + "...")
+	errorPrefix = red(" !") + "\n"
+	hideCursor()
+	fn()
+	showCursor()
+	errorPrefix = ""
+	if done != "" {
+		Errln(" " + done)
+	}
+}
+
+func handleSignal(s os.Signal, fn func()) {
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, s)
+	go func() {
+		<-c
+		fn()
+	}()
 }

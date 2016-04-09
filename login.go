@@ -65,7 +65,7 @@ func ssoLogin() {
 	token := getPassword("Enter your access token (typing will be hidden): ")
 	user := getUserFromToken(token)
 	if user == "" {
-		ExitIfError(errors.New("Access token invalid."), false)
+		ExitIfError(errors.New("Access token invalid."))
 	}
 	saveOauthToken(user, token)
 	Println("Logged in as " + cyan(user))
@@ -76,7 +76,7 @@ func getUserFromToken(token string) string {
 	req.Method = "GET"
 	req.Uri = req.Uri + "/account"
 	res, err := req.Do()
-	ExitIfError(err, false)
+	ExitIfError(err)
 	if res.StatusCode != 200 {
 		return ""
 	}
@@ -97,7 +97,7 @@ func interactiveLogin() {
 	token, err := v2login(email, password, "")
 	// TODO: use createOauthToken (v3 API)
 	// token, err := createOauthToken(email, password, "")
-	ExitIfError(err, false)
+	ExitIfError(err)
 	saveOauthToken(email, token)
 	Println("Logged in as " + cyan(email))
 }
@@ -108,7 +108,7 @@ func saveOauthToken(email, token string) {
 	netrc.RemoveMachine(httpGitHost())
 	netrc.AddMachine(apiHost(), email, token)
 	netrc.AddMachine(httpGitHost(), email, token)
-	ExitIfError(netrc.Save(), false)
+	ExitIfError(netrc.Save())
 }
 
 func getString(prompt string) string {
@@ -120,9 +120,9 @@ func getString(prompt string) string {
 		}
 		if err.Error() == "EOF" {
 			Errln()
-			os.Exit(1)
+			Exit(1)
 		}
-		ExitIfError(err, false)
+		ExitIfError(err)
 	}
 	return s
 }
@@ -136,7 +136,7 @@ In the meantime, login via cmd.exe
 https://github.com/heroku/heroku-cli/issues/84`)
 			Exit(1)
 		} else {
-			ExitIfError(err, false)
+			ExitIfError(err)
 		}
 	}
 	return password
@@ -159,19 +159,19 @@ func v2login(email, password, secondFactor string) (string, error) {
 		req.AddHeader("Heroku-Two-Factor-Code", secondFactor)
 	}
 	res, err := req.Do()
-	ExitIfError(err, false)
+	ExitIfError(err)
 	switch res.StatusCode {
 	case 200:
 		var response struct {
 			APIKey string `json:"api_key"`
 		}
-		ExitIfError(res.Body.FromJsonTo(&response), false)
+		ExitIfError(res.Body.FromJsonTo(&response))
 		return response.APIKey, nil
 	case 401:
 		var response struct {
 			Error string `json:"error"`
 		}
-		ExitIfError(res.Body.FromJsonTo(&response), false)
+		ExitIfError(res.Body.FromJsonTo(&response))
 		return "", errors.New(response.Error)
 	case 403:
 		return v2login(email, password, getString("Two-factor code: "))
@@ -179,7 +179,7 @@ func v2login(email, password, secondFactor string) (string, error) {
 		return "", errors.New("Authentication failed.\nEmail or password is not valid.\nCheck your credentials on https://dashboard.heroku.com")
 	default:
 		body, err := res.Body.ToString()
-		PrintError(err, false)
+		PrintError(err)
 		return "", fmt.Errorf("Invalid response from API.\nHTTP %d\n%s\n\nAre you behind a proxy?\nhttps://devcenter.heroku.com/articles/using-the-cli#using-an-http-proxy", res.StatusCode, body)
 	}
 }
@@ -199,7 +199,7 @@ func createOauthToken(email, password, secondFactor string) (string, error) {
 		req.AddHeader("Heroku-Two-Factor-Code", secondFactor)
 	}
 	res, err := req.Do()
-	ExitIfError(err, false)
+	ExitIfError(err)
 	type Doc struct {
 		ID          string
 		Message     string
@@ -253,6 +253,6 @@ func logout(ctx *Context) {
 	netrc := getNetrc()
 	netrc.RemoveMachine(apiHost())
 	netrc.RemoveMachine(httpGitHost())
-	ExitIfError(netrc.Save(), false)
+	ExitIfError(netrc.Save())
 	Println("Local credentials cleared.")
 }
