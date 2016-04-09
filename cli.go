@@ -10,9 +10,6 @@ import (
 	"github.com/dickeyxxx/netrc"
 )
 
-// ErrHelp means the user didn't type a valid command and we need to display help.
-var ErrHelp = errors.New("help")
-
 // ErrOrgNeeded means the command needs an org context and one was not found.
 var ErrOrgNeeded = errors.New("No org specified.\nRun this command with --org or by setting HEROKU_ORGANIZATION")
 
@@ -24,28 +21,34 @@ type Cli struct {
 
 // Run parses command line arguments and runs the associated command or help.
 // Also does lookups for app name and/or auth token if the command needs it.
-func (cli *Cli) Run(args []string) (err error) {
+func (cli *Cli) Run(args []string, showHelp bool) (err error) {
 	ctx := &Context{}
 	if len(args) < 2 {
-		return ErrHelp
+		if showHelp {
+			help()
+		} else {
+			return
+		}
 	}
 	ctx.Topic, ctx.Command = cli.ParseCmd(args[1])
 	if ctx.Command == nil {
-		return ErrHelp
+		currentAnalyticsCommand.Valid = false
+		if showHelp {
+			help()
+		} else {
+			return
+		}
 	}
 	if ctx.Command.VariableArgs {
-		ctx.Args, ctx.Flags, ctx.App, err = parseVarArgs(ctx.Command, args[2:])
+		ctx.Args, ctx.Flags, ctx.App = parseVarArgs(ctx.Command, args[2:])
 	} else {
-		ctx.Args, ctx.Flags, ctx.App, err = parseArgs(ctx.Command, args[2:])
-	}
-	if err != nil {
-		return err
+		ctx.Args, ctx.Flags, ctx.App = parseArgs(ctx.Command, args[2:])
 	}
 	if ctx.Command.NeedsApp || ctx.Command.WantsApp {
 		if ctx.App == "" {
 			ctx.App, err = app()
 			if err != nil && ctx.Command.NeedsApp {
-				ExitIfError(err)
+				ExitWithMessage(err.Error())
 			}
 		}
 		if ctx.App == "" && ctx.Command.NeedsApp {
@@ -100,7 +103,7 @@ func (cli *Cli) ParseCmd(cmd string) (topic *Topic, command *Command) {
 	return topic, cli.Commands.ByTopicAndCommand(tc[0], "")
 }
 
-func parseVarArgs(command *Command, args []string) (result []string, flags map[string]interface{}, appName string, err error) {
+func parseVarArgs(command *Command, args []string) (result []string, flags map[string]interface{}, appName string) {
 	result = make([]string, 0, len(args))
 	flags = map[string]interface{}{}
 	parseFlags := true
@@ -122,7 +125,7 @@ func parseVarArgs(command *Command, args []string) (result []string, flags map[s
 		case parseFlags && (args[i] == "--"):
 			parseFlags = false
 		case parseFlags && (args[i] == "--help" || args[i] == "-h"):
-			return nil, nil, "", ErrHelp
+			help()
 		case parseFlags && (args[i] == "--no-color"):
 			continue
 		case parseFlags && strings.HasPrefix(args[i], "-"):
@@ -130,23 +133,23 @@ func parseVarArgs(command *Command, args []string) (result []string, flags map[s
 			if err != nil && strings.HasSuffix(err.Error(), "needs a value") {
 				i++
 				if len(args) == i {
-					return nil, nil, "", err
+					ExitWithMessage(err.Error())
 				}
 				flag, val, err = parseFlag(args[i-1]+"="+args[i], possibleFlags)
 			}
 			switch {
 			case err != nil:
-				return nil, nil, "", err
+				ExitWithMessage(err.Error())
 			case flag == nil && command.VariableArgs:
 				result = append(result, args[i])
 			case flag == nil:
-				return nil, nil, "", command.unexpectedFlagErr(args[i])
+				command.unexpectedFlagErr(args[i])
 			case flag == appFlag:
 				appName = val
 			case flag == remoteFlag:
 				appName, err = appFromGitRemote(val)
 				if err != nil {
-					return nil, nil, "", err
+					ExitWithMessage(err.Error())
 				}
 			case flag.HasValue:
 				flags[flag.Name] = val
@@ -159,30 +162,27 @@ func parseVarArgs(command *Command, args []string) (result []string, flags map[s
 	}
 	for _, flag := range command.Flags {
 		if flag.Required && flags[flag.Name] == nil {
-			return nil, nil, "", errors.New("Required flag: " + flag.String())
+			ExitWithMessage("Required flag: %s", flag.String())
 		}
 	}
-	return result, flags, appName, nil
+	return result, flags, appName
 }
 
-func parseArgs(command *Command, args []string) (result map[string]string, flags map[string]interface{}, appName string, err error) {
+func parseArgs(command *Command, args []string) (result map[string]string, flags map[string]interface{}, appName string) {
 	result = map[string]string{}
-	args, flags, appName, err = parseVarArgs(command, args)
-	if err != nil {
-		return nil, nil, "", err
-	}
+	args, flags, appName = parseVarArgs(command, args)
 	if len(args) > len(command.Args) {
-		return nil, nil, "", command.unexpectedArgumentsErr(args[len(command.Args):])
+		command.unexpectedArgumentsErr(args[len(command.Args):])
 	}
 	for i, arg := range args {
 		result[command.Args[i].Name] = arg
 	}
 	for _, arg := range command.Args {
 		if !arg.Optional && result[arg.Name] == "" {
-			return nil, nil, "", errors.New("Missing argument: " + strings.ToUpper(arg.Name))
+			ExitWithMessage("Missing argument: %s", strings.ToUpper(arg.Name))
 		}
 	}
-	return result, flags, appName, nil
+	return result, flags, appName
 }
 
 func app() (string, error) {

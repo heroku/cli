@@ -9,8 +9,6 @@ import (
 	"runtime"
 	"runtime/debug"
 	"strings"
-
-	"github.com/stvp/rollbar"
 )
 
 // Version is the version of the v4 cli.
@@ -77,10 +75,6 @@ func init() {
 		whoamiAuthCmd,
 		whoamiCmd,
 	}
-	rollbar.Platform = "client"
-	rollbar.Token = "b40226d5e8a743cf963ca320f7be17bd"
-	rollbar.Environment = Channel
-	rollbar.ErrorWriter = nil
 }
 
 func main() {
@@ -100,21 +94,15 @@ func main() {
 	}
 	SubmitAnalytics()
 	SetupNode()
-	err := cli.Run(os.Args)
+
+	// try running as a core command
+	cli.Run(os.Args, false)
+
+	// Command wasn't found so load the plugins and try again
 	SetupBuiltinPlugins()
 	TriggerBackgroundUpdate()
-	if err == ErrHelp {
-		// Command wasn't found so load the plugins and try again
-		cli.LoadPlugins(GetPlugins())
-		err = cli.Run(os.Args)
-	}
-	if err == ErrHelp {
-		help()
-	}
-	if err != nil {
-		PrintError(err)
-		Exit(2)
-	}
+	cli.LoadPlugins(GetPlugins())
+	cli.Run(os.Args, true)
 	Exit(0)
 }
 
@@ -128,24 +116,10 @@ func handlePanic() {
 		if Channel == "?" {
 			debug.PrintStack()
 		} else {
-			rollbar.Error(rollbar.ERR, err, rollbarFields()...)
+			rollbar(err)
 		}
 		TriggerBackgroundUpdate()
 		Exit(1)
-	}
-}
-
-func rollbarFields() []*rollbar.Field {
-	var cmd string
-	if len(os.Args) > 1 {
-		cmd = os.Args[1]
-	}
-	return []*rollbar.Field{
-		{"version", Version},
-		{"os", runtime.GOOS},
-		{"arch", runtime.GOARCH},
-		{"command", cmd},
-		{"user", netrcLogin()},
 	}
 }
 

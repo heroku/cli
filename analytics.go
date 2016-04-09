@@ -20,6 +20,7 @@ var currentAnalyticsCommand = &AnalyticsCommand{
 	Arch:       runtime.GOARCH,
 	Language:   "go/" + strings.TrimPrefix(runtime.Version(), "go"),
 	CLIVersion: version(),
+	Valid:      true,
 }
 
 // AnalyticsCommand represents an analytics command
@@ -52,7 +53,6 @@ func (c *AnalyticsCommand) RecordEnd(status int) {
 	c.Command = os.Args[1]
 	c.Status = status
 	if !c.start.IsZero() {
-		c.Valid = true
 		c.Runtime = (time.Now().UnixNano() - c.start.UnixNano()) / 1000000
 	}
 	commands := readAnalyticsFile()
