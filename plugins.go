@@ -304,7 +304,7 @@ func ParsePlugin(name string) (*Plugin, error) {
 func GetPlugins() map[string]*Plugin {
 	plugins := FetchPluginCache()
 	for name, plugin := range plugins {
-		if plugin == nil || !pluginExists(name) {
+		if plugin == nil || !pluginExists(name) || plugin.Commands.Len() == 0 {
 			delete(plugins, name)
 		} else {
 			for _, command := range plugin.Commands {
