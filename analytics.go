@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"strings"
 	"time"
 
 	"github.com/dickeyxxx/golock"
@@ -17,7 +18,7 @@ var currentAnalyticsCommand = &AnalyticsCommand{
 	Version:    version(),
 	OS:         runtime.GOOS,
 	Arch:       runtime.GOARCH,
-	Language:   runtime.Version(),
+	Language:   "go/" + strings.TrimPrefix(runtime.Version(), "go"),
 	CLIVersion: version(),
 }
 
