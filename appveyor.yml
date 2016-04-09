@@ -7,10 +7,6 @@ environment:
 install:
   - go get -t -d -v ./...
   - go build -v
-  - go get github.com/kr/godep
-  - go get github.com/golang/lint/golint
-  - go get golang.org/x/tools/cmd/vet
-  - godep get
 
 build: off
 
