@@ -13,6 +13,7 @@ import (
 	"sync"
 
 	"github.com/lunixbochs/vtclean"
+	"github.com/stvp/rollbar"
 	"golang.org/x/crypto/ssh/terminal"
 )
 
@@ -54,6 +55,7 @@ func Exit(code int) {
 	currentAnalyticsCommand.RecordEnd(code)
 	showCursor()
 	wg.Wait()
+	rollbar.Wait()
 	exitFn(code)
 }
 
@@ -134,6 +136,7 @@ func PrintError(e error) {
 	Err(errorPrefix)
 	Error(e.Error())
 	Logln(string(debug.Stack()))
+	rollbar.Error(rollbar.ERR, e, rollbarFields()...)
 	if debugging {
 		debug.PrintStack()
 	}

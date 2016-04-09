@@ -129,7 +129,6 @@ func handlePanic() {
 			debug.PrintStack()
 		} else {
 			rollbar.Error(rollbar.ERR, err, rollbarFields()...)
-			rollbar.Wait()
 		}
 		TriggerBackgroundUpdate()
 		Exit(1)
@@ -142,10 +141,11 @@ func rollbarFields() []*rollbar.Field {
 		cmd = os.Args[1]
 	}
 	return []*rollbar.Field{
-		{"Version", Version},
-		{"GOOS", runtime.GOOS},
-		{"GOARCH", runtime.GOARCH},
+		{"version", Version},
+		{"os", runtime.GOOS},
+		{"arch", runtime.GOARCH},
 		{"command", cmd},
+		{"user", netrcLogin()},
 	}
 }
 
