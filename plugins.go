@@ -233,6 +233,10 @@ cmd.run(ctx);
 		// swallow sigint since the plugin will handle it
 		swallowSigint = true
 
+		currentAnalyticsCommand.Plugin = plugin.Name
+		currentAnalyticsCommand.Version = plugin.Version
+		currentAnalyticsCommand.Language = fmt.Sprintf("node/%s", gode.NodeVersion)
+
 		cmd, done := gode.RunScript(script)
 		defer done()
 		cmd.Stdin = os.Stdin
@@ -242,9 +246,7 @@ cmd.run(ctx);
 			cmd = gode.DebugScript(script)
 		}
 		err = cmd.Run()
-		if err != nil {
-			Exit(getExitCode(err))
-		}
+		Exit(getExitCode(err))
 	}
 }
 

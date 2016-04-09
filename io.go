@@ -51,6 +51,7 @@ func newLogger(path string) *log.Logger {
 
 // Exit just calls os.Exit, but can be mocked out for testing
 func Exit(code int) {
+	currentAnalyticsCommand.RecordEnd(code)
 	showCursor()
 	wg.Wait()
 	exitFn(code)

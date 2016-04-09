@@ -5,38 +5,58 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"runtime"
+	"time"
 
 	"github.com/dickeyxxx/golock"
 )
 
 var analyticsPath = filepath.Join(HomeDir, ".heroku", "analytics.json")
 var currentAnalyticsCommand = AnalyticsCommand{
-	Command: "foo",
+	Timestamp:  time.Now().Unix(),
+	Version:    version(),
+	OS:         runtime.GOOS,
+	Arch:       runtime.GOARCH,
+	Language:   runtime.Version(),
+	CLIVersion: version(),
 }
 
 // AnalyticsCommand represents an analytics command
 type AnalyticsCommand struct {
-	Command   string `json:"command"`
-	Timestamp int64  `json:"timestamp"`
-	Version   string `json:"version"`
-	Platform  string `json:"platform"`
-	Language  string `json:"language"`
-	Status    int64  `json:"status"`
-	Runtime   int64  `json:"runtime"`
+	Command    string `json:"command"`
+	Plugin     string `json:"plugin,omitempty"`
+	Timestamp  int64  `json:"timestamp"`
+	CLIVersion string `json:"cli_version"`
+	Version    string `json:"version"`
+	OS         string `json:"os"`
+	Arch       string `json:"arch"`
+	Language   string `json:"language"`
+	Status     int    `json:"status"`
+	Runtime    int64  `json:"runtime"`
+	Valid      bool   `json:"valid"`
+	start      time.Time
 }
 
-// RecordAnalytics sends the analytics info to the analytics service
-func RecordAnalytics(cmd AnalyticsCommand) {
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		if skipAnalytics() {
-			return
-		}
-		commands := readAnalyticsFile()
-		commands = append(commands, cmd)
-		writeAnalyticsFile(commands)
-	}()
+// RecordStart marks when a command was started (for tracking runtime)
+func (c *AnalyticsCommand) RecordStart() {
+	c.start = time.Now()
+}
+
+// RecordEnd marks when a command was completed
+// and records it to the analytics file
+func (c *AnalyticsCommand) RecordEnd(status int) {
+	if skipAnalytics() || len(os.Args) < 2 {
+		return
+	}
+	c.Command = os.Args[1]
+	c.Status = status
+	if !c.start.IsZero() {
+		c.Valid = true
+		c.Runtime = (time.Now().UnixNano() - c.start.UnixNano()) / 1000000
+	}
+	commands := readAnalyticsFile()
+	commands = append(commands, *c)
+	writeAnalyticsFile(commands)
 }
 
 func readAnalyticsFile() (commands []AnalyticsCommand) {
@@ -127,5 +147,5 @@ func skipAnalytics() bool {
 		Logln(err)
 		return true
 	}
-	return skip
+	return skip || netrcLogin() == ""
 }
