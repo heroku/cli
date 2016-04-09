@@ -167,13 +167,11 @@ Example:
 		SetupBuiltinPlugins()
 		var plugins []string
 		for _, plugin := range GetPlugins() {
-			if plugin != nil && len(plugin.Commands) > 0 {
-				symlinked := ""
-				if isPluginSymlinked(plugin.Name) {
-					symlinked = " (symlinked)"
-				}
-				plugins = append(plugins, fmt.Sprintf("%s %s %s", plugin.Name, plugin.Version, symlinked))
+			symlinked := ""
+			if isPluginSymlinked(plugin.Name) {
+				symlinked = " (symlinked)"
 			}
+			plugins = append(plugins, fmt.Sprintf("%s %s %s", plugin.Name, plugin.Version, symlinked))
 		}
 		sort.Strings(plugins)
 		for _, plugin := range plugins {
