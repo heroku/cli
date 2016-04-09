@@ -11,7 +11,7 @@ func ExampleRunScript() {
 	if err != nil {
 		panic(err)
 	}
-	cmd := RunScript(`console.log("hello world!")`)
+	cmd, done := RunScript(`console.log("hello world!")`)
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		panic(err)
@@ -19,4 +19,5 @@ func ExampleRunScript() {
 	fmt.Println(string(output))
 	// Output:
 	// hello world!
+	done()
 }

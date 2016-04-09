@@ -4,6 +4,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"path/filepath"
 	"testing"
 	"time"
 
@@ -50,10 +51,11 @@ func TestWindowsSetup(test *testing.T) {
 	}
 	err := os.MkdirAll("tmp", 0755)
 	must(err)
-	dir, err := ioutil.TempDir("tmp", "gode")
+	dir, err := ioutil.TempDir("", "gode")
 	must(err)
 	defer os.RemoveAll(dir)
 	SetRootPath(dir)
+	os.Chdir(dir)
 	t = getWindowsTarget()
 	must(Setup())
 	if setup, _ := IsSetup(); !setup {
@@ -70,7 +72,8 @@ func must(err error) {
 
 func setup() {
 	goreq.SetConnectTimeout(15 * time.Second)
-	SetRootPath("tmp")
+	dir, _ := filepath.Abs("tmp")
+	SetRootPath(dir)
 	must(Setup())
 }
 
