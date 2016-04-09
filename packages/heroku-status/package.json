@@ -18,7 +18,8 @@
   "license": "ISC",
   "homepage": "https://github.com/heroku/heroku-status",
   "scripts": {
-    "test": "mocha && jshint .",
+    "test": "nyc mocha --require ./test/helpers.js && jshint .",
+    "coverage": "nyc report --reporter=text-lcov | coveralls",
     "preversion": "npm test",
     "postversion": "npm publish && git push && git push --tags"
   },
@@ -30,9 +31,10 @@
   },
   "devDependencies": {
     "chai": "3.5.0",
+    "coveralls": "2.11.9",
     "jshint": "2.9.1",
     "mocha": "2.4.5",
-    "mocha-circleci-reporter": "0.0.1",
-    "nock": "7.7.2"
+    "nock": "7.7.2",
+    "nyc": "6.2.1"
   }
 }
