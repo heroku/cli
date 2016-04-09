@@ -248,13 +248,13 @@ func plural(word string, count int) string {
 }
 
 func showCursor() {
-	if supportsColor() {
+	if supportsColor() && !windows() {
 		Print("\u001b[?25h")
 	}
 }
 
 func hideCursor() {
-	if supportsColor() {
+	if supportsColor() && !windows() {
 		Print("\u001b[?25l")
 	}
 }
