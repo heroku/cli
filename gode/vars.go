@@ -19,6 +19,9 @@ var nodeBinPath string
 var npmBasePath string
 var npmBinPath string
 
+// ProgressDrawFn is the progress text to display when downloading node/npm
+var ProgressDrawFn func(progress, total int64) string
+
 func init() {
 	registry = os.Getenv("HEROKU_NPM_REGISTRY")
 	if registry == "" {

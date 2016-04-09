@@ -63,7 +63,7 @@ func Update(channel string, t string) {
 		touchAutoupdateFile()
 		updateCLI(channel)
 		SetupNode()
-		updatePlugins()
+		action("heroku-cli: Updating plugins", "", updatePlugins)
 		truncateErrorLog()
 		cleanTmpDir()
 		done <- true
@@ -80,15 +80,14 @@ func updatePlugins() {
 	if len(plugins) == 0 {
 		return
 	}
-	Err("heroku-cli: Updating plugins...")
 	packages, err := gode.OutdatedPackages(plugins...)
-	PrintError(err, true)
+	PrintError(err)
 	if len(packages) > 0 {
 		for name, version := range packages {
 			lockPlugin(name)
-			PrintError(gode.InstallPackages(name+"@"+version), true)
+			PrintError(gode.InstallPackages(name + "@" + version))
 			plugin, err := ParsePlugin(name)
-			PrintError(err, true)
+			PrintError(err)
 			AddPluginsToCache(plugin)
 			unlockPlugin(name)
 		}
@@ -106,7 +105,7 @@ func updateCLI(channel string) {
 	manifest, err := getUpdateManifest(channel)
 	if err != nil {
 		Warn("Error updating CLI")
-		PrintError(err, false)
+		PrintError(err)
 		return
 	}
 	if manifest.Version == Version && manifest.Channel == Channel {
@@ -178,7 +177,7 @@ func touchAutoupdateFile() {
 
 // forces a full update on the next run
 func clearAutoupdateFile() {
-	PrintError(os.Remove(autoupdateFile), true)
+	PrintError(os.Remove(autoupdateFile))
 }
 
 type manifest struct {
@@ -249,20 +248,20 @@ func reexec() {
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
-	os.Exit(getExitCode(cmd.Run()))
+	Exit(getExitCode(cmd.Run()))
 }
 
 func truncateErrorLog() {
 	Debugln("truncating error log...")
 	body, err := ioutil.ReadFile(ErrLogPath)
 	if err != nil {
-		PrintError(err, false)
+		PrintError(err)
 		return
 	}
 	lines := strings.Split(string(body), "\n")
 	lines = lines[maxint(len(lines)-1000, 0) : len(lines)-1]
 	err = ioutil.WriteFile(ErrLogPath, []byte(strings.Join(lines, "\n")+"\n"), 0644)
-	PrintError(err, false)
+	PrintError(err)
 }
 
 func maxint(a, b int) int {
@@ -276,14 +275,14 @@ func cleanTmpDir() {
 	Debugln("cleaning up tmp dirs...")
 	dirs, err := ioutil.ReadDir(tmpPath)
 	if err != nil {
-		PrintError(err, false)
+		PrintError(err)
 		return
 	}
 	for _, dir := range dirs {
 		if time.Since(dir.ModTime()) > 24*time.Hour {
 			path := filepath.Join(tmpPath, dir.Name())
 			Debugln("deleting " + path)
-			PrintError(os.RemoveAll(path), false)
+			PrintError(os.RemoveAll(path))
 		}
 	}
 }

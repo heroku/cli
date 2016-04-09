@@ -1,7 +1,5 @@
 package main
 
-import "os"
-
 var whichTopic = &Topic{
 	Name:   "which",
 	Hidden: true,
@@ -17,7 +15,7 @@ var whichCmd = &Command{
 		_, cmd := cli.ParseCmd(command)
 		if cmd == nil {
 			Println("No command found. Could be a ruby command. https://github.com/heroku/heroku")
-			os.Exit(1)
+			Exit(1)
 		}
 		if cmd.Plugin == "" {
 			Println("Command in v4 core. https://github.com/heroku/heroku-cli")

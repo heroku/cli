@@ -83,7 +83,7 @@ func downloadXZ(url string) (io.Reader, func() string, error) {
 	progress := &ioprogress.Reader{
 		Reader:   resp.Body,
 		Size:     int64(size),
-		DrawFunc: ioprogress.DrawTerminalf(os.Stderr, progressDrawFn),
+		DrawFunc: ioprogress.DrawTerminalf(os.Stderr, ProgressDrawFn),
 	}
 	getSha, reader := computeSha(progress)
 	uncompressed, err := xz.NewReader(reader)
@@ -116,10 +116,6 @@ func downloadFile(path, url, sha string) error {
 		return err
 	}
 	return os.RemoveAll(filepath.Dir(tmp))
-}
-
-func progressDrawFn(progress, total int64) string {
-	return fmt.Sprintf("heroku-cli: Adding dependencies... %15s", ioprogress.DrawTextFormatBytes(progress, total))
 }
 
 func clearOldNodeInstalls() error {

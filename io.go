@@ -26,6 +26,8 @@ var errLogger = newLogger(ErrLogPath)
 var exitFn = os.Exit
 var debugging = isDebugging()
 var debuggingHeaders = isDebuggingHeaders()
+var swallowSigint = false
+var errorPrefix = ""
 
 func init() {
 	Stdout = os.Stdout
@@ -46,6 +48,7 @@ func newLogger(path string) *log.Logger {
 
 // Exit just calls os.Exit, but can be mocked out for testing
 func Exit(code int) {
+	showCursor()
 	exitFn(code)
 }
 
@@ -119,13 +122,11 @@ func Debugf(f string, a ...interface{}) {
 }
 
 // PrintError is a helper that prints out formatted error messages in red text
-func PrintError(e error, newline bool) {
+func PrintError(e error) {
 	if e == nil {
 		return
 	}
-	if newline {
-		Errln()
-	}
+	Err(errorPrefix)
 	Error(e.Error())
 	if debugging {
 		debug.PrintStack()
@@ -156,10 +157,10 @@ func errorArrow() string {
 }
 
 // ExitIfError calls PrintError and exits if e is not null
-func ExitIfError(e error, newline bool) {
+func ExitIfError(e error) {
 	if e != nil {
-		PrintError(e, newline)
-		os.Exit(1)
+		PrintError(e)
+		Exit(1)
 	}
 }
 
@@ -250,5 +251,17 @@ func showCursor() {
 func hideCursor() {
 	if supportsColor() {
 		Print("\u001b[?25l")
+	}
+}
+
+func action(text, done string, fn func()) {
+	Err(text + "...")
+	errorPrefix = red(" !") + "\n"
+	hideCursor()
+	fn()
+	showCursor()
+	errorPrefix = ""
+	if done != "" {
+		Errln(" " + done)
 	}
 }

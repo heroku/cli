@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
-	"os/signal"
 	"path/filepath"
 	"sort"
 	"strconv"
@@ -15,6 +14,7 @@ import (
 
 	"github.com/dickeyxxx/golock"
 	"github.com/heroku/heroku-cli/gode"
+	"github.com/mitchellh/ioprogress"
 )
 
 // Plugin represents a javascript plugin
@@ -29,8 +29,23 @@ type Plugin struct {
 // SetupNode sets up node and npm in ~/.heroku
 func SetupNode() {
 	gode.SetRootPath(AppDir())
+	gode.ProgressDrawFn = func(progress, total int64) string {
+		base := "heroku-cli: Adding dependencies..."
+		if progress == total {
+			if istty() {
+				showCursor()
+			} else {
+				return fmt.Sprintf("%s done", base)
+			}
+		}
+		if istty() {
+			hideCursor()
+			return fmt.Sprintf("%s %15s", base, ioprogress.DrawTextFormatBytes(progress, total))
+		}
+		return base
+	}
 	setup, err := gode.IsSetup()
-	PrintError(err, false)
+	PrintError(err)
 	if !setup {
 		if err := gode.Setup(); err != nil {
 			panic(err)
@@ -79,9 +94,9 @@ var pluginsInstallCmd = &Command{
 			Errln("Must specify a plugin name")
 			return
 		}
-		Errf("Installing plugin %s...", name)
-		ExitIfError(installPlugins(name), true)
-		Errln(" done")
+		action("Installing plugin "+name, "done", func() {
+			ExitIfError(installPlugins(name))
+		})
 	},
 }
 
@@ -118,7 +133,7 @@ var pluginsLinkCmd = &Command{
 			panic(err)
 		}
 		plugin, err := ParsePlugin(name)
-		ExitIfError(err, false)
+		ExitIfError(err)
 		if name != plugin.Name {
 			path = newPath
 			newPath = pluginPath(plugin.Name)
@@ -145,10 +160,10 @@ var pluginsUninstallCmd = &Command{
 	Run: func(ctx *Context) {
 		name := ctx.Args.(map[string]string)["name"]
 		if !contains(PluginNames(), name) {
-			ExitIfError(errors.New(name+" is not installed"), false)
+			ExitIfError(errors.New(name + " is not installed"))
 		}
 		Errf("Uninstalling plugin %s...", name)
-		ExitIfError(gode.RemovePackages(name), true)
+		ExitIfError(gode.RemovePackages(name))
 		RemovePluginFromCache(name)
 		Errln(" done")
 	},
@@ -231,7 +246,7 @@ cmd.run(ctx);
 `, plugin.Name, plugin.Version, topic, command, string(title), ctxJSON, strconv.Quote(ErrLogPath))
 
 		// swallow sigint since the plugin will handle it
-		swallowSignal(os.Interrupt)
+		swallowSigint = true
 
 		cmd, done := gode.RunScript(script)
 		defer done()
@@ -242,19 +257,10 @@ cmd.run(ctx);
 			cmd = gode.DebugScript(script)
 		}
 		err = cmd.Run()
-		showCursor()
 		if err != nil {
-			os.Exit(getExitCode(err))
+			Exit(getExitCode(err))
 		}
 	}
-}
-
-func swallowSignal(s os.Signal) {
-	c := make(chan os.Signal, 1)
-	signal.Notify(c, s)
-	go func() {
-		<-c
-	}()
 }
 
 func getExitCode(err error) int {
@@ -363,10 +369,10 @@ func SetupBuiltinPlugins() {
 	Err("heroku-cli: Installing core plugins...")
 	if err := installPlugins(pluginNames...); err != nil {
 		// retry once
-		PrintError(gode.RemovePackages(pluginNames...), true)
-		PrintError(gode.ClearCache(), true)
+		PrintError(gode.RemovePackages(pluginNames...))
+		PrintError(gode.ClearCache())
 		Err("\rheroku-cli: Installing core plugins (retrying)...")
-		ExitIfError(installPlugins(pluginNames...), true)
+		ExitIfError(installPlugins(pluginNames...))
 	}
 	Errln(" done")
 }

@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"os/signal"
 	"runtime"
 	"runtime/debug"
 	"strings"
@@ -84,6 +85,11 @@ func init() {
 
 func main() {
 	defer handlePanic()
+	handleSignal(os.Interrupt, func() {
+		if !swallowSigint {
+			Exit(1)
+		}
+	})
 	var wg sync.WaitGroup
 	runtime.GOMAXPROCS(1) // more procs causes runtime: failed to create new OS thread on Ubuntu
 	ShowDebugInfo()
@@ -107,8 +113,8 @@ func main() {
 		help()
 	}
 	if err != nil {
-		PrintError(err, false)
-		os.Exit(2)
+		PrintError(err)
+		Exit(2)
 	}
 	wg.Wait()
 }
@@ -127,7 +133,6 @@ func handlePanic() {
 			rollbar.Wait()
 		}
 		TriggerBackgroundUpdate()
-		showCursor()
 		Exit(1)
 	}
 }
@@ -163,8 +168,17 @@ func ShowDebugInfo() {
 
 func getProxy() *url.URL {
 	req, err := http.NewRequest("GET", "https://api.heroku.com", nil)
-	PrintError(err, false)
+	PrintError(err)
 	proxy, err := http.ProxyFromEnvironment(req)
-	PrintError(err, false)
+	PrintError(err)
 	return proxy
+}
+
+func handleSignal(s os.Signal, fn func()) {
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, s)
+	go func() {
+		<-c
+		fn()
+	}()
 }
