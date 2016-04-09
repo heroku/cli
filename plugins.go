@@ -32,7 +32,7 @@ func SetupNode() {
 	setup, err := gode.IsSetup()
 	PrintError(err, false)
 	if !setup {
-		PrintError(gode.Setup(), true)
+		panic(gode.Setup())
 	}
 }
 
