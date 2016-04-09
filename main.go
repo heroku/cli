@@ -51,6 +51,7 @@ func init() {
 		updateTopic,
 		versionTopic,
 		whichTopic,
+		whoamiTopic,
 	}
 	cli.Commands = CommandSet{
 		authLoginCmd,
@@ -73,6 +74,7 @@ func init() {
 		updateCmd,
 		versionCmd,
 		whichCmd,
+		whoamiAuthCmd,
 		whoamiCmd,
 	}
 	rollbar.Platform = "client"
