@@ -4,7 +4,7 @@
   "description": "Heroku CLI plugin to run one-off dyno processes.",
   "main": "index.js",
   "scripts": {
-    "test": "standard",
+    "test": "nyc mocha && standard",
     "preversion": "npm test",
     "postversion": "npm publish && git push && git push --tags"
   },
@@ -23,9 +23,14 @@
   "homepage": "https://github.com/heroku/heroku-run",
   "dependencies": {
     "co": "4.6.0",
-    "heroku-cli-util": "5.10.10"
+    "heroku-cli-util": "5.10.11",
+    "shellwords": "0.1.0",
+    "unexpected": "10.13.2"
   },
   "devDependencies": {
+    "mocha": "2.4.5",
+    "nock": "8.0.0",
+    "nyc": "6.4.4",
     "standard": "7.1.0"
   }
 }
