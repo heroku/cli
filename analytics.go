@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"sync"
@@ -49,15 +50,37 @@ func RecordAnalytics(wg *sync.WaitGroup) {
 	}
 	golock.Lock(lockfile)
 	defer golock.Unlock(lockfile)
+	submitAnalytics(analytics)
+}
+
+func submitAnalytics(analytics AnalyticsCommands) {
+	plugins := func() map[string]string {
+		plugins := make(map[string]string)
+		for _, plugin := range GetPlugins() {
+			plugins[plugin.Name] = plugin.Version
+		}
+		dirs, _ := ioutil.ReadDir(filepath.Join(HomeDir, ".heroku", "plugins"))
+		for _, dir := range dirs {
+			plugins[dir.Name()] = "ruby"
+		}
+		return plugins
+	}
+
 	req := apiRequestBase("")
-	req.Uri = "https://cli-analytics.heroku.com/record"
+	host := os.Getenv("HEROKU_ANALYTICS_HOST")
+	if host == "" {
+		host = "https://cli-analytics.heroku.com"
+	}
+	req.Uri = host + "/record"
 	req.Method = "POST"
 	req.Body = struct {
 		Commands AnalyticsCommands `json:"commands"`
 		User     string            `json:"user"`
+		Plugins  map[string]string `json:"plugins"`
 	}{
 		Commands: analytics,
 		User:     netrcLogin(),
+		Plugins:  plugins(),
 	}
 	resp, err := req.Do()
 	if err != nil {
