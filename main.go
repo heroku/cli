@@ -127,6 +127,7 @@ func handlePanic() {
 			rollbar.Wait()
 		}
 		TriggerBackgroundUpdate()
+		showCursor()
 		Exit(1)
 	}
 }
