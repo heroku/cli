@@ -1,8 +1,6 @@
 machine:
   node:
-    version: v5.9.1
+    version: v5.10.1
 test:
-  override:
-    - jshint .
-    - mkdir -p $CIRCLE_TEST_REPORTS/mocha
-    - MOCHA_FILE=$CIRCLE_TEST_REPORTS/mocha/junit.xml mocha --reporter mocha-junit-reporter
+  post:
+    - npm run coverage

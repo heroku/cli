@@ -4,7 +4,8 @@
   "description": "Heroku CLI plugin to manage apps.",
   "main": "index.js",
   "scripts": {
-    "test": "mocha && jshint .",
+    "test": "nyc mocha --require ./test/helpers.js && jshint .",
+    "coverage": "nyc report --reporter=text-lcov | coveralls",
     "preversion": "npm test",
     "postversion": "npm publish && git push && git push --tags"
   },
@@ -33,9 +34,10 @@
   },
   "devDependencies": {
     "chai": "^3.3.0",
+    "coveralls": "2.11.9",
     "jshint": "*",
     "mocha": "^2.3.3",
-    "mocha-junit-reporter": "1.10.0",
-    "nock": "7.5.0"
+    "nock": "7.5.0",
+    "nyc": "6.2.1"
   }
 }
