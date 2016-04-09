@@ -26,11 +26,12 @@ var updateTopic = &Topic{
 }
 
 var updateCmd = &Command{
-	Topic:       "update",
-	Hidden:      true,
-	Description: "updates heroku-cli",
-	Args:        []Arg{{Name: "channel", Optional: true}},
-	Flags:       []Flag{{Name: "background", Hidden: true}},
+	Topic:            "update",
+	Hidden:           true,
+	Description:      "updates heroku-cli",
+	DisableAnalytics: true,
+	Args:             []Arg{{Name: "channel", Optional: true}},
+	Flags:            []Flag{{Name: "background", Hidden: true}},
 	Run: func(ctx *Context) {
 		channel := ctx.Args.(map[string]string)["channel"]
 		if channel == "" {

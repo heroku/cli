@@ -77,6 +77,9 @@ func (cli *Cli) Run(args []string) (err error) {
 	ctx.GitHost = gitHost()
 	ctx.HTTPGitHost = httpGitHost()
 	currentAnalyticsCommand.RecordStart()
+	if ctx.Command.DisableAnalytics {
+		currentAnalyticsCommand = nil
+	}
 	ctx.Command.Run(ctx)
 	return nil
 }

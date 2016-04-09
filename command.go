@@ -11,24 +11,25 @@ import (
 // For example, in the command `heroku apps:create` the command would be `create`.
 // They must have a Topic name that links to a real topic's name.
 type Command struct {
-	Topic        string             `json:"topic"`
-	Command      string             `json:"command,omitempty"`
-	Plugin       string             `json:"plugin"`
-	Usage        string             `json:"usage"`
-	Description  string             `json:"description"`
-	Default      bool               `json:"default"`
-	Help         string             `json:"help"`
-	FullHelp     string             `json:"fullHelp"`
-	Hidden       bool               `json:"hidden"`
-	NeedsApp     bool               `json:"needsApp"`
-	WantsApp     bool               `json:"wantsApp"`
-	NeedsOrg     bool               `json:"needsOrg"`
-	WantsOrg     bool               `json:"wantsOrg"`
-	NeedsAuth    bool               `json:"needsAuth"`
-	VariableArgs bool               `json:"variableArgs"`
-	Args         []Arg              `json:"args"`
-	Flags        []Flag             `json:"flags"`
-	Run          func(ctx *Context) `json:"-"`
+	Topic            string             `json:"topic"`
+	Command          string             `json:"command,omitempty"`
+	Plugin           string             `json:"plugin"`
+	Usage            string             `json:"usage"`
+	Description      string             `json:"description"`
+	Default          bool               `json:"default"`
+	Help             string             `json:"help"`
+	FullHelp         string             `json:"fullHelp"`
+	Hidden           bool               `json:"hidden"`
+	NeedsApp         bool               `json:"needsApp"`
+	WantsApp         bool               `json:"wantsApp"`
+	NeedsOrg         bool               `json:"needsOrg"`
+	WantsOrg         bool               `json:"wantsOrg"`
+	NeedsAuth        bool               `json:"needsAuth"`
+	VariableArgs     bool               `json:"variableArgs"`
+	DisableAnalytics bool               `json:"disableAnalytics"`
+	Args             []Arg              `json:"args"`
+	Flags            []Flag             `json:"flags"`
+	Run              func(ctx *Context) `json:"-"`
 }
 
 func (c *Command) String() string {
@@ -218,9 +219,10 @@ var commandsTopic = &Topic{
 }
 
 var commandsListCmd = &Command{
-	Topic:       "commands",
-	Description: "list all commands",
-	Flags:       []Flag{{Name: "json"}},
+	Topic:            "commands",
+	Description:      "list all commands",
+	Flags:            []Flag{{Name: "json"}},
+	DisableAnalytics: true,
 	Run: func(ctx *Context) {
 		SetupBuiltinPlugins()
 		cli.LoadPlugins(GetPlugins())

@@ -12,7 +12,7 @@ import (
 )
 
 var analyticsPath = filepath.Join(HomeDir, ".heroku", "analytics.json")
-var currentAnalyticsCommand = AnalyticsCommand{
+var currentAnalyticsCommand = &AnalyticsCommand{
 	Timestamp:  time.Now().Unix(),
 	Version:    version(),
 	OS:         runtime.GOOS,
@@ -45,7 +45,7 @@ func (c *AnalyticsCommand) RecordStart() {
 // RecordEnd marks when a command was completed
 // and records it to the analytics file
 func (c *AnalyticsCommand) RecordEnd(status int) {
-	if skipAnalytics() || len(os.Args) < 2 {
+	if c == nil || skipAnalytics() || len(os.Args) < 2 {
 		return
 	}
 	c.Command = os.Args[1]

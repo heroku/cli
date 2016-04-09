@@ -155,9 +155,10 @@ var pluginsUninstallCmd = &Command{
 }
 
 var pluginsListCmd = &Command{
-	Topic:       "plugins",
-	Hidden:      true,
-	Description: "Lists installed plugins",
+	Topic:            "plugins",
+	Hidden:           true,
+	Description:      "Lists installed plugins",
+	DisableAnalytics: true,
 	Help: `
 Example:
   $ heroku plugins`,
