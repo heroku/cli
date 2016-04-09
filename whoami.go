@@ -7,7 +7,29 @@ var authTopic = &Topic{
 	Description: "authentication (login/logout)",
 }
 
+var whoamiTopic = &Topic{
+	Name:   "whoami",
+	Hidden: true,
+}
+
 var whoamiCmd = &Command{
+	Topic:       "whoami",
+	Description: "display your Heroku login",
+	Help: `Example:
+
+  $ heroku auth:whoami
+	email@example.com
+
+	whoami will return nonzero status if not logged in:
+
+  $ heroku auth:whoami
+	not logged in
+	$ echo $?
+	100`,
+	Run: whoami,
+}
+
+var whoamiAuthCmd = &Command{
 	Topic:       "auth",
 	Command:     "whoami",
 	Description: "display your Heroku login",
@@ -15,26 +37,35 @@ var whoamiCmd = &Command{
 	Help: `Example:
 
   $ heroku auth:whoami
-	email@example.com`,
-	Run: func(ctx *Context) {
-		if os.Getenv("HEROKU_API_KEY") != "" {
-			Warn("HEROKU_API_KEY is set")
-		}
+	email@example.com
 
-		// don't use needsToken since this should fail if
-		// not logged in. Should not show a login prompt.
-		ctx.APIToken = apiToken()
+	whoami will return nonzero status if not logged in:
 
-		if ctx.APIToken == "" {
-			Println("not logged in")
-			Exit(100)
-		}
+  $ heroku auth:whoami
+	not logged in
+	$ echo $?
+	100`,
+	Run: whoami,
+}
 
-		user := getUserFromToken(ctx.APIToken)
-		if user == "" {
-			Println("not logged in")
-			Exit(100)
-		}
-		Println(user)
-	},
+func whoami(ctx *Context) {
+	if os.Getenv("HEROKU_API_KEY") != "" {
+		Warn("HEROKU_API_KEY is set")
+	}
+
+	// don't use needsToken since this should fail if
+	// not logged in. Should not show a login prompt.
+	ctx.APIToken = apiToken()
+
+	if ctx.APIToken == "" {
+		Println("not logged in")
+		Exit(100)
+	}
+
+	user := getUserFromToken(ctx.APIToken)
+	if user == "" {
+		Println("not logged in")
+		Exit(100)
+	}
+	Println(user)
 }
