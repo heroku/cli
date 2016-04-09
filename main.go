@@ -6,11 +6,9 @@ import (
 	"net/http"
 	"net/url"
 	"os"
-	"os/signal"
 	"runtime"
 	"runtime/debug"
 	"strings"
-	"sync"
 
 	"github.com/stvp/rollbar"
 )
@@ -87,10 +85,10 @@ func main() {
 	defer handlePanic()
 	handleSignal(os.Interrupt, func() {
 		if !swallowSigint {
-			Exit(1)
+			showCursor()
+			os.Exit(1)
 		}
 	})
-	var wg sync.WaitGroup
 	runtime.GOMAXPROCS(1) // more procs causes runtime: failed to create new OS thread on Ubuntu
 	ShowDebugInfo()
 	if !(len(os.Args) >= 2 && os.Args[1] == "update") {
@@ -98,9 +96,8 @@ func main() {
 		// otherwise it will update twice
 		Update(Channel, "block")
 	}
+	SubmitAnalytics()
 	SetupNode()
-	wg.Add(1)
-	go RecordAnalytics(&wg)
 	err := cli.Run(os.Args)
 	SetupBuiltinPlugins()
 	TriggerBackgroundUpdate()
@@ -116,7 +113,7 @@ func main() {
 		PrintError(err)
 		Exit(2)
 	}
-	wg.Wait()
+	Exit(0)
 }
 
 func handlePanic() {
@@ -172,13 +169,4 @@ func getProxy() *url.URL {
 	proxy, err := http.ProxyFromEnvironment(req)
 	PrintError(err)
 	return proxy
-}
-
-func handleSignal(s os.Signal, fn func()) {
-	c := make(chan os.Signal, 1)
-	signal.Notify(c, s)
-	go func() {
-		<-c
-		fn()
-	}()
 }

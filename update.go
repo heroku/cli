@@ -58,43 +58,36 @@ func Update(channel string, t string) {
 	if !IsUpdateNeeded(t) {
 		return
 	}
-	done := make(chan bool)
-	go func() {
-		touchAutoupdateFile()
-		updateCLI(channel)
-		SetupNode()
-		action("heroku-cli: Updating plugins", "", updatePlugins)
-		truncateErrorLog()
-		cleanTmpDir()
-		done <- true
-	}()
-	select {
-	case <-time.After(time.Second * 300):
-		Errln("Timed out while updating")
-	case <-done:
-	}
+	touchAutoupdateFile()
+	updateCLI(channel)
+	SetupNode()
+	updatePlugins()
+	truncateErrorLog()
+	cleanTmpDir()
 }
 
 func updatePlugins() {
-	plugins := PluginNamesNotSymlinked()
-	if len(plugins) == 0 {
-		return
-	}
-	packages, err := gode.OutdatedPackages(plugins...)
-	PrintError(err)
-	if len(packages) > 0 {
-		for name, version := range packages {
-			lockPlugin(name)
-			PrintError(gode.InstallPackages(name + "@" + version))
-			plugin, err := ParsePlugin(name)
-			PrintError(err)
-			AddPluginsToCache(plugin)
-			unlockPlugin(name)
+	action("heroku-cli: Updating plugins", "", func() {
+		plugins := PluginNamesNotSymlinked()
+		if len(plugins) == 0 {
+			return
 		}
-		Errf(" done. Updated %d %s.\n", len(packages), plural("package", len(packages)))
-	} else {
-		Errln(" no plugins to update.")
-	}
+		packages, err := gode.OutdatedPackages(plugins...)
+		PrintError(err)
+		if len(packages) > 0 {
+			for name, version := range packages {
+				lockPlugin(name)
+				PrintError(gode.InstallPackages(name + "@" + version))
+				plugin, err := ParsePlugin(name)
+				PrintError(err)
+				AddPluginsToCache(plugin)
+				unlockPlugin(name)
+			}
+			Errf(" done. Updated %d %s.\n", len(packages), plural("package", len(packages)))
+		} else {
+			Errln(" no plugins to update.")
+		}
+	})
 }
 
 func updateCLI(channel string) {
@@ -122,34 +115,34 @@ func updateCLI(channel string) {
 		golock.Unlock(updateLockPath)
 	}
 	defer unlock()
-	if manifest.Channel == "master" {
-		Errf("heroku-cli: Updating to %s...", manifest.Version)
-	} else {
-		Errf("heroku-cli: Updating to %s (%s)...", manifest.Version, manifest.Channel)
+	msg := fmt.Sprintf("heroku-cli: Updating to %s", manifest.Version)
+	if manifest.Channel != "master" {
+		msg = fmt.Sprintf("%s (%s)", msg, manifest.Channel)
 	}
-	build := manifest.Builds[runtime.GOOS][runtime.GOARCH]
-	// on windows we can't remove an existing file or remove the running binary
-	// so we download the file to binName.new
-	// move the running binary to binName.old (deleting any existing file first)
-	// rename the downloaded file to binName
-	tmpBinPathNew := binPath + ".new"
-	tmpBinPathOld := binPath + ".old"
-	if err := downloadBin(tmpBinPathNew, build.URL); err != nil {
-		panic(err)
-	}
-	if fileSha1(tmpBinPathNew) != build.Sha1 {
-		panic("SHA mismatch")
-	}
-	os.Remove(tmpBinPathOld)
-	os.Rename(binPath, tmpBinPathOld)
-	if err := os.Rename(tmpBinPathNew, binPath); err != nil {
-		panic(err)
-	}
-	os.Remove(tmpBinPathOld)
-	Errln(" done")
-	unlock()
-	clearAutoupdateFile() // force full update
-	reexec()              // reexec to finish updating with new code
+	action(msg, "done", func() {
+		build := manifest.Builds[runtime.GOOS][runtime.GOARCH]
+		// on windows we can't remove an existing file or remove the running binary
+		// so we download the file to binName.new
+		// move the running binary to binName.old (deleting any existing file first)
+		// rename the downloaded file to binName
+		tmpBinPathNew := binPath + ".new"
+		tmpBinPathOld := binPath + ".old"
+		if err := downloadBin(tmpBinPathNew, build.URL); err != nil {
+			panic(err)
+		}
+		if fileSha1(tmpBinPathNew) != build.Sha1 {
+			panic("SHA mismatch")
+		}
+		os.Remove(tmpBinPathOld)
+		os.Rename(binPath, tmpBinPathOld)
+		if err := os.Rename(tmpBinPathNew, binPath); err != nil {
+			panic(err)
+		}
+		os.Remove(tmpBinPathOld)
+		unlock()
+		clearAutoupdateFile() // force full update
+	})
+	reexec() // reexec to finish updating with new code
 }
 
 // IsUpdateNeeded checks if an update is available
@@ -236,9 +229,13 @@ func fileSha1(path string) string {
 
 // TriggerBackgroundUpdate will trigger an update to the client in the background
 func TriggerBackgroundUpdate() {
-	if IsUpdateNeeded("background") {
-		exec.Command(binPath, "update", "--background").Start()
-	}
+	wg.Add(1)
+	go func() {
+		wg.Done()
+		if IsUpdateNeeded("background") {
+			exec.Command(binPath, "update", "--background").Start()
+		}
+	}()
 }
 
 // restarts the CLI with the same arguments

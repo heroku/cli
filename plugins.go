@@ -10,11 +10,11 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"sync"
 	"syscall"
 
 	"github.com/dickeyxxx/golock"
 	"github.com/heroku/heroku-cli/gode"
-	"github.com/mitchellh/ioprogress"
 )
 
 // Plugin represents a javascript plugin
@@ -29,21 +29,6 @@ type Plugin struct {
 // SetupNode sets up node and npm in ~/.heroku
 func SetupNode() {
 	gode.SetRootPath(AppDir())
-	gode.ProgressDrawFn = func(progress, total int64) string {
-		base := "heroku-cli: Adding dependencies..."
-		if progress == total {
-			if istty() {
-				showCursor()
-			} else {
-				return fmt.Sprintf("%s done", base)
-			}
-		}
-		if istty() {
-			hideCursor()
-			return fmt.Sprintf("%s %15s", base, ioprogress.DrawTextFormatBytes(progress, total))
-		}
-		return base
-	}
 	setup, err := gode.IsSetup()
 	PrintError(err)
 	if !setup {
@@ -366,15 +351,15 @@ func SetupBuiltinPlugins() {
 	if len(pluginNames) == 0 {
 		return
 	}
-	Err("heroku-cli: Installing core plugins...")
-	if err := installPlugins(pluginNames...); err != nil {
-		// retry once
-		PrintError(gode.RemovePackages(pluginNames...))
-		PrintError(gode.ClearCache())
-		Err("\rheroku-cli: Installing core plugins (retrying)...")
-		ExitIfError(installPlugins(pluginNames...))
-	}
-	Errln(" done")
+	action("heroku-cli: Installing core plugins", "done", func() {
+		if err := installPlugins(pluginNames...); err != nil {
+			// retry once
+			PrintError(gode.RemovePackages(pluginNames...))
+			PrintError(gode.ClearCache())
+			Err("\rheroku-cli: Installing core plugins (retrying)...")
+			ExitIfError(installPlugins(pluginNames...))
+		}
+	})
 }
 
 func difference(a, b []string) []string {
@@ -409,13 +394,22 @@ func installPlugins(names ...string) error {
 	if err != nil {
 		return err
 	}
-	plugins := make([]*Plugin, 0, len(names))
-	for _, name := range names {
-		plugin, err := ParsePlugin(name)
-		if err != nil {
-			return err
-		}
-		plugins = append(plugins, plugin)
+	plugins := make([]*Plugin, len(names))
+	var wg sync.WaitGroup
+	wg.Add(len(plugins))
+	for i, name := range names {
+		go func(i int, name string) {
+			defer wg.Done()
+			plugin, parseErr := ParsePlugin(name)
+			if parseErr != nil {
+				err = parseErr
+			}
+			plugins[i] = plugin
+		}(i, name)
+	}
+	wg.Wait()
+	if err != nil {
+		return err
 	}
 	AddPluginsToCache(plugins...)
 	return nil

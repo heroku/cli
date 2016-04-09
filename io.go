@@ -5,10 +5,12 @@ import (
 	"io"
 	"log"
 	"os"
+	"os/signal"
 	"path/filepath"
 	"runtime"
 	"runtime/debug"
 	"strings"
+	"sync"
 
 	"github.com/lunixbochs/vtclean"
 	"golang.org/x/crypto/ssh/terminal"
@@ -28,6 +30,7 @@ var debugging = isDebugging()
 var debuggingHeaders = isDebuggingHeaders()
 var swallowSigint = false
 var errorPrefix = ""
+var wg sync.WaitGroup
 
 func init() {
 	Stdout = os.Stdout
@@ -49,6 +52,7 @@ func newLogger(path string) *log.Logger {
 // Exit just calls os.Exit, but can be mocked out for testing
 func Exit(code int) {
 	showCursor()
+	wg.Wait()
 	exitFn(code)
 }
 
@@ -264,4 +268,13 @@ func action(text, done string, fn func()) {
 	if done != "" {
 		Errln(" " + done)
 	}
+}
+
+func handleSignal(s os.Signal, fn func()) {
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, s)
+	go func() {
+		<-c
+		fn()
+	}()
 }
