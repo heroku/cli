@@ -56,31 +56,24 @@ func (c *AnalyticsCommand) RecordEnd(status int) {
 	}
 	commands := readAnalyticsFile()
 	commands = append(commands, *c)
-	writeAnalyticsFile(commands)
+	LogIfError(writeAnalyticsFile(commands))
 }
 
 func readAnalyticsFile() (commands []AnalyticsCommand) {
 	f, err := os.Open(analyticsPath)
 	if err != nil {
-		Logln(err)
 		return
 	}
-	if err := json.NewDecoder(f).Decode(&commands); err != nil {
-		Logln(err)
-		return
-	}
+	json.NewDecoder(f).Decode(&commands)
 	return commands
 }
 
-func writeAnalyticsFile(commands []AnalyticsCommand) {
+func writeAnalyticsFile(commands []AnalyticsCommand) error {
 	data, err := json.MarshalIndent(commands, "", "  ")
 	if err != nil {
-		Logln(err)
-		return
+		return err
 	}
-	if err := ioutil.WriteFile(analyticsPath, data, 0644); err != nil {
-		Logln(err)
-	}
+	return ioutil.WriteFile(analyticsPath, data, 0644)
 }
 
 // SubmitAnalytics sends the analytics info to the analytics service
@@ -130,12 +123,11 @@ func SubmitAnalytics() {
 		}{version(), commands, netrcLogin(), plugins()}
 		resp, err := req.Do()
 		if err != nil {
-			Logln(err)
+			LogIfError(err)
 			return
 		}
 		if resp.StatusCode != 201 {
 			Logln("analytics: HTTP " + resp.Status)
-			return
 		}
 		os.Truncate(analyticsPath, 0)
 	}()

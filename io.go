@@ -133,6 +133,7 @@ func PrintError(e error) {
 	}
 	Err(errorPrefix)
 	Error(e.Error())
+	Logln(string(debug.Stack()))
 	if debugging {
 		debug.PrintStack()
 	}
@@ -173,6 +174,7 @@ func ExitIfError(e error) {
 func LogIfError(e error) {
 	if e != nil {
 		Logln(e.Error())
+		Logln(string(debug.Stack()))
 	}
 }
 
