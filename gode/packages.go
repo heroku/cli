@@ -4,9 +4,11 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 )
 
 // Package represents an npm package.
@@ -116,6 +118,7 @@ func execNpm(args ...string) (string, string, error) {
 	}
 	var stdout, stderr bytes.Buffer
 	if debugging() {
+		log.Printf("running npm from %s: %s\n", cmd.Dir, strings.Join(cmd.Args, " "))
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 	} else {

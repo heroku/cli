@@ -3,9 +3,11 @@ package gode
 import (
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 )
 
 // RunScript runs a given script in node
@@ -14,6 +16,9 @@ func RunScript(script string) *exec.Cmd {
 	cmd := exec.Command(nodeBinPath, "-e", script)
 	cmd.Env = append(os.Environ(), "NODE_PATH="+modulesDir)
 	cmd.Dir = rootPath
+	if debugging() {
+		log.Printf("running node from %s: %s\n", cmd.Dir, strings.Join(cmd.Args, " "))
+	}
 	return cmd
 }
 
