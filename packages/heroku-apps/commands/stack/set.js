@@ -14,8 +14,8 @@ function* run (context, heroku) {
     path: `/apps/${context.app}`,
     body: {build_stack: stack},
   });
-  console.log(`Stack set. Next release on ${cli.color.cyan(context.app)} will use ${cli.color.green(stack)}.`);
-  console.log(`Run ${cli.color.cyan.bold('git push heroku master')} to create a new release on ${cli.color.cyan(context.app)}.`);
+  cli.log(`Stack set. Next release on ${cli.color.cyan(context.app)} will use ${cli.color.green(stack)}.`);
+  cli.log(`Run ${cli.color.cyan.bold('git push heroku master')} to create a new release on ${cli.color.cyan(context.app)}.`);
 }
 
 module.exports = {

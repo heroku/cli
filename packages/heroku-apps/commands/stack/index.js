@@ -16,12 +16,12 @@ function* run (context, heroku) {
   let stacks = yield heroku.stacks().list();
   for (let stack of stacks) {
     if (stack.name === app.stack.name) {
-      process.stdout.write('*');
+      cli.console.writeLog('*');
     } else {
-      process.stdout.write(' ');
+      cli.console.writeLog(' ');
     }
-    process.stdout.write(` ${map(stack.name)}`);
-    console.log();
+    cli.console.writeLog(` ${map(stack.name)}`);
+    cli.log();
   }
 }
 
