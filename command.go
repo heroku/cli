@@ -113,8 +113,8 @@ See more information with %s`,
 	)
 }
 
-func (c *Command) appNeededErr() error {
-	return fmt.Errorf(
+func (c *Command) appNeededErr() {
+	ExitWithMessage(
 		`Error: No app specified
 Usage: %s
 We don't know which app to run this on.

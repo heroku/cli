@@ -94,10 +94,9 @@ func interactiveLogin() {
 	email := getString("Email: ")
 	password := getPassword("Password (typing will be hidden): ")
 
-	token, err := v2login(email, password, "")
+	token := v2login(email, password, "")
 	// TODO: use createOauthToken (v3 API)
 	// token, err := createOauthToken(email, password, "")
-	ExitIfError(err)
 	saveOauthToken(email, token)
 	Println("Logged in as " + cyan(email))
 }
@@ -142,7 +141,7 @@ https://github.com/heroku/heroku-cli/issues/84`)
 	return password
 }
 
-func v2login(email, password, secondFactor string) (string, error) {
+func v2login(email, password, secondFactor string) string {
 	req := apiRequestBase("")
 	req.Method = "POST"
 
@@ -166,13 +165,13 @@ func v2login(email, password, secondFactor string) (string, error) {
 			APIKey string `json:"api_key"`
 		}
 		ExitIfError(res.Body.FromJsonTo(&response))
-		return response.APIKey, nil
+		return response.APIKey
 	case 401:
 		var response struct {
 			Error string `json:"error"`
 		}
 		ExitIfError(res.Body.FromJsonTo(&response))
-		return "", errors.New(response.Error)
+		panic("unreachable")
 	case 403:
 		return v2login(email, password, getString("Two-factor code: "))
 	case 404:

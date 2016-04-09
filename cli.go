@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -9,9 +8,6 @@ import (
 
 	"github.com/dickeyxxx/netrc"
 )
-
-// ErrOrgNeeded means the command needs an org context and one was not found.
-var ErrOrgNeeded = errors.New("No org specified.\nRun this command with --org or by setting HEROKU_ORGANIZATION")
 
 // Cli handles parsing and dispatching of commands
 type Cli struct {
@@ -21,7 +17,7 @@ type Cli struct {
 
 // Run parses command line arguments and runs the associated command or help.
 // Also does lookups for app name and/or auth token if the command needs it.
-func (cli *Cli) Run(args []string, showHelp bool) (err error) {
+func (cli *Cli) Run(args []string, showHelp bool) {
 	ctx := &Context{}
 	if len(args) < 2 {
 		if showHelp {
@@ -46,13 +42,14 @@ func (cli *Cli) Run(args []string, showHelp bool) (err error) {
 	}
 	if ctx.Command.NeedsApp || ctx.Command.WantsApp {
 		if ctx.App == "" {
+			var err error
 			ctx.App, err = app()
 			if err != nil && ctx.Command.NeedsApp {
 				ExitWithMessage(err.Error())
 			}
 		}
 		if ctx.App == "" && ctx.Command.NeedsApp {
-			return ctx.Command.appNeededErr()
+			ctx.Command.appNeededErr()
 		}
 	}
 	if ctx.Command.NeedsOrg || ctx.Command.WantsOrg {
@@ -62,7 +59,7 @@ func (cli *Cli) Run(args []string, showHelp bool) (err error) {
 			ctx.Org = os.Getenv("HEROKU_ORGANIZATION")
 		}
 		if ctx.Org == "" && ctx.Command.NeedsOrg {
-			return ErrOrgNeeded
+			ExitWithMessage("No org specified.\nRun this command with --org or by setting HEROKU_ORGANIZATION")
 		}
 	}
 	if ctx.Command.NeedsAuth {
@@ -84,7 +81,7 @@ func (cli *Cli) Run(args []string, showHelp bool) (err error) {
 		currentAnalyticsCommand = nil
 	}
 	ctx.Command.Run(ctx)
-	return nil
+	Exit(0)
 }
 
 // ParseCmd parses the command argument into a topic and command
