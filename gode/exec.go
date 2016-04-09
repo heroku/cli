@@ -7,19 +7,35 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"strings"
 )
 
 // RunScript runs a given script in node
 // Returns an *os/exec.Cmd instance
-func RunScript(script string) *exec.Cmd {
-	cmd := exec.Command(nodeBinPath, "-e", script)
+func RunScript(script string) (cmd *exec.Cmd, done func()) {
+	useTmpFile := true
+	f, err := ioutil.TempFile("", "heroku-script-")
+	if err != nil {
+		useTmpFile = false
+		log.Println(err)
+	}
+	defer f.Close()
+	if _, err := f.WriteString(script); err != nil {
+		useTmpFile = false
+		log.Println(err)
+	}
+	if useTmpFile {
+		cmd = exec.Command(nodeBinPath, f.Name())
+	} else {
+		cmd = exec.Command(nodeBinPath, "-e", script)
+	}
 	cmd.Env = append(os.Environ(), "NODE_PATH="+modulesDir)
 	cmd.Dir = rootPath
 	if debugging() {
-		log.Printf("running node from %s: %s\n", cmd.Dir, strings.Join(cmd.Args, " "))
+		log.Printf("running node NODE_PATH=%s %s\n%s\n", modulesDir, cmd.Path, script)
 	}
-	return cmd
+	return cmd, func() {
+		os.Remove(f.Name())
+	}
 }
 
 // DebugScript is the same as RunScript except it launches with node-inspector

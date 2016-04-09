@@ -240,3 +240,11 @@ func plural(word string, count int) string {
 	}
 	return word + "s"
 }
+
+func showCursor() {
+	Print("\u001b[?25h")
+}
+
+func hideCursor() {
+	Print("\u001b[?25l")
+}

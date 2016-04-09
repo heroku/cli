@@ -190,57 +190,60 @@ func runFn(plugin *Plugin, topic, command string) func(ctx *Context) {
 			panic(err)
 		}
 		title, _ := json.Marshal(processTitle(ctx))
-		script := fmt.Sprintf(`
-		'use strict';
-		var moduleName = '%s';
-		var moduleVersion = '%s';
-		var topic = '%s';
-		var command = '%s';
-		process.title = %s;
-		var ctx = %s;
-		ctx.version = ctx.version + ' ' + moduleName + '/' + moduleVersion + ' node-' + process.version;
-		var logPath = %s;
-		process.chdir(ctx.cwd);
-		if (!ctx.dev) {
-			process.on('uncaughtException', function (err) {
-				// ignore EPIPE errors (usually from piping to head)
-				if (err.code === "EPIPE") return;
-				console.error(' !   Error in ' + moduleName + ':')
-				console.error(' !   ' + err.message || err);
-				if (err.stack) {
-					var fs = require('fs');
-					var log = function (line) {
-						var d = new Date().toISOString()
-						.replace(/T/, ' ')
-						.replace(/-/g, '/')
-						.replace(/\..+/, '');
-						fs.appendFileSync(logPath, d + ' ' + line + '\n');
-					}
-					log('Error during ' + topic + ':' + command);
-					log(err.stack);
-					console.error(' !   See ' + logPath + ' for more info.');
-				}
-				process.exit(1);
-			});
+		script := fmt.Sprintf(`'use strict';
+var moduleName = '%s';
+var moduleVersion = '%s';
+var topic = '%s';
+var command = '%s';
+process.title = %s;
+var ctx = %s;
+ctx.version = ctx.version + ' ' + moduleName + '/' + moduleVersion + ' node-' + process.version;
+var logPath = %s;
+process.chdir(ctx.cwd);
+if (!ctx.dev) {
+	process.on('uncaughtException', function (err) {
+		// ignore EPIPE errors (usually from piping to head)
+		if (err.code === "EPIPE") return;
+		console.error(' !   Error in ' + moduleName + ':')
+		console.error(' !   ' + err.message || err);
+		if (err.stack) {
+			var fs = require('fs');
+			var log = function (line) {
+				var d = new Date().toISOString()
+				.replace(/T/, ' ')
+				.replace(/-/g, '/')
+				.replace(/\..+/, '');
+				fs.appendFileSync(logPath, d + ' ' + line + '\n');
+			}
+			log('Error during ' + topic + ':' + command);
+			log(err.stack);
+			console.error(' !   See ' + logPath + ' for more info.');
 		}
-		if (command === '') { command = null }
-		var module = require(moduleName);
-		var cmd = module.commands.filter(function (c) {
-			return c.topic === topic && c.command == command;
-		})[0];
-		cmd.run(ctx);`, plugin.Name, plugin.Version, topic, command, string(title), ctxJSON, strconv.Quote(ErrLogPath))
+		process.exit(1);
+	});
+}
+if (command === '') { command = null }
+var module = require(moduleName);
+var cmd = module.commands.filter(function (c) {
+	return c.topic === topic && c.command == command;
+})[0];
+cmd.run(ctx);
+`, plugin.Name, plugin.Version, topic, command, string(title), ctxJSON, strconv.Quote(ErrLogPath))
 
 		// swallow sigint since the plugin will handle it
 		swallowSignal(os.Interrupt)
 
-		cmd := gode.RunScript(script)
+		cmd, done := gode.RunScript(script)
+		defer done()
 		cmd.Stdin = os.Stdin
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 		if ctx.Flags["debugger"] == true {
 			cmd = gode.DebugScript(script)
 		}
-		if err := cmd.Run(); err != nil {
+		err = cmd.Run()
+		showCursor()
+		if err != nil {
 			os.Exit(getExitCode(err))
 		}
 	}
@@ -281,7 +284,8 @@ func ParsePlugin(name string) (*Plugin, error) {
 	plugin.version = pjson.version;
 
 	console.log(JSON.stringify(plugin))`
-	cmd := gode.RunScript(script)
+	cmd, done := gode.RunScript(script)
+	defer done()
 	cmd.Stderr = Stderr
 	output, err := cmd.Output()
 	if err != nil {
