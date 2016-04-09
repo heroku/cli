@@ -45,7 +45,7 @@ func (cli *Cli) Run(args []string) (err error) {
 		if ctx.App == "" {
 			ctx.App, err = app()
 			if err != nil && ctx.Command.NeedsApp {
-				ExitIfError(err, false)
+				ExitIfError(err)
 			}
 		}
 		if ctx.App == "" && ctx.Command.NeedsApp {
@@ -76,6 +76,10 @@ func (cli *Cli) Run(args []string) (err error) {
 	ctx.APIURL = apiURL()
 	ctx.GitHost = gitHost()
 	ctx.HTTPGitHost = httpGitHost()
+	currentAnalyticsCommand.RecordStart()
+	if ctx.Command.DisableAnalytics {
+		currentAnalyticsCommand = nil
+	}
 	ctx.Command.Run(ctx)
 	return nil
 }
@@ -198,7 +202,7 @@ func getNetrc() *netrc.Netrc {
 		}
 		Errln("Error parsing netrc at " + netrcPath())
 		Errln(err.Error())
-		os.Exit(1)
+		Exit(1)
 	}
 	return n
 }

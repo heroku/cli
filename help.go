@@ -33,7 +33,7 @@ func help() {
 	default:
 		printCommandHelp(command)
 	}
-	os.Exit(0)
+	Exit(0)
 }
 
 func printTopicCommandsHelp(topic *Topic) {

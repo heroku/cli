@@ -11,9 +11,10 @@ var versionTopic = &Topic{
 }
 
 var versionCmd = &Command{
-	Topic:       "version",
-	Hidden:      true,
-	Description: "print the version",
+	Topic:            "version",
+	Hidden:           true,
+	Description:      "print the version",
+	DisableAnalytics: true,
 	Help: `Shows the Heroku CLI version.
 
 Example:

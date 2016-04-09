@@ -6,11 +6,11 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
-	"os/signal"
 	"path/filepath"
 	"sort"
 	"strconv"
 	"strings"
+	"sync"
 	"syscall"
 
 	"github.com/dickeyxxx/golock"
@@ -30,7 +30,7 @@ type Plugin struct {
 func SetupNode() {
 	gode.SetRootPath(AppDir())
 	setup, err := gode.IsSetup()
-	PrintError(err, false)
+	PrintError(err)
 	if !setup {
 		if err := gode.Setup(); err != nil {
 			panic(err)
@@ -79,9 +79,9 @@ var pluginsInstallCmd = &Command{
 			Errln("Must specify a plugin name")
 			return
 		}
-		Errf("Installing plugin %s...", name)
-		ExitIfError(installPlugins(name), true)
-		Errln(" done")
+		action("Installing plugin "+name, "done", func() {
+			ExitIfError(installPlugins(name))
+		})
 	},
 }
 
@@ -118,7 +118,7 @@ var pluginsLinkCmd = &Command{
 			panic(err)
 		}
 		plugin, err := ParsePlugin(name)
-		ExitIfError(err, false)
+		ExitIfError(err)
 		if name != plugin.Name {
 			path = newPath
 			newPath = pluginPath(plugin.Name)
@@ -145,19 +145,20 @@ var pluginsUninstallCmd = &Command{
 	Run: func(ctx *Context) {
 		name := ctx.Args.(map[string]string)["name"]
 		if !contains(PluginNames(), name) {
-			ExitIfError(errors.New(name+" is not installed"), false)
+			ExitIfError(errors.New(name + " is not installed"))
 		}
 		Errf("Uninstalling plugin %s...", name)
-		ExitIfError(gode.RemovePackages(name), true)
+		ExitIfError(gode.RemovePackages(name))
 		RemovePluginFromCache(name)
 		Errln(" done")
 	},
 }
 
 var pluginsListCmd = &Command{
-	Topic:       "plugins",
-	Hidden:      true,
-	Description: "Lists installed plugins",
+	Topic:            "plugins",
+	Hidden:           true,
+	Description:      "Lists installed plugins",
+	DisableAnalytics: true,
 	Help: `
 Example:
   $ heroku plugins`,
@@ -190,68 +191,64 @@ func runFn(plugin *Plugin, topic, command string) func(ctx *Context) {
 			panic(err)
 		}
 		title, _ := json.Marshal(processTitle(ctx))
-		script := fmt.Sprintf(`
-		'use strict';
-		var moduleName = '%s';
-		var moduleVersion = '%s';
-		var topic = '%s';
-		var command = '%s';
-		process.title = %s;
-		var ctx = %s;
-		ctx.version = ctx.version + ' ' + moduleName + '/' + moduleVersion + ' node-' + process.version;
-		var logPath = %s;
-		process.chdir(ctx.cwd);
-		if (!ctx.dev) {
-			process.on('uncaughtException', function (err) {
-				// ignore EPIPE errors (usually from piping to head)
-				if (err.code === "EPIPE") return;
-				console.error(' !   Error in ' + moduleName + ':')
-				console.error(' !   ' + err.message || err);
-				if (err.stack) {
-					var fs = require('fs');
-					var log = function (line) {
-						var d = new Date().toISOString()
-						.replace(/T/, ' ')
-						.replace(/-/g, '/')
-						.replace(/\..+/, '');
-						fs.appendFileSync(logPath, d + ' ' + line + '\n');
-					}
-					log('Error during ' + topic + ':' + command);
-					log(err.stack);
-					console.error(' !   See ' + logPath + ' for more info.');
-				}
-				process.exit(1);
-			});
+		script := fmt.Sprintf(`'use strict';
+var moduleName = '%s';
+var moduleVersion = '%s';
+var topic = '%s';
+var command = '%s';
+process.title = %s;
+var ctx = %s;
+ctx.version = ctx.version + ' ' + moduleName + '/' + moduleVersion + ' node-' + process.version;
+var logPath = %s;
+process.chdir(ctx.cwd);
+if (!ctx.dev) {
+	process.on('uncaughtException', function (err) {
+		// ignore EPIPE errors (usually from piping to head)
+		if (err.code === "EPIPE") return;
+		console.error(' !   Error in ' + moduleName + ':')
+		console.error(' !   ' + err.message || err);
+		if (err.stack) {
+			var fs = require('fs');
+			var log = function (line) {
+				var d = new Date().toISOString()
+				.replace(/T/, ' ')
+				.replace(/-/g, '/')
+				.replace(/\..+/, '');
+				fs.appendFileSync(logPath, d + ' ' + line + '\n');
+			}
+			log('Error during ' + topic + ':' + command);
+			log(err.stack);
+			console.error(' !   See ' + logPath + ' for more info.');
 		}
-		if (command === '') { command = null }
-		var module = require(moduleName);
-		var cmd = module.commands.filter(function (c) {
-			return c.topic === topic && c.command == command;
-		})[0];
-		cmd.run(ctx);`, plugin.Name, plugin.Version, topic, command, string(title), ctxJSON, strconv.Quote(ErrLogPath))
+		process.exit(1);
+	});
+}
+if (command === '') { command = null }
+var module = require(moduleName);
+var cmd = module.commands.filter(function (c) {
+	return c.topic === topic && c.command == command;
+})[0];
+cmd.run(ctx);
+`, plugin.Name, plugin.Version, topic, command, string(title), ctxJSON, strconv.Quote(ErrLogPath))
 
 		// swallow sigint since the plugin will handle it
-		swallowSignal(os.Interrupt)
+		swallowSigint = true
 
-		cmd := gode.RunScript(script)
+		currentAnalyticsCommand.Plugin = plugin.Name
+		currentAnalyticsCommand.Version = plugin.Version
+		currentAnalyticsCommand.Language = fmt.Sprintf("node/%s", gode.NodeVersion)
+
+		cmd, done := gode.RunScript(script)
+		defer done()
 		cmd.Stdin = os.Stdin
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 		if ctx.Flags["debugger"] == true {
 			cmd = gode.DebugScript(script)
 		}
-		if err := cmd.Run(); err != nil {
-			os.Exit(getExitCode(err))
-		}
+		err = cmd.Run()
+		Exit(getExitCode(err))
 	}
-}
-
-func swallowSignal(s os.Signal) {
-	c := make(chan os.Signal, 1)
-	signal.Notify(c, s)
-	go func() {
-		<-c
-	}()
 }
 
 func getExitCode(err error) int {
@@ -281,7 +278,8 @@ func ParsePlugin(name string) (*Plugin, error) {
 	plugin.version = pjson.version;
 
 	console.log(JSON.stringify(plugin))`
-	cmd := gode.RunScript(script)
+	cmd, done := gode.RunScript(script)
+	defer done()
 	cmd.Stderr = Stderr
 	output, err := cmd.Output()
 	if err != nil {
@@ -356,15 +354,15 @@ func SetupBuiltinPlugins() {
 	if len(pluginNames) == 0 {
 		return
 	}
-	Err("heroku-cli: Installing core plugins...")
-	if err := installPlugins(pluginNames...); err != nil {
-		// retry once
-		PrintError(gode.RemovePackages(pluginNames...), true)
-		PrintError(gode.ClearCache(), true)
-		Err("\rheroku-cli: Installing core plugins (retrying)...")
-		ExitIfError(installPlugins(pluginNames...), true)
-	}
-	Errln(" done")
+	action("heroku-cli: Installing core plugins", "done", func() {
+		if err := installPlugins(pluginNames...); err != nil {
+			// retry once
+			PrintError(gode.RemovePackages(pluginNames...))
+			PrintError(gode.ClearCache())
+			Err("\rheroku-cli: Installing core plugins (retrying)...")
+			ExitIfError(installPlugins(pluginNames...))
+		}
+	})
 }
 
 func difference(a, b []string) []string {
@@ -399,13 +397,22 @@ func installPlugins(names ...string) error {
 	if err != nil {
 		return err
 	}
-	plugins := make([]*Plugin, 0, len(names))
-	for _, name := range names {
-		plugin, err := ParsePlugin(name)
-		if err != nil {
-			return err
-		}
-		plugins = append(plugins, plugin)
+	plugins := make([]*Plugin, len(names))
+	var wg sync.WaitGroup
+	wg.Add(len(plugins))
+	for i, name := range names {
+		go func(i int, name string) {
+			defer wg.Done()
+			plugin, parseErr := ParsePlugin(name)
+			if parseErr != nil {
+				err = parseErr
+			}
+			plugins[i] = plugin
+		}(i, name)
+	}
+	wg.Wait()
+	if err != nil {
+		return err
 	}
 	AddPluginsToCache(plugins...)
 	return nil

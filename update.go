@@ -26,11 +26,12 @@ var updateTopic = &Topic{
 }
 
 var updateCmd = &Command{
-	Topic:       "update",
-	Hidden:      true,
-	Description: "updates heroku-cli",
-	Args:        []Arg{{Name: "channel", Optional: true}},
-	Flags:       []Flag{{Name: "background", Hidden: true}},
+	Topic:            "update",
+	Hidden:           true,
+	Description:      "updates heroku-cli",
+	DisableAnalytics: true,
+	Args:             []Arg{{Name: "channel", Optional: true}},
+	Flags:            []Flag{{Name: "background", Hidden: true}},
 	Run: func(ctx *Context) {
 		channel := ctx.Args.(map[string]string)["channel"]
 		if channel == "" {
@@ -58,44 +59,36 @@ func Update(channel string, t string) {
 	if !IsUpdateNeeded(t) {
 		return
 	}
-	done := make(chan bool)
-	go func() {
-		touchAutoupdateFile()
-		updateCLI(channel)
-		SetupNode()
-		updatePlugins()
-		truncateErrorLog()
-		cleanTmpDir()
-		done <- true
-	}()
-	select {
-	case <-time.After(time.Second * 300):
-		Errln("Timed out while updating")
-	case <-done:
-	}
+	touchAutoupdateFile()
+	updateCLI(channel)
+	SetupNode()
+	updatePlugins()
+	truncateErrorLog()
+	cleanTmpDir()
 }
 
 func updatePlugins() {
-	plugins := PluginNamesNotSymlinked()
-	if len(plugins) == 0 {
-		return
-	}
-	Err("heroku-cli: Updating plugins...")
-	packages, err := gode.OutdatedPackages(plugins...)
-	PrintError(err, true)
-	if len(packages) > 0 {
-		for name, version := range packages {
-			lockPlugin(name)
-			PrintError(gode.InstallPackages(name+"@"+version), true)
-			plugin, err := ParsePlugin(name)
-			PrintError(err, true)
-			AddPluginsToCache(plugin)
-			unlockPlugin(name)
+	action("heroku-cli: Updating plugins", "", func() {
+		plugins := PluginNamesNotSymlinked()
+		if len(plugins) == 0 {
+			return
 		}
-		Errf(" done. Updated %d %s.\n", len(packages), plural("package", len(packages)))
-	} else {
-		Errln(" no plugins to update.")
-	}
+		packages, err := gode.OutdatedPackages(plugins...)
+		PrintError(err)
+		if len(packages) > 0 {
+			for name, version := range packages {
+				lockPlugin(name)
+				PrintError(gode.InstallPackages(name + "@" + version))
+				plugin, err := ParsePlugin(name)
+				PrintError(err)
+				AddPluginsToCache(plugin)
+				unlockPlugin(name)
+			}
+			Errf(" done. Updated %d %s.\n", len(packages), plural("package", len(packages)))
+		} else {
+			Errln(" no plugins to update.")
+		}
+	})
 }
 
 func updateCLI(channel string) {
@@ -106,7 +99,7 @@ func updateCLI(channel string) {
 	manifest, err := getUpdateManifest(channel)
 	if err != nil {
 		Warn("Error updating CLI")
-		PrintError(err, false)
+		PrintError(err)
 		return
 	}
 	if manifest.Version == Version && manifest.Channel == Channel {
@@ -123,34 +116,34 @@ func updateCLI(channel string) {
 		golock.Unlock(updateLockPath)
 	}
 	defer unlock()
-	if manifest.Channel == "master" {
-		Errf("heroku-cli: Updating to %s...", manifest.Version)
-	} else {
-		Errf("heroku-cli: Updating to %s (%s)...", manifest.Version, manifest.Channel)
+	msg := fmt.Sprintf("heroku-cli: Updating to %s", manifest.Version)
+	if manifest.Channel != "master" {
+		msg = fmt.Sprintf("%s (%s)", msg, manifest.Channel)
 	}
-	build := manifest.Builds[runtime.GOOS][runtime.GOARCH]
-	// on windows we can't remove an existing file or remove the running binary
-	// so we download the file to binName.new
-	// move the running binary to binName.old (deleting any existing file first)
-	// rename the downloaded file to binName
-	tmpBinPathNew := binPath + ".new"
-	tmpBinPathOld := binPath + ".old"
-	if err := downloadBin(tmpBinPathNew, build.URL); err != nil {
-		panic(err)
-	}
-	if fileSha1(tmpBinPathNew) != build.Sha1 {
-		panic("SHA mismatch")
-	}
-	os.Remove(tmpBinPathOld)
-	os.Rename(binPath, tmpBinPathOld)
-	if err := os.Rename(tmpBinPathNew, binPath); err != nil {
-		panic(err)
-	}
-	os.Remove(tmpBinPathOld)
-	Errln(" done")
-	unlock()
-	clearAutoupdateFile() // force full update
-	reexec()              // reexec to finish updating with new code
+	action(msg, "done", func() {
+		build := manifest.Builds[runtime.GOOS][runtime.GOARCH]
+		// on windows we can't remove an existing file or remove the running binary
+		// so we download the file to binName.new
+		// move the running binary to binName.old (deleting any existing file first)
+		// rename the downloaded file to binName
+		tmpBinPathNew := binPath + ".new"
+		tmpBinPathOld := binPath + ".old"
+		if err := downloadBin(tmpBinPathNew, build.URL); err != nil {
+			panic(err)
+		}
+		if fileSha1(tmpBinPathNew) != build.Sha1 {
+			panic("SHA mismatch")
+		}
+		os.Remove(tmpBinPathOld)
+		os.Rename(binPath, tmpBinPathOld)
+		if err := os.Rename(tmpBinPathNew, binPath); err != nil {
+			panic(err)
+		}
+		os.Remove(tmpBinPathOld)
+		unlock()
+		clearAutoupdateFile() // force full update
+	})
+	reexec() // reexec to finish updating with new code
 }
 
 // IsUpdateNeeded checks if an update is available
@@ -178,7 +171,7 @@ func touchAutoupdateFile() {
 
 // forces a full update on the next run
 func clearAutoupdateFile() {
-	PrintError(os.Remove(autoupdateFile), true)
+	PrintError(os.Remove(autoupdateFile))
 }
 
 type manifest struct {
@@ -237,9 +230,13 @@ func fileSha1(path string) string {
 
 // TriggerBackgroundUpdate will trigger an update to the client in the background
 func TriggerBackgroundUpdate() {
-	if IsUpdateNeeded("background") {
-		exec.Command(binPath, "update", "--background").Start()
-	}
+	wg.Add(1)
+	go func() {
+		wg.Done()
+		if IsUpdateNeeded("background") {
+			exec.Command(binPath, "update", "--background").Start()
+		}
+	}()
 }
 
 // restarts the CLI with the same arguments
@@ -249,20 +246,20 @@ func reexec() {
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
-	os.Exit(getExitCode(cmd.Run()))
+	Exit(getExitCode(cmd.Run()))
 }
 
 func truncateErrorLog() {
 	Debugln("truncating error log...")
 	body, err := ioutil.ReadFile(ErrLogPath)
 	if err != nil {
-		PrintError(err, false)
+		PrintError(err)
 		return
 	}
 	lines := strings.Split(string(body), "\n")
 	lines = lines[maxint(len(lines)-1000, 0) : len(lines)-1]
 	err = ioutil.WriteFile(ErrLogPath, []byte(strings.Join(lines, "\n")+"\n"), 0644)
-	PrintError(err, false)
+	PrintError(err)
 }
 
 func maxint(a, b int) int {
@@ -276,14 +273,14 @@ func cleanTmpDir() {
 	Debugln("cleaning up tmp dirs...")
 	dirs, err := ioutil.ReadDir(tmpPath)
 	if err != nil {
-		PrintError(err, false)
+		PrintError(err)
 		return
 	}
 	for _, dir := range dirs {
 		if time.Since(dir.ModTime()) > 24*time.Hour {
 			path := filepath.Join(tmpPath, dir.Name())
 			Debugln("deleting " + path)
-			PrintError(os.RemoveAll(path), false)
+			PrintError(os.RemoveAll(path))
 		}
 	}
 }
