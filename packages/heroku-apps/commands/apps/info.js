@@ -10,13 +10,12 @@ let util     = require('util');
 
 function* run (context, heroku) {
   function getInfo(app) {
-    // TODO: Remove variant and consolidate extended/app calls into one when the API no longer requires the variant
     return {
-      addons: heroku.apps(app).addons().listByApp(),
-      app: heroku.request({path: `/apps/${app}`, headers: {'Accept': 'application/vnd.heroku+json; version=3.dogwood'}}),
-      dynos: heroku.apps(app).dynos().list().catch(() => []),
+      addons:        heroku.apps(app).addons().listByApp(),
+      app:           heroku.get(context.flags.extended ? `/apps/${app}?extended=true` : `/apps/${app}`),
+      dynos:         heroku.apps(app).dynos().list().catch(() => []),
       collaborators: heroku.apps(app).collaborators().list().catch(() => []),
-      extended: context.flags.extended ? heroku.request({path: `/apps/${app}?extended=true`}) : {},
+      pipeline:      heroku.get(`/apps/${app}/pipeline-couplings`).catch(() => null),
     };
   }
 
@@ -37,6 +36,7 @@ function* run (context, heroku) {
     if (info.app.database_size) data['Database Size'] = filesize(info.app.database_size, {round: 0});
     if (info.app.create_status !== 'complete') data['Create Status'] = info.app.create_status;
     if (info.app.space) data['Space'] = info.app.space.name;
+    if (info.pipeline) data['Pipeline'] = `${info.pipeline.pipeline.name} - ${info.pipeline.stage}`;
 
     data['Git URL'] = info.app.git_url;
     data['Web URL'] = info.app.web_url;
@@ -52,7 +52,7 @@ function* run (context, heroku) {
 
     if (context.flags.extended) {
       console.log("\n\n--- Extended Information ---\n\n");
-      cli.debug(info.extended.extended);
+      cli.debug(info.app.extended);
     }
   }
 
@@ -68,6 +68,7 @@ function* run (context, heroku) {
     if (info.app.cron_next_run) print('cron_next_run', cli.formatDate(new Date(info.app.cron_next_run)));
     if (info.app.database_size) print('database_size', filesize(info.app.database_size, {round: 0}));
     if (info.app.create_status !== 'complete') print('create_status', info.app.create_status);
+    if (info.pipeline) print('pipeline', `${info.pipeline.pipeline.name}:${info.pipeline.stage}`);
 
     print('git_url', info.app.git_url);
     print('web_url', info.app.web_url);
@@ -79,14 +80,10 @@ function* run (context, heroku) {
     print('stack', info.app.stack.name);
   }
 
-  function json() {
-    console.log(JSON.stringify(info, null, 2));
-  }
-
   if (context.flags.shell) {
     shell();
   } else if (context.flags.json) {
-    json();
+    cli.styledJSON(info);
   } else {
     print();
   }
