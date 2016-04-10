@@ -96,7 +96,6 @@ func main() {
 		// otherwise it will update twice
 		Update(Channel, "block")
 	}
-	SubmitAnalytics()
 	SetupNode()
 
 	// try running as a core command
