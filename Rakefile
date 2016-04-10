@@ -17,7 +17,7 @@ TARGETS = [
   {os: 'freebsd', arch: '386'},
 ]
 
-VERSION = `./version`.chomp
+VERSION = `./bin/version`.chomp
 dirty = `git status 2> /dev/null | tail -n1`.chomp != 'nothing to commit, working directory clean'
 CHANNEL = dirty ? 'dirty' : `git rev-parse --abbrev-ref HEAD`.chomp
 CLOUDFRONT_HOST = 'cli-assets.heroku.com'

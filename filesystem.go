@@ -5,25 +5,30 @@ import (
 	"os/user"
 	"path/filepath"
 	"runtime"
+
+	"github.com/kardianos/osext"
 )
 
 // HomeDir is the user's home directory
 var HomeDir = homeDir()
 
-// AppDir is the .heroku path
-func AppDir() string {
-	if runtime.GOOS == "windows" {
-		dir := os.Getenv("LOCALAPPDATA")
-		if dir != "" {
-			return filepath.Join(dir, "heroku")
-		}
-	}
-	dir := os.Getenv("XDG_DATA_HOME")
-	if dir != "" {
-		return filepath.Join(dir, "heroku")
-	}
-	return filepath.Join(HomeDir, ".heroku")
-}
+// BinPath is the running executable
+var BinPath = binPath()
+
+// AppDir is the subdirectory the binary is running from
+var AppDir = appDir()
+
+// ConfigHome is XDG_CONFIG_HOME/heroku or equivalent
+var ConfigHome = configHome()
+
+// DataHome is XDG_CONFIG_HOME/heroku or equivalent
+var DataHome = dataHome()
+
+// CacheHome is XDG_CACHE_HOME/heroku or equivalent
+var CacheHome = cacheHome()
+
+// ErrLogPath is the location of the error log
+var ErrLogPath = filepath.Join(CacheHome, "error.log")
 
 func homeDir() string {
 	home := os.Getenv("HOME")
@@ -35,4 +40,56 @@ func homeDir() string {
 		panic(err)
 	}
 	return user.HomeDir
+}
+
+func binPath() string {
+	d, err := osext.Executable()
+	if err != nil {
+		panic(err)
+	}
+	return d
+}
+
+func appDir() string {
+	d, err := osext.ExecutableFolder()
+	if err != nil {
+		panic(err)
+	}
+	return filepath.Join(d, "..")
+}
+
+func configHome() string {
+	d := os.Getenv("XDG_CONFIG_HOME")
+	if d == "" {
+		d = filepath.Join(HomeDir, ".config")
+	}
+	return filepath.Join(d, "heroku")
+}
+
+func dataHome() string {
+	d := os.Getenv("XDG_DATA_HOME")
+	if d == "" {
+		if runtime.GOOS == "windows" && localAppData() != "" {
+			d = localAppData()
+		} else {
+			d = filepath.Join(HomeDir, ".local", "share")
+		}
+	}
+	return filepath.Join(d, "heroku")
+}
+
+func cacheHome() string {
+	d := os.Getenv("XDG_CACHE_HOME")
+	if d == "" {
+		if runtime.GOOS == "windows" && localAppData() != "" {
+			d = localAppData()
+		} else {
+			d = filepath.Join(HomeDir, ".cache")
+		}
+	}
+	return filepath.Join(d, "heroku")
+}
+
+func localAppData() string {
+	return os.Getenv("LOCALAPPDATA")
 }
