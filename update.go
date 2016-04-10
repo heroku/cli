@@ -254,7 +254,9 @@ func truncateErrorLog() {
 	Debugln("truncating error log...")
 	body, err := ioutil.ReadFile(ErrLogPath)
 	if err != nil {
-		PrintError(err)
+		if !os.IsNotExist(err) {
+			PrintError(err)
+		}
 		return
 	}
 	lines := strings.Split(string(body), "\n")
