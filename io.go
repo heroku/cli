@@ -305,6 +305,7 @@ func rollbar(err error, level string) {
 	rollbarAPI.Token = "b40226d5e8a743cf963ca320f7be17bd"
 	rollbarAPI.Environment = Channel
 	rollbarAPI.ErrorWriter = nil
+	rollbarAPI.CodeVersion = GitSHA
 	var cmd string
 	if len(os.Args) > 1 {
 		cmd = os.Args[1]
