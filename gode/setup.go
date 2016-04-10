@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/dickeyxxx/golock"
 	"github.com/franela/goreq"
@@ -71,7 +72,7 @@ func downloadNpm() error {
 }
 
 func downloadXZ(url string) (io.Reader, func() string, error) {
-	req := goreq.Request{Uri: url}
+	req := goreq.Request{Uri: url, Timeout: 30 * time.Minute}
 	resp, err := req.Do()
 	if err != nil {
 		return nil, nil, err
