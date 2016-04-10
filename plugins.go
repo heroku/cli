@@ -293,7 +293,9 @@ func ParsePlugin(name string) (*Plugin, error) {
 				Warn("Failed to install " + name + ". Retrying...")
 				WarnIfError(gode.RemovePackages(name))
 				WarnIfError(gode.ClearCache())
-				WarnIfError(gode.InstallPackages(name))
+				if err := gode.InstallPackages(name); err != nil {
+					return nil, err
+				}
 				return ParsePlugin(name)
 			}
 			return nil, fmt.Errorf("Error reading plugin: %s\n%s\n%s", name, err, output)
