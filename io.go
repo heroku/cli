@@ -13,7 +13,7 @@ import (
 	"sync"
 
 	"github.com/lunixbochs/vtclean"
-	"github.com/stvp/rollbar"
+	rollbarAPI "github.com/stvp/rollbar"
 	"golang.org/x/crypto/ssh/terminal"
 )
 
@@ -55,7 +55,6 @@ func Exit(code int) {
 	currentAnalyticsCommand.RecordEnd(code)
 	showCursor()
 	wg.Wait()
-	rollbar.Wait()
 	exitFn(code)
 }
 
@@ -136,7 +135,7 @@ func PrintError(e error) {
 	Err(errorPrefix)
 	Error(e.Error())
 	Logln(string(debug.Stack()))
-	rollbar.Error(rollbar.ERR, e, rollbarFields()...)
+	rollbar(e)
 	if debugging {
 		debug.PrintStack()
 	}
@@ -156,6 +155,13 @@ func Error(msg string) {
 	msg = strings.TrimSpace(msg)
 	msg = strings.Join(strings.Split(msg, "\n"), "\n"+bang)
 	Errln(bang + msg)
+}
+
+// ExitWithMessage shows an error message then exits with status code 2
+// It does not emit to rollbar
+func ExitWithMessage(format string, a ...interface{}) {
+	Error(fmt.Sprintf(format, a...))
+	Exit(2)
 }
 
 func errorArrow() string {
@@ -282,5 +288,29 @@ func handleSignal(s os.Signal, fn func()) {
 	go func() {
 		<-c
 		fn()
+	}()
+}
+
+func rollbar(err error) {
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		rollbarAPI.Platform = "client"
+		rollbarAPI.Token = "b40226d5e8a743cf963ca320f7be17bd"
+		rollbarAPI.Environment = Channel
+		rollbarAPI.ErrorWriter = nil
+		var cmd string
+		if len(os.Args) > 1 {
+			cmd = os.Args[1]
+		}
+		fields := []*rollbarAPI.Field{
+			{"version", Version},
+			{"os", runtime.GOOS},
+			{"arch", runtime.GOARCH},
+			{"command", cmd},
+			{"user", netrcLogin()},
+		}
+		rollbarAPI.Error(rollbarAPI.ERR, err, fields...)
+		rollbarAPI.Wait()
 	}()
 }
