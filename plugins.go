@@ -281,20 +281,23 @@ func ParsePlugin(name string) (*Plugin, error) {
 	cmd.Stderr = Stderr
 	output, err := cmd.Output()
 	done()
+
 	if err != nil {
 		// try again but this time grab stdout and stderr
 		cmd, done := gode.RunScript(script)
-		output, _ := cmd.CombinedOutput()
-		done()
-		if !pluginInstallRetrying && strings.Contains(string(output), "Error: Cannot find module") {
-			pluginInstallRetrying = true
-			Warn("Failed to install " + name + ". Retrying...")
-			WarnIfError(gode.RemovePackages(name))
-			WarnIfError(gode.ClearCache())
-			WarnIfError(gode.InstallPackages(name))
-			return ParsePlugin(name)
+		output, err = cmd.CombinedOutput() // sometimes this actually works the second time
+		if err != nil {
+			done()
+			if !pluginInstallRetrying && strings.Contains(string(output), "Error: Cannot find module") {
+				pluginInstallRetrying = true
+				Warn("Failed to install " + name + ". Retrying...")
+				WarnIfError(gode.RemovePackages(name))
+				WarnIfError(gode.ClearCache())
+				WarnIfError(gode.InstallPackages(name))
+				return ParsePlugin(name)
+			}
+			return nil, fmt.Errorf("Error reading plugin: %s\n%s\n%s", name, err, output)
 		}
-		return nil, fmt.Errorf("Error reading plugin: %s\n%s\n%s", name, err, output)
 	}
 	var plugin Plugin
 	err = json.Unmarshal([]byte(output), &plugin)
