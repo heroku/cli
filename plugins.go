@@ -10,7 +10,6 @@ import (
 	"sort"
 	"strconv"
 	"strings"
-	"sync"
 	"syscall"
 
 	"github.com/dickeyxxx/golock"
@@ -400,21 +399,12 @@ func installPlugins(names ...string) error {
 		return err
 	}
 	plugins := make([]*Plugin, len(names))
-	var wg sync.WaitGroup
-	wg.Add(len(plugins))
 	for i, name := range names {
-		go func(i int, name string) {
-			defer wg.Done()
-			plugin, parseErr := ParsePlugin(name)
-			if parseErr != nil {
-				err = parseErr
-			}
-			plugins[i] = plugin
-		}(i, name)
-	}
-	wg.Wait()
-	if err != nil {
-		return err
+		plugin, err := ParsePlugin(name)
+		if err != nil {
+			return err
+		}
+		plugins[i] = plugin
 	}
 	AddPluginsToCache(plugins...)
 	return nil
