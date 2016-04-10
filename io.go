@@ -162,6 +162,7 @@ func Error(msg string) {
 // ExitWithMessage shows an error message then exits with status code 2
 // It does not emit to rollbar
 func ExitWithMessage(format string, a ...interface{}) {
+	TriggerBackgroundUpdate()
 	Error(fmt.Sprintf(format, a...))
 	Exit(2)
 }
@@ -176,6 +177,7 @@ func errorArrow() string {
 // ExitIfError exits if e is not null
 func ExitIfError(e error) {
 	if e != nil {
+		TriggerBackgroundUpdate()
 		Err(errorPrefix)
 		Error(e.Error())
 		Logln(string(debug.Stack()))
