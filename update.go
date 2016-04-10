@@ -62,6 +62,7 @@ func Update(channel string, t string) {
 	touchAutoupdateFile()
 	updateCLI(channel)
 	SetupNode()
+	SetupBuiltinPlugins()
 	updatePlugins()
 	truncateErrorLog()
 	cleanTmpDir()
