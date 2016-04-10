@@ -113,7 +113,7 @@ func handlePanic() {
 			err = errors.New(rec.(string))
 		}
 		Errln("ERROR:", err)
-		if Channel == "" {
+		if Channel == "?" {
 			debug.PrintStack()
 		} else {
 			rollbar(err, "critical")
