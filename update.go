@@ -60,11 +60,11 @@ func Update(channel string, t string) {
 		return
 	}
 	touchAutoupdateFile()
+	SubmitAnalytics()
 	updateCLI(channel)
 	SetupNode()
 	SetupBuiltinPlugins()
 	updatePlugins()
-	SubmitAnalytics()
 	truncateErrorLog()
 	cleanTmpDir()
 }
@@ -145,6 +145,7 @@ func updateCLI(channel string) {
 		unlock()
 		clearAutoupdateFile() // force full update
 	})
+	wg.Wait()
 	reexec() // reexec to finish updating with new code
 }
 
