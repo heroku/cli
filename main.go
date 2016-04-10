@@ -16,6 +16,10 @@ import (
 // If it is set to `dev` it will not autoupdate.
 var Version = "dev"
 
+// GitSHA is the git sha of the build
+// This is set by a build flag in the `Rakefile`.
+var GitSHA = ""
+
 // Channel is the git branch the code was compiled on.
 // This is set by a build flag in the `Rakefile` based on the git branch.
 var Channel = "?"
