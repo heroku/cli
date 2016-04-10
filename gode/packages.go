@@ -130,12 +130,14 @@ func execNpm(args ...string) (string, string, error) {
 }
 
 func environ() []string {
-	env := append(os.Environ(), "NPM_CONFIG_ALWAYS_AUTH=false")
-	env = append(env, "NPM_CONFIG_CACHE="+filepath.Join(rootPath, ".npm-cache"))
-	env = append(env, "NPM_CONFIG_REGISTRY="+registry)
-	env = append(env, "NPM_CONFIG_GLOBAL=false")
-	env = append(env, "NPM_CONFIG_ONLOAD_SCRIPT=false")
-	return env
+	env := []string{
+		"NPM_CONFIG_ALWAYS_AUTH=false",
+		"NPM_CONFIG_CACHE=" + filepath.Join(rootPath, ".npm-cache"),
+		"NPM_CONFIG_REGISTRY=" + registry,
+		"NPM_CONFIG_GLOBAL=false",
+		"NPM_CONFIG_ONLOAD_SCRIPT=false",
+	}
+	return append(env, os.Environ()...)
 }
 
 func debugging() bool {

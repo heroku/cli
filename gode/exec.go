@@ -28,7 +28,7 @@ func RunScript(script string) (cmd *exec.Cmd, done func()) {
 	} else {
 		cmd = exec.Command(nodeBinPath, "-e", script)
 	}
-	cmd.Env = append(os.Environ(), "NODE_PATH="+modulesDir)
+	cmd.Env = append([]string{"NODE_PATH=" + modulesDir}, os.Environ()...)
 	cmd.Dir = rootPath
 	if debugging() {
 		log.Printf("running node NODE_PATH=%s %s\n%s\n", modulesDir, cmd.Path, script)
