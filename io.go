@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"os"
 	"os/signal"
@@ -23,8 +24,6 @@ var Stdout io.Writer
 // Stderr is to mock stderr for testing
 var Stderr io.Writer
 
-// ErrLogPath is the location of the error log
-var ErrLogPath = filepath.Join(AppDir(), "error.log")
 var errLogger = newLogger(ErrLogPath)
 var exitFn = os.Exit
 var debugging = isDebugging()
@@ -52,6 +51,7 @@ func newLogger(path string) *log.Logger {
 
 // Exit just calls os.Exit, but can be mocked out for testing
 func Exit(code int) {
+	TriggerBackgroundUpdate()
 	currentAnalyticsCommand.RecordEnd(code)
 	showCursor()
 	wg.Wait()
@@ -162,7 +162,6 @@ func Error(msg string) {
 // ExitWithMessage shows an error message then exits with status code 2
 // It does not emit to rollbar
 func ExitWithMessage(format string, a ...interface{}) {
-	TriggerBackgroundUpdate()
 	Error(fmt.Sprintf(format, a...))
 	Exit(2)
 }
@@ -177,7 +176,6 @@ func errorArrow() string {
 // ExitIfError exits if e is not null
 func ExitIfError(e error) {
 	if e != nil {
-		TriggerBackgroundUpdate()
 		Err(errorPrefix)
 		Error(e.Error())
 		Logln(string(debug.Stack()))
@@ -325,4 +323,19 @@ func rollbar(err error, level string) {
 		defer wg.Done()
 		rollbarAPI.Wait()
 	}()
+}
+
+func truncateErrorLog() {
+	Debugln("truncating error log...")
+	body, err := ioutil.ReadFile(ErrLogPath)
+	if err != nil {
+		if !os.IsNotExist(err) {
+			WarnIfError(err)
+		}
+		return
+	}
+	lines := strings.Split(string(body), "\n")
+	lines = lines[maxint(len(lines)-1000, 0) : len(lines)-1]
+	err = ioutil.WriteFile(ErrLogPath, []byte(strings.Join(lines, "\n")+"\n"), 0644)
+	WarnIfError(err)
 }
