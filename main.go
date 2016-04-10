@@ -113,10 +113,10 @@ func handlePanic() {
 			err = errors.New(rec.(string))
 		}
 		Errln("ERROR:", err)
-		if Channel == "?" {
+		if Channel == "" {
 			debug.PrintStack()
 		} else {
-			rollbar(err)
+			rollbar(err, "critical")
 		}
 		TriggerBackgroundUpdate()
 		Exit(1)
@@ -141,8 +141,8 @@ func ShowDebugInfo() {
 
 func getProxy() *url.URL {
 	req, err := http.NewRequest("GET", "https://api.heroku.com", nil)
-	PrintError(err)
+	WarnIfError(err)
 	proxy, err := http.ProxyFromEnvironment(req)
-	PrintError(err)
+	WarnIfError(err)
 	return proxy
 }

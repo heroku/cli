@@ -29,7 +29,7 @@ type Plugin struct {
 func SetupNode() {
 	gode.SetRootPath(AppDir())
 	setup, err := gode.IsSetup()
-	PrintError(err)
+	WarnIfError(err)
 	if !setup {
 		if err := gode.Setup(); err != nil {
 			panic(err)
@@ -358,8 +358,8 @@ func SetupBuiltinPlugins() {
 	action("heroku-cli: Installing core plugins", "done", func() {
 		if err := installPlugins(pluginNames...); err != nil {
 			// retry once
-			PrintError(gode.RemovePackages(pluginNames...))
-			PrintError(gode.ClearCache())
+			WarnIfError(gode.RemovePackages(pluginNames...))
+			WarnIfError(gode.ClearCache())
 			Err("\rheroku-cli: Installing core plugins (retrying)...")
 			ExitIfError(installPlugins(pluginNames...))
 		}

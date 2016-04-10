@@ -75,13 +75,13 @@ func updatePlugins() {
 			return
 		}
 		packages, err := gode.OutdatedPackages(plugins...)
-		PrintError(err)
+		WarnIfError(err)
 		if len(packages) > 0 {
 			for name, version := range packages {
 				lockPlugin(name)
-				PrintError(gode.InstallPackages(name + "@" + version))
+				WarnIfError(gode.InstallPackages(name + "@" + version))
 				plugin, err := ParsePlugin(name)
-				PrintError(err)
+				WarnIfError(err)
 				AddPluginsToCache(plugin)
 				unlockPlugin(name)
 			}
@@ -100,7 +100,7 @@ func updateCLI(channel string) {
 	manifest, err := getUpdateManifest(channel)
 	if err != nil {
 		Warn("Error updating CLI")
-		PrintError(err)
+		WarnIfError(err)
 		return
 	}
 	if manifest.Version == Version && manifest.Channel == Channel {
@@ -172,7 +172,7 @@ func touchAutoupdateFile() {
 
 // forces a full update on the next run
 func clearAutoupdateFile() {
-	PrintError(os.Remove(autoupdateFile))
+	WarnIfError(os.Remove(autoupdateFile))
 }
 
 type manifest struct {
@@ -255,14 +255,14 @@ func truncateErrorLog() {
 	body, err := ioutil.ReadFile(ErrLogPath)
 	if err != nil {
 		if !os.IsNotExist(err) {
-			PrintError(err)
+			WarnIfError(err)
 		}
 		return
 	}
 	lines := strings.Split(string(body), "\n")
 	lines = lines[maxint(len(lines)-1000, 0) : len(lines)-1]
 	err = ioutil.WriteFile(ErrLogPath, []byte(strings.Join(lines, "\n")+"\n"), 0644)
-	PrintError(err)
+	WarnIfError(err)
 }
 
 func maxint(a, b int) int {
@@ -276,14 +276,14 @@ func cleanTmpDir() {
 	Debugln("cleaning up tmp dirs...")
 	dirs, err := ioutil.ReadDir(tmpPath)
 	if err != nil {
-		PrintError(err)
+		WarnIfError(err)
 		return
 	}
 	for _, dir := range dirs {
 		if time.Since(dir.ModTime()) > 24*time.Hour {
 			path := filepath.Join(tmpPath, dir.Name())
 			Debugln("deleting " + path)
-			PrintError(os.RemoveAll(path))
+			WarnIfError(os.RemoveAll(path))
 		}
 	}
 }
