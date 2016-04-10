@@ -60,11 +60,11 @@ func Update(channel string, t string) {
 		return
 	}
 	touchAutoupdateFile()
-	SubmitAnalytics()
 	updateCLI(channel)
 	SetupNode()
 	SetupBuiltinPlugins()
 	updatePlugins()
+	SubmitAnalytics()
 	truncateErrorLog()
 	cleanTmpDir()
 }
