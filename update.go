@@ -185,6 +185,7 @@ type manifest struct {
 func getUpdateManifest(channel string) (*manifest, error) {
 	res, err := goreq.Request{
 		Uri:       "https://cli-assets.heroku.com/" + channel + "/manifest.json",
+		Timeout:   30 * time.Minute,
 		ShowDebug: debugging,
 	}.Do()
 	if err != nil {
@@ -203,6 +204,7 @@ func downloadBin(path, url string) error {
 	defer out.Close()
 	res, err := goreq.Request{
 		Uri:       url + ".xz",
+		Timeout:   30 * time.Minute,
 		ShowDebug: debugging,
 	}.Do()
 	if err != nil {
