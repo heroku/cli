@@ -41,9 +41,17 @@ func Setup() error {
 		if err := os.Chmod(nodeBinPath, 0755); err != nil {
 			return err
 		}
+		if err := checkNodeVersion(); err != nil {
+			os.Remove(nodeBinPath)
+			return err
+		}
 	}
 	if exists, _ := fileExists(npmBinPath); !exists {
 		if err := downloadNpm(); err != nil {
+			return err
+		}
+		if err := checkNpmVersion(); err != nil {
+			os.RemoveAll(npmBasePath)
 			return err
 		}
 	}
@@ -144,4 +152,28 @@ func getHTTPError(resp *goreq.Response) error {
 	var body string
 	body = resp.Header.Get("Content-Type")
 	return fmt.Errorf("%s: %s", resp.Status, body)
+}
+
+func checkNodeVersion() error {
+	cmd, done := RunScript("process.stdout.write(process.version)")
+	output, err := cmd.CombinedOutput()
+	done()
+	if err != nil {
+		return err
+	}
+	if string(output) != "v"+NodeVersion {
+		return fmt.Errorf("expected node %s to equal %s", string(output), "v"+NodeVersion)
+	}
+	return nil
+}
+
+func checkNpmVersion() error {
+	stdout, stderr, err := execNpm("-v")
+	if err != nil {
+		return err
+	}
+	if stdout != NpmVersion+"\n" {
+		return fmt.Errorf("expected npm %s to equal %s\n%s", stdout, "v"+NodeVersion, stderr)
+	}
+	return nil
 }
