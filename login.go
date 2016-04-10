@@ -171,6 +171,7 @@ func v2login(email, password, secondFactor string) string {
 			Error string `json:"error"`
 		}
 		ExitIfError(res.Body.FromJsonTo(&response))
+		ExitWithMessage(response.Error)
 		panic("unreachable")
 	case 403:
 		return v2login(email, password, getString("Two-factor code: "))
