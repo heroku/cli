@@ -127,15 +127,17 @@ func Debugf(f string, a ...interface{}) {
 	}
 }
 
-// PrintError is a helper that prints out formatted error messages in red text
-func PrintError(e error) {
+// WarnIfError is a helper that prints out formatted error messages
+// it will emit to rollbar
+// it does not exit
+func WarnIfError(e error) {
 	if e == nil {
 		return
 	}
 	Err(errorPrefix)
-	Error(e.Error())
+	Warn(e.Error())
 	Logln(string(debug.Stack()))
-	rollbar(e)
+	rollbar(e, "warning")
 	if debugging {
 		debug.PrintStack()
 	}
@@ -171,10 +173,16 @@ func errorArrow() string {
 	return "▸"
 }
 
-// ExitIfError calls PrintError and exits if e is not null
+// ExitIfError exits if e is not null
 func ExitIfError(e error) {
 	if e != nil {
-		PrintError(e)
+		Err(errorPrefix)
+		Error(e.Error())
+		Logln(string(debug.Stack()))
+		rollbar(e, "error")
+		if debugging {
+			debug.PrintStack()
+		}
 		Exit(1)
 	}
 }
@@ -184,6 +192,7 @@ func LogIfError(e error) {
 	if e != nil {
 		Logln(e.Error())
 		Logln(string(debug.Stack()))
+		rollbar(e, "info")
 	}
 }
 
@@ -291,7 +300,7 @@ func handleSignal(s os.Signal, fn func()) {
 	}()
 }
 
-func rollbar(err error) {
+func rollbar(err error, level string) {
 	rollbarAPI.Platform = "client"
 	rollbarAPI.Token = "b40226d5e8a743cf963ca320f7be17bd"
 	rollbarAPI.Environment = Channel
@@ -307,7 +316,7 @@ func rollbar(err error) {
 		{"command", cmd},
 		{"user", netrcLogin()},
 	}
-	rollbarAPI.Error(rollbarAPI.ERR, err, fields...)
+	rollbarAPI.Error(level, err, fields...)
 	wg.Add(1)
 	go func() {
 		defer wg.Done()

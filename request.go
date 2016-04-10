@@ -98,7 +98,7 @@ func getCACerts() *x509.CertPool {
 		Debugln("  " + path)
 		data, err := ioutil.ReadFile(path)
 		if err != nil {
-			PrintError(err)
+			WarnIfError(err)
 			return nil
 		}
 		ok := certs.AppendCertsFromPEM(data)
@@ -113,7 +113,7 @@ func getCACerts() *x509.CertPool {
 func downloadCert(path string) {
 	f, err := os.Create(path)
 	if err != nil {
-		PrintError(err)
+		WarnIfError(err)
 		return
 	}
 	res, err := goreq.Request{
@@ -121,7 +121,7 @@ func downloadCert(path string) {
 		ShowDebug: debugging,
 	}.Do()
 	if err != nil {
-		PrintError(err)
+		WarnIfError(err)
 		return
 	}
 	defer res.Body.Close()

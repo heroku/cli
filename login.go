@@ -179,7 +179,7 @@ func v2login(email, password, secondFactor string) string {
 		panic("unreachable")
 	default:
 		body, err := res.Body.ToString()
-		PrintError(err)
+		WarnIfError(err)
 		ExitWithMessage("Invalid response from API.\nHTTP %d\n%s\n\nAre you behind a proxy?\nhttps://devcenter.heroku.com/articles/using-the-cli#using-an-http-proxy", res.StatusCode, body)
 		panic("unreachable")
 	}
