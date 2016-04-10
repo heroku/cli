@@ -263,6 +263,8 @@ func getExitCode(err error) int {
 	}
 }
 
+var pluginInstallRetrying = false
+
 // ParsePlugin requires the plugin's node module
 // to get the commands and metadata
 func ParsePlugin(name string) (*Plugin, error) {
@@ -284,6 +286,14 @@ func ParsePlugin(name string) (*Plugin, error) {
 		cmd, done := gode.RunScript(script)
 		output, _ := cmd.CombinedOutput()
 		done()
+		if !pluginInstallRetrying && strings.Contains(string(output), "Error: Cannot find module") {
+			pluginInstallRetrying = true
+			Warn("Failed to install " + name + ". Retrying...")
+			WarnIfError(gode.RemovePackages(name))
+			WarnIfError(gode.ClearCache())
+			WarnIfError(gode.InstallPackages(name))
+			return ParsePlugin(name)
+		}
 		return nil, fmt.Errorf("Error reading plugin: %s\n%s\n%s", name, err, output)
 	}
 	var plugin Plugin
