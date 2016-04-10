@@ -54,7 +54,7 @@ end
 
 def build(target)
   path = "./dist/#{target[:os]}/#{target[:arch]}/heroku-cli"
-  ldflags = "-X=main.Version=#{VERSION} -X=main.Channel=#{CHANNEL} -X=main.GitSHA=#{sha_digest}"
+  ldflags = "-X=main.Version=#{VERSION} -X=main.Channel=#{CHANNEL} -X=main.GitSHA=#{REVISION}"
   args = ["-o", "#{path}", "-ldflags", "\"#{ldflags}\""]
   vars = ["GOOS=#{target[:os]}", "GOARCH=#{target[:arch]}"]
   vars << "GO386=#{target[:go386]}" if target[:go386]
