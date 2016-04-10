@@ -50,7 +50,8 @@ func Setup() error {
 	if err := os.MkdirAll(modulesDir, 0755); err != nil {
 		return err
 	}
-	return clearOldNodeInstalls()
+	clearOldNodeInstalls()
+	return nil
 }
 
 func downloadNpm() error {
@@ -123,22 +124,17 @@ func progressDrawFn(progress, total int64) string {
 	return fmt.Sprintf("heroku-cli: Adding dependencies... %15s", ioprogress.DrawTextFormatBytes(progress, total))
 }
 
-func clearOldNodeInstalls() error {
+func clearOldNodeInstalls() {
 	for _, name := range getDirsWithPrefix(rootPath, "node-") {
 		if !strings.HasPrefix(name, "node-"+NodeVersion) {
-			if err := os.RemoveAll(filepath.Join(rootPath, name)); err != nil {
-				return err
-			}
+			os.RemoveAll(filepath.Join(rootPath, name))
 		}
 	}
 	for _, name := range getDirsWithPrefix(rootPath, "npm-") {
 		if name != "npm-"+NpmVersion {
-			if err := os.RemoveAll(filepath.Join(rootPath, name)); err != nil {
-				return err
-			}
+			os.RemoveAll(filepath.Join(rootPath, name))
 		}
 	}
-	return nil
 }
 
 func getHTTPError(resp *goreq.Response) error {
