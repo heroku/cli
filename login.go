@@ -5,8 +5,11 @@ import (
 	"fmt"
 	"net/url"
 	"os"
+	"path/filepath"
+	"runtime"
 	"time"
 
+	"github.com/dickeyxxx/netrc"
 	"github.com/dickeyxxx/speakeasy"
 	"github.com/toqueteos/webbrowser"
 )
@@ -257,4 +260,64 @@ func logout(ctx *Context) {
 	netrc.RemoveMachine(httpGitHost())
 	ExitIfError(netrc.Save())
 	Println("Local credentials cleared.")
+}
+
+func getNetrc() *netrc.Netrc {
+	n, err := netrc.Parse(netrcPath())
+	if err != nil {
+		if _, ok := err.(*os.PathError); ok {
+			// File not found
+			return &netrc.Netrc{Path: netrcPath()}
+		}
+		Errln("Error parsing netrc at " + netrcPath())
+		Errln(err.Error())
+		Exit(1)
+	}
+	return n
+}
+
+func auth() (password string) {
+	token := apiToken()
+	if token == "" {
+		interactiveLogin()
+		return auth()
+	}
+	return token
+}
+
+func apiToken() string {
+	key := os.Getenv("HEROKU_API_KEY")
+	if key != "" {
+		return key
+	}
+	netrc := getNetrc()
+	machine := netrc.Machine(apiHost())
+	if machine != nil {
+		return machine.Get("password")
+	}
+	return ""
+}
+
+func netrcPath() string {
+	base := filepath.Join(HomeDir, ".netrc")
+	if runtime.GOOS == "windows" {
+		base = filepath.Join(HomeDir, "_netrc")
+	}
+	if exists, _ := fileExists(base + ".gpg"); exists {
+		base = base + ".gpg"
+	}
+	return base
+}
+
+func netrcLogin() string {
+	key := os.Getenv("HEROKU_API_KEY")
+	if key != "" {
+		return ""
+	}
+	netrc := getNetrc()
+	machine := netrc.Machine(apiHost())
+	if machine != nil {
+		return machine.Get("login")
+	}
+	return ""
 }

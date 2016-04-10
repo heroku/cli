@@ -37,10 +37,6 @@ var orgFlag = &Flag{
 	Description: "organization to use",
 }
 
-var debuggerFlag = &Flag{
-	Name: "debugger",
-}
-
 func (f *Flag) String() string {
 	s := " "
 	switch {

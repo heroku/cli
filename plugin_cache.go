@@ -7,48 +7,63 @@ import (
 	"path/filepath"
 )
 
-var pluginCachePath = filepath.Join(AppDir(), "plugin-cache.json")
-
-// AddPluginsToCache adds/updates a set of plugins to ~/.heroku/plugin-cache.json
-func AddPluginsToCache(plugins ...*Plugin) {
-	cache := FetchPluginCache()
+func (p *Plugins) addToCache(plugins ...*Plugin) {
+	cache := p.Plugins()
+	contains := func(name string) int {
+		for i, plugin := range cache {
+			if plugin.Name == name {
+				return i
+			}
+		}
+		return -1
+	}
 	for _, plugin := range plugins {
-		if plugin != nil {
-			cache[plugin.Name] = plugin
+		// find or replace
+		i := contains(plugin.Name)
+		if i == -1 {
+			cache = append(cache, plugin)
+		} else {
+			cache[i] = plugin
 		}
 	}
-	savePluginCache(cache)
+	p.saveCache(cache)
 }
 
-// RemovePluginFromCache will take a plugin and remove it from the list
-func RemovePluginFromCache(name string) {
-	cache := FetchPluginCache()
-	delete(cache, name)
-	savePluginCache(cache)
+func (p *Plugins) removeFromCache(name string) {
+	plugins := p.Plugins()
+	for i, plugin := range plugins {
+		if plugin.Name == name {
+			plugins = append(plugins[:i], plugins[i+1:]...)
+		}
+	}
+	p.saveCache(plugins)
 }
 
-func savePluginCache(cache map[string]*Plugin) {
-	data, err := json.MarshalIndent(cache, "", "  ")
+func (p *Plugins) saveCache(plugins []*Plugin) {
+	data, err := json.MarshalIndent(plugins, "", "  ")
 	if err != nil {
 		panic(err)
 	}
-	if err := ioutil.WriteFile(pluginCachePath, data, 0644); err != nil {
+	if err := ioutil.WriteFile(p.cachePath(), data, 0644); err != nil {
 		panic(err)
 	}
 }
 
-// FetchPluginCache returns the plugins from the cache
-func FetchPluginCache() map[string]*Plugin {
-	plugins := make(map[string]*Plugin, 100)
-	if exists, _ := fileExists(pluginCachePath); !exists {
-		return plugins
+// Plugins reads the cache file into the struct
+func (p *Plugins) Plugins() (plugins []*Plugin) {
+	if exists, _ := fileExists(p.cachePath()); !exists {
+		return
 	}
-	f, err := os.Open(pluginCachePath)
+	f, err := os.Open(p.cachePath())
 	if err != nil {
-		return plugins
+		LogIfError(err)
+		return
 	}
-	if err := json.NewDecoder(f).Decode(&plugins); err != nil {
-		WarnIfError(err)
-	}
-	return plugins
+	err = json.NewDecoder(f).Decode(&plugins)
+	WarnIfError(err)
+	return
+}
+
+func (p *Plugins) cachePath() string {
+	return filepath.Join(p.Path, "plugins.json")
 }
