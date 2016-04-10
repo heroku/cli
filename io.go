@@ -292,25 +292,25 @@ func handleSignal(s os.Signal, fn func()) {
 }
 
 func rollbar(err error) {
+	rollbarAPI.Platform = "client"
+	rollbarAPI.Token = "b40226d5e8a743cf963ca320f7be17bd"
+	rollbarAPI.Environment = Channel
+	rollbarAPI.ErrorWriter = nil
+	var cmd string
+	if len(os.Args) > 1 {
+		cmd = os.Args[1]
+	}
+	fields := []*rollbarAPI.Field{
+		{"version", Version},
+		{"os", runtime.GOOS},
+		{"arch", runtime.GOARCH},
+		{"command", cmd},
+		{"user", netrcLogin()},
+	}
+	rollbarAPI.Error(rollbarAPI.ERR, err, fields...)
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		rollbarAPI.Platform = "client"
-		rollbarAPI.Token = "b40226d5e8a743cf963ca320f7be17bd"
-		rollbarAPI.Environment = Channel
-		rollbarAPI.ErrorWriter = nil
-		var cmd string
-		if len(os.Args) > 1 {
-			cmd = os.Args[1]
-		}
-		fields := []*rollbarAPI.Field{
-			{"version", Version},
-			{"os", runtime.GOOS},
-			{"arch", runtime.GOARCH},
-			{"command", cmd},
-			{"user", netrcLogin()},
-		}
-		rollbarAPI.Error(rollbarAPI.ERR, err, fields...)
 		rollbarAPI.Wait()
 	}()
 }
