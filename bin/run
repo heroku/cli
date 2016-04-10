@@ -1,4 +1,4 @@
 #!/bin/bash
 
-go build
-./cli $*
+gulp build:workspace
+./tmp/heroku/bin/heroku $*
