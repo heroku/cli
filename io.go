@@ -317,7 +317,7 @@ func rollbar(err error, level string) {
 		{"os", runtime.GOOS},
 		{"arch", runtime.GOARCH},
 		{"command", cmd},
-		{"user", netrcLogin()},
+		{"person.id", netrcLogin()},
 	}
 	rollbarAPI.Error(level, err, fields...)
 	wg.Add(1)
