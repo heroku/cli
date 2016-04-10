@@ -10,7 +10,6 @@ import (
 	"sort"
 	"strconv"
 	"strings"
-	"sync"
 	"syscall"
 
 	"github.com/dickeyxxx/golock"
@@ -277,11 +276,15 @@ func ParsePlugin(name string) (*Plugin, error) {
 
 	console.log(JSON.stringify(plugin))`
 	cmd, done := gode.RunScript(script)
-	defer done()
 	cmd.Stderr = Stderr
 	output, err := cmd.Output()
+	done()
 	if err != nil {
-		return nil, fmt.Errorf("Error reading plugin: %s\n%s", name, err)
+		// try again but this time grab stdout and stderr
+		cmd, done := gode.RunScript(script)
+		output, _ := cmd.CombinedOutput()
+		done()
+		return nil, fmt.Errorf("Error reading plugin: %s\n%s\n%s", name, err, output)
 	}
 	var plugin Plugin
 	err = json.Unmarshal([]byte(output), &plugin)
@@ -396,21 +399,12 @@ func installPlugins(names ...string) error {
 		return err
 	}
 	plugins := make([]*Plugin, len(names))
-	var wg sync.WaitGroup
-	wg.Add(len(plugins))
 	for i, name := range names {
-		go func(i int, name string) {
-			defer wg.Done()
-			plugin, parseErr := ParsePlugin(name)
-			if parseErr != nil {
-				err = parseErr
-			}
-			plugins[i] = plugin
-		}(i, name)
-	}
-	wg.Wait()
-	if err != nil {
-		return err
+		plugin, err := ParsePlugin(name)
+		if err != nil {
+			return err
+		}
+		plugins[i] = plugin
 	}
 	AddPluginsToCache(plugins...)
 	return nil

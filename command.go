@@ -83,11 +83,11 @@ func (c *Command) buildFullHelp() string {
 	return strings.TrimSuffix(strings.Join(sections, "\n\n"), "\n")
 }
 
-func (c *Command) unexpectedFlagErr(flag string) error {
+func (c *Command) unexpectedFlagErr(flag string) {
 	flagHelp := c.buildFlagHelp()
 	cmd := "heroku " + c.String()
 	if flagHelp == "" {
-		return fmt.Errorf(
+		ExitWithMessage(
 			`Error: Unexpected flag %s
 Usage: %s
 This command does not take any flags.
@@ -98,7 +98,7 @@ See more information with %s`,
 			cyan(cmd+" --help"),
 		)
 	}
-	return fmt.Errorf(
+	ExitWithMessage(
 		`Error: Unexpected flag %s
 Usage: %s
 
@@ -113,8 +113,8 @@ See more information with %s`,
 	)
 }
 
-func (c *Command) appNeededErr() error {
-	return fmt.Errorf(
+func (c *Command) appNeededErr() {
+	ExitWithMessage(
 		`Error: No app specified
 Usage: %s
 We don't know which app to run this on.
@@ -126,9 +126,9 @@ https://devcenter.heroku.com/articles/using-the-cli#app-commands`,
 	)
 }
 
-func (c *Command) unexpectedArgumentsErr(args []string) error {
+func (c *Command) unexpectedArgumentsErr(args []string) {
 	cmd := "heroku " + c.String()
-	return fmt.Errorf(
+	ExitWithMessage(
 		`Error: Unexpected %s %s
 Usage: %s
 You gave this command too many arguments. Try the command again without these extra arguments.
