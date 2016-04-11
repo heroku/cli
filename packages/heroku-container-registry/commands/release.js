@@ -110,7 +110,11 @@ function release(context) {
       }
 
       function onBuildExit(code) {
-        if (code !== 0) throw new Error('Build failed');
+        if (code !== 0) {
+          cli.log('Build failed. Make sure `docker-compose build web` returns a 0 exit status.');
+          return;
+        }
+
         var tokens = output.match(/\S+/g);
         var fromMatch = output.match(/FROM ([^\s]+)/) || [];
         var imageName = fromMatch[1];
