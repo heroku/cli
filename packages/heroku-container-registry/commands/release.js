@@ -112,7 +112,7 @@ function release(context) {
       function onBuildExit(code) {
         if (code !== 0) {
           cli.log('Build failed. Make sure `docker-compose build web` returns a 0 exit status.');
-          return;
+          process.exit(1);
         }
 
         var tokens = output.match(/\S+/g);
