@@ -53,11 +53,6 @@ class Run {
     return this.heroku.request({
       path: `/apps/${this.app}/dynos`,
       method: 'POST',
-      middleware: (res, cb) => {
-        let msg = res.headers['warning-message'];
-        if (msg) cli.warn(msg);
-        cb();
-      },
       body: {
         command:  command,
         attach:   true,
