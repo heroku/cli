@@ -1,4 +1,5 @@
-# heroku-cli-addons [![Circle CI](https://circleci.com/gh/heroku/heroku-cli-addons.svg?style=svg)](https://circleci.com/gh/heroku/heroku-cli-addons)
+# heroku-cli-addons [![Circle CI](https://circleci.com/gh/heroku/heroku-cli-addons.svg?style=svg)](https://circleci.com/gh/heroku/heroku-cli-addons) [![Coverage Status](https://coveralls.io/repos/github/heroku/heroku-cli-addons/badge.svg?branch=master)](https://coveralls.io/github/heroku/heroku-cli-addons?branch=master)
+
 
 This re-implements the `heroku addons [--app APP|--all]` command in Node with a
 new UX which aims to make the concepts clearer and the relationships between
