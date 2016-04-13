@@ -18,6 +18,5 @@ describe('heroku access:remove', () => {
         .then(() => expect(`Removing raulb@heroku.com access from the app myapp... done\n`).to.eq(cli.stderr))
         .then(() => api.done());
     });
-
   });
 });
