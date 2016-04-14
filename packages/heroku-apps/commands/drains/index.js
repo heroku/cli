@@ -15,7 +15,7 @@ function* run (context, heroku) {
     if (drains[1].length > 0) {
       cli.styledHeader('Drains');
       drains[1].forEach(drain => {
-        let output = `${cli.color.cyan(drain.url)} (${cli.color.green(drain.token)})`;
+        let output = `${drain.url} (${cli.color.green(drain.token)})`;
         if (drain.extended) output = output + ` drain_id=${drain.extended.drain_id}`;
         cli.log(output);
       });
