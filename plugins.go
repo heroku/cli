@@ -109,24 +109,25 @@ var pluginsLinkCmd = &Command{
 			panic(err)
 		}
 		name := filepath.Base(path)
-		newPath := pluginPath(name)
-		os.Remove(newPath)
-		os.RemoveAll(newPath)
-		err = os.Symlink(path, newPath)
-		if err != nil {
-			panic(err)
-		}
-		plugin, err := ParsePlugin(name)
-		ExitIfError(err)
-		if name != plugin.Name {
-			path = newPath
-			newPath = pluginPath(plugin.Name)
+		action("Symlinking "+name, "done", func() {
+			newPath := pluginPath(name)
 			os.Remove(newPath)
 			os.RemoveAll(newPath)
-			os.Rename(path, newPath)
-		}
-		Println("Symlinked", plugin.Name)
-		AddPluginsToCache(plugin)
+			err = os.Symlink(path, newPath)
+			if err != nil {
+				panic(err)
+			}
+			plugin, err := ParsePlugin(name)
+			ExitIfError(err)
+			if name != plugin.Name {
+				path = newPath
+				newPath = pluginPath(plugin.Name)
+				os.Remove(newPath)
+				os.RemoveAll(newPath)
+				os.Rename(path, newPath)
+			}
+			AddPluginsToCache(plugin)
+		})
 	},
 }
 
