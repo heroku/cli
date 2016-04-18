@@ -12,7 +12,7 @@ function* run (context, heroku) {
       cli.log(`${k}=${shellescape([v])}`);
     });
   } else if (context.flags.json) {
-    cli.log(JSON.stringify(configVars, null, 2));
+    cli.styledJSON(configVars);
   } else {
     cli.styledHeader(`${context.app} Config Vars`);
     cli.styledObject(configVars);
