@@ -4,7 +4,7 @@ let co  = require('co');
 let cli = require('heroku-cli-util');
 
 function* run(context, heroku) {
-  yield cli.action(`Removing all ssh keys`, co(function* () {
+  yield cli.action(`Removing all SSH keys`, co(function* () {
     let keys = yield heroku.get('/account/keys');
     for (let key of keys) {
       yield heroku.request({
@@ -18,7 +18,7 @@ function* run(context, heroku) {
 module.exports = {
   topic: 'keys',
   command: 'clear',
-  description: 'remove all ssh keys for current user',
+  description: 'remove all SSH keys for current user',
   needsAuth: true,
   run: cli.command(co.wrap(run))
 };

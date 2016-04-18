@@ -5,10 +5,10 @@ let cli      = require('heroku-cli-util');
 let inquirer = require('inquirer');
 let util     = require('../../lib/util');
 
-function sshKeygen (file) {
+function sshKeygen (file, quiet) {
   let spawn = require('child_process').spawn;
   return new Promise(function (fulfill, reject) {
-    spawn('ssh-keygen', ['-t', 'rsa', '-N', '', '-f', file], {stdio: 'inherit'})
+    spawn('ssh-keygen', ['-t', 'rsa', '-N', '', '-f', file], {stdio: quiet ? null : 'inherit'})
     .on('close', code => code === 0 ? fulfill() : reject(code));
   });
 }
@@ -22,13 +22,13 @@ function* run(context, heroku) {
 
   let generate = co.wrap(function* () {
     yield util.mkdirp(sshdir, {mode: 0o700});
-    yield sshKeygen(path.join(sshdir, 'id_rsa'));
+    yield sshKeygen(path.join(sshdir, 'id_rsa'), context.flags.quiet);
   });
 
   let findKey = co.wrap(function* () {
     const defaultKey = path.join(sshdir, 'id_rsa.pub');
     if (!(yield fs.exists(defaultKey))) {
-      cli.console.error('Could not find an existing ssh key at ~/.ssh/id_rsa.pub');
+      cli.console.error('Could not find an existing SSH key at ~/.ssh/id_rsa.pub');
       let resp = yield inquirer.prompt([{
         type: 'confirm',
         name: 'yes',
@@ -55,7 +55,7 @@ function* run(context, heroku) {
         type: 'list',
         name: 'key',
         choices: keys,
-        message: 'Which ssh key would you like to upload?'
+        message: 'Which SSH key would you like to upload?'
       }]);
       return resp.key;
     }
@@ -63,7 +63,7 @@ function* run(context, heroku) {
 
 
   let upload = co.wrap(function* (key) {
-    yield cli.action(`Uploading ${cli.color.cyan(key)} ssh key`, co(function* () {
+    yield cli.action(`Uploading ${cli.color.cyan(key)} SSH key`, co(function* () {
       yield heroku.request({
         method: 'POST',
         path:   `/account/keys`,
@@ -83,7 +83,7 @@ function* run(context, heroku) {
 module.exports = {
   topic: 'keys',
   command: 'add',
-  description: 'add an ssh key for a user',
+  description: 'add an SSH key for a user',
   help: `if no KEY is specified, will try to find ~/.ssh/id_rsa.pub
 
 Examples:
@@ -99,5 +99,6 @@ Examples:
 `,
   needsAuth: true,
   args: [{name: 'key', optional: true}],
+  flags: [{name: 'quiet', hidden: true}],
   run: cli.command(co.wrap(run))
 };

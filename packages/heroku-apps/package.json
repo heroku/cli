@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/heroku/heroku-apps",
   "dependencies": {
-    "bluebird-queue": "0.0.8",
+    "bluebird": "3.3.5",
     "co": "4.6.0",
     "filesize": "3.2.1",
     "heroku-cli-util": "5.10.7",
@@ -40,10 +40,13 @@
     "chai": "^3.3.0",
     "changelog": "1.0.7",
     "coveralls": "2.11.9",
+    "fs-extra": "0.28.0",
     "jshint": "*",
     "mocha": "^2.3.3",
     "nock": "8.0.0",
     "nyc": "6.4.0",
+    "proxyquire": "1.7.4",
+    "rimraf": "2.5.2",
     "unexpected": "10.13.1"
   }
 }

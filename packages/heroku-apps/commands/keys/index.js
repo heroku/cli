@@ -13,7 +13,7 @@ function* run(context, heroku) {
   if (context.flags.json) {
     cli.styledJSON(keys);
   } else if (keys.length === 0) {
-    cli.warn('You have no ssh keys.');
+    cli.warn('You have no SSH keys.');
   } else {
     cli.styledHeader(`${cli.color.cyan(keys[0].email)} keys`);
     if (context.flags.long) {
@@ -26,11 +26,11 @@ function* run(context, heroku) {
 
 module.exports = {
   topic: 'keys',
-  description: 'display your ssh keys',
+  description: 'display your SSH keys',
   needsAuth: true,
   run: cli.command(co.wrap(run)),
   flags: [
-    {name: 'long', char: 'l', description: 'display full ssh keys'},
+    {name: 'long', char: 'l', description: 'display full SSH keys'},
     {name: 'json', description: 'output in json format'},
   ],
 };

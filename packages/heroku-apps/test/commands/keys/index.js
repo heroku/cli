@@ -13,7 +13,7 @@ describe('heroku keys', () => {
       .get('/account/keys').reply(200, []);
     return cmd.run({flags: {}})
     .then(() => expect(cli.stdout, 'to be empty'))
-    .then(() => expect(cli.stderr, 'to equal', ' ▸    You have no ssh keys.\n'))
+    .then(() => expect(cli.stderr, 'to equal', ' ▸    You have no SSH keys.\n'))
     .then(() => api.done());
   });
 
@@ -42,7 +42,7 @@ ssh-rsa AAAAB3NzxC...V7iHuYrZxd user@machine\n`))
     .then(() => api.done());
   });
 
-  it('shows full ssh keys', () => {
+  it('shows full SSH keys', () => {
     let api = nock('https://api.heroku.com:443')
       .get('/account/keys')
       .reply(200, [
