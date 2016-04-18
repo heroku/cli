@@ -10,10 +10,6 @@ let trunc = s => _.truncate(s, {length: 35, omission: '…'});
 // gets the process number from a string like web.19 => 19
 let getProcessNum = s => parseInt(s.split('.', 2)[1]);
 
-function printJSON (data) {
-  cli.log(JSON.stringify(data.dynos, null, 2));
-}
-
 function printQuota (quota) {
   if (!quota) return;
   let lbl;
@@ -81,7 +77,7 @@ function* run (context, heroku) {
     dynos: heroku.request({path: `/apps/${context.app}/dynos${suffix}`}),
   };
   if (context.flags.json) {
-    printJSON(data);
+    cli.styledJSON(data.dynos);
   } else if (context.flags.extended) {
     printExtended(data.dynos);
   } else {
