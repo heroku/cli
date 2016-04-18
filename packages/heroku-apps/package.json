@@ -6,7 +6,7 @@
   "scripts": {
     "test": "nyc mocha --require ./test/helpers.js && jshint .",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "preversion": "npm test",
+    "preversion": "npm test && changelog heroku-apps all -m > CHANGELOG.md && git add CHANGELOG.md",
     "postversion": "npm publish && git push && git push --tags"
   },
   "repository": {
@@ -34,6 +34,7 @@
   },
   "devDependencies": {
     "chai": "^3.3.0",
+    "changelog": "1.0.7",
     "coveralls": "2.11.9",
     "jshint": "*",
     "mocha": "^2.3.3",
