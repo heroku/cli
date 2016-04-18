@@ -7,7 +7,7 @@ function* run (context, heroku) {
   let app     = context.app;
   let feature = context.args.feature;
 
-  yield cli.action(`Disabling ${cli.color.green(feature)} for ${cli.color.cyan(app)}`, co(function* () {
+  yield cli.action(`Disabling ${cli.color.green(feature)} for ${cli.color.app(app)}`, co(function* () {
     let f = yield heroku.get(`/apps/${app}/features/${feature}`);
     if (!f.enabled) throw new Error(`${cli.color.red(feature)} is already disabled.`);
 

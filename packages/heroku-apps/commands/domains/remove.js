@@ -5,7 +5,7 @@ let co  = require('co');
 
 function* run (context, heroku) {
   let hostname = context.args.hostname;
-  yield cli.action(`Removing ${cli.color.green(hostname)} from ${cli.color.cyan(context.app)}`, heroku.request({
+  yield cli.action(`Removing ${cli.color.green(hostname)} from ${cli.color.app(context.app)}`, heroku.request({
     path: `/apps/${context.app}/domains/${hostname}`,
     method: 'DELETE',
   }));

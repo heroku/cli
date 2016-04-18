@@ -44,7 +44,7 @@ function* run (context, heroku) {
   }
 
   function createText(name, space) {
-    let text = `Creating ${name ? cli.color.magenta(name) : 'app'}`;
+    let text = `Creating ${name ? cli.color.app(name) : 'app'}`;
     if (space) {
       text += ` in space ${space}`;
     }

@@ -19,7 +19,7 @@ function* run (context, heroku) {
   let changes = parse(context.args);
   if (changes.length === 0) {
     let formation = yield heroku.get(`/apps/${app}/formation`);
-    if (formation.length === 0) throw new Error(`No process types on ${cli.color.cyan(app)}.\nUpload a Procfile to add process types.\nhttps://devcenter.heroku.com/articles/procfile`);
+    if (formation.length === 0) throw new Error(`No process types on ${cli.color.app(app)}.\nUpload a Procfile to add process types.\nhttps://devcenter.heroku.com/articles/procfile`);
     cli.log(formation.map(d => `${cli.color.green(d.type)}=${cli.color.yellow(d.quantity)}:${cli.color.cyan(d.size)}`).sort().join(' '));
   } else {
     yield cli.action('Scaling dynos', {success: false}, co(function* () {

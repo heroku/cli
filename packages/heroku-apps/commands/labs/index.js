@@ -37,7 +37,7 @@ function* run (context, heroku) {
     printFeatures(features.user);
     if (features.app) {
       cli.log();
-      cli.styledHeader(`App Features ${cli.color.cyan(context.app)}`);
+      cli.styledHeader(`App Features ${cli.color.app(context.app)}`);
       printFeatures(features.app);
     }
   }

@@ -26,8 +26,8 @@
     "bluebird-queue": "0.0.8",
     "co": "4.6.0",
     "filesize": "3.2.1",
-    "heroku-cli-util": "5.10.6",
-    "lodash": "4.6.1",
+    "heroku-cli-util": "5.10.7",
+    "lodash": "4.11.1",
     "shell-escape": "0.2.0",
     "strftime": "0.9.2",
     "string": "3.3.1"
@@ -37,7 +37,7 @@
     "coveralls": "2.11.9",
     "jshint": "*",
     "mocha": "^2.3.3",
-    "nock": "7.5.0",
-    "nyc": "6.2.1"
+    "nock": "8.0.0",
+    "nyc": "6.4.0"
   }
 }

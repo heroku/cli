@@ -5,7 +5,7 @@ let co          = require('co');
 
 function* run (context, heroku) {
   let hostname = context.args.hostname;
-  let domain = yield cli.action(`Adding ${cli.color.green(hostname)} to ${cli.color.cyan(context.app)}`, heroku.request({
+  let domain = yield cli.action(`Adding ${cli.color.green(hostname)} to ${cli.color.app(context.app)}`, heroku.request({
     path: `/apps/${context.app}/domains`,
     method: 'POST',
     body: {hostname},

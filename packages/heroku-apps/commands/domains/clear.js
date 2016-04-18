@@ -15,7 +15,7 @@ function* run (context, heroku) {
     }
     return queue.start();
   });
-  yield cli.action(`Removing all domains from ${cli.color.cyan(context.app)}`, p);
+  yield cli.action(`Removing all domains from ${cli.color.app(context.app)}`, p);
 }
 
 module.exports = {

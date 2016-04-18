@@ -13,7 +13,7 @@ function* run (context, heroku) {
   if (context.flags.json) {
     cli.styledJSON(features);
   } else {
-    cli.styledHeader(`App Features ${cli.color.cyan(context.app)}`);
+    cli.styledHeader(`App Features ${cli.color.app(context.app)}`);
     let longest = Math.max.apply(null, features.map(f => f.name.length));
     for (let f of features) {
       let line = `${f.enabled ? '[+]' : '[ ]'} ${S(f.name).padRight(longest)}`;

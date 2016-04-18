@@ -10,12 +10,12 @@ function* run (context, heroku) {
   let app = context.args.app || context.app;
   if (!app) throw new Error('No app specified.\nUSAGE: heroku apps:destroy APPNAME');
   yield heroku.get(`/apps/${app}`);
-  yield cli.confirmApp(app, context.flags.confirm, `WARNING: This will delete ${cli.color.bold.red(app)} including all add-ons.`);
+  yield cli.confirmApp(app, context.flags.confirm, `WARNING: This will delete ${cli.color.app(app)} including all add-ons.`);
   let request = heroku.request({
     method: 'DELETE',
     path:   `/apps/${app}`,
   });
-  yield cli.action(`Destroying ${app} (including all add-ons)`, request);
+  yield cli.action(`Destroying ${cli.color.app(app)} (including all add-ons)`, request);
 
   if (git.inGitRepo()) {
     // delete git remotes pointing to this app
