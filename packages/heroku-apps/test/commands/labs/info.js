@@ -2,12 +2,12 @@
 
 let nock     = require('nock');
 let cmd      = require('../../../commands/labs/info');
-let expect   = require('chai').expect;
+let expect   = require('unexpected');
 
 describe('labs:info', function() {
   beforeEach(() => cli.mockConsole());
 
-  it('shows labs feature info', function() {
+  it('shows user labs feature info', function() {
     let api = nock('https://api.heroku.com:443')
       .get('/account/features/feature-a')
       .reply(200, {
@@ -17,11 +17,47 @@ describe('labs:info', function() {
         doc_url: 'https://devcenter.heroku.com',
       });
     return cmd.run({args: {feature: 'feature-a'}, flags: {}})
-    .then(() => expect(cli.stdout).to.equal(`=== feature-a
+    .then(() => expect(cli.stdout, 'to equal',`=== feature-a
 Description: a user lab feature
 Docs:        https://devcenter.heroku.com
 Enabled:     true
 `))
+    .then(() => expect(cli.stderr, 'to be empty'))
+    .then(() => api.done());
+  });
+
+  it('shows user labs feature info as json', () => {
+    let api = nock('https://api.heroku.com:443')
+      .get('/account/features/feature-a')
+      .reply(200, {
+        enabled: true,
+        name: 'feature-a',
+        description: 'a user lab feature',
+        doc_url: 'https://devcenter.heroku.com',
+      });
+    return cmd.run({args: {feature: 'feature-a'}, flags: {json: true}})
+    .then(() => expect(JSON.parse(cli.stdout), 'to satisfy', {name: 'feature-a'}))
+    .then(() => expect(cli.stderr, 'to be empty'))
+    .then(() => api.done());
+  });
+
+  it('shows app labs feature info', function() {
+    let api = nock('https://api.heroku.com:443')
+      .get('/account/features/feature-a').reply(404)
+      .get('/apps/myapp/features/feature-a')
+      .reply(200, {
+        enabled: true,
+        name: 'feature-a',
+        description: 'an app labs feature',
+        doc_url: 'https://devcenter.heroku.com',
+      });
+    return cmd.run({app: 'myapp', args: {feature: 'feature-a'}, flags: {}})
+    .then(() => expect(cli.stdout, 'to equal', `=== feature-a
+Description: an app labs feature
+Docs:        https://devcenter.heroku.com
+Enabled:     true
+`))
+    .then(() => expect(cli.stderr, 'to be empty'))
     .then(() => api.done());
   });
 });

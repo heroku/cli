@@ -3,10 +3,6 @@
 let cli = require('heroku-cli-util');
 let co  = require('co');
 
-function printJSON (feature) {
-  cli.log(JSON.stringify(feature, null, 2));
-}
-
 function print (feature) {
   cli.styledHeader(feature.name);
   cli.styledObject({
@@ -27,7 +23,7 @@ function* run (context, heroku) {
     feature = yield heroku.get(`/apps/${context.app}/features/${context.args.feature}`);
   }
   if (context.flags.json) {
-    printJSON(feature);
+    cli.styledJSON(feature);
   } else {
     print(feature);
   }
