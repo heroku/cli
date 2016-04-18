@@ -28,9 +28,9 @@
   "unused": true,
   "globals": {
     "cli": true,
+    "commands": true,
     "expect": true,
-    "nock": true,
-    "commands": true
+    "nock": true
   },
   "predef": [
     "after",
