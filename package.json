@@ -1,6 +1,5 @@
 {
   "name": "heroku-cli",
-  "private": true,
   "dependencies": {
     "adm-zip": "0.4.7",
     "aws-sdk": "2.3.0",
@@ -12,5 +11,6 @@
     "observatory": "1.0.0",
     "rimraf": "2.5.2",
     "tar": "2.2.1"
-  }
+  },
+  "private": true
 }
