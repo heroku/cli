@@ -4,7 +4,7 @@ let cli = require('heroku-cli-util');
 let co  = require('co');
 let infer = require('../../lib/infer');
 let prompt = require('../../lib/prompt');
-let stages = require('../../lib/stages').names;
+let stages = require('../../lib/stages').inferrableStageNames;
 
 const createCoupling = require('../../lib/api').createCoupling;
 
