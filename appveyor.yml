@@ -1,4 +1,4 @@
-clone_folder: C:\gopath\src\github.com\heroku\heroku-cli
+clone_folder: C:\gopath\src\github.com\heroku\cli
 
 environment:
   GOPATH: C:\gopath

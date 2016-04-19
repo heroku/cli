@@ -18,7 +18,7 @@ var whichCmd = &Command{
 			Exit(1)
 		}
 		if cmd.Plugin == "" {
-			Println("Command in v4 core. https://github.com/heroku/heroku-cli")
+			Println("Command in v4 core. https://github.com/heroku/cli")
 		} else {
 			Println("Command in npm package: " + cmd.Plugin + ". https://www.npmjs.com/package/" + cmd.Plugin)
 		}

@@ -1,5 +1,5 @@
 {
-	"ImportPath": "github.com/heroku/heroku-cli",
+	"ImportPath": "github.com/heroku/cli",
 	"GoVersion": "go1.6",
 	"GodepVersion": "v60",
 	"Deps": [
