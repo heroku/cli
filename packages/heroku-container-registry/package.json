@@ -19,6 +19,7 @@
   "license": "ISC",
   "dependencies": {
     "camelcase": "1.0.2",
+    "co": "4.6.0",
     "dotenv": "^1.1.0",
     "heroku-cli-util": "^1.8.1",
     "heroku-client": "^1.9.1",
@@ -32,11 +33,11 @@
     "yamljs": "0.2.4"
   },
   "devDependencies": {
-    "chai": "3.2.0",
-    "depcheck": "0.4.7",
-    "dir-compare": "0.0.2",
-    "fs-extra": "0.23.1",
+    "chai": "^3.2.0",
+    "depcheck": "^0.4.7",
+    "dir-compare": "^0.0.2",
+    "fs-extra": "^0.23.1",
     "mocha": "^2.2.4",
-    "wrench": "1.5.8"
+    "wrench": "^1.5.8"
   }
 }
