@@ -15,7 +15,7 @@ import (
 
 	"github.com/dickeyxxx/golock"
 	"github.com/franela/goreq"
-	"github.com/heroku/heroku-cli/gode"
+	"github.com/heroku/cli/gode"
 	"github.com/kardianos/osext"
 	"github.com/ulikunitz/xz"
 )

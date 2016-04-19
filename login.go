@@ -132,7 +132,7 @@ func getPassword(prompt string) string {
 		if err.Error() == "The handle is invalid." {
 			Errln(`Login is currently incompatible with git bash/cygwin
 In the meantime, login via cmd.exe
-https://github.com/heroku/heroku-cli/issues/84`)
+https://github.com/heroku/cli/issues/84`)
 			Exit(1)
 		} else {
 			ExitIfError(err)

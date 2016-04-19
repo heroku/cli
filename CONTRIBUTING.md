@@ -1,7 +1,7 @@
 Contributing to the Heroku CLI
 ==============================
 
-The v4 Heroku CLI is written in Go with Node modules. For more on the v4 architecture, [check out the README](https://github.com/heroku/heroku-cli/blob/master/README.md).
+The v4 Heroku CLI is written in Go with Node modules. For more on the v4 architecture, [check out the README](https://github.com/heroku/cli/blob/master/README.md).
 
 Commands can be written either in Go or as a Node module. Generally speaking if you want to contribute a new command it should be done in a Node module because these modules are easier to write and we have established good testing strategies for them. There are some exceptions to changes that would need to be in Go:
 

@@ -13,7 +13,7 @@ import (
 	"syscall"
 
 	"github.com/dickeyxxx/golock"
-	"github.com/heroku/heroku-cli/gode"
+	"github.com/heroku/cli/gode"
 )
 
 // Plugin represents a javascript plugin
