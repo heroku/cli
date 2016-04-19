@@ -1,4 +1,5 @@
-![](https://d4yt8xl9b7in.cloudfront.net/assets/home/logotype-heroku.png) Next Gen Heroku CLI
+![](https://d4yt8xl9b7in.cloudfront.net/assets/home/logotype-heroku.png)
+Heroku CLI
 ==========
 
 [![Circle CI](https://circleci.com/gh/heroku/cli/tree/master.svg?style=svg)](https://circleci.com/gh/heroku/cli/tree/master)
