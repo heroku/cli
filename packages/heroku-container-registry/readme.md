@@ -43,7 +43,6 @@ Checkout the plugin source code and tell the Heroku CLI to use your local versio
 ```
 $ git clone https://github.com/heroku/heroku-docker.git
 $ cd heroku-docker
-$ git checkout compose
 $ npm install
 $ heroku plugins:link .
 ```
