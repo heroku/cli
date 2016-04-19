@@ -2,6 +2,7 @@ Heroku CLI
 ==========
 
 ![](https://d4yt8xl9b7in.cloudfront.net/assets/home/logotype-heroku.png)
+
 [![Circle CI](https://circleci.com/gh/heroku/cli/tree/master.svg?style=svg)](https://circleci.com/gh/heroku/cli/tree/master)
 [<img src="https://ci.appveyor.com/api/projects/status/github/heroku/cli?svg=true&branch=master" alt="Appveyor" height="18"/>](https://ci.appveyor.com/project/Heroku/cli?branch=master)
 [![MIT License](https://img.shields.io/github/license/heroku/cli.svg)](https://github.com/heroku/cli/blob/master/LICENSE)
