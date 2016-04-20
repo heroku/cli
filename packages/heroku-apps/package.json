@@ -4,7 +4,7 @@
   "description": "Heroku CLI plugin to manage apps.",
   "main": "index.js",
   "scripts": {
-    "test": "nyc mocha --require ./test/helpers.js && jshint .",
+    "test": "mocha && jshint .",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "preversion": "npm test && changelog heroku-apps all -m > CHANGELOG.md && git add CHANGELOG.md",
     "postversion": "npm publish && git push && git push --tags"
