@@ -15,8 +15,8 @@
   "license": "ISC",
   "dependencies": {
     "co": "4.6.0",
-    "heroku-cli-util": "5.10.1",
-    "lodash": "4.7.0",
+    "heroku-cli-util": "5.10.7",
+    "lodash": "4.11.1",
     "printf": "0.2.3"
   },
   "devDependencies": {
@@ -24,8 +24,9 @@
     "coveralls": "2.11.9",
     "jshint": "^2.8.0",
     "mocha": "^2.2.5",
-    "nock": "5.2.1",
-    "nyc": "6.2.1"
+    "nock": "8.0.0",
+    "nyc": "6.4.0",
+    "unexpected": "10.13.2"
   },
   "scripts": {
     "test": "nyc mocha --require ./test/init.js && jshint .",
