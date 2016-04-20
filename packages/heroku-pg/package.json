@@ -23,12 +23,13 @@
   "homepage": "https://github.com/heroku/heroku-pg",
   "dependencies": {
     "co": "4.6.0",
-    "heroku-cli-util": "5.8.3"
+    "heroku-cli-util": "5.10.7"
   },
   "devDependencies": {
-    "chai": "^3.3.0",
     "jshint": "*",
     "mocha": "^2.3.3",
-    "nock": "7.2.2"
+    "nock": "8.0.0",
+    "nyc": "6.4.0",
+    "unexpected": "10.13.2"
   }
 }
