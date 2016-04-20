@@ -4,6 +4,7 @@ let co = require('co')
 let cli = require('heroku-cli-util')
 let _ = require('lodash')
 let url = require('url')
+let host = require('../lib/host')
 
 function databaseNameFromUrl (uri, config) {
   delete config.DATABASE_URL
@@ -25,19 +26,6 @@ function displayDB (db) {
   let keys = ['Config Vars'].concat(db.info.info.map((i) => i.name))
   cli.styledObject(info, keys)
   cli.log()
-}
-
-function host (attachment) {
-  let shogun = process.env.SHOGUN
-  let appHost = process.env.HEROKU_POSTGRESQL_HOST
-  if (attachment.plan.name.match(/dev|basic/)) {
-    if (appHost) return `${host}.herokuapp.com`
-    return 'https://postgres-starter-api.heroku.com'
-  } else {
-    if (shogun) return `${shogun}.herokuapp.com`
-    if (appHost) return `${host}.herokuapp.com`
-    return 'https://postgres-api.heroku.com'
-  }
 }
 
 function * run (context, heroku) {
