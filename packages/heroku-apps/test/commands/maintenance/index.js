@@ -1,12 +1,17 @@
 'use strict';
 
 // get command from index.js
-let cmd = commands.find(c => c.topic === 'maintenance');
+let cmd = commands.find(c => c.topic === 'maintenance' && !c.command);
+let expect = require('unexpected');
 
 describe('maintenance', () => {
   // prevent stdout/stderr from displaying
   // redirects to cli.stdout/cli.stderr instead
   beforeEach(() => cli.mockConsole());
+
+  // remove all mocked endpoints
+  // useful if the test fails since it could screw up other tests
+  afterEach(() => nock.cleanAll());
 
   it('shows that maintenance is on', () => {
     // mock out API
@@ -17,9 +22,9 @@ describe('maintenance', () => {
     // run the command
     return cmd.run({app: 'myapp'})
     // check stdout
-    .then(() => expect(cli.stdout).to.equal('on\n'))
+    .then(() => expect(cli.stdout, 'to equal', 'on\n'))
     // check stderr
-    .then(() => expect(cli.stderr).to.equal(''))
+    .then(() => expect(cli.stderr, 'to be empty'))
     // ensure all nock HTTP expectations are met
     .then(() => api.done());
   });
@@ -29,7 +34,8 @@ describe('maintenance', () => {
       .get('/apps/myapp')
       .reply(200, {maintenance: false});
     return cmd.run({app: 'myapp'})
-    .then(() => expect(cli.stdout).to.equal('off\n'))
+    .then(() => expect(cli.stdout, 'to equal', 'off\n'))
+    .then(() => expect(cli.stderr, 'to be empty'))
     .then(() => api.done());
   });
 });
