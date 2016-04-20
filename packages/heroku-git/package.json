@@ -1,38 +1,41 @@
 {
   "name": "heroku-git",
-  "version": "2.4.5",
   "description": "Heroku CLI plugin to manage local git repos.",
-  "main": "index.js",
-  "scripts": {
-    "test": "jshint . && mocha",
-    "debug": "node-debug _mocha",
-    "preversion": "npm test",
-    "postversion": "npm publish && git push && git push --tags"
+  "version": "2.4.5",
+  "author": "Jeff Dickey (@dickeyxxx)",
+  "bugs": {
+    "url": "https://github.com/heroku/heroku-git/issues"
   },
+  "dependencies": {
+    "co": "4.6.0",
+    "heroku-cli-util": "5.10.8"
+  },
+  "devDependencies": {
+    "chai": "^3.0.0",
+    "codeclimate-test-reporter": "0.3.1",
+    "coveralls": "2.11.9",
+    "mocha": "^2.2.4",
+    "nock": "8.0.0",
+    "nyc": "6.4.0",
+    "proxyquire": "^1.5.0",
+    "sinon": "^1.14.1",
+    "sinon-chai": "^2.8.0",
+    "snazzy": "3.0.1"
+  },
+  "homepage": "https://github.com/heroku/heroku-git",
+  "keywords": [
+    "heroku-plugin"
+  ],
+  "license": "ISC",
+  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/heroku/heroku-git.git"
   },
-  "keywords": [
-    "heroku-plugin"
-  ],
-  "author": "Jeff Dickey (@dickeyxxx)",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/heroku/heroku-git/issues"
-  },
-  "homepage": "https://github.com/heroku/heroku-git",
-  "dependencies": {
-    "co": "4.6.0",
-    "heroku-cli-util": "5.7.4"
-  },
-  "devDependencies": {
-    "chai": "^3.0.0",
-    "jshint": "*",
-    "mocha": "^2.2.4",
-    "nock": "7.0.2",
-    "proxyquire": "^1.5.0",
-    "sinon": "^1.14.1",
-    "sinon-chai": "^2.8.0"
+  "scripts": {
+    "coverage": "nyc report --reporter=text-lcov | codeclimate-test-reporter && nyc report --reporter=text-lcov | coveralls",
+    "postversion": "npm publish && git push && git push --tags",
+    "preversion": "npm test",
+    "test": "mocha && standard | snazzy"
   }
 }

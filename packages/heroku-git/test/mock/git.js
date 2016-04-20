@@ -1,15 +1,15 @@
-'use strict';
+'use strict'
 
 module.exports = {
-  remoteFromGitConfig: function () {return Promise.resolve('heroku');},
-  httpGitUrl:          function (app)  {return `https://git.heroku.com/${app}.git`;},
-  spawn:               function ()     {return Promise.resolve();},
-  exec:                function (args) {
+  remoteFromGitConfig: () => Promise.resolve('heroku'),
+  httpGitUrl: (app) => `https://git.heroku.com/${app}.git`,
+  spawn: () => Promise.resolve(),
+  exec: function (args) {
     switch (args.join(' ')) {
       case 'remote':
-        return Promise.resolve('heroku');
+        return Promise.resolve('heroku')
       default:
-        return Promise.resolve();
+        return Promise.resolve()
     }
   }
-};
+}
