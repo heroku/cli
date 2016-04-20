@@ -33,19 +33,19 @@ function* run (context, heroku) {
 
 let cmd = {
   variableArgs: true,
-  description: 'scale dyno count up or down',
-  help: `appending a size (eg. web=2:2X) allows simultaneous scaling and resizing
+  description: 'scale dyno quantity up or down',
+  help: `Appending a size (eg. web=2:Standard-2X) allows simultaneous scaling and resizing.
 
-omitting any arguments will display the app's current dyno formation, in a
-format suitable for passing back into ps:scale
+Omitting any arguments will display the app's current dyno formation, in a
+format suitable for passing back into ps:scale.
 
 Examples:
 
-  $ heroku ps:scale web=3:2X worker+1
-  Scaling dynos... done, now running web at 3:2X, worker at 1:1X.
+  $ heroku ps:scale web=3:Standard-2X worker+1
+  Scaling dynos... done, now running web at 3:Standard-2X, worker at 1:Standard-1X.
 
   $ heroku ps:scale
-  web=3:2X worker=1:1X
+  web=3:Standard-2X worker=1:Standard-1X
 `,
   needsAuth: true,
   needsApp: true,
@@ -54,3 +54,4 @@ Examples:
 
 exports.ps   = Object.assign({}, cmd, {topic: 'ps',    command: 'scale'});
 exports.root = Object.assign({}, cmd, {topic: 'scale', command: null});
+exports.dyno = Object.assign({}, cmd, {topic: 'dyno',  command: 'scale'});
