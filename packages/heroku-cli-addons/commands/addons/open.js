@@ -1,8 +1,9 @@
 'use strict';
 
-let cli = require('heroku-cli-util');
-let co  = require('co');
-let fs  = require('fs');
+let cli     = require('heroku-cli-util');
+let co      = require('co');
+let fs      = require('fs');
+let resolve = require('../../lib/resolve');
 
 function open (url) {
   cli.log(`Opening ${cli.color.cyan(url)}...`);
@@ -63,52 +64,12 @@ let sudo = co.wrap(function* (ctx, api) {
 function* run (ctx, api) {
   if (process.env.HEROKU_SUDO) return sudo(ctx, api);
 
-  function getAddon (id) {
-    return api.get(`/addons/${encodeURIComponent(id)}`);
-  }
-
-  function getAppAddon (app, id) {
-    if (!app || id.indexOf('::') !== -1) return getAddon(id);
-    return api.get(`/apps/${app}/addons/${encodeURIComponent(id)}`)
-    .catch(function (err) { if (err.statusCode === 404) return getAddon(id); else throw err; });
-  }
-
-  function getAttachment(id) {
-    return api.get(`/addon-attachments/${encodeURIComponent(id)}`);
-  }
-
-  function getAppAttachment(app, id) {
-    if (!app || id.indexOf('::') !== -1) return getAttachment(id);
-    return api.get(`/apps/${ctx.app}/addon-attachments/${encodeURIComponent(id)}`);
-  }
-
-  function* getAppAddonAttachment (addon, app) {
-    const attachments = yield api.get(`/addons/${encodeURIComponent(addon.id)}/addon-attachments`);
-    return attachments.find(att => att.app.name === app);
-  }
-
-  let id  = ctx.args.addon;
-
-  try {
-    // first check to see if there is an attachment matching this app/id combo
-    let attachment = yield getAppAttachment(ctx.app, id);
+  let attachment = yield resolve.attachment(api, ctx.app, ctx.args.addon);
+  if (attachment) {
     yield open(attachment.web_url);
-  } catch (err) {
-    if (err.statusCode !== 404) throw err;
-
-    // no attachment found, check for addon instead
-    let addon = yield getAppAddon(ctx.app, id);
-
-    // If we were passed an add-on slug, there still could be an attachment
-    // to the context app. Try to find and use it so `context_app` is set
-    // correctly in the SSO payload.
-    let attachment = yield getAppAddonAttachment(addon, ctx.app);
-
-    if (attachment) {
-      yield open(attachment.web_url);
-    } else {
-      yield open(addon.web_url);
-    }
+  } else {
+    let addon = yield resolve.addon(api, ctx.app, ctx.args.addon);
+    yield open(addon.web_url);
   }
 }
 

@@ -9,6 +9,7 @@ exports.commands = [
     require('./commands/addons'),
     require('./commands/addons/attach'),
     require('./commands/addons/detach'),
+    require('./commands/addons/docs'),
     require('./commands/addons/info'),
     require('./commands/addons/open'),
     require('./commands/addons/plans'),
