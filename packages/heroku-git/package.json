@@ -36,6 +36,6 @@
     "coverage": "nyc report --reporter=text-lcov | codeclimate-test-reporter && nyc report --reporter=text-lcov | coveralls",
     "postversion": "npm publish && git push && git push --tags",
     "preversion": "npm test",
-    "test": "mocha && standard | snazzy"
+    "test": "nyc mocha && standard | snazzy"
   }
 }
