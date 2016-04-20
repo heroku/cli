@@ -32,7 +32,7 @@
   "scripts": {
     "postversion": "npm publish && git push && git push --tags",
     "preversion": "npm test",
-    "test": "mocha && standard | snazzy",
+    "test": "nyc mocha && standard | snazzy",
     "coverage": "nyc report --reporter=text-lcov | codeclimate-test-reporter"
   }
 }
