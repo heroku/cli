@@ -1,35 +1,37 @@
 {
   "name": "heroku-pg",
-  "version": "1.0.0",
   "description": "Heroku CLI plugin to manage Postgres.",
-  "main": "index.js",
-  "scripts": {
-    "test": "mocha && jshint .",
-    "preversion": "npm test",
-    "postversion": "npm publish && git push && git push --tags"
+  "version": "1.0.0",
+  "author": "Jeff Dickey (@dickeyxxx)",
+  "bugs": {
+    "url": "https://github.com/heroku/heroku-pg/issues"
   },
+  "dependencies": {
+    "co": "4.6.0",
+    "heroku-cli-util": "5.10.8",
+    "lodash": "4.11.1"
+  },
+  "devDependencies": {
+    "mocha": "2.4.5",
+    "nock": "8.0.0",
+    "nyc": "6.4.0",
+    "snazzy": "3.0.1",
+    "standard": "6.0.8",
+    "unexpected": "10.13.2"
+  },
+  "homepage": "https://github.com/heroku/heroku-pg",
+  "keywords": [
+    "heroku-plugin"
+  ],
+  "license": "ISC",
+  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/heroku/heroku-pg.git"
   },
-  "keywords": [
-    "heroku-plugin"
-  ],
-  "author": "Jeff Dickey (@dickeyxxx)",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/heroku/heroku-pg/issues"
-  },
-  "homepage": "https://github.com/heroku/heroku-pg",
-  "dependencies": {
-    "co": "4.6.0",
-    "heroku-cli-util": "5.10.7"
-  },
-  "devDependencies": {
-    "jshint": "*",
-    "mocha": "^2.3.3",
-    "nock": "8.0.0",
-    "nyc": "6.4.0",
-    "unexpected": "10.13.2"
+  "scripts": {
+    "postversion": "npm publish && git push && git push --tags",
+    "preversion": "npm test",
+    "test": "mocha && standard | snazzy"
   }
 }
