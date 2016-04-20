@@ -1,5 +1,8 @@
 # heroku-git [![Circle CI](https://circleci.com/gh/heroku/heroku-git/tree/master.svg?style=svg)](https://circleci.com/gh/heroku/heroku-git/tree/master)
 
+[![Code Climate](https://codeclimate.com/github/heroku/heroku-git/badges/gpa.svg)](https://codeclimate.com/github/heroku/heroku-git)
+[![Test Coverage](https://codeclimate.com/github/heroku/heroku-git/badges/coverage.svg)](https://codeclimate.com/github/heroku/heroku-git/coverage)
+[![npm version](https://badge.fury.io/js/heroku-git.svg)](https://badge.fury.io/js/heroku-git)
 [![License](https://img.shields.io/github/license/heroku/heroku-git.svg)](https://github.com/heroku/heroku-git/blob/master/LICENSE)
 
 Heroku CLI plugin to manage local git repos.
