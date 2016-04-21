@@ -33,9 +33,9 @@
     "url": "https://github.com/heroku/heroku-status"
   },
   "scripts": {
-    "coverage": "nyc report --reporter=text-lcov | coveralls",
+    "coverage": "nyc report --reporter=text-lcov | codeclimate-test-reporter && nyc report --reporter=text-lcov | coveralls",
     "postversion": "npm publish && git push && git push --tags",
     "preversion": "npm test",
-    "test": "nyc mocha --require ./test/helpers.js && jshint ."
+    "test": "nyc mocha && jshint ."
   }
 }
