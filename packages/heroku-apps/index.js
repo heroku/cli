@@ -87,6 +87,7 @@ exports.commands = [
   require('./commands/ps/type').type,
   require('./commands/regions'),
   require('./commands/releases'),
+  require('./commands/releases/info'),
   require('./commands/releases/rollback'),
   require('./commands/stack'),
   require('./commands/stack/set'),
