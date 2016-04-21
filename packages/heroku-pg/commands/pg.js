@@ -63,7 +63,7 @@ module.exports = {
   topic: 'pg',
   needsApp: true,
   needsAuth: true,
-  run: cli.command(co.wrap(run))
+  run: cli.command({preauth: true}, co.wrap(run))
 }
 
 exports.displayDB = displayDB
