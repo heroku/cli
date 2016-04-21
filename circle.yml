@@ -2,7 +2,6 @@ dependencies:
   override:
     - if [ ! -d ~/bats ]; then git clone https://github.com/sstephenson/bats.git ~/bats; fi
     - go get github.com/golang/lint
-    - go get golang.org/x/tools/cmd/vet
     - go get github.com/jstemmer/go-junit-report
     - mkdir -p $CIRCLE_TEST_REPORTS/go
   cache_directories:
