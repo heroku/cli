@@ -50,6 +50,6 @@
     "coverage": "nyc report --reporter=text-lcov | codeclimate-test-reporter && nyc report --reporter=text-lcov | coveralls",
     "postversion": "npm publish && git push && git push --tags",
     "preversion": "npm test && changelog heroku-apps all -m > CHANGELOG.md && git add CHANGELOG.md",
-    "test": "nyc mocha && jshint ."
+    "test": "TZ=utc nyc mocha && jshint ."
   }
 }
