@@ -14,11 +14,12 @@
   },
   "devDependencies": {
     "chai": "3.5.0",
+    "codeclimate-test-reporter": "0.3.1",
     "coveralls": "2.11.9",
     "jshint": "2.9.1",
     "mocha": "2.4.5",
-    "nock": "7.7.2",
-    "nyc": "6.2.1"
+    "nock": "8.0.0",
+    "nyc": "6.4.0"
   },
   "homepage": "https://github.com/heroku/heroku-status",
   "keywords": [
