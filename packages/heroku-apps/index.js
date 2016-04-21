@@ -20,7 +20,7 @@ exports.topics = [
   { name: 'rename',        hidden: true },
   { name: 'restart',       hidden: true },
   { name: 'scale',         hidden: true },
-  { name: 'stack',         description: 'manage the stack of an app' },
+  { name: 'stack',         hidden: true },
   { name: 'stop',          hidden: true },
 ];
 
@@ -41,6 +41,10 @@ exports.commands = [
   require('./commands/apps/open').root,
   require('./commands/apps/rename').apps,
   require('./commands/apps/rename').root,
+  require('./commands/apps/stacks').apps,
+  require('./commands/apps/stacks').root,
+  require('./commands/apps/stacks/set').apps,
+  require('./commands/apps/stacks/set').root,
   require('./commands/buildpacks'),
   require('./commands/buildpacks/add.js'),
   require('./commands/buildpacks/clear.js'),
@@ -98,6 +102,4 @@ exports.commands = [
   require('./commands/releases'),
   require('./commands/releases/info'),
   require('./commands/releases/rollback'),
-  require('./commands/stack'),
-  require('./commands/stack/set'),
 ];

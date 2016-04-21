@@ -18,11 +18,12 @@ function* run (context, heroku) {
   cli.log(`Run ${cli.color.cmd('git push heroku master')} to create a new release on ${cli.color.app(context.app)}.`);
 }
 
-module.exports = {
+let cmd = {
   topic: 'stack',
   command: 'set',
   needsApp: true,
   needsAuth: true,
+  description: 'set the stack of an app',
   help: `
 Example:
 
@@ -32,3 +33,6 @@ Example:
   args: [{name: 'stack'}],
   run: cli.command(co.wrap(run))
 };
+
+exports.apps = Object.assign({}, cmd, {topic: 'apps', command: 'stacks:set'});
+exports.root = Object.assign({}, cmd, {topic: 'stack', command: 'set'});
