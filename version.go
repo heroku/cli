@@ -6,8 +6,8 @@ import (
 )
 
 var versionTopic = &Topic{
-	Name:        "version",
-	Description: "print the version",
+	Name:   "version",
+	Hidden: true,
 }
 
 var versionCmd = &Command{
