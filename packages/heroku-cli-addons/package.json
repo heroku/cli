@@ -1,18 +1,11 @@
 {
   "name": "heroku-cli-addons",
-  "version": "0.3.1",
   "description": "`heroku addons:*` commands",
-  "main": "index.js",
+  "version": "0.3.1",
   "author": "Bo Jeanes @bjeanes",
-  "homepage": "https://github.com/heroku/heroku-cli-addons",
-  "repository": "https://github.com/heroku/heroku-cli-addons",
   "bugs": {
     "url": "https://github.com/heroku/heroku-cli-addons/issues"
   },
-  "keywords": [
-    "heroku-plugin"
-  ],
-  "license": "ISC",
   "dependencies": {
     "co": "4.6.0",
     "heroku-cli-util": "5.10.7",
@@ -28,10 +21,17 @@
     "nyc": "6.4.0",
     "unexpected": "10.13.2"
   },
+  "homepage": "https://github.com/heroku/heroku-cli-addons",
+  "keywords": [
+    "heroku-plugin"
+  ],
+  "license": "ISC",
+  "main": "index.js",
+  "repository": "https://github.com/heroku/heroku-cli-addons",
   "scripts": {
-    "test": "nyc mocha && jshint .",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
+    "postversion": "git push && git push --tags",
     "preversion": "npm test",
-    "postversion": "git push && git push --tags"
+    "test": "nyc mocha && jshint ."
   }
 }
