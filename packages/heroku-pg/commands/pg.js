@@ -28,6 +28,8 @@ function displayDB (db) {
   cli.log()
 }
 
+let notDatabaseUrl = (a) => !a.config_vars.find((c) => c === 'DATABASE_URL')
+
 function * run (context, heroku) {
   let app = context.app
   let config = heroku.get(`/apps/${app}/config-vars`)
@@ -36,7 +38,7 @@ function * run (context, heroku) {
     path: `/apps/${app}/addons`
   })
   addons = addons.filter((a) => a.addon_service.name === 'heroku-postgresql')
-  addons = _.sortBy(addons, 'config_vars[0]')
+  addons = _.sortBy(addons, notDatabaseUrl, 'name')
 
   let dbs = yield addons.map((a) => {
     return {
