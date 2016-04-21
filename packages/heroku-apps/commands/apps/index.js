@@ -73,6 +73,7 @@ function* run (context, heroku) {
 
 module.exports = {
   topic: 'apps',
+  command: 'list', hidden: true, // temporary until https://github.com/heroku/api/issues/5885 is fixed
   description: 'list your apps',
   help: `
 Example:
