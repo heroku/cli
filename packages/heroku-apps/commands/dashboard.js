@@ -28,6 +28,7 @@ function displayErrors (metrics) {
 
 function displayMetrics (metrics) {
   function rpmSparkline() {
+    if (process.platform === 'win32') return;
     let sparkline = require('sparkline');
     let points = [];
     _.values(metrics.routerStatus.data).forEach(cur => {
