@@ -29,7 +29,7 @@ Examples:
       git = git(context)
       let appName = context.flags.app || context.args.shift()
       if (!appName) {
-        return cli.error('Specify an app with --app')
+        throw new Error('Specify an app with --app')
       }
       let app = yield heroku.apps(appName).info()
       let remote = context.flags.remote || (yield git.remoteFromGitConfig()) || 'heroku'

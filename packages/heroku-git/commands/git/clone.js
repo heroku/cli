@@ -4,6 +4,17 @@ let co = require('co')
 let cli = require('heroku-cli-util')
 let git = require('../../lib/git')
 
+function * run (context, heroku) {
+  git = git(context)
+  let appName = context.flags.app
+  if (!appName) throw new Error('Specify an app with --app')
+  let app = yield heroku.apps(appName).info()
+  let directory = context.args.DIRECTORY || app.name
+  let remote = context.flags.remote || 'heroku'
+  let url = context.flags['ssh-git'] ? git.sshGitUrl(app.name) : git.httpGitUrl(app.name)
+  yield git.spawn(['clone', '-o', remote, url, directory])
+}
+
 module.exports = {
   topic: 'git',
   command: 'clone',
@@ -23,19 +34,5 @@ module.exports = {
     {name: 'remote', char: 'r', hasValue: true, description: 'the git remote to create, default "heroku"'},
     {name: 'ssh-git', description: 'use SSH git protocol'}
   ],
-  run: cli.command(function (context, heroku) {
-    return co(function * () {
-      git = git(context)
-      let appName = context.flags.app
-      if (!appName) {
-        cli.error('Specify an app with --app')
-        return
-      }
-      let app = yield heroku.apps(appName).info()
-      let directory = context.args.DIRECTORY || app.name
-      let remote = context.flags.remote || 'heroku'
-      let url = context.flags['ssh-git'] ? git.sshGitUrl(app.name) : git.httpGitUrl(app.name)
-      yield git.spawn(['clone', '-o', remote, url, directory])
-    })
-  })
+  run: cli.command(co.wrap(run))
 }
