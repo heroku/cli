@@ -65,11 +65,19 @@ function* run (ctx, api) {
   if (process.env.HEROKU_SUDO) return sudo(ctx, api);
 
   let attachment = yield resolve.attachment(api, ctx.app, ctx.args.addon);
+  let web_url;
+
   if (attachment) {
-    yield open(attachment.web_url);
+    web_url = attachment.web_url;
   } else {
     let addon = yield resolve.addon(api, ctx.app, ctx.args.addon);
-    yield open(addon.web_url);
+    web_url = addon.web_url;
+  }
+
+  if (ctx.flags['show-url']) {
+    cli.log(web_url);
+  } else {
+    yield open(web_url);
   }
 }
 
@@ -79,6 +87,7 @@ module.exports = {
   wantsApp:    true,
   needsAuth:   true,
   args:        [{name: 'addon'}],
+  flags:       [{name: 'show-url', description: 'show URL, do not open browser'}],
   run:         cli.command({preauth: true}, co.wrap(run)),
   description: `open an add-on's dashboard in your browser`
 };
