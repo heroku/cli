@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "co": "4.6.0",
-    "heroku-cli-util": "5.10.7",
+    "heroku-cli-util": "5.10.10",
     "lodash": "4.11.1",
     "printf": "0.2.3"
   },
