@@ -6,6 +6,18 @@ describe('heroku members', () => {
   beforeEach(() => cli.mockConsole());
   afterEach(()  => nock.cleanAll());
 
+  it('shows there are not org members if it is an orphan org', () => {
+    let api = nock('https://api.heroku.com:443')
+    .get('/organizations/myorg/members')
+    .reply(200, []);
+    return cmd.run({org: 'myorg', flags: {}})
+    .then(() => expect(
+`No members in myorg
+`).to.eq(cli.stdout))
+    .then(() => expect(``).to.eq(cli.stderr))
+    .then(() => api.done());
+  });
+
   it('shows all the org members', () => {
     let api = nock('https://api.heroku.com:443')
     .get('/organizations/myorg/members')

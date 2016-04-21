@@ -12,7 +12,9 @@ function* run (context, heroku) {
   if (context.flags.json) {
     cli.log(JSON.stringify(members, null, 2));
   } else if (members.length === 0) {
-    cli.log(`No members in ${cli.color.magenta(context.org)} with role ${cli.color.green(context.flags.role)}`);
+    let msg = `No members in ${cli.color.magenta(context.org)}`;
+    if (context.flags.role) msg += ` with role ${cli.color.green(context.flags.role)}`;
+    cli.log(msg);
   } else {
     cli.table(members, {
       printHeader: false,
