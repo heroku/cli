@@ -11,8 +11,7 @@ function * run (context, heroku) {
   let app = yield heroku.apps(appName).info()
   let directory = context.args.DIRECTORY || app.name
   let remote = context.flags.remote || 'heroku'
-  let url = context.flags['ssh-git'] ? git.sshGitUrl(app.name) : git.httpGitUrl(app.name)
-  yield git.spawn(['clone', '-o', remote, url, directory])
+  yield git.spawn(['clone', '-o', remote, git.url(app.name, context.flags['ssh-git']), directory])
 }
 
 module.exports = {

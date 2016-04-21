@@ -32,11 +32,14 @@ module.exports = function (context) {
     return `https://${context.httpGitHost}/${app}.git`
   }
 
+  function url (app, ssh) {
+    return ssh ? sshGitUrl(app) : httpGitUrl(app)
+  }
+
   return {
     exec,
     spawn,
     remoteFromGitConfig,
-    sshGitUrl,
-    httpGitUrl
+    url
   }
 }

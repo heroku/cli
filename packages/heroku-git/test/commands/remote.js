@@ -58,23 +58,4 @@ describe('git:remote', function () {
       api.done()
     })
   })
-
-  it('adds an ssh-git remote', () => {
-    let git = require('../mock/git')
-    let mock = sinon.mock(git)
-    mock.expects('exec').withExactArgs(['remote']).once().returns(Promise.resolve(''))
-    mock.expects('exec').withExactArgs(['remote', 'add', 'heroku', 'git@heroku.com:myapp.git']).once().returns(Promise.resolve())
-    let remote = proxyquire('../../commands/git/remote', {'../../lib/git': () => git})
-    let api = nock('https://api.heroku.com')
-      .get('/apps/myapp')
-      .reply(200, {name: 'myapp'})
-
-    return remote.run({flags: {app: 'myapp', 'ssh-git': true}, args: []})
-    .then(() => expect(cli.stdout, 'to equal', 'set git remote heroku to git@heroku.com:myapp.git\n'))
-    .then(() => {
-      mock.verify()
-      mock.restore()
-      api.done()
-    })
-  })
 })

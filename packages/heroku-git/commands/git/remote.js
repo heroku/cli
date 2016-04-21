@@ -34,7 +34,7 @@ Examples:
       let app = yield heroku.apps(appName).info()
       let remote = context.flags.remote || (yield git.remoteFromGitConfig()) || 'heroku'
       let remotes = yield git.exec(['remote'])
-      let url = context.flags['ssh-git'] ? git.sshGitUrl(app.name) : git.httpGitUrl(app.name)
+      let url = git.url(app.name, context.flags['ssh-git'])
       if (includes(remotes.split('\n'), remote)) {
         yield git.exec(['remote', 'set-url', remote, url].concat(context.args))
       } else {

@@ -20,7 +20,6 @@ describe('git', function () {
     .then((data) => {
       expect(data, 'to equal', 'foo')
       mock.verify()
-      mock.restore()
     })
   })
 
@@ -29,23 +28,21 @@ describe('git', function () {
     mock.expects('spawn').withExactArgs('git', ['remote'], {stdio: [0, 1, 2]}).returns(emitter)
     process.nextTick(() => emitter.emit('close'))
     return git.spawn(['remote'])
-    .then(() => {
-      mock.verify()
-      mock.restore()
-    })
+    .then(() => mock.verify())
   })
 
   it('gets heroku git remote config', function () {
     mock.expects('execFile').withArgs('git', ['config', 'heroku.remote']).yieldsAsync(null, 'staging')
     return git.remoteFromGitConfig()
     .then((remote) => expect(remote, 'to equal', 'staging'))
+    .then(() => mock.verify())
   })
 
   it('returns an http git url', function () {
-    expect(git.httpGitUrl('foo'), 'to equal', 'https://git.heroku.com/foo.git')
+    expect(git.url('foo', false), 'to equal', 'https://git.heroku.com/foo.git')
   })
 
   it('returns an ssh git url', function () {
-    expect(git.sshGitUrl('foo'), 'to equal', 'git@heroku.com:foo.git')
+    expect(git.url('foo', true), 'to equal', 'git@heroku.com:foo.git')
   })
 })
