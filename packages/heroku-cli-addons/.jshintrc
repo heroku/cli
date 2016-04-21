@@ -28,13 +28,13 @@
     "cli": true,
     "nock": true,
     "commands": true,
-    "expect": true
+    "expect": true,
+    "context": true
   },
   "predef": [
     "afterEach",
     "beforeEach",
     "describe",
-    "context",
     "it",
     "sinon"
   ]

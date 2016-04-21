@@ -4,12 +4,11 @@ let fixtures = require('../../fixtures');
 let util     = require('../../util');
 let cli      = require('heroku-cli-util');
 let nock     = require('nock');
-let expect   = require('chai').expect;
+let expect   = require('unexpected');
 let cmd      = require('../../../commands/addons/rename');
 
 describe('addons:rename', () => {
     beforeEach(() => {
-        cli.raiseErrors = false;
         cli.mockConsole();
     });
 
@@ -26,7 +25,7 @@ describe('addons:rename', () => {
                 .reply(201, "");
 
             return cmd.run({flags: {}, args: {addon: redis.name, name: "cache-redis"}}).then(() => {
-                expect(renameRequest.isDone()).to.equal(true);
+                expect(renameRequest.isDone(), 'to equal', true);
                 util.expectOutput(cli.stdout, `${redis.name} successfully renamed to cache-redis.`);
             });
         });
@@ -38,9 +37,8 @@ describe('addons:rename', () => {
                 .get(`/addons/not-an-addon`)
                 .reply(404, {message: "Couldn't find that add-on.", id: "not_found", resource: "addon"});
 
-            return cmd.run({flags: {}, args: {addon: "not-an-addon", name: "cache-redis"}}).then(() => {
-                expect(cli.stderr).to.contain("Couldn't find that add-on.");
-            });
+            return expect(cmd.run({flags: {}, args: {addon: "not-an-addon", name: "cache-redis"}}),
+                   'to be rejected with', {body: {message: "Couldn't find that add-on."}});
         });
     });
 });

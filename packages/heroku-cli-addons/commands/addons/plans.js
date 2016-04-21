@@ -1,8 +1,9 @@
 'use strict';
 
-let cli = require('heroku-cli-util');
-let co  = require('co');
-let _   = require('lodash');
+let cli  = require('heroku-cli-util');
+let co   = require('co');
+let _    = require('lodash');
+let util = require('../../lib/util');
 
 function* run (context, heroku) {
   let plans = yield heroku.get(`/addon-services/${context.args.service}/plans`);
@@ -15,7 +16,7 @@ function* run (context, heroku) {
         {key: 'default',    label: '', format: d => d ? 'default' : ''},
         {key: 'name',       label: 'slug'},
         {key: 'human_name', label: 'name'},
-        {key: 'price', format: p => p.cents === 0 ? 'free' : `$${(p.cents/100)}.00/${p.unit}`},
+        {key: 'price',      format: util.formatPrice},
       ]
     });
   }
