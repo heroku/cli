@@ -1,6 +1,10 @@
-CLI Plugin for [Heroku Status](https://status.heroku.com)
+CLI Plugin for [Heroku Status](https://status.heroku.com) [![Circle CI](https://circleci.com/gh/heroku/heroku-status.svg?style=svg)](https://circleci.com/gh/heroku/heroku-status)
 ===========
-[![Circle CI](https://circleci.com/gh/heroku/heroku-status.svg?style=svg)](https://circleci.com/gh/heroku/heroku-status)
+
+[![Code Climate](https://codeclimate.com/github/heroku/heroku-status/badges/gpa.svg)](https://codeclimate.com/github/heroku/heroku-status)
+[![Test Coverage](https://codeclimate.com/github/heroku/heroku-status/badges/coverage.svg)](https://codeclimate.com/github/heroku/heroku-status/coverage)
+[![npm version](https://badge.fury.io/js/heroku-status.svg)](https://badge.fury.io/js/heroku-status)
+[![License](https://img.shields.io/github/license/heroku/heroku-status.svg)](https://github.com/heroku/heroku-status/blob/master/LICENSE)
 
 Read more about Toolbelt 4.0 plugins [here](https://github.com/heroku/heroku-hello-world#heroku-hello-world).
 
