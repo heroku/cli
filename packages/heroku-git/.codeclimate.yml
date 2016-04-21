@@ -7,6 +7,7 @@ engines:
       - javascript
     exclude_fingerprints:
     - d55943908d54856af0309b9279cdd5d3
+    - 3a488be1b88f461b5015d8e125324bcc
   eslint:
     enabled: false
   fixme:
