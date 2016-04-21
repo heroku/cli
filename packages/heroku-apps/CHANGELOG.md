@@ -1,3 +1,70 @@
+2.0.0 / 2016-04-21
+==================
+
+  * 2.0.0
+  * set TZ for npm test
+  * move stack commands to apps:stacks ([#77](https://github.com/heroku/heroku-apps/issues/77))
+  * added dashboard and related commands ([#59](https://github.com/heroku/heroku-apps/issues/59))
+  * apps list command ([#29](https://github.com/heroku/heroku-apps/issues/29))
+    * apps command
+    * added space and org options to apps:list
+    * finalize apps index
+    * Adding tests and slight wording modifications
+    * fix name of function
+    * filter spaces by org
+    * added test for collab app test
+    * show account name on apps list
+    * testing apps index more
+    * show only org apps with --org and --all
+  * fixed output of ps:scale ([#74](https://github.com/heroku/heroku-apps/issues/74))
+  * improve config:* UX ([#76](https://github.com/heroku/heroku-apps/issues/76))
+    added release back in and use consistent colors
+  * added releases:info ([#25](https://github.com/heroku/heroku-apps/issues/25))
+    * releases
+    * added test
+    * better testing on releases index
+    * added --shell to releases:info
+    * fix current config vars
+    * fix tests
+  * fixpack
+  * ignore codeclimate false positives
+  * added ISC license
+  * badging
+  * fix coveralls
+  * fix badges
+  * code coverage
+  * ignore coverage directory
+  * codeclimate
+  * fix build
+  * ps:type ([#53](https://github.com/heroku/heroku-apps/issues/53))
+    * ps:type
+    * fix tests
+    * simplify output
+    * set cost to blank in case it is a new type
+    * ignore coverage directory from jshint
+  * update maintenance test to match dev center article
+  * simplify npm test
+  * ignore coverage directory from jshint
+  * added test cases for config index ([#71](https://github.com/heroku/heroku-apps/issues/71))
+  * added more testing on ps index ([#70](https://github.com/heroku/heroku-apps/issues/70))
+    * added more testing on ps index
+    * added more tests for ps:scale
+  * testing labs commands ([#69](https://github.com/heroku/heroku-apps/issues/69))
+  * testing updates ([#68](https://github.com/heroku/heroku-apps/issues/68))
+    * use bluebird instead of bluebird-queue
+    * testing keys:add
+  * added labs test ([#67](https://github.com/heroku/heroku-apps/issues/67))
+  * keys:* ([#40](https://github.com/heroku/heroku-apps/issues/40))
+    * added keys cmd
+    * added keys:*
+    * added basic test for keys:add
+    * inquirer 1.x
+    * allow removing duplicate keys
+    * move mkdirp to util
+    * better testing on keys index
+  * added changelog
+  * added changelog ([#66](https://github.com/heroku/heroku-apps/issues/66))
+
 1.8.0 / 2016-04-18
 ==================
 
