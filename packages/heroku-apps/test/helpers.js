@@ -7,3 +7,6 @@ global.nock = require('nock');                  // Load nock
 
 process.env.TZ  = 'UTC';                        // Use UTC time always
 cli.raiseErrors = true;                         // Fully raise exceptions
+require('mockdate').set(new Date());            // Freeze time
+process.stdout.columns = 80;                    // Set screen width for consistent wrapping
+process.stderr.columns = 80;                    // Set screen width for consistent wrapping

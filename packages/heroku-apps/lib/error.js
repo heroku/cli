@@ -3,7 +3,7 @@
 var util = require('util');
 var cli  = require('heroku-cli-util');
 
-function ErrorExit(code) {  
+function ErrorExit(code) {
   Error.call(this);
   Error.captureStackTrace(this, this.constructor);
   this.name = this.constructor.name;
