@@ -15,7 +15,7 @@ function* run (context, heroku) {
     cli.styledJSON(configVars);
   } else {
     cli.styledHeader(`${context.app} Config Vars`);
-    cli.styledObject(configVars);
+    cli.styledObject(_.mapKeys(configVars, (_, k) => cli.color.configVar(k)));
   }
 }
 
