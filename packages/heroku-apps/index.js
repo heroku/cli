@@ -23,6 +23,7 @@ exports.topics = [
 ];
 
 exports.commands = [
+  require('./commands/apps'),
   require('./commands/apps/create').apps,
   require('./commands/apps/create').root,
   require('./commands/apps/destroy').apps,
