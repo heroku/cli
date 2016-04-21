@@ -1,27 +1,10 @@
 {
   "name": "heroku-status",
-  "version": "2.1.2",
   "description": "CLI Plugin for Heroku Status",
-  "main": "index.js",
+  "version": "2.1.2",
   "author": "Raul Barroso @raulb",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/heroku/heroku-status"
-  },
   "bugs": {
     "url": "https://github.com/heroku/heroku-status/issues"
-  },
-  "keywords": [
-    "heroku-plugin",
-    "heroku-status"
-  ],
-  "license": "ISC",
-  "homepage": "https://github.com/heroku/heroku-status",
-  "scripts": {
-    "test": "nyc mocha --require ./test/helpers.js && jshint .",
-    "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "preversion": "npm test",
-    "postversion": "npm publish && git push && git push --tags"
   },
   "dependencies": {
     "co": "4.6.0",
@@ -36,5 +19,22 @@
     "mocha": "2.4.5",
     "nock": "7.7.2",
     "nyc": "6.2.1"
+  },
+  "homepage": "https://github.com/heroku/heroku-status",
+  "keywords": [
+    "heroku-plugin",
+    "heroku-status"
+  ],
+  "license": "ISC",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/heroku/heroku-status"
+  },
+  "scripts": {
+    "coverage": "nyc report --reporter=text-lcov | coveralls",
+    "postversion": "npm publish && git push && git push --tags",
+    "preversion": "npm test",
+    "test": "nyc mocha --require ./test/helpers.js && jshint ."
   }
 }
