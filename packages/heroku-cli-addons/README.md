@@ -38,12 +38,6 @@ reference types by consistent colours and dimming non-critical information:
 
 ## Install
 
-### Latest published version
-
-``` sh-session
-$ heroku plugins:install heroku-cli-addons
-```
-
 ### Latest dev version
 
 ``` sh-session
@@ -65,6 +59,5 @@ $ rm ~/.heroku/node_modules/heroku-cli-addons
 ```sh-session
 $ npm install                     # install all dependencies
 $ npm test                        # run the tests
-$ npm version <major|minor|patch> # bump the version number and push to git
-$ npm publish [--tag pre]         # publish latest on npm (optionally as pre-release)
+$ npm version <major|minor|patch> # bump the version number and publish to npm
 ```
