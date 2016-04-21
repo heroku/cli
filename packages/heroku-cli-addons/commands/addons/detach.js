@@ -34,5 +34,5 @@ module.exports = {
   needsAuth: true,
   needsApp: true,
   args: [{name: 'attachment_name'}],
-  run: cli.command(co.wrap(run))
+  run: cli.command({preauth: true}, co.wrap(run))
 };

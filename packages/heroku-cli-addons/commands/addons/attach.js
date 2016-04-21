@@ -52,5 +52,5 @@ module.exports = {
     {name: 'confirm', description: 'overwrite existing add-on attachment with same name', hasValue: true},
   ],
   args: [{name: 'addon_name'}],
-  run: cli.command(co.wrap(run))
+  run: cli.command({preauth: true}, co.wrap(run))
 };
