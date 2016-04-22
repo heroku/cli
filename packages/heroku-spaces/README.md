@@ -1,8 +1,7 @@
-# heroku-spaces
-[![Build Status](https://travis-ci.org/heroku/heroku-spaces.svg?branch=master)](https://travis-ci.org/heroku/heroku-spaces)
+heroku-spaces [![Circle CI](https://circleci.com/gh/heroku/heroku-spaces.svg?style=svg)](https://circleci.com/gh/heroku/heroku-spaces)
+===========
 
-This repository is part of a private beta product available via invitation only. Please email spaces-feedback@heroku.com for more information or to request an invite. Please include as much information as possible regarding your intended use(s) and how you found this repo.
-
-## Installation
-
-    $ heroku plugins:install heroku-spaces
+[![Code Climate](https://codeclimate.com/github/heroku/heroku-spaces/badges/gpa.svg)](https://codeclimate.com/github/heroku/heroku-spaces)
+[![Test Coverage](https://codeclimate.com/github/heroku/heroku-spaces/badges/coverage.svg)](https://codeclimate.com/github/heroku/heroku-spaces/coverage)
+[![npm version](https://badge.fury.io/js/heroku-spaces.svg)](https://badge.fury.io/js/heroku-spaces)
+[![License](https://img.shields.io/github/license/heroku/heroku-spaces.svg)](https://github.com/heroku/heroku-spaces/blob/master/LICENSE)
