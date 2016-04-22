@@ -1,9 +1,9 @@
-'use strict';
+'use strict'
 
 exports.topics = [
-  {name: 'spaces',      description: 'manage heroku private spaces'},
-  {name: 'trusted-ips', hidden: true},
-];
+  {name: 'spaces', description: 'manage heroku private spaces'},
+  {name: 'trusted-ips', hidden: true}
+]
 
 exports.commands = [
   require('./commands'),
@@ -15,5 +15,5 @@ exports.commands = [
   require('./commands/drains/set'),
   require('./commands/trusted-ips'),
   require('./commands/trusted-ips/add'),
-  require('./commands/trusted-ips/remove'),
-];
+  require('./commands/trusted-ips/remove')
+]

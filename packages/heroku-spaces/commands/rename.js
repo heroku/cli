@@ -1,17 +1,17 @@
-'use strict';
+'use strict'
 
-let cli = require('heroku-cli-util');
-let co  = require('co');
+let cli = require('heroku-cli-util')
+let co = require('co')
 
-function* run(context, heroku) {
-  let to   = context.flags.to;
-  let from = context.flags.from;
+function * run (context, heroku) {
+  let to = context.flags.to
+  let from = context.flags.from
   let request = heroku.request({
-    method:  'PATCH',
-    path:    `/spaces/${from}`,
-    body:    {name: to},
-  });
-  yield cli.action(`Renaming space from ${cli.color.cyan(from)} to ${cli.color.green(to)}`, request);
+    method: 'PATCH',
+    path: `/spaces/${from}`,
+    body: {name: to}
+  })
+  yield cli.action(`Renaming space from ${cli.color.cyan(from)} to ${cli.color.green(to)}`, request)
 }
 
 module.exports = {
@@ -27,7 +27,7 @@ Example:
   needsAuth: true,
   flags: [
     {name: 'from', hasValue: true, required: true, description: 'current name of space'},
-    {name: 'to',   hasValue: true, required: true, description: 'desired name of space'},
+    {name: 'to', hasValue: true, required: true, description: 'desired name of space'}
   ],
   run: cli.command(co.wrap(run))
-};
+}

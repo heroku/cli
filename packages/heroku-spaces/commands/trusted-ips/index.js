@@ -1,19 +1,19 @@
-'use strict';
+'use strict'
 
-let cli = require('heroku-cli-util');
-let co  = require('co');
+let cli = require('heroku-cli-util')
+let co = require('co')
 
 function displayJSON (rules) {
-  cli.log(JSON.stringify(rules, null, 2));
+  cli.log(JSON.stringify(rules, null, 2))
 }
 
-function* run(context, heroku) {
-  let lib = require('../../lib/trusted-ips')(heroku);
-  let space = context.flags.space || context.args.space;
-  if (!space) throw new Error('Space name required.\nUSAGE: heroku trusted-ips my-space');
-  let rules = yield lib.getRules(space);
-  if (context.flags.json) displayJSON(rules);
-  else lib.displayRules(space, rules);
+function * run (context, heroku) {
+  let lib = require('../../lib/trusted-ips')(heroku)
+  let space = context.flags.space || context.args.space
+  if (!space) throw new Error('Space name required.\nUSAGE: heroku trusted-ips my-space')
+  let rules = yield lib.getRules(space)
+  if (context.flags.json) displayJSON(rules)
+  else lib.displayRules(space, rules)
 }
 
 module.exports = {
@@ -31,7 +31,7 @@ a time to the commands listed below. For example 1.2.3.4/20 and 5.6.7.8/20 can b
   args: [{name: 'space', optional: true, hidden: true}],
   flags: [
     {name: 'space', char: 's', hasValue: true, description: 'space to get inbound rules from'},
-    {name: 'json', description: 'output in json format'},
+    {name: 'json', description: 'output in json format'}
   ],
   run: cli.command(co.wrap(run))
-};
+}
