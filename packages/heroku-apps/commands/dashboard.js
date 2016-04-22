@@ -57,10 +57,10 @@ function displayNotifications (notifications) {
   }
 }
 
-function displayApps (apps, apps_metrics) {
+function displayApps (apps, appsMetrics) {
   let owner = owner => owner.email.endsWith('@herokumanager.com') ? owner.email.split('@')[0] : owner.email;
 
-  for (let a of _.zip(apps, apps_metrics)) {
+  for (let a of _.zip(apps, appsMetrics)) {
     cli.log();
     let app     = a[0];
     let metrics = a[1];
