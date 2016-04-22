@@ -5,6 +5,8 @@
 [![npm version](https://badge.fury.io/js/heroku-git.svg)](https://badge.fury.io/js/heroku-git)
 [![License](https://img.shields.io/github/license/heroku/heroku-git.svg)](https://github.com/heroku/heroku-git/blob/master/LICENSE)
 
+[![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)
+
 Heroku CLI plugin to manage local git repos.
 
 Commands
