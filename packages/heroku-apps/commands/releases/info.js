@@ -4,6 +4,7 @@ let cli         = require('heroku-cli-util');
 let co          = require('co');
 let _           = require('lodash');
 let shellescape = require('shell-escape');
+let status_helper = require('./status_helper');
 
 function* run (context, heroku) {
   // TODO: find out how to get config vars and addons data in apiv3 or deprecate this command
@@ -14,31 +15,56 @@ function* run (context, heroku) {
     let releases = yield heroku.request({
       path: `/apps/${context.app}/releases`,
       partial: true,
-      headers: {Range: `version ..; max=2, order=desc`},
+      headers: {
+        Range: `version ..; max=1, order=desc`,
+        Accept: `application/vnd.heroku+json; version=3.release_status`
+      },
     });
     id = releases[0].version;
   }
-  release = yield heroku.request({
-    path:    `/apps/${context.app}/releases/${id}`,
-    headers: {Accept: 'application/json'},
-  });
+
+  release = yield {
+    v3: heroku.request({
+      path:    `/apps/${context.app}/releases/${id}`,
+      headers: {
+        Accept: `application/vnd.heroku+json; version=3.release_status`
+      }
+    }),
+    // TODO: move to use API V3 once an endpoint to fetch a release config vars is available
+    v2: function(callback) {
+      heroku.request({
+        path:    `/apps/${context.app}/releases/${id}`,
+        headers: {Accept: 'application/json'},
+        parseJSON: false
+      }, function(err, c) {
+        callback(null, JSON.parse(c || '{}'));
+      });
+    }
+  };
+
   if (context.flags.json) {
-    cli.styledJSON(release);
+    cli.styledJSON(release.v3);
   } else {
-    cli.styledHeader(`Release ${cli.color.cyan(release.name)}`);
+    let releaseChange = release.v3.description;
+    let status = status_helper(release.v3.status);
+    if (status.content !== undefined) {
+      releaseChange += " (" + cli.color[status.color](status.content) + ")";
+    }
+
+    cli.styledHeader(`Release ${cli.color.cyan("v" + release.v3.version)}`);
     cli.styledObject({
-      'Add-ons': release.addons,
-      Change: release.descr,
-      By:     release.user,
-      When:   release.created_at,
+      'Add-ons': release.v2.addons,
+      Change: releaseChange,
+      By:     release.v3.user.email,
+      When:   release.v3.created_at,
     });
-    cli.log();
-    if (release.env) {
-      cli.styledHeader(`${cli.color.cyan(release.name)} Config vars`);
+    if (release.v2.env) {
+      cli.log();
+      cli.styledHeader(`${cli.color.cyan("v" + release.v3.version)} Config vars`);
       if (context.flags.shell) {
-        _.forEach(release.env, (v, k) => cli.log(`${k}=${shellescape([v])}`));
+        _.forEach(release.v2.env, (v, k) => cli.log(`${k}=${shellescape([v])}`));
       } else {
-        cli.styledObject(release.env);
+        cli.styledObject(release.v2.env);
       }
     }
   }

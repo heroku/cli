@@ -4,9 +4,19 @@ let cli  = require('heroku-cli-util');
 let co   = require('co');
 let _    = require('lodash');
 let time = require('../../lib/time');
+let status_helper = require('./status_helper');
 
 let width = () => process.stdout.columns > 80 ? process.stdout.columns : 80;
-let trunc = s => _.truncate(s, {length: width()-60, omission: '…'});
+let trunc = (s, l) => _.truncate(s, {length: width()-(60+l), omission: '…'});
+
+let descriptionWithStatus = function(d, r) {
+  let status = status_helper(r.status);
+  let sc = '';
+  if (status.content !== undefined) {
+    sc = cli.color[status.color](status.content);
+  }
+  return trunc(d, sc.length) + " " + sc;
+};
 
 function* run (context, heroku) {
   let url = `/apps/${context.app}/releases`;
@@ -14,8 +24,12 @@ function* run (context, heroku) {
   let releases = yield heroku.request({
     path: url,
     partial: true,
-    headers: { 'Range': `version ..; max=${context.flags.num || 15}, order=desc` },
+    headers: {
+      'Range': `version ..; max=${context.flags.num || 15}, order=desc`,
+      'Accept': `application/vnd.heroku+json; version=3.release_status`
+    },
   });
+
   if (context.flags.json) {
     cli.log(JSON.stringify(releases, null, 2));
   } else if (context.flags.extended) {
@@ -23,8 +37,8 @@ function* run (context, heroku) {
     cli.table(releases, {
       printHeader: false,
       columns: [
-        {key: 'version',     format: v => cli.color.green('v'+v)},
-        {key: 'description', format: trunc},
+        {key: 'version',     format: (v, r) => cli.color[status_helper(r.status).color]('v'+v)},
+        {key: 'description', format: descriptionWithStatus },
         {key: 'user',        format: u => cli.color.magenta(u.email.replace(/@addons\.heroku\.com$/,''))},
         {key: 'created_at',  format: t => time.ago(new Date(t))},
         {key: 'extended.slug_id'},
@@ -38,8 +52,8 @@ function* run (context, heroku) {
     cli.table(releases, {
       printHeader: false,
       columns: [
-        {key: 'version',     label: '', format: v => cli.color.green('v'+v)},
-        {key: 'description', format: trunc},
+        {key: 'version',     label: '', format: (v, r) => cli.color[status_helper(r.status).color]('v'+v)},
+        {key: 'description', format: descriptionWithStatus },
         {key: 'user',        format: u => cli.color.magenta(u.email)},
         {key: 'created_at',  format: t => time.ago(new Date(t))},
       ]
