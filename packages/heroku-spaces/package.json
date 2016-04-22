@@ -1,24 +1,10 @@
 {
   "name": "heroku-spaces",
-  "version": "2.1.2",
   "description": "Heroku plugin to manage Heroku Private Spaces",
-  "main": "index.js",
+  "version": "2.1.2",
   "author": "Heroku",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/heroku/heroku-spaces"
-  },
   "bugs": {
     "url": "https://github.com/heroku/heroku-spaces/issues"
-  },
-  "keywords": [
-    "heroku-plugin"
-  ],
-  "license": "ISC",
-  "scripts": {
-    "test": "jshint . && mocha",
-    "preversion": "npm test",
-    "postversion": "npm publish && git push && git push --tags"
   },
   "dependencies": {
     "co": "4.6.0",
@@ -26,9 +12,28 @@
     "lodash": "3.10.1"
   },
   "devDependencies": {
-    "chai": "3.4.1",
-    "jshint": "*",
-    "mocha": "*",
-    "nock": "*"
+    "chai": "3.5.0",
+    "codeclimate-test-reporter": "0.3.1",
+    "coveralls": "2.11.9",
+    "mocha": "2.4.5",
+    "nock": "8.0.0",
+    "nyc": "6.4.0",
+    "snazzy": "3.0.1",
+    "standard": "6.0.8"
+  },
+  "keywords": [
+    "heroku-plugin"
+  ],
+  "license": "ISC",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/heroku/heroku-spaces"
+  },
+  "scripts": {
+    "coverage": "nyc report --reporter=text-lcov | codeclimate-test-reporter && nyc report --reporter=text-lcov | coveralls",
+    "postversion": "npm publish && git push && git push --tags",
+    "preversion": "npm test",
+    "test": "nyc mocha && standard | snazzy"
   }
 }
