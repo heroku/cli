@@ -5,7 +5,7 @@
   "main": "index.js",
   "author": "Jeff Dickey @dickeyxxx",
   "scripts": {
-    "test": "jshint .",
+    "test": "standard | snazzy",
     "preversion": "npm test",
     "postversion": "npm publish && git push && git push --tags"
   },
@@ -22,9 +22,10 @@
   "license": "ISC",
   "dependencies": {
     "foreman": "1.4.1",
-    "heroku-cli-util": "5.9.1"
+    "heroku-cli-util": "5.10.10"
   },
   "devDependencies": {
-    "jshint": "^2.8.0"
+    "snazzy": "3.0.1",
+    "standard": "6.0.8"
   }
 }
