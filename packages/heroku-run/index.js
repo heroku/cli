@@ -10,6 +10,7 @@ exports.topics = [{
 
 exports.commands = [
   require('./commands/run'),
+  require('./commands/inside'),
   require('./commands/detached'),
   require('./commands/logs'),
 ];
