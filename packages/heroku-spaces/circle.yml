@@ -1,0 +1,6 @@
+machine:
+  node:
+    version: v5.10.1
+test:
+  post:
+    - npm run coverage
