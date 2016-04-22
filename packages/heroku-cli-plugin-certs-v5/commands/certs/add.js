@@ -10,17 +10,17 @@ let ssl_doctor          = require('../../lib/ssl_doctor.js');
 let display_warnings    = require('../../lib/display_warnings.js');
 let certificate_details = require('../../lib/certificate_details.js');
 
-function* run(context, heroku) {
-  let meta;
-
+function* getMeta(context, heroku) {
   if (context.flags.type === 'endpoint') {
-    meta = endpoints.meta(context.app, 'ssl');
+    return endpoints.meta(context.app, 'ssl');
   } else if (context.flags.type === 'sni' || ! (yield endpoints.hasAddon(context.app, heroku))) {
-    meta = endpoints.meta(context.app, 'sni');
+    return endpoints.meta(context.app, 'sni');
   } else {
     error.exit(1, 'Must pass either --type with either \'endpoint\' or \'sni\'');
   }
+}
 
+function* getFiles(context) {
   let files = yield {
     crt: readFile(context.args.CRT),
     key: readFile(context.args.KEY)
@@ -36,10 +36,18 @@ function* run(context, heroku) {
     key = res.key;
   }
 
+  return {crt, key};
+}
+
+function* run(context, heroku) {
+  let meta = yield getMeta(context, heroku);
+
+  let files = yield getFiles(context);
+
   let cert = yield cli.action(`Adding SSL certificate to ${context.app}`, {}, heroku.request({
     path: meta.path,
     method: 'POST',
-    body: {certificate_chain: crt, private_key: key},
+    body: {certificate_chain: files.crt, private_key: files.key},
     headers: {'Accept': `application/vnd.heroku+json; version=3.${meta.variant}`}
   }));
 
