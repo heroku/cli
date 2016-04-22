@@ -18,6 +18,8 @@
     "mocha": "2.4.5",
     "nock": "8.0.0",
     "nyc": "6.4.0",
+    "snazzy": "3.0.1",
+    "standard": "6.0.8",
     "unexpected": "10.13.2"
   },
   "homepage": "https://github.com/heroku/heroku-status",
