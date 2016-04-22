@@ -1,13 +1,13 @@
-'use strict';
+'use strict'
 
-let co       = require('co');
-let cli      = require('heroku-cli-util');
-let extend   = require('util')._extend;
-let url      = require('url');
+let co = require('co')
+let cli = require('heroku-cli-util')
+let extend = require('util')._extend
+let url = require('url')
 
-function* run (context, heroku) {
-  let app = yield heroku.apps(context.app).info();
-  yield cli.open(url.resolve(app.web_url, context.args.path || ''));
+function * run (context, heroku) {
+  let app = yield heroku.apps(context.app).info()
+  yield cli.open(url.resolve(app.web_url, context.args.path || ''))
 }
 
 let cmd = {
@@ -25,11 +25,11 @@ Examples:
   `,
   needsApp: true,
   needsAuth: true,
-  args:  [{name: 'path', optional: true}],
+  args: [{name: 'path', optional: true}],
   run: cli.command(co.wrap(run))
-};
+}
 
-module.exports.open = cmd;
-module.exports.root = extend({}, cmd);
-module.exports.root.topic = 'open';
-delete module.exports.root.command;
+module.exports.open = cmd
+module.exports.root = extend({}, cmd)
+module.exports.root.topic = 'open'
+delete module.exports.root.command

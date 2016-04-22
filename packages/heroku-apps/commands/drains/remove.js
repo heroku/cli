@@ -1,14 +1,14 @@
-'use strict';
+'use strict'
 
-let cli = require('heroku-cli-util');
-let co  = require('co');
+let cli = require('heroku-cli-util')
+let co = require('co')
 
-function* run (context, heroku) {
+function * run (context, heroku) {
   let drain = yield heroku.request({
     method: 'delete',
-    path:   `/apps/${context.app}/log-drains/${encodeURIComponent(context.args.url)}`,
-  });
-  cli.log(`Successfully removed drain ${cli.color.cyan(drain.url)}`);
+    path: `/apps/${context.app}/log-drains/${encodeURIComponent(context.args.url)}`
+  })
+  cli.log(`Successfully removed drain ${cli.color.cyan(drain.url)}`)
 }
 
 module.exports = {
@@ -19,4 +19,4 @@ module.exports = {
   needsAuth: true,
   args: [{name: 'url'}],
   run: cli.command(co.wrap(run))
-};
+}

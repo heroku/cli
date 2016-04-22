@@ -1,21 +1,21 @@
-'use strict';
+'use strict'
 
-let cli         = require('heroku-cli-util');
-let co          = require('co');
-let _           = require('lodash');
-let shellescape = require('shell-escape');
+let cli = require('heroku-cli-util')
+let co = require('co')
+let _ = require('lodash')
+let shellescape = require('shell-escape')
 
-function* run (context, heroku) {
-  let configVars = yield heroku.request({path: `/apps/${context.app}/config-vars`});
+function * run (context, heroku) {
+  let configVars = yield heroku.request({path: `/apps/${context.app}/config-vars`})
   if (context.flags.shell) {
     _.forEach(configVars, function (v, k) {
-      cli.log(`${k}=${shellescape([v])}`);
-    });
+      cli.log(`${k}=${shellescape([v])}`)
+    })
   } else if (context.flags.json) {
-    cli.styledJSON(configVars);
+    cli.styledJSON(configVars)
   } else {
-    cli.styledHeader(`${context.app} Config Vars`);
-    cli.styledObject(_.mapKeys(configVars, (_, k) => cli.color.configVar(k)));
+    cli.styledHeader(`${context.app} Config Vars`)
+    cli.styledObject(_.mapKeys(configVars, (_, k) => cli.color.configVar(k)))
   }
 }
 
@@ -26,7 +26,7 @@ module.exports = {
   needsAuth: true,
   flags: [
     {name: 'shell', char: 's', description: 'output config vars in shell format'},
-    {name: 'json', description: 'output config vars in json format'},
+    {name: 'json', description: 'output config vars in json format'}
   ],
   run: cli.command(co.wrap(run))
-};
+}

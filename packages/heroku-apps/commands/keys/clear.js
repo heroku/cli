@@ -1,18 +1,18 @@
-'use strict';
+'use strict'
 
-let co  = require('co');
-let cli = require('heroku-cli-util');
+let co = require('co')
+let cli = require('heroku-cli-util')
 
-function* run(context, heroku) {
-  yield cli.action(`Removing all SSH keys`, co(function* () {
-    let keys = yield heroku.get('/account/keys');
+function * run (context, heroku) {
+  yield cli.action('Removing all SSH keys', co(function * () {
+    let keys = yield heroku.get('/account/keys')
     for (let key of keys) {
       yield heroku.request({
         method: 'DELETE',
-        path:   `/account/keys/${key.id}`,
-      });
+        path: `/account/keys/${key.id}`
+      })
     }
-  }));
+  }))
 }
 
 module.exports = {
@@ -21,4 +21,4 @@ module.exports = {
   description: 'remove all SSH keys for current user',
   needsAuth: true,
   run: cli.command(co.wrap(run))
-};
+}

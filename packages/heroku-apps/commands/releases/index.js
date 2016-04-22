@@ -1,63 +1,63 @@
-'use strict';
+'use strict'
 
-let cli  = require('heroku-cli-util');
-let co   = require('co');
-let _    = require('lodash');
-let time = require('../../lib/time');
-let status_helper = require('./status_helper');
+let cli = require('heroku-cli-util')
+let co = require('co')
+let _ = require('lodash')
+let time = require('../../lib/time')
+let status_helper = require('./status_helper')
 
-let width = () => process.stdout.columns > 80 ? process.stdout.columns : 80;
-let trunc = (s, l) => _.truncate(s, {length: width()-(60+l), omission: '…'});
+let width = () => process.stdout.columns > 80 ? process.stdout.columns : 80
+let trunc = (s, l) => _.truncate(s, {length: width() - (60 + l), omission: '…'})
 
-let descriptionWithStatus = function(d, r) {
-  let status = status_helper(r.status);
-  let sc = '';
+let descriptionWithStatus = function (d, r) {
+  let status = status_helper(r.status)
+  let sc = ''
   if (status.content !== undefined) {
-    sc = cli.color[status.color](status.content);
+    sc = cli.color[status.color](status.content)
   }
-  return trunc(d, sc.length) + " " + sc;
-};
+  return trunc(d, sc.length) + ' ' + sc
+}
 
-function* run (context, heroku) {
-  let url = `/apps/${context.app}/releases`;
-  if (context.flags.extended) url = url + '?extended=true';
+function * run (context, heroku) {
+  let url = `/apps/${context.app}/releases`
+  if (context.flags.extended) url = url + '?extended=true'
   let releases = yield heroku.request({
     path: url,
     partial: true,
     headers: {
       'Range': `version ..; max=${context.flags.num || 15}, order=desc`,
-      'Accept': `application/vnd.heroku+json; version=3.release_status`
-    },
-  });
+      'Accept': 'application/vnd.heroku+json; version=3.release_status'
+    }
+  })
 
   if (context.flags.json) {
-    cli.log(JSON.stringify(releases, null, 2));
+    cli.log(JSON.stringify(releases, null, 2))
   } else if (context.flags.extended) {
-    cli.styledHeader(`${context.app} Releases`);
+    cli.styledHeader(`${context.app} Releases`)
     cli.table(releases, {
       printHeader: false,
       columns: [
-        {key: 'version',     format: (v, r) => cli.color[status_helper(r.status).color]('v'+v)},
-        {key: 'description', format: descriptionWithStatus },
-        {key: 'user',        format: u => cli.color.magenta(u.email.replace(/@addons\.heroku\.com$/,''))},
-        {key: 'created_at',  format: t => time.ago(new Date(t))},
+        {key: 'version', format: (v, r) => cli.color[status_helper(r.status).color]('v' + v)},
+        {key: 'description', format: descriptionWithStatus},
+        {key: 'user', format: (u) => cli.color.magenta(u.email.replace(/@addons\.heroku\.com$/, ''))},
+        {key: 'created_at', format: (t) => time.ago(new Date(t))},
         {key: 'extended.slug_id'},
-        {key: 'extended.slug_uuid'},
+        {key: 'extended.slug_uuid'}
       ]
-    });
+    })
   } else if (releases.length === 0) {
-    cli.log(`${context.app} has no releases.`);
+    cli.log(`${context.app} has no releases.`)
   } else {
-    cli.styledHeader(`${context.app} Releases`);
+    cli.styledHeader(`${context.app} Releases`)
     cli.table(releases, {
       printHeader: false,
       columns: [
-        {key: 'version',     label: '', format: (v, r) => cli.color[status_helper(r.status).color]('v'+v)},
-        {key: 'description', format: descriptionWithStatus },
-        {key: 'user',        format: u => cli.color.magenta(u.email)},
-        {key: 'created_at',  format: t => time.ago(new Date(t))},
+        {key: 'version', label: '', format: (v, r) => cli.color[status_helper(r.status).color]('v' + v)},
+        {key: 'description', format: descriptionWithStatus},
+        {key: 'user', format: (u) => cli.color.magenta(u.email)},
+        {key: 'created_at', format: (t) => time.ago(new Date(t))}
       ]
-    });
+    })
   }
 }
 
@@ -77,7 +77,7 @@ Example:
   flags: [
     {name: 'num', char: 'n', description: 'number of releases to show', hasValue: true},
     {name: 'json', description: 'output releases in json format'},
-    {name: 'extended', char: 'x', hidden: true},
+    {name: 'extended', char: 'x', hidden: true}
   ],
   run: cli.command(co.wrap(run))
-};
+}

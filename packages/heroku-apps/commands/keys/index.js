@@ -1,25 +1,25 @@
-'use strict';
+'use strict'
 
-let co  = require('co');
-let cli = require('heroku-cli-util');
+let co = require('co')
+let cli = require('heroku-cli-util')
 
 function formatKey (key) {
-  key = key.trim().split(/\s/);
-  return `${key[0]} ${key[1].substr(0,10)}...${key[1].substr(-10,10)} ${cli.color.green(key[2])}`;
+  key = key.trim().split(/\s/)
+  return `${key[0]} ${key[1].substr(0, 10)}...${key[1].substr(-10, 10)} ${cli.color.green(key[2])}`
 }
 
-function* run(context, heroku) {
-  let keys = yield heroku.get('/account/keys');
+function * run (context, heroku) {
+  let keys = yield heroku.get('/account/keys')
   if (context.flags.json) {
-    cli.styledJSON(keys);
+    cli.styledJSON(keys)
   } else if (keys.length === 0) {
-    cli.warn('You have no SSH keys.');
+    cli.warn('You have no SSH keys.')
   } else {
-    cli.styledHeader(`${cli.color.cyan(keys[0].email)} keys`);
+    cli.styledHeader(`${cli.color.cyan(keys[0].email)} keys`)
     if (context.flags.long) {
-      keys.forEach(k => cli.log(k.public_key));
+      keys.forEach((k) => cli.log(k.public_key))
     } else {
-      keys.map(k => cli.log(formatKey(k.public_key)));
+      keys.map((k) => cli.log(formatKey(k.public_key)))
     }
   }
 }
@@ -31,6 +31,6 @@ module.exports = {
   run: cli.command(co.wrap(run)),
   flags: [
     {name: 'long', char: 'l', description: 'display full SSH keys'},
-    {name: 'json', description: 'output in json format'},
-  ],
-};
+    {name: 'json', description: 'output in json format'}
+  ]
+}

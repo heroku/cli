@@ -1,34 +1,39 @@
-'use strict';
+'use strict'
 
-let cli = require('heroku-cli-util');
-let co  = require('co');
+let cli = require('heroku-cli-util')
+let co = require('co')
 
-function* run (context, heroku) {
-  let _   = require('lodash');
-  let app = context.app;
+let emptyFormationErr = (app) => {
+  return new Error(`No process types on ${cli.color.app(app)}.
+Upload a Procfile to add process types.
+https://devcenter.heroku.com/articles/procfile`)
+}
+
+function * run (context, heroku) {
+  let _ = require('lodash')
+  let app = context.app
 
   function parse (args) {
-    return _.compact(args.map(arg => {
-      let change = arg.match(/^([a-zA-Z0-9_]+)([=+-]\d+)(?::([\w-]+))?$/);
-      if (!change) return;
-      let quantity = change[2][0] === '=' ? change[2].substr(1) : change[2];
-      return {type: change[1], quantity, size: change[3]};
-    }));
+    return _.compact(args.map((arg) => {
+      let change = arg.match(/^([a-zA-Z0-9_]+)([=+-]\d+)(?::([\w-]+))?$/)
+      if (!change) return
+      let quantity = change[2][0] === '=' ? change[2].substr(1) : change[2]
+      return {type: change[1], quantity, size: change[3]}
+    }))
   }
 
-  let changes = parse(context.args);
+  let changes = parse(context.args)
   if (changes.length === 0) {
-    let formation = yield heroku.get(`/apps/${app}/formation`);
-    if (formation.length === 0) throw new Error(`No process types on ${cli.color.app(app)}.\nUpload a Procfile to add process types.\nhttps://devcenter.heroku.com/articles/procfile`);
-    cli.log(formation.map(d => `${cli.color.green(d.type)}=${cli.color.yellow(d.quantity)}:${cli.color.cyan(d.size)}`).sort().join(' '));
+    let formation = yield heroku.get(`/apps/${app}/formation`)
+    if (formation.length === 0) throw emptyFormationErr(app)
+    cli.log(formation.map((d) => `${cli.color.green(d.type)}=${cli.color.yellow(d.quantity)}:${cli.color.cyan(d.size)}`).sort().join(' '))
   } else {
+    let formation = yield cli.action('Scaling dynos', {success: false},
+      heroku.request({method: 'PATCH', path: `/apps/${app}/formation`, body: {updates: changes}}))
 
-    let formation = yield cli.action( 'Scaling dynos', {success: false},
-      heroku.request({method: 'PATCH', path: `/apps/${app}/formation`, body: {updates: changes}}));
-
-    let output = formation.filter(f => changes.find(c => c.type === f.type))
-    .map(d => `${cli.color.green(d.type)} at ${cli.color.yellow(d.quantity)}:${cli.color.cyan(d.size)}`);
-    cli.console.error(`done, now running ${output.join(', ')}`);
+    let output = formation.filter((f) => changes.find((c) => c.type === f.type))
+      .map((d) => `${cli.color.green(d.type)} at ${cli.color.yellow(d.quantity)}:${cli.color.cyan(d.size)}`)
+    cli.console.error(`done, now running ${output.join(', ')}`)
   }
 }
 
@@ -51,8 +56,8 @@ Examples:
   needsAuth: true,
   needsApp: true,
   run: cli.command(co.wrap(run))
-};
+}
 
-exports.ps   = Object.assign({}, cmd, {topic: 'ps',    command: 'scale'});
-exports.root = Object.assign({}, cmd, {topic: 'scale', command: null});
-exports.dyno = Object.assign({}, cmd, {topic: 'dyno',  command: 'scale'});
+exports.ps = Object.assign({}, cmd, {topic: 'ps', command: 'scale'})
+exports.root = Object.assign({}, cmd, {topic: 'scale', command: null})
+exports.dyno = Object.assign({}, cmd, {topic: 'dyno', command: 'scale'})

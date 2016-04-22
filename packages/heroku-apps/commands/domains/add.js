@@ -1,16 +1,17 @@
-'use strict';
+'use strict'
 
-let cli         = require('heroku-cli-util');
-let co          = require('co');
+let cli = require('heroku-cli-util')
+let co = require('co')
 
-function* run (context, heroku) {
-  let hostname = context.args.hostname;
+function * run (context, heroku) {
+  let hostname = context.args.hostname
   let domain = yield cli.action(`Adding ${cli.color.green(hostname)} to ${cli.color.app(context.app)}`, heroku.request({
     path: `/apps/${context.app}/domains`,
     method: 'POST',
-    body: {hostname},
-  }));
-  cli.warn(`Configure your app's DNS provider to point to the DNS Target ${cli.color.green(domain.cname)}.\nFor help, see https://devcenter.heroku.com/articles/custom-domains`);
+    body: {hostname}
+  }))
+  cli.warn(`Configure your app's DNS provider to point to the DNS Target ${cli.color.green(domain.cname)}.
+For help, see https://devcenter.heroku.com/articles/custom-domains`)
 }
 
 module.exports = {
@@ -21,4 +22,4 @@ module.exports = {
   needsAuth: true,
   args: [{name: 'hostname'}],
   run: cli.command(co.wrap(run))
-};
+}

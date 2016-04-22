@@ -1,20 +1,20 @@
-'use strict';
+'use strict'
 
-let cli      = require('heroku-cli-util');
-let co       = require('co');
+let cli = require('heroku-cli-util')
+let co = require('co')
 
-function* run (context, heroku) {
-  let app  = context.app;
-  let dyno = context.args.dyno;
+function * run (context, heroku) {
+  let app = context.app
+  let dyno = context.args.dyno
 
-  let msg = 'Restarting';
-  if (dyno) msg += ` ${cli.color.cyan(dyno)}`;
-  msg += (dyno && dyno.indexOf('.') !== -1) ? ' dyno' : ' dynos';
-  msg += ` on ${cli.color.app(app)}`;
+  let msg = 'Restarting'
+  if (dyno) msg += ` ${cli.color.cyan(dyno)}`
+  msg += (dyno && dyno.indexOf('.') !== -1) ? ' dyno' : ' dynos'
+  msg += ` on ${cli.color.app(app)}`
 
-  yield cli.action(msg, co(function* () {
-    yield heroku.delete(dyno ? `/apps/${app}/dynos/${encodeURIComponent(dyno)}` : `/apps/${app}/dynos`);
-  }));
+  yield cli.action(msg, co(function * () {
+    yield heroku.delete(dyno ? `/apps/${app}/dynos/${encodeURIComponent(dyno)}` : `/apps/${app}/dynos`)
+  }))
 }
 
 let cmd = {
@@ -37,8 +37,8 @@ Examples:
   needsApp: true,
   args: [{name: 'dyno', optional: true}],
   run: cli.command(co.wrap(run))
-};
+}
 
-exports.ps       = Object.assign({}, cmd, {topic: 'ps',      command: 'restart'});
-exports.restart  = Object.assign({}, cmd, {topic: 'restart', command: null});
-exports.dyno     = Object.assign({}, cmd, {topic: 'dyno',    command: 'restart'});
+exports.ps = Object.assign({}, cmd, {topic: 'ps', command: 'restart'})
+exports.restart = Object.assign({}, cmd, {topic: 'restart', command: null})
+exports.dyno = Object.assign({}, cmd, {topic: 'dyno', command: 'restart'})

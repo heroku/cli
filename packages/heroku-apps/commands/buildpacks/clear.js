@@ -1,12 +1,12 @@
-'use strict';
+'use strict'
 
-let co    = require('co');
-let cli   = require('heroku-cli-util');
+let co = require('co')
+let cli = require('heroku-cli-util')
 
-let BuildpackCommand = require('../../lib/buildpacks.js');
+let BuildpackCommand = require('../../lib/buildpacks.js')
 
-function* run(context, heroku) {
-  yield new BuildpackCommand(context, heroku, 'clear', 'cleared').clear();
+function * run (context, heroku) {
+  yield new BuildpackCommand(context, heroku, 'clear', 'cleared').clear()
 }
 
 module.exports = {
@@ -16,5 +16,5 @@ module.exports = {
   help: '',
   needsApp: true,
   needsAuth: true,
-  run: cli.command(co.wrap(run)),
-};
+  run: cli.command(co.wrap(run))
+}

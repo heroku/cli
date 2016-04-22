@@ -1,18 +1,22 @@
-'use strict';
+'use strict'
+/* globals describe beforeEach commands it */
 
-let cmd = commands.find(c => c.topic === 'apps' && c.command === 'destroy');
+const nock = require('nock')
+const cli = require('heroku-cli-util')
+const expect = require('chai').expect
 
-describe('apps:destroy', function() {
-  beforeEach(() => cli.mockConsole());
+let cmd = commands.find((c) => c.topic === 'apps' && c.command === 'destroy')
+describe('apps:destroy', function () {
+  beforeEach(() => cli.mockConsole())
 
-  it('deletes the app', function() {
+  it('deletes the app', function () {
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp').reply(200, {name: 'myapp'})
-      .delete('/apps/myapp').reply(200);
+      .delete('/apps/myapp').reply(200)
 
     return cmd.run({app: 'myapp', args: {}, flags: {confirm: 'myapp'}})
-    .then(() => expect(cli.stdout).to.equal(''))
-    .then(() => expect(cli.stderr).to.equal('Destroying myapp (including all add-ons)... done\n'))
-    .then(() => api.done());
-  });
-});
+      .then(() => expect(cli.stdout).to.equal(''))
+      .then(() => expect(cli.stderr).to.equal('Destroying myapp (including all add-ons)... done\n'))
+      .then(() => api.done())
+  })
+})

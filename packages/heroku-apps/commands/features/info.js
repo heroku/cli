@@ -1,20 +1,20 @@
-'use strict';
+'use strict'
 
-let cli = require('heroku-cli-util');
-let co  = require('co');
+let cli = require('heroku-cli-util')
+let co = require('co')
 
-function* run (context, heroku) {
-  let feature = yield heroku.get(`/apps/${context.app}/features/${context.args.feature}`);
+function * run (context, heroku) {
+  let feature = yield heroku.get(`/apps/${context.app}/features/${context.args.feature}`)
 
   if (context.flags.json) {
-    cli.styledJSON(feature);
+    cli.styledJSON(feature)
   } else {
-    cli.styledHeader(feature.name);
+    cli.styledHeader(feature.name)
     cli.styledObject({
       Description: feature.description,
-      Enabled:     feature.enabled ? cli.color.green(feature.enabled) : cli.color.red(feature.enabled),
-      Docs:        feature.doc_url,
-    });
+      Enabled: feature.enabled ? cli.color.green(feature.enabled) : cli.color.red(feature.enabled),
+      Docs: feature.doc_url
+    })
   }
 }
 
@@ -27,4 +27,4 @@ module.exports = {
   needsAuth: true,
   needsApp: true,
   run: cli.command(co.wrap(run))
-};
+}

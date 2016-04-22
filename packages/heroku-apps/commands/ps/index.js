@@ -1,29 +1,29 @@
-'use strict';
+'use strict'
 
-let cli      = require('heroku-cli-util');
-let co       = require('co');
-let _        = require('lodash');
-let time     = require('../../lib/time');
+let cli = require('heroku-cli-util')
+let co = require('co')
+let _ = require('lodash')
+let time = require('../../lib/time')
 
-let trunc = s => _.truncate(s, {length: 35, omission: '…'});
+let trunc = (s) => _.truncate(s, {length: 35, omission: '…'})
 
 // gets the process number from a string like web.19 => 19
-let getProcessNum = s => parseInt(s.split('.', 2)[1]);
+let getProcessNum = (s) => parseInt(s.split('.', 2)[1])
 
 function printQuota (quota) {
-  if (!quota) return;
-  let lbl;
-  if (quota.allow_until) lbl = 'Free quota left';
-  else if (quota.deny_until) lbl = 'Free quota exhausted. Unidle available in';
+  if (!quota) return
+  let lbl
+  if (quota.allow_until) lbl = 'Free quota left'
+  else if (quota.deny_until) lbl = 'Free quota exhausted. Unidle available in'
   if (lbl) {
-    let timestamp = quota.allow_until ? new Date(quota.allow_until) : new Date(quota.deny_until);
-    let timeRemaining = time.remaining(new Date(), timestamp);
-    cli.log(`${lbl}: ${timeRemaining}`);
+    let timestamp = quota.allow_until ? new Date(quota.allow_until) : new Date(quota.deny_until)
+    let timeRemaining = time.remaining(new Date(), timestamp)
+    cli.log(`${lbl}: ${timeRemaining}`)
   }
 }
 
 function printExtended (dynos) {
-  dynos = _.sortBy(dynos, ['type'], a => getProcessNum(a.name));
+  dynos = _.sortBy(dynos, ['type'], (a) => getProcessNum(a.name))
   cli.table(dynos, {
     columns: [
       {key: 'id', label: 'ID'},
@@ -36,53 +36,54 @@ function printExtended (dynos) {
       {key: 'release.version', label: 'Release'},
       {key: 'command', label: 'Command', format: trunc},
       {key: 'extended.route', label: 'Route'},
-      {key: 'size', label: 'Size'},
+      {key: 'size', label: 'Size'}
     ]
-  });
+  })
 }
 
 function printDynos (dynos) {
   let dynosByCommand = _.reduce(dynos, function (dynosByCommand, dyno) {
-    let since = time.ago(new Date(dyno.updated_at));
-    let size = dyno.size || '1X';
+    let since = time.ago(new Date(dyno.updated_at))
+    let size = dyno.size || '1X'
 
     if (dyno.type === 'run') {
-      let key = `run: one-off processes`;
-      if (dynosByCommand[key] === undefined) dynosByCommand[key] = [];
-      dynosByCommand[key].push(`${dyno.name} (${size}): ${dyno.state} ${since}: ${dyno.command}`);
+      let key = 'run: one-off processes'
+      if (dynosByCommand[key] === undefined) dynosByCommand[key] = []
+      dynosByCommand[key].push(`${dyno.name} (${size}): ${dyno.state} ${since}: ${dyno.command}`)
     } else {
-      let key = `${cli.color.green(dyno.type)} (${cli.color.cyan(size)}): ${dyno.command}`;
-      if (dynosByCommand[key] === undefined) dynosByCommand[key] = [];
-      let state = dyno.state === 'up' ? cli.color.green(dyno.state) : cli.color.yellow(dyno.state);
-      let item = `${dyno.name}: ${cli.color.green(state)} ${cli.color.gray(since)}`;
-      dynosByCommand[key].push(item);
+      let key = `${cli.color.green(dyno.type)} (${cli.color.cyan(size)}): ${dyno.command}`
+      if (dynosByCommand[key] === undefined) dynosByCommand[key] = []
+      let state = dyno.state === 'up' ? cli.color.green(dyno.state) : cli.color.yellow(dyno.state)
+      let item = `${dyno.name}: ${cli.color.green(state)} ${cli.color.gray(since)}`
+      dynosByCommand[key].push(item)
     }
-    return dynosByCommand;
-  }, {});
+    return dynosByCommand
+  }, {})
   _.forEach(dynosByCommand, function (dynos, key) {
-    cli.styledHeader(`${key} (${cli.color.yellow(dynos.length)})`);
-    dynos = dynos.sort((a, b) => getProcessNum(a) - getProcessNum(b));
-    for (let dyno of dynos) cli.log(dyno);
-    cli.log();
-  });
+    cli.styledHeader(`${key} (${cli.color.yellow(dynos.length)})`)
+    dynos = dynos.sort((a, b) => getProcessNum(a) - getProcessNum(b))
+    for (let dyno of dynos) cli.log(dyno)
+    cli.log()
+  })
 }
 
-function* run (context, heroku) {
-  let suffix = context.flags.extended ? '?extended=true' : '';
+function * run (context, heroku) {
+  let suffix = context.flags.extended ? '?extended=true' : ''
   let data = yield {
     quota: heroku.request({
       path: `/apps/${context.app}/actions/get-quota${suffix}`,
       method: 'post', headers: {Accept: 'application/vnd.heroku+json; version=3.app-quotas'}
-    }).catch(() => {}),
-    dynos: heroku.request({path: `/apps/${context.app}/dynos${suffix}`}),
-  };
+    }).catch(() => {
+    }),
+    dynos: heroku.request({path: `/apps/${context.app}/dynos${suffix}`})
+  }
   if (context.flags.json) {
-    cli.styledJSON(data.dynos);
+    cli.styledJSON(data.dynos)
   } else if (context.flags.extended) {
-    printExtended(data.dynos);
+    printExtended(data.dynos)
   } else {
-    printQuota(data.quota);
-    printDynos(data.dynos);
+    printQuota(data.quota)
+    printDynos(data.dynos)
   }
 }
 
@@ -91,7 +92,7 @@ module.exports = {
   description: 'list dynos for an app',
   flags: [
     {name: 'json', description: 'display as json'},
-    {name: 'extended', char: 'x', hidden: true},
+    {name: 'extended', char: 'x', hidden: true}
   ],
   help: `
 Example:
@@ -105,4 +106,4 @@ Example:
   needsAuth: true,
   needsApp: true,
   run: cli.command(co.wrap(run))
-};
+}

@@ -1,16 +1,18 @@
-'use strict';
+'use strict'
+/* globals describe beforeEach it */
 
-let nock   = require('nock');
-let cmd    = require('../../../commands/maintenance/on');
+const cli = require('heroku-cli-util')
+const nock = require('nock')
+const cmd = require('../../../commands/maintenance/on')
 
-describe('maintenance:on', function() {
-  beforeEach(() => cli.mockConsole());
+describe('maintenance:on', function () {
+  beforeEach(() => cli.mockConsole())
 
-  it('turns maintenance mode on', function() {
+  it('turns maintenance mode on', function () {
     let api = nock('https://api.heroku.com:443')
       .patch('/apps/myapp', {maintenance: true})
-      .reply(200);
+      .reply(200)
     return cmd.run({app: 'myapp'})
-    .then(() => api.done());
-  });
-});
+      .then(() => api.done())
+  })
+})

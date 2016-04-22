@@ -1,38 +1,38 @@
-'use strict';
+'use strict'
 
-let co     = require('co');
-let cli    = require('heroku-cli-util');
-let _      = require('lodash');
+let co = require('co')
+let cli = require('heroku-cli-util')
+let _ = require('lodash')
 
-function* run (context, heroku) {
-  let git = require('../../lib/git')(context);
+function * run (context, heroku) {
+  let git = require('../../lib/git')(context)
 
-  let oldApp = context.app;
-  let newApp = context.args.newname;
+  let oldApp = context.app
+  let newApp = context.args.newname
 
   let request = heroku.request({
     method: 'PATCH',
-    path:   `/apps/${oldApp}`,
-    body:   {name: newApp},
-  });
-  let app = yield cli.action(`Renaming ${cli.color.cyan(oldApp)} to ${cli.color.green(newApp)}`, request);
-  let gitUrl = context.flags['ssh-git'] ? git.sshGitHurl(app.name) : git.gitUrl(app.name);
-  cli.log(`${app.web_url} | ${gitUrl}`);
+    path: `/apps/${oldApp}`,
+    body: {name: newApp}
+  })
+  let app = yield cli.action(`Renaming ${cli.color.cyan(oldApp)} to ${cli.color.green(newApp)}`, request)
+  let gitUrl = context.flags['ssh-git'] ? git.sshGitHurl(app.name) : git.gitUrl(app.name)
+  cli.log(`${app.web_url} | ${gitUrl}`)
 
   if (git.inGitRepo()) {
     // delete git remotes pointing to this app
     yield _(yield git.listRemotes())
-    .filter(r => git.gitUrl(oldApp) === r[1] || git.sshGitUrl(oldApp) === r[1])
-    .map(r => r[0])
-    .uniq()
-    .map(r => {
-      return git.rmRemote(r)
-      .then(() => git.createRemote(r, gitUrl))
-      .then(() => cli.log(`Git remote ${r} updated`));
-    }).value();
+      .filter((r) => git.gitUrl(oldApp) === r[1] || git.sshGitUrl(oldApp) === r[1])
+      .map((r) => r[0])
+      .uniq()
+      .map((r) => {
+        return git.rmRemote(r)
+          .then(() => git.createRemote(r, gitUrl))
+          .then(() => cli.log(`Git remote ${r} updated`))
+      }).value()
   }
 
-  cli.warn("Don't forget to update git remotes for all other local checkouts of the app.");
+  cli.warn("Don't forget to update git remotes for all other local checkouts of the app.")
 }
 
 let cmd = {
@@ -49,13 +49,13 @@ Example:
   Git remote heroku updated
   `,
   needsAuth: true,
-  needsApp:  true,
-  args:  [{name: 'newname'}],
+  needsApp: true,
+  args: [{name: 'newname'}],
   flags: [
-    {name: 'ssh-git', description: 'use ssh git protocol instead of https'},
+    {name: 'ssh-git', description: 'use ssh git protocol instead of https'}
   ],
   run: cli.command(co.wrap(run))
-};
+}
 
-module.exports.apps = cmd;
-module.exports.root = Object.assign({}, cmd, {topic: 'rename', command: null});
+module.exports.apps = cmd
+module.exports.root = Object.assign({}, cmd, {topic: 'rename', command: null})

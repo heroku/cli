@@ -1,30 +1,30 @@
-'use strict';
+'use strict'
 
-let cli         = require('heroku-cli-util');
-let co          = require('co');
+let cli = require('heroku-cli-util')
+let co = require('co')
 
-function* run (context, heroku) {
-  let domains = yield heroku.request({path: `/apps/${context.app}/domains`});
+function * run (context, heroku) {
+  let domains = yield heroku.request({path: `/apps/${context.app}/domains`})
   if (context.flags.json) {
-    cli.log(JSON.stringify(domains, null, 2));
+    cli.log(JSON.stringify(domains, null, 2))
   } else {
-    let herokuDomains = domains.filter(d => d.kind === 'heroku');
-    let customDomains = domains.filter(d => d.kind !== 'heroku');
-    cli.styledHeader(`${context.app} Heroku Domain`);
+    let herokuDomains = domains.filter((d) => d.kind === 'heroku')
+    let customDomains = domains.filter((d) => d.kind !== 'heroku')
+    cli.styledHeader(`${context.app} Heroku Domain`)
     if (herokuDomains.length === 0) {
-      cli.warn('Not found');
+      cli.warn('Not found')
     } else {
-      herokuDomains.forEach(d => cli.log(d.hostname));
+      herokuDomains.forEach((d) => cli.log(d.hostname))
     }
-    cli.log();
+    cli.log()
     if (customDomains.length > 0) {
-      cli.styledHeader(`${context.app} Custom Domains`);
+      cli.styledHeader(`${context.app} Custom Domains`)
       cli.table(customDomains, {
         columns: [
           {key: 'hostname', label: 'Domain Name'},
-          {key: 'cname',    label: 'DNS Target'},
+          {key: 'cname', label: 'DNS Target'}
         ]
-      });
+      })
     }
   }
 }
@@ -47,7 +47,7 @@ Example:
   needsApp: true,
   needsAuth: true,
   flags: [
-    {name: 'json', description: 'output in json format'},
+    {name: 'json', description: 'output in json format'}
   ],
   run: cli.command(co.wrap(run))
-};
+}

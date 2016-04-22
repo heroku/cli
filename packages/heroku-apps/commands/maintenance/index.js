@@ -1,11 +1,11 @@
-'use strict';
+'use strict'
 
-let cli = require('heroku-cli-util');
-let co  = require('co');
+let cli = require('heroku-cli-util')
+let co = require('co')
 
-function* run (context, heroku) {
-  let app = yield heroku.apps(context.app).info();
-  cli.log(app.maintenance ? 'on' : 'off');
+function * run (context, heroku) {
+  let app = yield heroku.apps(context.app).info()
+  cli.log(app.maintenance ? 'on' : 'off')
 }
 
 module.exports = {
@@ -14,4 +14,4 @@ module.exports = {
   needsApp: true,
   needsAuth: true,
   run: cli.command(co.wrap(run))
-};
+}
