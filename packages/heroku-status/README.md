@@ -6,6 +6,8 @@ CLI Plugin for [Heroku Status](https://status.heroku.com) [![Circle CI](https://
 [![npm version](https://badge.fury.io/js/heroku-status.svg)](https://badge.fury.io/js/heroku-status)
 [![License](https://img.shields.io/github/license/heroku/heroku-status.svg)](https://github.com/heroku/heroku-status/blob/master/LICENSE)
 
+[![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)
+
 Read more about Toolbelt 4.0 plugins [here](https://github.com/heroku/heroku-hello-world#heroku-hello-world).
 
 
