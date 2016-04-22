@@ -1,19 +1,19 @@
-'use strict';
+'use strict'
 
-let cli = require('heroku-cli-util');
-let co  = require('co');
+let cli = require('heroku-cli-util')
+let co = require('co')
 
-function* run (context, heroku) {
-  let app = context.app;
-  let attachment = yield heroku.get(`/apps/${app}/addon-attachments/${context.args.attachment_name}`);
+function * run (context, heroku) {
+  let app = context.app
+  let attachment = yield heroku.get(`/apps/${app}/addon-attachments/${context.args.attachment_name}`)
 
   yield cli.action(
     `Detaching ${cli.color.attachment(attachment.name)} to ${cli.color.addon(attachment.addon.name)} from ${cli.color.app(app)}`,
     heroku.request({
       path: `/addon-attachments/${attachment.id}`,
-      method: 'DELETE',
+      method: 'DELETE'
     })
-  );
+  )
 
   let releases = yield cli.action(
     `Unsetting ${cli.color.attachment(attachment.name)} config vars and restarting ${cli.color.app(app)}`,
@@ -21,10 +21,10 @@ function* run (context, heroku) {
     heroku.request({
       path: `/apps/${app}/releases`,
       partial: true,
-      headers: { 'Range': `version ..; max=1, order=desc` },
+      headers: { 'Range': 'version ..; max=1, order=desc' }
     })
-  );
-  cli.console.error(`done, v${releases[0].version}`);
+  )
+  cli.console.error(`done, v${releases[0].version}`)
 }
 
 module.exports = {
@@ -35,4 +35,4 @@ module.exports = {
   needsApp: true,
   args: [{name: 'attachment_name'}],
   run: cli.command({preauth: true}, co.wrap(run))
-};
+}

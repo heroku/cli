@@ -1,19 +1,19 @@
-'use strict';
+'use strict'
 
-let cli     = require('heroku-cli-util');
-let co      = require('co');
-let fs      = require('fs');
-let resolve = require('../../lib/resolve');
+let cli = require('heroku-cli-util')
+let co = require('co')
+let fs = require('fs')
+let resolve = require('../../lib/resolve')
 
 function open (url) {
-  cli.log(`Opening ${cli.color.cyan(url)}...`);
-  return cli.open(url);
+  cli.log(`Opening ${cli.color.cyan(url)}...`)
+  return cli.open(url)
 }
 
-const ssoPath = '/tmp/heroku-sso.html';
+const ssoPath = '/tmp/heroku-sso.html'
 
 function writeSudoTemplate (ctx, sso, path) {
-  return new Promise(function (fulfill, reject) {
+  return new Promise(function (resolve, reject) {
     let html = `<!DOCTYPE HTML>
 <html>
   <head>
@@ -28,66 +28,66 @@ function writeSudoTemplate (ctx, sso, path) {
     </form>
 
     <script type="text/javascript">
-      var params = ${JSON.stringify(sso.params)};
-      var form = document.forms[0];
+      var params = ${JSON.stringify(sso.params)}
+      var form = document.forms[0]
       $(document).ready(function() {
         $.each(params, function(key, value) {
           $('<input>').attr({ type: 'hidden', name: key, value: value })
-            .appendTo(form);
-        });
-        form.submit();
+            .appendTo(form)
+        })
+        form.submit()
       })
     </script>
   </body>
-</html>`;
+</html>`
     fs.writeFile(path, html, function (err) {
-      if (err) reject(err);
-      else     fulfill();
-    });
-  });
+      if (err) reject(err)
+      else resolve()
+    })
+  })
 }
 
-let sudo = co.wrap(function* (ctx, api) {
+let sudo = co.wrap(function * (ctx, api) {
   let sso = yield api.request({
-    method:  'GET',
-    path:    `/apps/${ctx.app}/addons/${ctx.args.addon}/sso`,
-    headers: {Accept: 'application/json'},
-  });
+    method: 'GET',
+    path: `/apps/${ctx.app}/addons/${ctx.args.addon}/sso`,
+    headers: {Accept: 'application/json'}
+  })
   if (sso.method === 'get') {
-    yield open(sso.action);
+    yield open(sso.action)
   } else {
-    yield writeSudoTemplate(ctx, sso, ssoPath);
-    yield open(`file://${ssoPath}`);
+    yield writeSudoTemplate(ctx, sso, ssoPath)
+    yield open(`file://${ssoPath}`)
   }
-});
+})
 
-function* run (ctx, api) {
-  if (process.env.HEROKU_SUDO) return sudo(ctx, api);
+function * run (ctx, api) {
+  if (process.env.HEROKU_SUDO) return sudo(ctx, api)
 
-  let attachment = yield resolve.attachment(api, ctx.app, ctx.args.addon);
-  let web_url;
+  let attachment = yield resolve.attachment(api, ctx.app, ctx.args.addon)
+  let web_url
 
   if (attachment) {
-    web_url = attachment.web_url;
+    web_url = attachment.web_url
   } else {
-    let addon = yield resolve.addon(api, ctx.app, ctx.args.addon);
-    web_url = addon.web_url;
+    let addon = yield resolve.addon(api, ctx.app, ctx.args.addon)
+    web_url = addon.web_url
   }
 
   if (ctx.flags['show-url']) {
-    cli.log(web_url);
+    cli.log(web_url)
   } else {
-    yield open(web_url);
+    yield open(web_url)
   }
 }
 
 module.exports = {
-  topic:       'addons',
-  command:     'open',
-  wantsApp:    true,
-  needsAuth:   true,
-  args:        [{name: 'addon'}],
-  flags:       [{name: 'show-url', description: 'show URL, do not open browser'}],
-  run:         cli.command({preauth: true}, co.wrap(run)),
-  description: `open an add-on's dashboard in your browser`
-};
+  topic: 'addons',
+  command: 'open',
+  wantsApp: true,
+  needsAuth: true,
+  args: [{name: 'addon'}],
+  flags: [{name: 'show-url', description: 'show URL, do not open browser'}],
+  run: cli.command({preauth: true}, co.wrap(run)),
+  description: "open an add-on's dashboard in your browser"
+}

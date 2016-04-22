@@ -1,86 +1,86 @@
-'use strict';
+'use strict'
 
-let cli      = require('heroku-cli-util');
-let co       = require('co');
-let _        = require('lodash');
-let resolver = require('../../lib/resolve');
-let util     = require('../../lib/util');
+let cli = require('heroku-cli-util')
+let co = require('co')
+let _ = require('lodash')
+let resolver = require('../../lib/resolve')
+let util = require('../../lib/util')
 
-let context;
-let heroku;
-let app;
-let name;
-let plan;
-let addon;
-let service;
+let context
+let heroku
+let app
+let name
+let plan
+let addon
+let service
 
 function noPlanError () {
   throw new Error(`Error: No plan specified.
 You need to specify a plan to move ${cli.color.yellow(name)} to.
 For example: ${cli.color.blue('heroku addons:upgrade heroku-redis:premium-0')}
 
-${cli.color.cyan('https://devcenter.heroku.com/articles/managing-add-ons')}`);
+${cli.color.cyan('https://devcenter.heroku.com/articles/managing-add-ons')}`)
 }
 
 function handlePlanChangeAPIError (err) {
-  if (err.statusCode === 422 && err.body.message && err.body.message.startsWith('Couldn\'t find either the add-on')) {
+  if (err.statusCode === 422 && err.body.message && err.body.message.startsWith("Couldn't find either the add-on")) {
     return heroku.get(`/addon-services/${service}/plans`)
-    .then(plans => {
-      plans = _.sortBy(plans, 'price.cents').map(plans => plans.name);
-      throw new Error(`${err.body.message}
+      .then((plans) => {
+        plans = _.sortBy(plans, 'price.cents').map((plans) => plans.name)
+        throw new Error(`${err.body.message}
 
 Here are the available plans for ${cli.color.yellow(service)}:
 ${plans.join('\n')}
 
-See more plan information with ${cli.color.blue('heroku addons:plans '+service)}
+See more plan information with ${cli.color.blue('heroku addons:plans ' + service)}
 
-${cli.color.cyan('https://devcenter.heroku.com/articles/managing-add-ons')}`);
-    });
+${cli.color.cyan('https://devcenter.heroku.com/articles/managing-add-ons')}`)
+      })
   }
-  throw err;
+  throw err
 }
 
 function handleAPIError (err) {
   if (err.statusCode === 422 && err.body.id === 'multiple_matches') {
-    let example = err.body.message.split(', ')[2] || 'redis-triangular-1234';
+    let example = err.body.message.split(', ')[2] || 'redis-triangular-1234'
     throw new Error(`${err.body.message}
 
-Multiple add-ons match ${cli.color.yellow(name)}${app ? ' on '+app : ''}
-It is not clear which add-on\'s plan you are trying to change.
+Multiple add-ons match ${cli.color.yellow(name)}${app ? ' on ' + app : ''}
+It is not clear which add-on's plan you are trying to change.
 
 Specify the add-on name instead of the name of the add-on service.
-For example, instead of: ${cli.color.blue('heroku addons:upgrade '+context.args.addon+' '+(context.args.plan || ''))}
-Run this: ${cli.color.blue('heroku addons:upgrade '+example + ' ' + name + ':' + plan)}
-${!app ? 'Alternatively, specify an app to filter by with '+cli.color.blue('--app') : ''}
-${cli.color.cyan('https://devcenter.heroku.com/articles/managing-add-ons')}`);
+For example, instead of: ${cli.color.blue('heroku addons:upgrade ' + context.args.addon + ' ' + (context.args.plan || ''))}
+Run this: ${cli.color.blue('heroku addons:upgrade ' + example + ' ' + name + ':' + plan)}
+${!app ? 'Alternatively, specify an app to filter by with ' + cli.color.blue('--app') : ''}
+${cli.color.cyan('https://devcenter.heroku.com/articles/managing-add-ons')}`)
   }
-  throw err;
+  throw err
 }
 
-function* run (c, h) {
-  context = c;
-  heroku  = h;
-  app     = context.app;
-  name    = context.args.addon;
-  plan    = context.args.plan;
+function * run (c, h) {
+  context = c
+  heroku = h
+  app = context.app
+  name = context.args.addon
+  plan = context.args.plan
 
   // called with just one argument in the form of `heroku addons:upgrade heroku-redis:hobby`
   if (!plan && name.indexOf(':') !== -1) {
-    let s = name.split(':');
-    name = s[0];
-    plan = s[1];
+    let s = name.split(':')
+    name = s[0]
+    plan = s[1]
   }
 
-  if (!plan) noPlanError();
+  if (!plan) noPlanError()
   // ignore the service part of the plan since we can infer the service based on the add-on
-  if (plan.indexOf(':') !== -1) plan = plan.split(':')[1];
+  if (plan.indexOf(':') !== -1) plan = plan.split(':')[1]
 
   // find the add-on to be changed
-  addon = yield resolver.addon(heroku, app, name).catch(e => handleAPIError(e));
+  addon = yield resolver.addon(heroku, app, name).catch((e) => handleAPIError(e))
 
-  service = addon.addon_service.name;
-  app     = addon.app.name;
-  plan    = `${service}:${plan}`;
+  service = addon.addon_service.name
+  app = addon.app.name
+  plan = `${service}:${plan}`
   addon = yield cli.action(`Changing ${cli.color.magenta(addon.name)} on ${cli.color.cyan(app)} from ${cli.color.blue(addon.plan.name)} to ${cli.color.blue(plan)}`, {success: false},
     heroku.request({
       path: `/apps/${app}/addons/${addon.name}`,
@@ -88,12 +88,12 @@ function* run (c, h) {
       body: {plan: {name: plan}},
       headers: {
         'Accept-Expansion': 'plan',
-        'X-Heroku-Legacy-Provider-Messages': 'true',
+        'X-Heroku-Legacy-Provider-Messages': 'true'
       }
-    }).catch(e => handlePlanChangeAPIError(e))
-  );
-  cli.console.error(`done, ${cli.color.green(util.formatPrice(addon.plan.price))}`);
-  if (addon.provision_message) cli.log(addon.provision_message);
+    }).catch((e) => handlePlanChangeAPIError(e))
+  )
+  cli.console.error(`done, ${cli.color.green(util.formatPrice(addon.plan.price))}`)
+  if (addon.provision_message) cli.log(addon.provision_message)
 }
 
 let cmd = {
@@ -121,7 +121,7 @@ Examples:
   wantsApp: true,
   args: [{name: 'addon'}, {name: 'plan', optional: true}],
   run: cli.command(co.wrap(run))
-};
+}
 
-exports.upgrade   = Object.assign({command: 'upgrade'  }, cmd);
-exports.downgrade = Object.assign({command: 'downgrade'}, cmd);
+exports.upgrade = Object.assign({command: 'upgrade'}, cmd)
+exports.downgrade = Object.assign({command: 'downgrade'}, cmd)
