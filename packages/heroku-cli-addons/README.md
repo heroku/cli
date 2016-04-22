@@ -5,6 +5,8 @@
 [![npm version](https://badge.fury.io/js/heroku-cli-addons.svg)](https://badge.fury.io/js/heroku-cli-addons)
 [![License](https://img.shields.io/github/license/heroku/heroku-cli-addons.svg)](https://github.com/heroku/heroku-cli-addons/blob/master/LICENSE)
 
+[![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)
+
 This re-implements the `heroku addons [--app APP|--all]` command in Node with a
 new UX which aims to make the concepts clearer and the relationships between
 them more accessible.
