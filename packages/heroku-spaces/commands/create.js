@@ -11,13 +11,13 @@ function* run(context, heroku) {
     path: '/spaces',
     body: {
       name: space,
-      organization: context.flags.org,
+      organization: context.org,
       channel_name: context.flags.channel,
       region: context.flags.region,
       log_drain_url: context.flags['log-drain-url'],
     }
   });
-  space = yield cli.action(`Creating space ${cli.color.green(space)} in organization ${cli.color.cyan(context.flags.org)}`, request);
+  space = yield cli.action(`Creating space ${cli.color.green(space)} in organization ${cli.color.cyan(context.org)}`, request);
   cli.styledHeader(space.name);
   cli.styledObject({
     ID:              space.id,
@@ -44,11 +44,11 @@ Example:
   Created at:   2016-01-06T03:23:13Z
   `,
   needsApp: false,
+  needsOrg: true,
   needsAuth: true,
   args: [{name: 'space', optional: true, hidden: true}],
   flags: [
     {name: 'space', char: 's', hasValue: true, description: 'name of space to create'},
-    {name: 'org', char: 'o', required: true, hasValue: true, description: 'organization name'},
     {name: 'channel', hasValue: true, hidden: true},
     {name: 'region', hasValue: true, description: 'region name'},
     {name: 'log-drain-url', hasValue: true, hidden: true, description: 'direct log drain url'},

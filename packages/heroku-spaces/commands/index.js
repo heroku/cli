@@ -22,13 +22,13 @@ function displayJSON (spaces) {
 
 function* run(context, heroku) {
   let spaces = yield heroku.get('/spaces');
-  if (context.flags.org) {
-    spaces = spaces.filter(s => s.organization.name === context.flags.org);
+  if (context.org) {
+    spaces = spaces.filter(s => s.organization.name === context.org);
   }
   spaces = _.sortByAll(spaces, 'name');
   if (context.flags.json) displayJSON(spaces);
   else if (spaces.length === 0) {
-    if (context.flags.org) throw new Error(`No spaces in ${cli.color.cyan(context.flags.org)}.`);
+    if (context.org) throw new Error(`No spaces in ${cli.color.cyan(context.org)}.`);
     else throw new Error('You do not have access to any spaces.');
   }
   else display(spaces);
@@ -37,10 +37,9 @@ function* run(context, heroku) {
 module.exports = {
   topic: 'spaces',
   description: 'list available spaces',
-  needsApp: false,
+  wantsOrg: true,
   needsAuth: true,
   flags: [
-    {name: 'org', char: 'o', hasValue: true, description: 'filter by org'},
     {name: 'json', description: 'output in json format'},
   ],
   run: cli.command(co.wrap(run))

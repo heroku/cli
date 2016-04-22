@@ -19,7 +19,7 @@ describe('spaces:create', function() {
       .reply(201,
         {name: 'my-space', organization: {name: 'my-org'}, region: {name: 'my-region'}, state: 'enabled', created_at: now}
       );
-    return cmd.run({flags: {space: 'my-space', org: 'my-org', region: 'my-region'}})
+    return cmd.run({org: 'my-org', flags: {space: 'my-space', region: 'my-region'}})
     .then(() => expect(cli.stdout).to.equal(
 `=== my-space
 Organization: my-org
