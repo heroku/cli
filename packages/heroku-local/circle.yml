@@ -1,0 +1,8 @@
+machine:
+  node:
+    version: v5.10.1
+dependencies:
+  pre:
+    - sudo add-apt-repository ppa:duggan/bats -y
+    - sudo apt-get update
+    - sudo apt-get install bats

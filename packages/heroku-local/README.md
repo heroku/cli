@@ -1,4 +1,4 @@
-heroku-local
+heroku-local [![Circle CI](https://circleci.com/gh/heroku/heroku-local/tree/master.svg?style=svg)](https://circleci.com/gh/heroku/heroku-local/tree/master)
 ============
 
 Run heroku apps locally. This plugin is built into the Heroku Toolbelt, you do not need to install it separately.

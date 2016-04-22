@@ -1,25 +1,11 @@
 {
   "name": "heroku-local",
-  "version": "5.0.1",
   "description": "run heroku apps locally",
-  "main": "index.js",
+  "version": "5.0.1",
   "author": "Jeff Dickey @dickeyxxx",
-  "scripts": {
-    "test": "standard | snazzy",
-    "preversion": "npm test",
-    "postversion": "npm publish && git push && git push --tags"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/heroku/heroku-local"
-  },
   "bugs": {
     "url": "https://github.com/heroku/heroku-local/issues"
   },
-  "keywords": [
-    "heroku-plugin"
-  ],
-  "license": "ISC",
   "dependencies": {
     "foreman": "1.4.1",
     "heroku-cli-util": "5.10.10"
@@ -27,5 +13,19 @@
   "devDependencies": {
     "snazzy": "3.0.1",
     "standard": "6.0.8"
+  },
+  "keywords": [
+    "heroku-plugin"
+  ],
+  "license": "ISC",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/heroku/heroku-local"
+  },
+  "scripts": {
+    "postversion": "npm publish && git push && git push --tags",
+    "preversion": "npm test",
+    "test": "bats test && standard | snazzy"
   }
 }
