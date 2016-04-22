@@ -52,6 +52,32 @@ FOO: foo
       .then(() => api.done())
   })
 
+  it('shows most recent release info config vars as shell', function () {
+    let api = nock('https://api.heroku.com:443')
+      .get('/apps/myapp/releases')
+      .reply(200, [{version: 10}])
+      .get('/apps/myapp/releases/10')
+      .matchHeader('accept', 'application/vnd.heroku+json; version=3.release_status')
+      .reply(200, release)
+      .get('/apps/myapp/releases/10')
+      .matchHeader('accept', 'application/json')
+      .reply(200, v2release)
+    return cmd.run({app: 'myapp', flags: {shell: true}, args: {}})
+      .then(() => expect(cli.stdout, 'to equal', `=== Release v10
+Add-ons: addon1
+         addon2
+By:      foo@foo.com
+Change:  something changed
+When:    ${d.toISOString()}
+
+=== v10 Config vars
+FOO=foo
+BAR=bar
+`))
+      .then(() => expect(cli.stderr, 'to be empty'))
+      .then(() => api.done())
+  })
+
   it('shows release info by id', function () {
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/releases/10')
