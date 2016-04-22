@@ -5,6 +5,8 @@ heroku-local [![Circle CI](https://circleci.com/gh/heroku/heroku-local/tree/mast
 [![npm version](https://badge.fury.io/js/heroku-local.svg)](https://badge.fury.io/js/heroku-local)
 [![License](https://img.shields.io/github/license/heroku/heroku-local.svg)](https://github.com/heroku/heroku-local/blob/master/LICENSE)
 
+[![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)
+
 Run heroku apps locally. This plugin is built into the Heroku Toolbelt, you do not need to install it separately.
 
 To use:
