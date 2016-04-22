@@ -32,6 +32,16 @@ module.exports = function (context) {
     return `https://${context.httpGitHost}/${app}.git`
   }
 
+  function remoteUrl (name) {
+    return exec(['remote', '-v'])
+    .then(function (remotes) {
+      return remotes.split('\n')
+      .map((r) => r.split('\t'))
+      .find((r) => r[0] === name)[1]
+      .split(' ')[0]
+    })
+  }
+
   function url (app, ssh) {
     return ssh ? sshGitUrl(app) : httpGitUrl(app)
   }
@@ -40,6 +50,7 @@ module.exports = function (context) {
     exec,
     spawn,
     remoteFromGitConfig,
+    remoteUrl,
     url
   }
 }

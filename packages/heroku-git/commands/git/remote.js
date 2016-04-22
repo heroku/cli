@@ -23,7 +23,8 @@ function * run (context, heroku) {
   } else {
     yield git.exec(['remote', 'add', remote, url].concat(context.args))
   }
-  cli.log(`set git remote ${cli.color.cyan(remote)} to ${cli.color.cyan(url)}`)
+  let newRemote = yield git.remoteUrl('heroku')
+  cli.log(`set git remote ${cli.color.cyan(remote)} to ${cli.color.cyan(newRemote)}`)
 }
 
 module.exports = {
