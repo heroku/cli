@@ -63,7 +63,7 @@ tmp/%/heroku/lib/cacert.pem: resources/cacert.pem
 
 SOURCEDIR=.
 SOURCES := $(shell find $(SOURCEDIR) -name '*.go')
-LDFLAGS=-ldflags "-X=main.Version=$(VERSION) -X=main.Channel=$(CHANNEL) -X=main.GitSHA=$(REVISION) -X=main.NodeVersion=$(NODE_VERSION) -X=main.NodeBase=$(NODE_BASE) -X=main.NpmVersion=$(NPM_VERSION)"
+LDFLAGS=-ldflags "-X=main.Version=$(VERSION) -X=main.Channel=$(CHANNEL) -X=main.GitSHA=$(REVISION) -X=main.NodeVersion=$(NODE_VERSION) -X=main.NpmVersion=$(NPM_VERSION)"
 tmp/darwin-%/heroku/bin/heroku: GOOS=darwin
 tmp/linux-%/heroku/bin/heroku:  GOOS=linux
 tmp/%-amd64/heroku/bin/heroku:  GOARCH=amd64
