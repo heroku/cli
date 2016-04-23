@@ -69,7 +69,7 @@ tmp/%-386/heroku/bin/heroku:    GOARCH=386
 tmp/%/heroku/bin/heroku: $(SOURCES)
 	GOOS=$(GOOS) GOARCH=$(GOARCH) go build $(LDFLAGS) -o $@
 
-$(DIST_DIR)/%.tar.xz: $(VERSIONS)
+$(DIST_DIR)/heroku-v$(VERSION)-%.tar.xz: $(VERSIONS)
 	@mkdir -p $(@D)
 	tar -C tmp/$* -c heroku | xz > $@
 
@@ -90,7 +90,7 @@ test: build
 all: $(VERSIONS)
 
 .PHONY: dist
-dist: $(foreach target, $(TARGETS), $(DIST_DIR)/$(target).tar.xz)
+dist: $(foreach target, $(TARGETS), $(DIST_DIR)/heroku-v$(VERSION)-$(target).tar.xz)
 
 NODES = node-v$(NODE_VERSION)-darwin-x64.tar.gz \
 node-v$(NODE_VERSION)-linux-x64.tar.gz \
