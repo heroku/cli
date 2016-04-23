@@ -1,4 +1,4 @@
 #!/bin/bash
 
 make
-./tmp/heroku/bin/heroku-cli $*
+./tmp/`go env GOOS`-`go env GOARCH`/heroku/bin/heroku $*
