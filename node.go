@@ -9,8 +9,8 @@ import (
 	"runtime"
 )
 
-// NodeVersion is the current node version
-const NodeVersion = "5.10.1"
+var NodeBase = "?"
+var NodeVersion = "?"
 
 // RunScript runs some node code
 func (p *Plugins) RunScript(script string) (cmd *exec.Cmd, done func()) {
@@ -42,7 +42,7 @@ func (p *Plugins) RunScript(script string) (cmd *exec.Cmd, done func()) {
 func (p *Plugins) nodeBinPath() string {
 	b := os.Getenv("HEROKU_NODE_PATH")
 	if b == "" {
-		b = filepath.Join(AppDir, "node-"+NodeVersion)
+		b = filepath.Join(AppDir, "lib", NodeBase)
 	}
 	if runtime.GOOS == "windows" {
 		b = b + ".exe"

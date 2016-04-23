@@ -15,7 +15,7 @@ import (
 var NpmRegistry = npmRegistry()
 
 // NpmVersion is the current npm version
-const NpmVersion = "3.8.5"
+var NpmVersion = "?"
 
 // NpmPackage represents an npm package.
 type NpmPackage struct {
