@@ -9,7 +9,6 @@ import (
 	"runtime"
 )
 
-var NodeBase = "?"
 var NodeVersion = "?"
 
 // RunScript runs some node code
@@ -42,7 +41,7 @@ func (p *Plugins) RunScript(script string) (cmd *exec.Cmd, done func()) {
 func (p *Plugins) nodeBinPath() string {
 	b := os.Getenv("HEROKU_NODE_PATH")
 	if b == "" {
-		b = filepath.Join(AppDir, "lib", NodeBase)
+		b = filepath.Join(AppDir, "lib", "node-"+NodeVersion)
 	}
 	if runtime.GOOS == "windows" {
 		b = b + ".exe"
