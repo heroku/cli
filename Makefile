@@ -10,6 +10,7 @@ CHANNEL=$(shell git rev-parse --abbrev-ref HEAD)
 GOOS=$(shell go env GOOS)
 GOARCH=$(shell go env GOARCH)
 WORKSPACE=tmp/$(GOOS)-$(GOARCH)/heroku
+VERSIONS:=$(foreach target, $(TARGETS), tmp/$(target)/heroku/VERSION)
 
 NODE_BASE=node-v$(NODE_VERSION)-$(NODE_OS)-$(NODE_ARCH)
 tmp/darwin-%/heroku/lib/node-$(NODE_VERSION): NODE_OS=darwin
@@ -72,7 +73,6 @@ test: build
 	$(WORKSPACE)/bin/heroku plugins
 	$(WORKSPACE)/bin/heroku status
 
-VERSIONS := $(foreach target, $(TARGETS), tmp/$(target)/heroku/VERSION)
 .PHONY: all
 all: $(VERSIONS)
 
