@@ -31,14 +31,16 @@ $(NPM_ARCHIVE):
 	curl -Lso $@ https://github.com/npm/npm/archive/v$(NPM_VERSION).tar.gz
 
 $(NPM_PATH): $(NPM_ARCHIVE)
+	mkdir -p $(@D)
 	tar -C $(@D) -xzf $(NPM_ARCHIVE)
+	touch $@
 
 NODE_MODULES=$(WORKSPACE)/lib/node_modules
 $(NODE_MODULES): $(BINARY) package.json
 	cp package.json $(@D)/package.json
 	$(BINARY) setup
 
-$(BINARY): $(SOURCES) $(NODE_PATH) $(NPM_PATH)
+$(BINARY): $(SOURCES) $(NPM_PATH) $(NODE_PATH)
 	go build $(LDFLAGS) -o $(BINARY)
 
 .PHONY: build
