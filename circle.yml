@@ -33,7 +33,7 @@ test:
       test ${PIPESTATUS[0]} -eq 0
     - ~/bats/bin/bats test
   post:
-    - gometalinter || true
+    - gometalinter --deadline 30s || true
     - |
       cat output | go-junit-report > $CIRCLE_TEST_REPORTS/go/junit.xml;
       go tool cover -html=coverage.out -o $CIRCLE_ARTIFACTS/coverage.html;
