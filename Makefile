@@ -89,14 +89,16 @@ test: build
 .PHONY: all
 all: $(VERSIONS)
 
+DIST_TARGETS := $(foreach target, $(TARGETS), $(DIST_DIR)/heroku-v$(VERSION)-$(target).tar.xz)
 .PHONY: dist
-dist: $(foreach target, $(TARGETS), $(DIST_DIR)/heroku-v$(VERSION)-$(target).tar.xz)
+dist: $(DIST_TARGETS)
 
 NODES = node-v$(NODE_VERSION)-darwin-x64.tar.gz \
 node-v$(NODE_VERSION)-linux-x64.tar.gz \
 win-x64/node.exe
+NODE_TARGETS := $(foreach node, $(NODES), tmp/node-v$(NODE_VERSION)/$(node))
 .PHONY: deps
-deps: $(NPM_ARCHIVE) $(foreach node, $(NODES), tmp/node-v$(NODE_VERSION)/$(node))
+deps: $(NPM_ARCHIVE) $(NODE_TARGETS)
 
 .DEFAULT_GOAL=build
 .SECONDARY:
