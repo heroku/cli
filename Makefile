@@ -57,7 +57,7 @@ tmp/%-386/heroku/bin/heroku:    GOARCH=386
 tmp/%/heroku/bin/heroku: $(SOURCES)
 	GOOS=$(GOOS) GOARCH=$(GOARCH) go build $(LDFLAGS) -o $@
 
-dist/%.tar.xz: $(VERSIONS)
+$(DIST_DIR)/%.tar.xz: $(VERSIONS)
 	@mkdir -p $(@D)
 	tar -C tmp/$* -c heroku | xz > $@
 
@@ -78,7 +78,7 @@ test: build
 all: $(VERSIONS)
 
 .PHONY: dist
-dist: $(foreach target, $(TARGETS), dist/$(target).tar.xz)
+dist: $(foreach target, $(TARGETS), $(DIST_DIR)/$(target).tar.xz)
 
 .DEFAULT_GOAL=build
 .SECONDARY:
