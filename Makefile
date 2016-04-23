@@ -14,16 +14,19 @@ WORKSPACE=tmp/$(GOOS)-$(GOARCH)/heroku
 VERSIONS:=$(foreach target, $(TARGETS), tmp/$(target)/heroku/VERSION)
 
 NODE_BASE=node-v$(NODE_VERSION)-$(NODE_OS)-$(NODE_ARCH)
+tmp/node-v$(NODE_VERSION)/%:
+	@mkdir -p $(@D)
+	curl -Lso $@ https://nodejs.org/dist/v$(NODE_VERSION)/$*
+
+.SECONDEXPANSION:
 tmp/darwin-%/heroku/lib/node-$(NODE_VERSION): NODE_OS=darwin
 tmp/linux-%/heroku/lib/node-$(NODE_VERSION):  NODE_OS=linux
 tmp/%-amd64/heroku/lib/node-$(NODE_VERSION):  NODE_ARCH=x64
 tmp/%-386/heroku/lib/node-$(NODE_VERSION):    NODE_ARCH=x86
-tmp/%/heroku/lib/node-$(NODE_VERSION):
-	@mkdir -p $(@D)
-	curl -Lso tmp/$(NODE_BASE).tar.gz https://nodejs.org/dist/v$(NODE_VERSION)/$(NODE_BASE).tar.gz
-	tar -C tmp -xzf tmp/$(NODE_BASE).tar.gz
-	mv tmp/$(NODE_BASE)/bin/node $@
-	rm -rf tmp/$(NODE_BASE)*
+tmp/%/heroku/lib/node-$(NODE_VERSION): tmp/node-v$(NODE_VERSION)/$$(NODE_BASE).tar.gz
+	tar -C tmp/node-v$(NODE_VERSION) -xzf $<
+	mv tmp/node-v$(NODE_VERSION)/$(NODE_BASE)/bin/node $@
+	rm -rf tmp/node-v$(NODE_VERSION)/$(NODE_BASE)*
 
 NPM_ARCHIVE=tmp/npm-v$(NPM_VERSION).tar.gz
 $(NPM_ARCHIVE):
@@ -32,14 +35,14 @@ $(NPM_ARCHIVE):
 tmp/%/heroku/lib/npm-$(NPM_VERSION): $(NPM_ARCHIVE)
 	@mkdir -p $(@D)
 	tar -C $(@D) -xzf $(NPM_ARCHIVE)
-	touch $@
+	@touch $@
 
 $(WORKSPACE)/lib/plugins.json: $(WORKSPACE)/bin/heroku package.json $(WORKSPACE)/lib/npm-$(NPM_VERSION) $(WORKSPACE)/lib/node-$(NODE_VERSION)
 	@mkdir -p $(@D)
 	cp package.json $(@D)/package.json
 	$(WORKSPACE)/bin/heroku setup
 
-tmp/%/heroku/lib/plugins.json: $($(WORKSPACE)/lib/plugins.json)
+tmp/%/heroku/lib/plugins.json: $(WORKSPACE)/lib/plugins.json
 	cp $(WORKSPACE)/lib/plugins.json $@
 	cp $(WORKSPACE)/lib/package.json $(@D)/package.json
 	cp -r $(WORKSPACE)/lib/node_modules $(@D)
@@ -79,6 +82,12 @@ all: $(VERSIONS)
 
 .PHONY: dist
 dist: $(foreach target, $(TARGETS), $(DIST_DIR)/$(target).tar.xz)
+
+NODES = node-v$(NODE_VERSION)-darwin-x64.tar.gz \
+node-v$(NODE_VERSION)-linux-x64.tar.gz \
+win-x64/node.exe
+.PHONY: deps
+deps: $(NPM_ARCHIVE) $(foreach node, $(NODES), tmp/node-v$(NODE_VERSION)/$(node))
 
 .DEFAULT_GOAL=build
 .SECONDARY:
