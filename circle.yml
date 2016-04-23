@@ -22,6 +22,7 @@ dependencies:
     - >
       mkdir -p
       $CIRCLE_TEST_REPORTS/go
+    - make deps
 test:
   override:
     - >
@@ -31,7 +32,6 @@ test:
       test ${PIPESTATUS[0]} -eq 0
     - make test
   post:
-    - DIST_DIR=$CIRCLE_ARTIFACTS make dist -j4
     - gometalinter --deadline 30s || true
     - |
       cat output | go-junit-report > $CIRCLE_TEST_REPORTS/go/junit.xml;
@@ -41,4 +41,4 @@ deployment:
   v5:
     branch: v5
     commands:
-      - echo "deploy!!"
+      - DIST_DIR=$CIRCLE_ARTIFACTS make dist -j4
