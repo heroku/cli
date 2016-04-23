@@ -33,7 +33,7 @@ test:
       -cover -coverprofile=coverage.out
       | tee output;
       test ${PIPESTATUS[0]} -eq 0
-    - make test
+    - make test -j4
   post:
     - gometalinter --deadline 30s || true
     - |
