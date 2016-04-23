@@ -8,10 +8,7 @@ checkout:
       rm -rf ~/$CIRCLE_PROJECT_REPONAME;
       ln -s ~/.go_workspace/src/github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME ~/$CIRCLE_PROJECT_REPONAME;
 dependencies:
-  cache_directories:
-    - ~/bats
   override:
-    - if [ ! -d ~/bats ]; then git clone https://github.com/sstephenson/bats.git ~/bats; fi
     - >
       go get
       github.com/jstemmer/go-junit-report
@@ -31,7 +28,6 @@ test:
       -cover -coverprofile=coverage.out
       | tee output;
       test ${PIPESTATUS[0]} -eq 0
-    - ~/bats/bin/bats test
     - make test
   post:
     - gometalinter --deadline 30s || true
