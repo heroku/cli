@@ -47,8 +47,14 @@ tmp/%/heroku/lib/plugins.json: $(WORKSPACE)/lib/plugins.json
 	cp $(WORKSPACE)/lib/package.json $(@D)/package.json
 	cp -r $(WORKSPACE)/lib/node_modules $(@D)
 
-tmp/%/heroku/VERSION: tmp/%/heroku/bin/heroku tmp/%/heroku/lib/npm-$(NPM_VERSION) tmp/%/heroku/lib/node-$(NODE_VERSION) tmp/%/heroku/lib/plugins.json bin/version
+tmp/%/heroku/VERSION: tmp/%/heroku/bin/heroku tmp/%/heroku/lib/npm-$(NPM_VERSION) tmp/%/heroku/lib/node-$(NODE_VERSION) tmp/%/heroku/lib/plugins.json bin/version tmp/%/heroku/README.md tmp/%/heroku/CHANGELOG
 	echo $(VERSION) > $@
+
+tmp/%/heroku/README.md: README.md
+	cp README.md $@
+
+tmp/%/heroku/CHANGELOG: CHANGELOG
+	cp CHANGELOG $@
 
 SOURCEDIR=.
 SOURCES := $(shell find $(SOURCEDIR) -name '*.go')
