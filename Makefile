@@ -11,10 +11,13 @@ CHANNEL=$(shell git rev-parse --abbrev-ref HEAD)
 
 GOOS=$(shell go env GOOS)
 GOARCH=$(shell go env GOARCH)
-WORKSPACE=tmp/$(GOOS)-$(GOARCH)/heroku
+WORKSPACE=tmp/dev/heroku
 VERSIONS:=$(foreach target, $(TARGETS), tmp/$(target)/heroku/VERSION)
 
 NODE_BASE=node-v$(NODE_VERSION)-$(NODE_OS)-$(NODE_ARCH)
+NODE_OS=$(GOOS)
+NODE_ARCH=x64
+
 $(CACHE_DIR)/node-v$(NODE_VERSION)/%:
 	@mkdir -p $(@D)
 	curl -Lso $@ https://nodejs.org/dist/v$(NODE_VERSION)/$*
