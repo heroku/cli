@@ -12,7 +12,7 @@ checkout:
       ln -s ~/.go_workspace/src/github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME ~/$CIRCLE_PROJECT_REPONAME;
 dependencies:
   cache_directories:
-    - ~/deps
+    - $CACHE_DIR
   override:
     - go version
     - >
