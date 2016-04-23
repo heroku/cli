@@ -347,16 +347,6 @@ func (p *Plugins) isPluginSymlinked(plugin string) bool {
 	return fi.Mode()&os.ModeSymlink != 0
 }
 
-func difference(a, b []string) []string {
-	res := make([]string, 0, len(a))
-	for _, aa := range a {
-		if !contains(b, aa) {
-			res = append(res, aa)
-		}
-	}
-	return res
-}
-
 func contains(arr []string, s string) bool {
 	for _, a := range arr {
 		if a == s {

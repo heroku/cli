@@ -1,7 +1,7 @@
 {
 	"ImportPath": "github.com/heroku/cli",
 	"GoVersion": "go1.6",
-	"GodepVersion": "v60",
+	"GodepVersion": "v62",
 	"Deps": [
 		{
 			"ImportPath": "github.com/dickeyxxx/golock",
@@ -27,10 +27,6 @@
 		{
 			"ImportPath": "github.com/lunixbochs/vtclean",
 			"Rev": "99af041082fef905a67c12a5c484d8da26ade604"
-		},
-		{
-			"ImportPath": "github.com/mitchellh/ioprogress",
-			"Rev": "8163955264568045f462ae7e2d6d07b2001fc997"
 		},
 		{
 			"ImportPath": "github.com/stvp/rollbar",

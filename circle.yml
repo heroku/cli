@@ -1,16 +1,40 @@
+---
+checkout:
+  post:
+    - |
+      rm -rf ~/.go_workspace/src/github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME;
+      mkdir -p ~/.go_workspace/src/github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME;
+      cp -R ~/$CIRCLE_PROJECT_REPONAME ~/.go_workspace/src/github.com/$CIRCLE_PROJECT_USERNAME/;
+      rm -rf ~/$CIRCLE_PROJECT_REPONAME;
+      ln -s ~/.go_workspace/src/github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME ~/$CIRCLE_PROJECT_REPONAME;
 dependencies:
+  cache_directories:
+    - ~/bats
   override:
     - if [ ! -d ~/bats ]; then git clone https://github.com/sstephenson/bats.git ~/bats; fi
-    - go get github.com/golang/lint
-    - go get github.com/jstemmer/go-junit-report
-    - mkdir -p $CIRCLE_TEST_REPORTS/go
-  cache_directories:
-    - "~/bats"
+    - >
+      go get
+      github.com/jstemmer/go-junit-report
+      github.com/alecthomas/gometalinter
+      github.com/tools/godep
+      github.com/mattn/goveralls
+    - gometalinter --install
+    - >
+      mkdir -p
+      $CIRCLE_TEST_REPORTS/go
 test:
+  pre:
+    - go version
   override:
-    - go test -v -race ./... | go-junit-report > $CIRCLE_TEST_REPORTS/go/results.xml
-  post:
-    - test -z "$(go fmt)"
-    - test -z "$(golint)"
-    - go vet
+    - >
+      go test -v -race
+      -cover -coverprofile=coverage.out
+      | tee output;
+      test ${PIPESTATUS[0]} -eq 0
     - ~/bats/bin/bats test
+  post:
+    - gometalinter || true
+    - |
+      cat output | go-junit-report > $CIRCLE_TEST_REPORTS/go/junit.xml;
+      go tool cover -html=coverage.out -o $CIRCLE_ARTIFACTS/coverage.html;
+      goveralls -coverprofile=coverage.out -service=circle-ci -repotoken=$COVERALLS_TOKEN;
