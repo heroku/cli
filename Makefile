@@ -4,6 +4,7 @@ NODE_VERSION=5.11.0
 TARGETS=darwin-amd64 linux-amd64
 
 DIST_DIR?=dist
+CACHE_DIR?=tmp
 VERSION=$(shell ./bin/version)
 REVISION=$(shell git log -n 1 --pretty=format:"%H")
 CHANNEL=$(shell git rev-parse --abbrev-ref HEAD)
@@ -14,7 +15,7 @@ WORKSPACE=tmp/$(GOOS)-$(GOARCH)/heroku
 VERSIONS:=$(foreach target, $(TARGETS), tmp/$(target)/heroku/VERSION)
 
 NODE_BASE=node-v$(NODE_VERSION)-$(NODE_OS)-$(NODE_ARCH)
-tmp/node-v$(NODE_VERSION)/%:
+$(CACHE_DIR)/node-v$(NODE_VERSION)/%:
 	@mkdir -p $(@D)
 	curl -Lso $@ https://nodejs.org/dist/v$(NODE_VERSION)/$*
 
@@ -23,12 +24,13 @@ tmp/darwin-%/heroku/lib/node-$(NODE_VERSION): NODE_OS=darwin
 tmp/linux-%/heroku/lib/node-$(NODE_VERSION):  NODE_OS=linux
 tmp/%-amd64/heroku/lib/node-$(NODE_VERSION):  NODE_ARCH=x64
 tmp/%-386/heroku/lib/node-$(NODE_VERSION):    NODE_ARCH=x86
-tmp/%/heroku/lib/node-$(NODE_VERSION): tmp/node-v$(NODE_VERSION)/$$(NODE_BASE).tar.gz
+tmp/%/heroku/lib/node-$(NODE_VERSION): $(CACHE_DIR)/node-v$(NODE_VERSION)/$$(NODE_BASE).tar.gz
+	@mkdir -p tmp/node-v$(NODE_VERSION)
 	tar -C tmp/node-v$(NODE_VERSION) -xzf $<
 	mv tmp/node-v$(NODE_VERSION)/$(NODE_BASE)/bin/node $@
 	rm -rf tmp/node-v$(NODE_VERSION)/$(NODE_BASE)*
 
-NPM_ARCHIVE=tmp/npm-v$(NPM_VERSION).tar.gz
+NPM_ARCHIVE=$(CACHE_DIR)/npm-v$(NPM_VERSION).tar.gz
 $(NPM_ARCHIVE):
 	@mkdir -p $(@D)
 	curl -Lso $@ https://github.com/npm/npm/archive/v$(NPM_VERSION).tar.gz
@@ -78,7 +80,7 @@ build: $(WORKSPACE)/bin/heroku $(WORKSPACE)/lib/plugins.json
 
 .PHONY: clean
 clean:
-	rm -rf tmp dist
+	rm -rf tmp dist $(CACHE_DIR)
 
 .PHONY: test
 test: build
@@ -96,7 +98,7 @@ dist: $(DIST_TARGETS)
 NODES = node-v$(NODE_VERSION)-darwin-x64.tar.gz \
 node-v$(NODE_VERSION)-linux-x64.tar.gz \
 win-x64/node.exe
-NODE_TARGETS := $(foreach node, $(NODES), tmp/node-v$(NODE_VERSION)/$(node))
+NODE_TARGETS := $(foreach node, $(NODES), $(CACHE_DIR)/node-v$(NODE_VERSION)/$(node))
 .PHONY: deps
 deps: $(NPM_ARCHIVE) $(NODE_TARGETS)
 
