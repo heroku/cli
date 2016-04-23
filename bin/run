@@ -1,4 +1,4 @@
 #!/bin/bash
 
-gulp build:workspace
-./tmp/heroku/bin/heroku $*
+make
+./tmp/heroku/bin/heroku-cli $*
