@@ -12,7 +12,7 @@ import (
 	"github.com/dickeyxxx/golock"
 )
 
-var analyticsPath = filepath.Join(HomeDir, ".heroku", "analytics.json")
+var analyticsPath = filepath.Join(CacheHome, "analytics.json")
 var currentAnalyticsCommand = &AnalyticsCommand{
 	Timestamp:  time.Now().Unix(),
 	Version:    version(),
