@@ -236,7 +236,7 @@ cmd.run(ctx);
 
 		currentAnalyticsCommand.Plugin = plugin.Name
 		currentAnalyticsCommand.Version = plugin.Version
-		currentAnalyticsCommand.Language = fmt.Sprintf("node/?")
+		currentAnalyticsCommand.Language = fmt.Sprintf("node/" + NodeVersion)
 
 		cmd, done := p.RunScript(script)
 		cmd.Stdin = os.Stdin

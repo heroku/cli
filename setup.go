@@ -33,7 +33,10 @@ var setupCmd = &Command{
 }
 
 func readPackageJSON(path string) (pjson map[string]interface{}, err error) {
-	if exists, _ := fileExists(path); !exists {
+	if exists, err := fileExists(path); !exists {
+		if err != nil {
+			panic(err)
+		}
 		return map[string]interface{}{}, nil
 	}
 	data, err := ioutil.ReadFile(path)
