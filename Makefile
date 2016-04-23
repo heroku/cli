@@ -3,6 +3,7 @@ NODE_VERSION=5.11.0
 
 TARGETS=darwin-amd64 linux-amd64
 
+DIST_DIR?=dist
 VERSION=$(shell ./bin/version)
 REVISION=$(shell git log -n 1 --pretty=format:"%H")
 CHANNEL=$(shell git rev-parse --abbrev-ref HEAD)

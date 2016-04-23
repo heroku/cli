@@ -1,7 +1,4 @@
 ---
-general:
-  artifacts:
-    - dist
 checkout:
   post:
     - |
@@ -11,6 +8,8 @@ checkout:
       rm -rf ~/$CIRCLE_PROJECT_REPONAME;
       ln -s ~/.go_workspace/src/github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME ~/$CIRCLE_PROJECT_REPONAME;
 dependencies:
+  cache_directories:
+    - tmp
   override:
     - go version
     - >
@@ -32,7 +31,7 @@ test:
       test ${PIPESTATUS[0]} -eq 0
     - make test
   post:
-    - make dist
+    - DIST_DIR=$CIRCLE_ARTIFACTS make dist
     - gometalinter --deadline 30s || true
     - |
       cat output | go-junit-report > $CIRCLE_TEST_REPORTS/go/junit.xml;
