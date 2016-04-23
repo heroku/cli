@@ -12,6 +12,7 @@ checkout:
       ln -s ~/.go_workspace/src/github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME ~/$CIRCLE_PROJECT_REPONAME;
 dependencies:
   override:
+    - go version
     - >
       go get
       github.com/jstemmer/go-junit-report
@@ -23,8 +24,6 @@ dependencies:
       mkdir -p
       $CIRCLE_TEST_REPORTS/go
 test:
-  pre:
-    - go version
   override:
     - >
       go test -v -race
