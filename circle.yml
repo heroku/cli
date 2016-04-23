@@ -1,4 +1,7 @@
 ---
+machine:
+  environment:
+    CACHE_DIR: ~/deps
 checkout:
   post:
     - |
@@ -9,7 +12,7 @@ checkout:
       ln -s ~/.go_workspace/src/github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME ~/$CIRCLE_PROJECT_REPONAME;
 dependencies:
   cache_directories:
-    - tmp
+    - ~/deps
   override:
     - go version
     - >
