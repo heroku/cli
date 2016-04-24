@@ -453,7 +453,7 @@ func (p *Plugins) Update() {
 	packages, err := p.OutdatedPackages(plugins...)
 	WarnIfError(err)
 	if len(packages) > 0 {
-		action("heroku-cli: Updating plugins", "done", func() {
+		action("heroku-cli: Updating plugins", "", func() {
 			for name, version := range packages {
 				p.lockPlugin(name)
 				WarnIfError(p.installPackages(name + "@" + version))
