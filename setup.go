@@ -2,9 +2,9 @@ package main
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"path/filepath"
 	"strings"
+	"time"
 )
 
 var setupTopic = &Topic{
@@ -17,7 +17,7 @@ var setupCmd = &Command{
 	Description: "used in building the CLI",
 	Hidden:      true,
 	Run: func(ctx *Context) {
-		pjson, err := readPackageJSON(filepath.Join(corePlugins.Path, "package.json"))
+		pjson, err := readJSON(filepath.Join(corePlugins.Path, "package.json"))
 		ExitIfError(err)
 		plugins := []string{}
 		for name, v := range pjson["dependencies"].(map[string]interface{}) {
@@ -32,17 +32,51 @@ var setupCmd = &Command{
 	},
 }
 
-func readPackageJSON(path string) (pjson map[string]interface{}, err error) {
-	if exists, err := fileExists(path); !exists {
-		if err != nil {
-			panic(err)
+type Manifest struct {
+	ReleasedAt string            `json:"released_at"`
+	Version    string            `json:"version"`
+	Channel    string            `json:"channel"`
+	Builds     map[string]*Build `json:"builds"`
+}
+type Build struct {
+	Url    string `json:"url"`
+	Sha256 string `json:"sha256"`
+}
+
+var manifestCmd = &Command{
+	Topic:       "setup",
+	Command:     "manifest",
+	Description: "used in building the CLI",
+	Hidden:      true,
+	Flags: []Flag{
+		{Name: "dir", Char: "d", Required: true, HasValue: true},
+		{Name: "version", Char: "v", Required: true, HasValue: true},
+		{Name: "channel", Char: "c", Required: true, HasValue: true},
+		{Name: "targets", Char: "t", Required: true, HasValue: true},
+	},
+	Run: func(ctx *Context) {
+		manifest := &Manifest{
+			ReleasedAt: time.Now().UTC().Format("2006-01-02T15:04:05Z0700"),
+			Version:    ctx.Flags["version"].(string),
+			Channel:    ctx.Flags["channel"].(string),
+			Builds:     map[string]*Build{},
 		}
-		return map[string]interface{}{}, nil
-	}
-	data, err := ioutil.ReadFile(path)
-	if err != nil {
-		return nil, err
-	}
-	err = json.Unmarshal(data, &pjson)
-	return pjson, err
+		dir := (ctx.Flags["dir"].(string))
+		targets := strings.Split(ctx.Flags["targets"].(string), ",")
+		for _, target := range targets {
+			info := strings.Split(target, "-")
+			os := info[0]
+			arch := info[1]
+			file := "heroku-v" + manifest.Version + "-" + target + ".tar.xz"
+			sha, err := fileSha256(filepath.Join(dir, file))
+			ExitIfError(err)
+			manifest.Builds[os+"-"+arch] = &Build{
+				Url:    "https://cli-assets.heroku.com/" + manifest.Channel + "/" + manifest.Version + "/" + file,
+				Sha256: sha,
+			}
+		}
+		data, err := json.MarshalIndent(manifest, "", "  ")
+		ExitIfError(err)
+		Println(string(data))
+	},
 }

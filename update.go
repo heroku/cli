@@ -1,11 +1,9 @@
 package main
 
 import (
-	"crypto/sha1"
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -16,6 +14,8 @@ import (
 	"github.com/franela/goreq"
 	"github.com/ulikunitz/xz"
 )
+
+var Autoupdate = "no"
 
 var updateTopic = &Topic{
 	Name:        "update",
@@ -58,8 +58,7 @@ func Update(channel string, t string) {
 }
 
 func updateCLI(channel string) {
-	if channel == "?" {
-		// do not update dev version
+	if Autoupdate != "yes" {
 		return
 	}
 	manifest, err := getUpdateManifest(channel)
@@ -97,7 +96,7 @@ func updateCLI(channel string) {
 		if err := downloadBin(tmpBinPathNew, build.URL); err != nil {
 			panic(err)
 		}
-		if fileSha1(tmpBinPathNew) != build.Sha1 {
+		if sha, _ := fileSha256(tmpBinPathNew); sha != build.Sha1 {
 			panic("SHA mismatch")
 		}
 		os.Remove(tmpBinPathOld)
@@ -187,14 +186,6 @@ func downloadBin(path, url string) error {
 	}
 	_, err = io.Copy(out, uncompressed)
 	return err
-}
-
-func fileSha1(path string) string {
-	data, err := ioutil.ReadFile(path)
-	if err != nil {
-		panic(err)
-	}
-	return fmt.Sprintf("%x", sha1.Sum(data))
 }
 
 // TriggerBackgroundUpdate will trigger an update to the client in the background
