@@ -1,9 +1,10 @@
 'use strict'
 
-let co = require('co')
-let cli = require('heroku-cli-util')
-let inquirer = require('inquirer')
-let util = require('../../lib/util')
+const co = require('co')
+const cli = require('heroku-cli-util')
+const inquirer = require('inquirer')
+const util = require('../../lib/util')
+const os = require('os')
 
 function sshKeygen (file, quiet) {
   let spawn = require('child_process').spawn
@@ -30,9 +31,8 @@ function confirmPrompt (message) {
 function * run (context, heroku) {
   let fs = require('mz/fs')
   let path = require('path')
-  let home = require('os-homedir')
 
-  const sshdir = path.join(home(), '.ssh')
+  const sshdir = path.join(os.homedir(), '.ssh')
 
   let generate = co.wrap(function * () {
     yield util.mkdirp(sshdir, {mode: 0o700})

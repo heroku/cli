@@ -14,7 +14,7 @@ const osHomedir = () => home
 const inquirer = {}
 const rimraf = require('rimraf')
 
-const cmd = proxyquire('../../../commands/keys/add', {inquirer, 'os-homedir': osHomedir})
+const cmd = proxyquire('../../../commands/keys/add', {inquirer, 'os': {homedir: osHomedir}})
 
 describe('keys:add', () => {
   beforeEach(() => {
