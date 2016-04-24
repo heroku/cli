@@ -156,6 +156,23 @@ space:=$(empty) $(empty)
 $(DIST_DIR)/$(VERSION)/manifest.json: $(WORKSPACE)/bin/heroku $(DIST_TARGETS)
 	$(WORKSPACE)/bin/heroku build:manifest --dir $(@D) --version $(VERSION) --channel $(CHANNEL) --targets $(subst $(space),$(comma),$(TARGETS)) > $@
 
+DEB_VERSION:=$(firstword $(subst -, ,$(VERSION)))-1
+DEB_BASE:=heroku_$(DEB_VERSION)
+$(DIST_DIR)/$(VERSION)/$(DEB_BASE)_%.deb: tmp/debian-%/heroku/VERSION
+	mkdir -p tmp/$(DEB_BASE)_$*.apt/DEBIAN
+	mkdir -p tmp/$(DEB_BASE)_$*.apt/usr/bin
+	mkdir -p tmp/$(DEB_BASE)_$*.apt/usr/lib
+	sed -e "s/Architecture: ARCHITECTURE/Architecture: $(if $(filter amd64,$*),amd64,i386)/" resources/deb/control | \
+	  sed -e "s/Version: VERSION/Version: $(DEB_VERSION)/" \
+		> tmp/$(DEB_BASE)_$*.apt/DEBIAN/control
+	cp -r tmp/debian-$*/heroku tmp/$(DEB_BASE)_$*.apt/usr/lib/
+	ln -s ../lib/heroku/bin/heroku tmp/$(DEB_BASE)_$*.apt/usr/bin/heroku
+	sudo chown -R root tmp/$(DEB_BASE)_$*.apt
+	sudo chgrp -R root tmp/$(DEB_BASE)_$*.apt
+	mkdir -p $(@D)
+	dpkg --build tmp/$(DEB_BASE)_$*.apt $@
+	sudo rm -rf tmp/$(DEB_BASE)_$*.apt
+
 .PHONY: build
 build: $(WORKSPACE)/bin/heroku $(WORKSPACE)/lib/plugins.json $(WORKSPACE)/lib/cacert.pem
 
@@ -174,6 +191,9 @@ all: $(VERSIONS)
 
 .PHONY: dist
 dist: $(MANIFEST)
+
+.PHONY: deb
+deb: $(DIST_DIR)/$(VERSION)/$(DEB_BASE)_amd64.deb $(DIST_DIR)/$(VERSION)/$(DEB_BASE)_386.deb
 
 .PHONY: release
 release: $(MANIFEST)
