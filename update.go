@@ -172,6 +172,9 @@ func loadNewCLI() {
 		return
 	}
 	bin := filepath.Join(DataHome, "cli", "bin", "heroku")
+	if BinPath == bin {
+		return
+	}
 	if exists, _ := fileExists(bin); !exists {
 		return
 	}
