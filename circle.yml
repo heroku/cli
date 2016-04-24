@@ -32,7 +32,7 @@ dependencies:
         wget https://cli-assets.heroku.com/osslsigncode-1.7.1.tar.gz
         tar -xzf osslsigncode-1.7.1.tar.gz
         mv osslsigncode-1.7.1 ~/osslsigncode
-        cd osslsigncode-1.7.1 && ./configure && make
+        cd ~/osslsigncode-1.7.1 && ./configure && make
       fi;
       cd ~/osslsigncode && sudo make install
 test:
