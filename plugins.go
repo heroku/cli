@@ -74,11 +74,28 @@ var pluginsInstallCmd = &Command{
 	Run: func(ctx *Context) {
 		plugins := ctx.Args.([]string)
 		if len(plugins) == 0 {
-			Errln("Must specify a plugin name")
-			return
+			ExitWithMessage("Must specify a plugin name.\nUSAGE: heroku plugins:install heroku-debug")
 		}
-		action("Installing "+plural("plugin", len(plugins))+" "+strings.Join(plugins, " "), "done", func() {
-			ExitIfError(userPlugins.InstallPlugins(plugins...))
+		toinstall := make([]string, 0, len(plugins))
+		core := corePlugins.PluginNames()
+		for _, plugin := range plugins {
+			if contains(core, strings.Split(plugin, "@")[0]) {
+				Warn("Not installing " + plugin + " because it is already installed as a core plugin.")
+				continue
+			}
+			toinstall = append(toinstall, plugin)
+		}
+		if len(toinstall) == 0 {
+			Exit(1)
+		}
+		action("Installing "+plural("plugin", len(toinstall))+" "+strings.Join(toinstall, " "), "done", func() {
+			err := userPlugins.InstallPlugins(toinstall...)
+			if err != nil {
+				if strings.Contains(err.Error(), "no such package available") {
+					ExitWithMessage("Plugin not found")
+				}
+				panic(err)
+			}
 		})
 	},
 }
@@ -283,7 +300,6 @@ var pluginInstallRetry = true
 func (p *Plugins) ParsePlugin(name string) (*Plugin, error) {
 	script := `
 	var plugin = require('` + name + `');
-	if (!plugin.commands) throw new Error('Contains no commands. Is this a real plugin?');
 	var pjson  = require('` + name + `/package.json');
 
 	plugin.name    = pjson.name;
@@ -318,6 +334,9 @@ func (p *Plugins) ParsePlugin(name string) (*Plugin, error) {
 	err = json.Unmarshal([]byte(output), &plugin)
 	if err != nil {
 		return nil, fmt.Errorf("Error parsing plugin: %s\n%s\n%s", name, err, string(output))
+	}
+	if len(plugin.Commands) == 0 {
+		return nil, fmt.Errorf("Invalid plugin. No commands found.")
 	}
 	for _, command := range plugin.Commands {
 		if command == nil {
