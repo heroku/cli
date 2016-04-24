@@ -8,7 +8,6 @@ import (
 	"os/exec"
 	"path/filepath"
 	"sort"
-	"strconv"
 	"strings"
 	"syscall"
 
@@ -221,45 +220,20 @@ func (p *Plugins) runFn(plugin *Plugin, topic, command string) func(ctx *Context
 		}
 		title, _ := json.Marshal("heroku " + strings.Join(os.Args[1:], " "))
 
-		script := fmt.Sprintf(`'use strict';
-var moduleName = '%s';
-var moduleVersion = '%s';
-var topic = '%s';
-var command = '%s';
-process.title = %s;
-var ctx = %s;
-ctx.version = ctx.version + ' ' + moduleName + '/' + moduleVersion + ' node-' + process.version;
-var logPath = %s;
-process.chdir(ctx.cwd);
-if (!ctx.dev) {
-	process.on('uncaughtException', function (err) {
-		// ignore EPIPE errors (usually from piping to head)
-		if (err.code === "EPIPE") return;
-		console.error(' !   Error in ' + moduleName + ':')
-		console.error(' !   ' + err.message || err);
-		if (err.stack) {
-			var fs = require('fs');
-			var log = function (line) {
-				var d = new Date().toISOString()
-				.replace(/T/, ' ')
-				.replace(/-/g, '/')
-				.replace(/\..+/, '');
-				fs.appendFileSync(logPath, d + ' ' + line + '\n');
-			}
-			log('Error during ' + topic + ':' + command);
-			log(err.stack);
-			console.error(' !   See ' + logPath + ' for more info.');
-		}
-		process.exit(1);
-	});
-}
+		script := fmt.Sprintf(`'use strict'
+let pluginName = '%s'
+let pluginVersion = '%s'
+let topic = '%s'
+let command = '%s'
+process.title = %s
+let ctx = %s
+ctx.version = ctx.version + ' ' + pluginName + '/' + pluginVersion + ' node-' + process.version
+process.chdir(ctx.cwd)
 if (command === '') { command = null }
-var module = require(moduleName);
-var cmd = module.commands.filter(function (c) {
-	return c.topic === topic && c.command == command;
-})[0];
-cmd.run(ctx);
-`, plugin.Name, plugin.Version, topic, command, string(title), ctxJSON, strconv.Quote(ErrLogPath))
+let plugin = require(pluginName)
+let cmd = plugin.commands.filter((c) => c.topic === topic && c.command == command)[0]
+cmd.run(ctx)
+`, plugin.Name, plugin.Version, topic, command, string(title), ctxJSON)
 
 		// swallow sigint since the plugin will handle it
 		swallowSigint = true
