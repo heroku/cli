@@ -96,6 +96,7 @@ var pluginsLinkCmd = &Command{
 	$ heroku plugins:link .`,
 
 	Run: func(ctx *Context) {
+		pluginInstallRetry = false
 		path := ctx.Args.(map[string]string)["path"]
 		if path == "" {
 			path = "."
@@ -263,7 +264,7 @@ func getExitCode(err error) int {
 	}
 }
 
-var pluginInstallRetrying = false
+var pluginInstallRetry = true
 
 // ParsePlugin requires the plugin's node module
 // to get the commands and metadata
@@ -288,8 +289,8 @@ func (p *Plugins) ParsePlugin(name string) (*Plugin, error) {
 		output, err = cmd.CombinedOutput() // sometimes this actually works the second time
 		if err != nil {
 			done()
-			if !pluginInstallRetrying && strings.Contains(string(output), "Error: Cannot find module") {
-				pluginInstallRetrying = true
+			if pluginInstallRetry && strings.Contains(string(output), "Error: Cannot find module") {
+				pluginInstallRetry = false
 				Warn("Failed to install " + name + ". Retrying...")
 				WarnIfError(p.RemovePackages(name))
 				WarnIfError(p.ClearCache())
