@@ -68,7 +68,7 @@ var pluginsInstallCmd = &Command{
 	Help: `Install a Heroku plugin
 
   Example:
-  $ heroku plugins:install dickeyxxx/heroku-production-status`,
+  $ heroku plugins:install heroku-production-status`,
 
 	Run: func(ctx *Context) {
 		plugins := ctx.Args.([]string)
