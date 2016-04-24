@@ -1,15 +1,18 @@
 NPM_VERSION=3.8.7
 NODE_VERSION=5.11.0
 
-TARGETS=darwin-amd64  \
-				linux-amd64   \
-				linux-386     \
-				linux-arm     \
-				windows-amd64 \
-				windows-386   \
-				freebsd-amd64 \
-				freebsd-386   \
-				openbsd-amd64 \
+TARGETS=darwin-amd64   \
+				linux-amd64    \
+				linux-386      \
+				linux-arm      \
+				debian-amd64   \
+				debian-386     \
+				debian-arm     \
+				windows-amd64  \
+				windows-386    \
+				freebsd-amd64  \
+				freebsd-386    \
+				openbsd-amd64  \
 				openbsd-386
 
 DIST_DIR?=dist
@@ -38,6 +41,7 @@ $(CACHE_DIR)/node-v$(NODE_VERSION)/%:
 .SECONDEXPANSION:
 tmp/darwin-%/heroku/lib/node-$(NODE_VERSION): NODE_OS=darwin
 tmp/linux-%/heroku/lib/node-$(NODE_VERSION):  NODE_OS=linux
+tmp/debian-%/heroku/lib/node-$(NODE_VERSION): NODE_OS=linux
 tmp/%-amd64/heroku/lib/node-$(NODE_VERSION):  NODE_ARCH=x64
 tmp/%-386/heroku/lib/node-$(NODE_VERSION):    NODE_ARCH=x86
 tmp/%-arm/heroku/lib/node-$(NODE_VERSION):    NODE_ARCH=armv6l
@@ -105,7 +109,9 @@ SOURCES := $(shell find $(SOURCEDIR) -name '*.go')
 LDFLAGS=-ldflags "-X=main.Version=$(VERSION) -X=main.Channel=$(CHANNEL) -X=main.GitSHA=$(REVISION) -X=main.NodeVersion=$(NODE_VERSION) -X=main.NpmVersion=$(NPM_VERSION) -X=main.Autoupdate=$(AUTOUPDATE)"
 tmp/darwin-%/heroku/bin/heroku:      GOOS=darwin
 tmp/linux-%/heroku/bin/heroku:       GOOS=linux
+tmp/debian-%/heroku/bin/heroku:      GOOS=linux
 tmp/linux-386/heroku/bin/heroku:     GO386=387
+tmp/debian-386/heroku/bin/heroku:    GO386=387
 tmp/windows-%/heroku/bin/heroku.exe: GOOS=windows
 tmp/freebsd-%/heroku/bin/heroku:     GOOS=freebsd
 tmp/openbsd-%/heroku/bin/heroku:     GOOS=openbsd
@@ -114,7 +120,8 @@ tmp/%-386/heroku/bin/heroku:         GOARCH=386
 tmp/%-arm/heroku/bin/heroku:         GOARCH=arm
 tmp/%-arm/heroku/bin/heroku:         GOARM=6
 tmp/dev/heroku/bin/heroku:           AUTOUPDATE=no
-tmp/linux-%/heroku/bin/heroku:       AUTOUPDATE=maybe
+tmp/linux-%/heroku/bin/heroku:       AUTOUPDATE=yes
+tmp/debian-%/heroku/bin/heroku:      AUTOUPDATE=no
 tmp/darwin-%/heroku/bin/heroku:      AUTOUPDATE=yes
 tmp/windows-%/heroku/bin/heroku.exe: AUTOUPDATE=yes
 tmp/freebsd-%/heroku/bin/heroku.exe: AUTOUPDATE=yes
@@ -169,6 +176,7 @@ release: $(MANIFEST)
 
 NODES = node-v$(NODE_VERSION)-darwin-x64.tar.gz \
 node-v$(NODE_VERSION)-linux-x64.tar.gz \
+node-v$(NODE_VERSION)-linux-x86.tar.gz \
 win-x64/node.exe \
 win-x86/node.exe
 
