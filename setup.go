@@ -40,6 +40,7 @@ type Manifest struct {
 }
 type Build struct {
 	Url    string `json:"url"`
+	Sha1   string `json:"sha1"`
 	Sha256 string `json:"sha256"`
 }
 
@@ -68,11 +69,14 @@ var manifestCmd = &Command{
 			os := info[0]
 			arch := info[1]
 			file := "heroku-v" + manifest.Version + "-" + target + ".tar.xz"
-			sha, err := fileSha256(filepath.Join(dir, file))
+			sha1, err := fileSha1(filepath.Join(dir, file))
+			ExitIfError(err)
+			sha256, err := fileSha256(filepath.Join(dir, file))
 			ExitIfError(err)
 			manifest.Builds[os+"-"+arch] = &Build{
 				Url:    "https://cli-assets.heroku.com/" + manifest.Channel + "/" + manifest.Version + "/" + file,
-				Sha256: sha,
+				Sha1:   sha1,
+				Sha256: sha256,
 			}
 		}
 		data, err := json.MarshalIndent(manifest, "", "  ")
