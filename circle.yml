@@ -18,7 +18,7 @@ dependencies:
   override:
     - >
       go version;
-      go get
+      go get -v
       github.com/jstemmer/go-junit-report
       github.com/alecthomas/gometalinter
       github.com/tools/godep
