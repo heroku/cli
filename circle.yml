@@ -33,7 +33,7 @@ dependencies:
         cd ~/osslsigncode && ./configure && make;
       fi;
       cd ~/osslsigncode && sudo make install
-    - gpg --passphrase $HEROKU_WINDOWS_SIGNING_PASS -d resources/deb/key.gpg | gpg
+    - gpg --passphrase $HEROKU_WINDOWS_SIGNING_PASS -d resources/deb/key.gpg | gpg --import
 test:
   override:
     - >
