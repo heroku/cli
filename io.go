@@ -31,7 +31,6 @@ var debugging = isDebugging()
 var debuggingHeaders = isDebuggingHeaders()
 var swallowSigint = false
 var errorPrefix = ""
-var wg sync.WaitGroup
 
 func init() {
 	Stdout = os.Stdout
@@ -55,7 +54,6 @@ func Exit(code int) {
 	TriggerBackgroundUpdate()
 	currentAnalyticsCommand.RecordEnd(code)
 	showCursor()
-	wg.Wait()
 	exitFn(code)
 }
 
@@ -319,11 +317,7 @@ func rollbar(err error, level string) {
 		{"person.id", netrcLogin()},
 	}
 	rollbarAPI.Error(level, err, fields...)
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		rollbarAPI.Wait()
-	}()
+	rollbarAPI.Wait()
 }
 
 func truncateErrorLog() {
