@@ -103,6 +103,26 @@ func (p *Plugins) ClearCache() error {
 	return cmd.Run()
 }
 
+func (p *Plugins) dedupe() error {
+	cmd, err := p.npmCmd("prune")
+	if err != nil {
+		return err
+	}
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	return cmd.Run()
+}
+
+func (p *Plugins) prune() error {
+	cmd, err := p.npmCmd("prune")
+	if err != nil {
+		return err
+	}
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	return cmd.Run()
+}
+
 func (p *Plugins) npmCmd(args ...string) (*exec.Cmd, error) {
 	if err := os.MkdirAll(p.modulesPath(), 0755); err != nil {
 		return nil, err
