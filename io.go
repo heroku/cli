@@ -32,7 +32,6 @@ var exitFn = os.Exit
 var debugging = isDebugging()
 var debuggingHeaders = isDebuggingHeaders()
 var swallowSigint = false
-var errorPrefix = ""
 
 func init() {
 	Stdout = os.Stdout
@@ -135,7 +134,6 @@ func WarnIfError(e error) {
 	if e == nil {
 		return
 	}
-	Err(errorPrefix)
 	Warn(e.Error())
 	Logln(string(debug.Stack()))
 	rollbar(e, "warning")
@@ -146,18 +144,27 @@ func WarnIfError(e error) {
 
 // Warn shows a message with excalamation points prepended to stderr
 func Warn(msg string) {
-	bang := yellow(" ▸    ")
+	if actionMsg != "" {
+		Errln(yellow(" !"))
+	}
+	prefix := yellow(" ▸    ")
 	msg = strings.TrimSpace(msg)
-	msg = strings.Join(strings.Split(msg, "\n"), "\n"+bang)
-	Errln(bang + msg)
+	msg = strings.Join(strings.Split(msg, "\n"), "\n"+prefix)
+	Errln(prefix + msg)
+	if actionMsg != "" {
+		Err(actionMsg + "...")
+	}
 }
 
 // Error shows a message with excalamation points prepended to stderr
 func Error(msg string) {
-	bang := red(" " + errorArrow() + "    ")
+	if actionMsg != "" {
+		Errln(red(" !"))
+	}
+	prefix := red(" " + errorArrow() + "    ")
 	msg = strings.TrimSpace(msg)
-	msg = strings.Join(strings.Split(msg, "\n"), "\n"+bang)
-	Errln(bang + msg)
+	msg = strings.Join(strings.Split(msg, "\n"), "\n"+prefix)
+	Errln(prefix + msg)
 }
 
 // ExitWithMessage shows an error message then exits with status code 2
@@ -177,7 +184,6 @@ func errorArrow() string {
 // ExitIfError exits if e is not null
 func ExitIfError(e error) {
 	if e != nil {
-		Err(errorPrefix)
 		Error(e.Error())
 		Logln(string(debug.Stack()))
 		rollbar(e, "error")
@@ -280,13 +286,15 @@ func hideCursor() {
 	}
 }
 
-func action(text, done string, fn func()) {
-	Err(text + "...")
-	errorPrefix = red(" !") + "\n"
+var actionMsg string
+
+func action(msg, done string, fn func()) {
+	actionMsg = msg
+	Err(actionMsg + "...")
 	hideCursor()
 	fn()
+	actionMsg = ""
 	showCursor()
-	errorPrefix = ""
 	if done != "" {
 		Errln(" " + done)
 	}
