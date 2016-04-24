@@ -158,7 +158,7 @@ $(DIST_DIR)/$(VERSION)/manifest.json: $(WORKSPACE)/bin/heroku $(DIST_TARGETS)
 
 DEB_VERSION:=$(firstword $(subst -, ,$(VERSION)))-1
 DEB_BASE:=heroku_$(DEB_VERSION)
-$(DIST_DIR)/$(VERSION)/$(DEB_BASE)_%.deb: tmp/debian-%/heroku/VERSION
+$(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_%.deb: tmp/debian-%/heroku/VERSION
 	mkdir -p tmp/$(DEB_BASE)_$*.apt/DEBIAN
 	mkdir -p tmp/$(DEB_BASE)_$*.apt/usr/bin
 	mkdir -p tmp/$(DEB_BASE)_$*.apt/usr/lib
@@ -172,6 +172,14 @@ $(DIST_DIR)/$(VERSION)/$(DEB_BASE)_%.deb: tmp/debian-%/heroku/VERSION
 	mkdir -p $(@D)
 	dpkg --build tmp/$(DEB_BASE)_$*.apt $@
 	sudo rm -rf tmp/$(DEB_BASE)_$*.apt
+
+$(DIST_DIR)/$(VERSION)/apt/Packages: $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_amd64.deb $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_386.deb
+	apt-ftparchive packages $(@D) > $@
+	gzip -c $@ > $@.gz
+
+$(DIST_DIR)/$(VERSION)/apt/Release: $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_amd64.deb $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_386.deb
+	apt-ftparchive -c resources/deb/apt-ftparchive.conf release $(@D) > $@
+	gpg --digest-algo SHA512 -abs -u 0F1B0520 -o $@.gpg $@
 
 .PHONY: build
 build: $(WORKSPACE)/bin/heroku $(WORKSPACE)/lib/plugins.json $(WORKSPACE)/lib/cacert.pem
@@ -193,11 +201,16 @@ all: $(VERSIONS)
 dist: $(MANIFEST) deb
 
 .PHONY: deb
-deb: $(DIST_DIR)/$(VERSION)/$(DEB_BASE)_amd64.deb $(DIST_DIR)/$(VERSION)/$(DEB_BASE)_386.deb
+deb: $(DIST_DIR)/$(VERSION)/apt/Packages $(DIST_DIR)/$(VERSION)/apt/Release
 
 .PHONY: release
-release: $(MANIFEST)
+release: $(MANIFEST) deb
 	$(foreach txz, $(DIST_TARGETS), aws s3 cp --cache-control max-age=86400 $(txz) s3://heroku-cli-assets/branches/$(CHANNEL)/$(VERSION)/$(notdir $(txz));)
+	aws s3 cp --cache-control max-age=86400 $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)* s3://heroku-cli-assets/branches/$(CHANNEL)/apt/
+	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/apt/Package s3://heroku-cli-assets/branches/$(CHANNEL)/apt/Package
+	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/apt/Package.gz s3://heroku-cli-assets/branches/$(CHANNEL)/apt/Package.gz
+	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/apt/Release s3://heroku-cli-assets/branches/$(CHANNEL)/apt/Release
+	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/apt/Release.gpg s3://heroku-cli-assets/branches/$(CHANNEL)/apt/Release.gpg
 	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/manifest.json s3://heroku-cli-assets/branches/$(CHANNEL)/manifest.json
 	@echo Released $(VERSION) on $(CHANNEL)
 
