@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"runtime"
-	"runtime/debug"
 	"strings"
 )
 
@@ -116,13 +115,7 @@ func handlePanic() {
 		if !ok {
 			err = errors.New(rec.(string))
 		}
-		Errln("ERROR:", err)
-		if Channel == "?" {
-			debug.PrintStack()
-		} else {
-			rollbar(err, "critical")
-		}
-		Exit(1)
+		ExitIfError(err)
 	}
 }
 
