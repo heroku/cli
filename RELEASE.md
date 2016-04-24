@@ -1,6 +1,8 @@
 Releasing Toolbelt v4
 =====================
 
+TODO: update this for v5
+
 Prerequisites:
 
 * `gem install rake aws-sdk`
