@@ -13,6 +13,7 @@ checkout:
 dependencies:
   cache_directories:
     - ~/deps
+    - ~/osslsigncode
   override:
     - go version
     - >
@@ -27,11 +28,13 @@ dependencies:
       $CIRCLE_TEST_REPORTS/go
     - make deps
     - >
-      if [ ! -f /usr/local/bin/osslsigncode ]; then
-        cd /tmp && wget https://cli-assets.heroku.com/osslsigncode-1.7.1.tar.gz
-        cd /tmp && tar -xzf osslsigncode-1.7.1.tar.gz
-        cd /tmp/osslsigncode-1.7.1 && ./configure && make && sudo make install
+      if [ ! -d ~/osslsigncode ]; then
+        wget https://cli-assets.heroku.com/osslsigncode-1.7.1.tar.gz
+        tar -xzf osslsigncode-1.7.1.tar.gz
+        mv osslsigncode-1.7.1 ~/osslsigncode
+        cd osslsigncode-1.7.1 && ./configure && make
       fi
+      cd ~/osslsigncode && sudo make install
 test:
   override:
     - >
