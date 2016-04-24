@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -338,4 +339,27 @@ func truncateErrorLog() {
 	lines = lines[maxint(len(lines)-1000, 0) : len(lines)-1]
 	err = ioutil.WriteFile(ErrLogPath, []byte(strings.Join(lines, "\n")+"\n"), 0644)
 	WarnIfError(err)
+}
+
+func readJSON(path string) (out map[string]interface{}, err error) {
+	if exists, err := fileExists(path); !exists {
+		if err != nil {
+			panic(err)
+		}
+		return map[string]interface{}{}, nil
+	}
+	data, err := ioutil.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+	err = json.Unmarshal(data, &out)
+	return out, err
+}
+
+func saveJSON(obj interface{}, path string) error {
+	data, err := json.MarshalIndent(obj, "", "  ")
+	if err != nil {
+		return err
+	}
+	return ioutil.WriteFile(path, data, 0644)
 }

@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 )
@@ -40,11 +39,7 @@ func (p *Plugins) removeFromCache(name string) {
 }
 
 func (p *Plugins) saveCache(plugins []*Plugin) {
-	data, err := json.MarshalIndent(plugins, "", "  ")
-	if err != nil {
-		panic(err)
-	}
-	if err := ioutil.WriteFile(p.cachePath(), data, 0644); err != nil {
+	if err := saveJSON(plugins, p.cachePath()); err != nil {
 		panic(err)
 	}
 }
