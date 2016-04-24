@@ -43,5 +43,11 @@ test:
 deployment:
   v5:
     branch: v5
+    owner: heroku
     commands:
       - DIST_DIR=$CIRCLE_ARTIFACTS CHANNEL=dev make release -j4
+  stable:
+    tag: /v[0-9]+(\.[0-9]+)*/
+    owner: heroku
+    commands:
+      - DIST_DIR=$CIRCLE_ARTIFACTS CHANNEL=stable make release -j4
