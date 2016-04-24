@@ -10,7 +10,6 @@ import (
 
 // Version is the version of the v4 cli.
 // This is set by a build flag in the `Rakefile`.
-// If it is set to `dev` it will not autoupdate.
 var Version = "dev"
 
 // GitSHA is the git sha of the build
