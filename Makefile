@@ -1,5 +1,5 @@
 NPM_VERSION=3.8.7
-NODE_VERSION=5.11.0
+NODE_VERSION=5.0.0
 
 TARGETS=darwin-amd64 linux-amd64
 
@@ -51,6 +51,8 @@ $(WORKSPACE)/lib/plugins.json: $(WORKSPACE)/bin/heroku package.json $(WORKSPACE)
 	@mkdir -p $(@D)
 	cp package.json $(@D)/package.json
 	$(WORKSPACE)/bin/heroku setup
+	cd $(WORKSPACE)/lib && npm dedupe # this doesn't work inside the CLI for some reason
+	cd $(WORKSPACE)/lib && npm prune
 
 tmp/%/heroku/lib/plugins.json: $(WORKSPACE)/lib/plugins.json
 	cp $(WORKSPACE)/lib/plugins.json $@
