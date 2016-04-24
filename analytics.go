@@ -79,62 +79,58 @@ func writeAnalyticsFile(commands []AnalyticsCommand) error {
 
 // SubmitAnalytics sends the analytics info to the analytics service
 func SubmitAnalytics() {
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		if skipAnalytics() {
-			return
+	if skipAnalytics() {
+		return
+	}
+	commands := readAnalyticsFile()
+	if len(commands) < 10 {
+		// do not record if less than 10 commands
+		return
+	}
+	lockfile := filepath.Join(CacheHome, "analytics.lock")
+	if locked, _ := golock.IsLocked(lockfile); locked {
+		// skip if already updating
+		return
+	}
+	golock.Lock(lockfile)
+	defer golock.Unlock(lockfile)
+	plugins := func() map[string]string {
+		plugins := make(map[string]string)
+		for _, plugin := range corePlugins.Plugins() {
+			plugins[plugin.Name] = plugin.Version
 		}
-		commands := readAnalyticsFile()
-		if len(commands) < 10 {
-			// do not record if less than 10 commands
-			return
+		for _, plugin := range userPlugins.Plugins() {
+			plugins[plugin.Name] = plugin.Version
 		}
-		lockfile := filepath.Join(CacheHome, "analytics.lock")
-		if locked, _ := golock.IsLocked(lockfile); locked {
-			// skip if already updating
-			return
+		dirs, _ := ioutil.ReadDir(filepath.Join(HomeDir, ".heroku", "plugins"))
+		for _, dir := range dirs {
+			plugins[dir.Name()] = "ruby"
 		}
-		golock.Lock(lockfile)
-		defer golock.Unlock(lockfile)
-		plugins := func() map[string]string {
-			plugins := make(map[string]string)
-			for _, plugin := range corePlugins.Plugins() {
-				plugins[plugin.Name] = plugin.Version
-			}
-			for _, plugin := range userPlugins.Plugins() {
-				plugins[plugin.Name] = plugin.Version
-			}
-			dirs, _ := ioutil.ReadDir(filepath.Join(HomeDir, ".heroku", "plugins"))
-			for _, dir := range dirs {
-				plugins[dir.Name()] = "ruby"
-			}
-			return plugins
-		}
+		return plugins
+	}
 
-		req := apiRequestBase("")
-		host := os.Getenv("HEROKU_ANALYTICS_HOST")
-		if host == "" {
-			host = "https://cli-analytics.heroku.com"
-		}
-		req.Uri = host + "/record"
-		req.Method = "POST"
-		req.Body = struct {
-			Version  string             `json:"version"`
-			Commands []AnalyticsCommand `json:"commands"`
-			User     string             `json:"user"`
-			Plugins  map[string]string  `json:"plugins"`
-		}{version(), commands, netrcLogin(), plugins()}
-		resp, err := req.Do()
-		if err != nil {
-			LogIfError(err)
-			return
-		}
-		if resp.StatusCode != 201 {
-			Logln("analytics: HTTP " + resp.Status)
-		}
-		os.Truncate(analyticsPath, 0)
-	}()
+	req := apiRequestBase("")
+	host := os.Getenv("HEROKU_ANALYTICS_HOST")
+	if host == "" {
+		host = "https://cli-analytics.heroku.com"
+	}
+	req.Uri = host + "/record"
+	req.Method = "POST"
+	req.Body = struct {
+		Version  string             `json:"version"`
+		Commands []AnalyticsCommand `json:"commands"`
+		User     string             `json:"user"`
+		Plugins  map[string]string  `json:"plugins"`
+	}{version(), commands, netrcLogin(), plugins()}
+	resp, err := req.Do()
+	if err != nil {
+		LogIfError(err)
+		return
+	}
+	if resp.StatusCode != 201 {
+		Logln("analytics: HTTP " + resp.Status)
+	}
+	os.Truncate(analyticsPath, 0)
 }
 
 func skipAnalytics() bool {
