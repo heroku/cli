@@ -63,7 +63,6 @@ var pluginsInstallCmd = &Command{
 	Command:      "install",
 	Hidden:       true,
 	VariableArgs: true,
-	Args:         []Arg{{Name: "name"}},
 	Description:  "Installs a plugin into the CLI",
 	Help: `Install a Heroku plugin
 
