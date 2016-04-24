@@ -19,7 +19,11 @@ DIST_DIR?=dist
 CACHE_DIR?=tmp
 VERSION=$(shell ./bin/version)
 REVISION=$(shell git log -n 1 --pretty=format:"%H")
-CHANNEL?=dev
+
+ifeq (,$(findstring working directory clean,$(shell git status 2> /dev/null | tail -n1)))
+	DIRTY=-dirty
+endif
+CHANNEL?=$(shell git rev-parse --abbrev-ref HEAD)$(DIRTY)
 
 GOOS=$(shell go env GOOS)
 GOARCH=$(shell go env GOARCH)
