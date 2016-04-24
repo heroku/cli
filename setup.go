@@ -23,7 +23,9 @@ var setupCmd = &Command{
 		for name, v := range pjson["dependencies"].(map[string]interface{}) {
 			plugins = append(plugins, name+"@"+v.(string))
 		}
-		corePlugins.installPackages(plugins...)
+		ExitIfError(corePlugins.installPackages(plugins...))
+		ExitIfError(corePlugins.dedupe())
+		ExitIfError(corePlugins.prune())
 		for _, plugin := range plugins {
 			plugin, err := corePlugins.ParsePlugin(strings.Split(plugin, "@")[0])
 			ExitIfError(err)
