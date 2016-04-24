@@ -5,17 +5,20 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"io"
+	"io/ioutil"
 	"os"
 )
 
-func fileExists(path string) (bool, error) {
-	if _, err := os.Stat(path); err != nil {
-		if os.IsNotExist(err) {
-			return false, nil
-		}
-		return false, err
+// gets the sha of a stream and returns a tee to the same stream
+// so it can be reused
+func computeSha(reader io.Reader) (func() string, io.Reader) {
+	hasher := sha256.New()
+	tee := io.TeeReader(reader, hasher)
+	getSha := func() string {
+		ioutil.ReadAll(tee)
+		return hex.EncodeToString(hasher.Sum(nil))
 	}
-	return true, nil
+	return getSha, tee
 }
 
 func fileSha256(path string) (string, error) {

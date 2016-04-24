@@ -1,6 +1,7 @@
 package main
 
 import (
+	"io/ioutil"
 	"os"
 	"os/user"
 	"path/filepath"
@@ -92,4 +93,27 @@ func cacheHome() string {
 
 func localAppData() string {
 	return os.Getenv("LOCALAPPDATA")
+}
+
+func fileExists(path string) (bool, error) {
+	if _, err := os.Stat(path); err != nil {
+		if os.IsNotExist(err) {
+			return false, nil
+		}
+		return false, err
+	}
+	return true, nil
+}
+
+func tmpDir(base string) string {
+	root := filepath.Join(base, "tmp")
+	err := os.MkdirAll(root, 0755)
+	if err != nil {
+		panic(err)
+	}
+	dir, err := ioutil.TempDir(root, "")
+	if err != nil {
+		panic(err)
+	}
+	return dir
 }

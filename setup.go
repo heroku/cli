@@ -39,7 +39,7 @@ type Manifest struct {
 	Builds     map[string]*Build `json:"builds"`
 }
 type Build struct {
-	Url    string `json:"url"`
+	URL    string `json:"url"`
 	Sha1   string `json:"sha1"`
 	Sha256 string `json:"sha256"`
 }
@@ -74,7 +74,7 @@ var manifestCmd = &Command{
 			sha256, err := fileSha256(filepath.Join(dir, file))
 			ExitIfError(err)
 			manifest.Builds[os+"-"+arch] = &Build{
-				Url:    "https://cli-assets.heroku.com/" + manifest.Channel + "/" + manifest.Version + "/" + file,
+				URL:    "https://cli-assets.heroku.com/" + manifest.Channel + "/" + manifest.Version + "/" + file,
 				Sha1:   sha1,
 				Sha256: sha256,
 			}

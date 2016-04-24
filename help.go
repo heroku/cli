@@ -31,7 +31,7 @@ func help() {
 	sort.Sort(commands)
 	switch {
 	case topic == nil:
-		Print("heroku is the CLI for managing apps hosted on heroku.com\n\n")
+		//Print("heroku is the CLI for managing apps hosted on heroku.com\n\n")
 		Printf("Usage: heroku COMMAND [--app APP] [command-specific-options]\n\n")
 		Printf("Help topics, type \"heroku help TOPIC\" for more details:\n\n")
 		for _, topic := range nonHiddenTopics(topics) {
