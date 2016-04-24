@@ -1,7 +1,16 @@
 NPM_VERSION=3.8.7
 NODE_VERSION=5.11.0
 
-TARGETS=darwin-amd64 linux-amd64 linux-386 windows-amd64 windows-386
+TARGETS=darwin-amd64  \
+				linux-amd64   \
+				linux-386     \
+				linux-arm     \
+				windows-amd64 \
+				windows-386   \
+				freebsd-amd64 \
+				freebsd-386   \
+				openbsd-amd64 \
+				openbsd-386   \
 
 DIST_DIR?=dist
 CACHE_DIR?=tmp
@@ -31,6 +40,13 @@ tmp/darwin-%/heroku/lib/node-$(NODE_VERSION): NODE_OS=darwin
 tmp/linux-%/heroku/lib/node-$(NODE_VERSION):  NODE_OS=linux
 tmp/%-amd64/heroku/lib/node-$(NODE_VERSION):  NODE_ARCH=x64
 tmp/%-386/heroku/lib/node-$(NODE_VERSION):    NODE_ARCH=x86
+tmp/%-arm/heroku/lib/node-$(NODE_VERSION):    NODE_ARCH=armv6l
+
+.IGNORE: tmp/freebsd-amd64/heroku/lib/node-$(NODE_VERSION) \
+	tmp/freebsd-386/heroku/lib/node-$(NODE_VERSION) \
+	tmp/openbsd-amd64/heroku/lib/node-$(NODE_VERSION) \
+	tmp/openbsd-386/heroku/lib/node-$(NODE_VERSION)
+
 tmp/%/heroku/lib/node-$(NODE_VERSION): $(CACHE_DIR)/node-v$(NODE_VERSION)/$$(NODE_BASE).tar.gz
 	@mkdir -p tmp/$*
 	rm -rf $(@D)/node-*
@@ -59,7 +75,8 @@ $(WORKSPACE)/lib/plugins.json: $(WORKSPACE)/bin/heroku package.json $(WORKSPACE)
 	@mkdir -p $(@D)
 	cp package.json $(@D)/package.json
 	$(WORKSPACE)/bin/heroku setup
-	cd $(WORKSPACE)/lib && ./npm-$(NPM_VERSION)/cli.js dedupe # this doesn't work inside the CLI for some reason
+	@ # this doesn't work in the CLI for some reason
+	cd $(WORKSPACE)/lib && ./npm-$(NPM_VERSION)/cli.js dedupe
 	cd $(WORKSPACE)/lib && ./npm-$(NPM_VERSION)/cli.js prune
 
 tmp/%/heroku/lib/plugins.json: $(WORKSPACE)/lib/plugins.json
@@ -88,15 +105,32 @@ SOURCES := $(shell find $(SOURCEDIR) -name '*.go')
 LDFLAGS=-ldflags "-X=main.Version=$(VERSION) -X=main.Channel=$(CHANNEL) -X=main.GitSHA=$(REVISION) -X=main.NodeVersion=$(NODE_VERSION) -X=main.NpmVersion=$(NPM_VERSION) -X=main.Autoupdate=$(AUTOUPDATE)"
 tmp/darwin-%/heroku/bin/heroku:      GOOS=darwin
 tmp/linux-%/heroku/bin/heroku:       GOOS=linux
+tmp/linux-386/heroku/bin/heroku:     GO386=387
 tmp/windows-%/heroku/bin/heroku.exe: GOOS=windows
+tmp/freebsd-%/heroku/bin/heroku:     GOOS=freebsd
+tmp/openbsd-%/heroku/bin/heroku:     GOOS=openbsd
 tmp/%-amd64/heroku/bin/heroku:       GOARCH=amd64
 tmp/%-386/heroku/bin/heroku:         GOARCH=386
+tmp/%-arm/heroku/bin/heroku:         GOARCH=arm
+tmp/%-arm/heroku/bin/heroku:         GOARM=6
 tmp/dev/heroku/bin/heroku:           AUTOUPDATE=no
 tmp/linux-%/heroku/bin/heroku:       AUTOUPDATE=maybe
 tmp/darwin-%/heroku/bin/heroku:      AUTOUPDATE=yes
 tmp/windows-%/heroku/bin/heroku.exe: AUTOUPDATE=yes
-tmp/%/heroku/bin/heroku tmp/%/heroku/bin/heroku.exe: $(SOURCES)
+tmp/freebsd-%/heroku/bin/heroku.exe: AUTOUPDATE=yes
+tmp/openbsd-%/heroku/bin/heroku.exe: AUTOUPDATE=yes
+tmp/%/heroku/bin/heroku: $(SOURCES)
+	GOOS=$(GOOS) GOARCH=$(GOARCH) GO386=$(GO386) GOARM=$(GOARM) go build $(LDFLAGS) -o $@
+
+tmp/%/heroku/bin/heroku.exe: $(SOURCES)
 	GOOS=$(GOOS) GOARCH=$(GOARCH) go build $(LDFLAGS) -o $@
+	@echo signing for windows
+	@osslsigncode -pkcs12 resources/exe/heroku-codesign-cert.pfx \
+		-pass '$(HEROKU_WINDOWS_SIGNING_PASS)' \
+		-n 'Heroku Toolbelt' \
+		-i https://toolbelt.heroku.com/ \
+		-in $@ -out $@.signed
+	mv $@.signed $@
 
 $(DIST_DIR)/$(VERSION)/heroku-v$(VERSION)-%.tar.xz: $(VERSIONS)
 	@mkdir -p $(@D)
