@@ -47,7 +47,9 @@ func (p *Plugins) nodeBinPath() string {
 		b = b + ".exe"
 	}
 	if exists, _ := fileExists(b); !exists {
-		b, _ = exec.LookPath("node")
+		var err error
+		b, err = exec.LookPath("node")
+		ExitIfError(err)
 	}
 	return b
 }
