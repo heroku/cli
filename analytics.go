@@ -139,5 +139,5 @@ func skipAnalytics() bool {
 		Logln(err)
 		return true
 	}
-	return skip || netrcLogin() == ""
+	return (skip != nil && *skip) || netrcLogin() == ""
 }
