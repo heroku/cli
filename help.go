@@ -6,7 +6,6 @@ import (
 	"strings"
 )
 
-// show the help
 func help() {
 	var cmd string
 	if len(os.Args) > 1 {
