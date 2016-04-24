@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -321,21 +322,6 @@ func rollbar(err error, level string) {
 	rollbarAPI.Wait()
 }
 
-func truncateErrorLog() {
-	Debugln("truncating error log...")
-	body, err := ioutil.ReadFile(ErrLogPath)
-	if err != nil {
-		if !os.IsNotExist(err) {
-			WarnIfError(err)
-		}
-		return
-	}
-	lines := strings.Split(string(body), "\n")
-	lines = lines[maxint(len(lines)-1000, 0) : len(lines)-1]
-	err = ioutil.WriteFile(ErrLogPath, []byte(strings.Join(lines, "\n")+"\n"), 0644)
-	WarnIfError(err)
-}
-
 func readJSON(path string) (out map[string]interface{}, err error) {
 	if exists, err := fileExists(path); !exists {
 		if err != nil {
@@ -384,4 +370,24 @@ func execBin(bin string, args ...string) {
 			panic(err)
 		}
 	}
+}
+
+// truncates the beginning of a file
+func truncate(path string, n int) {
+	f, err := os.Open(path)
+	if err != nil {
+		LogIfError(err)
+		return
+	}
+	scanner := bufio.NewScanner(f)
+	lines := make([]string, 0, n+1)
+	scanner.Split(bufio.ScanLines)
+	for scanner.Scan() {
+		lines = append(lines, scanner.Text())
+		if len(lines) > n {
+			lines = lines[1:]
+		}
+	}
+	lines = append(lines, "")
+	ioutil.WriteFile(path, []byte(strings.Join(lines, "\n")), 0644)
 }

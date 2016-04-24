@@ -52,7 +52,7 @@ func Update(channel string, t string) {
 	SubmitAnalytics()
 	updateCLI(channel)
 	userPlugins.Update()
-	truncateErrorLog()
+	truncate(ErrLogPath, 1000)
 	cleanTmpDirs()
 }
 
@@ -160,6 +160,9 @@ func cleanTmpDirs() {
 	clean := func(base string) {
 		Debugln("cleaning up tmp dirs in " + base)
 		dir := filepath.Join(base, "tmp")
+		if exists, _ := fileExists(dir); !exists {
+			return
+		}
 		files, err := ioutil.ReadDir(dir)
 		LogIfError(err)
 		for _, file := range files {
