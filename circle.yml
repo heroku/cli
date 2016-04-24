@@ -48,11 +48,16 @@ test:
       go tool cover -html=coverage.out -o $CIRCLE_ARTIFACTS/coverage.html;
       goveralls -coverprofile=coverage.out -service=circle-ci -repotoken=$COVERALLS_TOKEN;
 deployment:
-  v5:
-    branch: v5
+  dev:
+    branch: dev
     owner: heroku
     commands:
       - CHANNEL=dev make release -j4
+  beta:
+    branch: master
+    owner: heroku
+    commands:
+      - CHANNEL=beta make release -j4
   stable:
     tag: /v[0-9]+(\.[0-9]+)*/
     owner: heroku
