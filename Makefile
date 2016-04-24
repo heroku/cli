@@ -119,7 +119,7 @@ dist: $(MANIFEST)
 .PHONY: release
 release: $(MANIFEST)
 	$(foreach txz, $(DIST_TARGETS), aws s3 cp --cache-control max-age=86400 $(txz) s3://heroku-cli-assets/$(CHANNEL)/$(VERSION)/$(notdir $(txz));)
-	aws s3 cp --cache-control max-age=86400 $(DIST_DIR)/$(VERSION)/manifest.json s3://heroku-cli-assets/$(CHANNEL)/manifest.json
+	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/manifest.json s3://heroku-cli-assets/$(CHANNEL)/manifest.json
 	@echo Released $(VERSION) on $(CHANNEL)
 
 NODES = node-v$(NODE_VERSION)-darwin-x64.tar.gz \
