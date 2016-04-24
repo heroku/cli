@@ -30,10 +30,7 @@ dependencies:
       if [ ! -f /usr/bin/osslsigncode ]; then
         wget https://cli-assets.heroku.com/osslsigncode-1.7.1.tar.gz
         tar -xzf osslsigncode-1.7.1.tar.gz
-        cd osslsigncode
-        ./configre
-        make
-        sudo make install
+        cd osslsigncode && ./configure && make && sudo make install
       fi
 test:
   override:
