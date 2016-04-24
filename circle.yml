@@ -10,29 +10,27 @@ checkout:
       cp -R ~/$CIRCLE_PROJECT_REPONAME ~/.go_workspace/src/github.com/$CIRCLE_PROJECT_USERNAME/;
       rm -rf ~/$CIRCLE_PROJECT_REPONAME;
       ln -s ~/.go_workspace/src/github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME ~/$CIRCLE_PROJECT_REPONAME;
+      mkdir -p $CIRCLE_TEST_REPORTS/go;
 dependencies:
   cache_directories:
     - ~/deps
     - ~/osslsigncode
   override:
-    - go version
     - >
+      go version;
       go get
       github.com/jstemmer/go-junit-report
       github.com/alecthomas/gometalinter
       github.com/tools/godep
-      github.com/mattn/goveralls
-    - gometalinter --install
-    - >
-      mkdir -p
-      $CIRCLE_TEST_REPORTS/go
+      github.com/mattn/goveralls;
+      gometalinter --install;
     - make deps
     - >
       if [ ! -d ~/osslsigncode ]; then
         wget https://cli-assets.heroku.com/osslsigncode-1.7.1.tar.gz;
         tar -xvzf osslsigncode-1.7.1.tar.gz;
         mv osslsigncode-1.7.1 ~/osslsigncode;
-        cd ~/osslsigncode-1.7.1 && ./configure && make;
+        cd ~/osslsigncode && ./configure && make;
       fi;
       cd ~/osslsigncode && sudo make install
 test:
