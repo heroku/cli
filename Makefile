@@ -82,7 +82,7 @@ tmp/%/heroku/lib/npm-$(NPM_VERSION): $(NPM_ARCHIVE)
 $(WORKSPACE)/lib/plugins.json: $(WORKSPACE)/bin/heroku package.json $(WORKSPACE)/lib/npm-$(NPM_VERSION) $(WORKSPACE)/lib/node-$(NODE_VERSION)$$(EXT)
 	@mkdir -p $(@D)
 	cp package.json $(@D)/package.json
-	$(WORKSPACE)/bin/heroku setup
+	$(WORKSPACE)/bin/heroku build:plugins
 	@ # this doesn't work in the CLI for some reason
 	cd $(WORKSPACE)/lib && ./npm-$(NPM_VERSION)/cli.js dedupe
 	cd $(WORKSPACE)/lib && ./npm-$(NPM_VERSION)/cli.js prune
@@ -154,7 +154,7 @@ comma:=,
 empty:=
 space:=$(empty) $(empty)
 $(DIST_DIR)/$(VERSION)/manifest.json: $(WORKSPACE)/bin/heroku $(DIST_TARGETS)
-	$(WORKSPACE)/bin/heroku setup:manifest --dir $(@D) --version $(VERSION) --channel $(CHANNEL) --targets $(subst $(space),$(comma),$(TARGETS)) > $@
+	$(WORKSPACE)/bin/heroku build:manifest --dir $(@D) --version $(VERSION) --channel $(CHANNEL) --targets $(subst $(space),$(comma),$(TARGETS)) > $@
 
 .PHONY: build
 build: $(WORKSPACE)/bin/heroku $(WORKSPACE)/lib/plugins.json
@@ -177,8 +177,8 @@ dist: $(MANIFEST)
 
 .PHONY: release
 release: $(MANIFEST)
-	$(foreach txz, $(DIST_TARGETS), aws s3 cp --cache-control max-age=86400 $(txz) s3://heroku-cli-assets/$(CHANNEL)/$(VERSION)/$(notdir $(txz));)
-	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/manifest.json s3://heroku-cli-assets/$(CHANNEL)/manifest.json
+	$(foreach txz, $(DIST_TARGETS), aws s3 cp --cache-control max-age=86400 $(txz) s3://heroku-cli-assets/branches/$(CHANNEL)/$(VERSION)/$(notdir $(txz));)
+	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/manifest.json s3://heroku-cli-assets/branches/$(CHANNEL)/manifest.json
 	@echo Released $(VERSION) on $(CHANNEL)
 
 NODES = node-v$(NODE_VERSION)-darwin-x64.tar.gz \
