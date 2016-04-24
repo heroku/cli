@@ -7,12 +7,13 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"os/exec"
 	"os/signal"
 	"path/filepath"
 	"runtime"
 	"runtime/debug"
 	"strings"
-	"sync"
+	"syscall"
 
 	"github.com/lunixbochs/vtclean"
 	rollbarAPI "github.com/stvp/rollbar"
@@ -356,4 +357,31 @@ func saveJSON(obj interface{}, path string) error {
 		return err
 	}
 	return ioutil.WriteFile(path, data, 0644)
+}
+
+func inspect(o interface{}) {
+	fmt.Printf("%+v\n", o)
+}
+
+func maxint(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
+
+func execBin(bin string, args ...string) {
+	if runtime.GOOS == "windows" {
+		cmd := exec.Command(bin, args[1:]...)
+		cmd.Stdin = os.Stdin
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+		if err := cmd.Run(); err != nil {
+			os.Exit(getExitCode(err))
+		}
+	} else {
+		if err := syscall.Exec(bin, args, os.Environ()); err != nil {
+			panic(err)
+		}
+	}
 }

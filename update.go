@@ -1,9 +1,8 @@
 package main
 
 import (
-	"errors"
 	"fmt"
-	"io"
+	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -12,7 +11,6 @@ import (
 
 	"github.com/dickeyxxx/golock"
 	"github.com/franela/goreq"
-	"github.com/ulikunitz/xz"
 )
 
 var Autoupdate = "no"
@@ -55,19 +53,20 @@ func Update(channel string, t string) {
 	updateCLI(channel)
 	userPlugins.Update()
 	truncateErrorLog()
+	cleanTmpDirs()
 }
 
 func updateCLI(channel string) {
-	//if Autoupdate != "yes" {
-	//return
-	//}
+	if Autoupdate != "yes" {
+		return
+	}
 	manifest, err := getUpdateManifest(channel)
 	if err != nil {
 		Warn("Error updating CLI")
 		WarnIfError(err)
 		return
 	}
-	if manifest == nil || (manifest.Version == Version && manifest.Channel == Channel) {
+	if manifest.Version == Version && manifest.Channel == Channel {
 		return
 	}
 	locked, err := golock.IsLocked(updateLockPath)
@@ -81,34 +80,25 @@ func updateCLI(channel string) {
 		golock.Unlock(updateLockPath)
 	}
 	defer unlock()
-	msg := fmt.Sprintf("heroku-cli: Updating to %s", manifest.Version)
+	downloadingMessage = fmt.Sprintf("heroku-cli: Updating to %s...", manifest.Version)
 	if manifest.Channel != "stable" {
-		msg = fmt.Sprintf("%s (%s)", msg, manifest.Channel)
+		downloadingMessage = fmt.Sprintf("%s (%s)", downloadingMessage, manifest.Channel)
 	}
-	action(msg, "done", func() {
-		build := manifest.Builds[runtime.GOOS][runtime.GOARCH]
-		// on windows we can't remove an existing file or remove the running binary
-		// so we download the file to binName.new
-		// move the running binary to binName.old (deleting any existing file first)
-		// rename the downloaded file to binName
-		tmpBinPathNew := BinPath + ".new"
-		tmpBinPathOld := BinPath + ".old"
-		if err := downloadBin(tmpBinPathNew, build.URL); err != nil {
-			panic(err)
-		}
-		if sha, _ := fileSha256(tmpBinPathNew); sha != build.Sha1 {
-			panic("SHA mismatch")
-		}
-		os.Remove(tmpBinPathOld)
-		os.Rename(BinPath, tmpBinPathOld)
-		if err := os.Rename(tmpBinPathNew, BinPath); err != nil {
-			panic(err)
-		}
-		os.Remove(tmpBinPathOld)
-		unlock()
-		clearAutoupdateFile() // force full update
-	})
-	reexec() // reexec to finish updating with new code
+	Logln(downloadingMessage)
+	build := manifest.Builds[runtime.GOOS+"-"+runtime.GOARCH]
+	reader, getSha, err := downloadXZ(build.URL)
+	ExitIfError(err)
+	tmp := tmpDir(DataHome)
+	ExitIfError(extractTar(reader, tmp))
+	sha := getSha()
+	if sha != build.Sha256 {
+		panic(fmt.Errorf("SHA mismatch: expected %s to be %s", sha, build.Sha256))
+	}
+	LogIfError(os.Rename(filepath.Join(DataHome, "cli"), filepath.Join(tmpDir(DataHome), "heroku")))
+	LogIfError(os.Rename(filepath.Join(tmp, "heroku"), filepath.Join(DataHome, "cli")))
+	unlock()
+	Debugln("updating done, loading new cli " + manifest.Version)
+	loadNewCLI()
 }
 
 // IsUpdateNeeded checks if an update is available
@@ -139,14 +129,7 @@ func clearAutoupdateFile() {
 	WarnIfError(os.Remove(autoupdateFile))
 }
 
-type manifest struct {
-	Channel, Version string
-	Builds           map[string]map[string]struct {
-		URL, Sha1 string
-	}
-}
-
-func getUpdateManifest(channel string) (*manifest, error) {
+func getUpdateManifest(channel string) (*Manifest, error) {
 	res, err := goreq.Request{
 		Uri:       "https://cli-assets.heroku.com/" + channel + "/manifest.json",
 		Timeout:   30 * time.Minute,
@@ -155,36 +138,9 @@ func getUpdateManifest(channel string) (*manifest, error) {
 	if err != nil {
 		return nil, err
 	}
-	var m manifest
+	var m Manifest
 	res.Body.FromJsonTo(&m)
 	return &m, nil
-}
-
-func downloadBin(path, url string) error {
-	out, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0755)
-	if err != nil {
-		return err
-	}
-	defer out.Close()
-	res, err := goreq.Request{
-		Uri:       url + ".xz",
-		Timeout:   30 * time.Minute,
-		ShowDebug: debugging,
-	}.Do()
-	if err != nil {
-		return err
-	}
-	if res.StatusCode != 200 {
-		b, _ := res.Body.ToString()
-		return errors.New(b)
-	}
-	defer res.Body.Close()
-	uncompressed, err := xz.NewReader(res.Body)
-	if err != nil {
-		return err
-	}
-	_, err = io.Copy(out, uncompressed)
-	return err
 }
 
 // TriggerBackgroundUpdate will trigger an update to the client in the background
@@ -194,19 +150,30 @@ func TriggerBackgroundUpdate() {
 	}
 }
 
-// restarts the CLI with the same arguments
-func reexec() {
-	Debugln("reexecing new CLI...")
-	cmd := exec.Command(BinPath, os.Args[1:]...)
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	Exit(getExitCode(cmd.Run()))
+func cleanTmpDirs() {
+	clean := func(base string) {
+		Debugln("cleaning up tmp dirs in " + base)
+		dir := filepath.Join(base, "tmp")
+		files, err := ioutil.ReadDir(dir)
+		LogIfError(err)
+		for _, file := range files {
+			if time.Since(file.ModTime()) > 24*time.Hour {
+				path := filepath.Join(dir, file.Name())
+				LogIfError(os.RemoveAll(path))
+			}
+		}
+	}
+	clean(DataHome)
+	clean(CacheHome)
 }
 
-func maxint(a, b int) int {
-	if a > b {
-		return a
+func loadNewCLI() {
+	if Autoupdate == "no" {
+		return
 	}
-	return b
+	bin := filepath.Join(DataHome, "cli", "bin", "heroku")
+	if exists, _ := fileExists(bin); !exists {
+		return
+	}
+	execBin(bin, os.Args...)
 }
