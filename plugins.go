@@ -90,7 +90,10 @@ var pluginsLinkCmd = &Command{
 	Args:        []Arg{{Name: "path", Optional: true}},
 	Help: `Links a local plugin into CLI.
 	This is useful when developing plugins locally.
-	It simply symlinks the specified path into ~/.heroku/node_modules
+	It simply symlinks the specified path into the plugins directory
+	and parses the plugin.
+
+	You will need to run it again if you change any of the plugin metadata.
 
   Example:
 	$ heroku plugins:link .`,
