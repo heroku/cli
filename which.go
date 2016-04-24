@@ -10,9 +10,8 @@ var whichCmd = &Command{
 	Hidden: true,
 	Args:   []Arg{{Name: "command"}},
 	Run: func(ctx *Context) {
-		cli.LoadPlugins(GetPlugins())
 		command := ctx.Args.(map[string]string)["command"]
-		_, cmd := cli.ParseCmd(command)
+		cmd := AllCommands().Find(command)
 		if cmd == nil {
 			Println("No command found. Could be a ruby command. https://github.com/heroku/heroku")
 			Exit(1)

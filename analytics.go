@@ -12,7 +12,7 @@ import (
 	"github.com/dickeyxxx/golock"
 )
 
-var analyticsPath = filepath.Join(HomeDir, ".heroku", "analytics.json")
+var analyticsPath = filepath.Join(CacheHome, "analytics.json")
 var currentAnalyticsCommand = &AnalyticsCommand{
 	Timestamp:  time.Now().Unix(),
 	Version:    version(),
@@ -90,7 +90,7 @@ func SubmitAnalytics() {
 			// do not record if less than 10 commands
 			return
 		}
-		lockfile := filepath.Join(AppDir(), "analytics.lock")
+		lockfile := filepath.Join(CacheHome, "analytics.lock")
 		if locked, _ := golock.IsLocked(lockfile); locked {
 			// skip if already updating
 			return
@@ -99,7 +99,10 @@ func SubmitAnalytics() {
 		defer golock.Unlock(lockfile)
 		plugins := func() map[string]string {
 			plugins := make(map[string]string)
-			for _, plugin := range GetPlugins() {
+			for _, plugin := range corePlugins.Plugins() {
+				plugins[plugin.Name] = plugin.Version
+			}
+			for _, plugin := range userPlugins.Plugins() {
 				plugins[plugin.Name] = plugin.Version
 			}
 			dirs, _ := ioutil.ReadDir(filepath.Join(HomeDir, ".heroku", "plugins"))

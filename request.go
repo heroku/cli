@@ -8,6 +8,7 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
@@ -62,7 +63,7 @@ func shouldVerifyHost(host string) bool {
 func getCACerts() *x509.CertPool {
 	paths := list.New()
 	if !useSystemCerts() {
-		path := filepath.Join(AppDir(), "cacert.pem")
+		path := filepath.Join(AppDir, "cacert.pem")
 		if _, err := os.Stat(path); os.IsNotExist(err) {
 			downloadCert(path)
 		}
@@ -127,4 +128,12 @@ func downloadCert(path string) {
 	defer res.Body.Close()
 	defer f.Close()
 	io.Copy(f, res.Body)
+}
+
+func getProxy() *url.URL {
+	req, err := http.NewRequest("GET", "https://api.heroku.com", nil)
+	WarnIfError(err)
+	proxy, err := http.ProxyFromEnvironment(req)
+	WarnIfError(err)
+	return proxy
 }

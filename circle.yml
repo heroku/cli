@@ -1,16 +1,61 @@
+---
+machine:
+  environment:
+    CACHE_DIR: ~/deps
+checkout:
+  post:
+    - |
+      rm -rf ~/.go_workspace/src/github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME;
+      mkdir -p ~/.go_workspace/src/github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME;
+      cp -R ~/$CIRCLE_PROJECT_REPONAME ~/.go_workspace/src/github.com/$CIRCLE_PROJECT_USERNAME/;
+      rm -rf ~/$CIRCLE_PROJECT_REPONAME;
+      ln -s ~/.go_workspace/src/github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME ~/$CIRCLE_PROJECT_REPONAME;
+      mkdir -p $CIRCLE_TEST_REPORTS/go;
 dependencies:
-  override:
-    - if [ ! -d ~/bats ]; then git clone https://github.com/sstephenson/bats.git ~/bats; fi
-    - go get github.com/golang/lint
-    - go get github.com/jstemmer/go-junit-report
-    - mkdir -p $CIRCLE_TEST_REPORTS/go
   cache_directories:
-    - "~/bats"
+    - ~/deps
+    - ~/osslsigncode
+  override:
+    - env
+    - >
+      go version;
+      go get
+      github.com/jstemmer/go-junit-report
+      github.com/alecthomas/gometalinter
+      github.com/tools/godep
+      github.com/mattn/goveralls;
+      gometalinter --install;
+    - make deps
+    - >
+      if [ ! -d ~/osslsigncode ]; then
+        wget https://cli-assets.heroku.com/osslsigncode-1.7.1.tar.gz;
+        tar -xvzf osslsigncode-1.7.1.tar.gz;
+        mv osslsigncode-1.7.1 ~/osslsigncode;
+        cd ~/osslsigncode && ./configure && make;
+      fi;
+      cd ~/osslsigncode && sudo make install
 test:
   override:
-    - go test -v -race ./... | go-junit-report > $CIRCLE_TEST_REPORTS/go/results.xml
+    - >
+      go test -v -race
+      -cover -coverprofile=coverage.out
+      | tee output;
+      test ${PIPESTATUS[0]} -eq 0
+    - make test -j4
   post:
-    - test -z "$(go fmt)"
-    - test -z "$(golint)"
-    - go vet
-    - ~/bats/bin/bats test
+    - gometalinter --deadline 30s || true
+    - |
+      cat output | go-junit-report > $CIRCLE_TEST_REPORTS/go/junit.xml;
+      go tool cover -html=coverage.out -o $CIRCLE_ARTIFACTS/coverage.html;
+      goveralls -coverprofile=coverage.out -service=circle-ci -repotoken=$COVERALLS_TOKEN;
+deployment:
+  v5:
+    branch: v5
+    owner: heroku
+    commands:
+      - DIST_DIR=$CIRCLE_ARTIFACTS CHANNEL=dev make release -j4
+  stable:
+    tag: /v[0-9]+(\.[0-9]+)*/
+    owner: heroku
+    commands:
+      - DIST_DIR=$CIRCLE_ARTIFACTS CHANNEL=stable make release -j4

@@ -1,24 +1,21 @@
 package main
 
 import (
-	"crypto/sha1"
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"runtime"
-	"strings"
 	"time"
 
 	"github.com/dickeyxxx/golock"
 	"github.com/franela/goreq"
-	"github.com/heroku/cli/gode"
-	"github.com/kardianos/osext"
 	"github.com/ulikunitz/xz"
 )
+
+var Autoupdate = "no"
 
 var updateTopic = &Topic{
 	Name:        "update",
@@ -45,14 +42,8 @@ var updateCmd = &Command{
 	},
 }
 
-var binPath string
-var updateLockPath = filepath.Join(AppDir(), "updating.lock")
-var autoupdateFile = filepath.Join(AppDir(), "autoupdate")
-var tmpPath = filepath.Join(AppDir(), "tmp")
-
-func init() {
-	binPath, _ = osext.Executable()
-}
+var updateLockPath = filepath.Join(CacheHome, "updating.lock")
+var autoupdateFile = filepath.Join(CacheHome, "autoupdate")
 
 // Update updates the CLI and plugins
 func Update(channel string, t string) {
@@ -62,40 +53,12 @@ func Update(channel string, t string) {
 	touchAutoupdateFile()
 	SubmitAnalytics()
 	updateCLI(channel)
-	SetupNode()
-	SetupBuiltinPlugins()
-	updatePlugins()
+	userPlugins.Update()
 	truncateErrorLog()
-	cleanTmpDir()
-}
-
-func updatePlugins() {
-	action("heroku-cli: Updating plugins", "", func() {
-		plugins := PluginNamesNotSymlinked()
-		if len(plugins) == 0 {
-			return
-		}
-		packages, err := gode.OutdatedPackages(plugins...)
-		WarnIfError(err)
-		if len(packages) > 0 {
-			for name, version := range packages {
-				lockPlugin(name)
-				WarnIfError(gode.InstallPackages(name + "@" + version))
-				plugin, err := ParsePlugin(name)
-				WarnIfError(err)
-				AddPluginsToCache(plugin)
-				unlockPlugin(name)
-			}
-			Errf(" done. Updated %d %s.\n", len(packages), plural("package", len(packages)))
-		} else {
-			Errln(" no plugins to update.")
-		}
-	})
 }
 
 func updateCLI(channel string) {
-	if channel == "?" {
-		// do not update dev version
+	if Autoupdate != "yes" {
 		return
 	}
 	manifest, err := getUpdateManifest(channel)
@@ -104,7 +67,7 @@ func updateCLI(channel string) {
 		WarnIfError(err)
 		return
 	}
-	if manifest.Version == Version && manifest.Channel == Channel {
+	if manifest == nil || (manifest.Version == Version && manifest.Channel == Channel) {
 		return
 	}
 	locked, err := golock.IsLocked(updateLockPath)
@@ -119,7 +82,7 @@ func updateCLI(channel string) {
 	}
 	defer unlock()
 	msg := fmt.Sprintf("heroku-cli: Updating to %s", manifest.Version)
-	if manifest.Channel != "master" {
+	if manifest.Channel != "stable" {
 		msg = fmt.Sprintf("%s (%s)", msg, manifest.Channel)
 	}
 	action(msg, "done", func() {
@@ -128,17 +91,17 @@ func updateCLI(channel string) {
 		// so we download the file to binName.new
 		// move the running binary to binName.old (deleting any existing file first)
 		// rename the downloaded file to binName
-		tmpBinPathNew := binPath + ".new"
-		tmpBinPathOld := binPath + ".old"
+		tmpBinPathNew := BinPath + ".new"
+		tmpBinPathOld := BinPath + ".old"
 		if err := downloadBin(tmpBinPathNew, build.URL); err != nil {
 			panic(err)
 		}
-		if fileSha1(tmpBinPathNew) != build.Sha1 {
+		if sha, _ := fileSha256(tmpBinPathNew); sha != build.Sha1 {
 			panic("SHA mismatch")
 		}
 		os.Remove(tmpBinPathOld)
-		os.Rename(binPath, tmpBinPathOld)
-		if err := os.Rename(tmpBinPathNew, binPath); err != nil {
+		os.Rename(BinPath, tmpBinPathOld)
+		if err := os.Rename(tmpBinPathNew, BinPath); err != nil {
 			panic(err)
 		}
 		os.Remove(tmpBinPathOld)
@@ -225,21 +188,13 @@ func downloadBin(path, url string) error {
 	return err
 }
 
-func fileSha1(path string) string {
-	data, err := ioutil.ReadFile(path)
-	if err != nil {
-		panic(err)
-	}
-	return fmt.Sprintf("%x", sha1.Sum(data))
-}
-
 // TriggerBackgroundUpdate will trigger an update to the client in the background
 func TriggerBackgroundUpdate() {
 	wg.Add(1)
 	go func() {
 		wg.Done()
 		if IsUpdateNeeded("background") {
-			exec.Command(binPath, "update", "--background").Start()
+			exec.Command(BinPath, "update", "--background").Start()
 		}
 	}()
 }
@@ -247,26 +202,11 @@ func TriggerBackgroundUpdate() {
 // restarts the CLI with the same arguments
 func reexec() {
 	Debugln("reexecing new CLI...")
-	cmd := exec.Command(binPath, os.Args[1:]...)
+	cmd := exec.Command(BinPath, os.Args[1:]...)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	Exit(getExitCode(cmd.Run()))
-}
-
-func truncateErrorLog() {
-	Debugln("truncating error log...")
-	body, err := ioutil.ReadFile(ErrLogPath)
-	if err != nil {
-		if !os.IsNotExist(err) {
-			WarnIfError(err)
-		}
-		return
-	}
-	lines := strings.Split(string(body), "\n")
-	lines = lines[maxint(len(lines)-1000, 0) : len(lines)-1]
-	err = ioutil.WriteFile(ErrLogPath, []byte(strings.Join(lines, "\n")+"\n"), 0644)
-	WarnIfError(err)
 }
 
 func maxint(a, b int) int {
@@ -274,20 +214,4 @@ func maxint(a, b int) int {
 		return a
 	}
 	return b
-}
-
-func cleanTmpDir() {
-	Debugln("cleaning up tmp dirs...")
-	dirs, err := ioutil.ReadDir(tmpPath)
-	if err != nil {
-		WarnIfError(err)
-		return
-	}
-	for _, dir := range dirs {
-		if time.Since(dir.ModTime()) > 24*time.Hour {
-			path := filepath.Join(tmpPath, dir.Name())
-			Debugln("deleting " + path)
-			WarnIfError(os.RemoveAll(path))
-		}
-	}
 }

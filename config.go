@@ -12,7 +12,7 @@ type Config struct {
 }
 
 var config = Config{
-	path: filepath.Join(HomeDir, ".heroku", "config.json"),
+	path: filepath.Join(ConfigHome, "config.json"),
 }
 
 // GetBool returns a config setting that is a bool

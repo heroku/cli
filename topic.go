@@ -25,25 +25,14 @@ func (topics TopicSet) ByName(name string) *Topic {
 	return nil
 }
 
-// Commands returns all of the commands under the topic.
-func (t *Topic) Commands() []*Command {
-	commands := make([]*Command, 0, len(cli.Commands))
-	for _, c := range cli.Commands {
-		if c.Topic == t.Name {
-			commands = append(commands, c)
+// Concat joins 2 topic sets together
+func (topics TopicSet) Concat(more TopicSet) TopicSet {
+	for _, topic := range more {
+		if topics.ByName(topic.Name) == nil {
+			topics = append(topics, topic)
 		}
 	}
-	return commands
-}
-
-// Merge will replace empty data on the topic with data from the passed topic.
-func (t *Topic) Merge(other *Topic) {
-	if t.Name == "" {
-		t.Name = other.Name
-	}
-	if t.Description == "" {
-		t.Description = other.Description
-	}
+	return topics
 }
 
 func (topics TopicSet) Len() int {
@@ -56,4 +45,12 @@ func (topics TopicSet) Less(i, j int) bool {
 
 func (topics TopicSet) Swap(i, j int) {
 	topics[i], topics[j] = topics[j], topics[i]
+}
+
+// AllTopics gets all go/core/user topics
+func AllTopics() TopicSet {
+	topics := Topics
+	topics = topics.Concat(corePlugins.Topics())
+	topics = topics.Concat(userPlugins.Topics())
+	return topics
 }
