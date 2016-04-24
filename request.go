@@ -67,10 +67,7 @@ func shouldVerifyHost(host string) bool {
 func getCACerts() *x509.CertPool {
 	paths := list.New()
 	if !useSystemCerts() {
-		path := filepath.Join(AppDir, "cacert.pem")
-		if _, err := os.Stat(path); os.IsNotExist(err) {
-			downloadCert(path)
-		}
+		path := filepath.Join(AppDir, "lib", "cacert.pem")
 		paths.PushBack(path)
 	}
 
@@ -113,25 +110,6 @@ func getCACerts() *x509.CertPool {
 		}
 	}
 	return certs
-}
-
-func downloadCert(path string) {
-	f, err := os.Create(path)
-	if err != nil {
-		WarnIfError(err)
-		return
-	}
-	res, err := goreq.Request{
-		Uri:       "https://cli-assets.heroku.com/cacert.pem",
-		ShowDebug: debugging,
-	}.Do()
-	if err != nil {
-		WarnIfError(err)
-		return
-	}
-	defer res.Body.Close()
-	defer f.Close()
-	io.Copy(f, res.Body)
 }
 
 func getProxy() *url.URL {

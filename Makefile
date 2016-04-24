@@ -157,7 +157,7 @@ $(DIST_DIR)/$(VERSION)/manifest.json: $(WORKSPACE)/bin/heroku $(DIST_TARGETS)
 	$(WORKSPACE)/bin/heroku build:manifest --dir $(@D) --version $(VERSION) --channel $(CHANNEL) --targets $(subst $(space),$(comma),$(TARGETS)) > $@
 
 .PHONY: build
-build: $(WORKSPACE)/bin/heroku $(WORKSPACE)/lib/plugins.json
+build: $(WORKSPACE)/bin/heroku $(WORKSPACE)/lib/plugins.json $(WORKSPACE)/lib/cacert.pem
 
 .PHONY: clean
 clean:
