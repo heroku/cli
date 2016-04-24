@@ -16,6 +16,7 @@ dependencies:
     - ~/deps
     - ~/osslsigncode
   override:
+    - env
     - >
       go version;
       go get
