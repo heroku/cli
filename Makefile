@@ -53,15 +53,15 @@ tmp/%-arm/heroku/lib/node-$(NODE_VERSION):    NODE_ARCH=armv6l
 
 tmp/%/heroku/lib/node-$(NODE_VERSION): $(CACHE_DIR)/node-v$(NODE_VERSION)/$$(NODE_BASE).tar.gz
 	@mkdir -p tmp/$*
-	rm -rf $(@D)/node-*
+	@rm -rf $(@D)/node-*
 	tar -C tmp/$* -xzf $<
 	mv tmp/$*/$(NODE_BASE)/bin/node $@
-	rm -rf tmp/$*/$(NODE_BASE)*
+	@rm -rf tmp/$*/$(NODE_BASE)*
 	@touch $@
 
 tmp/%/heroku/lib/node-$(NODE_VERSION).exe: $(CACHE_DIR)/node-v$(NODE_VERSION)/win-$$(NODE_ARCH)/node.exe
 	@mkdir -p tmp/$*
-	rm -rf $(@D)/node-*
+	@rm -rf $(@D)/node-*
 	cp $< $@
 	@touch $@
 
@@ -71,7 +71,7 @@ $(NPM_ARCHIVE):
 	curl -Lso $@ https://github.com/npm/npm/archive/v$(NPM_VERSION).tar.gz
 tmp/%/heroku/lib/npm-$(NPM_VERSION): $(NPM_ARCHIVE)
 	@mkdir -p $(@D)
-	rm -rf $(@D)/npm-*
+	@rm -rf $(@D)/npm-*
 	tar -C $(@D) -xzf $(NPM_ARCHIVE)
 	@touch $@
 
@@ -86,7 +86,7 @@ $(WORKSPACE)/lib/plugins.json: $(WORKSPACE)/bin/heroku package.json $(WORKSPACE)
 tmp/%/heroku/lib/plugins.json: $(WORKSPACE)/lib/plugins.json
 	cp $(WORKSPACE)/lib/plugins.json $@
 	cp $(WORKSPACE)/lib/package.json $(@D)/package.json
-	rm -rf $(@D)/node_modules
+	@rm -rf $(@D)/node_modules
 	cp -r $(WORKSPACE)/lib/node_modules $(@D)
 
 tmp/%/heroku/VERSION: tmp/%/heroku/bin/heroku$$(EXT) tmp/%/heroku/lib/npm-$(NPM_VERSION) tmp/%/heroku/lib/node-$(NODE_VERSION)$$(EXT) tmp/%/heroku/lib/plugins.json bin/version tmp/%/heroku/README.md tmp/%/heroku/CHANGELOG tmp/%/heroku/lib/cacert.pem
