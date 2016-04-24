@@ -104,7 +104,7 @@ func (p *Plugins) ClearCache() error {
 }
 
 func (p *Plugins) dedupe() error {
-	cmd, err := p.npmCmd("prune")
+	cmd, err := p.npmCmd("dedupe")
 	if err != nil {
 		return err
 	}
