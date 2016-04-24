@@ -82,7 +82,7 @@ func updateCLI(channel string) {
 	}
 	defer unlock()
 	msg := fmt.Sprintf("heroku-cli: Updating to %s", manifest.Version)
-	if manifest.Channel != "master" {
+	if manifest.Channel != "stable" {
 		msg = fmt.Sprintf("%s (%s)", msg, manifest.Channel)
 	}
 	action(msg, "done", func() {
