@@ -190,7 +190,7 @@ test: build
 all: $(VERSIONS)
 
 .PHONY: dist
-dist: $(MANIFEST)
+dist: $(MANIFEST) deb
 
 .PHONY: deb
 deb: $(DIST_DIR)/$(VERSION)/$(DEB_BASE)_amd64.deb $(DIST_DIR)/$(VERSION)/$(DEB_BASE)_386.deb
