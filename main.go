@@ -55,6 +55,7 @@ func init() {
 		debugErrlogCmd,
 		loginCmd,
 		logoutCmd,
+		manifestCmd,
 		pluginsInstallCmd,
 		pluginsLinkCmd,
 		pluginsListCmd,
