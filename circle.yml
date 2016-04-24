@@ -44,4 +44,4 @@ deployment:
   v5:
     branch: v5
     commands:
-      - DIST_DIR=$CIRCLE_ARTIFACTS make dist -j4
+      - DIST_DIR=$CIRCLE_ARTIFACTS CHANNEL=dev make release -j4
