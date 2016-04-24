@@ -7,14 +7,16 @@ import (
 	"time"
 )
 
-var setupTopic = &Topic{
-	Name:   "setup",
-	Hidden: true,
+var buildTopic = &Topic{
+	Name:        "build",
+	Description: "These commands are used to build the CLI. They are not intended to be used otherwise.",
+	Hidden:      true,
 }
 
-var setupCmd = &Command{
-	Topic:       "setup",
-	Description: "used in building the CLI",
+var buildPluginsCmd = &Command{
+	Topic:       "build",
+	Command:     "plugins",
+	Description: "installs core plugins",
 	Hidden:      true,
 	Run: func(ctx *Context) {
 		pjson, err := readJSON(filepath.Join(corePlugins.Path, "package.json"))
@@ -44,10 +46,10 @@ type Build struct {
 	Sha256 string `json:"sha256"`
 }
 
-var manifestCmd = &Command{
-	Topic:       "setup",
+var buildManifestCmd = &Command{
+	Topic:       "build",
 	Command:     "manifest",
-	Description: "used in building the CLI",
+	Description: "builds manifest.json to upload to S3",
 	Hidden:      true,
 	Flags: []Flag{
 		{Name: "dir", Char: "d", Required: true, HasValue: true},
@@ -74,7 +76,7 @@ var manifestCmd = &Command{
 			sha256, err := fileSha256(filepath.Join(dir, file))
 			ExitIfError(err)
 			manifest.Builds[os+"-"+arch] = &Build{
-				URL:    "https://cli-assets.heroku.com/" + manifest.Channel + "/" + manifest.Version + "/" + file,
+				URL:    "https://cli-assets.heroku.com/branches/" + manifest.Channel + "/" + manifest.Version + "/" + file,
 				Sha1:   sha1,
 				Sha256: sha256,
 			}
