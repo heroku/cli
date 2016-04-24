@@ -5,16 +5,20 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"encoding/json"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"time"
 
 	"github.com/franela/goreq"
+	"github.com/mitchellh/ioprogress"
+	"github.com/ulikunitz/xz"
 )
 
 func init() {
@@ -136,4 +140,39 @@ func getProxy() *url.URL {
 	proxy, err := http.ProxyFromEnvironment(req)
 	WarnIfError(err)
 	return proxy
+}
+
+var downloadingMessage string
+
+func progressDrawFn(progress, total int64) string {
+	return fmt.Sprintf(downloadingMessage+" %15s", ioprogress.DrawTextFormatBytes(progress, total))
+}
+
+func downloadXZ(url string) (io.Reader, func() string, error) {
+	req := goreq.Request{Uri: url, Timeout: 30 * time.Minute}
+	resp, err := req.Do()
+	if err != nil {
+		return nil, nil, err
+	}
+	if err := getHTTPError(resp); err != nil {
+		return nil, nil, err
+	}
+	size, _ := strconv.Atoi(resp.Header.Get("Content-Length"))
+	progress := &ioprogress.Reader{
+		Reader:   resp.Body,
+		Size:     int64(size),
+		DrawFunc: ioprogress.DrawTerminalf(os.Stderr, progressDrawFn),
+	}
+	getSha, reader := computeSha(progress)
+	uncompressed, err := xz.NewReader(reader)
+	return uncompressed, getSha, err
+}
+
+func getHTTPError(resp *goreq.Response) error {
+	if resp.StatusCode < 400 {
+		return nil
+	}
+	var body string
+	body = resp.Header.Get("Content-Type")
+	return fmt.Errorf("%s: %s", resp.Status, body)
 }

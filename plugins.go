@@ -414,14 +414,14 @@ func (p *Plugins) unlockPlugin(name string) {
 
 // Update updates the plugins
 func (p *Plugins) Update() {
-	action("heroku-cli: Updating plugins", "", func() {
-		plugins := p.PluginNamesNotSymlinked()
-		if len(plugins) == 0 {
-			return
-		}
-		packages, err := p.OutdatedPackages(plugins...)
-		WarnIfError(err)
-		if len(packages) > 0 {
+	plugins := p.PluginNamesNotSymlinked()
+	if len(plugins) == 0 {
+		return
+	}
+	packages, err := p.OutdatedPackages(plugins...)
+	WarnIfError(err)
+	if len(packages) > 0 {
+		action("heroku-cli: Updating plugins", "done", func() {
 			for name, version := range packages {
 				p.lockPlugin(name)
 				WarnIfError(p.installPackages(name + "@" + version))
@@ -430,9 +430,7 @@ func (p *Plugins) Update() {
 				p.addToCache(plugin)
 				p.unlockPlugin(name)
 			}
-			Errf(" done. Updated %d %s.\n", len(packages), plural("package", len(packages)))
-		} else {
-			Errln(" no plugins to update.")
-		}
-	})
+		})
+		Errf(" done. Updated %d %s.\n", len(packages), plural("package", len(packages)))
+	}
 }
