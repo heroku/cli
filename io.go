@@ -264,6 +264,9 @@ func supportsColor() bool {
 			return false
 		}
 	}
+	if config, _ := config.GetBool("color"); config != nil && *config == false {
+		return false
+	}
 	return os.Getenv("COLOR") != "false"
 }
 
