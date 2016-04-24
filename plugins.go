@@ -162,21 +162,30 @@ var pluginsListCmd = &Command{
 	Hidden:           true,
 	Description:      "Lists installed plugins",
 	DisableAnalytics: true,
+	Flags: []Flag{
+		{Name: "core", Description: "show core plugins"},
+	},
 	Help: `
 Example:
   $ heroku plugins`,
 
 	Run: func(ctx *Context) {
 		var names []string
-		for _, plugin := range corePlugins.Plugins() {
-			names = append(names, fmt.Sprintf("%s %s (core)", plugin.Name, plugin.Version))
-		}
 		for _, plugin := range userPlugins.Plugins() {
 			symlinked := ""
 			if userPlugins.isPluginSymlinked(plugin.Name) {
 				symlinked = " (symlinked)"
 			}
 			names = append(names, fmt.Sprintf("%s %s%s", plugin.Name, plugin.Version, symlinked))
+		}
+		if ctx.Flags["core"] != nil {
+			userPluginNames := userPlugins.PluginNames()
+			for _, plugin := range corePlugins.Plugins() {
+				if contains(userPluginNames, plugin.Name) {
+					continue
+				}
+				names = append(names, fmt.Sprintf("%s %s (core)", plugin.Name, plugin.Version))
+			}
 		}
 		sort.Strings(names)
 		for _, plugin := range names {
