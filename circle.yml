@@ -27,10 +27,10 @@ dependencies:
       $CIRCLE_TEST_REPORTS/go
     - make deps
     - >
-      if [ ! -f /usr/bin/osslsigncode ]; then
-        wget https://cli-assets.heroku.com/osslsigncode-1.7.1.tar.gz
-        tar -xzf osslsigncode-1.7.1.tar.gz
-        cd osslsigncode && ./configure && make && sudo make install
+      if [ ! -f /usr/local/bin/osslsigncode ]; then
+        cd /tmp && wget https://cli-assets.heroku.com/osslsigncode-1.7.1.tar.gz
+        cd /tmp && tar -xzf osslsigncode-1.7.1.tar.gz
+        cd /tmp/osslsigncode-1.7.1 && ./configure && make && sudo make install
       fi
 test:
   override:
