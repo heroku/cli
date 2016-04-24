@@ -10,7 +10,7 @@ TARGETS=darwin-amd64  \
 				freebsd-amd64 \
 				freebsd-386   \
 				openbsd-amd64 \
-				openbsd-386   \
+				openbsd-386
 
 DIST_DIR?=dist
 CACHE_DIR?=tmp
