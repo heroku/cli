@@ -129,7 +129,7 @@ tmp/openbsd-%/heroku/bin/heroku.exe: AUTOUPDATE=yes
 tmp/%/heroku/bin/heroku: $(SOURCES)
 	GOOS=$(GOOS) GOARCH=$(GOARCH) GO386=$(GO386) GOARM=$(GOARM) go build $(LDFLAGS) -o $@
 
-tmp/%/heroku/bin/heroku.exe: $(SOURCES)
+tmp/%/heroku/bin/heroku.exe: $(SOURCES) resources/exe/heroku-codesign-cert.pfx
 	GOOS=$(GOOS) GOARCH=$(GOARCH) go build $(LDFLAGS) -o $@
 	@echo signing for windows
 	@osslsigncode -pkcs12 resources/exe/heroku-codesign-cert.pfx \
@@ -138,6 +138,9 @@ tmp/%/heroku/bin/heroku.exe: $(SOURCES)
 		-i https://toolbelt.heroku.com/ \
 		-in $@ -out $@.signed
 	mv $@.signed $@
+
+resources/exe/heroku-codesign-cert.pfx:
+	@gpg --yes --passphrase '$(HEROKU_WINDOWS_SIGNING_PASS)' -o resources/exe/heroku-codesign-cert.pfx -d resources/exe/heroku-codesign-cert.pfx.gpg
 
 $(DIST_DIR)/$(VERSION)/heroku-v$(VERSION)-%.tar.xz: $(VERSIONS)
 	@mkdir -p $(@D)
