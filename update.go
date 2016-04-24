@@ -134,7 +134,7 @@ func clearAutoupdateFile() {
 
 func getUpdateManifest(channel string) (*Manifest, error) {
 	res, err := goreq.Request{
-		Uri:       "https://cli-assets.heroku.com/" + channel + "/manifest.json",
+		Uri:       "https://cli-assets.heroku.com/branches/" + channel + "/manifest.json",
 		Timeout:   30 * time.Minute,
 		ShowDebug: debugging,
 	}.Do()
