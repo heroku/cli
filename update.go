@@ -86,6 +86,9 @@ func updateCLI(channel string) {
 	}
 	Logln(downloadingMessage)
 	build := manifest.Builds[runtime.GOOS+"-"+runtime.GOARCH]
+	if build == nil {
+		panic(fmt.Errorf("no build for %s", manifest.Channel))
+	}
 	reader, getSha, err := downloadXZ(build.URL)
 	ExitIfError(err)
 	tmp := tmpDir(DataHome)
@@ -136,6 +139,9 @@ func getUpdateManifest(channel string) (*Manifest, error) {
 		ShowDebug: debugging,
 	}.Do()
 	if err != nil {
+		return nil, err
+	}
+	if err := getHTTPError(res); err != nil {
 		return nil, err
 	}
 	var m Manifest
