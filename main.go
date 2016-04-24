@@ -75,6 +75,7 @@ func init() {
 }
 
 func main() {
+	loadNewCLI()
 	defer handlePanic()
 
 	// handle sigint
