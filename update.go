@@ -58,9 +58,9 @@ func Update(channel string, t string) {
 }
 
 func updateCLI(channel string) {
-	if Autoupdate != "yes" {
-		return
-	}
+	//if Autoupdate != "yes" {
+	//return
+	//}
 	manifest, err := getUpdateManifest(channel)
 	if err != nil {
 		Warn("Error updating CLI")
@@ -108,7 +108,6 @@ func updateCLI(channel string) {
 		unlock()
 		clearAutoupdateFile() // force full update
 	})
-	wg.Wait()
 	reexec() // reexec to finish updating with new code
 }
 
@@ -190,13 +189,9 @@ func downloadBin(path, url string) error {
 
 // TriggerBackgroundUpdate will trigger an update to the client in the background
 func TriggerBackgroundUpdate() {
-	wg.Add(1)
-	go func() {
-		wg.Done()
-		if IsUpdateNeeded("background") {
-			exec.Command(BinPath, "update", "--background").Start()
-		}
-	}()
+	if IsUpdateNeeded("background") {
+		exec.Command(BinPath, "update", "--background").Start()
+	}
 }
 
 // restarts the CLI with the same arguments
