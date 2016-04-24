@@ -24,8 +24,6 @@ var setupCmd = &Command{
 			plugins = append(plugins, name+"@"+v.(string))
 		}
 		ExitIfError(corePlugins.installPackages(plugins...))
-		ExitIfError(corePlugins.dedupe())
-		ExitIfError(corePlugins.prune())
 		for _, plugin := range plugins {
 			plugin, err := corePlugins.ParsePlugin(strings.Split(plugin, "@")[0])
 			ExitIfError(err)
