@@ -139,7 +139,8 @@ tmp/%/heroku/bin/heroku.exe: $(SOURCES) resources/exe/heroku-codesign-cert.pfx
 		-pass '$(HEROKU_WINDOWS_SIGNING_PASS)' \
 		-n 'Heroku Toolbelt' \
 		-i https://toolbelt.heroku.com/ \
-		-in $@ -out $@
+		-in $@ -out $@.signed
+	mv $@.signed $@
 
 resources/exe/heroku-codesign-cert.pfx:
 	@gpg --yes --passphrase '$(HEROKU_WINDOWS_SIGNING_PASS)' -o resources/exe/heroku-codesign-cert.pfx -d resources/exe/heroku-codesign-cert.pfx.gpg
