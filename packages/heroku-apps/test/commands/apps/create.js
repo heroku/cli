@@ -24,7 +24,7 @@ describe('apps:create', function () {
 
     return apps.run({flags: {}, args: {}, httpGitHost: 'git.heroku.com'}).then(function () {
       mock.done()
-      expect(cli.stderr).to.equal('Creating app... done, foobar stack is cedar-14\n')
+      expect(cli.stderr).to.equal('Creating app... foobar\n')
       expect(cli.stdout).to.equal('https://foobar.com | https://git.heroku.com/foobar.git\n')
     })
   })
@@ -42,7 +42,7 @@ describe('apps:create', function () {
 
     return apps.run({flags: {space: 'my-space-name'}, args: {}, httpGitHost: 'git.heroku.com'}).then(function () {
       mock.done()
-      expect(cli.stderr).to.equal('Creating app in space my-space-name... done, foobar stack is cedar-14\n')
+      expect(cli.stderr).to.equal('Creating app in space my-space-name... foobar\n')
       expect(cli.stdout).to.equal('https://foobar.com | https://git.heroku.com/foobar.git\n')
     })
   })
