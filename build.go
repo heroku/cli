@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"time"
 )
@@ -65,11 +66,12 @@ var buildManifestCmd = &Command{
 			Builds:     map[string]*Build{},
 		}
 		files := strings.Split(ctx.Flags["targets"].(string), ",")
+		re := regexp.MustCompile(`heroku-v\d+\.\d+\.\d+-\w+-(\w+)-(\w+)\.tar.xz`)
 		for _, file := range files {
 			filename := filepath.Base(file)
-			info := strings.Split(filename, "-")
-			os := info[3]
-			arch := info[4]
+			info := re.FindStringSubmatch(filename)
+			os := info[1]
+			arch := info[2]
 			sha1, err := fileSha1(file)
 			ExitIfError(err)
 			sha256, err := fileSha256(file)
