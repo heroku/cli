@@ -173,6 +173,10 @@
 			"Rev": "ee2624c2e9c86346c38536cb0e87a4eeebf25d11"
 		},
 		{
+			"ImportPath": "github.com/texttheater/golang-levenshtein/levenshtein",
+			"Rev": "14026fface0cb806188c85e792a93d625dc37d0f"
+		},
+		{
 			"ImportPath": "github.com/toqueteos/webbrowser",
 			"Comment": "v1.0",
 			"Rev": "21fc9f95c83442fd164094666f7cb4f9fdd56cd6"
