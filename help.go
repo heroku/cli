@@ -1,17 +1,16 @@
 package main
 
 import (
-	"os"
 	"sort"
 	"strings"
 )
 
-func help() {
+func Help(args []string) {
 	var cmd string
-	if len(os.Args) > 1 {
-		cmd = os.Args[1]
-		if len(os.Args) > 2 && cmd == "help" {
-			cmd = os.Args[2]
+	if len(args) > 1 {
+		cmd = args[1]
+		if len(args) > 2 && cmd == "help" {
+			cmd = args[2]
 		} else {
 			currentAnalyticsCommand.Valid = false
 		}
@@ -30,16 +29,19 @@ func help() {
 	sort.Sort(topics)
 	sort.Sort(commands)
 	switch {
-	case topic == nil:
-		//Print("heroku is the CLI for managing apps hosted on heroku.com\n\n")
+	case cmd == "":
 		Printf("Usage: heroku COMMAND [--app APP] [command-specific-options]\n\n")
 		Printf("Help topics, type \"heroku help TOPIC\" for more details:\n\n")
 		for _, topic := range nonHiddenTopics(topics) {
 			Printf("  heroku %-30s# %s\n", topic.Name, topic.Description)
 		}
+		Exit(0)
+	case topic == nil:
+		helpInvalidCommand(cmd)
 	case command == nil:
 		Printf("Usage: heroku %s:COMMAND [--app APP] [command-specific-options]\n\n", topic.Name)
 		printTopicCommandsHelp(topic, topicCommands)
+		Exit(0)
 	case command.Command == "":
 		printCommandHelp(command)
 		// This is a root command so show the other commands in the topic
@@ -47,10 +49,11 @@ func help() {
 		if len(topicCommands) > 1 {
 			printTopicCommandsHelp(topic, topicCommands)
 		}
+		Exit(0)
 	default:
 		printCommandHelp(command)
+		Exit(0)
 	}
-	Exit(0)
 }
 
 func printTopicCommandsHelp(topic *Topic, commands CommandSet) {
@@ -85,4 +88,10 @@ func nonHiddenCommands(from []*Command) []*Command {
 		}
 	}
 	return to
+}
+
+func helpInvalidCommand(cmd string) {
+	ExitWithMessage(`%s is not a heroku command.
+Run %s help for a list of available commands.
+`, yellow(cmd), cyan("heroku"))
 }
