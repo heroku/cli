@@ -231,8 +231,8 @@ release: $(MANIFEST) deb distwin
 	aws s3 cp --cache-control max-age=86400 $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_amd64.deb s3://heroku-cli-assets/branches/$(CHANNEL)/apt/$(DEB_BASE)_amd64.deb
 	aws s3 cp --cache-control max-age=86400 $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_386.deb s3://heroku-cli-assets/branches/$(CHANNEL)/apt/$(DEB_BASE)_386.deb
 	aws s3 cp --cache-control max-age=86400 $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_arm.deb s3://heroku-cli-assets/branches/$(CHANNEL)/apt/$(DEB_BASE)_arm.deb
-	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/heroku-installer-win-amd64.exe s3://heroku-cli-assets/branches/$(CHANNEL)/heroku-installer-win-amd64.exe
-	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/heroku-installer-win-386.exe s3://heroku-cli-assets/branches/$(CHANNEL)/heroku-installer-win-386.exe
+	aws s3 cp --cache-control max-age=3600 $(DIST_DIR)/$(VERSION)/heroku-installer-win-amd64.exe s3://heroku-cli-assets/branches/$(CHANNEL)/heroku-installer-win-amd64.exe
+	aws s3 cp --cache-control max-age=3600 $(DIST_DIR)/$(VERSION)/heroku-installer-win-386.exe s3://heroku-cli-assets/branches/$(CHANNEL)/heroku-installer-win-386.exe
 	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/apt/Packages s3://heroku-cli-assets/branches/$(CHANNEL)/apt/Packages
 	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/apt/Packages.gz s3://heroku-cli-assets/branches/$(CHANNEL)/apt/Packages.gz
 	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/apt/Release s3://heroku-cli-assets/branches/$(CHANNEL)/apt/Release
