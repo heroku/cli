@@ -1,6 +1,10 @@
 package main
 
-import "os"
+import (
+	"os"
+	"sort"
+	"strings"
+)
 
 func help() {
 	var cmd string
@@ -8,27 +12,40 @@ func help() {
 		cmd = os.Args[1]
 		if len(os.Args) > 2 && cmd == "help" {
 			cmd = os.Args[2]
+		} else {
+			currentAnalyticsCommand.Valid = false
 		}
 	}
-	cli.Commands.loadUsages()
-	topic, command := cli.ParseCmd(cmd)
+	commands := AllCommands()
+	commands.loadUsages()
+	command := commands.Find(cmd)
+	topics := AllTopics()
+	topic := topics.ByName(strings.SplitN(cmd, ":", 2)[0])
+	topicCommands := CommandSet{}
+	for _, cur := range commands {
+		if topic != nil && cur.Topic == topic.Name {
+			topicCommands = append(topicCommands, cur)
+		}
+	}
+	sort.Sort(topics)
+	sort.Sort(commands)
 	switch {
 	case topic == nil:
-		Print("heroku is the CLI for managing apps hosted on heroku.com\n\n")
+		//Print("heroku is the CLI for managing apps hosted on heroku.com\n\n")
 		Printf("Usage: heroku COMMAND [--app APP] [command-specific-options]\n\n")
 		Printf("Help topics, type \"heroku help TOPIC\" for more details:\n\n")
-		for _, topic := range nonHiddenTopics(cli.Topics) {
+		for _, topic := range nonHiddenTopics(topics) {
 			Printf("  heroku %-30s# %s\n", topic.Name, topic.Description)
 		}
 	case command == nil:
 		Printf("Usage: heroku %s:COMMAND [--app APP] [command-specific-options]\n\n", topic.Name)
-		printTopicCommandsHelp(topic)
+		printTopicCommandsHelp(topic, topicCommands)
 	case command.Command == "":
 		printCommandHelp(command)
 		// This is a root command so show the other commands in the topic
 		// if there are any
-		if len(topic.Commands()) > 1 {
-			printTopicCommandsHelp(topic)
+		if len(topicCommands) > 1 {
+			printTopicCommandsHelp(topic, topicCommands)
 		}
 	default:
 		printCommandHelp(command)
@@ -36,8 +53,7 @@ func help() {
 	Exit(0)
 }
 
-func printTopicCommandsHelp(topic *Topic) {
-	commands := topic.Commands()
+func printTopicCommandsHelp(topic *Topic, commands CommandSet) {
 	if len(commands) > 0 {
 		Printf("\nCommands for %s, type \"heroku help %s:COMMAND\" for more details:\n\n", topic.Name, topic.Name)
 		for _, command := range nonHiddenCommands(commands) {

@@ -1,16 +1,20 @@
 package main
 
 import (
+	"bufio"
+	"encoding/json"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"os"
+	"os/exec"
 	"os/signal"
 	"path/filepath"
 	"runtime"
 	"runtime/debug"
 	"strings"
-	"sync"
+	"syscall"
 
 	"github.com/lunixbochs/vtclean"
 	rollbarAPI "github.com/stvp/rollbar"
@@ -23,15 +27,11 @@ var Stdout io.Writer
 // Stderr is to mock stderr for testing
 var Stderr io.Writer
 
-// ErrLogPath is the location of the error log
-var ErrLogPath = filepath.Join(AppDir(), "error.log")
 var errLogger = newLogger(ErrLogPath)
 var exitFn = os.Exit
 var debugging = isDebugging()
 var debuggingHeaders = isDebuggingHeaders()
 var swallowSigint = false
-var errorPrefix = ""
-var wg sync.WaitGroup
 
 func init() {
 	Stdout = os.Stdout
@@ -52,9 +52,9 @@ func newLogger(path string) *log.Logger {
 
 // Exit just calls os.Exit, but can be mocked out for testing
 func Exit(code int) {
+	TriggerBackgroundUpdate()
 	currentAnalyticsCommand.RecordEnd(code)
 	showCursor()
-	wg.Wait()
 	exitFn(code)
 }
 
@@ -134,7 +134,6 @@ func WarnIfError(e error) {
 	if e == nil {
 		return
 	}
-	Err(errorPrefix)
 	Warn(e.Error())
 	Logln(string(debug.Stack()))
 	rollbar(e, "warning")
@@ -145,24 +144,32 @@ func WarnIfError(e error) {
 
 // Warn shows a message with excalamation points prepended to stderr
 func Warn(msg string) {
-	bang := yellow(" ▸    ")
+	if actionMsg != "" {
+		Errln(yellow(" !"))
+	}
+	prefix := yellow(" ▸    ")
 	msg = strings.TrimSpace(msg)
-	msg = strings.Join(strings.Split(msg, "\n"), "\n"+bang)
-	Errln(bang + msg)
+	msg = strings.Join(strings.Split(msg, "\n"), "\n"+prefix)
+	Errln(prefix + msg)
+	if actionMsg != "" {
+		Err(actionMsg + "...")
+	}
 }
 
 // Error shows a message with excalamation points prepended to stderr
 func Error(msg string) {
-	bang := red(" " + errorArrow() + "    ")
+	if actionMsg != "" {
+		Errln(red(" !"))
+	}
+	prefix := red(" " + errorArrow() + "    ")
 	msg = strings.TrimSpace(msg)
-	msg = strings.Join(strings.Split(msg, "\n"), "\n"+bang)
-	Errln(bang + msg)
+	msg = strings.Join(strings.Split(msg, "\n"), "\n"+prefix)
+	Errln(prefix + msg)
 }
 
 // ExitWithMessage shows an error message then exits with status code 2
 // It does not emit to rollbar
 func ExitWithMessage(format string, a ...interface{}) {
-	TriggerBackgroundUpdate()
 	Error(fmt.Sprintf(format, a...))
 	Exit(2)
 }
@@ -177,8 +184,6 @@ func errorArrow() string {
 // ExitIfError exits if e is not null
 func ExitIfError(e error) {
 	if e != nil {
-		TriggerBackgroundUpdate()
-		Err(errorPrefix)
 		Error(e.Error())
 		Logln(string(debug.Stack()))
 		rollbar(e, "error")
@@ -259,6 +264,9 @@ func supportsColor() bool {
 			return false
 		}
 	}
+	if config, _ := config.GetBool("color"); config != nil && *config == false {
+		return false
+	}
 	return os.Getenv("COLOR") != "false"
 }
 
@@ -281,13 +289,15 @@ func hideCursor() {
 	}
 }
 
-func action(text, done string, fn func()) {
-	Err(text + "...")
-	errorPrefix = red(" !") + "\n"
+var actionMsg string
+
+func action(msg, done string, fn func()) {
+	actionMsg = msg
+	Err(actionMsg + "...")
 	hideCursor()
 	fn()
+	actionMsg = ""
 	showCursor()
-	errorPrefix = ""
 	if done != "" {
 		Errln(" " + done)
 	}
@@ -320,9 +330,75 @@ func rollbar(err error, level string) {
 		{"person.id", netrcLogin()},
 	}
 	rollbarAPI.Error(level, err, fields...)
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		rollbarAPI.Wait()
-	}()
+	rollbarAPI.Wait()
+}
+
+func readJSON(path string) (out map[string]interface{}, err error) {
+	if exists, err := fileExists(path); !exists {
+		if err != nil {
+			panic(err)
+		}
+		return map[string]interface{}{}, nil
+	}
+	data, err := ioutil.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+	err = json.Unmarshal(data, &out)
+	return out, err
+}
+
+func saveJSON(obj interface{}, path string) error {
+	data, err := json.MarshalIndent(obj, "", "  ")
+	if err != nil {
+		return err
+	}
+	return ioutil.WriteFile(path, data, 0644)
+}
+
+func inspect(o interface{}) {
+	fmt.Printf("%+v\n", o)
+}
+
+func maxint(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
+
+func execBin(bin string, args ...string) {
+	if runtime.GOOS == "windows" {
+		cmd := exec.Command(bin, args[1:]...)
+		cmd.Stdin = os.Stdin
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+		if err := cmd.Run(); err != nil {
+			os.Exit(getExitCode(err))
+		}
+	} else {
+		if err := syscall.Exec(bin, args, os.Environ()); err != nil {
+			panic(err)
+		}
+	}
+}
+
+// truncates the beginning of a file
+func truncate(path string, n int) {
+	f, err := os.Open(path)
+	if err != nil {
+		LogIfError(err)
+		return
+	}
+	scanner := bufio.NewScanner(f)
+	lines := make([]string, 0, n+1)
+	scanner.Split(bufio.ScanLines)
+	for scanner.Scan() {
+		lines = append(lines, scanner.Text())
+		if len(lines) > n {
+			lines = lines[1:]
+		}
+	}
+	lines = append(lines, "")
+	ioutil.WriteFile(path, []byte(strings.Join(lines, "\n")), 0644)
 }

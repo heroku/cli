@@ -1,16 +1,17 @@
 {
   "name": "heroku-cli",
+  "description": "Heroku CLI",
+  "private": true,
   "dependencies": {
-    "adm-zip": "0.4.7",
-    "aws-sdk": "2.3.0",
-    "bluebird": "3.3.4",
-    "fstream": "1.0.8",
-    "lzma-native": "1.1.0",
-    "mkdirp": "0.5.1",
-    "mz": "2.4.0",
-    "observatory": "1.0.0",
-    "rimraf": "2.5.2",
-    "tar": "2.2.1"
-  },
-  "private": true
+    "heroku-apps": "2.0.2",
+    "heroku-cli-addons": "0.3.0",
+    "heroku-fork": "4.1.2",
+    "heroku-git": "2.5.1",
+    "heroku-local": "5.0.2",
+    "heroku-orgs": "1.0.8",
+    "heroku-pipelines": "1.1.4",
+    "heroku-run": "3.2.0",
+    "heroku-spaces": "2.1.2",
+    "heroku-status": "2.1.4"
+  }
 }

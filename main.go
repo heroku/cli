@@ -3,17 +3,13 @@ package main
 import (
 	"errors"
 	"fmt"
-	"net/http"
-	"net/url"
 	"os"
 	"runtime"
-	"runtime/debug"
 	"strings"
 )
 
 // Version is the version of the v4 cli.
 // This is set by a build flag in the `Rakefile`.
-// If it is set to `dev` it will not autoupdate.
 var Version = "dev"
 
 // GitSHA is the git sha of the build
@@ -24,30 +20,23 @@ var GitSHA = ""
 // This is set by a build flag in the `Rakefile` based on the git branch.
 var Channel = "?"
 
-var cli = &Cli{}
+// Topics are all the command topics
+// This list is all the Go topics, the Node topics are filled in later
+var Topics TopicSet
 
-// BuiltinPlugins are the core plugins that will be autoinstalled
-var BuiltinPlugins = []string{
-	"heroku-apps",
-	"heroku-cli-addons",
-	"heroku-fork",
-	"heroku-git",
-	"heroku-local",
-	"heroku-orgs",
-	"heroku-pipelines",
-	"heroku-run",
-	"heroku-spaces",
-	"heroku-status",
-}
+// Commands are all the commands
+// This list is all the Go commands, the Node commands are filled in later
+var Commands CommandSet
 
 func init() {
-	cli.Topics = TopicSet{
+	Topics = TopicSet{
 		authTopic,
 		commandsTopic,
 		debugTopic,
 		loginTopic,
 		logoutTopic,
 		pluginsTopic,
+		buildTopic,
 		twoFactorTopic,
 		twoFactorTopicAlias,
 		updateTopic,
@@ -55,7 +44,8 @@ func init() {
 		whichTopic,
 		whoamiTopic,
 	}
-	cli.Commands = CommandSet{
+
+	Commands = CommandSet{
 		authLoginCmd,
 		authLogoutCmd,
 		authTokenCmd,
@@ -63,10 +53,12 @@ func init() {
 		debugErrlogCmd,
 		loginCmd,
 		logoutCmd,
+		buildManifestCmd,
 		pluginsInstallCmd,
 		pluginsLinkCmd,
 		pluginsListCmd,
 		pluginsUninstallCmd,
+		buildPluginsCmd,
 		twoFactorCmd,
 		twoFactorCmdAlias,
 		twoFactorDisableCmd,
@@ -82,31 +74,39 @@ func init() {
 }
 
 func main() {
+	loadNewCLI()
 	defer handlePanic()
+
+	// handle sigint
 	handleSignal(os.Interrupt, func() {
 		if !swallowSigint {
 			showCursor()
 			os.Exit(1)
 		}
 	})
+
 	runtime.GOMAXPROCS(1) // more procs causes runtime: failed to create new OS thread on Ubuntu
 	ShowDebugInfo()
-	if !(len(os.Args) >= 2 && os.Args[1] == "update") {
+
+	if len(os.Args) < 2 {
+		help()
+	}
+
+	if os.Args[1] == "update" {
 		// skip blocking update if the command is to update
 		// otherwise it will update twice
 		Update(Channel, "block")
 	}
-	SetupNode()
 
 	// try running as a core command
-	cli.Run(os.Args, false)
+	Commands.Run(os.Args)
 
-	// Command wasn't found so load the plugins and try again
-	SetupBuiltinPlugins()
-	TriggerBackgroundUpdate()
-	cli.LoadPlugins(GetPlugins())
-	cli.Run(os.Args, true)
-	Exit(0)
+	// command wasn't found so try running it as a plugin
+	userPlugins.Commands().Run(os.Args)
+	corePlugins.Commands().Run(os.Args)
+
+	// no command found
+	help()
 }
 
 func handlePanic() {
@@ -115,14 +115,7 @@ func handlePanic() {
 		if !ok {
 			err = errors.New(rec.(string))
 		}
-		Errln("ERROR:", err)
-		if Channel == "?" {
-			debug.PrintStack()
-		} else {
-			rollbar(err, "critical")
-		}
-		TriggerBackgroundUpdate()
-		Exit(1)
+		ExitIfError(err)
 	}
 }
 
@@ -131,7 +124,7 @@ func ShowDebugInfo() {
 	if !isDebugging() {
 		return
 	}
-	info := []string{version(), binPath}
+	info := []string{version(), BinPath}
 	if len(os.Args) > 1 {
 		info = append(info, fmt.Sprintf("cmd: %s", os.Args[1]))
 	}
@@ -140,12 +133,4 @@ func ShowDebugInfo() {
 		info = append(info, fmt.Sprintf("proxy: %s", proxy))
 	}
 	Debugln(strings.Join(info, " "))
-}
-
-func getProxy() *url.URL {
-	req, err := http.NewRequest("GET", "https://api.heroku.com", nil)
-	WarnIfError(err)
-	proxy, err := http.ProxyFromEnvironment(req)
-	WarnIfError(err)
-	return proxy
 }

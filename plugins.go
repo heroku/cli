@@ -8,13 +8,19 @@ import (
 	"os/exec"
 	"path/filepath"
 	"sort"
-	"strconv"
 	"strings"
 	"syscall"
 
 	"github.com/dickeyxxx/golock"
-	"github.com/heroku/cli/gode"
 )
+
+// Plugins represents either core or user plugins
+type Plugins struct {
+	Path string
+}
+
+var corePlugins = &Plugins{Path: filepath.Join(AppDir, "lib")}
+var userPlugins = &Plugins{Path: filepath.Join(DataHome, "plugins")}
 
 // Plugin represents a javascript plugin
 type Plugin struct {
@@ -25,35 +31,26 @@ type Plugin struct {
 	Commands CommandSet `json:"commands"`
 }
 
-// SetupNode sets up node and npm in ~/.heroku
-func SetupNode() {
-	gode.SetRootPath(AppDir())
-	setup, err := gode.IsSetup()
-	WarnIfError(err)
-	if !setup {
-		if err := gode.Setup(); err != nil {
-			panic(err)
+// Commands lists all the commands of the plugins
+func (p *Plugins) Commands() (commands CommandSet) {
+	for _, plugin := range p.Plugins() {
+		for _, command := range plugin.Commands {
+			command.Run = p.runFn(plugin, command.Topic, command.Command)
+			commands = append(commands, command)
 		}
 	}
+	return
 }
 
-// LoadPlugins loads the topics and commands from the JavaScript plugins into the CLI
-func (cli *Cli) LoadPlugins(plugins map[string]*Plugin) {
-	for _, plugin := range plugins {
-		for _, topic := range plugin.Topics {
-			cli.AddTopic(topic)
-		}
+// Topics gets all the plugin's topics
+func (p *Plugins) Topics() (topics TopicSet) {
+	for _, plugin := range p.Plugins() {
 		if plugin.Topic != nil {
-			cli.AddTopic(plugin.Topic)
+			topics = append(topics, plugin.Topic)
 		}
-		for _, command := range plugin.Commands {
-			if !cli.AddCommand(command) {
-				Errf("WARNING: command %s has already been defined\n", command)
-			}
-		}
+		topics = append(topics, plugin.Topics...)
 	}
-	sort.Sort(cli.Topics)
-	sort.Sort(cli.Commands)
+	return
 }
 
 var pluginsTopic = &Topic{
@@ -62,24 +59,41 @@ var pluginsTopic = &Topic{
 }
 
 var pluginsInstallCmd = &Command{
-	Topic:       "plugins",
-	Command:     "install",
-	Hidden:      true,
-	Args:        []Arg{{Name: "name"}},
-	Description: "Installs a plugin into the CLI",
+	Topic:        "plugins",
+	Command:      "install",
+	Hidden:       true,
+	VariableArgs: true,
+	Description:  "Installs a plugin into the CLI",
 	Help: `Install a Heroku plugin
 
   Example:
-  $ heroku plugins:install dickeyxxx/heroku-production-status`,
+  $ heroku plugins:install heroku-production-status`,
 
 	Run: func(ctx *Context) {
-		name := ctx.Args.(map[string]string)["name"]
-		if len(name) == 0 {
-			Errln("Must specify a plugin name")
-			return
+		plugins := ctx.Args.([]string)
+		if len(plugins) == 0 {
+			ExitWithMessage("Must specify a plugin name.\nUSAGE: heroku plugins:install heroku-debug")
 		}
-		action("Installing plugin "+name, "done", func() {
-			ExitIfError(installPlugins(name))
+		toinstall := make([]string, 0, len(plugins))
+		core := corePlugins.PluginNames()
+		for _, plugin := range plugins {
+			if contains(core, strings.Split(plugin, "@")[0]) {
+				Warn("Not installing " + plugin + " because it is already installed as a core plugin.")
+				continue
+			}
+			toinstall = append(toinstall, plugin)
+		}
+		if len(toinstall) == 0 {
+			Exit(1)
+		}
+		action("Installing "+plural("plugin", len(toinstall))+" "+strings.Join(toinstall, " "), "done", func() {
+			err := userPlugins.InstallPlugins(toinstall...)
+			if err != nil {
+				if strings.Contains(err.Error(), "no such package available") {
+					ExitWithMessage("Plugin not found")
+				}
+				panic(err)
+			}
 		})
 	},
 }
@@ -91,12 +105,16 @@ var pluginsLinkCmd = &Command{
 	Args:        []Arg{{Name: "path", Optional: true}},
 	Help: `Links a local plugin into CLI.
 	This is useful when developing plugins locally.
-	It simply symlinks the specified path into ~/.heroku/node_modules
+	It simply symlinks the specified path into the plugins directory
+	and parses the plugin.
+
+	You will need to run it again if you change any of the plugin metadata.
 
   Example:
 	$ heroku plugins:link .`,
 
 	Run: func(ctx *Context) {
+		pluginInstallRetry = false
 		path := ctx.Args.(map[string]string)["path"]
 		if path == "" {
 			path = "."
@@ -110,23 +128,23 @@ var pluginsLinkCmd = &Command{
 		}
 		name := filepath.Base(path)
 		action("Symlinking "+name, "done", func() {
-			newPath := pluginPath(name)
+			newPath := userPlugins.pluginPath(name)
 			os.Remove(newPath)
 			os.RemoveAll(newPath)
 			err = os.Symlink(path, newPath)
 			if err != nil {
 				panic(err)
 			}
-			plugin, err := ParsePlugin(name)
+			plugin, err := userPlugins.ParsePlugin(name)
 			ExitIfError(err)
 			if name != plugin.Name {
 				path = newPath
-				newPath = pluginPath(plugin.Name)
+				newPath = userPlugins.pluginPath(plugin.Name)
 				os.Remove(newPath)
 				os.RemoveAll(newPath)
 				os.Rename(path, newPath)
 			}
-			AddPluginsToCache(plugin)
+			userPlugins.addToCache(plugin)
 		})
 	},
 }
@@ -144,12 +162,12 @@ var pluginsUninstallCmd = &Command{
 
 	Run: func(ctx *Context) {
 		name := ctx.Args.(map[string]string)["name"]
-		if !contains(PluginNames(), name) {
+		if !contains(userPlugins.PluginNames(), name) {
 			ExitIfError(errors.New(name + " is not installed"))
 		}
 		Errf("Uninstalling plugin %s...", name)
-		ExitIfError(gode.RemovePackages(name))
-		RemovePluginFromCache(name)
+		ExitIfError(userPlugins.RemovePackages(name))
+		userPlugins.removeFromCache(name)
 		Errln(" done")
 	},
 }
@@ -159,92 +177,76 @@ var pluginsListCmd = &Command{
 	Hidden:           true,
 	Description:      "Lists installed plugins",
 	DisableAnalytics: true,
+	Flags: []Flag{
+		{Name: "core", Description: "show core plugins"},
+	},
 	Help: `
 Example:
   $ heroku plugins`,
 
 	Run: func(ctx *Context) {
-		SetupBuiltinPlugins()
-		var plugins []string
-		for _, plugin := range GetPlugins() {
+		var names []string
+		for _, plugin := range userPlugins.Plugins() {
 			symlinked := ""
-			if isPluginSymlinked(plugin.Name) {
+			if userPlugins.isPluginSymlinked(plugin.Name) {
 				symlinked = " (symlinked)"
 			}
-			plugins = append(plugins, fmt.Sprintf("%s %s %s", plugin.Name, plugin.Version, symlinked))
+			names = append(names, fmt.Sprintf("%s %s%s", plugin.Name, plugin.Version, symlinked))
 		}
-		sort.Strings(plugins)
-		for _, plugin := range plugins {
+		if ctx.Flags["core"] != nil {
+			userPluginNames := userPlugins.PluginNames()
+			for _, plugin := range corePlugins.Plugins() {
+				if contains(userPluginNames, plugin.Name) {
+					continue
+				}
+				names = append(names, fmt.Sprintf("%s %s (core)", plugin.Name, plugin.Version))
+			}
+		}
+		sort.Strings(names)
+		for _, plugin := range names {
 			Println(plugin)
 		}
 	},
 }
 
-func runFn(plugin *Plugin, topic, command string) func(ctx *Context) {
+func (p *Plugins) runFn(plugin *Plugin, topic, command string) func(ctx *Context) {
 	return func(ctx *Context) {
-		readLockPlugin(plugin.Name)
-		ctx.Dev = isPluginSymlinked(plugin.Name)
+		p.readLockPlugin(plugin.Name)
+		ctx.Dev = p.isPluginSymlinked(plugin.Name)
 		ctxJSON, err := json.Marshal(ctx)
 		if err != nil {
 			panic(err)
 		}
-		title, _ := json.Marshal(processTitle(ctx))
-		script := fmt.Sprintf(`'use strict';
-var moduleName = '%s';
-var moduleVersion = '%s';
-var topic = '%s';
-var command = '%s';
-process.title = %s;
-var ctx = %s;
-ctx.version = ctx.version + ' ' + moduleName + '/' + moduleVersion + ' node-' + process.version;
-var logPath = %s;
-process.chdir(ctx.cwd);
-if (!ctx.dev) {
-	process.on('uncaughtException', function (err) {
-		// ignore EPIPE errors (usually from piping to head)
-		if (err.code === "EPIPE") return;
-		console.error(' !   Error in ' + moduleName + ':')
-		console.error(' !   ' + err.message || err);
-		if (err.stack) {
-			var fs = require('fs');
-			var log = function (line) {
-				var d = new Date().toISOString()
-				.replace(/T/, ' ')
-				.replace(/-/g, '/')
-				.replace(/\..+/, '');
-				fs.appendFileSync(logPath, d + ' ' + line + '\n');
-			}
-			log('Error during ' + topic + ':' + command);
-			log(err.stack);
-			console.error(' !   See ' + logPath + ' for more info.');
-		}
-		process.exit(1);
-	});
-}
+		title, _ := json.Marshal("heroku " + strings.Join(os.Args[1:], " "))
+
+		script := fmt.Sprintf(`'use strict'
+let pluginName = '%s'
+let pluginVersion = '%s'
+let topic = '%s'
+let command = '%s'
+process.title = %s
+let ctx = %s
+ctx.version = ctx.version + ' ' + pluginName + '/' + pluginVersion + ' node-' + process.version
+process.chdir(ctx.cwd)
 if (command === '') { command = null }
-var module = require(moduleName);
-var cmd = module.commands.filter(function (c) {
-	return c.topic === topic && c.command == command;
-})[0];
-cmd.run(ctx);
-`, plugin.Name, plugin.Version, topic, command, string(title), ctxJSON, strconv.Quote(ErrLogPath))
+let plugin = require(pluginName)
+let cmd = plugin.commands.filter((c) => c.topic === topic && c.command == command)[0]
+cmd.run(ctx)
+`, plugin.Name, plugin.Version, topic, command, string(title), ctxJSON)
 
 		// swallow sigint since the plugin will handle it
 		swallowSigint = true
 
 		currentAnalyticsCommand.Plugin = plugin.Name
 		currentAnalyticsCommand.Version = plugin.Version
-		currentAnalyticsCommand.Language = fmt.Sprintf("node/%s", gode.NodeVersion)
+		currentAnalyticsCommand.Language = fmt.Sprintf("node/" + NodeVersion)
 
-		cmd, done := gode.RunScript(script)
-		defer done()
+		cmd, done := p.RunScript(script)
 		cmd.Stdin = os.Stdin
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
-		if ctx.Flags["debugger"] == true {
-			cmd = gode.DebugScript(script)
-		}
 		err = cmd.Run()
+		done()
 		Exit(getExitCode(err))
 	}
 }
@@ -264,40 +266,39 @@ func getExitCode(err error) int {
 	}
 }
 
-var pluginInstallRetrying = false
+var pluginInstallRetry = true
 
 // ParsePlugin requires the plugin's node module
 // to get the commands and metadata
-func ParsePlugin(name string) (*Plugin, error) {
+func (p *Plugins) ParsePlugin(name string) (*Plugin, error) {
 	script := `
 	var plugin = require('` + name + `');
-	if (!plugin.commands) throw new Error('Contains no commands. Is this a real plugin?');
 	var pjson  = require('` + name + `/package.json');
 
 	plugin.name    = pjson.name;
 	plugin.version = pjson.version;
 
 	console.log(JSON.stringify(plugin))`
-	cmd, done := gode.RunScript(script)
+	cmd, done := p.RunScript(script)
 	cmd.Stderr = Stderr
 	output, err := cmd.Output()
 	done()
 
 	if err != nil {
 		// try again but this time grab stdout and stderr
-		cmd, done := gode.RunScript(script)
+		cmd, done := p.RunScript(script)
 		output, err = cmd.CombinedOutput() // sometimes this actually works the second time
 		if err != nil {
 			done()
-			if !pluginInstallRetrying && strings.Contains(string(output), "Error: Cannot find module") {
-				pluginInstallRetrying = true
+			if pluginInstallRetry && strings.Contains(string(output), "Error: Cannot find module") {
+				pluginInstallRetry = false
 				Warn("Failed to install " + name + ". Retrying...")
-				WarnIfError(gode.RemovePackages(name))
-				WarnIfError(gode.ClearCache())
-				if err := gode.InstallPackages(name); err != nil {
+				WarnIfError(p.RemovePackages(name))
+				WarnIfError(p.ClearCache())
+				if err := p.installPackages(name); err != nil {
 					return nil, err
 				}
-				return ParsePlugin(name)
+				return p.ParsePlugin(name)
 			}
 			return nil, fmt.Errorf("Error reading plugin: %s\n%s\n%s", name, err, output)
 		}
@@ -306,6 +307,9 @@ func ParsePlugin(name string) (*Plugin, error) {
 	err = json.Unmarshal([]byte(output), &plugin)
 	if err != nil {
 		return nil, fmt.Errorf("Error parsing plugin: %s\n%s\n%s", name, err, string(output))
+	}
+	if len(plugin.Commands) == 0 {
+		return nil, fmt.Errorf("Invalid plugin. No commands found.")
 	}
 	for _, command := range plugin.Commands {
 		if command == nil {
@@ -317,79 +321,35 @@ func ParsePlugin(name string) (*Plugin, error) {
 	return &plugin, nil
 }
 
-// GetPlugins goes through all the node plugins and returns them in Go stucts
-func GetPlugins() map[string]*Plugin {
-	plugins := FetchPluginCache()
-	for name, plugin := range plugins {
-		if plugin == nil || !pluginExists(name) || plugin.Commands.Len() == 0 {
-			delete(plugins, name)
-		} else {
-			for _, command := range plugin.Commands {
-				command.Run = runFn(plugin, command.Topic, command.Command)
-			}
-		}
-	}
-	return plugins
-}
-
 // PluginNames lists all the plugin names
-func PluginNames() []string {
-	plugins := FetchPluginCache()
+func (p *Plugins) PluginNames() []string {
+	plugins := p.Plugins()
 	names := make([]string, 0, len(plugins))
 	for _, plugin := range plugins {
-		if plugin != nil && pluginExists(plugin.Name) && len(plugin.Commands) > 0 {
-			names = append(names, plugin.Name)
+		names = append(names, plugin.Name)
+	}
+	return names
+}
+
+// PluginNamesNotSymlinked lists all the plugin names that are not symlinked
+func (p *Plugins) PluginNamesNotSymlinked() []string {
+	plugins := p.PluginNames()
+	names := make([]string, 0, len(plugins))
+	for _, plugin := range plugins {
+		if !p.isPluginSymlinked(plugin) {
+			names = append(names, plugin)
 		}
 	}
 	return names
 }
 
-// PluginNamesNotSymlinked returns all the plugins that are not symlinked
-func PluginNamesNotSymlinked() []string {
-	a := PluginNames()
-	b := make([]string, 0, len(a))
-	for _, plugin := range a {
-		if !isPluginSymlinked(plugin) {
-			b = append(b, plugin)
-		}
-	}
-	return b
-}
-
-func isPluginSymlinked(plugin string) bool {
-	path := filepath.Join(AppDir(), "node_modules", plugin)
+func (p *Plugins) isPluginSymlinked(plugin string) bool {
+	path := filepath.Join(p.modulesPath(), plugin)
 	fi, err := os.Lstat(path)
 	if err != nil {
 		return false
 	}
 	return fi.Mode()&os.ModeSymlink != 0
-}
-
-// SetupBuiltinPlugins ensures all the builtinPlugins are installed
-func SetupBuiltinPlugins() {
-	pluginNames := difference(BuiltinPlugins, PluginNames())
-	if len(pluginNames) == 0 {
-		return
-	}
-	action("heroku-cli: Installing core plugins", "done", func() {
-		if err := installPlugins(pluginNames...); err != nil {
-			// retry once
-			WarnIfError(gode.RemovePackages(pluginNames...))
-			WarnIfError(gode.ClearCache())
-			Err("\rheroku-cli: Installing core plugins (retrying)...")
-			ExitIfError(installPlugins(pluginNames...))
-		}
-	})
-}
-
-func difference(a, b []string) []string {
-	res := make([]string, 0, len(a))
-	for _, aa := range a {
-		if !contains(b, aa) {
-			res = append(res, aa)
-		}
-	}
-	return res
 }
 
 func contains(arr []string, s string) bool {
@@ -401,58 +361,81 @@ func contains(arr []string, s string) bool {
 	return false
 }
 
-func installPlugins(names ...string) error {
+// InstallPlugins installs plugins
+func (p *Plugins) InstallPlugins(names ...string) error {
 	for _, name := range names {
-		lockPlugin(name)
+		p.lockPlugin(name)
 	}
 	defer func() {
 		for _, name := range names {
-			unlockPlugin(name)
+			p.unlockPlugin(name)
 		}
 	}()
-	err := gode.InstallPackages(names...)
+	err := p.installPackages(names...)
 	if err != nil {
 		return err
 	}
 	plugins := make([]*Plugin, len(names))
 	for i, name := range names {
-		plugin, err := ParsePlugin(name)
+		plugin, err := p.ParsePlugin(name)
 		if err != nil {
 			return err
 		}
 		plugins[i] = plugin
 	}
-	AddPluginsToCache(plugins...)
+	p.addToCache(plugins...)
 	return nil
 }
 
-func pluginExists(plugin string) bool {
-	exists, _ := fileExists(pluginPath(plugin))
-	return exists
+// directory location of plugin
+func (p *Plugins) pluginPath(plugin string) string {
+	return filepath.Join(p.Path, "node_modules", plugin)
 }
 
-// directory location of plugin
-func pluginPath(plugin string) string {
-	return filepath.Join(AppDir(), "node_modules", plugin)
+// name of lockfile
+func (p *Plugins) lockfile(name string) string {
+	return filepath.Join(p.Path, name+".updating")
 }
 
 // lock a plugin for reading
-func readLockPlugin(name string) {
-	lockfile := updateLockPath + "." + name
-	locked, err := golock.IsLocked(lockfile)
+func (p *Plugins) readLockPlugin(name string) {
+	locked, err := golock.IsLocked(p.lockfile(name))
 	LogIfError(err)
 	if locked {
-		lockPlugin(name)
-		unlockPlugin(name)
+		p.lockPlugin(name)
+		p.unlockPlugin(name)
 	}
 }
 
 // lock a plugin for writing
-func lockPlugin(name string) {
-	LogIfError(golock.Lock(updateLockPath + "." + name))
+func (p *Plugins) lockPlugin(name string) {
+	LogIfError(golock.Lock(p.lockfile(name)))
 }
 
 // unlock a plugin
-func unlockPlugin(name string) {
-	LogIfError(golock.Unlock(updateLockPath + "." + name))
+func (p *Plugins) unlockPlugin(name string) {
+	LogIfError(golock.Unlock(p.lockfile(name)))
+}
+
+// Update updates the plugins
+func (p *Plugins) Update() {
+	plugins := p.PluginNamesNotSymlinked()
+	if len(plugins) == 0 {
+		return
+	}
+	packages, err := p.OutdatedPackages(plugins...)
+	WarnIfError(err)
+	if len(packages) > 0 {
+		action("heroku-cli: Updating plugins", "", func() {
+			for name, version := range packages {
+				p.lockPlugin(name)
+				WarnIfError(p.installPackages(name + "@" + version))
+				plugin, err := p.ParsePlugin(name)
+				WarnIfError(err)
+				p.addToCache(plugin)
+				p.unlockPlugin(name)
+			}
+		})
+		Errf(" done. Updated %d %s.\n", len(packages), plural("package", len(packages)))
+	}
 }

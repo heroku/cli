@@ -1,7 +1,7 @@
 {
 	"ImportPath": "github.com/heroku/cli",
 	"GoVersion": "go1.6",
-	"GodepVersion": "v60",
+	"GodepVersion": "v62",
 	"Deps": [
 		{
 			"ImportPath": "github.com/dickeyxxx/golock",

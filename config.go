@@ -1,37 +1,37 @@
 package main
 
-import (
-	"encoding/json"
-	"os"
-	"path/filepath"
-)
+import "path/filepath"
 
 // Config interacts with the config.json
 type Config struct {
-	path string
+	path   string
+	config map[string]interface{}
 }
 
 var config = Config{
-	path: filepath.Join(HomeDir, ".heroku", "config.json"),
+	path: filepath.Join(ConfigHome, "config.json"),
 }
 
 // GetBool returns a config setting that is a bool
-func (c *Config) GetBool(key string) (bool, error) {
+func (c *Config) GetBool(key string) (*bool, error) {
 	r, err := c.get(key)
 	if err != nil {
-		return false, err
+		return nil, err
 	}
-	return r.(bool), err
+	if r == nil {
+		return nil, nil
+	}
+	b := r.(bool)
+	return &b, nil
 }
 
 func (c *Config) get(key string) (interface{}, error) {
-	f, err := os.Open(c.path)
-	if err != nil {
-		return nil, err
+	if c.config == nil {
+		var err error
+		c.config, err = readJSON(c.path)
+		if err != nil {
+			return nil, err
+		}
 	}
-	var config map[string]interface{}
-	if err := json.NewDecoder(f).Decode(&config); err != nil {
-		return nil, err
-	}
-	return config[key], nil
+	return c.config[key], nil
 }

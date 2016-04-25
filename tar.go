@@ -1,4 +1,4 @@
-package gode
+package main
 
 import (
 	"archive/tar"
