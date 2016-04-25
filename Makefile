@@ -28,7 +28,6 @@ CHANNEL?=$(shell git rev-parse --abbrev-ref HEAD)$(DIRTY)
 GOOS=$(shell go env GOOS)
 GOARCH=$(shell go env GOARCH)
 WORKSPACE=tmp/dev/heroku
-VERSIONS := $(foreach target, $(TARGETS), tmp/$(target)/heroku/VERSION)
 DIST_TARGETS := $(foreach target, $(TARGETS), $(subst debian,linux,$(DIST_DIR)/$(VERSION)/heroku-v$(VERSION)-$(target).tar.xz))
 MANIFEST := $(DIST_DIR)/$(VERSION)/manifest.json
 
