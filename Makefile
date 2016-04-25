@@ -190,7 +190,7 @@ $(DIST_DIR)/$(VERSION)/heroku-installer-win-%.exe: tmp/windows-%/heroku/VERSION 
 	sed -e "s/!define Version 'VERSION'/!define Version '$(VERSION)'/" resources/exe/heroku.nsi |\
 		sed -e "s/InstallDir .*/InstallDir \"\$$PROGRAMFILES$(if $(filter amd64,$*),64,)\\\Heroku\"/" \
 		> tmp/windows-$*/heroku/heroku.nsi
-	makensis tmp/windows-$*/heroku/heroku.nsi
+	makensis tmp/windows-$*/heroku/heroku.nsi > /dev/null
 	@osslsigncode -pkcs12 resources/exe/heroku-codesign-cert.pfx \
 		-pass '$(HEROKU_WINDOWS_SIGNING_PASS)' \
 		-n 'Heroku CLI' \
