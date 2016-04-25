@@ -16,7 +16,7 @@
   ],
   "license": "ISC",
   "scripts": {
-    "test": "eslint ."
+    "test": "standard"
   },
   "dependencies": {
     "heroku-cli-util": "5.6.3",
@@ -25,6 +25,6 @@
     "ssh2": "0.4.11"
   },
   "devDependencies": {
-    "eslint": "*"
+    "standard": "6.0.8"
   }
 }
