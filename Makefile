@@ -145,7 +145,7 @@ tmp/%/heroku/bin/heroku.exe: $(SOURCES) resources/exe/heroku-codesign-cert.pfx
 resources/exe/heroku-codesign-cert.pfx:
 	@gpg --yes --passphrase '$(HEROKU_WINDOWS_SIGNING_PASS)' -o resources/exe/heroku-codesign-cert.pfx -d resources/exe/heroku-codesign-cert.pfx.gpg
 
-$(DIST_DIR)/$(VERSION)/heroku-v$(VERSION)-%.tar.xz: $(VERSIONS)
+$(DIST_DIR)/$(VERSION)/heroku-v$(VERSION)-%.tar.xz: tmp/%/heroku/VERSION
 	@mkdir -p $(@D)
 	tar -C tmp/$* -c heroku | xz -2 > $@
 
@@ -184,7 +184,7 @@ tmp/git/Git-%.exe:
 	@mkdir -p tmp/git
 	curl -Lso $@ https://cli-assets.heroku.com/git/Git-$*.exe
 
-$(DIST_DIR)/$(VERSION)/heroku-installer-win-%.exe: tmp/windows-%/heroku/VERSION tmp/git/Git-2.8.1-32-bit.exe tmp/git/Git-2.8.1-64-bit.exe
+$(DIST_DIR)/$(VERSION)/heroku-windows-%.exe: tmp/windows-%/heroku/VERSION tmp/git/Git-2.8.1-32-bit.exe tmp/git/Git-2.8.1-64-bit.exe
 	@mkdir -p $(@D)
 	cp tmp/git/Git-2.8.1-64-bit.exe tmp/windows-$*/heroku/git.exe
 	sed -e "s/!define Version 'VERSION'/!define Version '$(VERSION)'/" resources/exe/heroku.nsi |\
@@ -214,30 +214,53 @@ test: build
 	$(WORKSPACE)/bin/heroku status
 
 .PHONY: all
-all: $(VERSIONS)
+all: darwin linux windows freebsd openbsd
 
-.PHONY: dist
-dist: $(MANIFEST) deb distwin
+.PHONY: darwin
+darwin: tmp/darwin-amd64/heroku/VERSION
+
+.PHONY: linux
+linux: tmp/linux-amd64/heroku/VERSION tmp/linux-arm/heroku/VERSION tmp/linux-386/heroku/VERSION
+
+.PHONY: windows
+windows: tmp/windows-amd64/heroku/VERSION tmp/windows-386/heroku/VERSION
+
+.PHONY: freebsd
+freebsd: tmp/freebsd-amd64/heroku/VERSION tmp/freebsd-386/heroku/VERSION
+
+.PHONY: openbsd
+openbsd: tmp/openbsd-amd64/heroku/VERSION tmp/openbsd-386/heroku/VERSION
 
 .PHONY: distwin
-distwin: $(DIST_DIR)/$(VERSION)/heroku-installer-win-amd64.exe $(DIST_DIR)/$(VERSION)/heroku-installer-win-386.exe
+distwin: $(DIST_DIR)/$(VERSION)/heroku-windows-amd64.exe $(DIST_DIR)/$(VERSION)/heroku-windows-386.exe
 
-.PHONY: deb
+.PHONY: distosx
+distosx: $(DIST_DIR)/$(VERSION)/heroku-osx.exe
+
+.PHONY: distdeb
 deb: $(DIST_DIR)/$(VERSION)/apt/Packages $(DIST_DIR)/$(VERSION)/apt/Release
 
-.PHONY: release
-release: $(MANIFEST) deb distwin
+.PHONY: releasetgz
+releasetgz: $(MANIFEST)
 	$(foreach txz, $(DIST_TARGETS), aws s3 cp --cache-control max-age=86400 $(txz) s3://heroku-cli-assets/branches/$(CHANNEL)/$(VERSION)/$(notdir $(txz));)
+	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/manifest.json s3://heroku-cli-assets/branches/$(CHANNEL)/manifest.json
+
+.PHONY: releasewin
+.PHONY: releaseosx
+.PHONY: releasedeb
+releasedeb: distdeb
 	aws s3 cp --cache-control max-age=86400 $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_amd64.deb s3://heroku-cli-assets/branches/$(CHANNEL)/apt/$(DEB_BASE)_amd64.deb
 	aws s3 cp --cache-control max-age=86400 $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_386.deb s3://heroku-cli-assets/branches/$(CHANNEL)/apt/$(DEB_BASE)_386.deb
 	aws s3 cp --cache-control max-age=86400 $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_arm.deb s3://heroku-cli-assets/branches/$(CHANNEL)/apt/$(DEB_BASE)_arm.deb
-	aws s3 cp --cache-control max-age=3600 $(DIST_DIR)/$(VERSION)/heroku-installer-win-amd64.exe s3://heroku-cli-assets/branches/$(CHANNEL)/heroku-installer-win-amd64.exe
-	aws s3 cp --cache-control max-age=3600 $(DIST_DIR)/$(VERSION)/heroku-installer-win-386.exe s3://heroku-cli-assets/branches/$(CHANNEL)/heroku-installer-win-386.exe
 	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/apt/Packages s3://heroku-cli-assets/branches/$(CHANNEL)/apt/Packages
 	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/apt/Packages.gz s3://heroku-cli-assets/branches/$(CHANNEL)/apt/Packages.gz
 	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/apt/Release s3://heroku-cli-assets/branches/$(CHANNEL)/apt/Release
 	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/apt/Release.gpg s3://heroku-cli-assets/branches/$(CHANNEL)/apt/Release.gpg
-	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/manifest.json s3://heroku-cli-assets/branches/$(CHANNEL)/manifest.json
+
+.PHONY: releasewin
+releasewin: releasewin releasedeb releaseosx
+	aws s3 cp --cache-control max-age=3600 $(DIST_DIR)/$(VERSION)/heroku-windows-amd64.exe s3://heroku-cli-assets/branches/$(CHANNEL)/heroku-windows-amd64.exe
+	aws s3 cp --cache-control max-age=3600 $(DIST_DIR)/$(VERSION)/heroku-windows-386.exe s3://heroku-cli-assets/branches/$(CHANNEL)/heroku-windows-386.exe
 	@echo Released $(VERSION) on $(CHANNEL)
 
 NODES = node-v$(NODE_VERSION)-darwin-x64.tar.gz \
