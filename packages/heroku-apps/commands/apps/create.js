@@ -53,7 +53,7 @@ function * run (context, heroku) {
 
   let app = yield cli.action(createText(name, context.flags.space), {success: false}, createApp())
 
-  cli.console.writeError(name ? 'done' : `${cli.color.app(app.name)}`)
+  cli.console.writeError(name ? 'done' : `done, ${cli.color.app(app.name)}`)
   if (context.flags.region) {
     cli.console.writeError(`, region is ${cli.color.yellow(app.region.name)}`)
   }
