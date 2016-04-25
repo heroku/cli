@@ -54,16 +54,16 @@ deployment:
     owner: heroku
     commands:
       - gpg --passphrase $HEROKU_WINDOWS_SIGNING_PASS -d resources/deb/key.gpg | gpg --import
-      - CHANNEL=dev make releasewin releasedeb releasetgz -j4
+      - CHANNEL=dev make releasewin releasedeb releasetxz -j4
   beta:
     branch: master
     owner: heroku
     commands:
       - gpg --passphrase $HEROKU_WINDOWS_SIGNING_PASS -d resources/deb/key.gpg | gpg --import
-      - CHANNEL=beta make releasewin releasedeb releasetgz -j4
+      - CHANNEL=beta make releasewin releasedeb releasetxz -j4
   stable:
     tag: /v[0-9]+(\.[0-9]+)*/
     owner: heroku
     commands:
       - gpg --passphrase $HEROKU_WINDOWS_SIGNING_PASS -d resources/deb/key.gpg | gpg --import
-      - CHANNEL=stable make releasewin releasedeb releasetgz -j4
+      - CHANNEL=stable make releasewin releasedeb releasetxz -j4
