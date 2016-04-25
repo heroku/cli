@@ -36,8 +36,8 @@ function* run(context, heroku) {
     body: {certificate_chain: crt, private_key: key}
   }));
 
-  display_warnings(cert);
   certificate_details(cert, 'Updated certificate details:');
+  display_warnings(cert);
 }
 
 module.exports = {

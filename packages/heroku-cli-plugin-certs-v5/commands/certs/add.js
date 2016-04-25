@@ -51,10 +51,9 @@ function* run(context, heroku) {
     headers: {'Accept': `application/vnd.heroku+json; version=3.${meta.variant}`}
   }));
 
-  display_warnings(cert);
   cli.log(`${context.app} now served by ${cert.cname}`);
-
   certificate_details(cert);
+  display_warnings(cert);
 }
 
 module.exports = {
