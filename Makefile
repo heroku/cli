@@ -1,20 +1,6 @@
 NPM_VERSION=3.8.7
 NODE_VERSION=5.11.0
 
-TARGETS=darwin-amd64   \
-				linux-amd64    \
-				linux-386      \
-				linux-arm      \
-				debian-amd64   \
-				debian-386     \
-				debian-arm     \
-				windows-amd64  \
-				windows-386    \
-				freebsd-amd64  \
-				freebsd-386    \
-				openbsd-amd64  \
-				openbsd-386
-
 DIST_DIR?=dist
 CACHE_DIR?=tmp
 VERSION=$(shell ./bin/version)
@@ -28,7 +14,6 @@ CHANNEL?=$(shell git rev-parse --abbrev-ref HEAD)$(DIRTY)
 GOOS=$(shell go env GOOS)
 GOARCH=$(shell go env GOARCH)
 WORKSPACE=tmp/dev/heroku
-DIST_TARGETS := $(foreach target, $(TARGETS), $(subst debian,linux,$(DIST_DIR)/$(VERSION)/heroku-v$(VERSION)-$(target).tar.xz))
 MANIFEST := $(DIST_DIR)/$(VERSION)/manifest.json
 
 NODE_BASE=node-v$(NODE_VERSION)-$(NODE_OS)-$(NODE_ARCH)
@@ -151,8 +136,19 @@ $(DIST_DIR)/$(VERSION)/heroku-v$(VERSION)-%.tar.xz: tmp/%/heroku/VERSION
 comma:=,
 empty:=
 space:=$(empty) $(empty)
+DIST_TARGETS=$(DIST_DIR)/$(VERSION)/heroku-v$(VERSION)-darwin-amd64.tar.xz \
+						 $(DIST_DIR)/$(VERSION)/heroku-v$(VERSION)-linux-amd64.tar.xz \
+						 $(DIST_DIR)/$(VERSION)/heroku-v$(VERSION)-linux-386.tar.xz \
+						 $(DIST_DIR)/$(VERSION)/heroku-v$(VERSION)-linux-arm.tar.xz \
+						 $(DIST_DIR)/$(VERSION)/heroku-v$(VERSION)-windows-amd64.tar.xz \
+						 $(DIST_DIR)/$(VERSION)/heroku-v$(VERSION)-windows-386.tar.xz \
+						 $(DIST_DIR)/$(VERSION)/heroku-v$(VERSION)-freebsd-amd64.tar.xz \
+						 $(DIST_DIR)/$(VERSION)/heroku-v$(VERSION)-freebsd-386.tar.xz \
+						 $(DIST_DIR)/$(VERSION)/heroku-v$(VERSION)-openbsd-amd64.tar.xz \
+						 $(DIST_DIR)/$(VERSION)/heroku-v$(VERSION)-openbsd-386.tar.xz
+
 $(MANIFEST): $(WORKSPACE)/bin/heroku $(DIST_TARGETS)
-	$(WORKSPACE)/bin/heroku build:manifest --dir $(@D) --version $(VERSION) --channel $(CHANNEL) --targets $(subst $(space),$(comma),$(subst debian,linux,$(TARGETS))) > $@
+	$(WORKSPACE)/bin/heroku build:manifest --dir $(@D) --version $(VERSION) --channel $(CHANNEL) --targets $(subst $(space),$(comma),$(TARGETS)) > $@
 
 DEB_VERSION:=$(firstword $(subst -, ,$(VERSION)))-1
 DEB_BASE:=heroku_$(DEB_VERSION)
