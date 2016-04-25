@@ -34,7 +34,7 @@ type Command struct {
 	Run              func(ctx *Context) `json:"-"`
 }
 
-func (c *Command) String() string {
+func (c Command) String() string {
 	if c.Command == "" {
 		return c.Topic
 	}

@@ -51,6 +51,7 @@ var _ = Describe("Help", func() {
 
 		It("shows invalid command message", func() {
 			Expect(stderr).To(Equal(` !    hlp is not a heroku command.
+ !    Perhaps you meant help.
  !    Run heroku help for a list of available commands.
 `))
 		})
