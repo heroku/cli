@@ -148,7 +148,7 @@ DIST_TARGETS=$(DIST_DIR)/$(VERSION)/heroku-v$(VERSION)-darwin-amd64.tar.xz \
 						 $(DIST_DIR)/$(VERSION)/heroku-v$(VERSION)-openbsd-386.tar.xz
 
 $(MANIFEST): $(WORKSPACE)/bin/heroku $(DIST_TARGETS)
-	$(WORKSPACE)/bin/heroku build:manifest --dir $(@D) --version $(VERSION) --channel $(CHANNEL) --targets $(subst $(space),$(comma),$(TARGETS)) > $@
+	$(WORKSPACE)/bin/heroku build:manifest --dir $(@D) --version $(VERSION) --channel $(CHANNEL) --targets $(subst $(space),$(comma),$(DIST_TARGETS)) > $@
 
 DEB_VERSION:=$(firstword $(subst -, ,$(VERSION)))-1
 DEB_BASE:=heroku_$(DEB_VERSION)
@@ -232,10 +232,13 @@ openbsd: tmp/openbsd-amd64/heroku/VERSION tmp/openbsd-386/heroku/VERSION
 .PHONY: distwin
 distwin: $(DIST_DIR)/$(VERSION)/heroku-windows-amd64.exe $(DIST_DIR)/$(VERSION)/heroku-windows-386.exe
 
-.PHONY: releasetgz
-releasetgz: $(MANIFEST) $(DIST_TARGETS)
-	$(foreach txz, $(DIST_TARGETS), aws s3 cp --cache-control max-age=86400 $(txz) s3://heroku-cli-assets/branches/$(CHANNEL)/$(VERSION)/$(notdir $(txz));)
+.PHONY: releasetxz
+releasetxz: $(MANIFEST) $(addprefix releasetxz/,$(DIST_TARGETS))
 	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/manifest.json s3://heroku-cli-assets/branches/$(CHANNEL)/manifest.json
+
+.PHONY: releasetxz/%
+releasetxz/%.tar.xz: %.tar.xz
+	aws s3 cp --cache-control max-age=86400 $< s3://heroku-cli-assets/branches/$(CHANNEL)/$(VERSION)/$(notdir $<)
 
 .PHONY: distosx
 distosx: $(DIST_DIR)/$(VERSION)/heroku-osx.pkg
