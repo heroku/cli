@@ -206,9 +206,9 @@ deb: $(DIST_DIR)/$(VERSION)/apt/Packages $(DIST_DIR)/$(VERSION)/apt/Release
 .PHONY: release
 release: $(MANIFEST) deb
 	$(foreach txz, $(DIST_TARGETS), aws s3 cp --cache-control max-age=86400 $(txz) s3://heroku-cli-assets/branches/$(CHANNEL)/$(VERSION)/$(notdir $(txz));)
-	aws s3 cp --cache-control max-age=86400 $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_amd64 s3://heroku-cli-assets/branches/$(CHANNEL)/apt/$(DEB_BASE)_amd64
-	aws s3 cp --cache-control max-age=86400 $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_386 s3://heroku-cli-assets/branches/$(CHANNEL)/apt/$(DEB_BASE)_386
-	aws s3 cp --cache-control max-age=86400 $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_arm s3://heroku-cli-assets/branches/$(CHANNEL)/apt/$(DEB_BASE)_arm
+	aws s3 cp --cache-control max-age=86400 $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_amd64.deb s3://heroku-cli-assets/branches/$(CHANNEL)/apt/$(DEB_BASE)_amd64.deb
+	aws s3 cp --cache-control max-age=86400 $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_386.deb s3://heroku-cli-assets/branches/$(CHANNEL)/apt/$(DEB_BASE)_386.deb
+	aws s3 cp --cache-control max-age=86400 $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_arm.deb s3://heroku-cli-assets/branches/$(CHANNEL)/apt/$(DEB_BASE)_arm.deb
 	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/apt/Package s3://heroku-cli-assets/branches/$(CHANNEL)/apt/Package
 	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/apt/Package.gz s3://heroku-cli-assets/branches/$(CHANNEL)/apt/Package.gz
 	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/apt/Release s3://heroku-cli-assets/branches/$(CHANNEL)/apt/Release
