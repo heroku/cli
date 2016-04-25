@@ -151,7 +151,7 @@ $(DIST_DIR)/$(VERSION)/heroku-v$(VERSION)-%.tar.xz: tmp/%/heroku/VERSION
 comma:=,
 empty:=
 space:=$(empty) $(empty)
-$(DIST_DIR)/$(VERSION)/manifest.json: $(WORKSPACE)/bin/heroku $(DIST_TARGETS)
+$(MANIFEST): $(WORKSPACE)/bin/heroku $(DIST_TARGETS)
 	$(WORKSPACE)/bin/heroku build:manifest --dir $(@D) --version $(VERSION) --channel $(CHANNEL) --targets $(subst $(space),$(comma),$(subst debian,linux,$(TARGETS))) > $@
 
 DEB_VERSION:=$(firstword $(subst -, ,$(VERSION)))-1
@@ -237,7 +237,7 @@ openbsd: tmp/openbsd-amd64/heroku/VERSION tmp/openbsd-386/heroku/VERSION
 distwin: $(DIST_DIR)/$(VERSION)/heroku-windows-amd64.exe $(DIST_DIR)/$(VERSION)/heroku-windows-386.exe
 
 .PHONY: releasetgz
-releasetgz: $(MANIFEST)
+releasetgz: $(MANIFEST) $(DIST_TARGETS)
 	$(foreach txz, $(DIST_TARGETS), aws s3 cp --cache-control max-age=86400 $(txz) s3://heroku-cli-assets/branches/$(CHANNEL)/$(VERSION)/$(notdir $(txz));)
 	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/manifest.json s3://heroku-cli-assets/branches/$(CHANNEL)/manifest.json
 
