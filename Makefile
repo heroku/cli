@@ -173,7 +173,7 @@ $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_%.deb: tmp/debian-%/heroku/VERSION
 	dpkg --build tmp/$(DEB_BASE)_$*.apt $@
 	sudo rm -rf tmp/$(DEB_BASE)_$*.apt
 
-$(DIST_DIR)/$(VERSION)/apt/Packages: $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_amd64.deb $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_386.deb $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_arm.deb
+$(DIST_DIR)/$(VERSION)/apt/Package: $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_amd64.deb $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_386.deb $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_arm.deb
 	apt-ftparchive packages $(@D) > $@
 	gzip -c $@ > $@.gz
 
@@ -201,7 +201,7 @@ all: $(VERSIONS)
 dist: $(MANIFEST) deb
 
 .PHONY: deb
-deb: $(DIST_DIR)/$(VERSION)/apt/Packages $(DIST_DIR)/$(VERSION)/apt/Release
+deb: $(DIST_DIR)/$(VERSION)/apt/Package $(DIST_DIR)/$(VERSION)/apt/Release
 
 .PHONY: release
 release: $(MANIFEST) deb
