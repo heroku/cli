@@ -3,16 +3,16 @@
 let co      = require('co');
 let cli     = require('heroku-cli-util');
 
-let endpoints     = require('../../lib/endpoints.js').all;
+let endpoints     = require('../../lib/endpoints.js').certsAndDomains;
 let display_table = require('../../lib/display_table.js');
 
 function* run(context, heroku) {
-  let certs = yield endpoints(context.app, heroku);
+  let certsAndDomains = yield endpoints(context.app, heroku);
 
-  if (certs.length === 0) {
+  if (certsAndDomains.certs.length === 0) {
     cli.log(`${context.app} has no SSL certificates.\nUse \`heroku _certs:add CRT KEY\` to add one.`);
   } else {
-    display_table(certs);
+    display_table(certsAndDomains.certs, certsAndDomains.domains);
   }
 }
 

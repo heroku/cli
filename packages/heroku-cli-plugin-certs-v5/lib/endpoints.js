@@ -37,12 +37,7 @@ function meta(app, t, name) {
   return {path, type, variant};
 }
 
-function* all(app, heroku) {
-  let all_certs = yield {
-    ssl_certs: sslCertsPromise(app, heroku),
-    sni_certs: sniCertsPromise(app, heroku)
-  };
-
+function tagAndSort(app, all_certs) {
   all_certs.sni_certs.forEach(function(cert) {
     cert._meta = meta(app, 'sni', cert.name);
   });
@@ -54,6 +49,25 @@ function* all(app, heroku) {
   return all_certs.ssl_certs.concat(all_certs.sni_certs).sort(function(a, b) {
     return a.name < b.name;
   });
+}
+
+function* all(app, heroku) {
+  let all_certs = yield {
+    ssl_certs: sslCertsPromise(app, heroku),
+    sni_certs: sniCertsPromise(app, heroku)
+  };
+
+  return tagAndSort(app, all_certs);
+}
+
+function* certsAndDomains(app, heroku) {
+  let requests = yield {
+    ssl_certs: sslCertsPromise(app, heroku),
+    sni_certs: sniCertsPromise(app, heroku),
+    domains: heroku.request({path: `/apps/${app}/domains`})
+  };
+
+  return {certs: tagAndSort(app, requests), domains: requests.domains};
 }
 
 function* hasAddon(app, heroku) {
@@ -73,5 +87,6 @@ function* hasAddon(app, heroku) {
 module.exports = {
   hasAddon,
   meta,
-  all
+  all,
+  certsAndDomains
 };
