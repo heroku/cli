@@ -53,8 +53,10 @@ function * run (context, heroku) {
 
   let app = yield cli.action(createText(name, context.flags.space), {success: false}, createApp())
 
-  if (context.flags.region) cli.console.error(`done, region is ${cli.color.yellow(app.region.name)}`)
-  else cli.console.error(`done, stack is ${app.stack.name}`)
+  let newapp = name ? '' : `${cli.color.app(app.name)} `
+
+  if (context.flags.region) cli.console.error(`done, ${newapp}region is ${cli.color.yellow(app.region.name)}`)
+  else cli.console.error(`done, ${newapp}stack is ${app.stack.name}`)
 
   if (context.flags.addons) yield addAddons(app, context.flags.addons.split(','))
   if (context.flags.buildpack) yield addBuildpack(app, context.flags.buildpack)
