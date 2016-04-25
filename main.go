@@ -89,7 +89,7 @@ func main() {
 	ShowDebugInfo()
 
 	if len(os.Args) < 2 {
-		help()
+		Help(os.Args)
 	}
 
 	if os.Args[1] == "update" {
@@ -106,7 +106,7 @@ func main() {
 	corePlugins.Commands().Run(os.Args)
 
 	// no command found
-	help()
+	Help(os.Args)
 }
 
 func handlePanic() {

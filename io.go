@@ -28,7 +28,7 @@ var Stdout io.Writer
 var Stderr io.Writer
 
 var errLogger = newLogger(ErrLogPath)
-var exitFn = os.Exit
+var ExitFn = os.Exit
 var debugging = isDebugging()
 var debuggingHeaders = isDebuggingHeaders()
 var swallowSigint = false
@@ -55,7 +55,7 @@ func Exit(code int) {
 	TriggerBackgroundUpdate()
 	currentAnalyticsCommand.RecordEnd(code)
 	showCursor()
-	exitFn(code)
+	ExitFn(code)
 }
 
 // Err just calls `fmt.Fprint(Stderr, a...)` but can be mocked out for testing.
@@ -147,7 +147,7 @@ func Warn(msg string) {
 	if actionMsg != "" {
 		Errln(yellow(" !"))
 	}
-	prefix := yellow(" ▸    ")
+	prefix := " " + yellow(ErrorArrow) + "    "
 	msg = strings.TrimSpace(msg)
 	msg = strings.Join(strings.Split(msg, "\n"), "\n"+prefix)
 	Errln(prefix + msg)
@@ -161,7 +161,7 @@ func Error(msg string) {
 	if actionMsg != "" {
 		Errln(red(" !"))
 	}
-	prefix := red(" " + errorArrow() + "    ")
+	prefix := " " + red(ErrorArrow) + "    "
 	msg = strings.TrimSpace(msg)
 	msg = strings.Join(strings.Split(msg, "\n"), "\n"+prefix)
 	Errln(prefix + msg)
@@ -173,6 +173,8 @@ func ExitWithMessage(format string, a ...interface{}) {
 	Error(fmt.Sprintf(format, a...))
 	Exit(2)
 }
+
+var ErrorArrow = errorArrow()
 
 func errorArrow() string {
 	if windows() {

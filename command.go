@@ -346,7 +346,7 @@ func parseVarArgs(command *Command, args []string) (result []string, flags map[s
 		case parseFlags && (args[i] == "--"):
 			parseFlags = false
 		case parseFlags && (args[i] == "--help" || args[i] == "-h"):
-			help()
+			Help(os.Args)
 		case parseFlags && (args[i] == "--no-color"):
 			continue
 		case parseFlags && strings.HasPrefix(args[i], "-"):
