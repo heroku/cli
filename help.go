@@ -1,8 +1,12 @@
 package main
 
 import (
+	"fmt"
+	"os"
 	"sort"
 	"strings"
+
+	"github.com/texttheater/golang-levenshtein/levenshtein"
 )
 
 func Help(args []string) {
@@ -37,7 +41,7 @@ func Help(args []string) {
 		}
 		Exit(0)
 	case topic == nil:
-		helpInvalidCommand(cmd)
+		helpInvalidCommand(cmd, commands)
 	case command == nil:
 		Printf("Usage: heroku %s:COMMAND [--app APP] [command-specific-options]\n\n", topic.Name)
 		printTopicCommandsHelp(topic, topicCommands)
@@ -90,8 +94,41 @@ func nonHiddenCommands(from []*Command) []*Command {
 	return to
 }
 
-func helpInvalidCommand(cmd string) {
+func helpInvalidCommand(cmd string, commands CommandSet) {
+	var closest string
+	if len(cmd) > 2 {
+		closest = fmt.Sprintf("Perhaps you meant %s.\n", yellow(findClosestCommand(commands, cmd).String()))
+	}
 	ExitWithMessage(`%s is not a heroku command.
-Run %s help for a list of available commands.
-`, yellow(cmd), cyan("heroku"))
+%sRun %s help for a list of available commands.
+`, yellow(cmd), closest, cyan("heroku"))
+}
+
+func findClosestCommand(from CommandSet, a string) *Command {
+	var top *Command
+	var val int
+	for _, b := range from {
+		if cur := stringDistance(a, b.String()); cur < val || top == nil {
+			top = b
+			val = cur
+		}
+	}
+	return top
+}
+
+func stringDistance(a, b string) int {
+	return levenshtein.DistanceForStrings([]rune(a), []rune(b), levenshtein.DefaultOptions)
+}
+
+var helpTopic = &Topic{
+	Name:   "help",
+	Hidden: true,
+}
+
+var helpCmd = &Command{
+	Topic:  "help",
+	Hidden: true,
+	Run: func(ctx *Context) {
+		Help(os.Args)
+	},
 }
