@@ -33,7 +33,6 @@ dependencies:
         cd ~/osslsigncode && ./configure && make;
       fi;
       cd ~/osslsigncode && sudo make install
-    - gpg --passphrase $HEROKU_WINDOWS_SIGNING_PASS -d resources/deb/key.gpg | gpg --import
     - sudo apt-get install nsis
 test:
   override:
@@ -54,14 +53,17 @@ deployment:
     branch: dev
     owner: heroku
     commands:
+      - gpg --passphrase $HEROKU_WINDOWS_SIGNING_PASS -d resources/deb/key.gpg | gpg --import
       - CHANNEL=dev make release -j4
   beta:
     branch: master
     owner: heroku
     commands:
+      - gpg --passphrase $HEROKU_WINDOWS_SIGNING_PASS -d resources/deb/key.gpg | gpg --import
       - CHANNEL=beta make release -j4
   stable:
     tag: /v[0-9]+(\.[0-9]+)*/
     owner: heroku
     commands:
+      - gpg --passphrase $HEROKU_WINDOWS_SIGNING_PASS -d resources/deb/key.gpg | gpg --import
       - CHANNEL=stable make release -j4
