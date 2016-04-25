@@ -146,6 +146,7 @@ func pluginsLink(ctx *Context) {
 		newPath := userPlugins.pluginPath(name)
 		os.Remove(newPath)
 		os.RemoveAll(newPath)
+		os.MkdirAll(filepath.Dir(newPath), 0755)
 		err = os.Symlink(path, newPath)
 		must(err)
 		plugin, err := userPlugins.ParsePlugin(name)
