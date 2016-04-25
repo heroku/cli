@@ -64,19 +64,18 @@ var buildManifestCmd = &Command{
 			Channel:    ctx.Flags["channel"].(string),
 			Builds:     map[string]*Build{},
 		}
-		dir := (ctx.Flags["dir"].(string))
-		targets := strings.Split(ctx.Flags["targets"].(string), ",")
-		for _, target := range targets {
-			info := strings.Split(target, "-")
-			os := info[0]
-			arch := info[1]
-			file := "heroku-v" + manifest.Version + "-" + target + ".tar.xz"
-			sha1, err := fileSha1(filepath.Join(dir, file))
+		files := strings.Split(ctx.Flags["targets"].(string), ",")
+		for _, file := range files {
+			filename := filepath.Base(file)
+			info := strings.Split(filename, "-")
+			os := info[3]
+			arch := info[4]
+			sha1, err := fileSha1(file)
 			ExitIfError(err)
-			sha256, err := fileSha256(filepath.Join(dir, file))
+			sha256, err := fileSha256(file)
 			ExitIfError(err)
 			manifest.Builds[os+"-"+arch] = &Build{
-				URL:    "https://cli-assets.heroku.com/branches/" + manifest.Channel + "/" + manifest.Version + "/" + file,
+				URL:    "https://cli-assets.heroku.com/branches/" + manifest.Channel + "/" + manifest.Version + "/" + filename,
 				Sha1:   sha1,
 				Sha256: sha256,
 			}

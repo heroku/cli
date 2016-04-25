@@ -14,7 +14,6 @@ CHANNEL?=$(shell git rev-parse --abbrev-ref HEAD)$(DIRTY)
 GOOS=$(shell go env GOOS)
 GOARCH=$(shell go env GOARCH)
 WORKSPACE=tmp/dev/heroku
-MANIFEST := $(DIST_DIR)/$(VERSION)/manifest.json
 
 NODE_BASE=node-v$(NODE_VERSION)-$(NODE_OS)-$(NODE_ARCH)
 NODE_OS=$(GOOS)
@@ -68,8 +67,8 @@ $(WORKSPACE)/lib/plugins.json: $(WORKSPACE)/bin/heroku package.json $(WORKSPACE)
 	cp package.json $(@D)/package.json
 	$(WORKSPACE)/bin/heroku build:plugins
 	@ # this doesn't work in the CLI for some reason
-	cd $(WORKSPACE)/lib && ./npm-$(NPM_VERSION)/cli.js dedupe
-	cd $(WORKSPACE)/lib && ./npm-$(NPM_VERSION)/cli.js prune
+	cd $(WORKSPACE)/lib && ./npm-$(NPM_VERSION)/cli.js dedupe > /dev/null
+	cd $(WORKSPACE)/lib && ./npm-$(NPM_VERSION)/cli.js prune > /dev/null
 
 tmp/%/heroku/lib/plugins.json: $(WORKSPACE)/lib/plugins.json
 	cp $(WORKSPACE)/lib/plugins.json $@
@@ -105,6 +104,7 @@ tmp/freebsd-%/heroku/bin/heroku:     GOOS=freebsd
 tmp/openbsd-%/heroku/bin/heroku:     GOOS=openbsd
 tmp/%-amd64/heroku/bin/heroku:       GOARCH=amd64
 tmp/%-386/heroku/bin/heroku:         GOARCH=386
+tmp/%-386/heroku/bin/heroku.exe:     GOARCH=386
 tmp/%-arm/heroku/bin/heroku:         GOARCH=arm
 tmp/%-arm/heroku/bin/heroku:         GOARM=6
 tmp/dev/heroku/bin/heroku:           AUTOUPDATE=no
@@ -146,7 +146,7 @@ DIST_TARGETS=$(DIST_DIR)/$(VERSION)/heroku-v$(VERSION)-darwin-amd64.tar.xz \
 						 $(DIST_DIR)/$(VERSION)/heroku-v$(VERSION)-freebsd-386.tar.xz \
 						 $(DIST_DIR)/$(VERSION)/heroku-v$(VERSION)-openbsd-amd64.tar.xz \
 						 $(DIST_DIR)/$(VERSION)/heroku-v$(VERSION)-openbsd-386.tar.xz
-
+MANIFEST := $(DIST_DIR)/$(VERSION)/manifest.json
 $(MANIFEST): $(WORKSPACE)/bin/heroku $(DIST_TARGETS)
 	$(WORKSPACE)/bin/heroku build:manifest --dir $(@D) --version $(VERSION) --channel $(CHANNEL) --targets $(subst $(space),$(comma),$(DIST_TARGETS)) > $@
 
@@ -231,6 +231,9 @@ openbsd: tmp/openbsd-amd64/heroku/VERSION tmp/openbsd-386/heroku/VERSION
 
 .PHONY: distwin
 distwin: $(DIST_DIR)/$(VERSION)/heroku-windows-amd64.exe $(DIST_DIR)/$(VERSION)/heroku-windows-386.exe
+
+.PHONY: disttxz
+disttxz: $(MANIFEST) $(DIST_TARGETS)
 
 .PHONY: releasetxz
 releasetxz: $(MANIFEST) $(addprefix releasetxz/,$(DIST_TARGETS))
