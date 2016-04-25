@@ -29,7 +29,7 @@ GOOS=$(shell go env GOOS)
 GOARCH=$(shell go env GOARCH)
 WORKSPACE=tmp/dev/heroku
 VERSIONS := $(foreach target, $(TARGETS), tmp/$(target)/heroku/VERSION)
-DIST_TARGETS := $(foreach target, $(TARGETS), $(DIST_DIR)/$(VERSION)/heroku-v$(VERSION)-$(target).tar.xz)
+DIST_TARGETS := $(foreach target, $(TARGETS), $(subst debian,linux,$(DIST_DIR)/$(VERSION)/heroku-v$(VERSION)-$(target).tar.xz))
 MANIFEST := $(DIST_DIR)/$(VERSION)/manifest.json
 
 NODE_BASE=node-v$(NODE_VERSION)-$(NODE_OS)-$(NODE_ARCH)
@@ -162,7 +162,7 @@ $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_%.deb: tmp/debian-%/heroku/VERSION
 	mkdir -p tmp/$(DEB_BASE)_$*.apt/DEBIAN
 	mkdir -p tmp/$(DEB_BASE)_$*.apt/usr/bin
 	mkdir -p tmp/$(DEB_BASE)_$*.apt/usr/lib
-	sed -e "s/Architecture: ARCHITECTURE/Architecture: $(if $(filter amd64,$*),amd64,i386)/" resources/deb/control | \
+	sed -e "s/Architecture: ARCHITECTURE/Architecture: $(if $(filter amd64,$*),amd64,$(if $(filter 386,$*),i386,armel))/" resources/deb/control | \
 	  sed -e "s/Version: VERSION/Version: $(DEB_VERSION)/" \
 		> tmp/$(DEB_BASE)_$*.apt/DEBIAN/control
 	cp -r tmp/debian-$*/heroku tmp/$(DEB_BASE)_$*.apt/usr/lib/
@@ -173,11 +173,11 @@ $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_%.deb: tmp/debian-%/heroku/VERSION
 	dpkg --build tmp/$(DEB_BASE)_$*.apt $@
 	sudo rm -rf tmp/$(DEB_BASE)_$*.apt
 
-$(DIST_DIR)/$(VERSION)/apt/Packages: $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_amd64.deb $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_386.deb
+$(DIST_DIR)/$(VERSION)/apt/Packages: $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_amd64.deb $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_386.deb $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_arm.deb
 	apt-ftparchive packages $(@D) > $@
 	gzip -c $@ > $@.gz
 
-$(DIST_DIR)/$(VERSION)/apt/Release: $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_amd64.deb $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_386.deb
+$(DIST_DIR)/$(VERSION)/apt/Release: $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_amd64.deb $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_386.deb $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_arm.deb
 	apt-ftparchive -c resources/deb/apt-ftparchive.conf release $(@D) > $@
 	gpg --digest-algo SHA512 -abs -u 0F1B0520 -o $@.gpg $@
 
@@ -206,7 +206,9 @@ deb: $(DIST_DIR)/$(VERSION)/apt/Packages $(DIST_DIR)/$(VERSION)/apt/Release
 .PHONY: release
 release: $(MANIFEST) deb
 	$(foreach txz, $(DIST_TARGETS), aws s3 cp --cache-control max-age=86400 $(txz) s3://heroku-cli-assets/branches/$(CHANNEL)/$(VERSION)/$(notdir $(txz));)
-	aws s3 cp --cache-control max-age=86400 $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)* s3://heroku-cli-assets/branches/$(CHANNEL)/apt/
+	aws s3 cp --cache-control max-age=86400 $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_amd64 s3://heroku-cli-assets/branches/$(CHANNEL)/apt/$(DEB_BASE)_amd64
+	aws s3 cp --cache-control max-age=86400 $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_386 s3://heroku-cli-assets/branches/$(CHANNEL)/apt/$(DEB_BASE)_386
+	aws s3 cp --cache-control max-age=86400 $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_arm s3://heroku-cli-assets/branches/$(CHANNEL)/apt/$(DEB_BASE)_arm
 	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/apt/Package s3://heroku-cli-assets/branches/$(CHANNEL)/apt/Package
 	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/apt/Package.gz s3://heroku-cli-assets/branches/$(CHANNEL)/apt/Package.gz
 	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/apt/Release s3://heroku-cli-assets/branches/$(CHANNEL)/apt/Release
