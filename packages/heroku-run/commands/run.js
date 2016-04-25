@@ -58,6 +58,7 @@ class Run {
         attach:   true,
         size:     this.flags.size,
         env:      this.env(),
+        force_no_tty: this.flags['no-tty']
       }
     });
   }
@@ -149,6 +150,7 @@ Examples:
     {name: 'size', char: 's', description: 'dyno size', hasValue: true},
     {name: 'exit-code', description: 'passthrough the exit code of the remote command'},
     {name: 'env', description: "environment variables to set (use ';' to split multiple vars)", hasValue: true},
+    {name: 'no-tty', description: "force the command to not run in a tty", hasValue: false},
   ],
   run: cli.command((context, heroku) => (new Run()).run(context, heroku))
 };
