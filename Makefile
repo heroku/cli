@@ -148,7 +148,7 @@ resources/exe/heroku-codesign-cert.pfx:
 
 $(DIST_DIR)/$(VERSION)/heroku-v$(VERSION)-%.tar.xz: $(VERSIONS)
 	@mkdir -p $(@D)
-	tar -C tmp/$* -c heroku | xz > $@
+	tar -C tmp/$* -c heroku | xz -2 > $@
 
 comma:=,
 empty:=
