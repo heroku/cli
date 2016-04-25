@@ -137,7 +137,7 @@ tmp/%/heroku/bin/heroku.exe: $(SOURCES) resources/exe/heroku-codesign-cert.pfx
 	GOOS=$(GOOS) GOARCH=$(GOARCH) go build $(LDFLAGS) -o $@
 	@osslsigncode -pkcs12 resources/exe/heroku-codesign-cert.pfx \
 		-pass '$(HEROKU_WINDOWS_SIGNING_PASS)' \
-		-n 'Heroku Toolbelt' \
+		-n 'Heroku CLI' \
 		-i https://toolbelt.heroku.com/ \
 		-in $@ -out $@.signed
 	mv $@.signed $@
@@ -193,7 +193,7 @@ $(DIST_DIR)/$(VERSION)/heroku-installer-win-%.exe: tmp/windows-%/heroku/VERSION 
 	makensis tmp/windows-$*/heroku/heroku.nsi
 	@osslsigncode -pkcs12 resources/exe/heroku-codesign-cert.pfx \
 		-pass '$(HEROKU_WINDOWS_SIGNING_PASS)' \
-		-n 'Heroku Toolbelt' \
+		-n 'Heroku CLI' \
 		-i https://toolbelt.heroku.com/ \
 		-in tmp/windows-$*/heroku/installer.exe -out $@
 	@rm tmp/windows-$*/heroku/heroku.nsi
