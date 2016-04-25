@@ -197,7 +197,7 @@ func createOauthToken(email, password, secondFactor string) (string, error) {
 	req.BasicAuthPassword = password
 	req.Body = map[string]interface{}{
 		"scope":       []string{"global"},
-		"description": "Toolbelt CLI login from " + time.Now().UTC().Format(time.RFC3339),
+		"description": "Heroku CLI login from " + time.Now().UTC().Format(time.RFC3339),
 		"expires_in":  60 * 60 * 24 * 30, // 30 days
 	}
 	if secondFactor != "" {
