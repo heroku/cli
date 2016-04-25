@@ -34,7 +34,7 @@ dependencies:
       fi;
       cd ~/osslsigncode && sudo make install
     - gpg --passphrase $HEROKU_WINDOWS_SIGNING_PASS -d resources/deb/key.gpg | gpg --import
-    - sudo apt-get install makensis
+    - sudo apt-get install nsis
 test:
   override:
     - >
