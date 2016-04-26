@@ -2,6 +2,7 @@ package main_test
 
 import (
 	"bytes"
+	"os"
 
 	cli "github.com/heroku/cli"
 
@@ -14,6 +15,10 @@ var _ = Describe("io", func() {
 	var out string
 	BeforeEach(func() {
 		cli.InspectOut = new(bytes.Buffer)
+	})
+
+	AfterEach(func() {
+		cli.InspectOut = os.Stderr
 	})
 
 	JustBeforeEach(func() {
