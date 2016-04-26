@@ -11,19 +11,22 @@ import (
 )
 
 var _ = Describe("io", func() {
+	var out string
 	BeforeEach(func() {
-		cli.Stdout = new(bytes.Buffer)
-		cli.Stderr = new(bytes.Buffer)
-		cli.ExitFn = func(code int) { exit = code }
+		cli.InspectOut = new(bytes.Buffer)
 	})
 
 	JustBeforeEach(func() {
-		stdout = vtclean.Clean(cli.Stdout.(*bytes.Buffer).String(), false)
-		stderr = vtclean.Clean(cli.Stderr.(*bytes.Buffer).String(), false)
+		out = vtclean.Clean(cli.InspectOut.(*bytes.Buffer).String(), false)
 	})
 
 	Describe("inspect", func() {
+		BeforeEach(func() {
+			cli.Inspect(struct{ Name string }{"Jeff"})
+		})
+
 		It("inspects a struct", func() {
+			Expect(out).To(Equal("{Name:Jeff}\n"))
 		})
 	})
 })
