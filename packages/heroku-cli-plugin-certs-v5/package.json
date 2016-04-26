@@ -16,6 +16,7 @@
   "dependencies": {
     "co": "4.6.0",
     "heroku-cli-util": "5.6.3",
+    "inquirer": "1.0.2",
     "lodash": "3.10.1",
     "moment": "2.10.6",
     "got": "6.1.1"
@@ -25,6 +26,7 @@
     "jshint": "*",
     "mocha": "^2.3.3",
     "nock": "3.2.0",
+    "proxyquire": "1.7.4",
     "sinon": "1.17.2",
     "sinon-chai": "2.8.0"
   },

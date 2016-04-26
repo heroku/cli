@@ -5,9 +5,12 @@ let nock   = require('nock');
 var fs     = require('fs');
 var sinon  = require('sinon');
 
-let certs = require('../../../commands/certs/add.js');
+let proxyquire = require('proxyquire').noCallThru();
+let inquirer;
+let certs;
 
 let endpoint            = require('../../stubs/sni-endpoints.js').endpoint;
+let endpoint_stables    = require('../../stubs/sni-endpoints.js').endpoint_stables;
 let endpoint_warning    = require('../../stubs/sni-endpoints.js').endpoint_warning;
 let certificate_details = require('../../stubs/sni-endpoints.js').certificate_details;
 
@@ -21,6 +24,9 @@ describe('heroku certs:add', function() {
     sinon.stub(fs, 'readFile');
     nock.cleanAll();
     error.exit.mock();
+
+    inquirer = {};
+    certs = proxyquire('../../../commands/certs/add', {inquirer});
   });
 
   describe('(ported)', function() {
@@ -61,6 +67,10 @@ ${certificate_details}
   });
 
   it('# posts to ssl doctor', function() {
+    nock('https://api.heroku.com')
+    .get('/apps/example/domains')
+    .reply(200, []);
+
     fs.readFile
       .withArgs('pem_file', sinon.match.func)
       .callsArgWithAsync(1, null, 'pem content');
@@ -104,6 +114,10 @@ ${certificate_details}
   });
 
   it('# propegates ssl doctor errors', function() {
+    nock('https://api.heroku.com')
+    .get('/apps/example/domains')
+    .reply(200, []);
+
     fs.readFile
       .withArgs('pem_file', sinon.match.func)
       .callsArgWithAsync(1, null, 'pem content');
@@ -141,6 +155,10 @@ ${certificate_details}
   });
 
   it('# bypasses ssl doctor', function() {
+    nock('https://api.heroku.com')
+    .get('/apps/example/domains')
+    .reply(200, []);
+
     fs.readFile
       .withArgs('pem_file', sinon.match.func)
       .callsArgWithAsync(1, null, 'pem content');
@@ -174,6 +192,10 @@ ${certificate_details}
   });
 
   it('# displays warnings', function() {
+    nock('https://api.heroku.com')
+    .get('/apps/example/domains')
+    .reply(200, []);
+
     fs.readFile
       .withArgs('pem_file', sinon.match.func)
       .callsArgWithAsync(1, null, 'pem content');
@@ -209,6 +231,10 @@ ${certificate_details}
         "resource":"addon"
     });
 
+    nock('https://api.heroku.com')
+    .get('/apps/example/domains')
+    .reply(200, []);
+
     fs.readFile
       .withArgs('pem_file', sinon.match.func)
       .callsArgWithAsync(1, null, 'pem content');
@@ -231,6 +257,160 @@ Certificate details:
 ${certificate_details}
 `);
     });
+  });
+
+  describe('stable cnames', function() {
+    beforeEach(function() {
+      nock('https://api.heroku.com')
+      .get('/apps/example/addons/ssl%3Aendpoint')
+      .reply(404, {
+          "id":"not_found",
+          "resource":"addon"
+      });
+  
+      fs.readFile
+        .withArgs('pem_file', sinon.match.func)
+        .callsArgWithAsync(1, null, 'pem content');
+      fs.readFile
+        .withArgs('key_file', sinon.match.func)
+        .callsArgWithAsync(1, null, 'key content');
+    });
+
+    it('# prompts creates an SNI endpoint with stable cnames if no SSL addon', function() {
+      let mock = nock('https://api.heroku.com')
+      .post('/apps/example/sni-endpoints', {
+        certificate_chain: 'pem content', private_key: 'key content'
+      })
+      .reply(200, endpoint_stables);
+
+      let domains_mock = nock('https://api.heroku.com')
+      .get('/apps/example/domains')
+      .reply(200, [
+        {"kind": "custom", "hostname": "biz.example.com", "cname": "biz.example.com.herokudns.com"},
+        {"kind": "custom", "hostname": "baz.example.org", "cname": "baz.example.org.herokudns.com"}
+      ]);
+
+      inquirer.prompt = prompts => {
+        let choices = prompts[0].choices;
+        expect(choices).to.eql([
+          {name: 'foo.example.org'},
+          {name: 'bar.example.org'}
+        ]);
+        return Promise.resolve({domains: ['foo.example.org']});
+      };
+
+      let domains_create = nock('https://api.heroku.com')
+      .post('/apps/example/domains', {hostname: 'foo.example.org'})
+      .reply(200, 
+        {"kind": "custom", "cname": "foo.example.com.herokudns.org", "hostname": "foo.example.org"}
+      );
+
+      return certs.run({app: 'example', args: {CRT: 'pem_file', KEY: 'key_file'}, flags: {bypass: true}}).then(function() {
+        mock.done();
+        domains_mock.done();
+        domains_create.done();
+        expect(unwrap(cli.stderr)).to.equal('Adding SSL certificate to example... done\nAdding domain foo.example.org to example... done\n');
+        expect(cli.stdout).to.equal(
+`Certificate details:
+Common Name(s): foo.example.org
+                bar.example.org
+                biz.example.com
+Expires At:     2013-08-01 21:34 UTC
+Issuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
+Starts At:      2012-08-01 21:34 UTC
+Subject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
+SSL certificate is self signed.
+
+=== The following common names already have domain entries
+biz.example.com
+
+=== The following domains are set up for this certificate
+Name        Endpoint                       Common Name(s)   Expires               Trusted  Type
+──────────  ─────────────────────────────  ───────────────  ────────────────────  ───────  ────
+tokyo-1050  foo.example.com.herokudns.org  foo.example.org  2013-08-01 21:34 UTC  False    SNI 
+            (no domains match)             bar.example.org                                     
+            biz.example.com.herokudns.com  biz.example.com                                     
+`);
+      });
+    });
+
+    it('# does not prompt if all domains covered', function() {
+      let mock = nock('https://api.heroku.com')
+      .post('/apps/example/sni-endpoints', {
+        certificate_chain: 'pem content', private_key: 'key content'
+      })
+      .reply(200, endpoint_stables);
+
+      let domains_mock = nock('https://api.heroku.com')
+      .get('/apps/example/domains')
+      .reply(200, [
+        {"kind": "custom", "hostname": "foo.example.org", "cname": "foo.example.org.herokudns.com"},
+        {"kind": "custom", "hostname": "bar.example.org", "cname": "bar.example.org.herokudns.com"},
+        {"kind": "custom", "hostname": "biz.example.com", "cname": "biz.example.com.herokudns.com"},
+        {"kind": "custom", "hostname": "baz.example.org", "cname": "baz.example.org.herokudns.com"}
+      ]);
+
+      return certs.run({app: 'example', args: {CRT: 'pem_file', KEY: 'key_file'}, flags: {bypass: true}}).then(function() {
+        mock.done();
+        domains_mock.done();
+        expect(unwrap(cli.stderr)).to.equal('Adding SSL certificate to example... done\n');
+        expect(cli.stdout).to.equal(
+`Certificate details:
+Common Name(s): foo.example.org
+                bar.example.org
+                biz.example.com
+Expires At:     2013-08-01 21:34 UTC
+Issuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
+Starts At:      2012-08-01 21:34 UTC
+Subject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
+SSL certificate is self signed.
+
+=== The following common names already have domain entries
+foo.example.org
+bar.example.org
+biz.example.com
+`);
+      });
+    });
+
+    it('# does not prompt if domains covered with wildcard', function() {
+      let mock = nock('https://api.heroku.com')
+      .post('/apps/example/sni-endpoints', {
+        certificate_chain: 'pem content', private_key: 'key content'
+      })
+      .reply(200, endpoint_stables);
+
+      let domains_mock = nock('https://api.heroku.com')
+      .get('/apps/example/domains')
+      .reply(200, [
+        {"kind": "custom", "hostname": "*.example.org", "cname": "wildcard.example.org.herokudns.com"},
+        {"kind": "custom", "hostname": "*.example.com", "cname": "wildcard.example.com.herokudns.com"},
+        {"kind": "custom", "hostname": "biz.example.com", "cname": "biz.example.com.herokudns.com"},
+      ]);
+
+      return certs.run({app: 'example', args: {CRT: 'pem_file', KEY: 'key_file'}, flags: {bypass: true}}).then(function() {
+        mock.done();
+        domains_mock.done();
+        expect(unwrap(cli.stderr)).to.equal('Adding SSL certificate to example... done\n');
+        expect(cli.stdout).to.equal(
+`Certificate details:
+Common Name(s): foo.example.org
+                bar.example.org
+                biz.example.com
+Expires At:     2013-08-01 21:34 UTC
+Issuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
+Starts At:      2012-08-01 21:34 UTC
+Subject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
+SSL certificate is self signed.
+
+=== The following common names already have domain entries
+foo.example.org
+bar.example.org
+biz.example.com
+`);
+      });
+    });
+
   });
 
   it('# errors out if there is an SSL addon and no flags set', function() {
@@ -260,6 +440,10 @@ ${certificate_details}
   it('# creates an SNI endpoint if SSL addon and passed --type sni', function() {
     nock('https://api.heroku.com')
     .get('/apps/example/ssl-endpoints')
+    .reply(200, []);
+
+    nock('https://api.heroku.com')
+    .get('/apps/example/domains')
     .reply(200, []);
 
     fs.readFile
