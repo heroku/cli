@@ -3,6 +3,7 @@ machine:
   environment:
     CACHE_DIR: ~/deps
     WORKSPACE: ~/workspace/heroku
+    NPM_REGISTRY: https://cli-npm.heroku.com
 checkout:
   post:
     - |
