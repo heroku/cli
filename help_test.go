@@ -56,4 +56,21 @@ var _ = Describe("Help", func() {
 `))
 		})
 	})
+
+	Context("heroku help version", func() {
+		BeforeEach(func() {
+			cli.Help([]string{"heroku", "help", "version"})
+		})
+
+		It("exits with code 0", func() {
+			Expect(exit).To(Equal(0))
+		})
+
+		It("shows help for version command", func() {
+			Expect(stderr).To(Equal(` !    hlp is not a heroku command.
+ !    Perhaps you meant help.
+ !    Run heroku help for a list of available commands.
+`))
+		})
+	})
 })
