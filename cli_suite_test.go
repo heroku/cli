@@ -13,7 +13,7 @@ import (
 	"testing"
 )
 
-func TestCli(t *testing.T) {
+func TestCLI(t *testing.T) {
 	RegisterFailHandler(Fail)
 	testReports := os.Getenv("CIRCLE_TEST_REPORTS")
 	if testReports != "" {
