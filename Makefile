@@ -207,7 +207,6 @@ clean:
 
 .PHONY: test
 test: build
-	@if type cowsay >/dev/null 2>&1; then echo Released $(VERSION) cowsay; fi;
 	$(WORKSPACE)/bin/heroku version
 	$(WORKSPACE)/bin/heroku plugins
 	$(WORKSPACE)/bin/heroku status
@@ -239,6 +238,7 @@ disttxz: $(MANIFEST) $(DIST_TARGETS)
 .PHONY: releasetxz
 releasetxz: $(MANIFEST) $(addprefix releasetxz/,$(DIST_TARGETS))
 	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/manifest.json s3://heroku-cli-assets/branches/$(CHANNEL)/manifest.json
+	@if type cowsay >/dev/null 2>&1; then cowsay Released $(VERSION) cowsay; fi;
 
 .PHONY: releasetxz/%
 releasetxz/%.tar.xz: %.tar.xz
