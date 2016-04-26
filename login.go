@@ -146,7 +146,7 @@ https://github.com/heroku/cli/issues/84`)
 
 func v2login(email, password, secondFactor string) string {
 	req := apiRequestBase("")
-	req.Method = "POST"
+	req.Method = POST
 
 	req.Uri = req.Uri + "/login"
 	req.ContentType = "application/x-www-form-urlencoded"
@@ -191,7 +191,7 @@ func v2login(email, password, secondFactor string) string {
 
 func createOauthToken(email, password, secondFactor string) (string, error) {
 	req := apiRequest("")
-	req.Method = "POST"
+	req.Method = POST
 	req.Uri = req.Uri + "/oauth/authorizations"
 	req.BasicAuthUsername = email
 	req.BasicAuthPassword = password
@@ -300,7 +300,7 @@ func apiToken() string {
 
 func netrcPath() string {
 	base := filepath.Join(HomeDir, ".netrc")
-	if runtime.GOOS == "windows" {
+	if runtime.GOOS == WINDOWS {
 		base = filepath.Join(HomeDir, "_netrc")
 	}
 	if exists, _ := fileExists(base + ".gpg"); exists {

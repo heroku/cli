@@ -21,6 +21,12 @@ import (
 	"github.com/ulikunitz/xz"
 )
 
+// GET for requests
+const GET = "GET"
+
+// POST for requests
+const POST = "POST"
+
 func init() {
 	goreq.SetConnectTimeout(15 * time.Second)
 	certs := getCACerts()
@@ -71,20 +77,20 @@ func getCACerts() *x509.CertPool {
 		paths.PushBack(path)
 	}
 
-	ssl_cert_file := os.Getenv("SSL_CERT_FILE")
-	if ssl_cert_file != "" {
-		paths.PushBack(ssl_cert_file)
+	sslCertFile := os.Getenv("SSL_CERT_FILE")
+	if sslCertFile != "" {
+		paths.PushBack(sslCertFile)
 	}
 
-	ssl_cert_dir := os.Getenv("SSL_CERT_DIR")
-	if ssl_cert_dir != "" {
-		files, err := ioutil.ReadDir(ssl_cert_dir)
+	sslCertDir := os.Getenv("SSL_CERT_DIR")
+	if sslCertDir != "" {
+		files, err := ioutil.ReadDir(sslCertDir)
 		if err != nil {
-			Warn("Error opening " + ssl_cert_dir)
+			Warn("Error opening " + sslCertDir)
 			return nil
 		}
 		for _, file := range files {
-			path := filepath.Join(ssl_cert_dir, file.Name())
+			path := filepath.Join(sslCertDir, file.Name())
 			paths.PushBack(path)
 		}
 	}

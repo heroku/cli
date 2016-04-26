@@ -22,21 +22,21 @@ import (
 )
 
 // Stdout is used to mock stdout for testing
-var Stdout io.Writer
+var Stdout io.Writer = os.Stdout
 
 // Stderr is to mock stderr for testing
-var Stderr io.Writer
+var Stderr io.Writer = os.Stderr
+
+// InspectOut is used to mock inspect for testing
+var InspectOut io.Writer = os.Stderr
 
 var errLogger = newLogger(ErrLogPath)
+
+// ExitFn is used to mock os.Exit
 var ExitFn = os.Exit
 var debugging = isDebugging()
 var debuggingHeaders = isDebuggingHeaders()
 var swallowSigint = false
-
-func init() {
-	Stdout = os.Stdout
-	Stderr = os.Stderr
-}
 
 func newLogger(path string) *log.Logger {
 	err := os.MkdirAll(filepath.Dir(path), 0777)
@@ -118,15 +118,6 @@ func Debugln(a ...interface{}) {
 	}
 }
 
-// Debugf is used to print debugging information
-// It will be added to the logfile in ~/.heroku and stderr if HEROKU_DEBUG is set.
-func Debugf(f string, a ...interface{}) {
-	Logf(f, a...)
-	if debugging {
-		fmt.Fprintf(Stderr, f, a...)
-	}
-}
-
 // WarnIfError is a helper that prints out formatted error messages
 // it will emit to rollbar
 // it does not exit
@@ -174,6 +165,7 @@ func ExitWithMessage(format string, a ...interface{}) {
 	Exit(2)
 }
 
+// ErrorArrow is the triangle or bang that prefixes errors
 var ErrorArrow = errorArrow()
 
 func errorArrow() string {
@@ -205,9 +197,12 @@ func LogIfError(e error) {
 	}
 }
 
+// ONE is the string 1
+const ONE = "1"
+
 func isDebugging() bool {
 	debug := strings.ToUpper(os.Getenv("HEROKU_DEBUG"))
-	if debug == "TRUE" || debug == "1" {
+	if debug == "TRUE" || debug == ONE {
 		return true
 	}
 	return false
@@ -215,7 +210,7 @@ func isDebugging() bool {
 
 func isDebuggingHeaders() bool {
 	debug := strings.ToUpper(os.Getenv("HEROKU_DEBUG_HEADERS"))
-	if debug == "TRUE" || debug == "1" {
+	if debug == "TRUE" || debug == ONE {
 		return true
 	}
 	return false
@@ -250,7 +245,7 @@ func cyan(s string) string {
 }
 
 func windows() bool {
-	return runtime.GOOS == "windows"
+	return runtime.GOOS == WINDOWS
 }
 
 func istty() bool {
@@ -359,18 +354,11 @@ func saveJSON(obj interface{}, path string) error {
 }
 
 func inspect(o interface{}) {
-	fmt.Printf("%+v\n", o)
-}
-
-func maxint(a, b int) int {
-	if a > b {
-		return a
-	}
-	return b
+	fmt.Fprintf(InspectOut, "%+v\n", o)
 }
 
 func execBin(bin string, args ...string) {
-	if runtime.GOOS == "windows" {
+	if runtime.GOOS == WINDOWS {
 		cmd := exec.Command(bin, args[1:]...)
 		cmd.Stdin = os.Stdin
 		cmd.Stdout = os.Stdout

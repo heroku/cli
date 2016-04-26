@@ -9,6 +9,7 @@ import (
 	"github.com/texttheater/golang-levenshtein/levenshtein"
 )
 
+// Help shows the help
 func Help(args []string) {
 	var cmd string
 	if len(args) > 1 {

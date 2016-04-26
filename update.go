@@ -13,6 +13,7 @@ import (
 	"github.com/franela/goreq"
 )
 
+// Autoupdate is a flag to enable/disable CLI autoupdating
 var Autoupdate = "no"
 
 var updateTopic = &Topic{
