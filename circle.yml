@@ -40,23 +40,7 @@ test:
     - go test -v -race -cover -coverprofile=coverage.out
     - make test -j4
   post:
-    - ^
-      gometalinter --deadline 30s --disble-all
-      -E deadcode
-      -E dupl
-      -E errcheck
-      -E goconst
-      -E gofmt
-      -E goimports
-      -E golint
-      -E gotype
-      -E ineffassign
-      -E interfacer
-      -E varcheck
-      -E vet
-      -E vetshadow
-      -E unconvert
-      -E staticcheck
+    - gometalinter --deadline 30s --cyclo-over 32 -D aligncheck -D gosimple
     - |
       go tool cover -html=coverage.out -o $CIRCLE_ARTIFACTS/coverage.html;
       goveralls -coverprofile=coverage.out -service=circle-ci -repotoken=$COVERALLS_TOKEN;
