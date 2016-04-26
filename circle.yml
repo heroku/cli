@@ -33,7 +33,7 @@ dependencies:
         cd ~/osslsigncode && ./configure && make;
       fi;
     - make deps build -j4
-    - if ! type cowsay >/dev/null 2>&1; then sudo apt-get install nsis; fi;
+    - if ! type cowsay >/dev/null 2>&1; then sudo apt-get install cowsay; fi;
 test:
   override:
     - go test -v -race -cover -coverprofile=coverage.out
