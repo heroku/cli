@@ -18,23 +18,21 @@ dependencies:
     - ~/deps
     - ~/osslsigncode
     - ~/workspace
+    - ~/.cache/heroku/npm
   override:
     - >
       go version;
-      go get -v
-      github.com/alecthomas/gometalinter
-      github.com/mattn/goveralls;
-      gometalinter --install;
-    - make deps build -j4
-    - >
-      if ! type osslsigncode >/dev/null 2>&1; then
+      if ! type gometalinter >/dev/null 2>&1; then go get -v github.com/alecthomas/gometalinter; fi;
+      if ! type goveralls    >/dev/null 2>&1; then go get -v github.com/mattn/goveralls; fi;
+      cd ~/osslsigncode && sudo make install;
+      if ! type makensis >/dev/null 2>&1; then sudo apt-get install nsis; fi;
+      if [ ! -d ~/osslsigncode ]; then
         wget https://cli-assets.heroku.com/osslsigncode-1.7.1.tar.gz;
         tar -xvzf osslsigncode-1.7.1.tar.gz;
         mv osslsigncode-1.7.1 ~/osslsigncode;
         cd ~/osslsigncode && ./configure && make;
       fi;
-      cd ~/osslsigncode && sudo make install
-    - if ! type makensis >/dev/null 2>&1; then sudo apt-get install nsis; fi
+    - make deps build -j4
 test:
   override:
     - go test -v -race -cover -coverprofile=coverage.out
