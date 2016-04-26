@@ -8,12 +8,14 @@ import (
 	"github.com/texttheater/golang-levenshtein/levenshtein"
 )
 
+const HELP = "help"
+
 // Help shows the help
 func Help(args []string) {
-	cmd := "help"
+	cmd := HELP
 	if len(args) > 1 {
 		cmd = args[1]
-		if len(args) > 2 && cmd == "help" {
+		if len(args) > 2 && cmd == HELP {
 			cmd = args[2]
 		}
 	}
@@ -31,7 +33,7 @@ func Help(args []string) {
 	sort.Sort(topics)
 	sort.Sort(commands)
 	switch {
-	case cmd == "help":
+	case cmd == HELP:
 		Printf("Usage: heroku COMMAND [--app APP] [command-specific-options]\n\n")
 		Printf("Help topics, type \"heroku help TOPIC\" for more details:\n\n")
 		for _, topic := range nonHiddenTopics(topics) {
