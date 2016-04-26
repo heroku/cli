@@ -29,7 +29,7 @@ Example:
 }
 
 func version() string {
-	return fmt.Sprintf("heroku-cli/%s (%s-%s) %s", Version, runtime.GOARCH, runtime.GOOS, runtime.Version())
+	return fmt.Sprintf("heroku-cli/%s (%s-%s) %s", Version, runtime.GOOS, runtime.GOARCH, runtime.Version())
 }
 
 // ShowVersion shows the version and exits
