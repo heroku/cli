@@ -55,7 +55,7 @@ var twoFactorGenerateCmdAlias = &Command{
 
 func twoFactorGenerateRun(ctx *Context) {
 	req := apiRequest(ctx.APIToken)
-	req.Method = "POST"
+	req.Method = POST
 	req.Uri = req.Uri + "/account/recovery-codes"
 	req.AddHeader("Heroku-Password", getPassword("Password (typing will be hidden): "))
 	req.AddHeader("Heroku-Two-Factor-Code", getString("Two-factor code: "))

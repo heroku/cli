@@ -35,12 +35,15 @@ var buildPluginsCmd = &Command{
 	},
 }
 
+// Manifest is the manifest.json for releases
 type Manifest struct {
 	ReleasedAt string            `json:"released_at"`
 	Version    string            `json:"version"`
 	Channel    string            `json:"channel"`
 	Builds     map[string]*Build `json:"builds"`
 }
+
+// Build is a part of a Manifest
 type Build struct {
 	URL    string `json:"url"`
 	Sha1   string `json:"sha1"`
@@ -72,13 +75,10 @@ var buildManifestCmd = &Command{
 			info := re.FindStringSubmatch(filename)
 			os := info[1]
 			arch := info[2]
-			sha1, err := fileSha1(file)
-			ExitIfError(err)
 			sha256, err := fileSha256(file)
 			ExitIfError(err)
 			manifest.Builds[os+"-"+arch] = &Build{
 				URL:    "https://cli-assets.heroku.com/branches/" + manifest.Channel + "/" + manifest.Version + "/" + filename,
-				Sha1:   sha1,
 				Sha256: sha256,
 			}
 		}

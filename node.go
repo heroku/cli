@@ -9,6 +9,7 @@ import (
 	"runtime"
 )
 
+// NodeVersion is the current node version
 var NodeVersion = "?"
 
 // RunScript runs some node code
@@ -43,7 +44,7 @@ func (p *Plugins) nodeBinPath() string {
 	if b == "" {
 		b = filepath.Join(AppDir, "lib", "node-"+NodeVersion)
 	}
-	if runtime.GOOS == "windows" {
+	if runtime.GOOS == WINDOWS {
 		b = b + ".exe"
 	}
 	if exists, _ := fileExists(b); !exists {

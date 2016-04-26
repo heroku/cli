@@ -23,7 +23,6 @@ dependencies:
       go version;
       go get -v
       github.com/alecthomas/gometalinter
-      github.com/tools/godep
       github.com/mattn/goveralls;
       gometalinter --install;
     - make deps build -j4
@@ -41,7 +40,16 @@ test:
     - go test -v -race -cover -coverprofile=coverage.out
     - make test -j4
   post:
-    - gometalinter --deadline 30s || true
+    - ^
+      gometalinter --deadline 30s --disble-all
+      -E deadcode
+      -E dupl
+      -E errcheck
+      -E goconst
+      -E gocyclo
+      -E gofmt
+      -E goimports
+      -E golint
     - |
       go tool cover -html=coverage.out -o $CIRCLE_ARTIFACTS/coverage.html;
       goveralls -coverprofile=coverage.out -service=circle-ci -repotoken=$COVERALLS_TOKEN;

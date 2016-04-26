@@ -10,6 +10,9 @@ import (
 	"github.com/kardianos/osext"
 )
 
+// WINDOWS is "windows"
+const WINDOWS = "windows"
+
 // HomeDir is the user's home directory
 var HomeDir = homeDir()
 
@@ -70,7 +73,7 @@ func configHome() string {
 func dataHome() string {
 	d := os.Getenv("XDG_DATA_HOME")
 	if d == "" {
-		if runtime.GOOS == "windows" && localAppData() != "" {
+		if runtime.GOOS == WINDOWS && localAppData() != "" {
 			d = localAppData()
 		} else {
 			d = filepath.Join(HomeDir, ".local", "share")
@@ -82,7 +85,7 @@ func dataHome() string {
 func cacheHome() string {
 	d := os.Getenv("XDG_CACHE_HOME")
 	if d == "" {
-		if runtime.GOOS == "windows" && localAppData() != "" {
+		if runtime.GOOS == WINDOWS && localAppData() != "" {
 			d = localAppData()
 		} else {
 			d = filepath.Join(HomeDir, ".cache")

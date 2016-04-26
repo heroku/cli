@@ -63,9 +63,12 @@ func (c *AnalyticsCommand) RecordEnd(status int) {
 func readAnalyticsFile() (commands []AnalyticsCommand) {
 	f, err := os.Open(analyticsPath)
 	if err != nil {
+		LogIfError(err)
 		return
 	}
-	json.NewDecoder(f).Decode(&commands)
+	if err := json.NewDecoder(f).Decode(&commands); err != nil {
+		LogIfError(err)
+	}
 	return commands
 }
 
@@ -115,7 +118,7 @@ func SubmitAnalytics() {
 		host = "https://cli-analytics.heroku.com"
 	}
 	req.Uri = host + "/record"
-	req.Method = "POST"
+	req.Method = POST
 	req.Body = struct {
 		Version  string             `json:"version"`
 		Commands []AnalyticsCommand `json:"commands"`
