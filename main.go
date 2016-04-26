@@ -55,8 +55,9 @@ func Start(args ...string) {
 	}
 
 	switch args[1] {
-	case HELP, "--help":
+	case "help", "--help":
 		help(args)
+		return
 	case "version", "--version", "-v":
 		ShowVersion()
 	}
@@ -69,7 +70,8 @@ func Start(args ...string) {
 	}
 	ctx, err := BuildContext(cmd, args)
 	if err == errHelp {
-		help(os.Args)
+		help(args)
+		return
 	}
 	must(err)
 	cmd.Run(ctx)
