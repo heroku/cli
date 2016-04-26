@@ -9,8 +9,9 @@ import (
 	"runtime"
 	"time"
 
+	"github.com/ansel1/merry"
+	"github.com/dghubble/sling"
 	"github.com/dickeyxxx/golock"
-	"github.com/franela/goreq"
 )
 
 func init() {
@@ -24,17 +25,12 @@ func init() {
 				Description:      "updates the Heroku CLI",
 				DisableAnalytics: true,
 				Args:             []Arg{{Name: "channel", Optional: true}},
-				Flags:            []Flag{{Name: "background", Hidden: true}},
 				Run: func(ctx *Context) {
 					channel := ctx.Args.(map[string]string)["channel"]
 					if channel == "" {
 						channel = Channel
 					}
-					t := "foreground"
-					if ctx.Flags["background"] == true {
-						t = "background"
-					}
-					Update(channel, t)
+					Update(channel)
 				},
 			},
 		},
@@ -48,10 +44,7 @@ var updateLockPath = filepath.Join(CacheHome, "updating.lock")
 var autoupdateFile = filepath.Join(CacheHome, "autoupdate")
 
 // Update updates the CLI and plugins
-func Update(channel string, t string) {
-	if !IsUpdateNeeded(t) {
-		return
-	}
+func Update(channel string) {
 	touchAutoupdateFile()
 	SubmitAnalytics()
 	updateCLI(channel)
@@ -61,23 +54,17 @@ func Update(channel string, t string) {
 }
 
 func updateCLI(channel string) {
-	if Autoupdate != "yes" {
-		return
-	}
-	manifest, err := getUpdateManifest(channel)
-	if err != nil {
-		Warn("Error updating CLI")
-		WarnIfError(err)
-		return
-	}
+	//if Autoupdate != "yes" {
+	//return
+	//}
+	manifest := getUpdateManifest(channel)
 	if manifest.Version == Version && manifest.Channel == Channel {
 		return
 	}
 	locked, err := golock.IsLocked(updateLockPath)
 	LogIfError(err)
 	if locked {
-		Warn("Update in progress")
-		return
+		must(merry.Errorf("Update in progress"))
 	}
 	LogIfError(golock.Lock(updateLockPath))
 	unlock := func() {
@@ -91,15 +78,15 @@ func updateCLI(channel string) {
 	Logln(downloadingMessage)
 	build := manifest.Builds[runtime.GOOS+"-"+runtime.GOARCH]
 	if build == nil {
-		panic(fmt.Errorf("no build for %s", manifest.Channel))
+		must(merry.Errorf("no build for %s", manifest.Channel))
 	}
 	reader, getSha, err := downloadXZ(build.URL)
-	ExitIfError(err)
+	must(err)
 	tmp := tmpDir(DataHome)
-	ExitIfError(extractTar(reader, tmp))
+	must(extractTar(reader, tmp))
 	sha := getSha()
 	if sha != build.Sha256 {
-		panic(fmt.Errorf("SHA mismatch: expected %s to be %s", sha, build.Sha256))
+		must(merry.Errorf("SHA mismatch: expected %s to be %s", sha, build.Sha256))
 	}
 	LogIfError(os.Rename(filepath.Join(DataHome, "cli"), filepath.Join(tmpDir(DataHome), "heroku")))
 	LogIfError(os.Rename(filepath.Join(tmp, "heroku"), filepath.Join(DataHome, "cli")))
@@ -109,49 +96,39 @@ func updateCLI(channel string) {
 }
 
 // IsUpdateNeeded checks if an update is available
-func IsUpdateNeeded(t string) bool {
+func IsUpdateNeeded() bool {
 	f, err := os.Stat(autoupdateFile)
 	if err != nil {
+		LogIfError(err)
 		return true
 	}
-	if t == "background" {
-		return time.Since(f.ModTime()) > 4*time.Hour
-	} else if t == "block" {
-		return time.Since(f.ModTime()) > 2160*time.Hour // 90 days
-	}
-	return true
+	return time.Since(f.ModTime()) > 4*time.Hour
 }
 
 func touchAutoupdateFile() {
 	out, err := os.OpenFile(autoupdateFile, os.O_WRONLY|os.O_CREATE, 0644)
-	if err != nil {
-		panic(err)
-	}
-	out.WriteString(time.Now().String())
-	out.Close()
+	must(err)
+	_, err = out.WriteString(time.Now().String())
+	must(err)
+	err = out.Close()
+	must(err)
 }
 
-func getUpdateManifest(channel string) (*Manifest, error) {
-	res, err := goreq.Request{
-		Uri:       "https://cli-assets.heroku.com/branches/" + channel + "/manifest.json",
-		Timeout:   30 * time.Minute,
-		ShowDebug: debugging,
-	}.Do()
-	if err != nil {
-		return nil, err
-	}
-	if err := getHTTPError(res); err != nil {
-		return nil, err
-	}
+func getUpdateManifest(channel string) *Manifest {
 	var m Manifest
-	res.Body.FromJsonTo(&m)
-	return &m, nil
+	url := "https://cli-assets.heroku.com/branches/" + channel + "/manifest.json"
+	rsp, err := sling.New().Get(url).ReceiveSuccess(&m)
+	must(err)
+	must(getHTTPError(rsp))
+	return &m
 }
 
 // TriggerBackgroundUpdate will trigger an update to the client in the background
 func TriggerBackgroundUpdate() {
-	if IsUpdateNeeded("background") {
-		exec.Command(BinPath, "update", "--background").Start()
+	if IsUpdateNeeded() {
+		Debugln("triggering background update")
+		touchAutoupdateFile()
+		exec.Command(BinPath, "update").Start()
 	}
 }
 

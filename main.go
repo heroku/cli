@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"os"
 	"runtime"
@@ -29,8 +28,15 @@ var Topics TopicSet
 var Commands CommandSet
 
 func main() {
+	Start(os.Args...)
+}
+
+// Start the CLI
+func Start(args ...string) {
 	loadNewCLI()
-	defer handlePanic()
+	if os.Getenv("TESTING") != ONE {
+		defer handlePanic()
+	}
 
 	// handle sigint
 	handleSignal(os.Interrupt, func() {
@@ -43,44 +49,29 @@ func main() {
 	runtime.GOMAXPROCS(1) // more procs causes runtime: failed to create new OS thread on Ubuntu
 	ShowDebugInfo()
 
-	if len(os.Args) < 2 {
-		Help(os.Args)
+	if len(args) <= 1 {
+		// show dashboard if no args passed
+		args = append(args, "dashboard")
 	}
 
-	switch os.Args[1] {
-	case "update":
-		Update(Channel, "block")
-		Exit(0)
+	switch args[1] {
 	case HELP, "--help":
-		Help(os.Args)
+		help(args)
 	case "version", "--version", "-v":
 		ShowVersion()
 	}
 
-	cmd := AllCommands().Find(os.Args[1])
-	ctx, err := BuildContext(cmd, os.Args)
-
-	switch {
-	case err == errHelp:
-		Help(os.Args)
-	case err != nil:
-		ExitIfError(err)
-	default:
-		cmd.Run(ctx)
+	cmd := AllCommands().Find(args[1])
+	ctx, err := BuildContext(cmd, args)
+	if err == errHelp {
+		help(os.Args)
 	}
+	must(err)
+	cmd.Run(ctx)
 	Exit(0)
 }
 
-func handlePanic() {
-	if rec := recover(); rec != nil {
-		err, ok := rec.(error)
-		if !ok {
-			Inspect(err)
-			err = errors.New(rec.(string))
-		}
-		ExitIfError(err)
-	}
-}
+var crashing = false
 
 // ShowDebugInfo prints debugging information if HEROKU_DEBUG=1
 func ShowDebugInfo() {

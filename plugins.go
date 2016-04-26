@@ -126,7 +126,7 @@ func pluginsInstall(ctx *Context) {
 			if strings.Contains(err.Error(), "no such package available") {
 				ExitWithMessage("Plugin not found")
 			}
-			panic(err)
+			must(err)
 		}
 	})
 }
@@ -138,23 +138,18 @@ func pluginsLink(ctx *Context) {
 		path = "."
 	}
 	path, err := filepath.Abs(path)
-	if err != nil {
-		panic(err)
-	}
-	if _, err = os.Stat(path); err != nil {
-		panic(err)
-	}
+	must(err)
+	_, err = os.Stat(path)
+	must(err)
 	name := filepath.Base(path)
 	action("Symlinking "+name, "done", func() {
 		newPath := userPlugins.pluginPath(name)
 		os.Remove(newPath)
 		os.RemoveAll(newPath)
 		err = os.Symlink(path, newPath)
-		if err != nil {
-			panic(err)
-		}
+		must(err)
 		plugin, err := userPlugins.ParsePlugin(name)
-		ExitIfError(err)
+		must(err)
 		if name != plugin.Name {
 			path = newPath
 			newPath = userPlugins.pluginPath(plugin.Name)
@@ -169,10 +164,10 @@ func pluginsLink(ctx *Context) {
 func pluginsUninstall(ctx *Context) {
 	name := ctx.Args.(map[string]string)["name"]
 	if !contains(userPlugins.PluginNames(), name) {
-		ExitIfError(errors.New(name + " is not installed"))
+		must(errors.New(name + " is not installed"))
 	}
 	Errf("Uninstalling plugin %s...", name)
-	ExitIfError(userPlugins.RemovePackages(name))
+	must(userPlugins.RemovePackages(name))
 	userPlugins.removeFromCache(name)
 	Errln(" done")
 }
@@ -222,9 +217,7 @@ func (p *Plugins) runFn(plugin *Plugin, topic, command string) func(ctx *Context
 		p.readLockPlugin(plugin.Name)
 		ctx.Dev = p.isPluginSymlinked(plugin.Name)
 		ctxJSON, err := json.Marshal(ctx)
-		if err != nil {
-			panic(err)
-		}
+		must(err)
 		title, _ := json.Marshal("heroku " + strings.Join(os.Args[1:], " "))
 
 		script := fmt.Sprintf(`'use strict'
@@ -266,12 +259,12 @@ func getExitCode(err error) int {
 	case *exec.ExitError:
 		status, ok := e.Sys().(syscall.WaitStatus)
 		if !ok {
-			panic(err)
+			must(err)
 		}
 		return status.ExitStatus()
-	default:
-		panic(err)
 	}
+	must(err)
+	return -1
 }
 
 var pluginInstallRetry = true
@@ -482,7 +475,7 @@ func (p *Plugins) removeFromCache(name string) {
 
 func (p *Plugins) saveCache(plugins []*Plugin) {
 	if err := saveJSON(plugins, p.cachePath()); err != nil {
-		panic(err)
+		must(err)
 	}
 }
 

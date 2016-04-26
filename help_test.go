@@ -34,7 +34,7 @@ var _ = Describe("Help", func() {
 
 	Context("with no args", func() {
 		BeforeEach(func() {
-			cli.Help([]string{""})
+			cli.Start("heroku")
 		})
 
 		It("exits with code 0", func() { Expect(exit).To(Equal(0)) })
@@ -45,7 +45,7 @@ var _ = Describe("Help", func() {
 
 	Context("heroku help", func() {
 		BeforeEach(func() {
-			cli.Commands.Run([]string{"heroku", "help"})
+			cli.Start("heroku", "help")
 		})
 
 		It("exits with code 0", func() { Expect(exit).To(Equal(0)) })
@@ -56,7 +56,7 @@ var _ = Describe("Help", func() {
 
 	Context("heroku hlp", func() {
 		BeforeEach(func() {
-			cli.Help([]string{"heroku", "hlp"})
+			cli.Start("heroku", "hlp")
 		})
 
 		It("exits with code 2", func() { Expect(exit).To(Equal(2)) })
@@ -70,7 +70,7 @@ var _ = Describe("Help", func() {
 
 	Context("heroku help version", func() {
 		BeforeEach(func() {
-			cli.Help([]string{"heroku", "help", "version"})
+			cli.Start("heroku", "help", "version")
 		})
 
 		It("exits with code 0", func() { Expect(exit).To(Equal(0)) })

@@ -207,6 +207,7 @@ clean:
 
 .PHONY: test
 test: build
+	@if type cowsay >/dev/null 2>&1; then echo Released $(VERSION) cowsay; fi;
 	$(WORKSPACE)/bin/heroku version
 	$(WORKSPACE)/bin/heroku plugins
 	$(WORKSPACE)/bin/heroku status

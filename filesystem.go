@@ -40,25 +40,19 @@ func homeDir() string {
 		return home
 	}
 	user, err := user.Current()
-	if err != nil {
-		panic(err)
-	}
+	must(err)
 	return user.HomeDir
 }
 
 func binPath() string {
 	d, err := osext.Executable()
-	if err != nil {
-		panic(err)
-	}
+	must(err)
 	return d
 }
 
 func appDir() string {
 	d, err := osext.ExecutableFolder()
-	if err != nil {
-		panic(err)
-	}
+	must(err)
 	return filepath.Join(d, "..")
 }
 
@@ -111,12 +105,8 @@ func fileExists(path string) (bool, error) {
 func tmpDir(base string) string {
 	root := filepath.Join(base, "tmp")
 	err := os.MkdirAll(root, 0755)
-	if err != nil {
-		panic(err)
-	}
+	must(err)
 	dir, err := ioutil.TempDir(root, "")
-	if err != nil {
-		panic(err)
-	}
+	must(err)
 	return dir
 }

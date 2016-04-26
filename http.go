@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"net"
 	"net/http"
 	"net/url"
 	"os"
@@ -16,6 +17,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/ansel1/merry"
+	"github.com/dghubble/sling"
 	"github.com/franela/goreq"
 	"github.com/mitchellh/ioprogress"
 	"github.com/ulikunitz/xz"
@@ -27,11 +30,20 @@ const GET = "GET"
 // POST for requests
 const POST = "POST"
 
+var httpClient = http.DefaultClient
+
 func init() {
-	goreq.SetConnectTimeout(15 * time.Second)
-	certs := getCACerts()
-	if certs != nil {
-		goreq.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{RootCAs: certs}
+	httpClient.Timeout = 30 * time.Minute
+	transport := http.DefaultTransport.(*http.Transport)
+	transport.TLSHandshakeTimeout = 60 * time.Second
+	transport.Dial = (&net.Dialer{
+		Timeout:   60 * time.Second,
+		KeepAlive: 30 * time.Second,
+	}).Dial
+	transport.ExpectContinueTimeout = 30 * time.Second
+	tlsConfig := httpTLSClientConfig()
+	if tlsConfig != nil {
+		transport.TLSClientConfig = tlsConfig
 	}
 }
 
@@ -70,7 +82,7 @@ func shouldVerifyHost(host string) bool {
 	return !(os.Getenv("HEROKU_SSL_VERIFY") == "disable" || strings.HasSuffix(host, "herokudev.com"))
 }
 
-func getCACerts() *x509.CertPool {
+func httpTLSClientConfig() *tls.Config {
 	paths := list.New()
 	if !useSystemCerts() {
 		path := filepath.Join(AppDir, "lib", "cacert.pem")
@@ -115,7 +127,7 @@ func getCACerts() *x509.CertPool {
 			return nil
 		}
 	}
-	return certs
+	return &tls.Config{RootCAs: certs}
 }
 
 func getProxy() *url.URL {
@@ -133,12 +145,12 @@ func progressDrawFn(progress, total int64) string {
 }
 
 func downloadXZ(url string) (io.Reader, func() string, error) {
-	req := goreq.Request{Uri: url, Timeout: 30 * time.Minute}
-	resp, err := req.Do()
+	req, err := sling.New().Get(url).Request()
 	if err != nil {
 		return nil, nil, err
 	}
-	if err := getHTTPError(resp); err != nil {
+	resp, err := httpClient.Do(req)
+	if err != nil {
 		return nil, nil, err
 	}
 	size, _ := strconv.Atoi(resp.Header.Get("Content-Length"))
@@ -152,11 +164,9 @@ func downloadXZ(url string) (io.Reader, func() string, error) {
 	return uncompressed, getSha, err
 }
 
-func getHTTPError(resp *goreq.Response) error {
-	if resp.StatusCode < 400 {
+func getHTTPError(rsp *http.Response) error {
+	if rsp.StatusCode >= 200 && rsp.StatusCode < 300 {
 		return nil
 	}
-	var body string
-	body = resp.Header.Get("Content-Type")
-	return fmt.Errorf("%s: %s", resp.Status, body)
+	return merry.Errorf("HTTP Error: %s %s", rsp.Request.URL, rsp.Status)
 }

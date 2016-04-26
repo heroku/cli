@@ -33,12 +33,13 @@ dependencies:
         cd ~/osslsigncode && ./configure && make;
       fi;
     - make deps build -j4
+    - if ! type cowsay >/dev/null 2>&1; then sudo apt-get install nsis; fi;
 test:
   override:
     - go test -v -race -cover -coverprofile=coverage.out
     - make test -j4
-  post:
     - gometalinter --deadline 30s --cyclo-over 32 -D aligncheck -D gosimple -D errcheck -D gotype -D vetshadow -D goconst
+  post:
     - |
       go tool cover -html=coverage.out -o $CIRCLE_ARTIFACTS/coverage.html;
       goveralls -coverprofile=coverage.out -service=circle-ci -repotoken=$COVERALLS_TOKEN;

@@ -16,6 +16,7 @@ import (
 	"strings"
 	"syscall"
 
+	"github.com/ansel1/merry"
 	"github.com/lunixbochs/vtclean"
 	rollbarAPI "github.com/stvp/rollbar"
 	"golang.org/x/crypto/ssh/terminal"
@@ -40,13 +41,9 @@ var swallowSigint = false
 
 func newLogger(path string) *log.Logger {
 	err := os.MkdirAll(filepath.Dir(path), 0777)
-	if err != nil {
-		panic(err)
-	}
+	must(err)
 	file, err := os.OpenFile(path, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0644)
-	if err != nil {
-		panic(err)
-	}
+	must(err)
 	return log.New(file, "", log.LstdFlags)
 }
 
@@ -126,11 +123,8 @@ func WarnIfError(e error) {
 		return
 	}
 	Warn(e.Error())
-	Logln(string(debug.Stack()))
+	Debugln(merry.Details(e))
 	rollbar(e, "warning")
-	if debugging {
-		debug.PrintStack()
-	}
 }
 
 // Warn shows a message with excalamation points prepended to stderr
@@ -175,16 +169,9 @@ func errorArrow() string {
 	return "▸"
 }
 
-// ExitIfError exits if e is not null
-func ExitIfError(e error) {
-	if e != nil {
-		Error(e.Error())
-		Logln(string(debug.Stack()))
-		rollbar(e, "error")
-		if debugging {
-			debug.PrintStack()
-		}
-		Exit(1)
+func must(err error) {
+	if err != nil {
+		panic(err)
 	}
 }
 
@@ -309,7 +296,29 @@ func handleSignal(s os.Signal, fn func()) {
 	}()
 }
 
+func handlePanic() {
+	if crashing {
+		// if already crashing just let the error bubble
+		// or else potential fork-bomb
+		return
+	}
+	crashing = true
+	if rec := recover(); rec != nil {
+		err, ok := rec.(error)
+		if !ok {
+			err = merry.New(rec.(string))
+		}
+		Error(err.Error())
+		Debugln(merry.Details(err))
+		rollbar(err, "error")
+		Exit(1)
+	}
+}
+
 func rollbar(err error, level string) {
+	if os.Getenv("TESTING") == ONE {
+		return
+	}
 	rollbarAPI.Platform = "client"
 	rollbarAPI.Token = "b40226d5e8a743cf963ca320f7be17bd"
 	rollbarAPI.Environment = Channel
@@ -333,7 +342,7 @@ func rollbar(err error, level string) {
 func readJSON(path string) (map[string]interface{}, error) {
 	if exists, err := fileExists(path); !exists {
 		if err != nil {
-			panic(err)
+			return nil, err
 		}
 		return map[string]interface{}{}, nil
 	}
@@ -360,18 +369,15 @@ func Inspect(o interface{}) {
 }
 
 func execBin(bin string, args ...string) {
-	if runtime.GOOS == WINDOWS {
+	if runtime.GOOS != WINDOWS {
 		cmd := exec.Command(bin, args[1:]...)
 		cmd.Stdin = os.Stdin
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
-		if err := cmd.Run(); err != nil {
-			os.Exit(getExitCode(err))
-		}
+		err := cmd.Run()
+		os.Exit(getExitCode(err))
 	} else {
-		if err := syscall.Exec(bin, args, os.Environ()); err != nil {
-			panic(err)
-		}
+		must(syscall.Exec(bin, args, os.Environ()))
 	}
 }
 

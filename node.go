@@ -50,7 +50,7 @@ func (p *Plugins) nodeBinPath() string {
 	if exists, _ := fileExists(b); !exists {
 		var err error
 		b, err = exec.LookPath("node")
-		ExitIfError(err)
+		must(err)
 	}
 	return b
 }
