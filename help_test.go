@@ -101,4 +101,15 @@ var _ = Describe("Help", func() {
 			Expect(stdout).To(ContainSubstring("heroku build:manifest"))
 		})
 	})
+
+	Context("help command", func() {
+		BeforeEach(func() {
+			cli.AllCommands().Find("help").Run(&cli.Context{})
+		})
+
+		It("exits with code 0", func() { Expect(exit).To(Equal(0)) })
+		It("shows help for build commands", func() {
+			Expect(stdout).To(HavePrefix("Usage: heroku COMMAND"))
+		})
+	})
 })

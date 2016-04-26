@@ -23,10 +23,6 @@ var Channel = "?"
 // This list is all the Go topics, the Node topics are filled in later
 var Topics TopicSet
 
-// Commands are all the commands
-// This list is all the Go commands, the Node commands are filled in later
-var Commands CommandSet
-
 func main() {
 	Start(os.Args...)
 }
@@ -60,6 +56,7 @@ func Start(args ...string) {
 		return
 	case "version", "--version", "-v":
 		ShowVersion()
+		return
 	}
 
 	cmd := AllCommands().Find(args[1])

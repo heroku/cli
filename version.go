@@ -12,7 +12,6 @@ func init() {
 		Commands: CommandSet{
 			{
 				Topic:            "version",
-				Hidden:           true,
 				Description:      "print the version",
 				DisableAnalytics: true,
 				Help: `Shows the Heroku CLI version.
