@@ -4,6 +4,15 @@
 	"GodepVersion": "v62",
 	"Deps": [
 		{
+			"ImportPath": "github.com/ansel1/merry",
+			"Rev": "5d27db058b2209512885615d6b5d96df9569d0c9"
+		},
+		{
+			"ImportPath": "github.com/dghubble/sling",
+			"Comment": "v1.0-14-g5765fe1",
+			"Rev": "5765fe1bdc176ae984b074c8a89980d1f16e6dd8"
+		},
+		{
 			"ImportPath": "github.com/dickeyxxx/golock",
 			"Comment": "v1.1.0",
 			"Rev": "ae2e6b7e683fc65b06e64361d9386c7278b677a0"
@@ -17,8 +26,12 @@
 			"Rev": "c3278227c0f70a2151ebbaef1a0dbbaa36be3be3"
 		},
 		{
-			"ImportPath": "github.com/franela/goreq",
-			"Rev": "3ddeded65be21dacb5a2e2d0b95af9ff6862a2b5"
+			"ImportPath": "github.com/go-errors/errors",
+			"Rev": "a41850380601eeb43f4350f7d17c6bbd8944aaf8"
+		},
+		{
+			"ImportPath": "github.com/google/go-querystring/query",
+			"Rev": "9235644dd9e52eeae6fa48efd539fdc351a0af53"
 		},
 		{
 			"ImportPath": "github.com/kardianos/osext",

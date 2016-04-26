@@ -54,9 +54,9 @@ func Update(channel string) {
 }
 
 func updateCLI(channel string) {
-	//if Autoupdate != "yes" {
-	//return
-	//}
+	if Autoupdate != "yes" {
+		return
+	}
 	manifest := getUpdateManifest(channel)
 	if manifest.Version == Version && manifest.Channel == Channel {
 		return
@@ -71,6 +71,7 @@ func updateCLI(channel string) {
 		golock.Unlock(updateLockPath)
 	}
 	defer unlock()
+	hideCursor()
 	downloadingMessage = fmt.Sprintf("heroku-cli: Updating to %s...", manifest.Version)
 	if manifest.Channel != "stable" {
 		downloadingMessage = fmt.Sprintf("%s (%s)", downloadingMessage, manifest.Channel)

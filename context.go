@@ -87,10 +87,6 @@ func BuildContext(command *Command, args []string) (*Context, error) {
 	ctx.APIURL = apiURL()
 	ctx.GitHost = gitHost()
 	ctx.HTTPGitHost = httpGitHost()
-	currentAnalyticsCommand.RecordStart()
-	if ctx.Command.DisableAnalytics {
-		currentAnalyticsCommand = nil
-	}
 	return ctx, nil
 }
 
