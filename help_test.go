@@ -32,17 +32,6 @@ var _ = Describe("Help", func() {
 		stderr = vtclean.Clean(cli.Stderr.(*bytes.Buffer).String(), false)
 	})
 
-	Context("with no args", func() {
-		BeforeEach(func() {
-			cli.Start("heroku")
-		})
-
-		It("exits with code 0", func() { Expect(exit).To(Equal(0)) })
-		It("shows the help", func() {
-			Expect(stdout).To(HavePrefix("Usage: heroku COMMAND [--app APP] [command-specific-options]"))
-		})
-	})
-
 	Context("heroku help", func() {
 		BeforeEach(func() {
 			cli.Start("heroku", "help")
