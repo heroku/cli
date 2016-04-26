@@ -40,7 +40,7 @@ test:
     - go test -v -race -cover -coverprofile=coverage.out
     - make test -j4
   post:
-    - gometalinter --deadline 30s --cyclo-over 32 -D aligncheck -D gosimple
+    - gometalinter --deadline 30s --cyclo-over 32 -D aligncheck -D gosimple -D errcheck -D gotype -D vetshadow
     - |
       go tool cover -html=coverage.out -o $CIRCLE_ARTIFACTS/coverage.html;
       goveralls -coverprofile=coverage.out -service=circle-ci -repotoken=$COVERALLS_TOKEN;

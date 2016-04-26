@@ -354,6 +354,7 @@ func saveJSON(obj interface{}, path string) error {
 	return ioutil.WriteFile(path, data, 0644)
 }
 
+// Inspect an object
 func Inspect(o interface{}) {
 	fmt.Fprintf(InspectOut, "%+v\n", o)
 }
