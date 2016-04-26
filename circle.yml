@@ -23,7 +23,7 @@ dependencies:
       github.com/tools/godep
       github.com/mattn/goveralls;
       gometalinter --install;
-    - make deps -j4
+    - make deps build -j4
     - >
       if [ ! -d ~/osslsigncode ]; then
         wget https://cli-assets.heroku.com/osslsigncode-1.7.1.tar.gz;
