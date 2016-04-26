@@ -380,6 +380,7 @@ func execBin(bin string, args ...string) {
 		os.Exit(getExitCode(err))
 	} else {
 		must(syscall.Exec(bin, args, os.Environ()))
+		Inspect("")
 	}
 }
 

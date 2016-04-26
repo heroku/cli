@@ -442,9 +442,8 @@ func (p *Plugins) Update() {
 }
 
 func (p *Plugins) addToCache(plugins ...*Plugin) {
-	cache := p.Plugins()
 	contains := func(name string) int {
-		for i, plugin := range cache {
+		for i, plugin := range p.plugins {
 			if plugin.Name == name {
 				return i
 			}
@@ -455,26 +454,25 @@ func (p *Plugins) addToCache(plugins ...*Plugin) {
 		// find or replace
 		i := contains(plugin.Name)
 		if i == -1 {
-			cache = append(cache, plugin)
+			p.plugins = append(p.plugins, plugin)
 		} else {
-			cache[i] = plugin
+			p.plugins[i] = plugin
 		}
 	}
-	p.saveCache(cache)
+	p.saveCache()
 }
 
 func (p *Plugins) removeFromCache(name string) {
-	plugins := p.Plugins()
-	for i, plugin := range plugins {
+	for i, plugin := range p.plugins {
 		if plugin.Name == name {
-			plugins = append(plugins[:i], plugins[i+1:]...)
+			p.plugins = append(p.plugins[:i], p.plugins[i+1:]...)
 		}
 	}
-	p.saveCache(plugins)
+	p.saveCache()
 }
 
-func (p *Plugins) saveCache(plugins []*Plugin) {
-	if err := saveJSON(plugins, p.cachePath()); err != nil {
+func (p *Plugins) saveCache() {
+	if err := saveJSON(p.plugins, p.cachePath()); err != nil {
 		must(err)
 	}
 }
