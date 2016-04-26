@@ -19,10 +19,15 @@ var _ = Describe("Help", func() {
 	BeforeEach(func() {
 		cli.Stdout = new(bytes.Buffer)
 		cli.Stderr = new(bytes.Buffer)
-		cli.ExitFn = func(code int) { exit = code }
+		cli.ExitFn = func(code int) {
+			if exit == 9999 {
+				exit = code
+			}
+		}
 	})
 
 	AfterEach(func() {
+		exit = 9999
 		cli.Stdout = os.Stdout
 		cli.Stderr = os.Stderr
 	})
@@ -49,6 +54,7 @@ var _ = Describe("Help", func() {
 		})
 
 		It("exits with code 2", func() { Expect(exit).To(Equal(2)) })
+		It("has no stdout", func() { Expect(stdout).To(Equal("")) })
 		It("shows invalid command message", func() {
 			Expect(stderr).To(Equal(` !    hlp is not a heroku command.
  !    Perhaps you meant help.
