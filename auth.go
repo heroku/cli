@@ -124,19 +124,19 @@ func init() {
 		{
 			Name:   "twofactor",
 			Hidden: true,
-			Commands: []*Command{
-				&Command{
+			Commands: CommandSet{
+				{
 					NeedsAuth:   true,
 					Description: "enable 2fa on your account",
 					Run:         twoFactorRun,
 				},
-				&Command{
+				{
 					Command:     "generate-recovery-codes",
 					Description: "Generates and replaces recovery codes",
 					NeedsAuth:   true,
 					Run:         twoFactorGenerateRun,
 				},
-				&Command{
+				{
 					Command:     "disable",
 					Description: "Disable two-factor authentication for your account",
 					NeedsAuth:   true,
@@ -147,19 +147,19 @@ func init() {
 		{
 			Name:   "2fa",
 			Hidden: true,
-			Commands: []*Command{
-				&Command{
+			Commands: CommandSet{
+				{
 					NeedsAuth:   true,
 					Description: "enable 2fa on your account",
 					Run:         twoFactorRun,
 				},
-				&Command{
+				{
 					Command:     "generate-recovery-codes",
 					Description: "Generates and replaces recovery codes",
 					NeedsAuth:   true,
 					Run:         twoFactorGenerateRun,
 				},
-				&Command{
+				{
 					Command:     "disable",
 					Description: "Disable two-factor authentication for your account",
 					NeedsAuth:   true,
@@ -223,7 +223,7 @@ func ssoLogin() {
 	token := getPassword("Enter your access token (typing will be hidden): ")
 	user := getUserFromToken(token)
 	if user == "" {
-		ExitIfError(errors.New("Access token invalid."))
+		must(errors.New("Access token invalid."))
 	}
 	saveOauthToken(user, token)
 	Println("Logged in as " + cyan(user))
@@ -234,7 +234,7 @@ func getUserFromToken(token string) string {
 	req.Method = "GET"
 	req.Uri = req.Uri + "/account"
 	res, err := req.Do()
-	ExitIfError(err)
+	must(err)
 	if res.StatusCode != 200 {
 		return ""
 	}
@@ -265,7 +265,7 @@ func saveOauthToken(email, token string) {
 	netrc.RemoveMachine(httpGitHost())
 	netrc.AddMachine(apiHost(), email, token)
 	netrc.AddMachine(httpGitHost(), email, token)
-	ExitIfError(netrc.Save())
+	must(netrc.Save())
 }
 
 func getString(prompt string) string {
@@ -279,7 +279,7 @@ func getString(prompt string) string {
 			Errln()
 			Exit(1)
 		}
-		ExitIfError(err)
+		must(err)
 	}
 	return s
 }
@@ -293,7 +293,7 @@ In the meantime, login via cmd.exe
 https://github.com/heroku/cli/issues/84`)
 			Exit(1)
 		} else {
-			ExitIfError(err)
+			must(err)
 		}
 	}
 	return password
@@ -316,32 +316,31 @@ func v2login(email, password, secondFactor string) string {
 		req.AddHeader("Heroku-Two-Factor-Code", secondFactor)
 	}
 	res, err := req.Do()
-	ExitIfError(err)
+	must(err)
 	switch res.StatusCode {
 	case 200:
 		var response struct {
 			APIKey string `json:"api_key"`
 		}
-		ExitIfError(res.Body.FromJsonTo(&response))
+		must(res.Body.FromJsonTo(&response))
 		return response.APIKey
 	case 401:
 		var response struct {
 			Error string `json:"error"`
 		}
-		ExitIfError(res.Body.FromJsonTo(&response))
+		must(res.Body.FromJsonTo(&response))
 		ExitWithMessage(response.Error)
-		panic("unreachable")
 	case 403:
 		return v2login(email, password, getString("Two-factor code: "))
 	case 404:
 		ExitWithMessage("Authentication failed.\nEmail or password is not valid.\nCheck your credentials on https://dashboard.heroku.com")
-		panic("unreachable")
 	default:
 		body, err := res.Body.ToString()
 		WarnIfError(err)
 		ExitWithMessage("Invalid response from API.\nHTTP %d\n%s\n\nAre you behind a proxy?\nhttps://devcenter.heroku.com/articles/using-the-cli#using-an-http-proxy", res.StatusCode, body)
-		panic("unreachable")
 	}
+	must(fmt.Errorf("unreachable"))
+	return ""
 }
 
 func createOauthToken(email, password, secondFactor string) (string, error) {
@@ -359,7 +358,7 @@ func createOauthToken(email, password, secondFactor string) (string, error) {
 		req.AddHeader("Heroku-Two-Factor-Code", secondFactor)
 	}
 	res, err := req.Do()
-	ExitIfError(err)
+	must(err)
 	type Doc struct {
 		ID          string
 		Message     string
@@ -385,7 +384,7 @@ func logout(ctx *Context) {
 	netrc := getNetrc()
 	netrc.RemoveMachine(apiHost())
 	netrc.RemoveMachine(httpGitHost())
-	ExitIfError(netrc.Save())
+	must(netrc.Save())
 	Println("Local credentials cleared.")
 }
 
@@ -456,7 +455,7 @@ func twoFactorGenerateRun(ctx *Context) {
 	req.AddHeader("Heroku-Password", getPassword("Password (typing will be hidden): "))
 	req.AddHeader("Heroku-Two-Factor-Code", getString("Two-factor code: "))
 	res, err := req.Do()
-	ExitIfError(err)
+	must(err)
 	var codes []interface{}
 	res.Body.FromJsonTo(&codes)
 	Println("Recovery codes:")
@@ -474,7 +473,7 @@ func twoFactorDisableRun(ctx *Context) {
 		"password":                  getPassword("Password (typing will be hidden):"),
 	}
 	res, err := req.Do()
-	ExitIfError(err)
+	must(err)
 	if res.StatusCode != 200 {
 		var doc map[string]string
 		res.Body.FromJsonTo(&doc)
@@ -489,7 +488,7 @@ func twoFactorRun(ctx *Context) {
 	req.Method = "GET"
 	req.Uri = req.Uri + "/account"
 	res, err := req.Do()
-	ExitIfError(err)
+	must(err)
 	var doc map[string]bool
 	res.Body.FromJsonTo(&doc)
 	if doc["two_factor_authentication"] {

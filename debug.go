@@ -23,9 +23,9 @@ func init() {
 							numS = "30"
 						}
 						num, err := strconv.Atoi(numS)
-						ExitIfError(err)
+						must(err)
 						body, err := ioutil.ReadFile(ErrLogPath)
-						ExitIfError(err)
+						must(err)
 						lines := strings.Split(string(body), "\n")
 						start := len(lines) - num - 1
 						if start < 0 {

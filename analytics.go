@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"runtime/debug"
 	"strings"
 	"time"
 
@@ -50,6 +51,7 @@ func (c *AnalyticsCommand) RecordEnd(status int) {
 	if c == nil || skipAnalytics() || len(os.Args) < 2 {
 		return
 	}
+	debug.PrintStack()
 	c.Command = os.Args[1]
 	c.Status = status
 	if !c.start.IsZero() {
@@ -131,7 +133,7 @@ func SubmitAnalytics() {
 		return
 	}
 	if resp.StatusCode != 201 {
-		Logln("analytics: HTTP " + resp.Status)
+		Debugln("analytics: HTTP " + resp.Status)
 	}
 	os.Truncate(analyticsPath, 0)
 }
@@ -139,8 +141,8 @@ func SubmitAnalytics() {
 func skipAnalytics() bool {
 	skip, err := config.GetBool("skip_analytics")
 	if err != nil {
-		Logln(err)
+		Debugln(err)
 		return true
 	}
-	return (skip != nil && *skip) || netrcLogin() == ""
+	return os.Getenv("TESTING") == ONE || (skip != nil && *skip) || netrcLogin() == ""
 }

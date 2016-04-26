@@ -15,7 +15,7 @@ func init() {
 			&Command{
 				Hidden: true,
 				Run: func(ctx *Context) {
-					Help([]string{"heroku", "help"})
+					help([]string{"heroku", "help"})
 				},
 			},
 		},
@@ -25,8 +25,7 @@ func init() {
 // HELP is "help"
 const HELP = "help"
 
-// Help shows the help
-func Help(args []string) {
+func help(args []string) {
 	var cmd string
 	switch {
 	case len(args) <= 1:

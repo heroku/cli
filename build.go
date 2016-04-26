@@ -21,15 +21,15 @@ func init() {
 					Description: "installs core plugins",
 					Run: func(ctx *Context) {
 						pjson, err := readJSON(filepath.Join(corePlugins.Path, "package.json"))
-						ExitIfError(err)
+						must(err)
 						plugins := []string{}
 						for name, v := range pjson["dependencies"].(map[string]interface{}) {
 							plugins = append(plugins, name+"@"+v.(string))
 						}
-						ExitIfError(corePlugins.installPackages(plugins...))
+						must(corePlugins.installPackages(plugins...))
 						for _, plugin := range plugins {
 							plugin, err := corePlugins.ParsePlugin(strings.Split(plugin, "@")[0])
-							ExitIfError(err)
+							must(err)
 							corePlugins.addToCache(plugin)
 						}
 					},
@@ -59,14 +59,14 @@ func init() {
 							os := info[1]
 							arch := info[2]
 							sha256, err := fileSha256(file)
-							ExitIfError(err)
+							must(err)
 							manifest.Builds[os+"-"+arch] = &Build{
 								URL:    "https://cli-assets.heroku.com/branches/" + manifest.Channel + "/" + manifest.Version + "/" + filename,
 								Sha256: sha256,
 							}
 						}
 						data, err := json.MarshalIndent(manifest, "", "  ")
-						ExitIfError(err)
+						must(err)
 						Println(string(data))
 					},
 				},

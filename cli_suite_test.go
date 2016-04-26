@@ -14,6 +14,7 @@ import (
 )
 
 func TestCLI(t *testing.T) {
+	os.Setenv("TESTING", "1")
 	RegisterFailHandler(Fail)
 	testReports := os.Getenv("CIRCLE_TEST_REPORTS")
 	if testReports != "" {
