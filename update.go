@@ -128,11 +128,6 @@ func touchAutoupdateFile() {
 	out.Close()
 }
 
-// forces a full update on the next run
-func clearAutoupdateFile() {
-	WarnIfError(os.Remove(autoupdateFile))
-}
-
 func getUpdateManifest(channel string) (*Manifest, error) {
 	res, err := goreq.Request{
 		Uri:       "https://cli-assets.heroku.com/branches/" + channel + "/manifest.json",

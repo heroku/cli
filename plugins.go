@@ -123,7 +123,7 @@ var pluginsLinkCmd = &Command{
 		if err != nil {
 			panic(err)
 		}
-		if _, err := os.Stat(path); err != nil {
+		if _, err = os.Stat(path); err != nil {
 			panic(err)
 		}
 		name := filepath.Base(path)
@@ -304,7 +304,7 @@ func (p *Plugins) ParsePlugin(name string) (*Plugin, error) {
 		}
 	}
 	var plugin Plugin
-	err = json.Unmarshal([]byte(output), &plugin)
+	err = json.Unmarshal(output, &plugin)
 	if err != nil {
 		return nil, fmt.Errorf("Error parsing plugin: %s\n%s\n%s", name, err, string(output))
 	}

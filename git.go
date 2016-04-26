@@ -184,8 +184,8 @@ func appFromGitRemote(remote string) (string, error) {
 		if err != nil {
 			if isNotFound(err) {
 				wdir, _ := os.Getwd()
-				remotes, err := gitRemotes()
-				if err != nil {
+				var remotes map[string]string
+				if remotes, err = gitRemotes(); err != nil {
 					return "", err
 				}
 				msg := fmt.Sprintf("Error: Could not find git remote %s in %s", remote, wdir)

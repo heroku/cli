@@ -119,7 +119,7 @@ func getCACerts() *x509.CertPool {
 }
 
 func getProxy() *url.URL {
-	req, err := http.NewRequest("GET", "https://api.heroku.com", nil)
+	req, err := http.NewRequest(GET, "https://api.heroku.com", nil)
 	WarnIfError(err)
 	proxy, err := http.ProxyFromEnvironment(req)
 	WarnIfError(err)

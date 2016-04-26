@@ -330,7 +330,7 @@ func rollbar(err error, level string) {
 	rollbarAPI.Wait()
 }
 
-func readJSON(path string) (out map[string]interface{}, err error) {
+func readJSON(path string) (map[string]interface{}, error) {
 	if exists, err := fileExists(path); !exists {
 		if err != nil {
 			panic(err)
@@ -341,6 +341,7 @@ func readJSON(path string) (out map[string]interface{}, err error) {
 	if err != nil {
 		return nil, err
 	}
+	var out map[string]interface{}
 	err = json.Unmarshal(data, &out)
 	return out, err
 }
