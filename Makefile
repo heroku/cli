@@ -38,12 +38,12 @@ tmp/%-arm/heroku/lib/node-$(NODE_VERSION):    NODE_ARCH=armv6l
 	tmp/openbsd-amd64/heroku/lib/node-$(NODE_VERSION) \
 	tmp/openbsd-386/heroku/lib/node-$(NODE_VERSION)
 
-tmp/%/heroku/lib/node-$(NODE_VERSION): $(CACHE_DIR)/node-v$(NODE_VERSION)/$$(NODE_BASE).tar.gz
-	@mkdir -p tmp/$*
+%/heroku/lib/node-$(NODE_VERSION): $(CACHE_DIR)/node-v$(NODE_VERSION)/$$(NODE_BASE).tar.gz
+	@mkdir -p $*
 	@rm -rf $(@D)/node-*
-	tar -C tmp/$* -xzf $<
-	mv tmp/$*/$(NODE_BASE)/bin/node $@
-	@rm -rf tmp/$*/$(NODE_BASE)*
+	tar -C $* -xzf $<
+	mv $*/$(NODE_BASE)/bin/node $@
+	@rm -rf $*/$(NODE_BASE)*
 	@touch $@
 
 tmp/%/heroku/lib/node-$(NODE_VERSION).exe: $(CACHE_DIR)/node-v$(NODE_VERSION)/win-$$(NODE_ARCH)/node.exe
@@ -56,7 +56,7 @@ NPM_ARCHIVE=$(CACHE_DIR)/npm-v$(NPM_VERSION).tar.gz
 $(NPM_ARCHIVE):
 	@mkdir -p $(@D)
 	curl -Lso $@ https://github.com/npm/npm/archive/v$(NPM_VERSION).tar.gz
-tmp/%/heroku/lib/npm-$(NPM_VERSION): $(NPM_ARCHIVE)
+%/heroku/lib/npm-$(NPM_VERSION): $(NPM_ARCHIVE)
 	@mkdir -p $(@D)
 	@rm -rf $(@D)/npm-*
 	tar -C $(@D) -xzf $(NPM_ARCHIVE)
@@ -87,7 +87,7 @@ tmp/%/heroku/CHANGELOG: CHANGELOG
 	@mkdir -p $(@D)
 	cp $< $@
 
-tmp/%/heroku/lib/cacert.pem: resources/cacert.pem
+%/heroku/lib/cacert.pem: resources/cacert.pem
 	@mkdir -p $(@D)
 	cp $< $@
 
@@ -107,17 +107,17 @@ tmp/%-386/heroku/bin/heroku:         GOARCH=386
 tmp/%-386/heroku/bin/heroku.exe:     GOARCH=386
 tmp/%-arm/heroku/bin/heroku:         GOARCH=arm
 tmp/%-arm/heroku/bin/heroku:         GOARM=6
-tmp/dev/heroku/bin/heroku:           AUTOUPDATE=no
+$(WORKSPACE)/bin/heroku:             AUTOUPDATE=no
 tmp/linux-%/heroku/bin/heroku:       AUTOUPDATE=yes
 tmp/debian-%/heroku/bin/heroku:      AUTOUPDATE=no
 tmp/darwin-%/heroku/bin/heroku:      AUTOUPDATE=yes
 tmp/windows-%/heroku/bin/heroku.exe: AUTOUPDATE=yes
 tmp/freebsd-%/heroku/bin/heroku.exe: AUTOUPDATE=yes
 tmp/openbsd-%/heroku/bin/heroku.exe: AUTOUPDATE=yes
-tmp/%/heroku/bin/heroku: $(SOURCES)
+%/heroku/bin/heroku: $(SOURCES)
 	GOOS=$(GOOS) GOARCH=$(GOARCH) GO386=$(GO386) GOARM=$(GOARM) go build $(LDFLAGS) -o $@
 
-tmp/%/heroku/bin/heroku.exe: $(SOURCES) resources/exe/heroku-codesign-cert.pfx
+%/heroku/bin/heroku.exe: $(SOURCES) resources/exe/heroku-codesign-cert.pfx
 	GOOS=$(GOOS) GOARCH=$(GOARCH) go build $(LDFLAGS) -o $@
 	@osslsigncode -pkcs12 resources/exe/heroku-codesign-cert.pfx \
 		-pass '$(HEROKU_WINDOWS_SIGNING_PASS)' \

@@ -2,7 +2,7 @@
 machine:
   environment:
     CACHE_DIR: ~/deps
-    WORKSPACE: ~/workspace
+    WORKSPACE: ~/workspace/heroku
 checkout:
   post:
     - |
