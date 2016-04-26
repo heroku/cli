@@ -19,32 +19,31 @@ import (
 
 	"github.com/ansel1/merry"
 	"github.com/dghubble/sling"
-	"github.com/franela/goreq"
 	"github.com/mitchellh/ioprogress"
 	"github.com/ulikunitz/xz"
 )
 
-// GET for requests
-const GET = "GET"
-
-// POST for requests
-const POST = "POST"
-
-var httpClient = http.DefaultClient
+var apiHTTPClient *http.Client
 
 func init() {
-	httpClient.Timeout = 30 * time.Minute
-	transport := http.DefaultTransport.(*http.Transport)
-	transport.TLSHandshakeTimeout = 60 * time.Second
-	transport.Dial = (&net.Dialer{
-		Timeout:   60 * time.Second,
-		KeepAlive: 30 * time.Second,
-	}).Dial
-	transport.ExpectContinueTimeout = 30 * time.Second
-	tlsConfig := httpTLSClientConfig()
-	if tlsConfig != nil {
-		transport.TLSClientConfig = tlsConfig
+	getClient := func() *http.Client {
+		return &http.Client{
+			Timeout: 30 * time.Minute,
+			Transport: &http.Transport{
+				TLSClientConfig: httpTLSClientConfig(),
+				Proxy:           http.ProxyFromEnvironment,
+				Dial: (&net.Dialer{
+					Timeout:   60 * time.Second,
+					KeepAlive: 60 * time.Second,
+				}).Dial,
+				TLSHandshakeTimeout:   30 * time.Second,
+				ExpectContinueTimeout: 3 * time.Second,
+			},
+		}
 	}
+	http.DefaultClient = getClient()
+	apiHTTPClient = getClient()
+	apiHTTPClient.Transport.(*http.Transport).TLSClientConfig.InsecureSkipVerify = !shouldVerifyHost(apiURL())
 }
 
 func useSystemCerts() bool {
@@ -52,37 +51,37 @@ func useSystemCerts() bool {
 	return e != "false" && e != "0"
 }
 
-func apiRequestBase(authToken string) *goreq.Request {
-	req := goreq.Request{
-		Uri:       apiURL(),
-		ShowDebug: debugging,
-		Insecure:  !shouldVerifyHost(apiURL()),
-		UserAgent: version(),
-	}
-	if authToken != "" {
-		req.AddHeader("Authorization", "Bearer "+authToken)
-	}
+// APIRequest is for requests to api.heroku.com
+type APIRequest struct {
+	*sling.Sling
+}
+
+// Auth the API request with a token
+func (api *APIRequest) Auth(token string) *APIRequest {
+	api.Set("Authorization", "Bearer "+token)
+	return api
+}
+
+func apiRequest() *APIRequest {
+	req := sling.New().Client(apiHTTPClient).Base(apiURL())
+	req.Set("User-Agent", version())
+	req.Set("Accept", "application/vnd.heroku+json; version=3")
 	if os.Getenv("HEROKU_HEADERS") != "" {
 		var h map[string]string
 		json.Unmarshal([]byte(os.Getenv("HEROKU_HEADERS")), &h)
 		for k, v := range h {
-			req.AddHeader(k, v)
+			req.Set(k, v)
 		}
 	}
-	return &req
-}
-
-func apiRequest(authToken string) *goreq.Request {
-	req := apiRequestBase(authToken)
-	req.AddHeader("Accept", "application/vnd.heroku+json; version=3")
-	return req
+	return &APIRequest{req}
 }
 
 func shouldVerifyHost(host string) bool {
 	return !(os.Getenv("HEROKU_SSL_VERIFY") == "disable" || strings.HasSuffix(host, "herokudev.com"))
 }
 
-func httpTLSClientConfig() *tls.Config {
+func httpTLSClientConfig() (config *tls.Config) {
+	config = &tls.Config{}
 	paths := list.New()
 	if !useSystemCerts() {
 		path := filepath.Join(AppDir, "lib", "cacert.pem")
@@ -99,7 +98,7 @@ func httpTLSClientConfig() *tls.Config {
 		files, err := ioutil.ReadDir(sslCertDir)
 		if err != nil {
 			Warn("Error opening " + sslCertDir)
-			return nil
+			return
 		}
 		for _, file := range files {
 			path := filepath.Join(sslCertDir, file.Name())
@@ -108,7 +107,7 @@ func httpTLSClientConfig() *tls.Config {
 	}
 
 	if paths.Len() == 0 {
-		return nil
+		return
 	}
 
 	certs := x509.NewCertPool()
@@ -119,19 +118,20 @@ func httpTLSClientConfig() *tls.Config {
 		data, err := ioutil.ReadFile(path)
 		if err != nil {
 			WarnIfError(err)
-			return nil
+			return
 		}
 		ok := certs.AppendCertsFromPEM(data)
 		if !ok {
 			Warn("Error parsing " + path)
-			return nil
+			return
 		}
 	}
-	return &tls.Config{RootCAs: certs}
+	config.RootCAs = certs
+	return
 }
 
 func getProxy() *url.URL {
-	req, err := http.NewRequest(GET, "https://api.heroku.com", nil)
+	req, err := http.NewRequest("GET", "https://api.heroku.com", nil)
 	WarnIfError(err)
 	proxy, err := http.ProxyFromEnvironment(req)
 	WarnIfError(err)
@@ -149,7 +149,7 @@ func downloadXZ(url string) (io.Reader, func() string, error) {
 	if err != nil {
 		return nil, nil, err
 	}
-	resp, err := httpClient.Do(req)
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return nil, nil, err
 	}

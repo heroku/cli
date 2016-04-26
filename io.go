@@ -118,13 +118,14 @@ func Debugln(a ...interface{}) {
 // WarnIfError is a helper that prints out formatted error messages
 // it will emit to rollbar
 // it does not exit
-func WarnIfError(e error) {
-	if e == nil {
+func WarnIfError(err error) {
+	if err == nil {
 		return
 	}
-	Warn(e.Error())
-	Debugln(merry.Details(e))
-	rollbar(e, "warning")
+	err = merry.Wrap(err)
+	Warn(err.Error())
+	Debugln(merry.Details(err))
+	rollbar(err, "warning")
 }
 
 // Warn shows a message with excalamation points prepended to stderr
@@ -308,6 +309,7 @@ func handlePanic() {
 		if !ok {
 			err = merry.New(rec.(string))
 		}
+		err = merry.Wrap(err)
 		Error(err.Error())
 		Debugln(merry.Details(err))
 		rollbar(err, "error")

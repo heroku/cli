@@ -3,12 +3,12 @@ package main
 import (
 	"errors"
 	"fmt"
-	"net/url"
 	"os"
 	"path/filepath"
 	"runtime"
 	"time"
 
+	"github.com/ansel1/merry"
 	"github.com/dickeyxxx/netrc"
 	"github.com/dickeyxxx/speakeasy"
 	"github.com/toqueteos/webbrowser"
@@ -57,10 +57,16 @@ func init() {
 				},
 			},
 			{
+				Command:     "2fa",
+				Description: "check 2fa status",
+				NeedsAuth:   true,
+				Run:         twoFactorRun,
+			},
+			{
 				Command:     "2fa:enable",
 				Description: "enable 2fa on your account",
 				NeedsAuth:   true,
-				Run:         twoFactorRun,
+				Run:         twoFactorEnableRun,
 			},
 			{
 				Command:     "2fa:gen-recovery-codes",
@@ -127,7 +133,7 @@ func init() {
 			Commands: CommandSet{
 				{
 					NeedsAuth:   true,
-					Description: "enable 2fa on your account",
+					Description: "check 2fa status",
 					Run:         twoFactorRun,
 				},
 				{
@@ -150,7 +156,7 @@ func init() {
 			Commands: CommandSet{
 				{
 					NeedsAuth:   true,
-					Description: "enable 2fa on your account",
+					Description: "check 2fa status",
 					Run:         twoFactorRun,
 				},
 				{
@@ -186,11 +192,11 @@ func whoami(ctx *Context) {
 	}
 
 	user := getUserFromToken(ctx.APIToken)
-	if user == "" {
+	if user == nil {
 		Println("not logged in")
 		Exit(100)
 	}
-	Println(user)
+	Println(user.Email)
 }
 
 func login(ctx *Context) {
@@ -222,25 +228,26 @@ func ssoLogin() {
 	}
 	token := getPassword("Enter your access token (typing will be hidden): ")
 	user := getUserFromToken(token)
-	if user == "" {
+	if user == nil {
 		must(errors.New("Access token invalid."))
 	}
-	saveOauthToken(user, token)
-	Println("Logged in as " + cyan(user))
+	saveOauthToken(user.Email, token)
+	Println("Logged in as " + cyan(user.Email))
 }
 
-func getUserFromToken(token string) string {
-	req := apiRequest(token)
-	req.Method = "GET"
-	req.Uri = req.Uri + "/account"
-	res, err := req.Do()
-	must(err)
+// Account is a heroku account from /account
+type Account struct {
+	Email                   string `json:"email"`
+	TwoFactorAuthentication bool   `json:"two_factor_authentication"`
+}
+
+func getUserFromToken(token string) (account *Account) {
+	res, err := apiRequest().Auth(token).Get("/account").ReceiveSuccess(&account)
 	if res.StatusCode != 200 {
-		return ""
+		return nil
 	}
-	var doc map[string]interface{}
-	res.Body.FromJsonTo(&doc)
-	return doc["email"].(string)
+	must(err)
+	return account
 }
 
 func interactiveLogin() {
@@ -300,43 +307,35 @@ https://github.com/heroku/cli/issues/84`)
 }
 
 func v2login(email, password, secondFactor string) string {
-	req := apiRequestBase("")
-	req.Method = POST
-
-	req.Uri = req.Uri + "/login"
-	req.ContentType = "application/x-www-form-urlencoded"
-	req.ShowDebug = false
-
-	data := url.Values{}
-	data.Set("username", email)
-	data.Set("password", password)
-	req.Body = data.Encode()
-
+	api := apiRequest().Post("/login")
+	api.Set("Accept", "application/json")
+	body := struct {
+		Username string `url:"username"`
+		Password string `url:"password"`
+	}{email, password}
+	api.BodyForm(body)
 	if secondFactor != "" {
-		req.AddHeader("Heroku-Two-Factor-Code", secondFactor)
+		api.Set("Heroku-Two-Factor-Code", secondFactor)
 	}
-	res, err := req.Do()
+	success := struct {
+		APIKey string `json:"api_key"`
+	}{}
+	failure := struct {
+		Error string `json:"error"`
+	}{}
+	res, err := api.Receive(&success, &failure)
 	must(err)
 	switch res.StatusCode {
 	case 200:
-		var response struct {
-			APIKey string `json:"api_key"`
-		}
-		must(res.Body.FromJsonTo(&response))
-		return response.APIKey
+		return success.APIKey
 	case 401:
-		var response struct {
-			Error string `json:"error"`
-		}
-		must(res.Body.FromJsonTo(&response))
-		ExitWithMessage(response.Error)
+		ExitWithMessage(failure.Error)
 	case 403:
 		return v2login(email, password, getString("Two-factor code: "))
 	case 404:
 		ExitWithMessage("Authentication failed.\nEmail or password is not valid.\nCheck your credentials on https://dashboard.heroku.com")
 	default:
-		body, err := res.Body.ToString()
-		WarnIfError(err)
+		WarnIfError(getHTTPError(res))
 		ExitWithMessage("Invalid response from API.\nHTTP %d\n%s\n\nAre you behind a proxy?\nhttps://devcenter.heroku.com/articles/using-the-cli#using-an-http-proxy", res.StatusCode, body)
 	}
 	must(fmt.Errorf("unreachable"))
@@ -344,30 +343,26 @@ func v2login(email, password, secondFactor string) string {
 }
 
 func createOauthToken(email, password, secondFactor string) (string, error) {
-	req := apiRequest("")
-	req.Method = POST
-	req.Uri = req.Uri + "/oauth/authorizations"
-	req.BasicAuthUsername = email
-	req.BasicAuthPassword = password
-	req.Body = map[string]interface{}{
+	body := map[string]interface{}{
 		"scope":       []string{"global"},
 		"description": "Heroku CLI login from " + time.Now().UTC().Format(time.RFC3339),
 		"expires_in":  60 * 60 * 24 * 30, // 30 days
 	}
-	if secondFactor != "" {
-		req.AddHeader("Heroku-Two-Factor-Code", secondFactor)
-	}
-	res, err := req.Do()
+	req, err := apiRequest().Post("/oauth/authorizations").BodyJSON(body).Request()
 	must(err)
-	type Doc struct {
+	req.SetBasicAuth(email, password)
+	if secondFactor != "" {
+		req.Header.Set("Heroku-Two-Factor-Code", secondFactor)
+	}
+	doc := struct {
 		ID          string
 		Message     string
 		AccessToken struct {
 			Token string
 		} `json:"access_token"`
-	}
-	var doc Doc
-	res.Body.FromJsonTo(&doc)
+	}{}
+	res, err := apiRequest().Do(req, doc, nil)
+	must(err)
 	if doc.ID == "two_factor" {
 		return createOauthToken(email, password, getString("Two-factor code: "))
 	}
@@ -449,15 +444,13 @@ func netrcLogin() string {
 }
 
 func twoFactorGenerateRun(ctx *Context) {
-	req := apiRequest(ctx.APIToken)
-	req.Method = POST
-	req.Uri = req.Uri + "/account/recovery-codes"
-	req.AddHeader("Heroku-Password", getPassword("Password (typing will be hidden): "))
-	req.AddHeader("Heroku-Two-Factor-Code", getString("Two-factor code: "))
-	res, err := req.Do()
-	must(err)
+	req := apiRequest().Auth(ctx.APIToken).Post("/account/recovery-codes")
+	req.Set("Heroku-Password", getPassword("Password (typing will be hidden): "))
+	req.Set("Heroku-Two-Factor-Code", getString("Two-factor code: "))
 	var codes []interface{}
-	res.Body.FromJsonTo(&codes)
+	res, err := req.ReceiveSuccess(&codes)
+	must(err)
+	must(getHTTPError(res))
 	Println("Recovery codes:")
 	for _, code := range codes {
 		Println(code)
@@ -465,35 +458,41 @@ func twoFactorGenerateRun(ctx *Context) {
 }
 
 func twoFactorDisableRun(ctx *Context) {
-	req := apiRequest(ctx.APIToken)
-	req.Method = "PATCH"
-	req.Uri = req.Uri + "/account/"
-	req.Body = map[string]interface{}{
-		"two_factor_authentication": "false",
-		"password":                  getPassword("Password (typing will be hidden):"),
-	}
-	res, err := req.Do()
-	must(err)
-	if res.StatusCode != 200 {
-		var doc map[string]string
-		res.Body.FromJsonTo(&doc)
-		Error(doc["message"])
-		return
-	}
-	Println("disabled two-factor authentication")
+	twoFactorToggle(ctx, false)
 }
 
 func twoFactorRun(ctx *Context) {
-	req := apiRequest(ctx.APIToken)
-	req.Method = "GET"
-	req.Uri = req.Uri + "/account"
-	res, err := req.Do()
-	must(err)
-	var doc map[string]bool
-	res.Body.FromJsonTo(&doc)
-	if doc["two_factor_authentication"] {
+	account := getUserFromToken(ctx.APIToken)
+	if account.TwoFactorAuthentication {
 		Println("Two-factor authentication is enabled")
 	} else {
 		Println("Two-factor authentication is not enabled")
 	}
+}
+
+func twoFactorEnableRun(ctx *Context) {
+	twoFactorToggle(ctx, true)
+}
+
+func twoFactorToggle(ctx *Context, on bool) {
+	req := apiRequest().Auth(ctx.APIToken).Patch("/account/")
+	body := map[string]interface{}{
+		"password": getPassword("Password (typing will be hidden):"),
+	}
+	if on {
+		body["two_factor_authentication"] = "true"
+	} else {
+		body["two_factor_authentication"] = "false"
+	}
+
+	req.BodyJSON(body)
+	failure := map[string]interface{}{}
+	var account *Account
+	res, err := req.Receive(&account, &failure)
+	must(err)
+	if res.StatusCode != 200 {
+		must(merry.New(failure["message"].(string)))
+		return
+	}
+	twoFactorRun(ctx)
 }

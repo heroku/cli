@@ -62,6 +62,11 @@ func Start(args ...string) {
 	}
 
 	cmd := AllCommands().Find(args[1])
+	if cmd != nil && cmd.DisableAnalytics {
+		currentAnalyticsCommand = nil
+	} else {
+		currentAnalyticsCommand.RecordStart()
+	}
 	ctx, err := BuildContext(cmd, args)
 	if err == errHelp {
 		help(os.Args)

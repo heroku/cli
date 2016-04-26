@@ -6,10 +6,10 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
-	"runtime/debug"
 	"strings"
 	"time"
 
+	"github.com/dghubble/sling"
 	"github.com/dickeyxxx/golock"
 )
 
@@ -51,7 +51,6 @@ func (c *AnalyticsCommand) RecordEnd(status int) {
 	if c == nil || skipAnalytics() || len(os.Args) < 2 {
 		return
 	}
-	debug.PrintStack()
 	c.Command = os.Args[1]
 	c.Status = status
 	if !c.start.IsZero() {
@@ -114,27 +113,22 @@ func SubmitAnalytics() {
 		return plugins
 	}
 
-	req := apiRequestBase("")
 	host := os.Getenv("HEROKU_ANALYTICS_HOST")
 	if host == "" {
 		host = "https://cli-analytics.heroku.com"
 	}
-	req.Uri = host + "/record"
-	req.Method = POST
-	req.Body = struct {
+	body := struct {
 		Version  string             `json:"version"`
 		Commands []AnalyticsCommand `json:"commands"`
 		User     string             `json:"user"`
 		Plugins  map[string]string  `json:"plugins"`
 	}{version(), commands, netrcLogin(), plugins()}
-	resp, err := req.Do()
+	resp, err := sling.New().Base(host).Post("/record").BodyJSON(body).ReceiveSuccess(nil)
 	if err != nil {
 		LogIfError(err)
 		return
 	}
-	if resp.StatusCode != 201 {
-		Debugln("analytics: HTTP " + resp.Status)
-	}
+	LogIfError(getHTTPError(resp))
 	os.Truncate(analyticsPath, 0)
 }
 
