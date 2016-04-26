@@ -43,27 +43,27 @@ function* getFiles(context) {
   return {crt, key};
 }
 
-function* getChoices(context, cert_domains, existingDomains, newDomains) {
-  if (context.flags.domains) {
-    let choices = _.difference(context.flags.domains.split(',').map(str => str.trim()), existingDomains);
+function getFlagChoices(context, cert_domains, existingDomains) {
+  let choices = _.difference(context.flags.domains.split(',').map(str => str.trim()), existingDomains);
 
-    let bad_choices = _.remove(choices, choice => (!_.find(cert_domains, cert_domain => cert_domain === choice)));
-    bad_choices.forEach(function(choice) {
-      cli.warn(`Not adding ${choice} because it is not listed in the certificate`);
-    });
+  let bad_choices = _.remove(choices, choice => (!_.find(cert_domains, cert_domain => cert_domain === choice)));
+  bad_choices.forEach(function(choice) {
+    cli.warn(`Not adding ${choice} because it is not listed in the certificate`);
+  });
 
-    return choices;
-  } else {
-    let resp = yield inquirer.prompt([{
-      type: 'checkbox',
-      name: 'domains',
-      message: 'Select domains you would like to add',
-      choices: newDomains.map(function(domain) {
-        return {name: domain};
-      })
-    }]);
-    return resp.domains;
-  }
+  return choices;
+}
+
+function* getPromptChoices(context, cert_domains, existingDomains, newDomains) {
+  let resp = yield inquirer.prompt([{
+    type: 'checkbox',
+    name: 'domains',
+    message: 'Select domains you would like to add',
+    choices: newDomains.map(function(domain) {
+      return {name: domain};
+    })
+  }]);
+  return resp.domains;
 }
 
 function* addDomains(context, heroku, meta, promises_result) {
@@ -90,7 +90,12 @@ function* addDomains(context, heroku, meta, promises_result) {
 
   let addedDomains;
   if (newDomains.length > 0) {
-    let choices = yield getChoices(context, cert_domains, existingDomains, newDomains);
+    let choices;
+    if (context.flags.domains) {
+      choices = getFlagChoices(context, cert_domains, existingDomains);
+    } else {
+      choices = yield getPromptChoices(context, cert_domains, existingDomains, newDomains);
+    }
 
     // Add a newline between the existing and adding messages
     if (choices.length > 0) {
