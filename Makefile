@@ -13,7 +13,7 @@ CHANNEL?=$(shell git rev-parse --abbrev-ref HEAD)$(DIRTY)
 
 GOOS=$(shell go env GOOS)
 GOARCH=$(shell go env GOARCH)
-WORKSPACE=tmp/dev/heroku
+WORKSPACE?=tmp/dev/heroku
 
 NODE_BASE=node-v$(NODE_VERSION)-$(NODE_OS)-$(NODE_ARCH)
 NODE_OS=$(GOOS)
