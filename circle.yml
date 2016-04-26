@@ -27,14 +27,14 @@ dependencies:
       gometalinter --install;
     - make deps build -j4
     - >
-      if [ ! -d ~/osslsigncode ]; then
+      if ! type osslsigncode >/dev/null 2>&1; then
         wget https://cli-assets.heroku.com/osslsigncode-1.7.1.tar.gz;
         tar -xvzf osslsigncode-1.7.1.tar.gz;
         mv osslsigncode-1.7.1 ~/osslsigncode;
         cd ~/osslsigncode && ./configure && make;
       fi;
       cd ~/osslsigncode && sudo make install
-    - sudo apt-get install nsis
+    - if ! type makensis >/dev/null 2>&1; then sudo apt-get install nsis; fi
 test:
   override:
     - go test -v -race -cover -coverprofile=coverage.out
