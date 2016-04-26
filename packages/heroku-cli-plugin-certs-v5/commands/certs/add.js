@@ -54,8 +54,8 @@ function getFlagChoices(context, cert_domains, existingDomains) {
   return choices;
 }
 
-function* getPromptChoices(context, cert_domains, existingDomains, newDomains) {
-  let resp = yield inquirer.prompt([{
+function getPromptChoices(context, cert_domains, existingDomains, newDomains) {
+  return inquirer.prompt([{
     type: 'checkbox',
     name: 'domains',
     message: 'Select domains you would like to add',
@@ -63,7 +63,6 @@ function* getPromptChoices(context, cert_domains, existingDomains, newDomains) {
       return {name: domain};
     })
   }]);
-  return resp.domains;
 }
 
 function* addDomains(context, heroku, meta, promises_result) {
@@ -94,7 +93,7 @@ function* addDomains(context, heroku, meta, promises_result) {
     if (context.flags.domains) {
       choices = getFlagChoices(context, cert_domains, existingDomains);
     } else {
-      choices = yield getPromptChoices(context, cert_domains, existingDomains, newDomains);
+      choices = (yield getPromptChoices(context, cert_domains, existingDomains, newDomains)).domains;
     }
 
     // Add a newline between the existing and adding messages
