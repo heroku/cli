@@ -273,6 +273,7 @@ releasewin: $(DIST_DIR)/$(VERSION)/heroku-windows-amd64.exe $(DIST_DIR)/$(VERSIO
 NODES = node-v$(NODE_VERSION)-darwin-x64.tar.gz \
 node-v$(NODE_VERSION)-linux-x64.tar.gz \
 node-v$(NODE_VERSION)-linux-x86.tar.gz \
+node-v$(NODE_VERSION)-linux-armv6l.tar.gz \
 win-x64/node.exe \
 win-x86/node.exe
 
