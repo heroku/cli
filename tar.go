@@ -33,7 +33,7 @@ func extractTar(f io.Reader, path string) error {
 	}
 }
 
-func extractFile(archive *tar.Reader, hdr *tar.Header, path string) error {
+func extractFile(archive io.Reader, hdr *tar.Header, path string) error {
 	if err := os.MkdirAll(filepath.Dir(path), 0755); err != nil {
 		return err
 	}

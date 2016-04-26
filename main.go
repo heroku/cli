@@ -115,6 +115,7 @@ func handlePanic() {
 	if rec := recover(); rec != nil {
 		err, ok := rec.(error)
 		if !ok {
+			inspect(err)
 			err = errors.New(rec.(string))
 		}
 		ExitIfError(err)
