@@ -4,10 +4,48 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"os"
 	"sort"
 	"strings"
 )
+
+func init() {
+	Topics = append(Topics, TopicSet{
+		{
+			Name:        "commands",
+			Description: "list all commands",
+			Hidden:      true,
+			Commands: CommandSet{
+				{
+					Topic:            "commands",
+					Description:      "list all commands",
+					Flags:            []Flag{{Name: "json"}},
+					DisableAnalytics: true,
+					Run: func(ctx *Context) {
+						commands := AllCommands().Sort()
+						if ctx.Flags["json"] == true {
+							commands.loadUsages()
+							commands.loadFullHelp()
+							doc := map[string]interface{}{"topics": Topics, "commands": commands}
+							s, _ := json.Marshal(doc)
+							Println(string(s))
+							return
+						}
+						for _, command := range commands {
+							if command.Hidden {
+								continue
+							}
+							if command.Command == "" {
+								Printf("%s\n", command.Topic)
+							} else {
+								Printf("%s:%s\n", command.Topic, command.Command)
+							}
+						}
+					},
+				},
+			},
+		},
+	}...)
+}
 
 // Command represents a CLI command.
 // For example, in the command `heroku apps:create` the command would be `create`.
@@ -51,10 +89,10 @@ func commandUsage(c *Command) string {
 func (c *Command) buildFlagHelp() string {
 	flags := c.Flags
 	if c.NeedsApp || c.WantsApp {
-		flags = append(flags, *appFlag, *remoteFlag)
+		flags = append(flags, *AppFlag, *RemoteFlag)
 	}
 	if c.NeedsOrg || c.WantsOrg {
-		flags = append(flags, *orgFlag)
+		flags = append(flags, *OrgFlag)
 	}
 	lines := make([]string, 0, len(flags))
 	for _, flag := range flags {
@@ -148,9 +186,6 @@ type CommandSet []*Command
 
 // Find finds a command and topic matching the cmd string
 func (commands CommandSet) Find(cmd string) *Command {
-	if strings.ToLower(cmd) == "--version" || strings.ToLower(cmd) == "-v" {
-		return versionCmd
-	}
 	var topic, command string
 	tc := strings.SplitN(cmd, ":", 2)
 	topic = tc[0]
@@ -194,6 +229,23 @@ func (commands CommandSet) Swap(i, j int) {
 	commands[i], commands[j] = commands[j], commands[i]
 }
 
+// NonHidden returns the commands that are not hidden
+func (commands CommandSet) NonHidden() []*Command {
+	to := make([]*Command, 0, len(commands))
+	for _, command := range commands {
+		if !command.Hidden {
+			to = append(to, command)
+		}
+	}
+	return to
+}
+
+// Sort sorts
+func (commands CommandSet) Sort() CommandSet {
+	sort.Sort(commands)
+	return commands
+}
+
 // Arg defines an argument for a command.
 // These will be parsed in Go and passed to the Run method in the Context struct.
 type Arg struct {
@@ -224,217 +276,10 @@ func argsString(args []Arg) string {
 	return buffer.String()
 }
 
-var commandsTopic = &Topic{
-	Name:        "commands",
-	Description: "list all commands",
-	Hidden:      true,
-}
-
-var commandsListCmd = &Command{
-	Topic:            "commands",
-	Description:      "list all commands",
-	Flags:            []Flag{{Name: "json"}},
-	DisableAnalytics: true,
-	Run: func(ctx *Context) {
-		commands := AllCommands()
-		sort.Sort(commands)
-		if ctx.Flags["json"] == true {
-			commands.loadUsages()
-			commands.loadFullHelp()
-			doc := map[string]interface{}{"topics": Topics, "commands": commands}
-			s, _ := json.Marshal(doc)
-			Println(string(s))
-			return
-		}
-		for _, command := range commands {
-			if command.Hidden {
-				continue
-			}
-			if command.Command == "" {
-				Printf("%s\n", command.Topic)
-			} else {
-				Printf("%s:%s\n", command.Topic, command.Command)
-			}
-		}
-	},
-}
-
 // AllCommands gets all go/core/user commands
 func AllCommands() CommandSet {
-	commands := Commands
+	commands := Topics.Commands()
 	commands = append(commands, corePlugins.Commands()...)
 	commands = append(commands, userPlugins.Commands()...)
 	return commands
-}
-
-// Run parses command line arguments and runs the associated command or help.
-// Also does lookups for app name and/or auth token if the command needs it.
-func (commands CommandSet) Run(args []string) {
-	ctx := &Context{}
-	ctx.Command = commands.Find(args[1])
-	if ctx.Command == nil {
-		return
-	}
-	if ctx.Command.VariableArgs {
-		ctx.Args, ctx.Flags, ctx.App = parseVarArgs(ctx.Command, args[2:])
-	} else {
-		ctx.Args, ctx.Flags, ctx.App = parseArgs(ctx.Command, args[2:])
-	}
-	if ctx.Command.NeedsApp || ctx.Command.WantsApp {
-		if ctx.App == "" {
-			var err error
-			ctx.App, err = app()
-			if err != nil && ctx.Command.NeedsApp {
-				ExitWithMessage(err.Error())
-			}
-		}
-		if ctx.App == "" && ctx.Command.NeedsApp {
-			ctx.Command.appNeededErr()
-		}
-	}
-	if ctx.Command.NeedsOrg || ctx.Command.WantsOrg {
-		if org, ok := ctx.Flags["org"].(string); ok {
-			ctx.Org = org
-		} else {
-			ctx.Org = os.Getenv("HEROKU_ORGANIZATION")
-		}
-		if ctx.Org == "" && ctx.Command.NeedsOrg {
-			ExitWithMessage("No org specified.\nRun this command with --org or by setting HEROKU_ORGANIZATION")
-		}
-	}
-	if ctx.Command.NeedsAuth {
-		ctx.APIToken = auth()
-		ctx.Auth.Password = ctx.APIToken
-	}
-	ctx.Cwd, _ = os.Getwd()
-	ctx.HerokuDir = CacheHome
-	ctx.Debug = debugging
-	ctx.DebugHeaders = debuggingHeaders
-	ctx.Version = version()
-	ctx.SupportsColor = supportsColor()
-	ctx.APIHost = apiHost()
-	ctx.APIURL = apiURL()
-	ctx.GitHost = gitHost()
-	ctx.HTTPGitHost = httpGitHost()
-	currentAnalyticsCommand.RecordStart()
-	if ctx.Command.DisableAnalytics {
-		currentAnalyticsCommand = nil
-	}
-	ctx.Command.Run(ctx)
-	Exit(0)
-}
-
-func parseVarArgs(command *Command, args []string) (result []string, flags map[string]interface{}, appName string) {
-	result = make([]string, 0, len(args))
-	flags = map[string]interface{}{}
-	parseFlags := true
-	possibleFlags := []*Flag{}
-	populateFlagsFromEnvVars(command.Flags, flags)
-	for _, flag := range command.Flags {
-		f := flag
-		possibleFlags = append(possibleFlags, &f)
-	}
-	if command.NeedsApp || command.WantsApp {
-		possibleFlags = append(possibleFlags, appFlag, remoteFlag)
-	}
-	if command.NeedsOrg || command.WantsOrg {
-		possibleFlags = append(possibleFlags, orgFlag)
-	}
-	warnAboutDuplicateFlags(possibleFlags)
-	for i := 0; i < len(args); i++ {
-		switch {
-		case parseFlags && (args[i] == "--"):
-			parseFlags = false
-		case parseFlags && (args[i] == "--help" || args[i] == "-h"):
-			Help(os.Args)
-		case parseFlags && (args[i] == "--no-color"):
-			continue
-		case parseFlags && strings.HasPrefix(args[i], "-"):
-			flag, val, err := parseFlag(args[i], possibleFlags)
-			if err != nil && strings.HasSuffix(err.Error(), "needs a value") {
-				i++
-				if len(args) == i {
-					ExitWithMessage(err.Error())
-				}
-				flag, val, err = parseFlag(args[i-1]+"="+args[i], possibleFlags)
-			}
-			switch {
-			case err != nil:
-				ExitWithMessage(err.Error())
-			case flag == nil && command.VariableArgs:
-				result = append(result, args[i])
-			case flag == nil:
-				command.unexpectedFlagErr(args[i])
-			case flag == appFlag:
-				appName = val
-			case flag == remoteFlag:
-				appName, err = appFromGitRemote(val)
-				if err != nil {
-					ExitWithMessage(err.Error())
-				}
-			case flag.HasValue:
-				flags[flag.Name] = val
-			default:
-				flags[flag.Name] = true
-			}
-		default:
-			result = append(result, args[i])
-		}
-	}
-	for _, flag := range command.Flags {
-		if flag.Required && flags[flag.Name] == nil {
-			ExitWithMessage("Required flag: %s", flag.String())
-		}
-	}
-	return result, flags, appName
-}
-
-func parseArgs(command *Command, args []string) (result map[string]string, flags map[string]interface{}, appName string) {
-	result = map[string]string{}
-	args, flags, appName = parseVarArgs(command, args)
-	if len(args) > len(command.Args) {
-		command.unexpectedArgumentsErr(args[len(command.Args):])
-	}
-	for i, arg := range args {
-		result[command.Args[i].Name] = arg
-	}
-	for _, arg := range command.Args {
-		if !arg.Optional && result[arg.Name] == "" {
-			ExitWithMessage("Missing argument: %s", strings.ToUpper(arg.Name))
-		}
-	}
-	return result, flags, appName
-}
-
-func app() (string, error) {
-	app := os.Getenv("HEROKU_APP")
-	if app != "" {
-		return app, nil
-	}
-	return appFromGitRemote(remoteFromGitConfig())
-}
-
-func populateFlagsFromEnvVars(flagDefinitons []Flag, flags map[string]interface{}) {
-	for _, flag := range flagDefinitons {
-		if strings.ToLower(flag.Name) == "user" && os.Getenv("HEROKU_USER") != "" {
-			flags[flag.Name] = os.Getenv("HEROKU_USER")
-		}
-		if strings.ToLower(flag.Name) == "force" && os.Getenv("HEROKU_FORCE") == "1" {
-			flags[flag.Name] = true
-		}
-	}
-}
-
-func warnAboutDuplicateFlags(flags []*Flag) {
-	for _, a := range flags {
-		for _, b := range flags {
-			if a == b {
-				continue
-			}
-			if (a.Char != "" && a.Char == b.Char) ||
-				(a.Name != "" && a.Name == b.Name) {
-				Errf("Flag conflict: %s conflicts with %s\n", a, b)
-			}
-		}
-	}
 }

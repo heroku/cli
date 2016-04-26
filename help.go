@@ -2,107 +2,108 @@ package main
 
 import (
 	"fmt"
-	"sort"
 	"strings"
 
 	"github.com/texttheater/golang-levenshtein/levenshtein"
 )
 
+func init() {
+	Topics = append(Topics, &Topic{
+		Name:   "help",
+		Hidden: true,
+		Commands: CommandSet{
+			&Command{
+				Hidden: true,
+				Run: func(ctx *Context) {
+					Help([]string{"heroku", "help"})
+				},
+			},
+		},
+	})
+}
+
+// HELP is "help"
 const HELP = "help"
 
 // Help shows the help
 func Help(args []string) {
-	cmd := HELP
-	if len(args) > 1 {
+	var cmd string
+	switch {
+	case len(args) <= 1:
+		cmd = HELP
+	case len(args) > 2 && (args[1] == HELP || args[1] == "--help"):
+		cmd = args[2]
+	default:
 		cmd = args[1]
-		if len(args) > 2 && cmd == HELP {
-			cmd = args[2]
-		}
 	}
-	commands := AllCommands()
-	commands.loadUsages()
-	command := commands.Find(cmd)
-	topics := AllTopics()
-	topic := topics.ByName(strings.SplitN(cmd, ":", 2)[0])
+	topic := AllTopics().ByName(strings.SplitN(cmd, ":", 2)[0])
+	command := AllCommands().Find(cmd)
+	switch {
+	case cmd == HELP || cmd == "--help":
+		helpShowTopics()
+	case topic == nil:
+		helpInvalidCommand(cmd)
+	case command == nil && strings.Index(cmd, ":") != -1:
+		helpInvalidCommand(cmd)
+	case command == nil:
+		helpShowTopic(topic)
+	default:
+		helpShowCommand(topic, command)
+	}
+}
+
+func helpShowTopics() {
+	Printf("Usage: heroku COMMAND [--app APP] [command-specific-options]\n\n")
+	Printf("Help topics, type \"heroku help TOPIC\" for more details:\n\n")
+	for _, topic := range AllTopics().NonHidden().Sort() {
+		Printf("  heroku %-30s# %s\n", topic.Name, topic.Description)
+	}
+	Println()
+	Exit(0)
+}
+
+func helpShowTopic(topic *Topic) {
+	Printf("Usage: heroku %s:COMMAND [--app APP] [command-specific-options]\n\n", topic.Name)
+	printTopicCommandsHelp(topic)
+	Println()
+	Exit(0)
+}
+
+func helpShowCommand(topic *Topic, command *Command) {
+	Printf("Usage: heroku %s\n\n", commandUsage(command))
+	Println(command.buildFullHelp())
+	if command.Command == "" {
+		printTopicCommandsHelp(topic)
+	}
+	Println()
+	Exit(0)
+}
+
+func printTopicCommandsHelp(topic *Topic) {
 	topicCommands := CommandSet{}
-	for _, cur := range commands {
+	for _, cur := range AllCommands().NonHidden() {
 		if topic != nil && cur.Topic == topic.Name {
 			topicCommands = append(topicCommands, cur)
 		}
 	}
-	sort.Sort(topics)
-	sort.Sort(commands)
-	switch {
-	case cmd == HELP:
-		Printf("Usage: heroku COMMAND [--app APP] [command-specific-options]\n\n")
-		Printf("Help topics, type \"heroku help TOPIC\" for more details:\n\n")
-		for _, topic := range nonHiddenTopics(topics) {
-			Printf("  heroku %-30s# %s\n", topic.Name, topic.Description)
-		}
-		Exit(0)
-	case topic == nil:
-		helpInvalidCommand(cmd, commands)
-	case command == nil:
-		Printf("Usage: heroku %s:COMMAND [--app APP] [command-specific-options]\n\n", topic.Name)
-		printTopicCommandsHelp(topic, topicCommands)
-		Exit(0)
-	case command.Command == "":
-		printCommandHelp(command)
-		// This is a root command so show the other commands in the topic
-		// if there are any
-		if len(topicCommands) > 1 {
-			printTopicCommandsHelp(topic, topicCommands)
-		}
-		Exit(0)
-	default:
-		printCommandHelp(command)
-		Exit(0)
-	}
-}
-
-func printTopicCommandsHelp(topic *Topic, commands CommandSet) {
-	if len(commands) > 0 {
+	topicCommands.loadUsages()
+	if len(topicCommands) > 0 {
 		Printf("\nCommands for %s, type \"heroku help %s:COMMAND\" for more details:\n\n", topic.Name, topic.Name)
-		for _, command := range nonHiddenCommands(commands) {
+		for _, command := range topicCommands.Sort() {
 			Printf(" heroku %-30s # %s\n", command.Usage, command.Description)
 		}
 	}
 }
 
-func printCommandHelp(command *Command) {
-	Printf("Usage: heroku %s\n\n", command.Usage)
-	Println(command.buildFullHelp())
-}
-
-func nonHiddenTopics(from TopicSet) TopicSet {
-	to := make(TopicSet, 0, len(from))
-	for _, topic := range from {
-		if !topic.Hidden {
-			to = append(to, topic)
-		}
-	}
-	return to
-}
-
-func nonHiddenCommands(from []*Command) []*Command {
-	to := make([]*Command, 0, len(from))
-	for _, command := range from {
-		if !command.Hidden {
-			to = append(to, command)
-		}
-	}
-	return to
-}
-
-func helpInvalidCommand(cmd string, commands CommandSet) {
+func helpInvalidCommand(cmd string) {
 	var closest string
 	currentAnalyticsCommand.Valid = false
 	if len(cmd) > 2 {
-		closest = fmt.Sprintf("Perhaps you meant %s.\n", yellow(findClosestCommand(commands, cmd).String()))
+		closest = fmt.Sprintf("Perhaps you meant %s.\n", yellow(findClosestCommand(AllCommands(), cmd).String()))
 	}
 	ExitWithMessage(`%s is not a heroku command.
-%sRun %s help for a list of available commands.
-`, yellow(cmd), closest, cyan("heroku"))
+%sRun %s for a list of available commands.
+`, yellow(cmd), closest, cyan("heroku help"))
 }
 
 func findClosestCommand(from CommandSet, a string) *Command {
@@ -119,17 +120,4 @@ func findClosestCommand(from CommandSet, a string) *Command {
 
 func stringDistance(a, b string) int {
 	return levenshtein.DistanceForStrings([]rune(a), []rune(b), levenshtein.DefaultOptions)
-}
-
-var helpTopic = &Topic{
-	Name:   "help",
-	Hidden: true,
-}
-
-var helpCmd = &Command{
-	Topic:  "help",
-	Hidden: true,
-	Run: func(ctx *Context) {
-		Help([]string{"heroku", "help"})
-	},
 }
