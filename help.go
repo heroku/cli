@@ -28,8 +28,6 @@ const HELP = "help"
 func help(args []string) {
 	var cmd string
 	switch {
-	case len(args) <= 1:
-		cmd = HELP
 	case len(args) > 2 && (args[1] == HELP || args[1] == "--help"):
 		cmd = args[2]
 	default:

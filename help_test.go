@@ -63,14 +63,42 @@ var _ = Describe("Help", func() {
 		})
 	})
 
-	Context("heroku help version", func() {
+	Context("heroku help plugins", func() {
 		BeforeEach(func() {
-			cli.Start("heroku", "help", "version")
+			cli.Start("heroku", "help", "plugins")
 		})
 
 		It("exits with code 0", func() { Expect(exit).To(Equal(0)) })
-		It("shows help for version command", func() {
-			Expect(stdout).To(HavePrefix("Usage: heroku version"))
+		It("shows help for plugins command", func() {
+			Expect(stdout).To(HavePrefix("Usage: heroku plugins"))
+			Expect(stdout).To(ContainSubstring("heroku plugins:link"))
+		})
+	})
+
+	Context("heroku help plugins:foo", func() {
+		BeforeEach(func() {
+			cli.Start("heroku", "help", "plugins:foo")
+		})
+
+		It("exits with code 2", func() { Expect(exit).To(Equal(2)) })
+		It("has no stdout", func() { Expect(stdout).To(Equal("")) })
+		It("shows invalid command message", func() {
+			Expect(stderr).To(Equal(` !    plugins:foo is not a heroku command.
+ !    Perhaps you meant plugins.
+ !    Run heroku help for a list of available commands.
+`))
+		})
+	})
+
+	Context("heroku help build", func() {
+		BeforeEach(func() {
+			cli.Start("heroku", "help", "build")
+		})
+
+		It("exits with code 0", func() { Expect(exit).To(Equal(0)) })
+		It("shows help for build commands", func() {
+			Expect(stdout).To(HavePrefix("Usage: heroku build:COMMAND"))
+			Expect(stdout).To(ContainSubstring("heroku build:manifest"))
 		})
 	})
 })
