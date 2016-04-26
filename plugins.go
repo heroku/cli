@@ -14,9 +14,173 @@ import (
 	"github.com/dickeyxxx/golock"
 )
 
+func init() {
+	Topics = append(Topics, &Topic{
+		Name:        "plugins",
+		Description: "manage plugins",
+		Commands: CommandSet{
+			{
+				Topic:            "plugins",
+				Hidden:           true,
+				Description:      "Lists installed plugins",
+				DisableAnalytics: true,
+				Flags: []Flag{
+					{Name: "core", Description: "show core plugins"},
+				},
+				Help: `
+Example:
+  $ heroku plugins`,
+
+				Run: pluginsList,
+			},
+			{
+				Topic:        "plugins",
+				Command:      "install",
+				Hidden:       true,
+				VariableArgs: true,
+				Description:  "Installs a plugin into the CLI",
+				Help: `Install a Heroku plugin
+
+  Example:
+  $ heroku plugins:install heroku-production-status`,
+
+				Run: pluginsInstall,
+			},
+			{
+				Topic:       "plugins",
+				Command:     "link",
+				Description: "Links a local plugin into CLI",
+				Args:        []Arg{{Name: "path", Optional: true}},
+				Help: `Links a local plugin into CLI.
+	This is useful when developing plugins locally.
+	It simply symlinks the specified path into the plugins directory
+	and parses the plugin.
+
+	You will need to run it again if you change any of the plugin metadata.
+
+  Example:
+	$ heroku plugins:link .`,
+
+				Run: pluginsLink,
+			},
+			{
+				Topic:       "plugins",
+				Command:     "uninstall",
+				Hidden:      true,
+				Args:        []Arg{{Name: "name"}},
+				Description: "Uninstalls a plugin from the CLI",
+				Help: `Uninstalls a Heroku plugin
+
+  Example:
+  $ heroku plugins:uninstall heroku-production-status`,
+
+				Run: pluginsUninstall,
+			},
+		},
+	})
+}
+
+func pluginsList(ctx *Context) {
+	var names []string
+	for _, plugin := range userPlugins.Plugins() {
+		symlinked := ""
+		if userPlugins.isPluginSymlinked(plugin.Name) {
+			symlinked = " (symlinked)"
+		}
+		names = append(names, fmt.Sprintf("%s %s%s", plugin.Name, plugin.Version, symlinked))
+	}
+	if ctx.Flags["core"] != nil {
+		userPluginNames := userPlugins.PluginNames()
+		for _, plugin := range corePlugins.Plugins() {
+			if contains(userPluginNames, plugin.Name) {
+				continue
+			}
+			names = append(names, fmt.Sprintf("%s %s (core)", plugin.Name, plugin.Version))
+		}
+	}
+	sort.Strings(names)
+	for _, plugin := range names {
+		Println(plugin)
+	}
+}
+func pluginsInstall(ctx *Context) {
+	plugins := ctx.Args.([]string)
+	if len(plugins) == 0 {
+		ExitWithMessage("Must specify a plugin name.\nUSAGE: heroku plugins:install heroku-debug")
+	}
+	toinstall := make([]string, 0, len(plugins))
+	core := corePlugins.PluginNames()
+	for _, plugin := range plugins {
+		if contains(core, strings.Split(plugin, "@")[0]) {
+			Warn("Not installing " + plugin + " because it is already installed as a core plugin.")
+			continue
+		}
+		toinstall = append(toinstall, plugin)
+	}
+	if len(toinstall) == 0 {
+		Exit(1)
+	}
+	action("Installing "+plural("plugin", len(toinstall))+" "+strings.Join(toinstall, " "), "done", func() {
+		err := userPlugins.InstallPlugins(toinstall...)
+		if err != nil {
+			if strings.Contains(err.Error(), "no such package available") {
+				ExitWithMessage("Plugin not found")
+			}
+			panic(err)
+		}
+	})
+}
+
+func pluginsLink(ctx *Context) {
+	pluginInstallRetry = false
+	path := ctx.Args.(map[string]string)["path"]
+	if path == "" {
+		path = "."
+	}
+	path, err := filepath.Abs(path)
+	if err != nil {
+		panic(err)
+	}
+	if _, err = os.Stat(path); err != nil {
+		panic(err)
+	}
+	name := filepath.Base(path)
+	action("Symlinking "+name, "done", func() {
+		newPath := userPlugins.pluginPath(name)
+		os.Remove(newPath)
+		os.RemoveAll(newPath)
+		err = os.Symlink(path, newPath)
+		if err != nil {
+			panic(err)
+		}
+		plugin, err := userPlugins.ParsePlugin(name)
+		ExitIfError(err)
+		if name != plugin.Name {
+			path = newPath
+			newPath = userPlugins.pluginPath(plugin.Name)
+			os.Remove(newPath)
+			os.RemoveAll(newPath)
+			os.Rename(path, newPath)
+		}
+		userPlugins.addToCache(plugin)
+	})
+}
+
+func pluginsUninstall(ctx *Context) {
+	name := ctx.Args.(map[string]string)["name"]
+	if !contains(userPlugins.PluginNames(), name) {
+		ExitIfError(errors.New(name + " is not installed"))
+	}
+	Errf("Uninstalling plugin %s...", name)
+	ExitIfError(userPlugins.RemovePackages(name))
+	userPlugins.removeFromCache(name)
+	Errln(" done")
+}
+
 // Plugins represents either core or user plugins
 type Plugins struct {
-	Path string
+	Path    string
+	plugins []*Plugin
 }
 
 var corePlugins = &Plugins{Path: filepath.Join(AppDir, "lib")}
@@ -51,162 +215,6 @@ func (p *Plugins) Topics() (topics TopicSet) {
 		topics = append(topics, plugin.Topics...)
 	}
 	return
-}
-
-var pluginsTopic = &Topic{
-	Name:        "plugins",
-	Description: "manage plugins",
-}
-
-var pluginsInstallCmd = &Command{
-	Topic:        "plugins",
-	Command:      "install",
-	Hidden:       true,
-	VariableArgs: true,
-	Description:  "Installs a plugin into the CLI",
-	Help: `Install a Heroku plugin
-
-  Example:
-  $ heroku plugins:install heroku-production-status`,
-
-	Run: func(ctx *Context) {
-		plugins := ctx.Args.([]string)
-		if len(plugins) == 0 {
-			ExitWithMessage("Must specify a plugin name.\nUSAGE: heroku plugins:install heroku-debug")
-		}
-		toinstall := make([]string, 0, len(plugins))
-		core := corePlugins.PluginNames()
-		for _, plugin := range plugins {
-			if contains(core, strings.Split(plugin, "@")[0]) {
-				Warn("Not installing " + plugin + " because it is already installed as a core plugin.")
-				continue
-			}
-			toinstall = append(toinstall, plugin)
-		}
-		if len(toinstall) == 0 {
-			Exit(1)
-		}
-		action("Installing "+plural("plugin", len(toinstall))+" "+strings.Join(toinstall, " "), "done", func() {
-			err := userPlugins.InstallPlugins(toinstall...)
-			if err != nil {
-				if strings.Contains(err.Error(), "no such package available") {
-					ExitWithMessage("Plugin not found")
-				}
-				panic(err)
-			}
-		})
-	},
-}
-
-var pluginsLinkCmd = &Command{
-	Topic:       "plugins",
-	Command:     "link",
-	Description: "Links a local plugin into CLI",
-	Args:        []Arg{{Name: "path", Optional: true}},
-	Help: `Links a local plugin into CLI.
-	This is useful when developing plugins locally.
-	It simply symlinks the specified path into the plugins directory
-	and parses the plugin.
-
-	You will need to run it again if you change any of the plugin metadata.
-
-  Example:
-	$ heroku plugins:link .`,
-
-	Run: func(ctx *Context) {
-		pluginInstallRetry = false
-		path := ctx.Args.(map[string]string)["path"]
-		if path == "" {
-			path = "."
-		}
-		path, err := filepath.Abs(path)
-		if err != nil {
-			panic(err)
-		}
-		if _, err = os.Stat(path); err != nil {
-			panic(err)
-		}
-		name := filepath.Base(path)
-		action("Symlinking "+name, "done", func() {
-			newPath := userPlugins.pluginPath(name)
-			os.Remove(newPath)
-			os.RemoveAll(newPath)
-			err = os.Symlink(path, newPath)
-			if err != nil {
-				panic(err)
-			}
-			plugin, err := userPlugins.ParsePlugin(name)
-			ExitIfError(err)
-			if name != plugin.Name {
-				path = newPath
-				newPath = userPlugins.pluginPath(plugin.Name)
-				os.Remove(newPath)
-				os.RemoveAll(newPath)
-				os.Rename(path, newPath)
-			}
-			userPlugins.addToCache(plugin)
-		})
-	},
-}
-
-var pluginsUninstallCmd = &Command{
-	Topic:       "plugins",
-	Command:     "uninstall",
-	Hidden:      true,
-	Args:        []Arg{{Name: "name"}},
-	Description: "Uninstalls a plugin from the CLI",
-	Help: `Uninstalls a Heroku plugin
-
-  Example:
-  $ heroku plugins:uninstall heroku-production-status`,
-
-	Run: func(ctx *Context) {
-		name := ctx.Args.(map[string]string)["name"]
-		if !contains(userPlugins.PluginNames(), name) {
-			ExitIfError(errors.New(name + " is not installed"))
-		}
-		Errf("Uninstalling plugin %s...", name)
-		ExitIfError(userPlugins.RemovePackages(name))
-		userPlugins.removeFromCache(name)
-		Errln(" done")
-	},
-}
-
-var pluginsListCmd = &Command{
-	Topic:            "plugins",
-	Hidden:           true,
-	Description:      "Lists installed plugins",
-	DisableAnalytics: true,
-	Flags: []Flag{
-		{Name: "core", Description: "show core plugins"},
-	},
-	Help: `
-Example:
-  $ heroku plugins`,
-
-	Run: func(ctx *Context) {
-		var names []string
-		for _, plugin := range userPlugins.Plugins() {
-			symlinked := ""
-			if userPlugins.isPluginSymlinked(plugin.Name) {
-				symlinked = " (symlinked)"
-			}
-			names = append(names, fmt.Sprintf("%s %s%s", plugin.Name, plugin.Version, symlinked))
-		}
-		if ctx.Flags["core"] != nil {
-			userPluginNames := userPlugins.PluginNames()
-			for _, plugin := range corePlugins.Plugins() {
-				if contains(userPluginNames, plugin.Name) {
-					continue
-				}
-				names = append(names, fmt.Sprintf("%s %s (core)", plugin.Name, plugin.Version))
-			}
-		}
-		sort.Strings(names)
-		for _, plugin := range names {
-			Println(plugin)
-		}
-	},
 }
 
 func (p *Plugins) runFn(plugin *Plugin, topic, command string) func(ctx *Context) {
@@ -438,4 +446,64 @@ func (p *Plugins) Update() {
 		})
 		Errf(" done. Updated %d %s.\n", len(packages), plural("package", len(packages)))
 	}
+}
+
+func (p *Plugins) addToCache(plugins ...*Plugin) {
+	cache := p.Plugins()
+	contains := func(name string) int {
+		for i, plugin := range cache {
+			if plugin.Name == name {
+				return i
+			}
+		}
+		return -1
+	}
+	for _, plugin := range plugins {
+		// find or replace
+		i := contains(plugin.Name)
+		if i == -1 {
+			cache = append(cache, plugin)
+		} else {
+			cache[i] = plugin
+		}
+	}
+	p.saveCache(cache)
+}
+
+func (p *Plugins) removeFromCache(name string) {
+	plugins := p.Plugins()
+	for i, plugin := range plugins {
+		if plugin.Name == name {
+			plugins = append(plugins[:i], plugins[i+1:]...)
+		}
+	}
+	p.saveCache(plugins)
+}
+
+func (p *Plugins) saveCache(plugins []*Plugin) {
+	if err := saveJSON(plugins, p.cachePath()); err != nil {
+		panic(err)
+	}
+}
+
+// Plugins reads the cache file into the struct
+func (p *Plugins) Plugins() []*Plugin {
+	if p.plugins == nil {
+		p.plugins = []*Plugin{}
+		if exists, _ := fileExists(p.cachePath()); !exists {
+			return p.plugins
+		}
+		f, err := os.Open(p.cachePath())
+		if err != nil {
+			LogIfError(err)
+			return p.plugins
+		}
+		err = json.NewDecoder(f).Decode(&p.plugins)
+		WarnIfError(err)
+	}
+	return p.plugins
+}
+
+func (p *Plugins) cachePath() string {
+	return filepath.Join(p.Path, "plugins.json")
 }

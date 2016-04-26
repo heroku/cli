@@ -28,53 +28,6 @@ var Topics TopicSet
 // This list is all the Go commands, the Node commands are filled in later
 var Commands CommandSet
 
-func init() {
-	Topics = TopicSet{
-		authTopic,
-		buildTopic,
-		commandsTopic,
-		debugTopic,
-		helpTopic,
-		loginTopic,
-		logoutTopic,
-		pluginsTopic,
-		twoFactorTopic,
-		twoFactorTopicAlias,
-		updateTopic,
-		versionTopic,
-		whichTopic,
-		whoamiTopic,
-	}
-
-	Commands = CommandSet{
-		authLoginCmd,
-		authLogoutCmd,
-		authTokenCmd,
-		buildManifestCmd,
-		buildPluginsCmd,
-		commandsListCmd,
-		debugErrlogCmd,
-		helpCmd,
-		loginCmd,
-		logoutCmd,
-		pluginsInstallCmd,
-		pluginsLinkCmd,
-		pluginsListCmd,
-		pluginsUninstallCmd,
-		twoFactorCmd,
-		twoFactorCmdAlias,
-		twoFactorDisableCmd,
-		twoFactorDisableCmdAlias,
-		twoFactorGenerateCmd,
-		twoFactorGenerateCmdAlias,
-		updateCmd,
-		versionCmd,
-		whichCmd,
-		whoamiAuthCmd,
-		whoamiCmd,
-	}
-}
-
 func main() {
 	loadNewCLI()
 	defer handlePanic()
@@ -94,21 +47,28 @@ func main() {
 		Help(os.Args)
 	}
 
-	if os.Args[1] == "update" {
-		// skip blocking update if the command is to update
-		// otherwise it will update twice
+	switch os.Args[1] {
+	case "update":
 		Update(Channel, "block")
+		Exit(0)
+	case HELP, "--help":
+		Help(os.Args)
+	case "version", "--version", "-v":
+		ShowVersion()
 	}
 
-	// try running as a core command
-	Commands.Run(os.Args)
+	cmd := AllCommands().Find(os.Args[1])
+	ctx, err := BuildContext(cmd, os.Args)
 
-	// command wasn't found so try running it as a plugin
-	userPlugins.Commands().Run(os.Args)
-	corePlugins.Commands().Run(os.Args)
-
-	// no command found
-	Help(os.Args)
+	switch {
+	case err == errHelp:
+		Help(os.Args)
+	case err != nil:
+		ExitIfError(err)
+	default:
+		cmd.Run(ctx)
+	}
+	Exit(0)
 }
 
 func handlePanic() {

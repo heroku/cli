@@ -13,33 +13,36 @@ import (
 	"github.com/franela/goreq"
 )
 
+func init() {
+	Topics = append(Topics, &Topic{
+		Name:        "update",
+		Description: "update heroku-cli",
+		Commands: CommandSet{
+			{
+				Topic:            "update",
+				Hidden:           true,
+				Description:      "updates the Heroku CLI",
+				DisableAnalytics: true,
+				Args:             []Arg{{Name: "channel", Optional: true}},
+				Flags:            []Flag{{Name: "background", Hidden: true}},
+				Run: func(ctx *Context) {
+					channel := ctx.Args.(map[string]string)["channel"]
+					if channel == "" {
+						channel = Channel
+					}
+					t := "foreground"
+					if ctx.Flags["background"] == true {
+						t = "background"
+					}
+					Update(channel, t)
+				},
+			},
+		},
+	})
+}
+
 // Autoupdate is a flag to enable/disable CLI autoupdating
 var Autoupdate = "no"
-
-var updateTopic = &Topic{
-	Name:        "update",
-	Description: "update heroku-cli",
-}
-
-var updateCmd = &Command{
-	Topic:            "update",
-	Hidden:           true,
-	Description:      "updates heroku-cli",
-	DisableAnalytics: true,
-	Args:             []Arg{{Name: "channel", Optional: true}},
-	Flags:            []Flag{{Name: "background", Hidden: true}},
-	Run: func(ctx *Context) {
-		channel := ctx.Args.(map[string]string)["channel"]
-		if channel == "" {
-			channel = Channel
-		}
-		t := "foreground"
-		if ctx.Flags["background"] == true {
-			t = "background"
-		}
-		Update(channel, t)
-	},
-}
 
 var updateLockPath = filepath.Join(CacheHome, "updating.lock")
 var autoupdateFile = filepath.Join(CacheHome, "autoupdate")

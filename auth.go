@@ -14,28 +14,183 @@ import (
 	"github.com/toqueteos/webbrowser"
 )
 
-var loginTopic = &Topic{
-	Name:        "login",
-	Description: "login with your Heroku credentials.",
+func init() {
+	Topics = append(Topics, TopicSet{{
+		Name:        "auth",
+		Description: "authentication (login/logout)",
+		Commands: []*Command{
+			{
+				Command:     "login",
+				Description: "login with your Heroku credentials.",
+				Flags: []Flag{
+					{Name: "sso", Description: "login for enterprise users under SSO"},
+				},
+				Run: login,
+			},
+			{
+				Command:     "logout",
+				Description: "clear your local Heroku credentials",
+				Run:         logout,
+			},
+			{
+				Command:     "whoami",
+				Description: "display your Heroku login",
+				Help: `Example:
+
+  $ heroku auth:whoami
+	email@example.com
+
+	whoami will return nonzero status if not logged in:
+
+  $ heroku auth:whoami
+	not logged in
+	$ echo $?
+	100`,
+				Run: whoami,
+			},
+			{
+				Command:     "token",
+				Description: "display your API token.",
+				NeedsAuth:   true,
+				Run: func(ctx *Context) {
+					Println(ctx.APIToken)
+				},
+			},
+			{
+				Command:     "2fa:enable",
+				Description: "enable 2fa on your account",
+				NeedsAuth:   true,
+				Run:         twoFactorRun,
+			},
+			{
+				Command:     "2fa:gen-recovery-codes",
+				Description: "generates and replaces recovery codes",
+				NeedsAuth:   true,
+				Run:         twoFactorGenerateRun,
+			},
+			{
+				Command:     "2fa:disable",
+				Description: "disable two-factor authentication for your account",
+				NeedsAuth:   true,
+				Run:         twoFactorDisableRun,
+			},
+		},
+	},
+		{
+			Name:   "whoami",
+			Hidden: true,
+			Commands: []*Command{
+				{
+					Description: "display your Heroku login",
+					Help: `Example:
+
+  $ heroku auth:whoami
+	email@example.com
+
+	whoami will return nonzero status if not logged in:
+
+  $ heroku auth:whoami
+	not logged in
+	$ echo $?
+	100`,
+					Run: whoami,
+				},
+			},
+		},
+		{
+			Name:        "login",
+			Description: "login with your Heroku credentials.",
+			Commands: []*Command{
+				{
+					Description: "login with your Heroku credentials.",
+					Flags: []Flag{
+						{Name: "sso", Description: "login for enterprise users under SSO"},
+					},
+					Run: login,
+				},
+			},
+		},
+		{
+			Name:        "logout",
+			Hidden:      true,
+			Description: "clear your local Heroku credentials",
+			Commands: []*Command{
+				{
+					Description: "clear your local Heroku credentials",
+					Run:         logout,
+				},
+			},
+		},
+		{
+			Name:   "twofactor",
+			Hidden: true,
+			Commands: []*Command{
+				&Command{
+					NeedsAuth:   true,
+					Description: "enable 2fa on your account",
+					Run:         twoFactorRun,
+				},
+				&Command{
+					Command:     "generate-recovery-codes",
+					Description: "Generates and replaces recovery codes",
+					NeedsAuth:   true,
+					Run:         twoFactorGenerateRun,
+				},
+				&Command{
+					Command:     "disable",
+					Description: "Disable two-factor authentication for your account",
+					NeedsAuth:   true,
+					Run:         twoFactorDisableRun,
+				},
+			},
+		},
+		{
+			Name:   "2fa",
+			Hidden: true,
+			Commands: []*Command{
+				&Command{
+					NeedsAuth:   true,
+					Description: "enable 2fa on your account",
+					Run:         twoFactorRun,
+				},
+				&Command{
+					Command:     "generate-recovery-codes",
+					Description: "Generates and replaces recovery codes",
+					NeedsAuth:   true,
+					Run:         twoFactorGenerateRun,
+				},
+				&Command{
+					Command:     "disable",
+					Description: "Disable two-factor authentication for your account",
+					NeedsAuth:   true,
+					Run:         twoFactorDisableRun,
+				},
+			},
+		},
+	}...,
+	)
 }
 
-var loginCmd = &Command{
-	Topic:       "login",
-	Description: "login with your Heroku credentials.",
-	Flags: []Flag{
-		{Name: "sso", Description: "login for enterprise users under SSO"},
-	},
-	Run: login,
-}
+func whoami(ctx *Context) {
+	if os.Getenv("HEROKU_API_KEY") != "" {
+		Warn("HEROKU_API_KEY is set")
+	}
 
-var authLoginCmd = &Command{
-	Topic:       "auth",
-	Command:     "login",
-	Description: "login with your Heroku credentials.",
-	Flags: []Flag{
-		{Name: "sso", Description: "login for enterprise users under SSO"},
-	},
-	Run: login,
+	// don't use needsToken since this should fail if
+	// not logged in. Should not show a login prompt.
+	ctx.APIToken = apiToken()
+
+	if ctx.APIToken == "" {
+		Println("not logged in")
+		Exit(100)
+	}
+
+	user := getUserFromToken(ctx.APIToken)
+	if user == "" {
+		Println("not logged in")
+		Exit(100)
+	}
+	Println(user)
 }
 
 func login(ctx *Context) {
@@ -223,34 +378,6 @@ func createOauthToken(email, password, secondFactor string) (string, error) {
 	return doc.AccessToken.Token, nil
 }
 
-var authTokenCmd = &Command{
-	Topic:       "auth",
-	Command:     "token",
-	Description: "display your API token.",
-	NeedsAuth:   true,
-	Run: func(ctx *Context) {
-		Println(ctx.APIToken)
-	},
-}
-
-var logoutTopic = &Topic{
-	Name:        "logout",
-	Description: "clear your local Heroku credentials",
-}
-
-var logoutCmd = &Command{
-	Topic:       "logout",
-	Description: "clear your local Heroku credentials",
-	Run:         logout,
-}
-
-var authLogoutCmd = &Command{
-	Topic:       "auth",
-	Command:     "logout",
-	Description: "clear your local Heroku credentials",
-	Run:         logout,
-}
-
 func logout(ctx *Context) {
 	if os.Getenv("HEROKU_API_KEY") != "" {
 		Warn("HEROKU_API_KEY is set")
@@ -320,4 +447,54 @@ func netrcLogin() string {
 		return machine.Get("login")
 	}
 	return ""
+}
+
+func twoFactorGenerateRun(ctx *Context) {
+	req := apiRequest(ctx.APIToken)
+	req.Method = POST
+	req.Uri = req.Uri + "/account/recovery-codes"
+	req.AddHeader("Heroku-Password", getPassword("Password (typing will be hidden): "))
+	req.AddHeader("Heroku-Two-Factor-Code", getString("Two-factor code: "))
+	res, err := req.Do()
+	ExitIfError(err)
+	var codes []interface{}
+	res.Body.FromJsonTo(&codes)
+	Println("Recovery codes:")
+	for _, code := range codes {
+		Println(code)
+	}
+}
+
+func twoFactorDisableRun(ctx *Context) {
+	req := apiRequest(ctx.APIToken)
+	req.Method = "PATCH"
+	req.Uri = req.Uri + "/account/"
+	req.Body = map[string]interface{}{
+		"two_factor_authentication": "false",
+		"password":                  getPassword("Password (typing will be hidden):"),
+	}
+	res, err := req.Do()
+	ExitIfError(err)
+	if res.StatusCode != 200 {
+		var doc map[string]string
+		res.Body.FromJsonTo(&doc)
+		Error(doc["message"])
+		return
+	}
+	Println("disabled two-factor authentication")
+}
+
+func twoFactorRun(ctx *Context) {
+	req := apiRequest(ctx.APIToken)
+	req.Method = "GET"
+	req.Uri = req.Uri + "/account"
+	res, err := req.Do()
+	ExitIfError(err)
+	var doc map[string]bool
+	res.Body.FromJsonTo(&doc)
+	if doc["two_factor_authentication"] {
+		Println("Two-factor authentication is enabled")
+	} else {
+		Println("Two-factor authentication is not enabled")
+	}
 }
