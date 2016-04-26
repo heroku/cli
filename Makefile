@@ -31,7 +31,7 @@ tmp/linux-%/heroku/lib/node-$(NODE_VERSION):  NODE_OS=linux
 tmp/debian-%/heroku/lib/node-$(NODE_VERSION): NODE_OS=linux
 tmp/%-amd64/heroku/lib/node-$(NODE_VERSION):  NODE_ARCH=x64
 tmp/%-386/heroku/lib/node-$(NODE_VERSION):    NODE_ARCH=x86
-tmp/%-arm/heroku/lib/node-$(NODE_VERSION):    NODE_ARCH=armv6l
+tmp/%-arm/heroku/lib/node-$(NODE_VERSION):    NODE_ARCH=armv7l
 
 .IGNORE: tmp/freebsd-amd64/heroku/lib/node-$(NODE_VERSION) \
 	tmp/freebsd-386/heroku/lib/node-$(NODE_VERSION) \
@@ -273,7 +273,7 @@ releasewin: $(DIST_DIR)/$(VERSION)/heroku-windows-amd64.exe $(DIST_DIR)/$(VERSIO
 NODES = node-v$(NODE_VERSION)-darwin-x64.tar.gz \
 node-v$(NODE_VERSION)-linux-x64.tar.gz \
 node-v$(NODE_VERSION)-linux-x86.tar.gz \
-node-v$(NODE_VERSION)-linux-armv6l.tar.gz \
+node-v$(NODE_VERSION)-linux-armv7l.tar.gz \
 win-x64/node.exe \
 win-x86/node.exe
 
