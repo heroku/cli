@@ -39,5 +39,4 @@ func ShowVersion() {
 		Printf(" %s", Channel)
 	}
 	Println()
-	Exit(0)
 }
