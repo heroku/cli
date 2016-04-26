@@ -38,7 +38,7 @@ test:
   override:
     - go test -v -race -cover -coverprofile=coverage.out
     - make test -j4
-    - gometalinter --deadline 30s --cyclo-over 32 -D aligncheck -D gosimple -D errcheck -D gotype -D vetshadow -D goconst
+    - gometalinter --deadline 30s --cyclo-over 32 -D aligncheck -D gosimple -D errcheck -D gotype -D vetshadow -D goconst --exclude ".+_test.go"
   post:
     - |
       go tool cover -html=coverage.out -o $CIRCLE_ARTIFACTS/coverage.html;
