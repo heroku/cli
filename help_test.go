@@ -67,10 +67,7 @@ var _ = Describe("Help", func() {
 		})
 
 		It("shows help for version command", func() {
-			Expect(stderr).To(Equal(` !    hlp is not a heroku command.
- !    Perhaps you meant help.
- !    Run heroku help for a list of available commands.
-`))
+			Expect(stdout).To(HavePrefix("Usage: heroku version"))
 		})
 	})
 })
