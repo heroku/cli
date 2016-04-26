@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"sort"
 	"strings"
 
@@ -11,13 +10,11 @@ import (
 
 // Help shows the help
 func Help(args []string) {
-	var cmd string
+	cmd := "help"
 	if len(args) > 1 {
 		cmd = args[1]
 		if len(args) > 2 && cmd == "help" {
 			cmd = args[2]
-		} else {
-			currentAnalyticsCommand.Valid = false
 		}
 	}
 	commands := AllCommands()
@@ -34,7 +31,7 @@ func Help(args []string) {
 	sort.Sort(topics)
 	sort.Sort(commands)
 	switch {
-	case cmd == "":
+	case cmd == "help":
 		Printf("Usage: heroku COMMAND [--app APP] [command-specific-options]\n\n")
 		Printf("Help topics, type \"heroku help TOPIC\" for more details:\n\n")
 		for _, topic := range nonHiddenTopics(topics) {
@@ -97,6 +94,7 @@ func nonHiddenCommands(from []*Command) []*Command {
 
 func helpInvalidCommand(cmd string, commands CommandSet) {
 	var closest string
+	currentAnalyticsCommand.Valid = false
 	if len(cmd) > 2 {
 		closest = fmt.Sprintf("Perhaps you meant %s.\n", yellow(findClosestCommand(commands, cmd).String()))
 	}
@@ -130,6 +128,6 @@ var helpCmd = &Command{
 	Topic:  "help",
 	Hidden: true,
 	Run: func(ctx *Context) {
-		Help(os.Args)
+		Help([]string{"heroku", "help"})
 	},
 }
