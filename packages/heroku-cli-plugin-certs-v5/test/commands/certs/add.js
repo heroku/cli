@@ -309,7 +309,7 @@ ${certificate_details}
         mock.done();
         domains_mock.done();
         domains_create.done();
-        expect(unwrap(cli.stderr)).to.equal('Adding SSL certificate to example... done\nAdding domain foo.example.org to example... done\n');
+        expect(unwrap(cli.stderr)).to.equal('Adding SSL certificate to example... done\n\nAdding domain foo.example.org to example... done\n');
         expect(cli.stdout).to.equal(
 `Certificate details:
 Common Name(s): foo.example.org
@@ -330,6 +330,138 @@ Name        Endpoint                       Common Name(s)   Expires             
 tokyo-1050  foo.example.com.herokudns.org  foo.example.org  2013-08-01 21:34 UTC  False    SNI 
             (no domains match)             bar.example.org                                     
             biz.example.com.herokudns.com  biz.example.com                                     
+`);
+      });
+    });
+
+    it('# when passed domains does not prompt and creates an SNI endpoint with stable cnames if no SSL addon', function() {
+      let mock = nock('https://api.heroku.com')
+      .post('/apps/example/sni-endpoints', {
+        certificate_chain: 'pem content', private_key: 'key content'
+      })
+      .reply(200, endpoint_stables);
+
+      let domains_mock = nock('https://api.heroku.com')
+      .get('/apps/example/domains')
+      .reply(200, [
+        {"kind": "custom", "hostname": "baz.example.org", "cname": "baz.example.org.herokudns.com"}
+      ]);
+
+      let domains_create_foo = nock('https://api.heroku.com')
+      .post('/apps/example/domains', {hostname: 'foo.example.org'})
+      .reply(200, 
+        {"kind": "custom", "cname": "foo.example.com.herokudns.org", "hostname": "foo.example.org"}
+      );
+
+      let domains_create_bar = nock('https://api.heroku.com')
+      .post('/apps/example/domains', {hostname: 'bar.example.org'})
+      .reply(200, 
+        {"kind": "custom", "cname": "bar.example.com.herokudns.org", "hostname": "bar.example.org"}
+      );
+
+      return certs.run({app: 'example', args: {CRT: 'pem_file', KEY: 'key_file'}, flags: {bypass: true, domains: 'foo.example.org,bar.example.org'}}).then(function() {
+        mock.done();
+        domains_mock.done();
+        domains_create_foo.done();
+        domains_create_bar.done();
+        expect(unwrap(cli.stderr)).to.equal('Adding SSL certificate to example... done\n\nAdding domain foo.example.org to example... done\nAdding domain bar.example.org to example... done\n');
+        expect(cli.stdout).to.equal(
+`Certificate details:
+Common Name(s): foo.example.org
+                bar.example.org
+                biz.example.com
+Expires At:     2013-08-01 21:34 UTC
+Issuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
+Starts At:      2012-08-01 21:34 UTC
+Subject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
+SSL certificate is self signed.
+
+=== The following domains are set up for this certificate
+Name        Endpoint                       Common Name(s)   Expires               Trusted  Type
+──────────  ─────────────────────────────  ───────────────  ────────────────────  ───────  ────
+tokyo-1050  foo.example.com.herokudns.org  foo.example.org  2013-08-01 21:34 UTC  False    SNI 
+            bar.example.com.herokudns.org  bar.example.org                                     
+            (no domains match)             biz.example.com                                     
+`);
+      });
+    });
+
+    it('# when passed existing domains does not prompt and creates an SNI endpoint with stable cnames if no SSL addon', function() {
+      let mock = nock('https://api.heroku.com')
+      .post('/apps/example/sni-endpoints', {
+        certificate_chain: 'pem content', private_key: 'key content'
+      })
+      .reply(200, endpoint_stables);
+
+      let domains_mock = nock('https://api.heroku.com')
+      .get('/apps/example/domains')
+      .reply(200, [
+        {"kind": "custom", "hostname": "baz.example.org", "cname": "baz.example.org.herokudns.com"},
+        {"kind": "custom", "hostname": "foo.example.org", "cname": "foo.example.org.herokudns.com"}
+      ]);
+
+      return certs.run({app: 'example', args: {CRT: 'pem_file', KEY: 'key_file'}, flags: {bypass: true, domains: 'foo.example.org'}}).then(function() {
+        mock.done();
+        domains_mock.done();
+        expect(unwrap(cli.stderr)).to.equal('Adding SSL certificate to example... done\n');
+        expect(cli.stdout).to.equal(
+`Certificate details:
+Common Name(s): foo.example.org
+                bar.example.org
+                biz.example.com
+Expires At:     2013-08-01 21:34 UTC
+Issuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
+Starts At:      2012-08-01 21:34 UTC
+Subject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
+SSL certificate is self signed.
+
+=== The following common names already have domain entries
+foo.example.org
+
+=== The following domains are set up for this certificate
+Name        Endpoint                       Common Name(s)   Expires               Trusted  Type
+──────────  ─────────────────────────────  ───────────────  ────────────────────  ───────  ────
+tokyo-1050  foo.example.org.herokudns.com  foo.example.org  2013-08-01 21:34 UTC  False    SNI 
+            (no domains match)             bar.example.org                                     
+            (no domains match)             biz.example.com                                     
+`);
+      });
+    });
+
+    it('# when passed bad domains does not prompt and creates an SNI endpoint with stable cnames if no SSL addon', function() {
+      let mock = nock('https://api.heroku.com')
+      .post('/apps/example/sni-endpoints', {
+        certificate_chain: 'pem content', private_key: 'key content'
+      })
+      .reply(200, endpoint_stables);
+
+      let domains_mock = nock('https://api.heroku.com')
+      .get('/apps/example/domains')
+      .reply(200, [
+        {"kind": "custom", "hostname": "baz.example.org", "cname": "baz.example.org.herokudns.com"}
+      ]);
+
+      return certs.run({app: 'example', args: {CRT: 'pem_file', KEY: 'key_file'}, flags: {bypass: true, domains: 'garbage.example.org'}}).then(function() {
+        mock.done();
+        domains_mock.done();
+        expect(unwrap(cli.stderr)).to.equal('Adding SSL certificate to example... done WARNING: Not adding garbage.example.org because it is not listed in the certificate\n');
+        expect(cli.stdout).to.equal(
+`Certificate details:
+Common Name(s): foo.example.org
+                bar.example.org
+                biz.example.com
+Expires At:     2013-08-01 21:34 UTC
+Issuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
+Starts At:      2012-08-01 21:34 UTC
+Subject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
+SSL certificate is self signed.
+
+=== The following domains are set up for this certificate
+Name        Endpoint            Common Name(s)   Expires               Trusted  Type
+──────────  ──────────────────  ───────────────  ────────────────────  ───────  ────
+tokyo-1050  (no domains match)  foo.example.org  2013-08-01 21:34 UTC  False    SNI 
+            (no domains match)  bar.example.org                                     
+            (no domains match)  biz.example.com                                     
 `);
       });
     });

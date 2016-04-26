@@ -43,6 +43,29 @@ function* getFiles(context) {
   return {crt, key};
 }
 
+function* getChoices(context, cert_domains, existingDomains, newDomains) {
+  if (context.flags.domains) {
+    let choices = _.difference(context.flags.domains.split(',').map(str => str.trim()), existingDomains);
+
+    let bad_choices = _.remove(choices, choice => (!_.find(cert_domains, cert_domain => cert_domain === choice)));
+    bad_choices.forEach(function(choice) {
+      cli.warn(`Not adding ${choice} because it is not listed in the certificate`);
+    });
+
+    return choices;
+  } else {
+    let resp = yield inquirer.prompt([{
+      type: 'checkbox',
+      name: 'domains',
+      message: 'Select domains you would like to add',
+      choices: newDomains.map(function(domain) {
+        return {name: domain};
+      })
+    }]);
+    return resp.domains;
+  }
+}
+
 function* addDomains(context, heroku, meta, promises_result) {
   let cert_domains = promises_result.cert.ssl_cert.cert_domains;
   let api_domains  = promises_result.domains;
@@ -66,16 +89,13 @@ function* addDomains(context, heroku, meta, promises_result) {
   }
 
   if (newDomains.length > 0) {
-    let resp = yield inquirer.prompt([{
-      type: 'checkbox',
-      name: 'domains',
-      message: 'Select domains you would like to add',
-      choices: newDomains.map(function(domain) {
-        return {name: domain};
-      })
-    }]);
+    let choices = yield getChoices(context, cert_domains, existingDomains, newDomains);
 
-    let choices = resp.domains;
+    // Add a newline between the existing and adding messages
+    if (choices.length > 0) {
+      cli.console.error();
+    }
+
     let addedDomains = new Array(choices.length);
     for (let i = 0; i < choices.length; i++) {
       let cert_domain = choices[i];
@@ -146,6 +166,7 @@ module.exports = {
   flags: [
     {name: 'bypass', description: 'bypass the trust chain completion step', hasValue: false},
     {name: 'type', description: 'type to create, either \'sni\' or \'endpoint\'', hasValue: true},
+    {name: 'domains', description: 'domains to create after certificate upload', hasValue: true},
   ],
   description: 'Add an SSL certificate to an app.',
   needsApp: true,
