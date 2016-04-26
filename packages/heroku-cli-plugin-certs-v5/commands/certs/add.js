@@ -88,6 +88,7 @@ function* addDomains(context, heroku, meta, promises_result) {
     existingDomains.forEach(domain => cli.log(domain));
   }
 
+  let addedDomains;
   if (newDomains.length > 0) {
     let choices = yield getChoices(context, cert_domains, existingDomains, newDomains);
 
@@ -96,7 +97,7 @@ function* addDomains(context, heroku, meta, promises_result) {
       cli.console.error();
     }
 
-    let addedDomains = new Array(choices.length);
+    addedDomains = new Array(choices.length);
     for (let i = 0; i < choices.length; i++) {
       let cert_domain = choices[i];
 
@@ -106,11 +107,13 @@ function* addDomains(context, heroku, meta, promises_result) {
         body: {'hostname': cert_domain}
       }));
     }
-
-    cli.log();
-    cli.styledHeader('The following domains are set up for this certificate');
-    displayTable([promises_result.cert], api_domains.concat(addedDomains));
+  } else {
+    addedDomains = [];
   }
+
+  cli.log();
+  cli.styledHeader('The following domains are set up for this certificate');
+  displayTable([promises_result.cert], api_domains.concat(addedDomains));
 }
 
 function* run(context, heroku) {

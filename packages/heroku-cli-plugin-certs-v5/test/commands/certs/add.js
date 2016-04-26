@@ -501,6 +501,13 @@ SSL certificate is self signed.
 foo.example.org
 bar.example.org
 biz.example.com
+
+=== The following domains are set up for this certificate
+Name        Endpoint                       Common Name(s)   Expires               Trusted  Type
+──────────  ─────────────────────────────  ───────────────  ────────────────────  ───────  ────
+tokyo-1050  foo.example.org.herokudns.com  foo.example.org  2013-08-01 21:34 UTC  False    SNI 
+            bar.example.org.herokudns.com  bar.example.org                                     
+            biz.example.com.herokudns.com  biz.example.com                                     
 `);
       });
     });
@@ -539,6 +546,13 @@ SSL certificate is self signed.
 foo.example.org
 bar.example.org
 biz.example.com
+
+=== The following domains are set up for this certificate
+Name        Endpoint                            Common Name(s)   Expires               Trusted  Type
+──────────  ──────────────────────────────────  ───────────────  ────────────────────  ───────  ────
+tokyo-1050  wildcard.example.org.herokudns.com  foo.example.org  2013-08-01 21:34 UTC  False    SNI 
+            wildcard.example.org.herokudns.com  bar.example.org                                     
+            biz.example.com.herokudns.com       biz.example.com                                     
 `);
       });
     });
