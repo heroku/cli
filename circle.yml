@@ -19,7 +19,6 @@ dependencies:
     - >
       go version;
       go get -v
-      github.com/jstemmer/go-junit-report
       github.com/alecthomas/gometalinter
       github.com/tools/godep
       github.com/mattn/goveralls;
@@ -36,16 +35,11 @@ dependencies:
     - sudo apt-get install nsis
 test:
   override:
-    - >
-      go test -v -race
-      -cover -coverprofile=coverage.out
-      | tee output;
-      test ${PIPESTATUS[0]} -eq 0
+    - go test -v -race -cover -coverprofile=coverage.out
     - make test -j4
   post:
     - gometalinter --deadline 30s || true
     - |
-      cat output | go-junit-report > $CIRCLE_TEST_REPORTS/go/junit.xml;
       go tool cover -html=coverage.out -o $CIRCLE_ARTIFACTS/coverage.html;
       goveralls -coverprofile=coverage.out -service=circle-ci -repotoken=$COVERALLS_TOKEN;
 deployment:
