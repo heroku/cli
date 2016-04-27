@@ -69,7 +69,7 @@ func init() {
 				Run:         twoFactorEnableRun,
 			},
 			{
-				Command:     "2fa:gen-recovery-codes",
+				Command:     "2fa:generate",
 				Description: "generates and replaces recovery codes",
 				NeedsAuth:   true,
 				Run:         twoFactorGenerateRun,
