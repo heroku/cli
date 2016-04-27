@@ -25,13 +25,13 @@ dependencies:
       go version &&
       if ! type gometalinter >/dev/null 2>&1; then go get -v github.com/alecthomas/gometalinter && gometalinter --install; fi &&
       if ! type goveralls    >/dev/null 2>&1; then go get -v github.com/mattn/goveralls; fi &&
-      cd ~/osslsigncode && sudo make install &&
       if [ ! -d ~/osslsigncode ]; then
         wget https://cli-assets.heroku.com/osslsigncode-1.7.1.tar.gz &&
         tar -xvzf osslsigncode-1.7.1.tar.gz &&
         mv osslsigncode-1.7.1 ~/osslsigncode &&
         cd ~/osslsigncode && ./configure && make
-      fi
+      fi &&
+      cd ~/osslsigncode && sudo make install
     - make deps build -j4
     - >
       mkdir -p /home/ubuntu/aptcache &&
