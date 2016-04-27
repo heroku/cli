@@ -7,12 +7,12 @@ machine:
 checkout:
   post:
     - |
-      rm -rf ~/.go_workspace/src/github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME; &&
-      mkdir -p ~/.go_workspace/src/github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME; &&
-      cp -R ~/$CIRCLE_PROJECT_REPONAME ~/.go_workspace/src/github.com/$CIRCLE_PROJECT_USERNAME/; &&
-      rm -rf ~/$CIRCLE_PROJECT_REPONAME; &&
-      ln -s ~/.go_workspace/src/github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME ~/$CIRCLE_PROJECT_REPONAME; &&
-      mkdir -p $CIRCLE_TEST_REPORTS/go;
+      rm -rf ~/.go_workspace/src/github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME &&
+      mkdir -p ~/.go_workspace/src/github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME &&
+      cp -R ~/$CIRCLE_PROJECT_REPONAME ~/.go_workspace/src/github.com/$CIRCLE_PROJECT_USERNAME/ &&
+      rm -rf ~/$CIRCLE_PROJECT_REPONAME &&
+      ln -s ~/.go_workspace/src/github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME ~/$CIRCLE_PROJECT_REPONAME &&
+      mkdir -p $CIRCLE_TEST_REPORTS/go
 dependencies:
   cache_directories:
     - ~/deps
@@ -22,16 +22,16 @@ dependencies:
     - ~/aptcache
   override:
     - >
-      go version; &&
-      if ! type gometalinter >/dev/null 2>&1; then go get -v github.com/alecthomas/gometalinter; &&; gometalinter --install fi; &&
-      if ! type goveralls    >/dev/null 2>&1; then go get -v github.com/mattn/goveralls; fi; &&
-      cd ~/osslsigncode && sudo make install; &&
+      go version &&
+      if ! type gometalinter >/dev/null 2>&1; then go get -v github.com/alecthomas/gometalinter && gometalinter --install fi &&
+      if ! type goveralls    >/dev/null 2>&1; then go get -v github.com/mattn/goveralls; fi &&
+      cd ~/osslsigncode && sudo make install &&
       if [ ! -d ~/osslsigncode ]; then
-        wget https://cli-assets.heroku.com/osslsigncode-1.7.1.tar.gz; &&
-        tar -xvzf osslsigncode-1.7.1.tar.gz; &&
-        mv osslsigncode-1.7.1 ~/osslsigncode; &&
-        cd ~/osslsigncode && ./configure && make;
-      fi;
+        wget https://cli-assets.heroku.com/osslsigncode-1.7.1.tar.gz &&
+        tar -xvzf osslsigncode-1.7.1.tar.gz &&
+        mv osslsigncode-1.7.1 ~/osslsigncode &&
+        cd ~/osslsigncode && ./configure && make
+      fi
     - make deps build -j4
     - >
       mkdir -p /home/ubuntu/aptcache &&
