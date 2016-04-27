@@ -79,7 +79,7 @@ func (c Command) String() string {
 	return c.Topic + ":" + c.Command
 }
 
-func commandUsage(c *Command) string {
+func CommandUsage(c *Command) string {
 	if c.Usage != "" {
 		return c.Usage
 	}
@@ -134,7 +134,7 @@ This command does not take any flags.
 
 See more information with %s`,
 			red(flag),
-			cyan("heroku "+commandUsage(c)),
+			cyan("heroku "+CommandUsage(c)),
 			cyan(cmd+" --help"),
 		)
 	}
@@ -147,7 +147,7 @@ This flag is invalid for this command. Here are the accepted flags:
 
 See more information with %s`,
 		red(flag),
-		cyan("heroku "+commandUsage(c)),
+		cyan("heroku "+CommandUsage(c)),
 		flagHelp,
 		cyan(cmd+" --help"),
 	)
@@ -161,7 +161,7 @@ We don't know which app to run this on.
 Run this command from inside an app folder or specify which app to use with %s
 
 https://devcenter.heroku.com/articles/using-the-cli#app-commands`,
-		cyan("heroku "+commandUsage(c)+" --app APP"),
+		cyan("heroku "+CommandUsage(c)+" --app APP"),
 		cyan("--app APP"),
 	)
 }
@@ -176,7 +176,7 @@ You gave this command too many arguments. Try the command again without these ex
 See more information with %s`,
 		plural("argument", len(args)),
 		red(strings.Join(args, " ")),
-		cyan("heroku "+commandUsage(c)),
+		cyan("heroku "+CommandUsage(c)),
 		cyan(cmd+" --help"),
 	)
 }
@@ -202,7 +202,7 @@ func (commands CommandSet) Find(cmd string) *Command {
 
 func (commands CommandSet) loadUsages() {
 	for _, c := range commands {
-		c.Usage = commandUsage(c)
+		c.Usage = CommandUsage(c)
 	}
 }
 
