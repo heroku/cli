@@ -27,6 +27,12 @@ func TestCLI(t *testing.T) {
 	}
 }
 
+var errLogPath = filepath.Join("tmp", "error.log")
 var _ = BeforeSuite(func() {
+	cli.ErrLogPath = errLogPath
 	cli.ErrorArrow = "!"
+})
+
+var _ = AfterSuite(func() {
+	os.Remove(errLogPath)
 })

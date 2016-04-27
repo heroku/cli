@@ -1,10 +1,8 @@
 package main
 
 import (
-	"fmt"
-	"io/ioutil"
-	"strconv"
-	"strings"
+	"io"
+	"os"
 )
 
 func init() {
@@ -16,24 +14,10 @@ func init() {
 				{
 					Topic:   "debug",
 					Command: "errlog",
-					Flags:   []Flag{{Name: "num", Char: "n", HasValue: true}},
 					Run: func(ctx *Context) {
-						numS, _ := ctx.Flags["num"].(string)
-						if numS == "" {
-							numS = "30"
-						}
-						num, err := strconv.Atoi(numS)
+						f, err := os.Open(ErrLogPath)
 						must(err)
-						body, err := ioutil.ReadFile(ErrLogPath)
-						must(err)
-						lines := strings.Split(string(body), "\n")
-						start := len(lines) - num - 1
-						if start < 0 {
-							start = 0
-						}
-						end := len(lines) - 1
-						lines = lines[start:end]
-						fmt.Println(strings.Join(lines, "\n"))
+						io.CopyBuffer(Stdout, f, make([]byte, 1024))
 					},
 				},
 			},
