@@ -238,7 +238,7 @@ disttxz: $(MANIFEST) $(DIST_TARGETS)
 .PHONY: releasetxz
 releasetxz: $(MANIFEST) $(addprefix releasetxz/,$(DIST_TARGETS))
 	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/manifest.json s3://heroku-cli-assets/branches/$(CHANNEL)/manifest.json
-	@if type cowsay >/dev/null 2>&1; then cowsay Released $(VERSION) cowsay; fi;
+	@if type cowsay >/dev/null 2>&1; then cowsay Released $(VERSION); fi;
 
 .PHONY: releasetxz/%
 releasetxz/%.tar.xz: %.tar.xz
