@@ -25,7 +25,6 @@ dependencies:
       if ! type gometalinter >/dev/null 2>&1; then go get -v github.com/alecthomas/gometalinter; fi;
       if ! type goveralls    >/dev/null 2>&1; then go get -v github.com/mattn/goveralls; fi;
       cd ~/osslsigncode && sudo make install;
-      if ! type makensis >/dev/null 2>&1; then sudo apt-get install nsis; fi;
       if [ ! -d ~/osslsigncode ]; then
         wget https://cli-assets.heroku.com/osslsigncode-1.7.1.tar.gz;
         tar -xvzf osslsigncode-1.7.1.tar.gz;
@@ -33,7 +32,10 @@ dependencies:
         cd ~/osslsigncode && ./configure && make;
       fi;
     - make deps build -j4
-    - if ! type cowsay >/dev/null 2>&1; then sudo apt-get install cowsay; fi;
+    - >
+      sudo apt-get -o dir::cache::archives="/home/ubuntu/aptcache" update; sudo apt-get -o dir::cache::archives="/home/ubuntu/aptcache" install -y
+      cowsay
+      nsis
 test:
   override:
     - go test -v -race -cover -coverprofile=coverage.out
