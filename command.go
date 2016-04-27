@@ -79,6 +79,7 @@ func (c Command) String() string {
 	return c.Topic + ":" + c.Command
 }
 
+// CommandUsage generates the usage for a command
 func CommandUsage(c *Command) string {
 	if c.Usage != "" {
 		return c.Usage
