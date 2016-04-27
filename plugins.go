@@ -11,6 +11,7 @@ import (
 	"strings"
 	"syscall"
 
+	"github.com/ansel1/merry"
 	"github.com/dickeyxxx/golock"
 )
 
@@ -132,7 +133,6 @@ func pluginsInstall(ctx *Context) {
 }
 
 func pluginsLink(ctx *Context) {
-	pluginInstallRetry = false
 	path := ctx.Args.(map[string]string)["path"]
 	if path == "" {
 		path = "."
@@ -268,8 +268,6 @@ func getExitCode(err error) int {
 	return -1
 }
 
-var pluginInstallRetry = true
-
 // ParsePlugin requires the plugin's node module
 // to get the commands and metadata
 func (p *Plugins) ParsePlugin(name string) (*Plugin, error) {
@@ -287,23 +285,7 @@ func (p *Plugins) ParsePlugin(name string) (*Plugin, error) {
 	done()
 
 	if err != nil {
-		// try again but this time grab stdout and stderr
-		cmd, done := p.RunScript(script)
-		output, err = cmd.CombinedOutput() // sometimes this actually works the second time
-		if err != nil {
-			done()
-			if pluginInstallRetry && strings.Contains(string(output), "Error: Cannot find module") {
-				pluginInstallRetry = false
-				Warn("Failed to install " + name + ". Retrying...")
-				WarnIfError(p.RemovePackages(name))
-				WarnIfError(p.ClearCache())
-				if err := p.installPackages(name); err != nil {
-					return nil, err
-				}
-				return p.ParsePlugin(name)
-			}
-			return nil, fmt.Errorf("Error reading plugin: %s\n%s\n%s", name, err, output)
-		}
+		return nil, merry.Errorf("Error installing plugin %s", name)
 	}
 	var plugin Plugin
 	err = json.Unmarshal(output, &plugin)
