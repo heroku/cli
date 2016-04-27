@@ -2,7 +2,6 @@ package main
 
 import (
 	"io/ioutil"
-	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -31,9 +30,6 @@ func (p *Plugins) RunScript(script string) (cmd *exec.Cmd, done func()) {
 		cmd = exec.Command(p.nodeBinPath(), "-e", script)
 	}
 	cmd.Env = append([]string{"NODE_PATH=" + p.modulesPath()}, os.Environ()...)
-	if debugging {
-		log.Printf("running node NODE_PATH=%s %s\n%s\n", p.modulesPath(), cmd.Path, script)
-	}
 	return cmd, func() {
 		os.Remove(f.Name())
 	}
