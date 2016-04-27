@@ -13,6 +13,7 @@ func init() {
 			{
 				Topic:            "version",
 				Description:      "print the version",
+				Hidden:           true,
 				DisableAnalytics: true,
 				Help: `Shows the Heroku CLI version.
 
