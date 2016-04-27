@@ -19,6 +19,7 @@ dependencies:
     - ~/osslsigncode
     - ~/workspace
     - ~/.cache/heroku/npm
+    - ~/aptcache
   override:
     - >
       go version;
@@ -33,6 +34,7 @@ dependencies:
       fi;
     - make deps build -j4
     - >
+      mkdir -p /home/ubuntu/aptcache
       sudo apt-get -o dir::cache::archives="/home/ubuntu/aptcache" update; sudo apt-get -o dir::cache::archives="/home/ubuntu/aptcache" install -y
       cowsay
       nsis
