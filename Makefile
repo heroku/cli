@@ -238,7 +238,6 @@ disttxz: $(MANIFEST) $(DIST_TARGETS)
 .PHONY: releasetxz
 releasetxz: $(MANIFEST) $(addprefix releasetxz/,$(DIST_TARGETS))
 	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/manifest.json s3://heroku-cli-assets/branches/$(CHANNEL)/manifest.json
-	@if type cowsay >/dev/null 2>&1; then cowsay Released $(VERSION); fi;
 
 .PHONY: releasetxz/%
 releasetxz/%.tar.xz: %.tar.xz
@@ -253,6 +252,10 @@ releaseosx: $(DIST_DIR)/$(VERSION)/heroku-osx.pkg
 
 .PHONY: distdeb
 deb: $(DIST_DIR)/$(VERSION)/apt/Packages $(DIST_DIR)/$(VERSION)/apt/Release
+
+.PHONY: release
+release: releasewin releasedeb releasetxz
+	@if type cowsay >/dev/null 2>&1; then cowsay Released $(VERSION); fi;
 
 .PHONY: releasedeb
 releasedeb: $(DIST_DIR)/$(VERSION)/apt/Packages $(DIST_DIR)/$(VERSION)/apt/Release
