@@ -23,7 +23,7 @@ dependencies:
   override:
     - >
       go version &&
-      if ! type gometalinter >/dev/null 2>&1; then go get -v github.com/alecthomas/gometalinter && gometalinter --install fi &&
+      if ! type gometalinter >/dev/null 2>&1; then go get -v github.com/alecthomas/gometalinter && gometalinter --install; fi &&
       if ! type goveralls    >/dev/null 2>&1; then go get -v github.com/mattn/goveralls; fi &&
       cd ~/osslsigncode && sudo make install &&
       if [ ! -d ~/osslsigncode ]; then
