@@ -77,16 +77,8 @@ tmp/%/heroku/lib/plugins.json: $(WORKSPACE)/lib/plugins.json
 	@rm -rf $(@D)/node_modules
 	cp -r $(WORKSPACE)/lib/node_modules $(@D)
 
-tmp/%/heroku/VERSION: tmp/%/heroku/bin/heroku$$(EXT) tmp/%/heroku/lib/npm-$(NPM_VERSION) tmp/%/heroku/lib/node-$(NODE_VERSION)$$(EXT) tmp/%/heroku/lib/plugins.json bin/version tmp/%/heroku/README.md tmp/%/heroku/CHANGELOG tmp/%/heroku/lib/cacert.pem
+tmp/%/heroku/VERSION: tmp/%/heroku/bin/heroku$$(EXT) tmp/%/heroku/lib/npm-$(NPM_VERSION) tmp/%/heroku/lib/node-$(NODE_VERSION)$$(EXT) tmp/%/heroku/lib/plugins.json bin/version tmp/%/heroku/lib/cacert.pem
 	echo $(VERSION) > $@
-
-tmp/%/heroku/README.md: README.md
-	@mkdir -p $(@D)
-	cp $< $@
-
-tmp/%/heroku/CHANGELOG: CHANGELOG
-	@mkdir -p $(@D)
-	cp $< $@
 
 %/heroku/lib/cacert.pem: resources/cacert.pem
 	@mkdir -p $(@D)
@@ -132,6 +124,8 @@ resources/exe/heroku-codesign-cert.pfx:
 
 $(DIST_DIR)/$(VERSION)/heroku-v$(VERSION)-%.tar.xz: tmp/%/heroku/VERSION
 	@mkdir -p $(@D)
+	cp resources/standalone/install tmp/$*/heroku/install
+	cp resources/standalone/README tmp/$*/heroku/README
 	tar -C tmp/$* -c heroku | xz -2 > $@
 
 comma:=,
