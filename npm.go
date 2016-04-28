@@ -115,7 +115,7 @@ func (p *Plugins) npmCmd(args ...string) (*exec.Cmd, error) {
 		}
 		args = append(args, "--loglevel="+level)
 	}
-	cmd := exec.Command(p.nodeBinPath(), args...)
+	cmd := exec.Command(NodeBinPath, args...)
 	cmd.Dir = p.Path
 	cmd.Env = p.environ()
 	return cmd, nil
