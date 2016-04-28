@@ -26,8 +26,6 @@ Section "Heroku CLI ${VERSION}"
   WriteUninstaller "$INSTDIR\Uninstall.exe"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Heroku" \
                    "DisplayName" "Heroku CLI"
-  Push "$INSTDIR\bin"
-  Call AddToPath
 SectionEnd
 
 Section "Git 2.8.1"
@@ -35,6 +33,11 @@ Section "Git 2.8.1"
   IfSilent +2
     ExecWait "$INSTDIR\git.exe"
 
+SectionEnd
+
+Section "Set PATH to Heroku CLI"
+  Push "$INSTDIR\bin"
+  Call AddToPath
 SectionEnd
 
 Section "Uninstall"
