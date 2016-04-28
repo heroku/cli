@@ -23,7 +23,7 @@ tmp/windows%: EXT=.exe
 
 $(CACHE_DIR)/node-v$(NODE_VERSION)/%:
 	@mkdir -p $(@D)
-	curl -Lso $@ https://nodejs.org/dist/v$(NODE_VERSION)/$*
+	curl -fsSLo $@ https://nodejs.org/dist/v$(NODE_VERSION)/$*
 
 .SECONDEXPANSION:
 tmp/darwin-%/heroku/lib/node-$(NODE_VERSION): NODE_OS=darwin
@@ -55,7 +55,7 @@ tmp/%/heroku/lib/node-$(NODE_VERSION).exe: $(CACHE_DIR)/node-v$(NODE_VERSION)/wi
 NPM_ARCHIVE=$(CACHE_DIR)/npm-v$(NPM_VERSION).tar.gz
 $(NPM_ARCHIVE):
 	@mkdir -p $(@D)
-	curl -Lso $@ https://github.com/npm/npm/archive/v$(NPM_VERSION).tar.gz
+	curl -fsSLo $@ https://github.com/npm/npm/archive/v$(NPM_VERSION).tar.gz
 %/heroku/lib/npm-$(NPM_VERSION): $(NPM_ARCHIVE)
 	@mkdir -p $(@D)
 	@rm -rf $(@D)/npm-*
@@ -178,7 +178,7 @@ $(DIST_DIR)/$(VERSION)/apt/Release: $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_amd64
 
 $(CACHE_DIR)/git/Git-%.exe:
 	@mkdir -p $(CACHE_DIR)/git
-	curl -Lso $@ https://cli-assets.heroku.com/git/Git-$*.exe
+	curl -fsSLo $@ https://cli-assets.heroku.com/git/Git-$*.exe
 
 $(DIST_DIR)/$(VERSION)/heroku-windows-%.exe: tmp/windows-%/heroku/VERSION $(CACHE_DIR)/git/Git-2.8.1-32-bit.exe $(CACHE_DIR)/git/Git-2.8.1-64-bit.exe
 	@mkdir -p $(@D)
