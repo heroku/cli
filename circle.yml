@@ -11,6 +11,5 @@ test:
     - go test -v -race ./... | go-junit-report > $CIRCLE_TEST_REPORTS/go/results.xml
   post:
     - test -z "$(go fmt)"
-    - test -z "$(golint)"
     - go vet
     - ~/bats/bin/bats test
