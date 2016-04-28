@@ -92,7 +92,6 @@ type Manifest struct {
 // Build is a part of a Manifest
 type Build struct {
 	URL    string `json:"url"`
-	Sha1   string `json:"sha1"`
 	Sha256 string `json:"sha256"`
 	Bytes  int64  `json:"bytes"`
 }
