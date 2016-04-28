@@ -100,6 +100,9 @@ func updateCLI(channel string) {
 func IsUpdateNeeded() bool {
 	f, err := os.Stat(autoupdateFile)
 	if err != nil {
+		if os.IsNotExist(err) {
+			return true
+		}
 		LogIfError(err)
 		return true
 	}
