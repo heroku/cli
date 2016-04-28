@@ -25,18 +25,15 @@ func (p *Plugins) RunScript(script string) (cmd *exec.Cmd, done func()) {
 		LogIfError(err)
 	}
 	if useTmpFile {
-		cmd = exec.Command(NodeBinPath, f.Name())
+		cmd = exec.Command(nodeBinPath(), f.Name())
 	} else {
-		cmd = exec.Command(NodeBinPath, "-e", script)
+		cmd = exec.Command(nodeBinPath(), "-e", script)
 	}
 	cmd.Env = append([]string{"NODE_PATH=" + p.modulesPath()}, os.Environ()...)
 	return cmd, func() {
 		os.Remove(f.Name())
 	}
 }
-
-// NodeBinPath is the location of the node binary
-var NodeBinPath = nodeBinPath()
 
 func nodeBinPath() string {
 	b := os.Getenv("HEROKU_NODE_PATH")
