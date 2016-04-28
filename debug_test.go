@@ -22,9 +22,9 @@ var _ = Describe("debug", func() {
 		}
 		f.WriteString(butt)
 		f.Close()
+		cli.ExitFn = func(code int) {}
 		cli.Start("heroku", "debug:errlog")
 		stdout = vtclean.Clean(cli.Stdout.(*bytes.Buffer).String(), false)
-		cli.ExitFn = func(code int) {}
 	})
 	AfterEach(func() { cli.Stdout = os.Stdout })
 
