@@ -166,11 +166,11 @@ $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_%.deb: tmp/debian-%/heroku/VERSION
 	sudo rm -rf tmp/$(DEB_BASE)_$*.apt
 
 $(DIST_DIR)/$(VERSION)/apt/Packages: $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_amd64.deb $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_386.deb $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_arm.deb
-	apt-ftparchive packages $(@D) > $@
+	cd $(@D) && apt-ftparchive packages . > Packages
 	gzip -c $@ > $@.gz
 
 $(DIST_DIR)/$(VERSION)/apt/Release: $(DIST_DIR)/$(VERSION)/apt/Packages
-	apt-ftparchive -c resources/deb/apt-ftparchive.conf release $(@D) > $@
+	cd $(@D) && apt-ftparchive -c ../../../resources/deb/apt-ftparchive.conf release . > Release
 	@gpg --digest-algo SHA512 -abs -u 0F1B0520 -o $@.gpg $@
 
 $(CACHE_DIR)/git/Git-%.exe:
