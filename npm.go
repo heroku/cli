@@ -107,7 +107,7 @@ func (p *Plugins) npmCmd(args ...string) (*exec.Cmd, error) {
 	if err := os.MkdirAll(p.modulesPath(), 0755); err != nil {
 		return nil, err
 	}
-	args = append([]string{p.npmBinPath()}, args...)
+	args = append([]string{npmBinPath()}, args...)
 	if debugging {
 		level := os.Getenv("GODE_DEBUG")
 		if level == "" {
@@ -158,6 +158,6 @@ func npmRegistry() string {
 	return registry
 }
 
-func (p *Plugins) npmBinPath() string {
+func npmBinPath() string {
 	return filepath.Join(AppDir, "lib", "npm-"+NpmVersion, "cli.js")
 }
