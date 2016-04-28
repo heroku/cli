@@ -158,6 +158,9 @@ func loadNewCLI() {
 		return
 	}
 	bin := filepath.Join(DataHome, "cli", "bin", "heroku")
+	if runtime.GOOS == WINDOWS {
+		bin = bin + ".exe"
+	}
 	if BinPath == bin {
 		return
 	}
