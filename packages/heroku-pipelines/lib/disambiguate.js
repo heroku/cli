@@ -6,16 +6,11 @@ let inquirer  = require("inquirer");
 function *disambiguate(heroku, pipeline_id_or_name) {
   var pipeline;
   if(validator.isUUID(pipeline_id_or_name)) {
-    pipeline = yield heroku.request({
-      method: 'GET',
-      path: `/pipelines/${pipeline_id_or_name}`,
-      headers: { 'Accept': 'application/vnd.heroku+json; version=3.pipelines' }
-    }); // heroku.pipelines(pipeline_id_or_name).info();
+    pipeline = yield heroku.pipelines(pipeline_id_or_name).info();
   } else {
     let pipelines = yield heroku.request({
       method: 'GET',
-      path: `/pipelines?eq[name]=${pipeline_id_or_name}`,
-      headers: { 'Accept': 'application/vnd.heroku+json; version=3.pipelines' }
+      path: `/pipelines?eq[name]=${pipeline_id_or_name}`
     });
     if(pipelines.length === 0) {
       throw new Error('Pipeline not found');
