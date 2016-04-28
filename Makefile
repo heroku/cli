@@ -71,6 +71,7 @@ $(WORKSPACE)/lib/plugins.json: $(WORKSPACE)/bin/heroku package.json $(WORKSPACE)
 	cd $(WORKSPACE)/lib && ./npm-$(NPM_VERSION)/cli.js prune > /dev/null
 
 tmp/%/heroku/lib/plugins.json: $(WORKSPACE)/lib/plugins.json
+	@mkdir -p $(@D)
 	cp $(WORKSPACE)/lib/plugins.json $@
 	cp $(WORKSPACE)/lib/package.json $(@D)/package.json
 	@rm -rf $(@D)/node_modules
