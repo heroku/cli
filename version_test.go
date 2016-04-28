@@ -19,7 +19,6 @@ var _ = Describe("version", func() {
 		cli.Stdout = new(bytes.Buffer)
 		cli.Start("heroku", "version")
 		stdout = vtclean.Clean(cli.Stdout.(*bytes.Buffer).String(), false)
-		cli.ExitFn = func(code int) {}
 	})
 	AfterEach(func() { cli.Stdout = os.Stdout })
 

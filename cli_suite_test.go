@@ -29,6 +29,7 @@ func TestCLI(t *testing.T) {
 
 var errLogPath = filepath.Join("tmp", "error.log")
 var _ = BeforeSuite(func() {
+	cli.ExitFn = func(int) {}
 	os.MkdirAll(filepath.Dir(errLogPath), 0755)
 	cli.ErrLogPath = errLogPath
 	cli.ErrorArrow = "!"
