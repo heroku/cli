@@ -98,6 +98,9 @@ func updateCLI(channel string) {
 
 // IsUpdateNeeded checks if an update is available
 func IsUpdateNeeded() bool {
+	if exists, _ := fileExists(expectedBinPath()); !exists {
+		return true
+	}
 	f, err := os.Stat(autoupdateFile)
 	if err != nil {
 		if os.IsNotExist(err) {
@@ -156,19 +159,29 @@ func cleanTmpDirs() {
 	clean(CacheHome)
 }
 
-func loadNewCLI() {
-	if Autoupdate == "no" {
-		return
-	}
+func expectedBinPath() string {
 	bin := filepath.Join(DataHome, "cli", "bin", "heroku")
 	if runtime.GOOS == WINDOWS {
 		bin = bin + ".exe"
 	}
-	if BinPath == bin {
+	return bin
+}
+
+func loadNewCLI() {
+	if Autoupdate == "no" {
 		return
 	}
-	if exists, _ := fileExists(bin); !exists {
+	expected := expectedBinPath()
+	if BinPath == expected {
 		return
 	}
-	execBin(bin, os.Args...)
+	if exists, _ := fileExists(expected); !exists {
+		if exists, _ = fileExists(npmBinPath()); !exists {
+			// uh oh, npm isn't where it should be.
+			// The CLI probably isn't installed right so force an update
+			Update(Channel)
+		}
+		return
+	}
+	execBin(expected, os.Args...)
 }
