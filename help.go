@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"path/filepath"
 	"strings"
 
 	"github.com/texttheater/golang-levenshtein/levenshtein"
@@ -39,9 +40,9 @@ func help(args []string) {
 	case cmd == HELP || cmd == "--help":
 		helpShowTopics()
 	case topic == nil:
-		helpInvalidCommand(cmd)
+		helpInvalidCommand(cmd, args)
 	case command == nil && strings.Index(cmd, ":") != -1:
-		helpInvalidCommand(cmd)
+		helpInvalidCommand(cmd, args)
 	case command == nil:
 		helpShowTopic(topic)
 	default:
@@ -92,18 +93,21 @@ func printTopicCommandsHelp(topic *Topic) {
 	}
 }
 
-func helpInvalidCommand(cmd string) {
+func helpInvalidCommand(cmd string, args []string) {
 	var closest string
 	currentAnalyticsCommand.Valid = false
-	if len(cmd) > 2 {
-		closest = fmt.Sprintf("Perhaps you meant %s.\n", yellow(findClosestCommand(AllCommands(), cmd).String()))
+	guess, distance := findClosestCommand(AllCommands(), cmd)
+	if len(cmd) > 2 || distance < 2 {
+		newcmd := fmt.Sprintf("heroku %s %s", guess, strings.Join(args[2:], " "))
+		WarnIfError(saveJSON(&Guess{guess.String(), args[2:]}, guessPath()))
+		closest = fmt.Sprintf("Perhaps you meant %s.\nRun %s to run %s\n", yellow(guess.String()), cyan("heroku _"), cyan(newcmd))
 	}
 	ExitWithMessage(`%s is not a heroku command.
 %sRun %s for a list of available commands.
 `, yellow(cmd), closest, cyan("heroku help"))
 }
 
-func findClosestCommand(from CommandSet, a string) *Command {
+func findClosestCommand(from CommandSet, a string) (*Command, int) {
 	var top *Command
 	var val int
 	for _, b := range from {
@@ -112,9 +116,25 @@ func findClosestCommand(from CommandSet, a string) *Command {
 			val = cur
 		}
 	}
-	return top
+	return top, val
 }
 
 func stringDistance(a, b string) int {
 	return levenshtein.DistanceForStrings([]rune(a), []rune(b), levenshtein.DefaultOptions)
+}
+
+// Guess is used with `heroku _`
+type Guess struct {
+	Guess string   `json:"guess"`
+	Args  []string `json:"args"`
+}
+
+func guessPath() string {
+	return filepath.Join(CacheHome, "guess.json")
+}
+
+func loadLastCommandGuess() (guess *Guess) {
+	err := readJSON(&guess, guessPath())
+	LogIfError(err)
+	return guess
 }

@@ -48,10 +48,10 @@ func (c *AnalyticsCommand) RecordStart() {
 // RecordEnd marks when a command was completed
 // and records it to the analytics file
 func (c *AnalyticsCommand) RecordEnd(status int) {
-	if c == nil || skipAnalytics() || len(os.Args) < 2 {
+	if c == nil || skipAnalytics() || len(Args) < 2 {
 		return
 	}
-	c.Command = os.Args[1]
+	c.Command = Args[1]
 	c.Status = status
 	if !c.start.IsZero() {
 		c.Runtime = (time.Now().UnixNano() - c.start.UnixNano()) / 1000000
@@ -133,10 +133,5 @@ func SubmitAnalytics() {
 }
 
 func skipAnalytics() bool {
-	skip, err := config.GetBool("skip_analytics")
-	if err != nil {
-		Debugln(err)
-		return true
-	}
-	return os.Getenv("TESTING") == ONE || (skip != nil && *skip) || netrcLogin() == ""
+	return os.Getenv("TESTING") == ONE || (config.SkipAnalytics != nil && *config.SkipAnalytics) || netrcLogin() == ""
 }

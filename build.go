@@ -21,11 +21,13 @@ func init() {
 					Command:     "plugins",
 					Description: "installs core plugins",
 					Run: func(ctx *Context) {
-						pjson, err := readJSON(filepath.Join(corePlugins.Path, "package.json"))
-						must(err)
+						pjson := struct {
+							Dependencies map[string]string `json:"dependencies"`
+						}{}
+						must(readJSON(&pjson, filepath.Join(corePlugins.Path, "package.json")))
 						plugins := []string{}
-						for name, v := range pjson["dependencies"].(map[string]interface{}) {
-							plugins = append(plugins, name+"@"+v.(string))
+						for name, v := range pjson.Dependencies {
+							plugins = append(plugins, name+"@"+v)
 						}
 						must(corePlugins.installPackages(plugins...))
 						for _, plugin := range plugins {

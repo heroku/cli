@@ -258,10 +258,13 @@ func supportsColor() bool {
 			return false
 		}
 	}
-	if config, _ := config.GetBool("color"); config != nil && *config == false {
+	if os.Getenv("COLOR") == "false" {
 		return false
 	}
-	return os.Getenv("COLOR") != "false"
+	if config != nil && config.Color != nil && !*config.Color {
+		return false
+	}
+	return true
 }
 
 func plural(word string, count int) string {
@@ -349,20 +352,12 @@ func rollbar(err error, level string) {
 	rollbarAPI.Wait()
 }
 
-func readJSON(path string) (map[string]interface{}, error) {
-	if exists, err := fileExists(path); !exists {
-		if err != nil {
-			return nil, err
-		}
-		return map[string]interface{}{}, nil
-	}
-	data, err := ioutil.ReadFile(path)
+func readJSON(obj interface{}, path string) error {
+	f, err := os.Open(path)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	var out map[string]interface{}
-	err = json.Unmarshal(data, &out)
-	return out, err
+	return json.NewDecoder(f).Decode(&obj)
 }
 
 func saveJSON(obj interface{}, path string) error {

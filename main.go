@@ -23,13 +23,16 @@ var Channel = "?"
 // This list is all the Go topics, the Node topics are filled in later
 var Topics TopicSet
 
+// Args is os.Args
+var Args = os.Args
+
 func main() {
 	Start(os.Args...)
 	Exit(0)
 }
 
 // Start the CLI
-func Start(args ...string) {
+func Start() {
 	loadNewCLI()
 	if os.Getenv("TESTING") != ONE {
 		defer handlePanic()
@@ -46,29 +49,34 @@ func Start(args ...string) {
 	runtime.GOMAXPROCS(1) // more procs causes runtime: failed to create new OS thread on Ubuntu
 	ShowDebugInfo()
 
-	if len(args) <= 1 {
+	if len(Args) <= 1 {
 		// show dashboard if no args passed
-		args = append(args, "dashboard")
+		Args = append(Args, "dashboard")
 	}
 
-	switch args[1] {
+	switch Args[1] {
+	case "_":
+		guess := loadLastCommandGuess()
+		if guess != nil {
+			Args = append([]string{Args[0], guess.Guess}, guess.Args...)
+		}
 	case "help", "--help":
-		help(args)
+		help(Args)
 		return
 	case "version", "--version", "-v":
 		ShowVersion()
 		return
 	}
 
-	cmd := AllCommands().Find(args[1])
+	cmd := AllCommands().Find(Args[1])
 	if cmd != nil && cmd.DisableAnalytics {
 		currentAnalyticsCommand = nil
 	} else {
 		currentAnalyticsCommand.RecordStart()
 	}
-	ctx, err := BuildContext(cmd, args)
+	ctx, err := BuildContext(cmd, Args)
 	if err == errHelp {
-		help(args)
+		help(Args)
 		return
 	}
 	must(err)
