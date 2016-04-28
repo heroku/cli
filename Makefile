@@ -176,19 +176,18 @@ $(CACHE_DIR)/git/Git-%.exe:
 
 $(DIST_DIR)/$(VERSION)/heroku-windows-%.exe: tmp/windows-%/heroku/VERSION $(CACHE_DIR)/git/Git-2.8.1-32-bit.exe $(CACHE_DIR)/git/Git-2.8.1-64-bit.exe
 	@mkdir -p $(@D)
-	cp $(CACHE_DIR)/git/Git-2.8.1-64-bit.exe tmp/windows-$*/heroku/git.exe
+	rm -rf tmp/windows-$*-installer
+	cp -r tmp/windows-$* tmp/windows-$*-installer
+	cp $(CACHE_DIR)/git/Git-2.8.1-64-bit.exe tmp/windows-$*-installer/heroku/git.exe
 	sed -e "s/!define Version 'VERSION'/!define Version '$(VERSION)'/" resources/exe/heroku.nsi |\
 		sed -e "s/InstallDir .*/InstallDir \"\$$PROGRAMFILES$(if $(filter amd64,$*),64,)\\\Heroku\"/" \
-		> tmp/windows-$*/heroku/heroku.nsi
-	makensis tmp/windows-$*/heroku/heroku.nsi > /dev/null
+		> tmp/windows-$*-installer/heroku/heroku.nsi
+	makensis tmp/windows-$*-installer/heroku/heroku.nsi > /dev/null
 	@osslsigncode -pkcs12 resources/exe/heroku-codesign-cert.pfx \
 		-pass '$(HEROKU_WINDOWS_SIGNING_PASS)' \
 		-n 'Heroku CLI' \
 		-i https://toolbelt.heroku.com/ \
-		-in tmp/windows-$*/heroku/installer.exe -out $@
-	@rm tmp/windows-$*/heroku/heroku.nsi
-	@rm tmp/windows-$*/heroku/git.exe
-	@rm tmp/windows-$*/heroku/installer.exe
+		-in tmp/windows-$*-installer/heroku/installer.exe -out $@
 
 $(DIST_DIR)/$(VERSION)/heroku-osx.pkg: tmp/darwin-amd64/heroku/VERSION
 	@echo "TODO OSX"
