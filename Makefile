@@ -249,7 +249,7 @@ releaseosx: $(DIST_DIR)/$(VERSION)/heroku-osx.pkg
 	aws s3 cp --cache-control max-age=3600 $(DIST_DIR)/$(VERSION)/heroku-osx.pkg s3://heroku-cli-assets/branches/$(CHANNEL)/heroku-osx.pkg
 
 .PHONY: distdeb
-deb: $(DIST_DIR)/$(VERSION)/apt/Packages $(DIST_DIR)/$(VERSION)/apt/Release
+distdeb: $(DIST_DIR)/$(VERSION)/apt/Packages $(DIST_DIR)/$(VERSION)/apt/Release
 
 .PHONY: release
 release: releasewin releasedeb releasetxz
