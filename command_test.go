@@ -16,7 +16,6 @@ var _ = Describe("Command", func() {
 	BeforeEach(func() {
 		cli.Stdout = new(bytes.Buffer)
 		cli.Start("heroku", "version")
-		cli.ExitFn = func(code int) {}
 	})
 
 	JustBeforeEach(func() {
