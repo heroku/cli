@@ -41,7 +41,7 @@ dependencies:
       nsis
 test:
   override:
-    - go test -v -race -cover -coverprofile=coverage.out
+    - go test -v -race -cover -coverprofile=coverage.out -ginkgo.v
     - make test -j $JOBZ
     - ./bin/lint
   post:
