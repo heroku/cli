@@ -393,6 +393,7 @@ func (p *Plugins) readLockPlugin(name string) {
 
 // lock a plugin for writing
 func (p *Plugins) lockPlugin(name string) {
+	os.MkdirAll(filepath.Dir(p.lockfile(name)), 0755)
 	LogIfError(golock.Lock(p.lockfile(name)))
 }
 
