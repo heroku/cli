@@ -58,7 +58,8 @@ func updateCLI(channel string) {
 		return
 	}
 	manifest := getUpdateManifest(channel)
-	if manifest.Version == Version && manifest.Channel == Channel {
+	binExists, _ := fileExists(expectedBinPath())
+	if binExists && manifest.Version == Version && manifest.Channel == Channel {
 		return
 	}
 	locked, err := golock.IsLocked(updateLockPath)
