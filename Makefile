@@ -145,6 +145,9 @@ MANIFEST := $(DIST_DIR)/$(VERSION)/manifest.json
 $(MANIFEST): $(WORKSPACE)/bin/heroku $(DIST_TARGETS)
 	$(WORKSPACE)/bin/heroku build:manifest --dir $(@D) --version $(VERSION) --channel $(CHANNEL) --targets $(subst $(space),$(comma),$(DIST_TARGETS)) > $@
 
+$(MANIFEST).sig: $(MANIFEST)
+	@gpg --armor -u 0F1B0520 --output $@ --detach-sig $<
+
 DEB_VERSION:=$(firstword $(subst -, ,$(VERSION)))-1
 DEB_BASE:=heroku_$(DEB_VERSION)
 $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_%.deb: tmp/debian-%/heroku/VERSION
@@ -168,7 +171,7 @@ $(DIST_DIR)/$(VERSION)/apt/Packages: $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_amd6
 
 $(DIST_DIR)/$(VERSION)/apt/Release: $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_amd64.deb $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_386.deb $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_arm.deb
 	apt-ftparchive -c resources/deb/apt-ftparchive.conf release $(@D) > $@
-	gpg --digest-algo SHA512 -abs -u 0F1B0520 -o $@.gpg $@
+	@gpg --digest-algo SHA512 -abs -u 0F1B0520 -o $@.gpg $@
 
 $(CACHE_DIR)/git/Git-%.exe:
 	@mkdir -p $(CACHE_DIR)/git
@@ -227,11 +230,12 @@ openbsd: tmp/openbsd-amd64/heroku/VERSION tmp/openbsd-386/heroku/VERSION
 distwin: $(DIST_DIR)/$(VERSION)/heroku-windows-amd64.exe $(DIST_DIR)/$(VERSION)/heroku-windows-386.exe
 
 .PHONY: disttxz
-disttxz: $(MANIFEST) $(DIST_TARGETS)
+disttxz: $(MANIFEST) $(MANIFEST).sig $(DIST_TARGETS)
 
 .PHONY: releasetxz
-releasetxz: $(MANIFEST) $(addprefix releasetxz/,$(DIST_TARGETS))
+releasetxz: $(MANIFEST) $(MANIFEST).sig $(addprefix releasetxz/,$(DIST_TARGETS))
 	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/manifest.json s3://heroku-cli-assets/branches/$(CHANNEL)/manifest.json
+	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/manifest.json.sig s3://heroku-cli-assets/branches/$(CHANNEL)/manifest.json.sig
 
 .PHONY: releasetxz/%
 releasetxz/%.tar.xz: %.tar.xz

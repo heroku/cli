@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"os"
 	"path/filepath"
 	"regexp"
 	"strings"
@@ -56,6 +57,10 @@ func init() {
 						for _, file := range files {
 							filename := filepath.Base(file)
 							info := re.FindStringSubmatch(filename)
+							f, err := os.Open(file)
+							must(err)
+							fi, err := f.Stat()
+							must(err)
 							os := info[1]
 							arch := info[2]
 							sha256, err := fileSha256(file)
@@ -63,6 +68,7 @@ func init() {
 							manifest.Builds[os+"-"+arch] = &Build{
 								URL:    "https://cli-assets.heroku.com/branches/" + manifest.Channel + "/" + manifest.Version + "/" + filename,
 								Sha256: sha256,
+								Bytes:  fi.Size(),
 							}
 						}
 						data, err := json.MarshalIndent(manifest, "", "  ")
@@ -88,4 +94,5 @@ type Build struct {
 	URL    string `json:"url"`
 	Sha1   string `json:"sha1"`
 	Sha256 string `json:"sha256"`
+	Bytes  int64  `json:"bytes"`
 }
