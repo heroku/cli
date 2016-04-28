@@ -25,6 +25,7 @@ var Topics TopicSet
 
 func main() {
 	Start(os.Args...)
+	Exit(0)
 }
 
 // Start the CLI
