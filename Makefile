@@ -169,7 +169,7 @@ $(DIST_DIR)/$(VERSION)/apt/Packages: $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_amd6
 	apt-ftparchive packages $(@D) > $@
 	gzip -c $@ > $@.gz
 
-$(DIST_DIR)/$(VERSION)/apt/Release: $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_amd64.deb $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_386.deb $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_arm.deb
+$(DIST_DIR)/$(VERSION)/apt/Release: $(DIST_DIR)/$(VERSION)/apt/Packages
 	apt-ftparchive -c resources/deb/apt-ftparchive.conf release $(@D) > $@
 	@gpg --digest-algo SHA512 -abs -u 0F1B0520 -o $@.gpg $@
 
