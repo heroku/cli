@@ -344,7 +344,6 @@ func rollbar(err error, level string) {
 		{"os", runtime.GOOS},
 		{"arch", runtime.GOARCH},
 		{"command", cmd},
-		{"person.id", netrcLogin()},
 	}
 	rollbarAPI.Error(level, err, fields...)
 	rollbarAPI.Wait()
