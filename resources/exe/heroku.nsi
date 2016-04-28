@@ -28,16 +28,16 @@ Section "Heroku CLI ${VERSION}"
                    "DisplayName" "Heroku CLI"
 SectionEnd
 
+Section "Set PATH to Heroku CLI"
+  Push "$INSTDIR\bin"
+  Call AddToPath
+SectionEnd
+
 Section "Git 2.8.1"
   File "git.exe"
   IfSilent +2
     ExecWait "$INSTDIR\git.exe"
 
-SectionEnd
-
-Section "Set PATH to Heroku CLI"
-  Push "$INSTDIR\bin"
-  Call AddToPath
 SectionEnd
 
 Section "Uninstall"
