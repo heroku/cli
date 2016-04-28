@@ -25,9 +25,9 @@ func (p *Plugins) RunScript(script string) (cmd *exec.Cmd, done func()) {
 		LogIfError(err)
 	}
 	if useTmpFile {
-		cmd = exec.Command(p.nodeBinPath(), f.Name())
+		cmd = exec.Command(NodeBinPath, f.Name())
 	} else {
-		cmd = exec.Command(p.nodeBinPath(), "-e", script)
+		cmd = exec.Command(NodeBinPath, "-e", script)
 	}
 	cmd.Env = append([]string{"NODE_PATH=" + p.modulesPath()}, os.Environ()...)
 	return cmd, func() {
@@ -35,17 +35,22 @@ func (p *Plugins) RunScript(script string) (cmd *exec.Cmd, done func()) {
 	}
 }
 
-func (p *Plugins) nodeBinPath() string {
+// NodeBinPath is the location of the node binary
+var NodeBinPath = nodeBinPath()
+
+func nodeBinPath() string {
 	b := os.Getenv("HEROKU_NODE_PATH")
-	if b == "" {
-		b = filepath.Join(AppDir, "lib", "node-"+NodeVersion)
-	}
+	ext := ""
 	if runtime.GOOS == WINDOWS {
-		b = b + ".exe"
+		ext = ".exe"
+	}
+	if b == "" {
+		b = filepath.Join(AppDir, "lib", "node-"+NodeVersion+ext)
 	}
 	if exists, _ := fileExists(b); !exists {
 		var err error
-		b, err = exec.LookPath("node")
+		Debugf("node not found in %s. Using node from PATH\n", b)
+		b, err = exec.LookPath("node" + ext)
 		must(err)
 	}
 	return b
