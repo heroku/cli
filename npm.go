@@ -108,7 +108,7 @@ func (p *Plugins) npmCmd(args ...string) (*exec.Cmd, error) {
 		return nil, err
 	}
 	args = append([]string{npmBinPath()}, args...)
-	if debugging {
+	if Debugging {
 		level := os.Getenv("GODE_DEBUG")
 		if level == "" {
 			level = "info"
@@ -127,7 +127,7 @@ func (p *Plugins) execNpm(args ...string) (string, string, error) {
 		return "", "", err
 	}
 	var stdout, stderr bytes.Buffer
-	if debugging {
+	if Debugging {
 		log.Printf("running npm from %s: %s\n", cmd.Dir, strings.Join(cmd.Args, " "))
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr

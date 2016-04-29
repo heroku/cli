@@ -62,11 +62,28 @@ var _ = Describe("Help", func() {
  !    Run heroku help for a list of available commands.
 `))
 		})
+		It("reruns heroku help", func() {
+			cli.Start("heroku", "_")
+			stdout = vtclean.Clean(cli.Stdout.(*bytes.Buffer).String(), false)
+			Expect(stdout).To(HavePrefix("Usage: heroku COMMAND [--app APP] [command-specific-options]"))
+		})
 	})
 
 	Context("heroku help plugins", func() {
 		BeforeEach(func() {
 			cli.Start("heroku", "help", "plugins")
+		})
+
+		It("exits with code 0", func() { Expect(exit).To(Equal(0)) })
+		It("shows help for plugins command", func() {
+			Expect(stdout).To(HavePrefix("Usage: heroku plugins"))
+			Expect(stdout).To(ContainSubstring("heroku plugins:link"))
+		})
+	})
+
+	Context("heroku plugins --help", func() {
+		BeforeEach(func() {
+			cli.Start("heroku", "plugins", "--help")
 		})
 
 		It("exits with code 0", func() { Expect(exit).To(Equal(0)) })

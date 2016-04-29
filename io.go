@@ -35,8 +35,12 @@ var errLogger = newLogger(ErrLogPath)
 
 // ExitFn is used to mock os.Exit
 var ExitFn = os.Exit
-var debugging = isDebugging()
-var debuggingHeaders = isDebuggingHeaders()
+
+// Debugging is HEROKU_DEBUG
+var Debugging = isDebugging()
+
+// DebuggingHeaders is HEROKU_DEBUG_HEADERS
+var DebuggingHeaders = isDebuggingHeaders()
 var swallowSigint = false
 
 func newLogger(path string) *log.Logger {
@@ -110,7 +114,7 @@ func Logf(format string, a ...interface{}) {
 // It will be added to the logfile in ~/.cache/heroku/error.log and stderr if HEROKU_DEBUG is set.
 func Debugln(a ...interface{}) {
 	Logln(a...)
-	if debugging {
+	if Debugging {
 		fmt.Fprintln(Stderr, a...)
 	}
 }
@@ -119,7 +123,7 @@ func Debugln(a ...interface{}) {
 // It will be added to the logfile in ~/.cache/heroku/error.log and stderr if HEROKU_DEBUG is set.
 func Debugf(format string, a ...interface{}) {
 	Logf(format, a...)
-	if debugging {
+	if Debugging {
 		fmt.Fprintf(Stderr, format, a...)
 	}
 }

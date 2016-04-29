@@ -87,23 +87,18 @@ func Start(args ...string) {
 	ctx, err := BuildContext(cmd, Args)
 	must(err)
 	cmd.Run(ctx)
-	Exit(0)
 }
 
 var crashing = false
 
 // ShowDebugInfo prints debugging information if HEROKU_DEBUG=1
 func ShowDebugInfo() {
-	if !isDebugging() {
+	if !Debugging {
 		return
 	}
 	info := []string{version(), BinPath}
 	if len(Args) > 1 {
 		info = append(info, fmt.Sprintf("cmd: %s", Args[1]))
-	}
-	proxy := getProxy()
-	if proxy != nil {
-		info = append(info, fmt.Sprintf("proxy: %s", proxy))
 	}
 	Debugln(strings.Join(info, " "))
 }

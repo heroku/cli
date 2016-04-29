@@ -10,7 +10,6 @@ import (
 	"io/ioutil"
 	"net"
 	"net/http"
-	"net/url"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -128,14 +127,6 @@ func httpTLSClientConfig() (config *tls.Config) {
 	}
 	config.RootCAs = certs
 	return
-}
-
-func getProxy() *url.URL {
-	req, err := http.NewRequest("GET", "https://api.heroku.com", nil)
-	WarnIfError(err)
-	proxy, err := http.ProxyFromEnvironment(req)
-	WarnIfError(err)
-	return proxy
 }
 
 var downloadingMessage string

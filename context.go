@@ -79,8 +79,8 @@ func BuildContext(command *Command, args []string) (*Context, error) {
 	}
 	ctx.Cwd, _ = os.Getwd()
 	ctx.HerokuDir = CacheHome
-	ctx.Debug = debugging
-	ctx.DebugHeaders = debuggingHeaders
+	ctx.Debug = Debugging
+	ctx.DebugHeaders = DebuggingHeaders
 	ctx.Version = version()
 	ctx.SupportsColor = supportsColor()
 	ctx.APIHost = apiHost()
