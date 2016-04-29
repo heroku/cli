@@ -100,10 +100,10 @@ func SubmitAnalytics() {
 	defer golock.Unlock(lockfile)
 	plugins := func() map[string]string {
 		plugins := make(map[string]string)
-		for _, plugin := range corePlugins.Plugins() {
+		for _, plugin := range CorePlugins.Plugins() {
 			plugins[plugin.Name] = plugin.Version
 		}
-		for _, plugin := range userPlugins.Plugins() {
+		for _, plugin := range UserPlugins.Plugins() {
 			plugins[plugin.Name] = plugin.Version
 		}
 		dirs, _ := ioutil.ReadDir(filepath.Join(HomeDir, ".heroku", "plugins"))

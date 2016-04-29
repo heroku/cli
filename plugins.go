@@ -83,17 +83,17 @@ Example:
 
 func pluginsList(ctx *Context) {
 	var names []string
-	for _, plugin := range userPlugins.Plugins() {
+	for _, plugin := range UserPlugins.Plugins() {
 		symlinked := ""
-		if userPlugins.isPluginSymlinked(plugin.Name) {
+		if UserPlugins.isPluginSymlinked(plugin.Name) {
 			symlinked = " (symlinked)"
 		}
 		names = append(names, fmt.Sprintf("%s %s%s", plugin.Name, plugin.Version, symlinked))
 	}
 	if ctx.Flags["core"] != nil {
-		userPluginNames := userPlugins.PluginNames()
-		for _, plugin := range corePlugins.Plugins() {
-			if contains(userPluginNames, plugin.Name) {
+		UserPluginNames := UserPlugins.PluginNames()
+		for _, plugin := range CorePlugins.Plugins() {
+			if contains(UserPluginNames, plugin.Name) {
 				continue
 			}
 			names = append(names, fmt.Sprintf("%s %s (core)", plugin.Name, plugin.Version))
@@ -110,7 +110,7 @@ func pluginsInstall(ctx *Context) {
 		ExitWithMessage("Must specify a plugin name.\nUSAGE: heroku plugins:install heroku-debug")
 	}
 	toinstall := make([]string, 0, len(plugins))
-	core := corePlugins.PluginNames()
+	core := CorePlugins.PluginNames()
 	for _, plugin := range plugins {
 		if contains(core, strings.Split(plugin, "@")[0]) {
 			Warn("Not installing " + plugin + " because it is already installed as a core plugin.")
@@ -122,7 +122,7 @@ func pluginsInstall(ctx *Context) {
 		Exit(1)
 	}
 	action("Installing "+plural("plugin", len(toinstall))+" "+strings.Join(toinstall, " "), "done", func() {
-		err := userPlugins.InstallPlugins(toinstall...)
+		err := UserPlugins.InstallPlugins(toinstall...)
 		if err != nil {
 			if strings.Contains(err.Error(), "no such package available") {
 				ExitWithMessage("Plugin not found")
@@ -143,33 +143,33 @@ func pluginsLink(ctx *Context) {
 	must(err)
 	name := filepath.Base(path)
 	action("Symlinking "+name, "done", func() {
-		newPath := userPlugins.pluginPath(name)
+		newPath := UserPlugins.pluginPath(name)
 		os.Remove(newPath)
 		os.RemoveAll(newPath)
 		os.MkdirAll(filepath.Dir(newPath), 0755)
 		err = os.Symlink(path, newPath)
 		must(err)
-		plugin, err := userPlugins.ParsePlugin(name)
+		plugin, err := UserPlugins.ParsePlugin(name)
 		must(err)
 		if name != plugin.Name {
 			path = newPath
-			newPath = userPlugins.pluginPath(plugin.Name)
+			newPath = UserPlugins.pluginPath(plugin.Name)
 			os.Remove(newPath)
 			os.RemoveAll(newPath)
 			os.Rename(path, newPath)
 		}
-		userPlugins.addToCache(plugin)
+		UserPlugins.addToCache(plugin)
 	})
 }
 
 func pluginsUninstall(ctx *Context) {
 	name := ctx.Args.(map[string]string)["name"]
-	if !contains(userPlugins.PluginNames(), name) {
+	if !contains(UserPlugins.PluginNames(), name) {
 		must(errors.New(name + " is not installed"))
 	}
 	Errf("Uninstalling plugin %s...", name)
-	must(userPlugins.RemovePackages(name))
-	userPlugins.removeFromCache(name)
+	must(UserPlugins.RemovePackages(name))
+	UserPlugins.removeFromCache(name)
 	Errln(" done")
 }
 
@@ -179,8 +179,11 @@ type Plugins struct {
 	plugins []*Plugin
 }
 
-var corePlugins = &Plugins{Path: filepath.Join(AppDir, "lib")}
-var userPlugins = &Plugins{Path: filepath.Join(DataHome, "plugins")}
+// CorePlugins are built in plugins
+var CorePlugins = &Plugins{Path: filepath.Join(AppDir, "lib")}
+
+// UserPlugins are user-installable plugins
+var UserPlugins = &Plugins{Path: filepath.Join(DataHome, "plugins")}
 
 // Plugin represents a javascript plugin
 type Plugin struct {

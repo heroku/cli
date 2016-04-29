@@ -14,9 +14,6 @@ import (
 // NpmRegistry is the npm registry to use
 var NpmRegistry = npmRegistry()
 
-// NpmVersion is the current npm version
-var NpmVersion = "?"
-
 // NpmPackage represents an npm package.
 type NpmPackage struct {
 	Name    string `json:"name"`
@@ -159,5 +156,5 @@ func npmRegistry() string {
 }
 
 func npmBinPath() string {
-	return filepath.Join(AppDir, "lib", "npm-"+NpmVersion, "cli.js")
+	return filepath.Join(AppDir, "lib", "npm", "cli.js")
 }

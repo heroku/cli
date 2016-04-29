@@ -48,7 +48,7 @@ func Update(channel string) {
 	touchAutoupdateFile()
 	SubmitAnalytics()
 	updateCLI(channel)
-	userPlugins.Update()
+	UserPlugins.Update()
 	truncate(ErrLogPath, 1000)
 	cleanTmpDirs()
 }

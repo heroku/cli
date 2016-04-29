@@ -280,7 +280,7 @@ func argsString(args []Arg) string {
 // AllCommands gets all go/core/user commands
 func AllCommands() CommandSet {
 	commands := Topics.Commands()
-	commands = append(commands, corePlugins.Commands()...)
-	commands = append(commands, userPlugins.Commands()...)
+	commands = append(commands, CorePlugins.Commands()...)
+	commands = append(commands, UserPlugins.Commands()...)
 	return commands
 }
