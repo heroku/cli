@@ -24,16 +24,16 @@ func init() {
 						pjson := struct {
 							Dependencies map[string]string `json:"dependencies"`
 						}{}
-						must(readJSON(&pjson, filepath.Join(corePlugins.Path, "package.json")))
+						must(readJSON(&pjson, filepath.Join(CorePlugins.Path, "package.json")))
 						plugins := []string{}
 						for name, v := range pjson.Dependencies {
 							plugins = append(plugins, name+"@"+v)
 						}
-						must(corePlugins.installPackages(plugins...))
+						must(CorePlugins.installPackages(plugins...))
 						for _, plugin := range plugins {
-							plugin, err := corePlugins.ParsePlugin(strings.Split(plugin, "@")[0])
+							plugin, err := CorePlugins.ParsePlugin(strings.Split(plugin, "@")[0])
 							must(err)
-							corePlugins.addToCache(plugin)
+							CorePlugins.addToCache(plugin)
 						}
 					},
 				},

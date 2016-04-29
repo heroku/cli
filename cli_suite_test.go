@@ -29,6 +29,8 @@ func TestCLI(t *testing.T) {
 
 var errLogPath = filepath.Join("tmp", "error.log")
 var _ = BeforeSuite(func() {
+	cli.AppDir, _ = filepath.Abs(filepath.Join("tmp", "dev", "heroku"))
+	cli.CorePlugins.Path = filepath.Join(cli.AppDir, "lib")
 	cli.ExitFn = func(int) {}
 	os.MkdirAll(filepath.Dir(errLogPath), 0755)
 	cli.ErrLogPath = errLogPath

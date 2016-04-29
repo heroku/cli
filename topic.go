@@ -53,8 +53,8 @@ func (topics TopicSet) Swap(i, j int) {
 // AllTopics gets all go/core/user topics
 func AllTopics() TopicSet {
 	topics := Topics
-	topics = topics.Concat(corePlugins.Topics())
-	topics = topics.Concat(userPlugins.Topics())
+	topics = topics.Concat(CorePlugins.Topics())
+	topics = topics.Concat(UserPlugins.Topics())
 	return topics
 }
 

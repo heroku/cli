@@ -42,7 +42,7 @@ func nodeBinPath() string {
 		ext = ".exe"
 	}
 	if b == "" {
-		b = filepath.Join(AppDir, "lib", "node-"+NodeVersion+ext)
+		b = filepath.Join(AppDir, "lib", "node"+ext)
 	}
 	if exists, _ := fileExists(b); !exists {
 		var err error

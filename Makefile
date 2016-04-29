@@ -26,29 +26,27 @@ $(CACHE_DIR)/node-v$(NODE_VERSION)/%:
 	curl -fsSLo $@ https://nodejs.org/dist/v$(NODE_VERSION)/$*
 
 .SECONDEXPANSION:
-tmp/darwin-%/heroku/lib/node-$(NODE_VERSION): NODE_OS=darwin
-tmp/linux-%/heroku/lib/node-$(NODE_VERSION):  NODE_OS=linux
-tmp/debian-%/heroku/lib/node-$(NODE_VERSION): NODE_OS=linux
-tmp/%-amd64/heroku/lib/node-$(NODE_VERSION):  NODE_ARCH=x64
-tmp/%-386/heroku/lib/node-$(NODE_VERSION):    NODE_ARCH=x86
-tmp/%-arm/heroku/lib/node-$(NODE_VERSION):    NODE_ARCH=armv7l
+tmp/darwin-%/heroku/lib/node: NODE_OS=darwin
+tmp/linux-%/heroku/lib/node:  NODE_OS=linux
+tmp/debian-%/heroku/lib/node: NODE_OS=linux
+tmp/%-amd64/heroku/lib/node:  NODE_ARCH=x64
+tmp/%-386/heroku/lib/node:    NODE_ARCH=x86
+tmp/%-arm/heroku/lib/node:    NODE_ARCH=armv7l
 
-.IGNORE: tmp/freebsd-amd64/heroku/lib/node-$(NODE_VERSION) \
-	tmp/freebsd-386/heroku/lib/node-$(NODE_VERSION) \
-	tmp/openbsd-amd64/heroku/lib/node-$(NODE_VERSION) \
-	tmp/openbsd-386/heroku/lib/node-$(NODE_VERSION)
+.IGNORE: tmp/freebsd-amd64/heroku/lib/node \
+	tmp/freebsd-386/heroku/lib/node \
+	tmp/openbsd-amd64/heroku/lib/node \
+	tmp/openbsd-386/heroku/lib/node
 
-%/heroku/lib/node-$(NODE_VERSION): $(CACHE_DIR)/node-v$(NODE_VERSION)/$$(NODE_BASE).tar.gz
+%/heroku/lib/node: $(CACHE_DIR)/node-v$(NODE_VERSION)/$$(NODE_BASE).tar.gz
 	@mkdir -p $*
-	@rm -rf $(@D)/node-*
 	tar -C $* -xzf $<
 	mv $*/$(NODE_BASE)/bin/node $@
 	@rm -rf $*/$(NODE_BASE)*
 	@touch $@
 
-tmp/%/heroku/lib/node-$(NODE_VERSION).exe: $(CACHE_DIR)/node-v$(NODE_VERSION)/win-$$(NODE_ARCH)/node.exe
+tmp/%/heroku/lib/node.exe: $(CACHE_DIR)/node-v$(NODE_VERSION)/win-$$(NODE_ARCH)/node.exe
 	@mkdir -p tmp/$*
-	@rm -rf $(@D)/node-*
 	cp $< $@
 	@touch $@
 
@@ -56,19 +54,19 @@ NPM_ARCHIVE=$(CACHE_DIR)/npm-v$(NPM_VERSION).tar.gz
 $(NPM_ARCHIVE):
 	@mkdir -p $(@D)
 	curl -fsSLo $@ https://github.com/npm/npm/archive/v$(NPM_VERSION).tar.gz
-%/heroku/lib/npm-$(NPM_VERSION): $(NPM_ARCHIVE)
+%/heroku/lib/npm: $(NPM_ARCHIVE)
 	@mkdir -p $(@D)
-	@rm -rf $(@D)/npm-*
 	tar -C $(@D) -xzf $(NPM_ARCHIVE)
+	mv $(@D)/npm-* $@
 	@touch $@
 
-$(WORKSPACE)/lib/plugins.json: $(WORKSPACE)/bin/heroku package.json $(WORKSPACE)/lib/npm-$(NPM_VERSION) $(WORKSPACE)/lib/node-$(NODE_VERSION)$$(EXT)
+$(WORKSPACE)/lib/plugins.json: $(WORKSPACE)/bin/heroku package.json $(WORKSPACE)/lib/npm $(WORKSPACE)/lib/node$$(EXT)
 	@mkdir -p $(@D)
 	cp package.json $(@D)/package.json
 	$(WORKSPACE)/bin/heroku build:plugins
 	@ # this doesn't work in the CLI for some reason
-	cd $(WORKSPACE)/lib && ./npm-$(NPM_VERSION)/cli.js dedupe > /dev/null
-	cd $(WORKSPACE)/lib && ./npm-$(NPM_VERSION)/cli.js prune > /dev/null
+	cd $(WORKSPACE)/lib && ./npm/cli.js dedupe > /dev/null
+	cd $(WORKSPACE)/lib && ./npm/cli.js prune > /dev/null
 
 tmp/%/heroku/lib/plugins.json: $(WORKSPACE)/lib/plugins.json
 	@mkdir -p $(@D)
@@ -77,7 +75,7 @@ tmp/%/heroku/lib/plugins.json: $(WORKSPACE)/lib/plugins.json
 	@rm -rf $(@D)/node_modules
 	cp -r $(WORKSPACE)/lib/node_modules $(@D)
 
-tmp/%/heroku/VERSION: tmp/%/heroku/bin/heroku$$(EXT) tmp/%/heroku/lib/npm-$(NPM_VERSION) tmp/%/heroku/lib/node-$(NODE_VERSION)$$(EXT) tmp/%/heroku/lib/plugins.json bin/version tmp/%/heroku/lib/cacert.pem
+tmp/%/heroku/VERSION: tmp/%/heroku/bin/heroku$$(EXT) tmp/%/heroku/lib/npm tmp/%/heroku/lib/node$$(EXT) tmp/%/heroku/lib/plugins.json bin/version tmp/%/heroku/lib/cacert.pem
 	echo $(VERSION) > $@
 
 %/heroku/lib/cacert.pem: resources/cacert.pem
@@ -86,7 +84,7 @@ tmp/%/heroku/VERSION: tmp/%/heroku/bin/heroku$$(EXT) tmp/%/heroku/lib/npm-$(NPM_
 
 SOURCEDIR=.
 SOURCES := $(shell find $(SOURCEDIR) -name '*.go')
-LDFLAGS=-ldflags "-X=main.Version=$(VERSION) -X=main.Channel=$(CHANNEL) -X=main.GitSHA=$(REVISION) -X=main.NodeVersion=$(NODE_VERSION) -X=main.NpmVersion=$(NPM_VERSION) -X=main.Autoupdate=$(AUTOUPDATE)"
+LDFLAGS=-ldflags "-X=main.Version=$(VERSION) -X=main.Channel=$(CHANNEL) -X=main.GitSHA=$(REVISION) -X=main.NodeVersion=$(NODE_VERSION) -X=main.Autoupdate=$(AUTOUPDATE)"
 tmp/darwin-%/heroku/bin/heroku:      GOOS=darwin
 tmp/linux-%/heroku/bin/heroku:       GOOS=linux
 tmp/debian-%/heroku/bin/heroku:      GOOS=linux
