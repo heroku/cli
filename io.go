@@ -35,8 +35,12 @@ var errLogger = newLogger(ErrLogPath)
 
 // ExitFn is used to mock os.Exit
 var ExitFn = os.Exit
-var debugging = isDebugging()
-var debuggingHeaders = isDebuggingHeaders()
+
+// Debugging is HEROKU_DEBUG
+var Debugging = isDebugging()
+
+// DebuggingHeaders is HEROKU_DEBUG_HEADERS
+var DebuggingHeaders = isDebuggingHeaders()
 var swallowSigint = false
 
 func newLogger(path string) *log.Logger {
@@ -110,7 +114,7 @@ func Logf(format string, a ...interface{}) {
 // It will be added to the logfile in ~/.cache/heroku/error.log and stderr if HEROKU_DEBUG is set.
 func Debugln(a ...interface{}) {
 	Logln(a...)
-	if debugging {
+	if Debugging {
 		fmt.Fprintln(Stderr, a...)
 	}
 }
@@ -119,7 +123,7 @@ func Debugln(a ...interface{}) {
 // It will be added to the logfile in ~/.cache/heroku/error.log and stderr if HEROKU_DEBUG is set.
 func Debugf(format string, a ...interface{}) {
 	Logf(format, a...)
-	if debugging {
+	if Debugging {
 		fmt.Fprintf(Stderr, format, a...)
 	}
 }
@@ -253,15 +257,18 @@ func supportsColor() bool {
 	if !istty() {
 		return false
 	}
-	for _, arg := range os.Args {
+	for _, arg := range Args {
 		if arg == "--no-color" {
 			return false
 		}
 	}
-	if config, _ := config.GetBool("color"); config != nil && *config == false {
+	if os.Getenv("COLOR") == "false" {
 		return false
 	}
-	return os.Getenv("COLOR") != "false"
+	if config != nil && config.Color != nil && !*config.Color {
+		return false
+	}
+	return true
 }
 
 func plural(word string, count int) string {
@@ -336,8 +343,8 @@ func rollbar(err error, level string) {
 	rollbarAPI.ErrorWriter = nil
 	rollbarAPI.CodeVersion = GitSHA
 	var cmd string
-	if len(os.Args) > 1 {
-		cmd = os.Args[1]
+	if len(Args) > 1 {
+		cmd = Args[1]
 	}
 	fields := []*rollbarAPI.Field{
 		{"version", Version},
@@ -349,20 +356,12 @@ func rollbar(err error, level string) {
 	rollbarAPI.Wait()
 }
 
-func readJSON(path string) (map[string]interface{}, error) {
-	if exists, err := fileExists(path); !exists {
-		if err != nil {
-			return nil, err
-		}
-		return map[string]interface{}{}, nil
-	}
-	data, err := ioutil.ReadFile(path)
+func readJSON(obj interface{}, path string) error {
+	f, err := os.Open(path)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	var out map[string]interface{}
-	err = json.Unmarshal(data, &out)
-	return out, err
+	return json.NewDecoder(f).Decode(&obj)
 }
 
 func saveJSON(obj interface{}, path string) error {

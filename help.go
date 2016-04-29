@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"path/filepath"
 	"strings"
 
 	"github.com/texttheater/golang-levenshtein/levenshtein"
@@ -15,7 +16,8 @@ func init() {
 			&Command{
 				Hidden: true,
 				Run: func(ctx *Context) {
-					help([]string{"heroku", "help"})
+					Args = []string{"heroku", "help"}
+					help()
 				},
 			},
 		},
@@ -25,23 +27,21 @@ func init() {
 // HELP is "help"
 const HELP = "help"
 
-func help(args []string) {
-	var cmd string
-	switch {
-	case len(args) > 2 && (args[1] == HELP || args[1] == "--help"):
-		cmd = args[2]
-	default:
-		cmd = args[1]
+func help() {
+	cmd := Args[1]
+	switch Args[1] {
+	case "help", "--help", "-h":
+		if len(Args) >= 3 {
+			cmd = Args[2]
+		} else {
+			cmd = ""
+		}
 	}
 	topic := AllTopics().ByName(strings.SplitN(cmd, ":", 2)[0])
 	command := AllCommands().Find(cmd)
 	switch {
-	case cmd == HELP || cmd == "--help":
-		helpShowTopics()
 	case topic == nil:
-		helpInvalidCommand(cmd)
-	case command == nil && strings.Index(cmd, ":") != -1:
-		helpInvalidCommand(cmd)
+		helpShowTopics()
 	case command == nil:
 		helpShowTopic(topic)
 	default:
@@ -92,18 +92,21 @@ func printTopicCommandsHelp(topic *Topic) {
 	}
 }
 
-func helpInvalidCommand(cmd string) {
+func helpInvalidCommand() {
 	var closest string
 	currentAnalyticsCommand.Valid = false
-	if len(cmd) > 2 {
-		closest = fmt.Sprintf("Perhaps you meant %s.\n", yellow(findClosestCommand(AllCommands(), cmd).String()))
+	guess, distance := findClosestCommand(AllCommands(), Args[1])
+	if len(Args[1]) > 2 || distance < 2 {
+		newcmd := strings.TrimSpace(fmt.Sprintf("heroku %s %s", guess, strings.Join(Args[2:], " ")))
+		WarnIfError(saveJSON(&Guess{guess.String(), Args[2:]}, guessPath()))
+		closest = fmt.Sprintf("Perhaps you meant %s?\nRun %s to run %s.\n", yellow(guess.String()), cyan("heroku _"), cyan(newcmd))
 	}
 	ExitWithMessage(`%s is not a heroku command.
 %sRun %s for a list of available commands.
-`, yellow(cmd), closest, cyan("heroku help"))
+`, yellow(Args[1]), closest, cyan("heroku help"))
 }
 
-func findClosestCommand(from CommandSet, a string) *Command {
+func findClosestCommand(from CommandSet, a string) (*Command, int) {
 	var top *Command
 	var val int
 	for _, b := range from {
@@ -112,9 +115,25 @@ func findClosestCommand(from CommandSet, a string) *Command {
 			val = cur
 		}
 	}
-	return top
+	return top, val
 }
 
 func stringDistance(a, b string) int {
 	return levenshtein.DistanceForStrings([]rune(a), []rune(b), levenshtein.DefaultOptions)
+}
+
+// Guess is used with `heroku _`
+type Guess struct {
+	Guess string   `json:"guess"`
+	Args  []string `json:"args"`
+}
+
+func guessPath() string {
+	return filepath.Join(CacheHome, "guess.json")
+}
+
+func loadLastCommandGuess() (guess *Guess) {
+	err := readJSON(&guess, guessPath())
+	LogIfError(err)
+	return guess
 }

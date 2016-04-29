@@ -23,6 +23,9 @@ var Channel = "?"
 // This list is all the Go topics, the Node topics are filled in later
 var Topics TopicSet
 
+// Args is os.Args
+var Args []string
+
 func main() {
 	Start(os.Args...)
 	Exit(0)
@@ -30,6 +33,7 @@ func main() {
 
 // Start the CLI
 func Start(args ...string) {
+	Args = args
 	loadNewCLI()
 	if os.Getenv("TESTING") != ONE {
 		defer handlePanic()
@@ -46,50 +50,55 @@ func Start(args ...string) {
 	runtime.GOMAXPROCS(1) // more procs causes runtime: failed to create new OS thread on Ubuntu
 	ShowDebugInfo()
 
-	if len(args) <= 1 {
+	if len(Args) <= 1 {
 		// show dashboard if no args passed
-		args = append(args, "dashboard")
+		Args = append(Args, "dashboard")
 	}
 
-	switch args[1] {
-	case "help", "--help":
-		help(args)
+	switch Args[1] {
+	case "_":
+		guess := loadLastCommandGuess()
+		if guess != nil {
+			Args = append([]string{Args[0], guess.Guess}, guess.Args...)
+		}
+	case "help", "--help", "-h":
+		help()
 		return
 	case "version", "--version", "-v":
 		ShowVersion()
 		return
 	}
 
-	cmd := AllCommands().Find(args[1])
-	if cmd != nil && cmd.DisableAnalytics {
-		currentAnalyticsCommand = nil
-	} else {
-		currentAnalyticsCommand.RecordStart()
+	for _, arg := range Args {
+		if arg == "--help" || arg == "-h" {
+			help()
+			return
+		}
 	}
-	ctx, err := BuildContext(cmd, args)
-	if err == errHelp {
-		help(args)
+
+	cmd := AllCommands().Find(Args[1])
+	if cmd == nil {
+		helpInvalidCommand()
 		return
 	}
+	if !cmd.DisableAnalytics {
+		currentAnalyticsCommand.RecordStart()
+	}
+	ctx, err := BuildContext(cmd, Args)
 	must(err)
 	cmd.Run(ctx)
-	Exit(0)
 }
 
 var crashing = false
 
 // ShowDebugInfo prints debugging information if HEROKU_DEBUG=1
 func ShowDebugInfo() {
-	if !isDebugging() {
+	if !Debugging {
 		return
 	}
 	info := []string{version(), BinPath}
-	if len(os.Args) > 1 {
-		info = append(info, fmt.Sprintf("cmd: %s", os.Args[1]))
-	}
-	proxy := getProxy()
-	if proxy != nil {
-		info = append(info, fmt.Sprintf("proxy: %s", proxy))
+	if len(Args) > 1 {
+		info = append(info, fmt.Sprintf("cmd: %s", Args[1]))
 	}
 	Debugln(strings.Join(info, " "))
 }
