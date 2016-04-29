@@ -7,5 +7,4 @@ environment:
 build: off
 
 test_script:
-  - go test -v -race
-  - go build -v ./...
+  - go test -v -race -cover -coverprofile=coverage.out -ginkgo.v
