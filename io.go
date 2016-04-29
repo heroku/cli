@@ -253,7 +253,7 @@ func supportsColor() bool {
 	if !istty() {
 		return false
 	}
-	for _, arg := range os.Args {
+	for _, arg := range Args {
 		if arg == "--no-color" {
 			return false
 		}
@@ -339,8 +339,8 @@ func rollbar(err error, level string) {
 	rollbarAPI.ErrorWriter = nil
 	rollbarAPI.CodeVersion = GitSHA
 	var cmd string
-	if len(os.Args) > 1 {
-		cmd = os.Args[1]
+	if len(Args) > 1 {
+		cmd = Args[1]
 	}
 	fields := []*rollbarAPI.Field{
 		{"version", Version},

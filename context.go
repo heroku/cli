@@ -35,7 +35,7 @@ type Context struct {
 
 var errHelp = errors.New(HELP)
 
-// BuildContext builds a context object based on a command and os.Args
+// BuildContext builds a context object based on a command and args
 func BuildContext(command *Command, args []string) (*Context, error) {
 	var err error
 	if command == nil {

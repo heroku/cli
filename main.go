@@ -24,7 +24,7 @@ var Channel = "?"
 var Topics TopicSet
 
 // Args is os.Args
-var Args = os.Args
+var Args []string
 
 func main() {
 	Start(os.Args...)
@@ -32,7 +32,8 @@ func main() {
 }
 
 // Start the CLI
-func Start() {
+func Start(args ...string) {
+	Args = args
 	loadNewCLI()
 	if os.Getenv("TESTING") != ONE {
 		defer handlePanic()
@@ -60,25 +61,30 @@ func Start() {
 		if guess != nil {
 			Args = append([]string{Args[0], guess.Guess}, guess.Args...)
 		}
-	case "help", "--help":
-		help(Args)
+	case "help", "--help", "-h":
+		help()
 		return
 	case "version", "--version", "-v":
 		ShowVersion()
 		return
 	}
 
+	for _, arg := range Args {
+		if arg == "--help" || arg == "-h" {
+			help()
+			return
+		}
+	}
+
 	cmd := AllCommands().Find(Args[1])
-	if cmd != nil && cmd.DisableAnalytics {
-		currentAnalyticsCommand = nil
-	} else {
+	if cmd == nil {
+		helpInvalidCommand()
+		return
+	}
+	if !cmd.DisableAnalytics {
 		currentAnalyticsCommand.RecordStart()
 	}
 	ctx, err := BuildContext(cmd, Args)
-	if err == errHelp {
-		help(Args)
-		return
-	}
 	must(err)
 	cmd.Run(ctx)
 	Exit(0)
@@ -92,8 +98,8 @@ func ShowDebugInfo() {
 		return
 	}
 	info := []string{version(), BinPath}
-	if len(os.Args) > 1 {
-		info = append(info, fmt.Sprintf("cmd: %s", os.Args[1]))
+	if len(Args) > 1 {
+		info = append(info, fmt.Sprintf("cmd: %s", Args[1]))
 	}
 	proxy := getProxy()
 	if proxy != nil {

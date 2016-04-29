@@ -57,7 +57,8 @@ var _ = Describe("Help", func() {
 		It("has no stdout", func() { Expect(stdout).To(Equal("")) })
 		It("shows invalid command message", func() {
 			Expect(stderr).To(Equal(` !    hlp is not a heroku command.
- !    Perhaps you meant help.
+ !    Perhaps you meant help?
+ !    Run heroku _ to run heroku help.
  !    Run heroku help for a list of available commands.
 `))
 		})
@@ -80,13 +81,10 @@ var _ = Describe("Help", func() {
 			cli.Start("heroku", "help", "plugins:foo")
 		})
 
-		It("exits with code 2", func() { Expect(exit).To(Equal(2)) })
-		It("has no stdout", func() { Expect(stdout).To(Equal("")) })
-		It("shows invalid command message", func() {
-			Expect(stderr).To(Equal(` !    plugins:foo is not a heroku command.
- !    Perhaps you meant plugins.
- !    Run heroku help for a list of available commands.
-`))
+		It("exits with code 0", func() { Expect(exit).To(Equal(0)) })
+		It("shows help for plugins commands", func() {
+			Expect(stdout).To(HavePrefix("Usage: heroku plugins:COMMAND"))
+			Expect(stdout).To(ContainSubstring("heroku plugins:link"))
 		})
 	})
 

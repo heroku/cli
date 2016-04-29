@@ -141,7 +141,7 @@ func remoteFromGitConfig() string {
 
 func errMultipleHerokuRemotes(remotes []string) error {
 	sort.Strings(remotes)
-	cmd := "heroku " + strings.Join(os.Args[1:], " ")
+	cmd := "heroku " + strings.Join(Args[1:], " ")
 	remote := remotes[0]
 	if remote == "heroku" {
 		// easier to understand the concept of --remote when

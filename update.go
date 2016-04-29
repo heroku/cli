@@ -184,5 +184,5 @@ func loadNewCLI() {
 		}
 		return
 	}
-	execBin(expected, os.Args...)
+	execBin(expected, Args...)
 }

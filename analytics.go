@@ -48,7 +48,7 @@ func (c *AnalyticsCommand) RecordStart() {
 // RecordEnd marks when a command was completed
 // and records it to the analytics file
 func (c *AnalyticsCommand) RecordEnd(status int) {
-	if c == nil || skipAnalytics() || len(Args) < 2 {
+	if c == nil || skipAnalytics() || len(Args) < 2 || (c.Valid && c.start.IsZero()) {
 		return
 	}
 	c.Command = Args[1]
