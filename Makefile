@@ -24,8 +24,8 @@ $(CACHE_DIR)/node-v$(NODE_VERSION)/%:
 	curl -fsSLo $@ https://nodejs.org/dist/v$(NODE_VERSION)/$*
 
 $(WORKSPACE)/lib/node: NODE_OS      := $(shell go env GOOS)
-$(WORKSPACE)/lib/node: ARCH    := $(subst amd64,x64,$(shell go env GOARCH))
-tmp/%/heroku/lib/node: $(CACHE_DIR)/node-v$(NODE_VERSION)/node-v$(NODE_VERSION)-$$(NODE_OS)-$$(NODE_ARCH).tar.gz
+$(WORKSPACE)/lib/node: NODE_ARCH    := $(subst amd64,x64,$(shell go env GOARCH))
+%/heroku/lib/node: $(CACHE_DIR)/node-v$(NODE_VERSION)/node-v$(NODE_VERSION)-$$(NODE_OS)-$$(NODE_ARCH).tar.gz
 	@mkdir -p $(@D)
 	tar -C $(@D) -xzf $<
 	cp $(@D)/node-v$(NODE_VERSION)-$(NODE_OS)-$(NODE_ARCH)/bin/node $@
@@ -41,7 +41,7 @@ NPM_ARCHIVE=$(CACHE_DIR)/npm-v$(NPM_VERSION).tar.gz
 $(NPM_ARCHIVE):
 	@mkdir -p $(@D)
 	curl -fsSLo $@ https://github.com/npm/npm/archive/v$(NPM_VERSION).tar.gz
-tmp/%/heroku/lib/npm: $(NPM_ARCHIVE)
+%/heroku/lib/npm: $(NPM_ARCHIVE)
 	@mkdir -p $(@D)
 	tar -C $(@D) -xzf $(NPM_ARCHIVE)
 	mv $(@D)/npm-* $@
@@ -62,19 +62,19 @@ tmp/%/heroku/lib/plugins.json: $(WORKSPACE)/lib/plugins.json
 	@rm -rf $(@D)/node_modules
 	cp -r $(WORKSPACE)/lib/node_modules $(@D)
 
-tmp/%/heroku/VERSION: bin/version
+%/heroku/VERSION: bin/version
 	@mkdir -p $(@D)
 	echo $(VERSION) > $@
 
-tmp/%/heroku/lib/cacert.pem: resources/cacert.pem
+%/heroku/lib/cacert.pem: resources/cacert.pem
 	@mkdir -p $(@D)
 	cp $< $@
 
-tmp/%/heroku/README: resources/standalone/README
+%/heroku/README: resources/standalone/README
 	@mkdir -p $(@D)
 	cp $< $@
 
-tmp/%/heroku/install: resources/standalone/install
+%/heroku/install: resources/standalone/install
 	@mkdir -p $(@D)
 	cp $< $@
 
@@ -89,7 +89,7 @@ $(WORKSPACE)/bin/heroku: BUILD_TAGS=dev
 $(WORKSPACE)/bin/heroku tmp/%/heroku/bin/heroku: $(SOURCES) bin/version
 	GOOS=$(GOOS) GOARCH=$(ARCH) GO386=$(GO386) GOARM=$(GOARM) go build -tags $(BUILD_TAGS) -o $@ $(LDFLAGS)
 
-tmp/%/heroku/bin/heroku.exe: $(SOURCES) resources/exe/heroku-codesign-cert.pfx
+%/heroku/bin/heroku.exe: $(SOURCES) resources/exe/heroku-codesign-cert.pfx
 	GOOS=$(GOOS) GOARCH=$(GOARCH) go build $(LDFLAGS) -o $@ -tags $(BUILD_TAGS)
 	@osslsigncode -pkcs12 resources/exe/heroku-codesign-cert.pfx \
 		-pass '$(HEROKU_WINDOWS_SIGNING_PASS)' \
