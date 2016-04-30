@@ -119,9 +119,9 @@ func buildBsdiff(ctx *Context) {
 	must(err)
 	Errf("downloading %s\n", build.URL)
 	defer patch.Close()
+	Errf("bsdiffing %s\n", out)
+	must(binarydist.Diff(old, new, patch))
 	if sha() != build.Sha256 {
 		must(merry.Errorf("SHA mismatch"))
 	}
-	Errf("bsdiffing %s\n", out)
-	must(binarydist.Diff(old, new, patch))
 }
