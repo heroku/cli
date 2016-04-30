@@ -157,7 +157,10 @@ func downloadXZ(url, msg string) (io.Reader, func() string, error) {
 	}
 	getSha, reader := computeSha(download)
 	uncompressed, err := xz.NewReader(reader)
-	return uncompressed, getSha, err
+	return uncompressed, func() string {
+		defer resp.Body.Close()
+		return getSha()
+	}, err
 }
 
 func getHTTPError(rsp *http.Response) error {

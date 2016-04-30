@@ -248,8 +248,11 @@ distwin: $(DIST_DIR)/$(VERSION)/heroku-windows-amd64.exe $(DIST_DIR)/$(VERSION)/
 .PHONY: disttxz
 disttxz: $(MANIFEST) $(MANIFEST).sig $(DIST_TARGETS)
 
-.PHONY: distpatch
+.PHONY: distpatch releasepatch releasepatch/%
 distpatch: $(DIST_PATCHES)
+releasepatch: $(addprefix releasepatch/,$(DIST_PATCHES))
+releasepatch/%: %
+	aws s3 cp --cache-control max-age=0 $(DIST_DIR)/$(PREVIOUS_VERSION)/$(@F) s3://heroku-cli-assets/branches/$(CHANNEL)/$(@F)
 
 .PHONY: releasetxz
 releasetxz: $(MANIFEST) $(MANIFEST).sig $(addprefix releasetxz/,$(DIST_TARGETS))
@@ -271,7 +274,7 @@ releaseosx: $(DIST_DIR)/$(VERSION)/heroku-osx.pkg
 distdeb: $(DIST_DIR)/$(VERSION)/apt/Packages $(DIST_DIR)/$(VERSION)/apt/Release
 
 .PHONY: release
-release: releasewin releasedeb releasetxz
+release: releasewin releasedeb releasetxz releasepatch
 	@if type cowsay >/dev/null 2>&1; then cowsay -f stegosaurus Released $(CHANNEL)/$(VERSION); fi;
 
 .PHONY: releasedeb
