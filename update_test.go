@@ -1,6 +1,7 @@
 package main_test
 
 import (
+	"os"
 	"os/exec"
 	"path/filepath"
 
@@ -13,6 +14,7 @@ import (
 var _ = Describe("update.go", func() {
 	Describe("UpdateCLI()", func() {
 		It("downloads a new CLI", func() {
+			os.Remove(cli.UpdateLockPath)
 			manifest := cli.GetUpdateManifest("dev")
 			Expect(manifest.Channel).To(Equal("dev"))
 			dest := filepath.Join("tmp", "newcli")
