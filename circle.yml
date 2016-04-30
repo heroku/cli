@@ -48,17 +48,17 @@ deployment:
     branch: dev
     owner: heroku
     commands:
-      - gpg --passphrase $HEROKU_WINDOWS_SIGNING_PASS -d resources/deb/key.gpg | gpg --import
-      - CHANNEL=dev make release -j $JOBZ
+      #- gpg --passphrase $HEROKU_WINDOWS_SIGNING_PASS -d resources/deb/key.gpg | gpg --import
+      #- CHANNEL=dev make release -j $JOBZ
   beta:
     branch: beta
     owner: heroku
     commands:
-      - gpg --passphrase $HEROKU_WINDOWS_SIGNING_PASS -d resources/deb/key.gpg | gpg --import
-      - CHANNEL=beta make release -j $JOBZ
+      #- gpg --passphrase $HEROKU_WINDOWS_SIGNING_PASS -d resources/deb/key.gpg | gpg --import
+      #- CHANNEL=beta make release -j $JOBZ
   stable:
     tag: /v[0-9]+(\.[0-9]+)*/
     owner: heroku
     commands:
-      - gpg --passphrase $HEROKU_WINDOWS_SIGNING_PASS -d resources/deb/key.gpg | gpg --import
-      - CHANNEL=stable make release -j $JOBZ
+      #- gpg --passphrase $HEROKU_WINDOWS_SIGNING_PASS -d resources/deb/key.gpg | gpg --import
+      #- CHANNEL=stable make release -j $JOBZ
