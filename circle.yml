@@ -23,7 +23,7 @@ dependencies:
     - >
       go version &&
       if ! type gometalinter >/dev/null 2>&1; then go get -v github.com/alecthomas/gometalinter && gometalinter --install; fi &&
-      if ! type goveralls    >/dev/null 2>&1; then go get -v github.com/mattn/goveralls; fi &&
+      if ! type goveralls    >/dev/null 2>&1; then go get -v github.com/mattn/goveralls; fi
     - make deps build -j $JOBZ
     - sudo apt-get install cowsay nsis
 test:
