@@ -86,7 +86,7 @@ $(WORKSPACE)/bin/heroku: OS   := $(shell go env GOOS)
 $(WORKSPACE)/bin/heroku: ARCH := $(shell go env GOARCH)
 $(WORKSPACE)/bin/heroku: AUTOUPDATE=no
 $(WORKSPACE)/bin/heroku: BUILD_TAGS=dev
-tmp/%/heroku/bin/heroku: $(SOURCES) bin/version
+$(WORKSPACE)/bin/heroku tmp/%/heroku/bin/heroku: $(SOURCES) bin/version
 	GOOS=$(GOOS) GOARCH=$(ARCH) GO386=$(GO386) GOARM=$(GOARM) go build -tags $(BUILD_TAGS) -o $@ $(LDFLAGS)
 
 tmp/%/heroku/bin/heroku.exe: $(SOURCES) resources/exe/heroku-codesign-cert.pfx
