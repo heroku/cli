@@ -252,7 +252,7 @@ disttxz: $(MANIFEST) $(MANIFEST).sig $(DIST_TARGETS)
 distpatch: $(DIST_PATCHES)
 releasepatch: $(addprefix releasepatch/,$(DIST_PATCHES))
 releasepatch/%: %
-	aws s3 cp --cache-control max-age=0 $(DIST_DIR)/$(PREVIOUS_VERSION)/$(@F) s3://heroku-cli-assets/branches/$(CHANNEL)/$(@F)
+	aws s3 cp --cache-control max-age=0 $(DIST_DIR)/$(PREVIOUS_VERSION)/$(@F) s3://heroku-cli-assets/branches/$(CHANNEL)/$(PREVIOUS_VERSION)/$(@F)
 
 .PHONY: releasetxz
 releasetxz: $(MANIFEST) $(MANIFEST).sig $(addprefix releasetxz/,$(DIST_TARGETS))
