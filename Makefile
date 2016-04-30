@@ -26,26 +26,26 @@ $(CACHE_DIR)/node-v$(NODE_VERSION)/%:
 	curl -fsSLo $@ https://nodejs.org/dist/v$(NODE_VERSION)/$*
 
 .SECONDEXPANSION:
-tmp/darwin-%/heroku/lib/node: NODE_OS=darwin
-tmp/linux-%/heroku/lib/node:  NODE_OS=linux
-tmp/debian-%/heroku/lib/node: NODE_OS=linux
-tmp/%-amd64/heroku/lib/node:  NODE_ARCH=x64
-tmp/%-386/heroku/lib/node:    NODE_ARCH=x86
-tmp/%-arm/heroku/lib/node:    NODE_ARCH=armv7l
+tmp/darwin-%/heroku/lib/node:  NODE_OS=darwin
+tmp/linux-%/heroku/lib/node:   NODE_OS=linux
+tmp/debian-%/heroku/lib/node:  NODE_OS=linux
+tmp/%-amd64/heroku/lib/node:   NODE_ARCH=x64
+tmp/%-386/heroku/lib/node:     NODE_ARCH=x86
+tmp/%-arm/heroku/lib/node:     NODE_ARCH=armv7l
 
-.IGNORE: tmp/freebsd-amd64/heroku/lib/node \
-	tmp/freebsd-386/heroku/lib/node \
-	tmp/openbsd-amd64/heroku/lib/node \
-	tmp/openbsd-386/heroku/lib/node
+.PHONY: tmp/freebsd-amd64/heroku/lib/node \
+	       tmp/freebsd-386/heroku/lib/node \
+	       tmp/openbsd-amd64/heroku/lib/node \
+	       tmp/openbsd-386/heroku/lib/node
 
-%/heroku/lib/node: $(CACHE_DIR)/node-v$(NODE_VERSION)/$$(NODE_BASE).tar.gz
-	@mkdir -p $*
-	tar -C $* -xzf $<
-	mv $*/$(NODE_BASE)/bin/node $@
-	@rm -rf $*/$(NODE_BASE)*
+tmp/dev/heroku/lib/node tmp/debian-%/heroku/lib/node tmp/darwin-%/heroku/lib/node tmp/linux-%/heroku/lib/node: $(CACHE_DIR)/node-v$(NODE_VERSION)/$$(NODE_BASE).tar.gz
+	@mkdir -p $(@D)
+	tar -C $(@D) -xzf $<
+	mv $(@D)/$(NODE_BASE)/bin/node $@
+	@rm -rf $(@D)/$(NODE_BASE)*
 	@touch $@
 
-tmp/%/heroku/lib/node.exe: $(CACHE_DIR)/node-v$(NODE_VERSION)/win-$$(NODE_ARCH)/node.exe
+tmp/windows-%/heroku/lib/node.exe: $(CACHE_DIR)/node-v$(NODE_VERSION)/win-$$(NODE_ARCH)/node.exe
 	@mkdir -p tmp/$*
 	cp $< $@
 	@touch $@
