@@ -17,6 +17,8 @@ WORKSPACE?=tmp/dev/heroku
 AUTOUPDATE=yes
 NODE_OS=$(OS)
 
+TARGETS:=darwin-amd64 linux-amd64 linux-386 linux-arm windows-amd64 windows-386 freebsd-amd64 freebsd-386 openbsd-amd64 openbsd-386
+
 $(CACHE_DIR)/node-v$(NODE_VERSION)/%:
 	@mkdir -p $(@D)
 	curl -fsSLo $@ https://nodejs.org/dist/v$(NODE_VERSION)/$*
@@ -106,16 +108,7 @@ $(DIST_DIR)/$(VERSION)/heroku-v$(VERSION)-%.tar.xz: tmp/%
 comma:=,
 empty:=
 space:=$(empty) $(empty)
-DIST_TARGETS=$(DIST_DIR)/$(VERSION)/heroku-v$(VERSION)-darwin-amd64.tar.xz \
-						 $(DIST_DIR)/$(VERSION)/heroku-v$(VERSION)-linux-amd64.tar.xz \
-						 $(DIST_DIR)/$(VERSION)/heroku-v$(VERSION)-linux-386.tar.xz \
-						 $(DIST_DIR)/$(VERSION)/heroku-v$(VERSION)-linux-arm.tar.xz \
-						 $(DIST_DIR)/$(VERSION)/heroku-v$(VERSION)-windows-amd64.tar.xz \
-						 $(DIST_DIR)/$(VERSION)/heroku-v$(VERSION)-windows-386.tar.xz \
-						 $(DIST_DIR)/$(VERSION)/heroku-v$(VERSION)-freebsd-amd64.tar.xz \
-						 $(DIST_DIR)/$(VERSION)/heroku-v$(VERSION)-freebsd-386.tar.xz \
-						 $(DIST_DIR)/$(VERSION)/heroku-v$(VERSION)-openbsd-amd64.tar.xz \
-						 $(DIST_DIR)/$(VERSION)/heroku-v$(VERSION)-openbsd-386.tar.xz
+DIST_TARGETS := $(foreach t,$(TARGETS),$(DIST_DIR)/$(VERSION)/heroku-v$(VERSION)-$(t).tar.xz)
 MANIFEST := $(DIST_DIR)/$(VERSION)/manifest.json
 $(MANIFEST): $(WORKSPACE)/bin/heroku $(DIST_TARGETS)
 	$(WORKSPACE)/bin/heroku build:manifest --dir $(@D) --version $(VERSION) --channel $(CHANNEL) --targets $(subst $(space),$(comma),$(DIST_TARGETS)) > $@
@@ -124,18 +117,10 @@ $(MANIFEST).sig: $(MANIFEST)
 	@gpg --armor -u 0F1B0520 --yes --output $@ --detach-sig $<
 
 PREVIOUS_VERSION:=$(shell curl -fsSL https://cli-assets.heroku.com/branches/$(CHANNEL)/manifest.json | jq -r '.version')
-DIST_PATCHES:=$(DIST_DIR)/$(PREVIOUS_VERSION)/heroku-v$(PREVIOUS_VERSION)-darwin-amd64.tar.patch \
-						  $(DIST_DIR)/$(PREVIOUS_VERSION)/heroku-v$(PREVIOUS_VERSION)-linux-amd64.tar.patch \
-						  $(DIST_DIR)/$(PREVIOUS_VERSION)/heroku-v$(PREVIOUS_VERSION)-linux-386.tar.patch \
-						  $(DIST_DIR)/$(PREVIOUS_VERSION)/heroku-v$(PREVIOUS_VERSION)-linux-arm.tar.patch \
-						  $(DIST_DIR)/$(PREVIOUS_VERSION)/heroku-v$(PREVIOUS_VERSION)-windows-amd64.tar.patch \
-						  $(DIST_DIR)/$(PREVIOUS_VERSION)/heroku-v$(PREVIOUS_VERSION)-windows-386.tar.patch \
-						  $(DIST_DIR)/$(PREVIOUS_VERSION)/heroku-v$(PREVIOUS_VERSION)-freebsd-amd64.tar.patch \
-						  $(DIST_DIR)/$(PREVIOUS_VERSION)/heroku-v$(PREVIOUS_VERSION)-freebsd-386.tar.patch \
-						  $(DIST_DIR)/$(PREVIOUS_VERSION)/heroku-v$(PREVIOUS_VERSION)-openbsd-amd64.tar.patch \
-						  $(DIST_DIR)/$(PREVIOUS_VERSION)/heroku-v$(PREVIOUS_VERSION)-openbsd-386.tar.patch
+DIST_PATCHES := $(foreach t,$(TARGETS),$(DIST_DIR)/$(PREVIOUS_VERSION)/heroku-v$(PREVIOUS_VERSION)-$(t).patch)
 
-$(DIST_DIR)/$(PREVIOUS_VERSION)/heroku-v$(PREVIOUS_VERSION)-%.tar.patch: $(DIST_DIR)/$(VERSION)/heroku-v$(VERSION)-%.tar.xz
+$(DIST_DIR)/$(PREVIOUS_VERSION)/heroku-v$(PREVIOUS_VERSION)-%.patch: $(DIST_DIR)/$(VERSION)/heroku-v$(VERSION)-%.tar.xz
+	@mkdir -p $(@D)
 	$(WORKSPACE)/bin/heroku build:bsdiff --new $< --channel $(CHANNEL) --target $* --out $@
 
 DEB_VERSION:=$(firstword $(subst -, ,$(VERSION)))-1
