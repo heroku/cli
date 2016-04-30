@@ -7,11 +7,7 @@ if [ "$#" -ne 2 ]; then
   exit 1
 fi
 
-
-make tmp/dev/heroku/bin/heroku --quiet
-tmp/dev/heroku/bin/heroku run bash --no-tty --exit-code --size ${SIZE:="Performance-L"} -- <<EOF
-cd ~/src/github.com/heroku/cli
-git fetch
-git checkout $1
-CHANNEL=$2 make release -j${JOBS:="8"}
-EOF
+docker build -t cli docker
+docker run \
+  -e HEROKU_WINDOWS_SIGNING_PASS=$HEROKU_WINDOWS_SIGNING_PASS \
+  cli $*
