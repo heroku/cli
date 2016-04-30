@@ -145,12 +145,21 @@ type Build struct {
 	Bytes  int64  `json:"bytes"`
 }
 
+var updateManifestRetrying = false
+
 // GetUpdateManifest loads the manifest.json for a channel
 func GetUpdateManifest(channel string) *Manifest {
 	var m Manifest
 	url := "https://cli-assets.heroku.com/branches/" + channel + "/manifest.json"
 	rsp, err := sling.New().Get(url).ReceiveSuccess(&m)
-	must(err)
+	if err != nil {
+		if updateManifestRetrying {
+			must(err)
+		} else {
+			updateManifestRetrying = true
+			return GetUpdateManifest(channel)
+		}
+	}
 	must(getHTTPError(rsp))
 	return &m
 }
