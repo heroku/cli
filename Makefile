@@ -14,6 +14,7 @@ endif
 CHANNEL?:=$(shell git rev-parse --abbrev-ref HEAD)$(DIRTY)
 
 WORKSPACE?=tmp/dev/heroku
+export PATH := $(WORKSPACE)/lib:$(PATH)
 AUTOUPDATE=yes
 NODE_OS=$(OS)
 
