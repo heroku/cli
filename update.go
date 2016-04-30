@@ -152,14 +152,11 @@ func GetUpdateManifest(channel string) *Manifest {
 	var m Manifest
 	url := "https://cli-assets.heroku.com/branches/" + channel + "/manifest.json"
 	rsp, err := sling.New().Get(url).ReceiveSuccess(&m)
-	if err != nil {
-		if updateManifestRetrying {
-			must(err)
-		} else {
-			updateManifestRetrying = true
-			return GetUpdateManifest(channel)
-		}
+	if err != nil && !updateManifestRetrying {
+		updateManifestRetrying = true
+		return GetUpdateManifest(channel)
 	}
+	must(err)
 	must(getHTTPError(rsp))
 	return &m
 }
