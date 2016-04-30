@@ -1,0 +1,4 @@
+#!/bin/bash
+
+echo "cli"
+exit 0
