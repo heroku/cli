@@ -1,52 +1,37 @@
+.SECONDEXPANSION:
+
 NPM_VERSION=3.8.7
 NODE_VERSION=6.0.0
 
 DIST_DIR?=dist
-CACHE_DIR?=tmp
+CACHE_DIR?=tmp/cache
 VERSION=$(shell ./bin/version)
 REVISION=$(shell git log -n 1 --pretty=format:"%H")
 
 ifeq (,$(findstring working directory clean,$(shell git status 2> /dev/null | tail -n1)))
 	DIRTY=-dirty
 endif
-CHANNEL?=$(shell git rev-parse --abbrev-ref HEAD)$(DIRTY)
+CHANNEL?:=$(shell git rev-parse --abbrev-ref HEAD)$(DIRTY)
 
-GOOS=$(shell go env GOOS)
-GOARCH=$(shell go env GOARCH)
 WORKSPACE?=tmp/dev/heroku
-
-NODE_BASE=node-v$(NODE_VERSION)-$(NODE_OS)-$(NODE_ARCH)
-NODE_OS=$(GOOS)
-NODE_ARCH=x64
-
-tmp/windows%: EXT=.exe
+AUTOUPDATE=yes
+NODE_OS=$(OS)
 
 $(CACHE_DIR)/node-v$(NODE_VERSION)/%:
 	@mkdir -p $(@D)
 	curl -fsSLo $@ https://nodejs.org/dist/v$(NODE_VERSION)/$*
 
-.SECONDEXPANSION:
-tmp/darwin-%/heroku/lib/node:  NODE_OS=darwin
-tmp/linux-%/heroku/lib/node:   NODE_OS=linux
-tmp/debian-%/heroku/lib/node:  NODE_OS=linux
-tmp/%-amd64/heroku/lib/node:   NODE_ARCH=x64
-tmp/%-386/heroku/lib/node:     NODE_ARCH=x86
-tmp/%-arm/heroku/lib/node:     NODE_ARCH=armv7l
-
-.PHONY: tmp/freebsd-amd64/heroku/lib/node \
-	       tmp/freebsd-386/heroku/lib/node \
-	       tmp/openbsd-amd64/heroku/lib/node \
-	       tmp/openbsd-386/heroku/lib/node
-
-tmp/dev/heroku/lib/node tmp/debian-%/heroku/lib/node tmp/darwin-%/heroku/lib/node tmp/linux-%/heroku/lib/node: $(CACHE_DIR)/node-v$(NODE_VERSION)/$$(NODE_BASE).tar.gz
+$(WORKSPACE)/lib/node: NODE_OS      := $(shell go env GOOS)
+$(WORKSPACE)/lib/node: ARCH    := $(subst amd64,x64,$(shell go env GOARCH))
+tmp/%/heroku/lib/node: $(CACHE_DIR)/node-v$(NODE_VERSION)/node-v$(NODE_VERSION)-$$(NODE_OS)-$$(NODE_ARCH).tar.gz
 	@mkdir -p $(@D)
 	tar -C $(@D) -xzf $<
-	mv $(@D)/$(NODE_BASE)/bin/node $@
-	@rm -rf $(@D)/$(NODE_BASE)*
+	cp $(@D)/node-v$(NODE_VERSION)-$(NODE_OS)-$(NODE_ARCH)/bin/node $@
+	rm -rf $(@D)/node-*
 	@touch $@
 
 tmp/windows-%/heroku/lib/node.exe: $(CACHE_DIR)/node-v$(NODE_VERSION)/win-$$(NODE_ARCH)/node.exe
-	@mkdir -p tmp/$*
+	@mkdir -p $(@D)
 	cp $< $@
 	@touch $@
 
@@ -54,13 +39,13 @@ NPM_ARCHIVE=$(CACHE_DIR)/npm-v$(NPM_VERSION).tar.gz
 $(NPM_ARCHIVE):
 	@mkdir -p $(@D)
 	curl -fsSLo $@ https://github.com/npm/npm/archive/v$(NPM_VERSION).tar.gz
-%/heroku/lib/npm: $(NPM_ARCHIVE)
+tmp/%/heroku/lib/npm: $(NPM_ARCHIVE)
 	@mkdir -p $(@D)
 	tar -C $(@D) -xzf $(NPM_ARCHIVE)
 	mv $(@D)/npm-* $@
 	@touch $@
 
-$(WORKSPACE)/lib/plugins.json: $(WORKSPACE)/bin/heroku package.json $(WORKSPACE)/lib/npm $(WORKSPACE)/lib/node$$(EXT)
+$(WORKSPACE)/lib/plugins.json: package.json $(WORKSPACE)/lib/npm $(WORKSPACE)/lib/node$$(EXT) | $(WORKSPACE)/bin/heroku
 	@mkdir -p $(@D)
 	cp package.json $(@D)/package.json
 	$(WORKSPACE)/bin/heroku build:plugins
@@ -75,43 +60,27 @@ tmp/%/heroku/lib/plugins.json: $(WORKSPACE)/lib/plugins.json
 	@rm -rf $(@D)/node_modules
 	cp -r $(WORKSPACE)/lib/node_modules $(@D)
 
-tmp/%/heroku/VERSION: tmp/%/heroku/bin/heroku$$(EXT) tmp/%/heroku/lib/npm tmp/%/heroku/lib/node$$(EXT) tmp/%/heroku/lib/plugins.json bin/version tmp/%/heroku/lib/cacert.pem
+tmp/%/heroku/VERSION: bin/version
+	@mkdir -p $(@D)
 	echo $(VERSION) > $@
 
-%/heroku/lib/cacert.pem: resources/cacert.pem
+tmp/%/heroku/lib/cacert.pem: resources/cacert.pem
 	@mkdir -p $(@D)
 	cp $< $@
 
 BUILD_TAGS=release
-SOURCEDIR=.
-SOURCES := $(shell find $(SOURCEDIR) -name '*.go')
+SOURCES := $(shell ls | grep '\.go')
 LDFLAGS=-ldflags "-X=main.Version=$(VERSION) -X=main.Channel=$(CHANNEL) -X=main.GitSHA=$(REVISION) -X=main.NodeVersion=$(NODE_VERSION) -X=main.Autoupdate=$(AUTOUPDATE)"
-tmp/darwin-%/heroku/bin/heroku:      GOOS=darwin
-tmp/linux-%/heroku/bin/heroku:       GOOS=linux
-tmp/debian-%/heroku/bin/heroku:      GOOS=linux
-tmp/linux-386/heroku/bin/heroku:     GO386=387
-tmp/debian-386/heroku/bin/heroku:    GO386=387
-tmp/windows-%/heroku/bin/heroku.exe: GOOS=windows
-tmp/freebsd-%/heroku/bin/heroku:     GOOS=freebsd
-tmp/openbsd-%/heroku/bin/heroku:     GOOS=openbsd
-tmp/%-amd64/heroku/bin/heroku:       GOARCH=amd64
-tmp/%-386/heroku/bin/heroku:         GOARCH=386
-tmp/%-386/heroku/bin/heroku.exe:     GOARCH=386
-tmp/%-arm/heroku/bin/heroku:         GOARCH=arm
-tmp/%-arm/heroku/bin/heroku:         GOARM=6
-$(WORKSPACE)/bin/heroku:             AUTOUPDATE=no
-$(WORKSPACE)/bin/heroku:             BUILD_TAGS=dev
-tmp/linux-%/heroku/bin/heroku:       AUTOUPDATE=yes
-tmp/debian-%/heroku/bin/heroku:      AUTOUPDATE=no
-tmp/darwin-%/heroku/bin/heroku:      AUTOUPDATE=yes
-tmp/windows-%/heroku/bin/heroku.exe: AUTOUPDATE=yes
-tmp/freebsd-%/heroku/bin/heroku.exe: AUTOUPDATE=yes
-tmp/openbsd-%/heroku/bin/heroku.exe: AUTOUPDATE=yes
-%/heroku/bin/heroku: $(SOURCES)
-	GOOS=$(GOOS) GOARCH=$(GOARCH) GO386=$(GO386) GOARM=$(GOARM) go build $(LDFLAGS) -o $@ -tags $(BUILD_TAGS)
+GOOS=$(OS)
+$(WORKSPACE)/bin/heroku: OS   := $(shell go env GOOS)
+$(WORKSPACE)/bin/heroku: ARCH := $(shell go env GOARCH)
+$(WORKSPACE)/bin/heroku: AUTOUPDATE=no
+$(WORKSPACE)/bin/heroku: BUILD_TAGS=dev
+tmp/%/heroku/bin/heroku: $(SOURCES)
+	GOOS=$(GOOS) GOARCH=$(ARCH) GO386=$(GO386) GOARM=$(GOARM) go build -tags $(BUILD_TAGS) -o $@ $(LDFLAGS)
 
-%/heroku/bin/heroku.exe: $(SOURCES) resources/exe/heroku-codesign-cert.pfx
-	GOOS=$(GOOS) GOARCH=$(GOARCH) go build $(LDFLAGS) -o $@
+tmp/%/heroku/bin/heroku.exe: $(SOURCES) resources/exe/heroku-codesign-cert.pfx
+	GOOS=$(GOOS) GOARCH=$(GOARCH) go build $(LDFLAGS) -o $@ -tags $(BUILD_TAGS)
 	@osslsigncode -pkcs12 resources/exe/heroku-codesign-cert.pfx \
 		-pass '$(HEROKU_WINDOWS_SIGNING_PASS)' \
 		-n 'Heroku CLI' \
@@ -122,7 +91,7 @@ tmp/openbsd-%/heroku/bin/heroku.exe: AUTOUPDATE=yes
 resources/exe/heroku-codesign-cert.pfx:
 	@gpg --yes --passphrase '$(HEROKU_WINDOWS_SIGNING_PASS)' -o resources/exe/heroku-codesign-cert.pfx -d resources/exe/heroku-codesign-cert.pfx.gpg
 
-$(DIST_DIR)/$(VERSION)/heroku-v$(VERSION)-%.tar.xz: tmp/%/heroku/VERSION
+$(DIST_DIR)/$(VERSION)/heroku-v$(VERSION)-%.tar.xz: %
 	@mkdir -p $(@D)
 	cp resources/standalone/install tmp/$*/heroku/install
 	cp resources/standalone/README tmp/$*/heroku/README
@@ -148,9 +117,24 @@ $(MANIFEST): $(WORKSPACE)/bin/heroku $(DIST_TARGETS)
 $(MANIFEST).sig: $(MANIFEST)
 	@gpg --armor -u 0F1B0520 --output $@ --detach-sig $<
 
+PREVIOUS_VERSION:=$(shell curl -fsSL https://cli-assets.heroku.com/branches/$(CHANNEL)/manifest.json | jq -r '.version')
+DIST_PATCHES:=$(DIST_DIR)/$(PREVIOUS_VERSION)/heroku-v$(PREVIOUS_VERSION)-darwin-amd64.tar.patch \
+						  $(DIST_DIR)/$(PREVIOUS_VERSION)/heroku-v$(PREVIOUS_VERSION)-linux-amd64.tar.patch \
+						  $(DIST_DIR)/$(PREVIOUS_VERSION)/heroku-v$(PREVIOUS_VERSION)-linux-386.tar.patch \
+						  $(DIST_DIR)/$(PREVIOUS_VERSION)/heroku-v$(PREVIOUS_VERSION)-linux-arm.tar.patch \
+						  $(DIST_DIR)/$(PREVIOUS_VERSION)/heroku-v$(PREVIOUS_VERSION)-windows-amd64.tar.patch \
+						  $(DIST_DIR)/$(PREVIOUS_VERSION)/heroku-v$(PREVIOUS_VERSION)-windows-386.tar.patch \
+						  $(DIST_DIR)/$(PREVIOUS_VERSION)/heroku-v$(PREVIOUS_VERSION)-freebsd-amd64.tar.patch \
+						  $(DIST_DIR)/$(PREVIOUS_VERSION)/heroku-v$(PREVIOUS_VERSION)-freebsd-386.tar.patch \
+						  $(DIST_DIR)/$(PREVIOUS_VERSION)/heroku-v$(PREVIOUS_VERSION)-openbsd-amd64.tar.patch \
+						  $(DIST_DIR)/$(PREVIOUS_VERSION)/heroku-v$(PREVIOUS_VERSION)-openbsd-386.tar.patch
+
+$(DIST_DIR)/$(PREVIOUS_VERSION)/heroku-v$(PREVIOUS_VERSION)-%.tar.patch: $(DIST_DIR)/$(VERSION)/heroku-v$(VERSION)-%.tar.xz
+	$(WORKSPACE)/bin/heroku build:bsdiff --new $< --channel $(CHANNEL) --target $* --out $@
+
 DEB_VERSION:=$(firstword $(subst -, ,$(VERSION)))-1
 DEB_BASE:=heroku_$(DEB_VERSION)
-$(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_%.deb: tmp/debian-%/heroku/VERSION
+$(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_%.deb: %
 	@mkdir -p tmp/$(DEB_BASE)_$*.apt/DEBIAN
 	@mkdir -p tmp/$(DEB_BASE)_$*.apt/usr/bin
 	@mkdir -p tmp/$(DEB_BASE)_$*.apt/usr/lib
@@ -196,7 +180,7 @@ $(DIST_DIR)/$(VERSION)/heroku-osx.pkg: tmp/darwin-amd64/heroku/VERSION
 	@echo "TODO OSX"
 
 .PHONY: build
-build: $(WORKSPACE)/bin/heroku $(WORKSPACE)/lib/plugins.json $(WORKSPACE)/lib/cacert.pem
+build: $(WORKSPACE)/bin/heroku $(WORKSPACE)/lib/npm $(WORKSPACE)/lib/node $(WORKSPACE)/lib/plugins.json $(WORKSPACE)/lib/cacert.pem
 
 .PHONY: clean
 clean:
@@ -211,26 +195,65 @@ test: build
 .PHONY: all
 all: darwin linux windows freebsd openbsd
 
+TARGET_DEPS =  tmp/$$(OS)-$$(ARCH)/heroku/bin/heroku$$(EXT) \
+						   tmp/$$(OS)-$$(ARCH)/heroku/lib/npm           \
+						   tmp/$$(OS)-$$(ARCH)/heroku/lib/plugins.json  \
+						   tmp/$$(OS)-$$(ARCH)/heroku/lib/cacert.pem
+
+%-amd64: ARCH      := amd64
+%-amd64: NODE_ARCH := x64
+%-386:   ARCH      := 386
+%-386:   NODE_ARCH := x86
+%-arm:   ARCH      := arm
+%-arm:   NODE_ARCH := armv7l
+
+darwin: OS := darwin
+darwin: ARCH := amd64
+darwin: NODE_ARCH := x64
 .PHONY: darwin
-darwin: tmp/darwin-amd64/heroku/VERSION
+darwin: $(TARGET_DEPS) tmp/$$(OS)-$$(ARCH)/heroku/lib/node
 
-.PHONY: linux
-linux: tmp/linux-amd64/heroku/VERSION tmp/linux-arm/heroku/VERSION tmp/linux-386/heroku/VERSION
+LINUX_TARGETS  := linux-amd64 linux-386 linux-arm
+DEBIAN_TARGETS := debian-amd64 debian-386 debian-arm
+linux-% debian-%j:      OS    := linux
+linux-arm debian-arm:   GOARM := 6
+linux-386 debian-386:   GO386 := 387
+debian-%: AUTOUPDATE := no
+debian-%: OS         := debian
+debian-%: NODE_OS    := linux
+debian-%: GOOS       := linux
+.PHONY: linux debian $(LINUX_TARGETS) $(DEBIAN_TARGETS)
+linux: $(LINUX_TARGETS)
+debian: $(DEBIAN_TARGETS)
+$(LINUX_TARGETS) $(DEBIAN_TARGETS): $(TARGET_DEPS) tmp/$$(OS)-$$(ARCH)/heroku/lib/node
 
-.PHONY: windows
-windows: tmp/windows-amd64/heroku/VERSION tmp/windows-386/heroku/VERSION
+FREEBSD_TARGETS := freebsd-amd64 freebsd-386
+freebsd-%: OS := freebsd
+.PHONY: freebsd $(FREEBSD_TARGETS)
+freebsd: $(FREEBSD_TARGETS)
+$(FREEBSD_TARGETS): $(TARGET_DEPS)
 
-.PHONY: freebsd
-freebsd: tmp/freebsd-amd64/heroku/VERSION tmp/freebsd-386/heroku/VERSION
+OPENBSD_TARGETS := openbsd-amd64 openbsd-386
+openbsd-%: OS := openbsd
+.PHONY: openbsd $(OPENBSD_TARGETS)
+openbsd: $(OPENBSD_TARGETS)
+$(OPENBSD_TARGETS): $(TARGET_DEPS)
 
-.PHONY: openbsd
-openbsd: tmp/openbsd-amd64/heroku/VERSION tmp/openbsd-386/heroku/VERSION
+WINDOWS_TARGETS := windows-amd64 windows-386
+windows-%: OS := windows
+windows-%: EXT := .exe
+.PHONY: windows $(WINDOWS_TARGETS)
+windows: $(WINDOWS_TARGETS)
+$(WINDOWS_TARGETS): $(TARGET_DEPS) tmp/windows-$$(ARCH)/heroku/lib/node.exe
 
 .PHONY: distwin
 distwin: $(DIST_DIR)/$(VERSION)/heroku-windows-amd64.exe $(DIST_DIR)/$(VERSION)/heroku-windows-386.exe
 
 .PHONY: disttxz
 disttxz: $(MANIFEST) $(MANIFEST).sig $(DIST_TARGETS)
+
+.PHONY: disttxpatch
+disttxzpatch: $(MANIFEST) $(DIST_TARGETS) $(DIST_PATCHES)
 
 .PHONY: releasetxz
 releasetxz: $(MANIFEST) $(MANIFEST).sig $(addprefix releasetxz/,$(DIST_TARGETS))
@@ -282,4 +305,3 @@ NODE_TARGETS := $(foreach node, $(NODES), $(CACHE_DIR)/node-v$(NODE_VERSION)/$(n
 deps: $(NPM_ARCHIVE) $(NODE_TARGETS) $(CACHE_DIR)/git/Git-2.8.1-64-bit.exe $(CACHE_DIR)/git/Git-2.8.1-32-bit.exe
 
 .DEFAULT_GOAL=build
-.SECONDARY:

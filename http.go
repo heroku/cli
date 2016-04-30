@@ -129,13 +129,13 @@ func httpTLSClientConfig() (config *tls.Config) {
 	return
 }
 
-var downloadingMessage string
-
-func progressDrawFn(progress, total int64) string {
-	return fmt.Sprintf(downloadingMessage+" %15s", ioprogress.DrawTextFormatBytes(progress, total))
+func progressDrawFn(msg string) func(int64, int64) string {
+	return func(progress, total int64) string {
+		return fmt.Sprintf(msg+" %15s", ioprogress.DrawTextFormatBytes(progress, total))
+	}
 }
 
-func downloadXZ(url string) (io.Reader, func() string, error) {
+func downloadXZ(url, msg string) (io.Reader, func() string, error) {
 	req, err := sling.New().Get(url).Request()
 	if err != nil {
 		return nil, nil, err
@@ -144,13 +144,18 @@ func downloadXZ(url string) (io.Reader, func() string, error) {
 	if err != nil {
 		return nil, nil, err
 	}
-	size, _ := strconv.Atoi(resp.Header.Get("Content-Length"))
-	progress := &ioprogress.Reader{
-		Reader:   resp.Body,
-		Size:     int64(size),
-		DrawFunc: ioprogress.DrawTerminalf(Stderr, progressDrawFn),
+	var download io.Reader
+	if msg != "" {
+		size, _ := strconv.Atoi(resp.Header.Get("Content-Length"))
+		download = &ioprogress.Reader{
+			Reader:   resp.Body,
+			Size:     int64(size),
+			DrawFunc: ioprogress.DrawTerminalf(Stderr, progressDrawFn(msg)),
+		}
+	} else {
+		download = resp.Body
 	}
-	getSha, reader := computeSha(progress)
+	getSha, reader := computeSha(download)
 	uncompressed, err := xz.NewReader(reader)
 	return uncompressed, getSha, err
 }
