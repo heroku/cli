@@ -9,4 +9,5 @@ fi
 
 git fetch
 git checkout $1
-CHANNEL=$2 make all -j ${JOBS:=6}
+gpg --passphrase $HEROKU_WINDOWS_SIGNING_PASS -d resources/deb/key.gpg | gpg --import
+CHANNEL=$2 make release -j ${JOBS:=6}
