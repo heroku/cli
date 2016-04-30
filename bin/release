@@ -1,13 +1,7 @@
-#!/usr/bin/env bash
-
+#!/bin/bash
 set -e
 
-if [ "$#" -ne 2 ]; then
-  echo "USAGE: $0 SHA CHANNEL" 1>&2
-  exit 1
-fi
-
 docker build -t cli docker
-docker run \
+docker run -t \
   -e HEROKU_WINDOWS_SIGNING_PASS=$HEROKU_WINDOWS_SIGNING_PASS \
   cli $*

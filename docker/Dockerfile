@@ -37,5 +37,8 @@ WORKDIR $HOME/src/github.com/heroku/cli
 ENV GOPATH=$HOME \
   PATH=$HOME/src/github.com/heroku/cli/tmp/dev/heroku/lib:$GOPATH/bin:/usr/local/go/bin:$PATH
 
+RUN git checkout dev
+RUN make deps build test -j4
+
 COPY run run
 ENTRYPOINT ["./run"]
