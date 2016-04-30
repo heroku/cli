@@ -116,7 +116,9 @@ $(MANIFEST): $(WORKSPACE)/bin/heroku $(DIST_TARGETS)
 $(MANIFEST).sig: $(MANIFEST)
 	@gpg --armor -u 0F1B0520 --yes --output $@ --detach-sig $<
 
+ifneq ($(CHANNEL),)
 PREVIOUS_VERSION:=$(shell curl -fsSL https://cli-assets.heroku.com/branches/$(CHANNEL)/manifest.json | jq -r '.version')
+endif
 DIST_PATCHES := $(foreach t,$(TARGETS),$(DIST_DIR)/$(PREVIOUS_VERSION)/heroku-v$(PREVIOUS_VERSION)-$(t).patch)
 
 $(DIST_DIR)/$(PREVIOUS_VERSION)/heroku-v$(PREVIOUS_VERSION)-%.patch: $(DIST_DIR)/$(VERSION)/heroku-v$(VERSION)-%.tar.xz
