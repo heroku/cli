@@ -181,7 +181,7 @@ func cleanTmpDirs() {
 		for _, file := range files {
 			if time.Since(file.ModTime()) > 24*time.Hour {
 				path := filepath.Join(dir, file.Name())
-				Debugf("removing old tmp dir %s", path)
+				Debugf("removing old tmp dir %s\n", path)
 				LogIfError(os.RemoveAll(path))
 			}
 		}
