@@ -92,7 +92,8 @@ func localAppData() string {
 	return os.Getenv("LOCALAPPDATA")
 }
 
-func fileExists(path string) (bool, error) {
+// FileExists returns whether or not path exists
+func FileExists(path string) (bool, error) {
 	if _, err := os.Stat(path); err != nil {
 		if os.IsNotExist(err) {
 			return false, nil

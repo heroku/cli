@@ -424,7 +424,7 @@ func netrcPath() string {
 	if runtime.GOOS == WINDOWS {
 		base = filepath.Join(HomeDir, "_netrc")
 	}
-	if exists, _ := fileExists(base + ".gpg"); exists {
+	if exists, _ := FileExists(base + ".gpg"); exists {
 		base = base + ".gpg"
 	}
 	return base

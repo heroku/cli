@@ -2,4 +2,4 @@
 
 set -e
 
-go test -ginkgo.slowSpecThreshold=30 $*
+go test -ginkgo.slowSpecThreshold=30 -tags test $*

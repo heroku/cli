@@ -148,7 +148,7 @@ func downloadXZ(url string) (io.Reader, func() string, error) {
 	progress := &ioprogress.Reader{
 		Reader:   resp.Body,
 		Size:     int64(size),
-		DrawFunc: ioprogress.DrawTerminalf(os.Stderr, progressDrawFn),
+		DrawFunc: ioprogress.DrawTerminalf(Stderr, progressDrawFn),
 	}
 	getSha, reader := computeSha(progress)
 	uncompressed, err := xz.NewReader(reader)

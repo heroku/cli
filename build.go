@@ -1,3 +1,5 @@
+// +build !test,!release
+
 package main
 
 import (
@@ -81,19 +83,4 @@ func init() {
 			},
 		},
 	}...)
-}
-
-// Manifest is the manifest.json for releases
-type Manifest struct {
-	ReleasedAt string            `json:"released_at"`
-	Version    string            `json:"version"`
-	Channel    string            `json:"channel"`
-	Builds     map[string]*Build `json:"builds"`
-}
-
-// Build is a part of a Manifest
-type Build struct {
-	URL    string `json:"url"`
-	Sha256 string `json:"sha256"`
-	Bytes  int64  `json:"bytes"`
 }

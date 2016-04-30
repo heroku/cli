@@ -58,7 +58,7 @@ func updateCLI(channel string) {
 		return
 	}
 	manifest := GetUpdateManifest(channel)
-	binExists, _ := fileExists(expectedBinPath())
+	binExists, _ := FileExists(expectedBinPath())
 	if binExists && manifest.Version == Version && manifest.Channel == Channel {
 		return
 	}
@@ -96,7 +96,7 @@ func DownloadCLI(channel, path string, manifest *Manifest) {
 	if sha != build.Sha256 {
 		must(merry.Errorf("SHA mismatch: expected %s to be %s", sha, build.Sha256))
 	}
-	exists, _ := fileExists(path)
+	exists, _ := FileExists(path)
 	if exists {
 		must(os.Rename(path, filepath.Join(tmpDir(DataHome), "heroku")))
 	}
@@ -107,7 +107,7 @@ func DownloadCLI(channel, path string, manifest *Manifest) {
 
 // IsUpdateNeeded checks if an update is available
 func IsUpdateNeeded() bool {
-	if exists, _ := fileExists(expectedBinPath()); !exists {
+	if exists, _ := FileExists(expectedBinPath()); !exists {
 		return true
 	}
 	f, err := os.Stat(autoupdateFile)
@@ -128,6 +128,21 @@ func touchAutoupdateFile() {
 	must(err)
 	err = out.Close()
 	must(err)
+}
+
+// Manifest is the manifest.json for releases
+type Manifest struct {
+	ReleasedAt string            `json:"released_at"`
+	Version    string            `json:"version"`
+	Channel    string            `json:"channel"`
+	Builds     map[string]*Build `json:"builds"`
+}
+
+// Build is a part of a Manifest
+type Build struct {
+	URL    string `json:"url"`
+	Sha256 string `json:"sha256"`
+	Bytes  int64  `json:"bytes"`
 }
 
 // GetUpdateManifest loads the manifest.json for a channel
@@ -152,7 +167,7 @@ func TriggerBackgroundUpdate() {
 func cleanTmpDirs() {
 	clean := func(base string) {
 		dir := filepath.Join(base, "tmp")
-		if exists, _ := fileExists(dir); !exists {
+		if exists, _ := FileExists(dir); !exists {
 			return
 		}
 		files, err := ioutil.ReadDir(dir)
@@ -185,8 +200,8 @@ func loadNewCLI() {
 	if BinPath == expected {
 		return
 	}
-	if exists, _ := fileExists(expected); !exists {
-		if exists, _ = fileExists(npmBinPath()); !exists {
+	if exists, _ := FileExists(expected); !exists {
+		if exists, _ = FileExists(npmBinPath()); !exists {
 			// uh oh, npm isn't where it should be.
 			// The CLI probably isn't installed right so force an update
 			Update(Channel)

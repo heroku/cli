@@ -1,27 +1,19 @@
 package main_test
 
 import (
-	"bytes"
-	"os"
+	"fmt"
+	"runtime"
 
 	cli "github.com/heroku/cli"
 
-	"github.com/lunixbochs/vtclean"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("Command", func() {
-	var stdout string
 	BeforeEach(func() {
-		cli.Stdout = new(bytes.Buffer)
 		cli.Start("heroku", "version")
 	})
-
-	JustBeforeEach(func() {
-		stdout = vtclean.Clean(cli.Stdout.(*bytes.Buffer).String(), false)
-	})
-	AfterEach(func() { cli.Stdout = os.Stdout })
 
 	Describe("parsing", func() {
 		testcase := func(title string, command *cli.Command, expected string) {
@@ -37,7 +29,7 @@ var _ = Describe("Command", func() {
 	})
 
 	It("shows the version", func() {
-		//version := fmt.Sprintf("heroku-cli/%s (%s-%s) %s ?\n", cli.Version, runtime.GOOS, runtime.GOARCH, runtime.Version())
-		//Expect(stdout).To(Equal(version))
+		version := fmt.Sprintf("heroku-cli/%s (%s-%s) %s ?\n", cli.Version, runtime.GOOS, runtime.GOARCH, runtime.Version())
+		Expect(stdout()).To(Equal(version))
 	})
 })
