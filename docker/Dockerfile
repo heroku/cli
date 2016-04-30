@@ -13,6 +13,8 @@ RUN apt-get update && apt-get upgrade -y && \
   libssl-dev \
   nsis \
   openssl \
+  python-pip \
+  python-dev \
   && rm -rf /var/lib/apt/lists/*
 
 # install go
@@ -29,6 +31,10 @@ RUN curl -fsSL "$GOLANG_DOWNLOAD_URL" -o golang.tar.gz \
 RUN curl -fsSLo osslsigncode-1.7.1.tar.gz https://cli-assets.heroku.com/osslsigncode-1.7.1.tar.gz && \
     tar -xvzf osslsigncode-1.7.1.tar.gz && cd osslsigncode-1.7.1 && \
     ./configure && make && make install && cd .. rm -rf osslsigncode-1.7.1
+
+# python/aws
+RUN pip install --upgrade pip && \
+    pip install awscli
 
 # setup repo
 RUN mkdir -p $HOME/src/github.com/heroku && git clone https://github.com/heroku/cli $HOME/src/github.com/heroku/cli
