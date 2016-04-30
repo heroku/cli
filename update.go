@@ -96,8 +96,12 @@ func DownloadCLI(channel, path string, manifest *Manifest) {
 	if sha != build.Sha256 {
 		must(merry.Errorf("SHA mismatch: expected %s to be %s", sha, build.Sha256))
 	}
-	LogIfError(os.Rename(filepath.Join(DataHome, "cli"), filepath.Join(tmpDir(DataHome), "heroku")))
-	LogIfError(os.Rename(filepath.Join(tmp, "heroku"), path))
+	exists, _ := fileExists(path)
+	if exists {
+		must(os.Rename(path, filepath.Join(tmpDir(DataHome), "heroku")))
+	}
+	Errln(path)
+	must(os.Rename(filepath.Join(tmp, "heroku"), path))
 	Debugf("updated to %s\n", manifest.Version)
 }
 

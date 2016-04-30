@@ -42,7 +42,7 @@ func Start(args ...string) {
 	// handle sigint
 	handleSignal(os.Interrupt, func() {
 		if !swallowSigint {
-			showCursor()
+			ShowCursor()
 			os.Exit(1)
 		}
 	})

@@ -55,7 +55,7 @@ func newLogger(path string) *log.Logger {
 func Exit(code int) {
 	TriggerBackgroundUpdate()
 	currentAnalyticsCommand.RecordEnd(code)
-	showCursor()
+	ShowCursor()
 	ExitFn(code)
 }
 
@@ -278,7 +278,8 @@ func plural(word string, count int) string {
 	return word + "s"
 }
 
-func showCursor() {
+// ShowCursor displays the cursor
+func ShowCursor() {
 	if supportsColor() && !windows() {
 		Print("\u001b[?25h")
 	}
@@ -298,7 +299,7 @@ func action(msg, done string, fn func()) {
 	hideCursor()
 	fn()
 	actionMsg = ""
-	showCursor()
+	ShowCursor()
 	if done != "" {
 		Errln(" " + done)
 	}
