@@ -1,0 +1,22 @@
+.SECONDEXPANSION:
+
+SOURCES := $(shell find . -name '*.go')
+
+tmp/%/heroku/VERSION:
+	@mkdir -p $(@D)
+	echo 1.0 > $@
+
+tmp/%/heroku/bin/heroku: $(SOURCES)
+	GOOS=$(GOOS) GOARCH=$(GOARCH) go build -o $@
+
+darwin: GOOS:=darwin
+darwin: GOARCH:=amd64
+darwin: tmp/$$(GOOS)-$$(GOARCH)/heroku/VERSION tmp/$$(GOOS)-$$(GOARCH)/heroku/bin/heroku
+
+linux: GOOS:=linux
+linux: GOARCH:=amd64
+linux: tmp/linux-amd64/heroku/VERSION tmp/linux-amd64/heroku/bin/heroku
+
+all: darwin linux
+
+.PHONY: darwin linux all

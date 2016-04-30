@@ -79,7 +79,7 @@ func DownloadCLI(channel, path string, manifest *Manifest) {
 	}
 	defer unlock()
 	hideCursor()
-	downloadingMessage = fmt.Sprintf("heroku-cli: Updating to %s...", manifest.Version)
+	downloadingMessage := fmt.Sprintf("heroku-cli: Updating to %s...", manifest.Version)
 	if manifest.Channel != "stable" {
 		downloadingMessage = fmt.Sprintf("%s (%s)", downloadingMessage, manifest.Channel)
 	}
@@ -88,7 +88,7 @@ func DownloadCLI(channel, path string, manifest *Manifest) {
 	if build == nil {
 		must(merry.Errorf("no build for %s", manifest.Channel))
 	}
-	reader, getSha, err := downloadXZ(build.URL)
+	reader, getSha, err := downloadXZ(build.URL, downloadingMessage)
 	must(err)
 	tmp := tmpDir(DataHome)
 	must(extractTar(reader, tmp))
