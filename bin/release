@@ -1,2 +1,16 @@
 #!/usr/bin/env bash
-# bin/release <build-dir>
+
+set -e
+
+if [ "$#" -ne 2 ]; then
+  echo "USAGE: $0 SHA CHANNEL" 1>&2
+  exit 1
+fi
+
+
+make tmp/dev/heroku/bin/heroku --quiet
+tmp/dev/heroku/bin/heroku run bash --size ${SIZE:="Performance-L"} <<EOF
+cd ~/src/github.com/heroku/cli
+git checkout $1
+CHANNEL=$2 make release -j${JOBS:="8"}
+EOF
