@@ -66,6 +66,7 @@ func updateCLI(channel string) {
 	loadNewCLI()
 }
 
+// DownloadCLI downloads a CLI update to a given path
 func DownloadCLI(channel, path string, manifest *Manifest) {
 	locked, err := golock.IsLocked(updateLockPath)
 	LogIfError(err)

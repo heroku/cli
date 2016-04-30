@@ -36,7 +36,7 @@ dependencies:
     - sudo apt-get install cowsay nsis
 test:
   override:
-    - go test -v -race -cover -coverprofile=coverage.out -ginkgo.v
+    - ./bin/test -v -race -cover -coverprofile=coverage.out -ginkgo.v
     - make test -j $JOBZ
     - ./bin/lint
   post:
