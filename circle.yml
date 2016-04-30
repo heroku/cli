@@ -43,22 +43,22 @@ test:
     - |
       go tool cover -html=coverage.out -o $CIRCLE_ARTIFACTS/coverage.html;
       goveralls -coverprofile=coverage.out -service=circle-ci -repotoken=$COVERALLS_TOKEN;
-deployment:
-  dev:
-    branch: dev
-    owner: heroku
-    commands:
+#deployment:
+  #dev:
+    #branch: dev
+    #owner: heroku
+    #commands:
       #- gpg --passphrase $HEROKU_WINDOWS_SIGNING_PASS -d resources/deb/key.gpg | gpg --import
       #- CHANNEL=dev make release -j $JOBZ
-  beta:
-    branch: beta
-    owner: heroku
-    commands:
+  #beta:
+    #branch: beta
+    #owner: heroku
+    #commands:
       #- gpg --passphrase $HEROKU_WINDOWS_SIGNING_PASS -d resources/deb/key.gpg | gpg --import
       #- CHANNEL=beta make release -j $JOBZ
-  stable:
-    tag: /v[0-9]+(\.[0-9]+)*/
-    owner: heroku
-    commands:
+  #stable:
+    #tag: /v[0-9]+(\.[0-9]+)*/
+    #owner: heroku
+    #commands:
       #- gpg --passphrase $HEROKU_WINDOWS_SIGNING_PASS -d resources/deb/key.gpg | gpg --import
       #- CHANNEL=stable make release -j $JOBZ
