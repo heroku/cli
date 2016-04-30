@@ -128,7 +128,7 @@ $(DIST_DIR)/$(PREVIOUS_VERSION)/heroku-v$(PREVIOUS_VERSION)-%.patch: $(DIST_DIR)
 
 DEB_VERSION:=$(firstword $(subst -, ,$(VERSION)))-1
 DEB_BASE:=heroku_$(DEB_VERSION)
-$(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_%.deb: tmp/debian-amd64 tmp/debian-386 tmp/debian-arm
+$(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_%.deb: tmp/debian-%
 	@mkdir -p tmp/$(DEB_BASE)_$*.apt/DEBIAN
 	@mkdir -p tmp/$(DEB_BASE)_$*.apt/usr/bin
 	@mkdir -p tmp/$(DEB_BASE)_$*.apt/usr/lib
