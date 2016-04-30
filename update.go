@@ -40,7 +40,8 @@ func init() {
 // Autoupdate is a flag to enable/disable CLI autoupdating
 var Autoupdate = "no"
 
-var updateLockPath = filepath.Join(CacheHome, "updating.lock")
+// UpdateLockPath is the path to the updating lock file
+var UpdateLockPath = filepath.Join(CacheHome, "updating.lock")
 var autoupdateFile = filepath.Join(CacheHome, "autoupdate")
 
 // Update updates the CLI and plugins
@@ -68,14 +69,14 @@ func updateCLI(channel string) {
 
 // DownloadCLI downloads a CLI update to a given path
 func DownloadCLI(channel, path string, manifest *Manifest) {
-	locked, err := golock.IsLocked(updateLockPath)
+	locked, err := golock.IsLocked(UpdateLockPath)
 	LogIfError(err)
 	if locked {
 		must(merry.Errorf("Update in progress"))
 	}
-	LogIfError(golock.Lock(updateLockPath))
+	LogIfError(golock.Lock(UpdateLockPath))
 	unlock := func() {
-		golock.Unlock(updateLockPath)
+		golock.Unlock(UpdateLockPath)
 	}
 	defer unlock()
 	hideCursor()
