@@ -38,6 +38,10 @@
 			"Rev": "29ae4ffbc9a6fe9fb2bc5029050ce6996ea1d3bc"
 		},
 		{
+			"ImportPath": "github.com/kr/binarydist",
+			"Rev": "9955b0ab8708602d411341e55fffd7e0700f86bd"
+		},
+		{
 			"ImportPath": "github.com/lunixbochs/vtclean",
 			"Rev": "99af041082fef905a67c12a5c484d8da26ade604"
 		},
