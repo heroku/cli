@@ -44,7 +44,7 @@ func nodeBinPath() string {
 	if b == "" {
 		b = filepath.Join(AppDir, "lib", "node"+ext)
 	}
-	if exists, _ := fileExists(b); !exists {
+	if exists, _ := FileExists(b); !exists {
 		var err error
 		Debugf("node not found in %s. Using node from PATH\n", b)
 		b, err = exec.LookPath("node" + ext)

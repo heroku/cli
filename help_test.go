@@ -1,24 +1,16 @@
 package main_test
 
 import (
-	"bytes"
-	"os"
-
 	cli "github.com/heroku/cli"
 
-	"github.com/lunixbochs/vtclean"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("Help", func() {
-	var stdout string
-	var stderr string
 	exit := 9999
 
 	BeforeEach(func() {
-		cli.Stdout = new(bytes.Buffer)
-		cli.Stderr = new(bytes.Buffer)
 		cli.ExitFn = func(code int) {
 			if exit == 9999 {
 				exit = code
@@ -28,13 +20,6 @@ var _ = Describe("Help", func() {
 
 	AfterEach(func() {
 		exit = 9999
-		cli.Stdout = os.Stdout
-		cli.Stderr = os.Stderr
-	})
-
-	JustBeforeEach(func() {
-		stdout = vtclean.Clean(cli.Stdout.(*bytes.Buffer).String(), false)
-		stderr = vtclean.Clean(cli.Stderr.(*bytes.Buffer).String(), false)
 	})
 
 	Context("heroku help", func() {
@@ -44,7 +29,7 @@ var _ = Describe("Help", func() {
 
 		It("exits with code 0", func() { Expect(exit).To(Equal(0)) })
 		It("shows the help", func() {
-			Expect(stdout).To(HavePrefix("Usage: heroku COMMAND [--app APP] [command-specific-options]"))
+			Expect(stdout()).To(HavePrefix("Usage: heroku COMMAND [--app APP] [command-specific-options]"))
 		})
 	})
 
@@ -54,9 +39,9 @@ var _ = Describe("Help", func() {
 		})
 
 		It("exits with code 2", func() { Expect(exit).To(Equal(2)) })
-		It("has no stdout", func() { Expect(stdout).To(Equal("")) })
+		It("has no stdout", func() { Expect(stdout()).To(Equal("")) })
 		It("shows invalid command message", func() {
-			Expect(stderr).To(Equal(` !    hlp is not a heroku command.
+			Expect(stderr()).To(Equal(` !    hlp is not a heroku command.
  !    Perhaps you meant help?
  !    Run heroku _ to run heroku help.
  !    Run heroku help for a list of available commands.
@@ -64,8 +49,7 @@ var _ = Describe("Help", func() {
 		})
 		It("reruns heroku help", func() {
 			cli.Start("heroku", "_")
-			stdout = vtclean.Clean(cli.Stdout.(*bytes.Buffer).String(), false)
-			Expect(stdout).To(HavePrefix("Usage: heroku COMMAND [--app APP] [command-specific-options]"))
+			Expect(stdout()).To(HavePrefix("Usage: heroku COMMAND [--app APP] [command-specific-options]"))
 		})
 	})
 
@@ -76,8 +60,8 @@ var _ = Describe("Help", func() {
 
 		It("exits with code 0", func() { Expect(exit).To(Equal(0)) })
 		It("shows help for plugins command", func() {
-			Expect(stdout).To(HavePrefix("Usage: heroku plugins"))
-			Expect(stdout).To(ContainSubstring("heroku plugins:link"))
+			Expect(stdout()).To(HavePrefix("Usage: heroku plugins"))
+			Expect(stdout()).To(ContainSubstring("heroku plugins:link"))
 		})
 	})
 
@@ -88,8 +72,8 @@ var _ = Describe("Help", func() {
 
 		It("exits with code 0", func() { Expect(exit).To(Equal(0)) })
 		It("shows help for plugins command", func() {
-			Expect(stdout).To(HavePrefix("Usage: heroku plugins"))
-			Expect(stdout).To(ContainSubstring("heroku plugins:link"))
+			Expect(stdout()).To(HavePrefix("Usage: heroku plugins"))
+			Expect(stdout()).To(ContainSubstring("heroku plugins:link"))
 		})
 	})
 
@@ -100,20 +84,19 @@ var _ = Describe("Help", func() {
 
 		It("exits with code 0", func() { Expect(exit).To(Equal(0)) })
 		It("shows help for plugins commands", func() {
-			Expect(stdout).To(HavePrefix("Usage: heroku plugins:COMMAND"))
-			Expect(stdout).To(ContainSubstring("heroku plugins:link"))
+			Expect(stdout()).To(HavePrefix("Usage: heroku plugins:COMMAND"))
+			Expect(stdout()).To(ContainSubstring("heroku plugins:link"))
 		})
 	})
 
-	Context("heroku help build", func() {
+	Context("heroku help plugins", func() {
 		BeforeEach(func() {
-			cli.Start("heroku", "help", "build")
+			cli.Start("heroku", "help", "plugins")
 		})
 
 		It("exits with code 0", func() { Expect(exit).To(Equal(0)) })
-		It("shows help for build commands", func() {
-			Expect(stdout).To(HavePrefix("Usage: heroku build:COMMAND"))
-			Expect(stdout).To(ContainSubstring("heroku build:manifest"))
+		It("shows help for plugins commands", func() {
+			Expect(stdout()).To(ContainSubstring("heroku plugins:link"))
 		})
 	})
 
@@ -123,8 +106,8 @@ var _ = Describe("Help", func() {
 		})
 
 		It("exits with code 0", func() { Expect(exit).To(Equal(0)) })
-		It("shows help for build commands", func() {
-			Expect(stdout).To(HavePrefix("Usage: heroku COMMAND"))
+		It("shows help", func() {
+			Expect(stdout()).To(HavePrefix("Usage: heroku COMMAND"))
 		})
 	})
 })

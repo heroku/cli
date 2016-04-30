@@ -82,6 +82,7 @@ tmp/%/heroku/VERSION: tmp/%/heroku/bin/heroku$$(EXT) tmp/%/heroku/lib/npm tmp/%/
 	@mkdir -p $(@D)
 	cp $< $@
 
+BUILD_TAGS=release
 SOURCEDIR=.
 SOURCES := $(shell find $(SOURCEDIR) -name '*.go')
 LDFLAGS=-ldflags "-X=main.Version=$(VERSION) -X=main.Channel=$(CHANNEL) -X=main.GitSHA=$(REVISION) -X=main.NodeVersion=$(NODE_VERSION) -X=main.Autoupdate=$(AUTOUPDATE)"
@@ -99,6 +100,7 @@ tmp/%-386/heroku/bin/heroku.exe:     GOARCH=386
 tmp/%-arm/heroku/bin/heroku:         GOARCH=arm
 tmp/%-arm/heroku/bin/heroku:         GOARM=6
 $(WORKSPACE)/bin/heroku:             AUTOUPDATE=no
+$(WORKSPACE)/bin/heroku:             BUILD_TAGS=dev
 tmp/linux-%/heroku/bin/heroku:       AUTOUPDATE=yes
 tmp/debian-%/heroku/bin/heroku:      AUTOUPDATE=no
 tmp/darwin-%/heroku/bin/heroku:      AUTOUPDATE=yes
@@ -106,7 +108,7 @@ tmp/windows-%/heroku/bin/heroku.exe: AUTOUPDATE=yes
 tmp/freebsd-%/heroku/bin/heroku.exe: AUTOUPDATE=yes
 tmp/openbsd-%/heroku/bin/heroku.exe: AUTOUPDATE=yes
 %/heroku/bin/heroku: $(SOURCES)
-	GOOS=$(GOOS) GOARCH=$(GOARCH) GO386=$(GO386) GOARM=$(GOARM) go build $(LDFLAGS) -o $@
+	GOOS=$(GOOS) GOARCH=$(GOARCH) GO386=$(GO386) GOARM=$(GOARM) go build $(LDFLAGS) -o $@ -tags $(BUILD_TAGS)
 
 %/heroku/bin/heroku.exe: $(SOURCES) resources/exe/heroku-codesign-cert.pfx
 	GOOS=$(GOOS) GOARCH=$(GOARCH) go build $(LDFLAGS) -o $@

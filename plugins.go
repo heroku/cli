@@ -471,7 +471,7 @@ func (p *Plugins) saveCache() {
 func (p *Plugins) Plugins() []*Plugin {
 	if p.plugins == nil {
 		p.plugins = []*Plugin{}
-		if exists, _ := fileExists(p.cachePath()); !exists {
+		if exists, _ := FileExists(p.cachePath()); !exists {
 			return p.plugins
 		}
 		f, err := os.Open(p.cachePath())

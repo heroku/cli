@@ -1,24 +1,16 @@
 package main_test
 
 import (
-	"bytes"
-	"os"
-
 	cli "github.com/heroku/cli"
 
-	"github.com/lunixbochs/vtclean"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("version", func() {
-	var stdout string
-	var stderr string
 	exit := 9999
 
 	BeforeEach(func() {
-		cli.Stdout = new(bytes.Buffer)
-		cli.Stderr = new(bytes.Buffer)
 		cli.ExitFn = func(code int) {
 			if exit == 9999 {
 				exit = code
@@ -28,13 +20,6 @@ var _ = Describe("version", func() {
 
 	AfterEach(func() {
 		exit = 9999
-		cli.Stdout = os.Stdout
-		cli.Stderr = os.Stderr
-	})
-
-	JustBeforeEach(func() {
-		stdout = vtclean.Clean(cli.Stdout.(*bytes.Buffer).String(), false)
-		stderr = vtclean.Clean(cli.Stderr.(*bytes.Buffer).String(), false)
 	})
 
 	Context("with no args", func() {
@@ -67,7 +52,7 @@ var _ = Describe("version", func() {
 			cli.Debugging = false
 		})
 		It("shows command", func() {
-			Expect(stderr).To(ContainSubstring("cmd: test"))
+			Expect(stderr()).To(ContainSubstring("cmd: test"))
 		})
 	})
 })

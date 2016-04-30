@@ -1,10 +1,12 @@
 package main_test
 
 import (
+	"bytes"
 	"os"
 	"path/filepath"
 
 	cli "github.com/heroku/cli"
+	"github.com/lunixbochs/vtclean"
 
 	. "github.com/onsi/ginkgo"
 	"github.com/onsi/ginkgo/reporters"
@@ -42,8 +44,30 @@ var _ = AfterSuite(func() {
 	cli.ShowCursor()
 })
 
+var _ = BeforeEach(func() {
+	cli.Stdout = new(bytes.Buffer)
+	cli.Stderr = new(bytes.Buffer)
+})
+
+var _ = AfterEach(func() {
+	cli.Stdout = os.Stdout
+	cli.Stderr = os.Stderr
+})
+
 func must(err error) {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func stdout() string {
+	return stripcolor(cli.Stdout.(*bytes.Buffer).String())
+}
+
+func stderr() string {
+	return stripcolor(cli.Stderr.(*bytes.Buffer).String())
+}
+
+func stripcolor(in string) string {
+	return vtclean.Clean(in, false)
 }
