@@ -57,11 +57,16 @@ func updateCLI(channel string) {
 	if Autoupdate != "yes" {
 		return
 	}
-	manifest := getUpdateManifest(channel)
+	manifest := GetUpdateManifest(channel)
 	binExists, _ := fileExists(expectedBinPath())
 	if binExists && manifest.Version == Version && manifest.Channel == Channel {
 		return
 	}
+	DownloadCLI(channel, filepath.Join(DataHome, "cli"), manifest)
+	loadNewCLI()
+}
+
+func DownloadCLI(channel, path string, manifest *Manifest) {
 	locked, err := golock.IsLocked(updateLockPath)
 	LogIfError(err)
 	if locked {
@@ -91,10 +96,8 @@ func updateCLI(channel string) {
 		must(merry.Errorf("SHA mismatch: expected %s to be %s", sha, build.Sha256))
 	}
 	LogIfError(os.Rename(filepath.Join(DataHome, "cli"), filepath.Join(tmpDir(DataHome), "heroku")))
-	LogIfError(os.Rename(filepath.Join(tmp, "heroku"), filepath.Join(DataHome, "cli")))
-	unlock()
-	Debugln("updating done, loading new cli " + manifest.Version)
-	loadNewCLI()
+	LogIfError(os.Rename(filepath.Join(tmp, "heroku"), path))
+	Debugf("updated to %s\n", manifest.Version)
 }
 
 // IsUpdateNeeded checks if an update is available
@@ -122,7 +125,8 @@ func touchAutoupdateFile() {
 	must(err)
 }
 
-func getUpdateManifest(channel string) *Manifest {
+// GetUpdateManifest loads the manifest.json for a channel
+func GetUpdateManifest(channel string) *Manifest {
 	var m Manifest
 	url := "https://cli-assets.heroku.com/branches/" + channel + "/manifest.json"
 	rsp, err := sling.New().Get(url).ReceiveSuccess(&m)
