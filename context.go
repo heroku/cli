@@ -20,9 +20,9 @@ type Context struct {
 	HerokuDir     string                 `json:"herokuDir"`
 	Debug         bool                   `json:"debug"`
 	DebugHeaders  bool                   `json:"debugHeaders"`
-	Version       string                 `json:"version"`
 	Dev           bool                   `json:"dev"`
 	SupportsColor bool                   `json:"supportsColor"`
+	Version       string                 `json:"version"`
 	APIToken      string                 `json:"apiToken"`
 	APIHost       string                 `json:"apiHost"` // deprecated in favor of apiUrl
 	APIURL        string                 `json:"apiUrl"`
