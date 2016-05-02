@@ -64,7 +64,7 @@ function orgAppCollaboratorsWithPrivileges() {
     },
     {
       privileges: [ { name: 'deploy' }, { name: 'view' } ],
-      role: 'viewer',
+      role: 'member',
       user: { email: 'bob@heroku.com' }
     }
   ]);

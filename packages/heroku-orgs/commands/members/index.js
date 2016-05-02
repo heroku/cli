@@ -3,12 +3,11 @@
 let cli     = require('heroku-cli-util');
 let co      = require('co');
 let _       = require('lodash');
-let Utils   = require('../../lib/utils');
 
 function* run (context, heroku) {
   let members = yield heroku.get(`/organizations/${context.org}/members`);
   members = _.sortBy(members, 'email');
-  if (context.flags.role) members = members.filter(m => Utils.roleName(m.role) === context.flags.role);
+  if (context.flags.role) members = members.filter(m => m.role === context.flags.role);
   if (context.flags.json) {
     cli.log(JSON.stringify(members, null, 2));
   } else if (members.length === 0) {
@@ -20,7 +19,7 @@ function* run (context, heroku) {
       printHeader: false,
       columns: [
         {key: 'email', label: 'Email', format: e => cli.color.cyan(e)},
-        {key: 'role', label: 'Role', format: r => cli.color.green(Utils.roleName(r))},
+        {key: 'role', label: 'Role', format: r => cli.color.green(r)},
       ]
     });
   }

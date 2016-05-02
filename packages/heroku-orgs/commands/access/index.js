@@ -21,7 +21,7 @@ function printAccess (app, collaborators) {
   .reject(c => /herokumanager\.com$/.test(c.user.email))
   .map(collab => {
     let email = collab.user.email;
-    let role = Utils.roleName(collab.role);
+    let role = collab.role;
     let data = { email: email, role: role || 'collaborator' };
 
     if (showPrivileges) {
@@ -32,7 +32,7 @@ function printAccess (app, collaborators) {
 
   let columns = [
     {key: 'email', label: 'Email', format: e => cli.color.cyan(e)},
-    {key: 'role', label: 'Role', format: r => cli.color.green(Utils.roleName(r))}
+    {key: 'role', label: 'Role', format: r => cli.color.green(r)}
   ];
   if (showPrivileges) columns.push({key: 'privileges', label: 'Privileges'});
   cli.table(collaborators, {printHeader: false, columns});
