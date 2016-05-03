@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"os"
 	"os/exec"
@@ -165,7 +164,7 @@ func pluginsLink(ctx *Context) {
 func pluginsUninstall(ctx *Context) {
 	name := ctx.Args.(map[string]string)["name"]
 	if !contains(UserPlugins.PluginNames(), name) {
-		must(errors.New(name + " is not installed"))
+		ExitWithMessage("%s is not installed", name)
 	}
 	Errf("Uninstalling plugin %s...", name)
 	must(UserPlugins.RemovePackages(name))
