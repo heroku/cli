@@ -101,7 +101,6 @@ func DownloadCLI(channel, path string, manifest *Manifest) {
 	if exists {
 		must(os.Rename(path, filepath.Join(tmpDir(DataHome), "heroku")))
 	}
-	Errln(path)
 	must(os.Rename(filepath.Join(tmp, "heroku"), path))
 	Debugf("updated to %s\n", manifest.Version)
 }
