@@ -51,7 +51,7 @@ deployment:
       - gpg --passphrase $HEROKU_WINDOWS_SIGNING_PASS -d resources/deb/key.gpg | gpg --import
       - CHANNEL=dev make release -j $JOBZ
   beta:
-    branch: beta
+    branch: master
     owner: heroku
     commands:
       - gpg --passphrase $HEROKU_WINDOWS_SIGNING_PASS -d resources/deb/key.gpg | gpg --import
