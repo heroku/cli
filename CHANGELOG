@@ -1,4 +1,8 @@
-5.1.0   2016-05-04
+5.1.2   2016-05-04
+==================
+Use new rollbar token
+
+5.1.1   2016-05-04
 ==================
 Fixed bug where symlinked plugins would not override core
 
