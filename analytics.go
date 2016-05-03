@@ -131,7 +131,7 @@ func SubmitAnalytics() {
 		return
 	}
 	LogIfError(getHTTPError(resp))
-	os.Truncate(analyticsPath, 0)
+	writeAnalyticsFile([]AnalyticsCommand{})
 }
 
 func skipAnalytics() bool {
