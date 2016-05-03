@@ -1,0 +1,28 @@
+#!/bin/bash
+
+set -e
+
+if [ -d /usr/local/bin ]; then
+  DIR=/usr/local/bin
+elif [ -d /usr/bin ]; then
+  DIR=/usr/bin
+else
+  echo "Nowhere to put binary. /usr/local/bin nor /usr/bin exist." 1>&2 && exit 1
+fi
+
+if [ ! -w "$DIR" ]; then
+  echo "$DIR is not writeable. sudo permissions required." 1>&2
+  sudo -k # always prompt for password
+  SUDO=sudo
+fi
+
+CURRENTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+INSTALLPATH=$DIR/heroku
+$SUDO cp $CURRENTDIR/bin/heroku $INSTALLPATH
+
+rm -rf ~/.local/share/heroku/cli
+mkdir -p ~/.local/share/heroku
+cp -r $CURRENTDIR ~/.local/share/heroku/cli
+
+printf "\e[0mheroku installed to \e[38;5;104m$INSTALLPATH\e[0m\n"
+$INSTALLPATH version

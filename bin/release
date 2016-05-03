@@ -1,0 +1,9 @@
+#!/bin/bash
+set -e
+
+docker build -t cli docker
+docker run -t --rm \
+  -e HEROKU_WINDOWS_SIGNING_PASS=$HEROKU_WINDOWS_SIGNING_PASS \
+  -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
+  -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
+  cli $*

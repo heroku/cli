@@ -141,7 +141,7 @@ func remoteFromGitConfig() string {
 
 func errMultipleHerokuRemotes(remotes []string) error {
 	sort.Strings(remotes)
-	cmd := "heroku " + strings.Join(os.Args[1:], " ")
+	cmd := "heroku " + strings.Join(Args[1:], " ")
 	remote := remotes[0]
 	if remote == "heroku" {
 		// easier to understand the concept of --remote when
@@ -184,8 +184,8 @@ func appFromGitRemote(remote string) (string, error) {
 		if err != nil {
 			if isNotFound(err) {
 				wdir, _ := os.Getwd()
-				remotes, err := gitRemotes()
-				if err != nil {
+				var remotes map[string]string
+				if remotes, err = gitRemotes(); err != nil {
 					return "", err
 				}
 				msg := fmt.Sprintf("Error: Could not find git remote %s in %s", remote, wdir)

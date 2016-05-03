@@ -1,61 +1,62 @@
 package main
 
 import (
+	"bufio"
+	"encoding/json"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"os"
+	"os/exec"
 	"os/signal"
 	"path/filepath"
 	"runtime"
 	"runtime/debug"
 	"strings"
-	"sync"
+	"syscall"
 
+	"github.com/ansel1/merry"
 	"github.com/lunixbochs/vtclean"
 	rollbarAPI "github.com/stvp/rollbar"
 	"golang.org/x/crypto/ssh/terminal"
 )
 
 // Stdout is used to mock stdout for testing
-var Stdout io.Writer
+var Stdout io.Writer = os.Stdout
 
 // Stderr is to mock stderr for testing
-var Stderr io.Writer
+var Stderr io.Writer = os.Stderr
 
-// ErrLogPath is the location of the error log
-var ErrLogPath = filepath.Join(AppDir(), "error.log")
+// InspectOut is used to mock inspect for testing
+var InspectOut io.Writer = os.Stderr
+
 var errLogger = newLogger(ErrLogPath)
-var exitFn = os.Exit
-var debugging = isDebugging()
-var debuggingHeaders = isDebuggingHeaders()
-var swallowSigint = false
-var errorPrefix = ""
-var wg sync.WaitGroup
 
-func init() {
-	Stdout = os.Stdout
-	Stderr = os.Stderr
-}
+// ExitFn is used to mock os.Exit
+var ExitFn = os.Exit
+
+// Debugging is HEROKU_DEBUG
+var Debugging = isDebugging()
+
+// DebuggingHeaders is HEROKU_DEBUG_HEADERS
+var DebuggingHeaders = isDebuggingHeaders()
+var swallowSigint = false
 
 func newLogger(path string) *log.Logger {
 	err := os.MkdirAll(filepath.Dir(path), 0777)
-	if err != nil {
-		panic(err)
-	}
+	must(err)
 	file, err := os.OpenFile(path, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0644)
-	if err != nil {
-		panic(err)
-	}
+	must(err)
 	return log.New(file, "", log.LstdFlags)
 }
 
 // Exit just calls os.Exit, but can be mocked out for testing
 func Exit(code int) {
+	TriggerBackgroundUpdate()
 	currentAnalyticsCommand.RecordEnd(code)
-	showCursor()
-	wg.Wait()
-	exitFn(code)
+	ShowCursor()
+	ExitFn(code)
 }
 
 // Err just calls `fmt.Fprint(Stderr, a...)` but can be mocked out for testing.
@@ -92,80 +93,88 @@ func Println(a ...interface{}) {
 }
 
 // Log is used to print debugging information
-// It will be added to the logfile in ~/.heroku or printed out if HEROKU_DEBUG is set.
+// It will be added to the logfile in ~/.cache/heroku/error.log or printed out if HEROKU_DEBUG is set.
 func Log(a ...interface{}) {
 	errLogger.Print(vtclean.Clean(fmt.Sprint(a...), false))
 }
 
 // Logln is used to print debugging information
-// It will be added to the logfile in ~/.heroku
+// It will be added to the logfile in ~/.cache/heroku/error.log
 func Logln(a ...interface{}) {
 	Log(fmt.Sprintln(a...))
 }
 
 // Logf is used to print debugging information
-// It will be added to the logfile in ~/.heroku
+// It will be added to the logfile in ~/.cache/heroku/error.log
 func Logf(format string, a ...interface{}) {
 	Log(fmt.Sprintf(format, a...))
 }
 
 // Debugln is used to print debugging information
-// It will be added to the logfile in ~/.heroku and stderr if HEROKU_DEBUG is set.
+// It will be added to the logfile in ~/.cache/heroku/error.log and stderr if HEROKU_DEBUG is set.
 func Debugln(a ...interface{}) {
 	Logln(a...)
-	if debugging {
+	if Debugging {
 		fmt.Fprintln(Stderr, a...)
 	}
 }
 
 // Debugf is used to print debugging information
-// It will be added to the logfile in ~/.heroku and stderr if HEROKU_DEBUG is set.
-func Debugf(f string, a ...interface{}) {
-	Logf(f, a...)
-	if debugging {
-		fmt.Fprintf(Stderr, f, a...)
+// It will be added to the logfile in ~/.cache/heroku/error.log and stderr if HEROKU_DEBUG is set.
+func Debugf(format string, a ...interface{}) {
+	Logf(format, a...)
+	if Debugging {
+		fmt.Fprintf(Stderr, format, a...)
 	}
 }
 
 // WarnIfError is a helper that prints out formatted error messages
 // it will emit to rollbar
 // it does not exit
-func WarnIfError(e error) {
-	if e == nil {
+func WarnIfError(err error) {
+	if err == nil {
 		return
 	}
-	Err(errorPrefix)
-	Warn(e.Error())
-	Logln(string(debug.Stack()))
-	rollbar(e, "warning")
-	if debugging {
-		debug.PrintStack()
-	}
+	err = merry.Wrap(err)
+	Warn(err.Error())
+	Debugln(merry.Details(err))
+	rollbar(err, "warning")
 }
 
 // Warn shows a message with excalamation points prepended to stderr
 func Warn(msg string) {
-	bang := yellow(" ▸    ")
+	if actionMsg != "" {
+		Errln(yellow(" !"))
+	}
+	prefix := " " + yellow(ErrorArrow) + "    "
 	msg = strings.TrimSpace(msg)
-	msg = strings.Join(strings.Split(msg, "\n"), "\n"+bang)
-	Errln(bang + msg)
+	msg = strings.Join(strings.Split(msg, "\n"), "\n"+prefix)
+	Errln(prefix + msg)
+	if actionMsg != "" {
+		Err(actionMsg + "...")
+	}
 }
 
 // Error shows a message with excalamation points prepended to stderr
 func Error(msg string) {
-	bang := red(" " + errorArrow() + "    ")
+	if actionMsg != "" {
+		Errln(red(" !"))
+	}
+	prefix := " " + red(ErrorArrow) + "    "
 	msg = strings.TrimSpace(msg)
-	msg = strings.Join(strings.Split(msg, "\n"), "\n"+bang)
-	Errln(bang + msg)
+	msg = strings.Join(strings.Split(msg, "\n"), "\n"+prefix)
+	Errln(prefix + msg)
 }
 
 // ExitWithMessage shows an error message then exits with status code 2
 // It does not emit to rollbar
 func ExitWithMessage(format string, a ...interface{}) {
-	TriggerBackgroundUpdate()
 	Error(fmt.Sprintf(format, a...))
 	Exit(2)
 }
+
+// ErrorArrow is the triangle or bang that prefixes errors
+var ErrorArrow = errorArrow()
 
 func errorArrow() string {
 	if windows() {
@@ -174,18 +183,9 @@ func errorArrow() string {
 	return "▸"
 }
 
-// ExitIfError exits if e is not null
-func ExitIfError(e error) {
-	if e != nil {
-		TriggerBackgroundUpdate()
-		Err(errorPrefix)
-		Error(e.Error())
-		Logln(string(debug.Stack()))
-		rollbar(e, "error")
-		if debugging {
-			debug.PrintStack()
-		}
-		Exit(1)
+func must(err error) {
+	if err != nil {
+		panic(err)
 	}
 }
 
@@ -198,9 +198,12 @@ func LogIfError(e error) {
 	}
 }
 
+// ONE is the string 1
+const ONE = "1"
+
 func isDebugging() bool {
 	debug := strings.ToUpper(os.Getenv("HEROKU_DEBUG"))
-	if debug == "TRUE" || debug == "1" {
+	if debug == "TRUE" || debug == ONE {
 		return true
 	}
 	return false
@@ -208,7 +211,7 @@ func isDebugging() bool {
 
 func isDebuggingHeaders() bool {
 	debug := strings.ToUpper(os.Getenv("HEROKU_DEBUG_HEADERS"))
-	if debug == "TRUE" || debug == "1" {
+	if debug == "TRUE" || debug == ONE {
 		return true
 	}
 	return false
@@ -243,7 +246,7 @@ func cyan(s string) string {
 }
 
 func windows() bool {
-	return runtime.GOOS == "windows"
+	return runtime.GOOS == WINDOWS
 }
 
 func istty() bool {
@@ -254,12 +257,18 @@ func supportsColor() bool {
 	if !istty() {
 		return false
 	}
-	for _, arg := range os.Args {
+	for _, arg := range Args {
 		if arg == "--no-color" {
 			return false
 		}
 	}
-	return os.Getenv("COLOR") != "false"
+	if os.Getenv("COLOR") == "false" {
+		return false
+	}
+	if config != nil && config.Color != nil && !*config.Color {
+		return false
+	}
+	return true
 }
 
 func plural(word string, count int) string {
@@ -269,7 +278,8 @@ func plural(word string, count int) string {
 	return word + "s"
 }
 
-func showCursor() {
+// ShowCursor displays the cursor
+func ShowCursor() {
 	if supportsColor() && !windows() {
 		Print("\u001b[?25h")
 	}
@@ -281,13 +291,15 @@ func hideCursor() {
 	}
 }
 
-func action(text, done string, fn func()) {
-	Err(text + "...")
-	errorPrefix = red(" !") + "\n"
+var actionMsg string
+
+func action(msg, done string, fn func()) {
+	actionMsg = msg
+	Err(actionMsg + "...")
 	hideCursor()
 	fn()
-	showCursor()
-	errorPrefix = ""
+	actionMsg = ""
+	ShowCursor()
 	if done != "" {
 		Errln(" " + done)
 	}
@@ -302,27 +314,100 @@ func handleSignal(s os.Signal, fn func()) {
 	}()
 }
 
+func handlePanic() {
+	if crashing {
+		// if already crashing just let the error bubble
+		// or else potential fork-bomb
+		return
+	}
+	crashing = true
+	if rec := recover(); rec != nil {
+		err, ok := rec.(error)
+		if !ok {
+			err = merry.New(rec.(string))
+		}
+		err = merry.Wrap(err)
+		Error(err.Error())
+		Debugln(merry.Details(err))
+		rollbar(err, "error")
+		Exit(1)
+	}
+}
+
 func rollbar(err error, level string) {
+	if os.Getenv("TESTING") == ONE {
+		return
+	}
 	rollbarAPI.Platform = "client"
 	rollbarAPI.Token = "b40226d5e8a743cf963ca320f7be17bd"
 	rollbarAPI.Environment = Channel
 	rollbarAPI.ErrorWriter = nil
 	rollbarAPI.CodeVersion = GitSHA
 	var cmd string
-	if len(os.Args) > 1 {
-		cmd = os.Args[1]
+	if len(Args) > 1 {
+		cmd = Args[1]
 	}
 	fields := []*rollbarAPI.Field{
 		{"version", Version},
 		{"os", runtime.GOOS},
 		{"arch", runtime.GOARCH},
 		{"command", cmd},
-		{"person.id", netrcLogin()},
 	}
 	rollbarAPI.Error(level, err, fields...)
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		rollbarAPI.Wait()
-	}()
+	rollbarAPI.Wait()
+}
+
+func readJSON(obj interface{}, path string) error {
+	f, err := os.Open(path)
+	if err != nil {
+		return err
+	}
+	return json.NewDecoder(f).Decode(&obj)
+}
+
+func saveJSON(obj interface{}, path string) error {
+	data, err := json.MarshalIndent(obj, "", "  ")
+	if err != nil {
+		return err
+	}
+	return ioutil.WriteFile(path, data, 0644)
+}
+
+// Inspect an object
+func Inspect(o interface{}) {
+	fmt.Fprintf(InspectOut, "%+v\n", o)
+}
+
+func execBin(bin string, args ...string) {
+	if runtime.GOOS != WINDOWS {
+		cmd := exec.Command(bin, args[1:]...)
+		cmd.Stdin = os.Stdin
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+		err := cmd.Run()
+		os.Exit(getExitCode(err))
+	} else {
+		must(syscall.Exec(bin, args, os.Environ()))
+		Inspect("")
+	}
+}
+
+// truncates the beginning of a file
+func truncate(path string, n int) {
+	f, err := os.Open(path)
+	if err != nil {
+		LogIfError(err)
+		return
+	}
+	scanner := bufio.NewScanner(f)
+	lines := make([]string, 0, n+1)
+	scanner.Split(bufio.ScanLines)
+	for scanner.Scan() {
+		lines = append(lines, scanner.Text())
+		if len(lines) > n {
+			lines = lines[1:]
+		}
+	}
+	lines = append(lines, "")
+	ioutil.WriteFile(path, []byte(strings.Join(lines, "\n")), 0644)
 }

@@ -4,12 +4,7 @@ environment:
   GOPATH: C:\gopath
   PATH: C:\gopath\bin;%PATH%
 
-install:
-  - go get -t -d -v ./...
-  - go build -v
-
 build: off
 
 test_script:
-  #- go test -v -race -timeout 30m ./...
-  - go build -v ./...
+  - go test -v -race -cover -coverprofile=coverage.out -ginkgo.v -tags test

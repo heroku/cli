@@ -1,11 +1,14 @@
 package main
 
+import "sort"
+
 // Topic represents a CLI topic.
 // For example, in the command `heroku apps:create` the topic would be `apps`.
 type Topic struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
 	Hidden      bool   `json:"hidden"`
+	Commands    []*Command
 }
 
 func (t *Topic) String() string {
@@ -25,25 +28,14 @@ func (topics TopicSet) ByName(name string) *Topic {
 	return nil
 }
 
-// Commands returns all of the commands under the topic.
-func (t *Topic) Commands() []*Command {
-	commands := make([]*Command, 0, len(cli.Commands))
-	for _, c := range cli.Commands {
-		if c.Topic == t.Name {
-			commands = append(commands, c)
+// Concat joins 2 topic sets together
+func (topics TopicSet) Concat(more TopicSet) TopicSet {
+	for _, topic := range more {
+		if topics.ByName(topic.Name) == nil {
+			topics = append(topics, topic)
 		}
 	}
-	return commands
-}
-
-// Merge will replace empty data on the topic with data from the passed topic.
-func (t *Topic) Merge(other *Topic) {
-	if t.Name == "" {
-		t.Name = other.Name
-	}
-	if t.Description == "" {
-		t.Description = other.Description
-	}
+	return topics
 }
 
 func (topics TopicSet) Len() int {
@@ -56,4 +48,41 @@ func (topics TopicSet) Less(i, j int) bool {
 
 func (topics TopicSet) Swap(i, j int) {
 	topics[i], topics[j] = topics[j], topics[i]
+}
+
+// AllTopics gets all go/core/user topics
+func AllTopics() TopicSet {
+	topics := Topics
+	topics = topics.Concat(CorePlugins.Topics())
+	topics = topics.Concat(UserPlugins.Topics())
+	return topics
+}
+
+// NonHidden returns  a set of topics that are not hidden
+func (topics TopicSet) NonHidden() TopicSet {
+	to := make(TopicSet, 0, len(topics))
+	for _, topic := range topics {
+		if !topic.Hidden {
+			to = append(to, topic)
+		}
+	}
+	return to
+}
+
+// Sort sorts the set
+func (topics TopicSet) Sort() TopicSet {
+	sort.Sort(topics)
+	return topics
+}
+
+// Commands returns all the commands of all the topics
+func (topics TopicSet) Commands() CommandSet {
+	commands := CommandSet{}
+	for _, topic := range topics {
+		for _, command := range topic.Commands {
+			command.Topic = topic.Name
+			commands = append(commands, command)
+		}
+	}
+	return commands
 }

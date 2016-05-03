@@ -1,0 +1,9 @@
+Heroku CLI Standalone
+=====================
+
+To install the standalone Heroku CLI:
+
+    $ xz -cd heroku-VERSION.tar.xz | tar -x
+    $ cd heroku
+    $ ./install
+    heroku installed to /usr/local/bin/heroku

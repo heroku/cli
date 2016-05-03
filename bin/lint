@@ -1,0 +1,2 @@
+#!/bin/bash
+gometalinter --deadline 30s --cyclo-over 32 -D aligncheck -D gosimple -D errcheck -D gotype -D vetshadow -D goconst --exclude ".+_test.go"
