@@ -339,7 +339,7 @@ func rollbar(err error, level string) {
 		return
 	}
 	rollbarAPI.Platform = "client"
-	rollbarAPI.Token = "b40226d5e8a743cf963ca320f7be17bd"
+	rollbarAPI.Token = "d40104ae6fa8477dbb6907370231d7d8"
 	rollbarAPI.Environment = Channel
 	rollbarAPI.ErrorWriter = nil
 	rollbarAPI.CodeVersion = GitSHA
