@@ -64,7 +64,9 @@ func (c *AnalyticsCommand) RecordEnd(status int) {
 func readAnalyticsFile() (commands []AnalyticsCommand) {
 	f, err := os.Open(analyticsPath)
 	if err != nil {
-		LogIfError(err)
+		if !os.IsNotExist(err) {
+			LogIfError(err)
+		}
 		return
 	}
 	if err := json.NewDecoder(f).Decode(&commands); err != nil {
