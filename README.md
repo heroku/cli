@@ -30,8 +30,6 @@ This CLI is written both in Go and node. The core part of the CLI is this Go pro
 
 Most commands are plugins. An example of one would be [heroku-git](https://github.com/heroku/heroku-git). You can install it with `heroku plugins:install` and use it with `heroku git:remote`. When you install it, it uses npm to install the plugin into `~/.heroku/node_plugins/heroku-git`. Then, the commands become available to the CLI.
 
-We have shims in place for some commands inside the current Ruby CLI which will setup this Go/Node CLI, install the plugin, and exec the command. [Here is the shim for heroku-git](https://github.com/heroku/heroku/blob/master/lib/heroku/command/git.rb#L47).
-
 Once we have plugins to replicate every command in the Ruby CLI, we will then ship this CLI standalone.
 
 For more on developing plugins, [read the blog announcement](https://blog.heroku.com/archives/2015/3/19/making_cli_plugins_better_with_a_new_architecture)
