@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-// Version is the version of the v4 cli.
+// Version is the version of the cli.
 // This is set by a build flag in the `Rakefile`.
 var Version = "dev"
 
