@@ -72,7 +72,7 @@ func DownloadCLI(channel, path string, manifest *Manifest) {
 	locked, err := golock.IsLocked(UpdateLockPath)
 	LogIfError(err)
 	if locked {
-		must(merry.Errorf("Update in progress"))
+		ExitWithMessage("Update in progress")
 	}
 	LogIfError(golock.Lock(UpdateLockPath))
 	unlock := func() {
