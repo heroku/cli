@@ -4,7 +4,7 @@ let cli = require('heroku-cli-util')
 let co = require('co')
 let _ = require('lodash')
 let shellescape = require('shell-escape')
-let status_helper = require('./status_helper')
+let statusHelper = require('./status_helper')
 
 function * run (context, heroku) {
   // TODO: find out how to get config vars and addons data in apiv3 or deprecate this command
@@ -41,7 +41,7 @@ function * run (context, heroku) {
     cli.styledJSON(release.v3)
   } else {
     let releaseChange = release.v3.description
-    let status = status_helper(release.v3.status)
+    let status = statusHelper(release.v3.status)
     if (status.content !== undefined) {
       releaseChange += ' (' + cli.color[status.color](status.content) + ')'
     }

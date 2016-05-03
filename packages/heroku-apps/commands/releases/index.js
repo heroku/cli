@@ -4,13 +4,13 @@ let cli = require('heroku-cli-util')
 let co = require('co')
 let _ = require('lodash')
 let time = require('../../lib/time')
-let status_helper = require('./status_helper')
+let statusHelper = require('./status_helper')
 
 let width = () => process.stdout.columns > 80 ? process.stdout.columns : 80
 let trunc = (s, l) => _.truncate(s, {length: width() - (60 + l), omission: '…'})
 
 let descriptionWithStatus = function (d, r) {
-  let status = status_helper(r.status)
+  let status = statusHelper(r.status)
   let sc = ''
   if (status.content !== undefined) {
     sc = cli.color[status.color](status.content)
@@ -37,7 +37,7 @@ function * run (context, heroku) {
     cli.table(releases, {
       printHeader: false,
       columns: [
-        {key: 'version', format: (v, r) => cli.color[status_helper(r.status).color]('v' + v)},
+        {key: 'version', format: (v, r) => cli.color[statusHelper(r.status).color]('v' + v)},
         {key: 'description', format: descriptionWithStatus},
         {key: 'user', format: (u) => cli.color.magenta(u.email.replace(/@addons\.heroku\.com$/, ''))},
         {key: 'created_at', format: (t) => time.ago(new Date(t))},
@@ -52,7 +52,7 @@ function * run (context, heroku) {
     cli.table(releases, {
       printHeader: false,
       columns: [
-        {key: 'version', label: '', format: (v, r) => cli.color[status_helper(r.status).color]('v' + v)},
+        {key: 'version', label: '', format: (v, r) => cli.color[statusHelper(r.status).color]('v' + v)},
         {key: 'description', format: descriptionWithStatus},
         {key: 'user', format: (u) => cli.color.magenta(u.email)},
         {key: 'created_at', format: (t) => time.ago(new Date(t))}

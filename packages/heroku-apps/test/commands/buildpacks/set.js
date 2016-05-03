@@ -5,10 +5,10 @@ const cli = require('heroku-cli-util')
 const expect = require('chai').expect
 const buildpacks = require('../../../commands/buildpacks/set.js')
 const error = require('../../../lib/error.js')
-const stub_get = require('../../stubs/buildpacks.js').get
-const stub_put = require('../../stubs/buildpacks.js').put
+const stubGet = require('../../stubs/buildpacks.js').get
+const stubPut = require('../../stubs/buildpacks.js').put
 const unwrap = require('../../unwrap.js')
-const assert_exit = require('../../assert_exit.js')
+const assertExit = require('../../assert_exit.js')
 
 describe('heroku buildpacks:set', function () {
   beforeEach(function () {
@@ -18,9 +18,9 @@ describe('heroku buildpacks:set', function () {
 
   describe('URL', function () {
     it('# with no buildpacks sets the buildpack URL', function () {
-      stub_get()
+      stubGet()
 
-      let mock = stub_put(
+      let mock = stubPut(
         'https://github.com/heroku/heroku-buildpack-ruby'
       )
 
@@ -37,9 +37,9 @@ Run git push heroku master to create a new release using this buildpack.
     })
 
     it('# errors out when already exists', function () {
-      stub_get('http://github.com/foobar/foobar')
+      stubGet('http://github.com/foobar/foobar')
 
-      return assert_exit(1, buildpacks.run({
+      return assertExit(1, buildpacks.run({
         app: 'example', args: {url: 'http://github.com/foobar/foobar'}
       })).then(function () {
         expect(unwrap(cli.stderr)).to.equal(' ▸    The buildpack http://github.com/foobar/foobar is already set on your app.\n')
@@ -47,13 +47,13 @@ Run git push heroku master to create a new release using this buildpack.
     })
 
     it('# overwrites in the the first when no i is passed', function () {
-      stub_get(
+      stubGet(
         'http://github.com/foo/foo',
         'http://github.com/baz/baz',
         'http://github.com/biz/biz'
       )
 
-      let mock = stub_put(
+      let mock = stubPut(
         'http://github.com/bar/bar',
         'http://github.com/baz/baz',
         'http://github.com/biz/biz'
@@ -76,9 +76,9 @@ Run git push heroku master to create a new release using these buildpacks.
 
   describe('-i INDEX URL', function () {
     it('# with no buildpacks sets the buildpack URL with index', function () {
-      stub_get()
+      stubGet()
 
-      let mock = stub_put(
+      let mock = stubPut(
         'https://github.com/heroku/heroku-buildpack-ruby'
       )
 
@@ -96,11 +96,11 @@ Run git push heroku master to create a new release using this buildpack.
     })
 
     it('# with one existing buildpack successfully overwrites an existing buildpack URL at index', function () {
-      stub_get(
+      stubGet(
         'https://github.com/heroku/heroku-buildpack-java'
       )
 
-      let mock = stub_put(
+      let mock = stubPut(
         'https://github.com/heroku/heroku-buildpack-ruby'
       )
 
@@ -118,11 +118,11 @@ Run git push heroku master to create a new release using this buildpack.
     })
 
     it('# with one existing buildpack unsuccessfully fails if buildpack is already set', function () {
-      stub_get(
+      stubGet(
         'https://github.com/heroku/heroku-buildpack-ruby'
       )
 
-      return assert_exit(1, buildpacks.run({
+      return assertExit(1, buildpacks.run({
         app: 'example', args: {url: 'https://github.com/heroku/heroku-buildpack-ruby'},
         flags: {index: '1'}
       })).then(function () {
@@ -134,12 +134,12 @@ Run git push heroku master to create a new release using this buildpack.
     })
 
     it('# with two existing buildpacks successfully overwrites an existing buildpack URL at index', function () {
-      stub_get(
+      stubGet(
         'https://github.com/heroku/heroku-buildpack-java',
         'https://github.com/heroku/heroku-buildpack-nodejs'
       )
 
-      let mock = stub_put(
+      let mock = stubPut(
         'https://github.com/heroku/heroku-buildpack-ruby',
         'https://github.com/heroku/heroku-buildpack-nodejs'
       )
@@ -160,12 +160,12 @@ Run git push heroku master to create a new release using these buildpacks.
     })
 
     it('# with two existing buildpacks successfully adds buildpack URL to the end of list', function () {
-      stub_get(
+      stubGet(
         'https://github.com/heroku/heroku-buildpack-java',
         'https://github.com/heroku/heroku-buildpack-nodejs'
       )
 
-      let mock = stub_put(
+      let mock = stubPut(
         'https://github.com/heroku/heroku-buildpack-java',
         'https://github.com/heroku/heroku-buildpack-nodejs',
         'https://github.com/heroku/heroku-buildpack-ruby'
@@ -188,12 +188,12 @@ Run git push heroku master to create a new release using these buildpacks.
     })
 
     it('# with two existing buildpacks successfully adds buildpack URL to the very end of list', function () {
-      stub_get(
+      stubGet(
         'https://github.com/heroku/heroku-buildpack-java',
         'https://github.com/heroku/heroku-buildpack-nodejs'
       )
 
-      let mock = stub_put(
+      let mock = stubPut(
         'https://github.com/heroku/heroku-buildpack-java',
         'https://github.com/heroku/heroku-buildpack-nodejs',
         'https://github.com/heroku/heroku-buildpack-ruby'
@@ -216,12 +216,12 @@ Run git push heroku master to create a new release using these buildpacks.
     })
 
     it('# with two existing buildpacks unsuccessfully fails if buildpack is already set', function () {
-      stub_get(
+      stubGet(
         'https://github.com/heroku/heroku-buildpack-java',
         'https://github.com/heroku/heroku-buildpack-nodejs'
       )
 
-      return assert_exit(1, buildpacks.run({
+      return assertExit(1, buildpacks.run({
         app: 'example', args: {url: 'https://github.com/heroku/heroku-buildpack-java'},
         flags: {index: '2'}
       })).then(function () {
@@ -233,7 +233,7 @@ Run git push heroku master to create a new release using these buildpacks.
     })
 
     it('# returns an error message when i is not an integer', function () {
-      return assert_exit(1, buildpacks.run({
+      return assertExit(1, buildpacks.run({
         app: 'example', args: {url: 'http://github.com/bar/bar'},
         flags: {index: 'notaninteger'}
       })).then(function () {
@@ -242,7 +242,7 @@ Run git push heroku master to create a new release using these buildpacks.
     })
 
     it('# returns an error message when i < 0', function () {
-      return assert_exit(1, buildpacks.run({
+      return assertExit(1, buildpacks.run({
         app: 'example', args: {url: 'http://github.com/bar/bar'},
         flags: {index: '-1'}
       })).then(function () {
@@ -252,7 +252,7 @@ Run git push heroku master to create a new release using these buildpacks.
   })
 
   it('# handles a missing buildpack URL arg', function () {
-    return assert_exit(1, buildpacks.run({
+    return assertExit(1, buildpacks.run({
       app: 'example', args: {}
     })).then(function () {
       expect(cli.stderr).to.equal(

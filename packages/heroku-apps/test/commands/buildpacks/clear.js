@@ -7,7 +7,7 @@ const expect = require('chai').expect
 const buildpacks = require('../../../commands/buildpacks/clear.js')
 const error = require('../../../lib/error.js')
 const unwrap = require('../../unwrap.js')
-const stub_put = require('../../stubs/buildpacks.js').put
+const stubPut = require('../../stubs/buildpacks.js').put
 
 describe('heroku buildpacks:clear', function () {
   beforeEach(function () {
@@ -20,7 +20,7 @@ describe('heroku buildpacks:clear', function () {
       .get('/apps/example/config-vars')
       .reply(200, {})
 
-    let mock = stub_put()
+    let mock = stubPut()
 
     return buildpacks.run({
       app: 'example'
@@ -35,7 +35,7 @@ describe('heroku buildpacks:clear', function () {
       .get('/apps/example/config-vars')
       .reply(200, {BUILDPACK_URL: 'http://github.com/foo/foo'})
 
-    let mock = stub_put()
+    let mock = stubPut()
 
     return buildpacks.run({
       app: 'example'
@@ -51,7 +51,7 @@ describe('heroku buildpacks:clear', function () {
       .get('/apps/example/config-vars')
       .reply(200, {LANGUAGE_PACK_URL: 'http://github.com/foo/foo'})
 
-    let mock = stub_put()
+    let mock = stubPut()
 
     return buildpacks.run({
       app: 'example'

@@ -3,7 +3,7 @@
 let expect = require('chai').expect
 let ErrorExit = require('../lib/error.js').ErrorExit
 
-function assert_error_exit (code, gen) {
+function exit (code, gen) {
   var actual
   return gen.catch(function (err) {
     expect(err).to.be.an.instanceof(ErrorExit)
@@ -14,4 +14,4 @@ function assert_error_exit (code, gen) {
   })
 }
 
-module.exports = assert_error_exit
+module.exports = exit
