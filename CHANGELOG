@@ -1,3 +1,10 @@
+5.1.0   2016-05-03
+==================
+Help updates, added `heroku _`
+Added more tests
+Moved 2fa under auth:
+Updated to node 6
+
 5.0.0   2016-04-24
 ==================
 Release CLI as single tarball containing all dependencies
