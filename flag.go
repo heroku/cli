@@ -16,29 +16,28 @@ type Flag struct {
 	Required    bool   `json:"required"`
 }
 
-var appFlag = &Flag{
+// AppFlag is --app
+var AppFlag = &Flag{
 	Name:        "app",
 	Char:        "a",
 	HasValue:    true,
 	Description: "app to run command against",
 }
 
-var remoteFlag = &Flag{
+// RemoteFlag is --remote for --app
+var RemoteFlag = &Flag{
 	Name:        "remote",
 	Char:        "r",
 	HasValue:    true,
 	Description: "git remote of app to run command against",
 }
 
-var orgFlag = &Flag{
+// OrgFlag is --org
+var OrgFlag = &Flag{
 	Name:        "org",
 	Char:        "o",
 	HasValue:    true,
 	Description: "organization to use",
-}
-
-var debuggerFlag = &Flag{
-	Name: "debugger",
 }
 
 func (f *Flag) String() string {
@@ -57,7 +56,8 @@ func (f *Flag) String() string {
 	return s
 }
 
-func parseFlag(input string, flags []*Flag) (*Flag, string, error) {
+// ParseFlag parses a flag from argument inputs
+func ParseFlag(input string, flags []*Flag) (*Flag, string, error) {
 	keyvalue := strings.SplitN(input, "=", 2)
 	key := keyvalue[0]
 	value := ""
@@ -65,7 +65,7 @@ func parseFlag(input string, flags []*Flag) (*Flag, string, error) {
 		value = keyvalue[1]
 	}
 	if len(key) > 2 && key[1] != '-' {
-		return parseFlag(key[:2]+"="+key[2:], flags)
+		return ParseFlag(key[:2]+"="+key[2:], flags)
 	}
 	for _, flag := range flags {
 		if (flag.Char != "" && key == "-"+flag.Char) || key == "--"+flag.Name {

@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
-go build
-./cli $*
+make tmp/dev/heroku/bin/heroku --quiet
+tmp/dev/heroku/bin/heroku $*

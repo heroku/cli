@@ -1,40 +1,37 @@
-package main
+package main_test
 
-import "testing"
+import (
+	cli "github.com/heroku/cli"
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
+)
 
-var verboseFlag = &Flag{
+var verboseFlag = &cli.Flag{
 	Name:     "verbose",
 	Char:     "v",
 	HasValue: false,
 }
 
-func checkFlag(t *testing.T, flag *Flag, input, expectedValue, expectedError string) {
-	out, val, err := parseFlag(input, []*Flag{flag})
-	if expectedError != "" {
-		if expectedError != err.Error() {
-			t.Error(err)
-		}
-		return
+var _ = Describe("ParseFlag", func() {
+	test := func(flag *cli.Flag, input, expected, expectedErr string) {
+		It(input, func() {
+			out, val, err := cli.ParseFlag(input, []*cli.Flag{flag})
+			if expectedErr != "" {
+				Expect(err.Error()).To(Equal(expectedErr))
+			} else {
+				Expect(err).ShouldNot(HaveOccurred())
+				Expect(out).To(Equal(flag))
+				Expect(val).To(Equal(expected))
+			}
+		})
 	}
-	if err != nil {
-		t.Error(err)
-	}
-	if flag != out {
-		t.Error(flag, "not returned")
-	}
-	if val != expectedValue {
-		t.Error(expectedValue + " not returned")
-	}
-}
-
-func TestParseFlag(t *testing.T) {
-	checkFlag(t, appFlag, "-amyapp", "myapp", "")
-	checkFlag(t, appFlag, "--app=myapp", "myapp", "")
-	checkFlag(t, appFlag, "--app=myapp=app", "myapp=app", "")
-	checkFlag(t, appFlag, "-a=myapp", "myapp", "")
-	checkFlag(t, appFlag, "-amyapp", "myapp", "")
-	checkFlag(t, appFlag, "--app", "", " -a, --app APP needs a value")
-	checkFlag(t, verboseFlag, "--verbose", "", "")
-	checkFlag(t, verboseFlag, "--verbose=foo", "", " -v, --verbose does not take a value")
-	checkFlag(t, verboseFlag, "-v", "", "")
-}
+	test(cli.AppFlag, "-amyapp", "myapp", "")
+	test(cli.AppFlag, "--app=myapp", "myapp", "")
+	test(cli.AppFlag, "--app=myapp=app", "myapp=app", "")
+	test(cli.AppFlag, "-a=myapp", "myapp", "")
+	test(cli.AppFlag, "-amyapp", "myapp", "")
+	test(cli.AppFlag, "--app", "", " -a, --app APP needs a value")
+	test(verboseFlag, "--verbose", "", "")
+	test(verboseFlag, "--verbose=foo", "", " -v, --verbose does not take a value")
+	test(verboseFlag, "-v", "", "")
+})

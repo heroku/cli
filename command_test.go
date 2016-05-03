@@ -1,22 +1,35 @@
-package main
+package main_test
 
-import "testing"
+import (
+	"fmt"
+	"runtime"
 
-func TestCommand(t *testing.T) {
-	tests := []struct {
-		Title    string
-		Command  *Command
-		Expected string
-	}{
-		{"basic", &Command{Topic: "apps", Command: "info"}, "apps:info"},
-		{"topic root command", &Command{Topic: "apps", Command: ""}, "apps"},
-		{"with required argument", &Command{Topic: "apps", Command: "info", Args: []Arg{{Name: "foo"}}}, "apps:info FOO"},
-		{"with optional argument", &Command{Topic: "apps", Command: "info", Args: []Arg{{Name: "foo", Optional: true}}}, "apps:info [FOO]"},
-		{"with multiple arguments", &Command{Topic: "apps", Command: "info", Args: []Arg{{Name: "foo"}, {Name: "bar"}}}, "apps:info FOO BAR"},
-	}
-	for _, test := range tests {
-		if commandUsage(test.Command) != test.Expected {
-			t.Error(test.Title)
+	cli "github.com/heroku/cli"
+
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
+)
+
+var _ = Describe("Command", func() {
+	BeforeEach(func() {
+		cli.Start("heroku", "version")
+	})
+
+	Describe("parsing", func() {
+		testcase := func(title string, command *cli.Command, expected string) {
+			It(title, func() {
+				Expect(cli.CommandUsage(command)).To(Equal(expected))
+			})
 		}
-	}
-}
+		testcase("basic", &cli.Command{Topic: "apps", Command: "info"}, "apps:info")
+		testcase("topic root command", &cli.Command{Topic: "apps", Command: ""}, "apps")
+		testcase("with required argument", &cli.Command{Topic: "apps", Command: "info", Args: []cli.Arg{{Name: "foo"}}}, "apps:info FOO")
+		testcase("with optional argument", &cli.Command{Topic: "apps", Command: "info", Args: []cli.Arg{{Name: "foo", Optional: true}}}, "apps:info [FOO]")
+		testcase("with multiple arguments", &cli.Command{Topic: "apps", Command: "info", Args: []cli.Arg{{Name: "foo"}, {Name: "bar"}}}, "apps:info FOO BAR")
+	})
+
+	It("shows the version", func() {
+		version := fmt.Sprintf("heroku-cli/%s (%s-%s) %s ?\n", cli.Version, runtime.GOOS, runtime.GOARCH, runtime.Version())
+		Expect(stdout()).To(Equal(version))
+	})
+})

@@ -1,15 +1,64 @@
+---
+machine:
+  environment:
+    CACHE_DIR: ~/deps
+    WORKSPACE: ~/workspace/heroku
+    NPM_REGISTRY: https://cli-npm.heroku.com
+    JOBZ: 6
+checkout:
+  post:
+    - |
+      rm -rf ~/.go_workspace/src/github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME &&
+      mkdir -p ~/.go_workspace/src/github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME &&
+      cp -R ~/$CIRCLE_PROJECT_REPONAME ~/.go_workspace/src/github.com/$CIRCLE_PROJECT_USERNAME/ &&
+      rm -rf ~/$CIRCLE_PROJECT_REPONAME &&
+      ln -s ~/.go_workspace/src/github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME ~/$CIRCLE_PROJECT_REPONAME &&
+      mkdir -p $CIRCLE_TEST_REPORTS/go
 dependencies:
-  override:
-    - if [ ! -d ~/bats ]; then git clone https://github.com/sstephenson/bats.git ~/bats; fi
-    - go get github.com/golang/lint
-    - go get github.com/jstemmer/go-junit-report
-    - mkdir -p $CIRCLE_TEST_REPORTS/go
   cache_directories:
-    - "~/bats"
+    - ~/deps
+    - ~/osslsigncode
+    - ~/workspace
+    - ~/.cache/heroku/npm
+  override:
+    - >
+      go version &&
+      if ! type gometalinter >/dev/null 2>&1; then go get -v github.com/alecthomas/gometalinter && gometalinter --install; fi &&
+      if ! type goveralls    >/dev/null 2>&1; then go get -v github.com/mattn/goveralls; fi &&
+      if [ ! -d ~/osslsigncode ]; then
+        wget https://cli-assets.heroku.com/osslsigncode-1.7.1.tar.gz &&
+        tar -xvzf osslsigncode-1.7.1.tar.gz &&
+        mv osslsigncode-1.7.1 ~/osslsigncode &&
+        cd ~/osslsigncode && ./configure && make
+      fi &&
+      cd ~/osslsigncode && sudo make install
+    - make deps build -j $JOBZ
+    - sudo apt-get install cowsay nsis
 test:
   override:
-    - go test -v -race ./... | go-junit-report > $CIRCLE_TEST_REPORTS/go/results.xml
+    - ./bin/test -v -race -cover -coverprofile=coverage.out -ginkgo.v
+    - make test -j $JOBZ
+    - ./bin/lint
   post:
-    - test -z "$(go fmt)"
-    - go vet
-    - ~/bats/bin/bats test
+    - |
+      go tool cover -html=coverage.out -o $CIRCLE_ARTIFACTS/coverage.html;
+      goveralls -coverprofile=coverage.out -service=circle-ci -repotoken=$COVERALLS_TOKEN;
+deployment:
+  dev:
+    branch: dev
+    owner: heroku
+    commands:
+      - gpg --passphrase $HEROKU_WINDOWS_SIGNING_PASS -d resources/deb/key.gpg | gpg --import
+      - CHANNEL=dev make release -j $JOBZ
+  beta:
+    branch: beta
+    owner: heroku
+    commands:
+      - gpg --passphrase $HEROKU_WINDOWS_SIGNING_PASS -d resources/deb/key.gpg | gpg --import
+      - CHANNEL=beta make release -j $JOBZ
+  stable:
+    tag: /v[0-9]+(\.[0-9]+)*/
+    owner: heroku
+    commands:
+      - gpg --passphrase $HEROKU_WINDOWS_SIGNING_PASS -d resources/deb/key.gpg | gpg --import
+      - CHANNEL=stable make release -j $JOBZ
