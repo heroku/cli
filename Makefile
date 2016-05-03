@@ -91,7 +91,7 @@ $(WORKSPACE)/bin/heroku tmp/%/heroku/bin/heroku: $(SOURCES) bin/version
 	GOOS=$(GOOS) GOARCH=$(ARCH) GO386=$(GO386) GOARM=$(GOARM) go build -tags $(BUILD_TAGS) -o $@ $(LDFLAGS)
 
 %/heroku/bin/heroku.exe: $(SOURCES) resources/exe/heroku-codesign-cert.pfx
-	GOOS=$(GOOS) GOARCH=$(GOARCH) go build $(LDFLAGS) -o $@ -tags $(BUILD_TAGS)
+	GOOS=$(GOOS) GOARCH=$(ARCH) go build $(LDFLAGS) -o $@ -tags $(BUILD_TAGS)
 	@osslsigncode -pkcs12 resources/exe/heroku-codesign-cert.pfx \
 		-pass '$(HEROKU_WINDOWS_SIGNING_PASS)' \
 		-n 'Heroku CLI' \
