@@ -33,7 +33,9 @@ func (p *Plugins) RunScript(script string) (cmd *exec.Cmd, done func()) {
 	}
 	cmd.Env = append([]string{"NODE_PATH=" + p.modulesPath()}, os.Environ()...)
 	return cmd, func() {
-		os.Remove(f.Name())
+		if f != nil {
+			os.Remove(f.Name())
+		}
 	}
 }
 
