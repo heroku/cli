@@ -26,13 +26,13 @@ function * run (context, heroku) {
   if (changes.length === 0) {
     let formation = yield heroku.get(`/apps/${app}/formation`)
     if (formation.length === 0) throw emptyFormationErr(app)
-    cli.log(formation.map((d) => `${cli.color.green(d.type)}=${cli.color.yellow(d.quantity)}:${cli.color.cyan(d.size)}`).sort().join(' '))
+    cli.log(formation.map((d) => `${d.type}=${d.quantity}:${d.size}`).sort().join(' '))
   } else {
     let formation = yield cli.action('Scaling dynos', {success: false},
       heroku.request({method: 'PATCH', path: `/apps/${app}/formation`, body: {updates: changes}}))
 
     let output = formation.filter((f) => changes.find((c) => c.type === f.type))
-      .map((d) => `${cli.color.green(d.type)} at ${cli.color.yellow(d.quantity)}:${cli.color.cyan(d.size)}`)
+      .map((d) => `${cli.color.green(d.type)} at ${d.quantity}:${d.size}`)
     cli.console.error(`done, now running ${output.join(', ')}`)
   }
 }
