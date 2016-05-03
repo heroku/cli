@@ -9,7 +9,7 @@ let empty = (o) => Object.keys(o).length === 0
 
 function displayFormation (formation) {
   formation = _.groupBy(formation, 'size')
-  formation = _.map(formation, (p, size) => `${cli.color.yellow(_.sumBy(p, 'quantity'))}:${cli.color.cyan(size)}`)
+  formation = _.map(formation, (p, size) => `${_.sumBy(p, 'quantity')}:${size}`)
   cli.log(`  Dynos: ${formation.join(' ')}`)
 }
 
@@ -23,7 +23,7 @@ function displayErrors (metrics) {
       errors = errors.concat(_.toPairs(dynoErrors.data).map((e) => cli.color.red(`${_.sum(e[1])} ${e[0]}`)))
     })
   }
-  if (errors.length > 0) cli.log(`  ${errors.join(', ')} - see details with ${cli.color.yellow('heroku apps:errors')}`)
+  if (errors.length > 0) cli.log(`  Errors: ${errors.join(', ')} - see details with ${cli.color.cmd('heroku apps:errors')}`)
 }
 
 function displayMetrics (metrics) {
@@ -48,7 +48,7 @@ function displayMetrics (metrics) {
   if (metrics.routerStatus && !empty(metrics.routerStatus.data)) {
     rpm = `${_.round(_.sum(_.flatten(_.values(metrics.routerStatus.data))) / 24 / 60)} rpm ${rpmSparkline()}`
   }
-  if (rpm || ms) cli.log(`  ${cli.color.green(ms)} ${cli.color.yellow(rpm)}`)
+  if (rpm || ms) cli.log(`  Metrics: ${ms}${rpm}`)
 }
 
 function displayNotifications (notifications) {
@@ -68,9 +68,9 @@ function displayApps (apps, appsMetrics) {
     let metrics = a[1]
     cli.log(cli.color.app(app.app.name))
     let pipeline = app.pipeline ? ` Pipeline: ${cli.color.blue.bold(app.pipeline.pipeline.name)}` : ''
-    cli.log(`  Owner: ${cli.color.blue.bold(owner(app.app.owner))}${pipeline}`)
+    cli.log(`  Owner: ${owner(app.app.owner)}${pipeline}`)
     displayFormation(app.formation)
-    cli.log(`  Last release: ${cli.color.green(time.ago(new Date(app.app.released_at)))}`)
+    cli.log(`  Last release: ${time.ago(new Date(app.app.released_at))}`)
     displayMetrics(metrics)
     displayErrors(metrics)
   }
@@ -127,7 +127,7 @@ function * run (context, heroku) {
   cli.log(`
 See all add-ons with ${cli.color.cmd('heroku addons')}`)
   let sampleOrg = _.sortBy(data.orgs.filter((o) => o.role !== 'collaborator'), (o) => new Date(o.created_at))[0]
-  if (sampleOrg) cli.log(`See all apps in ${cli.color.cmd(sampleOrg.name)} with ${cli.color.cmd('heroku apps --org ' + sampleOrg.name)}`)
+  if (sampleOrg) cli.log(`See all apps in ${cli.color.blue(sampleOrg.name)} with ${cli.color.cmd('heroku apps --org ' + sampleOrg.name)}`)
   cli.log(`See all apps with ${cli.color.cmd('heroku apps --all')}`)
   displayNotifications(data.notifications)
   cli.log(`
