@@ -9,8 +9,8 @@ let empty = (o) => Object.keys(o).length === 0
 
 function displayFormation (formation) {
   formation = _.groupBy(formation, 'size')
-  formation = _.map(formation, (p, size) => `${_.sumBy(p, 'quantity')}:${size}`)
-  cli.log(`  Dynos: ${formation.join(' ')}`)
+  formation = _.map(formation, (p, size) => `${bold(_.sumBy(p, 'quantity'))} | ${size}`)
+  cli.log(`  ${label('Dynos:')} ${formation.join(', ')}`)
 }
 
 function displayErrors (metrics) {
@@ -23,7 +23,7 @@ function displayErrors (metrics) {
       errors = errors.concat(_.toPairs(dynoErrors.data).map((e) => cli.color.red(`${_.sum(e[1])} ${e[0]}`)))
     })
   }
-  if (errors.length > 0) cli.log(`  Errors: ${errors.join(', ')} - see details with ${cli.color.cmd('heroku apps:errors')}`)
+  if (errors.length > 0) cli.log(`  ${label('Errors:')} ${errors.join(dim(', '))} (see details with ${cli.color.cmd('heroku apps:errors')})`)
 }
 
 function displayMetrics (metrics) {
@@ -38,7 +38,7 @@ function displayMetrics (metrics) {
       }
     })
     points.pop()
-    return sparkline(points) + ' last 24 hours rpm'
+    return dim(sparkline(points)) + ' last 24 hours rpm'
   }
   let ms = ''
   let rpm = ''
@@ -48,7 +48,7 @@ function displayMetrics (metrics) {
   if (metrics.routerStatus && !empty(metrics.routerStatus.data)) {
     rpm = `${_.round(_.sum(_.flatten(_.values(metrics.routerStatus.data))) / 24 / 60)} rpm ${rpmSparkline()}`
   }
-  if (rpm || ms) cli.log(`  Metrics: ${ms}${rpm}`)
+  if (rpm || ms) cli.log(`  ${label('Metrics:')} ${ms}${rpm}`)
 }
 
 function displayNotifications (notifications) {
@@ -59,6 +59,10 @@ You have ${notifications.length} unread notifications. Read them with ${cli.colo
   }
 }
 
+let dim = (s) => cli.color.gray.bold(s)
+let bold = (s) => cli.color.bold(s)
+let label = (s) => cli.color.blue(s)
+
 function displayApps (apps, appsMetrics) {
   let owner = (owner) => owner.email.endsWith('@herokumanager.com') ? owner.email.split('@')[0] : owner.email
 
@@ -67,10 +71,12 @@ function displayApps (apps, appsMetrics) {
     let app = a[0]
     let metrics = a[1]
     cli.log(cli.color.app(app.app.name))
-    let pipeline = app.pipeline ? ` Pipeline: ${cli.color.blue.bold(app.pipeline.pipeline.name)}` : ''
-    cli.log(`  Owner: ${owner(app.app.owner)}${pipeline}`)
+    cli.log(`  ${label('Owner:')} ${owner(app.app.owner)}`)
+    if (app.pipelin) {
+      cli.log(`  ${label('Pipeline:')} ${app.pipeline.pipeline.name}`)
+    }
     displayFormation(app.formation)
-    cli.log(`  Last release: ${time.ago(new Date(app.app.released_at))}`)
+    cli.log(`  ${label('Last release:')} ${time.ago(new Date(app.app.released_at))}`)
     displayMetrics(metrics)
     displayErrors(metrics)
   }
@@ -127,7 +133,7 @@ function * run (context, heroku) {
   cli.log(`
 See all add-ons with ${cli.color.cmd('heroku addons')}`)
   let sampleOrg = _.sortBy(data.orgs.filter((o) => o.role !== 'collaborator'), (o) => new Date(o.created_at))[0]
-  if (sampleOrg) cli.log(`See all apps in ${cli.color.blue(sampleOrg.name)} with ${cli.color.cmd('heroku apps --org ' + sampleOrg.name)}`)
+  if (sampleOrg) cli.log(`See all apps in ${cli.color.yellow.dim(sampleOrg.name)} with ${cli.color.cmd('heroku apps --org ' + sampleOrg.name)}`)
   cli.log(`See all apps with ${cli.color.cmd('heroku apps --all')}`)
   displayNotifications(data.notifications)
   cli.log(`

@@ -94,10 +94,10 @@ See other CLI commands with heroku help
         .then(() => expect(cli.stdout, 'to be', `
 myapp
   Owner: foo@bar.com
-  Dynos: 1:Standard-1X
+  Dynos: 1 | Standard-1X
   Last release: ${time.ago(now)}
   Metrics: 46 ms 4 rpm ▂▁▁▆▂▅█▇ last 24 hours rpm
-  Errors: 2 H12, 3 H25, 9 H27 - see details with heroku apps:errors
+  Errors: 2 H12, 3 H25, 9 H27 (see details with heroku apps:errors)
 
 See all add-ons with heroku addons
 See all apps with heroku apps --all
