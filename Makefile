@@ -277,7 +277,7 @@ releaseosx: $(DIST_DIR)/$(VERSION)/heroku-osx.pkg
 distdeb: $(DIST_DIR)/$(VERSION)/apt/Packages $(DIST_DIR)/$(VERSION)/apt/Release
 
 .PHONY: release
-release: releasewin releasedeb releasetxz releasepatch
+release: releasewin releasedeb releasetxz
 	@if type cowsay >/dev/null 2>&1; then cowsay -f stegosaurus Released $(CHANNEL)/$(VERSION); fi;
 
 .PHONY: releasedeb
