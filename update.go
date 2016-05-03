@@ -51,7 +51,7 @@ func Update(channel string) {
 	updateCLI(channel)
 	UserPlugins.Update()
 	truncate(ErrLogPath, 1000)
-	cleanTmpDirs()
+	cleanTmp()
 }
 
 func updateCLI(channel string) {
@@ -170,7 +170,7 @@ func TriggerBackgroundUpdate() {
 	}
 }
 
-func cleanTmpDirs() {
+func cleanTmp() {
 	clean := func(base string) {
 		dir := filepath.Join(base, "tmp")
 		if exists, _ := FileExists(dir); !exists {
@@ -181,7 +181,7 @@ func cleanTmpDirs() {
 		for _, file := range files {
 			if time.Since(file.ModTime()) > 24*time.Hour {
 				path := filepath.Join(dir, file.Name())
-				Debugf("removing old tmp dir %s\n", path)
+				Debugf("removing old tmp: %s\n", path)
 				LogIfError(os.RemoveAll(path))
 			}
 		}

@@ -14,7 +14,9 @@ var NodeVersion = "?"
 // RunScript runs some node code
 func (p *Plugins) RunScript(script string) (cmd *exec.Cmd, done func()) {
 	useTmpFile := true
-	f, err := ioutil.TempFile("", "heroku-script-")
+	cacheTmp := filepath.Join(CacheHome, "tmp")
+	os.MkdirAll(cacheTmp, 0755)
+	f, err := ioutil.TempFile(cacheTmp, "heroku-script-")
 	if err != nil {
 		useTmpFile = false
 		LogIfError(err)
