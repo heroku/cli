@@ -192,8 +192,8 @@ func must(err error) {
 // LogIfError logs out an error if one arises
 func LogIfError(e error) {
 	if e != nil {
-		Logln(e.Error())
-		Logln(string(debug.Stack()))
+		Debugln(e.Error())
+		Debugln(string(debug.Stack()))
 		rollbar(e, "info")
 	}
 }
