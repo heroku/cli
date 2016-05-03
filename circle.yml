@@ -5,6 +5,10 @@ machine:
     WORKSPACE: ~/workspace/heroku
     NPM_REGISTRY: https://cli-npm.heroku.com
     JOBZ: 6
+  post:
+    - sudo rm -rf /usr/local/go
+    - if [ ! -e ~/deps/go1.6.2.linux-amd64.tar.gz ]; then mkdir -p ~/deps && wget -O ~/deps/go1.6.2.linux-amd64.tar.gz https://storage.googleapis.com/golang/go1.6.2.linux-amd64.tar.gz; fi
+    - sudo tar -C /usr/local -xzf ~/deps/go1.6.2.linux-amd64.tar.gz
 checkout:
   post:
     - |
