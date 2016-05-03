@@ -15,10 +15,7 @@ var NodeVersion = "?"
 func (p *Plugins) RunScript(script string) (cmd *exec.Cmd, done func()) {
 	cacheTmp := filepath.Join(CacheHome, "tmp")
 	os.MkdirAll(cacheTmp, 0755)
-	f, err := ioutil.TempFile(cacheTmp, "heroku-script-")
-	if err != nil {
-		LogIfError(err)
-	}
+	f, _ := ioutil.TempFile(cacheTmp, "heroku-script-")
 	if f != nil {
 		defer f.Close()
 		if _, err := f.WriteString(script); err != nil {
