@@ -8,7 +8,6 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/ansel1/merry"
 	"github.com/dickeyxxx/netrc"
 	"github.com/dickeyxxx/speakeasy"
 	"github.com/toqueteos/webbrowser"
@@ -491,7 +490,7 @@ func twoFactorToggle(ctx *Context, on bool) {
 	res, err := req.Receive(&account, &failure)
 	must(err)
 	if res.StatusCode != 200 {
-		must(merry.New(failure["message"].(string)))
+		ExitWithMessage(failure["message"].(string))
 		return
 	}
 	twoFactorRun(ctx)
