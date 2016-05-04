@@ -55,12 +55,11 @@ func Update(channel string) {
 }
 
 func updateCLI(channel string) {
-	if Autoupdate != "yes" {
+	if Autoupdate == "no" {
 		return
 	}
 	manifest := GetUpdateManifest(channel)
-	binExists, _ := FileExists(expectedBinPath())
-	if binExists && manifest.Version == Version && manifest.Channel == Channel {
+	if npmExists() && manifest.Version == Version && manifest.Channel == Channel {
 		return
 	}
 	DownloadCLI(channel, filepath.Join(DataHome, "cli"), manifest)
@@ -107,9 +106,6 @@ func DownloadCLI(channel, path string, manifest *Manifest) {
 
 // IsUpdateNeeded checks if an update is available
 func IsUpdateNeeded() bool {
-	if exists, _ := FileExists(expectedBinPath()); !exists {
-		return true
-	}
 	f, err := os.Stat(autoupdateFile)
 	if err != nil {
 		if os.IsNotExist(err) {
@@ -202,17 +198,26 @@ func loadNewCLI() {
 	if Autoupdate == "no" {
 		return
 	}
-	expected := expectedBinPath()
-	if BinPath == expected {
-		return
-	}
-	if exists, _ := FileExists(expected); !exists {
-		if exists, _ = FileExists(npmBinPath()); !exists {
-			// uh oh, npm isn't where it should be.
-			// The CLI probably isn't installed right so force an update
-			Update(Channel)
+	expected, err := os.Stat(expectedBinPath())
+	if err != nil {
+		if os.IsNotExist(err) {
+			if !npmExists() {
+				// uh oh, npm isn't where it should be.
+				// The CLI probably isn't installed right so force an update
+				Update(Channel)
+			}
+		} else {
+			must(err)
 		}
-		return
 	}
-	execBin(expected, Args...)
+	current, err := os.Stat(BinPath)
+	must(err)
+	if !os.SameFile(current, expected) {
+		execBin(expected.Name(), Args...)
+	}
+}
+
+func npmExists() bool {
+	exists, _ := FileExists(npmBinPath())
+	return exists
 }
