@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
 	"os/user"
@@ -61,7 +62,9 @@ func configHome() string {
 	if d == "" {
 		d = filepath.Join(HomeDir, ".config")
 	}
-	return filepath.Join(d, "heroku")
+	d = filepath.Join(d, "heroku")
+	must(mkdirp(d))
+	return d
 }
 
 func dataHome() string {
@@ -73,7 +76,9 @@ func dataHome() string {
 			d = filepath.Join(HomeDir, ".local", "share")
 		}
 	}
-	return filepath.Join(d, "heroku")
+	d = filepath.Join(d, "heroku")
+	must(mkdirp(d))
+	return d
 }
 
 func cacheHome() string {
@@ -85,7 +90,9 @@ func cacheHome() string {
 			d = filepath.Join(HomeDir, ".cache")
 		}
 	}
-	return filepath.Join(d, "heroku")
+	d = filepath.Join(d, "heroku")
+	must(mkdirp(d))
+	return d
 }
 
 func localAppData() string {
@@ -105,9 +112,18 @@ func FileExists(path string) (bool, error) {
 
 func tmpDir(base string) string {
 	root := filepath.Join(base, "tmp")
-	err := os.MkdirAll(root, 0755)
+	err := mkdirp(root)
 	must(err)
 	dir, err := ioutil.TempDir(root, "")
 	must(err)
 	return dir
+}
+
+func mkdirp(path string) error {
+	err := os.MkdirAll(path, 0755)
+	if os.IsPermission(err) {
+		fmt.Fprintf(os.Stderr, "Error creating %s which is needed for the Heroku CLI.\nRun `sudo mkdir -p %s && sudo chown $USER %s` to create this directory.\n", path, path, path)
+		os.Exit(1)
+	}
+	return err
 }
