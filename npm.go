@@ -144,6 +144,9 @@ func (p *Plugins) environ() []string {
 		"NPM_CONFIG_GLOBAL=false",
 		"NPM_CONFIG_ONLOAD_SCRIPT=false",
 	}
+	if file := os.Getenv("SSL_CERT_FILE"); file != "" {
+		env = append(env, "NPM_CONFIG_CAFILE="+file)
+	}
 	return append(env, os.Environ()...)
 }
 
