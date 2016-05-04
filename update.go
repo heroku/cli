@@ -202,13 +202,12 @@ func loadNewCLI() {
 	if err != nil {
 		if os.IsNotExist(err) {
 			if !npmExists() {
-				// uh oh, npm isn't where it should be.
-				// The CLI probably isn't installed right so force an update
+				Debugln("npm does not exist, forcing update")
 				Update(Channel)
 			}
-		} else {
-			must(err)
+			return
 		}
+		must(err)
 	}
 	current, err := os.Stat(BinPath)
 	must(err)
