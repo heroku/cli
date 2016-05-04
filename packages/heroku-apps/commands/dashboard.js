@@ -72,7 +72,7 @@ function displayApps (apps, appsMetrics) {
     let metrics = a[1]
     cli.log(cli.color.app(app.app.name))
     cli.log(`  ${label('Owner:')} ${owner(app.app.owner)}`)
-    if (app.pipelin) {
+    if (app.pipeline) {
       cli.log(`  ${label('Pipeline:')} ${app.pipeline.pipeline.name}`)
     }
     displayFormation(app.formation)
