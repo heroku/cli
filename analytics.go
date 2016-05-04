@@ -94,12 +94,9 @@ func SubmitAnalytics() {
 		return
 	}
 	lockfile := filepath.Join(CacheHome, "analytics.lock")
-	if locked, _ := golock.IsLocked(lockfile); locked {
-		// skip if already updating
-		return
-	}
 	golock.Lock(lockfile)
 	defer golock.Unlock(lockfile)
+	commands = readAnalyticsFile() // read commands again in case it was locked
 	plugins := func() map[string]string {
 		plugins := make(map[string]string)
 		for _, plugin := range CorePlugins.Plugins() {
