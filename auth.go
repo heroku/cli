@@ -293,12 +293,12 @@ func getString(prompt string) string {
 func getPassword(prompt string) string {
 	password, err := speakeasy.Ask(prompt)
 	if err != nil {
-		if err.Error() == "The handle is invalid." {
-			Errln(`Login is currently incompatible with git bash/cygwin
+		switch err.Error() {
+		case "The handle is invalid.", "Controlador no válido.", "Identificador inválido.":
+			ExitWithMessage(`Login is currently incompatible with git bash/cygwin
 In the meantime, login via cmd.exe
 https://github.com/heroku/cli/issues/84`)
-			Exit(1)
-		} else {
+		default:
 			must(err)
 		}
 	}
