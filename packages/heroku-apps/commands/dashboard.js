@@ -54,8 +54,8 @@ function displayMetrics (metrics) {
 function displayNotifications (notifications) {
   notifications = notifications.filter((n) => !n.read)
   if (notifications.length > 0) {
-    cli.log(cli.color.yellow(`
-You have ${notifications.length} unread notifications. Read them with ${cli.color.cmd('heroku notifications')}`))
+    cli.log(`
+You have ${cli.color.yellow(notifications.length)} unread notifications. Read them with ${cli.color.cmd('heroku notifications')}`)
   }
 }
 
