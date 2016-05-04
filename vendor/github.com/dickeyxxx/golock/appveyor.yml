@@ -1,0 +1,10 @@
+clone_folder: C:\gopath\src\github.com\dickeyxxx\golock
+
+environment:
+  GOPATH: C:\gopath
+  PATH: C:\gopath\bin;%PATH%
+
+build: off
+
+test_script:
+  - go test -v -race

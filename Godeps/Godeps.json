@@ -14,8 +14,8 @@
 		},
 		{
 			"ImportPath": "github.com/dickeyxxx/golock",
-			"Comment": "v1.1.0",
-			"Rev": "ae2e6b7e683fc65b06e64361d9386c7278b677a0"
+			"Comment": "v1.1.1",
+			"Rev": "f8983b9df963bdbe77b31e684a71cd815d21f59e"
 		},
 		{
 			"ImportPath": "github.com/dickeyxxx/netrc",

@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"path/filepath"
+	"runtime"
 	"strconv"
 	"syscall"
 	"time"
@@ -55,13 +57,7 @@ func IsLocked(path string) (bool, error) {
 		return false, err
 	}
 	if pid != 0 {
-		active, err := isPidActive(pid)
-		if err != nil {
-			return false, err
-		}
-		if active {
-			return true, nil
-		}
+		return isPidActive(pid), nil
 	}
 	return false, nil
 }
@@ -96,29 +92,28 @@ func readLockfile(path string) (pid int, err error) {
 }
 
 func writeLockfile(path string, pid int) error {
+	os.MkdirAll(filepath.Dir(path), 0755)
 	data := []byte(strconv.Itoa(pid))
 	return ioutil.WriteFile(path, data, 0666)
 }
 
-func isPidActive(pid int) (bool, error) {
-	p, err := os.FindProcess(pid)
+func isPidActive(pid int) bool {
+	process, err := os.FindProcess(pid)
 	if err != nil {
-		return false, nil
+		return false
 	}
-	err = p.Signal(os.Signal(syscall.Signal(0)))
-	if err == nil {
-		return true, nil
+
+	if runtime.GOOS != "windows" {
+		return process.Signal(syscall.Signal(0)) == nil
 	}
-	errno, ok := err.(syscall.Errno)
-	if !ok {
-		return false, nil // dead owner
+
+	processState, err := process.Wait()
+	if err != nil {
+		return false
 	}
-	switch errno {
-	case syscall.ESRCH:
-		return false, nil // dead owner
-	case syscall.EPERM:
-		return true, nil
-	default:
-		return false, err
+	if processState.Exited() {
+		return false
 	}
+
+	return true
 }
