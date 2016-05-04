@@ -1,3 +1,8 @@
+5.1.5   2016-05-05
+==================
+Fix installing CLI with symlinked directories
+Show better error when permissions are invalid
+
 5.1.4   2016-05-04
 ==================
 Add 32-bit windows target
