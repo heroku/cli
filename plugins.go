@@ -118,7 +118,7 @@ func pluginsInstall(ctx *Context) {
 		toinstall = append(toinstall, plugin)
 	}
 	if len(toinstall) == 0 {
-		Exit(1)
+		Exit(0)
 	}
 	action("Installing "+plural("plugin", len(toinstall))+" "+strings.Join(toinstall, " "), "done", func() {
 		err := UserPlugins.InstallPlugins(toinstall...)
