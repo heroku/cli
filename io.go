@@ -379,6 +379,7 @@ func Inspect(o interface{}) {
 }
 
 func execBin(bin string, args ...string) {
+	Debugf("Executing %s\n", bin)
 	if runtime.GOOS != WINDOWS {
 		cmd := exec.Command(bin, args[1:]...)
 		cmd.Stdin = os.Stdin
