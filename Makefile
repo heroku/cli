@@ -155,7 +155,7 @@ $(CACHE_DIR)/git/Git-%.exe:
 	@mkdir -p $(CACHE_DIR)/git
 	curl -fsSLo $@ https://cli-assets.heroku.com/git/Git-$*.exe
 
-$(DIST_DIR)/$(VERSION)/heroku-windows-%.exe: tmp/windows-%/heroku/VERSION $(CACHE_DIR)/git/Git-2.8.1-32-bit.exe $(CACHE_DIR)/git/Git-2.8.1-64-bit.exe
+$(DIST_DIR)/$(VERSION)/heroku-windows-%.exe: tmp/windows-% $(CACHE_DIR)/git/Git-2.8.1-32-bit.exe $(CACHE_DIR)/git/Git-2.8.1-64-bit.exe
 	@mkdir -p $(@D)
 	rm -rf tmp/windows-$*-installer
 	cp -r tmp/windows-$* tmp/windows-$*-installer
