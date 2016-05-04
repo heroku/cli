@@ -121,7 +121,7 @@ func tmpDir(base string) string {
 
 func mkdirp(path string) error {
 	err := os.MkdirAll(path, 0755)
-	if os.IsPermission(err) {
+	if os.IsPermission(err) && runtime.GOOS != "windows" {
 		fmt.Fprintf(os.Stderr, "Error creating %s which is needed for the Heroku CLI.\nRun `sudo mkdir -p %s && sudo chown $USER %s` to create this directory.\n", path, path, path)
 		os.Exit(1)
 	}

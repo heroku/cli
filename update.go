@@ -205,9 +205,9 @@ func loadNewCLI() {
 				Debugln("npm does not exist, forcing update")
 				Update(Channel)
 			}
-		} else {
-			must(err)
+			return
 		}
+		must(err)
 	}
 	current, err := os.Stat(BinPath)
 	must(err)
