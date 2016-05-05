@@ -78,7 +78,7 @@ func buildManifest(ctx *Context) {
 		Builds:     map[string]*Build{},
 	}
 	files := strings.Split(ctx.Flags["targets"].(string), ",")
-	re := regexp.MustCompile(`heroku-v\d+\.\d+\.\d+-\w+-(\w+)-(\w+)\.tar.xz`)
+	re := regexp.MustCompile(`heroku-v\d+\.\d+\.\d+-\w+-(\w+)-(\w+)\.tar\..z`)
 	for _, file := range files {
 		filename := filepath.Base(file)
 		info := re.FindStringSubmatch(filename)

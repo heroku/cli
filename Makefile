@@ -103,18 +103,34 @@ resources/exe/heroku-codesign-cert.pfx:
 	@gpg --yes --passphrase '$(HEROKU_WINDOWS_SIGNING_PASS)' -o resources/exe/heroku-codesign-cert.pfx -d resources/exe/heroku-codesign-cert.pfx.gpg
 
 $(DIST_DIR)/$(VERSION)/heroku-v$(VERSION)-%.tar.xz: tmp/%
+	@if [ -z "$(CHANNEL)" ]; then echo "no channel" && exit 1; fi
 	@mkdir -p $(@D)
 	tar -C tmp/$* -c heroku | xz -2 > $@
+
+$(DIST_DIR)/$(VERSION)/gz/heroku-v$(VERSION)-%.tar.gz: tmp/%
+	@if [ -z "$(CHANNEL)" ]; then echo "no channel" && exit 1; fi
+	@mkdir -p $(@D)
+	tar -C tmp/$* -c heroku | gzip > $@
 
 comma:=,
 empty:=
 space:=$(empty) $(empty)
 DIST_TARGETS := $(foreach t,$(TARGETS),$(DIST_DIR)/$(VERSION)/heroku-v$(VERSION)-$(t).tar.xz)
+DIST_TARGETS_GZ := $(foreach t,$(TARGETS),$(DIST_DIR)/$(VERSION)/gz/heroku-v$(VERSION)-$(t).tar.gz)
 MANIFEST := $(DIST_DIR)/$(VERSION)/manifest.json
+MANIFEST_GZ := $(DIST_DIR)/$(VERSION)/gz/manifest.json
 $(MANIFEST): $(WORKSPACE)/bin/heroku $(DIST_TARGETS)
+	@if [ -z "$(CHANNEL)" ]; then echo "no channel" && exit 1; fi
 	$(WORKSPACE)/bin/heroku build:manifest --dir $(@D) --version $(VERSION) --channel $(CHANNEL) --targets $(subst $(space),$(comma),$(DIST_TARGETS)) > $@
 
+$(MANIFEST_GZ): $(WORKSPACE)/bin/heroku $(DIST_TARGETS_GZ)
+	@if [ -z "$(CHANNEL)" ]; then echo "no channel" && exit 1; fi
+	$(WORKSPACE)/bin/heroku build:manifest --dir $(@D) --version $(VERSION) --channel $(CHANNEL) --targets $(subst $(space),$(comma),$(DIST_TARGETS_GZ)) > $@
+
 $(MANIFEST).sig: $(MANIFEST)
+	@gpg --armor -u 0F1B0520 --yes --output $@ --detach-sig $<
+
+$(MANIFEST_GZ).sig: $(MANIFEST_GZ)
 	@gpg --armor -u 0F1B0520 --yes --output $@ --detach-sig $<
 
 ifneq ($(CHANNEL),)
@@ -254,8 +270,9 @@ $(WINDOWS_TARGETS): $(TARGET_DEPS) tmp/windows-$$(ARCH)/heroku/lib/node.exe
 .PHONY: distwin
 distwin: $(DIST_DIR)/$(VERSION)/heroku-windows-amd64.exe $(DIST_DIR)/$(VERSION)/heroku-windows-386.exe
 
-.PHONY: disttxz
+.PHONY: disttxz disttgz
 disttxz: $(MANIFEST) $(MANIFEST).sig $(DIST_TARGETS)
+disttgz: $(MANIFEST_GZ) $(MANIFEST_GZ).sig $(DIST_TARGETS_GZ)
 
 .PHONY: distpatch releasepatch releasepatch/%
 distpatch: $(DIST_PATCHES)
@@ -268,8 +285,15 @@ releasetxz: $(MANIFEST) $(MANIFEST).sig $(addprefix releasetxz/,$(DIST_TARGETS))
 	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/manifest.json s3://heroku-cli-assets/branches/$(CHANNEL)/manifest.json
 	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/manifest.json.sig s3://heroku-cli-assets/branches/$(CHANNEL)/manifest.json.sig
 
-.PHONY: releasetxz/%
+.PHONY: releasetgz
+releasetgz: $(MANIFEST_GZ) $(MANIFEST_GZ).sig $(addprefix releasetgz/,$(DIST_TARGETS_GZ))
+	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/gz/manifest.json s3://heroku-cli-assets/branches/$(CHANNEL)/gz/manifest.json
+	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/gz/manifest.json.sig s3://heroku-cli-assets/branches/$(CHANNEL)/gz/manifest.json.sig
+
+.PHONY: releasetxz/% releasetgz/%
 releasetxz/%.tar.xz: %.tar.xz
+	aws s3 cp --cache-control max-age=86400 $< s3://heroku-cli-assets/branches/$(CHANNEL)/$(VERSION)/$(notdir $<)
+releasetgz/%.tar.gz: %.tar.gz
 	aws s3 cp --cache-control max-age=86400 $< s3://heroku-cli-assets/branches/$(CHANNEL)/$(VERSION)/$(notdir $<)
 
 .PHONY: distosx
@@ -283,7 +307,7 @@ releaseosx: $(DIST_DIR)/$(VERSION)/heroku-osx.pkg
 distdeb: $(DIST_DIR)/$(VERSION)/apt/Packages $(DIST_DIR)/$(VERSION)/apt/Release
 
 .PHONY: release
-release: releasewin releasedeb releasetxz
+release: releasewin releasedeb releasetxz releasetgz
 	@if type cowsay >/dev/null 2>&1; then cowsay -f stegosaurus Released $(CHANNEL)/$(VERSION); fi;
 
 .PHONY: releasedeb
