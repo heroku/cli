@@ -43,3 +43,8 @@ For problems directly related to the CLI, [add an issue on GitHub](https://githu
 For other issues, [submit a support ticket](https://help.heroku.com/).
 
 [Contributors](https://github.com/heroku/cli/contributors)
+
+Developing
+==========
+
+To run the CLI locally, use the `./bin/run` script. If you want to install the dev version of the CLI, run `make install`.
