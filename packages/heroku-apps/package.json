@@ -23,8 +23,6 @@
   "devDependencies": {
     "chai": "^3.3.0",
     "changelog": "1.0.7",
-    "codeclimate-test-reporter": "0.3.1",
-    "coveralls": "2.11.9",
     "fs-extra": "0.30.0",
     "mocha": "^2.3.3",
     "mockdate": "1.0.4",
@@ -47,7 +45,6 @@
     "url": "https://github.com/heroku/heroku-apps.git"
   },
   "scripts": {
-    "coverage": "nyc report --reporter=text-lcov | codeclimate-test-reporter && nyc report --reporter=text-lcov | coveralls",
     "postversion": "npm publish && git push && git push --tags",
     "preversion": "npm test",
     "test": "TZ=utc nyc mocha && standard | snazzy"
