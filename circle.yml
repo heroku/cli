@@ -28,7 +28,6 @@ dependencies:
     - >
       go version &&
       if ! type gometalinter >/dev/null 2>&1; then go get -v github.com/alecthomas/gometalinter && gometalinter --install; fi &&
-      if ! type goveralls    >/dev/null 2>&1; then go get -v github.com/mattn/goveralls; fi &&
       if [ ! -d ~/osslsigncode ]; then
         wget https://cli-assets.heroku.com/osslsigncode-1.7.1.tar.gz &&
         tar -xvzf osslsigncode-1.7.1.tar.gz &&
@@ -44,9 +43,7 @@ test:
     - make test -j $JOBZ
     - ./bin/lint
   post:
-    - |
-      go tool cover -html=coverage.out -o $CIRCLE_ARTIFACTS/coverage.html;
-      goveralls -coverprofile=coverage.out -service=circle-ci -repotoken=$COVERALLS_TOKEN;
+    - bash <(curl -s https://codecov.io/bash)
 deployment:
   dev:
     branch: dev
