@@ -7,6 +7,7 @@ Heroku CLI
 [![Build status](https://ci.appveyor.com/api/projects/status/ouee3b9d7jwkjcr1/branch/master?svg=true)](https://ci.appveyor.com/project/Heroku/cli/branch/master)
 [![MIT License](https://img.shields.io/github/license/heroku/cli.svg)](https://github.com/heroku/cli/blob/master/LICENSE)
 [![Go Report Card](https://goreportcard.com/badge/github.com/heroku/cli)](https://goreportcard.com/report/github.com/heroku/cli)
+[![codebeat badge](https://codebeat.co/badges/78afe7cb-2634-490e-a450-b6edbd299fc2)](https://codebeat.co/projects/github-com-heroku-cli)
 
 The Heroku CLI is used to manage Heroku apps from the command line.
 
