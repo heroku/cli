@@ -1,3 +1,7 @@
+5.1.6   2016-05-06
+==================
+Added tar.gz variant
+
 5.1.5   2016-05-05
 ==================
 Fix installing CLI with symlinked directories
