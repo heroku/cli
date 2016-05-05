@@ -176,6 +176,12 @@ $(DIST_DIR)/$(VERSION)/heroku-osx.pkg: tmp/darwin-amd64/heroku/VERSION
 .PHONY: build
 build: $(WORKSPACE)/bin/heroku $(WORKSPACE)/lib/npm $(WORKSPACE)/lib/node $(WORKSPACE)/lib/plugins.json $(WORKSPACE)/lib/cacert.pem
 
+.PHONY: install
+install: build
+	cp -r $(WORKSPACE) /usr/local/lib/heroku
+	rm /usr/local/bin/heroku
+	ln -s /usr/local/lib/heroku/bin/heroku /usr/local/bin/heroku
+
 .PHONY: clean
 clean:
 	rm -rf tmp dist $(CACHE_DIR) $(DIST_DIR)
