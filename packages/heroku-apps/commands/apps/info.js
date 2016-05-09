@@ -113,7 +113,7 @@ let cmd = {
     {name: 'extended', char: 'x', hidden: true},
     {name: 'json', char: 'j'}
   ],
-  run: cli.command(co.wrap(run))
+  run: cli.command({preauth: true}, co.wrap(run))
 }
 
 module.exports.apps = cmd
