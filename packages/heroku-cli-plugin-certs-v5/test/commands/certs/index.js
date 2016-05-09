@@ -165,4 +165,40 @@ tokyo-1050  wildcard.example.org.herokudns.com  *.example.org   2013-08-01 21:34
     });
   });
 
+  it('# shows certs with common names stacked and just stable cname matches', function() {
+    let mock_sni = nock('https://api.heroku.com', {
+      reqheaders: {'Accept': 'application/vnd.heroku+json; version=3.sni_ssl_cert'}
+    })
+    .get('/apps/example/sni-endpoints')
+    .reply(200, [endpoint_stables]);
+
+    let mock_ssl = nock('https://api.heroku.com', {
+      reqheaders: {'Accept': 'application/vnd.heroku+json; version=3.ssl_cert'}
+    })
+    .get('/apps/example/ssl-endpoints')
+    .reply(200, []);
+
+    let mock_domains = nock('https://api.heroku.com')
+    .get('/apps/example/domains')
+    .reply(200, [
+      {'kind': 'custom', 'hostname': 'foo.example.org', 'cname': 'foo.example.org.herokudns.com'},
+      {'kind': 'custom', 'hostname': 'bar.example.org', 'cname': 'haiku.herokussl.com'},
+      {'kind': 'custom', 'hostname': '*.example.com',   'cname': 'haiku.herokussl.com'}
+    ]);
+
+    return certs.run({app: 'example'}).then(function() {
+      mock_sni.done();
+      mock_ssl.done();
+      mock_domains.done();
+      expect(cli.stderr).to.equal('');
+      expect(cli.stdout).to.equal(
+`Name        Endpoint                       Common Name(s)   Expires               Trusted  Type
+──────────  ─────────────────────────────  ───────────────  ────────────────────  ───────  ────
+tokyo-1050  foo.example.org.herokudns.com  foo.example.org  2013-08-01 21:34 UTC  False    SNI 
+            (no domains match)             bar.example.org                                     
+            (no domains match)             biz.example.com                                     
+`);
+    });
+  });
+
 });

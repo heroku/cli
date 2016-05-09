@@ -302,7 +302,7 @@ ${certificate_details}
       let domains_create = nock('https://api.heroku.com')
       .post('/apps/example/domains', {hostname: 'foo.example.org'})
       .reply(200, 
-        {"kind": "custom", "cname": "foo.example.com.herokudns.org", "hostname": "foo.example.org"}
+        {"kind": "custom", "cname": "foo.example.com.herokudns.com", "hostname": "foo.example.org"}
       );
 
       return certs.run({app: 'example', args: {CRT: 'pem_file', KEY: 'key_file'}, flags: {bypass: true}}).then(function() {
@@ -327,7 +327,7 @@ biz.example.com
 === The following domains are set up for this certificate
 Name        Endpoint                       Common Name(s)   Expires               Trusted  Type
 ──────────  ─────────────────────────────  ───────────────  ────────────────────  ───────  ────
-tokyo-1050  foo.example.com.herokudns.org  foo.example.org  2013-08-01 21:34 UTC  False    SNI 
+tokyo-1050  foo.example.com.herokudns.com  foo.example.org  2013-08-01 21:34 UTC  False    SNI 
             (no domains match)             bar.example.org                                     
             biz.example.com.herokudns.com  biz.example.com                                     
 `);
@@ -350,13 +350,13 @@ tokyo-1050  foo.example.com.herokudns.org  foo.example.org  2013-08-01 21:34 UTC
       let domains_create_foo = nock('https://api.heroku.com')
       .post('/apps/example/domains', {hostname: 'foo.example.org'})
       .reply(200, 
-        {"kind": "custom", "cname": "foo.example.com.herokudns.org", "hostname": "foo.example.org"}
+        {"kind": "custom", "cname": "foo.example.com.herokudns.com", "hostname": "foo.example.org"}
       );
 
       let domains_create_bar = nock('https://api.heroku.com')
       .post('/apps/example/domains', {hostname: 'bar.example.org'})
       .reply(200, 
-        {"kind": "custom", "cname": "bar.example.com.herokudns.org", "hostname": "bar.example.org"}
+        {"kind": "custom", "cname": "bar.example.com.herokudns.com", "hostname": "bar.example.org"}
       );
 
       return certs.run({app: 'example', args: {CRT: 'pem_file', KEY: 'key_file'}, flags: {bypass: true, domains: 'foo.example.org,bar.example.org'}}).then(function() {
@@ -379,8 +379,8 @@ SSL certificate is self signed.
 === The following domains are set up for this certificate
 Name        Endpoint                       Common Name(s)   Expires               Trusted  Type
 ──────────  ─────────────────────────────  ───────────────  ────────────────────  ───────  ────
-tokyo-1050  foo.example.com.herokudns.org  foo.example.org  2013-08-01 21:34 UTC  False    SNI 
-            bar.example.com.herokudns.org  bar.example.org                                     
+tokyo-1050  foo.example.com.herokudns.com  foo.example.org  2013-08-01 21:34 UTC  False    SNI 
+            bar.example.com.herokudns.com  bar.example.org                                     
             (no domains match)             biz.example.com                                     
 `);
       });
