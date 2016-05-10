@@ -277,11 +277,11 @@ func getExitCode(err error) int {
 // to get the commands and metadata
 func (p *Plugins) ParsePlugin(name string) (*Plugin, error) {
 	script := `
-	var plugin = require('` + name + `');
-	var pjson  = require('` + name + `/package.json');
+	var plugin = require('` + name + `')
+	var pjson  = require('` + name + `/package.json')
 
-	plugin.name    = pjson.name;
-	plugin.version = pjson.version;
+	plugin.name    = pjson.name
+	plugin.version = pjson.version
 
 	console.log(JSON.stringify(plugin))`
 	cmd, done := p.RunScript(script)
@@ -295,7 +295,7 @@ func (p *Plugins) ParsePlugin(name string) (*Plugin, error) {
 	var plugin Plugin
 	err = json.Unmarshal(output, &plugin)
 	if err != nil {
-		return nil, fmt.Errorf("Error parsing plugin: %s\n%s\n%s", name, err, string(output))
+		return nil, fmt.Errorf("Error parsing plugin: %s\n%s\n%s\nIs this a real CLI plugin?", name, err, string(output))
 	}
 	if len(plugin.Commands) == 0 {
 		return nil, fmt.Errorf("Invalid plugin. No commands found.")
