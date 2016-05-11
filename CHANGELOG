@@ -1,3 +1,10 @@
+5.1.7   2016-05-11
+==================
+Updated node to 6.1.0
+Updated heroku-apps
+Show better error on plugin parsing failure
+Switch to armv6l from armv7l for node
+
 5.1.6   2016-05-06
 ==================
 Added tar.gz variant
