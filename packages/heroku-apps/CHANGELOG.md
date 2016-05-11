@@ -1,3 +1,52 @@
+2.0.4 / 2016-05-11
+==================
+
+  * 2.0.4
+  * updated deps
+  * preauth apps:info ([#88](https://github.com/heroku/heroku-apps/issues/88))
+  * switch to codecov for coverage ([#87](https://github.com/heroku/heroku-apps/issues/87))
+  * fix pipeline
+  * less yellow
+  * clean up color usage
+  * standard 7ify
+  * fix create specs
+  * show done message
+
+2.0.3 / 2016-04-25
+==================
+
+  * 2.0.3
+  * hide stack on apps:create
+  * show new app name
+  * use os.homedir()
+  * Update README.md
+  * test config var shell format
+  * standardify ([#83](https://github.com/heroku/heroku-apps/issues/83))
+  * Fix snake case to camel case
+  * Display release status ([#64](https://github.com/heroku/heroku-apps/issues/64))
+    * show releases status in info and index
+    * set max to 1 for retrieving current release
+
+2.0.2 / 2016-04-22
+==================
+
+  * 2.0.2
+  * Merge pull request [#82](https://github.com/heroku/heroku-apps/issues/82) from heroku/add-yes-command-line-flag
+    Add yes command line flag
+
+2.0.1 / 2016-04-21
+==================
+
+  * 2.0.1
+  * switch back to ruby for `heroku apps`
+    failing due to https://github.com/heroku/api/issues/5885
+  * hide dynos and resize from topics
+  * remove changelog from preversion
+    since it would not show the latest release, changelog is better run
+    afterwards manually
+  * changelog
+  * disable sparklines on windows
+
 2.0.0 / 2016-04-21
 ==================
 
@@ -158,60 +207,3 @@
 
   * Merge pull request [#31](https://github.com/heroku/heroku-apps/issues/31) from heroku/labs
     labs commands
-
-1.3.0 / 2016-03-22
-==================
-
-  * show error if no app
-  * added apps:delete alias
-  * added apps:destroy
-  * fixed test description
-  * removed extraneous catch
-  * catch errors getting app features
-  * added labs:enable and labs:disable
-  * fixed labs:info when not in an app directory
-  * added labs:info
-  * added labs index command
-  * update deps
-  * Merge pull request [#45](https://github.com/heroku/heroku-apps/issues/45) from edmorley/correct-create-app-help
-    Correct a typo in the app:create help text
-  * Correct a typo in the app:create help text
-
-1.2.7 / 2016-03-14
-==================
-
-  * 1.2.7
-  * Merge pull request [#48](https://github.com/heroku/heroku-apps/issues/48) from heroku/heroku-create-app-in-space
-    Fix app in space create text to match devcenter
-  * Fix app in space create text to match devcenter
-  * 1.2.6
-
-1.2.6 / 2016-03-11
-==================
-
-  * Merge pull request [#47](https://github.com/heroku/heroku-apps/issues/47) from heroku/fix-dates-info
-    fix date parsing
-  * fix date parsing
-  * Merge pull request [#42](https://github.com/heroku/heroku-apps/issues/42) from heroku/hide-addon-user-email
-    Don't show full email address for add-on releases
-  * simplified jshint
-  * minor testing doc update
-  * minor testing changes for style guide
-
-1.2.5 / 2016-03-02
-==================
-
-  * 1.2.5
-  * Merge pull request [#44](https://github.com/heroku/heroku-apps/issues/44) from hvaara/ps-quota
-    Changed variable name in the ps sub-command
-  * Changed variable name in the ps sub-command
-    Fixes heroku/heroku-apps[#43](https://github.com/heroku/heroku-apps/issues/43)
-  * Don't show full email address for add-on releases
-  * ignore test directory
-
-1.2.4 / 2016-02-10
-==================
-
-  * 1.2.4
-  * Merge pull request [#41](https://github.com/heroku/heroku-apps/issues/41) from heroku/buildpacks
-    Allow the url to pass through unmodified to add
