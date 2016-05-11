@@ -1,9 +1,9 @@
-'use strict';
+'use strict'
 exports.topic = {
   name: 'heroku',
   // this is the help text that shows up under `heroku help`
-  description: 'a topic for the ssl plugin',
-};
+  description: 'a topic for the ssl plugin'
+}
 
 exports.commands = [
   require('./commands/certs/index.js'),
@@ -14,5 +14,5 @@ exports.commands = [
   require('./commands/certs/key.js'),
   require('./commands/certs/remove.js'),
   require('./commands/certs/rollback.js'),
-  require('./commands/certs/update.js'),
-];
+  require('./commands/certs/update.js')
+]

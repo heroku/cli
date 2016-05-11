@@ -9,7 +9,7 @@
     "url": "https://github.com/heroku/heroku-certs/issues"
   },
   "scripts": {
-    "test": "mocha && jshint .",
+    "test": "TZ=utc nyc mocha && standard | snazzy",
     "preversion": "npm test",
     "postversion": "npm publish && git push && git push --tags"
   },
@@ -26,9 +26,12 @@
     "jshint": "*",
     "mocha": "^2.3.3",
     "nock": "3.2.0",
+    "nyc": "6.4.2",
     "proxyquire": "1.7.4",
     "sinon": "1.17.2",
-    "sinon-chai": "2.8.0"
+    "sinon-chai": "2.8.0",
+    "snazzy": "4.0.0",
+    "standard": "7.0.0"
   },
   "keywords": [
     "heroku-plugin"

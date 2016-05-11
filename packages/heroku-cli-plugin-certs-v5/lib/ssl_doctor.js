@@ -1,55 +1,53 @@
-'use strict';
+'use strict'
 
-let cli = require('heroku-cli-util');
-let got    = require('got');
-let url    = require('url');
-let https  = require('https');
-let tunnel  = require('tunnel-agent');
+let cli = require('heroku-cli-util')
+let got = require('got')
+let url = require('url')
+let https = require('https')
+let tunnel = require('tunnel-agent')
 
-module.exports = function(path, parts, message) {
-  let logMessage = message || 'Resolving trust chain';
+module.exports = function (path, parts, message) {
+  let logMessage = message || 'Resolving trust chain'
 
-  let ssl_doctor = process.env.SSL_DOCTOR_URL || 'https://ssl-doctor.herokuapp.com/';
+  let sslDoctor = process.env.SSL_DOCTOR_URL || 'https://ssl-doctor.herokuapp.com/'
 
-  let post_data = parts.join('\n');
+  let postData = parts.join('\n')
 
-  let httpsProxy = process.env.HTTPS_PROXY || process.env.https_proxy || process.env.HTTP_PROXY || process.env.http_proxy;
-  let agent;
+  let httpsProxy = process.env.HTTPS_PROXY || process.env.https_proxy || process.env.HTTP_PROXY || process.env.http_proxy
+  let agent
   if (httpsProxy) {
-    cli.hush(`proxy set to ${httpsProxy}`);
-    let proxy = url.parse(httpsProxy);
+    cli.hush(`proxy set to ${httpsProxy}`)
+    let proxy = url.parse(httpsProxy)
 
     agent = tunnel.httpsOverHttp({
       proxy: {
         host: proxy.hostname,
         port: proxy.port || 8080
       }
-    });
+    })
   } else {
-    agent = new https.Agent();
+    agent = new https.Agent()
   }
 
-  let post_options = {
+  let postOptions = {
     method: 'POST',
     headers: {
       'content-type': 'application/octet-stream',
-      'content-length': Buffer.byteLength(post_data)
+      'content-length': Buffer.byteLength(postData)
     },
-    body: post_data,
+    body: postData,
     agent: agent
-  };
+  }
 
-  let promise = got(ssl_doctor + path, post_options).
-  then(function(response) {
-    return response.body;
-  }).
-  catch(function(error) {
+  let promise = got(sslDoctor + path, postOptions).then(function (response) {
+    return response.body
+  }).catch(function (error) {
     if (error.response && error.response.body) {
-      throw new Error(error.response.body);
+      throw new Error(error.response.body)
     } else {
-      throw error;
+      throw error
     }
-  });
+  })
 
-  return cli.action(logMessage, {}, promise);
-};
+  return cli.action(logMessage, {}, promise)
+}

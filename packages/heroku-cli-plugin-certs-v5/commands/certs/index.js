@@ -1,18 +1,18 @@
-'use strict';
+'use strict'
 
-let co      = require('co');
-let cli     = require('heroku-cli-util');
+let co = require('co')
+let cli = require('heroku-cli-util')
 
-let endpoints     = require('../../lib/endpoints.js').certsAndDomains;
-let display_table = require('../../lib/display_table.js');
+let endpoints = require('../../lib/endpoints.js').certsAndDomains
+let displayTable = require('../../lib/display_table.js')
 
-function* run(context, heroku) {
-  let certsAndDomains = yield endpoints(context.app, heroku);
+function * run (context, heroku) {
+  let certsAndDomains = yield endpoints(context.app, heroku)
 
   if (certsAndDomains.certs.length === 0) {
-    cli.log(`${context.app} has no SSL certificates.\nUse \`heroku _certs:add CRT KEY\` to add one.`);
+    cli.log(`${context.app} has no SSL certificates.\nUse \`heroku _certs:add CRT KEY\` to add one.`)
   } else {
-    display_table(certsAndDomains.certs, certsAndDomains.domains);
+    displayTable(certsAndDomains.certs, certsAndDomains.domains)
   }
 }
 
@@ -21,5 +21,5 @@ module.exports = {
   description: 'List SSL certificates for an app.',
   needsApp: true,
   needsAuth: true,
-  run: cli.command(co.wrap(run)),
-};
+  run: cli.command(co.wrap(run))
+}

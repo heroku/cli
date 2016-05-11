@@ -1,110 +1,110 @@
-'use strict';
+'use strict'
 
-let co      = require('co');
-let cli     = require('heroku-cli-util');
+let co = require('co')
+let cli = require('heroku-cli-util')
 
-let openssl   = require('../../lib/openssl.js');
-let endpoints = require('../../lib/endpoints.js').all;
+let openssl = require('../../lib/openssl.js')
+let endpoints = require('../../lib/endpoints.js').all
 
-function valEmpty(val) {
+function valEmpty (val) {
   if (val) {
-    return val.length === 0;
+    return val.length === 0
   } else {
-    return true;
+    return true
   }
 }
 
-function getSubject(context) {
-  let domain = context.args.domain;
+function getSubject (context) {
+  let domain = context.args.domain
 
-  let owner = context.flags.owner;
-  let country = context.flags.country;
-  let area = context.flags.area;
-  let city = context.flags.city;
+  let owner = context.flags.owner
+  let country = context.flags.country
+  let area = context.flags.area
+  let city = context.flags.city
 
-  let subject = context.flags.subject;
+  let subject = context.flags.subject
 
   if (valEmpty(subject)) {
-    subject = '';
-    if (! valEmpty(country)) {
-      subject += `/C=${country}`;
+    subject = ''
+    if (!valEmpty(country)) {
+      subject += `/C=${country}`
     }
 
-    if (! valEmpty(area)) {
-      subject += `/ST=${area}`;
+    if (!valEmpty(area)) {
+      subject += `/ST=${area}`
     }
 
-    if (! valEmpty(city)) {
-      subject += `/L=${city}`;
+    if (!valEmpty(city)) {
+      subject += `/L=${city}`
     }
 
-    if (! valEmpty(owner)) {
-      subject += `/O=${owner}`;
+    if (!valEmpty(owner)) {
+      subject += `/O=${owner}`
     }
 
-    subject += `/CN=${domain}`;
+    subject += `/CN=${domain}`
   }
 
-  return subject;
+  return subject
 }
 
-function requiresPrompt(context) {
+function requiresPrompt (context) {
   if (valEmpty(context.flags.subject)) {
-    let args = [context.flags.owner, context.flags.country, context.flags.area, context.flags.city];
-    if (! context.flags.now && args.every(function (v) { return valEmpty(v); })) {
-      return true;
+    let args = [context.flags.owner, context.flags.country, context.flags.area, context.flags.city]
+    if (!context.flags.now && args.every(function (v) { return valEmpty(v) })) {
+      return true
     }
   }
-  return false;
+  return false
 }
 
-function getCommand(certs, domain) {
-  if (certs.find(function(f) {
-    return f.ssl_cert.cert_domains.find(function(d) {
-      return d === domain;
-    });
+function getCommand (certs, domain) {
+  if (certs.find(function (f) {
+    return f.ssl_cert.cert_domains.find(function (d) {
+      return d === domain
+    })
   })) {
-    return "update";
+    return 'update'
   } else {
-    return "add";
+    return 'add'
   }
 }
 
-function* run(context, heroku) {
+function * run (context, heroku) {
   if (requiresPrompt(context)) {
-    context.flags.owner = yield cli.prompt('Owner of this certificate');
-    context.flags.country = yield cli.prompt('Country of owner (two-letter ISO code)');
-    context.flags.area = yield cli.prompt('State/province/etc. of owner');
-    context.flags.city = yield cli.prompt('City of owner');
+    context.flags.owner = yield cli.prompt('Owner of this certificate')
+    context.flags.country = yield cli.prompt('Country of owner (two-letter ISO code)')
+    context.flags.area = yield cli.prompt('State/province/etc. of owner')
+    context.flags.city = yield cli.prompt('City of owner')
   }
 
-  let subject = getSubject(context);
+  let subject = getSubject(context)
 
-  let domain = context.args.domain;
-  let keysize = context.flags.keysize || 2048;
-  let keyfile = `${domain}.key`;
+  let domain = context.args.domain
+  let keysize = context.flags.keysize || 2048
+  let keyfile = `${domain}.key`
 
-  let certs = yield endpoints(context.app, heroku);
+  let certs = yield endpoints(context.app, heroku)
 
-  var command = getCommand(certs, domain);
+  var command = getCommand(certs, domain)
 
   if (context.flags.selfsigned) {
-    let crtfile = `${domain}.crt`;
+    let crtfile = `${domain}.crt`
 
-    yield openssl.spawn(['req', '-new', '-newkey', `rsa:${keysize}`, '-nodes', '-keyout', keyfile, '-out', crtfile, '-subj', subject, '-x509']);
+    yield openssl.spawn(['req', '-new', '-newkey', `rsa:${keysize}`, '-nodes', '-keyout', keyfile, '-out', crtfile, '-subj', subject, '-x509'])
 
-    cli.console.error('Your key and self-signed certificate have been generated.');
-    cli.console.error('Next, run:');
-    cli.console.error(`$ heroku _certs:${command} ${crtfile} ${keyfile}`);
+    cli.console.error('Your key and self-signed certificate have been generated.')
+    cli.console.error('Next, run:')
+    cli.console.error(`$ heroku _certs:${command} ${crtfile} ${keyfile}`)
   } else {
-    let csrfile = `${domain}.csr`;
+    let csrfile = `${domain}.csr`
 
-    yield openssl.spawn(['req', '-new', '-newkey', `rsa:${keysize}`, '-nodes', '-keyout', keyfile, '-out', csrfile, '-subj', subject]);
+    yield openssl.spawn(['req', '-new', '-newkey', `rsa:${keysize}`, '-nodes', '-keyout', keyfile, '-out', csrfile, '-subj', subject])
 
-    cli.console.error('Your key and certificate signing request have been generated.');
-    cli.console.error(`Submit the CSR in \'${csrfile}\' to your preferred certificate authority.`);
-    cli.console.error('When you\'ve received your certificate, run:');
-    cli.console.error(`$ heroku _certs:${command} CERTFILE ${keyfile}`);
+    cli.console.error('Your key and certificate signing request have been generated.')
+    cli.console.error(`Submit the CSR in '${csrfile}' to your preferred certificate authority.`)
+    cli.console.error("When you've received your certificate, run:")
+    cli.console.error(`$ heroku _certs:${command} CERTFILE ${keyfile}`)
   }
 }
 
@@ -112,7 +112,7 @@ module.exports = {
   topic: '_certs',
   command: 'generate',
   args: [
-    {name: 'domain', optional: false},
+    {name: 'domain', optional: false}
   ],
   flags: [
     {
@@ -161,5 +161,5 @@ module.exports = {
   help: 'Generate a key and certificate signing request (or self-signed certificate)\nfor an app. Prompts for information to put in the certificate unless --now\nis used, or at least one of the --subject, --owner, --country, --area, or\n--city options is specified.',
   needsApp: true,
   needsAuth: true,
-  run: cli.command(co.wrap(run)),
-};
+  run: cli.command(co.wrap(run))
+}

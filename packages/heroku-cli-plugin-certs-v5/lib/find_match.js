@@ -1,33 +1,33 @@
-'use strict';
+'use strict'
 
-let _           = require('lodash');
+let _ = require('lodash')
 
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
-function escapeRegExp(string){
-    return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // $& means the whole matched string
+function escapeRegExp (string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') // $& means the whole matched string
 }
 
-let stableCname = ".herokudns.com";
+let stableCname = '.herokudns.com'
 
-module.exports = function(cert_domain, domains) {
-  let exactMatch = _.find(domains, domain => cert_domain === domain.hostname);
+module.exports = function (certDomain, domains) {
+  let exactMatch = _.find(domains, (domain) => certDomain === domain.hostname)
   if (exactMatch && exactMatch.cname.endsWith(stableCname)) {
-    return exactMatch.cname;
+    return exactMatch.cname
   }
 
-  let wildcardMatch = _.find(domains, function(domain) {
+  let wildcardMatch = _.find(domains, function (domain) {
     if (domain.hostname && domain.hostname.substring(0, 2) === '*.') {
-      let baseCertDomain = domain.hostname.substring(2);
-      let regex = new RegExp(`^[a-zA-Z0-9_-]+\.${escapeRegExp(baseCertDomain)}$`);
-      return cert_domain.match(regex);
+      let baseCertDomain = domain.hostname.substring(2)
+      let regex = new RegExp(`^[a-zA-Z0-9_-]+.${escapeRegExp(baseCertDomain)}$`)
+      return certDomain.match(regex)
     }
 
-    return false;
-  });
+    return false
+  })
 
   if (wildcardMatch && wildcardMatch.cname.endsWith(stableCname)) {
-    return wildcardMatch.cname;
-  } 
+    return wildcardMatch.cname
+  }
 
-  return null;
-};
+  return null
+}
