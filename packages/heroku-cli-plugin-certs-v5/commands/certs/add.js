@@ -65,9 +65,12 @@ function getPromptChoices (context, certDomains, existingDomains, newDomains) {
   }])
 }
 
-function * addDomains (context, heroku, meta, promisesResult) {
-  let certDomains = promisesResult.cert.ssl_cert.cert_domains
-  let apiDomains = promisesResult.domains
+function * addDomains (context, heroku, meta, cert) {
+  let certDomains = cert.ssl_cert.cert_domains
+
+  let apiDomains = yield heroku.request({
+    path: `/apps/${context.app}/domains`
+  })
 
   let existingDomains = []
   let newDomains = []
@@ -138,23 +141,13 @@ function * run (context, heroku) {
 
   let files = yield getFiles(context)
 
-  let promises = {}
-  promises.cert = cli.action(`Adding SSL certificate to ${context.app}`, {}, heroku.request({
+  let cert = yield cli.action(`Adding SSL certificate to ${context.app}`, {}, heroku.request({
     path: meta.path,
     method: 'POST',
     body: {certificate_chain: files.crt, private_key: files.key},
     headers: {'Accept': `application/vnd.heroku+json; version=3.${meta.variant}`}
   }))
 
-  if (meta.type === 'SNI') {
-    promises.domains = heroku.request({
-      path: `/apps/${context.app}/domains`
-    })
-  }
-
-  let promisesResult = yield promises
-
-  let cert = promisesResult.cert
   cert._meta = meta
 
   let stableCname = meta.type === 'SNI' && !cert.cname
@@ -167,7 +160,7 @@ function * run (context, heroku) {
   if (stableCname) {
     certificateDetails(cert)
 
-    yield addDomains(context, heroku, meta, promisesResult)
+    yield addDomains(context, heroku, meta, cert)
   } else {
     cli.log(`${context.app} now served by ${cert.cname}`)
     certificateDetails(cert)
