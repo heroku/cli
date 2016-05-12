@@ -290,6 +290,7 @@ ${certificateDetails}
           {'kind': 'custom', 'hostname': 'biz.example.com', 'cname': 'biz.example.com.herokudns.com'},
           {'kind': 'custom', 'hostname': 'baz.example.org', 'cname': 'baz.example.org.herokudns.com'},
           {'kind': 'custom', 'hostname': 'example.org', 'cname': 'example.org.herokudns.com'},
+          {'kind': 'custom', 'hostname': 'example.co.uk', 'cname': 'example.co.uk.herokudns.com'},
           {'kind': 'heroku', 'hostname': 'haiku.herokuapp.com', 'cname': 'haiku.herokuapp.com'}
         ])
 
@@ -334,6 +335,7 @@ Domain           Record Type  DNS Target
 biz.example.com  CNAME        biz.example.com.herokudns.com
 baz.example.org  CNAME        baz.example.org.herokudns.com
 example.org      ALIAS/ANAME  example.org.herokudns.com    
+example.co.uk    ALIAS/ANAME  example.co.uk.herokudns.com  
 foo.example.org  CNAME        foo.example.org.herokudns.com
 `)
         /* eslint-enable no-trailing-spaces */

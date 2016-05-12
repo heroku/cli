@@ -4,6 +4,7 @@ let co = require('co')
 let cli = require('heroku-cli-util')
 let _ = require('lodash')
 let inquirer = require('inquirer')
+let psl = require('psl')
 
 let error = require('../../lib/error.js')
 let readFile = require('../../lib/read_file.js')
@@ -118,7 +119,7 @@ function * addDomains (context, heroku, meta, promisesResult) {
   cli.styledHeader("Your certificate has been added successfully.  Update your application's DNS settings as follows")
 
   let type = function (domain) {
-    return domain.hostname.match(/^[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+$/) ? 'ALIAS/ANAME' : 'CNAME'
+    return psl.parse(domain.hostname).subdomain === null ? 'ALIAS/ANAME' : 'CNAME'
   }
 
   let domains = apiDomains.concat(addedDomains)

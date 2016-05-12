@@ -19,7 +19,8 @@
     "inquirer": "1.0.2",
     "lodash": "3.10.1",
     "moment": "2.10.6",
-    "got": "6.1.1"
+    "got": "6.1.1",
+    "psl": "1.1.10"
   },
   "devDependencies": {
     "chai": "^3.3.0",
