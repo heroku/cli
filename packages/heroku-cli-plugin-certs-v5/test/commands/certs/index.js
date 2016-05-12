@@ -74,7 +74,7 @@ akita-7777  akita-7777.herokussl.com  heroku.com      2013-08-01 21:34 UTC  True
       reqheaders: {'Accept': 'application/vnd.heroku+json; version=3.sni_ssl_cert'}
     })
       .get('/apps/example/sni-endpoints')
-      .reply(200, [endpoint])
+      .reply(200, [endpointStables])
 
     let mockSsl = nock('https://api.heroku.com', {
       reqheaders: {'Accept': 'application/vnd.heroku+json; version=3.ssl_cert'}
@@ -93,10 +93,10 @@ akita-7777  akita-7777.herokussl.com  heroku.com      2013-08-01 21:34 UTC  True
       expect(cli.stderr).to.equal('')
       /* eslint-disable no-trailing-spaces */
       expect(cli.stdout).to.equal(
-        `Name        Endpoint                  Common Name(s)  Expires               Trusted  Type    
-──────────  ────────────────────────  ──────────────  ────────────────────  ───────  ────────
-tokyo-1050  tokyo-1050.herokussl.com  example.org     2013-08-01 21:34 UTC  False    SNI     
-akita-7777  akita-7777.herokussl.com  heroku.com      2013-08-01 21:34 UTC  True     Endpoint
+`Name        Endpoint                  Common Name(s)                                     Expires               Trusted  Type    
+──────────  ────────────────────────  ─────────────────────────────────────────────────  ────────────────────  ───────  ────────
+tokyo-1050  (Not applicable for SNI)  foo.example.org, bar.example.org, biz.example.com  2013-08-01 21:34 UTC  False    SNI     
+akita-7777  akita-7777.herokussl.com  heroku.com                                         2013-08-01 21:34 UTC  True     Endpoint
 `)
       /* eslint-enable no-trailing-spaces */
     })
@@ -130,9 +130,9 @@ akita-7777  akita-7777.herokussl.com  heroku.com      2013-08-01 21:34 UTC  True
       expect(cli.stderr).to.equal('')
       /* eslint-disable no-trailing-spaces */
       expect(cli.stdout).to.equal(
-`Name        Endpoint                  Common Name(s)                                     Expires               Trusted  Type
-──────────  ────────────────────────  ─────────────────────────────────────────────────  ────────────────────  ───────  ────
-tokyo-1050  (Not applicable for SNI)  foo.example.org, bar.example.org, biz.example.com  2013-08-01 21:34 UTC  False    SNI 
+`Name        Common Name(s)                                     Expires               Trusted  Type
+──────────  ─────────────────────────────────────────────────  ────────────────────  ───────  ────
+tokyo-1050  foo.example.org, bar.example.org, biz.example.com  2013-08-01 21:34 UTC  False    SNI 
 `)
       /* eslint-enable no-trailing-spaces */
     })
@@ -164,9 +164,9 @@ tokyo-1050  (Not applicable for SNI)  foo.example.org, bar.example.org, biz.exam
       expect(cli.stderr).to.equal('')
       /* eslint-disable no-trailing-spaces */
       expect(cli.stdout).to.equal(
-`Name        Endpoint                  Common Name(s)  Expires               Trusted  Type
-──────────  ────────────────────────  ──────────────  ────────────────────  ───────  ────
-tokyo-1050  (Not applicable for SNI)  fooexample.org  2013-08-01 21:34 UTC  False    SNI 
+`Name        Common Name(s)  Expires               Trusted  Type
+──────────  ──────────────  ────────────────────  ───────  ────
+tokyo-1050  fooexample.org  2013-08-01 21:34 UTC  False    SNI 
 `)
       /* eslint-enable no-trailing-spaces */
     })
@@ -199,9 +199,9 @@ tokyo-1050  (Not applicable for SNI)  fooexample.org  2013-08-01 21:34 UTC  Fals
       expect(cli.stderr).to.equal('')
       /* eslint-disable no-trailing-spaces */
       expect(cli.stdout).to.equal(
-`Name        Endpoint                  Common Name(s)  Expires               Trusted  Type
-──────────  ────────────────────────  ──────────────  ────────────────────  ───────  ────
-tokyo-1050  (Not applicable for SNI)  *.example.org   2013-08-01 21:34 UTC  False    SNI 
+`Name        Common Name(s)  Expires               Trusted  Type
+──────────  ──────────────  ────────────────────  ───────  ────
+tokyo-1050  *.example.org   2013-08-01 21:34 UTC  False    SNI 
 `)
       /* eslint-enable no-trailing-spaces */
     })
@@ -235,9 +235,9 @@ tokyo-1050  (Not applicable for SNI)  *.example.org   2013-08-01 21:34 UTC  Fals
       expect(cli.stderr).to.equal('')
       /* eslint-disable no-trailing-spaces */
       expect(cli.stdout).to.equal(
-`Name        Endpoint                  Common Name(s)                                     Expires               Trusted  Type
-──────────  ────────────────────────  ─────────────────────────────────────────────────  ────────────────────  ───────  ────
-tokyo-1050  (Not applicable for SNI)  foo.example.org, bar.example.org, biz.example.com  2013-08-01 21:34 UTC  False    SNI 
+`Name        Common Name(s)                                     Expires               Trusted  Type
+──────────  ─────────────────────────────────────────────────  ────────────────────  ───────  ────
+tokyo-1050  foo.example.org, bar.example.org, biz.example.com  2013-08-01 21:34 UTC  False    SNI 
 `)
       /* eslint-enable no-trailing-spaces */
     })
