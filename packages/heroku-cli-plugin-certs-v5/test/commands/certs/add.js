@@ -333,7 +333,7 @@ Domain           Record Type  DNS Target
 ───────────────  ───────────  ─────────────────────────────
 biz.example.com  CNAME        biz.example.com.herokudns.com
 baz.example.org  CNAME        baz.example.org.herokudns.com
-example.org      ALIAS/CNAME  example.org.herokudns.com    
+example.org      ALIAS/ANAME  example.org.herokudns.com    
 foo.example.org  CNAME        foo.example.org.herokudns.com
 `)
         /* eslint-enable no-trailing-spaces */
