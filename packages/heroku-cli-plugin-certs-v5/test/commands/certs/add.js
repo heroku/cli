@@ -288,7 +288,8 @@ ${certificateDetails}
         .get('/apps/example/domains')
         .reply(200, [
           {'kind': 'custom', 'hostname': 'biz.example.com', 'cname': 'biz.example.com.herokudns.com'},
-          {'kind': 'custom', 'hostname': 'baz.example.org', 'cname': 'baz.example.org.herokudns.com'}
+          {'kind': 'custom', 'hostname': 'baz.example.org', 'cname': 'baz.example.org.herokudns.com'},
+          {'kind': 'custom', 'hostname': 'example.org', 'cname': 'example.org.herokudns.com'}
         ])
 
       inquirer.prompt = (prompts) => {
@@ -303,7 +304,7 @@ ${certificateDetails}
       let domainsCreate = nock('https://api.heroku.com')
         .post('/apps/example/domains', {hostname: 'foo.example.org'})
         .reply(200,
-          {'kind': 'custom', 'cname': 'foo.example.com.herokudns.com', 'hostname': 'foo.example.org'}
+          {'kind': 'custom', 'cname': 'foo.example.org.herokudns.com', 'hostname': 'foo.example.org'}
       )
 
       return certs.run({app: 'example', args: {CRT: 'pem_file', KEY: 'key_file'}, flags: {bypass: true}}).then(function () {
@@ -326,12 +327,13 @@ SSL certificate is self signed.
 === The following common names already have domain entries
 biz.example.com
 
-=== The following domains are set up for this certificate
-Name        Endpoint                       Common Name(s)   Expires               Trusted  Type
-──────────  ─────────────────────────────  ───────────────  ────────────────────  ───────  ────
-tokyo-1050  foo.example.com.herokudns.com  foo.example.org  2013-08-01 21:34 UTC  False    SNI 
-            (no domains match)             bar.example.org                                     
-            biz.example.com.herokudns.com  biz.example.com                                     
+=== Your certificate has been added successfully.  Update your application's DNS settings as follows
+Domain           Record Type  DNS Target                   
+───────────────  ───────────  ─────────────────────────────
+biz.example.com  CNAME        biz.example.com.herokudns.com
+baz.example.org  CNAME        baz.example.org.herokudns.com
+example.org      ALIAS/CNAME  example.org.herokudns.com    
+foo.example.org  CNAME        foo.example.org.herokudns.com
 `)
         /* eslint-enable no-trailing-spaces */
       })
@@ -380,12 +382,12 @@ Starts At:      2012-08-01 21:34 UTC
 Subject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
 SSL certificate is self signed.
 
-=== The following domains are set up for this certificate
-Name        Endpoint                       Common Name(s)   Expires               Trusted  Type
-──────────  ─────────────────────────────  ───────────────  ────────────────────  ───────  ────
-tokyo-1050  foo.example.com.herokudns.com  foo.example.org  2013-08-01 21:34 UTC  False    SNI 
-            bar.example.com.herokudns.com  bar.example.org                                     
-            (no domains match)             biz.example.com                                     
+=== Your certificate has been added successfully.  Update your application's DNS settings as follows
+Domain           Record Type  DNS Target                   
+───────────────  ───────────  ─────────────────────────────
+baz.example.org  CNAME        baz.example.org.herokudns.com
+foo.example.org  CNAME        foo.example.com.herokudns.com
+bar.example.org  CNAME        bar.example.com.herokudns.com
 `)
         /* eslint-enable no-trailing-spaces */
       })
@@ -424,12 +426,11 @@ SSL certificate is self signed.
 === The following common names already have domain entries
 foo.example.org
 
-=== The following domains are set up for this certificate
-Name        Endpoint                       Common Name(s)   Expires               Trusted  Type
-──────────  ─────────────────────────────  ───────────────  ────────────────────  ───────  ────
-tokyo-1050  foo.example.org.herokudns.com  foo.example.org  2013-08-01 21:34 UTC  False    SNI 
-            (no domains match)             bar.example.org                                     
-            (no domains match)             biz.example.com                                     
+=== Your certificate has been added successfully.  Update your application's DNS settings as follows
+Domain           Record Type  DNS Target                   
+───────────────  ───────────  ─────────────────────────────
+baz.example.org  CNAME        baz.example.org.herokudns.com
+foo.example.org  CNAME        foo.example.org.herokudns.com
 `)
         /* eslint-enable no-trailing-spaces */
       })
@@ -464,12 +465,10 @@ Starts At:      2012-08-01 21:34 UTC
 Subject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
 SSL certificate is self signed.
 
-=== The following domains are set up for this certificate
-Name        Endpoint            Common Name(s)   Expires               Trusted  Type
-──────────  ──────────────────  ───────────────  ────────────────────  ───────  ────
-tokyo-1050  (no domains match)  foo.example.org  2013-08-01 21:34 UTC  False    SNI 
-            (no domains match)  bar.example.org                                     
-            (no domains match)  biz.example.com                                     
+=== Your certificate has been added successfully.  Update your application's DNS settings as follows
+Domain           Record Type  DNS Target                   
+───────────────  ───────────  ─────────────────────────────
+baz.example.org  CNAME        baz.example.org.herokudns.com
 `)
         /* eslint-enable no-trailing-spaces */
       })
@@ -512,12 +511,13 @@ foo.example.org
 bar.example.org
 biz.example.com
 
-=== The following domains are set up for this certificate
-Name        Endpoint                       Common Name(s)   Expires               Trusted  Type
-──────────  ─────────────────────────────  ───────────────  ────────────────────  ───────  ────
-tokyo-1050  foo.example.org.herokudns.com  foo.example.org  2013-08-01 21:34 UTC  False    SNI 
-            bar.example.org.herokudns.com  bar.example.org                                     
-            biz.example.com.herokudns.com  biz.example.com                                     
+=== Your certificate has been added successfully.  Update your application's DNS settings as follows
+Domain           Record Type  DNS Target                   
+───────────────  ───────────  ─────────────────────────────
+foo.example.org  CNAME        foo.example.org.herokudns.com
+bar.example.org  CNAME        bar.example.org.herokudns.com
+biz.example.com  CNAME        biz.example.com.herokudns.com
+baz.example.org  CNAME        baz.example.org.herokudns.com
 `)
         /* eslint-enable no-trailing-spaces */
       })
@@ -559,12 +559,12 @@ foo.example.org
 bar.example.org
 biz.example.com
 
-=== The following domains are set up for this certificate
-Name        Endpoint                            Common Name(s)   Expires               Trusted  Type
-──────────  ──────────────────────────────────  ───────────────  ────────────────────  ───────  ────
-tokyo-1050  wildcard.example.org.herokudns.com  foo.example.org  2013-08-01 21:34 UTC  False    SNI 
-            wildcard.example.org.herokudns.com  bar.example.org                                     
-            biz.example.com.herokudns.com       biz.example.com                                     
+=== Your certificate has been added successfully.  Update your application's DNS settings as follows
+Domain           Record Type  DNS Target                        
+───────────────  ───────────  ──────────────────────────────────
+*.example.org    CNAME        wildcard.example.org.herokudns.com
+*.example.com    CNAME        wildcard.example.com.herokudns.com
+biz.example.com  CNAME        biz.example.com.herokudns.com     
 `)
         /* eslint-enable no-trailing-spaces */
       })

@@ -10,7 +10,6 @@ let readFile = require('../../lib/read_file.js')
 let findMatch = require('../../lib/find_match.js')
 let endpoints = require('../../lib/endpoints.js')
 let sslDoctor = require('../../lib/ssl_doctor.js')
-let displayTable = require('../../lib/display_table.js')
 let displayWarnings = require('../../lib/display_warnings.js')
 let certificateDetails = require('../../lib/certificate_details.js')
 
@@ -116,8 +115,18 @@ function * addDomains (context, heroku, meta, promisesResult) {
   }
 
   cli.log()
-  cli.styledHeader('The following domains are set up for this certificate')
-  displayTable([promisesResult.cert], apiDomains.concat(addedDomains))
+  cli.styledHeader("Your certificate has been added successfully.  Update your application's DNS settings as follows")
+
+  let type = function (domain) {
+    return domain.hostname.match(/^[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+$/) ? 'ALIAS/CNAME' : 'CNAME'
+  }
+
+  let domains = apiDomains.concat(addedDomains).map((domain) => Object.assign({}, domain, {type: type(domain)}))
+  cli.table(domains, {columns: [
+      {label: 'Domain', key: 'hostname'},
+      {label: 'Record Type', key: 'type'},
+      {label: 'DNS Target', key: 'cname'}
+  ]})
 }
 
 function * run (context, heroku) {
