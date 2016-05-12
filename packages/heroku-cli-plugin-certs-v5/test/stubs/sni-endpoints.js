@@ -86,5 +86,16 @@ SSL certificate is self signed.`,
       'issuer': '/C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org',
       'subject': '/C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org'
     }
+  },
+  endpoint_wildcard_bug: { 'name': 'tokyo-1050',
+    'cname': null,
+    'ssl_cert': {
+      'ca_signed?': false,
+      'cert_domains': [ 'fooexample.org' ],
+      'starts_at': '2012-08-01T21:34:23Z',
+      'expires_at': '2013-08-01T21:34:23Z',
+      'issuer': '/C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org',
+      'subject': '/C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org'
+    }
   }
 }

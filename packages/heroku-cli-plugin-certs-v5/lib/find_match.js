@@ -18,7 +18,7 @@ module.exports = function (certDomain, domains) {
   let wildcardMatch = _.find(domains, function (domain) {
     if (domain.hostname && domain.hostname.substring(0, 2) === '*.') {
       let baseCertDomain = domain.hostname.substring(2)
-      let regex = new RegExp(`^[a-zA-Z0-9_-]+.${escapeRegExp(baseCertDomain)}$`)
+      let regex = new RegExp(`^[a-zA-Z0-9_-]+\\.${escapeRegExp(baseCertDomain)}$`)
       return certDomain.match(regex)
     }
 
