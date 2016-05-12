@@ -121,7 +121,10 @@ function * addDomains (context, heroku, meta, promisesResult) {
     return domain.hostname.match(/^[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+$/) ? 'ALIAS/CNAME' : 'CNAME'
   }
 
-  let domains = apiDomains.concat(addedDomains).map((domain) => Object.assign({}, domain, {type: type(domain)}))
+  let domains = apiDomains.concat(addedDomains)
+    .filter((domain) => domain.kind === 'custom')
+    .map((domain) => Object.assign({}, domain, {type: type(domain)}))
+
   cli.table(domains, {columns: [
       {label: 'Domain', key: 'hostname'},
       {label: 'Record Type', key: 'type'},

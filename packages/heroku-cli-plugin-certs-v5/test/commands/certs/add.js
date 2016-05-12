@@ -289,7 +289,8 @@ ${certificateDetails}
         .reply(200, [
           {'kind': 'custom', 'hostname': 'biz.example.com', 'cname': 'biz.example.com.herokudns.com'},
           {'kind': 'custom', 'hostname': 'baz.example.org', 'cname': 'baz.example.org.herokudns.com'},
-          {'kind': 'custom', 'hostname': 'example.org', 'cname': 'example.org.herokudns.com'}
+          {'kind': 'custom', 'hostname': 'example.org', 'cname': 'example.org.herokudns.com'},
+          {'kind': 'heroku', 'hostname': 'haiku.herokuapp.com', 'cname': 'haiku.herokuapp.com'}
         ])
 
       inquirer.prompt = (prompts) => {
