@@ -34,7 +34,7 @@ module.exports = {
     {name: 'name', hasValue: true, description: 'name to rollback'},
     {name: 'endpoint', hasValue: true, description: 'endpoint to rollback'}
   ],
-  description: 'Rollback an SSL certificate from an app.',
+  description: 'rollback an SSL certificate from an app',
   needsApp: true,
   needsAuth: true,
   run: cli.command(co.wrap(run))

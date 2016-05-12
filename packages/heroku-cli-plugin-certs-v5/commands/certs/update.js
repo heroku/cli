@@ -53,7 +53,7 @@ module.exports = {
     {name: 'name', hasValue: true, description: 'name to update'},
     {name: 'endpoint', hasValue: true, description: 'endpoint to update'}
   ],
-  description: 'Update an SSL certificate on an app.',
+  description: 'update an SSL certificate on an app',
   needsApp: true,
   needsAuth: true,
   run: cli.command(co.wrap(run))

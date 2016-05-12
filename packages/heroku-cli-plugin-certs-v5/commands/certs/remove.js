@@ -35,7 +35,7 @@ module.exports = {
     {name: 'name', hasValue: true, description: 'name to remove'},
     {name: 'endpoint', hasValue: true, description: 'endpoint to remove'}
   ],
-  description: 'Remove an SSL certificate from an app.',
+  description: 'remove an SSL certificate from an app',
   needsApp: true,
   needsAuth: true,
   run: cli.command(co.wrap(run))

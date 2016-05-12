@@ -188,7 +188,7 @@ module.exports = {
     {name: 'type', description: "type to create, either 'sni' or 'endpoint'", hasValue: true},
     {name: 'domains', description: 'domains to create after certificate upload', hasValue: true}
   ],
-  description: 'Add an SSL certificate to an app.',
+  description: 'add an SSL certificate to an app',
   needsApp: true,
   needsAuth: true,
   run: cli.command(co.wrap(run))

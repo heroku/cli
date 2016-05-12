@@ -24,7 +24,7 @@ module.exports = {
     {name: 'name', hasValue: true, description: 'name to check info on'},
     {name: 'endpoint', hasValue: true, description: 'endpoint to check info on'}
   ],
-  description: 'Show certificate information for an SSL certificate.',
+  description: 'show certificate information for an SSL certificate',
   needsApp: true,
   needsAuth: true,
   run: cli.command(co.wrap(run))
