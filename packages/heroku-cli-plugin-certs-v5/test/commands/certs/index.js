@@ -130,11 +130,9 @@ akita-7777  akita-7777.herokussl.com  heroku.com      2013-08-01 21:34 UTC  True
       expect(cli.stderr).to.equal('')
       /* eslint-disable no-trailing-spaces */
       expect(cli.stdout).to.equal(
-        `Name        Endpoint                            Common Name(s)   Expires               Trusted  Type
-──────────  ──────────────────────────────────  ───────────────  ────────────────────  ───────  ────
-tokyo-1050  foo.example.org.herokudns.com       foo.example.org  2013-08-01 21:34 UTC  False    SNI 
-            wildcard.example.org.herokudns.com  bar.example.org                                     
-            (no domains match)                  biz.example.com                                     
+`Name        Endpoint                  Common Name(s)                                     Expires               Trusted  Type
+──────────  ────────────────────────  ─────────────────────────────────────────────────  ────────────────────  ───────  ────
+tokyo-1050  (Not applicable for SNI)  foo.example.org, bar.example.org, biz.example.com  2013-08-01 21:34 UTC  False    SNI 
 `)
       /* eslint-enable no-trailing-spaces */
     })
@@ -166,9 +164,9 @@ tokyo-1050  foo.example.org.herokudns.com       foo.example.org  2013-08-01 21:3
       expect(cli.stderr).to.equal('')
       /* eslint-disable no-trailing-spaces */
       expect(cli.stdout).to.equal(
-`Name        Endpoint            Common Name(s)  Expires               Trusted  Type
-──────────  ──────────────────  ──────────────  ────────────────────  ───────  ────
-tokyo-1050  (no domains match)  fooexample.org  2013-08-01 21:34 UTC  False    SNI 
+`Name        Endpoint                  Common Name(s)  Expires               Trusted  Type
+──────────  ────────────────────────  ──────────────  ────────────────────  ───────  ────
+tokyo-1050  (Not applicable for SNI)  fooexample.org  2013-08-01 21:34 UTC  False    SNI 
 `)
       /* eslint-enable no-trailing-spaces */
     })
@@ -201,9 +199,9 @@ tokyo-1050  (no domains match)  fooexample.org  2013-08-01 21:34 UTC  False    S
       expect(cli.stderr).to.equal('')
       /* eslint-disable no-trailing-spaces */
       expect(cli.stdout).to.equal(
-        `Name        Endpoint                            Common Name(s)  Expires               Trusted  Type
-──────────  ──────────────────────────────────  ──────────────  ────────────────────  ───────  ────
-tokyo-1050  wildcard.example.org.herokudns.com  *.example.org   2013-08-01 21:34 UTC  False    SNI 
+`Name        Endpoint                  Common Name(s)  Expires               Trusted  Type
+──────────  ────────────────────────  ──────────────  ────────────────────  ───────  ────
+tokyo-1050  (Not applicable for SNI)  *.example.org   2013-08-01 21:34 UTC  False    SNI 
 `)
       /* eslint-enable no-trailing-spaces */
     })
@@ -237,11 +235,9 @@ tokyo-1050  wildcard.example.org.herokudns.com  *.example.org   2013-08-01 21:34
       expect(cli.stderr).to.equal('')
       /* eslint-disable no-trailing-spaces */
       expect(cli.stdout).to.equal(
-        `Name        Endpoint                       Common Name(s)   Expires               Trusted  Type
-──────────  ─────────────────────────────  ───────────────  ────────────────────  ───────  ────
-tokyo-1050  foo.example.org.herokudns.com  foo.example.org  2013-08-01 21:34 UTC  False    SNI 
-            (no domains match)             bar.example.org                                     
-            (no domains match)             biz.example.com                                     
+`Name        Endpoint                  Common Name(s)                                     Expires               Trusted  Type
+──────────  ────────────────────────  ─────────────────────────────────────────────────  ────────────────────  ───────  ────
+tokyo-1050  (Not applicable for SNI)  foo.example.org, bar.example.org, biz.example.com  2013-08-01 21:34 UTC  False    SNI 
 `)
       /* eslint-enable no-trailing-spaces */
     })
