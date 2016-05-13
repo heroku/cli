@@ -14,9 +14,9 @@ function * run (context, heroku) {
     error.exit(1, 'SNI Endpoints cannot be rolled back, please update with a new cert.')
   }
 
-  yield cli.confirmApp(context.app, context.flags.confirm, `Potentially Destructive Action\nThis command will change the certificate of endpoint ${endpoint.name} (${endpoint.cname}) from ${context.app}.`)
+  yield cli.confirmApp(context.app, context.flags.confirm, `Potentially Destructive Action\nThis command will change the certificate of endpoint ${endpoint.name} (${endpoint.cname}) from ${cli.color.app(context.app)}.`)
 
-  let cert = yield cli.action(`Rolling back SSL certificate ${endpoint.name} (${endpoint.cname}) for ${context.app}`, {}, heroku.request({
+  let cert = yield cli.action(`Rolling back SSL certificate ${endpoint.name} (${endpoint.cname}) for ${cli.color.app(context.app)}`, {}, heroku.request({
     path: `/apps/${context.app}/ssl-endpoints/${encodeURIComponent(endpoint.cname)}/rollback`,
     method: 'POST',
     headers: {'X-Heroku-API-Version': '2', 'Accept': 'application/json'}

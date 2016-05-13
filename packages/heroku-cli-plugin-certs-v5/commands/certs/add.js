@@ -109,7 +109,7 @@ function * addDomains (context, heroku, meta, cert) {
     for (let i = 0; i < choices.length; i++) {
       let certDomain = choices[i]
 
-      addedDomains[i] = yield cli.action(`Adding domain ${certDomain} to ${context.app}`, {}, heroku.request({
+      addedDomains[i] = yield cli.action(`Adding domain ${cli.color.green(certDomain)} to ${cli.color.app(context.app)}`, {}, heroku.request({
         path: `/apps/${context.app}/domains`,
         method: 'POST',
         body: {'hostname': certDomain}
@@ -130,7 +130,9 @@ function * addDomains (context, heroku, meta, cert) {
     .map((domain) => Object.assign({}, domain, {type: type(domain)}))
 
   if (domains.length === 0) {
-    cli.styledHeader('Your certificate has been added successfully.  Add a custom domain to your app by running `heroku domains:add <yourdomain.com>`')
+    /* eslint-disable no-irregular-whitespace */
+    cli.styledHeader(`Your certificate has been added successfully.  Add a custom domain to your app by running ${cli.color.app('heroku domains:add <yourdomain.com>')}`)
+    /* eslint-enable no-irregular-whitespace */
   } else {
     cli.styledHeader("Your certificate has been added successfully.  Update your application's DNS settings as follows")
     cli.table(domains, {columns: [
@@ -146,7 +148,7 @@ function * run (context, heroku) {
 
   let files = yield getFiles(context)
 
-  let cert = yield cli.action(`Adding SSL certificate to ${context.app}`, {}, heroku.request({
+  let cert = yield cli.action(`Adding SSL certificate to ${cli.color.app(context.app)}`, {}, heroku.request({
     path: meta.path,
     method: 'POST',
     body: {certificate_chain: files.crt, private_key: files.key},
@@ -167,7 +169,7 @@ function * run (context, heroku) {
 
     yield addDomains(context, heroku, meta, cert)
   } else {
-    cli.log(`${context.app} now served by ${cert.cname}`)
+    cli.log(`${cli.color.app(context.app)} now served by ${cli.color.green(cert.cname)}`)
     certificateDetails(cert)
   }
 

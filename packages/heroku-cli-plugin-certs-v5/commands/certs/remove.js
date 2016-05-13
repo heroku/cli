@@ -11,10 +11,10 @@ function * run (context, heroku) {
 
   let cname = endpoint.cname ? `(${endpoint.cname}) ` : ''
 
-  yield cli.confirmApp(context.app, context.flags.confirm, `Potentially Destructive Action\nThis command will remove the endpoint ${endpoint.name} ${cname}from ${context.app}.`)
+  yield cli.confirmApp(context.app, context.flags.confirm, `Potentially Destructive Action\nThis command will remove the endpoint ${endpoint.name} ${cname}from ${cli.color.app(context.app)}.`)
 
   let actions = yield {
-    action: cli.action(`Removing SSL certificate ${endpoint.name} ${cname}from ${context.app}`, {}, heroku.request({
+    action: cli.action(`Removing SSL certificate ${endpoint.name} ${cname}from ${cli.color.app(context.app)}`, {}, heroku.request({
       path: endpoint._meta.path,
       method: 'DELETE',
       headers: {'Accept': `application/vnd.heroku+json; version=3.${endpoint._meta.variant}`}

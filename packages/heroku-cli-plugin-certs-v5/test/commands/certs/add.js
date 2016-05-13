@@ -601,7 +601,7 @@ Starts At:      2012-08-01 21:34 UTC
 Subject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
 SSL certificate is self signed.
 
-=== Your certificate has been added successfully.  Add a custom domain to your app by running \`heroku domains:add <yourdomain.com>\`
+=== Your certificate has been added successfully.  Add a custom domain to your app by running heroku domains:add <yourdomain.com>
 `)
         /* eslint-disable no-irregular-whitespace */
         /* eslint-enable no-trailing-spaces */

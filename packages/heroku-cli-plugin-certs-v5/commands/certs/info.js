@@ -9,7 +9,7 @@ let certificateDetails = require('../../lib/certificate_details.js')
 function * run (context, heroku) {
   let endpoint = yield flags(context, heroku)
 
-  let cert = yield cli.action(`Fetching SSL certificate ${endpoint.name} info for ${context.app}`, {}, heroku.request({
+  let cert = yield cli.action(`Fetching SSL certificate ${endpoint.name} info for ${cli.color.app(context.app)}`, {}, heroku.request({
     path: endpoint._meta.path,
     headers: {'Accept': `application/vnd.heroku+json; version=3.${endpoint._meta.variant}`}
   }))

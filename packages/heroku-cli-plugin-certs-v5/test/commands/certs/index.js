@@ -64,7 +64,7 @@ akita-7777  akita-7777.herokussl.com  heroku.com      2013-08-01 21:34 UTC  True
         mockSsl.done()
         mockDomains.done()
         expect(cli.stderr).to.equal('')
-        expect(cli.stdout).to.equal(`example has no SSL certificates.\nUse \`heroku _certs:add CRT KEY\` to add one.\n`)
+        expect(cli.stdout).to.equal(`example has no SSL certificates.\nUse heroku _certs:add CRT KEY to add one.\n`)
       })
     })
   })
