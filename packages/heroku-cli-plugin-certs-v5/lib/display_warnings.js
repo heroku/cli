@@ -7,7 +7,7 @@ module.exports = function (endpoint) {
   if (warnings) {
     for (var field in warnings) {
       if (warnings.hasOwnProperty(field) && endpoint.warnings[field].length > 0) {
-        cli.warn(`${field} ${endpoint.warnings[field]}`)
+        cli.warn(`WARNING: ${field} ${endpoint.warnings[field]}`)
       }
     }
   }

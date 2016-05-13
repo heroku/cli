@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "co": "4.6.0",
-    "heroku-cli-util": "5.6.3",
+    "heroku-cli-util": "5.10.10",
     "inquirer": "1.0.2",
     "lodash": "3.10.1",
     "moment": "2.10.6",
