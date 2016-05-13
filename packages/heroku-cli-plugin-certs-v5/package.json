@@ -1,6 +1,6 @@
 {
   "name": "heroku-certs",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "description": "heroku ssl plugin",
   "main": "index.js",
   "author": "Ransom Briggs rbriggs@heroku.com",
