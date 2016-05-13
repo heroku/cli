@@ -43,7 +43,7 @@ describe('heroku certs:chain', function () {
       .withArgs('b_file', sinon.match.func)
       .callsArgWithAsync(1, null, 'pem b content')
 
-    let sslDoctor = nock('https://ssl-doctor.herokuapp.com', {
+    let sslDoctor = nock('https://ssl-doctor.heroku.com', {
       reqheaders: {
         'content-type': 'application/octet-stream',
         'content-length': '27'

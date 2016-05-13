@@ -79,7 +79,7 @@ ${certificateDetails}
       .withArgs('key_file', sinon.match.func)
       .callsArgWithAsync(1, null, 'key content')
 
-    let sslDoctor = nock('https://ssl-doctor.herokuapp.com', {
+    let sslDoctor = nock('https://ssl-doctor.heroku.com', {
       reqheaders: {
         'content-type': 'application/octet-stream',
         'content-length': '23'
@@ -126,7 +126,7 @@ ${certificateDetails}
       .withArgs('key_file', sinon.match.func)
       .callsArgWithAsync(1, null, 'key content')
 
-    let sslDoctor = nock('https://ssl-doctor.herokuapp.com', {
+    let sslDoctor = nock('https://ssl-doctor.heroku.com', {
       reqheaders: {
         'content-type': 'application/octet-stream',
         'content-length': '23'

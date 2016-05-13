@@ -5,7 +5,7 @@ let cli = require('heroku-cli-util')
 module.exports = function (path, parts, message) {
   let logMessage = message || 'Resolving trust chain'
 
-  let sslDoctor = process.env.SSL_DOCTOR_URL || 'https://ssl-doctor.herokuapp.com/'
+  let sslDoctor = process.env.SSL_DOCTOR_URL || 'https://ssl-doctor.heroku.com/'
 
   let postData = parts.join('\n')
 
