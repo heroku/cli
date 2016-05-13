@@ -44,7 +44,8 @@ function * getFiles (context) {
 }
 
 function getFlagChoices (context, certDomains, existingDomains) {
-  let choices = _.difference(context.flags.domains.split(',').map((str) => str.trim()), existingDomains)
+  let flagDomains = context.flags.domains.split(',').map((str) => str.trim()).filter((str) => str !== '')
+  let choices = _.difference(flagDomains, existingDomains)
 
   let badChoices = _.remove(choices, (choice) => (!_.find(certDomains, (certDomain) => certDomain === choice)))
   badChoices.forEach(function (choice) {
@@ -93,7 +94,7 @@ function * addDomains (context, heroku, meta, cert) {
   let addedDomains
   if (newDomains.length > 0) {
     let choices
-    if (context.flags.domains) {
+    if (context.flags.domains !== undefined) {
       choices = getFlagChoices(context, certDomains, existingDomains)
     } else {
       choices = (yield getPromptChoices(context, certDomains, existingDomains, newDomains)).domains
@@ -119,7 +120,6 @@ function * addDomains (context, heroku, meta, cert) {
   }
 
   cli.log()
-  cli.styledHeader("Your certificate has been added successfully.  Update your application's DNS settings as follows")
 
   let type = function (domain) {
     return psl.parse(domain.hostname).subdomain === null ? 'ALIAS/ANAME' : 'CNAME'
@@ -129,11 +129,16 @@ function * addDomains (context, heroku, meta, cert) {
     .filter((domain) => domain.kind === 'custom')
     .map((domain) => Object.assign({}, domain, {type: type(domain)}))
 
-  cli.table(domains, {columns: [
-      {label: 'Domain', key: 'hostname'},
-      {label: 'Record Type', key: 'type'},
-      {label: 'DNS Target', key: 'cname'}
-  ]})
+  if (domains.length === 0) {
+    cli.styledHeader('Your certificate has been added successfully.  Add a custom domain to your app by running `heroku domains:add <yourdomain.com>`')
+  } else {
+    cli.styledHeader("Your certificate has been added successfully.  Update your application's DNS settings as follows")
+    cli.table(domains, {columns: [
+        {label: 'Domain', key: 'hostname'},
+        {label: 'Record Type', key: 'type'},
+        {label: 'DNS Target', key: 'cname'}
+    ]})
+  }
 }
 
 function * run (context, heroku) {
