@@ -9,9 +9,9 @@ let endpoints = require('../../lib/endpoints.js')
 function * run (context, heroku) {
   let endpoint = yield flags(context, heroku)
 
-  yield cli.confirmApp(context.app, context.flags.confirm, `Potentially Destructive Action\nThis command will remove the endpoint ${endpoint.name} (${endpoint.cname}) from ${context.app}.`)
-
   let cname = endpoint.cname ? `(${endpoint.cname}) ` : ''
+
+  yield cli.confirmApp(context.app, context.flags.confirm, `Potentially Destructive Action\nThis command will remove the endpoint ${endpoint.name} ${cname}from ${context.app}.`)
 
   let actions = yield {
     action: cli.action(`Removing SSL certificate ${endpoint.name} ${cname}from ${context.app}`, {}, heroku.request({
