@@ -29,7 +29,9 @@ function * run (context, heroku) {
 
   yield cli.confirmApp(context.app, context.flags.confirm, `Potentially Destructive Action\nThis command will change the certificate of endpoint ${endpoint.name} (${endpoint.cname}) from ${context.app}.`)
 
-  let cert = yield cli.action(`Updating SSL certificate ${endpoint.name} (${endpoint.cname}) for ${context.app}`, {}, heroku.request({
+  let cname = endpoint.cname ? `(${endpoint.cname}) ` : ''
+
+  let cert = yield cli.action(`Updating SSL certificate ${endpoint.name} ${cname}for ${context.app}`, {}, heroku.request({
     path: endpoint._meta.path,
     method: 'PATCH',
     headers: {'Accept': `application/vnd.heroku+json; version=3.${endpoint._meta.variant}`},

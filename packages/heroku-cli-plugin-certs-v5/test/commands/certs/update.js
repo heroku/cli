@@ -12,7 +12,7 @@ let shared = require('./shared.js')
 let sharedSsl = require('./shared_ssl.js')
 let sharedSni = require('./shared_sni.js')
 
-let endpoint = require('../../stubs/sni-endpoints.js').endpoint
+let endpointStable = require('../../stubs/sni-endpoints.js').endpoint_stable
 let endpointWarning = require('../../stubs/sni-endpoints.js').endpoint_warning
 let certificateDetails = require('../../stubs/sni-endpoints.js').certificate_details
 let unwrap = require('../../unwrap.js')
@@ -30,7 +30,7 @@ describe('heroku certs:update', function () {
 
     nock('https://api.heroku.com')
       .get('/apps/example/sni-endpoints')
-      .reply(200, [endpoint])
+      .reply(200, [endpointStable])
   })
 
   afterEach(function () {
@@ -75,12 +75,12 @@ describe('heroku certs:update', function () {
       .patch('/apps/example/sni-endpoints/tokyo-1050', {
         certificate_chain: 'pem content', private_key: 'key content'
       })
-      .reply(200, endpoint)
+      .reply(200, endpointStable)
 
     return certs.run({app: 'example', args: {CRT: 'pem_file', KEY: 'key_file'}, flags: {name: 'tokyo-1050', confirm: 'example'}}).then(function () {
       sslDoctor.done()
       mock.done()
-      expect(cli.stderr).to.equal('Resolving trust chain... done\nUpdating SSL certificate tokyo-1050 (tokyo-1050.herokussl.com) for example... done\n')
+      expect(cli.stderr).to.equal('Resolving trust chain... done\nUpdating SSL certificate tokyo-1050 for example... done\n')
       expect(cli.stdout).to.equal(
         `Updated certificate details:
 ${certificateDetails}
@@ -129,11 +129,11 @@ ${certificateDetails}
       .patch('/apps/example/sni-endpoints/tokyo-1050', {
         certificate_chain: 'pem content', private_key: 'key content'
       })
-      .reply(200, endpoint)
+      .reply(200, endpointStable)
 
     return certs.run({app: 'example', args: {name: 'tokyo-1050', CRT: 'pem_file', KEY: 'key_file'}, flags: {bypass: true, confirm: 'example'}}).then(function () {
       mock.done()
-      expect(cli.stderr).to.equal('Updating SSL certificate tokyo-1050 (tokyo-1050.herokussl.com) for example... done\n')
+      expect(cli.stderr).to.equal('Updating SSL certificate tokyo-1050 for example... done\n')
       expect(cli.stdout).to.equal(
         `Updated certificate details:
 ${certificateDetails}
@@ -157,7 +157,7 @@ ${certificateDetails}
 
     return certs.run({app: 'example', args: {name: 'tokyo-1050', CRT: 'pem_file', KEY: 'key_file'}, flags: {bypass: true, confirm: 'example'}}).then(function () {
       mock.done()
-      expect(unwrap(cli.stderr)).to.equal('Updating SSL certificate tokyo-1050 (tokyo-1050.herokussl.com) for example... done WARNING: ssl_cert provides no domain(s) that are configured for this Heroku app\n')
+      expect(unwrap(cli.stderr)).to.equal('Updating SSL certificate tokyo-1050 for example... done WARNING: ssl_cert provides no domain(s) that are configured for this Heroku app\n')
     })
   })
 
