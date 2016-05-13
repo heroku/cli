@@ -21,7 +21,7 @@ function * run (context) {
 module.exports = {
   topic: '_certs',
   command: 'chain',
-  description: 'print the ordered and complete chain for the given certificate',
+  description: 'print an ordered & complete chain for a certificate',
   needsApp: true,
   needsAuth: true,
   variableArgs: true,

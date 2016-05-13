@@ -157,7 +157,7 @@ module.exports = {
       description: 'do not prompt for any owner information'
     }
   ],
-  description: 'generate a key and certificate signing request (or self-signed certificate)',
+  description: 'generate a key and a CSR or self-signed certificate',
   help: 'Generate a key and certificate signing request (or self-signed certificate)\nfor an app. Prompts for information to put in the certificate unless --now\nis used, or at least one of the --subject, --owner, --country, --area, or\n--city options is specified.',
   needsApp: true,
   needsAuth: true,
