@@ -372,7 +372,7 @@ foo.example.org  CNAME        foo.example.org.herokudns.com
         domainsMock.done()
         domainsCreateFoo.done()
         domainsCreateBar.done()
-        expect(unwrap(cli.stderr)).to.equal('Adding SSL certificate to example... done\n\nAdding domain foo.example.org to example... done\nAdding domain bar.example.org to example... done\n')
+        expect(unwrap(cli.stderr)).to.equal('Adding SSL certificate to example... done\n\nAdding domains foo.example.org, bar.example.org to example... done\n')
         /* eslint-disable no-trailing-spaces */
         expect(cli.stdout).to.equal(
           `Certificate details:
@@ -392,6 +392,66 @@ baz.example.org  CNAME        baz.example.org.herokudns.com
 foo.example.org  CNAME        foo.example.com.herokudns.com
 bar.example.org  CNAME        bar.example.com.herokudns.com
 `)
+        /* eslint-enable no-trailing-spaces */
+      })
+    })
+
+    it('# when passed domains does not prompt and there are failures', function () {
+      let mock = nock('https://api.heroku.com')
+        .post('/apps/example/sni-endpoints', {
+          certificate_chain: 'pem content', private_key: 'key content'
+        })
+        .reply(200, endpointStables)
+
+      let domainsMock = nock('https://api.heroku.com')
+        .get('/apps/example/domains')
+        .reply(200, [])
+
+      let domainsCreateFoo = nock('https://api.heroku.com')
+        .post('/apps/example/domains', {hostname: 'foo.example.org'})
+        .reply(200,
+          {'kind': 'custom', 'cname': 'foo.example.org.herokudns.com', 'hostname': 'foo.example.org'}
+      )
+
+      let domainsCreateBar = nock('https://api.heroku.com')
+        .post('/apps/example/domains', {hostname: 'bar.example.org'})
+        .reply(422, {'id': 'invalid_params', 'message': 'example.com is currently in use by another app.'}
+      )
+
+      let domainsCreateBiz = nock('https://api.heroku.com')
+        .post('/apps/example/domains', {hostname: 'biz.example.com'})
+        .reply(200,
+          {'kind': 'custom', 'cname': 'biz.example.com.herokudns.com', 'hostname': 'biz.example.com'}
+      )
+
+      return assertExit(2, certs.run({app: 'example', args: {CRT: 'pem_file', KEY: 'key_file'}, flags: {bypass: true, domains: 'foo.example.org,bar.example.org,biz.example.com'}})).then(function () {
+        mock.done()
+        domainsMock.done()
+        domainsCreateFoo.done()
+        domainsCreateBar.done()
+        domainsCreateBiz.done()
+        expect(unwrap(cli.stderr)).to.equal('Adding SSL certificate to example... done\n\nAdding domains foo.example.org, bar.example.org, biz.example.com to example... !!! An error was encountered when adding bar.example.org example.com is currently in use by another app.\n')
+        /* eslint-disable no-trailing-spaces */
+        /* eslint-disable no-multiple-empty-lines */
+        expect(cli.stdout).to.equal(
+          `Certificate details:
+Common Name(s): foo.example.org
+                bar.example.org
+                biz.example.com
+Expires At:     2013-08-01 21:34 UTC
+Issuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
+Starts At:      2012-08-01 21:34 UTC
+Subject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
+SSL certificate is self signed.
+
+
+=== Your certificate has been added successfully.  Update your application's DNS settings as follows
+Domain           Record Type  DNS Target
+───────────────  ───────────  ─────────────────────────────
+foo.example.org  CNAME        foo.example.org.herokudns.com
+biz.example.com  CNAME        biz.example.com.herokudns.com
+`)
+        /* eslint-disable no-multiple-empty-lines */
         /* eslint-enable no-trailing-spaces */
       })
     })

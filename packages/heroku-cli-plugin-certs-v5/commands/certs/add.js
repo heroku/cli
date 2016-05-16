@@ -14,6 +14,15 @@ let sslDoctor = require('../../lib/ssl_doctor.js')
 let displayWarnings = require('../../lib/display_warnings.js')
 let certificateDetails = require('../../lib/certificate_details.js')
 
+function Domains (domains) {
+  this.domains = domains
+
+  this.added = this.domains.filter((domain) => !domain._failed)
+  this.failed = this.domains.filter((domain) => domain._failed)
+
+  this.hasFailed = this.failed.length > 0
+}
+
 function * getMeta (context, heroku) {
   if (context.flags.type === 'endpoint') {
     return endpoints.meta(context.app, 'ssl')
@@ -66,6 +75,18 @@ function getPromptChoices (context, certDomains, existingDomains, newDomains) {
   }])
 }
 
+function * getChoices (certDomains, newDomains, existingDomains, context) {
+  if (newDomains.length === 0) {
+    return []
+  } else {
+    if (context.flags.domains !== undefined) {
+      return getFlagChoices(context, certDomains, existingDomains)
+    } else {
+      return (yield getPromptChoices(context, certDomains, existingDomains, newDomains)).domains
+    }
+  }
+}
+
 function * addDomains (context, heroku, meta, cert) {
   let certDomains = cert.ssl_cert.cert_domains
 
@@ -91,32 +112,47 @@ function * addDomains (context, heroku, meta, cert) {
     existingDomains.forEach((domain) => cli.log(domain))
   }
 
-  let addedDomains
-  if (newDomains.length > 0) {
-    let choices
-    if (context.flags.domains !== undefined) {
-      choices = getFlagChoices(context, certDomains, existingDomains)
-    } else {
-      choices = (yield getPromptChoices(context, certDomains, existingDomains, newDomains)).domains
-    }
+  let choices = yield getChoices(certDomains, newDomains, existingDomains, context)
+  let domains
 
+  if (choices.length === 0) {
+    domains = new Domains([])
+  } else {
     // Add a newline between the existing and adding messages
-    if (choices.length > 0) {
-      cli.console.error()
-    }
+    cli.console.error()
 
-    addedDomains = new Array(choices.length)
-    for (let i = 0; i < choices.length; i++) {
-      let certDomain = choices[i]
-
-      addedDomains[i] = yield cli.action(`Adding domain ${cli.color.green(certDomain)} to ${cli.color.app(context.app)}`, {}, heroku.request({
+    let promise = Promise.all(choices.map(function (certDomain) {
+      return heroku.request({
         path: `/apps/${context.app}/domains`,
         method: 'POST',
         body: {'hostname': certDomain}
-      }))
-    }
-  } else {
-    addedDomains = []
+      }).catch(function (err) {
+        return {_hostname: certDomain, _failed: true, _err: err}
+      })
+    })).then(function (data) {
+      let domains = new Domains(data)
+      if (domains.hasFailed) {
+        throw domains
+      }
+      return domains
+    })
+
+    let label = choices.length > 1 ? 'domains' : 'domain'
+    let message = `Adding ${label} ${choices.map((choice) => cli.color.green(choice)).join(', ')} to ${cli.color.app(context.app)}`
+    domains = yield cli.action(message, {}, promise).catch(function (err) {
+      if (err instanceof Domains) {
+        return err
+      }
+      throw err
+    })
+  }
+
+  if (domains.hasFailed) {
+    cli.log()
+    domains.failed.forEach(function (domain) {
+      cli.error(`An error was encountered when adding ${domain._hostname}`)
+      cli.error(domain._err)
+    })
   }
 
   cli.log()
@@ -125,21 +161,25 @@ function * addDomains (context, heroku, meta, cert) {
     return psl.parse(domain.hostname).subdomain === null ? 'ALIAS/ANAME' : 'CNAME'
   }
 
-  let domains = apiDomains.concat(addedDomains)
+  let domainsTable = apiDomains.concat(domains.added)
     .filter((domain) => domain.kind === 'custom')
     .map((domain) => Object.assign({}, domain, {type: type(domain)}))
 
-  if (domains.length === 0) {
+  if (domainsTable.length === 0) {
     /* eslint-disable no-irregular-whitespace */
     cli.styledHeader(`Your certificate has been added successfully.  Add a custom domain to your app by running ${cli.color.app('heroku domains:add <yourdomain.com>')}`)
     /* eslint-enable no-irregular-whitespace */
   } else {
     cli.styledHeader("Your certificate has been added successfully.  Update your application's DNS settings as follows")
-    cli.table(domains, {columns: [
+    cli.table(domainsTable, {columns: [
         {label: 'Domain', key: 'hostname'},
         {label: 'Record Type', key: 'type'},
         {label: 'DNS Target', key: 'cname'}
     ]})
+  }
+
+  if (domains.hasFailed) {
+    error.exit(2)
   }
 }
 
