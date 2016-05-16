@@ -1,3 +1,5 @@
 language: node_js
 node_js:
-  - "5.4"
+  - "6.1"
+after_success:
+  - nyc report --reporter=text-lcov > coverage.lcov && bash <(curl -s https://codecov.io/bash)
