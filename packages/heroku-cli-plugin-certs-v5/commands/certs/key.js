@@ -22,7 +22,12 @@ module.exports = {
   topic: '_certs',
   command: 'key',
   description: 'print the correct key for the given certificate',
-  help: 'You must pass one single certificate, and one or more keys.\nThe first key that signs the certificate will be printed back.',
+  help: `You must pass one single certificate, and one or more keys.\nThe first key that signs the certificate will be printed back.
+
+Example:
+
+ $ heroku _certs:key example.com.crt example.com.key
+`,
   needsApp: true,
   needsAuth: true,
   variableArgs: true,

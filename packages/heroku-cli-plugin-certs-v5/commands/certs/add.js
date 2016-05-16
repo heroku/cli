@@ -189,6 +189,10 @@ module.exports = {
     {name: 'domains', description: 'domains to create after certificate upload', hasValue: true}
   ],
   description: 'add an SSL certificate to an app',
+  help: `Example:
+
+ $ heroku _certs:add example.com.crt example.com.key
+`,
   needsApp: true,
   needsAuth: true,
   run: cli.command(co.wrap(run))

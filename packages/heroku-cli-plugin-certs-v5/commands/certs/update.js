@@ -56,6 +56,10 @@ module.exports = {
     {name: 'endpoint', hasValue: true, description: 'endpoint to update'}
   ],
   description: 'update an SSL certificate on an app',
+  help: `Example:
+
+ $ heroku _certs:update example.com.crt example.com.key
+`,
   needsApp: true,
   needsAuth: true,
   run: cli.command(co.wrap(run))
