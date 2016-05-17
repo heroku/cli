@@ -41,6 +41,47 @@ function printExtended (dynos) {
   })
 }
 
+function * printAccountQuota (context, heroku) {
+  let requests = yield {
+    app: heroku.request({
+      path: `/apps/${context.app}`,
+      headers: {Accept: 'application/vnd.heroku+json; version=3.process-tier'}
+    }),
+    account: heroku.request({path: '/account'})
+  }
+
+  if (requests.app.process_tier !== 'free') {
+    return
+  }
+
+  let quota = yield heroku.request({
+    path: `/accounts/${requests.account.id}/actions/get-quota`,
+    headers: {Accept: 'application/vnd.heroku+json; version=3.account-quotas'}
+  })
+  .catch(function (err) {
+    if (err.statusCode === 404 && err.body && err.body.id === 'not_found') {
+      return null
+    }
+    throw err
+  })
+
+  if (!quota) return
+
+  let remaining, percentage
+  if (quota.account_quota === 0) {
+    remaining = 0
+    percentage = 0
+  } else {
+    remaining = quota.account_quota - quota.quota_used
+    percentage = Math.floor(remaining / quota.account_quota * 100)
+  }
+
+  cli.log(`Free dyno hours quota remaining this month: ${remaining} hrs (${percentage}%)`)
+  cli.log('For more information on dyno sleeping and how to upgrade, see:')
+  cli.log('https://devcenter.heroku.com/articles/dyno-sleeping')
+  cli.log()
+}
+
 function printDynos (dynos) {
   let dynosByCommand = _.reduce(dynos, function (dynosByCommand, dyno) {
     let since = time.ago(new Date(dyno.updated_at))
@@ -69,20 +110,35 @@ function printDynos (dynos) {
 
 function * run (context, heroku) {
   let suffix = context.flags.extended ? '?extended=true' : ''
+
+  let feature = heroku.request({path: '/account/features/free-2016'})
+    .catch(function (err) {
+      if (err.statusCode === 404 && err.body && err.body.id === 'not_found') {
+        return {enabled: false}
+      }
+      throw err
+    })
+
   let data = yield {
     quota: heroku.request({
       path: `/apps/${context.app}/actions/get-quota${suffix}`,
       method: 'post', headers: {Accept: 'application/vnd.heroku+json; version=3.app-quotas'}
     }).catch(() => {
     }),
-    dynos: heroku.request({path: `/apps/${context.app}/dynos${suffix}`})
+    dynos: heroku.request({path: `/apps/${context.app}/dynos${suffix}`}),
+    feature
   }
+
   if (context.flags.json) {
     cli.styledJSON(data.dynos)
   } else if (context.flags.extended) {
     printExtended(data.dynos)
   } else {
-    printQuota(data.quota)
+    if (data.feature.enabled) {
+      yield printAccountQuota(context, heroku)
+    } else {
+      printQuota(data.quota)
+    }
     printDynos(data.dynos)
   }
 }
