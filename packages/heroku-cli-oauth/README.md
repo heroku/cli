@@ -1,5 +1,6 @@
 # Heroku OAuth
 [![CircleCI](https://circleci.com/gh/heroku/heroku-oauth.svg?style=svg)](https://circleci.com/gh/heroku/heroku-oauth)
+[![codecov](https://codecov.io/gh/heroku/heroku-oauth/branch/master/graph/badge.svg)](https://codecov.io/gh/heroku/heroku-oauth)
 
 Command line plugin for managing OAuth clients, authorizations and tokens.
 
