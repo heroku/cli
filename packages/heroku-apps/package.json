@@ -25,6 +25,7 @@
     "changelog": "1.0.7",
     "fs-extra": "0.30.0",
     "mocha": "^2.3.3",
+    "mocha-junit-reporter": "1.11.1",
     "mockdate": "1.0.4",
     "nock": "8.0.0",
     "nyc": "6.4.4",
