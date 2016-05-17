@@ -20,7 +20,7 @@ describe('authorizations:create', () => {
   beforeEach(() => {
     api
       .post('/oauth/authorizations', {description: 'awesome'})
-      .reply(201, {access_token: {token: 'secrettoken'}})
+      .reply(201, {scope: ['global'], access_token: {token: 'secrettoken'}})
   })
 
   it('creates the authorization', () => {
