@@ -12,7 +12,7 @@ function getUpdates (o) {
   if (o.url) updates.redirect_uri = lib.validateURL(o.url)
   if (o.name) updates.name = o.name
 
-  if (empty(updates)) throw new Error('No changes provided')
+  if (empty(updates)) throw new Error('No changes provided.')
   return updates
 }
 

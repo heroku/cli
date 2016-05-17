@@ -8,7 +8,7 @@ function * run (context, heroku) {
   if (context.flags.json) {
     cli.log(JSON.stringify(clients, null, 2))
   } else if (clients.length === 0) {
-    cli.log('No oauth clients.')
+    cli.log('No OAuth clients.')
   } else {
     cli.table(clients, {
       printHeader: null,
