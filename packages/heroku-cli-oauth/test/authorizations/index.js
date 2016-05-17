@@ -14,7 +14,7 @@ describe('authorizations', function () {
       .get('/oauth/authorizations')
       .reply(200, [{description: 'awesome', id: 'f6e8d969-129f-42d2-854b-c2eca9d5a42e', scope: ['app', 'user']}])
     return cmd.run({flags: {}})
-      .then(() => expect(cli.stdout, 'to equal', 'awesome  f6e8d969-129f-42d2-854b-c2eca9d5a42e  app,user\n'))
+      .then(() => expect(cli.stdout, 'to equal', 'awesome      f6e8d969-129f-42d2-854b-c2eca9d5a42e  app,user\n'))
       .then(() => api.done())
   })
 })

@@ -8,11 +8,11 @@
   },
   "dependencies": {
     "co": "4.6.0",
-    "heroku-cli-util": "5.7.3"
+    "heroku-cli-util": "5.10.11"
   },
   "devDependencies": {
-    "mocha": "2.3.4",
-    "nock": "5.2.1",
+    "mocha": "2.4.5",
+    "nock": "8.0.0",
     "nyc": "6.4.4",
     "standard": "7.1.0",
     "unexpected": "10.13.2"
