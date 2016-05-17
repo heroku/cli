@@ -1,0 +1,6 @@
+machine:
+  node:
+    version: v6.1.0
+test:
+  post:
+    - nyc report --reporter=text-lcov > coverage.lcov && bash <(curl -s https://codecov.io/bash)
