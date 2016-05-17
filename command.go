@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"sort"
+	"strconv"
 	"strings"
 )
 
@@ -96,6 +97,12 @@ func (c *Command) buildFlagHelp() string {
 		flags = append(flags, *OrgFlag)
 	}
 	lines := make([]string, 0, len(flags))
+	longestFlag := 20
+	for _, flag := range flags {
+		if l := len(flag.String()); l > longestFlag {
+			longestFlag = l
+		}
+	}
 	for _, flag := range flags {
 		if flag.Hidden {
 			continue
@@ -103,7 +110,7 @@ func (c *Command) buildFlagHelp() string {
 		if flag.Description == "" {
 			lines = append(lines, flag.String())
 		} else {
-			lines = append(lines, fmt.Sprintf("%-20s # %s", flag.String(), flag.Description))
+			lines = append(lines, fmt.Sprintf("%-"+strconv.Itoa(longestFlag)+"s # %s", flag.String(), flag.Description))
 		}
 	}
 	return strings.Join(lines, "\n")
