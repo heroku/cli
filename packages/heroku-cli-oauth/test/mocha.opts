@@ -1,2 +1,2 @@
---require ./test/helpers.js
+--require ./test/init.js
 --recursive

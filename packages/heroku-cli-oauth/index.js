@@ -1,9 +1,9 @@
-'use strict';
+'use strict'
 
 exports.topic = {
   name: 'clients',
   description: 'manage OAuth clients on the platform'
-};
+}
 
 exports.commands = [
   require('./commands/authorizations'),
@@ -11,5 +11,5 @@ exports.commands = [
   require('./commands/clients/create'),
   require('./commands/clients/info'),
   require('./commands/clients/update'),
-  require('./commands/clients/destroy'),
-];
+  require('./commands/clients/destroy')
+]

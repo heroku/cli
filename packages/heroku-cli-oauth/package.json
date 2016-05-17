@@ -11,10 +11,11 @@
     "heroku-cli-util": "5.7.3"
   },
   "devDependencies": {
-    "chai": "3.4.1",
-    "jshint": "*",
     "mocha": "2.3.4",
-    "nock": "5.2.1"
+    "nock": "5.2.1",
+    "nyc": "6.4.4",
+    "standard": "7.1.0",
+    "unexpected": "10.13.2"
   },
   "homepage": "https://github.com/heroku/heroku-oauth",
   "keywords": [
@@ -27,6 +28,8 @@
     "url": "https://github.com/heroku/heroku-oauth.git"
   },
   "scripts": {
-    "test": "mocha && jshint ."
+    "postversion": "npm publish && git push && git push --tags",
+    "preversion": "npm test",
+    "test": "nyc mocha && standard"
   }
 }
