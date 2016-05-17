@@ -2,8 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
-	"os"
 	"strings"
 )
 
@@ -30,7 +28,6 @@ var Args []string
 func Start(args ...string) {
 	Args = args
 	loadNewCLI()
-	stopIfSudo()
 
 	ShowDebugInfo()
 
@@ -82,9 +79,4 @@ func ShowDebugInfo() {
 		info = append(info, fmt.Sprintf("cmd: %s", Args[1]))
 	}
 	Debugln(strings.Join(info, " "))
-}
-func stopIfSudo() {
-	if os.Getenv("USER") == "root" && os.Getenv("SUDO_USER") != "" {
-		log.Fatalln("Refusing to run under sudo")
-	}
 }
