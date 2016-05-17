@@ -6,7 +6,7 @@ let cli = require('heroku-cli-util')
 function * run (context, heroku) {
   let clients = yield heroku.get('/oauth/clients')
   if (context.flags.json) {
-    cli.log(JSON.stringify(clients, null, 2))
+    cli.styledJSON(clients)
   } else if (clients.length === 0) {
     cli.log('No OAuth clients.')
   } else {

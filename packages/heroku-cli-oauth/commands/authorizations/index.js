@@ -7,7 +7,7 @@ function * run (context, heroku) {
   let authorizations = yield heroku.get('/oauth/authorizations')
 
   if (context.flags.json) {
-    cli.log(JSON.stringify(authorizations, null, 2))
+    cli.styledJSON(authorizations)
   } else if (authorizations.length === 0) {
     cli.log('No OAuth authorizations.')
   } else {
