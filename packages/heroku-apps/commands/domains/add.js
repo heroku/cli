@@ -2,6 +2,7 @@
 
 let cli = require('heroku-cli-util')
 let co = require('co')
+let waitForDomain = require('../../lib/domains_wait')
 
 function * run (context, heroku) {
   let hostname = context.args.hostname
@@ -12,6 +13,17 @@ function * run (context, heroku) {
   }))
   cli.warn(`Configure your app's DNS provider to point to the DNS Target ${cli.color.green(domain.cname)}.
 For help, see https://devcenter.heroku.com/articles/custom-domains`)
+
+  if (domain.status !== 'none') {
+    cli.console.error('')
+    if (context.flags.wait) {
+      yield waitForDomain(context, heroku, domain)
+    } else {
+      cli.console.error(`The domain ${cli.color.green(hostname)} has been enqueued for addition`)
+      let command = `heroku domains:wait ${hostname}`
+      cli.warn(`Run ${cli.color.cmd(command)} to wait for completion`)
+    }
+  }
 }
 
 module.exports = {
@@ -21,5 +33,6 @@ module.exports = {
   needsApp: true,
   needsAuth: true,
   args: [{name: 'hostname'}],
+  flags: [{name: 'wait'}],
   run: cli.command(co.wrap(run))
 }

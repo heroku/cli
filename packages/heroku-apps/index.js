@@ -63,6 +63,7 @@ exports.commands = [
   require('./commands/domains/add'),
   require('./commands/domains/clear'),
   require('./commands/domains/remove'),
+  require('./commands/domains/wait'),
   require('./commands/drains'),
   require('./commands/drains/add'),
   require('./commands/drains/remove'),

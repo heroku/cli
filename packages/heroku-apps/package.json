@@ -9,6 +9,7 @@
   "dependencies": {
     "bluebird": "3.3.5",
     "co": "4.6.0",
+    "co-wait": "0.0.0",
     "filesize": "3.3.0",
     "heroku-cli-util": "5.10.10",
     "inquirer": "1.0.2",
@@ -24,6 +25,7 @@
     "chai": "^3.3.0",
     "changelog": "1.0.7",
     "fs-extra": "0.30.0",
+    "lolex": "1.4.0",
     "mocha": "^2.3.3",
     "mocha-junit-reporter": "1.11.1",
     "mockdate": "1.0.4",
