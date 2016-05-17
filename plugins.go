@@ -25,7 +25,7 @@ func init() {
 				Description:      "Lists installed plugins",
 				DisableAnalytics: true,
 				Flags: []Flag{
-					{Name: "core", Description: "show core plugins"},
+					{Name: "core", Description: "show core plugins", Hidden: true},
 				},
 				Help: `
 Example:
