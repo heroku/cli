@@ -14,7 +14,7 @@ function * run (context, heroku) {
     cli.table(authorizations, {
       printHeader: null,
       columns: [
-        {key: 'description'},
+        {key: 'description', format: v => cli.color.green(v)},
         {key: 'id'},
         {key: 'scope', format: v => v.join(',')}
       ]
