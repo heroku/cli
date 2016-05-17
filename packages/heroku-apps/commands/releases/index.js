@@ -25,8 +25,7 @@ function * run (context, heroku) {
     path: url,
     partial: true,
     headers: {
-      'Range': `version ..; max=${context.flags.num || 15}, order=desc`,
-      'Accept': 'application/vnd.heroku+json; version=3.release_status'
+      'Range': `version ..; max=${context.flags.num || 15}, order=desc`
     }
   })
 

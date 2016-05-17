@@ -31,7 +31,7 @@ describe('releases:info', function () {
       .get('/apps/myapp/releases')
       .reply(200, [{version: 10}])
       .get('/apps/myapp/releases/10')
-      .matchHeader('accept', 'application/vnd.heroku+json; version=3.release_status')
+      .matchHeader('accept', 'application/vnd.heroku+json; version=3')
       .reply(200, release)
       .get('/apps/myapp/releases/10')
       .matchHeader('accept', 'application/json')
@@ -57,7 +57,7 @@ FOO: foo
       .get('/apps/myapp/releases')
       .reply(200, [{version: 10}])
       .get('/apps/myapp/releases/10')
-      .matchHeader('accept', 'application/vnd.heroku+json; version=3.release_status')
+      .matchHeader('accept', 'application/vnd.heroku+json; version=3')
       .reply(200, release)
       .get('/apps/myapp/releases/10')
       .matchHeader('accept', 'application/json')
@@ -81,7 +81,7 @@ BAR=bar
   it('shows release info by id', function () {
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/releases/10')
-      .matchHeader('accept', 'application/vnd.heroku+json; version=3.release_status')
+      .matchHeader('accept', 'application/vnd.heroku+json; version=3')
       .reply(200, release)
       .get('/apps/myapp/releases/10')
       .matchHeader('accept', 'application/json')
@@ -105,7 +105,7 @@ FOO: foo
   it('shows recent release as json', function () {
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/releases/10')
-      .matchHeader('accept', 'application/vnd.heroku+json; version=3.release_status')
+      .matchHeader('accept', 'application/vnd.heroku+json; version=3')
       .reply(200, release)
       .get('/apps/myapp/releases/10')
       .matchHeader('accept', 'application/json')
@@ -121,7 +121,7 @@ FOO: foo
       .get('/apps/myapp/releases')
       .reply(200, [{version: 10}])
       .get('/apps/myapp/releases/10')
-      .matchHeader('accept', 'application/vnd.heroku+json; version=3.release_status')
+      .matchHeader('accept', 'application/vnd.heroku+json; version=3')
       .reply(200, {
         description: 'something changed',
         status: 'failure',
@@ -144,7 +144,7 @@ When:    ${d.toISOString()}
       .get('/apps/myapp/releases')
       .reply(200, [{version: 10}])
       .get('/apps/myapp/releases/10')
-      .matchHeader('accept', 'application/vnd.heroku+json; version=3.release_status')
+      .matchHeader('accept', 'application/vnd.heroku+json; version=3')
       .reply(200, {
         description: 'something changed',
         status: 'pending',

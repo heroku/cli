@@ -16,8 +16,7 @@ function * run (context, heroku) {
       path: `/apps/${context.app}/releases`,
       partial: true,
       headers: {
-        Range: 'version ..; max=1, order=desc',
-        Accept: 'application/vnd.heroku+json; version=3.release_status'
+        Range: 'version ..; max=1, order=desc'
       }
     })
     id = releases[0].version
@@ -27,7 +26,7 @@ function * run (context, heroku) {
     v3: heroku.request({
       path: `/apps/${context.app}/releases/${id}`,
       headers: {
-        Accept: 'application/vnd.heroku+json; version=3.release_status'
+        Accept: 'application/vnd.heroku+json; version=3'
       }
     }),
     // TODO: move to use API V3 once an endpoint to fetch a release config vars is available
