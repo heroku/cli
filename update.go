@@ -50,6 +50,7 @@ func Update(channel string) {
 	SubmitAnalytics()
 	updateCLI(channel)
 	UserPlugins.Update()
+	UserPlugins.MigrateRubyPlugins()
 	truncate(ErrLogPath, 1000)
 	cleanTmp()
 }
