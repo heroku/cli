@@ -48,7 +48,12 @@ class Dyno {
     .then(dyno => {
       this.dyno = dyno
       if (this.opts.attach || this.opts.dyno) return this.attach()
-      else cli.action.update(this._status('done'))
+      else {
+        cli.action.update(this._status('done'))
+        cli.console.error()
+        cli.action.update('')
+        cli.action.task.spinner.clear()
+      }
     }))
   }
 
