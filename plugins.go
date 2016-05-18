@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -430,6 +431,23 @@ func (p *Plugins) Update() {
 	}
 }
 
+// MigrateRubyPlugins migrates from legacy ruby plugins to node versions
+func (p *Plugins) MigrateRubyPlugins() {
+	pluginMap := map[string]string{
+		"heroku-config": "heroku-config",
+		"heroku-oauth":  "heroku-cli-oauth",
+	}
+	for _, ruby := range RubyPlugins() {
+		plugin := pluginMap[ruby]
+		if plugin == "" || contains(p.PluginNames(), plugin) {
+			continue
+		}
+		action("Updating "+plugin+" plugin", "done", func() {
+			WarnIfError(p.InstallPlugins(plugin))
+		})
+	}
+}
+
 func (p *Plugins) addToCache(plugins ...*Plugin) {
 	contains := func(name string) int {
 		for i, plugin := range p.plugins {
@@ -486,4 +504,21 @@ func (p *Plugins) Plugins() []*Plugin {
 
 func (p *Plugins) cachePath() string {
 	return filepath.Join(p.Path, "plugins.json")
+}
+
+// RubyPlugins lists all the ruby plugins
+func RubyPlugins() []string {
+	dirs, err := ioutil.ReadDir(filepath.Join(HomeDir, ".heroku", "plugins"))
+	if err != nil {
+		LogIfError(err)
+		return []string{}
+	}
+	plugins := make([]string, 0, len(dirs))
+	for _, dir := range dirs {
+		if !dir.IsDir() {
+			continue
+		}
+		plugins = append(plugins, dir.Name())
+	}
+	return plugins
 }
