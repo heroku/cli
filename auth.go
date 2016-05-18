@@ -14,7 +14,7 @@ import (
 )
 
 func init() {
-	Topics = append(Topics, TopicSet{{
+	topics = append(topics, Topics{{
 		Name:        "auth",
 		Description: "authentication (login/logout)",
 		Commands: []*Command{
@@ -129,7 +129,7 @@ func init() {
 		{
 			Name:   "twofactor",
 			Hidden: true,
-			Commands: CommandSet{
+			Commands: Commands{
 				{
 					NeedsAuth:   true,
 					Description: "check 2fa status",
@@ -152,7 +152,7 @@ func init() {
 		{
 			Name:   "2fa",
 			Hidden: true,
-			Commands: CommandSet{
+			Commands: Commands{
 				{
 					NeedsAuth:   true,
 					Description: "check 2fa status",

@@ -15,11 +15,11 @@ func (t *Topic) String() string {
 	return t.Name
 }
 
-// TopicSet is a slice of Topic structs with some helper methods.
-type TopicSet []*Topic
+// Topics are a list of topics
+type Topics []*Topic
 
 // ByName returns a topic in the set matching the name.
-func (topics TopicSet) ByName(name string) *Topic {
+func (topics Topics) ByName(name string) *Topic {
 	for _, topic := range topics {
 		if topic.Name == name {
 			return topic
@@ -29,7 +29,7 @@ func (topics TopicSet) ByName(name string) *Topic {
 }
 
 // Concat joins 2 topic sets together
-func (topics TopicSet) Concat(more TopicSet) TopicSet {
+func (topics Topics) Concat(more Topics) Topics {
 	for _, topic := range more {
 		if topics.ByName(topic.Name) == nil {
 			topics = append(topics, topic)
@@ -38,29 +38,29 @@ func (topics TopicSet) Concat(more TopicSet) TopicSet {
 	return topics
 }
 
-func (topics TopicSet) Len() int {
+func (topics Topics) Len() int {
 	return len(topics)
 }
 
-func (topics TopicSet) Less(i, j int) bool {
+func (topics Topics) Less(i, j int) bool {
 	return topics[i].Name < topics[j].Name
 }
 
-func (topics TopicSet) Swap(i, j int) {
+func (topics Topics) Swap(i, j int) {
 	topics[i], topics[j] = topics[j], topics[i]
 }
 
 // AllTopics gets all go/core/user topics
-func AllTopics() TopicSet {
-	topics := Topics
+func AllTopics() Topics {
+	topics := topics
 	topics = topics.Concat(CorePlugins.Topics())
 	topics = topics.Concat(UserPlugins.Topics())
 	return topics
 }
 
 // NonHidden returns  a set of topics that are not hidden
-func (topics TopicSet) NonHidden() TopicSet {
-	to := make(TopicSet, 0, len(topics))
+func (topics Topics) NonHidden() Topics {
+	to := make(Topics, 0, len(topics))
 	for _, topic := range topics {
 		if !topic.Hidden {
 			to = append(to, topic)
@@ -70,14 +70,14 @@ func (topics TopicSet) NonHidden() TopicSet {
 }
 
 // Sort sorts the set
-func (topics TopicSet) Sort() TopicSet {
+func (topics Topics) Sort() Topics {
 	sort.Sort(topics)
 	return topics
 }
 
 // Commands returns all the commands of all the topics
-func (topics TopicSet) Commands() CommandSet {
-	commands := CommandSet{}
+func (topics Topics) Commands() Commands {
+	commands := Commands{}
 	for _, topic := range topics {
 		for _, command := range topic.Commands {
 			command.Topic = topic.Name

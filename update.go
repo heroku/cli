@@ -15,10 +15,10 @@ import (
 )
 
 func init() {
-	Topics = append(Topics, &Topic{
+	topics = append(topics, &Topic{
 		Name:        "update",
 		Description: "update heroku-cli",
-		Commands: CommandSet{
+		Commands: Commands{
 			{
 				Topic:            "update",
 				Hidden:           true,

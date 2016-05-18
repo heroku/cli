@@ -9,10 +9,10 @@ import (
 )
 
 func init() {
-	Topics = append(Topics, &Topic{
+	topics = append(topics, &Topic{
 		Name:   "help",
 		Hidden: true,
-		Commands: CommandSet{
+		Commands: Commands{
 			&Command{
 				Hidden: true,
 				Run: func(ctx *Context) {
@@ -77,7 +77,7 @@ func helpShowCommand(topic *Topic, command *Command) {
 }
 
 func printTopicCommandsHelp(topic *Topic) {
-	topicCommands := CommandSet{}
+	topicCommands := Commands{}
 	for _, cur := range AllCommands().NonHidden() {
 		if topic != nil && cur.Topic == topic.Name {
 			topicCommands = append(topicCommands, cur)
@@ -106,7 +106,7 @@ func helpInvalidCommand() {
 `, yellow(Args[1]), closest, cyan("heroku help"))
 }
 
-func findClosestCommand(from CommandSet, a string) (*Command, int) {
+func findClosestCommand(from Commands, a string) (*Command, int) {
 	var top *Command
 	var val int
 	for _, b := range from {

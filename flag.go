@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"sort"
 	"strings"
 )
 
@@ -82,4 +83,34 @@ func ParseFlag(input string, flags []*Flag) (*Flag, string, error) {
 		}
 	}
 	return nil, "", nil
+}
+
+// Flags are a list of flags
+type Flags []Flag
+
+// Len is for sorting
+func (flags Flags) Len() int {
+	return len(flags)
+}
+
+// Less is for sorting
+func (flags Flags) Less(i, j int) bool {
+	if flags[i].Char != "" && flags[j].Char == "" {
+		return true
+	}
+	if flags[i].Char == "" && flags[j].Char != "" {
+		return false
+	}
+	return flags[i].Name < flags[j].Name
+}
+
+// Swap the flags for sorting
+func (flags Flags) Swap(i, j int) {
+	flags[i], flags[j] = flags[j], flags[i]
+}
+
+// Sort sorts the flags
+func (flags Flags) Sort() Flags {
+	sort.Sort(flags)
+	return flags
 }
