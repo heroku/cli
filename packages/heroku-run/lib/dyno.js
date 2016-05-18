@@ -23,6 +23,7 @@ class Dyno {
   constructor (opts) {
     this.opts = opts
     this.heroku = opts.heroku
+    if (this.opts.showStatus === undefined) this.opts.showStatus = true
   }
 
   /**
@@ -31,7 +32,7 @@ class Dyno {
    */
   start () {
     let command = this.opts['exit-code'] ? `${this.opts.command}; echo heroku-command-exit-status $?` : this.opts.command
-    return cli.action(`Running ${cli.color.cyan.bold(this.opts.command)} on ${cli.color.app(this.opts.app)}`, {success: false}, this.heroku.request({
+    let start = this.heroku.request({
       path: this.opts.dyno ? `/apps/${this.opts.app}/dynos/${this.opts.dyno}` : `/apps/${this.opts.app}/dynos`,
       method: 'POST',
       headers: {
@@ -49,12 +50,18 @@ class Dyno {
       this.dyno = dyno
       if (this.opts.attach || this.opts.dyno) return this.attach()
       else {
-        cli.action.update(this._status('done'))
-        cli.console.error()
-        cli.action.update('')
-        cli.action.task.spinner.clear()
+        if (this.opts.showStatus) {
+          cli.action.update(this._status('done'))
+          cli.console.error()
+          cli.action.update('')
+          cli.action.task.spinner.clear()
+        }
       }
-    }))
+    })
+
+    if (this.opts.showStatus) {
+      return cli.action(`Running ${cli.color.cyan.bold(this.opts.command)} on ${cli.color.app(this.opts.app)}`, {success: false}, start)
+    } else return start
   }
 
   /**
@@ -62,7 +69,7 @@ class Dyno {
    */
   attach () {
     return new Promise((resolve, reject) => {
-      cli.action.update(this._status('starting'))
+      if (this.opts.showStatus) cli.action.update(this._status('starting'))
       this.resolve = resolve
       this.reject = reject
       let uri = url.parse(this.dyno.attach_url)
@@ -70,7 +77,9 @@ class Dyno {
       c.setTimeout(1000 * 60 * 20)
       c.setEncoding('utf8')
       c.on('connect', () => {
-        c.write(uri.path.substr(1) + '\r\n', () => cli.action.update(this._status('connecting')))
+        c.write(uri.path.substr(1) + '\r\n', () => {
+          if (this.opts.showStatus) cli.action.update(this._status('connecting'))
+        })
       })
       c.on('data', this._readData(c))
       c.on('close', () => {
@@ -101,11 +110,13 @@ class Dyno {
     return data => {
       // discard first line
       if (firstLine) {
-        cli.action.update(this._status('up'))
-        cli.action.task.spinner.stop()
-        cli.console.error()
-        cli.action.update('')
-        cli.action.task.spinner.clear()
+        if (this.opts.showStatus) {
+          cli.action.update(this._status('up'))
+          cli.action.task.spinner.stop()
+          cli.console.error()
+          cli.action.update('')
+          cli.action.task.spinner.clear()
+        }
         firstLine = false
         this._readStdin(c)
         return
