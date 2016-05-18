@@ -1,6 +1,12 @@
+---
 machine:
   node:
-    version: v5.10.1
+    version: v6.2.0
 test:
+  pre:
+    - mkdir -p $CIRCLE_TEST_REPORTS/mocha
+  override:
+    - MOCHA_FILE=$CIRCLE_TEST_REPORTS/mocha/results.xml nyc mocha test -R mocha-junit-reporter
+    - standard
   post:
-    - npm run coverage
+    - nyc report --reporter=text-lcov > coverage.lcov && bash <(curl -s https://codecov.io/bash)
