@@ -1,10 +1,13 @@
 'use strict'
 
-let co = require('co')
-let cli = require('heroku-cli-util')
+const co = require('co')
+const cli = require('heroku-cli-util')
+const _ = require('lodash')
 
 function * run (context, heroku) {
   let clients = yield heroku.get('/oauth/clients')
+  clients = _.sortBy(clients, 'name')
+
   if (context.flags.json) {
     cli.styledJSON(clients)
   } else if (clients.length === 0) {
