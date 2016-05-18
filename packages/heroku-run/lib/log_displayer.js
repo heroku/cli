@@ -41,7 +41,7 @@ function readLogs (logplexURL) {
     liner.setEncoding('utf8')
     res.pipe(liner)
     liner.on('data', line => cli.log(colorize(line)))
-    res.on('close', resolve)
+    res.on('end', resolve)
     res.on('error', reject)
   })
 }
