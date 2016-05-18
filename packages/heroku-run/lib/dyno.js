@@ -32,8 +32,11 @@ class Dyno {
   start () {
     let command = this.opts['exit-code'] ? `${this.opts.command}; echo heroku-command-exit-status $?` : this.opts.command
     return cli.action(`Running ${cli.color.cyan.bold(this.opts.command)} on ${cli.color.app(this.opts.app)}`, {success: false}, this.heroku.request({
-      path: `/apps/${this.opts.app}/dynos`,
+      path: this.opts.dyno ? `/apps/${this.opts.app}/dynos/${this.opts.dyno}` : `/apps/${this.opts.app}/dynos`,
       method: 'POST',
+      headers: {
+        Accept: this.opts.dyno ? 'application/vnd.heroku+json; version=3.run-inside' : 'application/vnd.heroku+json; version=3'
+      },
       body: {
         command: command,
         attach: this.opts.attach,
@@ -44,7 +47,7 @@ class Dyno {
     })
     .then(dyno => {
       this.dyno = dyno
-      if (this.opts.attach) return this.attach()
+      if (this.opts.attach || this.opts.dyno) return this.attach()
       else cli.action.update(this._status('done'))
     }))
   }
@@ -85,7 +88,7 @@ class Dyno {
   }
 
   _status (status) {
-    return `Running ${cli.color.cyan.bold(this.opts.command)} on ${cli.color.app(this.opts.app)}... ${cli.color.blue(status)}, ${this.dyno.name}`
+    return `Running ${cli.color.cyan.bold(this.opts.command)} on ${cli.color.app(this.opts.app)}... ${cli.color.blue(status)}, ${this.dyno.name || this.opts.dyno}`
   }
 
   _readData (c) {
@@ -96,6 +99,8 @@ class Dyno {
         cli.action.update(this._status('up'))
         cli.action.task.spinner.stop()
         cli.console.error()
+        cli.action.update('')
+        cli.action.task.spinner.clear()
         firstLine = false
         this._readStdin(c)
         return
