@@ -6,7 +6,7 @@ import (
 )
 
 func init() {
-	topics = append(topics, &Topic{
+	CLITopics = append(CLITopics, &Topic{
 		Name:   "version",
 		Hidden: true,
 		Commands: Commands{

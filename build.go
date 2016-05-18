@@ -16,7 +16,7 @@ import (
 )
 
 func init() {
-	topics = append(topics, Topics{
+	CLITopics = append(CLITopics, Topics{
 		{
 			Name:        "build",
 			Description: "These commands are used to build the CLI. They are not intended to be used otherwise.",

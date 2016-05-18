@@ -1,7 +1,7 @@
 package main
 
 func init() {
-	topics = append(topics, &Topic{
+	CLITopics = append(CLITopics, &Topic{
 		Name:   "which",
 		Hidden: true,
 		Commands: Commands{

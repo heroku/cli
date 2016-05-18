@@ -17,9 +17,9 @@ var GitSHA = ""
 // This is set by a build flag in the `Rakefile` based on the git branch.
 var Channel = "?"
 
-// Topics are all the command topics
+// CLITopics are all the command topics
 // This list is all the Go topics, the Node topics are filled in later
-var topics Topics
+var CLITopics Topics
 
 // Args is os.Args
 var Args []string
