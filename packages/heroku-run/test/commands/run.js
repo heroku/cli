@@ -1,14 +1,17 @@
 'use strict'
-/* globals describe it commands apikey */
+/* globals describe beforeEach it commands apikey */
 
+const cli = require('heroku-cli-util')
 const cmd = commands.find(c => c.topic === 'run' && !c.command)
 const expect = require('unexpected')
 const StdOutFixture = require('fixture-stdout')
-const fixture = new StdOutFixture()
 
 describe('run', () => {
+  beforeEach(() => cli.mockConsole())
+
   it('runs a command', () => {
     let stdout = ''
+    let fixture = new StdOutFixture()
     fixture.capture(s => { stdout += s })
     return cmd.run({app: 'heroku-run-test-app', flags: {}, auth: {password: apikey}, args: ['echo', '1', '2', '3']})
     .then(() => fixture.release())
