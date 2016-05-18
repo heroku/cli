@@ -50,7 +50,6 @@ class Dyno {
       if (this.opts.attach || this.opts.dyno) return this.attach()
       else cli.action.update(this._status('done'))
     }))
-    .then(() => process.stdin.setRawMode(false))
   }
 
   /**
@@ -70,8 +69,8 @@ class Dyno {
       })
       c.on('data', this._readData(c))
       c.on('close', () => {
-        if (this.stdin) process.stdin.removeListener('data', this.stdin)
         this.opts['exit-code'] ? reject('No exit code returned') : resolve()
+        if (this.unpipeStdin) this.unpipeStdin()
       })
       c.on('error', reject)
       process.once('SIGINT', () => c.end())
@@ -124,16 +123,16 @@ class Dyno {
     if (tty.isatty(0)) {
       stdin.setRawMode(true)
       stdin.pipe(c)
+      stdin.unref()
       let sigints = []
-      this.stdin = function (c) {
+      stdin.on('data', function (c) {
         if (c === '\u0003') sigints.push(new Date())
         sigints = sigints.filter(d => d > new Date() - 1000)
         if (sigints.length >= 4) {
           cli.error('forcing dyno disconnect')
           process.exit(1)
         }
-      }
-      stdin.on('data', this.stdin)
+      })
     } else {
       stdin.pipe(new stream.Transform({
         objectMode: true,
