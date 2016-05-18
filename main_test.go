@@ -24,19 +24,19 @@ var _ = Describe("version", func() {
 
 	Context("with no args", func() {
 		ran := false
-		var topicBackup cli.TopicSet
+		var topicBackup cli.Topics
 		BeforeEach(func() {
-			topicBackup = cli.Topics
-			cli.Topics = cli.TopicSet{
+			topicBackup = cli.CLITopics
+			cli.CLITopics = cli.Topics{
 				{
 					Name:     "dashboard",
-					Commands: cli.CommandSet{{Run: func(*cli.Context) { ran = true }}},
+					Commands: cli.Commands{{Run: func(*cli.Context) { ran = true }}},
 				},
 			}
 			cli.Start("heroku")
 		})
 		AfterEach(func() {
-			cli.Topics = topicBackup
+			cli.CLITopics = topicBackup
 		})
 
 		It("ran dashboard command", func() { Expect(ran).To(BeTrue()) })

@@ -10,7 +10,7 @@ import (
 )
 
 func init() {
-	topics = append(topics, Topics{
+	CLITopics = append(CLITopics, Topics{
 		{
 			Name:        "commands",
 			Description: "list all commands",
@@ -26,7 +26,7 @@ func init() {
 						if ctx.Flags["json"] == true {
 							commands.loadUsages()
 							commands.loadFullHelp()
-							doc := map[string]interface{}{"topics": topics, "commands": commands}
+							doc := map[string]interface{}{"topics": CLITopics, "commands": commands}
 							s, _ := json.Marshal(doc)
 							Println(string(s))
 							return
@@ -287,7 +287,7 @@ func argsString(args []Arg) string {
 
 // AllCommands gets all go/core/user commands
 func AllCommands() Commands {
-	commands := topics.Commands()
+	commands := CLITopics.Commands()
 	commands = append(commands, UserPlugins.Commands()...)
 	commands = append(commands, CorePlugins.Commands()...)
 	return commands

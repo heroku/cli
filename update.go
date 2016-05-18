@@ -15,7 +15,7 @@ import (
 )
 
 func init() {
-	topics = append(topics, &Topic{
+	CLITopics = append(CLITopics, &Topic{
 		Name:        "update",
 		Description: "update heroku-cli",
 		Commands: Commands{

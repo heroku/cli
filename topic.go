@@ -52,7 +52,7 @@ func (topics Topics) Swap(i, j int) {
 
 // AllTopics gets all go/core/user topics
 func AllTopics() Topics {
-	topics := topics
+	topics := CLITopics
 	topics = topics.Concat(CorePlugins.Topics())
 	topics = topics.Concat(UserPlugins.Topics())
 	return topics

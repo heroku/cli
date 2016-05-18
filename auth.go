@@ -14,7 +14,7 @@ import (
 )
 
 func init() {
-	topics = append(topics, Topics{{
+	CLITopics = append(CLITopics, Topics{{
 		Name:        "auth",
 		Description: "authentication (login/logout)",
 		Commands: []*Command{

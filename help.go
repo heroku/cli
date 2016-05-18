@@ -9,7 +9,7 @@ import (
 )
 
 func init() {
-	topics = append(topics, &Topic{
+	CLITopics = append(CLITopics, &Topic{
 		Name:   "help",
 		Hidden: true,
 		Commands: Commands{
