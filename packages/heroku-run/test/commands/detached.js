@@ -5,7 +5,7 @@ const cmd = commands.find(c => c.topic === 'run' && c.command === 'detached')
 const expect = require('unexpected')
 const cli = require('heroku-cli-util')
 
-describe('run', () => {
+describe('run:detached', () => {
   beforeEach(() => cli.mockConsole())
 
   it('runs a command', () => {
