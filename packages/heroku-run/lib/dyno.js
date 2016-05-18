@@ -102,7 +102,7 @@ class Dyno {
   }
 
   _status (status) {
-    return `Running ${cli.color.cyan.bold(this.opts.command)} on ${cli.color.app(this.opts.app)}... ${cli.color.blue(status)}, ${this.dyno.name || this.opts.dyno}`
+    return `Running ${cli.color.cyan.bold(this.opts.command)} on ${cli.color.app(this.opts.app)}... ${status}, ${this.dyno.name || this.opts.dyno}`
   }
 
   _readData (c) {
