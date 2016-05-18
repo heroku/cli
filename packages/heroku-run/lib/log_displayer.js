@@ -61,3 +61,4 @@ function logDisplayer (heroku, options) {
 }
 
 module.exports = logDisplayer
+module.exports.COLORS = COLORS
