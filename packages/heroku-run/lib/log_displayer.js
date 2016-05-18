@@ -1,7 +1,7 @@
-'use strict';
+'use strict'
 
-let cli   = require('heroku-cli-util');
-let liner = require('../lib/line_transform');
+let cli = require('heroku-cli-util')
+let liner = require('../lib/line_transform')
 
 const COLORS = [
   s => cli.color.cyan(s),
@@ -15,35 +15,35 @@ const COLORS = [
   s => cli.color.bold.yellow(s),
   s => cli.color.bold.green(s),
   s => cli.color.bold.red(s),
-  s => cli.color.bold.blue(s),
-];
-let assignedColors = {};
+  s => cli.color.bold.blue(s)
+]
+let assignedColors = {}
 function getColorForIdentifier (i) {
-  if (assignedColors[i]) return assignedColors[i];
-  assignedColors[i] = COLORS[Object.keys(assignedColors).length % COLORS.length];
-  return assignedColors[i];
+  if (assignedColors[i]) return assignedColors[i]
+  assignedColors[i] = COLORS[Object.keys(assignedColors).length % COLORS.length]
+  return assignedColors[i]
 }
 
-let lineRegex = /^(.*?\[([\w-]+)([\d\.]+)?\]:)(.*)?$/;
+let lineRegex = /^(.*?\[([\w-]+)([\d\.]+)?\]:)(.*)?$/
 function colorize (line) {
-  let parsed = line.match(lineRegex);
-  if (!parsed) return line;
-  let header     = parsed[1];
-  let identifier = parsed[2];
-  let body       = parsed[4];
-  return getColorForIdentifier(identifier)(header) + body;
+  let parsed = line.match(lineRegex)
+  if (!parsed) return line
+  let header = parsed[1]
+  let identifier = parsed[2]
+  let body = parsed[4]
+  return getColorForIdentifier(identifier)(header) + body
 }
 
 function readLogs (logplexURL) {
-  return new Promise(function (fulfill, reject) {
-    let res = cli.got.stream(logplexURL);
-    res.setEncoding('utf8');
-    liner.setEncoding('utf8');
-    res.pipe(liner);
-    liner.on('data', line => cli.log(colorize(line)));
-    res.on('close', fulfill);
-    res.on('error', reject);
-  });
+  return new Promise(function (resolve, reject) {
+    let res = cli.got.stream(logplexURL)
+    res.setEncoding('utf8')
+    liner.setEncoding('utf8')
+    res.pipe(liner)
+    liner.on('data', line => cli.log(colorize(line)))
+    res.on('close', resolve)
+    res.on('error', reject)
+  })
 }
 
 function logDisplayer (heroku, options) {
@@ -51,13 +51,13 @@ function logDisplayer (heroku, options) {
     path: `/apps/${options.app}/log-sessions`,
     method: 'POST',
     body: {
-      tail:   options.tail,
-      dyno:   options.dyno,
+      tail: options.tail,
+      dyno: options.dyno,
       source: options.source,
-      lines:  options.lines,
+      lines: options.lines
     }
   })
-  .then(response => readLogs(response.logplex_url));
+    .then(response => readLogs(response.logplex_url))
 }
 
-module.exports = logDisplayer;
+module.exports = logDisplayer

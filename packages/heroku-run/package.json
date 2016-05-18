@@ -4,7 +4,7 @@
   "description": "Heroku CLI plugin to run one-off dyno processes.",
   "main": "index.js",
   "scripts": {
-    "test": "jshint .",
+    "test": "standard",
     "preversion": "npm test",
     "postversion": "npm publish && git push && git push --tags"
   },
@@ -26,6 +26,6 @@
     "heroku-cli-util": "5.10.10"
   },
   "devDependencies": {
-    "jshint": "*"
+    "standard": "7.1.0"
   }
 }
