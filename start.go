@@ -19,7 +19,7 @@ var Channel = "?"
 
 // Topics are all the command topics
 // This list is all the Go topics, the Node topics are filled in later
-var Topics TopicSet
+var topics Topics
 
 // Args is os.Args
 var Args []string

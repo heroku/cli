@@ -15,10 +15,10 @@ import (
 )
 
 func init() {
-	Topics = append(Topics, &Topic{
+	topics = append(topics, &Topic{
 		Name:        "plugins",
 		Description: "manage plugins",
-		Commands: CommandSet{
+		Commands: Commands{
 			{
 				Topic:            "plugins",
 				Hidden:           true,
@@ -186,15 +186,15 @@ var UserPlugins = &Plugins{Path: filepath.Join(DataHome, "plugins")}
 
 // Plugin represents a javascript plugin
 type Plugin struct {
-	Name     string     `json:"name"`
-	Version  string     `json:"version"`
-	Topics   TopicSet   `json:"topics"`
-	Topic    *Topic     `json:"topic"`
-	Commands CommandSet `json:"commands"`
+	Name     string   `json:"name"`
+	Version  string   `json:"version"`
+	Topics   Topics   `json:"topics"`
+	Topic    *Topic   `json:"topic"`
+	Commands Commands `json:"commands"`
 }
 
 // Commands lists all the commands of the plugins
-func (p *Plugins) Commands() (commands CommandSet) {
+func (p *Plugins) Commands() (commands Commands) {
 	for _, plugin := range p.Plugins() {
 		for _, command := range plugin.Commands {
 			command.Run = p.runFn(plugin, command.Topic, command.Command)
@@ -205,7 +205,7 @@ func (p *Plugins) Commands() (commands CommandSet) {
 }
 
 // Topics gets all the plugin's topics
-func (p *Plugins) Topics() (topics TopicSet) {
+func (p *Plugins) Topics() (topics Topics) {
 	for _, plugin := range p.Plugins() {
 		if plugin.Topic != nil {
 			topics = append(topics, plugin.Topic)

@@ -10,12 +10,12 @@ import (
 )
 
 func init() {
-	Topics = append(Topics, TopicSet{
+	topics = append(topics, Topics{
 		{
 			Name:        "commands",
 			Description: "list all commands",
 			Hidden:      true,
-			Commands: CommandSet{
+			Commands: Commands{
 				{
 					Topic:            "commands",
 					Description:      "list all commands",
@@ -26,7 +26,7 @@ func init() {
 						if ctx.Flags["json"] == true {
 							commands.loadUsages()
 							commands.loadFullHelp()
-							doc := map[string]interface{}{"topics": Topics, "commands": commands}
+							doc := map[string]interface{}{"topics": topics, "commands": commands}
 							s, _ := json.Marshal(doc)
 							Println(string(s))
 							return
@@ -69,7 +69,7 @@ type Command struct {
 	VariableArgs     bool               `json:"variableArgs"`
 	DisableAnalytics bool               `json:"disableAnalytics"`
 	Args             []Arg              `json:"args"`
-	Flags            []Flag             `json:"flags"`
+	Flags            Flags              `json:"flags"`
 	Run              func(ctx *Context) `json:"-"`
 }
 
@@ -96,6 +96,7 @@ func (c *Command) buildFlagHelp() string {
 	if c.NeedsOrg || c.WantsOrg {
 		flags = append(flags, *OrgFlag)
 	}
+	flags.Sort()
 	lines := make([]string, 0, len(flags))
 	longestFlag := 20
 	for _, flag := range flags {
@@ -189,11 +190,11 @@ See more information with %s`,
 	)
 }
 
-// CommandSet is a slice of Command structs with some helper methods.
-type CommandSet []*Command
+// Commands is a slice of Command structs with some helper methods.
+type Commands []*Command
 
 // Find finds a command and topic matching the cmd string
-func (commands CommandSet) Find(cmd string) *Command {
+func (commands Commands) Find(cmd string) *Command {
 	var topic, command string
 	tc := strings.SplitN(cmd, ":", 2)
 	topic = tc[0]
@@ -208,13 +209,13 @@ func (commands CommandSet) Find(cmd string) *Command {
 	return nil
 }
 
-func (commands CommandSet) loadUsages() {
+func (commands Commands) loadUsages() {
 	for _, c := range commands {
 		c.Usage = CommandUsage(c)
 	}
 }
 
-func (commands CommandSet) loadFullHelp() {
+func (commands Commands) loadFullHelp() {
 	for _, c := range commands {
 		if c.FullHelp == "" {
 			c.FullHelp = c.buildFullHelp()
@@ -222,23 +223,23 @@ func (commands CommandSet) loadFullHelp() {
 	}
 }
 
-func (commands CommandSet) Len() int {
+func (commands Commands) Len() int {
 	return len(commands)
 }
 
-func (commands CommandSet) Less(i, j int) bool {
+func (commands Commands) Less(i, j int) bool {
 	if commands[i].Topic == commands[j].Topic {
 		return commands[i].Command < commands[j].Command
 	}
 	return commands[i].Topic < commands[j].Topic
 }
 
-func (commands CommandSet) Swap(i, j int) {
+func (commands Commands) Swap(i, j int) {
 	commands[i], commands[j] = commands[j], commands[i]
 }
 
 // NonHidden returns the commands that are not hidden
-func (commands CommandSet) NonHidden() []*Command {
+func (commands Commands) NonHidden() []*Command {
 	to := make([]*Command, 0, len(commands))
 	for _, command := range commands {
 		if !command.Hidden {
@@ -249,7 +250,7 @@ func (commands CommandSet) NonHidden() []*Command {
 }
 
 // Sort sorts
-func (commands CommandSet) Sort() CommandSet {
+func (commands Commands) Sort() Commands {
 	sort.Sort(commands)
 	return commands
 }
@@ -285,8 +286,8 @@ func argsString(args []Arg) string {
 }
 
 // AllCommands gets all go/core/user commands
-func AllCommands() CommandSet {
-	commands := Topics.Commands()
+func AllCommands() Commands {
+	commands := topics.Commands()
 	commands = append(commands, UserPlugins.Commands()...)
 	commands = append(commands, CorePlugins.Commands()...)
 	return commands

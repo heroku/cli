@@ -16,11 +16,11 @@ import (
 )
 
 func init() {
-	Topics = append(Topics, TopicSet{
+	topics = append(topics, Topics{
 		{
 			Name:        "build",
 			Description: "These commands are used to build the CLI. They are not intended to be used otherwise.",
-			Commands: CommandSet{
+			Commands: Commands{
 				{
 					Command:     "plugins",
 					Description: "installs core plugins",

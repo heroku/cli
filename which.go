@@ -1,10 +1,10 @@
 package main
 
 func init() {
-	Topics = append(Topics, &Topic{
+	topics = append(topics, &Topic{
 		Name:   "which",
 		Hidden: true,
-		Commands: CommandSet{
+		Commands: Commands{
 			{
 				Topic: "which",
 				Args:  []Arg{{Name: "command"}},

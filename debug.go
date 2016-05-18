@@ -6,11 +6,11 @@ import (
 )
 
 func init() {
-	Topics = append(Topics, TopicSet{
+	topics = append(topics, Topics{
 		{
 			Name:   "debug",
 			Hidden: true,
-			Commands: CommandSet{
+			Commands: Commands{
 				{
 					Topic:   "debug",
 					Command: "errlog",

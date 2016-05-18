@@ -6,10 +6,10 @@ import (
 )
 
 func init() {
-	Topics = append(Topics, &Topic{
+	topics = append(topics, &Topic{
 		Name:   "version",
 		Hidden: true,
-		Commands: CommandSet{
+		Commands: Commands{
 			{
 				Topic:            "version",
 				Description:      "print the version",
