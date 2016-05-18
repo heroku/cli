@@ -436,6 +436,7 @@ func (p *Plugins) MigrateRubyPlugins() {
 	pluginMap := map[string]string{
 		"heroku-config": "heroku-config",
 		"heroku-oauth":  "heroku-cli-oauth",
+		"heroku-vim":    "heroku-vim",
 	}
 	for _, ruby := range RubyPlugins() {
 		plugin := pluginMap[ruby]
