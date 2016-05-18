@@ -105,9 +105,8 @@ func SubmitAnalytics() {
 		for _, plugin := range UserPlugins.Plugins() {
 			plugins[plugin.Name] = plugin.Version
 		}
-		dirs, _ := ioutil.ReadDir(filepath.Join(HomeDir, ".heroku", "plugins"))
-		for _, dir := range dirs {
-			plugins[dir.Name()] = "ruby"
+		for _, p := range RubyPlugins() {
+			plugins[p] = "ruby"
 		}
 		return plugins
 	}
