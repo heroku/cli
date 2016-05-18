@@ -30,9 +30,8 @@ class Dyno {
    * @returns {Promise} promise resolved when dyno process is created
    */
   start () {
-    this._updateStatus()
     let command = this.opts['exit-code'] ? `${this.opts.command}; echo heroku-command-exit-status $?` : this.opts.command
-    return this.heroku.request({
+    return cli.action(`Running ${cli.color.cyan.bold(this.opts.command)} on ${cli.color.app(this.opts.app)}`, {success: false}, this.heroku.request({
       path: `/apps/${this.opts.app}/dynos`,
       method: 'POST',
       body: {
@@ -46,8 +45,8 @@ class Dyno {
     .then(dyno => {
       this.dyno = dyno
       if (this.opts.attach) return this.attach()
-      else this._updateStatus('done', true)
-    })
+      else cli.action.update(this._status('done'))
+    }))
   }
 
   /**
@@ -55,7 +54,7 @@ class Dyno {
    */
   attach () {
     return new Promise((resolve, reject) => {
-      this._updateStatus('starting')
+      cli.action.update(this._status('starting'))
       this.resolve = resolve
       this.reject = reject
       let uri = url.parse(this.dyno.attach_url)
@@ -63,7 +62,7 @@ class Dyno {
       c.setTimeout(1000 * 60 * 20)
       c.setEncoding('utf8')
       c.on('connect', () => {
-        c.write(uri.path.substr(1) + '\r\n', () => this._updateStatus('connecting'))
+        c.write(uri.path.substr(1) + '\r\n', () => cli.action.update(this._status('connecting')))
       })
       c.on('data', this._readData(c))
       c.on('close', () => {
@@ -85,17 +84,8 @@ class Dyno {
     return c
   }
 
-  _updateStatus (status, stop) {
-    let msg = `Running ${cli.color.cyan.bold(this.opts.command)} on ${cli.color.app(this.opts.app)}... `
-    if (status) msg += `${cli.color.blue(status)}, ${this.dyno.name}`
-    if (!this.spinner) {
-      this.spinner = new cli.Spinner({text: msg})
-      this.spinner.start()
-    } else this.spinner.update(msg)
-    if (stop) {
-      this.spinner.stop()
-      cli.console.error()
-    }
+  _status (status) {
+    return `Running ${cli.color.cyan.bold(this.opts.command)} on ${cli.color.app(this.opts.app)}... ${cli.color.blue(status)}, ${this.dyno.name}`
   }
 
   _readData (c) {
@@ -103,7 +93,9 @@ class Dyno {
     return data => {
       // discard first line
       if (firstLine) {
-        this._updateStatus('up', true)
+        cli.action.update(this._status('up'))
+        cli.action.task.spinner.stop()
+        cli.console.error()
         firstLine = false
         this._readStdin(c)
         return
