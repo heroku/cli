@@ -2,9 +2,12 @@
 
 const co = require('co')
 const cli = require('heroku-cli-util')
+const _ = require('lodash')
 
 function * run (context, heroku) {
   let sessions = yield heroku.get('/oauth/sessions')
+  sessions = _.sortBy(sessions, 'description')
+
   if (context.flags.json) {
     cli.styledJSON(sessions)
   } else if (sessions.length === 0) {
