@@ -14,3 +14,5 @@ exports.commands = [
   require('./commands/detached'),
   require('./commands/logs')
 ]
+
+exports.Dyno = require('./lib/dyno')
