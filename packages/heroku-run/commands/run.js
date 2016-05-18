@@ -13,13 +13,13 @@ function * run (context, heroku) {
     size: context.flags.size,
     'exit-code': context.flags['exit-code'],
     env: context.flags.env,
-    'no-tty': context.flags['no-tty']
+    'no-tty': context.flags['no-tty'],
+    attach: true
   }
   if (!opts.command) throw new Error('Usage: heroku run COMMAND\n\nExample: heroku run bash')
 
   let dyno = new Dyno(opts)
   yield dyno.start()
-  yield dyno.attach()
 }
 
 module.exports = {
@@ -40,8 +40,8 @@ Examples:
   needsApp: true,
   flags: [
     {name: 'size', char: 's', description: 'dyno size', hasValue: true},
-    {name: 'exit-code', description: 'passthrough the exit code of the remote command'},
-    {name: 'env', description: "environment variables to set (use ';' to split multiple vars)", hasValue: true},
+    {name: 'exit-code', char: 'x', description: 'passthrough the exit code of the remote command'},
+    {name: 'env', char: 'e', description: "environment variables to set (use ';' to split multiple vars)", hasValue: true},
     {name: 'no-tty', description: 'force the command to not run in a tty', hasValue: false}
   ],
   run: cli.command(co.wrap(run))

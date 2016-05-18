@@ -4,33 +4,29 @@ let co = require('co')
 let cli = require('heroku-cli-util')
 let helpers = require('../lib/helpers')
 let logDisplayer = require('../lib/log_displayer')
-
-function startDyno (heroku, app, size, command, envFlag) {
-  return heroku.apps(app).dynos().create({
-    command: command,
-    attach: false,
-    size: size,
-    env: envFlag ? helpers.buildEnvFromFlag(envFlag) : {}
-  })
-}
+let Dyno = require('../lib/dyno')
 
 function * run (context, heroku) {
-  let command = helpers.buildCommand(context.args)
-  if (!command) {
-    cli.error('Usage: heroku run COMMAND\n\nExample: heroku run bash')
-    process.exit(1)
+  let opts = {
+    heroku: heroku,
+    app: context.app,
+    command: helpers.buildCommand(context.args),
+    size: context.flags.size,
+    env: context.flags.env,
+    attach: false
   }
-  let p = startDyno(heroku, context.app, context.flags.size, command, context.flags.env)
-  let dyno = yield cli.action(`Running ${cli.color.cyan.bold(command)} on ${context.app}`, {success: false}, p)
-  cli.console.error(` up, ${dyno.name}`)
+  if (!opts.command) throw new Error('Usage: heroku run COMMAND\n\nExample: heroku run bash')
+  let dyno = new Dyno(opts)
+  yield dyno.start()
+
   if (context.flags.tail) {
     yield logDisplayer(heroku, {
       app: context.app,
-      dyno: dyno.name,
+      dyno: dyno.dyno.name,
       tail: true
     })
   } else {
-    cli.log(`Run ${cli.color.cyan.bold('heroku logs --app ' + dyno.app.name + ' --dyno ' + dyno.name)} to view the output.`)
+    cli.log(`Run ${cli.color.cmd('heroku logs --app ' + dyno.opts.app + ' --dyno ' + dyno.dyno.name)} to view the output.`)
   }
 }
 
@@ -51,7 +47,7 @@ Example:
   flags: [
     {name: 'size', char: 's', description: 'dyno size', hasValue: true},
     {name: 'tail', char: 't', description: 'stream logs from the dyno'},
-    {name: 'env', description: "environment variables to set (use ';' to split multiple vars)", hasValue: true}
+    {name: 'env', char: 'e', description: "environment variables to set (use ';' to split multiple vars)", hasValue: true}
   ],
   run: cli.command(co.wrap(run))
 }

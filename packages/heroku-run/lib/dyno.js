@@ -15,6 +15,7 @@ class Dyno {
    * @param {boolean} options.exit-code - get exit code from process
    * @param {string} options.command - command to run
    * @param {string} options.app - app to run dyno on
+   * @param {string} options.attach - attach to dyno
    * @param {string} options.size - size of dyno to create
    * @param {boolean} options.no-tty - force not to use a tty
    * @param {Object} options.env - dyno environment variables
@@ -36,13 +37,17 @@ class Dyno {
       method: 'POST',
       body: {
         command: command,
-        attach: true,
+        attach: this.opts.attach,
         size: this.opts.size,
         env: this._env(),
         force_no_tty: this.opts['no-tty']
       }
     })
-    .then(dyno => { this.dyno = dyno })
+    .then(dyno => {
+      this.dyno = dyno
+      if (this.opts.attach) return this.attach()
+      else this._updateStatus('done', true)
+    })
   }
 
   /**
