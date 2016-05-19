@@ -37,7 +37,7 @@
   "repository": "https://github.com/heroku/heroku-cli-addons",
   "scripts": {
     "coverage": "nyc report --reporter=text-lcov | codeclimate-test-reporter && nyc report --reporter=text-lcov | coveralls",
-    "postversion": "git push && git push --tags",
+    "postversion": "npm publish && git push && git push --tags",
     "preversion": "npm test",
     "test": "nyc mocha && standard"
   }
