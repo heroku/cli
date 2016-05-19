@@ -9,7 +9,12 @@
   "dependencies": {
     "co": "4.6.0",
     "heroku-cli-util": "5.10.10",
-    "lodash": "4.11.1",
+    "lodash.groupby": "4.4.0",
+    "lodash.memoize": "4.1.0",
+    "lodash.merge": "4.4.0",
+    "lodash.some": "4.4.0",
+    "lodash.sortby": "4.5.0",
+    "lodash.values": "4.1.0",
     "printf": "0.2.3"
   },
   "devDependencies": {
@@ -19,9 +24,9 @@
     "heroku-client": "2.4.3",
     "mocha": "^2.2.5",
     "nock": "8.0.0",
-    "nyc": "6.4.0",
-    "snazzy": "3.0.1",
-    "standard": "6.0.8",
+    "nyc": "6.4.4",
+    "standard": "7.1.0",
+    "time-require": "0.1.2",
     "unexpected": "10.13.2"
   },
   "homepage": "https://github.com/heroku/heroku-cli-addons",
@@ -35,6 +40,6 @@
     "coverage": "nyc report --reporter=text-lcov | codeclimate-test-reporter && nyc report --reporter=text-lcov | coveralls",
     "postversion": "git push && git push --tags",
     "preversion": "npm test",
-    "test": "nyc mocha && standard | snazzy"
+    "test": "nyc mocha && standard"
   }
 }

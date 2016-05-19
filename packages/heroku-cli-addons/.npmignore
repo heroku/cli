@@ -1,1 +1,4 @@
 test
+.nyc_output
+coverage
+circle.yml

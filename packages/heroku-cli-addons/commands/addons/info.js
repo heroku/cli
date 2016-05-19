@@ -2,12 +2,12 @@
 
 let cli = require('heroku-cli-util')
 let co = require('co')
-let resolve = require('../../lib/resolve')
 
 let formatPrice = require('../../lib/util').formatPrice
 let style = require('../../lib/util').style
 
 let run = cli.command({preauth: true}, function (ctx, api) {
+  const resolve = require('../../lib/resolve')
   return co(function * () {
     let addon = yield resolve.addon(api, ctx.app, ctx.args.addon, {'Accept-Expansion': 'addon_service,plan'})
 

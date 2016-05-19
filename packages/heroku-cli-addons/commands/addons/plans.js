@@ -1,13 +1,14 @@
 'use strict'
 
-let cli = require('heroku-cli-util')
-let co = require('co')
-let _ = require('lodash')
-let util = require('../../lib/util')
+const cli = require('heroku-cli-util')
+const co = require('co')
 
 function * run (context, heroku) {
+  const util = require('../../lib/util')
+  const sortBy = require('lodash.sortby')
+
   let plans = yield heroku.get(`/addon-services/${context.args.service}/plans`)
-  plans = _.sortBy(plans, 'price.cents')
+  plans = sortBy(plans, 'price.cents')
 
   if (context.flags.json) {
     cli.styledJSON(plans)

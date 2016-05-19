@@ -1,8 +1,6 @@
 'use strict'
 
-let cli = require('heroku-cli-util')
-let merge = require('lodash').merge
-let printf = require('printf')
+const cli = require('heroku-cli-util')
 
 let styles = {
   app: 'cyan',
@@ -18,12 +16,16 @@ module.exports = {
   },
 
   table: function (data, options) {
+    const merge = require('lodash.merge')
+
     return cli.table(data, merge(options, {
       printLine: cli.log
     }))
   },
 
   formatPrice: function (price) {
+    const printf = require('printf')
+
     if (!price) return
     if (price.cents === 0) return 'free'
 

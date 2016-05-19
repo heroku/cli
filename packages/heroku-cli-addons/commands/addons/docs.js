@@ -2,9 +2,10 @@
 
 let cli = require('heroku-cli-util')
 let co = require('co')
-let resolve = require('../../lib/resolve')
 
 function * run (context, heroku) {
+  const resolve = require('../../lib/resolve')
+
   let id = context.args.addon.split(':')[0]
   let addon = yield heroku.get(`/addon-services/${encodeURIComponent(id)}`).catch(() => null)
   if (!addon) addon = (yield resolve.addon(heroku, context.app, id)).addon_service

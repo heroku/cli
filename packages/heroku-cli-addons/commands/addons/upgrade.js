@@ -1,10 +1,7 @@
 'use strict'
 
-let cli = require('heroku-cli-util')
-let co = require('co')
-let _ = require('lodash')
-let resolver = require('../../lib/resolve')
-let util = require('../../lib/util')
+const cli = require('heroku-cli-util')
+const co = require('co')
 
 let context
 let heroku
@@ -23,10 +20,12 @@ ${cli.color.cyan('https://devcenter.heroku.com/articles/managing-add-ons')}`)
 }
 
 function handlePlanChangeAPIError (err) {
+  const sortBy = require('lodash.sortby')
+
   if (err.statusCode === 422 && err.body.message && err.body.message.startsWith("Couldn't find either the add-on")) {
     return heroku.get(`/addon-services/${service}/plans`)
       .then((plans) => {
-        plans = _.sortBy(plans, 'price.cents').map((plans) => plans.name)
+        plans = sortBy(plans, 'price.cents').map((plans) => plans.name)
         throw new Error(`${err.body.message}
 
 Here are the available plans for ${cli.color.yellow(service)}:
@@ -58,6 +57,9 @@ ${cli.color.cyan('https://devcenter.heroku.com/articles/managing-add-ons')}`)
 }
 
 function * run (c, h) {
+  const resolver = require('../../lib/resolve')
+  const util = require('../../lib/util')
+
   context = c
   heroku = h
   app = context.app

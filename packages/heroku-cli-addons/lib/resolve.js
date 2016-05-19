@@ -1,8 +1,8 @@
 'use strict'
 
-let _ = require('lodash')
+const memoize = require('lodash.memoize')
 
-exports.addon = _.memoize(function (heroku, app, id, headers) {
+exports.addon = memoize(function (heroku, app, id, headers) {
   let getAddon = function (id) {
     return heroku.request({
       path: `/addons/${encodeURIComponent(id)}`,
