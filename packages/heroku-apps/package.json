@@ -35,7 +35,8 @@
     "rimraf": "2.5.2",
     "snazzy": "4.0.0",
     "standard": "7.0.1",
-    "unexpected": "10.13.2"
+    "unexpected": "10.13.2",
+    "time-require": "0.1.2"
   },
   "homepage": "https://github.com/heroku/heroku-apps",
   "keywords": [
