@@ -8,7 +8,7 @@ let run = cli.command({preauth: true}, function (ctx, api) {
     let addon = yield api.get(`/addons/${ctx.args.addon}`)
     let addonUrl = `/apps/${addon.app.id}/addons/${addon.id}`
 
-    yield api.patch(addonUrl, {name: ctx.args.name})
+    yield api.patch(addonUrl, {body: {name: ctx.args.name}})
 
     let oldName = ctx.args.addon
     let newName = cli.color.magenta(ctx.args.name)

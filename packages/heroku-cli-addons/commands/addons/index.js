@@ -21,11 +21,7 @@ function * run (ctx, api) {
     let attachments, addons
 
     if (app) { // don't disploy attachments globally
-      addons = api.request({
-        method: 'GET',
-        path: `/apps/${app}/addons`,
-        headers: {'Accept-Expansion': 'addon_service,plan'}
-      })
+      addons = api.get(`/apps/${app}/addons`, {headers: {'Accept-Expansion': 'addon_service,plan'}})
 
       let sudoHeaders = JSON.parse(process.env.HEROKU_HEADERS || '{}')
       if (sudoHeaders['X-Heroku-Sudo'] && !sudoHeaders['X-Heroku-Sudo-User']) {
@@ -39,7 +35,7 @@ function * run (ctx, api) {
       } else {
         // In order to display all foreign attachments, we'll get out entire
         // attachment list
-        attachments = api.addonAttachments().list()
+        attachments = api.get('/addon-attachments')
       }
     } else {
       addons = api.request({
