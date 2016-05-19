@@ -25,8 +25,7 @@ function * run (context, heroku) {
     if (err.exitCode) {
       cli.error(err)
       process.exit(err.exitCode)
-    }
-    throw err
+    } else throw err
   }
 }
 

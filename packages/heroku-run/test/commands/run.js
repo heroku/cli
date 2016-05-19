@@ -28,7 +28,9 @@ describe('run', () => {
   })
 
   it('gets 127 status for invalid command', () => {
-    return expect(cmd.run({app: 'heroku-run-test-app', flags: {'exit-code': true}, auth: {password: apikey}, args: ['invalid-command']})
-                  , 'to be rejected with', 'Process exited with code 127')
+    let code
+    process.exit = c => { code = c }
+    return cmd.run({app: 'heroku-run-test-app', flags: {'exit-code': true}, auth: {password: apikey}, args: ['invalid-command']})
+    .then(() => expect(code, 'to equal', 127))
   })
 })
