@@ -1,16 +1,17 @@
 'use strict'
 
-let cli = require('heroku-cli-util')
-let co = require('co')
-let _ = require('lodash')
-let S = require('string')
+const cli = require('heroku-cli-util')
+const co = require('co')
 
 function printJSON (features) {
   cli.log(JSON.stringify(features, null, 2))
 }
 
 function printFeatures (features) {
-  features = _.sortBy(features, 'name')
+  const sortBy = require('lodash.sortby')
+  const S = require('string')
+
+  features = sortBy(features, 'name')
   let longest = Math.max.apply(null, features.map((f) => f.name.length))
   for (let f of features) {
     let line = `${f.enabled ? '[+]' : '[ ]'} ${S(f.name).padRight(longest)}`

@@ -1,11 +1,13 @@
 'use strict'
 
-let cli = require('heroku-cli-util')
-let co = require('co')
-let extend = require('util')._extend
-let _ = require('lodash')
+const cli = require('heroku-cli-util')
+const co = require('co')
 
 function * run (context, heroku) {
+  const reduce = require('lodash.reduce')
+  const pickBy = require('lodash.pickby')
+  const mapKeys = require('lodash.mapkeys')
+
   function lastRelease () {
     return heroku.request({
       method: 'GET',
@@ -15,7 +17,7 @@ function * run (context, heroku) {
     }).then((releases) => releases[0])
   }
 
-  let vars = _.reduce(context.args, function (vars, v) {
+  let vars = reduce(context.args, function (vars, v) {
     let idx = v.indexOf('=')
     if (idx === -1) {
       cli.error(`${cli.color.cyan(v)} is invalid. Must be in the format ${cli.color.cyan('FOO=bar')}.`)
@@ -43,8 +45,8 @@ function * run (context, heroku) {
 
   cli.console.error(`done, ${cli.color.release('v' + release.version)}`)
 
-  config = _.pickBy(config, (_, k) => vars[k])
-  config = _.mapKeys(config, (_, k) => cli.color.green(k))
+  config = pickBy(config, (_, k) => vars[k])
+  config = mapKeys(config, (_, k) => cli.color.green(k))
   cli.styledObject(config)
 }
 
@@ -70,5 +72,5 @@ let cmd = {
 }
 
 module.exports.set = cmd
-module.exports.add = extend({}, cmd)
+module.exports.add = Object.assign({}, cmd)
 module.exports.add.command = 'add'

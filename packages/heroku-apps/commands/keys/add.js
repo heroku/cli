@@ -2,7 +2,6 @@
 
 const co = require('co')
 const cli = require('heroku-cli-util')
-const inquirer = require('inquirer')
 const util = require('../../lib/util')
 const os = require('os')
 
@@ -14,21 +13,22 @@ function sshKeygen (file, quiet) {
   })
 }
 
-function confirmPrompt (message) {
-  if (process.stdin.isTTY) {
-    return inquirer.prompt([{
-      type: 'confirm',
-      name: 'yes',
-      message: message
-    }])
-  } else {
-    return cli.prompt(message + ' [Y/n]').then(function (data) {
-      return {yes: /^y(es)?/i.test(data)}
-    })
-  }
-}
-
 function * run (context, heroku) {
+  const inquirer = require('inquirer')
+  function confirmPrompt (message) {
+    if (process.stdin.isTTY) {
+      return inquirer.prompt([{
+        type: 'confirm',
+        name: 'yes',
+        message: message
+      }])
+    } else {
+      return cli.prompt(message + ' [Y/n]').then(function (data) {
+        return {yes: /^y(es)?/i.test(data)}
+      })
+    }
+  }
+
   let fs = require('mz/fs')
   let path = require('path')
 

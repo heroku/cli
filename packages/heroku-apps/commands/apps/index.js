@@ -1,10 +1,12 @@
 'use strict'
 
-let co = require('co')
-let cli = require('heroku-cli-util')
-let _ = require('lodash')
+const co = require('co')
+const cli = require('heroku-cli-util')
 
 function * run (context, heroku) {
+  const sortBy = require('lodash.sortby')
+  const partition = require('lodash.partition')
+
   let org = (!context.flags.personal && context.org) ? context.org : null
   let space = context.flags.space
   if (space) org = (yield heroku.get(`/spaces/${space}`)).organization.name
@@ -37,7 +39,7 @@ function * run (context, heroku) {
       cli.styledHeader(`Apps in organization ${cli.color.magenta(org)}`)
       listApps(apps)
     } else {
-      apps = _.partition(apps, (app) => app.owner.email === user.email)
+      apps = partition(apps, (app) => app.owner.email === user.email)
       if (apps[0].length > 0) {
         cli.styledHeader(`${cli.color.cyan(user.email)} Apps`)
         listApps(apps[0])
@@ -60,7 +62,7 @@ function * run (context, heroku) {
     apps: org ? heroku.get(`/organizations/${org}/apps`) : heroku.get('/apps'),
     user: heroku.get('/account')
   }
-  let apps = _.sortBy(requests.apps, 'name')
+  let apps = sortBy(requests.apps, 'name')
   if (!context.flags.all && !org && !space) apps = apps.filter(isNotOrgApp)
   if (space) apps = apps.filter((a) => a.space && (a.space.name === space || a.space.id === space))
 

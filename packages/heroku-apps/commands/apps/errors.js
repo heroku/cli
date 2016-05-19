@@ -1,9 +1,7 @@
 'use strict'
 
-let co = require('co')
-let cli = require('heroku-cli-util')
-let _ = require('lodash')
-let errorInfo = require('../../lib/error_info.json')
+const co = require('co')
+const cli = require('heroku-cli-util')
 
 let colorize = (level, s) => {
   switch (level) {
@@ -19,6 +17,8 @@ let colorize = (level, s) => {
 }
 
 function buildErrorTable (errors, source) {
+  const errorInfo = require('../../lib/error_info.json')
+
   return Object.keys(errors).map((name) => {
     let count = errors[name]
     let info = errorInfo.find((e) => e.name === name)
@@ -27,6 +27,9 @@ function buildErrorTable (errors, source) {
 }
 
 function * run (context, heroku) {
+  const sum = require('lodash.sum')
+  const fromPairs = require('lodash.frompairs')
+
   const hours = parseInt(context.flags.hours) || 24
   const NOW = new Date().toISOString()
   const YESTERDAY = new Date(new Date().getTime() - (hours * 60 * 60 * 1000)).toISOString()
@@ -38,7 +41,7 @@ function * run (context, heroku) {
       path: `/apps/${context.app}/router-metrics/errors?${DATE}&process_type=web`,
       headers: {Range: ''}
     }).then((rsp) => {
-      Object.keys(rsp.data).forEach((key) => { rsp.data[key] = _.sum(rsp.data[key]) })
+      Object.keys(rsp.data).forEach((key) => { rsp.data[key] = sum(rsp.data[key]) })
       return rsp.data
     })
   }
@@ -49,7 +52,7 @@ function * run (context, heroku) {
       path: `/apps/${context.app}/formation/${type}/metrics/errors?${DATE}`,
       headers: {Range: ''}
     }).then((rsp) => {
-      Object.keys(rsp.data).forEach((key) => { rsp.data[key] = _.sum(rsp.data[key]) })
+      Object.keys(rsp.data).forEach((key) => { rsp.data[key] = sum(rsp.data[key]) })
       return rsp.data
     })
   }
@@ -59,7 +62,7 @@ function * run (context, heroku) {
   let showDyno = context.flags.dyno || !context.flags.router
   let showRouter = context.flags.router || !context.flags.dyno
   let errors = yield {
-    dyno: showDyno ? _.fromPairs(types.map((type) => [type, dynoErrors(type)])) : {},
+    dyno: showDyno ? fromPairs(types.map((type) => [type, dynoErrors(type)])) : {},
     router: showRouter ? routerErrors() : {}
   }
 

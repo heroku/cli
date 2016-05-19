@@ -1,10 +1,10 @@
 'use strict'
 
-let cli = require('heroku-cli-util')
-let co = require('co')
-let bluebird = require('bluebird')
+const cli = require('heroku-cli-util')
+const co = require('co')
 
 function * run (context, heroku) {
+  const bluebird = require('bluebird')
   yield cli.action(`Removing all domains from ${cli.color.app(context.app)}`, co(function * () {
     let domains = yield heroku.request({path: `/apps/${context.app}/domains`})
     domains = domains.filter((d) => d.kind === 'custom')

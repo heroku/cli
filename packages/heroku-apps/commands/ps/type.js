@@ -12,7 +12,8 @@ https://devcenter.heroku.com/articles/procfile`)
 }
 
 function * run (context, heroku) {
-  let _ = require('lodash')
+  const compact = require('lodash.compact')
+  const sortBy = require('lodash.sortby')
 
   let app = context.app
 
@@ -20,7 +21,7 @@ function * run (context, heroku) {
     if (args.length === 0) return []
     let formation = yield heroku.get(`/apps/${app}/formation`)
     if (args.find((a) => a.match(/=/))) {
-      return _.compact(args.map((arg) => {
+      return compact(args.map((arg) => {
         let match = arg.match(/^([a-zA-Z0-9_]+)=([\w-]+)$/)
         let type = match[1]
         let size = match[2]
@@ -37,7 +38,7 @@ Types: ${cli.color.yellow(formation.map((f) => f.type).join(', '))}`)
 
   let displayFormation = co.wrap(function * () {
     let formation = yield heroku.get(`/apps/${app}/formation`)
-    formation = _.sortBy(formation, 'type')
+    formation = sortBy(formation, 'type')
     formation = formation.map((d) => ({
       type: cli.color.green(d.type),
       size: cli.color.cyan(d.size),

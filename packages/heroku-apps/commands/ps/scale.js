@@ -10,11 +10,11 @@ https://devcenter.heroku.com/articles/procfile`)
 }
 
 function * run (context, heroku) {
-  let _ = require('lodash')
+  const compact = require('lodash.compact')
   let app = context.app
 
   function parse (args) {
-    return _.compact(args.map((arg) => {
+    return compact(args.map((arg) => {
       let change = arg.match(/^([a-zA-Z0-9_]+)([=+-]\d+)(?::([\w-]+))?$/)
       if (!change) return
       let quantity = change[2][0] === '=' ? change[2].substr(1) : change[2]

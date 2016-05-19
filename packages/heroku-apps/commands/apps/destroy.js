@@ -1,11 +1,11 @@
 'use strict'
 
-let co = require('co')
-let cli = require('heroku-cli-util')
-let _ = require('lodash')
+const co = require('co')
+const cli = require('heroku-cli-util')
 
 function * run (context, heroku) {
-  let git = require('../../lib/git')(context)
+  const _ = require('lodash')
+  const git = require('../../lib/git')(context)
 
   let app = context.args.app || context.app
   if (!app) throw new Error('No app specified.\nUSAGE: heroku apps:destroy APPNAME')

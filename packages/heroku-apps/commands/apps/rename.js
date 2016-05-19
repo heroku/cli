@@ -1,10 +1,11 @@
 'use strict'
 
-let co = require('co')
-let cli = require('heroku-cli-util')
-let _ = require('lodash')
+const co = require('co')
+const cli = require('heroku-cli-util')
 
 function * run (context, heroku) {
+  const _ = require('lodash')
+
   let git = require('../../lib/git')(context)
 
   let oldApp = context.app

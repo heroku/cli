@@ -1,21 +1,23 @@
 'use strict'
 
-let cli = require('heroku-cli-util')
-let co = require('co')
-let _ = require('lodash')
-let shellescape = require('shell-escape')
+const cli = require('heroku-cli-util')
+const co = require('co')
 
 function * run (context, heroku) {
+  const shellescape = require('shell-escape')
+  const forEach = require('lodash.foreach')
+  const mapKeys = require('lodash.mapkeys')
+
   let configVars = yield heroku.request({path: `/apps/${context.app}/config-vars`})
   if (context.flags.shell) {
-    _.forEach(configVars, function (v, k) {
+    forEach(configVars, function (v, k) {
       cli.log(`${k}=${shellescape([v])}`)
     })
   } else if (context.flags.json) {
     cli.styledJSON(configVars)
   } else {
     cli.styledHeader(`${context.app} Config Vars`)
-    cli.styledObject(_.mapKeys(configVars, (_, k) => cli.color.configVar(k)))
+    cli.styledObject(mapKeys(configVars, (_, k) => cli.color.configVar(k)))
   }
 }
 

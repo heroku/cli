@@ -1,12 +1,13 @@
 'use strict'
 
-let cli = require('heroku-cli-util')
-let co = require('co')
-let _ = require('lodash')
+const cli = require('heroku-cli-util')
+const co = require('co')
 
 function * run (context, heroku) {
+  const sortBy = require('lodash.sortBy')
+
   let regions = yield heroku.get('/regions')
-  regions = _.sortBy(regions, ['private_capable', 'name'])
+  regions = sortBy(regions, ['private_capable', 'name'])
   if (context.flags.json) {
     cli.log(JSON.stringify(regions, 0, 2))
   } else {

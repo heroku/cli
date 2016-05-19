@@ -1,11 +1,11 @@
 'use strict'
 
-let cli = require('heroku-cli-util')
-let co = require('co')
-let _ = require('lodash')
-let extend = require('util')._extend
+const cli = require('heroku-cli-util')
+const co = require('co')
 
 function * run (context, heroku) {
+  const reduce = require('lodash.reduce')
+
   function lastRelease () {
     return heroku.request({
       method: 'GET',
@@ -28,7 +28,7 @@ function * run (context, heroku) {
       method: 'patch',
       path: `/apps/${context.app}/config-vars`,
       // body will be like {FOO: null, BAR: null}
-      body: _.reduce(context.args, (vars, v) => { vars[v] = null; return vars }, {})
+      body: reduce(context.args, (vars, v) => { vars[v] = null; return vars }, {})
     })
     release = yield lastRelease()
   }))
@@ -55,5 +55,5 @@ let cmd = {
 }
 
 module.exports.unset = cmd
-module.exports.remove = extend({}, cmd)
+module.exports.remove = Object.assign({}, cmd)
 module.exports.remove.command = 'remove'

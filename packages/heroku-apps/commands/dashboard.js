@@ -1,37 +1,49 @@
 'use strict'
 
-let co = require('co')
-let cli = require('heroku-cli-util')
-let time = require('../lib/time')
-let _ = require('lodash')
+const co = require('co')
+const cli = require('heroku-cli-util')
 
 let empty = (o) => Object.keys(o).length === 0
 
 function displayFormation (formation) {
-  formation = _.groupBy(formation, 'size')
-  formation = _.map(formation, (p, size) => `${bold(_.sumBy(p, 'quantity'))} | ${size}`)
+  const groupBy = require('lodash.groupby')
+  const map = require('lodash.map')
+  const sumBy = require('lodash.sumby')
+
+  formation = groupBy(formation, 'size')
+  formation = map(formation, (p, size) => `${bold(sumBy(p, 'quantity'))} | ${size}`)
   cli.log(`  ${label('Dynos:')} ${formation.join(', ')}`)
 }
 
 function displayErrors (metrics) {
+  const toPairs = require('lodash.topairs')
+  const sum = require('lodash.sum')
+
   let errors = []
   if (metrics.routerErrors) {
-    errors = errors.concat(_.toPairs(metrics.routerErrors.data).map((e) => cli.color.red(`${_.sum(e[1])} ${e[0]}`)))
+    errors = errors.concat(toPairs(metrics.routerErrors.data).map((e) => cli.color.red(`${sum(e[1])} ${e[0]}`)))
   }
   if (metrics.dynoErrors) {
     metrics.dynoErrors.filter((d) => d).forEach((dynoErrors) => {
-      errors = errors.concat(_.toPairs(dynoErrors.data).map((e) => cli.color.red(`${_.sum(e[1])} ${e[0]}`)))
+      errors = errors.concat(toPairs(dynoErrors.data).map((e) => cli.color.red(`${sum(e[1])} ${e[0]}`)))
     })
   }
   if (errors.length > 0) cli.log(`  ${label('Errors:')} ${errors.join(dim(', '))} (see details with ${cli.color.cmd('heroku apps:errors')})`)
 }
 
 function displayMetrics (metrics) {
+  const flatten = require('lodash.flatten')
+  const mean = require('lodash.mean')
+  const pad = require('lodash.pad')
+  const round = require('lodash.round')
+  const sum = require('lodash.sum')
+  const values = require('lodash.values')
+
   function rpmSparkline () {
     if (process.platform === 'win32') return
     let sparkline = require('sparkline')
     let points = []
-    _.values(metrics.routerStatus.data).forEach((cur) => {
+    values(metrics.routerStatus.data).forEach((cur) => {
       for (let i = 0; i < cur.length; i++) {
         let j = Math.floor(i / 3)
         points[j] = (points[j] || 0) + cur[i]
@@ -43,10 +55,10 @@ function displayMetrics (metrics) {
   let ms = ''
   let rpm = ''
   if (metrics.routerLatency && !empty(metrics.routerLatency.data)) {
-    ms = _.pad(`${_.round(_.mean(metrics.routerLatency.data.latency_p50))} ms`, 6)
+    ms = pad(`${round(mean(metrics.routerLatency.data.latency_p50))} ms`, 6)
   }
   if (metrics.routerStatus && !empty(metrics.routerStatus.data)) {
-    rpm = `${_.round(_.sum(_.flatten(_.values(metrics.routerStatus.data))) / 24 / 60)} rpm ${rpmSparkline()}`
+    rpm = `${round(sum(flatten(values(metrics.routerStatus.data))) / 24 / 60)} rpm ${rpmSparkline()}`
   }
   if (rpm || ms) cli.log(`  ${label('Metrics:')} ${ms}${rpm}`)
 }
@@ -64,9 +76,12 @@ let bold = (s) => cli.color.bold(s)
 let label = (s) => cli.color.blue(s)
 
 function displayApps (apps, appsMetrics) {
+  const zip = require('lodash.zip')
+  const time = require('../lib/time')
+
   let owner = (owner) => owner.email.endsWith('@herokumanager.com') ? owner.email.split('@')[0] : owner.email
 
-  for (let a of _.zip(apps, appsMetrics)) {
+  for (let a of zip(apps, appsMetrics)) {
     cli.log()
     let app = a[0]
     let metrics = a[1]
@@ -83,6 +98,8 @@ function displayApps (apps, appsMetrics) {
 }
 
 function * run (context, heroku) {
+  const sortBy = require('lodash.sortby')
+
   function favoriteApps () {
     return heroku.request({
       host: 'longboard.heroku.com',
@@ -132,7 +149,7 @@ function * run (context, heroku) {
 
   cli.log(`
 See all add-ons with ${cli.color.cmd('heroku addons')}`)
-  let sampleOrg = _.sortBy(data.orgs.filter((o) => o.role !== 'collaborator'), (o) => new Date(o.created_at))[0]
+  let sampleOrg = sortBy(data.orgs.filter((o) => o.role !== 'collaborator'), (o) => new Date(o.created_at))[0]
   if (sampleOrg) cli.log(`See all apps in ${cli.color.yellow.dim(sampleOrg.name)} with ${cli.color.cmd('heroku apps --org ' + sampleOrg.name)}`)
   cli.log(`See all apps with ${cli.color.cmd('heroku apps --all')}`)
   displayNotifications(data.notifications)

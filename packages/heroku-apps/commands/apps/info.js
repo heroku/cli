@@ -1,14 +1,14 @@
 'use strict'
 
-let _ = require('lodash')
-let S = require('string')
-let co = require('co')
-let cli = require('heroku-cli-util')
-let extend = require('util')._extend
-let filesize = require('filesize')
-let util = require('util')
+const co = require('co')
+const cli = require('heroku-cli-util')
 
 function * run (context, heroku) {
+  const filesize = require('filesize')
+  const util = require('util')
+  const S = require('string')
+  const countBy = require('lodash.countby')
+
   function getInfo (app) {
     return {
       addons: heroku.apps(app).addons().listByApp(),
@@ -22,8 +22,8 @@ function * run (context, heroku) {
   let app = context.args.app || context.app
   if (!app) throw new Error('No app specified.\nUSAGE: heroku info my-app')
   let info = yield getInfo(app)
-  let addons = _(info.addons).map('plan.name').sort().value()
-  let collaborators = _(info.collaborators).map('user.email').pull(info.app.owner.email).sort().value()
+  let addons = info.addons.map(a => a.plan.name).sort()
+  let collaborators = info.collaborators.map(c => c.user.email).filter(c => c !== info.app.owner.email).sort()
 
   function print () {
     let data = {}
@@ -44,7 +44,7 @@ function * run (context, heroku) {
     data['Slug Size'] = filesize(info.app.slug_size, {round: 0})
     data['Owner'] = info.app.owner.email
     data['Region'] = info.app.region.name
-    data['Dynos'] = _(info.dynos).countBy('type').value()
+    data['Dynos'] = countBy(info.dynos, 'type')
     data['Stack'] = info.app.stack.name
 
     cli.styledHeader(info.app.name)
@@ -76,7 +76,7 @@ function * run (context, heroku) {
     print('slug_size', filesize(info.app.slug_size, {round: 0}))
     print('owner', info.app.owner.email)
     print('region', info.app.region.name)
-    print('dynos', util.inspect(_(info.dynos).countBy('type').value()))
+    print('dynos', util.inspect(countBy(info.dynos, 'type')))
     print('stack', info.app.stack.name)
   }
 
@@ -117,6 +117,6 @@ let cmd = {
 }
 
 module.exports.apps = cmd
-module.exports.root = extend({}, cmd)
+module.exports.root = Object.assign({}, cmd)
 module.exports.root.topic = 'info'
 delete module.exports.root.command

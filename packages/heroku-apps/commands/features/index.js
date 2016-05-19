@@ -1,14 +1,15 @@
 'use strict'
 
-let cli = require('heroku-cli-util')
-let co = require('co')
-let _ = require('lodash')
-let S = require('string')
+const cli = require('heroku-cli-util')
+const co = require('co')
 
 function * run (context, heroku) {
+  const sortBy = require('lodash.sortby')
+  const S = require('string')
+
   let features = yield heroku.get(`/apps/${context.app}/features`)
   features = features.filter((f) => f.state === 'general')
-  features = _.sortBy(features, 'name')
+  features = sortBy(features, 'name')
 
   if (context.flags.json) {
     cli.styledJSON(features)

@@ -2,10 +2,7 @@
 
 let cli = require('heroku-cli-util')
 let co = require('co')
-let _ = require('lodash')
 let time = require('../../lib/time')
-
-let trunc = (s) => _.truncate(s, {length: 35, omission: '…'})
 
 // gets the process number from a string like web.19 => 19
 let getProcessNum = (s) => parseInt(s.split('.', 2)[1])
@@ -23,7 +20,11 @@ function printQuota (quota) {
 }
 
 function printExtended (dynos) {
-  dynos = _.sortBy(dynos, ['type'], (a) => getProcessNum(a.name))
+  const truncate = require('lodash.truncate')
+  const sortBy = require('lodash.sortby')
+  const trunc = (s) => truncate(s, {length: 35, omission: '…'})
+
+  dynos = sortBy(dynos, ['type'], (a) => getProcessNum(a.name))
   cli.table(dynos, {
     columns: [
       {key: 'id', label: 'ID'},
@@ -83,7 +84,10 @@ function * printAccountQuota (context, heroku) {
 }
 
 function printDynos (dynos) {
-  let dynosByCommand = _.reduce(dynos, function (dynosByCommand, dyno) {
+  const reduce = require('lodash.reduce')
+  const forEach = require('lodash.foreach')
+
+  let dynosByCommand = reduce(dynos, function (dynosByCommand, dyno) {
     let since = time.ago(new Date(dyno.updated_at))
     let size = dyno.size || '1X'
 
@@ -100,7 +104,7 @@ function printDynos (dynos) {
     }
     return dynosByCommand
   }, {})
-  _.forEach(dynosByCommand, function (dynos, key) {
+  forEach(dynosByCommand, function (dynos, key) {
     cli.styledHeader(`${key} (${cli.color.yellow(dynos.length)})`)
     dynos = dynos.sort((a, b) => getProcessNum(a) - getProcessNum(b))
     for (let dyno of dynos) cli.log(dyno)

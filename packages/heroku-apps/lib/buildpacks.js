@@ -1,6 +1,5 @@
 'use strict'
 let cli = require('heroku-cli-util')
-let _ = require('lodash')
 let error = require('./error.js')
 
 function BuildpackCommand (context, heroku, command, action) {
@@ -74,9 +73,10 @@ BuildpackCommand.prototype.clear = function * () {
 }
 
 BuildpackCommand.prototype.findIndex = function (buildpacks) {
+  const findIndex = require('lodash.findindex')
   let index = this.index
   if (index) {
-    return _.findIndex(buildpacks, function (b) {
+    return findIndex(buildpacks, function (b) {
       return b.ordinal + 1 === index
     })
   } else {
@@ -85,9 +85,10 @@ BuildpackCommand.prototype.findIndex = function (buildpacks) {
 }
 
 BuildpackCommand.prototype.findUrl = function findUrl (buildpacks) {
+  const findIndex = require('lodash.findindex')
   let url = this.url
   let mappedUrl = this.url.replace(/^urn:buildpack:/, '').replace(/^https:\/\/codon-buildpacks\.s3\.amazonaws\.com\/buildpacks\/heroku\/(.*)\.tgz$/, 'heroku/$1')
-  return _.findIndex(buildpacks, function (b) { return b.buildpack.url === url || b.buildpack.url === mappedUrl })
+  return findIndex(buildpacks, function (b) { return b.buildpack.url === url || b.buildpack.url === mappedUrl })
 }
 
 BuildpackCommand.prototype.display = function (buildpacks, indent) {

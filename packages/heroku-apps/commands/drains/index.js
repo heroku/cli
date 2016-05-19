@@ -2,16 +2,17 @@
 
 let cli = require('heroku-cli-util')
 let co = require('co')
-let _ = require('lodash')
 
 function * run (context, heroku) {
+  const partition = require('lodash.partition')
+
   let path = `/apps/${context.app}/log-drains`
   if (context.flags.extended) path = path + '?extended=true'
   let drains = yield heroku.request({path})
   if (context.flags.json) {
     cli.styledJSON(drains)
   } else {
-    drains = _.partition(drains, 'addon')
+    drains = partition(drains, 'addon')
     if (drains[1].length > 0) {
       cli.styledHeader('Drains')
       drains[1].forEach((drain) => {

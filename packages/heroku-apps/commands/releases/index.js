@@ -1,24 +1,25 @@
 'use strict'
 
-let cli = require('heroku-cli-util')
-let co = require('co')
-let _ = require('lodash')
-let time = require('../../lib/time')
-let statusHelper = require('./status_helper')
-
-let width = () => process.stdout.columns > 80 ? process.stdout.columns : 80
-let trunc = (s, l) => _.truncate(s, {length: width() - (60 + l), omission: '…'})
-
-let descriptionWithStatus = function (d, r) {
-  let status = statusHelper(r.status)
-  let sc = ''
-  if (status.content !== undefined) {
-    sc = cli.color[status.color](status.content)
-  }
-  return trunc(d, sc.length) + ' ' + sc
-}
+const cli = require('heroku-cli-util')
+const co = require('co')
 
 function * run (context, heroku) {
+  const statusHelper = require('./status_helper')
+  const time = require('../../lib/time')
+  const truncate = require('lodash.truncate')
+
+  let descriptionWithStatus = function (d, r) {
+    const width = () => process.stdout.columns > 80 ? process.stdout.columns : 80
+    const trunc = (s, l) => truncate(s, {length: width() - (60 + l), omission: '…'})
+
+    let status = statusHelper(r.status)
+    let sc = ''
+    if (status.content !== undefined) {
+      sc = cli.color[status.color](status.content)
+    }
+    return trunc(d, sc.length) + ' ' + sc
+  }
+
   let url = `/apps/${context.app}/releases`
   if (context.flags.extended) url = url + '?extended=true'
   let releases = yield heroku.request({
