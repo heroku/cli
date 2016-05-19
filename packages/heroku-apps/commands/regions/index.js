@@ -4,7 +4,7 @@ const cli = require('heroku-cli-util')
 const co = require('co')
 
 function * run (context, heroku) {
-  const sortBy = require('lodash.sortBy')
+  const sortBy = require('lodash.sortby')
 
   let regions = yield heroku.get('/regions')
   regions = sortBy(regions, ['private_capable', 'name'])
