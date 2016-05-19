@@ -224,7 +224,6 @@ func (p *Plugins) runFn(plugin *Plugin, topic, command string) func(ctx *Context
 		must(err)
 		args, err := json.Marshal(Args)
 		must(err)
-		title, _ := json.Marshal("heroku " + strings.Join(Args[1:], " "))
 
 		script := fmt.Sprintf(`'use strict'
 process.argv = %s
@@ -232,7 +231,6 @@ let pluginName = '%s'
 let pluginVersion = '%s'
 let topic = '%s'
 let command = '%s'
-process.title = %s
 let ctx = %s
 ctx.version = ctx.version + ' ' + pluginName + '/' + pluginVersion + ' node-' + process.version
 process.chdir(ctx.cwd)
@@ -240,7 +238,7 @@ if (command === '') { command = null }
 let plugin = require(pluginName)
 let cmd = plugin.commands.filter((c) => c.topic === topic && c.command == command)[0]
 cmd.run(ctx)
-`, args, plugin.Name, plugin.Version, topic, command, string(title), ctxJSON)
+`, args, plugin.Name, plugin.Version, topic, command, ctxJSON)
 
 		// swallow sigint since the plugin will handle it
 		swallowSigint = true
