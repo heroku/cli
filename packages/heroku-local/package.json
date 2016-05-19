@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "foreman": "2.0.0-1",
-    "heroku-cli-util": "6.0.0"
+    "heroku-cli-util": "6.0.1"
   },
   "devDependencies": {
     "standard": "6.0.8"
