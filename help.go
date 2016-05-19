@@ -93,6 +93,7 @@ func printTopicCommandsHelp(topic *Topic) {
 }
 
 func helpInvalidCommand() {
+	checkIfKnownTopic(Args[1])
 	var closest string
 	currentAnalyticsCommand.Valid = false
 	guess, distance := findClosestCommand(AllCommands(), Args[1])
@@ -104,6 +105,18 @@ func helpInvalidCommand() {
 	ExitWithMessage(`%s is not a heroku command.
 %sRun %s for a list of available commands.
 `, yellow(Args[1]), closest, cyan("heroku help"))
+}
+
+func checkIfKnownTopic(cmd string) {
+	knownTopics := map[string]string{
+		"redis": "heroku-redis",
+		"kafka": "heroku-kafka",
+	}
+	topic := strings.Split(cmd, ":")[0]
+	plugin := knownTopics[topic]
+	if plugin != "" {
+		ExitWithMessage("Use %s commands by installing the %s plugin.\n%s", topic, yellow(plugin), cyan("heroku plugins:install "+plugin))
+	}
 }
 
 func findClosestCommand(from Commands, a string) (*Command, int) {
