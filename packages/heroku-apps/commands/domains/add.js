@@ -3,6 +3,7 @@
 let cli = require('heroku-cli-util')
 let co = require('co')
 let waitForDomain = require('../../lib/domains_wait')
+let shellescape = require('shell-escape')
 
 function * run (context, heroku) {
   let hostname = context.args.hostname
@@ -20,7 +21,7 @@ For help, see https://devcenter.heroku.com/articles/custom-domains`)
       yield waitForDomain(context, heroku, domain)
     } else {
       cli.console.error(`The domain ${cli.color.green(hostname)} has been enqueued for addition`)
-      let command = `heroku domains:wait ${hostname}`
+      let command = `heroku domains:wait ${shellescape([hostname])}`
       cli.warn(`Run ${cli.color.cmd(command)} to wait for completion`)
     }
   }

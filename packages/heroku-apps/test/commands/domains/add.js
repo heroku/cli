@@ -14,6 +14,7 @@ describe('domains:add', function () {
     cli.mockConsole()
     clock = lolex.install()
     clock.setTimeout = function (fn, timeout) { fn() }
+    nock.cleanAll()
   })
 
   afterEach(function () {
@@ -45,7 +46,23 @@ describe('domains:add', function () {
  ▸    For help, see https://devcenter.heroku.com/articles/custom-domains
 
 The domain foo.com has been enqueued for addition
- ▸    Run heroku domains:wait foo.com to wait for completion
+ ▸    Run heroku domains:wait 'foo.com' to wait for completion
+`))
+  })
+
+  it('adds a wildcard domain with status pending and wait false', function () {
+    let api = nock('https://api.heroku.com:443')
+      .post('/apps/myapp/domains', {hostname: '*.foo.com'})
+      .reply(200, {status: 'pending'})
+    return cmd.run({app: 'myapp', args: {hostname: '*.foo.com'}, flags: {}})
+      .then(() => api.done())
+      .then(() => expect(cli.stderr).to.equal(
+`Adding *.foo.com to myapp... done
+ ▸    Configure your app's DNS provider to point to the DNS Target undefined.
+ ▸    For help, see https://devcenter.heroku.com/articles/custom-domains
+
+The domain *.foo.com has been enqueued for addition
+ ▸    Run heroku domains:wait '*.foo.com' to wait for completion
 `))
   })
 
