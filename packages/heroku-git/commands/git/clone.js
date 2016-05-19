@@ -8,7 +8,7 @@ function * run (context, heroku) {
   git = git(context)
   let appName = context.flags.app
   if (!appName) throw new Error('Specify an app with --app')
-  let app = yield heroku.apps(appName).info()
+  let app = yield heroku.get(`/apps/${appName}`)
   let directory = context.args.DIRECTORY || app.name
   let remote = context.flags.remote || 'heroku'
   yield git.spawn(['clone', '-o', remote, git.url(app.name, context.flags['ssh-git']), directory])

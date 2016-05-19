@@ -14,7 +14,7 @@ function * run (context, heroku) {
   if (!appName) {
     throw new Error('Specify an app with --app')
   }
-  let app = yield heroku.apps(appName).info()
+  let app = yield heroku.get(`/apps/${appName}`)
   let remote = context.flags.remote || (yield git.remoteFromGitConfig()) || 'heroku'
   let remotes = yield git.exec(['remote'])
   let url = git.url(app.name, context.flags['ssh-git'])
