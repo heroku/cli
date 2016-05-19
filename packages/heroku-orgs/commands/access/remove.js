@@ -6,7 +6,7 @@ let extend        = require('util')._extend;
 
 function* run(context, heroku) {
   let appName = context.app;
-  let request = heroku.apps(appName).collaborators(context.args.email).delete();
+  let request = heroku.delete(`/apps/${appName}/collaborators/${context.args.email}`);
   yield cli.action(`Removing ${cli.color.cyan(context.args.email)} access from the app ${cli.color.magenta(appName)}`, request);
 }
 

@@ -9,7 +9,7 @@ let co    = require('co');
 function* run (context, heroku) {
   let appName     = context.app;
   let privileges  = context.flags.privileges.split(",");
-  let appInfo = yield heroku.apps(appName).info();
+  let appInfo = yield heroku.get(`/apps/${appName}`);
 
   if (!Utils.isOrgApp(appInfo.owner.email)) error.exit(1, `Error: cannot update privileges. The app ${cli.color.cyan(appName)} is not owned by an organization`);
 

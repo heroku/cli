@@ -10,7 +10,7 @@ let extend = require('util')._extend;
 function* run(context, heroku) {
   let appName = context.app;
   let privileges = context.flags.privileges || '';
-  let appInfo = yield heroku.apps(appName).info();
+  let appInfo = yield heroku.get(`/apps/${appName}`);
   let output = `Adding ${cli.color.cyan(context.args.email)} access to the app ${cli.color.magenta(appName)}`;
   let request;
   let orgFlags = [];
@@ -47,7 +47,7 @@ function* run(context, heroku) {
       }
     });
   } else {
-    request = heroku.apps(appName).collaborators().create({ user: context.args.email });
+    request = heroku.post(`/apps/${appName}/collaborators`, {body: { user: context.args.email }});
   }
   yield cli.action(`${output}`, request);
 }

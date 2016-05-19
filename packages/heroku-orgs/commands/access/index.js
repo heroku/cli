@@ -41,7 +41,7 @@ function printAccess (app, collaborators) {
 function* run (context, heroku) {
   let appName = context.app;
 
-  let app = yield heroku.apps(appName).info();
+  let app = yield heroku.get(`/apps/${appName}`);
   let isOrgApp = Utils.isOrgApp(app.owner.email);
 
   let collaborators = yield heroku.request({
