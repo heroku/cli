@@ -183,6 +183,15 @@ https://devcenter.heroku.com/articles/dyno-sleeping
       .then(() => expect(cli.stderr, 'to be empty'))
   })
 
+  it('handles quota 200 not_found properly', function () {
+    stubAccountQuota(200, {id: 'not_found'})
+
+    let freeExpression = ''
+    return cmd.run({app: 'myapp', flags: {}})
+      .then(() => expect(cli.stdout, 'to equal', freeExpression))
+      .then(() => expect(cli.stderr, 'to be empty'))
+  })
+
   it('does not print out for non-free apps', function () {
     stubAccountFeature(200, {enabled: true})
 

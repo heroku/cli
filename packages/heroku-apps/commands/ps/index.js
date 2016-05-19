@@ -59,6 +59,13 @@ function * printAccountQuota (context, heroku) {
     path: `/accounts/${requests.account.id}/actions/get-quota`,
     headers: {Accept: 'application/vnd.heroku+json; version=3.account-quotas'}
   })
+  .then(function (data) {
+    // very temporary fix, the person who can fix this is on vacation
+    if (data.id === 'not_found') {
+      return null
+    }
+    return data
+  })
   .catch(function (err) {
     if (err.statusCode === 404 && err.body && err.body.id === 'not_found') {
       return null
