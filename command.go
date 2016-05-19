@@ -26,7 +26,7 @@ func init() {
 						if ctx.Flags["json"] == true {
 							commands.loadUsages()
 							commands.loadFullHelp()
-							doc := map[string]interface{}{"topics": CLITopics, "commands": commands}
+							doc := map[string]interface{}{"topics": AllTopics(), "commands": commands}
 							s, _ := json.Marshal(doc)
 							Println(string(s))
 							return
