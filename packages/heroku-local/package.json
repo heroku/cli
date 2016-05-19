@@ -8,10 +8,9 @@
   },
   "dependencies": {
     "foreman": "2.0.0-1",
-    "heroku-cli-util": "5.10.10"
+    "heroku-cli-util": "6.0.0"
   },
   "devDependencies": {
-    "snazzy": "3.0.1",
     "standard": "6.0.8"
   },
   "keywords": [
@@ -26,6 +25,6 @@
   "scripts": {
     "postversion": "npm publish && git push && git push --tags",
     "preversion": "npm test",
-    "test": "bats test && standard | snazzy"
+    "test": "bats test && standard"
   }
 }
