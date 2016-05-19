@@ -29,7 +29,7 @@ function * run (context, heroku) {
   let addAddons = co.wrap(function * (app, addons) {
     for (let addon of addons) {
       addon = addon.trim()
-      let request = heroku.apps(app.name).addons().create({plan: addon})
+      let request = heroku.post(`/apps/${app.name}/addons`, {body: {plan: addon}})
       yield cli.action(`Adding ${cli.color.green(addon)}`, request)
     }
   })

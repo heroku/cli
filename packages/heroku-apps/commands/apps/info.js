@@ -11,10 +11,10 @@ function * run (context, heroku) {
 
   function getInfo (app) {
     return {
-      addons: heroku.apps(app).addons().listByApp(),
+      addons: heroku.get(`/apps/${app}/addons`),
       app: heroku.get(context.flags.extended ? `/apps/${app}?extended=true` : `/apps/${app}`),
-      dynos: heroku.apps(app).dynos().list().catch(() => []),
-      collaborators: heroku.apps(app).collaborators().list().catch(() => []),
+      dynos: heroku.get(`/apps/${app}/dynos`).catch(() => []),
+      collaborators: heroku.get(`/apps/${app}/collaborators`).catch(() => []),
       pipeline: heroku.get(`/apps/${app}/pipeline-couplings`).catch(() => null)
     }
   }

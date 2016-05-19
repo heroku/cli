@@ -9,7 +9,7 @@ module.exports = {
   needsAuth: true,
   run: h.command(function * (context, heroku) {
     let app = context.app
-    let p = heroku.apps(app).update({maintenance: false})
+    let p = heroku.patch(`/apps/${app}`, {body: {maintenance: false}})
     yield h.action(`Disabling maintenance mode for ${h.color.app(app)}`, p)
   })
 }

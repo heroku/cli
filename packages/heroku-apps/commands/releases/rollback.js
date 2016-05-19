@@ -25,7 +25,7 @@ function * run (context, heroku) {
     release = yield getLatestRelease()
   }
 
-  let p = heroku.post(`/apps/${context.app}/releases`, {release: release.id})
+  let p = heroku.post(`/apps/${context.app}/releases`, {body: {release: release.id}})
   let latest = yield cli.action(`Rolling back ${cli.color.app(context.app)} to ${cli.color.green('v' + release.version)}`, p, {success: false})
   cli.log(`done, ${cli.color.green('v' + latest.version)}`)
   cli.warn(`Rollback affects code and config vars; it doesn't add or remove addons.

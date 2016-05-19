@@ -4,7 +4,7 @@ let cli = require('heroku-cli-util')
 let co = require('co')
 
 function * run (context, heroku) {
-  let app = yield heroku.apps(context.app).info()
+  let app = yield heroku.get(`/apps/${context.app}`)
   cli.log(app.maintenance ? 'on' : 'off')
 }
 
