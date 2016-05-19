@@ -1,3 +1,7 @@
+5.2.1   2016-05-19
+==================
+Fixed bug with heroku run not returning correct exit code
+
 5.2.0   2016-05-19
 ==================
 Updated all plugins
