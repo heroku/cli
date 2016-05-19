@@ -1,10 +1,10 @@
 'use strict'
 
 const co = require('co')
-const wait = require('co-wait')
 const cli = require('heroku-cli-util')
 
 module.exports = function * (context, heroku, domain) {
+  const wait = require('co-wait')
   yield cli.action(`Waiting for ${cli.color.green(domain.hostname)}`, co(function * () {
     while (domain.status === 'pending') {
       yield wait(5000)
