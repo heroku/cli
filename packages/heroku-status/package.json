@@ -8,8 +8,9 @@
   },
   "dependencies": {
     "co": "4.6.0",
-    "heroku-cli-util": "5.10.10",
-    "lodash": "4.11.1",
+    "heroku-cli-util": "6.0.0",
+    "lodash.maxby": "4.4.0",
+    "lodash.padend": "4.5.0",
     "moment": "2.13.0"
   },
   "devDependencies": {
@@ -17,9 +18,8 @@
     "coveralls": "2.11.9",
     "mocha": "2.4.5",
     "nock": "8.0.0",
-    "nyc": "6.4.0",
-    "snazzy": "3.0.1",
-    "standard": "6.0.8",
+    "nyc": "6.4.4",
+    "standard": "7.1.0",
     "unexpected": "10.13.2"
   },
   "homepage": "https://github.com/heroku/heroku-status",
@@ -37,6 +37,6 @@
     "coverage": "nyc report --reporter=text-lcov | codeclimate-test-reporter && nyc report --reporter=text-lcov | coveralls",
     "postversion": "npm publish && git push && git push --tags",
     "preversion": "npm test",
-    "test": "nyc mocha && standard | snazzy"
+    "test": "nyc mocha && standard"
   }
 }
