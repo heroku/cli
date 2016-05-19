@@ -24,8 +24,7 @@
   "dependencies": {
     "co": "4.6.0",
     "heroku-cli-util": "6.0.0",
-    "shellwords": "0.1.0",
-    "unexpected": "10.13.2"
+    "shellwords": "0.1.0"
   },
   "devDependencies": {
     "fixture-stdout": "0.2.1",
@@ -34,6 +33,7 @@
     "netrc": "0.1.4",
     "nock": "8.0.0",
     "nyc": "6.4.4",
-    "standard": "7.1.0"
+    "standard": "7.1.0",
+    "unexpected": "10.13.2"
   }
 }
