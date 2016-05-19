@@ -1,3 +1,13 @@
+5.2.0   2016-05-19
+==================
+Updated all plugins
+Show better error message on command not found
+Migrate heroku-vim ruby plugin
+Migrate heroku-config ruby plugin
+Sort flags alphabetically
+Better formatting on flag help
+Update node to 6.2.0
+
 5.1.8   2016-05-17
 ==================
 Updated heroku-apps
