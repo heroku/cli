@@ -2,12 +2,19 @@
 
 let _ = require('lodash')
 
-exports.addon = _.memoize(function (heroku, app, id) {
-  let getAddon = (id) => heroku.get(`/addons/${encodeURIComponent(id)}`)
+exports.addon = _.memoize(function (heroku, app, id, headers) {
+  let getAddon = function (id) {
+    return heroku.request({
+      path: `/addons/${encodeURIComponent(id)}`,
+      headers: headers || {}
+    })
+  }
 
   if (!app || id.indexOf('::') !== -1) return getAddon(id)
-  return heroku.get(`/apps/${app}/addons/${encodeURIComponent(id)}`)
-    .catch(function (err) { if (err.statusCode === 404) return getAddon(id); else throw err })
+  return heroku.request({
+    path: `/apps/${app}/addons/${encodeURIComponent(id)}`,
+    headers: headers || {}
+  }).catch(function (err) { if (err.statusCode === 404) return getAddon(id); else throw err })
 })
 
 exports.attachment = function (heroku, app, id) {
