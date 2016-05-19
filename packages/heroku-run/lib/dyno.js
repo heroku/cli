@@ -126,7 +126,12 @@ class Dyno {
       if (exitCode) {
         process.stdout.write(data.replace(/^heroku-command-exit-status \d+$\n?/m, ''))
         let code = parseInt(exitCode[1])
-        code === 0 ? this.resolve() : this.reject(`Process exited with code ${cli.color.red(code)}`)
+        if (code === 0) this.resolve()
+        else {
+          let err = new Error(`Process exited with code ${cli.color.red(code)}`)
+          err.exitCode = code
+          this.reject(err)
+        }
         return
       }
       process.stdout.write(data)

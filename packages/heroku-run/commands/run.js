@@ -19,7 +19,15 @@ function * run (context, heroku) {
   if (!opts.command) throw new Error('Usage: heroku run COMMAND\n\nExample: heroku run bash')
 
   let dyno = new Dyno(opts)
-  yield dyno.start()
+  try {
+    yield dyno.start()
+  } catch (err) {
+    if (err.exitCode) {
+      cli.error(err)
+      process.exit(err.exitCode)
+    }
+    throw err
+  }
 }
 
 module.exports = {
