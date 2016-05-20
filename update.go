@@ -51,6 +51,7 @@ func Update(channel string) {
 	updateCLI(channel)
 	UserPlugins.Update()
 	UserPlugins.MigrateRubyPlugins()
+	deleteOldPluginsDirectory()
 	truncate(ErrLogPath, 1000)
 	cleanTmp()
 }
@@ -220,4 +221,10 @@ func loadNewCLI() {
 func npmExists() bool {
 	exists, _ := FileExists(npmBinPath())
 	return exists
+}
+
+// deleteOldPluginsDirectory removes the v4 directory
+// this is a problem on windows because node will recurse up until it finds a node_modules directory
+func deleteOldPluginsDirectory() {
+	os.RemoveAll(filepath.Join(DataHome, "node_modules"))
 }
