@@ -23,6 +23,12 @@ function * run (context, heroku) {
       method: 'POST',
       path: (params.space || context.org) ? '/organizations/apps' : '/apps',
       body: params
+    }).then(app => {
+      let status = name ? 'done' : `done, ${cli.color.app(app.name)}`
+      if (context.flags.region) status += `, region is ${cli.color.yellow(app.region.name)}`
+      if (context.flags.stack) status += `, stack is ${cli.color.yellow(app.stack.name)}`
+      cli.action.done(status)
+      return app
     })
   }
 
@@ -52,15 +58,6 @@ function * run (context, heroku) {
   }
 
   let app = yield cli.action(createText(name, context.flags.space), {success: false}, createApp())
-
-  cli.console.writeError(name ? 'done' : `done, ${cli.color.app(app.name)}`)
-  if (context.flags.region) {
-    cli.console.writeError(`, region is ${cli.color.yellow(app.region.name)}`)
-  }
-  if (context.flags.stack) {
-    cli.console.writeError(`, stack is ${cli.color.yellow(app.stack.name)}`)
-  }
-  cli.console.error()
 
   if (context.flags.addons) yield addAddons(app, context.flags.addons.split(','))
   if (context.flags.buildpack) yield addBuildpack(app, context.flags.buildpack)

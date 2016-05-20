@@ -20,7 +20,6 @@ function * run (context, heroku) {
     process.exit(1)
   }
 
-  let release
   let vars = context.args.map((v) => cli.color.configVar(v)).join(', ')
 
   yield cli.action(`Unsetting ${vars} and restarting ${cli.color.app(context.app)}`, {success: false}, co(function * () {
@@ -30,10 +29,9 @@ function * run (context, heroku) {
       // body will be like {FOO: null, BAR: null}
       body: reduce(context.args, (vars, v) => { vars[v] = null; return vars }, {})
     })
-    release = yield lastRelease()
+    let release = yield lastRelease()
+    cli.action.done('done, ' + cli.color.release(`v${release.version}`))
   }))
-
-  cli.console.error('done, ' + cli.color.release(`v${release.version}`))
 }
 
 let cmd = {

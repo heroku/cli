@@ -28,7 +28,6 @@ function * run (context, heroku) {
   }, {})
 
   let config
-  let release
 
   yield cli.action(
     `Setting ${context.args.map((v) => cli.color.configVar(v.split('=')[0])).join(', ')} and restarting ${cli.color.app(context.app)}`,
@@ -39,11 +38,10 @@ function * run (context, heroku) {
         path: `/apps/${context.app}/config-vars`,
         body: vars
       })
-      release = yield lastRelease()
+      let release = yield lastRelease()
+      cli.action.done(`done, ${cli.color.release('v' + release.version)}`)
     })
   )
-
-  cli.console.error(`done, ${cli.color.release('v' + release.version)}`)
 
   config = pickBy(config, (_, k) => vars[k])
   config = mapKeys(config, (_, k) => cli.color.green(k))
