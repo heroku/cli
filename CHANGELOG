@@ -1,3 +1,7 @@
+5.2.5   2016-05-20
+==================
+Update heroku-fork
+
 5.2.4   2016-05-20
 ==================
 Fixed bug when migrating from v4 on windows
