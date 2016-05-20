@@ -41,7 +41,8 @@
     "shell-escape": "0.2.0",
     "sparkline": "0.1.2",
     "strftime": "0.9.2",
-    "string": "3.3.1"
+    "string": "3.3.1",
+    "term-img": "0.2.0"
   },
   "devDependencies": {
     "chai": "^3.3.0",

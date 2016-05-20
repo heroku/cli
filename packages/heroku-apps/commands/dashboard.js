@@ -82,7 +82,6 @@ function displayApps (apps, appsMetrics) {
   let owner = (owner) => owner.email.endsWith('@herokumanager.com') ? owner.email.split('@')[0] : owner.email
 
   for (let a of zip(apps, appsMetrics)) {
-    cli.log()
     let app = a[0]
     let metrics = a[1]
     cli.log(cli.color.app(app.app.name))
@@ -94,11 +93,14 @@ function displayApps (apps, appsMetrics) {
     cli.log(`  ${label('Last release:')} ${time.ago(new Date(app.app.released_at))}`)
     displayMetrics(metrics)
     displayErrors(metrics)
+    cli.log()
   }
 }
 
 function * run (context, heroku) {
+  const img = require('term-img')
   const sortBy = require('lodash.sortby')
+  const path = require('path')
 
   function favoriteApps () {
     return heroku.request({
@@ -125,7 +127,7 @@ function * run (context, heroku) {
 
   let apps, data, metrics
 
-  yield cli.action('Loading', {success: false}, co(function * () {
+  yield cli.action('Loading', {clear: true}, co(function * () {
     apps = yield favoriteApps()
 
     data = yield {
@@ -140,15 +142,14 @@ function * run (context, heroku) {
     metrics = yield fetchMetrics(data.apps)
   }))
 
-  process.stderr.write('\r')
-  if (process.stderr.clearLine) process.stderr.clearLine()
-  else cli.console.error('\n')
+  img(path.join(__dirname, '..', 'assets', 'heroku.png'), {
+    fallback: () => cli.console.error()
+  })
 
   if (apps.length > 0) displayApps(data.apps, metrics)
   else cli.warn(`Add apps to this dashboard by favoriting them with ${cli.color.cmd('heroku apps:favorites:add')}`)
 
-  cli.log(`
-See all add-ons with ${cli.color.cmd('heroku addons')}`)
+  cli.log(`See all add-ons with ${cli.color.cmd('heroku addons')}`)
   let sampleOrg = sortBy(data.orgs.filter((o) => o.role !== 'collaborator'), (o) => new Date(o.created_at))[0]
   if (sampleOrg) cli.log(`See all apps in ${cli.color.yellow.dim(sampleOrg.name)} with ${cli.color.cmd('heroku apps --org ' + sampleOrg.name)}`)
   cli.log(`See all apps with ${cli.color.cmd('heroku apps --all')}`)
