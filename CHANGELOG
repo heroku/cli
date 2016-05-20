@@ -1,3 +1,7 @@
+5.2.3   2016-05-20
+==================
+Added heroku-redis as a core plugin
+
 5.2.2   2016-05-19
 ==================
 Fixed help for plugins
