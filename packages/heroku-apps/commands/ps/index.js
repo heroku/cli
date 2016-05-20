@@ -140,6 +140,11 @@ function * run (context, heroku) {
     feature
   }
 
+  let type = context.args.type
+  if (type) {
+    data.dynos = data.dynos.filter(dyno => dyno.type === type)
+  }
+
   if (context.flags.json) {
     cli.styledJSON(data.dynos)
   } else if (context.flags.extended) {
@@ -157,6 +162,7 @@ function * run (context, heroku) {
 module.exports = {
   topic: 'ps',
   description: 'list dynos for an app',
+  args: [{name: 'type', optional: true}],
   flags: [
     {name: 'json', description: 'display as json'},
     {name: 'extended', char: 'x', hidden: true}
