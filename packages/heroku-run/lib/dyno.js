@@ -141,10 +141,10 @@ class Dyno {
   _readStdin (c) {
     let stdin = process.stdin
     stdin.setEncoding('utf8')
+    stdin.unref()
     if (tty.isatty(0)) {
       stdin.setRawMode(true)
       stdin.pipe(c)
-      stdin.unref()
       let sigints = []
       stdin.on('data', function (c) {
         if (c === '\u0003') sigints.push(new Date())
