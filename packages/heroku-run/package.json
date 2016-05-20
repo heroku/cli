@@ -1,6 +1,6 @@
 {
   "name": "heroku-run",
-  "version": "3.2.7",
+  "version": "3.2.8",
   "description": "Heroku CLI plugin to run one-off dyno processes.",
   "main": "index.js",
   "scripts": {
