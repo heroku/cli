@@ -508,7 +508,6 @@ func (p *Plugins) cachePath() string {
 func RubyPlugins() []string {
 	dirs, err := ioutil.ReadDir(filepath.Join(HomeDir, ".heroku", "plugins"))
 	if err != nil {
-		LogIfError(err)
 		return []string{}
 	}
 	plugins := make([]string, 0, len(dirs))
