@@ -10,6 +10,7 @@ import (
 	"sort"
 	"strings"
 	"syscall"
+	"time"
 
 	"github.com/ansel1/merry"
 	"github.com/dickeyxxx/golock"
@@ -56,8 +57,6 @@ Example:
 	This is useful when developing plugins locally.
 	It simply symlinks the specified path into the plugins directory
 	and parses the plugin.
-
-	You will need to run it again if you change any of the plugin metadata.
 
   Example:
 	$ heroku plugins:link .`,
@@ -158,7 +157,6 @@ func pluginsLink(ctx *Context) {
 			os.RemoveAll(newPath)
 			os.Rename(path, newPath)
 		}
-		UserPlugins.addToCache(plugin)
 	})
 }
 
@@ -187,11 +185,12 @@ var UserPlugins = &Plugins{Path: filepath.Join(DataHome, "plugins")}
 
 // Plugin represents a javascript plugin
 type Plugin struct {
-	Name     string   `json:"name"`
-	Version  string   `json:"version"`
-	Topics   Topics   `json:"topics"`
-	Topic    *Topic   `json:"topic"`
-	Commands Commands `json:"commands"`
+	Name      string    `json:"name"`
+	Version   string    `json:"version"`
+	Topics    Topics    `json:"topics"`
+	Topic     *Topic    `json:"topic"`
+	Commands  Commands  `json:"commands"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
 
 // Commands lists all the commands of the plugins
@@ -291,6 +290,7 @@ func (p *Plugins) ParsePlugin(name string) (*Plugin, error) {
 		return nil, merry.Errorf("Error installing plugin %s", name)
 	}
 	var plugin Plugin
+	plugin.UpdatedAt = time.Now()
 	err = json.Unmarshal(output, &plugin)
 	if err != nil {
 		return nil, fmt.Errorf("Error parsing plugin: %s\n%s\n%s\nIs this a real CLI plugin?", name, err, string(output))
@@ -305,6 +305,7 @@ func (p *Plugins) ParsePlugin(name string) (*Plugin, error) {
 		command.Plugin = plugin.Name
 		command.Help = strings.TrimSpace(command.Help)
 	}
+	p.addToCache(&plugin)
 	return &plugin, nil
 }
 
@@ -362,15 +363,10 @@ func (p *Plugins) InstallPlugins(names ...string) error {
 	if err != nil {
 		return err
 	}
-	plugins := make([]*Plugin, len(names))
-	for i, name := range names {
-		plugin, err := p.ParsePlugin(name)
-		if err != nil {
-			return err
-		}
-		plugins[i] = plugin
+	for _, name := range names {
+		_, err := p.ParsePlugin(name)
+		must(err)
 	}
-	p.addToCache(plugins...)
 	return nil
 }
 
@@ -418,9 +414,8 @@ func (p *Plugins) Update() {
 			for name, version := range packages {
 				p.lockPlugin(name)
 				WarnIfError(p.installPackages(name + "@" + version))
-				plugin, err := p.ParsePlugin(name)
+				_, err := p.ParsePlugin(name)
 				WarnIfError(err)
-				p.addToCache(plugin)
 				p.unlockPlugin(name)
 			}
 		})
@@ -446,7 +441,7 @@ func (p *Plugins) MigrateRubyPlugins() {
 	}
 }
 
-func (p *Plugins) addToCache(plugins ...*Plugin) {
+func (p *Plugins) addToCache(plugin *Plugin) {
 	contains := func(name string) int {
 		for i, plugin := range p.plugins {
 			if plugin.Name == name {
@@ -455,14 +450,12 @@ func (p *Plugins) addToCache(plugins ...*Plugin) {
 		}
 		return -1
 	}
-	for _, plugin := range plugins {
-		// find or replace
-		i := contains(plugin.Name)
-		if i == -1 {
-			p.plugins = append(p.plugins, plugin)
-		} else {
-			p.plugins[i] = plugin
-		}
+	// find or replace
+	i := contains(plugin.Name)
+	if i == -1 {
+		p.plugins = append(p.plugins, plugin)
+	} else {
+		p.plugins[i] = plugin
 	}
 	p.saveCache()
 }
@@ -496,8 +489,21 @@ func (p *Plugins) Plugins() []*Plugin {
 		}
 		err = json.NewDecoder(f).Decode(&p.plugins)
 		WarnIfError(err)
+		p.removeMissingPlugins()
+		p.RefreshPlugins()
 	}
 	return p.plugins
+}
+
+func (p *Plugins) removeMissingPlugins() {
+	for i, plugin := range p.plugins {
+		if exists, _ := FileExists(p.pluginPath(plugin.Name)); !exists {
+			p.plugins = append(p.plugins[:i], p.plugins[i+1:]...)
+			p.saveCache()
+			p.removeMissingPlugins()
+			return
+		}
+	}
 }
 
 func (p *Plugins) cachePath() string {
@@ -518,4 +524,55 @@ func RubyPlugins() []string {
 		plugins = append(plugins, dir.Name())
 	}
 	return plugins
+}
+
+// ByName returns a plugin by its name
+func (p *Plugins) ByName(name string) *Plugin {
+	for _, plugin := range p.Plugins() {
+		if plugin.Name == name {
+			return plugin
+		}
+	}
+	return nil
+}
+
+// RefreshPlugins reparses plugin's metadata if symlinked and has modified files
+func (p *Plugins) RefreshPlugins() {
+	for _, plugin := range p.plugins {
+		if !p.pluginRefreshNeeded(plugin) {
+			continue
+		}
+		action(fmt.Sprintf("Parsing %s", plugin.Name), "done", func() {
+			_, err := p.ParsePlugin(plugin.Name)
+			must(err)
+		})
+	}
+}
+
+// returns true if symlinked and any files in the plugin are newer than the cached version
+func (p *Plugins) pluginRefreshNeeded(plugin *Plugin) bool {
+	if !p.isPluginSymlinked(plugin.Name) {
+		return false
+	}
+	base, err := filepath.EvalSymlinks(p.pluginPath(plugin.Name))
+	must(err)
+	skip := func(path string) bool {
+		for _, dir := range []string{".git", "node_modules"} {
+			if strings.HasSuffix(path, dir) {
+				return true
+			}
+		}
+		return false
+	}
+	refresh := false
+	filepath.Walk(base, func(path string, fi os.FileInfo, err error) error {
+		if skip(path) || refresh {
+			return filepath.SkipDir
+		}
+		if fi.ModTime().After(plugin.UpdatedAt) {
+			refresh = true
+		}
+		return nil
+	})
+	return refresh
 }
