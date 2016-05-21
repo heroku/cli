@@ -14,6 +14,7 @@
     "codeclimate-test-reporter": "0.3.1",
     "coveralls": "2.11.9",
     "mocha": "^2.2.4",
+    "mocha-junit-reporter": "1.11.1",
     "nock": "8.0.0",
     "nyc": "6.4.4",
     "proxyquire": "^1.5.0",
@@ -32,7 +33,6 @@
     "url": "https://github.com/heroku/heroku-git.git"
   },
   "scripts": {
-    "coverage": "nyc report --reporter=text-lcov | codeclimate-test-reporter && nyc report --reporter=text-lcov | coveralls",
     "postversion": "npm publish && git push && git push --tags",
     "preversion": "npm test",
     "test": "nyc mocha && standard"
