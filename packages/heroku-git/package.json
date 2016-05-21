@@ -1,7 +1,7 @@
 {
   "name": "heroku-git",
   "description": "Heroku CLI plugin to manage local git repos.",
-  "version": "2.5.2",
+  "version": "2.5.3",
   "author": "Jeff Dickey (@dickeyxxx)",
   "bugs": {
     "url": "https://github.com/heroku/heroku-git/issues"
