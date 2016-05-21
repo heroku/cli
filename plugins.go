@@ -489,9 +489,18 @@ func (p *Plugins) Plugins() []*Plugin {
 		}
 		err = json.NewDecoder(f).Decode(&p.plugins)
 		WarnIfError(err)
+		p.removeMissingPlugins()
 		p.RefreshPlugins()
 	}
 	return p.plugins
+}
+
+func (p *Plugins) removeMissingPlugins() {
+	for i, plugin := range p.plugins {
+		if exists, _ := FileExists(p.pluginPath(plugin.Name)); !exists {
+			p.plugins = append(p.plugins[:i], p.plugins[i+1:]...)
+		}
+	}
 }
 
 func (p *Plugins) cachePath() string {
