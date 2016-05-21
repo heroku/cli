@@ -11,7 +11,7 @@
     "heroku-cli-util": "6.0.7"
   },
   "devDependencies": {
-    "standard": "6.0.8"
+    "standard": "7.1.0"
   },
   "keywords": [
     "heroku-plugin"
