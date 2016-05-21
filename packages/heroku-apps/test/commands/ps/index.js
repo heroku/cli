@@ -75,6 +75,17 @@ run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
       .then(() => api.done())
   })
 
+  it('errors when no dynos found', function () {
+    nock('https://api.heroku.com:443')
+      .get('/apps/myapp/dynos')
+      .reply(200, [
+        {command: 'npm start', size: 'Free', name: 'web.1', type: 'web', updated_at: hourAgo, state: 'up'},
+        {command: 'bash', size: 'Free', name: 'run.1', type: 'run', updated_at: hourAgo, state: 'up'}
+      ])
+    stubAccountFeatureDisabled()
+    return expect(cmd.run({app: 'myapp', args: ['foo'], flags: {}}), 'to be rejected with', 'No foo dynos on myapp')
+  })
+
   it('shows dyno list as json', function () {
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/dynos')
