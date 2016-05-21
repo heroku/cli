@@ -28,7 +28,7 @@ function stubAccountQuota (code, body) {
 
   nock('https://api.heroku.com:443')
     .get('/apps/myapp/dynos')
-    .reply(200, [])
+    .reply(200, [{command: 'bash', size: 'Free', name: 'run.1', type: 'run', updated_at: hourAgo, state: 'up'}])
 
   nock('https://api.heroku.com:443', {
     reqHeaders: {'Accept': 'application/vnd.heroku+json; version=3.process_tier'}
@@ -63,7 +63,7 @@ describe('ps', function () {
 
     stubAccountFeatureDisabled()
 
-    return cmd.run({app: 'myapp', args: {}, flags: {}})
+    return cmd.run({app: 'myapp', args: [], flags: {}})
       .then(() => expect(cli.stdout, 'to equal', `=== web (Free): npm start (1)
 web.1: up ${hourAgoStr} (~ 1h ago)
 
@@ -84,7 +84,7 @@ run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
 
     stubAccountFeatureDisabled()
 
-    return cmd.run({app: 'myapp', args: {}, flags: {json: true}})
+    return cmd.run({app: 'myapp', args: [], flags: {json: true}})
       .then(() => expect(JSON.parse(cli.stdout)[0], 'to satisfy', {command: 'npm start'}))
       .then(() => expect(cli.stderr, 'to be empty'))
       .then(() => api.done())
@@ -100,7 +100,7 @@ run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
     stubAccountFeature(404, {id: 'not_found'})
 
     let freeExpression = /^Free quota left: ([\d]+h [\d]{1,2}m|[\d]{1,2}m [\d]{1,2}s|[\d]{1,2}s])\n$/
-    return cmd.run({app: 'myapp', args: {}, flags: {}})
+    return cmd.run({app: 'myapp', args: [], flags: {}})
       .then(() => expect(cli.stdout, 'to match', freeExpression))
       .then(() => expect(cli.stderr, 'to be empty'))
       .then(() => api.done())
@@ -116,7 +116,7 @@ run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
     stubAccountFeature(200, {enabled: false})
 
     let freeExpression = /^Free quota left: ([\d]+h [\d]{1,2}m|[\d]{1,2}m [\d]{1,2}s|[\d]{1,2}s])\n$/
-    return cmd.run({app: 'myapp', args: {}, flags: {}})
+    return cmd.run({app: 'myapp', args: [], flags: {}})
       .then(() => expect(cli.stdout, 'to match', freeExpression))
       .then(() => expect(cli.stderr, 'to be empty'))
       .then(() => api.done())
@@ -136,7 +136,7 @@ run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
 
     stubAccountFeatureDisabled()
 
-    return cmd.run({app: 'myapp', args: {}, flags: {extended: true}})
+    return cmd.run({app: 'myapp', args: [], flags: {extended: true}})
       .then(() => expect(cli.stdout, 'to equal', `ID   Process  State                                    Region  Instance  Port  AZ       Release  Command    Route     Size
 ───  ───────  ───────────────────────────────────────  ──────  ────────  ────  ───────  ───────  ─────────  ────────  ────
 101  run.1    up ${hourAgoStr} (~ 1h ago)  us      instance  8000  us-east           bash       da route  Free
@@ -154,8 +154,11 @@ run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
 For more information on dyno sleeping and how to upgrade, see:
 https://devcenter.heroku.com/articles/dyno-sleeping
 
+=== run: one-off processes (1)
+run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
+
 `
-    return cmd.run({app: 'myapp', args: {}, flags: {}})
+    return cmd.run({app: 'myapp', args: [], flags: {}})
       .then(() => expect(cli.stdout, 'to equal', freeExpression))
       .then(() => expect(cli.stderr, 'to be empty'))
   })
@@ -168,8 +171,11 @@ https://devcenter.heroku.com/articles/dyno-sleeping
 For more information on dyno sleeping and how to upgrade, see:
 https://devcenter.heroku.com/articles/dyno-sleeping
 
+=== run: one-off processes (1)
+run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
+
 `
-    return cmd.run({app: 'myapp', args: {}, flags: {}})
+    return cmd.run({app: 'myapp', args: [], flags: {}})
       .then(() => expect(cli.stdout, 'to equal', freeExpression))
       .then(() => expect(cli.stderr, 'to be empty'))
   })
@@ -177,8 +183,12 @@ https://devcenter.heroku.com/articles/dyno-sleeping
   it('handles quota 404 properly', function () {
     stubAccountQuota(404, {id: 'not_found'})
 
-    let freeExpression = ''
-    return cmd.run({app: 'myapp', args: {}, flags: {}})
+    let freeExpression = `=== run: one-off processes (1)
+run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
+
+`
+
+    return cmd.run({app: 'myapp', args: [], flags: {}})
       .then(() => expect(cli.stdout, 'to equal', freeExpression))
       .then(() => expect(cli.stderr, 'to be empty'))
   })
@@ -186,8 +196,11 @@ https://devcenter.heroku.com/articles/dyno-sleeping
   it('handles quota 200 not_found properly', function () {
     stubAccountQuota(200, {id: 'not_found'})
 
-    let freeExpression = ''
-    return cmd.run({app: 'myapp', args: {}, flags: {}})
+    let freeExpression = `=== run: one-off processes (1)
+run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
+
+`
+    return cmd.run({app: 'myapp', args: [], flags: {}})
       .then(() => expect(cli.stdout, 'to equal', freeExpression))
       .then(() => expect(cli.stderr, 'to be empty'))
   })
@@ -207,21 +220,24 @@ https://devcenter.heroku.com/articles/dyno-sleeping
 
     let dynos = nock('https://api.heroku.com:443')
       .get('/apps/myapp/dynos')
-      .reply(200, [])
+      .reply(200, [{command: 'bash', size: 'Free', name: 'run.1', type: 'run', updated_at: hourAgo, state: 'up'}])
 
-    let freeExpression = ''
-    return cmd.run({app: 'myapp', args: {}, flags: {}})
+    let freeExpression = `=== run: one-off processes (1)
+run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
+
+`
+    return cmd.run({app: 'myapp', args: [], flags: {}})
       .then(() => expect(cli.stdout, 'to equal', freeExpression))
       .then(() => expect(cli.stderr, 'to be empty'))
       .then(() => dynos.done())
   })
 
-  it('propegates quota 503 properly', function () {
+  it('propagates quota 503 properly', function () {
     stubAccountQuota(503, {id: 'server_error'})
 
     let freeExpression = ''
     let thrown = false
-    return cmd.run({app: 'myapp', args: {}, flags: {}})
+    return cmd.run({app: 'myapp', args: [], flags: {}})
       .catch(function () { thrown = true })
       .then(() => expect(thrown, 'to equal', true))
       .then(() => expect(cli.stdout, 'to equal', freeExpression))

@@ -119,63 +119,66 @@ function printDynos (dynos) {
   })
 }
 
-function * run (context, heroku) {
-  let suffix = context.flags.extended ? '?extended=true' : ''
+const appquotaheader = {Accept: 'application/vnd.heroku+json; version=3.app-quotas'}
 
-  let feature = heroku.request({path: '/account/features/free-2016'})
-    .catch(function (err) {
+function * run (context, heroku) {
+  const {app, flags, args} = context
+  const types = args
+  const {json, extended} = flags
+  const suffix = extended ? '?extended=true' : ''
+
+  let {quota, dynos, feature} = yield {
+    quota: heroku.post(`/apps/${app}/actions/get-quota${suffix}`, {headers: appquotaheader}).catch(() => {}),
+    dynos: heroku.request({path: `/apps/${app}/dynos${suffix}`}),
+    feature: heroku.get('/account/features/free-2016').catch(function (err) {
       if (err.statusCode === 404 && err.body && err.body.id === 'not_found') {
         return {enabled: false}
       }
       throw err
     })
-
-  let data = yield {
-    quota: heroku.request({
-      path: `/apps/${context.app}/actions/get-quota${suffix}`,
-      method: 'post', headers: {Accept: 'application/vnd.heroku+json; version=3.app-quotas'}
-    }).catch(() => {
-    }),
-    dynos: heroku.request({path: `/apps/${context.app}/dynos${suffix}`}),
-    feature
   }
 
-  let type = context.args.type
-  if (type) {
-    data.dynos = data.dynos.filter(dyno => dyno.type === type)
+  if (types.length > 0) {
+    dynos = dynos.filter(dyno => types.find(t => dyno.type === t))
+    types.forEach(t => {
+      if (!dynos.find(d => d.type === t)) {
+        throw new Error(`No ${cli.color.cyan(t)} dynos on ${cli.color.app(app)}`)
+      }
+    })
   }
 
-  if (context.flags.json) {
-    cli.styledJSON(data.dynos)
-  } else if (context.flags.extended) {
-    printExtended(data.dynos)
-  } else {
-    if (data.feature.enabled) {
-      yield printAccountQuota(context, heroku)
-    } else {
-      printQuota(data.quota)
-    }
-    printDynos(data.dynos)
+  if (json) cli.styledJSON(dynos)
+  else if (extended) printExtended(dynos)
+  else {
+    if (feature.enabled) yield printAccountQuota(context, heroku)
+    else printQuota(quota)
+    if (dynos.length === 0) throw new Error(`No dynos on ${cli.color.app(app)}`)
+    else printDynos(dynos)
   }
 }
 
 module.exports = {
   topic: 'ps',
   description: 'list dynos for an app',
-  args: [{name: 'type', optional: true}],
+  variableArgs: true,
+  usage: 'ps [TYPE [TYPE ...]]',
   flags: [
     {name: 'json', description: 'display as json'},
     {name: 'extended', char: 'x', hidden: true}
   ],
   help: `
-Example:
+Examples:
 
  $ heroku ps
  === run: one-off dyno
  run.1: up for 5m: bash
 
  === web: bundle exec thin start -p $PORT
- web.1: created for 30s`,
+ web.1: created for 30s
+
+ $ heroku ps run # specifying types
+ === run: one-off dyno
+ run.1: up for 5m: bash`,
   needsAuth: true,
   needsApp: true,
   run: cli.command(co.wrap(run))
