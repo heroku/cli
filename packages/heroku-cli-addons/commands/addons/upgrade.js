@@ -83,8 +83,8 @@ function * run (c, h) {
   service = addon.addon_service.name
   app = addon.app.name
   plan = `${service}:${plan}`
-  addon = yield cli.action(`Changing ${cli.color.magenta(addon.name)} on ${cli.color.cyan(app)} from ${cli.color.blue(addon.plan.name)} to ${cli.color.blue(plan)}`, {success: false},
-    heroku.request({
+  yield cli.action(`Changing ${cli.color.magenta(addon.name)} on ${cli.color.cyan(app)} from ${cli.color.blue(addon.plan.name)} to ${cli.color.blue(plan)}`, {success: false}, co(function * () {
+    addon = yield heroku.request({
       path: `/apps/${app}/addons/${addon.name}`,
       method: 'PATCH',
       body: {plan: {name: plan}},
@@ -93,9 +93,9 @@ function * run (c, h) {
         'X-Heroku-Legacy-Provider-Messages': 'true'
       }
     }).catch((e) => handlePlanChangeAPIError(e))
-  )
-  cli.console.error(`done, ${cli.color.green(util.formatPrice(addon.plan.price))}`)
-  if (addon.provision_message) cli.log(addon.provision_message)
+    cli.action.done(`done, ${cli.color.green(util.formatPrice(addon.plan.price))}`)
+    if (addon.provision_message) cli.log(addon.provision_message)
+  }))
 }
 
 let cmd = {

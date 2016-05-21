@@ -15,16 +15,18 @@ function * run (context, heroku) {
     })
   )
 
-  let releases = yield cli.action(
+  yield cli.action(
     `Unsetting ${cli.color.attachment(attachment.name)} config vars and restarting ${cli.color.app(app)}`,
     {success: false},
-    heroku.request({
-      path: `/apps/${app}/releases`,
-      partial: true,
-      headers: { 'Range': 'version ..; max=1, order=desc' }
+    co(function * () {
+      let releases = yield heroku.request({
+        path: `/apps/${app}/releases`,
+        partial: true,
+        headers: { 'Range': 'version ..; max=1, order=desc' }
+      })
+      cli.action.done(`done, v${releases[0].version}`)
     })
   )
-  cli.console.error(`done, v${releases[0].version}`)
 }
 
 module.exports = {
