@@ -63,7 +63,7 @@ describe('ps', function () {
 
     stubAccountFeatureDisabled()
 
-    return cmd.run({app: 'myapp', flags: {}})
+    return cmd.run({app: 'myapp', args: {}, flags: {}})
       .then(() => expect(cli.stdout, 'to equal', `=== web (Free): npm start (1)
 web.1: up ${hourAgoStr} (~ 1h ago)
 
@@ -84,7 +84,7 @@ run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
 
     stubAccountFeatureDisabled()
 
-    return cmd.run({app: 'myapp', flags: {json: true}})
+    return cmd.run({app: 'myapp', args: {}, flags: {json: true}})
       .then(() => expect(JSON.parse(cli.stdout)[0], 'to satisfy', {command: 'npm start'}))
       .then(() => expect(cli.stderr, 'to be empty'))
       .then(() => api.done())
@@ -100,7 +100,7 @@ run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
     stubAccountFeature(404, {id: 'not_found'})
 
     let freeExpression = /^Free quota left: ([\d]+h [\d]{1,2}m|[\d]{1,2}m [\d]{1,2}s|[\d]{1,2}s])\n$/
-    return cmd.run({app: 'myapp', flags: {}})
+    return cmd.run({app: 'myapp', args: {}, flags: {}})
       .then(() => expect(cli.stdout, 'to match', freeExpression))
       .then(() => expect(cli.stderr, 'to be empty'))
       .then(() => api.done())
@@ -116,7 +116,7 @@ run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
     stubAccountFeature(200, {enabled: false})
 
     let freeExpression = /^Free quota left: ([\d]+h [\d]{1,2}m|[\d]{1,2}m [\d]{1,2}s|[\d]{1,2}s])\n$/
-    return cmd.run({app: 'myapp', flags: {}})
+    return cmd.run({app: 'myapp', args: {}, flags: {}})
       .then(() => expect(cli.stdout, 'to match', freeExpression))
       .then(() => expect(cli.stderr, 'to be empty'))
       .then(() => api.done())
@@ -136,7 +136,7 @@ run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
 
     stubAccountFeatureDisabled()
 
-    return cmd.run({app: 'myapp', flags: {extended: true}})
+    return cmd.run({app: 'myapp', args: {}, flags: {extended: true}})
       .then(() => expect(cli.stdout, 'to equal', `ID   Process  State                                    Region  Instance  Port  AZ       Release  Command    Route     Size
 ───  ───────  ───────────────────────────────────────  ──────  ────────  ────  ───────  ───────  ─────────  ────────  ────
 101  run.1    up ${hourAgoStr} (~ 1h ago)  us      instance  8000  us-east           bash       da route  Free
@@ -155,7 +155,7 @@ For more information on dyno sleeping and how to upgrade, see:
 https://devcenter.heroku.com/articles/dyno-sleeping
 
 `
-    return cmd.run({app: 'myapp', flags: {}})
+    return cmd.run({app: 'myapp', args: {}, flags: {}})
       .then(() => expect(cli.stdout, 'to equal', freeExpression))
       .then(() => expect(cli.stderr, 'to be empty'))
   })
@@ -169,7 +169,7 @@ For more information on dyno sleeping and how to upgrade, see:
 https://devcenter.heroku.com/articles/dyno-sleeping
 
 `
-    return cmd.run({app: 'myapp', flags: {}})
+    return cmd.run({app: 'myapp', args: {}, flags: {}})
       .then(() => expect(cli.stdout, 'to equal', freeExpression))
       .then(() => expect(cli.stderr, 'to be empty'))
   })
@@ -178,7 +178,7 @@ https://devcenter.heroku.com/articles/dyno-sleeping
     stubAccountQuota(404, {id: 'not_found'})
 
     let freeExpression = ''
-    return cmd.run({app: 'myapp', flags: {}})
+    return cmd.run({app: 'myapp', args: {}, flags: {}})
       .then(() => expect(cli.stdout, 'to equal', freeExpression))
       .then(() => expect(cli.stderr, 'to be empty'))
   })
@@ -187,7 +187,7 @@ https://devcenter.heroku.com/articles/dyno-sleeping
     stubAccountQuota(200, {id: 'not_found'})
 
     let freeExpression = ''
-    return cmd.run({app: 'myapp', flags: {}})
+    return cmd.run({app: 'myapp', args: {}, flags: {}})
       .then(() => expect(cli.stdout, 'to equal', freeExpression))
       .then(() => expect(cli.stderr, 'to be empty'))
   })
@@ -210,7 +210,7 @@ https://devcenter.heroku.com/articles/dyno-sleeping
       .reply(200, [])
 
     let freeExpression = ''
-    return cmd.run({app: 'myapp', flags: {}})
+    return cmd.run({app: 'myapp', args: {}, flags: {}})
       .then(() => expect(cli.stdout, 'to equal', freeExpression))
       .then(() => expect(cli.stderr, 'to be empty'))
       .then(() => dynos.done())
@@ -221,7 +221,7 @@ https://devcenter.heroku.com/articles/dyno-sleeping
 
     let freeExpression = ''
     let thrown = false
-    return cmd.run({app: 'myapp', flags: {}})
+    return cmd.run({app: 'myapp', args: {}, flags: {}})
       .catch(function () { thrown = true })
       .then(() => expect(thrown, 'to equal', true))
       .then(() => expect(cli.stdout, 'to equal', freeExpression))

@@ -54,14 +54,13 @@ describe('dashboard', () => {
         .get('/user/notifications').reply(200, [])
 
       return cmd.run({})
-        .then(() => expect(cli.stdout, 'to be', `
-See all add-ons with heroku addons
+        .then(() => expect(cli.stdout, 'to be', `See all add-ons with heroku addons
 See all apps with heroku apps --all
 
 See other CLI commands with heroku help
 
 `))
-        .then(() => expect(cli.stderr, 'to be', 'Loading...  ▸    Add apps to this dashboard by favoriting them with heroku\n ▸    apps:favorites:add\n'))
+        .then(() => expect(cli.stderr, 'to be', 'Loading... done\n\n ▸    Add apps to this dashboard by favoriting them with heroku\n ▸    apps:favorites:add\n'))
         .then(() => longboard.done())
         .then(() => telex.done())
         .then(() => heroku.done())
@@ -91,8 +90,7 @@ See other CLI commands with heroku help
         .reply(200, {data: {}})
 
       return cmd.run({})
-        .then(() => expect(cli.stdout, 'to be', `
-myapp
+        .then(() => expect(cli.stdout, 'to be', `myapp
   Owner: foo@bar.com
   Dynos: 1 | Standard-1X
   Last release: ${time.ago(now)}
@@ -105,7 +103,7 @@ See all apps with heroku apps --all
 See other CLI commands with heroku help
 
 `))
-        .then(() => expect(cli.stderr, 'to be', 'Loading... '))
+        .then(() => expect(cli.stderr, 'to be', 'Loading... done\n\n'))
         .then(() => metrics.done())
         .then(() => longboard.done())
         .then(() => telex.done())

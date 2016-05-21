@@ -1,5 +1,13 @@
 'use strict'
-let h = require('heroku-cli-util')
+
+const cli = require('heroku-cli-util')
+const co = require('co')
+
+function * run (context, heroku) {
+  let app = context.app
+  let p = heroku.patch(`/apps/${app}`, {body: {maintenance: true}})
+  yield cli.action(`Enabling maintenance mode for ${cli.color.app(app)}`, p)
+}
 
 module.exports = {
   topic: 'maintenance',
@@ -7,9 +15,5 @@ module.exports = {
   description: 'put the app into maintenance mode',
   needsApp: true,
   needsAuth: true,
-  run: h.command(function * (context, heroku) {
-    let app = context.app
-    let p = heroku.patch(`/apps/${app}`, {body: {maintenance: true}})
-    yield h.action(`Enabling maintenance mode for ${h.color.app(app)}`, p)
-  })
+  run: cli.command(co.wrap(run))
 }

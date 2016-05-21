@@ -28,12 +28,12 @@ function * run (context, heroku) {
     if (formation.length === 0) throw emptyFormationErr(app)
     cli.log(formation.map((d) => `${d.type}=${d.quantity}:${d.size}`).sort().join(' '))
   } else {
-    let formation = yield cli.action('Scaling dynos', {success: false},
-      heroku.request({method: 'PATCH', path: `/apps/${app}/formation`, body: {updates: changes}}))
-
-    let output = formation.filter((f) => changes.find((c) => c.type === f.type))
-      .map((d) => `${cli.color.green(d.type)} at ${d.quantity}:${d.size}`)
-    cli.console.error(`done, now running ${output.join(', ')}`)
+    yield cli.action('Scaling dynos', {success: false}, co(function * () {
+      let formation = yield heroku.request({method: 'PATCH', path: `/apps/${app}/formation`, body: {updates: changes}})
+      let output = formation.filter((f) => changes.find((c) => c.type === f.type))
+        .map((d) => `${cli.color.green(d.type)} at ${d.quantity}:${d.size}`)
+      cli.action.done(`done, now running ${output.join(', ')}`)
+    }))
   }
 }
 
