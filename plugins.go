@@ -499,6 +499,9 @@ func (p *Plugins) removeMissingPlugins() {
 	for i, plugin := range p.plugins {
 		if exists, _ := FileExists(p.pluginPath(plugin.Name)); !exists {
 			p.plugins = append(p.plugins[:i], p.plugins[i+1:]...)
+			p.saveCache()
+			p.removeMissingPlugins()
+			return
 		}
 	}
 }
