@@ -1,3 +1,53 @@
+2.1.1 / 2016-05-20
+==================
+
+  * 2.1.1
+  * updated heroku-cli-util
+
+2.1.0 / 2016-05-20
+==================
+
+  * 2.1.0
+  * updated actions to work with heroku-cli-util@6
+  * updated deps
+  * add img to dashboard
+  * update action
+  * filter dynos by type
+  * update heroku-cli-util
+
+2.0.7 / 2016-05-19
+==================
+
+  * 2.0.7
+  * Add fix for 200 with { id: not_found } ([#96](https://github.com/heroku/heroku-apps/issues/96))
+  * fix sortby
+  * optimize co-wait require
+  * Properly escape domains:wait example command ([#95](https://github.com/heroku/heroku-apps/issues/95))
+  * update heroku-cli-util to 6
+  * optimize requires
+  * added benchmark script
+
+2.0.6 / 2016-05-17
+==================
+
+  * 2.0.6
+  * Merge branch 'master' of github.com:heroku/heroku-apps
+
+2.0.5 / 2016-05-17
+==================
+
+  * 2.0.5
+  * Add stable domains:add extra functionality ([#93](https://github.com/heroku/heroku-apps/issues/93))
+    * Add stable domains:add extra functionality
+    * refactor domain wait to use co-wait ([#94](https://github.com/heroku/heroku-apps/issues/94))
+    * Remove unnecessary hasValue: false
+  * Change free usage to be based off of account quota ([#90](https://github.com/heroku/heroku-apps/issues/90))
+    * Change free usage to be based off of account quota
+    * Respect free-2016 user flag to toggle behavior
+  * circle test reporting
+  * remove release_status variant ([#89](https://github.com/heroku/heroku-apps/issues/89))
+  * changelog
+
 2.0.4 / 2016-05-11
 ==================
 
