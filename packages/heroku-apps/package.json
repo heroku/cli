@@ -7,7 +7,7 @@
     "url": "https://github.com/heroku/heroku-apps/issues"
   },
   "dependencies": {
-    "bluebird": "3.3.5",
+    "bluebird": "3.4.0",
     "co": "4.6.0",
     "co-wait": "0.0.0",
     "filesize": "3.3.0",
@@ -29,7 +29,7 @@
     "lodash.pickby": "4.4.0",
     "lodash.reduce": "4.4.0",
     "lodash.round": "4.0.2",
-    "lodash.sortby": "4.4.2",
+    "lodash.sortby": "4.5.0",
     "lodash.sum": "4.0.2",
     "lodash.sumby": "4.4.0",
     "lodash.topairs": "4.1.1",
@@ -48,7 +48,7 @@
     "chai": "^3.3.0",
     "changelog": "1.0.7",
     "fs-extra": "0.30.0",
-    "lolex": "1.4.0",
+    "lolex": "1.5.0",
     "mocha": "^2.3.3",
     "mocha-junit-reporter": "1.11.1",
     "mockdate": "1.0.4",
@@ -57,9 +57,9 @@
     "proxyquire": "1.7.9",
     "rimraf": "2.5.2",
     "snazzy": "4.0.0",
-    "standard": "7.0.1",
-    "unexpected": "10.13.2",
-    "time-require": "0.1.2"
+    "standard": "7.1.0",
+    "time-require": "0.1.2",
+    "unexpected": "10.13.3"
   },
   "homepage": "https://github.com/heroku/heroku-apps",
   "keywords": [
