@@ -11,7 +11,7 @@
     "heroku-orgs": "1.1.2",
     "heroku-pipelines": "1.1.6",
     "heroku-redis": "1.2.5",
-    "heroku-run": "3.2.8",
+    "heroku-run": "3.2.9",
     "heroku-spaces": "2.1.5",
     "heroku-status": "2.1.6"
   }
