@@ -18,7 +18,7 @@
     "nyc": "6.4.4",
     "proxyquire": "^1.5.0",
     "sinon": "^1.14.1",
-    "unexpected": "10.13.2"
+    "unexpected": "10.13.3"
   },
   "homepage": "https://github.com/heroku/heroku-git",
   "keywords": [
