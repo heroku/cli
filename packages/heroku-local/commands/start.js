@@ -1,6 +1,7 @@
 'use strict'
 
-let cli = require('heroku-cli-util')
+const co = require('co')
+const cli = require('heroku-cli-util')
 
 function * run (context) {
   if (context.flags.restart) throw new Error('--restart is no longer available\nUse forego instead: https://github.com/ddollar/forego')
@@ -36,5 +37,5 @@ Examples:
     {name: 'restart', char: 'r', hasValue: false, hidden: true, description: 'restart process if it dies'},
     {name: 'concurrency', char: 'c', hasValue: true, hidden: true, description: 'number of processes to start'}
   ],
-  run: cli.command(run)
+  run: cli.command(co.wrap(run))
 }

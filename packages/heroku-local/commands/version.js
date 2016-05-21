@@ -1,6 +1,7 @@
 'use strict'
 
-let cli = require('heroku-cli-util')
+const co = require('co')
+const cli = require('heroku-cli-util')
 
 function * run () {
   process.argv = ['', 'heroku local', '--version']
@@ -12,5 +13,5 @@ module.exports = {
   command: 'version',
   description: 'display node-foreman version',
   help: 'Display node-foreman version',
-  run: cli.command(run)
+  run: cli.command(co.wrap(run))
 }

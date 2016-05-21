@@ -1,6 +1,7 @@
 'use strict'
 
-let cli = require('heroku-cli-util')
+const co = require('co')
+const cli = require('heroku-cli-util')
 
 function * run (context) {
   if (context.args.length < 1) {
@@ -31,5 +32,5 @@ module.exports = {
     {name: 'env', char: 'e', hasValue: true},
     {name: 'port', char: 'p', hasValue: true}
   ],
-  run: cli.command(run)
+  run: cli.command(co.wrap(run))
 }
