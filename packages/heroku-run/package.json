@@ -23,7 +23,7 @@
   "homepage": "https://github.com/heroku/heroku-run",
   "dependencies": {
     "co": "4.6.0",
-    "heroku-cli-util": "6.0.1",
+    "heroku-cli-util": "6.0.4",
     "shellwords": "0.1.0"
   },
   "devDependencies": {

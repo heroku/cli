@@ -49,14 +49,7 @@ class Dyno {
     .then(dyno => {
       this.dyno = dyno
       if (this.opts.attach || this.opts.dyno) return this.attach()
-      else {
-        if (this.opts.showStatus) {
-          cli.action.update(this._status('done'))
-          cli.console.error()
-          cli.action.update('')
-          cli.action.task.spinner.clear()
-        }
-      }
+      else if (this.opts.showStatus) cli.action.done(this._status('done'))
     })
 
     if (this.opts.showStatus) {
@@ -69,7 +62,7 @@ class Dyno {
    */
   attach () {
     return new Promise((resolve, reject) => {
-      if (this.opts.showStatus) cli.action.update(this._status('starting'))
+      if (this.opts.showStatus) cli.action.status(this._status('starting'))
       this.resolve = resolve
       this.reject = reject
       let uri = url.parse(this.dyno.attach_url)
@@ -78,7 +71,7 @@ class Dyno {
       c.setEncoding('utf8')
       c.on('connect', () => {
         c.write(uri.path.substr(1) + '\r\n', () => {
-          if (this.opts.showStatus) cli.action.update(this._status('connecting'))
+          if (this.opts.showStatus) cli.action.status(this._status('connecting'))
         })
       })
       c.on('data', this._readData(c))
@@ -102,7 +95,7 @@ class Dyno {
   }
 
   _status (status) {
-    return `Running ${cli.color.cyan.bold(this.opts.command)} on ${cli.color.app(this.opts.app)}... ${status}, ${this.dyno.name || this.opts.dyno}`
+    return `${status}, ${this.dyno.name || this.opts.dyno}`
   }
 
   _readData (c) {
@@ -110,13 +103,7 @@ class Dyno {
     return data => {
       // discard first line
       if (firstLine) {
-        if (this.opts.showStatus) {
-          cli.action.update(this._status('up'))
-          cli.action.task.spinner.stop()
-          cli.console.error()
-          cli.action.update('')
-          cli.action.task.spinner.clear()
-        }
+        if (this.opts.showStatus) cli.action.done(this._status('up'))
         firstLine = false
         this._readStdin(c)
         return
