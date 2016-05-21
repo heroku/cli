@@ -1,6 +1,6 @@
 machine:
   node:
-    version: v5.10.1
+    version: v6.2.0
 dependencies:
   pre:
     - sudo add-apt-repository ppa:duggan/bats -y
