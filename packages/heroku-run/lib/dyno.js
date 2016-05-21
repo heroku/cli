@@ -128,7 +128,7 @@ class Dyno {
   _readStdin (c) {
     let stdin = process.stdin
     stdin.setEncoding('utf8')
-    stdin.unref()
+    if (stdin.unref) stdin.unref()
     if (tty.isatty(0)) {
       stdin.setRawMode(true)
       stdin.pipe(c)
