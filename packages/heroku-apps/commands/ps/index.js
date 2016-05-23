@@ -152,7 +152,7 @@ function * run (context, heroku) {
   else {
     if (feature.enabled) yield printAccountQuota(context, heroku)
     else printQuota(quota)
-    if (dynos.length === 0) throw new Error(`No dynos on ${cli.color.app(app)}`)
+    if (dynos.length === 0) cli.log(`No dynos on ${cli.color.app(app)}`)
     else printDynos(dynos)
   }
 }

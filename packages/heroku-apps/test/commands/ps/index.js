@@ -254,4 +254,17 @@ run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
       .then(() => expect(cli.stdout, 'to equal', freeExpression))
       .then(() => expect(cli.stderr, 'to be empty'))
   })
+
+  it('logs to stdout and exits zero when no dynos', function () {
+    stubAccountFeature(200, {enabled: false})
+
+    let dynos = nock('https://api.heroku.com:443')
+      .get('/apps/myapp/dynos')
+      .reply(200, [])
+
+    return cmd.run({app: 'myapp', args: [], flags: {}})
+      .then(() => expect(cli.stdout, 'to equal', 'No dynos on myapp\n'))
+      .then(() => expect(cli.stderr, 'to be empty'))
+      .then(() => dynos.done())
+  })
 })
