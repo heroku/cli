@@ -67,6 +67,29 @@ See other CLI commands with heroku help
     })
   })
 
+  describe('with no telex', () => {
+    it('shows the dashboard', () => {
+      let longboard = nock('https://longboard.heroku.com:443')
+        .get('/favorites').reply(200, [])
+      let heroku = nock('https://api.heroku.com:443')
+        .get('/organizations').reply(200, [])
+      let telex = nock('https://telex.heroku.com:443')
+        .get('/user/notifications').reply(401, [])
+
+      return cmd.run({})
+        .then(() => expect(cli.stdout, 'to be', `See all add-ons with heroku addons
+See all apps with heroku apps --all
+
+See other CLI commands with heroku help
+
+`))
+        .then(() => expect(cli.stderr, 'to be', 'Loading... done\n\n ▸    Add apps to this dashboard by favoriting them with heroku\n ▸    apps:favorites:add\n'))
+        .then(() => longboard.done())
+        .then(() => telex.done())
+        .then(() => heroku.done())
+    })
+  })
+
   describe('with a favorite app', () => {
     it('shows the dashboard', () => {
       let longboard = nock('https://longboard.heroku.com:443')

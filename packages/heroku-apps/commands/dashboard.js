@@ -64,6 +64,8 @@ function displayMetrics (metrics) {
 }
 
 function displayNotifications (notifications) {
+  if (!notifications) return
+
   notifications = notifications.filter((n) => !n.read)
   if (notifications.length > 0) {
     cli.log(`
@@ -132,7 +134,7 @@ function * run (context, heroku) {
 
     data = yield {
       orgs: heroku.request({path: '/organizations'}),
-      notifications: heroku.request({host: 'telex.heroku.com', path: '/user/notifications'}),
+      notifications: heroku.request({host: 'telex.heroku.com', path: '/user/notifications'}).catch(() => null),
       apps: apps.map((app) => ({
         app: heroku.get(`/apps/${app}`),
         formation: heroku.get(`/apps/${app}/formation`),
