@@ -7,11 +7,15 @@ function escapeRegExp (string) {
   return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') // $& means the whole matched string
 }
 
-let stableCname = '.herokudns.com'
+let stableCnames = ['.herokudns.com', '.herokudnsdev.com']
+
+function matches (match) {
+  return match && _.find(stableCnames, (stableCname) => match.cname.endsWith(stableCname))
+}
 
 module.exports = function (certDomain, domains) {
   let exactMatch = _.find(domains, (domain) => certDomain === domain.hostname)
-  if (exactMatch && exactMatch.cname.endsWith(stableCname)) {
+  if (matches(exactMatch)) {
     return exactMatch.cname
   }
 
@@ -25,7 +29,7 @@ module.exports = function (certDomain, domains) {
     return false
   })
 
-  if (wildcardMatch && wildcardMatch.cname.endsWith(stableCname)) {
+  if (matches(wildcardMatch)) {
     return wildcardMatch.cname
   }
 

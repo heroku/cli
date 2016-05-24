@@ -549,7 +549,7 @@ baz.example.org  CNAME        baz.example.org.herokudns.com
         .reply(200, [
           {'kind': 'custom', 'hostname': 'foo.example.org', 'cname': 'foo.example.org.herokudns.com'},
           {'kind': 'custom', 'hostname': 'bar.example.org', 'cname': 'bar.example.org.herokudns.com'},
-          {'kind': 'custom', 'hostname': 'biz.example.com', 'cname': 'biz.example.com.herokudns.com'},
+          {'kind': 'custom', 'hostname': 'biz.example.com', 'cname': 'biz.example.com.herokudnsdev.com'},
           {'kind': 'custom', 'hostname': 'baz.example.org', 'cname': 'baz.example.org.herokudns.com'}
         ])
 
@@ -576,10 +576,10 @@ biz.example.com
 
 === Your certificate has been added successfully.  Update your application's DNS settings as follows
 Domain           Record Type  DNS Target
-───────────────  ───────────  ─────────────────────────────
+───────────────  ───────────  ────────────────────────────────
 foo.example.org  CNAME        foo.example.org.herokudns.com
 bar.example.org  CNAME        bar.example.org.herokudns.com
-biz.example.com  CNAME        biz.example.com.herokudns.com
+biz.example.com  CNAME        biz.example.com.herokudnsdev.com
 baz.example.org  CNAME        baz.example.org.herokudns.com
 `)
         /* eslint-enable no-trailing-spaces */
