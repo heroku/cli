@@ -7,14 +7,9 @@ function* run (context, heroku) {
   let request = heroku.request({
     method:     'POST',
     path:       `/v1/app/${context.app}/join`,
-    parseJSON:  false,
     headers:    {Accept: 'application/json'}
   });
-  try {
-    yield cli.action(`Joining ${cli.color.cyan(context.app)}`, request);
-  } catch (err) {
-    throw err.body ? new Error(err.body) : err;
-  }
+  yield cli.action(`Joining ${cli.color.cyan(context.app)}`, request);
 }
 
 let cmd = {
