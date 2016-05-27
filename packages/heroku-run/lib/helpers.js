@@ -1,7 +1,6 @@
 'use strict'
 
-const cli = require('heroku-cli-util')
-const shellwords = require('shellwords')
+let cli = require('heroku-cli-util')
 
 function buildCommand (args) {
   if (args.length === 1) {
@@ -9,7 +8,14 @@ function buildCommand (args) {
     // `heroku run "rake test"` should work like `heroku run rake test`
     return args[0]
   }
-  return args.map(shellwords.escape).join(' ')
+  let cmd = ''
+  for (let arg of args) {
+    if (arg.indexOf(' ') !== -1 || arg.indexOf('"') !== -1) {
+      arg = '"' + arg.replace(/"/g, '\\"') + '"'
+    }
+    cmd = cmd + ' ' + arg
+  }
+  return cmd.trim()
 }
 
 function buildEnvFromFlag (flag) {

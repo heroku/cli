@@ -18,6 +18,24 @@ describe('run', () => {
     .then(() => expect(stdout, 'to equal', '1 2 3\n'))
   })
 
+  it('runs a command with spaces', () => {
+    let stdout = ''
+    let fixture = new StdOutFixture()
+    fixture.capture(s => { stdout += s })
+    return cmd.run({app: 'heroku-run-test-app', flags: {}, auth: {password: apikey}, args: ['ruby', '-e', 'puts ARGV[0]', '{"foo": "bar"}']})
+    .then(() => fixture.release())
+    .then(() => expect(stdout, 'to equal', '{"foo": "bar"}\n'))
+  })
+
+  it('runs a command with quotes', () => {
+    let stdout = ''
+    let fixture = new StdOutFixture()
+    fixture.capture(s => { stdout += s })
+    return cmd.run({app: 'heroku-run-test-app', flags: {}, auth: {password: apikey}, args: ['ruby', '-e', 'puts ARGV[0]', '{"foo":"bar"}']})
+    .then(() => fixture.release())
+    .then(() => expect(stdout, 'to equal', '{"foo":"bar"}\n'))
+  })
+
   it('runs a command with env vars', () => {
     let stdout = ''
     let fixture = new StdOutFixture()
