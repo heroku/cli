@@ -22,9 +22,9 @@ describe('run', () => {
     let stdout = ''
     let fixture = new StdOutFixture()
     fixture.capture(s => { stdout += s })
-    return cmd.run({app: 'heroku-run-test-app', flags: {}, auth: {password: apikey}, args: ['ruby', '-e', 'puts ARGV[0]', '{"foo": "bar"}']})
+    return cmd.run({app: 'heroku-run-test-app', flags: {}, auth: {password: apikey}, args: ['ruby', '-e', 'puts ARGV[0]', '{"foo": "bar"} ']})
     .then(() => fixture.release())
-    .then(() => expect(stdout, 'to equal', '{"foo": "bar"}\n'))
+    .then(() => expect(stdout, 'to equal', '{"foo": "bar"} \n'))
   })
 
   it('runs a command with quotes', () => {
