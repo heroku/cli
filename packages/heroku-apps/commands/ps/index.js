@@ -84,7 +84,11 @@ function * printAccountQuota (context, heroku) {
     percentage = Math.floor(remaining / quota.account_quota * 100)
   }
 
-  cli.log(`Free dyno hours quota remaining this month: ${remaining} hrs (${percentage}%)`)
+  let remainingMinutes = remaining / 60
+  let hours = Math.floor(remainingMinutes / 60)
+  let minutes = Math.floor(remainingMinutes % 60)
+
+  cli.log(`Free dyno hours quota remaining this month: ${hours}h ${minutes}m (${percentage}%)`)
   cli.log('For more information on dyno sleeping and how to upgrade, see:')
   cli.log('https://devcenter.heroku.com/articles/dyno-sleeping')
   cli.log()

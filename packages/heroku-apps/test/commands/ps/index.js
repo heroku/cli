@@ -161,7 +161,24 @@ run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
     stubAccountQuota(200, {account_quota: 1000, quota_used: 1})
 
     let freeExpression =
-`Free dyno hours quota remaining this month: 999 hrs (99%)
+`Free dyno hours quota remaining this month: 0h 16m (99%)
+For more information on dyno sleeping and how to upgrade, see:
+https://devcenter.heroku.com/articles/dyno-sleeping
+
+=== run: one-off processes (1)
+run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
+
+`
+    return cmd.run({app: 'myapp', args: [], flags: {}})
+      .then(() => expect(cli.stdout, 'to equal', freeExpression))
+      .then(() => expect(cli.stderr, 'to be empty'))
+  })
+
+  it('shows free quota remaining in hours and minutes', function () {
+    stubAccountQuota(200, {account_quota: 3600000, quota_used: 178200})
+
+    let freeExpression =
+`Free dyno hours quota remaining this month: 950h 30m (95%)
 For more information on dyno sleeping and how to upgrade, see:
 https://devcenter.heroku.com/articles/dyno-sleeping
 
@@ -178,7 +195,7 @@ run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
     stubAccountQuota(200, {account_quota: 0, quota_used: 0})
 
     let freeExpression =
-`Free dyno hours quota remaining this month: 0 hrs (0%)
+`Free dyno hours quota remaining this month: 0h 0m (0%)
 For more information on dyno sleeping and how to upgrade, see:
 https://devcenter.heroku.com/articles/dyno-sleeping
 
