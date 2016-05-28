@@ -3,6 +3,12 @@
 let cli = require('heroku-cli-util')
 let co = require('co')
 
+function styledDrain (id, name, drain) {
+  let output = `${id} (${name})`
+  if (drain.extended) output = output + ` drain_id=${drain.extended.drain_id}`
+  cli.log(output)
+}
+
 function * run (context, heroku) {
   const partition = require('lodash.partition')
 
@@ -16,16 +22,14 @@ function * run (context, heroku) {
     if (drains[1].length > 0) {
       cli.styledHeader('Drains')
       drains[1].forEach((drain) => {
-        let output = `${drain.url} (${cli.color.green(drain.token)})`
-        if (drain.extended) output = output + ` drain_id=${drain.extended.drain_id}`
-        cli.log(output)
+        styledDrain(drain.url, cli.color.green(drain.token), drain)
       })
     }
     if (drains[0].length > 0) {
       let addons = yield drains[0].map((d) => heroku.get(`/apps/${context.app}/addons/${d.addon.name}`))
       cli.styledHeader('Add-on Drains')
-      addons.forEach((addon) => {
-        cli.log(`${cli.color.yellow(addon.plan.name)} (${cli.color.green(addon.name)})`)
+      addons.forEach((addon, i) => {
+        styledDrain(cli.color.yellow(addon.plan.name), cli.color.green(addon.name), drains[0][i])
       })
     }
   }

@@ -39,4 +39,34 @@ add-on:test (add-on-123)
 `))
       .then(() => api.done())
   })
+
+  it('shows drain_id for both', function () {
+    let api = nock('https://api.heroku.com:443')
+      .get('/apps/myapp/log-drains?extended=true')
+      .reply(200, [{
+        addon: {name: 'add-on-123'},
+        token: 'd.8bf587e9-29d1-43c8-bd0e-36cdfaf35259',
+        url: 'https://forker.herokuapp.com',
+        extended: {
+          drain_id: 12345
+        }
+      }, {
+        token: 'd.8bf587e9-29d1-43c8-bd0e-36cdfaf35259',
+        url: 'https://forker.herokuapp.com',
+        extended: {
+          drain_id: 67890
+        }
+      }])
+      .get('/apps/myapp/addons/add-on-123')
+      .reply(200, {name: 'add-on-123', plan: {name: 'add-on:test'}})
+    return cmd.run({app: 'myapp', flags: {extended: true}})
+      .then(() => expect(cli.stderr).to.equal(''))
+      .then(() => expect(cli.stdout).to.equal(
+`=== Drains
+https://forker.herokuapp.com (d.8bf587e9-29d1-43c8-bd0e-36cdfaf35259) drain_id=67890
+=== Add-on Drains
+add-on:test (add-on-123) drain_id=12345
+`))
+      .then(() => api.done())
+  })
 })
