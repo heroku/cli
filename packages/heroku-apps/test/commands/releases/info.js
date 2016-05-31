@@ -124,6 +124,29 @@ FOO: foo
       .matchHeader('accept', 'application/vnd.heroku+json; version=3')
       .reply(200, {
         description: 'something changed',
+        status: 'failed',
+        user: { email: 'foo@foo.com' },
+        created_at: d,
+        version: 10
+      })
+    return cmd.run({app: 'myapp', flags: {}, args: {}})
+      .then(() => expect(cli.stdout, 'to equal', `=== Release v10
+By:      foo@foo.com
+Change:  something changed (release command failed)
+When:    ${d.toISOString()}
+`))
+      .then(() => expect(cli.stderr, 'to be empty'))
+      .then(() => api.done())
+  })
+
+  it('shows a failed (failure) release info', function () {
+    let api = nock('https://api.heroku.com:443')
+      .get('/apps/myapp/releases')
+      .reply(200, [{version: 10}])
+      .get('/apps/myapp/releases/10')
+      .matchHeader('accept', 'application/vnd.heroku+json; version=3')
+      .reply(200, {
+        description: 'something changed',
         status: 'failure',
         user: { email: 'foo@foo.com' },
         created_at: d,

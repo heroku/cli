@@ -13,7 +13,7 @@ describe('releases', () => {
     {
       'created_at': '2015-11-18T01:37:41Z',
       'description': 'Set foo config vars',
-      'status': 'success',
+      'status': 'succeeded',
       'id': '5efa3510-e8df-4db0-a176-83ff8ad91eb5',
       'slug': {
         'id': '37994c83-39a3-4cbf-b318-8f9dc648f701'
@@ -28,7 +28,7 @@ describe('releases', () => {
     {
       'created_at': '2015-11-18T01:36:38Z',
       'description': 'Remove AWS_SECRET_ACCESS_KEY config vars',
-      'status': 'failure',
+      'status': 'failed',
       'id': '7be47426-2c1b-4e4d-b6e5-77c79169aa41',
       'slug': {
         'id': '37994c83-39a3-4cbf-b318-8f9dc648f701'
@@ -76,7 +76,7 @@ describe('releases', () => {
     {
       'created_at': '2015-11-18T01:37:41Z',
       'description': 'Set foo config vars',
-      'status': 'success',
+      'status': 'succeeded',
       'id': '5efa3510-e8df-4db0-a176-83ff8ad91eb5',
       'slug': {
         'id': '37994c83-39a3-4cbf-b318-8f9dc648f701'
