@@ -75,7 +75,7 @@ describe('domains:wait', function () {
       .then(() => status1.done())
       .then(() => status2.done())
       .then(() => expect(cli.stdout).to.equal(''))
-      .then(() => expect(cli.stderr).to.equal('Waiting for foo.com... !!!\n'))
+      .then(() => expect(cli.stderr).to.equal('Waiting for foo.com... !\n'))
   })
 
   it('adds a domain with the wait message failed immediately', function () {
@@ -93,6 +93,6 @@ describe('domains:wait', function () {
       .then(() => expect(thrown).to.equal(true))
       .then(() => api.done())
       .then(() => expect(cli.stdout).to.equal(''))
-      .then(() => expect(cli.stderr).to.equal('Waiting for foo.com... !!!\n'))
+      .then(() => expect(cli.stderr).to.equal('Waiting for foo.com... !\n'))
   })
 })

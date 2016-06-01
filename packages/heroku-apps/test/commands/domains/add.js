@@ -123,7 +123,7 @@ Waiting for foo.com... done
  ▸    Configure your app's DNS provider to point to the DNS Target undefined.
  ▸    For help, see https://devcenter.heroku.com/articles/custom-domains
 
-Waiting for foo.com... !!!
+Waiting for foo.com... !
 `))
   })
 
@@ -147,7 +147,7 @@ Waiting for foo.com... !!!
  ▸    Configure your app's DNS provider to point to the DNS Target undefined.
  ▸    For help, see https://devcenter.heroku.com/articles/custom-domains
 
-Waiting for foo.com... !!!
+Waiting for foo.com... !
 `))
   })
 })

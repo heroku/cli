@@ -11,7 +11,7 @@
     "co": "4.6.0",
     "co-wait": "0.0.0",
     "filesize": "3.3.0",
-    "heroku-cli-util": "6.0.10",
+    "heroku-cli-util": "6.0.11",
     "inquirer": "1.0.2",
     "lodash": "4.12.0",
     "lodash.compact": "3.0.1",
