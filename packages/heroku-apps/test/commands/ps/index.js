@@ -9,6 +9,17 @@ const strftime = require('strftime')
 
 const hourAgo = new Date(new Date() - 60 * 60 * 1000)
 const hourAgoStr = strftime('%Y/%m/%d %H:%M:%S %z', hourAgo)
+const hourAhead = new Date(new Date().getTime() + 60 * 60 * 1000)
+
+function stubAccountFeature (code, body) {
+  nock('https://api.heroku.com:443')
+    .get('/account/features/free-2016')
+    .reply(code, body)
+}
+
+function stubAccountFeatureDisabled () {
+  stubAccountFeature(404, {id: 'not_found'})
+}
 
 function stubAccountQuota (code, body) {
   nock('https://api.heroku.com:443')
@@ -36,18 +47,6 @@ function stubAccountQuota (code, body) {
     .reply(code, body)
 }
 
-function stubAppAndAccount () {
-  nock('https://api.heroku.com:443', {
-    reqHeaders: {'Accept': 'application/vnd.heroku+json; version=3.process_tier'}
-  })
-    .get('/apps/myapp')
-    .reply(200, {process_tier: 'hobby'})
-
-  nock('https://api.heroku.com:443')
-    .get('/account')
-    .reply(200, {id: '1234'})
-}
-
 describe('ps', function () {
   beforeEach(function () {
     cli.mockConsole()
@@ -62,7 +61,7 @@ describe('ps', function () {
         {command: 'bash', size: 'Free', name: 'run.1', type: 'run', updated_at: hourAgo, state: 'up'}
       ])
 
-    stubAppAndAccount()
+    stubAccountFeatureDisabled()
 
     return cmd.run({app: 'myapp', args: [], flags: {}})
       .then(() => expect(cli.stdout, 'to equal', `=== web (Free): npm start (1)
@@ -83,9 +82,7 @@ run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
         {command: 'npm start', size: 'Free', name: 'web.1', type: 'web', updated_at: hourAgo, state: 'up'},
         {command: 'bash', size: 'Free', name: 'run.1', type: 'run', updated_at: hourAgo, state: 'up'}
       ])
-
-    stubAppAndAccount()
-
+    stubAccountFeatureDisabled()
     return expect(cmd.run({app: 'myapp', args: ['foo'], flags: {}}), 'to be rejected with', 'No foo dynos on myapp')
   })
 
@@ -96,8 +93,42 @@ run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
         {command: 'npm start', size: 'Free', name: 'web.1', type: 'web', updated_at: hourAgo, state: 'up'}
       ])
 
+    stubAccountFeatureDisabled()
+
     return cmd.run({app: 'myapp', args: [], flags: {json: true}})
       .then(() => expect(JSON.parse(cli.stdout)[0], 'to satisfy', {command: 'npm start'}))
+      .then(() => expect(cli.stderr, 'to be empty'))
+      .then(() => api.done())
+  })
+
+  it('shows free time remaining when free-2016 not found', function () {
+    let api = nock('https://api.heroku.com:443')
+      .post('/apps/myapp/actions/get-quota')
+      .reply(200, {allow_until: hourAhead})
+      .get('/apps/myapp/dynos')
+      .reply(200)
+
+    stubAccountFeature(404, {id: 'not_found'})
+
+    let freeExpression = /^Free quota left: ([\d]+h [\d]{1,2}m|[\d]{1,2}m [\d]{1,2}s|[\d]{1,2}s])\n$/
+    return cmd.run({app: 'myapp', args: [], flags: {}})
+      .then(() => expect(cli.stdout, 'to match', freeExpression))
+      .then(() => expect(cli.stderr, 'to be empty'))
+      .then(() => api.done())
+  })
+
+  it('shows free time remaining when free-2016 not enabled', function () {
+    let api = nock('https://api.heroku.com:443')
+      .post('/apps/myapp/actions/get-quota')
+      .reply(200, {allow_until: hourAhead})
+      .get('/apps/myapp/dynos')
+      .reply(200)
+
+    stubAccountFeature(200, {enabled: false})
+
+    let freeExpression = /^Free quota left: ([\d]+h [\d]{1,2}m|[\d]{1,2}m [\d]{1,2}s|[\d]{1,2}s])\n$/
+    return cmd.run({app: 'myapp', args: [], flags: {}})
+      .then(() => expect(cli.stdout, 'to match', freeExpression))
       .then(() => expect(cli.stderr, 'to be empty'))
       .then(() => api.done())
   })
@@ -113,6 +144,8 @@ run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
           region: 'us', instance: 'instance', port: 8000, az: 'us-east', route: 'da route'
         }}
       ])
+
+    stubAccountFeatureDisabled()
 
     return cmd.run({app: 'myapp', args: [], flags: {extended: true}})
       .then(() => expect(cli.stdout, 'to equal', `ID   Process  State                                    Region  Instance  Port  AZ       Release  Command    Route     Size
@@ -201,6 +234,8 @@ run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
   })
 
   it('does not print out for non-free apps', function () {
+    stubAccountFeature(200, {enabled: true})
+
     nock('https://api.heroku.com:443')
       .get('/account')
       .reply(200, {id: '1234'})
@@ -238,11 +273,11 @@ run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
   })
 
   it('logs to stdout and exits zero when no dynos', function () {
+    stubAccountFeature(200, {enabled: false})
+
     let dynos = nock('https://api.heroku.com:443')
       .get('/apps/myapp/dynos')
       .reply(200, [])
-
-    stubAppAndAccount()
 
     return cmd.run({app: 'myapp', args: [], flags: {}})
       .then(() => expect(cli.stdout, 'to equal', 'No dynos on myapp\n'))
