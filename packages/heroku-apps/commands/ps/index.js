@@ -7,18 +7,6 @@ let time = require('../../lib/time')
 // gets the process number from a string like web.19 => 19
 let getProcessNum = (s) => parseInt(s.split('.', 2)[1])
 
-function printQuota (quota) {
-  if (!quota) return
-  let lbl
-  if (quota.allow_until) lbl = 'Free quota left'
-  else if (quota.deny_until) lbl = 'Free quota exhausted. Unidle available in'
-  if (lbl) {
-    let timestamp = quota.allow_until ? new Date(quota.allow_until) : new Date(quota.deny_until)
-    let timeRemaining = time.remaining(new Date(), timestamp)
-    cli.log(`${lbl}: ${timeRemaining}`)
-  }
-}
-
 function printExtended (dynos) {
   const truncate = require('lodash.truncate')
   const sortBy = require('lodash.sortby')
@@ -42,21 +30,13 @@ function printExtended (dynos) {
   })
 }
 
-function * printAccountQuota (context, heroku) {
-  let requests = yield {
-    app: heroku.request({
-      path: `/apps/${context.app}`,
-      headers: {Accept: 'application/vnd.heroku+json; version=3.process-tier'}
-    }),
-    account: heroku.request({path: '/account'})
-  }
-
-  if (requests.app.process_tier !== 'free') {
+function * printAccountQuota (context, heroku, app, account) {
+  if (app.process_tier !== 'free') {
     return
   }
 
   let quota = yield heroku.request({
-    path: `/accounts/${requests.account.id}/actions/get-quota`,
+    path: `/accounts/${account.id}/actions/get-quota`,
     headers: {Accept: 'application/vnd.heroku+json; version=3.account-quotas'}
   })
   .then(function (data) {
@@ -123,24 +103,25 @@ function printDynos (dynos) {
   })
 }
 
-const appquotaheader = {Accept: 'application/vnd.heroku+json; version=3.app-quotas'}
-
 function * run (context, heroku) {
   const {app, flags, args} = context
   const types = args
   const {json, extended} = flags
   const suffix = extended ? '?extended=true' : ''
 
-  let {quota, dynos, feature} = yield {
-    quota: heroku.post(`/apps/${app}/actions/get-quota${suffix}`, {headers: appquotaheader}).catch(() => {}),
-    dynos: heroku.request({path: `/apps/${app}/dynos${suffix}`}),
-    feature: heroku.get('/account/features/free-2016').catch(function (err) {
-      if (err.statusCode === 404 && err.body && err.body.id === 'not_found') {
-        return {enabled: false}
-      }
-      throw err
-    })
+  let promises = {
+    dynos: heroku.request({path: `/apps/${app}/dynos${suffix}`})
   }
+
+  if (!json && !extended) {
+    promises.app_info = heroku.request({
+      path: `/apps/${context.app}`,
+      headers: {Accept: 'application/vnd.heroku+json; version=3.process-tier'}
+    })
+    promises.account_info = heroku.request({path: '/account'})
+  }
+
+  let {dynos, app_info, account_info} = yield promises
 
   if (types.length > 0) {
     dynos = dynos.filter(dyno => types.find(t => dyno.type === t))
@@ -154,8 +135,7 @@ function * run (context, heroku) {
   if (json) cli.styledJSON(dynos)
   else if (extended) printExtended(dynos)
   else {
-    if (feature.enabled) yield printAccountQuota(context, heroku)
-    else printQuota(quota)
+    yield printAccountQuota(context, heroku, app_info, account_info)
     if (dynos.length === 0) cli.log(`No dynos on ${cli.color.app(app)}`)
     else printDynos(dynos)
   }
