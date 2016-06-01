@@ -61,7 +61,7 @@ Setting foo config vars and restarting myapp... done, v10
       .reply(200, [{version: 10}])
     return cmd.run({app: 'myapp', args: {addon_name: 'redis-123'}, flags: {as: 'foo'}})
       .then(() => expect(cli.stdout, 'to be empty'))
-      .then(() => expect(cli.stderr, 'to equal', `Attaching redis-123 as foo to myapp... !!!
+      .then(() => expect(cli.stderr, 'to equal', `Attaching redis-123 as foo to myapp... !
 Attaching redis-123 as foo to myapp... done
 Setting foo config vars and restarting myapp... done, v10
 `))
