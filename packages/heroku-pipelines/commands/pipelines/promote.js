@@ -1,5 +1,6 @@
 'use strict';
 
+const co = require('co');
 const assert = require('assert');
 const cli = require('heroku-cli-util');
 const BBPromise = require('bluebird');
@@ -116,7 +117,7 @@ module.exports = {
       hasValue: true
     }
   ],
-  run: cli.command(function* (context, heroku) {
+  run: cli.command(co.wrap(function* (context, heroku) {
     const app = context.app;
     const coupling = yield getCoupling(heroku, app);
     const allApps = yield getApps(heroku, coupling.pipeline);
@@ -177,5 +178,5 @@ module.exports = {
     }
 
     cli.styledHash(styledTargets);
-  })
+  }))
 };

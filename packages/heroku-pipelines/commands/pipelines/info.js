@@ -1,5 +1,6 @@
 'use strict';
 
+const co              = require('co');
 const cli             = require('heroku-cli-util');
 const disambiguate    = require('../../lib/disambiguate');
 const stageNames      = require('../../lib/stages').names;
@@ -17,7 +18,7 @@ module.exports = {
   flags: [
     {name: 'json', description: 'output in json format'},
   ],
-  run: cli.command(function* (context, heroku) {
+  run: cli.command(co.wrap(function* (context, heroku) {
     const pipeline = yield disambiguate(heroku, context.args.pipeline);
 
     const apps = yield listPipelineApps(heroku, pipeline.id);
@@ -42,5 +43,5 @@ module.exports = {
       cli.styledHeader(pipeline.name);
       cli.styledHash(stages, stageNames);
     }
-  })
+  }))
 };

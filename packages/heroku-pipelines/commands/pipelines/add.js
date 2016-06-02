@@ -1,5 +1,6 @@
 'use strict';
 
+let co = require('co');
 let cli = require('heroku-cli-util');
 let infer = require('../../lib/infer');
 let disambiguate = require('../../lib/disambiguate');
@@ -21,7 +22,7 @@ module.exports = {
   flags: [
     {name: 'stage', char: 's', description: 'stage of first app in pipeline', hasValue: true}
   ],
-  run: cli.command(function* (context, heroku) {
+  run: cli.command(co.wrap(function* (context, heroku) {
     const app = context.app;
 
     var stage;
@@ -46,5 +47,5 @@ module.exports = {
 
     yield cli.action(`Adding ${app} to ${pipeline.name} pipeline as ${stage}`,
                     createCoupling(heroku, pipeline, app, stage));
-  })
+  }))
 };

@@ -1,5 +1,6 @@
 'use strict';
 
+let co = require('co');
 let cli = require('heroku-cli-util');
 
 module.exports = {
@@ -12,7 +13,7 @@ module.exports = {
     {name: 'json', description: 'output in json format'},
   ],
   needsAuth: true,
-  run: cli.command(function* (context, heroku) {
+  run: cli.command(co.wrap(function* (context, heroku) {
     let pipelines = yield heroku.get('/pipelines');
 
     if (context.flags.json) {
@@ -21,5 +22,5 @@ module.exports = {
       cli.styledHeader(`My Pipelines`);
       for (let pipeline of pipelines) cli.log(pipeline.name);
     }
-  })
+  }))
 };

@@ -1,5 +1,6 @@
 'use strict';
 
+const co = require('co');
 const cli = require('heroku-cli-util');
 const disambiguate = require('../../lib/disambiguate');
 
@@ -14,7 +15,7 @@ module.exports = {
     {name: 'pipeline', description: 'current name of pipeline', optional: false},
     {name: 'name', description: 'new name of pipeline', optional: false}
   ],
-  run: cli.command(function* (context, heroku) {
+  run: cli.command(co.wrap(function* (context, heroku) {
     const pipeline = yield disambiguate(heroku, context.args.pipeline);
 
     const promise = heroku.request({
@@ -25,5 +26,5 @@ module.exports = {
     }); // heroku.pipelines(pipeline).update(body);
 
     yield cli.action(`Renaming ${pipeline.name} pipeline to ${context.args.name}`, promise);
-  })
+  }))
 };
