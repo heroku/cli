@@ -7,7 +7,6 @@ const BBPromise = require('bluebird');
 const api              = require('../../lib/api');
 const keyBy            = require('../../lib/key-by');
 const listPipelineApps = api.listPipelineApps;
-const V3_HEADER        = api.V3_HEADER;
 
 const PROMOTION_ORDER = ["development", "staging", "production"];
 
@@ -23,11 +22,17 @@ function isFailed(promotionTarget) {
   return promotionTarget.status === 'failed';
 }
 
+function * getSecondFactor() {
+  cli.yubikey.enable();
+  const secondFactor = yield cli.prompt('Two-factor code', { mask: true });
+  cli.yubikey.disable();
+  return secondFactor;
+}
+
 function pollPromotionStatus(heroku, id) {
   return heroku.request({
     method: 'GET',
-    path: `/pipeline-promotions/${id}/promotion-targets`,
-    headers: { 'Accept': V3_HEADER, }
+    path: `/pipeline-promotions/${id}/promotion-targets`
   }).then(function(targets) {
     if (targets.every(isComplete)) { return targets; }
 
@@ -38,8 +43,7 @@ function pollPromotionStatus(heroku, id) {
 function* getCoupling(heroku, app) {
   return yield cli.action(`Fetching app info`, heroku.request({
     method: 'GET',
-    path: `/apps/${app}/pipeline-couplings`,
-    headers: { 'Accept': V3_HEADER }
+    path: `/apps/${app}/pipeline-couplings`
   }));
 }
 
@@ -48,17 +52,30 @@ function* getApps(heroku, pipeline) {
     listPipelineApps(heroku, pipeline.id));
 }
 
-function* promote(heroku, promotionActionName, pipelineId, sourceAppId, targetApps) {
-  return yield cli.action(promotionActionName, heroku.request({
+function* promote(heroku, label, id, sourceAppId, targetApps, secondFactor) {
+  const options = {
     method: 'POST',
     path: `/pipeline-promotions`,
-    headers: { 'Accept': V3_HEADER, },
     body: {
-      pipeline: { id: pipelineId },
+      pipeline: { id: id },
       source:   { app: { id: sourceAppId } },
-      targets:  targetApps.map(function(app) { return { app: { id: app.id } }; })
+      targets:  targetApps.map((app) => { return { app: { id: app.id } }; })
     }
-  }));
+  };
+
+  if (secondFactor) {
+    options.headers = { 'Heroku-Two-Factor-Code': secondFactor };
+  }
+
+  try {
+    return yield cli.action(label, heroku.request(options));
+  } catch(error) {
+    if (error.body.id !== "two_factor") {
+      throw error;
+    }
+    const secondFactor = yield getSecondFactor();
+    return yield promote(heroku, label, id, sourceAppId, targetApps, secondFactor);
+  }
 }
 
 function assertNotPromotingToSelf(source, target) {

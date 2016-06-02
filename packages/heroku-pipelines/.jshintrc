@@ -12,7 +12,7 @@
   "laxcomma": true,
   "maxcomplexity": 10,
   "maxdepth": 5,
-  "maxparams": 5,
+  "maxparams": 6,
   "maxstatements": 25,
   "multistr": true,
   "newcap": true,
