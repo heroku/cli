@@ -139,7 +139,7 @@ function release(context) {
   }
 
   function createRemoteSlug(slug) {
-    var lang = `heroku-docker (${ slug.name || 'unknown'})`;
+    var lang = `heroku-container-tools (${ slug.name || 'unknown'})`;
     cli.log(`creating remote slug...`);
     cli.log(`language-pack: ${ lang }`);
     cli.log('remote process types:', modifiedProc);
@@ -190,7 +190,7 @@ function release(context) {
       method: 'POST',
       path: `${ app.path }/releases`,
       headers: {
-        'Heroku-Deploy-Type': 'heroku-docker'
+        'Heroku-Deploy-Type': 'heroku-container-tools'
       },
       body: {
         slug: id

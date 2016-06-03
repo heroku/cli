@@ -2,7 +2,7 @@ link:
 	heroku plugins:link "$(shell pwd)"
 
 unlink:
-	heroku plugins:uninstall heroku-docker
+	heroku plugins:uninstall heroku-container-tools
 
 patch:
 	npm version patch

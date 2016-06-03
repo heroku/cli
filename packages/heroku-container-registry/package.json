@@ -1,10 +1,10 @@
 {
-  "name": "heroku-docker",
+  "name": "heroku-container-tools",
   "version": "2.0.0",
   "topic": "docker",
   "description": "Use Docker to build and deploy Heroku apps",
   "main": "index.js",
-  "repository": "https://github.com/heroku/heroku-docker",
+  "repository": "https://github.com/heroku/heroku-container-tools",
   "scripts": {
     "test": "mocha",
     "depcheck": "depcheck || true"

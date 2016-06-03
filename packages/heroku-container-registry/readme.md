@@ -5,7 +5,7 @@ Heroku Toolbelt plugin to help configure, test and release apps to Heroku using 
 ## Installation
 
 ```
-$ heroku plugins:install heroku-docker
+$ heroku plugins:install heroku-container-tools
 ```
 
 ## Use
@@ -41,8 +41,8 @@ Usage: heroku docker:init
 Checkout the plugin source code and tell the Heroku CLI to use your local version of the plugin (instead of the default one distributed with NPM).
 
 ```
-$ git clone https://github.com/heroku/heroku-docker.git
-$ cd heroku-docker
+$ git clone https://github.com/heroku/heroku-container-tools.git
+$ cd heroku-container-tools
 $ npm install
 $ heroku plugins:link .
 ```

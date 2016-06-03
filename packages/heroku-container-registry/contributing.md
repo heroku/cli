@@ -16,7 +16,7 @@ When you'd like to go back to using the official release:
 
 ```
 make unlink
-heroku plugins:install heroku-docker
+heroku plugins:install heroku-container-tools
 ```
 
 While developing, you can run the basic test suite:
