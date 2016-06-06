@@ -1,3 +1,9 @@
+5.2.18  2016-06-06
+==================
+Update heroku-apps
+Update heroku-cli-util in all core modules
+Upgrade heroku-orgs
+
 5.2.17  2016-06-01
 ==================
 Update heroku-apps
