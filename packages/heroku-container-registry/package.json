@@ -1,6 +1,6 @@
 {
   "name": "heroku-container-tools",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "topic": "container",
   "description": "Use Docker to build and deploy Heroku apps",
   "main": "index.js",
