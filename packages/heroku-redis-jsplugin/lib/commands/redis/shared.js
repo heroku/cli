@@ -54,7 +54,24 @@ function make_addons_filter (filter) {
   return on_response
 }
 
+function * getRedisAddon (context, heroku, addonsList) {
+  addonsList = addonsList || heroku.get(`/apps/${context.app}/addons`)
+
+  let addonsFilter = make_addons_filter(context.args.database)
+  let addons = addonsFilter(yield addonsList)
+
+  if (addons.length === 0) {
+    cli.exit(1, 'No Redis instances found.')
+  } else if (addons.length > 1) {
+    let names = addons.map(function (addon) { return addon.name })
+    cli.exit(1, `Please specify a single instance. Found: ${names.join(', ')}`)
+  }
+
+  return addons[0]
+}
+
 module.exports = {
   request: request,
-  make_addons_filter: make_addons_filter
+  make_addons_filter: make_addons_filter,
+  getRedisAddon: getRedisAddon
 }

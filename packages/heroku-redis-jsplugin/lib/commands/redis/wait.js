@@ -1,4 +1,6 @@
 'use strict'
+
+let co = require('co')
 let api = require('./shared.js')
 let cli = require('heroku-cli-util')
 
@@ -9,18 +11,9 @@ module.exports = {
   needsAuth: true,
   args: [{name: 'database', optional: true}],
   description: 'wait for Redis instance to be available',
-  run: cli.command(function * (context, heroku) {
-    let addonsFilter = api.make_addons_filter(context.args.database)
-    let addons = addonsFilter(yield heroku.apps(context.app).addons().listByApp())
-    if (addons.length === 0) {
-      cli.error('No Redis instances found.')
-      process.exit(1)
-    } else if (addons.length > 1) {
-      let names = addons.map(function (addon) { return addon.name })
-      cli.error(`Please specify a single instance. Found: ${names.join(', ')}`)
-      process.exit(1)
-    }
-    let addon = addons[0]
+  run: cli.command(co.wrap(function * (context, heroku) {
+    let addon = yield api.getRedisAddon(context, heroku)
+
     let interval = setInterval(function () {
       api.request(context, `/redis/v0/databases/${addon.name}/wait`, 'GET').then(function (status) {
         if (!status['waiting?']) {
@@ -31,5 +24,5 @@ module.exports = {
         clearInterval(interval)
       })
     }, 500)
-  })
+  }))
 }

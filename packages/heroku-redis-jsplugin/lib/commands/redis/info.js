@@ -1,4 +1,6 @@
 'use strict'
+
+let co = require('co')
 let api = require('./shared.js')
 let cli = require('heroku-cli-util')
 
@@ -10,8 +12,8 @@ module.exports = {
   default: true,
   args: [{name: 'database', optional: true}],
   description: 'gets information about redis',
-  run: cli.command(function * (context, heroku) {
-    let addons = yield heroku.apps(context.app).addons().listByApp()
+  run: cli.command(co.wrap(function * (context, heroku) {
+    let addons = yield heroku.get(`/apps/${context.app}/addons`)
     // filter out non-redis addons
     addons = api.make_addons_filter(context.args.database)(addons)
     // get info for each db
@@ -39,5 +41,5 @@ module.exports = {
         return memo
       }, {}), db.redis.info.map(function (row) { return row.name }))
     }
-  })
+  }))
 }

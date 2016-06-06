@@ -16,15 +16,25 @@
   ],
   "license": "ISC",
   "scripts": {
-    "test": "standard"
+    "test": "nyc mocha && standard | snazzy"
   },
   "dependencies": {
-    "heroku-cli-util": "5.10.10",
+    "co": "4.6.0",
+    "heroku-cli-util": "6.0.11",
     "heroku-client": "2.4.0",
     "ioredis": "1.9.0",
     "ssh2": "0.4.11"
   },
   "devDependencies": {
+    "chai": "3.5.0",
+    "chai-as-promised": "5.3.0",
+    "lolex": "1.5.0",
+    "mocha": "2.4.5",
+    "nock": "3.2.0",
+    "nyc": "6.4.4",
+    "proxyquire": "1.7.9",
+    "sinon": "1.17.2",
+    "snazzy": "4.0.0",
     "standard": "6.0.8"
   }
 }

@@ -1,4 +1,6 @@
 'use strict'
+
+let co = require('co')
 let api = require('./shared.js')
 let cli = require('heroku-cli-util')
 let net = require('net')
@@ -148,22 +150,11 @@ module.exports = {
   description: 'opens a redis prompt',
   args: [{name: 'database', optional: true}],
   flags: [{name: 'confirm', char: 'c', hasValue: true}],
-  run: cli.command({preauth: true}, function * (context, heroku) {
-    let addonsFilter = api.make_addons_filter(context.args.database)
-    let addonsList = heroku.apps(context.app).addons().listByApp()
-    let addons = addonsFilter(yield addonsList)
-    if (addons.length === 0) {
-      cli.error('No Redis instances found.')
-      process.exit(1)
-    } else if (addons.length > 1) {
-      let names = addons.map(function (addon) { return addon.name })
-      cli.error(`Please specify a single instance. Found: ${names.join(', ')}`)
-      process.exit(1)
-    }
+  run: cli.command({preauth: true}, co.wrap(function * (context, heroku) {
+    let addon = yield api.getRedisAddon(context, heroku)
 
-    let config = yield heroku.apps(context.app).configVars().info()
+    let config = yield heroku.get(`/apps/${context.app}/config-vars`)
 
-    let addon = addons[0]
     let redis = yield api.request(context, `/redis/v0/databases/${addon.name}`)
     let hobby = redis.plan.indexOf('hobby') === 0
 
@@ -174,7 +165,7 @@ module.exports = {
     let vars = {}
     addon.config_vars.forEach(function (key) { vars[key] = config[key] })
 
-    console.log(`Connecting to ${addon.name} (${addon.config_vars.join(', ')}):`)
+    cli.log(`Connecting to ${addon.name} (${addon.config_vars.join(', ')}):`)
     maybeTunnel(redis, vars)
-  })
+  }))
 }
