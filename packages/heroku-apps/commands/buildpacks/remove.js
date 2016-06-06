@@ -2,23 +2,22 @@
 
 let co = require('co')
 let cli = require('heroku-cli-util')
-let error = require('../../lib/error.js')
 let BuildpackCommand = require('../../lib/buildpacks.js')
 
 function * run (context, heroku) {
   let buildpackCommand = new BuildpackCommand(context, heroku, 'remove', 'removed')
 
   if (buildpackCommand.url && buildpackCommand.index) {
-    error.exit(1, 'Please choose either index or Buildpack URL, but not both.')
+    cli.exit(1, 'Please choose either index or Buildpack URL, but not both.')
   }
 
   if (!buildpackCommand.url && !buildpackCommand.index) {
-    error.exit(1, 'Usage: heroku buildpacks:remove [BUILDPACK_URL].\nMust specify a buildpack to remove, either by index or URL.')
+    cli.exit(1, 'Usage: heroku buildpacks:remove [BUILDPACK_URL].\nMust specify a buildpack to remove, either by index or URL.')
   }
 
   let buildpacksGet = yield buildpackCommand.get()
   if (buildpacksGet.length === 0) {
-    error.exit(1, `No buildpacks were found. Next release on ${context.app} will detect buildpack normally.`)
+    cli.exit(1, `No buildpacks were found. Next release on ${context.app} will detect buildpack normally.`)
   }
 
   var spliceIndex
@@ -30,7 +29,7 @@ function * run (context, heroku) {
   }
 
   if (spliceIndex === -1) {
-    error.exit(1, 'Buildpack not found. Nothing was removed.')
+    cli.exit(1, 'Buildpack not found. Nothing was removed.')
   }
 
   if (buildpacksGet.length === 1) {

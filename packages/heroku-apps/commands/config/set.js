@@ -4,6 +4,10 @@ const cli = require('heroku-cli-util')
 const co = require('co')
 
 function * run (context, heroku) {
+  if (context.args.length === 0) {
+    cli.exit(1, 'Usage: heroku config:set KEY1=VALUE1 [KEY2=VALUE2 ...]\nMust specify KEY and VALUE to set.')
+  }
+
   const reduce = require('lodash.reduce')
   const pickBy = require('lodash.pickby')
   const mapKeys = require('lodash.mapkeys')

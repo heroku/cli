@@ -6,8 +6,13 @@ const nock = require('nock')
 const cmd = require('../../..').commands.find((c) => c.topic === 'config' && c.command === 'set')
 const expect = require('unexpected')
 
+const assertExit = require('../../assert_exit.js')
+
 describe('config:set', () => {
-  beforeEach(() => cli.mockConsole())
+  beforeEach(function () {
+    cli.mockConsole()
+    cli.exit.mock()
+  })
   afterEach(() => nock.cleanAll())
 
   it('sets a config var', () => {
@@ -32,5 +37,14 @@ describe('config:set', () => {
       .then(() => expect(cli.stdout, 'to be empty'))
       .then(() => expect(cli.stderr, 'to equal', 'Setting RACK_ENV and restarting myapp... done, v10\n'))
       .then(() => api.done())
+  })
+
+  it('errors out on empty', () => {
+    return assertExit(1, cmd.run({app: 'myapp', args: []}))
+      .then(() => expect(cli.stdout, 'to equal', ''))
+      .then(() => expect(cli.stderr, 'to equal',
+` ▸    Usage: heroku config:set KEY1=VALUE1 [KEY2=VALUE2 ...]
+ ▸    Must specify KEY and VALUE to set.
+`))
   })
 })

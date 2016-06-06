@@ -1,6 +1,5 @@
 'use strict'
 let cli = require('heroku-cli-util')
-let error = require('./error.js')
 
 function BuildpackCommand (context, heroku, command, action) {
   this.app = context.app
@@ -9,7 +8,7 @@ function BuildpackCommand (context, heroku, command, action) {
   if (context.flags && context.flags.index) {
     let index = parseInt(context.flags.index)
     if (isNaN(index) || index <= 0) {
-      error.exit(1, 'Invalid index. Must be greater than 0.')
+      cli.exit(1, 'Invalid index. Must be greater than 0.')
     }
     this.index = index
   } else {
@@ -130,7 +129,7 @@ BuildpackCommand.prototype.mutate = function (buildpacksGet, spliceIndex) {
 
 BuildpackCommand.prototype.validateUrlNotSet = function (buildpacks) {
   if (this.findUrl(buildpacks, this.url) !== -1) {
-    error.exit(1, `The buildpack ${this.url} is already set on your app.`)
+    cli.exit(1, `The buildpack ${this.url} is already set on your app.`)
   }
 }
 
@@ -138,16 +137,16 @@ BuildpackCommand.prototype.validateUrlPassed = function () {
   if (this.url) {
     return this.url
   }
-  error.exit(1, `Usage: heroku buildpacks:${this.command} BUILDPACK_URL.
+  cli.exit(1, `Usage: heroku buildpacks:${this.command} BUILDPACK_URL.
 Must specify target buildpack URL.`)
 }
 
 BuildpackCommand.prototype.validateIndexInRange = function (buildpacks) {
   if (this.index < 0 || this.index > buildpacks.length) {
     if (buildpacks.length === 1) {
-      error.exit(1, 'Invalid index. Only valid value is 1.')
+      cli.exit(1, 'Invalid index. Only valid value is 1.')
     } else {
-      error.exit(1, `Invalid index. Please choose a value between 1 and ${buildpacks.length}`)
+      cli.exit(1, `Invalid index. Please choose a value between 1 and ${buildpacks.length}`)
     }
   }
 }

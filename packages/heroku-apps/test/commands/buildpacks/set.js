@@ -4,7 +4,6 @@
 const cli = require('heroku-cli-util')
 const expect = require('chai').expect
 const buildpacks = require('../../../commands/buildpacks/set.js')
-const error = require('../../../lib/error.js')
 const stubGet = require('../../stubs/buildpacks.js').get
 const stubPut = require('../../stubs/buildpacks.js').put
 const unwrap = require('../../unwrap.js')
@@ -13,7 +12,7 @@ const assertExit = require('../../assert_exit.js')
 describe('heroku buildpacks:set', function () {
   beforeEach(function () {
     cli.mockConsole()
-    error.exit.mock()
+    cli.exit.mock()
   })
 
   describe('URL', function () {

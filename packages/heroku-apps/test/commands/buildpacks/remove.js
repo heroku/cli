@@ -5,7 +5,6 @@ const cli = require('heroku-cli-util')
 const nock = require('nock')
 const expect = require('chai').expect
 const buildpacks = require('../../../commands/buildpacks/remove.js')
-const error = require('../../../lib/error.js')
 const unwrap = require('../../unwrap.js')
 const stubGet = require('../../stubs/buildpacks.js').get
 const stubPut = require('../../stubs/buildpacks.js').put
@@ -14,7 +13,7 @@ const assertExit = require('../../assert_exit.js')
 describe('heroku buildpacks:remove', function () {
   beforeEach(function () {
     cli.mockConsole()
-    error.exit.mock()
+    cli.exit.mock()
   })
 
   describe('-i INDEX', function () {

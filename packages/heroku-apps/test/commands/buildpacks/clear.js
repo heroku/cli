@@ -5,14 +5,13 @@ const cli = require('heroku-cli-util')
 const nock = require('nock')
 const expect = require('chai').expect
 const buildpacks = require('../../../commands/buildpacks/clear.js')
-const error = require('../../../lib/error.js')
 const unwrap = require('../../unwrap.js')
 const stubPut = require('../../stubs/buildpacks.js').put
 
 describe('heroku buildpacks:clear', function () {
   beforeEach(function () {
     cli.mockConsole()
-    error.exit.mock()
+    cli.exit.mock()
   })
 
   it('# clears the buildpack URL', function () {
