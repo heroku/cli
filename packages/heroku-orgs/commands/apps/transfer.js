@@ -4,18 +4,36 @@ let cli         = require('heroku-cli-util');
 let co          = require('co');
 let extend      = require('util')._extend;
 let lock        = require('./lock.js').apps;
+let Utils       = require('../../lib/utils');
 
 function* run (context, heroku) {
   let app    = context.app;
   let recipient = context.args.recipient;
+  let request;
+  let transferMsg;
 
-  let request = heroku.request({
-    method:  'PATCH',
-    path:    `/organizations/apps/${app}`,
-    body:    {owner: recipient},
-  });
+  let appInfo = yield heroku.get(`/apps/${app}`);
 
-  yield cli.action(`Transferring ${cli.color.cyan(app)} to ${cli.color.magenta(recipient)}`, request);
+  if (Utils.isOrgApp(recipient) || Utils.isOrgApp(appInfo.owner.email)) {
+    request = heroku.request({
+      method:  'PATCH',
+      path:    `/organizations/apps/${app}`,
+      body:    {owner: recipient},
+    });
+    transferMsg = `Transferring ${cli.color.app(app)} to ${cli.color.magenta(recipient)}`;
+  } else {
+    transferMsg = `Initiating transfer of ${cli.color.app(app)} to ${cli.color.magenta(recipient)}`;
+    request = heroku.post(`/account/app-transfers`, {
+      body: {
+        app: app,
+        recipient: recipient
+      }
+    }).then(request => {
+      if (request.state === 'pending') cli.action.done('email sent');
+    });
+  }
+
+  yield cli.action(transferMsg, request);
 
   if (context.flags.locked) {
     yield lock.run(context);

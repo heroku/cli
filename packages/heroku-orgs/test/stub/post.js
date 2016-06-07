@@ -15,7 +15,14 @@ function collaboratorsWithPrivileges(privileges) {
   }).reply(200);
 }
 
+function personalAppTransfer() {
+  return nock('https://api.heroku.com:443')
+  .post('/account/app-transfers', {app: 'myapp', recipient: 'foo@foo.com'})
+  .reply(200, {state: 'pending'});
+}
+
 module.exports = {
   collaborators: collaborators,
   collaboratorsWithPrivileges: collaboratorsWithPrivileges,
+  personalAppTransfer: personalAppTransfer
 };
