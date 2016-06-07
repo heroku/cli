@@ -12,6 +12,7 @@ module.exports = function(topic) {
     needsApp: true,
     needsAuth: true,
     args: [{ name: 'process', optional: true }],
+    flags: [{ name: 'verbose', char: 'v', hasValue: false }],
     run: cli.command(co.wrap(push))
   };
 };
@@ -23,7 +24,7 @@ function* push(context, heroku) {
   let resource = `${ registry }/${ context.app }/${ proc }`;
 
   try {
-    let build = yield buildImage(resource, context.cwd);
+    let build = yield buildImage(resource, context.cwd, context.flags.verbose);
   }
   catch (err) {
     cli.error(`Error: docker build exited with ${ err }`);
@@ -31,7 +32,7 @@ function* push(context, heroku) {
   }
 
   try {
-    let push = yield pushImage(resource);
+    let push = yield pushImage(resource, context.flags.verbose);
   }
   catch (err) {
     cli.error(`Error: docker push exited with ${ err }`);
@@ -39,7 +40,7 @@ function* push(context, heroku) {
   }
 }
 
-function buildImage(resource, cwd) {
+function buildImage(resource, cwd, verbose) {
   return new Promise((resolve, reject) => {
     let args = [
       'build',
@@ -47,6 +48,9 @@ function buildImage(resource, cwd) {
       resource,
       cwd
     ];
+    if (verbose) {
+      console.log(['> docker'].concat(args).join(' '));
+    }
     child.spawn('docker', args, { stdio: 'inherit' })
       .on('exit', (code, signal) => {
         if (signal || code) reject(signal || code);
@@ -55,12 +59,15 @@ function buildImage(resource, cwd) {
   });
 }
 
-function pushImage(resource) {
+function pushImage(resource, verbose) {
   return new Promise((resolve, reject) => {
     let args = [
       'push',
       resource
     ];
+    if (verbose) {
+      console.log(['> docker'].concat(args).join(' '));
+    }
     child.spawn('docker', args, { stdio: 'inherit' })
       .on('exit', (code, signal) => {
         if (signal || code) reject(signal || code);
