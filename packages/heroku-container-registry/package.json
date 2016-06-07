@@ -1,5 +1,5 @@
 {
-  "name": "@heroku/container-tools",
+  "name": "heroku-container-tools",
   "version": "3.0.0",
   "topic": "container",
   "description": "Use Docker to build and deploy Heroku apps",
