@@ -12,7 +12,7 @@
     "heroku-pipelines": "1.1.7",
     "heroku-redis": "1.2.6",
     "heroku-run": "3.2.14",
-    "heroku-spaces": "2.1.6",
+    "heroku-spaces": "2.2.0",
     "heroku-status": "2.1.9"
   }
 }
