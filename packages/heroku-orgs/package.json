@@ -30,6 +30,7 @@
     "chai": "*",
     "jshint": "*",
     "mocha": "*",
+    "mocha-junit-reporter": "1.11.1",
     "nock": "*",
     "nyc": "6.4.4"
   }
