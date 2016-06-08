@@ -117,7 +117,7 @@ transfer an app to another user or organization
  -l, --locked        # lock the app upon transfer
  -a, --app APP       # app to run command against
  -r, --remote REMOTE # git remote of app to run command against
-
+ --bulk              # transfer applications in bulk
 Examples:
 
   $ heroku apps:transfer collaborator@example.com
@@ -198,5 +198,3 @@ $ npm test
   ```
 
 2. Open a new pr in https://github.com/heroku/cli/blob/master/package.json, updating to the appropiate heroku-orgs version.
-
-

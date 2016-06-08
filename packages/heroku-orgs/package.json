@@ -24,7 +24,8 @@
   "dependencies": {
     "co": "4.6.0",
     "heroku-cli-util": "6.0.11",
-    "lodash": "4.12.0"
+    "lodash": "4.12.0",
+    "inquirer": "1.0.3"
   },
   "devDependencies": {
     "chai": "*",
@@ -32,6 +33,7 @@
     "mocha": "*",
     "mocha-junit-reporter": "1.11.1",
     "nock": "*",
-    "nyc": "6.4.4"
+    "nyc": "6.4.4",
+    "proxyquire": "1.7.4"
   }
 }

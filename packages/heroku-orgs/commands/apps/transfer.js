@@ -1,55 +1,81 @@
 'use strict';
 
+let _           = require('lodash');
+let AppTransfer = require('../../lib/app_transfer');
 let cli         = require('heroku-cli-util');
 let co          = require('co');
 let extend      = require('util')._extend;
+let inquirer    = require('inquirer');
 let lock        = require('./lock.js').apps;
 let Utils       = require('../../lib/utils');
 
+function getAppsToTransfer (apps) {
+  return inquirer.prompt([{
+    type: 'checkbox',
+    name: 'choices',
+    pageSize: 20,
+    message: 'Select applications you would like to transfer',
+    choices: apps.map(function (app) {
+      return {
+        name: `${app.name} (${Utils.getOwner(app.owner.email)})`,
+        value: { name: app.name, owner: app.owner.email }
+      };
+    })
+  }]);
+}
+
 function* run (context, heroku) {
-  let app    = context.app;
+  let app       = context.app;
   let recipient = context.args.recipient;
-  let request;
-  let transferMsg;
 
-  let appInfo = yield heroku.get(`/apps/${app}`);
+  if (context.flags.bulk) {
+    let allApps = yield heroku.get('/apps');
+    let selectedApps = yield getAppsToTransfer(_.sortBy(allApps, 'name'));
+    cli.console.error(`Transferring applications to ${cli.color.magenta(recipient)}...\n`);
 
-  if (Utils.isOrgApp(recipient) || Utils.isOrgApp(appInfo.owner.email)) {
-    request = heroku.request({
-      method:  'PATCH',
-      path:    `/organizations/apps/${app}`,
-      body:    {owner: recipient},
-    });
-    transferMsg = `Transferring ${cli.color.app(app)} to ${cli.color.magenta(recipient)}`;
-  } else {
-    transferMsg = `Initiating transfer of ${cli.color.app(app)} to ${cli.color.magenta(recipient)}`;
-    request = heroku.post(`/account/app-transfers`, {
-      body: {
-        app: app,
-        recipient: recipient
+    for (let app of selectedApps.choices) {
+      try {
+        let appTransfer = new AppTransfer({
+          heroku: heroku,
+          appName: app.name,
+          recipient: recipient,
+          personalAppTransfer: Utils.isValidEmail(recipient) && !Utils.isOrgApp(app.owner),
+          bulk: true
+        });
+        yield appTransfer.start();
+      } catch (err) {
+        cli.error(err);
       }
-    }).then(request => {
-      if (request.state === 'pending') cli.action.done('email sent');
+    }
+  } else {
+    let appInfo = yield heroku.get(`/apps/${app}`);
+    let appTransfer = new AppTransfer({
+      heroku: heroku,
+      appName: appInfo.name,
+      recipient: recipient,
+      personalAppTransfer: Utils.isValidEmail(recipient) && !Utils.isOrgApp(appInfo.owner.email)
     });
-  }
+    yield appTransfer.start();
 
-  yield cli.action(transferMsg, request);
-
-  if (context.flags.locked) {
-    yield lock.run(context);
+    if (context.flags.locked) {
+      yield lock.run(context);
+    }
   }
 }
 
 let cmd = {
   topic:        'apps',
   command:      'transfer',
-  description:  'transfer an app to another user or organization',
+  description:  'transfer applications to another user, organization or team',
   needsAuth:    true,
-  needsApp:     true,
+  wantsApp:     true,
   run:          cli.command(co.wrap(run)),
-  args:         [{name: 'recipient', description: 'user or org to transfer app to'}],
+  args:         [
+    {name: 'recipient', description: 'user, organization or team to transfer applications to'},
+  ],
   flags: [
     {name: 'locked', char: 'l', hasValue: false, required: false, description: 'lock the app upon transfer'},
+    {name: 'bulk', hasValue: false, required: false, description: 'transfer applications in bulk'},
   ],
   help: `
 Examples:
@@ -59,6 +85,9 @@ Examples:
 
   $ heroku apps:transfer acme-widgets
   Transferring example to acme-widgets... done
+
+  $ heroku apps:transfer --bulk acme-widgets
+  ...
   `,
 };
 

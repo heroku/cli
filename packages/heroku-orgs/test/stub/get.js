@@ -1,5 +1,15 @@
 'use strict';
 
+function apps() {
+  return nock('https://api.heroku.com:443')
+  .get('/apps')
+  .reply(200,[
+    { name: 'my-team-app', owner: { email: 'team@herokumanager.com' } },
+    { name: 'my-org-app', owner: { email: 'organization@herokumanager.com' } },
+    { name: 'myapp', owner: { email: 'foo@foo.com' } }
+  ]);
+}
+
 function appCollaborators() {
   return nock('https://api.heroku.com:443')
   .get('/apps/myapp/collaborators')
@@ -128,6 +138,7 @@ function userFeatureFlags(flags) {
 }
 
 module.exports = {
+  apps: apps,
   appCollaborators: appCollaborators,
   appPrivileges: appPrivileges,
   orgApp: orgApp,

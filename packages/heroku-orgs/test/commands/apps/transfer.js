@@ -1,30 +1,86 @@
 'use strict';
 
-let cmd       = require('../../../commands/apps/transfer');
-let stubGet   = require('../../stub/get');
-let stubPost   = require('../../stub/post');
-let stubPatch = require('../../stub/patch');
-
-function orgAppTransfer() {
-  let api = stubPatch.orgAppTransfer();
-  return cmd.run({app: 'myapp', args: {recipient: 'foo@foo.com'}, flags: {}})
-  .then(() => expect(``).to.eq(cli.stdout))
-  .then(() => expect(`Transferring myapp to foo@foo.com... done\n`).to.eq(cli.stderr))
-  .then(() => api.done());
-}
-
-function personalAppTransfer() {
-  let api = stubPost.personalAppTransfer();
-  return cmd.run({app: 'myapp', args: {recipient: 'foo@foo.com'}, flags: {}})
-  .then(() => expect(``).to.eq(cli.stdout))
-  .then(() => expect(`Initiating transfer of myapp to foo@foo.com... email sent
-`).to.eq(cli.stderr))
-  .then(() => api.done());
-}
+let cmd;
+let inquirer      = {};
+let stubGet       = require('../../stub/get');
+let stubPost      = require('../../stub/post');
+let stubPatch     = require('../../stub/patch');
+let proxyquire    = require('proxyquire').noCallThru();
 
 describe('heroku apps:transfer', () => {
-  beforeEach(() => cli.mockConsole());
+  beforeEach(() => {
+    cli.mockConsole();
+    inquirer = {};
+    cmd = proxyquire('../../../commands/apps/transfer', {inquirer});
+  });
+
   afterEach(()  => nock.cleanAll());
+
+  context('when transferring in bulk', () => {
+    beforeEach(() => {
+      stubGet.apps();
+    });
+
+    it('transfers selected apps to a team', () => {
+      inquirer.prompt = (prompts) => {
+        let choices = prompts[0].choices;
+        expect(choices).to.eql([
+          {
+            name: 'my-org-app (organization)',
+            value: { name: 'my-org-app', owner: 'organization@herokumanager.com' }
+          },
+          {
+            name: 'my-team-app (team)',
+            value: { name: 'my-team-app', owner: 'team@herokumanager.com' }
+          },
+          {
+            name: 'myapp (foo@foo.com)',
+            value: { name: 'myapp', owner: 'foo@foo.com' }
+          }
+        ]);
+        return Promise.resolve({choices: [{ name: 'myapp', owner: 'foo@foo.com' }]});
+      };
+
+      let api = stubPatch.orgAppTransfer();
+      return cmd.run({args: {recipient: 'team'}, flags: {bulk: true}})
+      .then(function() {
+        api.done();
+        expect(cli.stderr).to.equal(`Transferring applications to team...
+
+Transferring myapp... done\n`);
+      });
+    });
+
+    it('transfers selected apps to a personal account', () => {
+      inquirer.prompt = (prompts) => {
+        let choices = prompts[0].choices;
+        expect(choices).to.eql([
+          {
+            name: 'my-org-app (organization)',
+            value: { name: 'my-org-app', owner: 'organization@herokumanager.com' }
+          },
+          {
+            name: 'my-team-app (team)',
+            value: { name: 'my-team-app', owner: 'team@herokumanager.com' }
+          },
+          {
+            name: 'myapp (foo@foo.com)',
+            value: { name: 'myapp', owner: 'foo@foo.com' }
+          }
+        ]);
+        return Promise.resolve({choices: [{ name: 'myapp', owner: 'foo@foo.com' }]});
+      };
+
+      let api = stubPost.personalAppTransfer();
+      return cmd.run({args: {recipient: 'raulb@heroku.com'}, flags: {bulk: true}})
+      .then(function() {
+        api.done();
+        expect(cli.stderr).to.equal(`Transferring applications to raulb@heroku.com...
+
+Initiating transfer of myapp... email sent\n`);
+      });
+    });
+  });
 
   context('when it is a personal app', () => {
     beforeEach(() => {
@@ -32,11 +88,19 @@ describe('heroku apps:transfer', () => {
     });
 
     it('transfers the app to a personal account', () => {
-      personalAppTransfer();
+      let api = stubPost.personalAppTransfer();
+      return cmd.run({app: 'myapp', args: {recipient: 'raulb@heroku.com'}, flags: {}})
+      .then(() => expect(``).to.eq(cli.stdout))
+      .then(() => expect(`Initiating transfer of myapp to raulb@heroku.com... email sent\n`).to.eq(cli.stderr))
+      .then(() => api.done());
     });
 
     it('transfers the app to an organization', () => {
-      orgAppTransfer();
+      let api = stubPatch.orgAppTransfer();
+      return cmd.run({app: 'myapp', args: {recipient: 'team'}, flags: {}})
+      .then(() => expect(``).to.eq(cli.stdout))
+      .then(() => expect(`Transferring myapp to team... done\n`).to.eq(cli.stderr))
+      .then(() => api.done());
     });
   });
 
@@ -46,15 +110,23 @@ describe('heroku apps:transfer', () => {
     });
 
     it('transfers the app to a personal account', () => {
-      personalAppTransfer();
+      let api = stubPatch.orgAppTransfer();
+      return cmd.run({app: 'myapp', args: {recipient: 'team'}, flags: {}})
+      .then(() => expect(``).to.eq(cli.stdout))
+      .then(() => expect(`Transferring myapp to team... done\n`).to.eq(cli.stderr))
+      .then(() => api.done());
     });
 
     it('transfers the app to an organization', () => {
-      orgAppTransfer();
+      let api = stubPatch.orgAppTransfer();
+      return cmd.run({app: 'myapp', args: {recipient: 'team'}, flags: {}})
+      .then(() => expect(``).to.eq(cli.stdout))
+      .then(() => expect(`Transferring myapp to team... done\n`).to.eq(cli.stderr))
+      .then(() => api.done());
     });
 
     it('transfers and locks the app if --locked is passed', () => {
-      let api = stubPatch.orgAppTransfer();
+      let api = stubPatch.personalAppTransfer();
 
       let locked_api = nock('https://api.heroku.com:443')
       .get('/organizations/apps/myapp')
@@ -62,13 +134,11 @@ describe('heroku apps:transfer', () => {
       .patch('/organizations/apps/myapp', {locked: true})
       .reply(200);
 
-      return cmd.run({app: 'myapp', args: {recipient: 'foo@foo.com'}, flags: {locked: true}})
+      return cmd.run({app: 'myapp', args: {recipient: 'raulb@heroku.com'}, flags: {locked: true}})
       .then(() => expect(``).to.eq(cli.stdout))
-      .then(() => expect(`Transferring myapp to foo@foo.com... done\nLocking myapp... done\n`).to.eq(cli.stderr))
+      .then(() => expect(`Transferring myapp to raulb@heroku.com... done\nLocking myapp... done\n`).to.eq(cli.stderr))
       .then(() => api.done())
       .then(() => locked_api.done());
     });
-
   });
-
 });
