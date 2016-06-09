@@ -17,8 +17,9 @@ function * run (context, heroku) {
       log_drain_url: context.flags['log-drain-url']
     }
   })
-  cli.warn(`${cli.color.bold('Spend Alert.')} Each Heroku Private Space costs $1000 in Add-on Credits/month (pro-rated to the second).`)
   space = yield cli.action(`Creating space ${cli.color.green(space)} in organization ${cli.color.cyan(context.org)}`, request)
+  cli.warn(`${cli.color.bold('Spend Alert.')} Each Heroku Private Space costs $1000 in Add-on Credits/month (pro-rated to the second).`)
+  cli.warn('Use spaces:wait to track allocation.')
   cli.styledHeader(space.name)
   cli.styledObject({
     ID: space.id,

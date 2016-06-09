@@ -1,17 +1,21 @@
 'use strict'
 
+let lib = require('../lib/spaces')()
 let cli = require('heroku-cli-util')
 let co = require('co')
 
 function * run (context, heroku) {
-  let lib = require('../lib/spaces')()
   let spaceName = context.flags.space || context.args.space
   if (!spaceName) throw new Error('Space name required.\nUSAGE: heroku spaces:info my-space')
   let space = yield heroku.get(`/spaces/${spaceName}`)
   if (space.state === 'allocated') {
     space.outbound_ips = yield heroku.get(`/spaces/${spaceName}/nat`)
   }
-  if (context.flags.json) {
+  render(space, context.flags)
+}
+
+function render (space, flags) {
+  if (flags.json) {
     cli.log(JSON.stringify(space, null, 2))
   } else {
     cli.styledHeader(space.name)
@@ -36,5 +40,6 @@ module.exports = {
     {name: 'space', char: 's', hasValue: true, description: 'space to get info of'},
     {name: 'json', description: 'output in json format'}
   ],
+  render: render,
   run: cli.command(co.wrap(run))
 }
