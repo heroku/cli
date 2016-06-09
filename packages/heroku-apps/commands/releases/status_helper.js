@@ -2,7 +2,6 @@
 
 module.exports = function (s) {
   switch (s) {
-    case 'success':
     case 'succeeded':
     case null:
       return {
@@ -13,7 +12,6 @@ module.exports = function (s) {
         color: 'yellow',
         content: 'release command executing'
       }
-    case 'failure':
     case 'failed':
       return {
         color: 'red',
