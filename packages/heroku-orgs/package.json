@@ -17,7 +17,7 @@
   "license": "ISC",
   "homepage": "https://github.com/heroku/heroku-orgs",
   "scripts": {
-    "test": "nyc mocha && jshint .",
+    "test": "nyc mocha && standard",
     "preversion": "npm test",
     "postversion": "npm publish && git push && git push --tags"
   },
@@ -29,11 +29,11 @@
   },
   "devDependencies": {
     "chai": "*",
-    "jshint": "*",
     "mocha": "*",
     "mocha-junit-reporter": "1.11.1",
     "nock": "*",
     "nyc": "6.4.4",
-    "proxyquire": "1.7.4"
+    "proxyquire": "1.7.4",
+    "standard": "7.1.2"
   }
 }

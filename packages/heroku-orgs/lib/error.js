@@ -1,35 +1,36 @@
-'use strict';
+'use strict'
 
-var util = require('util');
-var cli  = require('heroku-cli-util');
+var util = require('util')
+var cli = require('heroku-cli-util')
 
-function ErrorExit(code) {
-  Error.call(this);
-  Error.captureStackTrace(this, this.constructor);
-  this.name = this.constructor.name;
+function ErrorExit (code) {
+  Error.call(this)
+  Error.captureStackTrace(this, this.constructor)
+  this.name = this.constructor.name
 
-  this.code = code;
+  this.code = code
 }
 
-util.inherits(ErrorExit, Error);
+util.inherits(ErrorExit, Error)
 
-var mocking;
+var mocking
 
-function exit(code, message) {
+function exit (code, message) {
   if (message) {
-    cli.error(message);
+    cli.error(message)
   }
   if (mocking) {
-    throw new ErrorExit(code);
+    throw new ErrorExit(code)
   } else {
-    process.exit(code);
+    process.exit(code)
   }
 }
 
-exit.mock = function() {
-  mocking = true;
-};
+exit.mock = function () {
+  mocking = true
+}
 
 module.exports = {
-  exit, ErrorExit
-};
+  exit,
+  ErrorExit
+}

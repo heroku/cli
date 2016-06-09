@@ -1,13 +1,13 @@
-'use strict';
+'use strict'
 
-let _           = require('lodash');
-let AppTransfer = require('../../lib/app_transfer');
-let cli         = require('heroku-cli-util');
-let co          = require('co');
-let extend      = require('util')._extend;
-let inquirer    = require('inquirer');
-let lock        = require('./lock.js').apps;
-let Utils       = require('../../lib/utils');
+let _ = require('lodash')
+let AppTransfer = require('../../lib/app_transfer')
+let cli = require('heroku-cli-util')
+let co = require('co')
+let extend = require('util')._extend
+let inquirer = require('inquirer')
+let lock = require('./lock.js').apps
+let Utils = require('../../lib/utils')
 
 function getAppsToTransfer (apps) {
   return inquirer.prompt([{
@@ -19,19 +19,20 @@ function getAppsToTransfer (apps) {
       return {
         name: `${app.name} (${Utils.getOwner(app.owner.email)})`,
         value: { name: app.name, owner: app.owner.email }
-      };
+      }
     })
-  }]);
+  }])
 }
 
-function* run (context, heroku) {
-  let app       = context.app;
-  let recipient = context.args.recipient;
+function * run (context, heroku) {
+  let app = context.app
+  let recipient = context.args.recipient
 
   if (context.flags.bulk) {
-    let allApps = yield heroku.get('/apps');
-    let selectedApps = yield getAppsToTransfer(_.sortBy(allApps, 'name'));
-    cli.console.error(`Transferring applications to ${cli.color.magenta(recipient)}...\n`);
+    let allApps = yield heroku.get('/apps')
+    let selectedApps = yield getAppsToTransfer(_.sortBy(allApps, 'name'))
+    cli.console.error(`Transferring applications to ${cli.color.magenta(recipient)}...
+`)
 
     for (let app of selectedApps.choices) {
       try {
@@ -41,41 +42,41 @@ function* run (context, heroku) {
           recipient: recipient,
           personalAppTransfer: Utils.isValidEmail(recipient) && !Utils.isOrgApp(app.owner),
           bulk: true
-        });
-        yield appTransfer.start();
+        })
+        yield appTransfer.start()
       } catch (err) {
-        cli.error(err);
+        cli.error(err)
       }
     }
   } else {
-    let appInfo = yield heroku.get(`/apps/${app}`);
+    let appInfo = yield heroku.get(`/apps/${app}`)
     let appTransfer = new AppTransfer({
       heroku: heroku,
       appName: appInfo.name,
       recipient: recipient,
       personalAppTransfer: Utils.isValidEmail(recipient) && !Utils.isOrgApp(appInfo.owner.email)
-    });
-    yield appTransfer.start();
+    })
+    yield appTransfer.start()
 
     if (context.flags.locked) {
-      yield lock.run(context);
+      yield lock.run(context)
     }
   }
 }
 
 let cmd = {
-  topic:        'apps',
-  command:      'transfer',
-  description:  'transfer applications to another user, organization or team',
-  needsAuth:    true,
-  wantsApp:     true,
-  run:          cli.command(co.wrap(run)),
-  args:         [
-    {name: 'recipient', description: 'user, organization or team to transfer applications to'},
+  topic: 'apps',
+  command: 'transfer',
+  description: 'transfer applications to another user, organization or team',
+  needsAuth: true,
+  wantsApp: true,
+  run: cli.command(co.wrap(run)),
+  args: [
+    {name: 'recipient', description: 'user, organization or team to transfer applications to'}
   ],
   flags: [
     {name: 'locked', char: 'l', hasValue: false, required: false, description: 'lock the app upon transfer'},
-    {name: 'bulk', hasValue: false, required: false, description: 'transfer applications in bulk'},
+    {name: 'bulk', hasValue: false, required: false, description: 'transfer applications in bulk'}
   ],
   help: `
 Examples:
@@ -88,14 +89,14 @@ Examples:
 
   $ heroku apps:transfer --bulk acme-widgets
   ...
-  `,
-};
+  `
+}
 
-module.exports = cmd;
-module.exports.sharing = extend({}, cmd);
-module.exports.sharing.hidden = true;
-module.exports.sharing.topic = 'sharing';
+module.exports = cmd
+module.exports.sharing = extend({}, cmd)
+module.exports.sharing.hidden = true
+module.exports.sharing.topic = 'sharing'
 module.exports.sharing.run = function () {
-  cli.error(`This command is now ${cli.color.cyan('heroku apps:transfer')}`);
-  process.exit(1);
-};
+  cli.error(`This command is now ${cli.color.cyan('heroku apps:transfer')}`)
+  process.exit(1)
+}

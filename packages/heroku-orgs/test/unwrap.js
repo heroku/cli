@@ -1,7 +1,7 @@
-'use strict';
+'use strict'
 
-function unwrap(str) {
-  return str.replace(/\n ▸   /g, '');
+function unwrap (str) {
+  return str.replace(/\n ▸ {3}/g, '')
 }
 
-module.exports = unwrap;
+module.exports = unwrap
