@@ -18,3 +18,5 @@ exports.commands = [
   require('./commands/addons/upgrade').upgrade,
   require('./commands/addons/upgrade').downgrade
 ]
+
+exports.resolve = require('./lib/resolve')
