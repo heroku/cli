@@ -30,10 +30,10 @@ describe('pg', () => {
   context('with 2 dbs', () => {
     let plan = {name: 'heroku-postresql:hobby-dev'}
     let config = {HEROKU_POSTGRESQL_COBALT_URL: 'postgres://uxxxxxxxxx:pxxxxxxxx@ec2-54-111-111-1.compute-1.amazonaws.com:5452/dxxxxxxxxxxxx'}
-    let addon_service = {name: 'heroku-postgresql'}
+    let addonService = {name: 'heroku-postgresql'}
     let addons = [
-      {name: 'postgres-1', addon_service, plan, config_vars: ['DATABASE_URL', 'HEROKU_POSTGRESQL_PINK_URL']},
-      {name: 'postgres-2', addon_service, plan, config_vars: ['HEROKU_POSTGRESQL_BRONZE_URL']}
+      {name: 'postgres-1', addon_service: addonService, plan, config_vars: ['DATABASE_URL', 'HEROKU_POSTGRESQL_PINK_URL']},
+      {name: 'postgres-2', addon_service: addonService, plan, config_vars: ['HEROKU_POSTGRESQL_BRONZE_URL']}
     ]
     let dbA = {info: [
       {name: 'Plan', values: ['Hobby-dev']},
