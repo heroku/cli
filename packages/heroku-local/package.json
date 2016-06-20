@@ -7,6 +7,7 @@
     "url": "https://github.com/heroku/heroku-local/issues"
   },
   "dependencies": {
+    "co": "4.6.0",
     "foreman": "2.0.0-1",
     "heroku-cli-util": "6.0.11"
   },

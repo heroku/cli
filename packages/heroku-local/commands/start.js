@@ -12,7 +12,14 @@ function * run (context) {
   if (context.flags.procfile) process.argv.push('--procfile', context.flags.procfile)
   if (context.flags.env) process.argv.push('--env', context.flags.env)
   if (context.flags.port) process.argv.push('--port', context.flags.port)
-  if (context.args.processname) process.argv.push(context.args.processname)
+  if (context.args.processname) {
+    process.argv.push(context.args.processname)
+  } else {
+    let procfile = context.flags.procfile || 'Procfile'
+    let procHash = require('foreman/lib/procfile.js').loadProc(procfile)
+    let processes = Object.keys(procHash).filter((x) => x !== 'release')
+    process.argv.push(processes.join(','))
+  }
 
   require('foreman/nf.js')
 }
