@@ -19,14 +19,14 @@
   },
   "devDependencies": {
     "chai": "^3.2.0",
-    "codeclimate-test-reporter": "0.3.1",
+    "codeclimate-test-reporter": "0.3.3",
     "coveralls": "2.11.9",
     "mocha": "^2.2.5",
     "nock": "8.0.0",
-    "nyc": "6.4.4",
-    "standard": "7.1.0",
+    "nyc": "6.6.1",
+    "standard": "7.1.2",
     "time-require": "0.1.2",
-    "unexpected": "10.13.2"
+    "unexpected": "10.13.3"
   },
   "homepage": "https://github.com/heroku/heroku-cli-addons",
   "keywords": [
