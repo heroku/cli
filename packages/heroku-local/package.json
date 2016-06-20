@@ -1,7 +1,7 @@
 {
   "name": "heroku-local",
   "description": "run heroku apps locally",
-  "version": "5.1.3",
+  "version": "5.1.4",
   "author": "Jeff Dickey @dickeyxxx",
   "bugs": {
     "url": "https://github.com/heroku/heroku-local/issues"
