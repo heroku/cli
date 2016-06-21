@@ -426,9 +426,10 @@ func (p *Plugins) Update() {
 // MigrateRubyPlugins migrates from legacy ruby plugins to node versions
 func (p *Plugins) MigrateRubyPlugins() {
 	pluginMap := map[string]string{
-		"heroku-config": "heroku-config",
-		"heroku-oauth":  "heroku-cli-oauth",
-		"heroku-vim":    "heroku-vim",
+		"heroku-accounts": "heroku-accounts",
+		"heroku-config":   "heroku-config",
+		"heroku-oauth":    "heroku-cli-oauth",
+		"heroku-vim":      "heroku-vim",
 	}
 	for _, ruby := range RubyPlugins() {
 		plugin := pluginMap[ruby]
