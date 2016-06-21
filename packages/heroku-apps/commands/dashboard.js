@@ -129,6 +129,8 @@ function * run (context, heroku) {
 
   let apps, data, metrics
 
+  img(path.join(__dirname, '..', 'assets', 'heroku.png'), {fallback: () => {}})
+
   yield cli.action('Loading', {clear: true}, co(function * () {
     apps = yield favoriteApps()
 
@@ -143,10 +145,6 @@ function * run (context, heroku) {
     }
     metrics = yield fetchMetrics(data.apps)
   }))
-
-  img(path.join(__dirname, '..', 'assets', 'heroku.png'), {
-    fallback: () => cli.console.error()
-  })
 
   if (apps.length > 0) displayApps(data.apps, metrics)
   else cli.warn(`Add apps to this dashboard by favoriting them with ${cli.color.cmd('heroku apps:favorites:add')}`)
