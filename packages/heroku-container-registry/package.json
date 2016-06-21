@@ -1,21 +1,21 @@
 {
-  "name": "heroku-container-tools",
-  "version": "3.0.0",
+  "name": "heroku-container-registry",
+  "version": "4.0.0",
   "topic": "container",
-  "description": "Use Docker to build and deploy Heroku apps",
+  "description": "Use containers to build and deploy Heroku apps",
   "main": "index.js",
-  "repository": "https://github.com/heroku/heroku-container-tools",
+  "repository": "https://github.com/heroku/heroku-container-registry",
   "scripts": {
     "test": "mocha",
     "depcheck": "depcheck || true"
   },
   "keywords": [
     "heroku",
-    "docker",
+    "container",
     "cli",
     "heroku-plugin"
   ],
-  "author": "Hunter Loftis <hunter@hunterloftis.com>",
+  "author": "Hunter Loftis <hunter@heroku.com>",
   "license": "ISC",
   "dependencies": {
     "camelcase": "1.0.2",

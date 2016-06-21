@@ -1,5 +1,0 @@
-{
-  "name": "before",
-  "image": "heroku/nodejs",
-  "addons": ["heroku-redis", "heroku-postgresql:hobby-basic", "foo:bar"]
-}
