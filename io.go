@@ -265,6 +265,9 @@ func supportsColor() bool {
 	if os.Getenv("COLOR") == "false" {
 		return false
 	}
+	if os.Getenv("TERM") == "dumb" {
+		return false
+	}
 	if config != nil && config.Color != nil && !*config.Color {
 		return false
 	}
