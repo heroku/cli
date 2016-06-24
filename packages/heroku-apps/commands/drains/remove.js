@@ -18,5 +18,6 @@ module.exports = {
   needsApp: true,
   needsAuth: true,
   args: [{name: 'url'}],
+  usage: 'drains:remove [URL|TOKEN]',
   run: cli.command(co.wrap(run))
 }
