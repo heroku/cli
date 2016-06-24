@@ -60,7 +60,7 @@ See all apps with heroku apps --all
 See other CLI commands with heroku help
 
 `))
-        .then(() => expect(cli.stderr, 'to be', 'Loading... done\n\n ▸    Add apps to this dashboard by favoriting them with heroku\n ▸    apps:favorites:add\n'))
+        .then(() => expect(cli.stderr, 'to be', 'Loading... done\n ▸    Add apps to this dashboard by favoriting them with heroku\n ▸    apps:favorites:add\n'))
         .then(() => longboard.done())
         .then(() => telex.done())
         .then(() => heroku.done())
@@ -83,7 +83,7 @@ See all apps with heroku apps --all
 See other CLI commands with heroku help
 
 `))
-        .then(() => expect(cli.stderr, 'to be', 'Loading... done\n\n ▸    Add apps to this dashboard by favoriting them with heroku\n ▸    apps:favorites:add\n'))
+        .then(() => expect(cli.stderr, 'to be', 'Loading... done\n ▸    Add apps to this dashboard by favoriting them with heroku\n ▸    apps:favorites:add\n'))
         .then(() => longboard.done())
         .then(() => telex.done())
         .then(() => heroku.done())
@@ -126,7 +126,7 @@ See all apps with heroku apps --all
 See other CLI commands with heroku help
 
 `))
-        .then(() => expect(cli.stderr, 'to be', 'Loading... done\n\n'))
+        .then(() => expect(cli.stderr, 'to be', 'Loading... done\n'))
         .then(() => metrics.done())
         .then(() => longboard.done())
         .then(() => telex.done())
