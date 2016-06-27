@@ -30,10 +30,16 @@ function * run (context, heroku) {
     }
   })
 
+  let header = `${context.app} Releases`
+  let currentRelease = releases.filter((r) => r.current === true)[0]
+  if (currentRelease !== undefined) {
+    header += ' - ' + cli.color['blue'](`Current: v${currentRelease.version}`)
+  }
+
   if (context.flags.json) {
     cli.log(JSON.stringify(releases, null, 2))
   } else if (context.flags.extended) {
-    cli.styledHeader(`${context.app} Releases`)
+    cli.styledHeader(header)
     cli.table(releases, {
       printHeader: false,
       columns: [
@@ -48,7 +54,7 @@ function * run (context, heroku) {
   } else if (releases.length === 0) {
     cli.log(`${context.app} has no releases.`)
   } else {
-    cli.styledHeader(`${context.app} Releases`)
+    cli.styledHeader(header)
     cli.table(releases, {
       printHeader: false,
       columns: [
