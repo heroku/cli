@@ -225,14 +225,15 @@ run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
       .then(() => dynos.done())
   })
 
-  it('propagates quota 503 properly', function () {
+  it('traps errors properly', function () {
     stubAccountQuota(503, {id: 'server_error'})
 
-    let freeExpression = ''
-    let thrown = false
+    let freeExpression = `=== run: one-off processes (1)
+run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
+
+`
+
     return cmd.run({app: 'myapp', args: [], flags: {}})
-      .catch(function () { thrown = true })
-      .then(() => expect(thrown, 'to equal', true))
       .then(() => expect(cli.stdout, 'to equal', freeExpression))
       .then(() => expect(cli.stderr, 'to be empty'))
   })

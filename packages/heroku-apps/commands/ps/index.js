@@ -46,11 +46,8 @@ function * printAccountQuota (context, heroku, app, account) {
     }
     return data
   })
-  .catch(function (err) {
-    if (err.statusCode === 404 && err.body && err.body.id === 'not_found') {
-      return null
-    }
-    throw err
+  .catch(function () {
+    return null
   })
 
   if (!quota) return
