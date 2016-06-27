@@ -15,15 +15,14 @@ function * run (context, heroku) {
       redirect_uri: url
     }
   })
+  var client
   if (context.flags.shell) {
-    let client = yield request
-    cli.log(`HEROKU_OAUTH_ID=${client.id}`)
-    cli.log(`HEROKU_OAUTH_SECRET=${client.secret}`)
+    client = yield request
   } else {
-    let client = yield cli.action(`Creating ${context.args.name}`, request)
-    cli.log(`HEROKU_OAUTH_ID=${client.id}`)
-    cli.log(`HEROKU_OAUTH_SECRET=${client.secret}`)
+    client = yield cli.action(`Creating ${context.args.name}`, request)
   }
+  cli.log(`HEROKU_OAUTH_ID=${client.id}`)
+  cli.log(`HEROKU_OAUTH_SECRET=${client.secret}`)
 }
 
 module.exports = {
