@@ -1,3 +1,7 @@
+5.2.23  2016-06-29
+==================
+Added heroku-repo to auto-migrating ruby plugins
+
 5.2.22  2016-06-27
 ==================
 Update heroku-apps
