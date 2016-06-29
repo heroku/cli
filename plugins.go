@@ -429,6 +429,7 @@ func (p *Plugins) MigrateRubyPlugins() {
 		"heroku-accounts": "heroku-accounts",
 		"heroku-config":   "heroku-config",
 		"heroku-oauth":    "heroku-cli-oauth",
+		"heroku-repo":     "heroku-repo",
 		"heroku-vim":      "heroku-vim",
 	}
 	for _, ruby := range RubyPlugins() {
