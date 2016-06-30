@@ -230,12 +230,12 @@ let pluginName = '%s'
 let pluginVersion = '%s'
 let topic = '%s'
 let command = '%s'
-let ctx = %s
-ctx.version = ctx.version + ' ' + pluginName + '/' + pluginVersion + ' node-' + process.version
+global.context = %s
+context.version = context.version + ' ' + pluginName + '/' + pluginVersion + ' node-' + process.version
 if (command === '') { command = null }
 let plugin = require(pluginName)
 let cmd = plugin.commands.filter((c) => c.topic === topic && c.command == command)[0]
-cmd.run(ctx)
+cmd.run(context)
 `, args, plugin.Name, plugin.Version, topic, command, ctxJSON)
 
 		// swallow sigint since the plugin will handle it
