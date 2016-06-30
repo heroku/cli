@@ -8,25 +8,25 @@
   },
   "dependencies": {
     "co": "4.6.0",
-    "heroku-cli-util": "6.0.11",
+    "heroku-cli-util": "6.0.13",
     "lodash.groupby": "4.4.0",
     "lodash.memoize": "4.1.0",
     "lodash.merge": "4.4.0",
     "lodash.some": "4.4.0",
     "lodash.sortby": "4.5.0",
+    "lodash.topairs": "4.1.1",
     "lodash.values": "4.1.0",
-    "printf": "0.2.3"
+    "printf": "0.2.4"
   },
   "devDependencies": {
     "chai": "^3.2.0",
     "codeclimate-test-reporter": "0.3.3",
-    "coveralls": "2.11.9",
     "mocha": "^2.2.5",
     "nock": "8.0.0",
     "nyc": "6.6.1",
     "standard": "7.1.2",
     "time-require": "0.1.2",
-    "unexpected": "10.13.3"
+    "unexpected": "10.14.2"
   },
   "homepage": "https://github.com/heroku/heroku-cli-addons",
   "keywords": [
@@ -36,7 +36,6 @@
   "main": "index.js",
   "repository": "https://github.com/heroku/heroku-cli-addons",
   "scripts": {
-    "coverage": "nyc report --reporter=text-lcov | codeclimate-test-reporter && nyc report --reporter=text-lcov | coveralls",
     "postversion": "npm publish && git push && git push --tags",
     "preversion": "npm test",
     "test": "nyc mocha && standard"

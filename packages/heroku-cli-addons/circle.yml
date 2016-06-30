@@ -3,4 +3,4 @@ machine:
     version: v6.2.0
 test:
   post:
-    - npm run coverage
+    - nyc report --reporter=text-lcov > coverage.lcov && bash <(curl -s https://codecov.io/bash)

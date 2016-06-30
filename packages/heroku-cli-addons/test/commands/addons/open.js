@@ -11,14 +11,14 @@ describe('addons:open', function () {
   it('only prints the URL when --show-url passed', function () {
     let api = nock('https://api.heroku.com:443')
 
-    api.get('/apps/myapp/addons/slowdb')
-      .reply(200, {id: 'slowdb', web_url: 'http://slowdb'})
+    api.get('/apps/myapp/addons/db2')
+      .reply(200, {id: 'db2', web_url: 'http://db2'})
 
-    api.get('/addons/slowdb/addon-attachments')
+    api.get('/addons/db2/addon-attachments')
       .reply(200, [])
 
-    return cmd.run({app: 'myapp', args: {addon: 'slowdb'}, flags: {'show-url': true}})
-      .then(() => expect(cli.stdout).to.equal('http://slowdb\n'))
+    return cmd.run({app: 'myapp', args: {addon: 'db2'}, flags: {'show-url': true}})
+      .then(() => expect(cli.stdout).to.equal('http://db2\n'))
       .then(() => api.done())
   })
 

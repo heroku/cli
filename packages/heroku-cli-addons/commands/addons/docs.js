@@ -8,7 +8,7 @@ function * run (context, heroku) {
 
   let id = context.args.addon.split(':')[0]
   let addon = yield heroku.get(`/addon-services/${encodeURIComponent(id)}`).catch(() => null)
-  if (!addon) addon = (yield resolve.addon(heroku, context.app, id)).addon_service
+  if (!addon) addon = (yield resolve.addon(context.app, id)).addon_service
   let url = `https://devcenter.heroku.com/articles/${addon.name}`
 
   if (context.flags['show-url']) {

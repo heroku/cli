@@ -9,7 +9,7 @@ let style = require('../../lib/util').style
 let run = cli.command({preauth: true}, function (ctx, api) {
   const resolve = require('../../lib/resolve')
   return co(function * () {
-    let addon = yield resolve.addon(api, ctx.app, ctx.args.addon, {'Accept-Expansion': 'addon_service,plan'})
+    let addon = yield resolve.addon(ctx.app, ctx.args.addon, {'Accept-Expansion': 'addon_service,plan'})
 
     addon.attachments = yield api.request({
       method: 'GET',

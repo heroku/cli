@@ -1,36 +1,32 @@
 'use strict'
 
 const memoize = require('lodash.memoize')
+const cli = require('heroku-cli-util')
 
-exports.addon = memoize(function (heroku, app, id, headers) {
+exports.addon = memoize(function (app, id, headers) {
   let getAddon = function (id) {
-    return heroku.request({
-      path: `/addons/${encodeURIComponent(id)}`,
-      headers: headers || {}
-    })
+    return cli.heroku.get(`/addons/${encodeURIComponent(id)}`, {headers: headers || {}})
   }
 
   if (!app || id.indexOf('::') !== -1) return getAddon(id)
-  return heroku.request({
-    path: `/apps/${app}/addons/${encodeURIComponent(id)}`,
-    headers: headers || {}
-  }).catch(function (err) { if (err.statusCode === 404) return getAddon(id); else throw err })
-})
+  return cli.heroku.get(`/apps/${app}/addons/${encodeURIComponent(id)}`, {headers: headers || {}})
+    .catch(function (err) { if (err.statusCode === 404) return getAddon(id); else throw err })
+}, (app, id) => `${app}-${id}`)
 
-exports.attachment = function (heroku, app, id) {
+exports.attachment = function (app, id) {
   function getAttachment (id) {
-    return heroku.get(`/addon-attachments/${encodeURIComponent(id)}`)
+    return cli.heroku.get(`/addon-attachments/${encodeURIComponent(id)}`)
       .catch(function (err) { if (err.statusCode !== 404) throw err })
   }
 
   function getAppAttachment (app, id) {
     if (!app || id.indexOf('::') !== -1) return getAttachment(id)
-    return heroku.get(`/apps/${app}/addon-attachments/${encodeURIComponent(id)}`)
+    return cli.heroku.get(`/apps/${app}/addon-attachments/${encodeURIComponent(id)}`)
       .catch(function (err) { if (err.statusCode !== 404) throw err })
   }
 
   function getAppAddonAttachment (addon, app) {
-    return heroku.get(`/addons/${encodeURIComponent(addon.id)}/addon-attachments`)
+    return cli.heroku.get(`/addons/${encodeURIComponent(addon.id)}/addon-attachments`)
       .then((attachments) => attachments.find((att) => att.app.name === app))
   }
 
@@ -43,7 +39,7 @@ exports.attachment = function (heroku, app, id) {
       // to the context app. Try to find and use it so `context_app` is set
       // correctly in the SSO payload.
       else {
-        return exports.addon(heroku, app, id)
+        return exports.addon(app, id)
         .then((addon) => getAppAddonAttachment(addon, app))
       }
     })
