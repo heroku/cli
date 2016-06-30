@@ -5,5 +5,6 @@ exports.topics = [
 ]
 
 exports.commands = [
-  require('./commands/pg')
+  require('./commands/info').info,
+  require('./commands/info').root
 ]
