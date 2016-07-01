@@ -3,7 +3,7 @@
 const cli = require('heroku-cli-util')
 const co = require('co')
 
-function * run (context) {
+function * run (context, heroku) {
   const resolve = require('../../lib/resolve')
   const groupBy = require('lodash.groupby')
   const toPairs = require('lodash.topairs')
@@ -11,14 +11,14 @@ function * run (context) {
   let force = context.flags.force || process.env.HEROKU_FORCE === '1'
   if (context.args.length === 0) throw new Error('Missing add-on name')
 
-  let addons = yield context.args.map(name => resolve.addon(context.app, name))
+  let addons = yield context.args.map(name => resolve.addon(heroku, context.app, name))
   for (let app of toPairs(groupBy(addons, 'app.name'))) {
     addons = app[1]
     app = app[0]
     yield cli.confirmApp(app, context.flags.confirm)
     for (let addon of addons) {
       let msg = `Destroying ${cli.color.addon(addon.name)} on ${cli.color.app(addon.app.name)}`
-      yield cli.action(msg, cli.heroku.request({
+      yield cli.action(msg, heroku.request({
         method: 'DELETE',
         path: `/apps/${addon.app.id}/addons/${addon.id}`,
         headers: {'Accept-Expansion': 'plan'},

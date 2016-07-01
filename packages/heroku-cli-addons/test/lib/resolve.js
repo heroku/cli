@@ -3,6 +3,7 @@
 
 let resolve = require('../../lib/resolve')
 let expect = require('unexpected')
+let Heroku = require('heroku-client')
 
 describe('resolve', () => {
   beforeEach(() => cli.mockConsole())
@@ -13,7 +14,7 @@ describe('resolve', () => {
       let api = nock('https://api.heroku.com:443')
         .get('/addons/myaddon-1').reply(200, {name: 'myaddon-1'})
 
-      return resolve.addon(null, 'myaddon-1')
+      return resolve.addon(new Heroku(), null, 'myaddon-1')
         .then((addon) => expect(addon, 'to satisfy', {name: 'myaddon-1'}))
         .then(() => api.done())
     })
@@ -22,7 +23,7 @@ describe('resolve', () => {
       let api = nock('https://api.heroku.com:443')
         .get('/apps/myapp/addons/myaddon-2').reply(200, {name: 'myaddon-2'})
 
-      return resolve.addon('myapp', 'myaddon-2')
+      return resolve.addon(new Heroku(), 'myapp', 'myaddon-2')
         .then((addon) => expect(addon, 'to satisfy', {name: 'myaddon-2'}))
         .then(() => api.done())
     })
@@ -32,7 +33,7 @@ describe('resolve', () => {
         .get('/apps/myapp/addons/myaddon-3').reply(404)
         .get('/addons/myaddon-3').reply(404)
 
-      return resolve.addon('myapp', 'myaddon-3')
+      return resolve.addon(new Heroku(), 'myapp', 'myaddon-3')
         .then(() => { throw new Error('unreachable') })
         .catch((err) => expect(err, 'to satisfy', {statusCode: 404}))
     })
@@ -41,7 +42,7 @@ describe('resolve', () => {
       nock('https://api.heroku.com:443')
         .get('/apps/myapp/addons/myaddon-5').reply(401)
 
-      return resolve.addon('myapp', 'myaddon-5')
+      return resolve.addon(new Heroku(), 'myapp', 'myaddon-5')
         .then(() => { throw new Error('unreachable') })
         .catch((err) => expect(err, 'to satisfy', {statusCode: 401}))
     })
@@ -52,7 +53,7 @@ describe('resolve', () => {
       let api = nock('https://api.heroku.com:443')
         .get('/addon-attachments/myattachment').reply(200, {name: 'myattachment'})
 
-      return resolve.attachment(null, 'myattachment')
+      return resolve.attachment(new Heroku(), null, 'myattachment')
         .then((addon) => expect(addon, 'to satisfy', {name: 'myattachment'}))
         .then(() => api.done())
     })
@@ -61,7 +62,7 @@ describe('resolve', () => {
       let api = nock('https://api.heroku.com:443')
         .get('/apps/myapp/addon-attachments/myattachment-1').reply(200, {name: 'myattachment-1'})
 
-      return resolve.attachment('myapp', 'myattachment-1')
+      return resolve.attachment(new Heroku(), 'myapp', 'myattachment-1')
         .then((addon) => expect(addon, 'to satisfy', {name: 'myattachment-1'}))
         .then(() => api.done())
     })
@@ -70,7 +71,7 @@ describe('resolve', () => {
       let api = nock('https://api.heroku.com:443')
         .get('/addon-attachments/myattachment').reply(401)
 
-      return resolve.attachment(null, 'myattachment')
+      return resolve.attachment(new Heroku(), null, 'myattachment')
         .then(() => { throw new Error('unreachable') })
         .catch((err) => expect(err, 'to satisfy', {statusCode: 401}))
         .then(() => api.done())
@@ -80,7 +81,7 @@ describe('resolve', () => {
       let api = nock('https://api.heroku.com:443')
         .get('/apps/myapp/addon-attachments/myattachment-2').reply(401)
 
-      return resolve.attachment('myapp', 'myattachment-2')
+      return resolve.attachment(new Heroku(), 'myapp', 'myattachment-2')
         .then(() => { throw new Error('unreachable') })
         .catch((err) => expect(err, 'to satisfy', {statusCode: 401}))
         .then(() => api.done())

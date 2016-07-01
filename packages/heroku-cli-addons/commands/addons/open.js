@@ -65,13 +65,13 @@ function * run (ctx, api) {
 
   if (process.env.HEROKU_SUDO) return sudo(ctx, api)
 
-  let attachment = yield resolve.attachment(ctx.app, ctx.args.addon)
+  let attachment = yield resolve.attachment(api, ctx.app, ctx.args.addon)
   let webUrl
 
   if (attachment) {
     webUrl = attachment.web_url
   } else {
-    let addon = yield resolve.addon(ctx.app, ctx.args.addon)
+    let addon = yield resolve.addon(api, ctx.app, ctx.args.addon)
     webUrl = addon.web_url
   }
 

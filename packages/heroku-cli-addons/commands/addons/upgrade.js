@@ -78,7 +78,7 @@ function * run (c, h) {
   if (plan.indexOf(':') !== -1) plan = plan.split(':')[1]
 
   // find the add-on to be changed
-  addon = yield resolver.addon(app, name).catch((e) => handleAPIError(e))
+  addon = yield resolver.addon(h, app, name).catch((e) => handleAPIError(e))
 
   service = addon.addon_service.name
   app = addon.app.name
