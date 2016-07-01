@@ -5,7 +5,7 @@ let co = require('co')
 
 function * run (context, heroku) {
   let app = context.app
-  let addon = yield heroku.get(`/addons/${context.args.addon_name}`)
+  let addon = yield heroku.get(`/addons/${encodeURIComponent(context.args.addon_name)}`)
 
   function createAttachment (app, as, confirm) {
     return cli.action(
