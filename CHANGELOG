@@ -1,3 +1,8 @@
+5.2.24  2016-07-05
+==================
+Updated heroku-redis
+Updated heroku-cli-addons
+
 5.2.23  2016-06-29
 ==================
 Added heroku-repo to auto-migrating ruby plugins
