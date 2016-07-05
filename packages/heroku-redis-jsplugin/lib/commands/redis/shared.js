@@ -8,7 +8,7 @@ const ADDON = process.env.HEROKU_REDIS_ADDON_NAME || 'heroku-redis'
 function request (context, path, method, body) {
   let headers = { 'Accept': 'application/json' }
   if (process.env.HEROKU_HEADERS) {
-    cli.extend(headers, JSON.parse(process.env.HEROKU_HEADERS))
+    Object.assign(headers, JSON.parse(process.env.HEROKU_HEADERS))
   }
   return Heroku.request({
     method: method || 'GET',
