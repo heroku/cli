@@ -23,7 +23,6 @@
   },
   "devDependencies": {
     "chai": "^3.3.0",
-    "jshint": "*",
     "mocha": "^2.3.3",
     "nock": "3.2.0",
     "nyc": "6.4.4",
