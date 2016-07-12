@@ -1,19 +1,18 @@
 'use strict'
 
 const co = require('co')
-const cli = require('heroku-cli-util')
 
-function * addon (app, db) {
+function * addon (heroku, app, db) {
   const {resolve} = require('heroku-cli-addons')
 
-  let attachment = yield resolve.attachment(cli.heroku, app, db)
+  let attachment = yield resolve.attachment(heroku, app, db, {'Accept-Inclusion': 'addon:plan'})
   return attachment.addon
 }
 
-function * all (app) {
+function * all (heroku, app) {
   const uniqby = require('lodash.uniqby')
 
-  let attachments = yield cli.heroku.get(`/apps/${app}/addon-attachments`, {
+  let attachments = yield heroku.get(`/apps/${app}/addon-attachments`, {
     headers: {'Accept-Inclusion': 'addon:plan'}
   })
   let addons = attachments.map(a => a.addon)

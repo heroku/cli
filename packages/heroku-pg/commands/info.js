@@ -38,7 +38,7 @@ function displayDB (db) {
   cli.log()
 }
 
-function * run (context) {
+function * run (context, heroku) {
   const sortBy = require('lodash.sortby')
   const host = require('../lib/host')
   const fetcher = require('../lib/fetcher')
@@ -46,12 +46,12 @@ function * run (context) {
   const db = context.args.database
 
   let addons = []
-  let config = cli.heroku.get(`/apps/${app}/config-vars`)
+  let config = heroku.get(`/apps/${app}/config-vars`)
 
   if (db) {
-    addons = yield [fetcher.addon(app, db)]
+    addons = yield [fetcher.addon(heroku, app, db)]
   } else {
-    addons = yield fetcher.all(app)
+    addons = yield fetcher.all(heroku, app)
     if (addons.length === 0) {
       cli.log(`${cli.color.app(app)} has no heroku-postgresql databases.`)
       return
@@ -62,7 +62,7 @@ function * run (context) {
     return {
       addon,
       config,
-      db: cli.heroku.request({
+      db: heroku.request({
         host: host(addon),
         method: 'get',
         path: `/client/v11/databases/${addon.name}`

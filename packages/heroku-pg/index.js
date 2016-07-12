@@ -6,5 +6,6 @@ exports.topics = [
 
 exports.commands = [
   require('./commands/info').info,
-  require('./commands/info').root
+  require('./commands/info').root,
+  require('./commands/wait')
 ]
