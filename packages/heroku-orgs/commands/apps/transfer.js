@@ -28,6 +28,7 @@ function * run (context, heroku) {
   let app = context.app
   let recipient = context.args.recipient
 
+  // App transfers in bulk
   if (context.flags.bulk) {
     let allApps = yield heroku.get('/apps')
     let selectedApps = yield getAppsToTransfer(_.sortBy(allApps, 'name'))
@@ -40,7 +41,7 @@ function * run (context, heroku) {
           heroku: heroku,
           appName: app.name,
           recipient: recipient,
-          personalAppTransfer: Utils.isValidEmail(recipient) && !Utils.isOrgApp(app.owner),
+          personalToPersonal: Utils.isValidEmail(recipient) && !Utils.isOrgApp(app.owner),
           bulk: true
         })
         yield appTransfer.start()
@@ -48,13 +49,19 @@ function * run (context, heroku) {
         cli.error(err)
       }
     }
-  } else {
+  } else { // Single app transfer
     let appInfo = yield heroku.get(`/apps/${app}`)
+
+    // Shows warning when app is transferred from a team/org to a personal account
+    if (Utils.isValidEmail(recipient) && Utils.isOrgApp(appInfo.owner.email)) {
+      yield cli.confirmApp(app, context.flags.confirm, 'All collaborators will be removed from this app')
+    }
+
     let appTransfer = new AppTransfer({
       heroku: heroku,
       appName: appInfo.name,
       recipient: recipient,
-      personalAppTransfer: Utils.isValidEmail(recipient) && !Utils.isOrgApp(appInfo.owner.email)
+      personalToPersonal: Utils.isValidEmail(recipient) && !Utils.isOrgApp(appInfo.owner.email)
     })
     yield appTransfer.start()
 

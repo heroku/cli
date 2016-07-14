@@ -8,7 +8,7 @@ function orgAppTransfer () {
     .reply(200, { name: 'myapp', owner: { email: 'team@herokumanager.com' } })
 }
 
-function personalAppTransfer () {
+function personalToPersonal () {
   return nock('https://api.heroku.com:443')
     .patch('/organizations/apps/myapp', {owner: 'raulb@heroku.com'})
     .reply(200, { name: 'myapp', owner: { email: 'raulb@heroku.com' } })
@@ -16,5 +16,5 @@ function personalAppTransfer () {
 
 module.exports = {
   orgAppTransfer: orgAppTransfer,
-  personalAppTransfer: personalAppTransfer
+  personalToPersonal: personalToPersonal
 }

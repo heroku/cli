@@ -73,7 +73,7 @@ Transferring myapp... done
         return Promise.resolve({choices: [{ name: 'myapp', owner: 'foo@foo.com' }]})
       }
 
-      let api = stubPost.personalAppTransfer()
+      let api = stubPost.personalToPersonal()
       return cmd.run({args: {recipient: 'raulb@heroku.com'}, flags: {bulk: true}})
         .then(function () {
           api.done()
@@ -91,7 +91,7 @@ Initiating transfer of myapp... email sent
     })
 
     it('transfers the app to a personal account', () => {
-      let api = stubPost.personalAppTransfer()
+      let api = stubPost.personalToPersonal()
       return cmd.run({app: 'myapp', args: {recipient: 'raulb@heroku.com'}, flags: {}})
         .then(() => expect('').to.eq(cli.stdout))
         .then(() => expect(`Initiating transfer of myapp to raulb@heroku.com... email sent
@@ -114,9 +114,9 @@ Initiating transfer of myapp... email sent
       stubGet.orgApp()
     })
 
-    it('transfers the app to a personal account', () => {
+    it('transfers the app to a personal account confirming app name', () => {
       let api = stubPatch.orgAppTransfer()
-      return cmd.run({app: 'myapp', args: {recipient: 'team'}, flags: {}})
+      return cmd.run({app: 'myapp', args: {recipient: 'team'}, flags: { confirm: 'myapp' }})
         .then(() => expect('').to.eq(cli.stdout))
         .then(() => expect(`Transferring myapp to team... done
 `).to.eq(cli.stderr))
@@ -133,7 +133,7 @@ Initiating transfer of myapp... email sent
     })
 
     it('transfers and locks the app if --locked is passed', () => {
-      let api = stubPatch.personalAppTransfer()
+      let api = stubPatch.orgAppTransfer()
 
       let lockedAPI = nock('https://api.heroku.com:443')
         .get('/organizations/apps/myapp')
@@ -141,9 +141,9 @@ Initiating transfer of myapp... email sent
         .patch('/organizations/apps/myapp', {locked: true})
         .reply(200)
 
-      return cmd.run({app: 'myapp', args: {recipient: 'raulb@heroku.com'}, flags: {locked: true}})
+      return cmd.run({app: 'myapp', args: {recipient: 'team'}, flags: { locked: true }})
         .then(() => expect('').to.eq(cli.stdout))
-        .then(() => expect(`Transferring myapp to raulb@heroku.com... done
+        .then(() => expect(`Transferring myapp to team... done
 Locking myapp... done
 `).to.eq(cli.stderr))
         .then(() => api.done())

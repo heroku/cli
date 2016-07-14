@@ -8,18 +8,18 @@ class AppTransfer {
    * @param {Object} options.heroku - instance of heroku-client
    * @param {string} options.appName - application that is being transferred
    * @param {string} options.recipient - recipient of the transfer
-   * @param {boolean} options.personalAppTransfer - determines if it is a transfer between individual accounts
+   * @param {boolean} options.personalToPersonal - determines if it is a transfer between individual accounts
   */
   constructor (opts) {
     this.opts = opts
     this.heroku = this.opts.heroku
     this.appName = this.opts.appName
     this.recipient = this.opts.recipient
-    this.personalAppTransfer = this.opts.personalAppTransfer
+    this.personalToPersonal = this.opts.personalToPersonal
 
-    if (this.personalAppTransfer === undefined) this.personalAppTransfer = true
+    if (this.personalToPersonal === undefined) this.personalToPersonal = true
 
-    if (this.personalAppTransfer) {
+    if (this.personalToPersonal) {
       this.body = { app: this.appName, recipient: this.recipient }
       this.transferMsg = `Initiating transfer of ${cli.color.app(this.appName)}`
       if (!this.opts.bulk) this.transferMsg += ` to ${cli.color.magenta(this.recipient)}`
