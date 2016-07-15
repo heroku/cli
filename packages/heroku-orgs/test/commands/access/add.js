@@ -8,40 +8,40 @@ let unwrap = require('../../unwrap')
 let stubGet = require('../../stub/get')
 let stubPost = require('../../stub/post')
 let api
-let apiPrivilegesVariant
+let apiPermissionsVariant
 let apiV2
 
 describe('heroku access:add', () => {
-  context('with an org app with user privileges', () => {
+  context('with an org app with user permissions', () => {
     beforeEach(() => {
       cli.mockConsole()
       api = stubGet.orgApp()
-      apiPrivilegesVariant = stubPost.collaboratorsWithPrivileges(['deploy', 'view'])
+      apiPermissionsVariant = stubPost.collaboratorsWithPermissions(['deploy', 'view'])
       apiV2 = stubGet.orgFlags(['org-access-controls'])
     })
     afterEach(() => nock.cleanAll())
 
-    it('adds user to the app with privileges, and view is implicit', () => {
-      return cmd.run({app: 'myapp', args: {email: 'raulb@heroku.com'}, flags: { privileges: 'deploy' }})
+    it('adds user to the app with permissions, and view is implicit', () => {
+      return cmd.run({app: 'myapp', args: {email: 'raulb@heroku.com'}, flags: { permissions: 'deploy' }})
         .then(() => expect('').to.eq(cli.stdout))
-        .then(() => expect(`Adding raulb@heroku.com access to the app myapp with deploy,view privileges... done
+        .then(() => expect(`Adding raulb@heroku.com access to the app myapp with deploy,view permissions... done
 `).to.eq(cli.stderr))
         .then(() => api.done())
         .then(() => apiV2.done())
-        .then(() => apiPrivilegesVariant.done())
+        .then(() => apiPermissionsVariant.done())
     })
 
-    it('adds user to the app with privileges, even specifying the view privilege', () => {
-      return cmd.run({app: 'myapp', args: {email: 'raulb@heroku.com'}, flags: { privileges: 'deploy,view' }})
+    it('adds user to the app with permissions, even specifying the view permission', () => {
+      return cmd.run({app: 'myapp', args: {email: 'raulb@heroku.com'}, flags: { permissions: 'deploy,view' }})
         .then(() => expect('').to.eq(cli.stdout))
-        .then(() => expect(`Adding raulb@heroku.com access to the app myapp with deploy,view privileges... done
+        .then(() => expect(`Adding raulb@heroku.com access to the app myapp with deploy,view permissions... done
 `).to.eq(cli.stderr))
         .then(() => api.done())
         .then(() => apiV2.done())
-        .then(() => apiPrivilegesVariant.done())
+        .then(() => apiPermissionsVariant.done())
     })
 
-    it('raises an error when privileges are not specified', () => {
+    it('raises an error when permissions are not specified', () => {
       error.exit.mock()
 
       return assertExit(1, cmd.run({
@@ -49,19 +49,25 @@ describe('heroku access:add', () => {
       }).then(() => {
         api.done()
         apiV2.done()
-        apiPrivilegesVariant.done()
+        apiPermissionsVariant.done()
       })).then(function () {
-        expect(unwrap(cli.stderr)).to.equal(` ▸    Missing argument: privileges
+        expect(unwrap(cli.stderr)).to.equal(` ▸    Missing argument: permissions
 `)
       })
     })
+
+    it('supports --privileges, but shows deprecation warning', () => {
+      return cmd.run({app: 'myapp', args: {email: 'raulb@heroku.com'}, flags: { privileges: 'deploy,view' }})
+        .then(() => expect('').to.eq(cli.stdout))
+        .then(() => expect(' ▸    DEPRECATION WARNING: use `--permissions` not `--privileges`\nAdding raulb@heroku.com access to the app myapp with deploy,view permissions... done\n').to.eq(cli.stderr))
+    })
   })
 
-  context('with an org app without user privileges', () => {
+  context('with an org app without user permissions', () => {
     beforeEach(() => {
       cli.mockConsole()
       api = stubGet.orgApp()
-      apiPrivilegesVariant = stubPost.collaborators()
+      apiPermissionsVariant = stubPost.collaborators()
       apiV2 = stubGet.orgFlags([])
     })
     afterEach(() => nock.cleanAll())
@@ -73,7 +79,7 @@ describe('heroku access:add', () => {
 `).to.eq(cli.stderr))
         .then(() => api.done())
         .then(() => apiV2.done())
-        .then(() => apiPrivilegesVariant.done())
+        .then(() => apiPermissionsVariant.done())
     })
   })
 
@@ -81,7 +87,7 @@ describe('heroku access:add', () => {
     beforeEach(() => {
       cli.mockConsole()
       api = stubGet.personalApp()
-      apiPrivilegesVariant = stubPost.collaborators()
+      apiPermissionsVariant = stubPost.collaborators()
     })
     afterEach(() => nock.cleanAll())
 
@@ -91,7 +97,7 @@ describe('heroku access:add', () => {
         .then(() => expect(`Adding raulb@heroku.com access to the app myapp... done
 `).to.eq(cli.stderr))
         .then(() => api.done())
-        .then(() => apiPrivilegesVariant.done())
+        .then(() => apiPermissionsVariant.done())
     })
   })
 })

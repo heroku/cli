@@ -45,15 +45,15 @@ raulb@heroku.com  admin
     })
   })
 
-  context('with a org with static privileges', () => {
+  context('with a org with static permissions', () => {
     beforeEach(() => cli.mockConsole())
     afterEach(() => nock.cleanAll())
 
     it('shows the app collaborators and hides the org collaborator record', () => {
       let apiOrgApp = stubGet.orgApp()
       let apiOrgMembers = stubGet.orgMembers()
-      let apiAppPrivileges = stubGet.appPrivileges()
-      let apiOrgAppCollaboratorsWithPrivileges = stubGet.orgAppCollaboratorsWithPrivileges()
+      let apiAppPermissions = stubGet.appPermissions()
+      let apiOrgAppCollaboratorsWithPermissions = stubGet.orgAppCollaboratorsWithPermissions()
       let apiOrgFlags = stubGet.orgFlags('static-permissions')
 
       return cmd.run({app: 'myapp', flags: {}})
@@ -64,21 +64,21 @@ raulb@heroku.com  admin   deploy,manage,operate,view
         .then(() => expect('').to.eq(cli.stderr))
         .then(() => apiOrgApp.done())
         .then(() => apiOrgMembers.done())
-        .then(() => apiAppPrivileges.done())
-        .then(() => apiOrgAppCollaboratorsWithPrivileges.done())
+        .then(() => apiAppPermissions.done())
+        .then(() => apiOrgAppCollaboratorsWithPermissions.done())
         .then(() => apiOrgFlags.done())
     })
   })
 
-  context('with a org with dynamic privileges', () => {
+  context('with a org with dynamic permissions', () => {
     beforeEach(() => cli.mockConsole())
     afterEach(() => nock.cleanAll())
 
     it('shows the app collaborators and hides the org collaborator record', () => {
       let apiOrgApp = stubGet.orgApp()
       let apiOrgMembers = stubGet.orgMembers()
-      let apiAppPrivileges = stubGet.appPrivileges()
-      let apiOrgAppCollaboratorsWithPrivileges = stubGet.orgAppCollaboratorsWithPrivileges()
+      let apiAppPermissions = stubGet.appPermissions()
+      let apiOrgAppCollaboratorsWithPermissions = stubGet.orgAppCollaboratorsWithPermissions()
       let apiOrgFlags = stubGet.orgFlags('org-access-controls')
 
       return cmd.run({app: 'myapp', flags: {}})
@@ -89,8 +89,8 @@ raulb@heroku.com  admin   deploy,manage,operate,view
         .then(() => expect('').to.eq(cli.stderr))
         .then(() => apiOrgApp.done())
         .then(() => apiOrgMembers.done())
-        .then(() => apiAppPrivileges.done())
-        .then(() => apiOrgAppCollaboratorsWithPrivileges.done())
+        .then(() => apiAppPermissions.done())
+        .then(() => apiOrgAppCollaboratorsWithPermissions.done())
         .then(() => apiOrgFlags.done())
     })
   })

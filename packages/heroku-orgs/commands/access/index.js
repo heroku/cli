@@ -15,7 +15,7 @@ function printJSON (collaborators) {
 }
 
 function printAccess (app, collaborators) {
-  let showPrivileges = Utils.isOrgApp(app.owner.email) && (orgHasGranularPermissions(orgFlags))
+  let showPermissions = Utils.isOrgApp(app.owner.email) && (orgHasGranularPermissions(orgFlags))
   collaborators = _.chain(collaborators)
     .sortBy(c => c.email || c.user.email)
     .reject(c => /herokumanager\.com$/.test(c.user.email))
@@ -24,8 +24,8 @@ function printAccess (app, collaborators) {
       let role = collab.role
       let data = { email: email, role: role || 'collaborator' }
 
-      if (showPrivileges) {
-        data.privileges = _.map(_.sortBy(collab.privileges, 'name'), 'name')
+      if (showPermissions) {
+        data.permissions = _.map(_.sortBy(collab.permissions, 'name'), 'name')
       }
       return data
     }).value()
@@ -34,7 +34,7 @@ function printAccess (app, collaborators) {
     {key: 'email', label: 'Email', format: e => cli.color.cyan(e)},
     {key: 'role', label: 'Role', format: r => cli.color.green(r)}
   ]
-  if (showPrivileges) columns.push({key: 'privileges', label: 'Privileges'})
+  if (showPermissions) columns.push({key: 'permissions', label: 'Permissions'})
   cli.table(collaborators, {printHeader: false, columns})
 }
 
@@ -64,7 +64,7 @@ function * run (context, heroku) {
         let admins = yield heroku.get(`/organizations/${orgName}/members`)
         admins = _.filter(admins, { 'role': 'admin' })
 
-        let adminPrivileges = yield heroku.request({
+        let adminPermissions = yield heroku.request({
           method: 'GET',
           path: '/organizations/privileges',
           headers: { Accept: 'application/vnd.heroku+json; version=3.org-privileges' }
@@ -72,11 +72,11 @@ function * run (context, heroku) {
 
         admins = _.forEach(admins, function (admin) {
           admin.user = { email: admin.email }
-          admin.privileges = adminPrivileges
+          admin.permissions = adminPermissions
           return admin
         })
 
-        collaborators = _.reject(collaborators, {role: 'admin'}) // Admins might have already privileges
+        collaborators = _.reject(collaborators, {role: 'admin'}) // Admins might have already permissions
         collaborators = _.union(collaborators, admins)
       } catch (err) {
         if (err.statusCode !== 403) throw err

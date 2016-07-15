@@ -21,7 +21,7 @@ function appCollaborators () {
     ])
 }
 
-function appPrivileges () {
+function appPermissions () {
   return nock('https://api.heroku.com:443', {
     reqheaders: {Accept: 'application/vnd.heroku+json; version=3.org-privileges'}
   })
@@ -65,18 +65,18 @@ function orgAppCollaborators () {
     ])
 }
 
-function orgAppCollaboratorsWithPrivileges () {
+function orgAppCollaboratorsWithPermissions () {
   return nock('https://api.heroku.com:443', {
     reqheaders: {Accept: 'application/vnd.heroku+json; version=3.org-privileges'}
   })
     .get('/organizations/apps/myapp/collaborators')
     .reply(200, [
-      { privileges: [],
+      { permissions: [],
         role: 'owner',
         user: { email: 'myorg@herokumanager.com' }
       },
       {
-        privileges: [ { name: 'deploy' }, { name: 'view' } ],
+        permissions: [ { name: 'deploy' }, { name: 'view' } ],
         role: 'member',
         user: { email: 'bob@heroku.com' }
       }
@@ -142,10 +142,10 @@ function userFeatureFlags (flags) {
 module.exports = {
   apps: apps,
   appCollaborators: appCollaborators,
-  appPrivileges: appPrivileges,
+  appPermissions: appPermissions,
   orgApp: orgApp,
   orgAppCollaborators: orgAppCollaborators,
-  orgAppCollaboratorsWithPrivileges: orgAppCollaboratorsWithPrivileges,
+  orgAppCollaboratorsWithPermissions: orgAppCollaboratorsWithPermissions,
   orgFlags: orgFlags,
   orgMembers: orgMembers,
   personalApp: personalApp,

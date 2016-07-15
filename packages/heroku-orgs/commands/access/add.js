@@ -9,7 +9,7 @@ let extend = require('util')._extend
 
 function * run (context, heroku) {
   let appName = context.app
-  let privileges = context.flags.privileges || ''
+  let permissions = context.flags.permissions || context.flags.privileges || ''
   let appInfo = yield heroku.get(`/apps/${appName}`)
   let output = `Adding ${cli.color.cyan(context.args.email)} access to the app ${cli.color.magenta(appName)}`
   let request
@@ -26,14 +26,16 @@ function * run (context, heroku) {
   }
 
   if (_.includes(orgFlags, 'org-access-controls')) {
-    if (!privileges) error.exit(1, 'Missing argument: privileges')
+    if (!permissions) error.exit(1, 'Missing argument: permissions')
 
-    privileges = privileges.split(',')
+    if (context.flags.privileges) cli.warn('DEPRECATION WARNING: use `--permissions` not `--privileges`')
+
+    permissions = permissions.split(',')
 
     // Give implicit `view` access
-    privileges.push('view')
-    privileges = _.uniq(privileges.sort())
-    output += ` with ${cli.color.green(privileges)} privileges`
+    permissions.push('view')
+    permissions = _.uniq(permissions.sort())
+    output += ` with ${cli.color.green(permissions)} permissions`
 
     request = heroku.request({
       method: 'POST',
@@ -43,7 +45,7 @@ function * run (context, heroku) {
       },
       body: {
         user: context.args.email,
-        privileges: privileges
+        permissions: permissions
       }
     })
   } else {
@@ -58,10 +60,11 @@ let cmd = {
   needsApp: true,
   command: 'add',
   description: 'Add new users to your app',
-  help: 'heroku access:add user@email.com --app APP # Add a collaborator to your app\n\nheroku access:add user@email.com --app APP --privileges deploy,manage,operate # privileges must be comma separated',
+  help: 'heroku access:add user@email.com --app APP # Add a collaborator to your app\n\nheroku access:add user@email.com --app APP --permissions deploy,manage,operate # permissions must be comma separated',
   args: [{name: 'email', optional: false}],
   flags: [
-    {name: 'privileges', description: 'list of privileges comma separated', hasValue: true, optional: true}
+    {name: 'permissions', description: 'list of permissions comma separated', hasValue: true, optional: true},
+    {name: 'privileges', hasValue: true, optional: true, hidden: true} // Deprecated flag
   ],
   run: cli.command(co.wrap(run))
 }

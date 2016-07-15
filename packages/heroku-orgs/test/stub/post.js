@@ -9,13 +9,13 @@ function collaborators () {
     }).reply(200)
 }
 
-function collaboratorsWithPrivileges (privileges) {
+function collaboratorsWithPermissions (permissions) {
   return nock('https://api.heroku.com:443', {
     reqheaders: {Accept: 'application/vnd.heroku+json; version=3.org-privileges'}
   })
     .post('/organizations/apps/myapp/collaborators', {
       user: 'raulb@heroku.com',
-      privileges: privileges || ['']
+      permissions: permissions || ['']
     }).reply(200)
 }
 
@@ -27,6 +27,6 @@ function personalToPersonal () {
 
 module.exports = {
   collaborators: collaborators,
-  collaboratorsWithPrivileges: collaboratorsWithPrivileges,
-  personalToPersonal: personalToPersonal
+  personalToPersonal: personalToPersonal,
+  collaboratorsWithPermissions: collaboratorsWithPermissions
 }
