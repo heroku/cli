@@ -2,6 +2,7 @@
 
 const cli = require('heroku-cli-util')
 const co = require('co')
+const sprintf = require('sprintf-js').sprintf
 
 function capitalize (str) {
   return str.substr(0, 1).toUpperCase() + str.substr(1)
@@ -21,10 +22,11 @@ function * run (context) {
   const moment = require('moment')
   const maxBy = require('lodash.maxby')
   const padEnd = require('lodash.padend')
+  const apiPath = '/api/v4/current-status'
 
   let host = process.env.HEROKU_STATUS_HOST || 'https://status.heroku.com'
-  let response = (yield cli.got(host + '/api/v3/current-status', {
-    path: '/api/v3/current-status',
+  let response = (yield cli.got(host + apiPath, {
+    path: apiPath,
     json: true,
     headers: { 'Accept': 'application/vnd.heroku+json;' }
   })).body
@@ -34,10 +36,13 @@ function * run (context) {
     return
   }
 
-  cli.log(`Production:   ${printStatus(response.status.Production)}`)
-  cli.log(`Development:  ${printStatus(response.status.Development)}`)
+  response.status.forEach(function (item) {
+    var message = printStatus(item.status)
 
-  response.issues.forEach(function (incident) {
+    cli.log(sprintf('%-10s %s', item.system + ':', message))
+  })
+
+  response.incidents.forEach(function (incident) {
     cli.log()
     cli.styledHeader(`${incident.title} ${cli.color.yellow(moment(incident.created_at).format('LT'))} ${cli.color.cyan(incident.full_url)}`)
 

@@ -11,7 +11,8 @@
     "heroku-cli-util": "6.0.11",
     "lodash.maxby": "4.4.0",
     "lodash.padend": "4.5.0",
-    "moment": "2.13.0"
+    "moment": "2.13.0",
+    "sprintf-js": "^1.0.3"
   },
   "devDependencies": {
     "codeclimate-test-reporter": "0.3.1",
