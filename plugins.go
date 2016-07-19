@@ -235,6 +235,13 @@ ctx.version = ctx.version + ' ' + pluginName + '/' + pluginVersion + ' node-' + 
 if (command === '') { command = null }
 let plugin = require(pluginName)
 let cmd = plugin.commands.filter((c) => c.topic === topic && c.command == command)[0]
+
+function handleEPIPE (err) {
+	if (err.errno !== 'EPIPE') throw err
+}
+process.stdout.on('error', handleEPIPE)
+process.stderr.on('error', handleEPIPE)
+
 cmd.run(ctx)
 `, args, plugin.Name, plugin.Version, topic, command, ctxJSON)
 
