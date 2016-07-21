@@ -13,6 +13,6 @@
     "heroku-redis": "1.2.7",
     "heroku-run": "3.2.14",
     "heroku-spaces": "2.3.0",
-    "heroku-status": "2.1.9"
+    "heroku-status": "3.0.0"
   }
 }
