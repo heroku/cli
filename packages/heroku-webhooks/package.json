@@ -1,0 +1,37 @@
+{
+  "name": "heroku-webhooks",
+  "description": "Heroku CLI plugin to manage webhooks.",
+  "version": "1.0.0",
+  "author": "Ransom Briggs (@ransombriggs)",
+  "bugs": {
+    "url": "https://github.com/heroku/heroku-webhooks/issues"
+  },
+  "dependencies": {
+    "co": "4.6.0",
+    "heroku-cli-util": "6.0.11"
+  },
+  "devDependencies": {
+    "chai": "^3.3.0",
+    "mocha": "^2.3.3",
+    "mocha-junit-reporter": "1.11.1",
+    "nock": "8.0.0",
+    "nyc": "6.4.4",
+    "snazzy": "4.0.0",
+    "standard": "7.1.0"
+  },
+  "homepage": "https://github.com/heroku/heroku-webhooks",
+  "keywords": [
+    "heroku-plugin"
+  ],
+  "license": "ISC",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/heroku/heroku-webhooks.git"
+  },
+  "scripts": {
+    "postversion": "npm publish && git push && git push --tags",
+    "preversion": "npm test",
+    "test": "TZ=utc nyc mocha && standard | snazzy"
+  }
+}
