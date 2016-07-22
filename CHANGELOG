@@ -1,3 +1,7 @@
+5.2.27  2016-07-22
+==================
+Added heroku-pg
+
 5.2.26  2016-07-22
 ==================
 Gracefully handle closed stdout/stderr streams
