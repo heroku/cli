@@ -16,7 +16,7 @@ import (
 var analyticsPath = filepath.Join(CacheHome, "analytics.json")
 var currentAnalyticsCommand = &AnalyticsCommand{
 	Timestamp:  time.Now().Unix(),
-	Version:    version(),
+	Version:    Version,
 	OS:         runtime.GOOS,
 	Arch:       runtime.GOARCH,
 	Language:   "go/" + strings.TrimPrefix(runtime.Version(), "go"),
