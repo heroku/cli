@@ -15,13 +15,11 @@ import (
 
 var analyticsPath = filepath.Join(CacheHome, "analytics.json")
 var currentAnalyticsCommand = &AnalyticsCommand{
-	Timestamp:  time.Now().Unix(),
-	Version:    Version,
-	OS:         runtime.GOOS,
-	Arch:       runtime.GOARCH,
-	Language:   "go/" + strings.TrimPrefix(runtime.Version(), "go"),
-	CLIVersion: Version,
-	Valid:      true,
+	Timestamp: time.Now().Unix(),
+	OS:        runtime.GOOS,
+	Arch:      runtime.GOARCH,
+	Language:  "go/" + strings.TrimPrefix(runtime.Version(), "go"),
+	Valid:     true,
 }
 
 // AnalyticsCommand represents an analytics command
@@ -42,6 +40,8 @@ type AnalyticsCommand struct {
 
 // RecordStart marks when a command was started (for tracking runtime)
 func (c *AnalyticsCommand) RecordStart() {
+	c.Version = Version
+	c.CLIVersion = Version
 	c.start = time.Now()
 }
 
