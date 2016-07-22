@@ -20,7 +20,7 @@ var currentAnalyticsCommand = &AnalyticsCommand{
 	OS:         runtime.GOOS,
 	Arch:       runtime.GOARCH,
 	Language:   "go/" + strings.TrimPrefix(runtime.Version(), "go"),
-	CLIVersion: version(),
+	CLIVersion: Version,
 	Valid:      true,
 }
 
