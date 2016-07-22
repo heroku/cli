@@ -13,6 +13,8 @@ let endpoints = require('../../lib/endpoints.js')
 let sslDoctor = require('../../lib/ssl_doctor.js')
 let displayWarnings = require('../../lib/display_warnings.js')
 let certificateDetails = require('../../lib/certificate_details.js')
+let isWildcard = require('../../lib/is_wildcard.js')
+let isWildcardMatch = require('../../lib/is_wildcard_match.js')
 
 function Domains (domains) {
   this.domains = domains
@@ -65,11 +67,17 @@ function getFlagChoices (context, certDomains, existingDomains) {
 }
 
 function getPromptChoices (context, certDomains, existingDomains, newDomains) {
+  let nonWildcardDomains = newDomains.filter((domain) => !isWildcard(domain))
+
+  if (nonWildcardDomains.length === 0) {
+    return Promise.resolve({domains: []})
+  }
+
   return inquirer.prompt([{
     type: 'checkbox',
     name: 'domains',
     message: 'Select domains you would like to add',
-    choices: newDomains.map(function (domain) {
+    choices: nonWildcardDomains.map(function (domain) {
       return {name: domain}
     })
   }])
@@ -161,9 +169,24 @@ function * addDomains (context, heroku, meta, cert) {
     return psl.parse(domain.hostname).subdomain === null ? 'ALIAS/ANAME' : 'CNAME'
   }
 
+  let hasWildcard = _.some(certDomains, (certDomain) => isWildcard(certDomain))
+
   let domainsTable = apiDomains.concat(domains.added)
     .filter((domain) => domain.kind === 'custom')
-    .map((domain) => Object.assign({}, domain, {type: type(domain)}))
+    .map(function (domain) {
+      let warning = null
+      if (hasWildcard && domain.hostname) {
+        let hasMatch = _.some(certDomains, function (certDomain) {
+          return domain.hostname === certDomain || isWildcardMatch(certDomain, domain.hostname)
+        })
+
+        if (!hasMatch) {
+          warning = '! Does not match any domains on your SSL certificate'
+        }
+      }
+
+      return Object.assign({}, domain, {type: type(domain), warning: warning})
+    })
 
   if (domainsTable.length === 0) {
     /* eslint-disable no-irregular-whitespace */
@@ -171,11 +194,18 @@ function * addDomains (context, heroku, meta, cert) {
     /* eslint-enable no-irregular-whitespace */
   } else {
     cli.styledHeader("Your certificate has been added successfully.  Update your application's DNS settings as follows")
-    cli.table(domainsTable, {columns: [
+
+    let columns = [
         {label: 'Domain', key: 'hostname'},
         {label: 'Record Type', key: 'type'},
         {label: 'DNS Target', key: 'cname'}
-    ]})
+    ]
+
+    if (_.some(domainsTable, (domain) => domain.warning)) {
+      columns.push({label: 'Warnings', key: 'warning'})
+    }
+
+    cli.table(domainsTable, {columns: columns})
   }
 
   if (domains.hasFailed) {

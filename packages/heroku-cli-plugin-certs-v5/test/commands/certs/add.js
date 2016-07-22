@@ -13,6 +13,7 @@ let certs
 let endpoint = require('../../stubs/sni-endpoints.js').endpoint
 let endpointStables = require('../../stubs/sni-endpoints.js').endpoint_stables
 let endpointWarning = require('../../stubs/sni-endpoints.js').endpoint_warning
+let endpointWildcard = require('../../stubs/sni-endpoints.js').endpoint_wildcard
 let certificateDetails = require('../../stubs/sni-endpoints.js').certificate_details
 
 let error = require('../../../lib/error.js')
@@ -629,6 +630,117 @@ Domain           Record Type  DNS Target
 *.example.com    CNAME        wildcard.example.com.herokudns.com
 biz.example.com  CNAME        biz.example.com.herokudns.com
 `)
+        /* eslint-enable no-trailing-spaces */
+      })
+    })
+
+    it('# does not prompt if no domains and wildcard cert', function () {
+      let mock = nock('https://api.heroku.com')
+        .post('/apps/example/sni-endpoints', {
+          certificate_chain: 'pem content', private_key: 'key content'
+        })
+        .reply(200, endpointWildcard)
+
+      let domainsMock = nock('https://api.heroku.com')
+        .get('/apps/example/domains')
+        .reply(200, [])
+
+      return certs.run({app: 'example', args: {CRT: 'pem_file', KEY: 'key_file'}, flags: {bypass: true}}).then(function () {
+        mock.done()
+        domainsMock.done()
+        expect(unwrap(cli.stderr)).to.equal('Adding SSL certificate to example... done\n')
+        /* eslint-disable no-trailing-spaces */
+        /* eslint-disable no-irregular-whitespace */
+        expect(cli.stdout).to.equal(
+          `Certificate details:
+Common Name(s): *.example.org
+Expires At:     2013-08-01 21:34 UTC
+Issuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
+Starts At:      2012-08-01 21:34 UTC
+Subject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
+SSL certificate is self signed.
+
+=== Your certificate has been added successfully.  Add a custom domain to your app by running heroku domains:add <yourdomain.com>
+`)
+        /* eslint-enable no-irregular-whitespace */
+        /* eslint-enable no-trailing-spaces */
+      })
+    })
+
+    it('# prints mismatched domains for wildcard cert', function () {
+      let mock = nock('https://api.heroku.com')
+        .post('/apps/example/sni-endpoints', {
+          certificate_chain: 'pem content', private_key: 'key content'
+        })
+        .reply(200, endpointWildcard)
+
+      let domainsMock = nock('https://api.heroku.com')
+        .get('/apps/example/domains')
+        .reply(200, [
+          {'kind': 'custom', 'hostname': 'foo.example.org', 'cname': 'foo.example.org.herokudns.com'},
+          {'kind': 'custom', 'hostname': 'bar.example.com', 'cname': 'bar.example.com.herokudns.com'}
+        ])
+
+      return certs.run({app: 'example', args: {CRT: 'pem_file', KEY: 'key_file'}, flags: {bypass: true}}).then(function () {
+        mock.done()
+        domainsMock.done()
+        expect(unwrap(cli.stderr)).to.equal('Adding SSL certificate to example... done\n')
+        /* eslint-disable no-trailing-spaces */
+        /* eslint-disable no-irregular-whitespace */
+        expect(cli.stdout).to.equal(
+          `Certificate details:
+Common Name(s): *.example.org
+Expires At:     2013-08-01 21:34 UTC
+Issuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
+Starts At:      2012-08-01 21:34 UTC
+Subject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
+SSL certificate is self signed.
+
+=== Your certificate has been added successfully.  Update your application's DNS settings as follows
+Domain           Record Type  DNS Target                     Warnings
+───────────────  ───────────  ─────────────────────────────  ────────────────────────────────────────────────────
+foo.example.org  CNAME        foo.example.org.herokudns.com
+bar.example.com  CNAME        bar.example.com.herokudns.com  ! Does not match any domains on your SSL certificate
+`)
+        /* eslint-enable no-irregular-whitespace */
+        /* eslint-enable no-trailing-spaces */
+      })
+    })
+
+    it('# prints matched domains for wildcard cert with no warnings', function () {
+      let mock = nock('https://api.heroku.com')
+        .post('/apps/example/sni-endpoints', {
+          certificate_chain: 'pem content', private_key: 'key content'
+        })
+        .reply(200, endpointWildcard)
+
+      let domainsMock = nock('https://api.heroku.com')
+        .get('/apps/example/domains')
+        .reply(200, [
+          {'kind': 'custom', 'hostname': 'foo.example.org', 'cname': 'foo.example.org.herokudns.com'}
+        ])
+
+      return certs.run({app: 'example', args: {CRT: 'pem_file', KEY: 'key_file'}, flags: {bypass: true}}).then(function () {
+        mock.done()
+        domainsMock.done()
+        expect(unwrap(cli.stderr)).to.equal('Adding SSL certificate to example... done\n')
+        /* eslint-disable no-trailing-spaces */
+        /* eslint-disable no-irregular-whitespace */
+        expect(cli.stdout).to.equal(
+          `Certificate details:
+Common Name(s): *.example.org
+Expires At:     2013-08-01 21:34 UTC
+Issuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
+Starts At:      2012-08-01 21:34 UTC
+Subject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
+SSL certificate is self signed.
+
+=== Your certificate has been added successfully.  Update your application's DNS settings as follows
+Domain           Record Type  DNS Target
+───────────────  ───────────  ─────────────────────────────
+foo.example.org  CNAME        foo.example.org.herokudns.com
+`)
+        /* eslint-enable no-irregular-whitespace */
         /* eslint-enable no-trailing-spaces */
       })
     })

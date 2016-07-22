@@ -1,11 +1,7 @@
 'use strict'
 
 let _ = require('lodash')
-
-// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
-function escapeRegExp (string) {
-  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') // $& means the whole matched string
-}
+let isWildcardMatch = require('./is_wildcard_match')
 
 let stableCnames = ['.herokudns.com', '.herokudnsdev.com']
 
@@ -20,13 +16,7 @@ module.exports = function (certDomain, domains) {
   }
 
   let wildcardMatch = _.find(domains, function (domain) {
-    if (domain.hostname && domain.hostname.substring(0, 2) === '*.') {
-      let baseCertDomain = domain.hostname.substring(2)
-      let regex = new RegExp(`^[a-zA-Z0-9_-]+\\.${escapeRegExp(baseCertDomain)}$`)
-      return certDomain.match(regex)
-    }
-
-    return false
+    return (domain.hostname && isWildcardMatch(domain.hostname, certDomain))
   })
 
   if (matches(wildcardMatch)) {
