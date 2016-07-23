@@ -19,9 +19,9 @@ describe('spaces:create', function () {
         region: 'my-region'
       })
       .reply(201,
-        {name: 'my-space', organization: {name: 'my-org'}, region: {name: 'my-region'}, state: 'enabled', created_at: now}
+        {name: 'my-space', organization: {name: 'my-org'}, region: {name: 'my-region'}, features: [ 'one', 'two' ], state: 'enabled', created_at: now}
     )
-    return cmd.run({org: 'my-org', flags: {space: 'my-space', region: 'my-region'}})
+    return cmd.run({org: 'my-org', flags: {space: 'my-space', region: 'my-region', features: 'one, two'}})
       .then(() => expect(cli.stdout).to.equal(
         `=== my-space
 Organization: my-org

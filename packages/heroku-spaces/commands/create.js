@@ -1,7 +1,7 @@
 'use strict'
 
-let cli = require('heroku-cli-util')
-let co = require('co')
+const cli = require('heroku-cli-util')
+const co = require('co')
 
 function * run (context, heroku) {
   let space = context.flags.space || context.args.space
@@ -14,6 +14,7 @@ function * run (context, heroku) {
       organization: context.org,
       channel_name: context.flags.channel,
       region: context.flags.region,
+      features: (context.flags.features || '').split(',').map((s) => { return s.trim() }),
       log_drain_url: context.flags['log-drain-url']
     }
   })
@@ -53,6 +54,7 @@ Example:
     {name: 'space', char: 's', hasValue: true, description: 'name of space to create'},
     {name: 'channel', hasValue: true, hidden: true},
     {name: 'region', hasValue: true, description: 'region name'},
+    {name: 'features', hasValue: true, hidden: 'true', description: 'a list of features separated by commas'},
     {name: 'log-drain-url', hasValue: true, hidden: true, description: 'direct log drain url'}
   ],
   run: cli.command(co.wrap(run))
