@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"path/filepath"
+	"strconv"
 	"strings"
 
 	"github.com/texttheater/golang-levenshtein/levenshtein"
@@ -52,8 +53,15 @@ func help() {
 func helpShowTopics() {
 	Printf("Usage: heroku COMMAND [--app APP] [command-specific-options]\n\n")
 	Printf("Help topics, type \"heroku help TOPIC\" for more details:\n\n")
-	for _, topic := range AllTopics().NonHidden().Sort() {
-		Printf("  heroku %-30s# %s\n", topic.Name, topic.Description)
+	topics := AllTopics().NonHidden().Sort()
+	longestTopic := 0
+	for _, topic := range topics {
+		if len(topic.Name) > longestTopic {
+			longestTopic = len(topic.Name)
+		}
+	}
+	for _, topic := range topics {
+		Printf("  heroku %-"+strconv.Itoa(longestTopic+1)+"s# %s\n", topic.Name, topic.Description)
 	}
 	Println()
 	Exit(0)
