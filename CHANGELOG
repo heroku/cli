@@ -1,6 +1,10 @@
+5.2.29  2016-07-25
+==================
+Updated heroku-pg
+
 5.2.28  2016-07-25
 ==================
-Updated heroku-fork, heroku-orgs, heroku-pg
+Updated heroku-fork, heroku-orgs
 
 5.2.27  2016-07-22
 ==================
