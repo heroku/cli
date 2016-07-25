@@ -71,10 +71,14 @@ function * run (context, heroku) {
         host: host(addon),
         method: 'get',
         path: `/client/v11/databases/${addon.name}`
+      }).catch(err => {
+        if (err.statusCode !== 404) throw err
+        cli.warn(`${cli.color.addon(addon.name)} is not yet provisioned.\nRun ${cli.color.cmd('heroku pg:wait')} to wait until the db is provisioned.`)
       })
     }
   })
 
+  dbs = dbs.filter(db => db.db)
   dbs.forEach(db => { db.configVars = configVarNamesFromValue(db.config, db.db.resource_url) })
   dbs = sortBy(dbs, db => db.configVars[0] !== 'DATABASE_URL', 'configVars[0]')
 
