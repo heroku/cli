@@ -29,7 +29,12 @@ function displayDB (db) {
   db.db.info.push({name: 'Add-on', values: [cli.color.addon(db.addon.name)]})
   let info = db.db.info.reduce((info, i) => {
     if (i.values.length > 0) {
-      info[i.name] = i.resolve_db_name ? databaseNameFromUrl(i.values[0], db.config) : i.values.join(', ')
+      if (i.resolve_db_name) {
+        info[i.name] = i.values.map(v => databaseNameFromUrl(v, db.config))
+      } else {
+        info[i.name] = i.values
+      }
+      info[i.name] = info[i.name].join(', ')
     }
     return info
   }, {})
