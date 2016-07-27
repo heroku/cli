@@ -1,6 +1,6 @@
 {
   "name": "heroku-orgs",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "description": "CLI to manage Heroku Organizations",
   "main": "index.js",
   "author": "Raul Barroso @raulb",
