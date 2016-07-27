@@ -19,7 +19,7 @@ describe('heroku access:update', () => {
           owner: { email: 'myorg@herokumanager.com' }
         })
       let apiPermissionsVariant = nock('https://api.heroku.com:443', {
-        reqheaders: {Accept: 'application/vnd.heroku+json; version=3.org-privileges'}
+        reqheaders: {Accept: 'application/vnd.heroku+json; version=3'}
       })
         .patch('/organizations/apps/myapp/collaborators/raulb@heroku.com', {
           permissions: ['deploy', 'view']
@@ -41,7 +41,7 @@ describe('heroku access:update', () => {
           owner: { email: 'myorg@herokumanager.com' }
         })
       let apiPermissionsVariant = nock('https://api.heroku.com:443', {
-        reqheaders: {Accept: 'application/vnd.heroku+json; version=3.org-privileges'}
+        reqheaders: {Accept: 'application/vnd.heroku+json; version=3'}
       })
         .patch('/organizations/apps/myapp/collaborators/raulb@heroku.com', {
           permissions: ['deploy', 'view']
@@ -63,7 +63,7 @@ describe('heroku access:update', () => {
           owner: { email: 'myorg@herokumanager.com' }
         })
       let apiPermissionsVariant = nock('https://api.heroku.com:443', {
-        reqheaders: {Accept: 'application/vnd.heroku+json; version=3.org-privileges'}
+        reqheaders: {Accept: 'application/vnd.heroku+json; version=3'}
       })
         .patch('/organizations/apps/myapp/collaborators/raulb@heroku.com', {
           permissions: ['deploy', 'view']

@@ -22,15 +22,8 @@ function * run (context, heroku) {
   permissions.push('view')
   permissions = _.uniq(permissions.sort())
 
-  let request = heroku.request({
-    method: 'PATCH',
-    path: `/organizations/apps/${appName}/collaborators/${context.args.email}`,
-    headers: {
-      Accept: 'application/vnd.heroku+json; version=3.org-privileges'
-    },
-    body: {
-      permissions: permissions
-    }
+  let request = heroku.patch(`/organizations/apps/${appName}/collaborators/${context.args.email}`, {
+    body: { permissions: permissions }
   })
   yield cli.action(`Updating ${context.args.email} in application ${cli.color.cyan(appName)} with ${permissions} permissions`, request)
 }

@@ -4,7 +4,7 @@ const nock = require('nock')
 
 function collaboratorsOrgApp (app, email) {
   return nock('https://api.heroku.com:443', {
-    reqheaders: {Accept: 'application/vnd.heroku+json; version=3.org-privileges'}
+    reqheaders: {Accept: 'application/vnd.heroku+json; version=3'}
   })
     .delete(`/organizations/apps/${app}/collaborators/${email}`).reply(200, {})
 }

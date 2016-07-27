@@ -23,9 +23,9 @@ function appCollaborators () {
 
 function appPermissions () {
   return nock('https://api.heroku.com:443', {
-    reqheaders: {Accept: 'application/vnd.heroku+json; version=3.org-privileges'}
+    reqheaders: {Accept: 'application/vnd.heroku+json; version=3'}
   })
-    .get('/organizations/privileges')
+    .get('/organizations/permissions')
     .reply(200, [
       { name: 'deploy' },
       { name: 'manage' },
@@ -46,7 +46,7 @@ function orgApp (locked = false) {
 
 function orgAppCollaborators () {
   return nock('https://api.heroku.com:443', {
-    reqheaders: {Accept: 'application/vnd.heroku+json; version=3.org-privileges'}
+    reqheaders: {Accept: 'application/vnd.heroku+json; version=3'}
   })
     .get('/organizations/apps/myapp/collaborators')
     .reply(200, [
@@ -67,7 +67,7 @@ function orgAppCollaborators () {
 
 function orgAppCollaboratorsWithPermissions () {
   return nock('https://api.heroku.com:443', {
-    reqheaders: {Accept: 'application/vnd.heroku+json; version=3.org-privileges'}
+    reqheaders: {Accept: 'application/vnd.heroku+json; version=3'}
   })
     .get('/organizations/apps/myapp/collaborators')
     .reply(200, [

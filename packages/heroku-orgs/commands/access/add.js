@@ -37,16 +37,8 @@ function * run (context, heroku) {
     permissions = _.uniq(permissions.sort())
     output += ` with ${cli.color.green(permissions)} permissions`
 
-    request = heroku.request({
-      method: 'POST',
-      path: `/organizations/apps/${appName}/collaborators`,
-      headers: {
-        Accept: 'application/vnd.heroku+json; version=3.org-privileges'
-      },
-      body: {
-        user: context.args.email,
-        permissions: permissions
-      }
+    request = heroku.post(`/organizations/apps/${appName}/collaborators`, {
+      body: { user: context.args.email, permissions: permissions }
     })
   } else {
     request = heroku.post(`/apps/${appName}/collaborators`, {body: { user: context.args.email }})

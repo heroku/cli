@@ -11,7 +11,7 @@ function collaborators () {
 
 function collaboratorsWithPermissions (permissions) {
   return nock('https://api.heroku.com:443', {
-    reqheaders: {Accept: 'application/vnd.heroku+json; version=3.org-privileges'}
+    reqheaders: {Accept: 'application/vnd.heroku+json; version=3'}
   })
     .post('/organizations/apps/myapp/collaborators', {
       user: 'raulb@heroku.com',

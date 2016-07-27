@@ -43,12 +43,8 @@ function * run (context, heroku) {
 
   let app = yield heroku.get(`/apps/${appName}`)
   let isOrgApp = Utils.isOrgApp(app.owner.email)
-
-  let collaborators = yield heroku.request({
-    method: 'GET',
-    path: isOrgApp ? `/organizations/apps/${appName}/collaborators` : `/apps/${appName}/collaborators`,
-    headers: { Accept: 'application/vnd.heroku+json; version=3.org-privileges' }
-  })
+  const path = isOrgApp ? `/organizations/apps/${appName}/collaborators` : `/apps/${appName}/collaborators`
+  let collaborators = yield heroku.get(path)
 
   if (isOrgApp) {
     let orgName = Utils.getOwner(app.owner.email)
@@ -64,11 +60,7 @@ function * run (context, heroku) {
         let admins = yield heroku.get(`/organizations/${orgName}/members`)
         admins = _.filter(admins, { 'role': 'admin' })
 
-        let adminPermissions = yield heroku.request({
-          method: 'GET',
-          path: '/organizations/privileges',
-          headers: { Accept: 'application/vnd.heroku+json; version=3.org-privileges' }
-        })
+        let adminPermissions = yield heroku.get('/organizations/permissions')
 
         admins = _.forEach(admins, function (admin) {
           admin.user = { email: admin.email }
