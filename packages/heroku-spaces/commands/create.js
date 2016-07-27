@@ -54,7 +54,7 @@ Example:
     {name: 'space', char: 's', hasValue: true, description: 'name of space to create'},
     {name: 'channel', hasValue: true, hidden: true},
     {name: 'region', hasValue: true, description: 'region name'},
-    {name: 'features', hasValue: true, hidden: 'true', description: 'a list of features separated by commas'},
+    {name: 'features', hasValue: true, hidden: true, description: 'a list of features separated by commas'},
     {name: 'log-drain-url', hasValue: true, hidden: true, description: 'direct log drain url'}
   ],
   run: cli.command(co.wrap(run))
