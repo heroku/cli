@@ -22,6 +22,7 @@
     "nock": "8.0.0",
     "npm": "3.10.5",
     "nyc": "7.0.0",
+    "publish-please": "2.1.4",
     "standard": "7.1.2",
     "unexpected": "10.15.0"
   },
@@ -38,8 +39,10 @@
   },
   "scripts": {
     "coverage": "nyc report --reporter=text-lcov | codeclimate-test-reporter && nyc report --reporter=text-lcov | coveralls",
-    "postversion": "npm publish && git push && git push --tags",
+    "postversion": "publish-please",
+    "prepublish": "publish-please guard",
     "preversion": "npm test",
+    "publish-please": "publish-please",
     "test": "nyc mocha && standard"
   }
 }
