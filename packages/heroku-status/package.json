@@ -40,6 +40,7 @@
   "scripts": {
     "coverage": "nyc report --reporter=text-lcov | codeclimate-test-reporter && nyc report --reporter=text-lcov | coveralls",
     "postversion": "publish-please",
+    "postpublish": "git push",
     "prepublish": "publish-please guard",
     "preversion": "npm test",
     "publish-please": "publish-please",
