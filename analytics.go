@@ -97,10 +97,6 @@ func SubmitAnalytics() {
 		return
 	}
 	file := readAnalyticsFile()
-	if len(file.Commands) < 10 {
-		// do not record if less than 10 commands
-		return
-	}
 	lockfile := filepath.Join(CacheHome, "analytics.lock")
 	golock.Lock(lockfile)
 	defer golock.Unlock(lockfile)
