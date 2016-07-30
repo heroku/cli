@@ -48,12 +48,12 @@ var autoupdateFile = filepath.Join(CacheHome, "autoupdate")
 func Update(channel string) {
 	touchAutoupdateFile()
 	updateCLI(channel)
+	SubmitAnalytics()
 	UserPlugins.Update()
 	UserPlugins.MigrateRubyPlugins()
 	deleteOldPluginsDirectory()
 	truncate(ErrLogPath, 1000)
 	cleanTmp()
-	SubmitAnalytics()
 }
 
 func updateCLI(channel string) {
