@@ -23,17 +23,17 @@
   "homepage": "https://github.com/heroku/heroku-run",
   "dependencies": {
     "co": "4.6.0",
-    "heroku-cli-util": "6.0.11",
+    "heroku-cli-util": "6.0.14",
     "shellwords": "0.1.0"
   },
   "devDependencies": {
     "fixture-stdout": "0.2.1",
-    "mocha": "2.4.5",
+    "mocha": "2.5.3",
     "mocha-junit-reporter": "1.11.1",
     "netrc": "0.1.4",
     "nock": "8.0.0",
-    "nyc": "6.4.4",
-    "standard": "7.1.0",
-    "unexpected": "10.13.2"
+    "nyc": "7.1.0",
+    "standard": "7.1.2",
+    "unexpected": "10.15.0"
   }
 }
