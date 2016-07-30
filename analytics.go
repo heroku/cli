@@ -6,7 +6,6 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
-	"strings"
 	"time"
 
 	"github.com/dghubble/sling"
@@ -14,34 +13,40 @@ import (
 )
 
 var analyticsPath = filepath.Join(CacheHome, "analytics.json")
+
+type analyticsBody struct {
+	Schema   int                `json:"schema"`
+	Commands []AnalyticsCommand `json:"commands"`
+	User     string             `json:"user,omitempty"`
+}
+
 var currentAnalyticsCommand = &AnalyticsCommand{
 	Timestamp: time.Now().Unix(),
 	OS:        runtime.GOOS,
 	Arch:      runtime.GOARCH,
-	Language:  "go/" + strings.TrimPrefix(runtime.Version(), "go"),
+	Language:  "go",
 	Valid:     true,
 }
 
 // AnalyticsCommand represents an analytics command
 type AnalyticsCommand struct {
-	Command    string `json:"command"`
-	Plugin     string `json:"plugin,omitempty"`
-	Timestamp  int64  `json:"timestamp"`
-	CLIVersion string `json:"cli_version"`
-	Version    string `json:"version"`
-	OS         string `json:"os"`
-	Arch       string `json:"arch"`
-	Language   string `json:"language"`
-	Status     int    `json:"status"`
-	Runtime    int64  `json:"runtime"`
-	Valid      bool   `json:"valid"`
-	start      time.Time
+	Command       string `json:"command"`
+	Plugin        string `json:"plugin,omitempty"`
+	PluginVersion string `json:"plugin_version,omitempty"`
+	Timestamp     int64  `json:"timestamp"`
+	Version       string `json:"version"`
+	OS            string `json:"os"`
+	Arch          string `json:"arch"`
+	Language      string `json:"language"`
+	Status        int    `json:"status"`
+	Runtime       int64  `json:"runtime"`
+	Valid         bool   `json:"valid"`
+	start         time.Time
 }
 
 // RecordStart marks when a command was started (for tracking runtime)
 func (c *AnalyticsCommand) RecordStart() {
 	c.Version = Version
-	c.CLIVersion = Version
 	c.start = time.Now()
 }
 
@@ -56,12 +61,12 @@ func (c *AnalyticsCommand) RecordEnd(status int) {
 	if !c.start.IsZero() {
 		c.Runtime = (time.Now().UnixNano() - c.start.UnixNano()) / 1000000
 	}
-	commands := readAnalyticsFile()
-	commands = append(commands, *c)
-	LogIfError(writeAnalyticsFile(commands))
+	file := readAnalyticsFile()
+	file.Commands = append(file.Commands, *c)
+	LogIfError(writeAnalyticsFile(file))
 }
 
-func readAnalyticsFile() (commands []AnalyticsCommand) {
+func readAnalyticsFile() (file analyticsBody) {
 	f, err := os.Open(analyticsPath)
 	if err != nil {
 		if !os.IsNotExist(err) {
@@ -69,14 +74,17 @@ func readAnalyticsFile() (commands []AnalyticsCommand) {
 		}
 		return
 	}
-	if err := json.NewDecoder(f).Decode(&commands); err != nil {
+	if err := json.NewDecoder(f).Decode(&file); err != nil {
 		LogIfError(err)
 	}
-	return commands
+	if file.Schema != 1 {
+		return analyticsBody{Schema: 1}
+	}
+	return file
 }
 
-func writeAnalyticsFile(commands []AnalyticsCommand) error {
-	data, err := json.MarshalIndent(commands, "", "  ")
+func writeAnalyticsFile(file analyticsBody) error {
+	data, err := json.MarshalIndent(file, "", "  ")
 	if err != nil {
 		return err
 	}
@@ -88,46 +96,29 @@ func SubmitAnalytics() {
 	if skipAnalytics() {
 		return
 	}
-	commands := readAnalyticsFile()
-	if len(commands) < 10 {
+	file := readAnalyticsFile()
+	if len(file.Commands) < 10 {
 		// do not record if less than 10 commands
 		return
 	}
 	lockfile := filepath.Join(CacheHome, "analytics.lock")
 	golock.Lock(lockfile)
 	defer golock.Unlock(lockfile)
-	commands = readAnalyticsFile() // read commands again in case it was locked
-	plugins := func() map[string]string {
-		plugins := make(map[string]string)
-		for _, plugin := range CorePlugins.Plugins() {
-			plugins[plugin.Name] = plugin.Version
-		}
-		for _, plugin := range UserPlugins.Plugins() {
-			plugins[plugin.Name] = plugin.Version
-		}
-		for _, p := range RubyPlugins() {
-			plugins[p] = "ruby"
-		}
-		return plugins
-	}
+	file = readAnalyticsFile() // read commands again in case it was locked
+	file.User = netrcLogin()
 
 	host := os.Getenv("HEROKU_ANALYTICS_HOST")
 	if host == "" {
 		host = "https://cli-analytics.heroku.com"
 	}
-	body := struct {
-		Version  string             `json:"version"`
-		Commands []AnalyticsCommand `json:"commands"`
-		User     string             `json:"user"`
-		Plugins  map[string]string  `json:"plugins"`
-	}{version(), commands, netrcLogin(), plugins()}
-	resp, err := sling.New().Base(host).Post("/record").BodyJSON(body).ReceiveSuccess(nil)
+
+	resp, err := sling.New().Base(host).Post("/record").BodyJSON(file).ReceiveSuccess(nil)
 	if err != nil {
 		LogIfError(err)
 		return
 	}
 	LogIfError(getHTTPError(resp))
-	writeAnalyticsFile([]AnalyticsCommand{})
+	writeAnalyticsFile(analyticsBody{Schema: 1})
 }
 
 func skipAnalytics() bool {

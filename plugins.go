@@ -249,8 +249,8 @@ cmd.run(ctx)
 		swallowSigint = true
 
 		currentAnalyticsCommand.Plugin = plugin.Name
-		currentAnalyticsCommand.Version = plugin.Version
-		currentAnalyticsCommand.Language = fmt.Sprintf("node/" + NodeVersion)
+		currentAnalyticsCommand.PluginVersion = plugin.Version
+		currentAnalyticsCommand.Language = "node"
 
 		cmd, done := p.RunScript(script)
 		cmd.Stdin = os.Stdin
