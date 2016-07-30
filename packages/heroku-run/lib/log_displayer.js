@@ -47,6 +47,7 @@ function readLogs (logplexURL) {
 }
 
 function logDisplayer (heroku, options) {
+  process.stdout.on('error', () => process.exit(1))
   return heroku.request({
     path: `/apps/${options.app}/log-sessions`,
     method: 'POST',
