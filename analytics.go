@@ -16,7 +16,7 @@ var analyticsPath = filepath.Join(CacheHome, "analytics.json")
 
 type analyticsBody struct {
 	Schema   int                `json:"schema"`
-	Commands []AnalyticsCommand `json:"commands"`
+	Commands []AnalyticsCommand `json:"commands,omitempty"`
 	User     string             `json:"user,omitempty"`
 }
 
