@@ -81,7 +81,7 @@ tmp/%/heroku/lib/plugins.json: $(WORKSPACE)/lib/plugins.json
 
 BUILD_TAGS=release
 SOURCES := $(shell ls | grep '\.go')
-LDFLAGS=-ldflags "-X=main.Version=$(VERSION) -X=main.Channel=$(CHANNEL) -X=main.GitSHA=$(REVISION) -X=main.NodeVersion=$(NODE_VERSION) -X=main.Autoupdate=$(AUTOUPDATE)"
+LDFLAGS=-ldflags "-X=main.Version=$(VERSION) -X=main.Channel=$(CHANNEL) -X=main.GitSHA=$(REVISION) -X=main.Autoupdate=$(AUTOUPDATE)"
 GOOS=$(OS)
 $(WORKSPACE)/bin/heroku: OS   := $(shell go env GOOS)
 $(WORKSPACE)/bin/heroku: ARCH := $(shell go env GOARCH)

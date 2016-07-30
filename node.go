@@ -8,9 +8,6 @@ import (
 	"runtime"
 )
 
-// NodeVersion is the current node version
-var NodeVersion = "?"
-
 // RunScript runs some node code
 func (p *Plugins) RunScript(script string) (cmd *exec.Cmd, done func()) {
 	cacheTmp := filepath.Join(CacheHome, "tmp")
