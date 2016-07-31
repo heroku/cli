@@ -169,6 +169,7 @@ func Error(msg string) {
 // ExitWithMessage shows an error message then exits with status code 2
 // It does not emit to rollbar
 func ExitWithMessage(format string, a ...interface{}) {
+	currentAnalyticsCommand.Valid = false
 	Error(fmt.Sprintf(format, a...))
 	Exit(2)
 }
