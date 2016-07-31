@@ -20,9 +20,21 @@ func configPath() string {
 func init() {
 	err := readJSON(&config, configPath())
 	if config == nil {
-		config = &Config{}
+		config = &Config{
+			SkipAnalytics: pbool(false),
+			Color:         pbool(true),
+		}
 	}
-	if err != nil && !os.IsNotExist(err) {
-		WarnIfError(err)
+	if err != nil {
+		if os.IsNotExist(err) {
+			saveJSON(&config, configPath())
+		} else {
+			WarnIfError(err)
+		}
 	}
+}
+
+func pbool(b bool) *bool {
+	a := b
+	return &a
 }
