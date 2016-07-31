@@ -72,7 +72,7 @@ func readAnalyticsFile() (file analyticsBody) {
 		if !os.IsNotExist(err) {
 			LogIfError(err)
 		}
-		return
+		return analyticsBody{Schema: 1}
 	}
 	if err := json.NewDecoder(f).Decode(&file); err != nil {
 		LogIfError(err)
