@@ -108,7 +108,9 @@ func SubmitAnalytics() {
 		host = "https://cli-analytics.heroku.com"
 	}
 
-	resp, err := sling.New().Base(host).Post("/record").BodyJSON(file).ReceiveSuccess(nil)
+	req := sling.New().Base(host)
+	req.Set("User-Agent", version())
+	resp, err := req.Post("/record").BodyJSON(file).ReceiveSuccess(nil)
 	if err != nil {
 		LogIfError(err)
 		return
