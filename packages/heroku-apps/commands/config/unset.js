@@ -35,8 +35,6 @@ function * run (context, heroku) {
 }
 
 let cmd = {
-  topic: 'config',
-  command: 'unset',
   description: 'unset one or more config vars',
   help: `
  Examples:
@@ -52,6 +50,7 @@ let cmd = {
   run: cli.command({preauth: true}, co.wrap(run))
 }
 
-module.exports.unset = cmd
-module.exports.remove = Object.assign({}, cmd)
-module.exports.remove.command = 'remove'
+module.exports = [
+  Object.assign({topic: 'config', command: 'unset'}, cmd),
+  Object.assign({topic: 'config', command: 'remove', hidden: true}, cmd)
+]

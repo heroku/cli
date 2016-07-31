@@ -90,8 +90,6 @@ function * run (context, heroku) {
 }
 
 let cmd = {
-  topic: 'apps',
-  command: 'info',
   description: 'show detailed app information',
   help: `Examples:
 
@@ -116,7 +114,7 @@ let cmd = {
   run: cli.command({preauth: true}, co.wrap(run))
 }
 
-module.exports.apps = cmd
-module.exports.root = Object.assign({}, cmd)
-module.exports.root.topic = 'info'
-delete module.exports.root.command
+module.exports = [
+  Object.assign({topic: 'apps', command: 'info'}, cmd),
+  Object.assign({topic: 'info', hidden: true}, cmd)
+]

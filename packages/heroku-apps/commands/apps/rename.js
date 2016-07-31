@@ -37,8 +37,6 @@ function * run (context, heroku) {
 }
 
 let cmd = {
-  topic: 'apps',
-  command: 'rename',
   description: 'rename an app',
   help: `
 This will locally update the git remote if it is set to the old app.
@@ -58,5 +56,7 @@ Example:
   run: cli.command(co.wrap(run))
 }
 
-module.exports.apps = cmd
-module.exports.root = Object.assign({}, cmd, {topic: 'rename', command: null})
+module.exports = [
+  Object.assign({topic: 'apps', command: 'rename'}, cmd),
+  Object.assign({topic: 'rename', hidden: true}, cmd)
+]

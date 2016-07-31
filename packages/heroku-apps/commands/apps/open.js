@@ -2,7 +2,6 @@
 
 let co = require('co')
 let cli = require('heroku-cli-util')
-let extend = require('util')._extend
 let url = require('url')
 
 function * run (context, heroku) {
@@ -11,8 +10,6 @@ function * run (context, heroku) {
 }
 
 let cmd = {
-  topic: 'apps',
-  command: 'open',
   description: 'open the app in a web browser',
   help: `
 Examples:
@@ -29,7 +26,7 @@ Examples:
   run: cli.command(co.wrap(run))
 }
 
-module.exports.open = cmd
-module.exports.root = extend({}, cmd)
-module.exports.root.topic = 'open'
-delete module.exports.root.command
+module.exports = [
+  Object.assign({topic: 'apps', command: 'open'}, cmd),
+  Object.assign({topic: 'open', hidden: true}, cmd)
+]

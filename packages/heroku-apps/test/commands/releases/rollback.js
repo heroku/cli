@@ -3,7 +3,7 @@
 
 const cli = require('heroku-cli-util')
 const nock = require('nock')
-const cmd = require('../../../commands/releases/rollback')
+const cmd = require('../../..').commands.find(c => c.topic === 'releases' && c.command === 'rollback')
 
 describe('releases:rollback', function () {
   beforeEach(() => cli.mockConsole())

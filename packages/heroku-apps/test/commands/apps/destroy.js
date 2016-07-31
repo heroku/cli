@@ -4,8 +4,8 @@
 const nock = require('nock')
 const cli = require('heroku-cli-util')
 const expect = require('chai').expect
+const cmd = commands.find(c => c.topic === 'apps' && c.command === 'destroy')
 
-let cmd = commands.find((c) => c.topic === 'apps' && c.command === 'destroy')
 describe('apps:destroy', function () {
   beforeEach(() => cli.mockConsole())
 

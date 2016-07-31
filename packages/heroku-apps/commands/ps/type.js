@@ -83,8 +83,10 @@ Called with 1..n TYPE=SIZE arguments sets the quantity per type.
   run: cli.command(co.wrap(run))
 }
 
-exports.type = Object.assign({}, cmd, {topic: 'ps', command: 'type'})
-exports.psResize = Object.assign({}, cmd, {topic: 'ps', command: 'resize'})
-exports.resize = Object.assign({}, cmd, {topic: 'resize', command: null})
-exports.dynoType = Object.assign({}, cmd, {topic: 'dyno', command: 'type'})
-exports.dynoResize = Object.assign({}, cmd, {topic: 'dyno', command: 'resize'})
+module.exports = [
+  Object.assign({}, cmd, {topic: 'ps', command: 'type'}),
+  Object.assign({}, cmd, {topic: 'ps', command: 'resize'}),
+  Object.assign({}, cmd, {topic: 'resize', hidden: true}),
+  Object.assign({}, cmd, {topic: 'dyno', command: 'type', hidden: true}),
+  Object.assign({}, cmd, {topic: 'dyno', command: 'resize'})
+]

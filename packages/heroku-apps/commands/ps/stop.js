@@ -38,9 +38,11 @@ Examples:
   run: cli.command(co.wrap(run))
 }
 
-exports.ps = Object.assign({}, cmd, {topic: 'ps', command: 'stop'})
-exports.dyno = Object.assign({}, cmd, {topic: 'dyno', command: 'stop'})
-exports.stop = Object.assign({}, cmd, {topic: 'stop', command: null})
-exports.psKill = Object.assign({}, cmd, {topic: 'ps', command: 'kill'})
-exports.dynoKill = Object.assign({}, cmd, {topic: 'dyno', command: 'kill'})
-exports.kill = Object.assign({}, cmd, {topic: 'kill', command: null})
+module.exports = [
+  Object.assign({}, cmd, {topic: 'ps', command: 'stop'}),
+  Object.assign({}, cmd, {topic: 'dyno', command: 'stop'}),
+  Object.assign({}, cmd, {topic: 'ps', command: 'kill'}),
+  Object.assign({}, cmd, {topic: 'dyno', command: 'kill'}),
+  Object.assign({}, cmd, {topic: 'stop', hidden: true}),
+  Object.assign({}, cmd, {topic: 'kill', hidden: true})
+]

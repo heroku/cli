@@ -2,9 +2,9 @@
 /* globals describe beforeEach it */
 
 const cli = require('heroku-cli-util')
-let nock = require('nock')
-let expect = require('chai').expect
-let apps = require('../../../commands/apps/create.js').apps
+const nock = require('nock')
+const expect = require('chai').expect
+const apps = require('../../..').commands.find(c => c.topic === 'apps' && c.command === 'create')
 
 describe('apps:create', function () {
   beforeEach(function () {

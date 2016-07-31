@@ -32,5 +32,7 @@ let cmd = {
   run: cli.command(co.wrap(run))
 }
 
-exports.apps = Object.assign({}, cmd, {topic: 'apps', command: 'stacks'})
-exports.root = Object.assign({}, cmd, {topic: 'stack'})
+module.exports = [
+  Object.assign({topic: 'apps', command: 'stacks'}, cmd),
+  Object.assign({topic: 'stack', hidden: true}, cmd)
+]

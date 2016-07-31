@@ -2,7 +2,6 @@
 
 let co = require('co')
 let cli = require('heroku-cli-util')
-let extend = require('util')._extend
 
 function * run (context, heroku) {
   let git = require('../../lib/git')(context)
@@ -68,8 +67,6 @@ function * run (context, heroku) {
 }
 
 let cmd = {
-  topic: 'apps',
-  command: 'create',
   description: 'create a new app',
   help: `Examples:
 
@@ -111,7 +108,7 @@ let cmd = {
   run: cli.command(co.wrap(run))
 }
 
-module.exports.apps = cmd
-module.exports.root = extend({}, cmd)
-module.exports.root.topic = 'create'
-delete module.exports.root.command
+module.exports = [
+  Object.assign({topic: 'apps', command: 'create'}, cmd),
+  Object.assign({hidden: true, topic: 'create'}, cmd)
+]

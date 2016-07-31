@@ -53,8 +53,6 @@ function * run (context, heroku) {
 }
 
 let cmd = {
-  topic: 'config',
-  command: 'set',
   description: 'set one or more config vars',
   help: `Examples:
 
@@ -73,6 +71,7 @@ let cmd = {
   run: cli.command({preauth: true}, co.wrap(run))
 }
 
-module.exports.set = cmd
-module.exports.add = Object.assign({}, cmd)
-module.exports.add.command = 'add'
+module.exports = [
+  Object.assign({topic: 'config', command: 'set'}, cmd),
+  Object.assign({topic: 'config', command: 'add', hidden: true}, cmd)
+]

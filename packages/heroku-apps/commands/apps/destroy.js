@@ -28,8 +28,6 @@ function * run (context, heroku) {
 }
 
 let cmd = {
-  topic: 'apps',
-  command: 'destroy',
   description: 'permanently destroy an app',
   help: 'This will also destroy all add-ons on the app.',
   needsAuth: true,
@@ -41,6 +39,8 @@ let cmd = {
   run: cli.command(co.wrap(run))
 }
 
-module.exports.apps = cmd
-module.exports.root = Object.assign({}, cmd, {topic: 'destroy', command: null})
-module.exports.delete = Object.assign({}, cmd, {topic: 'apps', command: 'delete'})
+module.exports = [
+  Object.assign({topic: 'apps', command: 'destroy'}, cmd),
+  Object.assign({hidden: true, topic: 'destroy'}, cmd),
+  Object.assign({hidden: true, topic: 'apps', command: 'delete'}, cmd)
+]

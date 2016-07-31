@@ -39,6 +39,8 @@ Examples:
   run: cli.command(co.wrap(run))
 }
 
-exports.ps = Object.assign({}, cmd, {topic: 'ps', command: 'restart'})
-exports.restart = Object.assign({}, cmd, {topic: 'restart', command: null})
-exports.dyno = Object.assign({}, cmd, {topic: 'dyno', command: 'restart'})
+module.exports = [
+  Object.assign({topic: 'ps', command: 'restart'}, cmd),
+  Object.assign({topic: 'dyno', command: 'restart'}, cmd),
+  Object.assign({topic: 'restart', hidden: true}, cmd)
+]
