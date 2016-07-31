@@ -17,7 +17,6 @@ function * run (context, heroku) {
     'no-tty': context.flags['no-tty'],
     attach: true
   }
-  if (!opts.command) throw new Error('Usage: heroku run COMMAND\n\nExample: heroku run bash')
 
   let dyno = new Dyno(opts)
   try {
