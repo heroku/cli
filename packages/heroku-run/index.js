@@ -1,5 +1,8 @@
 'use strict'
 
+const path = require('path')
+const fs = require('fs')
+
 exports.topics = [{
   name: 'run',
   description: 'run a one-off process inside a Heroku dyno'
@@ -8,11 +11,8 @@ exports.topics = [{
   description: 'display recent log output'
 }]
 
-exports.commands = [
-  require('./commands/run'),
-  require('./commands/inside'),
-  require('./commands/detached'),
-  require('./commands/logs')
-]
+exports.commands = fs.readdirSync('./commands')
+  .filter(f => path.extname(f) === '.js')
+  .map(f => require('./commands/' + f))
 
 exports.Dyno = require('./lib/dyno')
