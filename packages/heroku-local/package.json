@@ -9,10 +9,10 @@
   "dependencies": {
     "co": "4.6.0",
     "foreman": "2.0.0-1",
-    "heroku-cli-util": "6.0.11"
+    "heroku-cli-util": "6.0.15"
   },
   "devDependencies": {
-    "standard": "7.1.0"
+    "standard": "7.1.2"
   },
   "keywords": [
     "heroku-plugin"
