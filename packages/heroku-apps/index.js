@@ -1,3 +1,7 @@
+'use strict'
+
+const flatten = require('lodash.flatten')
+
 exports.topics = [
   { name: 'apps', description: 'manage apps' },
   { name: 'buildpacks', description: 'manage the buildpacks for an app' },
@@ -26,7 +30,7 @@ exports.topics = [
   { name: 'stop', hidden: true }
 ]
 
-exports.commands = [
+exports.commands = flatten([
   require('./commands/apps'),
   require('./commands/apps/create').apps,
   require('./commands/apps/create').root,
@@ -105,4 +109,4 @@ exports.commands = [
   require('./commands/releases'),
   require('./commands/releases/info'),
   require('./commands/releases/rollback')
-]
+])

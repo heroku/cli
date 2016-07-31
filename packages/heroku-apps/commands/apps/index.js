@@ -73,9 +73,8 @@ function * run (context, heroku) {
   }
 }
 
-module.exports = {
+let cmd = {
   topic: 'apps',
-  command: 'list', hidden: true, // temporary until https://github.com/heroku/api/issues/5885 is fixed
   description: 'list your apps',
   help: `
 Example:
@@ -97,3 +96,8 @@ Example:
   ],
   run: cli.command(co.wrap(run))
 }
+
+module.exports = [
+  Object.assign({}, cmd),
+  Object.assign({command: 'list', hidden: true}, cmd)
+]
