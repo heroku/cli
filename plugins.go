@@ -248,9 +248,13 @@ cmd.run(ctx)
 		// swallow sigint since the plugin will handle it
 		swallowSigint = true
 
-		currentAnalyticsCommand.Plugin = plugin.Name
-		currentAnalyticsCommand.PluginVersion = plugin.Version
-		currentAnalyticsCommand.Language = "node"
+		if ctx.Dev {
+			currentAnalyticsCommand = nil
+		} else {
+			currentAnalyticsCommand.Plugin = plugin.Name
+			currentAnalyticsCommand.PluginVersion = plugin.Version
+			currentAnalyticsCommand.Language = "node"
+		}
 
 		cmd, done := p.RunScript(script)
 		cmd.Stdin = os.Stdin
