@@ -11,7 +11,7 @@ exports.topics = [{
   description: 'display recent log output'
 }]
 
-exports.commands = fs.readdirSync('./commands')
+exports.commands = fs.readdirSync(path.join(__dirname, 'commands'))
   .filter(f => path.extname(f) === '.js')
   .map(f => require('./commands/' + f))
 
