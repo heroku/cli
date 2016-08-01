@@ -74,7 +74,6 @@ function * run (context, heroku) {
 }
 
 let cmd = {
-  topic: 'apps',
   description: 'list your apps',
   help: `
 Example:
@@ -98,6 +97,7 @@ Example:
 }
 
 module.exports = [
-  Object.assign({}, cmd),
-  Object.assign({command: 'list', hidden: true}, cmd)
+  Object.assign({topic: 'apps'}, cmd),
+  Object.assign({command: 'list', hidden: true}, cmd),
+  Object.assign({topic: 'apps', command: 'list', hidden: true}, cmd)
 ]
