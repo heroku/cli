@@ -98,6 +98,6 @@ Example:
 
 module.exports = [
   Object.assign({topic: 'apps'}, cmd),
-  Object.assign({command: 'list', hidden: true}, cmd),
+  Object.assign({topic: 'list', hidden: true}, cmd),
   Object.assign({topic: 'apps', command: 'list', hidden: true}, cmd)
 ]
