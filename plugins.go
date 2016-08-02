@@ -40,7 +40,7 @@ Example:
 				Command:     "install",
 				Hidden:      true,
 				Args:        []Arg{{Name: "plugin"}},
-				Description: "Installs a plugin into the CLI",
+				Description: "install a plugin into the CLI",
 				Help: `Install a Heroku plugin
 
   Example:
@@ -51,7 +51,7 @@ Example:
 			{
 				Topic:       "plugins",
 				Command:     "link",
-				Description: "Links a local plugin into CLI",
+				Description: "symlink a local plugin into the CLI for development",
 				Args:        []Arg{{Name: "path", Optional: true}},
 				Help: `Links a local plugin into CLI.
 	This is useful when developing plugins locally.
@@ -68,7 +68,7 @@ Example:
 				Command:     "uninstall",
 				Hidden:      true,
 				Args:        []Arg{{Name: "name"}},
-				Description: "Uninstalls a plugin from the CLI",
+				Description: "uninstall a plugin from the CLI",
 				Help: `Uninstalls a Heroku plugin
 
   Example:
