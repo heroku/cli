@@ -36,17 +36,17 @@ Example:
 				Run: pluginsList,
 			},
 			{
-				Topic:        "plugins",
-				Command:      "install",
-				Hidden:       true,
-				VariableArgs: true,
-				Description:  "Installs a plugin into the CLI",
+				Topic:       "plugins",
+				Command:     "install",
+				Hidden:      true,
+				Args:        []Arg{{Name: "plugin"}},
+				Description: "Installs a plugin into the CLI",
 				Help: `Install a Heroku plugin
 
   Example:
   $ heroku plugins:install heroku-production-status`,
 
-				Run: pluginsInstall,
+				Run: pluginInstall,
 			},
 			{
 				Topic:       "plugins",
@@ -103,31 +103,46 @@ func pluginsList(ctx *Context) {
 		Println(plugin)
 	}
 }
-func pluginsInstall(ctx *Context) {
-	plugins := ctx.Args.([]string)
-	if len(plugins) == 0 {
-		ExitWithMessage("Must specify a plugin name.\nUSAGE: heroku plugins:install heroku-debug")
+
+func pluginNameFromRef(input string) (name string) {
+	parts := strings.Split(input, "@")
+	if strings.HasPrefix(input, "@") {
+		return "@" + parts[0]
 	}
-	toinstall := make([]string, 0, len(plugins))
-	core := CorePlugins.PluginNames()
-	for _, plugin := range plugins {
-		if contains(core, strings.Split(plugin, "@")[0]) {
-			Warn("Not installing " + plugin + " because it is already installed as a core plugin.")
-			continue
+	return parts[0]
+}
+
+func pluginVersionFromRef(input string) (version string) {
+	parts := strings.Split(input, "@")
+	if strings.HasPrefix(input, "@") {
+		if len(parts) > 2 {
+			return parts[2]
 		}
-		toinstall = append(toinstall, plugin)
+	} else {
+		if len(parts) > 1 {
+			return parts[1]
+		}
 	}
-	if len(toinstall) == 0 {
-		Exit(0)
-	}
-	action("Installing "+plural("plugin", len(toinstall))+" "+strings.Join(toinstall, " "), "done", func() {
-		err := UserPlugins.InstallPlugins(toinstall...)
+	return "latest"
+}
+
+func pluginInstall(ctx *Context) {
+	ref := ctx.Args.(map[string]string)["plugin"]
+	action("Installing "+ref, "done", func() {
+		err := UserPlugins.InstallPlugin(ref)
 		if err != nil {
 			if strings.Contains(err.Error(), "no such package available") {
 				ExitWithMessage("Plugin not found")
 			}
 			must(err)
 		}
+		for i, ref := range config.Plugins {
+			if pluginNameFromRef(ref) == pluginNameFromRef(ref) {
+				config.Plugins = append(config.Plugins[:i], config.Plugins[i+1:]...)
+			}
+		}
+		config.Plugins = append(config.Plugins, ref)
+		config.Save()
 	})
 }
 
@@ -360,25 +375,18 @@ func contains(arr []string, s string) bool {
 	return false
 }
 
-// InstallPlugins installs plugins
-func (p *Plugins) InstallPlugins(names ...string) error {
-	for _, name := range names {
-		p.lockPlugin(name)
-	}
-	defer func() {
-		for _, name := range names {
-			p.unlockPlugin(name)
-		}
-	}()
-	err := p.installPackages(names...)
+// InstallPlugin installs a plugin
+func (p *Plugins) InstallPlugin(ref string) error {
+	name := pluginNameFromRef(ref)
+	p.lockPlugin(name)
+	defer p.unlockPlugin(name)
+	err := p.installPackages(ref)
 	if err != nil {
 		return err
 	}
-	for _, name := range names {
-		_, err := p.ParsePlugin(name)
-		must(err)
-	}
-	return nil
+	_, err = p.ParsePlugin(name)
+
+	return err
 }
 
 // directory location of plugin
@@ -412,30 +420,58 @@ func (p *Plugins) unlockPlugin(name string) {
 	LogIfError(golock.Unlock(p.lockfile(name)))
 }
 
-// Update updates the plugins
-func (p *Plugins) Update() {
-	plugins := p.PluginNamesNotSymlinked()
-	if len(plugins) == 0 {
-		return
+// UpdatePlugins updates the plugins
+func UpdatePlugins() {
+	if len(config.Plugins) == 0 {
+		WarnIfError(addMissingConfigPlugins())
+	} else {
+		updatePluginsToConfig()
 	}
-	packages, err := p.OutdatedPackages(plugins...)
-	WarnIfError(err)
-	if len(packages) > 0 {
-		action("heroku-cli: Updating plugins", "", func() {
-			for name, version := range packages {
-				p.lockPlugin(name)
-				WarnIfError(p.installPackages(name + "@" + version))
-				_, err := p.ParsePlugin(name)
-				WarnIfError(err)
-				p.unlockPlugin(name)
+	action("heroku-cli: Updating plugins", "", func() {
+		for _, ref := range config.Plugins {
+			name := pluginNameFromRef(ref)
+			version := pluginVersionFromRef(ref)
+			UserPlugins.lockPlugin(name)
+			WarnIfError(UserPlugins.installPackages(name + "@" + version))
+			_, err := UserPlugins.ParsePlugin(name)
+			WarnIfError(err)
+			UserPlugins.unlockPlugin(name)
+			Errf(" done\n")
+		}
+	})
+}
+
+func updatePluginsToConfig() {
+	for _, name := range UserPlugins.PluginNamesNotSymlinked() {
+		for _, ref := range config.Plugins {
+			if name == pluginNameFromRef(ref) {
+				continue
 			}
-		})
-		Errf(" done. Updated %d %s.\n", len(packages), plural("package", len(packages)))
+			action("Uninstalling plugin removed from config: "+name, "done", func() {
+				WarnIfError(UserPlugins.RemovePackages(name))
+				UserPlugins.removeFromCache(name)
+			})
+		}
 	}
 }
 
+func addMissingConfigPlugins() error {
+	for _, plugin := range UserPlugins.PluginNamesNotSymlinked() {
+		for _, ref := range config.Plugins {
+			if pluginNameFromRef(ref) == plugin {
+				continue
+			}
+		}
+		config.Plugins = append(config.Plugins)
+		if err := config.Save(); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 // MigrateRubyPlugins migrates from legacy ruby plugins to node versions
-func (p *Plugins) MigrateRubyPlugins() {
+func MigrateRubyPlugins() {
 	pluginMap := map[string]string{
 		"heroku-accounts":  "heroku-accounts",
 		"heroku-buildkits": "heroku-buildkits",
@@ -446,11 +482,11 @@ func (p *Plugins) MigrateRubyPlugins() {
 	}
 	for _, ruby := range RubyPlugins() {
 		plugin := pluginMap[ruby]
-		if plugin == "" || contains(p.PluginNames(), plugin) {
+		if plugin == "" || contains(UserPlugins.PluginNames(), plugin) {
 			continue
 		}
 		action("Updating "+plugin+" plugin", "done", func() {
-			WarnIfError(p.InstallPlugins(plugin))
+			WarnIfError(UserPlugins.InstallPlugin(plugin))
 		})
 	}
 }

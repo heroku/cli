@@ -7,8 +7,9 @@ import (
 
 // Config interacts with the config.json
 type Config struct {
-	SkipAnalytics *bool `json:"skip_analytics"`
-	Color         *bool `json:"color"`
+	SkipAnalytics *bool    `json:"skip_analytics"`
+	Color         *bool    `json:"color"`
+	Plugins       []string `json:"plugins"`
 }
 
 var config *Config
@@ -27,11 +28,16 @@ func init() {
 	}
 	if err != nil {
 		if os.IsNotExist(err) {
-			saveJSON(&config, configPath())
+			WarnIfError(config.Save())
 		} else {
 			WarnIfError(err)
 		}
 	}
+}
+
+// Save the config
+func (c *Config) Save() error {
+	return saveJSON(c, configPath())
 }
 
 func pbool(b bool) *bool {
