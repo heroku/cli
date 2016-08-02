@@ -42,4 +42,4 @@ let cmd = {
 }
 
 exports.destroy = Object.assign({}, cmd, {command: 'destroy'})
-exports.remove = Object.assign({}, cmd, {command: 'remove'})
+exports.remove = Object.assign({}, cmd, {command: 'remove', hidden: true})
