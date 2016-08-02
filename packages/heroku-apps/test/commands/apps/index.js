@@ -51,6 +51,12 @@ function stubApps (apps) {
     .reply(200, apps)
 }
 
+function stubUserApps (apps) {
+  return nock('https://api.heroku.com')
+    .get('/users/~/apps')
+    .reply(200, apps)
+}
+
 function stubOrgApps (org, apps) {
   return nock('https://api.heroku.com')
     .get(`/organizations/${org}/apps`)
@@ -70,7 +76,7 @@ describe('heroku apps:list', function () {
 
   describe('with no args', function () {
     it('displays a message when the user has no apps', function () {
-      let mock = stubApps([])
+      let mock = stubUserApps([])
       return apps.run({flags: {}, args: {}}).then(function () {
         mock.done()
         expect(cli.stderr).to.equal('')
@@ -78,8 +84,8 @@ describe('heroku apps:list', function () {
       })
     })
 
-    it('list all user and collab apps omitting org apps', function () {
-      let mock = stubApps([example, collabApp, orgApp1])
+    it('list all user apps', function () {
+      let mock = stubUserApps([example, collabApp])
       return apps.run({flags: {}, args: {}}).then(function () {
         mock.done()
         expect(cli.stderr).to.equal('')
@@ -93,8 +99,24 @@ collab-app  someone-else@bar.com
       })
     })
 
-    it('shows as json', function () {
+    it('lists all apps', function () {
       let mock = stubApps([example, collabApp, orgApp1])
+      return apps.run({flags: {all: true}, args: {}}).then(function () {
+        mock.done()
+        expect(cli.stderr).to.equal('')
+        expect(cli.stdout).to.equal(
+          `=== foo@bar.com Apps
+example
+
+=== Collaborated Apps
+collab-app  someone-else@bar.com
+org-app-1   test-org@herokumanager.com
+`)
+      })
+    })
+
+    it('shows as json', function () {
+      let mock = stubUserApps([example, collabApp])
       return apps.run({flags: {json: true}, args: {}}).then(function () {
         mock.done()
         expect(cli.stderr).to.equal('')
@@ -103,7 +125,7 @@ collab-app  someone-else@bar.com
     })
 
     it('shows region if not us', function () {
-      let mock = stubApps([example, euApp])
+      let mock = stubUserApps([example, euApp])
       return apps.run({flags: {}, args: {}}).then(function () {
         mock.done()
         expect(cli.stderr).to.equal('')
