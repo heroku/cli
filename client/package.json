@@ -1,0 +1,14 @@
+{
+  "name": "@heroku/cli",
+  "version": "6.0.0",
+  "bin": "./bin/heroku",
+  "dependencies": {
+    "fs-extra": "0.30.0",
+    "lodash.zip": "4.1.0",
+    "minimist": "1.2.0",
+    "unexpected": "10.15.0"
+  },
+  "devDependencies": {
+    "mocha": "3.0.0"
+  }
+}
