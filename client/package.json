@@ -14,7 +14,8 @@
   },
   "devDependencies": {
     "mocha": "3.0.0",
-    "nyc": "7.1.0"
+    "nyc": "7.1.0",
+    "time-require": "0.1.2"
   },
   "scripts": {
     "test": "nyc mocha"
