@@ -16,5 +16,10 @@ module.exports = {
   topic: 'plugins',
   command: 'install',
   args: [{name: 'plugin'}],
+  flags: [
+    {name: 'app', char: 'a', hasValue: true},
+    {name: 'remote', char: 'r', hasValue: true},
+    {name: 'verbose', char: 'v'}
+  ],
   run: co.wrap(run)
 }
