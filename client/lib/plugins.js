@@ -27,8 +27,8 @@ function get () {
   return json.readJSON(cachePath)
 }
 
-function getCommands () {
-  let commands = []
+function load () {
+  let {commands, topics} = require('..')
   for (let plugin of get()) {
     for (let command of plugin.commands) {
       command.run = context => {
@@ -38,8 +38,12 @@ function getCommands () {
       }
       commands.push(command)
     }
+    for (let topic of (plugin.topics || [])) {
+      topics.push(topic)
+    }
   }
-  return commands
+  commands.sort((a, b) => a.command > b.command)
+  topics.sort((a, b) => a.name > b.name)
 }
 
 function put (cache) {
@@ -82,5 +86,5 @@ function install (ref) {
 module.exports = {
   install,
   get,
-  getCommands
+  load
 }
