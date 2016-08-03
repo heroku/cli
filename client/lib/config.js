@@ -2,11 +2,17 @@
 
 const fs = require('fs-extra')
 const path = require('path')
-const os = require('os')
+const debug = require('debug')('config')
+const dirs = require('./dirs')
 
 class Config {
   constructor () {
-    this._path = path.join(os.homedir(), '.config', 'heroku', 'config.json')
+    this._defaults = {
+      skip_analytics: false,
+      color: true,
+      plugins: []
+    }
+    this._path = path.join(dirs.config, 'config.json')
     this._read()
   }
 
@@ -19,7 +25,13 @@ class Config {
   }
 
   _read () {
-    this._config = fs.readJsonSync(this._path)
+    try {
+      this._config = fs.readJSONSync(this._path)
+    } catch (err) {
+      debug(err)
+      this._config = this._defaults
+      this._write()
+    }
   }
 }
 
