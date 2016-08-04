@@ -4,7 +4,7 @@ const cli = require('heroku-cli-util')
 const co = require('co')
 
 function * run (context, heroku) {
-  const fetcher = require('../lib/fetcher')
+  const fetcher = require('../lib/fetcher')(heroku)
   const host = require('../lib/host')
   const app = context.app
   const db = context.args.database
@@ -46,9 +46,9 @@ function * run (context, heroku) {
 
   let dbs = []
   if (db) {
-    dbs = yield [fetcher.addon(heroku, app, db)]
+    dbs = yield [fetcher.addon(app, db)]
   } else {
-    dbs = yield fetcher.all(heroku, app)
+    dbs = yield fetcher.all(app)
   }
 
   for (let db of dbs) yield waitFor(db)

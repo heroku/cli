@@ -10,9 +10,11 @@ const all = [
   {name: 'postgres-1', plan: {name: 'heroku-postgresql:hobby-dev'}},
   {name: 'postgres-2', plan: {name: 'heroku-postgresql:hobby-dev'}}
 ]
-const fetcher = {
-  all: () => all,
-  addon: () => all[0]
+const fetcher = () => {
+  return {
+    all: () => all,
+    addon: () => all[0]
+  }
 }
 
 const cmd = proxyquire('../../commands/wait', {

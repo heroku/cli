@@ -8,9 +8,11 @@ const proxyquire = require('proxyquire')
 
 let all = []
 let addon
-const fetcher = {
-  all: () => all,
-  addon: () => addon
+const fetcher = () => {
+  return {
+    all: () => all,
+    addon: () => addon
+  }
 }
 
 const cmd = proxyquire('../../commands/info', {

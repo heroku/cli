@@ -28,10 +28,29 @@ describe('fetcher', () => {
         }
         return Promise.resolve()
       }
-      return fetcher.addon(new Heroku(), 'myapp', 'DATABASE_URL')
+      return fetcher(new Heroku()).addon('myapp', 'DATABASE_URL')
       .then(addon => {
         expect(addon.name, 'to equal', 'postgres-1')
       })
+    })
+  })
+
+  describe('database', () => {
+    it('returns db connection info', () => {
+      resolver.attachment = (_, app, db) => {
+        if (app === 'myapp' && db === 'DATABASE_URL') {
+          return Promise.resolve({addon: {id: 100, name: 'postgres-1'}})
+        }
+        return Promise.resolve()
+      }
+      api.get('/addons/100').reply(200, {
+        config_vars: ['DATABASE_URL']
+      })
+      api.get('/apps/myapp/config-vars').reply(200, {
+        'DATABASE_URL': 'postgres://pguser:pgpass@pghost.com/pgdb'
+      })
+      return fetcher(new Heroku()).database('myapp', 'DATABASE_URL')
+      .then(db => expect(db.user, 'to equal', 'pguser'))
     })
   })
 
@@ -45,7 +64,7 @@ describe('fetcher', () => {
       ]
       api.get('/apps/myapp/addon-attachments').reply(200, attachments)
 
-      return fetcher.all(new Heroku(), 'myapp')
+      return fetcher(new Heroku()).all('myapp')
       .then(addons => {
         expect(addons[0], 'to satisfy', {name: 'postgres-1'})
         expect(addons[1], 'to satisfy', {name: 'postgres-2'})
