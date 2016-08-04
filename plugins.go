@@ -441,6 +441,7 @@ func (p *Plugins) MigrateRubyPlugins() {
 		"heroku-buildkits": "heroku-buildkits",
 		"heroku-config":    "heroku-config",
 		"heroku-oauth":     "heroku-cli-oauth",
+		"heroku-pg-extras": "heroku-pg-extras",
 		"heroku-repo":      "heroku-repo",
 		"heroku-run-local": "heroku-run-localjs",
 		"heroku-vim":       "heroku-vim",
