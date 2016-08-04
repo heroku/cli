@@ -22,5 +22,5 @@ if (!command) {
   }
 }
 let context = new Context({argv: argv.slice(3), command})
-command.run(context)
+Promise.resolve(command.run(context))
 .catch(cli.errorHandler({debug: true}))

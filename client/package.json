@@ -1,5 +1,5 @@
 {
-  "name": "@heroku/cli",
+  "name": "heroku-cli",
   "version": "6.0.0",
   "bin": "./bin/heroku",
   "dependencies": {
