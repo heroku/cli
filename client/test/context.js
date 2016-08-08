@@ -13,7 +13,7 @@ describe('context', () => {
       it('parses 1 arg', () => {
         let argv = ['foo']
         let ctx = new Context({command, argv})
-        assert.equal(ctx.args.myarg, 'foo')
+        assert.strictEqual(ctx.args.myarg, 'foo')
       })
 
       it('fails if too many args', () => {
@@ -28,8 +28,8 @@ describe('context', () => {
       it('parses 2 args', () => {
         let argv = ['foo', 'bar']
         let ctx = new Context({command, argv})
-        assert.equal(ctx.args.one, 'foo')
-        assert.equal(ctx.args.two, 'bar')
+        assert.strictEqual(ctx.args.one, 'foo')
+        assert.strictEqual(ctx.args.two, 'bar')
       })
 
       it('fails if argument missing', () => {
@@ -44,7 +44,7 @@ describe('context', () => {
       it('ignores optional arg', () => {
         let argv = ['foo']
         let ctx = new Context({command, argv})
-        assert.equal(ctx.args.one, 'foo')
+        assert.strictEqual(ctx.args.one, 'foo')
       })
     })
 
@@ -54,7 +54,7 @@ describe('context', () => {
       it('ignores "not required" arg', () => {
         let argv = ['foo']
         let ctx = new Context({command, argv})
-        assert.equal(ctx.args.one, 'foo')
+        assert.strictEqual(ctx.args.one, 'foo')
       })
     })
   })
@@ -109,22 +109,38 @@ describe('context', () => {
       it('sets both flags', () => {
         let argv = ['--app', 'myapp', '--wait']
         let ctx = new Context({command, argv})
-        assert.equal(ctx.flags.app, 'myapp')
-        assert.equal(ctx.flags.app, 'myapp')
+        assert.strictEqual(ctx.flags.app, 'myapp')
+        assert.strictEqual(ctx.flags.app, 'myapp')
       })
 
       it('sets both short flags', () => {
         let argv = ['-a', 'myapp', '-w']
         let ctx = new Context({command, argv})
-        assert.equal(ctx.flags.app, 'myapp')
-        assert.equal(ctx.flags.wait, true)
+        assert.strictEqual(ctx.flags.app, 'myapp')
+        assert.strictEqual(ctx.flags.wait, 1)
       })
 
       it('sets both short flags', () => {
         let argv = ['-wamyapp']
         let ctx = new Context({command, argv})
-        assert.equal(ctx.flags.app, 'myapp')
-        assert.equal(ctx.flags.wait, true)
+        assert.strictEqual(ctx.flags.app, 'myapp')
+        assert.strictEqual(ctx.flags.wait, 1)
+      })
+    })
+
+    describe('debug', () => {
+      let command = {}
+
+      it('sets debug level to 1', () => {
+        let argv = ['-d']
+        let ctx = new Context({command, argv})
+        assert.equal(ctx.flags.debug, 1)
+      })
+
+      it('sets debug level to 2', () => {
+        let argv = ['-dd']
+        let ctx = new Context({command, argv})
+        assert.equal(ctx.flags.debug, 2)
       })
     })
   })

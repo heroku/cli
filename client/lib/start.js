@@ -1,9 +1,11 @@
 'use strict'
 
-process.on('uncaughtException', err => console.error(err.stack))
-process.on('unhandledRejection', err => console.error(err.stack))
-
 const cli = require('heroku-cli-util')
+const errHandler = cli.errorHandler({debug: true})
+
+process.on('uncaughtException', errHandler)
+process.on('unhandledRejection', errHandler)
+
 const Context = require('./context')
 const {argv} = process
 
@@ -24,4 +26,4 @@ if (!command) {
 }
 let context = new Context({argv: argv.slice(3), command})
 Promise.resolve(command.run(context))
-.catch(cli.errorHandler({debug: true}))
+.catch(errHandler)

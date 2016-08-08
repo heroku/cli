@@ -1,12 +1,29 @@
 'use strict'
 
+const builtInFlags = {
+  debug: {char: 'd'}
+}
+
 class Context {
   constructor (options) {
     this._argv = options.argv.slice(0)
     this._command = options.command
     this._parseArgs()
-    delete this._argv
-    delete this._command
+    this._prune()
+  }
+
+  get _flags () {
+    if (this.__flags) return this.__flags
+    if (Array.isArray(this._command.flags)) {
+      // convert from old flag format
+      this.__flags = this._command.flags.reduce((flags, i) => {
+        flags[i.name] = i
+        return flags
+      }, {})
+    } else this.__flags = this._command.flags
+    this.__flags = Object.assign({}, this.__flags, builtInFlags)
+    for (let flag of Object.keys(this.__flags)) this.__flags[flag].name = flag
+    return this.__flags
   }
 
   _parseArgs () {
@@ -30,14 +47,8 @@ class Context {
   }
 
   _parseFlag (arg) {
-    let flags = this._command.flags || []
-    let flag
     let long = arg.startsWith('--')
-    if (long) {
-      flag = flags.find(f => f.name === arg.slice(2))
-    } else {
-      flag = flags.find(f => f.char === arg[1])
-    }
+    let flag = long ? this._findLongFlag(arg) : this._findShortFlag(arg)
     if (!flag) return false
     let cur = this.flags[flag.name]
     if (flag.hasValue) {
@@ -46,15 +57,30 @@ class Context {
       if (!val) throw new Error(`Flag --${flag.name} expects a value.`)
       this.flags[flag.name] = val
     } else {
-      // if flag is specified multiple times, turn it into a number to increment
-      if (cur > 1) this.flags[flag.name]++
-      else if (cur === true) this.flags[flag.name] = 2
-      else this.flags[flag.name] = true
+      // if flag is specified multiple times, increment
+      if (!cur) this.flags[flag.name] = 0
+      this.flags[flag.name]++
 
       // push the rest of the short characters back on the stack
       if (!long && arg.length > 2) this._argv.unshift(`-${arg.slice(2)}`)
     }
     return true
+  }
+
+  _findLongFlag (arg) {
+    return this._flags[arg.slice(2)]
+  }
+
+  _findShortFlag (arg) {
+    for (let flag of Object.keys(this._flags)) {
+      if (arg[1] === this._flags[flag].char) return this._flags[flag]
+    }
+  }
+
+  _prune () {
+    delete this._argv
+    delete this._command
+    delete this.__flags
   }
 }
 
