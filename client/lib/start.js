@@ -10,9 +10,7 @@ const Context = require('./context')
 const {argv} = process
 const {commands} = require('..')
 
-if (argv.length < 3) require('./commands/help').run()
-
-let cmd = argv[2].split(':')
+let cmd = argv.length < 3 ? ['dashboard'] : argv[2].split(':')
 if (['-v', '--version'].includes(cmd[0].toLowerCase())) cmd = ['version']
 let getCommand = cmd => commands.find(c => c.topic === cmd[0] && c.command === cmd[1])
 let command = getCommand(cmd)

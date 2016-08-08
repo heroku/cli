@@ -48,7 +48,6 @@ function load () {
 }
 
 function put (cache) {
-  cache.sort((a, b) => a.name > b.name)
   return json.writeJSON(cachePath, cache)
 }
 

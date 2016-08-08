@@ -34,11 +34,12 @@ function topic (cmd) {
 
   if (command) {
     let cmd = command.command ? `${command.topic}:${command.command}` : command.topic
+    // TODO: get usage if defined
     let usage = `heroku ${cmd}` + (command.args || []).map(renderArg).join('')
     cli.log(`Usage: ${cli.color.cmd(usage)}\n`)
     if (command.description) cli.log(`${command.description.trim()}\n`)
     if (command.flags) cli.log(renderFlags(command.flags))
-    if (command.help) cli.log('\n' + command.help.trim())
+    if (command.help) cli.log(`\n${command.help.trim()}\n`)
   }
 
   if (cmd.includes(':')) return
