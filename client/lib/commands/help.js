@@ -63,7 +63,7 @@ function topic (cmd) {
 }
 
 function run (context) {
-  if (context.args.topic) topic(context.args.topic)
+  if (context && context.args.topic) topic(context.args.topic)
   else all()
   process.exit(0)
 }
