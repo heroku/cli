@@ -1,7 +1,7 @@
 'use strict'
 
 const cli = require('heroku-cli-util')
-const errHandler = cli.errorHandler({debug: true})
+const errHandler = cli.errorHandler()
 
 process.on('uncaughtException', errHandler)
 process.on('unhandledRejection', errHandler)
@@ -18,6 +18,7 @@ if (!command) {
   cli.error('command not found')
   process.exit(127)
 }
-let context = new Context({argv: argv.slice(3), command})
-Promise.resolve(command.run(context))
+let context = new Context(command)
+context.parse(argv.slice(3))
+.then(() => command.run(context))
 .catch(errHandler)

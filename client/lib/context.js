@@ -5,11 +5,15 @@ const builtInFlags = [
 ]
 
 class Context {
-  constructor (options) {
-    this._argv = options.argv.slice(0)
-    this._command = options.command
+  constructor (command) {
+    this._command = command
+  }
+
+  parse (argv) {
+    this._argv = argv.slice(0)
     this._parseArgs()
-    this._prune()
+    return Promise.resolve(this._before())
+    .then(() => this._prune())
   }
 
   get _args () {
@@ -76,9 +80,18 @@ class Context {
     return find(this._flags) || find(builtInFlags)
   }
 
+  _before () {
+    if (!this.__before) this.__before = this._command.before || []
+    if (this.__before.length) {
+      return Promise.resolve(this.__before.pop().bind(this)()).then(() => this._before())
+    }
+  }
+
   _prune () {
     delete this._argv
     delete this._command
+    delete this.__args
+    delete this.__before
   }
 }
 
