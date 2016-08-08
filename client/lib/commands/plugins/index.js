@@ -13,5 +13,6 @@ function * run (context) {
 
 module.exports = {
   topic: 'plugins',
+  description: 'list the installed plugins',
   run: co.wrap(run)
 }

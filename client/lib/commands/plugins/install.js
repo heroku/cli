@@ -11,6 +11,7 @@ function * run (context) {
 module.exports = {
   topic: 'plugins',
   command: 'install',
+  description: 'install a plugin',
   args: [{name: 'plugin'}],
   run: co.wrap(run)
 }

@@ -28,7 +28,8 @@ function get () {
 }
 
 function load () {
-  let {commands, topics} = require('..')
+  let commands = []
+  let topics = []
   for (let plugin of get()) {
     for (let command of plugin.commands) {
       command.run = context => {
@@ -41,9 +42,11 @@ function load () {
     for (let topic of (plugin.topics || [])) {
       topics.push(topic)
     }
+    if (plugin.topic) topics.push(plugin.topic)
   }
   commands.sort((a, b) => a.command > b.command)
   topics.sort((a, b) => a.name > b.name)
+  return {commands, topics}
 }
 
 function put (cache) {
@@ -73,7 +76,10 @@ function install (ref) {
       name: scope ? `${scope}/${name}` : name,
       version,
       path: path.join(dirs.data, 'plugins'),
-      forceInstall: true
+      forceInstall: true,
+      npmLoad: {
+        registry: process.env.HEROKU_NPM_REGISTRY || 'https://cli-npm.heroku.com'
+      }
     }, (err, packages) => {
       if (err) return reject(err)
       let pkg = packages.pop() // plugin is last installed package
