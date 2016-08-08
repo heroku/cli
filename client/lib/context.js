@@ -1,7 +1,10 @@
 'use strict'
 
+const cli = require('heroku-cli-util')
+
 const builtInFlags = [
-  {name: 'debug', char: 'd'}
+  {name: 'debug', char: 'd'},
+  {name: 'no-color', char: 'k'}
 ]
 
 class Context {
@@ -14,6 +17,20 @@ class Context {
     this._parseArgs()
     return Promise.resolve(this._before())
     .then(() => this._prune())
+  }
+
+  get supportsColor () {
+    if (['false', '0'].indexOf((process.env.COLOR || '').toLowerCase()) !== -1) return false
+    if ((process.env.TERM.toLowerCase() || '') === 'dumb') return false
+    if (this.flags['no-color']) return false
+    // TODO: check config file
+    return true
+  }
+
+  get debug () {
+    if (this.flags.debug) return this.flags.debug
+    if (['true', '1'].indexOf((process.env.HEROKU_DEBUG || '').toLowerCase()) !== -1) return 1
+    return false
   }
 
   get _args () {
@@ -82,6 +99,11 @@ class Context {
 
   _before () {
     if (!this.__before) this.__before = this._command.before || []
+    if (this._command.needsAuth) {
+      // TODO: deprecate this at some point in favor of explicit before filters
+      this._command.needsAuth = false
+      this.__before.push(cli.auth)
+    }
     if (this.__before.length) {
       return Promise.resolve(this.__before.pop().bind(this)()).then(() => this._before())
     }
