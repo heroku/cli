@@ -34,7 +34,7 @@ describe('context', () => {
 
       it('fails if argument missing', () => {
         let argv = ['foo']
-        assert.throws(() => new Context({argv, command}), /Missing argument two/)
+        assert.throws(() => new Context({argv, command}), /Missing required argument two/)
       })
     })
 
@@ -125,6 +125,20 @@ describe('context', () => {
         let ctx = new Context({command, argv})
         assert.strictEqual(ctx.flags.app, 'myapp')
         assert.strictEqual(ctx.flags.wait, 1)
+      })
+    })
+
+    describe('with required flag', () => {
+      it('fails if flag is required', () => {
+        let command = {flags: [{name: 'app', char: 'a', hasValue: true, required: true}]}
+        let argv = []
+        assert.throws(() => new Context({argv, command}), /Missing required flag --app/)
+      })
+
+      it('fails if flag is not optional', () => {
+        let command = {flags: [{name: 'app', char: 'a', hasValue: true, optional: false}]}
+        let argv = []
+        assert.throws(() => new Context({argv, command}), /Missing required flag --app/)
       })
     })
 
