@@ -14,15 +14,14 @@ class Context {
 
   get _flags () {
     if (this.__flags) return this.__flags
-    if (Array.isArray(this._command.flags)) {
+    this.__flags = this._command.flags || {}
+    if (Array.isArray(this.__flags)) {
       // convert from old flag format
-      this.__flags = this._command.flags.reduce((flags, i) => {
+      this.__flags = this.__flags.reduce((flags, i) => {
         flags[i.name] = i
         return flags
       }, {})
-    } else this.__flags = this._command.flags
-    this.__flags = Object.assign({}, this.__flags, builtInFlags)
-    for (let flag of Object.keys(this.__flags)) this.__flags[flag].name = flag
+    }
     return this.__flags
   }
 
@@ -68,12 +67,17 @@ class Context {
   }
 
   _findLongFlag (arg) {
-    return this._flags[arg.slice(2)]
+    return this._flags[arg.slice(2)] || builtInFlags[arg.slice(2)]
   }
 
   _findShortFlag (arg) {
     for (let flag of Object.keys(this._flags)) {
       if (arg[1] === this._flags[flag].char) return this._flags[flag]
+    }
+    for (let flag of Object.keys(builtInFlags)) {
+      if (arg[1] === builtInFlags[flag].char) {
+        return Object.assign({name: flag}, builtInFlags[flag])
+      }
     }
   }
 
