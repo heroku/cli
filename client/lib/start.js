@@ -10,6 +10,7 @@ const {argv} = process
 if (argv.length < 3) require('./commands/help').run()
 
 let cmd = argv[2].split(':')
+if (['-v', '--version'].includes(cmd[0].toLowerCase())) cmd = ['version']
 let commands = require('./commands')
 let getCommand = cmd => commands.find(c => c.topic === cmd[0] && c.command === cmd[1])
 let command = getCommand(cmd)
