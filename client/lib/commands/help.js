@@ -34,22 +34,19 @@ function topic (cmd) {
 
   if (command) {
     let cmd = command.command ? `${command.topic}:${command.command}` : command.topic
-    let usage = `heroku ${cmd}` + command.args.map(renderArg).join('')
+    let usage = `heroku ${cmd}` + (command.args || []).map(renderArg).join('')
     cli.log(`Usage: ${cli.color.cmd(usage)}\n`)
-    if (command.description) cli.log(`${command.description}\n`)
-    if (command.flags) {
-      for (let flag of command.flags) {
-        cli.log(` --${flag.name} # ${flag.description}`)
-      }
-      cli.log()
-    }
+    if (command.description) cli.log(`${command.description.trim()}\n`)
+    if (command.flags) cli.log(renderFlags(command.flags))
+    if (command.help) cli.log('\n' + command.help.trim())
   }
 
   if (cmd.includes(':')) return
 
+  commands = commands.filter(c => c.topic === cmd && c.command)
+  if (commands.length === 0) return
   cli.log(`${cmd} commands: (${cli.color.cmd('heroku help ' + cmd + ':COMMAND')} for details)
 `)
-  commands = commands.filter(c => c.topic === cmd && c.command)
   let maxLength = max(commands, 'command.length').command.length + cmd.length + 1
   for (let command of commands) {
     let cmd = command.command ? `${command.topic}:${command.command}` : command.topic
@@ -61,6 +58,37 @@ function topic (cmd) {
 function renderArg (arg) {
   if (arg.required !== false && arg.optional !== true) return ` <${arg.name}>`
   else return ` [${arg.name}]`
+}
+
+function stderrwidth () {
+  if (!process.stdout.isTTY) return 80
+  return process.stdout.getWindowSize()[0]
+}
+
+function renderFlags (flags) {
+  const max = require('lodash.maxby')
+  let lines = []
+  for (let flag of flags) {
+    let label = []
+    if (flag.char) label.push(`-${flag.char}`)
+    if (flag.name) label.push(` --${flag.name}`)
+    let usage = flag.hasValue ? ` ${flag.name.toUpperCase()}` : ''
+    lines.push([label.join(',').trim() + usage, flag.description])
+  }
+  let maxLength = max(lines, '0')[0].length
+  return lines.map(line => {
+    let desc = line[1] || ''
+    if (desc) {
+      desc = cli.linewrap(maxLength + 4, stderrwidth(), {
+        skipScheme: 'ansi-color'
+      })(desc).trim()
+      desc = ' # ' + desc.split('\n').map(l => {
+        if (l[0] !== ' ') return l
+        return l.substr(0, maxLength + 1) + ' # ' + l.substr(maxLength + 4)
+      }).join('\n')
+    }
+    return ` ${S(line[0]).padRight(maxLength)}${desc}`
+  }).join('\n')
 }
 
 function run (context) {

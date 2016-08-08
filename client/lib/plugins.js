@@ -44,8 +44,6 @@ function load () {
     }
     if (plugin.topic) topics.push(plugin.topic)
   }
-  commands.sort((a, b) => a.command > b.command)
-  topics.sort((a, b) => a.name > b.name)
   return {commands, topics}
 }
 
