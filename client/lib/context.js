@@ -3,8 +3,8 @@
 const flag = require('./flag')
 
 const builtInFlags = [
-  {name: 'debug', char: 'd'},
-  {name: 'no-color', char: 'k'}
+  {name: 'debug', char: 'D'},
+  {name: 'no-color'}
 ]
 
 class Context {
