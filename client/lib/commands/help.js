@@ -96,8 +96,8 @@ function renderFlags (flags) {
   }).join('\n')
 }
 
-function run (context) {
-  if (context && context.args.topic) topic(context.args.topic)
+function run () {
+  if (this.args && this.args.topic) topic(this.args.topic)
   else all()
 }
 

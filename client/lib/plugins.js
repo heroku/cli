@@ -44,7 +44,7 @@ function load () {
       command.run = context => {
         return require(path.join(dirs.data, 'plugins', 'node_modules', plugin.name))
         .commands.find(c => c.topic === command.topic && c.command === command.command)
-        .run(context)
+        .run.bind(this)(context)
       }
       commands.push(command)
     }
@@ -65,7 +65,9 @@ function parse (ref, pkg) {
   plugin.ref = ref
   plugin.name = pkg[0].split('@')[0]
   plugin.version = pkg[0].split('@')[1]
-  if (!plugin.commands) throw new Error(`${ref} does not appear to be a Heroku CLI plugin`)
+  if (!plugin.commands) {
+    throw new Error(`${ref} does not appear to be a Heroku CLI plugin`)
+  }
   let plugins = get()
   let idx = plugins.findIndex(p => p.name === plugin.name)
   if (idx !== -1) plugins[idx] = plugin
@@ -129,9 +131,8 @@ function * update () {
     let dist = ref.version || 'latest'
     let latest = info['dist-tags'][dist] || info['dist-tags']['latest']
     if (latest !== plugin.version) {
-      cli.action(`Updating ${plugin.ref || plugin.name}`, co(function * () {
-        yield install(plugin.ref || plugin.name)
-      }))
+      yield cli.action(`Updating ${plugin.ref || plugin.name}`,
+        install(plugin.ref || plugin.name))
     }
   }
 }

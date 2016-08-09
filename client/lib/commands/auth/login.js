@@ -3,10 +3,9 @@
 const co = require('co')
 const cli = require('heroku-cli-util')
 
-function * run (context) {
+function * run () {
   yield cli.auth.login()
-  let {heroku} = context
-  let account = yield heroku.get('/account')
+  let account = yield this.heroku.get('/account')
   cli.log(`Logged in as ${cli.color.cyan(account.email)}`)
 }
 
