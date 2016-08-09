@@ -1,6 +1,6 @@
 'use strict'
 
-const cli = require('heroku-cli-util')
+const flag = require('./flag')
 
 const builtInFlags = [
   {name: 'debug', char: 'd'},
@@ -10,13 +10,15 @@ const builtInFlags = [
 class Context {
   constructor (command) {
     this._command = command
+    flag.addHerokuFlags(command)
   }
 
-  parse (argv) {
+  * parse (...argv) {
     this._argv = argv.slice(0)
-    this._parseArgs()
-    return Promise.resolve(this._before())
-    .then(() => this._prune())
+    yield this._parseArgs()
+    yield this._before()
+    this._prune()
+    return this
   }
 
   get supportsColor () {
@@ -30,7 +32,7 @@ class Context {
   get debug () {
     if (this.flags.debug) return this.flags.debug
     if (['true', '1'].indexOf((process.env.HEROKU_DEBUG || '').toLowerCase()) !== -1) return 1
-    return false
+    return 0
   }
 
   get _args () {
@@ -44,26 +46,29 @@ class Context {
     return this._command.flags || []
   }
 
-  _parseArgs () {
+  * _parseArgs () {
     let parsingFlags = true
     this.flags = {}
-    this.args = {}
+    this.args = this._command.variableArgs ? [] : {}
     while (this._argv.length) {
       let arg = this._argv.shift()
       if (parsingFlags && arg.startsWith('-')) {
         if (arg === '--') { parsingFlags = false; continue }
         if (this._parseFlag(arg)) continue
       }
-      let expected = this._args.shift()
-      if (!expected) throw new Error(`Unexpected argument ${arg}`)
-      this.args[expected.name] = arg
+      if (this._command.variableArgs) {
+        this.args.push(arg)
+      } else {
+        let expected = this._args.shift()
+        if (!expected) throw new Error(`Unexpected argument ${arg}`)
+        this.args[expected.name] = arg
+      }
     }
 
     let missingArg = this._args.find(a => a.optional !== true && a.required !== false)
     if (missingArg) throw new Error(`Missing required argument ${missingArg.name}`)
 
-    let missingFlag = this._flags.find(a => a.optional === false || a.required === true)
-    if (missingFlag) throw new Error(`Missing required flag --${missingFlag.name}`)
+    yield this._parseFlags()
   }
 
   _parseFlag (arg) {
@@ -97,16 +102,28 @@ class Context {
     return find(this._flags) || find(builtInFlags)
   }
 
-  _before () {
-    if (!this.__before) this.__before = this._command.before || []
-    if (this._command.needsAuth) {
-      // TODO: deprecate this at some point in favor of explicit before filters
-      this._command.needsAuth = false
-      this.__before.push(cli.auth)
+  * _before () {
+    for (let filter of this._command.before || []) {
+      yield Promise.resolve(filter.bind(this)())
     }
-    if (this.__before.length) {
-      return Promise.resolve(this.__before.pop().bind(this)()).then(() => this._before())
+  }
+
+  * _parseFlags () {
+    for (let flag of this._flags || []) {
+      if (this.flags[flag.name]) {
+        if (flag.parse) this.flags[flag.name] = flag.parse.bind(this)(this.flags[flag.name])
+      } else {
+        if (flag.default) this.flags[flag.name] = yield this._flagDefault(flag)
+        if (!this.flags[flag.name] && (flag.optional === false || flag.required === true)) {
+          throw new Error(`Missing required flag --${flag.name}`)
+        }
+      }
     }
+  }
+
+  _flagDefault (flag) {
+    let val = typeof flag.default === 'function' ? flag.default.bind(this)() : flag.default
+    return Promise.resolve(val)
   }
 
   _prune () {
@@ -117,4 +134,5 @@ class Context {
   }
 }
 
-module.exports = Context
+const {wrap} = require('async-class')
+module.exports = wrap(Context)

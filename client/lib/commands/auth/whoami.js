@@ -3,13 +3,11 @@
 const co = require('co')
 const cli = require('heroku-cli-util')
 
-function * run (context) {
+function * run () {
   const Heroku = require('heroku-client')
+
   let token = cli.auth.token()
-  if (!token) {
-    cli.error('not logged in')
-    process.exit(1)
-  }
+  if (!token) cli.fatal('not logged in', 1)
   let heroku = new Heroku({token})
   let account = yield heroku.get('/account')
   cli.log(account.email)

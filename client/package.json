@@ -3,6 +3,8 @@
   "version": "6.0.0",
   "bin": "./bin/heroku",
   "dependencies": {
+    "async-class": "0.4.1",
+    "asyncawait": "1.0.6",
     "execa": "0.4.0",
     "fs-extra": "0.30.0",
     "heroku-apps": "2.1.15",
@@ -14,12 +16,14 @@
     "minimist": "1.2.0",
     "npm": "3.10.5",
     "npmi": "2.0.1",
-    "string": "3.3.1",
-    "unexpected": "10.15.0"
+    "string": "3.3.1"
   },
   "devDependencies": {
+    "chai": "3.5.0",
+    "chai-as-promised": "5.3.0",
     "mocha": "3.0.0",
     "nyc": "7.1.0",
+    "should": "10.0.0",
     "time-require": "0.1.2"
   },
   "scripts": {

@@ -2,6 +2,7 @@
 
 const cli = require('heroku-cli-util')
 const S = require('string')
+const flag = require('../flag')
 
 function topicCommand (cmd) {
   let idx = cmd.indexOf(':')
@@ -33,13 +34,14 @@ function topic (cmd) {
   command = commands.find(c => c.topic === topic && (c.command === command || (!c.command && !command)))
 
   if (command) {
+    flag.addHerokuFlags(command)
     let cmd = command.command ? `${command.topic}:${command.command}` : command.topic
     // TODO: get usage if defined
     let usage = `heroku ${cmd}` + (command.args || []).map(renderArg).join('')
     cli.log(`Usage: ${cli.color.cmd(usage)}\n`)
     if (command.description) cli.log(`${command.description.trim()}\n`)
-    if (command.flags) cli.log(renderFlags(command.flags))
-    if (command.help) cli.log(`\n${command.help.trim()}\n`)
+    if (command.flags) cli.log(`${renderFlags(command.flags)}\n`)
+    if (command.help) cli.log(`${command.help.trim()}\n`)
   }
 
   if (cmd.includes(':')) return
@@ -74,7 +76,9 @@ function renderFlags (flags) {
     if (flag.char) label.push(`-${flag.char}`)
     if (flag.name) label.push(` --${flag.name}`)
     let usage = flag.hasValue ? ` ${flag.name.toUpperCase()}` : ''
-    lines.push([label.join(',').trim() + usage, flag.description])
+    let description = flag.description || ''
+    if (flag.required || flag.optional === false) description = `(required) ${description}`
+    lines.push([label.join(',').trim() + usage, description])
   }
   let maxLength = max(lines, '0')[0].length
   return lines.map(line => {

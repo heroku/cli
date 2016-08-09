@@ -3,8 +3,8 @@
 const co = require('co')
 const cli = require('heroku-cli-util')
 
-function * run (context) {
-  cli.log(context.auth.password)
+function * run () {
+  cli.log(this.auth.password)
 }
 
 module.exports = {

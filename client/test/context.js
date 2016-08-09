@@ -1,9 +1,8 @@
 'use strict'
 
-/* globals describe context it */
+/* globals describe context it afterEach */
 
 const Context = require('../lib/context')
-const assert = require('assert')
 
 describe('context', () => {
   describe('arguments', () => {
@@ -11,14 +10,13 @@ describe('context', () => {
       let command = { args: [{name: 'myarg'}] }
 
       it('parses 1 arg', () => {
-        let argv = ['foo']
-        let ctx = new Context({command, argv})
-        assert.strictEqual(ctx.args.myarg, 'foo')
+        return new Context(command).parse('foo')
+        .then(ctx => ctx.args.myarg.should.eq('foo'))
       })
 
       it('fails if too many args', () => {
-        let argv = ['foo', 'bar']
-        assert.throws(() => new Context({argv, command}), /Unexpected argument bar/)
+        return new Context(command).parse('foo', 'bar')
+        .should.be.rejectedWith(/Unexpected argument bar/)
       })
     })
 
@@ -26,15 +24,13 @@ describe('context', () => {
       let command = { args: [{name: 'one'}, {name: 'two'}] }
 
       it('parses 2 args', () => {
-        let argv = ['foo', 'bar']
-        let ctx = new Context({command, argv})
-        assert.strictEqual(ctx.args.one, 'foo')
-        assert.strictEqual(ctx.args.two, 'bar')
+        return new Context(command).parse('foo', 'bar')
+        .should.eventually.have.property('args').that.deep.equals({one: 'foo', two: 'bar'})
       })
 
       it('fails if argument missing', () => {
-        let argv = ['foo']
-        assert.throws(() => new Context({argv, command}), /Missing required argument two/)
+        return new Context(command).parse('foo')
+        .should.be.rejectedWith(/Missing required argument two/)
       })
     })
 
@@ -42,9 +38,8 @@ describe('context', () => {
       let command = { args: [{name: 'one'}, {name: 'two', optional: true}] }
 
       it('ignores optional arg', () => {
-        let argv = ['foo']
-        let ctx = new Context({command, argv})
-        assert.strictEqual(ctx.args.one, 'foo')
+        return new Context(command).parse('foo')
+        .should.eventually.have.deep.property('args.one', 'foo')
       })
     })
 
@@ -52,9 +47,8 @@ describe('context', () => {
       let command = { args: [{name: 'one'}, {name: 'two', required: false}] }
 
       it('ignores "not required" arg', () => {
-        let argv = ['foo']
-        let ctx = new Context({command, argv})
-        assert.strictEqual(ctx.args.one, 'foo')
+        return new Context(command).parse('foo')
+        .should.eventually.have.deep.property('args.one', 'foo')
       })
     })
   })
@@ -64,15 +58,13 @@ describe('context', () => {
       let command = { flags: [{name: 'wait', char: 'w'}] }
 
       it('sets the flag', () => {
-        let argv = ['--wait']
-        let ctx = new Context({command, argv})
-        assert.equal(ctx.flags.wait, true)
+        return new Context(command).parse('--wait')
+        .should.eventually.have.deep.property('flags.wait', 1)
       })
 
       it('sets the short flag', () => {
-        let argv = ['-w']
-        let ctx = new Context({command, argv})
-        assert.equal(ctx.flags.wait, true)
+        return new Context(command).parse('-w')
+        .should.eventually.have.deep.property('flags.wait', 1)
       })
     })
 
@@ -80,21 +72,18 @@ describe('context', () => {
       let command = { flags: [{name: 'app', char: 'a', hasValue: true}] }
 
       it('sets the flag', () => {
-        let argv = ['--app', 'myapp']
-        let ctx = new Context({command, argv})
-        assert.equal(ctx.flags.app, 'myapp')
+        return new Context(command).parse('--app', 'myapp')
+        .should.eventually.have.deep.property('flags.app', 'myapp')
       })
 
       it('sets the short flag', () => {
-        let argv = ['-a', 'myapp']
-        let ctx = new Context({command, argv})
-        assert.equal(ctx.flags.app, 'myapp')
+        return new Context(command).parse('-a', 'myapp')
+        .should.eventually.have.deep.property('flags.app', 'myapp')
       })
 
       it('sets the short flag', () => {
-        let argv = ['-amyapp']
-        let ctx = new Context({command, argv})
-        assert.equal(ctx.flags.app, 'myapp')
+        return new Context(command).parse('-amyapp')
+        .should.eventually.have.deep.property('flags.app', 'myapp')
       })
     })
 
@@ -107,54 +96,91 @@ describe('context', () => {
       }
 
       it('sets both flags', () => {
-        let argv = ['--app', 'myapp', '--wait']
-        let ctx = new Context({command, argv})
-        assert.strictEqual(ctx.flags.app, 'myapp')
-        assert.strictEqual(ctx.flags.app, 'myapp')
+        return new Context(command).parse('--app', 'myapp', '--wait')
+        .should.eventually.have.property('flags').that.deep.eq({app: 'myapp', wait: 1})
       })
 
       it('sets both short flags', () => {
-        let argv = ['-a', 'myapp', '-w']
-        let ctx = new Context({command, argv})
-        assert.strictEqual(ctx.flags.app, 'myapp')
-        assert.strictEqual(ctx.flags.wait, 1)
+        return new Context(command).parse('-a', 'myapp', '-w')
+        .should.eventually.have.property('flags').that.deep.eq({app: 'myapp', wait: 1})
       })
 
       it('sets both short flags', () => {
-        let argv = ['-wamyapp']
-        let ctx = new Context({command, argv})
-        assert.strictEqual(ctx.flags.app, 'myapp')
-        assert.strictEqual(ctx.flags.wait, 1)
+        return new Context(command).parse('-wamyapp')
+        .should.eventually.have.property('flags').that.deep.eq({app: 'myapp', wait: 1})
       })
     })
 
     describe('with required flag', () => {
       it('fails if flag is required', () => {
         let command = {flags: [{name: 'app', char: 'a', hasValue: true, required: true}]}
-        let argv = []
-        assert.throws(() => new Context({argv, command}), /Missing required flag --app/)
+        return new Context(command).parse()
+        .should.eventually.be.rejectedWith(/Missing required flag --app/)
       })
 
       it('fails if flag is not optional', () => {
         let command = {flags: [{name: 'app', char: 'a', hasValue: true, optional: false}]}
-        let argv = []
-        assert.throws(() => new Context({argv, command}), /Missing required flag --app/)
+        return new Context(command).parse()
+        .should.eventually.be.rejectedWith(/Missing required flag --app/)
       })
     })
 
     describe('debug', () => {
       let command = {}
 
+      it('sets debug level to 0', () => {
+        return new Context(command).parse()
+        .should.eventually.have.property('debug', 0)
+      })
+
       it('sets debug level to 1', () => {
-        let argv = ['-d']
-        let ctx = new Context({command, argv})
-        assert.equal(ctx.flags.debug, 1)
+        return new Context(command).parse('-d')
+        .should.eventually.have.property('debug', 1)
       })
 
       it('sets debug level to 2', () => {
-        let argv = ['-dd']
-        let ctx = new Context({command, argv})
-        assert.equal(ctx.flags.debug, 2)
+        return new Context(command).parse('-dd')
+        .should.eventually.have.property('debug', 2)
+      })
+    })
+
+    describe('supportsColor', () => {
+      it('supports color', () => {
+        return new Context({}).parse()
+        .should.eventually.have.property('supportsColor', true)
+      })
+    })
+
+    describe('needsOrg', () => {
+      let command = {needsOrg: true}
+
+      afterEach(() => delete process.env.HEROKU_ORGANIZATION)
+
+      it('fetches the org from HEROKU_ORGANIZATION', () => {
+        process.env.HEROKU_ORGANIZATION = 'jeff-org'
+        return new Context(command).parse()
+        .should.eventually.have.property('org', 'jeff-org')
+      })
+    })
+
+    describe('needsApp', () => {
+      let command = {needsApp: true}
+
+      afterEach(() => delete process.env.HEROKU_APP)
+
+      it('fetches the app from HEROKU_APP', () => {
+        process.env.HEROKU_APP = 'myapp'
+        return new Context(command).parse()
+        .should.eventually.have.property('app', 'myapp')
+      })
+    })
+
+    describe('variableArgs', () => {
+      let command = {variableArgs: true}
+
+      it('loads variable args', () => {
+        return new Context(command).parse('foo', 'bar', 'baz')
+        .should.eventually.have.property('args').that.deep.eq(['foo', 'bar', 'baz'])
       })
     })
   })
