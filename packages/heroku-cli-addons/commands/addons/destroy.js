@@ -41,5 +41,7 @@ let cmd = {
   run: cli.command({preauth: true}, co.wrap(run))
 }
 
-exports.destroy = Object.assign({}, cmd, {command: 'destroy'})
-exports.remove = Object.assign({}, cmd, {command: 'remove', hidden: true})
+module.exports = [
+  Object.assign({command: 'destroy'}, cmd),
+  Object.assign({command: 'remove', hidden: true}, cmd)
+]

@@ -125,5 +125,7 @@ Examples:
   run: cli.command(co.wrap(run))
 }
 
-exports.upgrade = Object.assign({command: 'upgrade'}, cmd)
-exports.downgrade = Object.assign({command: 'downgrade'}, cmd)
+module.exports = [
+  Object.assign({command: 'upgrade'}, cmd),
+  Object.assign({command: 'downgrade'}, cmd)
+]
