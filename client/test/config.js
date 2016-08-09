@@ -20,7 +20,7 @@ describe('config', () => {
 
   afterEach(() => {
     try { fs.unlinkSync(configFile) } catch (err) { }
-    delete process.env.XDG_CONFIG_HOME
+    process.env.XDG_CONFIG_HOME = 'tmp'
   })
 
   it('writes out config', () => {

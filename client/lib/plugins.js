@@ -3,6 +3,8 @@
 const dirs = require('./dirs')
 const path = require('path')
 const json = require('./json')
+const Promise = require('bluebird')
+const fs = Promise.promisifyAll(require('fs-extra'))
 
 function readRef (ref) {
   let name = ref
@@ -24,7 +26,12 @@ function readRef (ref) {
 let cachePath = path.join(dirs.data, 'plugins', 'plugins.json')
 
 function get () {
-  return json.readJSON(cachePath)
+  try {
+    return json.readJSON(cachePath)
+  } catch (err) {
+    if (err.code !== 'ENOENT') throw err
+    return []
+  }
 }
 
 function load () {
@@ -52,7 +59,7 @@ function put (cache) {
 }
 
 function parse (ref, pkg) {
-  let plugin = require(pkg[1])
+  let plugin = require(path.resolve(pkg[1]))
   plugin.ref = ref
   plugin.name = pkg[0].split('@')[0]
   plugin.version = pkg[0].split('@')[1]
@@ -68,6 +75,7 @@ function install (ref) {
   return new Promise((resolve, reject) => {
     const npmi = require('npmi')
     let {name, scope, version} = readRef(ref)
+    fs.ensureDirSync(path.join(dirs.data, 'plugins'))
 
     npmi({
       name: scope ? `${scope}/${name}` : name,
@@ -86,8 +94,15 @@ function install (ref) {
   })
 }
 
+function uninstall (name) {
+  fs.removeSync(path.join(dirs.data, 'plugins', 'node_modules', name))
+  let plugins = get().filter(p => p.name !== name)
+  put(plugins)
+}
+
 module.exports = {
-  install,
   get,
-  load
+  install,
+  load,
+  uninstall
 }

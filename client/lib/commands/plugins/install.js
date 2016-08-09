@@ -3,8 +3,8 @@
 const co = require('co')
 const plugins = require('../../plugins')
 
-function * run (context) {
-  const ref = context.args.plugin
+function * run () {
+  const ref = this.args.plugin
   yield plugins.install(ref)
 }
 

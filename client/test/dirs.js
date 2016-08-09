@@ -1,6 +1,6 @@
 'use strict'
 
-/* globals describe it context beforeEach */
+/* globals describe it context beforeEach afterEach */
 
 const dirs = require('../lib/dirs')
 const path = require('path')
@@ -9,9 +9,15 @@ const os = require('os')
 describe('dirs', () => {
   context('nothing set', () => {
     beforeEach(() => {
-      delete process.env.XDG_DATA_HOME
       delete process.env.XDG_CACHE_HOME
       delete process.env.XDG_CONFIG_HOME
+      delete process.env.XDG_DATA_HOME
+    })
+
+    afterEach(() => {
+      process.env.XDG_DATA_HOME = 'tmp'
+      process.env.XDG_CACHE_HOME = 'tmp'
+      process.env.XDG_CONFIG_HOME = 'tmp'
     })
 
     it('sets config', () => {
