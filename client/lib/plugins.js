@@ -5,6 +5,8 @@ const path = require('path')
 const json = require('./json')
 const Promise = require('bluebird')
 const fs = Promise.promisifyAll(require('fs-extra'))
+const co = require('co')
+const cli = require('heroku-cli-util')
 
 function readRef (ref) {
   let name = ref
@@ -71,6 +73,13 @@ function parse (ref, pkg) {
   put(plugins)
 }
 
+let registry = process.env.HEROKU_NPM_REGISTRY || 'https://cli-npm.heroku.com'
+let npmConfig = {
+  registry,
+  progress: false,
+  loglevel: 'error'
+}
+
 function install (ref) {
   return new Promise((resolve, reject) => {
     const npmi = require('npmi')
@@ -82,9 +91,7 @@ function install (ref) {
       version,
       path: path.join(dirs.data, 'plugins'),
       forceInstall: true,
-      npmLoad: {
-        registry: process.env.HEROKU_NPM_REGISTRY || 'https://cli-npm.heroku.com'
-      }
+      npmLoad: npmConfig
     }, (err, packages) => {
       if (err) return reject(err)
       let pkg = packages.pop() // plugin is last installed package
@@ -100,9 +107,39 @@ function uninstall (name) {
   put(plugins)
 }
 
+function npmInfo (name) {
+  const npm = require('npm')
+
+  return new Promise((resolve, reject) => {
+    npm.load(npmConfig, err => {
+      if (err) return reject(err)
+      npm.commands.view([name], true, (err, data) => {
+        if (err) return reject(err)
+        resolve(data[Object.keys(data)[0]])
+      })
+    })
+  })
+}
+
+function * update () {
+  let plugins = get()
+  for (let plugin of plugins) {
+    let info = yield npmInfo(plugin.name)
+    let ref = readRef(plugin.ref || plugin.name)
+    let dist = ref.version || 'latest'
+    let latest = info['dist-tags'][dist] || info['dist-tags']['latest']
+    if (latest !== plugin.version) {
+      cli.action(`Updating ${plugin.ref || plugin.name}`, co(function * () {
+        yield install(plugin.ref || plugin.name)
+      }))
+    }
+  }
+}
+
 module.exports = {
   get,
   install,
   load,
-  uninstall
+  uninstall,
+  update: co.wrap(update)
 }
