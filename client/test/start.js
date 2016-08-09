@@ -12,4 +12,9 @@ describe('start', () => {
     return start(['heroku', 'help'])
     .then(() => cli.stdout.should.match(/^Usage: heroku/))
   })
+
+  it('shows the help for apps', () => {
+    return start(['heroku', 'help', 'apps'])
+    .then(() => cli.stdout.should.match(/^Usage: heroku/))
+  })
 })

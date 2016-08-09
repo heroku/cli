@@ -27,9 +27,10 @@
     "nock": "8.0.0",
     "nyc": "7.1.0",
     "should": "10.0.0",
+    "standard": "7.1.2",
     "time-require": "0.1.2"
   },
   "scripts": {
-    "test": "nyc mocha"
+    "test": "nyc mocha && standard"
   }
 }
