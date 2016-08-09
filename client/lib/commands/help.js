@@ -99,7 +99,6 @@ function renderFlags (flags) {
 function run (context) {
   if (context && context.args.topic) topic(context.args.topic)
   else all()
-  process.exit(0)
 }
 
 module.exports = {

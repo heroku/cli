@@ -21,6 +21,8 @@
   "devDependencies": {
     "chai": "3.5.0",
     "chai-as-promised": "5.3.0",
+    "hook-std": "0.2.0",
+    "intercept-stdout": "0.1.2",
     "mocha": "3.0.0",
     "nyc": "7.1.0",
     "should": "10.0.0",

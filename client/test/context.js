@@ -145,7 +145,7 @@ describe('context', () => {
     })
 
     describe('supportsColor', () => {
-      it('supports color', () => {
+      it('does not support color', () => {
         return new Context({}).parse()
         .should.eventually.have.property('supportsColor', true)
       })

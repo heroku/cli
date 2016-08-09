@@ -7,17 +7,19 @@ const json = require('./json')
 
 class Config {
   constructor () {
-    this._defaults = {
+    this._read()
+  }
+
+  get _defaults () {
+    return {
       skip_analytics: false,
       color: true,
       plugins: []
     }
-    this._path = path.join(dirs.config, 'config.json')
-    this._read()
   }
 
-  toString () {
-    return this._config.toString()
+  get _path () {
+    return path.join(dirs.config, 'config.json')
   }
 
   _write () {
