@@ -24,6 +24,7 @@
     "hook-std": "0.2.0",
     "intercept-stdout": "0.1.2",
     "mocha": "3.0.0",
+    "nock": "8.0.0",
     "nyc": "7.1.0",
     "should": "10.0.0",
     "time-require": "0.1.2"
