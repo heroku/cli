@@ -6,6 +6,9 @@ const cli = require('heroku-cli-util')
 function * run () {
   const Heroku = require('heroku-client')
 
+  if (process.env.HEROKU_API_KEY) {
+    cli.warn('HEROKU_API_KEY is set. Not using netrc credentials.')
+  }
   let token = cli.auth.token()
   if (!token) cli.fatal('not logged in', 1)
   let heroku = new Heroku({token})
