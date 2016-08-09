@@ -39,6 +39,7 @@ dependencies:
     - sudo apt-get install cowsay nsis jq
 test:
   override:
+    - cd client && npm install && npm test
     - ./bin/test -v -race -cover -coverprofile=coverage.out -ginkgo.v
     - make test -j $JOBZ
     - ./bin/lint
