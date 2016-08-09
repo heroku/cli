@@ -134,12 +134,12 @@ describe('context', () => {
       })
 
       it('sets debug level to 1', () => {
-        return new Context(command).parse('-d')
+        return new Context(command).parse('-D')
         .should.eventually.have.property('debug', 1)
       })
 
       it('sets debug level to 2', () => {
-        return new Context(command).parse('-dd')
+        return new Context(command).parse('-DD')
         .should.eventually.have.property('debug', 2)
       })
     })
