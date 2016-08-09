@@ -1,5 +1,7 @@
 ---
 machine:
+  node:
+    version: v6.3.0
   environment:
     CACHE_DIR: ~/deps
     WORKSPACE: ~/workspace/heroku
