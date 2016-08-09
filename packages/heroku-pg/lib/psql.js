@@ -5,7 +5,6 @@ const debug = require('debug')('psql')
 
 function * exec (db, query) {
   const execa = require('execa')
-  const os = require('os')
   const cli = require('heroku-cli-util')
 
   debug(query)
@@ -17,14 +16,8 @@ function * exec (db, query) {
     PGPORT: db.port,
     PGHOST: db.host
   }
-  let cmd = 'psql'
-  let args = ['-c', query]
-  if (os.platform() !== 'win32') {
-    args.unshift(cmd)
-    cmd = 'command'
-  }
   try {
-    let {stdout, stderr} = yield execa(cmd, args, {env})
+    let {stdout, stderr} = yield execa('psql', ['-c', query], {env})
     process.stderr.write(stderr)
     return stdout
   } catch (err) {
