@@ -1,10 +1,11 @@
 {
   "name": "heroku-cli",
-  "version": "6.0.0",
-  "bin": "./bin/heroku",
+  "version": "6.0.1",
+  "bin": {
+    "heroku": "./bin/heroku"
+  },
   "dependencies": {
     "async-class": "0.4.1",
-    "asyncawait": "1.0.6",
     "execa": "0.4.0",
     "fs-extra": "0.30.0",
     "heroku-apps": "2.1.15",
