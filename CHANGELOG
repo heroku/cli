@@ -1,3 +1,7 @@
+5.2.35  2016-08-10
+==================
+Updated heroku-apps
+
 5.2.34  2016-08-03
 ==================
 Added heroku-pg-extras, heroku-run-local to plugins to migrate from ruby
