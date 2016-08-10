@@ -1,0 +1,4 @@
+#!~/.local/share/heroku/cli/bin/heroku
+
+root=`dirname $0`/..
+$HOME/.local/share/heroku/cli/bin/heroku $@

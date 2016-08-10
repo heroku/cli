@@ -34,10 +34,14 @@ $(dist_dir)/node_modules/.bin/heroku:
 
 $(dist_dir)/$(OS)-$(ARCH)/heroku/lib/node_modules/.bin/heroku: $(dist_dir)/node_modules/.bin/heroku
 	@mkdir -p $(@D)
-	cp -r $(dist_dir)/node_modules $(@D)/node_modules
+	cp -r $(dist_dir)/node_modules $(dist_dir)/$(OS)-$(ARCH)/heroku/lib
 
-$(dist_dir)/heroku-$(OS)-$(ARCH)-$(version).tar.xz: $(dist_dir)/$(OS)-$(ARCH)/heroku/lib/node $(dist_dir)/$(OS)-$(ARCH)/heroku/lib/node_modules/.bin/heroku
+$(dist_dir)/heroku-$(OS)-$(ARCH)-$(version).tar.xz: $(dist_dir)/$(OS)-$(ARCH)/heroku/lib/node $(dist_dir)/$(OS)-$(ARCH)/heroku/lib/node_modules/.bin/heroku $(dist_dir)/$(OS)-$(ARCH)/heroku/bin/heroku
 	tar -C $(dist_dir)/$(OS)-$(ARCH) -c heroku | xz -2 > $@
+
+$(dist_dir)/$(OS)-$(ARCH)/heroku/bin/heroku:
+	@mkdir -p $(@D)
+	cp resources/heroku $@
 
 $(CACHE_DIR)/node-v$(NODE_VERSION)/%:
 	@mkdir -p $(@D)
