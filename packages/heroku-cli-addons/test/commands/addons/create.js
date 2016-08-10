@@ -29,7 +29,7 @@ describe('addons:create', () => {
 
     return cmd.run({
       app: 'myapp',
-      args: ['hpg:s0', '--rollback', '--follow', 'otherdb', '--foo'],
+      args: ['hpg:s-0', '--rollback', '--follow', 'otherdb', '--foo'],
       flags: {as: 'mydb'}
     })
       .then(() => expect(cli.stderr, 'to equal', 'Creating heroku-postgresql:standard-0 on myapp... $100/month\n'))
