@@ -69,11 +69,11 @@ Web URL:       https://myapp.herokuapp.com
       .then(() => expect(cli.stderr).to.equal(''))
       .then(() => expect(cli.stdout).to.equal(`addons=heroku-redis,papertrail
 collaborators=foo2@foo.com
-database-size=1000 B
-git-url=https://git.heroku.com/myapp
-web-url=https://myapp.herokuapp.com
-repo-size=1000 B
-slug-size=1000 B
+database_size=1000 B
+git_url=https://git.heroku.com/myapp
+web_url=https://myapp.herokuapp.com
+repo_size=1000 B
+slug_size=1000 B
 owner=foo@foo.com
 region=eu
 dynos={ web: 1 }

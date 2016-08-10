@@ -58,7 +58,7 @@ function * run (context, heroku) {
 
   function shell () {
     function print (k, v) {
-      cli.log(`${S(k).slugify()}=${v}`)
+      cli.log(`${S(k).underscore()}=${v}`)
     }
     print('addons', addons)
     print('collaborators', collaborators)
