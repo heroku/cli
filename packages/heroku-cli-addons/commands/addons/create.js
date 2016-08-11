@@ -64,7 +64,7 @@ const cmd = {
   args: [{name: 'service:plan'}],
   variableArgs: true,
   flags: [
-    {name: 'name', description: 'name for the add-on resource'},
+    {name: 'name', description: 'name for the add-on resource', hasValue: true},
     {name: 'as', description: 'name for the initial add-on attachment'},
     {name: 'confirm', description: 'overwrite existing config vars or existing add-on attachments'}
   ],
