@@ -40,9 +40,10 @@ function * run (context, heroku) {
     cli.styledJSON(release.v3)
   } else {
     let releaseChange = release.v3.description
-    let status = statusHelper(release.v3.status)
-    if (status.content !== undefined) {
-      releaseChange += ' (' + cli.color[status.color](status.content) + ')'
+    let status = statusHelper.description(release.v3)
+    let statusColor = statusHelper.color(release.v3.status)
+    if (status !== undefined) {
+      releaseChange += ' (' + cli.color[statusColor](status) + ')'
     }
 
     cli.styledHeader(`Release ${cli.color.cyan('v' + release.v3.version)}`)

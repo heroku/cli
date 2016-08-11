@@ -160,7 +160,7 @@ When:    ${d.toISOString()}
 Add-ons: addon1
          addon2
 By:      foo@foo.com
-Change:  something changed (release command executing)
+Change:  something changed (pending)
 When:    ${d.toISOString()}
 
 === v10 Config vars

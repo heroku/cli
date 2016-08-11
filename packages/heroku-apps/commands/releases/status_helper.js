@@ -1,25 +1,31 @@
 'use strict'
 
-module.exports = function (s) {
-  switch (s) {
-    case 'succeeded':
-    case null:
-      return {
-        color: 'green'
-      }
+function pendingDescription (release, runningRelease, runningSlug) {
+  if (runningRelease && runningRelease.id === release.id && runningSlug.process_types && runningSlug.process_types.release) {
+    return 'release command executing'
+  } else {
+    return 'pending'
+  }
+}
+
+module.exports.description = function (release, runningRelease, runningSlug) {
+  switch (release.status) {
     case 'pending':
-      return {
-        color: 'yellow',
-        content: 'release command executing'
-      }
+      return pendingDescription(release, runningRelease, runningSlug)
     case 'failed':
-      return {
-        color: 'red',
-        content: 'release command failed'
-      }
+      return 'release command failed'
     default:
-      return {
-        color: 'white'
-      }
+      return
+  }
+}
+
+module.exports.color = function (s) {
+  switch (s) {
+    case 'pending':
+      return 'yellow'
+    case 'failed':
+      return 'red'
+    default:
+      return 'white'
   }
 }

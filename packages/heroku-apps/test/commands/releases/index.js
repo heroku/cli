@@ -11,6 +11,22 @@ describe('releases', () => {
 
   const releases = [
     {
+      'created_at': '2015-11-18T01:36:38Z',
+      'description': 'third commit',
+      'status': 'pending',
+      'id': '86b20c9f-f5de-4876-aa36-d3dcb1d60f6a',
+      'slug': {
+        'id': '37994c83-39a3-4cbf-b318-8f9dc648f701'
+      },
+      'updated_at': '2015-11-18T01:36:38Z',
+      'user': {
+        'email': 'jeff@heroku.com',
+        'id': '5985f8c9-a63f-42a2-bec7-40b875bb986f'
+      },
+      'version': 41,
+      'current': false
+    },
+    {
       'created_at': '2015-11-18T01:37:41Z',
       'description': 'Set foo config vars',
       'status': 'succeeded',
@@ -98,13 +114,22 @@ describe('releases', () => {
     }
   ]
 
+  const slug = {
+    process_types: {
+      release: 'bundle exec rake db:migrate'
+    }
+  }
+
   it('shows releases', () => {
     process.stdout.columns = 80
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/releases')
       .reply(200, releases)
+      .get('/apps/myapp/slugs/37994c83-39a3-4cbf-b318-8f9dc648f701')
+      .reply(200, slug)
     return cmd.run({app: 'myapp', flags: {}})
       .then(() => expect(cli.stdout, 'to equal', `=== myapp Releases - Current: v37
+v41  third commit pending         jeff@heroku.com  2015/11/18 01:36:38 +0000
 v40  Set foo config vars          jeff@heroku.com  2015/11/18 01:37:41 +0000
 v39  … release command failed     jeff@heroku.com  2015/11/18 01:36:38 +0000
 v38  … release command executing  jeff@heroku.com  2015/11/18 01:36:38 +0000
@@ -114,12 +139,33 @@ v37  first commit                 jeff@heroku.com  2015/11/18 01:36:38 +0000
       .then(() => api.done())
   })
 
+  it('shows pending releases without release phase', () => {
+    process.stdout.columns = 80
+    let api = nock('https://api.heroku.com:443')
+      .get('/apps/myapp/releases')
+      .reply(200, releases)
+      .get('/apps/myapp/slugs/37994c83-39a3-4cbf-b318-8f9dc648f701')
+      .reply(200, {})
+    return cmd.run({app: 'myapp', flags: {}})
+      .then(() => expect(cli.stdout, 'to equal', `=== myapp Releases - Current: v37
+v41  third commit pending      jeff@heroku.com  2015/11/18 01:36:38 +0000
+v40  Set foo config vars       jeff@heroku.com  2015/11/18 01:37:41 +0000
+v39  … release command failed  jeff@heroku.com  2015/11/18 01:36:38 +0000
+v38  second commit pending     jeff@heroku.com  2015/11/18 01:36:38 +0000
+v37  first commit              jeff@heroku.com  2015/11/18 01:36:38 +0000
+`))
+      .then(() => expect(cli.stderr, 'to be empty'))
+      .then(() => api.done())
+  })
+
   it('shows releases as json', () => {
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/releases')
       .reply(200, releases)
+      .get('/apps/myapp/slugs/37994c83-39a3-4cbf-b318-8f9dc648f701')
+      .reply(200, slug)
     return cmd.run({app: 'myapp', flags: {json: true}})
-      .then(() => expect(JSON.parse(cli.stdout)[0], 'to satisfy', {version: 40}))
+      .then(() => expect(JSON.parse(cli.stdout)[0], 'to satisfy', {version: 41}))
       .then(() => expect(cli.stderr, 'to be empty'))
       .then(() => api.done())
   })
@@ -153,8 +199,11 @@ v40      Set foo config vars   jeff@heroku.com  2015/11/18 01:37:41 +0000  1    
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/releases')
       .reply(200, releases)
+      .get('/apps/myapp/slugs/37994c83-39a3-4cbf-b318-8f9dc648f701')
+      .reply(200, slug)
     return cmd.run({app: 'myapp', flags: {}})
       .then(() => expect(cli.stdout, 'to equal', `=== myapp Releases
+v41  third commit pending         jeff@heroku.com  2015/11/18 01:36:38 +0000
 v40  Set foo config vars          jeff@heroku.com  2015/11/18 01:37:41 +0000
 v39  … release command failed     jeff@heroku.com  2015/11/18 01:36:38 +0000
 v38  … release command executing  jeff@heroku.com  2015/11/18 01:36:38 +0000

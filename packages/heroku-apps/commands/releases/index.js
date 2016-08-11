@@ -11,11 +11,10 @@ function * run (context, heroku) {
   let descriptionWithStatus = function (d, r) {
     const width = () => process.stdout.columns > 80 ? process.stdout.columns : 80
     const trunc = (s, l) => truncate(s, {length: width() - (60 + l), omission: '…'})
-
-    let status = statusHelper(r.status)
+    let status = statusHelper.description(r, runningRelease, runningSlug)
     let sc = ''
-    if (status.content !== undefined) {
-      sc = cli.color[status.color](status.content)
+    if (status) {
+      sc = cli.color[statusHelper.color(r.status)](status)
     }
     return trunc(d, sc.length) + ' ' + sc
   }
@@ -32,8 +31,13 @@ function * run (context, heroku) {
 
   let header = `${context.app} Releases`
   let currentRelease = releases.filter((r) => r.current === true)[0]
-  if (currentRelease !== undefined) {
+  if (currentRelease) {
     header += ' - ' + cli.color['blue'](`Current: v${currentRelease.version}`)
+  }
+  let runningRelease = releases.filter((r) => r.status === 'pending').slice(-1)[0]
+  let runningSlug
+  if (runningRelease) {
+    runningSlug = yield heroku.get(`/apps/${context.app}/slugs/${runningRelease.slug.id}`)
   }
 
   if (context.flags.json) {
@@ -43,7 +47,7 @@ function * run (context, heroku) {
     cli.table(releases, {
       printHeader: false,
       columns: [
-        {key: 'version', format: (v, r) => cli.color[statusHelper(r.status).color]('v' + v)},
+        {key: 'version', format: (v, r) => cli.color[statusHelper.color(r.status)]('v' + v)},
         {key: 'description', format: descriptionWithStatus},
         {key: 'user', format: (u) => cli.color.magenta(u.email.replace(/@addons\.heroku\.com$/, ''))},
         {key: 'created_at', format: (t) => time.ago(new Date(t))},
@@ -58,7 +62,7 @@ function * run (context, heroku) {
     cli.table(releases, {
       printHeader: false,
       columns: [
-        {key: 'version', label: '', format: (v, r) => cli.color[statusHelper(r.status).color]('v' + v)},
+        {key: 'version', label: '', format: (v, r) => cli.color[statusHelper.color(r.status)]('v' + v)},
         {key: 'description', format: descriptionWithStatus},
         {key: 'user', format: (u) => cli.color.magenta(u.email)},
         {key: 'created_at', format: (t) => time.ago(new Date(t))}
