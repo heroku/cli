@@ -22,21 +22,12 @@ function parseConfig (args) {
   return config
 }
 
-function expandHPG (plan) {
-  if (!plan) throw new Error('Missing requested service or plan')
-  plan = plan.replace(/^hpg:/, 'heroku-postgresql:')
-  plan = plan.replace(/^heroku-postgresql:s-/, 'heroku-postgresql:standard-')
-  plan = plan.replace(/^heroku-postgresql:p-/, 'heroku-postgresql:premium-')
-  plan = plan.replace(/^heroku-postgresql:e-/, 'heroku-postgresql:enterprise-')
-  return plan
-}
-
 function * run (context, heroku) {
   const util = require('../../lib/util')
 
   let {app, flags, args} = context
   let {name, as, confirm} = flags
-  let plan = {name: expandHPG(args.shift())}
+  let plan = {name: args.shift()}
   let config = parseConfig(args)
 
   let addon
