@@ -7,13 +7,14 @@
 //   exports.commands = exports.commands.concat(commands)
 // }
 
-const plugins = require('./lib/plugins')
-const {topics, commands} = plugins.load()
-exports.topics = topics.concat([{
+// skip plugins for now since this will be used inside of v5
+// const plugins = require('./lib/plugins')
+// const {topics, commands} = plugins.load()
+exports.topics = [{
   name: 'plugins',
   description: 'manage CLI plugins'
-}])
-exports.commands = require('./lib/commands').concat(commands)
+}]
+exports.commands = require('./lib/commands')
 
 // requirePlugin('heroku-apps')
 // requirePlugin('heroku-git')
