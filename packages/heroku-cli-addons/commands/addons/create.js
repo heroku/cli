@@ -27,8 +27,8 @@ function * run (context, heroku) {
 
   let {app, flags, args} = context
   let {name, as, confirm} = flags
-  let plan = {name: args.shift()}
-  let config = parseConfig(args)
+  let plan = {name: args[0]}
+  let config = parseConfig(args.slice(1))
 
   let addon
   yield cli.action(`Creating ${plan.name} on ${cli.color.app(app)}`, co(function * () {
