@@ -41,8 +41,12 @@ function * run (context, heroku) {
     })
     cli.action.done(cli.color.green(util.formatPrice(addon.plan.price)))
   }))
-  let configVars = addon.config_vars.map(c => cli.color.configVar(c)).join(', ')
-  cli.log(`Created ${cli.color.addon(addon.name)} as ${configVars}`)
+  if (addon.config_vars.length) {
+    let configVars = addon.config_vars.map(c => cli.color.configVar(c)).join(', ')
+    cli.log(`Created ${cli.color.addon(addon.name)} as ${configVars}`)
+  } else {
+    cli.log(`Created ${cli.color.addon(addon.name)}`)
+  }
   if (addon.provision_message) cli.log(addon.provision_message)
   cli.log(`Use ${cli.color.cmd('heroku addons:docs ' + addon.addon_service.name)} to view documentation`)
 }
