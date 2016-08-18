@@ -3,13 +3,13 @@
 
 let cmd = require('../../../commands/access/remove')
 let stubDelete = require('../../stub/delete')
-let api
+let apiDelete
 
 describe('heroku access:remove', () => {
   context('with either a personal or org app', () => {
     beforeEach(() => {
       cli.mockConsole()
-      api = stubDelete.collaboratorsPersonalApp('myapp', 'raulb@heroku.com')
+      apiDelete = stubDelete.collaboratorsPersonalApp('myapp', 'raulb@heroku.com')
     })
     afterEach(() => nock.cleanAll())
 
@@ -18,7 +18,7 @@ describe('heroku access:remove', () => {
         .then(() => expect('').to.eq(cli.stdout))
         .then(() => expect(`Removing raulb@heroku.com access from the app myapp... done
 `).to.eq(cli.stderr))
-        .then(() => api.done())
+        .then(() => apiDelete.done())
     })
   })
 })

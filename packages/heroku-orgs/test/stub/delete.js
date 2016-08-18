@@ -14,7 +14,13 @@ function collaboratorsPersonalApp (app, email) {
     .delete(`/apps/${app}/collaborators/${email}`).reply(200, {})
 }
 
+function memberFromOrg () {
+  return nock('https://api.heroku.com:443', {})
+    .delete('/organizations/myorg/members/foo%40foo.com').reply(200)
+}
+
 module.exports = {
-  collaboratorsOrgApp: collaboratorsOrgApp,
-  collaboratorsPersonalApp: collaboratorsPersonalApp
+  collaboratorsOrgApp,
+  collaboratorsPersonalApp,
+  memberFromOrg
 }

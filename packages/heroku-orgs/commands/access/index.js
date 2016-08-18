@@ -5,17 +5,13 @@ let extend = require('util')._extend
 let _ = require('lodash')
 let Utils = require('../../lib/utils')
 let co = require('co')
-let orgFlags
 
-function orgHasGranularPermissions (orgFlags) {
-  return _.includes(orgFlags, 'org-access-controls') || _.includes(orgFlags, 'static-permissions')
-}
 function printJSON (collaborators) {
   cli.log(JSON.stringify(collaborators, null, 2))
 }
 
 function printAccess (app, collaborators) {
-  let showPermissions = Utils.isOrgApp(app.owner.email) && (orgHasGranularPermissions(orgFlags))
+  let showPermissions = Utils.isOrgApp(app.owner.email)
   collaborators = _.chain(collaborators)
     .sortBy(c => c.email || c.user.email)
     .reject(c => /herokumanager\.com$/.test(c.user.email))
@@ -43,36 +39,27 @@ function * run (context, heroku) {
 
   let app = yield heroku.get(`/apps/${appName}`)
   let isOrgApp = Utils.isOrgApp(app.owner.email)
-  const path = isOrgApp ? `/organizations/apps/${appName}/collaborators` : `/apps/${appName}/collaborators`
-  let collaborators = yield heroku.get(path)
+  let collaborators = yield heroku.get(`/apps/${appName}/collaborators`)
 
   if (isOrgApp) {
     let orgName = Utils.getOwner(app.owner.email)
-    let orgInfo = yield heroku.request({
-      method: 'GET',
-      path: `/v1/organization/${orgName}`,
-      headers: { Accept: 'application/vnd.heroku+json; version=2' }
-    })
 
-    orgFlags = orgInfo.flags
-    if (orgHasGranularPermissions(orgFlags)) {
-      try {
-        let admins = yield heroku.get(`/organizations/${orgName}/members`)
-        admins = _.filter(admins, { 'role': 'admin' })
+    try {
+      let admins = yield heroku.get(`/organizations/${orgName}/members`)
+      admins = _.filter(admins, { 'role': 'admin' })
 
-        let adminPermissions = yield heroku.get('/organizations/permissions')
+      let adminPermissions = yield heroku.get('/organizations/permissions')
 
-        admins = _.forEach(admins, function (admin) {
-          admin.user = { email: admin.email }
-          admin.permissions = adminPermissions
-          return admin
-        })
+      admins = _.forEach(admins, function (admin) {
+        admin.user = { email: admin.email }
+        admin.permissions = adminPermissions
+        return admin
+      })
 
-        collaborators = _.reject(collaborators, {role: 'admin'}) // Admins might have already permissions
-        collaborators = _.union(collaborators, admins)
-      } catch (err) {
-        if (err.statusCode !== 403) throw err
-      }
+      collaborators = _.reject(collaborators, {role: 'admin'}) // Admins might have already permissions
+      collaborators = _.union(collaborators, admins)
+    } catch (err) {
+      if (err.statusCode !== 403) throw err
     }
   }
 

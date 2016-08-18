@@ -10,8 +10,8 @@ describe('heroku access', () => {
     afterEach(() => nock.cleanAll())
 
     it('shows the app collaborators', () => {
-      let apiPersonalApp = stubGet.personalApp()
-      let apiAppCollaborators = stubGet.appCollaborators()
+      let apiGetPersonalApp = stubGet.personalApp()
+      let apiGetAppCollaborators = stubGet.appCollaborators()
 
       return cmd.run({app: 'myapp', flags: {}})
         .then(() => expect(
@@ -19,42 +19,20 @@ describe('heroku access', () => {
 raulb@heroku.com  owner
 `).to.eq(cli.stdout))
         .then(() => expect('').to.eq(cli.stderr))
-        .then(() => apiPersonalApp.done())
-        .then(() => apiAppCollaborators.done())
+        .then(() => apiGetPersonalApp.done())
+        .then(() => apiGetAppCollaborators.done())
     })
   })
 
-  context('with a role based access controls org', () => {
+  context('with organization/team', () => {
     beforeEach(() => cli.mockConsole())
     afterEach(() => nock.cleanAll())
 
     it('shows the app collaborators and hides the org collaborator record', () => {
-      let apiOrgApp = stubGet.orgApp()
-      let apiOrgAppCollaborators = stubGet.orgAppCollaborators()
-      let apiOrgFlags = stubGet.orgFlags('')
-
-      return cmd.run({app: 'myapp', flags: {}})
-        .then(() => expect(
-          `bob@heroku.com    collaborator
-raulb@heroku.com  admin
-`).to.eq(cli.stdout))
-        .then(() => expect('').to.eq(cli.stderr))
-        .then(() => apiOrgApp.done())
-        .then(() => apiOrgAppCollaborators.done())
-        .then(() => apiOrgFlags.done())
-    })
-  })
-
-  context('with a org with static permissions', () => {
-    beforeEach(() => cli.mockConsole())
-    afterEach(() => nock.cleanAll())
-
-    it('shows the app collaborators and hides the org collaborator record', () => {
-      let apiOrgApp = stubGet.orgApp()
-      let apiOrgMembers = stubGet.orgMembers()
-      let apiAppPermissions = stubGet.appPermissions()
-      let apiOrgAppCollaboratorsWithPermissions = stubGet.orgAppCollaboratorsWithPermissions()
-      let apiOrgFlags = stubGet.orgFlags('static-permissions')
+      let apiGetOrgApp = stubGet.orgApp()
+      let apiGetOrgMembers = stubGet.orgMembers()
+      let apiGetAppPermissions = stubGet.appPermissions()
+      let apiGetOrgAppCollaboratorsWithPermissions = stubGet.orgAppCollaboratorsWithPermissions()
 
       return cmd.run({app: 'myapp', flags: {}})
         .then(() => expect(
@@ -62,36 +40,10 @@ raulb@heroku.com  admin
 raulb@heroku.com  admin   deploy,manage,operate,view
 `).to.eq(cli.stdout))
         .then(() => expect('').to.eq(cli.stderr))
-        .then(() => apiOrgApp.done())
-        .then(() => apiOrgMembers.done())
-        .then(() => apiAppPermissions.done())
-        .then(() => apiOrgAppCollaboratorsWithPermissions.done())
-        .then(() => apiOrgFlags.done())
-    })
-  })
-
-  context('with a org with dynamic permissions', () => {
-    beforeEach(() => cli.mockConsole())
-    afterEach(() => nock.cleanAll())
-
-    it('shows the app collaborators and hides the org collaborator record', () => {
-      let apiOrgApp = stubGet.orgApp()
-      let apiOrgMembers = stubGet.orgMembers()
-      let apiAppPermissions = stubGet.appPermissions()
-      let apiOrgAppCollaboratorsWithPermissions = stubGet.orgAppCollaboratorsWithPermissions()
-      let apiOrgFlags = stubGet.orgFlags('org-access-controls')
-
-      return cmd.run({app: 'myapp', flags: {}})
-        .then(() => expect(
-          `bob@heroku.com    member  deploy,view
-raulb@heroku.com  admin   deploy,manage,operate,view
-`).to.eq(cli.stdout))
-        .then(() => expect('').to.eq(cli.stderr))
-        .then(() => apiOrgApp.done())
-        .then(() => apiOrgMembers.done())
-        .then(() => apiAppPermissions.done())
-        .then(() => apiOrgAppCollaboratorsWithPermissions.done())
-        .then(() => apiOrgFlags.done())
+        .then(() => apiGetOrgApp.done())
+        .then(() => apiGetOrgMembers.done())
+        .then(() => apiGetAppPermissions.done())
+        .then(() => apiGetOrgAppCollaboratorsWithPermissions.done())
     })
   })
 })

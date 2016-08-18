@@ -13,19 +13,14 @@ function * run (context, heroku) {
   let appInfo = yield heroku.get(`/apps/${appName}`)
   let output = `Adding ${cli.color.cyan(context.args.email)} access to the app ${cli.color.magenta(appName)}`
   let request
-  let orgFlags = []
+  let orgFeatures = []
 
   if (Utils.isOrgApp(appInfo.owner.email)) {
     let orgName = Utils.getOwner(appInfo.owner.email)
-    let orgInfo = yield heroku.request({
-      method: 'GET',
-      path: `/v1/organization/${orgName}`,
-      headers: { Accept: 'application/vnd.heroku+json; version=2' }
-    })
-    orgFlags = orgInfo.flags
+    orgFeatures = yield heroku.get(`/organizations/${orgName}/features`)
   }
 
-  if (_.includes(orgFlags, 'org-access-controls')) {
+  if (_.includes(_.map(orgFeatures, 'name'), 'org-access-controls')) {
     if (!permissions) error.exit(1, 'Missing argument: permissions')
 
     if (context.flags.privileges) cli.warn('DEPRECATION WARNING: use `--permissions` not `--privileges`')

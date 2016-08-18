@@ -2,6 +2,13 @@
 
 const nock = require('nock')
 
+function appCollaboratorWithPermissions (args) {
+  return nock('https://api.heroku.com:443')
+  .patch(`/organizations/apps/myapp/collaborators/${args.email}`, {
+    permissions: args.permissions
+  }).reply(200)
+}
+
 function orgAppTransfer () {
   return nock('https://api.heroku.com:443')
     .patch('/organizations/apps/myapp', { owner: 'team' })
@@ -15,6 +22,7 @@ function personalToPersonal () {
 }
 
 module.exports = {
-  orgAppTransfer: orgAppTransfer,
-  personalToPersonal: personalToPersonal
+  appCollaboratorWithPermissions,
+  orgAppTransfer,
+  personalToPersonal
 }
