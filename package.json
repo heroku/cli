@@ -8,7 +8,7 @@
     "heroku-fork": "4.1.11",
     "heroku-git": "2.5.8",
     "heroku-local": "5.1.5",
-    "heroku-orgs": "1.3.1",
+    "heroku-orgs": "1.3.2",
     "heroku-pg": "1.0.6",
     "heroku-pipelines": "1.1.7",
     "heroku-redis": "1.2.7",
