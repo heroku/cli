@@ -17,7 +17,7 @@ function * exec (db, query) {
     PGHOST: db.host
   }
   try {
-    let {stdout, stderr} = yield execa('psql', ['-c', query], {env})
+    let {stdout, stderr} = yield execa.shell(`psql -c "${query}"`, {env})
     process.stderr.write(stderr)
     return stdout
   } catch (err) {
