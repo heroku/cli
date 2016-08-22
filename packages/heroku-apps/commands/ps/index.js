@@ -20,6 +20,7 @@ function printExtended (dynos) {
       {key: 'state', label: 'State', format: (state, row) => `${state} ${time.ago(new Date(row.updated_at))}`},
       {key: 'extended.region', label: 'Region'},
       {key: 'extended.instance', label: 'Instance'},
+      {key: 'extended.ip', label: 'IP'},
       {key: 'extended.port', label: 'Port'},
       {key: 'extended.az', label: 'AZ'},
       {key: 'release.version', label: 'Release'},

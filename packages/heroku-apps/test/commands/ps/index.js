@@ -107,18 +107,18 @@ run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
       .get('/apps/myapp/dynos?extended=true')
       .reply(200, [
         {id: 100, command: 'npm start', size: 'Free', name: 'web.1', type: 'web', updated_at: hourAgo, state: 'up', extended: {
-          region: 'us', instance: 'instance', port: 8000, az: 'us-east', route: 'da route'
+          region: 'us', instance: 'instance', ip: '10.0.0.1', port: 8000, az: 'us-east', route: 'da route'
         }},
         {id: 101, command: 'bash', size: 'Free', name: 'run.1', type: 'run', updated_at: hourAgo, state: 'up', extended: {
-          region: 'us', instance: 'instance', port: 8000, az: 'us-east', route: 'da route'
+          region: 'us', instance: 'instance', ip: '10.0.0.2', port: 8000, az: 'us-east', route: 'da route'
         }}
       ])
 
     return cmd.run({app: 'myapp', args: [], flags: {extended: true}})
-      .then(() => expect(cli.stdout, 'to equal', `ID   Process  State                                    Region  Instance  Port  AZ       Release  Command    Route     Size
-───  ───────  ───────────────────────────────────────  ──────  ────────  ────  ───────  ───────  ─────────  ────────  ────
-101  run.1    up ${hourAgoStr} (~ 1h ago)  us      instance  8000  us-east           bash       da route  Free
-100  web.1    up ${hourAgoStr} (~ 1h ago)  us      instance  8000  us-east           npm start  da route  Free
+      .then(() => expect(cli.stdout, 'to equal', `ID   Process  State                                    Region  Instance  IP        Port  AZ       Release  Command    Route     Size
+───  ───────  ───────────────────────────────────────  ──────  ────────  ────────  ────  ───────  ───────  ─────────  ────────  ────
+101  run.1    up ${hourAgoStr} (~ 1h ago)  us      instance  10.0.0.2  8000  us-east           bash       da route  Free
+100  web.1    up ${hourAgoStr} (~ 1h ago)  us      instance  10.0.0.1  8000  us-east           npm start  da route  Free
 `))
       .then(() => expect(cli.stderr, 'to be empty'))
       .then(() => api.done())
