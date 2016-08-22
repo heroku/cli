@@ -21,7 +21,7 @@ function * exec (db, query) {
     process.stderr.write(stderr)
     return stdout
   } catch (err) {
-    if (err.code !== 127) throw err
+    if (err.code !== 'ENOENT') throw err
     cli.error(`The local psql command could not be located.
 For help installing psql, see https://devcenter.heroku.com/articles/heroku-postgresql#local-setup`)
     process.exit(1)
