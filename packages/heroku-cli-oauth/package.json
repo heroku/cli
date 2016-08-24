@@ -8,16 +8,16 @@
   },
   "dependencies": {
     "co": "4.6.0",
-    "heroku-cli-util": "5.10.11",
-    "lodash": "4.12.0"
+    "heroku-cli-util": "6.0.15",
+    "lodash": "4.15.0"
   },
   "devDependencies": {
-    "mocha": "2.4.5",
-    "mocha-junit-reporter": "1.11.1",
+    "mocha": "3.0.2",
+    "mocha-junit-reporter": "1.12.0",
     "nock": "8.0.0",
-    "nyc": "6.4.4",
-    "standard": "7.1.0",
-    "unexpected": "10.13.2"
+    "nyc": "8.1.0",
+    "standard": "8.0.0",
+    "unexpected": "10.16.0"
   },
   "homepage": "https://github.com/heroku/heroku-cli-oauth",
   "keywords": [
