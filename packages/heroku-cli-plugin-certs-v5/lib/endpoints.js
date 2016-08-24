@@ -84,7 +84,16 @@ function * hasAddon (app, heroku) {
   })
 }
 
+function * hasSpace (app, heroku) {
+  return yield heroku.request({
+    path: `/apps/${app}`
+  }).then(function (data) {
+    return !!data.space
+  })
+}
+
 module.exports = {
+  hasSpace,
   hasAddon,
   meta,
   all,

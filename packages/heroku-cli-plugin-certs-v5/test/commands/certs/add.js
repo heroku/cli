@@ -70,6 +70,10 @@ ${certificateDetails}
 
   it('# posts to ssl doctor', function () {
     nock('https://api.heroku.com')
+      .get('/apps/example')
+      .reply(200, { 'space': null })
+
+    nock('https://api.heroku.com')
       .get('/apps/example/domains')
       .reply(200, [])
 
@@ -117,6 +121,10 @@ ${certificateDetails}
 
   it('# propegates ssl doctor errors', function () {
     nock('https://api.heroku.com')
+      .get('/apps/example')
+      .reply(200, { 'space': null })
+
+    nock('https://api.heroku.com')
       .get('/apps/example/domains')
       .reply(200, [])
 
@@ -158,6 +166,10 @@ ${certificateDetails}
 
   it('# bypasses ssl doctor', function () {
     nock('https://api.heroku.com')
+      .get('/apps/example')
+      .reply(200, { 'space': null })
+
+    nock('https://api.heroku.com')
       .get('/apps/example/domains')
       .reply(200, [])
 
@@ -195,6 +207,10 @@ ${certificateDetails}
 
   it('# displays warnings', function () {
     nock('https://api.heroku.com')
+      .get('/apps/example')
+      .reply(200, { 'space': null })
+
+    nock('https://api.heroku.com')
       .get('/apps/example/domains')
       .reply(200, [])
 
@@ -226,6 +242,10 @@ ${certificateDetails}
   })
 
   it('# automatically creates an SNI endpoint if no SSL addon', function () {
+    nock('https://api.heroku.com')
+      .get('/apps/example')
+      .reply(200, { 'space': null })
+
     nock('https://api.heroku.com')
       .get('/apps/example/addons/ssl%3Aendpoint')
       .reply(404, {
@@ -261,8 +281,54 @@ ${certificateDetails}
     })
   })
 
+  it('# automatically creates an SSL endpoint if in dogwood', function () {
+    nock('https://api.heroku.com')
+      .get('/apps/example')
+      .reply(200, {
+        'space': {'name': 'spacely-space-1234'}
+      })
+
+    nock('https://api.heroku.com')
+      .get('/apps/example/addons/ssl%3Aendpoint')
+      .reply(404, {
+        'id': 'not_found',
+        'resource': 'addon'
+      })
+
+    nock('https://api.heroku.com')
+      .get('/apps/example/domains')
+      .reply(200, [])
+
+    fs.readFile
+      .withArgs('pem_file', sinon.match.func)
+      .callsArgWithAsync(1, null, 'pem content')
+    fs.readFile
+      .withArgs('key_file', sinon.match.func)
+      .callsArgWithAsync(1, null, 'key content')
+
+    let mock = nock('https://api.heroku.com')
+      .post('/apps/example/ssl-endpoints', {
+        certificate_chain: 'pem content', private_key: 'key content'
+      })
+      .reply(200, endpoint)
+
+    return certs.run({app: 'example', args: {CRT: 'pem_file', KEY: 'key_file'}, flags: {bypass: true}}).then(function () {
+      mock.done()
+      expect(cli.stderr).to.equal('Adding SSL certificate to example... done\n')
+      expect(cli.stdout).to.equal(
+        `example now served by tokyo-1050.herokussl.com
+Certificate details:
+${certificateDetails}
+`)
+    })
+  })
+
   describe('stable cnames', function () {
     beforeEach(function () {
+      nock('https://api.heroku.com')
+        .get('/apps/example')
+        .reply(200, { 'space': null })
+
       nock('https://api.heroku.com')
         .get('/apps/example/addons/ssl%3Aendpoint')
         .reply(404, {
@@ -782,25 +848,24 @@ SSL certificate is self signed.
   })
 
   it('# errors out if there is an SSL addon and no flags set', function () {
+    nock('https://api.heroku.com')
+      .get('/apps/example')
+      .reply(200, { 'space': null })
+
     let mockAddons = nock('https://api.heroku.com')
       .get('/apps/example/addons/ssl%3Aendpoint')
       .reply(200, {})
 
     return assertExit(1, certs.run({app: 'example', args: {CRT: 'pem_file', KEY: 'key_file'}, flags: {bypass: true}})).then(function () {
       mockAddons.done()
-      expect(cli.stderr).to.equal(" ▸    Must pass either --type with either 'endpoint' or 'sni'\n")
+      expect(cli.stderr).to.equal(" ▸    Must pass --type with either 'endpoint' or 'sni'\n")
       expect(cli.stdout).to.equal('')
     })
   })
 
   it('# errors out if type is not known', function () {
-    let mockSsl = nock('https://api.heroku.com')
-      .get('/apps/example/addons/ssl%3Aendpoint')
-      .reply(200, {})
-
     return assertExit(1, certs.run({app: 'example', args: {CRT: 'pem_file', KEY: 'key_file'}, flags: {bypass: true, type: 'foo'}})).then(function () {
-      mockSsl.done()
-      expect(cli.stderr).to.equal(" ▸    Must pass either --type with either 'endpoint' or 'sni'\n")
+      expect(cli.stderr).to.equal(" ▸    Must pass --type with either 'endpoint' or 'sni'\n")
       expect(cli.stdout).to.equal('')
     })
   })
