@@ -445,6 +445,7 @@ func (p *Plugins) MigrateRubyPlugins() {
 		"heroku-repo":      "heroku-repo",
 		"heroku-run-local": "heroku-run-localjs",
 		"heroku-vim":       "heroku-vim",
+		"heroku-deploy":    "heroku-cli-deploy",
 	}
 	for _, ruby := range RubyPlugins() {
 		plugin := pluginMap[ruby]
