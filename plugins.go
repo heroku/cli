@@ -440,6 +440,7 @@ func (p *Plugins) MigrateRubyPlugins() {
 		"heroku-accounts":  "heroku-accounts",
 		"heroku-buildkits": "heroku-buildkits",
 		"heroku-config":    "heroku-config",
+		"heroku-deploy":    "heroku-cli-deploy",
 		"heroku-oauth":     "heroku-cli-oauth",
 		"heroku-pg-extras": "heroku-pg-extras",
 		"heroku-repo":      "heroku-repo",
