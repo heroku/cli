@@ -8,6 +8,7 @@
     "async-class": "0.4.1",
     "fs-extra": "0.30.0",
     "heroku-cli-util": "github:heroku/heroku-cli-util#auth",
+    "lodash.flatten": "4.4.0",
     "lodash.max": "4.0.1",
     "lodash.maxby": "4.6.0",
     "lodash.zip": "4.2.0",
