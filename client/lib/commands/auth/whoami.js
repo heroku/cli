@@ -10,7 +10,7 @@ function * run () {
     cli.warn('HEROKU_API_KEY is set. Not using netrc credentials.')
   }
   let token = cli.auth.token()
-  if (!token) cli.fatal('not logged in', 1)
+  if (!token) cli.exit(1, 'not logged in')
   let heroku = new Heroku({token})
   let account = yield heroku.get('/account')
   cli.log(account.email)

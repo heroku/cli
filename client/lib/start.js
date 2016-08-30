@@ -15,7 +15,7 @@ function start (argv) {
 
   let getCommand = cmd => commands.find(c => c.topic === cmd[0] && c.command === cmd[1])
   let command = getCommand(cmd)
-  if (!command) cli.fatal('command not found', 127)
+  if (!command) cli.exit(127, 'command not found')
 
   let context = new Context(command)
   return context.parse(...argv.slice(2))
