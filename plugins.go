@@ -405,7 +405,7 @@ func (p *Plugins) RefreshPlugins() {
 		}
 		action(fmt.Sprintf("Parsing %s", plugin.Name), "done", func() {
 			_, err := p.ParsePlugin(plugin.Name)
-			must(err)
+			WarnIfError(err)
 		})
 	}
 }
