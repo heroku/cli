@@ -40,7 +40,7 @@ function topic (cmd) {
     let usage = `heroku ${cmd}` + (command.args || []).map(renderArg).join('')
     cli.log(`Usage: ${cli.color.cmd(usage)}\n`)
     if (command.description) cli.log(`${command.description.trim()}\n`)
-    if (command.flags) cli.log(`${renderFlags(command.flags)}\n`)
+    if (command.flags && command.flags.length) cli.log(`${renderFlags(command.flags)}\n`)
     if (command.help) cli.log(`${command.help.trim()}\n`)
   }
 

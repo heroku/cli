@@ -14,7 +14,7 @@ describe('start', () => {
   })
 
   it('shows the help for apps', () => {
-    return start(['heroku', 'help', 'apps'])
+    return start(['heroku', 'help', 'plugins'])
     .then(() => cli.stdout.should.match(/^Usage: heroku/))
   })
 })
