@@ -1,29 +1,70 @@
 #!/usr/bin/env node
 
 const fs = require('fs')
-
-function sh (cmd) {
+const cd = process.chdir
+function sh (cmd, opts = {}) {
   const {execSync} = require('child_process')
-  execSync(cmd, {stdio: 'inherit'})
+  return execSync(cmd, Object.assign({stdio: 'inherit'}, opts))
 }
 
-sh('mkdir -p dist/darwin-x64')
-process.chdir('dist/darwin-x64')
+const sha256 = file => {
+  return sh(`shasum -a 256 ${file}`, {stdio: [0, 'pipe', 2], encoding: 'utf8'}).trim().split(' ')[0]
+}
 
-const nodeVersion = '6.5.0'
-const nodeBase = `node-v${nodeVersion}-darwin-x64`
-const nodeBin = `node-v${nodeVersion}`
-if (!fs.existsSync(nodeBin)) {
+const sha = sh('git rev-parse --short HEAD', {stdio: [0, 'pipe', 2], encoding: 'utf8'}).trim()
+const version = `${require('../package.json').version}-${sha}`
+const channel = 'dev'
+
+sh(`rm -rf dist/${channel}`)
+sh(`mkdir -p dist/${channel}/${version}`)
+cd(`dist/${channel}/${version}`)
+
+sh('mkdir -p heroku')
+cd('heroku')
+sh('mkdir -p node_modules')
+sh('npm i ../../../..')
+cd('..')
+
+const targets = [
+  {os: 'darwin', arch: 'x64'}
+]
+
+let tarball = t => `heroku-v${version}-${t.os}-${t.arch}.tar.gz`
+
+function build ({os, arch}) {
+  const nodeVersion = '6.5.0'
+  const nodeBin = `node-v${nodeVersion}`
+  const nodeBase = `node-v${nodeVersion}-${os}-${arch}`
+
+  console.log(`Building ${tarball({os, arch})}`)
+  cd('heroku')
   sh(`curl -f https://nodejs.org/dist/v6.5.0/${nodeBase}.tar.gz | tar xz`)
   sh(`mv ${nodeBase}/bin/node ${nodeBin}`)
+  sh(`rm -rf ${nodeBase}`)
+
+  fs.writeFileSync('heroku', `#!/bin/bash
+  CWD=$(dirname $0)
+  $CWD/${nodeBin} $CWD/node_modules/.bin/heroku $@
+  `, {mode: 0o777})
+  cd('..')
+  sh(`tar czf ${tarball({os, arch})} heroku`)
 }
 
-sh('rm -rf node_modules')
-sh('mkdir -p node_modules')
+targets.forEach(t => build(t))
 
-sh('npm i ../..')
+sh('rm -rf heroku')
 
-fs.writeFileSync('heroku', `#!/bin/bash
-CWD=$(dirname $0)
-$CWD/${nodeBin} $CWD/node_modules/.bin/heroku $@
-`, {mode: 0o777})
+let manifest = {
+  version,
+  channel,
+  builds: targets.reduce((builds, t) => {
+    builds[`${t.os}-${t.arch}`] = {
+      url: `https://cli-assets.heroku.com/${channel}/${version}/${tarball(t)}`,
+      sha256: sha256(tarball(t))
+    }
+    return builds
+  }, {})
+}
+cd('..')
+fs.writeFileSync('manifest.json', JSON.stringify(manifest, null, 2))
+sh(`aws s3 cp --recursive . s3://heroku-cli-assets/${channel}`)
