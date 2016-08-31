@@ -6,6 +6,7 @@ let cli = require('heroku-cli-util')
 function * run (context, heroku) {
   yield cli.action(`Removing webhook ${context.args.id} from ${cli.color.app(context.app)}`, {}, heroku.request({
     path: `/apps/${context.app}/webhooks/${context.args.id}`,
+    headers: {Accept: 'application/vnd.heroku+json; version=3.webhooks'},
     method: 'DELETE'
   }))
 }

@@ -6,6 +6,7 @@ let cli = require('heroku-cli-util')
 function * run (context, heroku) {
   yield cli.action(`Adding webhook to ${cli.color.app(context.app)}`, {}, heroku.request({
     path: `/apps/${context.app}/webhooks`,
+    headers: {Accept: 'application/vnd.heroku+json; version=3.webhooks'},
     method: 'POST',
     body: {
       include: context.flags.include.split(',').map((s) => s.trim()),

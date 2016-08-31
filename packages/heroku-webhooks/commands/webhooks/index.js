@@ -6,6 +6,7 @@ let cli = require('heroku-cli-util')
 function * run (context, heroku) {
   let webhooks = yield heroku.request({
     path: `/apps/${context.app}/webhooks`,
+    headers: {Accept: 'application/vnd.heroku+json; version=3.webhooks'},
     method: 'GET'
   })
   if (webhooks.length === 0) {
