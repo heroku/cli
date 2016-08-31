@@ -7,14 +7,13 @@
 //   exports.commands = exports.commands.concat(commands)
 // }
 
-// skip plugins for now since this will be used inside of v5
-// const plugins = require('./lib/plugins')
-// const {topics, commands} = plugins.load()
-exports.topics = [{
+const plugins = require('./lib/plugins')
+let {topics, commands} = plugins.load()
+topics = topics.concat([{
   name: 'plugins',
   description: 'manage CLI plugins'
-}]
-exports.commands = require('./lib/commands')
+}])
+commands = commands.concat(require('./lib/commands'))
 
 // requirePlugin('heroku-apps')
 // requirePlugin('heroku-git')
@@ -26,11 +25,14 @@ function compare (prop) {
     return 0
   }
 }
-exports.topics.sort(compare('name'))
-exports.commands.sort((a, b) => {
+topics.sort(compare('name'))
+commands.sort((a, b) => {
   if (a.topic < b.topic) return -1
   if (a.topic > b.topic) return 1
   if (a.command < b.command) return -1
   if (a.command > b.command) return 1
   return 0
 })
+
+exports.topics = topics
+exports.commands = commands

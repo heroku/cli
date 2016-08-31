@@ -16,6 +16,7 @@ function commandsInDir (dir) {
     .map(f => commandsInDir(f))))
 
   return flatten(commands)
+  .filter(c => Object.keys(c).length)
 }
 
 module.exports = commandsInDir(__dirname)
