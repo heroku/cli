@@ -67,4 +67,4 @@ let manifest = {
 }
 cd('..')
 fs.writeFileSync('manifest.json', JSON.stringify(manifest, null, 2))
-sh(`aws s3 cp --recursive . s3://heroku-cli-assets/${channel}`)
+sh(`aws s3 cp --cache-control max-age=0 --recursive . s3://heroku-cli-assets/${channel}`)
