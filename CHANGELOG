@@ -1,3 +1,10 @@
+5.2.40  2016-08-31
+==================
+Updated heroku-orgs
+Updated heroku-pg
+Updated heroku-spaces
+Added heroku-cli-deploy to plugins
+
 5.2.39  2016-08-12
 ==================
 Updated heroku-cli-addons
