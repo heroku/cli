@@ -98,42 +98,48 @@ fixtures.addons = {
     id: '8895ea98-4c7b-11e5-9a16-2cf0ee2c94de',
     name: 'www-db',
     addon_service: fixtures.services['heroku-postgresql'],
-    plan: fixtures.plans['heroku-postgresql:hobby-dev']
+    plan: fixtures.plans['heroku-postgresql:hobby-dev'],
+    state: 'provisioned'
   },
   'www-redis': {
     app: fixtures.apps.www,
     id: '8a836ecc-4c88-11e5-ba7e-2cf0ee2c94de',
     name: 'www-redis',
     addon_service: fixtures.services['heroku-redis'],
-    plan: fixtures.plans['heroku-redis:premium-2']
+    plan: fixtures.plans['heroku-redis:premium-2'],
+    state: 'provisioning'
   },
   'api-redis': {
     app: fixtures.apps.api,
     id: 'fd1d2d74-4c88-11e5-8b63-2cf0ee2c94de',
     name: 'api-redis',
     addon_service: fixtures.services['heroku-redis'],
-    plan: fixtures.plans['heroku-redis:premium-2']
+    plan: fixtures.plans['heroku-redis:premium-2'],
+    state: 'provisioned'
   },
   'dwh-test-db': {
     app: fixtures.apps.dwh,
     id: '87f63372-60f8-11e5-bd19-2cf0ee2c94de',
     name: 'dwh-test-db',
     addon_service: fixtures.services['heroku-postgresql'],
-    plan: fixtures.plans['heroku-postgresql:hobby-dev']
+    plan: fixtures.plans['heroku-postgresql:hobby-dev'],
+    state: 'provisioned'
   },
   'dwh-db': {
     app: fixtures.apps.dwh,
     id: 'e00e794c-60ef-11e5-a8c7-2cf0ee2c94de',
     name: 'dwh-db',
     addon_service: fixtures.services['heroku-postgresql'],
-    plan: fixtures.plans['heroku-postgresql:standard-2']
+    plan: fixtures.plans['heroku-postgresql:standard-2'],
+    state: 'provisioned'
   },
   'dwh-db-2': {
     app: fixtures.apps.dwh,
     id: '10b42dda-60fa-11e5-8567-2cf0ee2c94de',
     name: 'dwh-db-2',
     addon_service: fixtures.services['heroku-postgresql'],
-    plan: fixtures.plans['heroku-postgresql:standard-2']
+    plan: fixtures.plans['heroku-postgresql:standard-2'],
+    state: 'provisioned'
   }
 }
 

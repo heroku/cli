@@ -14,6 +14,7 @@ describe('addons:create', () => {
     app: {name: 'myapp', id: 101},
     config_vars: ['DATABASE_URL'],
     plan: {price: {cents: 10000, unit: 'month'}},
+    state: 'provisioned',
     provision_message: 'provision message'
   }
 
