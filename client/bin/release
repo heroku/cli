@@ -1,0 +1,29 @@
+#!/usr/bin/env node
+
+const fs = require('fs')
+
+function sh (cmd) {
+  const {execSync} = require('child_process')
+  execSync(cmd, {stdio: 'inherit'})
+}
+
+sh('mkdir -p dist/darwin-x64')
+process.chdir('dist/darwin-x64')
+
+const nodeVersion = '6.5.0'
+const nodeBase = `node-v${nodeVersion}-darwin-x64`
+const nodeBin = `node-v${nodeVersion}`
+if (!fs.existsSync(nodeBin)) {
+  sh(`curl -f https://nodejs.org/dist/v6.5.0/${nodeBase}.tar.gz | tar xz`)
+  sh(`mv ${nodeBase}/bin/node ${nodeBin}`)
+}
+
+sh('rm -rf node_modules')
+sh('mkdir -p node_modules')
+
+sh('npm i ../..')
+
+fs.writeFileSync('heroku', `#!/bin/bash
+CWD=$(dirname $0)
+$CWD/${nodeBin} $CWD/node_modules/.bin/heroku $@
+`, {mode: 0o777})
