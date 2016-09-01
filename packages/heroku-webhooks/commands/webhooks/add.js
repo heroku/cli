@@ -12,7 +12,8 @@ function * run (context, heroku) {
       include: context.flags.include.split(',').map((s) => s.trim()),
       level: context.flags.level,
       secret: context.flags.secret,
-      url: context.flags.url
+      url: context.flags.url,
+      authorization: context.flags.authorization
     }
   }))
 }
@@ -23,7 +24,8 @@ module.exports = {
   flags: [
     {name: 'include', char: 'i', description: 'comma delimited webhook types', hasValue: true, required: true},
     {name: 'level', char: 'l', description: 'webhook notification level', hasValue: true, required: true},
-    {name: 'secret', char: 's', description: 'comma delimited hook types', hasValue: true, required: true},
+    {name: 'secret', char: 's', description: 'comma delimited hook types', hasValue: true},
+    {name: 'authorization', char: 't', description: 'authoriation header', hasValue: true},
     {name: 'url', char: 'u', description: 'url to send webhook to', hasValue: true, required: true}
   ],
   description: 'add a webhook to an app',
