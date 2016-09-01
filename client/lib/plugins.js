@@ -79,7 +79,8 @@ let registry = process.env.HEROKU_NPM_REGISTRY || 'https://cli-npm.heroku.com'
 let npmConfig = {
   registry,
   progress: false,
-  loglevel: 'error'
+  loglevel: 'error',
+  depth: 0
 }
 
 function install (ref) {
