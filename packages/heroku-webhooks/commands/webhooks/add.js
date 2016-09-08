@@ -3,7 +3,27 @@
 let co = require('co')
 let cli = require('heroku-cli-util')
 
+let secret = null
+
+function secretMiddleware (middleware) {
+  return function (response, cb) {
+    secret = response.headers['heroku-webhook-secret']
+    if (middleware) {
+      middleware(response, cb)
+    } else {
+      cb()
+    }
+  }
+}
+
+function addSecretMiddleware (heroku) {
+  let middleware = heroku.options.middleware
+  heroku.options.middleware = secretMiddleware(middleware)
+}
+
 function * run (context, heroku) {
+  addSecretMiddleware(heroku)
+
   yield cli.action(`Adding webhook to ${cli.color.app(context.app)}`, {}, heroku.request({
     path: `/apps/${context.app}/webhooks`,
     headers: {Accept: 'application/vnd.heroku+json; version=3.webhooks'},
@@ -16,6 +36,11 @@ function * run (context, heroku) {
       authorization: context.flags.authorization
     }
   }))
+
+  if (secret) {
+    cli.styledHeader('Webhooks Signing Secret')
+    cli.log(secret)
+  }
 }
 
 module.exports = {
