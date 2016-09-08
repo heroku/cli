@@ -49,14 +49,14 @@ module.exports = {
   flags: [
     {name: 'include', char: 'i', description: 'comma delimited webhook types', hasValue: true, required: true},
     {name: 'level', char: 'l', description: 'webhook notification level', hasValue: true, required: true},
-    {name: 'secret', char: 's', description: 'comma delimited hook types', hasValue: true},
-    {name: 'authorization', char: 't', description: 'authoriation header', hasValue: true},
+    {name: 'secret', char: 's', description: 'secret to sign webhooks with', hasValue: true},
+    {name: 'authorization', char: 't', description: 'authoriation header to send with webhooks', hasValue: true},
     {name: 'url', char: 'u', description: 'url to send webhook to', hasValue: true, required: true}
   ],
   description: 'add a webhook to an app',
   help: `Example:
 
- $ heroku webhooks:add -i dyno -l notify -s 09928c40bf1b191b645174a19f7053d16a180da37332e719ef0998f4c0a2 -u https://example.com/hooks
+ $ heroku webhooks:add -i api:dyno -l notify -u https://example.com/hooks
 `,
   needsApp: true,
   needsAuth: true,
