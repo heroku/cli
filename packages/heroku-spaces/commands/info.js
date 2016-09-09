@@ -7,7 +7,13 @@ let co = require('co')
 function * run (context, heroku) {
   let spaceName = context.flags.space || context.args.space
   if (!spaceName) throw new Error('Space name required.\nUSAGE: heroku spaces:info my-space')
-  let space = yield heroku.get(`/spaces/${spaceName}`)
+
+  let headers = {}
+  if (!context.flags.json) {
+    headers = { 'Accept-Expansion': 'region' }
+  }
+
+  let space = yield heroku.get(`/spaces/${spaceName}`, {headers})
   if (space.state === 'allocated') {
     space.outbound_ips = yield heroku.get(`/spaces/${spaceName}/nat`)
   }
@@ -22,7 +28,7 @@ function render (space, flags) {
     cli.styledObject({
       ID: space.id,
       Organization: space.organization.name,
-      Region: space.region.name,
+      Region: space.region.description,
       State: space.state,
       'Outbound IPs': lib.displayNat(space.outbound_ips),
       'Created at': space.created_at

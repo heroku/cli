@@ -15,13 +15,19 @@ function * run (context, heroku) {
   const spinner = new cli.Spinner({text: `Waiting for space ${cli.color.green(spaceName)} to allocate...`})
 
   spinner.start()
-  let space = yield heroku.get(`/spaces/${spaceName}`)
+
+  let headers = {}
+  if (!context.flags.json) {
+    headers = { 'Accept-Expansion': 'region' }
+  }
+
+  let space = yield heroku.get(`/spaces/${spaceName}`, {headers})
   while (space.state === 'allocating') {
     if ((new Date()).getTime() >= deadline) {
       throw new Error('Timeout waiting for space to become allocated.')
     }
     yield wait(interval)
-    space = yield heroku.get(`/spaces/${spaceName}`)
+    space = yield heroku.get(`/spaces/${spaceName}`, { 'headers': { 'Accept-Expansion': 'region' } })
   }
   space.outbound_ips = yield heroku.get(`/spaces/${spaceName}/nat`)
   spinner.stop('done\n')
