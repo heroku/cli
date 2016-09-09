@@ -13,9 +13,9 @@ function * run (context, heroku) {
     cli.log(`${cli.color.app(context.app)} has no deliveries`)
   } else {
     cli.table(deliveries, {columns: [
-      {key: 'id', label: 'ID'},
-      {key: 'event', label: 'Event', get: (w) => w.event.id},
-      {key: 'webhook', label: 'Webhook', get: (w) => w.webhook.id},
+      {key: 'id', label: 'Delivery ID'},
+      {key: 'event', label: 'Event ID', get: (w) => w.event.id},
+      {key: 'webhook', label: 'Webhook ID', get: (w) => w.webhook.id},
       {key: 'status', label: 'status', get: (w) => w.status}
     ]})
   }

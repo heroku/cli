@@ -13,7 +13,7 @@ function * run (context, heroku) {
     cli.log(`${cli.color.app(context.app)} has no webhooks\nUse ${cli.color.cmd('heroku webhooks:add')} to add one.`)
   } else {
     cli.table(webhooks, {columns: [
-      {key: 'id', label: 'ID'},
+      {key: 'id', label: 'Webhook ID'},
       {key: 'url', label: 'URL'},
       {key: 'include', label: 'Include'},
       {key: 'level', label: 'Level'}

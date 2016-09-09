@@ -29,7 +29,7 @@ describe('heroku webhooks:deliveries', function () {
       mock.done()
       expect(cli.stderr).to.equal('')
       expect(cli.stdout).to.equal(
-`ID                                    Event                                 Webhook                               status
+`Delivery ID                           Event ID                              Webhook ID                            status
 ────────────────────────────────────  ────────────────────────────────────  ────────────────────────────────────  ───────
 99999999-9999-9999-9999-999999999999  88888888-8888-8888-8888-888888888888  77777777-7777-7777-7777-777777777777  pending
 `)

@@ -28,7 +28,7 @@ describe('heroku webhooks:events', function () {
       mock.done()
       expect(cli.stderr).to.equal('')
       expect(cli.stdout).to.equal(
-`ID                                    Resource     Action  Published At
+`Event ID                              Resource     Action  Published At
 ────────────────────────────────────  ───────────  ──────  ────────────────────
 99999999-9999-9999-9999-999999999999  api:release  create  2016-08-31T21:55:06Z
 `)

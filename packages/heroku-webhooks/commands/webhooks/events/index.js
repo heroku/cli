@@ -13,7 +13,7 @@ function * run (context, heroku) {
     cli.log(`${cli.color.app(context.app)} has no events`)
   } else {
     cli.table(events, {columns: [
-      {key: 'id', label: 'ID'},
+      {key: 'id', label: 'Event ID'},
       {key: 'resource', label: 'Resource', get: (w) => w.payload.resource},
       {key: 'action', label: 'Action', get: (w) => w.payload.action},
       {key: 'published_at', label: 'Published At', get: (w) => w.payload.published_at}

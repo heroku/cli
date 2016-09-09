@@ -25,7 +25,7 @@ describe('heroku webhooks:add', function () {
       mock.done()
       expect(cli.stderr).to.equal('')
       expect(cli.stdout).to.equal(
-`ID                                    URL                Include  Level
+`Webhook ID                            URL                Include  Level
 ────────────────────────────────────  ─────────────────  ───────  ──────
 99999999-9999-9999-9999-999999999999  http://foobar.com  foo,bar  notify
 `)
