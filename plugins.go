@@ -148,7 +148,7 @@ func pluginsLink(ctx *Context) {
 		os.MkdirAll(filepath.Dir(newPath), 0755)
 		err = os.Symlink(path, newPath)
 		must(err)
-		plugin, err := UserPlugins.ParsePlugin(name)
+		plugin, err := UserPlugins.ParsePlugin(name, "symlink")
 		must(err)
 		if name != plugin.Name {
 			path = newPath
@@ -186,6 +186,7 @@ var UserPlugins = &Plugins{Path: filepath.Join(DataHome, "plugins")}
 // Plugin represents a javascript plugin
 type Plugin struct {
 	Name      string    `json:"name"`
+	Tag       string    `json:"tag"`
 	Version   string    `json:"version"`
 	Topics    Topics    `json:"topics"`
 	Topic     *Topic    `json:"topic"`
@@ -283,7 +284,7 @@ func getExitCode(err error) int {
 
 // ParsePlugin requires the plugin's node module
 // to get the commands and metadata
-func (p *Plugins) ParsePlugin(name string) (*Plugin, error) {
+func (p *Plugins) ParsePlugin(name, tag string) (*Plugin, error) {
 	script := `
 	var plugin = require('` + name + `')
 	var pjson  = require('` + name + `/package.json')
@@ -302,6 +303,7 @@ func (p *Plugins) ParsePlugin(name string) (*Plugin, error) {
 	}
 	var plugin Plugin
 	plugin.UpdatedAt = time.Now()
+	plugin.Tag = tag
 	err = json.Unmarshal(output, &plugin)
 	if err != nil {
 		return nil, fmt.Errorf("Error parsing plugin: %s\n%s\n%s\nIs this a real CLI plugin?", name, err, string(output))
@@ -330,18 +332,6 @@ func (p *Plugins) PluginNames() []string {
 	return names
 }
 
-// PluginNamesNotSymlinked lists all the plugin names that are not symlinked
-func (p *Plugins) PluginNamesNotSymlinked() []string {
-	plugins := p.PluginNames()
-	names := make([]string, 0, len(plugins))
-	for _, plugin := range plugins {
-		if !p.isPluginSymlinked(plugin) {
-			names = append(names, plugin)
-		}
-	}
-	return names
-}
-
 func (p *Plugins) isPluginSymlinked(plugin string) bool {
 	path := filepath.Join(p.modulesPath(), plugin)
 	fi, err := os.Lstat(path)
@@ -361,7 +351,18 @@ func contains(arr []string, s string) bool {
 }
 
 // InstallPlugins installs plugins
-func (p *Plugins) InstallPlugins(names ...string) error {
+func (p *Plugins) InstallPlugins(inputs ...string) error {
+	names := make([]string, 0, len(inputs))
+	tags := make([]string, 0, len(inputs))
+	for _, input := range inputs {
+		s := strings.SplitN(input, "@", 2)
+		names = append(names, s[0])
+		if len(s) > 1 {
+			tags = append(tags, s[1])
+		} else {
+			tags = append(tags, "")
+		}
+	}
 	for _, name := range names {
 		p.lockPlugin(name)
 	}
@@ -370,12 +371,12 @@ func (p *Plugins) InstallPlugins(names ...string) error {
 			p.unlockPlugin(name)
 		}
 	}()
-	err := p.installPackages(names...)
+	err := p.installPackages(inputs...)
 	if err != nil {
 		return err
 	}
-	for _, name := range names {
-		_, err := p.ParsePlugin(name)
+	for i, name := range names {
+		_, err := p.ParsePlugin(name, tags[i])
 		must(err)
 	}
 	return nil
@@ -414,24 +415,32 @@ func (p *Plugins) unlockPlugin(name string) {
 
 // Update updates the plugins
 func (p *Plugins) Update() {
-	plugins := p.PluginNamesNotSymlinked()
-	if len(plugins) == 0 {
-		return
-	}
-	packages, err := p.OutdatedPackages(plugins...)
-	WarnIfError(err)
-	if len(packages) > 0 {
-		action("heroku-cli: Updating plugins", "", func() {
-			for name, version := range packages {
-				p.lockPlugin(name)
-				WarnIfError(p.installPackages(name + "@" + version))
-				_, err := p.ParsePlugin(name)
-				WarnIfError(err)
-				p.unlockPlugin(name)
+	action("heroku-cli: Updating plugins", "done", func() {
+		for _, plugin := range p.Plugins() {
+			if p.isPluginSymlinked(plugin.Name) {
+				return
 			}
-		})
-		Errf(" done. Updated %d %s.\n", len(packages), plural("package", len(packages)))
-	}
+			Errf("\rheroku-cli: Updating %s...", plugin.Name)
+			p.lockPlugin(plugin.Name)
+			tag := plugin.Tag
+			if tag == "" {
+				tag = "latest"
+			}
+			tags, err := p.DistTags(plugin.Name)
+			if err != nil {
+				WarnIfError(err)
+				continue
+			}
+			if tags[tag] == plugin.Version {
+				continue
+			}
+			Errf("\rheroku-cli: Updating %s@%s to %s...", plugin.Name, plugin.Tag, tags[tag])
+			WarnIfError(p.installPackages(plugin.Name + "@" + tag))
+			_, err = p.ParsePlugin(plugin.Name, tag)
+			WarnIfError(err)
+			p.unlockPlugin(plugin.Name)
+		}
+	})
 }
 
 // MigrateRubyPlugins migrates from legacy ruby plugins to node versions
@@ -560,7 +569,7 @@ func (p *Plugins) RefreshPlugins() {
 			continue
 		}
 		action(fmt.Sprintf("Parsing %s", plugin.Name), "done", func() {
-			_, err := p.ParsePlugin(plugin.Name)
+			_, err := p.ParsePlugin(plugin.Name, "symlink")
 			must(err)
 		})
 	}
