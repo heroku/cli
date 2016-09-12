@@ -14,7 +14,7 @@ function * run (context, heroku) {
 module.exports = {
   topic: 'drains',
   command: 'remove',
-  description: 'adds a log drain to an app',
+  description: 'removes a log drain from an app',
   needsApp: true,
   needsAuth: true,
   args: [{name: 'url'}],
