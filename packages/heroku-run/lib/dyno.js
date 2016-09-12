@@ -95,7 +95,7 @@ class Dyno {
   }
 
   _status (status) {
-    return `${status}, ${this.dyno.name || this.opts.dyno}`
+    return `${status}, ${this.dyno.name || this.opts.dyno} (${this.dyno.size})`
   }
 
   _readData (c) {
