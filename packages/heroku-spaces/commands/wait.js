@@ -27,8 +27,9 @@ function * run (context, heroku) {
       throw new Error('Timeout waiting for space to become allocated.')
     }
     yield wait(interval)
-    space = yield heroku.get(`/spaces/${spaceName}`, { 'headers': { 'Accept-Expansion': 'region' } })
+    space = yield heroku.get(`/spaces/${spaceName}`, {headers})
   }
+
   space.outbound_ips = yield heroku.get(`/spaces/${spaceName}/nat`)
   spinner.stop('done\n')
 
