@@ -2,6 +2,7 @@
 
 const cli = require('heroku-cli-util')
 const co = require('co')
+const parsers = require('../lib/parsers')()
 
 function * run (context, heroku) {
   let space = context.flags.space || context.args.space
@@ -14,7 +15,7 @@ function * run (context, heroku) {
       organization: context.org,
       channel_name: context.flags.channel,
       region: context.flags.region,
-      features: (context.flags.features || '').split(',').map((s) => { return s.trim() }),
+      features: parsers.splitCsv(context.flags.features),
       log_drain_url: context.flags['log-drain-url']
     }
   })
