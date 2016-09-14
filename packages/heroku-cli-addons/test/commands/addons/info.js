@@ -32,7 +32,7 @@ Installed at: Invalid Date
 Owning app:   acme-inc-www
 Plan:         heroku-postgresql:hobby-dev
 Price:        free
-State:        provisioned
+State:        created
 `)
       })
     })
@@ -57,7 +57,7 @@ Installed at: Invalid Date
 Owning app:   acme-inc-www
 Plan:         heroku-postgresql:hobby-dev
 Price:        free
-State:        provisioned
+State:        created
 `)
       })
     })
@@ -85,7 +85,7 @@ Installed at: Invalid Date
 Owning app:   acme-inc-www
 Plan:         heroku-postgresql:hobby-dev
 Price:        free
-State:        provisioned
+State:        created
 `)
       })
     })

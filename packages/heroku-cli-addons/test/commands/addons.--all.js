@@ -32,10 +32,10 @@ describe('addons --all', function () {
       return cmd.run({flags: {}}).then(function () {
         util.expectOutput(cli.stdout, `
 Owning App    Add-on     Plan                         Price      State
-────────────  ─────────  ───────────────────────────  ─────────  ────────────
-acme-inc-api  api-redis  heroku-redis:premium-2       $60/month  provisioned
-acme-inc-www  www-db     heroku-postgresql:hobby-dev  free       provisioned
-acme-inc-www  www-redis  heroku-redis:premium-2       $60/month  provisioning
+────────────  ─────────  ───────────────────────────  ─────────  ────────
+acme-inc-api  api-redis  heroku-redis:premium-2       $60/month  created
+acme-inc-www  www-db     heroku-postgresql:hobby-dev  free       created
+acme-inc-www  www-redis  heroku-redis:premium-2       $60/month  creating
 `)
       })
     })
