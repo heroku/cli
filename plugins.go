@@ -415,30 +415,33 @@ func (p *Plugins) unlockPlugin(name string) {
 
 // Update updates the plugins
 func (p *Plugins) Update() {
+	update := func(plugin *Plugin) {
+		if p.isPluginSymlinked(plugin.Name) {
+			return
+		}
+		Errf("\rheroku-cli: Updating %s...", plugin.Name)
+		p.lockPlugin(plugin.Name)
+		defer p.unlockPlugin(plugin.Name)
+		tag := plugin.Tag
+		if tag == "" {
+			tag = "latest"
+		}
+		tags, err := p.DistTags(plugin.Name)
+		if err != nil {
+			WarnIfError(err)
+			return
+		}
+		if tags[tag] == plugin.Version {
+			return
+		}
+		Errf("\rheroku-cli: Updating %s@%s to %s...", plugin.Name, plugin.Tag, tags[tag])
+		WarnIfError(p.installPackages(plugin.Name + "@" + tag))
+		_, err = p.ParsePlugin(plugin.Name, tag)
+		WarnIfError(err)
+	}
 	action("heroku-cli: Updating plugins", "done", func() {
 		for _, plugin := range p.Plugins() {
-			if p.isPluginSymlinked(plugin.Name) {
-				return
-			}
-			Errf("\rheroku-cli: Updating %s...", plugin.Name)
-			p.lockPlugin(plugin.Name)
-			tag := plugin.Tag
-			if tag == "" {
-				tag = "latest"
-			}
-			tags, err := p.DistTags(plugin.Name)
-			if err != nil {
-				WarnIfError(err)
-				continue
-			}
-			if tags[tag] == plugin.Version {
-				continue
-			}
-			Errf("\rheroku-cli: Updating %s@%s to %s...", plugin.Name, plugin.Tag, tags[tag])
-			WarnIfError(p.installPackages(plugin.Name + "@" + tag))
-			_, err = p.ParsePlugin(plugin.Name, tag)
-			WarnIfError(err)
-			p.unlockPlugin(plugin.Name)
+			update(plugin)
 		}
 	})
 }
