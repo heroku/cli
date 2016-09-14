@@ -19,7 +19,7 @@ function * run (context, heroku) {
     cli.styledHeader(app ? `${read} Notifications for ${cli.color.app(app.name)}` : `${read} Notifications`)
     for (let n of notifications) {
       cli.log(cli.color.yellow(`\n${n.title}\n`))
-      cli.log(wrap(`${cli.color.gray.dim(time.ago(new Date(n.created_at)))}\n${n.body}`))
+      cli.log(wrap(`${cli.color.dim(time.ago(new Date(n.created_at)))}\n${n.body}`))
       for (let followup of n.followup) {
         cli.log(wrap(`${cli.color.gray.dim(time.ago(new Date(followup.created_at)))}\n${followup.body}`))
       }

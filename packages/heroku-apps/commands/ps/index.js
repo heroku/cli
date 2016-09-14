@@ -88,7 +88,7 @@ function printDynos (dynos) {
       let key = `${cli.color.green(dyno.type)} (${cli.color.cyan(size)}): ${dyno.command}`
       if (dynosByCommand[key] === undefined) dynosByCommand[key] = []
       let state = dyno.state === 'up' ? cli.color.green(dyno.state) : cli.color.yellow(dyno.state)
-      let item = `${dyno.name}: ${cli.color.green(state)} ${cli.color.gray(since)}`
+      let item = `${dyno.name}: ${cli.color.green(state)} ${cli.color.dim(since)}`
       dynosByCommand[key].push(item)
     }
     return dynosByCommand

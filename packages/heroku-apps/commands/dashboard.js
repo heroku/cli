@@ -73,7 +73,7 @@ You have ${cli.color.yellow(notifications.length)} unread notifications. Read th
   }
 }
 
-let dim = (s) => cli.color.gray.bold(s)
+let dim = (s) => cli.color.dim(s)
 let bold = (s) => cli.color.bold(s)
 let label = (s) => cli.color.blue(s)
 
