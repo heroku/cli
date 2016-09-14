@@ -64,7 +64,7 @@ func buildPlugins(ctx *Context) {
 	}
 	must(CorePlugins.installPackages(plugins...))
 	for _, plugin := range plugins {
-		s := strings.Split(plugin, "@")
+		s := strings.SplitN(plugin, "@", 2)
 		plugin, err := CorePlugins.ParsePlugin(s[0], s[1])
 		must(err)
 		CorePlugins.addToCache(plugin)
