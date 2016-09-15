@@ -73,20 +73,21 @@ func (p *Plugins) RemovePackages(packages ...string) error {
 	return nil
 }
 
-// OutdatedPackages returns a map of packages and their latest version
-func (p *Plugins) OutdatedPackages(names ...string) (map[string]string, error) {
-	args := append([]string{"outdated", "--json"}, names...)
-	stdout, stderr, err := p.execNpm(args...)
+// DistTags returns the dist-tags
+func (p *Plugins) DistTags(pkg string) (map[string]string, error) {
+	stdout, stderr, err := p.execNpm("dist-tag", "ls", pkg)
 	if err != nil {
 		return nil, errors.New(stderr)
 	}
-	var outdated map[string]struct{ Latest string }
-	json.Unmarshal([]byte(stdout), &outdated)
-	packages := make(map[string]string, len(outdated))
-	for name, versions := range outdated {
-		packages[name] = versions.Latest
+	tags := map[string]string{}
+	for _, line := range strings.Split(stdout, "\n") {
+		s := strings.Split(line, ": ")
+		if len(s) < 2 {
+			continue
+		}
+		tags[s[0]] = s[1]
 	}
-	return packages, nil
+	return tags, nil
 }
 
 // ClearCache clears the npm cache
