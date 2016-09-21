@@ -20,6 +20,16 @@ let error = require('../../../lib/error.js')
 let assertExit = require('../../assert_exit.js')
 let unwrap = require('../../unwrap.js')
 
+function mockDomains (inquirer) {
+  nock('https://api.heroku.com')
+    .get('/apps/example/domains')
+    .reply(200, [])
+
+  inquirer.prompt = (prompts) => {
+    return Promise.resolve({domains: []})
+  }
+}
+
 describe('heroku certs:add', function () {
   beforeEach(function () {
     cli.mockConsole()
@@ -36,6 +46,8 @@ describe('heroku certs:add', function () {
       nock('https://api.heroku.com')
         .get('/apps/example/ssl-endpoints')
         .reply(200, [])
+
+      mockDomains(inquirer)
 
       fs.readFile
         .withArgs('pem_file', sinon.match.func)
@@ -56,10 +68,14 @@ describe('heroku certs:add', function () {
         mockSsl.done()
         expect(cli.stderr).to.equal('Adding SSL certificate to example... done\n')
         expect(cli.stdout).to.equal(
+        /* eslint-disable no-irregular-whitespace */
           `example now served by tokyo-1050.herokussl.com
 Certificate details:
 ${certificateDetails}
+
+=== Your certificate has been added successfully.  Add a custom domain to your app by running heroku domains:add <yourdomain.com>
 `)
+        /* eslint-enable no-irregular-whitespace */
       })
     })
   })
@@ -73,9 +89,7 @@ ${certificateDetails}
       .get('/apps/example')
       .reply(200, { 'space': null })
 
-    nock('https://api.heroku.com')
-      .get('/apps/example/domains')
-      .reply(200, [])
+    mockDomains(inquirer)
 
     fs.readFile
       .withArgs('pem_file', sinon.match.func)
@@ -111,12 +125,16 @@ ${certificateDetails}
       mockSsl.done()
       mockSni.done()
       expect(cli.stderr).to.equal('Resolving trust chain... done\nAdding SSL certificate to example... done\n')
+      /* eslint-disable no-irregular-whitespace */
       expect(cli.stdout).to.equal(
         `example now served by tokyo-1050.herokussl.com
 Certificate details:
 ${certificateDetails}
+
+=== Your certificate has been added successfully.  Add a custom domain to your app by running heroku domains:add <yourdomain.com>
 `)
     })
+      /* eslint-enable no-irregular-whitespace */
   })
 
   it('# propegates ssl doctor errors', function () {
@@ -124,9 +142,7 @@ ${certificateDetails}
       .get('/apps/example')
       .reply(200, { 'space': null })
 
-    nock('https://api.heroku.com')
-      .get('/apps/example/domains')
-      .reply(200, [])
+    mockDomains(inquirer)
 
     fs.readFile
       .withArgs('pem_file', sinon.match.func)
@@ -169,9 +185,7 @@ ${certificateDetails}
       .get('/apps/example')
       .reply(200, { 'space': null })
 
-    nock('https://api.heroku.com')
-      .get('/apps/example/domains')
-      .reply(200, [])
+    mockDomains(inquirer)
 
     fs.readFile
       .withArgs('pem_file', sinon.match.func)
@@ -197,11 +211,15 @@ ${certificateDetails}
       mockSni.done()
       mockSsl.done()
       expect(cli.stderr).to.equal('Adding SSL certificate to example... done\n')
+      /* eslint-disable no-irregular-whitespace */
       expect(cli.stdout).to.equal(
         `example now served by tokyo-1050.herokussl.com
 Certificate details:
 ${certificateDetails}
+
+=== Your certificate has been added successfully.  Add a custom domain to your app by running heroku domains:add <yourdomain.com>
 `)
+      /* eslint-enable no-irregular-whitespace */
     })
   })
 
@@ -210,9 +228,7 @@ ${certificateDetails}
       .get('/apps/example')
       .reply(200, { 'space': null })
 
-    nock('https://api.heroku.com')
-      .get('/apps/example/domains')
-      .reply(200, [])
+    mockDomains(inquirer)
 
     fs.readFile
       .withArgs('pem_file', sinon.match.func)
@@ -237,7 +253,7 @@ ${certificateDetails}
     return certs.run({app: 'example', args: {CRT: 'pem_file', KEY: 'key_file'}, flags: {bypass: true}}).then(function () {
       mockSni.done()
       mockSsl.done()
-      expect(unwrap(cli.stderr)).to.equal('Adding SSL certificate to example... done WARNING: ssl_cert provides no domain(s) that are configured for this Heroku app\n')
+      expect(unwrap(cli.stderr)).to.equal('Adding SSL certificate to example... done\n')
     })
   })
 
@@ -253,9 +269,7 @@ ${certificateDetails}
         'resource': 'addon'
       })
 
-    nock('https://api.heroku.com')
-      .get('/apps/example/domains')
-      .reply(200, [])
+    mockDomains(inquirer)
 
     fs.readFile
       .withArgs('pem_file', sinon.match.func)
@@ -273,12 +287,16 @@ ${certificateDetails}
     return certs.run({app: 'example', args: {CRT: 'pem_file', KEY: 'key_file'}, flags: {bypass: true}}).then(function () {
       mock.done()
       expect(cli.stderr).to.equal('Adding SSL certificate to example... done\n')
+      /* eslint-disable no-irregular-whitespace */
       expect(cli.stdout).to.equal(
         `example now served by tokyo-1050.herokussl.com
 Certificate details:
 ${certificateDetails}
+
+=== Your certificate has been added successfully.  Add a custom domain to your app by running heroku domains:add <yourdomain.com>
 `)
     })
+      /* eslint-enable no-irregular-whitespace */
   })
 
   it('# automatically creates an SSL endpoint if in dogwood', function () {
@@ -295,9 +313,7 @@ ${certificateDetails}
         'resource': 'addon'
       })
 
-    nock('https://api.heroku.com')
-      .get('/apps/example/domains')
-      .reply(200, [])
+    mockDomains(inquirer)
 
     fs.readFile
       .withArgs('pem_file', sinon.match.func)
@@ -315,12 +331,16 @@ ${certificateDetails}
     return certs.run({app: 'example', args: {CRT: 'pem_file', KEY: 'key_file'}, flags: {bypass: true}}).then(function () {
       mock.done()
       expect(cli.stderr).to.equal('Adding SSL certificate to example... done\n')
+      /* eslint-disable no-irregular-whitespace */
       expect(cli.stdout).to.equal(
         `example now served by tokyo-1050.herokussl.com
 Certificate details:
 ${certificateDetails}
+
+=== Your certificate has been added successfully.  Add a custom domain to your app by running heroku domains:add <yourdomain.com>
 `)
     })
+      /* eslint-enable no-irregular-whitespace */
   })
 
   describe('stable cnames', function () {
@@ -875,9 +895,7 @@ SSL certificate is self signed.
       .get('/apps/example/ssl-endpoints')
       .reply(200, [])
 
-    nock('https://api.heroku.com')
-      .get('/apps/example/domains')
-      .reply(200, [])
+    mockDomains(inquirer)
 
     fs.readFile
       .withArgs('pem_file', sinon.match.func)
@@ -901,6 +919,8 @@ SSL certificate is self signed.
         `example now served by tokyo-1050.herokussl.com
 Certificate details:
 ${certificateDetails}
+
+=== Your certificate has been added successfully.  Add a custom domain to your app by running heroku domains:add <yourdomain.com>
 `)
     })
   })
@@ -909,6 +929,8 @@ ${certificateDetails}
     nock('https://api.heroku.com')
       .get('/apps/example/ssl-endpoints')
       .reply(200, [])
+
+    mockDomains(inquirer)
 
     fs.readFile
       .withArgs('pem_file', sinon.match.func)
@@ -932,6 +954,8 @@ ${certificateDetails}
         `example now served by tokyo-1050.herokussl.com
 Certificate details:
 ${certificateDetails}
+
+=== Your certificate has been added successfully.  Add a custom domain to your app by running heroku domains:add <yourdomain.com>
 `)
     })
   })

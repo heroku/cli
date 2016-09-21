@@ -245,21 +245,18 @@ function * run (context, heroku) {
 
   cert._meta = meta
 
-  let stableCname = meta.type === 'SNI' && !cert.cname
-
   // Remove the warning for SNI endpoints because we will provide our own error
-  if (stableCname && cert.warnings && cert.warnings.ssl_cert) {
+  if (cert.warnings && cert.warnings.ssl_cert) {
     _.pull(cert.warnings.ssl_cert, 'provides no domain(s) that are configured for this Heroku app')
   }
 
-  if (stableCname) {
-    certificateDetails(cert)
-
-    yield addDomains(context, heroku, meta, cert)
-  } else {
+  if (meta.type !== 'SNI' || cert.cname) {
     cli.log(`${cli.color.app(context.app)} now served by ${cli.color.green(cert.cname)}`)
-    certificateDetails(cert)
   }
+
+  certificateDetails(cert)
+
+  yield addDomains(context, heroku, meta, cert)
 
   displayWarnings(cert)
 }
