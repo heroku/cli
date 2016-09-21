@@ -11,35 +11,35 @@ const lolex = require('lolex')
 let clock
 const expansionHeaders = {'Accept-Expansion': 'addon_service,plan'}
 
-describe('addons:wait', function () {
-  beforeEach(function () {
+describe('addons:wait', () => {
+  beforeEach(() => {
     cli.mockConsole()
     cli.exit.mock()
     nock.cleanAll()
     clock = lolex.install()
-    clock.setTimeout = function (fn, timeout) { fn() }
+    clock.setTimeout = (fn, timeout) => { fn() }
   })
 
-  afterEach(function () {
+  afterEach(() => {
     clock.uninstall()
   })
 
-  context('waiting for an individual add-on', function () {
-    context('when the add-on is provisioned', function () {
-      beforeEach(function () {
+  context('waiting for an individual add-on', () => {
+    context('when the add-on is provisioned', () => {
+      beforeEach(() => {
         nock('https://api.heroku.com', {reqheaders: expansionHeaders})
           .get('/apps/example/addons/www-db')
           .reply(200, fixtures.addons['www-db']) // provisioned
       })
 
-      it('prints output indicating that it is done', function () {
+      it('prints output indicating that it is done', () => {
         return cmd.run({flags: {}, args: {addon: 'www-db'}})
           .then(() => expect(cli.stdout, 'to equal', ''))
           .then(() => expect(cli.stderr, 'to equal', 'Done! www-db is provisioned'))
       })
     })
-    context('for an add-on that is still provisioning', function () {
-      it('waits until the add-on is provisioned, then shows config vars', function () {
+    context('for an add-on that is still provisioning', () => {
+      it('waits until the add-on is provisioned, then shows config vars', () => {
         // Call to resolve the add-on:
         let resolverResponse = nock('https://api.heroku.com')
           .get('/addons/www-redis')
@@ -57,7 +57,7 @@ describe('addons:wait', function () {
           .get('/apps/acme-inc-www/addons/www-redis')
           .reply(200, provisionedAddon)
 
-        return cmd.run({args: {addon: 'www-redis'}, flags: {'wait-interval': '1'}})
+        return cmd.run({args: {addon: 'www-redis'}, flags: {'interval': '1'}})
           .then(() => resolverResponse.done())
           .then(() => provisioningResponse.done())
           .then(() => provisionedResponse.done())
@@ -66,7 +66,7 @@ describe('addons:wait', function () {
       })
     })
     context('when add-on transitions to deprovisioned state', () => {
-      it('shows that it failed to provision', function () {
+      it('shows that it failed to provision', () => {
         nock('https://api.heroku.com')
           .get('/addons/www-redis')
           .reply(200, fixtures.addons['www-redis']) // provisioning has started
@@ -83,11 +83,53 @@ describe('addons:wait', function () {
         expect(cmdPromise, 'to be rejected with', 'The add-on was unable to be created, with status deprovisioned')
       })
     })
+  })
+  context('waiting for many add-ons on an app', () => {
+    context('when all add-ons are provisioned', () => {
+      beforeEach(() => {
+        nock('https://api.heroku.com')
+          .get('/apps/myapp/addons')
+          .reply(200, [fixtures.addons['www-db']]) // provisioned add-on
+      })
+      it('shows they are created and exits', () => {
+        return cmd.run({flags: {}, args: {}, app: 'myapp'})
+          .then(() => expect(cli.stderr).to.equal('Waiting for add-ons to be created on myapp... \nwww-db (heroku-postgresql:hobby-dev) created\nWaiting for add-ons to be created on myapp... done\n'))
+          .then(() => expect(cli.stdout).to.equal(''))
+      })
+    })
 
-    // context('when app is provided and multiple add-ons on app', function () {
-    //   context('including add-ons still provisioning', function () {
-    //
-    //   })
-    // })
+    context('when one add-on is still provisioning and later completes', () => {
+      it('loops until the add-on is provisioned', () => {
+        let inProgressResponse = nock('https://api.heroku.com', {reqheaders: expansionHeaders})
+          .get('/apps/myapp/addons')
+          .reply(200, [
+            fixtures.addons['www-db'], // already done provisioning
+            fixtures.addons['www-redis'] // provisioning
+          ])
+
+        let provisionedAddon = _.clone(fixtures.addons['www-redis'])
+        provisionedAddon.state = 'provisioned'
+
+        let allDoneResponse = nock('https://api.heroku.com', {reqheaders: expansionHeaders})
+          .get('/apps/myapp/addons')
+          .reply(200, [
+            fixtures.addons['www-db'],
+            provisionedAddon
+          ])
+
+        return cmd.run({args: {}, app: 'myapp', flags: {'interval': '1'}})
+          .then(() => inProgressResponse.done())
+          .then(() => allDoneResponse.done())
+          .then(() => expect(cli.stderr).to.equal(`Waiting for add-ons to be created on myapp... 
+www-db (heroku-postgresql:hobby-dev) created
+www-redis (heroku-redis:premium-2) creating
+Waiting for add-ons to be created on myapp... 
+www-db (heroku-postgresql:hobby-dev) created
+www-redis (heroku-redis:premium-2) created
+Waiting for add-ons to be created on myapp... done
+`))
+          .then(() => expect(cli.stdout).to.equal(''))
+      })
+    })
   })
 })

@@ -6,7 +6,6 @@ const cli = require('heroku-cli-util')
 module.exports = function * (context, api, addon, interval) {
   const wait = require('co-wait')
   const app = addon.app.name
-  const addonName = addon.name
 
   yield cli.action(`Creating ${cli.color.addon(addon.name)}`, co(function * () {
     while (addon.state === 'provisioning') {
@@ -14,7 +13,7 @@ module.exports = function * (context, api, addon, interval) {
 
       addon = yield api.request({
         method: 'GET',
-        path: `/apps/${app}/addons/${addonName}`,
+        path: `/apps/${app}/addons/${addon.name}`,
         headers: {'Accept-Expansion': 'addon_service,plan'}
       })
     }
