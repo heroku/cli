@@ -10,16 +10,20 @@ function * run (context, heroku) {
   let certsAndDomains = yield endpoints(context.app, heroku)
 
   if (certsAndDomains.certs.length === 0) {
-    cli.log(`${cli.color.app(context.app)} has no SSL certificates.\nUse ${cli.color.cmd('heroku _certs:add CRT KEY')} to add one.`)
+    cli.log(`${cli.color.app(context.app)} has no SSL certificates.\nUse ${cli.color.cmd('heroku certs:add CRT KEY')} to add one.`)
   } else {
     displayTable(certsAndDomains.certs, certsAndDomains.domains)
   }
 }
 
-module.exports = {
-  topic: '_certs',
+let cmd = {
   description: 'List SSL certificates for an app.',
   needsApp: true,
   needsAuth: true,
   run: cli.command(co.wrap(run))
 }
+
+module.exports = [
+  Object.assign({topic: 'certs'}, cmd),
+  Object.assign({topic: '_certs', hidden: true}, cmd)
+]

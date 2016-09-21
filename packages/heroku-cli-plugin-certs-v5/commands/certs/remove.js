@@ -27,8 +27,7 @@ function * run (context, heroku) {
   }
 }
 
-module.exports = {
-  topic: '_certs',
+let cmd = {
   command: 'remove',
   flags: [
     {name: 'confirm', hasValue: true, hidden: true},
@@ -40,3 +39,8 @@ module.exports = {
   needsAuth: true,
   run: cli.command(co.wrap(run))
 }
+
+module.exports = [
+  Object.assign({topic: 'certs'}, cmd),
+  Object.assign({topic: '_certs', hidden: true}, cmd)
+]

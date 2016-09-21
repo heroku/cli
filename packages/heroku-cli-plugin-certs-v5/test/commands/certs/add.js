@@ -28,7 +28,7 @@ describe('heroku certs:add', function () {
     error.exit.mock()
 
     inquirer = {}
-    certs = proxyquire('../../../commands/certs/add', {inquirer})
+    certs = proxyquire('../../../commands/certs/add', {inquirer})[0]
   })
 
   describe('(ported)', function () {

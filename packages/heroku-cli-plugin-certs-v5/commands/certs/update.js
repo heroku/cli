@@ -42,8 +42,7 @@ function * run (context, heroku) {
   displayWarnings(cert)
 }
 
-module.exports = {
-  topic: '_certs',
+let cmd = {
   command: 'update',
   args: [
     {name: 'CRT', optional: false},
@@ -64,3 +63,8 @@ module.exports = {
   needsAuth: true,
   run: cli.command(co.wrap(run))
 }
+
+module.exports = [
+  Object.assign({topic: 'certs'}, cmd),
+  Object.assign({topic: '_certs', hidden: true}, cmd)
+]

@@ -264,8 +264,7 @@ function * run (context, heroku) {
   displayWarnings(cert)
 }
 
-module.exports = {
-  topic: '_certs',
+let cmd = {
   command: 'add',
   args: [
     {name: 'CRT', optional: false},
@@ -279,9 +278,14 @@ module.exports = {
   description: 'add an SSL certificate to an app',
   help: `Example:
 
- $ heroku _certs:add example.com.crt example.com.key
+ $ heroku certs:add example.com.crt example.com.key
 `,
   needsApp: true,
   needsAuth: true,
   run: cli.command(co.wrap(run))
 }
+
+module.exports = [
+  Object.assign({topic: 'certs'}, cmd),
+  Object.assign({topic: '_certs', hidden: true}, cmd)
+]

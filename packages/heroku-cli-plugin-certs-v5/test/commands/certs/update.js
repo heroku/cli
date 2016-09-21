@@ -6,7 +6,7 @@ let nock = require('nock')
 var fs = require('fs')
 var sinon = require('sinon')
 
-let certs = require('../../../commands/certs/update.js')
+let certs = require('../../../commands/certs/update.js')[0]
 let error = require('../../../lib/error.js')
 let shared = require('./shared.js')
 let sharedSsl = require('./shared_ssl.js')

@@ -95,7 +95,7 @@ function * run (context, heroku) {
 
     cli.console.error('Your key and self-signed certificate have been generated.')
     cli.console.error('Next, run:')
-    cli.console.error(`$ heroku _certs:${command} ${crtfile} ${keyfile}`)
+    cli.console.error(`$ heroku certs:${command} ${crtfile} ${keyfile}`)
   } else {
     let csrfile = `${domain}.csr`
 
@@ -104,12 +104,11 @@ function * run (context, heroku) {
     cli.console.error('Your key and certificate signing request have been generated.')
     cli.console.error(`Submit the CSR in '${csrfile}' to your preferred certificate authority.`)
     cli.console.error("When you've received your certificate, run:")
-    cli.console.error(`$ heroku _certs:${command} CERTFILE ${keyfile}`)
+    cli.console.error(`$ heroku certs:${command} CERTFILE ${keyfile}`)
   }
 }
 
-module.exports = {
-  topic: '_certs',
+let cmd = {
   command: 'generate',
   args: [
     {name: 'domain', optional: false}
@@ -162,9 +161,14 @@ module.exports = {
 
 Example:
 
- $ heroku _certs:generate example.com
+ $ heroku certs:generate example.com
 `,
   needsApp: true,
   needsAuth: true,
   run: cli.command(co.wrap(run))
 }
+
+module.exports = [
+  Object.assign({topic: 'certs'}, cmd),
+  Object.assign({topic: '_certs', hidden: true}, cmd)
+]

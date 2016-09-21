@@ -12,7 +12,7 @@ chai.use(sinonChai)
 let cli = require('heroku-cli-util')
 let childProcess = require('child_process')
 
-let certs = require('../../../commands/certs/generate.js')
+let certs = require('../../../commands/certs/generate.js')[0]
 let endpoint = require('../../stubs/sni-endpoints.js').endpoint
 
 let EventEmitter = require('events').EventEmitter
@@ -113,7 +113,7 @@ describe('heroku certs:generate', function () {
         `Your key and certificate signing request have been generated.
 Submit the CSR in 'example.com.csr' to your preferred certificate authority.
 When you've received your certificate, run:
-$ heroku _certs:add CERTFILE example.com.key
+$ heroku certs:add CERTFILE example.com.key
 `)
 
       expect(childProcess.spawn).to.have.been.calledWith('openssl', ['req', '-new', '-newkey', 'rsa:2048', '-nodes', '-keyout', 'example.com.key', '-out', 'example.com.csr', '-subj', '/CN=example.com'])
@@ -129,7 +129,7 @@ $ heroku _certs:add CERTFILE example.com.key
       expect(cli.stderr).to.equal(
         `Your key and self-signed certificate have been generated.
 Next, run:
-$ heroku _certs:add example.com.crt example.com.key
+$ heroku certs:add example.com.crt example.com.key
 `)
 
       expect(childProcess.spawn).to.have.been.calledWith('openssl', ['req', '-new', '-newkey', 'rsa:2048', '-nodes', '-keyout', 'example.com.key', '-out', 'example.com.crt', '-subj', '/CN=example.com', '-x509'])
@@ -146,7 +146,7 @@ $ heroku _certs:add example.com.crt example.com.key
         `Your key and certificate signing request have been generated.
 Submit the CSR in 'example.org.csr' to your preferred certificate authority.
 When you've received your certificate, run:
-$ heroku _certs:update CERTFILE example.org.key
+$ heroku certs:update CERTFILE example.org.key
 `)
 
       expect(childProcess.spawn).to.have.been.calledWith('openssl', ['req', '-new', '-newkey', 'rsa:2048', '-nodes', '-keyout', 'example.org.key', '-out', 'example.org.csr', '-subj', '/CN=example.org'])
@@ -173,7 +173,7 @@ $ heroku _certs:update CERTFILE example.org.key
         `Your key and certificate signing request have been generated.
 Submit the CSR in 'example.org.csr' to your preferred certificate authority.
 When you've received your certificate, run:
-$ heroku _certs:update CERTFILE example.org.key
+$ heroku certs:update CERTFILE example.org.key
 `)
 
       expect(childProcess.spawn).to.have.been.calledWith('openssl', ['req', '-new', '-newkey', 'rsa:2048', '-nodes', '-keyout', 'example.org.key', '-out', 'example.org.csr', '-subj', '/CN=example.org'])
@@ -190,7 +190,7 @@ $ heroku _certs:update CERTFILE example.org.key
         `Your key and certificate signing request have been generated.
 Submit the CSR in 'example.org.csr' to your preferred certificate authority.
 When you've received your certificate, run:
-$ heroku _certs:update CERTFILE example.org.key
+$ heroku certs:update CERTFILE example.org.key
 `)
 
       expect(childProcess.spawn).to.have.been.calledWith('openssl', ['req', '-new', '-newkey', 'rsa:4096', '-nodes', '-keyout', 'example.org.key', '-out', 'example.org.csr', '-subj', '/CN=example.org'])
