@@ -2,40 +2,55 @@
 /* globals describe it beforeEach afterEach cli nock context expect */
 
 let cmd = require('../../../commands/apps/leave').apps
+let stubGet = require('../../stub/get')
+let stubDelete = require('../../stub/delete')
 
 describe('heroku apps:leave', () => {
-  beforeEach(() => cli.mockConsole())
+  let apiGetUserAccount
+
+  beforeEach(() => {
+    apiGetUserAccount = stubGet.userAccount()
+    cli.mockConsole()
+  })
   afterEach(() => nock.cleanAll())
 
   context('when it is an org app', () => {
+    let apiDeleteOrgAppCollaborator
+    let apiOrgApp
+
+    beforeEach(() => {
+      apiDeleteOrgAppCollaborator = stubDelete.collaboratorsOrgApp('myapp', 'raulb%40heroku.com')
+      apiOrgApp = stubGet.orgApp()
+    })
+
     it('leaves the app', () => {
-      let api = nock('https://api.heroku.com:443')
-        .get('/apps/myapp')
-        .reply(200, {owner: {email: 'foo@herokumanager.com'}})
-        .delete('/v1/app/myapp/join')
-        .reply(204)
       return cmd.run({app: 'myapp'})
         .then(() => expect('').to.eq(cli.stdout))
         .then(() => expect(`Leaving myapp... done
 `).to.eq(cli.stderr))
-        .then(() => api.done())
+        .then(() => apiOrgApp.done())
+        .then(() => apiGetUserAccount.done())
+        .then(() => apiDeleteOrgAppCollaborator.done())
     })
   })
 
   context('when it is not an org app', () => {
+    let apiDeletePersonalAppCollaborator
+    let apiGetPersonalApp
+
+    beforeEach(() => {
+      apiDeletePersonalAppCollaborator = stubDelete.collaboratorsPersonalApp('myapp', 'raulb%40heroku.com')
+      apiGetPersonalApp = stubGet.personalApp()
+    })
+
     it('leaves the app', () => {
-      let api = nock('https://api.heroku.com:443')
-        .get('/apps/myapp')
-        .reply(200, {owner: {email: 'foo@foo.com'}})
-        .get('/account')
-        .reply(200, {email: 'foo@foo.com'})
-        .delete('/apps/myapp/collaborators/foo%40foo.com')
-        .reply(200)
       return cmd.run({app: 'myapp'})
         .then(() => expect('').to.eq(cli.stdout))
         .then(() => expect(`Leaving myapp... done
 `).to.eq(cli.stderr))
-        .then(() => api.done())
+        .then(() => apiGetPersonalApp.done())
+        .then(() => apiGetUserAccount.done())
+        .then(() => apiDeletePersonalAppCollaborator.done())
     })
   })
 })
