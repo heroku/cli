@@ -1,3 +1,7 @@
+5.3.3   2016-09-22
+==================
+Updated heroku-certs
+
 5.3.2   2016-09-21
 ==================
 Explicitly enable linters
