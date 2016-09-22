@@ -4,11 +4,13 @@ let cli = require('heroku-cli-util')
 let co = require('co')
 
 function * run (context, heroku) {
-  let request = heroku.request({
-    method: 'POST',
-    path: `/v1/app/${context.app}/join`,
-    headers: {Accept: 'application/json'}
-  })
+  let request = heroku.get('/account')
+    .then(function (user) {
+      return heroku.post(`/organizations/apps/${context.app}/collaborators`, {
+        body: { user: user.email }
+      })
+    })
+
   yield cli.action(`Joining ${cli.color.cyan(context.app)}`, request)
 }
 
