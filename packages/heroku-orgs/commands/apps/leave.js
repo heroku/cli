@@ -4,13 +4,9 @@ let cli = require('heroku-cli-util')
 let co = require('co')
 
 function * run (context, heroku) {
-  let app = yield heroku.get(`/apps/${context.app}`).catch(() => null)
-
-  let path = app.owner.email.endsWith('@herokumanager.com') ? '/organizations' : ''
   let request = heroku.get('/account')
     .then(function (user) {
-      path += `/apps/${context.app}/collaborators/${encodeURIComponent(user.email)}`
-      return heroku.delete(path).catch(function (err) {
+      return heroku.delete(`/apps/${context.app}/collaborators/${encodeURIComponent(user.email)}`).catch(function (err) {
         console.log(err)
         throw new Error(err.body)
       })
