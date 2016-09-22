@@ -242,4 +242,40 @@ tokyo-1050  foo.example.org, bar.example.org, biz.example.com  2013-08-01 21:34 
       /* eslint-enable no-trailing-spaces */
     })
   })
+
+  it('# traps the "id":"space_app_not_supported" error in dogwood', function () {
+    nock('https://api.heroku.com')
+      .get('/apps/example')
+      .reply(200, {
+        'space': {'name': 'spacely-space-1234'}
+      })
+
+    nock('https://api.heroku.com')
+      .get('/apps/example/addons/ssl%3Aendpoint')
+      .reply(404, {
+        'id': 'not_found',
+        'resource': 'addon'
+      })
+
+    nock('https://api.heroku.com')
+      .get('/apps/example/domains')
+      .reply(200, [])
+
+    nock('https://api.heroku.com')
+      .get('/apps/example/ssl-endpoints')
+      .reply(200, [])
+
+    let mock = nock('https://api.heroku.com')
+      .get('/apps/example/sni-endpoints')
+      .reply(422, {
+        'id': 'space_app_not_supported',
+        'message': 'App heroku-certs-test is in a space, but space apps are not supported on this endpoint. Try `/apps/:id/ssl-endpoints` instead.'
+      })
+
+    return certs.run({app: 'example', args: {}, flags: {}}).then(function () {
+      mock.done()
+      expect(cli.stderr).to.equal('')
+      expect(cli.stdout).to.equal(`example has no SSL certificates.\nUse heroku certs:add CRT KEY to add one.\n`)
+    })
+  })
 })

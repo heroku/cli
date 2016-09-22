@@ -13,6 +13,11 @@ function sniCertsPromise (app, heroku) {
   return heroku.request({
     path: `/apps/${app}/sni-endpoints`,
     headers: {'Accept': 'application/vnd.heroku+json; version=3.sni_ssl_cert'}
+  }).catch(function (err) {
+    if (err.statusCode === 422 && err.body && err.body.id === 'space_app_not_supported') {
+      return []
+    }
+    throw err
   }).then(function (data) {
     return data
   })
