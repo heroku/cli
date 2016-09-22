@@ -1,2 +1,2 @@
 #!/bin/bash
-gometalinter --deadline 30s --cyclo-over 32 -D aligncheck -D gosimple -D errcheck -D gotype -D vetshadow -D goconst -E gofmt --exclude ".+_test.go"
+gometalinter --deadline 30s --cyclo-over 32 --disable-all -E govet -E deadcode -E gocyclo -E golint -E varcheck -E structcheck -E dupl -E ineffassign -E interfacer -E unconvert -E staticcheck -E gofmt --exclude ".+_test.go" --exclude "vendor"
