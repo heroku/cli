@@ -48,5 +48,15 @@ module.exports = {
         state = ''
     }
     return state
+  },
+
+  trapConfirmationRequired: function * (context, fn) {
+    return yield fn(context.flags.confirm)
+    .catch((err) => {
+      if (!err.body || err.body.id !== 'confirmation_required') throw err
+      return cli.confirmApp(context.app, context.flags.confirm, err.body.message)
+        .then(() => fn(context.app))
+    })
   }
+
 }

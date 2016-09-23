@@ -45,23 +45,26 @@ function * run (context, heroku) {
   const util = require('../../lib/util')
 
   let {app, flags, args} = context
-  let {name, as, confirm} = flags
+  let {name, as} = flags
   let plan = {name: args[0]}
   let config = parseConfig(args.slice(1))
 
-  let addon
+  function createAddon (app, config, name, confirm, plan, as) {
+    return cli.action(`Creating ${plan.name} on ${cli.color.app(app)}`,
+      heroku.post(`/apps/${app}/addons`, {
+        body: { config, name, confirm, plan, attachment: {name: as} },
+        headers: {
+          'accept-expansion': 'plan',
+          'x-heroku-legacy-provider-messages': 'true'
+        }
+      }).then(function (addon) {
+        cli.action.done(cli.color.green(util.formatPrice(addon.plan.price)))
+        return addon
+      })
+    )
+  }
 
-  yield cli.action(`Creating ${plan.name} on ${cli.color.app(app)}`, co(function * () {
-    addon = yield heroku.post(`/apps/${app}/addons`, {
-      body: { config, name, confirm, plan, attachment: {name: as} },
-      headers: {
-        'accept-expansion': 'plan',
-        'x-heroku-legacy-provider-messages': 'true'
-      }
-    })
-
-    cli.action.done(cli.color.green(util.formatPrice(addon.plan.price)))
-  }))
+  let addon = yield util.trapConfirmationRequired(context, (confirm) => (createAddon(app, config, name, confirm, plan, as)))
 
   if (addon.provision_message) { cli.log(addon.provision_message) }
 
