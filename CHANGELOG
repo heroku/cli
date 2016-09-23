@@ -1,3 +1,7 @@
+5.3.5   2016-09-23
+==================
+Rollback heroku-cli-addons
+
 5.3.4   2016-09-23
 ==================
 Updated heroku-cli-addons
