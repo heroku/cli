@@ -3,29 +3,70 @@
 let cli = require('heroku-cli-util')
 let co = require('co')
 let extend = require('util')._extend
+let Utils = require('../../lib/utils')
 
 function * run (context, heroku) {
-  // Users receive `You'll be billed monthly for teams over 5 members.`
-  // message when going over the FREE_TEAM_LIMIT
-  const FREE_TEAM_LIMIT = 5
-  let org = context.org
+  let orgInfo = yield Utils.orgInfo(context, heroku)
+  let orgName = context.org
+
+  const warnMembershipLimit = function * (totalMembers) {
+    // Users receive `You'll be billed monthly for teams over 5 members.`
+    const FREE_TEAM_LIMIT = 6
+    if (totalMembers === FREE_TEAM_LIMIT) {
+      cli.warn("You'll be billed monthly for teams over 5 members.")
+    }
+  }
+
+  let addMemberToOrg = function * (email, role, orgName) {
+    let request = heroku.request({
+      method: 'PUT',
+      path: `/organizations/${orgName}/members`,
+      body: {email, role}
+    })
+    yield cli.action(`Adding ${cli.color.cyan(email)} to ${cli.color.magenta(orgName)} as ${cli.color.green(role)}`, request)
+  }
+
+  let inviteMemberToTeam = function * (email, role, orgName) {
+    let request = heroku.request({
+      headers: {
+        Accept: 'application/vnd.heroku+json; version=3.team-invitations'
+      },
+      method: 'PUT',
+      path: `/organizations/${orgName}/invitations`,
+      body: {email, role}
+    }).then(request => {
+      cli.action.done('email sent')
+    })
+
+    yield cli.action(`Inviting ${cli.color.cyan(email)} to ${cli.color.magenta(orgName)} as ${cli.color.green(role)}`, request)
+  }
+
   let email = context.args.email
   let role = context.flags.role
-  let features = yield heroku.get('/account/features')
-  let orgCreationFeature = features.find(function (feature) {
-    return feature.name === 'standard-org-creation'
-  })
 
-  let request = heroku.request({
-    method: 'PUT',
-    path: `/organizations/${org}/members`,
-    body: {email, role}
-  })
-  yield cli.action(`Adding ${cli.color.cyan(email)} to ${cli.color.magenta(org)} as ${cli.color.green(role)}`, request)
+  let groupFeatures = yield heroku.get(`/organizations/${orgName}/features`)
 
-  let members = yield heroku.get(`/organizations/${org}/members`)
-  if ((members.length === (FREE_TEAM_LIMIT + 1)) && orgCreationFeature) {
-    cli.log("You'll be billed monthly for teams over 5 members.")
+  if (groupFeatures.filter(of => of.name === 'team-invite-acceptance').length) {
+    yield inviteMemberToTeam(email, role, orgName)
+  } else {
+    yield addMemberToOrg(email, role, orgName)
+  }
+
+  if (orgInfo.type === 'team') {
+    let membersAndInvites = yield co(function * () {
+      return yield {
+        invites: heroku.request({
+          headers: {
+            Accept: 'application/vnd.heroku+json; version=3.team-invitations'
+          },
+          method: 'GET',
+          path: `/organizations/${orgName}/invitations`
+        }),
+        members: heroku.get(`/organizations/${orgName}/members`)
+      }
+    })
+    const membersCount = membersAndInvites.invites.length + membersAndInvites.members.length
+    yield warnMembershipLimit(membersCount)
   }
 }
 

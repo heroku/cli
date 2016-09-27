@@ -12,55 +12,125 @@ describe('heroku members:add', () => {
   beforeEach(() => cli.mockConsole())
   afterEach(() => nock.cleanAll())
 
-  it('adds a member to an org', () => {
-    stubGet.variableSizeOrgMembers(1)
-    stubGet.userFeatureFlags([])
-    apiUpdateMemberRole = stubPut.updateMemberRole('foo@foo.com', 'admin')
+  context('without the feature flag team-invite-acceptance', () => {
+    beforeEach(() => {
+      stubGet.orgFeatures([])
+    })
 
-    return cmd.run({org: 'myorg', args: {email: 'foo@foo.com'}, flags: {role: 'admin'}})
-      .then(() => expect('').to.eq(cli.stdout))
-      .then(() => expect(`Adding foo@foo.com to myorg as admin... done
+    context('and group is a team', () => {
+      beforeEach(() => {
+        stubGet.orgInfo('team')
+      })
+
+      it('does not warn the user when under the free org limit', () => {
+        stubGet.variableSizeOrgMembers(1)
+        stubGet.variableSizeTeamInvites(0)
+        apiUpdateMemberRole = stubPut.updateMemberRole('foo@foo.com', 'admin')
+
+        return cmd.run({org: 'myorg', args: {email: 'foo@foo.com'}, flags: {role: 'admin'}})
+        .then(() => expect('').to.eq(cli.stdout))
+        .then(() => expect(`Adding foo@foo.com to myorg as admin... done
 `).to.eq(cli.stderr))
-      .then(() => apiUpdateMemberRole.done())
+        .then(() => apiUpdateMemberRole.done())
+      })
+
+      it('does not warn the user when over the free org limit', () => {
+        stubGet.variableSizeOrgMembers(7)
+        stubGet.variableSizeTeamInvites(0)
+        apiUpdateMemberRole = stubPut.updateMemberRole('foo@foo.com', 'admin')
+
+        return cmd.run({org: 'myorg', args: {email: 'foo@foo.com'}, flags: {role: 'admin'}})
+        .then(() => expect('').to.eq(cli.stdout))
+        .then(() => expect(`Adding foo@foo.com to myorg as admin... done
+`).to.eq(cli.stderr))
+        .then(() => apiUpdateMemberRole.done())
+      })
+
+      it('does warn the user when at the free org limit', () => {
+        stubGet.variableSizeOrgMembers(6)
+        stubGet.variableSizeTeamInvites(0)
+        apiUpdateMemberRole = stubPut.updateMemberRole('foo@foo.com', 'admin')
+
+        return cmd.run({org: 'myorg', args: {email: 'foo@foo.com'}, flags: {role: 'admin'}})
+        .then(() => expect('').to.eq(cli.stdout))
+        .then(() => expect(`Adding foo@foo.com to myorg as admin... done
+ ▸    You'll be billed monthly for teams over 5 members.\n`).to.eq(cli.stderr))
+        .then(() => apiUpdateMemberRole.done())
+      })
+    })
+
+    context('and group is an enterprise org', () => {
+      beforeEach(() => {
+        stubGet.orgInfo('enterprise')
+        stubGet.variableSizeOrgMembers(1)
+      })
+
+      it('adds a member to an org', () => {
+        apiUpdateMemberRole = stubPut.updateMemberRole('foo@foo.com', 'admin')
+
+        return cmd.run({org: 'myorg', args: {email: 'foo@foo.com'}, flags: {role: 'admin'}})
+        .then(() => expect('').to.eq(cli.stdout))
+        .then(() => expect(`Adding foo@foo.com to myorg as admin... done
+`).to.eq(cli.stderr))
+        .then(() => apiUpdateMemberRole.done())
+      })
+    })
   })
 
-  context('adding a member with the standard org creation flag', () => {
+  context('with the feature flag team-invite-acceptance', () => {
     beforeEach(() => {
-      stubGet.userFeatureFlags([{name: 'standard-org-creation'}])
+      stubGet.orgFeatures([{name: 'team-invite-acceptance'}])
     })
 
-    it('does not warn the user when under the free org limit', () => {
-      stubGet.variableSizeOrgMembers(1)
-      apiUpdateMemberRole = stubPut.updateMemberRole('foo@foo.com', 'admin')
+    context('and group is a team', () => {
+      beforeEach(() => {
+        stubGet.orgInfo('team')
+      })
 
-      return cmd.run({org: 'myorg', args: {email: 'foo@foo.com'}, flags: {role: 'admin'}})
+      it('does warn the user when free org limit is caused by invites', () => {
+        let apiSendInvite = stubPut.sendInvite('foo@foo.com', 'admin')
+
+        let apiGetOrgMembers = stubGet.variableSizeOrgMembers(1)
+        let apiGetTeamInvites = stubGet.variableSizeTeamInvites(5)
+
+        return cmd.run({org: 'myorg', args: {email: 'foo@foo.com'}, flags: {role: 'admin'}})
+        .then(() => apiSendInvite.done())
+        .then(() => apiGetOrgMembers.done())
+        .then(() => apiGetTeamInvites.done())
         .then(() => expect('').to.eq(cli.stdout))
-        .then(() => expect(`Adding foo@foo.com to myorg as admin... done
-`).to.eq(cli.stderr))
-        .then(() => apiUpdateMemberRole.done())
-    })
+        .then(() => expect(`Inviting foo@foo.com to myorg as admin... email sent
+ ▸    You'll be billed monthly for teams over 5 members.\n`).to.eq(cli.stderr))
+      })
 
-    it('does not warn the user when over the free org limit', () => {
-      stubGet.variableSizeOrgMembers(7)
-      apiUpdateMemberRole = stubPut.updateMemberRole('foo@foo.com', 'admin')
+      it('sends an invite when adding a new user to the team', () => {
+        let apiSendInvite = stubPut.sendInvite('foo@foo.com', 'admin')
 
-      return cmd.run({org: 'myorg', args: {email: 'foo@foo.com'}, flags: {role: 'admin'}})
+        stubGet.variableSizeOrgMembers(1)
+        stubGet.variableSizeTeamInvites(0)
+
+        return cmd.run({org: 'myorg', args: {email: 'foo@foo.com'}, flags: {role: 'admin'}})
         .then(() => expect('').to.eq(cli.stdout))
-        .then(() => expect(`Adding foo@foo.com to myorg as admin... done
-`).to.eq(cli.stderr))
-        .then(() => apiUpdateMemberRole.done())
+        .then(() => expect(`Inviting foo@foo.com to myorg as admin... email sent\n`).to.eq(cli.stderr))
+        .then(() => apiSendInvite.done())
+      })
     })
 
-    it('does warn the user when at the free org limit', () => {
-      stubGet.variableSizeOrgMembers(6)
-      apiUpdateMemberRole = stubPut.updateMemberRole('foo@foo.com', 'admin')
+    context('and group is an enterprise org', () => {
+      beforeEach(() => {
+        stubGet.orgInfo('enterprise')
+      })
 
-      return cmd.run({org: 'myorg', args: {email: 'foo@foo.com'}, flags: {role: 'admin'}})
-        .then(() => expect(`You'll be billed monthly for teams over 5 members.
-`).to.eq(cli.stdout))
-        .then(() => expect(`Adding foo@foo.com to myorg as admin... done
-`).to.eq(cli.stderr))
-        .then(() => apiUpdateMemberRole.done())
+      it('sends an invite when adding a new user to the team', () => {
+        let apiSendInvite = stubPut.sendInvite('foo@foo.com', 'admin')
+
+        stubGet.variableSizeOrgMembers(1)
+        stubGet.variableSizeTeamInvites(0)
+
+        return cmd.run({org: 'myorg', args: {email: 'foo@foo.com'}, flags: {role: 'admin'}})
+        .then(() => expect('').to.eq(cli.stdout))
+        .then(() => expect(`Inviting foo@foo.com to myorg as admin... email sent\n`).to.eq(cli.stderr))
+        .then(() => apiSendInvite.done())
+      })
     })
   })
 })

@@ -52,6 +52,18 @@ function orgApp (locked = false) {
     })
 }
 
+function orgInfo (type = 'enterprise') {
+  return nock('https://api.heroku.com:443', {
+    reqheaders: {Accept: 'application/vnd.heroku+json; version=3'}
+  })
+    .get('/organizations/myorg')
+    .reply(200, {
+      name: 'myorg',
+      role: 'admin',
+      type: type
+    })
+}
+
 function orgAppCollaboratorsWithPermissions () {
   return nock('https://api.heroku.com:443', {
     reqheaders: {Accept: 'application/vnd.heroku+json; version=3'}
@@ -109,6 +121,21 @@ function variableSizeOrgMembers (orgSize) {
     .reply(200, orgMembers)
 }
 
+function variableSizeTeamInvites (teamSize) {
+  teamSize = (typeof (teamSize) === 'undefined') ? 1 : teamSize
+  let invites = []
+  for (let i = 0; i < teamSize; i++) {
+    invites.push({
+      role: 'member', user: { email: `invited-user-${i}@mail.com` }
+    })
+  }
+  return nock('https://api.heroku.com:443', {
+    reqheaders: {Accept: 'application/vnd.heroku+json; version=3.team-invitations'}
+  })
+    .get('/organizations/myorg/invitations')
+    .reply(200, invites)
+}
+
 function personalApp () {
   return nock('https://api.heroku.com:443')
     .get('/apps/myapp')
@@ -137,10 +164,12 @@ module.exports = {
   orgs,
   orgApp,
   orgAppCollaboratorsWithPermissions,
+  orgInfo,
   orgFeatures,
   orgMembers,
   personalApp,
   userAccount,
   userFeatureFlags,
-  variableSizeOrgMembers
+  variableSizeOrgMembers,
+  variableSizeTeamInvites
 }
