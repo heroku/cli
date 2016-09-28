@@ -59,6 +59,47 @@ Use heroku addons:docs heroku-db3 to view documentation
     })
   })
 
+  context('creating a db requiring confirmation', () => {
+    beforeEach(() => {
+      api.post('/apps/myapp/addons', {
+        attachment: {name: 'mydb'},
+        config: {follow: 'otherdb', rollback: true, foo: true},
+        plan: {name: 'heroku-postgresql:standard-0'}
+      })
+      .reply(423,
+        {'id': 'confirmation_required', 'message': 'This add-on is not automatically networked with this Private Space. '},
+        {'X-Confirmation-Required': 'myapp-confirm'})
+    })
+
+    it('aborts if confirmation does not match', () => {
+      return expect(cmd.run({
+        app: 'myapp',
+        args: ['heroku-postgresql:standard-0', '--rollback', '--follow', 'otherdb', '--foo'],
+        flags: {as: 'mydb', confirm: 'not-my-app'}
+      }), 'when rejected', 'to equal', 'Confirmation not-my-app did not match myapp. Aborted.')
+    })
+
+    it('succeeds if confirmation does match', () => {
+      api.post('/apps/myapp/addons', {
+        attachment: {name: 'mydb'},
+        config: {follow: 'otherdb', rollback: true, foo: true},
+        plan: {name: 'heroku-postgresql:standard-0'},
+        confirm: 'myapp'
+      })
+      .reply(200, addon)
+
+      return cmd.run({
+        app: 'myapp',
+        args: ['heroku-postgresql:standard-0', '--rollback', '--follow', 'otherdb', '--foo'],
+        flags: {as: 'mydb', confirm: 'myapp'}
+      }).then(() => expect(cli.stderr, 'to equal', 'Creating heroku-postgresql:standard-0 on myapp... !\nCreating heroku-postgresql:standard-0 on myapp... $100/month\n'))
+        .then(() => expect(cli.stdout, 'to equal', `Created db3-swiftly-123 as DATABASE_URL
+provision message
+Use heroku addons:docs heroku-db3 to view documentation
+`))
+    })
+  })
+
   context('--follow=--otherdb', () => {
     beforeEach(() => {
       api.post('/apps/myapp/addons', {

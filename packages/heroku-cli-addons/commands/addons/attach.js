@@ -4,6 +4,8 @@ let cli = require('heroku-cli-util')
 let co = require('co')
 
 function * run (context, heroku) {
+  const util = require('../../lib/util')
+
   let app = context.app
   let addon = yield heroku.get(`/addons/${encodeURIComponent(context.args.addon_name)}`)
 
@@ -23,12 +25,8 @@ function * run (context, heroku) {
     )
   }
 
-  let attachment = yield createAttachment(app, context.flags.as, context.flags.confirm)
-    .catch((err) => {
-      if (!err.body || err.body.id !== 'confirmation_required') throw err
-      return cli.confirmApp(app, context.flags.confirm, err.body.message)
-        .then(() => createAttachment(app, context.flags.as, app))
-    })
+  let attachment = yield util.trapConfirmationRequired(context, (confirm) => createAttachment(app, context.flags.as, confirm))
+
   yield cli.action(
     `Setting ${cli.color.attachment(attachment.name)} config vars and restarting ${cli.color.app(app)}`,
     {success: false},

@@ -33,21 +33,27 @@ function * run (context, heroku) {
   const util = require('../../lib/util')
 
   let {app, flags, args} = context
-  let {name, as, confirm} = flags
+  let {name, as} = flags
   let plan = {name: args[0]}
   let config = parseConfig(args.slice(1))
 
-  let addon
-  yield cli.action(`Creating ${plan.name} on ${cli.color.app(app)}`, co(function * () {
-    addon = yield heroku.post(`/apps/${app}/addons`, {
-      body: { config, name, confirm, plan, attachment: {name: as} },
-      headers: {
-        'accept-expansion': 'plan',
-        'x-heroku-legacy-provider-messages': 'true'
-      }
-    })
-    cli.action.done(cli.color.green(util.formatPrice(addon.plan.price)))
-  }))
+  function createAddon (app, config, name, confirm, plan, as) {
+    return cli.action(`Creating ${plan.name} on ${cli.color.app(app)}`,
+      heroku.post(`/apps/${app}/addons`, {
+        body: { config, name, confirm, plan, attachment: {name: as} },
+        headers: {
+          'accept-expansion': 'plan',
+          'x-heroku-legacy-provider-messages': 'true'
+        }
+      }).then(function (addon) {
+        cli.action.done(cli.color.green(util.formatPrice(addon.plan.price)))
+        return addon
+      })
+    )
+  }
+
+  let addon = yield util.trapConfirmationRequired(context, (confirm) => (createAddon(app, config, name, confirm, plan, as)))
+
   if (addon.config_vars.length) {
     let configVars = addon.config_vars.map(c => cli.color.configVar(c)).join(', ')
     cli.log(`Created ${cli.color.addon(addon.name)} as ${configVars}`)
