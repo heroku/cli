@@ -26,37 +26,10 @@ module.exports = {
   formatPrice: function (price) {
     const printf = require('printf')
 
-    if (!price) { return }
-    if (price.cents === 0) { return 'free' }
+    if (!price) return
+    if (price.cents === 0) return 'free'
 
     let fmt = price.cents % 100 === 0 ? '$%.0f/%s' : '$%.02f/%s'
     return printf(fmt, price.cents / 100, price.unit)
-  },
-
-  formatState: function (state) {
-    switch (state) {
-      case 'provisioned':
-        state = 'created'
-        break
-      case 'provisioning':
-        state = 'creating'
-        break
-      case 'deprovisioned':
-        state = 'errored'
-        break
-      default:
-        state = ''
-    }
-    return state
-  },
-
-  trapConfirmationRequired: function * (context, fn) {
-    return yield fn(context.flags.confirm)
-    .catch((err) => {
-      if (!err.body || err.body.id !== 'confirmation_required') throw err
-      return cli.confirmApp(context.app, context.flags.confirm, err.body.message)
-        .then(() => fn(context.app))
-    })
   }
-
 }

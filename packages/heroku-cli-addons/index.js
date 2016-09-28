@@ -19,8 +19,7 @@ exports.commands = flatten([
   require('./commands/addons/plans'),
   require('./commands/addons/rename'),
   require('./commands/addons/services'),
-  require('./commands/addons/upgrade'),
-  require('./commands/addons/wait')
+  require('./commands/addons/upgrade')
 ])
 
 exports.resolve = require('./lib/resolve')

@@ -8,7 +8,6 @@
   },
   "dependencies": {
     "co": "4.6.0",
-    "co-wait": "0.0.0",
     "heroku-cli-util": "6.0.15",
     "lodash.flatten": "4.3.0",
     "lodash.groupby": "4.5.1",
@@ -22,7 +21,6 @@
   },
   "devDependencies": {
     "chai": "^3.2.0",
-    "lolex": "^1.5.1",
     "mocha": "3.0.2",
     "nock": "8.0.0",
     "nyc": "7.1.0",

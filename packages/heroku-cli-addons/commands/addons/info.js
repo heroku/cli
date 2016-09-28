@@ -4,7 +4,6 @@ let cli = require('heroku-cli-util')
 let co = require('co')
 
 let formatPrice = require('../../lib/util').formatPrice
-let formatState = require('../../lib/util').formatState
 let style = require('../../lib/util').style
 
 let run = cli.command({preauth: true}, function (ctx, api) {
@@ -28,8 +27,7 @@ let run = cli.command({preauth: true}, function (ctx, api) {
         ].join('::')
       }).sort(),
       'Owning app': style('app', addon.app.name),
-      'Installed at': (new Date(addon.created_at)).toString(),
-      State: formatState(addon.state)
+      'Installed at': (new Date(addon.created_at)).toString()
     })
   })
 })
