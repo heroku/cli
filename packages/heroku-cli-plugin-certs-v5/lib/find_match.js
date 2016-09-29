@@ -6,13 +6,13 @@ let isWildcardMatch = require('./is_wildcard_match')
 let stableCnames = ['.herokudns.com', '.herokudnsdev.com']
 
 function matches (match) {
-  return match && _.find(stableCnames, (stableCname) => match.cname.endsWith(stableCname))
+  return match && (match.kind === 'heroku' || _.find(stableCnames, (stableCname) => match.cname.endsWith(stableCname)))
 }
 
 module.exports = function (certDomain, domains) {
   let exactMatch = _.find(domains, (domain) => certDomain === domain.hostname)
   if (matches(exactMatch)) {
-    return exactMatch.cname
+    return exactMatch
   }
 
   let wildcardMatch = _.find(domains, function (domain) {
@@ -20,7 +20,7 @@ module.exports = function (certDomain, domains) {
   })
 
   if (matches(wildcardMatch)) {
-    return wildcardMatch.cname
+    return wildcardMatch
   }
 
   return null

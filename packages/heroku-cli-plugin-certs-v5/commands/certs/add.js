@@ -113,24 +113,68 @@ function * getChoices (certDomains, newDomains, existingDomains, context) {
   }
 }
 
+function * getDomains (context, heroku) {
+  function someNull (domains) {
+    return _.some(domains, (domain) => domain.kind === 'custom' && !domain.cname)
+  }
+
+  function apiRequest (context, heroku) {
+    return heroku.request({
+      path: `/apps/${context.app}/domains`
+    })
+  }
+
+  let apiDomains = yield apiRequest(context, heroku)
+
+  if (someNull(apiDomains)) {
+    yield cli.action('Waiting for stable domains to be created', co(function * () {
+      const wait = require('co-wait')
+
+      let i = 0
+      do {
+        // trying 30 times was easier for me to test that setTimeout
+        if (i >= 30) {
+          throw new Error('Timed out while waiting for stable domains to be created')
+        }
+
+        yield wait(1000)
+        apiDomains = yield apiRequest(context, heroku)
+
+        i++
+      } while (someNull(apiDomains))
+    }))
+  }
+
+  return apiDomains
+}
+
 function * addDomains (context, heroku, meta, cert) {
   let certDomains = cert.ssl_cert.cert_domains
 
-  let apiDomains = yield heroku.request({
-    path: `/apps/${context.app}/domains`
-  })
+  let apiDomains = yield getDomains(context, heroku)
 
   let existingDomains = []
   let newDomains = []
+  let herokuDomains = []
 
   certDomains.forEach(function (certDomain) {
     let matches = findMatch(certDomain, apiDomains)
     if (matches) {
-      existingDomains.push(certDomain)
+      if (matches.kind === 'heroku') {
+        herokuDomains.push(certDomain)
+      } else {
+        existingDomains.push(certDomain)
+      }
     } else {
       newDomains.push(certDomain)
     }
   })
+
+  if (herokuDomains.length > 0) {
+    cli.log()
+    cli.styledHeader('The following common names are for hosts that are managed by Heroku')
+    herokuDomains.forEach((domain) => cli.log(domain))
+  }
 
   if (existingDomains.length > 0) {
     cli.log()

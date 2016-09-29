@@ -1,7 +1,13 @@
 'use strict'
 /* globals describe it beforeEach afterEach cli */
 
-let expect = require('chai').expect
+let chai = require('chai')
+
+let chaiAsPromised = require('chai-as-promised')
+chai.use(chaiAsPromised)
+
+let expect = chai.expect
+let assert = chai.assert
 let nock = require('nock')
 var fs = require('fs')
 var sinon = require('sinon')
@@ -11,6 +17,7 @@ let inquirer
 let certs
 
 let endpoint = require('../../stubs/sni-endpoints.js').endpoint
+let endpointHeroku = require('../../stubs/sni-endpoints.js').endpoint_heroku
 let endpointStables = require('../../stubs/sni-endpoints.js').endpoint_stables
 let endpointWarning = require('../../stubs/sni-endpoints.js').endpoint_warning
 let endpointWildcard = require('../../stubs/sni-endpoints.js').endpoint_wildcard
@@ -19,6 +26,8 @@ let certificateDetails = require('../../stubs/sni-endpoints.js').certificate_det
 let error = require('../../../lib/error.js')
 let assertExit = require('../../assert_exit.js')
 let unwrap = require('../../unwrap.js')
+
+let lolex = require('lolex')
 
 function mockDomains (inquirer) {
   nock('https://api.heroku.com')
@@ -673,6 +682,44 @@ baz.example.org  CNAME        baz.example.org.herokudns.com
       })
     })
 
+    it('# does not error out if the cert CN is for the heroku domain', function () {
+      let mock = nock('https://api.heroku.com')
+        .post('/apps/example/sni-endpoints', {
+          certificate_chain: 'pem content', private_key: 'key content'
+        })
+        .reply(200, endpointHeroku)
+
+      let domainsMock = nock('https://api.heroku.com')
+        .get('/apps/example/domains')
+        .reply(200, [
+          {'kind': 'heroku', 'hostname': 'tokyo-1050.herokuapp.com', 'cname': null}
+        ])
+
+      return certs.run({app: 'example', args: {CRT: 'pem_file', KEY: 'key_file'}, flags: {bypass: true}}).then(function () {
+        mock.done()
+        domainsMock.done()
+        expect(unwrap(cli.stderr)).to.equal('Adding SSL certificate to example... done\n')
+        /* eslint-disable no-irregular-whitespace */
+        /* eslint-disable no-trailing-spaces */
+        expect(cli.stdout).to.equal(
+          `Certificate details:
+Common Name(s): tokyo-1050.herokuapp.com
+Expires At:     2013-08-01 21:34 UTC
+Issuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=heroku.com
+Starts At:      2012-08-01 21:34 UTC
+Subject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=tokyo-1050.herokuapp.com
+SSL certificate is self signed.
+
+=== The following common names are for hosts that are managed by Heroku
+tokyo-1050.herokuapp.com
+
+=== Your certificate has been added successfully.  Add a custom domain to your app by running heroku domains:add <yourdomain.com>
+`)
+        /* eslint-enable no-trailing-spaces */
+        /* eslint-enable no-irregular-whitespace */
+      })
+    })
+
     it('# does not prompt if domains covered with wildcard', function () {
       let mock = nock('https://api.heroku.com')
         .post('/apps/example/sni-endpoints', {
@@ -863,6 +910,125 @@ SSL certificate is self signed.
 `)
         /* eslint-disable no-irregular-whitespace */
         /* eslint-enable no-trailing-spaces */
+      })
+    })
+
+    describe('waiting for domains', function () {
+      let clock
+
+      beforeEach(function () {
+        cli.mockConsole()
+        clock = lolex.install()
+        clock.setTimeout = function (fn, timeout) { fn() }
+      })
+
+      afterEach(function () {
+        clock.uninstall()
+      })
+
+      it('# waits for custom domains to have a cname', function () {
+        let mock = nock('https://api.heroku.com')
+          .post('/apps/example/sni-endpoints', {
+            certificate_chain: 'pem content', private_key: 'key content'
+          })
+          .reply(200, endpointStables)
+
+        let domainsMock = nock('https://api.heroku.com')
+          .get('/apps/example/domains')
+          .reply(200, [
+            {'kind': 'heroku', 'hostname': 'tokyo-1050.herokuapp.com', 'cname': null, 'status': 'none'},
+            {'kind': 'custom', 'hostname': 'foo.example.org', 'cname': null, 'status': 'none'},
+            {'kind': 'custom', 'hostname': 'bar.example.org', 'cname': null, 'status': 'none'},
+            {'kind': 'custom', 'hostname': 'biz.example.com', 'cname': null, 'status': 'none'}
+          ])
+
+        let domainsRetry = nock('https://api.heroku.com')
+          .get('/apps/example/domains')
+          .reply(200, [
+            {'kind': 'heroku', 'hostname': 'tokyo-1050.herokuapp.com', 'cname': null, 'status': 'none'},
+            {'kind': 'custom', 'hostname': 'foo.example.org', 'cname': null, 'status': 'none'},
+            {'kind': 'custom', 'hostname': 'bar.example.org', 'cname': 'bar.example.org.herokudns.com', 'status': 'succeeded'},
+            {'kind': 'custom', 'hostname': 'biz.example.com', 'cname': 'biz.example.com.herokudns.com', 'status': 'succeeded'}
+          ])
+
+        let domainsSuccess = nock('https://api.heroku.com')
+          .get('/apps/example/domains')
+          .reply(200, [
+            {'kind': 'heroku', 'hostname': 'tokyo-1050.herokuapp.com', 'cname': null, 'status': 'none'},
+            {'kind': 'custom', 'hostname': 'foo.example.org', 'cname': 'foo.example.org.herokudns.com', 'status': 'succeeded'},
+            {'kind': 'custom', 'hostname': 'bar.example.org', 'cname': 'bar.example.org.herokudns.com', 'status': 'succeeded'},
+            {'kind': 'custom', 'hostname': 'biz.example.com', 'cname': 'biz.example.com.herokudns.com', 'status': 'succeeded'}
+          ])
+
+        return certs.run({app: 'example', args: {CRT: 'pem_file', KEY: 'key_file'}, flags: {bypass: true}}).then(function () {
+          mock.done()
+          domainsMock.done()
+          domainsRetry.done()
+          domainsSuccess.done()
+          expect(unwrap(cli.stderr)).to.equal('Adding SSL certificate to example... done\nWaiting for stable domains to be created... done\n')
+          /* eslint-disable no-trailing-spaces */
+          expect(cli.stdout).to.equal(
+            `Certificate details:
+Common Name(s): foo.example.org
+                bar.example.org
+                biz.example.com
+Expires At:     2013-08-01 21:34 UTC
+Issuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
+Starts At:      2012-08-01 21:34 UTC
+Subject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
+SSL certificate is self signed.
+
+=== The following common names already have domain entries
+foo.example.org
+bar.example.org
+biz.example.com
+
+=== Your certificate has been added successfully.  Update your application's DNS settings as follows
+Domain           Record Type  DNS Target
+───────────────  ───────────  ─────────────────────────────
+foo.example.org  CNAME        foo.example.org.herokudns.com
+bar.example.org  CNAME        bar.example.org.herokudns.com
+biz.example.com  CNAME        biz.example.com.herokudns.com
+`)
+          /* eslint-enable no-trailing-spaces */
+        })
+      })
+
+      it('# tries 30 times and then gives up', function () {
+        let mock = nock('https://api.heroku.com')
+          .post('/apps/example/sni-endpoints', {
+            certificate_chain: 'pem content', private_key: 'key content'
+          })
+          .reply(200, endpointStables)
+
+        let domainsMock = nock('https://api.heroku.com')
+          .get('/apps/example/domains')
+          .times(31)
+          .reply(200, [
+            {'kind': 'heroku', 'hostname': 'tokyo-1050.herokuapp.com', 'cname': null, 'status': 'none'},
+            {'kind': 'custom', 'hostname': 'foo.example.org', 'cname': null, 'status': 'none'},
+            {'kind': 'custom', 'hostname': 'bar.example.org', 'cname': null, 'status': 'none'},
+            {'kind': 'custom', 'hostname': 'biz.example.com', 'cname': null, 'status': 'none'}
+          ])
+
+        return assert.isRejected(certs.run({app: 'example', args: {CRT: 'pem_file', KEY: 'key_file'}, flags: {bypass: true}}), /Timed out while waiting for stable domains to be created/).then(function () {
+          mock.done()
+          domainsMock.done()
+          expect(unwrap(cli.stderr)).to.equal('Adding SSL certificate to example... done\nWaiting for stable domains to be created... !!!\n')
+          /* eslint-disable no-trailing-spaces */
+          expect(cli.stdout).to.equal(
+            `Certificate details:
+Common Name(s): foo.example.org
+                bar.example.org
+                biz.example.com
+Expires At:     2013-08-01 21:34 UTC
+Issuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
+Starts At:      2012-08-01 21:34 UTC
+Subject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
+SSL certificate is self signed.
+`)
+          /* eslint-enable no-trailing-spaces */
+        })
       })
     })
   })
