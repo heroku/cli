@@ -31,7 +31,7 @@ class Dyno {
    * @returns {Promise} promise resolved when dyno process is created
    */
   start () {
-    let command = this.opts['exit-code'] ? `${this.opts.command}; echo heroku-command-exit-status $?` : this.opts.command
+    let command = this.opts['exit-code'] ? `${this.opts.command}; echo "\uFFFF heroku-command-exit-status $?"` : this.opts.command
     let start = this.heroku.request({
       path: this.opts.dyno ? `/apps/${this.opts.app}/dynos/${this.opts.dyno}` : `/apps/${this.opts.app}/dynos`,
       method: 'POST',
@@ -109,9 +109,9 @@ class Dyno {
         return
       }
       data = data.replace('\r\n', '\n')
-      let exitCode = data.match(/heroku-command-exit-status (\d+)/m)
+      let exitCode = data.match(/\uFFFF heroku-command-exit-status (\d+)/m)
       if (exitCode) {
-        process.stdout.write(data.replace(/^heroku-command-exit-status \d+$\n?/m, ''))
+        process.stdout.write(data.replace(/^\uFFFF heroku-command-exit-status \d+$\n?/m, ''))
         let code = parseInt(exitCode[1])
         if (code === 0) this.resolve()
         else {
