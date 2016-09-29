@@ -45,8 +45,8 @@ function * run (context, heroku) {
     let orgName = Utils.getOwner(app.owner.email)
 
     try {
-      let admins = yield heroku.get(`/organizations/${orgName}/members`)
-      admins = _.filter(admins, { 'role': 'admin' })
+      const members = yield heroku.get(`/organizations/${orgName}/members`)
+      let admins = members.filter(member => member.role === 'admin')
 
       let adminPermissions = yield heroku.get('/organizations/permissions')
 

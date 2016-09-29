@@ -2,27 +2,28 @@
 
 let cli = require('heroku-cli-util')
 let co = require('co')
-let _ = require('lodash')
-
-function printJSON (orgs) {
-  cli.log(JSON.stringify(orgs, null, 2))
-}
-
-function print (orgs) {
-  orgs = _.sortBy(orgs, 'name')
-  cli.table(orgs, {
-    columns: [
-      {key: 'name', label: 'Organization', format: o => cli.color.green(o)},
-      {key: 'role', label: 'Role', format: r => r}
-    ],
-    printHeader: false
-  })
-}
+let Utils = require('../../lib/utils')
 
 function * run (context, heroku) {
   let orgs = yield heroku.get('/organizations')
-  if (context.flags.json) printJSON(orgs)
-  else print(orgs)
+  let teams = orgs.filter(o => o.type === 'team')
+
+  // Filter by teams only
+  if (context.flags.teams) {
+    orgs = teams
+  } else if (context.flags.enterprise) {
+    orgs = orgs.filter(o => o.type === 'enterprise')
+  }
+
+  if (context.flags.json) {
+    Utils.printGroupsJSON(orgs)
+  } else {
+    Utils.printGroups(orgs, {label: 'Organizations'})
+  }
+
+  if ((teams.length) && (!context.flags.teams) && (!context.flags.enterprise)) {
+    cli.warn(`To list your teams only you can use ${cli.color.cmd('heroku teams')}`)
+  }
 }
 
 module.exports = {
@@ -30,7 +31,9 @@ module.exports = {
   description: 'list the organizations that you are a member of',
   needsAuth: true,
   flags: [
-    {name: 'json', description: 'output in json format'}
+    {name: 'json', description: 'output in json format'},
+    {name: 'enterprise', hasValue: false, description: 'filter by enterprise orgs'},
+    {name: 'teams', hasValue: false, description: 'filter by teams'}
   ],
   run: cli.command(co.wrap(run))
 }

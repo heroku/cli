@@ -20,7 +20,7 @@ function * run (context, heroku) {
     orgFeatures = yield heroku.get(`/organizations/${orgName}/features`)
   }
 
-  if (_.includes(_.map(orgFeatures, 'name'), 'org-access-controls')) {
+  if (orgFeatures.find(feature => feature.name === 'org-access-controls')) {
     if (!permissions) error.exit(1, 'Missing argument: permissions')
 
     if (context.flags.privileges) cli.warn('DEPRECATION WARNING: use `--permissions` not `--privileges`')
