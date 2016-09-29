@@ -33,7 +33,6 @@ function dockerLogin(registry, password, verbose) {
   return new Promise((resolve, reject) => {
     let args = [
       'login',
-      '--email=_',
       '--username=_',
       `--password=${ password }`,
       registry
