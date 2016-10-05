@@ -573,7 +573,7 @@ func (p *Plugins) RefreshPlugins() {
 		}
 		action(fmt.Sprintf("Parsing %s", plugin.Name), "done", func() {
 			_, err := p.ParsePlugin(plugin.Name, "symlink")
-			must(err)
+			WarnIfError(err)
 		})
 	}
 }
