@@ -17,6 +17,12 @@ let endpointWarning = require('../../stubs/sni-endpoints.js').endpoint_warning
 let certificateDetails = require('../../stubs/sni-endpoints.js').certificate_details
 let unwrap = require('../../unwrap.js')
 
+function mockFile (fs, file, content) {
+  fs.readFile
+    .withArgs(file, 'utf-8', sinon.match.func)
+    .callsArgWithAsync(2, null, content)
+}
+
 describe('heroku certs:update', function () {
   beforeEach(function () {
     cli.mockConsole()
@@ -38,12 +44,8 @@ describe('heroku certs:update', function () {
   })
 
   it('# requires confirmation', function () {
-    fs.readFile
-      .withArgs('pem_file', sinon.match.func)
-      .callsArgWithAsync(1, null, 'pem content')
-    fs.readFile
-      .withArgs('key_file', sinon.match.func)
-      .callsArgWithAsync(1, null, 'key content')
+    mockFile(fs, 'pem_file', 'pem content')
+    mockFile(fs, 'key_file', 'key content')
 
     var thrown = false
     return certs.run({app: 'example', args: {CRT: 'pem_file', KEY: 'key_file'}, flags: {confirm: 'notexample', bypass: true}}).catch(function (err) {
@@ -55,12 +57,8 @@ describe('heroku certs:update', function () {
   })
 
   it('# updates an endpoint when ssl doctor passes', function () {
-    fs.readFile
-      .withArgs('pem_file', sinon.match.func)
-      .callsArgWithAsync(1, null, 'pem content')
-    fs.readFile
-      .withArgs('key_file', sinon.match.func)
-      .callsArgWithAsync(1, null, 'key content')
+    mockFile(fs, 'pem_file', 'pem content')
+    mockFile(fs, 'key_file', 'key content')
 
     let sslDoctor = nock('https://ssl-doctor.heroku.com', {
       reqheaders: {
@@ -89,12 +87,8 @@ ${certificateDetails}
   })
 
   it('# propegates ssl doctor errors', function () {
-    fs.readFile
-      .withArgs('pem_file', sinon.match.func)
-      .callsArgWithAsync(1, null, 'pem content')
-    fs.readFile
-      .withArgs('key_file', sinon.match.func)
-      .callsArgWithAsync(1, null, 'key content')
+    mockFile(fs, 'pem_file', 'pem content')
+    mockFile(fs, 'key_file', 'key content')
 
     let sslDoctor = nock('https://ssl-doctor.heroku.com', {
       reqheaders: {
@@ -118,12 +112,8 @@ ${certificateDetails}
   })
 
   it('# bypasses ssl doctor', function () {
-    fs.readFile
-      .withArgs('pem_file', sinon.match.func)
-      .callsArgWithAsync(1, null, 'pem content')
-    fs.readFile
-      .withArgs('key_file', sinon.match.func)
-      .callsArgWithAsync(1, null, 'key content')
+    mockFile(fs, 'pem_file', 'pem content')
+    mockFile(fs, 'key_file', 'key content')
 
     let mock = nock('https://api.heroku.com')
       .patch('/apps/example/sni-endpoints/tokyo-1050', {
@@ -142,12 +132,8 @@ ${certificateDetails}
   })
 
   it('# displays warnings', function () {
-    fs.readFile
-      .withArgs('pem_file', sinon.match.func)
-      .callsArgWithAsync(1, null, 'pem content')
-    fs.readFile
-      .withArgs('key_file', sinon.match.func)
-      .callsArgWithAsync(1, null, 'key content')
+    mockFile(fs, 'pem_file', 'pem content')
+    mockFile(fs, 'key_file', 'key content')
 
     let mock = nock('https://api.heroku.com')
       .patch('/apps/example/sni-endpoints/tokyo-1050', {
@@ -163,12 +149,8 @@ ${certificateDetails}
 
   describe('shared', function () {
     beforeEach(function () {
-      fs.readFile
-        .withArgs('pem_file', sinon.match.func)
-        .callsArgWithAsync(1, null, 'pem content')
-      fs.readFile
-        .withArgs('key_file', sinon.match.func)
-        .callsArgWithAsync(1, null, 'key content')
+      mockFile(fs, 'pem_file', 'pem content')
+      mockFile(fs, 'key_file', 'key content')
     })
 
     let callback = function (path, endpoint, variant) {
@@ -235,12 +217,8 @@ describe('heroku certs:update (dogwood)', function () {
       .get('/apps/example/ssl-endpoints')
       .reply(200, [endpointStable])
 
-    fs.readFile
-      .withArgs('pem_file', sinon.match.func)
-      .callsArgWithAsync(1, null, 'pem content')
-    fs.readFile
-      .withArgs('key_file', sinon.match.func)
-      .callsArgWithAsync(1, null, 'key content')
+    mockFile(fs, 'pem_file', 'pem content')
+    mockFile(fs, 'key_file', 'key content')
 
     let mockPut = nock('https://api.heroku.com')
       .patch('/apps/example/ssl-endpoints/tokyo-1050', {

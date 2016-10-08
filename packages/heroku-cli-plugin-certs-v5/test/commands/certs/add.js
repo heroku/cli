@@ -39,6 +39,12 @@ function mockDomains (inquirer) {
   }
 }
 
+function mockFile (fs, file, content) {
+  fs.readFile
+    .withArgs(file, 'utf-8', sinon.match.func)
+    .callsArgWithAsync(2, null, content)
+}
+
 describe('heroku certs:add', function () {
   beforeEach(function () {
     cli.mockConsole()
@@ -58,12 +64,8 @@ describe('heroku certs:add', function () {
 
       mockDomains(inquirer)
 
-      fs.readFile
-        .withArgs('pem_file', sinon.match.func)
-        .callsArgWithAsync(1, null, 'pem content')
-      fs.readFile
-        .withArgs('key_file', sinon.match.func)
-        .callsArgWithAsync(1, null, 'key content')
+      mockFile(fs, 'pem_file', 'pem content')
+      mockFile(fs, 'key_file', 'key content')
 
       let mockSsl = nock('https://api.heroku.com', {
         reqheaders: {'Accept': 'application/vnd.heroku+json; version=3.ssl_cert'}
@@ -100,12 +102,8 @@ ${certificateDetails}
 
     mockDomains(inquirer)
 
-    fs.readFile
-      .withArgs('pem_file', sinon.match.func)
-      .callsArgWithAsync(1, null, 'pem content')
-    fs.readFile
-      .withArgs('key_file', sinon.match.func)
-      .callsArgWithAsync(1, null, 'key content')
+    mockFile(fs, 'pem_file', 'pem content')
+    mockFile(fs, 'key_file', 'key content')
 
     let sslDoctor = nock('https://ssl-doctor.heroku.com', {
       reqheaders: {
@@ -153,12 +151,8 @@ ${certificateDetails}
 
     mockDomains(inquirer)
 
-    fs.readFile
-      .withArgs('pem_file', sinon.match.func)
-      .callsArgWithAsync(1, null, 'pem content')
-    fs.readFile
-      .withArgs('key_file', sinon.match.func)
-      .callsArgWithAsync(1, null, 'key content')
+    mockFile(fs, 'pem_file', 'pem content')
+    mockFile(fs, 'key_file', 'key content')
 
     let sslDoctor = nock('https://ssl-doctor.heroku.com', {
       reqheaders: {
@@ -196,12 +190,8 @@ ${certificateDetails}
 
     mockDomains(inquirer)
 
-    fs.readFile
-      .withArgs('pem_file', sinon.match.func)
-      .callsArgWithAsync(1, null, 'pem content')
-    fs.readFile
-      .withArgs('key_file', sinon.match.func)
-      .callsArgWithAsync(1, null, 'key content')
+    mockFile(fs, 'pem_file', 'pem content')
+    mockFile(fs, 'key_file', 'key content')
 
     let mockSsl = nock('https://api.heroku.com')
       .get('/apps/example/addons/ssl%3Aendpoint')
@@ -239,12 +229,8 @@ ${certificateDetails}
 
     mockDomains(inquirer)
 
-    fs.readFile
-      .withArgs('pem_file', sinon.match.func)
-      .callsArgWithAsync(1, null, 'pem content')
-    fs.readFile
-      .withArgs('key_file', sinon.match.func)
-      .callsArgWithAsync(1, null, 'key content')
+    mockFile(fs, 'pem_file', 'pem content')
+    mockFile(fs, 'key_file', 'key content')
 
     let mockSsl = nock('https://api.heroku.com')
       .get('/apps/example/addons/ssl%3Aendpoint')
@@ -280,12 +266,8 @@ ${certificateDetails}
 
     mockDomains(inquirer)
 
-    fs.readFile
-      .withArgs('pem_file', sinon.match.func)
-      .callsArgWithAsync(1, null, 'pem content')
-    fs.readFile
-      .withArgs('key_file', sinon.match.func)
-      .callsArgWithAsync(1, null, 'key content')
+    mockFile(fs, 'pem_file', 'pem content')
+    mockFile(fs, 'key_file', 'key content')
 
     let mock = nock('https://api.heroku.com')
       .post('/apps/example/sni-endpoints', {
@@ -324,12 +306,8 @@ ${certificateDetails}
 
     mockDomains(inquirer)
 
-    fs.readFile
-      .withArgs('pem_file', sinon.match.func)
-      .callsArgWithAsync(1, null, 'pem content')
-    fs.readFile
-      .withArgs('key_file', sinon.match.func)
-      .callsArgWithAsync(1, null, 'key content')
+    mockFile(fs, 'pem_file', 'pem content')
+    mockFile(fs, 'key_file', 'key content')
 
     let mock = nock('https://api.heroku.com')
       .post('/apps/example/ssl-endpoints', {
@@ -365,12 +343,8 @@ ${certificateDetails}
           'resource': 'addon'
         })
 
-      fs.readFile
-        .withArgs('pem_file', sinon.match.func)
-        .callsArgWithAsync(1, null, 'pem content')
-      fs.readFile
-        .withArgs('key_file', sinon.match.func)
-        .callsArgWithAsync(1, null, 'key content')
+      mockFile(fs, 'pem_file', 'pem content')
+      mockFile(fs, 'key_file', 'key content')
     })
 
     it('# prompts creates an SNI endpoint with stable cnames if no SSL addon', function () {
@@ -1063,12 +1037,8 @@ SSL certificate is self signed.
 
     mockDomains(inquirer)
 
-    fs.readFile
-      .withArgs('pem_file', sinon.match.func)
-      .callsArgWithAsync(1, null, 'pem content')
-    fs.readFile
-      .withArgs('key_file', sinon.match.func)
-      .callsArgWithAsync(1, null, 'key content')
+    mockFile(fs, 'pem_file', 'pem content')
+    mockFile(fs, 'key_file', 'key content')
 
     let mockSni = nock('https://api.heroku.com', {
       reqheaders: {'Accept': 'application/vnd.heroku+json; version=3.sni_ssl_cert'}
@@ -1098,12 +1068,8 @@ ${certificateDetails}
 
     mockDomains(inquirer)
 
-    fs.readFile
-      .withArgs('pem_file', sinon.match.func)
-      .callsArgWithAsync(1, null, 'pem content')
-    fs.readFile
-      .withArgs('key_file', sinon.match.func)
-      .callsArgWithAsync(1, null, 'key content')
+    mockFile(fs, 'pem_file', 'pem content')
+    mockFile(fs, 'key_file', 'key content')
 
     let mockSni = nock('https://api.heroku.com', {
       reqheaders: {'Accept': 'application/vnd.heroku+json; version=3.ssl_cert'}

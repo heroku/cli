@@ -55,8 +55,8 @@ function * getMeta (context, heroku) {
 
 function * getFiles (context) {
   let files = yield {
-    crt: readFile(context.args.CRT),
-    key: readFile(context.args.KEY)
+    crt: readFile(context.args.CRT, 'utf-8'),
+    key: readFile(context.args.KEY, 'utf-8')
   }
 
   let crt, key
