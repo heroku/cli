@@ -93,6 +93,7 @@ let cmd = {
   run: cli.command({preauth: true}, co.wrap(run))
 }
 
-exports.displayDB = displayDB
-exports.root = cmd
-exports.info = Object.assign({}, cmd, {command: 'info'})
+module.exports = [
+  cmd,
+  Object.assign({command: 'info'}, cmd)
+]

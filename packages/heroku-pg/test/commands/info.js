@@ -17,7 +17,7 @@ const fetcher = () => {
 
 const cmd = proxyquire('../../commands/info', {
   '../lib/fetcher': fetcher
-}).root
+})[0]
 
 describe('pg', () => {
   let api, pg
