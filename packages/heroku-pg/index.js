@@ -8,6 +8,7 @@ exports.commands = [
   require('./commands/info').info,
   require('./commands/info').root,
   require('./commands/kill'),
+  require('./commands/killall'),
   require('./commands/ps'),
   require('./commands/wait')
 ]
