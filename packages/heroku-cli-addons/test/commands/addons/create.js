@@ -57,6 +57,14 @@ Use heroku addons:docs heroku-db3 to view documentation
         flags: {as: 'mydb'}
       })
     })
+
+    it('turns args value true into literal true, not a string', () => {
+      return cmd.run({
+        app: 'myapp',
+        args: ['heroku-postgresql:standard-0', '--rollback', '--follow=otherdb', '--foo=true'],
+        flags: {as: 'mydb'}
+      })
+    })
   })
 
   context('creating a db requiring confirmation', () => {

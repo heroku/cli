@@ -13,6 +13,7 @@ function parseConfig (args) {
     if (key.includes('=')) {
       [key, ...val] = key.split('=')
       val = val.join('=')
+      if (val === 'true') { val = true }
       config[key] = val
     } else {
       val = args.shift()
