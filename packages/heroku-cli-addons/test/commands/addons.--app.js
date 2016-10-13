@@ -50,12 +50,12 @@ describe('addons --app', function () {
 
       return run('acme-inc-www', function () {
         util.expectOutput(cli.stdout, `
-Add-on                      Plan       Price
-──────────────────────────  ─────────  ─────────
-heroku-postgresql (www-db)  hobby-dev  free
+Add-on                      Plan       Price      State
+──────────────────────────  ─────────  ─────────  ────────
+heroku-postgresql (www-db)  hobby-dev  free       created
  └─ as DATABASE
 
-heroku-redis (www-redis)    premium-2  $60/month
+heroku-redis (www-redis)    premium-2  $60/month  creating
  └─ as REDIS
 
 The table above shows add-ons and the attachments to the current app (acme-inc-www) or other apps.
@@ -70,9 +70,9 @@ The table above shows add-ons and the attachments to the current app (acme-inc-w
       ])
       return run('acme-inc-www', function () {
         util.expectOutput(cli.stdout, `
-Add-on                             Plan       Price
-─────────────────────────────────  ─────────  ─────
-heroku-postgresql (www-db)         hobby-dev  free
+Add-on                             Plan       Price  State
+─────────────────────────────────  ─────────  ─────  ───────
+heroku-postgresql (www-db)         hobby-dev  free   created
  ├─ as DATABASE
  └─ as WWW_DB on acme-inc-dwh app
 
@@ -89,9 +89,9 @@ The table above shows add-ons and the attachments to the current app (acme-inc-w
 
       return run('acme-inc-dwh', function () {
         util.expectOutput(cli.stdout, `
-Add-on                               Plan       Price
-───────────────────────────────────  ─────────  ────────────────────────────
-heroku-postgresql (www-db)           hobby-dev  (billed to acme-inc-www app)
+Add-on                               Plan       Price                         State
+───────────────────────────────────  ─────────  ────────────────────────────  ───────
+heroku-postgresql (www-db)           hobby-dev  (billed to acme-inc-www app)  created
  ├─ as WWW_DB
  └─ as DATABASE on acme-inc-www app
 
@@ -241,12 +241,12 @@ The table above shows add-ons and the attachments to the current app (acme-inc-d
   })
 
   it('prints add-on line for attachment when add-on info is missing from API (e.g. no permissions on billing app)', function () {
-    mockAPI('acme-inc-api', [ /* no add-on !*/], [fixtures.attachments['acme-inc-api::WWW_DB']])
+    mockAPI('acme-inc-api', [ /* no add-on ! */], [fixtures.attachments['acme-inc-api::WWW_DB']])
 
     return run('acme-inc-api', function () {
       util.expectOutput(cli.stdout, `
-Add-on         Plan  Price
-─────────────  ────  ────────────────────────────
+Add-on         Plan  Price                         State
+─────────────  ────  ────────────────────────────  ─────
 ? (www-db)     ?     (billed to acme-inc-www app)
  └─ as WWW_DB
 

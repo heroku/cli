@@ -31,11 +31,11 @@ describe('addons --all', function () {
     it('prints add-ons in a table', function () {
       return cmd.run({flags: {}}).then(function () {
         util.expectOutput(cli.stdout,
-          `Owning App    Add-on     Plan                         Price
-────────────  ─────────  ───────────────────────────  ─────────
-acme-inc-api  api-redis  heroku-redis:premium-2       $60/month
-acme-inc-www  www-db     heroku-postgresql:hobby-dev  free
-acme-inc-www  www-redis  heroku-redis:premium-2       $60/month`)
+`Owning App    Add-on     Plan                         Price      State
+────────────  ─────────  ───────────────────────────  ─────────  ────────
+acme-inc-api  api-redis  heroku-redis:premium-2       $60/month  created
+acme-inc-www  www-db     heroku-postgresql:hobby-dev  free       created
+acme-inc-www  www-redis  heroku-redis:premium-2       $60/month  creating`)
       })
     })
 

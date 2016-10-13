@@ -40,5 +40,22 @@ module.exports = {
       return cli.confirmApp(context.app, context.flags.confirm, err.body.message)
         .then(() => fn(context.app))
     })
+  },
+
+  formatState: function (state) {
+    switch (state) {
+      case 'provisioned':
+        state = 'created'
+        break
+      case 'provisioning':
+        state = 'creating'
+        break
+      case 'deprovisioned':
+        state = 'errored'
+        break
+      default:
+        state = ''
+    }
+    return state
   }
 }
