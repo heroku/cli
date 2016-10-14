@@ -3,7 +3,7 @@
   "description": "Heroku CLI",
   "private": true,
   "dependencies": {
-    "heroku-apps": "2.1.16",
+    "heroku-apps": "2.1.17",
     "heroku-certs": "1.1.18",
     "heroku-cli-addons": "1.1.7",
     "heroku-fork": "4.1.11",
