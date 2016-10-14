@@ -46,6 +46,73 @@ describe('resolve', () => {
         .then(() => { throw new Error('unreachable') })
         .catch((err) => expect(err, 'to satisfy', {statusCode: 401}))
     })
+
+    describe('memoization', () => {
+      it('memoizes an addon for an app', () => {
+        let api = nock('https://api.heroku.com:443')
+          .get('/apps/myapp/addons/myaddon-6').reply(200, {name: 'myaddon-6'})
+
+        return resolve.addon(new Heroku(), 'myapp', 'myaddon-6')
+          .then(function (addon) {
+            expect(addon, 'to satisfy', {name: 'myaddon-6'})
+            api.done()
+          })
+          .then(function () {
+            nock.cleanAll()
+
+            return resolve.addon(new Heroku(), 'myapp', 'myaddon-6')
+              .then(function (memoizedAddon) {
+                expect(memoizedAddon, 'to satisfy', {name: 'myaddon-6'})
+              })
+          })
+          .then(function () {
+            let diffId = nock('https://api.heroku.com:443')
+              .get('/apps/myapp/addons/myaddon-7').reply(200, {name: 'myaddon-7'})
+
+            return resolve.addon(new Heroku(), 'myapp', 'myaddon-7')
+              .then(function (diffIdAddon) {
+                expect(diffIdAddon, 'to satisfy', {name: 'myaddon-7'})
+                diffId.done()
+              })
+          })
+          .then(function () {
+            let diffApp = nock('https://api.heroku.com:443')
+              .get('/apps/fooapp/addons/myaddon-6').reply(200, {name: 'myaddon-6'})
+
+            return resolve.addon(new Heroku(), 'fooapp', 'myaddon-6')
+              .then(function (diffAppAddon) {
+                expect(diffAppAddon, 'to satisfy', {name: 'myaddon-6'})
+                diffApp.done()
+              })
+          })
+      })
+
+      it('does not memoize errors', () => {
+        let api = nock('https://api.heroku.com:443')
+          .get('/apps/myapp/addons/myaddon-8').reply(403, {id: 'two_factor'})
+
+        return resolve.addon(new Heroku(), 'myapp', 'myaddon-8')
+          .then(() => { throw new Error('unreachable') })
+          .catch((err) => expect(err.body, 'to satisfy', {id: 'two_factor'}))
+          .then(() => api.done())
+          .then(function () {
+            nock.cleanAll()
+
+            let apiRetry = nock('https://api.heroku.com:443')
+              .get('/apps/myapp/addons/myaddon-8').reply(200, {name: 'myaddon-8'})
+
+            return resolve.addon(new Heroku(), 'myapp', 'myaddon-8')
+              .then((addon) => expect(addon, 'to satisfy', {name: 'myaddon-8'}))
+              .then(() => apiRetry.done())
+          })
+          .then(function () {
+            nock.cleanAll()
+
+            return resolve.addon(new Heroku(), 'myapp', 'myaddon-8')
+              .then((addon) => expect(addon, 'to satisfy', {name: 'myaddon-8'}))
+          })
+      })
+    })
   })
 
   describe('attachment', () => {

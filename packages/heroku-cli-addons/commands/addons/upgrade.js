@@ -122,7 +122,7 @@ Examples:
   needsAuth: true,
   wantsApp: true,
   args: [{name: 'addon'}, {name: 'plan', optional: true}],
-  run: cli.command(co.wrap(run))
+  run: cli.command({preauth: true}, co.wrap(run))
 }
 
 module.exports = [

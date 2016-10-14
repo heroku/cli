@@ -2,7 +2,7 @@
 
 const memoize = require('lodash.memoize')
 
-exports.addon = memoize(function (heroku, app, id, headers) {
+const addonResolver = function (heroku, app, id, headers) {
   headers = headers || {}
   let getAddon = function (id) {
     return heroku.get(`/addons/${encodeURIComponent(id)}`, {headers})
@@ -11,7 +11,36 @@ exports.addon = memoize(function (heroku, app, id, headers) {
   if (!app || id.indexOf('::') !== -1) return getAddon(id)
   return heroku.get(`/apps/${app}/addons/${encodeURIComponent(id)}`, {headers})
     .catch(function (err) { if (err.statusCode === 404) return getAddon(id); else throw err })
-}, (_, app, id) => `${app}-${id}`)
+}
+
+/**
+ * Replacing memoize with our own memoization function that works with promises
+ * https://github.com/lodash/lodash/blob/da329eb776a15825c04ffea9fa75ae941ea524af/lodash.js#L10534
+ */
+const memoizePromise = function (func, resolver) {
+  var memoized = function () {
+    const args = arguments
+    const key = resolver.apply(this, args)
+    const cache = memoized.cache
+
+    if (cache.has(key)) {
+      return cache.get(key)
+    }
+
+    const result = func.apply(this, args)
+
+    result.then(function () {
+      memoized.cache = cache.set(key, result) || cache
+      return arguments
+    })
+
+    return result
+  }
+  memoized.cache = new memoize.Cache()
+  return memoized
+}
+
+exports.addon = memoizePromise(addonResolver, (_, app, id) => `${app}|${id}`)
 
 exports.attachment = function (heroku, app, id, headers) {
   headers = headers || {}
