@@ -569,6 +569,47 @@ foo.example.org  CNAME        foo.example.org.herokudns.com
       })
     })
 
+    it('# when passed existing domains does not prompt and creates an SNI endpoint with stable cnames if no SSL addon and wildcard match', function () {
+      let mock = nock('https://api.heroku.com')
+        .post('/apps/example/sni-endpoints', {
+          certificate_chain: 'pem content', private_key: 'key content'
+        })
+        .reply(200, endpointWildcard)
+
+      let domainsMock = nock('https://api.heroku.com')
+        .get('/apps/example/domains')
+        .reply(200, [])
+
+      let domainsCreateFoo = nock('https://api.heroku.com')
+        .post('/apps/example/domains', {hostname: 'foo.example.org'})
+        .reply(200,
+          {'kind': 'custom', 'cname': 'foo.example.org.herokudns.com', 'hostname': 'foo.example.org'}
+      )
+
+      return certs.run({app: 'example', args: {CRT: 'pem_file', KEY: 'key_file'}, flags: {bypass: true, domains: 'foo.example.org'}}).then(function () {
+        mock.done()
+        domainsMock.done()
+        domainsCreateFoo.done()
+        expect(unwrap(cli.stderr)).to.equal('Adding SSL certificate to example... done\n\nAdding domain foo.example.org to example... done\n')
+        /* eslint-disable no-trailing-spaces */
+        expect(cli.stdout).to.equal(
+          `Certificate details:
+Common Name(s): *.example.org
+Expires At:     2013-08-01 21:34 UTC
+Issuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
+Starts At:      2012-08-01 21:34 UTC
+Subject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
+SSL certificate is self signed.
+
+=== Your certificate has been added successfully.  Update your application's DNS settings as follows
+Domain           Record Type  DNS Target
+───────────────  ───────────  ─────────────────────────────
+foo.example.org  CNAME        foo.example.org.herokudns.com
+`)
+        /* eslint-enable no-trailing-spaces */
+      })
+    })
+
     it('# when passed bad domains does not prompt and creates an SNI endpoint with stable cnames if no SSL addon', function () {
       let mock = nock('https://api.heroku.com')
         .post('/apps/example/sni-endpoints', {

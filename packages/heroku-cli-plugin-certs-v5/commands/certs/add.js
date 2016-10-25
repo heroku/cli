@@ -72,11 +72,15 @@ function * getFiles (context) {
   return {crt, key}
 }
 
+function hasMatch (certDomains, domain) {
+  return _.find(certDomains, (certDomain) => (certDomain === domain || isWildcardMatch(certDomain, domain)))
+}
+
 function getFlagChoices (context, certDomains, existingDomains) {
   let flagDomains = context.flags.domains.split(',').map((str) => str.trim()).filter((str) => str !== '')
   let choices = _.difference(flagDomains, existingDomains)
 
-  let badChoices = _.remove(choices, (choice) => (!_.find(certDomains, (certDomain) => certDomain === choice)))
+  let badChoices = _.remove(choices, (choice) => (!hasMatch(certDomains, choice)))
   badChoices.forEach(function (choice) {
     cli.warn(`Not adding ${choice} because it is not listed in the certificate`)
   })
@@ -238,11 +242,7 @@ function * addDomains (context, heroku, meta, cert) {
     .map(function (domain) {
       let warning = null
       if (hasWildcard && domain.hostname) {
-        let hasMatch = _.some(certDomains, function (certDomain) {
-          return domain.hostname === certDomain || isWildcardMatch(certDomain, domain.hostname)
-        })
-
-        if (!hasMatch) {
+        if (!hasMatch(certDomains, domain.hostname)) {
           warning = '! Does not match any domains on your SSL certificate'
         }
       }
