@@ -1,8 +1,8 @@
 'use strict'
 
-let lib = require('../lib/spaces')()
-let cli = require('heroku-cli-util')
-let co = require('co')
+const cli = require('heroku-cli-util')
+const co = require('co')
+const lib = require('../lib/spaces')
 
 function * run (context, heroku) {
   let spaceName = context.flags.space || context.args.space
@@ -30,9 +30,10 @@ function render (space, flags) {
       Organization: space.organization.name,
       Region: space.region.description,
       State: space.state,
+      Shield: lib.displayShieldState(space),
       'Outbound IPs': lib.displayNat(space.outbound_ips),
       'Created at': space.created_at
-    }, ['ID', 'Organization', 'Region', 'State', 'Outbound IPs', 'Created at'])
+    }, ['ID', 'Organization', 'Region', 'State', 'Shield', 'Outbound IPs', 'Created at'])
   }
 }
 

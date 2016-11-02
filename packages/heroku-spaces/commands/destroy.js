@@ -1,10 +1,10 @@
 'use strict'
 
-let cli = require('heroku-cli-util')
-let co = require('co')
+const cli = require('heroku-cli-util')
+const co = require('co')
+const lib = require('../lib/spaces')
 
 function * run (context, heroku) {
-  let lib = require('../lib/spaces')()
   let spaceName = context.flags.space || context.args.space
   if (!spaceName) throw new Error('Space name required.\nUSAGE: heroku spaces:destroy my-space')
   let natWarning = ''

@@ -2,6 +2,7 @@
 
 const cli = require('heroku-cli-util')
 const co = require('co')
+const lib = require('../lib/spaces')
 const parsers = require('../lib/parsers')()
 
 function * run (context, heroku) {
@@ -16,7 +17,9 @@ function * run (context, heroku) {
       channel_name: context.flags.channel,
       region: context.flags.region,
       features: parsers.splitCsv(context.flags.features),
-      log_drain_url: context.flags['log-drain-url']
+      log_drain_url: context.flags['log-drain-url'],
+      shield: context.flags['shield'],
+      owner_pool: context.flags['owner-pool']
     }
   })
   space = yield cli.action(`Creating space ${cli.color.green(space)} in organization ${cli.color.cyan(context.org)}`, request)
@@ -28,8 +31,9 @@ function * run (context, heroku) {
     Organization: space.organization.name,
     Region: space.region.name,
     State: space.state,
+    Shield: lib.displayShieldState(space),
     'Created at': space.created_at
-  }, ['ID', 'Organization', 'Region', 'State', 'Created at'])
+  }, ['ID', 'Organization', 'Region', 'State', 'Shield', 'Created at'])
 }
 
 module.exports = {
@@ -56,7 +60,9 @@ Example:
     {name: 'channel', hasValue: true, hidden: true},
     {name: 'region', hasValue: true, description: 'region name'},
     {name: 'features', hasValue: true, hidden: true, description: 'a list of features separated by commas'},
-    {name: 'log-drain-url', hasValue: true, hidden: true, description: 'direct log drain url'}
+    {name: 'log-drain-url', hasValue: true, hidden: true, description: 'direct log drain url'},
+    {name: 'owner-pool', hasValue: true, hidden: true, description: 'owner pool name'},
+    {name: 'shield', hasValue: false, hidden: true, description: 'create a Shield space'}
   ],
   run: cli.command(co.wrap(run))
 }

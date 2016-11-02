@@ -15,7 +15,7 @@ describe('spaces:info', function () {
     let api = nock('https://api.heroku.com:443', {reqheaders: {'Accept-Expansion': 'region'}})
       .get('/spaces/my-space')
       .reply(200,
-        {name: 'my-space', organization: {name: 'my-org'}, region: {name: 'my-region', description: 'region'}, state: 'enabled', created_at: now}
+        {shield: false, name: 'my-space', organization: {name: 'my-org'}, region: {name: 'my-region', description: 'region'}, state: 'enabled', created_at: now}
     )
     return cmd.run({flags: {space: 'my-space'}})
       .then(() => expect(cli.stdout).to.equal(
@@ -23,6 +23,7 @@ describe('spaces:info', function () {
 Organization: my-org
 Region:       region
 State:        enabled
+Shield:       off
 Created at:   ${now.toISOString()}
 `))
       .then(() => api.done())
@@ -44,7 +45,7 @@ Created at:   ${now.toISOString()}
     let api = nock('https://api.heroku.com:443', {reqheaders: {'Accept-Expansion': 'region'}})
       .get('/spaces/my-space')
       .reply(200,
-        {name: 'my-space', organization: {name: 'my-org'}, region: {name: 'my-region', description: 'region'}, state: 'allocated', created_at: now}
+        {shield: false, name: 'my-space', organization: {name: 'my-org'}, region: {name: 'my-region', description: 'region'}, state: 'allocated', created_at: now}
     )
     let outbound = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/nat')
@@ -57,6 +58,7 @@ Created at:   ${now.toISOString()}
 Organization: my-org
 Region:       region
 State:        allocated
+Shield:       off
 Outbound IPs: 123.456.789.123
 Created at:   ${now.toISOString()}
 `))
@@ -68,7 +70,7 @@ Created at:   ${now.toISOString()}
     let api = nock('https://api.heroku.com:443', {reqheaders: {'Accept-Expansion': 'region'}})
       .get('/spaces/my-space')
       .reply(200,
-        {name: 'my-space', organization: {name: 'my-org'}, region: {name: 'my-region', description: 'region'}, state: 'allocated', created_at: now}
+        {shield: false, name: 'my-space', organization: {name: 'my-org'}, region: {name: 'my-region', description: 'region'}, state: 'allocated', created_at: now}
     )
     let outbound = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/nat')
@@ -81,10 +83,47 @@ Created at:   ${now.toISOString()}
 Organization: my-org
 Region:       region
 State:        allocated
+Shield:       off
 Outbound IPs: disabled
 Created at:   ${now.toISOString()}
 `))
       .then(() => outbound.done())
+      .then(() => api.done())
+  })
+
+  it('shows a space with Shield turned off', function () {
+    let api = nock('https://api.heroku.com:443')
+      .get('/spaces/my-space')
+      .reply(200,
+        {shield: false, name: 'my-space', organization: {name: 'my-org'}, region: {name: 'my-region', description: 'region'}, state: 'enabled', created_at: now}
+    )
+    return cmd.run({flags: {space: 'my-space'}})
+      .then(() => expect(cli.stdout).to.equal(
+        `=== my-space
+Organization: my-org
+Region:       region
+State:        enabled
+Shield:       off
+Created at:   ${now.toISOString()}
+`))
+      .then(() => api.done())
+  })
+
+  it('shows a space with Shield turned on', function () {
+    let api = nock('https://api.heroku.com:443')
+      .get('/spaces/my-space')
+      .reply(200,
+        {shield: true, name: 'my-space', organization: {name: 'my-org'}, region: {name: 'my-region', description: 'region'}, state: 'enabled', created_at: now}
+    )
+    return cmd.run({flags: {space: 'my-space'}})
+      .then(() => expect(cli.stdout).to.equal(
+        `=== my-space
+Organization: my-org
+Region:       region
+State:        enabled
+Shield:       on
+Created at:   ${now.toISOString()}
+`))
       .then(() => api.done())
   })
 })
