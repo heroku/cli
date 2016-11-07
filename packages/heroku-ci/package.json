@@ -1,0 +1,26 @@
+{
+  "name": "heroku-ci",
+  "version": "1.0.0",
+  "description": "Heroku CLI plugin for Heroku CI",
+  "main": "index.js",
+  "scripts": {
+    "test": "standard",
+    "format": "standard --format"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/heroku/heroku-ci.git"
+  },
+  "keywords": [
+    "heroku-plugin"
+  ],
+  "author": "Andrew Appleton, Gudmundur Bjarni Olafsson, Max Beizer, Ransom Briggs",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/heroku/heroku-ci/issues"
+  },
+  "homepage": "https://github.com/heroku/heroku-ci#readme",
+  "devDependencies": {
+    "standard": "8.5.0"
+  }
+}
