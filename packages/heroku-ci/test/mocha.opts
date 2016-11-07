@@ -1,0 +1,4 @@
+test
+--recursive
+-R dot
+-r co-mocha
