@@ -35,6 +35,7 @@
   "dependencies": {
     "co": "^4.6.0",
     "got": "^6.6.3",
-    "heroku-cli-util": "^6.0.15"
+    "heroku-cli-util": "^6.0.15",
+    "temp": "^0.8.3"
   }
 }
