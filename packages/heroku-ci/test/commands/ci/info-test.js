@@ -1,3 +1,5 @@
+/* eslint-env mocha */
+
 const nock = require('nock')
 const expect = require('chai').expect
 const cli = require('heroku-cli-util')

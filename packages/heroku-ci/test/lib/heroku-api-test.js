@@ -1,3 +1,5 @@
+/* eslint-env mocha */
+
 const nock = require('nock')
 const expect = require('chai').expect
 const Heroku = require('heroku-client')
@@ -9,7 +11,7 @@ describe('heroku-api', function () {
   describe('#pipelineCoupling', function () {
     it('gets the pipeline coupling given an app', function* () {
       const app = 'sausages'
-      const coupling = { pipeline: { id: '123-abc' }}
+      const coupling = { pipeline: { id: '123-abc' } }
       const api = nock(`https://api.heroku.com`)
         .get(`/apps/${app}/pipeline-couplings`)
         .reply(200, coupling)
@@ -23,7 +25,7 @@ describe('heroku-api', function () {
   describe('#pipelineRepository', function () {
     it('gets the pipeline coupling given an app', function* () {
       const pipeline = '123-abc'
-      const repo = { repository: { name: 'heroku/heroku' }}
+      const repo = { repository: { name: 'heroku/heroku' } }
       const api = nock(`https://kolkrabbi.herokuapp.com`)
         .get(`/pipelines/${pipeline}/repository`)
         .reply(200, repo)

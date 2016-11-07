@@ -1,5 +1,4 @@
 const KOLKRABBI = 'https://kolkrabbi.herokuapp.com'
-const VERSION_HEADER = 'Accept: application/vnd.heroku+json; version=3.ci'
 
 function* pipelineCoupling (client, app) {
   return client.get(`/apps/${app}/pipeline-couplings`)
