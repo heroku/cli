@@ -3,7 +3,7 @@
 const nock = require('nock')
 const expect = require('chai').expect
 const cli = require('heroku-cli-util')
-const cmd = require('../../../commands/ci/info')
+const cmd = require('../../../commands/ci/list')
 
 describe('heroku ci:info', function () {
   let app, coupling, pipelineRepository

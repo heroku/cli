@@ -4,6 +4,6 @@ The CLI plugin for Heroku CI
 
 ## Commands
 
-`heroku ci:info`
+`heroku ci:list`, aliased as `heroku ci`
 
 Show information about the current CI setup.

@@ -22,7 +22,7 @@ function* run (context, heroku) {
 
 module.exports = {
   topic: 'ci',
-  command: 'info',
+  command: 'list',
   default: true,
   needsApp: true,
   needsAuth: true,
