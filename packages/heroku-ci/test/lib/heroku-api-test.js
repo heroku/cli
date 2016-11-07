@@ -23,7 +23,7 @@ describe('heroku-api', function () {
   })
 
   describe('#pipelineRepository', function () {
-    it('gets the pipeline coupling given an app', function* () {
+    it('gets the pipeline repository given a pipeline', function* () {
       const pipeline = '123-abc'
       const repo = { repository: { name: 'heroku/heroku' } }
       const api = nock(`https://kolkrabbi.herokuapp.com`)
@@ -32,6 +32,22 @@ describe('heroku-api', function () {
 
       const response = yield herokuAPI.pipelineRepository(new Heroku(), pipeline)
       expect(response).to.deep.eq(repo)
+      api.done()
+    })
+  })
+
+  describe('#testRun', function () {
+    it('gets a test run given a pipeline and number', function* () {
+      const pipeline = '123-abc'
+      const number = 1
+      const testRun = { number }
+      const api = nock(`https://api.heroku.com`)
+        .get(`/pipelines/${pipeline}/test-runs/${number}`)
+        .matchHeader('Accept', 'application/vnd.heroku+json; version=3.ci')
+        .reply(200, testRun)
+
+      const response = yield herokuAPI.testRun(new Heroku(), pipeline, number)
+      expect(response).to.deep.eq(testRun)
       api.done()
     })
   })

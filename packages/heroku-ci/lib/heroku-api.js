@@ -1,3 +1,4 @@
+const https = require('https')
 const KOLKRABBI = 'https://kolkrabbi.herokuapp.com'
 const VERSION_HEADER = 'application/vnd.heroku+json; version=3.ci'
 
@@ -13,6 +14,20 @@ function* pipelineRepository (client, pipelineID) {
       Authorization: `Bearer ${client.options.token}`
     }
   })
+}
+
+function* testRun (client, pipelineID, number) {
+  return client.request({
+    path: `/pipelines/${pipelineID}/test-runs/${number}`,
+    headers: {
+      Authorization: `Bearer ${client.options.token}`,
+      Accept: VERSION_HEADER
+    }
+  })
+}
+
+function logStream (url, fn) {
+  return https.get(url, fn)
 }
 
 function* createTestRun (client, body) {
@@ -31,5 +46,7 @@ function* createTestRun (client, body) {
 module.exports = {
   pipelineCoupling,
   pipelineRepository,
+  testRun,
+  logStream,
   createTestRun
 }
