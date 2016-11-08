@@ -68,9 +68,9 @@ describe('heroku-api', function () {
   })
 
   describe('#testRuns', function () {
-    it('gets the latest test runs given a pipeline', function* () {
+    it('gets test runs given a pipeline', function* () {
       const pipeline = '123-abc'
-      const testRuns = [{ number: 123 }]
+      const testRuns = [{ id: '123' }]
       const api = nock(`https://api.heroku.com`)
         .get(`/pipelines/${pipeline}/test-runs`)
         .matchHeader('Accept', 'application/vnd.heroku+json; version=3.ci')

@@ -46,7 +46,7 @@ function* testRuns (client, pipelineID) {
   })
 }
 
-function *latestTestRun (client, pipelineID) {
+function* latestTestRun (client, pipelineID) {
   const latestTestRuns = yield client.request({
     path: `/pipelines/${pipelineID}/test-runs`,
     headers: {
