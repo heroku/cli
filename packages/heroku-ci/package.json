@@ -35,6 +35,7 @@
   "dependencies": {
     "co": "^4.6.0",
     "co-wait": "0.0.0",
+    "github-url-to-object": "^2.2.6",
     "got": "^6.6.3",
     "heroku-cli-util": "^6.0.15",
     "temp": "^0.8.3"

@@ -36,6 +36,21 @@ describe('heroku-api', function () {
     })
   })
 
+  describe('#githubArchiveLink', function () {
+    it('gets a GitHub archive link', function* () {
+      const { user, repository } = ['heroku', 'heroku-ci']
+      const ref = '123-abc'
+      const archiveLink = { archive_link: 'https://example.com' }
+      const api = nock(`https://kolkrabbi.herokuapp.com`)
+        .get(`/github/repos/${user}/${repository}/tarball/${ref}`)
+        .reply(200, archiveLink)
+
+      const response = yield herokuAPI.githubArchiveLink(new Heroku(), user, repository, ref)
+      expect(response).to.deep.eq(archiveLink)
+      api.done()
+    })
+  })
+
   describe('#testRun', function () {
     it('gets a test run given a pipeline and number', function* () {
       const pipeline = '123-abc'
@@ -48,6 +63,49 @@ describe('heroku-api', function () {
 
       const response = yield herokuAPI.testRun(new Heroku(), pipeline, number)
       expect(response).to.deep.eq(testRun)
+      api.done()
+    })
+  })
+
+  describe('#testRuns', function () {
+    it('gets the latest test runs given a pipeline', function* () {
+      const pipeline = '123-abc'
+      const testRuns = [{ number: 123 }]
+      const api = nock(`https://api.heroku.com`)
+        .get(`/pipelines/${pipeline}/test-runs`)
+        .matchHeader('Accept', 'application/vnd.heroku+json; version=3.ci')
+        .reply(200, testRuns)
+
+      const response = yield herokuAPI.testRuns(new Heroku(), pipeline)
+      expect(response).to.deep.eq(testRuns)
+      api.done()
+    })
+  })
+
+  describe('#latestTestRun', function () {
+    it('gets the latest test run given a pipeline', function* () {
+      const pipeline = '123-abc'
+      const testRuns = [{ number: 123 }, { number: 122 }]
+      const api = nock(`https://api.heroku.com`)
+        .get(`/pipelines/${pipeline}/test-runs`)
+        .matchHeader('Accept', 'application/vnd.heroku+json; version=3.ci')
+        .reply(200, testRuns)
+
+      const response = yield herokuAPI.latestTestRun(new Heroku(), pipeline)
+      expect(response).to.deep.eq(testRuns[0])
+      api.done()
+    })
+  })
+
+  describe('#createSource', function () {
+    it('creates a source', function* () {
+      const source = { source_blob: { get_url: 'https://example.com/get', put_url: 'https://example.com/put' } }
+      const api = nock(`https://api.heroku.com`)
+        .post(`/sources`)
+        .reply(201, source)
+
+      const response = yield herokuAPI.createSource(new Heroku())
+      expect(response).to.deep.eq(source)
       api.done()
     })
   })
