@@ -25,13 +25,6 @@ function isNotTerminal (testRun) {
   return !isTerminal(testRun)
 }
 
-// True if the given test run was updated in the last {recency} minutes
-function isRecent (testRun, recency = 60) {
-  const oneHourAgo = Date.now() - (recency * 60 * 1000)
-  const updatedAt = new Date(testRun.updated_at).valueOf()
-  return updatedAt > oneHourAgo
-}
-
 function * waitForStates (states, testRun, { heroku }) {
   while (!states.includes(testRun.status)) {
     testRun = yield api.testRun(heroku, testRun.pipeline.id, testRun.number)
@@ -100,7 +93,6 @@ function * displayAndExit (pipeline, number, { heroku }) {
 module.exports = {
   isTerminal,
   isNotTerminal,
-  isRecent,
   display,
   displayAndExit,
   STATES: { PENDING, CREATING, BUILDING, RUNNING, ERRORED, FAILED, SUCCEEDED }

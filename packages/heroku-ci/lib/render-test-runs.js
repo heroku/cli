@@ -5,8 +5,8 @@ const api = require('./heroku-api')
 const TestRun = require('./test-run')
 
 const SIMI = 'https://simi-production.herokuapp.com'
-const { PENDING, CREATING, BUILDING, RUNNING, ERRORED, FAILED, SUCCEEDED } = TestRun.STATES
 
+const { PENDING, CREATING, BUILDING, RUNNING, ERRORED, FAILED, SUCCEEDED } = TestRun.STATES
 const STATUS_ICONS = {
   [PENDING]: '⋯',
   [CREATING]: '⋯',
@@ -27,20 +27,25 @@ const STATUS_COLORS = {
   [SUCCEEDED]: 'green'
 }
 
-function isRunningOrRecent (testRun) {
-  return TestRun.isNotTerminal(testRun) || TestRun.isRecent(testRun)
-}
-
-function* getRunningTests (heroku, pipelineID) {
-  return (yield api.testRuns(heroku, pipelineID)).filter(isRunningOrRecent)
-}
-
 function statusIcon ({ status }) {
   return cli.color[STATUS_COLORS[status]](STATUS_ICONS[status])
 }
 
 function printLine (testRun) {
   return `${statusIcon(testRun)} #${testRun.number} ${testRun.commit_branch}:${testRun.commit_sha.slice(0, 6)} ${testRun.status}`
+}
+
+function limit (testRuns, count) {
+  return testRuns.slice(0, count)
+}
+
+function sort (testRuns) {
+  return testRuns.sort((a, b) => a.number < b.number ? 1 : -1)
+}
+
+function redraw (testRuns, count = 15) {
+  const arranged = limit(sort(testRuns), count)
+  return log(arranged.map(printLine).join('\n'))
 }
 
 function handleTestRunEvent (newTestRun, testRuns) {
@@ -55,17 +60,18 @@ function handleTestRunEvent (newTestRun, testRuns) {
   return testRuns
 }
 
-function render (testRuns) {
-  const sorted = testRuns.sort((a, b) => a.number < b.number ? 1 : -1)
-  log(sorted.map(printLine).join('\n'))
-}
+function* render (pipeline, { heroku, watch }) {
+  cli.styledHeader(
+    `${watch ? 'Watching' : 'Showing'} latest test runs for the ${pipeline.name} pipeline`
+  )
 
-function* watch (pipeline, { heroku }) {
-  cli.styledHeader(`Watching test runs for the ${pipeline.name} pipeline`)
+  let testRuns = yield api.testRuns(heroku, pipeline.id)
 
-  let testRuns = yield getRunningTests(heroku, pipeline.id)
+  redraw(testRuns)
 
-  render(testRuns)
+  if (!watch) {
+    return
+  }
 
   const socket = io(SIMI, { transports: ['websocket'], upgrade: false })
 
@@ -79,18 +85,18 @@ function* watch (pipeline, { heroku }) {
   socket.on('create', ({ resource, data }) => {
     if (resource === 'test-run') {
       testRuns = handleTestRunEvent(data, testRuns)
-      render(testRuns)
+      redraw(testRuns)
     }
   })
 
   socket.on('update', ({ resource, data }) => {
     if (resource === 'test-run') {
       testRuns = handleTestRunEvent(data, testRuns)
-      render(testRuns)
+      redraw(testRuns)
     }
   })
 }
 
 module.exports = {
-  watch
+  render
 }
