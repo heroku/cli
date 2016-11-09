@@ -1,4 +1,5 @@
 # Heroku CI CLI
+[![Heroku CI Status](https://ci-badges.herokuapp.com/pipelines/420ca0bc-031b-479a-9335-1d51046daab2/master.svg)](https://dashboard.heroku.com/pipelines/420ca0bc-031b-479a-9335-1d51046daab2/tests)
 
 The CLI plugin for Heroku CI
 
