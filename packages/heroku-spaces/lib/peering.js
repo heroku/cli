@@ -1,6 +1,7 @@
 'use strict'
 
-let cli = require('heroku-cli-util')
+const cli = require('heroku-cli-util')
+const format = require('./format')()
 
 module.exports = function (heroku) {
   function getPeeringInfo (space) {
@@ -19,11 +20,6 @@ module.exports = function (heroku) {
     return request('DELETE', `/spaces/${space}/peerings/${pcxID}`)
   }
 
-  function displayCIDR (cidr) {
-    if (!cidr || cidr.length === 0) return ''
-    return cidr.join(', ')
-  }
-
   function displayPeeringInfo (space, info) {
     cli.styledHeader(`${space} Peering Info`)
     cli.styledObject({
@@ -31,8 +27,8 @@ module.exports = function (heroku) {
       'AWS Region': info.aws_region,
       'AWS VPC ID': info.vpc_id,
       'AWS VPC CIDR': info.vpc_cidr,
-      'Dyno CIDRs': displayCIDR(info.dyno_cidr_blocks),
-      'Unavailable CIDRs': displayCIDR(info.unavailable_cidr_blocks)
+      'Dyno CIDRs': format.CIDR(info.dyno_cidr_blocks),
+      'Unavailable CIDRs': format.CIDR(info.unavailable_cidr_blocks)
     }, ['AWS Account ID', 'AWS Region', 'AWS VPC ID', 'AWS VPC CIDR', 'Dyno CIDRs', 'Unavailable CIDRs'])
   }
 

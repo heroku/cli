@@ -3,7 +3,6 @@
 let cli = require('heroku-cli-util')
 let co = require('co')
 
-
 function * run (context, heroku) {
   let lib = require('../../lib/peering')(heroku)
   let space = context.flags.space || context.args.space
