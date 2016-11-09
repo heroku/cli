@@ -1,17 +1,10 @@
 const api = require('./heroku-api')
 const cli = require('heroku-cli-util')
 const wait = require('co-wait')
+const TestRunStates = require('./test-run-states')
+const RenderTestRuns = require('./render-test-runs')
 
-/* eslint-disable no-unused-vars */
-const PENDING = 'pending'
-const CREATING = 'creating'
-/* eslint-enable no-unused-vars */
-
-const BUILDING = 'building'
-const RUNNING = 'running'
-const ERRORED = 'errored'
-const FAILED = 'failed'
-const SUCCEEDED = 'succeeded'
+const { BUILDING, RUNNING, ERRORED, FAILED, SUCCEEDED } = TestRunStates
 
 const TERMINAL_STATES = [SUCCEEDED, FAILED, ERRORED]
 const RUNNING_STATES = [RUNNING].concat(TERMINAL_STATES)
@@ -53,8 +46,6 @@ function stream (url) {
 }
 
 function * display (pipeline, number, { heroku }) {
-  cli.styledHeader(`Test run #${number} setup\n`)
-
   let testRun = yield api.testRun(heroku, pipeline.id, number)
 
   testRun = yield waitForStates(BUILDING_STATES, testRun, { heroku })
@@ -63,24 +54,12 @@ function * display (pipeline, number, { heroku }) {
 
   testRun = yield waitForStates(RUNNING_STATES, testRun, { heroku })
 
-  cli.styledHeader(`Test run #${number} output\n`)
-
   yield stream(testRun.output_stream_url)
-
-  cli.styledHeader(`Test run #${number} status\n`)
 
   testRun = yield waitForStates(TERMINAL_STATES, testRun, { heroku })
 
-  const repo = yield api.pipelineRepository(heroku, pipeline.id)
-
   cli.log(/* newline 💃 */)
-  cli.styledHash({
-    pipeline: pipeline.name,
-    repo: repo.repository.name,
-    status: testRun.status,
-    commit: `[${testRun.commit_sha.slice(0, 6)}] ${testRun.commit_message}`,
-    branch: testRun.commit_branch
-  })
+  cli.log(RenderTestRuns.printLine(testRun))
 
   return testRun
 }
@@ -94,6 +73,5 @@ module.exports = {
   isTerminal,
   isNotTerminal,
   display,
-  displayAndExit,
-  STATES: { PENDING, CREATING, BUILDING, RUNNING, ERRORED, FAILED, SUCCEEDED }
+  displayAndExit
 }

@@ -12,3 +12,7 @@ Show the statuses of the most recent test runs. Add the `-w` or `--watch` flag t
 `heroku ci:info 123`
 
 Show the status of a specific test run
+
+`heroku ci:last`
+
+Show the status of the last test run

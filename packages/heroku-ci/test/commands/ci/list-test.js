@@ -4,6 +4,7 @@ const nock = require('nock')
 const expect = require('chai').expect
 const cli = require('heroku-cli-util')
 const cmd = require('../../../commands/ci/list')
+const stdMocks = require('std-mocks')
 
 describe('heroku ci:list', function () {
   let app, coupling, runs
@@ -26,16 +27,25 @@ describe('heroku ci:list', function () {
     }]
   })
 
-  it.skip('displays recent runs', function () {
+  it('displays recent runs', function* () {
     const api = nock('https://api.heroku.com')
       .get(`/apps/${app}/pipeline-couplings`)
       .reply(200, coupling)
       .get(`/pipelines/${coupling.pipeline.id}/test-runs`)
       .reply(200, runs)
 
-    return cmd.run({ app }).then(() => {
-      expect(true).to.eq(true)
-      api.done()
-    })
+    stdMocks.use()
+
+    yield cmd.run({ app, flags: {} })
+
+    stdMocks.restore()
+    const { stdout } = stdMocks.flush()
+
+    expect(stdout[0]).to.contain(runs[0].number)
+    expect(stdout[0]).to.contain(runs[0].commit_branch)
+    expect(stdout[0]).to.contain(runs[0].commit_sha)
+    expect(stdout[0]).to.contain(runs[0].status)
+
+    api.done()
   })
 })

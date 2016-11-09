@@ -2,11 +2,11 @@ const cli = require('heroku-cli-util')
 const log = require('single-line-log').stdout
 const io = require('socket.io-client')
 const api = require('./heroku-api')
-const TestRun = require('./test-run')
+const TestRunStates = require('./test-run-states')
 
 const SIMI = 'https://simi-production.herokuapp.com'
 
-const { PENDING, CREATING, BUILDING, RUNNING, ERRORED, FAILED, SUCCEEDED } = TestRun.STATES
+const { PENDING, CREATING, BUILDING, RUNNING, ERRORED, FAILED, SUCCEEDED } = TestRunStates
 const STATUS_ICONS = {
   [PENDING]: '⋯',
   [CREATING]: '⋯',
@@ -32,7 +32,7 @@ function statusIcon ({ status }) {
 }
 
 function printLine (testRun) {
-  return `${statusIcon(testRun)} #${testRun.number} ${testRun.commit_branch}:${testRun.commit_sha.slice(0, 6)} ${testRun.status}`
+  return `${statusIcon(testRun)} #${testRun.number} ${testRun.commit_branch}:${testRun.commit_sha.slice(0, 7)} ${testRun.status}`
 }
 
 function limit (testRuns, count) {
@@ -98,5 +98,6 @@ function* render (pipeline, { heroku, watch }) {
 }
 
 module.exports = {
-  render
+  render,
+  printLine
 }
