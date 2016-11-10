@@ -3,6 +3,11 @@
 
 The CLI plugin for Heroku CI
 
+## Installation
+```sh
+heroku plugins:install heroku-ci
+```
+
 ## Commands
 
 All commands accept a `-a` flag. This should be the name of an app in the pipeline you have connected to Heroku CI. The `-a` flag can be omitted if you are in the directory of an app already.
