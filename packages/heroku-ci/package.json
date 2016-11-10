@@ -19,7 +19,7 @@
     "heroku-plugin"
   ],
   "author": "Andrew Appleton, Gudmundur Bjarni Olafsson, Max Beizer, Ransom Briggs",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/heroku/heroku-ci/issues"
   },
