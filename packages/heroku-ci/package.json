@@ -35,12 +35,12 @@
     "std-mocks": "^1.0.1"
   },
   "dependencies": {
+    "ansi-escapes": "1.4.0",
     "co": "^4.6.0",
     "co-wait": "0.0.0",
     "github-url-to-object": "^2.2.6",
     "got": "^6.6.3",
     "heroku-cli-util": "^6.0.15",
-    "single-line-log": "^1.1.2",
     "socket.io-client": "^1.5.1",
     "temp": "^0.8.3"
   }
