@@ -1,6 +1,5 @@
 'use strict'
 
-
 function ago (since) {
   const strftime = require('strftime')
   let elapsed = Math.floor((new Date() - since) / 1000)

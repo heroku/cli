@@ -47,19 +47,18 @@
   "devDependencies": {
     "chai": "^3.3.0",
     "changelog": "1.0.7",
-    "fs-extra": "0.30.0",
-    "lolex": "1.5.1",
-    "mocha": "^2.3.3",
-    "mocha-junit-reporter": "1.11.1",
-    "mockdate": "1.0.4",
-    "nock": "8.0.0",
-    "nyc": "7.1.0",
+    "fs-extra": "1.0.0",
+    "lolex": "1.5.2",
+    "mocha": "3.1.2",
+    "mocha-junit-reporter": "1.12.1",
+    "mockdate": "2.0.0",
+    "nock": "9.0.2",
+    "nyc": "8.4.0",
     "proxyquire": "1.7.10",
     "rimraf": "2.5.4",
-    "snazzy": "4.0.0",
-    "standard": "7.1.2",
+    "standard": "8.5.0",
     "time-require": "0.1.2",
-    "unexpected": "10.15.0"
+    "unexpected": "10.18.1"
   },
   "homepage": "https://github.com/heroku/heroku-apps",
   "keywords": [
@@ -75,6 +74,6 @@
     "changelog": "changelog heroku-apps all -m > CHANGELOG.md",
     "postversion": "npm publish && git push && git push --tags",
     "preversion": "npm test",
-    "test": "TZ=utc nyc mocha && standard | snazzy"
+    "test": "TZ=utc nyc mocha && standard"
   }
 }

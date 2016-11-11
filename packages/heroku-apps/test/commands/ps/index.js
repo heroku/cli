@@ -106,12 +106,8 @@ run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/dynos?extended=true')
       .reply(200, [
-        {id: 100, command: 'npm start', size: 'Free', name: 'web.1', type: 'web', updated_at: hourAgo, state: 'up', extended: {
-          region: 'us', instance: 'instance', ip: '10.0.0.1', port: 8000, az: 'us-east', route: 'da route'
-        }},
-        {id: 101, command: 'bash', size: 'Free', name: 'run.1', type: 'run', updated_at: hourAgo, state: 'up', extended: {
-          region: 'us', instance: 'instance', ip: '10.0.0.2', port: 8000, az: 'us-east', route: 'da route'
-        }}
+        {id: 100, command: 'npm start', size: 'Free', name: 'web.1', type: 'web', updated_at: hourAgo, state: 'up', extended: { region: 'us', instance: 'instance', ip: '10.0.0.1', port: 8000, az: 'us-east', route: 'da route' }},
+        {id: 101, command: 'bash', size: 'Free', name: 'run.1', type: 'run', updated_at: hourAgo, state: 'up', extended: { region: 'us', instance: 'instance', ip: '10.0.0.2', port: 8000, az: 'us-east', route: 'da route' }}
       ])
 
     return cmd.run({app: 'myapp', args: [], flags: {extended: true}})
