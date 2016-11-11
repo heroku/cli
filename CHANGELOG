@@ -1,3 +1,8 @@
+5.4.9   2016-11-11
+==================
+Update go to 1.7.3
+Fix updates on some windows platforms
+
 5.4.8   2016-10-24
 ==================
 Updated heroku-certs
