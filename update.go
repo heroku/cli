@@ -100,6 +100,7 @@ func DownloadCLI(channel, path string, manifest *Manifest) {
 	}
 	exists, _ := FileExists(path)
 	if exists {
+		WarnIfError(os.Rename(expectedBinPath(), filepath.Join(tmpDir(DataHome), "heroku")))
 		must(os.Rename(path, filepath.Join(tmpDir(DataHome), "heroku")))
 	}
 	must(os.Rename(filepath.Join(tmp, "heroku"), path))
