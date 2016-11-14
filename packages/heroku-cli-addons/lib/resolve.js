@@ -42,6 +42,36 @@ const memoizePromise = function (func, resolver) {
 
 exports.addon = memoizePromise(addonResolver, (_, app, id) => `${app}|${id}`)
 
+function NotFound () {
+  Error.call(this)
+  Error.captureStackTrace(this, this.constructor)
+  this.name = this.constructor.name
+
+  this.statusCode = 404
+  this.message = 'Couldn\'t find that addon.'
+}
+
+function AmbiguousError (objects) {
+  Error.call(this)
+  Error.captureStackTrace(this, this.constructor)
+  this.name = this.constructor.name
+
+  this.statusCode = 422
+  this.message = `Ambiguous identifier; multiple matching add-ons found: ${objects.map((object) => object.name).join(', ')}.`
+  this.body = {'id': 'multiple_matches', 'message': this.message}
+}
+
+const singularize = function (matches) {
+  switch (matches.length) {
+    case 0:
+      throw new NotFound()
+    case 1:
+      return matches[0]
+    default:
+      throw new AmbiguousError(matches)
+  }
+}
+
 exports.attachment = function (heroku, app, id, headers) {
   headers = headers || {}
 
@@ -58,7 +88,9 @@ exports.attachment = function (heroku, app, id, headers) {
 
   function getAppAddonAttachment (addon, app) {
     return heroku.get(`/addons/${encodeURIComponent(addon.id)}/addon-attachments`, {headers})
-      .then((attachments) => attachments.find((att) => att.app.name === app))
+      .then(function (attachments) {
+        return singularize(attachments.filter((att) => att.app.name === app))
+      })
   }
 
   // first check to see if there is an attachment matching this app/id combo
@@ -69,9 +101,11 @@ exports.attachment = function (heroku, app, id, headers) {
       // If we were passed an add-on slug, there still could be an attachment
       // to the context app. Try to find and use it so `context_app` is set
       // correctly in the SSO payload.
-      else {
+      else if (app) {
         return exports.addon(heroku, app, id)
         .then((addon) => getAppAddonAttachment(addon, app))
+      } else {
+        throw new NotFound()
       }
     })
 }

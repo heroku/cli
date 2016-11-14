@@ -153,5 +153,71 @@ describe('resolve', () => {
         .catch((err) => expect(err, 'to satisfy', {statusCode: 401}))
         .then(() => api.done())
     })
+
+    it('falls back to searching by addon', () => {
+      let api = nock('https://api.heroku.com:443')
+        .get('/apps/myapp/addon-attachments/myattachment-3').reply(404)
+
+      let appAddon = nock('https://api.heroku.com:443')
+        .get('/apps/myapp/addons/myattachment-3').reply(200, {id: '1e97e8ba-fd24-48a4-8118-eaf287eb7a0f', name: 'myaddon-3'})
+
+      let appAttachment = nock('https://api.heroku.com:443')
+        .get('/addons/1e97e8ba-fd24-48a4-8118-eaf287eb7a0f/addon-attachments').reply(200, [{app: {name: 'myapp'}, name: 'some-random-name'}])
+
+      return resolve.attachment(new Heroku(), 'myapp', 'myattachment-3')
+        .then((addon) => expect(addon, 'to satisfy', {name: 'some-random-name'}))
+        .then(() => api.done())
+        .then(() => appAddon.done())
+        .then(() => appAttachment.done())
+    })
+
+    it('throws an error when not found', () => {
+      let api = nock('https://api.heroku.com:443')
+        .get('/apps/myapp/addon-attachments/myattachment-4').reply(404)
+
+      let appAddon = nock('https://api.heroku.com:443')
+        .get('/apps/myapp/addons/myattachment-4').reply(200, {id: '1e97e8ba-fd24-48a4-8118-eaf287eb7a0f', name: 'myaddon-4'})
+
+      let appAttachment = nock('https://api.heroku.com:443')
+        .get('/addons/1e97e8ba-fd24-48a4-8118-eaf287eb7a0f/addon-attachments').reply(200, [{app: {name: 'not-myapp'}, name: 'some-random-name'}])
+
+      return resolve.attachment(new Heroku(), 'myapp', 'myattachment-4')
+        .then(() => { throw new Error('unreachable') })
+        .catch((err) => expect(err, 'to satisfy', {message: 'Couldn\'t find that addon.'}))
+        .then(() => api.done())
+        .then(() => appAddon.done())
+        .then(() => appAttachment.done())
+    })
+
+    it('does not fallback and throws error when there is no app', () => {
+      let api = nock('https://api.heroku.com:443')
+        .get('/addon-attachments/myattachment-4').reply(404)
+
+      return resolve.attachment(new Heroku(), null, 'myattachment-4')
+        .then(() => { throw new Error('unreachable') })
+        .catch((err) => expect(err, 'to satisfy', {message: 'Couldn\'t find that addon.'}))
+        .then(() => api.done())
+    })
+
+    it('throws an error when ambiguous', () => {
+      let api = nock('https://api.heroku.com:443')
+        .get('/apps/myapp/addon-attachments/myattachment-5').reply(404)
+
+      let appAddon = nock('https://api.heroku.com:443')
+        .get('/apps/myapp/addons/myattachment-5').reply(200, {id: '1e97e8ba-fd24-48a4-8118-eaf287eb7a0f', name: 'myaddon-5'})
+
+      let appAttachment = nock('https://api.heroku.com:443')
+        .get('/addons/1e97e8ba-fd24-48a4-8118-eaf287eb7a0f/addon-attachments').reply(200, [
+          {app: {name: 'myapp'}, name: 'some-random-name-1'},
+          {app: {name: 'myapp'}, name: 'some-random-name-2'}
+        ])
+
+      return resolve.attachment(new Heroku(), 'myapp', 'myattachment-5')
+        .then(() => { throw new Error('unreachable') })
+        .catch((err) => expect(err, 'to satisfy', {message: 'Ambiguous identifier; multiple matching add-ons found: some-random-name-1, some-random-name-2.'}))
+        .then(() => api.done())
+        .then(() => appAddon.done())
+        .then(() => appAttachment.done())
+    })
   })
 })
