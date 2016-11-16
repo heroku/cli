@@ -2,6 +2,7 @@
 
 const co = require('co')
 const debug = require('./debug')
+const pgUtil = require('./util')
 
 module.exports = heroku => {
   function * addon (app, db) {
@@ -14,23 +15,13 @@ module.exports = heroku => {
   }
 
   function * database (app, db) {
-    const url = require('url')
-
     let addonID = (yield module.exports(heroku).addon(app, db)).id
     let [addon, config] = yield [
       heroku.get(`/addons/${addonID}`),
       heroku.get(`/apps/${app}/config-vars`)
     ]
 
-    db = url.parse(config[addon.config_vars[0]])
-    let [user, password] = db.auth.split(':')
-    return {
-      user,
-      password,
-      database: db.path.split('/', 2)[1],
-      host: db.hostname,
-      port: db.port
-    }
+    return pgUtil.getConnectionDetails(addon, config)
   }
 
   function * all (app) {
