@@ -7,12 +7,19 @@ const proxyquire = require('proxyquire')
 const resolver = {}
 const fetcher = proxyquire('../../lib/fetcher', {'heroku-cli-addons': {resolve: resolver}})
 const Heroku = require('heroku-client')
+const sinon = require('sinon')
 
 describe('fetcher', () => {
   let api
+  let stub
 
   beforeEach(() => {
     api = nock('https://api.heroku.com:443')
+
+    stub = sinon.stub()
+    stub.throws('not stubbed')
+
+    resolver.attachment = stub
   })
 
   afterEach(() => {
@@ -22,12 +29,7 @@ describe('fetcher', () => {
 
   describe('addon', () => {
     it('returns addon attached to app', () => {
-      resolver.attachment = (_, app, db) => {
-        if (app === 'myapp' && db === 'DATABASE_URL') {
-          return Promise.resolve({addon: {name: 'postgres-1'}})
-        }
-        return Promise.resolve()
-      }
+      stub.withArgs(sinon.match.any, 'myapp', 'DATABASE_URL').returns(Promise.resolve({addon: {name: 'postgres-1'}}))
       return fetcher(new Heroku()).addon('myapp', 'DATABASE_URL')
       .then(addon => {
         expect(addon.name, 'to equal', 'postgres-1')
@@ -37,12 +39,7 @@ describe('fetcher', () => {
 
   describe('database', () => {
     it('returns db connection info', () => {
-      resolver.attachment = (_, app, db) => {
-        if (app === 'myapp' && db === 'DATABASE_URL') {
-          return Promise.resolve({addon: {id: 100, name: 'postgres-1'}})
-        }
-        return Promise.resolve()
-      }
+      stub.withArgs(sinon.match.any, 'myapp', 'DATABASE_URL').returns(Promise.resolve({addon: {id: 100, name: 'postgres-1'}}))
       api.get('/addons/100').reply(200, {
         config_vars: ['DATABASE_URL']
       })
