@@ -17,6 +17,7 @@
     "lodash.sample": "4.2.1",
     "lodash.sortby": "4.6.1",
     "lodash.uniqby": "4.6.1",
+    "sinon": "1.17.6",
     "string": "3.3.1",
     "strip-eof": "1.0.0"
   },

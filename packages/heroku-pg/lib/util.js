@@ -46,7 +46,8 @@ exports.getConnectionDetails = function (addon, config) {
     password,
     database: target.path.split('/', 2)[1],
     host: target.hostname,
-    port: target.port
+    port: target.port,
+    addon
   }
 
   // If bastion creds exist, graft it into the payload

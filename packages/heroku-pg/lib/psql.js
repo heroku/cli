@@ -11,11 +11,11 @@ function * exec (db, query) {
   debug(query)
   let env = Object.assign({}, process.env, {
     PGAPPNAME: 'psql non-interactive',
-    PGSSLMODE: 'require',
-    PGUSER: db.user,
+    PGSSLMODE: db.hostname === 'localhost' ? 'prefer' : 'require',
+    PGUSER: db.user || '',
     PGPASSWORD: db.password,
     PGDATABASE: db.database,
-    PGPORT: db.port,
+    PGPORT: db.port || 5432,
     PGHOST: db.host
   })
   let {stdout, error: err, status} = spawnSync('psql', ['--command', query], {env, encoding: 'utf8', stdio: [0, 'pipe', 2]})
