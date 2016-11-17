@@ -54,10 +54,9 @@ describe('fetcher', () => {
   describe('all', () => {
     it('returns all addons attached to app', () => {
       let plan = {name: 'heroku-postgresql:hobby-dev'}
-      let service = {name: 'heroku-postgresql'}
       let attachments = [
-        {addon: {id: 100, name: 'postgres-1', addon_service: service, plan, config_vars: ['DATABASE_URL', 'HEROKU_POSTGRESQL_PINK_URL']}},
-        {addon: {id: 101, name: 'postgres-2', addon_service: service, plan, config_vars: ['HEROKU_POSTGRESQL_BRONZE_URL']}}
+        {addon: {id: 100, name: 'postgres-1', plan, config_vars: ['DATABASE_URL', 'HEROKU_POSTGRESQL_PINK_URL']}},
+        {addon: {id: 101, name: 'postgres-2', plan, config_vars: ['HEROKU_POSTGRESQL_BRONZE_URL']}}
       ]
       api.get('/apps/myapp/addon-attachments').reply(200, attachments)
 
