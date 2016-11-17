@@ -52,8 +52,8 @@ describe('pg', () => {
       HEROKU_POSTGRESQL_PURPLE_URL: 'postgres://uxxxxxxxxx:pxxxxxxxx@ec3-54-111-111-1.compute-1.amazonaws.com:5452/dxxxxxxxxxxxx'
     }
     let addons = [
-      {id: 1, name: 'postgres-1', plan},
-      {id: 2, name: 'postgres-2', plan}
+      {id: 1, name: 'postgres-1', plan, app: {name: 'myapp2'}},
+      {id: 2, name: 'postgres-2', plan, app: {name: 'myapp'}}
     ]
     let dbA = {info: [
       {name: 'Plan', values: ['Hobby-dev']},
@@ -79,9 +79,10 @@ describe('pg', () => {
 
       return cmd.run({app: 'myapp', args: {}})
       .then(() => expect(cli.stdout, 'to equal', `=== DATABASE_URL, HEROKU_POSTGRESQL_COBALT_URL
-Plan:      Hobby-dev
-Following: HEROKU_POSTGRESQL_COBALT
-Add-on:    postgres-1
+Plan:        Hobby-dev
+Following:   HEROKU_POSTGRESQL_COBALT
+Billing App: myapp2
+Add-on:      postgres-1
 
 === HEROKU_POSTGRESQL_PURPLE_URL
 Plan:      Hobby-dev
