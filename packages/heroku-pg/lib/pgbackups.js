@@ -1,6 +1,7 @@
 'use strict'
 
 const co = require('co')
+const cli = require('heroku-cli-util')
 
 function prefix (transfer) {
   if (transfer.from_type === 'pg_dump') {
@@ -36,7 +37,7 @@ module.exports = (context, heroku) => ({
       }
     }),
     name: transfer => {
-      let S = require('string')
+      const S = require('string')
 
       let oldPGBName = transfer.options && transfer.options.pgbackups_name
       if (oldPGBName) return `o${oldPGBName}`
@@ -57,6 +58,63 @@ module.exports = (context, heroku) => ({
       } else {
         return 'Pending'
       }
+    }
+  },
+  wait: (action, transferID, interval, verbose) => {
+    const wait = require('co-wait')
+    const host = require('./host')()
+    const pgbackups = module.exports(context, heroku)
+
+    let shownLogs = []
+    let displayLogs = logs => {
+      for (let log of logs) {
+        if (shownLogs.find(l => l.created_at === log.created_at && l.message === log.message)) continue
+        shownLogs.push(log)
+        cli.log(`${log.created_at} ${log.message}`)
+      }
+    }
+
+    let poll = co.wrap(function * () {
+      let tty = process.env.TERM !== 'dumb' && process.stderr.isTTY
+      let backup
+      let failures = 0
+
+      while (true) {
+        try {
+          backup = yield heroku.get(`/client/v11/apps/${context.app}/transfers/${transferID}`, {host})
+        } catch (err) {
+          if (failures++ > 20) throw err
+        }
+        if (verbose) {
+          displayLogs(backup.logs)
+        } else if (tty) {
+          let msg = backup.started_at ? pgbackups.filesize(backup.processed_bytes) : 'pending'
+          let log = backup.logs.pop()
+          if (log) {
+            cli.action.status(`${msg}\n${log.created_at + ' ' + log.message}`)
+          } else {
+            cli.action.status(msg)
+          }
+        }
+        if (backup && backup.finished_at) {
+          if (backup.succeeded) return
+          else {
+            throw new Error(`An error occurred and the backup did not finish.
+
+${backup.logs.slice(-5).map(l => l.message).join('\n')}
+
+Run ${cli.color.cmd('heroku pg:backups:info ' + pgbackups.transfer.name(backup))} for more details.`)
+          }
+        }
+        yield wait(interval * 1000)
+      }
+    })
+
+    if (verbose) {
+      cli.log(`${action}...`)
+      return poll()
+    } else {
+      return cli.action(action, poll())
     }
   }
 })
