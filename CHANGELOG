@@ -1,3 +1,9 @@
+5.5.1   2016-11-17
+==================
+Warn on plugin refresh errors
+Updated heroku-certs
+Updated heroku-spaces
+
 5.5.0   2016-11-11
 ==================
 Minor version bump for windows autoupdates
