@@ -31,7 +31,8 @@ module.exports = (context, heroku) => ({
       if (m) {
         const host = require('./host')()
         let transfers = yield heroku.get(`/client/v11/apps/${context.app}/transfers`, {host})
-        return transfers.find(t => module.exports(context, heroku).transfer.name(t) === name)
+        let transfer = transfers.find(t => module.exports(context, heroku).transfer.name(t) === name)
+        if (transfer) return transfer.num
       }
     }),
     name: transfer => {
