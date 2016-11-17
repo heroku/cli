@@ -57,11 +57,11 @@ let cmd = {
   description: 'update an SSL certificate on an app',
   help: `Example:
 
- $ heroku _certs:update example.com.crt example.com.key
+ $ heroku certs:update example.com.crt example.com.key
 `,
   needsApp: true,
   needsAuth: true,
-  run: cli.command(co.wrap(run))
+  run: cli.command({preauth: true}, co.wrap(run))
 }
 
 module.exports = [
