@@ -8,6 +8,7 @@ exports.topics = [
 
 exports.commands = flatten([
   require('./commands/backups'),
+  require('./commands/backups/cancel'),
   require('./commands/backups/delete'),
   require('./commands/backups/info'),
   require('./commands/backups/schedule'),
