@@ -11,6 +11,7 @@ exports.commands = flatten([
   require('./commands/backups/cancel'),
   require('./commands/backups/delete'),
   require('./commands/backups/info'),
+  require('./commands/backups/restore'),
   require('./commands/backups/schedule'),
   require('./commands/backups/schedules'),
   require('./commands/backups/unschedule'),
