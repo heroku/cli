@@ -2,27 +2,7 @@
 
 const co = require('co')
 const cli = require('heroku-cli-util')
-
-function configVarNamesFromValue (config, value) {
-  const sortBy = require('lodash.sortby')
-
-  let keys = []
-  for (let key of Object.keys(config)) {
-    if (config[key] === value) keys.push(key)
-  }
-  return sortBy(keys, k => k !== 'DATABASE_URL', 'name')
-}
-
-function databaseNameFromUrl (uri, config) {
-  const url = require('url')
-
-  let names = configVarNamesFromValue(config, uri)
-  let name = names.pop()
-  while (name === 'DATABASE_URL') name = names.pop()
-  if (name) return cli.color.configVar(name.replace(/_URL$/, ''))
-  uri = url.parse(uri)
-  return `${uri.hostname}:${uri.port || 5432}${uri.path}`
-}
+const util = require('../lib/util')
 
 function displayDB (db) {
   cli.styledHeader(db.configVars.map(c => cli.color.configVar(c)).join(', '))
@@ -30,7 +10,7 @@ function displayDB (db) {
   let info = db.db.info.reduce((info, i) => {
     if (i.values.length > 0) {
       if (i.resolve_db_name) {
-        info[i.name] = i.values.map(v => databaseNameFromUrl(v, db.config))
+        info[i.name] = i.values.map(v => util.databaseNameFromUrl(v, db.config))
       } else {
         info[i.name] = i.values
       }
@@ -79,7 +59,7 @@ function * run (context, heroku) {
   })
 
   dbs = dbs.filter(db => db.db)
-  dbs.forEach(db => { db.configVars = configVarNamesFromValue(db.config, db.db.resource_url) })
+  dbs.forEach(db => { db.configVars = util.configVarNamesFromValue(db.config, db.db.resource_url) })
   dbs = sortBy(dbs, db => db.configVars[0] !== 'DATABASE_URL', 'configVars[0]')
 
   dbs.forEach(displayDB)

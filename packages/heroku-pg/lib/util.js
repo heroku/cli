@@ -1,3 +1,6 @@
+'use strict'
+
+const cli = require('heroku-cli-util')
 const debug = require('./debug')
 const url = require('url')
 const sample = require('lodash.sample')
@@ -53,4 +56,27 @@ exports.getConnectionDetails = function (addon, config) {
   }
 
   return payload
+}
+
+exports.starterPlan = a => !!a.plan.name.match(/(dev|basic)$/)
+
+exports.configVarNamesFromValue = (config, value) => {
+  const sortBy = require('lodash.sortby')
+
+  let keys = []
+  for (let key of Object.keys(config)) {
+    if (config[key] === value) keys.push(key)
+  }
+  return sortBy(keys, k => k !== 'DATABASE_URL', 'name')
+}
+
+exports.databaseNameFromUrl = (uri, config) => {
+  const url = require('url')
+
+  let names = exports.configVarNamesFromValue(config, uri)
+  let name = names.pop()
+  while (names.length > 0 && name === 'DATABASE_URL') name = names.pop()
+  if (name) return cli.color.configVar(name.replace(/_URL$/, ''))
+  uri = url.parse(uri)
+  return `${uri.hostname}:${uri.port || 5432}${uri.path}`
 }
