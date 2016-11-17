@@ -45,7 +45,7 @@ describe('pg:ps', () => {
  state,
  application_name AS source,
  age(now(),xact_start) AS running_for,
- waiting,
+ wait_event IS NOT NULL AS waiting,
  query
 FROM pg_stat_activity
 WHERE
@@ -62,7 +62,7 @@ WHERE
  state,
  application_name AS source,
  age(now(),xact_start) AS running_for,
- waiting,
+ wait_event IS NOT NULL AS waiting,
  query
 FROM pg_stat_activity
 WHERE
