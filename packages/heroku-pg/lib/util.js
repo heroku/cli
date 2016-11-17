@@ -2,10 +2,9 @@
 
 const cli = require('heroku-cli-util')
 const debug = require('./debug')
-const url = require('url')
-const sample = require('lodash.sample')
 
 const getBastion = function (config, baseName) {
+  const sample = require('lodash.sample')
   // If there are bastions, extract a host and a key
   // otherwise, return an empty Object
 
@@ -23,6 +22,7 @@ const getBastion = function (config, baseName) {
 }
 
 exports.getConnectionDetails = function (addon, config) {
+  const url = require('url')
   const connstringVars = addon.config_vars
     .filter((cv) => (
       config[cv].startsWith('postgres://') &&
