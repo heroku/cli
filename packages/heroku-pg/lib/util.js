@@ -29,9 +29,7 @@ exports.getConnectionDetails = function (addon, config) {
       cv.endsWith('_URL')
     ))
 
-  if (connstringVars.length === 0) {
-    throw new Error('Database URL not found for this addon')
-  }
+  if (connstringVars.length === 0) throw new Error('Database URL not found for this addon')
 
   // remove _URL from the end of the config var name
   const baseName = connstringVars[0].slice(0, -4)
@@ -47,7 +45,8 @@ exports.getConnectionDetails = function (addon, config) {
     database: target.path.split('/', 2)[1],
     host: target.hostname,
     port: target.port,
-    addon
+    addon,
+    url: target
   }
 
   // If bastion creds exist, graft it into the payload
