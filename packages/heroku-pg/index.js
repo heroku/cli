@@ -12,6 +12,9 @@ exports.commands = flatten([
   require('./commands/info'),
   require('./commands/kill'),
   require('./commands/killall'),
+  require('./commands/maintenance'),
+  require('./commands/maintenance/run'),
+  require('./commands/maintenance/window'),
   require('./commands/ps'),
   require('./commands/pull'),
   require('./commands/wait')
