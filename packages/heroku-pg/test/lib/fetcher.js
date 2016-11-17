@@ -39,7 +39,8 @@ describe('fetcher', () => {
 
   describe('database', () => {
     it('returns db connection info', () => {
-      stub.withArgs(sinon.match.any, 'myapp', 'DATABASE_URL').returns(Promise.resolve({addon: {id: 100, name: 'postgres-1'}}))
+      let app = {name: 'myapp'}
+      stub.withArgs(sinon.match.any, 'myapp', 'DATABASE_URL').returns(Promise.resolve({addon: {id: 100, name: 'postgres-1', app}}))
       api.get('/addons/100').reply(200, {
         config_vars: ['DATABASE_URL']
       })

@@ -15,10 +15,10 @@ module.exports = heroku => {
   }
 
   function * database (app, db) {
-    let addonID = (yield module.exports(heroku).addon(app, db)).id
+    let attachmentAddon = yield module.exports(heroku).addon(app, db)
     let [addon, config] = yield [
-      heroku.get(`/addons/${addonID}`),
-      heroku.get(`/apps/${app}/config-vars`)
+      heroku.get(`/addons/${attachmentAddon.id}`),
+      heroku.get(`/apps/${attachmentAddon.app.name}/config-vars`)
     ]
 
     return pgUtil.getConnectionDetails(addon, config)

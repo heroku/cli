@@ -24,6 +24,7 @@ exports.commands = flatten([
   require('./commands/maintenance/window'),
   require('./commands/promote'),
   require('./commands/ps'),
+  require('./commands/psql'),
   require('./commands/pull'),
   require('./commands/reset'),
   require('./commands/unfollow'),
