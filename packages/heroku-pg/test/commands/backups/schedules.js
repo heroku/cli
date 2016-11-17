@@ -1,0 +1,53 @@
+'use strict'
+/* global describe it beforeEach afterEach context */
+
+const cli = require('heroku-cli-util')
+const expect = require('unexpected')
+const nock = require('nock')
+const cmd = require('../../..').commands.find(c => c.topic === 'pg' && c.command === 'backups:schedules')
+
+describe('pg:backups:schedules', () => {
+  let api, pg
+
+  beforeEach(() => {
+    api = nock('https://api.heroku.com')
+    pg = nock('https://postgres-api.heroku.com')
+    cli.mockConsole()
+  })
+
+  afterEach(() => {
+    nock.cleanAll()
+    api.done()
+    pg.done()
+  })
+
+  it('shows empty message with no databases', () => {
+    api.get('/apps/myapp/addons').reply(200, [])
+    return expect(cmd.run({app: 'myapp'}), 'to be rejected with', 'No heroku-postgresql databases on myapp')
+  })
+
+  context('with databases', () => {
+    beforeEach(() => {
+      api.get('/apps/myapp/addons').reply(200, [{
+        name: 'postgres-1',
+        plan: {name: 'heroku-postgresql:standard-0'},
+        app: {name: 'myapp'}
+      }])
+    })
+
+    it('shows empty message with no schedules', () => {
+      pg.get('/client/v11/databases/postgres-1/transfer-schedules').reply(200, [])
+      return expect(cmd.run({app: 'myapp'}), 'to be rejected with', 'No backup schedules found on myapp\nUse heroku pg:backups:schedule to set one up')
+    })
+
+    it('shows schedule', () => {
+      pg.get('/client/v11/databases/postgres-1/transfer-schedules').reply(200, [
+        {name: 'DATABASE_URL', hour: 5, timezone: 'UTC'}
+      ])
+      return cmd.run({app: 'myapp'})
+      .then(() => expect(cli.stdout, 'to equal', `=== Backup Schedules
+DATABASE_URL: daily at 5:00 UTC
+`))
+    })
+  })
+})

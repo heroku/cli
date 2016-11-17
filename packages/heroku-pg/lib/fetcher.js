@@ -39,9 +39,22 @@ module.exports = heroku => {
     return addons
   }
 
+  function * arbitraryAppDB (app) {
+    // Since Postgres backups are tied to the app and not the add-on, but
+    // we require *an* add-on to interact with, make sure that that add-on
+    // is attached to the right app.
+
+    debug(`fetching arbitrary app db on ${app}`)
+    let addons = yield heroku.get(`/apps/${app}/addons`)
+    let addon = addons.find(a => a.app.name === app && a.plan.name.startsWith('heroku-postgresql'))
+    if (!addon) throw new Error(`No heroku-postgresql databases on ${app}`)
+    return addon
+  }
+
   return {
     addon: co.wrap(addon),
     all: co.wrap(all),
-    database: co.wrap(database)
+    database: co.wrap(database),
+    arbitraryAppDB: co.wrap(arbitraryAppDB)
   }
 }
