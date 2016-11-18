@@ -6,7 +6,7 @@ let waitForAddonProvisioning = require('../../lib/addons_wait')
 
 function * run (ctx, api) {
   const resolve = require('../../lib/resolve')
-  let addon = yield resolve.addon(api, ctx.app, ctx.args.addon, {'headers': {'Accept-Expansion': 'addon_service,plan'}})
+  let addon = yield resolve.addon(api, ctx.app, ctx.args.addon)
 
   let interval = parseInt(ctx.flags['wait-interval'])
   if (!interval || interval < 0) { interval = 5 }

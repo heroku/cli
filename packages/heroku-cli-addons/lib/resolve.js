@@ -3,7 +3,7 @@
 const memoize = require('lodash.memoize')
 
 const addonResolver = function (heroku, app, id, options = {}) {
-  const headers = options.headers || {}
+  const headers = {'Accept-Expansion': 'addon_service,plan'}
   let getAddon = function (id) {
     return heroku.get(`/addons/${encodeURIComponent(id)}`, {headers})
   }
@@ -73,7 +73,7 @@ const singularize = function (matches) {
 }
 
 exports.attachment = function (heroku, app, id, options = {}) {
-  const headers = options.headers || {}
+  const headers = {'Accept-Inclusion': 'addon:plan,config_vars'}
 
   function getAttachment (id) {
     return heroku.get(`/addon-attachments/${encodeURIComponent(id)}`, {headers})
