@@ -9,26 +9,26 @@
   "dependencies": {
     "co": "4.6.0",
     "co-wait": "0.0.0",
-    "debug": "2.2.0",
+    "debug": "2.3.2",
     "filesize": "3.3.0",
-    "heroku-cli-addons": "1.0.5",
-    "heroku-cli-util": "6.0.15",
+    "heroku-cli-addons": "1.1.8",
+    "heroku-cli-util": "6.0.16",
     "lodash.flatten": "4.4.0",
     "lodash.sample": "4.2.1",
-    "lodash.sortby": "4.6.1",
-    "lodash.uniqby": "4.6.1",
+    "lodash.sortby": "4.7.0",
+    "lodash.uniqby": "4.7.0",
     "sinon": "1.17.6",
-    "string": "3.3.1",
+    "string": "3.3.3",
     "strip-eof": "1.0.0"
   },
   "devDependencies": {
-    "mocha": "3.0.0",
-    "nock": "8.0.0",
-    "nyc": "7.1.0",
+    "mocha": "3.1.2",
+    "nock": "9.0.2",
+    "nyc": "9.0.1",
     "proxyquire": "1.7.10",
-    "sinon": "1.17.2",
-    "standard": "7.1.2",
-    "unexpected": "10.15.0"
+    "sinon": "1.17.6",
+    "standard": "8.5.0",
+    "unexpected": "10.19.0"
   },
   "homepage": "https://github.com/heroku/heroku-pg",
   "keywords": [
