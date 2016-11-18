@@ -9,8 +9,6 @@ function * run (context, heroku) {
   let {app, args, flags} = context
   let db = yield fetcher.addon(app, args.database)
 
-  if (!app) app = db.app.name
-
   yield cli.confirmApp(app, flags.confirm, `WARNING: Destructive action
 ${cli.color.addon(db.name)} will lose all of its data
 `)
@@ -24,7 +22,7 @@ module.exports = {
   topic: 'pg',
   command: 'reset',
   description: 'delete all data in DATABASE',
-  wantsApp: true,
+  needsApp: true,
   needsAuth: true,
   args: [{name: 'database', optional: true}],
   flags: [{name: 'confirm', char: 'c', hasValue: true}],

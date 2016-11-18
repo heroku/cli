@@ -10,8 +10,6 @@ function * run (context, heroku) {
   let {app, args, flags} = context
   let db = yield fetcher.addon(app, args.database)
 
-  if (!app) app = db.app.name
-
   let replica = yield heroku.get(`/client/v11/databases/${db.name}`, {host: host(db)})
 
   if (!replica.following) throw new Error(`${cli.color.addon(db.name)} is not a follower`)
@@ -30,7 +28,7 @@ module.exports = {
   topic: 'pg',
   command: 'unfollow',
   description: 'stop a replica from following and make it a writeable database',
-  wantsApp: true,
+  needsApp: true,
   needsAuth: true,
   args: [{name: 'database'}],
   flags: [{name: 'confirm', char: 'c', hasValue: true}],

@@ -20,7 +20,7 @@ function * run (context, heroku) {
 
 let cmd = {
   description: 'open a psql shell to the database',
-  wantsApp: true,
+  needsApp: true,
   needsAuth: true,
   flags: [{name: 'command', char: 'c', description: 'SQL command to run', hasValue: true}],
   args: [{name: 'database', optional: true}],

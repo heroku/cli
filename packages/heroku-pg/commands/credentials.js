@@ -35,7 +35,7 @@ module.exports = {
   topic: 'pg',
   command: 'credentials',
   description: 'manage the database credentials',
-  wantsApp: true,
+  needsApp: true,
   needsAuth: true,
   flags: [{name: 'reset', description: 'reset database credentials'}],
   args: [{name: 'database', optional: true}],

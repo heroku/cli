@@ -65,7 +65,7 @@ Data from ${cli.color.yellow(source.name)} will then be transferred to ${cli.col
 module.exports = {
   topic: 'pg',
   command: 'copy',
-  wantsApp: true,
+  needsApp: true,
   needsAuth: true,
   description: 'copy all data from source db to target',
   help: 'at least one of the databases must be a Heroku PostgreSQL DB',

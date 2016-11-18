@@ -9,7 +9,6 @@ function * run (context, heroku) {
   const fetcher = require('../lib/fetcher')(heroku)
   let {app, args, flags} = context
   let db = yield fetcher.addon(app, args.database)
-  if (!app) app = db.app.name
 
   if (util.starterPlan(db)) throw new Error('pg:upgrade is only available for follower production databases')
 
@@ -37,7 +36,7 @@ module.exports = {
   command: 'upgrade',
   description: 'unfollow a database and upgrade it to the latest stable PostgreSQL version',
   help: 'to upgrade to another PostgreSQL version, use pg:copy instead',
-  wantsApp: true,
+  needsApp: true,
   needsAuth: true,
   args: [{name: 'database', optional: true}],
   flags: [{name: 'confirm', char: 'c', hasValue: true}],
