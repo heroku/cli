@@ -47,8 +47,8 @@ describe('pg:backups:info', () => {
 Database:         RED
 Status:           Pending
 Type:             Manual
-Original DB Size: 976.56 KB
-Backup Size:      97.66 KB
+Original DB Size: 976.56kB
+Backup Size:      97.66kB
 
 === Backup Logs
 100 foo
@@ -79,8 +79,8 @@ Backup Size:      97.66 KB
 Database:         RED
 Status:           Pending
 Type:             Manual
-Original DB Size: 976.56 KB
-Backup Size:      97.66 KB
+Original DB Size: 976.56kB
+Backup Size:      97.66kB
 
 === Backup Logs
 100 foo
@@ -112,8 +112,8 @@ Database:         RED
 Finished at:      100
 Status:           Completed
 Type:             Manual
-Original DB Size: 976.56 KB
-Backup Size:      97.66 KB (90% compression)
+Original DB Size: 976.56kB
+Backup Size:      97.66kB (90% compression)
 
 === Backup Logs
 100 foo

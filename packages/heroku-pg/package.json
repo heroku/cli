@@ -7,6 +7,7 @@
     "url": "https://github.com/heroku/heroku-pg/issues"
   },
   "dependencies": {
+    "bytes": "2.4.0",
     "co": "4.6.0",
     "co-wait": "0.0.0",
     "debug": "2.3.2",
@@ -17,7 +18,9 @@
     "lodash.sample": "4.2.1",
     "lodash.sortby": "4.7.0",
     "lodash.uniqby": "4.7.0",
+    "mkdirp": "0.5.1",
     "sinon": "1.17.6",
+    "smooth-progress": "1.1.0",
     "string": "3.3.3",
     "strip-eof": "1.0.0"
   },

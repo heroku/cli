@@ -21,8 +21,12 @@ function prefix (transfer) {
 
 module.exports = (context, heroku) => ({
   filesize: (size, opts = {}) => {
-    const filesize = require('filesize')
-    return filesize(size, opts)
+    Object.assign(opts, {
+      decimalPlaces: 2,
+      fixedDecimals: true
+    })
+    const bytes = require('bytes')
+    return bytes(size, opts)
   },
   transfer: {
     num: co.wrap(function * (name) {
