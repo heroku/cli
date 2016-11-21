@@ -21,9 +21,9 @@ const getBastion = function (config, baseName) {
     : {bastionHost, bastionKey}
 }
 
-exports.getConnectionDetails = function (addon, config) {
+exports.getConnectionDetails = function (attachment, config) {
   const url = require('url')
-  const connstringVars = addon.config_vars
+  const connstringVars = attachment.config_vars
     .filter((cv) => (
       config[cv].startsWith('postgres://') &&
       cv.endsWith('_URL')
@@ -45,7 +45,7 @@ exports.getConnectionDetails = function (addon, config) {
     database: target.path.split('/', 2)[1],
     host: target.hostname,
     port: target.port,
-    addon,
+    attachment,
     url: target
   }
 

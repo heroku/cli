@@ -39,11 +39,11 @@ describe('fetcher', () => {
 
   describe('database', () => {
     it('returns db connection info', () => {
+      let addonApp = {name: 'addon-app'}
       let app = {name: 'myapp'}
-      stub.withArgs(sinon.match.any, 'myapp', 'DATABASE_URL').returns(Promise.resolve({addon: {id: 100, name: 'postgres-1', app}}))
-      api.get('/addons/100').reply(200, {
-        config_vars: ['DATABASE_URL']
-      })
+      stub.withArgs(sinon.match.any, 'myapp', 'DATABASE_URL').returns(Promise.resolve(
+        {addon: {id: 100, name: 'postgres-1', app: addonApp}, app, config_vars: ['DATABASE_URL']}
+      ))
       api.get('/apps/myapp/config-vars').reply(200, {
         'DATABASE_URL': 'postgres://pguser:pgpass@pghost.com/pgdb'
       })

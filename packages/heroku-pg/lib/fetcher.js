@@ -5,23 +5,24 @@ const debug = require('./debug')
 const pgUtil = require('./util')
 
 module.exports = heroku => {
-  function * addon (app, db) {
+  function * attachment (app, db) {
     const {resolve} = require('heroku-cli-addons')
 
     db = db || 'DATABASE_URL'
     debug(`fetching ${db} on ${app}`)
-    let attachment = yield resolve.attachment(heroku, app, db, {'Accept-Inclusion': 'addon:plan'})
-    return attachment.addon
+    return yield resolve.attachment(heroku, app, db)
+  }
+
+  function * addon (app, db) {
+    return (yield attachment(app, db)).addon
   }
 
   function * database (app, db) {
-    let attachmentAddon = yield module.exports(heroku).addon(app, db)
-    let [addon, config] = yield [
-      heroku.get(`/addons/${attachmentAddon.id}`),
-      heroku.get(`/apps/${attachmentAddon.app.name}/config-vars`)
+    let [attached, config] = yield [
+      attachment(app, db),
+      heroku.get(`/apps/${app}/config-vars`)
     ]
-
-    return pgUtil.getConnectionDetails(addon, config)
+    return pgUtil.getConnectionDetails(attached, config)
   }
 
   function * all (app) {

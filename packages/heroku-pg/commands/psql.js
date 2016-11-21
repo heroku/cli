@@ -10,7 +10,7 @@ function * run (context, heroku) {
   const {app, args, flags} = context
 
   let db = yield fetcher.database(app, args.database)
-  cli.console.error(`--> Connecting to ${cli.color.addon(db.addon.name)}`)
+  cli.console.error(`--> Connecting to ${cli.color.addon(db.attachment.addon.name)}`)
   if (flags.command) {
     process.stdout.write(yield psql.exec(db, flags.command))
   } else {

@@ -41,8 +41,8 @@ function * exec (db, query) {
 
 function * interactive (db) {
   const {spawnSync} = require('child_process')
-  let name = db.addon.config_vars[0].replace(/^HEROKU_POSTGRESQL_/, '').replace(/_URL$/, '')
-  let prompt = `${db.addon.app.name}::${name}%R%# `
+  let name = db.attachment.config_vars[0].replace(/^HEROKU_POSTGRESQL_/, '').replace(/_URL$/, '')
+  let prompt = `${db.attachment.app.name}::${name}%R%# `
   handleSignals()
   let {error: err, status} = spawnSync('psql',
     ['--set', `PROMPT1=${prompt}`, '--set', `PROMPT2=${prompt}`],

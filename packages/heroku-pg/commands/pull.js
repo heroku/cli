@@ -81,7 +81,7 @@ function * push (context, heroku) {
   const {app, args} = context
   const source = parseURL(args.source)
   const target = yield fetcher.database(app, args.target)
-  cli.log(`heroku-cli: Pushing ${cli.color.cyan(args.source)} ---> ${cli.color.addon(target.addon.name)}`)
+  cli.log(`heroku-cli: Pushing ${cli.color.cyan(args.source)} ---> ${cli.color.addon(target.attachment.addon.name)}`)
   yield run(source, target)
   cli.log('heroku-cli: Pushing complete.')
 }
@@ -91,7 +91,7 @@ function * pull (context, heroku) {
   const {app, args} = context
   const source = yield fetcher.database(app, args.source)
   const target = parseURL(args.target)
-  cli.log(`heroku-cli: Pulling ${cli.color.addon(source.addon.name)} ---> ${cli.color.cyan(args.target)}`)
+  cli.log(`heroku-cli: Pulling ${cli.color.addon(source.attachment.addon.name)} ---> ${cli.color.cyan(args.target)}`)
   yield run(source, target)
   cli.log('heroku-cli: Pulling complete.')
 }

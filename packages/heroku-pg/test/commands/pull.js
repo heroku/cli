@@ -13,8 +13,10 @@ const db = {
   database: 'mydb',
   port: 5432,
   host: 'herokai.com',
-  addon: {
-    name: 'postgres-1',
+  attachment: {
+    addon: {
+      name: 'postgres-1'
+    },
     config_vars: ['DATABASE_URL'],
     app: {name: 'myapp'}
   }
