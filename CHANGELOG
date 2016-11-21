@@ -1,3 +1,7 @@
+5.5.2   2016-11-21
+==================
+Updated heroku-cli-addons
+
 5.5.1   2016-11-17
 ==================
 Warn on plugin refresh errors
