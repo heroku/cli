@@ -11,12 +11,12 @@ describe('pg:backups:schedule', () => {
 
   beforeEach(() => {
     api = nock('https://api.heroku.com')
-    api.get('/apps/myapp/addon-attachments/DATABASE_URL').reply(200, {
+    api.post('/actions/addon-attachments/resolve', {app: 'myapp', addon_attachment: 'DATABASE_URL'}).reply(200, [{
       addon: {
         name: 'postgres-1',
         plan: {name: 'heroku-postgresql:standard-0'}
       }
-    })
+    }])
     pg = nock('https://postgres-api.heroku.com')
     cli.mockConsole()
   })
