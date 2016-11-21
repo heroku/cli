@@ -11,8 +11,8 @@ describe('addons:open', function () {
   it('only prints the URL when --show-url passed', function () {
     let api = nock('https://api.heroku.com:443')
 
-    api.get('/apps/myapp/addons/db2')
-      .reply(200, {id: 'db2', web_url: 'http://db2'})
+    api.post('/actions/addons/resolve', {'app': 'myapp', 'addon': 'db2'})
+      .reply(200, [{id: 'db2', web_url: 'http://db2'}])
 
     api.get('/addons/db2/addon-attachments')
       .reply(200, [])
@@ -25,8 +25,8 @@ describe('addons:open', function () {
   it('opens the addon dashboard in a browser by default', function () {
     let api = nock('https://api.heroku.com:443')
 
-    api.get('/apps/myapp/addons/slowdb')
-      .reply(200, {id: 'slowdb', web_url: 'http://slowdb'})
+    api.post('/actions/addons/resolve', {'app': 'myapp', 'addon': 'slowdb'})
+      .reply(200, [{id: 'slowdb', web_url: 'http://slowdb'}])
 
     api.get('/addons/slowdb/addon-attachments')
       .reply(200, [])
@@ -40,14 +40,14 @@ describe('addons:open', function () {
   it('opens an attached addon, by slug, with the correct `context_app`', function () {
     let api = nock('https://api.heroku.com:443')
 
-    api.get('/apps/myapp-2/addon-attachments/slowdb')
+    api.post('/actions/addon-attachments/resolve', {'app': 'myapp-2', 'addon_attachment': 'slowdb'})
       .reply(404)
 
-    api.get('/apps/myapp-2/addons/slowdb')
+    api.post('/actions/addons/resolve', {'app': 'myapp-2', 'addon': 'slowdb'})
       .reply(404)
 
-    api.get('/addons/slowdb')
-      .reply(200, {id: 'c7c9cf20-ec87-11e5-aea4-0002a5d5c51b', web_url: 'http://myapp-slowdb'})
+    api.post('/actions/addons/resolve', {'app': null, 'addon': 'slowdb'})
+      .reply(200, [{id: 'c7c9cf20-ec87-11e5-aea4-0002a5d5c51b', web_url: 'http://myapp-slowdb'}])
 
     api.get('/addons/c7c9cf20-ec87-11e5-aea4-0002a5d5c51b/addon-attachments')
       .reply(200, [

@@ -21,8 +21,8 @@ describe('addons:docs', function () {
     let api = nock('https://api.heroku.com:443')
       .get('/addon-services/my-attachment-1111')
       .reply(404)
-      .get('/addons/my-attachment-1111')
-      .reply(200, {addon_service: {name: 'slowdb'}})
+      .post('/actions/addons/resolve', {'addon': 'my-attachment-1111'})
+      .reply(200, [{addon_service: {name: 'slowdb'}}])
 
     return cmd.run({args: {addon: 'my-attachment-1111'}, flags: {'show-url': true}})
       .then(() => expect(cli.stdout).to.equal('https://devcenter.heroku.com/articles/slowdb\n'))
@@ -34,8 +34,8 @@ describe('addons:docs', function () {
     let api = nock('https://api.heroku.com:443')
       .get('/addon-services/my-attachment-1111')
       .reply(404)
-      .get('/apps/myapp/addons/my-attachment-1111')
-      .reply(200, {addon_service: {name: 'slowdb'}})
+      .post('/actions/addons/resolve', {'app': 'myapp', 'addon': 'my-attachment-1111'})
+      .reply(200, [{addon_service: {name: 'slowdb'}}])
 
     return cmd.run({app: 'myapp', args: {addon: 'my-attachment-1111'}, flags: {'show-url': true}})
       .then(() => expect(cli.stdout).to.equal('https://devcenter.heroku.com/articles/slowdb\n'))

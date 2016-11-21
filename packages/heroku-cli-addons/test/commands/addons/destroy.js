@@ -12,7 +12,7 @@ describe('addons:destroy', () => {
     let addon = {id: 201, name: 'db3-swiftly-123', addon_service: {name: 'heroku-db3'}, app: {name: 'myapp', id: 101}}
 
     let api = nock('https://api.heroku.com:443')
-      .get('/addons/heroku-db3').reply(200, addon)
+      .post('/actions/addons/resolve', {'app': 'myapp', 'addon': 'heroku-db3'}).reply(200, [addon])
       .delete('/apps/101/addons/201', {force: false})
       .reply(200, {plan: {price: {cents: 0}}, provision_message: 'provision msg'})
 

@@ -16,8 +16,8 @@ describe('addons:info', function () {
   context('with add-ons', function () {
     beforeEach(function () {
       nock('https://api.heroku.com', {reqheaders: {'Accept-Expansion': 'addon_service,plan'}})
-        .get('/addons/www-db')
-        .reply(200, fixtures.addons['www-db'])
+        .post('/actions/addons/resolve', {'app': null, 'addon': 'www-db'})
+        .reply(200, [fixtures.addons['www-db']])
       nock('https://api.heroku.com')
         .get(`/addons/${fixtures.addons['www-db']['id']}/addon-attachments`)
         .reply(200, [fixtures.attachments['acme-inc-www::DATABASE']])
@@ -41,8 +41,8 @@ State:        created
   context('with app add-ons', function () {
     beforeEach(function () {
       nock('https://api.heroku.com', {reqheaders: {'Accept-Expansion': 'addon_service,plan'}})
-        .get('/apps/example/addons/www-db')
-        .reply(200, fixtures.addons['www-db'])
+        .post('/actions/addons/resolve', {'app': 'example', 'addon': 'www-db'})
+        .reply(200, [fixtures.addons['www-db']])
       nock('https://api.heroku.com')
         .get(`/addons/${fixtures.addons['www-db']['id']}/addon-attachments`)
         .reply(200, [fixtures.attachments['acme-inc-www::DATABASE']])

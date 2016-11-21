@@ -11,7 +11,7 @@ describe('addons:upgrade', () => {
     let addon = {name: 'kafka-swiftly-123', addon_service: {name: 'heroku-kafka'}, app: {name: 'myapp'}, plan: {name: 'premium-0'}}
 
     let api = nock('https://api.heroku.com:443')
-      .get('/addons/heroku-kafka').reply(200, addon)
+      .post('/actions/addons/resolve', {'app': 'myapp', 'addon': 'heroku-kafka'}).reply(200, [addon])
       .patch('/apps/myapp/addons/kafka-swiftly-123', {plan: {name: 'heroku-kafka:hobby'}})
       .reply(200, {plan: {price: {cents: 0}}, provision_message: 'provision msg'})
     return cmd.run({app: 'myapp', args: {addon: 'heroku-kafka', plan: 'heroku-kafka:hobby'}})
@@ -24,7 +24,7 @@ describe('addons:upgrade', () => {
     let addon = {name: 'postgresql-swiftly-123', addon_service: {name: 'heroku-postgresql'}, app: {name: 'myapp'}, plan: {name: 'premium-0'}}
 
     let api = nock('https://api.heroku.com:443')
-      .get('/addons/heroku-postgresql').reply(200, addon)
+      .post('/actions/addons/resolve', {'app': 'myapp', 'addon': 'heroku-postgresql'}).reply(200, [addon])
       .patch('/apps/myapp/addons/postgresql-swiftly-123', {plan: {name: 'heroku-postgresql:hobby'}})
       .reply(200, {plan: {price: {cents: 0}}})
     return cmd.run({app: 'myapp', args: {addon: 'heroku-postgresql:hobby'}})
@@ -42,7 +42,7 @@ describe('addons:upgrade', () => {
     let addon = {name: 'db1-swiftly-123', addon_service: {name: 'heroku-db1'}, app: {name: 'myapp'}, plan: {name: 'premium-0'}}
 
     let api = nock('https://api.heroku.com:443')
-      .get('/addons/heroku-db1').reply(200, addon)
+      .post('/actions/addons/resolve', {'app': 'myapp', 'addon': 'heroku-db1'}).reply(200, [addon])
       .get('/addon-services/heroku-db1/plans').reply(200, [
         {name: 'heroku-db1:free'},
         {name: 'heroku-db1:premium-0'}
@@ -64,7 +64,8 @@ https://devcenter.heroku.com/articles/managing-add-ons`)
 
   it('handles multiple add-ons', () => {
     let api = nock('https://api.heroku.com:443')
-      .get('/addons/heroku-redis').reply(422, {id: 'multiple_matches', message: 'Ambiguous identifier; multiple matching add-ons found: redis-defined-2951, redis-rigid-2920.'})
+      .post('/actions/addons/resolve', {'app': null, 'addon': 'heroku-redis'})
+      .reply(200, [{'name': 'db1-swiftly-123'}, {'name': 'db1-swiftly-456'}])
     return expect(cmd.run({args: {addon: 'heroku-redis:invalid'}}),
       'to be rejected with', /multiple matching add-ons found/)
       .then(() => api.done())

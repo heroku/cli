@@ -28,8 +28,8 @@ describe('addons:wait', function () {
     context('when the add-on is provisioned', function () {
       beforeEach(function () {
         nock('https://api.heroku.com', {reqheaders: expansionHeaders})
-          .get('/apps/example/addons/www-db')
-          .reply(200, fixtures.addons['www-db']) // provisioned
+          .post('/actions/addons/resolve', {'app': null, 'addon': 'www-db'})
+          .reply(200, [fixtures.addons['www-db']]) // provisioned
       })
 
       it('prints output indicating that it is done', function () {
@@ -42,8 +42,8 @@ describe('addons:wait', function () {
       it('waits until the add-on is provisioned, then shows config vars', function () {
         // Call to resolve the add-on:
         let resolverResponse = nock('https://api.heroku.com')
-          .get('/addons/www-redis')
-          .reply(200, fixtures.addons['www-redis']) // provisioning
+          .post('/actions/addons/resolve', {'app': null, 'addon': 'www-redis'})
+          .reply(200, [fixtures.addons['www-redis']]) // provisioning
 
         let provisioningResponse = nock('https://api.heroku.com', {reqheaders: expansionHeaders})
           .get('/apps/acme-inc-www/addons/www-redis')
