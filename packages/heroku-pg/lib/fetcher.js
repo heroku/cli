@@ -10,7 +10,7 @@ module.exports = heroku => {
 
     db = db || 'DATABASE_URL'
     debug(`fetching ${db} on ${app}`)
-    return yield resolve.attachment(heroku, app, db)
+    return yield resolve.appAttachment(heroku, app, db, {addon_service: 'heroku-postgresql'})
   }
 
   function * addon (app, db) {
