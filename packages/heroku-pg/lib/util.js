@@ -21,22 +21,24 @@ const getBastion = function (config, baseName) {
     : {bastionHost, bastionKey}
 }
 
+function getUrl (configVars) {
+  let connstringVars = configVars.filter((cv) => (cv.endsWith('_URL')))
+  if (connstringVars.length === 0) throw new Error('Database URL not found for this addon')
+  return connstringVars[0]
+}
+
+exports.getUrl = getUrl
+
 exports.getConnectionDetails = function (attachment, config) {
   const url = require('url')
-  const connstringVars = attachment.config_vars
-    .filter((cv) => (
-      config[cv].startsWith('postgres://') &&
-      cv.endsWith('_URL')
-    ))
-
-  if (connstringVars.length === 0) throw new Error('Database URL not found for this addon')
+  const connstringVar = getUrl(attachment.config_vars.filter((cv) => config[cv].startsWith('postgres://')))
 
   // remove _URL from the end of the config var name
-  const baseName = connstringVars[0].slice(0, -4)
+  const baseName = connstringVar.slice(0, -4)
 
   // build the default payload for non-bastion dbs
-  debug(`Using "${connstringVars[0]}" to connect to your database…`)
-  const target = url.parse(config[connstringVars[0]])
+  debug(`Using "${connstringVar}" to connect to your database…`)
+  const target = url.parse(config[connstringVar])
   let [user, password] = target.auth.split(':')
 
   let payload = {

@@ -5,6 +5,7 @@ const cli = require('heroku-cli-util')
 
 function * run (context, heroku) {
   const url = require('url')
+  const util = require('../lib/util')
   const host = require('../lib/host')
   const pgbackups = require('../lib/pgbackups')(context, heroku)
   const addons = require('heroku-cli-addons').resolve
@@ -31,7 +32,7 @@ function * run (context, heroku) {
       attachment.addon = addon
       return {
         name: attachment.name.replace(/^HEROKU_POSTGRESQL_/, '').replace(/_URL$/, ''),
-        url: config[addon.config_vars[0]],
+        url: config[util.getUrl(addon.config_vars)],
         attachment,
         confirm: app
       }
