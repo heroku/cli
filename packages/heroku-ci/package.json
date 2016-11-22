@@ -1,6 +1,6 @@
 {
   "name": "heroku-ci",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Heroku CLI plugin for Heroku CI",
   "main": "index.js",
   "engines": {
