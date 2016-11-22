@@ -14,12 +14,17 @@ function* run (context, heroku) {
     return yield source.createSourceBlob(commit.ref, context, heroku)
   }))
 
+  const pipelineRepository = yield api.pipelineRepository(heroku, pipeline.id)
+  const organization = pipelineRepository.organization &&
+                       pipelineRepository.organization.name
+
   const testRun = yield cli.action('Starting test run', co(function* () {
     return yield api.createTestRun(heroku, {
       commit_branch: commit.branch,
       commit_message: commit.message,
       commit_sha: commit.ref,
       pipeline: pipeline.id,
+      organization,
       source_blob_url: sourceBlobUrl
     })
   }))

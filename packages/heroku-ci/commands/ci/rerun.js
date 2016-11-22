@@ -26,12 +26,17 @@ function* run (context, heroku) {
     return yield source.createSourceBlob(sourceTestRun.commit_sha, context, heroku)
   }))
 
+  const pipelineRepository = yield api.pipelineRepository(heroku, pipeline.id)
+  const organization = pipelineRepository.organization &&
+                       pipelineRepository.organization.name
+
   const testRun = yield cli.action('Starting test run', co(function* () {
     return yield api.createTestRun(heroku, {
       commit_branch: sourceTestRun.commit_branch,
       commit_message: sourceTestRun.commit_message,
       commit_sha: sourceTestRun.commit_sha,
       pipeline: pipeline.id,
+      organization,
       source_blob_url: sourceBlobUrl
     })
   }))
@@ -49,4 +54,3 @@ module.exports = {
   args: [{ name: 'number', optional: true }],
   run: cli.command(co.wrap(run))
 }
-
