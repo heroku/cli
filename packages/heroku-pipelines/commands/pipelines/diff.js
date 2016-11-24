@@ -175,7 +175,7 @@ function* run(context, heroku) {
 module.exports = {
   topic: 'pipelines',
   command: 'diff',
-  description: 'compares the latest release of this app its downstream app(s)',
+  description: 'compares the latest release of this app to its downstream app(s)',
   needsAuth: true,
   needsApp: true,
   run: cli.command(co.wrap(run))
