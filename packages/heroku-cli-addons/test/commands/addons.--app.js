@@ -13,7 +13,10 @@ describe('addons --app', function () {
     addons = addons || []
     attachments = attachments || []
 
-    nock('https://api.heroku.com', {reqheaders: {'Accept-Expansion': 'addon_service,plan'}})
+    nock('https://api.heroku.com', {reqheaders: {
+      'Accept-Expansion': 'addon_service,plan',
+      'Accept': 'application/vnd.heroku+json; version=3.with-addon-billing-info'
+    }})
       .get(`/apps/${appName}/addons`)
       .reply(200, addons)
 
@@ -236,6 +239,30 @@ The table above shows add-ons and the attachments to the current app (acme-inc-d
             expect(cli.stdout.indexOf('as DATABASE on acme-inc-www')).to.be.lt(cli.stdout.indexOf('as HEROKU_POSTGRESQL_RED on acme-inc-www'))
           })
         })
+      })
+    })
+  })
+
+  context('with a grandfathered add-on', function () {
+    beforeEach(function () {
+      let addon = fixtures.addons['dwh-db']
+      addon.billed_price_cents = 10000
+
+      mockAPI('acme-inc-dwh', [
+        addon
+      ], [
+        fixtures.attachments['acme-inc-dwh::DATABASE']
+      ])
+    })
+
+    it('prints add-ons in a table with the grandfathered price', function () {
+      return run('acme-inc-dwh', function () {
+        util.expectOutput(cli.stdout,
+`Add-on                      Plan        Price       State
+──────────────────────────  ──────────  ──────────  ───────
+heroku-postgresql (dwh-db)  standard-2  $100/month  created
+ └─ as DATABASE
+The table above shows add-ons and the attachments to the current app (acme-inc-dwh) or other apps.`)
       })
     })
   })

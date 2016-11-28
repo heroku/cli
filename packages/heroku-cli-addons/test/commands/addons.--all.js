@@ -56,6 +56,29 @@ acme-inc-www  www-redis  heroku-redis:premium-2       $60/month  creating`)
     })
   })
 
+  context('with a grandfathered add-on', function () {
+    beforeEach(function () {
+      let addon = fixtures.addons['dwh-db']
+      addon.billed_price_cents = 10000
+
+      nock('https://api.heroku.com', {reqheaders: {
+        'Accept-Expansion': 'addon_service,plan',
+        'Accept': 'application/vnd.heroku+json; version=3.with-addon-billing-info'
+      }})
+        .get('/addons')
+        .reply(200, [addon])
+    })
+
+    it('prints add-ons in a table with the grandfathered price', function () {
+      return cmd.run({flags: {}}).then(function () {
+        util.expectOutput(cli.stdout,
+`Owning App    Add-on  Plan                          Price       State
+────────────  ──────  ────────────────────────────  ──────────  ───────
+acme-inc-dwh  dwh-db  heroku-postgresql:standard-2  $100/month  created`)
+      })
+    })
+  })
+
   it('prints message when there are no add-ons', function () {
     nock('https://api.heroku.com').get('/addons').reply(200, [])
     return cmd.run({flags: {}}).then(function () {

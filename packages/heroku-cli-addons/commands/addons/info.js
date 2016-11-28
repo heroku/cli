@@ -3,6 +3,7 @@
 let cli = require('heroku-cli-util')
 let co = require('co')
 
+let grandfatheredPrice = require('../../lib/util').grandfatheredPrice
 let formatPrice = require('../../lib/util').formatPrice
 let formatState = require('../../lib/util').formatState
 let style = require('../../lib/util').style
@@ -10,12 +11,24 @@ let style = require('../../lib/util').style
 let run = cli.command({preauth: true}, function (ctx, api) {
   const resolve = require('../../lib/resolve')
   return co(function * () {
-    let addon = yield resolve.addon(api, ctx.app, ctx.args.addon)
+    let resolvedAddon = yield resolve.addon(api, ctx.app, ctx.args.addon)
 
-    addon.attachments = yield api.request({
-      method: 'GET',
-      path: `/addons/${addon.id}/addon-attachments`
-    })
+    // the resolve call uses a variant so we cannot also use the
+    // with-addon-billing-info in the resolve call so we have to run out
+    // and grab the addon again, but can bundle with the attachments request
+    let [addon, attachments] = yield [
+      api.get(`/addons/${resolvedAddon.id}`, {headers: {
+        'Accept-Expansion': 'addon_service,plan',
+        'Accept': 'application/vnd.heroku+json; version=3.with-addon-billing-info'
+      }}),
+      api.request({
+        method: 'GET',
+        path: `/addons/${resolvedAddon.id}/addon-attachments`
+      })
+    ]
+
+    addon.plan.price = grandfatheredPrice(addon)
+    addon.attachments = attachments
 
     cli.styledHeader(style('addon', addon.name))
     cli.styledHash({

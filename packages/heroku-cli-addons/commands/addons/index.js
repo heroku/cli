@@ -9,6 +9,7 @@ function * run (ctx, api) {
   const style = util.style
   const formatPrice = util.formatPrice
   const formatState = util.formatState
+  const grandfatheredPrice = util.grandfatheredPrice
   const printf = require('printf')
 
   const groupBy = require('lodash.groupby')
@@ -22,7 +23,10 @@ function * run (ctx, api) {
     let attachments, addons
 
     if (app) { // don't disploy attachments globally
-      addons = api.get(`/apps/${app}/addons`, {headers: {'Accept-Expansion': 'addon_service,plan'}})
+      addons = api.get(`/apps/${app}/addons`, {headers: {
+        'Accept-Expansion': 'addon_service,plan',
+        'Accept': 'application/vnd.heroku+json; version=3.with-addon-billing-info'
+      }})
 
       let sudoHeaders = JSON.parse(process.env.HEROKU_HEADERS || '{}')
       if (sudoHeaders['X-Heroku-Sudo'] && !sudoHeaders['X-Heroku-Sudo-User']) {
@@ -42,7 +46,10 @@ function * run (ctx, api) {
       addons = api.request({
         method: 'GET',
         path: '/addons',
-        headers: {'Accept-Expansion': 'addon_service,plan'}
+        headers: {
+          'Accept-Expansion': 'addon_service,plan',
+          'Accept': 'application/vnd.heroku+json; version=3.with-addon-billing-info'
+        }
       })
     }
 
@@ -66,6 +73,8 @@ function * run (ctx, api) {
       if (isRelevantToApp(addon)) {
         addons.push(addon)
       }
+
+      addon.plan.price = grandfatheredPrice(addon)
     })
 
     // Any attachments left didn't have a corresponding add-on record in API.

@@ -23,6 +23,11 @@ module.exports = {
     }))
   },
 
+  grandfatheredPrice: function (addon) {
+    const price = addon.plan.price
+    return Object.assign({}, price, {cents: addon.billed_price_cents})
+  },
+
   formatPrice: function (price) {
     const printf = require('printf')
 
