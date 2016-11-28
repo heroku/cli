@@ -3,14 +3,70 @@
 const co = require('co')
 const debug = require('./debug')
 const pgUtil = require('./util')
+const getConfig = require('./config')
 
 module.exports = heroku => {
-  function * attachment (app, db) {
-    const {resolve} = require('heroku-cli-addons')
+  function * attachment (app, passedDb) {
+    let db = passedDb || 'DATABASE_URL'
 
-    db = db || 'DATABASE_URL'
-    debug(`fetching ${db} on ${app}`)
-    return yield resolve.appAttachment(heroku, app, db, {addon_service: 'heroku-postgresql'})
+    function matchesHelper (app, db) {
+      const {resolve} = require('heroku-cli-addons')
+
+      debug(`fetching ${db} on ${app}`)
+
+      return resolve.appAttachment(heroku, app, db, {addon_service: 'heroku-postgresql'})
+      .then(attached => ({matches: [attached]}))
+      .catch(function (err) {
+        if (err.statusCode === 422 && err.body && err.body.id === 'multiple_matches' && err.matches) {
+          return {matches: err.matches, err: err}
+        }
+
+        if (err.statusCode === 404 && err.body && err.body.id === 'not_found') {
+          return {matches: null, err: err}
+        }
+
+        throw err
+      })
+    }
+
+    let {matches, err} = yield matchesHelper(app, db)
+
+    // happy path where the resolver matches just one
+    if (matches && matches.length === 1) {
+      return matches[0]
+    }
+
+    // case for 404 where there are implicit attachments
+    if (!matches) {
+      if (!db.endsWith('_URL')) {
+        db = db + '_URL'
+      }
+
+      let [config, attachments] = yield [
+        getConfig(heroku, app),
+        allAttachments(app)
+      ]
+
+      matches = attachments.filter(attachment => config[db] && config[db] === config[pgUtil.getUrl(attachment.config_vars)])
+
+      if (matches.length === 0) {
+        let validOptions = attachments.map(attachment => pgUtil.getUrl(attachment.config_vars))
+        throw new Error(`Unknown database: ${passedDb}. Valid options are: ${validOptions.join(', ')}`)
+      }
+    }
+
+    let first = matches[0]
+
+    // case for 422 where there are ambiguous attachments that are equivalent
+    if (matches.every((match) => first.addon.id === match.addon.id && first.app.id === match.app.id)) {
+      let config = yield getConfig(heroku, app)
+
+      if (matches.every((match) => config[pgUtil.getUrl(first.config_vars)] === config[pgUtil.getUrl(match.config_vars)])) {
+        return first
+      }
+    }
+
+    throw err
   }
 
   function * addon (app, db) {
@@ -18,11 +74,20 @@ module.exports = heroku => {
   }
 
   function * database (app, db) {
-    let [attached, config] = yield [
-      attachment(app, db),
-      heroku.get(`/apps/${app}/config-vars`)
-    ]
+    let attached = yield attachment(app, db)
+
+    // would inline this as well but in some cases attachment pulls down config
+    // as well and we would request twice at the same time but I did not want
+    // to push this down into attachment because we do not always need config
+    let config = yield getConfig(heroku, app)
     return pgUtil.getConnectionDetails(attached, config)
+  }
+
+  function * allAttachments (app) {
+    let attachments = yield heroku.get(`/apps/${app}/addon-attachments`, {
+      headers: {'Accept-Inclusion': 'addon:plan,config_vars'}
+    })
+    return attachments.filter(a => a.addon.plan.name.startsWith('heroku-postgresql'))
   }
 
   function * all (app) {
@@ -30,11 +95,7 @@ module.exports = heroku => {
 
     debug(`fetching all DBs on ${app}`)
 
-    let attachments = yield heroku.get(`/apps/${app}/addon-attachments`, {
-      headers: {'Accept-Inclusion': 'addon:plan'}
-    })
-    let addons = attachments.map(a => a.addon)
-    addons = addons.filter(a => a.plan.name.startsWith('heroku-postgresql'))
+    let addons = (yield allAttachments(app)).map(a => a.addon)
     addons = uniqby(addons, 'id')
 
     return addons

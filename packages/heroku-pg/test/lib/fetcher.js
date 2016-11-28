@@ -8,6 +8,12 @@ const resolver = {}
 const fetcher = proxyquire('../../lib/fetcher', {'heroku-cli-addons': {resolve: resolver}})
 const Heroku = require('heroku-client')
 const sinon = require('sinon')
+const url = require('url')
+
+beforeEach(function () {
+  const getConfig = require('../../lib/config')
+  getConfig.clear()
+})
 
 describe('fetcher', () => {
   let api
@@ -20,10 +26,10 @@ describe('fetcher', () => {
     stub.throws('not stubbed')
 
     resolver.appAttachment = stub
+    nock.cleanAll()
   })
 
   afterEach(() => {
-    nock.cleanAll()
     api.done()
   })
 
@@ -49,6 +55,252 @@ describe('fetcher', () => {
       })
       return fetcher(new Heroku()).database('myapp', 'DATABASE_URL')
       .then(db => expect(db.user, 'to equal', 'pguser'))
+    })
+
+    it('returns db connection info when multiple but no ambiguity', () => {
+      let addonApp = {name: 'addon-app'}
+      let app = {name: 'myapp'}
+      stub.withArgs(sinon.match.any, 'myapp', 'DATABASE_URL').returns(Promise.reject({
+        statusCode: 422,
+        body: {'id': 'multiple_matches'},
+        matches: [
+          {addon: {id: 100, name: 'postgres-1', app: addonApp}, app, config_vars: ['FOO_URL']},
+          {addon: {id: 100, name: 'postgres-1', app: addonApp}, app, config_vars: ['BAR_URL']}
+        ]
+      }))
+
+      api.get('/apps/myapp/config-vars').reply(200, {
+        'FOO_URL': 'postgres://pguser:pgpass@pghost.com/pgdb',
+        'BAR_URL': 'postgres://pguser:pgpass@pghost.com/pgdb'
+      })
+
+      return fetcher(new Heroku()).database('myapp', 'DATABASE_URL')
+      .then(db => expect(db.user, 'to equal', 'pguser'))
+    })
+
+    it('errors when config var value ambiguity', () => {
+      let addonApp = {name: 'addon-app'}
+      let app = {name: 'myapp'}
+      let err = {
+        statusCode: 422,
+        body: {'id': 'multiple_matches'},
+        matches: [
+          {addon: {id: 100, name: 'postgres-1', app: addonApp}, app, config_vars: ['FOO_URL']},
+          {addon: {id: 100, name: 'postgres-1', app: addonApp}, app, config_vars: ['BAR_URL']}
+        ]
+      }
+      stub.withArgs(sinon.match.any, 'myapp', 'DATABASE_URL').returns(Promise.reject(err))
+
+      api.get('/apps/myapp/config-vars').reply(200, {
+        'FOO_URL': 'postgres://pguser:pgpass@pghost.com/pgdb1',
+        'BAR_URL': 'postgres://pguser:pgpass@pghost.com/pgdb2'
+      })
+
+      return expect(fetcher(new Heroku()).database('myapp', 'DATABASE_URL'), 'to be rejected with', err)
+    })
+
+    it('errors when config addon ambiguity', () => {
+      let addonApp = {name: 'addon-app'}
+      let app = {name: 'myapp'}
+      let err = {
+        statusCode: 422,
+        body: {'id': 'multiple_matches'},
+        matches: [
+          {addon: {id: 100, name: 'postgres-1', app: addonApp}, app, config_vars: ['FOO_URL']},
+          {addon: {id: 101, name: 'postgres-2', app: addonApp}, app, config_vars: ['BAR_URL']}
+        ]
+      }
+      stub.withArgs(sinon.match.any, 'myapp', 'DATABASE_URL').returns(Promise.reject(err))
+
+      return expect(fetcher(new Heroku()).database('myapp', 'DATABASE_URL'), 'to be rejected with', err)
+    })
+
+    it('errors when config app ambiguity', () => {
+      let addonApp = {name: 'addon-app'}
+      let app = {name: 'myapp'}
+      let err = {
+        statusCode: 422,
+        body: {'id': 'multiple_matches'},
+        matches: [
+          {addon: {id: 100, name: 'postgres-1', app: app}, app: {id: 100}, config_vars: ['FOO_URL']},
+          {addon: {id: 100, name: 'postgres-1', app: addonApp}, app: {id: 101}, config_vars: ['BAR_URL']}
+        ]
+      }
+      stub.withArgs(sinon.match.any, 'myapp', 'DATABASE_URL').returns(Promise.reject(err))
+
+      return expect(fetcher(new Heroku()).database('myapp', 'DATABASE_URL'), 'to be rejected with', err)
+    })
+
+    describe('when not found and DATABASE_URL config var exists', () => {
+      it('returns when no db arg', () => {
+        const err = new Error()
+        err.statusCode = 404
+        err.body = {id: 'not_found'}
+        err.message = 'Not Found'
+
+        stub.withArgs(sinon.match.any, 'myapp', 'DATABASE_URL').returns(Promise.reject(err))
+
+        api.get('/apps/myapp/config-vars').reply(200, {
+          'DATABASE_URL': 'postgres://pguser:pgpass@pghost.com/pgdb',
+          'HEROKU_POSTGRESQL_PINK_URL': 'postgres://pguser:pgpass@pghost.com/pgdb'
+        })
+
+        let plan = {name: 'heroku-postgresql:hobby-dev'}
+        let attachments = [
+          {
+            app: {name: 'myapp'},
+            addon: {id: 100, name: 'postgres-1', plan},
+            config_vars: ['HEROKU_POSTGRESQL_PINK_URL']
+          }
+        ]
+
+        api.get('/apps/myapp/addon-attachments').reply(200, attachments)
+
+        return fetcher(new Heroku()).database('myapp')
+        .then((db) => expect(db, 'to equal', {
+          user: 'pguser',
+          password: 'pgpass',
+          database: 'pgdb',
+          host: 'pghost.com',
+          port: null,
+          attachment: attachments[0],
+          url: url.parse('postgres://pguser:pgpass@pghost.com/pgdb')
+        }))
+      })
+
+      it('returns when DATABASE_URL db arg', () => {
+        const err = new Error()
+        err.statusCode = 404
+        err.body = {id: 'not_found'}
+        err.message = 'Not Found'
+
+        stub.withArgs(sinon.match.any, 'myapp', 'DATABASE_URL').returns(Promise.reject(err))
+
+        api.get('/apps/myapp/config-vars').reply(200, {
+          'DATABASE_URL': 'postgres://pguser:pgpass@pghost.com/pgdb',
+          'HEROKU_POSTGRESQL_PINK_URL': 'postgres://pguser:pgpass@pghost.com/pgdb'
+        })
+
+        let plan = {name: 'heroku-postgresql:hobby-dev'}
+        let attachments = [
+          {
+            app: {name: 'myapp'},
+            addon: {id: 100, name: 'postgres-1', plan},
+            config_vars: ['HEROKU_POSTGRESQL_PINK_URL']
+          }
+        ]
+
+        api.get('/apps/myapp/addon-attachments').reply(200, attachments)
+
+        return fetcher(new Heroku()).database('myapp', 'DATABASE_URL')
+        .then((db) => expect(db, 'to equal', {
+          user: 'pguser',
+          password: 'pgpass',
+          database: 'pgdb',
+          host: 'pghost.com',
+          port: null,
+          attachment: attachments[0],
+          url: url.parse('postgres://pguser:pgpass@pghost.com/pgdb')
+        }))
+      })
+
+      it('returns when DATABASE db arg', () => {
+        const err = new Error()
+        err.statusCode = 404
+        err.body = {id: 'not_found'}
+        err.message = 'Not Found'
+
+        stub.withArgs(sinon.match.any, 'myapp', 'DATABASE').returns(Promise.reject(err))
+
+        api.get('/apps/myapp/config-vars').reply(200, {
+          'DATABASE_URL': 'postgres://pguser:pgpass@pghost.com/pgdb',
+          'HEROKU_POSTGRESQL_PINK_URL': 'postgres://pguser:pgpass@pghost.com/pgdb'
+        })
+
+        let plan = {name: 'heroku-postgresql:hobby-dev'}
+        let attachments = [
+          {
+            app: {name: 'myapp'},
+            addon: {id: 100, name: 'postgres-1', plan},
+            config_vars: ['HEROKU_POSTGRESQL_PINK_URL']
+          }
+        ]
+
+        api.get('/apps/myapp/addon-attachments').reply(200, attachments)
+
+        return fetcher(new Heroku()).database('myapp', 'DATABASE')
+        .then((db) => expect(db, 'to equal', {
+          user: 'pguser',
+          password: 'pgpass',
+          database: 'pgdb',
+          host: 'pghost.com',
+          port: null,
+          attachment: attachments[0],
+          url: url.parse('postgres://pguser:pgpass@pghost.com/pgdb')
+        }))
+      })
+
+      it('throws not found if not neither set', () => {
+        const err = new Error()
+        err.statusCode = 404
+        err.body = {id: 'not_found'}
+
+        stub.withArgs(sinon.match.any, 'myapp', 'FOOBAR_URL').returns(Promise.reject(err))
+
+        api.get('/apps/myapp/config-vars').reply(200, {
+          'DATABASE_URL': 'postgres://pguser:pgpass@pghost.com/pgdb'
+        })
+
+        let plan = {name: 'heroku-postgresql:hobby-dev'}
+        let attachments = [
+          {
+            app: {name: 'myapp'},
+            addon: {id: 100, name: 'postgres-1', plan},
+            config_vars: ['HEROKU_POSTGRESQL_PINK_URL']
+          }
+        ]
+
+        api.get('/apps/myapp/addon-attachments').reply(200, attachments)
+
+        return expect(fetcher(new Heroku()).database('myapp', 'FOOBAR_URL'), 'to be rejected with', /Unknown database: FOOBAR_URL. Valid options are: HEROKU_POSTGRESQL_PINK_URL/)
+      })
+
+      it('throws not found if mismatch', () => {
+        const err = new Error()
+        err.statusCode = 404
+        err.body = {id: 'not_found'}
+
+        stub.withArgs(sinon.match.any, 'myapp', 'FOOBAR_URL').returns(Promise.reject(err))
+
+        api.get('/apps/myapp/config-vars').reply(200, {
+          'FOOBAR_URL': 'postgres://pguser:pgpass@pghost.com/pgdb1',
+          'DATABASE_URL': 'postgres://pguser:pgpass@pghost.com/pgdb2'
+        })
+
+        let plan = {name: 'heroku-postgresql:hobby-dev'}
+        let attachments = [
+          {
+            app: {name: 'myapp'},
+            addon: {id: 100, name: 'postgres-1', plan},
+            config_vars: ['DATABASE_URL']
+          }
+        ]
+
+        api.get('/apps/myapp/addon-attachments').reply(200, attachments)
+
+        return expect(fetcher(new Heroku()).database('myapp', 'FOOBAR_URL'), 'to be rejected with', /Unknown database: FOOBAR_URL. Valid options are: DATABASE_URL/)
+      })
+    })
+
+    describe('when not found and DATABASE_URL config var does not exist', () => {
+      it('throws not found if mismatch', () => {
+        const err = new Error()
+        err.statusCode = 404
+
+        stub.withArgs(sinon.match.any, 'myapp', 'DATABASE_URL').throws(err)
+
+        return expect(fetcher(new Heroku()).database('myapp'), 'to be rejected with', err)
+      })
     })
   })
 
