@@ -2,15 +2,7 @@
 
 const co = require('co')
 const debug = require('debug')('psql')
-
-function handleError (err) {
-  const cli = require('heroku-cli-util')
-  if (!err) return
-  if (err.code !== 'ENOENT') throw err
-  cli.error(`The local psql command could not be located.
-For help installing psql, see https://devcenter.heroku.com/articles/heroku-postgresql#local-setup`)
-  process.exit(1)
-}
+const tunnel = require('tunnel-ssh')
 
 function env (db) {
   return Object.assign({}, process.env, {
@@ -24,32 +16,118 @@ function env (db) {
   })
 }
 
+function tunnelConfig (db) {
+  const localHost = '127.0.0.1'
+  const localPort = Math.floor(Math.random() * (65535 - 49152) + 49152)
+  return {
+    username: 'bastion',
+    host: db.bastionHost,
+    privateKey: db.bastionKey,
+    dstHost: db.host,
+    dstPort: db.port,
+    localHost: localHost,
+    localPort: localPort
+  }
+}
+
+function handlePsqlError (reject, psql) {
+  psql.on('error', (err) => {
+    if (err.code === 'ENOENT') {
+      reject(`The local psql command could not be located. For help installing psql, see https://devcenter.heroku.com/articles/heroku-postgresql#local-setup`)
+    } else {
+      reject(err)
+    }
+  })
+}
+
+function sshTunnel (db, dbTunnelConfig, timeout) {
+  return new Promise((resolve, reject) => {
+    // if necessary to tunnel, setup a tunnel
+    // see also https://github.com/heroku/heroku/blob/master/lib/heroku/helpers/heroku_postgresql.rb#L53-L80
+    let timer = setTimeout(() => reject('Establishing a secure tunnel timed out'), timeout)
+    if (db.bastionKey) {
+      tunnel(dbTunnelConfig, (err, tnl) => {
+        if (err) {
+          debug(err)
+          reject(`Unable to establish a secure tunnel to your database.`)
+        }
+        debug('Tunnel created')
+        clearTimeout(timer)
+        resolve(tnl)
+      })
+    } else {
+      clearTimeout(timer)
+      resolve()
+    }
+  })
+}
+
+function execPsql (query, dbEnv, timeout) {
+  const {spawn} = require('child_process')
+  return new Promise((resolve, reject) => {
+    let timer = setTimeout(() => reject('psql call timed out'), timeout)
+    let result = ''
+    let psql = spawn('psql', ['-c', query], {env: dbEnv, encoding: 'utf8', stdio: [ 'ignore', 'pipe', 'inherit' ]})
+    psql.stdout.on('data', function (data) {
+      result += data.toString()
+    })
+    psql.on('close', function (code) {
+      clearTimeout(timer)
+      resolve(result)
+    })
+    handlePsqlError(reject, psql)
+  })
+}
+
+function psqlInteractive (dbEnv, prompt, timeout) {
+  const {spawn} = require('child_process')
+  return new Promise((resolve, reject) => {
+    let psql = spawn('psql',
+                     ['--set', `PROMPT1=${prompt}`, '--set', `PROMPT2=${prompt}`],
+                     {env: dbEnv, stdio: 'inherit'})
+    handlePsqlError(reject, psql)
+    psql.on('close', (data) => {
+      resolve()
+    })
+  })
+}
+
+function getConfigs (db) {
+  let dbEnv = env(db)
+  const dbTunnelConfig = tunnelConfig(db)
+  if (db.bastionKey) {
+    dbEnv = Object.assign(dbEnv, {
+      PGPORT: dbTunnelConfig.localPort,
+      PGHOST: dbTunnelConfig.localHost
+    })
+  }
+  return {
+    dbEnv: dbEnv,
+    dbTunnelConfig: dbTunnelConfig
+  }
+}
+
 function handleSignals () {
   process.once('SIGINT', () => {})
 }
 
-function * exec (db, query) {
-  const stripEOF = require('strip-eof')
-  const {spawnSync} = require('child_process')
+function * exec (db, query, timeout = 20000) {
   handleSignals()
-  debug(query)
-  let {stdout, error: err, status} = spawnSync('psql', ['--command', query], {env: env(db), encoding: 'utf8', stdio: [0, 'pipe', 2]})
-  handleError(err)
-  if (status !== 0) process.exit(status)
-  return stripEOF(stdout)
+  let configs = getConfigs(db)
+
+  yield sshTunnel(db, configs.dbTunnelConfig, timeout)
+  return yield execPsql(query, configs.dbEnv, timeout)
 }
 
 function * interactive (db) {
-  const {spawnSync} = require('child_process')
   const pgUtil = require('./util')
   let name = pgUtil.getUrl(db.attachment.config_vars).replace(/^HEROKU_POSTGRESQL_/, '').replace(/_URL$/, '')
   let prompt = `${db.attachment.app.name}::${name}%R%# `
   handleSignals()
-  let {error: err, status} = spawnSync('psql',
-    ['--set', `PROMPT1=${prompt}`, '--set', `PROMPT2=${prompt}`],
-    {env: env(db), stdio: 'inherit'})
-  handleError(err)
-  if (status !== 0) process.exit(status)
+  let configs = getConfigs(db)
+
+  yield sshTunnel(db, configs.dbTunnelConfig)
+  return yield psqlInteractive(configs.dbEnv, prompt)
 }
 
 module.exports = {

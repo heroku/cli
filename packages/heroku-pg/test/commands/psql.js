@@ -35,14 +35,11 @@ describe('psql', () => {
   })
 
   it('runs psql', sinon.test(() => {
-    let cp = sinon.mock(require('child_process'))
-    cp.expects('spawnSync').withArgs('psql').once().returns({
-      stdout: '',
-      status: 0
-    })
-    return cmd.run({args: {}, flags: {}})
-    .then(() => cp.verify())
+    let psql = require('../../lib/psql')
+    sinon.stub(psql, 'exec').returns(Promise.resolve(''))
+    return cmd.run({args: {}, flags: {command: 'SELECT 1'}})
     .then(() => expect(cli.stdout, 'to equal', ''))
     .then(() => expect(cli.stderr, 'to equal', '--> Connecting to postgres-1\n'))
+    .then(() => psql.exec.restore())
   }))
 })
