@@ -5,16 +5,17 @@ let cli = require('heroku-cli-util')
 
 let flags = require('../../lib/flags.js')
 let endpoints = require('../../lib/endpoints.js')
+let formatEndpoint = require('../../lib/format_endpoint.js')
 
 function * run (context, heroku) {
   let endpoint = yield flags(context, heroku)
 
-  let cname = endpoint.cname ? `(${endpoint.cname}) ` : ''
+  let formattedEndpoint = formatEndpoint(endpoint)
 
-  yield cli.confirmApp(context.app, context.flags.confirm, `Potentially Destructive Action\nThis command will remove the endpoint ${endpoint.name} ${cname}from ${cli.color.app(context.app)}.`)
+  yield cli.confirmApp(context.app, context.flags.confirm, `Potentially Destructive Action\nThis command will remove the endpoint ${formattedEndpoint} from ${cli.color.app(context.app)}.`)
 
   let actions = yield {
-    action: cli.action(`Removing SSL certificate ${endpoint.name} ${cname}from ${cli.color.app(context.app)}`, {}, heroku.request({
+    action: cli.action(`Removing SSL certificate ${formattedEndpoint} from ${cli.color.app(context.app)}`, {}, heroku.request({
       path: endpoint._meta.path,
       method: 'DELETE',
       headers: {'Accept': `application/vnd.heroku+json; version=3.${endpoint._meta.variant}`}
@@ -27,7 +28,8 @@ function * run (context, heroku) {
   }
 }
 
-let cmd = {
+module.exports = {
+  topic: 'certs',
   command: 'remove',
   flags: [
     {name: 'confirm', hasValue: true, hidden: true},
@@ -39,8 +41,3 @@ let cmd = {
   needsAuth: true,
   run: cli.command(co.wrap(run))
 }
-
-module.exports = [
-  Object.assign({topic: 'certs'}, cmd),
-  Object.assign({topic: '_certs', hidden: true}, cmd)
-]

@@ -1,7 +1,7 @@
 'use strict'
 /* globals describe it beforeEach cli */
 
-let certs = require('../../../commands/certs/info.js')[0]
+let certs = require('../../../commands/certs/info.js')
 let nock = require('nock')
 let expect = require('chai').expect
 

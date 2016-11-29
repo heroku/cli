@@ -3,7 +3,7 @@
 
 let expect = require('chai').expect
 let nock = require('nock')
-let certs = require('../../../commands/certs/index.js')[0]
+let certs = require('../../../commands/certs/index.js')
 
 let endpoint = require('../../stubs/sni-endpoints.js').endpoint
 let endpoint2 = require('../../stubs/sni-endpoints.js').endpoint2

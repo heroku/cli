@@ -108,7 +108,8 @@ function * run (context, heroku) {
   }
 }
 
-let cmd = {
+module.exports = {
+  topic: 'certs',
   command: 'generate',
   args: [
     {name: 'domain', optional: false}
@@ -167,8 +168,3 @@ Example:
   needsAuth: true,
   run: cli.command(co.wrap(run))
 }
-
-module.exports = [
-  Object.assign({topic: 'certs'}, cmd),
-  Object.assign({topic: '_certs', hidden: true}, cmd)
-]

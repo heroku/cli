@@ -3,7 +3,7 @@
 
 let expect = require('chai').expect
 let nock = require('nock')
-let certs = require('../../../commands/certs/rollback.js')[0]
+let certs = require('../../../commands/certs/rollback.js')
 let error = require('../../../lib/error.js')
 let assertExit = require('../../assert_exit.js')
 

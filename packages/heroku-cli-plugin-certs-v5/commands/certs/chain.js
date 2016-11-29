@@ -18,7 +18,8 @@ function * run (context) {
   cli.console.writeLog(body)
 }
 
-let cmd = {
+module.exports = {
+  topic: 'certs',
   command: 'chain',
   description: 'print an ordered & complete chain for a certificate',
   needsApp: true,
@@ -26,9 +27,3 @@ let cmd = {
   variableArgs: true,
   run: cli.command(co.wrap(run))
 }
-
-module.exports = [
-  Object.assign({topic: 'certs'}, cmd),
-  Object.assign({topic: '_certs', hidden: true}, cmd)
-]
-

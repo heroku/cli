@@ -6,7 +6,7 @@ let nock = require('nock')
 var fs = require('fs')
 var sinon = require('sinon')
 
-let certs = require('../../../commands/certs/key.js')[0]
+let certs = require('../../../commands/certs/key.js')
 let assertExit = require('../../assert_exit.js')
 let error = require('../../../lib/error.js')
 

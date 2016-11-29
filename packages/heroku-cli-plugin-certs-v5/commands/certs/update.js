@@ -7,6 +7,7 @@ let flags = require('../../lib/flags.js')
 let readFile = require('../../lib/read_file.js')
 let sslDoctor = require('../../lib/ssl_doctor.js')
 let displayWarnings = require('../../lib/display_warnings.js')
+let formatEndpoint = require('../../lib/format_endpoint.js')
 let certificateDetails = require('../../lib/certificate_details.js')
 
 function * run (context, heroku) {
@@ -27,11 +28,11 @@ function * run (context, heroku) {
     key = res.key
   }
 
-  yield cli.confirmApp(context.app, context.flags.confirm, `Potentially Destructive Action\nThis command will change the certificate of endpoint ${endpoint.name} (${endpoint.cname}) from ${cli.color.app(context.app)}.`)
+  let formattedEndpoint = formatEndpoint(endpoint)
 
-  let cname = endpoint.cname ? `(${endpoint.cname}) ` : ''
+  yield cli.confirmApp(context.app, context.flags.confirm, `Potentially Destructive Action\nThis command will change the certificate of endpoint ${formattedEndpoint} from ${cli.color.app(context.app)}.`)
 
-  let cert = yield cli.action(`Updating SSL certificate ${endpoint.name} ${cname}for ${cli.color.app(context.app)}`, {}, heroku.request({
+  let cert = yield cli.action(`Updating SSL certificate ${formattedEndpoint} for ${cli.color.app(context.app)}`, {}, heroku.request({
     path: endpoint._meta.path,
     method: 'PATCH',
     headers: {'Accept': `application/vnd.heroku+json; version=3.${endpoint._meta.variant}`},
@@ -42,7 +43,8 @@ function * run (context, heroku) {
   displayWarnings(cert)
 }
 
-let cmd = {
+module.exports = {
+  topic: 'certs',
   command: 'update',
   args: [
     {name: 'CRT', optional: false},
@@ -63,8 +65,3 @@ let cmd = {
   needsAuth: true,
   run: cli.command({preauth: true}, co.wrap(run))
 }
-
-module.exports = [
-  Object.assign({topic: 'certs'}, cmd),
-  Object.assign({topic: '_certs', hidden: true}, cmd)
-]

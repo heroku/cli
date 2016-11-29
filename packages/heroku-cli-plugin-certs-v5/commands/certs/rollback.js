@@ -6,6 +6,7 @@ let cli = require('heroku-cli-util')
 let flags = require('../../lib/flags.js')
 let error = require('../../lib/error.js')
 let displayWarnings = require('../../lib/display_warnings.js')
+let formatEndpoint = require('../../lib/format_endpoint.js')
 let certificateDetails = require('../../lib/certificate_details.js')
 
 function * run (context, heroku) {
@@ -14,9 +15,11 @@ function * run (context, heroku) {
     error.exit(1, 'SNI Endpoints cannot be rolled back, please update with a new cert.')
   }
 
-  yield cli.confirmApp(context.app, context.flags.confirm, `Potentially Destructive Action\nThis command will change the certificate of endpoint ${endpoint.name} (${endpoint.cname}) from ${cli.color.app(context.app)}.`)
+  let formattedEndpoint = formatEndpoint(endpoint)
 
-  let cert = yield cli.action(`Rolling back SSL certificate ${endpoint.name} (${endpoint.cname}) for ${cli.color.app(context.app)}`, {}, heroku.request({
+  yield cli.confirmApp(context.app, context.flags.confirm, `Potentially Destructive Action\nThis command will change the certificate of endpoint ${formattedEndpoint} from ${cli.color.app(context.app)}.`)
+
+  let cert = yield cli.action(`Rolling back SSL certificate ${formattedEndpoint} for ${cli.color.app(context.app)}`, {}, heroku.request({
     path: `/apps/${context.app}/ssl-endpoints/${encodeURIComponent(endpoint.cname)}/rollback`,
     method: 'POST',
     headers: {'X-Heroku-API-Version': '2', 'Accept': 'application/json'}
@@ -26,7 +29,8 @@ function * run (context, heroku) {
   certificateDetails(cert, 'New active certificate details:')
 }
 
-let cmd = {
+module.exports = {
+  topic: 'certs',
   command: 'rollback',
   flags: [
     {name: 'confirm', hasValue: true, optional: true, hidden: true},
@@ -38,9 +42,3 @@ let cmd = {
   needsAuth: true,
   run: cli.command(co.wrap(run))
 }
-
-module.exports = [
-  Object.assign({topic: 'certs'}, cmd),
-  Object.assign({topic: '_certs', hidden: true}, cmd)
-]
-

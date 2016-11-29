@@ -18,7 +18,8 @@ function * run (context) {
   cli.console.writeLog(body.key)
 }
 
-let cmd = {
+module.exports = {
+  topic: 'certs',
   command: 'key',
   description: 'print the correct key for the given certificate',
   help: `You must pass one single certificate, and one or more keys.\nThe first key that signs the certificate will be printed back.
@@ -32,8 +33,3 @@ Example:
   variableArgs: true,
   run: cli.command(co.wrap(run))
 }
-
-module.exports = [
-  Object.assign({topic: 'certs'}, cmd),
-  Object.assign({topic: '_certs', hidden: true}, cmd)
-]
