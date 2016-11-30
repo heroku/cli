@@ -290,6 +290,22 @@ describe('fetcher', () => {
 
         return expect(fetcher(new Heroku()).database('myapp', 'FOOBAR_URL'), 'to be rejected with', /Unknown database: FOOBAR_URL. Valid options are: DATABASE_URL/)
       })
+
+      it('throws an error if no databases', () => {
+        const err = new Error()
+        err.statusCode = 404
+        err.body = {id: 'not_found'}
+
+        stub.withArgs(sinon.match.any, 'myapp', 'DATABASE_URL').returns(Promise.reject(err))
+
+        api.get('/apps/myapp/config-vars').reply(200, {
+          'DATABASE_URL': 'postgres://pguser:pgpass@pghost.com/pgdb2'
+        })
+
+        api.get('/apps/myapp/addon-attachments').reply(200, [])
+
+        return expect(fetcher(new Heroku()).database('myapp'), 'to be rejected with', /Your app has no databases./)
+      })
     })
 
     describe('when not found and DATABASE_URL config var does not exist', () => {

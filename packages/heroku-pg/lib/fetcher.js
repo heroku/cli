@@ -47,6 +47,10 @@ module.exports = heroku => {
         allAttachments(app)
       ]
 
+      if (attachments.length === 0) {
+        throw new Error('Your app has no databases.')
+      }
+
       matches = attachments.filter(attachment => config[db] && config[db] === config[pgUtil.getUrl(attachment.config_vars)])
 
       if (matches.length === 0) {
