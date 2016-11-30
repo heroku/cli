@@ -4,6 +4,7 @@ const co = require('co')
 const debug = require('./debug')
 const pgUtil = require('./util')
 const getConfig = require('./config')
+const cli = require('heroku-cli-util')
 
 module.exports = heroku => {
   function * attachment (app, passedDb) {
@@ -48,7 +49,7 @@ module.exports = heroku => {
       ]
 
       if (attachments.length === 0) {
-        throw new Error('Your app has no databases.')
+        throw new Error(`${cli.color.app(app)} has no databases`)
       }
 
       matches = attachments.filter(attachment => config[db] && config[db] === config[pgUtil.getUrl(attachment.config_vars)])

@@ -304,7 +304,7 @@ describe('fetcher', () => {
 
         api.get('/apps/myapp/addon-attachments').reply(200, [])
 
-        return expect(fetcher(new Heroku()).database('myapp'), 'to be rejected with', /Your app has no databases./)
+        return expect(fetcher(new Heroku()).database('myapp'), 'to be rejected with', /myapp has no databases/)
       })
     })
 
