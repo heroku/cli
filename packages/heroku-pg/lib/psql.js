@@ -108,7 +108,7 @@ function getConfigs (db) {
 }
 
 function handleSignals () {
-  process.once('SIGINT', () => {})
+  process.on('SIGINT', () => {})
 }
 
 function * exec (db, query, timeout = 20000) {
