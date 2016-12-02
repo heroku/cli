@@ -2,6 +2,8 @@
 
 set -ex
 
-rm -rf ~/.local/share/heroku
-rm -rf ~/.config/heroku
-rm -rf ~/.cache/heroku
+NAME=${1:-sfdx}
+
+rm -rf ~/.local/share/$NAME
+rm -rf ~/.config/$NAME
+rm -rf ~/.cache/$NAME

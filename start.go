@@ -5,6 +5,10 @@ import (
 	"strings"
 )
 
+const CLI_NAME = "SFDX"
+const BASE_CMD_NAME = "sfdx"
+const FOLDER_NAME = "sfdx"
+
 // Version is the version of the cli.
 // This is set by a build flag in the `Rakefile`.
 var Version = "dev"
