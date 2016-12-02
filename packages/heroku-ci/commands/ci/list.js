@@ -15,7 +15,7 @@ module.exports = {
   default: true,
   needsApp: true,
   needsAuth: true,
-  description: 'show the the most recent runs',
+  description: 'show the most recent runs',
   help: 'display the most recent CI runs for the given pipeline',
   flags: [
     {
