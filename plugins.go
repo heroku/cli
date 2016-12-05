@@ -31,7 +31,7 @@ func init() {
 				},
 				Help: `
 Example:
-  $ heroku plugins`,
+  $ `+BASE_CMD_NAME+` plugins`,
 
 				Run: pluginsList,
 			},
@@ -41,10 +41,10 @@ Example:
 				Hidden:       true,
 				VariableArgs: true,
 				Description:  "Installs a plugin into the CLI",
-				Help: `Install a Heroku plugin
+				Help: `Install a `+CLI_NAME+` plugin
 
   Example:
-  $ heroku plugins:install heroku-production-status`,
+  $ `+BASE_CMD_NAME+` plugins:install heroku-production-status`,
 
 				Run: pluginsInstall,
 			},
@@ -59,7 +59,7 @@ Example:
 	and parses the plugin.
 
   Example:
-	$ heroku plugins:link .`,
+	$ `+BASE_CMD_NAME+` plugins:link .`,
 
 				Run: pluginsLink,
 			},
@@ -69,10 +69,10 @@ Example:
 				Hidden:      true,
 				Args:        []Arg{{Name: "name"}},
 				Description: "Uninstalls a plugin from the CLI",
-				Help: `Uninstalls a Heroku plugin
+				Help: `Uninstalls a `+CLI_NAME+` plugin
 
   Example:
-  $ heroku plugins:uninstall heroku-production-status`,
+  $ `+BASE_CMD_NAME+` plugins:uninstall heroku-production-status`,
 
 				Run: pluginsUninstall,
 			},
@@ -106,7 +106,7 @@ func pluginsList(ctx *Context) {
 func pluginsInstall(ctx *Context) {
 	plugins := ctx.Args.([]string)
 	if len(plugins) == 0 {
-		ExitWithMessage("Must specify a plugin name.\nUSAGE: heroku plugins:install heroku-debug")
+		ExitWithMessage("Must specify a plugin name.\nUSAGE: "+BASE_CMD_NAME+" plugins:install heroku-debug")
 	}
 	toinstall := make([]string, 0, len(plugins))
 	core := CorePlugins.PluginNames()
@@ -419,7 +419,7 @@ func (p *Plugins) Update() {
 		if p.isPluginSymlinked(plugin.Name) {
 			return
 		}
-		Errf("\rheroku-cli: Updating %s...", plugin.Name)
+		Errf("\r%s-cli: Updating %s...", BASE_CMD_NAME, plugin.Name)
 		p.lockPlugin(plugin.Name)
 		defer p.unlockPlugin(plugin.Name)
 		tag := plugin.Tag
@@ -434,12 +434,12 @@ func (p *Plugins) Update() {
 		if tags[tag] == plugin.Version {
 			return
 		}
-		Errf("\rheroku-cli: Updating %s@%s to %s...", plugin.Name, plugin.Tag, tags[tag])
+		Errf("\r%s-cli: Updating %s@%s to %s...", BASE_CMD_NAME, plugin.Name, plugin.Tag, tags[tag])
 		WarnIfError(p.installPackages(plugin.Name + "@" + tag))
 		_, err = p.ParsePlugin(plugin.Name, tag)
 		WarnIfError(err)
 	}
-	action("heroku-cli: Updating plugins", "done", func() {
+	action(BASE_CMD_NAME+"-cli: Updating plugins", "done", func() {
 		for _, plugin := range p.Plugins() {
 			update(plugin)
 		}
@@ -541,7 +541,7 @@ func (p *Plugins) cachePath() string {
 
 // RubyPlugins lists all the ruby plugins
 func RubyPlugins() []string {
-	dirs, err := ioutil.ReadDir(filepath.Join(HomeDir, ".heroku", "plugins"))
+	dirs, err := ioutil.ReadDir(filepath.Join(HomeDir, "."+FOLDER_NAME, "plugins"))
 	if err != nil {
 		return []string{}
 	}

@@ -1,5 +1,7 @@
 #!/bin/bash
 set -e
 
-make tmp/dev/heroku/bin/heroku --quiet
-tmp/dev/heroku/bin/heroku $*
+NAME=${1:-sfdx}
+
+make tmp/dev/$NAME/bin/$NAME --quiet
+tmp/dev/$NAME/bin/$NAME $*

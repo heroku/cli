@@ -17,12 +17,12 @@ import (
 func init() {
 	CLITopics = append(CLITopics, &Topic{
 		Name:        "update",
-		Description: "update heroku-cli",
+		Description: "update "+BASE_CMD_NAME+"-cli",
 		Commands: Commands{
 			{
 				Topic:            "update",
 				Hidden:           true,
-				Description:      "updates the Heroku CLI",
+				Description:      "updates the "+CLI_NAME+" CLI",
 				DisableAnalytics: true,
 				Args:             []Arg{{Name: "channel", Optional: true}},
 				Run: func(ctx *Context) {
@@ -81,7 +81,7 @@ func DownloadCLI(channel, path string, manifest *Manifest) {
 	}
 	defer unlock()
 	hideCursor()
-	downloadingMessage := fmt.Sprintf("heroku-cli: Updating to %s...", manifest.Version)
+	downloadingMessage := fmt.Sprintf("%s-cli: Updating to %s...", BASE_CMD_NAME, manifest.Version)
 	if manifest.Channel != "stable" {
 		downloadingMessage = fmt.Sprintf("%s (%s)", downloadingMessage, manifest.Channel)
 	}
@@ -100,10 +100,10 @@ func DownloadCLI(channel, path string, manifest *Manifest) {
 	}
 	exists, _ := FileExists(path)
 	if exists {
-		WarnIfError(os.Rename(expectedBinPath(), filepath.Join(tmpDir(DataHome), "heroku")))
-		must(os.Rename(path, filepath.Join(tmpDir(DataHome), "heroku")))
+		WarnIfError(os.Rename(expectedBinPath(), filepath.Join(tmpDir(DataHome), FOLDER_NAME)))
+		must(os.Rename(path, filepath.Join(tmpDir(DataHome), FOLDER_NAME)))
 	}
-	must(os.Rename(filepath.Join(tmp, "heroku"), path))
+	must(os.Rename(filepath.Join(tmp, FOLDER_NAME), path))
 	Debugf("updated to %s\n", manifest.Version)
 }
 
@@ -190,7 +190,7 @@ func cleanTmp() {
 }
 
 func expectedBinPath() string {
-	bin := filepath.Join(DataHome, "cli", "bin", "heroku")
+	bin := filepath.Join(DataHome, "cli", "bin", FOLDER_NAME)
 	if runtime.GOOS == WINDOWS {
 		bin = bin + ".exe"
 	}
