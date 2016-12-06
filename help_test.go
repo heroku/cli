@@ -1,7 +1,7 @@
 package main_test
 
 import (
-	cli "github.com/heroku/cli"
+	cli "."
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -22,81 +22,81 @@ var _ = Describe("Help", func() {
 		exit = 9999
 	})
 
-	Context("heroku help", func() {
+	Context(BASE_CMD_NAME+" help", func() {
 		BeforeEach(func() {
-			cli.Start("heroku", "help")
+			cli.Start(BASE_CMD_NAME, "help")
 		})
 
 		It("exits with code 0", func() { Expect(exit).To(Equal(0)) })
 		It("shows the help", func() {
-			Expect(stdout()).To(HavePrefix("Usage: heroku COMMAND [--app APP] [command-specific-options]"))
+			Expect(stdout()).To(HavePrefix("Usage: " + BASE_CMD_NAME + " COMMAND [--app APP] [command-specific-options]"))
 		})
 	})
 
-	Context("heroku hlp", func() {
+	Context(BASE_CMD_NAME+" hlp", func() {
 		BeforeEach(func() {
-			cli.Start("heroku", "hlp")
+			cli.Start(BASE_CMD_NAME, "hlp")
 		})
 
 		It("exits with code 2", func() { Expect(exit).To(Equal(2)) })
 		It("has no stdout", func() { Expect(stdout()).To(Equal("")) })
 		It("shows invalid command message", func() {
-			Expect(stderr()).To(Equal(` !    hlp is not a heroku command.
+			Expect(stderr()).To(Equal(` !    hlp is not a ` + BASE_CMD_NAME + ` command.
  !    Perhaps you meant help?
- !    Run heroku _ to run heroku help.
- !    Run heroku help for a list of available commands.
+ !    Run ` + BASE_CMD_NAME + ` _ to run ` + BASE_CMD_NAME + ` help.
+ !    Run ` + BASE_CMD_NAME + ` help for a list of available commands.
 `))
 		})
-		It("reruns heroku help", func() {
-			cli.Start("heroku", "_")
-			Expect(stdout()).To(HavePrefix("Usage: heroku COMMAND [--app APP] [command-specific-options]"))
+		It("reruns sfdx help", func() {
+			cli.Start(BASE_CMD_NAME, "_")
+			Expect(stdout()).To(HavePrefix("Usage: " + BASE_CMD_NAME + " COMMAND [--app APP] [command-specific-options]"))
 		})
 	})
 
-	Context("heroku help plugins", func() {
+	Context(BASE_CMD_NAME+" help plugins", func() {
 		BeforeEach(func() {
-			cli.Start("heroku", "help", "plugins")
+			cli.Start(BASE_CMD_NAME, "help", "plugins")
 		})
 
 		It("exits with code 0", func() { Expect(exit).To(Equal(0)) })
 		It("shows help for plugins command", func() {
-			Expect(stdout()).To(HavePrefix("Usage: heroku plugins"))
-			Expect(stdout()).To(ContainSubstring("heroku plugins:link"))
+			Expect(stdout()).To(HavePrefix("Usage: " + BASE_CMD_NAME + " plugins"))
+			Expect(stdout()).To(ContainSubstring(BASE_CMD_NAME + " plugins:link"))
 		})
 	})
 
-	Context("heroku plugins --help", func() {
+	Context(BASE_CMD_NAME+" plugins --help", func() {
 		BeforeEach(func() {
-			cli.Start("heroku", "plugins", "--help")
+			cli.Start(BASE_CMD_NAME, "plugins", "--help")
 		})
 
 		It("exits with code 0", func() { Expect(exit).To(Equal(0)) })
 		It("shows help for plugins command", func() {
-			Expect(stdout()).To(HavePrefix("Usage: heroku plugins"))
-			Expect(stdout()).To(ContainSubstring("heroku plugins:link"))
+			Expect(stdout()).To(HavePrefix("Usage: " + BASE_CMD_NAME + " plugins"))
+			Expect(stdout()).To(ContainSubstring(BASE_CMD_NAME + " plugins:link"))
 		})
 	})
 
-	Context("heroku help plugins:foo", func() {
+	Context(BASE_CMD_NAME+" help plugins:foo", func() {
 		BeforeEach(func() {
-			cli.Start("heroku", "help", "plugins:foo")
+			cli.Start(BASE_CMD_NAME, "help", "plugins:foo")
 		})
 
 		It("exits with code 0", func() { Expect(exit).To(Equal(0)) })
 		It("shows help for plugins commands", func() {
-			Expect(stdout()).To(HavePrefix("Usage: heroku plugins:COMMAND"))
-			Expect(stdout()).To(ContainSubstring("heroku plugins:link"))
+			Expect(stdout()).To(HavePrefix("Usage: " + BASE_CMD_NAME + " plugins:COMMAND"))
+			Expect(stdout()).To(ContainSubstring(BASE_CMD_NAME + " plugins:link"))
 		})
 	})
 
-	Context("heroku help plugins", func() {
+	Context(BASE_CMD_NAME+" help plugins", func() {
 		BeforeEach(func() {
-			cli.Start("heroku", "help", "plugins")
+			cli.Start(BASE_CMD_NAME, "help", "plugins")
 		})
 
 		It("exits with code 0", func() { Expect(exit).To(Equal(0)) })
 		It("shows help for plugins commands", func() {
-			Expect(stdout()).To(ContainSubstring("heroku plugins:link"))
+			Expect(stdout()).To(ContainSubstring(BASE_CMD_NAME + " plugins:link"))
 		})
 	})
 
@@ -107,7 +107,7 @@ var _ = Describe("Help", func() {
 
 		It("exits with code 0", func() { Expect(exit).To(Equal(0)) })
 		It("shows help", func() {
-			Expect(stdout()).To(HavePrefix("Usage: heroku COMMAND"))
+			Expect(stdout()).To(HavePrefix("Usage: " + BASE_CMD_NAME + " COMMAND"))
 		})
 	})
 })

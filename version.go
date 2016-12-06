@@ -15,12 +15,12 @@ func init() {
 				Description:      "print the version",
 				Hidden:           true,
 				DisableAnalytics: true,
-				Help: `Shows the Heroku CLI version.
+				Help: `Shows the ` + CLI_NAME + ` CLI version.
 
 Example:
 
-  $ heroku version
-	heroku-cli/1.2.3 (x86_64-darwin11.2.0) ruby/1.9.3`,
+  $ ` + BASE_CMD_NAME + ` version
+	` + BASE_CMD_NAME + `-cli/1.2.3 (x86_64-darwin11.2.0) ruby/1.9.3`,
 				Run: func(ctx *Context) {
 					ShowVersion()
 				},
@@ -30,7 +30,7 @@ Example:
 }
 
 func version() string {
-	return fmt.Sprintf("heroku-cli/%s (%s-%s) %s", Version, runtime.GOOS, runtime.GOARCH, runtime.Version())
+	return fmt.Sprintf(BASE_CMD_NAME+"-cli/%s (%s-%s) %s", Version, runtime.GOOS, runtime.GOARCH, runtime.Version())
 }
 
 // ShowVersion shows the version and exits

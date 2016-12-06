@@ -1,7 +1,7 @@
 package main_test
 
 import (
-	cli "github.com/heroku/cli"
+	cli "."
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -33,7 +33,7 @@ var _ = Describe("version", func() {
 					Commands: cli.Commands{{Run: func(*cli.Context) { ran = true }}},
 				},
 			}
-			cli.Start("heroku")
+			cli.Start(BASE_CMD_NAME)
 		})
 		AfterEach(func() {
 			cli.CLITopics = topicBackup
@@ -45,7 +45,7 @@ var _ = Describe("version", func() {
 	Describe("ShowDebugInfo", func() {
 		BeforeEach(func() {
 			cli.Debugging = true
-			cli.Args = []string{"heroku", "test"}
+			cli.Args = []string{BASE_CMD_NAME, "test"}
 			cli.ShowDebugInfo()
 		})
 		AfterEach(func() {
