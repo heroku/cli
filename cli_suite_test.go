@@ -5,7 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
-	cli "github.com/heroku/cli"
+	cli "."
 	"github.com/lunixbochs/vtclean"
 
 	. "github.com/onsi/ginkgo"
@@ -14,6 +14,11 @@ import (
 
 	"testing"
 )
+
+// Copy from start.go to be used in the test namespace
+const CLI_NAME = "SFDX"
+const BASE_CMD_NAME = "sfdx"
+const FOLDER_NAME = "sfdx"
 
 func TestCLI(t *testing.T) {
 	os.Setenv("TESTING", "1")

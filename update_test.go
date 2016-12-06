@@ -5,7 +5,7 @@ import (
 	"os/exec"
 	"path/filepath"
 
-	cli "github.com/heroku/cli"
+	cli "."
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -20,9 +20,9 @@ var _ = Describe("update.go", func() {
 			Expect(manifest.Channel).To(Equal("dev"))
 			dest := filepath.Join("tmp", "newcli")
 			cli.DownloadCLI("dev", dest, manifest)
-			out, err := exec.Command(filepath.Join(dest, "bin", "heroku"), "version").Output()
+			out, err := exec.Command(filepath.Join(dest, "bin", BASE_CMD_NAME), "version").Output()
 			must(err)
-			Expect(out).To(HavePrefix("heroku-cli/"))
+			Expect(out).To(HavePrefix(BASE_CMD_NAME + "-cli/"))
 		})
 	})
 })

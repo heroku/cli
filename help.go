@@ -59,7 +59,6 @@ func helpShowTopics() {
 
 	longestTopic := 0
 	for _, topic := range topics {
-        Printf("%s\n", topic);
 		if len(topic.Name) > longestTopic {
 			longestTopic = len(topic.Name)
 		}
