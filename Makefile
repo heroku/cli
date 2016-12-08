@@ -186,8 +186,9 @@ $(DIST_DIR)/$(VERSION)/heroku-windows-%.exe: tmp/windows-% $(CACHE_DIR)/git/Git-
 		-i https://toolbelt.heroku.com/ \
 		-in tmp/windows-$*-installer/heroku/installer.exe -out $@
 
-$(DIST_DIR)/$(VERSION)/heroku-osx.pkg: tmp/darwin-amd64/heroku/VERSION
-	@echo "TODO OSX"
+$(DIST_DIR)/$(CHANNEL)/$(VERSION)/heroku-osx.pkg: tmp/darwin-amd64
+	@mkdir -p $(@D)
+	./resources/osx/build $@
 
 .PHONY: build
 build: $(WORKSPACE)/bin/heroku $(WORKSPACE)/lib/npm $(WORKSPACE)/lib/node $(WORKSPACE)/lib/plugins.json $(WORKSPACE)/lib/cacert.pem
@@ -293,15 +294,17 @@ releasetgz: $(MANIFEST_GZ) $(MANIFEST_GZ).sig $(addprefix releasetgz/,$(DIST_TAR
 .PHONY: releasetxz/% releasetgz/%
 releasetxz/%.tar.xz: %.tar.xz
 	aws s3 cp --cache-control max-age=86400 $< s3://heroku-cli-assets/branches/$(CHANNEL)/$(VERSION)/$(notdir $<)
+	aws s3 cp --cache-control max-age=86400 $< s3://heroku-cli-assets/branches/$(CHANNEL)/$(notdir $<)
 releasetgz/%.tar.gz: %.tar.gz
 	aws s3 cp --cache-control max-age=86400 $< s3://heroku-cli-assets/branches/$(CHANNEL)/$(VERSION)/$(notdir $<)
+	aws s3 cp --cache-control max-age=86400 $< s3://heroku-cli-assets/branches/$(CHANNEL)/$(notdir $<)
 
 .PHONY: distosx
-distosx: $(DIST_DIR)/$(VERSION)/heroku-osx.pkg
+distosx: $(DIST_DIR)/$(CHANNEL)/$(VERSION)/heroku-osx.pkg
 
 .PHONY: releaseosx
-releaseosx: $(DIST_DIR)/$(VERSION)/heroku-osx.pkg
-	aws s3 cp --cache-control max-age=3600 $(DIST_DIR)/$(VERSION)/heroku-osx.pkg s3://heroku-cli-assets/branches/$(CHANNEL)/heroku-osx.pkg
+releaseosx: $(DIST_DIR)/$(CHANNEL)/$(VERSION)/heroku-osx.pkg
+	aws s3 cp --cache-control max-age=3600 $(DIST_DIR)/$(CHANNEL)/$(VERSION)/heroku-osx.pkg s3://heroku-cli-assets/branches/$(CHANNEL)/heroku-osx.pkg
 
 .PHONY: distdeb
 distdeb: $(DIST_DIR)/$(VERSION)/apt/Packages $(DIST_DIR)/$(VERSION)/apt/Release
