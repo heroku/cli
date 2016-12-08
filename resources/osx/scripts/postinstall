@@ -1,0 +1,3 @@
+#!/bin/bash
+
+#osascript -e 'tell app "Finder" to display dialog "heroku installed."'

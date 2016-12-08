@@ -186,8 +186,9 @@ $(DIST_DIR)/$(VERSION)/heroku-windows-%.exe: tmp/windows-% $(CACHE_DIR)/git/Git-
 		-i https://toolbelt.heroku.com/ \
 		-in tmp/windows-$*-installer/heroku/installer.exe -out $@
 
-$(DIST_DIR)/$(VERSION)/heroku-osx.pkg: tmp/darwin-amd64/heroku/VERSION
-	@echo "TODO OSX"
+$(DIST_DIR)/$(VERSION)/heroku-osx.pkg: tmp/darwin-amd64
+	@mkdir -p $(@D)
+	./resources/osx/build $@
 
 .PHONY: build
 build: $(WORKSPACE)/bin/heroku $(WORKSPACE)/lib/npm $(WORKSPACE)/lib/node $(WORKSPACE)/lib/plugins.json $(WORKSPACE)/lib/cacert.pem

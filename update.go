@@ -215,6 +215,8 @@ func loadNewCLI() {
 	current, err := os.Stat(BinPath)
 	must(err)
 	if !os.SameFile(current, expected) {
+		Errln(expectedBinPath())
+		Errln(BinPath)
 		execBin(expected.Name(), Args...)
 	}
 }

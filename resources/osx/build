@@ -1,0 +1,21 @@
+#!/bin/bash
+
+set -ex
+
+VERSION=`./bin/version`
+mkdir -p tmp/osx/build
+rm -rf tmp/osx/build/*
+cd tmp/osx/build
+mkdir -p flat/base.pkg flat/Resources/en.lproj
+mkdir -p root/usr/local/lib; cp -r ../../darwin-amd64/heroku root/usr/local/lib/heroku
+mv root/usr/local/lib/heroku/bin root/usr/local
+(cd root && find . | cpio -o --format odc --owner 0:80 | gzip -c) > flat/base.pkg/Payload
+sed "s/VERSION/$VERSION/" ../../../resources/osx/PackageInfo |
+sed "s/KBYTES/`du -ks root | awk '{print $1}'`/" |
+sed "s/NUM_FILES/`find root | wc -l | awk '{print $1}'`/" > flat/base.pkg/PackageInfo
+sed "s/VERSION/$VERSION/" ../../../resources/osx/Distribution |
+sed "s/KBYTES/`du -ks root | awk '{print $1}'`/" > flat/Distribution
+(cd ../../../resources/osx/scripts && find . | cpio -o --format odc --owner 0:80 | gzip -c) > flat/base.pkg/Scripts
+#mkbom -u -g 80 root flat/base.pkg/Bom
+mkbom root flat/base.pkg/Bom
+(cd flat && xar --compression none -cf ../../../../$1 *)
