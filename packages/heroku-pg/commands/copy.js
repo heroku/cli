@@ -47,8 +47,9 @@ This command will remove all data from ${cli.color.yellow(target.name)}
 Data from ${cli.color.yellow(source.name)} will then be transferred to ${cli.color.yellow(target.name)}`)
 
   let copy
+  let attachment
   yield cli.action(`Starting copy of ${cli.color.yellow(source.name)} to ${cli.color.yellow(target.name)}`, co(function * () {
-    let attachment = source.attachment || target.attachment
+    attachment = source.attachment || target.attachment
     if (!attachment) throw new Error('Heroku PostgreSQL database must be source or target')
     copy = yield heroku.post(`/client/v11/databases/${attachment.addon.name}/transfers`, {
       body: {
@@ -60,7 +61,7 @@ Data from ${cli.color.yellow(source.name)} will then be transferred to ${cli.col
       host: host(attachment.addon)
     })
   }))
-  yield pgbackups.wait('Copying', copy.uuid, interval, flags.verbose)
+  yield pgbackups.wait('Copying', copy.uuid, interval, flags.verbose, attachment.addon.app.name)
 }
 
 module.exports = {

@@ -64,7 +64,10 @@ module.exports = (context, heroku) => ({
       }
     }
   },
-  wait: (action, transferID, interval, verbose) => {
+  wait: (action, transferID, interval, verbose, app) => {
+    if (app === undefined) {
+      app = context.app
+    }
     const wait = require('co-wait')
     const host = require('./host')()
     const pgbackups = module.exports(context, heroku)
@@ -85,7 +88,7 @@ module.exports = (context, heroku) => ({
 
       while (true) {
         try {
-          backup = yield heroku.get(`/client/v11/apps/${context.app}/transfers/${transferID}`, {host})
+          backup = yield heroku.get(`/client/v11/apps/${app}/transfers/${transferID}`, {host})
         } catch (err) {
           if (failures++ > 20) throw err
         }
