@@ -723,7 +723,7 @@ Expires At:     2013-08-01 21:34 UTC
 Issuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=heroku.com
 Starts At:      2012-08-01 21:34 UTC
 Subject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=tokyo-1050.herokuapp.com
-SSL certificate is self signed.
+SSL certificate is not trusted.
 
 === The following common names are for hosts that are managed by Heroku
 tokyo-1050.herokuapp.com
