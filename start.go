@@ -28,9 +28,12 @@ var CLITopics Topics
 // Args is os.Args
 var Args []string
 
+var namespace = "";
+
 // Start the CLI
 func Start(args ...string) {
-	Args = args
+	Args = setNamespace(args)
+
 	loadNewCLI()
 
 	ShowDebugInfo()
@@ -62,6 +65,7 @@ func Start(args ...string) {
 	}
 
 	cmd := AllCommands().Find(Args[1])
+
 	if cmd == nil {
 		helpInvalidCommand()
 		return
@@ -72,6 +76,24 @@ func Start(args ...string) {
 	ctx, err := BuildContext(cmd, Args)
 	must(err)
 	cmd.Run(ctx)
+}
+
+func setNamespace(args []string) []string {
+
+	newArray := []string{}
+
+	for i := 0; i < len(args); i++ {
+		if args[i] == "--namespace" {
+			i += 1;
+			if i < len(args) {
+				namespace = args[i];
+			}
+		} else {
+			newArray = append(newArray, args[i])
+		}
+	}
+
+	return newArray
 }
 
 var crashing = false
