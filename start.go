@@ -28,12 +28,15 @@ var CLITopics Topics
 // Args is os.Args
 var Args []string
 
-var namespace = "";
+// The default namespace for this instance of the cli [sfdx, heroku]
+var defaultNamespace = "sfdx";
+
+// Go flag
+var CliToken = "unset";
 
 // Start the CLI
 func Start(args ...string) {
-	Args = setNamespace(args)
-
+	Args = removeCliTokenAndUpdateDefaultNamespace(args)
 	loadNewCLI()
 
 	ShowDebugInfo()
@@ -78,16 +81,13 @@ func Start(args ...string) {
 	cmd.Run(ctx)
 }
 
-func setNamespace(args []string) []string {
+func removeCliTokenAndUpdateDefaultNamespace(args []string) []string {
 
 	newArray := []string{}
 
 	for i := 0; i < len(args); i++ {
-		if args[i] == "--namespace" {
-			i += 1;
-			if i < len(args) {
-				namespace = args[i];
-			}
+		if args[i] == CliToken {
+			defaultNamespace = "heroku"
 		} else {
 			newArray = append(newArray, args[i])
 		}

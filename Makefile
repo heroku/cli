@@ -5,6 +5,7 @@ NODE_VERSION=6.2.1
 FOLDER_NAME=sfdx
 BINARY_NAME=sfdx
 
+CLI_TOKEN=5D98FF27213533167357E4449C758
 ALIAS_COMPAT=heroku
 DIST_DIR?=dist
 CACHE_DIR?=tmp/cache
@@ -84,7 +85,7 @@ tmp/%/$(FOLDER_NAME)/lib/plugins.json: $(WORKSPACE)/lib/plugins.json
 
 BUILD_TAGS=release
 SOURCES := $(shell ls | grep '\.go')
-LDFLAGS=-ldflags "-X=main.Version=$(VERSION) -X=main.Channel=$(CHANNEL) -X=main.GitSHA=$(REVISION) -X=main.Autoupdate=$(AUTOUPDATE) -X=main.TargetBin=$(BINARY_NAME)"
+LDFLAGS=-ldflags "-X=main.Version=$(VERSION) -X=main.Channel=$(CHANNEL) -X=main.GitSHA=$(REVISION) -X=main.Autoupdate=$(AUTOUPDATE) -X=main.TargetBin=$(BINARY_NAME) -X=main.CliToken=$(CLI_TOKEN)"
 GOOS=$(OS)
 $(WORKSPACE)/bin/$(BINARY_NAME): OS   := $(shell go env GOOS)
 $(WORKSPACE)/bin/$(BINARY_NAME): ARCH := $(shell go env GOARCH)
