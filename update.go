@@ -201,7 +201,8 @@ func loadNewCLI() {
 	if Autoupdate == "no" {
 		return
 	}
-	expected, err := os.Stat(expectedBinPath())
+	expectedBinPath := expectedBinPath()
+	expected, err := os.Stat(expectedBinPath)
 	if err != nil {
 		if os.IsNotExist(err) {
 			if !npmExists() {
@@ -215,9 +216,7 @@ func loadNewCLI() {
 	current, err := os.Stat(BinPath)
 	must(err)
 	if !os.SameFile(current, expected) {
-		Errln(expectedBinPath())
-		Errln(BinPath)
-		execBin(expected.Name(), Args...)
+		execBin(expectedBinPath, Args...)
 	}
 }
 
