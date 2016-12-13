@@ -4,9 +4,9 @@
 const cli = require('heroku-cli-util')
 const expect = require('unexpected')
 const nock = require('nock')
-const cmd = require('../../..').commands.find(c => c.topic === 'pg' && c.command === 'backups:url')
+const cmd = require('../../..').commands.find((c) => c.topic === 'pg' && c.command === 'backups:url')
 
-describe('pg:backups:url', () => {
+const shouldUrl = function (cmdRun) {
   let pg
 
   beforeEach(() => {
@@ -29,15 +29,23 @@ describe('pg:backups:url', () => {
       ])
     })
     it('shows URL', () => {
-      return cmd.run({app: 'myapp', args: {}})
+      return cmdRun({app: 'myapp', args: {}})
       .then(() => expect(cli.stdout, 'to equal', 'https://dburl\n'))
     })
   })
 
   context('with id', () => {
     it('shows URL', () => {
-      return cmd.run({app: 'myapp', args: {backup_id: 'b003'}})
+      return cmdRun({app: 'myapp', args: {backup_id: 'b003'}})
       .then(() => expect(cli.stdout, 'to equal', 'https://dburl\n'))
     })
   })
+}
+
+describe('pg:backups:url', () => {
+  shouldUrl((args) => cmd.run(args))
+})
+
+describe('pg:backups url', () => {
+  shouldUrl(require('./helpers.js').dup('url', cmd))
 })

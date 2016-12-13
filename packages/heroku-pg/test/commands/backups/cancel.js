@@ -6,7 +6,7 @@ const expect = require('unexpected')
 const nock = require('nock')
 const cmd = require('../../..').commands.find(c => c.topic === 'pg' && c.command === 'backups:cancel')
 
-describe('pg:backups:cancel', () => {
+const shouldCancel = function (cmdRun) {
   let pg
 
   beforeEach(() => {
@@ -28,7 +28,7 @@ describe('pg:backups:cancel', () => {
     })
 
     it('cancels backup', () => {
-      return cmd.run({app: 'myapp', args: {}})
+      return cmdRun({app: 'myapp', args: {}})
       .then(() => expect(cli.stderr, 'to equal', 'Cancelling b003... done\n'))
     })
   })
@@ -41,8 +41,16 @@ describe('pg:backups:cancel', () => {
     })
 
     it('cancels backup', () => {
-      return cmd.run({app: 'myapp', args: {backup_id: 'b003'}})
+      return cmdRun({app: 'myapp', args: {backup_id: 'b003'}})
       .then(() => expect(cli.stderr, 'to equal', 'Cancelling b003... done\n'))
     })
   })
+}
+
+describe('pg:backups:cancel', () => {
+  shouldCancel((args) => cmd.run(args))
+})
+
+describe('pg:backups cancel', () => {
+  shouldCancel(require('./helpers.js').dup('cancel', cmd))
 })

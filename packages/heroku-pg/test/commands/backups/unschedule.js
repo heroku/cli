@@ -14,7 +14,7 @@ const addon = {
 
 const attachment = {addon}
 
-describe('pg:backups:unschedule', () => {
+const shouldUnschedule = function (cmdRun) {
   let pg, api
 
   beforeEach(() => {
@@ -34,8 +34,16 @@ describe('pg:backups:unschedule', () => {
   })
 
   it('unschedules a backup', () => {
-    return cmd.run({app: 'myapp', args: {}, flags: {at: '06:00 EDT'}})
+    return cmdRun({app: 'myapp', args: {}, flags: {at: '06:00 EDT'}})
     .then(() => expect(cli.stdout, 'to equal', ''))
     .then(() => expect(cli.stderr, 'to equal', 'Unscheduling DATABASE_URL daily backups... done\n'))
   })
+}
+
+describe('pg:backups:unschedule', () => {
+  shouldUnschedule((args) => cmd.run(args))
+})
+
+describe('pg:backups unschedule', () => {
+  shouldUnschedule(require('./helpers.js').dup('unschedule', cmd))
 })

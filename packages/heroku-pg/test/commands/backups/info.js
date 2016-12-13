@@ -4,9 +4,9 @@
 const cli = require('heroku-cli-util')
 const expect = require('unexpected')
 const nock = require('nock')
-const cmd = require('../../..').commands.find(c => c.topic === 'pg' && c.command === 'backups:info')
+const cmd = require('../../..').commands.find((c) => c.topic === 'pg' && c.command === 'backups:info')
 
-describe('pg:backups:info', () => {
+const shouldInfo = function (cmdRun) {
   let pg
 
   beforeEach(() => {
@@ -25,7 +25,7 @@ describe('pg:backups:info', () => {
     })
 
     it('shows error message', () => {
-      return expect(cmd.run({app: 'myapp', args: {}})
+      return expect(cmdRun({app: 'myapp', args: {}})
         , 'to be rejected with', 'No backups. Capture one with heroku pg:backups:capture')
     })
   })
@@ -42,7 +42,7 @@ describe('pg:backups:info', () => {
     })
 
     it('shows the backup', () => {
-      return cmd.run({app: 'myapp', args: {backup_id: 'b003'}})
+      return cmdRun({app: 'myapp', args: {backup_id: 'b003'}})
       .then(() => expect(cli.stdout, 'to equal', `=== Backup b003
 Database:         RED
 Status:           Pending
@@ -74,7 +74,7 @@ Backup Size:      97.66kB
     })
 
     it('shows the backup', () => {
-      return cmd.run({app: 'myapp', args: {backup_id: 'ob001'}})
+      return cmdRun({app: 'myapp', args: {backup_id: 'ob001'}})
       .then(() => expect(cli.stdout, 'to equal', `=== Backup ob001
 Database:         RED
 Status:           Pending
@@ -106,7 +106,7 @@ Backup Size:      97.66kB
     })
 
     it('shows the latest backup', () => {
-      return cmd.run({app: 'myapp', args: {}})
+      return cmdRun({app: 'myapp', args: {}})
       .then(() => expect(cli.stdout, 'to equal', `=== Backup b003
 Database:         RED
 Finished at:      100
@@ -121,4 +121,12 @@ Backup Size:      97.66kB (90% compression)
 `))
     })
   })
+}
+
+describe('pg:backups:info', () => {
+  shouldInfo((args) => cmd.run(args))
+})
+
+describe('pg:backups info', () => {
+  shouldInfo(require('./helpers.js').dup('info', cmd))
 })

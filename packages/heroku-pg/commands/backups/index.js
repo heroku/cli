@@ -7,13 +7,33 @@ function * run (context, heroku) {
   if (context.args.length > 0) {
     // backwards compatible for executing commands like
     // `heroku pg:backups info` instead of `heroku pg:backups:info`
-    const {spawnSync} = require('child_process')
-    let args = context.args.slice()
-    args[0] = `pg:backups:${args[0]}`
-    let {status} = spawnSync('heroku', args, {env: process.env, stdio: 'inherit'})
-    process.exit(status)
-  }
+    let pgbackupCommand = `backups:${context.args[0]}`
 
+    const commands = require('../..').commands
+    const cmd = commands.find(c => c.topic === 'pg' && c.command === pgbackupCommand)
+
+    if (!cmd) {
+      throw new Error(`Unknown pg:backups command: ${context.args[0]}`)
+    }
+
+    let args = {}
+    context.args.slice(1).forEach(function (arg, index) {
+      if (cmd.args[index]) {
+        args[cmd.args[index].name] = arg
+      } else {
+        throw new Error(`Unexpected argument: ${arg}`)
+      }
+    })
+
+    context = Object.assign(context, {args})
+
+    yield cmd.run(context, heroku)
+  } else {
+    yield list(context, heroku)
+  }
+}
+
+function * list (context, heroku) {
   const pgbackups = require('../../lib/pgbackups')(context, heroku)
   const sortBy = require('lodash.sortby')
   const host = require('../../lib/host')()
@@ -94,5 +114,13 @@ module.exports = {
   needsApp: true,
   needsAuth: true,
   variableArgs: true,
+  flags: [
+    // for backwards compatibility with `pg:backups command` invocation
+    {name: 'verbose', char: 'v', hidden: true},
+    {name: 'confirm', char: 'c', hasValue: true, hidden: true},
+    {name: 'output', char: 'o', hasValue: true, hidden: true},
+    {name: 'wait-interval', hasValue: true, hidden: true},
+    {name: 'at', hasValue: true, hidden: true}
+  ],
   run: cli.command({preauth: true}, co.wrap(run))
 }

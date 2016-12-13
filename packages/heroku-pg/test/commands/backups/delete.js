@@ -6,7 +6,7 @@ const expect = require('unexpected')
 const nock = require('nock')
 const cmd = require('../../..').commands.find(c => c.topic === 'pg' && c.command === 'backups:delete')
 
-describe('pg:backups:delete', () => {
+const shouldDelete = function (cmdRun) {
   let pg
 
   beforeEach(() => {
@@ -26,4 +26,12 @@ describe('pg:backups:delete', () => {
     return cmd.run({app: 'myapp', args: {backup_id: 'b003'}, flags: {confirm: 'myapp'}})
     .then(() => expect(cli.stderr, 'to equal', 'Deleting backup b003 on myapp... done\n'))
   })
+}
+
+describe('pg:backups:delete', () => {
+  shouldDelete((args) => cmd.run(args))
+})
+
+describe('pg:backups delete', () => {
+  shouldDelete(require('./helpers.js').dup('delete', cmd))
 })

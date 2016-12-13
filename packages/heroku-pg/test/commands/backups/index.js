@@ -187,3 +187,11 @@ c003  2016-10-08 00:42:54 +0000  Completed 2016-10-08 00:43:00 +0000  1.40kB  RE
     })
   })
 })
+
+describe('pg:backups', () => {
+  const infoCmd = require('../../..').commands.find((c) => c.topic === 'pg' && c.command === 'backups:info')
+
+  it('errors out when subcommand not found', () => {
+    return expect(require('./helpers.js').dup('foobar', infoCmd)({}), 'to be rejected with', 'Unknown pg:backups command: foobar')
+  })
+})

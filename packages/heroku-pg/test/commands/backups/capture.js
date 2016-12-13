@@ -4,23 +4,19 @@
 const cli = require('heroku-cli-util')
 const expect = require('unexpected')
 const nock = require('nock')
-const proxyquire = require('proxyquire')
 
 const addon = {name: 'postgres-1', plan: {name: 'heroku-postgresql:standard-0'}}
-const fetcher = () => {
-  return {
-    addon: () => addon
-  }
-}
 
-const cmd = proxyquire('../../../commands/backups/capture', {
-  '../../lib/fetcher': fetcher
-})
+const cmd = require('../../../commands/backups/capture')
 
-describe('pg:backups:capture', () => {
+const shouldCapture = function (cmdRun) {
   let pg
+  let api
 
   beforeEach(() => {
+    api = nock('https://api.heroku.com')
+    api.post('/actions/addon-attachments/resolve', {app: 'myapp', addon_attachment: 'DATABASE_URL'}).reply(200, [{addon}])
+
     pg = nock('https://postgres-api.heroku.com')
     pg.post('/client/v11/databases/postgres-1/backups').reply(200, {
       num: 5,
@@ -38,10 +34,11 @@ describe('pg:backups:capture', () => {
   afterEach(() => {
     nock.cleanAll()
     pg.done()
+    api.done()
   })
 
   it('captures a db', () => {
-    return cmd.run({app: 'myapp', args: {}, flags: {}})
+    return cmdRun({app: 'myapp', args: {}, flags: {}})
     .then(() => expect(cli.stdout, 'to equal', `
 Use Ctrl-C at any time to stop monitoring progress; the backup will continue running.
 Use heroku pg:backups:info to check progress.
@@ -53,4 +50,12 @@ Backing up DATABASE to b005... pending
 Backing up DATABASE to b005... done
 `))
   })
+}
+
+describe('pg:backups:capture', () => {
+  shouldCapture((args) => cmd.run(args))
+})
+
+describe('pg:backups capture', () => {
+  shouldCapture(require('./helpers.js').dup('capture', cmd))
 })

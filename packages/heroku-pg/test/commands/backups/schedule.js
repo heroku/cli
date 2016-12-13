@@ -6,7 +6,7 @@ const expect = require('unexpected')
 const nock = require('nock')
 const cmd = require('../../..').commands.find(c => c.topic === 'pg' && c.command === 'backups:schedule')
 
-describe('pg:backups:schedule', () => {
+const shouldSchedule = function (cmdRun) {
   let pg, api
 
   beforeEach(() => {
@@ -29,8 +29,16 @@ describe('pg:backups:schedule', () => {
 
   it('schedules a backup', () => {
     pg.post('/client/v11/databases/postgres-1/transfer-schedules').reply(201)
-    return cmd.run({app: 'myapp', args: {}, flags: {at: '06:00 EDT'}})
+    return cmdRun({app: 'myapp', args: {}, flags: {at: '06:00 EDT'}})
     .then(() => expect(cli.stdout, 'to equal', ''))
     .then(() => expect(cli.stderr, 'to equal', 'Scheduling automatic daily backups of postgres-1 at 06:00 America/New_York... done\n'))
   })
+}
+
+describe('pg:backups:schedule', () => {
+  shouldSchedule((args) => cmd.run(args))
+})
+
+describe('pg:backups schedule', () => {
+  shouldSchedule(require('./helpers.js').dup('schedule', cmd))
 })
