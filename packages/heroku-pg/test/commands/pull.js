@@ -1,11 +1,12 @@
 'use strict'
 
-/* global describe it beforeEach */
+/* global describe it beforeEach afterEach */
 
 const cli = require('heroku-cli-util')
 const sinon = require('sinon')
 const proxyquire = require('proxyquire')
 const expect = require('unexpected')
+const env = require('process').env
 
 const db = {
   user: 'jeff',
@@ -39,11 +40,41 @@ describe('pg', () => {
   })
 
   describe('push', () => {
+    afterEach(() => {
+      delete env.PGPORT
+    })
+
     it('pushes out a db', sinon.test(() => {
       let psql = require('../../lib/psql')
       sinon.stub(psql, 'exec').returns(Promise.resolve(' empty \n-------\n t'))
       let cp = sinon.mock(require('child_process'))
       cp.expects('execSync').withExactArgs('env PGSSLMODE=prefer pg_dump --verbose -F c -Z 0  -h localhost -p 5432  localdb | env PGPASSWORD="pass" pg_restore --verbose --no-acl --no-owner -U jeff -h herokai.com -p 5432 -d mydb', {stdio: 'inherit'}).once()
+      return push.run({args: {source: 'localdb', target: 'postgres-1'}})
+      .then(() => cp.verify())
+      .then(() => expect(cli.stdout, 'to equal', 'heroku-cli: Pushing localdb ---> postgres-1\nheroku-cli: Pushing complete.\n'))
+      .then(() => expect(cli.stderr, 'to equal', ''))
+      .then(() => psql.exec.restore())
+    }))
+
+    it('pushes out a db using url port', sinon.test(() => {
+      let psql = require('../../lib/psql')
+      sinon.stub(psql, 'exec').returns(Promise.resolve(' empty \n-------\n t'))
+      let cp = sinon.mock(require('child_process'))
+      cp.expects('execSync').withExactArgs('env PGSSLMODE=prefer pg_dump --verbose -F c -Z 0  -h localhost -p 5433  localdb | env PGPASSWORD="pass" pg_restore --verbose --no-acl --no-owner -U jeff -h herokai.com -p 5432 -d mydb', {stdio: 'inherit'}).once()
+      return push.run({args: {source: 'postgres://localhost:5433/localdb', target: 'postgres-1'}})
+      .then(() => cp.verify())
+      .then(() => expect(cli.stdout, 'to equal', 'heroku-cli: Pushing postgres://localhost:5433/localdb ---> postgres-1\nheroku-cli: Pushing complete.\n'))
+      .then(() => expect(cli.stderr, 'to equal', ''))
+      .then(() => psql.exec.restore())
+    }))
+
+    it('pushes out a db using PGPORT', sinon.test(() => {
+      env.PGPORT = 5433
+
+      let psql = require('../../lib/psql')
+      sinon.stub(psql, 'exec').returns(Promise.resolve(' empty \n-------\n t'))
+      let cp = sinon.mock(require('child_process'))
+      cp.expects('execSync').withExactArgs('env PGSSLMODE=prefer pg_dump --verbose -F c -Z 0  -h localhost -p 5433  localdb | env PGPASSWORD="pass" pg_restore --verbose --no-acl --no-owner -U jeff -h herokai.com -p 5432 -d mydb', {stdio: 'inherit'}).once()
       return push.run({args: {source: 'localdb', target: 'postgres-1'}})
       .then(() => cp.verify())
       .then(() => expect(cli.stdout, 'to equal', 'heroku-cli: Pushing localdb ---> postgres-1\nheroku-cli: Pushing complete.\n'))

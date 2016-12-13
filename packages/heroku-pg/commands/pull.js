@@ -4,6 +4,7 @@ const cli = require('heroku-cli-util')
 const co = require('co')
 const debug = require('debug')('push')
 const psql = require('../lib/psql')
+const env = require('process').env
 
 function parseURL (db) {
   const url = require('url')
@@ -13,6 +14,7 @@ function parseURL (db) {
   db.password = password
   db.database = db.path ? db.path.split('/', 2)[1] : null
   db.host = db.hostname || 'localhost'
+  db.port = db.port || env.PGPORT || 5432
   return db
 }
 
