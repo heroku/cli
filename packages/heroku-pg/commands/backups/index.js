@@ -120,7 +120,8 @@ module.exports = {
     {name: 'confirm', char: 'c', hasValue: true, hidden: true},
     {name: 'output', char: 'o', hasValue: true, hidden: true},
     {name: 'wait-interval', hasValue: true, hidden: true},
-    {name: 'at', hasValue: true, hidden: true}
+    {name: 'at', hasValue: true, hidden: true},
+    {name: 'quiet', char: 'q', hidden: true}
   ],
   run: cli.command({preauth: true}, co.wrap(run))
 }

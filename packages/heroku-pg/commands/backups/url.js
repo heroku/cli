@@ -32,6 +32,10 @@ let cmd = {
   needsApp: true,
   needsAuth: true,
   args: [{name: 'backup_id', optional: true}],
+  flags: [
+    // ignored but present for backwards compatibility
+    {name: 'quiet', char: 'q', hidden: true}
+  ],
   run: cli.command({preauth: true}, co.wrap(run))
 }
 
