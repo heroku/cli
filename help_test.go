@@ -29,7 +29,7 @@ var _ = Describe("Help", func() {
 
 		It("exits with code 0", func() { Expect(exit).To(Equal(0)) })
 		It("shows the help", func() {
-			Expect(stdout()).To(HavePrefix("Usage: " + BASE_CMD_NAME + " COMMAND [--app APP] [command-specific-options]"))
+			Expect(stdout()).To(HavePrefix("Usage: " + BASE_CMD_NAME + " COMMAND [command-specific-options]"))
 		})
 	})
 
@@ -49,7 +49,7 @@ var _ = Describe("Help", func() {
 		})
 		It("reruns sfdx help", func() {
 			cli.Start(BASE_CMD_NAME, "_")
-			Expect(stdout()).To(HavePrefix("Usage: " + BASE_CMD_NAME + " COMMAND [--app APP] [command-specific-options]"))
+			Expect(stdout()).To(HavePrefix("Usage: " + BASE_CMD_NAME + " COMMAND [command-specific-options]"))
 		})
 	})
 
@@ -108,6 +108,40 @@ var _ = Describe("Help", func() {
 		It("exits with code 0", func() { Expect(exit).To(Equal(0)) })
 		It("shows help", func() {
 			Expect(stdout()).To(HavePrefix("Usage: " + BASE_CMD_NAME + " COMMAND"))
+		})
+	})
+
+	Context("help namespace:topic", func() {
+		BeforeEach(func() {
+			cli.Start(BASE_CMD_NAME, "help", "heroku:auth")
+		})
+
+		It("exits with code 0", func() { Expect(exit).To(Equal(0)) })
+		It("shows help", func() {
+			Expect(stdout()).To(ContainSubstring("heroku:auth:2fa"))
+		})
+	})
+
+	Context("help topic on namespace", func() {
+		BeforeEach(func() {
+			cli.Start(BASE_CMD_NAME, "help", "auth")
+		})
+
+		It("exits with code 0", func() { Expect(exit).To(Equal(0)) })
+		It("shows help", func() {
+			Expect(stdout()).NotTo(ContainSubstring("heroku:auth:2fa"))
+		})
+	})
+
+	Context("help namespace:topic:command", func() {
+		BeforeEach(func() {
+			cli.Start(BASE_CMD_NAME, "help", "heroku:auth:2fa")
+		})
+
+		It("exits with code 0", func() { Expect(exit).To(Equal(0)) })
+		It("shows help", func() {
+			// SHouldn't show topic help, should show command help
+			Expect(stdout()).To(ContainSubstring("check 2fa status"))
 		})
 	})
 })

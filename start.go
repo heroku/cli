@@ -9,6 +9,9 @@ const CLI_NAME = "SFDX"
 const BASE_CMD_NAME = "sfdx"
 const FOLDER_NAME = "sfdx"
 
+// TODO should be set by a go flag for the installers to set
+var DefaultNamespace = "sfdx"
+
 // Version is the version of the cli.
 // This is set by a build flag in the `Rakefile`.
 var Version = "dev"
@@ -39,6 +42,9 @@ func Start(args ...string) {
 	Args = removeCliTokenAndUpdateDefaultNamespace(args)
 	loadNewCLI()
 
+	// Printf("**  %s  ** \n\n", Args[0])
+	// cmdPath := strings.Split(Args[0], "/")
+	// BASE_CMD_NAME = cmdPath[len(cmdPath)-1]
 	ShowDebugInfo()
 
 	if len(Args) <= 1 {

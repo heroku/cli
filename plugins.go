@@ -31,7 +31,7 @@ func init() {
 				},
 				Help: `
 Example:
-  $ `+BASE_CMD_NAME+` plugins`,
+  $ ` + BASE_CMD_NAME + ` plugins`,
 
 				Run: pluginsList,
 			},
@@ -41,10 +41,10 @@ Example:
 				Hidden:       true,
 				VariableArgs: true,
 				Description:  "Installs a plugin into the CLI",
-				Help: `Install a `+CLI_NAME+` plugin
+				Help: `Install a ` + CLI_NAME + ` plugin
 
   Example:
-  $ `+BASE_CMD_NAME+` plugins:install heroku-production-status`,
+  $ ` + BASE_CMD_NAME + ` plugins:install heroku-production-status`,
 
 				Run: pluginsInstall,
 			},
@@ -59,7 +59,7 @@ Example:
 	and parses the plugin.
 
   Example:
-	$ `+BASE_CMD_NAME+` plugins:link .`,
+	$ ` + BASE_CMD_NAME + ` plugins:link .`,
 
 				Run: pluginsLink,
 			},
@@ -69,10 +69,10 @@ Example:
 				Hidden:      true,
 				Args:        []Arg{{Name: "name"}},
 				Description: "Uninstalls a plugin from the CLI",
-				Help: `Uninstalls a `+CLI_NAME+` plugin
+				Help: `Uninstalls a ` + CLI_NAME + ` plugin
 
   Example:
-  $ `+BASE_CMD_NAME+` plugins:uninstall heroku-production-status`,
+  $ ` + BASE_CMD_NAME + ` plugins:uninstall heroku-production-status`,
 
 				Run: pluginsUninstall,
 			},
@@ -106,7 +106,7 @@ func pluginsList(ctx *Context) {
 func pluginsInstall(ctx *Context) {
 	plugins := ctx.Args.([]string)
 	if len(plugins) == 0 {
-		ExitWithMessage("Must specify a plugin name.\nUSAGE: "+BASE_CMD_NAME+" plugins:install heroku-debug")
+		ExitWithMessage("Must specify a plugin name.\nUSAGE: " + BASE_CMD_NAME + " plugins:install heroku-debug")
 	}
 	toinstall := make([]string, 0, len(plugins))
 	core := CorePlugins.PluginNames()
@@ -185,13 +185,14 @@ var UserPlugins = &Plugins{Path: filepath.Join(DataHome, "plugins")}
 
 // Plugin represents a javascript plugin
 type Plugin struct {
-	Name      string    `json:"name"`
-	Tag       string    `json:"tag"`
-	Version   string    `json:"version"`
-	Topics    Topics    `json:"topics"`
-	Topic     *Topic    `json:"topic"`
-	Commands  Commands  `json:"commands"`
-	UpdatedAt time.Time `json:"updated_at"`
+	Name      string     `json:"name"`
+	Tag       string     `json:"tag"`
+	Version   string     `json:"version"`
+	Namespace *Namespace `json:"namespace"`
+	Topics    Topics     `json:"topics"`
+	Topic     *Topic     `json:"topic"`
+	Commands  Commands   `json:"commands"`
+	UpdatedAt time.Time  `json:"updated_at"`
 }
 
 // Commands lists all the commands of the plugins
@@ -212,6 +213,16 @@ func (p *Plugins) Topics() (topics Topics) {
 			topics = append(topics, plugin.Topic)
 		}
 		topics = append(topics, plugin.Topics...)
+	}
+	return
+}
+
+// Topics gets all the plugin's topics
+func (p *Plugins) Namespaces() (namespaces Namespaces) {
+	for _, plugin := range p.Plugins() {
+		if plugin.Namespace != nil {
+			namespaces = append(namespaces, plugin.Namespace)
+		}
 	}
 	return
 }
@@ -316,6 +327,7 @@ func (p *Plugins) ParsePlugin(name, tag string) (*Plugin, error) {
 			continue
 		}
 		command.Plugin = plugin.Name
+		// TODO command.Namespace = plugin.Namespace
 		command.Help = strings.TrimSpace(command.Help)
 	}
 	p.addToCache(&plugin)
