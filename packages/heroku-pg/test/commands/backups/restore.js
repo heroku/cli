@@ -39,8 +39,7 @@ const shouldRestore = function (cmdRun) {
       })
       pg.get('/client/v11/apps/myapp/transfers/100-001').reply(200, {
         finished_at: '101',
-        succeeded: true,
-        logs: [{created_at: '100', message: 'log message 1'}]
+        succeeded: true
       })
     })
 
@@ -54,7 +53,6 @@ Stop a running restore with heroku pg:backups:cancel.
 `))
       .then(() => expect(cli.stderr, 'to equal', `Starting restore of b005 to postgres-1... done
 Restoring... pending
-100 log message 1
 Restoring... done
 `))
     })
@@ -69,7 +67,6 @@ Stop a running restore with heroku pg:backups:cancel.
 `))
       .then(() => expect(cli.stderr, 'to equal', `Starting restore of b005 to postgres-1... done
 Restoring... pending
-100 log message 1
 Restoring... done
 `))
     })
@@ -84,7 +81,6 @@ Stop a running restore with heroku pg:backups:cancel.
 `))
       .then(() => expect(cli.stderr, 'to equal', `Starting restore of b005 to postgres-1... done
 Restoring... pending
-100 log message 1
 Restoring... done
 `))
     })
@@ -130,8 +126,7 @@ Restoring...
       })
       pg.get('/client/v11/apps/myapp/transfers/100-001').reply(200, {
         finished_at: '101',
-        succeeded: true,
-        logs: []
+        succeeded: true
       })
     })
 
