@@ -120,6 +120,7 @@ module.exports = heroku => {
 
   return {
     addon: co.wrap(addon),
+    attachment: co.wrap(attachment),
     all: co.wrap(all),
     database: co.wrap(database),
     arbitraryAppDB: co.wrap(arbitraryAppDB)

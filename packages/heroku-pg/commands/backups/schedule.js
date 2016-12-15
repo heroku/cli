@@ -2,6 +2,7 @@
 
 const co = require('co')
 const cli = require('heroku-cli-util')
+const util = require('../../lib/util')
 
 const TZ = {
   'PST': 'America/Los_Angeles',
@@ -34,11 +35,14 @@ function * run (context, heroku) {
   const {app, args, flags} = context
 
   let schedule = parse(flags.at)
-  let db = yield fetcher.addon(app, args.database)
+
+  let attachment = yield fetcher.attachment(app, args.database)
+  let db = attachment.addon
 
   let at = cli.color.cyan(`${schedule.hour}:00 ${schedule.timezone}`)
+
   yield cli.action(`Scheduling automatic daily backups of ${cli.color.addon(db.name)} at ${at}`, co(function * () {
-    schedule.schedule_name = db.name
+    schedule.schedule_name = util.getUrl(attachment.config_vars)
 
     yield heroku.post(`/client/v11/databases/${db.name}/transfer-schedules`, {
       body: schedule,
