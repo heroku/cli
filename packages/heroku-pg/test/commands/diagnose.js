@@ -45,7 +45,7 @@ describe('pg:diagnose', () => {
     pg.get('/client/v11/databases/postgres-1/metrics').reply(200, [])
     diagnose.post('/reports', {
       url: 'postgres://db',
-      plan: 'heroku-postgresql:standard-0',
+      plan: 'standard-0',
       app: 'myapp',
       database: 'DATABASE_URL',
       metrics: []

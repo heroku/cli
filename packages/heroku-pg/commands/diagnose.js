@@ -16,7 +16,7 @@ function * run (context, heroku) {
     let config = yield heroku.get(`/apps/${app}/config-vars`)
     let params = {
       url: config[util.getUrl(db.config_vars)],
-      plan: db.plan.name,
+      plan: db.plan.name.split(':')[1],
       app: db.app.name,
       database: util.getUrl(db.config_vars)
     }
