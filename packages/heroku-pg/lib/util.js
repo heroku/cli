@@ -2,24 +2,7 @@
 
 const cli = require('heroku-cli-util')
 const debug = require('./debug')
-
-const getBastion = function (config, baseName) {
-  const sample = require('lodash.sample')
-  // If there are bastions, extract a host and a key
-  // otherwise, return an empty Object
-
-  // If there are bastions:
-  // * there should be one *_BASTION_KEY
-  // * pick one host from the comma-separated list in *_BASTIONS
-  // We assert that _BASTIONS and _BASTION_KEY always exist together
-  // If either is falsy, pretend neither exist
-
-  const bastionKey = config[`${baseName}_BASTION_KEY`]
-  const bastionHost = sample((config[`${baseName}_BASTIONS`] || '').split(','))
-  return (!(bastionKey && bastionHost))
-    ? {}
-    : {bastionHost, bastionKey}
-}
+const getBastion = require('./bastion').getBastion
 
 function getUrl (configVars) {
   let connstringVars = configVars.filter((cv) => (cv.endsWith('_URL')))

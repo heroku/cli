@@ -1,6 +1,6 @@
 'use strict'
 
-/* global describe it */
+/* global describe it beforeEach afterEach */
 
 const sinon = require('sinon')
 const expect = require('unexpected')
@@ -26,11 +26,25 @@ const bastionDb = {
 
 const proxyquire = require('proxyquire')
 var tunnelStub = sinon.stub().callsArg(1)
-const psql = proxyquire('../../lib/psql', {
+
+const bastion = proxyquire('../../lib/bastion', {
   'tunnel-ssh': tunnelStub
+})
+const psql = proxyquire('../../lib/psql', {
+  './bastion': bastion
 })
 
 describe('psql', () => {
+  beforeEach(() => {
+    sinon.stub(Math, 'random', function () {
+      return 0
+    })
+  })
+
+  afterEach(() => {
+    Math.random.restore()
+  })
+
   describe('exec', () => {
     it('runs psql', sinon.test(() => {
       let cp = sinon.mock(require('child_process'))
@@ -61,9 +75,6 @@ describe('psql', () => {
     }))
     it('opens an SSH tunnel and runs psql for bastion databases', sinon.test(() => {
       let cp = sinon.mock(require('child_process'))
-      sinon.stub(Math, 'random', function () {
-        return 0
-      })
       let tunnelConf = {
         username: 'bastion',
         host: 'bastion-host',

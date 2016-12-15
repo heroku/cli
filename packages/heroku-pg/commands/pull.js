@@ -5,6 +5,7 @@ const co = require('co')
 const debug = require('debug')('push')
 const psql = require('../lib/psql')
 const env = require('process').env
+const bastion = require('../lib/bastion')
 
 function parseURL (db) {
   const url = require('url')
@@ -28,6 +29,24 @@ function exec (cmd, opts = {}) {
     if (err.status) process.exit(err.status)
     throw err
   }
+}
+
+function spawn (cmd) {
+  const {spawn} = require('child_process')
+  return new Promise((resolve, reject) => {
+    let result = ''
+    let psql = spawn(cmd, [], {encoding: 'utf8', stdio: [ 'ignore', 'pipe', 'inherit' ], shell: true})
+    psql.stdout.on('data', function (data) {
+      result += data.toString()
+    })
+    psql.on('close', function (code) {
+      if (code === 0) {
+        resolve(result)
+      } else {
+        cli.exit(code)
+      }
+    })
+  })
 }
 
 const prepare = co.wrap(function * (target) {
@@ -69,20 +88,49 @@ and retry.`)
   }
 })
 
-const run = co.wrap(function * (source, target) {
-  yield prepare(target)
+const maybeTunnel = function * (herokuDb) {
+  // TODO defend against side effects, should find altering code & fix
+  herokuDb = Object.assign({}, herokuDb)
+
+  const configs = bastion.getConfigs(herokuDb)
+  const tunnel = yield bastion.sshTunnel(herokuDb, configs.dbTunnelConfig)
+  if (tunnel) {
+    const tunnelHost = {
+      host: 'localhost',
+      port: configs.dbTunnelConfig.localPort,
+      _tunnel: tunnel
+    }
+
+    herokuDb = Object.assign(herokuDb, tunnelHost)
+  }
+  return herokuDb
+}
+
+const run = co.wrap(function * (sourceIn, targetIn) {
+  yield prepare(targetIn)
+
+  const source = yield maybeTunnel(sourceIn)
+  const target = yield maybeTunnel(targetIn)
+
   let password = p => p ? ` PGPASSWORD="${p}"` : ''
   let dump = `env${password(source.password)} PGSSLMODE=prefer pg_dump --verbose -F c -Z 0 ${connstring(source, true)}`
   let restore = `env${password(target.password)} pg_restore --verbose --no-acl --no-owner ${connstring(target)}`
-  exec(`${dump} | ${restore}`)
-  yield verifyExtensionsMatch(source, target)
+
+  yield spawn(`${dump} | ${restore}`)
+
+  if (source._tunnel) source._tunnel.close()
+  if (target._tunnel) target._tunnel.close()
+
+  yield verifyExtensionsMatch(sourceIn, targetIn)
 })
 
 function * push (context, heroku) {
   const fetcher = require('../lib/fetcher')(heroku)
   const {app, args} = context
+
   const source = parseURL(args.source)
   const target = yield fetcher.database(app, args.target)
+
   cli.log(`heroku-cli: Pushing ${cli.color.cyan(args.source)} ---> ${cli.color.addon(target.attachment.addon.name)}`)
   yield run(source, target)
   cli.log('heroku-cli: Pushing complete.')
@@ -91,8 +139,10 @@ function * push (context, heroku) {
 function * pull (context, heroku) {
   const fetcher = require('../lib/fetcher')(heroku)
   const {app, args} = context
+
   const source = yield fetcher.database(app, args.source)
   const target = parseURL(args.target)
+
   cli.log(`heroku-cli: Pulling ${cli.color.addon(source.attachment.addon.name)} ---> ${cli.color.cyan(args.target)}`)
   yield run(source, target)
   cli.log('heroku-cli: Pulling complete.')
