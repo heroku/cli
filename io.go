@@ -8,13 +8,11 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
-	"os/exec"
 	"os/signal"
 	"path/filepath"
 	"runtime"
 	"runtime/debug"
 	"strings"
-	"syscall"
 
 	"github.com/ansel1/merry"
 	"github.com/lunixbochs/vtclean"
@@ -27,9 +25,6 @@ var Stdout io.Writer = os.Stdout
 
 // Stderr is to mock stderr for testing
 var Stderr io.Writer = os.Stderr
-
-// InspectOut is used to mock inspect for testing
-var InspectOut io.Writer = os.Stderr
 
 var errLogger = newLogger(ErrLogPath)
 
@@ -375,26 +370,6 @@ func saveJSON(obj interface{}, path string) error {
 		return err
 	}
 	return ioutil.WriteFile(path, data, 0644)
-}
-
-// Inspect an object
-func Inspect(o interface{}) {
-	fmt.Fprintf(InspectOut, "%+v\n", o)
-}
-
-func execBin(bin string, args ...string) {
-	Debugf("Executing %s\n", bin)
-	if runtime.GOOS != WINDOWS {
-		cmd := exec.Command(bin, args[1:]...)
-		cmd.Stdin = os.Stdin
-		cmd.Stdout = os.Stdout
-		cmd.Stderr = os.Stderr
-		err := cmd.Run()
-		os.Exit(getExitCode(err))
-	} else {
-		must(syscall.Exec(bin, args, os.Environ()))
-		Inspect("")
-	}
 }
 
 // truncates the beginning of a file
