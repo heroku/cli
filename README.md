@@ -1,7 +1,7 @@
 Heroku CLI
 ==========
 
-![](https://d4yt8xl9b7in.cloudfront.net/assets/home/logotype-heroku.png)
+![Heroku logo](https://d4yt8xl9b7in.cloudfront.net/assets/home/logotype-heroku.png)
 
 [![Circle CI](https://circleci.com/gh/heroku/cli/tree/master.svg?style=svg)](https://circleci.com/gh/heroku/cli/tree/master)
 [![Build status](https://ci.appveyor.com/api/projects/status/ouee3b9d7jwkjcr1/branch/master?svg=true)](https://ci.appveyor.com/project/Heroku/cli/branch/master)
@@ -18,22 +18,11 @@ To get started see <https://devcenter.heroku.com/start>
 Overview
 ========
 
-This is the next generation Go/Node-based Heroku CLI. Currently, it is not feature complete with the existing CLI and not intended to be used standalone. It is used internally inside the existing Ruby CLI for some commands.
+This is the next generation Go/Node-based Heroku CLI.  The goals of this project were to make plugins more flexible, remove Ruby as a runtime dependency, and make the CLI faster.
 
-The goals of this project were to make plugins more flexible, remove Ruby as a runtime dependency, and make the CLI faster.
+It has identical functionality to the old Ruby CLI. Under the hood, it is a modular CLI made up of node.js plugins.
 
-We are in the process of migrating commands over, some you can try out include: `heroku status`, `heroku fork`, and `heroku git:remote`.
-
-Architecture
-============
-
-This CLI is written both in Go and node. The core part of the CLI is this Go project and manages a node installation in `~/.heroku`. It handles taking in arguments, updating itself and node plugins, as well as some core commands like `heroku login`.
-
-Most commands are plugins. An example of one would be [heroku-git](https://github.com/heroku/heroku-git). You can install it with `heroku plugins:install` and use it with `heroku git:remote`. When you install it, it uses npm to install the plugin into `~/.heroku/node_plugins/heroku-git`. Then, the commands become available to the CLI.
-
-Once we have plugins to replicate every command in the Ruby CLI, we will then ship this CLI standalone.
-
-For more on developing plugins, [read the blog announcement](https://blog.heroku.com/archives/2015/3/19/making_cli_plugins_better_with_a_new_architecture)
+For more on developing plugins, read [Developing CLI Plugins](https://devcenter.heroku.com/articles/developing-cli-plugins)
 
 Issues
 ======
