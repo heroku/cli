@@ -327,7 +327,6 @@ func (p *Plugins) ParsePlugin(name, tag string) (*Plugin, error) {
 			continue
 		}
 		command.Plugin = plugin.Name
-		// TODO command.Namespace = plugin.Namespace
 		command.Help = strings.TrimSpace(command.Help)
 	}
 	p.addToCache(&plugin)

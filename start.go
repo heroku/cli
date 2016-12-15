@@ -9,9 +9,6 @@ const CLI_NAME = "SFDX"
 const BASE_CMD_NAME = "sfdx"
 const FOLDER_NAME = "sfdx"
 
-// TODO should be set by a go flag for the installers to set
-var DefaultNamespace = "sfdx"
-
 // Version is the version of the cli.
 // This is set by a build flag in the `Rakefile`.
 var Version = "dev"
@@ -32,10 +29,10 @@ var CLITopics Topics
 var Args []string
 
 // The default namespace for this instance of the cli [sfdx, heroku]
-var defaultNamespace = "sfdx";
+var DefaultNamespace = "sfdx"
 
 // Go flag
-var CliToken = "unset";
+var CliToken = "unset"
 
 // Start the CLI
 func Start(args ...string) {
@@ -93,7 +90,7 @@ func removeCliTokenAndUpdateDefaultNamespace(args []string) []string {
 
 	for i := 0; i < len(args); i++ {
 		if args[i] == CliToken {
-			defaultNamespace = "heroku"
+			DefaultNamespace = "heroku"
 		} else {
 			newArray = append(newArray, args[i])
 		}

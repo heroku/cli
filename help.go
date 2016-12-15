@@ -45,7 +45,6 @@ func parseCmdString(cmd string) (*Namespace, *Topic, string) {
 		namespace = AllNamespaces().ByName(parts[0])
 
 		if len(parts) > 1 {
-			Printf("%s", parts[1])
 			topic = AllTopics().Namespace(namespace.Name).ByName(parts[1])
 		}
 		if len(parts) > 2 {
