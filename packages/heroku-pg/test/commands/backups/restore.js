@@ -59,19 +59,6 @@ Restoring... done
 `))
     })
 
-    it('shows verbose output', () => {
-      return cmdRun({app: 'myapp', args: {}, flags: {confirm: 'myapp', verbose: true}})
-      .then(() => expect(cli.stdout, 'to equal', `
-Use Ctrl-C at any time to stop monitoring progress; the backup will continue restoring.
-Use heroku pg:backups to check progress.
-Stop a running restore with heroku pg:backups:cancel.
-
-Restoring...
-100 log message 1
-`))
-      .then(() => expect(cli.stderr, 'to equal', 'Starting restore of b005 to postgres-1... done\n'))
-    })
-
     it('restores a specific db', () => {
       return cmdRun({app: 'myapp', args: {backup: 'b005'}, flags: {confirm: 'myapp'}})
       .then(() => expect(cli.stdout, 'to equal', `
@@ -100,6 +87,37 @@ Restoring... pending
 100 log message 1
 Restoring... done
 `))
+    })
+  })
+
+  context('b005 (verbose)', () => {
+    beforeEach(() => {
+      pg.get('/client/v11/apps/myapp/transfers').reply(200, [
+        {num: 5, from_type: 'pg_dump', to_type: 'gof3r', succeeded: true, to_url: 'https://myurl'}
+      ])
+      pg.post('/client/v11/databases/postgres-1/restores', {backup_url: 'https://myurl'}).reply(200, {
+        num: 5,
+        from_name: 'DATABASE',
+        uuid: '100-001'
+      })
+      pg.get('/client/v11/apps/myapp/transfers/100-001?verbose=true').reply(200, {
+        finished_at: '101',
+        succeeded: true,
+        logs: [{created_at: '100', message: 'log message 1'}]
+      })
+    })
+
+    it('shows verbose output', () => {
+      return cmdRun({app: 'myapp', args: {}, flags: {confirm: 'myapp', verbose: true}})
+      .then(() => expect(cli.stdout, 'to equal', `
+Use Ctrl-C at any time to stop monitoring progress; the backup will continue restoring.
+Use heroku pg:backups to check progress.
+Stop a running restore with heroku pg:backups:cancel.
+
+Restoring...
+100 log message 1
+`))
+      .then(() => expect(cli.stderr, 'to equal', 'Starting restore of b005 to postgres-1... done\n'))
     })
   })
 

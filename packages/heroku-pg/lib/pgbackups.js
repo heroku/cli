@@ -86,9 +86,14 @@ module.exports = (context, heroku) => ({
       let backup
       let failures = 0
 
+      let url = `/client/v11/apps/${app}/transfers/${transferID}`
+      if (verbose) {
+        url = url + '?verbose=true'
+      }
+
       while (true) {
         try {
-          backup = yield heroku.get(`/client/v11/apps/${app}/transfers/${transferID}`, {host})
+          backup = yield heroku.get(url, {host})
         } catch (err) {
           if (failures++ > 20) throw err
         }
@@ -96,7 +101,7 @@ module.exports = (context, heroku) => ({
           displayLogs(backup.logs)
         } else if (tty) {
           let msg = backup.started_at ? pgbackups.filesize(backup.processed_bytes) : 'pending'
-          let log = backup.logs.pop()
+          let log = backup.logs && backup.logs.pop()
           if (log) {
             cli.action.status(`${msg}\n${log.created_at + ' ' + log.message}`)
           } else {

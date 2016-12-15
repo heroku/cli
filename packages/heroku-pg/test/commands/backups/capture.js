@@ -25,8 +25,7 @@ const shouldCapture = function (cmdRun) {
     })
     pg.get('/client/v11/apps/myapp/transfers/100-001').reply(200, {
       finished_at: '101',
-      succeeded: true,
-      logs: []
+      succeeded: true
     })
     cli.mockConsole()
   })
