@@ -20,7 +20,6 @@ func init() {
 		{
 			Name:        "build",
 			Description: "These commands are used to build the CLI. They are not intended to be used otherwise.",
-            Hidden: true,
 			Commands: Commands{
 				{
 					Command:     "plugins",
@@ -55,7 +54,6 @@ func init() {
 }
 
 func buildPlugins(ctx *Context) {
-    Printf("Here")
 	pjson := struct {
 		Dependencies map[string]string `json:"dependencies"`
 	}{}
@@ -70,7 +68,6 @@ func buildPlugins(ctx *Context) {
 		plugin, err := CorePlugins.ParsePlugin(s[0], s[1])
 		must(err)
 		CorePlugins.addToCache(plugin)
-        Printf(plugin.Name)
 	}
 }
 
