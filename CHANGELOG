@@ -1,3 +1,7 @@
+5.6.1   2016-12-15
+==================
+Lowered cache timeout of installers
+
 5.6.0   2016-12-15
 ==================
 Added OSX installer
