@@ -15,6 +15,7 @@
     "heroku-redis": "1.2.7",
     "heroku-run": "3.3.4",
     "heroku-spaces": "2.5.0",
-    "heroku-status": "3.0.2"
+    "heroku-status": "3.0.2",
+    "force-com": "0.3.3"
   }
 }

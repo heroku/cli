@@ -141,7 +141,7 @@ func (c *Command) buildFullHelp() string {
 
 func (c *Command) unexpectedFlagErr(flag string) {
 	flagHelp := c.buildFlagHelp()
-	cmd := BASE_CMD_NAME + " " + c.String()
+	cmd := getExecutableName() + " " + c.String()
 	if flagHelp == "" {
 		ExitWithMessage(
 			`Error: Unexpected flag %s
@@ -150,7 +150,7 @@ This command does not take any flags.
 
 See more information with %s`,
 			red(flag),
-			cyan(BASE_CMD_NAME+" "+CommandUsage(c)),
+			cyan(getExecutableName()+" "+CommandUsage(c)),
 			cyan(cmd+" --help"),
 		)
 	}
@@ -163,7 +163,7 @@ This flag is invalid for this command. Here are the accepted flags:
 
 See more information with %s`,
 		red(flag),
-		cyan(BASE_CMD_NAME+" "+CommandUsage(c)),
+		cyan(getExecutableName()+" "+CommandUsage(c)),
 		flagHelp,
 		cyan(cmd+" --help"),
 	)
@@ -177,13 +177,13 @@ We don't know which app to run this on.
 Run this command from inside an app folder or specify which app to use with %s
 
 https://devcenter.heroku.com/articles/using-the-cli#app-commands`,
-		cyan(BASE_CMD_NAME+" "+CommandUsage(c)+" --app APP"),
+		cyan(getExecutableName()+" "+CommandUsage(c)+" --app APP"),
 		cyan("--app APP"),
 	)
 }
 
 func (c *Command) unexpectedArgumentsErr(args []string) {
-	cmd := BASE_CMD_NAME + " " + c.String()
+	cmd := getExecutableName() + " " + c.String()
 	ExitWithMessage(
 		`Error: Unexpected %s %s
 Usage: %s
@@ -192,7 +192,7 @@ You gave this command too many arguments. Try the command again without these ex
 See more information with %s`,
 		plural("argument", len(args)),
 		red(strings.Join(args, " ")),
-		cyan(BASE_CMD_NAME+" "+CommandUsage(c)),
+		cyan(getExecutableName()+" "+CommandUsage(c)),
 		cyan(cmd+" --help"),
 	)
 }

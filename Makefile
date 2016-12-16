@@ -2,11 +2,12 @@
 
 NPM_VERSION=3.9.3
 NODE_VERSION=6.2.1
-FOLDER_NAME=sfdx
-BINARY_NAME=sfdx
 
+FOLDER_NAME=heroku
+BINARY_NAME=heroku
 CLI_TOKEN=5D98FF27213533167357E4449C758
-ALIAS_COMPAT=heroku
+ALIAS_NAME=sfdx
+
 DIST_DIR?=dist
 CACHE_DIR?=tmp/cache
 VERSION=$(shell ./bin/version)
@@ -85,7 +86,7 @@ tmp/%/$(FOLDER_NAME)/lib/plugins.json: $(WORKSPACE)/lib/plugins.json
 
 BUILD_TAGS=release
 SOURCES := $(shell ls | grep '\.go')
-LDFLAGS=-ldflags "-X=main.Version=$(VERSION) -X=main.Channel=$(CHANNEL) -X=main.GitSHA=$(REVISION) -X=main.Autoupdate=$(AUTOUPDATE) -X=main.TargetBin=$(BINARY_NAME) -X=main.CliToken=$(CLI_TOKEN)"
+LDFLAGS=-ldflags "-X=main.Version=$(VERSION) -X=main.Channel=$(CHANNEL) -X=main.GitSHA=$(REVISION) -X=main.Autoupdate=$(AUTOUPDATE) -X=main.BinaryName=$(BINARY_NAME) -X=main.CliToken=$(CLI_TOKEN) -X=main.AliasName=$(ALIAS_NAME) -X=main.FolderName=$(FOLDER_NAME)"
 GOOS=$(OS)
 $(WORKSPACE)/bin/$(BINARY_NAME): OS   := $(shell go env GOOS)
 $(WORKSPACE)/bin/$(BINARY_NAME): ARCH := $(shell go env GOARCH)
@@ -104,8 +105,17 @@ $(WORKSPACE)/bin/$(BINARY_NAME) tmp/%/$(FOLDER_NAME)/bin/$(BINARY_NAME): $(SOURC
 	mv $@.signed $@
 
 ALIAS_SOURCES := $(shell echo alias/*.go)
-$(WORKSPACE)/bin/$(ALIAS_COMPAT) tmp/%/$(FOLDER_NAME)/bin/$(ALIAS_COMPAT):
+$(WORKSPACE)/bin/$(ALIAS_NAME) tmp/%/$(FOLDER_NAME)/bin/$(ALIAS_NAME):
 	GOOS=$(GOOS) GOARCH=$(ARCH) GO386=$(GO386) GOARM=$(GOARM) go build -tags $(BUILD_TAGS) -o $@ $(LDFLAGS) $(ALIAS_SOURCES)
+
+%/$(FOLDER_NAME)/bin/$(ALIAS_NAME).exe: $(SOURCES) resources/exe/heroku-codesign-cert.pfx
+	GOOS=$(GOOS) GOARCH=$(ARCH) go build $(LDFLAGS) -o $@ -tags $(BUILD_TAGS) $(ALIAS_SOURCES)
+	@osslsigncode -pkcs12 resources/exe/heroku-codesign-cert.pfx \
+		-pass '$(HEROKU_WINDOWS_SIGNING_PASS)' \
+		-n 'Heroku CLI' \
+		-i https://toolbelt.heroku.com/ \
+		-in $@ -out $@.signed
+	mv $@.signed $@
 
 resources/exe/heroku-codesign-cert.pfx:
 	@gpg --yes --passphrase '$(HEROKU_WINDOWS_SIGNING_PASS)' -o resources/exe/heroku-codesign-cert.pfx -d resources/exe/heroku-codesign-cert.pfx.gpg
@@ -161,6 +171,7 @@ $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_%.deb: tmp/debian-%
 		> tmp/$(DEB_BASE)_$*.apt/DEBIAN/control
 	cp -r tmp/debian-$*/$(FOLDER_NAME) tmp/$(DEB_BASE)_$*.apt/usr/lib/
 	ln -s ../lib/$(FOLDER_NAME)/bin/$(BINARY_NAME) tmp/$(DEB_BASE)_$*.apt/usr/bin/$(BINARY_NAME)
+	ln -s ../lib/$(FOLDER_NAME)/bin/$(ALIAS_NAME) tmp/$(DEB_BASE)_$*.apt/usr/bin/$(ALIAS_NAME)
 	sudo chown -R root tmp/$(DEB_BASE)_$*.apt
 	sudo chgrp -R root tmp/$(DEB_BASE)_$*.apt
 	mkdir -p $(@D)
@@ -199,13 +210,15 @@ $(DIST_DIR)/$(CHANNEL)/$(VERSION)/heroku-osx.pkg: tmp/darwin-amd64
 	./resources/osx/build $@
 
 .PHONY: build
-build: $(WORKSPACE)/bin/$(BINARY_NAME) $(WORKSPACE)/bin/$(ALIAS_COMPAT) $(WORKSPACE)/lib/npm $(WORKSPACE)/lib/node $(WORKSPACE)/lib/plugins.json $(WORKSPACE)/lib/cacert.pem
+build: $(WORKSPACE)/bin/$(BINARY_NAME) $(WORKSPACE)/bin/$(ALIAS_NAME) $(WORKSPACE)/lib/npm $(WORKSPACE)/lib/node $(WORKSPACE)/lib/plugins.json $(WORKSPACE)/lib/cacert.pem
 
 .PHONY: install
 install: build
 	cp -r $(WORKSPACE) /usr/local/lib/$(FOLDER_NAME)
 	rm -f /usr/local/bin/$(BINARY_NAME)
+	rm -f /usr/local/bin/$(ALIAS_NAME)
 	ln -s /usr/local/lib/$(FOLDER_NAME)/bin/$(BINARY_NAME) /usr/local/bin/$(BINARY_NAME)
+	ln -s /usr/local/lib/$(FOLDER_NAME)/bin/$(ALIAS_NAME) /usr/local/bin/$(ALIAS_NAME)
 
 .PHONY: clean
 clean:
@@ -221,6 +234,7 @@ test: build
 all: darwin linux windows freebsd openbsd
 
 TARGET_DEPS =  tmp/$$(OS)-$$(ARCH)/$(FOLDER_NAME)/bin/$(BINARY_NAME)$$(EXT) \
+                tmp/$$(OS)-$$(ARCH)/$(FOLDER_NAME)/bin/$(ALIAS_NAME)$$(EXT) \
 						   tmp/$$(OS)-$$(ARCH)/$(FOLDER_NAME)/lib/npm           \
 						   tmp/$$(OS)-$$(ARCH)/$(FOLDER_NAME)/lib/plugins.json  \
 						   tmp/$$(OS)-$$(ARCH)/$(FOLDER_NAME)/lib/cacert.pem

@@ -3,29 +3,34 @@ package main
 import (
 	"os/exec"
 	"os"
-	"path/filepath"
 	"fmt"
 )
 
+const GO_FLAG_INIT_STATE = "unset"
+
 // Go flag for the name of this binary on the filesystem
-var TargetBin = "unset"
+var BinaryName = GO_FLAG_INIT_STATE
 
 // Shared token between this binary and sfdx. This enables us to know if sfdx was invoked by this process.
-var CliToken = "unset"
+var CliToken = GO_FLAG_INIT_STATE
 
 func main() {
-	cmd := filepath.Dir(os.Args[0]) + string(os.PathSeparator) + TargetBin
-
-
 	args := os.Args;
 	args = append(args, CliToken)
 
-	if _, err := os.Stat(cmd); os.IsNotExist(err) {
-		fmt.Fprintln(os.Stdout, "The sfdx command is not found at: ", cmd)
+	path, lookPathErr := exec.LookPath(BinaryName)
+
+	if lookPathErr != nil {
+		fmt.Fprintln(os.Stdout, "The %s command is not found.", BinaryName)
 		os.Exit(1)
 	}
 
-	command := exec.Command(cmd, args[1:]...)
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		fmt.Fprintln(os.Stdout, "Couldn't execute .", path)
+		os.Exit(1)
+	}
+
+	command := exec.Command(path, args[1:]...)
 
 	command.Stdout = os.Stdout;
 	command.Stderr = os.Stderr;

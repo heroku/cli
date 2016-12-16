@@ -62,7 +62,7 @@ func configHome() string {
 	if d == "" {
 		d = filepath.Join(HomeDir, ".config")
 	}
-	d = filepath.Join(d, FOLDER_NAME)
+	d = filepath.Join(d, FolderName)
 	must(mkdirp(d))
 	return d
 }
@@ -76,7 +76,7 @@ func dataHome() string {
 			d = filepath.Join(HomeDir, ".local", "share")
 		}
 	}
-	d = filepath.Join(d, FOLDER_NAME)
+	d = filepath.Join(d, FolderName)
 	must(mkdirp(d))
 	return d
 }
@@ -90,7 +90,7 @@ func cacheHome() string {
 			d = filepath.Join(HomeDir, ".cache")
 		}
 	}
-	d = filepath.Join(d, FOLDER_NAME)
+	d = filepath.Join(d, FolderName)
 	must(mkdirp(d))
 	return d
 }

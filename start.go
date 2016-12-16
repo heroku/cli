@@ -5,10 +5,6 @@ import (
 	"strings"
 )
 
-const CLI_NAME = "SFDX"
-const BASE_CMD_NAME = "sfdx"
-const FOLDER_NAME = "sfdx"
-
 // Version is the version of the cli.
 // This is set by a build flag in the `Rakefile`.
 var Version = "dev"
@@ -28,11 +24,22 @@ var CLITopics Topics
 // Args is os.Args
 var Args []string
 
-// The default namespace for this instance of the cli [sfdx, heroku]
-var DefaultNamespace = "sfdx"
+const GO_FLAG_INIT_STATE = "unset"
 
 // Go flag
-var CliToken = "unset"
+var CliToken = GO_FLAG_INIT_STATE
+
+// Go flag to capture the alias name
+var AliasName = GO_FLAG_INIT_STATE
+
+// Go flag to capture the binary name
+var BinaryName = GO_FLAG_INIT_STATE
+
+// Go flag to capture the folder name
+var FolderName = GO_FLAG_INIT_STATE
+
+// The default namespace for this instance of the cli. Defaults to the binary name for the alias.
+var DefaultNamespace = BinaryName
 
 // Start the CLI
 func Start(args ...string) {
@@ -90,13 +97,22 @@ func removeCliTokenAndUpdateDefaultNamespace(args []string) []string {
 
 	for i := 0; i < len(args); i++ {
 		if args[i] == CliToken {
-			DefaultNamespace = "heroku"
+			fmt.Println(fmt.Sprintf("CliToken: %s", CliToken))
+			DefaultNamespace = AliasName
 		} else {
 			newArray = append(newArray, args[i])
 		}
 	}
 
 	return newArray
+}
+
+func getExecutableName() string {
+	if DefaultNamespace == GO_FLAG_INIT_STATE {
+		return BinaryName;
+	}
+
+	return DefaultNamespace;
 }
 
 var crashing = false
