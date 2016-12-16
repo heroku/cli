@@ -97,7 +97,6 @@ func removeCliTokenAndUpdateDefaultNamespace(args []string) []string {
 
 	for i := 0; i < len(args); i++ {
 		if args[i] == CliToken {
-			fmt.Println(fmt.Sprintf("CliToken: %s", CliToken))
 			DefaultNamespace = AliasName
 		} else {
 			newArray = append(newArray, args[i])
