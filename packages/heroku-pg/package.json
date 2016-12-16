@@ -1,7 +1,7 @@
 {
   "name": "heroku-pg",
   "description": "Heroku CLI plugin to manage Postgres.",
-  "version": "2.0.7",
+  "version": "2.0.8",
   "author": "Jeff Dickey (@dickeyxxx)",
   "bugs": {
     "url": "https://github.com/heroku/heroku-pg/issues"
