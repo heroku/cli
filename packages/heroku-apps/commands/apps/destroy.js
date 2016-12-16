@@ -9,6 +9,9 @@ function * run (context, heroku) {
 
   let app = context.args.app || context.app
   if (!app) throw new Error('No app specified.\nUSAGE: heroku apps:destroy APPNAME')
+
+  context.app = app // make sure context.app is always set for herkou-cli-util
+
   yield heroku.get(`/apps/${app}`)
   yield cli.confirmApp(app, context.flags.confirm, `WARNING: This will delete ${cli.color.app(app)} including all add-ons.`)
   let request = heroku.request({

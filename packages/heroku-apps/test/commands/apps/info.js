@@ -39,7 +39,7 @@ describe('apps:info', () => {
       .get('/apps/myapp/addons').reply(200, addons)
       .get('/apps/myapp/collaborators').reply(200, collaborators)
       .get('/apps/myapp/dynos').reply(200, [{type: 'web', size: 'Standard-1X', quantity: 2}])
-    return cmd.run({args: {app: 'myapp'}, flags: {}})
+    return cmd.run({app: 'myapp', args: {}, flags: {}})
       .then(() => expect(cli.stderr).to.equal(''))
       .then(() => expect(cli.stdout).to.equal(`=== myapp
 Addons:        heroku-redis
@@ -57,6 +57,34 @@ Stack:         cedar-14
 Web URL:       https://myapp.herokuapp.com
 `))
       .then(() => api.done())
+  })
+
+  it('shows app info via arg', () => {
+    let api = nock('https://api.heroku.com:443')
+      .get('/apps/myapp').reply(200, app)
+      .get('/apps/myapp/addons').reply(200, addons)
+      .get('/apps/myapp/collaborators').reply(200, collaborators)
+      .get('/apps/myapp/dynos').reply(200, [{type: 'web', size: 'Standard-1X', quantity: 2}])
+    let context = {args: {app: 'myapp'}, flags: {}}
+    return cmd.run(context)
+      .then(() => expect(cli.stderr).to.equal(''))
+      .then(() => expect(cli.stdout).to.equal(`=== myapp
+Addons:        heroku-redis
+               papertrail
+Collaborators: foo2@foo.com
+Database Size: 1000 B
+Dynos:         web: 1
+Git URL:       https://git.heroku.com/myapp
+Owner:         foo@foo.com
+Region:        eu
+Repo Size:     1000 B
+Slug Size:     1000 B
+Space:         myspace
+Stack:         cedar-14
+Web URL:       https://myapp.herokuapp.com
+`))
+      .then(() => api.done())
+      .then(() => expect(context.app).to.equal('myapp'))
   })
 
   it('shows app info in shell format', () => {

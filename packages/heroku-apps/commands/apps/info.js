@@ -21,6 +21,9 @@ function * run (context, heroku) {
 
   let app = context.args.app || context.app
   if (!app) throw new Error('No app specified.\nUSAGE: heroku info my-app')
+
+  context.app = app // make sure context.app is always set for herkou-cli-util
+
   let info = yield getInfo(app)
   let addons = info.addons.map(a => a.plan.name).sort()
   let collaborators = info.collaborators.map(c => c.user.email).filter(c => c !== info.app.owner.email).sort()
