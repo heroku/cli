@@ -15,6 +15,11 @@ function * run (context, heroku) {
       path: `/apps/${app}/ps/stop?` + qs.stringify({[type]: dyno}),
       parseJSON: false,
       headers: {Accept: 'application/json'}
+    }).catch(function (err) {
+      // the body on success is `ok` so we cannot parseJSON but
+      // some exception handling expects the error to be json
+      err.body = JSON.parse(err.body)
+      throw err
     })
   }))
 }
