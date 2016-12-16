@@ -2,3 +2,4 @@
 
 sudo mkdir -p /usr/local/bin
 sudo ln -sf /usr/local/lib/heroku/bin/heroku /usr/local/bin/heroku
+sudo ln -sf /usr/local/lib/heroku/bin/sfdx /usr/local/bin/sfdx

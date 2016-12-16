@@ -21,7 +21,7 @@ func init() {
 			&Command{
 				Hidden: true,
 				Run: func(ctx *Context) {
-					Args = []string{BASE_CMD_NAME, HELP}
+					Args = []string{getExecutableName(), HELP}
 					help()
 				},
 			},
@@ -90,8 +90,8 @@ func help() {
 
 // Show the overall help if no namespace, topic, or command is given
 func helpShowNamespacesAndTopics() {
-	Printf("Usage: %s COMMAND [command-specific-options]\n\n", BASE_CMD_NAME)
-	Printf("Help topics, type \"%s help TOPIC\" for more details:\n\n", BASE_CMD_NAME)
+	Printf("Usage: %s COMMAND [command-specific-options]\n\n", getExecutableName())
+	Printf("Help topics, type \"%s help TOPIC\" for more details:\n\n", getExecutableName())
 	groups := AllTopics().NonHidden().NamespaceAndTopicDescriptions()
 
 	longestTopic := 0
@@ -106,15 +106,15 @@ func helpShowNamespacesAndTopics() {
 	sort.Strings(keys)
 
 	for _, key := range keys {
-		Printf("  %s %-"+strconv.Itoa(longestTopic+1)+"s# %s\n", BASE_CMD_NAME, key, groups[key])
+		Printf("  %s %-"+strconv.Itoa(longestTopic+1)+"s# %s\n", getExecutableName(), key, groups[key])
 	}
 	Println()
 	Exit(0)
 }
 
 func helpShowTopics(namespace *Namespace) {
-	Printf("Usage: %s COMMAND [command-specific-options]\n\n", BASE_CMD_NAME)
-	Printf("Help topics, type \"%s help TOPIC\" for more details:\n\n", BASE_CMD_NAME)
+	Printf("Usage: %s COMMAND [command-specific-options]\n\n", getExecutableName())
+	Printf("Help topics, type \"%s help TOPIC\" for more details:\n\n", getExecutableName())
 
 	topics := AllTopics().NonHidden()
 
@@ -129,21 +129,21 @@ func helpShowTopics(namespace *Namespace) {
 		}
 	}
 	for _, topic := range topics {
-		Printf("  %s %-"+strconv.Itoa(longestTopic+1)+"s# %s\n", BASE_CMD_NAME, topic.String(), topic.Description)
+		Printf("  %s %-"+strconv.Itoa(longestTopic+1)+"s# %s\n", getExecutableName(), topic.String(), topic.Description)
 	}
 	Println()
 	Exit(0)
 }
 
 func helpShowTopic(namespace *Namespace, topic *Topic) {
-	Printf("Usage: %s %s:COMMAND [command-specific-options]\n\n", BASE_CMD_NAME, topic.String())
+	Printf("Usage: %s %s:COMMAND [command-specific-options]\n\n", getExecutableName(), topic.String())
 	printTopicCommandsHelp(namespace, topic)
 	Println()
 	Exit(0)
 }
 
 func helpShowCommand(namespace *Namespace, topic *Topic, command *Command) {
-	Printf("Usage: %s %s\n\n", BASE_CMD_NAME, CommandUsage(command))
+	Printf("Usage: %s %s\n\n", getExecutableName(), CommandUsage(command))
 	Println(command.buildFullHelp())
 	if command.Command == "" {
 		printTopicCommandsHelp(namespace, topic)
@@ -166,9 +166,9 @@ func printTopicCommandsHelp(namespace *Namespace, topic *Topic) {
 	}
 	topicCommands.loadUsages()
 	if len(topicCommands) > 0 {
-		Printf("\nCommands for %s, type \"%s help %s:COMMAND\" for more details:\n\n", topic.Name, BASE_CMD_NAME, topic.Name)
+		Printf("\nCommands for %s, type \"%s help %s:COMMAND\" for more details:\n\n", topic.Name, getExecutableName(), topic.Name)
 		for _, command := range topicCommands.Sort() {
-			Printf(" %s %-30s # %s\n", BASE_CMD_NAME, command.Usage, command.Description)
+			Printf(" %s %-30s # %s\n", getExecutableName(), command.Usage, command.Description)
 		}
 	}
 }
@@ -179,13 +179,13 @@ func helpInvalidCommand() {
 	currentAnalyticsCommand.Valid = false
 	guess, distance := findClosestCommand(AllCommands(), Args[1])
 	if len(Args[1]) > 2 || distance < 2 {
-		newcmd := strings.TrimSpace(fmt.Sprintf("%s %s %s", BASE_CMD_NAME, guess, strings.Join(Args[2:], " ")))
+		newcmd := strings.TrimSpace(fmt.Sprintf("%s %s %s", getExecutableName(), guess, strings.Join(Args[2:], " ")))
 		WarnIfError(saveJSON(&Guess{guess.String(), Args[2:]}, guessPath()))
-		closest = fmt.Sprintf("Perhaps you meant %s?\nRun %s to run %s.\n", yellow(guess.String()), cyan(BASE_CMD_NAME+" _"), cyan(newcmd))
+		closest = fmt.Sprintf("Perhaps you meant %s?\nRun %s to run %s.\n", yellow(guess.String()), cyan(getExecutableName()+" _"), cyan(newcmd))
 	}
 	ExitWithMessage(`%s is not a %s command.
 %sRun %s for a list of available commands.
-`, yellow(Args[1]), BASE_CMD_NAME, closest, cyan(BASE_CMD_NAME+" help"))
+`, yellow(Args[1]), getExecutableName(), closest, cyan(getExecutableName()+" help"))
 }
 
 func checkIfKnownTopic(cmd string) {
@@ -196,7 +196,7 @@ func checkIfKnownTopic(cmd string) {
 	topic := strings.Split(cmd, ":")[0]
 	plugin := knownTopics[topic]
 	if plugin != "" {
-		ExitWithMessage("Use %s commands by installing the %s plugin.\n%s", topic, yellow(plugin), cyan(BASE_CMD_NAME+" plugins:install "+plugin))
+		ExitWithMessage("Use %s commands by installing the %s plugin.\n%s", topic, yellow(plugin), cyan(getExecutableName()+" plugins:install "+plugin))
 	}
 }
 
@@ -216,7 +216,7 @@ func stringDistance(a, b string) int {
 	return levenshtein.DistanceForStrings([]rune(a), []rune(b), levenshtein.DefaultOptions)
 }
 
-// Guess is used with `BASE_CMD_NAME _`
+// Guess is used with `getExecutableName() _`
 type Guess struct {
 	Guess string   `json:"guess"`
 	Args  []string `json:"args"`
