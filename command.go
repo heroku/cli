@@ -55,6 +55,7 @@ type Command struct {
 	Topic            string             `json:"topic"`
 	Command          string             `json:"command,omitempty"`
 	Plugin           string             `json:"plugin"`
+	Namespace        string             `json:"namespace"`
 	Usage            string             `json:"usage"`
 	Description      string             `json:"description"`
 	Default          bool               `json:"default"`
@@ -74,10 +75,16 @@ type Command struct {
 }
 
 func (c Command) String() string {
-	if c.Command == "" {
-		return c.Topic
+	str := ""
+	if c.Namespace != "" && c.Namespace != DefaultNamespace {
+		str += c.Namespace + ":"
 	}
-	return c.Topic + ":" + c.Command
+	str += c.Topic
+
+	if c.Command == "" {
+		return str
+	}
+	return str + ":" + c.Command
 }
 
 // CommandUsage generates the usage for a command
@@ -134,7 +141,7 @@ func (c *Command) buildFullHelp() string {
 
 func (c *Command) unexpectedFlagErr(flag string) {
 	flagHelp := c.buildFlagHelp()
-	cmd := BASE_CMD_NAME+" " + c.String()
+	cmd := BASE_CMD_NAME + " " + c.String()
 	if flagHelp == "" {
 		ExitWithMessage(
 			`Error: Unexpected flag %s
@@ -176,7 +183,7 @@ https://devcenter.heroku.com/articles/using-the-cli#app-commands`,
 }
 
 func (c *Command) unexpectedArgumentsErr(args []string) {
-	cmd := BASE_CMD_NAME+" " + c.String()
+	cmd := BASE_CMD_NAME + " " + c.String()
 	ExitWithMessage(
 		`Error: Unexpected %s %s
 Usage: %s
@@ -193,16 +200,22 @@ See more information with %s`,
 // Commands is a slice of Command structs with some helper methods.
 type Commands []*Command
 
-// Find finds a command and topic matching the cmd string
+// Find finds a command, topic and namespace matching the cmd string
 func (commands Commands) Find(cmd string) *Command {
-	var topic, command string
-	tc := strings.SplitN(cmd, ":", 2)
-	topic = tc[0]
-	if len(tc) > 1 {
-		command = tc[1]
+	namespace, topic, command := parseCmdString(cmd)
+
+	namespaceCmds := commands
+
+	// No group commands, so try to find as a topic on commands with no or default namespace
+	if namespace == nil {
+		namespaceCmds = commands.Namespace("").Concat(commands.Namespace(DefaultNamespace))
+	} else {
+		namespaceCmds = commands.Namespace(namespace.Name)
 	}
-	for _, c := range commands {
-		if c.Topic == topic && (c.Command == command || c.Default && command == "") {
+
+	for _, c := range namespaceCmds {
+		isSameTopic := (c.Topic == "" && topic == nil) || (topic != nil && c.Topic == topic.Name)
+		if isSameTopic && (c.Command == command || c.Default && command == "") {
 			return c
 		}
 	}
@@ -223,6 +236,14 @@ func (commands Commands) loadFullHelp() {
 	}
 }
 
+// Concat joins 2 commands sets together
+func (commands Commands) Concat(more Commands) Commands {
+	for _, command := range more {
+		commands = append(commands, command)
+	}
+	return commands
+}
+
 func (commands Commands) Len() int {
 	return len(commands)
 }
@@ -239,10 +260,21 @@ func (commands Commands) Swap(i, j int) {
 }
 
 // NonHidden returns the commands that are not hidden
-func (commands Commands) NonHidden() []*Command {
+func (commands Commands) NonHidden() Commands {
 	to := make([]*Command, 0, len(commands))
 	for _, command := range commands {
 		if !command.Hidden {
+			to = append(to, command)
+		}
+	}
+	return to
+}
+
+// Namespace returns the commands that are not hidden
+func (commands Commands) Namespace(name string) Commands {
+	to := make([]*Command, 0, len(commands))
+	for _, command := range commands {
+		if command.Namespace == name {
 			to = append(to, command)
 		}
 	}

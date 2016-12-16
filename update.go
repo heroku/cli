@@ -215,7 +215,14 @@ func loadNewCLI() {
 	current, err := os.Stat(BinPath)
 	must(err)
 	if !os.SameFile(current, expected) {
-		execBin(expected.Name(), Args...)
+		bin := expectedBinPath()
+		Debugf("Executing %s\n", bin)
+		cmd := exec.Command(bin, Args[1:]...)
+		cmd.Stdin = os.Stdin
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+		err := cmd.Run()
+		os.Exit(getExitCode(err))
 	}
 }
 

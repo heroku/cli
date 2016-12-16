@@ -13,13 +13,21 @@ import (
 	"github.com/toqueteos/webbrowser"
 )
 
+// TODO this should be moved into a heroku core plugin?
 func init() {
+	namespace := Namespace{
+		Name:        "heroku",
+		Description: "list all topics in the heroku namespace",
+	}
 	CLITopics = append(CLITopics, Topics{{
 		Name:        "auth",
 		Description: "authentication (login/logout)",
+		Namespace:   &namespace,
 		Commands: []*Command{
 			{
 				Command:     "login",
+				Namespace:   "heroku",
+				Topic:       "auth",
 				Description: "login with your Heroku credentials.",
 				Flags: []Flag{
 					{Name: "sso", Description: "login for enterprise users under SSO"},
@@ -28,11 +36,15 @@ func init() {
 			},
 			{
 				Command:     "logout",
+				Namespace:   "heroku",
+				Topic:       "auth",
 				Description: "clear your local Heroku credentials",
 				Run:         logout,
 			},
 			{
 				Command:     "whoami",
+				Namespace:   "heroku",
+				Topic:       "auth",
 				Description: "display your Heroku login",
 				Help: `Example:
 
@@ -49,6 +61,8 @@ func init() {
 			},
 			{
 				Command:     "token",
+				Namespace:   "heroku",
+				Topic:       "auth",
 				Description: "display your API token.",
 				NeedsAuth:   true,
 				Run: func(ctx *Context) {
@@ -57,24 +71,32 @@ func init() {
 			},
 			{
 				Command:     "2fa",
+				Namespace:   "heroku",
+				Topic:       "auth",
 				Description: "check 2fa status",
 				NeedsAuth:   true,
 				Run:         twoFactorRun,
 			},
 			{
 				Command:     "2fa:enable",
+				Namespace:   "heroku",
+				Topic:       "auth",
 				Description: "enable 2fa on your account",
 				NeedsAuth:   true,
 				Run:         twoFactorEnableRun,
 			},
 			{
 				Command:     "2fa:generate",
+				Namespace:   "heroku",
+				Topic:       "auth",
 				Description: "generates and replaces recovery codes",
 				NeedsAuth:   true,
 				Run:         twoFactorGenerateRun,
 			},
 			{
 				Command:     "2fa:disable",
+				Namespace:   "heroku",
+				Topic:       "auth",
 				Description: "disable two-factor authentication for your account",
 				NeedsAuth:   true,
 				Run:         twoFactorDisableRun,
@@ -82,8 +104,9 @@ func init() {
 		},
 	},
 		{
-			Name:   "whoami",
-			Hidden: true,
+			Name:      "whoami",
+			Namespace: &namespace,
+			Hidden:    true,
 			Commands: []*Command{
 				{
 					Description: "display your Heroku login",
@@ -105,6 +128,7 @@ func init() {
 		{
 			Name:        "login",
 			Description: "login with your Heroku credentials.",
+			Namespace:   &namespace,
 			Commands: []*Command{
 				{
 					Description: "login with your Heroku credentials.",
@@ -117,7 +141,7 @@ func init() {
 		},
 		{
 			Name:        "logout",
-			Hidden:      true,
+			Namespace:   &namespace,
 			Description: "clear your local Heroku credentials",
 			Commands: []*Command{
 				{
@@ -127,8 +151,9 @@ func init() {
 			},
 		},
 		{
-			Name:   "twofactor",
-			Hidden: true,
+			Name:      "twofactor",
+			Namespace: &namespace,
+			Hidden:    true,
 			Commands: Commands{
 				{
 					NeedsAuth:   true,
@@ -150,8 +175,9 @@ func init() {
 			},
 		},
 		{
-			Name:   "2fa",
-			Hidden: true,
+			Name:      "2fa",
+			Namespace: &namespace,
+			Hidden:    true,
 			Commands: Commands{
 				{
 					NeedsAuth:   true,
