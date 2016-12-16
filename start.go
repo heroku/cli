@@ -108,10 +108,19 @@ func removeCliTokenAndUpdateDefaultNamespace(args []string) []string {
 }
 
 func getExecutableName() string {
-	if DefaultNamespace == GO_FLAG_INIT_STATE {
+	defaultNs := getDefaultNamespace()
+	if defaultNs == GO_FLAG_INIT_STATE {
 		return BinaryName;
 	}
 
+	return defaultNs
+}
+
+func getFolderName() string {
+	return FolderName
+}
+
+func getDefaultNamespace() string {
 	return DefaultNamespace;
 }
 

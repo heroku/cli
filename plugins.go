@@ -552,7 +552,7 @@ func (p *Plugins) cachePath() string {
 
 // RubyPlugins lists all the ruby plugins
 func RubyPlugins() []string {
-	dirs, err := ioutil.ReadDir(filepath.Join(HomeDir, "."+FolderName, "plugins"))
+	dirs, err := ioutil.ReadDir(filepath.Join(HomeDir, "."+getFolderName(), "plugins"))
 	if err != nil {
 		return []string{}
 	}

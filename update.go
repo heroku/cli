@@ -100,10 +100,10 @@ func DownloadCLI(channel, path string, manifest *Manifest) {
 	}
 	exists, _ := FileExists(path)
 	if exists {
-		WarnIfError(os.Rename(expectedBinPath(), filepath.Join(tmpDir(DataHome), FolderName)))
-		must(os.Rename(path, filepath.Join(tmpDir(DataHome), FolderName)))
+		WarnIfError(os.Rename(expectedBinPath(), filepath.Join(tmpDir(DataHome), getFolderName())))
+		must(os.Rename(path, filepath.Join(tmpDir(DataHome), getFolderName())))
 	}
-	must(os.Rename(filepath.Join(tmp, FolderName), path))
+	must(os.Rename(filepath.Join(tmp, getFolderName()), path))
 	Debugf("updated to %s\n", manifest.Version)
 }
 
@@ -190,7 +190,7 @@ func cleanTmp() {
 }
 
 func expectedBinPath() string {
-	bin := filepath.Join(DataHome, "cli", "bin", FolderName)
+	bin := filepath.Join(DataHome, "cli", "bin", getFolderName())
 	if runtime.GOOS == WINDOWS {
 		bin = bin + ".exe"
 	}
