@@ -2,6 +2,7 @@
 
 const cli = require('heroku-cli-util')
 const co = require('co')
+const capitalize = require('lodash.capitalize')
 const PGDIAGNOSE_HOST = process.env.PGDIAGNOSE_URL || 'https://pgdiagnose.herokai.com'
 
 function * run (context, heroku) {
@@ -34,19 +35,27 @@ function * run (context, heroku) {
 available for one month after creation on ${report.created_at}
 `)
     let display = checks => {
-      for (let check of checks) {
-        cli.log(cli.color[check.status](`${check.status.toUpperCase()}: ${check.name}`))
-        if (check.status === 'green') continue
-        if (!check.results || !check.results.length) return
-        if (Array.isArray(check.results[0])) {
-          cli.log(`  ${check.results[0].join(' ')}`)
-        } else {
+      checks.forEach((check) => {
+        let color = cli.color[check.status] || ((txt) => txt)
+        cli.log(color(`${check.status.toUpperCase()}: ${check.name}`))
+
+        if (check.status === 'green') return
+        if (!check.results) return
+
+        if (Array.isArray(check.results)) {
+          if (!check.results.length) return
+
           let keys = Object.keys(check.results[0])
           cli.table(check.results, {
-            columns: keys.map(key => ({key}))
+            columns: keys.map(key => ({label: capitalize(key), key: key}))
           })
+        } else {
+          if (!Object.keys(check.results).length) return
+
+          let key = Object.keys(check.results)[0]
+          cli.log(`${key.split('_').map((s) => capitalize(s)).join(' ')} ${check.results[key]}`)
         }
-      }
+      })
     }
     display(report.checks.filter(c => c.status === 'red'))
     display(report.checks.filter(c => c.status === 'yellow'))

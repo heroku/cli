@@ -59,6 +59,11 @@ describe('pg:diagnose', () => {
           name: 'Connection count',
           status: 'red',
           results: [{count: 1}]
+        },
+        {
+          name: 'Load',
+          status: 'red',
+          results: {load: 100}
         }
       ]
     })
@@ -67,9 +72,11 @@ describe('pg:diagnose', () => {
 available for one month after creation on 101
 
 RED: Connection count
-count
+Count
 ─────
 1
+RED: Load
+Load 100
 `))
   })
 
@@ -84,6 +91,11 @@ count
           name: 'Connection count',
           status: 'red',
           results: [{count: 1}]
+        },
+        {
+          name: 'Load',
+          status: 'red',
+          results: {load: 100}
         }
       ]
     })
@@ -92,9 +104,109 @@ count
 available for one month after creation on 101
 
 RED: Connection count
-count
+Count
 ─────
 1
+RED: Load
+Load 100
+`))
+  })
+
+  it('displays an existing report with empty results', () => {
+    diagnose.get('/reports/697c8bd7-dbba-4f2d-83b6-789c58cc3a9c').reply(200, {
+      id: '697c8bd7-dbba-4f2d-83b6-789c58cc3a9c',
+      app: 'myapp',
+      database: 'postgres-1',
+      created_at: '101',
+      checks: [
+        {
+          name: 'Connection count',
+          status: 'red',
+          results: []
+        },
+        {
+          name: 'Load',
+          status: 'red',
+          results: {}
+        }
+      ]
+    })
+    return cmd.run({app: 'myapp', args: {'DATABASE|REPORT_ID': '697c8bd7-dbba-4f2d-83b6-789c58cc3a9c'}})
+    .then(() => expect(cli.stdout, 'to equal', `Report 697c8bd7-dbba-4f2d-83b6-789c58cc3a9c for myapp::postgres-1
+available for one month after creation on 101
+
+RED: Connection count
+RED: Load
+`))
+  })
+
+  it('roughly conforms with Ruby output', () => {
+    diagnose.get('/reports/697c8bd7-dbba-4f2d-83b6-789c58cc3a9c').reply(200, {
+      'id': 'abc123',
+      'app': 'appname',
+      'created_at': '2014-06-24 01:26:11.941197+00',
+      'database': 'dbcolor',
+      'checks': [
+        {'name': 'Hit Rate', 'status': 'green', 'results': null},
+        {'name': 'Connection Count', 'status': 'red', 'results': [{'count': 150}]},
+        {
+          'name': 'list',
+          'status': 'yellow',
+          'results': [
+            {'thing': 'one'},
+            {'thing': 'two'}
+          ]
+        },
+        {
+          'name': 'Load',
+          'status': 'skipped',
+          'results': {
+            'error': 'Load check not supported on this plan'
+          }
+        }
+      ]
+    })
+    return cmd.run({app: 'myapp', args: {'DATABASE|REPORT_ID': '697c8bd7-dbba-4f2d-83b6-789c58cc3a9c'}})
+    .then(() => expect(cli.stdout, 'to equal', `Report abc123 for appname::dbcolor
+available for one month after creation on 2014-06-24 01:26:11.941197+00
+
+RED: Connection Count
+Count
+─────
+150
+YELLOW: list
+Thing
+─────
+one
+two
+GREEN: Hit Rate
+SKIPPED: Load
+Error Load check not supported on this plan
+`))
+  })
+
+  it('converts underscores to spaces', () => {
+    diagnose.get('/reports/697c8bd7-dbba-4f2d-83b6-789c58cc3a9c').reply(200, {
+      'id': 'abc123',
+      'app': 'appname',
+      'created_at': '2014-06-24 01:26:11.941197+00',
+      'database': 'dbcolor',
+      'checks': [
+        {
+          'name': 'Load',
+          'status': 'skipped',
+          'results': {
+            'error_thing': 'Load check not supported on this plan'
+          }
+        }
+      ]
+    })
+    return cmd.run({app: 'myapp', args: {'DATABASE|REPORT_ID': '697c8bd7-dbba-4f2d-83b6-789c58cc3a9c'}})
+    .then(() => expect(cli.stdout, 'to equal', `Report abc123 for appname::dbcolor
+available for one month after creation on 2014-06-24 01:26:11.941197+00
+
+SKIPPED: Load
+Error Thing Load check not supported on this plan
 `))
   })
 })
