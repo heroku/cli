@@ -17,7 +17,7 @@ import (
 func init() {
 	namespace := Namespace{
 		Name:        "heroku",
-		Description: "list all topics in the heroku namespace",
+		Description: "list all heroku topics",
 	}
 	CLITopics = append(CLITopics, Topics{{
 		Name:        "auth",

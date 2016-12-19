@@ -76,7 +76,7 @@ type Command struct {
 
 func (c Command) String() string {
 	str := ""
-	if c.Namespace != "" && c.Namespace != DefaultNamespace {
+	if c.Namespace != "" && c.Namespace != getDefaultNamespace() {
 		str += c.Namespace + ":"
 	}
 	str += c.Topic
@@ -208,7 +208,7 @@ func (commands Commands) Find(cmd string) *Command {
 
 	// No group commands, so try to find as a topic on commands with no or default namespace
 	if namespace == nil {
-		namespaceCmds = commands.Namespace("").Concat(commands.Namespace(DefaultNamespace))
+		namespaceCmds = commands.Namespace("").Concat(commands.Namespace(getDefaultNamespace()))
 	} else {
 		namespaceCmds = commands.Namespace(namespace.Name)
 	}

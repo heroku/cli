@@ -41,7 +41,7 @@ Example:
 				Hidden:       true,
 				VariableArgs: true,
 				Description:  "Installs a plugin into the CLI",
-				Help: `Install a ` + DefaultNamespace + ` plugin
+				Help: `Install a ` + getDefaultNamespace() + ` plugin
 
   Example:
   $ ` + getExecutableName() + ` plugins:install heroku-production-status`,
@@ -69,7 +69,7 @@ Example:
 				Hidden:      true,
 				Args:        []Arg{{Name: "name"}},
 				Description: "Uninstalls a plugin from the CLI",
-				Help: `Uninstalls a ` + DefaultNamespace + ` plugin
+				Help: `Uninstalls a ` + getDefaultNamespace() + ` plugin
 
   Example:
   $ ` + getExecutableName() + ` plugins:uninstall heroku-production-status`,

@@ -16,9 +16,9 @@ import (
 )
 
 // Copy from start.go to be used in the test namespace
-const CLI_NAME = "SFDX"
-const BASE_CMD_NAME = "sfdx"
-const FOLDER_NAME = "sfdx"
+const CLI_NAME = "Heroku"
+const BinaryName = "heroku"
+const FolderName = "heroku"
 
 func TestCLI(t *testing.T) {
 	os.Setenv("TESTING", "1")
@@ -50,6 +50,8 @@ var _ = AfterSuite(func() {
 })
 
 var _ = BeforeEach(func() {
+	cli.BinaryName = BinaryName
+	cli.FolderName = FolderName
 	cli.Stdout = new(bytes.Buffer)
 	cli.Stderr = new(bytes.Buffer)
 })
