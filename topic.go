@@ -13,7 +13,7 @@ type Topic struct {
 }
 
 func (t *Topic) String() string {
-	if t.Namespace == nil || t.Namespace.Name == DefaultNamespace {
+	if t.Namespace == nil || t.Namespace.Name == getDefaultNamespace() {
 		return t.Name
 	}
 	return t.Namespace.Name + ":" + t.Name
@@ -92,7 +92,7 @@ func (topics Topics) Namespace(name string) Topics {
 	for _, topic := range topics {
 		matchedNoNamespace := topic.Namespace == nil && name == ""
 		matchedNamespace := topic.Namespace != nil && topic.Namespace.Name == name
-		matchedDefault := topic.Namespace != nil && topic.Namespace.Name == DefaultNamespace && name == ""
+		matchedDefault := topic.Namespace != nil && topic.Namespace.Name == getDefaultNamespace() && name == ""
 		if matchedNoNamespace || matchedNamespace || matchedDefault {
 			to = append(to, topic)
 		}
@@ -107,9 +107,11 @@ func (topics Topics) Namespace(name string) Topics {
 func (topics Topics) NamespaceAndTopicDescriptions() map[string]string {
 	to := make(map[string]string)
 	for _, topic := range topics {
-		if topic.Namespace == nil || topic.Namespace.Name == DefaultNamespace {
-			to[topic.Name] = topic.Description
-		} else if _, ok := to[topic.Namespace.Name]; ok || to[topic.Namespace.Name] == "" {
+		if topic.Namespace == nil || topic.Namespace.Name == getDefaultNamespace() {
+			if to[topic.Name] == "" {
+				to[topic.Name] = topic.Description
+			}
+		} else if desc, ok := to[topic.Namespace.Name]; ok || desc == "" {
 			to[topic.Namespace.Name] = topic.Namespace.Description
 		}
 	}

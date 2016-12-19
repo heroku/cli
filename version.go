@@ -15,7 +15,7 @@ func init() {
 				Description:      "print the version",
 				Hidden:           true,
 				DisableAnalytics: true,
-				Help: `Shows the ` + DefaultNamespace + ` CLI version.
+				Help: `Shows the ` + getDefaultNamespace() + ` CLI version.
 
 Example:
 

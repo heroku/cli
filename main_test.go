@@ -33,7 +33,7 @@ var _ = Describe("version", func() {
 					Commands: cli.Commands{{Run: func(*cli.Context) { ran = true }}},
 				},
 			}
-			cli.Start(BASE_CMD_NAME)
+			cli.Start(BinaryName)
 		})
 		AfterEach(func() {
 			cli.CLITopics = topicBackup
@@ -45,7 +45,7 @@ var _ = Describe("version", func() {
 	Describe("ShowDebugInfo", func() {
 		BeforeEach(func() {
 			cli.Debugging = true
-			cli.Args = []string{BASE_CMD_NAME, "test"}
+			cli.Args = []string{BinaryName, "test"}
 			cli.ShowDebugInfo()
 		})
 		AfterEach(func() {

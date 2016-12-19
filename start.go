@@ -46,9 +46,6 @@ func Start(args ...string) {
 	Args = removeCliTokenAndUpdateDefaultNamespace(args)
 	loadNewCLI()
 
-	// Printf("**  %s  ** \n\n", Args[0])
-	// cmdPath := strings.Split(Args[0], "/")
-	// BASE_CMD_NAME = cmdPath[len(cmdPath)-1]
 	ShowDebugInfo()
 
 	if len(Args) <= 1 {
@@ -92,6 +89,10 @@ func Start(args ...string) {
 }
 
 func removeCliTokenAndUpdateDefaultNamespace(args []string) []string {
+	// Golang flags are set after variable initialzation, so Namespace
+	// is still "unset". Namespace should always be defaulted to the BinaryName unless
+	// the CliToken is specified to set the Namespace to the AliasName.
+	DefaultNamespace = BinaryName
 
 	newArray := []string{}
 
@@ -102,14 +103,16 @@ func removeCliTokenAndUpdateDefaultNamespace(args []string) []string {
 			newArray = append(newArray, args[i])
 		}
 	}
-
 	return newArray
 }
 
+// The executable name is always the namespace
 func getExecutableName() string {
 	defaultNs := getDefaultNamespace()
+
+	// This should be set on initialzation, but return the binary name if it is not.
 	if defaultNs == GO_FLAG_INIT_STATE {
-		return BinaryName;
+		return BinaryName
 	}
 
 	return defaultNs
@@ -120,7 +123,7 @@ func getFolderName() string {
 }
 
 func getDefaultNamespace() string {
-	return DefaultNamespace;
+	return DefaultNamespace
 }
 
 var crashing = false
@@ -128,6 +131,7 @@ var crashing = false
 // ShowDebugInfo prints debugging information if HEROKU_DEBUG=1
 func ShowDebugInfo() {
 	info := []string{version(), BinPath}
+	//
 	if len(Args) > 1 {
 		info = append(info, fmt.Sprintf("cmd: %s", Args[1]))
 	}
