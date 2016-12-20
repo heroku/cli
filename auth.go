@@ -13,7 +13,6 @@ import (
 	"github.com/toqueteos/webbrowser"
 )
 
-// TODO this should be moved into a heroku core plugin?
 func init() {
 	namespace := Namespace{
 		Name:        "heroku",
