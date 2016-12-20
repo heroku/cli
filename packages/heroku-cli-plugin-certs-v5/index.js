@@ -3,7 +3,7 @@
 let _ = require('lodash')
 
 exports.topic = {
-  name: 'heroku',
+  name: 'certs',
   // this is the help text that shows up under `heroku help`
   description: 'a topic for the ssl plugin'
 }
