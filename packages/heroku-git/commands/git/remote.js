@@ -35,7 +35,11 @@ module.exports = {
 
 Examples:
 
-  $ heroku git:remote -a example set git remote heroku to https://git.heroku.com/example.git`,
+  # set git remote heroku to https://git.heroku.com/example.git
+  $ heroku git:remote -a example
+
+  # set git remote heroku-staging to https://git.heroku.com/example-staging.git
+  $ heroku git:remote --remote heroku-staging -a example`,
   needsAuth: true,
   variableArgs: true,
   flags: [
