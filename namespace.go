@@ -24,6 +24,16 @@ func AllNamespaces() Namespaces {
 	namespaces := CLITopics.Namespaces()
 	namespaces = namespaces.Concat(CorePlugins.Namespaces())
 	namespaces = namespaces.Concat(UserPlugins.Namespaces())
+
+	// TODO We want to install force when people try to use it. Hard code this
+	// for now, but we may want to make this a little more generic
+	if AllTopics().ByName("force") == nil {
+		namespaces = append(namespaces, &Namespace{
+			Name:        "force",
+			Description: "tools for the salesforce developer",
+		})
+	}
+
 	return namespaces
 }
 
