@@ -12,7 +12,7 @@ import (
 
 var _ = Describe("Command", func() {
 	BeforeEach(func() {
-		cli.Start(BASE_CMD_NAME, "version")
+		cli.Start(BinaryName, "version")
 	})
 
 	Describe("parsing", func() {
@@ -29,7 +29,7 @@ var _ = Describe("Command", func() {
 	})
 
 	It("shows the version", func() {
-		version := fmt.Sprintf(BASE_CMD_NAME+"-cli/%s (%s-%s) %s ?\n", cli.Version, runtime.GOOS, runtime.GOARCH, runtime.Version())
+		version := fmt.Sprintf(BinaryName+"-cli/%s (%s-%s) %s ?\n", cli.Version, runtime.GOOS, runtime.GOARCH, runtime.Version())
 		Expect(stdout()).To(Equal(version))
 	})
 })

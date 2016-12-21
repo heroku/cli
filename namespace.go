@@ -39,7 +39,8 @@ func (namespaces Namespaces) ByName(name string) *Namespace {
 
 // Has returns ture if a namespace exist for the given name or command.
 func (namespaces Namespaces) Has(nameOrCmd string) bool {
-	return namespaces.ByName(strings.SplitN(nameOrCmd, ":", 2)[0]) != nil
+	namespace := strings.SplitN(nameOrCmd, ":", 2)[0]
+	return namespace != getDefaultNamespace() && namespaces.ByName(namespace) != nil
 }
 
 func (namespaces Namespaces) Len() int {

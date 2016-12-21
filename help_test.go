@@ -22,81 +22,81 @@ var _ = Describe("Help", func() {
 		exit = 9999
 	})
 
-	Context(BASE_CMD_NAME+" help", func() {
+	Context(BinaryName+" help", func() {
 		BeforeEach(func() {
-			cli.Start(BASE_CMD_NAME, "help")
+			cli.Start(BinaryName, "help")
 		})
 
 		It("exits with code 0", func() { Expect(exit).To(Equal(0)) })
 		It("shows the help", func() {
-			Expect(stdout()).To(HavePrefix("Usage: " + BASE_CMD_NAME + " COMMAND [command-specific-options]"))
+			Expect(stdout()).To(HavePrefix("Usage: " + BinaryName + " COMMAND [command-specific-options]"))
 		})
 	})
 
-	Context(BASE_CMD_NAME+" hlp", func() {
+	Context(BinaryName+" hlp", func() {
 		BeforeEach(func() {
-			cli.Start(BASE_CMD_NAME, "hlp")
+			cli.Start(BinaryName, "hlp")
 		})
 
 		It("exits with code 2", func() { Expect(exit).To(Equal(2)) })
 		It("has no stdout", func() { Expect(stdout()).To(Equal("")) })
 		It("shows invalid command message", func() {
-			Expect(stderr()).To(Equal(` !    hlp is not a ` + BASE_CMD_NAME + ` command.
+			Expect(stderr()).To(Equal(` !    hlp is not a ` + BinaryName + ` command.
  !    Perhaps you meant help?
- !    Run ` + BASE_CMD_NAME + ` _ to run ` + BASE_CMD_NAME + ` help.
- !    Run ` + BASE_CMD_NAME + ` help for a list of available commands.
+ !    Run ` + BinaryName + ` _ to run ` + BinaryName + ` help.
+ !    Run ` + BinaryName + ` help for a list of available commands.
 `))
 		})
 		It("reruns sfdx help", func() {
-			cli.Start(BASE_CMD_NAME, "_")
-			Expect(stdout()).To(HavePrefix("Usage: " + BASE_CMD_NAME + " COMMAND [command-specific-options]"))
+			cli.Start(BinaryName, "_")
+			Expect(stdout()).To(HavePrefix("Usage: " + BinaryName + " COMMAND [command-specific-options]"))
 		})
 	})
 
-	Context(BASE_CMD_NAME+" help plugins", func() {
+	Context(BinaryName+" help plugins", func() {
 		BeforeEach(func() {
-			cli.Start(BASE_CMD_NAME, "help", "plugins")
+			cli.Start(BinaryName, "help", "plugins")
 		})
 
 		It("exits with code 0", func() { Expect(exit).To(Equal(0)) })
 		It("shows help for plugins command", func() {
-			Expect(stdout()).To(HavePrefix("Usage: " + BASE_CMD_NAME + " plugins"))
-			Expect(stdout()).To(ContainSubstring(BASE_CMD_NAME + " plugins:link"))
+			Expect(stdout()).To(HavePrefix("Usage: " + BinaryName + " plugins"))
+			Expect(stdout()).To(ContainSubstring(BinaryName + " plugins:link"))
 		})
 	})
 
-	Context(BASE_CMD_NAME+" plugins --help", func() {
+	Context(BinaryName+" plugins --help", func() {
 		BeforeEach(func() {
-			cli.Start(BASE_CMD_NAME, "plugins", "--help")
+			cli.Start(BinaryName, "plugins", "--help")
 		})
 
 		It("exits with code 0", func() { Expect(exit).To(Equal(0)) })
 		It("shows help for plugins command", func() {
-			Expect(stdout()).To(HavePrefix("Usage: " + BASE_CMD_NAME + " plugins"))
-			Expect(stdout()).To(ContainSubstring(BASE_CMD_NAME + " plugins:link"))
+			Expect(stdout()).To(HavePrefix("Usage: " + BinaryName + " plugins"))
+			Expect(stdout()).To(ContainSubstring(BinaryName + " plugins:link"))
 		})
 	})
 
-	Context(BASE_CMD_NAME+" help plugins:foo", func() {
+	Context(BinaryName+" help plugins:foo", func() {
 		BeforeEach(func() {
-			cli.Start(BASE_CMD_NAME, "help", "plugins:foo")
+			cli.Start(BinaryName, "help", "plugins:foo")
 		})
 
 		It("exits with code 0", func() { Expect(exit).To(Equal(0)) })
 		It("shows help for plugins commands", func() {
-			Expect(stdout()).To(HavePrefix("Usage: " + BASE_CMD_NAME + " plugins:COMMAND"))
-			Expect(stdout()).To(ContainSubstring(BASE_CMD_NAME + " plugins:link"))
+			Expect(stdout()).To(HavePrefix("Usage: " + BinaryName + " plugins:COMMAND"))
+			Expect(stdout()).To(ContainSubstring(BinaryName + " plugins:link"))
 		})
 	})
 
-	Context(BASE_CMD_NAME+" help plugins", func() {
+	Context(BinaryName+" help plugins", func() {
 		BeforeEach(func() {
-			cli.Start(BASE_CMD_NAME, "help", "plugins")
+			cli.Start(BinaryName, "help", "plugins")
 		})
 
 		It("exits with code 0", func() { Expect(exit).To(Equal(0)) })
 		It("shows help for plugins commands", func() {
-			Expect(stdout()).To(ContainSubstring(BASE_CMD_NAME + " plugins:link"))
+			Expect(stdout()).To(ContainSubstring(BinaryName + " plugins:link"))
 		})
 	})
 
@@ -107,13 +107,26 @@ var _ = Describe("Help", func() {
 
 		It("exits with code 0", func() { Expect(exit).To(Equal(0)) })
 		It("shows help", func() {
-			Expect(stdout()).To(HavePrefix("Usage: " + BASE_CMD_NAME + " COMMAND"))
+			Expect(stdout()).To(HavePrefix("Usage: " + BinaryName + " COMMAND"))
 		})
 	})
 
 	Context("help namespace:topic", func() {
 		BeforeEach(func() {
-			cli.Start(BASE_CMD_NAME, "help", "heroku:auth")
+			cli.Start(BinaryName, "help", "heroku:auth")
+		})
+
+		It("exits with code 0", func() { Expect(exit).To(Equal(0)) })
+		It("shows help", func() {
+			// Should not show up because we are on a DefaultNamespace heroku (moved to top level)
+			Expect(stdout()).NotTo(ContainSubstring("auth:2fa"))
+		})
+	})
+
+	Context("help topic on namespace", func() {
+		BeforeEach(func() {
+			cli.BinaryName = "sfdx"
+			cli.Start(BinaryName, "help", "heroku:auth")
 		})
 
 		It("exits with code 0", func() { Expect(exit).To(Equal(0)) })
@@ -122,26 +135,29 @@ var _ = Describe("Help", func() {
 		})
 	})
 
-	Context("help topic on namespace", func() {
-		BeforeEach(func() {
-			cli.Start(BASE_CMD_NAME, "help", "auth")
-		})
-
-		It("exits with code 0", func() { Expect(exit).To(Equal(0)) })
-		It("shows help", func() {
-			Expect(stdout()).NotTo(ContainSubstring("heroku:auth:2fa"))
-		})
-	})
-
 	Context("help namespace:topic:command", func() {
 		BeforeEach(func() {
-			cli.Start(BASE_CMD_NAME, "help", "heroku:auth:2fa")
+			cli.BinaryName = "sfdx"
+			cli.Start(BinaryName, "help", "heroku:auth:2fa")
 		})
 
 		It("exits with code 0", func() { Expect(exit).To(Equal(0)) })
 		It("shows help", func() {
 			// SHouldn't show topic help, should show command help
 			Expect(stdout()).To(ContainSubstring("check 2fa status"))
+		})
+	})
+
+	Context("help with different namespace", func() {
+		BeforeEach(func() {
+			cli.BinaryName = "sfdx"
+			cli.Start(BinaryName, "help")
+		})
+
+		It("exits with code 0", func() { Expect(exit).To(Equal(0)) })
+		It("shows help", func() {
+			// SHouldn't show topic help, should show command help
+			Expect(stdout()).To(ContainSubstring("list all heroku topics"))
 		})
 	})
 })

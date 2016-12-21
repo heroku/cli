@@ -22,7 +22,7 @@ func init() {
 			{
 				Topic:            "update",
 				Hidden:           true,
-				Description:      "updates the "+DefaultNamespace+" CLI",
+				Description:      "updates the "+getDefaultNamespace()+" CLI",
 				DisableAnalytics: true,
 				Args:             []Arg{{Name: "channel", Optional: true}},
 				Run: func(ctx *Context) {
