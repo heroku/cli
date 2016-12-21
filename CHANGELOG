@@ -1,3 +1,28 @@
+5.6.7   2016-12-20
+==================
+Update heroku-apps to 1.1.23
+
+5.6.6   2016-12-15
+==================
+Update heroku-apps to 2.1.20
+Update heroku-pg to 2.0.9
+
+5.6.5   2016-12-15
+==================
+Update heroku-pg to 2.0.8
+
+5.6.4   2016-12-15
+==================
+Update heroku-pg to 2.0.7
+
+5.6.3   2016-12-15
+==================
+Update heroku-pg to 2.0.6
+
+5.6.2   2016-12-15
+==================
+Update heroku-pg to 2.0.5
+
 5.6.1   2016-12-15
 ==================
 Lowered cache timeout of installers
