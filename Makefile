@@ -97,12 +97,14 @@ $(WORKSPACE)/bin/$(BINARY_NAME) tmp/%/$(FOLDER_NAME)/bin/$(BINARY_NAME): $(SOURC
 
 %/$(FOLDER_NAME)/bin/$(BINARY_NAME).exe: $(SOURCES) resources/exe/heroku-codesign-cert.pfx
 	GOOS=$(GOOS) GOARCH=$(ARCH) go build $(LDFLAGS) -o $@ -tags $(BUILD_TAGS)
+ifdef HEROKU_WINDOWS_SIGNING_PASS
 	@osslsigncode -pkcs12 resources/exe/heroku-codesign-cert.pfx \
 		-pass '$(HEROKU_WINDOWS_SIGNING_PASS)' \
 		-n 'Heroku CLI' \
 		-i https://toolbelt.heroku.com/ \
 		-in $@ -out $@.signed
 	mv $@.signed $@
+endif
 
 ALIAS_SOURCES := $(shell echo alias/*.go)
 $(WORKSPACE)/bin/$(ALIAS_NAME) tmp/%/$(FOLDER_NAME)/bin/$(ALIAS_NAME):
@@ -110,15 +112,19 @@ $(WORKSPACE)/bin/$(ALIAS_NAME) tmp/%/$(FOLDER_NAME)/bin/$(ALIAS_NAME):
 
 %/$(FOLDER_NAME)/bin/$(ALIAS_NAME).exe: $(SOURCES) resources/exe/heroku-codesign-cert.pfx
 	GOOS=$(GOOS) GOARCH=$(ARCH) go build $(LDFLAGS) -o $@ -tags $(BUILD_TAGS) $(ALIAS_SOURCES)
+ifdef HEROKU_WINDOWS_SIGNING_PASS
 	@osslsigncode -pkcs12 resources/exe/heroku-codesign-cert.pfx \
 		-pass '$(HEROKU_WINDOWS_SIGNING_PASS)' \
 		-n 'Heroku CLI' \
 		-i https://toolbelt.heroku.com/ \
 		-in $@ -out $@.signed
 	mv $@.signed $@
+endif
 
 resources/exe/heroku-codesign-cert.pfx:
+ifdef HEROKU_WINDOWS_SIGNING_PASS
 	@gpg --yes --passphrase '$(HEROKU_WINDOWS_SIGNING_PASS)' -o resources/exe/heroku-codesign-cert.pfx -d resources/exe/heroku-codesign-cert.pfx.gpg
+endif
 
 $(DIST_DIR)/$(VERSION)/heroku-v$(VERSION)-%.tar.xz: tmp/%
 	@if [ -z "$(CHANNEL)" ]; then echo "no channel" && exit 1; fi
@@ -199,11 +205,13 @@ $(DIST_DIR)/$(VERSION)/heroku-windows-%.exe: tmp/windows-% $(CACHE_DIR)/git/Git-
 		sed -e "s/InstallDir .*/InstallDir \"\$$PROGRAMFILES$(if $(filter amd64,$*),64,)\\\Heroku\"/" \
 		> tmp/windows-$*-installer/$(FOLDER_NAME)/heroku.nsi
 	makensis tmp/windows-$*-installer/$(FOLDER_NAME)/heroku.nsi > /dev/null
+ifdef HEROKU_WINDOWS_SIGNING_PASS
 	@osslsigncode -pkcs12 resources/exe/heroku-codesign-cert.pfx \
 		-pass '$(HEROKU_WINDOWS_SIGNING_PASS)' \
 		-n 'Heroku CLI' \
 		-i https://toolbelt.heroku.com/ \
 		-in tmp/windows-$*-installer/$(FOLDER_NAME)/installer.exe -out $@
+endif
 
 $(DIST_DIR)/$(CHANNEL)/$(VERSION)/heroku-osx.pkg: tmp/darwin-amd64
 	@mkdir -p $(@D)
