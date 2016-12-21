@@ -217,6 +217,7 @@ func loadNewCLI() {
 	if !os.SameFile(current, expected) {
 		bin := expectedBinPath()
 		Debugf("Executing %s\n", bin)
+		swallowSigint = true
 		cmd := exec.Command(bin, Args[1:]...)
 		cmd.Stdin = os.Stdin
 		cmd.Stdout = os.Stdout
