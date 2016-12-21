@@ -1,3 +1,7 @@
+5.6.8   2016-12-21
+==================
+Fix sigints on autoupdated client
+
 5.6.7   2016-12-20
 ==================
 Update heroku-apps to 1.1.23
