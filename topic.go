@@ -115,6 +115,12 @@ func (topics Topics) NamespaceAndTopicDescriptions() map[string]string {
 			to[topic.Namespace.Name] = topic.Namespace.Description
 		}
 	}
+	// Check for namespaces to be loaded
+	for _, namespace := range AllNamespaces() {
+		if desc, ok := to[namespace.Name]; ok || desc == "" {
+			to[namespace.Name] = namespace.Description
+		}
+	}
 	return to
 }
 

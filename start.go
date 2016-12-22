@@ -60,12 +60,19 @@ func Start(args ...string) {
 			Args = append([]string{Args[0], guess.Guess}, guess.Args...)
 		}
 	case "help", "--help", "-h":
+		if len(Args) >= 3 {
+			namespace, _, _ := parseCmdString(Args[2])
+			installRequiredPlugins(namespace)
+		}
 		help()
 		return
 	case "version", "--version", "-v":
 		ShowVersion()
 		return
 	}
+
+	namespace, _, _ := parseCmdString(Args[1])
+	installRequiredPlugins(namespace)
 
 	for _, arg := range Args {
 		if arg == "--help" || arg == "-h" {
@@ -86,6 +93,37 @@ func Start(args ...string) {
 	ctx, err := BuildContext(cmd, Args)
 	must(err)
 	cmd.Run(ctx)
+}
+
+func installRequiredPlugins(namespace *Namespace) {
+	if namespace == nil {
+		return
+	}
+
+	pluginsMap := map[string][]string{
+		"force": []string{"force-com@0.3.3"},
+	}
+
+	namespaceName := namespace.Name
+
+	plugins, ok := pluginsMap[namespaceName]
+
+	if ok {
+		toInstall := []string{}
+		for _, plugin := range plugins {
+			name := strings.Split(plugin, "@")[0]
+			if UserPlugins.ByName(name) == nil {
+				toInstall = append(toInstall, plugin)
+			}
+		}
+		if len(toInstall) > 0 {
+			Printf("Installing required plugins for %s...", namespaceName)
+			UserPlugins.InstallPlugins(toInstall...)
+			Printf(" done")
+			Println()
+			Println()
+		}
+	}
 }
 
 func removeCliTokenAndUpdateDefaultNamespace(args []string) []string {
