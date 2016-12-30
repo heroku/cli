@@ -54,6 +54,41 @@ describe('apps:errors', () => {
       .then(() => heroku.done())
   })
 
+  it('traps bad request', () => {
+    let heroku = nock('https://api.heroku.com:443')
+      .get('/apps/myapp/formation')
+      .reply(200, formation)
+    let metrics = nock('https://api.metrics.herokai.com:443')
+      .get(`/apps/myapp/router-metrics/errors?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h&process_type=web`)
+      .reply(200, {data: {}})
+      .get(`/apps/myapp/formation/node/metrics/errors?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h`)
+      .reply(200, {data: {}})
+      .get(`/apps/myapp/formation/web/metrics/errors?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h`)
+      .reply(400, {'id': 'bad_request', 'message': 'invalid process_type provided (valid examples: web, worker, etc); '})
+
+    return cmd.run({app: 'myapp', flags: {json: false}})
+      .then(() => expect(cli.stdout, 'to be', `No errors on myapp in the last 24 hours
+`))
+      .then(() => expect(cli.stderr, 'to be empty'))
+      .then(() => metrics.done())
+      .then(() => heroku.done())
+  })
+
+  it('propagates other bad request', () => {
+    nock('https://api.heroku.com:443')
+      .get('/apps/myapp/formation')
+      .reply(200, formation)
+    nock('https://api.metrics.herokai.com:443')
+      .get(`/apps/myapp/router-metrics/errors?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h&process_type=web`)
+      .reply(200, {data: {}})
+      .get(`/apps/myapp/formation/node/metrics/errors?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h`)
+      .reply(200, {data: {}})
+      .get(`/apps/myapp/formation/web/metrics/errors?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h`)
+      .reply(400, {'id': 'bad_request', 'message': 'ack!'})
+
+    return expect(cmd.run({app: 'myapp', flags: {json: false}}), 'to be rejected')
+  })
+
   it('shows errors', () => {
     let heroku = nock('https://api.heroku.com:443')
       .get('/apps/myapp/formation')
