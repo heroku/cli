@@ -1,3 +1,7 @@
+5.6.10  2016-12-30
+==================
+Remove govet from gometalinters
+
 5.6.9   2016-12-30
 ==================
 update heroku-apps to 2.1.21
