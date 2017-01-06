@@ -26,6 +26,8 @@ Section "Heroku CLI ${VERSION}"
   WriteUninstaller "$INSTDIR\Uninstall.exe"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Heroku" \
                    "DisplayName" "Heroku CLI"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Heroku" \
+                   "UninstallString" "$\"$INSTDIR\uninstall.exe$\""
 SectionEnd
 
 Section "Set PATH to Heroku CLI"
