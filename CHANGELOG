@@ -1,3 +1,10 @@
+5.6.11  2017-01-06
+==================
+Update heroku-redis to 1.2.8
+Update heroku-pg to 2.0.11
+Update heroku-cli-util to 1.2.3
+Show --app and --flag in plugin context
+
 5.6.10  2016-12-30
 ==================
 Remove govet from gometalinters
