@@ -124,6 +124,13 @@ func parseVarArgs(command *Command, args []string) (result []string, flags map[s
 				}
 				flag, val, err = ParseFlag(args[i-1]+"="+args[i], possibleFlags)
 			}
+			if flag != nil {
+				if flag.HasValue {
+					flags[flag.Name] = val
+				} else {
+					flags[flag.Name] = true
+				}
+			}
 			switch {
 			case err != nil:
 				ExitWithMessage(err.Error())
@@ -138,10 +145,6 @@ func parseVarArgs(command *Command, args []string) (result []string, flags map[s
 				if err != nil {
 					ExitWithMessage(err.Error())
 				}
-			case flag.HasValue:
-				flags[flag.Name] = val
-			default:
-				flags[flag.Name] = true
 			}
 		default:
 			result = append(result, args[i])
