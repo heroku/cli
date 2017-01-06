@@ -70,8 +70,40 @@ function * getRedisAddon (context, heroku, addonsList) {
   return addons[0]
 }
 
+function * info (context, heroku) {
+  let addons = yield heroku.get(`/apps/${context.app}/addons`)
+  // filter out non-redis addons
+  addons = make_addons_filter(context.args.database)(addons)
+  // get info for each db
+  let databases = yield addons.map(function * (addon) {
+    return yield {
+      addon: addon,
+      redis: request(context, `/redis/v0/databases/${addon.name}`).catch(function (err) {
+        if (err.statusCode !== 404) {
+          throw (err)
+        }
+        return null
+      })
+    }
+  })
+
+  // print out the info of the addon and redis db info
+  for (let db of databases) {
+    if (db.redis === null) {
+      continue
+    }
+
+    cli.styledHeader(`${db.addon.name} (${db.addon.config_vars.join(', ')})`)
+    cli.styledHash(db.redis.info.reduce(function (memo, row) {
+      memo[row.name] = row.values
+      return memo
+    }, {}), db.redis.info.map(function (row) { return row.name }))
+  }
+}
+
 module.exports = {
   request: request,
   make_addons_filter: make_addons_filter,
-  getRedisAddon: getRedisAddon
+  getRedisAddon: getRedisAddon,
+  info: info
 }

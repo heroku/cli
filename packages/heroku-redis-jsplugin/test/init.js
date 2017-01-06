@@ -9,5 +9,8 @@ let chaiAsPromised = require('chai-as-promised')
 
 chai.use(chaiAsPromised)
 
+process.stdout.columns = 80
+process.stderr.columns = 80
+
 let nock = require('nock')
 nock.disableNetConnect()

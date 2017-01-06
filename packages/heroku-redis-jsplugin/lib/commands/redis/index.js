@@ -6,7 +6,6 @@ let cli = require('heroku-cli-util')
 
 module.exports = {
   topic: 'redis',
-  command: 'info',
   needsApp: true,
   needsAuth: true,
   args: [{name: 'database', optional: true}],
