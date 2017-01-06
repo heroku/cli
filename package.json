@@ -10,9 +10,9 @@
     "heroku-git": "2.5.8",
     "heroku-local": "5.1.5",
     "heroku-orgs": "1.5.1",
-    "heroku-pg": "2.0.9",
+    "heroku-pg": "2.0.11",
     "heroku-pipelines": "1.1.7",
-    "heroku-redis": "1.2.7",
+    "heroku-redis": "1.2.8",
     "heroku-run": "3.3.4",
     "heroku-spaces": "2.5.0",
     "heroku-status": "3.0.2"
