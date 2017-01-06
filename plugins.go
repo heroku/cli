@@ -23,8 +23,7 @@ func init() {
 		Commands: Commands{
 			{
 				Topic:            "plugins",
-				Hidden:           true,
-				Description:      "Lists installed plugins",
+				Description:      "lists installed plugins",
 				DisableAnalytics: true,
 				Flags: []Flag{
 					{Name: "core", Description: "show core plugins", Hidden: true},
@@ -38,9 +37,8 @@ Example:
 			{
 				Topic:        "plugins",
 				Command:      "install",
-				Hidden:       true,
 				VariableArgs: true,
-				Description:  "Installs a plugin into the CLI",
+				Description:  "installs a plugin",
 				Help: `Install a Heroku plugin
 
   Example:
@@ -51,7 +49,7 @@ Example:
 			{
 				Topic:       "plugins",
 				Command:     "link",
-				Description: "Links a local plugin into CLI",
+				Description: "link a local plugin for development",
 				Args:        []Arg{{Name: "path", Optional: true}},
 				Help: `Links a local plugin into CLI.
 	This is useful when developing plugins locally.
@@ -66,9 +64,8 @@ Example:
 			{
 				Topic:       "plugins",
 				Command:     "uninstall",
-				Hidden:      true,
 				Args:        []Arg{{Name: "name"}},
-				Description: "Uninstalls a plugin from the CLI",
+				Description: "uninstalls a plugin",
 				Help: `Uninstalls a Heroku plugin
 
   Example:
