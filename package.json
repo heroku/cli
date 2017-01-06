@@ -5,7 +5,7 @@
   "dependencies": {
     "heroku-apps": "2.1.21",
     "heroku-certs": "1.1.23",
-    "heroku-cli-addons": "1.2.2",
+    "heroku-cli-addons": "1.2.3",
     "heroku-fork": "4.1.11",
     "heroku-git": "2.5.8",
     "heroku-local": "5.1.5",
