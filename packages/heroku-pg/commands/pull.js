@@ -188,10 +188,10 @@ TARGET will be created locally if it's a database name or remotely if it's a ful
 Examples:
 
   # pull Heroku DB named postgresql-swimmingly-100 into local DB mylocaldb
-  $ heroku pg:push postgresql-swimmingly-100 mylocaldb
+  $ heroku pg:pull postgresql-swimmingly-100 mylocaldb --app sushi
 
   # pull Heroku DB named postgresql-swimmingly-100 into remote DB at postgres://myhost/mydb
-  $ heroku pg:push postgresql-swimmingly-100 postgres://myhost/mydb
+  $ heroku pg:pull postgresql-swimmingly-100 postgres://myhost/mydb --app sushi
 `,
     run: cli.command({preauth: true}, co.wrap(pull))
   }, cmd)
