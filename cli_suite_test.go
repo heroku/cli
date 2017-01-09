@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 
 	cli "github.com/heroku/cli"
+
 	"github.com/lunixbochs/vtclean"
 
 	. "github.com/onsi/ginkgo"
@@ -14,6 +15,11 @@ import (
 
 	"testing"
 )
+
+// Copy from start.go to be used in the test namespace
+const CLI_NAME = "Heroku"
+const BinaryName = "heroku"
+const FolderName = "heroku"
 
 func TestCLI(t *testing.T) {
 	os.Setenv("TESTING", "1")
@@ -45,6 +51,8 @@ var _ = AfterSuite(func() {
 })
 
 var _ = BeforeEach(func() {
+	cli.BinaryName = BinaryName
+	cli.FolderName = FolderName
 	cli.Stdout = new(bytes.Buffer)
 	cli.Stderr = new(bytes.Buffer)
 })

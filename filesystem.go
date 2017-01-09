@@ -23,13 +23,13 @@ var BinPath = binPath()
 // AppDir is the subdirectory the binary is running from
 var AppDir = appDir()
 
-// ConfigHome is XDG_CONFIG_HOME/heroku or equivalent
+// ConfigHome is XDG_CONFIG_HOME/FOLDER_NAME or equivalent
 var ConfigHome = configHome()
 
-// DataHome is XDG_CONFIG_HOME/heroku or equivalent
+// DataHome is XDG_CONFIG_HOME/FOLDER_NAME or equivalent
 var DataHome = dataHome()
 
-// CacheHome is XDG_CACHE_HOME/heroku or equivalent
+// CacheHome is XDG_CACHE_HOME/FOLDER_NAME or equivalent
 var CacheHome = cacheHome()
 
 // ErrLogPath is the location of the error log
@@ -62,7 +62,7 @@ func configHome() string {
 	if d == "" {
 		d = filepath.Join(HomeDir, ".config")
 	}
-	d = filepath.Join(d, "heroku")
+	d = filepath.Join(d, getFolderName())
 	must(mkdirp(d))
 	return d
 }
@@ -76,7 +76,7 @@ func dataHome() string {
 			d = filepath.Join(HomeDir, ".local", "share")
 		}
 	}
-	d = filepath.Join(d, "heroku")
+	d = filepath.Join(d, getFolderName())
 	must(mkdirp(d))
 	return d
 }
@@ -90,7 +90,7 @@ func cacheHome() string {
 			d = filepath.Join(HomeDir, ".cache")
 		}
 	}
-	d = filepath.Join(d, "heroku")
+	d = filepath.Join(d, getFolderName())
 	must(mkdirp(d))
 	return d
 }
@@ -122,7 +122,7 @@ func tmpDir(base string) string {
 func mkdirp(path string) error {
 	err := os.MkdirAll(path, 0755)
 	if os.IsPermission(err) && runtime.GOOS != "windows" {
-		fmt.Fprintf(os.Stderr, "Error creating %s which is needed for the Heroku CLI.\nRun `sudo mkdir -p %s && sudo chown $USER %s` to create this directory.\n", path, path, path)
+		fmt.Fprintf(os.Stderr, "Error creating %s which is needed for the SFDX CLI.\nRun `sudo mkdir -p %s && sudo chown $USER %s` to create this directory.\n", path, path, path)
 		os.Exit(1)
 	}
 	return err
