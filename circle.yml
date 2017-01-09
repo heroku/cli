@@ -45,6 +45,12 @@ test:
   post:
     - bash <(curl -s https://codecov.io/bash)
 deployment:
+  sfdx:
+    branch: sfdx
+    owner: heroku
+    commands:
+      - gpg --passphrase $HEROKU_WINDOWS_SIGNING_PASS -d resources/deb/key.gpg | gpg --import
+      - CHANNEL=dev make release -j $JOBZ
   dev:
     branch: dev
     owner: heroku
