@@ -215,7 +215,7 @@ func (p *Plugins) Topics() (topics Topics) {
 	return
 }
 
-// Topics gets all the plugin's topics
+// Namespaces gets all the plugin's namespaces
 func (p *Plugins) Namespaces() (namespaces Namespaces) {
 	for _, plugin := range p.Plugins() {
 		if plugin.Namespace != nil {

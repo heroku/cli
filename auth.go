@@ -150,9 +150,12 @@ func init() {
 			},
 		},
 		{
-			Name:      "twofactor",
-			Namespace: &namespace,
-			Hidden:    true,
+			Name: "twofactor",
+			Namespace: &Namespace{
+				Name:        "heroku",
+				Description: "list all heroku topics",
+			},
+			Hidden: true,
 			Commands: Commands{
 				{
 					NeedsAuth:   true,

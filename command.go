@@ -204,7 +204,7 @@ type Commands []*Command
 func (commands Commands) Find(cmd string) *Command {
 	namespace, topic, command := parseCmdString(cmd)
 
-	namespaceCmds := commands
+	var namespaceCmds Commands
 
 	// No group commands, so try to find as a topic on commands with no or default namespace
 	if namespace == nil {

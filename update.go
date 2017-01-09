@@ -17,12 +17,12 @@ import (
 func init() {
 	CLITopics = append(CLITopics, &Topic{
 		Name:        "update",
-		Description: "update "+getExecutableName()+"-cli",
+		Description: "update " + getExecutableName() + "-cli",
 		Commands: Commands{
 			{
 				Topic:            "update",
 				Hidden:           true,
-				Description:      "updates the "+getDefaultNamespace()+" CLI",
+				Description:      "updates the " + getDefaultNamespace() + " CLI",
 				DisableAnalytics: true,
 				Args:             []Arg{{Name: "channel", Optional: true}},
 				Run: func(ctx *Context) {

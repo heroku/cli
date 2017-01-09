@@ -7,13 +7,13 @@ import (
 	"strings"
 )
 
-const GO_FLAG_INIT_STATE = "unset"
+const GoFlagInitState = "unset"
 
 // Go flag for the name of this binary on the filesystem
-var BinaryName = GO_FLAG_INIT_STATE
+var BinaryName = GoFlagInitState
 
 // Shared token between this binary and sfdx. This enables us to know if sfdx was invoked by this process.
-var CliToken = GO_FLAG_INIT_STATE
+var CliToken = GoFlagInitState
 
 func main() {
 	var path string

@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-// Topic represents a CLI topic.
+// Namespace represents a CLI namespace.
 // For example, in the command `heroku apps:create` the topic would be `apps`.
 type Namespace struct {
 	Name        string `json:"name"`
@@ -19,7 +19,7 @@ func (n *Namespace) String() string {
 // Namespaces are a list of namespaces
 type Namespaces []*Namespace
 
-// AllTopics gets all go/core/user topics
+// AllNamespaces gets all go/core/user namespaces
 func AllNamespaces() Namespaces {
 	namespaces := CLITopics.Namespaces()
 	namespaces = namespaces.Concat(CorePlugins.Namespaces())
