@@ -24,21 +24,22 @@ var CLITopics Topics
 // Args is os.Args
 var Args []string
 
-const GO_FLAG_INIT_STATE = "unset"
+// GoFlagInitState is the default value for unset flags
+const GoFlagInitState = "unset"
 
-// Go flag
-var CliToken = GO_FLAG_INIT_STATE
+// CliToken is the token that tells us this is called from a different binary
+var CliToken = GoFlagInitState
 
-// Go flag to capture the alias name
-var AliasName = GO_FLAG_INIT_STATE
+// AliasName is the alias of the different binary
+var AliasName = GoFlagInitState
 
-// Go flag to capture the binary name
-var BinaryName = GO_FLAG_INIT_STATE
+// BinaryName is the binary name
+var BinaryName = GoFlagInitState
 
-// Go flag to capture the folder name
-var FolderName = GO_FLAG_INIT_STATE
+// FolderName is the folder to look for plugins
+var FolderName = GoFlagInitState
 
-// The default namespace for this instance of the cli. Defaults to the binary name for the alias.
+// DefaultNamespace is The default namespace for this instance of the cli. Defaults to the binary name for the alias.
 var DefaultNamespace = BinaryName
 
 // Start the CLI
@@ -101,7 +102,7 @@ func installRequiredPlugins(namespace *Namespace) {
 	}
 
 	pluginsMap := map[string][]string{
-		"force": []string{"force-com"},
+		"force": {"force-com"},
 	}
 
 	namespaceName := namespace.Name
@@ -149,7 +150,7 @@ func getExecutableName() string {
 	defaultNs := getDefaultNamespace()
 
 	// This should be set on initialzation, but return the binary name if it is not.
-	if defaultNs == GO_FLAG_INIT_STATE {
+	if defaultNs == GoFlagInitState {
 		return BinaryName
 	}
 
