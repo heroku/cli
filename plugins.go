@@ -30,7 +30,7 @@ func init() {
 				},
 				Help: `
 Example:
-  $ heroku plugins`,
+  $ ` + getExecutableName() + ` plugins`,
 
 				Run: pluginsList,
 			},
@@ -38,11 +38,12 @@ Example:
 				Topic:        "plugins",
 				Command:      "install",
 				VariableArgs: true,
-				Description:  "installs a plugin",
-				Help: `Install a Heroku plugin
+
+				Description: "installs a plugin",
+				Help: `Install a ` + getDefaultNamespace() + ` plugin
 
   Example:
-  $ heroku plugins:install heroku-production-status`,
+  $ ` + getExecutableName() + ` plugins:install heroku-production-status`,
 
 				Run: pluginsInstall,
 			},
@@ -57,7 +58,7 @@ Example:
 	and parses the plugin.
 
   Example:
-	$ heroku plugins:link .`,
+	$ ` + getExecutableName() + ` plugins:link .`,
 
 				Run: pluginsLink,
 			},
@@ -66,10 +67,10 @@ Example:
 				Command:     "uninstall",
 				Args:        []Arg{{Name: "name"}},
 				Description: "uninstalls a plugin",
-				Help: `Uninstalls a Heroku plugin
+				Help: `Uninstalls a ` + getDefaultNamespace() + ` plugin
 
   Example:
-  $ heroku plugins:uninstall heroku-production-status`,
+  $ ` + getExecutableName() + ` plugins:uninstall heroku-production-status`,
 
 				Run: pluginsUninstall,
 			},
@@ -103,7 +104,7 @@ func pluginsList(ctx *Context) {
 func pluginsInstall(ctx *Context) {
 	plugins := ctx.Args.([]string)
 	if len(plugins) == 0 {
-		ExitWithMessage("Must specify a plugin name.\nUSAGE: heroku plugins:install heroku-debug")
+		ExitWithMessage("Must specify a plugin name.\nUSAGE: " + getExecutableName() + " plugins:install heroku-debug")
 	}
 	toinstall := make([]string, 0, len(plugins))
 	core := CorePlugins.PluginNames()
@@ -182,13 +183,14 @@ var UserPlugins = &Plugins{Path: filepath.Join(DataHome, "plugins")}
 
 // Plugin represents a javascript plugin
 type Plugin struct {
-	Name      string    `json:"name"`
-	Tag       string    `json:"tag"`
-	Version   string    `json:"version"`
-	Topics    Topics    `json:"topics"`
-	Topic     *Topic    `json:"topic"`
-	Commands  Commands  `json:"commands"`
-	UpdatedAt time.Time `json:"updated_at"`
+	Name      string     `json:"name"`
+	Tag       string     `json:"tag"`
+	Version   string     `json:"version"`
+	Namespace *Namespace `json:"namespace"`
+	Topics    Topics     `json:"topics"`
+	Topic     *Topic     `json:"topic"`
+	Commands  Commands   `json:"commands"`
+	UpdatedAt time.Time  `json:"updated_at"`
 }
 
 // Commands lists all the commands of the plugins
@@ -209,6 +211,16 @@ func (p *Plugins) Topics() (topics Topics) {
 			topics = append(topics, plugin.Topic)
 		}
 		topics = append(topics, plugin.Topics...)
+	}
+	return
+}
+
+// Topics gets all the plugin's topics
+func (p *Plugins) Namespaces() (namespaces Namespaces) {
+	for _, plugin := range p.Plugins() {
+		if plugin.Namespace != nil {
+			namespaces = append(namespaces, plugin.Namespace)
+		}
 	}
 	return
 }
@@ -416,7 +428,7 @@ func (p *Plugins) Update() {
 		if p.isPluginSymlinked(plugin.Name) {
 			return
 		}
-		Errf("\rheroku-cli: Updating %s...", plugin.Name)
+		Errf("\r%s-cli: Updating %s...", getExecutableName(), plugin.Name)
 		p.lockPlugin(plugin.Name)
 		defer p.unlockPlugin(plugin.Name)
 		tag := plugin.Tag
@@ -431,12 +443,12 @@ func (p *Plugins) Update() {
 		if tags[tag] == plugin.Version {
 			return
 		}
-		Errf("\rheroku-cli: Updating %s@%s to %s...", plugin.Name, plugin.Tag, tags[tag])
+		Errf("\r%s-cli: Updating %s@%s to %s...", getExecutableName(), plugin.Name, plugin.Tag, tags[tag])
 		WarnIfError(p.installPackages(plugin.Name + "@" + tag))
 		_, err = p.ParsePlugin(plugin.Name, tag)
 		WarnIfError(err)
 	}
-	action("heroku-cli: Updating plugins", "done", func() {
+	action(getExecutableName()+"-cli: Updating plugins", "done", func() {
 		for _, plugin := range p.Plugins() {
 			update(plugin)
 		}
@@ -538,7 +550,7 @@ func (p *Plugins) cachePath() string {
 
 // RubyPlugins lists all the ruby plugins
 func RubyPlugins() []string {
-	dirs, err := ioutil.ReadDir(filepath.Join(HomeDir, ".heroku", "plugins"))
+	dirs, err := ioutil.ReadDir(filepath.Join(HomeDir, "."+getFolderName(), "plugins"))
 	if err != nil {
 		return []string{}
 	}

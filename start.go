@@ -24,9 +24,26 @@ var CLITopics Topics
 // Args is os.Args
 var Args []string
 
+const GO_FLAG_INIT_STATE = "unset"
+
+// Go flag
+var CliToken = GO_FLAG_INIT_STATE
+
+// Go flag to capture the alias name
+var AliasName = GO_FLAG_INIT_STATE
+
+// Go flag to capture the binary name
+var BinaryName = GO_FLAG_INIT_STATE
+
+// Go flag to capture the folder name
+var FolderName = GO_FLAG_INIT_STATE
+
+// The default namespace for this instance of the cli. Defaults to the binary name for the alias.
+var DefaultNamespace = BinaryName
+
 // Start the CLI
 func Start(args ...string) {
-	Args = args
+	Args = removeCliTokenAndUpdateDefaultNamespace(args)
 	loadNewCLI()
 
 	ShowDebugInfo()
@@ -43,12 +60,19 @@ func Start(args ...string) {
 			Args = append([]string{Args[0], guess.Guess}, guess.Args...)
 		}
 	case "help", "--help", "-h":
+		if len(Args) >= 3 {
+			namespace, _, _ := parseCmdString(Args[2])
+			installRequiredPlugins(namespace)
+		}
 		help()
 		return
 	case "version", "--version", "-v":
 		ShowVersion()
 		return
 	}
+
+	namespace, _, _ := parseCmdString(Args[1])
+	installRequiredPlugins(namespace)
 
 	for _, arg := range Args {
 		if arg == "--help" || arg == "-h" {
@@ -58,6 +82,7 @@ func Start(args ...string) {
 	}
 
 	cmd := AllCommands().Find(Args[1])
+
 	if cmd == nil {
 		helpInvalidCommand()
 		return
@@ -68,6 +93,75 @@ func Start(args ...string) {
 	ctx, err := BuildContext(cmd, Args)
 	must(err)
 	cmd.Run(ctx)
+}
+
+func installRequiredPlugins(namespace *Namespace) {
+	if namespace == nil {
+		return
+	}
+
+	pluginsMap := map[string][]string{
+		"force": []string{"force-com"},
+	}
+
+	namespaceName := namespace.Name
+
+	plugins, ok := pluginsMap[namespaceName]
+
+	if ok {
+		toInstall := []string{}
+		for _, plugin := range plugins {
+			name := strings.Split(plugin, "@")[0]
+			if UserPlugins.ByName(name) == nil {
+				toInstall = append(toInstall, plugin)
+			}
+		}
+		if len(toInstall) > 0 {
+			Printf("Installing required plugins for %s...", namespaceName)
+			UserPlugins.InstallPlugins(toInstall...)
+			Printf(" done")
+			Println()
+			Println()
+		}
+	}
+}
+
+func removeCliTokenAndUpdateDefaultNamespace(args []string) []string {
+	// Golang flags are set after variable initialzation, so Namespace
+	// is still "unset". Namespace should always be defaulted to the BinaryName unless
+	// the CliToken is specified to set the Namespace to the AliasName.
+	DefaultNamespace = BinaryName
+
+	newArray := []string{}
+
+	for i := 0; i < len(args); i++ {
+		if args[i] == CliToken {
+			DefaultNamespace = AliasName
+		} else {
+			newArray = append(newArray, args[i])
+		}
+	}
+	return newArray
+}
+
+// The executable name is always the namespace
+func getExecutableName() string {
+	defaultNs := getDefaultNamespace()
+
+	// This should be set on initialzation, but return the binary name if it is not.
+	if defaultNs == GO_FLAG_INIT_STATE {
+		return BinaryName
+	}
+
+	return defaultNs
+}
+
+func getFolderName() string {
+	return FolderName
+}
+
+func getDefaultNamespace() string {
+	return DefaultNamespace
 }
 
 var crashing = false

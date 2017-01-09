@@ -12,11 +12,11 @@ import (
 
 var _ = Describe("version", func() {
 	BeforeEach(func() {
-		cli.Start("heroku", "version")
+		cli.Start(BinaryName, "version")
 	})
 
 	It("shows the version", func() {
-		version := fmt.Sprintf("heroku-cli/%s (%s-%s) %s ?\n", cli.Version, runtime.GOOS, runtime.GOARCH, runtime.Version())
+		version := fmt.Sprintf(BinaryName+"-cli/%s (%s-%s) %s ?\n", cli.Version, runtime.GOOS, runtime.GOARCH, runtime.Version())
 		Expect(stdout()).To(Equal(version))
 	})
 })

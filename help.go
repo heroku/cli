@@ -3,21 +3,25 @@ package main
 import (
 	"fmt"
 	"path/filepath"
+	"sort"
 	"strconv"
 	"strings"
 
 	"github.com/texttheater/golang-levenshtein/levenshtein"
 )
 
+// HELP is "help"
+const HELP = "help"
+
 func init() {
 	CLITopics = append(CLITopics, &Topic{
-		Name:   "help",
+		Name:   HELP,
 		Hidden: true,
 		Commands: Commands{
 			&Command{
 				Hidden: true,
 				Run: func(ctx *Context) {
-					Args = []string{"heroku", "help"}
+					Args = []string{getExecutableName(), HELP}
 					help()
 				},
 			},
@@ -25,8 +29,38 @@ func init() {
 	})
 }
 
-// HELP is "help"
-const HELP = "help"
+func parseCmdString(cmd string) (*Namespace, *Topic, string) {
+	if cmd == "" {
+		return nil, nil, ""
+	}
+
+	var namespace *Namespace
+	var topic *Topic
+	var command string = ""
+	var parts []string
+
+	if AllNamespaces().Has(cmd) {
+		// Return namespace, topic, command
+		parts = strings.SplitN(cmd, ":", 3)
+		namespace = AllNamespaces().ByName(parts[0])
+
+		if len(parts) > 1 {
+			topic = AllTopics().Namespace(namespace.Name).ByName(parts[1])
+		}
+		if len(parts) > 2 {
+			command = parts[2]
+		}
+	} else {
+		// Only return topic and command
+		parts = strings.SplitN(cmd, ":", 2)
+		topic = AllTopics().Namespace("").ByName(parts[0])
+
+		if len(parts) > 1 {
+			command = parts[1]
+		}
+	}
+	return namespace, topic, command
+}
 
 func help() {
 	cmd := Args[1]
@@ -38,64 +72,103 @@ func help() {
 			cmd = ""
 		}
 	}
-	topic := AllTopics().ByName(strings.SplitN(cmd, ":", 2)[0])
+
+	namespace, topic, _ := parseCmdString(cmd)
 	command := AllCommands().Find(cmd)
+
 	switch {
+	case namespace == nil && topic == nil:
+		helpShowNamespacesAndTopics()
 	case topic == nil:
-		helpShowTopics()
+		helpShowTopics(namespace)
 	case command == nil:
-		helpShowTopic(topic)
+		helpShowTopic(namespace, topic)
 	default:
-		helpShowCommand(topic, command)
+		helpShowCommand(namespace, topic, command)
 	}
 }
 
-func helpShowTopics() {
-	Printf("Usage: heroku COMMAND [--app APP] [command-specific-options]\n\n")
-	Printf("Help topics, type \"heroku help TOPIC\" for more details:\n\n")
-	topics := AllTopics().NonHidden().Sort()
+// Show the overall help if no namespace, topic, or command is given
+func helpShowNamespacesAndTopics() {
+	Printf("Usage: %s COMMAND [command-specific-options]\n\n", getExecutableName())
+	Printf("Help topics, type \"%s help TOPIC\" for more details:\n\n", getExecutableName())
+	groups := AllTopics().NonHidden().NamespaceAndTopicDescriptions()
+
+	longestTopic := 0
+	var keys []string
+	for key := range groups {
+		keys = append(keys, key)
+		if len(key) > longestTopic {
+			longestTopic = len(key)
+		}
+	}
+
+	sort.Strings(keys)
+
+	for _, key := range keys {
+		Printf("  %s %-"+strconv.Itoa(longestTopic+1)+"s# %s\n", getExecutableName(), key, groups[key])
+	}
+	Println()
+	Exit(0)
+}
+
+func helpShowTopics(namespace *Namespace) {
+	Printf("Usage: %s COMMAND [command-specific-options]\n\n", getExecutableName())
+	Printf("Help topics, type \"%s help TOPIC\" for more details:\n\n", getExecutableName())
+
+	topics := AllTopics().NonHidden()
+
+	if namespace != nil {
+		topics = topics.Namespace(namespace.Name)
+	}
+
 	longestTopic := 0
 	for _, topic := range topics {
-		if len(topic.Name) > longestTopic {
-			longestTopic = len(topic.Name)
+		if len(topic.String()) > longestTopic {
+			longestTopic = len(topic.String())
 		}
 	}
 	for _, topic := range topics {
-		Printf("  heroku %-"+strconv.Itoa(longestTopic+1)+"s# %s\n", topic.Name, topic.Description)
+		Printf("  %s %-"+strconv.Itoa(longestTopic+1)+"s# %s\n", getExecutableName(), topic.String(), topic.Description)
 	}
 	Println()
 	Exit(0)
 }
 
-func helpShowTopic(topic *Topic) {
-	Printf("Usage: heroku %s:COMMAND [--app APP] [command-specific-options]\n\n", topic.Name)
-	printTopicCommandsHelp(topic)
+func helpShowTopic(namespace *Namespace, topic *Topic) {
+	Printf("Usage: %s %s:COMMAND [command-specific-options]\n\n", getExecutableName(), topic.String())
+	printTopicCommandsHelp(namespace, topic)
 	Println()
 	Exit(0)
 }
 
-func helpShowCommand(topic *Topic, command *Command) {
-	Printf("Usage: heroku %s\n\n", CommandUsage(command))
+func helpShowCommand(namespace *Namespace, topic *Topic, command *Command) {
+	Printf("Usage: %s %s\n\n", getExecutableName(), CommandUsage(command))
 	Println(command.buildFullHelp())
 	if command.Command == "" {
-		printTopicCommandsHelp(topic)
+		printTopicCommandsHelp(namespace, topic)
 	}
 	Println()
 	Exit(0)
 }
 
-func printTopicCommandsHelp(topic *Topic) {
+func printTopicCommandsHelp(namespace *Namespace, topic *Topic) {
+	commands := AllCommands().NonHidden()
+
+	if namespace != nil {
+		commands = commands.Namespace(namespace.Name)
+	}
 	topicCommands := Commands{}
-	for _, cur := range AllCommands().NonHidden() {
+	for _, cur := range commands {
 		if topic != nil && cur.Topic == topic.Name {
 			topicCommands = append(topicCommands, cur)
 		}
 	}
 	topicCommands.loadUsages()
 	if len(topicCommands) > 0 {
-		Printf("\nCommands for %s, type \"heroku help %s:COMMAND\" for more details:\n\n", topic.Name, topic.Name)
+		Printf("\nCommands for %s, type \"%s help %s:COMMAND\" for more details:\n\n", topic.Name, getExecutableName(), topic.Name)
 		for _, command := range topicCommands.Sort() {
-			Printf(" heroku %-30s # %s\n", command.Usage, command.Description)
+			Printf(" %s %-30s # %s\n", getExecutableName(), command.Usage, command.Description)
 		}
 	}
 }
@@ -106,13 +179,13 @@ func helpInvalidCommand() {
 	currentAnalyticsCommand.Valid = false
 	guess, distance := findClosestCommand(AllCommands(), Args[1])
 	if len(Args[1]) > 2 || distance < 2 {
-		newcmd := strings.TrimSpace(fmt.Sprintf("heroku %s %s", guess, strings.Join(Args[2:], " ")))
+		newcmd := strings.TrimSpace(fmt.Sprintf("%s %s %s", getExecutableName(), guess, strings.Join(Args[2:], " ")))
 		WarnIfError(saveJSON(&Guess{guess.String(), Args[2:]}, guessPath()))
-		closest = fmt.Sprintf("Perhaps you meant %s?\nRun %s to run %s.\n", yellow(guess.String()), cyan("heroku _"), cyan(newcmd))
+		closest = fmt.Sprintf("Perhaps you meant %s?\nRun %s to run %s.\n", yellow(guess.String()), cyan(getExecutableName()+" _"), cyan(newcmd))
 	}
-	ExitWithMessage(`%s is not a heroku command.
+	ExitWithMessage(`%s is not a %s command.
 %sRun %s for a list of available commands.
-`, yellow(Args[1]), closest, cyan("heroku help"))
+`, yellow(Args[1]), getExecutableName(), closest, cyan(getExecutableName()+" help"))
 }
 
 func checkIfKnownTopic(cmd string) {
@@ -123,7 +196,7 @@ func checkIfKnownTopic(cmd string) {
 	topic := strings.Split(cmd, ":")[0]
 	plugin := knownTopics[topic]
 	if plugin != "" {
-		ExitWithMessage("Use %s commands by installing the %s plugin.\n%s", topic, yellow(plugin), cyan("heroku plugins:install "+plugin))
+		ExitWithMessage("Use %s commands by installing the %s plugin.\n%s", topic, yellow(plugin), cyan(getExecutableName()+" plugins:install "+plugin))
 	}
 }
 
@@ -143,7 +216,7 @@ func stringDistance(a, b string) int {
 	return levenshtein.DistanceForStrings([]rune(a), []rune(b), levenshtein.DefaultOptions)
 }
 
-// Guess is used with `heroku _`
+// Guess is used with `getExecutableName() _`
 type Guess struct {
 	Guess string   `json:"guess"`
 	Args  []string `json:"args"`
