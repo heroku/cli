@@ -50,7 +50,7 @@ deployment:
     owner: heroku
     commands:
       - gpg --passphrase $HEROKU_WINDOWS_SIGNING_PASS -d resources/deb/key.gpg | gpg --import
-      - CHANNEL=dev make release -j $JOBZ
+      - CHANNEL=sfdx make release -j $JOBZ
   dev:
     branch: dev
     owner: heroku
