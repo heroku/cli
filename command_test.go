@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"runtime"
 
-	cli "."
+	cli "github.com/heroku/cli"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"

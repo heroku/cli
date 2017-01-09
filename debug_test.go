@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"os"
 
-	cli "."
+	cli "github.com/heroku/cli"
 
 	"github.com/lunixbochs/vtclean"
 	. "github.com/onsi/ginkgo"

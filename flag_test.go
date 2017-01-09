@@ -1,7 +1,7 @@
 package main_test
 
 import (
-	cli "."
+	cli "github.com/heroku/cli"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )

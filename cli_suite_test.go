@@ -5,7 +5,8 @@ import (
 	"os"
 	"path/filepath"
 
-	cli "."
+	cli "github.com/heroku/cli"
+
 	"github.com/lunixbochs/vtclean"
 
 	. "github.com/onsi/ginkgo"

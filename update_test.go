@@ -5,7 +5,7 @@ import (
 	"os/exec"
 	"path/filepath"
 
-	cli "."
+	cli "github.com/heroku/cli"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
