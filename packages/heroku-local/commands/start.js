@@ -35,7 +35,8 @@ Examples:
 
   heroku local
   heroku local web
-  heroku local -f Procfile.test -e .env.test`,
+  heroku local web=2
+  heroku local web=1,worker=2`,
   args: [{name: 'processname', optional: true}],
   flags: [
     {name: 'procfile', char: 'f', hasValue: true, description: 'use a different Procfile'},
