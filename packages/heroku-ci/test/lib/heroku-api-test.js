@@ -26,7 +26,7 @@ describe('heroku-api', function () {
     it('gets the pipeline repository given a pipeline', function* () {
       const pipeline = '123-abc'
       const repo = { repository: { name: 'heroku/heroku' } }
-      const api = nock(`https://kolkrabbi.herokuapp.com`)
+      const api = nock(`https://kolkrabbi.heroku.com`)
         .get(`/pipelines/${pipeline}/repository`)
         .reply(200, repo)
 
@@ -41,7 +41,7 @@ describe('heroku-api', function () {
       const { user, repository } = ['heroku', 'heroku-ci']
       const ref = '123-abc'
       const archiveLink = { archive_link: 'https://example.com' }
-      const api = nock(`https://kolkrabbi.herokuapp.com`)
+      const api = nock(`https://kolkrabbi.heroku.com`)
         .get(`/github/repos/${user}/${repository}/tarball/${ref}`)
         .reply(200, archiveLink)
 

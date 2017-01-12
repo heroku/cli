@@ -1,5 +1,5 @@
 const https = require('https')
-const KOLKRABBI = 'https://kolkrabbi.herokuapp.com'
+const KOLKRABBI = 'https://kolkrabbi.heroku.com'
 const VERSION_HEADER = 'application/vnd.heroku+json; version=3.ci'
 
 function* pipelineCoupling (client, app) {
