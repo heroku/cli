@@ -39,6 +39,12 @@ module.exports = heroku => {
 
     // case for 404 where there are implicit attachments
     if (!matches) {
+      let appConfigMatch = new RegExp('^(.+?)::(.+)').exec(db)
+      if (appConfigMatch) {
+        app = appConfigMatch[1]
+        db = appConfigMatch[2]
+      }
+
       if (!db.endsWith('_URL')) {
         db = db + '_URL'
       }
@@ -64,7 +70,7 @@ module.exports = heroku => {
 
     // case for 422 where there are ambiguous attachments that are equivalent
     if (matches.every((match) => first.addon.id === match.addon.id && first.app.id === match.app.id)) {
-      let config = yield getConfig(heroku, app)
+      let config = yield getConfig(heroku, first.app.name)
 
       if (matches.every((match) => config[pgUtil.getUrl(first.config_vars)] === config[pgUtil.getUrl(match.config_vars)])) {
         return first
@@ -84,7 +90,7 @@ module.exports = heroku => {
     // would inline this as well but in some cases attachment pulls down config
     // as well and we would request twice at the same time but I did not want
     // to push this down into attachment because we do not always need config
-    let config = yield getConfig(heroku, app)
+    let config = yield getConfig(heroku, attached.app.name)
     return pgUtil.getConnectionDetails(attached, config)
   }
 

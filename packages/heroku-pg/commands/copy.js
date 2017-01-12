@@ -8,7 +8,7 @@ function * run (context, heroku) {
   const util = require('../lib/util')
   const host = require('../lib/host')
   const pgbackups = require('../lib/pgbackups')(context, heroku)
-  const addons = require('heroku-cli-addons').resolve
+  const fetcher = require('../lib/fetcher')(heroku)
   const {app, args, flags} = context
   const interval = Math.max(3, parseInt(flags['wait-interval'])) || 3
 
@@ -23,7 +23,7 @@ function * run (context, heroku) {
         confirm: name || uri.host
       }
     } else {
-      let attachment = yield addons.attachment(heroku, app, db)
+      let attachment = yield fetcher.attachment(app, db)
       if (!attachment) throw new Error(`${db} not found on ${cli.color.app(app)}`)
       let [addon, config] = yield [
         heroku.get(`/addons/${attachment.addon.name}`),

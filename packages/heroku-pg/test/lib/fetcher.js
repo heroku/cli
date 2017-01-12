@@ -57,6 +57,19 @@ describe('fetcher', () => {
       .then(db => expect(db.user, 'to equal', 'pguser'))
     })
 
+    it('uses attachment db config', () => {
+      let addonApp = {name: 'addon-app'}
+      let attachApp = {name: 'attach-myapp'}
+      stub.withArgs(sinon.match.any, 'myapp', 'attach-myapp::DATABASE_URL', {addon_service: 'heroku-postgresql'}).returns(Promise.resolve(
+        {addon: {id: 100, name: 'postgres-1', app: addonApp}, app: attachApp, config_vars: ['DATABASE_URL']}
+      ))
+      api.get('/apps/attach-myapp/config-vars').reply(200, {
+        'DATABASE_URL': 'postgres://pguser:pgpass@pghost.com/pgdb'
+      })
+      return fetcher(new Heroku()).database('myapp', 'attach-myapp::DATABASE_URL')
+      .then(db => expect(db.user, 'to equal', 'pguser'))
+    })
+
     it('returns db connection info when multiple but no ambiguity', () => {
       let addonApp = {name: 'addon-app'}
       let app = {name: 'myapp'}
@@ -70,6 +83,27 @@ describe('fetcher', () => {
       }))
 
       api.get('/apps/myapp/config-vars').reply(200, {
+        'FOO_URL': 'postgres://pguser:pgpass@pghost.com/pgdb',
+        'BAR_URL': 'postgres://pguser:pgpass@pghost.com/pgdb'
+      })
+
+      return fetcher(new Heroku()).database('myapp', 'DATABASE_URL')
+      .then(db => expect(db.user, 'to equal', 'pguser'))
+    })
+
+    it('returns db connection for app::config info when multiple but no ambiguity', () => {
+      let addonApp = {name: 'addon-app'}
+      let attachApp = {name: 'attach-app'}
+      stub.withArgs(sinon.match.any, 'myapp', 'DATABASE_URL').returns(Promise.reject({
+        statusCode: 422,
+        body: {'id': 'multiple_matches'},
+        matches: [
+          {addon: {id: 100, name: 'postgres-1', app: addonApp}, app: attachApp, config_vars: ['FOO_URL']},
+          {addon: {id: 100, name: 'postgres-1', app: addonApp}, app: attachApp, config_vars: ['BAR_URL']}
+        ]
+      }))
+
+      api.get('/apps/attach-app/config-vars').reply(200, {
         'FOO_URL': 'postgres://pguser:pgpass@pghost.com/pgdb',
         'BAR_URL': 'postgres://pguser:pgpass@pghost.com/pgdb'
       })
@@ -193,6 +227,42 @@ describe('fetcher', () => {
         api.get('/apps/myapp/addon-attachments').reply(200, attachments)
 
         return fetcher(new Heroku()).database('myapp', 'DATABASE_URL')
+        .then((db) => expect(db, 'to equal', {
+          user: 'pguser',
+          password: 'pgpass',
+          database: 'pgdb',
+          host: 'pghost.com',
+          port: null,
+          attachment: attachments[0],
+          url: url.parse('postgres://pguser:pgpass@pghost.com/pgdb')
+        }))
+      })
+
+      it('returns when attach-app::DATABASE_URL db arg', () => {
+        const err = new Error()
+        err.statusCode = 404
+        err.body = {id: 'not_found'}
+        err.message = 'Not Found'
+
+        stub.withArgs(sinon.match.any, 'myapp', 'attach-app::DATABASE_URL').returns(Promise.reject(err))
+
+        api.get('/apps/attach-app/config-vars').reply(200, {
+          'DATABASE_URL': 'postgres://pguser:pgpass@pghost.com/pgdb',
+          'HEROKU_POSTGRESQL_PINK_URL': 'postgres://pguser:pgpass@pghost.com/pgdb'
+        })
+
+        let plan = {name: 'heroku-postgresql:hobby-dev'}
+        let attachments = [
+          {
+            app: {name: 'attach-app'},
+            addon: {id: 100, name: 'postgres-1', plan},
+            config_vars: ['HEROKU_POSTGRESQL_PINK_URL']
+          }
+        ]
+
+        api.get('/apps/attach-app/addon-attachments').reply(200, attachments)
+
+        return fetcher(new Heroku()).database('myapp', 'attach-app::DATABASE_URL')
         .then((db) => expect(db, 'to equal', {
           user: 'pguser',
           password: 'pgpass',
