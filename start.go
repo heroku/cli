@@ -102,7 +102,7 @@ func installRequiredPlugins(namespace *Namespace) {
 	}
 
 	pluginsMap := map[string][]string{
-		"force": {"force-com"},
+		"force": {"salesforcedx"},
 	}
 
 	namespaceName := namespace.Name
