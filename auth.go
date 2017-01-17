@@ -21,7 +21,7 @@ func init() {
 	CLITopics = append(CLITopics, Topics{{
 		Name:        "auth",
 		Description: "authentication (login/logout)",
-		Namespace:   &namespace,
+		Namespace:   namespace.Name,
 		Commands: []*Command{
 			{
 				Command:     "login",
@@ -104,7 +104,7 @@ func init() {
 	},
 		{
 			Name:      "whoami",
-			Namespace: &namespace,
+			Namespace: namespace.Name,
 			Hidden:    true,
 			Commands: []*Command{
 				{
@@ -127,7 +127,7 @@ func init() {
 		{
 			Name:        "login",
 			Description: "login with your Heroku credentials.",
-			Namespace:   &namespace,
+			Namespace:   namespace.Name,
 			Commands: []*Command{
 				{
 					Description: "login with your Heroku credentials.",
@@ -140,7 +140,7 @@ func init() {
 		},
 		{
 			Name:        "logout",
-			Namespace:   &namespace,
+			Namespace:  namespace.Name,
 			Description: "clear your local Heroku credentials",
 			Commands: []*Command{
 				{
@@ -151,10 +151,7 @@ func init() {
 		},
 		{
 			Name: "twofactor",
-			Namespace: &Namespace{
-				Name:        "heroku",
-				Description: "list all heroku topics",
-			},
+			Namespace: namespace.Name,
 			Hidden: true,
 			Commands: Commands{
 				{
@@ -178,7 +175,7 @@ func init() {
 		},
 		{
 			Name:      "2fa",
-			Namespace: &namespace,
+			Namespace: namespace.Name,
 			Hidden:    true,
 			Commands: Commands{
 				{

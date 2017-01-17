@@ -21,8 +21,7 @@ type Namespaces []*Namespace
 
 // AllNamespaces gets all go/core/user namespaces
 func AllNamespaces() Namespaces {
-	namespaces := CLITopics.Namespaces()
-	namespaces = namespaces.Concat(CorePlugins.Namespaces())
+	namespaces := CorePlugins.Namespaces()
 	namespaces = namespaces.Concat(UserPlugins.Namespaces())
 
 	// TODO We want to install force when people try to use it. Hard code this
@@ -47,7 +46,7 @@ func (namespaces Namespaces) ByName(name string) *Namespace {
 	return nil
 }
 
-// Has returns ture if a namespace exist for the given name or command.
+// Has returns true if a namespace exists for the given name or command.
 func (namespaces Namespaces) Has(nameOrCmd string) bool {
 	namespace := strings.SplitN(nameOrCmd, ":", 2)[0]
 	return namespace != getDefaultNamespace() && namespaces.ByName(namespace) != nil

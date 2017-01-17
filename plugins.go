@@ -326,7 +326,12 @@ func (p *Plugins) ParsePlugin(name, tag string) (*Plugin, error) {
 		}
 		command.Plugin = plugin.Name
 		command.Help = strings.TrimSpace(command.Help)
+
+		if(plugin.Namespace != nil) {
+			command.Namespace = plugin.Namespace.Name;
+		}
 	}
+
 	p.addToCache(&plugin)
 	return &plugin, nil
 }

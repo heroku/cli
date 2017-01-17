@@ -39,13 +39,16 @@ func parseCmdString(cmd string) (*Namespace, *Topic, string) {
 	var command string
 	var parts []string
 
+	fmt.Printf("\nAllNamespaces().Has(cmd): %s\n", AllNamespaces().Has(cmd))
+
 	if AllNamespaces().Has(cmd) {
 		// Return namespace, topic, command
 		parts = strings.SplitN(cmd, ":", 3)
 		namespace = AllNamespaces().ByName(parts[0])
 
+
 		if len(parts) > 1 {
-			topic = AllTopics().Namespace(namespace.Name).ByName(parts[1])
+			topic = AllTopics().ByName(parts[1])
 		}
 		if len(parts) > 2 {
 			command = parts[2]
@@ -53,7 +56,7 @@ func parseCmdString(cmd string) (*Namespace, *Topic, string) {
 	} else {
 		// Only return topic and command
 		parts = strings.SplitN(cmd, ":", 2)
-		topic = AllTopics().Namespace("").ByName(parts[0])
+		topic = AllTopics().ByName(parts[0])
 
 		if len(parts) > 1 {
 			command = parts[1]
@@ -63,6 +66,7 @@ func parseCmdString(cmd string) (*Namespace, *Topic, string) {
 }
 
 func help() {
+
 	cmd := Args[1]
 	switch Args[1] {
 	case "help", "--help", "-h":
@@ -119,7 +123,7 @@ func helpShowTopics(namespace *Namespace) {
 	topics := AllTopics().NonHidden()
 
 	if namespace != nil {
-		topics = topics.Namespace(namespace.Name)
+		topics = topics.TopicsForNamespace(namespace)
 	}
 
 	longestTopic := 0
