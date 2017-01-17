@@ -57,7 +57,7 @@ func Update(channel string) {
 }
 
 func updateCLI(channel string) {
-	if Autoupdate == "no" {
+	if Autoupdate == "no" || config.LockVersion == Version {
 		return
 	}
 	manifest := GetUpdateManifest(channel)
