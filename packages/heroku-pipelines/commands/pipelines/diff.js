@@ -1,19 +1,19 @@
-'use strict';
+'use strict'
 
-const cli      = require('heroku-cli-util');
-const co       = require('co');
-const bluebird = require('bluebird');
+const cli = require('heroku-cli-util')
+const co = require('co')
+const bluebird = require('bluebird')
 
-const api             = require('../../lib/api');
-const listPipelineApps = api.listPipelineApps;
-const V3_HEADER       = api.V3_HEADER;
+const api = require('../../lib/api')
+const listPipelineApps = api.listPipelineApps
+const V3_HEADER = api.V3_HEADER
 
-const PROMOTION_ORDER = ['development', 'staging', 'production'];
-const KOLKRABBI_BASE_URL = 'https://kolkrabbi.heroku.com';
+const PROMOTION_ORDER = ['development', 'staging', 'production']
+const KOLKRABBI_BASE_URL = 'https://kolkrabbi.heroku.com'
 
 // Helper functions
 
-function kolkrabbiRequest(url, token) {
+function kolkrabbiRequest (url, token) {
   return cli.got.get(KOLKRABBI_BASE_URL + url, {
     headers: {
       authorization: 'Bearer ' + token
@@ -24,151 +24,151 @@ function kolkrabbiRequest(url, token) {
   .catch(err => {
     switch (err.statusCode) {
       case 404:
-        err = new Error(`404 ${url}`);
-        err.name = 'NOT_FOUND';
-        throw err;
+        err = new Error(`404 ${url}`)
+        err.name = 'NOT_FOUND'
+        throw err
       default:
-        throw err;
+        throw err
     }
-  });
+  })
 }
 
-function* getAppInfo(heroku, appName, appId) {
+function* getAppInfo (heroku, appName, appId) {
   // Find GitHub connection for the app
-  let githubApp;
+  let githubApp
   try {
-    githubApp = yield kolkrabbiRequest(`/apps/${appId}/github`, heroku.options.token);
+    githubApp = yield kolkrabbiRequest(`/apps/${appId}/github`, heroku.options.token)
   } catch (err) {
-    cli.hush(err);
-    return { name: appName, repo: null, hash: null };
+    cli.hush(err)
+    return { name: appName, repo: null, hash: null }
   }
 
   // Find the commit hash of the latest release for this app
-  let slug;
+  let slug
   try {
     const release = yield heroku.request({
       method: 'GET',
       path: `/apps/${appId}/releases`,
       headers: { 'Accept': V3_HEADER, 'Range': 'version ..; order=desc,max=1' },
       partial: true
-    });
+    })
     if (release[0].slug === null) {
-      throw new Error(`no release found for ${appName}`);
+      throw new Error(`no release found for ${appName}`)
     }
     slug = yield heroku.request({
       method: 'GET',
       path: `/apps/${appId}/slugs/${release[0].slug.id}`,
       headers: { 'Accept': V3_HEADER }
-    });
+    })
   } catch (err) {
-    cli.hush(err);
-    return { name: appName, repo: githubApp.repo, hash: null };
+    cli.hush(err)
+    return { name: appName, repo: githubApp.repo, hash: null }
   }
-  return { name: appName, repo: githubApp.repo, hash: slug.commit };
+  return { name: appName, repo: githubApp.repo, hash: slug.commit }
 }
 
-function* diff(targetApp, downstreamApp, githubToken, herokuUserAgent) {
+function* diff (targetApp, downstreamApp, githubToken, herokuUserAgent) {
   if (downstreamApp.repo === null) {
-    return cli.log(`\n${targetApp.name} was not compared to ${downstreamApp.name} as ${downstreamApp.name} is not connected to GitHub`);
+    return cli.log(`\n${targetApp.name} was not compared to ${downstreamApp.name} as ${downstreamApp.name} is not connected to GitHub`)
   } else if (downstreamApp.repo !== targetApp.repo) {
-    return cli.log(`\n${targetApp.name} was not compared to ${downstreamApp.name} as ${downstreamApp.name} is not connected to the same GitHub repo as ${targetApp.name}`);
+    return cli.log(`\n${targetApp.name} was not compared to ${downstreamApp.name} as ${downstreamApp.name} is not connected to the same GitHub repo as ${targetApp.name}`)
   } else if (downstreamApp.hash === null) {
-    return cli.log(`\n${targetApp.name} was not compared to ${downstreamApp.name} as ${downstreamApp.name} does not have any releases`);
+    return cli.log(`\n${targetApp.name} was not compared to ${downstreamApp.name} as ${downstreamApp.name} does not have any releases`)
   } else if (downstreamApp.hash === targetApp.hash) {
-    return cli.log(`\n${targetApp.name} is up to date with ${downstreamApp.name}`);
+    return cli.log(`\n${targetApp.name} is up to date with ${downstreamApp.name}`)
   }
 
   // Do the actual Github diff
   try {
-    const path = `${targetApp.repo}/compare/${downstreamApp.hash}...${targetApp.hash}`;
+    const path = `${targetApp.repo}/compare/${downstreamApp.hash}...${targetApp.hash}`
     const res = yield cli.got.get(`https://api.github.com/repos/${path}`, {
       headers: {
         authorization: 'token ' + githubToken,
         'user-agent': herokuUserAgent
       },
       json: true
-    });
-    cli.log("");
-    cli.styledHeader(`${targetApp.name} is ahead of ${downstreamApp.name} by ${res.body.ahead_by} commit${res.body.ahead_by === 1 ? '' : 's'}`);
-    let mapped = res.body.commits.map(function(commit) {
+    })
+    cli.log('')
+    cli.styledHeader(`${targetApp.name} is ahead of ${downstreamApp.name} by ${res.body.ahead_by} commit${res.body.ahead_by === 1 ? '' : 's'}`)
+    let mapped = res.body.commits.map(function (commit) {
       return {
         sha: commit.sha.substring(0, 7),
         date: commit.commit.author.date,
         author: commit.commit.author.name,
         message: commit.commit.message.split('\n')[0]
-      };
-    }).reverse();
+      }
+    }).reverse()
     cli.table(mapped, {columns: [
       {key: 'sha', label: 'SHA'},
       {key: 'date', label: 'Date'},
       {key: 'author', label: 'Author'},
       {key: 'message', label: 'Message'}
-    ]});
-    cli.log(`\nhttps://github.com/${path}`);
+    ]})
+    cli.log(`\nhttps://github.com/${path}`)
   } catch (err) {
-    cli.hush(err);
-    cli.log(`\n${targetApp.name} was not compared to ${downstreamApp.name} because we were unable to perform a diff`);
-    cli.log(`are you sure you have pushed your latest commits to GitHub?`);
+    cli.hush(err)
+    cli.log(`\n${targetApp.name} was not compared to ${downstreamApp.name} because we were unable to perform a diff`)
+    cli.log(`are you sure you have pushed your latest commits to GitHub?`)
   }
 }
 
-function* run(context, heroku) {
+function* run (context, heroku) {
   // jshint maxstatements:65
-  const targetAppName = context.app;
-  let coupling;
+  const targetAppName = context.app
+  let coupling
   try {
     coupling = yield heroku.request({
       method: 'GET',
       path: `/apps/${targetAppName}/pipeline-couplings`,
       headers: { 'Accept': V3_HEADER }
-    });
+    })
   } catch (err) {
-    return cli.error(`This app (${targetAppName}) does not seem to be a part of any pipeline`);
+    return cli.error(`This app (${targetAppName}) does not seem to be a part of any pipeline`)
   }
-  const targetAppId = coupling.app.id;
+  const targetAppId = coupling.app.id
 
   const allApps = yield cli.action(`Fetching apps from pipeline`,
-    listPipelineApps(heroku, coupling.pipeline.id));
+    listPipelineApps(heroku, coupling.pipeline.id))
 
-  const sourceStage = coupling.stage;
-  const downstreamStage = PROMOTION_ORDER[PROMOTION_ORDER.indexOf(sourceStage) + 1];
+  const sourceStage = coupling.stage
+  const downstreamStage = PROMOTION_ORDER[PROMOTION_ORDER.indexOf(sourceStage) + 1]
   if (downstreamStage === null || PROMOTION_ORDER.indexOf(sourceStage) < 0) {
-    return cli.error(`Unable to diff ${targetAppName}`);
+    return cli.error(`Unable to diff ${targetAppName}`)
   }
-  const downstreamApps = allApps.filter(function(app) {
-    return app.coupling.stage === downstreamStage;
-  });
+  const downstreamApps = allApps.filter(function (app) {
+    return app.coupling.stage === downstreamStage
+  })
 
   if (downstreamApps.length < 1) {
-    return cli.error(`Cannot diff ${targetAppName} as there are no downstream apps configured`);
+    return cli.error(`Cannot diff ${targetAppName} as there are no downstream apps configured`)
   }
 
   // Fetch GitHub repo/latest release hash for [target, downstream[0], .., downstream[n]] apps
-  const wrappedGetAppInfo = co.wrap(getAppInfo);
-  const appInfoPromises = [wrappedGetAppInfo(heroku, targetAppName, targetAppId)];
+  const wrappedGetAppInfo = co.wrap(getAppInfo)
+  const appInfoPromises = [wrappedGetAppInfo(heroku, targetAppName, targetAppId)]
   downstreamApps.forEach(function (app) {
-    appInfoPromises.push(wrappedGetAppInfo(heroku, app.name, app.id));
-  });
+    appInfoPromises.push(wrappedGetAppInfo(heroku, app.name, app.id))
+  })
   const appInfo = yield cli.action(`Fetching release info for all apps`,
-    bluebird.all(appInfoPromises));
+    bluebird.all(appInfoPromises))
 
   // Verify the target app
-  let targetAppInfo = appInfo[0];
+  let targetAppInfo = appInfo[0]
   if (targetAppInfo.repo === null) {
-    let command = `heroku pipelines:open ${coupling.pipeline.name}`;
-    return cli.error(`${targetAppName} does not seem to be connected to GitHub!\nRun ${cli.color.cyan(command)} and "Connect to GitHub".`);
+    let command = `heroku pipelines:open ${coupling.pipeline.name}`
+    return cli.error(`${targetAppName} does not seem to be connected to GitHub!\nRun ${cli.color.cyan(command)} and "Connect to GitHub".`)
   } else if (targetAppInfo.hash === null) {
-    return cli.error(`No release was found for ${targetAppName}, unable to diff`);
+    return cli.error(`No release was found for ${targetAppName}, unable to diff`)
   }
 
   // Fetch GitHub token for the user
-  const githubAccount = yield kolkrabbiRequest(`/account/github/token`, heroku.options.token);
+  const githubAccount = yield kolkrabbiRequest(`/account/github/token`, heroku.options.token)
 
   // Diff [{target, downstream[0]}, {target, downstream[1]}, .., {target, downstream[n]}]
-  const downstreamAppsInfo = appInfo.slice(1);
+  const downstreamAppsInfo = appInfo.slice(1)
   for (let downstreamAppInfo of downstreamAppsInfo) {
     yield diff(
-      targetAppInfo, downstreamAppInfo, githubAccount.github.token, heroku.options.userAgent);
+      targetAppInfo, downstreamAppInfo, githubAccount.github.token, heroku.options.userAgent)
   }
 }
 
@@ -179,4 +179,4 @@ module.exports = {
   needsAuth: true,
   needsApp: true,
   run: cli.command(co.wrap(run))
-};
+}

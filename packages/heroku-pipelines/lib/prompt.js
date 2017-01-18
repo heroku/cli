@@ -1,10 +1,10 @@
-'use strict';
+'use strict'
 
-module.exports = function prompt(questions) {
-  let inquirer = require('inquirer');
-  return new Promise(function (fulfill) {
+module.exports = function prompt (questions) {
+  let inquirer = require('inquirer')
+  return new Promise(function (resolve) {
     inquirer.prompt(questions, function (answers) {
-      fulfill(answers);
-    });
-  });
-};
+      resolve(answers)
+    })
+  })
+}

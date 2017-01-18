@@ -1,54 +1,54 @@
-'use strict';
+'use strict'
 
-let cli = require('heroku-cli-util');
-let co  = require('co');
-let infer = require('../../lib/infer');
-let prompt = require('../../lib/prompt');
-let stages = require('../../lib/stages').inferrableStageNames;
+let cli = require('heroku-cli-util')
+let co = require('co')
+let infer = require('../../lib/infer')
+let prompt = require('../../lib/prompt')
+let stages = require('../../lib/stages').inferrableStageNames
 
-const createCoupling = require('../../lib/api').createCoupling;
+const createCoupling = require('../../lib/api').createCoupling
 
-function* run(context, heroku) {
-  var name, stage;
-  let guesses = infer(context.app);
-  let questions = [];
+function* run (context, heroku) {
+  var name, stage
+  let guesses = infer(context.app)
+  let questions = []
 
-  const app = context.app;
+  const app = context.app
 
   if (context.args.name) {
-    name = context.args.name;
+    name = context.args.name
   } else {
     questions.push({
-      type: "input",
-      name: "name",
-      message: "Pipeline name",
+      type: 'input',
+      name: 'name',
+      message: 'Pipeline name',
       default: guesses[0]
-    });
+    })
   }
   if (context.flags.stage) {
-    stage = context.flags.stage;
+    stage = context.flags.stage
   } else {
     questions.push({
-      type: "list",
-      name: "stage",
+      type: 'list',
+      name: 'stage',
       message: `Stage of ${app}`,
       choices: stages,
       default: guesses[1]
-    });
+    })
   }
-  let answers = yield prompt(questions);
-  if (answers.name) name = answers.name;
-  if (answers.stage) stage = answers.stage;
+  let answers = yield prompt(questions)
+  if (answers.name) name = answers.name
+  if (answers.stage) stage = answers.stage
   let promise = heroku.request({
     method: 'POST',
     path: '/pipelines',
     body: {name: name},
     headers: { 'Accept': 'application/vnd.heroku+json; version=3' }
-  }); // heroku.pipelines().create({name: name});
-  let pipeline = yield cli.action(`Creating ${name} pipeline`, promise);
+  }) // heroku.pipelines().create({name: name});
+  let pipeline = yield cli.action(`Creating ${name} pipeline`, promise)
 
   yield cli.action(`Adding ${app} to ${pipeline.name} pipeline as ${stage}`,
-                  createCoupling(heroku, pipeline, app, stage));
+                  createCoupling(heroku, pipeline, app, stage))
 }
 
 module.exports = {
@@ -65,4 +65,4 @@ module.exports = {
     {name: 'stage', char: 's', description: 'stage of first app in pipeline', hasValue: true}
   ],
   run: cli.command(co.wrap(run))
-};
+}

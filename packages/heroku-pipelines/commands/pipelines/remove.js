@@ -1,9 +1,9 @@
-'use strict';
+'use strict'
 
-let co = require('co');
-let cli = require('heroku-cli-util');
+let co = require('co')
+let cli = require('heroku-cli-util')
 
-const removeCoupling = require('../../lib/api').removeCoupling;
+const removeCoupling = require('../../lib/api').removeCoupling
 
 module.exports = {
   topic: 'pipelines',
@@ -13,8 +13,8 @@ module.exports = {
   needsApp: true,
   needsAuth: true,
   run: cli.command(co.wrap(function* (context, heroku) {
-    const app = context.app;
+    const app = context.app
 
-    yield cli.action(`Removing ${app}`, removeCoupling(heroku, app));
+    yield cli.action(`Removing ${app}`, removeCoupling(heroku, app))
   }))
-};
+}

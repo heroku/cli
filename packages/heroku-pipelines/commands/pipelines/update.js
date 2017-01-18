@@ -1,8 +1,8 @@
-'use strict';
+'use strict'
 
-let co = require('co');
-let cli = require('heroku-cli-util');
-const updateCoupling = require('../../lib/api').updateCoupling;
+let co = require('co')
+let cli = require('heroku-cli-util')
+const updateCoupling = require('../../lib/api').updateCoupling
 
 module.exports = {
   topic: 'pipelines',
@@ -15,15 +15,15 @@ module.exports = {
     {name: 'stage', char: 's', description: 'new stage of app', hasValue: true}
   ],
   run: cli.command(co.wrap(function* (context, heroku) {
-    if(!context.flags.stage) {
-      cli.error('Stage must be specified with -s');
-      process.exit(1);
+    if (!context.flags.stage) {
+      cli.error('Stage must be specified with -s')
+      process.exit(1)
     }
 
-    const app   = context.app;
-    const stage = context.flags.stage;
+    const app = context.app
+    const stage = context.flags.stage
 
     yield cli.action(`Changing ${app} to ${stage}`,
-                     updateCoupling(heroku, app, stage));
+                     updateCoupling(heroku, app, stage))
   }))
-};
+}
