@@ -14,14 +14,11 @@ import (
 )
 
 func init() {
-	namespace := Namespace{
-		Name:        "heroku",
-		Description: "list all heroku topics",
-	}
+
 	CLITopics = append(CLITopics, Topics{{
 		Name:        "auth",
 		Description: "authentication (login/logout)",
-		Namespace:   namespace.Name,
+		Namespace:   HerokuNamespace.Name,
 		Commands: []*Command{
 			{
 				Command:     "login",
@@ -104,7 +101,7 @@ func init() {
 	},
 		{
 			Name:      "whoami",
-			Namespace: namespace.Name,
+			Namespace: HerokuNamespace.Name,
 			Hidden:    true,
 			Commands: []*Command{
 				{
@@ -127,7 +124,7 @@ func init() {
 		{
 			Name:        "login",
 			Description: "login with your Heroku credentials.",
-			Namespace:   namespace.Name,
+			Namespace:   HerokuNamespace.Name,
 			Commands: []*Command{
 				{
 					Description: "login with your Heroku credentials.",
@@ -140,7 +137,7 @@ func init() {
 		},
 		{
 			Name:        "logout",
-			Namespace:  namespace.Name,
+			Namespace:  HerokuNamespace.Name,
 			Description: "clear your local Heroku credentials",
 			Commands: []*Command{
 				{
@@ -151,7 +148,7 @@ func init() {
 		},
 		{
 			Name: "twofactor",
-			Namespace: namespace.Name,
+			Namespace: HerokuNamespace.Name,
 			Hidden: true,
 			Commands: Commands{
 				{
@@ -175,7 +172,7 @@ func init() {
 		},
 		{
 			Name:      "2fa",
-			Namespace: namespace.Name,
+			Namespace: HerokuNamespace.Name,
 			Hidden:    true,
 			Commands: Commands{
 				{

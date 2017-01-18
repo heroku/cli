@@ -168,6 +168,7 @@ func getDefaultNamespace() string {
 var crashing = false
 
 // ShowDebugInfo prints debugging information if HEROKU_DEBUG=1
+// Can't run unit tests with this enabled. Tests fail.
 func ShowDebugInfo() {
 	info := []string{version(), BinPath}
 	if len(Args) > 1 {

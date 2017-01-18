@@ -15,7 +15,15 @@ type Topic struct {
 }
 
 func (t *Topic) String() string {
-	return t.Name
+	if t.Namespace == getDefaultNamespace() {
+		return t.Name
+	}
+
+	if (len(t.Namespace) > 0) {
+		return t.Namespace + ":" + t.Name
+	} else {
+		return t.Name
+	}
 }
 
 // Topics are a list of topics

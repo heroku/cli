@@ -12,6 +12,8 @@ type Namespace struct {
 	Description string `json:"description"`
 }
 
+var HerokuNamespace = &Namespace{Name: "heroku", Description: "list all heroku topics"}
+
 func (n *Namespace) String() string {
 	return n.Name
 }
@@ -23,6 +25,7 @@ type Namespaces []*Namespace
 func AllNamespaces() Namespaces {
 	namespaces := CorePlugins.Namespaces()
 	namespaces = namespaces.Concat(UserPlugins.Namespaces())
+	namespaces = append(namespaces, HerokuNamespace)
 
 	// TODO We want to install force when people try to use it. Hard code this
 	// for now, but we may want to make this a little more generic

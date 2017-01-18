@@ -320,16 +320,33 @@ func (p *Plugins) ParsePlugin(name, tag string) (*Plugin, error) {
 	if len(plugin.Commands) == 0 {
 		return nil, fmt.Errorf("Invalid plugin. No commands found.")
 	}
+
+	var namespace = "heroku"
+
+	if plugin.Namespace != nil {
+		namespace = plugin.Namespace.Name
+	}
+
+	for _, topic := range plugin.Topics {
+		if topic == nil {
+			continue
+		}
+
+		topic.Namespace = namespace
+	}
+
+	if plugin.Topic != nil {
+		plugin.Topic.Namespace = namespace
+	}
+
+
 	for _, command := range plugin.Commands {
 		if command == nil {
 			continue
 		}
 		command.Plugin = plugin.Name
 		command.Help = strings.TrimSpace(command.Help)
-
-		if(plugin.Namespace != nil) {
-			command.Namespace = plugin.Namespace.Name;
-		}
+		command.Namespace = namespace
 	}
 
 	p.addToCache(&plugin)
