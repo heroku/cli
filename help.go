@@ -39,8 +39,6 @@ func parseCmdString(cmd string) (*Namespace, *Topic, string) {
 	var command string
 	var parts []string
 
-	fmt.Printf("\nAllNamespaces().Has(cmd): %s\n", AllNamespaces().Has(cmd))
-
 	if AllNamespaces().Has(cmd) {
 		// Return namespace, topic, command
 		parts = strings.SplitN(cmd, ":", 3)

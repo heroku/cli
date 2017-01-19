@@ -54,6 +54,8 @@ func Start(args ...string) {
 		Args = append(Args, "dashboard")
 	}
 
+
+
 	switch Args[1] {
 	case "_":
 		guess := loadLastCommandGuess()
@@ -63,7 +65,7 @@ func Start(args ...string) {
 	case "help", "--help", "-h":
 		if len(Args) >= 3 {
 			namespace, _, _ := parseCmdString(Args[2])
-			installRequiredPlugins(namespace)
+			installRequiredNamespace(namespace)
 		}
 		help()
 		return
@@ -73,7 +75,8 @@ func Start(args ...string) {
 	}
 
 	namespace, _, _ := parseCmdString(Args[1])
-	installRequiredPlugins(namespace)
+
+	installRequiredNamespace(namespace)
 
 	for _, arg := range Args {
 		if arg == "--help" || arg == "-h" {
@@ -91,26 +94,40 @@ func Start(args ...string) {
 	if !cmd.DisableAnalytics {
 		currentAnalyticsCommand.RecordStart()
 	}
+
 	ctx, err := BuildContext(cmd, Args)
 	must(err)
 	cmd.Run(ctx)
 }
 
-func installRequiredPlugins(namespace *Namespace) {
+func installRequiredNamespace(namespace *Namespace) {
 	if namespace == nil {
 		return
 	}
 
-	pluginsMap := map[string][]string{
+	requiredPluginsMap := map[string][]string{
 		"force": {"salesforcedx"},
+	}
+
+	/**
+	Iterator over all installed user plugins to see if one has a namespace that is required.
+	If so remove it from the requiredPluginsMap
+	 */
+	for _, plugin := range UserPlugins.Plugins() {
+		_, isAlreadyInstalledRequiredNamespace := requiredPluginsMap[plugin.Namespace.Name]
+		if isAlreadyInstalledRequiredNamespace {
+			delete(requiredPluginsMap, plugin.Namespace.Name)
+		}
 	}
 
 	namespaceName := namespace.Name
 
-	plugins, ok := pluginsMap[namespaceName]
+	plugins, ok := requiredPluginsMap[namespaceName]
 
 	if ok {
 		toInstall := []string{}
+
+
 		for _, plugin := range plugins {
 			name := strings.Split(plugin, "@")[0]
 			if UserPlugins.ByName(name) == nil {
