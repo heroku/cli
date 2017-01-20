@@ -44,20 +44,18 @@ func BuildContext(command *Command, args []string) (*Context, error) {
 	ctx := &Context{}
 	ctx.Command = command
 	if ctx.Command.VariableArgs {
-		ctx.Args, ctx.Flags, ctx.App, err = parseVarArgs(ctx.Command, args[2:])
+		ctx.Args, ctx.Flags, err = parseVarArgs(ctx.Command, args[2:])
 	} else {
-		ctx.Args, ctx.Flags, ctx.App, err = parseArgs(ctx.Command, args[2:])
+		ctx.Args, ctx.Flags, err = parseArgs(ctx.Command, args[2:])
 	}
 	if err != nil {
 		return nil, err
 	}
 	if ctx.Command.NeedsApp || ctx.Command.WantsApp {
-		if ctx.App == "" {
-			var err error
-			ctx.App, err = app()
-			if err != nil && ctx.Command.NeedsApp {
-				ExitWithMessage(err.Error())
-			}
+		var err error
+		ctx.App, err = app(ctx.Flags)
+		if err != nil && ctx.Command.NeedsApp {
+			ExitWithMessage(err.Error())
 		}
 		if ctx.App == "" && ctx.Command.NeedsApp {
 			ctx.Command.appNeededErr()
@@ -90,7 +88,7 @@ func BuildContext(command *Command, args []string) (*Context, error) {
 	return ctx, nil
 }
 
-func parseVarArgs(command *Command, args []string) (result []string, flags map[string]interface{}, appName string, err error) {
+func parseVarArgs(command *Command, args []string) (result []string, flags map[string]interface{}, err error) {
 	result = make([]string, 0, len(args))
 	flags = map[string]interface{}{}
 	parseFlags := true
@@ -112,7 +110,7 @@ func parseVarArgs(command *Command, args []string) (result []string, flags map[s
 		case parseFlags && (args[i] == "--"):
 			parseFlags = false
 		case parseFlags && (args[i] == "--help" || args[i] == "-h"):
-			return nil, nil, "", errHelp
+			return nil, nil, errHelp
 		case parseFlags && (args[i] == "--no-color"):
 			continue
 		case parseFlags && strings.HasPrefix(args[i], "-"):
@@ -138,13 +136,6 @@ func parseVarArgs(command *Command, args []string) (result []string, flags map[s
 				result = append(result, args[i])
 			case flag == nil:
 				command.unexpectedFlagErr(args[i])
-			case flag == AppFlag:
-				appName = val
-			case flag == RemoteFlag:
-				appName, err = appFromGitRemote(val)
-				if err != nil {
-					ExitWithMessage(err.Error())
-				}
 			}
 		default:
 			result = append(result, args[i])
@@ -155,14 +146,14 @@ func parseVarArgs(command *Command, args []string) (result []string, flags map[s
 			ExitWithMessage("Required flag: %s", flag.String())
 		}
 	}
-	return result, flags, appName, nil
+	return result, flags, nil
 }
 
-func parseArgs(command *Command, args []string) (result map[string]string, flags map[string]interface{}, appName string, err error) {
+func parseArgs(command *Command, args []string) (result map[string]string, flags map[string]interface{}, err error) {
 	result = map[string]string{}
-	args, flags, appName, err = parseVarArgs(command, args)
+	args, flags, err = parseVarArgs(command, args)
 	if err != nil {
-		return nil, nil, "", err
+		return nil, nil, err
 	}
 	if len(args) > len(command.Args) {
 		command.unexpectedArgumentsErr(args[len(command.Args):])
@@ -175,10 +166,23 @@ func parseArgs(command *Command, args []string) (result map[string]string, flags
 			ExitWithMessage("Missing argument: %s", strings.ToUpper(arg.Name))
 		}
 	}
-	return result, flags, appName, nil
+	return result, flags, nil
 }
 
-func app() (string, error) {
+func app(flags map[string]interface{}) (string, error) {
+	if flags["app"] != nil {
+		return flags["app"].(string), nil
+	}
+	if flags["remote"] != nil {
+		app, err := appFromGitRemote(flags["remote"].(string))
+		if err != nil {
+			return "", err
+		}
+		return app, nil
+	}
+	if flags["confirm"] != nil {
+		return flags["confirm"].(string), nil
+	}
 	app := os.Getenv("HEROKU_APP")
 	if app != "" {
 		return app, nil
