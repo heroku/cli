@@ -41,7 +41,7 @@ func help() {
 	topic := AllTopics().ByName(strings.SplitN(cmd, ":", 2)[0])
 	command := AllCommands().Find(cmd)
 	switch {
-	case topic == nil:
+	case topic == nil && command == nil:
 		helpShowTopics()
 	case command == nil:
 		helpShowTopic(topic)
