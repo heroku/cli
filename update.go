@@ -61,6 +61,9 @@ func updateCLI(channel string) {
 		return
 	}
 	if config.LockChannel != "" {
+		if channel != "stable" && channel != config.LockChannel {
+			ExitWithMessage("channel must be " + config.LockChannel)
+		}
 		channel = config.LockChannel
 	}
 	manifest := GetUpdateManifest(channel, config.LockVersion)
@@ -154,6 +157,7 @@ func GetUpdateManifest(channel, version string) *Manifest {
 	var m Manifest
 	url := "https://cli-assets.heroku.com/branches/" + channel + "/manifest.json"
 	if version != "" {
+		Errln("heroku-cli: locked to " + version)
 		url = "https://cli-assets.heroku.com/branches/" + channel + "/" + version + "/manifest.json"
 	}
 	rsp, err := sling.New().Get(url).ReceiveSuccess(&m)
