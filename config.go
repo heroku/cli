@@ -10,6 +10,7 @@ type Config struct {
 	SkipAnalytics *bool  `json:"skip_analytics"`
 	Color         *bool  `json:"color"`
 	LockVersion   string `json:"lock_version"`
+	LockChannel   string `json:"lock_channel"`
 }
 
 var config *Config

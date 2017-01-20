@@ -57,8 +57,11 @@ func Update(channel string) {
 }
 
 func updateCLI(channel string) {
-	if Autoupdate == "no" || config.LockVersion == Version {
+	if Autoupdate == "no" {
 		return
+	}
+	if config.LockChannel != "" {
+		channel = config.LockChannel
 	}
 	manifest := GetUpdateManifest(channel)
 	if npmExists() && manifest.Version == Version && manifest.Channel == Channel {
@@ -150,6 +153,9 @@ var updateManifestRetrying = false
 func GetUpdateManifest(channel string) *Manifest {
 	var m Manifest
 	url := "https://cli-assets.heroku.com/branches/" + channel + "/manifest.json"
+	if config.LockVersion != "" {
+		url = "https://cli-assets.heroku.com/branches/" + channel + "/" + config.LockVersion + "/manifest.json"
+	}
 	rsp, err := sling.New().Get(url).ReceiveSuccess(&m)
 	if err != nil && !updateManifestRetrying {
 		updateManifestRetrying = true
