@@ -1,7 +1,7 @@
 {
   "name": "heroku-pipelines",
   "description": "pipelines heroku plugin",
-  "version": "1.1.8",
+  "version": "1.2.0",
   "author": "Heroku Developer Experience team",
   "repository": "heroku/heroku-pipelines",
   "bugs": {
