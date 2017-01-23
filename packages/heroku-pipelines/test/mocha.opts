@@ -1,3 +1,6 @@
 --require ./test/init.js
+--require co-mocha
+--require sinon
+--require sinon-as-promised
 --recursive
 --reporter list

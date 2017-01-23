@@ -2,16 +2,14 @@
 
 let validator = require('validator')
 let inquirer = require('inquirer')
+let api = require('./api')
 
 function* disambiguate (heroku, pipelineIDOrName) {
   var pipeline
   if (validator.isUUID(pipelineIDOrName)) {
-    pipeline = yield heroku.pipelines(pipelineIDOrName).info()
+    pipeline = yield api.getPipeline(heroku, pipelineIDOrName)
   } else {
-    let pipelines = yield heroku.request({
-      method: 'GET',
-      path: `/pipelines?eq[name]=${pipelineIDOrName}`
-    })
+    let pipelines = yield api.findPipelineByName(heroku, pipelineIDOrName)
     if (pipelines.length === 0) {
       throw new Error('Pipeline not found')
     } else if (pipelines.length === 1) {

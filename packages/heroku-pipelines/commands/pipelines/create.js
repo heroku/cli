@@ -2,6 +2,7 @@
 
 let cli = require('heroku-cli-util')
 let co = require('co')
+let api = require('../../lib/api')
 let infer = require('../../lib/infer')
 let prompt = require('../../lib/prompt')
 let stages = require('../../lib/stages').inferrableStageNames
@@ -39,12 +40,7 @@ function* run (context, heroku) {
   let answers = yield prompt(questions)
   if (answers.name) name = answers.name
   if (answers.stage) stage = answers.stage
-  let promise = heroku.request({
-    method: 'POST',
-    path: '/pipelines',
-    body: {name: name},
-    headers: { 'Accept': 'application/vnd.heroku+json; version=3' }
-  }) // heroku.pipelines().create({name: name});
+  let promise = api.createPipeline(heroku, name)
   let pipeline = yield cli.action(`Creating ${name} pipeline`, promise)
 
   yield cli.action(`Adding ${app} to ${pipeline.name} pipeline as ${stage}`,
