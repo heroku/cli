@@ -1,9 +1,18 @@
 !include MUI2.nsh
 
 !define Version 'VERSION'
+
 Name "Heroku CLI"
 CRCCheck On
 InstallDirRegKey HKCU "Software\Heroku" ""
+VIProductVersion 1.0.0.0
+VIAddVersionKey CompanyName Heroku
+VIAddVersionKey ProductName "Heroku CLI"
+VIAddVersionKey FileVersion ${VERSION}
+VIAddVersionKey ProductVersion ${VERSION}
+
+SetCompressor /SOLID lzma
+SetCompressorDictSize 32
 
 !insertmacro MUI_PAGE_COMPONENTS
 !insertmacro MUI_PAGE_DIRECTORY
@@ -18,7 +27,7 @@ OutFile "installer.exe"
 
 InstallDir "$PROGRAMFILES64\Heroku"
 
-Section "Heroku CLI ${VERSION}"
+Section "Heroku CLI ${VERSION} 64-bit"
   SetOutPath $INSTDIR
   File /r bin
   File /r lib
@@ -35,8 +44,8 @@ Section "Set PATH to Heroku CLI"
   Call AddToPath
 SectionEnd
 
-Section "Git 2.8.1"
-  File "git.exe"
+Section "Git 2.11.0.3"
+  File "Git-2.11.0.3-64-bit.exe"
   IfSilent +2
     ExecWait "$INSTDIR\git.exe"
 
@@ -151,4 +160,32 @@ done:
   Pop $R3
   Pop $R2
   Exch $R1 ; $R1=old$R1, stack=[result,...]
+FunctionEnd
+
+
+; GetFirstStrPart - get string before "-"
+;
+; Usage:
+;   Push "5.0.0-abc"
+;   Call GetFirstStrPart
+;   Pop $0 ; "5.0.0"
+
+Function GetFirstStrPart
+  Exch $R0
+  Push $R1
+  Push $R2
+  StrLen $R1 $R0
+  IntOp $R1 $R1 + 1
+  loop:
+    IntOp $R1 $R1 - 1
+    StrCpy $R2 $R0 1 -$R1
+    StrCmp $R2 "" exit2
+    StrCmp $R2 "-" exit1 ; Change "-" to "\" if ur inputting dir path str
+  Goto loop
+  exit1:
+    StrCpy $R0 $R0 -$R1
+  exit2:
+    Pop $R2
+    Pop $R1
+    Exch $R0
 FunctionEnd
