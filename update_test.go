@@ -16,7 +16,7 @@ var _ = Describe("update.go", func() {
 		It("downloads a new CLI", func() {
 			Skip("not working on circle")
 			os.Remove(cli.UpdateLockPath)
-			manifest := cli.GetUpdateManifest("dev")
+			manifest := cli.GetUpdateManifest("dev", "")
 			Expect(manifest.Channel).To(Equal("dev"))
 			dest := filepath.Join("tmp", "newcli")
 			cli.DownloadCLI("dev", dest, manifest)
