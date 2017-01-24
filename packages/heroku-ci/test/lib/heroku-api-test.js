@@ -109,4 +109,32 @@ describe('heroku-api', function () {
       api.done()
     })
   })
+
+  describe('#configVars', function () {
+    it('gets config vars', function* () {
+      const id = '123'
+      const config = { FOO: 'bar' }
+      const api = nock(`https://api.heroku.com`)
+        .get(`/pipelines/${id}/stage/test/config-vars`)
+        .reply(200, config)
+
+      const response = yield herokuAPI.configVars(new Heroku(), id)
+      expect(response).to.deep.eq(config)
+      api.done()
+    })
+  })
+
+  describe('#setConfigVars', function () {
+    it('patches config vars', function* () {
+      const id = '123'
+      const config = { FOO: 'bar' }
+      const api = nock(`https://api.heroku.com`)
+        .patch(`/pipelines/${id}/stage/test/config-vars`)
+        .reply(200, config)
+
+      const response = yield herokuAPI.setConfigVars(new Heroku(), id, config)
+      expect(response).to.deep.eq(config)
+      api.done()
+    })
+  })
 })

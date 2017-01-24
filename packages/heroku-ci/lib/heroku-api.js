@@ -1,6 +1,8 @@
 const https = require('https')
 const KOLKRABBI = 'https://kolkrabbi.heroku.com'
-const VERSION_HEADER = 'application/vnd.heroku+json; version=3.ci'
+const V3_HEADER = 'application/vnd.heroku+json; version=3'
+const VERSION_HEADER = `${V3_HEADER}.ci`
+const PIPELINE_HEADER = `${V3_HEADER}.pipelines`
 
 function* pipelineCoupling (client, app) {
   return client.get(`/apps/${app}/pipeline-couplings`)
@@ -80,6 +82,22 @@ function* createTestRun (client, body) {
   })
 }
 
+function configVars (client, pipelineID) {
+  return client.request({
+    headers: { Accept: PIPELINE_HEADER },
+    path: `/pipelines/${pipelineID}/stage/test/config-vars`
+  })
+}
+
+function setConfigVars (client, pipelineID, body) {
+  return client.request({
+    method: 'PATCH',
+    headers: { Accept: PIPELINE_HEADER },
+    path: `/pipelines/${pipelineID}/stage/test/config-vars`,
+    body
+  })
+}
+
 module.exports = {
   pipelineCoupling,
   pipelineRepository,
@@ -89,5 +107,7 @@ module.exports = {
   latestTestRun,
   logStream,
   createSource,
-  createTestRun
+  createTestRun,
+  configVars,
+  setConfigVars
 }
