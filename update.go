@@ -61,7 +61,7 @@ func updateCLI(channel string) {
 		return
 	}
 	if config.LockChannel != "" {
-		if channel != "stable" && channel != config.LockChannel {
+		if channel != Channel && channel != config.LockChannel {
 			ExitWithMessage("channel must be " + config.LockChannel)
 		}
 		channel = config.LockChannel
