@@ -69,7 +69,7 @@ function * run (context, heroku) {
 
 let cmd = {
   topic: 'access',
-  description: 'list who has access to an application',
+  description: 'list who has access to an app',
   needsAuth: true,
   needsApp: true,
   flags: [
