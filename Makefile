@@ -171,12 +171,13 @@ $(CACHE_DIR)/git/Git-%.exe:
 	@mkdir -p $(CACHE_DIR)/git
 	curl -fsSLo $@ https://cli-assets.heroku.com/git/Git-$*.exe
 
-$(DIST_DIR)/$(VERSION)/heroku-windows-%.exe: tmp/windows-% $(CACHE_DIR)/git/Git-2.8.1-32-bit.exe $(CACHE_DIR)/git/Git-2.8.1-64-bit.exe
+$(DIST_DIR)/$(VERSION)/heroku-windows-%.exe: tmp/windows-% $(CACHE_DIR)/git/Git-2.11.0.3-32-bit.exe $(CACHE_DIR)/git/Git-2.11.0.3-64-bit.exe
 	@mkdir -p $(@D)
 	rm -rf tmp/windows-$*-installer
 	cp -r tmp/windows-$* tmp/windows-$*-installer
-	cp $(CACHE_DIR)/git/Git-2.8.1-64-bit.exe tmp/windows-$*-installer/heroku/git.exe
-	sed -e "s/!define Version 'VERSION'/!define Version '$(VERSION)'/" resources/exe/heroku.nsi |\
+	cp $(CACHE_DIR)/git/Git-2.11.0.3-64-bit.exe tmp/windows-$*-installer/heroku/
+	cp $(CACHE_DIR)/git/Git-2.11.0.3-32-bit.exe tmp/windows-$*-installer/heroku/
+	sed -e "s/!define Version 'VERSION'/!define Version '$(VERSION)'/" resources/exe/heroku-$(if $(filter amd64,$*),64,32).nsi |\
 		sed -e "s/InstallDir .*/InstallDir \"\$$PROGRAMFILES$(if $(filter amd64,$*),64,)\\\Heroku\"/" \
 		> tmp/windows-$*-installer/heroku/heroku.nsi
 	makensis tmp/windows-$*-installer/heroku/heroku.nsi > /dev/null
@@ -283,6 +284,7 @@ releasepatch/%: %
 
 .PHONY: releasetxz
 releasetxz: $(MANIFEST) $(MANIFEST).sig $(addprefix releasetxz/,$(DIST_TARGETS))
+	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/manifest.json s3://heroku-cli-assets/branches/$(CHANNEL)/$(VERSION)/manifest.json
 	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/manifest.json s3://heroku-cli-assets/branches/$(CHANNEL)/manifest.json
 	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/manifest.json.sig s3://heroku-cli-assets/branches/$(CHANNEL)/manifest.json.sig
 
@@ -337,6 +339,6 @@ win-x86/node.exe
 
 NODE_TARGETS := $(foreach node, $(NODES), $(CACHE_DIR)/node-v$(NODE_VERSION)/$(node))
 .PHONY: deps
-deps: $(NPM_ARCHIVE) $(NODE_TARGETS) $(CACHE_DIR)/git/Git-2.8.1-64-bit.exe $(CACHE_DIR)/git/Git-2.8.1-32-bit.exe
+deps: $(NPM_ARCHIVE) $(NODE_TARGETS) $(CACHE_DIR)/git/Git-2.11.0.3-64-bit.exe $(CACHE_DIR)/git/Git-2.11.0.3-32-bit.exe
 
 .DEFAULT_GOAL=build
