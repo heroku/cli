@@ -86,10 +86,10 @@ module.exports = (context, heroku) => ({
       let backup
       let failures = 0
 
-      let url = `/client/v11/apps/${app}/transfers/${transferID}`
-      if (verbose) {
-        url = url + '?verbose=true'
-      }
+      let quietUrl = `/client/v11/apps/${app}/transfers/${transferID}`
+      let verboseUrl = quietUrl + '?verbose=true'
+
+      let url = verbose ? verboseUrl : quietUrl
 
       while (true) {
         try {
@@ -111,6 +111,9 @@ module.exports = (context, heroku) => ({
         if (backup && backup.finished_at) {
           if (backup.succeeded) return
           else {
+            // logs is undefined unless verbose=true is passed
+            backup = yield heroku.get(verboseUrl, {host})
+
             throw new Error(`An error occurred and the backup did not finish.
 
 ${backup.logs.slice(-5).map(l => l.message).join('\n')}

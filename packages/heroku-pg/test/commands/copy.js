@@ -44,7 +44,7 @@ describe('pg:copy', () => {
         to_name: 'RED',
         to_url: 'postgres://heroku/db'
       }).reply(200, {uuid: '100-001'})
-      pg.get('/client/v11/apps/myapp/transfers/100-001').reply(200, {finished_at: '100', succeeded: true, logs: []})
+      pg.get('/client/v11/apps/myapp/transfers/100-001').reply(200, {finished_at: '100', succeeded: true})
     })
 
     it('copies', () => {
@@ -53,6 +53,32 @@ describe('pg:copy', () => {
       .then(() => expect(cli.stderr, 'to equal', `Starting copy of database bar on foo.com:5432 to RED... done
 Copying... pending
 Copying... done
+`))
+    })
+  })
+
+  context('fails', () => {
+    beforeEach(() => {
+      api.get('/addons/postgres-1').reply(200, addon)
+      api.post('/actions/addon-attachments/resolve', {app: 'myapp', addon_attachment: 'DATABASE_URL'}).reply(200, [attachment])
+      api.get('/apps/myapp/config-vars').reply(200, {DATABASE_URL: 'postgres://heroku/db'})
+      pg.post('/client/v11/databases/postgres-1/transfers', {
+        from_name: 'database bar on foo.com:5432',
+        from_url: 'postgres://foo.com/bar',
+        to_name: 'RED',
+        to_url: 'postgres://heroku/db'
+      }).reply(200, {uuid: '100-001'})
+      pg.get('/client/v11/apps/myapp/transfers/100-001').reply(200, {finished_at: '100', succeeded: false, num: 1})
+      pg.get('/client/v11/apps/myapp/transfers/100-001?verbose=true').reply(200, {finished_at: '100', succeeded: false, num: 1, logs: [{message: 'foobar'}]})
+    })
+
+    it('fails to copy', () => {
+      let err = 'An error occurred and the backup did not finish.\n\nfoobar\n\nRun heroku pg:backups:info b001 for more details.'
+      return expect(cmd.run({app: 'myapp', args: {source: 'postgres://foo.com/bar', target: 'DATABASE_URL'}, flags: {confirm: 'myapp'}}), 'to be rejected with', err)
+      .then(() => expect(cli.stdout, 'to equal', ''))
+      .then(() => expect(cli.stderr, 'to equal', `Starting copy of database bar on foo.com:5432 to RED... done
+Copying... pending
+Copying... !
 `))
     })
   })
