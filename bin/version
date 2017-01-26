@@ -1,3 +1,4 @@
 #!/bin/sh
 SHA=`git rev-parse --short HEAD`
-echo 5.6.32-$SHA
+VERSION=`node -p "require('./package.json').version"`
+echo $VERSION-$SHA
