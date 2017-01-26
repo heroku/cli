@@ -1,0 +1,50 @@
+#!/bin/bash
+
+set -ex
+
+VERSION=`./bin/version`
+NPM_VERSION=4.0.5
+NODE_VERSION=7.4.0
+
+# download node/npm
+for PLATFORM in `./bin/platforms`; do
+  # setup workspace
+  HEROKU_BASE=heroku-v$VERSION-$PLATFORM
+  WORKSPACE=tmp/build/$HEROKU_BASE
+  rm -rf $WORKSPACE
+  mkdir -p $WORKSPACE/node_modules
+  cp README.md $WORKSPACE
+  cp LICENSE $WORKSPACE
+  cp package.json $WORKSPACE
+  cp cli.js $WORKSPACE
+
+  # install node
+  NODE_BASE=node-v$NODE_VERSION-$PLATFORM
+  if [ ! -f tmp/$NODE_BASE.tar.xz ]; then
+    curl -fSLo tmp/$NODE_BASE.tar.xz https://nodejs.org/dist/v7.4.0/$NODE_BASE.tar.xz
+  fi
+  tar -C $WORKSPACE -xf tmp/$NODE_BASE.tar.xz
+  mv $WORKSPACE/$NODE_BASE $WORKSPACE/node
+
+  # install packages
+  cd $WORKSPACE
+  npm install
+  npm dedupe
+  npm prune
+
+  # create bin runner
+  cat << EOF > heroku
+#!/bin/bash
+DIR="\$( cd "\$( dirname "\${BASH_SOURCE[0]}" )" && pwd )"
+\$DIR/node/bin/node --harmony-async-await \$DIR/cli.js \$*
+EOF
+  chmod +x heroku
+
+  # create tarball
+  cd ..
+  tar cf - $HEROKU_BASE | xz -z > $HEROKU_BASE.tar.xz
+  tar czf $HEROKU_BASE.tar.gz $HEROKU_BASE
+  rm -rf $HEROKU_BASE
+
+  cd ../..
+done
