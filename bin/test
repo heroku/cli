@@ -1,5 +1,0 @@
-#!/bin/bash
-
-set -e
-
-go test -ginkgo.slowSpecThreshold=30 -tags test $*
