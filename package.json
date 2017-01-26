@@ -1,7 +1,7 @@
 {
   "name": "heroku-cli",
-  "description": "Heroku CLI",
-  "private": true,
+  "description": "CLI to interact with Heroku",
+  "version": "6.0.0",
   "dependencies": {
     "heroku-apps": "2.1.23",
     "heroku-certs": "1.1.25",
@@ -14,8 +14,10 @@
     "heroku-pg": "2.0.16",
     "heroku-pipelines": "1.2.4",
     "heroku-redis": "1.2.8",
-    "heroku-run": "3.4.3",
-    "heroku-spaces": "2.6.0",
-    "heroku-status": "3.0.5"
-  }
+    "heroku-run": "3.3.4",
+    "heroku-spaces": "2.5.0",
+    "heroku-status": "3.0.2"
+  },
+  "license": "ISC",
+  "repository": "https://github.com/heroku/cli"
 }
