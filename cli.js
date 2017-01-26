@@ -22,7 +22,7 @@ const Command = commands.find(c => cmd[1]
 )
 
 if (Command) {
-  let command = new Command(argv)
+  let command = new Command({argv})
   Promise.resolve(command.run())
   .catch(err => {
     console.error(err)
