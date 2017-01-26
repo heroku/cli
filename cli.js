@@ -3,7 +3,8 @@
 const flatten = list => list.reduce((a, b) => a.concat(Array.isArray(b) ? flatten(b) : b), [])
 
 const plugins = [
-  require('heroku-apps')
+  require('heroku-apps'),
+  require('heroku-run')
 ]
 const commands = flatten(plugins.map(p => p.commands))
 function help () {
