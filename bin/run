@@ -1,5 +1,4 @@
 #!/bin/bash
 set -e
 
-make tmp/dev/heroku/bin/heroku --quiet
-tmp/dev/heroku/bin/heroku $*
+node --harmony-async-await ./cli.js $*
