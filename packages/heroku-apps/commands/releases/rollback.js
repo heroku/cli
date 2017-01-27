@@ -13,7 +13,7 @@ function * run (context, heroku) {
       path: `/apps/${context.app}/releases`,
       partial: true,
       headers: { 'Range': 'version ..; max=2, order=desc' }
-    }).then((releases) => releases[1])
+    }).then((releases) => releases.filter((r) => r.status === 'succeeded')[1])
   }
 
   let release

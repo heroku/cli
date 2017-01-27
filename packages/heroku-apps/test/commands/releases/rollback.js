@@ -18,4 +18,26 @@ describe('releases:rollback', function () {
     return cmd.run({app: 'myapp', args: {release: 'v10'}})
       .then(() => api.done())
   })
+
+  it('rolls back to the latest release', function () {
+    process.stdout.columns = 80
+    let api = nock('https://api.heroku.com:443')
+      .get('/apps/myapp/releases')
+      .reply(200, [{'id': 'current_release', 'version': 41, status: 'succeeded'}, {'id': 'previous_release', 'version': 40, status: 'succeeded'}])
+      .post('/apps/myapp/releases', {release: 'previous_release'})
+      .reply(200, {})
+    return cmd.run({app: 'myapp', args: {}})
+      .then(() => api.done())
+  })
+
+  it('does not roll back to a failed release', function () {
+    process.stdout.columns = 80
+    let api = nock('https://api.heroku.com:443')
+      .get('/apps/myapp/releases')
+      .reply(200, [{'id': 'current_release', 'version': 41, status: 'succeeded'}, {'id': 'failed_release', 'version': 40, status: 'failed'}, {'id': 'succeeded_release', 'version': 39, status: 'succeeded'}])
+      .post('/apps/myapp/releases', {release: 'succeeded_release'})
+      .reply(200, {})
+    return cmd.run({app: 'myapp', args: {}})
+      .then(() => api.done())
+  })
 })
