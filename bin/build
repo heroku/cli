@@ -17,6 +17,7 @@ for PLATFORM in `./bin/platforms`; do
   cp LICENSE $WORKSPACE
   cp package.json $WORKSPACE
   cp cli.js $WORKSPACE
+  cp -r lib $WORKSPACE
 
   # install node
   NODE_BASE=node-v$NODE_VERSION-$PLATFORM
@@ -32,6 +33,8 @@ for PLATFORM in `./bin/platforms`; do
   npm dedupe
   npm prune
 
+  echo $VERSION > VERSION
+
   # create bin runner
   cat << EOF > heroku
 #!/bin/bash
@@ -44,7 +47,6 @@ EOF
   cd ..
   tar cf - $HEROKU_BASE | xz -z > $HEROKU_BASE.tar.xz
   tar czf $HEROKU_BASE.tar.gz $HEROKU_BASE
-  rm -rf $HEROKU_BASE
 
   cd ../..
 done
