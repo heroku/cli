@@ -15,8 +15,8 @@ async function run (Command) {
     const {convertLegacy} = require('heroku-command')
     Command = convertLegacy(Command)
   }
-  let command = new Command()
-  await command.init({argv})
+  let command = new Command({argv})
+  await command.init()
   await command.run()
   await command.done()
   process.exit(0)
