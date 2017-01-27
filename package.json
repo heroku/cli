@@ -16,8 +16,13 @@
     "heroku-redis": "1.2.8",
     "heroku-run": "3.3.4",
     "heroku-spaces": "2.5.0",
-    "heroku-status": "3.0.2"
+    "heroku-status": "3.0.2",
+    "lodash.maxby": "4.6.0",
+    "string": "3.3.3"
   },
   "license": "ISC",
-  "repository": "https://github.com/heroku/cli"
+  "repository": "https://github.com/heroku/cli",
+  "devDependencies": {
+    "standard": "8.6.0"
+  }
 }
