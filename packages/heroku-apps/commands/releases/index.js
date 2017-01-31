@@ -36,7 +36,7 @@ function * run (context, heroku) {
   }
   let runningRelease = releases.filter((r) => r.status === 'pending').slice(-1)[0]
   let runningSlug
-  if (runningRelease) {
+  if (runningRelease && runningRelease.slug) {
     runningSlug = yield heroku.get(`/apps/${context.app}/slugs/${runningRelease.slug.id}`)
   }
 

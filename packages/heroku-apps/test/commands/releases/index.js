@@ -92,6 +92,23 @@ describe('releases', () => {
     }
   ]
 
+  const releasesNoSlug = [
+    {
+      'created_at': '2015-11-18T01:36:38Z',
+      'description': 'first commit',
+      'status': 'pending',
+      'id': '86b20c9f-f5de-4876-aa36-d3dcb1d60f6a',
+      'slug': null,
+      'updated_at': '2015-11-18T01:36:38Z',
+      'user': {
+        'email': 'jeff@heroku.com',
+        'id': '5985f8c9-a63f-42a2-bec7-40b875bb986f'
+      },
+      'version': 1,
+      'current': false
+    }
+  ]
+
   const extended = [
     {
       'created_at': '2015-11-18T01:37:41Z',
@@ -153,6 +170,19 @@ v40  Set foo config vars       jeff@heroku.com  2015/11/18 01:37:41 +0000
 v39  … release command failed  jeff@heroku.com  2015/11/18 01:36:38 +0000
 v38  second commit pending     jeff@heroku.com  2015/11/18 01:36:38 +0000
 v37  first commit              jeff@heroku.com  2015/11/18 01:36:38 +0000
+`))
+      .then(() => expect(cli.stderr, 'to be empty'))
+      .then(() => api.done())
+  })
+
+  it('shows pending releases without a slug', () => {
+    process.stdout.columns = 80
+    let api = nock('https://api.heroku.com:443')
+      .get('/apps/myapp/releases')
+      .reply(200, releasesNoSlug)
+    return cmd.run({app: 'myapp', flags: {}})
+      .then(() => expect(cli.stdout, 'to equal', `=== myapp Releases
+v1  first commit pending  jeff@heroku.com  2015/11/18 01:36:38 +0000
 `))
       .then(() => expect(cli.stderr, 'to be empty'))
       .then(() => api.done())
