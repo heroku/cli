@@ -29,4 +29,4 @@ $ npm test
   $ npm version patch/minor/major
   ```
 
-2. Open a new pr in https://github.com/heroku/cli/blob/master/package.json, updating to the appropiate heroku-orgs version.
+2. Open a new pr in https://github.com/heroku/cli/blob/master/package.json, updating to the appropriate heroku-orgs version.
