@@ -4,7 +4,35 @@ const api = require('../../lib/api')
 const KolkrabbiAPI = require('../../lib/kolkrabbi-api')
 const GitHubAPI = require('../../lib/github-api')
 const prompt = require('../../lib/prompt')
+
 const REPO_REGEX = /.+\/.+/
+const STAGING_APP_INDICATOR = '-staging'
+const PIPELINE_MIN_LENGTH = 2
+const PIPELINE_MAX_LENGTH = 30 - STAGING_APP_INDICATOR.length
+const ERR_PIPELINE_NAME_LENGTH = `Please choose a pipeline name between 2 and ${PIPELINE_MAX_LENGTH} characters long`
+const ERR_REPO_FORMAT = 'Repository name must be in the format organization/repo'
+
+function validate ({ name, repo }) {
+  const errors = []
+  const [nameIsValid, nameMsg] = validateName(name || '')
+  const [repoIsValid, repoMsg] = validateRepo(repo || '')
+
+  if (name && !nameIsValid) errors.push(nameMsg)
+  if (repo && !repoIsValid) errors.push(repoMsg)
+
+  return errors
+}
+
+function validateName (name) {
+  const isValid = name.length >= PIPELINE_MIN_LENGTH &&
+                  name.length <= PIPELINE_MAX_LENGTH
+  return isValid ? [isValid] : [isValid, ERR_PIPELINE_NAME_LENGTH]
+}
+
+function validateRepo (repo) {
+  const isValid = !!repo.match(REPO_REGEX)
+  return isValid ? [isValid] : [isValid, ERR_REPO_FORMAT]
+}
 
 function getGitHubToken (kolkrabbi) {
   return kolkrabbi.getAccount().then((account) => {
@@ -40,23 +68,30 @@ function createApp (heroku, { archiveURL, name, organization, pipeline, stage })
 }
 
 function* getNameAndRepo (args) {
-  const answers = yield prompt([{
+  const answer = yield prompt([{
     type: 'input',
     name: 'name',
     message: 'Pipeline name',
-    when () { return !args.name }
+    when () { return !args.name },
+    validate (input) {
+      const [valid, msg] = validateName(input)
+      return valid || msg
+    }
   }, {
     type: 'input',
     name: 'repo',
     message: 'GitHub repository to connect to (e.g. rails/rails)',
     when () { return !args.repo },
     validate (input) {
-      if (input.match(REPO_REGEX)) return true
-      return 'Must be in the format organization/rep  o'
+      const [valid, msg] = validateRepo(input)
+      return valid || msg
     }
   }])
 
-  return Object.assign(answers, args)
+  const reply = Object.assign(answer, args)
+  reply.name = reply.name.toLowerCase().replace(/\s/g, '-')
+
+  return reply
 }
 
 function* getSettings (branch) {
@@ -173,11 +208,19 @@ module.exports = {
     }
   ],
   run: cli.command(co.wrap(function*(context, heroku) {
+    const errors = validate(context.args)
+
+    if (errors.length) {
+      cli.error(errors.join(', '))
+      return
+    }
+
     const kolkrabbi = new KolkrabbiAPI(context.version, heroku.options.token)
     const github = new GitHubAPI(context.version, yield getGitHubToken(kolkrabbi))
 
     const organization = context.flags.organization || context.flags.team
     const { name: pipelineName, repo: repoName } = yield getNameAndRepo(context.args)
+    const stagingAppName = pipelineName + STAGING_APP_INDICATOR
     const repo = yield getRepo(github, repoName)
     const settings = yield getSettings(repo.default_branch)
 
@@ -209,7 +252,6 @@ module.exports = {
       })
     )
 
-    const stagingAppName = `${pipelineName}-staging`
     const stagingApp = yield cli.action(
       `Creating ${cli.color.app(stagingAppName)} (staging app)`,
       createApp(heroku, {
