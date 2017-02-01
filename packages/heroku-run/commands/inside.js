@@ -13,7 +13,8 @@ function * run (context, heroku) {
     dyno: context.args[0],
     command: helpers.buildCommand(context.args.slice(1)),
     'exit-code': context.flags['exit-code'],
-    env: context.flags.env
+    env: context.flags.env,
+    listen: context.flags.listen
   }
 
   let dyno = new Dyno(opts)
@@ -37,7 +38,8 @@ Examples:
   needsApp: true,
   flags: [
     {name: 'exit-code', description: 'passthrough the exit code of the remote command'},
-    {name: 'env', description: "environment variables to set (use ';' to split multiple vars)", hasValue: true}
+    {name: 'env', description: "environment variables to set (use ';' to split multiple vars)", hasValue: true},
+    {name: 'listen', description: 'listen on a local port', hasValue: false, hidden: true}
   ],
   run: cli.command(co.wrap(run))
 }

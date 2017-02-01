@@ -14,7 +14,8 @@ function * run (context, heroku) {
     'exit-code': context.flags['exit-code'],
     env: context.flags.env,
     'no-tty': context.flags['no-tty'],
-    attach: true
+    attach: true,
+    listen: context.flags.listen
   }
   if (!opts.command) throw new Error('Usage: heroku run COMMAND\n\nExample: heroku run bash')
 
@@ -49,7 +50,8 @@ Examples:
     {name: 'size', char: 's', description: 'dyno size', hasValue: true},
     {name: 'exit-code', char: 'x', description: 'passthrough the exit code of the remote command'},
     {name: 'env', char: 'e', description: "environment variables to set (use ';' to split multiple vars)", hasValue: true},
-    {name: 'no-tty', description: 'force the command to not run in a tty', hasValue: false}
+    {name: 'no-tty', description: 'force the command to not run in a tty', hasValue: false},
+    {name: 'listen', description: 'listen on a local port', hasValue: false, hidden: true}
   ],
   run: cli.command(co.wrap(run))
 }

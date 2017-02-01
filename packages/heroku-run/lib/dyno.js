@@ -7,6 +7,10 @@ let stream = require('stream')
 let cli = require('heroku-cli-util')
 let helpers = require('../lib/helpers')
 
+const http = require('https')
+const net = require('net')
+const spawn = require('child_process').spawn
+
 /** Represents a dyno process */
 class Dyno {
   /**
@@ -48,6 +52,7 @@ class Dyno {
     })
     .then(dyno => {
       this.dyno = dyno
+      if (this.dyno.name) this.opts.dyno = this.dyno.name
       if (this.opts.attach || this.opts.dyno) return this.attach()
       else if (this.opts.showStatus) cli.action.done(this._status('done'))
     })
@@ -61,27 +66,106 @@ class Dyno {
    * Attaches stdin/stdout to dyno
    */
   attach () {
+    this.uri = url.parse(this.dyno.attach_url)
+    if (this.uri.protocol === 'http:' || this.uri.protocol === 'https:') {
+      return this._ssh()
+    } else {
+      return this._rendezvous()
+    }
+  }
+
+  _rendezvous () {
     return new Promise((resolve, reject) => {
-      if (this.opts.showStatus) cli.action.status(this._status('starting'))
       this.resolve = resolve
       this.reject = reject
-      let uri = url.parse(this.dyno.attach_url)
-      let c = tls.connect(uri.port, uri.hostname, {rejectUnauthorized: this.heroku.options.rejectUnauthorized})
+
+      if (this.opts.showStatus) cli.action.status(this._status('starting'))
+      let c = tls.connect(this.uri.port, this.uri.hostname, {rejectUnauthorized: this.heroku.options.rejectUnauthorized})
       c.setTimeout(1000 * 60 * 20)
       c.setEncoding('utf8')
       c.on('connect', () => {
-        c.write(uri.path.substr(1) + '\r\n', () => {
+        c.write(this.uri.path.substr(1) + '\r\n', () => {
           if (this.opts.showStatus) cli.action.status(this._status('connecting'))
         })
       })
       c.on('data', this._readData(c))
       c.on('close', () => {
-        this.opts['exit-code'] ? reject('No exit code returned') : resolve()
+        this.opts['exit-code'] ? this.reject('No exit code returned') : this.resolve()
         if (this.unpipeStdin) this.unpipeStdin()
       })
-      c.on('error', reject)
+      c.on('error', this.reject)
       process.once('SIGINT', () => c.end())
     })
+  }
+
+  _ssh () {
+    const interval = 30 * 1000
+    const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+
+    return this.heroku.request({
+      path: `/apps/${this.opts.app}/dynos/${this.opts.dyno}`,
+      method: 'GET',
+      headers: {Accept: 'application/vnd.heroku+json; version=3'}
+    })
+    .then(dyno => {
+      this.dyno = dyno
+      cli.action.done(this._status(this.dyno.state))
+
+      if (this.dyno.state === 'starting' || this.dyno.state === 'up') return this._connect()
+      else return wait(interval).then(this._ssh.bind(this))
+    })
+    .catch(() => {
+      return wait(interval).then(this._ssh.bind(this))
+    })
+  }
+
+  _connect () {
+    return new Promise((resolve, reject) => {
+      this.resolve = resolve
+      this.reject = reject
+
+      let options = this.uri
+      options.headers = {'Connection': 'Upgrade', 'Upgrade': 'tcp'}
+      options.rejectUnauthorized = false
+      let r = http.request(options)
+      r.end()
+
+      r.on('error', this.reject)
+      r.on('upgrade', (_, remote, head) => {
+        let s = net.createServer((client) => {
+          client.on('end', () => {
+            s.close()
+            this.resolve()
+          })
+          client.on('connect', () => s.close())
+
+          client.on('error', () => this.reject)
+          remote.on('error', () => this.reject)
+
+          client.setNoDelay(true)
+          remote.setNoDelay(true)
+
+          remote.on('data', (data) => client.write(data))
+          client.on('data', (data) => remote.write(data))
+        })
+
+        s.listen(null, 'localhost', () => this._handle(s.address()))
+      })
+    })
+  }
+
+  _handle (options) {
+    const host = options.address
+    const port = options.port
+
+    if (this.opts.listen) {
+      cli.console.log(`listening on port ${host}:${port} for ssh client`)
+    } else {
+      spawn('ssh', [host, '-p', port, '-oStrictHostKeyChecking=no', '-oUserKnownHostsFile=/dev/null', '-oServerAliveInterval=20'], {
+        detached: false,
+        stdio: 'inherit'
+      })
+    }
   }
 
   _env () {
