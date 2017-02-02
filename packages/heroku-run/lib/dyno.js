@@ -52,9 +52,12 @@ class Dyno {
     })
     .then(dyno => {
       this.dyno = dyno
-      if (this.dyno.name) this.opts.dyno = this.dyno.name
-      if (this.opts.attach || this.opts.dyno) return this.attach()
-      else if (this.opts.showStatus) cli.action.done(this._status('done'))
+      if (this.opts.attach || this.opts.dyno) {
+        if (this.dyno.name && this.opts.dyno === undefined) this.opts.dyno = this.dyno.name
+        return this.attach()
+      } else if (this.opts.showStatus) {
+        cli.action.done(this._status('done'))
+      }
     })
 
     if (this.opts.showStatus) {
