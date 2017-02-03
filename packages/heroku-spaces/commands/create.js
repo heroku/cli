@@ -19,7 +19,8 @@ function * run (context, heroku) {
       features: parsers.splitCsv(context.flags.features),
       log_drain_url: context.flags['log-drain-url'],
       shield: context.flags['shield'],
-      owner_pool: context.flags['owner-pool']
+      owner_pool: context.flags['owner-pool'],
+      cidr: context.flags['cidr']
     }
   })
   space = yield cli.action(`Creating space ${cli.color.green(space)} in organization ${cli.color.cyan(context.org)}`, request)
@@ -62,7 +63,8 @@ Example:
     {name: 'features', hasValue: true, hidden: true, description: 'a list of features separated by commas'},
     {name: 'log-drain-url', hasValue: true, hidden: true, description: 'direct log drain url'},
     {name: 'owner-pool', hasValue: true, hidden: true, description: 'owner pool name'},
-    {name: 'shield', hasValue: false, hidden: true, description: 'create a Shield space'}
+    {name: 'shield', hasValue: false, hidden: true, description: 'create a Shield space'},
+    {name: 'cidr', hasValue: true, hidden: true, description: 'the RFC-1918 CIDR the space will use'}
   ],
   run: cli.command(co.wrap(run))
 }

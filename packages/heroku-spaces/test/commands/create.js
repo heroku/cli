@@ -55,4 +55,27 @@ Created at:   ${now.toISOString()}
 `))
       .then(() => api.done())
   })
+
+  it('creates a space with custom cidr', function () {
+    let api = nock('https://api.heroku.com:443')
+      .post('/spaces', {
+        name: 'my-space',
+        organization: 'my-org',
+        region: 'my-region',
+        cidr: '10.0.0.0/16'
+      })
+      .reply(201,
+        {shield: false, name: 'my-space', organization: {name: 'my-org'}, region: {name: 'my-region'}, features: [ 'one', 'two' ], state: 'enabled', created_at: now}
+    )
+    return cmd.run({org: 'my-org', flags: {space: 'my-space', region: 'my-region', features: 'one, two', cidr: '10.0.0.0/16'}, shield: true, log_drain_url: 'https://logs.cheetah.com'})
+      .then(() => expect(cli.stdout).to.equal(
+        `=== my-space
+Organization: my-org
+Region:       my-region
+State:        enabled
+Shield:       off
+Created at:   ${now.toISOString()}
+`))
+      .then(() => api.done())
+  })
 })
