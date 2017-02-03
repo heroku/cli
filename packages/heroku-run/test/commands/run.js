@@ -5,6 +5,7 @@ const cli = require('heroku-cli-util')
 const cmd = commands.find(c => c.topic === 'run' && !c.command)
 const expect = require('unexpected')
 const StdOutFixture = require('fixture-stdout')
+const assertExit = require('../assert_exit')
 
 describe('run', () => {
   beforeEach(() => cli.mockConsole())
@@ -46,9 +47,11 @@ describe('run', () => {
   })
 
   it('gets 127 status for invalid command', () => {
-    let code
-    process.exit = c => { code = c }
-    return cmd.run({app: 'heroku-run-test-app', flags: {'exit-code': true}, auth: {password: apikey}, args: ['invalid-command']})
-    .then(() => expect(code, 'to equal', 127))
+    cli.exit.mock()
+    return assertExit(127, cmd.run({
+      app: 'heroku-run-test-app',
+      flags: {'exit-code': true},
+      auth: {password: apikey},
+      args: ['invalid-command']}))
   })
 })

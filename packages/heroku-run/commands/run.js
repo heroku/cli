@@ -23,10 +23,8 @@ function * run (context, heroku) {
   try {
     yield dyno.start()
   } catch (err) {
-    if (err.exitCode) {
-      cli.error(err)
-      process.exit(err.exitCode)
-    } else throw err
+    if (err.exitCode) cli.exit(err.exitCode, err)
+    else throw err
   }
 }
 
