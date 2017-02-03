@@ -132,16 +132,30 @@ exports.attachment = function (heroku, app, id, options = {}) {
 
   // first check to see if there is an attachment matching this app/id combo
   return promise
+    .then(function (attachment) {
+      return {attachment}
+    })
+    .catch(function (error) {
+      return {error}
+    })
     // if no attachment, look up an add-on that matches the id
-    .then((attachment) => {
+    .then((attachOrError) => {
+      let {attachment, error} = attachOrError
+
       if (attachment) return attachment
+
       // If we were passed an add-on slug, there still could be an attachment
       // to the context app. Try to find and use it so `context_app` is set
       // correctly in the SSO payload.
       else if (app) {
         return exports.addon(heroku, app, id, options)
         .then((addon) => getAppAddonAttachment(addon, app))
+        .catch((addonError) => {
+          if (error) throw error
+          throw addonError
+        })
       } else {
+        if (error) throw error
         throw new NotFound()
       }
     })

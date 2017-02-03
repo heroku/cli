@@ -237,6 +237,52 @@ describe('resolve', () => {
         .then(() => appAttachment.done())
     })
 
+    it('falls back to searching by addon and addon_service when ambigious', () => {
+      let api = nock('https://api.heroku.com:443')
+        .post('/actions/addon-attachments/resolve', {'app': 'myapp', 'addon_attachment': 'myattachment-3', 'addon_service': 'slowdb'}).reply(200, [
+          {app: {name: 'myapp'}, name: 'some-random-name-1'},
+          {app: {name: 'myapp'}, name: 'some-random-name-2'}
+        ])
+
+      let appAddon = nock('https://api.heroku.com:443')
+        .post('/actions/addons/resolve', {'app': 'myapp', 'addon': 'myattachment-3', 'addon_service': 'slowdb'}).reply(200, [{id: '1e97e8ba-fd24-48a4-8118-eaf287eb7a0f', name: 'myaddon-3'}])
+
+      let appAttachment = nock('https://api.heroku.com:443')
+        .get('/addons/1e97e8ba-fd24-48a4-8118-eaf287eb7a0f/addon-attachments').reply(200, [{app: {name: 'myapp'}, name: 'some-random-name', addon_service: {name: 'slowdb'}}])
+
+      return resolve.attachment(new Heroku(), 'myapp', 'myattachment-3', {'addon_service': 'slowdb'})
+        .then((addon) => expect(addon, 'to satisfy', {name: 'some-random-name'}))
+        .then(() => api.done())
+        .then(() => appAddon.done())
+        .then(() => appAttachment.done())
+    })
+
+    it('throws original error when ambigious and searching by addon and addon_service is ambigious', () => {
+      let api = nock('https://api.heroku.com:443')
+        .post('/actions/addon-attachments/resolve', {'app': 'myapp', 'addon_attachment': 'myattachment-3', 'addon_service': 'slowdb'}).reply(200, [
+          {app: {name: 'myapp'}, name: 'some-random-name-1'},
+          {app: {name: 'myapp'}, name: 'some-random-name-2'}
+        ])
+
+      let appAddon = nock('https://api.heroku.com:443')
+        .post('/actions/addons/resolve', {'app': 'myapp', 'addon': 'myattachment-3', 'addon_service': 'slowdb'}).reply(200, [{id: '1e97e8ba-fd24-48a4-8118-eaf287eb7a0f', name: 'myaddon-3'}])
+
+      let appAttachment = nock('https://api.heroku.com:443')
+        .get('/addons/1e97e8ba-fd24-48a4-8118-eaf287eb7a0f/addon-attachments').reply(200, [
+          {app: {name: 'myapp'}, name: 'some-random-name-a', addon_service: {name: 'slowdb'}},
+          {app: {name: 'myapp'}, name: 'some-random-name-b', addon_service: {name: 'slowdb'}}
+        ])
+
+      return resolve.attachment(new Heroku(), 'myapp', 'myattachment-3', {'addon_service': 'slowdb'})
+        .then(() => { throw new Error('unreachable') })
+        .catch(function (err) {
+          api.done()
+          appAddon.done()
+          appAttachment.done()
+          expect(err, 'to satisfy', {message: 'Ambiguous identifier; multiple matching add-ons found: some-random-name-1, some-random-name-2.', type: 'addon_attachment'})
+        })
+    })
+
     it('falls back to searching by addon and ignores addon_service if not passed', () => {
       let api = nock('https://api.heroku.com:443')
         .post('/actions/addon-attachments/resolve', {'app': 'myapp', 'addon_attachment': 'myattachment-3'}).reply(404)
