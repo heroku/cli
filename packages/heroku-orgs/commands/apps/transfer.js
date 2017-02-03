@@ -4,7 +4,6 @@ let _ = require('lodash')
 let AppTransfer = require('../../lib/app_transfer')
 let cli = require('heroku-cli-util')
 let co = require('co')
-let extend = require('util')._extend
 let inquirer = require('inquirer')
 let lock = require('./lock.js').apps
 let Utils = require('../../lib/utils')
@@ -100,10 +99,12 @@ Examples:
 }
 
 module.exports = cmd
-module.exports.sharing = extend({}, cmd)
-module.exports.sharing.hidden = true
-module.exports.sharing.topic = 'sharing'
-module.exports.sharing.run = function () {
-  cli.error(`This command is now ${cli.color.cyan('heroku apps:transfer')}`)
-  process.exit(1)
+module.exports.sharing = {
+  topic: 'sharing',
+  command: 'transfer',
+  hidden: true,
+  run: () => {
+    cli.error(`This command is now ${cli.color.cyan('heroku apps:transfer')}`)
+    process.exit(1)
+  }
 }

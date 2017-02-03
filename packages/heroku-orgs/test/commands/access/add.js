@@ -1,7 +1,7 @@
 'use strict'
 /* globals describe it beforeEach afterEach context cli nock expect */
 
-let cmd = require('../../../commands/access/add')
+let cmd = require('../../../commands/access/add')[0]
 let error = require('../../../lib/error')
 let assertExit = require('../../assert_exit')
 let unwrap = require('../../unwrap')

@@ -1,7 +1,7 @@
 'use strict'
 /* globals describe it beforeEach afterEach context cli nock expect*/
 
-let cmd = require('../../../commands/access/remove')
+let cmd = require('../../../commands/access/remove')[0]
 let stubDelete = require('../../stub/delete')
 let apiDelete
 

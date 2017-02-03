@@ -2,7 +2,6 @@
 
 let cli = require('heroku-cli-util')
 let co = require('co')
-let extend = require('util')._extend
 let Utils = require('../../lib/utils')
 
 function * run (context, heroku) {
@@ -72,7 +71,7 @@ function * run (context, heroku) {
   Utils.warnUsingOrgFlagInTeams(orgInfo, context)
 }
 
-let cmd = {
+let add = {
   topic: 'members',
   command: 'add',
   description: 'adds a user to an organization or a team',
@@ -86,7 +85,6 @@ let cmd = {
   run: cli.command(co.wrap(run))
 }
 
-module.exports.add = cmd
-module.exports.set = extend({}, cmd)
-module.exports.set.command = 'set'
-module.exports.set.description = 'sets a members role in an organization or a team'
+let set = Object.assign({}, add, {command: 'set', description: 'sets a members role in an organization or a team'})
+
+module.exports = [add, set]

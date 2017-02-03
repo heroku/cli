@@ -1,7 +1,7 @@
 'use strict'
 /* globals describe it beforeEach afterEach cli nock expect context */
 
-let cmd = require('../../../commands/members/add').add
+let cmd = require('../../../commands/members/add')[0]
 let stubGet = require('../../stub/get')
 let stubPut = require('../../stub/put')
 

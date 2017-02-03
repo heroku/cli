@@ -5,7 +5,6 @@ let _ = require('lodash')
 let Utils = require('../../lib/utils')
 let co = require('co')
 let error = require('../../lib/error')
-let extend = require('util')._extend
 
 function * run (context, heroku) {
   let appName = context.app
@@ -41,25 +40,27 @@ function * run (context, heroku) {
   yield cli.action(`${output}`, request)
 }
 
-let cmd = {
-  topic: 'access',
-  needsAuth: true,
-  needsApp: true,
-  command: 'add',
-  description: 'Add new users to your app',
-  help: 'heroku access:add user@email.com --app APP # Add a collaborator to your app\n\nheroku access:add user@email.com --app APP --permissions deploy,manage,operate # permissions must be comma separated',
-  args: [{name: 'email', optional: false}],
-  flags: [
-    {name: 'permissions', description: 'list of permissions comma separated', hasValue: true, optional: true},
-    {name: 'privileges', hasValue: true, optional: true, hidden: true} // Deprecated flag
-  ],
-  run: cli.command(co.wrap(run))
-}
-
-module.exports = cmd
-module.exports.sharing = extend({}, cmd)
-module.exports.sharing.hidden = true
-module.exports.sharing.topic = 'sharing'
-module.exports.sharing.run = function () {
-  cli.error(`This command is now ${cli.color.cyan('heroku access:add')}`); process.exit(1)
-}
+module.exports = [
+  {
+    topic: 'access',
+    needsAuth: true,
+    needsApp: true,
+    command: 'add',
+    description: 'Add new users to your app',
+    help: 'heroku access:add user@email.com --app APP # Add a collaborator to your app\n\nheroku access:add user@email.com --app APP --permissions deploy,manage,operate # permissions must be comma separated',
+    args: [{name: 'email', optional: false}],
+    flags: [
+      {name: 'permissions', description: 'list of permissions comma separated', hasValue: true, optional: true},
+      {name: 'privileges', hasValue: true, optional: true, hidden: true} // Deprecated flag
+    ],
+    run: cli.command(co.wrap(run))
+  }, {
+    topic: 'sharing',
+    command: 'add',
+    hidden: true,
+    run: () => {
+      cli.error(`This command is now ${cli.color.cyan('heroku access:add')}`)
+      process.exit(1)
+    }
+  }
+]

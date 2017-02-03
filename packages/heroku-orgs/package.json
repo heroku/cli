@@ -25,7 +25,8 @@
     "co": "4.6.0",
     "heroku-cli-util": "6.0.15",
     "inquirer": "1.1.2",
-    "lodash": "4.15.0"
+    "lodash": "4.15.0",
+    "lodash.flatten": "4.4.0"
   },
   "devDependencies": {
     "chai": "*",
