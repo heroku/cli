@@ -164,8 +164,11 @@ module.exports = {
 
     let vars = {}
     addon.config_vars.forEach(function (key) { vars[key] = config[key] })
+    let nonBastionVars = addon.config_vars.filter(function (configVar) {
+      return !(/(?:BASTIONS|BASTION_KEY|BASTION_REKEYS_AFTER)$/.test(configVar))
+    }).join(', ')
 
-    cli.log(`Connecting to ${addon.name} (${addon.config_vars.join(', ')}):`)
+    cli.log(`Connecting to ${addon.name} (${nonBastionVars}):`)
     maybeTunnel(redis, vars)
   }))
 }

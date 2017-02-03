@@ -93,7 +93,9 @@ describe('heroku redis:cli', function () {
   it('# for bastion it uses tunnel.connect', function () {
     let app = nock('https://api.heroku.com:443')
       .get('/apps/example/addons').reply(200, [
-        {name: 'redis-haiku', addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_BASTIONS']}
+        { name: 'redis-haiku',
+          addon_service: {name: 'heroku-redis'},
+          config_vars: ['REDIS_URL', 'REDIS_BASTIONS', 'REDIS_BASTION_KEY', 'REDIS_BASTION_REKEYS_AFTER'] }
       ])
 
     let configVars = nock('https://api.heroku.com:443')
@@ -109,7 +111,7 @@ describe('heroku redis:cli', function () {
     .then(() => app.done())
     .then(() => configVars.done())
     .then(() => redis.done())
-    .then(() => expect(cli.stdout).to.equal('Connecting to redis-haiku (REDIS_BASTIONS):\n'))
+    .then(() => expect(cli.stdout).to.equal('Connecting to redis-haiku (REDIS_URL):\n'))
     .then(() => expect(cli.stderr).to.equal(''))
     .then(() => expect(tunnel.called).to.equal(true))
   })
