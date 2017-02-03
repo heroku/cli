@@ -5,7 +5,7 @@ let nock = require('nock')
 let lolex = require('lolex')
 let expect = require('chai').expect
 
-let command = require('../../../lib/commands/redis/wait.js')
+let command = require('../../commands/wait')
 
 let clock
 
@@ -15,7 +15,7 @@ let clock
  * after rather an an afterEach or the test itself
  */
 describe('heroku redis:wait ', function () {
-  require('./shared.js').shouldHandleArgs(command)
+  require('../lib/shared').shouldHandleArgs(command)
 })
 
 describe('heroku redis:wait waiting? false', function () {

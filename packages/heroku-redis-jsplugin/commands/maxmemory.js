@@ -2,7 +2,7 @@
 
 let co = require('co')
 let cli = require('heroku-cli-util')
-let api = require('./shared.js')
+let api = require('../lib/shared')
 
 module.exports = {
   topic: 'redis',

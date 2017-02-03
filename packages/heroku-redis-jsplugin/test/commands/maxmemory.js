@@ -5,10 +5,10 @@ let expect = require('chai').expect
 let nock = require('nock')
 let exit = require('heroku-cli-util').exit
 
-let command = require('../../../lib/commands/redis/maxmemory.js')
+let command = require('../../commands/maxmemory')
 
 describe('heroku redis:maxmemory', function () {
-  require('./shared.js').shouldHandleArgs(command, {policy: 'noeviction'})
+  require('../lib/shared').shouldHandleArgs(command, {policy: 'noeviction'})
 })
 
 describe('heroku redis:maxmemory', function () {

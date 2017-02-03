@@ -1,10 +1,10 @@
 'use strict'
 
 let co = require('co')
-let api = require('./shared.js')
+let api = require('../lib/shared')
 let cli = require('heroku-cli-util')
 let net = require('net')
-let Parser = require('ioredis/lib/parsers/javascript.js')
+let Parser = require('ioredis/lib/parsers/javascript')
 let readline = require('readline')
 let tls = require('tls')
 let url = require('url')

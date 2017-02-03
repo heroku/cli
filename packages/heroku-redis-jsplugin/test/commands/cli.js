@@ -9,8 +9,8 @@ let expect = require('chai').expect
 let command, net, tls, tunnel
 
 describe('heroku redis:cli', function () {
-  let command = proxyquire('../../../lib/commands/redis/cli.js', {net: {}, tls: {}, ssh2: {}})
-  require('./shared.js').shouldHandleArgs(command)
+  let command = proxyquire('../../commands/cli.js', {net: {}, tls: {}, ssh2: {}})
+  require('../lib/shared').shouldHandleArgs(command)
 })
 
 describe('heroku redis:cli', function () {
@@ -39,7 +39,7 @@ describe('heroku redis:cli', function () {
 
     let ssh2 = { Client }
 
-    command = proxyquire('../../../lib/commands/redis/cli.js', {net, tls, ssh2})
+    command = proxyquire('../../commands/cli.js', {net, tls, ssh2})
   })
 
   it('# for hobby it uses net.connect', function () {

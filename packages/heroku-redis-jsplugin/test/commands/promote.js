@@ -4,10 +4,10 @@
 let nock = require('nock')
 let expect = require('chai').expect
 
-let command = require('../../../lib/commands/redis/promote.js')
+let command = require('../../commands/promote')
 
 describe('heroku redis:promote', function () {
-  require('./shared.js').shouldHandleArgs(command)
+  require('../lib/shared').shouldHandleArgs(command)
 })
 
 describe('heroku redis:promote', function () {

@@ -5,10 +5,10 @@ let expect = require('chai').expect
 let nock = require('nock')
 let exit = require('heroku-cli-util').exit
 
-let command = require('../../../lib/commands/redis/maintenance.js')
+let command = require('../../commands/maintenance')
 
 describe('heroku redis:maintenance', function () {
-  require('./shared.js').shouldHandleArgs(command)
+  require('../lib/shared').shouldHandleArgs(command)
 })
 
 describe('heroku redis:maintenance', function () {

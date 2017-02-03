@@ -5,8 +5,8 @@ let expect = require('chai').expect
 let nock = require('nock')
 
 let commands = [
-  {txt: ':info', command: require('../../../lib/commands/redis/info.js')},
-  {txt: '', command: require('../../../lib/commands/redis/index.js')}
+  {txt: ':info', command: require('../../commands/info')},
+  {txt: '', command: require('../../commands/index')}
 ]
 
 commands.forEach((cmd) => {

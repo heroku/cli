@@ -1,7 +1,7 @@
 'use strict'
 
 let co = require('co')
-let api = require('./shared.js')
+let api = require('../lib/shared')
 let cli = require('heroku-cli-util')
 
 module.exports = {
