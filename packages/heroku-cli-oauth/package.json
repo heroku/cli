@@ -12,12 +12,12 @@
     "lodash": "4.15.0"
   },
   "devDependencies": {
-    "mocha": "3.0.2",
-    "mocha-junit-reporter": "1.12.0",
-    "nock": "8.0.0",
-    "nyc": "8.1.0",
-    "standard": "8.0.0",
-    "unexpected": "10.16.0"
+    "mocha": "3.2.0",
+    "mocha-junit-reporter": "1.13.0",
+    "nock": "9.0.4",
+    "nyc": "10.1.2",
+    "standard": "8.6.0",
+    "unexpected": "10.25.0"
   },
   "homepage": "https://github.com/heroku/heroku-cli-oauth",
   "keywords": [
