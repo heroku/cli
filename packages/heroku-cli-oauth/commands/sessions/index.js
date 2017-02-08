@@ -2,9 +2,9 @@
 
 const co = require('co')
 const cli = require('heroku-cli-util')
-const _ = require('lodash')
 
 function * run (context, heroku) {
+  const _ = require('lodash')
   let sessions = yield heroku.get('/oauth/sessions')
   sessions = _.sortBy(sessions, 'description')
 

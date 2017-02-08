@@ -2,9 +2,9 @@
 
 const co = require('co')
 const cli = require('heroku-cli-util')
-const _ = require('lodash')
 
 function * run (context, heroku) {
+  const _ = require('lodash')
   let authorizations = yield heroku.get('/oauth/authorizations')
   authorizations = _.sortBy(authorizations, 'description')
 
