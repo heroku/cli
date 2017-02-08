@@ -106,7 +106,7 @@ ${certificateDetails}
       .catch(function (err) {
         sslDoctor.done()
         expect(cli.stdout).to.equal('')
-        expect(cli.stderr).to.equal('Resolving trust chain... !!!\n')
+        expect(cli.stderr).to.equal('Resolving trust chain... !\n')
         expect(err.message).to.equal('No certificate given is a domain name certificate.')
       })
   })

@@ -178,7 +178,7 @@ ${certificateDetails}
         mockSsl.done()
         sslDoctor.done()
         expect(cli.stdout).to.equal('')
-        expect(cli.stderr).to.equal('Resolving trust chain... !!!\n')
+        expect(cli.stderr).to.equal('Resolving trust chain... !\n')
         expect(err.message).to.equal('No certificate given is a domain name certificate.')
       })
   })
@@ -500,7 +500,7 @@ bar.example.org  CNAME        bar.example.com.herokudns.com
         domainsCreateFoo.done()
         domainsCreateBar.done()
         domainsCreateBiz.done()
-        expect(unwrap(cli.stderr)).to.equal('Adding SSL certificate to example... done\n\nAdding domains foo.example.org, bar.example.org, biz.example.com to example... !!! An error was encountered when adding bar.example.org example.com is currently in use by another app.\n')
+        expect(unwrap(cli.stderr)).to.equal('Adding SSL certificate to example... done\n\nAdding domains foo.example.org, bar.example.org, biz.example.com to example... ! An error was encountered when adding bar.example.org example.com is currently in use by another app.\n')
         /* eslint-disable no-trailing-spaces */
         /* eslint-disable no-multiple-empty-lines */
         expect(cli.stdout).to.equal(
@@ -1029,7 +1029,7 @@ biz.example.com  CNAME        biz.example.com.herokudns.com
         return assert.isRejected(certs.run({app: 'example', args: {CRT: 'pem_file', KEY: 'key_file'}, flags: {bypass: true}}), /Timed out while waiting for stable domains to be created/).then(function () {
           mock.done()
           domainsMock.done()
-          expect(unwrap(cli.stderr)).to.equal('Adding SSL certificate to example... done\nWaiting for stable domains to be created... !!!\n')
+          expect(unwrap(cli.stderr)).to.equal('Adding SSL certificate to example... done\nWaiting for stable domains to be created... !\n')
           /* eslint-disable no-trailing-spaces */
           expect(cli.stdout).to.equal(
             `Certificate details:
