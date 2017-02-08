@@ -20,9 +20,18 @@
     "lodash.maxby": "4.6.0",
     "string": "3.3.3"
   },
+  "devDependencies": {
+    "chai": "3.5.0",
+    "mocha": "3.2.0",
+    "nyc": "10.1.2",
+    "standard": "8.6.0"
+  },
+  "engines": {
+    "node": ">= 7.0.0"
+  },
   "license": "ISC",
   "repository": "https://github.com/heroku/cli",
-  "devDependencies": {
-    "standard": "8.6.0"
+  "scripts": {
+    "test": "nyc mocha && standard"
   }
 }
