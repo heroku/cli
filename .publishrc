@@ -3,14 +3,15 @@
     "vulnerableDependencies": false,
     "uncommittedChanges": true,
     "untrackedFiles": true,
-    "sensitiveData": true,
+    "sensitiveData": {
+      "ignore": [
+        "resources/cacert.pem"
+      ]
+    },
     "branch": "v6",
     "gitTag": true
   },
   "confirm": true,
   "publishTag": "latest",
-  "prePublishScript": "npm test",
-  "ignore": [
-    "resources/cacert.pem"
-  ]
+  "prePublishScript": "npm test"
 }
