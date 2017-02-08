@@ -1,5 +1,3 @@
-'use strict'
-
 const {describe, it} = require('mocha')
 const exec = require('heroku-cli-test')(require('../../lib/commands'))
 

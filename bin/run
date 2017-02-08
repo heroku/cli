@@ -1,4 +1,4 @@
 #!/bin/bash
 set -e
 
-node --harmony-async-await ./cli.js $*
+node --harmony-async-await --use_strict ./cli.js $*
