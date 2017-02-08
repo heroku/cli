@@ -25,10 +25,9 @@ async function run (Command) {
 async function main (Command) {
   try {
     if (argv.length < 2) await help()
-    await run(plugins.find(argv[1]))
+    await run(plugins.commands.find(argv[1]))
     plugins.load()
-    await run(plugins.find(argv[1]))
-    if (Command) await run(Command)
+    await run(plugins.commands.find(argv[1]))
     await help()
   } catch (err) {
     console.error(err)
