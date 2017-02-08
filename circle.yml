@@ -4,10 +4,10 @@ machine:
     version: 7.5.0
   environment:
     PATH: "${PATH}:${HOME}/${CIRCLE_PROJECT_REPONAME}/node_modules/.bin"
-  cache_directories:
-    - ~/.cache/yarn
 
 dependencies:
+  cache_directories:
+    - ~/.cache/yarn
   override:
     - yarn
 
