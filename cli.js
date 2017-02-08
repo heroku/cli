@@ -12,7 +12,7 @@ async function run (Command) {
   if (!Command) return
   if (!Command._version) {
     // v5 command
-    const {convertLegacy} = require('heroku-command')
+    const {convertLegacy} = require('heroku-cli-command')
     Command = convertLegacy(Command)
   }
   let command = new Command({argv})
