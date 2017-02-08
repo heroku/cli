@@ -8,23 +8,22 @@
   },
   "dependencies": {
     "co": "4.6.0",
-    "heroku-cli-util": "6.0.15",
-    "lodash.maxby": "4.5.1",
-    "lodash.padend": "4.6.0",
-    "moment": "2.14.1",
+    "heroku-cli-util": "6.1.2",
+    "lodash.maxby": "4.6.0",
+    "lodash.padend": "4.6.1",
+    "moment": "2.17.1",
     "sprintf-js": "^1.0.3"
   },
   "devDependencies": {
-    "codeclimate-test-reporter": "0.3.3",
-    "coveralls": "2.11.12",
-    "install": "0.8.1",
-    "mocha": "2.5.3",
-    "nock": "8.0.0",
-    "npm": "3.10.5",
-    "nyc": "7.1.0",
-    "publish-please": "2.1.4",
-    "standard": "7.1.2",
-    "unexpected": "10.15.0"
+    "codeclimate-test-reporter": "0.4.0",
+    "coveralls": "2.11.16",
+    "install": "0.8.7",
+    "mocha": "3.2.0",
+    "nock": "9.0.4",
+    "nyc": "10.1.2",
+    "publish-please": "2.2.0",
+    "standard": "8.6.0",
+    "unexpected": "10.25.0"
   },
   "homepage": "https://github.com/heroku/heroku-status",
   "keywords": [
