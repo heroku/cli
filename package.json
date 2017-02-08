@@ -31,7 +31,12 @@
   },
   "license": "ISC",
   "repository": "https://github.com/heroku/cli",
+  "standard": {
+    "ignore": [
+      "lib/linewrap.js"
+    ]
+  },
   "scripts": {
-    "test": "nyc mocha && standard"
+    "test": "nyc mocha --harmony-async-await && standard"
   }
 }
