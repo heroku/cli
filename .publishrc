@@ -2,7 +2,7 @@
   "validations": {
     "vulnerableDependencies": true,
     "uncommittedChanges": true,
-    "untrackedFiles": true,
+    "untrackedFiles": false,
     "sensitiveData": true,
     "branch": "v6",
     "gitTag": true

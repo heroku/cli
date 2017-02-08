@@ -35,7 +35,8 @@
   "repository": "https://github.com/heroku/cli",
   "scripts": {
     "postversion": "publish-please",
-    "preversion": "publish-please guard",
+    "prepublish": "publish-please guard",
+    "preversion": "npm test",
     "test": "nyc mocha --harmony-async-await --use_strict && standard"
   },
   "standard": {
