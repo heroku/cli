@@ -47,18 +47,18 @@
   "devDependencies": {
     "chai": "^3.3.0",
     "changelog": "1.0.7",
-    "fs-extra": "1.0.0",
+    "fs-extra": "2.0.0",
     "lolex": "1.5.2",
-    "mocha": "3.1.2",
-    "mocha-junit-reporter": "1.12.1",
-    "mockdate": "2.0.0",
-    "nock": "9.0.2",
-    "nyc": "8.4.0",
-    "proxyquire": "1.7.10",
+    "mocha": "3.2.0",
+    "mocha-junit-reporter": "1.13.0",
+    "mockdate": "2.0.1",
+    "nock": "9.0.4",
+    "nyc": "10.1.2",
+    "proxyquire": "1.7.11",
     "rimraf": "2.5.4",
-    "standard": "8.5.0",
+    "standard": "8.6.0",
     "time-require": "0.1.2",
-    "unexpected": "10.18.1"
+    "unexpected": "10.25.0"
   },
   "homepage": "https://github.com/heroku/heroku-apps",
   "keywords": [

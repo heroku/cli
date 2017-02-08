@@ -31,7 +31,7 @@ describe('apps:errors', () => {
       step: '1h0m0s',
       data: { H12: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 1, null, null, 1, null, null, null ],
         H25: [ null, null, null, null, 1, null, null, 1, null, null, null, null, 1, null, null, null, null, null, null, null, null, null, null, null, null ],
-    H27: [ null, null, null, null, null, null, null, null, null, 1, 1, null, null, null, null, null, null, null, null, 4, null, null, null, 3, null ] } }
+        H27: [ null, null, null, null, null, null, null, null, null, 1, 1, null, null, null, null, null, null, null, null, 4, null, null, null, 3, null ] } }
   }
 
   it('shows no errors', () => {
