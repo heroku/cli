@@ -24,7 +24,7 @@ function getColorForIdentifier (i) {
   return assignedColors[i]
 }
 
-let lineRegex = /^(.*?\[([\w-]+)([\d\.]+)?\]:)(.*)?$/
+let lineRegex = /^(.*?\[([\w-]+)([\d.]+)?]:)(.*)?$/
 function colorize (line) {
   let parsed = line.match(lineRegex)
   if (!parsed) return line
