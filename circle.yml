@@ -2,6 +2,17 @@
 machine:
   node:
     version: 7.5.0
+  environment:
+    PATH: "${PATH}:${HOME}/${CIRCLE_PROJECT_REPONAME}/node_modules/.bin"
+  cache_directories:
+    - ~/.cache/yarn
+
+dependencies:
+  override:
+    - yarn
+
 test:
+  override:
+    - yarn test
   post:
     - nyc report --reporter=text-lcov > coverage.lcov && bash <(curl -s https://codecov.io/bash)
