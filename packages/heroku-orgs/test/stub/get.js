@@ -107,15 +107,18 @@ function teamInvites (invites = [
 
 function orgMembers (members = [
   {
-    email: 'raulb@heroku.com', role: 'admin',
+    email: 'raulb@heroku.com',
+    role: 'admin',
     user: { email: 'raulb@heroku.com' }
   },
   {
-    email: 'bob@heroku.com', role: 'viewer',
+    email: 'bob@heroku.com',
+    role: 'viewer',
     user: { email: 'bob@heroku.com' }
   },
   {
-    email: 'peter@heroku.com', role: 'collaborator',
+    email: 'peter@heroku.com',
+    role: 'collaborator',
     user: { email: 'peter@heroku.com' }
   }
 ]) {
@@ -164,8 +167,9 @@ function variableSizeOrgMembers (orgSize) {
   orgSize = (typeof (orgSize) === 'undefined') ? 1 : orgSize
   let orgMembers = []
   for (let i = 0; i < orgSize; i++) {
-    orgMembers.push({email: `test${i}@heroku.com`, role: 'admin',
-    user: { email: `test${i}@heroku.com` }})
+    orgMembers.push({email: `test${i}@heroku.com`,
+      role: 'admin',
+      user: { email: `test${i}@heroku.com` }})
   }
   return nock('https://api.heroku.com:443')
   .get('/organizations/myorg/members')

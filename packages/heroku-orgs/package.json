@@ -31,10 +31,10 @@
   "devDependencies": {
     "chai": "*",
     "mocha": "*",
-    "mocha-junit-reporter": "1.12.0",
+    "mocha-junit-reporter": "1.13.0",
     "nock": "*",
-    "nyc": "8.1.0",
-    "proxyquire": "1.7.10",
-    "standard": "7.1.2"
+    "nyc": "10.1.2",
+    "proxyquire": "1.7.11",
+    "standard": "8.6.0"
   }
 }

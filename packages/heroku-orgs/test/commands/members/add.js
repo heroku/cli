@@ -5,7 +5,6 @@ let cmd = require('../../../commands/members/add')[0]
 let stubGet = require('../../stub/get')
 let stubPut = require('../../stub/put')
 
-
 describe('heroku members:add', () => {
   let apiUpdateMemberRole
 
