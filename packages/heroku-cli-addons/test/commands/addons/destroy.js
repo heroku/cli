@@ -21,4 +21,16 @@ describe('addons:destroy', () => {
       .then(() => expect(cli.stderr, 'to equal', 'Destroying db3-swiftly-123 on myapp... done\n'))
       .then(() => api.done())
   })
+
+  it('fails when addon app is not the app specified', () => {
+    let addon = {id: 201, name: 'db4-swiftly-123', addon_service: {name: 'heroku-db4'}, app: {name: 'myotherapp', id: 101}}
+
+    let api = nock('https://api.heroku.com:443')
+      .post('/actions/addons/resolve', {'app': 'myapp', 'addon': 'heroku-db4'}).reply(200, [addon])
+
+    return expect(
+      cmd.run({app: 'myapp', args: ['heroku-db4'], flags: {confirm: 'myapp'}}),
+      'to be rejected with', 'db4-swiftly-123 is on myotherapp not myapp'
+    ).then(() => api.done())
+  })
 })
