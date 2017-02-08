@@ -65,7 +65,7 @@ available for one month after creation on ${report.created_at}
 
   let report
   let id = args['DATABASE|REPORT_ID']
-  if (id && id.match(/^[a-z0-9\-]{36}$/)) {
+  if (id && id.match(/^[a-z0-9-]{36}$/)) {
     report = yield heroku.get(`/reports/${encodeURIComponent(id)}`, {host: PGDIAGNOSE_HOST})
   } else {
     report = yield generateReport(id)
