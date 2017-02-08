@@ -4,4 +4,4 @@ machine:
     version: 7.5.0
 test:
   post:
-    - bash <(curl -s https://codecov.io/bash)
+    - nyc report --reporter=text-lcov > coverage.lcov && bash <(curl -s https://codecov.io/bash)
