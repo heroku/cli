@@ -34,8 +34,9 @@
   "license": "ISC",
   "repository": "https://github.com/heroku/cli",
   "scripts": {
+    "postversion": "publish-please",
     "prepublish": "publish-please guard",
-    "publish-please": "publish-please",
+    "preversion": "npm test",
     "test": "nyc mocha --harmony-async-await --use_strict && standard"
   },
   "standard": {
