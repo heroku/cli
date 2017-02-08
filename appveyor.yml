@@ -1,9 +1,12 @@
-clone_folder: C:\gopath\src\github.com\heroku\cli
-
 environment:
-  GOPATH: C:\gopath
+  nodejs_version: 7.5.0
 
-build: off
+install:
+  - npm install
 
 test_script:
-  - go test -v -race -cover -coverprofile=coverage.out -ginkgo.v -tags test
+  - node --version
+  - npm --version
+  - npm test
+
+build: off
