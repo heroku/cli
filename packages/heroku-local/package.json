@@ -8,11 +8,11 @@
   },
   "dependencies": {
     "co": "4.6.0",
-    "foreman": "2.0.0-1",
-    "heroku-cli-util": "6.0.15"
+    "foreman": "2.0.0",
+    "heroku-cli-util": "6.1.3"
   },
   "devDependencies": {
-    "standard": "7.1.2"
+    "standard": "8.6.0"
   },
   "keywords": [
     "heroku-plugin"
