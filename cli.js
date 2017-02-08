@@ -22,7 +22,7 @@ async function run (Command) {
   process.exit(0)
 }
 
-async function main (Command) {
+async function main (args) {
   try {
     if (argv.length < 2) await help()
     await run(plugins.commands.find(argv[1]))
@@ -35,4 +35,4 @@ async function main (Command) {
   }
 }
 
-main()
+module.exports = main()
