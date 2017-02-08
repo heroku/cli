@@ -9,5 +9,8 @@
   },
   "confirm": true,
   "publishTag": "latest",
-  "prePublishScript": "npm test"
+  "prePublishScript": "npm test",
+  "ignore": [
+    "resources/cacert.pem"
+  ]
 }
