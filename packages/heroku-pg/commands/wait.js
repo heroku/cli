@@ -57,6 +57,7 @@ function * run (context, heroku) {
 module.exports = {
   topic: 'pg',
   command: 'wait',
+  description: 'blocks until database is available',
   needsApp: true,
   needsAuth: true,
   args: [{name: 'database', optional: true}],

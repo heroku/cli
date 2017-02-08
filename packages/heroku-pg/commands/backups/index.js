@@ -111,6 +111,7 @@ function * list (context, heroku) {
 module.exports = {
   topic: 'pg',
   command: 'backups',
+  description: 'list database backups',
   needsApp: true,
   needsAuth: true,
   variableArgs: true,

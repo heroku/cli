@@ -25,6 +25,7 @@ Use ${cli.color.cmd('heroku pg:backups:schedule')} to set one up`)
 module.exports = {
   topic: 'pg',
   command: 'backups:schedules',
+  description: 'list backup schedule',
   needsApp: true,
   needsAuth: true,
   run: cli.command({preauth: true}, co.wrap(run))

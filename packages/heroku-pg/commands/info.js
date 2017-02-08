@@ -70,6 +70,7 @@ function * run (context, heroku) {
 
 let cmd = {
   topic: 'pg',
+  description: 'show database information',
   needsApp: true,
   needsAuth: true,
   args: [{name: 'database', optional: true}],
