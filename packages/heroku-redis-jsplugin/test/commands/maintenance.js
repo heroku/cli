@@ -58,7 +58,7 @@ describe('heroku redis:maintenance', function () {
         {name: 'redis-haiku', addon_service: {name: 'heroku-redis'}, plan: {name: 'premium-0'}, config_vars: ['REDIS_FOO', 'REDIS_BAR']}
       ])
 
-    let app_info = nock('https://api.heroku.com:443')
+    let appInfo = nock('https://api.heroku.com:443')
       .get('/apps/example').reply(200, { maintenance: true })
 
     let redis = nock('https://redis-api.heroku.com:443')
@@ -66,7 +66,7 @@ describe('heroku redis:maintenance', function () {
 
     return expect(command.run({app: 'example', args: {}, flags: {run: true}, auth: {username: 'foobar', password: 'password'}})).to.be.rejectedWith(exit.ErrorExit)
     .then(() => app.done())
-    .then(() => app_info.done())
+    .then(() => appInfo.done())
     .then(() => redis.done())
     .then(() => expect(cli.stdout).to.equal('Message\n'))
     .then(() => expect(cli.stderr).to.equal(''))
@@ -78,12 +78,12 @@ describe('heroku redis:maintenance', function () {
         {name: 'redis-haiku', addon_service: {name: 'heroku-redis'}, plan: {name: 'premium-0'}, config_vars: ['REDIS_FOO', 'REDIS_BAR']}
       ])
 
-    let app_info = nock('https://api.heroku.com:443')
+    let appInfo = nock('https://api.heroku.com:443')
       .get('/apps/example').reply(200, { maintenance: false })
 
     return expect(command.run({app: 'example', args: {}, flags: {run: true}, auth: {username: 'foobar', password: 'password'}})).to.be.rejectedWith(exit.ErrorExit)
     .then(() => app.done())
-    .then(() => app_info.done())
+    .then(() => appInfo.done())
     .then(() => expect(cli.stdout).to.equal(''))
     .then(() => expect(cli.stderr).to.equal(' ▸    Application must be in maintenance mode or --force flag must be used\n'))
   })

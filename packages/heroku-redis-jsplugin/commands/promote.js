@@ -16,7 +16,7 @@ module.exports = {
 
     let addon = yield api.getRedisAddon(context, heroku, addonsList)
 
-    let redisFilter = api.make_addons_filter('REDIS_URL')
+    let redisFilter = api.makeAddonsFilter('REDIS_URL')
     let redis = redisFilter(yield addonsList)
 
     // Check if REDIS_URL is singlehandly assigned

@@ -27,14 +27,14 @@
   },
   "devDependencies": {
     "chai": "3.5.0",
-    "chai-as-promised": "5.3.0",
-    "lolex": "1.5.0",
-    "mocha": "2.4.5",
-    "nock": "3.2.0",
-    "nyc": "6.4.4",
-    "proxyquire": "1.7.9",
-    "sinon": "1.17.2",
-    "snazzy": "4.0.0",
-    "standard": "6.0.8"
+    "chai-as-promised": "6.0.0",
+    "lolex": "1.5.2",
+    "mocha": "3.2.0",
+    "nock": "9.0.4",
+    "nyc": "10.1.2",
+    "proxyquire": "1.7.11",
+    "sinon": "1.17.7",
+    "snazzy": "6.0.0",
+    "standard": "8.6.0"
   }
 }

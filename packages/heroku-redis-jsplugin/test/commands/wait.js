@@ -38,13 +38,13 @@ describe('heroku redis:wait waiting? false', function () {
         {name: 'redis-haiku', addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_FOO', 'REDIS_BAR']}
       ])
 
-    let redis_waiting = nock('https://redis-api.heroku.com:443')
+    let redisWaiting = nock('https://redis-api.heroku.com:443')
       .get('/redis/v0/databases/redis-haiku/wait').reply(200, {'waiting?': false})
 
     command.run({app: 'example', flags: {}, args: {}, auth: {username: 'foobar', password: 'password'}})
     .then(() => app.done())
     .then(() => clock.next())
-    .then(() => redis_waiting.done())
+    .then(() => redisWaiting.done())
     .then(() => done())
   })
 })
@@ -69,13 +69,13 @@ describe('heroku redis:wait waiting? true', function () {
         {name: 'redis-haiku', addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_FOO', 'REDIS_BAR']}
       ])
 
-    let redis_waiting = nock('https://redis-api.heroku.com:443')
+    let redisWaiting = nock('https://redis-api.heroku.com:443')
       .get('/redis/v0/databases/redis-haiku/wait').reply(200, {'waiting?': true})
 
     command.run({app: 'example', flags: {}, args: {}, auth: {username: 'foobar', password: 'password'}})
     .then(() => app.done())
     .then(() => clock.next())
-    .then(() => redis_waiting.done())
+    .then(() => redisWaiting.done())
     .then(() => done())
   })
 })
@@ -100,12 +100,12 @@ describe('heroku redis:timeout waiting? error', function () {
         {name: 'redis-haiku', addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_FOO', 'REDIS_BAR']}
       ])
 
-    let redis_waiting = nock('https://redis-api.heroku.com:443')
+    let redisWaiting = nock('https://redis-api.heroku.com:443')
       .get('/redis/v0/databases/redis-haiku/wait').reply(503, {'error': 'Error'})
 
     return command.run({app: 'example', flags: {}, args: {}, auth: {username: 'foobar', password: 'password'}})
     .then(() => app.done())
     .then(() => clock.next())
-    .then(() => redis_waiting.done())
+    .then(() => redisWaiting.done())
   })
 })

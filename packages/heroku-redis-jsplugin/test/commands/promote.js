@@ -45,7 +45,7 @@ describe('heroku redis:promote', function () {
         {name: 'redis-gold-haiku', addon_service: {name: 'heroku-redis'}, config_vars: ['HEROKU_REDIS_GOLD_URL']}
       ])
 
-    let attach_redis_url = nock('https://api.heroku.com:443')
+    let attachRedisUrl = nock('https://api.heroku.com:443')
       .post('/addon-attachments', {
         'app': {'name': 'example'},
         'addon': {'name': 'redis-silver-haiku'},
@@ -62,7 +62,7 @@ describe('heroku redis:promote', function () {
 
     return command.run({app: 'example', flags: {}, args: {database: 'redis-gold-haiku'}, auth: {username: 'foobar', password: 'password'}})
     .then(() => app.done())
-    .then(() => attach_redis_url.done())
+    .then(() => attachRedisUrl.done())
     .then(() => attach.done())
     .then(() => expect(cli.stdout).to.equal('Promoting redis-gold-haiku to REDIS_URL on example\n'))
     .then(() => expect(cli.stderr).to.equal(''))

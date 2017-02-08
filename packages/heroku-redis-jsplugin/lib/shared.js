@@ -20,15 +20,15 @@ function request (context, path, method, body) {
   })
 }
 
-function make_addons_filter (filter) {
+function makeAddonsFilter (filter) {
   if (filter) {
     filter = filter.toUpperCase()
   }
 
   function matches (addon) {
     for (let i = 0; i < addon.config_vars.length; i++) {
-      let cfg_name = addon.config_vars[i].toUpperCase()
-      if (cfg_name.indexOf(filter) >= 0) {
+      let cfgName = addon.config_vars[i].toUpperCase()
+      if (cfgName.indexOf(filter) >= 0) {
         return true
       }
     }
@@ -38,26 +38,26 @@ function make_addons_filter (filter) {
     return false
   }
 
-  function on_response (addons) {
-    let redis_addons = []
+  function onResponse (addons) {
+    let redisAddons = []
     for (let i = 0; i < addons.length; i++) {
       let addon = addons[i]
       let service = addon.addon_service.name
 
       if (service.indexOf(ADDON) === 0 && (!filter || matches(addon))) {
-        redis_addons.push(addon)
+        redisAddons.push(addon)
       }
     }
-    return redis_addons
+    return redisAddons
   }
 
-  return on_response
+  return onResponse
 }
 
 function * getRedisAddon (context, heroku, addonsList) {
   addonsList = addonsList || heroku.get(`/apps/${context.app}/addons`)
 
-  let addonsFilter = make_addons_filter(context.args.database)
+  let addonsFilter = makeAddonsFilter(context.args.database)
   let addons = addonsFilter(yield addonsList)
 
   if (addons.length === 0) {
@@ -73,7 +73,7 @@ function * getRedisAddon (context, heroku, addonsList) {
 function * info (context, heroku) {
   let addons = yield heroku.get(`/apps/${context.app}/addons`)
   // filter out non-redis addons
-  addons = make_addons_filter(context.args.database)(addons)
+  addons = makeAddonsFilter(context.args.database)(addons)
   // get info for each db
   let databases = yield addons.map(function * (addon) {
     return yield {
@@ -103,7 +103,7 @@ function * info (context, heroku) {
 
 module.exports = {
   request: request,
-  make_addons_filter: make_addons_filter,
+  makeAddonsFilter: makeAddonsFilter,
   getRedisAddon: getRedisAddon,
   info: info
 }
