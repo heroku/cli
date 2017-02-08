@@ -38,6 +38,6 @@
     ]
   },
   "scripts": {
-    "test": "nyc mocha --harmony-async-await && standard"
+    "test": "nyc mocha --harmony-async-await --use_strict && standard"
   }
 }
