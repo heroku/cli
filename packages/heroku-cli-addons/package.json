@@ -22,13 +22,13 @@
   },
   "devDependencies": {
     "chai": "^3.2.0",
-    "lolex": "1.5.1",
-    "mocha": "3.0.2",
-    "nock": "8.0.0",
-    "nyc": "7.1.0",
-    "standard": "7.1.2",
+    "lolex": "1.5.2",
+    "mocha": "3.2.0",
+    "nock": "9.0.4",
+    "nyc": "10.1.2",
+    "standard": "8.6.0",
     "time-require": "0.1.2",
-    "unexpected": "10.15.1"
+    "unexpected": "10.25.0"
   },
   "homepage": "https://github.com/heroku/heroku-cli-addons",
   "keywords": [
