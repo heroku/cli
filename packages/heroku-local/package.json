@@ -24,8 +24,6 @@
     "url": "https://github.com/heroku/heroku-local"
   },
   "scripts": {
-    "postversion": "npm publish && git push && git push --tags",
-    "preversion": "npm test",
     "test": "bats test && standard"
   }
 }
