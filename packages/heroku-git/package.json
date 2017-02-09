@@ -33,8 +33,6 @@
     "url": "https://github.com/heroku/heroku-git.git"
   },
   "scripts": {
-    "postversion": "npm publish && git push && git push --tags",
-    "preversion": "npm test",
     "test": "nyc mocha && standard"
   }
 }
