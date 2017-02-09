@@ -3,6 +3,8 @@
   "description": "CLI to interact with Heroku",
   "version": "6.0.7",
   "dependencies": {
+    "ansi-escapes": "^1.4.0",
+    "got": "^6.7.1",
     "heroku-apps": "2.1.22",
     "heroku-certs": "1.1.24",
     "heroku-cli-addons": "1.2.6",
