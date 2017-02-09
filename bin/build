@@ -26,10 +26,10 @@ cp -r lib $WORKSPACE
 
 # install node
 NODE_BASE=node-v$NODE_VERSION-$PLATFORM
-if [ ! -f tmp/$NODE_BASE.tar.gz ]; then
-  curl -fSLo tmp/$NODE_BASE.tar.gz https://nodejs.org/dist/v$NODE_VERSION/$NODE_BASE.tar.gz
+if [ ! -f tmp/$NODE_BASE.tar.xz ]; then
+  curl -fSLo tmp/$NODE_BASE.tar.xz https://nodejs.org/dist/v$NODE_VERSION/$NODE_BASE.tar.xz
 fi
-tar -C $WORKSPACE -xf tmp/$NODE_BASE.tar.gz
+tar -C $WORKSPACE -xf tmp/$NODE_BASE.tar.xz
 mv $WORKSPACE/$NODE_BASE $WORKSPACE/node
 
 # install packages
