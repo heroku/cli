@@ -35,7 +35,7 @@
   },
   "engineStrict": true,
   "engines": {
-    "node": ">= 8.0.0"
+    "node": ">= 7.0.0"
   },
   "homepage": "https://cli.heroku.com",
   "keywords": [
