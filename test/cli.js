@@ -14,6 +14,7 @@ describe('cli', () => {
   })
 
   it('runs the version command', async function () {
+    this.timeout(10000)
     this.output = ''
     console.log = output => { this.output += output + '\n' }
     process.exit = code => { this.code = code }
