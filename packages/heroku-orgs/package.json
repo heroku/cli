@@ -17,9 +17,7 @@
   "license": "ISC",
   "homepage": "https://github.com/heroku/heroku-orgs",
   "scripts": {
-    "test": "nyc mocha && standard",
-    "preversion": "npm test",
-    "postversion": "npm publish && git push && git push --tags"
+    "test": "nyc mocha && standard"
   },
   "dependencies": {
     "co": "4.6.0",
