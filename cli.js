@@ -7,7 +7,6 @@ async function help () {
 }
 
 async function run (Command) {
-  if (!Command) return
   if (!Command._version) {
     // v5 command
     const {convertLegacy} = require('heroku-cli-command')
@@ -27,7 +26,7 @@ async function main () {
       plugins.load()
       command = plugins.commands.find(argv[1])
     }
-    if (command) await run(plugins.commands.find(argv[1]))
+    if (command) await run(command)
     else await help()
     process.exit(0)
   } catch (err) {
