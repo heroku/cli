@@ -72,8 +72,6 @@
   },
   "scripts": {
     "changelog": "changelog heroku-apps all -m > CHANGELOG.md",
-    "postversion": "npm publish && git push && git push --tags",
-    "preversion": "npm test",
     "test": "TZ=utc nyc mocha && standard"
   }
 }
