@@ -10,7 +10,6 @@ function onexit (options) {
 
 process.on('exit', onexit)
 process.on('SIGINT', onexit.bind(null, {exit: true}))
-process.on('uncaughtException', onexit.bind(null, {exit: true}))
 
 async function main () {
   let command
