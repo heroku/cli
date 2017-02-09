@@ -1,15 +1,10 @@
 {
   "name": "heroku-certs",
-  "version": "1.1.24",
   "description": "heroku ssl plugin",
-  "main": "index.js",
+  "version": "1.1.24",
   "author": "Ransom Briggs rbriggs@heroku.com",
-  "repository": "heroku/heroku-certs",
   "bugs": {
     "url": "https://github.com/heroku/heroku-certs/issues"
-  },
-  "scripts": {
-    "test": "TZ=utc nyc mocha && standard"
   },
   "dependencies": {
     "co": "4.6.0",
@@ -35,5 +30,10 @@
   "keywords": [
     "heroku-plugin"
   ],
-  "license": "ISC"
+  "license": "ISC",
+  "main": "index.js",
+  "repository": "heroku/heroku-certs",
+  "scripts": {
+    "test": "TZ=utc nyc mocha && standard"
+  }
 }
