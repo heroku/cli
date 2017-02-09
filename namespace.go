@@ -12,6 +12,7 @@ type Namespace struct {
 	Description string `json:"description"`
 }
 
+// HerokuNamespace The default namespace for all pludings if one is not specified
 var HerokuNamespace = &Namespace{Name: "heroku", Description: "list all heroku topics"}
 
 func (n *Namespace) String() string {

@@ -44,7 +44,6 @@ func parseCmdString(cmd string) (*Namespace, *Topic, string) {
 		parts = strings.SplitN(cmd, ":", 3)
 		namespace = AllNamespaces().ByName(parts[0])
 
-
 		if len(parts) > 1 {
 			topic = AllTopics().ByName(parts[1])
 		}

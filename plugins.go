@@ -339,7 +339,6 @@ func (p *Plugins) ParsePlugin(name, tag string) (*Plugin, error) {
 		plugin.Topic.Namespace = namespace
 	}
 
-
 	for _, command := range plugin.Commands {
 		if command == nil {
 			continue

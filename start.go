@@ -54,8 +54,6 @@ func Start(args ...string) {
 		Args = append(Args, "dashboard")
 	}
 
-
-
 	switch Args[1] {
 	case "_":
 		guess := loadLastCommandGuess()
@@ -112,7 +110,7 @@ func installRequiredNamespace(namespace *Namespace) {
 	/**
 	Iterator over all installed user plugins to see if one has a namespace that is required.
 	If so remove it from the requiredPluginsMap
-	 */
+	*/
 	for _, plugin := range UserPlugins.Plugins() {
 		_, isAlreadyInstalledRequiredNamespace := requiredPluginsMap[plugin.Namespace.Name]
 		if isAlreadyInstalledRequiredNamespace {
@@ -126,7 +124,6 @@ func installRequiredNamespace(namespace *Namespace) {
 
 	if ok {
 		toInstall := []string{}
-
 
 		for _, plugin := range plugins {
 			name := strings.Split(plugin, "@")[0]

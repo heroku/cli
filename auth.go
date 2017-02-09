@@ -137,7 +137,7 @@ func init() {
 		},
 		{
 			Name:        "logout",
-			Namespace:  HerokuNamespace.Name,
+			Namespace:   HerokuNamespace.Name,
 			Description: "clear your local Heroku credentials",
 			Commands: []*Command{
 				{
@@ -147,9 +147,9 @@ func init() {
 			},
 		},
 		{
-			Name: "twofactor",
+			Name:      "twofactor",
 			Namespace: HerokuNamespace.Name,
-			Hidden: true,
+			Hidden:    true,
 			Commands: Commands{
 				{
 					NeedsAuth:   true,
