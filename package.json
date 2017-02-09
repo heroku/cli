@@ -2,6 +2,8 @@
   "name": "heroku-cli",
   "description": "CLI to interact with Heroku",
   "version": "6.0.7",
+  "author": "Jeff Dickey @dickeyxxx",
+  "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
     "ansi-escapes": "^1.4.0",
     "got": "^6.7.1",
@@ -31,10 +33,17 @@
     "nyc": "10.1.2",
     "standard": "8.6.0"
   },
+  "engineStrict": true,
   "engines": {
-    "node": ">= 7.0.0"
+    "node": ">= 8.0.0"
   },
+  "homepage": "https://cli.heroku.com",
+  "keywords": [
+    "heroku",
+    "heroku-cli-plugin"
+  ],
   "license": "ISC",
+  "main": "cli.js",
   "repository": "https://github.com/heroku/cli",
   "scripts": {
     "test": "nyc mocha --use_strict && standard"
