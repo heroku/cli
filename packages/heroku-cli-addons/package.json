@@ -38,8 +38,6 @@
   "main": "index.js",
   "repository": "https://github.com/heroku/heroku-cli-addons",
   "scripts": {
-    "postversion": "npm publish && git push && git push --tags",
-    "preversion": "npm test",
     "test": "nyc mocha && standard"
   }
 }
