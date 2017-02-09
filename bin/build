@@ -15,6 +15,7 @@ for PLATFORM in `./bin/platforms`; do
   cp README.md $WORKSPACE
   cp LICENSE $WORKSPACE
   cp package.json $WORKSPACE
+  cp yarn.lock $WORKSPACE
   cp cli.js $WORKSPACE
   cp -r lib $WORKSPACE
 
