@@ -1,23 +1,10 @@
 {
   "name": "heroku-orgs",
-  "version": "1.5.3",
   "description": "CLI to manage Heroku Organizations",
-  "main": "index.js",
+  "version": "1.5.3",
   "author": "Raul Barroso @raulb",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/heroku/heroku-orgs"
-  },
   "bugs": {
     "url": "https://github.com/heroku/heroku-orgs/issues"
-  },
-  "keywords": [
-    "heroku-plugin"
-  ],
-  "license": "ISC",
-  "homepage": "https://github.com/heroku/heroku-orgs",
-  "scripts": {
-    "test": "nyc mocha && standard"
   },
   "dependencies": {
     "co": "4.6.0",
@@ -34,5 +21,18 @@
     "nyc": "10.1.2",
     "proxyquire": "1.7.11",
     "standard": "8.6.0"
+  },
+  "homepage": "https://github.com/heroku/heroku-orgs",
+  "keywords": [
+    "heroku-plugin"
+  ],
+  "license": "ISC",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/heroku/heroku-orgs"
+  },
+  "scripts": {
+    "test": "nyc mocha && standard"
   }
 }
