@@ -42,7 +42,7 @@ echo $VERSION > VERSION
 cat << EOF > heroku
 #!/bin/bash
 DIR="\$( cd "\$( dirname "\${BASH_SOURCE[0]}" )" && pwd )"
-\$DIR/node/bin/node --harmony-async-await \$DIR/cli.js \$*
+\$DIR/node/bin/node --harmony-async-await --use_strict \$DIR/cli.js \$*
 EOF
 chmod +x heroku
 
