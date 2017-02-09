@@ -3,28 +3,8 @@
   "description": "pipelines heroku plugin",
   "version": "1.2.4",
   "author": "Heroku Developer Experience team",
-  "repository": "heroku/heroku-pipelines",
   "bugs": {
     "url": "https://github.com/heroku/heroku-pipelines/issues"
-  },
-  "keywords": [
-    "heroku-plugin"
-  ],
-  "license": "ISC",
-  "main": "index.js",
-  "scripts": {
-    "test": "nyc mocha && standard",
-    "preversion": "npm test",
-    "postversion": "npm publish && git push && git push --tags"
-  },
-  "standard": {
-    "globals": [
-      "describe",
-      "context",
-      "beforeEach",
-      "afterEach",
-      "it"
-    ]
   },
   "dependencies": {
     "bluebird": "3.4.7",
@@ -47,5 +27,23 @@
     "sinon-as-promised": "^4.0.2",
     "sinon-chai": "^2.8.0",
     "standard": "^8.6.0"
+  },
+  "keywords": [
+    "heroku-plugin"
+  ],
+  "license": "ISC",
+  "main": "index.js",
+  "repository": "heroku/heroku-pipelines",
+  "scripts": {
+    "test": "nyc mocha && standard"
+  },
+  "standard": {
+    "globals": [
+      "describe",
+      "context",
+      "beforeEach",
+      "afterEach",
+      "it"
+    ]
   }
 }
