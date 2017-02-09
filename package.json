@@ -37,7 +37,7 @@
     "postversion": "publish-please",
     "prepublish": "publish-please guard",
     "preversion": "npm test",
-    "test": "nyc mocha --harmony-async-await --use_strict && standard"
+    "test": "nyc mocha --use_strict && standard"
   },
   "standard": {
     "ignore": [
