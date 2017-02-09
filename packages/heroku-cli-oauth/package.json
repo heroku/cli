@@ -30,8 +30,6 @@
     "url": "https://github.com/heroku/heroku-cli-oauth.git"
   },
   "scripts": {
-    "postversion": "npm publish && git push && git push --tags",
-    "preversion": "npm test",
     "test": "nyc mocha && standard"
   }
 }
