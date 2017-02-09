@@ -46,8 +46,6 @@
     "url": "https://github.com/heroku/heroku-pg.git"
   },
   "scripts": {
-    "postversion": "npm publish && git push && git push --tags",
-    "preversion": "npm test",
     "test": "TZ=utc nyc mocha && standard"
   }
 }
