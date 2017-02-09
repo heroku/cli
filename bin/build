@@ -3,7 +3,7 @@
 set -ex
 
 VERSION=`./bin/version`
-NODE_VERSION=7.4.0
+NODE_VERSION=7.5.0
 
 if [ $# -ne 1 ]; then
   echo "USAGE: ./bin/build PLATFORM"
@@ -27,14 +27,14 @@ cp -r lib $WORKSPACE
 # install node
 NODE_BASE=node-v$NODE_VERSION-$PLATFORM
 if [ ! -f tmp/$NODE_BASE.tar.xz ]; then
-  curl -fSLo tmp/$NODE_BASE.tar.xz https://nodejs.org/dist/v7.4.0/$NODE_BASE.tar.xz
+  curl -fSLo tmp/$NODE_BASE.tar.xz https://nodejs.org/dist/v$NODE_VERSION/$NODE_BASE.tar.xz
 fi
 tar -C $WORKSPACE -xf tmp/$NODE_BASE.tar.xz
 mv $WORKSPACE/$NODE_BASE $WORKSPACE/node
 
 # install packages
 cd $WORKSPACE
-yarn install
+yarn install --offline --no-progress --production
 
 echo $VERSION > VERSION
 
@@ -49,6 +49,13 @@ chmod +x heroku
 # create tarball
 cd ..
 tar cf - $HEROKU_BASE | xz -z > $HEROKU_BASE.tar.xz
-tar czf $HEROKU_BASE.tar.gz $HEROKU_BASE
+
+SHA256=`shasum -a 256 $HEROKU_BASE.tar.xz | awk {'print \$1'}`
+cat << EOF > $PLATFORM
+{
+  "version": "$VERSION",
+  "sha256": "$SHA256"
+}
+EOF
 
 cd ../..
