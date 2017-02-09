@@ -40,7 +40,7 @@ echo $VERSION > VERSION
 
 # create bin runner
 cat << EOF > heroku
-#!/bin/bash
+#!/usr/bin/env bash
 DIR="\$( cd "\$( dirname "\${BASH_SOURCE[0]}" )" && pwd )"
 \$DIR/node/bin/node --harmony-async-await --use_strict \$DIR/cli.js \$*
 EOF
