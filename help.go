@@ -77,7 +77,7 @@ func helpShowTopic(topic *Topic) {
 func helpShowCommand(topic *Topic, command *Command) {
 	Printf("Usage: heroku %s\n\n", CommandUsage(command))
 	Println(command.buildFullHelp())
-	if command.Command == "" {
+	if command.Command == "" || command.Default {
 		printTopicCommandsHelp(topic)
 	}
 	Println()
