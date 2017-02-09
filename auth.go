@@ -148,7 +148,7 @@ func init() {
 		},
 		{
 			Name:      "twofactor",
-			Namespace: HerokuNamespace.Name,
+			Namespace: "heroku",
 			Hidden:    true,
 			Commands: Commands{
 				{

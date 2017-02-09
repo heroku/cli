@@ -112,9 +112,11 @@ func installRequiredNamespace(namespace *Namespace) {
 	If so remove it from the requiredPluginsMap
 	*/
 	for _, plugin := range UserPlugins.Plugins() {
-		_, isAlreadyInstalledRequiredNamespace := requiredPluginsMap[plugin.Namespace.Name]
-		if isAlreadyInstalledRequiredNamespace {
-			delete(requiredPluginsMap, plugin.Namespace.Name)
+		if plugin != nil && plugin.Namespace != nil {
+			_, isAlreadyInstalledRequiredNamespace := requiredPluginsMap[plugin.Namespace.Name]
+			if isAlreadyInstalledRequiredNamespace {
+				delete(requiredPluginsMap, plugin.Namespace.Name)
+			}
 		}
 	}
 
