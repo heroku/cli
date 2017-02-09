@@ -21,5 +21,6 @@ describe('cli', () => {
     await require('../cli')
     this.output.should.match(/^heroku-cli/)
     this.code.should.eq(0)
+    console.log = this.log
   })
 })
