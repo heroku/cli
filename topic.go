@@ -7,10 +7,10 @@ import (
 // Topic represents a CLI topic.
 // For example, in the command `heroku apps:create` the topic would be `apps`.
 type Topic struct {
-	Name        string     `json:"name"`
-	Description string     `json:"description"`
-	Hidden      bool       `json:"hidden"`
-	Namespace   string     `json:"namespace"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Hidden      bool   `json:"hidden"`
+	Namespace   string `json:"namespace"`
 	Commands    []*Command
 }
 
@@ -19,11 +19,10 @@ func (t *Topic) String() string {
 		return t.Name
 	}
 
-	if (len(t.Namespace) > 0) {
+	if len(t.Namespace) > 0 {
 		return t.Namespace + ":" + t.Name
-	} else {
-		return t.Name
 	}
+	return t.Name
 }
 
 // Topics are a list of topics
@@ -42,7 +41,8 @@ func (topics Topics) ByName(name string) *Topic {
 // Concat joins 2 topic sets together
 func (topics Topics) Concat(more Topics) Topics {
 	for _, topic := range more {
-		if topics.ByName(topic.Name) == nil {
+		t := topics.ByName(topic.Name)
+		if t == nil || topic.Namespace != t.Namespace {
 			topics = append(topics, topic)
 		}
 	}
@@ -105,7 +105,7 @@ func (topics Topics) Commands() Commands {
 func (topics Topics) NamespaceAndTopicDescriptions() map[string]string {
 	to := make(map[string]string)
 	for _, topic := range topics {
-		var namespace = AllNamespaces().ByName(topic.Namespace);
+		var namespace = AllNamespaces().ByName(topic.Namespace)
 
 		if namespace != nil {
 			if namespace.Name == getDefaultNamespace() {
@@ -128,7 +128,7 @@ func (topics Topics) NamespaceAndTopicDescriptions() map[string]string {
 	return to
 }
 
-
+// TopicsForNamespace returns an array of topics for the given namespace
 func (topics Topics) TopicsForNamespace(namespace *Namespace) Topics {
 	to := make(Topics, 0, len(topics))
 	for _, topic := range topics {
