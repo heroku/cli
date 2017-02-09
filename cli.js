@@ -2,32 +2,20 @@ const plugins = require('./lib/plugins')
 let argv = process.argv.slice(2)
 argv.unshift('heroku')
 
-async function help () {
-  await run(require('./lib/commands/help'))
-}
-
-async function run (Command) {
-  if (!Command._version) {
-    // v5 command
-    const {convertLegacy} = require('heroku-cli-command')
-    Command = convertLegacy(Command)
-  }
-  let command = new Command({argv})
-  await command.init()
-  await command.run()
-  await command.done()
-}
-
 async function main () {
   try {
-    if (argv.length < 2) await help()
-    let command = plugins.commands.find(argv[1])
-    if (!command) {
-      plugins.load()
-      command = plugins.commands.find(argv[1])
+    let Command = plugins.commands.find(argv[1])
+    if (!Command) Command = plugins.load().commands.find(argv[1])
+    if (!Command) Command = require('./lib/commands/help')
+    if (!Command._version) {
+      // v5 command
+      const {convertLegacy} = require('heroku-cli-command')
+      Command = convertLegacy(Command)
     }
-    if (command) await run(command)
-    else await help()
+    let command = new Command({argv})
+    await command.init()
+    await command.run()
+    await command.done()
     process.exit(0)
   } catch (err) {
     console.error(err)
