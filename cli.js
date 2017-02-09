@@ -20,8 +20,10 @@ async function run (Command) {
   process.exit(0)
 }
 
-async function main (args) {
+async function main () {
   try {
+    console.dir(process.argv)
+    console.dir(argv)
     if (argv.length < 2) await help()
     await run(plugins.commands.find(argv[1]))
     plugins.load()
