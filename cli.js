@@ -24,6 +24,7 @@ async function main () {
   try {
     console.dir(process.argv)
     console.dir(argv)
+    console.dir(plugins.commands)
     if (argv.length < 2) await help()
     await run(plugins.commands.find(argv[1]))
     plugins.load()
