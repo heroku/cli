@@ -17,16 +17,19 @@ async function run (Command) {
   await command.init()
   await command.run()
   await command.done()
-  process.exit(0)
 }
 
 async function main () {
   try {
     if (argv.length < 2) await help()
-    await run(plugins.commands.find(argv[1]))
-    plugins.load()
-    await run(plugins.commands.find(argv[1]))
-    await help()
+    let command = plugins.commands.find(argv[1])
+    if (!command) {
+      plugins.load()
+      command = plugins.commands.find(argv[1])
+    }
+    if (command) await run(plugins.commands.find(argv[1]))
+    else await help()
+    process.exit(0)
   } catch (err) {
     console.error(err)
     process.exit(1)
