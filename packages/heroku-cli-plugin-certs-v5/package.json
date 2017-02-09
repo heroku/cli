@@ -9,9 +9,7 @@
     "url": "https://github.com/heroku/heroku-certs/issues"
   },
   "scripts": {
-    "test": "TZ=utc nyc mocha && standard | snazzy",
-    "preversion": "npm test",
-    "postversion": "npm publish && git push && git push --tags"
+    "test": "TZ=utc nyc mocha && standard"
   },
   "dependencies": {
     "co": "4.6.0",
@@ -32,7 +30,6 @@
     "proxyquire": "1.7.11",
     "sinon": "1.17.7",
     "sinon-chai": "2.8.0",
-    "snazzy": "6.0.0",
     "standard": "8.6.0"
   },
   "keywords": [
