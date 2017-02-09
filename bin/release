@@ -1,0 +1,12 @@
+#!/bin/bash
+
+set -ex
+
+VERSION=`./bin/version`
+
+for PLATFORM in `./bin/platforms`; do
+  aws s3 cp --cache-control max-age=86400 tmp/build/heroku-v$VERSION-$PLATFORM.tar.xz s3://heroku-cli-assets/$CHANNEL/heroku-v$VERSION-$PLATFORM.tar.xz
+  aws s3 cp --cache-control max-age=86400 tmp/build/heroku-v$VERSION-$PLATFORM.tar.xz s3://heroku-cli-assets/$CHANNEL/heroku-$PLATFORM.tar.xz
+  aws s3 cp --cache-control max-age=86400 tmp/build/heroku-v$VERSION-$PLATFORM.tar.gz s3://heroku-cli-assets/$CHANNEL/heroku-v$VERSION-$PLATFORM.tar.gz
+  aws s3 cp --cache-control max-age=86400 tmp/build/heroku-v$VERSION-$PLATFORM.tar.gz s3://heroku-cli-assets/$CHANNEL/heroku-$PLATFORM.tar.gz
+done
