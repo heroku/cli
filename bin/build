@@ -26,10 +26,10 @@ cp -r lib $WORKSPACE
 
 # install node
 NODE_BASE=node-v$NODE_VERSION-$PLATFORM
-if [ ! -f tmp/$NODE_BASE.tar.xz ]; then
-  curl -fSLo tmp/$NODE_BASE.tar.xz https://nodejs.org/dist/v$NODE_VERSION/$NODE_BASE.tar.xz
+if [ ! -f tmp/$NODE_BASE.tar.gz ]; then
+  curl -fSLo tmp/$NODE_BASE.tar.gz https://nodejs.org/dist/v$NODE_VERSION/$NODE_BASE.tar.gz
 fi
-tar -C $WORKSPACE -xf tmp/$NODE_BASE.tar.xz
+tar -C $WORKSPACE -xf tmp/$NODE_BASE.tar.gz
 mv $WORKSPACE/$NODE_BASE $WORKSPACE/node
 
 # install packages
@@ -48,9 +48,9 @@ chmod +x heroku
 
 # create tarball
 cd ..
-tar cf - $HEROKU_BASE | xz -z > $HEROKU_BASE.tar.xz
+tar czf $HEROKU_BASE.tar.gz $HEROKU_BASE
 
-SHA256=`shasum -a 256 $HEROKU_BASE.tar.xz | awk {'print \$1'}`
+SHA256=`shasum -a 256 $HEROKU_BASE.tar.gz | awk {'print \$1'}`
 cat << EOF > $PLATFORM
 {
   "version": "$VERSION",
