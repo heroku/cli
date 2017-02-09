@@ -3,10 +3,9 @@
 set -ex
 
 VERSION=`./bin/version`
-NPM_VERSION=4.0.5
 NODE_VERSION=7.4.0
 
-# download node/npm
+# download node
 for PLATFORM in `./bin/platforms`; do
   # setup workspace
   HEROKU_BASE=heroku-v$VERSION-$PLATFORM
@@ -29,9 +28,7 @@ for PLATFORM in `./bin/platforms`; do
 
   # install packages
   cd $WORKSPACE
-  npm install
-  npm dedupe
-  npm prune
+  yarn install
 
   echo $VERSION > VERSION
 
