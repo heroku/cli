@@ -21,5 +21,4 @@ deployment:
   v6:
     branch: v6
     commands:
-      - bin/build
-      - CHANNEL=v6 bin/release
+      - bin/release v6
