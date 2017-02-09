@@ -21,7 +21,8 @@
     "heroku-spaces": "2.6.0",
     "heroku-status": "3.0.4",
     "lodash.maxby": "4.6.0",
-    "string": "3.3.3"
+    "string": "3.3.3",
+    "tar-stream": "^1.5.2"
   },
   "devDependencies": {
     "chai": "3.5.0",
