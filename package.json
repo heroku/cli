@@ -6,6 +6,7 @@
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
     "ansi-escapes": "^1.4.0",
+    "fs-extra": "2.0.0",
     "got": "^6.7.1",
     "heroku-apps": "2.1.23",
     "heroku-certs": "1.1.25",
@@ -31,7 +32,8 @@
     "chai-as-promised": "^6.0.0",
     "mocha": "3.2.0",
     "nyc": "10.1.2",
-    "standard": "8.6.0"
+    "standard": "8.6.0",
+    "time-require": "0.1.2"
   },
   "engineStrict": true,
   "engines": {

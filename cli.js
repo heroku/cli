@@ -1,3 +1,4 @@
+require('time-require')
 const plugins = require('./lib/plugins')
 let argv = process.argv.slice(2)
 argv.unshift('heroku')
