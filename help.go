@@ -146,7 +146,7 @@ func helpShowTopic(namespace *Namespace, topic *Topic) {
 func helpShowCommand(namespace *Namespace, topic *Topic, command *Command) {
 	Printf("Usage: %s %s\n\n", getExecutableName(), CommandUsage(command))
 	Println(command.buildFullHelp())
-	if command.Command == "" {
+	if command.Command == "" || command.Default {
 		printTopicCommandsHelp(namespace, topic)
 	}
 	Println()
