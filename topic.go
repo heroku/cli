@@ -1,22 +1,28 @@
 package main
 
-import "sort"
+import (
+	"sort"
+)
 
 // Topic represents a CLI topic.
 // For example, in the command `heroku apps:create` the topic would be `apps`.
 type Topic struct {
-	Name        string     `json:"name"`
-	Description string     `json:"description"`
-	Hidden      bool       `json:"hidden"`
-	Namespace   *Namespace `json:"namespace"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Hidden      bool   `json:"hidden"`
+	Namespace   string `json:"namespace"`
 	Commands    []*Command
 }
 
 func (t *Topic) String() string {
-	if t.Namespace == nil || t.Namespace.Name == getDefaultNamespace() {
+	if t.Namespace == getDefaultNamespace() {
 		return t.Name
 	}
-	return t.Namespace.Name + ":" + t.Name
+
+	if len(t.Namespace) > 0 {
+		return t.Namespace + ":" + t.Name
+	}
+	return t.Name
 }
 
 // Topics are a list of topics
@@ -35,7 +41,8 @@ func (topics Topics) ByName(name string) *Topic {
 // Concat joins 2 topic sets together
 func (topics Topics) Concat(more Topics) Topics {
 	for _, topic := range more {
-		if topics.ByName(topic.Name) == nil {
+		t := topics.ByName(topic.Name)
+		if t == nil || topic.Namespace != t.Namespace {
 			topics = append(topics, topic)
 		}
 	}
@@ -73,57 +80,6 @@ func (topics Topics) NonHidden() Topics {
 	return to
 }
 
-// Namespaces returns a set of namespace from the set of topics
-func (topics Topics) Namespaces() Namespaces {
-	to := make(Namespaces, 0, len(topics))
-	unique := make(map[string]bool)
-	for _, topic := range topics {
-		if topic.Namespace != nil && !unique[topic.Namespace.Name] {
-			unique[topic.Namespace.Name] = true
-			to = append(to, topic.Namespace)
-		}
-	}
-	return to
-}
-
-// Namespace returns  a set of topics that are part of the cli namespace
-func (topics Topics) Namespace(name string) Topics {
-	to := make(Topics, 0, len(topics))
-	for _, topic := range topics {
-		matchedNoNamespace := topic.Namespace == nil && name == ""
-		matchedNamespace := topic.Namespace != nil && topic.Namespace.Name == name
-		matchedDefault := topic.Namespace != nil && topic.Namespace.Name == getDefaultNamespace() && name == ""
-		if matchedNoNamespace || matchedNamespace || matchedDefault {
-			to = append(to, topic)
-		}
-	}
-	return to
-}
-
-// NamespaceAndTopicDescriptions returns a map of namespace and namespaceless
-// topic descriptions
-// i.e. it will group all topics by namespace except for topics that don't have a
-// namespace
-func (topics Topics) NamespaceAndTopicDescriptions() map[string]string {
-	to := make(map[string]string)
-	for _, topic := range topics {
-		if topic.Namespace == nil || topic.Namespace.Name == getDefaultNamespace() {
-			if to[topic.Name] == "" {
-				to[topic.Name] = topic.Description
-			}
-		} else if desc, ok := to[topic.Namespace.Name]; ok || desc == "" {
-			to[topic.Namespace.Name] = topic.Namespace.Description
-		}
-	}
-	// Check for namespaces to be loaded
-	for _, namespace := range AllNamespaces() {
-		if desc, ok := to[namespace.Name]; ok || desc == "" {
-			to[namespace.Name] = namespace.Description
-		}
-	}
-	return to
-}
-
 // Sort sorts the set
 func (topics Topics) Sort() Topics {
 	sort.Sort(topics)
@@ -140,4 +96,45 @@ func (topics Topics) Commands() Commands {
 		}
 	}
 	return commands
+}
+
+// NamespaceAndTopicDescriptions returns a map of namespace and namespaceless
+// topic descriptions
+// i.e. it will group all topics by namespace except for topics that don't have a
+// namespace
+func (topics Topics) NamespaceAndTopicDescriptions() map[string]string {
+	to := make(map[string]string)
+	for _, topic := range topics {
+		var namespace = AllNamespaces().ByName(topic.Namespace)
+
+		if namespace != nil {
+			if namespace.Name == getDefaultNamespace() {
+				if to[topic.Name] == "" {
+					to[topic.Name] = topic.Description
+				}
+			} else if desc, ok := to[namespace.Name]; ok || desc == "" {
+				to[namespace.Name] = namespace.Description
+			}
+		} else {
+			to[topic.Name] = topic.Description
+		}
+	}
+	// Check for namespaces to be loaded
+	for _, namespace := range AllNamespaces() {
+		if desc, ok := to[namespace.Name]; ok || desc == "" {
+			to[namespace.Name] = namespace.Description
+		}
+	}
+	return to
+}
+
+// TopicsForNamespace returns an array of topics for the given namespace
+func (topics Topics) TopicsForNamespace(namespace *Namespace) Topics {
+	to := make(Topics, 0, len(topics))
+	for _, topic := range topics {
+		if topic.Namespace == namespace.Name {
+			to = append(to, topic)
+		}
+	}
+	return to
 }
