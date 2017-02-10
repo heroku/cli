@@ -46,6 +46,12 @@ func parseCmdString(cmd string) (*Namespace, *Topic, string) {
 
 		if len(parts) > 1 {
 			topic = AllTopics().ByName(parts[1])
+
+			// If the plugin didn't define a actual topic, a command may still have it
+			// heroku-apps' dashboard is a prime example
+			if topic == nil {
+				topic = &Topic{Name: parts[1], Description: ""}
+			}
 		}
 		if len(parts) > 2 {
 			command = parts[2]
@@ -54,6 +60,12 @@ func parseCmdString(cmd string) (*Namespace, *Topic, string) {
 		// Only return topic and command
 		parts = strings.SplitN(cmd, ":", 2)
 		topic = AllTopics().ByName(parts[0])
+
+		// If the plugin didn't define a actual topic, a command may still have it
+		// heroku-apps' dashboard is a prime example
+		if topic == nil {
+			topic = &Topic{Name: parts[0], Description: ""}
+		}
 
 		if len(parts) > 1 {
 			command = parts[1]
