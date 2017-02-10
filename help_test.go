@@ -126,7 +126,7 @@ var _ = Describe("Help", func() {
 	Context("help topic on namespace", func() {
 		BeforeEach(func() {
 			cli.BinaryName = "sfdx"
-			cli.Start(BinaryName, "help", "heroku:auth")
+			cli.Start(BinaryName, "help", "heroku:auth:2fa")
 		})
 
 		It("exits with code 0", func() { Expect(exit).To(Equal(0)) })
