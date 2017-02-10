@@ -12,6 +12,9 @@ type Namespace struct {
 	Description string `json:"description"`
 }
 
+// HerokuNamespace The default namespace for all pludings if one is not specified
+var HerokuNamespace = &Namespace{Name: "heroku", Description: "list all heroku topics"}
+
 func (n *Namespace) String() string {
 	return n.Name
 }
@@ -21,9 +24,9 @@ type Namespaces []*Namespace
 
 // AllNamespaces gets all go/core/user namespaces
 func AllNamespaces() Namespaces {
-	namespaces := CLITopics.Namespaces()
-	namespaces = namespaces.Concat(CorePlugins.Namespaces())
+	namespaces := CorePlugins.Namespaces()
 	namespaces = namespaces.Concat(UserPlugins.Namespaces())
+	namespaces = append(namespaces, HerokuNamespace)
 
 	// TODO We want to install force when people try to use it. Hard code this
 	// for now, but we may want to make this a little more generic
@@ -47,7 +50,7 @@ func (namespaces Namespaces) ByName(name string) *Namespace {
 	return nil
 }
 
-// Has returns ture if a namespace exist for the given name or command.
+// Has returns true if a namespace exists for the given name or command.
 func (namespaces Namespaces) Has(nameOrCmd string) bool {
 	namespace := strings.SplitN(nameOrCmd, ":", 2)[0]
 	return namespace != getDefaultNamespace() && namespaces.ByName(namespace) != nil

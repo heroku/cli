@@ -1,7 +1,7 @@
 .SECONDEXPANSION:
 
-NPM_VERSION=3.9.3
-NODE_VERSION=6.2.1
+NPM_VERSION=3.10.10
+NODE_VERSION=6.9.5
 
 FOLDER_NAME=heroku
 BINARY_NAME=heroku
@@ -313,6 +313,7 @@ releasepatch/%: %
 
 .PHONY: releasetxz
 releasetxz: $(MANIFEST) $(MANIFEST).sig $(addprefix releasetxz/,$(DIST_TARGETS))
+	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/manifest.json s3://heroku-cli-assets/branches/$(CHANNEL)/$(VERSION)/manifest.json
 	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/manifest.json s3://heroku-cli-assets/branches/$(CHANNEL)/manifest.json
 	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/manifest.json.sig s3://heroku-cli-assets/branches/$(CHANNEL)/manifest.json.sig
 
