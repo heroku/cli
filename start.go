@@ -154,6 +154,7 @@ func removeCliTokenAndUpdateDefaultNamespace(args []string) []string {
 	for i := 0; i < len(args); i++ {
 		if args[i] == CliToken {
 			DefaultNamespace = AliasName
+			Debugf("Alias moving default namespace to %s\n", DefaultNamespace)
 		} else {
 			newArray = append(newArray, args[i])
 		}

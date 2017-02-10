@@ -7,13 +7,22 @@ import (
 	"strings"
 )
 
+// GoFlagInitState Initial state of exports
 const GoFlagInitState = "unset"
 
-// Go flag for the name of this binary on the filesystem
+// BinaryName Go flag for the name of this binary on the filesystem
 var BinaryName = GoFlagInitState
 
-// Shared token between this binary and sfdx. This enables us to know if sfdx was invoked by this process.
+// CliToken Shared token between this binary and sfdx. This enables us to know if sfdx was invoked by this process.
 var CliToken = GoFlagInitState
+
+func isDebugging() bool {
+	debug := strings.ToUpper(os.Getenv("HEROKU_DEBUG"))
+	if debug == "TRUE" || debug == "1" {
+		return true
+	}
+	return false
+}
 
 func main() {
 	var path string
@@ -44,6 +53,10 @@ func main() {
 		fmt.Printf("Couldn't execute %s", path)
 		fmt.Println()
 		os.Exit(1)
+	}
+
+	if isDebugging() {
+		fmt.Printf("Alias Executing %s\n", path)
 	}
 
 	command := exec.Command(path, args[1:]...)
