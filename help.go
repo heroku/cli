@@ -167,9 +167,9 @@ func printTopicCommandsHelp(namespace *Namespace, topic *Topic) {
 	}
 	topicCommands.loadUsages()
 	if len(topicCommands) > 0 {
-		Printf("\nCommands for %s, type \"%s help %s:COMMAND\" for more details:\n\n", topic.Name, getExecutableName(), topic.Name)
+		Printf("\nCommands for %s, type \"%s help %s:COMMAND\" for more details:\n\n", topic.String(), getExecutableName(), topic.String())
 		for _, command := range topicCommands.Sort() {
-			Printf(" %s %-30s # %s\n", getExecutableName(), command.Usage, command.Description)
+			Printf(" %s %-30s # %s\n", getExecutableName(), command.String(), command.Description)
 		}
 	}
 }
