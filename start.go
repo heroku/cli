@@ -44,6 +44,7 @@ var DefaultNamespace = BinaryName
 
 // Start the CLI
 func Start(args ...string) {
+	Args = args
 	loadNewCLI()
 	Args = removeCliTokenAndUpdateDefaultNamespace(args)
 
