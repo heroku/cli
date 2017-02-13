@@ -1,4 +1,9 @@
 if (process.env.HEROKU_TIME_REQUIRE) require('time-require')
+
+const path = require('path')
+const dirs = require('./lib/dirs')
+const lock = require('rwlockfile')
+
 const plugins = require('./lib/plugins')
 let argv = process.argv.slice(2)
 argv.unshift('heroku')
@@ -15,6 +20,7 @@ process.on('SIGINT', onexit.bind(null, {exit: true}))
 async function main () {
   let command
   try {
+    await lock.read(dirs.lockfile)
     let Command = plugins.commands.find(argv[1])
     if (!Command) Command = plugins.load().commands.find(argv[1])
     if (!Command) Command = require('./lib/commands/help')
