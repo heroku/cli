@@ -45,7 +45,7 @@ module.exports = {
     let answers = yield prompt(questions)
     if (answers.stage) stage = answers.stage
 
-    yield cli.action(`Adding ${cli.color.app(app)} to ${pipeline.name} pipeline as ${stage}`,
+    yield cli.action(`Adding ${cli.color.app(app)} to ${cli.color.pipeline(pipeline.name)} pipeline as ${stage}`,
                     createCoupling(heroku, pipeline, app, stage))
   }))
 }

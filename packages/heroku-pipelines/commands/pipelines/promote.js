@@ -49,7 +49,7 @@ function* getCoupling (heroku, app) {
 }
 
 function* getApps (heroku, pipeline) {
-  return yield cli.action(`Fetching apps from ${pipeline.name}`,
+  return yield cli.action(`Fetching apps from ${cli.color.pipeline(pipeline.name)}`,
     listPipelineApps(heroku, pipeline.id))
 }
 

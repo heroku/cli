@@ -24,6 +24,6 @@ module.exports = {
       headers: { 'Accept': 'application/vnd.heroku+json; version=3' }
     }) // heroku.pipelines(pipeline).destroy(body);
 
-    yield cli.action(`Destroying ${context.args.pipeline} pipeline`, promise)
+    yield cli.action(`Destroying ${cli.color.pipeline(context.args.pipeline)} pipeline`, promise)
   }))
 }
