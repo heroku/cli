@@ -1,6 +1,5 @@
 if (process.env.HEROKU_TIME_REQUIRE) require('time-require')
 
-const path = require('path')
 const dirs = require('./lib/dirs')
 const lock = require('rwlockfile')
 
