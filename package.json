@@ -24,6 +24,7 @@
     "heroku-spaces": "2.6.0",
     "heroku-status": "3.0.5",
     "lodash.maxby": "4.6.0",
+    "rwlockfile": "1.1.0",
     "string": "3.3.3",
     "tar-stream": "^1.5.2"
   },
