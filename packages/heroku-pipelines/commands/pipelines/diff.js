@@ -69,13 +69,13 @@ function* getAppInfo (heroku, appName, appId) {
 
 function* diff (targetApp, downstreamApp, githubToken, herokuUserAgent) {
   if (downstreamApp.repo === null) {
-    return cli.log(`\n${targetApp.name} was not compared to ${downstreamApp.name} as ${downstreamApp.name} is not connected to GitHub`)
+    return cli.log(`\n${cli.color.app(targetApp.name)} was not compared to ${cli.color.app(downstreamApp.name)} as ${cli.color.app(downstreamApp.name)} is not connected to GitHub`)
   } else if (downstreamApp.repo !== targetApp.repo) {
-    return cli.log(`\n${targetApp.name} was not compared to ${downstreamApp.name} as ${downstreamApp.name} is not connected to the same GitHub repo as ${targetApp.name}`)
+    return cli.log(`\n${cli.color.app(targetApp.name)} was not compared to ${cli.color.app(downstreamApp.name)} as ${cli.color.app(downstreamApp.name)} is not connected to the same GitHub repo as ${cli.color.app(targetApp.name)}`)
   } else if (downstreamApp.hash === null) {
-    return cli.log(`\n${targetApp.name} was not compared to ${downstreamApp.name} as ${downstreamApp.name} does not have any releases`)
+    return cli.log(`\n${cli.color.app(targetApp.name)} was not compared to ${cli.color.app(downstreamApp.name)} as ${cli.color.app(downstreamApp.name)} does not have any releases`)
   } else if (downstreamApp.hash === targetApp.hash) {
-    return cli.log(`\n${targetApp.name} is up to date with ${downstreamApp.name}`)
+    return cli.log(`\n${cli.color.app(targetApp.name)} is up to date with ${cli.color.app(downstreamApp.name)}`)
   }
 
   // Do the actual Github diff
@@ -89,7 +89,7 @@ function* diff (targetApp, downstreamApp, githubToken, herokuUserAgent) {
       json: true
     })
     cli.log('')
-    cli.styledHeader(`${targetApp.name} is ahead of ${downstreamApp.name} by ${res.body.ahead_by} commit${res.body.ahead_by === 1 ? '' : 's'}`)
+    cli.styledHeader(`${cli.color.app(targetApp.name)} is ahead of ${cli.color.app(downstreamApp.name)} by ${res.body.ahead_by} commit${res.body.ahead_by === 1 ? '' : 's'}`)
     let mapped = res.body.commits.map(function (commit) {
       return {
         sha: commit.sha.substring(0, 7),
@@ -107,7 +107,7 @@ function* diff (targetApp, downstreamApp, githubToken, herokuUserAgent) {
     cli.log(`\nhttps://github.com/${path}`)
   } catch (err) {
     cli.hush(err)
-    cli.log(`\n${targetApp.name} was not compared to ${downstreamApp.name} because we were unable to perform a diff`)
+    cli.log(`\n${cli.color.app(targetApp.name)} was not compared to ${cli.color.app(downstreamApp.name)} because we were unable to perform a diff`)
     cli.log(`are you sure you have pushed your latest commits to GitHub?`)
   }
 }

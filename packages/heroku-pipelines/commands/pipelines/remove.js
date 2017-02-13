@@ -15,6 +15,6 @@ module.exports = {
   run: cli.command(co.wrap(function* (context, heroku) {
     const app = context.app
 
-    yield cli.action(`Removing ${app}`, removeCoupling(heroku, app))
+    yield cli.action(`Removing ${cli.color.app(app)}`, removeCoupling(heroku, app))
   }))
 }

@@ -91,13 +91,13 @@ function assertValidPromotion (app, source, target) {
 
 function assertApps (app, targetApps, targetStage) {
   if (targetApps.length < 1) {
-    throw new Error(`Cannot promote from ${app} as there are no downstream apps in ${targetStage} stage`)
+    throw new Error(`Cannot promote from ${cli.color.app(app)} as there are no downstream apps in ${targetStage} stage`)
   }
 }
 
 function findAppInPipeline (apps, target) {
   const found = apps.find((app) => (app.name === target) || (app.id === target))
-  assert(found, `Cannot find app ${target}`)
+  assert(found, `Cannot find app ${cli.color.app(target)}`)
 
   return found
 }
