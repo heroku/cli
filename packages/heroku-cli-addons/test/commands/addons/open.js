@@ -41,10 +41,10 @@ describe('addons:open', function () {
     let api = nock('https://api.heroku.com:443')
 
     api.post('/actions/addon-attachments/resolve', {'app': 'myapp-2', 'addon_attachment': 'slowdb'})
-      .reply(404)
+      .reply(404, {'resource': 'add_on attachment'})
 
     api.post('/actions/addons/resolve', {'app': 'myapp-2', 'addon': 'slowdb'})
-      .reply(404)
+      .reply(404, {'resource': 'add_on'})
 
     api.post('/actions/addons/resolve', {'app': null, 'addon': 'slowdb'})
       .reply(200, [{id: 'c7c9cf20-ec87-11e5-aea4-0002a5d5c51b', web_url: 'http://myapp-slowdb'}])

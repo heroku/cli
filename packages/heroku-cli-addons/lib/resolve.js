@@ -25,6 +25,14 @@ const appAddon = function (heroku, app, id, options = {}) {
   .then(singularize('addon'))
 }
 
+const handleNotFound = function (err, resource) {
+  if (err.statusCode === 404 && err.body && err.body.resource === resource) {
+    return true
+  } else {
+    throw err
+  }
+}
+
 exports.appAddon = appAddon
 
 const addonResolver = function (heroku, app, id, options = {}) {
@@ -41,7 +49,7 @@ const addonResolver = function (heroku, app, id, options = {}) {
   if (!app || id.includes('::')) return getAddon(id)
 
   return appAddon(heroku, app, id, options)
-  .catch(function (err) { if (err.statusCode === 404) return getAddon(id); else throw err })
+  .catch(function (err) { if (handleNotFound(err, 'add_on')) return getAddon(id) })
 }
 
 /**
@@ -113,7 +121,7 @@ exports.attachment = function (heroku, app, id, options = {}) {
     return heroku.post('/actions/addon-attachments/resolve', {
       'headers': headers, 'body': {'app': null, 'addon_attachment': id, 'addon_service': options.addon_service}
     }).then(singularize('addon_attachment'))
-      .catch(function (err) { if (err.statusCode !== 404) throw err })
+      .catch(function (err) { handleNotFound(err, 'add_on attachment') })
   }
 
   function getAppAddonAttachment (addon, app) {
@@ -127,7 +135,7 @@ exports.attachment = function (heroku, app, id, options = {}) {
     promise = getAttachment(id)
   } else {
     promise = appAttachment(heroku, app, id, options)
-    .catch(function (err) { if (err.statusCode !== 404) throw err })
+    .catch(function (err) { handleNotFound(err, 'add_on attachment') })
   }
 
   // first check to see if there is an attachment matching this app/id combo
