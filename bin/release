@@ -13,9 +13,9 @@ CHANNEL=$1
 
 function release {
   ./bin/build $PLATFORM $CHANNEL
-  aws s3 cp --quiet --cache-control max-age=86400 tmp/build/heroku-v$VERSION-$PLATFORM.tar.gz s3://heroku-cli-assets/branches/$CHANNEL/heroku-v$VERSION-$PLATFORM.tar.gz
-  aws s3 cp --quiet --cache-control max-age=300 tmp/build/heroku-v$VERSION-$PLATFORM.tar.gz s3://heroku-cli-assets/branches/$CHANNEL/heroku-$PLATFORM.tar.gz
-  aws s3 cp --quiet --cache-control max-age=300 --content-type application/json tmp/build/$PLATFORM s3://heroku-cli-assets/branches/$CHANNEL/$PLATFORM
+  aws s3 cp --quiet --cache-control max-age=86400 tmp/build/heroku-v$VERSION-$PLATFORM.tar.gz s3://heroku-cli-assets/channels/$CHANNEL/heroku-v$VERSION-$PLATFORM.tar.gz
+  aws s3 cp --quiet --cache-control max-age=300 tmp/build/heroku-v$VERSION-$PLATFORM.tar.gz s3://heroku-cli-assets/channels/$CHANNEL/heroku-$PLATFORM.tar.gz
+  aws s3 cp --quiet --cache-control max-age=300 --content-type application/json tmp/build/$PLATFORM s3://heroku-cli-assets/channels/$CHANNEL/$PLATFORM
 }
 
 pids=""
