@@ -51,8 +51,15 @@ func Start(args ...string) {
 	ShowDebugInfo()
 
 	if len(Args) <= 1 {
-		// show dashboard if no args passed
-		Args = append(Args, "dashboard")
+		// Heroku shows a dashboard, but to do that for sfdx an entirly new
+		// plugin would need to be created and auto installed to utilize a
+		// dashboard. For now, just show help. Should be removed eventually.
+		if getDefaultNamespace() == "heroku" {
+			// show dashboard if no args passed
+			Args = append(Args, "dashboard")
+		} else {
+			Args = append(Args, "--help")
+		}
 	}
 
 	switch Args[1] {
