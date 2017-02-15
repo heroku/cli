@@ -37,6 +37,7 @@ cd $WORKSPACE
 yarn install --offline --no-progress --production
 
 echo $VERSION > VERSION
+echo $BRANCH > BRANCH
 
 # create bin runner
 cat << EOF > heroku
