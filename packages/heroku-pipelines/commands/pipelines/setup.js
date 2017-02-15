@@ -61,7 +61,11 @@ function getRepo (github, name) {
 function createApp (heroku, { archiveURL, name, organization, pipeline, stage }) {
   const params = {
     source_blob: { url: archiveURL },
-    app: { name }
+    app: { name },
+    pipeline_coupling: {
+      stage,
+      pipeline: pipeline.id
+    }
   }
 
   if (organization) {
@@ -70,11 +74,7 @@ function createApp (heroku, { archiveURL, name, organization, pipeline, stage })
     params.app.personal = true
   }
 
-  return api.createAppSetup(heroku, params).then((setup) => {
-    return api.postCoupling(heroku, pipeline.id, setup.app.id, stage).then(() => {
-      return setup.app
-    })
-  })
+  return api.createAppSetup(heroku, params).then((setup) => setup.app)
 }
 
 function* getNameAndRepo (args) {

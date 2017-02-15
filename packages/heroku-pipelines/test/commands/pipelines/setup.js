@@ -95,30 +95,20 @@ describe('pipelines:setup', function () {
 
         api = nock('https://api.heroku.com')
         api.post('/pipelines').reply(201, pipeline)
-
-        api.post('/pipeline-couplings', {
-          pipeline: pipeline.id,
-          app: prodApp.id,
-          stage: 'production'
-        }).reply(201, {})
-
-        api.post('/pipeline-couplings', {
-          pipeline: pipeline.id,
-          app: stagingApp.id,
-          stage: 'staging'
-        }).reply(201, {})
       })
 
       context('in a personal account', function () {
         beforeEach(function () {
           api.post('/app-setups', {
             source_blob: { url: archiveURL },
-            app: { name: prodApp.name, personal: true }
+            app: { name: prodApp.name, personal: true },
+            pipeline_coupling: { stage: 'production', pipeline: pipeline.id }
           }).reply(201, { app: prodApp })
 
           api.post('/app-setups', {
             source_blob: { url: archiveURL },
-            app: { name: stagingApp.name, personal: true }
+            app: { name: stagingApp.name, personal: true },
+            pipeline_coupling: { stage: 'staging', pipeline: pipeline.id }
           }).reply(201, { app: stagingApp })
         })
 
@@ -173,12 +163,14 @@ describe('pipelines:setup', function () {
 
           api.post('/app-setups', {
             source_blob: { url: archiveURL },
-            app: { name: prodApp.name, organization }
+            app: { name: prodApp.name, organization },
+            pipeline_coupling: { pipeline: pipeline.id, stage: 'production' }
           }).reply(201, { app: prodApp })
 
           api.post('/app-setups', {
             source_blob: { url: archiveURL },
-            app: { name: stagingApp.name, organization }
+            app: { name: stagingApp.name, organization },
+            pipeline_coupling: { pipeline: pipeline.id, stage: 'staging' }
           }).reply(201, { app: stagingApp })
         })
 
