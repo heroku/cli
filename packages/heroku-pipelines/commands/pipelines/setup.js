@@ -12,6 +12,16 @@ const PIPELINE_MAX_LENGTH = 30 - STAGING_APP_INDICATOR.length
 const ERR_PIPELINE_NAME_LENGTH = `Please choose a pipeline name between 2 and ${PIPELINE_MAX_LENGTH} characters long`
 const ERR_REPO_FORMAT = 'Repository name must be in the format organization/repo'
 
+const DEFAULT_SETTINGS = {
+  auto_deploy: true,
+  wait_for_ci: true,
+  pull_requests: {
+    enabled: true,
+    auto_deploy: true,
+    auto_destroy: true
+  }
+}
+
 function validate ({ name, repo }) {
   const errors = []
   const [nameIsValid, nameMsg] = validateName(name || '')
@@ -94,7 +104,11 @@ function* getNameAndRepo (args) {
   return reply
 }
 
-function* getSettings (branch) {
+function* getSettings (yes, branch) {
+  if (yes) {
+    return DEFAULT_SETTINGS
+  }
+
   return yield prompt([{
     type: 'confirm',
     name: 'auto_deploy',
@@ -131,8 +145,8 @@ function* hasCIFlag (heroku) {
   return hasFlag
 }
 
-function* getCISettings (organization) {
-  const settings = yield prompt([{
+function* getCISettings (yes, organization) {
+  const settings = yes ? { ci: true } : yield prompt([{
     type: 'confirm',
     name: 'ci',
     message: 'Enable automatic Heroku CI test runs?'
@@ -205,6 +219,12 @@ module.exports = {
       char: 't',
       description: 'the team which will own the apps (can also use --organization)',
       hasValue: true
+    },
+    {
+      name: 'yes',
+      char: 'y',
+      description: 'accept all default settings without prompting',
+      hasValue: false
     }
   ],
   run: cli.command(co.wrap(function*(context, heroku) {
@@ -222,11 +242,11 @@ module.exports = {
     const { name: pipelineName, repo: repoName } = yield getNameAndRepo(context.args)
     const stagingAppName = pipelineName + STAGING_APP_INDICATOR
     const repo = yield getRepo(github, repoName)
-    const settings = yield getSettings(repo.default_branch)
+    const settings = yield getSettings(context.flags.yes, repo.default_branch)
 
     let ciSettings
     if (yield hasCIFlag(heroku)) {
-      ciSettings = yield getCISettings(organization)
+      ciSettings = yield getCISettings(context.flags.yes, organization)
     }
 
     const pipeline = yield cli.action(

@@ -150,6 +150,19 @@ describe('pipelines:setup', function () {
           github.done()
           kolkrabbi.done()
         })
+
+        it('does not prompt for options with the -y flag', function* () {
+          yield cmd.run({
+            args: {
+              name: pipeline.name.toUpperCase()
+            },
+            flags: {
+              yes: true
+            }
+          })
+
+          expect(inquirer.prompt).not.to.have.beenCalled
+        })
       })
 
       context('in an organization', function () {
