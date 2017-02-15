@@ -1105,9 +1105,9 @@ heroku-cli-addons@1.2.8:
     lodash.values "4.3.0"
     printf "0.2.5"
 
-heroku-cli-command@^0.0.2:
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/heroku-cli-command/-/heroku-cli-command-0.0.2.tgz#de42a472068d0866365701a1babc2b5de3fd6997"
+heroku-cli-command@0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/heroku-cli-command/-/heroku-cli-command-0.1.0.tgz#6bddadfd7fb312c77435f6cb083ceb138a76d818"
   dependencies:
     ansi-escapes "1.4.0"
     cardinal "1.0.0"
@@ -1317,9 +1317,9 @@ heroku-pg@2.0.16:
     strip-eof "1.0.0"
     tunnel-ssh "4.1.1"
 
-heroku-pipelines@1.3.0:
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/heroku-pipelines/-/heroku-pipelines-1.3.0.tgz#01fb74c38a0aed50222f3e32c98596f5bfed40c3"
+heroku-pipelines@1.3.1:
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/heroku-pipelines/-/heroku-pipelines-1.3.1.tgz#6e846237846d4be67c891517e538a4512a4fd9d5"
   dependencies:
     bluebird "3.4.7"
     co "4.6.0"
@@ -2681,9 +2681,9 @@ run-parallel@^1.1.2:
   version "1.1.6"
   resolved "https://registry.yarnpkg.com/run-parallel/-/run-parallel-1.1.6.tgz#29003c9a2163e01e2d2dfc90575f2c6c1d61a039"
 
-rwlockfile@1.3.1:
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/rwlockfile/-/rwlockfile-1.3.1.tgz#1f0b746a8d52d0e0e4ed6608073e7db7ae92fb32"
+rwlockfile@1.3.3:
+  version "1.3.3"
+  resolved "https://registry.yarnpkg.com/rwlockfile/-/rwlockfile-1.3.3.tgz#7fd478ba96bcfac7bcc16a103dcffbb21d0f31c6"
   dependencies:
     graceful-fs ">= 4.0.0"
     ps-node "0.1.4"
