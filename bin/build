@@ -44,11 +44,23 @@ echo $CHANNEL > CHANNEL
 cat << EOF > heroku
 #!/usr/bin/env bash
 set -e
+get_script_dir () {
+	SOURCE="\${BASH_SOURCE[0]}"
+	# While \$SOURCE is a symlink, resolve it
+	while [ -h "\$SOURCE" ]; do
+		DIR="\$( cd -P "\$( dirname "\$SOURCE" )" && pwd )"
+		SOURCE="\$( readlink "\$SOURCE" )"
+		# If \$SOURCE was a relative symlink (so no "/" as prefix, need to resolve it relative to the symlink base directory
+		[[ \$SOURCE != /* ]] && SOURCE="\$DIR/\$SOURCE"
+	done
+	DIR="\$( cd -P "\$( dirname "\$SOURCE" )" && pwd )"
+	echo "\$DIR"
+}
 XDG_DATA_HOME=\${XDG_DATA_HOME:="\$HOME/.local/share"}
 if [ -x \$XDG_DATA_HOME/heroku/jscli/heroku ]; then
   \$XDG_DATA_HOME/heroku/jscli/heroku \$*
 else
-  DIR="\$( cd "\$( dirname "\${BASH_SOURCE[0]}" )" && pwd )"
+  DIR=\$(get_script_dir)
   \$DIR/node/bin/node --harmony-async-await --use_strict \$DIR/cli.js $*
 fi
 EOF
