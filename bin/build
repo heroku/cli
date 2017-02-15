@@ -5,12 +5,13 @@ set -ex
 VERSION=`./bin/version`
 NODE_VERSION=7.5.0
 
-if [ $# -ne 1 ]; then
-  echo "USAGE: ./bin/build PLATFORM"
+if [ $# -ne 2 ]; then
+  echo "USAGE: ./bin/build PLATFORM CHANNEL"
   exit 1
 fi
 
 PLATFORM=$1
+CHANNEL=$2
 
 # setup workspace
 HEROKU_BASE=heroku-v$VERSION-$PLATFORM
@@ -37,13 +38,19 @@ cd $WORKSPACE
 yarn install --offline --no-progress --production
 
 echo $VERSION > VERSION
-echo $BRANCH > BRANCH
+echo $CHANNEL > CHANNEL
 
 # create bin runner
 cat << EOF > heroku
 #!/usr/bin/env bash
-DIR="\$( cd "\$( dirname "\${BASH_SOURCE[0]}" )" && pwd )"
-\$DIR/node/bin/node --harmony-async-await --use_strict \$DIR/cli.js \$*
+set -e
+XDG_DATA_HOME=\${XDG_DATA_HOME:="\$HOME/.local/share"}
+if [ -x \$XDG_DATA_HOME/heroku/jscli/heroku ]; then
+  \$XDG_DATA_HOME/heroku/jscli/heroku \$*
+else
+  DIR="\$( cd "\$( dirname "\${BASH_SOURCE[0]}" )" && pwd )"
+  \$DIR/node/bin/node --harmony-async-await --use_strict \$DIR/cli.js $*
+fi
 EOF
 chmod +x heroku
 
