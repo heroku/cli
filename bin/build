@@ -61,7 +61,7 @@ if [ -x \$XDG_DATA_HOME/heroku/jscli/heroku ]; then
   \$XDG_DATA_HOME/heroku/jscli/heroku \$*
 else
   DIR=\$(get_script_dir)
-  \$DIR/node/bin/node --harmony-async-await --use_strict \$DIR/cli.js $*
+  \$DIR/node/bin/node --harmony-async-await --use_strict \$DIR/cli.js \$*
 fi
 EOF
 chmod +x heroku
