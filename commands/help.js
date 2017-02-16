@@ -93,7 +93,7 @@ class Help extends Command {
       this.log(`Usage: ${this.color.cmd(usage)}\n`)
       if (command.description) this.log(`${command.description.trim()}\n`)
       let flags = (command.flags || []).filter(f => !f.hidden)
-      if (flags.length) this.log(`${renderFlags(command.flags)}\n`)
+      if (flags.length) this.log(`${renderFlags(flags)}\n`)
       if (command.help) this.log(`${command.help.trim()}\n`)
     }
 
