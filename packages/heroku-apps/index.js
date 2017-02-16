@@ -10,6 +10,7 @@ exports.topics = [
   { name: 'drains', description: 'list all log drains' },
   { name: 'dyno', hidden: true },
   { name: 'features', description: 'manage optional features' },
+  { name: 'keys', description: 'manage ssh keys' },
   { name: 'labs', description: 'experimental features' },
   { name: 'maintenance', description: 'manage maintenance mode for an app' },
   { name: 'notifications', description: 'display notifications' },
