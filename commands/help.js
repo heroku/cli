@@ -1,23 +1,35 @@
 const {Command} = require('heroku-cli-command')
-const plugins = require('../lib/plugins')
 
 function stderrwidth () {
   if (!process.stdout.isTTY) return 80
   return process.stdout.getWindowSize()[0]
 }
 
+function compare (...props) {
+  return (a, b) => {
+    for (let prop of props) {
+      if (a[prop] < b[prop]) return -1
+      if (a[prop] > b[prop]) return 1
+    }
+    return 0
+  }
+}
+
 class Help extends Command {
   async run () {
-    plugins.load()
-    let cmd = this.argv.slice(1).find(arg => !['help', '-h', '--help'].includes(arg))
-    if (!cmd) return this.all()
-    let topic = plugins.topics.find(t => t.name === cmd.split(':')[0])
-    let command = plugins.commands.find(cmd)
-    if (!topic && !command) return this.all()
+    let cmd = this.args.find(arg => !['help', '-h', '--help'].includes(arg))
+    if (!cmd) return this.topics()
+    let topic = this.plugins.topics[cmd.split(':')[0]]
+    let command = this.plugins.commands[cmd]
+    if (!topic && !command) throw new Error(`command ${cmd} not found`)
     this.topic(topic, command, cmd)
   }
 
-  all () {
+  get plugins () {
+    return require('../lib/plugins')
+  }
+
+  topics () {
     const max = require('lodash.maxby')
     const S = require('string')
 
@@ -25,8 +37,9 @@ class Help extends Command {
 
   Help topics, type ${this.color.cmd(this.argv[0] + ' help TOPIC')} for more details:
   `)
-    let topics = plugins.topics
+    let topics = Object.keys(this.plugins.topics).map(t => this.plugins.topics[t])
     topics = topics.filter(t => !t.hidden)
+    topics.sort(compare('name'))
     let maxlength = max(topics, 'name.length').name.length
     for (let topic of topics) {
       this.log(`  ${this.argv[0]} ${S(topic.name).padRight(maxlength)}${topic.description ? ' # ' + topic.description : ''}`)
@@ -38,7 +51,7 @@ class Help extends Command {
   topic (topic, command, cmd) {
     const max = require('lodash.maxby')
     const S = require('string')
-    const linewrap = require('../linewrap')
+    const linewrap = require('../lib/linewrap')
 
     function renderArg (arg) {
       if (arg.required !== false && arg.optional !== true) return ` <${arg.name}>`
@@ -86,7 +99,9 @@ class Help extends Command {
 
     if (!topic || topic.name !== cmd) return
 
-    let commands = plugins.commands.filter(c => c.topic === topic.name && c.command)
+    let commands = Object.keys(this.plugins.commands).map(name => this.plugins.commands[name])
+    commands = commands.filter(c => c.topic === topic.name && c.command)
+    commands.sort(compare('command'))
     if (commands.length === 0) return
     this.log(`${this.argv[0]} ${topic.name} commands: (${this.color.cmd(this.argv[0] + ' help ' + topic.name + ':COMMAND')} for details)
   `)

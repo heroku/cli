@@ -2000,6 +2000,14 @@ kind-of@^3.0.2:
   dependencies:
     is-buffer "^1.0.2"
 
+klaw-sync@1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/klaw-sync/-/klaw-sync-1.1.1.tgz#a9d38cf8f0df17cb696b2e099423c6de92f41273"
+  dependencies:
+    micromatch "^2.3.11"
+  optionalDependencies:
+    graceful-fs "^4.1.11"
+
 lazy-cache@^1.0.3:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/lazy-cache/-/lazy-cache-1.0.4.tgz#a1d78fc3a50474cb80845d3b3b6e1da49a446e8e"
