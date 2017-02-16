@@ -20,9 +20,8 @@ async function main () {
     const Update = require('./commands/update')
     const update = new Update({version})
     await update.checkIfUpdating()
-    let Command = plugins.commands.find(argv[1])
-    if (!Command) Command = plugins.load().commands.find(argv[1])
-    if (!Command) Command = require('./commands/help')
+    let Command = plugins.commands[argv[1] || 'dashboard']
+    if (!Command) Command = require('./commands/no_command')
     if (!Command._version) {
       // v5 command
       const {convertLegacy} = require('heroku-cli-command')
