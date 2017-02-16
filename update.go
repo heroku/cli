@@ -58,6 +58,7 @@ func Update(channel string) {
 
 func updateCLI(channel string) {
 	if Autoupdate == "no" {
+		WarnIfError(merry.Errorf("Update CLI with apt-get update && apt-get upgrade"))
 		return
 	}
 	if config.LockChannel != "" {
