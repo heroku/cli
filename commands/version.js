@@ -2,7 +2,7 @@ const {Command} = require('heroku-cli-command')
 
 class Version extends Command {
   async run () {
-    let version = require('../version')
+    let version = require('../lib/version')
     this.log(`heroku-cli/${version} (${process.platform}-${process.arch}) node-${process.version}`)
   }
 }
