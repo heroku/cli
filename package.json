@@ -23,6 +23,7 @@
     "heroku-run": "3.4.3",
     "heroku-spaces": "2.6.0",
     "heroku-status": "3.0.5",
+    "klaw-sync": "1.1.1",
     "lodash.maxby": "4.6.0",
     "moment": "2.17.1",
     "rwlockfile": "1.3.3",

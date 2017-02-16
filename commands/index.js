@@ -1,7 +1,7 @@
-const {CommandList} = require('heroku-cli-command')
+const klaw = require('klaw-sync')
 
-exports.commands = new CommandList(
-  require('./update'),
-  require('./version'),
-  require('./plugins/install')
-)
+exports.topics = [
+  {name: 'update', description: 'update CLI and plugins'}
+]
+
+exports.commands = klaw(__dirname, {nodir: true}).map(f => require(f.path))
