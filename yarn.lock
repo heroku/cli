@@ -1341,9 +1341,9 @@ heroku-cli-command@0.1.0:
     heroku-client "3.0.0"
     netrc "0.1.4"
 
-heroku-cli-test@0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/heroku-cli-test/-/heroku-cli-test-0.0.1.tgz#a20d000e0421fd19a3261a8a0c7312629a280b2c"
+heroku-cli-test@0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/heroku-cli-test/-/heroku-cli-test-0.0.2.tgz#680c6df37f5c54f5eead1535f0999644259baa77"
 
 heroku-cli-util@6.0.11:
   version "6.0.11"
