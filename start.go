@@ -54,12 +54,18 @@ func Start(args ...string) {
 		// Heroku shows a dashboard, but to do that for sfdx an entirly new
 		// plugin would need to be created and auto installed to utilize a
 		// dashboard. For now, just show help. Should be removed eventually.
-		if getDefaultNamespace() == "heroku" {
+		if getDefaultNamespace() == HerokuNamespace.Name {
 			// show dashboard if no args passed
 			Args = append(Args, "dashboard")
 		} else {
 			Args = append(Args, "--help")
 		}
+	} else if len(Args) == 2 && getDefaultNamespace() != HerokuNamespace.Name && Args[1] == HerokuNamespace.Name {
+		// Since dashboard is not the default command for the heroku namespace, there is no way
+		// to find that command without changing the default namespace since the next thing after
+		// "sfdx heroku" needs to be a topic, not a command.
+		DefaultNamespace = HerokuNamespace.Name
+		Args[1] = "dashboard"
 	}
 
 	switch Args[1] {

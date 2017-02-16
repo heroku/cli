@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"syscall"
 )
 
 // GoFlagInitState Initial state of exports
@@ -66,7 +67,16 @@ func main() {
 	command.Stdin = os.Stdin
 
 	command.Start()
-	command.Wait()
+
+	if err := command.Wait(); err != nil {
+		if exiterr, ok := err.(*exec.ExitError); ok {
+			// The program has exited with an exit code != 0
+
+			if status, ok := exiterr.Sys().(syscall.WaitStatus); ok {
+				os.Exit(status.ExitStatus())
+			}
+		}
+	}
 
 	os.Exit(0)
 }
