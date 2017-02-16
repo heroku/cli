@@ -9,5 +9,6 @@ exports.commands = [
   require('./commands/enterprises/members'),
   require('./commands/enterprises/members-add'),
   require('./commands/enterprises/members-remove'),
+  require('./commands/teams'),
   require('./commands/teams/transfer')
 ]
