@@ -2,11 +2,11 @@
 
 const {Command} = require('heroku-cli-command')
 const path = require('path')
-const dirs = require('../dirs')
-const version = require('../version')
-const currentChannel = require('../channel')
+const dirs = require('../lib/dirs')
+const version = require('../lib/version')
+const currentChannel = require('../lib/channel')
 const lock = require('rwlockfile')
-const config = require('../config')
+const config = require('../lib/config')
 
 class Update extends Command {
   async run () {

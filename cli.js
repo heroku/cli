@@ -17,12 +17,12 @@ process.on('SIGINT', onexit.bind(null, {exit: true}))
 async function main () {
   let command
   try {
-    const Update = require('./lib/commands/update')
+    const Update = require('./commands/update')
     const update = new Update({version})
     await update.checkIfUpdating()
     let Command = plugins.commands.find(argv[1])
     if (!Command) Command = plugins.load().commands.find(argv[1])
-    if (!Command) Command = require('./lib/commands/help')
+    if (!Command) Command = require('./commands/help')
     if (!Command._version) {
       // v5 command
       const {convertLegacy} = require('heroku-cli-command')
