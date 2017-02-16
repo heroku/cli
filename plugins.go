@@ -251,6 +251,7 @@ function handleEPIPE (err) {
 }
 process.stdout.on('error', handleEPIPE)
 process.stderr.on('error', handleEPIPE)
+if (!ctx.dev) process.on('unhandledRejection', () => { })
 
 cmd.run(ctx)
 `, args, plugin.Name, plugin.Version, topic, command, ctxJSON)

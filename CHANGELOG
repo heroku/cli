@@ -1,3 +1,21 @@
+5.6.22  2017-02-15
+==================
+Updated heroku-pipelines
+
+5.6.21  2017-02-14
+==================
+Updated heroku-cli-addons to 1.2.8
+
+5.6.20  2017-02-13
+==================
+Updated heroku-pipelines
+Hide unhandled node promise warning unless in dev mode
+
+5.6.19  2017-02-13
+==================
+Fixed help for default commands
+Updated all plugins to new heroku-cli-util
+
 5.6.18  2017-02-06
 ==================
 Update heroku-cli-addons to 1.2.4
