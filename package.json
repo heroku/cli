@@ -8,7 +8,6 @@
   },
   "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
-    "name": "heroku-cli",
     "bin": "heroku",
     "plugins": [
       "heroku-apps",
@@ -27,7 +26,7 @@
     ]
   },
   "dependencies": {
-    "cli-engine": "0.0.2",
+    "cli-engine": "0.0.3",
     "heroku-apps": "2.1.24",
     "heroku-certs": "1.1.26",
     "heroku-cli-addons": "1.2.8",
