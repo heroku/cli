@@ -13,9 +13,7 @@ dependencies:
 
 test:
   override:
-    - echo "TODO: yarn test"
-  post:
-    - nyc report --reporter=text-lcov > coverage.lcov && bash <(curl -s https://codecov.io/bash)
+    - ./bin/run version
 
 deployment:
   v6:
