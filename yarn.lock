@@ -217,9 +217,9 @@ cli-cursor@^2.1.0:
   dependencies:
     restore-cursor "^2.0.0"
 
-cli-engine@0.0.2:
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/cli-engine/-/cli-engine-0.0.2.tgz#0c4f3119ad32390e15b438e0a4ac6ee5d391360b"
+cli-engine@0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/cli-engine/-/cli-engine-0.0.3.tgz#9f4dcc6668de68acdeb400cd9dbd68b0c3dc4e61"
   dependencies:
     ansi-escapes "1.4.0"
     execa "0.6.0"
