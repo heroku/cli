@@ -45,7 +45,8 @@
     ]
   },
   "scripts": {
-    "release": "echo $1 $2"
+    "build": "cli-build",
+    "release": "cli-release"
   },
   "homepage": "https://cli.heroku.com",
   "keywords": [
