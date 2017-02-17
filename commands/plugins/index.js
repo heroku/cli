@@ -9,6 +9,7 @@ class Plugins extends Command {
     plugins = plugins.filter(p => p.type !== 'builtin')
     plugins.sort(util.compare('name'))
     if (!this.flags.core) plugins = plugins.filter(p => p.type !== 'core')
+    if (!plugins.length) this.warn('no plugins installed')
     for (let plugin of plugins) {
       let output = `${plugin.name} ${plugin.version}`
       if (plugin.type !== 'user') output += ` (${plugin.type})`
