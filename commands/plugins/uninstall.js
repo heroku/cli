@@ -22,6 +22,6 @@ PluginsUninstall.command = 'uninstall'
 PluginsUninstall.args = [
   {name: 'plugin'}
 ]
-PluginsUninstall.aliases = ['unlink']
+PluginsUninstall.aliases = ['plugins:unlink']
 
 module.exports = PluginsUninstall
