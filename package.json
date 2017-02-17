@@ -49,7 +49,6 @@
     "heroku-cli-plugin"
   ],
   "license": "ISC",
-  "main": "cli.js",
   "repository": "https://github.com/heroku/cli",
   "scripts": {
     "build": "cli-build",
