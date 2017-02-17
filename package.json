@@ -9,7 +9,6 @@
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
     "cli-engine": "0.0.1",
-    "find-up-sync": "1.0.2",
     "heroku-apps": "2.1.24",
     "heroku-certs": "1.1.26",
     "heroku-cli-addons": "1.2.8",
@@ -30,6 +29,18 @@
     "name": "heroku-cli",
     "bin": "heroku",
     "plugins": [
+      "heroku-apps",
+      "heroku-certs",
+      "heroku-cli-addons",
+      "heroku-fork",
+      "heroku-git",
+      "heroku-local",
+      "heroku-orgs",
+      "heroku-pg",
+      "heroku-pipelines",
+      "heroku-redis",
+      "heroku-run",
+      "heroku-spaces",
       "heroku-status"
     ]
   },
