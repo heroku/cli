@@ -19,4 +19,4 @@ deployment:
   v6:
     branch: v6
     commands:
-      - cli-release v6
+      - npm run release v6
