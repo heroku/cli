@@ -35,7 +35,7 @@ async function main () {
     await command.done()
     process.exit(0)
   } catch (err) {
-    if (command) command.error(err)
+    if (command.error) command.error(err)
     else console.error(err)
     process.exit(1)
   }
