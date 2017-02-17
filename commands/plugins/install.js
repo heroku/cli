@@ -5,12 +5,15 @@ const path = require('path')
 
 class PluginsInstall extends Command {
   async run () {
+    const plugins = require('../../lib/plugins')
     if (!this.debugging) this.action(`Installing plugin ${this.args.plugin}`)
     await this.setupYarn()
     await this.yarn('add', this.args.plugin)
     try {
-      let plugin = require(path.join(dirs.plugins, 'node_modules', this.args.plugin))
+      let d = path.join(dirs.plugins, 'node_modules', this.args.plugin)
+      let plugin = require(d)
       if (!plugin.commands) throw new Error(`${this.args.plugin} does not appear to be a Heroku CLI plugin`)
+      plugins.clearCache(d)
     } catch (err) {
       if (!this.debugging) this.action(`ERROR: uninstalling ${this.args.plugin}`)
       this.warn('Run with --debug to see extra information')
