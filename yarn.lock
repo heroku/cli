@@ -483,6 +483,10 @@ fill-range@^2.1.0:
     repeat-element "^1.1.2"
     repeat-string "^1.5.2"
 
+find-up-sync@1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/find-up-sync/-/find-up-sync-1.0.2.tgz#e3ad6b8f7e2524bd051a1068a5b561926b935986"
+
 flexbuffer@0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/flexbuffer/-/flexbuffer-0.0.6.tgz#039fdf23f8823e440c38f3277e6fef1174215b30"
