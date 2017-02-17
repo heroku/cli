@@ -1,23 +1,15 @@
-const {Command} = require('heroku-cli-command')
+const {Command, mixins} = require('heroku-cli-command')
+const yarn = require('../../mixins/yarn')
 const dirs = require('../../lib/dirs')
-const path = require('path')
 
-class PluginsUninstall extends Command {
+class PluginsUninstall extends mixins.mix(Command).with(yarn) {
   async run () {
-    const plugins = require('../../lib/plugins')
     if (!this.debugging) this.action(`Uninstalling plugin ${this.args.plugin}`)
     await this.yarn('remove', this.args.plugin)
-    const d = path.join(dirs.plugins, 'node_modules', this.args.plugin)
-    plugins.clearCache(d)
+    this.plugins.clearCache(dirs.userPlugin(this.args.plugin))
   }
 
-  yarn (...args) {
-    const execa = require('execa')
-    const cwd = dirs.plugins
-    const stdio = this.debugging ? 'inherit' : null
-    this.debug(`${cwd}: ${dirs.yarnBin} ${args.join(' ')}`)
-    return execa(dirs.yarnBin, args, {cwd, stdio})
-  }
+  get plugins () { return require('../../lib/plugins') }
 }
 
 PluginsUninstall.topic = 'plugins'
@@ -25,5 +17,6 @@ PluginsUninstall.command = 'uninstall'
 PluginsUninstall.args = [
   {name: 'plugin'}
 ]
+PluginsUninstall.aliases = ['unlink']
 
 module.exports = PluginsUninstall

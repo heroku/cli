@@ -1284,9 +1284,9 @@ heroku-apps@2.1.24:
     string "3.3.3"
     term-img "1.0.0"
 
-heroku-certs@1.1.25:
-  version "1.1.25"
-  resolved "https://registry.yarnpkg.com/heroku-certs/-/heroku-certs-1.1.25.tgz#2ef52be45e302db5987b3ec162faf755f2bf2cb9"
+heroku-certs@1.1.26:
+  version "1.1.26"
+  resolved "https://registry.yarnpkg.com/heroku-certs/-/heroku-certs-1.1.26.tgz#706200a71a7cf8af2fe1e52ea4558b407117e9ca"
   dependencies:
     co "4.6.0"
     co-wait "0.0.0"
