@@ -7,9 +7,11 @@ class Help extends Command {
   async run () {
     let cmd = this.args.find(arg => !['help', '-h', '--help'].includes(arg))
     if (!cmd) return this.topics({argv0})
-    let topic = this.plugins.topics[cmd.split(':')[0]]
+    let topicName = cmd.split(':')[0]
+    let topic = this.plugins.topics[topicName]
     let matchedCommand = this.plugins.commands[cmd]
     if (!topic && !matchedCommand) throw new Error(`command ${cmd} not found`)
+    if (!topic) topic = {name: topicName, fetch: () => { }}
     let Topic = topic.fetch()
     let commands = Object.keys(this.plugins.commands)
       .map(name => this.plugins.commands[name])
