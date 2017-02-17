@@ -1,11 +1,16 @@
 const {Command, mixins} = require('heroku-cli-command')
 const yarn = require('../../mixins/yarn')
 const dirs = require('../../lib/dirs')
+const fs = require('fs-extra')
 
 class PluginsUninstall extends mixins.mix(Command).with(yarn) {
   async run () {
     if (!this.debugging) this.action(`Uninstalling plugin ${this.args.plugin}`)
-    await this.yarn('remove', this.args.plugin)
+    if (fs.existsSync(dirs.userPlugin(this.args.plugin))) {
+      await this.yarn('remove', this.args.plugin)
+    } else {
+      this.plugins.removeLinkedPlugin(this.args.plugin)
+    }
     this.plugins.clearCache(dirs.userPlugin(this.args.plugin))
   }
 
