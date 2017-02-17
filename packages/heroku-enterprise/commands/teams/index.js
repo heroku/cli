@@ -6,7 +6,11 @@ let cli = require('heroku-cli-util')
 function * list (context, heroku) {
   let teams = yield heroku.get('/organizations')
   let data = teams.map(function(t) {
-    return { team: t.name, enterpriseAccount: t.enterprise_account.name }
+    if (t.enterprise_account) {
+      return { team: t.name, enterpriseAccount: t.enterprise_account.name }
+    } else {
+      return { team: t.name, enterpriseAccount: 'n/a' }
+    }
   })
   let columns = [
     { key: 'team', label: 'Team', format: e => cli.color.cyan(e) },
