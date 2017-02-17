@@ -217,13 +217,16 @@ cli-cursor@^2.1.0:
   dependencies:
     restore-cursor "^2.0.0"
 
-cli-engine@0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/cli-engine/-/cli-engine-0.0.1.tgz#ed5738aa16fe9cbe2026135869be9ccf57a1dc70"
+cli-engine@0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/cli-engine/-/cli-engine-0.0.2.tgz#0c4f3119ad32390e15b438e0a4ac6ee5d391360b"
   dependencies:
     ansi-escapes "1.4.0"
     execa "0.6.0"
+    find-config "1.0.0"
+    find-up-sync "1.0.2"
     fs-extra "2.0.0"
+    heroku-cli-command "0.1.4"
     klaw-sync "1.1.1"
     lodash.maxby "4.6.0"
     moment "2.17.1"
@@ -482,6 +485,12 @@ fill-range@^2.1.0:
     randomatic "^1.1.3"
     repeat-element "^1.1.2"
     repeat-string "^1.5.2"
+
+find-config@1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/find-config/-/find-config-1.0.0.tgz#eafa2b9bc07fa9c90e9a0c3ef9cecf1cc800f530"
+  dependencies:
+    user-home "^2.0.0"
 
 find-up-sync@1.0.2:
   version "1.0.2"
