@@ -19,8 +19,6 @@ function * run (context, heroku) {
 }
 
 let cmd = {
-  topic: 'stack',
-  command: 'set',
   needsApp: true,
   needsAuth: true,
   description: 'set the stack of an app',
