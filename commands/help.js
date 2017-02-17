@@ -1,18 +1,9 @@
 const {Command} = require('heroku-cli-command')
+const util = require('../lib/util')
 
 function stderrwidth () {
   if (!process.stdout.isTTY) return 80
   return process.stdout.getWindowSize()[0]
-}
-
-function compare (...props) {
-  return (a, b) => {
-    for (let prop of props) {
-      if (a[prop] < b[prop]) return -1
-      if (a[prop] > b[prop]) return 1
-    }
-    return 0
-  }
 }
 
 class Help extends Command {
@@ -39,7 +30,7 @@ class Help extends Command {
   `)
     let topics = Object.keys(this.plugins.topics).map(t => this.plugins.topics[t])
     topics = topics.filter(t => !t.hidden)
-    topics.sort(compare('name'))
+    topics.sort(util.compare('name'))
     let maxlength = max(topics, 'name.length').name.length
     for (let topic of topics) {
       this.log(`  ${this.argv[0]} ${S(topic.name).padRight(maxlength)}${topic.description ? ' # ' + topic.description : ''}`)
@@ -101,7 +92,7 @@ class Help extends Command {
 
     let commands = Object.keys(this.plugins.commands).map(name => this.plugins.commands[name])
     commands = commands.filter(c => c.topic === topic.name && c.command)
-    commands.sort(compare('command'))
+    commands.sort(util.compare('command'))
     if (commands.length === 0) return
     this.log(`${this.argv[0]} ${topic.name} commands: (${this.color.cmd(this.argv[0] + ' help ' + topic.name + ':COMMAND')} for details)
   `)
