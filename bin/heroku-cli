@@ -15,4 +15,4 @@ get_script_dir () {
 }
 DIR=$(get_script_dir)
 
-node --harmony-async-await --use_strict $DIR/../cli.js $*
+HEROKU_UPDATE_DISABLED="installed via npm" node --harmony-async-await --use_strict $DIR/../cli.js $*
