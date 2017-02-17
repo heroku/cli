@@ -3,7 +3,9 @@
   "description": "CLI to interact with Heroku",
   "version": "6.1.2",
   "author": "Jeff Dickey @dickeyxxx",
-  "bin": "bin/run",
+  "bin": {
+    "heroku": "bin/run"
+  },
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
     "ansi-escapes": "1.4.0",
