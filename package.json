@@ -1,7 +1,7 @@
 {
   "name": "heroku-cli",
   "description": "CLI to interact with Heroku",
-  "version": "6.1.0",
+  "version": "6.1.1",
   "author": "Jeff Dickey @dickeyxxx",
   "bin": "bin/run",
   "bugs": "https://github.com/heroku/cli/issues",
