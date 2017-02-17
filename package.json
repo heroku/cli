@@ -11,7 +11,7 @@
     "heroku-apps": "2.1.24",
     "heroku-certs": "1.1.26",
     "heroku-cli-addons": "1.2.8",
-    "heroku-cli-command": "0.1.2",
+    "heroku-cli-command": "0.1.4",
     "heroku-cli-test": "0.0.2",
     "heroku-fork": "4.1.14",
     "heroku-git": "2.5.10",
