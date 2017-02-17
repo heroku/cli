@@ -26,9 +26,13 @@
     "heroku-spaces": "2.6.0",
     "heroku-status": "3.0.5"
   },
-  "corePlugins": [
-    "heroku-status"
-  ],
+  "cli-engine": {
+    "name": "heroku-cli",
+    "bin": "heroku",
+    "plugins": [
+      "heroku-status"
+    ]
+  },
   "scripts": {
     "release": "echo $1 $2"
   },
