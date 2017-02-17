@@ -2,11 +2,10 @@
 
 let _ = require('lodash')
 
-exports.topic = {
-  name: 'certs',
-  // this is the help text that shows up under `heroku help`
-  description: 'a topic for the ssl plugin'
-}
+exports.topics = [
+  {name: 'certs', description: 'a topic for the ssl plugin'},
+  {name: '_certs', hidden: true}
+]
 
 let commands = [
   require('./commands/certs/index.js'),
