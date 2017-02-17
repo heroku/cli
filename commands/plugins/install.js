@@ -1,8 +1,8 @@
 const {Command, mixins} = require('heroku-cli-command')
 const dirs = require('../../lib/dirs')
 const fs = require('fs-extra')
-const path = require('path')
 const yarn = require('../../mixins/yarn')
+const path = require('path')
 
 class PluginsInstall extends mixins.mix(Command).with(yarn) {
   async run () {
@@ -11,10 +11,9 @@ class PluginsInstall extends mixins.mix(Command).with(yarn) {
     await this.setupYarn()
     await this.yarn('add', this.args.plugin)
     try {
-      let d = path.join(dirs.plugins, 'node_modules', this.args.plugin)
-      let plugin = require(d)
+      let plugin = require(dirs.userPlugin(this.args.plugin))
       if (!plugin.commands) throw new Error(`${this.args.plugin} does not appear to be a Heroku CLI plugin`)
-      plugins.clearCache(d)
+      plugins.clearCache(dirs.userPlugin(this.args.plugin))
     } catch (err) {
       if (!this.debugging) this.action(`ERROR: uninstalling ${this.args.plugin}`)
       this.warn('Run with --debug to see extra information')
