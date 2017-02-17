@@ -13,9 +13,7 @@ class Help extends Command {
     if (!topic && !matchedCommand) throw new Error(`command ${cmd} not found`)
     if (!topic) topic = {name: topicName, fetch: () => { }}
     let Topic = topic.fetch()
-    let commands = Object.keys(this.plugins.commands)
-      .map(name => this.plugins.commands[name])
-      .filter(c => c.topic === topic.topic)
+    let commands = this.commandsForTopic(topicName)
     commands.sort(util.compare('command'))
     if (typeof Topic !== 'function') {
       Topic = class extends require('heroku-cli-command').Topic {}
@@ -28,6 +26,15 @@ class Help extends Command {
 
   get plugins () {
     return require('../lib/plugins')
+  }
+
+  commandsForTopic (topic) {
+    let plugins = this.plugins.list()
+    let commands = []
+    for (let plugin of plugins) {
+      commands = commands.concat(plugin.commands.filter(c => c.topic === topic))
+    }
+    return commands
   }
 
   topics ({argv0}) {
