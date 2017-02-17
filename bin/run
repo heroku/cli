@@ -15,4 +15,4 @@ get_script_dir () {
 }
 DIR=$(get_script_dir)
 
-HEROKU_DEV=1 node --harmony-async-await --use_strict $DIR/../cli.js $*
+node --harmony-async-await --use_strict $DIR/run.js $*
