@@ -40,6 +40,11 @@ class PluginsInstall extends Command {
 
 PluginsInstall.topic = 'plugins'
 PluginsInstall.command = 'install'
+PluginsInstall.description = 'Installs a plugin into the CLI'
+PluginsInstall.help = `
+Example:
+  $ heroku plugins:install heroku-production-status
+`
 PluginsInstall.args = [
   {name: 'plugin'}
 ]
