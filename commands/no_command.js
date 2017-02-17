@@ -8,4 +8,6 @@ Run ${this.color.cmd('heroku help')} for a list of available commands.`)
   }
 }
 
+NoCommand.variableArgs = true
+
 module.exports = NoCommand
