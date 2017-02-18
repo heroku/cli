@@ -660,9 +660,9 @@ here@0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/here/-/here-0.0.2.tgz#69c1af3f02121f3d8788e02e84dc8b3905d71195"
 
-heroku-apps@2.1.24:
-  version "2.1.24"
-  resolved "https://registry.yarnpkg.com/heroku-apps/-/heroku-apps-2.1.24.tgz#db6603621e4e1a221bf8f1848bcb4999d2de95c3"
+heroku-apps@2.1.25:
+  version "2.1.25"
+  resolved "https://registry.yarnpkg.com/heroku-apps/-/heroku-apps-2.1.25.tgz#ddf1b42469e023e1a1148839c128e4d05df2703d"
   dependencies:
     bluebird "3.4.7"
     co "4.6.0"
@@ -760,10 +760,6 @@ heroku-cli-command@0.1.5:
     lodash.maxby "4.6.0"
     netrc "0.1.4"
     string "3.3.3"
-
-heroku-cli-test@0.0.2:
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/heroku-cli-test/-/heroku-cli-test-0.0.2.tgz#680c6df37f5c54f5eead1535f0999644259baa77"
 
 heroku-cli-util@6.0.11:
   version "6.0.11"
