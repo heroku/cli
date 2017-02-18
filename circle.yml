@@ -17,7 +17,8 @@ test:
     - HEROKU_DEBUG=1 ./bin/run help
 
 deployment:
-  v6:
+  beta:
     branch: v6
+    owner: heroku
     commands:
       - npm run release beta
