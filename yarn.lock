@@ -224,13 +224,12 @@ cli-cursor@^2.1.0:
   dependencies:
     restore-cursor "^2.0.0"
 
-cli-engine@0.0.10:
-  version "0.0.10"
-  resolved "https://registry.yarnpkg.com/cli-engine/-/cli-engine-0.0.10.tgz#aaa0bc933ca23eae9a4e6fc902d0d02f598caf3c"
+cli-engine@0.0.12:
+  version "0.0.12"
+  resolved "https://registry.yarnpkg.com/cli-engine/-/cli-engine-0.0.12.tgz#4cc99e761492bc5eeaed24f894ce277ee8469b94"
   dependencies:
     ansi-escapes "1.4.0"
     execa "0.6.0"
-    find-up-sync "1.0.2"
     fs-extra "2.0.0"
     heroku-cli-command "0.1.5"
     klaw-sync "1.1.2"
@@ -491,10 +490,6 @@ fill-range@^2.1.0:
     randomatic "^1.1.3"
     repeat-element "^1.1.2"
     repeat-string "^1.5.2"
-
-find-up-sync@1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/find-up-sync/-/find-up-sync-1.0.2.tgz#e3ad6b8f7e2524bd051a1068a5b561926b935986"
 
 flexbuffer@0.0.6:
   version "0.0.6"
