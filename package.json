@@ -9,6 +9,7 @@
   "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
     "bin": "heroku",
+    "defaultCommand": "dashboard",
     "plugins": [
       "heroku-apps",
       "heroku-certs",
