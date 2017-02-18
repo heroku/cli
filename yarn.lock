@@ -224,14 +224,14 @@ cli-cursor@^2.1.0:
   dependencies:
     restore-cursor "^2.0.0"
 
-cli-engine@1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/cli-engine/-/cli-engine-1.0.0.tgz#63449ada8a30e078898b6ddded6765e3c25ef10f"
+cli-engine@1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/cli-engine/-/cli-engine-1.0.4.tgz#b636ccb4bcdbd88591e5a5a3cd92cb939f643b80"
   dependencies:
     ansi-escapes "1.4.0"
     execa "0.6.0"
     fs-extra "2.0.0"
-    heroku-cli-command "1.0.2"
+    heroku-cli-command "1.0.3"
     klaw-sync "1.1.2"
     lodash.maxby "4.6.0"
     moment "2.17.1"
@@ -742,9 +742,9 @@ heroku-cli-addons@1.2.8:
     lodash.values "4.3.0"
     printf "0.2.5"
 
-heroku-cli-command@1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/heroku-cli-command/-/heroku-cli-command-1.0.2.tgz#d4387f4c4e7beece2639fb5395c105c244b3c6df"
+heroku-cli-command@1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/heroku-cli-command/-/heroku-cli-command-1.0.3.tgz#3f6ab995624b155d5d3f92cc11e72c19045f204b"
   dependencies:
     ansi-escapes "1.4.0"
     cardinal "1.0.0"

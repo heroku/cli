@@ -32,7 +32,7 @@
     ]
   },
   "dependencies": {
-    "cli-engine": "1.0.0",
+    "cli-engine": "1.0.4",
     "heroku-apps": "2.1.25",
     "heroku-certs": "1.1.26",
     "heroku-cli-addons": "1.2.8",
