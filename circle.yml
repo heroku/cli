@@ -14,6 +14,7 @@ dependencies:
 test:
   override:
     - ./bin/run version -d
+    - ./bin/run help -d
 
 deployment:
   v6:
