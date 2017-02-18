@@ -9,6 +9,7 @@
   "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
     "bin": "heroku",
+    "node": "7.5.0",
     "default_command": "dashboard",
     "s3": {
       "bucket": "heroku-cli-assets",
