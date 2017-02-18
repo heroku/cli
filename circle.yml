@@ -13,7 +13,7 @@ dependencies:
 
 test:
   override:
-    - ./bin/run version
+    - ./bin/run version -d
 
 deployment:
   v6:
