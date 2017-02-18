@@ -9,7 +9,11 @@
   "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
     "bin": "heroku",
-    "defaultCommand": "dashboard",
+    "default_command": "dashboard",
+    "s3": {
+      "bucket": "heroku-cli-assets",
+      "host": "cli-assets.heroku.com"
+    },
     "plugins": [
       "heroku-apps",
       "heroku-certs",
@@ -27,7 +31,7 @@
     ]
   },
   "dependencies": {
-    "cli-engine": "0.0.10",
+    "cli-engine": "0.0.12",
     "heroku-apps": "2.1.25",
     "heroku-certs": "1.1.26",
     "heroku-cli-addons": "1.2.8",
