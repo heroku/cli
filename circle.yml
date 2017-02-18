@@ -13,8 +13,8 @@ dependencies:
 
 test:
   override:
-    - ./bin/run version -d
-    - ./bin/run help -d
+    - HEROKU_DEBUG=1 ./bin/run version
+    - HEROKU_DEBUG=1 ./bin/run help
 
 deployment:
   v6:
