@@ -757,6 +757,14 @@ heroku-cli-command@1.0.3:
     string "3.3.3"
     supports-color "3.2.3"
 
+heroku-cli-oauth@2.0.6:
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/heroku-cli-oauth/-/heroku-cli-oauth-2.0.6.tgz#c0c0ec4b42aeb1067fcfcd70d6c8b10dee0a6282"
+  dependencies:
+    co "4.6.0"
+    heroku-cli-util "6.1.4"
+    lodash "4.17.4"
+
 heroku-cli-util@6.0.11:
   version "6.0.11"
   resolved "https://registry.yarnpkg.com/heroku-cli-util/-/heroku-cli-util-6.0.11.tgz#40f9239cc1cb98d13932103f7135d57de9348035"
