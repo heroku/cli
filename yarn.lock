@@ -247,9 +247,9 @@ here@0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/here/-/here-0.0.2.tgz#69c1af3f02121f3d8788e02e84dc8b3905d71195"
 
-heroku-apps@2.1.23:
-  version "2.1.23"
-  resolved "https://registry.yarnpkg.com/heroku-apps/-/heroku-apps-2.1.23.tgz#5f56581b6071e712ea835ef118a94b2490270b49"
+heroku-apps@2.1.24:
+  version "2.1.24"
+  resolved "https://registry.yarnpkg.com/heroku-apps/-/heroku-apps-2.1.24.tgz#db6603621e4e1a221bf8f1848bcb4999d2de95c3"
   dependencies:
     bluebird "3.4.7"
     co "4.6.0"
@@ -303,6 +303,23 @@ heroku-certs@1.1.25:
 heroku-cli-addons@1.2.7:
   version "1.2.7"
   resolved "https://registry.yarnpkg.com/heroku-cli-addons/-/heroku-cli-addons-1.2.7.tgz#08a9a3cce2bd3697aad4cb4258c82c0df88fdfd2"
+  dependencies:
+    co "4.6.0"
+    co-wait "0.0.0"
+    heroku-cli-util "6.1.4"
+    lodash.flatten "4.4.0"
+    lodash.groupby "4.6.0"
+    lodash.memoize "4.1.2"
+    lodash.merge "4.6.0"
+    lodash.some "4.6.0"
+    lodash.sortby "4.7.0"
+    lodash.topairs "4.3.0"
+    lodash.values "4.3.0"
+    printf "0.2.5"
+
+heroku-cli-addons@1.2.8:
+  version "1.2.8"
+  resolved "https://registry.yarnpkg.com/heroku-cli-addons/-/heroku-cli-addons-1.2.8.tgz#c602c56e716167a88bc64dc734eb45c83d6d1c57"
   dependencies:
     co "4.6.0"
     co-wait "0.0.0"
@@ -379,6 +396,32 @@ heroku-cli-util@6.0.15:
 heroku-cli-util@6.1.4:
   version "6.1.4"
   resolved "https://registry.yarnpkg.com/heroku-cli-util/-/heroku-cli-util-6.1.4.tgz#4bc98647c5d80370aae189b16b016d69b6ec4d32"
+  dependencies:
+    ansi-escapes "1.4.0"
+    cardinal "1.0.0"
+    chalk "^1.1.3"
+    co "4.6.0"
+    got "^6.3.0"
+    heroku-client "3.0.1"
+    lodash.ary "4.1.1"
+    lodash.defaults "4.2.0"
+    lodash.get "4.4.2"
+    lodash.identity "3.0.0"
+    lodash.keys "4.2.0"
+    lodash.mapvalues "4.6.0"
+    lodash.noop "3.0.1"
+    lodash.partial "4.2.1"
+    lodash.pickby "4.6.0"
+    lodash.property "4.4.2"
+    lodash.repeat "4.1.0"
+    lodash.result "4.5.2"
+    opn "^3.0.3"
+    supports-color "^3.1.2"
+    tunnel-agent "^0.4.3"
+
+heroku-cli-util@6.1.5:
+  version "6.1.5"
+  resolved "https://registry.yarnpkg.com/heroku-cli-util/-/heroku-cli-util-6.1.5.tgz#7bc71a9c9f1c5b663309308e9b66f0aef130b2b8"
   dependencies:
     ansi-escapes "1.4.0"
     cardinal "1.0.0"
@@ -488,14 +531,14 @@ heroku-pg@2.0.16:
     strip-eof "1.0.0"
     tunnel-ssh "4.1.1"
 
-heroku-pipelines@1.2.4:
-  version "1.2.4"
-  resolved "https://registry.yarnpkg.com/heroku-pipelines/-/heroku-pipelines-1.2.4.tgz#f0851bed65a9bf9aa512f31d49935e7ac9bc37c2"
+heroku-pipelines@1.3.1:
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/heroku-pipelines/-/heroku-pipelines-1.3.1.tgz#6e846237846d4be67c891517e538a4512a4fd9d5"
   dependencies:
     bluebird "3.4.7"
     co "4.6.0"
     got "^6.7.1"
-    heroku-cli-util "6.1.4"
+    heroku-cli-util "6.1.5"
     inflection "1.12.0"
     inquirer "3.0.1"
     string-just "0.0.2"
