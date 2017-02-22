@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "co": "4.6.0",
-    "heroku-cli-util": "6.1.4"
+    "heroku-cli-util": "6.1.6"
   },
   "devDependencies": {
     "codeclimate-test-reporter": "0.4.0",
