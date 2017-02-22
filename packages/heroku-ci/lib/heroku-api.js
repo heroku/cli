@@ -61,6 +61,17 @@ function* latestTestRun (client, pipelineID) {
   return Promise.resolve(latestTestRuns[0])
 }
 
+function updateTestRun (client, id, body) {
+  return client.request({
+    body,
+    method: 'PATCH',
+    path: `/test-runs/${id}`,
+    headers: {
+      Accept: VERSION_HEADER
+    }
+  })
+}
+
 function logStream (url, fn) {
   return https.get(url, fn)
 }
@@ -98,6 +109,10 @@ function setConfigVars (client, pipelineID, body) {
   })
 }
 
+function appSetup (client, id) {
+  return client.get(`/app-setups/${id}`)
+}
+
 module.exports = {
   pipelineCoupling,
   pipelineRepository,
@@ -108,6 +123,8 @@ module.exports = {
   logStream,
   createSource,
   createTestRun,
+  updateTestRun,
   configVars,
-  setConfigVars
+  setConfigVars,
+  appSetup
 }

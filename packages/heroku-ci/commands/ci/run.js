@@ -38,6 +38,6 @@ module.exports = {
   needsApp: true,
   needsAuth: true,
   description: 'run tests against current directory',
-  help: 'uploads the contents of the current directory, using git archive, to Heroku and runs the tests',
+  help: 'uploads the contents of the current directory to Heroku and runs the tests',
   run: cli.command(co.wrap(run))
 }

@@ -57,5 +57,6 @@ function * displayAndExit (pipeline, number, { heroku }) {
 
 module.exports = {
   display,
-  displayAndExit
+  displayAndExit,
+  waitForStates
 }
