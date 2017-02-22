@@ -35,3 +35,7 @@ Re-run a previous test run. If no test run number is provided, the most recent t
 `heroku ci:migrate-manifest`
 
 Migrate the current directory from the deprecated `app-ci.json` file format to the new `app.json` + `environments`. [See the docs](https://devcenter.heroku.com/articles/heroku-ci-prerelease#migrating-applications-using-app-ci-json) for more details.
+
+`heroku ci:debug`
+
+Run this from within your repo directory to start and attach to a debug run. Useful for debugging failing test setup or a test which fails in CI but passes locally.
