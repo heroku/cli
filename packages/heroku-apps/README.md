@@ -7,3 +7,5 @@ heroku-apps [![Circle CI](https://circleci.com/gh/heroku/heroku-apps.svg?style=s
 [![License](https://img.shields.io/github/license/heroku/heroku-apps.svg)](https://github.com/heroku/heroku-apps/blob/master/LICENSE)
 
 [![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)
+
+This core plugin comes preinstalled to the [Heroku CLI](https://cli.heroku.com).
