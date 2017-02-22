@@ -1,6 +1,6 @@
 {
   "name": "heroku-redis",
-  "version": "1.2.8",
+  "version": "1.2.9",
   "description": "Heroku plugin to manage Heroku Redis",
   "main": "index.js",
   "author": "Heroku",
