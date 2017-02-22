@@ -161,7 +161,7 @@ func GetUpdateManifest(channel, version string) *Manifest {
 		Errln("heroku-cli: locked to " + version)
 		url = "https://cli-assets.heroku.com/branches/" + channel + "/" + version + "/manifest.json"
 	}
-	rsp, err := sling.New().Get(url).ReceiveSuccess(&m)
+	rsp, err := sling.New().Client(apiHTTPClient).Get(url).ReceiveSuccess(&m)
 	if err != nil && !updateManifestRetrying {
 		updateManifestRetrying = true
 		return GetUpdateManifest(channel, version)
