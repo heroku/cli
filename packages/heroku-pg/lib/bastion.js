@@ -24,15 +24,25 @@ const getBastion = function (config, baseName) {
 exports.getBastion = getBastion
 
 const env = function (db) {
-  return Object.assign({}, process.env, {
-    PGAPPNAME: 'psql non-interactive',
-    PGSSLMODE: db.hostname === 'localhost' ? 'prefer' : 'require',
-    PGUSER: db.user || '',
-    PGPASSWORD: db.password,
-    PGDATABASE: db.database,
-    PGPORT: db.port || 5432,
-    PGHOST: db.host
+  let baseEnv = Object.assign({
+    PGAPPNAME: 'psql non-interactive'
+  }, process.env, {
+    PGSSLMODE: (!db.hostname || db.hostname === 'localhost') ? 'prefer' : 'require'
   })
+  let mapping = {
+    PGUSER: 'user',
+    PGPASSWORD: 'password',
+    PGDATABASE: 'database',
+    PGPORT: 'port',
+    PGHOST: 'host'
+  }
+  Object.keys(mapping).forEach((envVar) => {
+    let val = db[mapping[envVar]]
+    if (val) {
+      baseEnv[envVar] = val
+    }
+  })
+  return baseEnv
 }
 
 exports.env = env
