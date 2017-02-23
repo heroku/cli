@@ -18,6 +18,7 @@ let tunnelStub
 let bastion
 let push
 let pull
+let emptyResponse
 
 let opts = { encoding: 'utf8', shell: true, stdio: ['ignore', 'pipe', 'inherit'] }
 
@@ -68,6 +69,7 @@ describe('pg', () => {
     sinon.stub(Math, 'random', function () {
       return 0
     })
+    emptyResponse = '00'
   })
 
   afterEach(() => {
@@ -81,7 +83,7 @@ describe('pg', () => {
 
     it('pushes out a db', sinon.test(() => {
       let psql = require('../../lib/psql')
-      sinon.stub(psql, 'exec').returns(Promise.resolve(' empty \n-------\n t'))
+      sinon.stub(psql, 'exec').returns(Promise.resolve(emptyResponse))
 
       let cp = sinon.mock(require('child_process'))
       let cmd = 'env PGSSLMODE=prefer pg_dump --verbose -F c -Z 0  -h localhost -p 5432  localdb | env PGPASSWORD="pass" pg_restore --verbose --no-acl --no-owner -U jeff -h herokai.com -p 5432 -d mydb'
@@ -103,7 +105,7 @@ describe('pg', () => {
 
     it('pushes out a db using url port', sinon.test(() => {
       let psql = require('../../lib/psql')
-      sinon.stub(psql, 'exec').returns(Promise.resolve(' empty \n-------\n t'))
+      sinon.stub(psql, 'exec').returns(Promise.resolve(emptyResponse))
       let cp = sinon.mock(require('child_process'))
       let cmd = 'env PGSSLMODE=prefer pg_dump --verbose -F c -Z 0  -h localhost -p 5433  localdb | env PGPASSWORD="pass" pg_restore --verbose --no-acl --no-owner -U jeff -h herokai.com -p 5432 -d mydb'
 
@@ -127,7 +129,7 @@ describe('pg', () => {
       env.PGPORT = 5433
 
       let psql = require('../../lib/psql')
-      sinon.stub(psql, 'exec').returns(Promise.resolve(' empty \n-------\n t'))
+      sinon.stub(psql, 'exec').returns(Promise.resolve(emptyResponse))
       let cp = sinon.mock(require('child_process'))
 
       let cmd = 'env PGSSLMODE=prefer pg_dump --verbose -F c -Z 0  -h localhost -p 5433  localdb | env PGPASSWORD="pass" pg_restore --verbose --no-acl --no-owner -U jeff -h herokai.com -p 5432 -d mydb'
@@ -162,7 +164,7 @@ describe('pg', () => {
       }
 
       let psql = require('../../lib/psql')
-      sinon.stub(psql, 'exec').returns(Promise.resolve(' empty \n-------\n t'))
+      sinon.stub(psql, 'exec').returns(Promise.resolve(emptyResponse))
       let cp = sinon.mock(require('child_process'))
       let cmd = 'env PGSSLMODE=prefer pg_dump --verbose -F c -Z 0  -h localhost -p 5432  localdb | env PGPASSWORD="pass" pg_restore --verbose --no-acl --no-owner -U jeff -h herokai.com -p 5432 -d mydb'
       cp.expects('spawn').withExactArgs(cmd, [], opts).once().returns(
@@ -186,7 +188,7 @@ describe('pg', () => {
 
     it('exits non-zero when there is an error', sinon.test(() => {
       let psql = require('../../lib/psql')
-      sinon.stub(psql, 'exec').returns(Promise.resolve(' empty \n-------\n t'))
+      sinon.stub(psql, 'exec').returns(Promise.resolve(emptyResponse))
 
       let cp = sinon.mock(require('child_process'))
       let cmd = 'env PGSSLMODE=prefer pg_dump --verbose -F c -Z 0  -h localhost -p 5432  localdb | env PGPASSWORD="pass" pg_restore --verbose --no-acl --no-owner -U jeff -h herokai.com -p 5432 -d mydb'

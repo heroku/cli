@@ -53,8 +53,14 @@ const prepare = co.wrap(function * (target) {
   if (target.host === 'localhost') {
     exec(`createdb ${connstring(target, true)}`)
   } else {
-    let result = yield psql.exec(target, 'SELECT COUNT(*) = 0 AS empty FROM pg_stat_user_tables')
-    if (!result.startsWith(' empty \n-------\n t')) throw new Error(`Remote database is not empty. Please create a new database or use ${cli.color.cmd('heroku pg:reset')}`)
+    // N.B.: we don't have a proper postgres driver and we don't want to rely on overriding
+    // possible .psqlrc output configurations, so we generate a random marker that is returned
+    // from the query. We avoid including it verbatim in the query text in case the equivalent
+    // of --echo-all is set.
+    const num = Math.random()
+    const emptyMarker = `${num}${num}`
+    let result = yield psql.exec(target, `SELECT CASE count(*) WHEN 0 THEN '${num}' || '${num}' END FROM pg_stat_user_tables`)
+    if (!result.includes(emptyMarker)) throw new Error(`Remote database is not empty. Please create a new database or use ${cli.color.cmd('heroku pg:reset')}`)
   }
 })
 
