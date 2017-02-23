@@ -1,3 +1,7 @@
+5.6.26  2017-02-23
+==================
+Update heroku-fork to 4.1.16
+
 5.6.25  2017-02-22
 ==================
 Update heroku-cli-util to 6.1.6 in core plugins
