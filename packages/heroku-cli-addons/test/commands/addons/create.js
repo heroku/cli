@@ -30,6 +30,25 @@ describe('addons:create', () => {
     nock.cleanAll()
   })
 
+  context('creating a db with a name', () => {
+    beforeEach(() => {
+      api.post('/apps/myapp/addons', {
+        plan: {name: 'heroku-postgresql:standard-0'},
+        name: 'foobar'
+      })
+      .reply(200, addon)
+    })
+
+    it('passes name through to the API', () => {
+      return cmd.run({
+        app: 'myapp',
+        args: ['heroku-postgresql:standard-0'],
+        flags: {name: 'foobar'}
+      })
+        .then(() => api.done())
+    })
+  })
+
   context('creating a db', () => {
     beforeEach(() => {
       api.post('/apps/myapp/addons', {
