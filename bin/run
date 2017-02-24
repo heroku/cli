@@ -15,4 +15,4 @@ get_script_dir () {
 }
 DIR=$(get_script_dir)
 
-node --harmony-async-await --use_strict $DIR/run.js $*
+node $DIR/run.js $*
