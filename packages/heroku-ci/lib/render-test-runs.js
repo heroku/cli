@@ -8,7 +8,7 @@ const TestRunStatesUtil = require('./test-run-states-util')
 
 const SIMI = 'https://simi-production.herokuapp.com'
 
-const { PENDING, CREATING, BUILDING, RUNNING, ERRORED, FAILED, SUCCEEDED } = TestRunStates
+const { PENDING, CREATING, BUILDING, RUNNING, DEBUGGING, ERRORED, FAILED, SUCCEEDED, CANCELLED } = TestRunStates
 
 // used to pad the status column so that the progress bars align
 const maxStateLength = Math.max.apply(null, Object.keys(TestRunStates).map((k) => TestRunStates[k]))
@@ -18,9 +18,11 @@ const STATUS_ICONS = {
   [CREATING]: '⋯',
   [BUILDING]: '⋯',
   [RUNNING]: '⋯',
+  [DEBUGGING]: '⋯',
   [ERRORED]: '!',
   [FAILED]: '✗',
-  [SUCCEEDED]: '✓'
+  [SUCCEEDED]: '✓',
+  [CANCELLED]: '!'
 }
 
 const STATUS_COLORS = {
@@ -28,13 +30,15 @@ const STATUS_COLORS = {
   [CREATING]: 'yellow',
   [BUILDING]: 'yellow',
   [RUNNING]: 'yellow',
+  [DEBUGGING]: 'yellow',
   [ERRORED]: 'red',
   [FAILED]: 'red',
-  [SUCCEEDED]: 'green'
+  [SUCCEEDED]: 'green',
+  [CANCELLED]: 'yellow'
 }
 
 function statusIcon ({ status }) {
-  return cli.color[STATUS_COLORS[status]](STATUS_ICONS[status])
+  return cli.color[STATUS_COLORS[status] || 'yellow'](STATUS_ICONS[status] || '-')
 }
 
 function printLine (testRun) {
