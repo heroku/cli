@@ -3,7 +3,7 @@
 const co = require('co')
 const cli = require('heroku-cli-util')
 
-module.exports = function * (context, api, addon, interval) {
+module.exports = function * (api, addon, interval) {
   const wait = require('co-wait')
   const app = addon.app.name
   const addonName = addon.name

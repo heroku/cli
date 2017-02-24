@@ -25,7 +25,7 @@ function * run (context, heroku) {
     )
   }
 
-  let attachment = yield util.trapConfirmationRequired(context, (confirm) => createAttachment(app, context.flags.as, confirm))
+  let attachment = yield util.trapConfirmationRequired(context.app, context.flags.confirm, (confirm) => createAttachment(app, context.flags.as, confirm))
 
   yield cli.action(
     `Setting ${cli.color.attachment(attachment.name)} config vars and restarting ${cli.color.app(app)}`,

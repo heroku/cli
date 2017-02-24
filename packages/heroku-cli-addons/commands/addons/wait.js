@@ -23,7 +23,7 @@ function * run (ctx, api) {
   if (!interval || interval < 0) { interval = 5 }
 
   for (let addon of addons) {
-    addon = yield waitForAddonProvisioning(ctx, api, addon, interval)
+    addon = yield waitForAddonProvisioning(api, addon, interval)
 
     let configVars = (addon.config_vars || [])
     if (configVars.length > 0) {
