@@ -15,8 +15,6 @@ stages:
           set -exu
           yarn
           ./bin/run version
-          node -p "process.stdout.getWindowSize()"
-
           ./bin/run help
       - type: cache-save
         key: cli
