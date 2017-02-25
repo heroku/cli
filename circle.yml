@@ -1,29 +1,29 @@
 ---
-machine:
-  node:
-    version: 7.5.0
-  environment:
-    PATH: "${PATH}:${HOME}/${CIRCLE_PROJECT_REPONAME}/node_modules/.bin"
-
-dependencies:
-  cache_directories:
-    - ~/.cache/yarn
-  override:
-    - yarn
-
-test:
-  override:
-    - HEROKU_DEBUG=1 ./bin/run version
-    - HEROKU_DEBUG=1 ./bin/run help
-
-deployment:
-  beta:
-    branch: v6
-    owner: heroku
-    commands:
-      - npm run release beta
-  stable:
-    tag: /v[0-9]+(\.[0-9]+)*/
-    owner: heroku
-    commands:
-      - npm run release stable
+version: 2
+executorType: docker
+containerInfo:
+  - image: dickeyxxx/cli-engine@sha256:4b54ba455ea8d9675b4dc501e874d83a1f6c0bf0aee7427ee55217e2de1d150e
+stages:
+  build:
+    workDir: ~/cli
+    steps:
+      - type: checkout
+      - type: cache-restore
+        key: cli
+      - type: shell
+        command: |
+          set -exu
+          yarn
+          ./bin/run version
+          ./bin/run help
+      - type: cache-save
+        key: cli
+        paths:
+          - /usr/local/share/.cache/yarn
+      - type: deploy
+        shell: /bin/bash
+        command: |
+          set -exu
+          if [ "${CIRCLE_BRANCH}" == "master" ]; then
+            yarn run release beta
+          fi
