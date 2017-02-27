@@ -20,7 +20,8 @@ function * run (context, heroku) {
       log_drain_url: context.flags['log-drain-url'],
       shield: context.flags['shield'],
       owner_pool: context.flags['owner-pool'],
-      cidr: context.flags['cidr']
+      cidr: context.flags['cidr'],
+      kpi_url: context.flags['kpi-url']
     }
   })
   space = yield cli.action(`Creating space ${cli.color.green(space)} in organization ${cli.color.cyan(context.org)}`, request)
@@ -64,7 +65,8 @@ Example:
     {name: 'log-drain-url', hasValue: true, hidden: true, description: 'direct log drain url'},
     {name: 'owner-pool', hasValue: true, hidden: true, description: 'owner pool name'},
     {name: 'shield', hasValue: false, hidden: true, description: 'create a Shield space'},
-    {name: 'cidr', hasValue: true, hidden: true, description: 'the RFC-1918 CIDR the space will use'}
+    {name: 'cidr', hasValue: true, hidden: true, description: 'the RFC-1918 CIDR the space will use'},
+    {name: 'kpi-url', hasValue: true, hidden: true, description: 'self-managed KPI endpoint to use'}
   ],
   run: cli.command(co.wrap(run))
 }
