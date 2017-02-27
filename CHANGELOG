@@ -1,3 +1,26 @@
+5.6.27  2017-02-24
+==================
+Update heroku-fork to 4.1.17
+Updated heroku-cli-addons to 1.2.10
+
+5.6.26  2017-02-23
+==================
+Update heroku-fork to 4.1.16
+
+5.6.25  2017-02-22
+==================
+Update heroku-cli-util to 6.1.6 in core plugins
+
+5.6.24  2017-02-22
+==================
+Use apiHTTPClient in analytics / update
+
+5.6.23  2017-02-21
+==================
+Use 32 bit git installer when 386
+Upgrade heroku-apps to 2.1.24
+Warn if update is disabled
+
 5.6.22  2017-02-15
 ==================
 Updated heroku-pipelines

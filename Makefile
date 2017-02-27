@@ -192,15 +192,19 @@ $(DIST_DIR)/$(VERSION)/apt/Release: $(DIST_DIR)/$(VERSION)/apt/Packages
 	cd $(@D) && apt-ftparchive -c ../../../resources/deb/apt-ftparchive.conf release . > Release
 	@gpg --digest-algo SHA512 -abs -u 0F1B0520 -o $@.gpg $@
 
-$(CACHE_DIR)/git/Git-%.exe:
+$(CACHE_DIR)/git/Git-2.8.1-386.exe:
 	@mkdir -p $(CACHE_DIR)/git
-	curl -fsSLo $@ https://cli-assets.heroku.com/git/Git-$*.exe
+	curl -fsSLo $@ https://cli-assets.heroku.com/git/Git-2.8.1-32-bit.exe
 
-$(DIST_DIR)/$(VERSION)/heroku-windows-%.exe: tmp/windows-% $(CACHE_DIR)/git/Git-2.8.1-32-bit.exe $(CACHE_DIR)/git/Git-2.8.1-64-bit.exe
+$(CACHE_DIR)/git/Git-2.8.1-amd64.exe:
+	@mkdir -p $(CACHE_DIR)/git
+	curl -fsSLo $@ https://cli-assets.heroku.com/git/Git-2.8.1-64-bit.exe
+
+$(DIST_DIR)/$(VERSION)/heroku-windows-%.exe: tmp/windows-% $(CACHE_DIR)/git/Git-2.8.1-386.exe $(CACHE_DIR)/git/Git-2.8.1-amd64.exe
 	@mkdir -p $(@D)
 	rm -rf tmp/windows-$*-installer
 	cp -r tmp/windows-$* tmp/windows-$*-installer
-	cp $(CACHE_DIR)/git/Git-2.8.1-64-bit.exe tmp/windows-$*-installer/$(FOLDER_NAME)/git.exe
+	cp $(CACHE_DIR)/git/Git-2.8.1-$*.exe tmp/windows-$*-installer/$(FOLDER_NAME)/git.exe
 	sed -e "s/!define Version 'VERSION'/!define Version '$(VERSION)'/" resources/exe/heroku.nsi |\
 		sed -e "s/InstallDir .*/InstallDir \"\$$PROGRAMFILES$(if $(filter amd64,$*),64,)\\\Heroku\"/" \
 		> tmp/windows-$*-installer/$(FOLDER_NAME)/heroku.nsi
@@ -368,6 +372,6 @@ win-x86/node.exe
 
 NODE_TARGETS := $(foreach node, $(NODES), $(CACHE_DIR)/node-v$(NODE_VERSION)/$(node))
 .PHONY: deps
-deps: $(NPM_ARCHIVE) $(NODE_TARGETS) $(CACHE_DIR)/git/Git-2.8.1-64-bit.exe $(CACHE_DIR)/git/Git-2.8.1-32-bit.exe
+deps: $(NPM_ARCHIVE) $(NODE_TARGETS) $(CACHE_DIR)/git/Git-2.8.1-amd64.exe $(CACHE_DIR)/git/Git-2.8.1-386.exe
 
 .DEFAULT_GOAL=build
