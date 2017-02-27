@@ -105,6 +105,7 @@ func init() {
 			Hidden:    true,
 			Commands: []*Command{
 				{
+					Namespace:   HerokuNamespace.Name,
 					Description: "display your Heroku login",
 					Help: `Example:
 
@@ -127,6 +128,7 @@ func init() {
 			Namespace:   HerokuNamespace.Name,
 			Commands: []*Command{
 				{
+					Namespace:   HerokuNamespace.Name,
 					Description: "login with your Heroku credentials.",
 					Flags: []Flag{
 						{Name: "sso", Description: "login for enterprise users under SSO"},
@@ -141,6 +143,7 @@ func init() {
 			Description: "clear your local Heroku credentials",
 			Commands: []*Command{
 				{
+					Namespace:   HerokuNamespace.Name,
 					Description: "clear your local Heroku credentials",
 					Run:         logout,
 				},
@@ -152,17 +155,20 @@ func init() {
 			Hidden:    true,
 			Commands: Commands{
 				{
+					Namespace:   "heroku",
 					NeedsAuth:   true,
 					Description: "check 2fa status",
 					Run:         twoFactorRun,
 				},
 				{
+					Namespace:   "heroku",
 					Command:     "generate-recovery-codes",
 					Description: "Generates and replaces recovery codes",
 					NeedsAuth:   true,
 					Run:         twoFactorGenerateRun,
 				},
 				{
+					Namespace:   "heroku",
 					Command:     "disable",
 					Description: "Disable two-factor authentication for your account",
 					NeedsAuth:   true,
@@ -176,17 +182,20 @@ func init() {
 			Hidden:    true,
 			Commands: Commands{
 				{
+					Namespace:   "heroku",
 					NeedsAuth:   true,
 					Description: "check 2fa status",
 					Run:         twoFactorRun,
 				},
 				{
+					Namespace:   "heroku",
 					Command:     "generate-recovery-codes",
 					Description: "Generates and replaces recovery codes",
 					NeedsAuth:   true,
 					Run:         twoFactorGenerateRun,
 				},
 				{
+					Namespace:   "heroku",
 					Command:     "disable",
 					Description: "Disable two-factor authentication for your account",
 					NeedsAuth:   true,
