@@ -1,7 +1,6 @@
 'use strict'
 
 const cli = require('heroku-cli-util')
-const _ = require('lodash')
 const co = require('co')
 
 function * run (context, heroku) {
@@ -9,7 +8,10 @@ function * run (context, heroku) {
   if (!spaceName) throw new Error('Space name required.\nUSAGE: heroku spaces:topology my-space')
 
   let topology = yield heroku.get(`/spaces/${spaceName}/topology`)
-  let appInfo = yield _.map(topology.apps, (app) => heroku.get(`/apps/${app.id}`))
+  let appInfo = []
+  if (topology.apps) {
+    appInfo = yield topology.apps.map((app) => heroku.get(`/apps/${app.id}`))
+  }
 
   render(spaceName, topology, appInfo, context.flags)
 }
@@ -19,25 +21,34 @@ function render (spaceName, topology, appInfo, flags) {
     cli.styledJSON(topology)
   } else {
     cli.styledHeader(spaceName)
-    _.forEach(topology.apps, (app) => {
-      let formations = []
-      let dynos = []
-      _.forEach(app.formations, (formation) => {
-        formations.push(formation.process_type)
-        _.forEach(formation.dynos, (dyno) => {
-          let dynoS = [`${formation.process_type}.${dyno.number}`, dyno.private_ip, dyno.hostname].filter(Boolean)
-          dynos.push(dynoS.join(' - '))
-        })
-      })
+    if (topology.apps) {
+      topology.apps.forEach((app) => {
+        let formations = []
+        let dynos = []
 
-      let info = _.find(appInfo, (info) => info.id === app.id)
-      cli.styledObject({
-        App: info.name,
-        Domains: app.domains,
-        Formations: formations,
-        Dynos: dynos
-      }, ['App', 'Domains', 'Formations', 'Dynos'])
-    })
+        if (app.formations) {
+          app.formations.forEach((formation) => {
+            formations.push(formation.process_type)
+
+            if (formation.dynos) {
+              formation.dynos.forEach((dyno) => {
+                let dynoS = [`${formation.process_type}.${dyno.number}`, dyno.private_ip, dyno.hostname].filter(Boolean)
+                dynos.push(dynoS.join(' - '))
+              })
+            }
+          })
+        }
+
+        let info = appInfo.find((info) => info.id === app.id)
+        cli.styledObject({
+          App: info.name,
+          Domains: app.domains,
+          Formations: formations,
+          Dynos: dynos
+        }, ['App', 'Domains', 'Formations', 'Dynos'])
+        cli.log('')
+      })
+    }
   }
 }
 
