@@ -289,9 +289,9 @@ cli-cursor@^2.1.0:
   dependencies:
     restore-cursor "^2.0.0"
 
-cli-engine-command@2.0.8:
-  version "2.0.8"
-  resolved "https://registry.yarnpkg.com/cli-engine-command/-/cli-engine-command-2.0.8.tgz#7803750aa61b818b9e08aefda6c41268a43baa00"
+cli-engine-command@2.0.10:
+  version "2.0.10"
+  resolved "https://registry.yarnpkg.com/cli-engine-command/-/cli-engine-command-2.0.10.tgz#f016bf3910480142fa5cea0d3123aa19da0afeac"
   dependencies:
     ansi-escapes "1.4.0"
     babel-runtime "6.23.0"
@@ -307,12 +307,12 @@ cli-engine-command@2.0.8:
     string "3.3.3"
     supports-color "3.2.3"
 
-cli-engine@1.0.5:
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/cli-engine/-/cli-engine-1.0.5.tgz#a31b1aa174a195541d9f8999058360939044c693"
+cli-engine@1.0.7:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/cli-engine/-/cli-engine-1.0.7.tgz#46d567d0e2a7e030e7f0da05d09ad857e74c3c37"
   dependencies:
     ansi-escapes "1.4.0"
-    cli-engine-command "2.0.8"
+    cli-engine-command "2.0.10"
     eslint "3.16.1"
     execa "0.6.0"
     klaw-sync "1.1.2"
@@ -321,7 +321,7 @@ cli-engine@1.0.5:
     rwlockfile "1.3.3"
     string "3.3.3"
     tar-stream "1.5.2"
-    yarn "0.20.3"
+    yarn "0.21.3"
 
 cli-width@^2.0.0:
   version "2.1.0"
@@ -494,10 +494,6 @@ delegates@^1.0.0:
 detect-indent@^5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/detect-indent/-/detect-indent-5.0.0.tgz#3871cc0a6a002e8c3e5b3cf7f336264675f06b9d"
-
-diff@^2.2.1:
-  version "2.2.3"
-  resolved "https://registry.yarnpkg.com/diff/-/diff-2.2.3.tgz#60eafd0d28ee906e4e8ff0a52c1229521033bf99"
 
 doctrine@^1.2.2:
   version "1.5.0"
@@ -1233,9 +1229,9 @@ heroku-run@3.4.4:
     heroku-cli-util "6.1.6"
     shellwords "0.1.0"
 
-heroku-spaces@2.6.1:
-  version "2.6.1"
-  resolved "https://registry.yarnpkg.com/heroku-spaces/-/heroku-spaces-2.6.1.tgz#bd1d01de4f551a79aac50f910453e1c49867ef74"
+heroku-spaces@2.7.1:
+  version "2.7.1"
+  resolved "https://registry.yarnpkg.com/heroku-spaces/-/heroku-spaces-2.7.1.tgz#adda84dfb440773e8bd18ccf4b6a364a5274ec33"
   dependencies:
     co "4.6.0"
     heroku-cli-util "6.1.6"
@@ -2737,9 +2733,9 @@ yallist@^2.0.0:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/yallist/-/yallist-2.1.2.tgz#1c11f9218f076089a47dd512f93c6699a6a81d52"
 
-yarn@0.20.3:
-  version "0.20.3"
-  resolved "https://registry.yarnpkg.com/yarn/-/yarn-0.20.3.tgz#1031e394721d689ab8c558c67032931bac5b3052"
+yarn@0.21.3:
+  version "0.21.3"
+  resolved "https://registry.yarnpkg.com/yarn/-/yarn-0.21.3.tgz#8dda3a63c798b383cfa577452c2b3cb3e4aa87e0"
   dependencies:
     babel-runtime "^6.0.0"
     bytes "^2.4.0"
@@ -2751,7 +2747,6 @@ yarn@0.20.3:
     debug "^2.2.0"
     defaults "^1.0.3"
     detect-indent "^5.0.0"
-    diff "^2.2.1"
     ini "^1.3.4"
     inquirer "^3.0.1"
     invariant "^2.2.0"
@@ -2774,5 +2769,4 @@ yarn@0.20.3:
     strip-bom "^3.0.0"
     tar "^2.2.1"
     tar-stream "^1.5.2"
-    user-home "^2.0.0"
     validate-npm-package-license "^3.0.1"

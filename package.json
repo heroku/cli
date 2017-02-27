@@ -33,7 +33,7 @@
     ]
   },
   "dependencies": {
-    "cli-engine": "1.0.5",
+    "cli-engine": "1.0.7",
     "heroku-apps": "2.1.26",
     "heroku-certs": "1.1.27",
     "heroku-cli-addons": "1.2.10",
@@ -46,7 +46,7 @@
     "heroku-pipelines": "1.3.2",
     "heroku-redis": "1.2.9",
     "heroku-run": "3.4.4",
-    "heroku-spaces": "2.6.1",
+    "heroku-spaces": "2.7.1",
     "heroku-status": "3.0.6"
   },
   "homepage": "https://cli.heroku.com",
