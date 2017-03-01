@@ -62,13 +62,13 @@ my-space  my-org        my-region  enabled  ${now.toISOString()}
     nock('https://api.heroku.com:443')
       .get('/spaces')
       .reply(200, [])
-    return chai.assert.isRejected(cmd.run({flags: {}, org: 'my-org'}), /^Error: No spaces in my-org.$/)
+    return chai.assert.isRejected(cmd.run({flags: {}, org: 'my-org'}), /^No spaces in my-org.$/)
   })
 
   it('shows spaces error message', function () {
     nock('https://api.heroku.com:443')
       .get('/spaces')
       .reply(200, [])
-    return chai.assert.isRejected(cmd.run({flags: {}}), /^Error: You do not have access to any spaces./)
+    return chai.assert.isRejected(cmd.run({flags: {}}), /^You do not have access to any spaces./)
   })
 })

@@ -81,7 +81,7 @@ describe('outbound-rules:add', function () {
           {target: '128.0.0.1/20', from_port: 80, to_port: 80, protocol: 'tcp'}
         ]
       })
-    return chai.assert.isRejected(cmd.run({flags: {space: 'my-space', dest: '128.0.1.1/20', port: '80-100-200', protocol: 'tcp'}}), /^Error: Specified --port range seems incorrect.$/)
+    return chai.assert.isRejected(cmd.run({flags: {space: 'my-space', dest: '128.0.1.1/20', port: '80-100-200', protocol: 'tcp'}}), /^Specified --port range seems incorrect.$/)
   })
 
   it('supports -1 as port', function () {
