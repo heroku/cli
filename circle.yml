@@ -1,65 +1,43 @@
 ---
-machine:
-  environment:
-    CACHE_DIR: ~/deps
-    WORKSPACE: ~/workspace/heroku
-    NPM_REGISTRY: https://cli-npm.heroku.com
-    JOBZ: 6
-  post:
-    - sudo rm -rf /usr/local/go
-    - if [ ! -e ~/deps/go1.7.5.linux-amd64.tar.gz ]; then mkdir -p ~/deps && wget -O ~/deps/go1.7.5.linux-amd64.tar.gz https://storage.googleapis.com/golang/go1.7.5.linux-amd64.tar.gz; fi
-    - sudo tar -C /usr/local -xzf ~/deps/go1.7.5.linux-amd64.tar.gz
-checkout:
-  post:
-    - |
-      rm -rf ~/.go_workspace/src/github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME &&
-      mkdir -p ~/.go_workspace/src/github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME &&
-      cp -R ~/$CIRCLE_PROJECT_REPONAME ~/.go_workspace/src/github.com/$CIRCLE_PROJECT_USERNAME/ &&
-      rm -rf ~/$CIRCLE_PROJECT_REPONAME &&
-      ln -s ~/.go_workspace/src/github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME ~/$CIRCLE_PROJECT_REPONAME &&
-      mkdir -p $CIRCLE_TEST_REPORTS/go
-dependencies:
-  cache_directories:
-    - ~/deps
-    - ~/osslsigncode
-    - ~/workspace
-    - ~/.cache/heroku/npm
-  override:
-    - >
-      go version &&
-      if ! type gometalinter >/dev/null 2>&1; then go get -v github.com/alecthomas/gometalinter && gometalinter --install; fi &&
-      if [ ! -d ~/osslsigncode ]; then
-        wget https://cli-assets.heroku.com/osslsigncode-1.7.1.tar.gz &&
-        tar -xvzf osslsigncode-1.7.1.tar.gz &&
-        mv osslsigncode-1.7.1 ~/osslsigncode &&
-        cd ~/osslsigncode && ./configure && make
-      fi &&
-      cd ~/osslsigncode && sudo make install
-    - make deps build -j $JOBZ
-    - sudo apt-get install cowsay nsis jq
-test:
-  override:
-    - ./bin/test -v -race -cover -coverprofile=coverage.out -ginkgo.v
-    - make test -j $JOBZ
-    - ./bin/lint
-  post:
-    - bash <(curl -s https://codecov.io/bash)
-deployment:
-  dev:
-    branch: dev
-    owner: heroku
-    commands:
-      - gpg --passphrase $HEROKU_WINDOWS_SIGNING_PASS -d resources/deb/key.gpg | gpg --import
-      - CHANNEL=dev make release -j $JOBZ
-  beta:
-    branch: master
-    owner: heroku
-    commands:
-      - gpg --passphrase $HEROKU_WINDOWS_SIGNING_PASS -d resources/deb/key.gpg | gpg --import
-      - CHANNEL=beta make release -j $JOBZ
-  stable:
-    tag: /v[0-9]+(\.[0-9]+)*/
-    owner: heroku
-    commands:
-      - gpg --passphrase $HEROKU_WINDOWS_SIGNING_PASS -d resources/deb/key.gpg | gpg --import
-      - CHANNEL=stable make release -j $JOBZ
+version: 2
+executorType: docker
+containerInfo:
+  - image: dickeyxxx/cli@sha256:e7de56db77c9711fa72844d708a0e0f1d453ca23e3548d69b50800521fd36bd9
+stages:
+  build:
+    workDir: ~/src/github.com/heroku/cli
+    steps:
+      - type: checkout
+      - type: cache-restore
+        key: heroku-cli-v5
+      - type: shell
+        command: |
+          set -exu
+          export PATH=~/bin:$PATH
+          go get -u github.com/alecthomas/gometalinter
+          gometalinter --install
+          ./bin/test -v -race -cover -coverprofile=coverage.out -ginkgo.v
+          make test -j 6
+          ./bin/run version
+          ./bin/run help
+          ./bin/lint
+      - type: cache-save
+        key: heroku-cli-v5
+        paths:
+          - ~/src/github.com/heroku/cli/tmp/cache
+          - ~/bin
+      - type: deploy
+        shell: /bin/bash
+        command: |
+          set -eu
+          echo $HEROKU_WINDOWS_SIGNING_PASS | gpg --passphrase-fd 0 --batch --yes -d resources/deb/key.gpg | gpg --import || echo "no passphrase"
+          echo $HEROKU_WINDOWS_SIGNING_PASS | gpg --batch --yes --passphrase-fd 0 -o resources/exe/heroku-codesign-cert.pfx -d resources/exe/heroku-codesign-cert.pfx.gpg
+          if [ `git name-rev --name-only --tags HEAD` != "undefined" ]; then
+            CHANNEL=stable make release -j6
+          fi
+          if [ "${CIRCLE_BRANCH}" == "master" ]; then
+            CHANNEL=beta make release -j6
+          fi
+          if [ "${CIRCLE_BRANCH}" == "circle-2.0" ]; then
+            CHANNEL=beta make release -j6
+          fi
