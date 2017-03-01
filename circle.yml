@@ -25,6 +25,22 @@ dependencies:
     - ~/workspace
     - ~/.cache/heroku/npm
   override:
+    - sudo apt-get install scons g++-multilib
+    - >
+      if [ ! -d /home/ubuntu/nsis-2.51 ]; then
+        mkdir /home/ubuntu/nsis-2.51 &&
+        wget https://downloads.sourceforge.net/project/nsis/NSIS%202/2.51/nsis-2.51-src.tar.bz2 &&
+        tar xvfj nsis-2.51-src.tar.bz2 &&
+        patch -i makensis.patch -p1 &&
+        mv nsis-2.51-src /home/ubuntu/nsis-2.51/src &&
+        wget https://downloads.sourceforge.net/project/nsis/NSIS%202/2.51/nsis-2.51.zip &&
+        unzip nsis-2.51
+        mv nsis-2.51 /home/ubuntu/nsis-2.51/zip &&
+        cd /home/ubuntu/nsis-2.51/src &&
+        scons SKIPSTUBS=all SKIPPLUGINS=all SKIPUTILS=all SKIPMISC=all NSIS_CONFIG_CONST_DATA_PATH=no PREFIX=/home/ubuntu/nsis-2.51/zip install-compiler &&
+        ls /home/ubuntu/nsis-2.51/zip/makensis
+      fi &&
+      export PATH=/home/ubuntu/nsis-2.51/zip:$PATH  
     - >
       go version &&
       if ! type gometalinter >/dev/null 2>&1; then go get -v github.com/alecthomas/gometalinter && gometalinter --install; fi &&
@@ -37,7 +53,8 @@ dependencies:
       cd ~/osslsigncode && sudo make install
     - make deps build -j $JOBZ
     - sudo apt-get update
-    - sudo apt-get install cowsay nsis jq
+    - sudo apt-get install cowsay jq
+
 test:
   override:
     - ./bin/test -v -race -cover -coverprofile=coverage.out -ginkgo.v
