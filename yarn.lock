@@ -1229,9 +1229,9 @@ heroku-run@3.4.4:
     heroku-cli-util "6.1.6"
     shellwords "0.1.0"
 
-heroku-spaces@2.7.1:
-  version "2.7.1"
-  resolved "https://registry.yarnpkg.com/heroku-spaces/-/heroku-spaces-2.7.1.tgz#adda84dfb440773e8bd18ccf4b6a364a5274ec33"
+heroku-spaces@2.7.2:
+  version "2.7.2"
+  resolved "https://registry.yarnpkg.com/heroku-spaces/-/heroku-spaces-2.7.2.tgz#b679f5c8c742fa2ac7c16968e8e6595383ff0275"
   dependencies:
     co "4.6.0"
     heroku-cli-util "6.1.6"
