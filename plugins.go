@@ -307,7 +307,7 @@ func (p *Plugins) ParsePlugin(name, tag string) (*Plugin, error) {
 		return nil, fmt.Errorf("Error parsing plugin: %s\n%s\n%s\nIs this a real CLI plugin?", name, err, string(output))
 	}
 	if len(plugin.Commands) == 0 {
-		return nil, fmt.Errorf("Invalid plugin. No commands found.")
+		return nil, fmt.Errorf("Invalid plugin. No commands found")
 	}
 	for _, command := range plugin.Commands {
 		if command == nil {
