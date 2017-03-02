@@ -3,6 +3,9 @@
 const cli = require('heroku-cli-util')
 const co = require('co')
 
+const getProcessType = (s) => s.split('-', 2)[0].split('.', 2)[0]
+const getProcessNum = (s) => parseInt(s.split('-', 2)[0].split('.', 2)[1])
+
 function * run (context, heroku) {
   let spaceName = context.flags.space || context.args.space
   if (!spaceName) throw new Error('Space name required.\nUSAGE: heroku spaces:topology my-space')
@@ -20,7 +23,6 @@ function render (spaceName, topology, appInfo, flags) {
   if (flags.json) {
     cli.styledJSON(topology)
   } else {
-    cli.styledHeader(spaceName)
     if (topology.apps) {
       topology.apps.forEach((app) => {
         let formations = []
@@ -39,14 +41,32 @@ function render (spaceName, topology, appInfo, flags) {
           })
         }
 
+        let domains = app.domains.sort()
+        formations = formations.sort()
+        dynos = dynos.sort((a, b) => {
+          let apt = getProcessType(a)
+          let bpt = getProcessType(b)
+          if (apt > bpt) {
+            return 1
+          } else if (apt < bpt) {
+            return -1
+          }
+
+          return getProcessNum(a) - getProcessNum(b)
+        })
+
         let info = appInfo.find((info) => info.id === app.id)
+        let header = info.name
+        if (formations.length > 0) {
+          header += ` (${cli.color.cyan(formations.join(', '))})`
+        }
+
+        cli.styledHeader(header)
         cli.styledObject({
-          App: info.name,
-          Domains: app.domains,
-          Formations: formations,
+          Domains: domains,
           Dynos: dynos
-        }, ['App', 'Domains', 'Formations', 'Dynos'])
-        cli.log('')
+        }, ['Domains', 'Dynos'])
+        cli.log()
       })
     }
   }

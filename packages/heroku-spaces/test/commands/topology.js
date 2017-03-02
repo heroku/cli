@@ -45,12 +45,10 @@ describe('spaces:toplogy', function () {
 
     return cmd.run({flags: {space: 'my-space'}})
       .then(() => expect(cli.stdout).to.equal(
-        `=== my-space
-App:        app-name
-Domains:    example.com
-            example.net
-Formations: web
-Dynos:      web.1 - 10.0.134.42 - 1.example-app-90210.app.localspace
+        `=== app-name (web)
+Domains: example.com
+         example.net
+Dynos:   web.1 - 10.0.134.42 - 1.example-app-90210.app.localspace
 
 `))
       .then(() => api.done())
