@@ -4,6 +4,7 @@ machine:
     CACHE_DIR: ~/deps
     WORKSPACE: ~/workspace/heroku
     NPM_REGISTRY: https://cli-npm.heroku.com
+    NSIS_VERSION: nsis-2.51
     JOBZ: 6
   post:
     - sudo rm -rf /usr/local/go
@@ -25,6 +26,21 @@ dependencies:
     - ~/workspace
     - ~/.cache/heroku/npm
   override:
+    - sudo apt-get update
+    - sudo apt-get install scons g++-multilib
+    - >
+      if [ ! -d /home/ubuntu/$NSIS_VERSION ]; then
+        mkdir /home/ubuntu/$NSIS_VERSION &&
+        wget https://downloads.sourceforge.net/project/nsis/NSIS%202/2.51/$NSIS_VERSION-src.tar.bz2 &&
+        tar xvfj $NSIS_VERSION-src.tar.bz2 &&
+        patch -i resources/exe/makensis.patch -p1 &&
+        mv $NSIS_VERSION-src /home/ubuntu/$NSIS_VERSION/src &&
+        wget https://downloads.sourceforge.net/project/nsis/NSIS%202/2.51/$NSIS_VERSION.zip &&
+        unzip $NSIS_VERSION
+        mv $NSIS_VERSION /home/ubuntu/$NSIS_VERSION/zip &&
+        cd /home/ubuntu/$NSIS_VERSION/src &&
+        scons SKIPSTUBS=all SKIPPLUGINS=all SKIPUTILS=all SKIPMISC=all PREFIX=/home/ubuntu/$NSIS_VERSION/zip install-compiler
+      fi
     - >
       go version &&
       if ! type gometalinter >/dev/null 2>&1; then go get -v github.com/alecthomas/gometalinter && gometalinter --install; fi &&
@@ -36,7 +52,8 @@ dependencies:
       fi &&
       cd ~/osslsigncode && sudo make install
     - make deps build -j $JOBZ
-    - sudo apt-get install cowsay nsis jq
+    - sudo apt-get install cowsay jq
+
 test:
   override:
     - ./bin/test -v -race -cover -coverprofile=coverage.out -ginkgo.v
@@ -50,16 +67,16 @@ deployment:
     owner: heroku
     commands:
       - gpg --passphrase $HEROKU_WINDOWS_SIGNING_PASS -d resources/deb/key.gpg | gpg --import
-      - CHANNEL=dev make release -j $JOBZ
+      - CHANNEL=dev MAKENSIS=/home/ubuntu/$NSIS_VERSION/zip/makensis make release -j $JOBZ
   beta:
     branch: master
     owner: heroku
     commands:
       - gpg --passphrase $HEROKU_WINDOWS_SIGNING_PASS -d resources/deb/key.gpg | gpg --import
-      - CHANNEL=beta make release -j $JOBZ
+      - CHANNEL=beta MAKENSIS=/home/ubuntu/$NSIS_VERSION/zip/makensis make release -j $JOBZ
   stable:
     tag: /v[0-9]+(\.[0-9]+)*/
     owner: heroku
     commands:
       - gpg --passphrase $HEROKU_WINDOWS_SIGNING_PASS -d resources/deb/key.gpg | gpg --import
-      - CHANNEL=stable make release -j $JOBZ
+      - CHANNEL=stable MAKENSIS=/home/ubuntu/$NSIS_VERSION/zip/makensis make release -j $JOBZ

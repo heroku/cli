@@ -1,0 +1,48 @@
+diff --git a/nsis-2.51-src/SCons/Config/gnu b/nsis-2.51-src/SCons/Config/gnu
+index 051b425..b22fe4c 100755
+--- a/nsis-2.51-src/SCons/Config/gnu
++++ b/nsis-2.51-src/SCons/Config/gnu
+@@ -31,7 +31,7 @@ defenv['ALIGN_FLAG'] = '-Wl,--file-alignment,512'
+ defenv['CPP_REQUIRES_STDLIB'] = 1
+ defenv['SUBSYS_CON'] = '-Wl,--subsystem,console'
+ defenv['MSVCRT_FLAG'] = ''
+-defenv['STDCALL'] = '__attribute__((__stdcall__))'
++defenv['STDCALL'] = '"__attribute__((__stdcall__))"'
+ 
+ ### defines
+ 
+@@ -71,6 +71,7 @@ stub_env.Append(CPPPATH = ['#$BUILD_CONFIG'])
+ if not defenv['DEBUG']:
+ 	stub_env.Append(CCFLAGS = ['-Os'])                # optimize for size
+ stub_env.Append(CCFLAGS = ['-Wall'])                # all warnings
++stub_env.Append(CCFLAGS = ['-fpermissive'])         # workaround for Name lookup changes
+ stub_env.Append(CCFLAGS = ['-xc'])                  # force compile as c
+ stub_env.Append(CCFLAGS = ['-fno-strict-aliasing']) # not safe for strict aliasing
+ 
+@@ -91,8 +92,10 @@ makensis_env.Append(CPPPATH = ['#$BUILD_CONFIG'])
+ if not defenv['DEBUG']:
+ 	makensis_env.Append(CCFLAGS = ['-O2'])                  # optimize
+ makensis_env.Append(CFLAGS = ['-Wall'])                   # all warnings
++makensis_env.Append(CFLAGS = ['-fpermissive'])            # workaround for Name lookup changes
+ makensis_env.Append(CXXFLAGS = ['-Wno-non-virtual-dtor']) # ignore virtual dtor warnings
+ makensis_env.Append(CXXFLAGS = ['-Wall'])                 # all warnings
++makensis_env.Append(CXXFLAGS = ['-fpermissive'])          # workaround for Name lookup changes
+ 
+ conf = FlagsConfigure(makensis_env)
+ conf.CheckCompileFlag('-m32')                     #
+@@ -110,6 +113,7 @@ cross_env(plugin_env)
+ if not defenv['DEBUG']:
+ 	plugin_env.Append(CCFLAGS = ['-Os'])              # optimize for size
+ plugin_env.Append(CCFLAGS = ['-Wall'])              # level 3 warnings
++plugin_env.Append(CCFLAGS = ['-fpermissive'])         # workaround for Name lookup changes
+ plugin_env.Append(CCFLAGS = ['-fno-strict-aliasing']) # not safe for strict aliasing
+ 
+ if not defenv['DEBUG'] and defenv['STRIP'] and defenv['STRIP_W32']:
+@@ -127,6 +131,7 @@ cp_util_env.Append(CPPPATH = ['#$BUILD_CONFIG'])
+ if not defenv['DEBUG']:
+ 	cp_util_env.Append(CCFLAGS = ['-O2'])             # optimize
+ cp_util_env.Append(CCFLAGS = ['-Wall'])             # all warnings
++cp_util_env.Append(CCFLAGS = ['-fpermissive'])         # workaround for Name lookup changes
+ cp_util_env.Append(CCFLAGS = ['-fno-strict-aliasing']) # not safe for strict aliasing
+ 
+ conf = FlagsConfigure(cp_util_env)
