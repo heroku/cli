@@ -39,7 +39,7 @@ dependencies:
         unzip $NSIS_VERSION
         mv $NSIS_VERSION /home/ubuntu/$NSIS_VERSION/zip &&
         cd /home/ubuntu/$NSIS_VERSION/src &&
-        scons SKIPSTUBS=all SKIPPLUGINS=all SKIPUTILS=all SKIPMISC=all NSIS_CONFIG_CONST_DATA_PATH=no PREFIX=/home/ubuntu/$NSIS_VERSION/zip install-compiler
+        scons SKIPSTUBS=all SKIPPLUGINS=all SKIPUTILS=all SKIPMISC=all PREFIX=/home/ubuntu/$NSIS_VERSION/zip install-compiler
       fi
     - >
       go version &&
