@@ -39,8 +39,7 @@ dependencies:
         unzip $NSIS_VERSION
         mv $NSIS_VERSION /home/ubuntu/$NSIS_VERSION/zip &&
         cd /home/ubuntu/$NSIS_VERSION/src &&
-        scons SKIPSTUBS=all SKIPPLUGINS=all SKIPUTILS=all SKIPMISC=all NSIS_CONFIG_CONST_DATA_PATH=no PREFIX=/home/ubuntu/$NSIS_VERSION/zip install-compiler &&
-        sudo ln -s /home/ubuntu/$NSIS_VERSION/zip/makensis /usr/bin/makensis
+        scons SKIPSTUBS=all SKIPPLUGINS=all SKIPUTILS=all SKIPMISC=all NSIS_CONFIG_CONST_DATA_PATH=no PREFIX=/home/ubuntu/$NSIS_VERSION/zip install-compiler
       fi
     - >
       go version &&
@@ -68,16 +67,16 @@ deployment:
     owner: heroku
     commands:
       - gpg --passphrase $HEROKU_WINDOWS_SIGNING_PASS -d resources/deb/key.gpg | gpg --import
-      - CHANNEL=dev make release -j $JOBZ
+      - CHANNEL=dev PATH=$PATH:/home/ubuntu/$NSIS_VERSION/zip make release -j $JOBZ
   beta:
     branch: master
     owner: heroku
     commands:
       - gpg --passphrase $HEROKU_WINDOWS_SIGNING_PASS -d resources/deb/key.gpg | gpg --import
-      - CHANNEL=beta make release -j $JOBZ
+      - CHANNEL=beta PATH=$PATH:/home/ubuntu/$NSIS_VERSION/zip make release -j $JOBZ
   stable:
     tag: /v[0-9]+(\.[0-9]+)*/
     owner: heroku
     commands:
       - gpg --passphrase $HEROKU_WINDOWS_SIGNING_PASS -d resources/deb/key.gpg | gpg --import
-      - CHANNEL=stable make release -j $JOBZ
+      - CHANNEL=stable PATH=$PATH:/home/ubuntu/$NSIS_VERSION/zip make release -j $JOBZ
