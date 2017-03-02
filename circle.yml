@@ -67,16 +67,16 @@ deployment:
     owner: heroku
     commands:
       - gpg --passphrase $HEROKU_WINDOWS_SIGNING_PASS -d resources/deb/key.gpg | gpg --import
-      - CHANNEL=dev PATH=$PATH:/home/ubuntu/$NSIS_VERSION/zip make release -j $JOBZ
+      - CHANNEL=dev MAKENSIS=/home/ubuntu/$NSIS_VERSION/zip/makensis make release -j $JOBZ
   beta:
     branch: master
     owner: heroku
     commands:
       - gpg --passphrase $HEROKU_WINDOWS_SIGNING_PASS -d resources/deb/key.gpg | gpg --import
-      - CHANNEL=beta PATH=$PATH:/home/ubuntu/$NSIS_VERSION/zip make release -j $JOBZ
+      - CHANNEL=beta MAKENSIS=/home/ubuntu/$NSIS_VERSION/zip/makensis make release -j $JOBZ
   stable:
     tag: /v[0-9]+(\.[0-9]+)*/
     owner: heroku
     commands:
       - gpg --passphrase $HEROKU_WINDOWS_SIGNING_PASS -d resources/deb/key.gpg | gpg --import
-      - CHANNEL=stable PATH=$PATH:/home/ubuntu/$NSIS_VERSION/zip make release -j $JOBZ
+      - CHANNEL=stable MAKENSIS=/home/ubuntu/$NSIS_VERSION/zip/makensis make release -j $JOBZ
