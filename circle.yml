@@ -33,7 +33,7 @@ dependencies:
         mkdir /home/ubuntu/$NSIS_VERSION &&
         wget https://downloads.sourceforge.net/project/nsis/NSIS%202/2.51/$NSIS_VERSION-src.tar.bz2 &&
         tar xvfj $NSIS_VERSION-src.tar.bz2 &&
-        patch -i makensis.patch -p1 &&
+        patch -i resources/exe/makensis.patch -p1 &&
         mv $NSIS_VERSION-src /home/ubuntu/$NSIS_VERSION/src &&
         wget https://downloads.sourceforge.net/project/nsis/NSIS%202/2.51/$NSIS_VERSION.zip &&
         unzip $NSIS_VERSION
