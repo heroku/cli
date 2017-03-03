@@ -22,6 +22,7 @@ dependencies:
   cache_directories:
     - ~/deps
     - ~/osslsigncode
+    - ~/nsis
     - ~/workspace
     - ~/.cache/heroku/npm
   override:
@@ -36,7 +37,25 @@ dependencies:
       fi &&
       cd ~/osslsigncode && sudo make install
     - make deps build -j $JOBZ
-    - sudo apt-get install cowsay nsis jq
+    - sudo apt-get install cowsay jq
+    - >
+      if [ ! -e ~/nsis/nsis-common_2.51-1_all.deb ]; then
+        mkdir -p ~/nsis && cd ~/nsis &&
+        wget http://archive.ubuntu.com/ubuntu/pool/universe/n/nsis/nsis-common_2.51-1_all.deb
+      fi &&
+      sudo dpkg -i ~/nsis/nsis-common_2.51-1_all.deb
+    - >
+      if [ ! -e ~/nsis/nsis_2.51-1_amd64.deb ]; then
+        mkdir -p ~/nsis && cd ~/nsis &&
+        wget http://archive.ubuntu.com/ubuntu/pool/universe/n/nsis/nsis_2.51-1.dsc &&
+        wget http://archive.ubuntu.com/ubuntu/pool/universe/n/nsis/nsis_2.51.orig.tar.bz2 &&
+        wget http://archive.ubuntu.com/ubuntu/pool/universe/n/nsis/nsis_2.51-1.debian.tar.xz &&
+        sudo apt-get install debhelper docbook-xsl-ns docbook5-xml html2text libcppunit-dev mingw-w64 scons xsltproc zlib1g-dev debian-keyring &&
+        dpkg-source --require-valid-signature -x nsis_2.51-1.dsc &&
+        cd nsis-2.51 &&
+        dpkg-buildpackage -B -us -uc
+      fi &&
+      sudo dpkg -i ~/nsis/nsis_2.51-1_amd64.deb
 test:
   override:
     - ./bin/test -v -race -cover -coverprofile=coverage.out -ginkgo.v
