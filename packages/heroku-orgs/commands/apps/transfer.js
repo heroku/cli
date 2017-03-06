@@ -102,6 +102,8 @@ module.exports = cmd
 module.exports.sharing = {
   topic: 'sharing',
   command: 'transfer',
+  help: 'this command is now heroku apps:transfer',
+  variableArgs: true,
   hidden: true,
   run: () => {
     cli.error(`This command is now ${cli.color.cyan('heroku apps:transfer')}`)

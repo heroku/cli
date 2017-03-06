@@ -80,6 +80,8 @@ module.exports = [
   {
     topic: 'sharing',
     command: 'access',
+    help: 'This command is now heroku access',
+    variableArgs: true,
     hidden: true,
     run: () => {
       cli.error(`This command is now ${cli.color.cyan('heroku access')}`)

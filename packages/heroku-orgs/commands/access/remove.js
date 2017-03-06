@@ -23,6 +23,8 @@ module.exports = [
   {
     topic: 'sharing',
     command: 'remove',
+    help: 'this command is now heroku access:remove',
+    variableArgs: true,
     hidden: true,
     run: () => {
       cli.error(`This command is now ${cli.color.cyan('heroku access:remove')}`)
