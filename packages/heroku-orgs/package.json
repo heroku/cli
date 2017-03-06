@@ -9,7 +9,7 @@
   "dependencies": {
     "co": "4.6.0",
     "heroku-cli-util": "6.1.6",
-    "inquirer": "3.0.1",
+    "inquirer": "3.0.6",
     "lodash": "4.17.4",
     "lodash.flatten": "4.4.0"
   },
@@ -17,10 +17,10 @@
     "chai": "*",
     "mocha": "*",
     "mocha-junit-reporter": "1.13.0",
-    "nock": "*",
+    "nock": "9.0.9",
     "nyc": "10.1.2",
     "proxyquire": "1.7.11",
-    "standard": "8.6.0"
+    "standard": "9.0.0"
   },
   "homepage": "https://github.com/heroku/heroku-orgs",
   "keywords": [

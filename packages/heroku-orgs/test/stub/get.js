@@ -13,7 +13,7 @@ function apps () {
 }
 
 function appCollaborators (collaborators =
-  [{user: {email: 'raulb@heroku.com'}, role: 'owner'},
+[{user: {email: 'raulb@heroku.com'}, role: 'owner'},
   {user: {email: 'jeff@heroku.com'}, role: 'collaborator'}]) {
   return nock('https://api.heroku.com:443')
     .get('/apps/myapp/collaborators')
