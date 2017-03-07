@@ -7,7 +7,7 @@ const source = require('../../lib/source')
 const TestRun = require('../../lib/test-run')
 
 // Default command. Run setup, source profile.d scripts and open a bash session
-const SETUP_COMMAND = 'sprettur setup && for f in .profile.d/*; do source $f; done'
+const SETUP_COMMAND = 'ci setup && eval $(ci env)'
 const COMMAND = `${SETUP_COMMAND} && bash`
 
 function* run (context, heroku) {
