@@ -4,37 +4,21 @@ const V3_HEADER = 'application/vnd.heroku+json; version=3'
 const FILTERS_HEADER = V3_HEADER + '.filters'
 
 function getCoupling (heroku, app) {
-  return heroku.request({
-    method: 'GET',
-    path: `/apps/${app}/pipeline-couplings`,
-    headers: { 'Accept': V3_HEADER }
-  })
+  return heroku.get(`/apps/${app}/pipeline-couplings`)
 }
 
 function postCoupling (heroku, pipeline, app, stage) {
-  return heroku.request({
-    method: 'POST',
-    path: '/pipeline-couplings',
-    body: {app: app, pipeline: pipeline, stage: stage},
-    headers: { 'Accept': V3_HEADER }
+  return heroku.post('/pipeline-couplings', {
+    body: { app, pipeline, stage }
   })
 }
 
 function patchCoupling (heroku, id, stage) {
-  return heroku.request({
-    method: 'PATCH',
-    path: `/pipeline-couplings/${id}`,
-    body: {stage: stage},
-    headers: { 'Accept': V3_HEADER }
-  })
+  return heroku.patch(`/pipeline-couplings/${id}`, { body: { stage } })
 }
 
 function deleteCoupling (heroku, id) {
-  return heroku.request({
-    method: 'DELETE',
-    path: `/pipeline-couplings/${id}`,
-    headers: { 'Accept': V3_HEADER }
-  })
+  return heroku.delete(`/pipeline-couplings/${id}`)
 }
 
 function createCoupling (heroku, pipeline, app, stage) {
@@ -52,44 +36,23 @@ function removeCoupling (heroku, app) {
 }
 
 function listCouplings (heroku, pipelineId) {
-  return heroku.request({
-    method: 'GET',
-    path: `/pipelines/${pipelineId}/pipeline-couplings`,
-    headers: { 'Accept': V3_HEADER }
-  })
+  return heroku.get(`/pipelines/${pipelineId}/pipeline-couplings`)
 }
 
 function getPipeline (heroku, id) {
-  return heroku.request({
-    method: 'GET',
-    path: `/pipelines/${id}`,
-    headers: { Accept: V3_HEADER }
-  })
+  return heroku.get(`/pipelines/${id}`)
 }
 
 function findPipelineByName (heroku, idOrnName) {
-  return heroku.request({
-    method: 'GET',
-    path: `/pipelines?eq[name]=${idOrnName}`
-  })
+  return heroku.get(`/pipelines?eq[name]=${idOrnName}`)
 }
 
 function createPipeline (heroku, name) {
-  return heroku.request({
-    method: 'POST',
-    path: '/pipelines',
-    headers: { 'Accept': V3_HEADER },
-    body: { name }
-  })
+  return heroku.post('/pipelines', { body: { name } })
 }
 
 function createAppSetup (heroku, body) {
-  return heroku.request({
-    method: 'POST',
-    path: '/app-setups',
-    headers: { 'Accept': V3_HEADER },
-    body
-  })
+  return heroku.post('/app-setups', { body })
 }
 
 function getAppFilter (heroku, appIds) {
@@ -115,33 +78,29 @@ function listPipelineApps (heroku, pipelineId) {
 }
 
 function getAccountFeature (heroku, feature) {
-  return heroku.request({
-    method: 'GET',
-    path: `/account/features/${feature}`,
-    headers: { Accept: V3_HEADER }
-  })
+  return heroku.get(`/account/features/${feature}`)
 }
 
-exports.getCoupling = getCoupling
-exports.postCoupling = postCoupling
-exports.patchCoupling = patchCoupling
-exports.deleteCoupling = deleteCoupling
+function getAppSetup (heroku, buildId) {
+  return heroku.get(`/app-setups/${buildId}`)
+}
 
-exports.createCoupling = createCoupling
-exports.updateCoupling = updateCoupling
-exports.removeCoupling = removeCoupling
-exports.listCouplings = listCouplings
-
-exports.getPipeline = getPipeline
-exports.findPipelineByName = findPipelineByName
-exports.createPipeline = createPipeline
-
-exports.createAppSetup = createAppSetup
-
-exports.getAppFilter = getAppFilter
-
-exports.listPipelineApps = listPipelineApps
-
-exports.getAccountFeature = getAccountFeature
-
-exports.V3_HEADER = V3_HEADER
+module.exports = {
+  createAppSetup,
+  createCoupling,
+  createPipeline,
+  deleteCoupling,
+  getAccountFeature,
+  getAppFilter,
+  getAppSetup,
+  getCoupling,
+  getPipeline,
+  findPipelineByName,
+  listCouplings,
+  listPipelineApps,
+  patchCoupling,
+  postCoupling,
+  removeCoupling,
+  updateCoupling,
+  V3_HEADER
+}

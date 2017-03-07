@@ -103,13 +103,16 @@ describe('pipelines:setup', function () {
             source_blob: { url: archiveURL },
             app: { name: prodApp.name, personal: true },
             pipeline_coupling: { stage: 'production', pipeline: pipeline.id }
-          }).reply(201, { app: prodApp })
+          }).reply(201, { id: 1, app: prodApp })
 
           api.post('/app-setups', {
             source_blob: { url: archiveURL },
             app: { name: stagingApp.name, personal: true },
             pipeline_coupling: { stage: 'staging', pipeline: pipeline.id }
-          }).reply(201, { app: stagingApp })
+          }).reply(201, { id: 2, app: stagingApp })
+
+          api.get('/app-setups/1').reply(200, { status: 'succeeded' })
+          api.get('/app-setups/2').reply(200, { status: 'succeeded' })
         })
 
         it('creates apps in the personal account', function* () {
@@ -165,13 +168,16 @@ describe('pipelines:setup', function () {
             source_blob: { url: archiveURL },
             app: { name: prodApp.name, organization },
             pipeline_coupling: { pipeline: pipeline.id, stage: 'production' }
-          }).reply(201, { app: prodApp })
+          }).reply(201, { id: 1, app: prodApp })
 
           api.post('/app-setups', {
             source_blob: { url: archiveURL },
             app: { name: stagingApp.name, organization },
             pipeline_coupling: { pipeline: pipeline.id, stage: 'staging' }
-          }).reply(201, { app: stagingApp })
+          }).reply(201, { id: 2, app: stagingApp })
+
+          api.get('/app-setups/1').reply(200, { status: 'succeeded' })
+          api.get('/app-setups/2').reply(200, { status: 'succeeded' })
         })
 
         it('creates apps in an organization', function* () {
