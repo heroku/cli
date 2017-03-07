@@ -294,7 +294,7 @@ function * run (context, heroku) {
     _.pull(cert.warnings.ssl_cert, 'provides no domain(s) that are configured for this Heroku app')
   }
 
-  if (meta.type !== 'SNI' || cert.cname) {
+  if (meta.flag !== 'sni' || cert.cname) {
     cli.log(`${cli.color.app(context.app)} now served by ${cli.color.green(cert.cname)}`)
   }
 

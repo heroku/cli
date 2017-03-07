@@ -4,6 +4,21 @@ let cli = require('heroku-cli-util')
 let formatDate = require('./format_date.js')
 let _ = require('lodash')
 
+function type (f) {
+  if (f.cname && f.cname.endsWith('.herokuspace.com')) {
+    return 'Private Space App'
+  }
+
+  switch (f._meta.flag) {
+    case 'sni':
+      return 'SNI'
+    case 'ssl':
+      return 'Endpoint'
+  }
+
+  throw new Error(`Unexpected flag ${f._meta.flag}`)
+}
+
 module.exports = function (certs, domains) {
   let mapped = certs.filter(function (f) { return f.ssl_cert }).map(function (f) {
     return {
@@ -11,7 +26,7 @@ module.exports = function (certs, domains) {
       cname: f.cname,
       expires_at: f.ssl_cert.expires_at,
       ca_signed: f.ssl_cert['ca_signed?'],
-      type: f._meta.type,
+      type: type(f),
       common_names: f.ssl_cert.cert_domains.join(', ')
     }
   })

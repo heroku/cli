@@ -24,22 +24,20 @@ function sniCertsPromise (app, heroku) {
 }
 
 function meta (app, t, name) {
-  var path, type, variant
+  var path, variant
   if (t === 'sni') {
-    type = 'SNI'
     path = `/apps/${app}/sni-endpoints`
     variant = 'sni_ssl_cert'
   } else if (t === 'ssl') {
-    type = 'Endpoint'
     path = `/apps/${app}/ssl-endpoints`
     variant = 'ssl_cert'
   } else {
-    throw Error('Unknown type ' + type)
+    throw Error('Unknown type ' + t)
   }
   if (name) {
     path = `${path}/${name}`
   }
-  return {path, type, variant}
+  return {path, variant, flag: t}
 }
 
 function tagAndSort (app, allCerts) {

@@ -11,7 +11,7 @@ let certificateDetails = require('../../lib/certificate_details.js')
 
 function * run (context, heroku) {
   let endpoint = yield flags(context, heroku)
-  if (endpoint._meta.type === 'SNI') {
+  if (endpoint._meta.flag === 'sni') {
     error.exit(1, 'SNI Endpoints cannot be rolled back, please update with a new cert.')
   }
 
