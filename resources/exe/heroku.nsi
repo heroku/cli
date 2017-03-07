@@ -49,83 +49,67 @@ Section "Uninstall"
   DeleteRegKey /ifempty HKCU "Software\Heroku"
 SectionEnd
 
-!define Environ 'HKCU "Environment"'
+!include LogicLib.nsh
+!include WinCore.nsh
+!ifndef NSIS_CHAR_SIZE
+!define NSIS_CHAR_SIZE 1
+!endif
 Function AddToPath
-  Exch $0
-  Push $1
-  Push $2
-  Push $3
-  Push $4
-
-  ; NSIS ReadRegStr returns empty string on string overflow
-  ; Native calls are used here to check actual length of PATH
-
-  ; $4 = RegOpenKey(HKEY_CURRENT_USER, "Environment", &$3)
-  System::Call "advapi32::RegOpenKey(i 0x80000001, t'Environment', *i.r3) i.r4"
-  IntCmp $4 0 0 done done
-  ; $4 = RegQueryValueEx($3, "PATH", (DWORD*)0, (DWORD*)0, &$1, ($2=NSIS_MAX_STRLEN, &$2))
-  ; RegCloseKey($3)
-  System::Call "advapi32::RegQueryValueEx(i $3, t'PATH', i 0, i 0, t.r1, *i ${NSIS_MAX_STRLEN} r2) i.r4"
-  System::Call "advapi32::RegCloseKey(i $3)"
-
-  IntCmp $4 234 0 +4 +4 ; $4 == ERROR_MORE_DATA
-    DetailPrint "AddToPath: original length $2 > ${NSIS_MAX_STRLEN}"
-    MessageBox MB_OK "PATH not updated, original length $2 > ${NSIS_MAX_STRLEN}"
-    Goto done
-
-  IntCmp $4 0 +5 ; $4 != NO_ERROR
-    IntCmp $4 2 +3 ; $4 != ERROR_FILE_NOT_FOUND
-      DetailPrint "AddToPath: unexpected error code $4"
-      Goto done
-    StrCpy $1 ""
-
-  ; Check if already in PATH
-  Push "$1;"
-  Push "$0;"
-  Call StrStr
-  Pop $2
-  StrCmp $2 "" 0 done
-  Push "$1;"
-  Push "$0\;"
-  Call StrStr
-  Pop $2
-  StrCmp $2 "" 0 done
-
-  ; Prevent NSIS string overflow
-  StrLen $2 $0
-  StrLen $3 $1
-  IntOp $2 $2 + $3
-  IntOp $2 $2 + 2 ; $2 = strlen(dir) + strlen(PATH) + sizeof(";")
-  IntCmp $2 ${NSIS_MAX_STRLEN} +4 +4 0
-    DetailPrint "AddToPath: new length $2 > ${NSIS_MAX_STRLEN}"
-    MessageBox MB_OK "PATH not updated, new length $2 > ${NSIS_MAX_STRLEN}."
-    Goto done
-
-  ; Append dir to PATH
-  DetailPrint "Add to PATH: $0"
-  StrCpy $2 $1 1 -1
-  StrCmp $2 ";" 0 +2
-    StrCpy $1 $1 -1 ; remove trailing ';'
-  StrCmp $1 "" +2   ; no leading ';'
-    StrCpy $0 "$1;$0"
-  WriteRegExpandStr ${Environ} "PATH" $0
-  SendMessage ${HWND_BROADCAST} ${WM_WININICHANGE} 0 "STR:Environment" /TIMEOUT=5000
-
-done:
-  Pop $4
-  Pop $3
-  Pop $2
-  Pop $1
-  Pop $0
+Pop $R0
+Push ${HKEY_CURRENT_USER}
+Push "Environment"
+Push "Path"
+Push ";"
+Push $R0
+Call RegAppendString
+Pop $0
+DetailPrint RegAppendString:Error=$0
 FunctionEnd
 
-; StrStr - find substring in a string
-;
-; Usage:
-;   Push "this is some string"
-;   Push "some"
-;   Call StrStr
-;   Pop $0 ; "some string"
+Function RegAppendString
+System::Store S
+Pop $R0 ; append
+Pop $R1 ; separator
+Pop $R2 ; reg value
+Pop $R3 ; reg path
+Pop $R4 ; reg hkey
+System::Call 'ADVAPI32::RegCreateKey(i$R4,tR3,*i.r1)i.r0'
+${If} $0 = 0
+    System::Call 'ADVAPI32::RegQueryValueEx(ir1,tR2,i0,*i.r2,i0,*i0r3)i.r0'
+    ${If} $0 <> 0
+        StrCpy $2 ${REG_SZ}
+        StrCpy $3 0
+    ${EndIf}
+    StrLen $4 $R0
+    StrLen $5 $R1
+    IntOp $4 $4 + $5
+    IntOp $4 $4 + 1 ; For \0
+    !if ${NSIS_CHAR_SIZE} > 1
+        IntOp $4 $4 * ${NSIS_CHAR_SIZE}
+    !endif
+    IntOp $4 $4 + $3
+    System::Alloc $4
+    System::Call 'ADVAPI32::RegQueryValueEx(ir1,tR2,i0,i0,isr9,*ir4r4)i.r0'
+    ${If} $0 = 0
+    ${OrIf} $0 = ${ERROR_FILE_NOT_FOUND}
+        System::Call 'KERNEL32::lstrlen(t)(ir9)i.r0'
+        ${If} $0 <> 0
+            System::Call 'KERNEL32::lstrcat(t)(ir9,tR1)'
+        ${EndIf}
+        System::Call 'KERNEL32::lstrcat(t)(ir9,tR0)'
+        System::Call 'KERNEL32::lstrlen(t)(ir9)i.r0'
+        IntOp $0 $0 + 1
+        !if ${NSIS_CHAR_SIZE} > 1
+            IntOp $0 $0 * ${NSIS_CHAR_SIZE}
+        !endif
+        System::Call 'ADVAPI32::RegSetValueEx(ir1,tR2,i0,ir2,ir9,ir0)i.r0'
+    ${EndIf}
+    System::Free $9
+    System::Call 'ADVAPI32::RegCloseKey(ir1)'
+${EndIf}
+Push $0
+System::Store L
+FunctionEnd
 
 Function StrStr
   Exch $R1 ; $R1=substring, stack=[old$R1,string,...]
