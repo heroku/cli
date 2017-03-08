@@ -7,14 +7,13 @@ let inquirer = require('inquirer')
 let psl = require('psl')
 
 let error = require('../../lib/error.js')
-let readFile = require('../../lib/read_file.js')
 let findMatch = require('../../lib/find_match.js')
 let endpoints = require('../../lib/endpoints.js')
-let sslDoctor = require('../../lib/ssl_doctor.js')
 let displayWarnings = require('../../lib/display_warnings.js')
 let certificateDetails = require('../../lib/certificate_details.js')
 let isWildcard = require('../../lib/is_wildcard.js')
 let isWildcardMatch = require('../../lib/is_wildcard_match.js')
+let getCertAndKey = require('../../lib/get_cert_and_key.js')
 
 function Domains (domains) {
   this.domains = domains
@@ -51,25 +50,6 @@ function * getMeta (context, heroku) {
   } else {
     error.exit(1, "Must pass --type with either 'endpoint' or 'sni'")
   }
-}
-
-function * getFiles (context) {
-  let files = yield {
-    crt: readFile(context.args.CRT, 'utf-8'),
-    key: readFile(context.args.KEY, 'utf-8')
-  }
-
-  let crt, key
-  if (context.flags.bypass) {
-    crt = files.crt
-    key = files.key
-  } else {
-    let res = JSON.parse(yield sslDoctor('resolve-chain-and-key', [files.crt, files.key]))
-    crt = res.pem
-    key = res.key
-  }
-
-  return {crt, key}
 }
 
 function hasMatch (certDomains, domain) {
@@ -278,7 +258,7 @@ function * addDomains (context, heroku, meta, cert) {
 function * run (context, heroku) {
   let meta = yield getMeta(context, heroku)
 
-  let files = yield getFiles(context)
+  let files = yield getCertAndKey(context)
 
   let cert = yield cli.action(`Adding SSL certificate to ${cli.color.app(context.app)}`, {}, heroku.request({
     path: meta.path,
@@ -308,6 +288,7 @@ function * run (context, heroku) {
 module.exports = {
   topic: 'certs',
   command: 'add',
+  variableArgs: true,
   args: [
     {name: 'CRT', optional: false},
     {name: 'KEY', optional: false}
@@ -318,9 +299,15 @@ module.exports = {
     {name: 'domains', description: 'domains to create after certificate upload', hasValue: true}
   ],
   description: 'add an SSL certificate to an app',
-  help: `Example:
+  help: `Note: certificates with PEM encoding are also valid
+
+Example:
 
  $ heroku certs:add example.com.crt example.com.key
+
+Cerfificate Intermediary Example:
+
+ $ heroku certs:add intermediary.crt example.com.crt example.com.key
 `,
   needsApp: true,
   needsAuth: true,
