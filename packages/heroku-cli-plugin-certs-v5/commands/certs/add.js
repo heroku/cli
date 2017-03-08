@@ -305,7 +305,7 @@ Example:
 
  $ heroku certs:add example.com.crt example.com.key
 
-Cerfificate Intermediary Example:
+Certificate Intermediary Example:
 
  $ heroku certs:add intermediary.crt example.com.crt example.com.key
 `,
