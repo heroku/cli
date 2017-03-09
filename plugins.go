@@ -78,27 +78,28 @@ Example:
 	})
 }
 
-type PluginPresenter struct {
-	Name	  	string `json:"name"`
-	Version 	string `json:"version"`
+type pluginPresenter struct {
+	Name    string `json:"name"`
+	Version string `json:"version"`
 }
-// Sorts PluginPresenters by Name
-type NameSorter []PluginPresenter
-func (a NameSorter) Len() int           { return len(a) }
-func (a NameSorter) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
-func (a NameSorter) Less(i, j int) bool { return a[i].Name < a[j].Name }
+
+type nameSorter []pluginPresenter
+
+func (a nameSorter) Len() int           { return len(a) }
+func (a nameSorter) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a nameSorter) Less(i, j int) bool { return a[i].Name < a[j].Name }
 
 func pluginsList(ctx *Context) {
 	var names []string
-	var pluginPresenters []PluginPresenter
+	var pluginPresenters []pluginPresenter
 	for _, plugin := range UserPlugins.Plugins() {
 		symlinked := ""
 		if UserPlugins.isPluginSymlinked(plugin.Name) {
 			symlinked = " (symlinked)"
 		}
 		names = append(names, fmt.Sprintf("%s %s%s", plugin.Name, plugin.Version, symlinked))
-		pluginPresenter := PluginPresenter{plugin.Name, fmt.Sprintf("%s%s", plugin.Version, symlinked)}
-		pluginPresenters = append(pluginPresenters, pluginPresenter)
+		plgPres := pluginPresenter{plugin.Name, fmt.Sprintf("%s%s", plugin.Version, symlinked)}
+		pluginPresenters = append(pluginPresenters, plgPres)
 	}
 	if ctx.Flags["core"] != nil {
 		UserPluginNames := UserPlugins.PluginNames()
@@ -107,13 +108,13 @@ func pluginsList(ctx *Context) {
 				continue
 			}
 			names = append(names, fmt.Sprintf("%s %s (core)", plugin.Name, plugin.Version))
-			pluginPresenter := PluginPresenter{plugin.Name, fmt.Sprintf("%s (core)", plugin.Version)}
-			pluginPresenters = append(pluginPresenters, pluginPresenter)
+			plgPres := pluginPresenter{plugin.Name, fmt.Sprintf("%s (core)", plugin.Version)}
+			pluginPresenters = append(pluginPresenters, plgPres)
 		}
 	}
 
 	if ctx.Flags["json"] != nil {
-		sort.Sort(NameSorter(pluginPresenters))
+		sort.Sort(nameSorter(pluginPresenters))
 		pluginsJSON, _ := json.Marshal(pluginPresenters)
 		Println(string(pluginsJSON))
 	} else {
