@@ -27,6 +27,7 @@ func init() {
 				DisableAnalytics: true,
 				Flags: []Flag{
 					{Name: "core", Description: "show core plugins", Hidden: true},
+					{Name: "json", Description: "show core plugins as json"},
 				},
 				Help: `
 Example:
@@ -77,14 +78,27 @@ Example:
 	})
 }
 
+type PluginPresenter struct {
+	Name	  	string `json:"name"`
+	Version 	string `json:"version"`
+}
+// Sorts PluginPresenters by Name
+type NameSorter []PluginPresenter
+func (a NameSorter) Len() int           { return len(a) }
+func (a NameSorter) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a NameSorter) Less(i, j int) bool { return a[i].Name < a[j].Name }
+
 func pluginsList(ctx *Context) {
 	var names []string
+	var pluginPresenters []PluginPresenter
 	for _, plugin := range UserPlugins.Plugins() {
 		symlinked := ""
 		if UserPlugins.isPluginSymlinked(plugin.Name) {
 			symlinked = " (symlinked)"
 		}
 		names = append(names, fmt.Sprintf("%s %s%s", plugin.Name, plugin.Version, symlinked))
+		pluginPresenter := PluginPresenter{plugin.Name, fmt.Sprintf("%s%s", plugin.Version, symlinked)}
+		pluginPresenters = append(pluginPresenters, pluginPresenter)
 	}
 	if ctx.Flags["core"] != nil {
 		UserPluginNames := UserPlugins.PluginNames()
@@ -93,11 +107,20 @@ func pluginsList(ctx *Context) {
 				continue
 			}
 			names = append(names, fmt.Sprintf("%s %s (core)", plugin.Name, plugin.Version))
+			pluginPresenter := PluginPresenter{plugin.Name, fmt.Sprintf("%s (core)", plugin.Version)}
+			pluginPresenters = append(pluginPresenters, pluginPresenter)
 		}
 	}
-	sort.Strings(names)
-	for _, plugin := range names {
-		Println(plugin)
+
+	if ctx.Flags["json"] != nil {
+		sort.Sort(NameSorter(pluginPresenters))
+		pluginsJSON, _ := json.Marshal(pluginPresenters)
+		Println(string(pluginsJSON))
+	} else {
+		sort.Strings(names)
+		for _, plugin := range names {
+			Println(plugin)
+		}
 	}
 }
 func pluginsInstall(ctx *Context) {
