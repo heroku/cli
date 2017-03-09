@@ -9,7 +9,7 @@
   "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
     "bin": "heroku",
-    "node": "7.5.0",
+    "node": "7.6.0",
     "defaultCommand": "dashboard",
     "s3": {
       "bucket": "heroku-cli-assets",
@@ -33,20 +33,20 @@
     ]
   },
   "dependencies": {
-    "cli-engine": "1.0.8",
+    "cli-engine": "^1.1.0",
     "heroku-apps": "2.1.26",
-    "heroku-certs": "1.1.27",
+    "heroku-certs": "^1.1.30",
     "heroku-cli-addons": "1.2.10",
     "heroku-cli-oauth": "2.0.7",
     "heroku-fork": "4.1.17",
     "heroku-git": "2.5.11",
     "heroku-local": "5.1.9",
-    "heroku-orgs": "1.5.6",
+    "heroku-orgs": "^1.5.7",
     "heroku-pg": "2.0.17",
-    "heroku-pipelines": "1.3.2",
+    "heroku-pipelines": "^1.4.0",
     "heroku-redis": "1.2.9",
     "heroku-run": "3.4.4",
-    "heroku-spaces": "2.7.2",
+    "heroku-spaces": "^2.7.3",
     "heroku-status": "3.0.6"
   },
   "homepage": "https://cli.heroku.com",
