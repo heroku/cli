@@ -15,7 +15,7 @@ function * run (context, heroku) {
 
   function parse (args) {
     return compact(args.map((arg) => {
-      let change = arg.match(/^([a-zA-Z0-9_]+)([=+-]\d+)(?::([\w-]+))?$/)
+      let change = arg.match(/^([\w-]+)([=+-]\d+)(?::([\w-]+))?$/)
       if (!change) return
       let quantity = change[2][0] === '=' ? change[2].substr(1) : change[2]
       return {type: change[1], quantity, size: change[3]}
