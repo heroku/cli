@@ -1,3 +1,18 @@
+5.6.32  2017-03-10
+==================
+Update heroku-apps to 2.1.27
+
+5.6.31  2017-03-08
+==================
+Update heroku-certs to 1.1.30
+
+5.6.30  2017-03-08
+==================
+Update heroku-certs to 1.1.29
+Update heroku-pipelines to 1.4.0
+Update heroku-spaces to 2.7.3
+Update heroku-orgs to 1.5.7
+
 5.6.29  2017-03-03
 ==================
 Bump makensis to 2.51-1
