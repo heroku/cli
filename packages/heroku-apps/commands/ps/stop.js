@@ -2,26 +2,14 @@
 
 let cli = require('heroku-cli-util')
 let co = require('co')
-let qs = require('querystring')
 
 function * run (context, heroku) {
   let app = context.app
   let dyno = context.args.dyno
   let type = dyno.indexOf('.') !== -1 ? 'ps' : 'type'
 
-  yield cli.action(`Stopping ${cli.color.cyan(dyno)} ${type === 'ps' ? 'dyno' : 'dynos'} on ${cli.color.app(app)}`, co(function * () {
-    yield heroku.request({
-      method: 'POST',
-      path: `/apps/${app}/ps/stop?` + qs.stringify({[type]: dyno}),
-      parseJSON: false,
-      headers: {Accept: 'application/json'}
-    }).catch(function (err) {
-      // the body on success is `ok` so we cannot parseJSON but
-      // some exception handling expects the error to be json
-      err.body = JSON.parse(err.body)
-      throw err
-    })
-  }))
+  yield cli.action(`Stopping ${cli.color.cyan(dyno)} ${type === 'ps' ? 'dyno' : 'dynos'} on ${cli.color.app(app)}`,
+    heroku.post(`/apps/${app}/dynos/${dyno}/actions/stop`))
 }
 
 let cmd = {
