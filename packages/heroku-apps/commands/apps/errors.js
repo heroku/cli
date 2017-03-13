@@ -76,7 +76,7 @@ function * run (context, heroku) {
     cli.styledJSON(errors)
   } else {
     let t = buildErrorTable(errors.router, 'router')
-    for (let type of Object.keys(errors.dyno)) t = t.concat(buildErrorTable(errors.dyno[type]))
+    for (let type of Object.keys(errors.dyno)) t = t.concat(buildErrorTable(errors.dyno[type], type))
     if (t.length === 0) {
       cli.log(`No errors on ${cli.color.app(context.app)} in the last ${hours} hours`)
     } else {

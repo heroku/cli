@@ -99,7 +99,7 @@ describe('apps:errors', () => {
       .get(`/apps/myapp/formation/node/metrics/errors?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h`)
       .reply(200, {data: {}})
       .get(`/apps/myapp/formation/web/metrics/errors?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h`)
-      .reply(200, {data: {}})
+      .reply(200, {data: {R14: [1]}})
 
     return cmd.run({app: 'myapp', flags: {json: false}})
       .then(() => expect(cli.stdout, 'to be', `=== Errors on myapp in the last 24 hours
@@ -108,6 +108,7 @@ source  name  level     desc                        count
 router  H12   critical  Request Timeout             2
 router  H25   critical  HTTP Restriction            3
 router  H27   info      Client Request Interrupted  9
+web     R14   critical  Memory quota exceeded       1
 `))
       .then(() => expect(cli.stderr, 'to be empty'))
       .then(() => metrics.done())
