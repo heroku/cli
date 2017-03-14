@@ -306,9 +306,9 @@ cli-engine-command@^2.0.11:
     string "3.3.3"
     supports-color "3.2.3"
 
-cli-engine@heroku/cli-engine#77d45de:
+cli-engine@heroku/cli-engine#c6ab67a:
   version "1.1.3"
-  resolved "https://codeload.github.com/heroku/cli-engine/tar.gz/77d45de"
+  resolved "https://codeload.github.com/heroku/cli-engine/tar.gz/c6ab67a"
   dependencies:
     ansi-escapes "1.4.0"
     cli-engine-command "^2.0.11"
