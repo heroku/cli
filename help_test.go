@@ -38,7 +38,7 @@ var _ = Describe("Help", func() {
 			cli.Start("heroku", "hlp")
 		})
 
-		It("exits with code 2", func() { Expect(exit).To(Equal(2)) })
+		It("exits with code 127", func() { Expect(exit).To(Equal(127)) })
 		It("has no stdout", func() { Expect(stdout()).To(Equal("")) })
 		It("shows invalid command message", func() {
 			Expect(stderr()).To(Equal(` !    hlp is not a heroku command.
