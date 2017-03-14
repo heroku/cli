@@ -32,6 +32,8 @@ exports.commands = flatten([
   require('./commands/apps/rename'),
   require('./commands/apps/stacks'),
   require('./commands/apps/stacks/set'),
+  require('./commands/auth/login'),
+  require('./commands/auth/whoami'),
   require('./commands/buildpacks'),
   require('./commands/buildpacks/add.js'),
   require('./commands/buildpacks/clear.js'),
