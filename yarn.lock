@@ -306,14 +306,15 @@ cli-engine-command@^2.0.11:
     string "3.3.3"
     supports-color "3.2.3"
 
-cli-engine@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/cli-engine/-/cli-engine-1.1.0.tgz#7a8556c0be1770ba5439f49f482f88dd5e246116"
+cli-engine@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/cli-engine/-/cli-engine-1.1.1.tgz#b37157758cc9047c35704c7cb5384903e05b92e0"
   dependencies:
     ansi-escapes "1.4.0"
     cli-engine-command "^2.0.11"
     eslint "3.17.1"
     execa "0.6.0"
+    find-node-modules "^1.0.4"
     klaw-sync "1.1.2"
     lodash.maxby "4.6.0"
     lodash.uniqby "^4.7.0"
@@ -490,6 +491,12 @@ delayed-stream@~1.0.0:
 delegates@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/delegates/-/delegates-1.0.0.tgz#84c6e159b81904fdca59a0ef44cd870d31250f9a"
+
+detect-file@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/detect-file/-/detect-file-0.1.0.tgz#4935dedfd9488648e006b0129566e9386711ea63"
+  dependencies:
+    fs-exists-sync "^0.1.0"
 
 detect-indent@^5.0.0:
   version "5.0.0"
@@ -710,6 +717,12 @@ expand-range@^1.8.1:
   dependencies:
     fill-range "^2.1.0"
 
+expand-tilde@^1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/expand-tilde/-/expand-tilde-1.2.2.tgz#0b81eba897e5a3d31d1c3d102f8f01441e559449"
+  dependencies:
+    os-homedir "^1.0.1"
+
 extend@~3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/extend/-/extend-3.0.0.tgz#5a474353b9f3353ddd8176dfd37b91c83a46f1d4"
@@ -772,6 +785,22 @@ fill-range@^2.1.0:
     repeat-element "^1.1.2"
     repeat-string "^1.5.2"
 
+find-node-modules@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/find-node-modules/-/find-node-modules-1.0.4.tgz#b6deb3cccb699c87037677bcede2c5f5862b2550"
+  dependencies:
+    findup-sync "0.4.2"
+    merge "^1.2.0"
+
+findup-sync@0.4.2:
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/findup-sync/-/findup-sync-0.4.2.tgz#a8117d0f73124f5a4546839579fe52d7129fb5e5"
+  dependencies:
+    detect-file "^0.1.0"
+    is-glob "^2.0.1"
+    micromatch "^2.3.7"
+    resolve-dir "^0.1.0"
+
 flat-cache@^1.2.1:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/flat-cache/-/flat-cache-1.2.2.tgz#fa86714e72c21db88601761ecf2f555d1abc6b96"
@@ -815,6 +844,10 @@ form-data@~2.1.1:
     asynckit "^0.4.0"
     combined-stream "^1.0.5"
     mime-types "^2.1.12"
+
+fs-exists-sync@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/fs-exists-sync/-/fs-exists-sync-0.1.0.tgz#982d6893af918e72d08dec9e8673ff2b5a8d6add"
 
 fs-extra@2.0.0:
   version "2.0.0"
@@ -893,6 +926,22 @@ glob@^7.0.0, glob@^7.0.3, glob@^7.0.5:
     once "^1.3.0"
     path-is-absolute "^1.0.0"
 
+global-modules@^0.2.3:
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/global-modules/-/global-modules-0.2.3.tgz#ea5a3bed42c6d6ce995a4f8a1269b5dae223828d"
+  dependencies:
+    global-prefix "^0.1.4"
+    is-windows "^0.2.0"
+
+global-prefix@^0.1.4:
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/global-prefix/-/global-prefix-0.1.5.tgz#8d3bc6b8da3ca8112a160d8d496ff0462bfef78f"
+  dependencies:
+    homedir-polyfill "^1.0.0"
+    ini "^1.3.4"
+    is-windows "^0.2.0"
+    which "^1.2.12"
+
 globals@^9.14.0:
   version "9.16.0"
   resolved "https://registry.yarnpkg.com/globals/-/globals-9.16.0.tgz#63e903658171ec2d9f51b1d31de5e2b8dc01fb80"
@@ -970,15 +1019,15 @@ here@0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/here/-/here-0.0.2.tgz#69c1af3f02121f3d8788e02e84dc8b3905d71195"
 
-heroku-apps@2.1.26:
-  version "2.1.26"
-  resolved "https://registry.yarnpkg.com/heroku-apps/-/heroku-apps-2.1.26.tgz#6561e06f43f86fc7016aa16336df19e189ec79b9"
+heroku-apps@^2.2.2:
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/heroku-apps/-/heroku-apps-2.2.2.tgz#a2dc271fc3ac378a7cedbd6c224927d5f5f9566b"
   dependencies:
     bluebird "3.4.7"
     co "4.6.0"
     co-wait "0.0.0"
     filesize "3.5.4"
-    heroku-cli-util "6.1.6"
+    heroku-cli-util "6.1.8"
     inquirer "3.0.1"
     lodash "4.17.4"
     lodash.compact "3.0.1"
@@ -1117,6 +1166,33 @@ heroku-cli-util@6.1.6:
     supports-color "^3.1.2"
     tunnel-agent "^0.4.3"
 
+heroku-cli-util@6.1.8:
+  version "6.1.8"
+  resolved "https://registry.yarnpkg.com/heroku-cli-util/-/heroku-cli-util-6.1.8.tgz#86e9b1475537ff88a0dffd8f8497dfe50872a066"
+  dependencies:
+    ansi-escapes "1.4.0"
+    cardinal "1.0.0"
+    chalk "^1.1.3"
+    co "4.6.0"
+    got "^6.3.0"
+    heroku-client "3.0.2"
+    lodash.ary "4.1.1"
+    lodash.defaults "4.2.0"
+    lodash.get "4.4.2"
+    lodash.identity "3.0.0"
+    lodash.keys "4.2.0"
+    lodash.mapvalues "4.6.0"
+    lodash.noop "3.0.1"
+    lodash.partial "4.2.1"
+    lodash.pickby "4.6.0"
+    lodash.property "4.4.2"
+    lodash.repeat "4.1.0"
+    lodash.result "4.5.2"
+    netrc-parser "2.0.1"
+    opn "^3.0.3"
+    supports-color "^3.1.2"
+    tunnel-agent "^0.4.3"
+
 heroku-client@2.4.0:
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/heroku-client/-/heroku-client-2.4.0.tgz#ae6282f04872334143cb6750949cab8b88f88222"
@@ -1251,6 +1327,12 @@ heroku-status@3.0.6:
 hoek@2.x.x:
   version "2.16.3"
   resolved "https://registry.yarnpkg.com/hoek/-/hoek-2.16.3.tgz#20bb7403d3cea398e91dc4710a8ff1b8274a25ed"
+
+homedir-polyfill@^1.0.0:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/homedir-polyfill/-/homedir-polyfill-1.0.1.tgz#4c2bbc8a758998feebf5ed68580f76d46768b4bc"
+  dependencies:
+    parse-passwd "^1.0.0"
 
 http-call@1.0.12:
   version "1.0.12"
@@ -1497,6 +1579,10 @@ is-typedarray@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/is-typedarray/-/is-typedarray-1.0.0.tgz#e479c80858df0c1b11ddda6940f96011fcda4a9a"
 
+is-windows@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/is-windows/-/is-windows-0.2.0.tgz#de1aa6d63ea29dd248737b69f1ff8b8002d2108c"
+
 isarray@0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/isarray/-/isarray-0.0.1.tgz#8a18acfca9a8f4177e09abfc6038939b05d1eedf"
@@ -1624,6 +1710,10 @@ levn@^0.3.0, levn@~0.3.0:
   dependencies:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
+
+lex@^1.7.9:
+  version "1.7.9"
+  resolved "https://registry.yarnpkg.com/lex/-/lex-1.7.9.tgz#5d5636ccef574348362938b79a47f0eed8ed0d43"
 
 lodash.ary@4.1.1:
   version "4.1.1"
@@ -1821,7 +1911,11 @@ lru-cache@^4.0.0, lru-cache@^4.0.1:
     pseudomap "^1.0.1"
     yallist "^2.0.0"
 
-micromatch@^2.3.11:
+merge@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/merge/-/merge-1.2.0.tgz#7531e39d4949c281a66b8c5a6e0265e8b05894da"
+
+micromatch@^2.3.11, micromatch@^2.3.7:
   version "2.3.11"
   resolved "https://registry.yarnpkg.com/micromatch/-/micromatch-2.3.11.tgz#86677c97d1720b363431d04d0d15293bd38c1565"
   dependencies:
@@ -1904,6 +1998,12 @@ mz@2.6.0:
 natural-compare@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/natural-compare/-/natural-compare-1.4.0.tgz#4abebfeed7541f2c27acfb29bdbbd15c8d5ba4f7"
+
+netrc-parser@2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/netrc-parser/-/netrc-parser-2.0.1.tgz#bd1d8b1eaf9555d4cceb051b74da1ab0a018e440"
+  dependencies:
+    lex "^1.7.9"
 
 netrc@0.1.4:
   version "0.1.4"
@@ -2020,7 +2120,7 @@ optionator@^0.8.2:
     type-check "~0.3.2"
     wordwrap "~1.0.0"
 
-os-homedir@^1.0.0:
+os-homedir@^1.0.0, os-homedir@^1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/os-homedir/-/os-homedir-1.0.2.tgz#ffbc4988336e0e833de0c168c7ef152121aa7fb3"
 
@@ -2047,6 +2147,10 @@ parse-glob@^3.0.4:
     is-dotfile "^1.0.0"
     is-extglob "^1.0.0"
     is-glob "^2.0.0"
+
+parse-passwd@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/parse-passwd/-/parse-passwd-1.0.0.tgz#6d5b934a456993b23d37f40a382d6f1666a8e5c6"
 
 path-is-absolute@^1.0.0:
   version "1.0.1"
@@ -2281,6 +2385,13 @@ require-uncached@^1.0.2:
 requires-port@0.x.x:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/requires-port/-/requires-port-0.0.1.tgz#4b4414411d9df7c855995dd899a8c78a2951c16d"
+
+resolve-dir@^0.1.0:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/resolve-dir/-/resolve-dir-0.1.1.tgz#b219259a5602fac5c5c496ad894a6e8cc430261e"
+  dependencies:
+    expand-tilde "^1.2.2"
+    global-modules "^0.2.3"
 
 resolve-from@^1.0.0:
   version "1.0.1"
@@ -2710,7 +2821,7 @@ verror@1.3.6:
   dependencies:
     extsprintf "1.0.2"
 
-which@1, which@^1.2.8, which@^1.2.9:
+which@1, which@^1.2.12, which@^1.2.8, which@^1.2.9:
   version "1.2.12"
   resolved "https://registry.yarnpkg.com/which/-/which-1.2.12.tgz#de67b5e450269f194909ef23ece4ebe416fa1192"
   dependencies:
