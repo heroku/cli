@@ -1,0 +1,7 @@
+.envrc
+.npmignore
+appveyor.yml
+circle.yml
+resources
+tmp
+yarn.lock
