@@ -72,11 +72,11 @@ MANIFEST := $(DIST_DIR)/$(VERSION)/manifest.json
 MANIFEST_GZ := $(DIST_DIR)/$(VERSION)/gz/manifest.json
 $(MANIFEST): $(WORKSPACE)/bin/heroku $(DIST_TARGETS)
 	@if [ -z "$(CHANNEL)" ]; then echo "no channel" && exit 1; fi
-	$(WORKSPACE)/bin/heroku build:manifest --dir $(@D) --version $(VERSION) --channel $(CHANNEL) --targets $(subst $(space),$(comma),$(DIST_TARGETS)) > $@
+	$(WORKSPACE)/bin/build-manifest --version $(VERSION) --channel $(CHANNEL) --targets $(subst $(space),$(comma),$(DIST_TARGETS)) > $@
 
 $(MANIFEST_GZ): $(WORKSPACE)/bin/heroku $(DIST_TARGETS_GZ)
 	@if [ -z "$(CHANNEL)" ]; then echo "no channel" && exit 1; fi
-	$(WORKSPACE)/bin/heroku build:manifest --dir $(@D) --version $(VERSION) --channel $(CHANNEL) --targets $(subst $(space),$(comma),$(DIST_TARGETS_GZ)) > $@
+	$(WORKSPACE)/bin/build-manifest --dir $(@D) --version $(VERSION) --channel $(CHANNEL) --targets $(subst $(space),$(comma),$(DIST_TARGETS_GZ)) > $@
 
 $(MANIFEST).sig: $(MANIFEST)
 	@gpg --armor -u 0F1B0520 --yes --output $@ --detach-sig $<

@@ -1,0 +1,32 @@
+#!/usr/bin/env node
+
+const argv = require('yargs').argv
+const path = require('path')
+
+function sha256 (f) {
+  const {execSync: exec} = require('child_process')
+  let output = exec(`shasum -a 256 ${f}`, {encoding: 'utf8'})
+  return output.split(' ')[0]
+}
+
+function bytes (f) {
+  return 0
+}
+
+const output = {
+  released_at: new Date(),
+  version: argv.version,
+  channel: argv.channel,
+  builds: argv.targets.split(',').reduce((builds, t) => {
+    let filename = path.basename(t)
+    let [, os, arch] = t.match(/heroku-v\d+\.\d+\.\d+-\w+-(\w+)-(\w+)\.tar\..z/)
+    const url = `https://cli-assets.heroku.com/branches/${argv.channel}/${argv.version}/${filename}`
+    builds[`${os}-${arch}`] = {
+      url,
+      sha256: sha256(t),
+      bytes: bytes(t)
+    }
+    return builds
+  }, {})
+}
+console.log(JSON.stringify(output, null, 2))
