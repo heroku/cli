@@ -4,7 +4,7 @@ const argv = require('yargs').argv
 const path = require('path')
 
 function sha256 (f) {
-  const {execSync: exec} = require('child_process')
+  const exec = require('child_process').execSync
   let output = exec(`shasum -a 256 ${f}`, {encoding: 'utf8'})
   return output.split(' ')[0]
 }
