@@ -37,6 +37,14 @@ For other issues, [submit a support ticket](https://help.heroku.com/).
 Developing
 ==========
 
-Developing the CLI locally requires go and node.
+Developing the CLI locally requires node.
 
-To run the CLI locally, use the `./bin/run` script. If you want to install the dev version of the CLI, run `make install`.
+To run the CLI locally, use the `./bin/run` script.
+
+**Alpha build note:** To make the run script operable, you must use yarn >= 0.21.3. After the initial project `yarn install`, do the following:
+
+```
+cd ./node_modules/cli-engine
+yarn install
+yarn prepare
+```
