@@ -9,6 +9,9 @@ machine:
     - sudo rm -rf /usr/local/go
     - if [ ! -e ~/deps/go1.7.5.linux-amd64.tar.gz ]; then mkdir -p ~/deps && wget -O ~/deps/go1.7.5.linux-amd64.tar.gz https://storage.googleapis.com/golang/go1.7.5.linux-amd64.tar.gz; fi
     - sudo tar -C /usr/local -xzf ~/deps/go1.7.5.linux-amd64.tar.gz
+  node:
+    version: 7.7.2
+
 checkout:
   post:
     - |
