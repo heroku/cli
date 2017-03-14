@@ -110,9 +110,10 @@ func helpInvalidCommand() {
 		WarnIfError(saveJSON(&Guess{guess.String(), Args[2:]}, guessPath()))
 		closest = fmt.Sprintf("Perhaps you meant %s?\nRun %s to run %s.\n", yellow(guess.String()), cyan("heroku _"), cyan(newcmd))
 	}
-	ExitWithMessage(`%s is not a heroku command.
+	Error(fmt.Sprintf(`%s is not a heroku command.
 %sRun %s for a list of available commands.
-`, yellow(Args[1]), closest, cyan("heroku help"))
+`, yellow(Args[1]), closest, cyan("heroku help")))
+	Exit(127)
 }
 
 func checkIfKnownTopic(cmd string) {
