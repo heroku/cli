@@ -2,7 +2,7 @@
 version: 2
 executorType: docker
 containerInfo:
-  - image: dickeyxxx/cli-engine@sha256:4b54ba455ea8d9675b4dc501e874d83a1f6c0bf0aee7427ee55217e2de1d150e
+  - image: dickeyxxx/cli-engine@sha256:090e7e327787303491f27482f021b9fbcfeac1d379a20769c7524c1c53b68c88
 stages:
   build:
     workDir: ~/cli
