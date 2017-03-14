@@ -33,6 +33,7 @@ exports.commands = flatten([
   require('./commands/apps/stacks'),
   require('./commands/apps/stacks/set'),
   require('./commands/auth/login'),
+  require('./commands/auth/logout'),
   require('./commands/auth/token'),
   require('./commands/auth/whoami'),
   require('./commands/buildpacks'),

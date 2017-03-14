@@ -38,6 +38,7 @@
     "lodash.zip": "4.2.0",
     "mkdirp": "0.5.1",
     "mz": "2.6.0",
+    "netrc-parser": "2.0.1",
     "shell-escape": "0.2.0",
     "sparkline": "0.1.2",
     "strftime": "0.10.0",
