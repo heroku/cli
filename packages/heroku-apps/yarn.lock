@@ -1167,7 +1167,7 @@ here@0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/here/-/here-0.0.2.tgz#69c1af3f02121f3d8788e02e84dc8b3905d71195"
 
-heroku-cli-util@^6.1.8:
+heroku-cli-util@6.1.8:
   version "6.1.8"
   resolved "https://registry.yarnpkg.com/heroku-cli-util/-/heroku-cli-util-6.1.8.tgz#86e9b1475537ff88a0dffd8f8497dfe50872a066"
   dependencies:
