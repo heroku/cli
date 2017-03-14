@@ -10,7 +10,6 @@ import (
 
 	"github.com/dickeyxxx/netrc"
 	"github.com/dickeyxxx/speakeasy"
-	"github.com/toqueteos/webbrowser"
 )
 
 func init() {
@@ -19,41 +18,9 @@ func init() {
 		Description: "authentication (login/logout)",
 		Commands: []*Command{
 			{
-				Command:     "login",
-				Description: "login with your Heroku credentials.",
-				Flags: []Flag{
-					{Name: "sso", Description: "login for enterprise users under SSO"},
-				},
-				Run: login,
-			},
-			{
 				Command:     "logout",
 				Description: "clear your local Heroku credentials",
 				Run:         logout,
-			},
-			{
-				Command:     "whoami",
-				Description: "display your Heroku login",
-				Help: `Example:
-
-  $ heroku auth:whoami
-	email@example.com
-
-	whoami will return nonzero status if not logged in:
-
-  $ heroku auth:whoami
-	not logged in
-	$ echo $?
-	100`,
-				Run: whoami,
-			},
-			{
-				Command:     "token",
-				Description: "display your API token.",
-				NeedsAuth:   true,
-				Run: func(ctx *Context) {
-					Println(ctx.APIToken)
-				},
 			},
 			{
 				Command:     "2fa",
@@ -81,40 +48,6 @@ func init() {
 			},
 		},
 	},
-		{
-			Name:   "whoami",
-			Hidden: true,
-			Commands: []*Command{
-				{
-					Description: "display your Heroku login",
-					Help: `Example:
-
-  $ heroku auth:whoami
-	email@example.com
-
-	whoami will return nonzero status if not logged in:
-
-  $ heroku auth:whoami
-	not logged in
-	$ echo $?
-	100`,
-					Run: whoami,
-				},
-			},
-		},
-		{
-			Name:        "login",
-			Description: "login with your Heroku credentials.",
-			Commands: []*Command{
-				{
-					Description: "login with your Heroku credentials.",
-					Flags: []Flag{
-						{Name: "sso", Description: "login for enterprise users under SSO"},
-					},
-					Run: login,
-				},
-			},
-		},
 		{
 			Name:        "logout",
 			Hidden:      true,
@@ -174,64 +107,6 @@ func init() {
 		},
 	}...,
 	)
-}
-
-func whoami(ctx *Context) {
-	if os.Getenv("HEROKU_API_KEY") != "" {
-		Warn("HEROKU_API_KEY is set")
-	}
-
-	// don't use needsToken since this should fail if
-	// not logged in. Should not show a login prompt.
-	ctx.APIToken = apiToken()
-
-	if ctx.APIToken == "" {
-		Println("not logged in")
-		Exit(100)
-	}
-
-	user := getUserFromToken(ctx.APIToken)
-	if user == nil {
-		Println("not logged in")
-		Exit(100)
-	}
-	Println(user.Email)
-}
-
-func login(ctx *Context) {
-	if os.Getenv("HEROKU_API_KEY") != "" {
-		Warn("HEROKU_API_KEY is set")
-	}
-	if ctx.Flags["sso"] == true {
-		ssoLogin()
-	} else {
-		interactiveLogin()
-	}
-}
-
-func ssoLogin() {
-	url := os.Getenv("SSO_URL")
-	if url == "" {
-		org := os.Getenv("HEROKU_ORGANIZATION")
-		for org == "" {
-			org = getString("Enter your organization name: ")
-		}
-		url = "https://sso.heroku.com/saml/" + org + "/init?cli=true"
-	}
-	Err("Opening browser for login...")
-	err := webbrowser.Open(url)
-	if err != nil {
-		Errln(" " + err.Error() + ".\nNavigate to " + cyan(url))
-	} else {
-		Errln(" done")
-	}
-	token := getPassword("Enter your access token (typing will be hidden): ")
-	user := getUserFromToken(token)
-	if user == nil {
-		must(errors.New("Access token invalid"))
-	}
-	saveOauthToken(user.Email, token)
-	Println("Logged in as " + cyan(user.Email))
 }
 
 // Account is a heroku account from /account
