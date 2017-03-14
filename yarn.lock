@@ -324,6 +324,24 @@ cli-engine@^1.1.3:
     tar-stream "1.5.2"
     yarn "0.21.3"
 
+cli-engine@heroku/cli-engine#77d45de:
+  version "1.1.3"
+  resolved "https://codeload.github.com/heroku/cli-engine/tar.gz/77d45de"
+  dependencies:
+    ansi-escapes "1.4.0"
+    cli-engine-command "^2.0.11"
+    eslint "3.17.1"
+    execa "0.6.0"
+    find-node-modules "^1.0.4"
+    klaw-sync "1.1.2"
+    lodash.maxby "4.6.0"
+    lodash.uniqby "^4.7.0"
+    moment "2.17.1"
+    rwlockfile "1.3.6"
+    string "3.3.3"
+    tar-stream "1.5.2"
+    yarn "0.21.3"
+
 cli-width@^2.0.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/cli-width/-/cli-width-2.1.0.tgz#b234ca209b29ef66fc518d9b98d5847b00edf00a"
