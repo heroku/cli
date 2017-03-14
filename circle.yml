@@ -58,14 +58,12 @@ dependencies:
       sudo dpkg -i ~/nsis/nsis_2.51-1_amd64.deb
 test:
   override:
-    - ./bin/test -v -race -cover -coverprofile=coverage.out -ginkgo.v
-    - make test -j $JOBZ
-    - ./bin/lint
+    - make
   post:
     - bash <(curl -s https://codecov.io/bash)
 deployment:
   dev:
-    branch: dev
+    branch: v5.99
     owner: heroku
     commands:
       - gpg --passphrase $HEROKU_WINDOWS_SIGNING_PASS -d resources/deb/key.gpg | gpg --import

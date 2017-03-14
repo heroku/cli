@@ -4,7 +4,6 @@ import (
 	"container/list"
 	"crypto/tls"
 	"crypto/x509"
-	"encoding/json"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -13,11 +12,10 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
-	"strings"
 	"time"
 
-	"github.com/ansel1/merry"
 	"github.com/dghubble/sling"
+	"github.com/go-errors/errors"
 	"github.com/mitchellh/ioprogress"
 	"github.com/ulikunitz/xz"
 )
@@ -42,41 +40,11 @@ func init() {
 	}
 	http.DefaultClient = getClient()
 	apiHTTPClient = getClient()
-	apiHTTPClient.Transport.(*http.Transport).TLSClientConfig.InsecureSkipVerify = !shouldVerifyHost(apiURL())
 }
 
 func useSystemCerts() bool {
 	e := os.Getenv("HEROKU_USE_SYSTEM_CERTS")
 	return e != "false" && e != "0"
-}
-
-// APIRequest is for requests to api.heroku.com
-type APIRequest struct {
-	*sling.Sling
-}
-
-// Auth the API request with a token
-func (api *APIRequest) Auth(token string) *APIRequest {
-	api.Set("Authorization", "Bearer "+token)
-	return api
-}
-
-func apiRequest() *APIRequest {
-	req := sling.New().Client(apiHTTPClient).Base(apiURL())
-	req.Set("User-Agent", version())
-	req.Set("Accept", "application/vnd.heroku+json; version=3")
-	if os.Getenv("HEROKU_HEADERS") != "" {
-		var h map[string]string
-		json.Unmarshal([]byte(os.Getenv("HEROKU_HEADERS")), &h)
-		for k, v := range h {
-			req.Set(k, v)
-		}
-	}
-	return &APIRequest{req}
-}
-
-func shouldVerifyHost(host string) bool {
-	return !(os.Getenv("HEROKU_SSL_VERIFY") == "disable" || strings.HasSuffix(host, "herokudev.com"))
 }
 
 func httpTLSClientConfig() (config *tls.Config) {
@@ -167,5 +135,5 @@ func getHTTPError(rsp *http.Response) error {
 	if rsp.StatusCode >= 200 && rsp.StatusCode < 300 {
 		return nil
 	}
-	return merry.Errorf("HTTP Error: %s %s", rsp.Request.URL, rsp.Status)
+	return errors.Errorf("HTTP Error: %s %s", rsp.Request.URL, rsp.Status)
 }

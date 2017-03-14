@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"os/user"
 	"path/filepath"
@@ -17,23 +16,11 @@ const WINDOWS = "windows"
 // HomeDir is the user's home directory
 var HomeDir = homeDir()
 
-// BinPath is the running executable
-var BinPath = binPath()
-
 // AppDir is the subdirectory the binary is running from
 var AppDir = appDir()
 
-// ConfigHome is XDG_CONFIG_HOME/heroku or equivalent
-var ConfigHome = configHome()
-
 // DataHome is XDG_CONFIG_HOME/heroku or equivalent
 var DataHome = dataHome()
-
-// CacheHome is XDG_CACHE_HOME/heroku or equivalent
-var CacheHome = cacheHome()
-
-// ErrLogPath is the location of the error log
-var ErrLogPath = filepath.Join(CacheHome, "error.log")
 
 func homeDir() string {
 	home := os.Getenv("HOME")
@@ -45,26 +32,10 @@ func homeDir() string {
 	return user.HomeDir
 }
 
-func binPath() string {
-	d, err := osext.Executable()
-	must(err)
-	return d
-}
-
 func appDir() string {
 	d, err := osext.ExecutableFolder()
 	must(err)
 	return filepath.Join(d, "..")
-}
-
-func configHome() string {
-	d := os.Getenv("XDG_CONFIG_HOME")
-	if d == "" {
-		d = filepath.Join(HomeDir, ".config")
-	}
-	d = filepath.Join(d, "heroku")
-	must(mkdirp(d))
-	return d
 }
 
 func dataHome() string {
@@ -76,21 +47,7 @@ func dataHome() string {
 			d = filepath.Join(HomeDir, ".local", "share")
 		}
 	}
-	d = filepath.Join(d, "heroku")
-	must(mkdirp(d))
-	return d
-}
-
-func cacheHome() string {
-	d := os.Getenv("XDG_CACHE_HOME")
-	if d == "" {
-		if runtime.GOOS == WINDOWS && localAppData() != "" {
-			d = localAppData()
-		} else {
-			d = filepath.Join(HomeDir, ".cache")
-		}
-	}
-	d = filepath.Join(d, "heroku")
+	d = filepath.Join(d, "heroku-cli")
 	must(mkdirp(d))
 	return d
 }
@@ -108,15 +65,6 @@ func FileExists(path string) (bool, error) {
 		return false, err
 	}
 	return true, nil
-}
-
-func tmpDir(base string) string {
-	root := filepath.Join(base, "tmp")
-	err := mkdirp(root)
-	must(err)
-	dir, err := ioutil.TempDir(root, "")
-	must(err)
-	return dir
 }
 
 func mkdirp(path string) error {
