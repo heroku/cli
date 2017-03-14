@@ -18,11 +18,6 @@ func init() {
 		Description: "authentication (login/logout)",
 		Commands: []*Command{
 			{
-				Command:     "logout",
-				Description: "clear your local Heroku credentials",
-				Run:         logout,
-			},
-			{
 				Command:     "2fa",
 				Description: "check 2fa status",
 				NeedsAuth:   true,
@@ -48,17 +43,6 @@ func init() {
 			},
 		},
 	},
-		{
-			Name:        "logout",
-			Hidden:      true,
-			Description: "clear your local Heroku credentials",
-			Commands: []*Command{
-				{
-					Description: "clear your local Heroku credentials",
-					Run:         logout,
-				},
-			},
-		},
 		{
 			Name:   "twofactor",
 			Hidden: true,
@@ -244,17 +228,6 @@ func createOauthToken(email, password, secondFactor string) (string, error) {
 		return "", errors.New(doc.Message)
 	}
 	return doc.AccessToken.Token, nil
-}
-
-func logout(ctx *Context) {
-	if os.Getenv("HEROKU_API_KEY") != "" {
-		Warn("HEROKU_API_KEY is set")
-	}
-	netrc := getNetrc()
-	netrc.RemoveMachine(apiHost())
-	netrc.RemoveMachine(httpGitHost())
-	must(netrc.Save())
-	Println("Local credentials cleared.")
 }
 
 func getNetrc() *netrc.Netrc {
