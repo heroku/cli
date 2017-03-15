@@ -8,19 +8,19 @@
   },
   "dependencies": {
     "co": "4.6.0",
-    "heroku-cli-util": "6.1.6"
+    "heroku-cli-util": "6.1.8"
   },
   "devDependencies": {
-    "codeclimate-test-reporter": "0.4.0",
-    "coveralls": "2.11.16",
+    "codeclimate-test-reporter": "^0.4.1",
+    "coveralls": "^2.12.0",
     "mocha": "3.2.0",
     "mocha-junit-reporter": "1.13.0",
-    "nock": "9.0.4",
+    "nock": "^9.0.9",
     "nyc": "10.1.2",
     "proxyquire": "^1.5.0",
     "sinon": "^1.14.1",
-    "standard": "8.6.0",
-    "unexpected": "10.25.0"
+    "standard": "^9.0.1",
+    "unexpected": "^10.26.3"
   },
   "homepage": "https://github.com/heroku/heroku-git",
   "keywords": [
