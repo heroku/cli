@@ -14,5 +14,6 @@ Please refer to [Developing CLI Plugins](https://devcenter.heroku.com/articles/d
 ## Deploy
 
 ```sh
-npm version patch/minor/major
+$ npm version patch/minor/major
+$ npm publish
 ```
