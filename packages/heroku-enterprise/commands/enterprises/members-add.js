@@ -6,7 +6,7 @@ function * membersAdd(context, heroku) {
   let member = context.args.email
   let permissionsString = context.flags.permissions
   let permissions = permissionsString.split(',')
-  let params = { body: { email: member, permissions: permissions } }
+  let params = { body: { user: member, permissions: permissions } }
   let members = yield heroku.get(`/enterprise-accounts/${enterpriseAccount}/members`)
   let req = function() {
     if(members.map((m) => m.user.email).includes(member)) {
