@@ -49,6 +49,9 @@
     "heroku-spaces": "^2.7.3",
     "heroku-status": "3.0.6"
   },
+  "files": [
+    "bin"
+  ],
   "homepage": "https://cli.heroku.com",
   "keywords": [
     "heroku",
