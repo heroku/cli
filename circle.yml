@@ -66,12 +66,12 @@ test:
   post:
     - bash <(curl -s https://codecov.io/bash)
 deployment:
-  dev:
+  v6:
     branch: v5.99
     owner: heroku
     commands:
       - gpg --passphrase $HEROKU_WINDOWS_SIGNING_PASS -d resources/deb/key.gpg | gpg --import
-      - CHANNEL=dev make release -j $JOBZ
+      - CHANNEL=v6 make release -j $JOBZ
   beta:
     branch: master
     owner: heroku
