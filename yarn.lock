@@ -289,9 +289,9 @@ cli-cursor@^2.1.0:
   dependencies:
     restore-cursor "^2.0.0"
 
-cli-engine-command@^2.2.2:
-  version "2.2.2"
-  resolved "https://registry.yarnpkg.com/cli-engine-command/-/cli-engine-command-2.2.2.tgz#49d8d2c4a14be95bd6507f39aa0d9aa477a89805"
+cli-engine-command@^2.2.3:
+  version "2.2.3"
+  resolved "https://registry.yarnpkg.com/cli-engine-command/-/cli-engine-command-2.2.3.tgz#593961b3499422846d8cb940c84fc4c844d58867"
   dependencies:
     ansi-escapes "^1.4.0"
     cardinal "^1.0.0"
@@ -306,12 +306,12 @@ cli-engine-command@^2.2.2:
     string "^3.3.3"
     supports-color "^3.2.3"
 
-cli-engine@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/cli-engine/-/cli-engine-1.2.0.tgz#dd3845176a786e1a9fdf708b57836836f6fa448d"
+cli-engine@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/cli-engine/-/cli-engine-1.2.1.tgz#65bfa2e9b6b06e1b72011374d87b5fecb64274ec"
   dependencies:
     ansi-escapes "1.4.0"
-    cli-engine-command "^2.2.2"
+    cli-engine-command "^2.2.3"
     eslint "3.17.1"
     execa "^0.6.1"
     find-node-modules "^1.0.4"
