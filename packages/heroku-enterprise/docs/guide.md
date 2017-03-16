@@ -5,6 +5,14 @@ teams, and consolidated usage. Enterprise accounts have an account-level
 permission called `manage` that allows a person granted that permission the 
 ability to manage permissions for other account members.
 
+## Getting Started
+
+Make sure you have the `heroku-enterprise` plugin installed:
+
+```sh
+heroku plugins:install heroku-enterprise
+```
+
 ## Creating an Account
 
 To begin, you need a Heroku Enterprise account. To create an enterprise account,
