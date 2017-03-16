@@ -24,6 +24,10 @@ stages:
         shell: /bin/bash
         command: |
           set -exu
-          if [ "${CIRCLE_BRANCH}" == "v6" ]; then
+          TAG=`git describe --exact-match HEAD || echo NOTAG`
+          if [ "${TAG}" != "NOTAG" ]; then
             yarn run release beta
+          fi
+          if [ "${CIRCLE_BRANCH}" == "v6" ]; then
+            yarn run release dev
           fi
