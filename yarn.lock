@@ -306,20 +306,21 @@ cli-engine-command@^2.2.2:
     string "^3.3.3"
     supports-color "^3.2.3"
 
-cli-engine@heroku/cli-engine#c46d6f8:
-  version "1.1.3"
-  resolved "https://codeload.github.com/heroku/cli-engine/tar.gz/c46d6f8"
+cli-engine@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/cli-engine/-/cli-engine-1.2.0.tgz#dd3845176a786e1a9fdf708b57836836f6fa448d"
   dependencies:
     ansi-escapes "1.4.0"
-    cli-engine-command "^2.0.11"
+    cli-engine-command "^2.2.2"
     eslint "3.17.1"
-    execa "0.6.0"
+    execa "^0.6.1"
     find-node-modules "^1.0.4"
     klaw-sync "1.1.2"
+    levenshtein "^1.0.5"
     lodash.maxby "4.6.0"
     lodash.uniqby "^4.7.0"
     moment "2.17.1"
-    rwlockfile "1.3.6"
+    rwlockfile "^1.3.6"
     string "3.3.3"
     tar-stream "1.5.2"
     yarn "0.21.3"

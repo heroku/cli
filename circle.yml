@@ -14,10 +14,6 @@ stages:
         command: |
           set -exu
           yarn
-          cd node_modules/cli-engine
-          yarn
-          yarn run prepare
-          cd ~/cli
           ./bin/run version
           ./bin/run help
       - type: cache-save
