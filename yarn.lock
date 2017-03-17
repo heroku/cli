@@ -236,15 +236,15 @@ here@0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/here/-/here-0.0.2.tgz#69c1af3f02121f3d8788e02e84dc8b3905d71195"
 
-heroku-apps@2.2.4:
-  version "2.2.4"
-  resolved "https://registry.yarnpkg.com/heroku-apps/-/heroku-apps-2.2.4.tgz#11606ab22c4d9700eeb379a1e62ec98fdd8174d3"
+heroku-apps@2.2.5:
+  version "2.2.5"
+  resolved "https://registry.yarnpkg.com/heroku-apps/-/heroku-apps-2.2.5.tgz#fb966e02cf0a54010eae1ec38a9d4aa947c67bd2"
   dependencies:
     bluebird "3.4.7"
     co "4.6.0"
     co-wait "0.0.0"
     filesize "3.5.4"
-    heroku-cli-util "6.1.11"
+    heroku-cli-util "6.1.12"
     inquirer "3.0.1"
     lodash "4.17.4"
     lodash.compact "3.0.1"
@@ -332,9 +332,9 @@ heroku-cli-oauth@2.0.7:
     heroku-cli-util "6.1.6"
     lodash "4.17.4"
 
-heroku-cli-util@6.1.11:
-  version "6.1.11"
-  resolved "https://registry.yarnpkg.com/heroku-cli-util/-/heroku-cli-util-6.1.11.tgz#4e58d0e3d354b98e514ef361ee757615e79877be"
+heroku-cli-util@6.1.12:
+  version "6.1.12"
+  resolved "https://registry.yarnpkg.com/heroku-cli-util/-/heroku-cli-util-6.1.12.tgz#25086c794f110c4f787681e637cb8249a95a0ab2"
   dependencies:
     ansi-escapes "1.4.0"
     cardinal "1.0.0"
