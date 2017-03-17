@@ -9,7 +9,10 @@
   "dependencies": {
     "co": "4.6.0",
     "heroku-cli-util": "6.1.6",
-    "lodash.sortby": "4.7.0"
+    "lodash.foreach": "^4.5.0",
+    "lodash.reduce": "^4.6.0",
+    "lodash.sortby": "^4.7.0",
+    "strftime": "^0.10.0"
   },
   "devDependencies": {
     "chai": "3.5.0",
