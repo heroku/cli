@@ -4,11 +4,21 @@ const fs = Promise.promisifyAll(require('fs'))
 const tmp = Promise.promisifyAll(require('temp').track())
 const gh = require('github-url-to-object')
 
-function runGit () {
-  const git = spawn('git', Array.from(arguments))
+const NOT_A_GIT_REPOSITORY = 'Not a git repository'
+const RUN_IN_A_GIT_REPOSITORY = 'Please run this command from the directory containing your project\'s git repo'
+
+function runGit (...args) {
+  const git = spawn('git', args)
 
   return new Promise((resolve, reject) => {
-    git.on('exit', reject)
+    git.on('exit', (error) => {
+      const stderr = git.stderr.read().toString()
+      if (stderr.includes(NOT_A_GIT_REPOSITORY)) {
+        error = RUN_IN_A_GIT_REPOSITORY
+      }
+      reject(error)
+    })
+
     git.stdout.on('data', (data) => resolve(data.toString().trim()))
   })
 }
