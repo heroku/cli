@@ -15,7 +15,7 @@
     "heroku-pipelines": "1.4.0",
     "heroku-redis": "1.2.9",
     "heroku-run": "3.4.4",
-    "heroku-spaces": "2.7.3",
+    "heroku-spaces": "2.8.0",
     "heroku-status": "3.0.6"
   }
 }
