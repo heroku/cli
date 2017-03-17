@@ -103,3 +103,20 @@ Team                                 Enterprise Account
 acme-web                             acme
 acme-api                             acme
 ```
+
+## Usage
+
+Once teams are setup, usage can be reviewed for an enterprise account by 
+providing the name of the account. The following displays the usage for the
+acme account:
+
+```
+$ heroku enterprises:usage --enterprise-account acme
+Account         Team              App                   Addon Usage  Connect Usage  Data Usage  Dyno Usage  Partner Usage
+──────────────  ────────────────  ────────────────────  ───────────  ─────────────  ──────────  ──────────  ─────────────
+acme            acme-web          acme-web-ui           0            0              0           0.516       0
+acme            acme-web          acme-web-cache        465          0              465         0           0
+acme            acme-web          acme-web-assets       0            0              0           0.516       0
+acme            acmd-api          acme-api-core         0            0              0           0.516       0
+acme            acmd-api          acme-api-jobs         0            0              0           0.516       0
+```
