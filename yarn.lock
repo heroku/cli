@@ -289,14 +289,14 @@ cli-cursor@^2.1.0:
   dependencies:
     restore-cursor "^2.0.0"
 
-cli-engine-command@^2.2.3:
-  version "2.2.3"
-  resolved "https://registry.yarnpkg.com/cli-engine-command/-/cli-engine-command-2.2.3.tgz#593961b3499422846d8cb940c84fc4c844d58867"
+cli-engine-command@2.2.4:
+  version "2.2.4"
+  resolved "https://registry.yarnpkg.com/cli-engine-command/-/cli-engine-command-2.2.4.tgz#5fec4faec100a3b7b437e5bc9d8ce543c27f68c5"
   dependencies:
     ansi-escapes "^1.4.0"
     cardinal "^1.0.0"
     chalk "^1.1.3"
-    fs-extra "^2.1.0"
+    fs-extra "2.1.2"
     got "^6.7.1"
     http-call "^1.0.15"
     jest-validate "^19.0.2"
@@ -306,15 +306,16 @@ cli-engine-command@^2.2.3:
     string "^3.3.3"
     supports-color "^3.2.3"
 
-cli-engine@^1.2.1:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/cli-engine/-/cli-engine-1.2.1.tgz#65bfa2e9b6b06e1b72011374d87b5fecb64274ec"
+cli-engine@2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/cli-engine/-/cli-engine-2.0.0.tgz#2be4aab68f297e8d0c452c8d24d802d049bc9f5c"
   dependencies:
     ansi-escapes "1.4.0"
-    cli-engine-command "^2.2.3"
-    eslint "3.17.1"
+    cli-engine-command "2.2.4"
+    eslint "3.18.0"
     execa "^0.6.1"
     find-node-modules "^1.0.4"
+    fs-extra "2.1.2"
     klaw-sync "1.1.2"
     levenshtein "^1.0.5"
     lodash.maxby "4.6.0"
@@ -378,7 +379,7 @@ concat-map@0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/concat-map/-/concat-map-0.0.1.tgz#d8a96bd77fd68df7793a73036a3ba0d5405d477b"
 
-concat-stream@^1.4.6:
+concat-stream@^1.5.2:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/concat-stream/-/concat-stream-1.6.0.tgz#0aac662fd52be78964d5532f694784e70110acf7"
   dependencies:
@@ -503,9 +504,9 @@ detect-indent@^5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/detect-indent/-/detect-indent-5.0.0.tgz#3871cc0a6a002e8c3e5b3cf7f336264675f06b9d"
 
-doctrine@^1.2.2:
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/doctrine/-/doctrine-1.5.0.tgz#379dce730f6166f76cefa4e6707a159b02c5a6fa"
+doctrine@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/doctrine/-/doctrine-2.0.0.tgz#c73d8d2909d22291e1a007a395804da8b665fe63"
   dependencies:
     esutils "^2.0.2"
     isarray "^1.0.0"
@@ -595,17 +596,18 @@ escope@^3.6.0:
     esrecurse "^4.1.0"
     estraverse "^4.1.1"
 
-eslint@3.17.1:
-  version "3.17.1"
-  resolved "https://registry.yarnpkg.com/eslint/-/eslint-3.17.1.tgz#b80ae12d9c406d858406fccda627afce33ea10ea"
+eslint@3.18.0:
+  version "3.18.0"
+  resolved "https://registry.yarnpkg.com/eslint/-/eslint-3.18.0.tgz#647e985c4ae71502d20ac62c109f66d5104c8a4b"
   dependencies:
     babel-code-frame "^6.16.0"
     chalk "^1.1.3"
-    concat-stream "^1.4.6"
+    concat-stream "^1.5.2"
     debug "^2.1.1"
-    doctrine "^1.2.2"
+    doctrine "^2.0.0"
     escope "^3.6.0"
     espree "^3.4.0"
+    esquery "^1.0.0"
     estraverse "^4.2.0"
     esutils "^2.0.2"
     file-entry-cache "^2.0.0"
@@ -649,6 +651,12 @@ esprima@~3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/esprima/-/esprima-3.0.0.tgz#53cf247acda77313e551c3aa2e73342d3fb4f7d9"
 
+esquery@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/esquery/-/esquery-1.0.0.tgz#cfba8b57d7fba93f17298a8a006a04cda13d80fa"
+  dependencies:
+    estraverse "^4.0.0"
+
 esrecurse@^4.1.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/esrecurse/-/esrecurse-4.1.0.tgz#4713b6536adf7f2ac4f327d559e7756bff648220"
@@ -656,7 +664,7 @@ esrecurse@^4.1.0:
     estraverse "~4.1.0"
     object-assign "^4.0.1"
 
-estraverse@^4.1.1, estraverse@^4.2.0:
+estraverse@^4.0.0, estraverse@^4.1.1, estraverse@^4.2.0:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/estraverse/-/estraverse-4.2.0.tgz#0dee3fed31fcd469618ce7342099fc1afa0bdb13"
 
@@ -850,9 +858,9 @@ fs-exists-sync@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/fs-exists-sync/-/fs-exists-sync-0.1.0.tgz#982d6893af918e72d08dec9e8673ff2b5a8d6add"
 
-fs-extra@^2.1.0:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-2.1.1.tgz#f8a34cc890522fc233896f34944ff2e35948959f"
+fs-extra@2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-2.1.2.tgz#046c70163cef9aad46b0e4a7fa467fb22d71de35"
   dependencies:
     graceful-fs "^4.1.2"
     jsonfile "^2.1.0"
@@ -1020,15 +1028,15 @@ here@0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/here/-/here-0.0.2.tgz#69c1af3f02121f3d8788e02e84dc8b3905d71195"
 
-heroku-apps@^2.2.3:
-  version "2.2.3"
-  resolved "https://registry.yarnpkg.com/heroku-apps/-/heroku-apps-2.2.3.tgz#da0222fe084e6d37860feddeff4bcaa45aaf92ec"
+heroku-apps@2.2.5:
+  version "2.2.5"
+  resolved "https://registry.yarnpkg.com/heroku-apps/-/heroku-apps-2.2.5.tgz#fb966e02cf0a54010eae1ec38a9d4aa947c67bd2"
   dependencies:
     bluebird "3.4.7"
     co "4.6.0"
     co-wait "0.0.0"
     filesize "3.5.4"
-    heroku-cli-util "6.1.8"
+    heroku-cli-util "6.1.12"
     inquirer "3.0.1"
     lodash "4.17.4"
     lodash.compact "3.0.1"
@@ -1116,6 +1124,33 @@ heroku-cli-oauth@2.0.7:
     heroku-cli-util "6.1.6"
     lodash "4.17.4"
 
+heroku-cli-util@6.1.12:
+  version "6.1.12"
+  resolved "https://registry.yarnpkg.com/heroku-cli-util/-/heroku-cli-util-6.1.12.tgz#25086c794f110c4f787681e637cb8249a95a0ab2"
+  dependencies:
+    ansi-escapes "1.4.0"
+    cardinal "1.0.0"
+    chalk "^1.1.3"
+    co "4.6.0"
+    got "^6.3.0"
+    heroku-client "3.0.2"
+    lodash.ary "4.1.1"
+    lodash.defaults "4.2.0"
+    lodash.get "4.4.2"
+    lodash.identity "3.0.0"
+    lodash.keys "4.2.0"
+    lodash.mapvalues "4.6.0"
+    lodash.noop "3.0.1"
+    lodash.partial "4.2.1"
+    lodash.pickby "4.6.0"
+    lodash.property "4.4.2"
+    lodash.repeat "4.1.0"
+    lodash.result "4.5.2"
+    netrc-parser "2.0.1"
+    opn "^3.0.3"
+    supports-color "^3.1.2"
+    tunnel-agent "^0.4.3"
+
 heroku-cli-util@6.1.4:
   version "6.1.4"
   resolved "https://registry.yarnpkg.com/heroku-cli-util/-/heroku-cli-util-6.1.4.tgz#4bc98647c5d80370aae189b16b016d69b6ec4d32"
@@ -1164,33 +1199,6 @@ heroku-cli-util@6.1.6:
     lodash.property "4.4.2"
     lodash.repeat "4.1.0"
     lodash.result "4.5.2"
-    opn "^3.0.3"
-    supports-color "^3.1.2"
-    tunnel-agent "^0.4.3"
-
-heroku-cli-util@6.1.8:
-  version "6.1.8"
-  resolved "https://registry.yarnpkg.com/heroku-cli-util/-/heroku-cli-util-6.1.8.tgz#86e9b1475537ff88a0dffd8f8497dfe50872a066"
-  dependencies:
-    ansi-escapes "1.4.0"
-    cardinal "1.0.0"
-    chalk "^1.1.3"
-    co "4.6.0"
-    got "^6.3.0"
-    heroku-client "3.0.2"
-    lodash.ary "4.1.1"
-    lodash.defaults "4.2.0"
-    lodash.get "4.4.2"
-    lodash.identity "3.0.0"
-    lodash.keys "4.2.0"
-    lodash.mapvalues "4.6.0"
-    lodash.noop "3.0.1"
-    lodash.partial "4.2.1"
-    lodash.pickby "4.6.0"
-    lodash.property "4.4.2"
-    lodash.repeat "4.1.0"
-    lodash.result "4.5.2"
-    netrc-parser "2.0.1"
     opn "^3.0.3"
     supports-color "^3.1.2"
     tunnel-agent "^0.4.3"
@@ -1307,13 +1315,16 @@ heroku-run@3.4.4:
     heroku-cli-util "6.1.6"
     shellwords "0.1.0"
 
-heroku-spaces@^2.7.3:
-  version "2.7.3"
-  resolved "https://registry.yarnpkg.com/heroku-spaces/-/heroku-spaces-2.7.3.tgz#931c8ead2410888f6527e4a146ec75c2ca55cab6"
+heroku-spaces@2.8.0:
+  version "2.8.0"
+  resolved "https://registry.yarnpkg.com/heroku-spaces/-/heroku-spaces-2.8.0.tgz#90bcc6d3bc290f652ffe2c02a268b898173a3b95"
   dependencies:
     co "4.6.0"
     heroku-cli-util "6.1.6"
-    lodash.sortby "4.7.0"
+    lodash.foreach "^4.5.0"
+    lodash.reduce "^4.6.0"
+    lodash.sortby "^4.7.0"
+    strftime "^0.10.0"
 
 heroku-status@3.0.6:
   version "3.0.6"
@@ -1747,7 +1758,7 @@ lodash.flatten@4.4.0:
   version "4.4.0"
   resolved "https://registry.yarnpkg.com/lodash.flatten/-/lodash.flatten-4.4.0.tgz#f31c22225a9632d2bbf8e4addbef240aa765a61f"
 
-lodash.foreach@4.5.0:
+lodash.foreach@4.5.0, lodash.foreach@^4.5.0:
   version "4.5.0"
   resolved "https://registry.yarnpkg.com/lodash.foreach/-/lodash.foreach-4.5.0.tgz#1a6a35eace401280c7f06dddec35165ab27e3e53"
 
@@ -1827,7 +1838,7 @@ lodash.property@4.4.2:
   version "4.4.2"
   resolved "https://registry.yarnpkg.com/lodash.property/-/lodash.property-4.4.2.tgz#da07124821c6409d025f30db8df851314515bffe"
 
-lodash.reduce@4.6.0:
+lodash.reduce@4.6.0, lodash.reduce@^4.6.0:
   version "4.6.0"
   resolved "https://registry.yarnpkg.com/lodash.reduce/-/lodash.reduce-4.6.0.tgz#f1ab6b839299ad48f784abbf476596f03b914d3b"
 
@@ -1851,7 +1862,7 @@ lodash.some@4.6.0:
   version "4.6.0"
   resolved "https://registry.yarnpkg.com/lodash.some/-/lodash.some-4.6.0.tgz#1bb9f314ef6b8baded13b549169b2a945eb68e4d"
 
-lodash.sortby@4.7.0:
+lodash.sortby@4.7.0, lodash.sortby@^4.7.0:
   version "4.7.0"
   resolved "https://registry.yarnpkg.com/lodash.sortby/-/lodash.sortby-4.7.0.tgz#edd14c824e2cc9c1e0b0a1b42bb5210516a42438"
 
@@ -2600,7 +2611,7 @@ streamsearch@~0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/streamsearch/-/streamsearch-0.1.2.tgz#808b9d0e56fc273d809ba57338e929919a1a9f1a"
 
-strftime@0.10.0:
+strftime@0.10.0, strftime@^0.10.0:
   version "0.10.0"
   resolved "https://registry.yarnpkg.com/strftime/-/strftime-0.10.0.tgz#b3f0fa419295202a5a289f6d6be9f4909a617193"
 
