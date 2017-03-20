@@ -11,12 +11,17 @@ function runGit (...args) {
   const git = spawn('git', args)
 
   return new Promise((resolve, reject) => {
-    git.on('exit', (error) => {
-      const stderr = git.stderr.read().toString()
-      if (stderr.includes(NOT_A_GIT_REPOSITORY)) {
-        error = RUN_IN_A_GIT_REPOSITORY
+    git.on('exit', (exitCode) => {
+      if (exitCode === 0) {
+        return
       }
-      reject(error)
+
+      const stderr = git.stderr.read() || ''
+      if (stderr.toString().includes(NOT_A_GIT_REPOSITORY)) {
+        reject(RUN_IN_A_GIT_REPOSITORY)
+        return
+      }
+      reject(exitCode)
     })
 
     git.stdout.on('data', (data) => resolve(data.toString().trim()))
