@@ -1,7 +1,7 @@
 {
   "name": "heroku-apps",
   "description": "Heroku CLI plugin to manage apps.",
-  "version": "2.2.3",
+  "version": "2.2.5",
   "author": "Jeff Dickey (@dickeyxxx)",
   "bugs": {
     "url": "https://github.com/heroku/heroku-apps/issues"
@@ -11,7 +11,7 @@
     "co": "4.6.0",
     "co-wait": "0.0.0",
     "filesize": "3.5.4",
-    "heroku-cli-util": "6.1.8",
+    "heroku-cli-util": "6.1.12",
     "inquirer": "3.0.1",
     "lodash": "4.17.4",
     "lodash.compact": "3.0.1",
