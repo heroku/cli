@@ -9,6 +9,10 @@ function type (f) {
     return 'Private Space App'
   }
 
+  if (f.ssl_cert && f.ssl_cert.acm) {
+    return 'ACM'
+  }
+
   switch (f._meta.flag) {
     case 'sni':
       return 'SNI'

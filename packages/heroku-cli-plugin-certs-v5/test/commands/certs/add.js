@@ -84,7 +84,7 @@ describe('heroku certs:add', function () {
 Certificate details:
 ${certificateDetails}
 
-=== Your certificate has been added successfully.  Add a custom domain to your app by running heroku domains:add <yourdomain.com>
+=== Your certificate has been added successfully.  Add a custom domain to your app by running heroku domains:add <yourdomain.com>
 `)
         /* eslint-enable no-irregular-whitespace */
       })
@@ -138,7 +138,7 @@ ${certificateDetails}
 Certificate details:
 ${certificateDetails}
 
-=== Your certificate has been added successfully.  Add a custom domain to your app by running heroku domains:add <yourdomain.com>
+=== Your certificate has been added successfully.  Add a custom domain to your app by running heroku domains:add <yourdomain.com>
 `)
     })
       /* eslint-enable no-irregular-whitespace */
@@ -188,7 +188,7 @@ ${certificateDetails}
 Certificate details:
 ${certificateDetails}
 
-=== Your certificate has been added successfully.  Add a custom domain to your app by running heroku domains:add <yourdomain.com>
+=== Your certificate has been added successfully.  Add a custom domain to your app by running heroku domains:add <yourdomain.com>
 `)
     })
       /* eslint-enable no-irregular-whitespace */
@@ -285,7 +285,7 @@ ${certificateDetails}
 Certificate details:
 ${certificateDetails}
 
-=== Your certificate has been added successfully.  Add a custom domain to your app by running heroku domains:add <yourdomain.com>
+=== Your certificate has been added successfully.  Add a custom domain to your app by running heroku domains:add <yourdomain.com>
 `)
       /* eslint-enable no-irregular-whitespace */
     })
@@ -372,7 +372,7 @@ ${certificateDetails}
 Certificate details:
 ${certificateDetails}
 
-=== Your certificate has been added successfully.  Add a custom domain to your app by running heroku domains:add <yourdomain.com>
+=== Your certificate has been added successfully.  Add a custom domain to your app by running heroku domains:add <yourdomain.com>
 `)
     })
       /* eslint-enable no-irregular-whitespace */
@@ -412,7 +412,7 @@ ${certificateDetails}
 Certificate details:
 ${certificateDetails}
 
-=== Your certificate has been added successfully.  Add a custom domain to your app by running heroku domains:add <yourdomain.com>
+=== Your certificate has been added successfully.  Add a custom domain to your app by running heroku domains:add <yourdomain.com>
 `)
     })
       /* eslint-enable no-irregular-whitespace */
@@ -816,7 +816,7 @@ SSL certificate is not trusted.
 === The following common names are for hosts that are managed by Heroku
 tokyo-1050.herokuapp.com
 
-=== Your certificate has been added successfully.  Add a custom domain to your app by running heroku domains:add <yourdomain.com>
+=== Your certificate has been added successfully.  Add a custom domain to your app by running heroku domains:add <yourdomain.com>
 `)
         /* eslint-enable no-trailing-spaces */
         /* eslint-enable no-irregular-whitespace */
@@ -896,7 +896,7 @@ Starts At:      2012-08-01 21:34 UTC
 Subject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
 SSL certificate is self signed.
 
-=== Your certificate has been added successfully.  Add a custom domain to your app by running heroku domains:add <yourdomain.com>
+=== Your certificate has been added successfully.  Add a custom domain to your app by running heroku domains:add <yourdomain.com>
 `)
         /* eslint-enable no-irregular-whitespace */
         /* eslint-enable no-trailing-spaces */
@@ -1009,7 +1009,7 @@ Starts At:      2012-08-01 21:34 UTC
 Subject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
 SSL certificate is self signed.
 
-=== Your certificate has been added successfully.  Add a custom domain to your app by running heroku domains:add <yourdomain.com>
+=== Your certificate has been added successfully.  Add a custom domain to your app by running heroku domains:add <yourdomain.com>
 `)
         /* eslint-disable no-irregular-whitespace */
         /* eslint-enable no-trailing-spaces */
@@ -1185,7 +1185,7 @@ SSL certificate is self signed.
 Certificate details:
 ${certificateDetails}
 
-=== Your certificate has been added successfully.  Add a custom domain to your app by running heroku domains:add <yourdomain.com>
+=== Your certificate has been added successfully.  Add a custom domain to your app by running heroku domains:add <yourdomain.com>
 `)
     })
   })
@@ -1216,7 +1216,7 @@ ${certificateDetails}
 Certificate details:
 ${certificateDetails}
 
-=== Your certificate has been added successfully.  Add a custom domain to your app by running heroku domains:add <yourdomain.com>
+=== Your certificate has been added successfully.  Add a custom domain to your app by running heroku domains:add <yourdomain.com>
 `)
     })
   })

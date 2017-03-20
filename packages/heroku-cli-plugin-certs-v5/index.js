@@ -19,6 +19,13 @@ let commands = [
   require('./commands/certs/update.js')
 ]
 
+let auto = [
+  require('./commands/certs/auto.js'),
+  require('./commands/certs/auto/enable.js'),
+  require('./commands/certs/auto/disable.js'),
+  require('./commands/certs/auto/refresh.js')
+]
+
 function deprecate (cmd) {
   let deprecatedRun = function (context) {
     let cli = require('heroku-cli-util')
@@ -30,4 +37,4 @@ function deprecate (cmd) {
   return Object.assign({}, cmd, {topic: '_certs', hidden: true, run: deprecatedRun})
 }
 
-exports.commands = commands.concat(commands.map((cmd) => deprecate(cmd)))
+exports.commands = commands.concat(commands.map((cmd) => deprecate(cmd))).concat(auto)

@@ -4,7 +4,6 @@ let co = require('co')
 let cli = require('heroku-cli-util')
 let _ = require('lodash')
 let inquirer = require('inquirer')
-let psl = require('psl')
 
 let error = require('../../lib/error.js')
 let findMatch = require('../../lib/find_match.js')
@@ -14,6 +13,8 @@ let certificateDetails = require('../../lib/certificate_details.js')
 let isWildcard = require('../../lib/is_wildcard.js')
 let isWildcardMatch = require('../../lib/is_wildcard_match.js')
 let getCertAndKey = require('../../lib/get_cert_and_key.js')
+
+let {waitForDomains, printDomains} = require('../../lib/domains')
 
 function Domains (domains) {
   this.domains = domains
@@ -97,45 +98,10 @@ function * getChoices (certDomains, newDomains, existingDomains, context) {
   }
 }
 
-function * getDomains (context, heroku) {
-  function someNull (domains) {
-    return _.some(domains, (domain) => domain.kind === 'custom' && !domain.cname)
-  }
-
-  function apiRequest (context, heroku) {
-    return heroku.request({
-      path: `/apps/${context.app}/domains`
-    })
-  }
-
-  let apiDomains = yield apiRequest(context, heroku)
-
-  if (someNull(apiDomains)) {
-    yield cli.action('Waiting for stable domains to be created', co(function * () {
-      const wait = require('co-wait')
-
-      let i = 0
-      do {
-        // trying 30 times was easier for me to test that setTimeout
-        if (i >= 30) {
-          throw new Error('Timed out while waiting for stable domains to be created')
-        }
-
-        yield wait(1000)
-        apiDomains = yield apiRequest(context, heroku)
-
-        i++
-      } while (someNull(apiDomains))
-    }))
-  }
-
-  return apiDomains
-}
-
 function * addDomains (context, heroku, meta, cert) {
   let certDomains = cert.ssl_cert.cert_domains
 
-  let apiDomains = yield getDomains(context, heroku)
+  let apiDomains = yield waitForDomains(context, heroku)
 
   let existingDomains = []
   let newDomains = []
@@ -211,10 +177,6 @@ function * addDomains (context, heroku, meta, cert) {
 
   cli.log()
 
-  let type = function (domain) {
-    return psl.parse(domain.hostname).subdomain === null ? 'ALIAS/ANAME' : 'CNAME'
-  }
-
   let hasWildcard = _.some(certDomains, (certDomain) => isWildcard(certDomain))
 
   let domainsTable = apiDomains.concat(domains.added)
@@ -227,28 +189,10 @@ function * addDomains (context, heroku, meta, cert) {
         }
       }
 
-      return Object.assign({}, domain, {type: type(domain), warning: warning})
+      return Object.assign({}, domain, {warning: warning})
     })
 
-  if (domainsTable.length === 0) {
-    /* eslint-disable no-irregular-whitespace */
-    cli.styledHeader(`Your certificate has been added successfully.  Add a custom domain to your app by running ${cli.color.app('heroku domains:add <yourdomain.com>')}`)
-    /* eslint-enable no-irregular-whitespace */
-  } else {
-    cli.styledHeader("Your certificate has been added successfully.  Update your application's DNS settings as follows")
-
-    let columns = [
-        {label: 'Domain', key: 'hostname'},
-        {label: 'Record Type', key: 'type'},
-        {label: 'DNS Target', key: 'cname'}
-    ]
-
-    if (_.some(domainsTable, (domain) => domain.warning)) {
-      columns.push({label: 'Warnings', key: 'warning'})
-    }
-
-    cli.table(domainsTable, {columns: columns})
-  }
+  printDomains(domainsTable, 'Your certificate has been added successfully.')
 
   if (domains.hasFailed) {
     error.exit(2)

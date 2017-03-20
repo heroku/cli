@@ -10,6 +10,7 @@ let endpoint2 = require('../../stubs/sni-endpoints.js').endpoint2
 let endpointStables = require('../../stubs/sni-endpoints.js').endpoint_stables
 let endpointWildcard = require('../../stubs/sni-endpoints.js').endpoint_wildcard
 let endpointWildcardBug = require('../../stubs/sni-endpoints.js').endpoint_wildcard_bug
+let endpointAcm = require('../../stubs/sni-endpoints.js').endpoint_acm
 
 let endpointSpace = require('../../stubs/ssl-endpoints.js').endpoint_space
 
@@ -132,6 +133,38 @@ akita-7777  akita-7777.herokussl.com  heroku.com                                
 `Name        Endpoint                               Common Name(s)  Expires               Trusted  Type
 ──────────  ─────────────────────────────────────  ──────────────  ────────────────────  ───────  ─────────────────
 tokyo-1050  tokyo-1050.japan-4321.herokuspace.com  heroku.com      2013-08-01 21:34 UTC  True     Private Space App
+`)
+      /* eslint-enable no-trailing-spaces */
+    })
+  })
+
+  it('# shows ACM for the type when acm true', function () {
+    let mockSni = nock('https://api.heroku.com', {
+      reqheaders: {'Accept': 'application/vnd.heroku+json; version=3.sni_ssl_cert'}
+    })
+      .get('/apps/example/sni-endpoints')
+      .reply(200, [endpointAcm])
+
+    let mockSsl = nock('https://api.heroku.com', {
+      reqheaders: {'Accept': 'application/vnd.heroku+json; version=3.ssl_cert'}
+    })
+      .get('/apps/example/ssl-endpoints')
+      .reply(200, [])
+
+    let mockDomains = nock('https://api.heroku.com')
+      .get('/apps/example/domains')
+      .reply(200, [])
+
+    return certs.run({app: 'example'}).then(function () {
+      mockSni.done()
+      mockSsl.done()
+      mockDomains.done()
+      expect(cli.stderr).to.equal('')
+      /* eslint-disable no-trailing-spaces */
+      expect(cli.stdout).to.equal(
+`Name        Common Name(s)  Expires               Trusted  Type
+──────────  ──────────────  ────────────────────  ───────  ────
+tokyo-1050  heroku.com      2013-08-01 21:34 UTC  True     ACM
 `)
       /* eslint-enable no-trailing-spaces */
     })
