@@ -10,13 +10,22 @@ function * run (context, heroku) {
   const countBy = require('lodash.countby')
 
   function getInfo (app) {
-    return {
+    let promises = {
       addons: heroku.get(`/apps/${app}/addons`),
-      app: heroku.get(context.flags.extended ? `/apps/${app}?extended=true` : `/apps/${app}`),
+      app: heroku.request({
+        path: `/apps/${app}`,
+        headers: {'Accept': 'application/vnd.heroku+json; version=3.cedar-acm'}
+      }),
       dynos: heroku.get(`/apps/${app}/dynos`).catch(() => []),
       collaborators: heroku.get(`/apps/${app}/collaborators`).catch(() => []),
       pipeline: heroku.get(`/apps/${app}/pipeline-couplings`).catch(() => null)
     }
+
+    if (context.flags.extended) {
+      promises.appExtended = heroku.get(`/apps/${app}?extended=true`)
+    }
+
+    return promises
   }
 
   let app = context.args.app || context.app
@@ -41,6 +50,7 @@ function * run (context, heroku) {
     if (info.app.space) data['Space'] = info.app.space.name
     if (info.pipeline) data['Pipeline'] = `${info.pipeline.pipeline.name} - ${info.pipeline.stage}`
 
+    data['ACM'] = info.app.acm
     data['Git URL'] = info.app.git_url
     data['Web URL'] = info.app.web_url
     data['Repo Size'] = filesize(info.app.repo_size, {round: 0})
@@ -54,8 +64,8 @@ function * run (context, heroku) {
     cli.styledObject(data)
 
     if (context.flags.extended) {
-      console.log('\n\n--- Extended Information ---\n\n')
-      cli.debug(info.app.extended)
+      cli.log('\n\n--- Extended Information ---\n\n')
+      cli.log(util.inspect(info.appExtended.extended))
     }
   }
 
@@ -63,6 +73,7 @@ function * run (context, heroku) {
     function print (k, v) {
       cli.log(`${S(k).underscore()}=${v}`)
     }
+    print('acm', info.app.acm)
     print('addons', addons)
     print('collaborators', collaborators)
 
