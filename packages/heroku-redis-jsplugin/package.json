@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "co": "4.6.0",
-    "heroku-cli-util": "6.1.6",
+    "heroku-cli-util": "6.1.13",
     "heroku-client": "2.4.0",
     "ioredis": "1.9.0",
     "ssh2": "0.4.11"
