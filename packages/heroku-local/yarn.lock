@@ -531,16 +531,16 @@ has-flag@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/has-flag/-/has-flag-1.0.0.tgz#9d9e793165ce017a00f00418c43f942a7b1d11fa"
 
-heroku-cli-util@6.1.4:
-  version "6.1.4"
-  resolved "https://registry.yarnpkg.com/heroku-cli-util/-/heroku-cli-util-6.1.4.tgz#4bc98647c5d80370aae189b16b016d69b6ec4d32"
+heroku-cli-util@6.1.13:
+  version "6.1.13"
+  resolved "https://registry.yarnpkg.com/heroku-cli-util/-/heroku-cli-util-6.1.13.tgz#a4e81b5fe54faa85e79145399297c18dea3d873b"
   dependencies:
     ansi-escapes "1.4.0"
     cardinal "1.0.0"
     chalk "^1.1.3"
     co "4.6.0"
     got "^6.3.0"
-    heroku-client "3.0.1"
+    heroku-client "3.0.2"
     lodash.ary "4.1.1"
     lodash.defaults "4.2.0"
     lodash.get "4.4.2"
@@ -553,13 +553,14 @@ heroku-cli-util@6.1.4:
     lodash.property "4.4.2"
     lodash.repeat "4.1.0"
     lodash.result "4.5.2"
+    netrc-parser "2.0.1"
     opn "^3.0.3"
     supports-color "^3.1.2"
     tunnel-agent "^0.4.3"
 
-heroku-client@3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/heroku-client/-/heroku-client-3.0.1.tgz#9c6a3c54ceeb805b45c3833926bf8ef0d1fb7ca5"
+heroku-client@3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/heroku-client/-/heroku-client-3.0.2.tgz#7e06f303ff18f7a0731725dcccbe210b76198657"
   dependencies:
     debug "^2.2.0"
     is-retry-allowed "^1.0.0"
@@ -719,6 +720,10 @@ levn@^0.3.0, levn@~0.3.0:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
 
+lex@^1.7.9:
+  version "1.7.9"
+  resolved "https://registry.yarnpkg.com/lex/-/lex-1.7.9.tgz#5d5636ccef574348362938b79a47f0eed8ed0d43"
+
 lodash.ary@4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/lodash.ary/-/lodash.ary-4.1.1.tgz#66065fa91bacc7a034d9c8fce52f83d3c7e40212"
@@ -810,6 +815,12 @@ mute-stream@0.0.5:
 natural-compare@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/natural-compare/-/natural-compare-1.4.0.tgz#4abebfeed7541f2c27acfb29bdbbd15c8d5ba4f7"
+
+netrc-parser@2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/netrc-parser/-/netrc-parser-2.0.1.tgz#bd1d8b1eaf9555d4cceb051b74da1ab0a018e440"
+  dependencies:
+    lex "^1.7.9"
 
 number-is-nan@^1.0.0:
   version "1.0.1"
