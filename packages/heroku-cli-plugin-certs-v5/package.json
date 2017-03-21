@@ -9,7 +9,7 @@
   "dependencies": {
     "co": "4.6.0",
     "co-wait": "0.0.0",
-    "heroku-cli-util": "6.1.6",
+    "heroku-cli-util": "6.1.13",
     "inquirer": "3.0.1",
     "lodash": "4.17.4",
     "moment": "2.17.1",
