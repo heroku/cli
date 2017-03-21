@@ -50,7 +50,7 @@ function * run (context, heroku) {
     if (info.app.space) data['Space'] = info.app.space.name
     if (info.pipeline) data['Pipeline'] = `${info.pipeline.pipeline.name} - ${info.pipeline.stage}`
 
-    data['ACM'] = info.app.acm
+    data['Auto Cert Mgmt'] = info.app.acm
     data['Git URL'] = info.app.git_url
     data['Web URL'] = info.app.web_url
     data['Repo Size'] = filesize(info.app.repo_size, {round: 0})
@@ -73,7 +73,7 @@ function * run (context, heroku) {
     function print (k, v) {
       cli.log(`${S(k).underscore()}=${v}`)
     }
-    print('acm', info.app.acm)
+    print('auto_cert_mgmt', info.app.acm)
     print('addons', addons)
     print('collaborators', collaborators)
 

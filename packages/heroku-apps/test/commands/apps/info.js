@@ -55,20 +55,20 @@ describe('apps:info', () => {
     return cmd.run({app: 'myapp', args: {}, flags: {}})
       .then(() => expect(cli.stderr).to.equal(''))
       .then(() => expect(cli.stdout).to.equal(`=== myapp
-ACM:           true
-Addons:        heroku-redis
-               papertrail
-Collaborators: foo2@foo.com
-Database Size: 1000 B
-Dynos:         web: 1
-Git URL:       https://git.heroku.com/myapp
-Owner:         foo@foo.com
-Region:        eu
-Repo Size:     1000 B
-Slug Size:     1000 B
-Space:         myspace
-Stack:         cedar-14
-Web URL:       https://myapp.herokuapp.com
+Addons:         heroku-redis
+                papertrail
+Auto Cert Mgmt: true
+Collaborators:  foo2@foo.com
+Database Size:  1000 B
+Dynos:          web: 1
+Git URL:        https://git.heroku.com/myapp
+Owner:          foo@foo.com
+Region:         eu
+Repo Size:      1000 B
+Slug Size:      1000 B
+Space:          myspace
+Stack:          cedar-14
+Web URL:        https://myapp.herokuapp.com
 `))
       .then(() => appApi.done())
       .then(() => api.done())
@@ -87,20 +87,20 @@ Web URL:       https://myapp.herokuapp.com
     return cmd.run({app: 'myapp', args: {}, flags: {extended: true}})
       .then(() => expect(cli.stderr).to.equal(''))
       .then(() => expect(cli.stdout).to.equal(`=== myapp
-ACM:           true
-Addons:        heroku-redis
-               papertrail
-Collaborators: foo2@foo.com
-Database Size: 1000 B
-Dynos:         web: 1
-Git URL:       https://git.heroku.com/myapp
-Owner:         foo@foo.com
-Region:        eu
-Repo Size:     1000 B
-Slug Size:     1000 B
-Space:         myspace
-Stack:         cedar-14
-Web URL:       https://myapp.herokuapp.com
+Addons:         heroku-redis
+                papertrail
+Auto Cert Mgmt: true
+Collaborators:  foo2@foo.com
+Database Size:  1000 B
+Dynos:          web: 1
+Git URL:        https://git.heroku.com/myapp
+Owner:          foo@foo.com
+Region:         eu
+Repo Size:      1000 B
+Slug Size:      1000 B
+Space:          myspace
+Stack:          cedar-14
+Web URL:        https://myapp.herokuapp.com
 
 
 --- Extended Information ---
@@ -125,20 +125,20 @@ Web URL:       https://myapp.herokuapp.com
     return cmd.run(context)
       .then(() => expect(cli.stderr).to.equal(''))
       .then(() => expect(cli.stdout).to.equal(`=== myapp
-ACM:           true
-Addons:        heroku-redis
-               papertrail
-Collaborators: foo2@foo.com
-Database Size: 1000 B
-Dynos:         web: 1
-Git URL:       https://git.heroku.com/myapp
-Owner:         foo@foo.com
-Region:        eu
-Repo Size:     1000 B
-Slug Size:     1000 B
-Space:         myspace
-Stack:         cedar-14
-Web URL:       https://myapp.herokuapp.com
+Addons:         heroku-redis
+                papertrail
+Auto Cert Mgmt: true
+Collaborators:  foo2@foo.com
+Database Size:  1000 B
+Dynos:          web: 1
+Git URL:        https://git.heroku.com/myapp
+Owner:          foo@foo.com
+Region:         eu
+Repo Size:      1000 B
+Slug Size:      1000 B
+Space:          myspace
+Stack:          cedar-14
+Web URL:        https://myapp.herokuapp.com
 `))
       .then(() => appApi.done())
       .then(() => api.done())
@@ -156,7 +156,7 @@ Web URL:       https://myapp.herokuapp.com
       .get('/apps/myapp/dynos').reply(200, [{type: 'web', size: 'Standard-1X', quantity: 2}])
     return cmd.run({args: {app: 'myapp'}, flags: {shell: true}})
       .then(() => expect(cli.stderr).to.equal(''))
-      .then(() => expect(cli.stdout).to.equal(`acm=true
+      .then(() => expect(cli.stdout).to.equal(`auto_cert_mgmt=true
 addons=heroku-redis,papertrail
 collaborators=foo2@foo.com
 database_size=1000 B
