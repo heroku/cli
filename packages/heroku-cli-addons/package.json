@@ -9,7 +9,7 @@
   "dependencies": {
     "co": "4.6.0",
     "co-wait": "0.0.0",
-    "heroku-cli-util": "6.1.13",
+    "heroku-cli-util": "6.1.14",
     "lodash.flatten": "4.4.0",
     "lodash.groupby": "4.6.0",
     "lodash.memoize": "4.1.2",
