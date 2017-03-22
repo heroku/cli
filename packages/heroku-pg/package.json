@@ -13,7 +13,7 @@
     "debug": "2.6.0",
     "filesize": "3.5.4",
     "heroku-cli-addons": "1.2.7",
-    "heroku-cli-util": "6.1.13",
+    "heroku-cli-util": "6.1.14",
     "lodash.capitalize": "4.2.1",
     "lodash.flatten": "4.4.0",
     "lodash.sample": "4.2.1",
