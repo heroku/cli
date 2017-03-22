@@ -1,3 +1,7 @@
+5.7.7   2017-03-21
+==================
+Revert "update heroku-cli-util to 6.1.13"
+
 5.7.6   2017-03-21
 ==================
 Update heroku-cli-util to 6.1.13
