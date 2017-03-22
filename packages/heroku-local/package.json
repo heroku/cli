@@ -9,7 +9,7 @@
   "dependencies": {
     "co": "4.6.0",
     "foreman": "2.0.0",
-    "heroku-cli-util": "6.1.13"
+    "heroku-cli-util": "6.1.14"
   },
   "devDependencies": {
     "standard": "8.6.0"
