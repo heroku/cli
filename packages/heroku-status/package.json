@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "co": "4.6.0",
-    "heroku-cli-util": "6.1.14",
+    "heroku-cli-util": "6.1.15",
     "lodash.maxby": "4.6.0",
     "lodash.padend": "4.6.1",
     "moment": "2.17.1",
