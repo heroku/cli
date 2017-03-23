@@ -37,7 +37,7 @@ module.exports = {
   description: 'set new app buildpack, overwriting into list of buildpacks if necessary',
   help: `Example:
 
- $ heroku buildpacks:set -i 1 https://github.com/heroku/heroku-buildpack-ruby
+ $ heroku buildpacks:set -i 1 heroku/ruby
 `,
   needsApp: true,
   needsAuth: true,
