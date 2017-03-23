@@ -116,10 +116,7 @@ func interactiveLogin() {
 	}
 	email := getString("Email: ")
 	password := getPassword("Password (typing will be hidden): ")
-
-	token := v2login(email, password, "")
-	// TODO: use createOauthToken (v3 API)
-	// token, err := createOauthToken(email, password, "")
+	token := createOauthToken(email, password, "")
 	saveOauthToken(email, token)
 	Println("Logged in as " + cyan(email))
 }
@@ -164,47 +161,11 @@ https://github.com/heroku/cli/issues/84`)
 	return password
 }
 
-func v2login(email, password, secondFactor string) string {
-	api := apiRequest().Post("/login")
-	api.Set("Accept", "application/json")
-	body := struct {
-		Username string `url:"username"`
-		Password string `url:"password"`
-	}{email, password}
-	api.BodyForm(body)
-	if secondFactor != "" {
-		api.Set("Heroku-Two-Factor-Code", secondFactor)
-	}
-	success := struct {
-		APIKey string `json:"api_key"`
-	}{}
-	failure := struct {
-		Error string `json:"error"`
-	}{}
-	res, err := api.Receive(&success, &failure)
-	must(err)
-	switch res.StatusCode {
-	case 200:
-		return success.APIKey
-	case 401:
-		ExitWithMessage(failure.Error)
-	case 403:
-		return v2login(email, password, getString("Two-factor code: "))
-	case 404:
-		ExitWithMessage("Authentication failed.\nEmail or password is not valid.\nCheck your credentials on https://dashboard.heroku.com")
-	default:
-		WarnIfError(getHTTPError(res))
-		ExitWithMessage("Invalid response from API.\nHTTP %d\n%s\n\nAre you behind a proxy?\nhttps://devcenter.heroku.com/articles/using-the-cli#using-an-http-proxy", res.StatusCode, body)
-	}
-	must(fmt.Errorf("unreachable"))
-	return ""
-}
-
-func createOauthToken(email, password, secondFactor string) (string, error) {
+func createOauthToken(email, password, secondFactor string) string {
 	body := map[string]interface{}{
 		"scope":       []string{"global"},
 		"description": "Heroku CLI login from " + time.Now().UTC().Format(time.RFC3339),
-		"expires_in":  60 * 60 * 24 * 30, // 30 days
+		"expires_in":  60 * 60 * 24 * 365, // 365 days
 	}
 	req, err := apiRequest().Post("/oauth/authorizations").BodyJSON(body).Request()
 	must(err)
@@ -212,22 +173,28 @@ func createOauthToken(email, password, secondFactor string) (string, error) {
 	if secondFactor != "" {
 		req.Header.Set("Heroku-Two-Factor-Code", secondFactor)
 	}
-	doc := struct {
-		ID          string
-		Message     string
+	success := struct {
 		AccessToken struct {
 			Token string
 		} `json:"access_token"`
 	}{}
-	res, err := apiRequest().Do(req, doc, nil)
+	failure := struct {
+		ID      string
+		Message string
+	}{}
+	res, err := apiRequest().Do(req, &success, &failure)
 	must(err)
-	if doc.ID == "two_factor" {
-		return createOauthToken(email, password, getString("Two-factor code: "))
+	if failure.ID != "" {
+		if failure.ID == "unauthorized" {
+			ExitWithMessage("Authentication failed.\nEmail or password is not valid.\nCheck your credentials on https://dashboard.heroku.com")
+		}
+		if failure.ID == "two_factor" {
+			return createOauthToken(email, password, getString("Two-factor code: "))
+		}
+		ExitWithMessage(failure.Message)
 	}
-	if res.StatusCode != 201 {
-		return "", errors.New(doc.Message)
-	}
-	return doc.AccessToken.Token, nil
+	must(getHTTPError(res))
+	return success.AccessToken.Token
 }
 
 func getNetrc() *netrc.Netrc {
