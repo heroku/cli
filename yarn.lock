@@ -306,9 +306,9 @@ cli-engine-command@2.2.6:
     string "^3.3.3"
     supports-color "^3.2.3"
 
-cli-engine@2.0.4:
-  version "2.0.4"
-  resolved "https://registry.yarnpkg.com/cli-engine/-/cli-engine-2.0.4.tgz#23c0e0c865398c9e78230f83097d0f937662db60"
+cli-engine@2.0.6:
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/cli-engine/-/cli-engine-2.0.6.tgz#bccbddd190a84524b864035d3059a924b2985f95"
   dependencies:
     ansi-escapes "1.4.0"
     cli-engine-command "2.2.6"
