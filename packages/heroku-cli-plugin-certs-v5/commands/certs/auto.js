@@ -12,6 +12,10 @@ function humanize (value) {
   if (value === 'ok') {
     return 'OK'
   }
+  // Remove the following lines once we address this in cedar-acm
+  if (value === 'verified') {
+    return 'In Progress'
+  }
   return value.split('-').map((word) => _.capitalize(word)).join(' ')
 }
 
