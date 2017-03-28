@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "heroku-apps": "2.2.13",
-    "heroku-certs": "1.1.35",
+    "heroku-certs": "1.1.36",
     "heroku-cli-addons": "1.2.14",
     "heroku-cli-oauth": "2.0.10",
     "heroku-fork": "4.1.20",
