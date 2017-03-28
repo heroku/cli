@@ -73,7 +73,9 @@ function * run (context, heroku) {
 
     if (context.flags.extended) {
       cli.log('\n\n--- Extended Information ---\n\n')
-      cli.log(util.inspect(info.app.extended))
+      if (info.app.extended) {
+        cli.log(util.inspect(info.app.extended))
+      }
     }
   }
 

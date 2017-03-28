@@ -113,6 +113,42 @@ Web URL:        https://myapp.herokuapp.com
       .then(() => api.done())
   })
 
+  it('shows empty extended app info when not defined', () => {
+    let appApi = nock('https://api.heroku.com', {
+      reqheaders: {'Accept': 'application/vnd.heroku+json; version=3.cedar-acm'}
+    }).get('/apps/myapp').reply(200, appAcm)
+
+    let api = nock('https://api.heroku.com:443')
+      .get('/apps/myapp?extended=true').reply(200, appAcm)
+      .get('/apps/myapp/addons').reply(200, addons)
+      .get('/apps/myapp/collaborators').reply(200, collaborators)
+      .get('/apps/myapp/dynos').reply(200, [{type: 'web', size: 'Standard-1X', quantity: 2}])
+    return cmd.run({app: 'myapp', args: {}, flags: {extended: true}})
+      .then(() => expect(cli.stderr).to.equal(''))
+      .then(() => expect(cli.stdout).to.equal(`=== myapp
+Addons:         heroku-redis
+                papertrail
+Auto Cert Mgmt: true
+Collaborators:  foo2@foo.com
+Database Size:  1000 B
+Dynos:          web: 1
+Git URL:        https://git.heroku.com/myapp
+Owner:          foo@foo.com
+Region:         eu
+Repo Size:      1000 B
+Slug Size:      1000 B
+Space:          myspace
+Stack:          cedar-14
+Web URL:        https://myapp.herokuapp.com
+
+
+--- Extended Information ---
+
+
+`))
+      .then(() => appApi.done())
+      .then(() => api.done())
+  })
   it('shows app info via arg', () => {
     let appApi = nock('https://api.heroku.com', {
       reqheaders: {'Accept': 'application/vnd.heroku+json; version=3.cedar-acm'}
