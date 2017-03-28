@@ -9,7 +9,7 @@ function * run (context, heroku) {
   const S = require('string')
   const countBy = require('lodash.countby')
 
-  function getInfo (app) {
+  function * getInfo (app) {
     let promises = {
       addons: heroku.get(`/apps/${app}/addons`),
       app: heroku.request({
@@ -25,7 +25,15 @@ function * run (context, heroku) {
       promises.appExtended = heroku.get(`/apps/${app}?extended=true`)
     }
 
-    return promises
+    let data = yield promises
+
+    if (context.flags.extended) {
+      data.appExtended.acm = data.app.acm
+      data.app = data.appExtended
+      delete data['appExtended']
+    }
+
+    return data
   }
 
   let app = context.args.app || context.app
@@ -65,7 +73,7 @@ function * run (context, heroku) {
 
     if (context.flags.extended) {
       cli.log('\n\n--- Extended Information ---\n\n')
-      cli.log(util.inspect(info.appExtended.extended))
+      cli.log(util.inspect(info.app.extended))
     }
   }
 

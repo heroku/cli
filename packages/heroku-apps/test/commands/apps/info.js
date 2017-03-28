@@ -22,7 +22,8 @@ let app = {
 
 let appExtended = Object.assign({}, app, {
   extended: {
-    foo: 'bar'
+    foo: 'bar',
+    id: 12345
   }
 })
 
@@ -106,7 +107,7 @@ Web URL:        https://myapp.herokuapp.com
 --- Extended Information ---
 
 
-{ foo: 'bar' }
+{ foo: 'bar', id: 12345 }
 `))
       .then(() => appApi.done())
       .then(() => api.done())
@@ -169,6 +170,48 @@ region=eu
 dynos={ web: 1 }
 stack=cedar-14
 `))
+      .then(() => appApi.done())
+      .then(() => api.done())
+  })
+
+  it('shows extended app info in json format', () => {
+    let appApi = nock('https://api.heroku.com', {
+      reqheaders: {'Accept': 'application/vnd.heroku+json; version=3.cedar-acm'}
+    }).get('/apps/myapp').reply(200, appAcm)
+
+    let api = nock('https://api.heroku.com:443')
+      .get('/apps/myapp?extended=true').reply(200, appExtended)
+      .get('/apps/myapp/addons').reply(200, addons)
+      .get('/apps/myapp/collaborators').reply(200, collaborators)
+      .get('/apps/myapp/dynos').reply(200, [{type: 'web', size: 'Standard-1X', quantity: 2}])
+    return cmd.run({args: {app: 'myapp'}, flags: {json: true, extended: true}})
+      .then(() => expect(cli.stderr).to.equal(''))
+      .then(() => {
+        let json = JSON.parse(cli.stdout)
+        expect(json.appExtended).to.be.undefined
+        expect(json.app.extended).to.not.be.undefined
+        expect(json.app.extended.id).to.equal(appExtended.extended.id)
+      })
+      .then(() => appApi.done())
+      .then(() => api.done())
+  })
+
+  it('shows app info in json format', () => {
+    let appApi = nock('https://api.heroku.com', {
+      reqheaders: {'Accept': 'application/vnd.heroku+json; version=3.cedar-acm'}
+    }).get('/apps/myapp').reply(200, appAcm)
+
+    let api = nock('https://api.heroku.com:443')
+      .get('/apps/myapp/addons').reply(200, addons)
+      .get('/apps/myapp/collaborators').reply(200, collaborators)
+      .get('/apps/myapp/dynos').reply(200, [{type: 'web', size: 'Standard-1X', quantity: 2}])
+    return cmd.run({args: {app: 'myapp'}, flags: {json: true}})
+      .then(() => expect(cli.stderr).to.equal(''))
+      .then(() => {
+        let json = JSON.parse(cli.stdout)
+        expect(json.appExtended).to.be.undefined
+        expect(json.app.extended).to.be.undefined
+      })
       .then(() => appApi.done())
       .then(() => api.done())
   })
