@@ -34,6 +34,23 @@ Created at:   ${now.toISOString()}
       .then(() => api.done())
   })
 
+  it('shows Standard Private Space Add-on cost warning', function () {
+    let api = nock('https://api.heroku.com:443')
+      .post('/spaces', {
+        name: 'my-space',
+        organization: 'my-org',
+        region: 'my-region',
+        owner_pool: 'party'
+      })
+      .reply(201,
+        {shield: false, name: 'my-space', organization: {name: 'my-org'}, region: {name: 'my-region'}, features: [ 'one', 'two' ], state: 'enabled', created_at: now}
+    )
+    return cmd.run({org: 'my-org', flags: {space: 'my-space', region: 'my-region', features: 'one, two', 'owner-pool': 'party'}})
+      .then(() => expect(cli.stderr).to.include(
+        `Each Heroku Standard Private Space costs $1000`))
+      .then(() => api.done())
+  })
+
   it('creates a Shield space', function () {
     let api = nock('https://api.heroku.com:443')
       .post('/spaces', {
@@ -44,7 +61,7 @@ Created at:   ${now.toISOString()}
       .reply(201,
         {shield: true, name: 'my-space', organization: {name: 'my-org'}, region: {name: 'my-region'}, features: [ 'one', 'two' ], state: 'enabled', created_at: now}
     )
-    return cmd.run({org: 'my-org', flags: {space: 'my-space', region: 'my-region', features: 'one, two'}, shield: true, log_drain_url: 'https://logs.cheetah.com'})
+    return cmd.run({org: 'my-org', flags: {space: 'my-space', region: 'my-region', features: 'one, two', shield: true}, log_drain_url: 'https://logs.cheetah.com'})
       .then(() => expect(cli.stdout).to.equal(
         `=== my-space
 Organization: my-org
@@ -53,6 +70,22 @@ State:        enabled
 Shield:       on
 Created at:   ${now.toISOString()}
 `))
+      .then(() => api.done())
+  })
+
+  it('shows Shield Private Space Add-on cost warning', function () {
+    let api = nock('https://api.heroku.com:443')
+      .post('/spaces', {
+        name: 'my-space',
+        organization: 'my-org',
+        region: 'my-region'
+      })
+      .reply(201,
+        {shield: true, name: 'my-space', organization: {name: 'my-org'}, region: {name: 'my-region'}, features: [ 'one', 'two' ], state: 'enabled', created_at: now}
+    )
+    return cmd.run({org: 'my-org', flags: {space: 'my-space', region: 'my-region', features: 'one, two', shield: true}, log_drain_url: 'https://logs.cheetah.com'})
+      .then(() => expect(cli.stderr).to.include(
+        `Each Heroku Shield Private Space costs $3000`))
       .then(() => api.done())
   })
 
