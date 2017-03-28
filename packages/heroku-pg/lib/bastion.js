@@ -2,6 +2,7 @@
 
 const debug = require('./debug')
 const tunnel = require('tunnel-ssh')
+const cli = require('heroku-cli-util')
 
 const getBastion = function (config, baseName) {
   const sample = require('lodash.sample')
@@ -86,7 +87,7 @@ function sshTunnel (db, dbTunnelConfig, timeout) {
     // see also https://github.com/heroku/heroku/blob/master/lib/heroku/helpers/heroku_postgresql.rb#L53-L80
     let timer = setTimeout(() => reject('Establishing a secure tunnel timed out'), timeout)
     if (db.bastionKey) {
-      tunnel(dbTunnelConfig, (err, tnl) => {
+      let tun = tunnel(dbTunnelConfig, (err, tnl) => {
         if (err) {
           debug(err)
           reject(`Unable to establish a secure tunnel to your database.`)
@@ -94,6 +95,11 @@ function sshTunnel (db, dbTunnelConfig, timeout) {
         debug('Tunnel created')
         clearTimeout(timer)
         resolve(tnl)
+      })
+      tun.on('error', (err) => {
+        // we can't reject the promise here because we may already have resolved it
+        debug(err)
+        cli.exit(1, 'Secure tunnel to your database failed')
       })
     } else {
       clearTimeout(timer)
