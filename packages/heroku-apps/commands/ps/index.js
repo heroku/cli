@@ -36,6 +36,10 @@ function * printAccountQuota (context, heroku, app, account) {
     return
   }
 
+  if (app.owner.id !== account.id) {
+    return
+  }
+
   let quota = yield heroku.request({
     path: `/accounts/${account.id}/actions/get-quota`,
     headers: {Accept: 'application/vnd.heroku+json; version=3.account-quotas'}

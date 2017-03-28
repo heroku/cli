@@ -23,7 +23,7 @@ function stubAccountQuota (code, body) {
     reqHeaders: {'Accept': 'application/vnd.heroku+json; version=3.process_tier'}
   })
     .get('/apps/myapp')
-    .reply(200, {process_tier: 'free'})
+    .reply(200, {process_tier: 'free', owner: {id: '1234'}})
 
   nock('https://api.heroku.com:443')
     .get('/account')
@@ -194,6 +194,40 @@ run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
     return cmd.run({app: 'myapp', args: [], flags: {}})
       .then(() => expect(cli.stdout, 'to equal', freeExpression))
       .then(() => expect(cli.stderr, 'to be empty'))
+  })
+
+  it('does not print out for apps that are not owned', function () {
+    nock('https://api.heroku.com:443')
+      .get('/account')
+      .reply(200, {id: '1234'})
+
+    nock('https://api.heroku.com:443', {
+      reqHeaders: {'Accept': 'application/vnd.heroku+json; version=3.process_tier'}
+    })
+      .get('/apps/myapp')
+      .reply(200, {
+        process_tier: 'free',
+        owner: {'id': '5678'}
+      })
+
+    nock('https://api.heroku.com:443', {
+      reqHeaders: {'Accept': 'application/vnd.heroku+json; version=3.account-quotas'}
+    })
+      .get('/accounts/1234/actions/get-quota')
+      .reply(200, {account_quota: 1000, quota_used: 1})
+
+    let dynos = nock('https://api.heroku.com:443')
+      .get('/apps/myapp/dynos')
+      .reply(200, [{command: 'bash', size: 'Free', name: 'run.1', type: 'run', updated_at: hourAgo, state: 'up'}])
+
+    let freeExpression = `=== run: one-off processes (1)
+run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
+
+`
+    return cmd.run({app: 'myapp', args: [], flags: {}})
+      .then(() => expect(cli.stdout, 'to equal', freeExpression))
+      .then(() => expect(cli.stderr, 'to be empty'))
+      .then(() => dynos.done())
   })
 
   it('does not print out for non-free apps', function () {
