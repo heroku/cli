@@ -49,6 +49,16 @@ describe('addons:create', () => {
     })
   })
 
+  context('calling addons:create without a plan', () => {
+    it('errors out with usage', () => {
+      return expect(cmd.run({
+        app: 'myapp',
+        args: [],
+        flags: {name: 'foobar'}
+      }), 'to be rejected with error satisfying', new Error('Usage: heroku addons:create SERVICE:PLAN'))
+    })
+  })
+
   context('creating a db', () => {
     beforeEach(() => {
       api.post('/apps/myapp/addons', {

@@ -34,6 +34,10 @@ function * run (context, heroku) {
   let createAddon = require('../../lib/create_addon')
 
   let {app, flags, args} = context
+  if (args.length === 0) {
+    throw new Error('Usage: heroku addons:create SERVICE:PLAN')
+  }
+
   let {name, as} = flags
   let config = parseConfig(args.slice(1))
 
