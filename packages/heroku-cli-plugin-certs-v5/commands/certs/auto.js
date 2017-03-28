@@ -16,6 +16,9 @@ function humanize (value) {
   if (value === 'verified') {
     return 'In Progress'
   }
+  if (value === 'dns-verified') {
+    return 'DNS Verified'
+  }
   return value.split('-').map((word) => _.capitalize(word)).join(' ')
 }
 
