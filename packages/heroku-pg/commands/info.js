@@ -5,9 +5,14 @@ const cli = require('heroku-cli-util')
 const util = require('../lib/util')
 
 function displayDB (db, app) {
-  cli.styledHeader(db.configVars.map(c => cli.color.configVar(c)).join(', '))
+  if (db.addon.attachment_names) {
+    cli.styledHeader(db.addon.attachment_names.map(c => cli.color.configVar(c + '_URL')).join(', '))
+  } else {
+    cli.styledHeader(db.configVars.map(c => cli.color.configVar(c)).join(', '))
+  }
+
   if (db.addon.app.name !== app) {
-    db.db.info.push({name: 'Billing App', values: [db.addon.app.name]})
+    db.db.info.push({name: 'Billing App', values: [cli.color.cyan(db.addon.app.name)]})
   }
   db.db.info.push({name: 'Add-on', values: [cli.color.addon(db.addon.name)]})
   let info = db.db.info.reduce((info, i) => {
@@ -56,7 +61,7 @@ function * run (context, heroku) {
         path: `/client/v11/databases/${addon.name}`
       }).catch(err => {
         if (err.statusCode !== 404) throw err
-        cli.warn(`${cli.color.addon(addon.name)} is not yet provisioned.\nRun ${cli.color.cmd('heroku pg:wait')} to wait until the db is provisioned.`)
+        cli.warn(`${cli.color.addon(addon.name)} is not yet provisioned.\nRun ${cli.color.cmd('heroku addons:wait')} to wait until the db is provisioned.`)
       })
     }
   })

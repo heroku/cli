@@ -394,8 +394,9 @@ describe('fetcher', () => {
     it('returns all addons attached to app', () => {
       let plan = {name: 'heroku-postgresql:hobby-dev'}
       let attachments = [
-        {addon: {id: 100, name: 'postgres-1', plan, config_vars: ['DATABASE_URL', 'HEROKU_POSTGRESQL_PINK_URL']}},
-        {addon: {id: 101, name: 'postgres-2', plan, config_vars: ['HEROKU_POSTGRESQL_BRONZE_URL']}}
+        {addon: {id: 100, name: 'postgres-1', plan}, name: 'DATABASE'},
+        {addon: {id: 100, name: 'postgres-1', plan}, name: 'HEROKU_POSTGRESQL_PINK'},
+        {addon: {id: 101, name: 'postgres-2', plan}, name: 'HEROKU_POSTGRESQL_BRONZE'}
       ]
       api.get('/apps/myapp/addon-attachments').reply(200, attachments)
 
@@ -403,6 +404,7 @@ describe('fetcher', () => {
       .then(addons => {
         expect(addons[0], 'to satisfy', {name: 'postgres-1'})
         expect(addons[1], 'to satisfy', {name: 'postgres-2'})
+        expect(addons[0], 'to satisfy', {attachment_names: ['DATABASE', 'HEROKU_POSTGRESQL_PINK']})
         expect(addons.length, 'to equal', 2)
       })
     })

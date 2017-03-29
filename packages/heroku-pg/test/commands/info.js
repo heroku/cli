@@ -93,6 +93,32 @@ Add-on:    postgres-2
       .then(() => expect(cli.stderr, 'to equal', ''))
     })
 
+    it('shows postgres info using attachment names', () => {
+      all = [
+        {id: 1, name: 'postgres-1', plan, app: {name: 'myapp2'}, attachment_names: ['DATABASE', 'ATTACHMENT_NAME']},
+        {id: 2, name: 'postgres-2', plan, app: {name: 'myapp'}, attachment_names: ['HEROKU_POSTGRESQL_PURPLE']}
+      ]
+
+      api.get('/apps/myapp/config-vars').reply(200, config)
+      pg
+      .get('/client/v11/databases/postgres-1').reply(200, dbA)
+      .get('/client/v11/databases/postgres-2').reply(200, dbB)
+
+      return cmd.run({app: 'myapp', args: {}})
+      .then(() => expect(cli.stdout, 'to equal', `=== DATABASE_URL, ATTACHMENT_NAME_URL
+Plan:        Hobby-dev
+Following:   HEROKU_POSTGRESQL_COBALT
+Billing App: myapp2
+Add-on:      postgres-1
+
+=== HEROKU_POSTGRESQL_PURPLE_URL
+Plan:      Hobby-dev
+Following: ec2-55-111-111-1.compute-1.amazonaws.com:5432/dxxxxxxxxxxxx
+Add-on:    postgres-2
+
+`))
+    })
+
     it('shows postgres info for single database when arg sent in', () => {
       addon = addons[1]
       api.get('/apps/myapp/config-vars').reply(200, config)
@@ -126,7 +152,7 @@ Add-on:    postgres-2
 
 `))
       .then(() => expect(cli.stderr, 'to equal', ` ▸    postgres-1 is not yet provisioned.
- ▸    Run heroku pg:wait to wait until the db is provisioned.
+ ▸    Run heroku addons:wait to wait until the db is provisioned.
 `))
     })
   })

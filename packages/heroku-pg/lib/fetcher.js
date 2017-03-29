@@ -66,6 +66,7 @@ module.exports = heroku => {
       }
     }
 
+    // case for multiple attachments with passedDb
     let first = matches[0]
 
     // case for 422 where there are ambiguous attachments that are equivalent
@@ -101,13 +102,27 @@ module.exports = heroku => {
     return attachments.filter(a => a.addon.plan.name.startsWith('heroku-postgresql'))
   }
 
+  function getAttachmentNamesByAddon (attachments) {
+    return attachments.reduce((results, a) => {
+      results[a.addon.id] = (results[a.addon.id] || []).concat(a.name)
+      return results
+    }, {})
+  }
+
   function * all (app) {
     const uniqby = require('lodash.uniqby')
 
     debug(`fetching all DBs on ${app}`)
 
-    let addons = (yield allAttachments(app)).map(a => a.addon)
+    let attachments = yield allAttachments(app)
+    let addons = attachments.map(a => a.addon)
+
+    // Get the list of attachment names per addon here and add to each addon obj
+    let attachmentNamesByAddon = getAttachmentNamesByAddon(attachments)
     addons = uniqby(addons, 'id')
+    addons.forEach(addon => {
+      addon.attachment_names = attachmentNamesByAddon[addon.id]
+    })
 
     return addons
   }
