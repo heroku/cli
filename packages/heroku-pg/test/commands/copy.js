@@ -18,6 +18,14 @@ const attachment = {
   addon
 }
 
+let copyingText = () => {
+  return process.stderr.isTTY ? 'Copying... pending\nCopying... done\n' : 'Copying... done\n'
+}
+
+let copyingFailText = () => {
+  return process.stderr.isTTY ? 'Copying... pending\nCopying... !\n' : 'Copying... !\n'
+}
+
 describe('pg:copy', () => {
   let pg, api
 
@@ -50,10 +58,7 @@ describe('pg:copy', () => {
     it('copies', () => {
       return cmd.run({app: 'myapp', args: {source: 'postgres://foo.com/bar', target: 'DATABASE_URL'}, flags: {confirm: 'myapp'}})
       .then(() => expect(cli.stdout, 'to equal', ''))
-      .then(() => expect(cli.stderr, 'to equal', `Starting copy of database bar on foo.com:5432 to RED... done
-Copying... pending
-Copying... done
-`))
+      .then(() => expect(cli.stderr, 'to equal', `Starting copy of database bar on foo.com:5432 to RED... done\n${copyingText()}`))
     })
   })
 
@@ -76,10 +81,7 @@ Copying... done
       let err = 'An error occurred and the backup did not finish.\n\nfoobar\n\nRun heroku pg:backups:info b001 for more details.'
       return expect(cmd.run({app: 'myapp', args: {source: 'postgres://foo.com/bar', target: 'DATABASE_URL'}, flags: {confirm: 'myapp'}}), 'to be rejected with', err)
       .then(() => expect(cli.stdout, 'to equal', ''))
-      .then(() => expect(cli.stderr, 'to equal', `Starting copy of database bar on foo.com:5432 to RED... done
-Copying... pending
-Copying... !
-`))
+      .then(() => expect(cli.stderr, 'to equal', `Starting copy of database bar on foo.com:5432 to RED... done\n${copyingFailText()}`))
     })
   })
 })

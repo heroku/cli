@@ -9,6 +9,10 @@ const addon = {name: 'postgres-1', plan: {name: 'heroku-postgresql:standard-0'}}
 
 const cmd = require('../../../commands/backups/restore')
 
+let restoringText = () => {
+  return process.stderr.isTTY ? 'Restoring... pending\nRestoring... done\n' : 'Restoring... done\n'
+}
+
 const shouldRestore = function (cmdRun) {
   let pg
   let api
@@ -51,10 +55,7 @@ Use heroku pg:backups to check progress.
 Stop a running restore with heroku pg:backups:cancel.
 
 `))
-      .then(() => expect(cli.stderr, 'to equal', `Starting restore of b005 to postgres-1... done
-Restoring... pending
-Restoring... done
-`))
+      .then(() => expect(cli.stderr, 'to equal', `Starting restore of b005 to postgres-1... done\n${restoringText()}`))
     })
 
     it('restores a specific db', () => {
@@ -65,10 +66,7 @@ Use heroku pg:backups to check progress.
 Stop a running restore with heroku pg:backups:cancel.
 
 `))
-      .then(() => expect(cli.stderr, 'to equal', `Starting restore of b005 to postgres-1... done
-Restoring... pending
-Restoring... done
-`))
+      .then(() => expect(cli.stderr, 'to equal', `Starting restore of b005 to postgres-1... done\n${restoringText()}`))
     })
 
     it('restores a specific app db', () => {
@@ -79,10 +77,7 @@ Use heroku pg:backups to check progress.
 Stop a running restore with heroku pg:backups:cancel.
 
 `))
-      .then(() => expect(cli.stderr, 'to equal', `Starting restore of b005 to postgres-1... done
-Restoring... pending
-Restoring... done
-`))
+      .then(() => expect(cli.stderr, 'to equal', `Starting restore of b005 to postgres-1... done\n${restoringText()}`))
     })
   })
 
@@ -138,10 +133,7 @@ Use heroku pg:backups to check progress.
 Stop a running restore with heroku pg:backups:cancel.
 
 `))
-      .then(() => expect(cli.stderr, 'to equal', `Starting restore of https://www.dropbox.com to postgres-1... done
-Restoring... pending
-Restoring... done
-`))
+      .then(() => expect(cli.stderr, 'to equal', `Starting restore of https://www.dropbox.com to postgres-1... done\n${restoringText()}`))
     })
   })
 }

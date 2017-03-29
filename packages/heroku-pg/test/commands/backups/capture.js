@@ -9,6 +9,14 @@ const addon = {name: 'postgres-1', plan: {name: 'heroku-postgresql:standard-0'}}
 
 const cmd = require('../../../commands/backups/capture')
 
+let captureText = () => {
+  if (process.stderr.isTTY) {
+    return 'Backing up DATABASE to b005... pending\nBacking up DATABASE to b005... done\n'
+  } else {
+    return 'Backing up DATABASE to b005... done\n'
+  }
+}
+
 const shouldCapture = function (cmdRun) {
   let pg
   let api
@@ -42,10 +50,7 @@ Use heroku pg:backups:info to check progress.
 Stop a running backup with heroku pg:backups:cancel.
 
 `))
-    .then(() => expect(cli.stderr, 'to equal', `Starting backup of postgres-1... done
-Backing up DATABASE to b005... pending
-Backing up DATABASE to b005... done
-`))
+    .then(() => expect(cli.stderr, 'to equal', `Starting backup of postgres-1... done\n${captureText()}`))
   })
 
   it('captures a db (verbose)', () => {
