@@ -7,17 +7,27 @@ const expect = require('unexpected')
 const proxyquire = require('proxyquire')
 const util = require('../../../lib/util')
 const bluebird = require('bluebird')
-const fs = bluebird.promisifyAll(require('fs-extra'))
-
-const home = './tmp/home'
-const osHomedir = () => home
-const inquirer = {}
 const rimraf = require('rimraf')
+const fs = bluebird.promisifyAll(require('fs-extra'))
+const home = './tmp/home'
 
-const cmd = proxyquire('../../../commands/keys/add', {inquirer, 'os': {homedir: osHomedir}})
+let osHomedir
+let inquirer
+let mockCli
+let cmd
 
 describe('keys:add', () => {
   beforeEach(() => {
+    osHomedir = () => home
+    inquirer = {}
+    mockCli = Object.assign({}, cli)
+
+    cmd = proxyquire('../../../commands/keys/add', {
+      'heroku-cli-util': mockCli,
+      'os': {homedir: osHomedir},
+      inquirer
+    })
+
     rimraf.sync(home)
     cli.mockConsole()
     return util.mkdirp(home)
@@ -53,6 +63,10 @@ describe('keys:add', () => {
       }
     }
 
+    mockCli.prompt = () => {
+      return Promise.resolve('yes')
+    }
+
     return cmd.run({args: {}, flags: {quiet: true}})
       .then(() => expect(cli.stdout, 'to be empty'))
       .then(() => expect(cli.stderr, 'to equal', 'Could not find an existing SSH key at ~/.ssh/id_rsa.pub\nUploading tmp/home/.ssh/id_rsa.pub SSH key... done\n'))
@@ -65,6 +79,10 @@ describe('keys:add', () => {
       .reply(200)
 
     inquirer.prompt = () => {
+      throw new Error('should not prompt')
+    }
+
+    mockCli.prompt = () => {
       throw new Error('should not prompt')
     }
 
@@ -89,6 +107,10 @@ describe('keys:add', () => {
       }
     }
 
+    mockCli.prompt = () => {
+      return Promise.resolve('yes')
+    }
+
     return fs.copyAsync('./test/fixtures/id_rsa.pub', home + '/.ssh/id_rsa.pub')
       .then(() => cmd.run({args: {}, flags: {}}))
       .then(() => expect(cli.stdout, 'to be empty'))
@@ -102,6 +124,10 @@ describe('keys:add', () => {
       .reply(200)
 
     inquirer.prompt = () => {
+      throw new Error('should not prompt')
+    }
+
+    mockCli.prompt = () => {
       throw new Error('should not prompt')
     }
 
