@@ -14,7 +14,7 @@ ${cli.color.addon(db.name)} will lose all of its data
 `)
 
   yield cli.action(`Resetting ${cli.color.addon(db.name)}`, co(function * () {
-    yield heroku.put(`/client/v11/databases/${db.name}/reset`, {host: host(db)})
+    yield heroku.put(`/client/v11/databases/${db.id}/reset`, {host: host(db)})
   }))
 }
 

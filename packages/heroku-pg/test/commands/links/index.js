@@ -7,6 +7,7 @@ const nock = require('nock')
 const proxyquire = require('proxyquire')
 
 const addon = {
+  id: 1,
   name: 'postgres-1',
   plan: {name: 'heroku-postgresql:standard-0'}
 }
@@ -37,7 +38,7 @@ describe('pg:links', () => {
   })
 
   it('shows links', () => {
-    pg.get('/client/v11/databases/postgres-1/links').reply(200, [
+    pg.get('/client/v11/databases/1/links').reply(200, [
       {name: 'redis-link-1', created_at: '100', remote: {attachment_name: 'REDIS', name: 'redis-001'}}
     ])
     return cmd.run({app: 'myapp', args: {}, flags: {confirm: 'myapp'}})

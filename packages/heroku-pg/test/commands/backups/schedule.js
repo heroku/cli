@@ -14,6 +14,7 @@ const shouldSchedule = function (cmdRun) {
     api.post('/actions/addon-attachments/resolve', {app: 'myapp', addon_attachment: 'DATABASE_URL'}).reply(200, [
       {
         addon: {
+          id: 1,
           name: 'postgres-1',
           plan: {name: 'heroku-postgresql:standard-0'}
         },
@@ -33,7 +34,7 @@ const shouldSchedule = function (cmdRun) {
   })
 
   it('schedules a backup', () => {
-    pg.post('/client/v11/databases/postgres-1/transfer-schedules', {
+    pg.post('/client/v11/databases/1/transfer-schedules', {
       'hour': '06', 'timezone': 'America/New_York', 'schedule_name': 'DATABASE_URL'
     }).reply(201)
     return cmdRun({app: 'myapp', args: {}, flags: {at: '06:00 EDT'}})

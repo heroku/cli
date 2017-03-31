@@ -5,7 +5,7 @@ const cli = require('heroku-cli-util')
 const expect = require('unexpected')
 const nock = require('nock')
 
-const addon = {name: 'postgres-1', plan: {name: 'heroku-postgresql:standard-0'}, app: {name: 'myapp'}}
+const addon = {id: 1, name: 'postgres-1', plan: {name: 'heroku-postgresql:standard-0'}, app: {name: 'myapp'}}
 
 const cmd = require('../../../commands/backups/capture')
 
@@ -33,7 +33,7 @@ const shouldCapture = function (cmdRun) {
     api.post('/actions/addon-attachments/resolve', {app: 'myapp', addon_attachment: 'DATABASE_URL'}).reply(200, [{addon}])
 
     pg = nock('https://postgres-api.heroku.com')
-    pg.post('/client/v11/databases/postgres-1/backups').reply(200, {
+    pg.post('/client/v11/databases/1/backups').reply(200, {
       num: 5,
       from_name: 'DATABASE',
       uuid: '100-001'
@@ -60,7 +60,7 @@ Stop a running backup with heroku pg:backups:cancel.
     api.post('/actions/addon-attachments/resolve', {app: 'myapp', addon_attachment: 'DATABASE_URL'}).reply(200, [{addon}])
 
     pg = nock('https://postgres-api.heroku.com')
-    pg.post('/client/v11/databases/postgres-1/backups').reply(200, {
+    pg.post('/client/v11/databases/1/backups').reply(200, {
       num: 5,
       from_name: 'DATABASE',
       uuid: '100-001'
@@ -91,7 +91,7 @@ Backing up DATABASE to b005...
     api.post('/actions/addon-attachments/resolve', {app: 'myapp', addon_attachment: 'DATABASE_URL'}).reply(200, [{addon}])
 
     pg = nock('https://postgres-api.heroku.com')
-    pg.post('/client/v11/databases/postgres-1/backups').reply(200, {
+    pg.post('/client/v11/databases/1/backups').reply(200, {
       num: 5,
       from_name: 'DATABASE',
       uuid: '100-001'

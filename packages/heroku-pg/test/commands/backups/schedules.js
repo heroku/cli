@@ -29,6 +29,7 @@ const shouldSchedules = function (cmdRun) {
   context('with databases', () => {
     beforeEach(() => {
       api.get('/apps/myapp/addons').reply(200, [{
+        id: 1,
         name: 'postgres-1',
         plan: {name: 'heroku-postgresql:standard-0'},
         app: {name: 'myapp'}
@@ -36,12 +37,12 @@ const shouldSchedules = function (cmdRun) {
     })
 
     it('shows empty message with no schedules', () => {
-      pg.get('/client/v11/databases/postgres-1/transfer-schedules').reply(200, [])
+      pg.get('/client/v11/databases/1/transfer-schedules').reply(200, [])
       return expect(cmdRun({app: 'myapp'}), 'to be rejected with', 'No backup schedules found on myapp\nUse heroku pg:backups:schedule to set one up')
     })
 
     it('shows schedule', () => {
-      pg.get('/client/v11/databases/postgres-1/transfer-schedules').reply(200, [
+      pg.get('/client/v11/databases/1/transfer-schedules').reply(200, [
         {name: 'DATABASE_URL', hour: 5, timezone: 'UTC'}
       ])
       return cmdRun({app: 'myapp'})

@@ -58,7 +58,7 @@ function * run (context, heroku) {
       db: heroku.request({
         host: host(addon),
         method: 'get',
-        path: `/client/v11/databases/${addon.name}`
+        path: `/client/v11/databases/${addon.id}`
       }).catch(err => {
         if (err.statusCode !== 404) throw err
         cli.warn(`${cli.color.addon(addon.name)} is not yet provisioned.\nRun ${cli.color.cmd('heroku addons:wait')} to wait until the db is provisioned.`)

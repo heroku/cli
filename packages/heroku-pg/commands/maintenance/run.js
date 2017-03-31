@@ -16,7 +16,7 @@ function * run (context, heroku) {
       let appInfo = yield heroku.get(`/apps/${app}`)
       if (!appInfo.maintenance) throw new Error('Application must be in maintenance mode or run with --force')
     }
-    let response = yield heroku.post(`/client/v11/databases/${db.name}/maintenance`, {host: host(db)})
+    let response = yield heroku.post(`/client/v11/databases/${db.id}/maintenance`, {host: host(db)})
     cli.action.done(response.message || 'done')
   }))
 }

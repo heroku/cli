@@ -14,7 +14,7 @@ function * run (context, heroku) {
 
   let backup
   yield cli.action(`Starting backup of ${cli.color.addon(db.name)}`, co(function * () {
-    backup = yield heroku.post(`/client/v11/databases/${db.name}/backups`, {host: host(db)})
+    backup = yield heroku.post(`/client/v11/databases/${db.id}/backups`, {host: host(db)})
   }))
   cli.log(`
 Use Ctrl-C at any time to stop monitoring progress; the backup will continue running.

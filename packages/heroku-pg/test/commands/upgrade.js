@@ -7,6 +7,7 @@ const nock = require('nock')
 const proxyquire = require('proxyquire')
 
 const addon = {
+  id: 1,
   name: 'postgres-1',
   plan: {name: 'heroku-postgresql:standard-0'}
 }
@@ -37,9 +38,9 @@ describe('pg:upgrade', () => {
 
   it('upgrades db', () => {
     api.get('/apps/myapp/config-vars').reply(200, {DATABASE_URL: 'postgres://db1'})
-    pg.get('/client/v11/databases/postgres-1').reply(200, {following: 'postgres://db1'})
-    pg.get('/client/v11/databases/postgres-1/upgrade_status').reply(200, {})
-    pg.post('/client/v11/databases/postgres-1/upgrade').reply(200)
+    pg.get('/client/v11/databases/1').reply(200, {following: 'postgres://db1'})
+    pg.get('/client/v11/databases/1/upgrade_status').reply(200, {})
+    pg.post('/client/v11/databases/1/upgrade').reply(200)
     return cmd.run({app: 'myapp', args: {}, flags: {confirm: 'myapp'}})
     .then(() => expect(cli.stderr, 'to equal', 'Starting upgrade of postgres-1... heroku pg:wait to track status\n'))
   })

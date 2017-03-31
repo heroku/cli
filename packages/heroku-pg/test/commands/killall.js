@@ -6,7 +6,7 @@ const expect = require('unexpected')
 const nock = require('nock')
 const proxyquire = require('proxyquire')
 
-const db = {name: 'postgres-1', plan: {name: 'heroku-postgresql:hobby-dev'}}
+const db = {id: 1, name: 'postgres-1', plan: {name: 'heroku-postgresql:hobby-dev'}}
 const fetcher = () => {
   return {
     addon: () => db
@@ -33,7 +33,7 @@ describe('pg:killall', () => {
 
   it('waits for all databases to be available', () => {
     pg
-      .post('/client/v11/databases/postgres-1/connection_reset').reply(200)
+      .post('/client/v11/databases/1/connection_reset').reply(200)
 
     return cmd.run({app: 'myapp', args: {}, flags: {}})
       .then(() => expect(cli.stdout, 'to equal', ''))

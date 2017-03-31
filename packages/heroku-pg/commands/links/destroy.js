@@ -16,7 +16,7 @@ This will delete ${cli.color.cyan(args.link)} along with the tables and views cr
 This may have adverse effects for software written against the ${cli.color.cyan(args.link)} schema.
 `)
   yield cli.action(`Destroying link ${cli.color.cyan(args.link)} from ${cli.color.addon(db.name)}`, co(function * () {
-    yield heroku.delete(`/client/v11/databases/${db.name}/links/${encodeURIComponent(args.link)}`, {host: host(db)})
+    yield heroku.delete(`/client/v11/databases/${db.id}/links/${encodeURIComponent(args.link)}`, {host: host(db)})
   }))
 }
 

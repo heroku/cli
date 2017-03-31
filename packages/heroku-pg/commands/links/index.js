@@ -15,7 +15,7 @@ function * run (context, heroku) {
   if (!dbs.length) throw new Error(`No databases on ${cli.color.app(app)}`)
 
   dbs = yield dbs.map(db => {
-    db.links = heroku.get(`/client/v11/databases/${db.name}/links`, {host: host(db)})
+    db.links = heroku.get(`/client/v11/databases/${db.id}/links`, {host: host(db)})
     return db
   })
 

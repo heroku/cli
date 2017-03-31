@@ -8,6 +8,7 @@ const nock = require('nock')
 const cmd = require('../..').commands.find(c => c.topic === 'pg' && c.command === 'copy')
 
 const addon = {
+  id: 1,
   name: 'postgres-1',
   app: {name: 'myapp'},
   config_vars: ['DATABASE_URL'],
@@ -46,7 +47,7 @@ describe('pg:copy', () => {
       api.get('/addons/postgres-1').reply(200, addon)
       api.post('/actions/addon-attachments/resolve', {app: 'myapp', addon_attachment: 'DATABASE_URL'}).reply(200, [attachment])
       api.get('/apps/myapp/config-vars').reply(200, {DATABASE_URL: 'postgres://heroku/db'})
-      pg.post('/client/v11/databases/postgres-1/transfers', {
+      pg.post('/client/v11/databases/1/transfers', {
         from_name: 'database bar on foo.com:5432',
         from_url: 'postgres://foo.com/bar',
         to_name: 'RED',
@@ -67,7 +68,7 @@ describe('pg:copy', () => {
       api.get('/addons/postgres-1').reply(200, addon)
       api.post('/actions/addon-attachments/resolve', {app: 'myapp', addon_attachment: 'DATABASE_URL'}).reply(200, [attachment])
       api.get('/apps/myapp/config-vars').reply(200, {DATABASE_URL: 'postgres://heroku/db'})
-      pg.post('/client/v11/databases/postgres-1/transfers', {
+      pg.post('/client/v11/databases/1/transfers', {
         from_name: 'database bar on foo.com:5432',
         from_url: 'postgres://foo.com/bar',
         to_name: 'RED',

@@ -51,7 +51,7 @@ Data from ${cli.color.yellow(source.name)} will then be transferred to ${cli.col
   yield cli.action(`Starting copy of ${cli.color.yellow(source.name)} to ${cli.color.yellow(target.name)}`, co(function * () {
     attachment = target.attachment || source.attachment
     if (!attachment) throw new Error('Heroku PostgreSQL database must be source or target')
-    copy = yield heroku.post(`/client/v11/databases/${attachment.addon.name}/transfers`, {
+    copy = yield heroku.post(`/client/v11/databases/${attachment.addon.id}/transfers`, {
       body: {
         from_name: source.name,
         from_url: source.url,

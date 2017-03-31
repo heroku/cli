@@ -54,7 +54,7 @@ function * run (context, heroku) {
   yield cli.confirmApp(app, flags.confirm)
   let restore
   yield cli.action(`Starting restore of ${cli.color.cyan(backupName)} to ${cli.color.addon(db.name)}`, co(function * () {
-    restore = yield heroku.post(`/client/v11/databases/${db.name}/restores`, {
+    restore = yield heroku.post(`/client/v11/databases/${db.id}/restores`, {
       body: {backup_url: backupURL},
       host: host(db)
     })

@@ -5,7 +5,7 @@ const cli = require('heroku-cli-util')
 const expect = require('unexpected')
 const nock = require('nock')
 
-const addon = {name: 'postgres-1', plan: {name: 'heroku-postgresql:standard-0'}, app: {name: 'myapp'}}
+const addon = {id: 1, name: 'postgres-1', plan: {name: 'heroku-postgresql:standard-0'}, app: {name: 'myapp'}}
 
 const cmd = require('../../../commands/backups/restore')
 
@@ -36,7 +36,7 @@ const shouldRestore = function (cmdRun) {
       pg.get('/client/v11/apps/myapp/transfers').reply(200, [
         {num: 5, from_type: 'pg_dump', to_type: 'gof3r', succeeded: true, to_url: 'https://myurl'}
       ])
-      pg.post('/client/v11/databases/postgres-1/restores', {backup_url: 'https://myurl'}).reply(200, {
+      pg.post('/client/v11/databases/1/restores', {backup_url: 'https://myurl'}).reply(200, {
         num: 5,
         from_name: 'DATABASE',
         uuid: '100-001'
@@ -86,7 +86,7 @@ Stop a running restore with heroku pg:backups:cancel.
       pg.get('/client/v11/apps/myapp/transfers').reply(200, [
         {num: 5, from_type: 'pg_dump', to_type: 'gof3r', succeeded: true, to_url: 'https://myurl'}
       ])
-      pg.post('/client/v11/databases/postgres-1/restores', {backup_url: 'https://myurl'}).reply(200, {
+      pg.post('/client/v11/databases/1/restores', {backup_url: 'https://myurl'}).reply(200, {
         num: 5,
         from_name: 'DATABASE',
         uuid: '100-001'
@@ -114,7 +114,7 @@ Restoring...
 
   context('with a URL', () => {
     beforeEach(() => {
-      pg.post('/client/v11/databases/postgres-1/restores', {backup_url: 'https://www.dropbox.com?dl=1'}).reply(200, {
+      pg.post('/client/v11/databases/1/restores', {backup_url: 'https://www.dropbox.com?dl=1'}).reply(200, {
         num: 5,
         from_name: 'DATABASE',
         uuid: '100-001'

@@ -7,6 +7,7 @@ const nock = require('nock')
 const proxyquire = require('proxyquire')
 
 const db = {
+  id: 1,
   name: 'postgres-1',
   plan: {name: 'heroku-postgresql:standard-0'}
 }
@@ -36,7 +37,7 @@ describe('pg:maintenance', () => {
   })
 
   it('sets maintenance window', () => {
-    pg.put('/client/v11/databases/postgres-1/maintenance_window', {description: 'Sunday 06:30'}).reply(200)
+    pg.put('/client/v11/databases/1/maintenance_window', {description: 'Sunday 06:30'}).reply(200)
     return cmd.run({app: 'myapp', args: {window: 'Sunday 06:30'}})
     .then(() => expect(cli.stdout, 'to equal', ''))
     .then(() => expect(cli.stderr, 'to equal', 'Setting maintenance window for postgres-1 to Sunday 06:30... done\n'))

@@ -74,8 +74,8 @@ describe('pg', () => {
 
       api.get('/apps/myapp/config-vars').reply(200, config)
       pg
-      .get('/client/v11/databases/postgres-1').reply(200, dbA)
-      .get('/client/v11/databases/postgres-2').reply(200, dbB)
+      .get('/client/v11/databases/1').reply(200, dbA)
+      .get('/client/v11/databases/2').reply(200, dbB)
 
       return cmd.run({app: 'myapp', args: {}})
       .then(() => expect(cli.stdout, 'to equal', `=== DATABASE_URL, HEROKU_POSTGRESQL_COBALT_URL
@@ -101,8 +101,8 @@ Add-on:    postgres-2
 
       api.get('/apps/myapp/config-vars').reply(200, config)
       pg
-      .get('/client/v11/databases/postgres-1').reply(200, dbA)
-      .get('/client/v11/databases/postgres-2').reply(200, dbB)
+      .get('/client/v11/databases/1').reply(200, dbA)
+      .get('/client/v11/databases/2').reply(200, dbB)
 
       return cmd.run({app: 'myapp', args: {}})
       .then(() => expect(cli.stdout, 'to equal', `=== DATABASE_URL, ATTACHMENT_NAME_URL
@@ -124,7 +124,7 @@ Add-on:    postgres-2
       api.get('/apps/myapp/config-vars').reply(200, config)
 
       pg
-      .get('/client/v11/databases/postgres-2')
+      .get('/client/v11/databases/2')
       .reply(200, dbB)
       return cmd.run({app: 'myapp', args: {database: 'postgres-2'}})
       .then(() => expect(cli.stdout, 'to equal', `=== HEROKU_POSTGRESQL_PURPLE_URL
@@ -141,8 +141,8 @@ Add-on:    postgres-2
 
       api.get('/apps/myapp/config-vars').reply(200, config)
       pg
-      .get('/client/v11/databases/postgres-1').reply(404)
-      .get('/client/v11/databases/postgres-2').reply(200, dbB)
+      .get('/client/v11/databases/1').reply(404)
+      .get('/client/v11/databases/2').reply(200, dbB)
 
       return cmd.run({app: 'myapp', args: {}})
       .then(() => expect(cli.stdout, 'to equal', `=== HEROKU_POSTGRESQL_PURPLE_URL

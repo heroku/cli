@@ -44,7 +44,7 @@ function * run (context, heroku) {
   yield cli.action(`Scheduling automatic daily backups of ${cli.color.addon(db.name)} at ${at}`, co(function * () {
     schedule.schedule_name = util.getUrl(attachment.config_vars)
 
-    yield heroku.post(`/client/v11/databases/${db.name}/transfer-schedules`, {
+    yield heroku.post(`/client/v11/databases/${db.id}/transfer-schedules`, {
       body: schedule,
       host: host(db)
     })

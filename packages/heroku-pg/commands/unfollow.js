@@ -10,7 +10,7 @@ function * run (context, heroku) {
   let {app, args, flags} = context
   let db = yield fetcher.addon(app, args.database)
 
-  let replica = yield heroku.get(`/client/v11/databases/${db.name}`, {host: host(db)})
+  let replica = yield heroku.get(`/client/v11/databases/${db.id}`, {host: host(db)})
 
   if (!replica.following) throw new Error(`${cli.color.addon(db.name)} is not a follower`)
 
@@ -20,7 +20,7 @@ ${cli.color.addon(db.name)} will become writeable and no longer follow ${origin}
 `)
 
   yield cli.action(`${cli.color.addon(db.name)} unfollowing`, co(function * () {
-    yield heroku.put(`/client/v11/databases/${db.name}/unfollow`, {host: host(db)})
+    yield heroku.put(`/client/v11/databases/${db.id}/unfollow`, {host: host(db)})
   }))
 }
 

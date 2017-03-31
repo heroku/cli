@@ -7,6 +7,7 @@ const nock = require('nock')
 const proxyquire = require('proxyquire')
 
 const addon = {
+  id: 1,
   name: 'postgres-1',
   plan: {name: 'heroku-postgresql:standard-0'}
 }
@@ -37,7 +38,7 @@ describe('pg:links:destroy', () => {
   })
 
   it('destroys a link', () => {
-    pg.delete('/client/v11/databases/postgres-1/links/redis').reply(200)
+    pg.delete('/client/v11/databases/1/links/redis').reply(200)
     return cmd.run({app: 'myapp', args: {link: 'redis'}, flags: {confirm: 'myapp'}})
     .then(() => expect(cli.stdout, 'to equal', ''))
     .then(() => expect(cli.stderr, 'to equal', 'Destroying link redis from postgres-1... done\n'))

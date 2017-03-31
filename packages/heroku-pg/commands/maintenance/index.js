@@ -11,7 +11,7 @@ function * run (context, heroku) {
   const db = yield fetcher.addon(app, args.database)
 
   if (util.starterPlan(db)) throw new Error('pg:maintenance is only available for production databases')
-  let info = yield heroku.get(`/client/v11/databases/${db.name}/maintenance`, {host: host(db)})
+  let info = yield heroku.get(`/client/v11/databases/${db.id}/maintenance`, {host: host(db)})
   cli.log(info.message)
 }
 

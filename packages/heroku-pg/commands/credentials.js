@@ -20,7 +20,7 @@ Connection URL:
     const host = require('../lib/host')
     let db = yield fetcher.addon(app, args.database)
     yield cli.action(`Resetting credentials on ${cli.color.addon(db.name)}`, co(function * () {
-      yield heroku.post(`/client/v11/databases/${db.name}/credentials_rotation`, {host: host(db)})
+      yield heroku.post(`/client/v11/databases/${db.id}/credentials_rotation`, {host: host(db)})
     }))
   })
 

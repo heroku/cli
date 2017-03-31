@@ -9,7 +9,7 @@ function * run (context, heroku) {
 
   yield cli.action('Terminating connections', co(function * () {
     const db = yield fetcher.addon(context.app, context.args.database)
-    yield heroku.post(`/client/v11/databases/${db.name}/connection_reset`, {host: host(db)})
+    yield heroku.post(`/client/v11/databases/${db.id}/connection_reset`, {host: host(db)})
   }))
 }
 

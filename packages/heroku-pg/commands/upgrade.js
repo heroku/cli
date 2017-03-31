@@ -13,8 +13,8 @@ function * run (context, heroku) {
   if (util.starterPlan(db)) throw new Error('pg:upgrade is only available for follower production databases')
 
   let [replica, status] = yield [
-    heroku.get(`/client/v11/databases/${db.name}`, {host: host(db)}),
-    heroku.get(`/client/v11/databases/${db.name}/upgrade_status`, {host: host(db)})
+    heroku.get(`/client/v11/databases/${db.id}`, {host: host(db)}),
+    heroku.get(`/client/v11/databases/${db.id}/upgrade_status`, {host: host(db)})
   ]
 
   if (status.error) throw new Error(status.error)
@@ -26,7 +26,7 @@ ${cli.color.addon(db.name)} will be upgraded to a newer PostgreSQL version, stop
 This cannot be undone.`)
 
   yield cli.action(`Starting upgrade of ${cli.color.addon(db.name)}`, co(function * () {
-    yield heroku.post(`/client/v11/databases/${db.name}/upgrade`, {host: host(db)})
+    yield heroku.post(`/client/v11/databases/${db.id}/upgrade`, {host: host(db)})
     cli.action.done(`${cli.color.cmd('heroku pg:wait')} to track status`)
   }))
 }

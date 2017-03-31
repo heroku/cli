@@ -21,7 +21,7 @@ function * run (context, heroku) {
   ]
 
   yield cli.action(`Adding link from ${cli.color.addon(target.name)} to ${cli.color.addon(db.name)}`, co(function * () {
-    let link = yield heroku.post(`/client/v11/databases/${db.name}/links`, {
+    let link = yield heroku.post(`/client/v11/databases/${db.id}/links`, {
       body: {
         target: target.name,
         as: flags.as

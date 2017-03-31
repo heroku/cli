@@ -7,6 +7,7 @@ const nock = require('nock')
 const proxyquire = require('proxyquire')
 
 const db = {
+  id: 1,
   name: 'postgres-1',
   plan: {name: 'heroku-postgresql:standard-0'},
   config_vars: ['DATABASE_URL'],
@@ -42,7 +43,7 @@ describe('pg:diagnose', () => {
   it('generates a report', () => {
     api.get('/addons/postgres-1').reply(200, db)
     api.get('/apps/myapp/config-vars').reply(200, {DATABASE_URL: 'postgres://db'})
-    pg.get('/client/v11/databases/postgres-1/metrics').reply(200, [])
+    pg.get('/client/v11/databases/1/metrics').reply(200, [])
     diagnose.post('/reports', {
       url: 'postgres://db',
       plan: 'standard-0',

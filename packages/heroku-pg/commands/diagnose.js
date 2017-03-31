@@ -22,7 +22,7 @@ function * run (context, heroku) {
       database: util.getUrl(db.config_vars)
     }
     if (!util.starterPlan(db)) {
-      params.metrics = yield heroku.get(`/client/v11/databases/${db.name}/metrics`, {host: host(db)})
+      params.metrics = yield heroku.get(`/client/v11/databases/${db.id}/metrics`, {host: host(db)})
     }
     return yield heroku.post('/reports', {
       host: PGDIAGNOSE_HOST,

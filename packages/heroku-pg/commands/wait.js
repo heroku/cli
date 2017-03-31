@@ -20,7 +20,7 @@ function * run (context, heroku) {
     while (true) {
       status = yield heroku.request({
         host: host(db),
-        path: `/client/v11/databases/${db.name}/wait_status`
+        path: `/client/v11/databases/${db.id}/wait_status`
       })
 
       if (status['error?']) {
