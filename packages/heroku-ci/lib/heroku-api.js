@@ -38,6 +38,16 @@ function* testRun (client, pipelineID, number) {
   })
 }
 
+function* testNodes (client, testRunIdD) {
+  return client.request({
+    path: `/test-runs/${testRunIdD}/test-nodes`,
+    headers: {
+      Authorization: `Bearer ${client.options.token}`,
+      Accept: VERSION_HEADER
+    }
+  })
+}
+
 function* testRuns (client, pipelineID) {
   return client.request({
     path: `/pipelines/${pipelineID}/test-runs`,
@@ -114,17 +124,18 @@ function appSetup (client, id) {
 }
 
 module.exports = {
-  pipelineCoupling,
-  pipelineRepository,
-  githubArchiveLink,
-  testRun,
-  testRuns,
-  latestTestRun,
-  logStream,
+  appSetup,
+  configVars,
   createSource,
   createTestRun,
-  updateTestRun,
-  configVars,
+  githubArchiveLink,
+  latestTestRun,
+  testNodes,
+  testRun,
+  testRuns,
+  logStream,
+  pipelineCoupling,
+  pipelineRepository,
   setConfigVars,
-  appSetup
+  updateTestRun
 }

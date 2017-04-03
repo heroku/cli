@@ -1,3 +1,4 @@
+
 /* eslint-env mocha */
 
 const nock = require('nock')
@@ -63,6 +64,22 @@ describe('heroku-api', function () {
 
       const response = yield herokuAPI.testRun(new Heroku(), pipeline, number)
       expect(response).to.deep.eq(testRun)
+      api.done()
+    })
+  })
+
+  describe('#testNodes', function () {
+    it('gets a test run given a pipeline and number', function* () {
+      const testRun = { id: 'uuid-999' }
+      const testNode = { test_run: { id: testRun.id } }
+
+      const api = nock(`https://api.heroku.com`)
+        .get(`/test-runs/${testRun.id}/test-nodes`)
+        .matchHeader('Accept', 'application/vnd.heroku+json; version=3.ci')
+        .reply(200, [testNode])
+
+      const response = yield herokuAPI.testNodes(new Heroku(), testRun.id)
+      expect(response).to.deep.eq([testNode])
       api.done()
     })
   })

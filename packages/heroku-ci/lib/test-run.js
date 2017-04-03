@@ -33,26 +33,33 @@ function stream (url) {
 
 function * display (pipeline, number, { heroku }) {
   let testRun = yield api.testRun(heroku, pipeline.id, number)
+  let testNodes = yield api.testNodes(heroku, testRun.id)
+  let firstTestNode = testNodes[0]
 
   testRun = yield waitForStates(TestRunStatesUtil.BUILDING_STATES, testRun, { heroku })
 
-  yield stream(testRun.setup_stream_url)
+  yield stream(firstTestNode.setup_stream_url)
 
   testRun = yield waitForStates(TestRunStatesUtil.RUNNING_STATES, testRun, { heroku })
 
-  yield stream(testRun.output_stream_url)
+  yield stream(firstTestNode.output_stream_url)
 
   testRun = yield waitForStates(TestRunStatesUtil.TERMINAL_STATES, testRun, { heroku })
+
+  // At this point, we know that testRun has a finished status,
+  // and we can check for exit_code from firstTestNode
+  testNodes = yield api.testNodes(heroku, testRun.id)
+  firstTestNode = testNodes[0]
 
   cli.log(/* newline 💃 */)
   cli.log(RenderTestRuns.printLine(testRun))
 
-  return testRun
+  return firstTestNode
 }
 
 function * displayAndExit (pipeline, number, { heroku }) {
-  let testRun = yield display(pipeline, number, { heroku })
-  process.exit(testRun.exit_code)
+  let testNode = yield display(pipeline, number, { heroku })
+  process.exit(testNode.exit_code)
 }
 
 module.exports = {

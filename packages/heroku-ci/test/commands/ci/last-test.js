@@ -7,7 +7,7 @@ const sinon = require('sinon')
 const cmd = require('../../../commands/ci/last')
 
 describe('heroku ci:last', function () {
-  let app, coupling, testRun, setupOutput, testOutput
+  let app, coupling, testRun, testNode, setupOutput, testOutput
 
   beforeEach(function () {
     cli.mockConsole()
@@ -25,12 +25,17 @@ describe('heroku ci:last', function () {
     testRun = {
       id: '123-abc',
       number: 123,
-      output_stream_url: 'https://output.com/tests',
-      setup_stream_url: 'https://output.com/setup',
       pipeline: coupling.pipeline,
       status: 'succeeded',
       commit_sha: '123abc456def',
       commit_branch: 'master'
+    }
+
+    testNode = {
+      output_stream_url: 'https://output.com/tests',
+      setup_stream_url: 'https://output.com/setup',
+      test_run: { id: testRun.id },
+      exit_code: 1
     }
 
     setupOutput = ''
@@ -49,6 +54,10 @@ describe('heroku ci:last', function () {
       .reply(200, [testRun])
       .get(`/pipelines/${coupling.pipeline.id}/test-runs/${testRun.number}`)
       .reply(200, testRun)
+      .get(`/test-runs/${testRun.id}/test-nodes`)
+      .reply(200, [testNode])
+      .get(`/test-runs/${testRun.id}/test-nodes`)
+      .reply(200, [testNode])
 
     const streamAPI = nock('https://output.com')
       .get('/setup')
