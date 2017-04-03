@@ -306,9 +306,9 @@ cli-engine-command@2.2.8:
     string "^3.3.3"
     supports-color "^3.2.3"
 
-cli-engine@2.0.8:
-  version "2.0.8"
-  resolved "https://registry.yarnpkg.com/cli-engine/-/cli-engine-2.0.8.tgz#ecbbc3f52578747177cbaaf6b956702bf5fd650d"
+cli-engine@2.0.9:
+  version "2.0.9"
+  resolved "https://registry.yarnpkg.com/cli-engine/-/cli-engine-2.0.9.tgz#42e545a4058ab4c7505b6efe7f4f3730aabe99e6"
   dependencies:
     ansi-escapes "1.4.0"
     cli-engine-command "2.2.8"
@@ -320,6 +320,7 @@ cli-engine@2.0.8:
     levenshtein "^1.0.5"
     lodash.maxby "4.6.0"
     lodash.uniqby "^4.7.0"
+    log-chopper "0.1.1"
     moment "2.17.1"
     rwlockfile "^1.3.6"
     string "3.3.3"
@@ -857,6 +858,13 @@ form-data@~2.1.1:
 fs-exists-sync@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/fs-exists-sync/-/fs-exists-sync-0.1.0.tgz#982d6893af918e72d08dec9e8673ff2b5a8d6add"
+
+fs-extra@2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-2.1.1.tgz#f8a34cc890522fc233896f34944ff2e35948959f"
+  dependencies:
+    graceful-fs "^4.1.2"
+    jsonfile "^2.1.0"
 
 fs-extra@2.1.2:
   version "2.1.2"
@@ -1731,6 +1739,10 @@ lex@^1.7.9:
   version "1.7.9"
   resolved "https://registry.yarnpkg.com/lex/-/lex-1.7.9.tgz#5d5636ccef574348362938b79a47f0eed8ed0d43"
 
+line-by-line@0.1.4:
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/line-by-line/-/line-by-line-0.1.4.tgz#7afbf8d6b975b31d4f9af21db8ff57939e9fa403"
+
 lodash.ary@4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/lodash.ary/-/lodash.ary-4.1.1.tgz#66065fa91bacc7a034d9c8fce52f83d3c7e40212"
@@ -1902,6 +1914,13 @@ lodash@4.17.4, lodash@^4.0.0, lodash@^4.3.0:
 lodash@^3.6.0:
   version "3.10.1"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-3.10.1.tgz#5bf45e8e49ba4189e17d482789dfd15bd140b7b6"
+
+log-chopper@0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/log-chopper/-/log-chopper-0.1.1.tgz#a2d3ab3e45e498d8780cc686756c57cbc7f7aee1"
+  dependencies:
+    fs-extra "2.1.1"
+    line-by-line "0.1.4"
 
 loose-envify@^1.0.0:
   version "1.3.1"
