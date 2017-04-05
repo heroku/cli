@@ -1167,9 +1167,9 @@ here@0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/here/-/here-0.0.2.tgz#69c1af3f02121f3d8788e02e84dc8b3905d71195"
 
-heroku-cli-util@6.1.16:
-  version "6.1.16"
-  resolved "https://registry.yarnpkg.com/heroku-cli-util/-/heroku-cli-util-6.1.16.tgz#344625124fbbc1481496a224557b8498fd0ba2f0"
+heroku-cli-util@6.1.17:
+  version "6.1.17"
+  resolved "https://registry.yarnpkg.com/heroku-cli-util/-/heroku-cli-util-6.1.17.tgz#3d1e5eb62f2a7e73053b4768054cc6df14b4d578"
   dependencies:
     ansi-escapes "1.4.0"
     cardinal "1.0.0"
