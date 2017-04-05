@@ -21,7 +21,7 @@
   "homepage": "https://github.com/heroku/heroku-run",
   "dependencies": {
     "co": "4.6.0",
-    "heroku-cli-util": "6.1.16",
+    "heroku-cli-util": "6.1.17",
     "shellwords": "0.1.0"
   },
   "devDependencies": {
