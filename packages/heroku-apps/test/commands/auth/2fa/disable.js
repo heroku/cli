@@ -15,14 +15,30 @@ describe('auth:2fa:disable', () => {
   it('disables 2fa on account', () => {
     cli.prompt = function () { return Promise.resolve('foobar') }
 
+    let apiPreCheck = nock('https://api.heroku.com')
+      .get('/account')
+      .reply(200, {two_factor_authentication: true})
+
     let api = nock('https://api.heroku.com')
       .patch('/account', {password: 'foobar', two_factor_authentication: false})
       .reply(200, {two_factor_authentication: false})
 
     return cmd.run({})
-      .then(() => expect(cli.stdout, 'to equal', 'Two-factor authentication is disabled\n'))
+      .then(() => expect(cli.stdout, 'to equal', 'Two-factor authentication has been disabled\n'))
       .then(() => expect(cli.stderr, 'to be empty'))
+      .then(() => apiPreCheck.done())
       .then(() => api.done())
+  })
+
+  it('errors if 2fa is already disabled', () => {
+    let apiPreCheck = nock('https://api.heroku.com')
+      .get('/account')
+      .reply(200, {two_factor_authentication: false})
+
+    return cmd.run({})
+      .then(() => expect(cli.stdout, 'to be empty'))
+      .catch((err) => expect(err.message, 'to equal', 'Two-factor authentication is already disabled'))
+      .then(() => apiPreCheck.done())
   })
 
   it('is aliased by 2fa:disable', () => {
