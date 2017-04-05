@@ -152,7 +152,7 @@ class Dyno {
           client.on('data', (data) => remote.write(data))
         })
 
-        s.listen(null, 'localhost', () => this._handle(s.address()))
+        s.listen(0, 'localhost', () => this._handle(s.address()))
       })
     })
   }
