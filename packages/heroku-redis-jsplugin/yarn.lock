@@ -882,9 +882,9 @@ has-flag@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/has-flag/-/has-flag-1.0.0.tgz#9d9e793165ce017a00f00418c43f942a7b1d11fa"
 
-heroku-cli-util@6.1.15:
-  version "6.1.15"
-  resolved "https://registry.yarnpkg.com/heroku-cli-util/-/heroku-cli-util-6.1.15.tgz#c4d0b91a785dc027934624f639106f172d7311bb"
+heroku-cli-util@6.1.17:
+  version "6.1.17"
+  resolved "https://registry.yarnpkg.com/heroku-cli-util/-/heroku-cli-util-6.1.17.tgz#3d1e5eb62f2a7e73053b4768054cc6df14b4d578"
   dependencies:
     ansi-escapes "1.4.0"
     cardinal "1.0.0"
