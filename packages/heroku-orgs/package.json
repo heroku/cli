@@ -1,7 +1,7 @@
 {
   "name": "heroku-orgs",
   "description": "CLI to manage Heroku Organizations",
-  "version": "1.5.10",
+  "version": "1.5.11",
   "author": "Raul Barroso @raulb",
   "bugs": {
     "url": "https://github.com/heroku/heroku-orgs/issues"
