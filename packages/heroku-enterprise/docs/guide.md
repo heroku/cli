@@ -80,6 +80,18 @@ acme-web                             n/a
 acme-api                             n/a
 ```
 
+#### Creating Teams
+
+To create a team in an enterprise account, you must specify the team name you
+ want and the enterprise account name. The team name must be unique. You will be
+ assigned as the sole admin of the team.
+
+```sh
+$ heroku teams:create acme-data --enterprise-account acme
+Creating acme-data in acme... done
+Creating acme-data in acme... done
+```
+
 #### Transferring a Team
 
 To transfer a team, you must specify the team name and the enterprise account
