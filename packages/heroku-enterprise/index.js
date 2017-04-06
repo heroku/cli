@@ -12,5 +12,6 @@ exports.commands = [
   require('./commands/enterprises/members-remove'),
   require('./commands/enterprises/usage'),
   require('./commands/teams'),
+  require('./commands/teams/create'),
   require('./commands/teams/transfer')
 ]
