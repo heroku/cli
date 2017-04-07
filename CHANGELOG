@@ -1,3 +1,79 @@
+5.8.1   2017-04-07
+==================
+Update plugins before updating CLI
+
+5.8.0   2017-04-05
+==================
+Update to node 7
+
+5.7.16  2017-03-30
+==================
+Update heroku-apps to 2.2.16
+
+5.7.15  2017-03-28
+==================
+Update heroku-certs to 1.1.36
+Update heroku-spaces to 2.8.4
+
+5.7.14  2017-03-28
+==================
+Update heroku-cli-addons to 1.2.14
+Update heroku-apps to 2.2.13
+
+5.7.13  2017-03-28
+==================
+Update heroku-apps to 2.2.12
+
+5.7.12  2017-03-27
+==================
+Bump version
+
+5.7.11  2017-03-27
+==================
+Update heroku-apps to 2.2.11
+Update heroku-certs to 1.1.35
+
+5.7.10  2017-03-23
+==================
+Update heroku-cli-util to 6.1.15
+
+5.7.9   2017-03-23
+==================
+Revert "update heroku-cli-util to 6.1.14"
+
+5.7.8   2017-03-22
+==================
+Update heroku-cli-util to 6.1.14
+
+5.7.7   2017-03-21
+==================
+Revert "update heroku-cli-util to 6.1.13"
+
+5.7.6   2017-03-21
+==================
+Update heroku-cli-util to 6.1.13
+
+5.7.5   2017-03-20
+==================
+Bump heroku-apps to 2.2.7
+
+5.7.4   2017-03-20
+==================
+Update heroku-apps to 2.2.6
+Update heroku-certs to 1.1.31
+
+5.7.3   2017-03-17
+==================
+Update heroku-apps to 2.2.5
+
+5.7.2   2017-03-17
+==================
+Update heroku-apps to 2.2.4
+
+5.7.1   2017-03-17
+==================
+Bump heroku-spaces to 2.8.0
+
 5.7.0  2017-03-14
 ==================
 Update heroku-apps to 2.2.3
