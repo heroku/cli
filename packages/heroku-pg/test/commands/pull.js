@@ -86,7 +86,7 @@ describe('pg', () => {
       sinon.stub(psql, 'exec').returns(Promise.resolve(emptyResponse))
 
       let cp = sinon.mock(require('child_process'))
-      let cmd = 'env PGSSLMODE=prefer pg_dump --verbose -F c -Z 0  -h localhost -p 5432  localdb | env PGPASSWORD="pass" pg_restore --verbose --no-acl --no-owner -U jeff -h herokai.com -p 5432 -d mydb'
+      let cmd = 'env PGSSLMODE=prefer pg_dump --verbose -F c -Z 0     localdb | env PGPASSWORD="pass" pg_restore --verbose --no-acl --no-owner -U jeff -h herokai.com -p 5432 -d mydb'
       cp.expects('spawn').withExactArgs(cmd, [], opts).once().returns(
         {
           stdout: {
@@ -132,7 +132,7 @@ describe('pg', () => {
       sinon.stub(psql, 'exec').returns(Promise.resolve(emptyResponse))
       let cp = sinon.mock(require('child_process'))
 
-      let cmd = 'env PGSSLMODE=prefer pg_dump --verbose -F c -Z 0  -h localhost -p 5433  localdb | env PGPASSWORD="pass" pg_restore --verbose --no-acl --no-owner -U jeff -h herokai.com -p 5432 -d mydb'
+      let cmd = 'env PGSSLMODE=prefer pg_dump --verbose -F c -Z 0   -p 5433  localdb | env PGPASSWORD="pass" pg_restore --verbose --no-acl --no-owner -U jeff -h herokai.com -p 5432 -d mydb'
       cp.expects('spawn').withExactArgs(cmd, [], opts).once().returns(
         {
           stdout: {
@@ -166,7 +166,7 @@ describe('pg', () => {
       let psql = require('../../lib/psql')
       sinon.stub(psql, 'exec').returns(Promise.resolve(emptyResponse))
       let cp = sinon.mock(require('child_process'))
-      let cmd = 'env PGSSLMODE=prefer pg_dump --verbose -F c -Z 0  -h localhost -p 5432  localdb | env PGPASSWORD="pass" pg_restore --verbose --no-acl --no-owner -U jeff -h herokai.com -p 5432 -d mydb'
+      let cmd = 'env PGSSLMODE=prefer pg_dump --verbose -F c -Z 0     localdb | env PGPASSWORD="pass" pg_restore --verbose --no-acl --no-owner -U jeff -h herokai.com -p 5432 -d mydb'
       cp.expects('spawn').withExactArgs(cmd, [], opts).once().returns(
         {
           stdout: {
@@ -191,7 +191,7 @@ describe('pg', () => {
       sinon.stub(psql, 'exec').returns(Promise.resolve(emptyResponse))
 
       let cp = sinon.mock(require('child_process'))
-      let cmd = 'env PGSSLMODE=prefer pg_dump --verbose -F c -Z 0  -h localhost -p 5432  localdb | env PGPASSWORD="pass" pg_restore --verbose --no-acl --no-owner -U jeff -h herokai.com -p 5432 -d mydb'
+      let cmd = 'env PGSSLMODE=prefer pg_dump --verbose -F c -Z 0     localdb | env PGPASSWORD="pass" pg_restore --verbose --no-acl --no-owner -U jeff -h herokai.com -p 5432 -d mydb'
       cp.expects('spawn').withExactArgs(cmd, [], opts).once().returns(
         {
           stdout: {
@@ -216,9 +216,9 @@ describe('pg', () => {
       let psql = require('../../lib/psql')
       sinon.stub(psql, 'exec')
       let cp = sinon.mock(require('child_process'))
-      cp.expects('execSync').withExactArgs('createdb  -h localhost -p 5432  localdb', {stdio: 'inherit'}).once()
+      cp.expects('execSync').withExactArgs('createdb     localdb', {stdio: 'inherit'}).once()
 
-      let cmd = 'env PGPASSWORD="pass" PGSSLMODE=prefer pg_dump --verbose -F c -Z 0 -U jeff -h herokai.com -p 5432  mydb | env pg_restore --verbose --no-acl --no-owner  -h localhost -p 5432 -d localdb'
+      let cmd = 'env PGPASSWORD="pass" PGSSLMODE=prefer pg_dump --verbose -F c -Z 0 -U jeff -h herokai.com -p 5432  mydb | env pg_restore --verbose --no-acl --no-owner    -d localdb'
       cp.expects('spawn').withExactArgs(cmd, [], opts).once().returns(
         {
           stdout: {
@@ -252,9 +252,9 @@ describe('pg', () => {
       let psql = require('../../lib/psql')
       sinon.stub(psql, 'exec')
       let cp = sinon.mock(require('child_process'))
-      cp.expects('execSync').withExactArgs('createdb  -h localhost -p 5432  localdb', {stdio: 'inherit'}).once()
+      cp.expects('execSync').withExactArgs('createdb     localdb', {stdio: 'inherit'}).once()
 
-      let cmd = 'env PGPASSWORD="pass" PGSSLMODE=prefer pg_dump --verbose -F c -Z 0 -U jeff -h herokai.com -p 5432  mydb | env pg_restore --verbose --no-acl --no-owner  -h localhost -p 5432 -d localdb'
+      let cmd = 'env PGPASSWORD="pass" PGSSLMODE=prefer pg_dump --verbose -F c -Z 0 -U jeff -h herokai.com -p 5432  mydb | env pg_restore --verbose --no-acl --no-owner    -d localdb'
       cp.expects('spawn').withExactArgs(cmd, [], opts).once().returns(
         {
           stdout: {

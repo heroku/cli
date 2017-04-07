@@ -14,8 +14,11 @@ function parseURL (db) {
   db.user = user
   db.password = password
   db.database = db.path ? db.path.split('/', 2)[1] : null
-  db.host = db.hostname || 'localhost'
-  db.port = db.port || env.PGPORT || 5432
+  db.host = db.hostname
+  db.port = db.port || env.PGPORT
+  if (db.hostname) {
+    db.port = db.port || 5432
+  }
   return db
 }
 
@@ -50,7 +53,7 @@ function spawn (cmd) {
 }
 
 const prepare = co.wrap(function * (target) {
-  if (target.host === 'localhost') {
+  if (target.host === 'localhost' || !target.host) {
     exec(`createdb ${connstring(target, true)}`)
   } else {
     // N.B.: we don't have a proper postgres driver and we don't want to rely on overriding
@@ -66,7 +69,9 @@ const prepare = co.wrap(function * (target) {
 
 function connstring (uri, skipDFlag) {
   let user = uri.user ? `-U ${uri.user}` : ''
-  return `${user} -h ${uri.host} -p ${uri.port || 5432} ${skipDFlag ? '' : '-d'} ${uri.database}`
+  let host = uri.host ? `-h ${uri.host}` : ''
+  let port = uri.port ? `-p ${uri.port}` : ''
+  return `${user} ${host} ${port} ${skipDFlag ? '' : '-d'} ${uri.database}`
 }
 
 const verifyExtensionsMatch = co.wrap(function * (source, target) {
