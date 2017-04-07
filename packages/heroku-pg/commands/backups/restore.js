@@ -65,7 +65,7 @@ Use ${cli.color.cmd('heroku pg:backups')} to check progress.
 Stop a running restore with ${cli.color.cmd('heroku pg:backups:cancel')}.
 `)
 
-  yield pgbackups.wait('Restoring', restore.uuid, interval, flags.verbose)
+  yield pgbackups.wait('Restoring', restore.uuid, interval, flags.verbose, db.app.name)
 }
 
 module.exports = {

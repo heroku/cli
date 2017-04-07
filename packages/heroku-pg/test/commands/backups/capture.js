@@ -5,7 +5,7 @@ const cli = require('heroku-cli-util')
 const expect = require('unexpected')
 const nock = require('nock')
 
-const addon = {name: 'postgres-1', plan: {name: 'heroku-postgresql:standard-0'}}
+const addon = {name: 'postgres-1', plan: {name: 'heroku-postgresql:standard-0'}, app: {name: 'myapp'}}
 
 const cmd = require('../../../commands/backups/capture')
 
@@ -28,6 +28,7 @@ const shouldCapture = function (cmdRun) {
   })
 
   it('captures a db', () => {
+    addon.app.name = 'myapp'
     api = nock('https://api.heroku.com')
     api.post('/actions/addon-attachments/resolve', {app: 'myapp', addon_attachment: 'DATABASE_URL'}).reply(200, [{addon}])
 
@@ -54,6 +55,7 @@ Stop a running backup with heroku pg:backups:cancel.
   })
 
   it('captures a db (verbose)', () => {
+    addon.app.name = 'myapp'
     api = nock('https://api.heroku.com')
     api.post('/actions/addon-attachments/resolve', {app: 'myapp', addon_attachment: 'DATABASE_URL'}).reply(200, [{addon}])
 
@@ -75,6 +77,40 @@ Stop a running backup with heroku pg:backups:cancel.
 Use Ctrl-C at any time to stop monitoring progress; the backup will continue running.
 Use heroku pg:backups:info to check progress.
 Stop a running backup with heroku pg:backups:cancel.
+
+Backing up DATABASE to b005...
+100 log message 1
+`))
+    .then(() => expect(cli.stderr, 'to equal', `Starting backup of postgres-1... done
+`))
+  })
+
+  it('captures a db (verbose) with non billing app', () => {
+    addon.app.name = 'mybillingapp'
+    api = nock('https://api.heroku.com')
+    api.post('/actions/addon-attachments/resolve', {app: 'myapp', addon_attachment: 'DATABASE_URL'}).reply(200, [{addon}])
+
+    pg = nock('https://postgres-api.heroku.com')
+    pg.post('/client/v11/databases/postgres-1/backups').reply(200, {
+      num: 5,
+      from_name: 'DATABASE',
+      uuid: '100-001'
+    })
+    pg.get('/client/v11/apps/mybillingapp/transfers/100-001?verbose=true').reply(200, {
+      finished_at: '101',
+      succeeded: true,
+      logs: [{created_at: '100', message: 'log message 1'}]
+    })
+    cli.mockConsole()
+
+    return cmdRun({app: 'myapp', args: {}, flags: {verbose: true}})
+    .then(() => expect(cli.stdout, 'to equal', `
+Use Ctrl-C at any time to stop monitoring progress; the backup will continue running.
+Use heroku pg:backups:info to check progress.
+Stop a running backup with heroku pg:backups:cancel.
+
+HINT: You are running this command with a non-billing application.
+Use heroku pg:backups -a mybillingapp to check the list of backups.
 
 Backing up DATABASE to b005...
 100 log message 1

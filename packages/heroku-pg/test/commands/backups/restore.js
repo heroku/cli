@@ -5,7 +5,7 @@ const cli = require('heroku-cli-util')
 const expect = require('unexpected')
 const nock = require('nock')
 
-const addon = {name: 'postgres-1', plan: {name: 'heroku-postgresql:standard-0'}}
+const addon = {name: 'postgres-1', plan: {name: 'heroku-postgresql:standard-0'}, app: {name: 'myapp'}}
 
 const cmd = require('../../../commands/backups/restore')
 
