@@ -115,15 +115,20 @@ function * run (context, heroku) {
     dynos: heroku.request({path: `/apps/${app}/dynos${suffix}`})
   }
 
-  if (!json && !extended) {
-    promises.app_info = heroku.request({
-      path: `/apps/${context.app}`,
-      headers: {Accept: 'application/vnd.heroku+json; version=3.process-tier'}
-    })
-    promises.account_info = heroku.request({path: '/account'})
-  }
+  promises.app_info = heroku.request({
+    path: `/apps/${context.app}`,
+    headers: {Accept: 'application/vnd.heroku+json; version=3.process-tier'}
+  })
+  promises.account_info = heroku.request({path: '/account'})
 
   let {dynos, app_info, account_info} = yield promises
+  const shielded = app_info.space && app_info.space.shield
+
+  if (shielded) {
+    dynos.forEach(d => {
+      d.size = d.size.replace('Private-', 'Shield-')
+    })
+  }
 
   if (types.length > 0) {
     dynos = dynos.filter(dyno => types.find(t => dyno.type === t))
