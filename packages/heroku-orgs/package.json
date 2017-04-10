@@ -17,10 +17,10 @@
     "chai": "*",
     "mocha": "*",
     "mocha-junit-reporter": "1.13.0",
-    "nock": "9.0.9",
-    "nyc": "10.1.2",
+    "nock": "9.0.13",
+    "nyc": "10.2.0",
     "proxyquire": "1.7.11",
-    "standard": "9.0.0"
+    "standard": "10.0.1"
   },
   "homepage": "https://github.com/heroku/heroku-orgs",
   "keywords": [
@@ -34,5 +34,10 @@
   },
   "scripts": {
     "test": "nyc mocha && standard"
-  }
+  },
+  "files": [
+    "index.js",
+    "commands",
+    "lib"
+  ]
 }

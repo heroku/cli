@@ -18,13 +18,13 @@ This app is already locked.`)
 }
 
 let cmd = {
-  topic: 'apps',
-  command: 'lock',
   description: 'prevent organization members from joining an app',
   needsAuth: true,
   needsApp: true,
   run: cli.command(co.wrap(run))
 }
 
-module.exports.apps = cmd
-module.exports.root = Object.assign({}, cmd, {topic: 'lock', command: null})
+module.exports = [
+  Object.assign({topic: 'apps', command: 'lock'}, cmd),
+  Object.assign({topic: 'lock'}, cmd)
+]

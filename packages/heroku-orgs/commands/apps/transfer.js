@@ -5,7 +5,7 @@ let AppTransfer = require('../../lib/app_transfer')
 let cli = require('heroku-cli-util')
 let co = require('co')
 let inquirer = require('inquirer')
-let lock = require('./lock.js').apps
+let lock = require('./lock.js')[0]
 let Utils = require('../../lib/utils')
 
 function getAppsToTransfer (apps) {
@@ -98,15 +98,17 @@ Examples:
   `
 }
 
-module.exports = cmd
-module.exports.sharing = {
-  topic: 'sharing',
-  command: 'transfer',
-  help: 'this command is now heroku apps:transfer',
-  variableArgs: true,
-  hidden: true,
-  run: () => {
-    cli.error(`This command is now ${cli.color.cyan('heroku apps:transfer')}`)
-    process.exit(1)
+module.exports = [
+  cmd,
+  {
+    topic: 'sharing',
+    command: 'transfer',
+    help: 'this command is now heroku apps:transfer',
+    variableArgs: true,
+    hidden: true,
+    run: () => {
+      cli.error(`This command is now ${cli.color.cyan('heroku apps:transfer')}`)
+      process.exit(1)
+    }
   }
-}
+]
