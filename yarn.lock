@@ -126,13 +126,13 @@ cross-spawn-async@^2.1.1:
     lru-cache "^4.0.0"
     which "^1.2.8"
 
-debug@2.6.0, debug@^2.1.3, debug@^2.2.0:
+debug@2.6.0:
   version "2.6.0"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.0.tgz#bc596bcabe7617f11d9fa15361eded5608b8499b"
   dependencies:
     ms "0.7.2"
 
-debug@2.6.3:
+debug@2.6.3, debug@^2.1.3, debug@^2.2.0:
   version "2.6.3"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.3.tgz#0f7eb8c30965ec08c72accfa0130c8b79984141d"
   dependencies:
@@ -240,9 +240,9 @@ here@0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/here/-/here-0.0.2.tgz#69c1af3f02121f3d8788e02e84dc8b3905d71195"
 
-heroku-apps@2.2.18:
-  version "2.2.18"
-  resolved "https://registry.yarnpkg.com/heroku-apps/-/heroku-apps-2.2.18.tgz#08b7dd1056ef207f7c0213456b48acf3b5b83a07"
+heroku-apps@2.2.19:
+  version "2.2.19"
+  resolved "https://registry.yarnpkg.com/heroku-apps/-/heroku-apps-2.2.19.tgz#f0d4666b722be10f14c896257da74fc6c204c902"
   dependencies:
     bluebird "3.4.7"
     co "4.6.0"
@@ -431,9 +431,9 @@ heroku-local@5.1.13:
     foreman "2.0.0"
     heroku-cli-util "6.1.17"
 
-heroku-orgs@1.5.11:
-  version "1.5.11"
-  resolved "https://registry.yarnpkg.com/heroku-orgs/-/heroku-orgs-1.5.11.tgz#a8866790118357f1a67e911ca947598541372535"
+heroku-orgs@1.5.12:
+  version "1.5.12"
+  resolved "https://registry.yarnpkg.com/heroku-orgs/-/heroku-orgs-1.5.12.tgz#19f497dd063e3ab85b600f181f77c59e9f2018cd"
   dependencies:
     co "4.6.0"
     heroku-cli-util "6.1.17"
@@ -441,9 +441,9 @@ heroku-orgs@1.5.11:
     lodash "4.17.4"
     lodash.flatten "4.4.0"
 
-heroku-pg@2.0.24:
-  version "2.0.24"
-  resolved "https://registry.yarnpkg.com/heroku-pg/-/heroku-pg-2.0.24.tgz#92168a213ecb740a8b7a0abb9721a45c7ebf193c"
+heroku-pg@2.0.25:
+  version "2.0.25"
+  resolved "https://registry.yarnpkg.com/heroku-pg/-/heroku-pg-2.0.25.tgz#50fb37c25aca93103c9bc01d8d7ade452dff6ff9"
   dependencies:
     bytes "2.5.0"
     co "4.6.0"
