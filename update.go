@@ -49,6 +49,7 @@ func Update(channel string) {
 	touchAutoupdateFile()
 	SubmitAnalytics()
 	UserPlugins.Update()
+	UserPlugins.Rebuild()
 	UserPlugins.MigrateRubyPlugins()
 	deleteOldPluginsDirectory()
 	updateCLI(channel)

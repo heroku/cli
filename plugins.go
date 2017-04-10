@@ -492,6 +492,11 @@ func (p *Plugins) MigrateRubyPlugins() {
 	}
 }
 
+// Rebuild the plugins when node version changes
+func (p *Plugins) Rebuild() {
+	p.execNpm("rebuild")
+}
+
 func (p *Plugins) addToCache(plugin *Plugin) {
 	contains := func(name string) int {
 		for i, plugin := range p.plugins {
