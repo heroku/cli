@@ -27,9 +27,6 @@ func Install(channel string) {
 	if arch == "amd64" {
 		arch = "x64"
 	}
-	if channel == "v6-philipe" {
-		channel = "v6"
-	}
 	manifest := GetUpdateManifest(channel, os, arch)
 	DownloadCLI(channel, filepath.Join(DataHome, "client"), os, arch, manifest)
 }
