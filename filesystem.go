@@ -47,7 +47,7 @@ func dataHome() string {
 			d = filepath.Join(HomeDir, ".local", "share")
 		}
 	}
-	d = filepath.Join(d, "heroku-cli")
+	d = filepath.Join(d, "heroku")
 	must(mkdirp(d))
 	return d
 }

@@ -28,7 +28,7 @@ func Install(channel string) {
 		arch = "x64"
 	}
 	manifest := GetUpdateManifest(channel, os, arch)
-	DownloadCLI(channel, filepath.Join(DataHome, "cli"), os, arch, manifest)
+	DownloadCLI(channel, filepath.Join(DataHome, "client"), os, arch, manifest)
 }
 
 // DownloadCLI downloads a CLI update to a given path
@@ -89,7 +89,7 @@ func GetUpdateManifest(channel, os, arch string) *Manifest {
 }
 
 func binPath() string {
-	bin := filepath.Join(DataHome, "cli", "bin", "heroku")
+	bin := filepath.Join(DataHome, "client", "bin", "heroku")
 	if runtime.GOOS == WINDOWS {
 		bin = bin + ".cmd"
 	}
