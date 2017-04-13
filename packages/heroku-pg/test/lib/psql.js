@@ -58,18 +58,25 @@ describe('psql', () => {
         PGHOST: 'localhost'
       })
       let opts = {env: env, encoding: 'utf8', stdio: [ 'ignore', 'pipe', 'inherit' ]}
-      let onHandler = function (key, data) {
-        return Promise.resolve('result')
-      }
       cp.expects('spawn').withExactArgs('psql', ['-c', 'SELECT NOW();'], opts).once().returns(
         {
           stdout: {
-            on: onHandler
+            on: (key, callback) => {
+              if (key === 'data') {
+                callback('2001-01-01T00:00:00.000UTC')
+              }
+            }
           },
-          on: onHandler
+          on: (key, callback) => {
+            if (key === 'close') {
+              callback(0)
+            } else if (key === 'error') {
+              callback(null)
+            }
+          }
         }
       )
-      return psql.exec(db, 'SELECT NOW();', 1000).catch((timeout) => {})
+      return psql.exec(db, 'SELECT NOW();')
       .then(() => cp.verify())
       .then(() => cp.restore())
     }))
@@ -84,18 +91,25 @@ describe('psql', () => {
         localHost: '127.0.0.1',
         localPort: 49152
       }
-      let onHandler = function (key, data) {
-        return Promise.resolve('result')
-      }
       cp.expects('spawn').withArgs('psql', ['-c', 'SELECT NOW();']).once().returns(
         {
           stdout: {
-            on: onHandler
+            on: (key, callback) => {
+              if (key === 'data') {
+                callback('2001-01-01T00:00:00.000UTC')
+              }
+            }
           },
-          on: onHandler
+          on: (key, callback) => {
+            if (key === 'close') {
+              callback(0)
+            } else if (key === 'error') {
+              callback(null)
+            }
+          }
         }
       )
-      return psql.exec(bastionDb, 'SELECT NOW();', 1000).catch((timeout) => {})
+      return psql.exec(bastionDb, 'SELECT NOW();', 1000)
       .then(() => expect(
         tunnelStub.withArgs(tunnelConf).calledOnce, 'to equal', true))
       .then(() => cp.verify())
