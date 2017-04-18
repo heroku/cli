@@ -62,11 +62,6 @@ type Command struct {
 	Help             string             `json:"help"`
 	FullHelp         string             `json:"fullHelp"`
 	Hidden           bool               `json:"hidden"`
-	NeedsApp         bool               `json:"needsApp"`
-	WantsApp         bool               `json:"wantsApp"`
-	NeedsOrg         bool               `json:"needsOrg"`
-	WantsOrg         bool               `json:"wantsOrg"`
-	NeedsAuth        bool               `json:"needsAuth"`
 	VariableArgs     bool               `json:"variableArgs"`
 	DisableAnalytics bool               `json:"disableAnalytics"`
 	Args             []Arg              `json:"args"`
@@ -97,12 +92,7 @@ func CommandUsage(c *Command) string {
 
 func (c *Command) buildFlagHelp() string {
 	flags := c.Flags
-	if c.NeedsApp || c.WantsApp {
-		flags = append(flags, *AppFlag, *RemoteFlag)
-	}
-	if c.NeedsOrg || c.WantsOrg {
-		flags = append(flags, *OrgFlag)
-	}
+
 	flags.Sort()
 	lines := make([]string, 0, len(flags))
 	longestFlag := 20

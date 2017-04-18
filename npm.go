@@ -152,9 +152,9 @@ func (p *Plugins) environ() []string {
 }
 
 func npmRegistry() string {
-	registry := os.Getenv("HEROKU_NPM_REGISTRY")
+	registry := os.Getenv("SFDX_NPM_REGISTRY")
 	if registry == "" {
-		registry = "https://cli-npm.heroku.com"
+		registry = "https://registry.npmjs.org/"
 	}
 	return registry
 }

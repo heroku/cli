@@ -124,40 +124,89 @@ var _ = Describe("Help", func() {
 	})
 
 	Context("help topic on namespace", func() {
+		topicBackup := cli.CLITopics
+		corePluginsBackup := cli.CorePlugins
+
 		BeforeEach(func() {
 			cli.BinaryName = "sfdx"
-			cli.Start(BinaryName, "help", "heroku:auth:2fa")
+			cli.CLITopics = cli.Topics{
+				{
+					Namespace: "test",
+					Name:      "ttopic",
+					Commands:  cli.Commands{{Command: "tcommand", Namespace: "test", Description: "mydescription", Run: func(*cli.Context) {}}},
+				},
+			}
+
+			pluginsObj := &cli.Plugins{}
+			pluginsObj.SetPlugins([]*cli.Plugin{&cli.Plugin{Namespace: &cli.Namespace{Name: "test"}}})
+			cli.CorePlugins = pluginsObj
+			cli.Start(BinaryName, "help", "test:ttopic")
+		})
+		AfterEach(func() {
+			cli.CLITopics = topicBackup
+			cli.CorePlugins = corePluginsBackup
 		})
 
 		It("exits with code 0", func() { Expect(exit).To(Equal(0)) })
 		It("shows help", func() {
-			Expect(stdout()).To(ContainSubstring("heroku:auth:2fa"))
+			Expect(stdout()).To(ContainSubstring("ttopic:tcommand"))
+			Expect(stdout()).To(ContainSubstring("mydescription"))
 		})
 	})
 
 	Context("help namespace:topic:command", func() {
+		topicBackup := cli.CLITopics
+		corePluginsBackup := cli.CorePlugins
 		BeforeEach(func() {
 			cli.BinaryName = "sfdx"
-			cli.Start(BinaryName, "help", "heroku:auth:2fa")
+			cli.CLITopics = cli.Topics{
+				{
+					Namespace: "test",
+					Name:      "ttopic",
+					Commands:  cli.Commands{{Command: "tcommand", Namespace: "test", Help: "myhelp", Run: func(*cli.Context) {}}},
+				},
+			}
+
+			pluginsObj := &cli.Plugins{}
+			pluginsObj.SetPlugins([]*cli.Plugin{&cli.Plugin{Namespace: &cli.Namespace{Name: "test"}}})
+			cli.CorePlugins = pluginsObj
+			cli.Start(BinaryName, "help", "test:ttopic:tcommand")
+		})
+		AfterEach(func() {
+			cli.CLITopics = topicBackup
+			cli.CorePlugins = corePluginsBackup
 		})
 
 		It("exits with code 0", func() { Expect(exit).To(Equal(0)) })
 		It("shows help", func() {
+			Expect(cli.CorePlugins.Plugins()[0].Namespace).To(ContainSubstring("test"))
 			// SHouldn't show topic help, should show command help
-			Expect(stdout()).To(ContainSubstring("check 2fa status"))
+			Expect(stdout()).To(ContainSubstring("myhelp"))
 		})
 	})
 
 	Context("help with different namespace", func() {
+		topicBackup := cli.CLITopics
+
 		BeforeEach(func() {
-			cli.BinaryName = "sfdx"
+			cli.BinaryName = "test"
+			cli.CLITopics = cli.Topics{
+				{
+					Namespace: "test",
+					Name:      "ttopic",
+					Commands:  cli.Commands{{Run: func(*cli.Context) {}}},
+				},
+			}
 			cli.Start(BinaryName, "help")
+		})
+		AfterEach(func() {
+			cli.CLITopics = topicBackup
 		})
 
 		It("exits with code 0", func() { Expect(exit).To(Equal(0)) })
 		It("shows help", func() {
 			// SHouldn't show topic help, should show command help
-			Expect(stdout()).To(ContainSubstring("list all heroku topics"))
+			Expect(stdout()).To(ContainSubstring("test ttopic"))
 		})
 	})
 })

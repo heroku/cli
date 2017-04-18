@@ -22,7 +22,7 @@ func (p *Plugins) RunScript(script string) (cmd *exec.Cmd, done func()) {
 	} else {
 		cmd = exec.Command(nodeBinPath(), "-e", script)
 	}
-	cmd.Env = append([]string{"NODE_PATH=" + p.modulesPath(), "HEROKU_EXECUTABLE_NAME=" + getExecutableName()}, os.Environ()...)
+	cmd.Env = append([]string{"NODE_PATH=" + p.modulesPath()}, os.Environ()...)
 	return cmd, func() {
 		if f != nil {
 			os.Remove(f.Name())
@@ -31,7 +31,7 @@ func (p *Plugins) RunScript(script string) (cmd *exec.Cmd, done func()) {
 }
 
 func nodeBinPath() string {
-	b := os.Getenv("HEROKU_NODE_PATH")
+	b := os.Getenv("SFDX_NODE_PATH")
 	ext := ""
 	if runtime.GOOS == WINDOWS {
 		ext = ".exe"

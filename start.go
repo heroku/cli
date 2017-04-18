@@ -46,26 +46,15 @@ var DefaultNamespace = BinaryName
 func Start(args ...string) {
 	Args = args
 	loadNewCLI()
-	Args = removeCliTokenAndUpdateDefaultNamespace(args)
 
 	ShowDebugInfo()
 
 	if len(Args) <= 1 {
-		// Heroku shows a dashboard, but to do that for sfdx an entirly new
-		// plugin would need to be created and auto installed to utilize a
-		// dashboard. For now, just show help. Should be removed eventually.
-		if getDefaultNamespace() == HerokuNamespace.Name {
-			// show dashboard if no args passed
+		if AllCommands().Find("dashboard") != nil {
 			Args = append(Args, "dashboard")
 		} else {
 			Args = append(Args, "--help")
 		}
-	} else if len(Args) == 2 && getDefaultNamespace() != HerokuNamespace.Name && Args[1] == HerokuNamespace.Name {
-		// Since dashboard is not the default command for the heroku namespace, there is no way
-		// to find that command without changing the default namespace since the next thing after
-		// "sfdx heroku" needs to be a topic, not a command.
-		DefaultNamespace = HerokuNamespace.Name
-		Args[1] = "dashboard"
 	}
 
 	switch Args[1] {
@@ -155,25 +144,6 @@ func installRequiredNamespace(namespace *Namespace) {
 			Println()
 		}
 	}
-}
-
-func removeCliTokenAndUpdateDefaultNamespace(args []string) []string {
-	// Golang flags are set after variable initialzation, so Namespace
-	// is still "unset". Namespace should always be defaulted to the BinaryName unless
-	// the CliToken is specified to set the Namespace to the AliasName.
-	DefaultNamespace = BinaryName
-
-	newArray := []string{}
-
-	for i := 0; i < len(args); i++ {
-		if args[i] == CliToken {
-			DefaultNamespace = AliasName
-			Debugf("Alias moving default namespace to %s\n", DefaultNamespace)
-		} else {
-			newArray = append(newArray, args[i])
-		}
-	}
-	return newArray
 }
 
 // The executable name is always the namespace

@@ -1,9 +1,9 @@
 !include MUI2.nsh
 
 !define Version 'VERSION'
-Name "Heroku CLI"
+Name "SFDX CLI"
 CRCCheck On
-InstallDirRegKey HKCU "Software\Heroku" ""
+InstallDirRegKey HKCU "Software\sfdx" ""
 
 !insertmacro MUI_PAGE_COMPONENTS
 !insertmacro MUI_PAGE_DIRECTORY
@@ -16,21 +16,21 @@ InstallDirRegKey HKCU "Software\Heroku" ""
 
 OutFile "installer.exe"
 
-InstallDir "$PROGRAMFILES64\Heroku"
+InstallDir "$PROGRAMFILES64\sfdx"
 
-Section "Heroku CLI ${VERSION}"
+Section "SFDX CLI ${VERSION}"
   SetOutPath $INSTDIR
   File /r bin
   File /r lib
-  WriteRegStr HKCU "Software\Heroku" "" $INSTDIR
+  WriteRegStr HKCU "Software\sfdx" "" $INSTDIR
   WriteUninstaller "$INSTDIR\Uninstall.exe"
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Heroku" \
-                   "DisplayName" "Heroku CLI"
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Heroku" \
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\sfdx" \
+                   "DisplayName" "SFDX CLI"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\sfdx" \
                    "UninstallString" "$\"$INSTDIR\uninstall.exe$\""
 SectionEnd
 
-Section "Set PATH to Heroku CLI"
+Section "Set PATH to SFDX CLI"
   Push "$INSTDIR\bin"
   Call AddToPath
 SectionEnd
@@ -45,8 +45,8 @@ SectionEnd
 Section "Uninstall"
   Delete "$INSTDIR\Uninstall.exe"
   RMDir /r "$INSTDIR"
-  RMDir /r "$LOCALAPPDATA\Heroku"
-  DeleteRegKey /ifempty HKCU "Software\Heroku"
+  RMDir /r "$LOCALAPPDATA\sfdx"
+  DeleteRegKey /ifempty HKCU "Software\sfdx"
 SectionEnd
 
 !define Environ 'HKCU "Environment"'

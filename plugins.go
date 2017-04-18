@@ -322,7 +322,7 @@ func (p *Plugins) ParsePlugin(name, tag string) (*Plugin, error) {
 		return nil, fmt.Errorf("Invalid plugin. No commands found.")
 	}
 
-	var namespace = "heroku"
+	var namespace = "sfdx"
 
 	if plugin.Namespace != nil {
 		namespace = plugin.Namespace.Name
@@ -553,6 +553,11 @@ func (p *Plugins) Plugins() []*Plugin {
 		p.RefreshPlugins()
 	}
 	return p.plugins
+}
+
+// SetPlugins set the plugins for testing
+func (p *Plugins) SetPlugins(plugins []*Plugin) {
+	p.plugins = plugins
 }
 
 func (p *Plugins) removeMissingPlugins() {

@@ -17,15 +17,12 @@ if [ ! -w "$DIR" ]; then
 fi
 
 CURRENTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-INSTALLPATH_HEROKU=$DIR/heroku
 INSTALLPATH_SFDX=$DIR/sfdx
-$SUDO cp $CURRENTDIR/bin/heroku $INSTALLPATH_HEROKU
 $SUDO cp $CURRENTDIR/bin/sfdx $INSTALLPATH_SFDX
 
-rm -rf ~/.local/share/heroku/cli
-mkdir -p ~/.local/share/heroku
-cp -r $CURRENTDIR ~/.local/share/heroku/cli
+rm -rf ~/.local/share/sfdx/cli
+mkdir -p ~/.local/share/sfdx
+cp -r $CURRENTDIR ~/.local/share/sfdx/cli
 
-printf "\e[0mheroku installed to \e[38;5;104m$INSTALLPATH_HEROKU\e[0m\n"
 printf "\e[0msfdx installed to \e[38;5;104m$INSTALLPATH_SFDX\e[0m\n"
 $INSTALLPATH_HEROKU version

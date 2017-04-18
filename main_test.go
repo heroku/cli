@@ -39,7 +39,10 @@ var _ = Describe("version", func() {
 			cli.CLITopics = topicBackup
 		})
 
-		It("ran dashboard command", func() { Expect(ran).To(BeTrue()) })
+		It("ran dashboard command", func() {
+			//Expect(stdout()).To(ContainSubstring("check 2fa status"))
+			Expect(ran).To(BeTrue())
+		})
 	})
 
 	Describe("ShowDebugInfo", func() {

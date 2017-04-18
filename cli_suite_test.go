@@ -17,9 +17,9 @@ import (
 )
 
 // Copy from start.go to be used in the test namespace
-const CLI_NAME = "Heroku"
-const BinaryName = "heroku"
-const FolderName = "heroku"
+const CLI_NAME = "sfdx"
+const BinaryName = "sfdx"
+const FolderName = "sfdx"
 
 func TestCLI(t *testing.T) {
 	os.Setenv("TESTING", "1")
@@ -37,7 +37,7 @@ func TestCLI(t *testing.T) {
 
 var errLogPath = filepath.Join("tmp", "error.log")
 var _ = BeforeSuite(func() {
-	cli.AppDir, _ = filepath.Abs(filepath.Join("tmp", "dev", "heroku"))
+	cli.AppDir, _ = filepath.Abs(filepath.Join("tmp", "dev", FolderName))
 	cli.CorePlugins.Path = filepath.Join(cli.AppDir, "lib")
 	cli.ExitFn = func(int) {}
 	os.MkdirAll(filepath.Dir(errLogPath), 0755)

@@ -20,6 +20,7 @@ func init() {
 		{
 			Name:        "build",
 			Description: "These commands are used to build the CLI. They are not intended to be used otherwise.",
+			Hidden:      true,
 			Commands: Commands{
 				{
 					Command:     "plugins",

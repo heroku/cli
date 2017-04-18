@@ -1,9 +1,9 @@
-Heroku CLI Standalone
+SalesforceDX CLI Standalone
 =====================
 
-To install the standalone Heroku CLI:
+To install the standalone SalesforceDX CLI:
 
     $ xz -cd heroku-VERSION.tar.xz | tar -x
-    $ cd heroku
+    $ cd sfdx
     $ ./install
-    heroku installed to /usr/local/bin/heroku
+    sfdx installed to /usr/local/bin/sfdx

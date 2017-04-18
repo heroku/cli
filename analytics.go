@@ -7,9 +7,6 @@ import (
 	"path/filepath"
 	"runtime"
 	"time"
-
-	"github.com/dghubble/sling"
-	"github.com/dickeyxxx/golock"
 )
 
 var analyticsPath = filepath.Join(CacheHome, "analytics.json")
@@ -96,29 +93,33 @@ func SubmitAnalytics() {
 	if skipAnalytics() {
 		return
 	}
-	file := readAnalyticsFile()
-	lockfile := filepath.Join(CacheHome, "analytics.lock")
-	golock.Lock(lockfile)
-	defer golock.Unlock(lockfile)
-	file = readAnalyticsFile() // read commands again in case it was locked
-	file.User = netrcLogin()
+	// file := readAnalyticsFile()
+	// lockfile := filepath.Join(CacheHome, "analytics.lock")
+	// golock.Lock(lockfile)
+	// defer golock.Unlock(lockfile)
+	// file = readAnalyticsFile() // read commands again in case it was locked
 
-	host := os.Getenv("HEROKU_ANALYTICS_HOST")
-	if host == "" {
-		host = "https://cli-analytics.heroku.com"
-	}
+	// TODO Send to Salesforce
 
-	req := sling.New().Base(host)
-	req.Set("User-Agent", version())
-	resp, err := req.Post("/record").BodyJSON(file).ReceiveSuccess(nil)
-	if err != nil {
-		LogIfError(err)
-		return
-	}
-	LogIfError(getHTTPError(resp))
+	// file.User = netrcLogin()
+	//
+	// host := os.Getenv("HEROKU_ANALYTICS_HOST")
+	// if host == "" {
+	// 	host = "https://cli-analytics.heroku.com"
+	// }
+	//
+	// req := sling.New().Base(host)
+	// req.Set("User-Agent", version())
+	// resp, err := req.Post("/record").BodyJSON(file).ReceiveSuccess(nil)
+	// if err != nil {
+	// 	LogIfError(err)
+	// 	return
+	// }
+	// LogIfError(getHTTPError(resp))
+
 	writeAnalyticsFile(analyticsBody{Schema: 1})
 }
 
 func skipAnalytics() bool {
-	return os.Getenv("TESTING") == ONE || (config.SkipAnalytics != nil && *config.SkipAnalytics) || netrcLogin() == ""
+	return os.Getenv("TESTING") == ONE || (config.SkipAnalytics != nil && *config.SkipAnalytics) // || netrcLogin() == ""
 }

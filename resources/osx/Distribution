@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <installer-script minSpecVersion="1.000000" authoringTool="com.apple.PackageMaker" authoringToolVersion="3.0.3">
-  <title>Heroku CLI VERSION</title>
+  <title>SFDX CLI VERSION</title>
   <options customize="never"/>
   <choices-outline>
     <line choice="heroku-cli"/>

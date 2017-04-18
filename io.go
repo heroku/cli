@@ -198,7 +198,7 @@ func LogIfError(e error) {
 const ONE = "1"
 
 func isDebugging() bool {
-	debug := strings.ToUpper(os.Getenv("HEROKU_DEBUG"))
+	debug := strings.ToUpper(os.Getenv("SFDX_DEBUG"))
 	if debug == "TRUE" || debug == ONE {
 		return true
 	}
@@ -206,7 +206,7 @@ func isDebugging() bool {
 }
 
 func isDebuggingHeaders() bool {
-	debug := strings.ToUpper(os.Getenv("HEROKU_DEBUG_HEADERS"))
+	debug := strings.ToUpper(os.Getenv("SFDX_DEBUG_HEADERS"))
 	if debug == "TRUE" || debug == ONE {
 		return true
 	}

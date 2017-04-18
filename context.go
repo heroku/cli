@@ -28,9 +28,6 @@ type Context struct {
 	APIURL        string                 `json:"apiUrl"`
 	GitHost       string                 `json:"gitHost"`
 	HTTPGitHost   string                 `json:"httpGitHost"`
-	Auth          struct {
-		Password string `json:"password"`
-	} `json:"auth"`
 }
 
 var errHelp = errors.New(HELP)
@@ -51,30 +48,7 @@ func BuildContext(command *Command, args []string) (*Context, error) {
 	if err != nil {
 		return nil, err
 	}
-	if ctx.Command.NeedsApp || ctx.Command.WantsApp {
-		var err error
-		ctx.App, err = app(ctx.Flags)
-		if err != nil && ctx.Command.NeedsApp {
-			ExitWithMessage(err.Error())
-		}
-		if ctx.App == "" && ctx.Command.NeedsApp {
-			ctx.Command.appNeededErr()
-		}
-	}
-	if ctx.Command.NeedsOrg || ctx.Command.WantsOrg {
-		if org, ok := ctx.Flags["org"].(string); ok {
-			ctx.Org = org
-		} else {
-			ctx.Org = os.Getenv("HEROKU_ORGANIZATION")
-		}
-		if ctx.Org == "" && ctx.Command.NeedsOrg {
-			ExitWithMessage("No org specified.\nRun this command with --org or by setting HEROKU_ORGANIZATION")
-		}
-	}
-	if ctx.Command.NeedsAuth {
-		ctx.APIToken = auth()
-		ctx.Auth.Password = ctx.APIToken
-	}
+
 	ctx.Cwd, _ = os.Getwd()
 	ctx.HerokuDir = CacheHome
 	ctx.Debug = Debugging
@@ -98,12 +72,7 @@ func parseVarArgs(command *Command, args []string) (result []string, flags map[s
 		f := flag
 		possibleFlags = append(possibleFlags, &f)
 	}
-	if command.NeedsApp || command.WantsApp {
-		possibleFlags = append(possibleFlags, AppFlag, RemoteFlag)
-	}
-	if command.NeedsOrg || command.WantsOrg {
-		possibleFlags = append(possibleFlags, OrgFlag)
-	}
+
 	warnAboutDuplicateFlags(possibleFlags)
 	for i := 0; i < len(args); i++ {
 		switch {
