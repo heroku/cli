@@ -104,7 +104,7 @@ func pluginsList(ctx *Context) {
 func pluginsInstall(ctx *Context) {
 	plugins := ctx.Args.([]string)
 	if len(plugins) == 0 {
-		ExitWithMessage("Must specify a plugin name.\nUSAGE: " + getExecutableName() + " plugins:install heroku-debug")
+		ExitWithMessage("Must specify a plugin name.\nUSAGE: " + getExecutableName() + " plugins:install salesforcedx")
 	}
 	toinstall := make([]string, 0, len(plugins))
 	core := CorePlugins.PluginNames()
@@ -317,6 +317,9 @@ func (p *Plugins) ParsePlugin(name, tag string) (*Plugin, error) {
 	err = json.Unmarshal(output, &plugin)
 	if err != nil {
 		return nil, fmt.Errorf("Error parsing plugin: %s\n%s\n%s\nIs this a real CLI plugin?", name, err, string(output))
+	}
+	if plugin.Namespace == nil || plugin.Namespace.Name == "" {
+		return nil, fmt.Errorf("Invalid plugin. No namespace found.")
 	}
 	if len(plugin.Commands) == 0 {
 		return nil, fmt.Errorf("Invalid plugin. No commands found.")
