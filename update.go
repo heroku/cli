@@ -156,6 +156,12 @@ var updateManifestRetrying = false
 func GetUpdateManifest(channel, version string) *Manifest {
 	var m Manifest
 	url := "https://cli-assets.heroku.com/branches/" + channel + "/manifest.json"
+
+	if UpgradeURL != "" {
+		url = UpgradeURL + "/manifest.json"
+		Debugf("Looking for new version at %s\n", url)
+	}
+
 	if version != "" {
 		Errln("heroku-cli: locked to " + version)
 		url = "https://cli-assets.heroku.com/branches/" + channel + "/" + version + "/manifest.json"

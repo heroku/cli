@@ -85,7 +85,7 @@ tmp/%/$(FOLDER_NAME)/lib/plugins.json: $(WORKSPACE)/lib/plugins.json
 
 BUILD_TAGS=release
 SOURCES := $(shell ls | grep '\.go')
-LDFLAGS=-ldflags "-X=main.Version=$(VERSION) -X=main.Channel=$(CHANNEL) -X=main.GitSHA=$(REVISION) -X=main.Autoupdate=$(AUTOUPDATE) -X=main.BinaryName=$(BINARY_NAME) -X=main.CliToken=$(CLI_TOKEN) -X=main.FolderName=$(FOLDER_NAME)"
+LDFLAGS=-ldflags "-X=main.Version=$(VERSION) -X=main.Channel=$(CHANNEL) -X=main.UpgradeURL=$(UPGRADE_URL) -X=main.GitSHA=$(REVISION) -X=main.Autoupdate=$(AUTOUPDATE) -X=main.BinaryName=$(BINARY_NAME) -X=main.CliToken=$(CLI_TOKEN) -X=main.FolderName=$(FOLDER_NAME)"
 GOOS=$(OS)
 $(WORKSPACE)/bin/$(BINARY_NAME): OS   := $(shell go env GOOS)
 $(WORKSPACE)/bin/$(BINARY_NAME): ARCH := $(shell go env GOARCH)
@@ -119,21 +119,21 @@ ifdef HEROKU_WINDOWS_SIGNING_PASS
 	@gpg --yes --passphrase '$(HEROKU_WINDOWS_SIGNING_PASS)' -o resources/exe/heroku-codesign-cert.pfx -d resources/exe/heroku-codesign-cert.pfx.gpg
 endif
 
-$(DIST_DIR)/$(VERSION)/heroku-v$(VERSION)-%.tar.xz: tmp/%
+$(DIST_DIR)/$(VERSION)/sfdx-v$(VERSION)-%.tar.xz: tmp/%
 	@if [ -z "$(CHANNEL)" ]; then echo "no channel" && exit 1; fi
 	@mkdir -p $(@D)
-	tar -C tmp/$* -c heroku | xz -2 > $@
+	tar -C tmp/$* -c sfdx | xz -2 > $@
 
-$(DIST_DIR)/$(VERSION)/gz/heroku-v$(VERSION)-%.tar.gz: tmp/%
+$(DIST_DIR)/$(VERSION)/gz/sfdx-v$(VERSION)-%.tar.gz: tmp/%
 	@if [ -z "$(CHANNEL)" ]; then echo "no channel" && exit 1; fi
 	@mkdir -p $(@D)
-	tar -C tmp/$* -c heroku | gzip > $@
+	tar -C tmp/$* -c sfdx | gzip > $@
 
 comma:=,
 empty:=
 space:=$(empty) $(empty)
-DIST_TARGETS := $(foreach t,$(TARGETS),$(DIST_DIR)/$(VERSION)/heroku-v$(VERSION)-$(t).tar.xz)
-DIST_TARGETS_GZ := $(foreach t,$(TARGETS),$(DIST_DIR)/$(VERSION)/gz/heroku-v$(VERSION)-$(t).tar.gz)
+DIST_TARGETS := $(foreach t,$(TARGETS),$(DIST_DIR)/$(VERSION)/sfdx-v$(VERSION)-$(t).tar.xz)
+DIST_TARGETS_GZ := $(foreach t,$(TARGETS),$(DIST_DIR)/$(VERSION)/gz/sfdx-v$(VERSION)-$(t).tar.gz)
 MANIFEST := $(DIST_DIR)/$(VERSION)/manifest.json
 MANIFEST_GZ := $(DIST_DIR)/$(VERSION)/gz/manifest.json
 $(MANIFEST): $(WORKSPACE)/bin/$(BINARY_NAME) $(DIST_TARGETS)
@@ -153,14 +153,14 @@ $(MANIFEST_GZ).sig: $(MANIFEST_GZ)
 ifneq ($(CHANNEL),)
 PREVIOUS_VERSION:=$(shell curl -fsSL https://cli-assets.heroku.com/branches/$(CHANNEL)/manifest.json | jq -r '.version')
 endif
-DIST_PATCHES := $(foreach t,$(TARGETS),$(DIST_DIR)/$(PREVIOUS_VERSION)/heroku-v$(PREVIOUS_VERSION)-$(t).patch)
+DIST_PATCHES := $(foreach t,$(TARGETS),$(DIST_DIR)/$(PREVIOUS_VERSION)/sfdx-v$(PREVIOUS_VERSION)-$(t).patch)
 
-$(DIST_DIR)/$(PREVIOUS_VERSION)/heroku-v$(PREVIOUS_VERSION)-%.patch: $(DIST_DIR)/$(VERSION)/heroku-v$(VERSION)-%.tar.xz
+$(DIST_DIR)/$(PREVIOUS_VERSION)/sfdx-v$(PREVIOUS_VERSION)-%.patch: $(DIST_DIR)/$(VERSION)/sfdx-v$(VERSION)-%.tar.xz
 	@mkdir -p $(@D)
 	$(WORKSPACE)/bin/$(BINARY_NAME) build:bsdiff --new $< --channel $(CHANNEL) --target $* --out $@
 
 DEB_VERSION:=$(firstword $(subst -, ,$(VERSION)))-1
-DEB_BASE:=heroku_$(DEB_VERSION)
+DEB_BASE:=sfdx_$(DEB_VERSION)
 $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_%.deb: tmp/debian-%
 	@mkdir -p tmp/$(DEB_BASE)_$*.apt/DEBIAN
 	@mkdir -p tmp/$(DEB_BASE)_$*.apt/usr/bin
@@ -188,13 +188,13 @@ $(CACHE_DIR)/git/Git-%.exe:
 	@mkdir -p $(CACHE_DIR)/git
 	curl -fsSLo $@ https://cli-assets.heroku.com/git/Git-$*.exe
 
-$(DIST_DIR)/$(VERSION)/heroku-windows-%.exe: tmp/windows-% $(CACHE_DIR)/git/Git-2.8.1-32-bit.exe $(CACHE_DIR)/git/Git-2.8.1-64-bit.exe
+$(DIST_DIR)/$(VERSION)/sfdx-windows-%.exe: tmp/windows-% $(CACHE_DIR)/git/Git-2.8.1-32-bit.exe $(CACHE_DIR)/git/Git-2.8.1-64-bit.exe
 	@mkdir -p $(@D)
 	rm -rf tmp/windows-$*-installer
 	cp -r tmp/windows-$* tmp/windows-$*-installer
 	cp $(CACHE_DIR)/git/Git-2.8.1-64-bit.exe tmp/windows-$*-installer/$(FOLDER_NAME)/git.exe
 	sed -e "s/!define Version 'VERSION'/!define Version '$(VERSION)'/" resources/exe/heroku.nsi |\
-		sed -e "s/InstallDir .*/InstallDir \"\$$PROGRAMFILES$(if $(filter amd64,$*),64,)\\\Heroku\"/" \
+		sed -e "s/InstallDir .*/InstallDir \"\$$PROGRAMFILES$(if $(filter amd64,$*),64,)\\\sfdx\"/" \
 		> tmp/windows-$*-installer/$(FOLDER_NAME)/heroku.nsi
 	makensis tmp/windows-$*-installer/$(FOLDER_NAME)/heroku.nsi > /dev/null
 ifdef HEROKU_WINDOWS_SIGNING_PASS
@@ -205,7 +205,7 @@ ifdef HEROKU_WINDOWS_SIGNING_PASS
 		-in tmp/windows-$*-installer/$(FOLDER_NAME)/installer.exe -out $@
 endif
 
-$(DIST_DIR)/$(CHANNEL)/$(VERSION)/heroku-osx.pkg: tmp/darwin-amd64
+$(DIST_DIR)/$(CHANNEL)/$(VERSION)/sfdx-osx.pkg: tmp/darwin-amd64
 	@mkdir -p $(@D)
 	./resources/osx/build $@
 
@@ -289,7 +289,7 @@ windows: $(WINDOWS_TARGETS)
 $(WINDOWS_TARGETS): $(TARGET_DEPS) tmp/windows-$$(ARCH)/$(FOLDER_NAME)/lib/node.exe
 
 .PHONY: distwin
-distwin: $(DIST_DIR)/$(VERSION)/heroku-windows-amd64.exe $(DIST_DIR)/$(VERSION)/heroku-windows-386.exe
+distwin: $(DIST_DIR)/$(VERSION)/sfdx-windows-amd64.exe $(DIST_DIR)/$(VERSION)/sfdx-windows-386.exe
 
 .PHONY: disttxz disttgz
 disttxz: $(MANIFEST) $(MANIFEST).sig $(DIST_TARGETS)
@@ -321,11 +321,11 @@ releasetgz/%.tar.gz: %.tar.gz
 	aws s3 cp --cache-control max-age=86400 $< s3://heroku-cli-assets/branches/$(CHANNEL)/$(notdir $<)
 
 .PHONY: distosx
-distosx: $(DIST_DIR)/$(CHANNEL)/$(VERSION)/heroku-osx.pkg
+distosx: $(DIST_DIR)/$(CHANNEL)/$(VERSION)/sfdx-osx.pkg
 
 .PHONY: releaseosx
-releaseosx: $(DIST_DIR)/$(CHANNEL)/$(VERSION)/heroku-osx.pkg
-	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(CHANNEL)/$(VERSION)/heroku-osx.pkg s3://heroku-cli-assets/branches/$(CHANNEL)/heroku-osx.pkg
+releaseosx: $(DIST_DIR)/$(CHANNEL)/$(VERSION)/sfdx-osx.pkg
+	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(CHANNEL)/$(VERSION)/sfdx-osx.pkg s3://heroku-cli-assets/branches/$(CHANNEL)/sfdx-osx.pkg
 
 .PHONY: distdeb
 distdeb: $(DIST_DIR)/$(VERSION)/apt/Packages $(DIST_DIR)/$(VERSION)/apt/Release
@@ -345,9 +345,9 @@ releasedeb: $(DIST_DIR)/$(VERSION)/apt/Packages $(DIST_DIR)/$(VERSION)/apt/Relea
 	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/apt/Release.gpg s3://heroku-cli-assets/branches/$(CHANNEL)/apt/Release.gpg
 
 .PHONY: releasewin
-releasewin: $(DIST_DIR)/$(VERSION)/heroku-windows-amd64.exe $(DIST_DIR)/$(VERSION)/heroku-windows-386.exe
-	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/heroku-windows-amd64.exe s3://heroku-cli-assets/branches/$(CHANNEL)/heroku-windows-amd64.exe
-	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/heroku-windows-386.exe s3://heroku-cli-assets/branches/$(CHANNEL)/heroku-windows-386.exe
+releasewin: $(DIST_DIR)/$(VERSION)/sfdx-windows-amd64.exe $(DIST_DIR)/$(VERSION)/sfdx-windows-386.exe
+	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/sfdx-windows-amd64.exe s3://heroku-cli-assets/branches/$(CHANNEL)/sfdx-windows-amd64.exe
+	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/sfdx-windows-386.exe s3://heroku-cli-assets/branches/$(CHANNEL)/sfdx-windows-386.exe
 
 NODES = node-v$(NODE_VERSION)-darwin-x64.tar.gz \
 node-v$(NODE_VERSION)-linux-x64.tar.gz \

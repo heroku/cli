@@ -17,6 +17,10 @@ var GitSHA = ""
 // This is set by a build flag in the `Rakefile` based on the git branch.
 var Channel = "?"
 
+// UpgradeURL is the URL to look at the manifest file for updates.
+// This is set by a build flag in the `Makefile`.
+var UpgradeURL = "?"
+
 // CLITopics are all the command topics
 // This list is all the Go topics, the Node topics are filled in later
 var CLITopics Topics
