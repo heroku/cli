@@ -1,24 +1,11 @@
 {
   "name": "heroku-run",
-  "version": "3.4.10",
   "description": "Heroku CLI plugin to run one-off dyno processes.",
-  "main": "index.js",
-  "scripts": {
-    "test": "nyc mocha && standard"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/heroku/heroku-run.git"
-  },
-  "keywords": [
-    "heroku-plugin"
-  ],
+  "version": "3.4.10",
   "author": "Jeff Dickey (@dickeyxxx)",
-  "license": "ISC",
   "bugs": {
     "url": "https://github.com/heroku/heroku-run/issues"
   },
-  "homepage": "https://github.com/heroku/heroku-run",
   "dependencies": {
     "co": "4.6.0",
     "heroku-cli-util": "6.1.17",
@@ -34,5 +21,18 @@
     "sinon": "1.17.7",
     "standard": "8.6.0",
     "unexpected": "10.25.0"
+  },
+  "homepage": "https://github.com/heroku/heroku-run",
+  "keywords": [
+    "heroku-plugin"
+  ],
+  "license": "ISC",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/heroku/heroku-run.git"
+  },
+  "scripts": {
+    "test": "nyc mocha && standard"
   }
 }
