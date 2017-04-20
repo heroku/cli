@@ -113,6 +113,7 @@ func (p *Plugins) npmCmd(args ...string) (*exec.Cmd, error) {
 		}
 		args = append(args, "--loglevel="+level)
 	}
+	args = append(args, "--scripts-prepend-node-path=true")
 	cmd := exec.Command(nodeBinPath(), args...)
 	cmd.Dir = p.Path
 	cmd.Env = p.environ()

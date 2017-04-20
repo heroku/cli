@@ -441,9 +441,9 @@ heroku-orgs@1.5.12:
     lodash "4.17.4"
     lodash.flatten "4.4.0"
 
-heroku-pg@2.0.25:
-  version "2.0.25"
-  resolved "https://registry.yarnpkg.com/heroku-pg/-/heroku-pg-2.0.25.tgz#50fb37c25aca93103c9bc01d8d7ade452dff6ff9"
+heroku-pg@2.0.26:
+  version "2.0.26"
+  resolved "https://registry.yarnpkg.com/heroku-pg/-/heroku-pg-2.0.26.tgz#fe4a1444969f6aa81788315291b42bc42be032bc"
   dependencies:
     bytes "2.5.0"
     co "4.6.0"
