@@ -34,7 +34,7 @@
     ]
   },
   "dependencies": {
-    "cli-engine": "3.0.2",
+    "cli-engine": "3.0.3",
     "heroku-apps": "2.2.19",
     "heroku-certs": "1.1.38",
     "heroku-cli-addons": "1.2.16",
@@ -43,7 +43,7 @@
     "heroku-git": "2.5.16",
     "heroku-local": "5.1.13",
     "heroku-orgs": "1.5.12",
-    "heroku-pg": "2.0.25",
+    "heroku-pg": "2.0.26",
     "heroku-pipelines": "1.4.4",
     "heroku-redis": "1.2.13",
     "heroku-run": "3.4.10",
