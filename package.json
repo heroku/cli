@@ -10,7 +10,7 @@
   "cli-engine": {
     "dirname": "heroku",
     "bin": "heroku",
-    "node": "7.8.0",
+    "node": "7.9.0",
     "defaultCommand": "dashboard",
     "s3": {
       "bucket": "heroku-cli-assets",
@@ -34,14 +34,14 @@
     ]
   },
   "dependencies": {
-    "cli-engine": "3.0.3",
-    "heroku-apps": "2.2.19",
+    "cli-engine": "3.0.5",
+    "heroku-apps": "2.2.20",
     "heroku-certs": "1.1.38",
-    "heroku-cli-addons": "1.2.16",
+    "heroku-cli-addons": "1.2.17",
     "heroku-cli-oauth": "2.0.12",
     "heroku-fork": "4.1.21",
     "heroku-git": "2.5.16",
-    "heroku-local": "5.1.13",
+    "heroku-local": "5.1.14",
     "heroku-orgs": "1.5.12",
     "heroku-pg": "2.0.26",
     "heroku-pipelines": "1.4.4",

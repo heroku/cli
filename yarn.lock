@@ -249,9 +249,9 @@ cli-engine-config@1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/cli-engine-config/-/cli-engine-config-1.0.3.tgz#c02c14b3e0ff78b8a4627e006fdfe23e32f2cb28"
 
-cli-engine@3.0.3:
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/cli-engine/-/cli-engine-3.0.3.tgz#5147648216404ca713a9192f7a5f48d2e4661b98"
+cli-engine@3.0.5:
+  version "3.0.5"
+  resolved "https://registry.yarnpkg.com/cli-engine/-/cli-engine-3.0.5.tgz#4e80e6286265f76588abe2e4c43b53cdf88c86f1"
   dependencies:
     ansi-escapes "1.4.0"
     cli-engine-command "3.0.3"
@@ -736,9 +736,9 @@ here@0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/here/-/here-0.0.2.tgz#69c1af3f02121f3d8788e02e84dc8b3905d71195"
 
-heroku-apps@2.2.19:
-  version "2.2.19"
-  resolved "https://registry.yarnpkg.com/heroku-apps/-/heroku-apps-2.2.19.tgz#f0d4666b722be10f14c896257da74fc6c204c902"
+heroku-apps@2.2.20:
+  version "2.2.20"
+  resolved "https://registry.yarnpkg.com/heroku-apps/-/heroku-apps-2.2.20.tgz#8396bc3087105a16039a74e300db72a709e48cec"
   dependencies:
     bluebird "3.4.7"
     co "4.6.0"
@@ -810,6 +810,23 @@ heroku-cli-addons@1.2.13:
 heroku-cli-addons@1.2.16:
   version "1.2.16"
   resolved "https://registry.yarnpkg.com/heroku-cli-addons/-/heroku-cli-addons-1.2.16.tgz#f4ef511179d2c1d46f73676e4d887f2c52d71efb"
+  dependencies:
+    co "4.6.0"
+    co-wait "0.0.0"
+    heroku-cli-util "6.1.17"
+    lodash.flatten "4.4.0"
+    lodash.groupby "4.6.0"
+    lodash.memoize "4.1.2"
+    lodash.merge "4.6.0"
+    lodash.some "4.6.0"
+    lodash.sortby "4.7.0"
+    lodash.topairs "4.3.0"
+    lodash.values "4.3.0"
+    printf "0.2.5"
+
+heroku-cli-addons@1.2.17:
+  version "1.2.17"
+  resolved "https://registry.yarnpkg.com/heroku-cli-addons/-/heroku-cli-addons-1.2.17.tgz#6da2e2265313b6dd774a9d4c4860eee1711a746e"
   dependencies:
     co "4.6.0"
     co-wait "0.0.0"
@@ -919,13 +936,14 @@ heroku-git@2.5.16:
     co "4.6.0"
     heroku-cli-util "6.1.17"
 
-heroku-local@5.1.13:
-  version "5.1.13"
-  resolved "https://registry.yarnpkg.com/heroku-local/-/heroku-local-5.1.13.tgz#09f28fef064691aa0c7c57c15749b2461c32876c"
+heroku-local@5.1.14:
+  version "5.1.14"
+  resolved "https://registry.yarnpkg.com/heroku-local/-/heroku-local-5.1.14.tgz#4986fb68d352d67939760c40544b4f4c49362fe5"
   dependencies:
     co "4.6.0"
     foreman "2.0.0"
     heroku-cli-util "6.1.17"
+    lodash.flatten "4.4.0"
 
 heroku-orgs@1.5.12:
   version "1.5.12"
