@@ -1,5 +1,6 @@
 'use strict'
 let cli = require('heroku-cli-util')
+let push = require('./push')
 
 function BuildpackCommand (context, heroku, command, action) {
   this.app = context.app
@@ -18,6 +19,7 @@ function BuildpackCommand (context, heroku, command, action) {
   this.url = context.args && context.args.url
   this.action = action
   this.command = command
+  this.context = context
 }
 
 BuildpackCommand.prototype.mapBuildpackResponse = function (buildpacks) {
@@ -103,11 +105,11 @@ BuildpackCommand.prototype.display = function (buildpacks, indent) {
 BuildpackCommand.prototype.displayUpdate = function (buildpacks) {
   if (buildpacks.length === 1) {
     cli.log(`Buildpack ${this.action}. Next release on ${this.app} will use ${buildpacks[0].buildpack.url}.`)
-    cli.log(`Run ${cli.color.magenta('git push heroku master')} to create a new release using this buildpack.`)
+    cli.log(`Run ${cli.color.magenta(push(this.context))} to create a new release using this buildpack.`)
   } else {
     cli.log(`Buildpack ${this.action}. Next release on ${this.app} will use:`)
     this.display(buildpacks, '  ')
-    cli.log(`Run ${cli.color.magenta('git push heroku master')} to create a new release using these buildpacks.`)
+    cli.log(`Run ${cli.color.magenta(push(this.context))} to create a new release using these buildpacks.`)
   }
 }
 

@@ -2,6 +2,7 @@
 
 let cli = require('heroku-cli-util')
 let co = require('co')
+let push = require('../../../lib/push')
 
 function map (stack) {
   return stack === 'cedar-10' ? 'cedar' : stack
@@ -15,7 +16,7 @@ function * run (context, heroku) {
     body: {build_stack: stack}
   })
   cli.log(`Stack set. Next release on ${cli.color.app(context.app)} will use ${cli.color.green(stack)}.`)
-  cli.log(`Run ${cli.color.cmd('git push heroku master')} to create a new release on ${cli.color.app(context.app)}.`)
+  cli.log(`Run ${cli.color.cmd(push(context))} to create a new release on ${cli.color.app(context.app)}.`)
 }
 
 let cmd = {
