@@ -265,7 +265,6 @@ function * run (ctx, api) {
 let topic = 'addons'
 module.exports = {
   topic: topic,
-  default: true,
   needsAuth: true,
   wantsApp: true,
   flags: [
