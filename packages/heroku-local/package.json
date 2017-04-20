@@ -9,7 +9,8 @@
   "dependencies": {
     "co": "4.6.0",
     "foreman": "2.0.0",
-    "heroku-cli-util": "6.1.17"
+    "heroku-cli-util": "6.1.17",
+    "lodash.flatten": "4.4.0"
   },
   "devDependencies": {
     "standard": "8.6.0"

@@ -24,11 +24,9 @@ function * run (context) {
   require('foreman/nf.js')
 }
 
-module.exports = {
+const cmd = {
   topic: 'local',
-  command: 'start',
   description: 'run heroku app locally',
-  default: true,
   help: `Start the application specified by a Procfile (defaults to ./Procfile)
 
 Examples:
@@ -47,3 +45,8 @@ Examples:
   ],
   run: cli.command(co.wrap(run))
 }
+
+module.exports = [
+  cmd,
+  Object.assign({command: 'start'}, cmd)
+]
