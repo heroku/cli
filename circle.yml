@@ -26,8 +26,8 @@ stages:
           set -exu
           TAG=`git describe --exact-match HEAD || echo NOTAG`
           if [ "${TAG}" != "NOTAG" ]; then
-            yarn run release beta
+            yarn run release stable
           fi
           if [ "${CIRCLE_BRANCH}" == "v6" ]; then
-            yarn run release v6
+            yarn run release beta
           fi
