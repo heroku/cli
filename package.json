@@ -11,6 +11,7 @@
     "dirname": "heroku",
     "bin": "heroku",
     "node": "7.8.0",
+    "namespace": "heroku",
     "defaultCommand": "dashboard",
     "s3": {
       "bucket": "heroku-cli-assets",
