@@ -3,12 +3,10 @@
 let co = require('co')
 let cli = require('heroku-cli-util')
 
-module.exports = {
+const cmd = {
   topic: 'pipelines',
-  command: 'list',
   description: 'list pipelines you have access to',
-  help: 'Example:\n  $ heroku pipelines:list\n  === My Pipelines\n  example\n  sushi',
-  default: true,
+  help: 'Example:\n  $ heroku pipelines\n  === My Pipelines\n  example\n  sushi',
   flags: [
     {name: 'json', description: 'output in json format'}
   ],
@@ -24,3 +22,8 @@ module.exports = {
     }
   }))
 }
+
+module.exports = [
+  cmd,
+  Object.assign({command: 'list'}, cmd)
+]

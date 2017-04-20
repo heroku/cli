@@ -1,5 +1,6 @@
 var fs = require('fs')
 var path = require('path')
+var flatten = require('lodash.flatten')
 
 exports.topic = {
   name: 'pipelines',
@@ -9,6 +10,6 @@ exports.topic = {
 
 var normalizedPath = path.join(__dirname, 'commands/pipelines')
 
-exports.commands = fs.readdirSync(normalizedPath).map(function (file) {
+exports.commands = flatten(fs.readdirSync(normalizedPath).map(function (file) {
   return require('./commands/pipelines/' + file)
-})
+}))

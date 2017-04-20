@@ -2,9 +2,9 @@
 
 const cli = require('heroku-cli-util')
 const nock = require('nock')
-const cmd = require('../../../commands/pipelines/list')
+const cmd = require('../../../commands/pipelines')[0]
 
-describe('pipelines:list', () => {
+describe('pipelines', () => {
   beforeEach(() => cli.mockConsole())
 
   it('displays the right messages', () => {
