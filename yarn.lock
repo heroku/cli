@@ -977,9 +977,9 @@ heroku-pg@2.0.26:
     strip-eof "1.0.0"
     tunnel-ssh "4.1.2"
 
-heroku-pipelines@1.4.4:
-  version "1.4.4"
-  resolved "https://registry.yarnpkg.com/heroku-pipelines/-/heroku-pipelines-1.4.4.tgz#5871fb33dbb01992528cc7c8f06fb559fb6a5c1c"
+heroku-pipelines@1.4.5:
+  version "1.4.5"
+  resolved "https://registry.yarnpkg.com/heroku-pipelines/-/heroku-pipelines-1.4.5.tgz#7181cc3688a3ce41cc1c2e94b18a6a959501b17c"
   dependencies:
     bluebird "3.4.7"
     co "4.6.0"
@@ -987,6 +987,7 @@ heroku-pipelines@1.4.4:
     heroku-cli-util "6.1.17"
     inflection "1.12.0"
     inquirer "3.0.1"
+    lodash.flatten "4.4.0"
     string-just "0.0.2"
     validator "6.2.1"
 
