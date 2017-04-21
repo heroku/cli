@@ -1,3 +1,8 @@
+5.8.7   2017-04-21
+==================
+Bump heroku-apps to 2.2.20
+Bump heroku-pg to 2.0.26
+
 5.8.6   2017-04-11
 ==================
 Add --scripts-prepend-node-path=true to npm args
