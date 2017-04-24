@@ -11,5 +11,7 @@ exports.topic = {
 var normalizedPath = path.join(__dirname, 'commands/pipelines')
 
 exports.commands = flatten(fs.readdirSync(normalizedPath).map(function (file) {
-  return require('./commands/pipelines/' + file)
-}))
+  if (file.endsWith('.js')) {
+    return require('./commands/pipelines/' + file)
+  }
+})).filter(function (e) { return e !== undefined })
