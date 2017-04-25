@@ -49,6 +49,7 @@ func Update(channel string) {
 	touchAutoupdateFile()
 	updateCLI(channel)
 	SubmitAnalytics()
+	installRequiredNamespace(&Namespace{Name: "force"})
 	UserPlugins.Update()
 	UserPlugins.MigrateRubyPlugins()
 	deleteOldPluginsDirectory()

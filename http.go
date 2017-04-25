@@ -4,7 +4,6 @@ import (
 	"container/list"
 	"crypto/tls"
 	"crypto/x509"
-	"encoding/json"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -59,20 +58,6 @@ type APIRequest struct {
 func (api *APIRequest) Auth(token string) *APIRequest {
 	api.Set("Authorization", "Bearer "+token)
 	return api
-}
-
-func apiRequest() *APIRequest {
-	req := sling.New().Client(apiHTTPClient).Base(apiURL())
-	req.Set("User-Agent", version())
-	req.Set("Accept", "application/vnd.heroku+json; version=3")
-	if os.Getenv("HEROKU_HEADERS") != "" {
-		var h map[string]string
-		json.Unmarshal([]byte(os.Getenv("HEROKU_HEADERS")), &h)
-		for k, v := range h {
-			req.Set(k, v)
-		}
-	}
-	return &APIRequest{req}
 }
 
 func shouldVerifyHost(host string) bool {

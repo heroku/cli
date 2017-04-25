@@ -17,30 +17,6 @@ type Flag struct {
 	Required    bool   `json:"required"`
 }
 
-// AppFlag is --app
-var AppFlag = &Flag{
-	Name:        "app",
-	Char:        "a",
-	HasValue:    true,
-	Description: "app to run command against",
-}
-
-// RemoteFlag is --remote for --app
-var RemoteFlag = &Flag{
-	Name:        "remote",
-	Char:        "r",
-	HasValue:    true,
-	Description: "git remote of app to run command against",
-}
-
-// OrgFlag is --org
-var OrgFlag = &Flag{
-	Name:        "org",
-	Char:        "o",
-	HasValue:    true,
-	Description: "organization to use",
-}
-
 func (f *Flag) String() string {
 	s := " "
 	switch {

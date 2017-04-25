@@ -25,12 +25,6 @@ var _ = Describe("ParseFlag", func() {
 			}
 		})
 	}
-	test(cli.AppFlag, "-amyapp", "myapp", "")
-	test(cli.AppFlag, "--app=myapp", "myapp", "")
-	test(cli.AppFlag, "--app=myapp=app", "myapp=app", "")
-	test(cli.AppFlag, "-a=myapp", "myapp", "")
-	test(cli.AppFlag, "-amyapp", "myapp", "")
-	test(cli.AppFlag, "--app", "", " -a, --app APP needs a value")
 	test(verboseFlag, "--verbose", "", "")
 	test(verboseFlag, "--verbose=foo", "", " -v, --verbose does not take a value")
 	test(verboseFlag, "-v", "", "")

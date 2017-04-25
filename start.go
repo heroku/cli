@@ -31,12 +31,6 @@ var Args []string
 // GoFlagInitState is the default value for unset flags
 const GoFlagInitState = "unset"
 
-// CliToken is the token that tells us this is called from a different binary
-var CliToken = GoFlagInitState
-
-// AliasName is the alias of the different binary
-var AliasName = GoFlagInitState
-
 // BinaryName is the binary name
 var BinaryName = GoFlagInitState
 

@@ -319,10 +319,10 @@ func (p *Plugins) ParsePlugin(name, tag string) (*Plugin, error) {
 		return nil, fmt.Errorf("Error parsing plugin: %s\n%s\n%s\nIs this a real CLI plugin?", name, err, string(output))
 	}
 	if plugin.Namespace == nil || plugin.Namespace.Name == "" {
-		return nil, fmt.Errorf("Invalid plugin. %s only supports plugins with a namespace.", BinaryName)
+		return nil, merry.Errorf("Invalid plugin. %s only supports plugins with a namespace.", BinaryName)
 	}
 	if len(plugin.Commands) == 0 {
-		return nil, fmt.Errorf("Invalid plugin. No commands found.")
+		return nil, merry.Errorf("Invalid plugin. No commands found.")
 	}
 
 	var namespace = "sfdx"
