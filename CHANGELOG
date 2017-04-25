@@ -1,3 +1,9 @@
+5.8.8   2017-04-25
+==================
+heroku-cli-addons 1.2.18
+heroku-local 5.1.14
+heroku-pipelines 1.5.0
+
 5.8.7   2017-04-21
 ==================
 Bump heroku-apps to 2.2.20
