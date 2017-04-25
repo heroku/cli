@@ -7,21 +7,20 @@ function * run (context) {
   if (context.flags.restart) throw new Error('--restart is no longer available\nUse forego instead: https://github.com/ddollar/forego')
   if (context.flags.concurrency) throw new Error('--concurrency is no longer available\nUse forego instead: https://github.com/ddollar/forego')
 
-  process.argv = ['', 'heroku local', 'start']
+  let execArgv = ['start']
 
-  if (context.flags.procfile) process.argv.push('--procfile', context.flags.procfile)
-  if (context.flags.env) process.argv.push('--env', context.flags.env)
-  if (context.flags.port) process.argv.push('--port', context.flags.port)
+  if (context.flags.procfile) execArgv.push('--procfile', context.flags.procfile)
+  if (context.flags.env) execArgv.push('--env', context.flags.env)
+  if (context.flags.port) execArgv.push('--port', context.flags.port)
   if (context.args.processname) {
-    process.argv.push(context.args.processname)
+    execArgv.push(context.args.processname)
   } else {
     let procfile = context.flags.procfile || 'Procfile'
     let procHash = require('foreman/lib/procfile.js').loadProc(procfile)
     let processes = Object.keys(procHash).filter((x) => x !== 'release')
-    process.argv.push(processes.join(','))
+    execArgv.push(processes.join(','))
   }
-
-  require('foreman/nf.js')
+  yield require('../lib/fork_foreman')(execArgv)
 }
 
 const cmd = {

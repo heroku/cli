@@ -9,15 +9,15 @@ function * run (context) {
     process.exit(-1)
   }
 
-  process.argv = ['', 'heroku local:run', 'run']
+  let execArgv = ['run']
 
   if (context.flags.env) process.argv.push('--env', context.flags.env)
   if (context.flags.port) process.argv.push('--port', context.flags.port)
 
-  process.argv.push('--') // disable node-foreman flag parsing
-  process.argv.push(...context.args)
+  execArgv.push('--') // disable node-foreman flag parsing
+  execArgv.push(...context.args)
 
-  require('foreman/nf.js')
+  yield require('../lib/fork_foreman')(execArgv)
 }
 
 module.exports = {
