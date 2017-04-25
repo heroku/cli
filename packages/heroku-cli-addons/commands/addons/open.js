@@ -50,7 +50,9 @@ let sudo = co.wrap(function * (ctx, api) {
   let sso = yield api.request({
     method: 'GET',
     path: `/apps/${ctx.app}/addons/${ctx.args.addon}/sso`,
-    headers: {Accept: 'application/json'}
+    headers: {
+      Accept: 'application/vnd.heroku+json; version=3.add-ons-sso'
+    }
   })
   if (sso.method === 'get') {
     yield open(sso.action)
