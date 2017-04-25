@@ -4,6 +4,7 @@ const expect = require('chai').expect
 const cli = require('heroku-cli-util')
 const nock = require('nock')
 const cmd = require('../../../commands/pipelines/promote')
+const stdMocks = require('std-mocks')
 
 describe('pipelines:promote', function () {
   const api = 'https://api.heroku.com'
@@ -29,6 +30,11 @@ describe('pipelines:promote', function () {
     id: '456-target-app-789',
     name: 'example-production-eu',
     pipeline: pipeline
+  }
+
+  const targetReleaseWithOutput = {
+    id: '123-target-release-456',
+    output_stream_url: 'https://busl.example/release'
   }
 
   const sourceCoupling = {
@@ -149,6 +155,56 @@ describe('pipelines:promote', function () {
         expect(cli.stdout).to.contain('failed')
         expect(cli.stdout).to.contain('Because reasons')
       })
+    })
+  })
+
+  context('with release phase', function () {
+    let req, busl
+
+    function mockPromotionTargetsWithRelease (release) {
+      req = nock(api)
+        .post('/pipeline-promotions', {
+          pipeline: { id: pipeline.id },
+          source: { app: { id: sourceApp.id } },
+          targets: [
+            { app: { id: targetApp1.id } }
+          ]
+        })
+        .reply(201, promotion)
+        .get(`/apps/${targetApp1.id}/releases/${release.id}`)
+        .reply(200, targetReleaseWithOutput)
+      busl = nock('https://busl.example')
+        .get('/release')
+        .reply(200, 'Release Command Output')
+
+      let pollCount = 0
+      nock(api)
+        .get(`/pipeline-promotions/${promotion.id}/promotion-targets`)
+        .twice()
+        .reply(200, function () {
+          pollCount++
+
+          return [{
+            app: { id: targetApp1.id },
+            release: { id: release.id },
+            status: pollCount > 1 ? 'successful' : 'pending',
+            error_message: null
+          }]
+        })
+    }
+
+    it('streams the release command output', function () {
+      stdMocks.use()
+      mockPromotionTargetsWithRelease(targetReleaseWithOutput)
+
+      return cmd.run({ app: sourceApp.name }).then(function () {
+        req.done()
+        busl.done()
+        expect(cli.stdout).to.contain('Release Command Output')
+        expect(cli.stdout).to.contain('successful')
+      })
+        .then(() => stdMocks.restore())
+        .catch(() => stdMocks.restore())
     })
   })
 })

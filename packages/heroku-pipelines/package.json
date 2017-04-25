@@ -27,7 +27,8 @@
     "sinon": "^1.15.3",
     "sinon-as-promised": "^4.0.2",
     "sinon-chai": "^2.8.0",
-    "standard": "^8.6.0"
+    "standard": "^8.6.0",
+    "std-mocks": "1.0.1"
   },
   "keywords": [
     "heroku-plugin"

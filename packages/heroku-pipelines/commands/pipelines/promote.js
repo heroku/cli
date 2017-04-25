@@ -30,14 +30,24 @@ function * getSecondFactor () {
   return secondFactor
 }
 
-function pollPromotionStatus (heroku, id) {
+function pollPromotionStatus (heroku, id, needsReleaseCommand) {
   return heroku.request({
     method: 'GET',
     path: `/pipeline-promotions/${id}/promotion-targets`
   }).then(function (targets) {
     if (targets.every(isComplete)) { return targets }
 
-    return BBPromise.delay(1000).then(pollPromotionStatus.bind(null, heroku, id))
+    //
+    // With only one target, we can return as soon as the release is created.
+    // The command will then read the release phase output
+    //
+    // `needsReleaseCommand` allows us to keep polling, as it can take a few
+    // seconds to get the release to succeeded after the release command
+    // finished.
+    //
+    if (needsReleaseCommand && targets.length === 1 && targets[0].release !== null) { return targets }
+
+    return BBPromise.delay(1000).then(pollPromotionStatus.bind(null, heroku, id, needsReleaseCommand))
   })
 }
 
@@ -71,7 +81,7 @@ function* promote (heroku, label, id, sourceAppId, targetApps, secondFactor) {
   try {
     return yield cli.action(label, heroku.request(options))
   } catch (error) {
-    if (error.body.id !== 'two_factor') {
+    if (!error.body || error.body.id !== 'two_factor') {
       throw error
     }
     const secondFactor = yield getSecondFactor()
@@ -100,6 +110,36 @@ function findAppInPipeline (apps, target) {
   assert(found, `Cannot find app ${cli.color.app(target)}`)
 
   return found
+}
+
+function* getRelease (heroku, app, release) {
+  return yield cli.action(`Fetching release info`, heroku.request({
+    method: 'GET',
+    path: `/apps/${app}/releases/${release}`
+  }))
+}
+
+function* streamReleaseCommand (heroku, targets, promotion) {
+  if (targets.length !== 1 || targets.every(isComplete)) {
+    return targets
+  }
+  const target = targets[0]
+  const release = yield getRelease(heroku, target.app.id, target.release.id)
+
+  if (!release.output_stream_url) {
+    return targets
+  }
+
+  cli.log('Running release command...')
+  yield new Promise(function (resolve, reject) {
+    let stream = cli.got.stream(release.output_stream_url)
+    stream.on('error', reject)
+    stream.on('end', resolve)
+    let piped = stream.pipe(process.stdout)
+    piped.on('error', reject)
+  })
+
+  return yield pollPromotionStatus(heroku, promotion.id, false)
 }
 
 module.exports = {
@@ -156,8 +196,9 @@ module.exports = {
       heroku, promotionActionName, coupling.pipeline.id, coupling.app.id, targetApps
     )
 
-    const pollLoop = pollPromotionStatus(heroku, promotion.id)
-    const promotionTargets = yield cli.action('Waiting for promotion to complete', pollLoop)
+    const pollLoop = pollPromotionStatus(heroku, promotion.id, true)
+    let promotionTargets = yield cli.action('Waiting for promotion to complete', pollLoop)
+    promotionTargets = yield streamReleaseCommand(heroku, promotionTargets, promotion)
 
     const appsByID = keyBy(allApps, 'id')
 
