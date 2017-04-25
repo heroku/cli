@@ -142,8 +142,13 @@ func installRequiredNamespace(namespace *Namespace) {
 		}
 		if len(toInstall) > 0 {
 			Printf("Installing required plugins for %s...", namespaceName)
-			UserPlugins.InstallPlugins(toInstall...)
-			Printf(" done")
+			err := UserPlugins.InstallPlugins(toInstall...)
+			if err != nil {
+				Println()
+				must(err)
+			} else {
+				Printf(" done")
+			}
 			Println()
 			Println()
 		}

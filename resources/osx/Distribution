@@ -3,10 +3,10 @@
   <title>SFDX CLI VERSION</title>
   <options customize="never"/>
   <choices-outline>
-    <line choice="heroku-cli"/>
+    <line choice="sfdx-cli"/>
   </choices-outline>
-  <choice id="heroku-cli" title="base">
-    <pkg-ref id="com.heroku.cli.base.pkg"/>
+  <choice id="sfdx-cli" title="base">
+    <pkg-ref id="com.sfdx.cli.base.pkg"/>
   </choice>
-  <pkg-ref id="com.heroku.cli.base.pkg" installKBytes="KBYTES" version="VERSION" auth="Root">#base.pkg</pkg-ref>
+  <pkg-ref id="com.sfdx.cli.base.pkg" installKBytes="KBYTES" version="VERSION" auth="Root">#base.pkg</pkg-ref>
 </installer-script>

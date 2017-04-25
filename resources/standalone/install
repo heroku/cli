@@ -25,4 +25,4 @@ mkdir -p ~/.local/share/sfdx
 cp -r $CURRENTDIR ~/.local/share/sfdx/cli
 
 printf "\e[0msfdx installed to \e[38;5;104m$INSTALLPATH_SFDX\e[0m\n"
-$INSTALLPATH_HEROKU version
+$INSTALLPATH_SFDX version
