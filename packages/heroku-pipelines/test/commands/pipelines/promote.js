@@ -68,7 +68,7 @@ describe('pipelines:promote', function () {
     let pollCount = 0
     return nock(api)
       .get(`/pipeline-promotions/${promotion.id}/promotion-targets`)
-      .twice()
+      .thrice()
       .reply(200, function () {
         pollCount++
 

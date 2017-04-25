@@ -121,13 +121,13 @@ function* getRelease (heroku, app, release) {
 
 function* streamReleaseCommand (heroku, targets, promotion) {
   if (targets.length !== 1 || targets.every(isComplete)) {
-    return targets
+    return yield pollPromotionStatus(heroku, promotion.id, false)
   }
   const target = targets[0]
   const release = yield getRelease(heroku, target.app.id, target.release.id)
 
   if (!release.output_stream_url) {
-    return targets
+    return yield pollPromotionStatus(heroku, promotion.id, false)
   }
 
   cli.log('Running release command...')
