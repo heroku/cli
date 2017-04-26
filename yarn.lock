@@ -736,9 +736,9 @@ here@0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/here/-/here-0.0.2.tgz#69c1af3f02121f3d8788e02e84dc8b3905d71195"
 
-heroku-apps@2.2.20:
-  version "2.2.20"
-  resolved "https://registry.yarnpkg.com/heroku-apps/-/heroku-apps-2.2.20.tgz#8396bc3087105a16039a74e300db72a709e48cec"
+heroku-apps@2.2.21:
+  version "2.2.21"
+  resolved "https://registry.yarnpkg.com/heroku-apps/-/heroku-apps-2.2.21.tgz#a12307993c35896703ac6babae23e58aba1f3a33"
   dependencies:
     bluebird "3.4.7"
     co "4.6.0"
@@ -824,9 +824,9 @@ heroku-cli-addons@1.2.16:
     lodash.values "4.3.0"
     printf "0.2.5"
 
-heroku-cli-addons@1.2.17:
-  version "1.2.17"
-  resolved "https://registry.yarnpkg.com/heroku-cli-addons/-/heroku-cli-addons-1.2.17.tgz#6da2e2265313b6dd774a9d4c4860eee1711a746e"
+heroku-cli-addons@1.2.18:
+  version "1.2.18"
+  resolved "https://registry.yarnpkg.com/heroku-cli-addons/-/heroku-cli-addons-1.2.18.tgz#61885c773e0de859c9f847c5dbe5f39436429ca5"
   dependencies:
     co "4.6.0"
     co-wait "0.0.0"
@@ -977,9 +977,9 @@ heroku-pg@2.0.26:
     strip-eof "1.0.0"
     tunnel-ssh "4.1.2"
 
-heroku-pipelines@1.4.5:
-  version "1.4.5"
-  resolved "https://registry.yarnpkg.com/heroku-pipelines/-/heroku-pipelines-1.4.5.tgz#7181cc3688a3ce41cc1c2e94b18a6a959501b17c"
+heroku-pipelines@1.5.1:
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/heroku-pipelines/-/heroku-pipelines-1.5.1.tgz#ebad2109b7a449ded8757bff18c763fbee136a56"
   dependencies:
     bluebird "3.4.7"
     co "4.6.0"
