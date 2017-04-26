@@ -240,9 +240,9 @@ here@0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/here/-/here-0.0.2.tgz#69c1af3f02121f3d8788e02e84dc8b3905d71195"
 
-heroku-apps@2.2.20:
-  version "2.2.20"
-  resolved "https://registry.yarnpkg.com/heroku-apps/-/heroku-apps-2.2.20.tgz#8396bc3087105a16039a74e300db72a709e48cec"
+heroku-apps@2.2.21:
+  version "2.2.21"
+  resolved "https://registry.yarnpkg.com/heroku-apps/-/heroku-apps-2.2.21.tgz#a12307993c35896703ac6babae23e58aba1f3a33"
   dependencies:
     bluebird "3.4.7"
     co "4.6.0"
@@ -440,9 +440,9 @@ heroku-git@2.5.16:
     co "4.6.0"
     heroku-cli-util "6.1.17"
 
-heroku-local@5.1.14:
-  version "5.1.14"
-  resolved "https://registry.yarnpkg.com/heroku-local/-/heroku-local-5.1.14.tgz#4986fb68d352d67939760c40544b4f4c49362fe5"
+heroku-local@5.1.15:
+  version "5.1.15"
+  resolved "https://registry.yarnpkg.com/heroku-local/-/heroku-local-5.1.15.tgz#a8521086b2f9e3f387d4c0e156a9d8ae9317521f"
   dependencies:
     co "4.6.0"
     foreman "2.0.0"
@@ -481,9 +481,9 @@ heroku-pg@2.0.26:
     strip-eof "1.0.0"
     tunnel-ssh "4.1.2"
 
-heroku-pipelines@1.5.0:
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/heroku-pipelines/-/heroku-pipelines-1.5.0.tgz#c78217add1bbce4b1a2c47b2249bf5130f90cfc7"
+heroku-pipelines@1.5.1:
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/heroku-pipelines/-/heroku-pipelines-1.5.1.tgz#ebad2109b7a449ded8757bff18c763fbee136a56"
   dependencies:
     bluebird "3.4.7"
     co "4.6.0"
