@@ -9,7 +9,7 @@
     "heroku-cli-oauth": "2.0.12",
     "heroku-fork": "4.1.21",
     "heroku-git": "2.5.16",
-    "heroku-local": "5.1.15",
+    "heroku-local": "5.1.16",
     "heroku-orgs": "1.5.12",
     "heroku-pg": "2.0.26",
     "heroku-pipelines": "1.5.1",
