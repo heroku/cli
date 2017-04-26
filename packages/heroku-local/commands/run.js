@@ -11,8 +11,8 @@ function * run (context) {
 
   let execArgv = ['run']
 
-  if (context.flags.env) process.argv.push('--env', context.flags.env)
-  if (context.flags.port) process.argv.push('--port', context.flags.port)
+  if (context.flags.env) execArgv.push('--env', context.flags.env)
+  if (context.flags.port) execArgv.push('--port', context.flags.port)
 
   execArgv.push('--') // disable node-foreman flag parsing
   execArgv.push(...context.args)
