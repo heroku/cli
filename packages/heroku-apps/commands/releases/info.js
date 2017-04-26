@@ -2,63 +2,41 @@
 
 const cli = require('heroku-cli-util')
 const co = require('co')
+let releases = require('../../lib/releases')
 
 function * run (context, heroku) {
   const shellescape = require('shell-escape')
   const statusHelper = require('./status_helper')
   const forEach = require('lodash.foreach')
-  let id = (context.args.release || 'current').toLowerCase()
-  id = id.startsWith('v') ? id.slice(1) : id
-  if (id === 'current') {
-    let releases = yield heroku.request({
-      path: `/apps/${context.app}/releases`,
-      partial: true,
-      headers: {
-        Range: 'version ..; max=1, order=desc'
-      }
-    })
-    id = releases[0].version
-  }
 
-  let data = yield {
-    release: heroku.request({
-      path: `/apps/${context.app}/releases/${id}`,
-      headers: {
-        Accept: 'application/vnd.heroku+json; version=3'
-      }
-    }),
-    config: heroku.request({
-      path: `/apps/${context.app}/releases/${id}/config-vars`,
-      headers: {
-        Accept: 'application/vnd.heroku+json; version=3'
-      }
-    })
-  }
+  let release = yield releases.FindByLatestOrId(heroku, context.app, context.args.release)
+
+  let config = yield heroku.get(`/apps/${context.app}/releases/${release.version}/config-vars`)
 
   if (context.flags.json) {
-    cli.styledJSON(data.release)
+    cli.styledJSON(release)
   } else {
-    let releaseChange = data.release.description
-    let status = statusHelper.description(data.release)
-    let statusColor = statusHelper.color(data.release.status)
+    let releaseChange = release.description
+    let status = statusHelper.description(release)
+    let statusColor = statusHelper.color(release.status)
     if (status !== undefined) {
       releaseChange += ' (' + cli.color[statusColor](status) + ')'
     }
 
-    cli.styledHeader(`Release ${cli.color.cyan('v' + data.release.version)}`)
+    cli.styledHeader(`Release ${cli.color.cyan('v' + release.version)}`)
     cli.styledObject({
-      'Add-ons': data.release.addon_plan_names,
+      'Add-ons': release.addon_plan_names,
       Change: releaseChange,
-      By: data.release.user.email,
-      When: data.release.created_at
+      By: release.user.email,
+      When: release.created_at
     })
 
     cli.log()
-    cli.styledHeader(`${cli.color.cyan('v' + data.release.version)} Config vars`)
+    cli.styledHeader(`${cli.color.cyan('v' + release.version)} Config vars`)
     if (context.flags.shell) {
-      forEach(data.config, (v, k) => cli.log(`${k}=${shellescape([v])}`))
+      forEach(config, (v, k) => cli.log(`${k}=${shellescape([v])}`))
     } else {
-      cli.styledObject(data.config)
+      cli.styledObject(config)
     }
   }
 }

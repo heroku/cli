@@ -58,6 +58,7 @@
     "proxyquire": "1.7.11",
     "rimraf": "2.5.4",
     "standard": "8.6.0",
+    "std-mocks": "1.0.1",
     "testdouble": "2.0.1",
     "time-require": "0.1.2",
     "unexpected": "10.25.0"

@@ -2,27 +2,16 @@
 
 let cli = require('heroku-cli-util')
 let co = require('co')
+let releases = require('../../lib/releases')
 
 function * run (context, heroku) {
-  function getRelease (id) {
-    return heroku.get(`/apps/${context.app}/releases/${id}`)
-  }
-
-  function getLatestRelease () {
-    return heroku.request({
-      path: `/apps/${context.app}/releases`,
-      partial: true,
-      headers: { 'Range': 'version ..; max=2, order=desc' }
-    }).then((releases) => releases.filter((r) => r.status === 'succeeded')[1])
-  }
-
   let release
   if (context.args.release) {
     let id = context.args.release.toLowerCase()
     id = id.startsWith('v') ? id.slice(1) : id
-    release = yield getRelease(id)
+    release = yield heroku.get(`/apps/${context.app}/releases/${id}`)
   } else {
-    release = yield getLatestRelease()
+    release = yield releases.FindRelease(heroku, context.app, (releases) => releases.filter((r) => r.status === 'succeeded')[1])
   }
 
   yield cli.action(`Rolling back ${cli.color.app(context.app)} to ${cli.color.green('v' + release.version)}`, {success: false}, co(function * () {

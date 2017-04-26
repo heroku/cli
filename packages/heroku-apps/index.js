@@ -81,5 +81,6 @@ exports.commands = flatten([
   require('./commands/regions'),
   require('./commands/releases'),
   require('./commands/releases/info'),
-  require('./commands/releases/rollback')
+  require('./commands/releases/rollback'),
+  require('./commands/releases/output')
 ])

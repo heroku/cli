@@ -26,10 +26,7 @@ describe('releases:info', function () {
   it('shows most recent release info', function () {
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/releases')
-      .reply(200, [{version: 10}])
-      .get('/apps/myapp/releases/10')
-      .matchHeader('accept', 'application/vnd.heroku+json; version=3')
-      .reply(200, release)
+      .reply(200, [release])
       .get('/apps/myapp/releases/10/config-vars')
       .matchHeader('accept', 'application/vnd.heroku+json; version=3')
       .reply(200, configVars)
@@ -52,10 +49,7 @@ FOO: foo
   it('shows most recent release info config vars as shell', function () {
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/releases')
-      .reply(200, [{version: 10}])
-      .get('/apps/myapp/releases/10')
-      .matchHeader('accept', 'application/vnd.heroku+json; version=3')
-      .reply(200, release)
+      .reply(200, [release])
       .get('/apps/myapp/releases/10/config-vars')
       .matchHeader('accept', 'application/vnd.heroku+json; version=3')
       .reply(200, configVars)
@@ -116,16 +110,13 @@ FOO: foo
   it('shows a failed release info', function () {
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/releases')
-      .reply(200, [{version: 10}])
-      .get('/apps/myapp/releases/10')
-      .matchHeader('accept', 'application/vnd.heroku+json; version=3')
-      .reply(200, {
+      .reply(200, [{
         description: 'something changed',
         status: 'failed',
         user: { email: 'foo@foo.com' },
         created_at: d,
         version: 10
-      })
+      }])
       .get('/apps/myapp/releases/10/config-vars')
       .matchHeader('accept', 'application/vnd.heroku+json; version=3')
       .reply(200, configVars)
@@ -146,17 +137,14 @@ FOO: foo
   it('shows a pending release info', function () {
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/releases')
-      .reply(200, [{version: 10}])
-      .get('/apps/myapp/releases/10')
-      .matchHeader('accept', 'application/vnd.heroku+json; version=3')
-      .reply(200, {
+      .reply(200, [{
         addon_plan_names: ['addon1', 'addon2'],
         description: 'something changed',
         status: 'pending',
         user: {email: 'foo@foo.com'},
         version: 10,
         created_at: d
-      })
+      }])
       .get('/apps/myapp/releases/10/config-vars')
       .matchHeader('accept', 'application/vnd.heroku+json; version=3')
       .reply(200, configVars)
