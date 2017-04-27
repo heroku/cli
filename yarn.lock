@@ -253,9 +253,9 @@ cli-engine-config@1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/cli-engine-config/-/cli-engine-config-1.1.1.tgz#c26b519055f4414859a5157b0d61e0091eb19eda"
 
-cli-engine@3.0.7:
-  version "3.0.7"
-  resolved "https://registry.yarnpkg.com/cli-engine/-/cli-engine-3.0.7.tgz#b754c8e2fe94714b1445fb0b6687dcf236f682e6"
+cli-engine@3.0.8:
+  version "3.0.8"
+  resolved "https://registry.yarnpkg.com/cli-engine/-/cli-engine-3.0.8.tgz#b815348c2859e10c5d5874961b7e734af627beb1"
   dependencies:
     ansi-escapes "2.0.0"
     cli-engine-command "3.0.5"
