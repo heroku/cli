@@ -12,7 +12,7 @@ function * usage(context, heroku) {
     queryString: query
   })
 
-  if (usage['teams'].length == 0) {
+  if (!usage['teams'] || usage['teams'].length == 0) {
     console.log(`No usage for ${enterpriseAccount}`)
     return
   }
