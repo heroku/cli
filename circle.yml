@@ -13,7 +13,7 @@ stages:
       - run: yarn
       # only needed for dev builds that reference git SHAs instead of npm packages
       # because prepare step is not run
-      # - run: cd node_modules/cli-engine && yarn
+      - run: cd node_modules/cli-engine && yarn
       - run: ./bin/run version
       - run: ./bin/run help
       - type: cache-save

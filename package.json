@@ -34,7 +34,7 @@
     ]
   },
   "dependencies": {
-    "cli-engine": "3.0.11",
+    "cli-engine": "github:heroku/cli-engine#reexec-cli",
     "heroku-apps": "2.2.21",
     "heroku-certs": "1.1.38",
     "heroku-cli-addons": "1.2.18",
