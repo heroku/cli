@@ -2,7 +2,7 @@
 version: 2
 executorType: docker
 containerInfo:
-  - image: dickeyxxx/cli-engine@sha256:090e7e327787303491f27482f021b9fbcfeac1d379a20769c7524c1c53b68c88
+  - image: dickeyxxx/cli-engine-docker:v1.0.1
 stages:
   build:
     workDir: ~/cli
@@ -10,12 +10,12 @@ stages:
       - type: checkout
       - type: cache-restore
         key: cli
-      - type: shell
-        command: |
-          set -exu
-          yarn
-          ./bin/run version
-          ./bin/run help
+      - run: yarn
+      # only needed for dev builds that reference git SHAs instead of npm packages
+      # because prepare step is not run
+      # - run: cd node_modules/cli-engine && yarn
+      - run: ./bin/run version
+      - run: ./bin/run help
       - type: cache-save
         key: cli
         paths:
@@ -30,4 +30,7 @@ stages:
           fi
           if [ "${CIRCLE_BRANCH}" == "v6" ]; then
             yarn run release beta
+          fi
+          if [ "${CIRCLE_BRANCH}" == "dev" ]; then
+            yarn run release dev
           fi
