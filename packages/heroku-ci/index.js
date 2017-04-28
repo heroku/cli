@@ -1,5 +1,6 @@
 const fs = require('fs')
 const path = require('path')
+const flatten = require('lodash.flatten')
 
 exports.topic = {
   name: 'ci',
@@ -8,6 +9,6 @@ exports.topic = {
 
 const commands = path.join(__dirname, 'commands/ci')
 
-exports.commands = fs.readdirSync(commands).map((file) => {
+exports.commands = flatten(fs.readdirSync(commands).map((file) => {
   return require(path.join(commands, file))
-})
+}))

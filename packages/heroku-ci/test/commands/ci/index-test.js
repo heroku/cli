@@ -3,10 +3,10 @@
 const nock = require('nock')
 const expect = require('chai').expect
 const cli = require('heroku-cli-util')
-const cmd = require('../../../commands/ci/list')
+const cmd = require('../../../commands/ci')[0]
 const stdMocks = require('std-mocks')
 
-describe('heroku ci:list', function () {
+describe('heroku ci', function () {
   let app, coupling, runs
 
   beforeEach(function () {

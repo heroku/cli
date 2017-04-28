@@ -43,6 +43,7 @@
     "got": "^6.6.3",
     "heroku-cli-util": "^6.0.15",
     "heroku-run": "^3.4.3",
+    "lodash.flatten": "^4.4.0",
     "shell-escape": "^0.2.0",
     "socket.io-client": "^1.5.1",
     "temp": "^0.8.3"
