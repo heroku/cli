@@ -34,3 +34,6 @@ stages:
           if [ "${CIRCLE_BRANCH}" == "dev" ]; then
             yarn run release dev
           fi
+          if [ "${CIRCLE_BRANCH}" == "dev2" ]; then
+            yarn run release dev2
+          fi
