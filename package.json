@@ -13,6 +13,7 @@
     "heroku-orgs": "1.5.12",
     "heroku-pg": "2.0.26",
     "heroku-pipelines": "1.5.1",
+    "heroku-ps-exec": "1.0.0",
     "heroku-redis": "1.2.13",
     "heroku-run": "3.4.10",
     "heroku-spaces": "2.8.6",
