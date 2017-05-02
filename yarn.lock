@@ -148,9 +148,9 @@ cli-engine-config@1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/cli-engine-config/-/cli-engine-config-1.1.2.tgz#3204f98f170794555b6eb27f97982bb689161d22"
 
-cli-engine@3.0.12:
-  version "3.0.12"
-  resolved "https://registry.yarnpkg.com/cli-engine/-/cli-engine-3.0.12.tgz#a16d0f79e3436534a9febe5208da749f9e2eae11"
+cli-engine@3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/cli-engine/-/cli-engine-3.1.0.tgz#0d1a9f65043ab88d840ee9b6cb12b825bb468e57"
   dependencies:
     cli-engine-command "3.1.1"
     cli-engine-config "1.1.2"
