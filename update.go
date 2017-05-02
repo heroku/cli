@@ -213,6 +213,8 @@ func loadNewCLI() {
 	if Autoupdate == "no" {
 		return
 	}
+	Debugln(expectedBinPath())
+	Debugln(BinPath)
 	expected, err := os.Stat(expectedBinPath())
 	if err != nil {
 		if os.IsNotExist(err) {
