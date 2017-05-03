@@ -12,6 +12,10 @@ function * usage(context, heroku) {
     queryString: query
   })
 
+  // usage always comes back as an array
+  // just show the first for now until we support multiple frames
+  usage = usage[0]
+
   if (!usage['teams'] || usage['teams'].length == 0) {
     console.log(`No usage for ${enterpriseAccount}`)
     return
