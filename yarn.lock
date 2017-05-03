@@ -148,9 +148,9 @@ cli-engine-config@1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/cli-engine-config/-/cli-engine-config-1.1.2.tgz#3204f98f170794555b6eb27f97982bb689161d22"
 
-cli-engine@3.1.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/cli-engine/-/cli-engine-3.1.0.tgz#0d1a9f65043ab88d840ee9b6cb12b825bb468e57"
+cli-engine@3.1.1:
+  version "3.1.1"
+  resolved "http://cli-npm.heroku.com/cli-engine/-/cli-engine-3.1.1/f39a335c90812be54bd5b2d4dde49e6d16127659.tgz#f39a335c90812be54bd5b2d4dde49e6d16127659"
   dependencies:
     cli-engine-command "3.1.1"
     cli-engine-config "1.1.2"
