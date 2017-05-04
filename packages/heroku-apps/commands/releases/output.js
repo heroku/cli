@@ -3,6 +3,7 @@
 let cli = require('heroku-cli-util')
 let co = require('co')
 let releases = require('../../lib/releases')
+let output = require('../../lib/output')
 
 function * run (context, heroku) {
   let release = yield releases.FindByLatestOrId(heroku, context.app, context.args.release)
@@ -14,13 +15,7 @@ function * run (context, heroku) {
     return
   }
 
-  yield new Promise(function (resolve, reject) {
-    let stream = cli.got.stream(streamUrl)
-    stream.on('error', reject)
-    stream.on('end', resolve)
-    let piped = stream.pipe(process.stdout)
-    piped.on('error', reject)
-  })
+  yield output.Stream(streamUrl)
 }
 
 module.exports = {

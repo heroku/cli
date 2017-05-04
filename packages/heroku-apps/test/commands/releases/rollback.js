@@ -4,6 +4,8 @@
 const cli = require('heroku-cli-util')
 const nock = require('nock')
 const cmd = require('../../..').commands.find(c => c.topic === 'releases' && c.command === 'rollback')
+const expect = require('chai').expect
+const stdMocks = require('std-mocks')
 
 describe('releases:rollback', function () {
   beforeEach(() => cli.mockConsole())
@@ -39,5 +41,25 @@ describe('releases:rollback', function () {
       .reply(200, {})
     return cmd.run({app: 'myapp', args: {}})
       .then(() => api.done())
+  })
+
+  it('streams the release command output', function () {
+    stdMocks.use()
+    process.stdout.columns = 80
+    let busl = nock('https://busl.test:443')
+      .get('/streams/release.log')
+      .reply(200, 'Release Output Content')
+    let api = nock('https://api.heroku.com:443')
+      .get('/apps/myapp/releases/10')
+      .reply(200, { 'id': '5efa3510-e8df-4db0-a176-83ff8ad91eb5', 'version': 40 })
+      .post('/apps/myapp/releases', {release: '5efa3510-e8df-4db0-a176-83ff8ad91eb5'})
+      .reply(200, {output_stream_url: 'https://busl.test/streams/release.log'})
+    return cmd.run({app: 'myapp', args: {release: 'v10'}})
+      .then(() => expect(stdMocks.flush().stdout.join('')).to.equal('Release Output Content'))
+      .then(() => expect(cli.stderr).to.equal(''))
+      .then(() => api.done())
+      .then(() => busl.done())
+      .then(() => stdMocks.restore())
+      .catch(() => stdMocks.restore())
   })
 })
