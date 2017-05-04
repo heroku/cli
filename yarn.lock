@@ -126,14 +126,14 @@ cli-cursor@^2.1.0:
   dependencies:
     restore-cursor "^2.0.0"
 
-cli-engine-command@3.1.3:
-  version "3.1.3"
-  resolved "http://cli-npm.heroku.com/cli-engine-command/-/cli-engine-command-3.1.3/26206015235d946fbb2a0b7411622fea7828e926.tgz#26206015235d946fbb2a0b7411622fea7828e926"
+cli-engine-command@3.1.4:
+  version "3.1.4"
+  resolved "http://cli-npm.heroku.com/cli-engine-command/-/cli-engine-command-3.1.4/464652cca33f53880755304b831a8c6c33a5fc51.tgz#464652cca33f53880755304b831a8c6c33a5fc51"
   dependencies:
     ansi-escapes "2.0.0"
     cardinal "^1.0.0"
     chalk "^1.1.3"
-    cli-engine-config "1.1.3"
+    cli-engine-config "1.1.4"
     fs-extra "3.0.0"
     got "^6.7.1"
     http-call "1.1.2"
@@ -144,16 +144,18 @@ cli-engine-command@3.1.3:
     string "^3.3.3"
     supports-color "^3.2.3"
 
-cli-engine-config@1.1.3:
-  version "1.1.3"
-  resolved "http://cli-npm.heroku.com/cli-engine-config/-/cli-engine-config-1.1.3/dba7b10a7241e7ca7e86d3a57ba1d9824197771c.tgz#dba7b10a7241e7ca7e86d3a57ba1d9824197771c"
-
-cli-engine@3.2.0:
-  version "3.2.0"
-  resolved "http://cli-npm.heroku.com/cli-engine/-/cli-engine-3.2.0/cba31dd59127bb04a81a62aede7e1c031f1fb44d.tgz#cba31dd59127bb04a81a62aede7e1c031f1fb44d"
+cli-engine-config@1.1.4:
+  version "1.1.4"
+  resolved "http://cli-npm.heroku.com/cli-engine-config/-/cli-engine-config-1.1.4/4f634cc02cb62d1f6d177736fff7fb01b866a2b1.tgz#4f634cc02cb62d1f6d177736fff7fb01b866a2b1"
   dependencies:
-    cli-engine-command "3.1.3"
-    cli-engine-config "1.1.3"
+    uuid "3.0.1"
+
+cli-engine@3.2.1:
+  version "3.2.1"
+  resolved "http://cli-npm.heroku.com/cli-engine/-/cli-engine-3.2.1/821c41b818866b2950fc8a5a9f4588418b1fdfa4.tgz#821c41b818866b2950fc8a5a9f4588418b1fdfa4"
+  dependencies:
+    cli-engine-command "3.1.4"
+    cli-engine-config "1.1.4"
     fs-extra "3.0.0"
     klaw-sync "2.1.0"
     levenshtein "^1.0.5"
@@ -1470,6 +1472,10 @@ url-parse-lax@^1.0.0:
 util-deprecate@~1.0.1:
   version "1.0.2"
   resolved "http://cli-npm.heroku.com/util-deprecate/-/util-deprecate-1.0.2/450d4dc9fa70de732762fbd2d4a28981419a0ccf.tgz#450d4dc9fa70de732762fbd2d4a28981419a0ccf"
+
+uuid@3.0.1:
+  version "3.0.1"
+  resolved "http://cli-npm.heroku.com/uuid/-/uuid-3.0.1/6544bba2dfda8c1cf17e629a3a305e2bb1fee6c1.tgz#6544bba2dfda8c1cf17e629a3a305e2bb1fee6c1"
 
 validator@6.2.1:
   version "6.2.1"
