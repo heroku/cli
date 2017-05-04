@@ -126,9 +126,9 @@ cli-cursor@^2.1.0:
   dependencies:
     restore-cursor "^2.0.0"
 
-cli-engine-command@3.1.1:
-  version "3.1.1"
-  resolved "http://cli-npm.heroku.com/cli-engine-command/-/cli-engine-command-3.1.1/8d7bb666293d78d69807779c23d4b497719a342a.tgz#8d7bb666293d78d69807779c23d4b497719a342a"
+cli-engine-command@3.1.2:
+  version "3.1.2"
+  resolved "http://cli-npm.heroku.com/cli-engine-command/-/cli-engine-command-3.1.2/d31a9a037c23d40b99d9faa3741025d62d157e27.tgz#d31a9a037c23d40b99d9faa3741025d62d157e27"
   dependencies:
     ansi-escapes "2.0.0"
     cardinal "^1.0.0"
@@ -148,11 +148,11 @@ cli-engine-config@1.1.2:
   version "1.1.2"
   resolved "http://cli-npm.heroku.com/cli-engine-config/-/cli-engine-config-1.1.2/3204f98f170794555b6eb27f97982bb689161d22.tgz#3204f98f170794555b6eb27f97982bb689161d22"
 
-cli-engine@3.1.1:
-  version "3.1.1"
-  resolved "http://cli-npm.heroku.com/cli-engine/-/cli-engine-3.1.1/f39a335c90812be54bd5b2d4dde49e6d16127659.tgz#f39a335c90812be54bd5b2d4dde49e6d16127659"
+cli-engine@3.1.2:
+  version "3.1.2"
+  resolved "http://cli-npm.heroku.com/cli-engine/-/cli-engine-3.1.2/eafcdddcc126a4aeafa75b90f7d64c2a349ea73a.tgz#eafcdddcc126a4aeafa75b90f7d64c2a349ea73a"
   dependencies:
-    cli-engine-command "3.1.1"
+    cli-engine-command "3.1.2"
     cli-engine-config "1.1.2"
     fs-extra "3.0.0"
     klaw-sync "2.1.0"
