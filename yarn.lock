@@ -374,9 +374,9 @@ here@0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/here/-/here-0.0.2.tgz#69c1af3f02121f3d8788e02e84dc8b3905d71195"
 
-heroku-apps@2.2.21:
-  version "2.2.21"
-  resolved "https://registry.yarnpkg.com/heroku-apps/-/heroku-apps-2.2.21.tgz#a12307993c35896703ac6babae23e58aba1f3a33"
+heroku-apps@2.2.22:
+  version "2.2.22"
+  resolved "https://registry.yarnpkg.com/heroku-apps/-/heroku-apps-2.2.22.tgz#db2c78250b7e58ef9d73b4166ee137095392867d"
   dependencies:
     bluebird "3.4.7"
     co "4.6.0"
