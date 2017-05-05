@@ -12,8 +12,8 @@ describe('apps:favorites:remove', () => {
 
   it('shows all favorite apps', () => {
     let api = nock('https://longboard.heroku.com:443')
-      .get('/favorites')
-      .reply(200, [{app_name: 'myapp'}, {app_name: 'myotherapp'}])
+      .get('/favorites?type=app')
+      .reply(200, [{resource_name: 'myapp'}, {resource_name: 'myotherapp'}])
 
     return cmd.run({app: 'myapp', flags: {json: false}})
       .then(() => expect(cli.stdout).to.equal(`=== Favorited Apps
@@ -26,11 +26,11 @@ myotherapp
 
   it('shows all favorite apps as json', () => {
     let api = nock('https://longboard.heroku.com:443')
-      .get('/favorites')
-      .reply(200, [{app_name: 'myapp'}, {app_name: 'myotherapp'}])
+      .get('/favorites?type=app')
+      .reply(200, [{resource_name: 'myapp'}, {resource_name: 'myotherapp'}])
 
     return cmd.run({app: 'myapp', flags: {json: true}})
-      .then(() => expect(JSON.parse(cli.stdout)[0].app_name).to.equal('myapp'))
+      .then(() => expect(JSON.parse(cli.stdout)[0].resource_name).to.equal('myapp'))
       .then(() => expect(cli.stderr).to.equal(''))
       .then(() => api.done())
   })

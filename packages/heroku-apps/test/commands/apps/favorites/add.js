@@ -11,9 +11,9 @@ describe('apps:favorites:add', () => {
 
   it('adds the app as a favorite', () => {
     let api = nock('https://longboard.heroku.com:443')
-      .get('/favorites')
+      .get('/favorites?type=app')
       .reply(200, [])
-      .post('/favorites', {app_id: 'myapp'})
+      .post('/favorites', {resource_id: 'myapp'})
       .reply(201)
 
     return cmd.run({app: 'myapp'})

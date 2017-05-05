@@ -11,9 +11,9 @@ describe('apps:favorites:remove', () => {
 
   it('removes the app as a favorite', () => {
     let api = nock('https://longboard.heroku.com:443')
-      .get('/favorites')
-      .reply(200, [{app_name: 'myapp'}])
-      .delete('/favorites/myapp')
+      .get('/favorites?type=app')
+      .reply(200, [{id: 'favoriteid', resource_name: 'myapp'}])
+      .delete('/favorites/favoriteid')
       .reply(201)
 
     return cmd.run({app: 'myapp'})
