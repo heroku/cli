@@ -150,9 +150,9 @@ cli-engine-config@1.1.4:
   dependencies:
     uuid "3.0.1"
 
-cli-engine@3.2.1:
-  version "3.2.1"
-  resolved "http://cli-npm.heroku.com/cli-engine/-/cli-engine-3.2.1/821c41b818866b2950fc8a5a9f4588418b1fdfa4.tgz#821c41b818866b2950fc8a5a9f4588418b1fdfa4"
+cli-engine@3.2.3:
+  version "3.2.3"
+  resolved "http://cli-npm.heroku.com/cli-engine/-/cli-engine-3.2.3/728d57bff509d3e9cf417049085120691623cb19.tgz#728d57bff509d3e9cf417049085120691623cb19"
   dependencies:
     cli-engine-command "3.1.4"
     cli-engine-config "1.1.4"
