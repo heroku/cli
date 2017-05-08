@@ -1,10 +1,13 @@
 {
   "name": "heroku-pipelines",
   "description": "pipelines heroku plugin",
-  "version": "1.5.1",
+  "version": "2.0.0",
   "author": "Heroku Developer Experience team",
   "bugs": {
     "url": "https://github.com/heroku/heroku-pipelines/issues"
+  },
+  "cli-engine": {
+    "namespace": "heroku"
   },
   "dependencies": {
     "bluebird": "3.4.7",
