@@ -3,7 +3,7 @@ machine:
   environment:
     CACHE_DIR: ~/deps
     WORKSPACE: ~/workspace/heroku
-    NPM_REGISTRY: https://cli-npm.heroku.com
+    NPM_REGISTRY: https://registry.npmjs.org/
     JOBZ: 6
   post:
     - sudo rm -rf /usr/local/go
@@ -51,6 +51,12 @@ deployment:
     commands:
       - gpg --passphrase $HEROKU_WINDOWS_SIGNING_PASS -d resources/deb/key.gpg | gpg --import
       - CHANNEL=sfdx make release -j $JOBZ
+  sfdx-stable:
+    branch: sfdx-seperateinstaller
+    owner: salesforce
+    commands:
+      - gpg --passphrase $HEROKU_WINDOWS_SIGNING_PASS -d resources/deb/key.gpg | gpg --import
+      - CHANNEL=sfdx-stable make release -j $JOBZ
   dev:
     branch: dev
     owner: heroku

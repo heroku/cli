@@ -43,7 +43,7 @@ func (p *Plugins) installPackages(packages ...string) error {
 	args := append([]string{"install"}, packages...)
 	_, stderr, err := p.execNpm(args...)
 	if err != nil {
-		return errors.New("Error installing package. \n" + stderr + "\nTry running again with HEROKU_DEBUG=1 to see more output.")
+		return errors.New("Error installing package. \n" + stderr + "\nTry running again with SFDX_DEBUG=1 to see more output.")
 	}
 	return nil
 }
