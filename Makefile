@@ -211,7 +211,6 @@ $(DIST_DIR)/$(CHANNEL)/$(VERSION)/sfdx-osx.pkg: tmp/darwin-amd64
 
 .PHONY: build
 build: $(WORKSPACE)/bin/$(BINARY_NAME) $(WORKSPACE)/lib/npm $(WORKSPACE)/lib/node $(WORKSPACE)/lib/plugins.json $(WORKSPACE)/lib/cacert.pem
-	#$(WORKSPACE)/bin/$(BINARY_NAME) plugins:install salesforcedx
 
 .PHONY: install
 install: build
@@ -227,7 +226,6 @@ clean:
 test: build
 	$(WORKSPACE)/bin/$(BINARY_NAME) version
 	$(WORKSPACE)/bin/$(BINARY_NAME) plugins
-	$(WORKSPACE)/bin/$(BINARY_NAME) status
 
 .PHONY: all
 all: darwin linux windows freebsd openbsd
