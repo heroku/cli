@@ -7,6 +7,8 @@ import (
 	"path/filepath"
 	"runtime"
 	"time"
+
+	"github.com/dickeyxxx/golock"
 )
 
 var analyticsPath = filepath.Join(CacheHome, "analytics.json")
@@ -39,6 +41,41 @@ type AnalyticsCommand struct {
 	Runtime       int64  `json:"runtime"`
 	Valid         bool   `json:"valid"`
 	start         time.Time
+}
+
+func init() {
+	CLITopics = append(CLITopics, &Topic{
+		Name:   "analytics",
+		Hidden: true,
+		Commands: Commands{
+			{
+				Hidden:           true,
+				DisableAnalytics: true,
+				Run: func(ctx *Context) {
+					file := readAnalyticsFile()
+					lockfile := filepath.Join(CacheHome, "analytics.lock")
+					golock.Lock(lockfile)
+					defer golock.Unlock(lockfile)
+					file = readAnalyticsFile() // read commands again in case it was locked
+					jsonContents, err := json.MarshalIndent(file, "", "  ")
+					if err != nil {
+
+					} else {
+						Printf("%s", string(jsonContents))
+					}
+					//writeAnalyticsFile(analyticsBody{Schema: 1})
+				},
+			},
+			{
+				Hidden:           true,
+				DisableAnalytics: true,
+				Topic:            "analytics",
+				Command:          "clear",
+				Run: func(ctx *Context) {
+					writeAnalyticsFile(analyticsBody{Schema: 1})
+				}},
+		},
+	})
 }
 
 // RecordStart marks when a command was started (for tracking runtime)
@@ -117,7 +154,7 @@ func SubmitAnalytics() {
 	// }
 	// LogIfError(getHTTPError(resp))
 
-	writeAnalyticsFile(analyticsBody{Schema: 1})
+	// writeAnalyticsFile(analyticsBody{Schema: 1})
 }
 
 func skipAnalytics() bool {

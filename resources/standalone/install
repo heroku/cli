@@ -19,7 +19,7 @@ fi
 CURRENTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 INSTALLPATH_SFDX=$DIR/sfdx
 $SUDO cp $CURRENTDIR/bin/sfdx $INSTALLPATH_SFDX
-# Account for use mask
+# Account for user mask
 $SUDO chmod 755 $INSTALLPATH_SFDX
 
 rm -rf ~/.local/share/sfdx/cli
