@@ -1,8 +1,8 @@
 'use strict'
 exports.topic = {
-  name: 'heroku',
+  name: 'webhooks',
   // this is the help text that shows up under `heroku help`
-  description: 'a topic for the webhooks plugin'
+  description: 'List webhooks for an app'
 }
 
 exports.commands = [
