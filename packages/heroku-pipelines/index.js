@@ -15,3 +15,5 @@ exports.commands = flatten(fs.readdirSync(normalizedPath).map(function (file) {
     return require('./commands/pipelines/' + file)
   }
 })).filter(function (e) { return e !== undefined })
+
+exports.disambiguatePipeline = require('./lib/disambiguate')
