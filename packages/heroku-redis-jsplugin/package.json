@@ -1,7 +1,7 @@
 {
   "name": "heroku-redis",
   "description": "Heroku plugin to manage Heroku Redis",
-  "version": "1.2.13",
+  "version": "1.2.14",
   "author": "Heroku",
   "bugs": {
     "url": "https://github.com/heroku/heroku-redis-jsplugin/issues"
