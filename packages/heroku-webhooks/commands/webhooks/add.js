@@ -47,11 +47,11 @@ module.exports = {
   topic: 'webhooks',
   command: 'add',
   flags: [
-    {name: 'include', char: 'i', description: 'comma delimited webhook types', hasValue: true, required: true},
-    {name: 'level', char: 'l', description: 'webhook notification level', hasValue: true, required: true},
-    {name: 'secret', char: 's', description: 'secret to sign webhooks with', hasValue: true},
+    {name: 'include', char: 'i', description: 'comma delimited event types your server will receive ', hasValue: true, required: true},
+    {name: 'level', char: 'l', description: 'notify does not retry, sync will retry until successful or timeout', hasValue: true, required: true},
+    {name: 'secret', char: 's', description: 'value to sign delivery with in Heroku-Webhook-Hmac-SHA256 header', hasValue: true},
     {name: 'authorization', char: 't', description: 'authoriation header to send with webhooks', hasValue: true},
-    {name: 'url', char: 'u', description: 'url to send webhook to', hasValue: true, required: true}
+    {name: 'url', char: 'u', description: 'URL for receiver', hasValue: true, required: true}
   ],
   description: 'add a webhook to an app',
   help: `Example:
