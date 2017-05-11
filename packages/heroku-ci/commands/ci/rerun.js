@@ -4,11 +4,10 @@ const co = require('co')
 const api = require('../../lib/heroku-api')
 const source = require('../../lib/source')
 const TestRun = require('../../lib/test-run')
+const Utils = require('../../lib/utils')
 
 function* run (context, heroku) {
-  const coupling = yield api.pipelineCoupling(heroku, context.app)
-  const pipeline = coupling.pipeline
-
+  const pipeline = yield Utils.getPipeline(context, heroku)
   let sourceTestRun
 
   if (context.args.number) {
@@ -47,10 +46,18 @@ function* run (context, heroku) {
 module.exports = {
   topic: 'ci',
   command: 'rerun',
-  needsApp: true,
+  wantsApp: true,
   needsAuth: true,
   description: 'rerun tests against current directory',
   help: 'uploads the contents of the current directory, using git archive, to Heroku and runs the tests',
   args: [{ name: 'number', optional: true }],
+  flags: [
+    {
+      name: 'pipeline',
+      char: 'p',
+      hasValue: true,
+      description: 'pipeline'
+    }
+  ],
   run: cli.command(co.wrap(run))
 }

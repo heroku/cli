@@ -1,6 +1,7 @@
 const cli = require('heroku-cli-util')
 const co = require('co')
 const api = require('../../lib/heroku-api')
+const Utils = require('../../lib/utils')
 
 function validateArgs (args) {
   if (args.length === 0) {
@@ -16,21 +17,29 @@ function* run (context, heroku) {
     return memo
   }, {})
 
-  const coupling = yield api.pipelineCoupling(heroku, context.app)
+  const pipeline = yield Utils.getPipeline(context, heroku)
 
   yield cli.action(
     `Unsetting ${Object.keys(vars).join(', ')}`,
-    api.setConfigVars(heroku, coupling.pipeline.id, vars)
+    api.setConfigVars(heroku, pipeline.id, vars)
   )
 }
 
 module.exports = {
   topic: 'ci',
   command: 'config:unset',
-  needsApp: true,
+  wantsApp: true,
   needsAuth: true,
   variableArgs: true,
   description: 'unset CI config vars',
+  flags: [
+    {
+      name: 'pipeline',
+      char: 'p',
+      hasValue: true,
+      description: 'pipeline'
+    }
+  ],
   help: `Examples:
 $ heroku ci:config:uset RAILS_ENV
 Unsetting RAILS_ENV... done

@@ -4,32 +4,26 @@ const nock = require('nock')
 const expect = require('chai').expect
 const cli = require('heroku-cli-util')
 const cmd = require('../../../commands/ci/config-set')
+const Factory = require('../../lib/factory')
 
 describe('heroku ci:config:set', function () {
-  let app, coupling, key, value
+  let key, pipeline, value
 
   beforeEach(function () {
     cli.mockConsole()
-    app = '123-app'
     key = 'FOO'
     value = 'bar'
-
-    coupling = {
-      pipeline: {
-        id: '123-abc',
-        name: 'test-pipeline'
-      }
-    }
+    pipeline = Factory.pipeline
   })
 
   it('sets new config', function* () {
     const api = nock('https://api.heroku.com')
-      .get(`/apps/${app}/pipeline-couplings`)
-      .reply(200, coupling)
-      .patch(`/pipelines/${coupling.pipeline.id}/stage/test/config-vars`)
+      .get(`/pipelines/${pipeline.id}`)
+      .reply(200, pipeline)
+      .patch(`/pipelines/${pipeline.id}/stage/test/config-vars`)
       .reply(200, { [key]: value })
 
-    yield cmd.run({ app, args: [ `${key}=${value}` ] })
+    yield cmd.run({ args: [ `${key}=${value}` ], flags: { pipeline: pipeline.id } })
 
     expect(cli.stdout).to.include(key)
     expect(cli.stdout).to.include(value)

@@ -4,10 +4,10 @@ const api = require('../../lib/heroku-api')
 const git = require('../../lib/git')
 const source = require('../../lib/source')
 const TestRun = require('../../lib/test-run')
+const Utils = require('../../lib/utils')
 
 function* run (context, heroku) {
-  const coupling = yield api.pipelineCoupling(heroku, context.app)
-  const pipeline = coupling.pipeline
+  const pipeline = yield Utils.getPipeline(context, heroku)
 
   const commit = yield git.readCommit('HEAD')
   const sourceBlobUrl = yield cli.action('Preparing source', co(function* () {
@@ -35,9 +35,17 @@ function* run (context, heroku) {
 module.exports = {
   topic: 'ci',
   command: 'run',
-  needsApp: true,
+  wantsApp: true,
   needsAuth: true,
   description: 'run tests against current directory',
+  flags: [
+    {
+      name: 'pipeline',
+      char: 'p',
+      hasValue: true,
+      description: 'pipeline'
+    }
+  ],
   help: 'uploads the contents of the current directory to Heroku and runs the tests',
   run: cli.command(co.wrap(run))
 }

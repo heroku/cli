@@ -1,20 +1,26 @@
 const cli = require('heroku-cli-util')
 const co = require('co')
-const api = require('../../lib/heroku-api')
+const Utils = require('../../lib/utils')
 
 function* run (context, heroku) {
-  const coupling = yield api.pipelineCoupling(heroku, context.app)
-  const couplingPipelineID = coupling.pipeline.id
-
-  yield cli.open(`https://dashboard.heroku.com/pipelines/${couplingPipelineID}/tests`)
+  const pipeline = yield Utils.getPipeline(context, heroku)
+  yield cli.open(`https://dashboard.heroku.com/pipelines/${pipeline.id}/tests`)
 }
 
 module.exports = {
   topic: 'ci',
   command: 'open',
-  needsApp: true,
+  wantsApp: true,
   needsAuth: true,
   description: 'open the Dashboard version of Heroku CI',
+  flags: [
+    {
+      name: 'pipeline',
+      char: 'p',
+      hasValue: true,
+      description: 'pipeline'
+    }
+  ],
   help: 'opens a browser to view the Dashboard version of Heroku CI',
   run: cli.command(co.wrap(run))
 }

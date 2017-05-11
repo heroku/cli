@@ -1,22 +1,30 @@
 const cli = require('heroku-cli-util')
 const co = require('co')
-const api = require('../../lib/heroku-api')
 const TestRun = require('../../lib/test-run')
+const Utils = require('../../lib/utils')
 
 function* run (context, heroku) {
-  const coupling = yield api.pipelineCoupling(heroku, context.app)
-  return yield TestRun.displayAndExit(coupling.pipeline, context.args.number, { heroku })
+  const pipeline = yield Utils.getPipeline(context, heroku)
+  return yield TestRun.displayAndExit(pipeline, context.args.number, { heroku })
 }
 
 module.exports = {
   topic: 'ci',
   command: 'info',
-  needsApp: true,
+  wantsApp: true,
   needsAuth: true,
   args: [
     {
       name: 'number',
       description: 'the test run number to show'
+    }
+  ],
+  flags: [
+    {
+      name: 'pipeline',
+      char: 'p',
+      hasValue: true,
+      description: 'pipeline'
     }
   ],
   description: 'test run information',

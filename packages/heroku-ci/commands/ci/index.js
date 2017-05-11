@@ -1,12 +1,11 @@
 const cli = require('heroku-cli-util')
 const co = require('co')
-const api = require('../../lib/heroku-api')
 const RenderTestRuns = require('../../lib/render-test-runs')
+const Utils = require('../../lib/utils')
 
 function* run (context, heroku) {
-  const coupling = yield api.pipelineCoupling(heroku, context.app)
-
-  return yield RenderTestRuns.render(coupling.pipeline, { heroku, watch: context.flags.watch })
+  const pipeline = yield Utils.getPipeline(context, heroku)
+  return yield RenderTestRuns.render(pipeline, { heroku, watch: context.flags.watch })
 }
 
 const cmd = {

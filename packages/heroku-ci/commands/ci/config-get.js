@@ -2,10 +2,11 @@ const cli = require('heroku-cli-util')
 const co = require('co')
 const shellescape = require('shell-escape')
 const api = require('../../lib/heroku-api')
+const Utils = require('../../lib/utils')
 
 function* run (context, heroku) {
-  const coupling = yield api.pipelineCoupling(heroku, context.app)
-  const config = yield api.configVars(heroku, coupling.pipeline.id)
+  const pipeline = yield Utils.getPipeline(context, heroku)
+  const config = yield api.configVars(heroku, pipeline.id)
   const value = config[context.args.key]
 
   if (context.flags.shell) {
@@ -18,7 +19,7 @@ function* run (context, heroku) {
 module.exports = {
   topic: 'ci',
   command: 'config:get',
-  needsApp: true,
+  wantsApp: true,
   needsAuth: true,
   description: 'get a CI config var',
   help: `Examples:
@@ -28,10 +29,18 @@ test
   args: [{
     name: 'key'
   }],
-  flags: [{
-    name: 'shell',
-    char: 's',
-    description: 'output config var in shell format'
-  }],
+  flags: [
+    {
+      name: 'shell',
+      char: 's',
+      description: 'output config var in shell format'
+    },
+    {
+      name: 'pipeline',
+      char: 'p',
+      hasValue: true,
+      description: 'pipeline'
+    }
+  ],
   run: cli.command(co.wrap(run))
 }
