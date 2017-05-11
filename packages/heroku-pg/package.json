@@ -35,6 +35,11 @@
     "standard": "8.6.0",
     "unexpected": "10.26.3"
   },
+  "files": [
+    "index.js",
+    "lib",
+    "commands"
+  ],
   "homepage": "https://github.com/heroku/heroku-pg",
   "keywords": [
     "heroku-plugin"
