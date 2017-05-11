@@ -4,9 +4,43 @@
 The CLI plugin for Heroku CI
 
 ## Installation
-```sh
-heroku plugins:install heroku-ci
+
+This plugin is part of the official Heroku CLI, so there is no need to install it to run their commands.
+
+## Development
+
+First, please read [Developing CLI Plugins on Heroku's DevCenter](https://devcenter.heroku.com/articles/developing-toolbelt-plug-ins).
+
+### Run Tests
+
 ```
+$ npm test
+```
+
+### Deploy
+
+1. Release a new version of this npm package. e.g. Using [`np`](https://www.npmjs.com/package/np)
+
+```
+› np
+
+Publish a new version of heroku-ci (1.6.0)
+
+? Select semver increment or specify new version minor 	1.7.0
+? Will bump from 1.6.0 to 1.7.0. Continue? Yes
+ ✔ Prerequisite check
+ ✔ Git
+ ✔ Cleanup
+ ✔ Installing dependencies using Yarn
+ ✔ Running tests
+ ✔ Bumping version using Yarn
+ ✔ Publishing package
+ ✔ Pushing tags
+
+ heroku-ci 1.7.0 published 🎉
+```
+
+2. Open a new pr in https://github.com/heroku/cli/blob/master/package.json, updating to the appropriate heroku-ci version.
 
 ## Commands
 
