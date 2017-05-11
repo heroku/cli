@@ -406,7 +406,7 @@ here@0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/here/-/here-0.0.2.tgz#69c1af3f02121f3d8788e02e84dc8b3905d71195"
 
-heroku-apps@^2.2.23:
+heroku-apps@2.2.23:
   version "2.2.23"
   resolved "https://registry.yarnpkg.com/heroku-apps/-/heroku-apps-2.2.23.tgz#ad50d5023a9f0178b32ed8cd578bbc6cc22e7dbe"
   dependencies:
@@ -460,7 +460,7 @@ heroku-certs@1.1.38:
     moment "2.17.1"
     psl "1.1.16"
 
-heroku-ci@^1.7.1:
+heroku-ci@1.7.1:
   version "1.7.1"
   resolved "https://registry.yarnpkg.com/heroku-ci/-/heroku-ci-1.7.1.tgz#a202fc887d8a4b25aa6ba5346dab5d0da77468a0"
   dependencies:
@@ -678,7 +678,7 @@ heroku-pg@2.0.26:
     strip-eof "1.0.0"
     tunnel-ssh "4.1.2"
 
-heroku-pipelines@^2.0.1, heroku-pipelines@^2.1.0:
+heroku-pipelines@2.1.0, heroku-pipelines@^2.0.1:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/heroku-pipelines/-/heroku-pipelines-2.1.0.tgz#526b72e1bf0be647c61f8c89d599b5fc5b953e0f"
   dependencies:
@@ -699,7 +699,7 @@ heroku-ps-exec@1.0.1:
     heroku-cli-util "^6.0.15"
     heroku-exec-util "0.3.6"
 
-heroku-redis@^1.2.14:
+heroku-redis@1.2.14:
   version "1.2.14"
   resolved "https://registry.yarnpkg.com/heroku-redis/-/heroku-redis-1.2.14.tgz#2ad2991fce1f7376b5990dd62c59020270c5efa9"
   dependencies:
