@@ -1,8 +1,0 @@
-.codeclimate.yml
-.npmignore
-.nyc_output
-benchmark.js
-circle.yml
-coverage
-test
-yarn.lock

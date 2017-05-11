@@ -63,9 +63,12 @@
     "time-require": "0.1.2",
     "unexpected": "10.25.0"
   },
-  "standard": {
-    "env": "mocha"
-  },
+  "files": [
+    "index.js",
+    "assets",
+    "lib",
+    "commands"
+  ],
   "homepage": "https://github.com/heroku/heroku-apps",
   "keywords": [
     "heroku-plugin"
@@ -79,5 +82,8 @@
   "scripts": {
     "changelog": "changelog heroku-apps all -m > CHANGELOG.md",
     "test": "TZ=utc nyc mocha && standard"
+  },
+  "standard": {
+    "env": "mocha"
   }
 }
