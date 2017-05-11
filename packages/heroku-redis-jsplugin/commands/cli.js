@@ -88,13 +88,31 @@ function redisCLI (uri, client) {
   client.on('data', function (data) {
     reply.execute(data)
   })
-  client.on('error', function (error) {
-    cli.error(error)
-    process.exit(1)
+  return new Promise((resolve, reject) => {
+    client.on('error', reject)
+    client.on('end', function () {
+      console.log('\nDisconnected from instance.')
+      resolve()
+    })
   })
-  client.on('end', function () {
-    console.log('\nDisconnected from instance.')
-    process.exit(0)
+}
+
+function bastionConnect ({uri, bastions, config}) {
+  return new Promise((resolve, reject) => {
+    let tunnel = new Client()
+    tunnel.on('ready', function () {
+      let localPort = Math.floor(Math.random() * (65535 - 49152) + 49152)
+      tunnel.forwardOut('localhost', localPort, uri.hostname, uri.port, function (err, stream) {
+        if (err) return reject(err)
+        stream.on('close', () => tunnel.end())
+        redisCLI(uri, stream).then(resolve).catch(reject)
+      })
+    })
+    tunnel.connect({
+      host: bastions.split(',')[0],
+      username: 'bastion',
+      privateKey: match(config, /_BASTION_KEY/)
+    })
   })
 }
 
@@ -113,24 +131,7 @@ function maybeTunnel (redis, config) {
   let uri = url.parse(redis.resource_url)
 
   if (bastions != null) {
-    let tunnel = new Client()
-    tunnel.on('ready', function () {
-      let localPort = Math.floor(Math.random() * (65535 - 49152) + 49152)
-      tunnel.forwardOut('localhost', localPort, uri.hostname, uri.port, function (err, stream) {
-        if (err) {
-          cli.error(err)
-        }
-        stream.on('close', function () {
-          tunnel.end()
-        })
-        redisCLI(uri, stream)
-      })
-    })
-    tunnel.connect({
-      host: bastions.split(',')[0],
-      username: 'bastion',
-      privateKey: match(config, /_BASTION_KEY/)
-    })
+    return bastionConnect({uri, bastions, config})
   } else {
     let client
     if (!hobby) {
@@ -138,7 +139,7 @@ function maybeTunnel (redis, config) {
     } else {
       client = net.connect({port: uri.port, host: uri.hostname})
     }
-    redisCLI(uri, client)
+    return redisCLI(uri, client)
   }
 }
 
@@ -169,6 +170,6 @@ module.exports = {
     }).join(', ')
 
     cli.log(`Connecting to ${addon.name} (${nonBastionVars}):`)
-    maybeTunnel(redis, vars)
+    return maybeTunnel(redis, vars)
   }))
 }

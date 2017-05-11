@@ -5,8 +5,10 @@ let nock = require('nock')
 let sinon = require('sinon')
 let proxyquire = require('proxyquire').noCallThru()
 let expect = require('chai').expect
+let Duplex = require('stream').Duplex
+let EventEmitter = require('events').EventEmitter
 
-let command, net, tls, tunnel
+let command, net, tls
 
 describe('heroku redis:cli', function () {
   let command = proxyquire('../../commands/cli.js', {net: {}, tls: {}, ssh2: {}})
@@ -17,27 +19,30 @@ describe('heroku redis:cli', function () {
   beforeEach(function () {
     cli.mockConsole()
 
-    let client = {
-      write: sinon.stub(),
-      on: sinon.stub()
+    class Client extends Duplex {
+      _write (chunk, encoding, callback) { }
+      _read (size) { this.emit('end') }
     }
 
     net = {
-      connect: sinon.stub().returns(client)
+      connect: sinon.stub().returns(new Client())
     }
 
     tls = {
-      connect: sinon.stub().returns(client)
+      connect: sinon.stub().returns(new Client())
     }
 
-    tunnel = sinon.stub()
+    class Tunnel extends EventEmitter {
+      connect () {
+        this.emit('ready')
+      }
 
-    let Client = function () {
-      this.on = sinon.stub()
-      this.connect = tunnel
+      forwardOut (localHost, localPort, hostname, port, cb) {
+        cb(null, new Client())
+      }
     }
 
-    let ssh2 = { Client }
+    let ssh2 = {Client: Tunnel}
 
     command = proxyquire('../../commands/cli.js', {net, tls, ssh2})
   })
@@ -56,7 +61,6 @@ describe('heroku redis:cli', function () {
         resource_url: 'redis://foobar:password@example.com:8649',
         plan: 'hobby'
       })
-
     return command.run({app: 'example', flags: {confirm: 'example'}, args: {}, auth: {username: 'foobar', password: 'password'}})
     .then(() => app.done())
     .then(() => configVars.done())
@@ -113,6 +117,5 @@ describe('heroku redis:cli', function () {
     .then(() => redis.done())
     .then(() => expect(cli.stdout).to.equal('Connecting to redis-haiku (REDIS_URL):\n'))
     .then(() => expect(cli.stderr).to.equal(''))
-    .then(() => expect(tunnel.called).to.equal(true))
   })
 })
