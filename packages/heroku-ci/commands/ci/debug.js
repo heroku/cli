@@ -12,7 +12,7 @@ const SETUP_COMMAND = 'ci setup && eval $(ci env)'
 const COMMAND = `${SETUP_COMMAND} && bash`
 
 function* run (context, heroku) {
-  const pipeline = Utils.getPipeline(context, heroku)
+  const pipeline = yield Utils.getPipeline(context, heroku)
 
   const pipelineRepository = yield api.pipelineRepository(heroku, pipeline.id)
   const organization = pipelineRepository.organization &&
