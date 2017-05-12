@@ -1,3 +1,142 @@
+5.9.2   2017-05-09
+==================
+heroku-ps-exec 1.0.1
+
+5.9.1   2017-05-04
+==================
+heroku-apps 2.2.22
+
+5.9.0   2017-05-01
+==================
+heroku-ps-exec 5.1.16
+
+5.8.11  2017-04-26
+==================
+heroku-pipelines 5.1.16
+
+5.8.10  2017-04-26
+==================
+heroku-pipelines 1.5.1
+
+5.8.9   2017-04-26
+==================
+heroku-apps 2.2.21
+heroku-local 5.1.15
+
+5.8.8   2017-04-25
+==================
+heroku-cli-addons 1.2.18
+heroku-local 5.1.14
+heroku-pipelines 1.5.0
+
+5.8.7   2017-04-21
+==================
+Bump heroku-apps to 2.2.20
+Bump heroku-pg to 2.0.26
+
+5.8.6   2017-04-11
+==================
+Add --scripts-prepend-node-path=true to npm args
+
+5.8.4   2017-04-10
+==================
+heroku-apps 1.5.12
+
+5.8.4   2017-04-10
+==================
+Update heroku-apps to 2.2.19
+
+5.8.3   2017-04-10
+==================
+Update to node 7
+Rebuild modules on update
+
+5.8.2   2017-04-10
+==================
+Roll back node 7 upgrade (heroku kafka issue)
+
+5.8.1   2017-04-07
+==================
+Update plugins before updating CLI
+
+5.8.0   2017-04-05
+==================
+Update to node 7
+
+5.7.16  2017-03-30
+==================
+Update heroku-apps to 2.2.16
+
+5.7.15  2017-03-28
+==================
+Update heroku-certs to 1.1.36
+Update heroku-spaces to 2.8.4
+
+5.7.14  2017-03-28
+==================
+Update heroku-cli-addons to 1.2.14
+Update heroku-apps to 2.2.13
+
+5.7.13  2017-03-28
+==================
+Update heroku-apps to 2.2.12
+
+5.7.12  2017-03-27
+==================
+Bump version
+
+5.7.11  2017-03-27
+==================
+Update heroku-apps to 2.2.11
+Update heroku-certs to 1.1.35
+
+5.7.10  2017-03-23
+==================
+Update heroku-cli-util to 6.1.15
+
+5.7.9   2017-03-23
+==================
+Revert "update heroku-cli-util to 6.1.14"
+
+5.7.8   2017-03-22
+==================
+Update heroku-cli-util to 6.1.14
+
+5.7.7   2017-03-21
+==================
+Revert "update heroku-cli-util to 6.1.13"
+
+5.7.6   2017-03-21
+==================
+Update heroku-cli-util to 6.1.13
+
+5.7.5   2017-03-20
+==================
+Bump heroku-apps to 2.2.7
+
+5.7.4   2017-03-20
+==================
+Update heroku-apps to 2.2.6
+Update heroku-certs to 1.1.31
+
+5.7.3   2017-03-17
+==================
+Update heroku-apps to 2.2.5
+
+5.7.2   2017-03-17
+==================
+Update heroku-apps to 2.2.4
+
+5.7.1   2017-03-17
+==================
+Bump heroku-spaces to 2.8.0
+
+5.7.0  2017-03-14
+==================
+Update heroku-apps to 2.2.3
+Exit with 127 code when command not found
+Moved login/logout/whoami to heroku-apps
+
 5.6.32  2017-03-10
 ==================
 Update heroku-apps to 2.1.27
