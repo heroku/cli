@@ -111,12 +111,14 @@ func SubmitAnalytics() {
 	req := sling.New().Client(apiHTTPClient).Base(host)
 	req.Set("User-Agent", version())
 	resp, err := req.Post("/record").BodyJSON(file).ReceiveSuccess(nil)
+
+	writeAnalyticsFile(analyticsBody{Schema: 1})
+
 	if err != nil {
 		LogIfError(err)
 		return
 	}
 	LogIfError(getHTTPError(resp))
-	writeAnalyticsFile(analyticsBody{Schema: 1})
 }
 
 func skipAnalytics() bool {
