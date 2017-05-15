@@ -24,7 +24,7 @@ function* push(context, heroku) {
   let resource = `${ registry }/${ context.app }/${ proc }`;
 
   try {
-    let build = yield buildImage(resource, context.cwd, context.flags.verbose);
+    let build = yield buildImage(resource, process.cwd(), context.flags.verbose);
   }
   catch (err) {
     cli.error(`Error: docker build exited with ${ err }`);
