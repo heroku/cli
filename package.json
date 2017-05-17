@@ -28,6 +28,7 @@
       "heroku-orgs",
       "heroku-pg",
       "heroku-pipelines",
+      "heroku-ps-exec",
       "heroku-redis",
       "heroku-run",
       "heroku-spaces",
