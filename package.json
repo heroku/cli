@@ -19,6 +19,7 @@
     "plugins": [
       "heroku-apps",
       "heroku-certs",
+      "heroku-ci",
       "heroku-cli-addons",
       "heroku-cli-oauth",
       "heroku-fork",
