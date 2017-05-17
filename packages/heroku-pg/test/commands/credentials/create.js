@@ -48,7 +48,7 @@ describe('pg:credentials:create', () => {
     pg.post('/postgres/v0/databases/postgres-1/credentials').reply(200)
     return cmd.run({app: 'myapp', args: {}, flags: {name: 'credname'}})
     .then(() => expect(cli.stdout, 'to equal', `
-Please attach the credential to the apps you want to use it in by running heroku addons:attach --credential credname -a app_name.
+Please attach the credential to the apps you want to use it in by running heroku addons:attach postgres-1 --credential credname -a app_name.
 Please define the new grants for the credential within Postgres: heroku pg:psql postgres-1 -a myapp.
 `))
     .then(() => expect(cli.stderr, 'to equal', 'Creating credential credname... done\n'))

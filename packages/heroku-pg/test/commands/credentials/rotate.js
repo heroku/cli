@@ -20,6 +20,21 @@ const addon = {
   plan: {name: 'heroku-postgresql:standard-0'}
 }
 
+const attachments = [
+  {
+    namespace: 'credential:my_role',
+    app: { name: 'appname_1' }
+  },
+  {
+    namespace: 'credential:my_role',
+    app: { name: 'appname_2' }
+  },
+  {
+    namespace: 'credential:other_role',
+    app: { name: 'appname_3' }
+  }
+]
+
 const fetcher = () => {
   return {
     database: () => db,
@@ -31,18 +46,30 @@ const cmd = proxyquire('../../../commands/credentials/rotate', {
   '../../lib/fetcher': fetcher
 })
 
+let lastApp, lastConfirm, lastMsg
+
+const confirmApp = function * (app, confirm, msg) {
+  lastApp = app
+  lastConfirm = confirm
+  lastMsg = msg
+}
+
 describe('pg:credentials:rotate', () => {
-  let api, pg, starter
+  let api, pg, starter, confirm
 
   beforeEach(() => {
     api = nock('https://api.heroku.com')
+    api.get('/addons/postgres-1/addon-attachments').reply(200, attachments)
     pg = nock('https://postgres-api.heroku.com')
     starter = nock('https://postgres-starter-api.heroku.com')
+    confirm = cli.confirmApp
+    cli.confirmApp = confirmApp
     cli.mockConsole()
     cli.exit.mock()
   })
 
   afterEach(() => {
+    cli.confirmApp = confirm
     nock.cleanAll()
     api.done()
   })
@@ -149,5 +176,75 @@ describe('pg:credentials:rotate', () => {
     return cmd.run({app: 'myapp', args: {}, flags: {all: true, confirm: 'myapp'}})
               .then(() => expect(cli.stdout, 'to equal', ''))
               .then(() => expect(cli.stderr, 'to equal', 'Rotating all credentials on postgres-1... done\n'))
+  })
+
+  it('requires app confirmation for rotating all roles with --all', () => {
+    pg.post('/postgres/v0/databases/postgres-1/credentials_rotation').reply(200)
+
+    const message = `WARNING: Destructive Action
+Connections will be reset and applications will be restarted.
+This command will affect the apps appname_1, appname_2, appname_3.`
+
+    return cmd.run({app: 'myapp',
+      args: {},
+      flags: { all: true, confirm: 'myapp' }})
+    .then(() => {
+      expect(lastApp, 'to equal', 'myapp')
+      expect(lastConfirm, 'to equal', 'myapp')
+      expect(lastMsg, 'to equal', message)
+    })
+  })
+
+  it('requires app confirmation for rotating a specific role with --name', () => {
+    pg.post('/postgres/v0/databases/postgres-1/credentials/my_role/credentials_rotation').reply(200)
+
+    const message = `WARNING: Destructive Action
+The password for the my_role credential will rotate.
+Connections older than 30 minutes will be reset, and a temporary rotation username will be used during the process.
+This command will affect the apps appname_1, appname_2.`
+
+    return cmd.run({app: 'myapp',
+      args: {},
+      flags: { name: 'my_role', confirm: 'myapp' }})
+    .then(() => {
+      expect(lastApp, 'to equal', 'myapp')
+      expect(lastConfirm, 'to equal', 'myapp')
+      expect(lastMsg, 'to equal', message)
+    })
+  })
+
+  it('requires app confirmation for force rotating all roles with --all and --force', () => {
+    pg.post('/postgres/v0/databases/postgres-1/credentials_rotation').reply(200)
+
+    const message = `WARNING: Destructive Action
+Connections will be reset and applications will be restarted.
+This command will affect the apps appname_1, appname_2, appname_3.`
+
+    return cmd.run({app: 'myapp',
+      args: {},
+      flags: { all: true, force: true, confirm: 'myapp' }})
+    .then(() => {
+      expect(lastApp, 'to equal', 'myapp')
+      expect(lastConfirm, 'to equal', 'myapp')
+      expect(lastMsg, 'to equal', message)
+    })
+  })
+
+  it('requires app confirmation for force rotating a specific role with --name and --force', () => {
+    pg.post('/postgres/v0/databases/postgres-1/credentials/my_role/credentials_rotation').reply(200)
+
+    const message = `WARNING: Destructive Action
+The password for the my_role credential will rotate.
+Connections will be reset and applications will be restarted.
+This command will affect the apps appname_1, appname_2.`
+
+    return cmd.run({app: 'myapp',
+      args: {},
+      flags: { name: 'my_role', force: true, confirm: 'myapp' }})
+    .then(() => {
+      expect(lastApp, 'to equal', 'myapp')
+      expect(lastConfirm, 'to equal', 'myapp')
+      expect(lastMsg, 'to equal', message)
+    })
   })
 })

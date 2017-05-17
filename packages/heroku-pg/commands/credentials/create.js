@@ -19,7 +19,7 @@ function * run (context, heroku) {
   yield cli.action(`Creating credential ${cli.color.cmd(flags.name)}`, co(function * () {
     yield heroku.post(`/postgres/v0/databases/${db.name}/credentials`, {host: host(db), body: data})
   }))
-  let attachCmd = `heroku addons:attach --credential ${flags.name} -a app_name`
+  let attachCmd = `heroku addons:attach ${db.name} --credential ${flags.name} -a app_name`
   let psqlCmd = `heroku pg:psql ${db.name} -a ${app}`
   cli.log(`
 Please attach the credential to the apps you want to use it in by running ${cli.color.cmd(attachCmd)}.
