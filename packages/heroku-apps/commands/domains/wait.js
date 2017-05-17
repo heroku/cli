@@ -5,11 +5,17 @@ let co = require('co')
 let waitForDomain = require('../../lib/domains_wait')
 
 function * run (context, heroku) {
-  let domain = yield heroku.request({
-    path: `/apps/${context.app}/domains/${encodeURIComponent(context.args.hostname)}`
-  })
+  let domains
+  if (context.args.hostname) {
+    domains = [yield heroku.get(`/apps/${context.app}/domains/${encodeURIComponent(context.args.hostname)}`)]
+  } else {
+    let apiDomains = yield heroku.get(`/apps/${context.app}/domains`)
+    domains = apiDomains.filter(domain => domain.status === 'pending')
+  }
 
-  yield waitForDomain(context, heroku, domain)
+  for (let domain of domains) {
+    yield waitForDomain(context, heroku, domain)
+  }
 }
 
 module.exports = {
@@ -18,6 +24,6 @@ module.exports = {
   description: 'wait for domain to be active for an app',
   needsApp: true,
   needsAuth: true,
-  args: [{name: 'hostname'}],
+  args: [{name: 'hostname', optional: true}],
   run: cli.command(co.wrap(run))
 }

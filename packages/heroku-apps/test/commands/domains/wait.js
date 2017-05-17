@@ -29,6 +29,29 @@ describe('domains:wait', function () {
       .then(() => expect(cli.stderr).to.equal('Waiting for foo.com... done\n'))
   })
 
+  it('waits for all domains', function () {
+    let api = nock('https://api.heroku.com:443')
+      .get('/apps/myapp/domains')
+      .reply(200, [
+        {id: '1234', status: 'pending', hostname: 'foo.com'},
+        {id: '5678', status: 'pending', hostname: 'bar.com'},
+        {id: '9012', status: 'none', hostname: 'biz.com'}
+      ])
+
+    let foo = nock('https://api.heroku.com:443')
+      .get('/apps/myapp/domains/1234')
+      .reply(200, {status: 'none', hostname: 'foo.com'})
+    let bar = nock('https://api.heroku.com:443')
+      .get('/apps/myapp/domains/5678')
+      .reply(200, {status: 'none', hostname: 'bar.com'})
+
+    return cmd.run({app: 'myapp', args: {}})
+      .then(() => api.done())
+      .then(() => foo.done())
+      .then(() => bar.done())
+      .then(() => expect(cli.stderr).to.equal('Waiting for foo.com... done\nWaiting for bar.com... done\n'))
+  })
+
   it('adds a domain with the wait message succeeded', function () {
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/domains/foo.com')
