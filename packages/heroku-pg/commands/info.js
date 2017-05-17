@@ -15,6 +15,7 @@ function displayDB (db, app) {
     db.db.info.push({name: 'Billing App', values: [cli.color.cyan(db.addon.app.name)]})
   }
   db.db.info.push({name: 'Add-on', values: [cli.color.addon(db.addon.name)]})
+
   let info = db.db.info.reduce((info, i) => {
     if (i.values.length > 0) {
       if (i.resolve_db_name) {

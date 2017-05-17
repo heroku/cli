@@ -9,11 +9,25 @@ function * run (context, heroku) {
   const {app, args, flags} = context
 
   let showCredentials = co.wrap(function * () {
-    let db = yield fetcher.database(app, args.database)
-    cli.log(`Connection info string:
+    const host = require('../lib/host')
+    let addon = yield fetcher.addon(app, args.database)
+    try {
+      let credentials = yield heroku.get(`/postgres/v0/databases/${addon.name}/credentials`,
+                                       { host: host(addon) })
+      cli.table(credentials, {
+        columns: [
+          {key: 'name', label: 'Credential'},
+          {key: 'state', label: 'State'}
+        ]
+      })
+    } catch (err) {
+      if (!err.statusCode || err.statusCode !== 422) throw err
+      let db = yield fetcher.database(app, args.database)
+      cli.log(`Connection info string:
    "dbname=${db.database} host=${db.host} port=${db.port || 5432} user=${db.user} password=${db.password} sslmode=require"
 Connection URL:
    ${db.url.href}`)
+    }
   })
 
   let reset = co.wrap(function * () {

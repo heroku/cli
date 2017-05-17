@@ -45,7 +45,10 @@ describe('pg:credentials', () => {
     api.done()
   })
 
+  // Old behaviour
   it('runs query', () => {
+    // Returns an error for non-whitelisted databases
+    pg.get('/postgres/v0/databases/postgres-1/credentials').reply(422)
     return cmd.run({app: 'myapp', args: {}, flags: {}})
     .then(() => expect(cli.stdout, 'to equal', `Connection info string:
    "dbname=mydb host=foo.com port=5432 user=jeff password=pass sslmode=require"
@@ -59,5 +62,31 @@ Connection URL:
     return cmd.run({app: 'myapp', args: {}, flags: {reset: true}})
     .then(() => expect(cli.stdout, 'to equal', ''))
     .then(() => expect(cli.stderr, 'to equal', 'Resetting credentials on postgres-1... done\n'))
+  })
+
+  // Private beta behaviour
+  it('shows the correct credentials', () => {
+    let credentials = [
+      { uuid: 'aaaa',
+        name: 'jeff',
+        state: 'created',
+        database: 'd123',
+        host: 'localhost',
+        port: 5442,
+        credentials: [] },
+      { uuid: 'aabb',
+        name: 'ransom',
+        state: 'rotating',
+        database: 'd123',
+        host: 'localhost',
+        port: 5442,
+        credentials: [] }
+    ]
+    pg.get('/postgres/v0/databases/postgres-1/credentials').reply(200, credentials)
+
+    return cmd.run({app: 'myapp', args: {}, flags: {name: 'jeff'}})
+              .then(() => expect(cli.stdout,
+                                 'to equal',
+                                 'Credential  State\n──────────  ────────\njeff        created\nransom      rotating\n'))
   })
 })
