@@ -68,6 +68,9 @@ func updateCLI(channel string) {
 		}
 		channel = config.LockChannel
 	}
+	if channel == "stable" && runtime.GOOS == "darwin" {
+		channel = "v6"
+	}
 	manifest := GetUpdateManifest(channel, config.LockVersion)
 	if npmExists() && manifest.Version == Version && manifest.Channel == Channel {
 		return
