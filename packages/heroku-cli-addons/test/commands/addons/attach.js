@@ -67,4 +67,20 @@ Setting foo config vars and restarting myapp... done, v10
 `))
       .then(() => api.done())
   })
+
+  it('attaches in the credential namespace if the credential flag is specified', function () {
+    let api = nock('https://api.heroku.com:443')
+      .get('/addons/postgres-123')
+      .reply(200, {name: 'postgres-123'})
+      .post('/addon-attachments', {app: {name: 'myapp'}, addon: {name: 'postgres-123'}, namespace: 'credential:hello'})
+      .reply(201, {name: 'POSTGRES_HELLO'})
+      .get('/apps/myapp/releases')
+      .reply(200, [{version: 10}])
+    return cmd.run({app: 'myapp', args: {addon_name: 'postgres-123'}, flags: {credential: 'hello'}})
+      .then(() => expect(cli.stdout, 'to be empty'))
+      .then(() => expect(cli.stderr, 'to equal', `Attaching hello of postgres-123 to myapp... done
+Setting POSTGRES_HELLO config vars and restarting myapp... done, v10
+`))
+      .then(() => api.done())
+  })
 })
