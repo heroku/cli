@@ -183,9 +183,9 @@ cli-engine-config@1.1.4:
   dependencies:
     uuid "3.0.1"
 
-cli-engine@3.3.1:
-  version "3.3.1"
-  resolved "http://cli-npm.heroku.com/cli-engine/-/cli-engine-3.3.1/1256cf784b68750032589b52bfce2d102a2e15f7.tgz#1256cf784b68750032589b52bfce2d102a2e15f7"
+cli-engine@3.3.2:
+  version "3.3.2"
+  resolved "http://cli-npm.heroku.com/cli-engine/-/cli-engine-3.3.2/46f3e9fd6472a7cd3d9a453c8cf83b101c0d6293.tgz#46f3e9fd6472a7cd3d9a453c8cf83b101c0d6293"
   dependencies:
     cli-engine-command "3.2.1"
     cli-engine-config "1.1.4"
@@ -617,9 +617,9 @@ heroku-cli-addons@1.2.16:
     lodash.values "4.3.0"
     printf "0.2.5"
 
-heroku-cli-addons@1.2.18:
-  version "1.2.18"
-  resolved "http://cli-npm.heroku.com/heroku-cli-addons/-/heroku-cli-addons-1.2.18/61885c773e0de859c9f847c5dbe5f39436429ca5.tgz#61885c773e0de859c9f847c5dbe5f39436429ca5"
+heroku-cli-addons@1.2.19:
+  version "1.2.19"
+  resolved "http://cli-npm.heroku.com/heroku-cli-addons/-/heroku-cli-addons-1.2.19/d19c09baa9c729ff3fcbc9e7516cf87a201428f8.tgz#d19c09baa9c729ff3fcbc9e7516cf87a201428f8"
   dependencies:
     co "4.6.0"
     co-wait "0.0.0"
