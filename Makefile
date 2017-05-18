@@ -85,8 +85,8 @@ $(MANIFEST).sig: $(MANIFEST)
 $(MANIFEST_GZ).sig: $(MANIFEST_GZ)
 	@gpg --armor -u 0F1B0520 --yes --output $@ --detach-sig $<
 
-ifneq ($(CHANNEL),)
-PREVIOUS_VERSION:=$(shell curl -fsSL https://cli-assets.heroku.com/branches/$(CHANNEL)/manifest.json | jq -r '.version')
+ifneq ($(PATH),)
+PREVIOUS_VERSION:=$(shell curl -fsSL https://cli-assets.heroku.com/branches/$(PATH)/manifest.json | jq -r '.version')
 endif
 DIST_PATCHES := $(foreach t,$(TARGETS),$(DIST_DIR)/$(PREVIOUS_VERSION)/heroku-v$(PREVIOUS_VERSION)-$(t).patch)
 
@@ -142,7 +142,7 @@ $(DIST_DIR)/$(VERSION)/heroku-windows-%.exe: tmp/windows-% $(CACHE_DIR)/git/Git-
 		-i https://toolbelt.heroku.com/ \
 		-in tmp/windows-$*-installer/heroku/installer.exe -out $@
 
-$(DIST_DIR)/$(CHANNEL)/$(VERSION)/heroku-osx.pkg: tmp/darwin-amd64
+$(DIST_DIR)/$(PATH)/$(VERSION)/heroku-osx.pkg: tmp/darwin-amd64
 	@mkdir -p $(@D)
 	./resources/osx/build $@
 
@@ -227,55 +227,55 @@ disttgz: $(MANIFEST_GZ) $(MANIFEST_GZ).sig $(DIST_TARGETS_GZ)
 distpatch: $(DIST_PATCHES)
 releasepatch: $(addprefix releasepatch/,$(DIST_PATCHES))
 releasepatch/%: %
-	aws s3 cp --cache-control max-age=0 $(DIST_DIR)/$(PREVIOUS_VERSION)/$(@F) s3://heroku-cli-assets/branches/$(CHANNEL)/$(PREVIOUS_VERSION)/$(@F)
+	aws s3 cp --cache-control max-age=0 $(DIST_DIR)/$(PREVIOUS_VERSION)/$(@F) s3://heroku-cli-assets/branches/$(PATH)/$(PREVIOUS_VERSION)/$(@F)
 
 .PHONY: releasetxz
 releasetxz: $(MANIFEST) $(MANIFEST).sig $(addprefix releasetxz/,$(DIST_TARGETS))
-	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/manifest.json s3://heroku-cli-assets/branches/$(CHANNEL)/$(VERSION)/manifest.json
-	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/manifest.json s3://heroku-cli-assets/branches/$(CHANNEL)/manifest.json
-	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/manifest.json.sig s3://heroku-cli-assets/branches/$(CHANNEL)/manifest.json.sig
+	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/manifest.json s3://heroku-cli-assets/branches/$(PATH)/$(VERSION)/manifest.json
+	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/manifest.json s3://heroku-cli-assets/branches/$(PATH)/manifest.json
+	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/manifest.json.sig s3://heroku-cli-assets/branches/$(PATH)/manifest.json.sig
 
 .PHONY: releasetgz
 releasetgz: $(MANIFEST_GZ) $(MANIFEST_GZ).sig $(addprefix releasetgz/,$(DIST_TARGETS_GZ))
-	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/gz/manifest.json s3://heroku-cli-assets/branches/$(CHANNEL)/gz/manifest.json
-	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/gz/manifest.json.sig s3://heroku-cli-assets/branches/$(CHANNEL)/gz/manifest.json.sig
+	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/gz/manifest.json s3://heroku-cli-assets/branches/$(PATH)/gz/manifest.json
+	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/gz/manifest.json.sig s3://heroku-cli-assets/branches/$(PATH)/gz/manifest.json.sig
 
 .PHONY: releasetxz/% releasetgz/%
 releasetxz/%.tar.xz: %.tar.xz
-	aws s3 cp --cache-control max-age=86400 $< s3://heroku-cli-assets/branches/$(CHANNEL)/$(VERSION)/$(notdir $<)
-	aws s3 cp --cache-control max-age=86400 $< s3://heroku-cli-assets/branches/$(CHANNEL)/$(notdir $<)
+	aws s3 cp --cache-control max-age=86400 $< s3://heroku-cli-assets/branches/$(PATH)/$(VERSION)/$(notdir $<)
+	aws s3 cp --cache-control max-age=86400 $< s3://heroku-cli-assets/branches/$(PATH)/$(notdir $<)
 releasetgz/%.tar.gz: %.tar.gz
-	aws s3 cp --cache-control max-age=86400 $< s3://heroku-cli-assets/branches/$(CHANNEL)/$(VERSION)/$(notdir $<)
-	aws s3 cp --cache-control max-age=86400 $< s3://heroku-cli-assets/branches/$(CHANNEL)/$(notdir $<)
+	aws s3 cp --cache-control max-age=86400 $< s3://heroku-cli-assets/branches/$(PATH)/$(VERSION)/$(notdir $<)
+	aws s3 cp --cache-control max-age=86400 $< s3://heroku-cli-assets/branches/$(PATH)/$(notdir $<)
 
 .PHONY: distosx
-distosx: $(DIST_DIR)/$(CHANNEL)/$(VERSION)/heroku-osx.pkg
+distosx: $(DIST_DIR)/$(PATH)/$(VERSION)/heroku-osx.pkg
 
 .PHONY: releaseosx
-releaseosx: $(DIST_DIR)/$(CHANNEL)/$(VERSION)/heroku-osx.pkg
-	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(CHANNEL)/$(VERSION)/heroku-osx.pkg s3://heroku-cli-assets/branches/$(CHANNEL)/heroku-osx.pkg
+releaseosx: $(DIST_DIR)/$(PATH)/$(VERSION)/heroku-osx.pkg
+	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(PATH)/$(VERSION)/heroku-osx.pkg s3://heroku-cli-assets/branches/$(PATH)/heroku-osx.pkg
 
 .PHONY: distdeb
 distdeb: $(DIST_DIR)/$(VERSION)/apt/Packages $(DIST_DIR)/$(VERSION)/apt/Release
 
 .PHONY: release
 release: releasewin releasedeb releasetxz releasetgz
-	@if type cowsay >/dev/null 2>&1; then cowsay -f stegosaurus Released $(CHANNEL)/$(VERSION); fi;
+	@if type cowsay >/dev/null 2>&1; then cowsay -f stegosaurus Released $(PATH)/$(VERSION); fi;
 
 .PHONY: releasedeb
 releasedeb: $(DIST_DIR)/$(VERSION)/apt/Packages $(DIST_DIR)/$(VERSION)/apt/Release
-	aws s3 cp --cache-control max-age=86400 $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_amd64.deb s3://heroku-cli-assets/branches/$(CHANNEL)/apt/$(DEB_BASE)_amd64.deb
-	aws s3 cp --cache-control max-age=86400 $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_386.deb s3://heroku-cli-assets/branches/$(CHANNEL)/apt/$(DEB_BASE)_386.deb
-	aws s3 cp --cache-control max-age=86400 $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_arm.deb s3://heroku-cli-assets/branches/$(CHANNEL)/apt/$(DEB_BASE)_arm.deb
-	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/apt/Packages s3://heroku-cli-assets/branches/$(CHANNEL)/apt/Packages
-	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/apt/Packages.gz s3://heroku-cli-assets/branches/$(CHANNEL)/apt/Packages.gz
-	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/apt/Release s3://heroku-cli-assets/branches/$(CHANNEL)/apt/Release
-	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/apt/Release.gpg s3://heroku-cli-assets/branches/$(CHANNEL)/apt/Release.gpg
+	aws s3 cp --cache-control max-age=86400 $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_amd64.deb s3://heroku-cli-assets/branches/$(PATH)/apt/$(DEB_BASE)_amd64.deb
+	aws s3 cp --cache-control max-age=86400 $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_386.deb s3://heroku-cli-assets/branches/$(PATH)/apt/$(DEB_BASE)_386.deb
+	aws s3 cp --cache-control max-age=86400 $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_arm.deb s3://heroku-cli-assets/branches/$(PATH)/apt/$(DEB_BASE)_arm.deb
+	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/apt/Packages s3://heroku-cli-assets/branches/$(PATH)/apt/Packages
+	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/apt/Packages.gz s3://heroku-cli-assets/branches/$(PATH)/apt/Packages.gz
+	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/apt/Release s3://heroku-cli-assets/branches/$(PATH)/apt/Release
+	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/apt/Release.gpg s3://heroku-cli-assets/branches/$(PATH)/apt/Release.gpg
 
 .PHONY: releasewin
 releasewin: $(DIST_DIR)/$(VERSION)/heroku-windows-amd64.exe $(DIST_DIR)/$(VERSION)/heroku-windows-386.exe
-	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/heroku-windows-amd64.exe s3://heroku-cli-assets/branches/$(CHANNEL)/heroku-windows-amd64.exe
-	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/heroku-windows-386.exe s3://heroku-cli-assets/branches/$(CHANNEL)/heroku-windows-386.exe
+	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/heroku-windows-amd64.exe s3://heroku-cli-assets/branches/$(PATH)/heroku-windows-amd64.exe
+	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/heroku-windows-386.exe s3://heroku-cli-assets/branches/$(PATH)/heroku-windows-386.exe
 
 .PHONY: deps
 deps: $(CACHE_DIR)/git/Git-2.8.1-amd64.exe $(CACHE_DIR)/git/Git-2.8.1-386.exe
