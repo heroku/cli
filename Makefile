@@ -9,6 +9,7 @@ ifeq (,$(findstring working directory clean,$(shell git status 2> /dev/null | ta
 	DIRTY=-dirty
 endif
 CHANNEL?:=$(shell git rev-parse --abbrev-ref HEAD)$(DIRTY)
+PATH?:=$(CHANNEL)
 
 WORKSPACE?=tmp/dev/heroku
 export PATH := $(WORKSPACE)/lib:$(PATH)
