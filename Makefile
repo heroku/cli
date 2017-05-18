@@ -69,8 +69,8 @@ empty:=
 space:=$(empty) $(empty)
 DIST_TARGETS := $(foreach t,$(TARGETS),$(DIST_DIR)/$(VERSION)/heroku-v$(VERSION)-$(t).tar.xz)
 DIST_TARGETS_GZ := $(foreach t,$(TARGETS),$(DIST_DIR)/$(VERSION)/gz/heroku-v$(VERSION)-$(t).tar.gz)
-MANIFEST := $(DIST_DIR)/$(VERSION)/manifest.json
-MANIFEST_GZ := $(DIST_DIR)/$(VERSION)/gz/manifest.json
+MANIFEST := $(DIST_DIR)/$(AWS_PATH)/$(VERSION)/manifest.json
+MANIFEST_GZ := $(DIST_DIR)/$(AWS_PATH)/$(VERSION)/gz/manifest.json
 $(MANIFEST): $(WORKSPACE)/bin/heroku $(DIST_TARGETS)
 	@if [ -z "$(CHANNEL)" ]; then echo "no channel" && exit 1; fi
 	./bin/build-manifest --version $(VERSION) --channel $(AWS_PATH) --targets $(subst $(space),$(comma),$(DIST_TARGETS)) > $@
@@ -231,14 +231,14 @@ releasepatch/%: %
 
 .PHONY: releasetxz
 releasetxz: $(MANIFEST) $(MANIFEST).sig $(addprefix releasetxz/,$(DIST_TARGETS))
-	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/manifest.json s3://heroku-cli-assets/branches/$(AWS_PATH)/$(VERSION)/manifest.json
-	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/manifest.json s3://heroku-cli-assets/branches/$(AWS_PATH)/manifest.json
-	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/manifest.json.sig s3://heroku-cli-assets/branches/$(AWS_PATH)/manifest.json.sig
+	aws s3 cp --cache-control max-age=300 $(MANIFEST) s3://heroku-cli-assets/branches/$(AWS_PATH)/$(VERSION)/manifest.json
+	aws s3 cp --cache-control max-age=300 $(MANIFEST) s3://heroku-cli-assets/branches/$(AWS_PATH)/manifest.json
+	aws s3 cp --cache-control max-age=300 $(MANIFEST).sig s3://heroku-cli-assets/branches/$(AWS_PATH)/manifest.json.sig
 
 .PHONY: releasetgz
 releasetgz: $(MANIFEST_GZ) $(MANIFEST_GZ).sig $(addprefix releasetgz/,$(DIST_TARGETS_GZ))
-	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/gz/manifest.json s3://heroku-cli-assets/branches/$(AWS_PATH)/gz/manifest.json
-	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/gz/manifest.json.sig s3://heroku-cli-assets/branches/$(AWS_PATH)/gz/manifest.json.sig
+	aws s3 cp --cache-control max-age=300 $(MANIFEST_GZ) s3://heroku-cli-assets/branches/$(AWS_PATH)/gz/manifest.json
+	aws s3 cp --cache-control max-age=300 $(MANIFEST_GZ).sig s3://heroku-cli-assets/branches/$(AWS_PATH)/gz/manifest.json.sig
 
 .PHONY: releasetxz/% releasetgz/%
 releasetxz/%.tar.xz: %.tar.xz
