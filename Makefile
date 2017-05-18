@@ -12,7 +12,7 @@ CHANNEL?:=$(shell git rev-parse --abbrev-ref HEAD)$(DIRTY)
 AWS_PATH?:=$(CHANNEL)
 
 WORKSPACE?=tmp/dev/heroku
-export AWS_PATH := $(WORKSPACE)/lib:$(AWS_PATH)
+export PATH := $(WORKSPACE)/lib:$(PATH)
 
 TARGETS:=darwin-amd64 linux-amd64 linux-386 linux-arm windows-amd64 windows-386 freebsd-amd64 freebsd-386 openbsd-amd64 openbsd-386
 
