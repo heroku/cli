@@ -62,4 +62,25 @@ describe('releases:rollback', function () {
       .then(() => stdMocks.restore())
       .catch(() => stdMocks.restore())
   })
+
+  it('has a missing missing output', function () {
+    stdMocks.use()
+    process.stdout.columns = 80
+    let busl = nock('https://busl.test:443')
+      .get('/streams/release.log')
+      .reply(404, '')
+    let api = nock('https://api.heroku.com:443')
+      .get('/apps/myapp/releases/10')
+      .reply(200, { 'id': '5efa3510-e8df-4db0-a176-83ff8ad91eb5', 'version': 40 })
+      .post('/apps/myapp/releases', {release: '5efa3510-e8df-4db0-a176-83ff8ad91eb5'})
+      .reply(200, {output_stream_url: 'https://busl.test/streams/release.log'})
+
+    return cmd.run({app: 'myapp', args: {release: 'v10'}})
+      .then(() => expect(cli.stdout).to.equal('Running release command...\n'))
+      .then(() => expect(cli.stderr).to.contain('Release command starting. Use `heroku releases:output` to view the log.\n'))
+      .then(() => api.done())
+      .then(() => busl.done())
+      .then(() => stdMocks.restore())
+      .catch(() => stdMocks.restore())
+  })
 })

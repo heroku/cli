@@ -16,6 +16,13 @@ function * run (context, heroku) {
   }
 
   yield output.Stream(streamUrl)
+    .catch(err => {
+      if (err.statusCode === 404) {
+        cli.warn('Release command not started yet. Please try again in a few seconds.')
+        return
+      }
+      throw err
+    })
 }
 
 module.exports = {

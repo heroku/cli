@@ -56,4 +56,20 @@ describe('releases:output', function () {
       .then(() => stdMocks.restore())
       .catch(() => stdMocks.restore())
   })
+
+  it('has a missing output', function () {
+    process.stdout.columns = 80
+    let busl = nock('https://busl.test:443')
+      .get('/streams/release.log')
+      .reply(404, '')
+    let api = nock('https://api.heroku.com:443')
+      .get('/apps/myapp/releases')
+      .reply(200, [{ 'version': 40, output_stream_url: 'https://busl.test/streams/release.log' }])
+
+    return cmd.run({app: 'myapp', args: {}})
+      .then(() => expect(cli.stdout).to.equal(''))
+      .then(() => expect(cli.stderr).to.contain('Release command not started yet. Please try again in a few seconds.\n'))
+      .then(() => api.done())
+      .then(() => busl.done())
+  })
 })

@@ -27,6 +27,13 @@ To undo, run: ${cli.color.cmd('heroku rollback v' + (latest.version - 1))}`)
   if (latest.output_stream_url) {
     cli.log('Running release command...')
     yield output.Stream(release.output_stream_url)
+      .catch(err => {
+        if (err.statusCode === 404) {
+          cli.warn('Release command starting. Use `heroku releases:output` to view the log.')
+          return
+        }
+        throw err
+      })
   }
 }
 
