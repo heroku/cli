@@ -1,12 +1,28 @@
 ---
-machine:
-  node:
-    version: v6.1.0
-test:
-  pre:
-    - mkdir -p $CIRCLE_TEST_REPORTS/mocha
-  override:
-    - nyc mocha test
-    - standard
-  post:
-    - nyc report --reporter=text-lcov > coverage.lcov && bash <(curl -s https://codecov.io/bash)
+version: 2
+jobs:
+  build:
+    docker:
+      - image: dickeyxxx/cli-engine-docker:v1.0.2
+    working_directory: ~/cli
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - cli-{{ .Branch }}-{{checksum "package.json"}}
+            - cli-{{ .Branch }}
+            - cli-master
+      - run: |
+          yarn
+          nyc mocha test
+          standard
+          nyc report --reporter=text-lcov > coverage.lcov && bash <(curl -s https://codecov.io/bash)
+      - save_cache:
+          key: cli-{{ .Branch }}-{{checksum "package.json"}}
+          paths:
+            - ~/cli/node_modules
+            - /usr/local/share/.cache/yarn
+      - save_cache:
+          key: cli-{{ .Branch }}
+          paths:
+            - /usr/local/share/.cache/yarn
