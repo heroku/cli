@@ -15,8 +15,12 @@ function * run (context, heroku) {
     cli.exit(1, 'cannot pass both --all and --name')
   }
   let cred = flags.name || 'default'
-  if (util.starterPlan(db) && cred !== 'default') throw new Error('This operation is not supported by Hobby tier databases.')
-
+  if (cred === 'default' && 'force' in flags && !all) {
+    cli.exit(1, 'Cannot force rotate the default credential.')
+  }
+  if (util.starterPlan(db) && cred !== 'default') {
+    throw new Error(`Only one default credential is supported for Hobby tier databases.`)
+  }
   let attachments = yield heroku.get(`/addons/${db.name}/addon-attachments`)
   if (flags.name) {
     attachments = attachments.filter(a => a.namespace === `credential:${cred}`)
@@ -26,7 +30,7 @@ function * run (context, heroku) {
   if (!flags.all) {
     warnings.push(`The password for the ${cred} credential will rotate.`)
   }
-  if (flags.all || flags.force) {
+  if (flags.all || flags.force || cred === 'default') {
     warnings.push(`Connections will be reset and applications will be restarted.`)
   } else {
     warnings.push(`Connections older than 30 minutes will be reset, and a temporary rotation username will be used during the process.`)

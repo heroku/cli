@@ -11,8 +11,14 @@ function * run (context, heroku) {
   const {app, args, flags} = context
   let cred = flags.name
 
+  if (cred === 'default') {
+    throw new Error('Default credential cannot be destroyed.')
+  }
+
   let db = yield fetcher.addon(app, args.database)
-  if (util.starterPlan(db)) throw new Error('This operation is not supported by Hobby tier databases.')
+  if (util.starterPlan(db)) {
+    throw new Error(`Only one default credential is supported for Hobby tier databases.`)
+  }
 
   let attachments = yield heroku.get(`/addons/${db.name}/addon-attachments`)
   let credAttachments = attachments.filter(a => a.namespace === `credential:${flags.name}`)
