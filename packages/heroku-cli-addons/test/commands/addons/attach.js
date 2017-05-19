@@ -72,6 +72,8 @@ Setting foo config vars and restarting myapp... done, v10
     let api = nock('https://api.heroku.com:443')
       .get('/addons/postgres-123')
       .reply(200, {name: 'postgres-123'})
+      .get('/addons/postgres-123/config/credential:hello')
+      .reply(200, [{some: 'config'}])
       .post('/addon-attachments', {app: {name: 'myapp'}, addon: {name: 'postgres-123'}, namespace: 'credential:hello'})
       .reply(201, {name: 'POSTGRES_HELLO'})
       .get('/apps/myapp/releases')
@@ -82,5 +84,19 @@ Setting foo config vars and restarting myapp... done, v10
 Setting POSTGRES_HELLO config vars and restarting myapp... done, v10
 `))
       .then(() => api.done())
+  })
+
+  it('errors if the credential flag is specified but that credential does not exist for that addon', function () {
+    nock('https://api.heroku.com:443')
+      .get('/addons/postgres-123')
+      .reply(200, {name: 'postgres-123'})
+      .get('/addons/postgres-123/config/credential:hello')
+      .reply(200, [])
+
+    return expect(cmd.run({
+      app: 'myapp',
+      args: {addon_name: 'postgres-123'},
+      flags: {credential: 'hello'}
+    }), 'to be rejected with error satisfying', new Error('Could not find credential hello for database postgres-123'))
   })
 })

@@ -29,6 +29,13 @@ function * run (context, heroku) {
     )
   }
 
+  if (context.flags.credential) {
+    let credentialConfig = yield heroku.get(`/addons/${addon.name}/config/credential:${context.flags.credential}`)
+    if (credentialConfig.length === 0) {
+      throw new Error(`Could not find credential ${context.flags.credential} for database ${addon.name}`)
+    }
+  }
+
   let attachment = yield util.trapConfirmationRequired(context.app, context.flags.confirm, (confirm) => createAttachment(app, context.flags.as, confirm, context.flags.credential))
 
   yield cli.action(
