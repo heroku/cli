@@ -15,14 +15,19 @@ function * run (context, heroku) {
       redirect_uri: url
     }
   })
-  var client
-  if (context.flags.shell) {
+  let client
+  if (context.flags.shell || context.flags.json) {
     client = yield request
   } else {
     client = yield cli.action(`Creating ${context.args.name}`, request)
   }
-  cli.log(`HEROKU_OAUTH_ID=${client.id}`)
-  cli.log(`HEROKU_OAUTH_SECRET=${client.secret}`)
+
+  if (context.flags.json) {
+    cli.styledJSON(client)
+  } else {
+    cli.log(`HEROKU_OAUTH_ID=${client.id}`)
+    cli.log(`HEROKU_OAUTH_SECRET=${client.secret}`)
+  }
 }
 
 module.exports = {
@@ -32,7 +37,8 @@ module.exports = {
   needsAuth: true,
   args: [{name: 'name'}, {name: 'redirect_uri'}],
   flags: [
-    {name: 'shell', char: 's', description: 'output in shell format'}
+    {name: 'shell', char: 's', description: 'output in shell format'},
+    {name: 'json', description: 'output in json format'}
   ],
   run: cli.command(co.wrap(run))
 }
