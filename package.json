@@ -46,7 +46,7 @@
     "heroku-git": "2.5.16",
     "heroku-local": "5.1.16",
     "heroku-orgs": "1.5.12",
-    "heroku-pg": "2.0.26",
+    "heroku-pg": "2.1.0",
     "heroku-pipelines": "2.1.0",
     "heroku-ps-exec": "1.0.1",
     "heroku-redis": "1.2.14",
