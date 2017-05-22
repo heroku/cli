@@ -223,7 +223,7 @@ debug@2.2.0:
   dependencies:
     ms "0.7.1"
 
-debug@2.3.3:
+debug@2.3.3, debug@^2.1.3, debug@^2.2.0:
   version "2.3.3"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.3.3.tgz#40c453e67e6e13c901ddec317af8986cda9eff8c"
   dependencies:
@@ -235,7 +235,7 @@ debug@2.6.0:
   dependencies:
     ms "0.7.2"
 
-debug@2.6.3, debug@^2.1.3, debug@^2.2.0:
+debug@2.6.3:
   version "2.6.3"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.3.tgz#0f7eb8c30965ec08c72accfa0130c8b79984141d"
   dependencies:
@@ -656,9 +656,9 @@ heroku-orgs@1.5.12:
     lodash "4.17.4"
     lodash.flatten "4.4.0"
 
-heroku-pg@2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/heroku-pg/-/heroku-pg-2.1.0.tgz#bcbac7a99affafae30628fe5d7545a9762231bd2"
+heroku-pg@2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/heroku-pg/-/heroku-pg-2.1.1.tgz#90664e93bf10abc7252923545b3e9d4168319afd"
   dependencies:
     bytes "2.5.0"
     co "4.6.0"
