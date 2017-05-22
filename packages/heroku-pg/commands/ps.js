@@ -13,20 +13,20 @@ function * run (context, heroku) {
 
   let db = yield fetcher.database(app, database)
 
+  const num = Math.random()
+  const waitingMarker = `${num}${num}`
+
   let waitingQuery = `
-SELECT EXISTS(
+SELECT '${num}' || '${num}' WHERE EXISTS (
   SELECT 1 FROM information_schema.columns WHERE table_schema = 'pg_catalog'
     AND table_name = 'pg_stat_activity'
     AND column_name = 'waiting'
-) AS available
+)
 `
-
   let waitingOutput = yield psql.exec(db, waitingQuery)
-  let waiting = 'wait_event IS NOT NULL AS waiting'
-
-  if (waitingOutput.includes('t')) {
-    waiting = 'waiting'
-  }
+  let waiting = waitingOutput.includes(waitingMarker)
+                ? 'waiting'
+                : 'wait_event IS NOT NULL AS waiting'
 
   let query = `
 SELECT
