@@ -98,7 +98,7 @@ Database objects owned by credname will be assigned to the default credential.
     ]
     api.get('/addons/postgres-1/addon-attachments').reply(200, attachments)
 
-    const err = new Error('Credential jeff must be detached from all other apps before destroying.')
+    const err = new Error('Credential jeff must be detached from the app otherapp before destroying.')
     return expect(cmd.run({app: 'myapp', args: {}, flags: {name: 'jeff'}}), 'to be rejected with', err)
   })
 })

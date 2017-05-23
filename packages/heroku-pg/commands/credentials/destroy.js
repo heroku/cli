@@ -22,7 +22,7 @@ function * run (context, heroku) {
 
   let attachments = yield heroku.get(`/addons/${db.name}/addon-attachments`)
   let credAttachments = attachments.filter(a => a.namespace === `credential:${flags.name}`)
-  if (credAttachments.length > 0) throw new Error(`Credential ${flags.name} must be detached from all other apps before destroying.`)
+  if (credAttachments.length > 0) throw new Error(`Credential ${flags.name} must be detached from the app${credAttachments.length > 1 ? 's' : ''} ${credAttachments.map(a => cli.color.app(a.app.name)).join(', ')} before destroying.`)
 
   yield cli.confirmApp(app, flags.confirm, `WARNING: Destructive action`)
 
