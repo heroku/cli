@@ -10,5 +10,8 @@ Instructions:
 * Run [np](https://github.com/sindresorhus/np)
 * Update [CHANGELOG](https://github.com/heroku/cli/blob/master/CHANGELOG).
 * CircleCI will detect the tag and automatically release to stable
-* Homebrew: `brew bump-formula-pr --url=https://cli-assets.heroku.com/heroku-cli/channels/stable/heroku-cli-v6.6.17-f15
-d070-darwin-x64.tar.xz heroku --version=6.6.17`
+* Homebrew:
+```
+brew bump-formula-pr --url=https://cli-assets.heroku.com/heroku-cli/channels/stable/heroku-cli-v6.6.17-f15
+d070-darwin-x64.tar.xz heroku --version=6.6.17
+```
