@@ -36,7 +36,7 @@
     ]
   },
   "dependencies": {
-    "cli-engine": "3.3.3",
+    "cli-engine": "3.3.4",
     "heroku-apps": "2.2.25",
     "heroku-certs": "1.1.38",
     "heroku-ci": "1.7.2",
