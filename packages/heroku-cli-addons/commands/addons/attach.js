@@ -16,7 +16,7 @@ function * run (context, heroku) {
       addon: {name: addon.name},
       confirm
     }
-    if (credential) {
+    if (credential && credential !== 'default') {
       body.namespace = 'credential:' + credential
     }
     return cli.action(
@@ -29,7 +29,7 @@ function * run (context, heroku) {
     )
   }
 
-  if (context.flags.credential) {
+  if (context.flags.credential && context.flags.credential !== 'default') {
     let credentialConfig = yield heroku.get(`/addons/${addon.name}/config/credential:${context.flags.credential}`)
     if (credentialConfig.length === 0) {
       throw new Error(`Could not find credential ${context.flags.credential} for database ${addon.name}`)
