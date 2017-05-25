@@ -2,10 +2,9 @@
 
 let co = require('co')
 let cli = require('heroku-cli-util')
-let git = require('../../lib/git')
 
 function * run (context, heroku) {
-  git = git(context)
+  let git = require('../../lib/git')(context)
   let appName = context.flags.app
   if (!appName) throw new Error('Specify an app with --app')
   let app = yield heroku.get(`/apps/${appName}`)
