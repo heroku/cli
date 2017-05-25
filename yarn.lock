@@ -10,6 +10,13 @@ after@0.8.2:
   version "0.8.2"
   resolved "http://cli-npm.heroku.com/after/-/after-0.8.2/fedb394f9f0e02aa9768e702bda23b505fae7e1f.tgz#fedb394f9f0e02aa9768e702bda23b505fae7e1f"
 
+ajv@^4.9.1:
+  version "4.11.8"
+  resolved "http://cli-npm.heroku.com/ajv/-/ajv-4.11.8/82ffb02b29e662ae53bdc20af15947706739c536.tgz#82ffb02b29e662ae53bdc20af15947706739c536"
+  dependencies:
+    co "^4.6.0"
+    json-stable-stringify "^1.0.1"
+
 ansi-escapes@1.4.0, ansi-escapes@^1.1.0, ansi-escapes@^1.3.0:
   version "1.4.0"
   resolved "http://cli-npm.heroku.com/ansi-escapes/-/ansi-escapes-1.4.0/d3a8a83b319aa67793662b13e761c7911422306e.tgz#d3a8a83b319aa67793662b13e761c7911422306e"
@@ -46,6 +53,17 @@ app-path@^2.1.0:
   dependencies:
     execa "^0.4.0"
 
+aproba@^1.0.3:
+  version "1.1.1"
+  resolved "http://cli-npm.heroku.com/aproba/-/aproba-1.1.1/95d3600f07710aa0e9298c726ad5ecf2eacbabab.tgz#95d3600f07710aa0e9298c726ad5ecf2eacbabab"
+
+are-we-there-yet@~1.1.2:
+  version "1.1.4"
+  resolved "http://cli-npm.heroku.com/are-we-there-yet/-/are-we-there-yet-1.1.4/bb5dca382bb94f05e15194373d16fd3ba1ca110d.tgz#bb5dca382bb94f05e15194373d16fd3ba1ca110d"
+  dependencies:
+    delegates "^1.0.0"
+    readable-stream "^2.0.6"
+
 array-filter@~0.0.0:
   version "0.0.1"
   resolved "http://cli-npm.heroku.com/array-filter/-/array-filter-0.0.1/7da8cf2e26628ed732803581fd21f67cacd2eeec.tgz#7da8cf2e26628ed732803581fd21f67cacd2eeec"
@@ -62,13 +80,33 @@ arraybuffer.slice@0.0.6:
   version "0.0.6"
   resolved "http://cli-npm.heroku.com/arraybuffer.slice/-/arraybuffer.slice-0.0.6/f33b2159f0532a3f3107a272c0ccfbd1ad2979ca.tgz#f33b2159f0532a3f3107a272c0ccfbd1ad2979ca"
 
-asn1@~0.2.0:
+asn1@~0.2.0, asn1@~0.2.3:
   version "0.2.3"
   resolved "http://cli-npm.heroku.com/asn1/-/asn1-0.2.3/dac8787713c9966849fc8180777ebe9c1ddf3b86.tgz#dac8787713c9966849fc8180777ebe9c1ddf3b86"
+
+assert-plus@1.0.0, assert-plus@^1.0.0:
+  version "1.0.0"
+  resolved "http://cli-npm.heroku.com/assert-plus/-/assert-plus-1.0.0/f12e0f3c5d77b0b1cdd9146942e4e96c1e4dd525.tgz#f12e0f3c5d77b0b1cdd9146942e4e96c1e4dd525"
+
+assert-plus@^0.2.0:
+  version "0.2.0"
+  resolved "http://cli-npm.heroku.com/assert-plus/-/assert-plus-0.2.0/d74e1b87e7affc0db8aadb7021f3fe48101ab234.tgz#d74e1b87e7affc0db8aadb7021f3fe48101ab234"
 
 async@0.2.x:
   version "0.2.10"
   resolved "http://cli-npm.heroku.com/async/-/async-0.2.10/b6bbe0b0674b9d719708ca38de8c237cb526c3d1.tgz#b6bbe0b0674b9d719708ca38de8c237cb526c3d1"
+
+asynckit@^0.4.0:
+  version "0.4.0"
+  resolved "http://cli-npm.heroku.com/asynckit/-/asynckit-0.4.0/c79ed97f7f34cb8f2ba1bc9790bcc366474b4b79.tgz#c79ed97f7f34cb8f2ba1bc9790bcc366474b4b79"
+
+aws-sign2@~0.6.0:
+  version "0.6.0"
+  resolved "http://cli-npm.heroku.com/aws-sign2/-/aws-sign2-0.6.0/14342dd38dbcc94d0e5b87d763cd63612c0e794f.tgz#14342dd38dbcc94d0e5b87d763cd63612c0e794f"
+
+aws4@^1.2.1:
+  version "1.6.0"
+  resolved "http://cli-npm.heroku.com/aws4/-/aws4-1.6.0/83ef5ca860b2b32e4a0deedee8c771b9db57471e.tgz#83ef5ca860b2b32e4a0deedee8c771b9db57471e"
 
 backo2@1.0.2:
   version "1.0.2"
@@ -86,6 +124,12 @@ base64-js@1.2.0:
   version "1.2.0"
   resolved "http://cli-npm.heroku.com/base64-js/-/base64-js-1.2.0/a39992d723584811982be5e290bb6a53d86700f1.tgz#a39992d723584811982be5e290bb6a53d86700f1"
 
+bcrypt-pbkdf@^1.0.0:
+  version "1.0.1"
+  resolved "http://cli-npm.heroku.com/bcrypt-pbkdf/-/bcrypt-pbkdf-1.0.1/63bc5dcb61331b92bc05fd528953c33462a06f8d.tgz#63bc5dcb61331b92bc05fd528953c33462a06f8d"
+  dependencies:
+    tweetnacl "^0.14.3"
+
 better-assert@~1.0.0:
   version "1.0.2"
   resolved "http://cli-npm.heroku.com/better-assert/-/better-assert-1.0.2/40866b9e1b9e0b55b481894311e68faffaebc522.tgz#40866b9e1b9e0b55b481894311e68faffaebc522"
@@ -102,6 +146,12 @@ blob@0.0.4:
   version "0.0.4"
   resolved "http://cli-npm.heroku.com/blob/-/blob-0.0.4/bcf13052ca54463f30f9fc7e95b9a47630a94921.tgz#bcf13052ca54463f30f9fc7e95b9a47630a94921"
 
+block-stream@*:
+  version "0.0.9"
+  resolved "http://cli-npm.heroku.com/block-stream/-/block-stream-0.0.9/13ebfe778a03205cfe03751481ebb4b3300c126a.tgz#13ebfe778a03205cfe03751481ebb4b3300c126a"
+  dependencies:
+    inherits "~2.0.0"
+
 bluebird@3.4.7, bluebird@^3.4.6:
   version "3.4.7"
   resolved "http://cli-npm.heroku.com/bluebird/-/bluebird-3.4.7/f72d760be09b7f76d08ed8fae98b289a8d05fab3.tgz#f72d760be09b7f76d08ed8fae98b289a8d05fab3"
@@ -109,6 +159,12 @@ bluebird@3.4.7, bluebird@^3.4.6:
 bluebird@^2.9.21:
   version "2.11.0"
   resolved "http://cli-npm.heroku.com/bluebird/-/bluebird-2.11.0/534b9033c022c9579c56ba3b3e5a5caafbb650e1.tgz#534b9033c022c9579c56ba3b3e5a5caafbb650e1"
+
+boom@2.x.x:
+  version "2.10.1"
+  resolved "http://cli-npm.heroku.com/boom/-/boom-2.10.1/39c8918ceff5799f83f9492a848f625add0c766f.tgz#39c8918ceff5799f83f9492a848f625add0c766f"
+  dependencies:
+    hoek "2.x.x"
 
 brace-expansion@^1.0.0:
   version "1.1.7"
@@ -139,6 +195,10 @@ cardinal@1.0.0, cardinal@^1.0.0:
   dependencies:
     ansicolors "~0.2.1"
     redeyed "~1.0.0"
+
+caseless@~0.12.0:
+  version "0.12.0"
+  resolved "http://cli-npm.heroku.com/caseless/-/caseless-0.12.0/1b681c21ff84033c826543090689420d187151dc.tgz#1b681c21ff84033c826543090689420d187151dc"
 
 chalk@^1.0.0, chalk@^1.1.1, chalk@^1.1.3:
   version "1.1.3"
@@ -191,9 +251,9 @@ cli-engine-heroku@0.3.1:
     cli-engine-command "4.0.3"
     heroku-client "3.0.2"
 
-cli-engine@3.3.6:
-  version "3.3.6"
-  resolved "http://cli-npm.heroku.com/cli-engine/-/cli-engine-3.3.6/7e59b6f38cedbd2779911f3e189971b120b00f44.tgz#7e59b6f38cedbd2779911f3e189971b120b00f44"
+cli-engine@3.3.7:
+  version "3.3.7"
+  resolved "http://cli-npm.heroku.com/cli-engine/-/cli-engine-3.3.7/4af4db8223003c7e6ebb93d2f00a07590fddfa6f.tgz#4af4db8223003c7e6ebb93d2f00a07590fddfa6f"
   dependencies:
     cli-engine-command "4.0.3"
     cli-engine-config "1.1.4"
@@ -206,6 +266,7 @@ cli-engine@3.3.6:
     log-chopper "0.1.1"
     moment "2.18.1"
     netrc-parser "2.0.2"
+    node-gyp "3.6.1"
     rwlockfile "^1.3.6"
     string "3.3.3"
     tar-fs "1.15.2"
@@ -237,6 +298,10 @@ co@4.6.0, co@^4.6.0:
   version "4.6.0"
   resolved "http://cli-npm.heroku.com/co/-/co-4.6.0/6ea6bdf3d853ae54ccb8e47bfa0bf3f9031fb184.tgz#6ea6bdf3d853ae54ccb8e47bfa0bf3f9031fb184"
 
+code-point-at@^1.0.0:
+  version "1.1.0"
+  resolved "http://cli-npm.heroku.com/code-point-at/-/code-point-at-1.1.0/0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
+
 color-convert@^1.0.0:
   version "1.9.0"
   resolved "http://cli-npm.heroku.com/color-convert/-/color-convert-1.9.0/1accf97dd739b983bf994d56fec8f95853641b7a.tgz#1accf97dd739b983bf994d56fec8f95853641b7a"
@@ -254,6 +319,12 @@ colors@0.6.x:
 colors@~1.0.3:
   version "1.0.3"
   resolved "http://cli-npm.heroku.com/colors/-/colors-1.0.3/0433f44d809680fdeb60ed260f1b0c262e82a40b.tgz#0433f44d809680fdeb60ed260f1b0c262e82a40b"
+
+combined-stream@^1.0.5, combined-stream@~1.0.5:
+  version "1.0.5"
+  resolved "http://cli-npm.heroku.com/combined-stream/-/combined-stream-1.0.5/938370a57b4a51dea2c77c15d5c5fdf895164009.tgz#938370a57b4a51dea2c77c15d5c5fdf895164009"
+  dependencies:
+    delayed-stream "~1.0.0"
 
 commander@~2.9.0:
   version "2.9.0"
@@ -285,6 +356,10 @@ connected-domain@^1.0.0:
   version "1.0.0"
   resolved "http://cli-npm.heroku.com/connected-domain/-/connected-domain-1.0.0/bfe77238c74be453a79f0cb6058deeb4f2358e93.tgz#bfe77238c74be453a79f0cb6058deeb4f2358e93"
 
+console-control-strings@^1.0.0, console-control-strings@~1.1.0:
+  version "1.1.0"
+  resolved "http://cli-npm.heroku.com/console-control-strings/-/console-control-strings-1.1.0/3d7cf4464db6446ea644bf4b39507f9851008e8e.tgz#3d7cf4464db6446ea644bf4b39507f9851008e8e"
+
 core-util-is@~1.0.0:
   version "1.0.2"
   resolved "http://cli-npm.heroku.com/core-util-is/-/core-util-is-1.0.2/b5fd54220aa2bc5ab57aab7140c940754503c1a7.tgz#b5fd54220aa2bc5ab57aab7140c940754503c1a7"
@@ -302,9 +377,21 @@ cross-spawn-async@^2.1.1:
     lru-cache "^4.0.0"
     which "^1.2.8"
 
+cryptiles@2.x.x:
+  version "2.0.5"
+  resolved "http://cli-npm.heroku.com/cryptiles/-/cryptiles-2.0.5/3bdfecdc608147c1c67202fa291e7dca59eaa3b8.tgz#3bdfecdc608147c1c67202fa291e7dca59eaa3b8"
+  dependencies:
+    boom "2.x.x"
+
 cycle@1.0.x:
   version "1.0.3"
   resolved "http://cli-npm.heroku.com/cycle/-/cycle-1.0.3/21e80b2be8580f98b468f379430662b046c34ad2.tgz#21e80b2be8580f98b468f379430662b046c34ad2"
+
+dashdash@^1.12.0:
+  version "1.14.1"
+  resolved "http://cli-npm.heroku.com/dashdash/-/dashdash-1.14.1/853cfa0f7cbe2fed5de20326b8dd581035f6e2f0.tgz#853cfa0f7cbe2fed5de20326b8dd581035f6e2f0"
+  dependencies:
+    assert-plus "^1.0.0"
 
 debug@2.2.0:
   version "2.2.0"
@@ -330,6 +417,14 @@ debug@2.6.3, debug@^2.1.3, debug@^2.2.0:
   dependencies:
     ms "0.7.2"
 
+delayed-stream@~1.0.0:
+  version "1.0.0"
+  resolved "http://cli-npm.heroku.com/delayed-stream/-/delayed-stream-1.0.0/df3ae199acadfb7d440aaae0b29e2272b24ec619.tgz#df3ae199acadfb7d440aaae0b29e2272b24ec619"
+
+delegates@^1.0.0:
+  version "1.0.0"
+  resolved "http://cli-npm.heroku.com/delegates/-/delegates-1.0.0/84c6e159b81904fdca59a0ef44cd870d31250f9a.tgz#84c6e159b81904fdca59a0ef44cd870d31250f9a"
+
 double-ended-queue@^2.1.0-0:
   version "2.1.0-0"
   resolved "http://cli-npm.heroku.com/double-ended-queue/-/double-ended-queue-2.1.0-0/103d3527fd31528f40188130c841efdd78264e5c.tgz#103d3527fd31528f40188130c841efdd78264e5c"
@@ -337,6 +432,12 @@ double-ended-queue@^2.1.0-0:
 duplexer3@^0.1.4:
   version "0.1.4"
   resolved "http://cli-npm.heroku.com/duplexer3/-/duplexer3-0.1.4/ee01dd1cac0ed3cbc7fdbea37dc0a8f1ce002ce2.tgz#ee01dd1cac0ed3cbc7fdbea37dc0a8f1ce002ce2"
+
+ecc-jsbn@~0.1.1:
+  version "0.1.1"
+  resolved "http://cli-npm.heroku.com/ecc-jsbn/-/ecc-jsbn-0.1.1/0fc73a9ed5f0d53c38193398523ef7e543777505.tgz#0fc73a9ed5f0d53c38193398523ef7e543777505"
+  dependencies:
+    jsbn "~0.1.0"
 
 end-of-stream@^1.0.0, end-of-stream@^1.1.0:
   version "1.4.0"
@@ -395,11 +496,19 @@ execa@^0.4.0:
     path-key "^1.0.0"
     strip-eof "^1.0.0"
 
+extend@~3.0.0:
+  version "3.0.1"
+  resolved "http://cli-npm.heroku.com/extend/-/extend-3.0.1/a755ea7bc1adfcc5a31ce7e762dbaadc5e636444.tgz#a755ea7bc1adfcc5a31ce7e762dbaadc5e636444"
+
 external-editor@^2.0.1:
   version "2.0.1"
   resolved "http://cli-npm.heroku.com/external-editor/-/external-editor-2.0.1/4c597c6c88fa6410e41dbbaa7b1be2336aa31095.tgz#4c597c6c88fa6410e41dbbaa7b1be2336aa31095"
   dependencies:
     tmp "^0.0.31"
+
+extsprintf@1.0.2:
+  version "1.0.2"
+  resolved "http://cli-npm.heroku.com/extsprintf/-/extsprintf-1.0.2/e1080e0658e300b06294990cc70e1502235fd550.tgz#e1080e0658e300b06294990cc70e1502235fd550"
 
 eyes@0.1.x, eyes@~0.1.8:
   version "0.1.8"
@@ -432,6 +541,18 @@ foreman@2.0.0:
     mustache "^2.2.1"
     shell-quote "~1.4.2"
 
+forever-agent@~0.6.1:
+  version "0.6.1"
+  resolved "http://cli-npm.heroku.com/forever-agent/-/forever-agent-0.6.1/fbc71f0c41adeb37f96c577ad1ed42d8fdacca91.tgz#fbc71f0c41adeb37f96c577ad1ed42d8fdacca91"
+
+form-data@~2.1.1:
+  version "2.1.4"
+  resolved "http://cli-npm.heroku.com/form-data/-/form-data-2.1.4/33c183acf193276ecaa98143a69e94bfee1750d1.tgz#33c183acf193276ecaa98143a69e94bfee1750d1"
+  dependencies:
+    asynckit "^0.4.0"
+    combined-stream "^1.0.5"
+    mime-types "^2.1.12"
+
 fs-extra@2.1.1:
   version "2.1.1"
   resolved "http://cli-npm.heroku.com/fs-extra/-/fs-extra-2.1.1/f8a34cc890522fc233896f34944ff2e35948959f.tgz#f8a34cc890522fc233896f34944ff2e35948959f"
@@ -451,9 +572,37 @@ fs.realpath@^1.0.0:
   version "1.0.0"
   resolved "http://cli-npm.heroku.com/fs.realpath/-/fs.realpath-1.0.0/1504ad2523158caa40db4a2787cb01411994ea4f.tgz#1504ad2523158caa40db4a2787cb01411994ea4f"
 
+fstream@^1.0.0, fstream@^1.0.2:
+  version "1.0.11"
+  resolved "http://cli-npm.heroku.com/fstream/-/fstream-1.0.11/5c1fb1f117477114f0632a0eb4b71b3cb0fd3171.tgz#5c1fb1f117477114f0632a0eb4b71b3cb0fd3171"
+  dependencies:
+    graceful-fs "^4.1.2"
+    inherits "~2.0.0"
+    mkdirp ">=0.5 0"
+    rimraf "2"
+
+gauge@~2.7.3:
+  version "2.7.4"
+  resolved "http://cli-npm.heroku.com/gauge/-/gauge-2.7.4/2c03405c7538c39d7eb37b317022e325fb018bf7.tgz#2c03405c7538c39d7eb37b317022e325fb018bf7"
+  dependencies:
+    aproba "^1.0.3"
+    console-control-strings "^1.0.0"
+    has-unicode "^2.0.0"
+    object-assign "^4.1.0"
+    signal-exit "^3.0.0"
+    string-width "^1.0.1"
+    strip-ansi "^3.0.1"
+    wide-align "^1.1.0"
+
 get-stream@^3.0.0:
   version "3.0.0"
   resolved "http://cli-npm.heroku.com/get-stream/-/get-stream-3.0.0/8e943d1358dc37555054ecbe2edb05aa174ede14.tgz#8e943d1358dc37555054ecbe2edb05aa174ede14"
+
+getpass@^0.1.1:
+  version "0.1.7"
+  resolved "http://cli-npm.heroku.com/getpass/-/getpass-0.1.7/5eff8e3e684d569ae4cb2b1282604e8ba62149fa.tgz#5eff8e3e684d569ae4cb2b1282604e8ba62149fa"
+  dependencies:
+    assert-plus "^1.0.0"
 
 github-url-to-object@^2.2.6:
   version "2.2.6"
@@ -461,7 +610,7 @@ github-url-to-object@^2.2.6:
   dependencies:
     is-url "^1.1.0"
 
-"glob@>= 3.1.4", glob@^7.0.5:
+"glob@>= 3.1.4", glob@^7.0.3, glob@^7.0.5:
   version "7.1.1"
   resolved "http://cli-npm.heroku.com/glob/-/glob-7.1.1/805211df04faaf1c63a3600306cdf5ade50b2ec8.tgz#805211df04faaf1c63a3600306cdf5ade50b2ec8"
   dependencies:
@@ -496,6 +645,17 @@ graceful-fs@^4.0.0, graceful-fs@^4.1.11, graceful-fs@^4.1.2, graceful-fs@^4.1.6:
   version "1.0.1"
   resolved "http://cli-npm.heroku.com/graceful-readlink/-/graceful-readlink-1.0.1/4cafad76bc62f02fa039b2f94e9a3dd3a391a725.tgz#4cafad76bc62f02fa039b2f94e9a3dd3a391a725"
 
+har-schema@^1.0.5:
+  version "1.0.5"
+  resolved "http://cli-npm.heroku.com/har-schema/-/har-schema-1.0.5/d263135f43307c02c602afc8fe95970c0151369e.tgz#d263135f43307c02c602afc8fe95970c0151369e"
+
+har-validator@~4.2.1:
+  version "4.2.1"
+  resolved "http://cli-npm.heroku.com/har-validator/-/har-validator-4.2.1/33481d0f1bbff600dd203d75812a6a5fba002e2a.tgz#33481d0f1bbff600dd203d75812a6a5fba002e2a"
+  dependencies:
+    ajv "^4.9.1"
+    har-schema "^1.0.5"
+
 has-ansi@^2.0.0:
   version "2.0.0"
   resolved "http://cli-npm.heroku.com/has-ansi/-/has-ansi-2.0.0/34f5049ce1ecdf2b0649af3ef24e45ed35416d91.tgz#34f5049ce1ecdf2b0649af3ef24e45ed35416d91"
@@ -515,6 +675,19 @@ has-cors@1.1.0:
 has-flag@^1.0.0:
   version "1.0.0"
   resolved "http://cli-npm.heroku.com/has-flag/-/has-flag-1.0.0/9d9e793165ce017a00f00418c43f942a7b1d11fa.tgz#9d9e793165ce017a00f00418c43f942a7b1d11fa"
+
+has-unicode@^2.0.0:
+  version "2.0.1"
+  resolved "http://cli-npm.heroku.com/has-unicode/-/has-unicode-2.0.1/e0e6fe6a28cf51138855e086d1691e771de2a8b9.tgz#e0e6fe6a28cf51138855e086d1691e771de2a8b9"
+
+hawk@~3.1.3:
+  version "3.1.3"
+  resolved "http://cli-npm.heroku.com/hawk/-/hawk-3.1.3/078444bd7c1640b0fe540d2c9b73d59678e8e1c4.tgz#078444bd7c1640b0fe540d2c9b73d59678e8e1c4"
+  dependencies:
+    boom "2.x.x"
+    cryptiles "2.x.x"
+    hoek "2.x.x"
+    sntp "1.x.x"
 
 here@0.0.2:
   version "0.0.2"
@@ -744,9 +917,9 @@ heroku-fork@4.1.21:
     heroku-cli-util "6.1.17"
     lodash "4.17.4"
 
-heroku-git@2.5.16:
-  version "2.5.16"
-  resolved "http://cli-npm.heroku.com/heroku-git/-/heroku-git-2.5.16/ca28d4b645c65a5d0965755f804f12bc4fa50316.tgz#ca28d4b645c65a5d0965755f804f12bc4fa50316"
+heroku-git@2.5.17:
+  version "2.5.17"
+  resolved "http://cli-npm.heroku.com/heroku-git/-/heroku-git-2.5.17/69d0ee90957615225b1db6a52403c0c905da2a39.tgz#69d0ee90957615225b1db6a52403c0c905da2a39"
   dependencies:
     co "4.6.0"
     heroku-cli-util "6.1.17"
@@ -853,6 +1026,10 @@ heroku-status@3.0.10:
     moment "2.17.1"
     sprintf-js "^1.0.3"
 
+hoek@2.x.x:
+  version "2.16.3"
+  resolved "http://cli-npm.heroku.com/hoek/-/hoek-2.16.3/20bb7403d3cea398e91dc4710a8ff1b8274a25ed.tgz#20bb7403d3cea398e91dc4710a8ff1b8274a25ed"
+
 http-call@1.1.2:
   version "1.1.2"
   resolved "http://cli-npm.heroku.com/http-call/-/http-call-1.1.2/bfec491443c86104451ae2764ad5307da0feea4a.tgz#bfec491443c86104451ae2764ad5307da0feea4a"
@@ -865,6 +1042,14 @@ http-proxy@~1.11.1:
   dependencies:
     eventemitter3 "1.x.x"
     requires-port "0.x.x"
+
+http-signature@~1.1.0:
+  version "1.1.1"
+  resolved "http://cli-npm.heroku.com/http-signature/-/http-signature-1.1.1/df72e267066cd0ac67fb76adf8e134a8fbcf91bf.tgz#df72e267066cd0ac67fb76adf8e134a8fbcf91bf"
+  dependencies:
+    assert-plus "^0.2.0"
+    jsprim "^1.2.2"
+    sshpk "^1.7.0"
 
 indexof@0.0.1:
   version "0.0.1"
@@ -885,7 +1070,7 @@ inflight@^1.0.4:
     once "^1.3.0"
     wrappy "1"
 
-inherits@2, inherits@~2.0.1:
+inherits@2, inherits@~2.0.0, inherits@~2.0.1:
   version "2.0.3"
   resolved "http://cli-npm.heroku.com/inherits/-/inherits-2.0.3/633c2c83e3da42a502f52466022480f4208261de.tgz#633c2c83e3da42a502f52466022480f4208261de"
 
@@ -943,6 +1128,12 @@ ipv6@*:
     cliff "0.1.x"
     sprintf "0.1.x"
 
+is-fullwidth-code-point@^1.0.0:
+  version "1.0.0"
+  resolved "http://cli-npm.heroku.com/is-fullwidth-code-point/-/is-fullwidth-code-point-1.0.0/ef9e31386f031a7f0d643af82fde50c457ef00cb.tgz#ef9e31386f031a7f0d643af82fde50c457ef00cb"
+  dependencies:
+    number-is-nan "^1.0.0"
+
 is-fullwidth-code-point@^2.0.0:
   version "2.0.0"
   resolved "http://cli-npm.heroku.com/is-fullwidth-code-point/-/is-fullwidth-code-point-2.0.0/a3b30a5c4f199183167aaab93beefae3ddfb654f.tgz#a3b30a5c4f199183167aaab93beefae3ddfb654f"
@@ -963,6 +1154,10 @@ is-stream@^1.0.0, is-stream@^1.1.0:
   version "1.1.0"
   resolved "http://cli-npm.heroku.com/is-stream/-/is-stream-1.1.0/12d4a3dd4e68e0b79ceb8dbc84173ae80d91ca44.tgz#12d4a3dd4e68e0b79ceb8dbc84173ae80d91ca44"
 
+is-typedarray@~1.0.0:
+  version "1.0.0"
+  resolved "http://cli-npm.heroku.com/is-typedarray/-/is-typedarray-1.0.0/e479c80858df0c1b11ddda6940f96011fcda4a9a.tgz#e479c80858df0c1b11ddda6940f96011fcda4a9a"
+
 is-url@^1.1.0:
   version "1.2.2"
   resolved "http://cli-npm.heroku.com/is-url/-/is-url-1.2.2/498905a593bf47cc2d9e7f738372bbf7696c7f26.tgz#498905a593bf47cc2d9e7f738372bbf7696c7f26"
@@ -979,7 +1174,7 @@ isexe@^2.0.0:
   version "2.0.0"
   resolved "http://cli-npm.heroku.com/isexe/-/isexe-2.0.0/e8fbf374dc556ff8947a10dcb0572d633f2cfa10.tgz#e8fbf374dc556ff8947a10dcb0572d633f2cfa10"
 
-isstream@0.1.x:
+isstream@0.1.x, isstream@~0.1.2:
   version "0.1.2"
   resolved "http://cli-npm.heroku.com/isstream/-/isstream-0.1.2/47e63f7af55afa6f92e1500e690eb8b8529c099a.tgz#47e63f7af55afa6f92e1500e690eb8b8529c099a"
 
@@ -989,6 +1184,30 @@ iterm2-version@^2.1.0:
   dependencies:
     app-path "^2.1.0"
     plist "^2.0.1"
+
+jodid25519@^1.0.0:
+  version "1.0.2"
+  resolved "http://cli-npm.heroku.com/jodid25519/-/jodid25519-1.0.2/06d4912255093419477d425633606e0e90782967.tgz#06d4912255093419477d425633606e0e90782967"
+  dependencies:
+    jsbn "~0.1.0"
+
+jsbn@~0.1.0:
+  version "0.1.1"
+  resolved "http://cli-npm.heroku.com/jsbn/-/jsbn-0.1.1/a5e654c2e5a2deb5f201d96cefbca80c0ef2f513.tgz#a5e654c2e5a2deb5f201d96cefbca80c0ef2f513"
+
+json-schema@0.2.3:
+  version "0.2.3"
+  resolved "http://cli-npm.heroku.com/json-schema/-/json-schema-0.2.3/b480c892e59a2f05954ce727bd3f2a4e882f9e13.tgz#b480c892e59a2f05954ce727bd3f2a4e882f9e13"
+
+json-stable-stringify@^1.0.1:
+  version "1.0.1"
+  resolved "http://cli-npm.heroku.com/json-stable-stringify/-/json-stable-stringify-1.0.1/9a759d39c5f2ff503fd5300646ed445f88c4f9af.tgz#9a759d39c5f2ff503fd5300646ed445f88c4f9af"
+  dependencies:
+    jsonify "~0.0.0"
+
+json-stringify-safe@~5.0.1:
+  version "5.0.1"
+  resolved "http://cli-npm.heroku.com/json-stringify-safe/-/json-stringify-safe-5.0.1/1296a2d58fd45f19a0f6ce01d65701e2c735b6eb.tgz#1296a2d58fd45f19a0f6ce01d65701e2c735b6eb"
 
 json3@3.3.2:
   version "3.3.2"
@@ -1009,6 +1228,15 @@ jsonfile@^3.0.0:
 jsonify@~0.0.0:
   version "0.0.0"
   resolved "http://cli-npm.heroku.com/jsonify/-/jsonify-0.0.0/2c74b6ee41d93ca51b7b5aaee8f503631d252a73.tgz#2c74b6ee41d93ca51b7b5aaee8f503631d252a73"
+
+jsprim@^1.2.2:
+  version "1.4.0"
+  resolved "http://cli-npm.heroku.com/jsprim/-/jsprim-1.4.0/a3b87e40298d8c380552d8cc7628a0bb95a22918.tgz#a3b87e40298d8c380552d8cc7628a0bb95a22918"
+  dependencies:
+    assert-plus "1.0.0"
+    extsprintf "1.0.2"
+    json-schema "0.2.3"
+    verror "1.3.6"
 
 keypair@1.0.1:
   version "1.0.1"
@@ -1222,6 +1450,16 @@ lru-cache@^4.0.0:
     pseudomap "^1.0.1"
     yallist "^2.0.0"
 
+mime-db@~1.27.0:
+  version "1.27.0"
+  resolved "http://cli-npm.heroku.com/mime-db/-/mime-db-1.27.0/820f572296bbd20ec25ed55e5b5de869e5436eb1.tgz#820f572296bbd20ec25ed55e5b5de869e5436eb1"
+
+mime-types@^2.1.12, mime-types@~2.1.7:
+  version "2.1.15"
+  resolved "http://cli-npm.heroku.com/mime-types/-/mime-types-2.1.15/a4ebf5064094569237b8cf70046776d09fc92aed.tgz#a4ebf5064094569237b8cf70046776d09fc92aed"
+  dependencies:
+    mime-db "~1.27.0"
+
 mimic-fn@^1.0.0:
   version "1.1.0"
   resolved "http://cli-npm.heroku.com/mimic-fn/-/mimic-fn-1.1.0/e667783d92e89dbd342818b5230b9d62a672ad18.tgz#e667783d92e89dbd342818b5230b9d62a672ad18"
@@ -1236,7 +1474,7 @@ minimist@0.0.8:
   version "0.0.8"
   resolved "http://cli-npm.heroku.com/minimist/-/minimist-0.0.8/857fcabfc3397d2625b8228262e86aa7a011b05d.tgz#857fcabfc3397d2625b8228262e86aa7a011b05d"
 
-mkdirp@0.5.1, mkdirp@^0.5.1:
+mkdirp@0.5.1, "mkdirp@>=0.5 0", mkdirp@^0.5.0, mkdirp@^0.5.1:
   version "0.5.1"
   resolved "http://cli-npm.heroku.com/mkdirp/-/mkdirp-0.5.1/30057438eac6cf7f8c4767f38648d6697d75c903.tgz#30057438eac6cf7f8c4767f38648d6697d75c903"
   dependencies:
@@ -1290,7 +1528,25 @@ node-forge@0.6.47:
   version "0.6.47"
   resolved "http://cli-npm.heroku.com/node-forge/-/node-forge-0.6.47/84a239c1eabfd9bbe3a9b7308d52102fdba1da81.tgz#84a239c1eabfd9bbe3a9b7308d52102fdba1da81"
 
-nopt@~2.1.2:
+node-gyp@3.6.1:
+  version "3.6.1"
+  resolved "http://cli-npm.heroku.com/node-gyp/-/node-gyp-3.6.1/19561067ff185464aded478212681f47fd578cbc.tgz#19561067ff185464aded478212681f47fd578cbc"
+  dependencies:
+    fstream "^1.0.0"
+    glob "^7.0.3"
+    graceful-fs "^4.1.2"
+    minimatch "^3.0.2"
+    mkdirp "^0.5.0"
+    nopt "2 || 3"
+    npmlog "0 || 1 || 2 || 3 || 4"
+    osenv "0"
+    request "2"
+    rimraf "2"
+    semver "~5.3.0"
+    tar "^2.0.0"
+    which "1"
+
+"nopt@2 || 3", nopt@~2.1.2:
   version "2.1.2"
   resolved "http://cli-npm.heroku.com/nopt/-/nopt-2.1.2/6cccd977b80132a07731d6e8ce58c2c8303cf9af.tgz#6cccd977b80132a07731d6e8ce58c2c8303cf9af"
   dependencies:
@@ -1302,7 +1558,24 @@ npm-run-path@^1.0.0:
   dependencies:
     path-key "^1.0.0"
 
-object-assign@^4.0.1:
+"npmlog@0 || 1 || 2 || 3 || 4":
+  version "4.1.0"
+  resolved "http://cli-npm.heroku.com/npmlog/-/npmlog-4.1.0/dc59bee85f64f00ed424efb2af0783df25d1c0b5.tgz#dc59bee85f64f00ed424efb2af0783df25d1c0b5"
+  dependencies:
+    are-we-there-yet "~1.1.2"
+    console-control-strings "~1.1.0"
+    gauge "~2.7.3"
+    set-blocking "~2.0.0"
+
+number-is-nan@^1.0.0:
+  version "1.0.1"
+  resolved "http://cli-npm.heroku.com/number-is-nan/-/number-is-nan-1.0.1/097b602b53422a522c1afb8790318336941a011d.tgz#097b602b53422a522c1afb8790318336941a011d"
+
+oauth-sign@~0.8.1:
+  version "0.8.2"
+  resolved "http://cli-npm.heroku.com/oauth-sign/-/oauth-sign-0.8.2/46a6ab7f0aead8deae9ec0565780b7d4efeb9d43.tgz#46a6ab7f0aead8deae9ec0565780b7d4efeb9d43"
+
+object-assign@^4.0.1, object-assign@^4.1.0:
   version "4.1.1"
   resolved "http://cli-npm.heroku.com/object-assign/-/object-assign-4.1.1/2109adc7965887cfc05cbbd442cac8bfbb360863.tgz#2109adc7965887cfc05cbbd442cac8bfbb360863"
 
@@ -1332,9 +1605,20 @@ options@>=0.0.5:
   version "0.0.6"
   resolved "http://cli-npm.heroku.com/options/-/options-0.0.6/ec22d312806bb53e731773e7cdaefcf1c643128f.tgz#ec22d312806bb53e731773e7cdaefcf1c643128f"
 
+os-homedir@^1.0.0:
+  version "1.0.2"
+  resolved "http://cli-npm.heroku.com/os-homedir/-/os-homedir-1.0.2/ffbc4988336e0e833de0c168c7ef152121aa7fb3.tgz#ffbc4988336e0e833de0c168c7ef152121aa7fb3"
+
 os-tmpdir@^1.0.0, os-tmpdir@~1.0.1:
   version "1.0.2"
   resolved "http://cli-npm.heroku.com/os-tmpdir/-/os-tmpdir-1.0.2/bbe67406c79aa85c5cfec766fe5734555dfa1274.tgz#bbe67406c79aa85c5cfec766fe5734555dfa1274"
+
+osenv@0:
+  version "0.1.4"
+  resolved "http://cli-npm.heroku.com/osenv/-/osenv-0.1.4/42fe6d5953df06c8064be6f176c3d05aaaa34644.tgz#42fe6d5953df06c8064be6f176c3d05aaaa34644"
+  dependencies:
+    os-homedir "^1.0.0"
+    os-tmpdir "^1.0.0"
 
 parsejson@0.0.3:
   version "0.0.3"
@@ -1367,6 +1651,10 @@ path-proxy@^1.0:
   resolved "http://cli-npm.heroku.com/path-proxy/-/path-proxy-1.0.0/18e8a36859fc9d2f1a53b48dee138543c020de5e.tgz#18e8a36859fc9d2f1a53b48dee138543c020de5e"
   dependencies:
     inflection "~1.3.0"
+
+performance-now@^0.2.0:
+  version "0.2.0"
+  resolved "http://cli-npm.heroku.com/performance-now/-/performance-now-0.2.0/33ef30c5c77d4ea21c5a53869d91b56d8f2555e5.tgz#33ef30c5c77d4ea21c5a53869d91b56d8f2555e5"
 
 pkginfo@0.3.x:
   version "0.3.1"
@@ -1420,11 +1708,19 @@ pump@^1.0.0:
     end-of-stream "^1.1.0"
     once "^1.3.1"
 
+punycode@^1.4.1:
+  version "1.4.1"
+  resolved "http://cli-npm.heroku.com/punycode/-/punycode-1.4.1/c0d5a63b2718800ad8e1eb0fa5269c84dd41845e.tgz#c0d5a63b2718800ad8e1eb0fa5269c84dd41845e"
+
 q@^1.2.0:
   version "1.5.0"
   resolved "http://cli-npm.heroku.com/q/-/q-1.5.0/dd01bac9d06d30e6f219aecb8253ee9ebdc308f1.tgz#dd01bac9d06d30e6f219aecb8253ee9ebdc308f1"
 
-readable-stream@^2.0.0, readable-stream@^2.0.5:
+qs@~6.4.0:
+  version "6.4.0"
+  resolved "http://cli-npm.heroku.com/qs/-/qs-6.4.0/13e26d28ad6b0ffaa91312cd3bf708ed351e7233.tgz#13e26d28ad6b0ffaa91312cd3bf708ed351e7233"
+
+readable-stream@^2.0.0, readable-stream@^2.0.5, readable-stream@^2.0.6:
   version "2.2.9"
   resolved "http://cli-npm.heroku.com/readable-stream/-/readable-stream-2.2.9/cf78ec6f4a6d1eb43d26488cac97f042e74b7fc8.tgz#cf78ec6f4a6d1eb43d26488cac97f042e74b7fc8"
   dependencies:
@@ -1451,6 +1747,33 @@ redeyed@~1.0.0:
   dependencies:
     esprima "~3.0.0"
 
+request@2:
+  version "2.81.0"
+  resolved "http://cli-npm.heroku.com/request/-/request-2.81.0/c6928946a0e06c5f8d6f8a9333469ffda46298a0.tgz#c6928946a0e06c5f8d6f8a9333469ffda46298a0"
+  dependencies:
+    aws-sign2 "~0.6.0"
+    aws4 "^1.2.1"
+    caseless "~0.12.0"
+    combined-stream "~1.0.5"
+    extend "~3.0.0"
+    forever-agent "~0.6.1"
+    form-data "~2.1.1"
+    har-validator "~4.2.1"
+    hawk "~3.1.3"
+    http-signature "~1.1.0"
+    is-typedarray "~1.0.0"
+    isstream "~0.1.2"
+    json-stringify-safe "~5.0.1"
+    mime-types "~2.1.7"
+    oauth-sign "~0.8.1"
+    performance-now "^0.2.0"
+    qs "~6.4.0"
+    safe-buffer "^5.0.1"
+    stringstream "~0.0.4"
+    tough-cookie "~2.3.0"
+    tunnel-agent "^0.6.0"
+    uuid "^3.0.0"
+
 requires-port@0.x.x:
   version "0.0.1"
   resolved "http://cli-npm.heroku.com/requires-port/-/requires-port-0.0.1/4b4414411d9df7c855995dd899a8c78a2951c16d.tgz#4b4414411d9df7c855995dd899a8c78a2951c16d"
@@ -1462,7 +1785,7 @@ restore-cursor@^2.0.0:
     onetime "^2.0.0"
     signal-exit "^3.0.2"
 
-rimraf@^2.6.1:
+rimraf@2, rimraf@^2.6.1:
   version "2.6.1"
   resolved "http://cli-npm.heroku.com/rimraf/-/rimraf-2.6.1/c2338ec643df7a1b7fe5c54fa86f57428a55f33d.tgz#c2338ec643df7a1b7fe5c54fa86f57428a55f33d"
   dependencies:
@@ -1494,9 +1817,13 @@ safe-buffer@^5.0.1:
   version "5.0.1"
   resolved "http://cli-npm.heroku.com/safe-buffer/-/safe-buffer-5.0.1/d263ca54696cd8a306b5ca6551e92de57918fbe7.tgz#d263ca54696cd8a306b5ca6551e92de57918fbe7"
 
-semver@^5.1.0:
+semver@^5.1.0, semver@~5.3.0:
   version "5.3.0"
   resolved "http://cli-npm.heroku.com/semver/-/semver-5.3.0/9b2ce5d3de02d17c6012ad326aa6b4d0cf54f94f.tgz#9b2ce5d3de02d17c6012ad326aa6b4d0cf54f94f"
+
+set-blocking@~2.0.0:
+  version "2.0.0"
+  resolved "http://cli-npm.heroku.com/set-blocking/-/set-blocking-2.0.0/045f9782d011ae9a6803ddd382b24392b3d890f7.tgz#045f9782d011ae9a6803ddd382b24392b3d890f7"
 
 shell-escape@0.2.0, shell-escape@^0.2.0:
   version "0.2.0"
@@ -1515,7 +1842,7 @@ shellwords@0.1.0:
   version "0.1.0"
   resolved "http://cli-npm.heroku.com/shellwords/-/shellwords-0.1.0/66afd47b6a12932d9071cbfd98a52e785cd0ba14.tgz#66afd47b6a12932d9071cbfd98a52e785cd0ba14"
 
-signal-exit@^3.0.2:
+signal-exit@^3.0.0, signal-exit@^3.0.2:
   version "3.0.2"
   resolved "http://cli-npm.heroku.com/signal-exit/-/signal-exit-3.0.2/b5fdc08f1287ea1178628e415e25132b73646c6d.tgz#b5fdc08f1287ea1178628e415e25132b73646c6d"
 
@@ -1531,6 +1858,12 @@ smooth-progress@1.1.0:
   dependencies:
     ansi-escapes "1.4.0"
     chalk "^1.1.1"
+
+sntp@1.x.x:
+  version "1.0.9"
+  resolved "http://cli-npm.heroku.com/sntp/-/sntp-1.0.9/6541184cc90aeea6c6e7b35e2659082443c66198.tgz#6541184cc90aeea6c6e7b35e2659082443c66198"
+  dependencies:
+    hoek "2.x.x"
 
 socket.io-client@^1.5.1:
   version "1.7.4"
@@ -1607,6 +1940,21 @@ ssh2@0.5.4:
   dependencies:
     ssh2-streams "~0.1.15"
 
+sshpk@^1.7.0:
+  version "1.13.0"
+  resolved "http://cli-npm.heroku.com/sshpk/-/sshpk-1.13.0/ff2a3e4fd04497555fed97b39a0fd82fafb3a33c.tgz#ff2a3e4fd04497555fed97b39a0fd82fafb3a33c"
+  dependencies:
+    asn1 "~0.2.3"
+    assert-plus "^1.0.0"
+    dashdash "^1.12.0"
+    getpass "^0.1.1"
+  optionalDependencies:
+    bcrypt-pbkdf "^1.0.0"
+    ecc-jsbn "~0.1.1"
+    jodid25519 "^1.0.0"
+    jsbn "~0.1.0"
+    tweetnacl "~0.14.0"
+
 stack-trace@0.0.x:
   version "0.0.9"
   resolved "http://cli-npm.heroku.com/stack-trace/-/stack-trace-0.0.9/a8f6eaeca90674c333e7c43953f275b451510695.tgz#a8f6eaeca90674c333e7c43953f275b451510695"
@@ -1622,6 +1970,14 @@ strftime@0.10.0, strftime@^0.10.0:
 string-just@0.0.2:
   version "0.0.2"
   resolved "http://cli-npm.heroku.com/string-just/-/string-just-0.0.2/8793188cba0b72892bffb74cc0e299cea6045b71.tgz#8793188cba0b72892bffb74cc0e299cea6045b71"
+
+string-width@^1.0.1, string-width@^1.0.2:
+  version "1.0.2"
+  resolved "http://cli-npm.heroku.com/string-width/-/string-width-1.0.2/118bdf5b8cdc51a2a7e70d211e07e2b0b9b107d3.tgz#118bdf5b8cdc51a2a7e70d211e07e2b0b9b107d3"
+  dependencies:
+    code-point-at "^1.0.0"
+    is-fullwidth-code-point "^1.0.0"
+    strip-ansi "^3.0.0"
 
 string-width@^2.0.0:
   version "2.0.0"
@@ -1644,7 +2000,11 @@ string_decoder@~1.0.0:
   dependencies:
     buffer-shims "~1.0.0"
 
-strip-ansi@^3.0.0:
+stringstream@~0.0.4:
+  version "0.0.5"
+  resolved "http://cli-npm.heroku.com/stringstream/-/stringstream-0.0.5/4e484cd4de5a0bbbee18e46307710a8a81621878.tgz#4e484cd4de5a0bbbee18e46307710a8a81621878"
+
+strip-ansi@^3.0.0, strip-ansi@^3.0.1:
   version "3.0.1"
   resolved "http://cli-npm.heroku.com/strip-ansi/-/strip-ansi-3.0.1/6a385fb8853d952d5ff05d0e8aaf94278dc63dcf.tgz#6a385fb8853d952d5ff05d0e8aaf94278dc63dcf"
   dependencies:
@@ -1687,6 +2047,14 @@ tar-stream@^1.1.2:
     end-of-stream "^1.0.0"
     readable-stream "^2.0.0"
     xtend "^4.0.0"
+
+tar@^2.0.0:
+  version "2.2.1"
+  resolved "http://cli-npm.heroku.com/tar/-/tar-2.2.1/8e4d2a256c0e2185c6b18ad694aec968b83cb1d1.tgz#8e4d2a256c0e2185c6b18ad694aec968b83cb1d1"
+  dependencies:
+    block-stream "*"
+    fstream "^1.0.2"
+    inherits "2"
 
 temp@^0.8.3:
   version "0.8.3"
@@ -1732,6 +2100,12 @@ to-array@0.1.4:
   version "0.1.4"
   resolved "http://cli-npm.heroku.com/to-array/-/to-array-0.1.4/17e6c11f73dd4f3d74cda7a4ff3238e9ad9bf890.tgz#17e6c11f73dd4f3d74cda7a4ff3238e9ad9bf890"
 
+tough-cookie@~2.3.0:
+  version "2.3.2"
+  resolved "http://cli-npm.heroku.com/tough-cookie/-/tough-cookie-2.3.2/f081f76e4c85720e6c37a5faced737150d84072a.tgz#f081f76e4c85720e6c37a5faced737150d84072a"
+  dependencies:
+    punycode "^1.4.1"
+
 tunnel-agent@^0.4.0, tunnel-agent@^0.4.3:
   version "0.4.3"
   resolved "http://cli-npm.heroku.com/tunnel-agent/-/tunnel-agent-0.4.3/6373db76909fe570e08d73583365ed828a74eeeb.tgz#6373db76909fe570e08d73583365ed828a74eeeb"
@@ -1749,6 +2123,10 @@ tunnel-ssh@4.1.2:
     debug "2.6.0"
     lodash.defaults "^4.1.0"
     ssh2 "0.5.4"
+
+tweetnacl@^0.14.3, tweetnacl@~0.14.0:
+  version "0.14.5"
+  resolved "http://cli-npm.heroku.com/tweetnacl/-/tweetnacl-0.14.5/5ae68177f192d4456269d108afa93ff8743f4f64.tgz#5ae68177f192d4456269d108afa93ff8743f4f64"
 
 ultron@1.0.x:
   version "1.0.2"
@@ -1772,7 +2150,7 @@ util-deprecate@~1.0.1:
   version "1.0.2"
   resolved "http://cli-npm.heroku.com/util-deprecate/-/util-deprecate-1.0.2/450d4dc9fa70de732762fbd2d4a28981419a0ccf.tgz#450d4dc9fa70de732762fbd2d4a28981419a0ccf"
 
-uuid@3.0.1:
+uuid@3.0.1, uuid@^3.0.0:
   version "3.0.1"
   resolved "http://cli-npm.heroku.com/uuid/-/uuid-3.0.1/6544bba2dfda8c1cf17e629a3a305e2bb1fee6c1.tgz#6544bba2dfda8c1cf17e629a3a305e2bb1fee6c1"
 
@@ -1780,11 +2158,23 @@ validator@6.2.1:
   version "6.2.1"
   resolved "http://cli-npm.heroku.com/validator/-/validator-6.2.1/bc575b78d15beb2e338a665ba9530c7f409ef667.tgz#bc575b78d15beb2e338a665ba9530c7f409ef667"
 
-which@^1.2.8:
+verror@1.3.6:
+  version "1.3.6"
+  resolved "http://cli-npm.heroku.com/verror/-/verror-1.3.6/cff5df12946d297d2baaefaa2689e25be01c005c.tgz#cff5df12946d297d2baaefaa2689e25be01c005c"
+  dependencies:
+    extsprintf "1.0.2"
+
+which@1, which@^1.2.8:
   version "1.2.14"
   resolved "http://cli-npm.heroku.com/which/-/which-1.2.14/9a87c4378f03e827cecaf1acdf56c736c01c14e5.tgz#9a87c4378f03e827cecaf1acdf56c736c01c14e5"
   dependencies:
     isexe "^2.0.0"
+
+wide-align@^1.1.0:
+  version "1.1.2"
+  resolved "http://cli-npm.heroku.com/wide-align/-/wide-align-1.1.2/571e0f1b0604636ebc0dfc21b0339bbe31341710.tgz#571e0f1b0604636ebc0dfc21b0339bbe31341710"
+  dependencies:
+    string-width "^1.0.2"
 
 winston@0.8.x:
   version "0.8.3"
