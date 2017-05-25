@@ -630,9 +630,9 @@ heroku-fork@4.1.21:
     heroku-cli-util "6.1.17"
     lodash "4.17.4"
 
-heroku-git@2.5.16:
-  version "2.5.16"
-  resolved "https://registry.yarnpkg.com/heroku-git/-/heroku-git-2.5.16.tgz#ca28d4b645c65a5d0965755f804f12bc4fa50316"
+heroku-git@2.5.17:
+  version "2.5.17"
+  resolved "https://registry.yarnpkg.com/heroku-git/-/heroku-git-2.5.17.tgz#69d0ee90957615225b1db6a52403c0c905da2a39"
   dependencies:
     co "4.6.0"
     heroku-cli-util "6.1.17"
