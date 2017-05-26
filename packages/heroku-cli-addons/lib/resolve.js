@@ -104,6 +104,7 @@ function AmbiguousError (matches, type) {
 
 const singularize = function (type) {
   return (matches) => {
+    matches = matches.filter(m => !m.hasOwnProperty('namespace') || m.namespace === null)
     switch (matches.length) {
       case 0:
         throw new NotFound()

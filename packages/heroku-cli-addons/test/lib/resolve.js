@@ -96,6 +96,26 @@ describe('resolve', () => {
         .then(() => { api.done() })
     })
 
+    it('finds the addon with null namespace for an app', () => {
+      let api = nock('https://api.heroku.com:443')
+        .post('/actions/addons/resolve', {'app': 'myapp', 'addon': 'myaddon-1'})
+        .reply(200, [{'name': 'myaddon-1', 'namespace': null}, {'name': 'myaddon-1b', 'namespace': 'definitely-not-null'}])
+
+      return resolve.addon(new Heroku(), 'myapp', 'myaddon-1')
+        .then((addon) => expect(addon, 'to satisfy', {name: 'myaddon-1'}))
+        .then(() => api.done())
+    })
+
+    it('finds the addon with no namespace for an app', () => {
+      let api = nock('https://api.heroku.com:443')
+        .post('/actions/addons/resolve', {'app': 'myapp', 'addon': 'myaddon-1'})
+        .reply(200, [{'name': 'myaddon-1'}, {'name': 'myaddon-1b', 'namespace': 'definitely-not-null'}])
+
+      return resolve.addon(new Heroku(), 'myapp', 'myaddon-1')
+        .then((addon) => expect(addon, 'to satisfy', {name: 'myaddon-1'}))
+        .then(() => api.done())
+    })
+
     describe('memoization', () => {
       it('memoizes an addon for an app', () => {
         let api = nock('https://api.heroku.com:443')
