@@ -1,7 +1,7 @@
 ---
 machine:
   node:
-    version: v6.2.1
+    version: 7.7.1
 test:
   pre:
     - mkdir -p $CIRCLE_TEST_REPORTS/mocha
