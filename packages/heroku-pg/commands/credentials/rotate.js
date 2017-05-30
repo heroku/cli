@@ -11,11 +11,11 @@ function * run (context, heroku) {
   let db = yield fetcher.addon(app, args.database)
   let all = flags.all
 
-  if (all && 'name' in flags) {
+  if (all && flags.name !== undefined) {
     throw new Error('cannot pass both --all and --name')
   }
   let cred = flags.name || 'default'
-  if ((cred === 'default' || all) && 'force' in flags) {
+  if ((cred === 'default' || all) && flags.force) {
     if (all) {
       throw new Error('Cannot force rotate all credentials: the default credential cannot be force rotated.')
     } else {
