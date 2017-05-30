@@ -9,5 +9,6 @@ Instructions:
 
 * Increment [version](https://github.com/heroku/cli/blob/master/bin/version).
 * Update [CHANGELOG](https://github.com/heroku/cli/blob/master/CHANGELOG).
+* Commit version & CHANGELOG and push to master
 * Tag version `git tag v5.x.x && git push --tags`
 * CircleCI will detect the tag and automatically release to stable
