@@ -21,19 +21,19 @@ describe('spaces', function () {
     let api = nock('https://api.heroku.com:443')
       .get('/spaces')
       .reply(200, [
-        {name: 'my-space', organization: {name: 'my-org'}, region: {name: 'my-region'}, state: 'enabled', created_at: now}
+        {name: 'my-space', organization: {name: 'my-team'}, region: {name: 'my-region'}, state: 'enabled', created_at: now}
       ])
     return cmd.run({flags: {}})
       .then(() => expect(cli.stdout).to.equal(
         `Name      Organization  Region     State    Created At
 ────────  ────────────  ─────────  ───────  ────────────────────────
-my-space  my-org        my-region  enabled  ${now.toISOString()}
+my-space  my-team       my-region  enabled  ${now.toISOString()}
 `))
       .then(() => api.done())
   })
 
   it('shows spaces with --json', function () {
-    let spaces = [{name: 'my-space', organization: {name: 'my-org'}, region: {name: 'my-region'}, state: 'enabled', created_at: now.toISOString()}]
+    let spaces = [{name: 'my-space', organization: {name: 'my-team'}, region: {name: 'my-region'}, state: 'enabled', created_at: now.toISOString()}]
     let api = nock('https://api.heroku.com:443')
       .get('/spaces')
       .reply(200, spaces)
@@ -46,14 +46,14 @@ my-space  my-org        my-region  enabled  ${now.toISOString()}
     let api = nock('https://api.heroku.com:443')
       .get('/spaces')
       .reply(200, [
-        {name: 'my-space', organization: {name: 'my-org'}, region: {name: 'my-region'}, state: 'enabled', created_at: now},
+        {name: 'my-space', organization: {name: 'my-team'}, region: {name: 'my-region'}, state: 'enabled', created_at: now},
         {name: 'other-space', organization: {name: 'other-org'}, region: {name: 'my-region'}, state: 'enabled', created_at: now}
       ])
-    return cmd.run({flags: {}, org: 'my-org'})
+    return cmd.run({flags: {}, team: 'my-team'})
       .then(() => expect(cli.stdout).to.equal(
         `Name      Organization  Region     State    Created At
 ────────  ────────────  ─────────  ───────  ────────────────────────
-my-space  my-org        my-region  enabled  ${now.toISOString()}
+my-space  my-team       my-region  enabled  ${now.toISOString()}
 `))
       .then(() => api.done())
   })
@@ -62,7 +62,7 @@ my-space  my-org        my-region  enabled  ${now.toISOString()}
     nock('https://api.heroku.com:443')
       .get('/spaces')
       .reply(200, [])
-    return chai.assert.isRejected(cmd.run({flags: {}, org: 'my-org'}), /^No spaces in my-org.$/)
+    return chai.assert.isRejected(cmd.run({flags: {}, team: 'my-team'}), /^No spaces in my-team.$/)
   })
 
   it('shows spaces error message', function () {

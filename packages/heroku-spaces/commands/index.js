@@ -2,6 +2,7 @@
 
 const cli = require('heroku-cli-util')
 const co = require('co')
+const {flags} = require('cli-engine-heroku')
 
 function display (spaces) {
   cli.table(spaces, {
@@ -21,15 +22,16 @@ function displayJSON (spaces) {
 
 function * run (context, heroku) {
   const sortBy = require('lodash.sortby')
+  let team = context.org || context.team || context.flags.team
 
   let spaces = yield heroku.get('/spaces')
-  if (context.org) {
-    spaces = spaces.filter((s) => s.organization.name === context.org)
+  if (team) {
+    spaces = spaces.filter((s) => s.organization.name === team)
   }
   spaces = sortBy(spaces, 'name')
   if (context.flags.json) displayJSON(spaces)
   else if (spaces.length === 0) {
-    if (context.org) throw new Error(`No spaces in ${cli.color.cyan(context.org)}.`)
+    if (team) throw new Error(`No spaces in ${cli.color.cyan(team)}.`)
     else throw new Error('You do not have access to any spaces.')
   } else {
     display(spaces)
@@ -39,10 +41,11 @@ function * run (context, heroku) {
 module.exports = {
   topic: 'spaces',
   description: 'list available spaces',
-  wantsOrg: true,
   needsAuth: true,
   flags: [
-    {name: 'json', description: 'output in json format'}
+    {name: 'json', description: 'output in json format'},
+    flags.org({name: 'org', hasValue: true}),
+    flags.team({name: 'team', hasValue: true, required: true})
   ],
   run: cli.command(co.wrap(run))
 }
