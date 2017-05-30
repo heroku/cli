@@ -144,7 +144,7 @@ example-eu (eu)
       return apps.run({org: 'test-org', flags: {}, args: {}}).then(function () {
         mock.done()
         expect(cli.stderr).to.equal('')
-        expect(cli.stdout).to.equal(`There are no apps in organization test-org.
+        expect(cli.stdout).to.equal(`There are no apps in team test-org.
 `)
       })
     })
@@ -155,7 +155,33 @@ example-eu (eu)
         mock.done()
         expect(cli.stderr).to.equal('')
         expect(cli.stdout).to.equal(
-          `=== Apps in organization test-org
+          `=== Apps in team test-org
+org-app-1
+org-app-2
+
+`)
+      })
+    })
+  })
+
+  describe('with team', function () {
+    it('displays a message when the team has no apps', function () {
+      let mock = stubOrgApps('test-team', [])
+      return apps.run({team: 'test-team', flags: {}, args: {}}).then(function () {
+        mock.done()
+        expect(cli.stderr).to.equal('')
+        expect(cli.stdout).to.equal(`There are no apps in team test-team.
+`)
+      })
+    })
+
+    it('list all in an team', function () {
+      let mock = stubOrgApps('test-team', [orgApp1, orgApp2])
+      return apps.run({team: 'test-team', flags: {}, args: {}}).then(function () {
+        mock.done()
+        expect(cli.stderr).to.equal('')
+        expect(cli.stdout).to.equal(
+          `=== Apps in team test-team
 org-app-1
 org-app-2
 

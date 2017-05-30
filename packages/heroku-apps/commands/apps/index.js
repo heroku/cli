@@ -2,12 +2,14 @@
 
 const co = require('co')
 const cli = require('heroku-cli-util')
+const {flags} = require('cli-engine-heroku')
 
 function * run (context, heroku) {
   const sortBy = require('lodash.sortby')
   const partition = require('lodash.partition')
 
-  let org = (!context.flags.personal && context.org) ? context.org : null
+  let team = context.org || context.team || context.flags.team
+  let org = (!context.flags.personal && team) ? team : null
   let space = context.flags.space
   if (space) org = (yield heroku.get(`/spaces/${space}`)).organization.name
 
@@ -27,14 +29,14 @@ function * run (context, heroku) {
   function print (apps, user) {
     if (apps.length === 0) {
       if (space) cli.log(`There are no apps in space ${cli.color.green(space)}.`)
-      else if (org) cli.log(`There are no apps in organization ${cli.color.magenta(org)}.`)
+      else if (org) cli.log(`There are no apps in team ${cli.color.magenta(org)}.`)
       else cli.log('You have no apps.')
       return
     } else if (space) {
       cli.styledHeader(`Apps in space ${cli.color.green(space)}`)
       listApps(apps)
     } else if (org) {
-      cli.styledHeader(`Apps in organization ${cli.color.magenta(org)}`)
+      cli.styledHeader(`Apps in team ${cli.color.magenta(org)}`)
       listApps(apps)
     } else {
       apps = partition(apps, (app) => app.owner.email === user.email)
@@ -88,12 +90,13 @@ Example:
  === Collaborated Apps
  theirapp   other@owner.name`,
   needsAuth: true,
-  wantsOrg: true,
   flags: [
-    {name: 'all', char: 'A', description: 'include apps in all organizations'},
+    {name: 'all', char: 'A', description: 'include apps in all teams'},
     {name: 'json', description: 'output in json format'},
     {name: 'space', char: 's', hasValue: true, description: 'filter by space'},
-    {name: 'personal', char: 'p', description: 'list apps in personal account when a default org is set'}
+    {name: 'personal', char: 'p', description: 'list apps in personal account when a default team is set'},
+    flags.org({name: 'org', hasValue: true}),
+    flags.team({name: 'team', hasValue: true})
   ],
   run: cli.command(co.wrap(run))
 }

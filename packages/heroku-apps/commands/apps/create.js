@@ -2,6 +2,7 @@
 
 let co = require('co')
 let cli = require('heroku-cli-util')
+const {flags} = require('cli-engine-heroku')
 
 function * run (context, heroku) {
   let git = require('../../lib/git')(context)
@@ -10,7 +11,7 @@ function * run (context, heroku) {
   function createApp () {
     let params = {
       name,
-      organization: context.org,
+      organization: context.org || context.team || context.flags.team,
       region: context.flags.region,
       space: context.flags.space,
       stack: context.flags.stack,
@@ -20,7 +21,7 @@ function * run (context, heroku) {
 
     return heroku.request({
       method: 'POST',
-      path: (params.space || context.org) ? '/organizations/apps' : '/apps',
+      path: (params.space || params.organization) ? '/organizations/apps' : '/apps',
       body: params
     }).then(app => {
       let status = name ? 'done' : `done, ${cli.color.app(app.name)}`
@@ -90,7 +91,6 @@ let cmd = {
  $ heroku apps:create --region eu
  `,
   needsAuth: true,
-  wantsOrg: true,
   args: [{name: 'app', optional: true}],
   flags: [
     {name: 'app', char: 'a', hasValue: true, hidden: true},
@@ -103,7 +103,9 @@ let cmd = {
     {name: 'region', hasValue: true, description: 'specify region for the app to run in'},
     {name: 'ssh-git', description: 'use SSH git protocol for local git remote'},
     {name: 'kernel', hidden: true, hasValue: true},
-    {name: 'locked', hidden: true}
+    {name: 'locked', hidden: true},
+    flags.org({name: 'org', hasValue: true}),
+    flags.team({name: 'team', hasValue: true})
   ],
   run: cli.command(co.wrap(run))
 }

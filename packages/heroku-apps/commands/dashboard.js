@@ -151,7 +151,7 @@ function * run (context, heroku) {
 
   cli.log(`See all add-ons with ${cli.color.cmd('heroku addons')}`)
   let sampleOrg = sortBy(data.orgs.filter((o) => o.role !== 'collaborator'), (o) => new Date(o.created_at))[0]
-  if (sampleOrg) cli.log(`See all apps in ${cli.color.yellow.dim(sampleOrg.name)} with ${cli.color.cmd('heroku apps --org ' + sampleOrg.name)}`)
+  if (sampleOrg) cli.log(`See all apps in ${cli.color.yellow.dim(sampleOrg.name)} with ${cli.color.cmd('heroku apps --team ' + sampleOrg.name)}`)
   cli.log(`See all apps with ${cli.color.cmd('heroku apps --all')}`)
   displayNotifications(data.notifications)
   cli.log(`
@@ -164,6 +164,5 @@ module.exports = {
   description: 'display information about favorite apps',
   hidden: true,
   needsAuth: true,
-  wantsOrg: true,
   run: cli.command(co.wrap(run))
 }
