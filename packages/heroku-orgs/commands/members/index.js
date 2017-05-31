@@ -58,11 +58,12 @@ module.exports = {
   topic: 'members',
   description: 'list members of an organization or a team',
   needsAuth: true,
+  wantsOrg: true,
   flags: [
     {name: 'role', char: 'r', hasValue: true, description: 'filter by role'},
     {name: 'pending', hasValue: false, description: 'filter by pending team invitations'},
     {name: 'json', description: 'output in json format'},
-    flags.org({name: 'org', hasValue: true, description: 'org to use', hidden: false}),
+    // flags.org({name: 'org', hasValue: true, description: 'org to use', hidden: false}),
     flags.team({name: 'team', hasValue: true, hidden: true})
   ],
   run: cli.command(co.wrap(run))

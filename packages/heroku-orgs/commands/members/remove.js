@@ -62,9 +62,10 @@ module.exports = {
   command: 'remove',
   description: 'removes a user from an organization or a team',
   needsAuth: true,
+  wantsOrg: true,
   args: [{name: 'email'}],
   flags: [
-    flags.org({name: 'org', hasValue: true, description: 'org to use', hidden: false}),
+    // flags.org({name: 'org', hasValue: true, description: 'org to use', hidden: false}),
     flags.team({name: 'team', hasValue: true, hidden: true})
   ],
   run: cli.command(co.wrap(run))
