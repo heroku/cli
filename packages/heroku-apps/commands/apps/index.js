@@ -90,12 +90,13 @@ Example:
  === Collaborated Apps
  theirapp   other@owner.name`,
   needsAuth: true,
+  wantsOrg: true,
   flags: [
     {name: 'all', char: 'A', description: 'include apps in all teams'},
     {name: 'json', description: 'output in json format'},
     {name: 'space', char: 's', hasValue: true, description: 'filter by space'},
     {name: 'personal', char: 'p', description: 'list apps in personal account when a default team is set'},
-    flags.org({name: 'org', hasValue: true}),
+    // flags.org({name: 'org', hasValue: true}),
     flags.team({name: 'team', hasValue: true})
   ],
   run: cli.command(co.wrap(run))
