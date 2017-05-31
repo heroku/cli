@@ -81,11 +81,12 @@ function* diff (targetApp, downstreamApp, githubToken, herokuUserAgent) {
   // Do the actual Github diff
   try {
     const path = `${targetApp.repo}/compare/${downstreamApp.hash}...${targetApp.hash}`
+    const headers = { authorization: 'token ' + githubToken }
+
+    if (herokuUserAgent) headers['user-agent'] = herokuUserAgent
+
     const res = yield cli.got.get(`https://api.github.com/repos/${path}`, {
-      headers: {
-        authorization: 'token ' + githubToken,
-        'user-agent': herokuUserAgent
-      },
+      headers,
       json: true
     })
     cli.log('')
