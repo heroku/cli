@@ -61,6 +61,7 @@ Example:
   `,
   needsApp: false,
   needsAuth: true,
+  wantsOrg: true,
   args: [{name: 'space', optional: true, hidden: true}],
   flags: [
     {name: 'space', char: 's', hasValue: true, description: 'name of space to create'},
@@ -72,7 +73,7 @@ Example:
     {name: 'shield', hasValue: false, hidden: true, description: 'create a Shield space'},
     {name: 'cidr', hasValue: true, hidden: true, description: 'the RFC-1918 CIDR the space will use'},
     {name: 'kpi-url', hasValue: true, hidden: true, description: 'self-managed KPI endpoint to use'},
-    flags.org({name: 'org', hasValue: true}),
+    // flags.org({name: 'org', hasValue: true}),
     flags.team({name: 'team', hasValue: true})
   ],
   run: cli.command(co.wrap(run))

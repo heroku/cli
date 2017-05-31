@@ -42,9 +42,10 @@ module.exports = {
   topic: 'spaces',
   description: 'list available spaces',
   needsAuth: true,
+  wantsOrg: true,
   flags: [
     {name: 'json', description: 'output in json format'},
-    flags.org({name: 'org', hasValue: true}),
+    // flags.org({name: 'org', hasValue: true}),
     flags.team({name: 'team', hasValue: true})
   ],
   run: cli.command(co.wrap(run))
