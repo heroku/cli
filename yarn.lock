@@ -251,6 +251,14 @@ cli-engine-heroku@0.3.1:
     cli-engine-command "4.0.3"
     heroku-client "3.0.2"
 
+cli-engine-heroku@0.3.2:
+  version "0.3.2"
+  resolved "http://cli-npm.heroku.com/cli-engine-heroku/-/cli-engine-heroku-0.3.2/4e40c8eddebaca358c4a11b7e8a0c1d2f0538f76.tgz#4e40c8eddebaca358c4a11b7e8a0c1d2f0538f76"
+  dependencies:
+    cli-engine-command "4.0.3"
+    heroku-client "3.0.2"
+    lodash.merge "4.6.0"
+
 cli-engine@3.3.7:
   version "3.3.7"
   resolved "http://cli-npm.heroku.com/cli-engine/-/cli-engine-3.3.7/4af4db8223003c7e6ebb93d2f00a07590fddfa6f.tgz#4af4db8223003c7e6ebb93d2f00a07590fddfa6f"
@@ -693,11 +701,12 @@ here@0.0.2:
   version "0.0.2"
   resolved "http://cli-npm.heroku.com/here/-/here-0.0.2/69c1af3f02121f3d8788e02e84dc8b3905d71195.tgz#69c1af3f02121f3d8788e02e84dc8b3905d71195"
 
-heroku-apps@2.2.25:
-  version "2.2.25"
-  resolved "http://cli-npm.heroku.com/heroku-apps/-/heroku-apps-2.2.25/d63061559f4fbbb96c9022eb06d8f7ffa4d947c0.tgz#d63061559f4fbbb96c9022eb06d8f7ffa4d947c0"
+heroku-apps@2.3.1:
+  version "2.3.1"
+  resolved "http://cli-npm.heroku.com/heroku-apps/-/heroku-apps-2.3.1/88fa450b7b892d5268aa9799d4f31ff95bb2dd90.tgz#88fa450b7b892d5268aa9799d4f31ff95bb2dd90"
   dependencies:
     bluebird "3.4.7"
+    cli-engine-heroku "0.3.2"
     co "4.6.0"
     co-wait "0.0.0"
     filesize "3.5.4"
@@ -933,10 +942,11 @@ heroku-local@5.1.16:
     heroku-cli-util "6.1.17"
     lodash.flatten "4.4.0"
 
-heroku-orgs@1.5.12:
-  version "1.5.12"
-  resolved "http://cli-npm.heroku.com/heroku-orgs/-/heroku-orgs-1.5.12/19f497dd063e3ab85b600f181f77c59e9f2018cd.tgz#19f497dd063e3ab85b600f181f77c59e9f2018cd"
+heroku-orgs@1.6.2:
+  version "1.6.2"
+  resolved "http://cli-npm.heroku.com/heroku-orgs/-/heroku-orgs-1.6.2/1a5e9944d2cc2248c3d90f6254d48b28b9d1f550.tgz#1a5e9944d2cc2248c3d90f6254d48b28b9d1f550"
   dependencies:
+    cli-engine-heroku "0.3.2"
     co "4.6.0"
     heroku-cli-util "6.1.17"
     inquirer "3.0.6"
@@ -1004,10 +1014,11 @@ heroku-run@3.4.10, heroku-run@^3.4.3:
     heroku-cli-util "6.1.17"
     shellwords "0.1.0"
 
-heroku-spaces@2.8.6:
-  version "2.8.6"
-  resolved "http://cli-npm.heroku.com/heroku-spaces/-/heroku-spaces-2.8.6/c41334de38869ef904fff0de285112f73a79a698.tgz#c41334de38869ef904fff0de285112f73a79a698"
+heroku-spaces@2.9.2:
+  version "2.9.2"
+  resolved "http://cli-npm.heroku.com/heroku-spaces/-/heroku-spaces-2.9.2/e486b570bbd92dccf0059cd976ea01cd6a3f1de1.tgz#e486b570bbd92dccf0059cd976ea01cd6a3f1de1"
   dependencies:
+    cli-engine-heroku "0.3.2"
     co "4.6.0"
     heroku-cli-util "6.1.17"
     lodash.foreach "^4.5.0"
