@@ -21,7 +21,21 @@ function * run (context, heroku) {
   const spaceName = context.flags.space || context.args.space
   if (!spaceName) throw new Error('Space name required.\nUSAGE: heroku spaces:ps my-space')
 
-  const spaceDynos = yield heroku.get(`/spaces/${spaceName}/dynos`)
+  const [spaceDynos, space] = yield Promise.all([
+    heroku.get(`/spaces/${spaceName}/dynos`),
+    heroku.get(`/spaces/${spaceName}`)
+  ])
+
+  if (space.shield) {
+    spaceDynos.forEach(spaceDyno => {
+      spaceDyno.dynos.forEach(d => {
+        if (d.size) {
+          d.size = d.size.replace('Private-', 'Shield-')
+        }
+      })
+    })
+  }
+
   if (context.flags.json) {
     cli.styledJSON(spaceDynos)
   } else {
