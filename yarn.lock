@@ -693,12 +693,11 @@ here@0.0.2:
   version "0.0.2"
   resolved "http://cli-npm.heroku.com/here/-/here-0.0.2/69c1af3f02121f3d8788e02e84dc8b3905d71195.tgz#69c1af3f02121f3d8788e02e84dc8b3905d71195"
 
-heroku-apps@2.3.0:
-  version "2.3.0"
-  resolved "http://cli-npm.heroku.com/heroku-apps/-/heroku-apps-2.3.0/c675a48708b11a5f93d489e6b915243147ef933d.tgz#c675a48708b11a5f93d489e6b915243147ef933d"
+heroku-apps@2.2.25:
+  version "2.2.25"
+  resolved "http://cli-npm.heroku.com/heroku-apps/-/heroku-apps-2.2.25/d63061559f4fbbb96c9022eb06d8f7ffa4d947c0.tgz#d63061559f4fbbb96c9022eb06d8f7ffa4d947c0"
   dependencies:
     bluebird "3.4.7"
-    cli-engine-heroku "0.3.1"
     co "4.6.0"
     co-wait "0.0.0"
     filesize "3.5.4"
@@ -934,11 +933,10 @@ heroku-local@5.1.16:
     heroku-cli-util "6.1.17"
     lodash.flatten "4.4.0"
 
-heroku-orgs@1.6.1:
-  version "1.6.1"
-  resolved "http://cli-npm.heroku.com/heroku-orgs/-/heroku-orgs-1.6.1/3a644970e179699b48b2c304b096daf91351cbce.tgz#3a644970e179699b48b2c304b096daf91351cbce"
+heroku-orgs@1.5.12:
+  version "1.5.12"
+  resolved "http://cli-npm.heroku.com/heroku-orgs/-/heroku-orgs-1.5.12/19f497dd063e3ab85b600f181f77c59e9f2018cd.tgz#19f497dd063e3ab85b600f181f77c59e9f2018cd"
   dependencies:
-    cli-engine-heroku "0.3.1"
     co "4.6.0"
     heroku-cli-util "6.1.17"
     inquirer "3.0.6"
@@ -1006,11 +1004,10 @@ heroku-run@3.4.10, heroku-run@^3.4.3:
     heroku-cli-util "6.1.17"
     shellwords "0.1.0"
 
-heroku-spaces@2.9.1:
-  version "2.9.1"
-  resolved "http://cli-npm.heroku.com/heroku-spaces/-/heroku-spaces-2.9.1/2360862764e55c0c8eea1629d97c9d14773a9698.tgz#2360862764e55c0c8eea1629d97c9d14773a9698"
+heroku-spaces@2.8.6:
+  version "2.8.6"
+  resolved "http://cli-npm.heroku.com/heroku-spaces/-/heroku-spaces-2.8.6/c41334de38869ef904fff0de285112f73a79a698.tgz#c41334de38869ef904fff0de285112f73a79a698"
   dependencies:
-    cli-engine-heroku "0.3.1"
     co "4.6.0"
     heroku-cli-util "6.1.17"
     lodash.foreach "^4.5.0"
