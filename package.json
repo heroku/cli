@@ -3,7 +3,7 @@
   "description": "Heroku CLI",
   "private": true,
   "dependencies": {
-    "heroku-apps": "2.3.0",
+    "heroku-apps": "2.2.25",
     "heroku-certs": "1.1.38",
     "heroku-ci": "1.7.2",
     "heroku-cli-addons": "1.2.19",
@@ -11,13 +11,13 @@
     "heroku-fork": "4.1.21",
     "heroku-git": "2.5.17",
     "heroku-local": "5.1.16",
-    "heroku-orgs": "1.6.1",
+    "heroku-orgs": "1.5.12",
     "heroku-pg": "2.1.1",
     "heroku-pipelines": "2.1.0",
     "heroku-ps-exec": "1.0.1",
     "heroku-redis": "1.2.14",
     "heroku-run": "3.4.10",
-    "heroku-spaces": "2.9.1",
+    "heroku-spaces": "2.8.6",
     "heroku-status": "3.0.10"
   }
 }
