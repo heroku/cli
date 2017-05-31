@@ -455,12 +455,13 @@ cli-engine-config@1.1.4:
   dependencies:
     uuid "3.0.1"
 
-cli-engine-heroku@0.3.1:
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/cli-engine-heroku/-/cli-engine-heroku-0.3.1.tgz#c26d8e385d3ef374a7c693e930e3ecdea0d4d1eb"
+cli-engine-heroku@0.3.2:
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/cli-engine-heroku/-/cli-engine-heroku-0.3.2.tgz#4e40c8eddebaca358c4a11b7e8a0c1d2f0538f76"
   dependencies:
     cli-engine-command "4.0.3"
     heroku-client "3.0.2"
+    lodash.merge "4.6.0"
 
 cli-width@^2.0.0:
   version "2.1.0"
