@@ -25,6 +25,7 @@
     "lolex": "1.5.2",
     "mocha": "3.2.0",
     "nock": "9.0.4",
+    "np": "2.15.0",
     "nyc": "10.1.2",
     "standard": "8.6.0",
     "time-require": "0.1.2",
@@ -38,6 +39,7 @@
   "main": "index.js",
   "repository": "https://github.com/heroku/heroku-cli-addons",
   "scripts": {
-    "test": "nyc mocha && standard"
+    "test": "nyc mocha && standard",
+    "release": "np"
   }
 }
