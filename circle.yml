@@ -28,7 +28,7 @@ stages:
           if [ "${TAG}" != "NOTAG" ]; then
             yarn run release stable
           fi
-          if [ "${CIRCLE_BRANCH}" == "v6" ]; then
+          if [ "${CIRCLE_BRANCH}" == "master" ]; then
             yarn run release beta
           fi
           if [ "${CIRCLE_BRANCH}" == "dev" ]; then
