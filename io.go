@@ -9,9 +9,9 @@ import (
 	"log"
 	"os"
 	"os/signal"
-	"path/filepath"
 	"runtime"
 	"runtime/debug"
+	"strconv"
 	"strings"
 
 	"github.com/ansel1/merry"
@@ -39,10 +39,15 @@ var DebuggingHeaders = isDebuggingHeaders()
 var swallowSigint = false
 
 func newLogger(path string) *log.Logger {
-	err := os.MkdirAll(filepath.Dir(path), 0777)
-	must(err)
 	file, err := os.OpenFile(path, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0644)
 	must(err)
+	uid := os.Getenv("SUDO_UID")
+	gid := os.Getenv("SUDO_GID")
+	if uid != "" && gid != "" {
+		uid, _ := strconv.Atoi(uid)
+		gid, _ := strconv.Atoi(gid)
+		os.Chown(path, uid, gid)
+	}
 	return log.New(file, "", log.LstdFlags)
 }
 
