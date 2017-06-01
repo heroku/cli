@@ -10,7 +10,7 @@
   "cli-engine": {
     "dirname": "heroku",
     "bin": "heroku",
-    "node": "7.9.0",
+    "node": "7.10.0",
     "defaultCommand": "dashboard",
     "s3": {
       "bucket": "heroku-cli-assets",
