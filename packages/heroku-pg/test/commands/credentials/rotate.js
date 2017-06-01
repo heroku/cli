@@ -95,20 +95,19 @@ describe('pg:credentials:rotate', () => {
     .then(() => expect(cli.stderr, 'to equal', 'Rotating my_role on postgres-1... done\n'))
   })
 
-  it('rotates credentials for all roles with --all and --force', () => {
-    pg.post('/postgres/v0/databases/postgres-1/credentials_rotation').reply(200)
-    return cmd.run({app: 'myapp', args: {}, flags: {all: true, confirm: 'myapp', force: true}})
-        .then(() => expect(cli.stdout, 'to equal', ''))
-    .then(() => expect(cli.stderr, 'to equal', 'Rotating all credentials on postgres-1... done\n'))
+  it('fails with an error if both --all and --name are included', () => {
+    const err = new Error(`cannot pass both --all and --name`)
+    return expect(cmd.run({app: 'myapp', args: {}, flags: {all: true, name: 'my_role', confirm: 'myapp'}}), 'to be rejected with', err)
   })
 
-  it('fails with an error if both --all and --name are included', () => {
-    return cmd.run({app: 'myapp', args: {}, flags: {all: true, name: 'my_role', confirm: 'myapp'}})
-              .then(() => { throw new Error('expected error') })
-              .catch((err) => {
-                expect(err.message, 'to equal', 'cannot pass both --all and --name')
-                expect(err.code, 'to equal', 1)
-              })
+  it('fails with an error if both --force and --all are included', () => {
+    const err = new Error(`Cannot force rotate all credentials: the default credential cannot be force rotated.`)
+    return expect(cmd.run({app: 'myapp', args: {}, flags: {force: true, all: true, confirm: 'myapp'}}), 'to be rejected with', err)
+  })
+
+  it('fails with an error if both --name default and --force are included', () => {
+    const err = new Error(`Cannot force rotate the default credential.`)
+    return expect(cmd.run({app: 'myapp', args: {}, flags: {force: true, name: 'default', confirm: 'myapp'}}), 'to be rejected with', err)
   })
 
   it('throws an error when the db is starter plan but the name is specified', () => {
@@ -206,23 +205,6 @@ This command will affect the apps appname_1, appname_2.`
     return cmd.run({app: 'myapp',
       args: {},
       flags: { name: 'my_role', confirm: 'myapp' }})
-    .then(() => {
-      expect(lastApp, 'to equal', 'myapp')
-      expect(lastConfirm, 'to equal', 'myapp')
-      expect(lastMsg, 'to equal', message)
-    })
-  })
-
-  it('requires app confirmation for force rotating all roles with --all and --force', () => {
-    pg.post('/postgres/v0/databases/postgres-1/credentials_rotation').reply(200)
-
-    const message = `WARNING: Destructive Action
-Connections will be reset and applications will be restarted.
-This command will affect the apps appname_1, appname_2, appname_3.`
-
-    return cmd.run({app: 'myapp',
-      args: {},
-      flags: { all: true, force: true, confirm: 'myapp' }})
     .then(() => {
       expect(lastApp, 'to equal', 'myapp')
       expect(lastConfirm, 'to equal', 'myapp')
