@@ -69,7 +69,7 @@ func updateCLI(channel string) {
 		}
 		channel = config.LockChannel
 	}
-	if channel == "stable" && runtime.GOOS == "darwin" && shouldUpdateToV6() {
+	if channel == "stable" && (runtime.GOOS == "darwin" || runtime.GOOS == "linux") && shouldUpdateToV6() {
 		Debugln("setting update to v6 channel")
 		channel = "v6"
 	}
