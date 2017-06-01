@@ -1,0 +1,17 @@
+{
+  "extends": [
+    "plugin:flowtype/recommended",
+    "plugin:jest/recommended",
+    "standard"
+  ],
+  "globals": {
+    "jasmine": true
+  },
+  "env": {
+    "jest": true
+  },
+  "plugins": [
+    "flowtype",
+    "jest"
+  ]
+}

@@ -1,6 +1,28 @@
-machine:
-  node:
-    version: v6.2.0
-test:
-  post:
-    - npm run coverage
+---
+version: 2
+jobs:
+  build:
+    docker:
+      - image: dickeyxxx/cli-engine-docker:v1.0.2
+    working_directory: ~/cli-plugin
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - cli-plugin-{{ .Branch }}-{{checksum "package.json"}}
+            - cli-plugin-{{ .Branch }}
+            - cli-plugin-master
+      - run: |
+          set -ex
+          yarn
+          npm test
+          bash <(curl -s https://codecov.io/bash)
+      - save_cache:
+          key: cli-plugin-{{ .Branch }}-{{checksum "package.json"}}
+          paths:
+            - ~/cli-plugin/node_modules
+            - /usr/local/share/.cache/yarn
+      - save_cache:
+          key: cli-plugin-{{ .Branch }}
+          paths:
+            - /usr/local/share/.cache/yarn
