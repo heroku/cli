@@ -42,6 +42,7 @@ function psqlInteractive (dbEnv, prompt) {
 }
 
 function handleSignals () {
+  process.removeAllListeners('SIGINT')
   process.on('SIGINT', () => {})
 }
 
