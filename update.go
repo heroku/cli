@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"math/rand"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -68,7 +69,8 @@ func updateCLI(channel string) {
 		}
 		channel = config.LockChannel
 	}
-	if channel == "stable" && runtime.GOOS == "darwin" {
+	if channel == "stable" && runtime.GOOS == "darwin" && shouldUpdateToV6() {
+		Debugln("setting update to v6 channel")
 		channel = "v6"
 	}
 	manifest := GetUpdateManifest(channel, config.LockVersion)
@@ -251,4 +253,18 @@ func npmExists() bool {
 // this is a problem on windows because node will recurse up until it finds a node_modules directory
 func deleteOldPluginsDirectory() {
 	os.RemoveAll(filepath.Join(DataHome, "node_modules"))
+}
+
+// shouldUpdateToV6 returns true if the CLI should update from v5 to v6
+// false if ~/.local/share/heroku/v5 exists
+// 1 out of 10 chance to update to v6 otherwise
+func shouldUpdateToV6() bool {
+	exists, _ := FileExists(filepath.Join(ConfigHome, "v5.lock"))
+	if exists {
+		Debugln("not updating to v6, v5.lock file exists")
+		return false
+	}
+	seed := rand.NewSource(time.Now().UnixNano())
+	r := rand.New(seed)
+	return r.Intn(100) > 90
 }
