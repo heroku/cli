@@ -946,9 +946,9 @@ heroku-orgs@1.6.2:
     lodash "4.17.4"
     lodash.flatten "4.4.0"
 
-heroku-pg@2.1.1:
-  version "2.1.1"
-  resolved "http://cli-npm.heroku.com/heroku-pg/-/heroku-pg-2.1.1/90664e93bf10abc7252923545b3e9d4168319afd.tgz#90664e93bf10abc7252923545b3e9d4168319afd"
+heroku-pg@2.1.2:
+  version "2.1.2"
+  resolved "http://cli-npm.heroku.com/heroku-pg/-/heroku-pg-2.1.2/580afffa075a18b69977183da5533832a8d6133d.tgz#580afffa075a18b69977183da5533832a8d6133d"
   dependencies:
     bytes "2.5.0"
     co "4.6.0"
@@ -968,9 +968,9 @@ heroku-pg@2.1.1:
     strip-eof "1.0.0"
     tunnel-ssh "4.1.2"
 
-heroku-pipelines@2.1.0, heroku-pipelines@^2.0.1:
-  version "2.1.0"
-  resolved "http://cli-npm.heroku.com/heroku-pipelines/-/heroku-pipelines-2.1.0/526b72e1bf0be647c61f8c89d599b5fc5b953e0f.tgz#526b72e1bf0be647c61f8c89d599b5fc5b953e0f"
+heroku-pipelines@2.1.1, heroku-pipelines@^2.0.1:
+  version "2.1.1"
+  resolved "http://cli-npm.heroku.com/heroku-pipelines/-/heroku-pipelines-2.1.1/29e5d1b14db8e195bc48ba8834f6e98a8f05208b.tgz#29e5d1b14db8e195bc48ba8834f6e98a8f05208b"
   dependencies:
     bluebird "3.4.7"
     co "4.6.0"
