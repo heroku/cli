@@ -50,6 +50,6 @@
     "build": "babel src -d lib --ignore '*.test.js'",
     "clean": "rimraf lib",
     "prepare": "npm run clean && npm run build",
-    "test": "flow && jest && eslint ."
+    "test": "jest && flow && eslint ."
   }
 }
