@@ -95,7 +95,6 @@ done
 cd $ROOT
 apt-ftparchive packages . > Packages
 gzip -c Packages > Packages.gz
-cat Packages
 
 # create Release apt file
 cd $ROOT
