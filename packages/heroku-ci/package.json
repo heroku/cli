@@ -4,7 +4,7 @@
   "description": "Heroku CLI plugin for Heroku CI",
   "main": "index.js",
   "engines": {
-    "node": ">=6.8.1",
+    "node": ">=6.8.1 <8.0.0",
     "npm": ">=3.10.8"
   },
   "scripts": {

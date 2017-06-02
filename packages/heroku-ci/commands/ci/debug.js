@@ -45,6 +45,16 @@ function* run (context, heroku) {
   const appSetup = yield api.appSetup(heroku, testRun.app_setup.id)
   const noSetup = context.flags['no-setup']
 
+  const configVars = {
+    HEROKU_TEST_RUN_ID: testRun.id,
+    HEROKU_TEST_RUN_BRANCH: testRun.commit_branch,
+    HEROKU_SUPPRESS_LOGGING: true,
+    CI_NODE_INDEX: 0,
+    CI_NODE_TOTAL: 1
+  }
+
+  const env = Object.keys(configVars).map((key) => `${key}=${configVars[key]}`).join(';')
+
   const dyno = new Dyno({
     heroku,
     app: appSetup.app.id,
@@ -52,7 +62,7 @@ function* run (context, heroku) {
     'exit-code': true,
     'no-tty': context.flags['no-tty'],
     attach: true,
-    env: 'HEROKU_SUPPRESS_LOGGING=true',
+    env,
     size: context.flags.size,
     showStatus: false
   })
