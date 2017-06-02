@@ -2,7 +2,7 @@
 version: 2
 executorType: docker
 containerInfo:
-  - image: dickeyxxx/cli-engine-docker:v1.2.0
+  - image: dickeyxxx/cli-engine-docker:v1.2.0-node7
 stages:
   build:
     workDir: ~/cli
