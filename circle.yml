@@ -13,6 +13,7 @@ stages:
       - type: shell
         command: |
           set -exu
+          yarn config set registry https://cli-npm.heroku.com
           yarn
           ./bin/run version
           ./bin/run help
