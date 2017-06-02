@@ -7,14 +7,14 @@ if [ $# -ne 1 ]; then
   exit 1
 fi
 
-PROJECT_ROOT=/cli
+PROJECT_ROOT=/root/cli
 cd $PROJECT_ROOT
 
 # set constants
 VERSION=$(node -p "require('./package.json').version")
 SHA=$(git rev-parse --short HEAD)
 DEB_VERSION="$VERSION-1"
-ROOT=/cli/tmp/apt
+ROOT=$PROJECT_ROOT/tmp/apt
 CHANNEL=$1
 
 ARCHS=(x86 x64)
