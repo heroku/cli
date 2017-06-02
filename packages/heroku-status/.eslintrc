@@ -4,9 +4,6 @@
     "plugin:jest/recommended",
     "standard"
   ],
-  "globals": {
-    "jasmine": true
-  },
   "env": {
     "jest": true
   },

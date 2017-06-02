@@ -15,7 +15,9 @@ jobs:
       - run: |
           set -ex
           yarn
-          npm test
+          jest
+          flow
+          eslint .
           bash <(curl -s https://codecov.io/bash)
       - save_cache:
           key: cli-plugin-{{ .Branch }}-{{checksum "package.json"}}
