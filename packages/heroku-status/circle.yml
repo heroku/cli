@@ -12,13 +12,10 @@ jobs:
             - cli-plugin-{{ .Branch }}-{{checksum "package.json"}}
             - cli-plugin-{{ .Branch }}
             - cli-plugin-master
-      - run: |
-          set -ex
-          yarn
-          jest
-          flow
-          eslint .
-          bash <(curl -s https://codecov.io/bash)
+      - run: yarn
+      - run: jest && bash <(curl -s https://codecov.io/bash)
+      - run: flow
+      - run: eslint .
       - save_cache:
           key: cli-plugin-{{ .Branch }}-{{checksum "package.json"}}
           paths:
