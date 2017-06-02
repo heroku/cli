@@ -1,0 +1,117 @@
+#!/bin/bash
+
+set -ex
+
+if [ $# -ne 1 ]; then
+  echo "USAGE: $0 CHANNEL"
+  exit 1
+fi
+
+PROJECT_ROOT=/cli
+cd $PROJECT_ROOT
+
+# set constants
+VERSION=$(node -p "require('./package.json').version")
+SHA=$(git rev-parse --short HEAD)
+DEB_VERSION="$VERSION-1"
+ROOT=/cli/tmp/apt
+CHANNEL=$1
+
+ARCHS=(x86 x64)
+for ARCH in "${ARCHS[@]}"; do
+  # set constants
+  if [ "$ARCH" == "x64" ]; then DEB_ARCH=amd64; else DEB_ARCH=i386; fi
+  DEB_BASE=heroku_${DEB_VERSION}_$DEB_ARCH
+  WORKSPACE="$ROOT/$DEB_BASE.apt"
+  DEB_FILE="$ROOT/$DEB_BASE.deb"
+
+  # prep workspace
+  rm -rf "$WORKSPACE"
+  mkdir -p "$WORKSPACE/DEBIAN"
+  mkdir -p "$WORKSPACE/usr/bin"
+  mkdir -p "$WORKSPACE/usr/lib"
+
+  # copy install to workspace
+  cp -r "tmp/build/heroku-cli-v$VERSION-$SHA-linux-$ARCH" "$WORKSPACE/usr/lib/heroku"
+
+  # add bin loader scripts
+  cat << EOF > "$WORKSPACE/usr/lib/heroku/bin/heroku"
+#!/usr/bin/env bash
+set -e
+get_script_dir () {
+  SOURCE="\${BASH_SOURCE[0]}"
+  # While \$SOURCE is a symlink, resolve it
+  while [ -h "\$SOURCE" ]; do
+    DIR="\$( cd -P "\$( dirname "\$SOURCE" )" && pwd )"
+    SOURCE="\$( readlink "\$SOURCE" )"
+    # If \$SOURCE was a relative symlink (so no "/" as prefix, need to resolve it relative to the symlink base directory
+    [[ \$SOURCE != /* ]] && SOURCE="\$DIR/\$SOURCE"
+  done
+  DIR="\$( cd -P "\$( dirname "\$SOURCE" )" && pwd )"
+  echo "\$DIR"
+}
+DIR=\$(get_script_dir)
+CLI_BINPATH=\$DIR/heroku \$DIR/node \$DIR/heroku.js "\$@"
+EOF
+  chmod +x "$WORKSPACE/usr/lib/heroku/bin/heroku"
+
+  cat << EOF > "$WORKSPACE/usr/lib/heroku/bin/heroku.js"
+const path = require('path')
+const CLI = require('cli-engine').default
+const root = path.join(__dirname, '..')
+const cli = new CLI({
+  argv: process.argv.slice(1),
+  config: {
+    root,
+    pjson: require(path.join(root, 'package.json')),
+    channel: '$CHANNEL',
+    version: '$VERSION',
+    disableUpdate: 'update the CLI with "sudo apt-get upgrade heroku"'
+  }
+})
+cli.run()
+EOF
+
+  # add debian config
+  sed -e "s/Architecture: ARCHITECTURE/Architecture: $DEB_ARCH/" resources/deb/control | \
+  sed -e "s/Version: VERSION/Version: $DEB_VERSION/" \
+  > "$WORKSPACE/DEBIAN/control"
+
+  # symlink bin
+  ln -s ../lib/heroku/bin/heroku "$WORKSPACE/usr/bin/heroku"
+
+  # reset permissions
+  chown -R root "$WORKSPACE"
+  chgrp -R root "$WORKSPACE"
+
+  # build deb package
+  dpkg --build "$WORKSPACE" "$DEB_FILE"
+  rm -rf "$WORKSPACE"
+
+done
+
+# create Package apt file
+cd $ROOT
+apt-ftparchive packages . > Packages
+gzip -c Packages > Packages.gz
+cat Packages
+
+# create Release apt file
+cd $ROOT
+apt-ftparchive -c $PROJECT_ROOT/resources/deb/apt-ftparchive.conf release . > Release
+gpg --digest-algo SHA512 -abs -u 0F1B0520 -o Release.gpg Release
+
+# ship to s3
+REMOTE_ROOT=s3://heroku-cli-assets/branches/$CHANNEL/apt
+aws s3 cp --cache-control max-age=300 "$ROOT/heroku_${DEB_VERSION}_amd64" "$REMOTE_ROOT/heroku_${DEB_VERSION}_amd64"
+aws s3 cp --cache-control max-age=300 "$ROOT/heroku_${DEB_VERSION}_i386" "$REMOTE_ROOT/heroku_${DEB_VERSION}_i386"
+# aws s3 cp --cache-control max-age=86400 "$ROOT/heroku_${DEB_VERSION}_amd64" "$REMOTE_ROOT/heroku_${DEB_VERSION}_amd64"
+# aws s3 cp --cache-control max-age=86400 "$ROOT/heroku_${DEB_VERSION}_i386" "$REMOTE_ROOT/heroku_${DEB_VERSION}_i386"
+echo "TODO ^^^"
+echo "TODO ^^^"
+echo "TODO ^^^"
+echo "TODO ^^^"
+aws s3 cp --cache-control max-age=300 "$ROOT/Release" "$REMOTE_ROOT/Release"
+aws s3 cp --cache-control max-age=300 "$ROOT/Release.gpg" "$REMOTE_ROOT/Release.gpg"
+aws s3 cp --cache-control max-age=300 "$ROOT/Packages" "$REMOTE_ROOT/Packages"
+aws s3 cp --cache-control max-age=300 "$ROOT/Packages.gz" "$REMOTE_ROOT/Packages.gz"
