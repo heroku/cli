@@ -6,9 +6,6 @@ Heroku CLI
 [![Circle CI](https://circleci.com/gh/heroku/cli/tree/master.svg?style=svg)](https://circleci.com/gh/heroku/cli/tree/master)
 [![Build status](https://ci.appveyor.com/api/projects/status/ouee3b9d7jwkjcr1/branch/master?svg=true)](https://ci.appveyor.com/project/Heroku/cli/branch/master)
 [![ISC License](https://img.shields.io/github/license/heroku/cli.svg)](https://github.com/heroku/cli/blob/master/LICENSE)
-[![Go Report Card](https://goreportcard.com/badge/github.com/heroku/cli)](https://goreportcard.com/report/github.com/heroku/cli)
-[![codebeat badge](https://codebeat.co/badges/78afe7cb-2634-490e-a450-b6edbd299fc2)](https://codebeat.co/projects/github-com-heroku-cli)
-[![codecov](https://codecov.io/gh/heroku/cli/branch/master/graph/badge.svg)](https://codecov.io/gh/heroku/cli)
 
 The Heroku CLI is used to manage Heroku apps from the command line.
 
@@ -19,7 +16,7 @@ To get started see <https://devcenter.heroku.com/start>
 Overview
 ========
 
-This is the next generation Go/Node-based Heroku CLI.  The goals of this project were to make plugins more flexible, remove Ruby as a runtime dependency, and make the CLI faster.
+This is the next generation Node-based Heroku CLI.  The goals of this project were to make plugins more flexible, remove Ruby as a runtime dependency, and make the CLI faster.
 
 It has identical functionality to the old Ruby CLI. Under the hood, it is a modular CLI made up of node.js plugins.
 
@@ -38,6 +35,8 @@ Developing
 ==========
 
 Developing the CLI locally requires node.
+
+The bulk of the code for this project lives at [heroku/cli-engine](https://github.com/heroku/cli-engine) and its dependencies.
 
 To run the CLI locally, use the `./bin/run` script.
 
