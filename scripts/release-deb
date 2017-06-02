@@ -17,6 +17,8 @@ DEB_VERSION="$VERSION-1"
 ROOT=$PROJECT_ROOT/tmp/apt
 CHANNEL=$1
 
+rm -rf $ROOT
+
 ARCHS=(x86 x64)
 for ARCH in "${ARCHS[@]}"; do
   # set constants
@@ -26,7 +28,6 @@ for ARCH in "${ARCHS[@]}"; do
   DEB_FILE="$ROOT/$DEB_BASE.deb"
 
   # prep workspace
-  rm -rf "$WORKSPACE"
   mkdir -p "$WORKSPACE/DEBIAN"
   mkdir -p "$WORKSPACE/usr/bin"
   mkdir -p "$WORKSPACE/usr/lib"
