@@ -37,4 +37,5 @@ stages:
           fi
           if [ "${CIRCLE_BRANCH}" == "deb" ]; then
             yarn run release dev
+            ./scripts/release-deb dev
           fi
