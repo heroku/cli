@@ -2,41 +2,53 @@
   "name": "heroku-status",
   "description": "CLI Plugin for Heroku Status",
   "version": "3.0.10",
-  "author": "Raul Barroso @raulb",
+  "author": "Jeff Dickey @dickeyxxx",
   "bugs": {
     "url": "https://github.com/heroku/heroku-status/issues"
   },
   "dependencies": {
-    "co": "4.6.0",
-    "heroku-cli-util": "6.1.17",
+    "cli-engine-heroku": "0.3.5",
     "lodash.maxby": "4.6.0",
     "lodash.padend": "4.6.1",
-    "moment": "2.17.1",
-    "sprintf-js": "^1.0.3"
+    "moment": "2.18.1",
+    "sprintf-js": "1.1.1"
   },
   "devDependencies": {
-    "codeclimate-test-reporter": "0.4.0",
-    "coveralls": "2.11.16",
-    "install": "0.8.7",
-    "mocha": "3.2.0",
-    "nock": "9.0.4",
-    "nyc": "10.1.2",
-    "standard": "8.6.0",
-    "unexpected": "10.25.0"
+    "babel-eslint": "7.2.3",
+    "babel-plugin-transform-class-properties": "6.24.1",
+    "babel-plugin-transform-es2015-modules-commonjs": "6.24.1",
+    "babel-plugin-transform-flow-strip-types": "6.22.0",
+    "eslint": "3.19.0",
+    "eslint-config-standard": "10.2.1",
+    "eslint-plugin-flowtype": "2.34.0",
+    "eslint-plugin-import": "2.3.0",
+    "eslint-plugin-jest": "20.0.3",
+    "eslint-plugin-node": "5.0.0",
+    "eslint-plugin-promise": "3.5.0",
+    "eslint-plugin-standard": "3.0.1",
+    "flow-bin": "0.47.0",
+    "jest": "20.0.4",
+    "nock": "9.0.13",
+    "rimraf": "2.6.1"
   },
+  "files": [
+    "lib"
+  ],
   "homepage": "https://github.com/heroku/heroku-status",
   "keywords": [
     "heroku-plugin",
     "heroku-status"
   ],
   "license": "ISC",
-  "main": "index.js",
+  "main": "lib/index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/heroku/heroku-status"
   },
   "scripts": {
-    "coverage": "nyc report --reporter=text-lcov | codeclimate-test-reporter && nyc report --reporter=text-lcov | coveralls",
-    "test": "nyc mocha && standard"
+    "build": "babel src -d lib --ignore '*.test.js'",
+    "clean": "rimraf lib",
+    "prepare": "npm run clean && npm run build",
+    "test": "flow && jest && eslint ."
   }
 }

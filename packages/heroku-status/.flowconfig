@@ -1,0 +1,12 @@
+[ignore]
+<PROJECT_ROOT>/lib/.*
+.*/node_modules/nock.*
+
+[include]
+
+[libs]
+
+[options]
+emoji=true
+unsafe.enable_getters_and_setters=true
+suppress_comment= \\(.\\|\n\\)*flow\\$ignore

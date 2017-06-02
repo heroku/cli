@@ -1,8 +1,10 @@
-exports.topic = {
+// @flow
+
+export const topic = {
   name: 'status',
   description: 'status of the Heroku platform'
 }
 
-exports.commands = [
+export const commands = [
   require('./commands/status')
 ]
