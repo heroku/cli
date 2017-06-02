@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.8.0] - 2017-06-02
+### Fixed
+- Debug runs now include the same Heroku provided config as regular test runs (`HEROKU_TEST_RUN_ID`, `HEROKU_TEST_RUN_BRANCH` `CI_NODE_INDEX` and `CI_NODE_TOTAL`)
+
 ## [1.5.2] - 2017-04-27
 ### Changed
 - Releax engines requirements in package.json.
