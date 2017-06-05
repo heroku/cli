@@ -69,7 +69,7 @@ func updateCLI(channel string) {
 		}
 		channel = config.LockChannel
 	}
-	if channel == "stable" && (runtime.GOOS == "darwin" || runtime.GOOS == "linux") && shouldUpdateToV6() {
+	if channel == "stable" && shouldUpdateToV6() {
 		Debugln("setting update to v6 channel")
 		channel = "v6"
 	}
@@ -259,6 +259,12 @@ func deleteOldPluginsDirectory() {
 // false if ~/.local/share/heroku/v5 exists
 // 1 out of 10 chance to update to v6 otherwise
 func shouldUpdateToV6() bool {
+	if runtime.GOOS != "darwin" && runtime.GOOS != "linux" {
+		return false
+	}
+	if runtime.GOARCH == "arm" {
+		return false
+	}
 	exists, _ := FileExists(filepath.Join(ConfigHome, "v5.lock"))
 	if exists {
 		Debugln("not updating to v6, v5.lock file exists")
