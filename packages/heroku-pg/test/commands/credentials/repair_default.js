@@ -46,9 +46,9 @@ describe('pg:credentials:repair-default', () => {
 
   it('resets the credential permissions', () => {
     pg.post('/postgres/v0/databases/postgres-1/repair-default').reply(200)
-    return cmd.run({app: 'myapp', args: {}, flags: {}})
+    return cmd.run({app: 'myapp', args: {}, flags: {confirm: 'myapp'}})
     .then(() => expect(cli.stdout, 'to equal', ''))
-    .then(() => expect(cli.stderr, 'to equal', 'Resetting permissions for default role to factory settings... done\n'))
+    .then(() => expect(cli.stderr, 'to equal', 'Resetting permissions and object ownership for default role to factory settings... done\n'))
   })
 
   it('throws an error when the db is starter plan', () => {
@@ -69,6 +69,6 @@ describe('pg:credentials:repair-default', () => {
     })
 
     const err = new Error('This operation is not supported by Hobby tier databases.')
-    return expect(cmd.run({app: 'myapp', args: {}, flags: {name: ''}}), 'to be rejected with', err)
+    return expect(cmd.run({app: 'myapp', args: {}, flags: {confirm: 'myapp'}}), 'to be rejected with', err)
   })
 })
