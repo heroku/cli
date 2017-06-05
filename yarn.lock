@@ -428,7 +428,7 @@ debug@2.2.0:
   dependencies:
     ms "0.7.1"
 
-debug@2.3.3:
+debug@2.3.3, debug@^2.1.3, debug@^2.2.0:
   version "2.3.3"
   resolved "http://cli-npm.heroku.com/debug/-/debug-2.3.3/40c453e67e6e13c901ddec317af8986cda9eff8c.tgz#40c453e67e6e13c901ddec317af8986cda9eff8c"
   dependencies:
@@ -440,7 +440,7 @@ debug@2.6.0:
   dependencies:
     ms "0.7.2"
 
-debug@2.6.3, debug@^2.1.3, debug@^2.2.0:
+debug@2.6.3:
   version "2.6.3"
   resolved "http://cli-npm.heroku.com/debug/-/debug-2.6.3/0f7eb8c30965ec08c72accfa0130c8b79984141d.tgz#0f7eb8c30965ec08c72accfa0130c8b79984141d"
   dependencies:
@@ -795,9 +795,9 @@ heroku-ci@1.8.0:
     socket.io-client "^1.5.1"
     temp "^0.8.3"
 
-heroku-cli-addons@1.2.16:
-  version "1.2.16"
-  resolved "http://cli-npm.heroku.com/heroku-cli-addons/-/heroku-cli-addons-1.2.16/f4ef511179d2c1d46f73676e4d887f2c52d71efb.tgz#f4ef511179d2c1d46f73676e4d887f2c52d71efb"
+heroku-cli-addons@1.2.19, heroku-cli-addons@1.x:
+  version "1.2.19"
+  resolved "http://cli-npm.heroku.com/heroku-cli-addons/-/heroku-cli-addons-1.2.19/d19c09baa9c729ff3fcbc9e7516cf87a201428f8.tgz#d19c09baa9c729ff3fcbc9e7516cf87a201428f8"
   dependencies:
     co "4.6.0"
     co-wait "0.0.0"
@@ -812,9 +812,9 @@ heroku-cli-addons@1.2.16:
     lodash.values "4.3.0"
     printf "0.2.5"
 
-heroku-cli-addons@1.2.19, heroku-cli-addons@1.x:
-  version "1.2.19"
-  resolved "http://cli-npm.heroku.com/heroku-cli-addons/-/heroku-cli-addons-1.2.19/d19c09baa9c729ff3fcbc9e7516cf87a201428f8.tgz#d19c09baa9c729ff3fcbc9e7516cf87a201428f8"
+heroku-cli-addons@1.2.20:
+  version "1.2.20"
+  resolved "http://cli-npm.heroku.com/heroku-cli-addons/-/heroku-cli-addons-1.2.20/bfd0899916d9163a172cc1a900583143a6a08c2e.tgz#bfd0899916d9163a172cc1a900583143a6a08c2e"
   dependencies:
     co "4.6.0"
     co-wait "0.0.0"
@@ -930,16 +930,16 @@ heroku-orgs@1.6.2:
     lodash "4.17.4"
     lodash.flatten "4.4.0"
 
-heroku-pg@2.2.0:
-  version "2.2.0"
-  resolved "http://cli-npm.heroku.com/heroku-pg/-/heroku-pg-2.2.0/782592bbe95b4b0c1d6fce71ccc73c015efe1f91.tgz#782592bbe95b4b0c1d6fce71ccc73c015efe1f91"
+heroku-pg@2.2.1:
+  version "2.2.1"
+  resolved "http://cli-npm.heroku.com/heroku-pg/-/heroku-pg-2.2.1/863b9420fb3435b3ff18728e6de506a0e0c70b9b.tgz#863b9420fb3435b3ff18728e6de506a0e0c70b9b"
   dependencies:
     bytes "2.5.0"
     co "4.6.0"
     co-wait "0.0.0"
     debug "2.6.3"
     filesize "3.5.6"
-    heroku-cli-addons "1.2.16"
+    heroku-cli-addons "1.2.20"
     heroku-cli-util "6.1.17"
     lodash.capitalize "4.2.1"
     lodash.flatten "4.4.0"
