@@ -1089,9 +1089,9 @@ has-yarn@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/has-yarn/-/has-yarn-1.0.0.tgz#89e25db604b725c8f5976fff0addc921b828a5a7"
 
-heroku-cli-addons@1.2.16:
-  version "1.2.16"
-  resolved "https://registry.yarnpkg.com/heroku-cli-addons/-/heroku-cli-addons-1.2.16.tgz#f4ef511179d2c1d46f73676e4d887f2c52d71efb"
+heroku-cli-addons@1.2.20:
+  version "1.2.20"
+  resolved "https://registry.yarnpkg.com/heroku-cli-addons/-/heroku-cli-addons-1.2.20.tgz#bfd0899916d9163a172cc1a900583143a6a08c2e"
   dependencies:
     co "4.6.0"
     co-wait "0.0.0"

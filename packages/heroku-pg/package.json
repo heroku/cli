@@ -12,7 +12,7 @@
     "co-wait": "0.0.0",
     "debug": "2.6.3",
     "filesize": "3.5.6",
-    "heroku-cli-addons": "1.2.16",
+    "heroku-cli-addons": "1.2.20",
     "heroku-cli-util": "6.1.17",
     "lodash.capitalize": "4.2.1",
     "lodash.flatten": "4.4.0",
