@@ -50,7 +50,7 @@
     "heroku-pipelines": "2.1.1",
     "heroku-ps-exec": "1.0.1",
     "heroku-redis": "1.2.14",
-    "heroku-run": "3.4.10",
+    "heroku-run": "3.4.11",
     "heroku-spaces": "2.9.2",
     "heroku-status": "3.0.10"
   },
