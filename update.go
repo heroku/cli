@@ -8,6 +8,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
+	"strconv"
 	"time"
 
 	"github.com/ansel1/merry"
@@ -259,7 +260,10 @@ func deleteOldPluginsDirectory() {
 // false if ~/.local/share/heroku/v5 exists
 // 1 out of 10 chance to update to v6 otherwise
 func shouldUpdateToV6() bool {
-	if runtime.GOOS != "darwin" && runtime.GOOS != "linux" {
+	if os.Getenv("HEROKU_UPDATE") == "v6" {
+		return true
+	}
+	if runtime.GOOS != "darwin" && runtime.GOOS != "linux" && runtime.GOOS != "windows" {
 		return false
 	}
 	if runtime.GOARCH == "arm" {
@@ -270,7 +274,10 @@ func shouldUpdateToV6() bool {
 		Debugln("not updating to v6, v5.lock file exists")
 		return false
 	}
-	seed := rand.NewSource(time.Now().UnixNano())
-	r := rand.New(seed)
-	return r.Intn(100) > 90
+	n := rand.New(rand.NewSource(time.Now().UnixNano())).Intn(100)
+	Debugln("Random update number for v6: " + strconv.Itoa(n))
+	if runtime.GOOS == "windows" {
+		return n > 98
+	}
+	return n > 90
 }
