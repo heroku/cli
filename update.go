@@ -59,6 +59,14 @@ func Update(channel string) {
 	cleanTmp()
 }
 
+func runVersion() {
+	cmd := exec.Command(BinPath, "version")
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	cmd.Run()
+}
+
 func updateCLI(channel string) {
 	if Autoupdate == "no" {
 		WarnIfError(merry.Errorf("Update CLI with apt-get update && apt-get upgrade"))
@@ -79,6 +87,7 @@ func updateCLI(channel string) {
 		return
 	}
 	DownloadCLI(channel, filepath.Join(DataHome, "cli"), manifest)
+	runVersion()
 	loadNewCLI()
 }
 
