@@ -28,13 +28,13 @@ stages:
           gpg --passphrase $HEROKU_WINDOWS_SIGNING_PASS -d resources/deb/key.gpg | gpg --import
           set -ex
           TAG=`git describe --exact-match HEAD || echo NOTAG`
-          if [ "${TAG}" != "NOTAG" ]; then
-            yarn run release stable
-            ./scripts/release-deb stable
-          fi
           if [ "${CIRCLE_BRANCH}" == "master" ]; then
             yarn run release beta
             ./scripts/release-deb beta
+          fi
+          if [ "${TAG}" != "NOTAG" ]; then
+            yarn run release stable
+            ./scripts/release-deb stable
           fi
           if [ "${CIRCLE_BRANCH}" == "dev" ]; then
             yarn run release dev
