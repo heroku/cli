@@ -12,7 +12,7 @@
 
   # remove toolbelt
   rm -f /etc/apt/sources.list.d/heroku.list
-  apt-get remove -y heroku-toolbelt heroku
+  apt-get remove -y heroku-toolbelt heroku || true
 
   # add heroku repository to apt
   add-apt-repository "deb https://cli-assets.heroku.com/branches/stable/apt ./"
