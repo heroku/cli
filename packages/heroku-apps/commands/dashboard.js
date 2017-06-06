@@ -104,6 +104,12 @@ function * run (context, heroku) {
   const sortBy = require('lodash.sortby')
   const path = require('path')
 
+  if (!context.auth || !context.auth.password) {
+    let {execSync} = require('child_process')
+    execSync('heroku help', {stdio: 'inherit'})
+    return
+  }
+
   function favoriteApps () {
     return heroku.request({
       host: 'longboard.heroku.com',
