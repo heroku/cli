@@ -61,8 +61,6 @@ test:
     - ./bin/test -v -race -cover -coverprofile=coverage.out -ginkgo.v
     - make test -j $JOBZ
     - ./bin/lint
-  post:
-    - bash <(curl -s https://codecov.io/bash)
 deployment:
   stable:
     branch: v5
