@@ -38,7 +38,7 @@ stages:
             yarn run release stable
             ./scripts/release-deb stable
           fi
-          if [ "${CIRCLE_BRANCH}" == "dev" ]; then
+          if [ "${CIRCLE_BRANCH}" == "inrelease" ]; then
             yarn run release dev
             ./scripts/release-deb dev
           fi
