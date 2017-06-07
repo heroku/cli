@@ -253,13 +253,28 @@ cli-engine-command@4.1.2:
     string "3.x"
     supports-color "3.x"
 
+cli-engine-command@^5.0.0:
+  version "5.0.0"
+  resolved "http://cli-npm.heroku.com/cli-engine-command/-/cli-engine-command-5.0.0/b7be811307e9cdf59f85f041311e1934152d96ec.tgz#b7be811307e9cdf59f85f041311e1934152d96ec"
+  dependencies:
+    ansi-escapes "2.x"
+    cardinal "1.x"
+    chalk "1.x"
+    fs-extra "3.x"
+    http-call "1.1.2"
+    lodash.maxby "4.x"
+    lodash.merge "4.x"
+    netrc-parser "2.0.2"
+    string "3.x"
+    supports-color "3.x"
+
 cli-engine-config@1.1.4:
   version "1.1.4"
   resolved "http://cli-npm.heroku.com/cli-engine-config/-/cli-engine-config-1.1.4/4f634cc02cb62d1f6d177736fff7fb01b866a2b1.tgz#4f634cc02cb62d1f6d177736fff7fb01b866a2b1"
   dependencies:
     uuid "3.0.1"
 
-cli-engine-config@1.3.5:
+cli-engine-config@1.3.5, cli-engine-config@^1.3.5:
   version "1.3.5"
   resolved "http://cli-npm.heroku.com/cli-engine-config/-/cli-engine-config-1.3.5/dfd72673a98e8e1aa7129409164b9f1836a9c300.tgz#dfd72673a98e8e1aa7129409164b9f1836a9c300"
   dependencies:
@@ -279,6 +294,13 @@ cli-engine-heroku@0.3.7:
   dependencies:
     heroku-client "3.x"
     lodash.merge "4.x"
+
+cli-engine-heroku@^1.0.0:
+  version "1.0.0"
+  resolved "http://cli-npm.heroku.com/cli-engine-heroku/-/cli-engine-heroku-1.0.0/de4bad35a819ee6ecfda3db22ecc6756206f6c1f.tgz#de4bad35a819ee6ecfda3db22ecc6756206f6c1f"
+  dependencies:
+    heroku-client "3.x"
+    netrc-parser "2.0.2"
 
 cli-engine@3.5.4:
   version "3.5.4"
@@ -816,6 +838,18 @@ heroku-cli-oauth@2.0.13:
     heroku-cli-util "6.1.17"
     lodash "4.17.4"
 
+heroku-cli-status@4.0.0:
+  version "4.0.0"
+  resolved "http://cli-npm.heroku.com/heroku-cli-status/-/heroku-cli-status-4.0.0/80399d5c355ed3af4df300395cfb9132d5e06f43.tgz#80399d5c355ed3af4df300395cfb9132d5e06f43"
+  dependencies:
+    cli-engine-command "^5.0.0"
+    cli-engine-config "^1.3.5"
+    cli-engine-heroku "^1.0.0"
+    lodash.maxby "^4.6.0"
+    lodash.padend "^4.6.1"
+    moment "^2.18.1"
+    sprintf-js "^1.1.1"
+
 heroku-cli-util@6.1.17, heroku-cli-util@6.x, heroku-cli-util@^6.0.15, heroku-cli-util@^6.1.17:
   version "6.1.17"
   resolved "http://cli-npm.heroku.com/heroku-cli-util/-/heroku-cli-util-6.1.17/3d1e5eb62f2a7e73053b4768054cc6df14b4d578.tgz#3d1e5eb62f2a7e73053b4768054cc6df14b4d578"
@@ -981,17 +1015,6 @@ heroku-spaces@2.9.2:
     lodash.reduce "^4.6.0"
     lodash.sortby "^4.7.0"
     strftime "^0.10.0"
-
-heroku-status@3.0.10:
-  version "3.0.10"
-  resolved "http://cli-npm.heroku.com/heroku-status/-/heroku-status-3.0.10/9d7bb4bc176620a57ee426eaa6c0ea98b51765b6.tgz#9d7bb4bc176620a57ee426eaa6c0ea98b51765b6"
-  dependencies:
-    co "4.6.0"
-    heroku-cli-util "6.1.17"
-    lodash.maxby "4.6.0"
-    lodash.padend "4.6.1"
-    moment "2.17.1"
-    sprintf-js "^1.0.3"
 
 hoek@2.x.x:
   version "2.16.3"
@@ -1289,7 +1312,7 @@ lodash.mapvalues@4.6.0:
   version "4.6.0"
   resolved "http://cli-npm.heroku.com/lodash.mapvalues/-/lodash.mapvalues-4.6.0/1bafa5005de9dd6f4f26668c30ca37230cc9689c.tgz#1bafa5005de9dd6f4f26668c30ca37230cc9689c"
 
-lodash.maxby@4.6.0, lodash.maxby@4.x:
+lodash.maxby@4.6.0, lodash.maxby@4.x, lodash.maxby@^4.6.0:
   version "4.6.0"
   resolved "http://cli-npm.heroku.com/lodash.maxby/-/lodash.maxby-4.6.0/082240068f3c7a227aa00a8380e4f38cf0786e3d.tgz#082240068f3c7a227aa00a8380e4f38cf0786e3d"
 
@@ -1313,7 +1336,7 @@ lodash.pad@4.5.1:
   version "4.5.1"
   resolved "http://cli-npm.heroku.com/lodash.pad/-/lodash.pad-4.5.1/4330949a833a7c8da22cc20f6a26c4d59debba70.tgz#4330949a833a7c8da22cc20f6a26c4d59debba70"
 
-lodash.padend@4.6.1:
+lodash.padend@^4.6.1:
   version "4.6.1"
   resolved "http://cli-npm.heroku.com/lodash.padend/-/lodash.padend-4.6.1/53ccba047d06e158d311f45da625f4e49e6f166e.tgz#53ccba047d06e158d311f45da625f4e49e6f166e"
 
@@ -1447,6 +1470,10 @@ mkdirp@0.5.1, "mkdirp@>=0.5 0", mkdirp@^0.5.0, mkdirp@^0.5.1:
 moment@2.17.1, moment@2.x:
   version "2.17.1"
   resolved "http://cli-npm.heroku.com/moment/-/moment-2.17.1/fed9506063f36b10f066c8b59a144d7faebe1d82.tgz#fed9506063f36b10f066c8b59a144d7faebe1d82"
+
+moment@^2.18.1:
+  version "2.18.1"
+  resolved "http://cli-npm.heroku.com/moment/-/moment-2.18.1/c36193dd3ce1c2eed2adb7c802dbbc77a81b1c0f.tgz#c36193dd3ce1c2eed2adb7c802dbbc77a81b1c0f"
 
 ms@0.7.1:
   version "0.7.1"
@@ -1861,7 +1888,7 @@ sparkline@0.1.2:
     here "0.0.2"
     nopt "~2.1.2"
 
-sprintf-js@^1.0.3:
+sprintf-js@^1.1.1:
   version "1.1.1"
   resolved "http://cli-npm.heroku.com/sprintf-js/-/sprintf-js-1.1.1/36be78320afe5801f6cea3ee78b6e5aab940ea0c.tgz#36be78320afe5801f6cea3ee78b6e5aab940ea0c"
 

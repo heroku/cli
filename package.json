@@ -22,6 +22,7 @@
       "heroku-ci",
       "heroku-cli-addons",
       "heroku-cli-oauth",
+      "heroku-cli-status",
       "heroku-fork",
       "heroku-git",
       "heroku-local",
@@ -31,8 +32,7 @@
       "heroku-ps-exec",
       "heroku-redis",
       "heroku-run",
-      "heroku-spaces",
-      "heroku-status"
+      "heroku-spaces"
     ]
   },
   "dependencies": {
@@ -42,6 +42,7 @@
     "heroku-ci": "1.8.0",
     "heroku-cli-addons": "1.2.20",
     "heroku-cli-oauth": "2.0.13",
+    "heroku-cli-status": "4.0.0",
     "heroku-fork": "4.1.22",
     "heroku-git": "2.5.17",
     "heroku-local": "5.1.16",
@@ -51,8 +52,7 @@
     "heroku-ps-exec": "1.0.1",
     "heroku-redis": "1.2.14",
     "heroku-run": "3.4.11",
-    "heroku-spaces": "2.9.2",
-    "heroku-status": "3.0.10"
+    "heroku-spaces": "2.9.2"
   },
   "files": [
     "bin"
