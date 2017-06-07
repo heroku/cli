@@ -1,10 +1,10 @@
-CLI Plugin for [Heroku Status](https://status.heroku.com) [![Circle CI](https://circleci.com/gh/heroku/heroku-status.svg?style=svg)](https://circleci.com/gh/heroku/heroku-status)
+CLI Plugin for [Heroku Status](https://status.heroku.com) [![Circle CI](https://circleci.com/gh/heroku/heroku-cli-status.svg?style=svg)](https://circleci.com/gh/heroku/heroku-cli-status)
 ===========
 
-[![Code Climate](https://codeclimate.com/github/heroku/heroku-status/badges/gpa.svg)](https://codeclimate.com/github/heroku/heroku-status)
-[![Test Coverage](https://codeclimate.com/github/heroku/heroku-status/badges/coverage.svg)](https://codeclimate.com/github/heroku/heroku-status/coverage)
-[![npm version](https://badge.fury.io/js/heroku-status.svg)](https://badge.fury.io/js/heroku-status)
-[![License](https://img.shields.io/github/license/heroku/heroku-status.svg)](https://github.com/heroku/heroku-status/blob/master/LICENSE)
+[![Code Climate](https://codeclimate.com/github/heroku/heroku-cli-status/badges/gpa.svg)](https://codeclimate.com/github/heroku/heroku-cli-status)
+[![Test Coverage](https://codeclimate.com/github/heroku/heroku-cli-status/badges/coverage.svg)](https://codeclimate.com/github/heroku/heroku-cli-status/coverage)
+[![npm version](https://badge.fury.io/js/heroku-cli-status.svg)](https://badge.fury.io/js/heroku-cli-status)
+[![License](https://img.shields.io/github/license/heroku/heroku-cli-status.svg)](https://github.com/heroku/heroku-cli-status/blob/master/LICENSE)
 
 [![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)
 
@@ -14,11 +14,7 @@ Read more about Toolbelt 4.0 plugins [here](https://github.com/heroku/heroku-hel
 How to install this plugin
 -------------------
 
-**Note: These Node.js plugins are available in the current Ruby CLI. No need to download a separate Toolbelt 4.0 CLI.**
-
-```
-$ heroku plugins:install heroku-status
-```
+This CLI comes built into the Heroku CLI. https://cli.heroku.com
 
 Available commands
 -------------------
