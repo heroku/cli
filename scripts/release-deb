@@ -99,7 +99,7 @@ gzip -c Packages > Packages.gz
 # create Release apt file
 cd $ROOT
 apt-ftparchive -c $PROJECT_ROOT/resources/deb/apt-ftparchive.conf release . > Release
-gpg --clearsign -u 0F1B0520 -o InRelease Release
+gpg --digest-algo SHA512 --clearsign -u 0F1B0520 -o InRelease Release
 gpg --digest-algo SHA512 -abs -u 0F1B0520 -o Release.gpg Release
 
 # ship to s3
