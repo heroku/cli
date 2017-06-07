@@ -280,9 +280,9 @@ cli-engine-heroku@0.3.7:
     heroku-client "3.x"
     lodash.merge "4.x"
 
-cli-engine@3.5.3:
-  version "3.5.3"
-  resolved "http://cli-npm.heroku.com/cli-engine/-/cli-engine-3.5.3/e891eab3a818c650d9641158c3d3c05f5796f7d1.tgz#e891eab3a818c650d9641158c3d3c05f5796f7d1"
+cli-engine@3.5.4:
+  version "3.5.4"
+  resolved "http://cli-npm.heroku.com/cli-engine/-/cli-engine-3.5.4/4274296c8906210e8801f188cab4a6866c63509d.tgz#4274296c8906210e8801f188cab4a6866c63509d"
   dependencies:
     cli-engine-command "4.1.2"
     cli-engine-config "1.3.5"
