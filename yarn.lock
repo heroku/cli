@@ -238,9 +238,9 @@ cli-engine-command@4.0.3:
     string "3.3.3"
     supports-color "^3.2.3"
 
-cli-engine-command@4.1.0:
-  version "4.1.0"
-  resolved "http://cli-npm.heroku.com/cli-engine-command/-/cli-engine-command-4.1.0/5bd33280aa5882e053fdc5412981b5caf05672d7.tgz#5bd33280aa5882e053fdc5412981b5caf05672d7"
+cli-engine-command@4.1.2:
+  version "4.1.2"
+  resolved "http://cli-npm.heroku.com/cli-engine-command/-/cli-engine-command-4.1.2/be6fbfc876e7eb4d0498945a02cf66e560bcc044.tgz#be6fbfc876e7eb4d0498945a02cf66e560bcc044"
   dependencies:
     ansi-escapes "2.x"
     cardinal "1.x"
@@ -280,11 +280,11 @@ cli-engine-heroku@0.3.7:
     heroku-client "3.x"
     lodash.merge "4.x"
 
-cli-engine@3.5.2:
-  version "3.5.2"
-  resolved "http://cli-npm.heroku.com/cli-engine/-/cli-engine-3.5.2/1dff4d5fc05adaee46844b5963ce809a1f81f80f.tgz#1dff4d5fc05adaee46844b5963ce809a1f81f80f"
+cli-engine@3.5.3:
+  version "3.5.3"
+  resolved "http://cli-npm.heroku.com/cli-engine/-/cli-engine-3.5.3/e891eab3a818c650d9641158c3d3c05f5796f7d1.tgz#e891eab3a818c650d9641158c3d3c05f5796f7d1"
   dependencies:
-    cli-engine-command "4.1.0"
+    cli-engine-command "4.1.2"
     cli-engine-config "1.3.5"
     cli-engine-heroku "0.3.7"
     debug "2.x"
