@@ -1,0 +1,19 @@
+
+name: heroku
+version: '6.9.6'
+summary: Heroku CLI
+description: Heroku CLI
+grade: stable
+confinement: strict
+
+apps:
+    heroku:
+        command: bin/heroku
+        plugs: [network]
+
+parts:
+  hello-node-snap:
+    plugin: nodejs
+    node-engine: 7.10.0
+    node-packages:
+      - heroku-cli
