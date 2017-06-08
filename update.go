@@ -272,11 +272,8 @@ func shouldUpdateToV6() bool {
 	if os.Getenv("HEROKU_UPDATE") == "v6" {
 		return true
 	}
-	if runtime.GOOS != "darwin" && runtime.GOOS != "linux" && runtime.GOOS != "windows" {
-		return false
-	}
-	if runtime.GOARCH == "arm" {
-		return false
+	if runtime.GOOS == "darwin" || runtime.GOOS == "linux" {
+		return true
 	}
 	exists, _ := FileExists(filepath.Join(ConfigHome, "v5.lock"))
 	if exists {
@@ -285,9 +282,6 @@ func shouldUpdateToV6() bool {
 	}
 	n := rand.New(rand.NewSource(time.Now().UnixNano())).Intn(100)
 	Debugln("Random update number for v6: " + strconv.Itoa(n))
-	if runtime.GOOS == "windows" {
-		return false
-		// return n > 98
-	}
-	return n > 90
+	return false
+	// return n > 98
 }
