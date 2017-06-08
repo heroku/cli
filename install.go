@@ -20,8 +20,8 @@ func Install(channel string) {
 		return
 	}
 	os := runtime.GOOS
-	if os == "windows" {
-		os = "win32"
+	if os == "win32" {
+		os = "windows"
 	}
 	arch := runtime.GOARCH
 	if arch == "amd64" {
