@@ -78,13 +78,15 @@ describe('fetcher', () => {
         body: {'id': 'multiple_matches'},
         matches: [
           {addon: {id: 100, name: 'postgres-1', app: addonApp}, app, config_vars: ['FOO_URL']},
-          {addon: {id: 100, name: 'postgres-1', app: addonApp}, app, config_vars: ['BAR_URL']}
+          {addon: {id: 100, name: 'postgres-1', app: addonApp}, app, config_vars: ['BAR_URL']},
+          {addon: {id: 100, name: 'postgres-1', app: addonApp}, app, namespace: 'credential:something', config_vars: ['CRED_URL']}
         ]
       }))
 
       api.get('/apps/myapp/config-vars').reply(200, {
         'FOO_URL': 'postgres://pguser:pgpass@pghost.com/pgdb',
-        'BAR_URL': 'postgres://pguser:pgpass@pghost.com/pgdb'
+        'BAR_URL': 'postgres://pguser:pgpass@pghost.com/pgdb',
+        'CRED_URL': 'postgres://pguser:pgpass@pghost.com/pgdb'
       })
 
       return fetcher(new Heroku()).database('myapp', 'DATABASE_URL')
@@ -99,13 +101,15 @@ describe('fetcher', () => {
         body: {'id': 'multiple_matches'},
         matches: [
           {addon: {id: 100, name: 'postgres-1', app: addonApp}, app: attachApp, config_vars: ['FOO_URL']},
-          {addon: {id: 100, name: 'postgres-1', app: addonApp}, app: attachApp, config_vars: ['BAR_URL']}
+          {addon: {id: 100, name: 'postgres-1', app: addonApp}, app: attachApp, config_vars: ['BAR_URL']},
+          {addon: {id: 100, name: 'postgres-1', app: addonApp}, app: attachApp, namespace: 'credential:something', config_vars: ['CRED_URL']}
         ]
       }))
 
       api.get('/apps/attach-app/config-vars').reply(200, {
         'FOO_URL': 'postgres://pguser:pgpass@pghost.com/pgdb',
-        'BAR_URL': 'postgres://pguser:pgpass@pghost.com/pgdb'
+        'BAR_URL': 'postgres://pguser:pgpass@pghost.com/pgdb',
+        'CRED_URL': 'postgres://pguser:pgpass@pghost.com/pgdb'
       })
 
       return fetcher(new Heroku()).database('myapp', 'DATABASE_URL')
@@ -120,14 +124,16 @@ describe('fetcher', () => {
         body: {'id': 'multiple_matches'},
         matches: [
           {addon: {id: 100, name: 'postgres-1', app: addonApp}, app, config_vars: ['FOO_URL']},
-          {addon: {id: 100, name: 'postgres-1', app: addonApp}, app, config_vars: ['BAR_URL']}
+          {addon: {id: 100, name: 'postgres-1', app: addonApp}, app, config_vars: ['BAR_URL']},
+          {addon: {id: 100, name: 'postgres-1', app: addonApp}, app, namespace: 'credential:something', config_vars: ['CRED_URL']}
         ]
       }
       stub.withArgs(sinon.match.any, 'myapp', 'DATABASE_URL').returns(Promise.reject(err))
 
       api.get('/apps/myapp/config-vars').reply(200, {
         'FOO_URL': 'postgres://pguser:pgpass@pghost.com/pgdb1',
-        'BAR_URL': 'postgres://pguser:pgpass@pghost.com/pgdb2'
+        'BAR_URL': 'postgres://pguser:pgpass@pghost.com/pgdb2',
+        'CRED_URL': 'postgres://pguser:pgpass@pghost.com/pgdb'
       })
 
       return expect(fetcher(new Heroku()).database('myapp', 'DATABASE_URL'), 'to be rejected with', err)

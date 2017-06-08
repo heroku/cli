@@ -58,6 +58,7 @@ module.exports = heroku => {
         throw new Error(`${cli.color.app(app)} has no databases`)
       }
 
+      attachments = attachments.filter(a => !a.hasOwnProperty('namespace') || a.namespace === null)
       matches = attachments.filter(attachment => config[db] && config[db] === config[pgUtil.getUrl(attachment.config_vars)])
 
       if (matches.length === 0) {
