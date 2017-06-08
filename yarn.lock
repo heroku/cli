@@ -238,7 +238,7 @@ cli-engine-command@4.0.3:
     string "3.3.3"
     supports-color "^3.2.3"
 
-cli-engine-command@5.0.3:
+cli-engine-command@5.0.3, cli-engine-command@^5.0.0:
   version "5.0.3"
   resolved "http://cli-npm.heroku.com/cli-engine-command/-/cli-engine-command-5.0.3/db682e34f5b21efc78c143755953037f56611ea1.tgz#db682e34f5b21efc78c143755953037f56611ea1"
   dependencies:
@@ -252,36 +252,15 @@ cli-engine-command@5.0.3:
     string "3.x"
     supports-color "3.x"
 
-cli-engine-command@^5.0.0:
-  version "5.0.0"
-  resolved "http://cli-npm.heroku.com/cli-engine-command/-/cli-engine-command-5.0.0/b7be811307e9cdf59f85f041311e1934152d96ec.tgz#b7be811307e9cdf59f85f041311e1934152d96ec"
-  dependencies:
-    ansi-escapes "2.x"
-    cardinal "1.x"
-    chalk "1.x"
-    fs-extra "3.x"
-    http-call "1.1.2"
-    lodash.maxby "4.x"
-    lodash.merge "4.x"
-    netrc-parser "2.0.2"
-    string "3.x"
-    supports-color "3.x"
-
 cli-engine-config@1.1.4:
   version "1.1.4"
   resolved "http://cli-npm.heroku.com/cli-engine-config/-/cli-engine-config-1.1.4/4f634cc02cb62d1f6d177736fff7fb01b866a2b1.tgz#4f634cc02cb62d1f6d177736fff7fb01b866a2b1"
   dependencies:
     uuid "3.0.1"
 
-cli-engine-config@1.3.7:
+cli-engine-config@1.3.7, cli-engine-config@^1.3.5:
   version "1.3.7"
   resolved "http://cli-npm.heroku.com/cli-engine-config/-/cli-engine-config-1.3.7/f95c5819e2bd46851e02425ad1100533babb9ca1.tgz#f95c5819e2bd46851e02425ad1100533babb9ca1"
-  dependencies:
-    uuid "3.x"
-
-cli-engine-config@^1.3.5:
-  version "1.3.5"
-  resolved "http://cli-npm.heroku.com/cli-engine-config/-/cli-engine-config-1.3.5/dfd72673a98e8e1aa7129409164b9f1836a9c300.tgz#dfd72673a98e8e1aa7129409164b9f1836a9c300"
   dependencies:
     uuid "3.x"
 
@@ -293,16 +272,9 @@ cli-engine-heroku@0.3.2:
     heroku-client "3.0.2"
     lodash.merge "4.6.0"
 
-cli-engine-heroku@1.1.0:
+cli-engine-heroku@1.1.0, cli-engine-heroku@^1.0.0:
   version "1.1.0"
   resolved "http://cli-npm.heroku.com/cli-engine-heroku/-/cli-engine-heroku-1.1.0/27ac30643e6d480fbff577b269e533df0ba180b8.tgz#27ac30643e6d480fbff577b269e533df0ba180b8"
-  dependencies:
-    heroku-client "3.x"
-    netrc-parser "2.0.2"
-
-cli-engine-heroku@^1.0.0:
-  version "1.0.0"
-  resolved "http://cli-npm.heroku.com/cli-engine-heroku/-/cli-engine-heroku-1.0.0/de4bad35a819ee6ecfda3db22ecc6756206f6c1f.tgz#de4bad35a819ee6ecfda3db22ecc6756206f6c1f"
   dependencies:
     heroku-client "3.x"
     netrc-parser "2.0.2"
@@ -468,13 +440,13 @@ debug@2.6.0:
   dependencies:
     ms "0.7.2"
 
-debug@2.6.3, debug@2.x, debug@^2.1.3, debug@^2.2.0:
+debug@2.6.3, debug@2.x, debug@^2.1.3:
   version "2.6.3"
   resolved "http://cli-npm.heroku.com/debug/-/debug-2.6.3/0f7eb8c30965ec08c72accfa0130c8b79984141d.tgz#0f7eb8c30965ec08c72accfa0130c8b79984141d"
   dependencies:
     ms "0.7.2"
 
-debug@^2.6.8:
+debug@^2.2.0, debug@^2.6.8:
   version "2.6.8"
   resolved "http://cli-npm.heroku.com/debug/-/debug-2.6.8/e731531ca2ede27d188222427da17821d68ff4fc.tgz#e731531ca2ede27d188222427da17821d68ff4fc"
   dependencies:
