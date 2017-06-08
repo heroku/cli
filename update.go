@@ -286,7 +286,8 @@ func shouldUpdateToV6() bool {
 	n := rand.New(rand.NewSource(time.Now().UnixNano())).Intn(100)
 	Debugln("Random update number for v6: " + strconv.Itoa(n))
 	if runtime.GOOS == "windows" {
-		return n > 98
+		return false
+		// return n > 98
 	}
 	return n > 90
 }
