@@ -142,31 +142,6 @@ $(DIST_DIR)/$(PREVIOUS_VERSION)/heroku-v$(PREVIOUS_VERSION)-%.patch: $(DIST_DIR)
 	@mkdir -p $(@D)
 	$(WORKSPACE)/bin/heroku build:bsdiff --new $< --channel $(CHANNEL) --target $* --out $@
 
-DEB_VERSION:=$(firstword $(subst -, ,$(VERSION)))-1
-DEB_BASE:=heroku_$(DEB_VERSION)
-$(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_%.deb: tmp/debian-%
-	@mkdir -p tmp/$(DEB_BASE)_$*.apt/DEBIAN
-	@mkdir -p tmp/$(DEB_BASE)_$*.apt/usr/bin
-	@mkdir -p tmp/$(DEB_BASE)_$*.apt/usr/lib
-	sed -e "s/Architecture: ARCHITECTURE/Architecture: $(if $(filter amd64,$*),amd64,$(if $(filter 386,$*),i386,armel))/" resources/deb/control | \
-	  sed -e "s/Version: VERSION/Version: $(DEB_VERSION)/" \
-		> tmp/$(DEB_BASE)_$*.apt/DEBIAN/control
-	cp -r tmp/debian-$*/heroku tmp/$(DEB_BASE)_$*.apt/usr/lib/
-	ln -s ../lib/heroku/bin/heroku tmp/$(DEB_BASE)_$*.apt/usr/bin/heroku
-	sudo chown -R root tmp/$(DEB_BASE)_$*.apt
-	sudo chgrp -R root tmp/$(DEB_BASE)_$*.apt
-	mkdir -p $(@D)
-	dpkg --build tmp/$(DEB_BASE)_$*.apt $@
-	sudo rm -rf tmp/$(DEB_BASE)_$*.apt
-
-$(DIST_DIR)/$(VERSION)/apt/Packages: $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_amd64.deb $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_386.deb $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_arm.deb
-	cd $(@D) && apt-ftparchive packages . > Packages
-	gzip -c $@ > $@.gz
-
-$(DIST_DIR)/$(VERSION)/apt/Release: $(DIST_DIR)/$(VERSION)/apt/Packages
-	cd $(@D) && apt-ftparchive -c ../../../resources/deb/apt-ftparchive.conf release . > Release
-	@gpg --digest-algo SHA512 -abs -u 0F1B0520 -o $@.gpg $@
-
 $(CACHE_DIR)/git/Git-2.8.1-386.exe:
 	@mkdir -p $(CACHE_DIR)/git
 	curl -fsSLo $@ https://cli-assets.heroku.com/git/Git-2.8.1-32-bit.exe
@@ -239,19 +214,13 @@ darwin: tmp/darwin-amd64
 tmp/darwin-amd64: $(TARGET_DEPS) tmp/$$(OS)-$$(ARCH)/heroku/lib/node $(STANDALONE_FILES)
 
 LINUX_TARGETS  := tmp/linux-amd64 tmp/linux-386 tmp/linux-arm
-DEBIAN_TARGETS := tmp/debian-amd64 tmp/debian-386 tmp/debian-arm
-tmp/linux-% tmp/debian-%j:      OS    := linux
-tmp/linux-arm tmp/debian-arm:   GOARM := 6
-tmp/linux-386 tmp/debian-386:   GO386 := 387
-tmp/debian-%: AUTOUPDATE := no
-tmp/debian-%: OS         := debian
-tmp/debian-%: NODE_OS    := linux
-tmp/debian-%: GOOS       := linux
-.PHONY: linux debian
+tmp/linux-%:      OS    := linux
+tmp/linux-arm:   GOARM := 6
+tmp/linux-386:   GO386 := 387
+.PHONY: linux
 linux: $(LINUX_TARGETS)
-debian: $(DEBIAN_TARGETS)
 $(LINUX_TARGETS): $(STANDALONE_FILES)
-$(LINUX_TARGETS) $(DEBIAN_TARGETS): $(TARGET_DEPS) tmp/$$(OS)-$$(ARCH)/heroku/lib/node
+$(LINUX_TARGETS): $(TARGET_DEPS) tmp/$$(OS)-$$(ARCH)/heroku/lib/node
 
 FREEBSD_TARGETS := tmp/freebsd-amd64 tmp/freebsd-386
 tmp/freebsd-%: OS := freebsd
@@ -311,22 +280,9 @@ distosx: $(DIST_DIR)/$(CHANNEL)/$(VERSION)/heroku-osx.pkg
 releaseosx: $(DIST_DIR)/$(CHANNEL)/$(VERSION)/heroku-osx.pkg
 	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(CHANNEL)/$(VERSION)/heroku-osx.pkg s3://heroku-cli-assets/branches/$(CHANNEL)/heroku-osx.pkg
 
-.PHONY: distdeb
-distdeb: $(DIST_DIR)/$(VERSION)/apt/Packages $(DIST_DIR)/$(VERSION)/apt/Release
-
 .PHONY: release
-release: releasewin releasedeb releasetxz releasetgz
+release: releasewin releasetxz releasetgz
 	@if type cowsay >/dev/null 2>&1; then cowsay -f stegosaurus Released $(CHANNEL)/$(VERSION); fi;
-
-.PHONY: releasedeb
-releasedeb: $(DIST_DIR)/$(VERSION)/apt/Packages $(DIST_DIR)/$(VERSION)/apt/Release
-	aws s3 cp --cache-control max-age=86400 $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_amd64.deb s3://heroku-cli-assets/branches/$(CHANNEL)/apt/$(DEB_BASE)_amd64.deb
-	aws s3 cp --cache-control max-age=86400 $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_386.deb s3://heroku-cli-assets/branches/$(CHANNEL)/apt/$(DEB_BASE)_386.deb
-	aws s3 cp --cache-control max-age=86400 $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_arm.deb s3://heroku-cli-assets/branches/$(CHANNEL)/apt/$(DEB_BASE)_arm.deb
-	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/apt/Packages s3://heroku-cli-assets/branches/$(CHANNEL)/apt/Packages
-	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/apt/Packages.gz s3://heroku-cli-assets/branches/$(CHANNEL)/apt/Packages.gz
-	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/apt/Release s3://heroku-cli-assets/branches/$(CHANNEL)/apt/Release
-	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/apt/Release.gpg s3://heroku-cli-assets/branches/$(CHANNEL)/apt/Release.gpg
 
 .PHONY: releasewin
 releasewin: $(DIST_DIR)/$(VERSION)/heroku-windows-amd64.exe $(DIST_DIR)/$(VERSION)/heroku-windows-386.exe
