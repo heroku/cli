@@ -273,9 +273,9 @@ cli-engine-config@1.1.4:
   dependencies:
     uuid "3.0.1"
 
-cli-engine-config@1.3.6:
-  version "1.3.6"
-  resolved "http://cli-npm.heroku.com/cli-engine-config/-/cli-engine-config-1.3.6/c5b0a2650d95a91ca91672aecba9bdac059b7a25.tgz#c5b0a2650d95a91ca91672aecba9bdac059b7a25"
+cli-engine-config@1.3.7:
+  version "1.3.7"
+  resolved "http://cli-npm.heroku.com/cli-engine-config/-/cli-engine-config-1.3.7/f95c5819e2bd46851e02425ad1100533babb9ca1.tgz#f95c5819e2bd46851e02425ad1100533babb9ca1"
   dependencies:
     uuid "3.x"
 
@@ -307,12 +307,12 @@ cli-engine-heroku@^1.0.0:
     heroku-client "3.x"
     netrc-parser "2.0.2"
 
-cli-engine@3.5.6:
-  version "3.5.6"
-  resolved "http://cli-npm.heroku.com/cli-engine/-/cli-engine-3.5.6/1499ce00bc970aaff235f066c4bca50eb0977263.tgz#1499ce00bc970aaff235f066c4bca50eb0977263"
+cli-engine@3.5.8:
+  version "3.5.8"
+  resolved "http://cli-npm.heroku.com/cli-engine/-/cli-engine-3.5.8/b7455604b3521d153e5a40263ca6d2a642b3e2f8.tgz#b7455604b3521d153e5a40263ca6d2a642b3e2f8"
   dependencies:
     cli-engine-command "5.0.3"
-    cli-engine-config "1.3.6"
+    cli-engine-config "1.3.7"
     cli-engine-heroku "1.1.0"
     debug "2.x"
     fs-extra "3.x"
