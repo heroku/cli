@@ -22,7 +22,7 @@ const appAddon = function (heroku, app, id, options = {}) {
     'headers': headers,
     'body': {'app': app, 'addon': id, 'addon_service': options.addon_service}
   })
-  .then(singularize('addon'))
+  .then(singularize('addon', options.namespace))
 }
 
 const handleNotFound = function (err, resource) {
@@ -43,7 +43,7 @@ const addonResolver = function (heroku, app, id, options = {}) {
       'headers': headers,
       'body': {'app': null, 'addon': id, 'addon_service': options.addon_service}
     })
-    .then(singularize('addon'))
+    .then(singularize('addon', options.namespace))
   }
 
   if (!app || id.includes('::')) return getAddon(id)
@@ -102,9 +102,14 @@ function AmbiguousError (matches, type) {
   this.type = type
 }
 
-const singularize = function (type) {
+const singularize = function (type, namespace) {
   return (matches) => {
-    matches = matches.filter(m => !m.hasOwnProperty('namespace') || m.namespace === null)
+    if (namespace) {
+      matches = matches.filter(m => m.namespace === namespace)
+    } else if (matches.length > 1) {
+      // In cases that aren't specific enough, filter by namespace
+      matches = matches.filter(m => !m.hasOwnProperty('namespace') || m.namespace === null)
+    }
     switch (matches.length) {
       case 0:
         throw new NotFound()
@@ -121,14 +126,14 @@ exports.attachment = function (heroku, app, id, options = {}) {
   function getAttachment (id) {
     return heroku.post('/actions/addon-attachments/resolve', {
       'headers': headers, 'body': {'app': null, 'addon_attachment': id, 'addon_service': options.addon_service}
-    }).then(singularize('addon_attachment'))
+    }).then(singularize('addon_attachment', options.namespace))
       .catch(function (err) { handleNotFound(err, 'add_on attachment') })
   }
 
   function getAppAddonAttachment (addon, app) {
     return heroku.get(`/addons/${encodeURIComponent(addon.id)}/addon-attachments`, {headers})
       .then(filter(app, options.addon_service))
-      .then(singularize('addon_attachment'))
+      .then(singularize('addon_attachment', options.namespace))
   }
 
   let promise
@@ -174,7 +179,7 @@ const appAttachment = function (heroku, app, id, options = {}) {
   const headers = attachmentHeaders()
   return heroku.post('/actions/addon-attachments/resolve', {
     'headers': headers, 'body': {'app': app, 'addon_attachment': id, 'addon_service': options.addon_service}
-  }).then(singularize('addon_attachment'))
+  }).then(singularize('addon_attachment', options.namespace))
 }
 
 exports.appAttachment = appAttachment

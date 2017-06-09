@@ -96,7 +96,7 @@ describe('resolve', () => {
         .then(() => { api.done() })
     })
 
-    it('finds the addon with null namespace for an app', () => {
+    it('finds the addon with null namespace for an app if no namespace is specified', () => {
       let api = nock('https://api.heroku.com:443')
         .post('/actions/addons/resolve', {'app': 'myapp', 'addon': 'myaddon-1'})
         .reply(200, [{'name': 'myaddon-1', 'namespace': null}, {'name': 'myaddon-1b', 'namespace': 'definitely-not-null'}])
@@ -106,10 +106,51 @@ describe('resolve', () => {
         .then(() => api.done())
     })
 
-    it('finds the addon with no namespace for an app', () => {
+    it('finds the addon with no namespace for an app if no namespace is specified', () => {
       let api = nock('https://api.heroku.com:443')
         .post('/actions/addons/resolve', {'app': 'myapp', 'addon': 'myaddon-1'})
         .reply(200, [{'name': 'myaddon-1'}, {'name': 'myaddon-1b', 'namespace': 'definitely-not-null'}])
+
+      return resolve.addon(new Heroku(), 'myapp', 'myaddon-1')
+        .then((addon) => expect(addon, 'to satisfy', {name: 'myaddon-1'}))
+        .then(() => api.done())
+    })
+
+    it('finds the addon with the specified namespace for an app if there are multiple addons', () => {
+      let api = nock('https://api.heroku.com:443')
+        .post('/actions/addons/resolve', {'app': 'myapp', 'addon': 'myaddon-1'})
+        .reply(200, [{'name': 'myaddon-1'}, {'name': 'myaddon-1b', 'namespace': 'great-namespace'}])
+
+      return resolve.addon(new Heroku(), 'myapp', 'myaddon-1', {namespace: 'great-namespace'})
+        .then((addon) => expect(addon, 'to satisfy', {name: 'myaddon-1b'}))
+        .then(() => api.done())
+    })
+
+    it('finds the addon with the specified namespace for an app if there is only one addon', () => {
+      let api = nock('https://api.heroku.com:443')
+        .post('/actions/addons/resolve', {'app': 'myapp', 'addon': 'myaddon-1'})
+        .reply(200, [{'name': 'myaddon-1b', 'namespace': 'great-namespace'}])
+
+      return resolve.addon(new Heroku(), 'myapp', 'myaddon-1', {namespace: 'great-namespace'})
+        .then((addon) => expect(addon, 'to satisfy', {name: 'myaddon-1b'}))
+        .then(() => api.done())
+    })
+
+    it('fails if there is no addon with the specified namespace for an app', () => {
+      let api = nock('https://api.heroku.com:443')
+        .post('/actions/addons/resolve', {'app': 'myapp', 'addon': 'myaddon-1'})
+        .reply(200, [{'name': 'myaddon-1'}])
+
+      return resolve.addon(new Heroku(), 'myapp', 'myaddon-1', {'namespace': 'amazing-namespace'})
+        .then(() => { throw new Error('unreachable') })
+        .catch((err) => expect(err, 'to satisfy', {statusCode: 404}))
+        .then(() => { api.done() })
+    })
+
+    it('finds the addon with a namespace for an app if there is only match which happens to have a namespace', () => {
+      let api = nock('https://api.heroku.com:443')
+        .post('/actions/addons/resolve', {'app': 'myapp', 'addon': 'myaddon-1'})
+        .reply(200, [{'name': 'myaddon-1', 'namespace': 'definitely-not-null'}])
 
       return resolve.addon(new Heroku(), 'myapp', 'myaddon-1')
         .then((addon) => expect(addon, 'to satisfy', {name: 'myaddon-1'}))
