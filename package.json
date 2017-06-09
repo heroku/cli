@@ -49,7 +49,7 @@
     "heroku-orgs": "1.6.2",
     "heroku-pg": "2.2.1",
     "heroku-pipelines": "2.1.1",
-    "heroku-ps-exec": "1.0.1",
+    "heroku-ps-exec": "1.0.2",
     "heroku-redis": "1.2.14",
     "heroku-run": "3.4.11",
     "heroku-spaces": "2.9.2"
