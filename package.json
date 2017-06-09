@@ -54,10 +54,10 @@
     "heroku-run": "3.4.11",
     "heroku-spaces": "2.9.2"
   },
+  "engineStrict": true,
   "engines": {
     "node": ">=7.10.0"
   },
-  "enginestrict": true,
   "files": [
     "bin"
   ],
