@@ -80,6 +80,7 @@ Connection URL:
   let reset = co.wrap(function * () {
     const host = require('../lib/host')
     let db = yield fetcher.addon(app, args.database)
+    cli.warn(`${cli.color.cmd('pg:credentials --reset')} is being deprecated. Please use ${cli.color.cmd('pg:credentials:rotate')} instead.`)
     yield cli.action(`Resetting credentials on ${cli.color.addon(db.name)}`, co(function * () {
       yield heroku.post(`/client/v11/databases/${db.id}/credentials_rotation`, {host: host(db)})
     }))

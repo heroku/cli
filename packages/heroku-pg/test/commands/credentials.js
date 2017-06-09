@@ -61,7 +61,7 @@ Connection URL:
     pg.post('/client/v11/databases/1/credentials_rotation').reply(200)
     return cmd.run({app: 'myapp', args: {}, flags: {reset: true}})
     .then(() => expect(cli.stdout, 'to equal', ''))
-    .then(() => expect(cli.stderr, 'to equal', 'Resetting credentials on postgres-1... done\n'))
+    .then(() => expect(cli.stderr, 'to contain', 'Resetting credentials on postgres-1... done\n'))
   })
 
   // Private beta behaviour
