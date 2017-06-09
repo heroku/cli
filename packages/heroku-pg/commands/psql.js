@@ -9,7 +9,9 @@ function * run (context, heroku) {
 
   const {app, args, flags} = context
 
-  let db = yield fetcher.database(app, args.database)
+  let namespace = flags.credential ? `credential:${flags.credential}` : null
+
+  let db = yield fetcher.database(app, args.database, namespace)
   cli.console.error(`--> Connecting to ${cli.color.addon(db.attachment.addon.name)}`)
   if (flags.command) {
     process.stdout.write(yield psql.exec(db, flags.command))
@@ -22,7 +24,10 @@ let cmd = {
   description: 'open a psql shell to the database',
   needsApp: true,
   needsAuth: true,
-  flags: [{name: 'command', char: 'c', description: 'SQL command to run', hasValue: true}],
+  flags: [
+    {name: 'command', char: 'c', description: 'SQL command to run', hasValue: true},
+    {name: 'credential', description: 'credential to use', hasValue: true}
+  ],
   args: [{name: 'database', optional: true}],
   run: cli.command({preauth: true}, co.wrap(run))
 }

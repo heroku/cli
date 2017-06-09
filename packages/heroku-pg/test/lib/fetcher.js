@@ -35,7 +35,7 @@ describe('fetcher', () => {
 
   describe('addon', () => {
     it('returns addon attached to app', () => {
-      stub.withArgs(sinon.match.any, 'myapp', 'DATABASE_URL', {addon_service: 'heroku-postgresql'}).returns(Promise.resolve({addon: {name: 'postgres-1'}}))
+      stub.withArgs(sinon.match.any, 'myapp', 'DATABASE_URL', {addon_service: 'heroku-postgresql', namespace: null}).returns(Promise.resolve({addon: {name: 'postgres-1'}}))
       return fetcher(new Heroku()).addon('myapp', 'DATABASE_URL')
       .then(addon => {
         expect(addon.name, 'to equal', 'postgres-1')
@@ -47,7 +47,7 @@ describe('fetcher', () => {
     it('returns db connection info', () => {
       let addonApp = {name: 'addon-app'}
       let app = {name: 'myapp'}
-      stub.withArgs(sinon.match.any, 'myapp', 'DATABASE_URL', {addon_service: 'heroku-postgresql'}).returns(Promise.resolve(
+      stub.withArgs(sinon.match.any, 'myapp', 'DATABASE_URL', {addon_service: 'heroku-postgresql', namespace: null}).returns(Promise.resolve(
         {addon: {id: 100, name: 'postgres-1', app: addonApp}, app, config_vars: ['DATABASE_URL']}
       ))
       api.get('/apps/myapp/config-vars').reply(200, {
@@ -60,7 +60,7 @@ describe('fetcher', () => {
     it('uses attachment db config', () => {
       let addonApp = {name: 'addon-app'}
       let attachApp = {name: 'attach-myapp'}
-      stub.withArgs(sinon.match.any, 'myapp', 'attach-myapp::DATABASE_URL', {addon_service: 'heroku-postgresql'}).returns(Promise.resolve(
+      stub.withArgs(sinon.match.any, 'myapp', 'attach-myapp::DATABASE_URL', {addon_service: 'heroku-postgresql', namespace: null}).returns(Promise.resolve(
         {addon: {id: 100, name: 'postgres-1', app: addonApp}, app: attachApp, config_vars: ['DATABASE_URL']}
       ))
       api.get('/apps/attach-myapp/config-vars').reply(200, {

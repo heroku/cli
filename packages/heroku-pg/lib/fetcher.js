@@ -7,7 +7,7 @@ const getConfig = require('./config')
 const cli = require('heroku-cli-util')
 
 module.exports = heroku => {
-  function * attachment (app, passedDb) {
+  function * attachment (app, passedDb, namespace = null) {
     let db = passedDb || 'DATABASE_URL'
 
     function matchesHelper (app, db) {
@@ -15,7 +15,7 @@ module.exports = heroku => {
 
       debug(`fetching ${db} on ${app}`)
 
-      return resolve.appAttachment(heroku, app, db, {addon_service: 'heroku-postgresql'})
+      return resolve.appAttachment(heroku, app, db, {addon_service: 'heroku-postgresql', namespace: namespace})
       .then(attached => ({matches: [attached]}))
       .catch(function (err) {
         if (err.statusCode === 422 && err.body && err.body.id === 'multiple_matches' && err.matches) {
@@ -58,7 +58,6 @@ module.exports = heroku => {
         throw new Error(`${cli.color.app(app)} has no databases`)
       }
 
-      attachments = attachments.filter(a => !a.hasOwnProperty('namespace') || a.namespace === null)
       matches = attachments.filter(attachment => config[db] && config[db] === config[pgUtil.getUrl(attachment.config_vars)])
 
       if (matches.length === 0) {
@@ -86,8 +85,8 @@ module.exports = heroku => {
     return (yield attachment(app, db)).addon
   }
 
-  function * database (app, db) {
-    let attached = yield attachment(app, db)
+  function * database (app, db, namespace) {
+    let attached = yield attachment(app, db, namespace)
 
     // would inline this as well but in some cases attachment pulls down config
     // as well and we would request twice at the same time but I did not want
