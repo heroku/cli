@@ -3,6 +3,8 @@
 const cli = require('heroku-cli-util')
 const debug = require('./debug')
 const getBastion = require('./bastion').getBastion
+const sortBy = require('lodash.sortby')
+const printf = require('printf')
 
 function getUrl (configVars) {
   let connstringVars = configVars.filter((cv) => (cv.endsWith('_URL')))
@@ -11,6 +13,65 @@ function getUrl (configVars) {
 }
 
 exports.getUrl = getUrl
+
+function formatAttachment (attachment) {
+  let attName = cli.color.addon(attachment.name)
+
+  let output = [cli.color.dim('as'), attName]
+  let appInfo = `on ${cli.color.app(attachment.app.name)} app`
+  output.push(cli.color.dim(appInfo))
+
+  return output.join(' ')
+}
+
+function renderAttachment (attachment, app, isLast) {
+  let line = isLast ? '└─' : '├─'
+  let attName = formatAttachment(attachment)
+  return printf(' %s %s', cli.color.dim(line), attName)
+}
+
+function presentCredentialAttachments (app, credAttachments, credentials, cred) {
+  let isForeignApp = (attOrAddon) => attOrAddon.app.name !== app
+  let atts = sortBy(credAttachments,
+    isForeignApp,
+    'name',
+    'app.name'
+  )
+  // render each attachment under the credential
+  let attLines = atts.map(function (attachment, idx) {
+    let isLast = (idx === credAttachments.length - 1)
+    return renderAttachment(attachment, app, isLast)
+  })
+
+  let rotationLines = []
+  let credentialStore = credentials.filter(a => a.name === cred)[0]
+  if (credentialStore.state === 'rotating') {
+    let formatted = credentialStore.credentials.map(function (credential, idx) {
+      return {
+        'user': credential.user,
+        'state': credential.state,
+        'connections': credential.connections
+      }
+    })
+    let connectionInformationAvailable = formatted.some((c) => c.connections)
+    if (connectionInformationAvailable) {
+      let prefix = '       '
+      rotationLines.push(`${prefix}Usernames currently active for this credential:`)
+      cli.table(formatted, {
+        printHeader: false,
+        printLine: function (line) { rotationLines.push(line) },
+        columns: [
+          {key: 'user', format: (v, r) => `${prefix}${v}`},
+          {key: 'state', format: (v, r) => (v === 'revoking') ? 'waiting for no connections to be revoked' : v},
+          {key: 'connections', format: (v, r) => `${v} connections`}
+        ]
+      })
+    }
+  }
+  return [cred].concat(attLines).concat(rotationLines).join('\n')
+}
+
+exports.presentCredentialAttachments = presentCredentialAttachments
 
 exports.getConnectionDetails = function (attachment, config) {
   const url = require('url')

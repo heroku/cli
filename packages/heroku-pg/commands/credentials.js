@@ -3,7 +3,7 @@
 const co = require('co')
 const cli = require('heroku-cli-util')
 const sortBy = require('lodash.sortby')
-const printf = require('printf')
+const util = require('../lib/util')
 
 function * run (context, heroku) {
   const fetcher = require('../lib/fetcher')(heroku)
@@ -14,22 +14,7 @@ function * run (context, heroku) {
     const host = require('../lib/host')
     let addon = yield fetcher.addon(app, args.database)
     let attachments = []
-
-    function formatAttachment (attachment) {
-      let attName = cli.color.addon(attachment.name)
-
-      let output = [cli.color.dim('as'), attName]
-      let appInfo = `on ${cli.color.app(attachment.app.name)} app`
-      output.push(cli.color.dim(appInfo))
-
-      return output.join(' ')
-    }
-
-    function renderAttachment (attachment, app, isLast) {
-      let line = isLast ? '└─' : '├─'
-      let attName = formatAttachment(attachment)
-      return printf(' %s %s', cli.color.dim(line), attName)
-    }
+    let credentials = []
 
     function presentCredential (cred) {
       let credAttachments = []
@@ -38,24 +23,11 @@ function * run (context, heroku) {
       } else {
         credAttachments = attachments.filter(a => a.namespace === null)
       }
-      let isForeignApp = (attOrAddon) => attOrAddon.app.name !== app
-      let atts = sortBy(credAttachments,
-        isForeignApp,
-        'name',
-        'app.name'
-      )
-
-      // render each attachment under the credential
-      let attLines = atts.map(function (attachment, idx) {
-        let isLast = (idx === credAttachments.length - 1)
-        return renderAttachment(attachment, app, isLast)
-      })
-
-      return [cred].concat(attLines).join('\n')
+      return util.presentCredentialAttachments(app, credAttachments, credentials, cred)
     }
 
     try {
-      let credentials = yield heroku.get(`/postgres/v0/databases/${addon.name}/credentials`,
+      credentials = yield heroku.get(`/postgres/v0/databases/${addon.name}/credentials`,
                                        { host: host(addon) })
       let isDefaultCredential = (cred) => cred.name !== 'default'
       credentials = sortBy(credentials, isDefaultCredential, 'name')
