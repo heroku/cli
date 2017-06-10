@@ -114,7 +114,7 @@ func buildBsdiff(ctx *Context) {
 	defer newf.Close()
 	new, err := xz.NewReader(newf)
 	must(err)
-	manifest := GetUpdateManifest(channel, "")
+	manifest := GetUpdateManifest(channel)
 	build := manifest.Builds[target]
 	old, sha, err := downloadXZ(build.URL, "")
 	must(err)

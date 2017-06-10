@@ -72,17 +72,11 @@ func updateCLI(channel string) {
 		WarnIfError(merry.Errorf("Update CLI with apt-get update && apt-get upgrade"))
 		return
 	}
-	if config.LockChannel != "" {
-		if channel != Channel && channel != config.LockChannel {
-			ExitWithMessage("channel must be " + config.LockChannel)
-		}
-		channel = config.LockChannel
-	}
 	if channel == "stable" && shouldUpdateToV6() {
 		Debugln("setting update to v6 channel")
 		channel = "v6"
 	}
-	manifest := GetUpdateManifest(channel, config.LockVersion)
+	manifest := GetUpdateManifest(channel)
 	if npmExists() && manifest.Version == Version && manifest.Channel == Channel {
 		return
 	}
@@ -170,17 +164,13 @@ type Build struct {
 var updateManifestRetrying = false
 
 // GetUpdateManifest loads the manifest.json for a channel
-func GetUpdateManifest(channel, version string) *Manifest {
+func GetUpdateManifest(channel string) *Manifest {
 	var m Manifest
 	url := "https://cli-assets.heroku.com/branches/" + channel + "/manifest.json"
-	if version != "" {
-		Errln("heroku-cli: locked to " + version)
-		url = "https://cli-assets.heroku.com/branches/" + channel + "/" + version + "/manifest.json"
-	}
 	rsp, err := sling.New().Client(apiHTTPClient).Get(url).ReceiveSuccess(&m)
 	if err != nil && !updateManifestRetrying {
 		updateManifestRetrying = true
-		return GetUpdateManifest(channel, version)
+		return GetUpdateManifest(channel)
 	}
 	must(err)
 	must(getHTTPError(rsp))
