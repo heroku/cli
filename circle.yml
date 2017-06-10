@@ -58,9 +58,7 @@ dependencies:
       sudo dpkg -i ~/nsis/nsis_2.51-1_amd64.deb
 test:
   override:
-    - ./bin/test -v -race -cover -coverprofile=coverage.out -ginkgo.v
-    - make test -j $JOBZ
-    - ./bin/lint
+    - echo "NO TESTS"
 deployment:
   stable:
     branch: v5
