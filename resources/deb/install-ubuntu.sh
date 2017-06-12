@@ -23,6 +23,9 @@
   # install heroku's release key for package verification
   wget -qO- https://cli-assets.heroku.com/apt/release.key | apt-key add -
 
+  # install apt-transport-https
+  apt-get install -y apt-transport-https
+
   # update your sources
   apt-get update
 
