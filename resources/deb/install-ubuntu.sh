@@ -2,7 +2,7 @@
 {
     set -ex
     SUDO=''
-    if [ "$EUID" != "0" ] && [ "$(id -u)" != "0" ]; then
+    if [ "$(id -u)" != "0" ]; then
       SUDO='sudo'
       echo "This script requires superuser access to install apt packages."
       echo "You will be prompted for your password by sudo."
