@@ -120,13 +120,13 @@ aws s3 cp --cache-control max-age=3600 "$ROOT/Packages.gz" "$REMOTE_ROOT/Package
 curl -S https://heroku-cli-assets.s3.amazonaws.com/install-ubuntu.sh > "$PROJECT_ROOT/tmp/install-ubuntu.sh"
 if ! cmp -s tmp/install-ubuntu.sh resources/deb/install-ubuntu.sh; then
   aws s3 cp --content-type text/plain --cache-control max-age=3600 "$PROJECT_ROOT/Packages.gz" "s3://$S3_HOST/install-ubuntu.sh"
-  aws cloudfront create-invalidation --distribution-id EHF9FOCUJYVZ --generate-cli-skeleton --paths "/install-ubuntu.sh"
+  aws cloudfront create-invalidation --distribution-id EHF9FOCUJYVZ --paths "/install-ubuntu.sh"
 fi
 
 # invalidate CDN
 # TODO: remove this on Dockerfile 1.2.1
 aws configure set preview.cloudfront true
-aws cloudfront create-invalidation --distribution-id EHF9FOCUJYVZ --generate-cli-skeleton --paths \
+aws cloudfront create-invalidation --distribution-id EHF9FOCUJYVZ --paths \
   "$REMOTE_PATH/heroku_${DEB_VERSION}_amd64.deb" \
   "$REMOTE_PATH/heroku_${DEB_VERSION}_i386.deb"  \
   "$REMOTE_PATH/Release"                         \
