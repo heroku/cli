@@ -25,7 +25,7 @@ stages:
         shell: /bin/bash
         command: |
           set -e
-          gpg --passphrase $HEROKU_WINDOWS_SIGNING_PASS -d resources/deb/key.gpg | gpg --import
+          echo $HEROKU_DEB_KEY | gpg --import
           set -ex
           TAG=`git describe --exact-match HEAD || echo NOTAG`
           if [ "${CIRCLE_BRANCH}" == "master" ]; then
