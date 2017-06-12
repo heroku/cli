@@ -238,23 +238,9 @@ cli-engine-command@4.0.3:
     string "3.3.3"
     supports-color "^3.2.3"
 
-cli-engine-command@5.1.3:
+cli-engine-command@5.1.3, cli-engine-command@^5.0.0:
   version "5.1.3"
   resolved "http://cli-npm.heroku.com/cli-engine-command/-/cli-engine-command-5.1.3/5b3d2cd4aac3e4d23fe135316ce0484f3ff4a967.tgz#5b3d2cd4aac3e4d23fe135316ce0484f3ff4a967"
-  dependencies:
-    ansi-escapes "2.x"
-    cardinal "1.x"
-    chalk "1.x"
-    fs-extra "3.x"
-    http-call "^2.1.0"
-    lodash.maxby "4.x"
-    lodash.merge "4.x"
-    string "3.x"
-    supports-color "3.x"
-
-cli-engine-command@^5.0.0:
-  version "5.1.2"
-  resolved "http://cli-npm.heroku.com/cli-engine-command/-/cli-engine-command-5.1.2/1a46112f3ff817eb3f66261988f3a3bd5113de9c.tgz#1a46112f3ff817eb3f66261988f3a3bd5113de9c"
   dependencies:
     ansi-escapes "2.x"
     cardinal "1.x"
@@ -293,9 +279,9 @@ cli-engine-heroku@1.1.0, cli-engine-heroku@^1.0.0:
     heroku-client "3.x"
     netrc-parser "2.0.2"
 
-cli-engine@3.5.15:
-  version "3.5.15"
-  resolved "https://registry.yarnpkg.com/cli-engine/-/cli-engine-3.5.15.tgz#73f5729eae80aae9f6ace9b5796d93a47e2d8c67"
+cli-engine@3.5.16:
+  version "3.5.16"
+  resolved "http://cli-npm.heroku.com/cli-engine/-/cli-engine-3.5.16/b7e9b94d78dc7f8270bf88a0c648ceb220db676c.tgz#b7e9b94d78dc7f8270bf88a0c648ceb220db676c"
   dependencies:
     cli-engine-command "5.1.3"
     cli-engine-config "1.3.7"
@@ -454,13 +440,13 @@ debug@2.6.0:
   dependencies:
     ms "0.7.2"
 
-debug@2.6.3, debug@2.x, debug@^2.1.3, debug@^2.2.0:
+debug@2.6.3, debug@2.x, debug@^2.1.3:
   version "2.6.3"
   resolved "http://cli-npm.heroku.com/debug/-/debug-2.6.3/0f7eb8c30965ec08c72accfa0130c8b79984141d.tgz#0f7eb8c30965ec08c72accfa0130c8b79984141d"
   dependencies:
     ms "0.7.2"
 
-debug@^2.6.8:
+debug@^2.2.0, debug@^2.6.8:
   version "2.6.8"
   resolved "http://cli-npm.heroku.com/debug/-/debug-2.6.8/e731531ca2ede27d188222427da17821d68ff4fc.tgz#e731531ca2ede27d188222427da17821d68ff4fc"
   dependencies:
@@ -908,9 +894,9 @@ heroku-client@3.0.2, heroku-client@3.x:
     is-retry-allowed "^1.0.0"
     tunnel-agent "^0.4.0"
 
-heroku-exec-util@0.3.6:
-  version "0.3.6"
-  resolved "http://cli-npm.heroku.com/heroku-exec-util/-/heroku-exec-util-0.3.6/da747c67eaf93392b185aed8c5e228933002130b.tgz#da747c67eaf93392b185aed8c5e228933002130b"
+heroku-exec-util@0.3.7:
+  version "0.3.7"
+  resolved "http://cli-npm.heroku.com/heroku-exec-util/-/heroku-exec-util-0.3.7/3cc006ee43cc8ff09d6448bc2ebea6821f0fb80b.tgz#3cc006ee43cc8ff09d6448bc2ebea6821f0fb80b"
   dependencies:
     co-wait "0.0.0"
     heroku-cli-util "^6.0.15"
@@ -919,6 +905,7 @@ heroku-exec-util@0.3.6:
     smooth-progress "1.0.4"
     socksv5 "git://github.com/heroku/socksv5.git#v0.0.6.1"
     ssh2 "0.5.4"
+    ssh2-streams "0.1.16"
     uuid "3.0.1"
 
 heroku-fork@4.1.22:
@@ -993,12 +980,12 @@ heroku-pipelines@2.1.1, heroku-pipelines@^2.0.1:
     string-just "0.0.2"
     validator "6.2.1"
 
-heroku-ps-exec@1.0.2:
-  version "1.0.2"
-  resolved "http://cli-npm.heroku.com/heroku-ps-exec/-/heroku-ps-exec-1.0.2/cc0f87155793701047a88c6526feeec42d16d1b4.tgz#cc0f87155793701047a88c6526feeec42d16d1b4"
+heroku-ps-exec@1.0.3:
+  version "1.0.3"
+  resolved "http://cli-npm.heroku.com/heroku-ps-exec/-/heroku-ps-exec-1.0.3/985ba54eedbbac2d903e53f8e366d681fb25882a.tgz#985ba54eedbbac2d903e53f8e366d681fb25882a"
   dependencies:
     heroku-cli-util "^6.0.15"
-    heroku-exec-util "0.3.6"
+    heroku-exec-util "0.3.7"
 
 heroku-redis@1.2.14:
   version "1.2.14"
@@ -1922,20 +1909,20 @@ sprintf@0.1.x:
   version "0.1.5"
   resolved "http://cli-npm.heroku.com/sprintf/-/sprintf-0.1.5/8f83e39a9317c1a502cb7db8050e51c679f6edcf.tgz#8f83e39a9317c1a502cb7db8050e51c679f6edcf"
 
+ssh2-streams@0.1.16, ssh2-streams@~0.1.15:
+  version "0.1.16"
+  resolved "http://cli-npm.heroku.com/ssh2-streams/-/ssh2-streams-0.1.16/ac9d3ce9e062f8cf08fcce5b3a274b6d5cecdc54.tgz#ac9d3ce9e062f8cf08fcce5b3a274b6d5cecdc54"
+  dependencies:
+    asn1 "~0.2.0"
+    semver "^5.1.0"
+    streamsearch "~0.1.2"
+
 ssh2-streams@~0.0.5:
   version "0.0.23"
   resolved "http://cli-npm.heroku.com/ssh2-streams/-/ssh2-streams-0.0.23/aeef30831bb5fc4af6aa3f6d0a261a413531612b.tgz#aeef30831bb5fc4af6aa3f6d0a261a413531612b"
   dependencies:
     asn1 "~0.2.0"
     readable-stream "~1.0.0"
-    streamsearch "~0.1.2"
-
-ssh2-streams@~0.1.15:
-  version "0.1.18"
-  resolved "http://cli-npm.heroku.com/ssh2-streams/-/ssh2-streams-0.1.18/d5721c1da3129afa56c888841448ae7cbdefec8b.tgz#d5721c1da3129afa56c888841448ae7cbdefec8b"
-  dependencies:
-    asn1 "~0.2.0"
-    semver "^5.1.0"
     streamsearch "~0.1.2"
 
 ssh2@0.4.11:
