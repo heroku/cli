@@ -25,7 +25,7 @@ stages:
         shell: /bin/bash
         command: |
           set -e
-          echo $HEROKU_DEB_KEY | gpg --import
+          echo "$HEROKU_DEB_KEY\n" | gpg --import
           set -ex
           TAG=`git describe --exact-match HEAD || echo NOTAG`
           if [ "${CIRCLE_BRANCH}" == "master" ]; then
