@@ -119,7 +119,7 @@ aws s3 cp --cache-control max-age=3600 "$ROOT/Packages.gz" "$REMOTE_ROOT/Package
 aws s3 cp --cache-control max-age=3600 "$ROOT/Packages.xz" "$REMOTE_ROOT/Packages.xz"
 
 # update install-ubuntu.sh if changed
-curl -sS https://heroku-cli-assets.s3.amazonaws.com/install-ubuntu.sh > "$PROJECT_ROOT/tmp/install-ubuntu.sh"
+curl -fsS https://heroku-cli-assets.s3.amazonaws.com/install-ubuntu.sh > "$PROJECT_ROOT/tmp/install-ubuntu.sh"
 if ! cmp -s tmp/install-ubuntu.sh resources/deb/install-ubuntu.sh; then
   cat $PROJECT_ROOT/tmp/install-ubuntu.sh
   cat resources/deb/install-ubuntu.sh
