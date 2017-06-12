@@ -94,17 +94,9 @@ done
 # create Package apt file
 cd $ROOT
 apt-ftparchive packages . > Packages
-apt-ftparchive -a amd64 packages . > Packages_amd64
-apt-ftparchive -a i386 packages . > Packages_i386
 gzip -c Packages > Packages.gz
-gzip -c Packages_amd64 > Packages_amd64.gz
-gzip -c Packages_i386 > Packages_i386.gz
 bzip2 -k Packages
-bzip2 -k Packages_amd64
-bzip2 -k Packages_i386
 xz -k Packages
-xz -k Packages_amd64
-xz -k Packages_i386
 
 # create Release apt file
 cd $ROOT
@@ -119,28 +111,12 @@ REMOTE_ROOT=s3://${S3_HOST}${REMOTE_PATH}
 aws s3 cp --cache-control max-age=86400 "$ROOT/heroku_${DEB_VERSION}_amd64.deb" "$REMOTE_ROOT/heroku_${DEB_VERSION}_amd64.deb"
 aws s3 cp --cache-control max-age=86400 "$ROOT/heroku_${DEB_VERSION}_i386.deb" "$REMOTE_ROOT/heroku_${DEB_VERSION}_i386.deb"
 aws s3 cp --content-type text/plain --cache-control max-age=3600 "$ROOT/Release" "$REMOTE_ROOT/Release"
-aws s3 cp --content-type text/plain --cache-control max-age=3600 "$ROOT/Release" "$REMOTE_ROOT/dists/stable/Release"
 aws s3 cp --content-type text/plain --cache-control max-age=3600 "$ROOT/InRelease" "$REMOTE_ROOT/InRelease"
-aws s3 cp --content-type text/plain --cache-control max-age=3600 "$ROOT/InRelease" "$REMOTE_ROOT/dists/stable/InRelease"
 aws s3 cp --content-type text/plain --cache-control max-age=3600 "$ROOT/Release.gpg" "$REMOTE_ROOT/Release.gpg"
-aws s3 cp --content-type text/plain --cache-control max-age=3600 "$ROOT/Release.gpg" "$REMOTE_ROOT/dists/stable/Release.gpg"
 aws s3 cp --content-type text/plain --cache-control max-age=3600 "$ROOT/Packages" "$REMOTE_ROOT/Packages"
-aws s3 cp --content-type text/plain --cache-control max-age=3600 "$ROOT/Packages" "$REMOTE_ROOT/dists/stable/Packages"
-aws s3 cp --content-type text/plain --cache-control max-age=3600 "$ROOT/Packages" "$REMOTE_ROOT/dists/stable/main/binary-all/Packages"
-aws s3 cp --content-type text/plain --cache-control max-age=3600 "$ROOT/Packages_i386" "$REMOTE_ROOT/dists/stable/main/binary-i386/Packages"
-aws s3 cp --content-type text/plain --cache-control max-age=3600 "$ROOT/Packages_amd64" "$REMOTE_ROOT/dists/stable/main/binary-amd64/Packages"
 aws s3 cp --cache-control max-age=3600 "$ROOT/Packages.bz2" "$REMOTE_ROOT/Packages.bz2"
 aws s3 cp --cache-control max-age=3600 "$ROOT/Packages.gz" "$REMOTE_ROOT/Packages.gz"
 aws s3 cp --cache-control max-age=3600 "$ROOT/Packages.xz" "$REMOTE_ROOT/Packages.xz"
-aws s3 cp --cache-control max-age=3600 "$ROOT/Packages.bz2" "$REMOTE_ROOT/dists/stable/main/binary-all/Packages.bz2"
-aws s3 cp --cache-control max-age=3600 "$ROOT/Packages.gz" "$REMOTE_ROOT/dists/stable/main/binary-all/Packages.gz"
-aws s3 cp --cache-control max-age=3600 "$ROOT/Packages.xz" "$REMOTE_ROOT/dists/stable/main/binary-all/Packages.xz"
-aws s3 cp --cache-control max-age=3600 "$ROOT/Packages_i386.bz2" "$REMOTE_ROOT/dists/stable/main/binary-i386/Packages.bz2"
-aws s3 cp --cache-control max-age=3600 "$ROOT/Packages_i386.gz" "$REMOTE_ROOT/dists/stable/main/binary-i386/Packages.gz"
-aws s3 cp --cache-control max-age=3600 "$ROOT/Packages_i386.xz" "$REMOTE_ROOT/dists/stable/main/binary-i386/Packages.xz"
-aws s3 cp --cache-control max-age=3600 "$ROOT/Packages_amd64.bz2" "$REMOTE_ROOT/dists/stable/main/binary-amd64/Packages.bz2"
-aws s3 cp --cache-control max-age=3600 "$ROOT/Packages_amd64.gz" "$REMOTE_ROOT/dists/stable/main/binary-amd64/Packages.gz"
-aws s3 cp --cache-control max-age=3600 "$ROOT/Packages_amd64.xz" "$REMOTE_ROOT/dists/stable/main/binary-amd64/Packages.xz"
 
 # update install-ubuntu.sh if changed
 curl -S https://heroku-cli-assets.s3.amazonaws.com/install-ubuntu.sh > "$PROJECT_ROOT/tmp/install-ubuntu.sh"
