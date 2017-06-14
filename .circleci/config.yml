@@ -1,23 +1,31 @@
 ---
+defaults: &defaults
+  working_directory: ~/cli
+  docker:
+    - image: dickeyxxx/cli-engine-docker:v1.2.1-node7
+
 version: 2
 jobs:
   build:
-    working_directory: ~/cli
-    docker:
-      - image: dickeyxxx/cli-engine-docker:v1.2.1-node7
+    <<: *defaults
     steps:
       - checkout
+
   test:
+    <<: *defaults
     requires:
       - build
     steps:
       - run: echo test
+
   deploy:
+    <<: *defaults
     requires:
       - build
       - test
     steps:
       - run: echo deploy
+
 workflows:
   version: 2
   build_test_deploy:
