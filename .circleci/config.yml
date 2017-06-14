@@ -8,9 +8,14 @@ jobs:
     steps:
       - checkout
   test:
+    requires:
+      - build
     steps:
       - run: echo test
   deploy:
+    requires:
+      - build
+      - test
     steps:
       - run: echo deploy
 workflows:
