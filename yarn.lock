@@ -449,13 +449,13 @@ debug@2.6.0:
   dependencies:
     ms "0.7.2"
 
-debug@2.6.3, debug@2.x, debug@^2.1.3, debug@^2.2.0:
+debug@2.6.3, debug@2.x, debug@^2.1.3:
   version "2.6.3"
   resolved "http://cli-npm.heroku.com/debug/-/debug-2.6.3/0f7eb8c30965ec08c72accfa0130c8b79984141d.tgz#0f7eb8c30965ec08c72accfa0130c8b79984141d"
   dependencies:
     ms "0.7.2"
 
-debug@^2.6.8:
+debug@^2.2.0, debug@^2.6.8:
   version "2.6.8"
   resolved "http://cli-npm.heroku.com/debug/-/debug-2.6.8/e731531ca2ede27d188222427da17821d68ff4fc.tgz#e731531ca2ede27d188222427da17821d68ff4fc"
   dependencies:
@@ -934,9 +934,9 @@ heroku-client@3.0.2, heroku-client@3.x:
     is-retry-allowed "^1.0.0"
     tunnel-agent "^0.4.0"
 
-heroku-exec-util@0.3.7:
-  version "0.3.7"
-  resolved "http://cli-npm.heroku.com/heroku-exec-util/-/heroku-exec-util-0.3.7/3cc006ee43cc8ff09d6448bc2ebea6821f0fb80b.tgz#3cc006ee43cc8ff09d6448bc2ebea6821f0fb80b"
+heroku-exec-util@0.3.9:
+  version "0.3.9"
+  resolved "http://cli-npm.heroku.com/heroku-exec-util/-/heroku-exec-util-0.3.9/9e01f02aadcdeb2a2ca3cca48d62eb90237badc9.tgz#9e01f02aadcdeb2a2ca3cca48d62eb90237badc9"
   dependencies:
     co-wait "0.0.0"
     heroku-cli-util "^6.0.15"
@@ -944,8 +944,9 @@ heroku-exec-util@0.3.7:
     node-forge "0.6.47"
     smooth-progress "1.0.4"
     socksv5 "git://github.com/heroku/socksv5.git#v0.0.6.1"
-    ssh2 "0.5.4"
-    ssh2-streams "0.1.16"
+    ssh2 "0.5.5"
+    ssh2-streams "0.1.19"
+    temp "0.8.3"
     uuid "3.0.1"
 
 heroku-fork@4.1.23:
@@ -1020,12 +1021,12 @@ heroku-pipelines@2.1.1, heroku-pipelines@^2.0.1:
     string-just "0.0.2"
     validator "6.2.1"
 
-heroku-ps-exec@1.0.3:
-  version "1.0.3"
-  resolved "http://cli-npm.heroku.com/heroku-ps-exec/-/heroku-ps-exec-1.0.3/985ba54eedbbac2d903e53f8e366d681fb25882a.tgz#985ba54eedbbac2d903e53f8e366d681fb25882a"
+heroku-ps-exec@1.0.5:
+  version "1.0.5"
+  resolved "http://cli-npm.heroku.com/heroku-ps-exec/-/heroku-ps-exec-1.0.5/b94e3cba56cad0a0bdf789ae14816fae32c46186.tgz#b94e3cba56cad0a0bdf789ae14816fae32c46186"
   dependencies:
     heroku-cli-util "^6.0.15"
-    heroku-exec-util "0.3.7"
+    heroku-exec-util "0.3.9"
 
 heroku-redis@1.2.14:
   version "1.2.14"
@@ -1952,9 +1953,9 @@ sprintf@0.1.x:
   version "0.1.5"
   resolved "http://cli-npm.heroku.com/sprintf/-/sprintf-0.1.5/8f83e39a9317c1a502cb7db8050e51c679f6edcf.tgz#8f83e39a9317c1a502cb7db8050e51c679f6edcf"
 
-ssh2-streams@0.1.16, ssh2-streams@~0.1.15:
-  version "0.1.16"
-  resolved "http://cli-npm.heroku.com/ssh2-streams/-/ssh2-streams-0.1.16/ac9d3ce9e062f8cf08fcce5b3a274b6d5cecdc54.tgz#ac9d3ce9e062f8cf08fcce5b3a274b6d5cecdc54"
+ssh2-streams@0.1.19, ssh2-streams@~0.1.18:
+  version "0.1.19"
+  resolved "http://cli-npm.heroku.com/ssh2-streams/-/ssh2-streams-0.1.19/f80ececc2de1a39e1aa64469851ec32bc96b83f9.tgz#f80ececc2de1a39e1aa64469851ec32bc96b83f9"
   dependencies:
     asn1 "~0.2.0"
     semver "^5.1.0"
@@ -1966,6 +1967,14 @@ ssh2-streams@~0.0.5:
   dependencies:
     asn1 "~0.2.0"
     readable-stream "~1.0.0"
+    streamsearch "~0.1.2"
+
+ssh2-streams@~0.1.15:
+  version "0.1.16"
+  resolved "http://cli-npm.heroku.com/ssh2-streams/-/ssh2-streams-0.1.16/ac9d3ce9e062f8cf08fcce5b3a274b6d5cecdc54.tgz#ac9d3ce9e062f8cf08fcce5b3a274b6d5cecdc54"
+  dependencies:
+    asn1 "~0.2.0"
+    semver "^5.1.0"
     streamsearch "~0.1.2"
 
 ssh2@0.4.11:
@@ -1980,6 +1989,12 @@ ssh2@0.5.4:
   resolved "http://cli-npm.heroku.com/ssh2/-/ssh2-0.5.4/1bf6b6b28c96eaef267f4d6c46a5a2517a599e27.tgz#1bf6b6b28c96eaef267f4d6c46a5a2517a599e27"
   dependencies:
     ssh2-streams "~0.1.15"
+
+ssh2@0.5.5:
+  version "0.5.5"
+  resolved "http://cli-npm.heroku.com/ssh2/-/ssh2-0.5.5/c7781ecd2ece7304a253cf620fab5a5c22bb2235.tgz#c7781ecd2ece7304a253cf620fab5a5c22bb2235"
+  dependencies:
+    ssh2-streams "~0.1.18"
 
 sshpk@^1.7.0:
   version "1.13.0"
@@ -2097,7 +2112,7 @@ tar@^2.0.0:
     fstream "^1.0.2"
     inherits "2"
 
-temp@^0.8.3:
+temp@0.8.3, temp@^0.8.3:
   version "0.8.3"
   resolved "http://cli-npm.heroku.com/temp/-/temp-0.8.3/e0c6bc4d26b903124410e4fed81103014dfc1f59.tgz#e0c6bc4d26b903124410e4fed81103014dfc1f59"
   dependencies:
