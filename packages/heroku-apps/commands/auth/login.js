@@ -3,7 +3,7 @@ const co = require('co')
 
 function * run (context, heroku) {
   try {
-    yield cli.login({save: true, sso: context.flags.sso})
+    yield cli.login({save: true, sso: context.flags.sso, expires_in: context.flags['expires-in']})
   } catch (err) {
     if (err.statusCode === 401) return yield run(context, heroku)
     throw err
@@ -17,7 +17,8 @@ function * run (context, heroku) {
 const cmd = {
   description: 'login with your Heroku credentials',
   flags: [
-    {name: 'sso', description: 'login for enterprise users under SSO'}
+    {name: 'sso', description: 'login for enterprise users under SSO'},
+    {name: 'expires-in', char: 'e', description: 'duration of token in seconds', hasValue: true}
   ],
   run: cli.command(co.wrap(run))
 }

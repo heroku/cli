@@ -1227,9 +1227,9 @@ here@0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/here/-/here-0.0.2.tgz#69c1af3f02121f3d8788e02e84dc8b3905d71195"
 
-heroku-cli-util@6.1.17:
-  version "6.1.17"
-  resolved "https://registry.yarnpkg.com/heroku-cli-util/-/heroku-cli-util-6.1.17.tgz#3d1e5eb62f2a7e73053b4768054cc6df14b4d578"
+heroku-cli-util@6.2.0:
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/heroku-cli-util/-/heroku-cli-util-6.2.0.tgz#0385772272b2f95137b95bbc8848f5a2c607766a"
   dependencies:
     ansi-escapes "1.4.0"
     cardinal "1.0.0"
@@ -2795,7 +2795,7 @@ supports-color@1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-1.2.0.tgz#ff1ed1e61169d06b3cf2d588e188b18d8847e17e"
 
-supports-color@3.1.2, supports-color@^3.1.2:
+supports-color@3.1.2:
   version "3.1.2"
   resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-3.1.2.tgz#72a262894d9d408b956ca05ff37b2ed8a6e2a2d5"
   dependencies:
@@ -2809,7 +2809,7 @@ supports-color@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-2.0.0.tgz#535d045ce6b6363fa40117084629995e9df324c7"
 
-supports-color@^3.2.3:
+supports-color@^3.1.2, supports-color@^3.2.3:
   version "3.2.3"
   resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-3.2.3.tgz#65ac0504b3954171d8a64946b2ae3cbb8a5f54f6"
   dependencies:
