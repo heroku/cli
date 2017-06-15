@@ -270,7 +270,8 @@ func shouldUpdateToV6() bool {
 		Debugln("not updating to v6, v5.lock file exists")
 		return false
 	}
-	n := rand.New(rand.NewSource(time.Now().UnixNano())).Intn(100)
-	Debugln("Random update number for v6: " + strconv.Itoa(n))
-	return n > 98
+	return false
+	// n := rand.New(rand.NewSource(time.Now().UnixNano())).Intn(100)
+	// Debugln("Random update number for v6: " + strconv.Itoa(n))
+	// return n > 98
 }
