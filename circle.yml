@@ -64,5 +64,5 @@ deployment:
     branch: v5
     owner: heroku
     commands:
-      - gpg --passphrase $HEROKU_WINDOWS_SIGNING_PASS -d resources/deb/key.gpg | gpg --import
+      - echo $HEROKU_DEB_KEY | base64 -d | gpg --import
       - CHANNEL=stable make release -j $JOBZ
