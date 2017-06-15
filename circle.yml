@@ -27,13 +27,15 @@ stages:
           set -e
           echo $HEROKU_DEB_KEY | base64 -d | gpg --import
           set -ex
-          TAG=`git describe --exact-match HEAD || echo NOTAG`
-          if [ "${TAG}" != "NOTAG" ]; then
-            yarn run release stable
-            ./scripts/release-deb stable
-          elif [ "${CIRCLE_BRANCH}" == "master" ]; then
-            yarn run release beta
-            ./scripts/release-deb beta
+          if [ "${CIRCLE_BRANCH}" == "master" ]; then
+            TAG=`git describe --exact-match HEAD || echo NOTAG`
+            if [ "${TAG}" != "NOTAG" ]; then
+              yarn run release stable
+              ./scripts/release-deb stable
+            else
+              yarn run release beta
+              ./scripts/release-deb beta
+            fi
           elif [ "${CIRCLE_BRANCH}" == "dev" ]; then
             yarn run release dev
             ./scripts/release-deb dev
