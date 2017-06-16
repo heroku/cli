@@ -1953,7 +1953,7 @@ sprintf@0.1.x:
   version "0.1.5"
   resolved "http://cli-npm.heroku.com/sprintf/-/sprintf-0.1.5/8f83e39a9317c1a502cb7db8050e51c679f6edcf.tgz#8f83e39a9317c1a502cb7db8050e51c679f6edcf"
 
-ssh2-streams@0.1.19, ssh2-streams@~0.1.18:
+ssh2-streams@0.1.19, ssh2-streams@~0.1.15, ssh2-streams@~0.1.18:
   version "0.1.19"
   resolved "http://cli-npm.heroku.com/ssh2-streams/-/ssh2-streams-0.1.19/f80ececc2de1a39e1aa64469851ec32bc96b83f9.tgz#f80ececc2de1a39e1aa64469851ec32bc96b83f9"
   dependencies:
@@ -1967,14 +1967,6 @@ ssh2-streams@~0.0.5:
   dependencies:
     asn1 "~0.2.0"
     readable-stream "~1.0.0"
-    streamsearch "~0.1.2"
-
-ssh2-streams@~0.1.15:
-  version "0.1.16"
-  resolved "http://cli-npm.heroku.com/ssh2-streams/-/ssh2-streams-0.1.16/ac9d3ce9e062f8cf08fcce5b3a274b6d5cecdc54.tgz#ac9d3ce9e062f8cf08fcce5b3a274b6d5cecdc54"
-  dependencies:
-    asn1 "~0.2.0"
-    semver "^5.1.0"
     streamsearch "~0.1.2"
 
 ssh2@0.4.11:
