@@ -68,7 +68,7 @@ function * run (context, heroku) {
 }
 
 let cmd = {
-  description: 'create a new app',
+  description: 'creates a new app',
   help: `Examples:
 
  $ heroku apps:create
