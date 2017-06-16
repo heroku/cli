@@ -53,7 +53,8 @@
     "heroku-ps-exec": "1.0.3",
     "heroku-redis": "1.2.14",
     "heroku-run": "3.4.11",
-    "heroku-spaces": "2.9.2"
+    "heroku-spaces": "2.9.2",
+    "semver": "5.3.0"
   },
   "engineStrict": true,
   "engines": {
