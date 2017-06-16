@@ -980,6 +980,10 @@ heroku-pipelines@2.1.1, heroku-pipelines@^2.0.1:
     string-just "0.0.2"
     validator "6.2.1"
 
+heroku-plugin-readme-generator@1.1.0:
+  version "1.1.0"
+  resolved "http://cli-npm.heroku.com/heroku-plugin-readme-generator/-/heroku-plugin-readme-generator-1.1.0/d5addd1e7e10a29ee2b571bc9871518c023e2f34.tgz#d5addd1e7e10a29ee2b571bc9871518c023e2f34"
+
 heroku-ps-exec@1.0.3:
   version "1.0.3"
   resolved "http://cli-npm.heroku.com/heroku-ps-exec/-/heroku-ps-exec-1.0.3/985ba54eedbbac2d903e53f8e366d681fb25882a.tgz#985ba54eedbbac2d903e53f8e366d681fb25882a"
