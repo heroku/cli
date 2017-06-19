@@ -42,7 +42,8 @@ var Autoupdate = "no"
 
 // UpdateLockPath is the path to the updating lock file
 var UpdateLockPath = filepath.Join(CacheHome, "updating.lock")
-// AutpupdateFile is the path to the autoupdate file to keep track of last time updated
+
+// AutoupdateFile is the path to the autoupdate file to keep track of last time updated
 var AutoupdateFile = filepath.Join(CacheHome, "autoupdate")
 
 // Update updates the CLI and plugins
