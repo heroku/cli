@@ -121,7 +121,7 @@ func IsUpdateNeeded() bool {
 	d := os.Getenv("SFDX_AUTOUPDATE_DISABLE")
 	if d == "true" || d == "TRUE" {
 		Debugln("background auto-update disabled from SFDX_AUTOUPDATE_DISABLE")
-		return false;
+		return false
 	}
 
 	f, err := os.Stat(AutoupdateFile)
