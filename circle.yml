@@ -55,7 +55,7 @@ deployment:
     branch: sfdx-seperateinstaller
     owner: heroku
     commands:
-      - gpg --passphrase $HEROKU_WINDOWS_SIGNING_PASS -d resources/deb/key.gpg | gpg --import
+      - echo $HEROKU_DEB_KEY | base64 -d | gpg --import
       - CHANNEL=sfdxstable make release -j $JOBZ
   dev:
     branch: dev
