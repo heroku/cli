@@ -42,7 +42,8 @@ var Autoupdate = "no"
 
 // UpdateLockPath is the path to the updating lock file
 var UpdateLockPath = filepath.Join(CacheHome, "updating.lock")
-var autoupdateFile = filepath.Join(CacheHome, "autoupdate")
+// AutpupdateFile is the path to the autoupdate file to keep track of last time updated
+var AutoupdateFile = filepath.Join(CacheHome, "autoupdate")
 
 // Update updates the CLI and plugins
 func Update(channel string) {
@@ -116,7 +117,13 @@ func DownloadCLI(channel, path string, manifest *Manifest) {
 
 // IsUpdateNeeded checks if an update is available
 func IsUpdateNeeded() bool {
-	f, err := os.Stat(autoupdateFile)
+	d := os.Getenv("SFDX_AUTOUPDATE_DISABLE")
+	if d == "true" || d == "TRUE" {
+		Debugln("background auto-update disabled from SFDX_AUTOUPDATE_DISABLE")
+		return false;
+	}
+
+	f, err := os.Stat(AutoupdateFile)
 	if err != nil {
 		if os.IsNotExist(err) {
 			return true
@@ -128,7 +135,7 @@ func IsUpdateNeeded() bool {
 }
 
 func touchAutoupdateFile() {
-	out, err := os.OpenFile(autoupdateFile, os.O_WRONLY|os.O_CREATE, 0644)
+	out, err := os.OpenFile(AutoupdateFile, os.O_WRONLY|os.O_CREATE, 0644)
 	must(err)
 	_, err = out.WriteString(time.Now().String())
 	must(err)

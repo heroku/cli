@@ -25,4 +25,15 @@ var _ = Describe("update.go", func() {
 			Expect(out).To(HavePrefix(BinaryName + "-cli/"))
 		})
 	})
+
+	Describe("IsUpdateNeeded()", func() {
+		It("disabled with env var", func() {
+			os.Remove(cli.AutoupdateFile)
+			needsUpdate := cli.IsUpdateNeeded()
+			Expect(needsUpdate).To(Equal(true))
+			os.Setenv("SFDX_AUTOUPDATE_DISABLE", "true")
+			needsUpdate = cli.IsUpdateNeeded()
+			Expect(needsUpdate).To(Equal(false))
+		})
+	})
 })
