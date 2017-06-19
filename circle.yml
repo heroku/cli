@@ -26,6 +26,8 @@ stages:
         command: |
           set -e
           echo $HEROKU_DEB_KEY | base64 -d | gpg --import
+          echo "machine api.heroku.com" >> ~/.netrc
+          echo "    password $HEROKU_API_KEY" >> ~/.netrc
           set -ex
           TAG=`git describe --exact-match HEAD || echo NOTAG`
           if [ "${CIRCLE_BRANCH}" == "master" ]; then
