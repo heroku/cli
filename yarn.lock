@@ -450,13 +450,13 @@ debug@2.6.0:
   dependencies:
     ms "0.7.2"
 
-debug@2.6.3, debug@2.x, debug@^2.1.3, debug@^2.2.0:
+debug@2.6.3, debug@2.x, debug@^2.1.3:
   version "2.6.3"
   resolved "http://cli-npm.heroku.com/debug/-/debug-2.6.3/0f7eb8c30965ec08c72accfa0130c8b79984141d.tgz#0f7eb8c30965ec08c72accfa0130c8b79984141d"
   dependencies:
     ms "0.7.2"
 
-debug@^2.6.8:
+debug@^2.2.0, debug@^2.6.8:
   version "2.6.8"
   resolved "http://cli-npm.heroku.com/debug/-/debug-2.6.8/e731531ca2ede27d188222427da17821d68ff4fc.tgz#e731531ca2ede27d188222427da17821d68ff4fc"
   dependencies:
