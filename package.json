@@ -32,6 +32,7 @@
       "heroku-pipelines",
       "heroku-ps-exec",
       "heroku-redis",
+      "heroku-repo",
       "heroku-run",
       "heroku-spaces"
     ]
@@ -52,6 +53,7 @@
     "heroku-pipelines": "2.1.1",
     "heroku-ps-exec": "1.0.5",
     "heroku-redis": "1.2.14",
+    "heroku-repo": "1.0.4",
     "heroku-run": "3.4.11",
     "heroku-spaces": "2.9.2",
     "semver": "5.3.0"
