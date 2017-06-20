@@ -177,6 +177,10 @@ byline@5.x:
   version "5.0.0"
   resolved "http://cli-npm.heroku.com/byline/-/byline-5.0.0/741c5216468eadc457b03410118ad77de8c1ddb1.tgz#741c5216468eadc457b03410118ad77de8c1ddb1"
 
+bytes@2.4.0:
+  version "2.4.0"
+  resolved "http://cli-npm.heroku.com/bytes/-/bytes-2.4.0/7d97196f9d5baf7f6935e25985549edd2a6c2339.tgz#7d97196f9d5baf7f6935e25985549edd2a6c2339"
+
 bytes@2.5.0:
   version "2.5.0"
   resolved "http://cli-npm.heroku.com/bytes/-/bytes-2.5.0/4c9423ea2d252c270c41b2bdefeff9bb6b62c06a.tgz#4c9423ea2d252c270c41b2bdefeff9bb6b62c06a"
@@ -195,6 +199,13 @@ cardinal@1.0.0, cardinal@1.x, cardinal@^1.0.0:
   dependencies:
     ansicolors "~0.2.1"
     redeyed "~1.0.0"
+
+cardinal@^0.7.1:
+  version "0.7.1"
+  resolved "http://cli-npm.heroku.com/cardinal/-/cardinal-0.7.1/2c270cdc751c86ceaafa08459c2bb38da2a2e297.tgz#2c270cdc751c86ceaafa08459c2bb38da2a2e297"
+  dependencies:
+    ansicolors "~0.2.1"
+    redeyed "~0.6.0"
 
 caseless@~0.12.0:
   version "0.12.0"
@@ -281,16 +292,23 @@ cli-engine-heroku@0.3.2:
     heroku-client "3.0.2"
     lodash.merge "4.6.0"
 
-cli-engine-heroku@1.1.0, cli-engine-heroku@^1.0.0:
+cli-engine-heroku@1.1.0:
   version "1.1.0"
   resolved "http://cli-npm.heroku.com/cli-engine-heroku/-/cli-engine-heroku-1.1.0/27ac30643e6d480fbff577b269e533df0ba180b8.tgz#27ac30643e6d480fbff577b269e533df0ba180b8"
   dependencies:
     heroku-client "3.x"
     netrc-parser "2.0.2"
 
+cli-engine-heroku@^1.0.0:
+  version "1.1.1"
+  resolved "http://cli-npm.heroku.com/cli-engine-heroku/-/cli-engine-heroku-1.1.1/13d55f2c1caadbf3f62c00ec5ac1192c2d00a4ce.tgz#13d55f2c1caadbf3f62c00ec5ac1192c2d00a4ce"
+  dependencies:
+    heroku-client "3.x"
+    netrc-parser "2.0.2"
+
 cli-engine@3.5.32:
   version "3.5.32"
-  resolved "https://registry.yarnpkg.com/cli-engine/-/cli-engine-3.5.32.tgz#81dbf476b519a70d1a1563f6276071fcdb0e9c9f"
+  resolved "http://cli-npm.heroku.com/cli-engine/-/cli-engine-3.5.32/81dbf476b519a70d1a1563f6276071fcdb0e9c9f.tgz#81dbf476b519a70d1a1563f6276071fcdb0e9c9f"
   dependencies:
     cli-engine-command "5.1.5"
     cli-engine-config "1.3.7"
@@ -515,6 +533,10 @@ engine.io-parser@1.3.2:
 escape-string-regexp@^1.0.2, escape-string-regexp@^1.0.5:
   version "1.0.5"
   resolved "http://cli-npm.heroku.com/escape-string-regexp/-/escape-string-regexp-1.0.5/1b61c0562190a8dff6ae3bb2cf0200ca130b86d4.tgz#1b61c0562190a8dff6ae3bb2cf0200ca130b86d4"
+
+esprima@~2.7.0:
+  version "2.7.3"
+  resolved "http://cli-npm.heroku.com/esprima/-/esprima-2.7.3/96e3b70d5779f6ad49cd032673d1c312767ba581.tgz#96e3b70d5779f6ad49cd032673d1c312767ba581"
 
 esprima@~3.0.0:
   version "3.0.0"
@@ -841,6 +863,57 @@ heroku-cli-status@4.0.0:
     moment "^2.18.1"
     sprintf-js "^1.1.1"
 
+heroku-cli-util@6.0.11:
+  version "6.0.11"
+  resolved "http://cli-npm.heroku.com/heroku-cli-util/-/heroku-cli-util-6.0.11/40f9239cc1cb98d13932103f7135d57de9348035.tgz#40f9239cc1cb98d13932103f7135d57de9348035"
+  dependencies:
+    ansi-escapes "1.4.0"
+    cardinal "^0.7.1"
+    chalk "^1.1.3"
+    got "^6.3.0"
+    heroku-client "3.0.0-beta2"
+    lodash.ary "4.0.1"
+    lodash.defaults "4.0.1"
+    lodash.get "4.3.0"
+    lodash.identity "3.0.0"
+    lodash.keys "4.0.7"
+    lodash.mapvalues "4.4.0"
+    lodash.noop "3.0.1"
+    lodash.partial "4.1.4"
+    lodash.pickby "4.4.0"
+    lodash.property "4.3.0"
+    lodash.repeat "4.0.3"
+    lodash.result "4.4.0"
+    opn "^3.0.3"
+    supports-color "^3.1.2"
+    tunnel-agent "^0.4.3"
+
+heroku-cli-util@6.0.13:
+  version "6.0.13"
+  resolved "http://cli-npm.heroku.com/heroku-cli-util/-/heroku-cli-util-6.0.13/dcedf063dc9e6d76a99e445e09efd1e397efff86.tgz#dcedf063dc9e6d76a99e445e09efd1e397efff86"
+  dependencies:
+    ansi-escapes "1.4.0"
+    cardinal "^0.7.1"
+    chalk "^1.1.3"
+    co "4.6.0"
+    got "^6.3.0"
+    heroku-client "3.0.0-beta2"
+    lodash.ary "4.0.1"
+    lodash.defaults "4.0.1"
+    lodash.get "4.3.0"
+    lodash.identity "3.0.0"
+    lodash.keys "4.0.7"
+    lodash.mapvalues "4.4.0"
+    lodash.noop "3.0.1"
+    lodash.partial "4.1.4"
+    lodash.pickby "4.4.0"
+    lodash.property "4.3.0"
+    lodash.repeat "4.0.3"
+    lodash.result "4.4.0"
+    opn "^3.0.3"
+    supports-color "^3.1.2"
+    tunnel-agent "^0.4.3"
+
 heroku-cli-util@6.1.17:
   version "6.1.17"
   resolved "http://cli-npm.heroku.com/heroku-cli-util/-/heroku-cli-util-6.1.17/3d1e5eb62f2a7e73053b4768054cc6df14b4d578.tgz#3d1e5eb62f2a7e73053b4768054cc6df14b4d578"
@@ -902,6 +975,13 @@ heroku-client@2.4.0:
     inflection "^1.7.0"
     path-proxy "^1.0"
     q "^1.2.0"
+    tunnel-agent "^0.4.0"
+
+heroku-client@3.0.0-beta2:
+  version "3.0.0-beta2"
+  resolved "http://cli-npm.heroku.com/heroku-client/-/heroku-client-3.0.0-beta2/4ef5577187edf67c5577bee5bf48738da3e7327d.tgz#4ef5577187edf67c5577bee5bf48738da3e7327d"
+  dependencies:
+    is-retry-allowed "^1.0.0"
     tunnel-agent "^0.4.0"
 
 heroku-client@3.0.2, heroku-client@3.x:
@@ -1016,6 +1096,25 @@ heroku-redis@1.2.14:
     ioredis "1.9.0"
     ssh2 "0.4.11"
 
+heroku-repo@1.0.4:
+  version "1.0.4"
+  resolved "http://cli-npm.heroku.com/heroku-repo/-/heroku-repo-1.0.4/96d339ead74e83e670d1b0d1662539cc3b72a869.tgz#96d339ead74e83e670d1b0d1662539cc3b72a869"
+  dependencies:
+    bytes "2.4.0"
+    co "4.6.0"
+    heroku-cli-util "6.0.13"
+    heroku-run "3.2.14"
+    mkdirp "0.5.1"
+    smooth-progress "1.0.4"
+
+heroku-run@3.2.14:
+  version "3.2.14"
+  resolved "http://cli-npm.heroku.com/heroku-run/-/heroku-run-3.2.14/44eb09ee9903e59559afe4bafcf7d86db90fde08.tgz#44eb09ee9903e59559afe4bafcf7d86db90fde08"
+  dependencies:
+    co "4.6.0"
+    heroku-cli-util "6.0.11"
+    shellwords "0.1.0"
+
 heroku-run@3.4.11, heroku-run@^3.4.3:
   version "3.4.11"
   resolved "http://cli-npm.heroku.com/heroku-run/-/heroku-run-3.4.11/b3c7d498281ac6b423dc9946afd945c8dea184ef.tgz#b3c7d498281ac6b423dc9946afd945c8dea184ef"
@@ -1093,7 +1192,7 @@ inflight@^1.0.4:
     once "^1.3.0"
     wrappy "1"
 
-inherits@2, inherits@~2.0.0, inherits@~2.0.1:
+inherits@2, inherits@~2.0.0, inherits@~2.0.1, inherits@~2.0.3:
   version "2.0.3"
   resolved "http://cli-npm.heroku.com/inherits/-/inherits-2.0.3/633c2c83e3da42a502f52466022480f4208261de.tgz#633c2c83e3da42a502f52466022480f4208261de"
 
@@ -1271,9 +1370,43 @@ lex@^1.7.9:
   version "1.7.9"
   resolved "http://cli-npm.heroku.com/lex/-/lex-1.7.9/5d5636ccef574348362938b79a47f0eed8ed0d43.tgz#5d5636ccef574348362938b79a47f0eed8ed0d43"
 
+lodash._basefor@~3.0.0:
+  version "3.0.3"
+  resolved "http://cli-npm.heroku.com/lodash._basefor/-/lodash._basefor-3.0.3/7550b4e9218ef09fad24343b612021c79b4c20c2.tgz#7550b4e9218ef09fad24343b612021c79b4c20c2"
+
+lodash._baseiteratee@~4.7.0:
+  version "4.7.0"
+  resolved "http://cli-npm.heroku.com/lodash._baseiteratee/-/lodash._baseiteratee-4.7.0/34a9b5543572727c3db2e78edae3c0e9e66bd102.tgz#34a9b5543572727c3db2e78edae3c0e9e66bd102"
+  dependencies:
+    lodash._stringtopath "~4.8.0"
+
+lodash._basetostring@~4.12.0:
+  version "4.12.0"
+  resolved "http://cli-npm.heroku.com/lodash._basetostring/-/lodash._basetostring-4.12.0/9327c9dc5158866b7fa4b9d42f4638e5766dd9df.tgz#9327c9dc5158866b7fa4b9d42f4638e5766dd9df"
+
+lodash._createwrapper@~4.0.0:
+  version "4.0.5"
+  resolved "http://cli-npm.heroku.com/lodash._createwrapper/-/lodash._createwrapper-4.0.5/d04c021ccd17a70e03ce89e9fe54c47b26a730d6.tgz#d04c021ccd17a70e03ce89e9fe54c47b26a730d6"
+
+lodash._stringtopath@~4.8.0:
+  version "4.8.0"
+  resolved "http://cli-npm.heroku.com/lodash._stringtopath/-/lodash._stringtopath-4.8.0/941bcf0e64266e5fc1d66fed0a6959544c576824.tgz#941bcf0e64266e5fc1d66fed0a6959544c576824"
+  dependencies:
+    lodash._basetostring "~4.12.0"
+
+lodash.ary@4.0.1:
+  version "4.0.1"
+  resolved "http://cli-npm.heroku.com/lodash.ary/-/lodash.ary-4.0.1/b478d894cd6075475fee39e1778c8f5601cf77fa.tgz#b478d894cd6075475fee39e1778c8f5601cf77fa"
+  dependencies:
+    lodash._createwrapper "~4.0.0"
+
 lodash.ary@4.1.1, lodash.ary@^4.1.1:
   version "4.1.1"
   resolved "http://cli-npm.heroku.com/lodash.ary/-/lodash.ary-4.1.1/66065fa91bacc7a034d9c8fce52f83d3c7e40212.tgz#66065fa91bacc7a034d9c8fce52f83d3c7e40212"
+
+lodash.assigninwith@^4.0.0:
+  version "4.2.0"
+  resolved "http://cli-npm.heroku.com/lodash.assigninwith/-/lodash.assigninwith-4.2.0/af02c98432ac86d93da695b4be801401971736af.tgz#af02c98432ac86d93da695b4be801401971736af"
 
 lodash.capitalize@4.2.1:
   version "4.2.1"
@@ -1286,6 +1419,13 @@ lodash.compact@3.0.1:
 lodash.countby@4.6.0:
   version "4.6.0"
   resolved "http://cli-npm.heroku.com/lodash.countby/-/lodash.countby-4.6.0/5351f24de16724a0059b561f920b0d80af78a33c.tgz#5351f24de16724a0059b561f920b0d80af78a33c"
+
+lodash.defaults@4.0.1:
+  version "4.0.1"
+  resolved "http://cli-npm.heroku.com/lodash.defaults/-/lodash.defaults-4.0.1/05678e612a9716c64b5bf2cecf045131ca3d3402.tgz#05678e612a9716c64b5bf2cecf045131ca3d3402"
+  dependencies:
+    lodash.assigninwith "^4.0.0"
+    lodash.rest "^4.0.0"
 
 lodash.defaults@4.2.0, lodash.defaults@^4.1.0, lodash.defaults@^4.2.0:
   version "4.2.0"
@@ -1307,6 +1447,12 @@ lodash.frompairs@4.0.1:
   version "4.0.1"
   resolved "http://cli-npm.heroku.com/lodash.frompairs/-/lodash.frompairs-4.0.1/bc4e5207fa2757c136e573614e9664506b2b1bd2.tgz#bc4e5207fa2757c136e573614e9664506b2b1bd2"
 
+lodash.get@4.3.0:
+  version "4.3.0"
+  resolved "http://cli-npm.heroku.com/lodash.get/-/lodash.get-4.3.0/d3765ffbf770d4e3d2bb4f6f40995ceaa223e36f.tgz#d3765ffbf770d4e3d2bb4f6f40995ceaa223e36f"
+  dependencies:
+    lodash._stringtopath "~4.8.0"
+
 lodash.get@4.4.2, lodash.get@^4.4.2:
   version "4.4.2"
   resolved "http://cli-npm.heroku.com/lodash.get/-/lodash.get-4.4.2/2d177f652fa31e939b4438d5341499dfa3825e99.tgz#2d177f652fa31e939b4438d5341499dfa3825e99"
@@ -1319,9 +1465,17 @@ lodash.identity@3.0.0, lodash.identity@^3.0.0:
   version "3.0.0"
   resolved "http://cli-npm.heroku.com/lodash.identity/-/lodash.identity-3.0.0/ad7bc6a4e647d79c972e1b80feef7af156267876.tgz#ad7bc6a4e647d79c972e1b80feef7af156267876"
 
-lodash.keys@4.2.0, lodash.keys@^4.2.0:
+lodash.keys@4.0.7:
+  version "4.0.7"
+  resolved "http://cli-npm.heroku.com/lodash.keys/-/lodash.keys-4.0.7/30e1b3bd98e54d6a0611991812685b6bc47cb63b.tgz#30e1b3bd98e54d6a0611991812685b6bc47cb63b"
+
+lodash.keys@4.2.0, lodash.keys@^4.0.0, lodash.keys@^4.2.0:
   version "4.2.0"
   resolved "http://cli-npm.heroku.com/lodash.keys/-/lodash.keys-4.2.0/a08602ac12e4fb83f91fc1fb7a360a4d9ba35205.tgz#a08602ac12e4fb83f91fc1fb7a360a4d9ba35205"
+
+lodash.keysin@^4.0.0:
+  version "4.2.0"
+  resolved "http://cli-npm.heroku.com/lodash.keysin/-/lodash.keysin-4.2.0/8cc3fb35c2d94acc443a1863e02fa40799ea6f28.tgz#8cc3fb35c2d94acc443a1863e02fa40799ea6f28"
 
 lodash.map@4.6.0:
   version "4.6.0"
@@ -1330,6 +1484,14 @@ lodash.map@4.6.0:
 lodash.mapkeys@4.6.0:
   version "4.6.0"
   resolved "http://cli-npm.heroku.com/lodash.mapkeys/-/lodash.mapkeys-4.6.0/df2cfa231d7c57c7a8ad003abdad5d73d3ea5195.tgz#df2cfa231d7c57c7a8ad003abdad5d73d3ea5195"
+
+lodash.mapvalues@4.4.0:
+  version "4.4.0"
+  resolved "http://cli-npm.heroku.com/lodash.mapvalues/-/lodash.mapvalues-4.4.0/586e4a31aa3f94ca1d6999ed28f8ac7cb1fe8e06.tgz#586e4a31aa3f94ca1d6999ed28f8ac7cb1fe8e06"
+  dependencies:
+    lodash._basefor "~3.0.0"
+    lodash._baseiteratee "~4.7.0"
+    lodash.keys "^4.0.0"
 
 lodash.mapvalues@4.6.0:
   version "4.6.0"
@@ -1363,6 +1525,13 @@ lodash.padend@^4.6.1:
   version "4.6.1"
   resolved "http://cli-npm.heroku.com/lodash.padend/-/lodash.padend-4.6.1/53ccba047d06e158d311f45da625f4e49e6f166e.tgz#53ccba047d06e158d311f45da625f4e49e6f166e"
 
+lodash.partial@4.1.4:
+  version "4.1.4"
+  resolved "http://cli-npm.heroku.com/lodash.partial/-/lodash.partial-4.1.4/532b796fcb2fdf03e4d9d6180097c9676648828a.tgz#532b796fcb2fdf03e4d9d6180097c9676648828a"
+  dependencies:
+    lodash._createwrapper "~4.0.0"
+    lodash.rest "^4.0.0"
+
 lodash.partial@4.2.1, lodash.partial@^4.2.1:
   version "4.2.1"
   resolved "http://cli-npm.heroku.com/lodash.partial/-/lodash.partial-4.2.1/49f3d8cfdaa3bff8b3a91d127e923245418961d4.tgz#49f3d8cfdaa3bff8b3a91d127e923245418961d4"
@@ -1371,9 +1540,22 @@ lodash.partition@4.6.0:
   version "4.6.0"
   resolved "http://cli-npm.heroku.com/lodash.partition/-/lodash.partition-4.6.0/a38e46b73469e0420b0da1212e66d414be364ba4.tgz#a38e46b73469e0420b0da1212e66d414be364ba4"
 
+lodash.pickby@4.4.0:
+  version "4.4.0"
+  resolved "http://cli-npm.heroku.com/lodash.pickby/-/lodash.pickby-4.4.0/490d6c9c37ddd6e2d42b2bc419eba7e729129a40.tgz#490d6c9c37ddd6e2d42b2bc419eba7e729129a40"
+  dependencies:
+    lodash._baseiteratee "~4.7.0"
+    lodash.keysin "^4.0.0"
+
 lodash.pickby@4.6.0:
   version "4.6.0"
   resolved "http://cli-npm.heroku.com/lodash.pickby/-/lodash.pickby-4.6.0/7dea21d8c18d7703a27c704c15d3b84a67e33aff.tgz#7dea21d8c18d7703a27c704c15d3b84a67e33aff"
+
+lodash.property@4.3.0:
+  version "4.3.0"
+  resolved "http://cli-npm.heroku.com/lodash.property/-/lodash.property-4.3.0/12bff820cb942f59e24a8783268ee5b663a0aa10.tgz#12bff820cb942f59e24a8783268ee5b663a0aa10"
+  dependencies:
+    lodash._stringtopath "~4.8.0"
 
 lodash.property@4.4.2, lodash.property@^4.4.2:
   version "4.4.2"
@@ -1383,9 +1565,25 @@ lodash.reduce@4.6.0, lodash.reduce@^4.6.0:
   version "4.6.0"
   resolved "http://cli-npm.heroku.com/lodash.reduce/-/lodash.reduce-4.6.0/f1ab6b839299ad48f784abbf476596f03b914d3b.tgz#f1ab6b839299ad48f784abbf476596f03b914d3b"
 
+lodash.repeat@4.0.3:
+  version "4.0.3"
+  resolved "http://cli-npm.heroku.com/lodash.repeat/-/lodash.repeat-4.0.3/257389f4d6ac2925870a4a59480ff647281e8273.tgz#257389f4d6ac2925870a4a59480ff647281e8273"
+  dependencies:
+    lodash.tostring "^4.0.0"
+
 lodash.repeat@4.1.0:
   version "4.1.0"
   resolved "http://cli-npm.heroku.com/lodash.repeat/-/lodash.repeat-4.1.0/fc7de8131d8c8ac07e4b49f74ffe829d1f2bec44.tgz#fc7de8131d8c8ac07e4b49f74ffe829d1f2bec44"
+
+lodash.rest@^4.0.0:
+  version "4.0.5"
+  resolved "http://cli-npm.heroku.com/lodash.rest/-/lodash.rest-4.0.5/954ef75049262038c96d1fc98b28fdaf9f0772aa.tgz#954ef75049262038c96d1fc98b28fdaf9f0772aa"
+
+lodash.result@4.4.0:
+  version "4.4.0"
+  resolved "http://cli-npm.heroku.com/lodash.result/-/lodash.result-4.4.0/1154b75b73ff10d1f4749a3697c2ba647ac1cefb.tgz#1154b75b73ff10d1f4749a3697c2ba647ac1cefb"
+  dependencies:
+    lodash._stringtopath "~4.8.0"
 
 lodash.result@4.5.2, lodash.result@^4.5.2:
   version "4.5.2"
@@ -1418,6 +1616,10 @@ lodash.sumby@4.6.0:
 lodash.topairs@4.3.0:
   version "4.3.0"
   resolved "http://cli-npm.heroku.com/lodash.topairs/-/lodash.topairs-4.3.0/3b6deaa37d60fb116713c46c5f17ea190ec48d64.tgz#3b6deaa37d60fb116713c46c5f17ea190ec48d64"
+
+lodash.tostring@^4.0.0:
+  version "4.1.4"
+  resolved "http://cli-npm.heroku.com/lodash.tostring/-/lodash.tostring-4.1.4/560c27d1f8eadde03c2cce198fef5c031d8298fb.tgz#560c27d1f8eadde03c2cce198fef5c031d8298fb"
 
 lodash.truncate@4.4.2:
   version "4.4.2"
@@ -1735,14 +1937,14 @@ qs@~6.4.0:
   resolved "http://cli-npm.heroku.com/qs/-/qs-6.4.0/13e26d28ad6b0ffaa91312cd3bf708ed351e7233.tgz#13e26d28ad6b0ffaa91312cd3bf708ed351e7233"
 
 readable-stream@^2.0.0, readable-stream@^2.0.5, readable-stream@^2.0.6:
-  version "2.2.11"
-  resolved "http://cli-npm.heroku.com/readable-stream/-/readable-stream-2.2.11/0796b31f8d7688007ff0b93a8088d34aa17c0f72.tgz#0796b31f8d7688007ff0b93a8088d34aa17c0f72"
+  version "2.3.0"
+  resolved "http://cli-npm.heroku.com/readable-stream/-/readable-stream-2.3.0/640f5dcda88c91a8dc60787145629170813a1ed2.tgz#640f5dcda88c91a8dc60787145629170813a1ed2"
   dependencies:
     core-util-is "~1.0.0"
-    inherits "~2.0.1"
+    inherits "~2.0.3"
     isarray "~1.0.0"
     process-nextick-args "~1.0.6"
-    safe-buffer "~5.0.1"
+    safe-buffer "~5.1.0"
     string_decoder "~1.0.0"
     util-deprecate "~1.0.1"
 
@@ -1754,6 +1956,12 @@ readable-stream@~1.0.0:
     inherits "~2.0.1"
     isarray "0.0.1"
     string_decoder "~0.10.x"
+
+redeyed@~0.6.0:
+  version "0.6.0"
+  resolved "http://cli-npm.heroku.com/redeyed/-/redeyed-0.6.0/692a2f765fecab433549edd439a7684aab67f789.tgz#692a2f765fecab433549edd439a7684aab67f789"
+  dependencies:
+    esprima "~2.7.0"
 
 redeyed@~1.0.0:
   version "1.0.1"
@@ -1823,7 +2031,7 @@ rx@^4.1.0:
   version "4.1.0"
   resolved "http://cli-npm.heroku.com/rx/-/rx-4.1.0/a5f13ff79ef3b740fe30aa803fb09f98805d4782.tgz#a5f13ff79ef3b740fe30aa803fb09f98805d4782"
 
-safe-buffer@^5.0.1:
+safe-buffer@^5.0.1, safe-buffer@~5.1.0:
   version "5.1.0"
   resolved "http://cli-npm.heroku.com/safe-buffer/-/safe-buffer-5.1.0/fe4c8460397f9eaaaa58e73be46273408a45e223.tgz#fe4c8460397f9eaaaa58e73be46273408a45e223"
 
