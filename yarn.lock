@@ -281,16 +281,9 @@ cli-engine-heroku@0.3.2:
     heroku-client "3.0.2"
     lodash.merge "4.6.0"
 
-cli-engine-heroku@1.1.1:
+cli-engine-heroku@1.1.1, cli-engine-heroku@^1.0.0:
   version "1.1.1"
   resolved "http://cli-npm.heroku.com/cli-engine-heroku/-/cli-engine-heroku-1.1.1/13d55f2c1caadbf3f62c00ec5ac1192c2d00a4ce.tgz#13d55f2c1caadbf3f62c00ec5ac1192c2d00a4ce"
-  dependencies:
-    heroku-client "3.x"
-    netrc-parser "2.0.2"
-
-cli-engine-heroku@^1.0.0:
-  version "1.1.0"
-  resolved "http://cli-npm.heroku.com/cli-engine-heroku/-/cli-engine-heroku-1.1.0/27ac30643e6d480fbff577b269e533df0ba180b8.tgz#27ac30643e6d480fbff577b269e533df0ba180b8"
   dependencies:
     heroku-client "3.x"
     netrc-parser "2.0.2"
