@@ -30,21 +30,20 @@ stages:
           echo "    password $HEROKU_API_KEY" >> ~/.netrc
           echo "    jeff+devcenter@heroku.com" >> ~/.netrc
           set -ex
-          TAG=`git describe --exact-match HEAD || echo NOTAG`
-          if [ "${CIRCLE_BRANCH}" == "master" ]; then
-            yarn run release beta
-            ./scripts/release-deb beta
-          fi
-          if [ "${TAG}" != "NOTAG" ]; then
-            yarn run release stable
-            ./scripts/release-deb stable
-            ./scripts/generate_docs.sh > /tmp/cli_documentation.md
-          fi
           if [ "${CIRCLE_BRANCH}" == "auto-doc" ]; then
             ./scripts/generate_docs.sh > /tmp/cli_documentation.md
             devcenter push /tmp/heroku-cli-commands.md --trace
           fi
-          if [ "${CIRCLE_BRANCH}" == "dev" ]; then
+          if [ "${CIRCLE_BRANCH}" == "master" ]; then
+            TAG=`git describe --exact-match HEAD || echo NOTAG`
+            if [ "${TAG}" != "NOTAG" ]; then
+              yarn run release stable
+              ./scripts/release-deb stable
+            else
+              yarn run release beta
+              ./scripts/release-deb beta
+            fi
+          elif [ "${CIRCLE_BRANCH}" == "dev" ]; then
             yarn run release dev
             ./scripts/release-deb dev
           fi

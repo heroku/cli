@@ -1,7 +1,7 @@
 {
   "name": "heroku-cli",
   "description": "CLI to interact with Heroku",
-  "version": "6.10.8",
+  "version": "6.11.17",
   "author": "Jeff Dickey @dickeyxxx",
   "bin": {
     "heroku": "bin/run"
@@ -37,23 +37,24 @@
     ]
   },
   "dependencies": {
-    "cli-engine": "3.5.16",
-    "heroku-apps": "2.3.1",
+    "cli-engine": "3.5.33",
+    "heroku-apps": "2.4.0",
     "heroku-certs": "1.1.38",
     "heroku-ci": "1.8.0",
     "heroku-cli-addons": "1.2.21",
     "heroku-cli-oauth": "2.0.13",
     "heroku-cli-status": "4.0.0",
-    "heroku-fork": "4.1.22",
+    "heroku-fork": "4.1.23",
     "heroku-git": "2.5.17",
     "heroku-local": "5.1.16",
     "heroku-orgs": "1.6.2",
-    "heroku-pg": "2.2.1",
+    "heroku-pg": "2.2.2",
     "heroku-pipelines": "2.1.1",
-    "heroku-ps-exec": "1.0.3",
+    "heroku-ps-exec": "1.0.5",
     "heroku-redis": "1.2.14",
     "heroku-run": "3.4.11",
-    "heroku-spaces": "2.9.2"
+    "heroku-spaces": "2.9.2",
+    "semver": "5.3.0"
   },
   "devDependencies": {
     "heroku-plugin-readme-generator": "git+ssh://git@github.com/heroku/heroku-cli-dev-center-generator.git#dev-center-cli-6-gen"
