@@ -73,13 +73,13 @@ Created OAuth authorization.
 You can also pass in short output format to only output the token.
 
 ```bash
-$ heroku authorizations:create --output_format short
+$ heroku authorizations:create --output-format short
 nec6a9b6-b21a-4ba1-il95-70zd47e14c4d
 ```
 
 Another option allows for tokens that expire.  This token expires in 10 seconds.
 ```
-$ heroku authorizations:create --expires_in 10
+$ heroku authorizations:create --expires-in 10
 Created OAuth authorization.
   Client:      <none>
   ID:          2231biha6-5b1e-4268-ba04-2ee7b74m2gf6
@@ -88,10 +88,10 @@ Created OAuth authorization.
   Token:       9aa5d667-fg37-4028-8dc9-b2191b5z5966
 ```
 
-A combination of short format and expires_in can be handy to pass into a job that needs access to heroku:
+A combination of short format and expires-in can be handy to pass into a job that needs access to heroku:
 
 ``` bash
-$ heroku run "HEROKU_EMAIL=`heroku auth:whoami` HEROKU_API_KEY=`heroku authorizations:create --expires_in 120 --output_format short` ./my_job.sh" -a myapp
+$ heroku run "HEROKU_EMAIL=`heroku auth:whoami` HEROKU_API_KEY=`heroku authorizations:create --expires-in 120 --output-format short` ./my_job.sh" -a myapp
 ```
 
 
