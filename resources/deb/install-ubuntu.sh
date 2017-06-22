@@ -14,6 +14,9 @@
     $SUDO sh <<SCRIPT
   set -ex
 
+  apt-get update
+  apt-get install -y apt-transport-https
+
   # add heroku repository to apt
   echo "deb https://cli-assets.heroku.com/branches/stable/apt ./" > /etc/apt/sources.list.d/heroku.list
 
@@ -22,9 +25,6 @@
 
   # install heroku's release key for package verification
   wget -qO- https://cli-assets.heroku.com/apt/release.key | apt-key add -
-
-  # install apt-transport-https
-  apt-get install -y apt-transport-https
 
   # update your sources
   apt-get update
