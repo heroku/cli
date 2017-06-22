@@ -19,6 +19,9 @@
     apt-get install apt-transport-https
   fi
 
+  apt-get update
+  apt-get install -y apt-transport-https
+
   # add heroku repository to apt
   echo "deb https://cli-assets.heroku.com/branches/stable/apt ./" > /etc/apt/sources.list.d/heroku.list
 
