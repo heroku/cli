@@ -57,7 +57,7 @@
     "semver": "5.3.0"
   },
   "devDependencies": {
-    "heroku-plugin-readme-generator": "git+ssh://git@github.com/heroku/heroku-cli-dev-center-generator.git#dev-center-cli-6-gen"
+    "heroku-plugin-readme-generator": "git+ssh://git@github.com/heroku/heroku-cli-dev-center-generator.git#flags-as-tables"
   },
   "engineStrict": true,
   "engines": {
