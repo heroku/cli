@@ -3,6 +3,10 @@
   "version": "1.8.0",
   "description": "Heroku CLI plugin for Heroku CI",
   "main": "index.js",
+  "engines": {
+    "node": ">=6.8.1 <8.0.0",
+    "npm": ">=3.10.8"
+  },
   "scripts": {
     "test": "mocha -R tap && standard --verbose | standard-tap",
     "format": "standard --format"
