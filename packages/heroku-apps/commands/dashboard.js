@@ -34,13 +34,12 @@ function displayErrors (metrics) {
 function displayMetrics (metrics) {
   const flatten = require('lodash.flatten')
   const mean = require('lodash.mean')
-  const pad = require('lodash.pad')
   const round = require('lodash.round')
   const sum = require('lodash.sum')
   const values = require('lodash.values')
 
   function rpmSparkline () {
-    if (process.platform === 'win32') return
+    if (['win32', 'windows'].includes(process.platform)) return ''
     let sparkline = require('sparkline')
     let points = []
     values(metrics.routerStatus.data).forEach((cur) => {
@@ -55,7 +54,8 @@ function displayMetrics (metrics) {
   let ms = ''
   let rpm = ''
   if (metrics.routerLatency && !empty(metrics.routerLatency.data)) {
-    ms = pad(`${round(mean(metrics.routerLatency.data.latency_p50))} ms`, 6)
+    let latency = metrics.routerLatency.data['latency.ms.p50']
+    if (latency) ms = `${round(mean(latency))} ms `
   }
   if (metrics.routerStatus && !empty(metrics.routerStatus.data)) {
     rpm = `${round(sum(flatten(values(metrics.routerStatus.data))) / 24 / 60)} rpm ${rpmSparkline()}`
