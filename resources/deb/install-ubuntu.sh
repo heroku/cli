@@ -13,17 +13,18 @@
     # run inside sudo
     $SUDO sh <<SCRIPT
   set -ex
-  apt-get update
-  export APT_TRANSPORT_MISSING=$(dpkg -l apt-transport-https | grep -c 'no packages')
-  if [ $APT_TRANSPORT_MISSING == '1' ]; then
-    apt-get install apt-transport-https
-  fi
+
+  # if apt-transport-https is not installed, clear out old sources, update, then install apt-transport-https
+  dpkg -s apt-transport-https 1>/dev/null 2>/dev/null || \
+    (echo "" > /etc/apt/sources.list.d/heroku.list \
+      && apt-get update \
+      && apt-get install -y apt-transport-https)
 
   # add heroku repository to apt
   echo "deb https://cli-assets.heroku.com/branches/stable/apt ./" > /etc/apt/sources.list.d/heroku.list
 
   # remove toolbelt
-  apt-get remove -y heroku-toolbelt heroku || true
+  (dpkg -s heroku-toolbelt 1>/dev/null 2>/dev/null && (apt-get remove -y heroku-toolbelt heroku || true)) || true
 
   # install heroku's release key for package verification
   wget -qO- https://cli-assets.heroku.com/apt/release.key | apt-key add -
