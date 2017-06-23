@@ -28,7 +28,6 @@ describe('releases:info', function () {
       .get('/apps/myapp/releases')
       .reply(200, [release])
       .get('/apps/myapp/releases/10/config-vars')
-      .matchHeader('accept', 'application/vnd.heroku+json; version=3')
       .reply(200, configVars)
     return cmd.run({app: 'myapp', flags: {}, args: {}})
       .then(() => expect(cli.stdout, 'to equal', `=== Release v10
@@ -51,7 +50,6 @@ FOO: foo
       .get('/apps/myapp/releases')
       .reply(200, [release])
       .get('/apps/myapp/releases/10/config-vars')
-      .matchHeader('accept', 'application/vnd.heroku+json; version=3')
       .reply(200, configVars)
     return cmd.run({app: 'myapp', flags: {shell: true}, args: {}})
       .then(() => expect(cli.stdout, 'to equal', `=== Release v10
@@ -72,10 +70,8 @@ BAR=bar
   it('shows release info by id', function () {
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/releases/10')
-      .matchHeader('accept', 'application/vnd.heroku+json; version=3')
       .reply(200, release)
       .get('/apps/myapp/releases/10/config-vars')
-      .matchHeader('accept', 'application/vnd.heroku+json; version=3')
       .reply(200, configVars)
     return cmd.run({app: 'myapp', flags: {}, args: {release: 'v10'}})
       .then(() => expect(cli.stdout, 'to equal', `=== Release v10
@@ -96,10 +92,8 @@ FOO: foo
   it('shows recent release as json', function () {
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/releases/10')
-      .matchHeader('accept', 'application/vnd.heroku+json; version=3')
       .reply(200, release)
       .get('/apps/myapp/releases/10/config-vars')
-      .matchHeader('accept', 'application/vnd.heroku+json; version=3')
       .reply(200, configVars)
     return cmd.run({app: 'myapp', flags: {json: true}, args: {release: 'v10'}})
       .then(() => expect(JSON.parse(cli.stdout), 'to satisfy', {version: 10}))
@@ -118,7 +112,6 @@ FOO: foo
         version: 10
       }])
       .get('/apps/myapp/releases/10/config-vars')
-      .matchHeader('accept', 'application/vnd.heroku+json; version=3')
       .reply(200, configVars)
     return cmd.run({app: 'myapp', flags: {}, args: {}})
       .then(() => expect(cli.stdout, 'to equal', `=== Release v10
@@ -146,7 +139,6 @@ FOO: foo
         created_at: d
       }])
       .get('/apps/myapp/releases/10/config-vars')
-      .matchHeader('accept', 'application/vnd.heroku+json; version=3')
       .reply(200, configVars)
     return cmd.run({app: 'myapp', flags: {}, args: {}})
       .then(() => expect(cli.stdout, 'to equal', `=== Release v10
