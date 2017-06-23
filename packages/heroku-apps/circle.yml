@@ -3,7 +3,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: dickeyxxx/cli-engine-docker:v1.0.2
+      - image: dickeyxxx/cli-engine-docker:v1.3.0
     working_directory: ~/cli
     steps:
       - checkout
