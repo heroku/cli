@@ -13,11 +13,7 @@
     # run inside sudo
     $SUDO sh <<SCRIPT
   set -ex
-  apt-get update
-  export APT_TRANSPORT_MISSING=$(dpkg -l apt-transport-https | grep -c 'no packages')
-  if [ $APT_TRANSPORT_MISSING == '1' ]; then
-    apt-get install apt-transport-https
-  fi
+  dpkg -s apt-transport-https 1>/dev/null 2>/dev/null || (apt-get update && apt-get install apt-transport-https)
 
   # add heroku repository to apt
   echo "deb https://cli-assets.heroku.com/branches/stable/apt ./" > /etc/apt/sources.list.d/heroku.list
