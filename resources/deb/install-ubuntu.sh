@@ -14,7 +14,7 @@
     $SUDO sh <<SCRIPT
   set -ex
   apt-get update
-  export APT_TRANSPORT_MISSING=$(dpkg -l apt-transport-https | grep -c 'no packages')
+  export APT_TRANSPORT_MISSING=$(dpkg -l apt-transport-https 2>&1 | grep -c 'no packages')
   if [ $APT_TRANSPORT_MISSING == '1' ]; then
     apt-get install apt-transport-https
   fi
