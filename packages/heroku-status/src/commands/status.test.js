@@ -12,7 +12,7 @@ beforeEach(() => nock.cleanAll())
 afterEach(() => api.done())
 
 describe('when heroku is green', () => {
-  it('shows success message', async () => {
+  beforeEach(() => {
     api.get('/api/v4/current-status')
       .reply(200, {
         status: [
@@ -23,11 +23,19 @@ describe('when heroku is green', () => {
         incidents: [],
         scheduled: []
       })
+  })
 
+  test('shows success message', async () => {
     let cmd = await Status.mock()
     expect(cmd.out.stdout.output).toEqual(`Apps:      No known issues at this time.
 Data:      No known issues at this time.
 Tools:     No known issues at this time.\n`)
+    expect(cmd.out.stderr.output).toEqual('')
+  })
+
+  test('--json', async () => {
+    let cmd = await Status.mock('--json')
+    expect(JSON.parse(cmd.out.stdout.output).status[0]).toMatchObject({status: 'green'})
     expect(cmd.out.stderr.output).toEqual('')
   })
 })
