@@ -2,7 +2,7 @@
 version: 2
 executorType: docker
 containerInfo:
-  - image: dickeyxxx/cli-engine-docker:v1.2.1-node7
+  - image: dickeyxxx/cli-engine-docker:v1.3.1
 stages:
   build:
     workDir: ~/cli
@@ -29,7 +29,14 @@ stages:
         command: |
           set -e
           echo $HEROKU_DEB_KEY | base64 -d | gpg --import
+          echo "machine api.heroku.com" >> ~/.netrc
+          echo "    password $HEROKU_API_KEY" >> ~/.netrc
+          echo "    jeff+devcenter@heroku.com" >> ~/.netrc
           set -ex
+          if [ "${CIRCLE_BRANCH}" == "auto-doc" ]; then
+            ./scripts/generate_docs.sh > /tmp/cli_documentation.md
+            devcenter push /tmp/heroku-cli-commands.md --trace
+          fi
           if [ "${CIRCLE_BRANCH}" == "master" ]; then
             TAG=`git describe --exact-match HEAD || echo NOTAG`
             if [ "${TAG}" != "NOTAG" ]; then
