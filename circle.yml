@@ -15,6 +15,9 @@ stages:
           set -exu
           yarn config set registry https://cli-npm.heroku.com
           yarn
+          if [ "${CIRCLE_BRANCH}" == "dev" ]; then
+            cd ~/cli/node_modules/cli-engine && yarn && cd ~/cli
+          fi
           ./bin/run version
           ./bin/run help
       - type: cache-save
