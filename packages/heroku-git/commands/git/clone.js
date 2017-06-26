@@ -19,10 +19,10 @@ module.exports = {
   description: 'clones a heroku app to your local machine at DIRECTORY (defaults to app name)',
   help: `Examples:
 
-  $ heroku git:clone -a example
-  Cloning into 'example'...
-  remote: Counting objects: 42, done.
-  ...`,
+    $ heroku git:clone -a example
+    Cloning into 'example'...
+    remote: Counting objects: 42, done.
+    ...`,
   needsAuth: true,
   args: [
     {name: 'DIRECTORY', optional: true, description: 'where to clone the app'}
