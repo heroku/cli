@@ -26,7 +26,7 @@ module.exports = {
 
 Example:
 
- $ heroku certs:key example.com.crt example.com.key
+    $ heroku certs:key example.com.crt example.com.key
 `,
   needsApp: true,
   needsAuth: true,

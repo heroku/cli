@@ -162,7 +162,7 @@ module.exports = {
 
 Example:
 
- $ heroku certs:generate example.com
+    $ heroku certs:generate example.com
 `,
   needsApp: true,
   needsAuth: true,
