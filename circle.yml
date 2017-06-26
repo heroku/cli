@@ -30,8 +30,9 @@ stages:
           set -e
           echo $HEROKU_DEB_KEY | base64 -d | gpg --import
           echo "machine api.heroku.com" >> ~/.netrc
-          echo "    password $HEROKU_API_KEY" >> ~/.netrc
-          echo "    jeff+devcenter@heroku.com" >> ~/.netrc
+          echo "  login jeff+devcenter@heroku.com" >> ~/.netrc
+          echo "  password $HEROKU_API_KEY" >> ~/.netrc
+          chmod 0600 ~/.netrc
           set -ex
           if [ "${CIRCLE_BRANCH}" == "auto-doc" ]; then
             ./scripts/generate_docs.sh > /tmp/cli_documentation.md
