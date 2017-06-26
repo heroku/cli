@@ -1,7 +1,7 @@
 'use strict'
 /* globals describe it beforeEach afterEach cli nock expect */
 
-let cmd = require('../../../commands/apps/unlock').apps
+let cmd = require('../../../commands/apps/unlock')[0]
 
 describe('heroku apps:unlock', () => {
   beforeEach(() => cli.mockConsole())

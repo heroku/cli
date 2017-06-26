@@ -87,14 +87,14 @@ let cmd = {
   help: `
 Examples:
 
-  $ heroku apps:transfer collaborator@example.com
-  Transferring example to collaborator@example.com... done
+    $ heroku apps:transfer collaborator@example.com
+    Transferring example to collaborator@example.com... done
 
-  $ heroku apps:transfer acme-widgets
-  Transferring example to acme-widgets... done
+    $ heroku apps:transfer acme-widgets
+    Transferring example to acme-widgets... done
 
-  $ heroku apps:transfer --bulk acme-widgets
-  ...
+    $ heroku apps:transfer --bulk acme-widgets
+    ...
   `
 }
 
