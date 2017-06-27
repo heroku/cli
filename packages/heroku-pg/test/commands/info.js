@@ -58,13 +58,13 @@ describe('pg', () => {
     let dbA = {info: [
       {name: 'Plan', values: ['Hobby-dev']},
       {name: 'Empty', values: []},
-      {name: 'Following', resolve_db_name: true, values: ['postgres://uxxxxxxxxx:pxxxxxxxx@ec2-54-111-111-1.compute-1.amazonaws.com:5452/dxxxxxxxxxxxx']}
+      {name: 'Following', resolve_db_name: true, values: ['postgres://ec2-54-111-111-1.compute-1.amazonaws.com:5452/dxxxxxxxxxxxx']}
     ],
       resource_url: config.DATABASE_URL
     }
     let dbB = {info: [
       {name: 'Plan', values: ['Hobby-dev']},
-      {name: 'Following', resolve_db_name: true, values: ['postgres://uxxxxxxxxx:pxxxxxxxx@ec2-55-111-111-1.compute-1.amazonaws.com/dxxxxxxxxxxxx']}
+      {name: 'Following', resolve_db_name: true, values: ['postgres://ec2-55-111-111-1.compute-1.amazonaws.com/dxxxxxxxxxxxx']}
     ],
       resource_url: config.HEROKU_POSTGRESQL_PURPLE_URL
     }

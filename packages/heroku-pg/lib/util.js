@@ -5,6 +5,7 @@ const debug = require('./debug')
 const getBastion = require('./bastion').getBastion
 const sortBy = require('lodash.sortby')
 const printf = require('printf')
+const URL = require('url').URL
 
 function getUrl (configVars) {
   let connstringVars = configVars.filter((cv) => (cv.endsWith('_URL')))
@@ -111,7 +112,21 @@ exports.configVarNamesFromValue = (config, value) => {
 
   let keys = []
   for (let key of Object.keys(config)) {
-    if (config[key] === value) keys.push(key)
+    let configVal = config[key]
+    if (configVal === value) {
+      keys.push(key)
+    } else if (configVal.startsWith('postgres://')) {
+      try {
+        let configURL = new URL(configVal)
+        let ourURL = new URL(value)
+        let components = [ 'protocol', 'hostname', 'port', 'pathname' ]
+        if (components.every((component) => ourURL[component] === configURL[component])) {
+          keys.push(key)
+        }
+      } catch (err) {
+        // ignore -- this is not a valid URL so not a matching URL
+      }
+    }
   }
   return sortBy(keys, k => k !== 'DATABASE_URL', 'name')
 }
