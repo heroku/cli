@@ -26,8 +26,7 @@ module.exports = {
   command: 'inside',
   hidden: true,
   description: 'run a one-off process inside an existing heroku dyno',
-  help: `
-Examples:
+  help: `Examples:
 
   $ heroku run:inside web.1 bash
   Running bash on web.1.... up

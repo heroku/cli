@@ -18,12 +18,11 @@ function * run (context, heroku) {
 module.exports = {
   topic: 'logs',
   description: 'display recent log output',
-  help: `
-Example:
-
-  $ heroku logs
-  2012-01-01T12:00:00+00:00 heroku[api]: Config add EXAMPLE by email@example.com
-  2012-01-01T12:00:01+00:00 heroku[api]: Release v1 created by email@example.com
+  help: `Example:
+    
+    $ heroku logs
+    2012-01-01T12:00:00+00:00 heroku[api]: Config add EXAMPLE by email@example.com
+    2012-01-01T12:00:01+00:00 heroku[api]: Release v1 created by email@example.com
 `,
   needsAuth: true,
   needsApp: true,
