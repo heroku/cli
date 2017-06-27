@@ -18,10 +18,10 @@ module.exports = {
   topic: 'spaces',
   command: 'rename',
   description: 'renames a space',
-  help: `
-Example:
-  $ heroku spaces:rename --from old-space-name --to new-space-name
-  Renaming space old-space-name to new-space-name... done
+  help: `Example:
+
+    $ heroku spaces:rename --from old-space-name --to new-space-name
+    Renaming space old-space-name to new-space-name... done
 `,
   needsApp: false,
   needsAuth: true,

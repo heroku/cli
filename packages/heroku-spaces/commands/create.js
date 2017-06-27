@@ -48,16 +48,17 @@ module.exports = {
   topic: 'spaces',
   command: 'create',
   description: 'create a new space',
-  help: `
-Example:
-  $ heroku spaces:create --space my-space --team my-team --region oregon
-  Creating space my-space in team my-team... done
-  === my-space
-  ID:           e7b99e37-69b3-4475-ad47-a5cc5d75fd9f
-  Organization: my-team
-  Region:       oregon
-  State:        allocating
-  Created at:   2016-01-06T03:23:13Z
+  help: `Example:
+
+    $ heroku spaces:create --space my-space --org my-org --region oregon
+    Creating space my-space in organization my-org... done
+    === my-space
+    ID:           e7b99e37-69b3-4475-ad47-a5cc5d75fd9f
+    Organization: my-org
+    Region:       oregon
+    State:        allocating
+    Created at:   2016-01-06T03:23:13Z
+
   `,
   needsApp: false,
   needsAuth: true,

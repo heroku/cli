@@ -23,8 +23,9 @@ module.exports = {
 Uses CIDR notation.
 
 Example:
-  $ heroku trusted-ips:add --space my-space 192.168.2.0/24
-  Added 192.168.0.1/24 to trusted IP ranges on my-space
+
+    $ heroku trusted-ips:add --space my-space 192.168.2.0/24
+    Added 192.168.0.1/24 to trusted IP ranges on my-space
   `,
   needsApp: false,
   needsAuth: true,

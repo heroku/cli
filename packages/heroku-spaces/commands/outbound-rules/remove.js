@@ -28,10 +28,10 @@ module.exports = {
   topic: 'outbound-rules',
   command: 'remove',
   description: 'Remove a Rules from the list of Outbound Rules',
-  help: `
-Example:
-  $ heroku outbound-rules:remove --space my-space 4
-  Removed 192.168.2.0/24 from trusted IP ranges on my-space
+  help: `Example:
+
+    $ heroku outbound-rules:remove --space my-space 4
+    Removed 192.168.2.0/24 from trusted IP ranges on my-space
   `,
   needsApp: false,
   needsAuth: true,

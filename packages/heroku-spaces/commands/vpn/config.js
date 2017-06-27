@@ -18,9 +18,9 @@ module.exports = {
   topic: 'spaces',
   command: 'vpn:config',
   description: 'display the configuration information for VPN',
-  help: `
-Example:
-  $ heroku spaces:vpn:config my-space`,
+  help: `Example:
+
+    $ heroku spaces:vpn:config my-space`,
   needsApp: false,
   needsAuth: true,
   args: [{name: 'space', optional: true, hidden: true}],

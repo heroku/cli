@@ -29,11 +29,11 @@ module.exports = {
   topic: 'spaces',
   command: 'vpn:create',
   description: 'create VPN',
-  help: `
-Example:
-  $ heroku spaces:vpn:create --ip 35.161.69.30 --cidrs 172.16.0.0/16,10.0.0.0/24 --space my-space
-  Creating VPN in space my-space... done
-  ▸    Use spaces:vpn:wait to track allocation.
+  help: `Example:
+
+    $ heroku spaces:vpn:create --ip 35.161.69.30 --cidrs 172.16.0.0/16,10.0.0.0/24 --space my-space
+    Creating VPN in space my-space... done
+    ▸    Use spaces:vpn:wait to track allocation.
   `,
   needsApp: false,
   needsAuth: true,

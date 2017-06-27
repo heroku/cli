@@ -31,10 +31,10 @@ module.exports = {
   topic: 'spaces',
   command: 'destroy',
   description: 'destroy a space',
-  help: `
-Example:
-  $ heroku spaces:destroy --space my-space
-  Destroying my-space... done
+  help: `Example:
+
+    $ heroku spaces:destroy --space my-space
+    Destroying my-space... done
 `,
   needsApp: false,
   needsAuth: true,

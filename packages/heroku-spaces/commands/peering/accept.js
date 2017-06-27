@@ -16,10 +16,10 @@ module.exports = {
   topic: 'spaces',
   command: 'peerings:accept',
   description: 'accepts a pending peering request for a private space',
-  help: `
-Example:
-  $ heroku spaces:peerings:accept pcx-4bd27022 --space example-space
-  Accepting and configuring peering connection pcx-4bd27022
+  help: `Example:
+
+    $ heroku spaces:peerings:accept pcx-4bd27022 --space example-space
+    Accepting and configuring peering connection pcx-4bd27022
   `,
   needsApp: false,
   needsAuth: true,

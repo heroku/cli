@@ -27,17 +27,20 @@ module.exports = {
   help: `
 The destination flag uses CIDR notation.
 
-Example:
-  $ heroku outbound-rules:add --space my-space --dest 192.168.2.0/24 --protocol tcp --port 80
-  Added 192.168.0.1/24 to the outbound rules on my-space
+ Example:
 
-Example with port range:
-  $ heroku outbound-rules:add --space my-space --dest 192.168.2.0/24 --protocol tcp --port 80-100
-  Added 192.168.0.1/24 to the outbound rules on my-space
+    $ heroku outbound-rules:add --space my-space --dest 192.168.2.0/24 --protocol tcp --port 80
+    Added 192.168.0.1/24 to the outbound rules on my-space
 
-Example opening up everything
-  $ heroku outbound-rules:add --space my-space --dest 0.0.0.0/0 --protocol any --port any
-  Added 0.0.0.0/0 to the outbound rules on my-space
+ Example with port range:
+
+    $ heroku outbound-rules:add --space my-space --dest 192.168.2.0/24 --protocol tcp --port 80-100
+    Added 192.168.0.1/24 to the outbound rules on my-space
+
+ Example opening up everything
+
+    $ heroku outbound-rules:add --space my-space --dest 0.0.0.0/0 --protocol any --port any
+    Added 0.0.0.0/0 to the outbound rules on my-space
 
 ICMP Rules
 The ICMP protocol has types, not ports, but the underlying systems treat them as the same. For this reason,

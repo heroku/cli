@@ -18,10 +18,10 @@ module.exports = {
   topic: 'spaces',
   command: 'vpn:destroy',
   description: 'destroys VPN in a private space',
-  help: `
-Example:
-  $ heroku spaces:vpn:destroy --confirm --space my-space
-  Tearing down VPN in space my-space
+  help: `Example:
+
+    $ heroku spaces:vpn:destroy --confirm --space my-space
+    Tearing down VPN in space my-space
   `,
   needsApp: false,
   needsAuth: true,

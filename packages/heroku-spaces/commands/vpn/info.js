@@ -68,19 +68,19 @@ module.exports = {
   topic: 'spaces',
   command: 'vpn:info',
   description: 'display the information for VPN',
-  help: `
-Example:
-  $ heroku spaces:vpn:info my-space
-  === my-space VPN Info
-  ID:             123456789012
-  Public IP:      35.161.69.30
-  Routable CIDRs: 172.16.0.0/16
-  State:          available
-  === my-space Tunnel Info
-  VPN Tunnel  IP Address     Status  Status Last Changed   Details
-  ──────────  ─────────────  ──────  ────────────────────  ──────────────
-  Tunnel 1    52.44.146.197  UP      2016-10-25T22:09:05Z  status message
-  Tunnel 2    52.44.146.197  UP      2016-10-25T22:09:05Z  status message`,
+  help: `Example:
+
+    $ heroku spaces:vpn:info my-space
+    === my-space VPN Info
+    ID:             123456789012
+    Public IP:      35.161.69.30
+    Routable CIDRs: 172.16.0.0/16
+    State:          available
+    === my-space Tunnel Info
+    VPN Tunnel  IP Address     Status  Status Last Changed   Details
+    ──────────  ─────────────  ──────  ────────────────────  ──────────────
+    Tunnel 1    52.44.146.197  UP      2016-10-25T22:09:05Z  status message
+    Tunnel 2    52.44.146.197  UP      2016-10-25T22:09:05Z  status message`,
   needsApp: false,
   needsAuth: true,
   args: [{name: 'space', optional: true, hidden: true}],
