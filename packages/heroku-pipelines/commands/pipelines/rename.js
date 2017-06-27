@@ -8,7 +8,10 @@ module.exports = {
   topic: 'pipelines',
   command: 'rename',
   description: 'rename a pipeline',
-  help: 'Example:\n  $ heroku pipelines:rename example www\n  Renaming example pipeline to www... done',
+  help: `Example:
+
+    $ heroku pipelines:rename example www
+    Renaming example pipeline to www... done`,
   needsApp: false,
   needsAuth: true,
   args: [
@@ -22,7 +25,7 @@ module.exports = {
       method: 'PATCH',
       path: `/pipelines/${pipeline.id}`,
       body: {name: context.args.name},
-      headers: { 'Accept': 'application/vnd.heroku+json; version=3' }
+      headers: {'Accept': 'application/vnd.heroku+json; version=3'}
     }) // heroku.pipelines(pipeline).update(body);
 
     yield cli.action(`Renaming ${cli.color.pipeline(pipeline.name)} pipeline to ${cli.color.pipeline(context.args.name)}`, promise)

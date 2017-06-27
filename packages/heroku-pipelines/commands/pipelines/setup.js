@@ -22,7 +22,7 @@ const DEFAULT_SETTINGS = {
   }
 }
 
-function validate ({ name, repo }) {
+function validate ({name, repo}) {
   const errors = []
   const [nameIsValid, nameMsg] = validateName(name || '')
   const [repoIsValid, repoMsg] = validateRepo(repo || '')
@@ -35,7 +35,7 @@ function validate ({ name, repo }) {
 
 function validateName (name) {
   const isValid = name.length >= PIPELINE_MIN_LENGTH &&
-                  name.length <= PIPELINE_MAX_LENGTH
+    name.length <= PIPELINE_MAX_LENGTH
   return isValid ? [isValid] : [isValid, ERR_PIPELINE_NAME_LENGTH]
 }
 
@@ -58,10 +58,10 @@ function getRepo (github, name) {
   })
 }
 
-function createApp (heroku, { archiveURL, name, organization, pipeline, stage }) {
+function createApp (heroku, {archiveURL, name, organization, pipeline, stage}) {
   const params = {
-    source_blob: { url: archiveURL },
-    app: { name },
+    source_blob: {url: archiveURL},
+    app: {name},
     pipeline_coupling: {
       stage,
       pipeline: pipeline.id
@@ -146,7 +146,7 @@ function* hasCIFlag (heroku) {
 }
 
 function* getCISettings (yes, organization) {
-  const settings = yes ? { ci: true } : yield prompt([{
+  const settings = yes ? {ci: true} : yield prompt([{
     type: 'confirm',
     name: 'ci',
     message: 'Enable automatic Heroku CI test runs?'
@@ -231,17 +231,17 @@ module.exports = {
   description: 'bootstrap a new pipeline with common settings and create a production and staging app (requires a fully formed app.json in the repo)',
   help: `Example:
 
-  heroku pipelines:setup example githuborg/reponame -o example-org
-  ? Automatically deploy the master branch to staging? Yes
-  ? Wait for CI to pass before deploying the master branch to staging? Yes
-  ? Enable review apps? Yes
-  ? Automatically create review apps for every PR? Yes
-  ? Automatically destroy idle review apps after 5 days? Yes
-  Creating pipeline... done
-  Linking to repo... done
-  Creating production and staging apps (⬢ example and ⬢ example-staging)
-  Configuring pipeline... done
-  View your new pipeline by running \`heroku pipelines:open e5a55ffa-de3f-11e6-a245-3c15c2e6bc1e\``,
+    heroku pipelines:setup example githuborg/reponame -o example-org
+    ? Automatically deploy the master branch to staging? Yes
+    ? Wait for CI to pass before deploying the master branch to staging? Yes
+    ? Enable review apps? Yes
+    ? Automatically create review apps for every PR? Yes
+    ? Automatically destroy idle review apps after 5 days? Yes
+    Creating pipeline... done
+    Linking to repo... done
+    Creating production and staging apps (⬢ example and ⬢ example-staging)
+    Configuring pipeline... done
+    View your new pipeline by running \`heroku pipelines:open e5a55ffa-de3f-11e6-a245-3c15c2e6bc1e\``,
   needsApp: false,
   needsAuth: true,
   args: [
@@ -276,7 +276,7 @@ module.exports = {
       hasValue: false
     }
   ],
-  run: cli.command(co.wrap(function*(context, heroku) {
+  run: cli.command(co.wrap(function* (context, heroku) {
     const errors = validate(context.args)
 
     if (errors.length) {
@@ -288,7 +288,7 @@ module.exports = {
     const github = new GitHubAPI(context.version, yield getGitHubToken(kolkrabbi))
 
     const organization = context.flags.organization || context.flags.team
-    const { name: pipelineName, repo: repoName } = yield getNameAndRepo(context.args)
+    const {name: pipelineName, repo: repoName} = yield getNameAndRepo(context.args)
     const stagingAppName = pipelineName + STAGING_APP_INDICATOR
     const repo = yield getRepo(github, repoName)
     const settings = yield getSettings(context.flags.yes, repo.default_branch)

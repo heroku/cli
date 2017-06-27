@@ -6,7 +6,12 @@ let cli = require('heroku-cli-util')
 const cmd = {
   topic: 'pipelines',
   description: 'list pipelines you have access to',
-  help: 'Example:\n  $ heroku pipelines\n  === My Pipelines\n  example\n  sushi',
+  help: `Example:
+
+    $ heroku pipelines
+    === My Pipelines
+    example
+    sushi`,
   flags: [
     {name: 'json', description: 'output in json format'}
   ],

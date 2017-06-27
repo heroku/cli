@@ -13,7 +13,13 @@ module.exports = {
   topic: 'pipelines',
   command: 'add',
   description: 'add this app to a pipeline',
-  help: 'The app and pipeline names must be specified.\nThe stage of the app will be guessed based on its name if not specified.\n\nExample:\n  $ heroku pipelines:add example -a example-admin -s production\n  Adding example-admin to example pipeline as production... done',
+  help: `The app and pipeline names must be specified.
+The stage of the app will be guessed based on its name if not specified.
+
+Example:
+
+    $ heroku pipelines:add example -a example-admin -s production
+    Adding example-admin to example pipeline as production... done`,
   needsApp: true,
   needsAuth: true,
   args: [
@@ -46,6 +52,6 @@ module.exports = {
     if (answers.stage) stage = answers.stage
 
     yield cli.action(`Adding ${cli.color.app(app)} to ${cli.color.pipeline(pipeline.name)} pipeline as ${stage}`,
-                    createCoupling(heroku, pipeline, app, stage))
+      createCoupling(heroku, pipeline, app, stage))
   }))
 }
