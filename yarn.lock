@@ -842,7 +842,7 @@ heroku-cli-status@4.0.0:
     moment "^2.18.1"
     sprintf-js "^1.1.1"
 
-heroku-cli-util@6.1.17, heroku-cli-util@6.x, heroku-cli-util@^6.0.15:
+heroku-cli-util@6.1.17:
   version "6.1.17"
   resolved "http://cli-npm.heroku.com/heroku-cli-util/-/heroku-cli-util-6.1.17/3d1e5eb62f2a7e73053b4768054cc6df14b4d578.tgz#3d1e5eb62f2a7e73053b4768054cc6df14b4d578"
   dependencies:
@@ -869,7 +869,7 @@ heroku-cli-util@6.1.17, heroku-cli-util@6.x, heroku-cli-util@^6.0.15:
     supports-color "^3.1.2"
     tunnel-agent "^0.4.3"
 
-heroku-cli-util@6.2.0, heroku-cli-util@^6.1.17:
+heroku-cli-util@6.2.0, heroku-cli-util@6.x, heroku-cli-util@^6.0.15, heroku-cli-util@^6.1.17:
   version "6.2.0"
   resolved "http://cli-npm.heroku.com/heroku-cli-util/-/heroku-cli-util-6.2.0/0385772272b2f95137b95bbc8848f5a2c607766a.tgz#0385772272b2f95137b95bbc8848f5a2c607766a"
   dependencies:
