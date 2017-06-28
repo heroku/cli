@@ -77,10 +77,10 @@ module.exports = {
   description: 'app-ci.json is deprecated. Run this command to migrate to app.json with an environments key.',
   help: `Example:
 
-$ heroku ci:migrate-manifest
-Writing app.json file... done
-Deleting app-ci.json file... done
-Please check the contents of your app.json before committing to your repo
-You're all set! 🎉.`,
+    $ heroku ci:migrate-manifest
+    Writing app.json file... done
+    Deleting app-ci.json file... done
+    Please check the contents of your app.json before committing to your repo
+    You're all set! 🎉.`,
   run: cli.command(co.wrap(run))
 }

@@ -97,10 +97,12 @@ module.exports = {
   wantsApp: true,
   needsAuth: true,
   description: 'opens an interactive test debugging session with the contents of the current directory',
-  help: `$ heroku ci:debug
-Preparing source... done
-Creating test run... done
-Running setup and attaching to test dyno...
+  help: `Example:
+
+   $ heroku ci:debug
+    Preparing source... done
+    Creating test run... done
+    Running setup and attaching to test dyno...
 
 ~ $
 `,

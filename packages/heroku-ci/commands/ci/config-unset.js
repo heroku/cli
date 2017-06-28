@@ -41,8 +41,9 @@ module.exports = {
     }
   ],
   help: `Examples:
-$ heroku ci:config:uset RAILS_ENV
-Unsetting RAILS_ENV... done
+
+    $ heroku ci:config:uset RAILS_ENV
+    Unsetting RAILS_ENV... done
 `,
   run: cli.command(co.wrap(run))
 }

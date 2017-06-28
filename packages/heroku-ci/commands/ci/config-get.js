@@ -23,8 +23,9 @@ module.exports = {
   needsAuth: true,
   description: 'get a CI config var',
   help: `Examples:
-$ heroku ci:config:get RAILS_ENV
-test
+
+    $ heroku ci:config:get RAILS_ENV
+    test
 `,
   args: [{
     name: 'key'

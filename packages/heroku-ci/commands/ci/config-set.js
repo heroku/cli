@@ -56,10 +56,11 @@ module.exports = {
     }
   ],
   help: `Examples:
-$ heroku ci:config:set RAILS_ENV=test
-Setting test config vars... done
 
-RAILS_ENV: test
+    $ heroku ci:config:set RAILS_ENV=test
+    Setting test config vars... done
+
+    RAILS_ENV: test
 `,
   run: cli.command(co.wrap(run))
 }
