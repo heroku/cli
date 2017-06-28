@@ -1,7 +1,7 @@
 {
   "name": "heroku-spaces",
   "description": "Heroku plugin to manage Heroku Private Spaces",
-  "version": "2.9.2",
+  "version": "2.9.3",
   "author": "Heroku",
   "bugs": {
     "url": "https://github.com/heroku/heroku-spaces/issues"
