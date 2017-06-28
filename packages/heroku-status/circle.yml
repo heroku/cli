@@ -13,7 +13,7 @@ jobs:
             - cli-plugin-{{ .Branch }}
             - cli-plugin-master
       - run: yarn
-      - run: jest && bash <(curl -s https://codecov.io/bash)
+      - run: jest --coverage && bash <(curl -s https://codecov.io/bash)
       - run: flow
       - run: eslint .
       - save_cache:
