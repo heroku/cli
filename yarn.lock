@@ -732,9 +732,9 @@ here@0.0.2:
   version "0.0.2"
   resolved "http://cli-npm.heroku.com/here/-/here-0.0.2/69c1af3f02121f3d8788e02e84dc8b3905d71195.tgz#69c1af3f02121f3d8788e02e84dc8b3905d71195"
 
-heroku-apps@2.4.0:
-  version "2.4.0"
-  resolved "http://cli-npm.heroku.com/heroku-apps/-/heroku-apps-2.4.0/578d4c90da6bfb0faf7838a2094e3501a30a755b.tgz#578d4c90da6bfb0faf7838a2094e3501a30a755b"
+heroku-apps@2.4.1:
+  version "2.4.1"
+  resolved "http://cli-npm.heroku.com/heroku-apps/-/heroku-apps-2.4.1/b4956d7867ad20da9a375a6e2ef888e9e29a3331.tgz#b4956d7867ad20da9a375a6e2ef888e9e29a3331"
   dependencies:
     bluebird "3.4.7"
     cli-engine-heroku "0.3.2"
@@ -787,9 +787,9 @@ heroku-certs@1.1.38:
     moment "2.17.1"
     psl "1.1.16"
 
-heroku-ci@1.8.0:
-  version "1.8.0"
-  resolved "http://cli-npm.heroku.com/heroku-ci/-/heroku-ci-1.8.0/e5815d4183169a4caf1813d06c3d7571a6aab709.tgz#e5815d4183169a4caf1813d06c3d7571a6aab709"
+heroku-ci@1.8.1:
+  version "1.8.1"
+  resolved "http://cli-npm.heroku.com/heroku-ci/-/heroku-ci-1.8.1/34d7ad1a9125dacb3530269d7264d07c4413fc00.tgz#34d7ad1a9125dacb3530269d7264d07c4413fc00"
   dependencies:
     ansi-escapes "1.4.0"
     bluebird "^3.4.6"
@@ -842,7 +842,7 @@ heroku-cli-status@4.0.0:
     moment "^2.18.1"
     sprintf-js "^1.1.1"
 
-heroku-cli-util@6.1.17:
+heroku-cli-util@6.1.17, heroku-cli-util@6.x, heroku-cli-util@^6.0.15:
   version "6.1.17"
   resolved "http://cli-npm.heroku.com/heroku-cli-util/-/heroku-cli-util-6.1.17/3d1e5eb62f2a7e73053b4768054cc6df14b4d578.tgz#3d1e5eb62f2a7e73053b4768054cc6df14b4d578"
   dependencies:
@@ -869,7 +869,7 @@ heroku-cli-util@6.1.17:
     supports-color "^3.1.2"
     tunnel-agent "^0.4.3"
 
-heroku-cli-util@6.2.0, heroku-cli-util@6.x, heroku-cli-util@^6.0.15, heroku-cli-util@^6.1.17:
+heroku-cli-util@6.2.0, heroku-cli-util@^6.1.17:
   version "6.2.0"
   resolved "http://cli-npm.heroku.com/heroku-cli-util/-/heroku-cli-util-6.2.0/0385772272b2f95137b95bbc8848f5a2c607766a.tgz#0385772272b2f95137b95bbc8848f5a2c607766a"
   dependencies:
