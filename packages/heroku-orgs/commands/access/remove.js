@@ -16,7 +16,9 @@ module.exports = [
     needsApp: true,
     command: 'remove',
     description: 'Remove users from your app',
-    help: 'Example:  `heroku access:remove user@email.com --app APP`',
+    help: `Example:
+
+    heroku access:remove user@email.com --app APP`,
     args: [{name: 'email', optional: false}],
     run: cli.command(co.wrap(run))
   },
