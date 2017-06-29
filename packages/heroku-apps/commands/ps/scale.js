@@ -64,11 +64,11 @@ format suitable for passing back into ps:scale.
 
 Examples:
 
-  $ heroku ps:scale web=3:Standard-2X worker+1
-  Scaling dynos... done, now running web at 3:Standard-2X, worker at 1:Standard-1X.
+    $ heroku ps:scale web=3:Standard-2X worker+1
+    Scaling dynos... done, now running web at 3:Standard-2X, worker at 1:Standard-1X.
 
-  $ heroku ps:scale
-  web=3:Standard-2X worker=1:Standard-1X
+    $ heroku ps:scale
+    web=3:Standard-2X worker=1:Standard-1X
 `,
   needsAuth: true,
   needsApp: true,

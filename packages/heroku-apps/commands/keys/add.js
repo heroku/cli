@@ -102,14 +102,14 @@ module.exports = {
 
 Examples:
 
-  $ heroku keys:add
-  Could not find an existing public key.
-  Would you like to generate one? [Yn] y
-  Generating new SSH public key.
-  Uploading SSH public key /.ssh/id_rsa.pub... done
+    $ heroku keys:add
+    Could not find an existing public key.
+    Would you like to generate one? [Yn] y
+    Generating new SSH public key.
+    Uploading SSH public key /.ssh/id_rsa.pub... done
 
-  $ heroku keys:add /my/key.pub
-  Uploading SSH public key /my/key.pub... done
+    $ heroku keys:add /my/key.pub
+    Uploading SSH public key /my/key.pub... done
 `,
   needsAuth: true,
   args: [{name: 'key', optional: true}],

@@ -19,11 +19,11 @@ stop app dyno or dyno type
 
 Examples:
 
-  $ heroku ps:stop run.1828
-  Stopping run.1828 dyno... done
+    $ heroku ps:stop run.1828
+    Stopping run.1828 dyno... done
 
-  $ heroku ps:stop run
-  Stopping run dynos... done
+    $ heroku ps:stop run
+    Stopping run dynos... done
 `,
   needsAuth: true,
   needsApp: true,

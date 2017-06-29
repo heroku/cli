@@ -23,8 +23,8 @@ module.exports = {
   help: `
 Example:
 
-  $ heroku keys:remove email@example.com
-  Removing email@example.com SSH key... done
+    $ heroku keys:remove email@example.com
+    Removing email@example.com SSH key... done
   `,
   needsAuth: true,
   args: [{name: 'key'}],

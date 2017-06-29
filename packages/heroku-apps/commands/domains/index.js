@@ -35,14 +35,14 @@ module.exports = {
   help: `
 Example:
 
-  $ heroku domains
-  === example Heroku Domain
-  example.herokuapp.com
-
-  === example Custom Domains
-  Domain Name  DNS Target
-  ───────────  ─────────────────────
-  example.com  example.herokuapp.com
+    $ heroku domains
+    === example Heroku Domain
+    example.herokuapp.com
+    
+    === example Custom Domains
+    Domain Name  DNS Target
+    ───────────  ─────────────────────
+    example.com  example.herokuapp.com
   `,
   needsApp: true,
   needsAuth: true,

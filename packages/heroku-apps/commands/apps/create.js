@@ -71,24 +71,24 @@ let cmd = {
   description: 'creates a new app',
   help: `Examples:
 
- $ heroku apps:create
- Creating app... done, stack is cedar-14
- https://floating-dragon-42.heroku.com/ | https://git.heroku.com/floating-dragon-42.git
+    $ heroku apps:create
+    Creating app... done, stack is cedar-14
+    https://floating-dragon-42.heroku.com/ | https://git.heroku.com/floating-dragon-42.git
 
- # or just
- $ heroku create
+    # or just
+    $ heroku create
 
- # specify a buildpack
- $ heroku apps:create --buildpack https://github.com/some/buildpack.git
+    # specify a buildpack
+    $ heroku apps:create --buildpack https://github.com/some/buildpack.git
 
- # specify a name
- $ heroku apps:create example
+    # specify a name
+    $ heroku apps:create example
 
- # create a staging app
- $ heroku apps:create example-staging --remote staging
+    # create a staging app
+    $ heroku apps:create example-staging --remote staging
 
- # create an app in the eu region
- $ heroku apps:create --region eu
+    # create an app in the eu region
+    $ heroku apps:create --region eu
  `,
   needsAuth: true,
   wantsOrg: true,

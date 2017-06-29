@@ -160,16 +160,16 @@ module.exports = {
   help: `
 Examples:
 
- $ heroku ps
- === run: one-off dyno
- run.1: up for 5m: bash
-
- === web: bundle exec thin start -p $PORT
- web.1: created for 30s
-
- $ heroku ps run # specifying types
- === run: one-off dyno
- run.1: up for 5m: bash`,
+    $ heroku ps
+    === run: one-off dyno
+    run.1: up for 5m: bash
+    
+    === web: bundle exec thin start -p $PORT
+    web.1: created for 30s
+    
+    $ heroku ps run # specifying types
+    === run: one-off dyno
+    run.1: up for 5m: bash`,
   needsAuth: true,
   needsApp: true,
   run: cli.command(co.wrap(run))

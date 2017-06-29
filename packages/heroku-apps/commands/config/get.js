@@ -24,8 +24,8 @@ module.exports = {
   description: 'display a config value for an app',
   help: `Example:
 
- $ heroku config:get RAILS_ENV
- production
+    $ heroku config:get RAILS_ENV
+    production
  `,
   args: [{name: 'key'}],
   flags: [{name: 'shell', char: 's', description: 'output config var in shell format'}],

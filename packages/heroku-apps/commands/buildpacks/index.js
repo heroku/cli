@@ -20,7 +20,7 @@ module.exports = {
   topic: 'buildpacks',
   description: 'display the buildpack_url(s) for an app',
   help: `Examples:
- $ heroku buildpacks
+    $ heroku buildpacks
 `,
   needsApp: true,
   needsAuth: true,

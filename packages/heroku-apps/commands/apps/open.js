@@ -14,11 +14,11 @@ let cmd = {
   help: `
 Examples:
 
-  $ heroku open -a myapp
-  # opens https://myapp.herokuapp.com
+    $ heroku open -a myapp
+    # opens https://myapp.herokuapp.com
 
-  $ heroku open -a myapp /foo
-  # opens https://myapp.herokuapp.com/foo
+    $ heroku open -a myapp /foo
+    # opens https://myapp.herokuapp.com/foo
   `,
   needsApp: true,
   needsAuth: true,
