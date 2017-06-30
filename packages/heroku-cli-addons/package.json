@@ -9,7 +9,7 @@
   "dependencies": {
     "co": "4.6.0",
     "co-wait": "0.0.0",
-    "heroku-cli-util": "6.1.17",
+    "heroku-cli-util": "^6.2.0",
     "lodash.flatten": "4.4.0",
     "lodash.groupby": "4.6.0",
     "lodash.memoize": "4.1.2",
@@ -21,15 +21,15 @@
     "printf": "0.2.5"
   },
   "devDependencies": {
-    "chai": "3.5.0",
-    "lolex": "1.5.2",
-    "mocha": "3.2.0",
-    "nock": "9.0.4",
-    "np": "2.15.0",
-    "nyc": "10.1.2",
-    "standard": "8.6.0",
+    "chai": "^4.0.2",
+    "lolex": "^1.6.0",
+    "mocha": "^3.4.2",
+    "nock": "^9.0.13",
+    "np": "^2.16.0",
+    "nyc": "^11.0.3",
+    "standard": "^10.0.2",
     "time-require": "0.1.2",
-    "unexpected": "10.25.0"
+    "unexpected": "^10.29.0"
   },
   "homepage": "https://github.com/heroku/heroku-cli-addons",
   "keywords": [
