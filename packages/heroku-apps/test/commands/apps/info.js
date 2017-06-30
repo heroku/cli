@@ -224,8 +224,8 @@ stack=cedar-14
       .then(() => expect(cli.stderr).to.equal(''))
       .then(() => {
         let json = JSON.parse(cli.stdout)
-        expect(json.appExtended).to.be.undefined
-        expect(json.app.extended).to.not.be.undefined
+        expect(json.appExtended).to.equal(undefined)
+        expect(json.app.extended).not.to.equal(undefined)
         expect(json.app.extended.id).to.equal(appExtended.extended.id)
       })
       .then(() => appApi.done())
@@ -245,8 +245,8 @@ stack=cedar-14
       .then(() => expect(cli.stderr).to.equal(''))
       .then(() => {
         let json = JSON.parse(cli.stdout)
-        expect(json.appExtended).to.be.undefined
-        expect(json.app.extended).to.be.undefined
+        expect(json.appExtended).to.equal(undefined)
+        expect(json.app.extended).to.equal(undefined)
       })
       .then(() => appApi.done())
       .then(() => api.done())

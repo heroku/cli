@@ -21,7 +21,6 @@ module.exports.description = function (release, runningRelease, runningSlug) {
     case 'failed':
       return 'release command failed'
     default:
-      return
   }
 }
 

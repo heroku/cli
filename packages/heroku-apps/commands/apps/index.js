@@ -31,7 +31,6 @@ function * run (context, heroku) {
       if (space) cli.log(`There are no apps in space ${cli.color.green(space)}.`)
       else if (org) cli.log(`There are no apps in team ${cli.color.magenta(org)}.`)
       else cli.log('You have no apps.')
-      return
     } else if (space) {
       cli.styledHeader(`Apps in space ${cli.color.green(space)}`)
       listApps(apps)
