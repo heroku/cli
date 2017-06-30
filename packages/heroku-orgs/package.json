@@ -7,10 +7,12 @@
     "url": "https://github.com/heroku/heroku-orgs/issues"
   },
   "dependencies": {
-    "cli-engine-heroku": "0.3.2",
+    "cli-engine-command": "^5.1.8",
+    "cli-engine-config": "^1.3.7",
+    "cli-engine-heroku": "^1.1.2",
     "co": "4.6.0",
-    "heroku-cli-util": "6.1.17",
-    "inquirer": "3.0.6",
+    "heroku-cli-util": "^6.2.2",
+    "inquirer": "^3.1.1",
     "lodash": "4.17.4",
     "lodash.flatten": "4.4.0"
   },
@@ -19,9 +21,9 @@
     "mocha": "*",
     "mocha-junit-reporter": "1.13.0",
     "nock": "9.0.13",
-    "nyc": "10.2.0",
-    "proxyquire": "1.7.11",
-    "standard": "10.0.1"
+    "nyc": "^11.0.3",
+    "proxyquire": "^1.8.0",
+    "standard": "^10.0.2"
   },
   "homepage": "https://github.com/heroku/heroku-orgs",
   "keywords": [
