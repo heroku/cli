@@ -49,6 +49,7 @@ function* run (context, heroku) {
     HEROKU_TEST_RUN_ID: testRun.id,
     HEROKU_TEST_RUN_BRANCH: testRun.commit_branch,
     HEROKU_SUPPRESS_LOGGING: true,
+    CI: true,
     CI_NODE_INDEX: 0,
     CI_NODE_TOTAL: 1
   }
