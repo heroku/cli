@@ -73,7 +73,7 @@ describe('fetcher', () => {
     it('returns db connection info when multiple but no ambiguity', () => {
       let addonApp = {name: 'addon-app'}
       let app = {name: 'myapp'}
-      stub.withArgs(sinon.match.any, 'myapp', 'DATABASE_URL').returns(Promise.reject({
+      let err = Object.assign(new Error(), {
         statusCode: 422,
         body: {'id': 'multiple_matches'},
         matches: [
@@ -81,7 +81,8 @@ describe('fetcher', () => {
           {addon: {id: 100, name: 'postgres-1', app: addonApp}, app, config_vars: ['BAR_URL']},
           {addon: {id: 100, name: 'postgres-1', app: addonApp}, app, namespace: 'credential:something', config_vars: ['CRED_URL']}
         ]
-      }))
+      })
+      stub.withArgs(sinon.match.any, 'myapp', 'DATABASE_URL').returns(Promise.reject(err))
 
       api.get('/apps/myapp/config-vars').reply(200, {
         'FOO_URL': 'postgres://pguser:pgpass@pghost.com/pgdb',
@@ -96,7 +97,7 @@ describe('fetcher', () => {
     it('returns db connection for app::config info when multiple but no ambiguity', () => {
       let addonApp = {name: 'addon-app'}
       let attachApp = {name: 'attach-app'}
-      stub.withArgs(sinon.match.any, 'myapp', 'DATABASE_URL').returns(Promise.reject({
+      let err = Object.assign(new Error(), {
         statusCode: 422,
         body: {'id': 'multiple_matches'},
         matches: [
@@ -104,7 +105,8 @@ describe('fetcher', () => {
           {addon: {id: 100, name: 'postgres-1', app: addonApp}, app: attachApp, config_vars: ['BAR_URL']},
           {addon: {id: 100, name: 'postgres-1', app: addonApp}, app: attachApp, namespace: 'credential:something', config_vars: ['CRED_URL']}
         ]
-      }))
+      })
+      stub.withArgs(sinon.match.any, 'myapp', 'DATABASE_URL').returns(Promise.reject(err))
 
       api.get('/apps/attach-app/config-vars').reply(200, {
         'FOO_URL': 'postgres://pguser:pgpass@pghost.com/pgdb',

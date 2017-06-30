@@ -85,12 +85,12 @@ function sshTunnel (db, dbTunnelConfig, timeout) {
   return new Promise((resolve, reject) => {
     // if necessary to tunnel, setup a tunnel
     // see also https://github.com/heroku/heroku/blob/master/lib/heroku/helpers/heroku_postgresql.rb#L53-L80
-    let timer = setTimeout(() => reject('Establishing a secure tunnel timed out'), timeout)
+    let timer = setTimeout(() => reject(new Error('Establishing a secure tunnel timed out')), timeout)
     if (db.bastionKey) {
       let tun = tunnel(dbTunnelConfig, (err, tnl) => {
         if (err) {
           debug(err)
-          reject(`Unable to establish a secure tunnel to your database.`)
+          reject(new Error('Unable to establish a secure tunnel to your database.'))
         }
         debug('Tunnel created')
         clearTimeout(timer)
