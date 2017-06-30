@@ -17,8 +17,6 @@ let endpoint = require('../../stubs/sni-endpoints.js').endpoint
 
 let EventEmitter = require('events').EventEmitter
 
-/* jshint -W030 */
-
 function mockPrompt (arg, returns) {
   return cli.prompt.withArgs(arg).returns(new Promise(function (resolve) {
     resolve(returns)

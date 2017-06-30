@@ -9,23 +9,23 @@
   "dependencies": {
     "co": "4.6.0",
     "co-wait": "0.0.0",
-    "heroku-cli-util": "6.1.17",
-    "inquirer": "3.0.1",
+    "heroku-cli-util": "^6.2.0",
+    "inquirer": "^3.1.1",
     "lodash": "4.17.4",
-    "moment": "2.17.1",
-    "psl": "1.1.16"
+    "moment": "^2.18.1",
+    "psl": "^1.1.19"
   },
   "devDependencies": {
-    "chai": "^3.3.0",
-    "chai-as-promised": "6.0.0",
-    "lolex": "1.5.2",
-    "mocha": "3.2.0",
-    "nock": "9.0.4",
-    "nyc": "10.1.2",
-    "proxyquire": "1.7.11",
-    "sinon": "1.17.7",
-    "sinon-chai": "2.8.0",
-    "standard": "8.6.0"
+    "chai": "^4.0.2",
+    "chai-as-promised": "^7.0.0",
+    "lolex": "^1.6.0",
+    "mocha": "^3.4.2",
+    "nock": "^9.0.13",
+    "nyc": "^11.0.3",
+    "proxyquire": "^1.8.0",
+    "sinon": "^2.3.6",
+    "sinon-chai": "^2.11.0",
+    "standard": "^8.0.0"
   },
   "keywords": [
     "heroku-plugin"
