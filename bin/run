@@ -14,5 +14,6 @@ get_script_dir () {
 	echo "$DIR"
 }
 DIR=$(get_script_dir)
+export CLI_BINPATH=$0
 
-node $DIR/run.js $*
+node "$DIR/run.js" "$@"
