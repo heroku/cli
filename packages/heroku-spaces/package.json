@@ -7,23 +7,25 @@
     "url": "https://github.com/heroku/heroku-spaces/issues"
   },
   "dependencies": {
-    "cli-engine-heroku": "0.3.2",
+    "cli-engine-command": "^5.1.8",
+    "cli-engine-config": "^1.3.7",
+    "cli-engine-heroku": "^1.1.2",
     "co": "4.6.0",
-    "heroku-cli-util": "6.1.17",
+    "heroku-cli-util": "^6.2.2",
     "lodash.foreach": "^4.5.0",
     "lodash.reduce": "^4.6.0",
     "lodash.sortby": "^4.7.0",
     "strftime": "^0.10.0"
   },
   "devDependencies": {
-    "chai": "3.5.0",
-    "chai-as-promised": "6.0.0",
-    "codeclimate-test-reporter": "0.4.1",
-    "coveralls": "2.11.16",
-    "mocha": "3.2.0",
-    "nock": "9.0.9",
-    "nyc": "10.1.2",
-    "standard": "9.0.0"
+    "chai": "^4.0.2",
+    "chai-as-promised": "^7.0.0",
+    "codeclimate-test-reporter": "^0.5.0",
+    "coveralls": "^2.13.1",
+    "mocha": "^3.4.2",
+    "nock": "^9.0.13",
+    "nyc": "^11.0.3",
+    "standard": "^10.0.2"
   },
   "keywords": [
     "heroku-plugin"
