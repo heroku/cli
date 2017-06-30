@@ -7,13 +7,13 @@
     "url": "https://github.com/heroku/heroku-local/issues"
   },
   "dependencies": {
-    "co": "4.6.0",
-    "foreman": "2.0.0",
-    "heroku-cli-util": "6.1.17",
-    "lodash.flatten": "4.4.0"
+    "co": "^4.6.0",
+    "foreman": "^2.0.0",
+    "heroku-cli-util": "^6.2.0",
+    "lodash.flatten": "^4.4.0"
   },
   "devDependencies": {
-    "standard": "8.6.0"
+    "standard": "^10.0.2"
   },
   "homepage": "https://github.com/heroku/heroku-local",
   "keywords": [
