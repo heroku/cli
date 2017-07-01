@@ -104,7 +104,8 @@ function * run (context, heroku) {
   const sortBy = require('lodash.sortby')
   const path = require('path')
 
-  if (!context.auth || !context.auth.password) {
+  // if not testing and not logged in
+  if (!cli.raiseErrors && (!context.auth || !context.auth.password)) {
     let {execSync} = require('child_process')
     execSync('heroku help', {stdio: 'inherit'})
     return
