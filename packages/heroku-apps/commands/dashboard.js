@@ -55,7 +55,7 @@ function displayMetrics (metrics) {
   let rpm = ''
   if (metrics.routerLatency && !empty(metrics.routerLatency.data)) {
     let latency = metrics.routerLatency.data['latency.ms.p50']
-    if (latency) ms = `${round(mean(latency))} ms `
+    if (!empty(latency)) ms = `${round(mean(latency))} ms `
   }
   if (metrics.routerStatus && !empty(metrics.routerStatus.data)) {
     rpm = `${round(sum(flatten(values(metrics.routerStatus.data))) / 24 / 60)} rpm ${rpmSparkline()}`
