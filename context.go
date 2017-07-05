@@ -132,7 +132,7 @@ func parseVarArgs(command *Command, args []string) (result []string, flags map[s
 			switch {
 			case err != nil:
 				ExitWithMessage(err.Error())
-			case flag == nil && command.VariableArgs:
+			case flag == nil && command.VariableArgs && strings.Contains(args[i], "="):
 				result = append(result, args[i])
 			case flag == nil:
 				command.unexpectedFlagErr(args[i])
