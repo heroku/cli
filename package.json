@@ -72,6 +72,7 @@
   "repository": "https://github.com/heroku/cli",
   "scripts": {
     "build": "cli-build",
-    "release": "cli-release"
+    "release": "cli-release",
+    "version": "VERSION=`node -p \"require('./package.json').version\"` && sed -i '' -e \"s/version: \\'[.0-9]*\\'/version: \\'$VERSION\\'/\" snap/snapcraft.yaml && git add snap/snapcraft.yaml"
   }
 }
