@@ -254,9 +254,9 @@ cli-engine-heroku@1.1.2, cli-engine-heroku@^1.1.1, cli-engine-heroku@^1.1.2:
     heroku-client "3.x"
     netrc-parser "2.0.2"
 
-cli-engine@3.5.36:
-  version "3.5.36"
-  resolved "http://cli-npm.heroku.com/cli-engine/-/cli-engine-3.5.36/52d56de188309d900bcf926ba0694a35dd6d5d1e.tgz#52d56de188309d900bcf926ba0694a35dd6d5d1e"
+cli-engine@3.5.38:
+  version "3.5.38"
+  resolved "http://cli-npm.heroku.com/cli-engine/-/cli-engine-3.5.38/a8a4eb813d560e22931e64836527b2ce5038ebc1.tgz#a8a4eb813d560e22931e64836527b2ce5038ebc1"
   dependencies:
     ansi-escapes "^2.0.0"
     cli-engine-command "5.1.9"
@@ -598,7 +598,7 @@ github-url-to-object@^2.2.6:
   dependencies:
     is-url "^1.1.0"
 
-"glob@>= 3.1.4", glob@^7.0.3:
+"glob@>= 3.1.4", glob@^7.0.3, glob@^7.0.5:
   version "7.1.2"
   resolved "http://cli-npm.heroku.com/glob/-/glob-7.1.2/c19c9df9a028702d678612384a6552404c636d15.tgz#c19c9df9a028702d678612384a6552404c636d15"
   dependencies:
@@ -685,9 +685,9 @@ here@0.0.2:
   version "0.0.2"
   resolved "http://cli-npm.heroku.com/here/-/here-0.0.2/69c1af3f02121f3d8788e02e84dc8b3905d71195.tgz#69c1af3f02121f3d8788e02e84dc8b3905d71195"
 
-heroku-apps@2.4.4:
-  version "2.4.4"
-  resolved "http://cli-npm.heroku.com/heroku-apps/-/heroku-apps-2.4.4/2ed3840d7adba4e1bc1791e534220cfc47f78d3d.tgz#2ed3840d7adba4e1bc1791e534220cfc47f78d3d"
+heroku-apps@2.4.5:
+  version "2.4.5"
+  resolved "http://cli-npm.heroku.com/heroku-apps/-/heroku-apps-2.4.5/311e0e5b9c01284aa1c7a854d09e894809d3c079.tgz#311e0e5b9c01284aa1c7a854d09e894809d3c079"
   dependencies:
     bluebird "^3.5.0"
     cli-engine-command "^5.1.8"
@@ -1699,7 +1699,13 @@ restore-cursor@^2.0.0:
     onetime "^2.0.0"
     signal-exit "^3.0.2"
 
-rimraf@2, rimraf@2.x, rimraf@~2.2.6:
+rimraf@2, rimraf@2.x:
+  version "2.6.1"
+  resolved "http://cli-npm.heroku.com/rimraf/-/rimraf-2.6.1/c2338ec643df7a1b7fe5c54fa86f57428a55f33d.tgz#c2338ec643df7a1b7fe5c54fa86f57428a55f33d"
+  dependencies:
+    glob "^7.0.5"
+
+rimraf@~2.2.6:
   version "2.2.8"
   resolved "http://cli-npm.heroku.com/rimraf/-/rimraf-2.2.8/e439be2aaee327321952730f99a8929e4fc50582.tgz#e439be2aaee327321952730f99a8929e4fc50582"
 
