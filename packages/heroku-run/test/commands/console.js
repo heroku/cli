@@ -10,7 +10,7 @@ describe('console', () => {
   let dynoStub, dynoOpts
 
   beforeEach(() => {
-    dynoStub = sinon.stub(Dyno.prototype, 'start', function () {
+    dynoStub = sinon.stub(Dyno.prototype, 'start').callsFake(function () {
       dynoOpts = this.opts
       return Promise.resolve()
     })
