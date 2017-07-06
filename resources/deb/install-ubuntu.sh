@@ -36,4 +36,8 @@
   apt-get install -y heroku
 
 SCRIPT
+  # test the CLI
+  LOCATION=$(which heroku)
+  echo "heroku cli installed to $LOCATION"
+  heroku version
 }
