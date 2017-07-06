@@ -18,6 +18,22 @@ function * getPipeline (context, client) {
   return pipeline
 }
 
+// Deep get in an object, returning undefined if the path is invalid
+// e.g. get([{ foo: { bar: 'baz' } } ], 0, 'foo', 'bar') => 'baz'
+//
+function dig (obj, ...path) {
+  const key = path.shift()
+  if (key == null || obj == null) {
+    return
+  }
+  const val = obj[key]
+  if (typeof val === 'object') {
+    return dig(val, ...path)
+  }
+  return val
+}
+
 module.exports = {
-  getPipeline
+  getPipeline,
+  dig
 }

@@ -18,6 +18,16 @@ function* pipelineRepository (client, pipelineID) {
   })
 }
 
+function* getDyno (client, appID, dynoID) {
+  return client.request({
+    path: `/apps/${appID}/dynos/${dynoID}`,
+    headers: {
+      Authorization: `Bearer ${client.options.token}`,
+      Accept: VERSION_HEADER
+    }
+  })
+}
+
 function* githubArchiveLink (client, user, repository, ref) {
   return client.request({
     host: KOLKRABBI,
@@ -128,6 +138,7 @@ module.exports = {
   configVars,
   createSource,
   createTestRun,
+  getDyno,
   githubArchiveLink,
   latestTestRun,
   testNodes,

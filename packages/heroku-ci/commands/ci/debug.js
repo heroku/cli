@@ -9,7 +9,6 @@ const Utils = require('../../lib/utils')
 
 // Default command. Run setup, source profile.d scripts and open a bash session
 const SETUP_COMMAND = 'ci setup && eval $(ci env)'
-const COMMAND = `${SETUP_COMMAND} && bash`
 
 function* run (context, heroku) {
   const pipeline = yield Utils.getPipeline(context, heroku)
@@ -29,10 +28,11 @@ function* run (context, heroku) {
       commit_branch: commit.branch,
       commit_message: commit.message,
       commit_sha: commit.ref,
-      pipeline: pipeline.id,
+      debug: true,
+      clear_cache: !!context.flags['no-cache'],
       organization,
-      source_blob_url: sourceBlobUrl,
-      debug: true
+      pipeline: pipeline.id,
+      source_blob_url: sourceBlobUrl
     })
 
     return yield TestRun.waitForStates(['debugging', 'errored'], run, { heroku })
@@ -56,18 +56,6 @@ function* run (context, heroku) {
 
   const env = Object.keys(configVars).map((key) => `${key}=${configVars[key]}`).join(';')
 
-  const dyno = new Dyno({
-    heroku,
-    app: appSetup.app.id,
-    command: noSetup ? 'bash' : COMMAND,
-    'exit-code': true,
-    'no-tty': context.flags['no-tty'],
-    attach: true,
-    env,
-    size: context.flags.size,
-    showStatus: false
-  })
-
   cli.log(`${noSetup ? 'Attaching' : 'Running setup and attaching'} to test dyno...`)
 
   if (noSetup) {
@@ -76,8 +64,42 @@ function* run (context, heroku) {
     cli.warn('to execute a build and configure the environment')
   }
 
+  const testNodes = yield api.testNodes(heroku, testRun.id)
+  const dynoID = Utils.dig(testNodes, 0, 'dyno', 'id')
+
+  const dyno = new Dyno({
+    heroku,
+    app: appSetup.app.id,
+    command: 'bash',
+    'exit-code': true,
+    attach: true,
+    env,
+    showStatus: false
+  })
+
+  let dynoPromise
+  if (dynoID) {
+    dyno.attach_url = (
+      yield api.getDyno(heroku, appSetup.app.id, dynoID)
+    ).attach_url
+    dynoPromise = dyno.attach()
+  } else {
+    dynoPromise = dyno.start()
+  }
+
+  function sendSetup (data, connection) {
+    if (data.toString().includes('$')) {
+      dyno.write(SETUP_COMMAND + '\n')
+      dyno.removeListener('data', sendSetup)
+    }
+  }
+
+  if (!noSetup) {
+    dyno.on('data', sendSetup)
+  }
+
   try {
-    yield dyno.start()
+    yield dynoPromise
   } catch (err) {
     if (err.exitCode) cli.exit(err.exitCode, err)
     else throw err
@@ -114,16 +136,15 @@ module.exports = {
       description: 'start test dyno without running test-setup'
     },
     {
-      name: 'size',
-      char: 's',
-      hasValue: true,
-      description: 'dyno size'
-    },
-    {
       name: 'pipeline',
       char: 'p',
       hasValue: true,
       description: 'pipeline'
+    },
+    {
+      name: 'no-cache',
+      hasValue: false,
+      description: 'start test run with an empty cache'
     }
   ],
   run: cli.command(co.wrap(run))

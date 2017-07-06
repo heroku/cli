@@ -37,6 +37,26 @@ describe('heroku-api', function () {
     })
   })
 
+  describe('#getDyno', function () {
+    it('returns dyno information', function* () {
+      const appID = '123-456-67-89'
+      const dynoID = '01234567-89ab-cdef-0123-456789abcdef'
+      const dyno = {
+        id: dynoID,
+        attach_url: 'rendezvous://rendezvous.runtime.heroku.com:5000/{rendezvous-id}',
+        app: { id: appID }
+      }
+
+      const api = nock(`https://api.heroku.com`)
+        .get(`/apps/${appID}/dynos/${dynoID}`)
+        .reply(200, dyno)
+
+      const response = yield herokuAPI.getDyno(new Heroku(), appID, dynoID)
+      expect(response).to.deep.eq(dyno)
+      api.done()
+    })
+  })
+
   describe('#githubArchiveLink', function () {
     it('gets a GitHub archive link', function* () {
       const { user, repository } = ['heroku', 'heroku-ci']
