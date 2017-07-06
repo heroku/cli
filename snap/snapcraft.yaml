@@ -1,6 +1,6 @@
 
 name: heroku
-version: '6.9.6'
+version: '6.12.5'
 summary: Heroku CLI
 description: Heroku CLI
 grade: stable
@@ -14,6 +14,6 @@ apps:
 parts:
   hello-node-snap:
     plugin: nodejs
-    node-engine: 7.10.0
+    node-engine: 8.1.3
     node-packages:
       - heroku-cli

@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+set -ex
+
+VERSION=$(node -p "require('./package.json').version")
+
+if [ -x /usr/local/bin/brew ]; then
+  /usr/local/bin/brew bump-formula-pr "--url=https://registry.npmjs.org/heroku-cli/-/heroku-cli-$VERSION.tgz"
+else
+  echo "homebrew not installed. Skipping formula bump." >&2
+fi
