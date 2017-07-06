@@ -32,18 +32,20 @@ stages:
           echo $HEROKU_DEB_KEY | base64 -d | gpg --import
           cat << EOF > ~/.netrc
           machine api.heroku.com
-            login jeff+devcenter@heroku.com 
+            login junk@junk.com
             password  $HEROKU_API_KEY
           EOF
           chmod 0600 ~/.netrc
           set -ex
+          if [ "${CIRCLE_BRANCH}" == "auto-doc" ]; then
+            ./scripts/generate_docs.sh > /tmp/cli_documentation.md
+            devcenter push /tmp/heroku-cli-commands.md --trace
+          fi 
           if [ "${CIRCLE_BRANCH}" == "master" ]; then
             TAG=`git describe --exact-match HEAD || echo NOTAG`
             if [ "${TAG}" != "NOTAG" ]; then
               yarn run release stable
               ./scripts/release-deb stable
-              ./scripts/generate_docs.sh > /tmp/cli_documentation.md
-              devcenter push /tmp/heroku-cli-commands.md --trace
             else
               yarn run release beta
               ./scripts/release-deb beta
