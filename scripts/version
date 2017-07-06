@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+set -ex
+
+VERSION=$(node -p "require('./package.json').version")
+sed -i '' -e "s/version: '[.0-9]*'/version: '$VERSION'/" snap/snapcraft.yaml
+git add snap/snapcraft.yaml
