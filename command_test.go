@@ -21,11 +21,12 @@ var _ = Describe("Command", func() {
 				Expect(cli.CommandUsage(command)).To(Equal(expected))
 			})
 		}
-		testcase("basic", &cli.Command{Topic: "apps", Command: "info"}, "apps:info")
-		testcase("topic root command", &cli.Command{Topic: "apps", Command: ""}, "apps")
-		testcase("with required argument", &cli.Command{Topic: "apps", Command: "info", Args: []cli.Arg{{Name: "foo"}}}, "apps:info FOO")
-		testcase("with optional argument", &cli.Command{Topic: "apps", Command: "info", Args: []cli.Arg{{Name: "foo", Optional: true}}}, "apps:info [FOO]")
-		testcase("with multiple arguments", &cli.Command{Topic: "apps", Command: "info", Args: []cli.Arg{{Name: "foo"}, {Name: "bar"}}}, "apps:info FOO BAR")
+		testcase("is basic", &cli.Command{Topic: "apps", Command: "info"}, "apps:info")
+		testcase("has topic root command", &cli.Command{Topic: "apps", Command: ""}, "apps")
+		testcase("has required argument", &cli.Command{Topic: "apps", Command: "info", Args: []cli.Arg{{Name: "foo"}}}, "apps:info FOO")
+		testcase("has optional argument", &cli.Command{Topic: "apps", Command: "info", Args: []cli.Arg{{Name: "foo", Optional: true}}}, "apps:info [FOO]")
+		testcase("has multiple arguments", &cli.Command{Topic: "apps", Command: "info", Args: []cli.Arg{{Name: "foo"}, {Name: "bar"}}}, "apps:info FOO BAR")
+		testcase("has variable arguments", &cli.Command{Topic: "apps", Command: "info", VariableArgs: true, Args: []cli.Arg{{Name: "foo=bar"}}}, "apps:info FOO=BAR")
 	})
 
 	It("shows the version", func() {
