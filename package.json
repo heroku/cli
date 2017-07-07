@@ -1,7 +1,7 @@
 {
   "name": "heroku-cli",
   "description": "CLI to interact with Heroku",
-  "version": "6.12.5",
+  "version": "6.12.6",
   "author": "Jeff Dickey @dickeyxxx",
   "bin": {
     "heroku": "bin/run"
@@ -37,10 +37,10 @@
     ]
   },
   "dependencies": {
-    "cli-engine": "3.5.38",
+    "cli-engine": "3.5.39",
     "heroku-apps": "2.4.5",
     "heroku-certs": "1.1.41",
-    "heroku-ci": "1.8.3",
+    "heroku-ci": "1.9.0",
     "heroku-cli-addons": "1.2.23",
     "heroku-cli-oauth": "2.0.14",
     "heroku-cli-status": "4.0.1",

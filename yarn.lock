@@ -506,9 +506,9 @@ cli-cursor@^2.1.0:
   dependencies:
     restore-cursor "^2.0.0"
 
-cli-engine-command@5.1.9, cli-engine-command@^5.1.7, cli-engine-command@^5.1.8:
-  version "5.1.9"
-  resolved "http://cli-npm.heroku.com/cli-engine-command/-/cli-engine-command-5.1.9/a3bacf7837d0cb8ba6690adde96bcb0313dc74e9.tgz#a3bacf7837d0cb8ba6690adde96bcb0313dc74e9"
+cli-engine-command@^5.1.10, cli-engine-command@^5.1.7, cli-engine-command@^5.1.8:
+  version "5.1.10"
+  resolved "http://cli-npm.heroku.com/cli-engine-command/-/cli-engine-command-5.1.10/0e397d22dd8387b5e7a7052c7a6abd05622c1747.tgz#0e397d22dd8387b5e7a7052c7a6abd05622c1747"
   dependencies:
     ansi-escapes "2.x"
     cardinal "1.x"
@@ -542,12 +542,12 @@ cli-engine-heroku@1.1.2, cli-engine-heroku@^1.1.1, cli-engine-heroku@^1.1.2:
     heroku-client "3.x"
     netrc-parser "2.0.2"
 
-cli-engine@3.5.38:
-  version "3.5.38"
-  resolved "http://cli-npm.heroku.com/cli-engine/-/cli-engine-3.5.38/a8a4eb813d560e22931e64836527b2ce5038ebc1.tgz#a8a4eb813d560e22931e64836527b2ce5038ebc1"
+cli-engine@3.5.39:
+  version "3.5.39"
+  resolved "http://cli-npm.heroku.com/cli-engine/-/cli-engine-3.5.39/a27afd4a948a778ed7ae633c0986d7acc26fef8d.tgz#a27afd4a948a778ed7ae633c0986d7acc26fef8d"
   dependencies:
     ansi-escapes "^2.0.0"
-    cli-engine-command "5.1.9"
+    cli-engine-command "^5.1.10"
     cli-engine-config "1.3.7"
     cli-engine-heroku "1.1.2"
     debug "2.x"
@@ -558,7 +558,7 @@ cli-engine@3.5.38:
     lodash.flatten "4.x"
     lodash.maxby "4.x"
     lodash.uniqby "4.x"
-    log-chopper "1.0.0"
+    log-chopper "^1.0.1"
     moment "2.x"
     netrc-parser "2.0.2"
     node-gyp "3.x"
@@ -1266,9 +1266,9 @@ heroku-certs@1.1.41:
     moment "^2.18.1"
     psl "^1.1.19"
 
-heroku-ci@1.8.3:
-  version "1.8.3"
-  resolved "http://cli-npm.heroku.com/heroku-ci/-/heroku-ci-1.8.3/f9a53b4e7fd088faf15a72aefe7ed592559ebb04.tgz#f9a53b4e7fd088faf15a72aefe7ed592559ebb04"
+heroku-ci@1.9.0:
+  version "1.9.0"
+  resolved "http://cli-npm.heroku.com/heroku-ci/-/heroku-ci-1.9.0/f85381729cb9e55cbf4f6bbaeb5dfec70e1564ca.tgz#f85381729cb9e55cbf4f6bbaeb5dfec70e1564ca"
   dependencies:
     ansi-escapes "1.4.0"
     bluebird "^3.4.6"
@@ -1278,7 +1278,7 @@ heroku-ci@1.8.3:
     got "^6.6.3"
     heroku-cli-util "^6.1.17"
     heroku-pipelines "^2.0.1"
-    heroku-run "^3.4.3"
+    heroku-run heroku/heroku-run#16d711e10fe92a4f17d7761d57add5fdf7705197
     lodash.flatten "^4.4.0"
     shell-escape "^0.2.0"
     socket.io-client "^1.5.1"
@@ -1479,9 +1479,17 @@ heroku-redis@1.2.15:
     ioredis "1.9.0"
     ssh2 "^0.4.11"
 
-heroku-run@3.4.13, heroku-run@^3.4.3:
+heroku-run@3.4.13:
   version "3.4.13"
   resolved "http://cli-npm.heroku.com/heroku-run/-/heroku-run-3.4.13/e21b23968a1db1d0a49d77ad8273928ad79896fb.tgz#e21b23968a1db1d0a49d77ad8273928ad79896fb"
+  dependencies:
+    co "4.6.0"
+    heroku-cli-util "^6.2.2"
+    shellwords "0.1.0"
+
+"heroku-run@github:heroku/heroku-run#16d711e10fe92a4f17d7761d57add5fdf7705197":
+  version "3.4.13"
+  resolved "https://codeload.github.com/heroku/heroku-run/tar.gz/16d711e10fe92a4f17d7761d57add5fdf7705197"
   dependencies:
     co "4.6.0"
     heroku-cli-util "^6.2.2"
@@ -2354,9 +2362,9 @@ lodash@^3.6.0:
   version "3.10.1"
   resolved "http://cli-npm.heroku.com/lodash/-/lodash-3.10.1/5bf45e8e49ba4189e17d482789dfd15bd140b7b6.tgz#5bf45e8e49ba4189e17d482789dfd15bd140b7b6"
 
-log-chopper@1.0.0:
-  version "1.0.0"
-  resolved "http://cli-npm.heroku.com/log-chopper/-/log-chopper-1.0.0/0f2a4cbf25b237395acb3480a54f8c5bd3f58190.tgz#0f2a4cbf25b237395acb3480a54f8c5bd3f58190"
+log-chopper@^1.0.1:
+  version "1.0.1"
+  resolved "http://cli-npm.heroku.com/log-chopper/-/log-chopper-1.0.1/85052864c888eb1fca91bc7b4565b68c7cfc952a.tgz#85052864c888eb1fca91bc7b4565b68c7cfc952a"
   dependencies:
     byline "5.x"
 
@@ -3306,8 +3314,8 @@ supports-color@^3.1.2:
     has-flag "^1.0.0"
 
 supports-color@^4.1.0:
-  version "4.1.0"
-  resolved "http://cli-npm.heroku.com/supports-color/-/supports-color-4.1.0/92cc14bb3dad8928ca5656c33e19a19f20af5c7a.tgz#92cc14bb3dad8928ca5656c33e19a19f20af5c7a"
+  version "4.2.0"
+  resolved "http://cli-npm.heroku.com/supports-color/-/supports-color-4.2.0/ad986dc7eb2315d009b4d77c8169c2231a684037.tgz#ad986dc7eb2315d009b4d77c8169c2231a684037"
   dependencies:
     has-flag "^2.0.0"
 
