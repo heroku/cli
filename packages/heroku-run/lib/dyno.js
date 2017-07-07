@@ -36,9 +36,7 @@ class Dyno {
    */
   start () {
     let command = this.opts['exit-code'] ? `${this.opts.command}; echo "\uFFFF heroku-command-exit-status $?"` : this.opts.command
-    let start = this.heroku.request({
-      path: this.opts.dyno ? `/apps/${this.opts.app}/dynos/${this.opts.dyno}` : `/apps/${this.opts.app}/dynos`,
-      method: 'POST',
+    let start = this.heroku.post(this.opts.dyno ? `/apps/${this.opts.app}/dynos/${this.opts.dyno}` : `/apps/${this.opts.app}/dynos`, {
       headers: {
         Accept: this.opts.dyno ? 'application/vnd.heroku+json; version=3.run-inside' : 'application/vnd.heroku+json; version=3'
       },
@@ -105,11 +103,7 @@ class Dyno {
     const interval = 30 * 1000
     const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
-    return this.heroku.request({
-      path: `/apps/${this.opts.app}/dynos/${this.opts.dyno}`,
-      method: 'GET',
-      headers: {Accept: 'application/vnd.heroku+json; version=3'}
-    })
+    return this.heroku.get(`/apps/${this.opts.app}/dynos/${this.opts.dyno}`)
     .then(dyno => {
       this.dyno = dyno
       cli.action.done(this._status(this.dyno.state))
@@ -165,7 +159,6 @@ class Dyno {
       cli.console.log(`listening on port ${host}:${port} for ssh client`)
     } else {
       spawn('ssh', [host, '-p', port, '-oStrictHostKeyChecking=no', '-oUserKnownHostsFile=/dev/null', '-oServerAliveInterval=20'], {
-        detached: false,
         stdio: 'inherit'
       })
     }
