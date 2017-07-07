@@ -742,9 +742,9 @@ heroku-certs@1.1.41:
     moment "^2.18.1"
     psl "^1.1.19"
 
-heroku-ci@1.8.3:
-  version "1.8.3"
-  resolved "http://cli-npm.heroku.com/heroku-ci/-/heroku-ci-1.8.3/f9a53b4e7fd088faf15a72aefe7ed592559ebb04.tgz#f9a53b4e7fd088faf15a72aefe7ed592559ebb04"
+heroku-ci@1.9.0:
+  version "1.9.0"
+  resolved "http://cli-npm.heroku.com/heroku-ci/-/heroku-ci-1.9.0/f85381729cb9e55cbf4f6bbaeb5dfec70e1564ca.tgz#f85381729cb9e55cbf4f6bbaeb5dfec70e1564ca"
   dependencies:
     ansi-escapes "1.4.0"
     bluebird "^3.4.6"
@@ -754,7 +754,7 @@ heroku-ci@1.8.3:
     got "^6.6.3"
     heroku-cli-util "^6.1.17"
     heroku-pipelines "^2.0.1"
-    heroku-run "^3.4.3"
+    heroku-run heroku/heroku-run#16d711e10fe92a4f17d7761d57add5fdf7705197
     lodash.flatten "^4.4.0"
     shell-escape "^0.2.0"
     socket.io-client "^1.5.1"
@@ -947,9 +947,17 @@ heroku-redis@1.2.15:
     ioredis "1.9.0"
     ssh2 "^0.4.11"
 
-heroku-run@3.4.13, heroku-run@^3.4.3:
+heroku-run@3.4.13:
   version "3.4.13"
   resolved "http://cli-npm.heroku.com/heroku-run/-/heroku-run-3.4.13/e21b23968a1db1d0a49d77ad8273928ad79896fb.tgz#e21b23968a1db1d0a49d77ad8273928ad79896fb"
+  dependencies:
+    co "4.6.0"
+    heroku-cli-util "^6.2.2"
+    shellwords "0.1.0"
+
+"heroku-run@github:heroku/heroku-run#16d711e10fe92a4f17d7761d57add5fdf7705197":
+  version "3.4.13"
+  resolved "https://codeload.github.com/heroku/heroku-run/tar.gz/16d711e10fe92a4f17d7761d57add5fdf7705197"
   dependencies:
     co "4.6.0"
     heroku-cli-util "^6.2.2"
@@ -1958,8 +1966,8 @@ supports-color@^3.1.2:
     has-flag "^1.0.0"
 
 supports-color@^4.1.0:
-  version "4.1.0"
-  resolved "http://cli-npm.heroku.com/supports-color/-/supports-color-4.1.0/92cc14bb3dad8928ca5656c33e19a19f20af5c7a.tgz#92cc14bb3dad8928ca5656c33e19a19f20af5c7a"
+  version "4.2.0"
+  resolved "http://cli-npm.heroku.com/supports-color/-/supports-color-4.2.0/ad986dc7eb2315d009b4d77c8169c2231a684037.tgz#ad986dc7eb2315d009b4d77c8169c2231a684037"
   dependencies:
     has-flag "^2.0.0"
 
