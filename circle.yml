@@ -37,15 +37,13 @@ stages:
           EOF
           chmod 0600 ~/.netrc
           set -ex
-          if [ "${CIRCLE_BRANCH}" == "auto-doc" ]; then
-            ./scripts/generate_docs.sh > /tmp/cli_documentation.md
-            devcenter push /tmp/heroku-cli-commands.md --trace
-          fi 
           if [ "${CIRCLE_BRANCH}" == "master" ]; then
             TAG=`git describe --exact-match HEAD || echo NOTAG`
             if [ "${TAG}" != "NOTAG" ]; then
               yarn run release stable
               ./scripts/release-deb stable
+              ./scripts/generate_docs.sh > /tmp/cli_documentation.md
+              devcenter push /tmp/heroku-cli-commands.md --trace
             else
               yarn run release beta
               ./scripts/release-deb beta
