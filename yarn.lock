@@ -955,7 +955,7 @@ heroku-run@3.4.13:
     heroku-cli-util "^6.2.2"
     shellwords "0.1.0"
 
-"heroku-run@github:heroku/heroku-run#16d711e10fe92a4f17d7761d57add5fdf7705197":
+heroku-run@heroku/heroku-run#16d711e10fe92a4f17d7761d57add5fdf7705197:
   version "3.4.13"
   resolved "https://codeload.github.com/heroku/heroku-run/tar.gz/16d711e10fe92a4f17d7761d57add5fdf7705197"
   dependencies:
