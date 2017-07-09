@@ -37,6 +37,12 @@ ansi-styles@^2.2.1:
   version "2.2.1"
   resolved "http://cli-npm.heroku.com/ansi-styles/-/ansi-styles-2.2.1/b432dd3358b634cf75e1e4664368240533c1ddbe.tgz#b432dd3358b634cf75e1e4664368240533c1ddbe"
 
+ansi-styles@^3.1.0:
+  version "3.1.0"
+  resolved "http://cli-npm.heroku.com/ansi-styles/-/ansi-styles-3.1.0/09c202d5c917ec23188caa5c9cb9179cd9547750.tgz#09c202d5c917ec23188caa5c9cb9179cd9547750"
+  dependencies:
+    color-convert "^1.0.0"
+
 ansicolors@~0.2.1:
   version "0.2.1"
   resolved "http://cli-npm.heroku.com/ansicolors/-/ansicolors-0.2.1/be089599097b74a5c9c4a84a0cdbcdb62bd87aef.tgz#be089599097b74a5c9c4a84a0cdbcdb62bd87aef"
@@ -198,7 +204,7 @@ caseless@~0.12.0:
   version "0.12.0"
   resolved "http://cli-npm.heroku.com/caseless/-/caseless-0.12.0/1b681c21ff84033c826543090689420d187151dc.tgz#1b681c21ff84033c826543090689420d187151dc"
 
-chalk@1.x, chalk@^1.0.0, chalk@^1.1.1, chalk@^1.1.3:
+chalk@1.x, chalk@^1.1.1, chalk@^1.1.3:
   version "1.1.3"
   resolved "http://cli-npm.heroku.com/chalk/-/chalk-1.1.3/a8115c55e4a702fe4d150abd3872822a7e09fc98.tgz#a8115c55e4a702fe4d150abd3872822a7e09fc98"
   dependencies:
@@ -207,6 +213,14 @@ chalk@1.x, chalk@^1.0.0, chalk@^1.1.1, chalk@^1.1.3:
     has-ansi "^2.0.0"
     strip-ansi "^3.0.0"
     supports-color "^2.0.0"
+
+chalk@^2.0.0:
+  version "2.0.1"
+  resolved "http://cli-npm.heroku.com/chalk/-/chalk-2.0.1/dbec49436d2ae15f536114e76d14656cdbc0f44d.tgz#dbec49436d2ae15f536114e76d14656cdbc0f44d"
+  dependencies:
+    ansi-styles "^3.1.0"
+    escape-string-regexp "^1.0.5"
+    supports-color "^4.0.0"
 
 chownr@^1.0.1:
   version "1.0.1"
@@ -218,7 +232,7 @@ cli-cursor@^2.1.0:
   dependencies:
     restore-cursor "^2.0.0"
 
-cli-engine-command@^5.1.10, cli-engine-command@^5.1.7, cli-engine-command@^5.1.8:
+cli-engine-command@^5.1.10, cli-engine-command@^5.1.8:
   version "5.1.10"
   resolved "http://cli-npm.heroku.com/cli-engine-command/-/cli-engine-command-5.1.10/0e397d22dd8387b5e7a7052c7a6abd05622c1747.tgz#0e397d22dd8387b5e7a7052c7a6abd05622c1747"
   dependencies:
@@ -247,9 +261,16 @@ cli-engine-config@1.3.7, cli-engine-config@^1.3.7:
   dependencies:
     uuid "3.x"
 
-cli-engine-heroku@1.1.2, cli-engine-heroku@^1.1.1, cli-engine-heroku@^1.1.2:
+cli-engine-heroku@1.1.2:
   version "1.1.2"
   resolved "http://cli-npm.heroku.com/cli-engine-heroku/-/cli-engine-heroku-1.1.2/db92098feaa8d09f4ea6b0ceda7f3176e0ea43fa.tgz#db92098feaa8d09f4ea6b0ceda7f3176e0ea43fa"
+  dependencies:
+    heroku-client "3.x"
+    netrc-parser "2.0.2"
+
+cli-engine-heroku@^1.1.2, cli-engine-heroku@^1.1.3:
+  version "1.1.3"
+  resolved "http://cli-npm.heroku.com/cli-engine-heroku/-/cli-engine-heroku-1.1.3/853b3a7f9d53fb4ef4264dca034e8b85821289fd.tgz#853b3a7f9d53fb4ef4264dca034e8b85821289fd"
   dependencies:
     heroku-client "3.x"
     netrc-parser "2.0.2"
@@ -308,6 +329,16 @@ co@4.6.0, co@4.x, co@^4.6.0:
 code-point-at@^1.0.0:
   version "1.1.0"
   resolved "http://cli-npm.heroku.com/code-point-at/-/code-point-at-1.1.0/0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
+
+color-convert@^1.0.0:
+  version "1.9.0"
+  resolved "http://cli-npm.heroku.com/color-convert/-/color-convert-1.9.0/1accf97dd739b983bf994d56fec8f95853641b7a.tgz#1accf97dd739b983bf994d56fec8f95853641b7a"
+  dependencies:
+    color-name "^1.1.1"
+
+color-name@^1.1.1:
+  version "1.1.2"
+  resolved "http://cli-npm.heroku.com/color-name/-/color-name-1.1.2/5c8ab72b64bd2215d617ae9559ebb148475cf98d.tgz#5c8ab72b64bd2215d617ae9559ebb148475cf98d"
 
 colors@0.6.x:
   version "0.6.2"
@@ -685,9 +716,9 @@ here@0.0.2:
   version "0.0.2"
   resolved "http://cli-npm.heroku.com/here/-/here-0.0.2/69c1af3f02121f3d8788e02e84dc8b3905d71195.tgz#69c1af3f02121f3d8788e02e84dc8b3905d71195"
 
-heroku-apps@2.4.5:
-  version "2.4.5"
-  resolved "http://cli-npm.heroku.com/heroku-apps/-/heroku-apps-2.4.5/311e0e5b9c01284aa1c7a854d09e894809d3c079.tgz#311e0e5b9c01284aa1c7a854d09e894809d3c079"
+heroku-apps@2.4.6:
+  version "2.4.6"
+  resolved "http://cli-npm.heroku.com/heroku-apps/-/heroku-apps-2.4.6/046e3be9ab3a613b009190fd84c1e261724ab82c.tgz#046e3be9ab3a613b009190fd84c1e261724ab82c"
   dependencies:
     bluebird "^3.5.0"
     cli-engine-command "^5.1.8"
@@ -760,26 +791,9 @@ heroku-ci@1.9.0:
     socket.io-client "^1.5.1"
     temp "^0.8.3"
 
-heroku-cli-addons@1.2.24:
+heroku-cli-addons@1.2.24, heroku-cli-addons@^1.2.22, heroku-cli-addons@^1.2.23:
   version "1.2.24"
   resolved "http://cli-npm.heroku.com/heroku-cli-addons/-/heroku-cli-addons-1.2.24/aa82a9d50b3d85c4ef37aec9392f65b722c14379.tgz#aa82a9d50b3d85c4ef37aec9392f65b722c14379"
-  dependencies:
-    co "4.6.0"
-    co-wait "0.0.0"
-    heroku-cli-util "^6.2.0"
-    lodash.flatten "4.4.0"
-    lodash.groupby "4.6.0"
-    lodash.memoize "4.1.2"
-    lodash.merge "4.6.0"
-    lodash.some "4.6.0"
-    lodash.sortby "4.7.0"
-    lodash.topairs "4.3.0"
-    lodash.values "4.3.0"
-    printf "0.2.5"
-
-heroku-cli-addons@^1.2.22, heroku-cli-addons@^1.2.23:
-  version "1.2.23"
-  resolved "http://cli-npm.heroku.com/heroku-cli-addons/-/heroku-cli-addons-1.2.23/8748a08d182fc6070302abbf85f85544da4e3408.tgz#8748a08d182fc6070302abbf85f85544da4e3408"
   dependencies:
     co "4.6.0"
     co-wait "0.0.0"
@@ -802,13 +816,13 @@ heroku-cli-oauth@2.0.14:
     heroku-cli-util "^6.2.0"
     lodash "^4.17.4"
 
-heroku-cli-status@4.0.1:
-  version "4.0.1"
-  resolved "http://cli-npm.heroku.com/heroku-cli-status/-/heroku-cli-status-4.0.1/1d90d32becaec166c2fe9606bba365404dd3acad.tgz#1d90d32becaec166c2fe9606bba365404dd3acad"
+heroku-cli-status@4.0.2:
+  version "4.0.2"
+  resolved "http://cli-npm.heroku.com/heroku-cli-status/-/heroku-cli-status-4.0.2/820d89c27dbfc4f156a6aa8826d92bc0f884cd3f.tgz#820d89c27dbfc4f156a6aa8826d92bc0f884cd3f"
   dependencies:
-    cli-engine-command "^5.1.7"
+    cli-engine-command "^5.1.10"
     cli-engine-config "^1.3.7"
-    cli-engine-heroku "^1.1.1"
+    cli-engine-heroku "^1.1.3"
     lodash.maxby "^4.6.0"
     lodash.padend "^4.6.1"
     moment "^2.18.1"
@@ -1050,11 +1064,11 @@ inherits@2, inherits@~2.0.0, inherits@~2.0.1, inherits@~2.0.3:
   resolved "http://cli-npm.heroku.com/inherits/-/inherits-2.0.3/633c2c83e3da42a502f52466022480f4208261de.tgz#633c2c83e3da42a502f52466022480f4208261de"
 
 inquirer@^3.0.1, inquirer@^3.1.1:
-  version "3.1.1"
-  resolved "http://cli-npm.heroku.com/inquirer/-/inquirer-3.1.1/87621c4fba4072f48a8dd71c9f9df6f100b2d534.tgz#87621c4fba4072f48a8dd71c9f9df6f100b2d534"
+  version "3.2.0"
+  resolved "http://cli-npm.heroku.com/inquirer/-/inquirer-3.2.0/45b44c2160c729d7578c54060b3eed94487bb42b.tgz#45b44c2160c729d7578c54060b3eed94487bb42b"
   dependencies:
     ansi-escapes "^2.0.0"
-    chalk "^1.0.0"
+    chalk "^2.0.0"
     cli-cursor "^2.1.0"
     cli-width "^2.0.0"
     external-editor "^2.0.4"
@@ -1064,8 +1078,8 @@ inquirer@^3.0.1, inquirer@^3.1.1:
     run-async "^2.2.0"
     rx-lite "^4.0.8"
     rx-lite-aggregates "^4.0.8"
-    string-width "^2.0.0"
-    strip-ansi "^3.0.0"
+    string-width "^2.1.0"
+    strip-ansi "^4.0.0"
     through "^2.3.6"
 
 ioredis@1.9.0:
@@ -1931,7 +1945,7 @@ string-width@^1.0.1, string-width@^1.0.2:
     is-fullwidth-code-point "^1.0.0"
     strip-ansi "^3.0.0"
 
-string-width@^2.0.0:
+string-width@^2.1.0:
   version "2.1.0"
   resolved "http://cli-npm.heroku.com/string-width/-/string-width-2.1.0/030664561fc146c9423ec7d978fe2457437fe6d0.tgz#030664561fc146c9423ec7d978fe2457437fe6d0"
   dependencies:
@@ -1982,7 +1996,7 @@ supports-color@^3.1.2:
   dependencies:
     has-flag "^1.0.0"
 
-supports-color@^4.1.0:
+supports-color@^4.0.0, supports-color@^4.1.0:
   version "4.2.0"
   resolved "http://cli-npm.heroku.com/supports-color/-/supports-color-4.2.0/ad986dc7eb2315d009b4d77c8169c2231a684037.tgz#ad986dc7eb2315d009b4d77c8169c2231a684037"
   dependencies:
