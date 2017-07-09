@@ -4,6 +4,7 @@ const flatten = require('lodash.flatten')
 
 exports.topic = {
   name: 'addons',
+  description: 'tools and services for developing, extending, and operating your app',
   overview: `Overview of Add-ons:
 
   Add-ons are created with the \`addons:create\` command, providing a reference
