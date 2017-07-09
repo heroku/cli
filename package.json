@@ -41,7 +41,7 @@
     "heroku-apps": "2.4.5",
     "heroku-certs": "1.1.41",
     "heroku-ci": "1.9.0",
-    "heroku-cli-addons": "1.2.23",
+    "heroku-cli-addons": "1.2.24",
     "heroku-cli-oauth": "2.0.14",
     "heroku-cli-status": "4.0.1",
     "heroku-fork": "4.1.25",

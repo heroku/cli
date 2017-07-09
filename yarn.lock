@@ -760,7 +760,24 @@ heroku-ci@1.9.0:
     socket.io-client "^1.5.1"
     temp "^0.8.3"
 
-heroku-cli-addons@1.2.23, heroku-cli-addons@^1.2.22, heroku-cli-addons@^1.2.23:
+heroku-cli-addons@1.2.24:
+  version "1.2.24"
+  resolved "http://cli-npm.heroku.com/heroku-cli-addons/-/heroku-cli-addons-1.2.24/aa82a9d50b3d85c4ef37aec9392f65b722c14379.tgz#aa82a9d50b3d85c4ef37aec9392f65b722c14379"
+  dependencies:
+    co "4.6.0"
+    co-wait "0.0.0"
+    heroku-cli-util "^6.2.0"
+    lodash.flatten "4.4.0"
+    lodash.groupby "4.6.0"
+    lodash.memoize "4.1.2"
+    lodash.merge "4.6.0"
+    lodash.some "4.6.0"
+    lodash.sortby "4.7.0"
+    lodash.topairs "4.3.0"
+    lodash.values "4.3.0"
+    printf "0.2.5"
+
+heroku-cli-addons@^1.2.22, heroku-cli-addons@^1.2.23:
   version "1.2.23"
   resolved "http://cli-npm.heroku.com/heroku-cli-addons/-/heroku-cli-addons-1.2.23/8748a08d182fc6070302abbf85f85544da4e3408.tgz#8748a08d182fc6070302abbf85f85544da4e3408"
   dependencies:
@@ -955,7 +972,7 @@ heroku-run@3.4.13:
     heroku-cli-util "^6.2.2"
     shellwords "0.1.0"
 
-"heroku-run@github:heroku/heroku-run#16d711e10fe92a4f17d7761d57add5fdf7705197":
+heroku-run@heroku/heroku-run#16d711e10fe92a4f17d7761d57add5fdf7705197:
   version "3.4.13"
   resolved "https://codeload.github.com/heroku/heroku-run/tar.gz/16d711e10fe92a4f17d7761d57add5fdf7705197"
   dependencies:
