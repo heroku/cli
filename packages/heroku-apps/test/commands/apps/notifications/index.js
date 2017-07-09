@@ -5,7 +5,7 @@ const cli = require('heroku-cli-util')
 const nock = require('nock')
 const expect = require('chai').expect
 const cmd = commands.find((c) => c.topic === 'notifications' && !c.command)
-const time = require('../../../../lib/time')
+const time = require('../../../../src/time')
 
 describe('notifications', () => {
   beforeEach(() => cli.mockConsole())

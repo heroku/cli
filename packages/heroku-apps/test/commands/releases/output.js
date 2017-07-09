@@ -1,9 +1,9 @@
 'use strict'
-/* globals describe it beforeEach */
+/* globals describe it beforeEach commands */
 
 const cli = require('heroku-cli-util')
 const nock = require('nock')
-const cmd = require('../../..').commands.find(c => c.topic === 'releases' && c.command === 'output')
+const cmd = commands.find(c => c.topic === 'releases' && c.command === 'output')
 const expect = require('chai').expect
 const stdMocks = require('std-mocks')
 

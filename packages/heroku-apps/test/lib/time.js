@@ -2,7 +2,7 @@
 /* globals describe it */
 
 const expect = require('unexpected')
-const time = require('../../lib/time')
+const time = require('../../src/time')
 const now = new Date()
 
 describe('time', () => {

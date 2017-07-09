@@ -2,7 +2,7 @@
 /* globals describe it */
 
 let expect = require('unexpected')
-let util = require('../../lib/util')
+let util = require('../../src/util')
 let fs = require('mz/fs')
 
 describe('util', () => {
