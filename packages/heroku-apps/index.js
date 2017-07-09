@@ -4,6 +4,7 @@ const flatten = require('lodash.flatten')
 
 exports.topics = [
   { name: 'apps', description: 'manage apps' },
+  { name: 'auth', description: 'heroku authentication' },
   { name: 'buildpacks', description: 'manage the buildpacks for an app' },
   { name: 'config', description: 'manage app config vars' },
   { name: 'domains', description: 'manage the domains for an app' },
