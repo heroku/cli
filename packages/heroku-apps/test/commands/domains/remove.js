@@ -3,7 +3,7 @@
 
 const cli = require('heroku-cli-util')
 const nock = require('nock')
-const cmd = require('../../../commands/domains/remove')
+const cmd = require('../../../src/commands/domains/remove')
 
 describe('domains:remove', function () {
   beforeEach(() => cli.mockConsole())

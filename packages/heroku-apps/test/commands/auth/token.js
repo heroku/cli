@@ -7,7 +7,7 @@ const netrc = td.constructor(require('netrc-parser'))
 netrc['@global'] = true
 const cli = proxyquire('heroku-cli-util', {'netrc-parser': netrc})
 
-const cmd = proxyquire('../../../commands/auth/token', {'heroku-cli-util': cli})
+const cmd = proxyquire('../../../src/commands/auth/token', {'heroku-cli-util': cli})
 const expect = require('unexpected')
 
 describe('auth:token', () => {

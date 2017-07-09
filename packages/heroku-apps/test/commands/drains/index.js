@@ -3,7 +3,7 @@
 
 const cli = require('heroku-cli-util')
 const nock = require('nock')
-const cmd = require('../../../commands/drains')
+const cmd = require('../../../src/commands/drains')
 const expect = require('chai').expect
 
 describe('drains', function () {
@@ -62,7 +62,7 @@ add-on:test (add-on-123)
     return cmd.run({app: 'myapp', flags: {extended: true}})
       .then(() => expect(cli.stderr).to.equal(''))
       .then(() => expect(cli.stdout).to.equal(
-`=== Drains
+        `=== Drains
 https://forker.herokuapp.com (d.8bf587e9-29d1-43c8-bd0e-36cdfaf35259) drain_id=67890
 === Add-on Drains
 add-on:test (add-on-123) drain_id=12345

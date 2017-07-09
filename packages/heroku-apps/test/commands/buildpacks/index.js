@@ -3,7 +3,7 @@
 
 const cli = require('heroku-cli-util')
 const expect = require('chai').expect
-const buildpacks = require('../../../commands/buildpacks')
+const buildpacks = require('../../../src/commands/buildpacks')
 const stubGet = require('../../stubs/buildpacks.js').get
 
 describe('heroku buildpacks', function () {

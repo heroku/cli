@@ -7,7 +7,7 @@ const td = require('testdouble')
 
 let netrcMock = td.constructor(require('netrc-parser'))
 // get command from index.js
-const cmd = proxyquire('../../../commands/auth/logout', {'netrc-parser': netrcMock})[0]
+const cmd = proxyquire('../../../src/commands/auth/logout', {'netrc-parser': netrcMock})[0]
 const expect = require('unexpected')
 
 describe('auth:logout', () => {

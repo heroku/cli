@@ -3,7 +3,7 @@
 
 const cli = require('heroku-cli-util')
 const nock = require('nock')
-const cmd = require('../../../commands/ps')
+const cmd = require('../../../src/commands/ps')
 const expect = require('unexpected')
 const strftime = require('strftime')
 

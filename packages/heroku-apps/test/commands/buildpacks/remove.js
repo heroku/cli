@@ -4,7 +4,7 @@
 const cli = require('heroku-cli-util')
 const nock = require('nock')
 const expect = require('chai').expect
-const buildpacks = require('../../../commands/buildpacks/remove.js')
+const buildpacks = require('../../../src/commands/buildpacks/remove.js')
 const unwrap = require('../../unwrap.js')
 const stubGet = require('../../stubs/buildpacks.js').get
 const stubPut = require('../../stubs/buildpacks.js').put
@@ -81,7 +81,7 @@ describe('heroku buildpacks:remove', function () {
       })
     })
 
-    it('# with two buildpacks successfully removes index', function () {
+    it('# with two buildpacks successfully removes index - java', function () {
       stubGet(
         'https://github.com/heroku/heroku-buildpack-java',
         'https://github.com/heroku/heroku-buildpack-ruby'
@@ -100,7 +100,7 @@ Run git push heroku master to create a new release using this buildpack.
       })
     })
 
-    it('# with two buildpacks successfully removes index', function () {
+    it('# with two buildpacks successfully removes index - ruby', function () {
       stubGet(
         'https://github.com/heroku/heroku-buildpack-java',
         'https://github.com/heroku/heroku-buildpack-ruby'
@@ -216,7 +216,7 @@ Run git push heroku master to create a new release using these buildpacks.
       let mock = stubPut('https://github.com/heroku/heroku-buildpack-java')
 
       return buildpacks.run({
-        app: 'example', args: {url: 'https://github.com/heroku/heroku-buildpack-ruby'}
+        app: 'example', args: {url: 'https://github.com/heroku/heroku-buildpack-ruby'}, flags: {}
       }).then(function () {
         mock.done()
         expect(cli.stderr).to.equal('')
@@ -281,7 +281,7 @@ Run git push heroku master to create a new release using this buildpack.
         'https://github.com/heroku/heroku-buildpack-nodejs'
       )
       return buildpacks.run({
-        app: 'example', args: {url: 'https://github.com/heroku/heroku-buildpack-ruby'}
+        app: 'example', args: {url: 'https://github.com/heroku/heroku-buildpack-ruby'}, flags: {}
       }).then(function () {
         mock.done()
         expect(cli.stdout).to.equal(

@@ -4,25 +4,11 @@ jobs:
   build:
     docker:
       - image: dickeyxxx/cli-engine-docker:v1.3.0
-    working_directory: ~/cli
+    working_directory: ~/cli-plugin
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - cli-{{ .Branch }}-{{checksum "package.json"}}
-            - cli-{{ .Branch }}
-            - cli-master
-      - run: |
-          yarn
-          nyc mocha test
-          standard
-          nyc report --reporter=text-lcov > coverage.lcov && bash <(curl -s https://codecov.io/bash)
-      - save_cache:
-          key: cli-{{ .Branch }}-{{checksum "package.json"}}
-          paths:
-            - ~/cli/node_modules
-            - /usr/local/share/.cache/yarn
-      - save_cache:
-          key: cli-{{ .Branch }}
-          paths:
-            - /usr/local/share/.cache/yarn
+      - run: yarn
+      - run: mocha
+      - run: jest --coverage && bash <(curl -s https://codecov.io/bash)
+      - run: flow check
+      - run: eslint .

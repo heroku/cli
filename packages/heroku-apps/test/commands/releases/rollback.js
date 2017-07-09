@@ -1,14 +1,18 @@
 'use strict'
-/* globals describe it beforeEach */
+/* globals describe it beforeEach commands */
 
 const cli = require('heroku-cli-util')
 const nock = require('nock')
-const cmd = require('../../..').commands.find(c => c.topic === 'releases' && c.command === 'rollback')
+const cmd = commands.find(c => c.topic === 'releases' && c.command === 'rollback')
 const expect = require('chai').expect
 const stdMocks = require('std-mocks')
 
 describe('releases:rollback', function () {
   beforeEach(() => cli.mockConsole())
+
+  afterEach(() => {
+    stdMocks.restore()
+  })
 
   it('rolls back the release', function () {
     process.stdout.columns = 80
@@ -59,8 +63,6 @@ describe('releases:rollback', function () {
       .then(() => expect(cli.stderr).to.equal(''))
       .then(() => api.done())
       .then(() => busl.done())
-      .then(() => stdMocks.restore())
-      .catch(() => stdMocks.restore())
   })
 
   it('has a missing missing output', function () {
@@ -80,7 +82,5 @@ describe('releases:rollback', function () {
       .then(() => expect(cli.stderr).to.contain('Release command starting. Use `heroku releases:output` to view the log.\n'))
       .then(() => api.done())
       .then(() => busl.done())
-      .then(() => stdMocks.restore())
-      .catch(() => stdMocks.restore())
   })
 })

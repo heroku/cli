@@ -1,3 +1,4 @@
 --require ./test/helpers.js
 --reporter list
 --recursive
+--compilers js:babel-register

@@ -3,7 +3,7 @@
 
 const cli = require('heroku-cli-util')
 const expect = require('chai').expect
-const buildpacks = require('../../../commands/buildpacks/set.js')
+const buildpacks = require('../../../src/commands/buildpacks/set.js')
 const stubGet = require('../../stubs/buildpacks.js').get
 const stubPut = require('../../stubs/buildpacks.js').put
 const unwrap = require('../../unwrap.js')
@@ -24,7 +24,7 @@ describe('heroku buildpacks:set', function () {
       )
 
       return buildpacks.run({
-        app: 'example', args: {url: 'https://github.com/heroku/heroku-buildpack-ruby'}
+        app: 'example', args: {url: 'https://github.com/heroku/heroku-buildpack-ruby'}, flags: {}
       }).then(function () {
         mock.done()
         expect(cli.stderr).to.equal('')
@@ -59,7 +59,7 @@ Run git push heroku master to create a new release using this buildpack.
       )
 
       return buildpacks.run({
-        app: 'example', args: {url: 'http://github.com/bar/bar'}
+        app: 'example', args: {url: 'http://github.com/bar/bar'}, flags: {}
       }).then(function () {
         mock.done()
         expect(cli.stdout).to.equal(

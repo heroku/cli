@@ -4,7 +4,7 @@
 const cli = require('heroku-cli-util')
 const nock = require('nock')
 const expect = require('chai').expect
-const buildpacks = require('../../../commands/buildpacks/add.js')
+const buildpacks = require('../../../src/commands/buildpacks/add.js')
 const stubGet = require('../../stubs/buildpacks.js').get
 const stubPut = require('../../stubs/buildpacks.js').put
 const unwrap = require('../../unwrap.js')
@@ -27,7 +27,7 @@ describe('heroku buildpacks:add', function () {
         .reply(200, [{buildpack: {url: 'urn:buildpack:heroku/ruby', name: 'heroku/ruby'}, ordinal: 0}])
 
       return buildpacks.run({
-        app: 'example', args: {url: 'heroku/ruby'}
+        app: 'example', args: {url: 'heroku/ruby'}, flags: {}
       }).then(function () {
         mock.done()
         expect(cli.stderr).to.equal('')
@@ -48,7 +48,7 @@ Run git push heroku master to create a new release using this buildpack.
         .reply(200, [{buildpack: {url: 'urn:buildpack:heroku/ruby', name: 'heroku/ruby'}, ordinal: 0}])
 
       return buildpacks.run({
-        app: 'example', args: {url: 'urn:buildpack:heroku/ruby'}
+        app: 'example', args: {url: 'urn:buildpack:heroku/ruby'}, flags: {}
       }).then(function () {
         mock.done()
         expect(cli.stderr).to.equal('')
@@ -65,7 +65,7 @@ Run git push heroku master to create a new release using this buildpack.
       let mock = stubPut('https://github.com/heroku/heroku-buildpack-ruby')
 
       return buildpacks.run({
-        app: 'example', args: {url: 'https://github.com/heroku/heroku-buildpack-ruby'}
+        app: 'example', args: {url: 'https://github.com/heroku/heroku-buildpack-ruby'}, flags: {}
       }).then(function () {
         mock.done()
         expect(cli.stderr).to.equal('')
@@ -85,7 +85,7 @@ Run git push heroku master to create a new release using this buildpack.
       )
 
       return buildpacks.run({
-        app: 'example', args: {url: 'https://github.com/heroku/heroku-buildpack-ruby'}
+        app: 'example', args: {url: 'https://github.com/heroku/heroku-buildpack-ruby'}, flags: {}
       }).then(function () {
         mock.done()
         expect(cli.stderr).to.equal('')
@@ -111,7 +111,7 @@ Run git push heroku master to create a new release using these buildpacks.
       )
 
       return buildpacks.run({
-        app: 'example', args: {url: 'https://github.com/heroku/heroku-buildpack-ruby'}
+        app: 'example', args: {url: 'https://github.com/heroku/heroku-buildpack-ruby'}, flags: {}
       }).then(function () {
         mock.done()
         expect(cli.stderr).to.equal('')

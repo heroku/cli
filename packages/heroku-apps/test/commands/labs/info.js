@@ -3,7 +3,7 @@
 
 const cli = require('heroku-cli-util')
 const nock = require('nock')
-const cmd = require('../../../commands/labs/info')
+const cmd = require('../../../src/commands/labs/info')
 const expect = require('unexpected')
 
 describe('labs:info', function () {

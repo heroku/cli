@@ -3,7 +3,7 @@
 
 const cli = require('heroku-cli-util')
 const nock = require('nock')
-const cmd = require('../../../commands/maintenance/off')
+const cmd = require('../../../src/commands/maintenance/off')
 
 describe('maintenance:off', function () {
   beforeEach(() => cli.mockConsole())

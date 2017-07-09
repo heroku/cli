@@ -4,7 +4,7 @@
 const cli = require('heroku-cli-util')
 const nock = require('nock')
 const expect = require('chai').expect
-const buildpacks = require('../../../commands/buildpacks/clear.js')
+const buildpacks = require('../../../src/commands/buildpacks/clear.js')
 const unwrap = require('../../unwrap.js')
 const stubPut = require('../../stubs/buildpacks.js').put
 

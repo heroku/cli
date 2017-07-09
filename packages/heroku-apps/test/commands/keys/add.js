@@ -22,7 +22,7 @@ describe('keys:add', () => {
     inquirer = {}
     mockCli = Object.assign({}, cli)
 
-    cmd = proxyquire('../../../commands/keys/add', {
+    cmd = proxyquire('../../../src/commands/keys/add', {
       'heroku-cli-util': mockCli,
       'os': {homedir: osHomedir},
       inquirer
@@ -118,7 +118,7 @@ describe('keys:add', () => {
       .then(() => api.done())
   })
 
-  it('adds a key when passed yes', () => {
+  it('adds a key when passed yes and has key', () => {
     let api = nock('https://api.heroku.com:443')
       .post('/account/keys', {public_key: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDsAbr7QvJUwDC0dfX3p884w7T06MgJcwbvKDeMpOGg7FXhVSjpXz0SrFrbzbUfs9LtIDIvBPfA5+LTA45+apQTt+A3fiMsKElFjiJgO0ag12vbttHxjda12tmm/Sc0CBpOOeLJxJYboWeN7G4LfW+llUXhb45gNp48qJKbCZKZN2RTd3F8BFUgLedVKg9xs1OyyioFaQJC0N8Ka4CyfTn0mpWnkyrzYvziG1KMELohbP74hAEmW7+/PM9KjXdLeFaOJXTYZLGYJR6DX2Wdd/AP1JFljtXNXlVQ224IPRuwrnVK/KqegY1tk+io4+Ju7mL9PyyXtFOESK+yinzQ3MJn\n'})
       .reply(200)

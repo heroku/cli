@@ -1,9 +1,9 @@
 'use strict'
-/* globals describe it beforeEach afterEach */
+/* globals describe it beforeEach afterEach commands */
 
 const cli = require('heroku-cli-util')
 const nock = require('nock')
-const cmd = require('../../../').commands.find((c) => c.topic === 'config' && c.command === 'unset')
+const cmd = commands.find((c) => c.topic === 'config' && c.command === 'unset')
 const expect = require('unexpected')
 
 describe('config:unset', () => {

@@ -3,7 +3,7 @@
 
 const cli = require('heroku-cli-util')
 const nock = require('nock')
-const cmd = require('../../../commands/domains/add')
+const cmd = require('../../../src/commands/domains/add')
 const expect = require('chai').expect
 const lolex = require('lolex')
 
@@ -28,7 +28,7 @@ describe('domains:add', function () {
     return cmd.run({app: 'myapp', args: {hostname: 'foo.com'}, flags: {}})
       .then(() => api.done())
       .then(() => expect(cli.stderr).to.equal(
-`Adding foo.com to myapp... done
+        `Adding foo.com to myapp... done
  ▸    Configure your app's DNS provider to point to the DNS Target undefined.
  ▸    For help, see https://devcenter.heroku.com/articles/custom-domains
 `))
@@ -41,7 +41,7 @@ describe('domains:add', function () {
     return cmd.run({app: 'myapp', args: {hostname: 'foo.com'}, flags: {}})
       .then(() => api.done())
       .then(() => expect(cli.stderr).to.equal(
-`Adding foo.com to myapp... done
+        `Adding foo.com to myapp... done
  ▸    Configure your app's DNS provider to point to the DNS Target undefined.
  ▸    For help, see https://devcenter.heroku.com/articles/custom-domains
 
@@ -57,7 +57,7 @@ The domain foo.com has been enqueued for addition
     return cmd.run({app: 'myapp', args: {hostname: '*.foo.com'}, flags: {}})
       .then(() => api.done())
       .then(() => expect(cli.stderr).to.equal(
-`Adding *.foo.com to myapp... done
+        `Adding *.foo.com to myapp... done
  ▸    Configure your app's DNS provider to point to the DNS Target undefined.
  ▸    For help, see https://devcenter.heroku.com/articles/custom-domains
 
@@ -85,7 +85,7 @@ The domain *.foo.com has been enqueued for addition
       .then(() => status2.done())
       .then(() => expect(cli.stdout).to.equal(''))
       .then(() => expect(cli.stderr).to.equal(
-`Adding foo.com to myapp... done
+        `Adding foo.com to myapp... done
  ▸    Configure your app's DNS provider to point to the DNS Target undefined.
  ▸    For help, see https://devcenter.heroku.com/articles/custom-domains
 
@@ -119,7 +119,7 @@ Waiting for foo.com... done
       .then(() => status2.done())
       .then(() => expect(cli.stdout).to.equal(''))
       .then(() => expect(cli.stderr).to.equal(
-`Adding foo.com to myapp... done
+        `Adding foo.com to myapp... done
  ▸    Configure your app's DNS provider to point to the DNS Target undefined.
  ▸    For help, see https://devcenter.heroku.com/articles/custom-domains
 
@@ -143,7 +143,7 @@ Waiting for foo.com... !
       .then(() => api.done())
       .then(() => expect(cli.stdout).to.equal(''))
       .then(() => expect(cli.stderr).to.equal(
-`Adding foo.com to myapp... done
+        `Adding foo.com to myapp... done
  ▸    Configure your app's DNS provider to point to the DNS Target undefined.
  ▸    For help, see https://devcenter.heroku.com/articles/custom-domains
 

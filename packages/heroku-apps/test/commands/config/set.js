@@ -1,9 +1,9 @@
 'use strict'
-/* globals describe beforeEach afterEach it */
+/* globals describe beforeEach afterEach it commands */
 
 const cli = require('heroku-cli-util')
 const nock = require('nock')
-const cmd = require('../../..').commands.find((c) => c.topic === 'config' && c.command === 'set')
+const cmd = commands.find((c) => c.topic === 'config' && c.command === 'set')
 const expect = require('unexpected')
 
 const assertExit = require('../../assert_exit.js')
@@ -43,7 +43,7 @@ describe('config:set', () => {
     return assertExit(1, cmd.run({app: 'myapp', args: []}))
       .then(() => expect(cli.stdout, 'to equal', ''))
       .then(() => expect(cli.stderr, 'to equal',
-` ▸    Usage: heroku config:set KEY1=VALUE1 [KEY2=VALUE2 ...]
+        ` ▸    Usage: heroku config:set KEY1=VALUE1 [KEY2=VALUE2 ...]
  ▸    Must specify KEY and VALUE to set.
 `))
   })
