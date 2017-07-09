@@ -1,12 +1,52 @@
 // @flow
 
 import Whoami from './whoami'
+import nock from 'nock'
 
-const nock = require('nock')
-const td = require('testdouble')
-const proxyquire = require('proxyquire')
+let mockMachines
 
-test('it says hello to the world', async () => {
-  let cmd = await Whoami.mock()
-  expect(cmd.out.stdout.output).toEqual('hello world!\n')
+jest.mock('netrc-parser', () => class {
+  machines = mockMachines
+})
+
+let api
+
+beforeEach(() => {
+  api = nock('https://api.heroku.com')
+})
+
+afterEach(() => {
+  api.done()
+})
+
+describe('not logged in', () => {
+  beforeEach(() => {
+    mockMachines = {
+      'api.heroku.com': {}
+    }
+  })
+
+  it('errors', async () => {
+    expect.assertions(1)
+    try {
+      await Whoami.mock()
+    } catch (err) {
+      expect(err.code).toEqual(100)
+    }
+  })
+})
+
+describe('logged in', () => {
+  beforeEach(() => {
+    mockMachines = {
+      'api.heroku.com': {password: 'myapikey'}
+    }
+  })
+
+  it('shows login', async () => {
+    api.get('/account')
+      .reply(200, {email: 'user@heroku.com'})
+    let cmd = await Whoami.mock()
+    expect(cmd.out.stdout.output).toEqual('user@heroku.com\n')
+  })
 })

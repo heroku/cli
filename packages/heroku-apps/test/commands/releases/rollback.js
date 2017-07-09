@@ -1,12 +1,12 @@
 'use strict'
 /* globals describe it beforeEach commands */
 
+import unwrap from '../../unwrap'
 const cli = require('heroku-cli-util')
 const nock = require('nock')
 const cmd = commands.find(c => c.topic === 'releases' && c.command === 'rollback')
 const expect = require('chai').expect
 const stdMocks = require('std-mocks')
-import unwrap from '../../unwrap'
 
 describe('releases:rollback', function () {
   beforeEach(() => cli.mockConsole())
