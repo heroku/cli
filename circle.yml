@@ -14,6 +14,7 @@ stages:
         command: |
           set -exu
           yarn config set registry https://cli-npm.heroku.com
+          yarn check
           yarn
           # build dev only if it is a git checkout
           if [ "${CIRCLE_BRANCH}" == "dev" ] && \
