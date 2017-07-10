@@ -7,6 +7,9 @@ jobs:
     working_directory: ~/cli-plugin
     steps:
       - checkout
+      - setup_remote_docker:
+          reusable: true
+          exclusive: false
       - restore_cache:
           keys:
             - node-modules-{{ checksum "yarn.lock" }}
