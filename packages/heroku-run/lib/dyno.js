@@ -158,10 +158,20 @@ class Dyno {
     if (this.opts.listen) {
       cli.console.log(`listening on port ${host}:${port} for ssh client`)
     } else {
-      spawn('ssh', [host, '-p', port, '-oStrictHostKeyChecking=no', '-oUserKnownHostsFile=/dev/null', '-oServerAliveInterval=20'], {
+      let params = [host, '-p', port, '-oStrictHostKeyChecking=no', '-oUserKnownHostsFile=/dev/null', '-oServerAliveInterval=20']
+      if (!this._isDebug()) {
+        params.push('-q')
+      }
+
+      spawn('ssh', params, {
         stdio: 'inherit'
       })
     }
+  }
+
+  _isDebug () {
+    let debug = process.env.HEROKU_DEBUG
+    return debug && (debug === '1' || debug.toUpperCase() === 'TRUE')
   }
 
   _env () {
