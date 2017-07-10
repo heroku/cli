@@ -2,7 +2,7 @@
 version: 2
 executorType: docker
 containerInfo:
-  - image: dickeyxxx/cli-engine-docker:v1.2.1-node7
+  - image: dickeyxxx/cli-engine-docker:v1.3.1
 stages:
   build:
     workDir: ~/cli
@@ -14,7 +14,8 @@ stages:
         command: |
           set -exu
           yarn config set registry https://cli-npm.heroku.com
-          yarn
+          yarn install --pure-lockfile
+          yarn check
           # build dev only if it is a git checkout
           if [ "${CIRCLE_BRANCH}" == "dev" ] && \
              [ ! -d ~/cli/node_modules/cli-engine/lib ]; then
