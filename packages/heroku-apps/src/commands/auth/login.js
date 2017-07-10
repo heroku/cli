@@ -1,3 +1,5 @@
+// @flow
+
 const cli = require('heroku-cli-util')
 const co = require('co')
 
@@ -14,16 +16,14 @@ function * run (context, heroku) {
   }))(context)
 }
 
-const cmd = {
+export default {
+  topic: 'auth',
+  command: 'login',
   description: 'login with your Heroku credentials',
+  aliases: ['login'],
   flags: [
     {name: 'sso', description: 'login for enterprise users under SSO'},
     {name: 'expires-in', char: 'e', description: 'duration of token in seconds', hasValue: true}
   ],
   run: cli.command(co.wrap(run))
 }
-
-module.exports = [
-  Object.assign({topic: 'auth', command: 'login'}, cmd),
-  Object.assign({topic: 'login'}, cmd)
-]
