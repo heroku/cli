@@ -35,6 +35,11 @@
   # install the toolbelt
   apt-get install -y heroku
 
+  # test the CLI
+  LOCATION=\$(which heroku)
+  echo "heroku cli installed to \$LOCATION"
+  heroku version
+
 SCRIPT
   # test the CLI
   LOCATION=$(which heroku)
