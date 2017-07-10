@@ -12,6 +12,7 @@ jobs:
             - node-modules-{{ checksum "yarn.lock" }}
             - node-modules-
       - run: yarn
+      - run: mocha
       - run: jest --coverage && bash <(curl -s https://codecov.io/bash)
       - run: flow check
       - run: eslint .
