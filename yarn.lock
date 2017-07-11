@@ -766,9 +766,9 @@ heroku-certs@1.1.41:
     moment "^2.18.1"
     psl "^1.1.19"
 
-heroku-ci@1.9.0:
-  version "1.9.0"
-  resolved "http://cli-npm.heroku.com/heroku-ci/-/heroku-ci-1.9.0/f85381729cb9e55cbf4f6bbaeb5dfec70e1564ca.tgz#f85381729cb9e55cbf4f6bbaeb5dfec70e1564ca"
+heroku-ci@1.9.1:
+  version "1.9.1"
+  resolved "http://cli-npm.heroku.com/heroku-ci/-/heroku-ci-1.9.1/6aaffb1d415f4f12db7e3a44328e853b35bf7264.tgz#6aaffb1d415f4f12db7e3a44328e853b35bf7264"
   dependencies:
     ansi-escapes "1.4.0"
     bluebird "^3.4.6"
