@@ -3,12 +3,10 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
-	"math/rand"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"runtime"
-	"strconv"
 	"time"
 
 	"github.com/ansel1/merry"
@@ -270,7 +268,5 @@ func shouldUpdateToV6() bool {
 		Debugln("not updating to v6, v5.lock file exists")
 		return false
 	}
-	n := rand.New(rand.NewSource(time.Now().UnixNano())).Intn(100)
-	Debugln("Random update number for v6: " + strconv.Itoa(n))
-	return n > 80
+	return true
 }
