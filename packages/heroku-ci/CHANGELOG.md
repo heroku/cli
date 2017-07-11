@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.9.1] - 2017-07-11
+### Fixed
+- Fixed a bug introduced in 1.9.0 with attaching to an already started one off dyno
+
+## [1.9.0] - 2017-07-07
+### Changed
+- Changed the debug run implementation to allow for the server to configure the run
+
 ## [1.8.0] - 2017-06-02
 ### Fixed
 - Debug runs now include the same Heroku provided config as regular test runs (`HEROKU_TEST_RUN_ID`, `HEROKU_TEST_RUN_BRANCH` `CI_NODE_INDEX` and `CI_NODE_TOTAL`)
