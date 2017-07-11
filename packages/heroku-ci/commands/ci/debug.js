@@ -65,23 +65,20 @@ function* run (context, heroku) {
   }
 
   const testNodes = yield api.testNodes(heroku, testRun.id)
-  const dynoID = Utils.dig(testNodes, 0, 'dyno', 'id')
+  const attachURL = Utils.dig(testNodes, 0, 'dyno', 'attach_url')
 
   const dyno = new Dyno({
     heroku,
     app: appSetup.app.id,
     command: 'bash',
-    'exit-code': true,
     attach: true,
     env,
     showStatus: false
   })
 
   let dynoPromise
-  if (dynoID) {
-    dyno.attach_url = (
-      yield api.getDyno(heroku, appSetup.app.id, dynoID)
-    ).attach_url
+  if (attachURL) {
+    dyno.dyno = { attach_url: attachURL }
     dynoPromise = dyno.attach()
   } else {
     dynoPromise = dyno.start()
