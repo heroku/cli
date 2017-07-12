@@ -54,7 +54,13 @@ jobs:
     docker:
       - image: dickeyxxx/cli-engine-docker:v1.3.1
     steps:
-      - run: touch ~/osslsigncode/foo
+      - run: |
+          if [ ! -d ~/osslsigncode ]; then
+            wget https://cli-assets.heroku.com/osslsigncode-1.7.1.tar.gz &&
+            tar -xvzf osslsigncode-1.7.1.tar.gz &&
+            mv osslsigncode-1.7.1 ~/osslsigncode &&
+            cd ~/osslsigncode && ./configure && make
+          fi
       - save_cache:
           key: osslsigncode
           paths:
