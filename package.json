@@ -10,7 +10,7 @@
   "cli-engine": {
     "dirname": "heroku",
     "bin": "heroku",
-    "node": "8.1.3",
+    "node": "8.1.4",
     "defaultCommand": "dashboard",
     "cloudfront": "EHF9FOCUJYVZ",
     "s3": {
@@ -58,7 +58,7 @@
   },
   "engineStrict": true,
   "engines": {
-    "node": ">=7.10.0"
+    "node": ">=8.1.4"
   },
   "files": [
     "bin"
