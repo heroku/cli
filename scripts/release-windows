@@ -1,0 +1,70 @@
+#!/bin/bash
+
+set -ex
+
+if [ $# -ne 2 ]; then
+  echo "USAGE: $0 CHANNEL ARCH"
+  exit 1
+fi
+
+CHANNEL=$1
+ARCH=$2
+
+NODE_VERSION=`node -p "require('./package.json')['cli-engine'].node || process.versions.node"`
+NAME=`node -p "require('./package.json').name"`
+BIN=`node -p "require('./package.json')['cli-engine'].bin || require('./package.json').name"`
+ROOT=`pwd`
+VERSION=`$ROOT/node_modules/cli-engine/bin/version`
+
+# setup workspace
+TARBALL_BASE=$NAME-v$VERSION-windows-$ARCH
+INSTALLER_BASE=$ROOT/tmp/windows-$ARCH-installer
+WORKSPACE=$ROOT/tmp/build/$TARBALL_BASE
+
+rm -rf $INSTALLER_BASE
+
+mkdir -p $INSTALLER_BASE/bin
+cp resources/exe/heroku.cmd $INSTALLER_BASE/bin/heroku.cmd
+
+cp -r $WORKSPACE $INSTALLER_BASE/cli
+
+if [ "$ARCH" == "x64" ]; then
+  PROGRAMSUFFIX="64"
+else
+  PROGRAMSUFFIX=""
+fi
+
+sed -e "s/!define Version 'VERSION'/!define Version '$VERSION'/" resources/exe/heroku.nsi |\
+  sed -e "s/InstallDir .*/InstallDir \"\$PROGRAMFILES$PROGRAMSUFFIX\\\Heroku\"/" \
+  > $INSTALLER_BASE/heroku.nsi
+
+makensis $INSTALLER_BASE/heroku.nsi > /dev/null
+
+trap finish EXIT
+
+DIST_DIR="dist/$VERSION"
+
+mkdir -p $DIST_DIR
+
+INSTALLER_EXE="heroku-windows-$ARCH.exe"
+INSTALLER="$DIST_DIR/$INSTALLER_EXE"
+
+set +x
+
+function finish {
+  rm /tmp/heroku-windows-key
+}
+
+echo $HEROKU_WINDOWS_KEY | base64 -d > /tmp/heroku-windows-key
+
+osslsigncode -pkcs12 /tmp/heroku-windows-key \
+  -pass "$HEROKU_WINDOWS_SIGNING_PASS" \
+  -n 'Heroku CLI' \
+  -i https://toolbelt.heroku.com/ \
+  -in $INSTALLER_BASE/installer.exe -out $INSTALLER
+
+set -x
+
+if [ "$CIRCLE_ARTIFACTS" != "" ]; then
+  cp $INSTALLER "$CIRCLE_ARTIFACTS/$INSTALLER_EXE"
+fi

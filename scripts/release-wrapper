@@ -37,7 +37,9 @@ ARCH=$ARCH_ARG
 CHANNEL=$CHANNEL_ARG
 
 do_release () {
-  # TODO: add other release types
+  if [ "${TYPE}" == "windows" ]; then
+    ./scripts/release-windows $1 $ARCH
+  fi
   if [ "${TYPE}" == "deb" ]; then
     yarn run release $1
     ./scripts/release-deb $1
