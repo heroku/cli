@@ -1,9 +1,7 @@
 ---
 version: 2
 executorType: docker
-containerInfo:
-  - image: dickeyxxx/cli-engine-docker:v1.3.1
-stages:
+jobs:
   build:
     workDir: ~/cli
     steps:
@@ -47,13 +45,12 @@ stages:
             ./scripts/release-deb dev
           fi
 
-jobs:
   echo1:
-    working_directory: ~/echo1
+    working_directory: ~/cli
     docker:
       - image: dickeyxxx/cli-engine-docker:v1.3.1
     steps:
-      - run: echo 1
+      - run: find tmp/build
   echo2:
     working_directory: ~/echo1
     docker:
@@ -76,8 +73,10 @@ workflows:
   version: 2
   build_and_test:
     jobs:
-      - echo1
+      - build
+      - echo1:
+          requires:
+            - build
       - echo2
       - echo3
       - echo4
-
