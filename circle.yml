@@ -38,10 +38,9 @@ stages:
             if [ "${TAG}" != "NOTAG" ]; then
               yarn run release stable
               ./scripts/release-deb stable
-            else
-              yarn run release beta
-              ./scripts/release-deb beta
             fi
+            yarn run release beta
+            ./scripts/release-deb beta
           elif [ "${CIRCLE_BRANCH}" == "dev" ]; then
             yarn run release dev
             ./scripts/release-deb dev
