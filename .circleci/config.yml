@@ -4,6 +4,8 @@ executorType: docker
 jobs:
   build:
     workDir: ~/cli
+    docker:
+     - image: dickeyxxx/cli-engine-docker:v1.3.1
     steps:
       - type: checkout
       - type: cache-restore
