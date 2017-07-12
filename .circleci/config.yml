@@ -46,13 +46,17 @@ jobs:
             yarn run release dev
             ./scripts/release-deb dev
           fi
+      - persist_to_workspace:
+          root: workspace
 
   echo1:
     working_directory: ~/cli
     docker:
       - image: dickeyxxx/cli-engine-docker:v1.3.1
     steps:
-      - run: tree .
+      - attach_workspace:
+          at:  ~/cli/workspace
+      - run: find ~/cli/workspace
   echo2:
     working_directory: ~/echo1
     docker:
