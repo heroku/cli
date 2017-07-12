@@ -49,6 +49,22 @@ jobs:
       - persist_to_workspace:
           root: .
 
+  build_osslsigncode:
+    working_directory: /tmp
+    docker:
+      - image: dickeyxxx/cli-engine-docker:v1.3.1
+    steps:
+      - run: >
+      if [ ! -d ~/osslsigncode ]; then
+        wget https://cli-assets.heroku.com/osslsigncode-1.7.1.tar.gz &&
+        tar -xvzf osslsigncode-1.7.1.tar.gz &&
+        mv osslsigncode-1.7.1 ~/osslsigncode &&
+        cd ~/osslsigncode && ./configure && make
+      fi
+      - save_cache:
+          key: osslsigncode
+          paths:
+            - ~/osslsigncode
   release_windows:
     working_directory: ~/cli
     docker:
@@ -56,23 +72,11 @@ jobs:
     steps:
       - attach_workspace:
           at:  ~/cli
-      - run: find ~/cli
+      - restore_cache:
+          keys:
+            - osslsigncode
+      - run: find ~/cli && find ~/osslsigncode
       - type: shell
-        command: |
-          $(DIST_DIR)/$(VERSION)/heroku-windows-%.exe: tmp/windows-% $(CACHE_DIR)/git/Git-2.8.1-386.exe $(CACHE_DIR)/git/Git-2.8.1-amd64.exe
-          @mkdir -p $(@D)
-          rm -rf tmp/windows-$*-installer
-          cp -r tmp/windows-$* tmp/windows-$*-installer
-          cp $(CACHE_DIR)/git/Git-2.8.1-$*.exe tmp/windows-$*-installer/heroku/git.exe
-          sed -e "s/!define Version 'VERSION'/!define Version '$(VERSION)'/" resources/exe/heroku.nsi |\
-            sed -e "s/InstallDir .*/InstallDir \"\$$PROGRAMFILES$(if $(filter amd64,$*),64,)\\\Heroku\"/" \
-            > tmp/windows-$*-installer/heroku/heroku.nsi
-          makensis tmp/windows-$*-installer/heroku/heroku.nsi > /dev/null
-          @osslsigncode -pkcs12 resources/exe/heroku-codesign-cert.pfx \
-            -pass '$(HEROKU_WINDOWS_SIGNING_PASS)' \
-            -n 'Heroku CLI' \
-            -i https://toolbelt.heroku.com/ \
-            -in tmp/windows-$*-installer/heroku/installer.exe -out $@
   echo2:
     working_directory: ~/echo1
     docker:
@@ -84,7 +88,9 @@ workflows:
   build_and_test:
     jobs:
       - build
+      - build_osslsigncode
       - release_windows:
           requires:
             - build
+            - build_osslsigncode
       - echo2
