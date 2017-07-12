@@ -47,7 +47,7 @@ jobs:
             ./scripts/release-deb dev
           fi
       - persist_to_workspace:
-          root: workspace
+          root: .
 
   echo1:
     working_directory: ~/cli
@@ -55,8 +55,8 @@ jobs:
       - image: dickeyxxx/cli-engine-docker:v1.3.1
     steps:
       - attach_workspace:
-          at:  ~/cli/workspace
-      - run: find ~/cli/workspace
+          at:  ~/cli
+      - run: find ~/cli
   echo2:
     working_directory: ~/echo1
     docker:
