@@ -75,8 +75,9 @@ jobs:
       - restore_cache:
           keys:
             - osslsigncode
-      - run: find ~/cli && find ~/osslsigncode
-      - type: shell
+      - run: |
+          find ~/cli &&
+          find ~/osslsigncode
   echo2:
     working_directory: ~/echo1
     docker:
