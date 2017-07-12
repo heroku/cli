@@ -2,7 +2,5 @@
 
 set -ex
 
-if [ $# -ne 1 ]; then
-  echo "USAGE: $0 CHANNEL"
-  exit 1
-fi
+echo 'building windows'
+

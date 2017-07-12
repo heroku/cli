@@ -48,23 +48,6 @@ jobs:
           fi
       - persist_to_workspace:
           root: .
-
-  build_osslsigncode:
-    working_directory: /tmp
-    docker:
-      - image: dickeyxxx/cli-engine-docker:v1.3.1
-    steps:
-      - run: |
-          if [ ! -d ~/osslsigncode ]; then
-            wget https://cli-assets.heroku.com/osslsigncode-1.7.1.tar.gz &&
-            tar -xvzf osslsigncode-1.7.1.tar.gz &&
-            mv osslsigncode-1.7.1 ~/osslsigncode &&
-            cd ~/osslsigncode && ./configure && make
-          fi
-      - save_cache:
-          key: osslsigncode
-          paths:
-            - ~/osslsigncode
   release_windows:
     working_directory: ~/cli
     docker:
@@ -72,12 +55,8 @@ jobs:
     steps:
       - attach_workspace:
           at:  ~/cli
-      - restore_cache:
-          keys:
-            - osslsigncode
       - run: |
-          find ~/cli &&
-          find ~/osslsigncode
+          ./scripts/release-windows
   echo2:
     working_directory: ~/echo1
     docker:
@@ -89,9 +68,7 @@ workflows:
   build_and_test:
     jobs:
       - build
-      - build_osslsigncode
       - release_windows:
           requires:
             - build
-            - build_osslsigncode
       - echo2
