@@ -52,25 +52,13 @@ jobs:
     docker:
       - image: dickeyxxx/cli-engine-docker:v1.3.1
     steps:
-      - run: find tmp/build
+      - run: tree .
   echo2:
     working_directory: ~/echo1
     docker:
       - image: dickeyxxx/cli-engine-docker:v1.3.1
     steps:
       - run: echo 2
-  echo3:
-    working_directory: ~/echo1
-    docker:
-      - image: dickeyxxx/cli-engine-docker:v1.3.1
-    steps:
-      - run: echo 3
-  echo4:
-    working_directory: ~/echo1
-    docker:
-      - image: dickeyxxx/cli-engine-docker:v1.3.1
-    steps:
-      - run: echo 4
 workflows:
   version: 2
   build_and_test:
@@ -80,5 +68,3 @@ workflows:
           requires:
             - build
       - echo2
-      - echo3
-      - echo4
