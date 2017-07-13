@@ -1,8 +1,8 @@
 # Using Heroku Enterprise
 
 Heroku Enterprise accounts provide a new container for managing account members,
-teams, and consolidated usage. Enterprise accounts have an account-level 
-permission called `manage` that allows a person granted that permission the 
+teams, and consolidated usage. Enterprise accounts have an account-level
+permission called `manage` that allows a person granted that permission the
 ability to manage permissions for other account members.
 
 ## Getting Started
@@ -16,10 +16,12 @@ heroku plugins:install heroku-enterprise
 ## Creating an Account
 
 To begin, you need a Heroku Enterprise account. To create an enterprise account,
-you need to provide the name of the account and a list of managers for the 
- account. **sudo is required** to create an enterprise account.
+you need to provide the name of the account and a list of managers for the
+account. **sudo is required** to create an enterprise account. These users
+will be added with all of the permissions on the Enterprise account. If you
+have multiple manager emails, please comma separate them.
 
-As an example, if your account is "acme" and you want to set Naaman as the 
+As an example, if your account is "acme" and you want to set Naaman as the
 account's manager, you can create that account with the following command:
 
 ```sh
@@ -29,18 +31,20 @@ $ heroku sudo enterprises:create acme --managers naaman@heroku.com
 ## Managing Members
 
 Now that you have an account, you can manage members in the account with the
-`enterprises:members` set of commands. Management of members is pretty 
+`enterprises:members` set of commands. Management of members is pretty
 straightforward and similar to managing team members; you can add, update, and
 delete members along with their associated permissions.
 
 #### Adding Members
 
 To add a new member, you must provide that person's email address, the set of
-permissions you'd like to grant, and the enterprise account name. The following
-adds Kathy to the acme enterprise account:
+permissions you'd like to grant, and the enterprise account name. Any prior
+permissions will be removed, with the exception of view. The set of permissions
+must be comma separated. The following adds Kathy to the acme enterprise
+account with billing and view:
 
 ```sh
-$ heroku enterprises:members-add kath@heroku.com --permissions billing --enterprise-account acme
+$ heroku enterprises:members-add kath@heroku.com --permissions billing,view --enterprise-account acme
 Adding kath@heroku.com to acme... done
 ```
 
@@ -67,7 +71,7 @@ Removing kath@heroku.com to acme... done
 ## Managing Teams
 
 Managing teams in an enterprise account is currently limited. You can see which
-teams are part of an enterprise account and you can transfer a team into an 
+teams are part of an enterprise account and you can transfer a team into an
 enterprise account.
 
 #### Listing Teams
@@ -95,7 +99,7 @@ Creating acme-data in acme... done
 #### Transferring a Team
 
 To transfer a team, you must specify the team name and the enterprise account
-name. The following transfers the acme-web team into the acme enterprise 
+name. The following transfers the acme-web team into the acme enterprise
 account:
 
 ```sh
@@ -118,7 +122,7 @@ acme-api                             acme
 
 ## Usage
 
-Once teams are setup, usage can be reviewed for an enterprise account by 
+Once teams are setup, usage can be reviewed for an enterprise account by
 providing the name of the account. The following displays the usage for the
 acme account:
 
