@@ -136,7 +136,9 @@ function * run (context, heroku) {
 
   let apps, data, metrics
 
-  img(path.join(__dirname, '..', 'assets', 'heroku.png'), {fallback: () => {}})
+  try {
+    img(path.join(__dirname, '..', '..', 'assets', 'heroku.png'), {fallback: () => {}})
+  } catch (err) { }
 
   yield cli.action('Loading', {clear: true}, co(function * () {
     apps = yield favoriteApps()
