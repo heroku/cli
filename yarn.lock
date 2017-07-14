@@ -232,7 +232,7 @@ cli-cursor@^2.1.0:
   dependencies:
     restore-cursor "^2.0.0"
 
-cli-engine-command@^5.1.10, cli-engine-command@^5.1.8:
+cli-engine-command@^5.1.10, cli-engine-command@^5.1.11, cli-engine-command@^5.1.8:
   version "5.1.11"
   resolved "http://cli-npm.heroku.com/cli-engine-command/-/cli-engine-command-5.1.11/253ba59b424af9b72141c50d444b0a9f82447513.tgz#253ba59b424af9b72141c50d444b0a9f82447513"
   dependencies:
@@ -709,12 +709,12 @@ here@0.0.2:
   version "0.0.2"
   resolved "http://cli-npm.heroku.com/here/-/here-0.0.2/69c1af3f02121f3d8788e02e84dc8b3905d71195.tgz#69c1af3f02121f3d8788e02e84dc8b3905d71195"
 
-heroku-apps@2.4.6:
-  version "2.4.6"
-  resolved "http://cli-npm.heroku.com/heroku-apps/-/heroku-apps-2.4.6/046e3be9ab3a613b009190fd84c1e261724ab82c.tgz#046e3be9ab3a613b009190fd84c1e261724ab82c"
+heroku-apps@2.4.7:
+  version "2.4.7"
+  resolved "http://cli-npm.heroku.com/heroku-apps/-/heroku-apps-2.4.7/26f58b5768698bbf65a182ce7c6f49fc20e8fa21.tgz#26f58b5768698bbf65a182ce7c6f49fc20e8fa21"
   dependencies:
     bluebird "^3.5.0"
-    cli-engine-command "^5.1.8"
+    cli-engine-command "^5.1.11"
     cli-engine-config "^1.3.7"
     cli-engine-heroku "^1.1.2"
     co "^4.6.0"
