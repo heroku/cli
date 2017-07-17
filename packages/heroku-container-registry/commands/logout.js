@@ -1,5 +1,6 @@
 const cli = require('heroku-cli-util')
 const log = require('../lib/log')
+const Sanbashi = require('../lib/sanbashi')
 
 module.exports = function (topic) {
   return {
