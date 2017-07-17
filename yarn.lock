@@ -971,15 +971,15 @@ heroku-redis@1.2.15:
     ioredis "1.9.0"
     ssh2 "^0.4.11"
 
-heroku-run@3.4.13:
-  version "3.4.13"
-  resolved "http://cli-npm.heroku.com/heroku-run/-/heroku-run-3.4.13/e21b23968a1db1d0a49d77ad8273928ad79896fb.tgz#e21b23968a1db1d0a49d77ad8273928ad79896fb"
+heroku-run@3.4.15:
+  version "3.4.15"
+  resolved "http://cli-npm.heroku.com/heroku-run/-/heroku-run-3.4.15/7315a70812bb798b39bc1fdf60627ce434ea79f5.tgz#7315a70812bb798b39bc1fdf60627ce434ea79f5"
   dependencies:
     co "4.6.0"
     heroku-cli-util "^6.2.2"
     shellwords "0.1.0"
 
-"heroku-run@github:heroku/heroku-run#16d711e10fe92a4f17d7761d57add5fdf7705197":
+heroku-run@heroku/heroku-run#16d711e10fe92a4f17d7761d57add5fdf7705197:
   version "3.4.13"
   resolved "https://codeload.github.com/heroku/heroku-run/tar.gz/16d711e10fe92a4f17d7761d57add5fdf7705197"
   dependencies:
