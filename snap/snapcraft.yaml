@@ -9,7 +9,6 @@ confinement: classic
 apps:
     heroku:
         command: bin/heroku
-        plugs: [network]
 
 parts:
   hello-node-snap:
