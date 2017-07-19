@@ -107,6 +107,8 @@ exports.getConnectionDetails = function (attachment, config) {
 
 exports.starterPlan = a => !!a.plan.name.match(/(dev|basic)$/)
 
+exports.legacyPlan = a => !!a.plan.name.match(/^legacy/)
+
 exports.configVarNamesFromValue = (config, value) => {
   const sortBy = require('lodash.sortby')
 
