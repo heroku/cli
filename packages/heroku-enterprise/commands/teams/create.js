@@ -5,8 +5,8 @@ function * transfer(context, heroku) {
   let team = context.args.team
   let enterpriseAccount = context.flags['enterprise-account']
 
-  let params = { body: { name: team, enterprise_account: enterpriseAccount } }
-  let createdTeam = heroku.post(`/teams`, params)
+  let params = { body: { name: team } }
+  let createdTeam = heroku.post(`/enterprise-accounts/${enterpriseAccount}/teams`, params)
 
   yield cli.action(`Creating ${cli.color.cyan(team)} in ${cli.color.green(enterpriseAccount)}`, createdTeam)
 }
