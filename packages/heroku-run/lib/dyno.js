@@ -3,7 +3,7 @@
 let tls = require('tls')
 let url = require('url')
 let tty = require('tty')
-let stream = require('stream')
+let {Duplex, Transform} = require('stream')
 let cli = require('heroku-cli-util')
 let helpers = require('../lib/helpers')
 
@@ -12,7 +12,7 @@ const net = require('net')
 const spawn = require('child_process').spawn
 
 /** Represents a dyno process */
-class Dyno {
+class Dyno extends Duplex {
   /**
    * @param {Object} options
    * @param {Object} options.heroku - instance of heroku-client
@@ -25,6 +25,8 @@ class Dyno {
    * @param {Object} options.env - dyno environment variables
   */
   constructor (opts) {
+    super()
+    this.cork()
     this.opts = opts
     this.heroku = opts.heroku
     if (this.opts.showStatus === undefined) this.opts.showStatus = true
@@ -67,12 +69,21 @@ class Dyno {
    * Attaches stdin/stdout to dyno
    */
   attach () {
+    this.pipe(process.stdout)
     this.uri = url.parse(this.dyno.attach_url)
-    if (this.uri.protocol === 'http:' || this.uri.protocol === 'https:') {
-      return this._ssh()
+    let p
+    if (this._useSSH) {
+      p = this._ssh()
     } else {
-      return this._rendezvous()
+      p = this._rendezvous()
     }
+    return p.then(() => {
+      this.end()
+    })
+  }
+
+  get _useSSH () {
+    return this.uri.protocol === 'http:' || this.uri.protocol === 'https:'
   }
 
   _rendezvous () {
@@ -155,8 +166,10 @@ class Dyno {
     const host = options.address
     const port = options.port
 
+    // does not actually uncork but allows error to be displayed when attempting to read
+    this.uncork()
     if (this.opts.listen) {
-      cli.console.log(`listening on port ${host}:${port} for ssh client`)
+      cli.log(`listening on port ${host}:${port} for ssh client`)
     } else {
       let params = [host, '-p', port, '-oStrictHostKeyChecking=no', '-oUserKnownHostsFile=/dev/null', '-oServerAliveInterval=20']
       if (!this._isDebug()) {
@@ -202,7 +215,7 @@ class Dyno {
       data = data.replace('\r\n', '\n')
       let exitCode = data.match(/\uFFFF heroku-command-exit-status (\d+)/m)
       if (exitCode) {
-        process.stdout.write(data.replace(/^\uFFFF heroku-command-exit-status \d+$\n?/m, ''))
+        this.push(data.replace(/^\uFFFF heroku-command-exit-status \d+$\n?/m, ''))
         let code = parseInt(exitCode[1])
         if (code === 0) this.resolve()
         else {
@@ -212,11 +225,12 @@ class Dyno {
         }
         return
       }
-      process.stdout.write(data)
+      this.push(data)
     }
   }
 
   _readStdin (c) {
+    this.input = c
     let stdin = process.stdin
     stdin.setEncoding('utf8')
     if (stdin.unref) stdin.unref()
@@ -233,12 +247,28 @@ class Dyno {
         }
       })
     } else {
-      stdin.pipe(new stream.Transform({
+      stdin.pipe(new Transform({
         objectMode: true,
         transform: (chunk, _, next) => c.write(chunk, next),
         flush: done => c.write('\x04', done)
       }))
     }
+    this.uncork()
+  }
+
+  _read () {
+    if (this.useSSH) {
+      throw new Error('Cannot read stream from ssh dyno')
+    }
+    // do not need to do anything to handle Readable interface
+  }
+
+  _write (chunk, encoding, callback) {
+    if (this.useSSH) {
+      throw new Error('Cannot write stream to ssh dyno')
+    }
+    if (!this.input) throw new Error('no input')
+    this.input.write(chunk, encoding, callback)
   }
 }
 
