@@ -1,0 +1,28 @@
+#!/bin/bash
+
+set -ex
+
+if [ $# -ne 1 ]; then
+  echo "USAGE: $0 type"
+  exit 1
+fi
+
+TYPE=$1
+
+do_release () {
+  # TODO: add other release types
+  if [ "$TYPE" == "deb" ]; then
+    yarn run release $1
+    ./scripts/release-deb $1
+  fi
+}
+
+if [ "${CIRCLE_BRANCH}" == "master" ]; then
+  TAG=`git describe --exact-match HEAD || echo NOTAG`
+  if [ "${TAG}" != "NOTAG" ]; then
+    do_release "stable"
+  fi
+  do_release "beta"
+elif [ "${CIRCLE_BRANCH}" == "dev" ]; then
+  do_release "dev"
+fi

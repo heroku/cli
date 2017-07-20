@@ -36,18 +36,7 @@ jobs:
           set -e
           echo $HEROKU_DEB_KEY | base64 -d | gpg --import
           set -ex
-          if [ "${CIRCLE_BRANCH}" == "master" ]; then
-            TAG=`git describe --exact-match HEAD || echo NOTAG`
-            if [ "${TAG}" != "NOTAG" ]; then
-              yarn run release stable
-              ./scripts/release-deb stable
-            fi
-            yarn run release beta
-            ./scripts/release-deb beta
-          elif [ "${CIRCLE_BRANCH}" == "dev" ]; then
-            yarn run release dev
-            ./scripts/release-deb dev
-          fi
+          ./scripts/release-wrapper deb
 workflows:
   version: 2
   build_and_release:
