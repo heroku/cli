@@ -54,7 +54,8 @@
     "heroku-redis": "1.2.15",
     "heroku-run": "3.4.16",
     "heroku-spaces": "2.9.5",
-    "semver": "5.3.0"
+    "semver": "5.3.0",
+    "snyk": "^1.36.2"
   },
   "engineStrict": true,
   "engines": {
@@ -74,6 +75,9 @@
     "build": "cli-build",
     "release": "cli-release",
     "version": "./scripts/version",
-    "postpublish": "./scripts/postpublish"
-  }
+    "postpublish": "./scripts/postpublish",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
+  },
+  "snyk": true
 }
