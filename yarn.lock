@@ -971,9 +971,9 @@ heroku-redis@1.2.15:
     ioredis "1.9.0"
     ssh2 "^0.4.11"
 
-heroku-run@3.4.15:
-  version "3.4.15"
-  resolved "http://cli-npm.heroku.com/heroku-run/-/heroku-run-3.4.15/7315a70812bb798b39bc1fdf60627ce434ea79f5.tgz#7315a70812bb798b39bc1fdf60627ce434ea79f5"
+heroku-run@3.4.16:
+  version "3.4.16"
+  resolved "http://cli-npm.heroku.com/heroku-run/-/heroku-run-3.4.16/dddf442905c83d2bc20845d4e77559f48b500b62.tgz#dddf442905c83d2bc20845d4e77559f48b500b62"
   dependencies:
     co "4.6.0"
     heroku-cli-util "^6.2.2"
