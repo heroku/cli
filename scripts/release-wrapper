@@ -1,15 +1,40 @@
 #!/bin/bash
 
-if [[ ($# -lt 2) || ($# -gt 3) ]]; then
-  echo "USAGE: $0 type arch [branch]"
+set -e
+
+USAGE="Usage: $0 type -a arch -b branch"
+
+while getopts ":a:b:" opt; do
+  case $opt in
+    a)
+      ARCH_ARG="${OPTARG}"
+      ;;
+    b)
+      BRANCH_ARG="${OPTARG}"
+      ;;
+    \?)
+      echo "$USAGE"
+      exit 1
+      ;;
+    :)
+      echo "$USAGE"
+      exit 1
+      ;;
+  esac
+done
+
+shift `expr $OPTIND - 1`
+
+if [ $# -ne 1 ]; then
+  echo "$USAGE"
   exit 1
 fi
 
 set -ex
 
 TYPE=$1
-ARCH=$2
-BRANCH=$3
+ARCH=$ARCH_ARG
+BRANCH=$BRANCH_ARG
 
 do_release () {
   # TODO: add other release types
