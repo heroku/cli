@@ -18,4 +18,6 @@ NAME=`node -p "require('./package.json').name"`
 TARBALL_BASE=$NAME-v$VERSION-windows-$ARCH.tar.gz
 WORKSPACE=$ROOT/tmp/build/$TARBALL_BASE
 
-cp $WORKSPACE tmp/build/windows-$ARCH.tar.gz
+if [ -e $WORKSPACE ]; then
+  cp $WORKSPACE tmp/build/windows-$ARCH.tar.gz
+fi

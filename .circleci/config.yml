@@ -51,6 +51,7 @@ jobs:
           at: ~/cli
       - run: |
           set -ex
+          ./scripts/extract-windows-files x64
           ./scripts/release-wrapper -a x64 windows
   release_windows_x86:
     <<: *defaults
@@ -59,6 +60,7 @@ jobs:
           at: ~/cli
       - run: |
           set -ex
+          ./scripts/extract-windows-files x86
           ./scripts/release-windows -a x86 windows
 workflows:
   version: 2
