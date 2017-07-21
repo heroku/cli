@@ -1,0 +1,57 @@
+#!/bin/bash
+
+set -e
+
+USAGE="Usage: $0 [-a arch] [-c channel] type"
+
+while getopts ":a:c:" opt; do
+  case $opt in
+    a)
+      ARCH_ARG="${OPTARG}"
+      ;;
+    c)
+      CHANNEL_ARG="${OPTARG}"
+      ;;
+    \?)
+      echo "$USAGE"
+      exit 1
+      ;;
+    :)
+      echo "$USAGE"
+      exit 1
+      ;;
+  esac
+done
+
+shift `expr $OPTIND - 1`
+
+if [ $# -ne 1 ]; then
+  echo "$USAGE"
+  exit 1
+fi
+
+set -ex
+
+TYPE=$1
+ARCH=$ARCH_ARG
+CHANNEL=$CHANNEL_ARG
+
+do_release () {
+  # TODO: add other release types
+  if [ "${TYPE}" == "deb" ]; then
+    yarn run release $1
+    ./scripts/release-deb $1
+  fi
+}
+
+if [ "${CHANNEL}" != "" ]; then
+  do_release "${CHANNEL}"
+elif [ "${CIRCLE_BRANCH}" == "master" ]; then
+  TAG=`git describe --exact-match HEAD || echo NOTAG`
+  if [ "${TAG}" != "NOTAG" ]; then
+    do_release "stable"
+  fi
+  do_release "beta"
+elif [ "${CIRCLE_BRANCH}" == "dev" ]; then
+  do_release "dev"
+fi
