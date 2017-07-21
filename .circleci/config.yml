@@ -62,7 +62,7 @@ jobs:
       - run: |
           set -ex
           ./scripts/extract-windows-files x86
-          ./scripts/release-windows -a x86 windows
+          ./scripts/release-wrapper -a x86 windows
 workflows:
   version: 2
   build_and_release:
