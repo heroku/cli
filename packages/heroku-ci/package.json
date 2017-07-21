@@ -39,7 +39,7 @@
     "got": "^6.6.3",
     "heroku-cli-util": "^6.1.17",
     "heroku-pipelines": "^2.0.1",
-    "heroku-run": "heroku/heroku-run#16d711e10fe92a4f17d7761d57add5fdf7705197",
+    "heroku-run": "^3.4.16",
     "lodash.flatten": "^4.4.0",
     "shell-escape": "^0.2.0",
     "socket.io-client": "^1.5.1",

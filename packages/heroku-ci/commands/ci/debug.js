@@ -65,7 +65,6 @@ function* run (context, heroku) {
   }
 
   const testNodes = yield api.testNodes(heroku, testRun.id)
-  const attachURL = Utils.dig(testNodes, 0, 'dyno', 'attach_url')
 
   const dyno = new Dyno({
     heroku,
@@ -76,13 +75,7 @@ function* run (context, heroku) {
     showStatus: false
   })
 
-  let dynoPromise
-  if (attachURL) {
-    dyno.dyno = { attach_url: attachURL }
-    dynoPromise = dyno.attach()
-  } else {
-    dynoPromise = dyno.start()
-  }
+  dyno.dyno = { attach_url: Utils.dig(testNodes, 0, 'dyno', 'attach_url') }
 
   function sendSetup (data, connection) {
     if (data.toString().includes('$')) {
@@ -96,7 +89,7 @@ function* run (context, heroku) {
   }
 
   try {
-    yield dynoPromise
+    yield dyno.attach()
   } catch (err) {
     if (err.exitCode) cli.exit(err.exitCode, err)
     else throw err

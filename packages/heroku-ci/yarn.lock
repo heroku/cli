@@ -752,9 +752,9 @@ heroku-pipelines@^2.0.1:
     string-just "0.0.2"
     validator "6.2.1"
 
-heroku-run@heroku/heroku-run#16d711e10fe92a4f17d7761d57add5fdf7705197:
-  version "3.4.13"
-  resolved "https://codeload.github.com/heroku/heroku-run/tar.gz/16d711e10fe92a4f17d7761d57add5fdf7705197"
+heroku-run@^3.4.16:
+  version "3.4.16"
+  resolved "https://registry.yarnpkg.com/heroku-run/-/heroku-run-3.4.16.tgz#dddf442905c83d2bc20845d4e77559f48b500b62"
   dependencies:
     co "4.6.0"
     heroku-cli-util "^6.2.2"
@@ -1446,6 +1446,7 @@ standard-tap@^1.0.1:
   dependencies:
     concat-stream "^1.5.0"
     minimist "^1.1.2"
+    standard "^5.0.0"
     standard-json "^1.0.0"
     yamlish "0.0.7"
 
