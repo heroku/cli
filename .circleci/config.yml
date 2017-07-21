@@ -45,6 +45,7 @@ jobs:
   release_windows_x64:
     <<: *defaults
     steps:
+      - type: checkout
       - attach_workspace:
           at: ~/cli
       - run: |
@@ -54,6 +55,7 @@ jobs:
   release_windows_x86:
     <<: *defaults
     steps:
+      - type: checkout
       - attach_workspace:
           at: ~/cli
       - run: |
