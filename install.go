@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"time"
 
 	"github.com/ansel1/merry"
 	"github.com/dghubble/sling"
@@ -65,8 +66,25 @@ func DownloadCLI(channel, path, runtimeOS, runtimeARCH string, manifest *Manifes
 	if exists {
 		must(os.RemoveAll(path))
 	}
-	must(os.Rename(filepath.Join(tmp, "heroku-cli-v"+manifest.Version+"-"+runtimeOS+"-"+runtimeARCH), path))
+	must(try(5, func() error {
+		return os.Rename(filepath.Join(tmp, "heroku-cli-v"+manifest.Version+"-"+runtimeOS+"-"+runtimeARCH), path)
+	}))
 	Debugf("updated to %s\n", manifest.Version)
+}
+
+func try(max int, fn func() error) error {
+	var err error
+	for i := 0; i < max; i++ {
+		err = fn()
+		if err == nil {
+			return nil
+		}
+		Errln(err)
+		seconds := 2 << uint(i)
+		Errf("heroku-cli: trying again in %d seconds...\n", seconds)
+		time.Sleep(time.Second * time.Duration(seconds))
+	}
+	return err
 }
 
 // Manifest is the manifest.json for releases
