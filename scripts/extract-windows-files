@@ -16,15 +16,10 @@ NAME=`node -p "require('./package.json').name"`
 
 # setup workspace
 TARBALL_BASE=$NAME-v$VERSION-windows-$ARCH.tar.gz
-WORKSPACE=$ROOT/tmp/build/$TARBALL_BASE
+WORKSPACE=$ROOT/tmp/tarballs/$TARBALL_BASE
 
-mkdir -p $ROOT/tmp/tarballs
-
-ARCHS=(x86 x64)
-for ARCH in "${ARCHS[@]}"; do
-  if [ -e $WORKSPACE ]; then
-    cp $WORKSPACE tmp/tarballs/windows-$ARCH.tar.gz
-  fi
+if [ -e $WORKSPACE ]; then
+  cd $ROOT/tmp/build
+  tar xfz $WORKSPACE
+  cd $ROOT
 fi
-
-find $ROOT/tmp/tarballs
