@@ -37,8 +37,15 @@ jobs:
           echo $HEROKU_DEB_KEY | base64 -d | gpg --import
           set -ex
           ./scripts/release-wrapper deb
+      - type: shell
+        command: |
+          set -ex
+          ./scripts/copy-windows-files
       - persist_to_workspace:
           root: .
+          paths:
+            - tmp/build/windows-x64.tar.gz
+            - tmp/build/windows-x86.tar.gz
   release_windows_x64:
     <<: *defaults
     steps:

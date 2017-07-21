@@ -1,0 +1,21 @@
+#!/bin/bash
+
+if [ $# -ne 1 ]; then
+  echo "USAGE: $0 ARCH"
+  exit 1
+fi
+
+ARCH=$1
+
+set -ex
+
+ROOT=`pwd`
+
+VERSION=`$ROOT/node_modules/cli-engine/bin/version`
+NAME=`node -p "require('./package.json').name"`
+
+# setup workspace
+TARBALL_BASE=$NAME-v$VERSION-windows-$ARCH.tar.gz
+WORKSPACE=$ROOT/tmp/build/$TARBALL_BASE
+
+cp $WORKSPACE tmp/build/windows-$ARCH.tar.gz
