@@ -1,12 +1,5 @@
 #!/bin/bash
 
-if [ $# -ne 1 ]; then
-  echo "USAGE: $0 ARCH"
-  exit 1
-fi
-
-ARCH=$1
-
 set -ex
 
 ROOT=`pwd`
