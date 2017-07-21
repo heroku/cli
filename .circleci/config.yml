@@ -40,7 +40,8 @@ jobs:
       - type: shell
         command: |
           set -ex
-          ./scripts/copy-windows-files
+          ./scripts/copy-windows-files x64
+          ./scripts/copy-windows-files x86
       - persist_to_workspace:
           root: .
           paths:
