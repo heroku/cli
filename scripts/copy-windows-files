@@ -18,6 +18,6 @@ for ARCH in "${ARCHS[@]}"; do
   if [ -e $WORKSPACE ]; then
     cp $WORKSPACE tmp/tarballs/windows-$ARCH.tar.gz
   fi
-fi
+done
 
 find $ROOT/tmp/tarballs
