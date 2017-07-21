@@ -42,6 +42,7 @@ jobs:
           root: .
           paths:
             - tmp/tarballs/*
+            - node_modules/cli-engine/bin/version
   release_windows_x64:
     <<: *defaults
     steps:
