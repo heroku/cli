@@ -40,7 +40,7 @@
     "cli-engine": "3.5.43",
     "heroku-apps": "2.4.7",
     "heroku-certs": "1.1.41",
-    "heroku-ci": "1.9.1",
+    "heroku-ci": "1.9.2",
     "heroku-cli-addons": "1.2.25",
     "heroku-cli-oauth": "2.0.14",
     "heroku-cli-status": "4.0.2",
