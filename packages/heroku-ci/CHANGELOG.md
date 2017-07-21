@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [1.9.2] - 2017-07-21
 ### Changed
-- Use upstream of CLI plugin `heroku-run`, which is used to streamify from the  the dyno.
+- Use upstream version of CLI plugin `heroku-run`, which is used to streamify from the  the dyno.
 - Remove code that was used as intermediate fallback while we transitioned over in one of our backend services.
 
 ## [1.9.1] - 2017-07-11
