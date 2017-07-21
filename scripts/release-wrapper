@@ -2,15 +2,15 @@
 
 set -e
 
-USAGE="Usage: $0 type -a arch -b branch"
+USAGE="Usage: $0 [-a arch] [-c channel] type"
 
-while getopts ":a:b:" opt; do
+while getopts ":a:c:" opt; do
   case $opt in
     a)
       ARCH_ARG="${OPTARG}"
       ;;
-    b)
-      BRANCH_ARG="${OPTARG}"
+    c)
+      CHANNEL_ARG="${OPTARG}"
       ;;
     \?)
       echo "$USAGE"
@@ -34,7 +34,7 @@ set -ex
 
 TYPE=$1
 ARCH=$ARCH_ARG
-BRANCH=$BRANCH_ARG
+CHANNEL=$CHANNEL_ARG
 
 do_release () {
   # TODO: add other release types
@@ -44,8 +44,8 @@ do_release () {
   fi
 }
 
-if [ "${BRANCH}" != "" ]; then
-  do_release "${BRANCH}"
+if [ "${CHANNEL}" != "" ]; then
+  do_release "${CHANNEL}"
 elif [ "${CIRCLE_BRANCH}" == "master" ]; then
   TAG=`git describe --exact-match HEAD || echo NOTAG`
   if [ "${TAG}" != "NOTAG" ]; then
