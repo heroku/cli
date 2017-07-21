@@ -37,9 +37,6 @@ jobs:
           echo $HEROKU_DEB_KEY | base64 -d | gpg --import
           set -ex
           ./scripts/release-wrapper deb
-      - type: deploy
-        command: |
-          set -ex
           ./scripts/copy-windows-files x64
           ./scripts/copy-windows-files x86
       - persist_to_workspace:
