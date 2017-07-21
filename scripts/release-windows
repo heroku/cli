@@ -62,9 +62,3 @@ osslsigncode -pkcs12 /tmp/heroku-windows-key \
   -n 'Heroku CLI' \
   -i https://toolbelt.heroku.com/ \
   -in $INSTALLER_BASE/installer.exe -out $INSTALLER
-
-set -x
-
-if [ "$CIRCLE_ARTIFACTS" != "" ]; then
-  cp $INSTALLER "$CIRCLE_ARTIFACTS/$INSTALLER_EXE"
-fi
