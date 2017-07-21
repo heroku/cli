@@ -1,6 +1,6 @@
 
 name: heroku
-version: '6.12.15'
+version: '6.12.16'
 summary: Heroku CLI
 description: Heroku CLI
 grade: stable
