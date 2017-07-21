@@ -48,6 +48,8 @@ jobs:
           fi
       - persist_to_workspace:
           root: .
+          paths:
+            - tmp/build/*.tar.gz
   release_windows:
     working_directory: ~/cli
     docker:
@@ -56,6 +58,7 @@ jobs:
       - attach_workspace:
           at:  ~/cli
       - run: |
+          find tmp
           ./scripts/release-windows
   echo2:
     working_directory: ~/echo1
