@@ -784,7 +784,24 @@ heroku-ci@1.9.1:
     socket.io-client "^1.5.1"
     temp "^0.8.3"
 
-heroku-cli-addons@1.2.24, heroku-cli-addons@^1.2.22, heroku-cli-addons@^1.2.23:
+heroku-cli-addons@1.2.25:
+  version "1.2.25"
+  resolved "http://cli-npm.heroku.com/heroku-cli-addons/-/heroku-cli-addons-1.2.25/02b86f99308fdbfca2bb10c533e408edc47bf918.tgz#02b86f99308fdbfca2bb10c533e408edc47bf918"
+  dependencies:
+    co "4.6.0"
+    co-wait "0.0.0"
+    heroku-cli-util "^6.2.0"
+    lodash.flatten "4.4.0"
+    lodash.groupby "4.6.0"
+    lodash.memoize "4.1.2"
+    lodash.merge "4.6.0"
+    lodash.some "4.6.0"
+    lodash.sortby "4.7.0"
+    lodash.topairs "4.3.0"
+    lodash.values "4.3.0"
+    printf "0.2.5"
+
+heroku-cli-addons@^1.2.22, heroku-cli-addons@^1.2.23:
   version "1.2.24"
   resolved "http://cli-npm.heroku.com/heroku-cli-addons/-/heroku-cli-addons-1.2.24/aa82a9d50b3d85c4ef37aec9392f65b722c14379.tgz#aa82a9d50b3d85c4ef37aec9392f65b722c14379"
   dependencies:
