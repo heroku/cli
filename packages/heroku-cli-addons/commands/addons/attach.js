@@ -30,7 +30,7 @@ function * run (context, heroku) {
   }
 
   if (context.flags.credential && context.flags.credential !== 'default') {
-    let credentialConfig = yield heroku.get(`/addons/${addon.name}/config/credential:${context.flags.credential}`)
+    let credentialConfig = yield heroku.get(`/addons/${addon.name}/config/credential:${encodeURIComponent(context.flags.credential)}`)
     if (credentialConfig.length === 0) {
       throw new Error(`Could not find credential ${context.flags.credential} for database ${addon.name}`)
     }
