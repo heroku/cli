@@ -12,6 +12,7 @@ TARBALL_BASE=$NAME-v$VERSION-windows-$ARCH.tar.gz
 WORKSPACE=$ROOT/tmp/build/$TARBALL_BASE
 
 mkdir -p $ROOT/tmp/tarballs
+touch $ROOT/tmp/tarballs/.keep
 
 ARCHS=(x86 x64)
 for ARCH in "${ARCHS[@]}"; do
