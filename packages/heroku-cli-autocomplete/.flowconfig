@@ -1,0 +1,10 @@
+[ignore]
+<PROJECT_ROOT>/lib/.*
+.*/node_modules/nock.*
+
+[include]
+
+[libs]
+
+[options]
+unsafe.enable_getters_and_setters=true
