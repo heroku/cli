@@ -268,9 +268,9 @@ cli-engine-heroku@^1.1.2, cli-engine-heroku@^1.1.4, cli-engine-heroku@^1.1.5:
     heroku-client "3.x"
     netrc-parser "2.0.2"
 
-cli-engine@3.5.44:
-  version "3.5.44"
-  resolved "http://cli-npm.heroku.com/cli-engine/-/cli-engine-3.5.44/c8dba399c8eb6b76473172435c5c6ba651da1750.tgz#c8dba399c8eb6b76473172435c5c6ba651da1750"
+cli-engine@3.5.45:
+  version "3.5.45"
+  resolved "http://cli-npm.heroku.com/cli-engine/-/cli-engine-3.5.45/c85bf6779aec850af1f9742df029166f2cb0db20.tgz#c85bf6779aec850af1f9742df029166f2cb0db20"
   dependencies:
     ansi-escapes "^2.0.0"
     cli-engine-command "^5.1.10"
