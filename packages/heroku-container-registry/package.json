@@ -18,27 +18,14 @@
   "author": "Hunter Loftis <hunter@heroku.com>",
   "license": "ISC",
   "dependencies": {
-    "camelcase": "1.0.2",
-    "dotenv": "1.1.0",
     "glob": "7.1.0",
     "heroku-cli-util": "6.1.17",
-    "inquirer": "3.0.6",
-    "is-there": "4.0.0",
-    "lodash": "3.3.1",
-    "mkdirp": "0.5.0",
-    "node-uuid": "1.4.3",
-    "progress": "1.1.8",
-    "request": "2.53.0",
-    "superagent": "0.21.0",
-    "yamljs": "0.2.4"
+    "inquirer": "3.0.6"
   },
   "devDependencies": {
     "chai": "3.2.0",
     "depcheck": "0.4.7",
-    "dir-compare": "0.0.2",
-    "fs-extra": "0.23.1",
     "mocha": "2.2.4",
-    "sinon": "2.1.0",
-    "wrench": "1.5.8"
+    "sinon": "2.1.0"
   }
 }
