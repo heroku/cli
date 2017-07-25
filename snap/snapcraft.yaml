@@ -1,5 +1,5 @@
 name: heroku
-version: '6.13.1'
+version: git
 summary: Heroku CLI
 description: Heroku CLI
 grade: stable
@@ -13,7 +13,7 @@ parts:
   heroku:
     source: .
     plugin: nodejs
-    node-engine: 8.2.1
+    node-engine: 7.10.0
     # In Node 8 local projects get symlinked instead of copied. This results in
     # a dangling symlink back to the build directory in snapcraft. So until
     # http://pad.lv/1702661 is fixed, copy heroku-cli in place.
