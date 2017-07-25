@@ -268,9 +268,9 @@ cli-engine-heroku@^1.1.2, cli-engine-heroku@^1.1.4, cli-engine-heroku@^1.1.5:
     heroku-client "3.x"
     netrc-parser "2.0.2"
 
-cli-engine@3.5.43:
-  version "3.5.43"
-  resolved "http://cli-npm.heroku.com/cli-engine/-/cli-engine-3.5.43/2625eb6546df673d7effb533155355dc5aaad213.tgz#2625eb6546df673d7effb533155355dc5aaad213"
+cli-engine@3.5.44:
+  version "3.5.44"
+  resolved "http://cli-npm.heroku.com/cli-engine/-/cli-engine-3.5.44/c8dba399c8eb6b76473172435c5c6ba651da1750.tgz#c8dba399c8eb6b76473172435c5c6ba651da1750"
   dependencies:
     ansi-escapes "^2.0.0"
     cli-engine-command "^5.1.10"
@@ -278,7 +278,7 @@ cli-engine@3.5.43:
     cli-engine-heroku "^1.1.4"
     debug "2.x"
     filesize "^3.5.10"
-    fs-extra "3.x"
+    fs-extra "^4.0.0"
     klaw-sync "2.x"
     levenshtein "1.x"
     lodash.flatten "4.x"
@@ -571,14 +571,6 @@ form-data@~2.1.1:
     asynckit "^0.4.0"
     combined-stream "^1.0.5"
     mime-types "^2.1.12"
-
-fs-extra@3.x:
-  version "3.0.1"
-  resolved "http://cli-npm.heroku.com/fs-extra/-/fs-extra-3.0.1/3794f378c58b342ea7dbbb23095109c4b3b62291.tgz#3794f378c58b342ea7dbbb23095109c4b3b62291"
-  dependencies:
-    graceful-fs "^4.1.2"
-    jsonfile "^3.0.0"
-    universalify "^0.1.0"
 
 fs-extra@^4.0.0:
   version "4.0.0"
