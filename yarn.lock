@@ -709,9 +709,9 @@ here@0.0.2:
   version "0.0.2"
   resolved "http://cli-npm.heroku.com/here/-/here-0.0.2/69c1af3f02121f3d8788e02e84dc8b3905d71195.tgz#69c1af3f02121f3d8788e02e84dc8b3905d71195"
 
-heroku-apps@2.4.7:
-  version "2.4.7"
-  resolved "http://cli-npm.heroku.com/heroku-apps/-/heroku-apps-2.4.7/26f58b5768698bbf65a182ce7c6f49fc20e8fa21.tgz#26f58b5768698bbf65a182ce7c6f49fc20e8fa21"
+heroku-apps@2.4.8:
+  version "2.4.8"
+  resolved "http://cli-npm.heroku.com/heroku-apps/-/heroku-apps-2.4.8/f78a05d0e6f56b790e2e17a33d363e8f91390686.tgz#f78a05d0e6f56b790e2e17a33d363e8f91390686"
   dependencies:
     bluebird "^3.5.0"
     cli-engine-command "^5.1.11"
