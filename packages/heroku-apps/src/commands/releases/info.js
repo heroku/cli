@@ -6,7 +6,7 @@ let releases = require('../../releases')
 
 function * run (context, heroku) {
   const shellescape = require('shell-escape')
-  const statusHelper = require('./status_helper')
+  const statusHelper = require('../../status_helper')
   const forEach = require('lodash.foreach')
 
   let release = yield releases.FindByLatestOrId(heroku, context.app, context.args.release)

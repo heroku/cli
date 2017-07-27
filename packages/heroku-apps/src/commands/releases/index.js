@@ -4,7 +4,7 @@ const cli = require('heroku-cli-util')
 const co = require('co')
 
 function * run (context, heroku) {
-  const statusHelper = require('./status_helper')
+  const statusHelper = require('../../status_helper')
   const time = require('../../time')
   const truncate = require('lodash.truncate')
 
