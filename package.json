@@ -1,7 +1,7 @@
 {
   "name": "heroku-cli",
   "description": "CLI to interact with Heroku",
-  "version": "6.12.16",
+  "version": "6.13.5",
   "author": "Jeff Dickey @dickeyxxx",
   "bin": {
     "heroku": "bin/run"
@@ -10,7 +10,7 @@
   "cli-engine": {
     "dirname": "heroku",
     "bin": "heroku",
-    "node": "8.1.4",
+    "node": "8.2.1",
     "defaultCommand": "dashboard",
     "cloudfront": "EHF9FOCUJYVZ",
     "s3": {
@@ -24,6 +24,7 @@
       "heroku-cli-addons",
       "heroku-cli-oauth",
       "heroku-cli-status",
+      "heroku-container-registry",
       "heroku-fork",
       "heroku-git",
       "heroku-local",
@@ -37,13 +38,14 @@
     ]
   },
   "dependencies": {
-    "cli-engine": "3.5.43",
-    "heroku-apps": "2.4.7",
+    "cli-engine": "3.5.48",
+    "heroku-apps": "2.4.8",
     "heroku-certs": "1.1.41",
-    "heroku-ci": "1.9.1",
+    "heroku-ci": "1.9.2",
     "heroku-cli-addons": "1.2.25",
     "heroku-cli-oauth": "2.0.14",
-    "heroku-cli-status": "4.0.2",
+    "heroku-cli-status": "4.0.3",
+    "heroku-container-registry": "4.3.1",
     "heroku-fork": "4.1.25",
     "heroku-git": "2.5.19",
     "heroku-local": "5.1.18",
@@ -54,7 +56,7 @@
     "heroku-redis": "1.2.15",
     "heroku-run": "3.4.16",
     "heroku-spaces": "2.9.5",
-    "semver": "5.3.0"
+    "semver": "5.4.1"
   },
   "engineStrict": true,
   "engines": {
@@ -75,5 +77,13 @@
     "release": "cli-release",
     "version": "./scripts/version",
     "postpublish": "./scripts/postpublish"
+  },
+  "devDependencies": {
+    "eslint": "4.3.0",
+    "eslint-config-standard": "10.2.1",
+    "eslint-plugin-import": "2.7.0",
+    "eslint-plugin-node": "5.1.1",
+    "eslint-plugin-promise": "3.5.0",
+    "eslint-plugin-standard": "3.0.1"
   }
 }

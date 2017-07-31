@@ -1,6 +1,5 @@
-
 name: heroku
-version: '6.12.16'
+version: git
 summary: Heroku CLI
 description: Heroku CLI
 grade: stable
@@ -8,11 +7,17 @@ confinement: classic
 
 apps:
     heroku:
-        command: bin/heroku
+        command: bin/node $SNAP/lib/node_modules/heroku-cli/bin/run.js
 
 parts:
-  hello-node-snap:
+  heroku:
+    source: .
     plugin: nodejs
     node-engine: 7.10.0
-    node-packages:
-      - heroku-cli
+    # In Node 8 local projects get symlinked instead of copied. This results in
+    # a dangling symlink back to the build directory in snapcraft. So until
+    # http://pad.lv/1702661 is fixed, copy heroku-cli in place.
+    install: |
+        heroku_cli=$SNAPCRAFT_PART_INSTALL/lib/node_modules/heroku-cli
+        rm $heroku_cli
+        cp -r . $heroku_cli/
