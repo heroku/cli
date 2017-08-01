@@ -11,24 +11,24 @@ endif
 CHANNEL?:=$(shell git rev-parse --abbrev-ref HEAD)$(DIRTY)
 AWS_PATH?=$(CHANNEL)
 
-WORKSPACE?=tmp/dev/heroku
+WORKSPACE?=tmp/dev/sfdx
 export PATH := $(WORKSPACE)/lib:$(PATH)
 
 TARGETS:=darwin-amd64 linux-amd64 linux-386 linux-arm windows-amd64 windows-386 freebsd-amd64 freebsd-386 openbsd-amd64 openbsd-386
 
-%/heroku/VERSION: bin/version
+%/sfdx/VERSION: bin/version
 	@mkdir -p $(@D)
 	echo $(VERSION) > $@
 
-%/heroku/lib/cacert.pem: resources/cacert.pem
+%/sfdx/lib/cacert.pem: resources/cacert.pem
 	@mkdir -p $(@D)
 	cp $< $@
 
-%/heroku/README: resources/standalone/README
+%/sfdx/README: resources/standalone/README
 	@mkdir -p $(@D)
 	cp $< $@
 
-%/heroku/install: resources/standalone/install
+%/sfdx/install: resources/standalone/install
 	@mkdir -p $(@D)
 	cp $< $@
 
@@ -36,13 +36,13 @@ BUILD_TAGS=release
 SOURCES := $(shell ls | grep '\.go')
 LDFLAGS=-ldflags "-X=main.Version=$(VERSION) -X=main.Channel=$(CHANNEL) -X=main.GitSHA=$(REVISION)"
 GOOS=$(OS)
-$(WORKSPACE)/bin/heroku: OS   := $(shell go env GOOS)
-$(WORKSPACE)/bin/heroku: ARCH := $(shell go env GOARCH)
-$(WORKSPACE)/bin/heroku: BUILD_TAGS=dev
-$(WORKSPACE)/bin/heroku tmp/%/heroku/bin/heroku: $(SOURCES) bin/version
+$(WORKSPACE)/bin/sfdx: OS   := $(shell go env GOOS)
+$(WORKSPACE)/bin/sfdx: ARCH := $(shell go env GOARCH)
+$(WORKSPACE)/bin/sfdx: BUILD_TAGS=dev
+$(WORKSPACE)/bin/sfdx tmp/%/sfdx/bin/sfdx: $(SOURCES) bin/version
 	GOOS=$(GOOS) GOARCH=$(ARCH) GO386=$(GO386) GOARM=$(GOARM) go build -tags $(BUILD_TAGS) -o $@ $(LDFLAGS)
 
-%/heroku/bin/heroku.exe: $(SOURCES) resources/exe/heroku-codesign-cert.pfx
+%/sfdx/bin/sfdx.exe: $(SOURCES) resources/exe/sfdx-codesign-cert.pfx
 	GOOS=$(GOOS) GOARCH=$(ARCH) go build $(LDFLAGS) -o $@ -tags $(BUILD_TAGS)
 	@osslsigncode -pkcs12 resources/exe/heroku-codesign-cert.pfx \
 		-pass '$(HEROKU_WINDOWS_SIGNING_PASS)' \
@@ -54,28 +54,28 @@ $(WORKSPACE)/bin/heroku tmp/%/heroku/bin/heroku: $(SOURCES) bin/version
 resources/exe/heroku-codesign-cert.pfx:
 	@gpg --yes --passphrase '$(HEROKU_WINDOWS_SIGNING_PASS)' -o resources/exe/heroku-codesign-cert.pfx -d resources/exe/heroku-codesign-cert.pfx.gpg
 
-$(DIST_DIR)/$(VERSION)/heroku-v$(VERSION)-%.tar.xz: tmp/%
+$(DIST_DIR)/$(VERSION)/sfdx-v$(VERSION)-%.tar.xz: tmp/%
 	@if [ -z "$(CHANNEL)" ]; then echo "no channel" && exit 1; fi
 	@mkdir -p $(@D)
-	tar -C tmp/$* -c heroku | xz -2 > $@
+	tar -C tmp/$* -c sfdx | xz -2 > $@
 
-$(DIST_DIR)/$(VERSION)/gz/heroku-v$(VERSION)-%.tar.gz: tmp/%
+$(DIST_DIR)/$(VERSION)/gz/sfdx-v$(VERSION)-%.tar.gz: tmp/%
 	@if [ -z "$(CHANNEL)" ]; then echo "no channel" && exit 1; fi
 	@mkdir -p $(@D)
-	tar -C tmp/$* -c heroku | gzip > $@
+	tar -C tmp/$* -c sfdx | gzip > $@
 
 comma:=,
 empty:=
 space:=$(empty) $(empty)
-DIST_TARGETS := $(foreach t,$(TARGETS),$(DIST_DIR)/$(VERSION)/heroku-v$(VERSION)-$(t).tar.xz)
-DIST_TARGETS_GZ := $(foreach t,$(TARGETS),$(DIST_DIR)/$(VERSION)/gz/heroku-v$(VERSION)-$(t).tar.gz)
+DIST_TARGETS := $(foreach t,$(TARGETS),$(DIST_DIR)/$(VERSION)/sfdx-v$(VERSION)-$(t).tar.xz)
+DIST_TARGETS_GZ := $(foreach t,$(TARGETS),$(DIST_DIR)/$(VERSION)/gz/sfdx-v$(VERSION)-$(t).tar.gz)
 MANIFEST := $(DIST_DIR)/$(VERSION)/manifest.json
 MANIFEST_GZ := $(DIST_DIR)/$(VERSION)/gz/manifest.json
-$(MANIFEST): $(WORKSPACE)/bin/heroku $(DIST_TARGETS)
+$(MANIFEST): $(WORKSPACE)/bin/sfdx $(DIST_TARGETS)
 	@if [ -z "$(CHANNEL)" ]; then echo "no channel" && exit 1; fi
 	./bin/build-manifest --version $(VERSION) --channel $(AWS_PATH) --targets $(subst $(space),$(comma),$(DIST_TARGETS)) > $@
 
-$(MANIFEST_GZ): $(WORKSPACE)/bin/heroku $(DIST_TARGETS_GZ)
+$(MANIFEST_GZ): $(WORKSPACE)/bin/sfdx $(DIST_TARGETS_GZ)
 	@if [ -z "$(CHANNEL)" ]; then echo "no channel" && exit 1; fi
 	./bin/build-manifest --version $(VERSION) --channel $(AWS_PATH) --targets $(subst $(space),$(comma),$(DIST_TARGETS_GZ)) > $@
 
@@ -88,14 +88,14 @@ $(MANIFEST_GZ).sig: $(MANIFEST_GZ)
 ifneq ($(AWS_PATH),)
 PREVIOUS_VERSION:=$(shell curl -fsSL https://cli-assets.heroku.com/branches/$(AWS_PATH)/manifest.json | jq -r '.version')
 endif
-DIST_PATCHES := $(foreach t,$(TARGETS),$(DIST_DIR)/$(PREVIOUS_VERSION)/heroku-v$(PREVIOUS_VERSION)-$(t).patch)
+DIST_PATCHES := $(foreach t,$(TARGETS),$(DIST_DIR)/$(PREVIOUS_VERSION)/sfdx-v$(PREVIOUS_VERSION)-$(t).patch)
 
-$(DIST_DIR)/$(PREVIOUS_VERSION)/heroku-v$(PREVIOUS_VERSION)-%.patch: $(DIST_DIR)/$(VERSION)/heroku-v$(VERSION)-%.tar.xz
+$(DIST_DIR)/$(PREVIOUS_VERSION)/sfdx-v$(PREVIOUS_VERSION)-%.patch: $(DIST_DIR)/$(VERSION)/sfdx-v$(VERSION)-%.tar.xz
 	@mkdir -p $(@D)
-	$(WORKSPACE)/bin/heroku build:bsdiff --new $< --channel $(CHANNEL) --target $* --out $@
+	$(WORKSPACE)/bin/sfdx build:bsdiff --new $< --channel $(CHANNEL) --target $* --out $@
 
 DEB_VERSION:=$(firstword $(subst -, ,$(VERSION)))-1
-DEB_BASE:=heroku_$(DEB_VERSION)
+DEB_BASE:=sfdx_$(DEB_VERSION)
 $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_%.deb: tmp/debian-%
 	@mkdir -p tmp/$(DEB_BASE)_$*.apt/DEBIAN
 	@mkdir -p tmp/$(DEB_BASE)_$*.apt/usr/bin
@@ -103,8 +103,8 @@ $(DIST_DIR)/$(VERSION)/apt/$(DEB_BASE)_%.deb: tmp/debian-%
 	sed -e "s/Architecture: ARCHITECTURE/Architecture: $(if $(filter amd64,$*),amd64,$(if $(filter 386,$*),i386,armel))/" resources/deb/control | \
 	  sed -e "s/Version: VERSION/Version: $(DEB_VERSION)/" \
 		> tmp/$(DEB_BASE)_$*.apt/DEBIAN/control
-	cp -r tmp/debian-$*/heroku tmp/$(DEB_BASE)_$*.apt/usr/lib/
-	ln -s ../lib/heroku/bin/heroku tmp/$(DEB_BASE)_$*.apt/usr/bin/heroku
+	cp -r tmp/debian-$*/sfdx tmp/$(DEB_BASE)_$*.apt/usr/lib/
+	ln -s ../lib/sfdx/bin/sfdx tmp/$(DEB_BASE)_$*.apt/usr/bin/sfdx
 	sudo chown -R root tmp/$(DEB_BASE)_$*.apt
 	sudo chgrp -R root tmp/$(DEB_BASE)_$*.apt
 	mkdir -p $(@D)
@@ -127,16 +127,16 @@ $(CACHE_DIR)/git/Git-2.8.1-amd64.exe:
 	@mkdir -p $(CACHE_DIR)/git
 	curl -fsSLo $@ https://cli-assets.heroku.com/git/Git-2.8.1-64-bit.exe
 
-$(DIST_DIR)/$(VERSION)/heroku-windows-%.exe: tmp/windows-% $(CACHE_DIR)/git/Git-2.8.1-386.exe $(CACHE_DIR)/git/Git-2.8.1-amd64.exe
+$(DIST_DIR)/$(VERSION)/sfdx-windows-%.exe: tmp/windows-% $(CACHE_DIR)/git/Git-2.8.1-386.exe $(CACHE_DIR)/git/Git-2.8.1-amd64.exe
 	@mkdir -p $(@D)
 	rm -rf tmp/windows-$*-installer
 	cp -r tmp/windows-$* tmp/windows-$*-installer
-	cp $(CACHE_DIR)/git/Git-2.8.1-$*.exe tmp/windows-$*-installer/heroku/git.exe
-	sed -e "s/!define Version 'VERSION'/!define Version '$(VERSION)'/" resources/exe/heroku.nsi |\
+	cp $(CACHE_DIR)/git/Git-2.8.1-$*.exe tmp/windows-$*-installer/sfdx/git.exe
+	sed -e "s/!define Version 'VERSION'/!define Version '$(VERSION)'/" resources/exe/sfdx.nsi |\
 		sed -e "s/InstallDir .*/InstallDir \"\$$PROGRAMFILES$(if $(filter amd64,$*),64,)\\\Heroku\"/" \
-		> tmp/windows-$*-installer/heroku/heroku.nsi
-	makensis tmp/windows-$*-installer/heroku/heroku.nsi > /dev/null
-	@osslsigncode -pkcs12 resources/exe/heroku-codesign-cert.pfx \
+		> tmp/windows-$*-installer/sfdx/sfdx.nsi
+	makensis tmp/windows-$*-installer/sfdx/sfdx.nsi > /dev/null
+	@osslsigncode -pkcs12 resources/exe/sfdx-codesign-cert.pfx \
 		-pass '$(HEROKU_WINDOWS_SIGNING_PASS)' \
 		-n 'Heroku CLI' \
 		-i https://toolbelt.heroku.com/ \
@@ -147,13 +147,13 @@ $(DIST_DIR)/$(AWS_PATH)/$(VERSION)/heroku-osx.pkg: tmp/darwin-amd64
 	./resources/osx/build $@
 
 .PHONY: build
-build: $(WORKSPACE)/bin/heroku $(WORKSPACE)/lib/cacert.pem
+build: $(WORKSPACE)/bin/sfdx $(WORKSPACE)/lib/cacert.pem
 
 .PHONY: install
 install: build
-	cp -r $(WORKSPACE) /usr/local/lib/heroku
-	rm /usr/local/bin/heroku
-	ln -s /usr/local/lib/heroku/bin/heroku /usr/local/bin/heroku
+	cp -r $(WORKSPACE) /usr/local/lib/sfdx
+	rm /usr/local/bin/sfdx
+	ln -s /usr/local/lib/sfdx/bin/sfdx /usr/local/bin/sfdx
 
 .PHONY: clean
 clean:
@@ -161,18 +161,18 @@ clean:
 
 .PHONY: test
 test: build
-	$(WORKSPACE)/bin/heroku version
-	$(WORKSPACE)/bin/heroku plugins
-	$(WORKSPACE)/bin/heroku status
+	$(WORKSPACE)/bin/sfdx version
+	$(WORKSPACE)/bin/sfdx plugins
+	$(WORKSPACE)/bin/sfdx status
 
 .PHONY: all
 all: darwin linux windows freebsd openbsd
 
-TARGET_DEPS =  tmp/$$(OS)-$$(ARCH)/heroku/bin/heroku$$(EXT) \
-						   tmp/$$(OS)-$$(ARCH)/heroku/lib/cacert.pem
+TARGET_DEPS =  tmp/$$(OS)-$$(ARCH)/sfdx/bin/sfdx$$(EXT) \
+						   tmp/$$(OS)-$$(ARCH)/sfdx/lib/cacert.pem
 
-STANDALONE_FILES = tmp/$$(OS)-$$(ARCH)/heroku/README  \
-									 tmp/$$(OS)-$$(ARCH)/heroku/install
+STANDALONE_FILES = tmp/$$(OS)-$$(ARCH)/sfdx/README  \
+									 tmp/$$(OS)-$$(ARCH)/sfdx/install
 
 tmp/%-amd64: ARCH      := amd64
 tmp/%-386:   ARCH      := 386
@@ -217,7 +217,7 @@ windows: $(WINDOWS_TARGETS)
 $(WINDOWS_TARGETS): $(TARGET_DEPS)
 
 .PHONY: distwin
-distwin: $(DIST_DIR)/$(VERSION)/heroku-windows-amd64.exe $(DIST_DIR)/$(VERSION)/heroku-windows-386.exe
+distwin: $(DIST_DIR)/$(VERSION)/sfdx-windows-amd64.exe $(DIST_DIR)/$(VERSION)/sfdx-windows-386.exe
 
 .PHONY: disttxz disttgz
 disttxz: $(MANIFEST) $(MANIFEST).sig $(DIST_TARGETS)
