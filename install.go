@@ -46,11 +46,11 @@ func DownloadCLI(channel, path, runtimeOS, runtimeARCH string, manifest *Manifes
 		golock.Unlock(installLockPath)
 	}
 	defer unlock()
-	downloadingMessage := fmt.Sprintf("heroku-cli: Updating to %s...", manifest.Version)
+	downloadingMessage := fmt.Sprintf("sfdx-cli: Updating to %s...", manifest.Version)
 	if Channel != "stable" {
 		downloadingMessage = fmt.Sprintf("%s (%s)", downloadingMessage, Channel)
 	}
-	url := "http://cli-assets.heroku.com/heroku-cli/channels/" + channel + "/heroku-cli-v" + manifest.Version + "-" + runtimeOS + "-" + runtimeARCH + ".tar.xz"
+	url := "https://developer.salesforce.com/media/salesforce-cli/v6/sfdx-cli/channels/latest/sfdx-cli-v" + manifest.Version + "-" + runtimeOS + "-" + runtimeARCH + ".tar.xz"
 	reader, getSha, err := downloadXZ(url, downloadingMessage)
 	must(err)
 	tmp := filepath.Join(DataHome, "tmp")
@@ -65,7 +65,7 @@ func DownloadCLI(channel, path, runtimeOS, runtimeARCH string, manifest *Manifes
 	if exists {
 		must(os.RemoveAll(path))
 	}
-	must(os.Rename(filepath.Join(tmp, "heroku-cli-v"+manifest.Version+"-"+runtimeOS+"-"+runtimeARCH), path))
+	must(os.Rename(filepath.Join(tmp, "sfdx-cli-v"+manifest.Version+"-"+runtimeOS+"-"+runtimeARCH), path))
 	Debugf("updated to %s\n", manifest.Version)
 }
 
@@ -80,7 +80,7 @@ var updateManifestRetrying = false
 // GetUpdateManifest loads the manifest.json for a channel
 func GetUpdateManifest(channel, os, arch string) *Manifest {
 	var m Manifest
-	url := "http://cli-assets.heroku.com/heroku-cli/channels/" + channel + "/" + os + "-" + arch
+	url := "https://developer.salesforce.com/media/salesforce-cli/v6/sfdx-cli/channels/latest/" + os + "-" + arch
 	rsp, err := sling.New().Client(apiHTTPClient).Get(url).ReceiveSuccess(&m)
 	if err != nil && !updateManifestRetrying {
 		updateManifestRetrying = true
@@ -92,7 +92,7 @@ func GetUpdateManifest(channel, os, arch string) *Manifest {
 }
 
 func binPath() string {
-	bin := filepath.Join(DataHome, "client", "bin", "heroku")
+	bin := filepath.Join(DataHome, "client", "bin", "sfdx")
 	if runtime.GOOS == WINDOWS {
 		bin = bin + ".cmd"
 	}
