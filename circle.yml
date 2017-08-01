@@ -66,14 +66,12 @@ test:
   post:
     - bash <(curl -s https://codecov.io/bash)
 deployment:
-  v6:
-    branch: v5.99
+  sfdx-v5.99:
+    branch: sfdx-v5.99
     owner: heroku
     commands:
       - gpg --passphrase $HEROKU_WINDOWS_SIGNING_PASS -d resources/deb/key.gpg | gpg --import
-      - CHANNEL=beta make release -j $JOBZ
-      - make clean
-      - CHANNEL=stable AWS_PATH=v6 make release -j $JOBZ
+      - CHANNEL=sfdx-v6 make release -j $JOBZ
   stable:
     tag: /v[0-9]+(\.[0-9]+)*/
     owner: heroku
