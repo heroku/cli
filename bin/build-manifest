@@ -19,7 +19,7 @@ const output = {
   channel: argv.channel,
   builds: argv.targets.split(',').reduce((builds, t) => {
     let filename = path.basename(t)
-    let [, os, arch] = t.match(/heroku-v\d+\.\d+\.\d+-\w+-(\w+)-(\w+)\.tar\..z/)
+    let [, os, arch] = t.match(/sfdx-v\d+\.\d+\.\d+-\w+-(\w+)-(\w+)\.tar\..z/)
     const url = `https://cli-assets.heroku.com/branches/${argv.channel}/${argv.version}/${filename}`
     builds[`${os}-${arch}`] = {
       url,

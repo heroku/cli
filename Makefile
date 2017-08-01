@@ -42,7 +42,7 @@ $(WORKSPACE)/bin/sfdx: BUILD_TAGS=dev
 $(WORKSPACE)/bin/sfdx tmp/%/sfdx/bin/sfdx: $(SOURCES) bin/version
 	GOOS=$(GOOS) GOARCH=$(ARCH) GO386=$(GO386) GOARM=$(GOARM) go build -tags $(BUILD_TAGS) -o $@ $(LDFLAGS)
 
-%/sfdx/bin/sfdx.exe: $(SOURCES) resources/exe/sfdx-codesign-cert.pfx
+%/sfdx/bin/sfdx.exe: $(SOURCES) resources/exe/heroku-codesign-cert.pfx
 	GOOS=$(GOOS) GOARCH=$(ARCH) go build $(LDFLAGS) -o $@ -tags $(BUILD_TAGS)
 	@osslsigncode -pkcs12 resources/exe/heroku-codesign-cert.pfx \
 		-pass '$(HEROKU_WINDOWS_SIGNING_PASS)' \
