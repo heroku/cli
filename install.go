@@ -32,6 +32,7 @@ func Install(channel string) {
 	}
 	manifest := GetUpdateManifest(channel, os, arch)
 	DownloadCLI(channel, filepath.Join(DataHome, "client"), os, arch, manifest)
+	showCursor()
 }
 
 // DownloadCLI downloads a CLI update to a given path

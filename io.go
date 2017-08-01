@@ -235,3 +235,9 @@ func rollbar(err error, level string) {
 	rollbarAPI.Error(level, err, fields...)
 	rollbarAPI.Wait()
 }
+
+func showCursor() {
+	if supportsColor() && !windows() {
+		Print("\u001b[?25h")
+	}
+}

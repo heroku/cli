@@ -1,5 +1,5 @@
 #!/bin/bash
 set -e
 
-make tmp/dev/heroku/bin/heroku --quiet
-tmp/dev/heroku/bin/heroku $*
+make tmp/dev/sfdx/bin/sfdx --quiet
+tmp/dev/sfdx/bin/sfdx $*
