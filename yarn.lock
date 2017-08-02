@@ -1289,9 +1289,9 @@ heroku-orgs@1.6.4:
     lodash "4.17.4"
     lodash.flatten "4.4.0"
 
-heroku-pg@2.2.6:
-  version "2.2.6"
-  resolved "http://cli-npm.heroku.com/heroku-pg/-/heroku-pg-2.2.6/30241a2bff59e45027334013a26a8be5c88f858e.tgz#30241a2bff59e45027334013a26a8be5c88f858e"
+heroku-pg@2.2.7:
+  version "2.2.7"
+  resolved "http://cli-npm.heroku.com/heroku-pg/-/heroku-pg-2.2.7/c27450868210b2556a3ca61625b15d42fc99e030.tgz#c27450868210b2556a3ca61625b15d42fc99e030"
   dependencies:
     bytes "^2.5.0"
     co "^4.6.0"
