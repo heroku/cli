@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [1.9.3] - 2017-08-02
+
 - Command `heroku ci` && `heroku ci:list` accept pipeline name via the  `--pipelines` flag.
 
 ## [1.9.2] - 2017-07-21
