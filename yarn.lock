@@ -305,9 +305,32 @@ cli-cursor@^2.1.0:
   dependencies:
     restore-cursor "^2.0.0"
 
-cli-engine-command@^5.1.11, cli-engine-command@^5.1.12, cli-engine-command@^5.1.13, cli-engine-command@^5.1.8:
+cli-engine-command@^5.1.11, cli-engine-command@^5.1.12, cli-engine-command@^5.1.8:
   version "5.1.13"
   resolved "http://cli-npm.heroku.com/cli-engine-command/-/cli-engine-command-5.1.13/6b1673ac19eda8b34ef93b7a2f7958ee1c93bd1b.tgz#6b1673ac19eda8b34ef93b7a2f7958ee1c93bd1b"
+  dependencies:
+    ansi-escapes "2.x"
+    cardinal "1.x"
+    chalk "^1.0.0"
+    fs-extra "^4.0.0"
+    http-call "^2.1.3"
+    lodash.ary "^4.1.1"
+    lodash.defaults "^4.2.0"
+    lodash.get "^4.4.2"
+    lodash.identity "^3.0.0"
+    lodash.keys "^4.2.0"
+    lodash.maxby "4.x"
+    lodash.merge "4.x"
+    lodash.partial "^4.2.1"
+    lodash.property "^4.4.2"
+    lodash.result "^4.5.2"
+    moment "^2.18.1"
+    string "3.x"
+    supports-color "^4.2.0"
+
+cli-engine-command@^5.1.15:
+  version "5.1.15"
+  resolved "http://cli-npm.heroku.com/cli-engine-command/-/cli-engine-command-5.1.15/3f226f62c872fa17b767800ce80f8d6508ca9322.tgz#3f226f62c872fa17b767800ce80f8d6508ca9322"
   dependencies:
     ansi-escapes "2.x"
     cardinal "1.x"
@@ -341,12 +364,12 @@ cli-engine-heroku@^1.1.2, cli-engine-heroku@^1.1.4, cli-engine-heroku@^1.1.5:
     heroku-client "3.x"
     netrc-parser "2.0.2"
 
-cli-engine@3.5.48:
-  version "3.5.48"
-  resolved "http://cli-npm.heroku.com/cli-engine/-/cli-engine-3.5.48/c0d3de720e5873f1ba1c2147d059a61890be98dd.tgz#c0d3de720e5873f1ba1c2147d059a61890be98dd"
+cli-engine@3.5.56:
+  version "3.5.56"
+  resolved "http://cli-npm.heroku.com/cli-engine/-/cli-engine-3.5.56/a616182335637c55cab3680899acc208e0d32fd2.tgz#a616182335637c55cab3680899acc208e0d32fd2"
   dependencies:
     ansi-escapes "^2.0.0"
-    cli-engine-command "^5.1.13"
+    cli-engine-command "^5.1.15"
     cli-engine-config "^1.3.7"
     cli-engine-heroku "^1.1.4"
     debug "2.x"
@@ -358,7 +381,7 @@ cli-engine@3.5.48:
     lodash.maxby "4.x"
     lodash.uniqby "4.x"
     log-chopper "^1.0.1"
-    moment "2.x"
+    moment "^2.18.1"
     netrc-parser "2.0.2"
     node-gyp "3.x"
     rwlockfile "^1.4.5"
@@ -1102,9 +1125,9 @@ heroku-certs@1.1.41:
     moment "^2.18.1"
     psl "^1.1.19"
 
-heroku-ci@1.9.2:
-  version "1.9.2"
-  resolved "http://cli-npm.heroku.com/heroku-ci/-/heroku-ci-1.9.2/d7bf2a6a6d919492f6d1bd6d7123824eb52e9350.tgz#d7bf2a6a6d919492f6d1bd6d7123824eb52e9350"
+heroku-ci@1.9.3:
+  version "1.9.3"
+  resolved "http://cli-npm.heroku.com/heroku-ci/-/heroku-ci-1.9.3/734447b484db0e33bf97ceabe385b6bb5a0642d6.tgz#734447b484db0e33bf97ceabe385b6bb5a0642d6"
   dependencies:
     ansi-escapes "1.4.0"
     bluebird "^3.4.6"
@@ -1289,9 +1312,9 @@ heroku-orgs@1.6.4:
     lodash "4.17.4"
     lodash.flatten "4.4.0"
 
-heroku-pg@2.2.6:
-  version "2.2.6"
-  resolved "http://cli-npm.heroku.com/heroku-pg/-/heroku-pg-2.2.6/30241a2bff59e45027334013a26a8be5c88f858e.tgz#30241a2bff59e45027334013a26a8be5c88f858e"
+heroku-pg@2.2.7:
+  version "2.2.7"
+  resolved "http://cli-npm.heroku.com/heroku-pg/-/heroku-pg-2.2.7/c27450868210b2556a3ca61625b15d42fc99e030.tgz#c27450868210b2556a3ca61625b15d42fc99e030"
   dependencies:
     bytes "^2.5.0"
     co "^4.6.0"
@@ -1899,7 +1922,7 @@ mkdirp@0.x, "mkdirp@>=0.5 0", mkdirp@^0.5.0, mkdirp@^0.5.1:
   dependencies:
     minimist "0.0.8"
 
-moment@2.x, moment@^2.18.1:
+moment@^2.18.1:
   version "2.18.1"
   resolved "http://cli-npm.heroku.com/moment/-/moment-2.18.1/c36193dd3ce1c2eed2adb7c802dbbc77a81b1c0f.tgz#c36193dd3ce1c2eed2adb7c802dbbc77a81b1c0f"
 
