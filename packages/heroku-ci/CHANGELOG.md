@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+
+- Command `heroku ci` && `heroku ci:list` accept pipeline name via the  `--pipelines` flag.
+
 ## [1.9.2] - 2017-07-21
 ### Changed
 - Use upstream version of CLI plugin `heroku-run`, which is used to streamify from the  the dyno.

@@ -10,11 +10,17 @@ function* run (context, heroku) {
 
 const cmd = {
   topic: 'ci',
-  needsApp: true,
+  wantsApp: true,
   needsAuth: true,
   description: 'show the most recent runs',
   help: 'display the most recent CI runs for the given pipeline',
   flags: [
+    {
+      name: 'pipeline',
+      char: 'p',
+      hasValue: true,
+      description: 'pipeline'
+    },
     {
       name: 'watch',
       char: 'w',
