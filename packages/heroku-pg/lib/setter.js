@@ -5,9 +5,9 @@ const co = require('co')
 
 exports.boolean = (value) => {
   switch (value) {
-    case 'true': case 'on': case true:
+    case 'true': case 'TRUE': case 'ON': case 'on': case true:
       return true
-    case 'false': case 'off': case null: case false:
+    case 'false': case 'FALSE': case 'OFF': case 'off': case null: case false:
       return false
     default:
       throw new TypeError('Invalid value. Valid options are: a boolean value')
@@ -42,7 +42,7 @@ exports.generate = (name, convert, explain) => {
     if (!value) {
       let settings = yield heroku.get(`/postgres/v0/databases/${db.id}/config`, {host: host(db)})
       let setting = settings[name]
-      cli.log(`${name} is set to ${setting.value} for ${db.name}.`)
+      cli.log(`${name.replace(/_/g, '-')} is set to ${setting.value} for ${db.name}.`)
       cli.log(explain(setting))
     } else {
       let settings = yield heroku.patch(`/postgres/v0/databases/${db.id}/config`, {
@@ -50,7 +50,7 @@ exports.generate = (name, convert, explain) => {
         body: { [name]: convert(value) }
       })
       let setting = settings[name]
-      cli.log(`${name} has been set to ${setting.value} for ${db.name}.`)
+      cli.log(`${name.replace(/_/g, '-')} has been set to ${setting.value} for ${db.name}.`)
       cli.log(explain(setting))
     }
   })

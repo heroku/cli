@@ -17,7 +17,7 @@ function * run (context, heroku) {
   let settings = yield heroku.get(`/postgres/v0/databases/${db.id}/config`, {host: host(db)})
   cli.styledHeader(db.name)
   let remapped = Object.keys(settings).reduce((s, key) => {
-    s[key] = settings[key]['value']
+    s[key.replace(/_/g, '-')] = settings[key]['value']
     return s
   }, {})
   cli.styledObject(remapped)
@@ -26,7 +26,7 @@ function * run (context, heroku) {
 module.exports = {
   topic: 'pg',
   command: 'settings',
-  description: 'show current settings',
+  description: 'show your current database settings',
   needsApp: true,
   needsAuth: true,
   args: [{name: 'database', optional: true}],
