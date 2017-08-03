@@ -114,7 +114,7 @@ function * run (context, heroku) {
   function favoriteApps () {
     return heroku.request({
       host: 'longboard.heroku.com',
-      path: '/favorites',
+      path: '/favorites?type=app',
       headers: {Range: ''}
     }).then((apps) => apps.map((app) => app.app_name))
   }
