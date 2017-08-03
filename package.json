@@ -48,7 +48,7 @@
     "heroku-container-registry": "4.3.1",
     "heroku-fork": "4.1.25",
     "heroku-git": "2.5.19",
-    "heroku-local": "5.1.18",
+    "heroku-local": "5.1.19",
     "heroku-orgs": "1.6.4",
     "heroku-pg": "2.2.7",
     "heroku-pipelines": "2.1.3",
