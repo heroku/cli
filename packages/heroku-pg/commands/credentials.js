@@ -33,6 +33,7 @@ function * run (context, heroku) {
       credentials = sortBy(credentials, isDefaultCredential, 'name')
       attachments = yield heroku.get(`/addons/${addon.name}/addon-attachments`)
 
+      cli.warn(`${cli.color.cmd('pg:credentials')} has recently changed. Please use ${cli.color.cmd('pg:credentials:url')} for the previous output.`)
       cli.table(credentials, {
         columns: [
           {key: 'name', label: 'Credential', format: presentCredential},
