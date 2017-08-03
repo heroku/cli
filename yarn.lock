@@ -341,9 +341,9 @@ cli-engine-heroku@^1.1.2, cli-engine-heroku@^1.1.4, cli-engine-heroku@^1.1.5:
     heroku-client "3.x"
     netrc-parser "2.0.2"
 
-cli-engine@3.5.56:
-  version "3.5.56"
-  resolved "http://cli-npm.heroku.com/cli-engine/-/cli-engine-3.5.56/a616182335637c55cab3680899acc208e0d32fd2.tgz#a616182335637c55cab3680899acc208e0d32fd2"
+cli-engine@3.5.57:
+  version "3.5.57"
+  resolved "http://cli-npm.heroku.com/cli-engine/-/cli-engine-3.5.57/80c4c267c5cd84a97f8e27c2d87d67fc91561e81.tgz#80c4c267c5cd84a97f8e27c2d87d67fc91561e81"
   dependencies:
     ansi-escapes "^2.0.0"
     cli-engine-command "^5.1.15"
@@ -847,9 +847,9 @@ flexbuffer@0.0.6:
   version "0.0.6"
   resolved "http://cli-npm.heroku.com/flexbuffer/-/flexbuffer-0.0.6/039fdf23f8823e440c38f3277e6fef1174215b30.tgz#039fdf23f8823e440c38f3277e6fef1174215b30"
 
-"foreman@git+https://github.com/heroku/node-foreman.git":
+"foreman@https://github.com/heroku/node-foreman.git":
   version "2.0.0"
-  resolved "git+https://github.com/heroku/node-foreman.git#799ba64191dd652e797b4e7711f17a520d5d69c8"
+  resolved "https://github.com/heroku/node-foreman.git#799ba64191dd652e797b4e7711f17a520d5d69c8"
   dependencies:
     commander "~2.9.0"
     http-proxy "~1.11.1"
