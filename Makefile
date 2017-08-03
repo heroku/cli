@@ -244,10 +244,10 @@ releasetgz: $(MANIFEST_GZ) $(MANIFEST_GZ).sig $(addprefix releasetgz/,$(DIST_TAR
 releasetxz/%.tar.xz: %.tar.xz
 	aws s3 cp --cache-control max-age=86400 $< s3://heroku-cli-assets/branches/$(AWS_PATH)/$(VERSION)/$(notdir $<)
 	aws s3 cp --cache-control max-age=86400 $< s3://heroku-cli-assets/branches/$(AWS_PATH)/$(notdir $<)
+	aws cloudfront create-invalidation --distribution-id EHF9FOCUJYVZ --paths "/branches/$(AWS_PATH)/*"
 releasetgz/%.tar.gz: %.tar.gz
 	aws s3 cp --cache-control max-age=86400 $< s3://heroku-cli-assets/branches/$(AWS_PATH)/$(VERSION)/$(notdir $<)
 	aws s3 cp --cache-control max-age=86400 $< s3://heroku-cli-assets/branches/$(AWS_PATH)/$(notdir $<)
-	aws cloudfront create-invalidation --distribution-id EHF9FOCUJYVZ --paths "/branches/$(AWS_PATH)/*"
 
 .PHONY: distosx
 distosx: $(DIST_DIR)/$(AWS_PATH)/$(VERSION)/heroku-osx.pkg
