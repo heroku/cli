@@ -15,7 +15,6 @@ import (
 	"time"
 
 	"github.com/dghubble/sling"
-	"github.com/go-errors/errors"
 	"github.com/mitchellh/ioprogress"
 	"github.com/ulikunitz/xz"
 )
@@ -135,5 +134,5 @@ func getHTTPError(rsp *http.Response) error {
 	if rsp.StatusCode >= 200 && rsp.StatusCode < 300 {
 		return nil
 	}
-	return errors.Errorf("HTTP Error: %s %s", rsp.Request.URL, rsp.Status)
+	return fmt.Errorf("HTTP Error: %s %s", rsp.Request.URL, rsp.Status)
 }

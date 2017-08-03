@@ -7,7 +7,6 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/ansel1/merry"
 	"github.com/dghubble/sling"
 	"github.com/dickeyxxx/golock"
 )
@@ -58,7 +57,7 @@ func DownloadCLI(path, runtimeOS, runtimeARCH string, manifest *Manifest) {
 	must(extractTar(reader, tmp))
 	sha := getSha()
 	if sha != manifest.Sha256XZ {
-		must(merry.Errorf("SHA mismatch: expected %s to be %s", sha, manifest.Sha256XZ))
+		must(fmt.Errorf("SHA mismatch: expected %s to be %s", sha, manifest.Sha256XZ))
 	}
 	exists, _ := FileExists(path)
 	if exists {
