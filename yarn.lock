@@ -305,30 +305,7 @@ cli-cursor@^2.1.0:
   dependencies:
     restore-cursor "^2.0.0"
 
-cli-engine-command@^5.1.11, cli-engine-command@^5.1.12, cli-engine-command@^5.1.8:
-  version "5.1.13"
-  resolved "http://cli-npm.heroku.com/cli-engine-command/-/cli-engine-command-5.1.13/6b1673ac19eda8b34ef93b7a2f7958ee1c93bd1b.tgz#6b1673ac19eda8b34ef93b7a2f7958ee1c93bd1b"
-  dependencies:
-    ansi-escapes "2.x"
-    cardinal "1.x"
-    chalk "^1.0.0"
-    fs-extra "^4.0.0"
-    http-call "^2.1.3"
-    lodash.ary "^4.1.1"
-    lodash.defaults "^4.2.0"
-    lodash.get "^4.4.2"
-    lodash.identity "^3.0.0"
-    lodash.keys "^4.2.0"
-    lodash.maxby "4.x"
-    lodash.merge "4.x"
-    lodash.partial "^4.2.1"
-    lodash.property "^4.4.2"
-    lodash.result "^4.5.2"
-    moment "^2.18.1"
-    string "3.x"
-    supports-color "^4.2.0"
-
-cli-engine-command@^5.1.15:
+cli-engine-command@^5.1.11, cli-engine-command@^5.1.12, cli-engine-command@^5.1.15, cli-engine-command@^5.1.8:
   version "5.1.15"
   resolved "http://cli-npm.heroku.com/cli-engine-command/-/cli-engine-command-5.1.15/3f226f62c872fa17b767800ce80f8d6508ca9322.tgz#3f226f62c872fa17b767800ce80f8d6508ca9322"
   dependencies:
@@ -870,9 +847,9 @@ flexbuffer@0.0.6:
   version "0.0.6"
   resolved "http://cli-npm.heroku.com/flexbuffer/-/flexbuffer-0.0.6/039fdf23f8823e440c38f3277e6fef1174215b30.tgz#039fdf23f8823e440c38f3277e6fef1174215b30"
 
-foreman@^2.0.0:
+"foreman@git+https://github.com/heroku/node-foreman.git":
   version "2.0.0"
-  resolved "http://cli-npm.heroku.com/foreman/-/foreman-2.0.0/00acd20f9dbbe2f79d04697bcca2a77ee00ee031.tgz#00acd20f9dbbe2f79d04697bcca2a77ee00ee031"
+  resolved "git+https://github.com/heroku/node-foreman.git#799ba64191dd652e797b4e7711f17a520d5d69c8"
   dependencies:
     commander "~2.9.0"
     http-proxy "~1.11.1"
@@ -949,7 +926,7 @@ github-url-to-object@^2.2.6:
   dependencies:
     is-url "^1.1.0"
 
-glob@7.1.0, "glob@>= 3.1.4", glob@^7.0.3:
+glob@7.1.0:
   version "7.1.0"
   resolved "http://cli-npm.heroku.com/glob/-/glob-7.1.0/36add856d746d0d99e4cc2797bba1ae2c67272fd.tgz#36add856d746d0d99e4cc2797bba1ae2c67272fd"
   dependencies:
@@ -960,7 +937,7 @@ glob@7.1.0, "glob@>= 3.1.4", glob@^7.0.3:
     once "^1.3.0"
     path-is-absolute "^1.0.0"
 
-glob@^7.0.5, glob@^7.1.2:
+"glob@>= 3.1.4", glob@^7.0.3, glob@^7.1.2:
   version "7.1.2"
   resolved "http://cli-npm.heroku.com/glob/-/glob-7.1.2/c19c9df9a028702d678612384a6552404c636d15.tgz#c19c9df9a028702d678612384a6552404c636d15"
   dependencies:
@@ -1290,12 +1267,12 @@ heroku-git@2.5.19:
     co "4.6.0"
     heroku-cli-util "^6.2.0"
 
-heroku-local@5.1.18:
-  version "5.1.18"
-  resolved "http://cli-npm.heroku.com/heroku-local/-/heroku-local-5.1.18/e3022e5e6e8c0ff179f3dc86e82a1da32a004401.tgz#e3022e5e6e8c0ff179f3dc86e82a1da32a004401"
+heroku-local@5.1.19:
+  version "5.1.19"
+  resolved "http://cli-npm.heroku.com/heroku-local/-/heroku-local-5.1.19/f5ca79825a64f0befab8e449af3f794b761e77e8.tgz#f5ca79825a64f0befab8e449af3f794b761e77e8"
   dependencies:
     co "^4.6.0"
-    foreman "^2.0.0"
+    foreman "https://github.com/heroku/node-foreman.git"
     heroku-cli-util "^6.2.0"
     lodash.flatten "^4.4.0"
 
@@ -2355,15 +2332,9 @@ restore-cursor@^2.0.0:
     onetime "^2.0.0"
     signal-exit "^3.0.2"
 
-rimraf@2, rimraf@2.x, rimraf@~2.2.6:
+rimraf@2, rimraf@2.x, rimraf@^2.2.8, rimraf@~2.2.6:
   version "2.2.8"
   resolved "http://cli-npm.heroku.com/rimraf/-/rimraf-2.2.8/e439be2aaee327321952730f99a8929e4fc50582.tgz#e439be2aaee327321952730f99a8929e4fc50582"
-
-rimraf@^2.2.8:
-  version "2.6.1"
-  resolved "http://cli-npm.heroku.com/rimraf/-/rimraf-2.6.1/c2338ec643df7a1b7fe5c54fa86f57428a55f33d.tgz#c2338ec643df7a1b7fe5c54fa86f57428a55f33d"
-  dependencies:
-    glob "^7.0.5"
 
 run-async@^2.2.0:
   version "2.3.0"
