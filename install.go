@@ -15,7 +15,7 @@ import (
 var installLockPath = filepath.Join(DataHome, "v5.lock")
 
 // Install installs the CLI
-func Install(channel string) {
+func Install() {
 	if exists, err := FileExists(binPath()); exists || err != nil {
 		WarnIfError(err)
 		return
@@ -31,13 +31,13 @@ func Install(channel string) {
 	if arch == "386" {
 		arch = "x86"
 	}
-	manifest := GetUpdateManifest(channel, os, arch)
-	DownloadCLI(channel, filepath.Join(DataHome, "client"), os, arch, manifest)
+	manifest := GetUpdateManifest(os, arch)
+	DownloadCLI(filepath.Join(DataHome, "client"), os, arch, manifest)
 	showCursor()
 }
 
 // DownloadCLI downloads a CLI update to a given path
-func DownloadCLI(channel, path, runtimeOS, runtimeARCH string, manifest *Manifest) {
+func DownloadCLI(path, runtimeOS, runtimeARCH string, manifest *Manifest) {
 	locked, err := golock.IsLocked(installLockPath)
 	LogIfError(err)
 	if locked {
@@ -49,9 +49,6 @@ func DownloadCLI(channel, path, runtimeOS, runtimeARCH string, manifest *Manifes
 	}
 	defer unlock()
 	downloadingMessage := fmt.Sprintf("sfdx-cli: Updating to %s...", manifest.Version)
-	if Channel != "stable" {
-		downloadingMessage = fmt.Sprintf("%s (%s)", downloadingMessage, Channel)
-	}
 	url := "https://developer.salesforce.com/media/salesforce-cli/sfdx-cli/channels/stable/sfdx-cli-v" + manifest.Version + "-" + runtimeOS + "-" + runtimeARCH + ".tar.xz"
 	reader, getSha, err := downloadXZ(url, downloadingMessage)
 	must(err)
@@ -97,13 +94,13 @@ type Manifest struct {
 var updateManifestRetrying = false
 
 // GetUpdateManifest loads the manifest.json for a channel
-func GetUpdateManifest(channel, os, arch string) *Manifest {
+func GetUpdateManifest(os, arch string) *Manifest {
 	var m Manifest
 	url := "https://developer.salesforce.com/media/salesforce-cli/sfdx-cli/channels/stable/" + os + "-" + arch
 	rsp, err := sling.New().Client(apiHTTPClient).Get(url).ReceiveSuccess(&m)
 	if err != nil && !updateManifestRetrying {
 		updateManifestRetrying = true
-		return GetUpdateManifest(channel, os, arch)
+		return GetUpdateManifest(os, arch)
 	}
 	must(err)
 	must(getHTTPError(rsp))

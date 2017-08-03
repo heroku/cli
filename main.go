@@ -10,21 +10,12 @@ import (
 // Version is the current version
 var Version = "dev"
 
-// Channel is the current channel
-var Channel = "beta"
-
 // GitSHA is the current git sha
 var GitSHA = ""
 
 func main() {
-	defer handlePanic()
 	runtime.GOMAXPROCS(1) // more procs causes runtime: failed to create new OS thread on Ubuntu
-
-	if Channel == "dev" || Channel == "" {
-		Channel = "beta"
-	}
-
-	Install(Channel)
+	Install()
 
 	// handle sigint
 	handleSignal(os.Interrupt, func() {})

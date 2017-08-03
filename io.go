@@ -9,8 +9,6 @@ import (
 	"runtime/debug"
 	"strings"
 
-	"github.com/ansel1/merry"
-	rollbarAPI "github.com/stvp/rollbar"
 	"golang.org/x/crypto/ssh/terminal"
 )
 
@@ -78,16 +76,12 @@ func Debugf(format string, a ...interface{}) {
 }
 
 // WarnIfError is a helper that prints out formatted error messages
-// it will emit to rollbar
 // it does not exit
 func WarnIfError(err error) {
 	if err == nil {
 		return
 	}
-	err = merry.Wrap(err)
 	Warn(err.Error())
-	Debugln(merry.Details(err))
-	rollbar(err, "warning")
 }
 
 // Warn shows a message with excalamation points prepended to stderr
@@ -127,7 +121,6 @@ func LogIfError(e error) {
 	if e != nil {
 		Debugln(e.Error())
 		Debugln(string(debug.Stack()))
-		rollbar(e, "info")
 	}
 }
 
@@ -189,51 +182,6 @@ func handleSignal(s os.Signal, fn func()) {
 		<-c
 		fn()
 	}()
-}
-
-var crashing = false
-
-func handlePanic() {
-	if crashing {
-		// if already crashing just let the error bubble
-		// or else potential fork-bomb
-		return
-	}
-	crashing = true
-	if rec := recover(); rec != nil {
-		err, ok := rec.(error)
-		if !ok {
-			err = merry.New(rec.(string))
-		}
-		err = merry.Wrap(err)
-		Error(err.Error())
-		Debugln(merry.Details(err))
-		rollbar(err, "error")
-		Exit(1)
-	}
-}
-
-func rollbar(err error, level string) {
-	if os.Getenv("TESTING") == ONE {
-		return
-	}
-	rollbarAPI.Platform = "client"
-	rollbarAPI.Token = "d40104ae6fa8477dbb6907370231d7d8"
-	rollbarAPI.Environment = Channel
-	rollbarAPI.ErrorWriter = nil
-	rollbarAPI.CodeVersion = GitSHA
-	var cmd string
-	if len(os.Args) > 1 {
-		cmd = os.Args[1]
-	}
-	fields := []*rollbarAPI.Field{
-		{"version", Version},
-		{"os", runtime.GOOS},
-		{"arch", runtime.GOARCH},
-		{"command", cmd},
-	}
-	rollbarAPI.Error(level, err, fields...)
-	rollbarAPI.Wait()
 }
 
 func showCursor() {
