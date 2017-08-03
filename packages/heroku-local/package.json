@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "co": "^4.6.0",
-    "foreman": "^2.0.0",
+    "foreman": "git+https://github.com/heroku/node-foreman.git",
     "heroku-cli-util": "^6.2.0",
     "lodash.flatten": "^4.4.0"
   },

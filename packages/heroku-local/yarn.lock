@@ -565,9 +565,9 @@ foreach@^2.0.5:
   version "2.0.5"
   resolved "https://registry.yarnpkg.com/foreach/-/foreach-2.0.5.tgz#0bee005018aeb260d0a3af3ae658dd0136ec1b99"
 
-foreman@^2.0.0:
+"foreman@git+https://github.com/heroku/node-foreman.git":
   version "2.0.0"
-  resolved "https://registry.yarnpkg.com/foreman/-/foreman-2.0.0.tgz#00acd20f9dbbe2f79d04697bcca2a77ee00ee031"
+  resolved "git+https://github.com/heroku/node-foreman.git#008f16259bcbee5b1f39a83d214f42806e0470d0"
   dependencies:
     commander "~2.9.0"
     http-proxy "~1.11.1"
