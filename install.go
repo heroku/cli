@@ -82,7 +82,7 @@ func try(max int, fn func() error) error {
 		}
 		Errln(err)
 		seconds := 2 << uint(i)
-		Errf("heroku-cli: trying again in %d seconds...\n", seconds)
+		Errf("sfdx-cli: trying again in %d seconds...\n", seconds)
 		time.Sleep(time.Second * time.Duration(seconds))
 	}
 	return err
