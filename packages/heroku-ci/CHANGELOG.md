@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [1.9.4] - 2017-08-04
+### Changed
+
+- `heroku ci:debug` no longer passes environment to the dyno, that happens by the backend services. ([#58](https://github.com/heroku/heroku-ci/pull/58))
+
 ## [1.9.3] - 2017-08-02
 
 - Command `heroku ci` && `heroku ci:list` accept pipeline name via the  `--pipelines` flag.
@@ -37,8 +42,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [1.4.2] - 2017-03-20
 ### Fixed
-- Fixes a null traversal regression in `ci:debug`. ([#25](https://github.com/heroku/heroku-ci/pull/25)]
+- Fixes a null traversal regression in `ci:debug`. ([#25](https://github.com/heroku/heroku-ci/pull/25))
 
 ## [1.4.1] - 2017-03-17
 ### Fixed
-- Commands which require a git repo to be present now fail with a helpful error. ([#24](https://github.com/heroku/heroku-ci/pull/24)]
+- Commands which require a git repo to be present now fail with a helpful error. ([#24](https://github.com/heroku/heroku-ci/pull/24))
