@@ -45,17 +45,6 @@ function* run (context, heroku) {
   const appSetup = yield api.appSetup(heroku, testRun.app_setup.id)
   const noSetup = context.flags['no-setup']
 
-  const configVars = {
-    HEROKU_TEST_RUN_ID: testRun.id,
-    HEROKU_TEST_RUN_BRANCH: testRun.commit_branch,
-    HEROKU_SUPPRESS_LOGGING: true,
-    CI: true,
-    CI_NODE_INDEX: 0,
-    CI_NODE_TOTAL: 1
-  }
-
-  const env = Object.keys(configVars).map((key) => `${key}=${configVars[key]}`).join(';')
-
   cli.log(`${noSetup ? 'Attaching' : 'Running setup and attaching'} to test dyno...`)
 
   if (noSetup) {
@@ -69,9 +58,6 @@ function* run (context, heroku) {
   const dyno = new Dyno({
     heroku,
     app: appSetup.app.id,
-    command: 'bash',
-    attach: true,
-    env,
     showStatus: false
   })
 
