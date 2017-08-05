@@ -46,4 +46,23 @@ describe('apps:create', function () {
       expect(cli.stdout).to.equal('https://foobar.com | https://git.heroku.com/foobar.git\n')
     })
   })
+
+  it('creates an app & returns as json', function () {
+    const json = {
+      name: 'foobar',
+      stack: {name: 'cedar-14'},
+      web_url: 'https://foobar.com'
+    }
+    let mock = nock('https://api.heroku.com')
+      .post('/apps', {
+      })
+      .reply(200, json)
+
+    return apps.run({flags: {json: true}, args: {}, httpGitHost: 'git.heroku.com'}).then(function () {
+      mock.done()
+
+      expect(cli.stderr).to.equal('Creating app... done, foobar\n')
+      expect(JSON.parse(cli.stdout), 'to satisfy', json)
+    })
+  })
 })

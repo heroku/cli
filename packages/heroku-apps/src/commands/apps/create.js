@@ -64,7 +64,11 @@ function * run (context, heroku) {
 
   let remoteUrl = context.flags['ssh-git'] ? git.sshGitUrl(app.name) : git.gitUrl(app.name)
   if (git.inGitRepo() && !context.flags['no-remote']) yield git.createRemote(context.flags.remote || 'heroku', remoteUrl)
-  cli.log(`${cli.color.cyan(app.web_url)} | ${cli.color.green(remoteUrl)}`)
+  if (context.flags.json) {
+    cli.styledJSON(app)
+  } else {
+    cli.log(`${cli.color.cyan(app.web_url)} | ${cli.color.green(remoteUrl)}`)
+  }
 }
 
 let cmd = {
@@ -105,6 +109,7 @@ let cmd = {
     {name: 'ssh-git', description: 'use SSH git protocol for local git remote'},
     {name: 'kernel', hidden: true, hasValue: true},
     {name: 'locked', hidden: true},
+    {name: 'json', description: 'output in json format'},
     // flags.org({name: 'org', hasValue: true}),
     flags.team({name: 'team', hasValue: true})
   ],
