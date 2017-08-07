@@ -22,7 +22,8 @@ function * run (context, heroku) {
 
   let attachments = yield heroku.get(`/addons/${db.name}/addon-attachments`)
   let credAttachments = attachments.filter(a => a.namespace === `credential:${flags.name}`)
-  if (credAttachments.length > 0) throw new Error(`Credential ${flags.name} must be detached from the app${credAttachments.length > 1 ? 's' : ''} ${credAttachments.map(a => cli.color.app(a.app.name)).join(', ')} before destroying.`)
+  let credAttachmentApps = Array.from(new Set(credAttachments.map(a => a.app.name)))
+  if (credAttachmentApps.length > 0) throw new Error(`Credential ${flags.name} must be detached from the app${credAttachmentApps.length > 1 ? 's' : ''} ${credAttachmentApps.map(name => cli.color.app(name)).join(', ')} before destroying.`)
 
   yield cli.confirmApp(app, flags.confirm, `WARNING: Destructive action`)
 
