@@ -847,9 +847,9 @@ flexbuffer@0.0.6:
   version "0.0.6"
   resolved "http://cli-npm.heroku.com/flexbuffer/-/flexbuffer-0.0.6/039fdf23f8823e440c38f3277e6fef1174215b30.tgz#039fdf23f8823e440c38f3277e6fef1174215b30"
 
-"foreman@git+https://github.com/heroku/node-foreman.git":
+"foreman@https://github.com/heroku/node-foreman.git":
   version "2.0.0"
-  resolved "git+https://github.com/heroku/node-foreman.git#799ba64191dd652e797b4e7711f17a520d5d69c8"
+  resolved "https://github.com/heroku/node-foreman.git#799ba64191dd652e797b4e7711f17a520d5d69c8"
   dependencies:
     commander "~2.9.0"
     http-proxy "~1.11.1"
@@ -1289,9 +1289,9 @@ heroku-orgs@1.6.4:
     lodash "4.17.4"
     lodash.flatten "4.4.0"
 
-heroku-pg@2.2.7:
-  version "2.2.7"
-  resolved "http://cli-npm.heroku.com/heroku-pg/-/heroku-pg-2.2.7/c27450868210b2556a3ca61625b15d42fc99e030.tgz#c27450868210b2556a3ca61625b15d42fc99e030"
+heroku-pg@2.3.0:
+  version "2.3.0"
+  resolved "http://cli-npm.heroku.com/heroku-pg/-/heroku-pg-2.3.0/ce703cd31ac0d58c283f91f665b53a494bd9e914.tgz#ce703cd31ac0d58c283f91f665b53a494bd9e914"
   dependencies:
     bytes "^2.5.0"
     co "^4.6.0"
