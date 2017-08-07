@@ -54,7 +54,7 @@ function presentCredentialAttachments (app, credAttachments, credentials, cred) 
         'connections': credential.connections
       }
     })
-    let connectionInformationAvailable = formatted.some((c) => c.connections)
+    let connectionInformationAvailable = formatted.some((c) => c.connections != null)
     if (connectionInformationAvailable) {
       let prefix = '       '
       rotationLines.push(`${prefix}Usernames currently active for this credential:`)

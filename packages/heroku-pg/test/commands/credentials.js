@@ -90,7 +90,7 @@ Connection URL:
         credentials: [
           {
             user: 'jeff',
-            connections: 5,
+            connections: 0,
             state: 'revoking'
           },
           {
@@ -133,7 +133,7 @@ jeff                                                                           r
  ├─ as HEROKU_POSTGRESQL_GREEN on main-app app
  └─ as HEROKU_POSTGRESQL_PINK on another-app app
        Usernames currently active for this credential:
-       jeff           waiting for no connections to be revoked  5 connections
+       jeff           waiting for no connections to be revoked  0 connections
        jeff-rotating  active                                    2 connections
 ransom                                                                         active
  └─ as HEROKU_POSTGRESQL_BLUE on yet-another-app app
