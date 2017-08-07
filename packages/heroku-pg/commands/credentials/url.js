@@ -54,7 +54,7 @@ module.exports = {
   needsApp: true,
   needsAuth: true,
   flags: [
-    {name: 'name', char: 'n', description: 'which credentials to show (default credentials if not specified)', hasValue: true}
+    {name: 'name', char: 'n', description: 'which credential to show (default credentials if not specified)', hasValue: true}
   ],
   args: [{name: 'database', optional: true}],
   run: cli.command({preauth: true}, co.wrap(run))
