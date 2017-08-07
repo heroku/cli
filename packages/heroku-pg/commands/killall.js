@@ -7,7 +7,7 @@ function * run (context, heroku) {
   const fetcher = require('../lib/fetcher')(heroku)
   const host = require('../lib/host')
 
-  yield cli.action('Terminating connections', co(function * () {
+  yield cli.action('Terminating connections for all credentials', co(function * () {
     const db = yield fetcher.addon(context.app, context.args.database)
     yield heroku.post(`/client/v11/databases/${db.id}/connection_reset`, {host: host(db)})
   }))
@@ -16,7 +16,7 @@ function * run (context, heroku) {
 module.exports = {
   topic: 'pg',
   command: 'killall',
-  description: 'terminates all connections',
+  description: 'terminates all connections for all credentials',
   needsApp: true,
   needsAuth: true,
   args: [{name: 'database', optional: true}],

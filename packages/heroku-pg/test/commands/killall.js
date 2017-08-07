@@ -37,6 +37,6 @@ describe('pg:killall', () => {
 
     return cmd.run({app: 'myapp', args: {}, flags: {}})
       .then(() => expect(cli.stdout, 'to equal', ''))
-      .then(() => expect(cli.stderr, 'to equal', 'Terminating connections... done\n'))
+      .then(() => expect(cli.stderr, 'to equal', 'Terminating connections for all credentials... done\n'))
   })
 })
