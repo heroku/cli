@@ -1,6 +1,6 @@
 @echo off
 
-set CLI_BINPATH=%~dp0\heroku.cmd
+set CLI_BINPATH="%~dp0\heroku.cmd"
 set CLI_LOCAL_BIN=%LOCALAPPDATA%\heroku\client\bin\heroku.cmd
 
 if exist "%CLI_LOCAL_BIN%" (
