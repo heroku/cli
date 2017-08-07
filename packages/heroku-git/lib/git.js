@@ -3,10 +3,19 @@
 let cp = require('child_process')
 
 module.exports = function (context) {
+  function wrapReject (reject) {
+    return function (error) {
+      if (error.code === 'ENOENT') {
+        error = new Error('Git must be installed to use the Heroku CLI.  See instructions here: http://git-scm.com')
+      }
+      reject(error)
+    }
+  }
+
   function exec (args) {
     return new Promise(function (resolve, reject) {
       cp.execFile('git', args, function (error, stdout) {
-        if (error) return reject(error)
+        if (error) return wrapReject(reject)(error)
         resolve(stdout.trim())
       })
     })
@@ -15,7 +24,7 @@ module.exports = function (context) {
   function spawn (args) {
     return new Promise(function (resolve, reject) {
       let s = cp.spawn('git', args, {stdio: [0, 1, 2]})
-      s.on('error', reject)
+      s.on('error', wrapReject(reject))
       s.on('close', resolve)
     })
   }

@@ -23,12 +23,50 @@ describe('git', function () {
     })
   })
 
+  it('translates exec Errno::ENOENT to a friendlier error message', function () {
+    let err = new Error()
+    err.code = 'ENOENT'
+
+    mock.expects('execFile').withArgs('git', ['remote']).yieldsAsync(err, null)
+
+    return expect(git.exec(['remote']), 'to be rejected with', 'Git must be installed to use the Heroku CLI.  See instructions here: http://git-scm.com')
+  })
+
+  it('exec passes through all other errors', function () {
+    let err = new Error('Some other error message')
+
+    mock.expects('execFile').withArgs('git', ['remote']).yieldsAsync(err, null)
+
+    return expect(git.exec(['remote']), 'to be rejected with', err.message)
+  })
+
   it('runs spawn', function () {
     let emitter = new EventEmitter()
     mock.expects('spawn').withExactArgs('git', ['remote'], {stdio: [0, 1, 2]}).returns(emitter)
     process.nextTick(() => emitter.emit('close'))
     return git.spawn(['remote'])
     .then(() => mock.verify())
+  })
+
+  it('translates spawn Errno::ENOENT to a friendlier error message', function () {
+    let err = new Error()
+    err.code = 'ENOENT'
+
+    let emitter = new EventEmitter()
+    mock.expects('spawn').withExactArgs('git', ['remote'], {stdio: [0, 1, 2]}).returns(emitter)
+    process.nextTick(() => emitter.emit('error', err))
+
+    return expect(git.spawn(['remote']), 'to be rejected with', 'Git must be installed to use the Heroku CLI.  See instructions here: http://git-scm.com')
+  })
+
+  it('spawn passes through all other errors', function () {
+    let err = new Error('Some other error message')
+
+    let emitter = new EventEmitter()
+    mock.expects('spawn').withExactArgs('git', ['remote'], {stdio: [0, 1, 2]}).returns(emitter)
+    process.nextTick(() => emitter.emit('error', err))
+
+    return expect(git.spawn(['remote']), 'to be rejected with', err.message)
   })
 
   it('gets heroku git remote config', function () {
