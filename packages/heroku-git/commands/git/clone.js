@@ -2,10 +2,11 @@
 
 let co = require('co')
 let cli = require('heroku-cli-util')
+let process = require('process')
 
 function * run (context, heroku) {
   let git = require('../../lib/git')(context)
-  let appName = context.flags.app
+  let appName = context.flags.app || process.env.HEROKU_APP
   if (!appName) throw new Error('Specify an app with --app')
   let app = yield heroku.get(`/apps/${appName}`)
   let directory = context.args.DIRECTORY || app.name
