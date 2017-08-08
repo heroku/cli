@@ -341,9 +341,9 @@ cli-engine-heroku@^1.1.2, cli-engine-heroku@^1.1.4, cli-engine-heroku@^1.1.5:
     heroku-client "3.x"
     netrc-parser "2.0.2"
 
-cli-engine@3.5.57:
-  version "3.5.57"
-  resolved "http://cli-npm.heroku.com/cli-engine/-/cli-engine-3.5.57/80c4c267c5cd84a97f8e27c2d87d67fc91561e81.tgz#80c4c267c5cd84a97f8e27c2d87d67fc91561e81"
+cli-engine@3.5.58:
+  version "3.5.58"
+  resolved "http://cli-npm.heroku.com/cli-engine/-/cli-engine-3.5.58/5acd2d3a90cc2b73b86fcdeb8feaf5be62d39830.tgz#5acd2d3a90cc2b73b86fcdeb8feaf5be62d39830"
   dependencies:
     ansi-escapes "^2.0.0"
     cli-engine-command "^5.1.15"
@@ -353,7 +353,6 @@ cli-engine@3.5.57:
     filesize "^3.5.10"
     fs-extra "^4.0.0"
     klaw-sync "2.x"
-    levenshtein "1.x"
     lodash.flatten "4.x"
     lodash.maxby "4.x"
     lodash.uniqby "4.x"
@@ -363,6 +362,7 @@ cli-engine@3.5.57:
     node-gyp "3.x"
     rwlockfile "^1.4.5"
     string "3.x"
+    string-similarity "^1.2.0"
     tar-fs "1.x"
     tmp "0.x"
 
@@ -847,9 +847,9 @@ flexbuffer@0.0.6:
   version "0.0.6"
   resolved "http://cli-npm.heroku.com/flexbuffer/-/flexbuffer-0.0.6/039fdf23f8823e440c38f3277e6fef1174215b30.tgz#039fdf23f8823e440c38f3277e6fef1174215b30"
 
-"foreman@git+https://github.com/heroku/node-foreman.git":
+"foreman@https://github.com/heroku/node-foreman.git":
   version "2.0.0"
-  resolved "git+https://github.com/heroku/node-foreman.git#799ba64191dd652e797b4e7711f17a520d5d69c8"
+  resolved "https://github.com/heroku/node-foreman.git#799ba64191dd652e797b4e7711f17a520d5d69c8"
   dependencies:
     commander "~2.9.0"
     http-proxy "~1.11.1"
@@ -937,7 +937,7 @@ glob@7.1.0:
     once "^1.3.0"
     path-is-absolute "^1.0.0"
 
-"glob@>= 3.1.4", glob@^7.0.3, glob@^7.0.5, glob@^7.1.2:
+"glob@>= 3.1.4", glob@^7.0.3, glob@^7.1.2:
   version "7.1.2"
   resolved "http://cli-npm.heroku.com/glob/-/glob-7.1.2/c19c9df9a028702d678612384a6552404c636d15.tgz#c19c9df9a028702d678612384a6552404c636d15"
   dependencies:
@@ -1645,10 +1645,6 @@ klaw-sync@2.x:
   optionalDependencies:
     graceful-fs "^4.1.11"
 
-levenshtein@1.x:
-  version "1.0.5"
-  resolved "http://cli-npm.heroku.com/levenshtein/-/levenshtein-1.0.5/3911737a9cb56da345d008f55782c6f138979ba3.tgz#3911737a9cb56da345d008f55782c6f138979ba3"
-
 levn@^0.3.0, levn@~0.3.0:
   version "0.3.0"
   resolved "http://cli-npm.heroku.com/levn/-/levn-0.3.0/3b09924edf9f083c0490fdd4c0bc4421e04764ee.tgz#3b09924edf9f083c0490fdd4c0bc4421e04764ee"
@@ -1844,7 +1840,7 @@ lodash.zip@^4.2.0:
   version "4.2.0"
   resolved "http://cli-npm.heroku.com/lodash.zip/-/lodash.zip-4.2.0/ec6662e4896408ed4ab6c542a3990b72cc080020.tgz#ec6662e4896408ed4ab6c542a3990b72cc080020"
 
-lodash@4.17.4, lodash@4.x, lodash@^4.0.0, lodash@^4.17.4, lodash@^4.3.0:
+lodash@4.17.4, lodash@4.x, lodash@^4.0.0, lodash@^4.13.1, lodash@^4.17.4, lodash@^4.3.0:
   version "4.17.4"
   resolved "http://cli-npm.heroku.com/lodash/-/lodash-4.17.4/78203a4d1c328ae1d86dca6460e369b57f4055ae.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
 
@@ -2332,13 +2328,7 @@ restore-cursor@^2.0.0:
     onetime "^2.0.0"
     signal-exit "^3.0.2"
 
-rimraf@2, rimraf@2.x, rimraf@^2.2.8:
-  version "2.6.1"
-  resolved "http://cli-npm.heroku.com/rimraf/-/rimraf-2.6.1/c2338ec643df7a1b7fe5c54fa86f57428a55f33d.tgz#c2338ec643df7a1b7fe5c54fa86f57428a55f33d"
-  dependencies:
-    glob "^7.0.5"
-
-rimraf@~2.2.6:
+rimraf@2, rimraf@2.x, rimraf@^2.2.8, rimraf@~2.2.6:
   version "2.2.8"
   resolved "http://cli-npm.heroku.com/rimraf/-/rimraf-2.2.8/e439be2aaee327321952730f99a8929e4fc50582.tgz#e439be2aaee327321952730f99a8929e4fc50582"
 
@@ -2570,6 +2560,12 @@ strftime@^0.10.0:
 string-just@^0.0.2:
   version "0.0.2"
   resolved "http://cli-npm.heroku.com/string-just/-/string-just-0.0.2/8793188cba0b72892bffb74cc0e299cea6045b71.tgz#8793188cba0b72892bffb74cc0e299cea6045b71"
+
+string-similarity@^1.2.0:
+  version "1.2.0"
+  resolved "http://cli-npm.heroku.com/string-similarity/-/string-similarity-1.2.0/d75153cb383846318b7a39a8d9292bb4db4e9c30.tgz#d75153cb383846318b7a39a8d9292bb4db4e9c30"
+  dependencies:
+    lodash "^4.13.1"
 
 string-width@^1.0.1, string-width@^1.0.2:
   version "1.0.2"
