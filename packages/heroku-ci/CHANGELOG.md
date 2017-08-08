@@ -6,7 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-- Command `heroku ci` && `heroku ci:list` can display JSON via the  `--json` flag.
+## [1.9.5] - 2017-08-08
+### Added
+
+- Command `heroku ci` && `heroku ci:list` can display JSON via the  `--json` flag. ([#57](https://github.com/heroku/heroku-ci/pull/57))
 
 ## [1.9.4] - 2017-08-04
 ### Changed
