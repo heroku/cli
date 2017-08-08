@@ -26,7 +26,7 @@ rm -rf $INSTALLER_BASE
 mkdir -p $INSTALLER_BASE/bin
 cp resources/exe/heroku.cmd $INSTALLER_BASE/bin/heroku.cmd
 
-cp -r $WORKSPACE $INSTALLER_BASE/cli
+cp -r $WORKSPACE $INSTALLER_BASE/client
 
 if [ "$ARCH" == "x64" ]; then
   PROGRAMSUFFIX="64"
