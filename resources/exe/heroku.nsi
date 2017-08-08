@@ -21,7 +21,7 @@ InstallDir "$PROGRAMFILES64\Heroku"
 Section "Heroku CLI ${VERSION}"
   SetOutPath $INSTDIR
   File /r bin
-  File /r cli
+  File /r client
   WriteRegStr HKCU "Software\Heroku" "" $INSTDIR
   WriteUninstaller "$INSTDIR\Uninstall.exe"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Heroku" \
