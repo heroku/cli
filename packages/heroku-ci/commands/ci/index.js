@@ -5,7 +5,7 @@ const Utils = require('../../lib/utils')
 
 function* run (context, heroku) {
   const pipeline = yield Utils.getPipeline(context, heroku)
-  return yield RenderTestRuns.render(pipeline, { heroku, watch: context.flags.watch })
+  return yield RenderTestRuns.render(pipeline, { heroku, watch: context.flags.watch, json: context.flags.json })
 }
 
 const cmd = {
@@ -26,7 +26,12 @@ const cmd = {
       char: 'w',
       hasValue: false,
       description: 'keep running and watch for new and update tests'
-
+    },
+    {
+      name: 'json',
+      char: 'j',
+      hasValue: false,
+      description: 'output run info in json format'
     }
   ],
   run: cli.command(co.wrap(run))

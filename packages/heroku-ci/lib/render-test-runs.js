@@ -97,12 +97,17 @@ function handleTestRunEvent (newTestRun, testRuns) {
   return testRuns
 }
 
-function * render (pipeline, { heroku, watch }) {
+function * render (pipeline, { heroku, watch, json }) {
+  let testRuns = yield api.testRuns(heroku, pipeline.id)
+
+  if (json) {
+    cli.styledJSON(testRuns)
+    return
+  }
+
   cli.styledHeader(
     `${watch ? 'Watching' : 'Showing'} latest test runs for the ${pipeline.name} pipeline`
   )
-
-  let testRuns = yield api.testRuns(heroku, pipeline.id)
 
   if (watch) {
     process.stdout.write(ansiEscapes.cursorHide)

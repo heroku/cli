@@ -44,4 +44,17 @@ describe('heroku ci', function () {
 
     api.done()
   })
+
+  it('displays recent runs formatted as JSON', function* () {
+    const api = nock('https://api.heroku.com')
+      .get(`/pipelines/${pipeline.id}`)
+      .reply(200, pipeline)
+      .get(`/pipelines/${pipeline.id}/test-runs`)
+      .reply(200, runs)
+
+    yield cmd.run({ flags: { pipeline: pipeline.id, json: true } })
+
+    expect(cli.stdout).to.include('\n    "number": 123,\n')
+    api.done()
+  })
 })
