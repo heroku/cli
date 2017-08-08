@@ -100,16 +100,6 @@ describe('pg:credentials:rotate', () => {
     return expect(cmd.run({app: 'myapp', args: {}, flags: {all: true, name: 'my_role', confirm: 'myapp'}}), 'to be rejected with', err)
   })
 
-  it('fails with an error if both --force and --all are included', () => {
-    const err = new Error(`Cannot force rotate all credentials: the default credential cannot be force rotated.`)
-    return expect(cmd.run({app: 'myapp', args: {}, flags: {force: true, all: true, confirm: 'myapp'}}), 'to be rejected with', err)
-  })
-
-  it('fails with an error if both --name default and --force are included', () => {
-    const err = new Error(`Cannot force rotate the default credential.`)
-    return expect(cmd.run({app: 'myapp', args: {}, flags: {force: true, name: 'default', confirm: 'myapp'}}), 'to be rejected with', err)
-  })
-
   it('throws an error when the db is starter plan but the name is specified', () => {
     const hobbyAddon = {
       name: 'postgres-1',
@@ -187,6 +177,24 @@ This command will affect the apps appname_1, appname_2, appname_3.`
     return cmd.run({app: 'myapp',
       args: {},
       flags: { all: true, confirm: 'myapp' }})
+    .then(() => {
+      expect(lastApp, 'to equal', 'myapp')
+      expect(lastConfirm, 'to equal', 'myapp')
+      expect(lastMsg, 'to equal', message)
+    })
+  })
+
+  it('requires app confirmation for rotating all roles with --all and --force', () => {
+    pg.post('/postgres/v0/databases/postgres-1/credentials_rotation').reply(200)
+
+    const message = `WARNING: Destructive Action
+This forces rotation on all credentials including the default credential.
+Connections will be reset and applications will be restarted.
+This command will affect the apps appname_1, appname_2, appname_3.`
+
+    return cmd.run({app: 'myapp',
+      args: {},
+      flags: { all: true, force: true, confirm: 'myapp' }})
     .then(() => {
       expect(lastApp, 'to equal', 'myapp')
       expect(lastConfirm, 'to equal', 'myapp')
