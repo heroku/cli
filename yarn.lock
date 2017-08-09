@@ -306,8 +306,8 @@ cli-cursor@^2.1.0:
     restore-cursor "^2.0.0"
 
 cli-engine-command@^5.1.11, cli-engine-command@^5.1.12, cli-engine-command@^5.1.15, cli-engine-command@^5.1.8:
-  version "5.1.16"
-  resolved "http://cli-npm.heroku.com/cli-engine-command/-/cli-engine-command-5.1.16/cd8b33f5fa4fc4316390eb22f8a2e0b8d6d6a57e.tgz#cd8b33f5fa4fc4316390eb22f8a2e0b8d6d6a57e"
+  version "5.1.17"
+  resolved "http://cli-npm.heroku.com/cli-engine-command/-/cli-engine-command-5.1.17/eda0bffd7037203d4fb496bb1539764868f956d4.tgz#eda0bffd7037203d4fb496bb1539764868f956d4"
   dependencies:
     ansi-escapes "2.x"
     cardinal "1.x"
@@ -847,9 +847,9 @@ flexbuffer@0.0.6:
   version "0.0.6"
   resolved "http://cli-npm.heroku.com/flexbuffer/-/flexbuffer-0.0.6/039fdf23f8823e440c38f3277e6fef1174215b30.tgz#039fdf23f8823e440c38f3277e6fef1174215b30"
 
-"foreman@https://github.com/heroku/node-foreman.git":
-  version "2.0.0"
-  resolved "https://github.com/heroku/node-foreman.git#799ba64191dd652e797b4e7711f17a520d5d69c8"
+"foreman@git+https://github.com/heroku/node-foreman.git":
+  version "2.0.1"
+  resolved "git+https://github.com/heroku/node-foreman.git#1da08769019b3cf762f6a9cfe7fb948c02879fb2"
   dependencies:
     commander "~2.9.0"
     http-proxy "~1.11.1"
@@ -937,7 +937,7 @@ glob@7.1.0:
     once "^1.3.0"
     path-is-absolute "^1.0.0"
 
-"glob@>= 3.1.4", glob@^7.0.3, glob@^7.1.2:
+"glob@>= 3.1.4", glob@^7.0.3, glob@^7.0.5, glob@^7.1.2:
   version "7.1.2"
   resolved "http://cli-npm.heroku.com/glob/-/glob-7.1.2/c19c9df9a028702d678612384a6552404c636d15.tgz#c19c9df9a028702d678612384a6552404c636d15"
   dependencies:
@@ -1342,12 +1342,12 @@ heroku-redis@1.2.15:
     ioredis "1.9.0"
     ssh2 "^0.4.11"
 
-heroku-run@3.4.16, heroku-run@^3.4.16:
-  version "3.4.16"
-  resolved "http://cli-npm.heroku.com/heroku-run/-/heroku-run-3.4.16/dddf442905c83d2bc20845d4e77559f48b500b62.tgz#dddf442905c83d2bc20845d4e77559f48b500b62"
+heroku-run@3.5.1, heroku-run@^3.4.16:
+  version "3.5.1"
+  resolved "http://cli-npm.heroku.com/heroku-run/-/heroku-run-3.5.1/d0d9160c9e723903d294c41aa16881453c8ef59c.tgz#d0d9160c9e723903d294c41aa16881453c8ef59c"
   dependencies:
     co "4.6.0"
-    heroku-cli-util "^6.2.2"
+    heroku-cli-util "^6.2.4"
     shellwords "0.1.0"
 
 heroku-spaces@2.9.5:
@@ -2328,7 +2328,13 @@ restore-cursor@^2.0.0:
     onetime "^2.0.0"
     signal-exit "^3.0.2"
 
-rimraf@2, rimraf@2.x, rimraf@^2.2.8, rimraf@~2.2.6:
+rimraf@2, rimraf@2.x, rimraf@^2.2.8:
+  version "2.6.1"
+  resolved "http://cli-npm.heroku.com/rimraf/-/rimraf-2.6.1/c2338ec643df7a1b7fe5c54fa86f57428a55f33d.tgz#c2338ec643df7a1b7fe5c54fa86f57428a55f33d"
+  dependencies:
+    glob "^7.0.5"
+
+rimraf@~2.2.6:
   version "2.2.8"
   resolved "http://cli-npm.heroku.com/rimraf/-/rimraf-2.2.8/e439be2aaee327321952730f99a8929e4fc50582.tgz#e439be2aaee327321952730f99a8929e4fc50582"
 
