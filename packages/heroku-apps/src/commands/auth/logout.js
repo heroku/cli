@@ -11,7 +11,7 @@ function * run (context, heroku) {
 }
 
 const cmd = {
-  description: 'cleares local login credentials',
+  description: 'clears local login credentials',
   run: cli.command(co.wrap(run))
 }
 
