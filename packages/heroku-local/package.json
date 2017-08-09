@@ -7,8 +7,8 @@
     "url": "https://github.com/heroku/heroku-local/issues"
   },
   "dependencies": {
+    "@heroku/foreman": "^2.0.1",
     "co": "^4.6.0",
-    "foreman": "https://github.com/heroku/node-foreman.git",
     "heroku-cli-util": "^6.2.0",
     "lodash.flatten": "^4.4.0"
   },

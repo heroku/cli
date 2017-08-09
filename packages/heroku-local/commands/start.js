@@ -16,7 +16,7 @@ function * run (context) {
     execArgv.push(context.args.processname)
   } else {
     let procfile = context.flags.procfile || 'Procfile'
-    let procHash = require('foreman/lib/procfile.js').loadProc(procfile)
+    let procHash = require('@heroku/foreman/lib/procfile.js').loadProc(procfile)
     let processes = Object.keys(procHash).filter((x) => x !== 'release')
     execArgv.push(processes.join(','))
   }
