@@ -21,6 +21,7 @@ class Dyno extends Duplex {
    * @param {string} options.app - app to run dyno on
    * @param {string} options.attach - attach to dyno
    * @param {string} options.size - size of dyno to create
+   * @param {string} options.type - type of dyno to create
    * @param {boolean} options.no-tty - force not to use a tty
    * @param {Object} options.env - dyno environment variables
   */
@@ -46,6 +47,7 @@ class Dyno extends Duplex {
         command: command,
         attach: this.opts.attach,
         size: this.opts.size,
+        type: this.opts.type,
         env: this._env(),
         force_no_tty: this.opts['no-tty']
       }

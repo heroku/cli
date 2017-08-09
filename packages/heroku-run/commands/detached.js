@@ -12,6 +12,7 @@ function * run (context, heroku) {
     app: context.app,
     command: helpers.buildCommand(context.args),
     size: context.flags.size,
+    type: context.flags.type,
     env: context.flags.env,
     attach: false
   }
@@ -46,6 +47,7 @@ module.exports = {
   flags: [
     {name: 'size', char: 's', description: 'dyno size', hasValue: true},
     {name: 'tail', char: 't', description: 'stream logs from the dyno'},
+    {name: 'type', description: 'process type', hasValue: true},
     {name: 'env', char: 'e', description: "environment variables to set (use ';' to split multiple vars)", hasValue: true}
   ],
   run: cli.command(co.wrap(run))

@@ -11,6 +11,7 @@ function * run (context, heroku) {
     app: context.app,
     command: helpers.buildCommand(context.args),
     size: context.flags.size,
+    type: context.flags.type,
     'exit-code': context.flags['exit-code'],
     env: context.flags.env,
     'no-tty': context.flags['no-tty'],
@@ -45,6 +46,7 @@ module.exports = {
   needsApp: true,
   flags: [
     {name: 'size', char: 's', description: 'dyno size', hasValue: true},
+    {name: 'type', description: 'process type', hasValue: true},
     {name: 'exit-code', char: 'x', description: 'passthrough the exit code of the remote command'},
     {name: 'env', char: 'e', description: "environment variables to set (use ';' to split multiple vars)", hasValue: true},
     {name: 'no-tty', description: 'force the command to not run in a tty', hasValue: false},
