@@ -2,7 +2,7 @@
 defaults: &defaults
   working_directory: ~/cli
   docker:
-    - image: dickeyxxx/cli-engine-docker:v2.0.0
+    - image: dickeyxxx/cli-engine-docker:v2.0.1
 
 version: 2
 executorType: docker
