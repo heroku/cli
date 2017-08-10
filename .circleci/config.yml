@@ -15,31 +15,12 @@ jobs:
         key: cli
       - type: shell
         command: |
-          set -e
-          echo $HEROKU_DEB_KEY | base64 -d | gpg --import
-          cat << EOF > ~/.netrc
-          machine api.heroku.com
-            login junk@junk.com
-            password  $HEROKU_API_KEY
-          EOF
-          chmod 0600 ~/.netrc
           set -exu
           yarn config set registry https://cli-npm.heroku.com
           yarn install --pure-lockfile
           yarn check
-          if [ "${CIRCLE_BRANCH}" == "master" ]; then
-            TAG=`git describe --exact-match HEAD || echo NOTAG`
-            if [ "${TAG}" != "NOTAG" ]; then
-              yarn run release stable
-              ./scripts/release-deb stable
-              ./scripts/generate_docs.sh > /tmp/cli_documentation.md
-              devcenter push /tmp/heroku-cli-commands.md --trace
-            else
-              yarn run release beta
-              ./scripts/release-deb beta
-            fi
           # build dev only if it is a git checkout
-          elif [ "${CIRCLE_BRANCH}" == "dev" ] && \
+          if [ "${CIRCLE_BRANCH}" == "dev" ] && \
              [ ! -d ~/cli/node_modules/cli-engine/lib ]; then
             cd ~/cli/node_modules/cli-engine && yarn && cd ~/cli
           fi
@@ -62,6 +43,27 @@ jobs:
           paths:
             - tmp/tarballs/*
             - node_modules/cli-engine/bin/version
+
+  generate_dev_center_docs:
+    <<: *defaults
+    filters:
+      tags:
+        only: /^v[0-9\.]+$/
+      branches:
+        only:
+          - master
+    steps:
+      - run:
+          set -e
+          echo $HEROKU_DEB_KEY | base64 -d | gpg --import
+          cat << EOF > ~/.netrc
+          machine api.heroku.com
+            password  $HEROKU_API_KEY
+          EOF
+          chmod 0600 ~/.netrc
+          ./scripts/generate_docs.sh > /tmp/cli_documentation.md
+          devcenter push /tmp/heroku-cli-commands.md --trace
+
   release_windows_x64:
     <<: *defaults
     steps:
@@ -97,5 +99,8 @@ workflows:
           requires:
             - build
       - release_windows_x86:
+          requires:
+            - build
+      - generate_dev_center_docs:
           requires:
             - build
