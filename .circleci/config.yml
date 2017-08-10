@@ -8,8 +8,8 @@ filters: &filters
   filters:
     tags:
       only: /^v*/
-    branches:
-      only: dev
+    # branches:
+    #   only: dev
 
 version: 2
 executorType: docker
