@@ -82,3 +82,7 @@ osslsigncode -pkcs12 /tmp/heroku-windows-key \
   -n 'Heroku CLI' \
   -i https://toolbelt.heroku.com/ \
   -in $INSTALLER_BASE/installer.exe -out $INSTALLER
+
+set -x
+
+aws s3 cp --cache-control max-age=300 $INSTALLER s3://heroku-cli-assets/branches/$CHANNEL/$INSTALLER_EXE
