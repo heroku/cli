@@ -6,7 +6,7 @@ defaults: &defaults
 
 tags: &tags
   tags:
-    only: /^v*/
+    only: /^v.*/
 
 filters: &filters
   filters:
