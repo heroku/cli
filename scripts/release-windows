@@ -82,3 +82,11 @@ osslsigncode -pkcs12 /tmp/heroku-windows-key \
   -n 'Heroku CLI' \
   -i https://toolbelt.heroku.com/ \
   -in $INSTALLER_BASE/installer.exe -out $INSTALLER
+
+set -x
+
+REMOTE_PATH=/branches/$CHANNEL/$INSTALLER_EXE
+
+aws s3 cp --cache-control max-age=86400 $INSTALLER s3://heroku-cli-assets$REMOTE_PATH
+
+aws cloudfront create-invalidation --distribution-id EHF9FOCUJYVZ --paths "$REMOTE_PATH"
