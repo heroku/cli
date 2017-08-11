@@ -48,11 +48,9 @@ do_release () {
 
 if [ "${CHANNEL}" != "" ]; then
   do_release "${CHANNEL}"
+elif [ "${CIRCLE_TAG}" != "" ]; then
+  do_release "stable"
 elif [ "${CIRCLE_BRANCH}" == "master" ]; then
-  TAG=`git describe --exact-match HEAD || echo NOTAG`
-  if [ "${TAG}" != "NOTAG" ]; then
-    do_release "stable"
-  fi
   do_release "beta"
 elif [ "${CIRCLE_BRANCH}" == "dev" ]; then
   do_release "dev"
