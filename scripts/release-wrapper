@@ -48,14 +48,10 @@ do_release () {
 
 if [ "${CHANNEL}" != "" ]; then
   do_release "${CHANNEL}"
-else
-  if [ "${CIRCLE_TAG}" != "" ]; then
-    do_release "stable"
-  fi
-
-  if [ "${CIRCLE_BRANCH}" == "master" ]; then
-    do_release "beta"
-  elif [ "${CIRCLE_BRANCH}" == "dev" ]; then
-    do_release "dev"
-  fi
+elif [ "${CIRCLE_TAG}" != "" ]; then
+  do_release "stable"
+elif [ "${CIRCLE_BRANCH}" == "master" ]; then
+  do_release "beta"
+elif [ "${CIRCLE_BRANCH}" == "dev" ]; then
+  do_release "dev"
 fi
