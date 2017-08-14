@@ -59,7 +59,7 @@
     "semver": "5.4.1"
   },
   "devDependencies": {
-    "heroku-plugin-readme-generator": "1.1.x"
+    "heroku-cli-dev-center-generator": "1.1.x"
   },
   "engineStrict": true,
   "engines": {

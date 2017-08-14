@@ -848,8 +848,8 @@ flexbuffer@0.0.6:
   resolved "http://cli-npm.heroku.com/flexbuffer/-/flexbuffer-0.0.6/039fdf23f8823e440c38f3277e6fef1174215b30.tgz#039fdf23f8823e440c38f3277e6fef1174215b30"
 
 "foreman@https://github.com/heroku/node-foreman.git":
-  version "2.0.0"
-  resolved "https://github.com/heroku/node-foreman.git#799ba64191dd652e797b4e7711f17a520d5d69c8"
+  version "2.0.1"
+  resolved "https://github.com/heroku/node-foreman.git#1da08769019b3cf762f6a9cfe7fb948c02879fb2"
   dependencies:
     commander "~2.9.0"
     http-proxy "~1.11.1"
