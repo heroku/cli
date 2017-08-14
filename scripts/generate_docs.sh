@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-heroku-plugin-readme-generator > /tmp/heroku-cli-commands.md
+heroku-cli-dev-center-generator > /tmp/heroku-cli-commands.md
