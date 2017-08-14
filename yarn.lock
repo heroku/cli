@@ -2,6 +2,15 @@
 # yarn lockfile v1
 
 
+"@heroku/foreman@^2.0.1":
+  version "2.0.1"
+  resolved "http://cli-npm.heroku.com/@heroku/foreman/-/foreman-2.0.1/093d96f181e1b7d1dcd6984cd71654c8d036366f.tgz#093d96f181e1b7d1dcd6984cd71654c8d036366f"
+  dependencies:
+    commander "~2.9.0"
+    http-proxy "~1.11.1"
+    mustache "^2.2.1"
+    shell-quote "~1.4.2"
+
 abbrev@1:
   version "1.1.0"
   resolved "http://cli-npm.heroku.com/abbrev/-/abbrev-1.1.0/d0554c2256636e2f56e7c2e5ad183f859428d81f.tgz#d0554c2256636e2f56e7c2e5ad183f859428d81f"
@@ -847,15 +856,6 @@ flexbuffer@0.0.6:
   version "0.0.6"
   resolved "http://cli-npm.heroku.com/flexbuffer/-/flexbuffer-0.0.6/039fdf23f8823e440c38f3277e6fef1174215b30.tgz#039fdf23f8823e440c38f3277e6fef1174215b30"
 
-"foreman@git+https://github.com/heroku/node-foreman.git":
-  version "2.0.1"
-  resolved "git+https://github.com/heroku/node-foreman.git#1da08769019b3cf762f6a9cfe7fb948c02879fb2"
-  dependencies:
-    commander "~2.9.0"
-    http-proxy "~1.11.1"
-    mustache "^2.2.1"
-    shell-quote "~1.4.2"
-
 forever-agent@~0.6.1:
   version "0.6.1"
   resolved "http://cli-npm.heroku.com/forever-agent/-/forever-agent-0.6.1/fbc71f0c41adeb37f96c577ad1ed42d8fdacca91.tgz#fbc71f0c41adeb37f96c577ad1ed42d8fdacca91"
@@ -1267,12 +1267,12 @@ heroku-git@2.5.21:
     co "4.6.0"
     heroku-cli-util "^6.2.4"
 
-heroku-local@5.1.19:
-  version "5.1.19"
-  resolved "http://cli-npm.heroku.com/heroku-local/-/heroku-local-5.1.19/f5ca79825a64f0befab8e449af3f794b761e77e8.tgz#f5ca79825a64f0befab8e449af3f794b761e77e8"
+heroku-local@5.1.20:
+  version "5.1.20"
+  resolved "http://cli-npm.heroku.com/heroku-local/-/heroku-local-5.1.20/a365eb66ac9afd4f082fc30bea286b0d49b7b8a7.tgz#a365eb66ac9afd4f082fc30bea286b0d49b7b8a7"
   dependencies:
+    "@heroku/foreman" "^2.0.1"
     co "^4.6.0"
-    foreman "https://github.com/heroku/node-foreman.git"
     heroku-cli-util "^6.2.0"
     lodash.flatten "^4.4.0"
 
