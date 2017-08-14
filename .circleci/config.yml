@@ -48,10 +48,10 @@ jobs:
     <<: *defaults
     filters:
       tags:
-        only: /^v[0-9\.]+$/
+        # only: /^v[0-9\.]+$/
       branches:
         only:
-          - master
+         #- master
     steps:
       - run:
           set -e
