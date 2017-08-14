@@ -1325,6 +1325,12 @@ heroku-pipelines@2.1.3, heroku-pipelines@^2.0.1:
     string-just "^0.0.2"
     validator "^6.2.1"
 
+"heroku-plugin-readme-generator@https://github.com/heroku/heroku-cli-dev-center-generator":
+  version "1.1.1"
+  resolved "https://github.com/heroku/heroku-cli-dev-center-generator#19b957c8de0486ad5cd6dfc0390207c5ebd6a3f7"
+  dependencies:
+    lodash "^4.17.4"
+
 heroku-ps-exec@1.0.6:
   version "1.0.6"
   resolved "http://cli-npm.heroku.com/heroku-ps-exec/-/heroku-ps-exec-1.0.6/01519a1c55c489ea2ca2285203afa3932f923af3.tgz#01519a1c55c489ea2ca2285203afa3932f923af3"
