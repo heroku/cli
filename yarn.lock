@@ -315,8 +315,8 @@ cli-cursor@^2.1.0:
     restore-cursor "^2.0.0"
 
 cli-engine-command@^5.1.11, cli-engine-command@^5.1.12, cli-engine-command@^5.1.15, cli-engine-command@^5.1.8:
-  version "5.1.17"
-  resolved "http://cli-npm.heroku.com/cli-engine-command/-/cli-engine-command-5.1.17/eda0bffd7037203d4fb496bb1539764868f956d4.tgz#eda0bffd7037203d4fb496bb1539764868f956d4"
+  version "5.1.18"
+  resolved "http://cli-npm.heroku.com/cli-engine-command/-/cli-engine-command-5.1.18/0b0ebb541c22e81da8fcfebd1fbe91ccfd5d6493.tgz#0b0ebb541c22e81da8fcfebd1fbe91ccfd5d6493"
   dependencies:
     ansi-escapes "2.x"
     cardinal "1.x"
@@ -344,8 +344,8 @@ cli-engine-config@^1.3.7:
     uuid "^3.1.0"
 
 cli-engine-heroku@^1.1.2, cli-engine-heroku@^1.1.4, cli-engine-heroku@^1.1.5:
-  version "1.1.6"
-  resolved "http://cli-npm.heroku.com/cli-engine-heroku/-/cli-engine-heroku-1.1.6/1026875dfd7fb5bc5a4dd4b480d85e4a5762c654.tgz#1026875dfd7fb5bc5a4dd4b480d85e4a5762c654"
+  version "1.1.7"
+  resolved "http://cli-npm.heroku.com/cli-engine-heroku/-/cli-engine-heroku-1.1.7/33df17edb53491e4c47f5d9150cda5151e0b269d.tgz#33df17edb53491e4c47f5d9150cda5151e0b269d"
   dependencies:
     heroku-client "3.x"
     netrc-parser "2.0.2"
@@ -537,6 +537,12 @@ debug@2.6.0:
 debug@2.x, debug@^2.1.3, debug@^2.2.0, debug@^2.6.8:
   version "2.6.8"
   resolved "http://cli-npm.heroku.com/debug/-/debug-2.6.8/e731531ca2ede27d188222427da17821d68ff4fc.tgz#e731531ca2ede27d188222427da17821d68ff4fc"
+  dependencies:
+    ms "2.0.0"
+
+debug@^3.0.0:
+  version "3.0.0"
+  resolved "http://cli-npm.heroku.com/debug/-/debug-3.0.0/1d2feae53349047b08b264ec41906ba17a8516e4.tgz#1d2feae53349047b08b264ec41906ba17a8516e4"
   dependencies:
     ms "2.0.0"
 
@@ -1211,13 +1217,21 @@ heroku-cli-util@^6.0.15, heroku-cli-util@^6.1.17, heroku-cli-util@^6.2.0, heroku
     supports-color "^3.1.2"
     tunnel-agent "^0.4.3"
 
-heroku-client@3.0.2, heroku-client@3.x, heroku-client@^3.0.2:
+heroku-client@3.0.2:
   version "3.0.2"
   resolved "http://cli-npm.heroku.com/heroku-client/-/heroku-client-3.0.2/7e06f303ff18f7a0731725dcccbe210b76198657.tgz#7e06f303ff18f7a0731725dcccbe210b76198657"
   dependencies:
     debug "^2.2.0"
     is-retry-allowed "^1.0.0"
     tunnel-agent "^0.4.0"
+
+heroku-client@3.x, heroku-client@^3.0.2:
+  version "3.0.3"
+  resolved "http://cli-npm.heroku.com/heroku-client/-/heroku-client-3.0.3/302df7fe315f8fa0a98c1a6cbd22a5d81e1c5253.tgz#302df7fe315f8fa0a98c1a6cbd22a5d81e1c5253"
+  dependencies:
+    debug "^3.0.0"
+    is-retry-allowed "^1.0.0"
+    tunnel-agent "^0.6.0"
 
 heroku-client@^2.4.0:
   version "2.4.3"
@@ -2054,7 +2068,7 @@ os-homedir@^1.0.0:
   version "1.0.2"
   resolved "http://cli-npm.heroku.com/os-homedir/-/os-homedir-1.0.2/ffbc4988336e0e833de0c168c7ef152121aa7fb3.tgz#ffbc4988336e0e833de0c168c7ef152121aa7fb3"
 
-os-tmpdir@^1.0.0, os-tmpdir@~1.0.1:
+os-tmpdir@^1.0.0, os-tmpdir@~1.0.1, os-tmpdir@~1.0.2:
   version "1.0.2"
   resolved "http://cli-npm.heroku.com/os-tmpdir/-/os-tmpdir-1.0.2/bbe67406c79aa85c5cfec766fe5734555dfa1274.tgz#bbe67406c79aa85c5cfec766fe5734555dfa1274"
 
@@ -2726,7 +2740,13 @@ timed-out@^4.0.0:
   version "4.0.1"
   resolved "http://cli-npm.heroku.com/timed-out/-/timed-out-4.0.1/f32eacac5a175bea25d7fab565ab3ed8741ef56f.tgz#f32eacac5a175bea25d7fab565ab3ed8741ef56f"
 
-tmp@0.x, tmp@^0.0.31:
+tmp@0.x:
+  version "0.0.33"
+  resolved "http://cli-npm.heroku.com/tmp/-/tmp-0.0.33/6d34335889768d21b2bcda0aa277ced3b1bfadf9.tgz#6d34335889768d21b2bcda0aa277ced3b1bfadf9"
+  dependencies:
+    os-tmpdir "~1.0.2"
+
+tmp@^0.0.31:
   version "0.0.31"
   resolved "http://cli-npm.heroku.com/tmp/-/tmp-0.0.31/8f38ab9438e17315e5dbd8b3657e8bfb277ae4a7.tgz#8f38ab9438e17315e5dbd8b3657e8bfb277ae4a7"
   dependencies:
