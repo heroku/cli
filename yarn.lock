@@ -1386,8 +1386,8 @@ hosted-git-info@^2.1.4:
   resolved "http://cli-npm.heroku.com/hosted-git-info/-/hosted-git-info-2.5.0/6d60e34b3abbc8313062c3b798ef8d901a07af3c.tgz#6d60e34b3abbc8313062c3b798ef8d901a07af3c"
 
 http-call@^2.1.4:
-  version "2.1.4"
-  resolved "http://cli-npm.heroku.com/http-call/-/http-call-2.1.4/ae1ed0ecf748031f1feeede496c9d0958d3ea793.tgz#ae1ed0ecf748031f1feeede496c9d0958d3ea793"
+  version "2.1.5"
+  resolved "http://cli-npm.heroku.com/http-call/-/http-call-2.1.5/f54d71cd8a322432691c61977d6c69d6fdfef70b.tgz#f54d71cd8a322432691c61977d6c69d6fdfef70b"
   dependencies:
     debug "^3.0.0"
     is-retry-allowed "^1.1.0"
