@@ -1327,7 +1327,7 @@ heroku-pipelines@2.1.3, heroku-pipelines@^2.0.1:
 
 "heroku-plugin-readme-generator@https://github.com/heroku/heroku-cli-dev-center-generator":
   version "1.1.1"
-  resolved "https://github.com/heroku/heroku-cli-dev-center-generator#19b957c8de0486ad5cd6dfc0390207c5ebd6a3f7"
+  resolved "https://github.com/heroku/heroku-cli-dev-center-generator#34b7f4d079e3c0acecf9277a925a4703a49e6f0f"
   dependencies:
     lodash "^4.17.4"
 

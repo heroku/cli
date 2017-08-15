@@ -46,13 +46,12 @@ jobs:
 
   generate_dev_center_docs:
     <<: *defaults
-    #
-    #filters:
-      #tags:
-        # only: /^v[0-9\.]+$/
-        #branches:
-        #only:
-         #- master
+    filters:
+      tags:
+         only: /^v[0-9\.]+$/
+        branches:
+        only:
+         - master
     steps:
       - type: checkout
       - type: shell
