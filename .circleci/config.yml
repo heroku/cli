@@ -50,8 +50,8 @@ jobs:
       tags:
          only: /^v[0-9\.]+$/
         branches:
-        only:
-         - master
+          only:
+           - master
     steps:
       - type: checkout
       - type: shell
