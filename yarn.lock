@@ -3,13 +3,13 @@
 
 
 "@heroku/foreman@^2.0.1":
-  version "2.0.1"
-  resolved "http://cli-npm.heroku.com/@heroku/foreman/-/foreman-2.0.1/093d96f181e1b7d1dcd6984cd71654c8d036366f.tgz#093d96f181e1b7d1dcd6984cd71654c8d036366f"
+  version "2.0.2"
+  resolved "http://cli-npm.heroku.com/@heroku/foreman/-/foreman-2.0.2/e24f8611bb0633ca89095648243d3a90564749fc.tgz#e24f8611bb0633ca89095648243d3a90564749fc"
   dependencies:
-    commander "~2.9.0"
-    http-proxy "~1.11.1"
+    commander "^2.11.0"
+    http-proxy "^1.16.2"
     mustache "^2.2.1"
-    shell-quote "~1.4.2"
+    shell-quote "^1.6.1"
 
 abbrev@1:
   version "1.1.0"
@@ -429,11 +429,9 @@ combined-stream@^1.0.5, combined-stream@~1.0.5:
   dependencies:
     delayed-stream "~1.0.0"
 
-commander@~2.9.0:
-  version "2.9.0"
-  resolved "http://cli-npm.heroku.com/commander/-/commander-2.9.0/9c99094176e12240cb22d6c5146098400fe0f7d4.tgz#9c99094176e12240cb22d6c5146098400fe0f7d4"
-  dependencies:
-    graceful-readlink ">= 1.0.0"
+commander@^2.11.0:
+  version "2.11.0"
+  resolved "http://cli-npm.heroku.com/commander/-/commander-2.11.0/157152fd1e7a6c8d98a5b715cf376df928004563.tgz#157152fd1e7a6c8d98a5b715cf376df928004563"
 
 component-bind@1.0.0:
   version "1.0.0"
@@ -989,10 +987,6 @@ graceful-fs@4.x, graceful-fs@^4.1.11, graceful-fs@^4.1.2, graceful-fs@^4.1.6:
   version "4.1.11"
   resolved "http://cli-npm.heroku.com/graceful-fs/-/graceful-fs-4.1.11/0e8bdfe4d1ddb8854d64e04ea7c00e2a026e5658.tgz#0e8bdfe4d1ddb8854d64e04ea7c00e2a026e5658"
 
-"graceful-readlink@>= 1.0.0":
-  version "1.0.1"
-  resolved "http://cli-npm.heroku.com/graceful-readlink/-/graceful-readlink-1.0.1/4cafad76bc62f02fa039b2f94e9a3dd3a391a725.tgz#4cafad76bc62f02fa039b2f94e9a3dd3a391a725"
-
 har-schema@^1.0.5:
   version "1.0.5"
   resolved "http://cli-npm.heroku.com/har-schema/-/har-schema-1.0.5/d263135f43307c02c602afc8fe95970c0151369e.tgz#d263135f43307c02c602afc8fe95970c0151369e"
@@ -1394,12 +1388,12 @@ http-call@^2.1.4:
     is-stream "^1.1.0"
     tunnel-agent "^0.6.0"
 
-http-proxy@~1.11.1:
-  version "1.11.3"
-  resolved "http://cli-npm.heroku.com/http-proxy/-/http-proxy-1.11.3/1915dc888751e2a6bf3c2abfcb1808fa86c72353.tgz#1915dc888751e2a6bf3c2abfcb1808fa86c72353"
+http-proxy@^1.16.2:
+  version "1.16.2"
+  resolved "http://cli-npm.heroku.com/http-proxy/-/http-proxy-1.16.2/06dff292952bf64dbe8471fa9df73066d4f37742.tgz#06dff292952bf64dbe8471fa9df73066d4f37742"
   dependencies:
     eventemitter3 "1.x.x"
-    requires-port "0.x.x"
+    requires-port "1.x.x"
 
 http-signature@~1.1.0:
   version "1.1.1"
@@ -2320,9 +2314,9 @@ require-uncached@^1.0.3:
     caller-path "^0.1.0"
     resolve-from "^1.0.0"
 
-requires-port@0.x.x:
-  version "0.0.1"
-  resolved "http://cli-npm.heroku.com/requires-port/-/requires-port-0.0.1/4b4414411d9df7c855995dd899a8c78a2951c16d.tgz#4b4414411d9df7c855995dd899a8c78a2951c16d"
+requires-port@1.x.x:
+  version "1.0.0"
+  resolved "http://cli-npm.heroku.com/requires-port/-/requires-port-1.0.0/925d2601d39ac485e091cf0da5c6e694dc3dcaff.tgz#925d2601d39ac485e091cf0da5c6e694dc3dcaff"
 
 resolve-from@^1.0.0:
   version "1.0.1"
@@ -2411,9 +2405,9 @@ shell-escape@^0.2.0:
   version "0.2.0"
   resolved "http://cli-npm.heroku.com/shell-escape/-/shell-escape-0.2.0/68fd025eb0490b4f567a027f0bf22480b5f84133.tgz#68fd025eb0490b4f567a027f0bf22480b5f84133"
 
-shell-quote@~1.4.2:
-  version "1.4.3"
-  resolved "http://cli-npm.heroku.com/shell-quote/-/shell-quote-1.4.3/952c44e0b1ed9013ef53958179cc643e8777466b.tgz#952c44e0b1ed9013ef53958179cc643e8777466b"
+shell-quote@^1.6.1:
+  version "1.6.1"
+  resolved "http://cli-npm.heroku.com/shell-quote/-/shell-quote-1.6.1/f4781949cce402697127430ea3b3c5476f481767.tgz#f4781949cce402697127430ea3b3c5476f481767"
   dependencies:
     array-filter "~0.0.0"
     array-map "~0.0.0"
