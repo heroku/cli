@@ -1236,9 +1236,9 @@ heroku-container-registry@4.3.1:
     heroku-cli-util "6.1.17"
     inquirer "3.0.6"
 
-heroku-exec-util@0.4.0:
-  version "0.4.0"
-  resolved "http://cli-npm.heroku.com/heroku-exec-util/-/heroku-exec-util-0.4.0/90ee5dcbd171ab61748aaddb29deda3e7ebf53af.tgz#90ee5dcbd171ab61748aaddb29deda3e7ebf53af"
+heroku-exec-util@0.5.0:
+  version "0.5.0"
+  resolved "http://cli-npm.heroku.com/heroku-exec-util/-/heroku-exec-util-0.5.0/fea60345149671aee1f59329803fa24d2d2df44e.tgz#fea60345149671aee1f59329803fa24d2d2df44e"
   dependencies:
     co-wait "0.0.0"
     heroku-cli-util "^6.0.15"
@@ -1324,12 +1324,12 @@ heroku-pipelines@2.1.3, heroku-pipelines@^2.0.1:
     string-just "^0.0.2"
     validator "^6.2.1"
 
-heroku-ps-exec@2.0.0:
-  version "2.0.0"
-  resolved "http://cli-npm.heroku.com/heroku-ps-exec/-/heroku-ps-exec-2.0.0/03e15df129c579104abc480785fa8e147461cc44.tgz#03e15df129c579104abc480785fa8e147461cc44"
+heroku-ps-exec@2.1.0:
+  version "2.1.0"
+  resolved "http://cli-npm.heroku.com/heroku-ps-exec/-/heroku-ps-exec-2.1.0/6a027fe35ab7ade4dfb2093fea7c74dd2b6f83f5.tgz#6a027fe35ab7ade4dfb2093fea7c74dd2b6f83f5"
   dependencies:
     heroku-cli-util "^6.0.15"
-    heroku-exec-util "0.4.0"
+    heroku-exec-util "0.5.0"
 
 heroku-redis@1.2.15:
   version "1.2.15"
