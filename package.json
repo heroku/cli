@@ -58,6 +58,14 @@
     "heroku-spaces": "2.9.5",
     "semver": "5.4.1"
   },
+  "devDependencies": {
+    "eslint": "4.4.1",
+    "eslint-config-standard": "10.2.1",
+    "eslint-plugin-import": "2.7.0",
+    "eslint-plugin-node": "5.1.1",
+    "eslint-plugin-promise": "3.5.0",
+    "eslint-plugin-standard": "3.0.1"
+  },
   "engineStrict": true,
   "engines": {
     "node": ">=8.0.0"
@@ -74,16 +82,8 @@
   "repository": "https://github.com/heroku/cli",
   "scripts": {
     "build": "cli-build",
+    "postpublish": "./scripts/postpublish",
     "release": "cli-release",
-    "version": "./scripts/version",
-    "postpublish": "./scripts/postpublish"
-  },
-  "devDependencies": {
-    "eslint": "4.4.1",
-    "eslint-config-standard": "10.2.1",
-    "eslint-plugin-import": "2.7.0",
-    "eslint-plugin-node": "5.1.1",
-    "eslint-plugin-promise": "3.5.0",
-    "eslint-plugin-standard": "3.0.1"
+    "version": "./scripts/version"
   }
 }
