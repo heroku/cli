@@ -315,14 +315,14 @@ cli-cursor@^2.1.0:
     restore-cursor "^2.0.0"
 
 cli-engine-command@^5.1.11, cli-engine-command@^5.1.12, cli-engine-command@^5.1.15, cli-engine-command@^5.1.8:
-  version "5.1.18"
-  resolved "http://cli-npm.heroku.com/cli-engine-command/-/cli-engine-command-5.1.18/0b0ebb541c22e81da8fcfebd1fbe91ccfd5d6493.tgz#0b0ebb541c22e81da8fcfebd1fbe91ccfd5d6493"
+  version "5.1.19"
+  resolved "http://cli-npm.heroku.com/cli-engine-command/-/cli-engine-command-5.1.19/9f2fec31a027f735fe6c31f4f042b06033b5a51e.tgz#9f2fec31a027f735fe6c31f4f042b06033b5a51e"
   dependencies:
     ansi-escapes "2.x"
     cardinal "1.x"
     chalk "^1.0.0"
     fs-extra "^4.0.1"
-    http-call "^2.1.3"
+    http-call "^2.1.4"
     lodash.ary "^4.1.1"
     lodash.defaults "^4.2.0"
     lodash.get "^4.4.2"
@@ -1385,11 +1385,11 @@ hosted-git-info@^2.1.4:
   version "2.5.0"
   resolved "http://cli-npm.heroku.com/hosted-git-info/-/hosted-git-info-2.5.0/6d60e34b3abbc8313062c3b798ef8d901a07af3c.tgz#6d60e34b3abbc8313062c3b798ef8d901a07af3c"
 
-http-call@^2.1.3:
-  version "2.1.3"
-  resolved "http://cli-npm.heroku.com/http-call/-/http-call-2.1.3/6c604f33aaa0d964fe1a9d236fec6bcb32db0418.tgz#6c604f33aaa0d964fe1a9d236fec6bcb32db0418"
+http-call@^2.1.4:
+  version "2.1.4"
+  resolved "http://cli-npm.heroku.com/http-call/-/http-call-2.1.4/ae1ed0ecf748031f1feeede496c9d0958d3ea793.tgz#ae1ed0ecf748031f1feeede496c9d0958d3ea793"
   dependencies:
-    debug "^2.6.8"
+    debug "^3.0.0"
     is-retry-allowed "^1.1.0"
     is-stream "^1.1.0"
     tunnel-agent "^0.6.0"
