@@ -20,10 +20,14 @@ VERSION=`$ROOT/node_modules/cli-engine/bin/version`
 TARBALL_BASE=$NAME-v$VERSION-windows-$ARCH
 INSTALLER_BASE=$ROOT/tmp/windows-$ARCH-installer
 WORKSPACE=$ROOT/tmp/build/$TARBALL_BASE
+WINEPREFIX=$ROOT/tmp/wine/windows-$ARCH-installer
 
 rm -rf $INSTALLER_BASE
+rm -rf $WINEPREFIX
 
 mkdir -p $INSTALLER_BASE/bin
+mkdir -p $WINEPREFIX
+
 cp resources/exe/heroku.cmd $INSTALLER_BASE/bin/heroku.cmd
 
 cp -r $WORKSPACE $INSTALLER_BASE/client
@@ -38,9 +42,31 @@ sed -e "s/!define Version 'VERSION'/!define Version '$VERSION'/" resources/exe/h
   sed -e "s/InstallDir .*/InstallDir \"\$PROGRAMFILES$PROGRAMSUFFIX\\\Heroku\"/" \
   > $INSTALLER_BASE/heroku.nsi
 
-makensis $INSTALLER_BASE/heroku.nsi > /dev/null
+makensis -DUNINSTALLER $INSTALLER_BASE/heroku.nsi > /dev/null
+
+WINEPREFIX=$WINEPREFIX wine $INSTALLER_BASE/tmpinstaller.exe /S
+
+rm $INSTALLER_BASE/tmpinstaller.exe
+
+function finish {
+  rm /tmp/heroku-windows-key
+}
 
 trap finish EXIT
+
+set +x
+
+echo $HEROKU_WINDOWS_KEY | base64 -d > /tmp/heroku-windows-key
+
+osslsigncode -pkcs12 /tmp/heroku-windows-key \
+  -pass "$HEROKU_WINDOWS_SIGNING_PASS" \
+  -n 'Heroku CLI' \
+  -i https://toolbelt.heroku.com/ \
+  -in $WINEPREFIX/drive_c/Program\ Files/Heroku/Uninstall.exe -out $INSTALLER_BASE/uninstall.exe
+
+set -x
+
+makensis $INSTALLER_BASE/heroku.nsi > /dev/null
 
 DIST_DIR="dist/$VERSION"
 
@@ -51,14 +77,16 @@ INSTALLER="$DIST_DIR/$INSTALLER_EXE"
 
 set +x
 
-function finish {
-  rm /tmp/heroku-windows-key
-}
-
-echo $HEROKU_WINDOWS_KEY | base64 -d > /tmp/heroku-windows-key
-
 osslsigncode -pkcs12 /tmp/heroku-windows-key \
   -pass "$HEROKU_WINDOWS_SIGNING_PASS" \
   -n 'Heroku CLI' \
   -i https://toolbelt.heroku.com/ \
   -in $INSTALLER_BASE/installer.exe -out $INSTALLER
+
+set -x
+
+REMOTE_PATH=/branches/$CHANNEL/$INSTALLER_EXE
+
+aws s3 cp --cache-control max-age=86400 $INSTALLER s3://heroku-cli-assets$REMOTE_PATH
+
+aws cloudfront create-invalidation --distribution-id EHF9FOCUJYVZ --paths "$REMOTE_PATH"

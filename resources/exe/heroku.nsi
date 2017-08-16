@@ -14,32 +14,45 @@ InstallDirRegKey HKCU "Software\Heroku" ""
 
 !insertmacro MUI_LANGUAGE "English"
 
-OutFile "installer.exe"
-
 InstallDir "$PROGRAMFILES64\Heroku"
 
-Section "Heroku CLI ${VERSION}"
-  SetOutPath $INSTDIR
-  File /r bin
-  File /r client
-  WriteRegStr HKCU "Software\Heroku" "" $INSTDIR
-  WriteUninstaller "$INSTDIR\Uninstall.exe"
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Heroku" \
-                   "DisplayName" "Heroku CLI"
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Heroku" \
-                   "UninstallString" "$\"$INSTDIR\uninstall.exe$\""
-SectionEnd
+!ifdef UNINSTALLER
+  OutFile "tmpinstaller.exe"
+
+  Section "Heroku CLI ${VERSION}"
+    SetOutPath $INSTDIR
+    WriteRegStr HKCU "Software\Heroku" "" $INSTDIR
+    WriteUninstaller "$INSTDIR\Uninstall.exe"
+  SectionEnd
+
+  Section "Uninstall"
+    Delete "$INSTDIR\Uninstall.exe"
+    RMDir /r "$INSTDIR"
+    RMDir /r "$LOCALAPPDATA\Heroku"
+    DeleteRegKey /ifempty HKCU "Software\Heroku"
+    DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Heroku"
+  SectionEnd
+!else
+  OutFile "installer.exe"
+
+  Section "Heroku CLI ${VERSION}"
+    SetOutPath $INSTDIR
+    File /r bin
+    File /r client
+    File /r uninstall.exe
+    WriteRegStr HKCU "Software\Heroku" "" $INSTDIR
+    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Heroku" \
+                     "DisplayName" "Heroku CLI"
+    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Heroku" \
+                     "UninstallString" "$\"$INSTDIR\uninstall.exe$\""
+    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Heroku" \
+                     "Publisher" "Heroku, Inc"
+  SectionEnd
+!endif
 
 Section "Set PATH to Heroku CLI"
   Push "$INSTDIR\bin"
   Call AddToPath
-SectionEnd
-
-Section "Uninstall"
-  Delete "$INSTDIR\Uninstall.exe"
-  RMDir /r "$INSTDIR"
-  RMDir /r "$LOCALAPPDATA\Heroku"
-  DeleteRegKey /ifempty HKCU "Software\Heroku"
 SectionEnd
 
 !define Environ 'HKCU "Environment"'
