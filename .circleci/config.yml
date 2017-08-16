@@ -93,7 +93,7 @@ jobs:
             password $HEROKU_API_KEY
           EOF
           chmod 0600 ~/.netrc
-          HEROKU_DEBUG=1 ./bin/run whoami
+          ./bin/run whoami
           heroku-cli-dev-center-generator > /tmp/heroku-cli-commands.md
           devcenter push /tmp/heroku-cli-commands.md --trace
 workflows:
