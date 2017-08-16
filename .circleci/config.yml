@@ -95,6 +95,7 @@ jobs:
           chmod 0600 ~/.netrc
           ./bin/run whoami
           heroku-cli-dev-center-generator > /tmp/heroku-cli-commands.md
+          cat /tmp/heroku-cli-commands.md
           devcenter push /tmp/heroku-cli-commands.md --trace
 workflows:
   version: 2
