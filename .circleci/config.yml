@@ -29,6 +29,7 @@ jobs:
           yarn config set registry https://cli-npm.heroku.com
           yarn install --pure-lockfile
           yarn check
+          ./scripts/lint
           # build dev only if it is a git checkout
           if [ "${CIRCLE_BRANCH}" == "dev" ] && \
              [ ! -d ~/cli/node_modules/cli-engine/lib ]; then
