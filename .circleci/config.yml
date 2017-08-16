@@ -82,8 +82,7 @@ jobs:
     <<: *defaults
     steps:
       - type: checkout
-      - type: shell
-        command: |
+      - run: |
           set -e
           yarn install
           echo $HEROKU_DEB_KEY | base64 -d | gpg --import
@@ -92,11 +91,13 @@ jobs:
             login me@example.com
             password $HEROKU_API_KEY
           EOF
+          set -ex
           chmod 0600 ~/.netrc
           ./bin/run whoami
           heroku-cli-dev-center-generator > /tmp/heroku-cli-commands.md
-          cat /tmp/heroku-cli-commands.md
-          devcenter push /tmp/heroku-cli-commands.md --trace
+      - store_artifacts:
+          path: /tmp/heroku-cli-commands.md
+      - run: devcenter push /tmp/heroku-cli-commands.md --trace
 workflows:
   version: 2
   build_and_release:
