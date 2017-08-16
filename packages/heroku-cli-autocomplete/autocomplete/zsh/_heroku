@@ -1,0 +1,50 @@
+#compdef heroku
+
+_heroku () {
+  local -a _flags=()
+  local -a _args=()
+  local _command_id=${words[2]}
+  local _cur=${words[CURRENT]}
+  local _arg_i=2
+
+  ## all commands
+  _complete_commands () {
+   local -a _all_commands_list
+   if type _set_all_commands_list >/dev/null 2>&1; then
+     _set_all_commands_list
+     _describe -t all-commands "all commands" _all_commands_list
+     return
+   fi
+   # fallback to grep'ing cmds from cache
+   compadd $(grep -oe '^[a-zA-Z0-9:_-]\+' $HEROKU_AC_COMMANDS_PATH)
+  }
+  ## end all commands
+
+  _find_first_arg_index () {
+    n=0
+    for i in "${words[@]}"; do
+      if [[ ! $i =~ ^- ]] && [[ "$n" -gt 1 ]]; ; then
+        _arg_i="$n"
+        return
+      fi
+      n=$(($n + 1))
+    done
+  }
+
+  if [ $CURRENT -gt 2 ]; then
+    if [[ "$_cur" == -* ]]; then
+      local _flag_completion_func="_set_${_command_id//:/_}_flags"
+      declare -f $_flag_completion_func >/dev/null && $_flag_completion_func
+    else
+      _find_first_arg_index
+      local _arg_completion_func="_set_${_command_id//:/_}_args"
+      declare -f $_arg_completion_func >/dev/null && $_arg_completion_func $_arg_i
+    fi
+  fi
+
+  _arguments  '1: :_complete_commands' \
+              $_flags \
+              $_args
+}
+
+_heroku
