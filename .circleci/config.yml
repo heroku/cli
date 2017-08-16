@@ -8,7 +8,7 @@ stable_tags: &stable_tags
   only: /^v.*/
 
 stable_filters: &stable_filters
-  tags: *tags
+  tags: *stable_tags
   branches:
     ignore: /.*/
 
