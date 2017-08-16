@@ -1,0 +1,12 @@
+#!/bin/bash
+
+echoerr() { echo "$@" 1>&2; }
+
+# check if any git references exist
+if grep -q -e "@git://" yarn.lock; then
+  echoerr "git reference found in yarn.lock:"
+  grep -e "@git://" yarn.lock 1>&2
+  echoerr "this causes problems when some users try to npm install -g heroku-cli"
+  echoerr "host the module on @heroku/foo"
+  exit 1
+fi
