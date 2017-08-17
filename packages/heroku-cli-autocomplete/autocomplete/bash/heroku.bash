@@ -179,6 +179,11 @@ __ltrim_colon_completions() {
 fi
 # end vendor scop/bash-completion
 
+_compreply_cli () {
+  opts=("$(heroku autocomplete:options "$(IFS=$' '; echo "${COMP_WORDS[*]}")")")
+  COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+}
+
 _heroku()
 {
     local cur opts
@@ -190,8 +195,14 @@ _heroku()
         COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
          __ltrim_colon_completions "$cur"
     else
-        opts=$(grep "${COMP_WORDS[1]}" $HEROKU_AC_COMMANDS_PATH | sed -n "s/^${COMP_WORDS[1]} //p")
-        COMPREPLY=( $(compgen -W  "${opts}" -- ${cur}) )
+        if [[ $cur == "-"* ]] ; then
+          opts=$(grep "${COMP_WORDS[1]}" $HEROKU_AC_COMMANDS_PATH | sed -n "s/^${COMP_WORDS[1]} //p")
+          COMPREPLY=( $(compgen -W  "${opts}" -- ${cur}) )
+        else
+          if type _compreply_cli >/dev/null 2>&1; then
+            _compreply_cli
+          fi
+        fi
     fi
     return 0
 }
