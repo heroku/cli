@@ -8,6 +8,7 @@ exports.topic = {
 exports.commands = [
   require('./commands/webhooks/add.js'),
   require('./commands/webhooks/index.js'),
+  require('./commands/webhooks/info.js'),
   require('./commands/webhooks/remove.js'),
   require('./commands/webhooks/update.js'),
   require('./commands/webhooks/events/index.js'),
