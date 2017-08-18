@@ -26,7 +26,7 @@ describe('heroku webhooks:events', function () {
 
     return certs.run({app: 'example', args: {}, flags: {}}).then(function () {
       mock.done()
-      expect(cli.stderr).to.equal('')
+      expect(cli.stderr).to.equal(' ▸    heroku webhooks:event is deprecated, please use heroku webhooks:deliveries\n')
       expect(cli.stdout).to.equal(
 `Event ID                              Resource     Action  Published At
 ────────────────────────────────────  ───────────  ──────  ────────────────────
@@ -42,7 +42,7 @@ describe('heroku webhooks:events', function () {
 
     return certs.run({app: 'example', args: {}, flags: {}}).then(function () {
       mock.done()
-      expect(cli.stderr).to.equal('')
+      expect(cli.stderr).to.equal(' ▸    heroku webhooks:event is deprecated, please use heroku webhooks:deliveries\n')
       expect(cli.stdout).to.equal('example has no events\n')
     })
   })

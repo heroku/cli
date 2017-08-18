@@ -12,7 +12,7 @@ describe('heroku webhooks:deliveries:info', function () {
   })
 
   it('# shows a delivery', function () {
-    let mock = nock('https://api.heroku.com')
+    let mockDelivery = nock('https://api.heroku.com')
       .get('/apps/example/webhook-deliveries/99999999-9999-9999-9999-999999999999')
       .reply(200, {
         id: '99999999-9999-9999-9999-999999999999',
@@ -25,14 +25,38 @@ describe('heroku webhooks:deliveries:info', function () {
         status: 'pending'
       })
 
+    let mockEvent = nock('https://api.heroku.com')
+      .get('/apps/example/webhook-events/88888888-8888-8888-8888-888888888888')
+      .reply(200, {
+        id: '88888888-8888-8888-8888-888888888888',
+        payload: {
+          published_at: '2016-08-31T21:55:06Z',
+          resource: 'api:release',
+          action: 'create',
+          data: {
+            foo: 'bar'
+          }
+        }
+      })
+
     return certs.run({app: 'example', args: {id: '99999999-9999-9999-9999-999999999999'}, flags: {}}).then(function () {
-      mock.done()
+      mockDelivery.done()
+      mockEvent.done()
       expect(cli.stderr).to.equal('')
       expect(cli.stdout).to.equal(
 `=== 99999999-9999-9999-9999-999999999999
-event:   88888888-8888-8888-8888-888888888888
-status:  pending
-webhook: 77777777-7777-7777-7777-777777777777
+Event:        88888888-8888-8888-8888-888888888888
+Status:       pending
+Webhook:      77777777-7777-7777-7777-777777777777
+=== Event Payload
+{
+  "published_at": "2016-08-31T21:55:06Z",
+  "resource": "api:release",
+  "action": "create",
+  "data": {
+    "foo": "bar"
+  }
+}
 `)
     })
   })

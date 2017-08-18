@@ -24,18 +24,18 @@ function addSecretMiddleware (heroku) {
 function * run (context, heroku) {
   addSecretMiddleware(heroku)
 
-  yield cli.action(`Adding webhook to ${cli.color.app(context.app)}`, {}, heroku.request({
-    path: `/apps/${context.app}/webhooks`,
-    headers: {Accept: 'application/vnd.heroku+json; version=3.webhooks'},
-    method: 'POST',
-    body: {
-      include: context.flags.include.split(',').map((s) => s.trim()),
-      level: context.flags.level,
-      secret: context.flags.secret,
-      url: context.flags.url,
-      authorization: context.flags.authorization
+  yield cli.action(`Adding webhook to ${cli.color.app(context.app)}`, {},
+    heroku.post(`/apps/${context.app}/webhooks`, {
+      headers: {Accept: 'application/vnd.heroku+json; version=3.webhooks'},
+      body: {
+        include: context.flags.include.split(',').map((s) => s.trim()),
+        level: context.flags.level,
+        secret: context.flags.secret,
+        url: context.flags.url,
+        authorization: context.flags.authorization
+      }
     }
-  }))
+  ))
 
   if (secret) {
     cli.styledHeader('Webhooks Signing Secret')

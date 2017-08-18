@@ -4,17 +4,17 @@ let co = require('co')
 let cli = require('heroku-cli-util')
 
 function * run (context, heroku) {
-  yield cli.action(`Updating webhook ${context.args.id} for ${cli.color.app(context.app)}`, {}, heroku.request({
-    path: `/apps/${context.app}/webhooks/${context.args.id}`,
-    headers: {Accept: 'application/vnd.heroku+json; version=3.webhooks'},
-    method: 'PATCH',
-    body: {
-      include: context.flags.include && context.flags.include.split(',').map((s) => s.trim()),
-      level: context.flags.level,
-      secret: context.flags.secret,
-      url: context.flags.url
+  yield cli.action(`Updating webhook ${context.args.id} for ${cli.color.app(context.app)}`, {},
+    heroku.patch(`/apps/${context.app}/webhooks/${context.args.id}`, {
+      headers: {Accept: 'application/vnd.heroku+json; version=3.webhooks'},
+      body: {
+        include: context.flags.include && context.flags.include.split(',').map((s) => s.trim()),
+        level: context.flags.level,
+        secret: context.flags.secret,
+        url: context.flags.url
+      }
     }
-  }))
+  ))
 }
 
 module.exports = {
