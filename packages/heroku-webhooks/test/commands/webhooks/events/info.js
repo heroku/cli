@@ -28,7 +28,7 @@ describe('heroku webhooks:events:info', function () {
 
     return certs.run({app: 'example', args: {id: '99999999-9999-9999-9999-999999999999'}, flags: {}}).then(function () {
       mock.done()
-      expect(cli.stderr).to.equal(' ▸    heroku webhooks:event:info is deprecated, please use heroku webhooks:deliveries:info\n')
+      expect(cli.stderr).to.equal(' ▸    heroku webhooks:event:info is deprecated, please use heroku webhooks:deliveries:info\n'.replace('\n ▸    '))
       expect(cli.stdout).to.equal(
 `=== 99999999-9999-9999-9999-999999999999
 payload: {
