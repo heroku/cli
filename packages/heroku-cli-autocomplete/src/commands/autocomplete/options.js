@@ -43,7 +43,7 @@ export default class ACFoo extends AutocompleteBase {
       let cacheCompletion
 
       if (cmdCurArgvIsFlag || cmdCurArgvIsFlagValue) {
-        const argvFlag = cmdCurArgvIsFlag ? cmdPreviousArgv : cmdCurArgv
+        const argvFlag = cmdCurArgvIsFlagValue ? cmdPreviousArgv : cmdCurArgv
         let {name, flag} = this._findFlagFromWildArg(argvFlag, Command)
         if (!flag) throw new Error(`${argvFlag} is not a valid flag for ${cmdId}`)
         cacheKey = name || flag.name
