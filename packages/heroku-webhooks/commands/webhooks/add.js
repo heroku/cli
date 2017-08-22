@@ -17,7 +17,7 @@ function secretMiddleware (middleware) {
 }
 
 function addSecretMiddleware (heroku) {
-  let middleware = heroku.options.middleware
+  let middleware = heroku.options.middleware.bind(heroku)
   heroku.options.middleware = secretMiddleware(middleware)
 }
 
