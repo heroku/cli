@@ -34,7 +34,8 @@
       "heroku-ps-exec",
       "heroku-redis",
       "heroku-run",
-      "heroku-spaces"
+      "heroku-spaces",
+      "heroku-webhooks"
     ]
   },
   "dependencies": {
