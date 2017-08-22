@@ -2,7 +2,7 @@
 exports.topic = {
   name: 'webhooks',
   // this is the help text that shows up under `heroku help`
-  description: 'List webhooks for an app'
+  description: 'setup HTTP notifications of app activity'
 }
 
 exports.commands = [
