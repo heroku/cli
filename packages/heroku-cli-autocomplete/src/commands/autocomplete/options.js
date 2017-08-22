@@ -84,7 +84,7 @@ export default class ACFoo extends AutocompleteBase {
 
   _findFlagFromWildArg (wild: string, Command: Class<Command<*>>) {
     let name = wild.replace(/^-+/, '')
-    name = name.replace(/=(\w+)?$/, '')
+    name = name.replace(/=(.+)?$/, '')
 
     let flag = Command.flags[name]
     if (flag) return {name, flag}
