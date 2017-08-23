@@ -1343,6 +1343,13 @@ heroku-spaces@2.9.5:
     lodash.sortby "^4.7.0"
     strftime "^0.10.0"
 
+heroku-webhooks@1.0.7:
+  version "1.0.7"
+  resolved "http://cli-npm.heroku.com/heroku-webhooks/-/heroku-webhooks-1.0.7/f74be8d76636721acd3dae3d87fe42652de1c28e.tgz#f74be8d76636721acd3dae3d87fe42652de1c28e"
+  dependencies:
+    co "4.6.0"
+    heroku-cli-util "^6.2.5"
+
 hoek@2.x.x:
   version "2.16.3"
   resolved "http://cli-npm.heroku.com/hoek/-/hoek-2.16.3/20bb7403d3cea398e91dc4710a8ff1b8274a25ed.tgz#20bb7403d3cea398e91dc4710a8ff1b8274a25ed"
@@ -1570,13 +1577,9 @@ js-yaml@^3.9.1:
     argparse "^1.0.7"
     esprima "^4.0.0"
 
-jsbn@0.1.0:
+jsbn@0.1.0, jsbn@~0.1.0:
   version "0.1.0"
   resolved "http://cli-npm.heroku.com/jsbn/-/jsbn-0.1.0/650987da0dd74f4ebf5a11377a2aa2d273e97dfd.tgz#650987da0dd74f4ebf5a11377a2aa2d273e97dfd"
-
-jsbn@~0.1.0:
-  version "0.1.1"
-  resolved "http://cli-npm.heroku.com/jsbn/-/jsbn-0.1.1/a5e654c2e5a2deb5f201d96cefbca80c0ef2f513.tgz#a5e654c2e5a2deb5f201d96cefbca80c0ef2f513"
 
 jschardet@^1.4.2:
   version "1.5.1"
