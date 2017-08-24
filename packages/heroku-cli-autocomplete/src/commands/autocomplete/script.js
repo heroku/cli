@@ -35,7 +35,7 @@ export default class AutocompleteScript extends AutocompleteBase {
     }
   }
 
-  _prefix() {
+  _prefix () {
     this.out.log(`\n# heroku autocomplete setup`)
   }
 }
