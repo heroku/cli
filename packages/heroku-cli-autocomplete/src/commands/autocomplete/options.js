@@ -67,7 +67,7 @@ export default class ACFoo extends AutocompleteBase {
 
         // build/retrieve cache
         const duration = cacheCompletion.cacheDuration || 60 * 60 * 24 // 1 day
-        const opts = {cacheFn: async () => await cacheCompletion.options(ctx)}
+        const opts = {cacheFn: () => cacheCompletion.options(ctx)}
         const options = await ACCache.fetch(flagCachePath, duration, opts)
 
         // return options cache

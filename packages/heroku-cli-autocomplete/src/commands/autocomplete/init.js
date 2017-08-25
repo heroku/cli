@@ -152,7 +152,9 @@ ${this.cmdsWithDesc.join('\n')}
   }
 
   _writeShellSetupsToCache () {
-    const zshSetup = `HEROKU_AC_COMMANDS_PATH=${path.join(this.completionsCachePath, 'commands')};
+    const zshSetup = `${this.waitingDots}
+
+HEROKU_AC_COMMANDS_PATH=${path.join(this.completionsCachePath, 'commands')};
 HEROKU_ZSH_AC_SETTERS_PATH=\${HEROKU_AC_COMMANDS_PATH}_functions && test -f $HEROKU_ZSH_AC_SETTERS_PATH && source $HEROKU_ZSH_AC_SETTERS_PATH;
 fpath=(
 ${path.join(__dirname, '..', '..', '..', 'autocomplete', 'zsh')}
@@ -175,6 +177,17 @@ test -f $HEROKU_BASH_AC_PATH && source $HEROKU_BASH_AC_PATH;
   // }
   // `
   //   }
+
+  get waitingDots (): string {
+    return `# http://stackoverflow.com/a/844299
+expand-or-complete-with-dots() {
+  echo -n "\\e[38;5;104m...\\e[0m"
+  zle expand-or-complete
+  zle redisplay
+}
+zle -N expand-or-complete-with-dots
+bindkey "^I" expand-or-complete-with-dots`
+  }
 
   _writeZshSetterFunctionsToCache () {
     const completions = []
