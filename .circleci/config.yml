@@ -95,7 +95,7 @@ jobs:
           chmod 0600 ~/.netrc
           ./bin/run whoami
           heroku-cli-dev-center-generator > /tmp/heroku-cli-commands.md
-          cli-doc-lint
+          remark /tmp/heroku-cli-commands.md -u remark-heroku-example-command -u remark-heroku-sample-code -u remark-heroku-bash-dollar -u remark-heroku-topic-overview -u remark-heroku-command-headings-inline-code
       - store_artifacts:
           path: /tmp/heroku-cli-commands.md
       - run: devcenter push /tmp/heroku-cli-commands.md --trace
