@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+set -x
+
+sudo rm -rf /usr/local/lib/heroku
+sudo rm -rf /usr/local/heroku
+sudo rm -rf /usr/local/bin/heroku

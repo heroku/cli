@@ -6,6 +6,4 @@ node_js:
 os: osx
 
 script:
-  - yarn
-  - echo foo
-  - pkgbuild
+  - ./scripts/macos/build

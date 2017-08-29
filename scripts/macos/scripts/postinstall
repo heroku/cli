@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+set -x
+
+sudo mkdir -p /usr/local/bin
+sudo ln -sf /usr/local/lib/heroku/bin/heroku /usr/local/bin/heroku

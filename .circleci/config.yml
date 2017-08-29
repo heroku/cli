@@ -4,15 +4,13 @@ defaults: &defaults
   docker:
     - image: dickeyxxx/cli-engine-docker:v2.0.1
 
-tags: &tags
-  tags:
-    only: /^v.*/
+tags: &version_tags
+  only: /^v.*/
 
-filters: &filters
-  filters:
-    <<: *tags
-    branches:
-      ignore: /.*/
+filters: &all_tags_filters
+  tags: *all_tags
+  branches:
+    ignore: /.*/
 
 version: 2
 executorType: docker
@@ -86,12 +84,12 @@ workflows:
     jobs:
       - build:
           filters:
-            <<: *tags
+            tags: *version_tags
       - release_windows_x64:
-          <<: *filters
+          filters: *all_tags_filters
           requires:
             - build
       - release_windows_x86:
-          <<: *filters
+          filters: *all_tags_filters
           requires:
             - build

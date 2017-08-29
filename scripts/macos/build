@@ -1,0 +1,22 @@
+#!/bin/bash
+
+source ./scripts/main
+
+if [ $# -ne 1 ]; then
+  echo "USAGE: $0 CHANNEL"
+  exit 1
+fi
+
+"${__root}/scripts/build" darwin-x64 "$1" tmp/darwin
+
+version=$(node -p "require('./package.json').version")
+
+mkdir -p dist
+
+pkgbuild --root tmp/darwin \
+  --identifier com.heroku.cli \
+  --install-location /usr/local/lib/heroku \
+  --version "$version" \
+  --sign "Developer ID Installer: Heroku INC" \
+  --scripts "${__root}/scripts/macos/scripts" \
+  dist/heroku.pkg
