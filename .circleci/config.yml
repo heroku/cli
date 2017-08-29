@@ -18,9 +18,9 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-        keys:
-          - cli-{{ checksum "yarn.lock" }}
-          - cli
+          keys:
+            - cli-{{ checksum "yarn.lock" }}
+            - cli
       - run: ./scripts/build
       - run: ./scripts/test
       - save_cache:
