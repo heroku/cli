@@ -6,4 +6,5 @@ node_js:
 os: osx
 
 script:
-  - ./scripts/macos/build
+  - ./scripts/macos/build dev
+  - ls -ls dist
