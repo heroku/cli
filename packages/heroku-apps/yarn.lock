@@ -637,7 +637,7 @@ chai@^4.0.2:
     pathval "^1.0.0"
     type-detect "^4.0.0"
 
-chalk@1.1.3, chalk@1.x, chalk@^1.1.0, chalk@^1.1.1, chalk@^1.1.3:
+chalk@1.1.3, chalk@^1.0.0, chalk@^1.1.0, chalk@^1.1.1, chalk@^1.1.3:
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/chalk/-/chalk-1.1.3.tgz#a8115c55e4a702fe4d150abd3872822a7e09fc98"
   dependencies:
@@ -715,15 +715,15 @@ cli-cursor@^2.1.0:
   dependencies:
     restore-cursor "^2.0.0"
 
-cli-engine-command@^5.1.11:
-  version "5.1.11"
-  resolved "https://registry.yarnpkg.com/cli-engine-command/-/cli-engine-command-5.1.11.tgz#253ba59b424af9b72141c50d444b0a9f82447513"
+cli-engine-command@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/cli-engine-command/-/cli-engine-command-6.0.0.tgz#57fbb5809b0be460bc4656c38048887aa7456c4f"
   dependencies:
     ansi-escapes "2.x"
     cardinal "1.x"
-    chalk "1.x"
-    fs-extra "3.x"
-    http-call "^2.1.3"
+    chalk "^1.0.0"
+    fs-extra "^4.0.1"
+    http-call "^2.1.4"
     lodash.ary "^4.1.1"
     lodash.defaults "^4.2.0"
     lodash.get "^4.4.2"
@@ -736,20 +736,20 @@ cli-engine-command@^5.1.11:
     lodash.result "^4.5.2"
     moment "^2.18.1"
     string "3.x"
-    supports-color "^4.1.0"
+    supports-color "^4.2.1"
 
-cli-engine-config@^1.3.7:
-  version "1.3.7"
-  resolved "https://registry.yarnpkg.com/cli-engine-config/-/cli-engine-config-1.3.7.tgz#f95c5819e2bd46851e02425ad1100533babb9ca1"
+cli-engine-config@^1.3.8:
+  version "1.3.8"
+  resolved "https://registry.yarnpkg.com/cli-engine-config/-/cli-engine-config-1.3.8.tgz#a795cea9abf4e992765ad8c58bcd411cf1e470ed"
   dependencies:
-    uuid "3.x"
+    uuid "^3.1.0"
 
-cli-engine-heroku@^1.1.2:
-  version "1.1.4"
-  resolved "https://registry.yarnpkg.com/cli-engine-heroku/-/cli-engine-heroku-1.1.4.tgz#a9419de92d006af9f52e258f12365233e825cb5d"
+cli-engine-heroku@^1.1.8:
+  version "1.1.8"
+  resolved "https://registry.yarnpkg.com/cli-engine-heroku/-/cli-engine-heroku-1.1.8.tgz#56a35a129fd0ad8e4de1b0b1fc050305ac78b428"
   dependencies:
     heroku-client "3.x"
-    netrc-parser "2.0.2"
+    netrc-parser "^2.0.3"
 
 cli-width@^2.0.0:
   version "2.1.0"
@@ -929,6 +929,12 @@ debug@2.6.0:
 debug@^2.1.1, debug@^2.2.0, debug@^2.6.3, debug@^2.6.8:
   version "2.6.8"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.8.tgz#e731531ca2ede27d188222427da17821d68ff4fc"
+  dependencies:
+    ms "2.0.0"
+
+debug@^3.0.0, debug@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/debug/-/debug-3.0.1.tgz#0564c612b521dc92d9f2988f0549e34f9c98db64"
   dependencies:
     ms "2.0.0"
 
@@ -1453,9 +1459,17 @@ form-data@~2.1.1:
     combined-stream "^1.0.5"
     mime-types "^2.1.12"
 
-fs-extra@3.x, fs-extra@^3.0.1:
+fs-extra@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-3.0.1.tgz#3794f378c58b342ea7dbbb23095109c4b3b62291"
+  dependencies:
+    graceful-fs "^4.1.2"
+    jsonfile "^3.0.0"
+    universalify "^0.1.0"
+
+fs-extra@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-4.0.1.tgz#7fc0c6c8957f983f57f306a24e5b9ddd8d0dd880"
   dependencies:
     graceful-fs "^4.1.2"
     jsonfile "^3.0.0"
@@ -1710,16 +1724,16 @@ here@0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/here/-/here-0.0.2.tgz#69c1af3f02121f3d8788e02e84dc8b3905d71195"
 
-heroku-cli-util@^6.2.0:
-  version "6.2.4"
-  resolved "https://registry.yarnpkg.com/heroku-cli-util/-/heroku-cli-util-6.2.4.tgz#e2316f4fc40f3a0f542f974b1bb389742f15d77c"
+heroku-cli-util@^6.2.6:
+  version "6.2.6"
+  resolved "https://registry.yarnpkg.com/heroku-cli-util/-/heroku-cli-util-6.2.6.tgz#d73150669eff9efb3f600b40047881e94f38db20"
   dependencies:
     ansi-escapes "^1.4.0"
     cardinal "^1.0.0"
     chalk "^1.1.3"
     co "^4.6.0"
     got "^6.3.0"
-    heroku-client "^3.0.2"
+    heroku-client "^3.0.3"
     lodash.ary "^4.1.1"
     lodash.defaults "^4.2.0"
     lodash.get "^4.4.2"
@@ -1732,18 +1746,26 @@ heroku-cli-util@^6.2.0:
     lodash.property "^4.4.2"
     lodash.repeat "^4.1.0"
     lodash.result "^4.5.2"
-    netrc-parser "^2.0.1"
+    netrc-parser "^2.0.3"
     opn "^3.0.3"
     supports-color "^3.1.2"
-    tunnel-agent "^0.4.3"
+    tunnel-agent "^0.6.0"
 
-heroku-client@3.x, heroku-client@^3.0.2:
+heroku-client@3.x:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/heroku-client/-/heroku-client-3.0.2.tgz#7e06f303ff18f7a0731725dcccbe210b76198657"
   dependencies:
     debug "^2.2.0"
     is-retry-allowed "^1.0.0"
     tunnel-agent "^0.4.0"
+
+heroku-client@^3.0.3:
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/heroku-client/-/heroku-client-3.0.3.tgz#302df7fe315f8fa0a98c1a6cbd22a5d81e1c5253"
+  dependencies:
+    debug "^3.0.0"
+    is-retry-allowed "^1.0.0"
+    tunnel-agent "^0.6.0"
 
 hoek@2.x.x:
   version "2.16.3"
@@ -1766,11 +1788,11 @@ html-encoding-sniffer@^1.0.1:
   dependencies:
     whatwg-encoding "^1.0.1"
 
-http-call@^2.1.3:
-  version "2.1.3"
-  resolved "https://registry.yarnpkg.com/http-call/-/http-call-2.1.3.tgz#6c604f33aaa0d964fe1a9d236fec6bcb32db0418"
+http-call@^2.1.4:
+  version "2.1.5"
+  resolved "https://registry.yarnpkg.com/http-call/-/http-call-2.1.5.tgz#f54d71cd8a322432691c61977d6c69d6fdfef70b"
   dependencies:
-    debug "^2.6.8"
+    debug "^3.0.0"
     is-retry-allowed "^1.1.0"
     is-stream "^1.1.0"
     tunnel-agent "^0.6.0"
@@ -1814,9 +1836,28 @@ ini@~1.3.0:
   version "1.3.4"
   resolved "https://registry.yarnpkg.com/ini/-/ini-1.3.4.tgz#0537cb79daf59b59a1a517dff706c86ec039162e"
 
-inquirer@^3.0.6, inquirer@^3.1.1:
+inquirer@^3.0.6:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/inquirer/-/inquirer-3.2.0.tgz#45b44c2160c729d7578c54060b3eed94487bb42b"
+  dependencies:
+    ansi-escapes "^2.0.0"
+    chalk "^2.0.0"
+    cli-cursor "^2.1.0"
+    cli-width "^2.0.0"
+    external-editor "^2.0.4"
+    figures "^2.0.0"
+    lodash "^4.3.0"
+    mute-stream "0.0.7"
+    run-async "^2.2.0"
+    rx-lite "^4.0.8"
+    rx-lite-aggregates "^4.0.8"
+    string-width "^2.1.0"
+    strip-ansi "^4.0.0"
+    through "^2.3.6"
+
+inquirer@^3.2.2:
+  version "3.2.2"
+  resolved "https://registry.yarnpkg.com/inquirer/-/inquirer-3.2.2.tgz#c2aaede1507cc54d826818737742d621bef2e823"
   dependencies:
     ansi-escapes "^2.0.0"
     chalk "^2.0.0"
@@ -2855,10 +2896,11 @@ natural-compare@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/natural-compare/-/natural-compare-1.4.0.tgz#4abebfeed7541f2c27acfb29bdbbd15c8d5ba4f7"
 
-netrc-parser@2.0.2, netrc-parser@^2.0.1, netrc-parser@^2.0.2:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/netrc-parser/-/netrc-parser-2.0.2.tgz#6ca81104d84993f81ac9654c5d3f517897c1d2f7"
+netrc-parser@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/netrc-parser/-/netrc-parser-2.0.3.tgz#b8bdd1c7170d349daaf1f81e3ef436959aa5ee42"
   dependencies:
+    debug "^3.0.1"
     lex "^1.7.9"
 
 nock@^9.0.13:
@@ -3748,9 +3790,15 @@ supports-color@^3.1.2:
   dependencies:
     has-flag "^1.0.0"
 
-supports-color@^4.0.0, supports-color@^4.1.0:
+supports-color@^4.0.0:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-4.2.0.tgz#ad986dc7eb2315d009b4d77c8169c2231a684037"
+  dependencies:
+    has-flag "^2.0.0"
+
+supports-color@^4.2.1:
+  version "4.2.1"
+  resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-4.2.1.tgz#65a4bb2631e90e02420dba5554c375a4754bb836"
   dependencies:
     has-flag "^2.0.0"
 
@@ -3886,7 +3934,7 @@ tryit@^1.0.1:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/tryit/-/tryit-1.0.3.tgz#393be730a9446fd1ead6da59a014308f36c289cb"
 
-tunnel-agent@^0.4.0, tunnel-agent@^0.4.3, tunnel-agent@~0.4.1:
+tunnel-agent@^0.4.0, tunnel-agent@~0.4.1:
   version "0.4.3"
   resolved "https://registry.yarnpkg.com/tunnel-agent/-/tunnel-agent-0.4.3.tgz#6373db76909fe570e08d73583365ed828a74eeeb"
 
@@ -3982,7 +4030,7 @@ util-deprecate@~1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/util-deprecate/-/util-deprecate-1.0.2.tgz#450d4dc9fa70de732762fbd2d4a28981419a0ccf"
 
-uuid@3.x, uuid@^3.0.0:
+uuid@^3.0.0, uuid@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.1.0.tgz#3dd3d3e790abc24d7b0d3a034ffababe28ebbc04"
 
