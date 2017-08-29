@@ -2,6 +2,7 @@
 defaults: &defaults
   working_directory: ~/cli
   docker:
+    #- image: dickeyxxx/cli-engine-docker:v2.1.0
     - image: dickeyxxx/cli-engine-docker:v2.0.1
 
 tags: &version_tags
@@ -15,81 +16,72 @@ filters: &all_tags_filters
 version: 2
 executorType: docker
 jobs:
-  build:
+  build_and_test:
     <<: *defaults
     steps:
-      - type: checkout
-      - type: cache-restore
-        key: cli
-      - type: shell
-        command: |
-          set -exu
-          yarn config set registry https://cli-npm.heroku.com
-          yarn install --pure-lockfile
-          yarn check
-          ./scripts/lint
-          # build dev only if it is a git checkout
-          if [ "${CIRCLE_BRANCH}" == "dev" ] && \
-             [ ! -d ~/cli/node_modules/cli-engine/lib ]; then
-            cd ~/cli/node_modules/cli-engine && yarn && cd ~/cli
-          fi
-          ./bin/run version
-          ./bin/run help
-      - type: cache-save
-        key: cli
+      - checkout
+      - restore_cache:
+        keys:
+          - cli-{{ checksum "yarn.lock" }}
+          - cli
+      - run: ./scripts/build
+      - run: ./scripts/test
+      - save_cache:
+        key: cli-{{ checksum "yarn.lock" }}
         paths:
           - /usr/local/share/.cache/yarn
-      - type: deploy
-        shell: /bin/bash
-        command: |
-          set -e
-          echo $HEROKU_DEB_KEY | base64 -d | gpg --import
-          set -ex
-          ./scripts/release-wrapper deb
-          ./scripts/copy-windows-files
-      - persist_to_workspace:
-          root: .
-          paths:
-            - tmp/tarballs/*
-            - node_modules/cli-engine/bin/version
-  release_windows_x64:
-    <<: *defaults
-    steps:
-      - type: checkout
-      - attach_workspace:
-          at: ~/cli
-      - run: |
-          set -ex
-          ./scripts/extract-windows-files x64
-          ./scripts/release-wrapper -a x64 windows
-          ./scripts/copy-artifacts x64
-      - store_artifacts:
-          path: tmp/artifacts
-  release_windows_x86:
-    <<: *defaults
-    steps:
-      - type: checkout
-      - attach_workspace:
-          at: ~/cli
-      - run: |
-          set -ex
-          ./scripts/extract-windows-files x86
-          ./scripts/release-wrapper -a x86 windows
-          ./scripts/copy-artifacts x86
-      - store_artifacts:
-          path: tmp/artifacts
+          - ~/cli/node_modules
+      # - type: deploy
+      #   shell: /bin/bash
+      #   command: |
+      #     set -e
+      #     echo $HEROKU_DEB_KEY | base64 -d | gpg --import
+      #     set -ex
+      #     ./scripts/release-wrapper deb
+      #     ./scripts/copy-windows-files
+      # - persist_to_workspace:
+      #     root: .
+      #     paths:
+      #       - tmp/tarballs/*
+      #       - node_modules/cli-engine/bin/version
+  # release_windows_x64:
+  #   <<: *defaults
+  #   steps:
+  #     - type: checkout
+  #     - attach_workspace:
+  #         at: ~/cli
+  #     - run: |
+  #         set -ex
+  #         ./scripts/extract-windows-files x64
+  #         ./scripts/release-wrapper -a x64 windows
+  #         ./scripts/copy-artifacts x64
+  #     - store_artifacts:
+  #         path: tmp/artifacts
+  # release_windows_x86:
+  #   <<: *defaults
+  #   steps:
+  #     - type: checkout
+  #     - attach_workspace:
+  #         at: ~/cli
+  #     - run: |
+  #         set -ex
+  #         ./scripts/extract-windows-files x86
+  #         ./scripts/release-wrapper -a x86 windows
+  #         ./scripts/copy-artifacts x86
+  #     - store_artifacts:
+  #         path: tmp/artifacts
 workflows:
   version: 2
   build_and_release:
     jobs:
-      - build:
+      - build_and_test:
           filters:
             tags: *version_tags
-      - release_windows_x64:
-          filters: *all_tags_filters
-          requires:
-            - build
-      - release_windows_x86:
-          filters: *all_tags_filters
-          requires:
-            - build
+      # - release_windows_x64:
+      #     filters: *all_tags_filters
+      #     requires:
+      #       - build
+      # - release_windows_x86:
+      #     filters: *all_tags_filters
+      #     requires:
+      #       - build

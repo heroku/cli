@@ -10,3 +10,7 @@ if grep -q -e "@git://" yarn.lock; then
   echoerr "host the module on @heroku/foo"
   exit 1
 fi
+
+# run shellcheck
+# TODO: enable when passing
+# find scripts | xargs shellcheck
