@@ -24,10 +24,10 @@ jobs:
       - run: ./scripts/build
       - run: ./scripts/test
       - save_cache:
-        key: cli-{{ checksum "yarn.lock" }}
-        paths:
-          - /usr/local/share/.cache/yarn
-          - ~/cli/node_modules
+          key: cli-{{ checksum "yarn.lock" }}
+          paths:
+            - /usr/local/share/.cache/yarn
+            - ~/cli/node_modules
       # - type: deploy
       #   shell: /bin/bash
       #   command: |
