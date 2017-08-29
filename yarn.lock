@@ -306,6 +306,10 @@ chownr@^1.0.1:
   version "1.0.1"
   resolved "http://cli-npm.heroku.com/chownr/-/chownr-1.0.1/e2a75042a9551908bebd25b8523d5f9769d79181.tgz#e2a75042a9551908bebd25b8523d5f9769d79181"
 
+ci-info@^1.0.0:
+  version "1.0.0"
+  resolved "http://cli-npm.heroku.com/ci-info/-/ci-info-1.0.0/dc5285f2b4e251821683681c381c3388f46ec534.tgz#dc5285f2b4e251821683681c381c3388f46ec534"
+
 circular-json@^0.3.1:
   version "0.3.3"
   resolved "http://cli-npm.heroku.com/circular-json/-/circular-json-0.3.3/815c99ea84f6809529d2f45791bdf82711352d66.tgz#815c99ea84f6809529d2f45791bdf82711352d66"
@@ -1382,6 +1386,14 @@ http-signature@~1.1.0:
     jsprim "^1.2.2"
     sshpk "^1.7.0"
 
+husky@0.14.3:
+  version "0.14.3"
+  resolved "http://cli-npm.heroku.com/husky/-/husky-0.14.3/c69ed74e2d2779769a17ba8399b54ce0b63c12c3.tgz#c69ed74e2d2779769a17ba8399b54ce0b63c12c3"
+  dependencies:
+    is-ci "^1.0.10"
+    normalize-path "^1.0.0"
+    strip-indent "^2.0.0"
+
 iconv-lite@^0.4.17:
   version "0.4.18"
   resolved "http://cli-npm.heroku.com/iconv-lite/-/iconv-lite-0.4.18/23d8656b16aae6742ac29732ea8f0336a4789cf2.tgz#23d8656b16aae6742ac29732ea8f0336a4789cf2"
@@ -1486,6 +1498,12 @@ is-builtin-module@^1.0.0:
   resolved "http://cli-npm.heroku.com/is-builtin-module/-/is-builtin-module-1.0.0/540572d34f7ac3119f8f76c30cbc1b1e037affbe.tgz#540572d34f7ac3119f8f76c30cbc1b1e037affbe"
   dependencies:
     builtin-modules "^1.0.0"
+
+is-ci@^1.0.10:
+  version "1.0.10"
+  resolved "http://cli-npm.heroku.com/is-ci/-/is-ci-1.0.10/f739336b2632365061a9d48270cd56ae3369318e.tgz#f739336b2632365061a9d48270cd56ae3369318e"
+  dependencies:
+    ci-info "^1.0.0"
 
 is-fullwidth-code-point@^1.0.0:
   version "1.0.0"
@@ -1989,6 +2007,10 @@ normalize-package-data@^2.3.2:
     is-builtin-module "^1.0.0"
     semver "2 || 3 || 4 || 5"
     validate-npm-package-license "^3.0.1"
+
+normalize-path@^1.0.0:
+  version "1.0.0"
+  resolved "http://cli-npm.heroku.com/normalize-path/-/normalize-path-1.0.0/32d0e472f91ff345701c15a8311018d3b0a90379.tgz#32d0e472f91ff345701c15a8311018d3b0a90379"
 
 npm-run-path@^1.0.0:
   version "1.0.0"
@@ -2610,6 +2632,10 @@ strip-bom@^3.0.0:
 strip-eof@^1.0.0:
   version "1.0.0"
   resolved "http://cli-npm.heroku.com/strip-eof/-/strip-eof-1.0.0/bb43ff5598a6eb05d89b59fcd129c983313606bf.tgz#bb43ff5598a6eb05d89b59fcd129c983313606bf"
+
+strip-indent@^2.0.0:
+  version "2.0.0"
+  resolved "http://cli-npm.heroku.com/strip-indent/-/strip-indent-2.0.0/5ef8db295d01e6ed6cbf7aab96998d7822527b68.tgz#5ef8db295d01e6ed6cbf7aab96998d7822527b68"
 
 strip-json-comments@~2.0.1:
   version "2.0.1"

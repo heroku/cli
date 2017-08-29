@@ -66,7 +66,8 @@
     "eslint-plugin-import": "2.7.0",
     "eslint-plugin-node": "5.1.1",
     "eslint-plugin-promise": "3.5.0",
-    "eslint-plugin-standard": "3.0.1"
+    "eslint-plugin-standard": "3.0.1",
+    "husky": "0.14.3"
   },
   "engineStrict": true,
   "engines": {
@@ -85,7 +86,7 @@
   "scripts": {
     "build": "cli-build",
     "postpublish": "./scripts/postpublish",
-    "release": "cli-release",
-    "version": "./scripts/version"
+    "precommit": "./scripts/precommit",
+    "release": "cli-release"
   }
 }

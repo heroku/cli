@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+source ./scripts/main
+
+if [ -x "$(command -v circleci)" ]; then
+  circleci config validate -c .circleci/config.yml
+else
+  echo "To install circleci and validate your config, run:"
+  echo "curl -o /usr/local/bin/circleci https://circle-downloads.s3.amazonaws.com/releases/build_agent_wrapper/circleci && chmod +x /usr/local/bin/circleci"
+fi
