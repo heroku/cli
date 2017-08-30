@@ -22,25 +22,80 @@ jobs:
           paths:
             - /usr/local/share/.cache/yarn
             - ~/cli/node_modules
-  darwin_x64: &release_target_job
+  darwin_x64:
     <<: *defaults
     steps:
       - checkout
-      - restore_cache: &release_target_cache_restore
+      - restore_cache:
+          keys: node-v8.3.0-darwin-x64
+      - restore_cache: &release_target_yarn_cache
           keys:
-            - v2-release-target-{{ checksum "yarn.lock" }}
-            - v2-release-target
+            - v1-release-target-yarn-{{ checksum "yarn.lock" }}
+            - v1-release-target
       - run: ./scripts/circle/release
       - save_cache:
-          key: v2-release-target-{{ checksum "yarn.lock" }}
+          key: v1-release-target-yarn-{{ checksum "yarn.lock" }}
           paths:
             - /usr/local/share/.cache/yarn
             - ~/cli/tmp/cache
-  linux_x64: *release_target_job
-  linux_x86: *release_target_job
-  linux_arm: *release_target_job
-  windows_x64: *release_target_job
-  windows_x86: *release_target_job
+      - save_cache:
+          key: node-v8.3.0-darwin-x64
+          paths: ~/cli/tmp/cache/node
+  linux_x64:
+    <<: *defaults
+    steps:
+      - checkout
+      - restore_cache:
+          keys: node-v8.3.0-linux-x64
+      - restore_cache: *release_target_yarn_cache
+      - run: ./scripts/circle/release
+      - save_cache:
+          key: node-v8.3.0-linux-x64
+          paths: ~/cli/tmp/cache/node
+  linux_x86:
+    <<: *defaults
+    steps:
+      - checkout
+      - restore_cache:
+          keys: node-v8.3.0-linux-x86
+      - restore_cache: *release_target_yarn_cache
+      - run: ./scripts/circle/release
+      - save_cache:
+          key: node-v8.3.0-linux-x86
+          paths: ~/cli/tmp/cache/node
+  linux_arm:
+    <<: *defaults
+    steps:
+      - checkout
+      - restore_cache:
+          keys: node-v8.3.0-linux-arm
+      - restore_cache: *release_target_yarn_cache
+      - run: ./scripts/circle/release
+      - save_cache:
+          key: node-v8.3.0-linux-arm
+          paths: ~/cli/tmp/cache/node
+  windows_x64:
+    <<: *defaults
+    steps:
+      - checkout
+      - restore_cache:
+          keys: node-v8.3.0-windows-x64
+      - restore_cache: *release_target_yarn_cache
+      - run: ./scripts/circle/release
+      - save_cache:
+          key: node-v8.3.0-windows-x64
+          paths: ~/cli/tmp/cache/node
+  windows_x86:
+    <<: *defaults
+    steps:
+      - checkout
+      - restore_cache:
+          keys: node-v8.3.0-windows-x86
+      - restore_cache: *release_target_yarn_cache
+      - run: ./scripts/circle/release
+      - save_cache:
+          key: node-v8.3.0-windows-x86
+          paths: ~/cli/tmp/cache/node
   debian:
     <<: *defaults
     steps:
