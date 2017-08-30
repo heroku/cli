@@ -12,7 +12,7 @@ mkdir -p "${output}"
 # create tarballs
 tarball_base="${output}/${BASE}"
 cd "$root/tmp/builds"
-bg tar c "$(base)" | xz > "${tarball_base}.tar.xz"
+bg tar c "${BASE}" | xz > "${tarball_base}.tar.xz"
 bg tar czf "${tarball_base}.tar.gz" "${BASE}"
 wait_all
 
