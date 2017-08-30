@@ -6,13 +6,13 @@ set -x
 
 if [[ "${CHANNEL:-}" == "" ]]; then
   if [[ "${TRAVIS_TAG:-}" != "" ]]; then
-    CHANNEL=stable
+    export CHANNEL=stable
   elif [[ "${TRAVIS_BRANCH:-}" = "master" ]]; then
-    CHANNEL=beta
+    export CHANNEL=beta
   elif [[ "${TRAVIS_BRANCH:-}" = "dev" ]]; then
-    CHANNEL=dev
+    export CHANNEL=dev
   elif [[ "${TRAVIS_BRANCH:-}" = "macos-installer" ]]; then
-    CHANNEL=dev
+    export CHANNEL=dev
   fi
 fi
 
