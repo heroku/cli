@@ -2,7 +2,7 @@
 
 source ./scripts/main
 
-"${__root}/scripts/lint"
+"${root}/scripts/lint"
 
-"${__root}/bin/run" version
-"${__root}/bin/run" help
+"${root}/bin/run" version
+"${root}/bin/run" help
