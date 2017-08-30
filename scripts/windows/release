@@ -59,7 +59,7 @@ DIST_DIR="dist/${VERSION}"
 
 mkdir -p "$DIST_DIR"
 
-INSTALLER_EXE="heroku-$ARCH.exe"
+INSTALLER_EXE="heroku-cli-$ARCH.exe"
 INSTALLER="$DIST_DIR/$INSTALLER_EXE"
 
 set +x
