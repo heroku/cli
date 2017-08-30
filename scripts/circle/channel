@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 
-if [[ "${CHANNEL:-}" != "" ]]; then
-  echo "${CHANNEL}"
-elif [[ "${CIRCLE_TAG:-}" != "" ]]; then
+if [[ "${CIRCLE_TAG:-}" != "" ]]; then
   echo stable
 elif [[ "${CIRCLE_BRANCH:-}" == "master" ]]; then
   echo beta
