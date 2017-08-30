@@ -12,6 +12,7 @@ set -x
 export OS=linux
 
 # set constants
+VERSION=$(node -p "require('./package.json').version")
 DEB_VERSION="${VERSION}-1"
 workspace_root=$root/tmp/apt
 

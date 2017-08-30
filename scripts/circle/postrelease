@@ -2,16 +2,18 @@
 
 source ./scripts/main
 
+CHANNEL=$(./scripts/circle/channel)
+
 set -x
 
 mkdir -p tmp/build
 cat << EOF > tmp/build/version
 {
-  "channel": "$(channel)",
-  "version": "$(version)"
+  "channel": "${CHANNEL}",
+  "version": "${VERSION}"
 }
 EOF
-aws s3 cp --cache-control max-age=3600 --content-type application/json tmp/build/version "s3://$S3_BUCKET/heroku-cli/channels/$(channel)/version"
+aws s3 cp --cache-control max-age=3600 --content-type application/json tmp/build/version "s3://$S3_BUCKET/heroku-cli/channels/${CHANNEL}/version"
 
 # invalidate CDN
-aws cloudfront create-invalidation --distribution-id EHF9FOCUJYVZ --paths "/heroku-cli/channels/$(channel)/*"
+aws cloudfront create-invalidation --distribution-id EHF9FOCUJYVZ --paths "/heroku-cli/channels/${CHANNEL}/*"
