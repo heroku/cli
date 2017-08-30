@@ -19,3 +19,7 @@ wait_all
 
 # finally, release to s3
 "${root}/scripts/release_tarballs" dist/tarballs
+
+if [[ "${OS}" = "darwin" ]]; then
+  "${root}/scripts/darwin/homebrew"
+fi

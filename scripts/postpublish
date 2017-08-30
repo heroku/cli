@@ -3,7 +3,6 @@
 set -ex
 
 VERSION=$(node -p "require('./package.json').version")
-SHA_VERSION=$(./scripts/version)
 
 # macos installer
 git push origin "$(git describe --abbrev=0 --tags)"
@@ -13,20 +12,6 @@ git submodule update --init
   cd macos-installer
   git tag "v$VERSION"
   git push --tags
-)
-
-# heroku homebrew tap
-(
-  cd homebrew-brew
-  git pull --rebase origin master
-  sed -i '' "s/heroku-cli-v.*-darwin-x64/heroku-cli-v${SHA_VERSION}-darwin-x64/" Formula/heroku.rb
-  sed -i '' "s/version \".*\"/version \"${SHA_VERSION}\"/" Formula/heroku.rb
-  git add Formula/heroku.rb
-  git commit -m "heroku ${SHA_VERSION}"
-  git push origin master
-  cd ..
-  # rather than make a bunch of commits to update this submodule, just reset it back
-  git submodule update
 )
 
 # homebrew-core
