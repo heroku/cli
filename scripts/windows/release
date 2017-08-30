@@ -23,7 +23,7 @@ else
   PROGRAMSUFFIX=""
 fi
 
-sed -e "s/!define Version 'VERSION'/!define Version '$(version)'/" resources/exe/heroku.nsi |\
+sed -e "s/!define Version 'VERSION'/!define Version '${VERSION}'/" resources/exe/heroku.nsi |\
   sed -e "s/InstallDir .*/InstallDir \"\$PROGRAMFILES$PROGRAMSUFFIX\\\Heroku\"/" \
   > "$INSTALLER_BASE/heroku.nsi"
 
@@ -53,7 +53,7 @@ set -x
 
 makensis "$INSTALLER_BASE/heroku.nsi" > /dev/null
 
-DIST_DIR="dist/$(version)"
+DIST_DIR="dist/${VERSION}"
 
 mkdir -p "$DIST_DIR"
 
@@ -70,4 +70,4 @@ osslsigncode -pkcs12 /tmp/heroku-windows-key \
 
 set -x
 
-s3uploadDayCache "$INSTALLER" "$remote_base/$INSTALLER_EXE"
+s3uploadDayCache "$INSTALLER" "$REMOTE_BASE/$INSTALLER_EXE"
