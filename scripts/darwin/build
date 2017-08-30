@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -x
+
 export OS=darwin
 export ARCH=x64
 
