@@ -120,9 +120,9 @@ workflows:
           filters: &all_pushes
             tags: &version_tags
               only: /^v.*/
-      - darwin_x64: &build_step
+      - darwin_x64_build: &build_step
           filters: *all_pushes
-      - linux_x64: *build_step
+      - linux_x64_build: *build_step
       # - linux_x86: *release_target
       # - linux_arm: *release_target
       # - windows_x64: *release_target
