@@ -38,7 +38,7 @@ function build_arch () {
 
   # setup base
   ARCH=${ARCH} "${root}/scripts/build_base"
-  mv "$root/tmp/builds/$(base)" "$WORKSPACE/usr/lib/heroku"
+  mv "$root/tmp/builds/${BASE}" "$WORKSPACE/usr/lib/heroku"
 
   # add bin loader scripts
   cat << EOF > "$WORKSPACE/usr/lib/heroku/bin/heroku"
@@ -116,7 +116,7 @@ gpg --digest-algo SHA512 --clearsign -u 0F1B0520 -o InRelease Release
 gpg --digest-algo SHA512 -abs -u 0F1B0520 -o Release.gpg Release
 
 # ship to s3
-REMOTE_PATH=/branches/$(channel)/apt
+REMOTE_PATH=/branches/${CHANNEL}/apt
 REMOTE_ROOT=s3://${S3_BUCKET}${REMOTE_PATH}
 bg s3uploadDayCache "$workspace_root/heroku_${DEB_VERSION}_armel.deb" "$REMOTE_ROOT/heroku_${DEB_VERSION}_armel.deb"
 bg s3uploadDayCache "$workspace_root/heroku_${DEB_VERSION}_amd64.deb" "$REMOTE_ROOT/heroku_${DEB_VERSION}_amd64.deb"
