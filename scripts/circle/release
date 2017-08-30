@@ -18,6 +18,3 @@ wait_all
 
 # finally, release to s3
 "${root}/scripts/release_tarballs" dist/tarballs
-
-# invalidate CDN
-aws cloudfront create-invalidation --distribution-id EHF9FOCUJYVZ --paths "/heroku-cli/channels/$CHANNEL/*"
