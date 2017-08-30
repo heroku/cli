@@ -100,7 +100,7 @@ jobs:
     <<: *defaults
     steps:
       - checkout
-      - restore_cache: *release_target_cache_restore
+      - restore_cache: *release_target_yarn_cache
       - run: ./scripts/linux/debian
   postrelease:
     <<: *defaults
