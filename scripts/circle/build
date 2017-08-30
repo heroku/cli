@@ -2,7 +2,7 @@
 
 source ./scripts/main
 
-yarn install --pure-lockfile
+yarn install --pure-lockfile --non-interactive --prefer-offline
 yarn check
 
 # build only if it is a git checkout

@@ -32,7 +32,7 @@ cp "${root}/package.json" "${output}"
 function install_packages {
   cd "${output}"
   # install packages
-  yarn install --no-progress --production --no-progress
+  yarn install --no-progress --production --non-interactive --prefer-offline
 
   # build cli-engine if needed
   if [ ! -f "${output}/node_modules/cli-engine/lib/cli.js" ]; then
