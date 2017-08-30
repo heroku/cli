@@ -30,11 +30,11 @@ jobs:
           keys: [node-v8.3.0-darwin-x64]
       - restore_cache: &release_target_yarn_cache
           keys:
-            - v2-release-target-yarn-{{ checksum "yarn.lock" }}
-            - v2-release-target
+            - v3-release-target-yarn-{{ checksum "yarn.lock" }}
+            - v3-release-target-yarn
       - run: ./scripts/circle/release
       - save_cache:
-          key: v2-release-target-yarn-{{ checksum "yarn.lock" }}
+          key: v3-release-target-yarn-{{ checksum "yarn.lock" }}
           paths:
             - /usr/local/share/.cache/yarn
       - save_cache:
