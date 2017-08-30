@@ -4,12 +4,32 @@ source ./scripts/main
 
 set -x
 
+function _channel () {
+  if [[ "${CHANNEL:-}" != "" ]]; then
+    echo "${CHANNEL}"
+  elif [[ "${CIRCLE_TAG:-}" != "" ]]; then
+    echo stable
+  elif [[ "${CIRCLE_BRANCH:-}" == "master" ]]; then
+    echo beta
+  elif [[ "${CIRCLE_BRANCH:-}" == "dev" ]]; then
+    echo dev
+  elif [[ "${CIRCLE_BRANCH:-}" == "macos-installer" ]]; then
+    echo dev
+  fi
+}
+CHANNEL=$(_channel)
+
 # first build the base
 "${root}/scripts/build_base" tmp/heroku
 
 # now build the installers and tarballs in parallel
 "${root}/scripts/build_tarballs" tmp/heroku dist/tarballs &
 wait
+
+if [ ! -z "$CHANNEL" ]; then
+  echo "Skipping release on ${CIRCLE_BRANCH}"
+  exit 0
+fi
 
 # finally, release to s3
 "${root}/scripts/release_tarballs" dist/tarballs

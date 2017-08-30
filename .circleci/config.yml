@@ -35,12 +35,14 @@ jobs:
           key: node-modules-{{ checksum "yarn.lock" }}
           paths:
             - ~/cli/node_modules
-  macos:
+  macos: &release_target_job
     <<: *defaults
     steps:
       - checkout
       - restore_cache: *yarn_cache
       - run: OS=darwin ARCH=x64 ./scripts/circle/release
+  linux: *release_target_job
+  windows: *release_target_job
   # release_windows_x64:
   #   <<: *defaults
   #   steps:
