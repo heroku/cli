@@ -6,7 +6,7 @@ VERSION=$(node -p "require('./package.json').version")
 
 git submodule sync
 git submodule update --init
-cd cli
+cd macos-installer
 git tag "v$VERSION"
 git push --tags
 
