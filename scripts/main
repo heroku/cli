@@ -31,3 +31,5 @@ function go_home () {
   cd "${root}"
 }
 go_home
+
+CHANNEL=$(./scripts/circle/channel)

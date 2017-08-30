@@ -74,17 +74,21 @@ workflows:
   heroku_cli:
     jobs:
       - test:
-          filters: &all_pushes
+          filters:
             tags: &version_tags
               only: /^v.*/
       - macos: &release_target
-          filters: *all_pushes
+          filters: &release_pushes
+            tags: *version_tags
+            branches:
+              only:
+                - master
+                - dev
           requires:
             - test
       - linux: *release_target
       - windows: *release_target
       - postrelease:
-          filters: *all_pushes
           requires:
             - macos
             - linux
