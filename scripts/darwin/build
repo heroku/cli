@@ -1,20 +1,23 @@
 #!/usr/bin/env bash
 
+OS=darwin
+ARCH=x64
+
 source ./scripts/main
 
 if [ $# -ne 1 ]; then
-  echo "USAGE: $0 CHANNEL"
+  echo "USAGE: $0 OUTPUT_DIR"
   exit 1
 fi
 
-"${root}/scripts/build_base" darwin-x64 "$1" dist/darwin
+"${root}/scripts/build_base" tmp/heroku
 
-mkdir -p dist
+output="$(mkdir -p "$1" && cd "$1" && pwd)"
 
-pkgbuild --root dist/darwin \
+pkgbuild --root tmp/heroku \
   --identifier com.heroku.cli \
   --install-location /usr/local/lib/heroku \
   --version "$(version)" \
   --sign "Developer ID Installer: Heroku INC" \
   --scripts "${root}/scripts/darwin/scripts" \
-  dist/heroku.pkg
+  "${output}/heroku.pkg"
