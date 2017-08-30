@@ -127,9 +127,9 @@ workflows:
           filters: &release_pushes
             tags: *version_tags
             branches: [master, dev, streamline]
-          requires:
-            - darwin_x64_build
-            - linux_x64_build
+          # requires:
+          #   - darwin_x64_build
+          #   - linux_x64_build
 # - linux_x86: *release_target
 # - linux_arm: *release_target
 # - windows_x64: *release_target
