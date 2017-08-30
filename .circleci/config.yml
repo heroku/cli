@@ -17,14 +17,12 @@ jobs:
             - node-modules
       - run: ./scripts/circle/build
       - run: ./scripts/test
-      - run: rm -rf /usr/local/share/.cache/yarn/*
-      - run: rm -rf node_modules/*
       - save_cache:
-          key: yarn-{{ checksum "yarn.lock" }}
+          key: v1-yarn-{{ checksum "yarn.lock" }}
           paths:
             - /usr/local/share/.cache/yarn
       - save_cache:
-          key: node-modules-{{ checksum "yarn.lock" }}
+          key: v1-node-modules-{{ checksum "yarn.lock" }}
           paths:
             - /usr/local/share/.cache/yarn
             - ~/cli/node_modules
@@ -34,8 +32,8 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - yarn-{{ checksum "yarn.lock" }}
-            - yarn
+            - v1-yarn-{{ checksum "yarn.lock" }}
+            - v1-yarn
       - run: OS=darwin ARCH=x64 ./scripts/circle/release
   linux: *release_target_job
   windows: *release_target_job
