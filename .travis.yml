@@ -9,8 +9,8 @@ before_install:
   - security default-keychain -s $OSX_KEYCHAIN
   - security unlock-keychain -p travis $OSX_KEYCHAIN
   - security set-keychain-settings -t 3600 -l ~/Library/Keychains/ios-build.keychain
-  - echo $CERTIFICATE_OSX | base64 --decode > ~/Certificates.cer
-  - security import Certificates.p12 -k ~/Library/Keychains/ios-build.keychain -P $HEROKU_DARWIN_SIGNING_PASS -T /usr/bin/codesign
+  - echo $CERTIFICATE_OSX | base64 --decode > ~/Certificates.p12
+  - security import ~/Certificates.p12 -k ~/Library/Keychains/ios-build.keychain -P $HEROKU_DARWIN_SIGNING_PASS -T /usr/bin/codesign
 script:
   - ./scripts/travis/release
 
