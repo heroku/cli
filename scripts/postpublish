@@ -4,6 +4,7 @@ set -ex
 
 VERSION=$(node -p "require('./package.json').version")
 
+git push origin "$(git describe --abbrev=0 --tags)"
 git submodule sync
 git submodule update --init
 cd macos-installer
