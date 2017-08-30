@@ -16,6 +16,7 @@ if [[ ! -z "${OSX_KEYCHAIN:-}" ]]; then
   keychain="--keychain ${OSX_KEYCHAIN}"
 fi
 
+mkdir -p tmp
 # shellcheck disable=SC2086
 pkgbuild --root "tmp/builds/${BASE}" \
   --identifier com.heroku.cli \
