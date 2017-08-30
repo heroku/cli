@@ -16,11 +16,11 @@ output="$(mkdir -p "$2" && cd "$2" && pwd)"
 mkdir -p "${output}"
 
 # create tarballs
-tarball_base="${output}/heroku-cli-${OS}-${ARCH}"
+tarball_base="${output}/heroku-cli-v$(version)-${OS}-${ARCH}"
 cd "$(dirname "${input}")"
-tar c heroku | xz > "${tarball_base}.tar.xz" &
-tar czf "${tarball_base}.tar.gz" heroku &
-wait
+bg tar c heroku | xz > "${tarball_base}.tar.xz"
+bg tar czf "${tarball_base}.tar.gz" heroku
+wait_all
 
 sha256=$(shasum -a 256 "${tarball_base}.tar.gz" | awk \{'print $1'\})
 sha256xz=$(shasum -a 256 "${tarball_base}.tar.xz" | awk \{'print $1'\})

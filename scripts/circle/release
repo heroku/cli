@@ -10,8 +10,8 @@ echo "Releasing ${CHANNEL}"
 "${root}/scripts/build_base" tmp/heroku
 
 # now build the installers and tarballs in parallel
-"${root}/scripts/build_tarballs" tmp/heroku dist/tarballs &
-wait
+bg "${root}/scripts/build_tarballs" tmp/heroku dist/tarballs
+wait_all
 
 # finally, release to s3
 "${root}/scripts/release_tarballs" dist/tarballs

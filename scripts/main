@@ -35,6 +35,17 @@ function go_home () {
 }
 go_home
 
+function bg () {
+  "$@" &
+  pids="${pids:-} $!"
+}
+
+function wait_all () {
+  for pid in $pids; do
+    wait "${pid}" || exit 1
+  done
+}
+
 CHANNEL=${CHANNEL:=$(./scripts/circle/channel)}
 
 if [[ ! -z "${CIRCLE_JOB-}" ]]; then

@@ -27,7 +27,7 @@ cp "${root}/README.md" "${output}"
 cp "${root}/LICENSE" "${output}"
 cp "${root}/package.json" "${output}"
 
-"${root}/scripts/fetch_node_binary" "${OS}" "${ARCH}" "${output}/bin" &
+bg "${root}/scripts/fetch_node_binary" "${OS}" "${ARCH}" "${output}/bin"
 
 function install_packages {
   cd "${output}"
@@ -41,7 +41,7 @@ function install_packages {
     yarn run prepare
   fi
 }
-install_packages &
+bg install_packages
 
 # create bin runner
 if [ "${OS}" == windows ]; then
@@ -96,4 +96,4 @@ const cli = new CLI({
 cli.run()
 EOF
 
-wait
+wait_all
