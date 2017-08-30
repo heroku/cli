@@ -28,34 +28,34 @@ jobs:
     <<: *defaults
     steps:
       - checkout
-      # - restore_cache: &release_target_yarn_cache
-      #     keys:
-      #       - v3-release-target-yarn-{{ checksum "yarn.lock" }}
-      #       - v3-release-target-yarn
-      # - restore_cache: {keys: [node-v8.3.0-darwin-x64]}
-      # - run: ./scripts/circle/build
-      # - persist_to_workspace: &persist_dist
-      #     root: tmp/builds
-      #     paths: [darwin_x64]
-      # - save_cache:
-      #     key: v3-release-target-yarn-{{ checksum "yarn.lock" }}
-      #     paths: [/usr/local/share/.cache/yarn]
-      # - save_cache: &node_cache_save
-      #     key: node-v8.3.0-darwin-x64
-      #     paths: [~/cli/tmp/cache/node]
+      - restore_cache: &release_target_yarn_cache
+          keys:
+            - v3-release-target-yarn-{{ checksum "yarn.lock" }}
+            - v3-release-target-yarn
+      - restore_cache: {keys: [node-v8.3.0-darwin-x64]}
+      - run: ./scripts/circle/build
+      - persist_to_workspace: &persist_dist
+          root: tmp/builds
+          paths: [darwin_x64]
+      - save_cache:
+          key: v3-release-target-yarn-{{ checksum "yarn.lock" }}
+          paths: [/usr/local/share/.cache/yarn]
+      - save_cache: &node_cache_save
+          key: node-v8.3.0-darwin-x64
+          paths: [~/cli/tmp/cache/node]
   linux_x64_build:
     <<: *defaults
     steps:
       - checkout
-      # - restore_cache: *release_target_yarn_cache
-      # - restore_cache: {keys: [node-v8.3.0-linux-x64]}
-      # - run: ./scripts/circle/build
-      # - persist_to_workspace: &persist_dist
-      #     root: tmp/builds
-      #     paths: [linux_x64]
-      # - save_cache:
-      #     <<: *node_cache_save
-      #     key: node-v8.3.0-linux-x64
+      - restore_cache: *release_target_yarn_cache
+      - restore_cache: {keys: [node-v8.3.0-linux-x64]}
+      - run: ./scripts/circle/build
+      - persist_to_workspace: &persist_dist
+          root: tmp/builds
+          paths: [linux_x64]
+      - save_cache:
+          <<: *node_cache_save
+          key: node-v8.3.0-linux-x64
   # linux_x86:
   #   <<: *defaults
   #   steps:
@@ -123,13 +123,13 @@ workflows:
       - darwin_x64_build: &build_step
           filters: *all_pushes
       - linux_x64_build: *build_step
-      # - release:
-      #     filters: &release_pushes
-      #       tags: *version_tags
-      #       branches: [master, dev, streamline]
-      #     requires:
-      #       - darwin_x64
-      #       - linux_x64
+      - release:
+          filters: &release_pushes
+            tags: *version_tags
+            branches: [master, dev, streamline]
+          requires:
+            - darwin_x64_build
+            - linux_x64_build
 # - linux_x86: *release_target
 # - linux_arm: *release_target
 # - windows_x64: *release_target
