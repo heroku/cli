@@ -12,4 +12,4 @@ script:
   - ls -ls dist
 env:
   global:
-    secure: JOQ9BEKxokX/3DMqmycUYpmwLa1r8iF4KRwzex/TDIadc+uC/R5G5n0YtrdwnpjstGth7QKz6z960XTn6/GBJg5nDLMKOXlDtOquhy1lY4GisNk7XNUS3DXkw8ltjLJ3xTSGnV8vUGBm+XJsWGd0sRdLXlGLeL/dmDee+rVd0ZE=
+    secure: "Lmrbyyz1WU1JSpfjxgWwAV3WcYmz5izPEEGFegzdXWUOCB2yP6Nq1UKSMLgRVK9S/myHlOVgR4gWh2RDWy+FaK4y3m3vqAPu6+o6yw4m+TtdOI6GYwbQB3Cv2JYfJVoe4GIDcWhVsZa+qVlozgNdpr8EaHpscX3IbiDmmbeWCmI="
