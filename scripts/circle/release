@@ -2,6 +2,7 @@
 
 source ./scripts/main
 source ./scripts/circle/vars
+./scripts/circle/github_setup
 
 set -x
 
