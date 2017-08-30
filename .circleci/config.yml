@@ -124,9 +124,9 @@ workflows:
           filters: *all_pushes
       - linux_x64_build: *build_step
       - release:
-          filters: &release_pushes
-            tags: *version_tags
-            branches: [master, dev, streamline]
+          # filters: &release_pushes
+          #   tags: *version_tags
+          #   branches: [master, dev, streamline]
           # requires:
           #   - darwin_x64_build
           #   - linux_x64_build
