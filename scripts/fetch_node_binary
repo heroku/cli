@@ -32,7 +32,7 @@ else
   node_base=node-v$(node_version)-${os}-${node_arch}
   if [ ! -f "${root}/tmp/cache/node/${node_base}" ]; then
     url=https://nodejs.org/dist/v$(node_version)/${node_base}.tar.xz
-    curl -fSL "${url}" | tar -C "${root}/tmp/node" -x
+    curl -fSL "${url}" | tar -C "${root}/tmp/node" -xJ
     mv "${root}/tmp/node/${node_base}/bin/node" "${root}/tmp/cache/node/${node_base}"
   fi
 fi
