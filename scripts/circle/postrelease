@@ -2,6 +2,7 @@
 
 source ./scripts/main
 
+VERSION=$(./scripts/version)
 CHANNEL=$(./scripts/circle/channel)
 
 set -x
