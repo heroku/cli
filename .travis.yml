@@ -5,13 +5,13 @@ node_js:
   - 8
 
 before_install:
-  - security create-keychain -p travis ios-build.keychain
-  - security default-keychain -s ios-build.keychain
-  - security unlock-keychain -p travis ios-build.keychain
-  - echo $CERTIFICATE_OSX | base64 --decode > ~/Certificate.cer
-  - security import .travis/Certificates.p12 -k ~/Library/Keychains/ios-build.keychain -P $HEROKU_DARWIN_SIGNING_PASS -T /usr/bin/codesign
+  - security create-keychain -p travis $OSX_KEYCHAIN
+  - security default-keychain -s $OSX_KEYCHAIN
+  - security unlock-keychain -p travis $OSX_KEYCHAIN
+  - echo $CERTIFICATE_OSX | base64 --decode > ~/Certificates.cer
+  - security import Certificates.p12 -k ~/Library/Keychains/ios-build.keychain -P $HEROKU_DARWIN_SIGNING_PASS -T /usr/bin/codesign
 script:
   - ./scripts/travis/release
 
 env:
-  - OSX_KEYCHAIN=~/Library/Keychains/ios-build.keychain
+  - OSX_KEYCHAIN=ios-build.keychain
