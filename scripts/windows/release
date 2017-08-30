@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+export OS=windows
+
 source ./scripts/main
 source ./scripts/circle/vars
 
@@ -15,7 +17,7 @@ mkdir -p "$WINEPREFIX"
 
 cp resources/exe/heroku.cmd "$INSTALLER_BASE/bin/heroku.cmd"
 
-cp -r "$root/tmp/builds/$(base)" "$INSTALLER_BASE/client"
+cp -r "${BASE_PATH}" "$INSTALLER_BASE/client"
 
 if [ "$ARCH" == "x64" ]; then
   PROGRAMSUFFIX="64"
