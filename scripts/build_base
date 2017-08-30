@@ -1,51 +1,57 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-set -x
+# builds a directory structure of a CLI to be released
+# this is the starting point for any build
+# It includes:
+#
+# * node binary
+# * node modules
+# * bin scripts
 
 source ./scripts/main
 
-if [[ $# -ne 4 ]]; then
-  echo "USAGE: $0 OS ARCH CHANNEL OUTPUT_DIR"
+set -x
+
+if [[ $# -ne 1 ]]; then
+  echo "USAGE: $0 OUTPUT_DIR"
   exit 1
 fi
 
-__os=$1
-__arch=$2
-__channel=$3
-__output="$(mkdir -p "$4" && cd "$4" && pwd)"
+output="$(mkdir -p "$1" && cd "$1" && pwd)"
 
 # setup workspace
-rm -rf "${__output}"
-mkdir -p "${__output}/node_modules"
-mkdir -p "${__output}/bin"
-cp "${__root}/README.md" "${__output}"
-cp "${__root}/LICENSE" "${__output}"
-cp "${__root}/package.json" "${__output}"
+rm -rf "${output}"
+mkdir -p "${output}/node_modules"
+mkdir -p "${output}/bin"
+cp "${root}/README.md" "${output}"
+cp "${root}/LICENSE" "${output}"
+cp "${root}/package.json" "${output}"
 
-"${__root}/scripts/fetch_node_binary" "${__os}" "${__arch}" "${__output}/bin" &
+"${root}/scripts/fetch_node_binary" "${OS}" "${ARCH}" "${output}/bin" &
 
-function yarn {
+function install_packages {
+  cd "${output}"
   # install packages
-  yarn install --no-progress --production --no-progress --modules-folder="${__output}/node_modules" &
+  yarn install --no-progress --production --no-progress
 
   # build cli-engine if needed
-  if [ ! -f "${__output}/node_modules/cli-engine/lib/cli.js" ]; then
-    cd "${__output}/node_modules/cli-engine"
+  if [ ! -f "${output}/node_modules/cli-engine/lib/cli.js" ]; then
+    cd "${output}/node_modules/cli-engine"
     yarn
     yarn run prepare
   fi
 }
-yarn &
+install_packages &
 
 # create bin runner
-if [ "${__os}" == windows ]; then
-  cat << EOF > "${__output}/bin/heroku.cmd"
+if [ "${OS}" == windows ]; then
+  cat << EOF > "${output}/bin/heroku.cmd"
 @echo off
 set CLI_BINPATH=%~dp0\\heroku.cmd
 "%~dp0\\node.exe" "%~dp0\\heroku.js" %*
 EOF
 else
-  cat << EOF > "${__output}/bin/heroku"
+  cat << EOF > "${output}/bin/heroku"
 #!/usr/bin/env bash
 set -e
 get_script_dir () {
@@ -71,10 +77,10 @@ else
   CLI_BINPATH="\$DIR/heroku" "\$DIR/node" "\$DIR/heroku.js" "\$@"
 fi
 EOF
-chmod +x "${__output}/bin/heroku"
+chmod +x "${output}/bin/heroku"
 fi
 
-cat << EOF > "${__output}/bin/heroku.js"
+cat << EOF > "${output}/bin/heroku.js"
 const path = require('path')
 const CLI = require('cli-engine').default
 const root = path.join(__dirname, '..')
@@ -83,8 +89,8 @@ const cli = new CLI({
   config: {
     root,
     pjson: require(path.join(root, 'package.json')),
-    channel: '${__channel}',
-    version: '${__version}'
+    channel: '${CHANNEL}',
+    version: '$(version)'
   }
 })
 cli.run()

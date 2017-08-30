@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+
+source ./scripts/main
+
+set -x
+
+if [ $# -ne 2 ]; then
+  echo "USAGE: $0 INPUT_DIR OUTPUT_DIR"
+  echo "INPUT_DIR is the result of running ./scripts/build_base"
+  exit 1
+fi
+
+input=$1
+output="$(mkdir -p "$2" && cd "$2" && pwd)"
+
+mkdir -p "${output}"
+
+# create tarballs
+tarball_base="${output}/heroku-cli-${OS}-${ARCH}"
+cd "$(dirname "${input}")"
+tar c heroku | xz > "${tarball_base}.tar.xz" &
+tar czf "${tarball_base}.tar.gz" heroku &
+wait
+
+sha256=$(shasum -a 256 "${tarball_base}.tar.gz" | awk \{'print $1'\})
+sha256xz=$(shasum -a 256 "${tarball_base}.tar.xz" | awk \{'print $1'\})
+cat << EOF > "${output}/${OS}-${ARCH}"
+{
+  "channel": "${CHANNEL}",
+  "version": "$(version)",
+  "sha256gz": "${sha256}",
+  "sha256xz": "${sha256xz}"
+}
+EOF

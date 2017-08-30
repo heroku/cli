@@ -25,7 +25,7 @@ jobs:
           keys:
             - node-modules-{{ checksum "yarn.lock" }}
             - node-modules
-      - run: ./scripts/build
+      - run: ./scripts/circle/build
       - run: ./scripts/test
       - save_cache:
           key: yarn-{{ checksum "yarn.lock" }}
@@ -39,37 +39,8 @@ jobs:
     <<: *defaults
     steps:
       - checkout
-      - restore_cache: &yarn_cache
-          keys:
-            - yarn-{{ checksum "yarn.lock" }}
-            - yarn
-      - restore_cache: &node_modules_cache
-          keys:
-            - node-modules-{{ checksum "yarn.lock" }}
-            - node-modules
-      - run: ./scripts/macos
-      - run: ./scripts/test
-      - save_cache:
-          key: yarn-{{ checksum "yarn.lock" }}
-          paths:
-            - /usr/local/share/.cache/yarn
-      - save_cache:
-          key: node-modules-{{ checksum "yarn.lock" }}
-          paths:
-            - ~/cli/node_modules
-      # - type: deploy
-      #   shell: /bin/bash
-      #   command: |
-      #     set -e
-      #     echo $HEROKU_DEB_KEY | base64 -d | gpg --import
-      #     set -ex
-      #     ./scripts/release-wrapper deb
-      #     ./scripts/copy-windows-files
-      # - persist_to_workspace:
-      #     root: .
-      #     paths:
-      #       - tmp/tarballs/*
-      #       - node_modules/cli-engine/bin/version
+      - restore_cache: *yarn_cache
+      - run: OS=darwin ARCH=x64 ./scripts/circle/release
   # release_windows_x64:
   #   <<: *defaults
   #   steps:
@@ -104,10 +75,12 @@ workflows:
           filters: &all_pushes
             tags: &version_tags
               only: /^v.*/
-      - macos:
+      - macos: &release_target
           filters: *all_pushes
           requires:
             - test
+      - linux: *release_target
+      - windows: *release_target
       # - release_windows_x64:
       #     filters: *all_tags_filters
       #     requires:

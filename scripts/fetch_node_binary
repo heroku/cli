@@ -7,35 +7,35 @@ if [[ $# -ne 3 ]]; then
   exit 1
 fi
 
-__os=$1
-__arch=$2
-__output=$3
-__node_ext=""
+os=$1
+arch=$2
+output=$3
+node_ext=""
 
-mkdir -p "${__output}"
-mkdir -p "${__root}/tmp/node"
-mkdir -p "${__root}/tmp/cache/node"
+mkdir -p "${output}"
+mkdir -p "${root}/tmp/node"
+mkdir -p "${root}/tmp/cache/node"
 
 # install node
-if [ "${__os}" == windows ]; then
-  __node_ext=".exe"
-  __node_base=node-v${__node_version}-win-${__arch}
-  if [ ! -f "${__root}/tmp/cache/node/${__node_base}" ]; then
-    __url=https://nodejs.org/dist/v${__node_version}/node-v${__node_version}-win-${__arch}.7z
-    curl -fSsLo "${__root}/tmp/node/${__node_base}.7z" "${__url}"
-    cd "${__root}/tmp/node"
-    7z x -bd -y "${__root}/tmp/node/${__node_base}.7z" > /dev/null
-    mv "${__node_base}/node.exe" "${__root}/tmp/cache/node/${__node_base}"
+if [ "${os}" == windows ]; then
+  node_ext=".exe"
+  node_base=node-v$(node_version)-win-${arch}
+  if [ ! -f "${root}/tmp/cache/node/${node_base}" ]; then
+    url=https://nodejs.org/dist/v$(node_version)/node-v$(node_version)-win-${arch}.7z
+    curl -fSsLo "${root}/tmp/node/${node_base}.7z" "${url}"
+    cd "${root}/tmp/node"
+    7z x -bd -y "${root}/tmp/node/${node_base}.7z" > /dev/null
+    mv "${node_base}/node.exe" "${root}/tmp/cache/node/${node_base}"
   fi
 else
-  if [ "${__arch}" == "arm" ]; then __node_arch=armv7l; else __node_arch="${__arch}"; fi
-  __node_base=node-v${__node_version}-${__os}-${__node_arch}
-  if [ ! -f "${__root}/tmp/cache/node/${__node_base}" ]; then
-    __url=https://nodejs.org/dist/v${__node_version}/${__node_base}.tar.xz
-    curl -fSL "${__url}" | tar -C "${__root}/tmp/node" -x
-    mv "${__root}/tmp/node/${__node_base}/bin/node" "${__root}/tmp/cache/node/${__node_base}"
+  if [ "${arch}" == "arm" ]; then node_arch=armv7l; else node_arch="${arch}"; fi
+  node_base=node-v$(node_version)-${os}-${node_arch}
+  if [ ! -f "${root}/tmp/cache/node/${node_base}" ]; then
+    url=https://nodejs.org/dist/v$(node_version)/${node_base}.tar.xz
+    curl -fSL "${url}" | tar -C "${root}/tmp/node" -x
+    mv "${root}/tmp/node/${node_base}/bin/node" "${root}/tmp/cache/node/${node_base}"
   fi
 fi
 
-cd "${__root}"
-cp "${__root}/tmp/cache/node/${__node_base}" "${__output}/node${__node_ext}"
+cd "${root}"
+cp "${root}/tmp/cache/node/${node_base}" "${output}/node${node_ext}"

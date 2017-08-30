@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+source ./scripts/main
+
+set -x
+
+# first build the base
+"${root}/scripts/build_base" tmp/heroku
+
+# now build the installers and tarballs in parallel
+"${root}/scripts/build_tarballs" tmp/heroku dist/tarballs &
+wait
+
+# finally, release to s3
+"${root}/scripts/release_tarballs" dist/tarballs
+
+# invalidate CDN
+aws cloudfront create-invalidation --distribution-id EHF9FOCUJYVZ --paths "/heroku-cli/channels/$CHANNEL/*"

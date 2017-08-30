@@ -8,9 +8,26 @@ set -o nounset
 # set -o xtrace
 
 # Set magic variables for current file & dir
-__dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-__root="$(cd "$(dirname "${__dir}")" && pwd)"
+dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+root="$(cd "$(dirname "${dir}")" && pwd)"
 
-__version=$(node -p "require('./package.json').version")
+function version () {
+  go_home
+  if [[ -z "${_version-}" ]]; then
+    _version=$(node -p "require('./package.json').version")
+  fi
+  echo "${_version}"
+}
 
-__node_version=$(node -p "require('./package.json')['cli-engine'].node || process.versions.node")
+function node_version () {
+  go_home
+  if [[ -z "${_node_version-}" ]]; then
+    _node_version=$(node -p "require('./package.json')['cli-engine'].node || process.versions.node")
+  fi
+  echo "${_node_version}"
+}
+
+function go_home () {
+  cd "${root}"
+}
+go_home

@@ -14,7 +14,6 @@
     "defaultCommand": "dashboard",
     "cloudfront": "EHF9FOCUJYVZ",
     "s3": {
-      "bucket": "heroku-cli-assets",
       "host": "cli-assets.heroku.com"
     },
     "plugins": [
