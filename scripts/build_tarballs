@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 source ./scripts/main
+source ./scripts/circle/vars
 
 set -x
 
@@ -9,18 +10,18 @@ output="$root/tmp/tarballs"
 mkdir -p "${output}"
 
 # create tarballs
-tarball_base="${output}/$(base)"
+tarball_base="${output}/${BASE}"
 cd "$root/tmp/builds"
 bg tar c "$(base)" | xz > "${tarball_base}.tar.xz"
-bg tar czf "${tarball_base}.tar.gz" "$(base)"
+bg tar czf "${tarball_base}.tar.gz" "${BASE}"
 wait_all
 
 sha256=$(shasum -a 256 "${tarball_base}.tar.gz" | awk \{'print $1'\})
 sha256xz=$(shasum -a 256 "${tarball_base}.tar.xz" | awk \{'print $1'\})
 cat << EOF > "${output}/${OS}-${ARCH}"
 {
-  "channel": "$(channel)",
-  "version": "$(version)",
+  "channel": "${CHANNEL}",
+  "version": "${VERSION}",
   "sha256gz": "${sha256}",
   "sha256xz": "${sha256xz}"
 }

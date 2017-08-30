@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 source ./scripts/main
+source ./scripts/circle/vars
 
 if [[ $# -ne 3 ]]; then
   echo "USAGE: $0 OS ARCH OUTPUT_DIR"
@@ -19,9 +20,9 @@ mkdir -p "${root}/tmp/cache/node"
 # install node
 if [ "${os}" == "windows" ]; then
   node_ext=".exe"
-  node_base=node-v$(node_version)-win-${arch}
+  node_base=node-v${NODE_VERSION}-win-${arch}
   if [ ! -f "${root}/tmp/cache/node/${node_base}" ]; then
-    url=https://nodejs.org/dist/v$(node_version)/node-v$(node_version)-win-${arch}.7z
+    url=https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-win-${arch}.7z
     curl -fSsLo "${root}/tmp/node/${node_base}.7z" "${url}"
     cd "${root}/tmp/node"
     7z x -bd -y "${root}/tmp/node/${node_base}.7z" > /dev/null
@@ -29,9 +30,9 @@ if [ "${os}" == "windows" ]; then
   fi
 else
   if [ "${arch}" == "arm" ]; then node_arch=armv7l; else node_arch="${arch}"; fi
-  node_base=node-v$(node_version)-${os}-${node_arch}
+  node_base=node-v${NODE_VERSION}-${os}-${node_arch}
   if [ ! -f "${root}/tmp/cache/node/${node_base}" ]; then
-    url=https://nodejs.org/dist/v$(node_version)/${node_base}.tar.xz
+    url=https://nodejs.org/dist/v${NODE_VERSION}/${node_base}.tar.xz
     curl -fSL "${url}" | tar -C "${root}/tmp/node" -xJ
     mv "${root}/tmp/node/${node_base}/bin/node" "${root}/tmp/cache/node/${node_base}"
   fi

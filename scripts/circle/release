@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 
 source ./scripts/main
+source ./scripts/circle/vars
 
 set -x
 
-echo "Releasing $(channel)"
+echo "Releasing ${CHANNEL}"
 
 # first build the base
 "${root}/scripts/build_base"

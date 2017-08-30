@@ -9,29 +9,28 @@
 # * bin scripts
 
 source ./scripts/main
+source ./scripts/circle/vars
 
 set -x
 
-output="$root/tmp/builds/$(base)"
-
 # setup workspace
-rm -rf "${output}"
-mkdir -p "${output}/node_modules"
-mkdir -p "${output}/bin"
-cp "${root}/README.md" "${output}"
-cp "${root}/LICENSE" "${output}"
-cp "${root}/package.json" "${output}"
+rm -rf "${BASE_PATH}"
+mkdir -p "${BASE_PATH}/node_modules"
+mkdir -p "${BASE_PATH}/bin"
+cp "${root}/README.md" "${BASE_PATH}"
+cp "${root}/LICENSE" "${BASE_PATH}"
+cp "${root}/package.json" "${BASE_PATH}"
 
-bg "${root}/scripts/fetch_node_binary" "${OS}" "${ARCH}" "${output}/bin"
+bg "${root}/scripts/fetch_node_binary" "${OS}" "${ARCH}" "${BASE_PATH}/bin"
 
 function install_packages {
-  cd "${output}"
+  cd "${BASE_PATH}"
   # install packages
   yarn install --no-progress --production --non-interactive --prefer-offline --mutex=file:/tmp/.yarn-mutex
 
   # build cli-engine if needed
-  if [ ! -f "${output}/node_modules/cli-engine/lib/cli.js" ]; then
-    cd "${output}/node_modules/cli-engine"
+  if [ ! -f "${BASE_PATH}/node_modules/cli-engine/lib/cli.js" ]; then
+    cd "${BASE_PATH}/node_modules/cli-engine"
     yarn
     yarn run prepare
   fi
@@ -40,13 +39,13 @@ bg install_packages
 
 # create bin runner
 if [ "${OS}" == "windows" ]; then
-  cat << EOF > "${output}/bin/heroku.cmd"
+  cat << EOF > "${BASE_PATH}/bin/heroku.cmd"
 @echo off
 set CLI_BINPATH=%~dp0\\heroku.cmd
 "%~dp0\\node.exe" "%~dp0\\heroku.js" %*
 EOF
 else
-  cat << EOF > "${output}/bin/heroku"
+  cat << EOF > "${BASE_PATH}/bin/heroku"
 #!/usr/bin/env bash
 set -e
 get_script_dir () {
@@ -72,10 +71,10 @@ else
   CLI_BINPATH="\$DIR/heroku" "\$DIR/node" "\$DIR/heroku.js" "\$@"
 fi
 EOF
-chmod +x "${output}/bin/heroku"
+chmod +x "${BASE_PATH}/bin/heroku"
 fi
 
-cat << EOF > "${output}/bin/heroku.js"
+cat << EOF > "${BASE_PATH}/bin/heroku.js"
 const path = require('path')
 const CLI = require('cli-engine').default
 const root = path.join(__dirname, '..')
@@ -84,8 +83,8 @@ const cli = new CLI({
   config: {
     root,
     pjson: require(path.join(root, 'package.json')),
-    channel: '$(channel)',
-    version: '$(version)'
+    channel: '${CHANNEL}',
+    version: '${VERSION}'
   }
 })
 cli.run()

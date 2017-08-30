@@ -1,14 +1,7 @@
 #!/usr/bin/env bash
 
 source ./scripts/main
-
-if [ $# -ne 1 ]; then
-  echo "USAGE: $0 INPUT_DIR"
-  echo "INPUT_DIR is the result of running ./scripts/build_base"
-  exit 1
-fi
-
-input_dir=$1
+source ./scripts/circle/vars
 
 # setup workspace
 INSTALLER_BASE=$root/tmp/windows-$ARCH-installer
@@ -22,7 +15,7 @@ mkdir -p "$WINEPREFIX"
 
 cp resources/exe/heroku.cmd "$INSTALLER_BASE/bin/heroku.cmd"
 
-cp -r "$input_dir" "$INSTALLER_BASE/client"
+cp -r "$root/tmp/builds/$(base)" "$INSTALLER_BASE/client"
 
 if [ "$ARCH" == "x64" ]; then
   PROGRAMSUFFIX="64"

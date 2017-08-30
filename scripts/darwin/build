@@ -4,6 +4,7 @@ export OS=darwin
 export ARCH=x64
 
 source ./scripts/main
+source ./scripts/circle/vars
 
 if [ $# -ne 1 ]; then
   echo "USAGE: $0 OUTPUT_DIR"
@@ -14,10 +15,10 @@ fi
 
 output="$(mkdir -p "$1" && cd "$1" && pwd)"
 
-pkgbuild --root "tmp/builds/$(base)" \
+pkgbuild --root "tmp/builds/${BASE}" \
   --identifier com.heroku.cli \
   --install-location /usr/local/lib/heroku \
-  --version "$(version)" \
+  --version "${VERSION}" \
   --sign "Developer ID Installer: Heroku INC" \
   --scripts "${root}/scripts/darwin/scripts" \
   "${output}/heroku.pkg"

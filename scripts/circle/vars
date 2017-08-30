@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+# shellcheck disable=SC2034
+
+source ./scripts/main
+
+go_home
+
+if [[ ! -z "${CIRCLE_JOB-}" ]]; then
+  IFS='_' read -ra _circle_job <<< "$CIRCLE_JOB"
+  OS=${OS:=${_circle_job[0]-}}
+  ARCH=${ARCH:=${_circle_job[1]-}}
+fi
+
+if [[ "${CHANNEL:-}" == "" ]]; then
+  if [[ "${CIRCLE_TAG:-}" != "" ]]; then
+    CHANNEL=stable
+  elif [[ "${CIRCLE_BRANCH:-}" == "master" ]]; then
+    CHANNEL=beta
+  else
+    CHANNEL=dev
+  fi
+fi
+
+VERSION=$(node -p "require('./package.json').version")
+NODE_VERSION=$(node -p "require('./package.json')['cli-engine'].node || process.versions.node")
+BASE="heroku-cli-v$VERSION-${OS}-${ARCH}"
+BASE_PATH="${root}/tmp/builds/${BASE}"
+REMOTE_BASE="s3://$S3_BUCKET/heroku-cli/channels/$CHANNEL"
