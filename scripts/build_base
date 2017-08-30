@@ -20,6 +20,7 @@ mkdir -p "${BASE_PATH}/bin"
 cp "${root}/README.md" "${BASE_PATH}"
 cp "${root}/LICENSE" "${BASE_PATH}"
 cp "${root}/package.json" "${BASE_PATH}"
+cp "${root}/yarn.lock" "${BASE_PATH}"
 
 bg "${root}/scripts/fetch_node_binary" "${BASE_PATH}/bin"
 
