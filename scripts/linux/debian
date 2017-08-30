@@ -36,7 +36,8 @@ function build_arch () {
   mkdir -p "$WORKSPACE/usr/lib"
 
   # setup base
-  ARCH=${ARCH} "${root}/scripts/build_base" "$WORKSPACE/usr/lib/heroku"
+  ARCH=${ARCH} "${root}/scripts/build_base"
+  mv "$root/tmp/builds/$(base)" "$WORKSPACE/usr/lib/heroku"
 
   # add bin loader scripts
   cat << EOF > "$WORKSPACE/usr/lib/heroku/bin/heroku"
