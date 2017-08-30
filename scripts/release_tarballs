@@ -11,8 +11,9 @@ fi
 input_dir=$1
 
 remote_base=s3://$S3_BUCKET/heroku-cli/channels/$CHANNEL
-aws s3 cp --cache-control max-age=86400 "${input_dir}heroku-cli-v$(version)-$OS-$ARCH.tar.xz" "$remote_base/heroku-cli-v$(version)-$OS-$ARCH.tar.xz"
-aws s3 cp --cache-control max-age=3600 "$remote_base/heroku-cli-v$(version)-$OS-$ARCH.tar.xz" "$remote_base/heroku-cli-$OS-$ARCH.tar.xz"
-aws s3 cp --cache-control max-age=86400 "${input_dir}/heroku-cli-v$(version)-$OS-$ARCH.tar.gz" "$remote_base/heroku-cli-v$(version)-$OS-$ARCH.tar.gz"
-aws s3 cp --cache-control max-age=3600 "$remote_base/heroku-cli-v$(version)-$OS-$ARCH.tar.gz" "$remote_base/heroku-cli-$OS-$ARCH.tar.gz"
-aws s3 cp --cache-control max-age=3600 --content-type application/json "${input_dir}/$OS-$ARCH" "$remote_base/$OS-$ARCH"
+aws s3 cp --quiet --cache-control max-age=86400 "${input_dir}heroku-cli-v$(version)-$OS-$ARCH.tar.xz" "$remote_base/heroku-cli-v$(version)-$OS-$ARCH.tar.xz" &
+aws s3 cp --quiet --cache-control max-age=3600 "$remote_base/heroku-cli-v$(version)-$OS-$ARCH.tar.xz" "$remote_base/heroku-cli-$OS-$ARCH.tar.xz" &
+aws s3 cp --quiet --cache-control max-age=86400 "${input_dir}/heroku-cli-v$(version)-$OS-$ARCH.tar.gz" "$remote_base/heroku-cli-v$(version)-$OS-$ARCH.tar.gz" &
+aws s3 cp --quiet --cache-control max-age=3600 "$remote_base/heroku-cli-v$(version)-$OS-$ARCH.tar.gz" "$remote_base/heroku-cli-$OS-$ARCH.tar.gz" &
+aws s3 cp --quiet --cache-control max-age=3600 --content-type application/json "${input_dir}/$OS-$ARCH" "$remote_base/$OS-$ARCH" &
+wait
