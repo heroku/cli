@@ -27,6 +27,8 @@ jobs:
             - node-modules
       - run: ./scripts/circle/build
       - run: ./scripts/test
+      - run: rm -rf /usr/local/share/.cache/yarn/*
+      - run: rm -rf node_modules/*
       - save_cache:
           key: yarn-{{ checksum "yarn.lock" }}
           paths:
@@ -78,7 +80,7 @@ workflows:
             tags: &version_tags
               only: /^v.*/
       - macos: &release_target
-          filters: &release_pushes
+          filters:
             tags: *version_tags
             branches:
               only:
