@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+source ./scripts/main
+
+set -x
+
+if [[ "${CHANNEL:-}" == "" ]]; then
+  if [[ "${TRAVIS_TAG:-}" != "" ]]; then
+    CHANNEL=stable
+  elif [[ "${TRAVIS_BRANCH:-}" = "master" ]]; then
+    CHANNEL=beta
+  elif [[ "${TRAVIS_BRANCH:-}" = "dev" ]]; then
+    CHANNEL=dev
+  elif [[ "${TRAVIS_BRANCH:-}" = "macos-installer" ]]; then
+    CHANNEL=dev
+  fi
+fi
+
+if [[ -z "${CHANNEL:-}" ]]; then
+  echo "Not releasing on this branch."
+  exit 0
+fi
+
+echo "Releasing ${CHANNEL}"
+
+"${root}/scripts/darwin/build"
+
+REMOTE_BASE="s3://$S3_BUCKET/heroku-cli/channels/$CHANNEL"
+s3uploadHourCache "${root}/tmp/heroku-cli.pkg" "${REMOTE_BASE}/heroku-cli.pkg"

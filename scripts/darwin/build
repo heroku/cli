@@ -6,14 +6,7 @@ export ARCH=x64
 source ./scripts/main
 source ./scripts/circle/vars
 
-if [ $# -ne 1 ]; then
-  echo "USAGE: $0 OUTPUT_DIR"
-  exit 1
-fi
-
 "${root}/scripts/build_base"
-
-output="$(mkdir -p "$1" && cd "$1" && pwd)"
 
 pkgbuild --root "tmp/builds/${BASE}" \
   --identifier com.heroku.cli \
@@ -21,4 +14,4 @@ pkgbuild --root "tmp/builds/${BASE}" \
   --version "${VERSION}" \
   --sign "Developer ID Installer: Heroku INC" \
   --scripts "${root}/scripts/darwin/scripts" \
-  "${output}/heroku.pkg"
+  "tmp/heroku-cli.pkg"

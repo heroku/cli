@@ -8,5 +8,4 @@ before_install:
   - openssl aes-256-cbc -K $encrypted_e7dd261e3971_key -iv $encrypted_e7dd261e3971_iv -in .travis/Certificates.p12.enc -out .travis/Certificates.p12 -d
   - security import .travis/Certificates.p12 -P $HEROKU_DARWIN_SIGNING_PASS
 script:
-  - CHANNEL=dev ./scripts/darwin/build dist
-  - ls -ls dist
+  - ./scripts/travis/release
