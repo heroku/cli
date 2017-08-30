@@ -123,13 +123,6 @@ workflows:
       - darwin_x64_build: &build_step
           filters: *all_pushes
       - linux_x64_build: *build_step
-      # - linux_x86: *release_target
-      # - linux_arm: *release_target
-      # - windows_x64: *release_target
-      # - windows_x86: *release_target
-      # - debian:
-      #     filters: *release_filters
-      #     requires: [test]
       - release:
           filters: &release_pushes
             tags: *version_tags
@@ -137,3 +130,10 @@ workflows:
           requires:
             - darwin_x64
             - linux_x64
+# - linux_x86: *release_target
+# - linux_arm: *release_target
+# - windows_x64: *release_target
+# - windows_x86: *release_target
+# - debian:
+#     filters: *release_filters
+#     requires: [test]
