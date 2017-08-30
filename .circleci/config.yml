@@ -84,6 +84,7 @@ workflows:
               only:
                 - master
                 - dev
+                - macos-installer
           requires:
             - test
       - linux: *release_target
