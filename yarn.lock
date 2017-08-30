@@ -294,7 +294,7 @@ chalk@^1.0.0, chalk@^1.1.1, chalk@^1.1.3:
     strip-ansi "^3.0.0"
     supports-color "^2.0.0"
 
-chalk@^2.0.0:
+chalk@^2.0.0, chalk@^2.1.0:
   version "2.1.0"
   resolved "http://cli-npm.heroku.com/chalk/-/chalk-2.1.0/ac5becf14fa21b99c6c92ca7a7d7cfd5b17e743e.tgz#ac5becf14fa21b99c6c92ca7a7d7cfd5b17e743e"
   dependencies:
@@ -345,7 +345,7 @@ cli-engine-command@^5.1.12, cli-engine-command@^5.1.8:
 
 cli-engine-command@^6.0.0, cli-engine-command@^6.0.1:
   version "6.0.1"
-  resolved "https://registry.yarnpkg.com/cli-engine-command/-/cli-engine-command-6.0.1.tgz#6fe545f371dadabefb811cfd242ba4301f76a36a"
+  resolved "http://cli-npm.heroku.com/cli-engine-command/-/cli-engine-command-6.0.1/6fe545f371dadabefb811cfd242ba4301f76a36a.tgz#6fe545f371dadabefb811cfd242ba4301f76a36a"
   dependencies:
     ansi-escapes "2.x"
     cardinal "1.x"
@@ -372,23 +372,16 @@ cli-engine-config@^1.3.7, cli-engine-config@^1.3.8:
   dependencies:
     uuid "^3.1.0"
 
-cli-engine-heroku@^1.1.10, cli-engine-heroku@^1.1.8:
+cli-engine-heroku@^1.1.10, cli-engine-heroku@^1.1.2, cli-engine-heroku@^1.1.5, cli-engine-heroku@^1.1.8:
   version "1.1.10"
-  resolved "https://registry.yarnpkg.com/cli-engine-heroku/-/cli-engine-heroku-1.1.10.tgz#f65ad8b9174938fc85b588df668eebf9abba3538"
+  resolved "http://cli-npm.heroku.com/cli-engine-heroku/-/cli-engine-heroku-1.1.10/f65ad8b9174938fc85b588df668eebf9abba3538.tgz#f65ad8b9174938fc85b588df668eebf9abba3538"
   dependencies:
     heroku-client "^3.0.3"
     netrc-parser "^2.0.3"
 
-cli-engine-heroku@^1.1.2, cli-engine-heroku@^1.1.5:
-  version "1.1.7"
-  resolved "http://cli-npm.heroku.com/cli-engine-heroku/-/cli-engine-heroku-1.1.7/33df17edb53491e4c47f5d9150cda5151e0b269d.tgz#33df17edb53491e4c47f5d9150cda5151e0b269d"
-  dependencies:
-    heroku-client "3.x"
-    netrc-parser "2.0.2"
-
 cli-engine@4.0.0:
   version "4.0.0"
-  resolved "https://registry.yarnpkg.com/cli-engine/-/cli-engine-4.0.0.tgz#51e0d716f5b0b0d9aff170afd54d5563e58ee078"
+  resolved "http://cli-npm.heroku.com/cli-engine/-/cli-engine-4.0.0/51e0d716f5b0b0d9aff170afd54d5563e58ee078.tgz#51e0d716f5b0b0d9aff170afd54d5563e58ee078"
   dependencies:
     ansi-escapes "^2.0.0"
     cli-engine-command "^6.0.1"
@@ -550,7 +543,7 @@ debug@2.x, debug@^2.1.3, debug@^2.2.0, debug@^2.6.8:
 
 debug@^3.0.0, debug@^3.0.1:
   version "3.0.1"
-  resolved "https://registry.yarnpkg.com/debug/-/debug-3.0.1.tgz#0564c612b521dc92d9f2988f0549e34f9c98db64"
+  resolved "http://cli-npm.heroku.com/debug/-/debug-3.0.1/0564c612b521dc92d9f2988f0549e34f9c98db64.tgz#0564c612b521dc92d9f2988f0549e34f9c98db64"
   dependencies:
     ms "2.0.0"
 
@@ -707,13 +700,13 @@ eslint-scope@^3.7.1:
     esrecurse "^4.1.0"
     estraverse "^4.1.1"
 
-eslint@4.4.1:
-  version "4.4.1"
-  resolved "http://cli-npm.heroku.com/eslint/-/eslint-4.4.1/99cd7eafcffca2ff99a5c8f5f2a474d6364b4bd3.tgz#99cd7eafcffca2ff99a5c8f5f2a474d6364b4bd3"
+eslint@4.5.0:
+  version "4.5.0"
+  resolved "http://cli-npm.heroku.com/eslint/-/eslint-4.5.0/bb75d3b8bde97fb5e13efcd539744677feb019c3.tgz#bb75d3b8bde97fb5e13efcd539744677feb019c3"
   dependencies:
     ajv "^5.2.0"
     babel-code-frame "^6.22.0"
-    chalk "^1.1.3"
+    chalk "^2.1.0"
     concat-stream "^1.6.0"
     cross-spawn "^5.1.0"
     debug "^2.6.8"
@@ -744,6 +737,7 @@ eslint@4.4.1:
     progress "^2.0.0"
     require-uncached "^1.0.3"
     semver "^5.3.0"
+    strip-ansi "^4.0.0"
     strip-json-comments "~2.0.1"
     table "^4.0.1"
     text-table "~0.2.0"
@@ -1053,7 +1047,7 @@ here@0.0.2:
 
 heroku-apps@2.4.11:
   version "2.4.11"
-  resolved "https://registry.yarnpkg.com/heroku-apps/-/heroku-apps-2.4.11.tgz#5b6022752d1a0a8b7be5a66079b6884841550b66"
+  resolved "http://cli-npm.heroku.com/heroku-apps/-/heroku-apps-2.4.11/5b6022752d1a0a8b7be5a66079b6884841550b66.tgz#5b6022752d1a0a8b7be5a66079b6884841550b66"
   dependencies:
     bluebird "^3.5.0"
     cli-engine-command "^6.0.0"
@@ -1190,36 +1184,9 @@ heroku-cli-util@6.1.17:
     supports-color "^3.1.2"
     tunnel-agent "^0.4.3"
 
-heroku-cli-util@^6.0.15, heroku-cli-util@^6.1.17, heroku-cli-util@^6.2.0, heroku-cli-util@^6.2.2, heroku-cli-util@^6.2.4, heroku-cli-util@^6.2.5:
-  version "6.2.5"
-  resolved "http://cli-npm.heroku.com/heroku-cli-util/-/heroku-cli-util-6.2.5/6596c095a4ee626a7ae1df6d79aebf730e6f0e7b.tgz#6596c095a4ee626a7ae1df6d79aebf730e6f0e7b"
-  dependencies:
-    ansi-escapes "^1.4.0"
-    cardinal "^1.0.0"
-    chalk "^1.1.3"
-    co "^4.6.0"
-    got "^6.3.0"
-    heroku-client "^3.0.3"
-    lodash.ary "^4.1.1"
-    lodash.defaults "^4.2.0"
-    lodash.get "^4.4.2"
-    lodash.identity "^3.0.0"
-    lodash.keys "^4.2.0"
-    lodash.mapvalues "^4.6.0"
-    lodash.noop "^3.0.1"
-    lodash.partial "^4.2.1"
-    lodash.pickby "^4.6.0"
-    lodash.property "^4.4.2"
-    lodash.repeat "^4.1.0"
-    lodash.result "^4.5.2"
-    netrc-parser "^2.0.1"
-    opn "^3.0.3"
-    supports-color "^3.1.2"
-    tunnel-agent "^0.6.0"
-
-heroku-cli-util@^6.2.6:
+heroku-cli-util@^6.0.15, heroku-cli-util@^6.1.17, heroku-cli-util@^6.2.0, heroku-cli-util@^6.2.2, heroku-cli-util@^6.2.4, heroku-cli-util@^6.2.5, heroku-cli-util@^6.2.6:
   version "6.2.6"
-  resolved "https://registry.yarnpkg.com/heroku-cli-util/-/heroku-cli-util-6.2.6.tgz#d73150669eff9efb3f600b40047881e94f38db20"
+  resolved "http://cli-npm.heroku.com/heroku-cli-util/-/heroku-cli-util-6.2.6/d73150669eff9efb3f600b40047881e94f38db20.tgz#d73150669eff9efb3f600b40047881e94f38db20"
   dependencies:
     ansi-escapes "^1.4.0"
     cardinal "^1.0.0"
@@ -1252,14 +1219,6 @@ heroku-client@3.0.2:
     is-retry-allowed "^1.0.0"
     tunnel-agent "^0.4.0"
 
-heroku-client@3.x, heroku-client@^3.0.3:
-  version "3.0.3"
-  resolved "http://cli-npm.heroku.com/heroku-client/-/heroku-client-3.0.3/302df7fe315f8fa0a98c1a6cbd22a5d81e1c5253.tgz#302df7fe315f8fa0a98c1a6cbd22a5d81e1c5253"
-  dependencies:
-    debug "^3.0.0"
-    is-retry-allowed "^1.0.0"
-    tunnel-agent "^0.6.0"
-
 heroku-client@^2.4.0:
   version "2.4.3"
   resolved "http://cli-npm.heroku.com/heroku-client/-/heroku-client-2.4.3/c52fec7e37e7af0ac14f66ce63adf1af156e0747.tgz#c52fec7e37e7af0ac14f66ce63adf1af156e0747"
@@ -1268,6 +1227,14 @@ heroku-client@^2.4.0:
     path-proxy "^1.0"
     q "^1.2.0"
     tunnel-agent "^0.4.0"
+
+heroku-client@^3.0.3:
+  version "3.0.3"
+  resolved "http://cli-npm.heroku.com/heroku-client/-/heroku-client-3.0.3/302df7fe315f8fa0a98c1a6cbd22a5d81e1c5253.tgz#302df7fe315f8fa0a98c1a6cbd22a5d81e1c5253"
+  dependencies:
+    debug "^3.0.0"
+    is-retry-allowed "^1.0.0"
+    tunnel-agent "^0.6.0"
 
 heroku-container-registry@4.3.1:
   version "4.3.1"
@@ -1456,8 +1423,8 @@ iconv-lite@^0.4.17:
   resolved "http://cli-npm.heroku.com/iconv-lite/-/iconv-lite-0.4.18/23d8656b16aae6742ac29732ea8f0336a4789cf2.tgz#23d8656b16aae6742ac29732ea8f0336a4789cf2"
 
 ignore@^3.3.3:
-  version "3.3.4"
-  resolved "http://cli-npm.heroku.com/ignore/-/ignore-3.3.4/85ab6d0a9ca8b27b31604c09efe1c14dc21ab872.tgz#85ab6d0a9ca8b27b31604c09efe1c14dc21ab872"
+  version "3.3.5"
+  resolved "http://cli-npm.heroku.com/ignore/-/ignore-3.3.5/c4e715455f6073a8d7e5dae72d2fc9d71663dba6.tgz#c4e715455f6073a8d7e5dae72d2fc9d71663dba6"
 
 imurmurhash@^0.1.4:
   version "0.1.4"
@@ -1506,7 +1473,7 @@ inquirer@3.0.6:
 
 inquirer@^3.0.1, inquirer@^3.0.6, inquirer@^3.1.1, inquirer@^3.2.2:
   version "3.2.2"
-  resolved "https://registry.yarnpkg.com/inquirer/-/inquirer-3.2.2.tgz#c2aaede1507cc54d826818737742d621bef2e823"
+  resolved "http://cli-npm.heroku.com/inquirer/-/inquirer-3.2.2/c2aaede1507cc54d826818737742d621bef2e823.tgz#c2aaede1507cc54d826818737742d621bef2e823"
   dependencies:
     ansi-escapes "^2.0.0"
     chalk "^2.0.0"
@@ -2019,15 +1986,9 @@ netrc-parser@2.0.1:
   dependencies:
     lex "^1.7.9"
 
-netrc-parser@2.0.2, netrc-parser@^2.0.1:
-  version "2.0.2"
-  resolved "http://cli-npm.heroku.com/netrc-parser/-/netrc-parser-2.0.2/6ca81104d84993f81ac9654c5d3f517897c1d2f7.tgz#6ca81104d84993f81ac9654c5d3f517897c1d2f7"
-  dependencies:
-    lex "^1.7.9"
-
 netrc-parser@^2.0.3:
   version "2.0.3"
-  resolved "https://registry.yarnpkg.com/netrc-parser/-/netrc-parser-2.0.3.tgz#b8bdd1c7170d349daaf1f81e3ef436959aa5ee42"
+  resolved "http://cli-npm.heroku.com/netrc-parser/-/netrc-parser-2.0.3/b8bdd1c7170d349daaf1f81e3ef436959aa5ee42.tgz#b8bdd1c7170d349daaf1f81e3ef436959aa5ee42"
   dependencies:
     debug "^3.0.1"
     lex "^1.7.9"
