@@ -24,9 +24,9 @@ function uploadDayCache () {
 function uploadHourCache () {
   upload --cache-control max-age=3600 "$@"
 }
-uploadDayCache "${input_dir}/heroku-cli-$(version)-$OS-$ARCH.tar.xz" "$remote_base/heroku-cli-v$(version)-$OS-$ARCH.tar.xz"
-uploadHourCache "$remote_base/heroku-cli-v$(version)-$OS-$ARCH.tar.xz" "$remote_base/heroku-cli-$OS-$ARCH.tar.xz"
+uploadDayCache "${input_dir}/heroku-cli-v$(version)-$OS-$ARCH.tar.xz" "$remote_base/heroku-cli-v$(version)-$OS-$ARCH.tar.xz"
 uploadDayCache "${input_dir}/heroku-cli-v$(version)-$OS-$ARCH.tar.gz" "$remote_base/heroku-cli-v$(version)-$OS-$ARCH.tar.gz"
+uploadHourCache "$remote_base/heroku-cli-v$(version)-$OS-$ARCH.tar.xz" "$remote_base/heroku-cli-$OS-$ARCH.tar.xz"
 uploadHourCache "$remote_base/heroku-cli-v$(version)-$OS-$ARCH.tar.gz" "$remote_base/heroku-cli-$OS-$ARCH.tar.gz"
 uploadHourCache --content-type application/json "${input_dir}/$OS-$ARCH" "$remote_base/$OS-$ARCH"
 
