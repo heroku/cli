@@ -60,7 +60,7 @@ set -x
 
 makensis "$INSTALLER_BASE/heroku.nsi" > /dev/null
 
-DIST_DIR="dist/$VERSION"
+DIST_DIR="dist/$(version)"
 
 mkdir -p "$DIST_DIR"
 
