@@ -54,7 +54,7 @@ osslsigncode -pkcs12 /tmp/heroku-windows-key \
   -pass "$HEROKU_WINDOWS_SIGNING_PASS" \
   -n 'Heroku CLI' \
   -i https://toolbelt.heroku.com/ \
-  -in "$WINEPREFIX/drive_c/Program\ Files/Heroku/Uninstall.exe" -out "$INSTALLER_BASE/uninstall.exe"
+  -in "$WINEPREFIX/drive_c/Program Files/Heroku/Uninstall.exe" -out "$INSTALLER_BASE/uninstall.exe"
 
 set -x
 
