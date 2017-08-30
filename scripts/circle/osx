@@ -4,23 +4,6 @@ source ./scripts/main
 
 set -x
 
-if [[ "${CHANNEL:-}" == "" ]]; then
-  if [[ "${CIRCLE_TAG:-}" != "" ]]; then
-    export CHANNEL=stable
-  elif [[ "${CIRCLE_BRANCH:-}" = "master" ]]; then
-    export CHANNEL=beta
-  elif [[ "${CIRCLE_BRANCH:-}" = "dev" ]]; then
-    export CHANNEL=dev
-  elif [[ "${CIRCLE_BRANCH:-}" = "macos-installer" ]]; then
-    export CHANNEL=dev
-  fi
-fi
-
-if [[ -z "${CHANNEL:-}" ]]; then
-  echo "Not releasing on this branch."
-  exit 0
-fi
-
 echo "Releasing ${CHANNEL}"
 
 "${root}/scripts/darwin/build"
