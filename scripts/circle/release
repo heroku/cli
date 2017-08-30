@@ -12,7 +12,7 @@ echo "Releasing ${CHANNEL}"
 # now build the installers and tarballs in parallel
 bg "${root}/scripts/build_tarballs" tmp/heroku dist/tarballs
 if [[ "${OS}" = "windows" ]]; then
-  bg "${root}/scripts/windows/release"
+  bg "${root}/scripts/windows/release" tmp/heroku
 fi
 wait_all
 
