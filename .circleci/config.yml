@@ -93,7 +93,7 @@ workflows:
       - linux_x86: *release_target
       - linux_arm: *release_target
       - windows_x64: *release_target
-      - windows_x32: *release_target
+      - windows_x86: *release_target
       - postrelease:
           requires:
             - darwin_x64
@@ -102,11 +102,3 @@ workflows:
             - linux_arm
             - windows_x64
             - windows_x86
-      # - release_windows_x64:
-      #     filters: *all_tags_filters
-      #     requires:
-      #       - build
-      # - release_windows_x86:
-      #     filters: *all_tags_filters
-      #     requires:
-      #       - build
