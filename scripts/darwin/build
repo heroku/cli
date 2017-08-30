@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-OS=darwin
-ARCH=x64
+export OS=darwin
+export ARCH=x64
 
 source ./scripts/main
 

@@ -6,5 +6,5 @@ node_js:
 os: osx
 
 script:
-  - ./scripts/darwin/build dev
+  - CHANNEL=dev ./scripts/darwin/build dist
   - ls -ls dist
