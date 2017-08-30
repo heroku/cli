@@ -32,7 +32,7 @@ bg "${root}/scripts/fetch_node_binary" "${OS}" "${ARCH}" "${output}/bin"
 function install_packages {
   cd "${output}"
   # install packages
-  yarn install --no-progress --production --non-interactive --prefer-offline
+  yarn install --no-progress --production --non-interactive --prefer-offline --mutex=file:/tmp/.yarn-mutex
 
   # build cli-engine if needed
   if [ ! -f "${output}/node_modules/cli-engine/lib/cli.js" ]; then

@@ -8,31 +8,35 @@ source ./scripts/main
 
 set -x
 
-PROJECT_ROOT=/root/cli
-cd $PROJECT_ROOT
+export OS=linux
 
 # set constants
-DEB_VERSION="$VERSION-1"
-ROOT=$PROJECT_ROOT/tmp/apt
-CHANNEL=$1
+DEB_VERSION="$(version)-1"
+workspace_root=$root/tmp/apt
 
-rm -rf $ROOT
+rm -rf "$workspace_root"
 
-ARCHS=(x86 x64)
-for ARCH in "${ARCHS[@]}"; do
+function build_arch () {
+  ARCH=$1
   # set constants
-  if [ "$ARCH" == "x64" ]; then DEB_ARCH=amd64; else DEB_ARCH=i386; fi
+  if [[ "$ARCH" = "x64" ]]; then
+    DEB_ARCH=amd64
+  elif [[ "$ARCH" = "arm" ]]; then
+    DEB_ARCH=armel
+  else
+    DEB_ARCH=i386
+  fi
   DEB_BASE=heroku_${DEB_VERSION}_$DEB_ARCH
-  WORKSPACE="$ROOT/$DEB_BASE.apt"
-  DEB_FILE="$ROOT/$DEB_BASE.deb"
+  WORKSPACE="$workspace_root/$DEB_BASE.apt"
+  DEB_FILE="$workspace_root/$DEB_BASE.deb"
 
   # prep workspace
   mkdir -p "$WORKSPACE/DEBIAN"
   mkdir -p "$WORKSPACE/usr/bin"
   mkdir -p "$WORKSPACE/usr/lib"
 
-  # copy install to workspace
-  cp -r "tmp/build/heroku-cli-v$VERSION-$SHA-linux-$ARCH" "$WORKSPACE/usr/lib/heroku"
+  # setup base
+  ARCH=${ARCH} "${root}/scripts/build_base" "$WORKSPACE/usr/lib/heroku"
 
   # add bin loader scripts
   cat << EOF > "$WORKSPACE/usr/lib/heroku/bin/heroku"
@@ -65,7 +69,7 @@ const cli = new CLI({
     root,
     pjson: require(path.join(root, 'package.json')),
     channel: '$CHANNEL',
-    version: '$VERSION',
+    version: '$(version)',
     updateDisabled: 'update the CLI with "sudo apt-get upgrade heroku"'
   }
 })
@@ -87,41 +91,49 @@ EOF
   # build deb package
   dpkg --build "$WORKSPACE" "$DEB_FILE"
   rm -rf "$WORKSPACE"
+}
 
+ARCHS=(arm x64 x86)
+for ARCH in "${ARCHS[@]}"; do
+  bg build_arch "$ARCH"
+  sleep 1
 done
+wait_all
 
 # create Package apt file
-cd $ROOT
+cd "$workspace_root"
 apt-ftparchive packages . > Packages
 gzip -c Packages > Packages.gz
 bzip2 -k Packages
 xz -k Packages
 
 # create Release apt file
-cd $ROOT
-apt-ftparchive -c $PROJECT_ROOT/resources/deb/apt-ftparchive.conf release . > Release
+cd "$workspace_root"
+apt-ftparchive -c "$root/resources/deb/apt-ftparchive.conf" release . > Release
 gpg --digest-algo SHA512 --clearsign -u 0F1B0520 -o InRelease Release
 gpg --digest-algo SHA512 -abs -u 0F1B0520 -o Release.gpg Release
 
 # ship to s3
 REMOTE_PATH=/branches/$CHANNEL/apt
 REMOTE_ROOT=s3://${S3_BUCKET}${REMOTE_PATH}
-aws s3 cp --cache-control max-age=86400 "$ROOT/heroku_${DEB_VERSION}_amd64.deb" "$REMOTE_ROOT/heroku_${DEB_VERSION}_amd64.deb"
-aws s3 cp --cache-control max-age=86400 "$ROOT/heroku_${DEB_VERSION}_i386.deb" "$REMOTE_ROOT/heroku_${DEB_VERSION}_i386.deb"
-aws s3 cp --content-type text/plain --cache-control max-age=3600 "$ROOT/Release" "$REMOTE_ROOT/Release"
-aws s3 cp --content-type text/plain --cache-control max-age=3600 "$ROOT/InRelease" "$REMOTE_ROOT/InRelease"
-aws s3 cp --content-type text/plain --cache-control max-age=3600 "$ROOT/Release.gpg" "$REMOTE_ROOT/Release.gpg"
-aws s3 cp --content-type text/plain --cache-control max-age=3600 "$ROOT/Packages" "$REMOTE_ROOT/Packages"
-aws s3 cp --cache-control max-age=3600 "$ROOT/Packages.bz2" "$REMOTE_ROOT/Packages.bz2"
-aws s3 cp --cache-control max-age=3600 "$ROOT/Packages.gz" "$REMOTE_ROOT/Packages.gz"
-aws s3 cp --cache-control max-age=3600 "$ROOT/Packages.xz" "$REMOTE_ROOT/Packages.xz"
+bg s3uploadDayCache "$workspace_root/heroku_${DEB_VERSION}_armel.deb" "$REMOTE_ROOT/heroku_${DEB_VERSION}_armel.deb"
+bg s3uploadDayCache "$workspace_root/heroku_${DEB_VERSION}_amd64.deb" "$REMOTE_ROOT/heroku_${DEB_VERSION}_amd64.deb"
+bg s3uploadDayCache "$workspace_root/heroku_${DEB_VERSION}_i386.deb" "$REMOTE_ROOT/heroku_${DEB_VERSION}_i386.deb"
+bg s3uploadHourCache --content-type text/plain "$workspace_root/Release" "$REMOTE_ROOT/Release"
+bg s3uploadHourCache --content-type text/plain "$workspace_root/InRelease" "$REMOTE_ROOT/InRelease"
+bg s3uploadHourCache --content-type text/plain "$workspace_root/Release.gpg" "$REMOTE_ROOT/Release.gpg"
+bg s3uploadHourCache --content-type text/plain "$workspace_root/Packages" "$REMOTE_ROOT/Packages"
+bg s3uploadHourCache "$workspace_root/Packages.bz2" "$REMOTE_ROOT/Packages.bz2"
+bg s3uploadHourCache "$workspace_root/Packages.gz" "$REMOTE_ROOT/Packages.gz"
+bg s3uploadHourCache "$workspace_root/Packages.xz" "$REMOTE_ROOT/Packages.xz"
+wait_all
 
 # update install-ubuntu.sh if changed
-curl -fsS https://heroku-cli-assets.s3.amazonaws.com/install-ubuntu.sh > "$PROJECT_ROOT/tmp/install-ubuntu.sh"
-if ! cmp -s $PROJECT_ROOT/tmp/install-ubuntu.sh "$PROJECT_ROOT/resources/deb/install-ubuntu.sh"; then
-  cat $PROJECT_ROOT/tmp/install-ubuntu.sh
-  cat $PROJECT_ROOT/resources/deb/install-ubuntu.sh
-  aws s3 cp --content-type text/plain --cache-control max-age=3600 "$PROJECT_ROOT/resources/deb/install-ubuntu.sh" "s3://$S3_BUCKET/install-ubuntu.sh"
+curl -fsS https://heroku-cli-assets.s3.amazonaws.com/install-ubuntu.sh > "$root/tmp/install-ubuntu.sh"
+if ! cmp -s "$root/tmp/install-ubuntu.sh" "$root/resources/deb/install-ubuntu.sh"; then
+  cat "$root/tmp/install-ubuntu.sh"
+  cat "$root/resources/deb/install-ubuntu.sh"
+  aws s3 cp --content-type text/plain --cache-control max-age=3600 "$root/resources/deb/install-ubuntu.sh" "s3://$S3_BUCKET/install-ubuntu.sh"
   aws cloudfront create-invalidation --distribution-id EHF9FOCUJYVZ --paths "/install-ubuntu.sh"
 fi
 
