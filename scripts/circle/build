@@ -2,6 +2,8 @@
 
 source ./scripts/main
 
+set -x
+
 yarn install --pure-lockfile --non-interactive --prefer-offline
 yarn check
 
