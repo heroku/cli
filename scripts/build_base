@@ -21,8 +21,7 @@ cp "${root}/README.md" "${BASE_PATH}"
 cp "${root}/LICENSE" "${BASE_PATH}"
 cp "${root}/package.json" "${BASE_PATH}"
 
-# TODO: background
-"${root}/scripts/fetch_node_binary" "${BASE_PATH}/bin"
+bg "${root}/scripts/fetch_node_binary" "${BASE_PATH}/bin"
 
 function install_packages {
   cd "${BASE_PATH}"
@@ -36,8 +35,7 @@ function install_packages {
     yarn run prepare
   fi
 }
-# TODO: background
-install_packages
+bg install_packages
 
 # create bin runner
 if [ "${OS}" == "windows" ]; then
@@ -91,3 +89,5 @@ const cli = new CLI({
 })
 cli.run()
 EOF
+
+wait_all
