@@ -3,6 +3,8 @@ defaults: &defaults
   working_directory: ~/cli
   docker:
     - image: dickeyxxx/cli-engine-docker:v2.1.0
+      environment:
+        NPM_CONFIG_REGISTRY: https://cli-npm.heroku.com
 
 version: 2
 executorType: docker
