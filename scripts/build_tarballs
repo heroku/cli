@@ -21,7 +21,7 @@ sha256xz=$(shasum -a 256 "${tarball_base}.tar.xz" | awk \{'print $1'\})
 cat << EOF > "${output}/${OS}-${ARCH}"
 {
   "channel": "${CHANNEL}",
-  "version": "${VERSION}",
+  "version": "${SHA_VERSION}",
   "sha256gz": "${sha256}",
   "sha256xz": "${sha256xz}"
 }

@@ -86,7 +86,7 @@ const cli = new CLI({
     root,
     pjson: require(path.join(root, 'package.json')),
     channel: '${CHANNEL}',
-    version: '${VERSION}'
+    version: '${SHA_VERSION}'
   }
 })
 cli.run()
