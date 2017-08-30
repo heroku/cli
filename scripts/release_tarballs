@@ -4,18 +4,10 @@ set -x
 
 source ./scripts/main
 
-if [ $# -ne 1 ]; then
-  echo "USAGE: $0 INPUT_DIR"
-  echo "INPUT_DIR is the result of running ./scripts/build_tarballs"
-  exit 1
-fi
-
-input_dir=$1
-
-bg s3uploadDayCache "${input_dir}/heroku-cli-v$(version)-$OS-$ARCH.tar.xz" "$remote_base/heroku-cli-v$(version)-$OS-$ARCH.tar.xz"
-bg s3uploadDayCache "${input_dir}/heroku-cli-v$(version)-$OS-$ARCH.tar.gz" "$remote_base/heroku-cli-v$(version)-$OS-$ARCH.tar.gz"
-bg s3uploadHourCache "$remote_base/heroku-cli-v$(version)-$OS-$ARCH.tar.xz" "$remote_base/heroku-cli-$OS-$ARCH.tar.xz"
-bg s3uploadHourCache "$remote_base/heroku-cli-v$(version)-$OS-$ARCH.tar.gz" "$remote_base/heroku-cli-$OS-$ARCH.tar.gz"
-bg s3uploadHourCache --content-type application/json "${input_dir}/$OS-$ARCH" "$remote_base/$OS-$ARCH"
+bg s3uploadDayCache "${root}/tmp/tarballs/heroku-cli-v$(version)-$OS-$ARCH.tar.xz" "$(remote_base)/heroku-cli-v$(version)-$OS-$ARCH.tar.xz"
+bg s3uploadDayCache "${root}/tmp/tarballs/heroku-cli-v$(version)-$OS-$ARCH.tar.gz" "$(remote_base)/heroku-cli-v$(version)-$OS-$ARCH.tar.gz"
+bg s3uploadHourCache "$(remote_base)/heroku-cli-v$(version)-$OS-$ARCH.tar.xz" "$(remote_base)/heroku-cli-$OS-$ARCH.tar.xz"
+bg s3uploadHourCache "$(remote_base)/heroku-cli-v$(version)-$OS-$ARCH.tar.gz" "$(remote_base)/heroku-cli-$OS-$ARCH.tar.gz"
+bg s3uploadHourCache --content-type application/json "${root}/tmp/tarballs/$OS-$ARCH" "$(remote_base)/$OS-$ARCH"
 
 wait_all

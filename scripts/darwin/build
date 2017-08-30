@@ -10,11 +10,11 @@ if [ $# -ne 1 ]; then
   exit 1
 fi
 
-"${root}/scripts/build_base" tmp/heroku
+"${root}/scripts/build_base"
 
 output="$(mkdir -p "$1" && cd "$1" && pwd)"
 
-pkgbuild --root tmp/heroku \
+pkgbuild --root "tmp/builds/$(base)" \
   --identifier com.heroku.cli \
   --install-location /usr/local/lib/heroku \
   --version "$(version)" \

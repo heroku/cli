@@ -12,12 +12,7 @@ source ./scripts/main
 
 set -x
 
-if [[ $# -ne 1 ]]; then
-  echo "USAGE: $0 OUTPUT_DIR"
-  exit 1
-fi
-
-output="$(mkdir -p "$1" && cd "$1" && pwd)"
+output="$root/tmp/builds/$(base)"
 
 # setup workspace
 rm -rf "${output}"
@@ -89,7 +84,7 @@ const cli = new CLI({
   config: {
     root,
     pjson: require(path.join(root, 'package.json')),
-    channel: '${CHANNEL}',
+    channel: '$(channel)',
     version: '$(version)'
   }
 })

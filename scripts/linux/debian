@@ -68,7 +68,7 @@ const cli = new CLI({
   config: {
     root,
     pjson: require(path.join(root, 'package.json')),
-    channel: '$CHANNEL',
+    channel: '$(channel)',
     version: '$(version)',
     updateDisabled: 'update the CLI with "sudo apt-get upgrade heroku"'
   }
@@ -114,7 +114,7 @@ gpg --digest-algo SHA512 --clearsign -u 0F1B0520 -o InRelease Release
 gpg --digest-algo SHA512 -abs -u 0F1B0520 -o Release.gpg Release
 
 # ship to s3
-REMOTE_PATH=/branches/$CHANNEL/apt
+REMOTE_PATH=/branches/$(channel)/apt
 REMOTE_ROOT=s3://${S3_BUCKET}${REMOTE_PATH}
 bg s3uploadDayCache "$workspace_root/heroku_${DEB_VERSION}_armel.deb" "$REMOTE_ROOT/heroku_${DEB_VERSION}_armel.deb"
 bg s3uploadDayCache "$workspace_root/heroku_${DEB_VERSION}_amd64.deb" "$REMOTE_ROOT/heroku_${DEB_VERSION}_amd64.deb"

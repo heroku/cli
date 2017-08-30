@@ -4,15 +4,15 @@ source ./scripts/main
 
 set -x
 
-echo "Releasing ${CHANNEL}"
+echo "Releasing $(channel)"
 
 # first build the base
-"${root}/scripts/build_base" tmp/heroku
+"${root}/scripts/build_base"
 
 # now build the installers and tarballs in parallel
-bg "${root}/scripts/build_tarballs" tmp/heroku dist/tarballs
+bg "${root}/scripts/build_tarballs"
 if [[ "${OS}" = "windows" ]]; then
-  bg "${root}/scripts/windows/release" tmp/heroku
+  bg "${root}/scripts/windows/release"
 fi
 wait_all
 
