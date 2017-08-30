@@ -120,16 +120,16 @@ workflows:
           filters: &all_pushes
             tags: &version_tags
               only: /^v.*/
-      - darwin_x64_build: &build_step
-          filters: *all_pushes
-      - linux_x64_build: *build_step
-      - release:
-          filters: &release_pushes
-            tags: *version_tags
-            branches: [master, dev, streamline]
-          requires:
-            - darwin_x64
-            - linux_x64
+      # - darwin_x64_build: &build_step
+      #     filters: *all_pushes
+      # - linux_x64_build: *build_step
+      # - release:
+      #     filters: &release_pushes
+      #       tags: *version_tags
+      #       branches: [master, dev, streamline]
+      #     requires:
+      #       - darwin_x64
+      #       - linux_x64
 # - linux_x86: *release_target
 # - linux_arm: *release_target
 # - windows_x64: *release_target
