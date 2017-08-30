@@ -5,13 +5,13 @@ source ./scripts/main
 set -x
 
 if [[ "${CHANNEL:-}" == "" ]]; then
-  if [[ "${TRAVIS_TAG:-}" != "" ]]; then
+  if [[ "${CIRCLE_TAG:-}" != "" ]]; then
     export CHANNEL=stable
-  elif [[ "${TRAVIS_BRANCH:-}" = "master" ]]; then
+  elif [[ "${CIRCLE_BRANCH:-}" = "master" ]]; then
     export CHANNEL=beta
-  elif [[ "${TRAVIS_BRANCH:-}" = "dev" ]]; then
+  elif [[ "${CIRCLE_BRANCH:-}" = "dev" ]]; then
     export CHANNEL=dev
-  elif [[ "${TRAVIS_BRANCH:-}" = "macos-installer" ]]; then
+  elif [[ "${CIRCLE_BRANCH:-}" = "macos-installer" ]]; then
     export CHANNEL=dev
   fi
 fi
