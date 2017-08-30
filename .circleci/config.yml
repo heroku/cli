@@ -13,8 +13,8 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - node-modules-{{ checksum "yarn.lock" }}
-            - node-modules
+            - v1-node-modules-{{ checksum "yarn.lock" }}
+            - v1-node-modules
       - run: ./scripts/circle/build
       - run: ./scripts/test
       - save_cache:
