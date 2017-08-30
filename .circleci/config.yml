@@ -13,8 +13,8 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v1-node-modules-{{ checksum "yarn.lock" }}
-            - v1-node-modules
+            - v1-test-{{ checksum "yarn.lock" }}
+            - v1-test
       - run: ./scripts/circle/build
       - run: ./scripts/test
       - save_cache:
@@ -22,7 +22,7 @@ jobs:
           paths:
             - /usr/local/share/.cache/yarn
       - save_cache:
-          key: v1-node-modules-{{ checksum "yarn.lock" }}
+          key: v1-test-{{ checksum "yarn.lock" }}
           paths:
             - /usr/local/share/.cache/yarn
             - ~/cli/node_modules
@@ -35,6 +35,11 @@ jobs:
             - v1-yarn-{{ checksum "yarn.lock" }}
             - v1-yarn
       - run: ./scripts/circle/release
+      - save_cache:
+          key: v1-release-target-{{ checksum "yarn.lock" }}
+          paths:
+            - /usr/local/share/.cache/yarn
+            - ~/cli/tmp/cache
   linux_x64: *release_target_job
   linux_x86: *release_target_job
   linux_arm: *release_target_job
