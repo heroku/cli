@@ -2,6 +2,9 @@
 
 # shellcheck disable=SC2034
 
+# fail wait when any children fails
+set -m
+
 set -o errexit
 set -o pipefail
 set -o nounset
