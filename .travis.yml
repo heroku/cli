@@ -13,3 +13,6 @@ before_install:
   - "security set-key-partition-list -S apple-tool:,apple: -s -k travis ios-build.keychain"
 script:
   - ./scripts/travis/release
+
+env:
+  OSX_KEYCHAIN=~/Library/Keychains/ios-build.keychain

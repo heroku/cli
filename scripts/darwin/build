@@ -8,7 +8,13 @@ export ARCH=x64
 source ./scripts/main
 source ./scripts/circle/vars
 
-"${root}/scripts/build_base"
+# "${root}/scripts/build_base"
+
+keychain=""
+
+if [[ ! -z "${OSX_KEYCHAIN:-}" ]]; then
+  keychain="--keychain ${OSX_KEYCHAIN}"
+fi
 
 pkgbuild --root "tmp/builds/${BASE}" \
   --identifier com.heroku.cli \
@@ -16,4 +22,6 @@ pkgbuild --root "tmp/builds/${BASE}" \
   --version "${VERSION}" \
   --sign "Developer ID Installer: Heroku INC" \
   --scripts "${root}/scripts/darwin/scripts" \
+# shellcheck disable=SC2086
+  $keychain \
   "tmp/heroku-cli.pkg"
