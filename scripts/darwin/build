@@ -8,7 +8,7 @@ export ARCH=x64
 source ./scripts/main
 source ./scripts/circle/vars
 
-# "${root}/scripts/build_base"
+"${root}/scripts/build_base"
 
 keychain=""
 
