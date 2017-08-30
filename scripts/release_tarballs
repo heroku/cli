@@ -4,10 +4,10 @@ set -x
 
 source ./scripts/main
 
-bg s3uploadDayCache "${root}/tmp/tarballs/heroku-cli-v$(version)-$OS-$ARCH.tar.xz" "$(remote_base)/heroku-cli-v$(version)-$OS-$ARCH.tar.xz"
-bg s3uploadDayCache "${root}/tmp/tarballs/heroku-cli-v$(version)-$OS-$ARCH.tar.gz" "$(remote_base)/heroku-cli-v$(version)-$OS-$ARCH.tar.gz"
-bg s3uploadHourCache "$(remote_base)/heroku-cli-v$(version)-$OS-$ARCH.tar.xz" "$(remote_base)/heroku-cli-$OS-$ARCH.tar.xz"
-bg s3uploadHourCache "$(remote_base)/heroku-cli-v$(version)-$OS-$ARCH.tar.gz" "$(remote_base)/heroku-cli-$OS-$ARCH.tar.gz"
-bg s3uploadHourCache --content-type application/json "${root}/tmp/tarballs/$OS-$ARCH" "$(remote_base)/$OS-$ARCH"
+s3uploadDayCache "${root}/tmp/tarballs/heroku-cli-v$(version)-$OS-$ARCH.tar.xz" "$(remote_base)/heroku-cli-v$(version)-$OS-$ARCH.tar.xz"
+s3uploadDayCache "${root}/tmp/tarballs/heroku-cli-v$(version)-$OS-$ARCH.tar.gz" "$(remote_base)/heroku-cli-v$(version)-$OS-$ARCH.tar.gz"
+s3uploadHourCache "$(remote_base)/heroku-cli-v$(version)-$OS-$ARCH.tar.xz" "$(remote_base)/heroku-cli-$OS-$ARCH.tar.xz"
+s3uploadHourCache "$(remote_base)/heroku-cli-v$(version)-$OS-$ARCH.tar.gz" "$(remote_base)/heroku-cli-$OS-$ARCH.tar.gz"
+s3uploadHourCache --content-type application/json "${root}/tmp/tarballs/$OS-$ARCH" "$(remote_base)/$OS-$ARCH"
 
-wait_all
+# wait_all
