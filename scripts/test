@@ -6,5 +6,20 @@ set -x
 
 "${root}/scripts/lint"
 
-"${root}/bin/run" version
-"${root}/bin/run" help
+function heroku () {
+  "${root}/bin/run" "$@"
+}
+
+# smoke tests
+heroku version
+heroku help
+heroku auth:whoami
+heroku apps
+heroku apps:info -a testingapp2572
+heroku git:clone -a testingapp2572
+(
+  cd testingapp2572
+  git remote rm origin
+  heroku git:remote -a testingapp2572
+)
+heroku run -a testingapp2572 echo "it works!"
