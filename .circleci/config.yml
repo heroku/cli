@@ -17,11 +17,7 @@ jobs:
     <<: *defaults
     steps:
       - checkout
-      - restore_cache: &yarn_cache
-          keys:
-            - yarn-{{ checksum "yarn.lock" }}
-            - yarn
-      - restore_cache: &node_modules_cache
+      - restore_cache:
           keys:
             - node-modules-{{ checksum "yarn.lock" }}
             - node-modules
@@ -36,12 +32,16 @@ jobs:
       - save_cache:
           key: node-modules-{{ checksum "yarn.lock" }}
           paths:
+            - /usr/local/share/.cache/yarn
             - ~/cli/node_modules
   macos: &release_target_job
     <<: *defaults
     steps:
       - checkout
-      - restore_cache: *yarn_cache
+      - restore_cache:
+          keys:
+            - yarn-{{ checksum "yarn.lock" }}
+            - yarn
       - run: OS=darwin ARCH=x64 ./scripts/circle/release
   linux: *release_target_job
   windows: *release_target_job
