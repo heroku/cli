@@ -4,7 +4,7 @@
 
 source ./scripts/_init
 
-./scripts/circle/github_setup
+./scripts/circle/_github_setup
 
 CHANNEL=$(./scripts/circle/_channel)
 VERSION=$(./scripts/_version)
