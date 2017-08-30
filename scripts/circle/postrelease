@@ -4,6 +4,7 @@ source ./scripts/main
 
 set -x
 
+mkdir -p tmp/build
 cat << EOF > tmp/build/version
 {
   "channel": "$CHANNEL",
