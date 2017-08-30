@@ -30,7 +30,7 @@ jobs:
     <<: *defaults
     steps:
       - checkout
-      - restore_cache:
+      - restore_cache: &yarn_cache_restore
           keys:
             - v1-yarn-{{ checksum "yarn.lock" }}
             - v1-yarn
@@ -45,6 +45,12 @@ jobs:
   linux_arm: *release_target_job
   windows_x64: *release_target_job
   windows_x86: *release_target_job
+  debian:
+    <<: *defaults
+    steps:
+      - checkout
+      - restore_cache: *yarn_cache_restore
+      - run: ./scripts/linux/debian
   postrelease:
     <<: *defaults
     steps:
@@ -59,7 +65,7 @@ workflows:
             tags: &version_tags
               only: /^v.*/
       - darwin_x64: &release_target
-          filters:
+          filters: &release_filters
             tags: *version_tags
             branches:
               only:
@@ -73,6 +79,10 @@ workflows:
       - linux_arm: *release_target
       - windows_x64: *release_target
       - windows_x86: *release_target
+      - debian:
+          filters: *release_filters
+          requires:
+            - test
       - postrelease:
           requires:
             - darwin_x64
