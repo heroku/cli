@@ -13,19 +13,41 @@ defaults: &defaults
 version: 2
 executorType: docker
 jobs:
-  build_and_test:
+  test:
     <<: *defaults
     steps:
       - checkout
-      - restore_cache:
+      - restore_cache: &yarn_cache
           keys:
             - yarn-{{ checksum "yarn.lock" }}
             - yarn
-      - restore_cache:
+      - restore_cache: &node_modules_cache
           keys:
             - node-modules-{{ checksum "yarn.lock" }}
             - node-modules
       - run: ./scripts/build
+      - run: ./scripts/test
+      - save_cache:
+          key: yarn-{{ checksum "yarn.lock" }}
+          paths:
+            - /usr/local/share/.cache/yarn
+      - save_cache:
+          key: node-modules-{{ checksum "yarn.lock" }}
+          paths:
+            - ~/cli/node_modules
+  macos:
+    <<: *defaults
+    steps:
+      - checkout
+      - restore_cache: &yarn_cache
+          keys:
+            - yarn-{{ checksum "yarn.lock" }}
+            - yarn
+      - restore_cache: &node_modules_cache
+          keys:
+            - node-modules-{{ checksum "yarn.lock" }}
+            - node-modules
+      - run: ./scripts/macos
       - run: ./scripts/test
       - save_cache:
           key: yarn-{{ checksum "yarn.lock" }}
@@ -76,12 +98,16 @@ jobs:
   #         path: tmp/artifacts
 workflows:
   version: 2
-  build_and_release:
+  heroku_cli:
     jobs:
-      - build_and_test:
-          filters:
+      - test:
+          filters: &all_pushes
             tags: &version_tags
               only: /^v.*/
+      - macos:
+          filters: *all_pushes
+          requires:
+            - test
       # - release_windows_x64:
       #     filters: *all_tags_filters
       #     requires:

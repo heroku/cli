@@ -1,90 +1,51 @@
 #!/bin/bash
 
-set -ex
+set -x
 
 source ./scripts/main
 
-if [[ $# -lt 2 ]] || [[ $# -gt 3 ]]; then
-  echo "USAGE: $0 PLATFORM CHANNEL [DEST]"
+if [[ $# -ne 4 ]]; then
+  echo "USAGE: $0 OS ARCH CHANNEL OUTPUT_DIR"
   exit 1
 fi
 
-PLATFORM=$1
-CHANNEL=$2
-DEST=${3:-}
-SHA=$(git rev-parse --short HEAD)
-VERSION=$(node -p "require('./package.json').version")
-VERSION="$VERSION-$SHA"
-NODE_VERSION=$(node -p "require('./package.json')['cli-engine'].node || process.versions.node")
-NAME=$(node -p "require('./package.json').name")
-BIN=$(node -p "require('./package.json')['cli-engine'].bin || require('./package.json').name")
-
-IFS='-' read -ra INFO <<< "$PLATFORM"
-OS=${INFO[0]}
-ARCH=${INFO[1]}
+__os=$1
+__arch=$2
+__channel=$3
+__output="$(mkdir -p "$4" && cd "$4" && pwd)"
 
 # setup workspace
-TARBALL_BASE=$NAME-v$VERSION-$PLATFORM
-DEST=${DEST:="${__root}/tmp/build/$TARBALL_BASE"}
-rm -rf "$DEST"
-mkdir -p "${__root}/tmp/cache"
-mkdir -p "$DEST/node_modules"
-mkdir -p "$DEST/bin"
-if [ -f README.md ]; then cp README.md "$DEST"; fi
-if [ -f LICENSE ]; then cp LICENSE "$DEST"; fi
-cp package.json "$DEST"
+rm -rf "${__output}"
+mkdir -p "${__output}/node_modules"
+mkdir -p "${__output}/bin"
+cp "${__root}/README.md" "${__output}"
+cp "${__root}/LICENSE" "${__output}"
+cp "${__root}/package.json" "${__output}"
 
-# install packages
-cd "$DEST"
-DEST=$(pwd)
+"${__root}/scripts/fetch_node_binary" "${__os}" "${__arch}" "${__output}/bin" &
 
-if [ -d "${__root}/tmp/build/yarn" ]; then
-  cp "${__root}/tmp/build/yarn/package.json" "$DEST"
-  cp "${__root}/tmp/build/yarn/yarn.lock" "$DEST"
-  cp -r "${__root}/tmp/build/yarn/node_modules" "$DEST"
-else
-  yarn install --no-progress --production
-fi
+function yarn {
+  # install packages
+  yarn install --no-progress --production --no-progress --modules-folder="${__output}/node_modules" &
 
-# build cli-engine if needed
-if [ ! -f "$DEST/node_modules/cli-engine/lib/cli.js" ]; then
-  cd "$DEST/node_modules/cli-engine"
-  yarn
-  yarn run prepare
-fi
-
-# install node
-if [ "$OS" == windows ]; then
-  NODE_BASE=node-v$NODE_VERSION-win-$ARCH
-  if [ ! -f "${__root}/tmp/cache/$NODE_BASE.7z" ]; then
-    URL=https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-win-$ARCH.7z
-    curl -fSsLo "${__root}/tmp/cache/$NODE_BASE.7z" "$URL"
+  # build cli-engine if needed
+  if [ ! -f "${__output}/node_modules/cli-engine/lib/cli.js" ]; then
+    cd "${__output}/node_modules/cli-engine"
+    yarn
+    yarn run prepare
   fi
-  cd "$DEST"
-  7z x -bd -y "${__root}/tmp/cache/$NODE_BASE.7z" > /dev/null
-  mv "$DEST/$NODE_BASE/node.exe" "$DEST/bin/node.exe"
-  rm -rf "${DEST:?}/$NODE_BASE"
-else
-  if [ "$ARCH" == "arm" ]; then NODE_ARCH=armv7l; else NODE_ARCH="$ARCH"; fi
-  NODE_BASE=node-v$NODE_VERSION-$OS-$NODE_ARCH
-  if [ ! -f "${__root}/tmp/cache/$NODE_BASE.tar.xz" ]; then
-    URL=https://nodejs.org/dist/v$NODE_VERSION/$NODE_BASE.tar.xz
-    curl -fSLo "${__root}/tmp/cache/$NODE_BASE.tar.xz" "$URL"
-  fi
-  tar -C "$DEST" -xf "${__root}/tmp/cache/$NODE_BASE.tar.xz"
-  mv "$DEST/$NODE_BASE/bin/node" "$DEST/bin/node"
-  rm -rf "${DEST:?}/$NODE_BASE"
-fi
+}
+yarn &
 
 # create bin runner
-if [ "$OS" == windows ]; then
-  cat << EOF > "$DEST/bin/$BIN.cmd"
+if [ "${__os}" == windows ]; then
+  cat << EOF > "${__output}/bin/heroku.cmd"
 @echo off
-set CLI_BINPATH=%~dp0\\$BIN.cmd
-"%~dp0\\node.exe" "%~dp0\\$BIN.js" %*
+set CLI_BINPATH=%~dp0\\heroku.cmd
+"%~dp0\\node.exe" "%~dp0\\heroku.js" %*
 EOF
 else
-  cat << EOF > "$DEST/bin/$BIN"
+  cat << EOF > "${__output}/bin/heroku"
 #!/usr/bin/env bash
 set -e
 get_script_dir () {
@@ -103,17 +64,17 @@ DIR=\$(get_script_dir)
 # normalize home directory
 CLI_HOME=\$(cd && pwd)
 XDG_DATA_HOME=\${XDG_DATA_HOME:="\$CLI_HOME/.local/share"}
-BIN_DIR="\$XDG_DATA_HOME/$BIN/client/bin"
-if [ -x "\$BIN_DIR/$BIN" ] && [ ! "\$BIN_DIR" -ef "\$DIR" ]; then
-  "\$XDG_DATA_HOME/$BIN/client/bin/$BIN" "\$@"
+BIN_DIR="\$XDG_DATA_HOME/heroku/client/bin"
+if [ -x "\$BIN_DIR/heroku" ] && [ ! "\$BIN_DIR" -ef "\$DIR" ]; then
+  "\$XDG_DATA_HOME/heroku/client/bin/heroku" "\$@"
 else
-  CLI_BINPATH="\$DIR/$BIN" "\$DIR/node" "\$DIR/$BIN.js" "\$@"
+  CLI_BINPATH="\$DIR/heroku" "\$DIR/node" "\$DIR/heroku.js" "\$@"
 fi
 EOF
-chmod +x "$DEST/bin/$BIN"
+chmod +x "${__output}/bin/heroku"
 fi
 
-cat << EOF > "$DEST/bin/$BIN.js"
+cat << EOF > "${__output}/bin/heroku.js"
 const path = require('path')
 const CLI = require('cli-engine').default
 const root = path.join(__dirname, '..')
@@ -122,9 +83,11 @@ const cli = new CLI({
   config: {
     root,
     pjson: require(path.join(root, 'package.json')),
-    channel: '$CHANNEL',
-    version: '$VERSION'
+    channel: '${__channel}',
+    version: '${__version}'
   }
 })
 cli.run()
 EOF
+
+wait

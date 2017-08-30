@@ -10,3 +10,7 @@ set -o nounset
 # Set magic variables for current file & dir
 __dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 __root="$(cd "$(dirname "${__dir}")" && pwd)"
+
+__version=$(node -p "require('./package.json').version")
+
+__node_version=$(node -p "require('./package.json')['cli-engine'].node || process.versions.node")

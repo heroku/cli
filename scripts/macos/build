@@ -7,16 +7,14 @@ if [ $# -ne 1 ]; then
   exit 1
 fi
 
-"${__root}/scripts/build" darwin-x64 "$1" tmp/darwin
-
-version=$(node -p "require('./package.json').version")
+"${__root}/scripts/build_base" darwin-x64 "$1" dist/darwin
 
 mkdir -p dist
 
-pkgbuild --root tmp/darwin \
+pkgbuild --root dist/darwin \
   --identifier com.heroku.cli \
   --install-location /usr/local/lib/heroku \
-  --version "$version" \
+  --version "${__version}" \
   --sign "Developer ID Installer: Heroku INC" \
   --scripts "${__root}/scripts/macos/scripts" \
   dist/heroku.pkg
