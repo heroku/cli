@@ -12,5 +12,4 @@ if grep -q -e "@git://" yarn.lock; then
 fi
 
 # run shellcheck
-# TODO: enable when passing
-# find scripts | xargs shellcheck
+find scripts -type f -print0 | xargs shellcheck -x
