@@ -1,17 +1,13 @@
 #!/usr/bin/env bash
 
-source ./scripts/main
-source ./scripts/circle/vars
-./scripts/circle/github_setup
+source ./scripts/circle/_init
 
 set -x
 
 echo "Releasing ${CHANNEL}"
 
-
-ls tmp/builds
-ls tmp/builds/darwin_x64
-ls tmp/builds/linux_x64
+ls tmp/darwin_x64
+ls tmp/linux_x64
 echo "SKIP RELEASES FOR NOW"
 exit 1
 

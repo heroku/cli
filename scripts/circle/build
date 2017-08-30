@@ -1,18 +1,16 @@
 #!/usr/bin/env bash
 
-source ./scripts/main
-source ./scripts/circle/vars
-./scripts/circle/github_setup
+source ./scripts/circle/_init
 
 set -x
 
 echo "Building ${OS} ${ARCH} ${CHANNEL}"
 
-# first build the base
-"${root}/scripts/build_base"
+# first build the workspace
+"${root}/scripts/build/workspace"
 
-# now build the installers and tarballs in parallel
-bg "${root}/scripts/build_tarballs"
+# now build the tarballs and installers in parallel
+bg "${root}/scripts/build/tarballs"
 if [[ "${OS}" = "windows" ]]; then
   bg "${root}/scripts/windows/release"
 fi

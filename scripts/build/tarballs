@@ -1,27 +1,27 @@
 #!/usr/bin/env bash
 
-source ./scripts/main
-source ./scripts/circle/vars
+source ./scripts/build/_init
 
 set -x
 
 # create tarballs
-cd "$BUILD_DIR"
+cd "$PLATFORM_DIR"
+mkdir -p "$PLATFORM_DIST_DIR"
 
 # must be a directory in this format
 # but it is difficult to work with the version number in other places
-mv "$TARBALL_BASE_DIR" "$BUILD_DIR/$BASE" 
+mv "$PLATFORM_WORKSPACE_DIR" "$PLATFORM_DIR/$VERSIONED_BASE"
 
-bg tar c "${BASE}" | xz > "$TXZ_PATH"
-bg tar czf "$TGZ_PATH" "${BASE}"
+bg tar c "${VERSIONED_BASE}" | xz > "$TXZ_PATH"
+bg tar czf "$TGZ_PATH" "${VERSIONED_BASE}"
 wait_all
 
 # move back into friendly format
-mv "$BUILD_DIR/$BASE" "$TARBALL_BASE_DIR"
+mv "$PLATFORM_DIR/$VERSIONED_BASE" "$PLATFORM_WORKSPACE_DIR"
 
 sha256=$(shasum -a 256 "$TGZ_PATH" | awk \{'print $1'\})
 sha256xz=$(shasum -a 256 "$TXZ_PATH" | awk \{'print $1'\})
-cat << EOF > "$BUILD_DIR/${OS}-${ARCH}"
+cat << EOF > "$PLATFORM_DIST_DIR/${OS}-${ARCH}"
 {
   "channel": "${CHANNEL}",
   "version": "${VERSION}",

@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+# shellcheck disable=SC2034
+
+source ./scripts/_init
+
+if [[ ! -z "${CIRCLE_JOB-}" ]]; then
+  IFS='_' read -ra _circle_job <<< "$CIRCLE_JOB"
+  OS=${OS:-${_circle_job[0]-}}
+  ARCH=${ARCH:-${_circle_job[1]-}}
+fi
+
+CHANNEL=$(./scripts/circle/_channel)
+VERSION=$(./scripts/_version)
+VERSIONED_BASE="heroku-cli-v${VERSION}-${OS}-${ARCH}"
+UNVERSIONED_BASE="heroku-cli-${OS}-${ARCH}"
+
+TMP_DIR="$root/tmp"
+PLATFORM_DIR="$TMP_DIR/${OS}_${ARCH}"
+PLATFORM_WORKSPACE_DIR="$PLATFORM_DIR/workspace"
+PLATFORM_DIST_DIR="$PLATFORM_DIR/dist"
+TGZ_PATH="$PLATFORM_DIST_DIR/$UNVERSIONED_BASE.tar.gz"
+TXZ_PATH="$PLATFORM_DIST_DIR/$UNVERSIONED_BASE.tar.xz"
+
+#REMOTE_BASE="s3://$S3_BUCKET/heroku-cli/channels/$CHANNEL"

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-source ./scripts/main
+source ./scripts/_init
 
 set -x
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-source ./scripts/main
+source ./scripts/_init
 
 if [[ "${CIRCLECI:-}" != "true" ]]; then
   echo "skipping github setup since not on circle"

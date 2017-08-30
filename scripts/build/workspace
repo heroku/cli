@@ -8,30 +8,29 @@
 # * node modules
 # * bin scripts
 
-source ./scripts/main
-source ./scripts/circle/vars
+source ./scripts/build/_init
 
 set -x
 
 # setup workspace
-rm -rf "${TARBALL_BASE_DIR}"
-mkdir -p "${TARBALL_BASE_DIR}/node_modules"
-mkdir -p "${TARBALL_BASE_DIR}/bin"
-cp "${root}/README.md" "${TARBALL_BASE_DIR}"
-cp "${root}/LICENSE" "${TARBALL_BASE_DIR}"
-cp "${root}/package.json" "${TARBALL_BASE_DIR}"
-cp "${root}/yarn.lock" "${TARBALL_BASE_DIR}"
+rm -rf "${PLATFORM_WORKSPACE_DIR}"
+mkdir -p "${PLATFORM_WORKSPACE_DIR}/node_modules"
+mkdir -p "${PLATFORM_WORKSPACE_DIR}/bin"
+cp "${root}/README.md" "${PLATFORM_WORKSPACE_DIR}"
+cp "${root}/LICENSE" "${PLATFORM_WORKSPACE_DIR}"
+cp "${root}/package.json" "${PLATFORM_WORKSPACE_DIR}"
+cp "${root}/yarn.lock" "${PLATFORM_WORKSPACE_DIR}"
 
-bg "${root}/scripts/fetch_node_binary" "${TARBALL_BASE_DIR}/bin"
+bg "${root}/scripts/build/_fetch_node_binary" "${PLATFORM_WORKSPACE_DIR}/bin"
 
 function install_packages {
-  cd "${TARBALL_BASE_DIR}"
+  cd "${PLATFORM_WORKSPACE_DIR}"
   # install packages
   yarn install --no-progress --production --non-interactive --prefer-offline --mutex=file:/tmp/.yarn-mutex
 
   # build cli-engine if needed
-  if [ ! -f "${TARBALL_BASE_DIR}/node_modules/cli-engine/lib/cli.js" ]; then
-    cd "${TARBALL_BASE_DIR}/node_modules/cli-engine"
+  if [ ! -f "${PLATFORM_WORKSPACE_DIR}/node_modules/cli-engine/lib/cli.js" ]; then
+    cd "${PLATFORM_WORKSPACE_DIR}/node_modules/cli-engine"
     yarn
     yarn run prepare
   fi
@@ -40,13 +39,13 @@ bg install_packages
 
 # create bin runner
 if [ "${OS}" == "windows" ]; then
-  cat << EOF > "${TARBALL_BASE_DIR}/bin/heroku.cmd"
+  cat << EOF > "${PLATFORM_WORKSPACE_DIR}/bin/heroku.cmd"
 @echo off
 set CLI_BINPATH=%~dp0\\heroku.cmd
 "%~dp0\\node.exe" "%~dp0\\heroku.js" %*
 EOF
 else
-  cat << EOF > "${TARBALL_BASE_DIR}/bin/heroku"
+  cat << EOF > "${PLATFORM_WORKSPACE_DIR}/bin/heroku"
 #!/usr/bin/env bash
 set -e
 get_script_dir () {
@@ -72,10 +71,10 @@ else
   CLI_BINPATH="\$DIR/heroku" "\$DIR/node" "\$DIR/heroku.js" "\$@"
 fi
 EOF
-chmod +x "${TARBALL_BASE_DIR}/bin/heroku"
+chmod +x "${PLATFORM_WORKSPACE_DIR}/bin/heroku"
 fi
 
-cat << EOF > "${TARBALL_BASE_DIR}/bin/heroku.js"
+cat << EOF > "${PLATFORM_WORKSPACE_DIR}/bin/heroku.js"
 const path = require('path')
 const CLI = require('cli-engine').default
 const root = path.join(__dirname, '..')

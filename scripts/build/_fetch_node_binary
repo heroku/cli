@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-source ./scripts/main
-source ./scripts/circle/vars
+source ./scripts/_init
 
+go_home
 if [[ $# -ne 1 ]]; then
   echo "USAGE: $0 OUTPUT_DIR"
   exit 1
@@ -10,6 +10,7 @@ fi
 
 output=$1
 node_ext=""
+NODE_VERSION=$(node -p "require('./package.json')['cli-engine'].node || process.versions.node")
 
 mkdir -p "${output}"
 mkdir -p "${root}/tmp/node"

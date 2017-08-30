@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-source ./scripts/main
+source ./scripts/_init
 
 # if [ -x "$(command -v circleci)" ]; then
 #   # does not work as circleci is not a tty :(
