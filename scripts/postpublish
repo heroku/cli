@@ -15,9 +15,9 @@ git submodule update --init
 )
 
 # homebrew-core
-if [ -x /usr/local/bin/brew ]; then
-  sleep 5
-  /usr/local/bin/brew bump-formula-pr "--url=https://registry.npmjs.org/heroku-cli/-/heroku-cli-$VERSION.tgz"
-else
-  echo "homebrew not installed. Skipping formula bump." >&2
-fi
+# if [ -x /usr/local/bin/brew ]; then
+#   sleep 5
+#   /usr/local/bin/brew bump-formula-pr "--url=https://registry.npmjs.org/heroku-cli/-/heroku-cli-$VERSION.tgz"
+# else
+#   echo "homebrew not installed. Skipping formula bump." >&2
+# fi
