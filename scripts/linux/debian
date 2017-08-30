@@ -11,7 +11,7 @@ set -x
 export OS=linux
 
 # set constants
-DEB_VERSION="$(version)-1"
+DEB_VERSION="${VERSION}-1"
 workspace_root=$root/tmp/apt
 
 rm -rf "$workspace_root"
@@ -69,8 +69,8 @@ const cli = new CLI({
   config: {
     root,
     pjson: require(path.join(root, 'package.json')),
-    channel: '$(channel)',
-    version: '$(version)',
+    channel: '${CHANNEL}',
+    version: '${VERSION}',
     updateDisabled: 'update the CLI with "sudo apt-get upgrade heroku"'
   }
 })
