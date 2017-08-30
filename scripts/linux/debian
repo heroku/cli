@@ -19,6 +19,7 @@ rm -rf "$workspace_root"
 
 function build_arch () {
   ARCH=$1
+  source ./scripts/circle/vars
   # set constants
   if [[ "$ARCH" = "x64" ]]; then
     DEB_ARCH=amd64
@@ -38,7 +39,7 @@ function build_arch () {
 
   # setup base
   ARCH=${ARCH} "${root}/scripts/build_base"
-  mv "$root/tmp/builds/${BASE}" "$WORKSPACE/usr/lib/heroku"
+  mv "${BASE_PATH}" "$WORKSPACE/usr/lib/heroku"
 
   # add bin loader scripts
   cat << EOF > "$WORKSPACE/usr/lib/heroku/bin/heroku"

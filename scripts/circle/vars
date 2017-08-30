@@ -8,8 +8,8 @@ go_home
 
 if [[ ! -z "${CIRCLE_JOB-}" ]]; then
   IFS='_' read -ra _circle_job <<< "$CIRCLE_JOB"
-  OS=${OS:=${_circle_job[0]-}}
-  ARCH=${ARCH:=${_circle_job[1]-}}
+  OS=${OS:-${_circle_job[0]-}}
+  ARCH=${ARCH:-${_circle_job[1]-}}
 fi
 
 if [[ "${CHANNEL:-}" == "" ]]; then
