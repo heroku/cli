@@ -26,7 +26,7 @@ jobs:
           paths:
             - /usr/local/share/.cache/yarn
             - ~/cli/node_modules
-  darwin: &release_target_job
+  darwin_x64: &release_target_job
     <<: *defaults
     steps:
       - checkout
@@ -35,8 +35,11 @@ jobs:
             - v1-yarn-{{ checksum "yarn.lock" }}
             - v1-yarn
       - run: ./scripts/circle/release
-  linux: *release_target_job
-  windows: *release_target_job
+  linux_x64: *release_target_job
+  linux_x86: *release_target_job
+  linux_arm: *release_target_job
+  windows_x64: *release_target_job
+  windows_x86: *release_target_job
   postrelease:
     <<: *defaults
     steps:
