@@ -8,8 +8,8 @@ VERSION=$(./scripts/version)
 
 git clone git@github.com:heroku/homebrew-brew.git tmp/homebrew-brew
 cd tmp/homebrew-brew
-sed -i '' "s/heroku-cli-v.*-darwin-x64/heroku-cli-v${VERSION}-darwin-x64/" Formula/heroku.rb
-sed -i '' "s/version \".*\"/version \"${VERSION}\"/" Formula/heroku.rb
+sed -i "s/heroku-cli-v.*-darwin-x64/heroku-cli-v${VERSION}-darwin-x64/" Formula/heroku.rb
+sed -i "s/version \".*\"/version \"${VERSION}\"/" Formula/heroku.rb
 git add Formula/heroku.rb
 git commit -m "heroku ${VERSION}"
 
