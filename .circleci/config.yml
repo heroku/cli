@@ -131,7 +131,7 @@ workflows:
       #     filters: *release_filters
       #     requires: [test]
       - release:
-          filters:
+          filters: &release_pushes
             tags: *version_tags
             branches: [master, dev, streamline]
           requires:
