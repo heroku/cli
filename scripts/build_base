@@ -44,7 +44,7 @@ function install_packages {
 bg install_packages
 
 # create bin runner
-if [ "${OS}" == windows ]; then
+if [ "${OS}" == "windows" ]; then
   cat << EOF > "${output}/bin/heroku.cmd"
 @echo off
 set CLI_BINPATH=%~dp0\\heroku.cmd

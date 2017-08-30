@@ -17,7 +17,7 @@ mkdir -p "${root}/tmp/node"
 mkdir -p "${root}/tmp/cache/node"
 
 # install node
-if [ "${os}" == windows ]; then
+if [ "${os}" == "windows" ]; then
   node_ext=".exe"
   node_base=node-v$(node_version)-win-${arch}
   if [ ! -f "${root}/tmp/cache/node/${node_base}" ]; then
