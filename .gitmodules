@@ -1,0 +1,3 @@
+[submodule "macos-installer"]
+	path = macos-installer
+	url = git@github.com:heroku/cli-macos-installer.git
