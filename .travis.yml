@@ -15,4 +15,4 @@ script:
   - ./scripts/travis/release
 
 env:
-  OSX_KEYCHAIN=~/Library/Keychains/ios-build.keychain
+  - OSX_KEYCHAIN=~/Library/Keychains/ios-build.keychain
