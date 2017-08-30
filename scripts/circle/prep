@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+source ./scripts/main
+
+set -x
+
+yarn install --pure-lockfile --non-interactive --prefer-offline
+yarn check
+
+# build only if it is a git checkout
+if [ ! -d "${root}/node_modules/cli-engine/lib" ]; then
+  cd "${root}/node_modules/cli-engine" && yarn && cd ~/cli
+fi

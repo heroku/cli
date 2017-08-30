@@ -1,13 +1,19 @@
 #!/usr/bin/env bash
 
 source ./scripts/main
+source ./scripts/circle/vars
+./scripts/circle/github_setup
 
 set -x
 
-yarn install --pure-lockfile --non-interactive --prefer-offline
-yarn check
+echo "Building ${OS} ${ARCH} ${CHANNEL}"
 
-# build only if it is a git checkout
-if [ ! -d "${root}/node_modules/cli-engine/lib" ]; then
-  cd "${root}/node_modules/cli-engine" && yarn && cd ~/cli
+# first build the base
+"${root}/scripts/build_base"
+
+# now build the installers and tarballs in parallel
+bg "${root}/scripts/build_tarballs"
+if [[ "${OS}" = "windows" ]]; then
+  bg "${root}/scripts/windows/release"
 fi
+wait_all

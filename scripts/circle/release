@@ -8,17 +8,14 @@ set -x
 
 echo "Releasing ${CHANNEL}"
 
-# first build the base
-"${root}/scripts/build_base"
 
-# now build the installers and tarballs in parallel
-bg "${root}/scripts/build_tarballs"
-if [[ "${OS}" = "windows" ]]; then
-  bg "${root}/scripts/windows/release"
-fi
-wait_all
+ls tmp/builds
+ls tmp/builds/darwin_x64
+ls tmp/builds/linux_x64
+echo "SKIP RELEASES FOR NOW"
+exit 1
 
-# finally, release to s3
+# release to s3
 "${root}/scripts/release_tarballs" dist/tarballs
 
 if [[ "${OS}" = "darwin" ]]; then

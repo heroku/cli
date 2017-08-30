@@ -17,129 +17,123 @@ jobs:
           keys:
             - v2-test-{{ checksum "yarn.lock" }}
             - v2-test
-      - run: ./scripts/circle/build
+      - run: ./scripts/circle/prep
       - run: ./scripts/test
       - save_cache:
           key: v2-test-{{ checksum "yarn.lock" }}
           paths:
             - /usr/local/share/.cache/yarn
             - ~/cli/node_modules
-  darwin_x64:
+  darwin_x64_build:
     <<: *defaults
     steps:
       - checkout
-      - restore_cache:
-          keys: [node-v8.3.0-darwin-x64]
       - restore_cache: &release_target_yarn_cache
           keys:
             - v3-release-target-yarn-{{ checksum "yarn.lock" }}
             - v3-release-target-yarn
-      - run: ./scripts/circle/release
+      - restore_cache: {keys: [node-v8.3.0-darwin-x64]}
+      - run: ./scripts/circle/build
+      - persist_to_workspace: &persist_dist
+          root: tmp/builds
+          paths: [darwin_x64]
       - save_cache:
           key: v3-release-target-yarn-{{ checksum "yarn.lock" }}
-          paths:
-            - /usr/local/share/.cache/yarn
-      - save_cache:
+          paths: [/usr/local/share/.cache/yarn]
+      - save_cache: &node_cache_save
           key: node-v8.3.0-darwin-x64
-          paths: ~/cli/tmp/cache/node
-  linux_x64:
+          paths: [~/cli/tmp/cache/node]
+  linux_x64_build:
     <<: *defaults
     steps:
       - checkout
-      - restore_cache:
-          keys: [node-v8.3.0-linux-x64]
       - restore_cache: *release_target_yarn_cache
-      - run: ./scripts/circle/release
+      - restore_cache: {keys: [node-v8.3.0-linux-x64]}
+      - run: ./scripts/circle/build
+      - persist_to_workspace: &persist_dist
+          root: tmp/builds
+          paths: [linux_x64]
       - save_cache:
+          <<: *node_cache_save
           key: node-v8.3.0-linux-x64
-          paths: ~/cli/tmp/cache/node
-  linux_x86:
+  # linux_x86:
+  #   <<: *defaults
+  #   steps:
+  #     - checkout
+  #     - restore_cache:
+  #         keys: [node-v8.3.0-linux-x86]
+  #     - restore_cache: *release_target_yarn_cache
+  #     - run: ./scripts/circle/build
+  #     - save_cache:
+  #         key: node-v8.3.0-linux-x86
+  #         paths: ~/cli/tmp/cache/node
+  # linux_arm:
+  #   <<: *defaults
+  #   steps:
+  #     - checkout
+  #     - restore_cache:
+  #         keys: [node-v8.3.0-linux-arm]
+  #     - restore_cache: *release_target_yarn_cache
+  #     - run: ./scripts/circle/build
+  #     - save_cache:
+  #         key: node-v8.3.0-linux-arm
+  #         paths: ~/cli/tmp/cache/node
+  # windows_x64:
+  #   <<: *defaults
+  #   steps:
+  #     - checkout
+  #     - restore_cache:
+  #         keys: [node-v8.3.0-windows-x64]
+  #     - restore_cache: *release_target_yarn_cache
+  #     - run: ./scripts/circle/build
+  #     - save_cache:
+  #         key: node-v8.3.0-windows-x64
+  #         paths: ~/cli/tmp/cache/node
+  # windows_x86:
+  #   <<: *defaults
+  #   steps:
+  #     - checkout
+  #     - restore_cache:
+  #         keys: [node-v8.3.0-windows-x86]
+  #     - restore_cache: *release_target_yarn_cache
+  #     - run: ./scripts/circle/build
+  #     - save_cache:
+  #         key: node-v8.3.0-windows-x86
+  #         paths: ~/cli/tmp/cache/node
+  # debian:
+  #   <<: *defaults
+  #   steps:
+  #     - checkout
+  #     - restore_cache: *release_target_yarn_cache
+  #     - run: ./scripts/linux/debian
+  release:
     <<: *defaults
     steps:
       - checkout
-      - restore_cache:
-          keys: [node-v8.3.0-linux-x86]
-      - restore_cache: *release_target_yarn_cache
+      - attach_workspace: {at: dist}
       - run: ./scripts/circle/release
-      - save_cache:
-          key: node-v8.3.0-linux-x86
-          paths: ~/cli/tmp/cache/node
-  linux_arm:
-    <<: *defaults
-    steps:
-      - checkout
-      - restore_cache:
-          keys: [node-v8.3.0-linux-arm]
-      - restore_cache: *release_target_yarn_cache
-      - run: ./scripts/circle/release
-      - save_cache:
-          key: node-v8.3.0-linux-arm
-          paths: ~/cli/tmp/cache/node
-  windows_x64:
-    <<: *defaults
-    steps:
-      - checkout
-      - restore_cache:
-          keys: [node-v8.3.0-windows-x64]
-      - restore_cache: *release_target_yarn_cache
-      - run: ./scripts/circle/release
-      - save_cache:
-          key: node-v8.3.0-windows-x64
-          paths: ~/cli/tmp/cache/node
-  windows_x86:
-    <<: *defaults
-    steps:
-      - checkout
-      - restore_cache:
-          keys: [node-v8.3.0-windows-x86]
-      - restore_cache: *release_target_yarn_cache
-      - run: ./scripts/circle/release
-      - save_cache:
-          key: node-v8.3.0-windows-x86
-          paths: ~/cli/tmp/cache/node
-  debian:
-    <<: *defaults
-    steps:
-      - checkout
-      - restore_cache: *release_target_yarn_cache
-      - run: ./scripts/linux/debian
-  postrelease:
-    <<: *defaults
-    steps:
-      - checkout
-      - run: ./scripts/circle/postrelease
 workflows:
   version: 2
   heroku_cli:
     jobs:
       - test:
-          filters:
+          filters: &all_pushes
             tags: &version_tags
               only: /^v.*/
-      - darwin_x64: &release_target
-          filters: &release_filters
+      - darwin_x64: &build_step
+          filters: *all_pushes
+      - linux_x64: *build_step
+      # - linux_x86: *release_target
+      # - linux_arm: *release_target
+      # - windows_x64: *release_target
+      # - windows_x86: *release_target
+      # - debian:
+      #     filters: *release_filters
+      #     requires: [test]
+      - release:
+          filters:
             tags: *version_tags
-            branches:
-              only:
-                - master
-                - dev
-          requires:
-            - test
-      - linux_x64: *release_target
-      - linux_x86: *release_target
-      - linux_arm: *release_target
-      - windows_x64: *release_target
-      - windows_x86: *release_target
-      - debian:
-          filters: *release_filters
-          requires:
-            - test
-      - postrelease:
-          filters: *release_filters
+            branches: [master, dev, streamline]
           requires:
             - darwin_x64
             - linux_x64
-            - linux_x86
-            - linux_arm
-            - windows_x64
-            - windows_x86
