@@ -10,6 +10,3 @@ before_install:
 script:
   - CHANNEL=dev ./scripts/darwin/build dist
   - ls -ls dist
-env:
-  global:
-    secure: "Lmrbyyz1WU1JSpfjxgWwAV3WcYmz5izPEEGFegzdXWUOCB2yP6Nq1UKSMLgRVK9S/myHlOVgR4gWh2RDWy+FaK4y3m3vqAPu6+o6yw4m+TtdOI6GYwbQB3Cv2JYfJVoe4GIDcWhVsZa+qVlozgNdpr8EaHpscX3IbiDmmbeWCmI="
