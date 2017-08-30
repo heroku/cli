@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+source ./scripts/main
+
+set -x
+
+cat << EOF > tmp/build/version
+{
+  "channel": "$CHANNEL",
+  "version": "$(version)"
+}
+EOF
+aws s3 cp --cache-control max-age=3600 --content-type application/json tmp/build/version "s3://$S3_BUCKET/heroku-cli/channels/$CHANNEL/version"
+
+# invalidate CDN
+aws cloudfront create-invalidation --distribution-id EHF9FOCUJYVZ --paths "/heroku-cli/channels/$CHANNEL/*"

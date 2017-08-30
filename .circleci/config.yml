@@ -81,6 +81,12 @@ workflows:
             - test
       - linux: *release_target
       - windows: *release_target
+      - postrelease:
+          filters: *all_pushes
+          requires:
+            - macos
+            - linux
+            - windows
       # - release_windows_x64:
       #     filters: *all_tags_filters
       #     requires:

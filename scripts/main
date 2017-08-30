@@ -31,3 +31,16 @@ function go_home () {
   cd "${root}"
 }
 go_home
+
+function _channel () {
+  if [[ "${CHANNEL:-}" != "" ]]; then
+    echo "${CHANNEL}"
+  elif [[ "${CIRCLE_TAG:-}" != "" ]]; then
+    echo stable
+  elif [[ "${CIRCLE_BRANCH:-}" == "master" ]]; then
+    echo beta
+  else
+    echo dev
+  fi
+}
+CHANNEL=$(_channel)
