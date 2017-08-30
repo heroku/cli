@@ -14,6 +14,6 @@ function heroku () {
 heroku version
 heroku help
 heroku auth:whoami
-APP=$(heroku apps | head -n2 | tail -n1)
+APP=$(heroku apps | head -n2 | tail -n1 | awk '{split($0, a); print a[1]}')
 heroku apps:info -a "$APP"
 heroku run --exit-code -a "$APP" echo "it works!"
