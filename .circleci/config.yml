@@ -27,7 +27,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys: node-v8.3.0-darwin-x64
+          keys: [node-v8.3.0-darwin-x64]
       - restore_cache: &release_target_yarn_cache
           keys:
             - v1-release-target-yarn-{{ checksum "yarn.lock" }}
@@ -37,7 +37,6 @@ jobs:
           key: v1-release-target-yarn-{{ checksum "yarn.lock" }}
           paths:
             - /usr/local/share/.cache/yarn
-            - ~/cli/tmp/cache
       - save_cache:
           key: node-v8.3.0-darwin-x64
           paths: ~/cli/tmp/cache/node
