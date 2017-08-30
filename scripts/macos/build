@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 source ./scripts/main
 
@@ -7,14 +7,14 @@ if [ $# -ne 1 ]; then
   exit 1
 fi
 
-"${__root}/scripts/build_base" darwin-x64 "$1" dist/darwin
+"${root}/scripts/build_base" darwin-x64 "$1" dist/darwin
 
 mkdir -p dist
 
 pkgbuild --root dist/darwin \
   --identifier com.heroku.cli \
   --install-location /usr/local/lib/heroku \
-  --version "${__version}" \
+  --version "$(version)" \
   --sign "Developer ID Installer: Heroku INC" \
-  --scripts "${__root}/scripts/macos/scripts" \
+  --scripts "${root}/scripts/darwin/scripts" \
   dist/heroku.pkg

@@ -26,7 +26,7 @@ jobs:
           paths:
             - /usr/local/share/.cache/yarn
             - ~/cli/node_modules
-  macos: &release_target_job
+  darwin: &release_target_job
     <<: *defaults
     steps:
       - checkout
@@ -34,9 +34,14 @@ jobs:
           keys:
             - v1-yarn-{{ checksum "yarn.lock" }}
             - v1-yarn
-      - run: OS=darwin ARCH=x64 ./scripts/circle/release
+      - run: ./scripts/circle/release
   linux: *release_target_job
   windows: *release_target_job
+  postrelease:
+    <<: *defaults
+    steps:
+      - checkout
+      - run: ./scripts/circle/postrelease
   # release_windows_x64:
   #   <<: *defaults
   #   steps:
@@ -71,7 +76,7 @@ workflows:
           filters:
             tags: &version_tags
               only: /^v.*/
-      - macos: &release_target
+      - darwin_x64: &release_target
           filters:
             tags: *version_tags
             branches:
@@ -81,13 +86,19 @@ workflows:
                 - macos-installer
           requires:
             - test
-      - linux: *release_target
-      - windows: *release_target
+      - linux_x64: *release_target
+      - linux_x86: *release_target
+      - linux_arm: *release_target
+      - windows_x64: *release_target
+      - windows_x32: *release_target
       - postrelease:
           requires:
-            - macos
-            - linux
-            - windows
+            - darwin_x64
+            - linux_x64
+            - linux_x86
+            - linux_arm
+            - windows_x64
+            - windows_x86
       # - release_windows_x64:
       #     filters: *all_tags_filters
       #     requires:
