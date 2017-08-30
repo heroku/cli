@@ -50,32 +50,6 @@ jobs:
     steps:
       - checkout
       - run: ./scripts/circle/postrelease
-  # release_windows_x64:
-  #   <<: *defaults
-  #   steps:
-  #     - type: checkout
-  #     - attach_workspace:
-  #         at: ~/cli
-  #     - run: |
-  #         set -ex
-  #         ./scripts/extract-windows-files x64
-  #         ./scripts/release-wrapper -a x64 windows
-  #         ./scripts/copy-artifacts x64
-  #     - store_artifacts:
-  #         path: tmp/artifacts
-  # release_windows_x86:
-  #   <<: *defaults
-  #   steps:
-  #     - type: checkout
-  #     - attach_workspace:
-  #         at: ~/cli
-  #     - run: |
-  #         set -ex
-  #         ./scripts/extract-windows-files x86
-  #         ./scripts/release-wrapper -a x86 windows
-  #         ./scripts/copy-artifacts x86
-  #     - store_artifacts:
-  #         path: tmp/artifacts
 workflows:
   version: 2
   heroku_cli:
