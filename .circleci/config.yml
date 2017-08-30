@@ -124,6 +124,7 @@ workflows:
           filters: *all_pushes
       - linux_x64_build: *build_step
       - release:
+          filters: *all_pushes
           # filters: &release_pushes
           #   tags: *version_tags
           #   branches: [master, dev, streamline]
