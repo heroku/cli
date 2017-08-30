@@ -5,20 +5,23 @@ source ./scripts/circle/vars
 
 set -x
 
-output="$root/tmp/tarballs"
-
-mkdir -p "${output}"
-
 # create tarballs
-tarball_base="${output}/${BASE}"
-cd "$root/tmp/builds"
-bg tar c "${BASE}" | xz > "${tarball_base}.tar.xz"
-bg tar czf "${tarball_base}.tar.gz" "${BASE}"
+cd "$BUILD_DIR"
+
+# must be a directory in this format
+# but it is difficult to work with the version number in other places
+mv "$TARBALL_BASE_DIR" "$BUILD_DIR/$BASE" 
+
+bg tar c "${BASE}" | xz > "$TXZ_PATH"
+bg tar czf "$TGZ_PATH" "${BASE}"
 wait_all
 
-sha256=$(shasum -a 256 "${tarball_base}.tar.gz" | awk \{'print $1'\})
-sha256xz=$(shasum -a 256 "${tarball_base}.tar.xz" | awk \{'print $1'\})
-cat << EOF > "${output}/${OS}-${ARCH}"
+# move back into friendly format
+mv "$BUILD_DIR/$BASE" "$TARBALL_BASE_DIR"
+
+sha256=$(shasum -a 256 "$TGZ_PATH" | awk \{'print $1'\})
+sha256xz=$(shasum -a 256 "$TXZ_PATH" | awk \{'print $1'\})
+cat << EOF > "$BUILD_DIR/${OS}-${ARCH}"
 {
   "channel": "${CHANNEL}",
   "version": "${VERSION}",
