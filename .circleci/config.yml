@@ -123,7 +123,6 @@ workflows:
               only:
                 - master
                 - dev
-                - macos-installer
           requires:
             - test
       - linux_x64: *release_target
@@ -136,6 +135,7 @@ workflows:
           requires:
             - test
       - postrelease:
+          filters: *release_filters
           requires:
             - darwin_x64
             - linux_x64
