@@ -128,11 +128,9 @@ jobs:
     <<: *defaults
     steps:
       - checkout
-      - restore_cache: *release_target_yarn_cache
-      - restore_cache: {keys: [node-v8.3.0-linux-x64]}
-      - restore_cache: {keys: [node-v8.3.0-linux-x86]}
-      - restore_cache: {keys: [node-v8.3.0-linux-arm]}
-      - run: ./scripts/linux/debian
+      - attach_workspace:
+          at: tmp
+      - run: ./scripts/build/debian
 workflows:
   version: 2
   heroku_cli:
@@ -164,7 +162,11 @@ workflows:
             - build_linux_arm
             - build_windows_x64
             - build_windows_x86
+            - debian
       - debian:
           filters: *release_filters
           requires:
             - test
+            - build_linux_x64
+            - build_linux_x86
+            - build_linux_arm

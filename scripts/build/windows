@@ -6,6 +6,5 @@ source ./scripts/_init
 
 "${scripts}/build/_workspace"
 
-bg "${scripts}/build/_tarballs"
-bg "${scripts}/build/_windows_installer"
-wait_all
+"${scripts}/build/_tarballs"
+"${scripts}/build/_windows_installer"

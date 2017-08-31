@@ -11,11 +11,13 @@ mkdir -p "$o"
 
 # must be a directory in this format
 # but it is difficult to work with the version number in other places
-ln -s "$(workspace_dir)" "$(versioned_base)"
+mv "$(workspace_dir)" "$(versioned_base)"
 
 bg tar c "$(versioned_base)" | xz > "$(txz_path)"
 bg tar czf "$(tgz_path)" "$(versioned_base)"
 wait_all
+
+mv "$(versioned_base)" "$(workspace_base)"
 
 sha256=$(shasum -a 256 "$(tgz_path)" | awk \{'print $1'\})
 sha256xz=$(shasum -a 256 "$(txz_path)" | awk \{'print $1'\})
