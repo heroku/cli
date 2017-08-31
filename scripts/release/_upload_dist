@@ -18,7 +18,7 @@ for PLATFORM in "${PLATFORMS[@]}"; do
   mv "$(txz_path)" "$(versioned_base).tar.xz"
 done
 
-s3uploadLongCache --recursive "$CACHE_DIR"
+s3uploadLongCache --recursive "$CACHE_DIR" "$REMOTE_BASE"
 
 # now do short cache files
 for PLATFORM in "${PLATFORMS[@]}"; do
