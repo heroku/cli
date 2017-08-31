@@ -6,3 +6,4 @@ source ./scripts/_init
 
 "${scripts}/build/_workspace"
 "${scripts}/build/_tarballs"
+"${scripts}/build/_debian"

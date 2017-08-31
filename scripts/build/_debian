@@ -13,23 +13,20 @@ export OS=linux
 # set constants
 workspace_root=$root/tmp/apt
 
-function build_deb () {
-  ARCH=$1
-  WORKSPACE="$workspace_root/$(versioned_deb_base).apt"
-  rm -rf "$WORKSPACE"
+WORKSPACE="$workspace_root/$(versioned_deb_base).apt"
+rm -rf "$WORKSPACE"
 
-  # prep workspace
-  mkdir -p "$WORKSPACE/DEBIAN"
-  mkdir -p "$WORKSPACE/usr/bin"
-  mkdir -p "$WORKSPACE/usr/lib"
-  mkdir -p "$dist_deb"
+# prep workspace
+mkdir -p "$WORKSPACE/DEBIAN"
+mkdir -p "$WORKSPACE/usr/bin"
+mkdir -p "$WORKSPACE/usr/lib"
+mkdir -p "$dist_deb"
 
-  # setup base
-  tar xf "$(txz_path)"
-  mv "$(versioned_base)" "$WORKSPACE/usr/lib/heroku"
+# setup base
+mv "$(workspace_dir)" "$WORKSPACE/usr/lib/heroku"
 
-  # add bin loader scripts
-  cat << EOF > "$WORKSPACE/usr/lib/heroku/bin/heroku"
+# add bin loader scripts
+cat << EOF > "$WORKSPACE/usr/lib/heroku/bin/heroku"
 #!/usr/bin/env bash
 set -e
 get_script_dir () {
@@ -47,9 +44,9 @@ get_script_dir () {
 DIR=\$(get_script_dir)
 CLI_BINPATH=\$DIR/heroku \$DIR/node \$DIR/heroku.js "\$@"
 EOF
-  chmod +x "$WORKSPACE/usr/lib/heroku/bin/heroku"
+chmod +x "$WORKSPACE/usr/lib/heroku/bin/heroku"
 
-  cat << EOF > "$WORKSPACE/usr/lib/heroku/bin/heroku.js"
+cat << EOF > "$WORKSPACE/usr/lib/heroku/bin/heroku.js"
 const path = require('path')
 const CLI = require('cli-engine').default
 const root = path.join(__dirname, '..')
@@ -66,23 +63,17 @@ const cli = new CLI({
 cli.run()
 EOF
 
-  # add debian config
-  sed -e "s/Architecture: ARCHITECTURE/Architecture: $(deb_arch)/" resources/deb/control | \
-  sed -e "s/Version: VERSION/Version: $DEB_VERSION/" \
-  > "$WORKSPACE/DEBIAN/control"
+# add debian config
+sed -e "s/Architecture: ARCHITECTURE/Architecture: $(deb_arch)/" resources/deb/control | \
+sed -e "s/Version: VERSION/Version: $DEB_VERSION/" \
+> "$WORKSPACE/DEBIAN/control"
 
-  # symlink bin
-  ln -s ../lib/heroku/bin/heroku "$WORKSPACE/usr/bin/heroku"
+# symlink bin
+ln -s ../lib/heroku/bin/heroku "$WORKSPACE/usr/bin/heroku"
 
-  # reset permissions
-  chown -R root "$WORKSPACE"
-  chgrp -R root "$WORKSPACE"
+# reset permissions
+chown -R root "$WORKSPACE"
+chgrp -R root "$WORKSPACE"
 
-  # build deb package
-  dpkg --build "$WORKSPACE" "$(unversioned_deb_path)"
-}
-
-for ARCH in "${DEB_ARCHS[@]}"; do
-  bg build_deb "$ARCH"
-done
-wait_all
+# build deb package
+dpkg --build "$WORKSPACE" "$(unversioned_deb_path)"

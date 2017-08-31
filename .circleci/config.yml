@@ -145,17 +145,6 @@ jobs:
           at: dist
       - run: ls dist && ls dist/app
       - run: ./scripts/release/circle
-  debian:
-    <<: *defaults
-    steps:
-      - checkout
-      - attach_workspace:
-          at: tmp
-      - run: ./scripts/build/debian
-      - persist_to_workspace:
-          <<: *persist_workspace
-          paths:
-            - apt
 workflows:
   version: 2
   heroku_cli:
@@ -187,10 +176,3 @@ workflows:
             - build_linux_arm
             - build_windows_x64
             - build_windows_x86
-            - debian
-      - debian:
-          filters: *release_filters
-          requires:
-            - build_linux_x64
-            - build_linux_x86
-            - build_linux_arm
