@@ -5,7 +5,7 @@ executorType: docker
 jobs:
   test:
     docker:
-      - image: dickeyxxx/cli-engine-docker:2.0.1
+      - image: dickeyxxx/cli-engine-docker:3.0.1
         environment: &env
           NPM_CONFIG_REGISTRY: https://cli-npm.heroku.com
     steps:
