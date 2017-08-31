@@ -18,9 +18,9 @@ tmp="$root/tmp"
 dist="$root/dist"
 dist_deb="$root/dist/apt"
 
-CHANNEL=$(./scripts/_vars/_channel)
-VERSION=$(./scripts/_vars/_version)
-SHORT_VERSION=$(node -p "require('./package.json').version")
+CHANNEL=$("$scripts/_vars/_channel")
+VERSION=$("$scripts/_vars/_version")
+SHORT_VERSION=$(node -p "require('$root/package.json').version")
 DEB_VERSION="${SHORT_VERSION}-1"
 
 PLATFORMS=(

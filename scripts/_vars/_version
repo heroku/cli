@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+root="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../.." && pwd )"
 sha=$(git rev-parse --short HEAD)
-version=$(node -p "require('./package.json').version")
+version=$(node -p "require('$root/package.json').version")
 echo "${version}-${sha}"
