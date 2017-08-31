@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-source ./scripts/release/_init
+source ./scripts/_init
 
 "$scripts/release/_github_setup"
 
@@ -14,3 +14,6 @@ echo "Releasing ${CHANNEL}"
 if [[ "${OS}" = "darwin" ]]; then
   "${scripts}/release/homebrew"
 fi
+
+# invalidate CDN
+aws cloudfront create-invalidation --distribution-id EHF9FOCUJYVZ --paths "/heroku-cli/channels/${CHANNEL}/*"

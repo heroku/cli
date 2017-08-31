@@ -4,7 +4,7 @@ set -x
 
 source ./scripts/_init
 
-CACHE_DIR="$TMP_DIR/s3"
+CACHE_DIR="$tmp/s3"
 
 rm -rf "$CACHE_DIR"
 mkdir -p "$CACHE_DIR"
@@ -32,5 +32,13 @@ for PLATFORM in "${PLATFORMS[@]}"; do
     mv "$(dist_dir)/heroku-cli-$ARCH.exe" "$CACHE_DIR"
   fi
 done
+
+# generate version file
+cat << EOF > "$CACHE_DIR/version"
+{
+  "channel": "${CHANNEL}",
+  "version": "${VERSION}"
+}
+EOF
 
 s3uploadShortCache --recursive "$CACHE_DIR" "$REMOTE_BASE"
