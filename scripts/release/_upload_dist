@@ -26,11 +26,19 @@ for PLATFORM in "${PLATFORMS[@]}"; do
 
   mv "$(versioned_base).tar.gz" "$(unversioned_base).tar.gz"
   mv "$(versioned_base).tar.xz" "$(unversioned_base).tar.xz"
-  mv "$dist/${OS}-${ARCH}" "$CACHE_DIR"
 
   if [ "$OS" == "windows" ]; then
     mv "$dist/heroku-cli-$ARCH.exe" "$CACHE_DIR"
   fi
+done
+
+s3uploadShortCache --recursive "$CACHE_DIR" "$REMOTE_BASE"
+
+rm "$CACHE_DIR/*"
+
+# now upload json files
+for PLATFORM in "${PLATFORMS[@]}"; do
+  mv "$dist/${OS}-${ARCH}" "$CACHE_DIR"
 done
 
 # generate version file
@@ -41,4 +49,4 @@ cat << EOF > "$CACHE_DIR/version"
 }
 EOF
 
-s3uploadShortCache --recursive "$CACHE_DIR" "$REMOTE_BASE"
+s3uploadShortCache --content-type application/json --recursive "$CACHE_DIR" "$REMOTE_BASE"
