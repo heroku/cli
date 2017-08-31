@@ -115,6 +115,10 @@ workflows:
       - release:
           filters:
             tags: *version_tags
+            branches:
+              - master
+              - dev
+              - streamline
           requires:
             - darwin_x64
             - linux_x64
