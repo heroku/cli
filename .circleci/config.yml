@@ -4,8 +4,8 @@ version: 2
 executorType: docker
 jobs:
   test:
-    docker:
-      - image: dickeyxxx/cli-engine-docker:v3.0.1
+    docker: &windows_docker
+      - image: dickeyxxx/cli-engine-docker:v2.0.1
         environment: &env
           NPM_CONFIG_REGISTRY: https://cli-npm.heroku.com
     steps:
@@ -69,9 +69,7 @@ jobs:
           <<: *persist_workspace
           paths: [linux_arm]
   windows_x64:
-    docker: &windows_docker
-      - image: dickeyxxx/cli-engine-docker:v2.0.1
-        environment: *env
+    docker: *windows_docker
     steps:
       - checkout
       - run: ./scripts/build/windows
