@@ -2,8 +2,6 @@
 
 set +x
 
-echo "$HEROKU_DEB_KEY" | base64 -d | gpg --import
-
 source ./scripts/_init
 
 set -x
