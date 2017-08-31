@@ -125,7 +125,10 @@ jobs:
       - run: ./scripts/release/dev_center_docs
       - store_artifacts:
           path: /tmp/heroku-cli-commands.md
-      - run: devcenter push /tmp/heroku-cli-commands.md --trace
+      - run: |
+          if [ "$CIRCLE_TAG" != "" ]; then
+            devcenter push /tmp/heroku-cli-commands.md --trace
+          fi
 workflows:
   version: 2
   heroku_cli:
