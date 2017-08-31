@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+set -ex
+
+VERSION=$(node -p "require('./package.json').version")
+
+# macos installer
+git clone git@github.com:heroku/cli-macos-installer.git tmp/cli-macos-installer
+cd tmp/homebrew-brew
+git tag "v$VERSION"
+git push --tags
+
+if [[ ${CHANNEL} != "stable" ]]; then
+  echo "not on stable, skipping macos-installer trigger"
+  exit
+fi
+
+git push origin master

@@ -15,6 +15,7 @@ echo "Releasing ${CHANNEL}"
 "${scripts}/release/_upload_dist"
 "${scripts}/release/_upload_debian"
 "${scripts}/release/_homebrew"
+"${scripts}/release/_macos_installer_trigger"
 
 # invalidate CDN
 aws cloudfront create-invalidation --distribution-id EHF9FOCUJYVZ --paths "/heroku-cli/channels/$CHANNEL/*" "/branches/$CHANNEL/apt/*"

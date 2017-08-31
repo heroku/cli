@@ -83,9 +83,7 @@
   "license": "ISC",
   "repository": "https://github.com/heroku/cli",
   "scripts": {
-    "build": "./scripts/build",
     "lint": "./scripts/lint",
-    "postpublish": "./scripts/postpublish",
     "precommit": "./scripts/precommit",
     "test": "./scripts/test"
   }
