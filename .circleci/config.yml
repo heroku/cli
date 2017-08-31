@@ -35,7 +35,7 @@ jobs:
           keys:
             - v3-release-target-yarn-{{ checksum "yarn.lock" }}
             - v3-release-target-yarn
-      - restore_cache: {keys: [node-v8.3.0-darwin-x64]}
+      - restore_cache: {keys: [node-v8.4.0-darwin-x64]}
       - run: ./scripts/build/darwin
       - persist_to_workspace: &dist
           root: dist
@@ -44,7 +44,7 @@ jobs:
           key: v3-release-target-yarn-{{ checksum "yarn.lock" }}
           paths: [/usr/local/share/.cache/yarn]
       - save_cache: &node_cache_save
-          key: node-v8.3.0-darwin-x64
+          key: node-v8.4.0-darwin-x64
           paths: [~/cli/tmp/cache/node]
   build_linux_x64:
     <<: *defaults
