@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# outputs a .deb file to dist/apt
+
 set +x
 
 source ./scripts/_init

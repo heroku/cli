@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+# inputs
+# $1 OUTPUT_DIR
+# $OS
+# $ARCH
+# $NODE_VERSION
+
 source ./scripts/_init
 
 go_home

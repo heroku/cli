@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# creates tarballs from the workspace into dist
+
 source ./scripts/_init
 
 set -x
