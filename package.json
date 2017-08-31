@@ -38,6 +38,7 @@
     ]
   },
   "dependencies": {
+    "@heroku/heroku-cli-dev-center-generator": "1.1.5",
     "cli-engine": "4.0.0",
     "heroku-apps": "2.4.11",
     "heroku-certs": "1.1.41",
