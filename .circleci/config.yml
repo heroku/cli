@@ -112,20 +112,20 @@ workflows:
       - linux_arm: *build_step
       - windows_x64: *build_step
       - windows_x86: *build_step
-      # - release:
-      #     filters:
-      #       tags: *version_tags
-      #       branches:
-      #         - master
-      #         - dev
-      #         - streamline
-      #     requires:
-      #       - darwin_x64
-      #       - linux_x64
-      #       - linux_x86
-      #       - linux_arm
-      #       - windows_x64
-      #       - windows_x86
+      - release:
+          filters:
+            tags: *version_tags
+            branches:
+              - master
+              - dev
+              - streamline
+          requires:
+            - darwin_x64
+            - linux_x64
+            - linux_x86
+            - linux_arm
+            - windows_x64
+            - windows_x86
 # - debian:
 #     filters: *release_filters
 #     requires: [test]
