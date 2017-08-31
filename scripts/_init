@@ -15,9 +15,13 @@ dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 root="$(cd "$(dirname "${dir}")" && pwd)"
 scripts="$root/scripts"
 tmp="$root/tmp"
+dist="$root/dist"
+dist_deb="$root/dist/apt"
 
 CHANNEL=$(./scripts/_vars/_channel)
 VERSION=$(./scripts/_vars/_version)
+SHORT_VERSION=$(node -p "require('./package.json').version")
+DEB_VERSION="${SHORT_VERSION}-1"
 
 PLATFORMS=(
   windows_x86
@@ -26,6 +30,12 @@ PLATFORMS=(
   linux_x86
   linux_x64
   linux_arm
+)
+
+DEB_ARCHS=(
+  x64
+  x86
+  arm
 )
 
 
@@ -48,23 +58,15 @@ function unversioned_base () {
   echo "heroku-cli-${OS}-${ARCH}"
 }
 
-function platform_dir () {
+function workspace_dir () {
   echo "$tmp/${OS}_${ARCH}"
 }
 
-function workspace_dir () {
-  echo "$(platform_dir)/workspace"
-}
-
-function dist_dir () {
-  echo "$(platform_dir)/dist"
-}
-
 function tgz_path () {
-  echo "$(dist_dir)/$(unversioned_base).tar.gz"
+  echo "$dist/$(unversioned_base).tar.gz"
 }
 function txz_path () {
-  echo "$(dist_dir)/$(unversioned_base).tar.xz"
+  echo "$dist/$(unversioned_base).tar.xz"
 }
 
 function go_home () {
@@ -83,7 +85,6 @@ function wait_all () {
   done
 }
 
-REMOTE_BASE="s3://$S3_BUCKET/heroku-cli/channels/$CHANNEL"
 function s3upload () {
   aws s3 cp "$@"
 }
@@ -92,4 +93,26 @@ function s3uploadLongCache () {
 }
 function s3uploadShortCache () {
   s3upload --cache-control max-age=3600 "$@"
+}
+
+function deb_arch () {
+  if [[ "$ARCH" = "x64" ]]; then
+    echo "amd64"
+  elif [[ "$ARCH" = "x86" ]]; then
+    echo "i386"
+  elif [[ "$ARCH" = "arm" ]]; then
+    echo "armel"
+  fi
+}
+function unversioned_deb_base () {
+  echo "heroku_$(deb_arch)"
+}
+function unversioned_deb_path () {
+  echo "$dist_deb/$(unversioned_deb_base).deb"
+}
+function versioned_deb_base () {
+  echo "heroku_${DEB_VERSION}_$(deb_arch)"
+}
+function versioned_deb_path () {
+  echo "$dist_deb/$(versioned_deb_base).deb"
 }

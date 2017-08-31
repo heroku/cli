@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+# shellcheck disable=SC2034
+
+source ./scripts/_init
+
+./scripts/release/_github_setup
+
+REMOTE_BASE="s3://$S3_BUCKET/heroku-cli/channels/$CHANNEL"

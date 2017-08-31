@@ -13,10 +13,8 @@ echo "Releasing ${CHANNEL}"
 
 # upload files to s3
 "${scripts}/release/_upload_dist"
-
-if [[ "${OS}" = "darwin" ]]; then
-  "${scripts}/release/homebrew"
-fi
+"${scripts}/release/_upload_debian"
+"${scripts}/release/_homebrew"
 
 # invalidate CDN
-aws cloudfront create-invalidation --distribution-id EHF9FOCUJYVZ --paths "/heroku-cli/channels/${CHANNEL}/*"
+aws cloudfront create-invalidation --distribution-id EHF9FOCUJYVZ --paths "/heroku-cli/channels/$CHANNEL/*" "/branches/$CHANNEL/apt/*"

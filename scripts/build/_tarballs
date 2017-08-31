@@ -5,9 +5,8 @@ source ./scripts/_init
 set -x
 
 # create tarballs
-cd "$(platform_dir)"
-o="$(dist_dir)"
-mkdir -p "$o"
+mkdir -p "$dist"
+cd "$dist"
 
 # must be a directory in this format
 # but it is difficult to work with the version number in other places
@@ -17,11 +16,11 @@ bg tar c "$(versioned_base)" | xz > "$(txz_path)"
 bg tar czf "$(tgz_path)" "$(versioned_base)"
 wait_all
 
-mv "$(versioned_base)" "$(workspace_base)"
+mv "$(versioned_base)" "$(workspace_dir)"
 
 sha256=$(shasum -a 256 "$(tgz_path)" | awk \{'print $1'\})
 sha256xz=$(shasum -a 256 "$(txz_path)" | awk \{'print $1'\})
-cat << EOF > "$o/${OS}-${ARCH}"
+cat << EOF > "$dist/${OS}-${ARCH}"
 {
   "channel": "${CHANNEL}",
   "version": "${VERSION}",

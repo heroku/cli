@@ -12,7 +12,7 @@ rm -rf "$WINEPREFIX"
 mkdir -p "$INSTALLER_BASE/bin"
 mkdir -p "$WINEPREFIX"
 
-o="$(dist_dir)"
+o="$dist"
 mkdir -p "$o"
 
 cp resources/exe/heroku.cmd "$INSTALLER_BASE/bin/heroku.cmd"

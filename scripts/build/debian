@@ -11,33 +11,22 @@ set -x
 export OS=linux
 
 # set constants
-VERSION=$(node -p "require('./package.json').version")
-DEB_VERSION="${VERSION}-1"
 workspace_root=$root/tmp/apt
 
-rm -rf "$workspace_root"
-
-function build_arch () {
+function build_deb () {
   ARCH=$1
-  # set constants
-  if [[ "$ARCH" = "x64" ]]; then
-    DEB_ARCH=amd64
-  elif [[ "$ARCH" = "arm" ]]; then
-    DEB_ARCH=armel
-  else
-    DEB_ARCH=i386
-  fi
-  DEB_BASE=heroku_${DEB_VERSION}_$DEB_ARCH
-  WORKSPACE="$workspace_root/$DEB_BASE.apt"
-  DEB_FILE="$workspace_root/$DEB_BASE.deb"
+  WORKSPACE="$workspace_root/$(versioned_deb_base).apt"
+  rm -rf "$WORKSPACE"
 
   # prep workspace
   mkdir -p "$WORKSPACE/DEBIAN"
   mkdir -p "$WORKSPACE/usr/bin"
   mkdir -p "$WORKSPACE/usr/lib"
+  mkdir -p "$dist_deb"
 
   # setup base
-  mv "$(workspace_dir)" "$WORKSPACE/usr/lib/heroku"
+  tar xf "$(txz_path)"
+  mv "$(versioned_base)" "$WORKSPACE/usr/lib/heroku"
 
   # add bin loader scripts
   cat << EOF > "$WORKSPACE/usr/lib/heroku/bin/heroku"
@@ -78,7 +67,7 @@ cli.run()
 EOF
 
   # add debian config
-  sed -e "s/Architecture: ARCHITECTURE/Architecture: $DEB_ARCH/" resources/deb/control | \
+  sed -e "s/Architecture: ARCHITECTURE/Architecture: $(deb_arch)/" resources/deb/control | \
   sed -e "s/Version: VERSION/Version: $DEB_VERSION/" \
   > "$WORKSPACE/DEBIAN/control"
 
@@ -90,53 +79,10 @@ EOF
   chgrp -R root "$WORKSPACE"
 
   # build deb package
-  dpkg --build "$WORKSPACE" "$DEB_FILE"
-  rm -rf "$WORKSPACE"
+  dpkg --build "$WORKSPACE" "$(unversioned_deb_path)"
 }
 
-ARCHS=(arm x64 x86)
-for ARCH in "${ARCHS[@]}"; do
-  bg build_arch "$ARCH"
-  sleep 1
+for ARCH in "${DEB_ARCHS[@]}"; do
+  bg build_deb "$ARCH"
 done
 wait_all
-
-# create Package apt file
-cd "$workspace_root"
-apt-ftparchive packages . > Packages
-gzip -c Packages > Packages.gz
-bzip2 -k Packages
-xz -k Packages
-
-# create Release apt file
-cd "$workspace_root"
-apt-ftparchive -c "$root/resources/deb/apt-ftparchive.conf" release . > Release
-gpg --digest-algo SHA512 --clearsign -u 0F1B0520 -o InRelease Release
-gpg --digest-algo SHA512 -abs -u 0F1B0520 -o Release.gpg Release
-
-# ship to s3
-REMOTE_PATH=/branches/${CHANNEL}/apt
-REMOTE_ROOT=s3://${S3_BUCKET}${REMOTE_PATH}
-bg s3uploadDayCache "$workspace_root/heroku_${DEB_VERSION}_armel.deb" "$REMOTE_ROOT/heroku_${DEB_VERSION}_armel.deb"
-bg s3uploadDayCache "$workspace_root/heroku_${DEB_VERSION}_amd64.deb" "$REMOTE_ROOT/heroku_${DEB_VERSION}_amd64.deb"
-bg s3uploadDayCache "$workspace_root/heroku_${DEB_VERSION}_i386.deb" "$REMOTE_ROOT/heroku_${DEB_VERSION}_i386.deb"
-bg s3uploadHourCache --content-type text/plain "$workspace_root/Release" "$REMOTE_ROOT/Release"
-bg s3uploadHourCache --content-type text/plain "$workspace_root/InRelease" "$REMOTE_ROOT/InRelease"
-bg s3uploadHourCache --content-type text/plain "$workspace_root/Release.gpg" "$REMOTE_ROOT/Release.gpg"
-bg s3uploadHourCache --content-type text/plain "$workspace_root/Packages" "$REMOTE_ROOT/Packages"
-bg s3uploadHourCache "$workspace_root/Packages.bz2" "$REMOTE_ROOT/Packages.bz2"
-bg s3uploadHourCache "$workspace_root/Packages.gz" "$REMOTE_ROOT/Packages.gz"
-bg s3uploadHourCache "$workspace_root/Packages.xz" "$REMOTE_ROOT/Packages.xz"
-wait_all
-
-# update install-ubuntu.sh if changed
-curl -fsS https://heroku-cli-assets.s3.amazonaws.com/install-ubuntu.sh > "$root/tmp/install-ubuntu.sh"
-if ! cmp -s "$root/tmp/install-ubuntu.sh" "$root/resources/deb/install-ubuntu.sh"; then
-  cat "$root/tmp/install-ubuntu.sh"
-  cat "$root/resources/deb/install-ubuntu.sh"
-  aws s3 cp --content-type text/plain --cache-control max-age=3600 "$root/resources/deb/install-ubuntu.sh" "s3://$S3_BUCKET/install-ubuntu.sh"
-  aws cloudfront create-invalidation --distribution-id EHF9FOCUJYVZ --paths "/install-ubuntu.sh"
-fi
-
-# invalidate CDN
-aws cloudfront create-invalidation --distribution-id EHF9FOCUJYVZ --paths "$REMOTE_PATH/*"
