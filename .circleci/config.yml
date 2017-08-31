@@ -1,19 +1,25 @@
 ---
+defaults: &defaults
+  working_directory: ~/cli
+  docker:
+    - image: node:8.4
+      environment: &env
+        NPM_CONFIG_REGISTRY: https://cli-npm.heroku.com
 
 version: 2
 executorType: docker
 jobs:
   test:
+    <<: *defaults
     docker: &windows_docker
       - image: dickeyxxx/cli-engine-docker:v2.1.0
-        environment: &env
-          NPM_CONFIG_REGISTRY: https://cli-npm.heroku.com
+        environment: *env
     steps:
       - checkout
-      # - restore_cache:
-      #     keys:
-      #       - v2-test-{{ checksum "yarn.lock" }}
-      #       - v2-test
+      - restore_cache:
+          keys:
+            - v2-test-{{ checksum "yarn.lock" }}
+            - v2-test
       - run: ./scripts/prep
       - run: ./scripts/test
       - save_cache:
@@ -22,9 +28,7 @@ jobs:
             - /usr/local/share/.cache/yarn
             - ~/cli/node_modules
   build_darwin_x64:
-    docker: &node_docker
-      - image: node:8.4
-        environment: *env
+    <<: *defaults
     steps:
       - checkout
       # - restore_cache: &release_target_yarn_cache
@@ -43,7 +47,7 @@ jobs:
           key: node-v8.3.0-darwin-x64
           paths: [~/cli/tmp/cache/node]
   build_linux_x64:
-    docker: *node_docker
+    <<: *defaults
     steps:
       - checkout
       - run: ./scripts/build/linux
@@ -51,7 +55,7 @@ jobs:
           <<: *persist_workspace
           paths: [linux_x64/dist]
   build_linux_x86:
-    docker: *node_docker
+    <<: *defaults
     steps:
       - checkout
       - run: ./scripts/build/linux
@@ -59,7 +63,7 @@ jobs:
           <<: *persist_workspace
           paths: [linux_x86/dist]
   build_linux_arm:
-    docker: *node_docker
+    <<: *defaults
     steps:
       - checkout
       - run: ./scripts/build/linux
@@ -67,6 +71,7 @@ jobs:
           <<: *persist_workspace
           paths: [linux_arm/dist]
   build_windows_x64:
+    <<: *defaults
     docker: *windows_docker
     steps:
       - checkout
@@ -75,6 +80,7 @@ jobs:
           <<: *persist_workspace
           paths: [windows_x64/dist]
   build_windows_x86:
+    <<: *defaults
     docker: *windows_docker
     steps:
       - checkout
@@ -83,6 +89,7 @@ jobs:
           <<: *persist_workspace
           paths: [windows_x86/dist]
   release:
+    <<: *defaults
     docker:
       - image: dickeyxxx/cli-engine-docker:v3.0.3
         environment: *env
