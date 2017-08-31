@@ -8,29 +8,30 @@
 # * node modules
 # * bin scripts
 
-source ./scripts/build/_init
+source ./scripts/_init
 
 set -x
 
 # setup workspace
-rm -rf "${PLATFORM_WORKSPACE_DIR}"
-mkdir -p "${PLATFORM_WORKSPACE_DIR}/node_modules"
-mkdir -p "${PLATFORM_WORKSPACE_DIR}/bin"
-cp "${root}/README.md" "${PLATFORM_WORKSPACE_DIR}"
-cp "${root}/LICENSE" "${PLATFORM_WORKSPACE_DIR}"
-cp "${root}/package.json" "${PLATFORM_WORKSPACE_DIR}"
-cp "${root}/yarn.lock" "${PLATFORM_WORKSPACE_DIR}"
+OUTPUT="$(platform_dir)/workspace"
+rm -rf "${OUTPUT}"
+mkdir -p "${OUTPUT}/node_modules"
+mkdir -p "${OUTPUT}/bin"
+cp "${root}/README.md" "${OUTPUT}"
+cp "${root}/LICENSE" "${OUTPUT}"
+cp "${root}/package.json" "${OUTPUT}"
+cp "${root}/yarn.lock" "${OUTPUT}"
 
-bg "${root}/scripts/build/_fetch_node_binary" "${PLATFORM_WORKSPACE_DIR}/bin"
+bg "${root}/scripts/build/_fetch_node_binary" "${OUTPUT}/bin"
 
 function install_packages {
-  cd "${PLATFORM_WORKSPACE_DIR}"
+  cd "${OUTPUT}"
   # install packages
   yarn install --no-progress --production --non-interactive --prefer-offline --mutex=file:/tmp/.yarn-mutex
 
   # build cli-engine if needed
-  if [ ! -f "${PLATFORM_WORKSPACE_DIR}/node_modules/cli-engine/lib/cli.js" ]; then
-    cd "${PLATFORM_WORKSPACE_DIR}/node_modules/cli-engine"
+  if [ ! -f "${OUTPUT}/node_modules/cli-engine/lib/cli.js" ]; then
+    cd "${OUTPUT}/node_modules/cli-engine"
     yarn
     yarn run prepare
   fi
@@ -39,13 +40,13 @@ bg install_packages
 
 # create bin runner
 if [ "${OS}" == "windows" ]; then
-  cat << EOF > "${PLATFORM_WORKSPACE_DIR}/bin/heroku.cmd"
+  cat << EOF > "${OUTPUT}/bin/heroku.cmd"
 @echo off
 set CLI_BINPATH=%~dp0\\heroku.cmd
 "%~dp0\\node.exe" "%~dp0\\heroku.js" %*
 EOF
 else
-  cat << EOF > "${PLATFORM_WORKSPACE_DIR}/bin/heroku"
+  cat << EOF > "${OUTPUT}/bin/heroku"
 #!/usr/bin/env bash
 set -e
 get_script_dir () {
@@ -71,10 +72,10 @@ else
   CLI_BINPATH="\$DIR/heroku" "\$DIR/node" "\$DIR/heroku.js" "\$@"
 fi
 EOF
-chmod +x "${PLATFORM_WORKSPACE_DIR}/bin/heroku"
+chmod +x "${OUTPUT}/bin/heroku"
 fi
 
-cat << EOF > "${PLATFORM_WORKSPACE_DIR}/bin/heroku.js"
+cat << EOF > "${OUTPUT}/bin/heroku.js"
 const path = require('path')
 const CLI = require('cli-engine').default
 const root = path.join(__dirname, '..')

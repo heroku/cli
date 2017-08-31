@@ -8,11 +8,9 @@ echo "Releasing ${CHANNEL}"
 
 ls tmp/darwin_x64
 ls tmp/linux_x64
-echo "SKIP RELEASES FOR NOW"
-exit 1
 
 # release to s3
-"${root}/scripts/release_tarballs" dist/tarballs
+"${root}/scripts/circle/_release_tarballs"
 
 if [[ "${OS}" = "darwin" ]]; then
   "${root}/scripts/darwin/homebrew"
