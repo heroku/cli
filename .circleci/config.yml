@@ -109,7 +109,7 @@ jobs:
   release:
     <<: *defaults
     docker:
-      - image: dickeyxxx/cli-engine-docker:v3.0.4
+      - image: dickeyxxx/cli-engine-docker:v3.0.5
         environment: *env
     steps:
       - add_ssh_keys
