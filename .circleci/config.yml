@@ -25,7 +25,10 @@ jobs:
             - /usr/local/share/.cache/yarn
             - ~/cli/node_modules
   darwin_x64:
-    <<: *defaults
+    docker:
+      - image: circleci/node:8.4
+        environment:
+          NPM_CONFIG_REGISTRY: https://cli-npm.heroku.com
     steps:
       - checkout
       - restore_cache: &release_target_yarn_cache
