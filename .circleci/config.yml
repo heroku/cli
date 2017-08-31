@@ -24,94 +24,50 @@ jobs:
           paths:
             - /usr/local/share/.cache/yarn
             - ~/cli/node_modules
-  darwin_x64_build:
-    <<: *defaults
-    steps:
-      - checkout
-      - restore_cache: &release_target_yarn_cache
-          keys:
-            - v3-release-target-yarn-{{ checksum "yarn.lock" }}
-            - v3-release-target-yarn
-      - restore_cache: {keys: [node-v8.3.0-darwin-x64]}
-      - run: ./scripts/circle/build
-      - persist_to_workspace: &persist_workspace
-          root: tmp
-          paths: [darwin_x64]
-      - save_cache:
-          key: v3-release-target-yarn-{{ checksum "yarn.lock" }}
-          paths: [/usr/local/share/.cache/yarn]
-      - save_cache: &node_cache_save
-          key: node-v8.3.0-darwin-x64
-          paths: [~/cli/tmp/cache/node]
-  linux_x64_build:
-    <<: *defaults
-    steps:
-      - checkout
-      - restore_cache: *release_target_yarn_cache
-      - restore_cache: {keys: [node-v8.3.0-linux-x64]}
-      - run: ./scripts/circle/build
-      - persist_to_workspace:
-          <<: *persist_workspace
-          paths: [linux_x64]
-      - save_cache:
-          <<: *node_cache_save
-          key: node-v8.3.0-linux-x64
-  # linux_x86:
+  # darwin_x64_build:
   #   <<: *defaults
   #   steps:
   #     - checkout
-  #     - restore_cache:
-  #         keys: [node-v8.3.0-linux-x86]
-  #     - restore_cache: *release_target_yarn_cache
+  #     - restore_cache: &release_target_yarn_cache
+  #         keys:
+  #           - v3-release-target-yarn-{{ checksum "yarn.lock" }}
+  #           - v3-release-target-yarn
+  #     - restore_cache: {keys: [node-v8.3.0-darwin-x64]}
   #     - run: ./scripts/circle/build
+  #     - persist_to_workspace: &persist_workspace
+  #         root: tmp
+  #         paths: [darwin_x64]
   #     - save_cache:
-  #         key: node-v8.3.0-linux-x86
-  #         paths: ~/cli/tmp/cache/node
-  # linux_arm:
+  #         key: v3-release-target-yarn-{{ checksum "yarn.lock" }}
+  #         paths: [/usr/local/share/.cache/yarn]
+  #     - save_cache: &node_cache_save
+  #         key: node-v8.3.0-darwin-x64
+  #         paths: [~/cli/tmp/cache/node]
+  # linux_x64_build:
   #   <<: *defaults
   #   steps:
   #     - checkout
-  #     - restore_cache:
-  #         keys: [node-v8.3.0-linux-arm]
   #     - restore_cache: *release_target_yarn_cache
+  #     - restore_cache: {keys: [node-v8.3.0-linux-x64]}
   #     - run: ./scripts/circle/build
+  #     - persist_to_workspace:
+  #         <<: *persist_workspace
+  #         paths: [linux_x64]
   #     - save_cache:
-  #         key: node-v8.3.0-linux-arm
-  #         paths: ~/cli/tmp/cache/node
-  # windows_x64:
+  #         <<: *node_cache_save
+  #         key: node-v8.3.0-linux-x64
+  # release:
   #   <<: *defaults
   #   steps:
   #     - checkout
-  #     - restore_cache:
-  #         keys: [node-v8.3.0-windows-x64]
-  #     - restore_cache: *release_target_yarn_cache
-  #     - run: ./scripts/circle/build
-  #     - save_cache:
-  #         key: node-v8.3.0-windows-x64
-  #         paths: ~/cli/tmp/cache/node
-  # windows_x86:
-  #   <<: *defaults
-  #   steps:
-  #     - checkout
-  #     - restore_cache:
-  #         keys: [node-v8.3.0-windows-x86]
-  #     - restore_cache: *release_target_yarn_cache
-  #     - run: ./scripts/circle/build
-  #     - save_cache:
-  #         key: node-v8.3.0-windows-x86
-  #         paths: ~/cli/tmp/cache/node
+  #     - attach_workspace: {at: dist}
+  #     - run: ./scripts/circle/release
   # debian:
   #   <<: *defaults
   #   steps:
   #     - checkout
   #     - restore_cache: *release_target_yarn_cache
   #     - run: ./scripts/linux/debian
-  release:
-    <<: *defaults
-    steps:
-      - checkout
-      - attach_workspace: {at: dist}
-      - run: ./scripts/circle/release
 workflows:
   version: 2
   heroku_cli:
@@ -120,13 +76,13 @@ workflows:
           filters: &all_pushes
             tags: &version_tags
               only: /^v.*/
-      - darwin_x64_build: &build_step
-          filters: *all_pushes
-      - linux_x64_build: *build_step
-      - release:
-          filters:
-            tags: *version_tags
-            branches: [master, dev, streamline]
+      # - darwin_x64_build: &build_step
+      #     filters: *all_pushes
+      # - linux_x64_build: *build_step
+      # - release:
+      #     filters:
+      #       tags: *version_tags
+      #       branches: [master, dev, streamline]
           # requires:
           #   - darwin_x64_build
           #   - linux_x64_build
