@@ -6,24 +6,20 @@ set -x
 
 # create tarballs
 cd "$(platform_dir)"
-WORK_DIR="$(platform_dir)/workspace"
-DIST_DIR="$(platform_dir)/dist"
-mkdir -p "$DIST_DIR"
+o="$(dist_dir)"
+mkdir -p "$o"
 
 # must be a directory in this format
 # but it is difficult to work with the version number in other places
-mv "$WORK_DIR" "$(platform_dir)/$(versioned_base)"
+ln -s "$(workspace_dir)" "$(versioned_base)"
 
 bg tar c "$(versioned_base)" | xz > "$(txz_path)"
 bg tar czf "$(tgz_path)" "$(versioned_base)"
 wait_all
 
-# move back into friendly format
-mv "$(platform_dir)/$(versioned_base)" "$WORK_DIR"
-
 sha256=$(shasum -a 256 "$(tgz_path)" | awk \{'print $1'\})
 sha256xz=$(shasum -a 256 "$(txz_path)" | awk \{'print $1'\})
-cat << EOF > "$DIST_DIR/${OS}-${ARCH}"
+cat << EOF > "$o/${OS}-${ARCH}"
 {
   "channel": "${CHANNEL}",
   "version": "${VERSION}",

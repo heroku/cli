@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+OS=darwin
+ARCH=x64
+
+source ./scripts/_init
+
+set -x
+
+echo "Releasing ${CHANNEL}"
+
+"${scripts}/build/_workspace"
+"${scripts}/darwin/build"
+
+s3uploadShortCache "${tmp}/heroku-cli.pkg" "${REMOTE_BASE}/heroku-cli.pkg"

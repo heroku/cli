@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+set -x
+
+source ./scripts/_init
+
+CACHE_DIR="$TMP_DIR/s3"
+
+rm -rf "$CACHE_DIR"
+mkdir -p "$CACHE_DIR"
+cd "$CACHE_DIR"
+
+# do long cache files first
+for PLATFORM in "${PLATFORMS[@]}"; do
+  split_platform "$PLATFORM"
+
+  mv "$(tgz_path)" "$(versioned_base).tar.gz"
+  mv "$(txz_path)" "$(versioned_base).tar.xz"
+done
+
+s3uploadLongCache --recursive "$CACHE_DIR"
+
+# now do short cache files
+for PLATFORM in "${PLATFORMS[@]}"; do
+  split_platform "$PLATFORM"
+
+  mv "$(versioned_base).tar.gz" "$(unversioned_base).tar.gz"
+  mv "$(versioned_base).tar.xz" "$(unversioned_base).tar.xz"
+  mv "$DIST_DIR/${OS}_${ARCH}" "$CACHE_DIR"
+
+  if [ "$OS" == "windows" ]; then
+    mv "$(dist_dir)/heroku-cli-$ARCH.exe" "$CACHE_DIR"
+  fi
+done
+
+s3uploadShortCache --recursive "$CACHE_DIR" "$REMOTE_BASE"

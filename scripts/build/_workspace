@@ -13,25 +13,25 @@ source ./scripts/_init
 set -x
 
 # setup workspace
-OUTPUT="$(platform_dir)/workspace"
-rm -rf "${OUTPUT}"
-mkdir -p "${OUTPUT}/node_modules"
-mkdir -p "${OUTPUT}/bin"
-cp "${root}/README.md" "${OUTPUT}"
-cp "${root}/LICENSE" "${OUTPUT}"
-cp "${root}/package.json" "${OUTPUT}"
-cp "${root}/yarn.lock" "${OUTPUT}"
+o="$(workspace_dir)"
+rm -rf "${o}"
+mkdir -p "${o}/node_modules"
+mkdir -p "${o}/bin"
+cp "${root}/README.md" "${o}"
+cp "${root}/LICENSE" "${o}"
+cp "${root}/package.json" "${o}"
+cp "${root}/yarn.lock" "${o}"
 
-bg "${root}/scripts/build/_fetch_node_binary" "${OUTPUT}/bin"
+bg "${root}/scripts/build/_fetch_node_binary" "${o}/bin"
 
 function install_packages {
-  cd "${OUTPUT}"
+  cd "${o}"
   # install packages
   yarn install --no-progress --production --non-interactive --prefer-offline --mutex=file:/tmp/.yarn-mutex
 
   # build cli-engine if needed
-  if [ ! -f "${OUTPUT}/node_modules/cli-engine/lib/cli.js" ]; then
-    cd "${OUTPUT}/node_modules/cli-engine"
+  if [ ! -f "${o}/node_modules/cli-engine/lib/cli.js" ]; then
+    cd "${o}/node_modules/cli-engine"
     yarn
     yarn run prepare
   fi
@@ -40,13 +40,13 @@ bg install_packages
 
 # create bin runner
 if [ "${OS}" == "windows" ]; then
-  cat << EOF > "${OUTPUT}/bin/heroku.cmd"
+  cat << EOF > "${o}/bin/heroku.cmd"
 @echo off
 set CLI_BINPATH=%~dp0\\heroku.cmd
 "%~dp0\\node.exe" "%~dp0\\heroku.js" %*
 EOF
 else
-  cat << EOF > "${OUTPUT}/bin/heroku"
+  cat << EOF > "${o}/bin/heroku"
 #!/usr/bin/env bash
 set -e
 get_script_dir () {
@@ -72,10 +72,10 @@ else
   CLI_BINPATH="\$DIR/heroku" "\$DIR/node" "\$DIR/heroku.js" "\$@"
 fi
 EOF
-chmod +x "${OUTPUT}/bin/heroku"
+chmod +x "${o}/bin/heroku"
 fi
 
-cat << EOF > "${OUTPUT}/bin/heroku.js"
+cat << EOF > "${o}/bin/heroku.js"
 const path = require('path')
 const CLI = require('cli-engine').default
 const root = path.join(__dirname, '..')

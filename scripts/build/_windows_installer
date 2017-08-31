@@ -1,13 +1,10 @@
 #!/usr/bin/env bash
 
-export OS=windows
-
-source ./scripts/main
-source ./scripts/circle/vars
+source ./scripts/_init
 
 # setup workspace
-INSTALLER_BASE=$root/tmp/windows-$ARCH-installer
-WINEPREFIX=$root/tmp/wine/windows-$ARCH-installer
+INSTALLER_BASE=$tmp/windows-$ARCH-installer
+WINEPREFIX=$tmp/wine/windows-$ARCH-installer
 
 rm -rf "$INSTALLER_BASE"
 rm -rf "$WINEPREFIX"
@@ -15,9 +12,12 @@ rm -rf "$WINEPREFIX"
 mkdir -p "$INSTALLER_BASE/bin"
 mkdir -p "$WINEPREFIX"
 
+o="$(dist_dir)"
+mkdir -p "$o"
+
 cp resources/exe/heroku.cmd "$INSTALLER_BASE/bin/heroku.cmd"
 
-cp -r "${BASE_PATH}" "$INSTALLER_BASE/client"
+cp -r "$(workspace_dir)" "$INSTALLER_BASE/client"
 
 if [ "$ARCH" == "x64" ]; then
   PROGRAMSUFFIX="64"
@@ -43,7 +43,7 @@ trap finish EXIT
 
 set +x
 
-echo "$HEROKU_WINDOWS_KEY" | base64 -d > /tmp/heroku-windows-key
+echo "$HEROKU_WINDOWS_KEY" | base64 --decode > /tmp/heroku-windows-key
 
 osslsigncode -pkcs12 /tmp/heroku-windows-key \
   -pass "$HEROKU_WINDOWS_SIGNING_PASS" \
@@ -55,12 +55,8 @@ set -x
 
 makensis "$INSTALLER_BASE/heroku.nsi" > /dev/null
 
-DIST_DIR="dist/${VERSION}"
-
-mkdir -p "$DIST_DIR"
-
 INSTALLER_EXE="heroku-cli-$ARCH.exe"
-INSTALLER="$DIST_DIR/$INSTALLER_EXE"
+INSTALLER="$o/$INSTALLER_EXE"
 
 set +x
 
@@ -69,7 +65,3 @@ osslsigncode -pkcs12 /tmp/heroku-windows-key \
   -n 'Heroku CLI' \
   -i https://toolbelt.heroku.com/ \
   -in "$INSTALLER_BASE/installer.exe" -out "$INSTALLER"
-
-set -x
-
-s3uploadDayCache "$INSTALLER" "$REMOTE_BASE/$INSTALLER_EXE"

@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+export OS=linux
+
+source ./scripts/_init
+
+"${scripts}/build/_workspace"
+"${scripts}/build/_tarballs"

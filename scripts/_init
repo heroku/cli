@@ -13,15 +13,30 @@ set -o nounset
 # Set magic variables for current file & dir
 dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 root="$(cd "$(dirname "${dir}")" && pwd)"
-TMP_DIR="$root/tmp"
+scripts="$root/scripts"
+tmp="$root/tmp"
 
-CHANNEL=$(./scripts/circle/_channel)
-VERSION=$(./scripts/_version)
+CHANNEL=$(./scripts/_vars/_channel)
+VERSION=$(./scripts/_vars/_version)
+
+PLATFORMS=(
+  darwin_x64
+  linux_x64
+)
+# PLATFORMS=(
+#   windows_x86
+#   windows_x64
+#   darwin_x64
+#   linux_x86
+#   linux_x64
+#   linux_arm
+# )
+
 
 function split_platform () {
-  IFS='_' read -ra _circle_job <<< "$CIRCLE_JOB"
-  export OS=${OS:-${_circle_job[0]-}}
-  export ARCH=${ARCH:-${_circle_job[1]-}}
+  IFS='_' read -ra _platform <<< "$1"
+  export OS=${OS:-${_platform[0]-}}
+  export ARCH=${ARCH:-${_platform[1]-}}
 }
 
 if [[ ! -z "${CIRCLE_JOB-}" ]]; then
@@ -36,14 +51,22 @@ function unversioned_base () {
 }
 
 function platform_dir () {
-  echo "$TMP_DIR/${OS}_${ARCH}"
+  echo "$tmp/${OS}_${ARCH}"
+}
+
+function workspace_dir () {
+  echo "$(platform_dir)/workspace"
+}
+
+function dist_dir () {
+  echo "$(platform_dir)/dist"
 }
 
 function tgz_path () {
-  echo "$(platform_dir)/dist/$(unversioned_base).tar.gz"
+  echo "$(dist_dir)/$(unversioned_base).tar.gz"
 }
 function txz_path () {
-  echo "$(platform_dir)/dist/$(unversioned_base).tar.xz"
+  echo "$(dist_dir)/$(unversioned_base).tar.xz"
 }
 
 function go_home () {
@@ -62,12 +85,13 @@ function wait_all () {
   done
 }
 
+REMOTE_BASE="s3://$S3_BUCKET/heroku-cli/channels/$CHANNEL"
 function s3upload () {
   aws s3 cp "$@"
 }
-# function s3uploadDayCache () {
-#   s3upload --cache-control max-age=86400 "$@"
-# }
-# function s3uploadHourCache () {
-#   s3upload --cache-control max-age=3600 "$@"
-# }
+function s3uploadLongCache () {
+  s3upload --cache-control max-age=86400 "$@"
+}
+function s3uploadShortCache () {
+  s3upload --cache-control max-age=3600 "$@"
+}

@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+source ./scripts/release/_init
+
+"$scripts/release/_github_setup"
+
+set -x
+
+echo "Releasing ${CHANNEL}"
+
+# upload files to s3
+"${scripts}/release/_upload_dist"
+
+if [[ "${OS}" = "darwin" ]]; then
+  "${scripts}/release/homebrew"
+fi

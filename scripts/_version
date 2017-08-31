@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-
-SHA=$(git rev-parse --short HEAD)
-VERSION=$(node -p "require('./package.json').version")
-echo "${VERSION}-${SHA}"

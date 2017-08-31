@@ -2,9 +2,7 @@
 
 set -ex
 
-source ./scripts/main
-
-VERSION=$(./scripts/version)
+source ./scripts/_init
 
 git clone git@github.com:heroku/homebrew-brew.git tmp/homebrew-brew
 cd tmp/homebrew-brew

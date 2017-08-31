@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+export OS=windows
+
+source ./scripts/_init
+
+"${scripts}/build/_workspace"
+
+bg "${scripts}/build/_tarballs"
+bg "${scripts}/build/_windows_installer"
+wait_all
