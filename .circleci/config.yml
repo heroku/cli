@@ -84,7 +84,7 @@ jobs:
           paths: [windows_x86/dist]
   release:
     docker:
-      - image: dickeyxxx/cli-engine-docker:v3.0.1
+      - image: dickeyxxx/cli-engine-docker:v3.0.3
         environment: *env
     steps:
       - checkout
@@ -120,6 +120,7 @@ workflows:
               - dev
               - streamline
           requires:
+            - test
             - darwin_x64
             - linux_x64
             - linux_x86
