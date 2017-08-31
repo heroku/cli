@@ -6,21 +6,6 @@ set -x
 
 source ./scripts/_init
 
-# first build the manifests
-
-# create Package apt file
-cd "$dist_deb"
-apt-ftparchive packages . > Packages
-gzip -c Packages > Packages.gz
-bzip2 -k Packages
-xz -k Packages
-
-# create Release apt file
-cd "$dist_deb"
-apt-ftparchive -c "$root/resources/deb/apt-ftparchive.conf" release . > Release
-gpg --digest-algo SHA512 --clearsign -u 0F1B0520 -o InRelease Release
-gpg --digest-algo SHA512 -abs -u 0F1B0520 -o Release.gpg Release
-
 CACHE_DIR="$tmp/s3"
 DEB_REMOTE_BASE=s3://$S3_BUCKET/branches/$CHANNEL/apt
 
@@ -30,22 +15,23 @@ cd "$CACHE_DIR"
 
 # do long cache files first
 for ARCH in "${DEB_ARCHS[@]}"; do
-  mv "$(deb_path)" "$CACHE_DIR"
+  mv "$(unversioned_deb_path)" "$CACHE_DIR/$(versioned_deb_base).deb"
 done
 
 s3uploadLongCache --recursive "$CACHE_DIR" "$DEB_REMOTE_BASE"
 
-# now do short cache files that are text
-rm -f "$CACHE_DIR/*"
-mv "$dist_deb/Release" "$CACHE_DIR"
-mv "$dist_deb/InRelease" "$CACHE_DIR"
-mv "$dist_deb/Release.gpg" "$CACHE_DIR"
-mv "$dist_deb/Packages" "$CACHE_DIR"
+# create Package apt file
+apt-ftparchive packages . > Packages
+gzip -c Packages > Packages.gz
+bzip2 -k Packages
+xz -k Packages
 
-s3uploadShortCache --content-type text/plain --recursive "$CACHE_DIR" "$DEB_REMOTE_BASE"
+# create Release apt file
+apt-ftparchive -c "$root/resources/deb/apt-ftparchive.conf" release . > Release
+gpg --digest-algo SHA512 --clearsign -u 0F1B0520 -o InRelease Release
+gpg --digest-algo SHA512 -abs -u 0F1B0520 -o Release.gpg Release
 
-rm -f "$CACHE_DIR/*"
-mv "$dist_deb/Packages.bz2" "$CACHE_DIR"
-mv "$dist_deb/Packages.gz" "$CACHE_DIR"
-mv "$dist_deb/Packages.xz" "$CACHE_DIR"
+# remove the deb files so we don't push them again
+rm ./*.deb
+
 s3uploadShortCache --recursive "$CACHE_DIR" "$DEB_REMOTE_BASE"
