@@ -39,7 +39,7 @@ rm "$CACHE_DIR"/*
 # now upload json files
 for PLATFORM in "${PLATFORMS[@]}"; do
   split_platform "$PLATFORM"
-  mv "$dist/${OS}-${ARCH}" "$CACHE_DIR"
+  cp "$dist/${OS}-${ARCH}" "$CACHE_DIR"
 done
 
 # generate version file
