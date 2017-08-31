@@ -20,34 +20,33 @@ output=$1
 node_ext=""
 NODE_VERSION=$(node -p "require('./package.json')['cli-engine'].node || process.versions.node")
 
+mkdir -p "$output"
+mkdir -p "$tmp/node"
+mkdir -p "$tmp/cache/node"
+
 # install node
 if [ "${OS}" == "windows" ]; then
   node_ext=".exe"
   node_base=node-v${NODE_VERSION}-win-${ARCH}
-  if [ ! -f "${root}/tmp/cache/node/${node_base}" ]; then
+  if [ ! -f "$tmp/cache/node/${node_base}" ]; then
     echo "fetching ${node_base}"
-    rm -rf "${tmp}/cache/node"
-    mkdir -p "${tmp}/cache/node"
     url=https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-win-${ARCH}.7z
-    curl -fSsLo "${root}/tmp/node/${node_base}.7z" "${url}"
-    mkdir -p "${root}/tmp/node"
-    cd "${root}/tmp/node"
-    7z x -bd -y "${tmp}/node/${node_base}.7z" > /dev/null
-    mv "${node_base}/node.exe" "${root}/tmp/cache/node/${node_base}"
+    curl -fSsLo "$tmp/node/${node_base}.7z" "${url}"
+    (
+      cd "$tmp/node"
+      7z x -bd -y "${tmp}/node/${node_base}.7z" > /dev/null
+      mv "${node_base}/node.exe" "$tmp/cache/node/${node_base}"
+    )
   fi
 else
   if [ "${ARCH}" == "arm" ]; then node_arch=armv7l; else node_arch="${ARCH}"; fi
   node_base=node-v${NODE_VERSION}-${OS}-${node_arch}
-  if [ ! -f "${root}/tmp/cache/node/${node_base}" ]; then
+  if [ ! -f "$tmp/cache/node/${node_base}" ]; then
     echo "fetching ${node_base}"
-    rm -rf "${tmp}/cache/node"
-    mkdir -p "${tmp}/cache/node"
     url=https://nodejs.org/dist/v${NODE_VERSION}/${node_base}.tar.xz
-    mkdir -p "${root}/tmp/node"
     curl -fSsL "${url}" | tar -C "${tmp}/node" -xJ
-    mv "${root}/tmp/node/${node_base}/bin/node" "${root}/tmp/cache/node/${node_base}"
+    mv "$tmp/node/${node_base}/bin/node" "$tmp/cache/node/${node_base}"
   fi
 fi
 
-mkdir -p "${output}"
 cp "${tmp}/cache/node/${node_base}" "${output}/node${node_ext}"
