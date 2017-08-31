@@ -43,9 +43,7 @@ jobs:
           key: node-v8.3.0-darwin-x64
           paths: [~/cli/tmp/cache/node]
   linux_x64:
-    docker: &circle_node_docker
-      - image: circleci/node:8.4
-        environment: *env
+    docker: *node_docker
     steps:
       - checkout
       - run: ./scripts/build/linux
@@ -61,7 +59,7 @@ jobs:
           <<: *persist_workspace
           paths: [linux_x86/dist]
   linux_arm:
-    docker: *circle_node_docker
+    docker: *node_docker
     steps:
       - checkout
       - run: ./scripts/build/linux
