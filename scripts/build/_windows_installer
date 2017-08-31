@@ -6,9 +6,6 @@ source ./scripts/_init
 INSTALLER_BASE=$tmp/windows-$ARCH-installer
 WINEPREFIX=$tmp/wine/windows-$ARCH-installer
 
-# initialize wine in the background
-wine foo > /dev/null &
-
 rm -rf "$INSTALLER_BASE"
 rm -rf "$WINEPREFIX"
 
