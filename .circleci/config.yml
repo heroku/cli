@@ -116,6 +116,7 @@ jobs:
       - image: dickeyxxx/cli-engine-docker:v3.0.3
         environment: *env
     steps:
+      - add_ssh_keys
       - checkout
       - attach_workspace:
           at: dist
