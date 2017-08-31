@@ -34,7 +34,7 @@ done
 
 s3uploadShortCache --recursive "$CACHE_DIR" "$REMOTE_BASE"
 
-rm "$CACHE_DIR/*"
+rm "$CACHE_DIR"/*
 
 # now upload json files
 for PLATFORM in "${PLATFORMS[@]}"; do
