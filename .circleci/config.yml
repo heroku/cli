@@ -35,7 +35,7 @@ jobs:
       - run: ./scripts/build/darwin
       - persist_to_workspace: &persist_workspace
           root: tmp
-          paths: [darwin_x64]
+          paths: [darwin_x64/dist]
       - save_cache:
           key: v3-release-target-yarn-{{ checksum "yarn.lock" }}
           paths: [/usr/local/share/.cache/yarn]
@@ -51,7 +51,7 @@ jobs:
       - run: ./scripts/build/linux
       - persist_to_workspace:
           <<: *persist_workspace
-          paths: [linux_x64]
+          paths: [linux_x64/dist]
   linux_x86:
     docker: *node_docker
     steps:
@@ -59,7 +59,7 @@ jobs:
       - run: ./scripts/build/linux
       - persist_to_workspace:
           <<: *persist_workspace
-          paths: [linux_x86]
+          paths: [linux_x86/dist]
   linux_arm:
     docker: *circle_node_docker
     steps:
@@ -67,7 +67,7 @@ jobs:
       - run: ./scripts/build/linux
       - persist_to_workspace:
           <<: *persist_workspace
-          paths: [linux_arm]
+          paths: [linux_arm/dist]
   windows_x64:
     docker: *windows_docker
     steps:
@@ -75,7 +75,7 @@ jobs:
       - run: ./scripts/build/windows
       - persist_to_workspace:
           <<: *persist_workspace
-          paths: [windows_x64]
+          paths: [windows_x64/dist]
   windows_x86:
     docker: *windows_docker
     steps:
@@ -83,7 +83,7 @@ jobs:
       - run: ./scripts/build/windows
       - persist_to_workspace:
           <<: *persist_workspace
-          paths: [windows_x86]
+          paths: [windows_x86/dist]
   # release:
   #   <<: *defaults
   #   steps:
