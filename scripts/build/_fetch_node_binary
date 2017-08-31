@@ -8,6 +8,8 @@
 
 source ./scripts/_init
 
+set -x
+
 go_home
 if [[ $# -ne 1 ]]; then
   echo "USAGE: $0 OUTPUT_DIR"
