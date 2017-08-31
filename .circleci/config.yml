@@ -5,6 +5,10 @@ defaults: &defaults
     - image: node:8.4
       environment: &env
         NPM_CONFIG_REGISTRY: https://cli-npm.heroku.com
+        LANGUAGE: en_US.UTF-8
+        LC_TYPE: en_US.UTF-8
+        LC_ALL: en_US.UTF-8
+        LANG: en_US.UTF-8
 
 version: 2
 executorType: docker
