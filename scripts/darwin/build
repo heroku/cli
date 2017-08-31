@@ -16,11 +16,11 @@ if [[ ! -z "${OSX_KEYCHAIN:-}" ]]; then
 fi
 
 # shellcheck disable=SC2086
-pkgbuild --root "tmp/builds/${BASE}" \
+pkgbuild --root "$(workspace_dir)" \
   --identifier com.heroku.cli \
   --install-location /usr/local/lib/heroku \
   --version "${VERSION}" \
   --sign "Developer ID Installer: Heroku INC" \
-  --scripts "${root}/scripts/darwin/scripts" \
+  --scripts "$scripts/darwin/scripts" \
   $keychain \
   "tmp/heroku-cli.pkg"
