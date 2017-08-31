@@ -6,7 +6,7 @@ source ./scripts/_init
 
 SHA256XZ=$(node -p \ " \
   require('fs'); \
-  let manifest = JSON.parse(fs.readFileSync('./dist/darwin-x64')); \
+  let manifest = JSON.parse(fs.readFileSync('$dist/darwin-x64')); \
   manifest.sha256xz
   ")
 
