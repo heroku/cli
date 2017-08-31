@@ -149,7 +149,7 @@ jobs:
       - checkout
       - attach_workspace:
           at: dist
-      - run: ls dist && ls dist/app
+      - run: ls dist && ls dist/apt
       - run: ./scripts/release/circle
 workflows:
   version: 2
