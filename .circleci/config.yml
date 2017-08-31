@@ -118,6 +118,7 @@ jobs:
             - windows-x64
             - heroku-cli-windows-x64.tar.gz
             - heroku-cli-windows-x64.tar.xz
+            - heroku-cli-x64.exe
       - save_cache: &node_cache_save
           key: node-v8.3.0-windows-x64
           paths: [~/cli/tmp/cache/node]
@@ -135,6 +136,7 @@ jobs:
             - windows-x86
             - heroku-cli-windows-x86.tar.gz
             - heroku-cli-windows-x86.tar.xz
+            - heroku-cli-x64.exe
       - save_cache: &node_cache_save
           key: node-v8.3.0-windows-x86
           paths: [~/cli/tmp/cache/node]
