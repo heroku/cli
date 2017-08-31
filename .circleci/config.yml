@@ -21,7 +21,7 @@ jobs:
           paths:
             - /usr/local/share/.cache/yarn
             - ~/cli/node_modules
-  darwin_x64:
+  build_darwin_x64:
     docker: &node_docker
       - image: node:8.4
         environment: *env
@@ -42,7 +42,7 @@ jobs:
       - save_cache: &node_cache_save
           key: node-v8.3.0-darwin-x64
           paths: [~/cli/tmp/cache/node]
-  linux_x64:
+  build_linux_x64:
     docker: *node_docker
     steps:
       - checkout
@@ -50,7 +50,7 @@ jobs:
       - persist_to_workspace:
           <<: *persist_workspace
           paths: [linux_x64/dist]
-  linux_x86:
+  build_linux_x86:
     docker: *node_docker
     steps:
       - checkout
@@ -58,7 +58,7 @@ jobs:
       - persist_to_workspace:
           <<: *persist_workspace
           paths: [linux_x86/dist]
-  linux_arm:
+  build_linux_arm:
     docker: *node_docker
     steps:
       - checkout
@@ -66,7 +66,7 @@ jobs:
       - persist_to_workspace:
           <<: *persist_workspace
           paths: [linux_arm/dist]
-  windows_x64:
+  build_windows_x64:
     docker: *windows_docker
     steps:
       - checkout
@@ -74,7 +74,7 @@ jobs:
       - persist_to_workspace:
           <<: *persist_workspace
           paths: [windows_x64/dist]
-  windows_x86:
+  build_windows_x86:
     docker: *windows_docker
     steps:
       - checkout
@@ -107,11 +107,11 @@ workflows:
               only: /^v.*/
       - darwin_x64: &build_step
           filters: *all_pushes
-      - linux_x64: *build_step
-      - linux_x86: *build_step
-      - linux_arm: *build_step
-      - windows_x64: *build_step
-      - windows_x86: *build_step
+      - build_linux_x64: *build_step
+      - build_linux_x86: *build_step
+      - build_linux_arm: *build_step
+      - build_windows_x64: *build_step
+      - build_windows_x86: *build_step
       - release:
           filters:
             tags: *version_tags
@@ -122,12 +122,12 @@ workflows:
                 - streamline
           requires:
             - test
-            - darwin_x64
-            - linux_x64
-            - linux_x86
-            - linux_arm
-            - windows_x64
-            - windows_x86
+            - build_darwin_x64
+            - build_linux_x64
+            - build_linux_x86
+            - build_linux_arm
+            - build_windows_x64
+            - build_windows_x86
 # - debian:
 #     filters: *release_filters
 #     requires: [test]
