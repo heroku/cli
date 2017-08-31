@@ -2,6 +2,9 @@
 
 source ./scripts/_init
 
+unset OS
+unset ARCH
+
 "$scripts/release/_github_setup"
 
 set -x

@@ -31,8 +31,8 @@ PLATFORMS=(
 
 function split_platform () {
   IFS='_' read -ra _platform <<< "$1"
-  export OS=${OS:-${_platform[0]-}}
-  export ARCH=${ARCH:-${_platform[1]-}}
+  export OS=${_platform[0]}
+  export ARCH=${_platform[1]}
 }
 
 if [[ ! -z "${CIRCLE_JOB-}" ]]; then
