@@ -82,14 +82,15 @@ jobs:
       - persist_to_workspace:
           <<: *persist_workspace
           paths: [windows_x86/dist]
-  # release:
-  #   docker:
-  #     - image: dickeyxxx/cli-engine-docker:v3.0.1
-  #       environment: *env
-  #   steps:
-  #     - checkout
-  #     - attach_workspace: {at: dist}
-  #     - run: ./scripts/release/circle
+  release:
+    docker:
+      - image: dickeyxxx/cli-engine-docker:v3.0.1
+        environment: *env
+    steps:
+      - checkout
+      - attach_workspace:
+          at: dist
+      - run: ./scripts/release/circle
   # debian:
   #   <<: *defaults
   #   steps:
