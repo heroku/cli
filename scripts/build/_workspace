@@ -22,21 +22,18 @@ cp "${root}/LICENSE" "${o}"
 cp "${root}/package.json" "${o}"
 cp "${root}/yarn.lock" "${o}"
 
-bg "${root}/scripts/build/_fetch_node_binary" "${o}/bin"
+"${root}/scripts/build/_fetch_node_binary" "${o}/bin"
 
-function install_packages {
-  cd "${o}"
-  # install packages
-  yarn install --no-progress --production --non-interactive --prefer-offline --mutex=file:/tmp/.yarn-mutex
+cd "${o}"
+# install packages
+yarn install --no-progress --production --non-interactive --prefer-offline --mutex=file:/tmp/.yarn-mutex
 
-  # build cli-engine if needed
-  if [ ! -f "${o}/node_modules/cli-engine/lib/cli.js" ]; then
-    cd "${o}/node_modules/cli-engine"
-    yarn
-    yarn run prepare
-  fi
-}
-bg install_packages
+# build cli-engine if needed
+if [ ! -f "${o}/node_modules/cli-engine/lib/cli.js" ]; then
+  cd "${o}/node_modules/cli-engine"
+  yarn
+  yarn run prepare
+fi
 
 # create bin runner
 if [ "${OS}" == "windows" ]; then
@@ -90,5 +87,3 @@ const cli = new CLI({
 })
 cli.run()
 EOF
-
-wait_all
