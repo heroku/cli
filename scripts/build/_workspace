@@ -22,11 +22,14 @@ cp "${root}/LICENSE" "${o}"
 cp "${root}/package.json" "${o}"
 cp "${root}/yarn.lock" "${o}"
 
-"${root}/scripts/build/_fetch_node_binary" "${o}/bin"
+(
+  cd "${o}"
+  # install packages
+  yarn install --no-progress --production --non-interactive --prefer-offline --mutex=file:/tmp/.yarn-mutex
+  ls node_modules
+)
 
-cd "${o}"
-# install packages
-yarn install --no-progress --production --non-interactive --prefer-offline --mutex=file:/tmp/.yarn-mutex
+"${root}/scripts/build/_fetch_node_binary" "${o}/bin"
 
 # build cli-engine if needed
 if [ ! -f "${o}/node_modules/cli-engine/lib/cli.js" ]; then
