@@ -105,7 +105,7 @@ workflows:
           filters: &all_pushes
             tags: &version_tags
               only: /^v.*/
-      - darwin_x64: &build_step
+      - build_darwin_x64: &build_step
           filters: *all_pushes
       - build_linux_x64: *build_step
       - build_linux_x86: *build_step
