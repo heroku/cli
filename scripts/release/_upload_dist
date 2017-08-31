@@ -26,10 +26,10 @@ for PLATFORM in "${PLATFORMS[@]}"; do
 
   mv "$(versioned_base).tar.gz" "$(unversioned_base).tar.gz"
   mv "$(versioned_base).tar.xz" "$(unversioned_base).tar.xz"
-  mv "$(dist_dir)/${OS}_${ARCH}" "$CACHE_DIR"
+  mv "$dist/${OS}_${ARCH}" "$CACHE_DIR"
 
   if [ "$OS" == "windows" ]; then
-    mv "$(dist_dir)/heroku-cli-$ARCH.exe" "$CACHE_DIR"
+    mv "$dist/heroku-cli-$ARCH.exe" "$CACHE_DIR"
   fi
 done
 
