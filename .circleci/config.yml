@@ -89,7 +89,8 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: dist
+          at: tmp
+      - run: ls tmp
       - run: ./scripts/release/circle
   # debian:
   #   <<: *defaults
