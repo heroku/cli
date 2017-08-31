@@ -118,6 +118,14 @@ jobs:
           at: dist
       - run: ls dist && ls dist/apt
       - run: ./scripts/release/circle
+  dev_center_docs:
+    docker: *windows_docker
+    steps:
+      - type: checkout
+      - run: ./scripts/release/dev_center_docs
+      - store_artifacts:
+          path: /tmp/heroku-cli-commands.md
+      - run: devcenter push /tmp/heroku-cli-commands.md --trace
 workflows:
   version: 2
   heroku_cli:
@@ -149,3 +157,6 @@ workflows:
             - build_linux_arm
             - build_windows_x64
             - build_windows_x86
+      - dev_center_docs:
+          requires:
+            - release

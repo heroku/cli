@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+# builds the dev center documentation to /tmp/heroku-cli-commands.md
+
+source ./scripts/_init
+
+set +x
+echo "$HEROKU_DEB_KEY" | base64 -d | gpg --import
+cat << EOF > ~/.netrc
+machine api.heroku.com
+  login me@example.com
+  password $HEROKU_API_KEY
+EOF
+chmod 0600 ~/.netrc
+set -ex
+
+"$(scripts)/prep"
+./bin/run whoami
+heroku-cli-dev-center-generator > /tmp/heroku-cli-commands.md
+remark /tmp/heroku-cli-commands.md -u remark-heroku-example-command -u remark-heroku-sample-code -u remark-heroku-bash-dollar -u remark-heroku-topic-overview -u remark-heroku-command-headings-inline-code
