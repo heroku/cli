@@ -159,4 +159,4 @@ workflows:
             - build_windows_x86
       - dev_center_docs:
           requires:
-            - release
+            - test
