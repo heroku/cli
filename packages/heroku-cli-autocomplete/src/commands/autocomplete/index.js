@@ -19,12 +19,13 @@ export default class Autocomplete extends AutocompleteBase {
     }
 
     switch (shell) {
-      case 'bash':
-        const cmd = CustomColors.cmd(`$ printf $(heroku autocomplete:script bash) >> ~/.bashrc`)
-        this.out.log(`Add the autocomplete setup script to your .bashrc or .bash_profile via:
-
-${cmd}`)
-        break
+      // for now, suspending bash completion
+      //       case 'bash':
+      //         const cmd = CustomColors.cmd(`$ printf $(heroku autocomplete:script bash) >> ~/.bashrc`)
+      //         this.out.log(`Add the autocomplete setup script to your .bashrc or .bash_profile via:
+      //
+      // ${cmd}`)
+      //         break
       case 'zsh':
         const cmd1 = CustomColors.cmd(`$ printf $(heroku autocomplete:script zsh) >> ~/.zshrc`)
         const cmd2 = CustomColors.cmd(`$ compaudit`)

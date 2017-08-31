@@ -25,9 +25,10 @@ export default class AutocompleteScript extends AutocompleteBase {
       case 'zsh':
         this.out.log(`${this._prefix}HEROKU_ZSH_AC_SETUP_PATH=${path.join(this.completionsPath, 'zsh_setup')} && test -f $HEROKU_ZSH_AC_SETUP_PATH && source $HEROKU_ZSH_AC_SETUP_PATH;`)
         break
-      case 'bash':
-        this.out.log(`${this._prefix}HEROKU_BASH_AC_SETUP_PATH=${path.join(this.completionsPath, 'bash_setup')} && test -f $HEROKU_BASH_AC_SETUP_PATH && source $HEROKU_BASH_AC_SETUP_PATH;`)
-        break
+      // for now, suspending bash completion
+      // case 'bash':
+      //   this.out.log(`${this._prefix}HEROKU_BASH_AC_SETUP_PATH=${path.join(this.completionsPath, 'bash_setup')} && test -f $HEROKU_BASH_AC_SETUP_PATH && source $HEROKU_BASH_AC_SETUP_PATH;`)
+      //   break
       default:
         this.out.error(`No autocomplete script for ${shell}. Run $ heroku autocomplete for install instructions.`)
     }

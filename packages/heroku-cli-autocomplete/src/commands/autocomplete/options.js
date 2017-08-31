@@ -6,7 +6,7 @@ import path from 'path'
 import ACCache from '../../cache'
 import AutocompleteBase from '.'
 
-export default class ACFoo extends AutocompleteBase {
+export default class AutocompleteOptions extends AutocompleteBase {
   static topic = 'autocomplete'
   static command = 'options'
   static description = 'dynamic completion'
@@ -38,7 +38,9 @@ export default class ACFoo extends AutocompleteBase {
       const cmdArgvCount = cmdArgv.length
       const cmdCurArgv = cmdArgv[cmdArgvCount - 1]
       const cmdPreviousArgv = cmdArgv[cmdArgvCount - 2]
-      let [cmdCurArgCount, cmdCurArgvIsFlag, cmdCurArgvIsFlagValue] = this._determineCmdState(cmdArgv, Command)
+      // for now, suspending arg completion
+      // let [cmdCurArgCount, cmdCurArgvIsFlag, cmdCurArgvIsFlagValue] =
+      let [cmdCurArgvIsFlag, cmdCurArgvIsFlagValue] = this._determineCmdState(cmdArgv, Command)
       let cacheKey
       let cacheCompletion
 
@@ -49,12 +51,14 @@ export default class ACFoo extends AutocompleteBase {
         cacheKey = name || flag.name
         cacheCompletion = flag.completion
       } else {
-        const cmdArgs = Command.args || []
-        const cmdArgsCount = cmdArgs.length
-        if (cmdCurArgCount > cmdArgsCount || cmdCurArgCount === 0) throw new Error(`Cannot complete arg position ${cmdCurArgCount} for ${cmdId}`)
-        const arg = cmdArgs[cmdCurArgCount - 1]
-        cacheKey = arg.name
-        cacheCompletion = arg.completion
+        // for now, suspending arg completion
+        throw new Error(`${cmdCurArgv} is not a valid flag for ${cmdId}`)
+        // const cmdArgs = Command.args || []
+        // const cmdArgsCount = cmdArgs.length
+        // if (cmdCurArgCount > cmdArgsCount || cmdCurArgCount === 0) throw new Error(`Cannot complete arg position ${cmdCurArgCount} for ${cmdId}`)
+        // const arg = cmdArgs[cmdCurArgCount - 1]
+        // cacheKey = arg.name
+        // cacheCompletion = arg.completion
       }
 
       // build/retrieve & return options cache
@@ -94,7 +98,7 @@ export default class ACFoo extends AutocompleteBase {
     return {}
   }
 
-  _determineCmdState (argv: Array<string>, Command: Class<Command<*>>): [number, boolean, boolean] {
+  _determineCmdState (argv: Array<string>, Command: Class<Command<*>>): [boolean, boolean] {
     let needFlagValueSatisfied = false
     let argIsFlag = false
     let argIsFlagValue = false
@@ -102,7 +106,9 @@ export default class ACFoo extends AutocompleteBase {
     let flagName
     // find cur index of argv (including empty '')
     // that are not flags or flag values
-    const nthArg = argv.filter(wild => {
+
+    // for now, suspending arg completion
+    argv.filter(wild => { // const nthArg = argv.filter(wild => {
       if (wild.match(/^-(-)?/)) {
         // we're a flag
         argIsFlag = true
@@ -160,8 +166,10 @@ export default class ACFoo extends AutocompleteBase {
       argIsFlagValue = false
       needFlagValueSatisfied = false
       return true
-    }).length
+    }) // .length
 
-    return [nthArg, argIsFlag, argIsFlagValue]
+    // for now, suspending arg completion
+    // return [nthArg, argIsFlag, argIsFlagValue]
+    return [argIsFlag, argIsFlagValue]
   }
 }

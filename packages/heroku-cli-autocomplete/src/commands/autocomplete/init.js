@@ -163,12 +163,14 @@ $fpath
 autoload -Uz compinit;
 compinit;
 `
-    const bashSetup = `HEROKU_AC_COMMANDS_PATH=${path.join(this.completionsCachePath, 'commands')};
-HEROKU_BASH_AC_PATH=${path.join(__dirname, '..', '..', '..', 'autocomplete', 'bash', 'heroku.bash')}
-test -f $HEROKU_BASH_AC_PATH && source $HEROKU_BASH_AC_PATH;
-`
+    // for now, suspending bash completion
+//     const bashSetup = `HEROKU_AC_COMMANDS_PATH=${path.join(this.completionsCachePath, 'commands')};
+// HEROKU_BASH_AC_PATH=${path.join(__dirname, '..', '..', '..', 'autocomplete', 'bash', 'heroku.bash')}
+// test -f $HEROKU_BASH_AC_PATH && source $HEROKU_BASH_AC_PATH;
+// `
     fs.writeFileSync(path.join(this.completionsCachePath, 'zsh_setup'), zshSetup)
-    fs.writeFileSync(path.join(this.completionsCachePath, 'bash_setup'), bashSetup)
+    // for now, suspending bash completion
+    // fs.writeFileSync(path.join(this.completionsCachePath, 'bash_setup'), bashSetup)
   }
 
   //   _genCompCli () {
