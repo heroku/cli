@@ -42,18 +42,3 @@ cat << EOF > "$CACHE_DIR/version"
 EOF
 
 s3uploadShortCache --recursive "$CACHE_DIR" "$REMOTE_BASE"
-
-# debian
-DEB_REMOTE_PATH=/branches/${CHANNEL}/apt
-DEB_REMOTE_ROOT=s3://${S3_BUCKET}${REMOTE_PATH}
-# bg s3uploadDayCache "$workspace_root/heroku_${DEB_VERSION}_armel.deb" "$REMOTE_ROOT/heroku_${DEB_VERSION}_armel.deb"
-# bg s3uploadDayCache "$workspace_root/heroku_${DEB_VERSION}_amd64.deb" "$REMOTE_ROOT/heroku_${DEB_VERSION}_amd64.deb"
-# bg s3uploadDayCache "$workspace_root/heroku_${DEB_VERSION}_i386.deb" "$REMOTE_ROOT/heroku_${DEB_VERSION}_i386.deb"
-# bg s3uploadHourCache --content-type text/plain "$workspace_root/Release" "$REMOTE_ROOT/Release"
-# bg s3uploadHourCache --content-type text/plain "$workspace_root/InRelease" "$REMOTE_ROOT/InRelease"
-# bg s3uploadHourCache --content-type text/plain "$workspace_root/Release.gpg" "$REMOTE_ROOT/Release.gpg"
-# bg s3uploadHourCache --content-type text/plain "$workspace_root/Packages" "$REMOTE_ROOT/Packages"
-# bg s3uploadHourCache "$workspace_root/Packages.bz2" "$REMOTE_ROOT/Packages.bz2"
-# bg s3uploadHourCache "$workspace_root/Packages.gz" "$REMOTE_ROOT/Packages.gz"
-# bg s3uploadHourCache "$workspace_root/Packages.xz" "$REMOTE_ROOT/Packages.xz"
-# wait_all
