@@ -37,13 +37,9 @@ jobs:
             - v3-release-target-yarn
       - restore_cache: {keys: [node-v8.3.0-darwin-x64]}
       - run: ./scripts/build/darwin
-      - persist_to_workspace: &persist_workspace
+      - persist_to_workspace: &dist
           root: dist
-          paths:
-            - darwin-x64
-            - heroku-cli-darwin-x64.tar.gz
-            - heroku-cli-darwin-x64.tar.xz
-            - apt/heroku_i386.deb
+          paths: [ . ]
       - save_cache:
           key: v3-release-target-yarn-{{ checksum "yarn.lock" }}
           paths: [/usr/local/share/.cache/yarn]
@@ -57,13 +53,7 @@ jobs:
       - restore_cache: *release_target_yarn_cache
       - restore_cache: {keys: [node-v8.3.0-linux-x64]}
       - run: ./scripts/build/linux
-      - persist_to_workspace:
-          <<: *persist_workspace
-          paths:
-            - linux-x64
-            - heroku-cli-linux-x64.tar.gz
-            - heroku-cli-linux-x64.tar.xz
-            - apt/heroku_amd64.deb
+      - persist_to_workspace: *dist
       - save_cache: &node_cache_save
           key: node-v8.3.0-linux-x64
           paths: [~/cli/tmp/cache/node]
@@ -74,13 +64,7 @@ jobs:
       - restore_cache: *release_target_yarn_cache
       - restore_cache: {keys: [node-v8.3.0-linux-x86]}
       - run: ./scripts/build/linux
-      - persist_to_workspace:
-          <<: *persist_workspace
-          paths:
-            - linux-x86
-            - heroku-cli-linux-x86.tar.gz
-            - heroku-cli-linux-x86.tar.xz
-            - apt/heroku_i386.deb
+      - persist_to_workspace: *dist
       - save_cache: &node_cache_save
           key: node-v8.3.0-linux-x86
           paths: [~/cli/tmp/cache/node]
@@ -91,13 +75,7 @@ jobs:
       - restore_cache: *release_target_yarn_cache
       - restore_cache: {keys: [node-v8.3.0-linux-arm]}
       - run: ./scripts/build/linux
-      - persist_to_workspace:
-          <<: *persist_workspace
-          paths:
-            - linux-arm
-            - heroku-cli-linux-arm.tar.gz
-            - heroku-cli-linux-arm.tar.xz
-            - apt/heroku_armel.deb
+      - persist_to_workspace: *dist
       - save_cache: &node_cache_save
           key: node-v8.3.0-linux-arm
           paths:
@@ -112,13 +90,7 @@ jobs:
       - restore_cache: *release_target_yarn_cache
       - restore_cache: {keys: [node-v8.3.0-windows-x64]}
       - run: ./scripts/build/windows
-      - persist_to_workspace:
-          <<: *persist_workspace
-          paths:
-            - windows-x64
-            - heroku-cli-windows-x64.tar.gz
-            - heroku-cli-windows-x64.tar.xz
-            - heroku-cli-x64.exe
+      - persist_to_workspace: *dist
       - save_cache: &node_cache_save
           key: node-v8.3.0-windows-x64
           paths: [~/cli/tmp/cache/node]
@@ -130,13 +102,7 @@ jobs:
       - restore_cache: *release_target_yarn_cache
       - restore_cache: {keys: [node-v8.3.0-windows-x86]}
       - run: ./scripts/build/windows
-      - persist_to_workspace:
-          <<: *persist_workspace
-          paths:
-            - windows-x86
-            - heroku-cli-windows-x86.tar.gz
-            - heroku-cli-windows-x86.tar.xz
-            - heroku-cli-x86.exe
+      - persist_to_workspace: *dist
       - save_cache: &node_cache_save
           key: node-v8.3.0-windows-x86
           paths: [~/cli/tmp/cache/node]
