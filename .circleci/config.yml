@@ -17,7 +17,7 @@ jobs:
           keys:
             - v2-test-{{ checksum "yarn.lock" }}
             - v2-test
-      - run: ./scripts/circle/prep
+      - run: ./scripts/prep
       - run: ./scripts/test
       - save_cache:
           key: v2-test-{{ checksum "yarn.lock" }}
