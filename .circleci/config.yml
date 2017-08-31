@@ -113,12 +113,6 @@ workflows:
       - windows_x64: *build_step
       - windows_x86: *build_step
       - release:
-          filters:
-            tags: *version_tags
-            branches:
-              - master
-              - dev
-              - streamline
           requires:
             - darwin_x64
             - linux_x64
