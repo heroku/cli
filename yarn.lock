@@ -1836,9 +1836,9 @@ heroku-client@^3.0.3:
     is-retry-allowed "^1.0.0"
     tunnel-agent "^0.6.0"
 
-heroku-container-registry@4.3.1:
-  version "4.3.1"
-  resolved "http://cli-npm.heroku.com/heroku-container-registry/-/heroku-container-registry-4.3.1/bcd0c5e5300a7c02377fb0970e7fbaa066ae30c5.tgz#bcd0c5e5300a7c02377fb0970e7fbaa066ae30c5"
+heroku-container-registry@4.4.0:
+  version "4.4.0"
+  resolved "http://cli-npm.heroku.com/heroku-container-registry/-/heroku-container-registry-4.4.0/172b7429c0bc9ff1b150f08c1fa662855d7ae736.tgz#172b7429c0bc9ff1b150f08c1fa662855d7ae736"
   dependencies:
     glob "7.1.0"
     heroku-cli-util "6.1.17"
