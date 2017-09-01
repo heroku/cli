@@ -1,23 +1,21 @@
 #!/usr/bin/env bash
 
+set +x
+
+echo "$HEROKU_WINDOWS_KEY" | base64 --decode > /tmp/heroku-windows-key
+
 source ./scripts/_init
+
+set -x
 
 # setup workspace
 INSTALLER_BASE=$tmp/windows-$ARCH-installer
-WINEPREFIX=$tmp/wine/windows-$ARCH-installer
-
 rm -rf "$INSTALLER_BASE"
-rm -rf "$WINEPREFIX"
-
 mkdir -p "$INSTALLER_BASE/bin"
-mkdir -p "$WINEPREFIX"
 
-o="$dist"
-mkdir -p "$o"
+cp "$root/resources/exe/heroku.cmd" "$INSTALLER_BASE/bin/heroku.cmd"
 
-cp resources/exe/heroku.cmd "$INSTALLER_BASE/bin/heroku.cmd"
-
-cp -r "$(workspace_dir)" "$INSTALLER_BASE/client"
+mv "$(workspace_dir)" "$INSTALLER_BASE/client"
 
 if [ "$ARCH" == "x64" ]; then
   PROGRAMSUFFIX="64"
@@ -29,39 +27,11 @@ sed -e "s/!define Version 'VERSION'/!define Version '${VERSION}'/" resources/exe
   sed -e "s/InstallDir .*/InstallDir \"\$PROGRAMFILES$PROGRAMSUFFIX\\\Heroku\"/" \
   > "$INSTALLER_BASE/heroku.nsi"
 
-makensis -DUNINSTALLER "$INSTALLER_BASE/heroku.nsi" > /dev/null
-
-WINEPREFIX=$WINEPREFIX wine "$INSTALLER_BASE/tmpinstaller.exe" /S
-
-rm "$INSTALLER_BASE/tmpinstaller.exe"
-
-function finish {
-  rm /tmp/heroku-windows-key
-}
-
-trap finish EXIT
+makensis "$INSTALLER_BASE/heroku.nsi" | grep -v "[compress]"
 
 set +x
-
-echo "$HEROKU_WINDOWS_KEY" | base64 --decode > /tmp/heroku-windows-key
-
 osslsigncode -pkcs12 /tmp/heroku-windows-key \
   -pass "$HEROKU_WINDOWS_SIGNING_PASS" \
   -n 'Heroku CLI' \
   -i https://toolbelt.heroku.com/ \
-  -in "$WINEPREFIX/drive_c/Program Files/Heroku/Uninstall.exe" -out "$INSTALLER_BASE/uninstall.exe"
-
-set -x
-
-makensis "$INSTALLER_BASE/heroku.nsi" > /dev/null
-
-INSTALLER_EXE="heroku-cli-$ARCH.exe"
-INSTALLER="$o/$INSTALLER_EXE"
-
-set +x
-
-osslsigncode -pkcs12 /tmp/heroku-windows-key \
-  -pass "$HEROKU_WINDOWS_SIGNING_PASS" \
-  -n 'Heroku CLI' \
-  -i https://toolbelt.heroku.com/ \
-  -in "$INSTALLER_BASE/installer.exe" -out "$INSTALLER"
+  -in "$INSTALLER_BASE/installer.exe" -out "$dist/heroku-cli-$ARCH.exe"
