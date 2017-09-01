@@ -15,6 +15,13 @@ InstallDirRegKey HKCU "Software\Heroku" ""
 !insertmacro MUI_LANGUAGE "English"
 
 OutFile "installer.exe"
+VIProductVersion "${VERSION}.0"
+VIAddVersionKey /LANG=${LANG_ENGLISH} "ProductName" "Heroku CLI"
+VIAddVersionKey /LANG=${LANG_ENGLISH} "Comments" "https://cli.heroku.com"
+VIAddVersionKey /LANG=${LANG_ENGLISH} "CompanyName" "Salesforce.com"
+VIAddVersionKey /LANG=${LANG_ENGLISH} "LegalCopyright" "© 2017"
+VIAddVersionKey /LANG=${LANG_ENGLISH} "FileDescription" "CLI Application"
+VIAddVersionKey /LANG=${LANG_ENGLISH} "FileVersion" "${VERSION}.0"
 
 InstallDir "$PROGRAMFILES64\Heroku"
 
