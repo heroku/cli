@@ -11,9 +11,6 @@ executorType: docker
 jobs:
   test:
     <<: *defaults
-    docker: &windows_docker
-      - image: dickeyxxx/cli-engine-docker:v2.1.0
-        environment: *env
     steps:
       - checkout
       - restore_cache:
@@ -84,7 +81,9 @@ jobs:
             - heroku-cli-linux-arm.tar.xz
   build_windows_x64:
     <<: *defaults
-    docker: *windows_docker
+    docker: &windows_docker
+      - image: dickeyxxx/cli-engine-docker:v2.1.0
+        environment: *env
     steps:
       - checkout
       - restore_cache: *release_target_yarn_cache
