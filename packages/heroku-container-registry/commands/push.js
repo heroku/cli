@@ -65,7 +65,7 @@ let push = async function (context, heroku) {
   try {
     for (let job of jobs) {
       if (job.name === 'standard') {
-        cli.styledHeader(`Building for ${context.args}  (${job.dockerfile })`)
+        cli.styledHeader(`Building ${context.args} (${job.dockerfile })`)
       } else {
         cli.styledHeader(`Building ${job.name} (${job.dockerfile})`)
       }
@@ -81,9 +81,9 @@ let push = async function (context, heroku) {
   try {
     for (let job of jobs) {
       if (job.name === 'standard') {
-        cli.styledHeader(`Pushing for ${context.args}  (${job.dockerfile })`)
+        cli.styledHeader(`Pushing ${context.args} (${job.dockerfile })`)
       } else {
-        cli.styledHeader(`Pushing  ${job.name}  (${job.dockerfile })`)
+        cli.styledHeader(`Pushing ${job.name} (${job.dockerfile })`)
       }
       await Sanbashi.pushImage(job.resource, context.flags.verbose)
     }
