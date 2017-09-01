@@ -1,0 +1,26 @@
+---
+version: 2
+jobs:
+  build:
+    working_directory: /cli
+    docker:
+      - image: node:8
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v2-yarn-{{ .Branch }}-{{checksum "yarn.lock"}}
+            - v2-yarn-{{ .Branch }}
+            - v2-yarn-master
+      - run: git submodule sync && git submodule update --init --recursive --remote
+      - run: yarn
+      - run: |
+          npx jest --coverage
+          bash <(curl -s https://codecov.io/bash)
+      - run: {command: "npx eslint .", when: always}
+      - run: {command: "npx flow check", when: always}
+      - save_cache:
+          key: v2-yarn-{{ .Branch }}-{{checksum "yarn.lock"}}
+          paths:
+            - /cli/node_modules
+            - /usr/local/share/.cache/yarn
