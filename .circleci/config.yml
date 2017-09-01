@@ -158,6 +158,7 @@ workflows:
             - build_linux_arm
             - build_windows_x64
             - build_windows_x86
-      - dev_center_docs:
-          requires:
-            - test
+      # skip devcenter for now
+      # - dev_center_docs:
+      #     requires:
+      #       - test
