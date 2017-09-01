@@ -8,6 +8,7 @@ module.exports = {
     help: pkg.description
   },
   commands: [
+    require('./commands/rm')(pkg.topic),
     require('./commands/index')(pkg),
     require('./commands/login')(pkg.topic),
     require('./commands/logout')(pkg.topic),
