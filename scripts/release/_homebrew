@@ -16,11 +16,12 @@ sed -i "s/heroku-cli-v.*-darwin-x64/heroku-cli-v${VERSION}-darwin-x64/" Formula/
 sed -i "s/version \".*\"/version \"${VERSION}\"/" Formula/heroku.rb
 sed -i "s/sha256 \".*\"/sha256 \"${SHA256XZ}\"/" Formula/heroku.rb
 git add Formula/heroku.rb
-git commit -m "heroku ${VERSION}"
+git diff
 
 if [[ ${CHANNEL} != "stable" ]]; then
   echo "not on stable, skipping homebrew"
   exit
 fi
 
+git commit -m "heroku ${VERSION}"
 git push origin master
