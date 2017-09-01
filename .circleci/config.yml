@@ -1,6 +1,6 @@
 ---
 defaults: &defaults
-  working_directory: ~/cli
+  working_directory: /cli
   docker:
     - image: node:8.4
       environment: &env
@@ -15,15 +15,15 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v2-test-{{ checksum "yarn.lock" }}
-            - v2-test
+            - v3-test-{{ checksum "yarn.lock" }}
+            - v3-test
       - run: ./scripts/prep
       - run: ./scripts/test
       - save_cache:
-          key: v2-test-{{ checksum "yarn.lock" }}
+          key: v3-test-{{ checksum "yarn.lock" }}
           paths:
             - /usr/local/share/.cache/yarn
-            - ~/cli/node_modules
+            - /cli/node_modules
   build_darwin_x64:
     <<: *defaults
     steps:
@@ -42,7 +42,7 @@ jobs:
           paths: [/usr/local/share/.cache/yarn]
       - save_cache: &node_cache_save
           key: node-v8.4.0-darwin-x64
-          paths: [~/cli/tmp/cache/node]
+          paths: [/cli/tmp/cache/node]
   build_linux_x64:
     <<: *defaults
     steps:
@@ -51,9 +51,9 @@ jobs:
       - restore_cache: {keys: [node-v8.4.0-linux-x64]}
       - run: ./scripts/build/linux
       - persist_to_workspace: *dist
-      - save_cache: &node_cache_save
+      - save_cache:
+          <<: *node_cache_save
           key: node-v8.4.0-linux-x64
-          paths: [~/cli/tmp/cache/node]
   build_linux_x86:
     <<: *defaults
     steps:
@@ -62,9 +62,9 @@ jobs:
       - restore_cache: {keys: [node-v8.4.0-linux-x86]}
       - run: ./scripts/build/linux
       - persist_to_workspace: *dist
-      - save_cache: &node_cache_save
+      - save_cache:
+          <<: *node_cache_save
           key: node-v8.4.0-linux-x86
-          paths: [~/cli/tmp/cache/node]
   build_linux_arm:
     <<: *defaults
     steps:
@@ -73,7 +73,8 @@ jobs:
       - restore_cache: {keys: [node-v8.4.0-linux-arm]}
       - run: ./scripts/build/linux
       - persist_to_workspace: *dist
-      - save_cache: &node_cache_save
+      - save_cache:
+          <<: *node_cache_save
           key: node-v8.4.0-linux-arm
           paths:
             - linux-arm
@@ -90,9 +91,9 @@ jobs:
       - restore_cache: {keys: [node-v8.4.0-windows-x64]}
       - run: ./scripts/build/windows
       - persist_to_workspace: *dist
-      - save_cache: &node_cache_save
+      - save_cache:
+          <<: *node_cache_save
           key: node-v8.4.0-windows-x64
-          paths: [~/cli/tmp/cache/node]
   build_windows_x86:
     <<: *defaults
     docker: *windows_docker
@@ -102,9 +103,9 @@ jobs:
       - restore_cache: {keys: [node-v8.4.0-windows-x86]}
       - run: ./scripts/build/windows
       - persist_to_workspace: *dist
-      - save_cache: &node_cache_save
+      - save_cache:
+          <<: *node_cache_save
           key: node-v8.4.0-windows-x86
-          paths: [~/cli/tmp/cache/node]
   release:
     <<: *defaults
     docker:
