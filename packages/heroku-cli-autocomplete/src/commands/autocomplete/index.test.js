@@ -8,5 +8,13 @@ let skipWindows = (os.platform() === 'windows' || os.platform() === 'win32') ? x
 
 skipWindows('outputs install instructions for zsh', async () => {
   let cmd = await Autocomplete.mock('zsh')
-  expect(cmd.out.stdout.output).toMatch(/heroku autocomplete:script zsh/)
+  expect(cmd.out.stdout.output).toMatch(`Add the autocomplete setup script to your .zshrc via:
+
+$ printf $(heroku autocomplete:script zsh) >> ~/.zshrc
+
+Run the following zsh command to ensure no permissions conflicts:
+
+$ compaudit
+
+Lastly, restart your shell`)
 })

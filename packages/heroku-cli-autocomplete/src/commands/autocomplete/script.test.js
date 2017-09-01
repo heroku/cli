@@ -8,6 +8,5 @@ let skipWindows = (os.platform() === 'windows' || os.platform() === 'win32') ? x
 
 skipWindows('outputs autocomplete script for .zshrc', async () => {
   let cmd = await AutocompleteScript.mock('zsh')
-  expect(cmd.out.stdout.output).toMatch(/\/cli-engine\/completions\/zsh_setup/)
-  expect(cmd.out.stdout.output).toMatch(/&& source \$HEROKU_ZSH_AC_SETUP_PATH/)
+  expect(cmd.out.stdout.output).toMatch(/\\n# heroku autocomplete setup\\nHEROKU_ZSH_AC_SETUP_PATH=(.+)\/completions\/zsh_setup && test -f \$HEROKU_ZSH_AC_SETUP_PATH && source \$HEROKU_ZSH_AC_SETUP_PATH;\n/)
 })

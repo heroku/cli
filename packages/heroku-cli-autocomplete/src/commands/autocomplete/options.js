@@ -85,7 +85,8 @@ export default class AutocompleteOptions extends AutocompleteBase {
     }
   }
 
-  _findFlagFromWildArg (wild: string, Command: Class<Command<*>>) {
+  // TO-DO: create a return type
+  _findFlagFromWildArg (wild: string, Command: Class<Command<*>>): Object {
     let name = wild.replace(/^-+/, '')
     name = name.replace(/=(.+)?$/, '')
 
@@ -130,6 +131,9 @@ export default class AutocompleteOptions extends AutocompleteBase {
             return false
           }
         }
+
+        // --app=my-app is consided a flag & not a flag value
+        // the shell's autocomplete handles partial value matching
 
         // add parsedFlag
         if (wildSplit.length === 2 && name) this.parsedFlags[name] = wildSplit[1]
