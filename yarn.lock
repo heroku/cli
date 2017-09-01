@@ -681,9 +681,9 @@ cli-engine-command@^5.1.12, cli-engine-command@^5.1.8:
     string "3.x"
     supports-color "^4.2.1"
 
-cli-engine-command@^6.0.0, cli-engine-command@^6.0.1:
-  version "6.0.1"
-  resolved "http://cli-npm.heroku.com/cli-engine-command/-/cli-engine-command-6.0.1/6fe545f371dadabefb811cfd242ba4301f76a36a.tgz#6fe545f371dadabefb811cfd242ba4301f76a36a"
+cli-engine-command@^6.0.0, cli-engine-command@^6.0.2:
+  version "6.0.2"
+  resolved "http://cli-npm.heroku.com/cli-engine-command/-/cli-engine-command-6.0.2/6cd6bdf4b0764fbd79c0862497e2230b028ba14a.tgz#6cd6bdf4b0764fbd79c0862497e2230b028ba14a"
   dependencies:
     ansi-escapes "2.x"
     cardinal "1.x"
@@ -702,29 +702,31 @@ cli-engine-command@^6.0.0, cli-engine-command@^6.0.1:
     lodash.result "^4.5.2"
     moment "^2.18.1"
     string "3.x"
-    supports-color "^4.2.1"
+    supports-color "^4.4.0"
 
-cli-engine-config@^1.3.7, cli-engine-config@^1.3.8:
-  version "1.3.8"
-  resolved "http://cli-npm.heroku.com/cli-engine-config/-/cli-engine-config-1.3.8/a795cea9abf4e992765ad8c58bcd411cf1e470ed.tgz#a795cea9abf4e992765ad8c58bcd411cf1e470ed"
+cli-engine-config@^1.3.7, cli-engine-config@^1.3.8, cli-engine-config@^1.6.1:
+  version "1.6.1"
+  resolved "http://cli-npm.heroku.com/cli-engine-config/-/cli-engine-config-1.6.1/87dc4114910f74073db97380ee56248d1d1f1702.tgz#87dc4114910f74073db97380ee56248d1d1f1702"
   dependencies:
+    fs-extra "^4.0.1"
+    jest-validate "^20.0.3"
     uuid "^3.1.0"
 
-cli-engine-heroku@^1.1.11, cli-engine-heroku@^1.1.2, cli-engine-heroku@^1.1.5, cli-engine-heroku@^1.1.8:
-  version "1.1.11"
-  resolved "http://cli-npm.heroku.com/cli-engine-heroku/-/cli-engine-heroku-1.1.11/b47c32f19a01b411952cdcaf1009f20c647653f1.tgz#b47c32f19a01b411952cdcaf1009f20c647653f1"
+cli-engine-heroku@^1.1.12, cli-engine-heroku@^1.1.2, cli-engine-heroku@^1.1.5, cli-engine-heroku@^1.1.8:
+  version "1.1.12"
+  resolved "http://cli-npm.heroku.com/cli-engine-heroku/-/cli-engine-heroku-1.1.12/2008d40e26d06074ebbbfa09edba934609dd1269.tgz#2008d40e26d06074ebbbfa09edba934609dd1269"
   dependencies:
     heroku-client "^3.0.3"
     netrc-parser "^2.0.3"
 
-cli-engine@4.0.2:
-  version "4.0.2"
-  resolved "http://cli-npm.heroku.com/cli-engine/-/cli-engine-4.0.2/d593c04d37670fa88dc80863216d1d5c7ab9455d.tgz#d593c04d37670fa88dc80863216d1d5c7ab9455d"
+cli-engine@4.1.0:
+  version "4.1.0"
+  resolved "http://cli-npm.heroku.com/cli-engine/-/cli-engine-4.1.0/1e8126c0fcdc2c5dffbba2e117a826f021852803.tgz#1e8126c0fcdc2c5dffbba2e117a826f021852803"
   dependencies:
     ansi-escapes "^2.0.0"
-    cli-engine-command "^6.0.1"
-    cli-engine-config "^1.3.7"
-    cli-engine-heroku "^1.1.11"
+    cli-engine-command "^6.0.2"
+    cli-engine-config "^1.6.1"
+    cli-engine-heroku "^1.1.12"
     debug "^3.0.1"
     filesize "^3.5.10"
     fs-extra "^4.0.1"
@@ -4639,7 +4641,7 @@ supports-color@^3.1.2:
   dependencies:
     has-flag "^1.0.0"
 
-supports-color@^4.0.0, supports-color@^4.1.0, supports-color@^4.2.1:
+supports-color@^4.0.0, supports-color@^4.1.0, supports-color@^4.2.1, supports-color@^4.4.0:
   version "4.4.0"
   resolved "http://cli-npm.heroku.com/supports-color/-/supports-color-4.4.0/883f7ddabc165142b2a61427f3352ded195d1a3e.tgz#883f7ddabc165142b2a61427f3352ded195d1a3e"
   dependencies:
