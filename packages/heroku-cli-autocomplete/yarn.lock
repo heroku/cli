@@ -629,15 +629,15 @@ cli-cursor@^2.1.0:
   dependencies:
     restore-cursor "^2.0.0"
 
-cli-engine-command@^5.1.15, cli-engine-command@^5.1.18:
-  version "5.1.18"
-  resolved "https://registry.yarnpkg.com/cli-engine-command/-/cli-engine-command-5.1.18.tgz#0b0ebb541c22e81da8fcfebd1fbe91ccfd5d6493"
+cli-engine-command@^6.0.2:
+  version "6.0.2"
+  resolved "https://registry.yarnpkg.com/cli-engine-command/-/cli-engine-command-6.0.2.tgz#6cd6bdf4b0764fbd79c0862497e2230b028ba14a"
   dependencies:
     ansi-escapes "2.x"
     cardinal "1.x"
     chalk "^1.0.0"
     fs-extra "^4.0.1"
-    http-call "^2.1.3"
+    http-call "^2.1.5"
     lodash.ary "^4.1.1"
     lodash.defaults "^4.2.0"
     lodash.get "^4.4.2"
@@ -650,45 +650,48 @@ cli-engine-command@^5.1.15, cli-engine-command@^5.1.18:
     lodash.result "^4.5.2"
     moment "^2.18.1"
     string "3.x"
-    supports-color "^4.2.1"
+    supports-color "^4.4.0"
 
-cli-engine-config@^1.3.7:
-  version "1.3.8"
-  resolved "https://registry.yarnpkg.com/cli-engine-config/-/cli-engine-config-1.3.8.tgz#a795cea9abf4e992765ad8c58bcd411cf1e470ed"
+cli-engine-config@^1.6.3:
+  version "1.6.3"
+  resolved "https://registry.yarnpkg.com/cli-engine-config/-/cli-engine-config-1.6.3.tgz#e001b08a51036f9e7e2774fa4d31ee2bcb14c5a9"
   dependencies:
+    fs-extra "^4.0.1"
+    jest-validate "^20.0.3"
     uuid "^3.1.0"
 
-cli-engine-heroku@^1.1.4, cli-engine-heroku@^1.1.7:
-  version "1.1.7"
-  resolved "https://registry.yarnpkg.com/cli-engine-heroku/-/cli-engine-heroku-1.1.7.tgz#33df17edb53491e4c47f5d9150cda5151e0b269d"
+cli-engine-heroku@^1.1.12:
+  version "1.1.12"
+  resolved "https://registry.yarnpkg.com/cli-engine-heroku/-/cli-engine-heroku-1.1.12.tgz#2008d40e26d06074ebbbfa09edba934609dd1269"
   dependencies:
-    heroku-client "3.x"
-    netrc-parser "2.0.2"
+    heroku-client "^3.0.3"
+    netrc-parser "^2.0.3"
 
-cli-engine@^3.5.58:
-  version "3.5.58"
-  resolved "https://registry.yarnpkg.com/cli-engine/-/cli-engine-3.5.58.tgz#5acd2d3a90cc2b73b86fcdeb8feaf5be62d39830"
+cli-engine@^4.1.2:
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/cli-engine/-/cli-engine-4.1.2.tgz#88711507f75a2b62fd38379b8d9c8f4f6091409a"
   dependencies:
     ansi-escapes "^2.0.0"
-    cli-engine-command "^5.1.15"
-    cli-engine-config "^1.3.7"
-    cli-engine-heroku "^1.1.4"
-    debug "2.x"
+    cli-engine-command "^6.0.2"
+    cli-engine-config "^1.6.3"
+    cli-engine-heroku "^1.1.12"
+    debug "^3.0.1"
     filesize "^3.5.10"
-    fs-extra "^4.0.0"
-    klaw-sync "2.x"
+    find-up "^2.1.0"
+    fs-extra "^4.0.1"
+    klaw-sync "^3.0.0"
     lodash.flatten "4.x"
     lodash.maxby "4.x"
     lodash.uniqby "4.x"
     log-chopper "^1.0.1"
     moment "^2.18.1"
-    netrc-parser "2.0.2"
+    netrc-parser "^2.0.3"
     node-gyp "3.x"
     rwlockfile "^1.4.5"
     string "3.x"
     string-similarity "^1.2.0"
     tar-fs "1.x"
-    tmp "0.x"
+    tmp "^0.0.33"
 
 cli-width@^2.0.0:
   version "2.1.0"
@@ -819,6 +822,12 @@ dashdash@^1.12.0:
 debug@2, debug@2.x, debug@^2.1.1, debug@^2.2.0, debug@^2.6.3, debug@^2.6.8:
   version "2.6.8"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.8.tgz#e731531ca2ede27d188222427da17821d68ff4fc"
+  dependencies:
+    ms "2.0.0"
+
+debug@^3.0.0, debug@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/debug/-/debug-3.0.1.tgz#0564c612b521dc92d9f2988f0549e34f9c98db64"
   dependencies:
     ms "2.0.0"
 
@@ -1488,13 +1497,13 @@ hawk@~3.1.3:
     hoek "2.x.x"
     sntp "1.x.x"
 
-heroku-client@3.x:
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/heroku-client/-/heroku-client-3.0.2.tgz#7e06f303ff18f7a0731725dcccbe210b76198657"
+heroku-client@^3.0.3:
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/heroku-client/-/heroku-client-3.0.3.tgz#302df7fe315f8fa0a98c1a6cbd22a5d81e1c5253"
   dependencies:
-    debug "^2.2.0"
+    debug "^3.0.0"
     is-retry-allowed "^1.0.0"
-    tunnel-agent "^0.4.0"
+    tunnel-agent "^0.6.0"
 
 hoek@2.x.x:
   version "2.16.3"
@@ -1517,11 +1526,11 @@ html-encoding-sniffer@^1.0.1:
   dependencies:
     whatwg-encoding "^1.0.1"
 
-http-call@^2.1.3:
-  version "2.1.3"
-  resolved "https://registry.yarnpkg.com/http-call/-/http-call-2.1.3.tgz#6c604f33aaa0d964fe1a9d236fec6bcb32db0418"
+http-call@^2.1.5:
+  version "2.1.5"
+  resolved "https://registry.yarnpkg.com/http-call/-/http-call-2.1.5.tgz#f54d71cd8a322432691c61977d6c69d6fdfef70b"
   dependencies:
-    debug "^2.6.8"
+    debug "^3.0.0"
     is-retry-allowed "^1.1.0"
     is-stream "^1.1.0"
     tunnel-agent "^0.6.0"
@@ -2141,12 +2150,6 @@ kind-of@^4.0.0:
   dependencies:
     is-buffer "^1.1.5"
 
-klaw-sync@2.x:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/klaw-sync/-/klaw-sync-2.1.0.tgz#3d3bcd8600e7bfdef53231c739ff053aed560e44"
-  optionalDependencies:
-    graceful-fs "^4.1.11"
-
 klaw-sync@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/klaw-sync/-/klaw-sync-3.0.0.tgz#07ff84e82e3f7c1c39dd0c9b7259db826ec998f6"
@@ -2400,10 +2403,11 @@ natural-compare@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/natural-compare/-/natural-compare-1.4.0.tgz#4abebfeed7541f2c27acfb29bdbbd15c8d5ba4f7"
 
-netrc-parser@2.0.2:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/netrc-parser/-/netrc-parser-2.0.2.tgz#6ca81104d84993f81ac9654c5d3f517897c1d2f7"
+netrc-parser@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/netrc-parser/-/netrc-parser-2.0.3.tgz#b8bdd1c7170d349daaf1f81e3ef436959aa5ee42"
   dependencies:
+    debug "^3.0.1"
     lex "^1.7.9"
 
 netrc@^0.1.4:
@@ -2555,7 +2559,7 @@ os-locale@^1.4.0:
   dependencies:
     lcid "^1.0.0"
 
-os-tmpdir@^1.0.0, os-tmpdir@^1.0.1, os-tmpdir@~1.0.1:
+os-tmpdir@^1.0.0, os-tmpdir@^1.0.1, os-tmpdir@~1.0.1, os-tmpdir@~1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/os-tmpdir/-/os-tmpdir-1.0.2.tgz#bbe67406c79aa85c5cfec766fe5734555dfa1274"
 
@@ -3191,9 +3195,15 @@ supports-color@^3.1.2:
   dependencies:
     has-flag "^1.0.0"
 
-supports-color@^4.0.0, supports-color@^4.2.1:
+supports-color@^4.0.0:
   version "4.2.1"
   resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-4.2.1.tgz#65a4bb2631e90e02420dba5554c375a4754bb836"
+  dependencies:
+    has-flag "^2.0.0"
+
+supports-color@^4.4.0:
+  version "4.4.0"
+  resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-4.4.0.tgz#883f7ddabc165142b2a61427f3352ded195d1a3e"
   dependencies:
     has-flag "^2.0.0"
 
@@ -3283,11 +3293,17 @@ timed-out@^4.0.0:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/timed-out/-/timed-out-4.0.1.tgz#f32eacac5a175bea25d7fab565ab3ed8741ef56f"
 
-tmp@0.x, tmp@^0.0.31:
+tmp@^0.0.31:
   version "0.0.31"
   resolved "https://registry.yarnpkg.com/tmp/-/tmp-0.0.31.tgz#8f38ab9438e17315e5dbd8b3657e8bfb277ae4a7"
   dependencies:
     os-tmpdir "~1.0.1"
+
+tmp@^0.0.33:
+  version "0.0.33"
+  resolved "https://registry.yarnpkg.com/tmp/-/tmp-0.0.33.tgz#6d34335889768d21b2bcda0aa277ced3b1bfadf9"
+  dependencies:
+    os-tmpdir "~1.0.2"
 
 tmpl@1.0.x:
   version "1.0.4"
@@ -3318,10 +3334,6 @@ trim-right@^1.0.1:
 tryit@^1.0.1:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/tryit/-/tryit-1.0.3.tgz#393be730a9446fd1ead6da59a014308f36c289cb"
-
-tunnel-agent@^0.4.0:
-  version "0.4.3"
-  resolved "https://registry.yarnpkg.com/tunnel-agent/-/tunnel-agent-0.4.3.tgz#6373db76909fe570e08d73583365ed828a74eeeb"
 
 tunnel-agent@^0.6.0:
   version "0.6.0"
