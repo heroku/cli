@@ -12,4 +12,8 @@ if grep -q -e "@git://" yarn.lock; then
 fi
 
 # run shellcheck
-find scripts -type f -print0 | xargs shellcheck --external-sources
+if [ -x "$(command -v shellcheck)" ]; then
+  find scripts -type f -print0 | xargs shellcheck --external-sources
+else
+  echoerr "install shellcheck to lint the scripts"
+fi
