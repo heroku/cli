@@ -4,7 +4,7 @@ source ./scripts/_init
 
 set -x
 
-yarn install --pure-lockfile --non-interactive --prefer-offline
+yarn install --pure-lockfile --non-interactive
 yarn check
 
 # build only if it is a git checkout

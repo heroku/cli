@@ -25,7 +25,7 @@ cp "${root}/yarn.lock" "${o}"
 (
   cd "${o}"
   # install packages
-  yarn install --no-progress --production --non-interactive --prefer-offline --mutex=file:/tmp/.yarn-mutex
+  yarn install --no-progress --production --non-interactive --mutex=file:/tmp/.yarn-mutex
 )
 
 "${root}/scripts/build/_fetch_node_binary" "${o}/bin"
