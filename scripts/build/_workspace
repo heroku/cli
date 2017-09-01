@@ -75,17 +75,10 @@ chmod +x "${o}/bin/heroku"
 fi
 
 cat << EOF > "${o}/bin/heroku.js"
-const path = require('path')
-const CLI = require('cli-engine').default
-const root = path.join(__dirname, '..')
-const cli = new CLI({
-  argv: process.argv.slice(1),
-  config: {
-    root,
-    pjson: require(path.join(root, 'package.json')),
-    channel: '${CHANNEL}',
-    version: '${VERSION}'
-  }
-})
-cli.run()
+const {run} = require('cli-engine')
+const config = {
+  channel: '${CHANNEL}',
+  version: '${VERSION}'
+}
+run({config})
 EOF
