@@ -12,9 +12,9 @@ jobs:
             - node-modules-{{ checksum "yarn.lock" }}
             - node-modules-
       - run: yarn
-      - run: jest --coverage && bash <(curl -s https://codecov.io/bash)
-      - run: flow check
-      - run: eslint .
+      - run: ./node_modules/.bin/jest --coverage && bash <(curl -s https://codecov.io/bash)
+      - run: ./node_modules/.bin/flow check
+      - run: ./node_modules/.bin/eslint .
       - save_cache:
           key: node-modules-{{ checksum "yarn.lock" }}
           paths:
