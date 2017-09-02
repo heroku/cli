@@ -28,20 +28,20 @@ export default class Status extends Command {
     }
 
     let host = process.env.HEROKU_STATUS_HOST || 'https://status.heroku.com'
-    let response = await this.http.get(host + apiPath)
+    let {body} = await this.http.get(host + apiPath)
 
     if (this.flags.json) {
-      this.out.styledJSON(response)
+      this.out.styledJSON(body)
       return
     }
 
-    for (let item of response.status) {
+    for (let item of body.status) {
       var message = printStatus(item.status)
 
       this.out.log(sprintf('%-10s %s', item.system + ':', message))
     }
 
-    for (let incident of response.incidents) {
+    for (let incident of body.incidents) {
       this.out.log()
       this.out.styledHeader(`${incident.title} ${this.out.color.yellow(moment(incident.created_at).format('LT'))} ${this.out.color.cyan(incident.full_url)}`)
 

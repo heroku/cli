@@ -700,15 +700,15 @@ cli-cursor@^2.1.0:
   dependencies:
     restore-cursor "^2.0.0"
 
-cli-engine-command@^6.0.2:
-  version "6.0.2"
-  resolved "https://registry.yarnpkg.com/cli-engine-command/-/cli-engine-command-6.0.2.tgz#6cd6bdf4b0764fbd79c0862497e2230b028ba14a"
+cli-engine-command@^7.0.6:
+  version "7.0.6"
+  resolved "https://registry.yarnpkg.com/cli-engine-command/-/cli-engine-command-7.0.6.tgz#d3429ea91cf6324542f29c2a26626a2152954d68"
   dependencies:
     ansi-escapes "2.x"
     cardinal "1.x"
     chalk "^1.0.0"
     fs-extra "^4.0.1"
-    http-call "^2.1.5"
+    http-call "^3.0.1"
     lodash.ary "^4.1.1"
     lodash.defaults "^4.2.0"
     lodash.get "^4.4.2"
@@ -723,19 +723,20 @@ cli-engine-command@^6.0.2:
     string "3.x"
     supports-color "^4.4.0"
 
-cli-engine-config@^1.6.1:
-  version "1.6.1"
-  resolved "https://registry.yarnpkg.com/cli-engine-config/-/cli-engine-config-1.6.1.tgz#87dc4114910f74073db97380ee56248d1d1f1702"
+cli-engine-config@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/cli-engine-config/-/cli-engine-config-2.0.0.tgz#c4f576c7f3148b09de18b364d16d45da0802b033"
   dependencies:
     fs-extra "^4.0.1"
     jest-validate "^20.0.3"
     uuid "^3.1.0"
 
-cli-engine-heroku@^1.1.12:
-  version "1.1.12"
-  resolved "https://registry.yarnpkg.com/cli-engine-heroku/-/cli-engine-heroku-1.1.12.tgz#2008d40e26d06074ebbbfa09edba934609dd1269"
+cli-engine-heroku@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/cli-engine-heroku/-/cli-engine-heroku-2.0.0.tgz#8f626dc7d98792f7b336e18223d6b5972b2b5edd"
   dependencies:
     heroku-client "^3.0.3"
+    http-call "^3.0.1"
     netrc-parser "^2.0.3"
 
 cli-width@^2.0.0:
@@ -991,9 +992,9 @@ eslint-module-utils@^2.1.1:
     debug "^2.6.8"
     pkg-dir "^1.0.0"
 
-eslint-plugin-flowtype@^2.35.0:
-  version "2.35.0"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-flowtype/-/eslint-plugin-flowtype-2.35.0.tgz#d17494f0ae8b727c632d8b9d4b4a848e7e0c04af"
+eslint-plugin-flowtype@^2.35.1:
+  version "2.35.1"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-flowtype/-/eslint-plugin-flowtype-2.35.1.tgz#9ad98181b467a3645fbd2a8d430393cc17a4ea63"
   dependencies:
     lodash "^4.15.0"
 
@@ -1040,9 +1041,9 @@ eslint-scope@^3.7.1:
     esrecurse "^4.1.0"
     estraverse "^4.1.1"
 
-eslint@^4.5.0:
-  version "4.5.0"
-  resolved "https://registry.yarnpkg.com/eslint/-/eslint-4.5.0.tgz#bb75d3b8bde97fb5e13efcd539744677feb019c3"
+eslint@^4.6.0:
+  version "4.6.0"
+  resolved "https://registry.yarnpkg.com/eslint/-/eslint-4.6.0.tgz#98ced4a706a87abbe63207895d0023a38e250bbe"
   dependencies:
     ajv "^5.2.0"
     babel-code-frame "^6.22.0"
@@ -1246,9 +1247,9 @@ flat-cache@^1.2.1:
     graceful-fs "^4.1.2"
     write "^0.2.1"
 
-flow-bin@^0.53.1:
-  version "0.53.1"
-  resolved "https://registry.yarnpkg.com/flow-bin/-/flow-bin-0.53.1.tgz#9b22b63a23c99763ae533ebbab07f88c88c97d84"
+flow-bin@^0.54.0:
+  version "0.54.0"
+  resolved "https://registry.yarnpkg.com/flow-bin/-/flow-bin-0.54.0.tgz#f2fb0478e9e99702b623c9ed84079a39903bba77"
 
 for-in@^1.0.1:
   version "1.0.2"
@@ -1473,11 +1474,11 @@ html-encoding-sniffer@^1.0.1:
   dependencies:
     whatwg-encoding "^1.0.1"
 
-http-call@^2.1.5:
-  version "2.1.5"
-  resolved "https://registry.yarnpkg.com/http-call/-/http-call-2.1.5.tgz#f54d71cd8a322432691c61977d6c69d6fdfef70b"
+http-call@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/http-call/-/http-call-3.0.1.tgz#906d7f4740ac9756c1e106c89cd0fb876fa1034a"
   dependencies:
-    debug "^3.0.0"
+    debug "^3.0.1"
     is-retry-allowed "^1.1.0"
     is-stream "^1.1.0"
     tunnel-agent "^0.6.0"
