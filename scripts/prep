@@ -5,7 +5,7 @@ source ./scripts/_init
 set -x
 
 yarn install --pure-lockfile --non-interactive
-yarn check
+#yarn check
 
 # build only if it is a git checkout
 if [ ! -d "${root}/node_modules/cli-engine/lib" ]; then
