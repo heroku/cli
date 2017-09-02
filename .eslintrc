@@ -1,5 +1,17 @@
 {
   "extends": [
+    "plugin:flowtype/recommended",
+    "plugin:jest/recommended",
     "standard"
+  ],
+  "env": {
+    "jest": true
+  },
+  "rules": {
+    "jest/valid-expect": "warn"
+  },
+  "plugins": [
+    "flowtype",
+    "jest"
   ]
 }

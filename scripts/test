@@ -8,6 +8,7 @@ set -x
 npx jest
 npx flow
 npx eslint .
+npx flow
 
 function heroku () {
   "${root}/bin/run" "$@"
