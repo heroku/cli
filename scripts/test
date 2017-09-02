@@ -5,6 +5,9 @@ source ./scripts/_init
 set -x
 
 "${root}/scripts/lint"
+npx jest
+npx flow
+npx eslint .
 
 function heroku () {
   "${root}/bin/run" "$@"

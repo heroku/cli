@@ -11,6 +11,9 @@
     "dirname": "heroku",
     "node": "8.4.0",
     "defaultCommand": "dashboard",
+    "hooks": {
+      "prerun": "./lib/hooks/prerun/analytics"
+    },
     "s3": {
       "host": "cli-assets.heroku.com"
     },
@@ -36,7 +39,7 @@
     ]
   },
   "dependencies": {
-    "cli-engine": "4.1.2",
+    "cli-engine": "4.2.0",
     "heroku-apps": "2.4.11",
     "heroku-certs": "1.1.41",
     "heroku-ci": "1.9.5",
@@ -59,7 +62,11 @@
   },
   "devDependencies": {
     "@heroku/heroku-cli-dev-center-generator": "1.1.5",
-    "eslint": "4.5.0",
+    "babel-cli": "6.26.0",
+    "babel-plugin-syntax-object-rest-spread": "6.13.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "6.26.0",
+    "babel-preset-flow": "6.23.0",
+    "eslint": "4.6.0",
     "eslint-config-standard": "10.2.1",
     "eslint-plugin-import": "2.7.0",
     "eslint-plugin-node": "5.1.1",
@@ -82,8 +89,12 @@
   "license": "ISC",
   "repository": "https://github.com/heroku/cli",
   "scripts": {
+    "build": "babel src -d lib --ignore '*.test.js'",
+    "clean": "rimraf lib tmp",
+    "download": "./scripts/download-yarn",
     "lint": "./scripts/lint",
     "precommit": "./scripts/precommit",
+    "prepare": "npm run clean && npm run build",
     "test": "./scripts/test"
   }
 }

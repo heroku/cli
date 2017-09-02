@@ -1,5 +1,5 @@
-.nyc_output
 cli
+lib
 dist
 tmp
 node_modules
