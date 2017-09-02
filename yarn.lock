@@ -355,7 +355,7 @@ babel-generator@^6.18.0, babel-generator@^6.26.0:
 
 babel-helper-function-name@^6.24.1:
   version "6.24.1"
-  resolved "https://registry.yarnpkg.com/babel-helper-function-name/-/babel-helper-function-name-6.24.1.tgz#d3475b8c03ed98242a25b48351ab18399d3580a9"
+  resolved "http://cli-npm.heroku.com/babel-helper-function-name/-/babel-helper-function-name-6.24.1/d3475b8c03ed98242a25b48351ab18399d3580a9.tgz#d3475b8c03ed98242a25b48351ab18399d3580a9"
   dependencies:
     babel-helper-get-function-arity "^6.24.1"
     babel-runtime "^6.22.0"
@@ -365,7 +365,7 @@ babel-helper-function-name@^6.24.1:
 
 babel-helper-get-function-arity@^6.24.1:
   version "6.24.1"
-  resolved "https://registry.yarnpkg.com/babel-helper-get-function-arity/-/babel-helper-get-function-arity-6.24.1.tgz#8f7782aa93407c41d3aa50908f89b031b1b6853d"
+  resolved "http://cli-npm.heroku.com/babel-helper-get-function-arity/-/babel-helper-get-function-arity-6.24.1/8f7782aa93407c41d3aa50908f89b031b1b6853d.tgz#8f7782aa93407c41d3aa50908f89b031b1b6853d"
   dependencies:
     babel-runtime "^6.22.0"
     babel-types "^6.24.1"
@@ -405,7 +405,7 @@ babel-plugin-jest-hoist@^20.0.3:
 
 babel-plugin-syntax-class-properties@^6.8.0:
   version "6.13.0"
-  resolved "https://registry.yarnpkg.com/babel-plugin-syntax-class-properties/-/babel-plugin-syntax-class-properties-6.13.0.tgz#d7eb23b79a317f8543962c505b827c7d6cac27de"
+  resolved "http://cli-npm.heroku.com/babel-plugin-syntax-class-properties/-/babel-plugin-syntax-class-properties-6.13.0/d7eb23b79a317f8543962c505b827c7d6cac27de.tgz#d7eb23b79a317f8543962c505b827c7d6cac27de"
 
 babel-plugin-syntax-flow@^6.18.0:
   version "6.18.0"
@@ -413,11 +413,11 @@ babel-plugin-syntax-flow@^6.18.0:
 
 babel-plugin-syntax-object-rest-spread@^6.13.0:
   version "6.13.0"
-  resolved "https://registry.yarnpkg.com/babel-plugin-syntax-object-rest-spread/-/babel-plugin-syntax-object-rest-spread-6.13.0.tgz#fd6536f2bce13836ffa3a5458c4903a597bb3bf5"
+  resolved "http://cli-npm.heroku.com/babel-plugin-syntax-object-rest-spread/-/babel-plugin-syntax-object-rest-spread-6.13.0/fd6536f2bce13836ffa3a5458c4903a597bb3bf5.tgz#fd6536f2bce13836ffa3a5458c4903a597bb3bf5"
 
 babel-plugin-transform-class-properties@^6.24.1:
   version "6.24.1"
-  resolved "https://registry.yarnpkg.com/babel-plugin-transform-class-properties/-/babel-plugin-transform-class-properties-6.24.1.tgz#6a79763ea61d33d36f37b611aa9def81a81b46ac"
+  resolved "http://cli-npm.heroku.com/babel-plugin-transform-class-properties/-/babel-plugin-transform-class-properties-6.24.1/6a79763ea61d33d36f37b611aa9def81a81b46ac.tgz#6a79763ea61d33d36f37b611aa9def81a81b46ac"
   dependencies:
     babel-helper-function-name "^6.24.1"
     babel-plugin-syntax-class-properties "^6.8.0"
@@ -775,7 +775,7 @@ cli-cursor@^2.1.0:
   dependencies:
     restore-cursor "^2.0.0"
 
-cli-engine-command@7.0.6, cli-engine-command@^7.0.6:
+cli-engine-command@7.0.6, cli-engine-command@^7.0.5, cli-engine-command@^7.0.6:
   version "7.0.6"
   resolved "http://cli-npm.heroku.com/cli-engine-command/-/cli-engine-command-7.0.6/d3429ea91cf6324542f29c2a26626a2152954d68.tgz#d3429ea91cf6324542f29c2a26626a2152954d68"
   dependencies:
@@ -820,29 +820,6 @@ cli-engine-command@^5.1.8:
     moment "^2.18.1"
     string "3.x"
     supports-color "^4.2.1"
-
-cli-engine-command@^7.0.5:
-  version "7.0.5"
-  resolved "http://cli-npm.heroku.com/cli-engine-command/-/cli-engine-command-7.0.5/794b6441d1a4e2a575ea65dc6a969e2bdcf92347.tgz#794b6441d1a4e2a575ea65dc6a969e2bdcf92347"
-  dependencies:
-    ansi-escapes "2.x"
-    cardinal "1.x"
-    chalk "^1.0.0"
-    fs-extra "^4.0.1"
-    http-call "^3.0.1"
-    lodash.ary "^4.1.1"
-    lodash.defaults "^4.2.0"
-    lodash.get "^4.4.2"
-    lodash.identity "^3.0.0"
-    lodash.keys "^4.2.0"
-    lodash.maxby "4.x"
-    lodash.merge "4.x"
-    lodash.partial "^4.2.1"
-    lodash.property "^4.4.2"
-    lodash.result "^4.5.2"
-    moment "^2.18.1"
-    string "3.x"
-    supports-color "^4.4.0"
 
 cli-engine-config@2.0.0, cli-engine-config@^2.0.0:
   version "2.0.0"
@@ -1824,7 +1801,7 @@ here@0.0.2:
 
 heroku-apps@2.4.12:
   version "2.4.12"
-  resolved "https://registry.yarnpkg.com/heroku-apps/-/heroku-apps-2.4.12.tgz#a141d9cef948594f7eed031d0704e6e4c7ce9f6b"
+  resolved "http://cli-npm.heroku.com/heroku-apps/-/heroku-apps-2.4.12/a141d9cef948594f7eed031d0704e6e4c7ce9f6b.tgz#a141d9cef948594f7eed031d0704e6e4c7ce9f6b"
   dependencies:
     bluebird "^3.5.0"
     cli-engine-command "^7.0.6"
