@@ -3,21 +3,25 @@ version: 2
 jobs:
   build:
     docker:
-      - image: dickeyxxx/cli-engine-docker:v1.3.1
-    working_directory: ~/cli-plugin
+      - image: node:8
     steps:
       - checkout
       - restore_cache:
           keys:
-            - node-modules-{{ checksum "yarn.lock" }}
-            - node-modules-
+            - v1-yarn-{{ .Branch }}-{{checksum "yarn.lock"}}
+            - v1-yarn-{{ .Branch }}
+            - v1-yarn-master
       - run: yarn
-      - run: mocha
-      - run: jest --coverage && bash <(curl -s https://codecov.io/bash)
-      - run: flow check
-      - run: eslint .
+      - run: |
+          npx jest --coverage
+          bash <(curl -s https://codecov.io/bash)
+      - run: {command: "npx eslint .", when: always}
+      - run: {command: "npx flow check", when: always}
+      - run:
+          command: npx eslint .
+          when: always
       - save_cache:
-          key: node-modules-{{ checksum "yarn.lock" }}
+          key: v1-yarn-{{ .Branch }}-{{checksum "yarn.lock"}}
           paths:
-            - node_modules
+            - ~/cli-engine-config/node_modules
             - /usr/local/share/.cache/yarn
