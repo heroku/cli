@@ -15,6 +15,7 @@ jobs:
       - run: |
           npx jest --coverage
           bash <(curl -s https://codecov.io/bash)
+      - run: {command: "npx mocha", when: always}
       - run: {command: "npx eslint .", when: always}
       - run: {command: "npx flow check", when: always}
       - run:
