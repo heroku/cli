@@ -9,7 +9,7 @@ export default class Index extends Command {
   static aliases = ['2fa', 'twofactor']
 
   async run () {
-    let account = await this.heroku.get('/account')
+    let {body: account} = await this.heroku.get('/account')
     if (account.two_factor_authentication) {
       this.out.log('Two-factor authentication is enabled')
     } else {

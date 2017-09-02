@@ -10,9 +10,10 @@ export default class Whoami extends Command {
 
   async run () {
     if (process.env.HEROKU_API_KEY) this.out.warn('HEROKU_API_KEY is set')
-    if (!this.heroku.requestOptions.headers.authorization) this.notloggedin()
+    // flow$ignore
+    if (!this.heroku.defaultOptions.headers.authorization) this.notloggedin()
     try {
-      let account = await this.heroku.get('/account')
+      let {body: account} = await this.heroku.get('/account')
       this.out.log(account.email)
     } catch (err) {
       if (err.statusCode === 401) this.notloggedin()
