@@ -6,8 +6,13 @@ import AnalyticsCommand from './analytics'
 import {Command} from 'cli-engine-command'
 
 class TestCommand extends Command<*> {
-  static topic = 'foo'
-  static command = 'bar'
+  static topic = 'fuzz'
+  static command = 'fizz'
+}
+
+const plugin = {
+  name: 'fuzz',
+  version: '9.8.7'
 }
 
 function analyticsJson () {
@@ -34,7 +39,8 @@ function build (options = {}) {
     platform: 'windows',
     skipAnalytics: false,
     install: '5a8ef179-1129-4f81-877c-662c89f83f1f',
-    name: 'cli-engine'
+    name: 'cli-engine',
+    ...options
   })
 
   let json = options.json || analyticsJson()
@@ -253,7 +259,7 @@ describe('AnalyticsCommand', () => {
       let command = build({json})
       await command.record({
         Command: TestCommand,
-        plugin: null,
+        plugin,
         argv: []
       })
       expect(command._writeJSON.mock.calls).toEqual([[expected]])
