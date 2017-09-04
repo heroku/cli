@@ -28,22 +28,32 @@ jobs:
           paths:
             - /usr/local/share/.cache/yarn
             - /cli/node_modules
+  build_base:
+    <<: *defaults
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v0-build-base-yarn-{{ checksum "yarn.lock" }}
+            - v0-build-base-yarn
+      - run: ./scripts/build/base
+      - persist_to_workspace:
+          root: tmp/base
+          paths: [ . ]
+      - save_cache:
+          key: v0-build-base-yarn-{{ checksum "yarn.lock" }}
+          paths: [/usr/local/share/.cache/yarn]
   build_darwin_x64:
     <<: *defaults
     steps:
       - checkout
-      - restore_cache: &release_target_yarn_cache
-          keys:
-            - v3-release-target-yarn-{{ checksum "yarn.lock" }}
-            - v3-release-target-yarn
       - restore_cache: {keys: [node-v8.4.0-darwin-x64]}
-      - run: ./scripts/build/darwin
+      - attach_workspace: {at: tmp/base}
+      - run: ./scripts/build/workspace
+      - run: ./scripts/build/tarballs
       - persist_to_workspace: &dist
           root: dist
           paths: [ . ]
-      - save_cache:
-          key: v3-release-target-yarn-{{ checksum "yarn.lock" }}
-          paths: [/usr/local/share/.cache/yarn]
       - save_cache: &node_cache_save
           key: node-v8.4.0-darwin-x64
           paths: [/cli/tmp/cache/node]
@@ -51,9 +61,11 @@ jobs:
     <<: *defaults
     steps:
       - checkout
-      - restore_cache: *release_target_yarn_cache
       - restore_cache: {keys: [node-v8.4.0-linux-x64]}
-      - run: ./scripts/build/linux
+      - attach_workspace: {at: tmp/base}
+      - run: ./scripts/build/workspace
+      - run: ./scripts/build/tarballs
+      - run: ./scripts/build/debian
       - persist_to_workspace: *dist
       - save_cache:
           <<: *node_cache_save
@@ -62,9 +74,11 @@ jobs:
     <<: *defaults
     steps:
       - checkout
-      - restore_cache: *release_target_yarn_cache
       - restore_cache: {keys: [node-v8.4.0-linux-x86]}
-      - run: ./scripts/build/linux
+      - attach_workspace: {at: tmp/base}
+      - run: ./scripts/build/workspace
+      - run: ./scripts/build/tarballs
+      - run: ./scripts/build/debian
       - persist_to_workspace: *dist
       - save_cache:
           <<: *node_cache_save
@@ -73,9 +87,11 @@ jobs:
     <<: *defaults
     steps:
       - checkout
-      - restore_cache: *release_target_yarn_cache
       - restore_cache: {keys: [node-v8.4.0-linux-arm]}
-      - run: ./scripts/build/linux
+      - attach_workspace: {at: tmp/base}
+      - run: ./scripts/build/workspace
+      - run: ./scripts/build/tarballs
+      - run: ./scripts/build/debian
       - persist_to_workspace: *dist
       - save_cache:
           <<: *node_cache_save
@@ -91,8 +107,10 @@ jobs:
         environment: *env
     steps:
       - checkout
-      - restore_cache: *release_target_yarn_cache
       - restore_cache: {keys: [node-v8.4.0-windows-x64]}
+      - attach_workspace: {at: tmp/base}
+      - run: ./scripts/build/workspace
+      - run: ./scripts/build/tarballs
       - run: ./scripts/build/windows
       - persist_to_workspace: *dist
       - save_cache:
@@ -103,8 +121,10 @@ jobs:
     docker: *windows_docker
     steps:
       - checkout
-      - restore_cache: *release_target_yarn_cache
       - restore_cache: {keys: [node-v8.4.0-windows-x86]}
+      - attach_workspace: {at: tmp/base}
+      - run: ./scripts/build/workspace
+      - run: ./scripts/build/tarballs
       - run: ./scripts/build/windows
       - persist_to_workspace: *dist
       - save_cache:
@@ -118,8 +138,7 @@ jobs:
     steps:
       - add_ssh_keys
       - checkout
-      - attach_workspace:
-          at: dist
+      - attach_workspace: {at: dist}
       - run: {command: "ls dist && ls dist/apt", when: always}
       - run: {command: "./scripts/release/_github_setup", when: always}
       - run: {command: "./scripts/release/_upload_dist", when: always}
@@ -146,7 +165,10 @@ workflows:
           filters: &all_pushes
             tags: &version_tags
               only: /^v.*/
+      - build_base: *all_pushes
       - build_darwin_x64: &release
+          requires:
+            - build_base
           filters:
             tags: *version_tags
             branches:

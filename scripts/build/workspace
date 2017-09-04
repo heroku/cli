@@ -1,13 +1,5 @@
 #!/usr/bin/env bash
 
-# builds a directory structure of a CLI to be released
-# this is the starting point for any build
-# It includes:
-#
-# * node binary
-# * node modules
-# * bin scripts
-
 source ./scripts/_init
 
 set -x
@@ -15,29 +7,9 @@ set -x
 # setup workspace
 o="$(workspace_dir)"
 rm -rf "${o}"
-mkdir -p "${o}/node_modules"
-mkdir -p "${o}/bin"
-mkdir -p "${o}/lib"
-cp "${root}/README.md" "${o}"
-cp "${root}/LICENSE" "${o}"
-cp "${root}/package.json" "${o}"
-cp "${root}/yarn.lock" "${o}"
-cp -rv "${root}/lib" "${o}"
-
-(
-  cd "${o}"
-  # install packages
-  yarn install --no-progress --production --non-interactive --mutex=file:/tmp/.yarn-mutex
-)
+cp -rv "$(base_dir)" "$o"
 
 "${root}/scripts/build/_fetch_node_binary" "${o}/bin"
-
-# build cli-engine if needed
-if [ ! -f "${o}/node_modules/cli-engine/lib/cli.js" ]; then
-  cd "${o}/node_modules/cli-engine"
-  yarn
-  yarn run prepare
-fi
 
 # create bin runner
 if [ "${OS}" == "windows" ]; then
@@ -75,12 +47,3 @@ fi
 EOF
 chmod +x "${o}/bin/heroku"
 fi
-
-cat << EOF > "${o}/bin/heroku.js"
-const {run} = require('cli-engine')
-const config = {
-  channel: '${CHANNEL}',
-  version: '${VERSION}'
-}
-run({config})
-EOF

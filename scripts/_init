@@ -58,6 +58,10 @@ function unversioned_base () {
   echo "heroku-cli-${OS}-${ARCH}"
 }
 
+function base_dir () {
+  echo "$tmp/base"
+}
+
 function workspace_dir () {
   echo "$tmp/${OS}_${ARCH}"
 }
