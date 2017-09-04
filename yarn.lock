@@ -120,7 +120,7 @@ ansi-styles@^2.2.1:
   version "2.2.1"
   resolved "http://cli-npm.heroku.com/ansi-styles/-/ansi-styles-2.2.1/b432dd3358b634cf75e1e4664368240533c1ddbe.tgz#b432dd3358b634cf75e1e4664368240533c1ddbe"
 
-ansi-styles@^3.0.0, ansi-styles@^3.1.0:
+ansi-styles@^3.0.0, ansi-styles@^3.1.0, ansi-styles@^3.2.0:
   version "3.2.0"
   resolved "http://cli-npm.heroku.com/ansi-styles/-/ansi-styles-3.2.0/c159b8d5be0f9e5a6f346dab94f16ce022161b88.tgz#c159b8d5be0f9e5a6f346dab94f16ce022161b88"
   dependencies:
@@ -385,6 +385,13 @@ babel-jest@^20.0.3:
     babel-plugin-istanbul "^4.0.0"
     babel-preset-jest "^20.0.3"
 
+babel-jest@^21.0.0:
+  version "21.0.0"
+  resolved "http://cli-npm.heroku.com/babel-jest/-/babel-jest-21.0.0/4f636a7dce105aa5753d5f3dde4422ff50c1d6c5.tgz#4f636a7dce105aa5753d5f3dde4422ff50c1d6c5"
+  dependencies:
+    babel-plugin-istanbul "^4.0.0"
+    babel-preset-jest "^21.0.0"
+
 babel-messages@^6.23.0:
   version "6.23.0"
   resolved "http://cli-npm.heroku.com/babel-messages/-/babel-messages-6.23.0/f3cdf4703858035b2a2951c6ec5edf6c62f2630e.tgz#f3cdf4703858035b2a2951c6ec5edf6c62f2630e"
@@ -402,6 +409,10 @@ babel-plugin-istanbul@^4.0.0:
 babel-plugin-jest-hoist@^20.0.3:
   version "20.0.3"
   resolved "http://cli-npm.heroku.com/babel-plugin-jest-hoist/-/babel-plugin-jest-hoist-20.0.3/afedc853bd3f8dc3548ea671fbe69d03cc2c1767.tgz#afedc853bd3f8dc3548ea671fbe69d03cc2c1767"
+
+babel-plugin-jest-hoist@^21.0.0:
+  version "21.0.0"
+  resolved "http://cli-npm.heroku.com/babel-plugin-jest-hoist/-/babel-plugin-jest-hoist-21.0.0/aa2dbab7b0d58fa635640efd53aab730be7b3273.tgz#aa2dbab7b0d58fa635640efd53aab730be7b3273"
 
 babel-plugin-syntax-class-properties@^6.8.0:
   version "6.13.0"
@@ -466,6 +477,12 @@ babel-preset-jest@^20.0.3:
   resolved "http://cli-npm.heroku.com/babel-preset-jest/-/babel-preset-jest-20.0.3/cbacaadecb5d689ca1e1de1360ebfc66862c178a.tgz#cbacaadecb5d689ca1e1de1360ebfc66862c178a"
   dependencies:
     babel-plugin-jest-hoist "^20.0.3"
+
+babel-preset-jest@^21.0.0:
+  version "21.0.0"
+  resolved "http://cli-npm.heroku.com/babel-preset-jest/-/babel-preset-jest-21.0.0/13a8d82e999aa49f8b2dc14d0023d362f2e4ba23.tgz#13a8d82e999aa49f8b2dc14d0023d362f2e4ba23"
+  dependencies:
+    babel-plugin-jest-hoist "^21.0.0"
 
 babel-register@^6.26.0:
   version "6.26.0"
@@ -712,7 +729,7 @@ chalk@^1.0.0, chalk@^1.1.0, chalk@^1.1.1, chalk@^1.1.3:
     strip-ansi "^3.0.0"
     supports-color "^2.0.0"
 
-chalk@^2.0.0, chalk@^2.1.0:
+chalk@^2.0.0, chalk@^2.0.1, chalk@^2.1.0:
   version "2.1.0"
   resolved "http://cli-npm.heroku.com/chalk/-/chalk-2.1.0/ac5becf14fa21b99c6c92ca7a7d7cfd5b17e743e.tgz#ac5becf14fa21b99c6c92ca7a7d7cfd5b17e743e"
   dependencies:
@@ -775,7 +792,7 @@ cli-cursor@^2.1.0:
   dependencies:
     restore-cursor "^2.0.0"
 
-cli-engine-command@7.0.6, cli-engine-command@^7.0.5, cli-engine-command@^7.0.6:
+cli-engine-command@7.0.6, cli-engine-command@^7.0.6:
   version "7.0.6"
   resolved "http://cli-npm.heroku.com/cli-engine-command/-/cli-engine-command-7.0.6/d3429ea91cf6324542f29c2a26626a2152954d68.tgz#d3429ea91cf6324542f29c2a26626a2152954d68"
   dependencies:
@@ -852,12 +869,12 @@ cli-engine-heroku@^1.1.2:
     heroku-client "^3.0.3"
     netrc-parser "^2.0.3"
 
-cli-engine@4.2.0:
-  version "4.2.0"
-  resolved "http://cli-npm.heroku.com/cli-engine/-/cli-engine-4.2.0/d1aa881295a6aa615338042b40724c79530d2199.tgz#d1aa881295a6aa615338042b40724c79530d2199"
+cli-engine@4.3.0:
+  version "4.3.0"
+  resolved "http://cli-npm.heroku.com/cli-engine/-/cli-engine-4.3.0/066118709ea7ab5f4e812131cf1a23f5d63e2702.tgz#066118709ea7ab5f4e812131cf1a23f5d63e2702"
   dependencies:
     ansi-escapes "^2.0.0"
-    cli-engine-command "^7.0.5"
+    cli-engine-command "^7.0.6"
     cli-engine-config "^2.0.0"
     cli-engine-heroku "^2.0.0"
     debug "^3.0.1"
@@ -1258,9 +1275,9 @@ eslint-plugin-import@2.7.0:
     minimatch "^3.0.3"
     read-pkg-up "^2.0.0"
 
-eslint-plugin-jest@20.0.3:
-  version "20.0.3"
-  resolved "http://cli-npm.heroku.com/eslint-plugin-jest/-/eslint-plugin-jest-20.0.3/ec15eba6ac0ab44a67ebf6e02672ca9d7e7cba29.tgz#ec15eba6ac0ab44a67ebf6e02672ca9d7e7cba29"
+eslint-plugin-jest@21.0.0:
+  version "21.0.0"
+  resolved "http://cli-npm.heroku.com/eslint-plugin-jest/-/eslint-plugin-jest-21.0.0/7ba4cab39b54dbafa1e3b2a73b42afccea325efe.tgz#7ba4cab39b54dbafa1e3b2a73b42afccea325efe"
 
 eslint-plugin-node@5.1.1:
   version "5.1.1"
@@ -1286,9 +1303,9 @@ eslint-scope@^3.7.1:
     esrecurse "^4.1.0"
     estraverse "^4.1.1"
 
-eslint@4.6.0:
-  version "4.6.0"
-  resolved "http://cli-npm.heroku.com/eslint/-/eslint-4.6.0/98ced4a706a87abbe63207895d0023a38e250bbe.tgz#98ced4a706a87abbe63207895d0023a38e250bbe"
+eslint@4.6.1:
+  version "4.6.1"
+  resolved "http://cli-npm.heroku.com/eslint/-/eslint-4.6.1/ddc7fc7fd70bf93205b0b3449bb16a1e9e7d4950.tgz#ddc7fc7fd70bf93205b0b3449bb16a1e9e7d4950"
   dependencies:
     ajv "^5.2.0"
     babel-code-frame "^6.22.0"
@@ -1408,6 +1425,17 @@ expand-range@^1.8.1:
   resolved "http://cli-npm.heroku.com/expand-range/-/expand-range-1.8.2/a299effd335fe2721ebae8e257ec79644fc85337.tgz#a299effd335fe2721ebae8e257ec79644fc85337"
   dependencies:
     fill-range "^2.1.0"
+
+expect@^21.0.0:
+  version "21.0.0"
+  resolved "http://cli-npm.heroku.com/expect/-/expect-21.0.0/55fbb07e989479863663975ae8e9ec51753c99ca.tgz#55fbb07e989479863663975ae8e9ec51753c99ca"
+  dependencies:
+    ansi-styles "^3.2.0"
+    jest-diff "^21.0.0"
+    jest-get-type "^21.0.0"
+    jest-matcher-utils "^21.0.0"
+    jest-message-util "^21.0.0"
+    jest-regex-util "^21.0.0"
 
 extend@^3.0.0, extend@~3.0.0:
   version "3.0.1"
@@ -1571,7 +1599,7 @@ fs.realpath@^1.0.0:
   version "1.0.0"
   resolved "http://cli-npm.heroku.com/fs.realpath/-/fs.realpath-1.0.0/1504ad2523158caa40db4a2787cb01411994ea4f.tgz#1504ad2523158caa40db4a2787cb01411994ea4f"
 
-fsevents@^1.0.0:
+fsevents@^1.0.0, fsevents@^1.1.1:
   version "1.1.2"
   resolved "http://cli-npm.heroku.com/fsevents/-/fsevents-1.1.2/3282b713fb3ad80ede0e9fcf4611b5aa6fc033f4.tgz#3282b713fb3ad80ede0e9fcf4611b5aa6fc033f4"
   dependencies:
@@ -1965,6 +1993,33 @@ heroku-cli-util@^6.0.15, heroku-cli-util@^6.1.17, heroku-cli-util@^6.2.0, heroku
     supports-color "^3.1.2"
     tunnel-agent "^0.6.0"
 
+heroku-cli-util@^6.2.7:
+  version "6.2.7"
+  resolved "http://cli-npm.heroku.com/heroku-cli-util/-/heroku-cli-util-6.2.7/0419f8f64152ad00f280497c3e9d2de0f1fe6066.tgz#0419f8f64152ad00f280497c3e9d2de0f1fe6066"
+  dependencies:
+    ansi-escapes "^1.4.0"
+    cardinal "^1.0.0"
+    chalk "^1.1.3"
+    co "^4.6.0"
+    got "^6.3.0"
+    heroku-client "^3.0.3"
+    lodash.ary "^4.1.1"
+    lodash.defaults "^4.2.0"
+    lodash.get "^4.4.2"
+    lodash.identity "^3.0.0"
+    lodash.keys "^4.2.0"
+    lodash.mapvalues "^4.6.0"
+    lodash.noop "^3.0.1"
+    lodash.partial "^4.2.1"
+    lodash.pickby "^4.6.0"
+    lodash.property "^4.4.2"
+    lodash.repeat "^4.1.0"
+    lodash.result "^4.5.2"
+    netrc-parser "^2.0.3"
+    opn "^3.0.3"
+    supports-color "^3.1.2"
+    tunnel-agent "^0.6.0"
+
 heroku-client@3.0.2:
   version "3.0.2"
   resolved "http://cli-npm.heroku.com/heroku-client/-/heroku-client-3.0.2/7e06f303ff18f7a0731725dcccbe210b76198657.tgz#7e06f303ff18f7a0731725dcccbe210b76198657"
@@ -2037,16 +2092,16 @@ heroku-local@5.1.21:
     heroku-cli-util "^6.2.5"
     lodash.flatten "^4.4.0"
 
-heroku-orgs@1.6.4:
-  version "1.6.4"
-  resolved "http://cli-npm.heroku.com/heroku-orgs/-/heroku-orgs-1.6.4/8138b1be625e75becfccf1b7ed77f9ea261085d8.tgz#8138b1be625e75becfccf1b7ed77f9ea261085d8"
+heroku-orgs@1.6.6:
+  version "1.6.6"
+  resolved "http://cli-npm.heroku.com/heroku-orgs/-/heroku-orgs-1.6.6/bc88b86e6794b862baf686d1397261d4b2a1e56c.tgz#bc88b86e6794b862baf686d1397261d4b2a1e56c"
   dependencies:
-    cli-engine-command "^5.1.8"
-    cli-engine-config "^1.3.7"
-    cli-engine-heroku "^1.1.2"
+    cli-engine-command "^7.0.6"
+    cli-engine-config "^2.0.0"
+    cli-engine-heroku "^2.0.0"
     co "4.6.0"
-    heroku-cli-util "^6.2.2"
-    inquirer "^3.1.1"
+    heroku-cli-util "^6.2.7"
+    inquirer "^3.2.3"
     lodash "4.17.4"
     lodash.flatten "4.4.0"
 
@@ -2594,6 +2649,12 @@ jest-changed-files@^20.0.3:
   version "20.0.3"
   resolved "http://cli-npm.heroku.com/jest-changed-files/-/jest-changed-files-20.0.3/9394d5cc65c438406149bef1bf4d52b68e03e3f8.tgz#9394d5cc65c438406149bef1bf4d52b68e03e3f8"
 
+jest-changed-files@^21.0.0:
+  version "21.0.0"
+  resolved "http://cli-npm.heroku.com/jest-changed-files/-/jest-changed-files-21.0.0/fa7cfc353187e2fb852dd5830e8d09068dde78d1.tgz#fa7cfc353187e2fb852dd5830e8d09068dde78d1"
+  dependencies:
+    throat "^4.0.0"
+
 jest-cli@^20.0.4:
   version "20.0.4"
   resolved "http://cli-npm.heroku.com/jest-cli/-/jest-cli-20.0.4/e532b19d88ae5bc6c417e8b0593a6fe954b1dc93.tgz#e532b19d88ae5bc6c417e8b0593a6fe954b1dc93"
@@ -2629,6 +2690,40 @@ jest-cli@^20.0.4:
     worker-farm "^1.3.1"
     yargs "^7.0.2"
 
+jest-cli@^21.0.1:
+  version "21.0.1"
+  resolved "http://cli-npm.heroku.com/jest-cli/-/jest-cli-21.0.1/b3e9ef6d0ae0e43870932d2ed3d10de0515e9d34.tgz#b3e9ef6d0ae0e43870932d2ed3d10de0515e9d34"
+  dependencies:
+    ansi-escapes "^2.0.0"
+    chalk "^2.0.1"
+    glob "^7.1.2"
+    graceful-fs "^4.1.11"
+    is-ci "^1.0.10"
+    istanbul-api "^1.1.1"
+    istanbul-lib-coverage "^1.0.1"
+    istanbul-lib-instrument "^1.4.2"
+    istanbul-lib-source-maps "^1.1.0"
+    jest-changed-files "^21.0.0"
+    jest-config "^21.0.0"
+    jest-environment-jsdom "^21.0.0"
+    jest-haste-map "^21.0.0"
+    jest-message-util "^21.0.0"
+    jest-regex-util "^21.0.0"
+    jest-resolve-dependencies "^21.0.0"
+    jest-runner "^21.0.0"
+    jest-runtime "^21.0.0"
+    jest-snapshot "^21.0.0"
+    jest-util "^21.0.0"
+    micromatch "^2.3.11"
+    node-notifier "^5.0.2"
+    pify "^2.3.0"
+    slash "^1.0.0"
+    string-length "^1.0.1"
+    strip-ansi "^4.0.0"
+    which "^1.2.12"
+    worker-farm "^1.3.1"
+    yargs "^7.0.2"
+
 jest-config@^20.0.4:
   version "20.0.4"
   resolved "http://cli-npm.heroku.com/jest-config/-/jest-config-20.0.4/e37930ab2217c913605eff13e7bd763ec48faeea.tgz#e37930ab2217c913605eff13e7bd763ec48faeea"
@@ -2644,6 +2739,22 @@ jest-config@^20.0.4:
     jest-validate "^20.0.3"
     pretty-format "^20.0.3"
 
+jest-config@^21.0.0:
+  version "21.0.0"
+  resolved "http://cli-npm.heroku.com/jest-config/-/jest-config-21.0.0/81dcb20d15971f31bf44a82c6fe85b4423d98d95.tgz#81dcb20d15971f31bf44a82c6fe85b4423d98d95"
+  dependencies:
+    chalk "^2.0.1"
+    glob "^7.1.1"
+    jest-environment-jsdom "^21.0.0"
+    jest-environment-node "^21.0.0"
+    jest-get-type "^21.0.0"
+    jest-jasmine2 "^21.0.0"
+    jest-regex-util "^21.0.0"
+    jest-resolve "^21.0.0"
+    jest-util "^21.0.0"
+    jest-validate "^21.0.0"
+    pretty-format "^21.0.0"
+
 jest-diff@^20.0.3:
   version "20.0.3"
   resolved "http://cli-npm.heroku.com/jest-diff/-/jest-diff-20.0.3/81f288fd9e675f0fb23c75f1c2b19445fe586617.tgz#81f288fd9e675f0fb23c75f1c2b19445fe586617"
@@ -2653,9 +2764,22 @@ jest-diff@^20.0.3:
     jest-matcher-utils "^20.0.3"
     pretty-format "^20.0.3"
 
+jest-diff@^21.0.0:
+  version "21.0.0"
+  resolved "http://cli-npm.heroku.com/jest-diff/-/jest-diff-21.0.0/b996ba2963a783125e6bc59fd5623bce67df7f17.tgz#b996ba2963a783125e6bc59fd5623bce67df7f17"
+  dependencies:
+    chalk "^2.0.1"
+    diff "^3.2.0"
+    jest-get-type "^21.0.0"
+    pretty-format "^21.0.0"
+
 jest-docblock@^20.0.3:
   version "20.0.3"
   resolved "http://cli-npm.heroku.com/jest-docblock/-/jest-docblock-20.0.3/17bea984342cc33d83c50fbe1545ea0efaa44712.tgz#17bea984342cc33d83c50fbe1545ea0efaa44712"
+
+jest-docblock@^21.0.0:
+  version "21.0.0"
+  resolved "http://cli-npm.heroku.com/jest-docblock/-/jest-docblock-21.0.0/7dd57568543aec98910f749540afc15fab53a27f.tgz#7dd57568543aec98910f749540afc15fab53a27f"
 
 jest-environment-jsdom@^20.0.3:
   version "20.0.3"
@@ -2665,12 +2789,31 @@ jest-environment-jsdom@^20.0.3:
     jest-util "^20.0.3"
     jsdom "^9.12.0"
 
+jest-environment-jsdom@^21.0.0:
+  version "21.0.0"
+  resolved "http://cli-npm.heroku.com/jest-environment-jsdom/-/jest-environment-jsdom-21.0.0/1d53e34b1656254b8c539700e35360d8f8ebb579.tgz#1d53e34b1656254b8c539700e35360d8f8ebb579"
+  dependencies:
+    jest-mock "^21.0.0"
+    jest-util "^21.0.0"
+    jsdom "^9.12.0"
+
 jest-environment-node@^20.0.3:
   version "20.0.3"
   resolved "http://cli-npm.heroku.com/jest-environment-node/-/jest-environment-node-20.0.3/d488bc4612af2c246e986e8ae7671a099163d403.tgz#d488bc4612af2c246e986e8ae7671a099163d403"
   dependencies:
     jest-mock "^20.0.3"
     jest-util "^20.0.3"
+
+jest-environment-node@^21.0.0:
+  version "21.0.0"
+  resolved "http://cli-npm.heroku.com/jest-environment-node/-/jest-environment-node-21.0.0/ffc781b82569f3f4bc2d8fb8f1ea7373cb11f043.tgz#ffc781b82569f3f4bc2d8fb8f1ea7373cb11f043"
+  dependencies:
+    jest-mock "^21.0.0"
+    jest-util "^21.0.0"
+
+jest-get-type@^21.0.0:
+  version "21.0.0"
+  resolved "http://cli-npm.heroku.com/jest-get-type/-/jest-get-type-21.0.0/ed8667533c0a24a4feebbf492661f23abac3620b.tgz#ed8667533c0a24a4feebbf492661f23abac3620b"
 
 jest-haste-map@^20.0.4:
   version "20.0.5"
@@ -2681,6 +2824,17 @@ jest-haste-map@^20.0.4:
     jest-docblock "^20.0.3"
     micromatch "^2.3.11"
     sane "~1.6.0"
+    worker-farm "^1.3.1"
+
+jest-haste-map@^21.0.0:
+  version "21.0.0"
+  resolved "http://cli-npm.heroku.com/jest-haste-map/-/jest-haste-map-21.0.0/1f099ff6aedb52ec55fa9773ce26e4bbb00b0580.tgz#1f099ff6aedb52ec55fa9773ce26e4bbb00b0580"
+  dependencies:
+    fb-watchman "^2.0.0"
+    graceful-fs "^4.1.11"
+    jest-docblock "^21.0.0"
+    micromatch "^2.3.11"
+    sane "^2.0.0"
     worker-farm "^1.3.1"
 
 jest-jasmine2@^20.0.4:
@@ -2697,12 +2851,33 @@ jest-jasmine2@^20.0.4:
     once "^1.4.0"
     p-map "^1.1.1"
 
+jest-jasmine2@^21.0.0:
+  version "21.0.0"
+  resolved "http://cli-npm.heroku.com/jest-jasmine2/-/jest-jasmine2-21.0.0/539725989e45ab0b00029fcf37bc679aa39c2941.tgz#539725989e45ab0b00029fcf37bc679aa39c2941"
+  dependencies:
+    chalk "^2.0.1"
+    expect "^21.0.0"
+    graceful-fs "^4.1.11"
+    jest-diff "^21.0.0"
+    jest-matcher-utils "^21.0.0"
+    jest-message-util "^21.0.0"
+    jest-snapshot "^21.0.0"
+    p-cancelable "^0.3.0"
+
 jest-matcher-utils@^20.0.3:
   version "20.0.3"
   resolved "http://cli-npm.heroku.com/jest-matcher-utils/-/jest-matcher-utils-20.0.3/b3a6b8e37ca577803b0832a98b164f44b7815612.tgz#b3a6b8e37ca577803b0832a98b164f44b7815612"
   dependencies:
     chalk "^1.1.3"
     pretty-format "^20.0.3"
+
+jest-matcher-utils@^21.0.0:
+  version "21.0.0"
+  resolved "http://cli-npm.heroku.com/jest-matcher-utils/-/jest-matcher-utils-21.0.0/493dc25b9ed6a23a61802ca20656f0f1c16f15b1.tgz#493dc25b9ed6a23a61802ca20656f0f1c16f15b1"
+  dependencies:
+    chalk "^2.0.1"
+    jest-get-type "^21.0.0"
+    pretty-format "^21.0.0"
 
 jest-matchers@^20.0.3:
   version "20.0.3"
@@ -2721,19 +2896,41 @@ jest-message-util@^20.0.3:
     micromatch "^2.3.11"
     slash "^1.0.0"
 
+jest-message-util@^21.0.0:
+  version "21.0.0"
+  resolved "http://cli-npm.heroku.com/jest-message-util/-/jest-message-util-21.0.0/cd49c2e91d7a227e622884c418185a1a7cbe1fd6.tgz#cd49c2e91d7a227e622884c418185a1a7cbe1fd6"
+  dependencies:
+    chalk "^2.0.1"
+    micromatch "^2.3.11"
+    slash "^1.0.0"
+
 jest-mock@^20.0.3:
   version "20.0.3"
   resolved "http://cli-npm.heroku.com/jest-mock/-/jest-mock-20.0.3/8bc070e90414aa155c11a8d64c869a0d5c71da59.tgz#8bc070e90414aa155c11a8d64c869a0d5c71da59"
 
+jest-mock@^21.0.0:
+  version "21.0.0"
+  resolved "http://cli-npm.heroku.com/jest-mock/-/jest-mock-21.0.0/948fdbb44ef702ca998e078ca62b4968780e102e.tgz#948fdbb44ef702ca998e078ca62b4968780e102e"
+
 jest-regex-util@^20.0.3:
   version "20.0.3"
   resolved "http://cli-npm.heroku.com/jest-regex-util/-/jest-regex-util-20.0.3/85bbab5d133e44625b19faf8c6aa5122d085d762.tgz#85bbab5d133e44625b19faf8c6aa5122d085d762"
+
+jest-regex-util@^21.0.0:
+  version "21.0.0"
+  resolved "http://cli-npm.heroku.com/jest-regex-util/-/jest-regex-util-21.0.0/f13c382a1c55515c20471390ab38e5d71cbd320e.tgz#f13c382a1c55515c20471390ab38e5d71cbd320e"
 
 jest-resolve-dependencies@^20.0.3:
   version "20.0.3"
   resolved "http://cli-npm.heroku.com/jest-resolve-dependencies/-/jest-resolve-dependencies-20.0.3/6e14a7b717af0f2cb3667c549de40af017b1723a.tgz#6e14a7b717af0f2cb3667c549de40af017b1723a"
   dependencies:
     jest-regex-util "^20.0.3"
+
+jest-resolve-dependencies@^21.0.0:
+  version "21.0.0"
+  resolved "http://cli-npm.heroku.com/jest-resolve-dependencies/-/jest-resolve-dependencies-21.0.0/09dfd9654a8af92880a2f66076871d48810bd48d.tgz#09dfd9654a8af92880a2f66076871d48810bd48d"
+  dependencies:
+    jest-regex-util "^21.0.0"
 
 jest-resolve@^20.0.4:
   version "20.0.4"
@@ -2742,6 +2939,29 @@ jest-resolve@^20.0.4:
     browser-resolve "^1.11.2"
     is-builtin-module "^1.0.0"
     resolve "^1.3.2"
+
+jest-resolve@^21.0.0:
+  version "21.0.0"
+  resolved "http://cli-npm.heroku.com/jest-resolve/-/jest-resolve-21.0.0/04d3939203633cc57ae8219b34ad42687dd8d111.tgz#04d3939203633cc57ae8219b34ad42687dd8d111"
+  dependencies:
+    browser-resolve "^1.11.2"
+    chalk "^2.0.1"
+    is-builtin-module "^1.0.0"
+
+jest-runner@^21.0.0:
+  version "21.0.0"
+  resolved "http://cli-npm.heroku.com/jest-runner/-/jest-runner-21.0.0/8969dd22ff73911c84043cf16b6cfadf609f3d1f.tgz#8969dd22ff73911c84043cf16b6cfadf609f3d1f"
+  dependencies:
+    jest-config "^21.0.0"
+    jest-docblock "^21.0.0"
+    jest-haste-map "^21.0.0"
+    jest-jasmine2 "^21.0.0"
+    jest-message-util "^21.0.0"
+    jest-runtime "^21.0.0"
+    jest-util "^21.0.0"
+    pify "^2.3.0"
+    throat "^3.0.0"
+    worker-farm "^1.3.1"
 
 jest-runtime@^20.0.4:
   version "20.0.4"
@@ -2763,6 +2983,28 @@ jest-runtime@^20.0.4:
     strip-bom "3.0.0"
     yargs "^7.0.2"
 
+jest-runtime@^21.0.0:
+  version "21.0.0"
+  resolved "http://cli-npm.heroku.com/jest-runtime/-/jest-runtime-21.0.0/54af290dc664a49ddc251c7d7ce1a5661afc1ead.tgz#54af290dc664a49ddc251c7d7ce1a5661afc1ead"
+  dependencies:
+    babel-core "^6.0.0"
+    babel-jest "^21.0.0"
+    babel-plugin-istanbul "^4.0.0"
+    chalk "^2.0.1"
+    convert-source-map "^1.4.0"
+    graceful-fs "^4.1.11"
+    jest-config "^21.0.0"
+    jest-haste-map "^21.0.0"
+    jest-regex-util "^21.0.0"
+    jest-resolve "^21.0.0"
+    jest-util "^21.0.0"
+    json-stable-stringify "^1.0.1"
+    micromatch "^2.3.11"
+    slash "^1.0.0"
+    strip-bom "3.0.0"
+    write-file-atomic "^2.1.0"
+    yargs "^7.0.2"
+
 jest-snapshot@^20.0.3:
   version "20.0.3"
   resolved "http://cli-npm.heroku.com/jest-snapshot/-/jest-snapshot-20.0.3/5b847e1adb1a4d90852a7f9f125086e187c76566.tgz#5b847e1adb1a4d90852a7f9f125086e187c76566"
@@ -2773,6 +3015,17 @@ jest-snapshot@^20.0.3:
     jest-util "^20.0.3"
     natural-compare "^1.4.0"
     pretty-format "^20.0.3"
+
+jest-snapshot@^21.0.0:
+  version "21.0.0"
+  resolved "http://cli-npm.heroku.com/jest-snapshot/-/jest-snapshot-21.0.0/00b582b13ef42112bd431b498e37f7829b30cd66.tgz#00b582b13ef42112bd431b498e37f7829b30cd66"
+  dependencies:
+    chalk "^2.0.1"
+    jest-diff "^21.0.0"
+    jest-matcher-utils "^21.0.0"
+    mkdirp "^0.5.1"
+    natural-compare "^1.4.0"
+    pretty-format "^21.0.0"
 
 jest-util@^20.0.3:
   version "20.0.3"
@@ -2786,6 +3039,18 @@ jest-util@^20.0.3:
     leven "^2.1.0"
     mkdirp "^0.5.1"
 
+jest-util@^21.0.0:
+  version "21.0.0"
+  resolved "http://cli-npm.heroku.com/jest-util/-/jest-util-21.0.0/62b3a3ec3ff91022ef7e1ffbcf3293424715919f.tgz#62b3a3ec3ff91022ef7e1ffbcf3293424715919f"
+  dependencies:
+    callsites "^2.0.0"
+    chalk "^2.0.1"
+    graceful-fs "^4.1.11"
+    jest-message-util "^21.0.0"
+    jest-mock "^21.0.0"
+    jest-validate "^21.0.0"
+    mkdirp "^0.5.1"
+
 jest-validate@^20.0.3:
   version "20.0.3"
   resolved "http://cli-npm.heroku.com/jest-validate/-/jest-validate-20.0.3/d0cfd1de4f579f298484925c280f8f1d94ec3cab.tgz#d0cfd1de4f579f298484925c280f8f1d94ec3cab"
@@ -2795,7 +3060,22 @@ jest-validate@^20.0.3:
     leven "^2.1.0"
     pretty-format "^20.0.3"
 
-jest@20.0.4, jest@^20.0.4:
+jest-validate@^21.0.0:
+  version "21.0.0"
+  resolved "http://cli-npm.heroku.com/jest-validate/-/jest-validate-21.0.0/f906d54eca2a485ffbfb2d8a7d58831c026e6dd5.tgz#f906d54eca2a485ffbfb2d8a7d58831c026e6dd5"
+  dependencies:
+    chalk "^2.0.1"
+    jest-get-type "^21.0.0"
+    leven "^2.1.0"
+    pretty-format "^21.0.0"
+
+jest@21.0.1:
+  version "21.0.1"
+  resolved "http://cli-npm.heroku.com/jest/-/jest-21.0.1/746cddc89477beaea5b208e7017ca26652bfdb38.tgz#746cddc89477beaea5b208e7017ca26652bfdb38"
+  dependencies:
+    jest-cli "^21.0.1"
+
+jest@^20.0.4:
   version "20.0.4"
   resolved "http://cli-npm.heroku.com/jest/-/jest-20.0.4/3dd260c2989d6dad678b1e9cc4d91944f6d602ac.tgz#3dd260c2989d6dad678b1e9cc4d91944f6d602ac"
   dependencies:
@@ -3602,6 +3882,10 @@ output-file-sync@^1.1.2:
     mkdirp "^0.5.1"
     object-assign "^4.1.0"
 
+p-cancelable@^0.3.0:
+  version "0.3.0"
+  resolved "http://cli-npm.heroku.com/p-cancelable/-/p-cancelable-0.3.0/b9e123800bcebb7ac13a479be195b507b98d30fa.tgz#b9e123800bcebb7ac13a479be195b507b98d30fa"
+
 p-limit@^1.1.0:
   version "1.1.0"
   resolved "http://cli-npm.heroku.com/p-limit/-/p-limit-1.1.0/b07ff2d9a5d88bec806035895a2bab66a27988bc.tgz#b07ff2d9a5d88bec806035895a2bab66a27988bc"
@@ -3770,6 +4054,13 @@ pretty-format@^20.0.3:
   dependencies:
     ansi-regex "^2.1.1"
     ansi-styles "^3.0.0"
+
+pretty-format@^21.0.0:
+  version "21.0.0"
+  resolved "http://cli-npm.heroku.com/pretty-format/-/pretty-format-21.0.0/bea1522c4c47e49b44db5b6fbf83e7737251f305.tgz#bea1522c4c47e49b44db5b6fbf83e7737251f305"
+  dependencies:
+    ansi-regex "^3.0.0"
+    ansi-styles "^3.2.0"
 
 printf@0.2.5:
   version "0.2.5"
@@ -4505,6 +4796,20 @@ safe-buffer@^5.0.1, safe-buffer@~5.1.0, safe-buffer@~5.1.1:
   version "5.1.1"
   resolved "http://cli-npm.heroku.com/safe-buffer/-/safe-buffer-5.1.1/893312af69b2123def71f57889001671eeb2c853.tgz#893312af69b2123def71f57889001671eeb2c853"
 
+sane@^2.0.0:
+  version "2.0.0"
+  resolved "http://cli-npm.heroku.com/sane/-/sane-2.0.0/99cb79f21f4a53a69d4d0cd957c2db04024b8eb2.tgz#99cb79f21f4a53a69d4d0cd957c2db04024b8eb2"
+  dependencies:
+    anymatch "^1.3.0"
+    exec-sh "^0.2.0"
+    fb-watchman "^2.0.0"
+    minimatch "^3.0.2"
+    minimist "^1.1.1"
+    walker "~1.0.5"
+    watch "~0.10.0"
+  optionalDependencies:
+    fsevents "^1.1.1"
+
 sane@~1.6.0:
   version "1.6.0"
   resolved "http://cli-npm.heroku.com/sane/-/sane-1.6.0/9610c452307a135d29c1fdfe2547034180c46775.tgz#9610c452307a135d29c1fdfe2547034180c46775"
@@ -4955,6 +5260,10 @@ thenify-all@^1.0.0:
 throat@^3.0.0:
   version "3.2.0"
   resolved "http://cli-npm.heroku.com/throat/-/throat-3.2.0/50cb0670edbc40237b9e347d7e1f88e4620af836.tgz#50cb0670edbc40237b9e347d7e1f88e4620af836"
+
+throat@^4.0.0:
+  version "4.1.0"
+  resolved "http://cli-npm.heroku.com/throat/-/throat-4.1.0/89037cbc92c56ab18926e6ba4cbb200e15672a6a.tgz#89037cbc92c56ab18926e6ba4cbb200e15672a6a"
 
 through@^2.3.6:
   version "2.3.8"
@@ -5452,6 +5761,14 @@ wrapped@^1.0.1:
 wrappy@1:
   version "1.0.2"
   resolved "http://cli-npm.heroku.com/wrappy/-/wrappy-1.0.2/b5243d8f3ec1aa35f1364605bc0d1036e30ab69f.tgz#b5243d8f3ec1aa35f1364605bc0d1036e30ab69f"
+
+write-file-atomic@^2.1.0:
+  version "2.3.0"
+  resolved "http://cli-npm.heroku.com/write-file-atomic/-/write-file-atomic-2.3.0/1ff61575c2e2a4e8e510d6fa4e243cce183999ab.tgz#1ff61575c2e2a4e8e510d6fa4e243cce183999ab"
+  dependencies:
+    graceful-fs "^4.1.11"
+    imurmurhash "^0.1.4"
+    signal-exit "^3.0.2"
 
 write@^0.2.1:
   version "0.2.1"
