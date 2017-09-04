@@ -12,7 +12,8 @@
     "node": "8.4.0",
     "defaultCommand": "dashboard",
     "hooks": {
-      "prerun": "./lib/hooks/prerun/analytics"
+      "prerun": "./lib/hooks/prerun/analytics",
+      "update": "./lib/hooks/update/analytics"
     },
     "s3": {
       "host": "cli-assets.heroku.com"
