@@ -33,14 +33,14 @@ function analyticsJson () {
   }
 }
 
-function build (options = {}) {
+function build (configOptions = {}, options = {}) {
   let config = buildConfig({
     version: '1.2.3',
     platform: 'windows',
     skipAnalytics: false,
     install: '5a8ef179-1129-4f81-877c-662c89f83f1f',
     name: 'cli-engine',
-    ...options
+    ...configOptions
   })
 
   let json = options.json || analyticsJson()
@@ -108,7 +108,7 @@ describe('AnalyticsCommand', () => {
     it('does not submit if login is not set', async () => {
       let api = nock('https://cli-analytics.heroku.com').post('/record').reply(200, {})
 
-      let command = build({netrcLogin: null})
+      let command = build({}, {netrcLogin: null})
 
       await command.submit()
       expect(api.isDone()).toBe(false)
@@ -119,7 +119,7 @@ describe('AnalyticsCommand', () => {
 
       let json = analyticsJson()
       json.commands = []
-      let command = build({json})
+      let command = build({}, {json})
 
       await command.submit()
       expect(api.isDone()).toBe(false)
@@ -129,7 +129,7 @@ describe('AnalyticsCommand', () => {
       let json = analyticsJson()
       let api = nock('https://cli-analytics.heroku.com').post('/record', json).reply(200, {})
 
-      let command = build({json})
+      let command = build({}, {json})
 
       await command.submit()
       api.done()
@@ -139,7 +139,7 @@ describe('AnalyticsCommand', () => {
       let json = analyticsJson()
       let api = nock('https://cli-analytics.heroku.com').post('/record', json).reply(200, {})
 
-      let command = build({json})
+      let command = build({}, {json})
 
       await command.submit()
 
@@ -154,7 +154,7 @@ describe('AnalyticsCommand', () => {
       let json = analyticsJson()
       let api = nock('https://foobar.com').post('/record', json).reply(200, {})
 
-      let command = build({json})
+      let command = build({}, {json})
 
       await command.submit()
       api.done()
@@ -164,7 +164,7 @@ describe('AnalyticsCommand', () => {
       let json = analyticsJson()
       let api = nock('https://cli-analytics.heroku.com').post('/record', json).reply(503, {})
 
-      let command = build({json})
+      let command = build({}, {json})
 
       await command.submit()
 
@@ -231,7 +231,7 @@ describe('AnalyticsCommand', () => {
     })
 
     it('does not record if login is not set', async () => {
-      let command = build({netrcLogin: null})
+      let command = build({}, {netrcLogin: null})
 
       await command.record({
         Command: TestCommand,
@@ -256,7 +256,7 @@ describe('AnalyticsCommand', () => {
         'language': 'node'
       })
 
-      let command = build({json})
+      let command = build({}, {json})
       await command.record({
         Command: TestCommand,
         plugin,
