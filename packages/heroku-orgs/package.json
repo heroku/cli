@@ -17,13 +17,13 @@
     "lodash.flatten": "4.4.0"
   },
   "devDependencies": {
-    "chai": "*",
-    "mocha": "*",
+    "chai": "^4.1.2",
+    "mocha": "^3.5.0",
     "mocha-junit-reporter": "1.13.0",
-    "nock": "9.0.13",
-    "nyc": "^11.0.3",
+    "nock": "^9.0.14",
+    "nyc": "^11.1.0",
     "proxyquire": "^1.8.0",
-    "standard": "^10.0.2"
+    "standard": "^10.0.3"
   },
   "homepage": "https://github.com/heroku/heroku-orgs",
   "keywords": [
