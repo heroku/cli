@@ -45,7 +45,7 @@ function split_platform () {
   export ARCH=${_platform[1]}
 }
 
-if [[ "${CIRCLE_JOB-}" == build_* ]]; then
+if [[ "${CIRCLE_JOB-}" == build_* ]] && [[ "${CIRCLE_JOB-}" != "build_base" ]] ; then
   IFS='_' read -ra _platform <<< "$CIRCLE_JOB"
   export OS=${_platform[1]}
   export ARCH=${_platform[2]}
