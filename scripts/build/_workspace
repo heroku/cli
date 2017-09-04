@@ -22,6 +22,8 @@ cp "${root}/LICENSE" "${o}"
 cp "${root}/package.json" "${o}"
 cp "${root}/yarn.lock" "${o}"
 
+cp -rv "${root}/lib" "${o}/lib"
+
 (
   cd "${o}"
   # install packages
