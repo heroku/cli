@@ -15,7 +15,7 @@ jobs:
       - run: {command: "yarn"}
       - run: {command: "npx standard", when: always}
       - run: {command: "npx nyc mocha", when: always}
-      - run: {command: "bash <(curl -s https://codecov.io/bash)"}
+      - run: {command: "nyc report --reporter=text-lcov > coverage.lcov && bash <(curl -s https://codecov.io/bash)"}
       - save_cache:
           key: v1-yarn-{{ .Branch }}-{{checksum "yarn.lock"}}
           paths:
