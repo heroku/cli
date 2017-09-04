@@ -7,7 +7,7 @@ set -x
 # setup workspace
 o="$(workspace_dir)"
 rm -rf "${o}"
-cp -rv "$(base_dir)" "$o"
+cp -r "$(base_dir)" "$o"
 
 "${root}/scripts/build/_fetch_node_binary" "${o}/bin"
 
