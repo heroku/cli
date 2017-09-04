@@ -13,8 +13,7 @@ jobs:
             - v1-yarn-{{ .Branch }}
             - v1-yarn-master
       - run: {command: "yarn"}
-      - run: {command: "npx eslint .", when: always}
-      - run: {command: "npx flow check", when: always}
+      - run: {command: "npx standard", when: always}
       - run: {command: "npx nyc ./node_modules/.bin/mocha", when: always}
       - run: {command: "bash <(curl -s https://codecov.io/bash)"}
       - save_cache:

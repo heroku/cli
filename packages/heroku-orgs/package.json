@@ -11,7 +11,7 @@
     "cli-engine-config": "^2.0.0",
     "cli-engine-heroku": "^2.0.0",
     "co": "4.6.0",
-    "heroku-cli-util": "^6.2.6",
+    "heroku-cli-util": "^6.2.7",
     "inquirer": "^3.2.3",
     "lodash": "4.17.4",
     "lodash.flatten": "4.4.0"

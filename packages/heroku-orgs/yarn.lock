@@ -1108,9 +1108,9 @@ has@^1.0.1:
   dependencies:
     function-bind "^1.0.2"
 
-heroku-cli-util@^6.2.6:
-  version "6.2.6"
-  resolved "https://registry.yarnpkg.com/heroku-cli-util/-/heroku-cli-util-6.2.6.tgz#d73150669eff9efb3f600b40047881e94f38db20"
+heroku-cli-util@^6.2.7:
+  version "6.2.7"
+  resolved "https://registry.yarnpkg.com/heroku-cli-util/-/heroku-cli-util-6.2.7.tgz#0419f8f64152ad00f280497c3e9d2de0f1fe6066"
   dependencies:
     ansi-escapes "^1.4.0"
     cardinal "^1.0.0"
