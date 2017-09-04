@@ -165,7 +165,8 @@ workflows:
           filters: &all_pushes
             tags: &version_tags
               only: /^v.*/
-      - build_base: *all_pushes
+      - build_base:
+          filters: *all_pushes
       - build_darwin_x64: &release
           requires:
             - build_base
