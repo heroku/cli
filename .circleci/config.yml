@@ -120,8 +120,13 @@ jobs:
       - checkout
       - attach_workspace:
           at: dist
-      - run: ls dist && ls dist/apt
-      - run: ./scripts/release/circle
+      - run: {command: "ls dist && ls dist/apt", when: always}
+      - run: {command: "./scripts/release/_github_setup", when: always}
+      - run: {command: "./scripts/release/_upload_dist", when: always}
+      - run: {command: "./scripts/release/_upload_debian", when: always}
+      - run: {command: "./scripts/release/_homebrew", when: always}
+      - run: {command: "./scripts/release/_macos_installer_trigger", when: always}
+      - run: {command: "./scripts/release/_invalidate_cdn", when: always}
   # dev_center_docs:
   #   docker: *windows_docker
   #   steps:
