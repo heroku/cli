@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+source ./scripts/_init
+
+set -x
+
+"$scripts/test/lint"
+npx jest
+npx flow
+"$scripts/test/smoke"

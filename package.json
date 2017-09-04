@@ -108,9 +108,9 @@
     "build": "babel src -d lib --ignore '*.test.js'",
     "clean": "rimraf lib tmp dist",
     "download": "./scripts/download-yarn",
-    "lint": "./scripts/lint",
+    "lint": "./scripts/test/lint",
     "precommit": "./scripts/precommit",
     "prepare": "npm run build",
-    "test": "./scripts/test"
+    "test": "./scripts/test/all"
   }
 }

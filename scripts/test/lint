@@ -17,3 +17,5 @@ if [ -x "$(command -v shellcheck)" ]; then
 else
   echoerr "install shellcheck to lint the scripts"
 fi
+
+eslint .

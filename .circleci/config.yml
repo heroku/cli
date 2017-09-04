@@ -18,7 +18,11 @@ jobs:
             - v3-test-{{ checksum "yarn.lock" }}
             - v3-test
       - run: ./scripts/prep
-      - run: ./scripts/test
+      - run: {command: "./scripts/test/lint", when: always}
+      - run: {command: "npx flow check", when: always}
+      - run: {command: "npx jest", when: always}
+      - run: {command: "bash <(curl -s https://codecov.io/bash)"}
+      - run: {command: "./scripts/test/smoke", when: always}
       - save_cache:
           key: v3-test-{{ checksum "yarn.lock" }}
           paths:
