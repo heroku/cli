@@ -18,4 +18,4 @@ else
   echoerr "install shellcheck to lint the scripts"
 fi
 
-eslint .
+npx eslint .
