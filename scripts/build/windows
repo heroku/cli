@@ -4,7 +4,7 @@ export OS=windows
 
 source ./scripts/_init
 
+"${scripts}/prep"
 "${scripts}/build/_workspace"
-
 "${scripts}/build/_tarballs"
 "${scripts}/build/_windows_installer"

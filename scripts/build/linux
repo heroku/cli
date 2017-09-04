@@ -4,6 +4,7 @@ export OS=linux
 
 source ./scripts/_init
 
+"${scripts}/prep"
 "${scripts}/build/_workspace"
 "${scripts}/build/_tarballs"
 "${scripts}/build/_debian"
