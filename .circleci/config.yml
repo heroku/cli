@@ -13,10 +13,10 @@ jobs:
     <<: *defaults
     steps:
       - checkout
-      - restore_cache:
+      - restore_cache: &yarn_restore_cache
           keys:
-            - v3-test-{{ checksum "yarn.lock" }}
-            - v3-test
+            - v0-yarn-{{ checksum "yarn.lock" }}
+            - v0-yarn
       - run: ./scripts/prep
       - run: {command: "./scripts/test/lint", when: always}
       - run: {command: "npx flow check", when: always}
@@ -24,7 +24,7 @@ jobs:
       - run: {command: "bash <(curl -s https://codecov.io/bash)"}
       - run: {command: "./scripts/test/smoke", when: always}
       - save_cache:
-          key: v3-test-{{ checksum "yarn.lock" }}
+          key: v0-yarn-{{ checksum "yarn.lock" }}
           paths:
             - /usr/local/share/.cache/yarn
             - /cli/node_modules
@@ -32,17 +32,11 @@ jobs:
     <<: *defaults
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - v0-build-base-yarn-{{ checksum "yarn.lock" }}
-            - v0-build-base-yarn
+      - restore_cache: *yarn_restore_cache
       - run: ./scripts/build/base
       - persist_to_workspace:
           root: tmp/base
           paths: [ . ]
-      - save_cache:
-          key: v0-build-base-yarn-{{ checksum "yarn.lock" }}
-          paths: [/usr/local/share/.cache/yarn]
   build_darwin_x64:
     <<: *defaults
     steps:
