@@ -14,7 +14,7 @@ jobs:
             - v1-yarn-master
       - run: {command: "yarn"}
       - run: {command: "npx standard", when: always}
-      - run: {command: "npx nyc ./node_modules/.bin/mocha", when: always}
+      - run: {command: "npx nyc mocha", when: always}
       - run: {command: "bash <(curl -s https://codecov.io/bash)"}
       - save_cache:
           key: v1-yarn-{{ .Branch }}-{{checksum "yarn.lock"}}
