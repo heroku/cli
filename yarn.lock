@@ -2182,9 +2182,9 @@ html-encoding-sniffer@^1.0.1:
   dependencies:
     whatwg-encoding "^1.0.1"
 
-http-call@3.0.1, http-call@^3.0.1:
-  version "3.0.1"
-  resolved "http://cli-npm.heroku.com/http-call/-/http-call-3.0.1/906d7f4740ac9756c1e106c89cd0fb876fa1034a.tgz#906d7f4740ac9756c1e106c89cd0fb876fa1034a"
+http-call@3.0.2:
+  version "3.0.2"
+  resolved "http://cli-npm.heroku.com/http-call/-/http-call-3.0.2/5e3be641449b13546480f651f095b693e22e59a8.tgz#5e3be641449b13546480f651f095b693e22e59a8"
   dependencies:
     debug "^3.0.1"
     is-retry-allowed "^1.1.0"
@@ -2196,6 +2196,15 @@ http-call@^2.1.4:
   resolved "http://cli-npm.heroku.com/http-call/-/http-call-2.1.6/fa9e7d703eca39639a267f58e8b0dc7e6fe32873.tgz#fa9e7d703eca39639a267f58e8b0dc7e6fe32873"
   dependencies:
     debug "^3.0.0"
+    is-retry-allowed "^1.1.0"
+    is-stream "^1.1.0"
+    tunnel-agent "^0.6.0"
+
+http-call@^3.0.1:
+  version "3.0.1"
+  resolved "http://cli-npm.heroku.com/http-call/-/http-call-3.0.1/906d7f4740ac9756c1e106c89cd0fb876fa1034a.tgz#906d7f4740ac9756c1e106c89cd0fb876fa1034a"
+  dependencies:
+    debug "^3.0.1"
     is-retry-allowed "^1.1.0"
     is-stream "^1.1.0"
     tunnel-agent "^0.6.0"
