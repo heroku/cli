@@ -95,7 +95,7 @@ fi
 
 if [[ "${CIRCLE_JOB-}" == build_os_* ]]; then
   IFS='_' read -ra _platform <<< "$CIRCLE_JOB"
-  export OS=${_platform[1]}
+  export OS=${_platform[2]}
 fi
 
 if [ ! -z "${OS:-}" ]; then
