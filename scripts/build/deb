@@ -4,11 +4,11 @@
 
 set +x
 
+export OS=linux
+
 source ./scripts/_init
 
 set -x
-
-export OS=linux
 
 function build () {
   __workspace="$TMP_DIR/apt/$VERSIONED_DEB_BASE.apt"
