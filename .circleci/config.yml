@@ -51,7 +51,6 @@ jobs:
       - run: ./scripts/build/base
       - run: ./scripts/build/workspace
       - run: ./scripts/build/tarballs
-      - run: ./scripts/build/debian
       - persist_to_workspace: *dist
       - save_cache:
           <<: *node_cache_save
@@ -68,7 +67,6 @@ jobs:
       - run: ./scripts/build/base
       - run: ./scripts/build/workspace
       - run: ./scripts/build/tarballs
-      - run: ./scripts/build/windows
       - persist_to_workspace: *dist
       - save_cache:
           <<: *node_cache_save
