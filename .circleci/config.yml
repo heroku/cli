@@ -124,32 +124,32 @@ workflows:
           filters: &all_pushes
             tags: &version_tags
               only: /^v.*/
-      - build_darwin: &release
+      - build_os_darwin: &release
           filters:
             tags: *version_tags
             branches:
               only:
                 - master
                 - dev
-      - build_linux: *release
-      - build_windows: *release
+      - build_os_linux: *release
+      - build_os_windows: *release
       - build_and_release_win_inst:
           <<: *release
           requires:
             - test
-            - build_windows
+            - build_os_windows
       - build_and_release_deb:
           <<: *release
           requires:
             - test
-            - build_linux
+            - build_os_linux
       - release:
           <<: *release
           requires:
             - test
-            - build_darwin
-            - build_linux
-            - build_windows
+            - build_os_darwin
+            - build_os_linux
+            - build_os_windows
       # skip devcenter for now
       # - dev_center_docs:
       #     requires:
