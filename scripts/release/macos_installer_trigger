@@ -3,7 +3,7 @@
 set -ex
 
 VERSION=$(node -p "require('./package.json').version")
-CHANNEL=$(./scripts/_vars/_channel)
+CHANNEL=$(./scripts/_vars/channel)
 
 # trigger a macos installer by committing and tagging to the repo
 
