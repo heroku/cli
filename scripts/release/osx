@@ -9,6 +9,7 @@ set -x
 
 echo "Releasing ${CHANNEL}"
 
-"${scripts}/build/workspace"
+script "build/base"
+script "build/workspace"
 
-s3upload "${tmp}/heroku-cli.pkg" "${REMOTE_BASE}/heroku-cli.pkg"
+s3upload "${TMP_DIR}/heroku-cli.pkg" "${REMOTE_BASE}/heroku-cli.pkg"
