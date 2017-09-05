@@ -14,13 +14,13 @@ cd tmp/cli-macos-installer
   git checkout "$CIRCLE_SHA1"
 )
 git add cli
-git commit -m "heroku $VERSION"
 
 if [[ ${CHANNEL} != "stable" ]]; then
   echo "not on stable, skipping macos-installer trigger"
   exit
 fi
 
+git commit -m "heroku $VERSION"
 git tag "v$VERSION"
 git push --tags
 
