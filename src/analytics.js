@@ -13,6 +13,7 @@ const debug = require('debug')('heroku:analytics')
 
 type AnalyticsJSONCommand = {
   command: string,
+  autocomplete: number,
   version: string,
   plugin_version: string,
   os: string,
@@ -65,6 +66,7 @@ export default class AnalyticsCommand {
 
     analyticsJSON.commands.push({
       command: opts.Command.id,
+      autocomplete: await this._acAnalytics(),
       version: this.config.version,
       plugin: plugin.name,
       plugin_version: plugin.version,
@@ -136,5 +138,23 @@ export default class AnalyticsCommand {
 
   async _writeJSON (analyticsJSON: AnalyticsJSON) {
     return fs.outputJson(this.analyticsPath, analyticsJSON)
+  }
+
+  _acAnalyticsPath (type: string): string {
+    return path.join(this.config.cacheDir, 'completion_analytics', type)
+  }
+
+  async _acAnalytics (): Promise<number> {
+    let meta = {
+      cmd: fs.exists(this._acAnalyticsPath('command')),
+      flag: fs.exists(this._acAnalyticsPath('flag')),
+      value: fs.exists(this._acAnalyticsPath('value'))
+    }
+    let score = 0
+    if (await meta.cmd) score += 1
+    if (await meta.flag) score += 2
+    if (await meta.value) score += 4
+    await fs.emptyDir(this._acAnalyticsPath(''))
+    return score
   }
 }
