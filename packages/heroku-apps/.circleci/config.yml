@@ -18,9 +18,6 @@ jobs:
       - run: {command: "npx mocha", when: always}
       - run: {command: "npx eslint .", when: always}
       - run: {command: "npx flow check", when: always}
-      - run:
-          command: npx eslint .
-          when: always
       - save_cache:
           key: v1-yarn-{{ .Branch }}-{{checksum "yarn.lock"}}
           paths:
