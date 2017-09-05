@@ -102,7 +102,7 @@ jobs:
       - checkout
       - attach_workspace: {at: dist}
       - run: ./scripts/build/windows
-      - run: ls dist/apt
+      - run: ls dist
       - run: ./scripts/release/windows
   # dev_center_docs:
   #   docker: *windows_docker
