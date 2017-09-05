@@ -80,7 +80,7 @@ jobs:
       - add_ssh_keys
       - checkout
       - attach_workspace: {at: dist}
-      - run: {command: "ls dist && ls dist/apt", when: always}
+      - run: {command: "ls dist", when: always}
       - run: {command: "./scripts/release/_github_setup", when: always}
       - run: {command: "./scripts/release/upload_dist", when: always}
       - run: {command: "./scripts/release/homebrew", when: always}
