@@ -7,18 +7,18 @@ set -ex
 (
   # prep npm build
   npm pack
-  mkdir -p "$tmp"
+  mkdir -p "$TMP_DIR"
   TARBALL_FILENAME="heroku-cli-$SHORT_VERSION.tgz"
-  mv "$TARBALL_FILENAME" "$tmp/heroku-cli.tgz"
-  rm -rf "$tmp/package"
-  cd "$tmp"
-  tar -C "$tmp" -xzf "$tmp/heroku-cli.tgz"
-  cd "$tmp/package"
+  mv "$TARBALL_FILENAME" "$TMP_DIR/heroku-cli.tgz"
+  rm -rf "$TMP_DIR/package"
+  cd "$TMP_DIR"
+  tar -C "$TMP_DIR" -xzf "$TMP_DIR/heroku-cli.tgz"
+  cd "$TMP_DIR/package"
   yarn --production
 )
 
 function heroku () {
-  "$tmp/package/bin/run" "$@"
+  "$TMP_DIR/package/bin/run" "$@"
 }
 
 # enter tmp directory
