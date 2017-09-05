@@ -2,4 +2,4 @@
 
 source ./scripts/_init
 
-aws cloudfront create-invalidation --distribution-id "$CLOUDFRONT_DISTRIBUTION" --paths "/heroku-cli/channels/$CHANNEL/*" "/branches/$CHANNEL/apt/*"
+aws cloudfront create-invalidation --distribution-id "$CLOUDFRONT_DISTRIBUTION" --paths "/heroku-cli/channels/$CHANNEL/*"

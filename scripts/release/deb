@@ -37,3 +37,4 @@ gpg --digest-algo SHA512 -abs -u 0F1B0520 -o Release.gpg Release
 rm ./*.deb
 
 s3upload --recursive "$CACHE_DIR" "$DEB_REMOTE_BASE"
+aws cloudfront create-invalidation --distribution-id "$CLOUDFRONT_DISTRIBUTION" --paths "/branches/$CHANNEL/apt/*"
