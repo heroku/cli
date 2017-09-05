@@ -58,6 +58,9 @@ jobs:
           key: node-v8.4.0-linux-x64
   build_os_windows:
     <<: *defaults
+    docker: &windows_docker
+      - image: dickeyxxx/cli-engine-docker-nsis:v3.0.2
+        environment: *env
     steps:
       - checkout
       - restore_cache: {keys: [debug0-node-v8.4.0-windows]}
@@ -96,9 +99,7 @@ jobs:
       - run: ./scripts/release/deb
   build_and_release_win_inst:
     <<: *defaults
-    docker:
-      - image: dickeyxxx/cli-engine-docker-nsis:v3.0.2
-        environment: *env
+    docker: *windows_docker
     steps:
       - checkout
       - attach_workspace: {at: dist}
