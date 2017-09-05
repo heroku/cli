@@ -7,7 +7,8 @@ export ARCH=x64
 
 source ./scripts/_init
 
-"${scripts}/build/_workspace"
+script "build/base"
+script "build/workspace"
 
 keychain=""
 
@@ -16,11 +17,11 @@ if [[ ! -z "${OSX_KEYCHAIN:-}" ]]; then
 fi
 
 # shellcheck disable=SC2086
-pkgbuild --root "$(workspace_dir)" \
+pkgbuild --root "$WORKSPACE_DIR" \
   --identifier com.heroku.cli \
   --install-location /usr/local/lib/heroku \
   --version "${VERSION}" \
   --sign "Developer ID Installer: Heroku INC" \
-  --scripts "$scripts/darwin/scripts" \
+  --scripts "$ROOT_DIR/scripts/darwin/scripts" \
   $keychain \
   "tmp/heroku-cli.pkg"
