@@ -536,7 +536,7 @@ babel-types@^6.18.0, babel-types@^6.23.0, babel-types@^6.24.1, babel-types@^6.26
     lodash "^4.17.4"
     to-fast-properties "^1.0.3"
 
-babylon@^6.17.0, babylon@^6.17.4, babylon@^6.18.0:
+babylon@^6.17.0, babylon@^6.18.0:
   version "6.18.0"
   resolved "http://cli-npm.heroku.com/babylon/-/babylon-6.18.0/af2f3b88fa6f5c1e4c634d1a0f8eac4f55b395e3.tgz#af2f3b88fa6f5c1e4c634d1a0f8eac4f55b395e3"
 
@@ -815,40 +815,9 @@ cli-engine-command@7.0.6, cli-engine-command@^7.0.6:
     string "3.x"
     supports-color "^4.4.0"
 
-cli-engine-command@^5.1.8:
-  version "5.1.19"
-  resolved "http://cli-npm.heroku.com/cli-engine-command/-/cli-engine-command-5.1.19/9f2fec31a027f735fe6c31f4f042b06033b5a51e.tgz#9f2fec31a027f735fe6c31f4f042b06033b5a51e"
-  dependencies:
-    ansi-escapes "2.x"
-    cardinal "1.x"
-    chalk "^1.0.0"
-    fs-extra "^4.0.1"
-    http-call "^2.1.4"
-    lodash.ary "^4.1.1"
-    lodash.defaults "^4.2.0"
-    lodash.get "^4.4.2"
-    lodash.identity "^3.0.0"
-    lodash.keys "^4.2.0"
-    lodash.maxby "4.x"
-    lodash.merge "4.x"
-    lodash.partial "^4.2.1"
-    lodash.property "^4.4.2"
-    lodash.result "^4.5.2"
-    moment "^2.18.1"
-    string "3.x"
-    supports-color "^4.2.1"
-
 cli-engine-config@2.0.1, cli-engine-config@^2.0.0:
   version "2.0.1"
   resolved "http://cli-npm.heroku.com/cli-engine-config/-/cli-engine-config-2.0.1/d5a9a34d993ac59e88e6a5f115fa9acdbe28f9e7.tgz#d5a9a34d993ac59e88e6a5f115fa9acdbe28f9e7"
-  dependencies:
-    fs-extra "^4.0.1"
-    jest-validate "^20.0.3"
-    uuid "^3.1.0"
-
-cli-engine-config@^1.3.7:
-  version "1.7.0"
-  resolved "http://cli-npm.heroku.com/cli-engine-config/-/cli-engine-config-1.7.0/418e51bb8f3b578c65d957350f69adee31695510.tgz#418e51bb8f3b578c65d957350f69adee31695510"
   dependencies:
     fs-extra "^4.0.1"
     jest-validate "^20.0.3"
@@ -860,13 +829,6 @@ cli-engine-heroku@2.0.0, cli-engine-heroku@^2.0.0:
   dependencies:
     heroku-client "^3.0.3"
     http-call "^3.0.1"
-    netrc-parser "^2.0.3"
-
-cli-engine-heroku@^1.1.2:
-  version "1.1.12"
-  resolved "http://cli-npm.heroku.com/cli-engine-heroku/-/cli-engine-heroku-1.1.12/2008d40e26d06074ebbbfa09edba934609dd1269.tgz#2008d40e26d06074ebbbfa09edba934609dd1269"
-  dependencies:
-    heroku-client "^3.0.3"
     netrc-parser "^2.0.3"
 
 cli-engine@4.3.1:
@@ -1967,7 +1929,7 @@ heroku-cli-util@6.1.17:
     supports-color "^3.1.2"
     tunnel-agent "^0.4.3"
 
-heroku-cli-util@^6.0.15, heroku-cli-util@^6.1.17, heroku-cli-util@^6.2.0, heroku-cli-util@^6.2.2, heroku-cli-util@^6.2.4, heroku-cli-util@^6.2.5, heroku-cli-util@^6.2.6, heroku-cli-util@^6.2.7:
+heroku-cli-util@^6.0.15, heroku-cli-util@^6.1.17, heroku-cli-util@^6.2.0, heroku-cli-util@^6.2.4, heroku-cli-util@^6.2.5, heroku-cli-util@^6.2.6, heroku-cli-util@^6.2.7:
   version "6.2.7"
   resolved "http://cli-npm.heroku.com/heroku-cli-util/-/heroku-cli-util-6.2.7/0419f8f64152ad00f280497c3e9d2de0f1fe6066.tgz#0419f8f64152ad00f280497c3e9d2de0f1fe6066"
   dependencies:
@@ -2140,15 +2102,15 @@ heroku-run@3.5.1, heroku-run@^3.4.16:
     heroku-cli-util "^6.2.4"
     shellwords "0.1.0"
 
-heroku-spaces@2.9.5:
-  version "2.9.5"
-  resolved "http://cli-npm.heroku.com/heroku-spaces/-/heroku-spaces-2.9.5/0d59cb7c5a1f7c0d5ec5f8917d1796cbccc38d80.tgz#0d59cb7c5a1f7c0d5ec5f8917d1796cbccc38d80"
+heroku-spaces@2.9.6:
+  version "2.9.6"
+  resolved "http://cli-npm.heroku.com/heroku-spaces/-/heroku-spaces-2.9.6/79198ac6e3007ec4d2878802e12844a7af11ce0e.tgz#79198ac6e3007ec4d2878802e12844a7af11ce0e"
   dependencies:
-    cli-engine-command "^5.1.8"
-    cli-engine-config "^1.3.7"
-    cli-engine-heroku "^1.1.2"
+    cli-engine-command "^7.0.6"
+    cli-engine-config "^2.0.0"
+    cli-engine-heroku "^2.0.0"
     co "4.6.0"
-    heroku-cli-util "^6.2.2"
+    heroku-cli-util "^6.2.7"
     lodash.foreach "^4.5.0"
     lodash.reduce "^4.6.0"
     lodash.sortby "^4.7.0"
@@ -2182,27 +2144,9 @@ html-encoding-sniffer@^1.0.1:
   dependencies:
     whatwg-encoding "^1.0.1"
 
-http-call@3.0.2:
+http-call@3.0.2, http-call@^3.0.1:
   version "3.0.2"
   resolved "http://cli-npm.heroku.com/http-call/-/http-call-3.0.2/5e3be641449b13546480f651f095b693e22e59a8.tgz#5e3be641449b13546480f651f095b693e22e59a8"
-  dependencies:
-    debug "^3.0.1"
-    is-retry-allowed "^1.1.0"
-    is-stream "^1.1.0"
-    tunnel-agent "^0.6.0"
-
-http-call@^2.1.4:
-  version "2.1.6"
-  resolved "http://cli-npm.heroku.com/http-call/-/http-call-2.1.6/fa9e7d703eca39639a267f58e8b0dc7e6fe32873.tgz#fa9e7d703eca39639a267f58e8b0dc7e6fe32873"
-  dependencies:
-    debug "^3.0.0"
-    is-retry-allowed "^1.1.0"
-    is-stream "^1.1.0"
-    tunnel-agent "^0.6.0"
-
-http-call@^3.0.1:
-  version "3.0.1"
-  resolved "http://cli-npm.heroku.com/http-call/-/http-call-3.0.1/906d7f4740ac9756c1e106c89cd0fb876fa1034a.tgz#906d7f4740ac9756c1e106c89cd0fb876fa1034a"
   dependencies:
     debug "^3.0.1"
     is-retry-allowed "^1.1.0"
@@ -2559,14 +2503,14 @@ isstream@~0.1.2:
   resolved "http://cli-npm.heroku.com/isstream/-/isstream-0.1.2/47e63f7af55afa6f92e1500e690eb8b8529c099a.tgz#47e63f7af55afa6f92e1500e690eb8b8529c099a"
 
 istanbul-api@^1.1.1:
-  version "1.1.13"
-  resolved "http://cli-npm.heroku.com/istanbul-api/-/istanbul-api-1.1.13/7197f64413600ebdfec6347a2dc3d4e03f97ed5a.tgz#7197f64413600ebdfec6347a2dc3d4e03f97ed5a"
+  version "1.1.14"
+  resolved "http://cli-npm.heroku.com/istanbul-api/-/istanbul-api-1.1.14/25bc5701f7c680c0ffff913de46e3619a3a6e680.tgz#25bc5701f7c680c0ffff913de46e3619a3a6e680"
   dependencies:
     async "^2.1.4"
     fileset "^2.0.2"
     istanbul-lib-coverage "^1.1.1"
     istanbul-lib-hook "^1.0.7"
-    istanbul-lib-instrument "^1.7.5"
+    istanbul-lib-instrument "^1.8.0"
     istanbul-lib-report "^1.1.1"
     istanbul-lib-source-maps "^1.2.1"
     istanbul-reports "^1.1.2"
@@ -2584,15 +2528,15 @@ istanbul-lib-hook@^1.0.7:
   dependencies:
     append-transform "^0.4.0"
 
-istanbul-lib-instrument@^1.4.2, istanbul-lib-instrument@^1.7.2, istanbul-lib-instrument@^1.7.5:
-  version "1.7.5"
-  resolved "http://cli-npm.heroku.com/istanbul-lib-instrument/-/istanbul-lib-instrument-1.7.5/adb596f8f0cb8b95e739206351a38a586af21b1e.tgz#adb596f8f0cb8b95e739206351a38a586af21b1e"
+istanbul-lib-instrument@^1.4.2, istanbul-lib-instrument@^1.7.2, istanbul-lib-instrument@^1.8.0:
+  version "1.8.0"
+  resolved "http://cli-npm.heroku.com/istanbul-lib-instrument/-/istanbul-lib-instrument-1.8.0/66f6c9421cc9ec4704f76f2db084ba9078a2b532.tgz#66f6c9421cc9ec4704f76f2db084ba9078a2b532"
   dependencies:
     babel-generator "^6.18.0"
     babel-template "^6.16.0"
     babel-traverse "^6.18.0"
     babel-types "^6.18.0"
-    babylon "^6.17.4"
+    babylon "^6.18.0"
     istanbul-lib-coverage "^1.1.1"
     semver "^5.3.0"
 
@@ -5138,7 +5082,7 @@ supports-color@^3.1.2:
   dependencies:
     has-flag "^1.0.0"
 
-supports-color@^4.0.0, supports-color@^4.1.0, supports-color@^4.2.1, supports-color@^4.4.0:
+supports-color@^4.0.0, supports-color@^4.1.0, supports-color@^4.4.0:
   version "4.4.0"
   resolved "http://cli-npm.heroku.com/supports-color/-/supports-color-4.4.0/883f7ddabc165142b2a61427f3352ded195d1a3e.tgz#883f7ddabc165142b2a61427f3352ded195d1a3e"
   dependencies:
