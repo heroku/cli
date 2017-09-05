@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
 
+OS=linux
 set +x
 echo "$HEROKU_DEB_KEY" | base64 -d | gpg --import
 set -x
 
 source ./scripts/_init
 
-CACHE_DIR="$tmp/s3"
+CACHE_DIR="$TMP_DIR/s3"
 DEB_REMOTE_BASE=s3://$S3_BUCKET/branches/$CHANNEL/apt
 
 rm -rf "$CACHE_DIR"
@@ -14,11 +15,12 @@ mkdir -p "$CACHE_DIR"
 cd "$CACHE_DIR"
 
 # do long cache files first
-for ARCH in "${DEB_ARCHS[@]}"; do
-  mv "$(unversioned_deb_path)" "$CACHE_DIR/$(versioned_deb_base).deb"
+for ARCH in "${ARCHS[@]}"; do
+  setarch "$ARCH"
+  mv "$UNVERSIONED_DEB_PATH" "$CACHE_DIR/$VERSIONED_DEB_BASE.deb"
 done
 
-s3uploadLongCache --recursive "$CACHE_DIR" "$DEB_REMOTE_BASE"
+s3upload --recursive "$CACHE_DIR" "$DEB_REMOTE_BASE"
 
 # create Package apt file
 apt-ftparchive packages . > Packages
@@ -27,11 +29,11 @@ bzip2 -k Packages
 xz -k Packages
 
 # create Release apt file
-apt-ftparchive -c "$root/resources/deb/apt-ftparchive.conf" release . > Release
+apt-ftparchive -c "$ROOT_DIR/resources/deb/apt-ftparchive.conf" release . > Release
 gpg --digest-algo SHA512 --clearsign -u 0F1B0520 -o InRelease Release
 gpg --digest-algo SHA512 -abs -u 0F1B0520 -o Release.gpg Release
 
 # remove the deb files so we don't push them again
 rm ./*.deb
 
-s3uploadShortCache --recursive "$CACHE_DIR" "$DEB_REMOTE_BASE"
+s3upload --recursive "$CACHE_DIR" "$DEB_REMOTE_BASE"

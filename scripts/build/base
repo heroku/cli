@@ -4,24 +4,21 @@ source ./scripts/_init
 
 set -x
 
-"$scripts/prep"
-
 # setup workspace
-o="$(base_dir)"
+o="$BASE_DIR"
 rm -rf "${o}"
 mkdir -p "${o}/node_modules"
 mkdir -p "${o}/bin"
-mkdir -p "${o}/lib"
-cp "${root}/README.md" "${o}"
-cp "${root}/LICENSE" "${o}"
-cp "${root}/package.json" "${o}"
-cp "${root}/yarn.lock" "${o}"
-cp -rv "${root}/lib" "${o}"
+cp "$ROOT_DIR/README.md" "${o}"
+cp "$ROOT_DIR/LICENSE" "${o}"
+cp "$ROOT_DIR/package.json" "${o}"
+cp "$ROOT_DIR/yarn.lock" "${o}"
+cp -rv "$ROOT_DIR/lib" "${o}/lib"
 
 (
   cd "${o}"
   # install packages
-  yarn install --no-progress --production --non-interactive --mutex=file:/tmp/.yarn-mutex
+  yarn install --no-progress --production --non-interactive
 )
 
 # build cli-engine if needed

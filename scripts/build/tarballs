@@ -7,22 +7,23 @@ source ./scripts/_init
 set -x
 
 # create tarballs
-mkdir -p "$dist"
-cd "$dist"
+cd "$DIST_DIR"
 
-# must be a directory in this format
-# but it is difficult to work with the version number in other places
-mv "$(workspace_dir)" "$(versioned_base)"
+function build () {
+  # must be a directory in this format
+  # but it is difficult to work with the version number in other places
+  mv "$WORKSPACE_DIR" "$VERSIONED_BASE"
 
-bg tar c "$(versioned_base)" | xz > "$(txz_path)"
-bg tar czf "$(tgz_path)" "$(versioned_base)"
-wait_all
+  tar c "$VERSIONED_BASE" | xz > "$TXZ_PATH" &
+  local xzpid=$!
+  tar czf "$TGZ_PATH" "$VERSIONED_BASE"
+  wait $xzpid || exit 1
 
-mv "$(versioned_base)" "$(workspace_dir)"
+  mv "$VERSIONED_BASE" "$WORKSPACE_DIR"
 
-sha256=$(shasum -a 256 "$(tgz_path)" | awk \{'print $1'\})
-sha256xz=$(shasum -a 256 "$(txz_path)" | awk \{'print $1'\})
-cat << EOF > "$dist/${OS}-${ARCH}"
+  sha256=$(shasum -a 256 "$TGZ_PATH" | awk \{'print $1'\})
+  sha256xz=$(shasum -a 256 "$TXZ_PATH" | awk \{'print $1'\})
+  cat << EOF > "$DIST_DIR/${OS}-${ARCH}"
 {
   "channel": "${CHANNEL}",
   "version": "${VERSION}",
@@ -30,3 +31,11 @@ cat << EOF > "$dist/${OS}-${ARCH}"
   "sha256xz": "${sha256xz}"
 }
 EOF
+}
+
+
+for ARCH in "${ARCHS[@]}"; do
+  setarch "$ARCH"
+  bg build
+done
+wait_all

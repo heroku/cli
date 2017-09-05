@@ -11,4 +11,4 @@ echo "Releasing ${CHANNEL}"
 
 "${scripts}/build/workspace"
 
-s3uploadShortCache "${tmp}/heroku-cli.pkg" "${REMOTE_BASE}/heroku-cli.pkg"
+s3upload "${tmp}/heroku-cli.pkg" "${REMOTE_BASE}/heroku-cli.pkg"

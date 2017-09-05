@@ -15,8 +15,8 @@ jobs:
       - checkout
       - restore_cache: &yarn_restore_cache
           keys:
-            - v0-yarn-{{ checksum "yarn.lock" }}
-            - v0-yarn
+            - v0-debug0-yarn-{{ checksum "yarn.lock" }}
+            - v0-debug0-yarn
       - run: ./scripts/prep
       - run: {command: "./scripts/test/lint", when: always}
       - run: {command: "npx flow check", when: always}
@@ -24,25 +24,16 @@ jobs:
       - run: {command: "bash <(curl -s https://codecov.io/bash)"}
       - run: {command: "./scripts/test/smoke", when: always}
       - save_cache:
-          key: v0-yarn-{{ checksum "yarn.lock" }}
+          key: v0-debug0-yarn-{{ checksum "yarn.lock" }}
           paths:
             - /usr/local/share/.cache/yarn
-            - /cli/node_modules
-  build_base:
-    <<: *defaults
-    steps:
-      - checkout
-      - restore_cache: *yarn_restore_cache
-      - run: ./scripts/build/base
-      - persist_to_workspace:
-          root: tmp/base
-          paths: [ . ]
-  build_darwin_x64:
+  build_os_darwin:
     <<: *defaults
     steps:
       - checkout
       - restore_cache: {keys: [node-v8.4.0-darwin-x64]}
-      - attach_workspace: {at: tmp/base}
+      - run: ./scripts/prep
+      - run: ./scripts/build/base
       - run: ./scripts/build/workspace
       - run: ./scripts/build/tarballs
       - persist_to_workspace: &dist
@@ -51,12 +42,13 @@ jobs:
       - save_cache: &node_cache_save
           key: node-v8.4.0-darwin-x64
           paths: [/cli/tmp/cache/node]
-  build_linux_x64:
+  build_os_linux:
     <<: *defaults
     steps:
       - checkout
       - restore_cache: {keys: [node-v8.4.0-linux-x64]}
-      - attach_workspace: {at: tmp/base}
+      - run: ./scripts/prep
+      - run: ./scripts/build/base
       - run: ./scripts/build/workspace
       - run: ./scripts/build/tarballs
       - run: ./scripts/build/debian
@@ -64,69 +56,23 @@ jobs:
       - save_cache:
           <<: *node_cache_save
           key: node-v8.4.0-linux-x64
-  build_linux_x86:
+  build_os_windows:
     <<: *defaults
     steps:
       - checkout
-      - restore_cache: {keys: [node-v8.4.0-linux-x86]}
-      - attach_workspace: {at: tmp/base}
-      - run: ./scripts/build/workspace
-      - run: ./scripts/build/tarballs
-      - run: ./scripts/build/debian
-      - persist_to_workspace: *dist
-      - save_cache:
-          <<: *node_cache_save
-          key: node-v8.4.0-linux-x86
-  build_linux_arm:
-    <<: *defaults
-    steps:
-      - checkout
-      - restore_cache: {keys: [node-v8.4.0-linux-arm]}
-      - attach_workspace: {at: tmp/base}
-      - run: ./scripts/build/workspace
-      - run: ./scripts/build/tarballs
-      - run: ./scripts/build/debian
-      - persist_to_workspace: *dist
-      - save_cache:
-          <<: *node_cache_save
-          key: node-v8.4.0-linux-arm
-          paths:
-            - linux-arm
-            - heroku-cli-linux-arm.tar.gz
-            - heroku-cli-linux-arm.tar.xz
-  build_windows_x64:
-    <<: *defaults
-    docker: &windows_docker
-      - image: dickeyxxx/cli-engine-docker-nsis:v3.0.2
-        environment: *env
-    steps:
-      - checkout
-      - restore_cache: {keys: [node-v8.4.0-windows-x64]}
-      - attach_workspace: {at: tmp/base}
+      - restore_cache: {keys: [debug0-node-v8.4.0-windows]}
+      - run: ./scripts/prep
+      - run: ./scripts/build/base
       - run: ./scripts/build/workspace
       - run: ./scripts/build/tarballs
       - run: ./scripts/build/windows
       - persist_to_workspace: *dist
       - save_cache:
           <<: *node_cache_save
-          key: node-v8.4.0-windows-x64
-  build_windows_x86:
-    <<: *defaults
-    docker: *windows_docker
-    steps:
-      - checkout
-      - restore_cache: {keys: [node-v8.4.0-windows-x86]}
-      - attach_workspace: {at: tmp/base}
-      - run: ./scripts/build/workspace
-      - run: ./scripts/build/tarballs
-      - run: ./scripts/build/windows
-      - persist_to_workspace: *dist
-      - save_cache:
-          <<: *node_cache_save
-          key: node-v8.4.0-windows-x86
+          key: debug0-node-v8.4.0-windows
   release:
     <<: *defaults
-    docker:
+    docker: &release
       - image: dickeyxxx/cli-engine-docker:v3.0.6
         environment: *env
     steps:
@@ -135,11 +81,30 @@ jobs:
       - attach_workspace: {at: dist}
       - run: {command: "ls dist && ls dist/apt", when: always}
       - run: {command: "./scripts/release/_github_setup", when: always}
-      - run: {command: "./scripts/release/_upload_dist", when: always}
-      - run: {command: "./scripts/release/_upload_debian", when: always}
-      - run: {command: "./scripts/release/_homebrew", when: always}
-      - run: {command: "./scripts/release/_macos_installer_trigger", when: always}
-      - run: {command: "./scripts/release/_invalidate_cdn", when: always}
+      - run: {command: "./scripts/release/upload_dist", when: always}
+      - run: {command: "./scripts/release/homebrew", when: always}
+      - run: {command: "./scripts/release/macos_installer_trigger", when: always}
+      - run: {command: "./scripts/release/invalidate_cdn", when: always}
+  build_and_release_deb:
+    <<: *defaults
+    docker: *release
+    steps:
+      - checkout
+      - attach_workspace: {at: dist}
+      - run: ./scripts/build/deb
+      - run: ls dist/apt
+      - run: ./scripts/release/deb
+  build_and_release_win_inst:
+    <<: *defaults
+    docker:
+      - image: dickeyxxx/cli-engine-docker-nsis:v3.0.2
+        environment: *env
+    steps:
+      - checkout
+      - attach_workspace: {at: dist}
+      - run: ./scripts/build/windows
+      - run: ls dist/apt
+      - run: ./scripts/release/windows
   # dev_center_docs:
   #   docker: *windows_docker
   #   steps:
@@ -159,32 +124,32 @@ workflows:
           filters: &all_pushes
             tags: &version_tags
               only: /^v.*/
-      - build_base:
-          filters: *all_pushes
-      - build_darwin_x64: &release
-          requires:
-            - build_base
+      - build_darwin: &release
           filters:
             tags: *version_tags
             branches:
               only:
                 - master
                 - dev
-      - build_linux_x64: *release
-      - build_linux_x86: *release
-      - build_linux_arm: *release
-      - build_windows_x64: *release
-      - build_windows_x86: *release
+      - build_linux: *release
+      - build_windows: *release
+      - build_and_release_win_inst:
+          <<: *release
+          requires:
+            - test
+            - build_windows
+      - build_and_release_deb:
+          <<: *release
+          requires:
+            - test
+            - build_linux
       - release:
           <<: *release
           requires:
             - test
-            - build_darwin_x64
-            - build_linux_x64
-            - build_linux_x86
-            - build_linux_arm
-            - build_windows_x64
-            - build_windows_x86
+            - build_darwin
+            - build_linux
+            - build_windows
       # skip devcenter for now
       # - dev_center_docs:
       #     requires:

@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+
+set -x
+
+source ./scripts/release/_init
+
+CACHE_DIR="$TMP_DIR/s3"
+
+rm -rf "$CACHE_DIR"
+mkdir -p "$CACHE_DIR"
+cd "$CACHE_DIR"
+
+TARGETS=(darwin linux windows)
+for OS in "${TARGETS[@]}"; do
+  setos "$OS"
+  IFS='|' read -ra ARCHS <<< "$(archs)"
+  for ARCH in "${ARCHS[@]}"; do
+    setarch "$ARCH"
+    mv "$TGZ_PATH" "$VERSIONED_BASE.tar.gz"
+    mv "$TXZ_PATH" "$VERSIONED_BASE.tar.xz"
+  done
+done
+
+s3upload --recursive "$CACHE_DIR" "$REMOTE_BASE"
+
+for OS in "${TARGETS[@]}"; do
+  setos "$OS"
+  IFS='|' read -ra ARCHS <<< "$(archs)"
+  for ARCH in "${ARCHS[@]}"; do
+    setarch "$ARCH"
+    mv "$VERSIONED_BASE.tar.gz" "$UNVERSIONED_BASE.tar.gz"
+    mv "$VERSIONED_BASE.tar.xz" "$UNVERSIONED_BASE.tar.xz"
+  done
+done
+
+s3upload --recursive "$CACHE_DIR" "$REMOTE_BASE"
+
+rm "$CACHE_DIR"/*
+
+# now upload json files
+for OS in "${TARGETS[@]}"; do
+  setos "$OS"
+  IFS='|' read -ra ARCHS <<< "$(archs)"
+  for ARCH in "${ARCHS[@]}"; do
+    setarch "$ARCH"
+    cp "$DIST_DIR/${OS}-${ARCH}" "$CACHE_DIR"
+  done
+done
+
+# generate version file
+cat << EOF > "$CACHE_DIR/version"
+{
+  "channel": "${CHANNEL}",
+  "version": "${VERSION}"
+}
+EOF
+
+s3upload --content-type application/json --recursive "$CACHE_DIR" "$REMOTE_BASE"

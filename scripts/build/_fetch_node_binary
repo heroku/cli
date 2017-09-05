@@ -10,7 +10,6 @@ source ./scripts/_init
 
 set -x
 
-go_home
 if [[ $# -ne 1 ]]; then
   echo "USAGE: $0 OUTPUT_DIR"
   exit 1
@@ -21,32 +20,32 @@ node_ext=""
 NODE_VERSION=$(node -p "require('./package.json')['cli-engine'].node || process.versions.node")
 
 mkdir -p "$output"
-mkdir -p "$tmp/node"
-mkdir -p "$tmp/cache/node"
+mkdir -p "$TMP_DIR/node"
+mkdir -p "$TMP_DIR/cache/node"
 
 # install node
 if [ "${OS}" == "windows" ]; then
   node_ext=".exe"
   node_base=node-v${NODE_VERSION}-win-${ARCH}
-  if [ ! -f "$tmp/cache/node/${node_base}" ]; then
+  if [ ! -f "$TMP_DIR/cache/node/${node_base}" ]; then
     echo "fetching ${node_base}"
     url=https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-win-${ARCH}.7z
-    curl -fSsLo "$tmp/node/${node_base}.7z" "${url}"
+    curl -fSsLo "$TMP_DIR/node/${node_base}.7z" "${url}"
     (
-      cd "$tmp/node"
-      7z x -bd -y "${tmp}/node/${node_base}.7z" > /dev/null
-      mv "${node_base}/node.exe" "$tmp/cache/node/${node_base}"
+      cd "$TMP_DIR/node"
+      7z x -bd -y "${TMP_DIR}/node/${node_base}.7z" > /dev/null
+      mv "${node_base}/node.exe" "$TMP_DIR/cache/node/${node_base}"
     )
   fi
 else
   if [ "${ARCH}" == "arm" ]; then node_arch=armv7l; else node_arch="${ARCH}"; fi
   node_base=node-v${NODE_VERSION}-${OS}-${node_arch}
-  if [ ! -f "$tmp/cache/node/${node_base}" ]; then
+  if [ ! -f "$TMP_DIR/cache/node/${node_base}" ]; then
     echo "fetching ${node_base}"
     url=https://nodejs.org/dist/v${NODE_VERSION}/${node_base}.tar.xz
-    curl -fSsL "${url}" | tar -C "${tmp}/node" -xJ
-    mv "$tmp/node/${node_base}/bin/node" "$tmp/cache/node/${node_base}"
+    curl -fSsL "${url}" | tar -C "${TMP_DIR}/node" -xJ
+    mv "$TMP_DIR/node/${node_base}/bin/node" "$TMP_DIR/cache/node/${node_base}"
   fi
 fi
 
-cp "${tmp}/cache/node/${node_base}" "${output}/node${node_ext}"
+cp "${TMP_DIR}/cache/node/${node_base}" "${output}/node${node_ext}"

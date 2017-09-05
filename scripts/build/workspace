@@ -4,22 +4,24 @@ source ./scripts/_init
 
 set -x
 
-# setup workspace
-o="$(workspace_dir)"
-rm -rf "${o}"
-cp -r "$(base_dir)" "$o"
+function build () {
+  setarch $ARCH
+  # setup workspace
+  o="$WORKSPACE_DIR"
+  rm -rf "${o}"
+  cp -r "$BASE_DIR" "$o"
 
-"${root}/scripts/build/_fetch_node_binary" "${o}/bin"
+  "$ROOT_DIR/scripts/build/_fetch_node_binary" "${o}/bin"
 
-# create bin runner
-if [ "${OS}" == "windows" ]; then
-  cat << EOF > "${o}/bin/heroku.cmd"
+  # create bin runner
+  if [ "${OS}" == "windows" ]; then
+    cat << EOF > "${o}/bin/heroku.cmd"
 @echo off
 set CLI_BINPATH=%~dp0\\heroku.cmd
 "%~dp0\\node.exe" "%~dp0\\heroku.js" %*
 EOF
-else
-  cat << EOF > "${o}/bin/heroku"
+  else
+    cat << EOF > "${o}/bin/heroku"
 #!/usr/bin/env bash
 set -e
 get_script_dir () {
@@ -45,5 +47,11 @@ else
   CLI_BINPATH="\$DIR/heroku" "\$DIR/node" "\$DIR/heroku.js" "\$@"
 fi
 EOF
-chmod +x "${o}/bin/heroku"
-fi
+    chmod +x "${o}/bin/heroku"
+  fi
+}
+
+for ARCH in "${ARCHS[@]}"; do
+  bg build
+done
+wait_all

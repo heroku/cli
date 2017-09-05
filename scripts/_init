@@ -11,78 +11,73 @@ set -o nounset
 # set -o xtrace
 
 # Set magic variables for current file & dir
-dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-root="$(cd "$(dirname "${dir}")" && pwd)"
-scripts="$root/scripts"
-tmp="$root/tmp"
-dist="$root/dist"
-dist_deb="$root/dist/apt"
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && cd .. && pwd)"
+cd "${ROOT_DIR}"
+TMP_DIR="$ROOT_DIR/tmp"
+BASE_DIR="$TMP_DIR/base"
+DIST_DIR="$ROOT_DIR/dist"
+DIST_APT_DIR="$ROOT_DIR/dist/apt"
 
-CHANNEL=$("$scripts/_vars/_channel")
-VERSION=$("$scripts/_vars/_version")
-SHORT_VERSION=$(node -p "require('$root/package.json').version")
-DEB_VERSION="${SHORT_VERSION}-1"
+mkdir -p "$TMP_DIR"
+mkdir -p "$DIST_DIR"
 
 PLATFORMS=(
-  windows_x86
-  windows_x64
-  darwin_x64
-  linux_x86
-  linux_x64
-  linux_arm
+  darwin-x64
 )
 
-DEB_ARCHS=(
-  x64
-  x86
-  arm
-)
-
-
-function split_platform () {
-  IFS='_' read -ra _platform <<< "$1"
-  export OS=${_platform[0]}
-  export ARCH=${_platform[1]}
+function script () {
+  "$ROOT_DIR/scripts/$1"
 }
 
-if [[ "${CIRCLE_JOB-}" == build_* ]] && [[ "${CIRCLE_JOB-}" != "build_base" ]] ; then
-  IFS='_' read -ra _platform <<< "$CIRCLE_JOB"
-  export OS=${_platform[1]}
-  export ARCH=${_platform[2]}
-fi
+CHANNEL=$(script "_vars/channel")
+VERSION=$(script "_vars/version")
+SHORT_VERSION=$(node -p "require('$ROOT_DIR/package.json').version")
+DEB_VERSION="${SHORT_VERSION}-1"
 
-function versioned_base () {
-  echo "heroku-cli-v${VERSION}-${OS}-${ARCH}"
-}
-function unversioned_base () {
-  echo "heroku-cli-${OS}-${ARCH}"
-}
-
-function base_dir () {
-  echo "$tmp/base"
+function archs () {
+  if [ "$OS" = darwin ]; then
+    echo "x64"
+  elif [ "$OS" = windows ]; then
+    echo "x64|x86"
+  elif [ "$OS" = linux ]; then
+    echo "x64|x86|arm"
+  fi
 }
 
-function workspace_dir () {
-  echo "$tmp/${OS}_${ARCH}"
+function setos () {
+  export OS=$1
+  if [ ! -z "${ARCH:-}" ]; then
+    setarch "$ARCH"
+  fi
 }
 
-function tgz_path () {
-  echo "$dist/$(unversioned_base).tar.gz"
-}
-function txz_path () {
-  echo "$dist/$(unversioned_base).tar.xz"
-}
+function setarch () {
+  export ARCH=$1
+  export VERSIONED_BASE="heroku-cli-v${VERSION}-${OS}-${ARCH}"
+  export UNVERSIONED_BASE="heroku-cli-${OS}-${ARCH}"
+  export WORKSPACE_DIR="$TMP_DIR/${OS}_${ARCH}"
+  export TGZ_PATH="$DIST_DIR/$UNVERSIONED_BASE.tar.gz"
+  export TXZ_PATH="$DIST_DIR/$UNVERSIONED_BASE.tar.xz"
 
-function go_home () {
-  cd "${root}"
+  if [ "$OS" = linux ]; then
+    if [ "$ARCH" = x64 ]; then
+      export DEB_ARCH=amd64
+    elif [ "$ARCH" = x86 ]; then
+      export DEB_ARCH=i386
+    elif [ "$ARCH" = arm ]; then
+      export DEB_ARCH=armel
+    fi
+    export VERSIONED_DEB_BASE="heroku_${DEB_VERSION}_$DEB_ARCH"
+    export UNVERSIONED_DEB_BASE="heroku_$DEB_ARCH"
+    export VERSIONED_DEB_PATH="$DIST_APT_DIR/$VERSIONED_DEB_BASE.deb"
+    export UNVERSIONED_DEB_PATH="$DIST_APT_DIR/$UNVERSIONED_DEB_BASE.deb"
+  fi
 }
-go_home
 
 function bg () {
   "$@" &
   pids="${pids:-} $!"
 }
-
 function wait_all () {
   for pid in $pids; do
     wait "${pid}" || exit 1
@@ -90,33 +85,21 @@ function wait_all () {
 }
 
 function s3upload () {
-  aws s3 cp "$@"
-}
-function s3uploadLongCache () {
-  s3upload --cache-control max-age=86400 "$@"
-}
-function s3uploadShortCache () {
-  s3upload --cache-control max-age=3600 "$@"
+  echo "$@"
+  #aws s3 cp --cache-control max-age=86400 "$@"
 }
 
-function deb_arch () {
-  if [[ "$ARCH" = "x64" ]]; then
-    echo "amd64"
-  elif [[ "$ARCH" = "x86" ]]; then
-    echo "i386"
-  elif [[ "$ARCH" = "arm" ]]; then
-    echo "armel"
-  fi
-}
-function unversioned_deb_base () {
-  echo "heroku_$(deb_arch)"
-}
-function unversioned_deb_path () {
-  echo "$dist_deb/$(unversioned_deb_base).deb"
-}
-function versioned_deb_base () {
-  echo "heroku_${DEB_VERSION}_$(deb_arch)"
-}
-function versioned_deb_path () {
-  echo "$dist_deb/$(versioned_deb_base).deb"
-}
+if [[ "${CIRCLE_JOB-}" == build_os_* ]]; then
+  IFS='_' read -ra _platform <<< "$CIRCLE_JOB"
+  export OS=${_platform[1]}
+fi
+
+if [[ "${CIRCLE_JOB-}" == build_os_* ]]; then
+  IFS='_' read -ra _platform <<< "$CIRCLE_JOB"
+  export OS=${_platform[1]}
+fi
+
+if [ ! -z "${OS:-}" ]; then
+  setos "$OS"
+  IFS='|' read -ra ARCHS <<< "$(archs)"
+fi
