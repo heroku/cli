@@ -31,7 +31,8 @@ jobs:
     <<: *defaults
     steps:
       - checkout
-      - restore_cache: {keys: [node-v8.4.0-darwin-x64]}
+      - restore_cache: *yarn_restore_cache
+      - restore_cache: {keys: [node-v8.4.0-darwin]}
       - run: ./scripts/prep
       - run: ./scripts/build/base
       - run: ./scripts/build/workspace
@@ -40,13 +41,14 @@ jobs:
           root: dist
           paths: [ . ]
       - save_cache: &node_cache_save
-          key: node-v8.4.0-darwin-x64
+          key: node-v8.4.0-darwin
           paths: [/cli/tmp/cache/node]
   build_os_linux:
     <<: *defaults
     steps:
       - checkout
-      - restore_cache: {keys: [node-v8.4.0-linux-x64]}
+      - restore_cache: *yarn_restore_cache
+      - restore_cache: {keys: [node-v8.4.0-linux]}
       - run: ./scripts/prep
       - run: ./scripts/build/base
       - run: ./scripts/build/workspace
@@ -54,7 +56,7 @@ jobs:
       - persist_to_workspace: *dist
       - save_cache:
           <<: *node_cache_save
-          key: node-v8.4.0-linux-x64
+          key: node-v8.4.0-linux
   build_os_windows:
     <<: *defaults
     docker: &windows_docker
@@ -62,7 +64,8 @@ jobs:
         environment: *env
     steps:
       - checkout
-      - restore_cache: {keys: [debug0-node-v8.4.0-windows]}
+      - restore_cache: *yarn_restore_cache
+      - restore_cache: {keys: [node-v8.4.0-windows]}
       - run: ./scripts/prep
       - run: ./scripts/build/base
       - run: ./scripts/build/workspace
@@ -70,7 +73,7 @@ jobs:
       - persist_to_workspace: *dist
       - save_cache:
           <<: *node_cache_save
-          key: debug0-node-v8.4.0-windows
+          key: node-v8.4.0-windows
   release:
     <<: *defaults
     docker: &release_docker
