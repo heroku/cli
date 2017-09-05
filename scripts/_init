@@ -85,8 +85,7 @@ function wait_all () {
 }
 
 function s3upload () {
-  echo "$@"
-  #aws s3 cp --cache-control max-age=86400 "$@"
+  aws s3 cp --cache-control max-age=86400 "$@"
 }
 
 if [[ "${CIRCLE_JOB-}" == build_os_* ]]; then
