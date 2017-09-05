@@ -6,3 +6,5 @@ cli.raiseErrors = true
 let chai = require('chai')
 chai.use(require('sinon-chai'))
 chai.should()
+
+global.columns = 80
