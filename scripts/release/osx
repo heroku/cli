@@ -5,6 +5,8 @@ export ARCH=x64
 
 source ./scripts/release/_init
 
+script "darwin/build"
+
 set -x
 
 echo "Releasing ${CHANNEL}"
