@@ -95,7 +95,7 @@ class Dyno extends Duplex {
 
       if (this.opts.showStatus) cli.action.status(this._status('starting'))
       let c = tls.connect(this.uri.port, this.uri.hostname, {rejectUnauthorized: this.heroku.options.rejectUnauthorized})
-      c.setTimeout(1000 * 60 * 20)
+      c.setTimeout(1000 * 60 * 60)
       c.setEncoding('utf8')
       c.on('connect', () => {
         c.write(this.uri.path.substr(1) + '\r\n', () => {
@@ -108,6 +108,10 @@ class Dyno extends Duplex {
         if (this.unpipeStdin) this.unpipeStdin()
       })
       c.on('error', this.reject)
+      c.on('timeout', () => {
+        c.end()
+        this.reject(new Error('timed out'))
+      })
       process.once('SIGINT', () => c.end())
     })
   }
