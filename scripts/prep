@@ -8,6 +8,6 @@ yarn install --pure-lockfile --non-interactive
 #yarn check
 
 # build only if it is a git checkout
-if [ ! -d "${root}/node_modules/cli-engine/lib" ]; then
-  cd "${root}/node_modules/cli-engine" && yarn && cd ~/cli
+if [ ! -d "${ROOT_DIR}/node_modules/cli-engine/lib" ]; then
+  cd "${ROOT_DIR}/node_modules/cli-engine" && yarn && cd ~/cli
 fi
