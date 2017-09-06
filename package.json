@@ -59,7 +59,7 @@
     "heroku-local": "5.1.21",
     "heroku-orgs": "1.6.6",
     "heroku-pg": "2.3.0",
-    "heroku-pipelines": "2.1.3",
+    "heroku-pipelines": "2.2.0",
     "heroku-ps-exec": "2.2.0",
     "heroku-redis": "1.2.15",
     "heroku-run": "3.5.1",
