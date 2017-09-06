@@ -108,6 +108,10 @@ ansi-escapes@2.x, ansi-escapes@^2.0.0:
   version "2.0.0"
   resolved "http://cli-npm.heroku.com/ansi-escapes/-/ansi-escapes-2.0.0/5bae52be424878dd9783e8910e3fc2922e83c81b.tgz#5bae52be424878dd9783e8910e3fc2922e83c81b"
 
+ansi-escapes@^3.0.0:
+  version "3.0.0"
+  resolved "http://cli-npm.heroku.com/ansi-escapes/-/ansi-escapes-3.0.0/ec3e8b4e9f8064fc02c3ac9b65f1c275bda8ef92.tgz#ec3e8b4e9f8064fc02c3ac9b65f1c275bda8ef92"
+
 ansi-regex@^2.0.0, ansi-regex@^2.1.1:
   version "2.1.1"
   resolved "http://cli-npm.heroku.com/ansi-regex/-/ansi-regex-2.1.1/c3b33ab5ee360d86e0e628f0468ae7ef27d654df.tgz#c3b33ab5ee360d86e0e628f0468ae7ef27d654df"
@@ -823,6 +827,14 @@ cli-engine-config@2.0.1, cli-engine-config@^2.0.0:
     jest-validate "^20.0.3"
     uuid "^3.1.0"
 
+cli-engine-config@^2.0.1:
+  version "2.0.2"
+  resolved "http://cli-npm.heroku.com/cli-engine-config/-/cli-engine-config-2.0.2/29b1184d4595c6835dbda3dec8b3be074781dbc8.tgz#29b1184d4595c6835dbda3dec8b3be074781dbc8"
+  dependencies:
+    fs-extra "^4.0.1"
+    jest-validate "^20.0.3"
+    uuid "^3.1.0"
+
 cli-engine-heroku@2.0.0, cli-engine-heroku@^2.0.0:
   version "2.0.0"
   resolved "http://cli-npm.heroku.com/cli-engine-heroku/-/cli-engine-heroku-2.0.0/8f626dc7d98792f7b336e18223d6b5972b2b5edd.tgz#8f626dc7d98792f7b336e18223d6b5972b2b5edd"
@@ -831,19 +843,19 @@ cli-engine-heroku@2.0.0, cli-engine-heroku@^2.0.0:
     http-call "^3.0.1"
     netrc-parser "^2.0.3"
 
-cli-engine@4.3.1:
-  version "4.3.1"
-  resolved "http://cli-npm.heroku.com/cli-engine/-/cli-engine-4.3.1/75b71eda5dce5dda4b986791317a8cc512296ef3.tgz#75b71eda5dce5dda4b986791317a8cc512296ef3"
+cli-engine@4.3.2:
+  version "4.3.2"
+  resolved "http://cli-npm.heroku.com/cli-engine/-/cli-engine-4.3.2/4b4ec5ee4982ac10d5a999600012880e0a7f2624.tgz#4b4ec5ee4982ac10d5a999600012880e0a7f2624"
   dependencies:
-    ansi-escapes "^2.0.0"
+    ansi-escapes "^3.0.0"
     cli-engine-command "^7.0.6"
-    cli-engine-config "^2.0.0"
+    cli-engine-config "^2.0.1"
     cli-engine-heroku "^2.0.0"
     debug "^3.0.1"
     filesize "^3.5.10"
     find-up "^2.1.0"
     fs-extra "^4.0.1"
-    http-call "^3.0.1"
+    http-call "^3.0.2"
     klaw-sync "^3.0.0"
     lodash.flatten "4.x"
     lodash.maxby "4.x"
@@ -853,7 +865,7 @@ cli-engine@4.3.1:
     moment "^2.18.1"
     netrc-parser "^2.0.3"
     node-gyp "3.x"
-    rwlockfile "^1.4.5"
+    rwlockfile "^1.4.6"
     string "3.x"
     string-similarity "^1.2.0"
     tar-fs "1.x"
@@ -1512,9 +1524,9 @@ flexbuffer@0.0.6:
   version "0.0.6"
   resolved "http://cli-npm.heroku.com/flexbuffer/-/flexbuffer-0.0.6/039fdf23f8823e440c38f3277e6fef1174215b30.tgz#039fdf23f8823e440c38f3277e6fef1174215b30"
 
-flow-bin@0.54.0:
-  version "0.54.0"
-  resolved "http://cli-npm.heroku.com/flow-bin/-/flow-bin-0.54.0/f2fb0478e9e99702b623c9ed84079a39903bba77.tgz#f2fb0478e9e99702b623c9ed84079a39903bba77"
+flow-bin@0.54.1:
+  version "0.54.1"
+  resolved "http://cli-npm.heroku.com/flow-bin/-/flow-bin-0.54.1/7101bcccf006dc0652714a8aef0c72078a760510.tgz#7101bcccf006dc0652714a8aef0c72078a760510"
 
 fn-name@^2.0.1:
   version "2.0.1"
@@ -2063,7 +2075,22 @@ heroku-pg@2.3.0:
     strip-eof "^1.0.0"
     tunnel-ssh "^4.1.3"
 
-heroku-pipelines@2.1.3, heroku-pipelines@^2.0.1:
+heroku-pipelines@2.2.0:
+  version "2.2.0"
+  resolved "http://cli-npm.heroku.com/heroku-pipelines/-/heroku-pipelines-2.2.0/e376a6eb43deb2b5add6b58d9a6028897bc470a3.tgz#e376a6eb43deb2b5add6b58d9a6028897bc470a3"
+  dependencies:
+    bluebird "^3.4.7"
+    co "^4.6.0"
+    got "^6.7.1"
+    heroku-cli-util "^6.2.7"
+    inflection "^1.12.0"
+    inquirer "^3.0.1"
+    lodash.flatten "^4.4.0"
+    lodash.sortby "^4.7.0"
+    string-just "^0.0.2"
+    validator "^6.2.1"
+
+heroku-pipelines@^2.0.1:
   version "2.1.3"
   resolved "http://cli-npm.heroku.com/heroku-pipelines/-/heroku-pipelines-2.1.3/1e98972e1506ddc902904b49079f9680029f3ae5.tgz#1e98972e1506ddc902904b49079f9680029f3ae5"
   dependencies:
@@ -2094,7 +2121,15 @@ heroku-redis@1.2.15:
     ioredis "1.9.0"
     ssh2 "^0.4.11"
 
-heroku-run@3.5.1, heroku-run@^3.4.16:
+heroku-run@3.5.2:
+  version "3.5.2"
+  resolved "http://cli-npm.heroku.com/heroku-run/-/heroku-run-3.5.2/e7c8207a51a4c602123f91e3b8e7cd22ddf19b75.tgz#e7c8207a51a4c602123f91e3b8e7cd22ddf19b75"
+  dependencies:
+    co "4.6.0"
+    heroku-cli-util "^6.2.7"
+    shellwords "^0.1.1"
+
+heroku-run@^3.4.16:
   version "3.5.1"
   resolved "http://cli-npm.heroku.com/heroku-run/-/heroku-run-3.5.1/d0d9160c9e723903d294c41aa16881453c8ef59c.tgz#d0d9160c9e723903d294c41aa16881453c8ef59c"
   dependencies:
@@ -2144,7 +2179,7 @@ html-encoding-sniffer@^1.0.1:
   dependencies:
     whatwg-encoding "^1.0.1"
 
-http-call@3.0.2, http-call@^3.0.1:
+http-call@3.0.2, http-call@^3.0.1, http-call@^3.0.2:
   version "3.0.2"
   resolved "http://cli-npm.heroku.com/http-call/-/http-call-3.0.2/5e3be641449b13546480f651f095b693e22e59a8.tgz#5e3be641449b13546480f651f095b693e22e59a8"
   dependencies:
@@ -4699,9 +4734,9 @@ run-async@^2.2.0:
   dependencies:
     is-promise "^2.1.0"
 
-rwlockfile@^1.4.5:
-  version "1.4.5"
-  resolved "http://cli-npm.heroku.com/rwlockfile/-/rwlockfile-1.4.5/9a5f9fc10d3fe61dbb5f8278571f3d155d59e379.tgz#9a5f9fc10d3fe61dbb5f8278571f3d155d59e379"
+rwlockfile@^1.4.6:
+  version "1.4.6"
+  resolved "http://cli-npm.heroku.com/rwlockfile/-/rwlockfile-1.4.6/7257a5bd6c34a0f03cbc1b09515423344f839942.tgz#7257a5bd6c34a0f03cbc1b09515423344f839942"
   dependencies:
     debug "2.x"
     graceful-fs "4.x"
@@ -4804,7 +4839,7 @@ shellwords@0.1.0:
   version "0.1.0"
   resolved "http://cli-npm.heroku.com/shellwords/-/shellwords-0.1.0/66afd47b6a12932d9071cbfd98a52e785cd0ba14.tgz#66afd47b6a12932d9071cbfd98a52e785cd0ba14"
 
-shellwords@^0.1.0:
+shellwords@^0.1.0, shellwords@^0.1.1:
   version "0.1.1"
   resolved "http://cli-npm.heroku.com/shellwords/-/shellwords-0.1.1/d6b9181c1a48d397324c84871efbcfc73fc0654b.tgz#d6b9181c1a48d397324c84871efbcfc73fc0654b"
 

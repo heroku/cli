@@ -7,7 +7,6 @@ const debug = require('debug')('heroku:analytics')
 
 async function run (config: Config, opts: PreRun) {
   try {
-    debug('run')
     const Analytics = require('../../analytics').default
     const analytics = new Analytics(config)
     await analytics.record(opts)

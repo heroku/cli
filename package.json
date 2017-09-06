@@ -13,6 +13,7 @@
     "node": "8.4.0",
     "defaultCommand": "dashboard",
     "hooks": {
+      "init": "./lib/hooks/init/migrate",
       "prerun": "./lib/hooks/prerun/analytics",
       "update": "./lib/hooks/update/analytics"
     },
@@ -41,7 +42,7 @@
     ]
   },
   "dependencies": {
-    "cli-engine": "4.3.1",
+    "cli-engine": "4.3.2",
     "cli-engine-command": "7.0.6",
     "cli-engine-config": "2.0.1",
     "cli-engine-heroku": "2.0.0",
@@ -62,7 +63,7 @@
     "heroku-pipelines": "2.2.0",
     "heroku-ps-exec": "2.2.0",
     "heroku-redis": "1.2.15",
-    "heroku-run": "3.5.1",
+    "heroku-run": "3.5.2",
     "heroku-spaces": "2.9.6",
     "heroku-webhooks": "1.0.7",
     "http-call": "3.0.2",
@@ -85,7 +86,7 @@
     "eslint-plugin-node": "5.1.1",
     "eslint-plugin-promise": "3.5.0",
     "eslint-plugin-standard": "3.0.1",
-    "flow-bin": "0.54.0",
+    "flow-bin": "0.54.1",
     "husky": "0.14.3",
     "jest": "21.0.1",
     "nock": "9.0.14"
