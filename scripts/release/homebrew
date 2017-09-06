@@ -31,7 +31,7 @@ NODE_VERSION=$(node -p "require('./package.json')['cli-engine'].node || process.
     sed -i "s/node-.*.tar.xz/${NODE_TARBALL_BASE}/" Formula/heroku-node.rb
     sed -i "s/sha256 \".*\"/sha256 \"${NODE_SHA256XZ}\"/" Formula/heroku-node.rb
     git add Formula/heroku-node.rb
-    git diff
+    git diff --cached
     aws s3 cp --cache-control max-age=0 "$NODE_TARBALL_PATH" "$REMOTE_BASE/$NODE_TARBALL_BASE"
     git commit -m "heroku-node ${NODE_VERSION}"
     git push origin master
@@ -54,7 +54,7 @@ cd tmp/homebrew-brew
 sed -i "s/heroku-.*.tar.xz/${TARBALL_BASE}/" Formula/heroku.rb
 sed -i "s/sha256 \".*\"/sha256 \"${SHA256XZ}\"/" Formula/heroku.rb
 git add Formula/heroku.rb
-git diff
+git diff --cached
 
 if [[ ${CHANNEL} != "stable" ]]; then
   echo "not on stable, skipping homebrew"
