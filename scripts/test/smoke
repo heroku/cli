@@ -4,21 +4,10 @@ source ./scripts/_init
 
 set -ex
 
-(
-  # prep npm build
-  npm pack
-  mkdir -p "$TMP_DIR"
-  TARBALL_FILENAME="heroku-cli-$SHORT_VERSION.tgz"
-  mv "$TARBALL_FILENAME" "$TMP_DIR/heroku-cli.tgz"
-  rm -rf "$TMP_DIR/package"
-  cd "$TMP_DIR"
-  tar -C "$TMP_DIR" -xzf "$TMP_DIR/heroku-cli.tgz"
-  cd "$TMP_DIR/package"
-  yarn --production
-)
+./scripts/build/base
 
 function heroku () {
-  "$TMP_DIR/package/bin/run" "$@"
+  node "$TMP_DIR/base/bin/heroku.js" "$@"
 }
 
 # enter tmp directory
