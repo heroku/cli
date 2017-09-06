@@ -4,7 +4,9 @@ source ./scripts/_init
 
 set -ex
 
-./scripts/build/base
+if [ ! -d "$TMP_DIR/base" ]; then
+  ./scripts/build/base
+fi
 
 function heroku () {
   node "$TMP_DIR/base/bin/heroku.js" "$@"
