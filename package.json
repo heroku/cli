@@ -42,10 +42,10 @@
     ]
   },
   "dependencies": {
-    "cli-engine": "4.3.2",
-    "cli-engine-command": "7.0.6",
-    "cli-engine-config": "2.0.1",
-    "cli-engine-heroku": "2.0.0",
+    "cli-engine": "4.4.0",
+    "cli-engine-command": "8.0.4",
+    "cli-engine-config": "3.1.0",
+    "cli-engine-heroku": "3.0.1",
     "debug": "3.0.1",
     "fs-extra": "4.0.1",
     "heroku-apps": "2.4.12",
