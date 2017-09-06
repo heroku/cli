@@ -1,58 +1,47 @@
 const keyBy = require('./key-by')
 
 const V3_HEADER = 'application/vnd.heroku+json; version=3'
-const FILTERS_HEADER = V3_HEADER + '.filters'
+const FILTERS_HEADER = `${V3_HEADER}.filters`
+const PIPELINES_HEADER = `${V3_HEADER}.pipelines`
 
-function getCoupling (heroku, app) {
-  return heroku.get(`/apps/${app}/pipeline-couplings`)
-}
-
-function postCoupling (heroku, pipeline, app, stage) {
-  return heroku.post('/pipeline-couplings', {
-    body: { app, pipeline, stage }
-  })
-}
-
-function patchCoupling (heroku, id, stage) {
-  return heroku.patch(`/pipeline-couplings/${id}`, { body: { stage } })
-}
-
-function deleteCoupling (heroku, id) {
-  return heroku.delete(`/pipeline-couplings/${id}`)
+function createAppSetup (heroku, body) {
+  return heroku.post('/app-setups', { body })
 }
 
 function createCoupling (heroku, pipeline, app, stage) {
   return postCoupling(heroku, pipeline.id, app, stage)
 }
 
-function updateCoupling (heroku, app, stage) {
-  return getCoupling(heroku, app)
-           .then(coupling => patchCoupling(heroku, coupling.id, stage))
-}
-
-function removeCoupling (heroku, app) {
-  return getCoupling(heroku, app)
-           .then(coupling => deleteCoupling(heroku, coupling.id))
-}
-
-function listCouplings (heroku, pipelineId) {
-  return heroku.get(`/pipelines/${pipelineId}/pipeline-couplings`)
-}
-
-function getPipeline (heroku, id) {
-  return heroku.get(`/pipelines/${id}`)
-}
-
-function findPipelineByName (heroku, idOrnName) {
-  return heroku.get(`/pipelines?eq[name]=${idOrnName}`)
-}
-
 function createPipeline (heroku, name) {
   return heroku.post('/pipelines', { body: { name } })
 }
 
-function createAppSetup (heroku, body) {
-  return heroku.post('/app-setups', { body })
+function deleteCoupling (heroku, id) {
+  return heroku.delete(`/pipeline-couplings/${id}`)
+}
+
+function findPipelineByName (heroku, idOrName) {
+  return heroku.request({
+    method: 'GET',
+    path: `/pipelines?eq[name]=${idOrName}`,
+    headers: { 'Accept': PIPELINES_HEADER }
+  })
+}
+
+function getCoupling (heroku, app) {
+  return heroku.get(`/apps/${app}/pipeline-couplings`)
+}
+
+function getPipeline (heroku, id) {
+  return heroku.request({
+    method: 'GET',
+    path: `/pipelines/${id}`,
+    headers: { 'Accept': PIPELINES_HEADER }
+  })
+}
+
+function getTeam (heroku, teamId) {
+  return heroku.get(`/teams/${teamId}`)
 }
 
 function getAppFilter (heroku, appIds) {
@@ -62,6 +51,14 @@ function getAppFilter (heroku, appIds) {
     headers: { 'Accept': FILTERS_HEADER },
     body: { in: { id: appIds } }
   })
+}
+
+function getAccountFeature (heroku, feature) {
+  return heroku.get(`/account/features/${feature}`)
+}
+
+function getAppSetup (heroku, buildId) {
+  return heroku.get(`/app-setups/${buildId}`)
 }
 
 function listPipelineApps (heroku, pipelineId) {
@@ -77,12 +74,28 @@ function listPipelineApps (heroku, pipelineId) {
   })
 }
 
-function getAccountFeature (heroku, feature) {
-  return heroku.get(`/account/features/${feature}`)
+function listCouplings (heroku, pipelineId) {
+  return heroku.get(`/pipelines/${pipelineId}/pipeline-couplings`)
 }
 
-function getAppSetup (heroku, buildId) {
-  return heroku.get(`/app-setups/${buildId}`)
+function patchCoupling (heroku, id, stage) {
+  return heroku.patch(`/pipeline-couplings/${id}`, { body: { stage } })
+}
+
+function postCoupling (heroku, pipeline, app, stage) {
+  return heroku.post('/pipeline-couplings', {
+    body: { app, pipeline, stage }
+  })
+}
+
+function removeCoupling (heroku, app) {
+  return getCoupling(heroku, app)
+           .then(coupling => deleteCoupling(heroku, coupling.id))
+}
+
+function updateCoupling (heroku, app, stage) {
+  return getCoupling(heroku, app)
+           .then(coupling => patchCoupling(heroku, coupling.id, stage))
 }
 
 module.exports = {
@@ -90,12 +103,13 @@ module.exports = {
   createCoupling,
   createPipeline,
   deleteCoupling,
+  findPipelineByName,
   getAccountFeature,
   getAppFilter,
   getAppSetup,
   getCoupling,
   getPipeline,
-  findPipelineByName,
+  getTeam,
   listCouplings,
   listPipelineApps,
   patchCoupling,
