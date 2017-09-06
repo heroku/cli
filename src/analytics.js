@@ -13,7 +13,7 @@ const debug = require('debug')('heroku:analytics')
 
 type AnalyticsJSONCommand = {
   command: string,
-  autocomplete: number,
+  completion: number,
   version: string,
   plugin_version: string,
   os: string,
@@ -66,7 +66,7 @@ export default class AnalyticsCommand {
 
     analyticsJSON.commands.push({
       command: opts.Command.id,
-      autocomplete: await this._acAnalytics(),
+      completion: await this._acAnalytics(),
       version: this.config.version,
       plugin: plugin.name,
       plugin_version: plugin.version,
