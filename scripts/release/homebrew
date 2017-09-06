@@ -15,7 +15,7 @@ NODE_VERSION=$(node -p "require('./package.json')['cli-engine'].node || process.
 (
   NODE_TARBALL_BASE=node-${NODE_VERSION}.tar.xz
   NODE_TARBALL_PATH=$DIST_DIR/$NODE_TARBALL_BASE
-  if grep -q "$NODE_VERSION" "tmp/homebrew-brew/Formula/heroku-node.rb"; then
+  if ! grep -q "$NODE_VERSION" "tmp/homebrew-brew/Formula/heroku-node.rb"; then
     (
       rm -rf "$TMP_DIR/homebrew"
       mkdir "$TMP_DIR/homebrew"
