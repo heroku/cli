@@ -32,7 +32,7 @@ NODE_VERSION=$(node -p "require('./package.json')['cli-engine'].node || process.
     sed -i "s/sha256 \".*\"/sha256 \"${NODE_SHA256XZ}\"/" Formula/heroku-node.rb
     git add Formula/heroku-node.rb
     git diff --cached
-    aws s3 cp --cache-control max-age=0 "$NODE_TARBALL_PATH" "$REMOTE_BASE/$NODE_TARBALL_BASE"
+    aws s3 cp --cache-control max-age=604800 "$NODE_TARBALL_PATH" "$REMOTE_BASE/$NODE_TARBALL_BASE"
     git commit -m "heroku-node ${NODE_VERSION}"
     git push origin master
   fi
@@ -61,6 +61,6 @@ if [[ ${CHANNEL} != "stable" ]]; then
   exit
 fi
 
-aws s3 cp --cache-control max-age=0 "$TARBALL_PATH" "$REMOTE_BASE/$TARBALL_BASE"
+aws s3 cp --cache-control max-age=604800 "$TARBALL_PATH" "$REMOTE_BASE/$TARBALL_BASE"
 git commit -m "heroku ${SHORT_VERSION}"
 git push origin master
