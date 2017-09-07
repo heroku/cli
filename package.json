@@ -13,6 +13,7 @@
     "dirname": "heroku",
     "node": "8.4.0",
     "defaultCommand": "dashboard",
+    "legacyConverter": "./lib/legacy",
     "hooks": {
       "init": "./lib/hooks/init/migrate",
       "prerun": "./lib/hooks/prerun/analytics",
