@@ -1,7 +1,6 @@
 // @flow
 
 import Options from './options'
-// import os from 'os'
 import {Command, flags} from 'cli-engine-heroku'
 
 class TestCommand extends Command {
@@ -13,9 +12,6 @@ class TestCommand extends Command {
   }
 }
 
-// autocomplete will throw error on windows
-// let skipWindows = (os.platform() === 'windows' || os.platform() === 'win32') ? xtest : test
-
 describe('AutocompleteOptions', () => {
   let cmd
   beforeAll(() => {
@@ -24,8 +20,6 @@ describe('AutocompleteOptions', () => {
 
   describe('#_findFlagFromWildArg', () => {
     test('finds flag from long and short name', () => {
-      // let cmd = await Options.mock('heroku foo:bar --app=')
-      // expect(cmd.out.stdout.output).toMatch(/\/cli-engine\/completions\/zsh_setup/)
       var output = cmd._findFlagFromWildArg('--app=my-app', TestCommand)
       expect(output.name).toEqual('app')
       output = cmd._findFlagFromWildArg('-a', TestCommand)
