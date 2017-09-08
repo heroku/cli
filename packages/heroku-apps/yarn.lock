@@ -70,7 +70,7 @@ amdefine@>=0.0.4:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/amdefine/-/amdefine-1.0.1.tgz#4a5282ac164729e93619bcfd3ad151f817ce91f5"
 
-ansi-escapes@^1.3.0, ansi-escapes@^1.4.0:
+ansi-escapes@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/ansi-escapes/-/ansi-escapes-1.4.0.tgz#d3a8a83b319aa67793662b13e761c7911422306e"
 
@@ -4015,11 +4015,11 @@ tar@^2.2.1:
     fstream "^1.0.2"
     inherits "2"
 
-term-img@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/term-img/-/term-img-1.0.0.tgz#703c166bd16b0ef17a04469b0cfdd0deb3d270bb"
+term-img@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/term-img/-/term-img-2.1.0.tgz#8ff0c9e03b50d861f27bff083e60670f109fa260"
   dependencies:
-    ansi-escapes "^1.3.0"
+    ansi-escapes "^2.0.0"
     iterm2-version "^2.1.0"
 
 test-exclude@^4.1.1:

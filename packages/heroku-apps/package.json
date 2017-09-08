@@ -46,7 +46,7 @@
     "sparkline": "^0.2.0",
     "strftime": "^0.10.0",
     "string": "^3.3.3",
-    "term-img": "^1.0.0"
+    "term-img": "^2.1.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
