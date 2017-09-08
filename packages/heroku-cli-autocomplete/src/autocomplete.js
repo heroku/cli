@@ -29,6 +29,6 @@ export class AutocompleteBase extends Command {
   }
 
   writeLogFile (msg: string) {
-    logToFile(`[${moment().format()}] ${msg}`, this.acLogfile)
+    logToFile(`[${moment().format()}] ${msg}\n`, this.acLogfile)
   }
 }
