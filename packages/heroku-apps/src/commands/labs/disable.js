@@ -1,42 +1,42 @@
-'use strict'
+// @flow
 
-let cli = require('heroku-cli-util')
-let co = require('co')
+import {Command, flags} from 'cli-engine-heroku'
 
-function * run (context, heroku) {
-  function disableFeature (feature, app) {
-    return heroku.request({
-      path: app ? `/apps/${app}/features/${feature}` : `/account/features/${feature}`,
-      method: 'PATCH',
+export default class LabsDisable extends Command {
+  static topic = 'labs'
+  static command = 'disable'
+  static description = 'disables an experimental feature'
+  static args = [{name: 'feature'}]
+  static flags = {
+    app: flags.app(),
+    remote: flags.remote()
+  }
+
+  async run () {
+    let feature = this.args.feature
+    let request
+    let target
+
+    try {
+      await this.heroku.get(`/account/features/${feature}`)
+      request = this.disableFeature(feature)
+      target = (await this.heroku.get('/account')).body.email
+    } catch (err) {
+      if (err.statusCode !== 404) throw err
+      // might be an app feature
+      if (!this.app) throw err
+      await this.heroku.get(`/apps/${this.app}/features/${feature}`)
+      request = this.disableFeature(feature, this.app)
+      target = this.app
+    }
+
+    this.out.action.start(`Disabling ${this.out.color.green(feature)} for ${this.out.color.cyan(target)}`)
+    await request
+  }
+
+  disableFeature (feature: string, app?: ?string) {
+    return this.heroku.patch(app ? `/apps/${app}/features/${feature}` : `/account/features/${feature}`, {
       body: {enabled: false}
     })
   }
-
-  let feature = context.args.feature
-  let request
-  let target
-  try {
-    yield heroku.get(`/account/features/${feature}`)
-    request = disableFeature(feature)
-    target = (yield heroku.get('/account')).email
-  } catch (err) {
-    if (err.statusCode !== 404) throw err
-    // might be an app feature
-    if (!context.app) throw err
-    yield heroku.get(`/apps/${context.app}/features/${feature}`)
-    request = disableFeature(feature, context.app)
-    target = context.app
-  }
-
-  yield cli.action(`Disabling ${cli.color.green(feature)} for ${cli.color.cyan(target)}`, request)
-}
-
-module.exports = {
-  topic: 'labs',
-  command: 'disable',
-  description: 'disables an experimental feature',
-  args: [{name: 'feature'}],
-  needsAuth: true,
-  wantsApp: true,
-  run: cli.command(co.wrap(run))
 }
