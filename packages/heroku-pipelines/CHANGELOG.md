@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+- Update help output of `pipelines:info`
+
 ## [2.2.0] 2017-09-06
 
 - Show pipeline owner when it has one set in the command `pipelines:info`

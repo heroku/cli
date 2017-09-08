@@ -26,11 +26,18 @@ module.exports = {
   description: 'show list of apps in a pipeline',
   help: `Example:
 
-    $ heroku pipelines:info example
-    === example
-    Staging:     example-staging
-    Production:  example
-    example-admin`,
+  $ heroku pipelines:info example
+  name:  example
+  owner: my-team (team)
+
+  app name                     stage
+  ───────────────────────────  ──────────
+  ⬢ example-pr-16              review
+  ⬢ example-pr-19              review
+  ⬢ example-pr-23              review
+  ⬢ example-staging            staging
+  ⬢ example-staging-2          staging
+  ⬢ example-production         production`,
   needsAuth: true,
   args: [
     {name: 'pipeline', description: 'pipeline to show', optional: false}
