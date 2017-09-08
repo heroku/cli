@@ -154,6 +154,7 @@ ${this.cmdsWithDesc.join('\n')}
   _writeShellSetupsToCache () {
     const zshSetup = `${this.waitingDots}
 
+HEROKU_AC_ANALYTICS_DIR=${path.join(this.completionsCachePath, 'completion_analytics')};
 HEROKU_AC_COMMANDS_PATH=${path.join(this.completionsCachePath, 'commands')};
 HEROKU_ZSH_AC_SETTERS_PATH=\${HEROKU_AC_COMMANDS_PATH}_functions && test -f $HEROKU_ZSH_AC_SETTERS_PATH && source $HEROKU_ZSH_AC_SETTERS_PATH;
 fpath=(

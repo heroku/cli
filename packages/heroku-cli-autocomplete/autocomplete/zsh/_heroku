@@ -7,6 +7,7 @@ _heroku () {
 
   ## all commands
   _complete_commands () {
+   touch "$HEROKU_AC_ANALYTICS_DIR"/command
    local -a _all_commands_list
    if type _set_all_commands_list >/dev/null 2>&1; then
      _set_all_commands_list
@@ -24,10 +25,12 @@ _heroku () {
 
   if [ $CURRENT -gt 2 ]; then
     if [[ "$_cur" == -* ]]; then
+      touch "$HEROKU_AC_ANALYTICS_DIR"/flag
       local _flag_completion_func="_set_${_command_id//:/_}_flags"
       declare -f $_flag_completion_func >/dev/null && $_flag_completion_func
     else
       if type _compadd_cli >/dev/null 2>&1; then
+        touch "$HEROKU_AC_ANALYTICS_DIR"/value
         _compadd_cli
       fi
     fi
