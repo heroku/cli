@@ -86,6 +86,9 @@
     "lib"
   ],
   "homepage": "https://github.com/heroku/heroku-apps",
+  "jest": {
+    "setupTestFrameworkScriptFile": "./test/jest.js"
+  },
   "keywords": [
     "heroku-plugin"
   ],
