@@ -8,9 +8,9 @@
   },
   "dependencies": {
     "bluebird": "^3.5.0",
-    "cli-engine-command": "^8.0.12",
-    "cli-engine-config": "^3.1.7",
-    "cli-engine-heroku": "^3.0.5",
+    "cli-engine-command": "^8.0.15",
+    "cli-engine-config": "^3.2.0",
+    "cli-engine-heroku": "^4.0.1",
     "co": "^4.6.0",
     "co-wait": "^0.0.0",
     "filesize": "^3.5.10",

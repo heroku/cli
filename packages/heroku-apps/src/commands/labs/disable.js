@@ -22,7 +22,7 @@ export default class LabsDisable extends Command {
       request = this.disableFeature(feature)
       target = (await this.heroku.get('/account')).body.email
     } catch (err) {
-      if (err.statusCode !== 404) throw err
+      if (err.http.statusCode !== 404) throw err
       // might be an app feature
       if (!this.app) throw err
       await this.heroku.get(`/apps/${this.app}/features/${feature}`)
