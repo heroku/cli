@@ -102,6 +102,11 @@
     "bin"
   ],
   "homepage": "https://cli.heroku.com",
+  "jest": {
+    "modulePathIgnorePatterns": [
+      "tmp"
+    ]
+  },
   "keywords": [
     "heroku",
     "heroku-cli-plugin"
