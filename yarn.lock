@@ -804,26 +804,18 @@ cli-cursor@^2.1.0:
   dependencies:
     restore-cursor "^2.0.0"
 
-cli-engine-command@8.0.12:
-  version "8.0.12"
-  resolved "https://registry.yarnpkg.com/cli-engine-command/-/cli-engine-command-8.0.12.tgz#af1b87480ea202715808552c9134e28e71b40454"
+cli-engine-command@8.0.15, cli-engine-command@^8.0.15:
+  version "8.0.15"
+  resolved "https://registry.yarnpkg.com/cli-engine-command/-/cli-engine-command-8.0.15.tgz#44a6ae79c740d800f474ab9e0601132b300d1d47"
   dependencies:
     "@heroku/linewrap" "^1.0.0"
     ansi-escapes "^3.0.0"
     cardinal "1.x"
-    chalk "^1.0.0"
+    chalk "^2.1.0"
+    cli-ux "^1.0.1"
     fs-extra "^4.0.1"
     http-call "^3.0.2"
-    lodash.ary "^4.1.1"
-    lodash.defaults "^4.2.0"
-    lodash.get "^4.4.2"
-    lodash.identity "^3.0.0"
-    lodash.keys "^4.2.0"
-    lodash.maxby "4.x"
-    lodash.merge "4.x"
-    lodash.partial "^4.2.1"
-    lodash.property "^4.4.2"
-    lodash.result "^4.5.2"
+    lodash.maxby "^4.6.0"
     moment "^2.18.1"
     string "3.x"
     supports-color "^4.4.0"
@@ -851,33 +843,9 @@ cli-engine-command@^7.0.6:
     string "3.x"
     supports-color "^4.4.0"
 
-cli-engine-command@^8.0.5:
-  version "8.0.5"
-  resolved "https://registry.yarnpkg.com/cli-engine-command/-/cli-engine-command-8.0.5.tgz#4db87c18826b1cd75e80ad9e36043e3e15fa4c37"
-  dependencies:
-    "@heroku/linewrap" "^1.0.0"
-    ansi-escapes "^3.0.0"
-    cardinal "1.x"
-    chalk "^1.0.0"
-    fs-extra "^4.0.1"
-    http-call "^3.0.2"
-    lodash.ary "^4.1.1"
-    lodash.defaults "^4.2.0"
-    lodash.get "^4.4.2"
-    lodash.identity "^3.0.0"
-    lodash.keys "^4.2.0"
-    lodash.maxby "4.x"
-    lodash.merge "4.x"
-    lodash.partial "^4.2.1"
-    lodash.property "^4.4.2"
-    lodash.result "^4.5.2"
-    moment "^2.18.1"
-    string "3.x"
-    supports-color "^4.4.0"
-
-cli-engine-config@3.1.7:
-  version "3.1.7"
-  resolved "https://registry.yarnpkg.com/cli-engine-config/-/cli-engine-config-3.1.7.tgz#5f706030e3e6a99ba920d9874acbcdc35a24db0c"
+cli-engine-config@3.2.0, cli-engine-config@^3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/cli-engine-config/-/cli-engine-config-3.2.0.tgz#5b1af55e64c1ef680e298ec6c1fab649c1d1e80c"
   dependencies:
     fs-extra "^4.0.1"
     uuid "^3.1.0"
@@ -890,17 +858,11 @@ cli-engine-config@^2.0.0:
     jest-validate "^20.0.3"
     uuid "^3.1.0"
 
-cli-engine-config@^3.1.2:
-  version "3.1.2"
-  resolved "https://registry.yarnpkg.com/cli-engine-config/-/cli-engine-config-3.1.2.tgz#ccef9a6a1ae27d13ce23acbd8fa22d9bfad5f5e7"
+cli-engine-heroku@4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/cli-engine-heroku/-/cli-engine-heroku-4.0.1.tgz#b4f255137900ab2833bf201deb518bff0c1cb35d"
   dependencies:
-    fs-extra "^4.0.1"
-    uuid "^3.1.0"
-
-cli-engine-heroku@3.1.1:
-  version "3.1.1"
-  resolved "https://registry.yarnpkg.com/cli-engine-heroku/-/cli-engine-heroku-3.1.1.tgz#e8bdc7bb92e20406f8ceb5d521dc6d9ca24c1703"
-  dependencies:
+    cli-ux "^1.0.1"
     heroku-client "^3.0.3"
     http-call "^3.0.2"
     netrc-parser "^2.0.3"
@@ -913,14 +875,14 @@ cli-engine-heroku@^2.0.0:
     http-call "^3.0.1"
     netrc-parser "^2.0.3"
 
-cli-engine@4.5.0:
-  version "4.5.0"
-  resolved "https://registry.yarnpkg.com/cli-engine/-/cli-engine-4.5.0.tgz#7a893128c317000434f435fa0dddbbc4c29a0293"
+cli-engine@4.6.0:
+  version "4.6.0"
+  resolved "https://registry.yarnpkg.com/cli-engine/-/cli-engine-4.6.0.tgz#eb220caadb263db3c42b40aa002fe5d9e11f978f"
   dependencies:
     "@heroku/linewrap" "^1.0.0"
     ansi-escapes "^3.0.0"
-    cli-engine-command "^8.0.5"
-    cli-engine-config "^3.1.2"
+    cli-engine-command "^8.0.15"
+    cli-engine-config "^3.2.0"
     debug "^3.0.1"
     filesize "^3.5.10"
     find-up "^2.1.0"
@@ -935,11 +897,31 @@ cli-engine@4.5.0:
     moment "^2.18.1"
     netrc-parser "^2.0.3"
     node-gyp "3.x"
-    rwlockfile "^1.4.7"
+    rwlockfile "^1.4.8"
     string "3.x"
     string-similarity "^1.2.0"
     tar-fs "1.x"
     tmp "^0.0.33"
+
+cli-ux@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-1.0.1.tgz#0f49f02e4fa7a8f65a4f67c07fa0af891099fa6a"
+  dependencies:
+    ansi-escapes "^3.0.0"
+    ansi-styles "^3.2.0"
+    cardinal "^1.0.0"
+    chalk "^2.1.0"
+    fs-extra "^4.0.1"
+    lodash.ary "^4.1.1"
+    lodash.get "^4.4.2"
+    lodash.identity "^3.0.0"
+    lodash.partial "^4.2.1"
+    lodash.property "^4.4.2"
+    lodash.result "^4.5.2"
+    moment "^2.18.1"
+    password-prompt "^1.0.3"
+    strip-ansi "^4.0.0"
+    supports-color "^4.4.0"
 
 cli-width@^2.0.0:
   version "2.2.0"
@@ -3998,6 +3980,13 @@ parseuri@0.0.5:
   dependencies:
     better-assert "~1.0.0"
 
+password-prompt@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/password-prompt/-/password-prompt-1.0.3.tgz#1478aad647c5afb65158e901bf4df0a3c367039a"
+  dependencies:
+    ansi-escapes "^3.0.0"
+    cross-spawn "^5.1.0"
+
 path-exists@^2.0.0:
   version "2.1.0"
   resolved "http://cli-npm.heroku.com/path-exists/-/path-exists-2.1.0/0feb6c64f0fc518d9a754dd5efb62c7022761f4b.tgz#0feb6c64f0fc518d9a754dd5efb62c7022761f4b"
@@ -4826,9 +4815,9 @@ run-async@^2.2.0:
   dependencies:
     is-promise "^2.1.0"
 
-rwlockfile@^1.4.7:
-  version "1.4.7"
-  resolved "https://registry.yarnpkg.com/rwlockfile/-/rwlockfile-1.4.7.tgz#4d7ba1096842d943eba82d60c9b2de9d781e74bd"
+rwlockfile@^1.4.8:
+  version "1.4.8"
+  resolved "https://registry.yarnpkg.com/rwlockfile/-/rwlockfile-1.4.8.tgz#2814e82ac3afe63483b359a0fd8d2cc00d0a29dd"
   dependencies:
     debug "^3.0.1"
     fs-extra "^4.0.1"
