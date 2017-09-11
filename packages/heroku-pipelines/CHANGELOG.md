@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 - Update help output of `pipelines:info`
+- Show warning when operating in an owned pipeline with apps with different owners with the `pipelines:info` command.
 
 ## [2.2.0] 2017-09-06
 

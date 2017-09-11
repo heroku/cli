@@ -4,21 +4,8 @@ const co = require('co')
 const cli = require('heroku-cli-util')
 const disambiguate = require('../../lib/disambiguate')
 const listPipelineApps = require('../../lib/api').listPipelineApps
-const getTeam = require('../../lib/api').getTeam
 const sortBy = require('lodash.sortby')
-
-// For user pipelines we need to use their couplings to determine user email
-function getUserPipelineOwner (apps, userId) {
-  for (let app in apps) {
-    if (apps[app].owner.id === userId) {
-      return apps[app].owner.email
-    }
-  }
-
-  // If pipeline owner doesn't own any application and type is user (unlikely)
-  // We return userId as default
-  return userId
-}
+const PipelineOwner = require('../../lib/ownership')
 
 module.exports = {
   topic: 'pipelines',
@@ -48,29 +35,16 @@ module.exports = {
   ],
   run: cli.command(co.wrap(function* (context, heroku) {
     const pipeline = yield disambiguate(heroku, context.args.pipeline)
-
-    let apps = yield listPipelineApps(heroku, pipeline.id)
-    const developmentApps = sortBy(apps.filter(app => app.coupling.stage === 'development'), ['name'])
-    const reviewApps = sortBy(apps.filter(app => app.coupling.stage === 'review'), ['name'])
-    const stagingApps = sortBy(apps.filter(app => app.coupling.stage === 'staging'), ['name'])
-    const productionApps = sortBy(apps.filter(app => app.coupling.stage === 'production'), ['name'])
-
-    apps = developmentApps.concat(reviewApps).concat(stagingApps).concat(productionApps)
+    const pipelineApps = yield listPipelineApps(heroku, pipeline.id)
+    let owner
 
     if (context.flags.json) {
-      cli.styledJSON({pipeline, apps})
+      cli.styledJSON({pipeline, pipelineApps})
     } else {
       cli.log(`name:  ${pipeline.name}`)
 
       if (pipeline.owner) {
-        let owner
-
-        if (pipeline.owner.type === 'team') {
-          const team = yield getTeam(heroku, pipeline.owner.id)
-          owner = `${team.name} (team)`
-        } else {
-          owner = getUserPipelineOwner(apps, pipeline.owner.id)
-        }
+        owner = yield PipelineOwner.getOwner(heroku, pipelineApps, pipeline)
         cli.log(`owner: ${owner}`)
       }
       cli.log('')
@@ -86,7 +60,17 @@ module.exports = {
         })
       }
 
+      const developmentApps = sortBy(pipelineApps.filter(app => app.coupling.stage === 'development'), ['name'])
+      const reviewApps = sortBy(pipelineApps.filter(app => app.coupling.stage === 'review'), ['name'])
+      const stagingApps = sortBy(pipelineApps.filter(app => app.coupling.stage === 'staging'), ['name'])
+      const productionApps = sortBy(pipelineApps.filter(app => app.coupling.stage === 'production'), ['name'])
+      const apps = developmentApps.concat(reviewApps).concat(stagingApps).concat(productionApps)
+
       cli.table(apps, { columns })
+
+      if (pipeline.owner) {
+        PipelineOwner.warnMixedOwnership(pipelineApps, pipeline, owner)
+      }
     }
   }))
 }
