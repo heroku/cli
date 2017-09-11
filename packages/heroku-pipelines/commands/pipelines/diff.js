@@ -181,5 +181,8 @@ module.exports = {
   description: 'compares the latest release of this app to its downstream app(s)',
   needsAuth: true,
   needsApp: true,
-  run: cli.command(co.wrap(run))
+  run: cli.command(co.wrap(run)),
+  help: `Example:
+
+    $ heroku pipelines:diff --app murmuring-headland-14719`
 }
