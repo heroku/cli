@@ -12,12 +12,16 @@ jobs:
             - v1-yarn-{{ .Branch }}
             - v1-yarn-master
       - run: yarn
-      - run: |
-          npx jest --coverage
-          bash <(curl -s https://codecov.io/bash)
-      - run: {command: "npx mocha", when: always}
+      - run: {command: "npx jest --coverage", when: always}
+      - run: {command: "npx nyc mocha", when: always}
       - run: {command: "npx eslint .", when: always}
       - run: {command: "npx flow check", when: always}
+      - run: |
+          mv coverage/coverage-final.json coverage/jest-coverage.json
+          npx nyc report --reporter=json
+          mv coverage/coverage-final.json coverage/mocha-coverage.json
+          npx istanbul-combine -r json coverage/*-coverage.json
+          bash <(curl -s https://codecov.io/bash)
       - save_cache:
           key: v1-yarn-{{ .Branch }}-{{checksum "yarn.lock"}}
           paths:
