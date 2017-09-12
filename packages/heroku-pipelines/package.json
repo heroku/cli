@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "bluebird": "^3.4.7",
+    "cli-engine-heroku": "^4.0.1",
     "co": "^4.6.0",
     "got": "^6.7.1",
     "heroku-cli-util": "^6.2.7",

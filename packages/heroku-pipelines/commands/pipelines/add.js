@@ -6,6 +6,7 @@ let infer = require('../../lib/infer')
 let disambiguate = require('../../lib/disambiguate')
 let prompt = require('../../lib/prompt')
 let stageNames = require('../../lib/stages').inferrableStageNames
+const {StageCompletion} = require('cli-engine-heroku/lib/completions')
 
 const createCoupling = require('../../lib/api').createCoupling
 
@@ -26,7 +27,7 @@ Example:
     {name: 'pipeline', description: 'name of pipeline', optional: false}
   ],
   flags: [
-    {name: 'stage', char: 's', description: 'stage of first app in pipeline', hasValue: true}
+    {name: 'stage', char: 's', description: 'stage of first app in pipeline', hasValue: true, completion: StageCompletion}
   ],
   run: cli.command(co.wrap(function* (context, heroku) {
     const app = context.app

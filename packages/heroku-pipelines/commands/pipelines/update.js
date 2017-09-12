@@ -3,6 +3,7 @@
 let co = require('co')
 let cli = require('heroku-cli-util')
 const updateCoupling = require('../../lib/api').updateCoupling
+const {StageCompletion} = require('cli-engine-heroku/lib/completions')
 
 module.exports = {
   topic: 'pipelines',
@@ -15,7 +16,7 @@ module.exports = {
   needsApp: true,
   needsAuth: true,
   flags: [
-    {name: 'stage', char: 's', description: 'new stage of app', hasValue: true}
+    {name: 'stage', char: 's', description: 'new stage of app', hasValue: true, completion: StageCompletion}
   ],
   run: cli.command(co.wrap(function* (context, heroku) {
     if (!context.flags.stage) {
