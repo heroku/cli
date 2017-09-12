@@ -16,9 +16,11 @@
     "legacyConverter": "./lib/legacy",
     "hooks": {
       "init": "./lib/hooks/init/migrate",
-      "precache": "./lib/hooks/prerun/completions",
       "prerun": "./lib/hooks/prerun/analytics",
-      "update": "./lib/hooks/update/analytics"
+      "update": [
+        "./lib/hooks/update/analytics",
+        "./lib/hooks/update/completions"
+      ]
     },
     "s3": {
       "host": "cli-assets.heroku.com"
