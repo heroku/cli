@@ -12,8 +12,13 @@ function createCoupling (heroku, pipeline, app, stage) {
   return postCoupling(heroku, pipeline.id, app, stage)
 }
 
-function createPipeline (heroku, name) {
-  return heroku.post('/pipelines', { body: { name } })
+function createPipeline (heroku, name, owner) {
+  return heroku.request({
+    method: 'POST',
+    path: '/pipelines',
+    headers: { 'Accept': PIPELINES_HEADER },
+    body: { name, owner }
+  })
 }
 
 function deleteCoupling (heroku, id) {
@@ -51,6 +56,10 @@ function getAppFilter (heroku, appIds) {
     headers: { 'Accept': FILTERS_HEADER },
     body: { in: { id: appIds } }
   })
+}
+
+function getAccountInfo (heroku) {
+  return heroku.get('/account')
 }
 
 function getAccountFeature (heroku, feature) {
@@ -104,6 +113,7 @@ module.exports = {
   createPipeline,
   deleteCoupling,
   findPipelineByName,
+  getAccountInfo,
   getAccountFeature,
   getAppFilter,
   getAppSetup,

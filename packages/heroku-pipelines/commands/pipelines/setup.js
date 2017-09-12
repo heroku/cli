@@ -4,6 +4,7 @@ const api = require('../../lib/api')
 const KolkrabbiAPI = require('../../lib/kolkrabbi-api')
 const GitHubAPI = require('../../lib/github-api')
 const prompt = require('../../lib/prompt')
+const {flags} = require('cli-engine-heroku')
 
 const REPO_REGEX = /.+\/.+/
 const STAGING_APP_INDICATOR = '-staging'
@@ -229,6 +230,7 @@ module.exports = {
   topic: 'pipelines',
   command: 'setup',
   description: 'bootstrap a new pipeline with common settings and create a production and staging app (requires a fully formed app.json in the repo)',
+
   help: `Example:
 
     $ heroku pipelines:setup example githuborg/reponame -o example-org
@@ -244,6 +246,7 @@ module.exports = {
     View your new pipeline by running \`heroku pipelines:open e5a55ffa-de3f-11e6-a245-3c15c2e6bc1e\``,
   needsApp: false,
   needsAuth: true,
+  wantsOrg: true,
   args: [
     {
       name: 'name',
@@ -257,18 +260,7 @@ module.exports = {
     }
   ],
   flags: [
-    {
-      name: 'organization',
-      char: 'o',
-      description: 'the organization which will own the apps (can also use --team)',
-      hasValue: true
-    },
-    {
-      name: 'team',
-      char: 't',
-      description: 'the team which will own the apps (can also use --organization)',
-      hasValue: true
-    },
+    flags.team({name: 'team', hasValue: true, description: 'the team which will own the apps (can also use --org)'}),
     {
       name: 'yes',
       char: 'y',
@@ -287,7 +279,7 @@ module.exports = {
     const kolkrabbi = new KolkrabbiAPI(context.version, heroku.options.token)
     const github = new GitHubAPI(context.version, yield getGitHubToken(kolkrabbi))
 
-    const organization = context.flags.organization || context.flags.team
+    const organization = context.org || context.team || context.flags.team || context.flags.organization
     const {name: pipelineName, repo: repoName} = yield getNameAndRepo(context.args)
     const stagingAppName = pipelineName + STAGING_APP_INDICATOR
     const repo = yield getRepo(github, repoName)
@@ -298,9 +290,17 @@ module.exports = {
       ciSettings = yield getCISettings(context.flags.yes, organization)
     }
 
+    let ownerType = organization ? 'team' : 'user'
+
+    // If team or org is not specified, we assign ownership to the user creating
+    let owner = organization ? yield api.getTeam(heroku, organization) : yield api.getAccountInfo(heroku)
+    let ownerID = owner.id
+
+    owner = { id: ownerID, type: ownerType }
+
     const pipeline = yield cli.action(
       'Creating pipeline',
-      api.createPipeline(heroku, pipelineName)
+      api.createPipeline(heroku, pipelineName, owner)
     )
 
     yield cli.action(

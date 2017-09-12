@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 - Update help output of `pipelines:info`
 - Show warning when operating in an owned pipeline with apps with different owners with the `pipelines:info` command.
+- Add support for creating a pipeline with an owner. Uses the personal account as owner if no owner is specified via `--team` or `--org`
+- Update `pipelines:setup` to use `--org` rather than `--organization` when creating a pipeline to an organization. This is to preserve consistency with other CLI commands.
 
 ## [2.2.0] 2017-09-06
 

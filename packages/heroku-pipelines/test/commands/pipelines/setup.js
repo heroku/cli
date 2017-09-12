@@ -113,6 +113,8 @@ describe('pipelines:setup', function () {
 
           api.get('/app-setups/1').reply(200, { status: 'succeeded' })
           api.get('/app-setups/2').reply(200, { status: 'succeeded' })
+
+          api.get('/account').reply(200, { id: '1234-567' })
         })
 
         it('creates apps in the personal account', function* () {
@@ -158,30 +160,32 @@ describe('pipelines:setup', function () {
         })
       })
 
-      context('in an organization', function () {
-        let organization
+      context('in a team', function () {
+        let team
 
         beforeEach(function () {
-          organization = 'test-org'
+          team = 'test-org'
 
           api.post('/app-setups', {
             source_blob: { url: archiveURL },
-            app: { name: prodApp.name, organization },
+            app: { name: prodApp.name, organization: team },
             pipeline_coupling: { pipeline: pipeline.id, stage: 'production' }
           }).reply(201, { id: 1, app: prodApp })
 
           api.post('/app-setups', {
             source_blob: { url: archiveURL },
-            app: { name: stagingApp.name, organization },
+            app: { name: stagingApp.name, organization: team },
             pipeline_coupling: { pipeline: pipeline.id, stage: 'staging' }
           }).reply(201, { id: 2, app: stagingApp })
 
           api.get('/app-setups/1').reply(200, { status: 'succeeded' })
           api.get('/app-setups/2').reply(200, { status: 'succeeded' })
+
+          api.get('/teams/test-org').reply(200, { id: '89-0123-456' })
         })
 
-        it('creates apps in an organization', function* () {
-          yield cmd.run({ args: {}, flags: { organization } })
+        it('creates apps in a team', function* () {
+          yield cmd.run({ args: {}, flags: { team } })
 
           api.done()
           github.done()
@@ -192,10 +196,10 @@ describe('pipelines:setup', function () {
           api.get('/account/features/ci').reply(200, { enabled: true })
           kolkrabbi.patch(`/pipelines/${pipeline.id}/repository`, {
             ci: true,
-            organization
+            organization: team
           }).reply(200)
 
-          yield cmd.run({ args: {}, flags: { organization } })
+          yield cmd.run({ args: {}, flags: { team } })
 
           api.done()
           github.done()
