@@ -5,6 +5,7 @@ let cli = require('heroku-cli-util')
 let co = require('co')
 let Utils = require('../../lib/utils')
 const {flags} = require('cli-engine-heroku')
+const {RoleCompletion} = require('cli-engine-heroku/lib/completions')
 
 function * run (context, heroku) {
   let orgInfo = yield Utils.orgInfo(context, heroku)
@@ -60,7 +61,7 @@ module.exports = {
   needsAuth: true,
   wantsOrg: true,
   flags: [
-    {name: 'role', char: 'r', hasValue: true, description: 'filter by role'},
+    {name: 'role', char: 'r', hasValue: true, description: 'filter by role', completion: RoleCompletion},
     {name: 'pending', hasValue: false, description: 'filter by pending team invitations'},
     {name: 'json', description: 'output in json format'},
     // flags.org({name: 'org', hasValue: true, description: 'org to use', hidden: false}),

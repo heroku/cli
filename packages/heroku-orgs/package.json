@@ -7,9 +7,9 @@
     "url": "https://github.com/heroku/heroku-orgs/issues"
   },
   "dependencies": {
-    "cli-engine-command": "^7.0.6",
-    "cli-engine-config": "^2.0.0",
-    "cli-engine-heroku": "^2.0.0",
+    "cli-engine-command": "^8.0.15",
+    "cli-engine-config": "^3.3.0",
+    "cli-engine-heroku": "^4.1.0",
     "co": "4.6.0",
     "heroku-cli-util": "^6.2.7",
     "inquirer": "^3.2.3",

@@ -4,6 +4,7 @@ let cli = require('heroku-cli-util')
 let co = require('co')
 let Utils = require('../../lib/utils')
 const {flags} = require('cli-engine-heroku')
+const {RoleCompletion} = require('cli-engine-heroku/lib/completions')
 
 function * run (context, heroku) {
   let orgInfo = yield Utils.orgInfo(context, heroku)
@@ -80,7 +81,7 @@ let add = {
   wantsOrg: true,
   args: [{name: 'email'}],
   flags: [
-    {name: 'role', char: 'r', hasValue: true, required: true, description: 'member role (admin, collaborator, member, owner)'},
+    {name: 'role', char: 'r', hasValue: true, required: true, description: 'member role (admin, collaborator, member, owner)', completion: RoleCompletion},
     // flags.org({name: 'org', hasValue: true, description: 'org to use', hidden: false}),
     flags.team({name: 'team', hasValue: true, hidden: true})
   ],
