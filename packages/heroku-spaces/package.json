@@ -7,9 +7,9 @@
     "url": "https://github.com/heroku/heroku-spaces/issues"
   },
   "dependencies": {
-    "cli-engine-command": "^8.0.12",
-    "cli-engine-config": "^3.1.7",
-    "cli-engine-heroku": "^3.1.1",
+    "cli-engine-command": "^8.0.15",
+    "cli-engine-config": "^3.3.0",
+    "cli-engine-heroku": "^4.1.0",
     "co": "4.6.0",
     "heroku-cli-util": "^6.2.7",
     "lodash.foreach": "^4.5.0",
