@@ -39,7 +39,7 @@ module.exports = {
     let owner
 
     if (context.flags.json) {
-      cli.styledJSON({pipeline, pipelineApps})
+      cli.styledJSON({pipeline, apps: pipelineApps})
     } else {
       cli.log(`name:  ${pipeline.name}`)
 
