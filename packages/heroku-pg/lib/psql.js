@@ -2,6 +2,7 @@
 
 const co = require('co')
 const bastion = require('./bastion')
+const debug = require('./debug')
 
 function handlePsqlError (reject, psql) {
   psql.on('error', (err) => {
@@ -17,6 +18,7 @@ function execPsql (query, dbEnv) {
   const {spawn} = require('child_process')
   return new Promise((resolve, reject) => {
     let result = ''
+    debug('Running query: %s', query.trim())
     let psql = spawn('psql', ['-c', query], {env: dbEnv, encoding: 'utf8', stdio: [ 'ignore', 'pipe', 'inherit' ]})
     psql.stdout.on('data', function (data) {
       result += data.toString()

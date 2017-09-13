@@ -10,7 +10,7 @@
     "bytes": "^2.5.0",
     "co": "^4.6.0",
     "co-wait": "^0.0.0",
-    "debug": "^2.6.8",
+    "debug": "^3.0.0",
     "filesize": "^3.5.10",
     "heroku-cli-addons": "^1.2.22",
     "heroku-cli-util": "^6.2.0",
