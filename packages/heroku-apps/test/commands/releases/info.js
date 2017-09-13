@@ -145,7 +145,7 @@ FOO: foo
 Add-ons: addon1
          addon2
 By:      foo@foo.com
-Change:  something changed (pending)
+Change:  something changed (release command executing)
 When:    ${d.toISOString()}
 
 === v10 Config vars

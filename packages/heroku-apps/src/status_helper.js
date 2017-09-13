@@ -1,23 +1,9 @@
 'use strict'
 
-function pendingDescription (release, runningRelease, runningSlug) {
-  if (runningRelease && runningRelease.id === release.id && hasReleasePhase(runningSlug)) {
-    return 'release command executing'
-  } else {
-    return 'pending'
-  }
-}
-
-function hasReleasePhase (slug) {
-  return slug &&
-    slug.process_types &&
-    slug.process_types.release
-}
-
-module.exports.description = function (release, runningRelease, runningSlug) {
+module.exports.description = function (release) {
   switch (release.status) {
     case 'pending':
-      return pendingDescription(release, runningRelease, runningSlug)
+      return 'release command executing'
     case 'failed':
       return 'release command failed'
     default:

@@ -146,7 +146,7 @@ describe('releases', () => {
       .reply(200, slug)
     return cmd.run({app: 'myapp', flags: {}})
       .then(() => expect(cli.stdout, 'to equal', `=== myapp Releases - Current: v37
-v41  third commit pending         jeff@heroku.com  2015/11/18 01:36:38 +0000
+v41  … release command executing  jeff@heroku.com  2015/11/18 01:36:38 +0000
 v40  Set foo config vars          jeff@heroku.com  2015/11/18 01:37:41 +0000
 v39  … release command failed     jeff@heroku.com  2015/11/18 01:36:38 +0000
 v38  … release command executing  jeff@heroku.com  2015/11/18 01:36:38 +0000
@@ -165,11 +165,11 @@ v37  first commit                 jeff@heroku.com  2015/11/18 01:36:38 +0000
       .reply(200, {})
     return cmd.run({app: 'myapp', flags: {}})
       .then(() => expect(cli.stdout, 'to equal', `=== myapp Releases - Current: v37
-v41  third commit pending      jeff@heroku.com  2015/11/18 01:36:38 +0000
-v40  Set foo config vars       jeff@heroku.com  2015/11/18 01:37:41 +0000
-v39  … release command failed  jeff@heroku.com  2015/11/18 01:36:38 +0000
-v38  second commit pending     jeff@heroku.com  2015/11/18 01:36:38 +0000
-v37  first commit              jeff@heroku.com  2015/11/18 01:36:38 +0000
+v41  … release command executing  jeff@heroku.com  2015/11/18 01:36:38 +0000
+v40  Set foo config vars          jeff@heroku.com  2015/11/18 01:37:41 +0000
+v39  … release command failed     jeff@heroku.com  2015/11/18 01:36:38 +0000
+v38  … release command executing  jeff@heroku.com  2015/11/18 01:36:38 +0000
+v37  first commit                 jeff@heroku.com  2015/11/18 01:36:38 +0000
 `))
       .then(() => expect(cli.stderr, 'to be empty'))
       .then(() => api.done())
@@ -182,7 +182,7 @@ v37  first commit              jeff@heroku.com  2015/11/18 01:36:38 +0000
       .reply(200, releasesNoSlug)
     return cmd.run({app: 'myapp', flags: {}})
       .then(() => expect(cli.stdout, 'to equal', `=== myapp Releases
-v1  first commit pending  jeff@heroku.com  2015/11/18 01:36:38 +0000
+v1  … release command executing  jeff@heroku.com  2015/11/18 01:36:38 +0000
 `))
       .then(() => expect(cli.stderr, 'to be empty'))
       .then(() => api.done())
@@ -233,7 +233,7 @@ v40      Set foo config vars   jeff@heroku.com  2015/11/18 01:37:41 +0000  1    
       .reply(200, slug)
     return cmd.run({app: 'myapp', flags: {}})
       .then(() => expect(cli.stdout, 'to equal', `=== myapp Releases
-v41  third commit pending         jeff@heroku.com  2015/11/18 01:36:38 +0000
+v41  … release command executing  jeff@heroku.com  2015/11/18 01:36:38 +0000
 v40  Set foo config vars          jeff@heroku.com  2015/11/18 01:37:41 +0000
 v39  … release command failed     jeff@heroku.com  2015/11/18 01:36:38 +0000
 v38  … release command executing  jeff@heroku.com  2015/11/18 01:36:38 +0000
