@@ -23,6 +23,7 @@ function analyticsJson () {
     commands: [
       {
         command: 'foo',
+        completion: 0,
         version: '1.2.3',
         plugin_version: '4.5.6',
         os: 'darwin',
@@ -59,6 +60,11 @@ function build (configOptions = {}, options = {}) {
 
   // flow$ignore
   command._writeJSON = jest.fn()
+
+  // flow$ignore
+  command._acAnalytics = function () {
+    return 7
+  }
 
   // flow$ignore
   Object.defineProperty(command, 'netrcLogin', {
@@ -247,6 +253,7 @@ describe('AnalyticsCommand', () => {
       let expected = analyticsJson()
       expected.commands.push({
         'command': 'fuzz:fizz',
+        'completion': 7,
         'os': 'windows',
         'shell': 'cmd.exe',
         'plugin': 'fuzz',
