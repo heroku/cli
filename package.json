@@ -17,7 +17,10 @@
     "hooks": {
       "init": "./lib/hooks/init/migrate",
       "prerun": "./lib/hooks/prerun/analytics",
-      "update": "./lib/hooks/update/analytics"
+      "update": [
+        "./lib/hooks/update/analytics",
+        "./lib/hooks/update/completions"
+      ]
     },
     "s3": {
       "host": "cli-assets.heroku.com"
@@ -46,8 +49,8 @@
   "dependencies": {
     "cli-engine": "4.6.0",
     "cli-engine-command": "8.0.15",
-    "cli-engine-config": "3.2.0",
-    "cli-engine-heroku": "4.0.1",
+    "cli-engine-config": "3.3.0",
+    "cli-engine-heroku": "4.1.0",
     "debug": "3.0.1",
     "fs-extra": "4.0.1",
     "heroku-apps": "2.4.12",

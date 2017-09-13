@@ -843,9 +843,9 @@ cli-engine-command@^7.0.6:
     string "3.x"
     supports-color "^4.4.0"
 
-cli-engine-config@3.2.0, cli-engine-config@^3.2.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/cli-engine-config/-/cli-engine-config-3.2.0.tgz#5b1af55e64c1ef680e298ec6c1fab649c1d1e80c"
+cli-engine-config@3.3.0:
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/cli-engine-config/-/cli-engine-config-3.3.0.tgz#3524c2df644204a6c7be60d3281a705faaf18fec"
   dependencies:
     fs-extra "^4.0.1"
     uuid "^3.1.0"
@@ -858,9 +858,16 @@ cli-engine-config@^2.0.0:
     jest-validate "^20.0.3"
     uuid "^3.1.0"
 
-cli-engine-heroku@4.0.1, cli-engine-heroku@^4.0.1:
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/cli-engine-heroku/-/cli-engine-heroku-4.0.1.tgz#b4f255137900ab2833bf201deb518bff0c1cb35d"
+cli-engine-config@^3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/cli-engine-config/-/cli-engine-config-3.2.0.tgz#5b1af55e64c1ef680e298ec6c1fab649c1d1e80c"
+  dependencies:
+    fs-extra "^4.0.1"
+    uuid "^3.1.0"
+
+cli-engine-heroku@4.1.0, cli-engine-heroku@^4.0.1:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/cli-engine-heroku/-/cli-engine-heroku-4.1.0.tgz#ab751b2ecfe8d3cd4d673ae271ef8aac0c0a1a35"
   dependencies:
     cli-ux "^1.0.1"
     heroku-client "^3.0.3"
