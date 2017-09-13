@@ -20,10 +20,10 @@ async function run (config: Config, opts: PreRun) {
       } else {
         debug('skipping autocomplete, not installed')
       }
-      await AppCompletion.options({out: this.out})
-      await PipelineCompletion.options({out: this.out})
-      await SpaceCompletion.options({out: this.out})
-      await TeamCompletion.options({out: this.out})
+      await AppCompletion.options({config: this.config})
+      await PipelineCompletion.options({config: this.config})
+      await SpaceCompletion.options({config: this.config})
+      await TeamCompletion.options({config: this.config})
     }
   } catch (err) {
     debug(err)
