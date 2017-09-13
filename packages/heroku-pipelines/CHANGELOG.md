@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [2.3.1] 2017-09-13
+
 - Fixes serialization for `pipelines:info --json`. https://github.com/heroku/heroku-pipelines/pull/72 changed the serialization for that command changing `apps` to `pipelineApps`.
 
 ## [2.3.0] 2017-09-12
