@@ -2,6 +2,7 @@
 
 const co = require('co')
 const cli = require('heroku-cli-util')
+const {FileCompletion} = require('cli-engine-heroku/lib/completions')
 
 function * run (context) {
   if (context.flags.restart) throw new Error('--restart is no longer available\nUse forego instead: https://github.com/ddollar/forego')
@@ -36,8 +37,8 @@ Examples:
     heroku local web=1,worker=2`,
   args: [{name: 'processname', optional: true}],
   flags: [
-    {name: 'procfile', char: 'f', hasValue: true, description: 'use a different Procfile'},
-    {name: 'env', char: 'e', hasValue: true, description: 'location of env file (defaults to .env)'},
+    {name: 'procfile', char: 'f', hasValue: true, description: 'use a different Procfile', completion: FileCompletion},
+    {name: 'env', char: 'e', hasValue: true, description: 'location of env file (defaults to .env)', completion: FileCompletion},
     {name: 'port', char: 'p', hasValue: true, description: 'port to listen on'},
     {name: 'restart', char: 'r', hasValue: false, hidden: true, description: 'restart process if it dies'},
     {name: 'concurrency', char: 'c', hasValue: true, hidden: true, description: 'number of processes to start'}

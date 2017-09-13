@@ -2,6 +2,7 @@
 
 const co = require('co')
 const cli = require('heroku-cli-util')
+const {FileCompletion} = require('cli-engine-heroku/lib/completions')
 
 function * run (context) {
   if (context.args.length < 1) {
@@ -29,7 +30,7 @@ module.exports = {
     heroku local:run bin/migrate`,
   variableArgs: true,
   flags: [
-    {name: 'env', char: 'e', hasValue: true},
+    {name: 'env', char: 'e', hasValue: true, completion: FileCompletion},
     {name: 'port', char: 'p', hasValue: true}
   ],
   run: cli.command(co.wrap(run))
