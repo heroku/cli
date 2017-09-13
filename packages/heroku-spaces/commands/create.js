@@ -5,6 +5,7 @@ const co = require('co')
 const lib = require('../lib/spaces')
 const parsers = require('../lib/parsers')()
 const {flags} = require('cli-engine-heroku')
+const {RegionCompletion} = require('cli-engine-heroku/lib/completions')
 
 function * run (context, heroku) {
   let space = context.flags.space || context.args.space
@@ -67,7 +68,7 @@ module.exports = {
   flags: [
     {name: 'space', char: 's', hasValue: true, description: 'name of space to create'},
     {name: 'channel', hasValue: true, hidden: true},
-    {name: 'region', hasValue: true, description: 'region name'},
+    {name: 'region', hasValue: true, description: 'region name', completion: RegionCompletion},
     {name: 'features', hasValue: true, hidden: true, description: 'a list of features separated by commas'},
     {name: 'log-drain-url', hasValue: true, hidden: true, description: 'direct log drain url'},
     {name: 'owner-pool', hasValue: true, hidden: true, description: 'owner pool name'},

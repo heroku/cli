@@ -2,6 +2,10 @@
 # yarn lockfile v1
 
 
+"@heroku/linewrap@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@heroku/linewrap/-/linewrap-1.0.0.tgz#a9d4e99f0a3e423a899b775f5f3d6747a1ff15c6"
+
 acorn-jsx@^3.0.0:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/acorn-jsx/-/acorn-jsx-3.0.1.tgz#afdf9488fb1ecefc8348f6fb22f464e32a58b36b"
@@ -39,27 +43,21 @@ amdefine@>=0.0.4:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/amdefine/-/amdefine-1.0.1.tgz#4a5282ac164729e93619bcfd3ad151f817ce91f5"
 
-ansi-escapes@2.x:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/ansi-escapes/-/ansi-escapes-2.0.0.tgz#5bae52be424878dd9783e8910e3fc2922e83c81b"
-
 ansi-escapes@^1.1.0, ansi-escapes@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/ansi-escapes/-/ansi-escapes-1.4.0.tgz#d3a8a83b319aa67793662b13e761c7911422306e"
 
-ansi-regex@^2.0.0, ansi-regex@^2.1.1:
+ansi-escapes@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/ansi-escapes/-/ansi-escapes-3.0.0.tgz#ec3e8b4e9f8064fc02c3ac9b65f1c275bda8ef92"
+
+ansi-regex@^2.0.0:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/ansi-regex/-/ansi-regex-2.1.1.tgz#c3b33ab5ee360d86e0e628f0468ae7ef27d654df"
 
 ansi-styles@^2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/ansi-styles/-/ansi-styles-2.2.1.tgz#b432dd3358b634cf75e1e4664368240533c1ddbe"
-
-ansi-styles@^3.0.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/ansi-styles/-/ansi-styles-3.2.0.tgz#c159b8d5be0f9e5a6f346dab94f16ce022161b88"
-  dependencies:
-    color-convert "^1.9.0"
 
 ansicolors@~0.2.1:
   version "0.2.1"
@@ -366,15 +364,16 @@ cli-cursor@^1.0.1:
   dependencies:
     restore-cursor "^1.0.1"
 
-cli-engine-command@^7.0.6:
-  version "7.0.6"
-  resolved "https://registry.yarnpkg.com/cli-engine-command/-/cli-engine-command-7.0.6.tgz#d3429ea91cf6324542f29c2a26626a2152954d68"
+cli-engine-command@^8.0.12:
+  version "8.0.12"
+  resolved "https://registry.yarnpkg.com/cli-engine-command/-/cli-engine-command-8.0.12.tgz#af1b87480ea202715808552c9134e28e71b40454"
   dependencies:
-    ansi-escapes "2.x"
+    "@heroku/linewrap" "^1.0.0"
+    ansi-escapes "^3.0.0"
     cardinal "1.x"
     chalk "^1.0.0"
     fs-extra "^4.0.1"
-    http-call "^3.0.1"
+    http-call "^3.0.2"
     lodash.ary "^4.1.1"
     lodash.defaults "^4.2.0"
     lodash.get "^4.4.2"
@@ -389,20 +388,19 @@ cli-engine-command@^7.0.6:
     string "3.x"
     supports-color "^4.4.0"
 
-cli-engine-config@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/cli-engine-config/-/cli-engine-config-2.0.0.tgz#c4f576c7f3148b09de18b364d16d45da0802b033"
+cli-engine-config@^3.1.7:
+  version "3.1.7"
+  resolved "https://registry.yarnpkg.com/cli-engine-config/-/cli-engine-config-3.1.7.tgz#5f706030e3e6a99ba920d9874acbcdc35a24db0c"
   dependencies:
     fs-extra "^4.0.1"
-    jest-validate "^20.0.3"
     uuid "^3.1.0"
 
-cli-engine-heroku@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/cli-engine-heroku/-/cli-engine-heroku-2.0.0.tgz#8f626dc7d98792f7b336e18223d6b5972b2b5edd"
+cli-engine-heroku@^3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/cli-engine-heroku/-/cli-engine-heroku-3.1.1.tgz#e8bdc7bb92e20406f8ceb5d521dc6d9ca24c1703"
   dependencies:
     heroku-client "^3.0.3"
-    http-call "^3.0.1"
+    http-call "^3.0.2"
     netrc-parser "^2.0.3"
 
 cli-width@^2.0.0:
@@ -441,16 +439,6 @@ codeclimate-test-reporter@^0.5.0:
     commander "2.9.0"
     lcov-parse "0.0.10"
     request "~2.79.0"
-
-color-convert@^1.9.0:
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/color-convert/-/color-convert-1.9.0.tgz#1accf97dd739b983bf994d56fec8f95853641b7a"
-  dependencies:
-    color-name "^1.1.1"
-
-color-name@^1.1.1:
-  version "1.1.3"
-  resolved "https://registry.yarnpkg.com/color-name/-/color-name-1.1.3.tgz#a7d0558bd89c42f795dd42328f740831ca53bc25"
 
 combined-stream@^1.0.5, combined-stream@~1.0.5:
   version "1.0.5"
@@ -1252,9 +1240,9 @@ hosted-git-info@^2.1.4:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/hosted-git-info/-/hosted-git-info-2.2.0.tgz#7a0d097863d886c0fabbdcd37bf1758d8becf8a5"
 
-http-call@^3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/http-call/-/http-call-3.0.1.tgz#906d7f4740ac9756c1e106c89cd0fb876fa1034a"
+http-call@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/http-call/-/http-call-3.0.2.tgz#5e3be641449b13546480f651f095b693e22e59a8"
   dependencies:
     debug "^3.0.1"
     is-retry-allowed "^1.1.0"
@@ -1526,22 +1514,6 @@ istanbul-reports@^1.1.1:
   dependencies:
     handlebars "^4.0.3"
 
-jest-matcher-utils@^20.0.3:
-  version "20.0.3"
-  resolved "https://registry.yarnpkg.com/jest-matcher-utils/-/jest-matcher-utils-20.0.3.tgz#b3a6b8e37ca577803b0832a98b164f44b7815612"
-  dependencies:
-    chalk "^1.1.3"
-    pretty-format "^20.0.3"
-
-jest-validate@^20.0.3:
-  version "20.0.3"
-  resolved "https://registry.yarnpkg.com/jest-validate/-/jest-validate-20.0.3.tgz#d0cfd1de4f579f298484925c280f8f1d94ec3cab"
-  dependencies:
-    chalk "^1.1.3"
-    jest-matcher-utils "^20.0.3"
-    leven "^2.1.0"
-    pretty-format "^20.0.3"
-
 jodid25519@^1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/jodid25519/-/jodid25519-1.0.2.tgz#06d4912255093419477d425633606e0e90782967"
@@ -1632,10 +1604,6 @@ lcid@^1.0.0:
 lcov-parse@0.0.10:
   version "0.0.10"
   resolved "https://registry.yarnpkg.com/lcov-parse/-/lcov-parse-0.0.10.tgz#1b0b8ff9ac9c7889250582b70b71315d9da6d9a3"
-
-leven@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/leven/-/leven-2.1.0.tgz#c2e7a9f772094dee9d34202ae8acce4687875580"
 
 levn@^0.3.0, levn@~0.3.0:
   version "0.3.0"
@@ -2210,13 +2178,6 @@ prepend-http@^1.0.1:
 preserve@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/preserve/-/preserve-0.2.0.tgz#815ed1f6ebc65926f865b310c0713bcb3315ce4b"
-
-pretty-format@^20.0.3:
-  version "20.0.3"
-  resolved "https://registry.yarnpkg.com/pretty-format/-/pretty-format-20.0.3.tgz#020e350a560a1fe1a98dc3beb6ccffb386de8b14"
-  dependencies:
-    ansi-regex "^2.1.1"
-    ansi-styles "^3.0.0"
 
 process-nextick-args@~1.0.6:
   version "1.0.7"

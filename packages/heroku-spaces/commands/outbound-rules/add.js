@@ -2,6 +2,14 @@
 
 let cli = require('heroku-cli-util')
 let co = require('co')
+const {SpaceCompletion} = require('cli-engine-heroku/lib/completions')
+
+const ProtocolCompletion = {
+  cacheDuration: 60 * 60 * 24 * 365, // cache yearly
+  options: async (ctx) => {
+    return ['tcp', 'udp', 'icmp', '0-255', 'any']
+  }
+}
 
 function * run (context, heroku) {
   let lib = require('../../lib/outbound-rules')(heroku)
@@ -51,10 +59,10 @@ allow. ICMP types are numbered, 0-255.
   needsAuth: true,
   args: [],
   flags: [
-    {name: 'space', char: 's', hasValue: true, description: 'space to add rule to'},
+    {name: 'space', char: 's', hasValue: true, description: 'space to add rule to', completion: SpaceCompletion},
     {name: 'confirm', hasValue: true, description: 'set to space name to bypass confirm prompt'},
     {name: 'dest', hasValue: true, description: 'target CIDR block dynos are allowed to communicate with'},
-    {name: 'protocol', hasValue: true, description: 'the protocol dynos are allowed to use when communicating with hosts in destination CIDR block. Valid protocols are "tcp", "udp", "icmp", "0-255" and "any".'},
+    {name: 'protocol', hasValue: true, description: 'the protocol dynos are allowed to use when communicating with hosts in destination CIDR block. Valid protocols are "tcp", "udp", "icmp", "0-255" and "any".', completion: ProtocolCompletion},
     {name: 'port', hasValue: true, description: 'the port dynos are allowed to use when communicating with hosts in destination CIDR block. Accepts a range in `<lowest port>-<highest port>` format. 0 is the minimum. The maximum port allowed is 65535, except for ICMP with a maximum of 255.'}
   ],
   run: cli.command(co.wrap(run))

@@ -2,6 +2,7 @@
 
 let cli = require('heroku-cli-util')
 let co = require('co')
+const {SpaceCompletion} = require('cli-engine-heroku/lib/completions')
 
 function displayJSON (rules) {
   cli.log(JSON.stringify(rules, null, 2))
@@ -33,7 +34,7 @@ You can add specific rules that only allow your dyno to communicate with trusted
   needsAuth: true,
   args: [{name: 'space', optional: true, hidden: true}],
   flags: [
-    {name: 'space', char: 's', hasValue: true, description: 'space to get outbound rules from'},
+    {name: 'space', char: 's', hasValue: true, description: 'space to get outbound rules from', completion: SpaceCompletion},
     {name: 'json', description: 'output in json format'}
   ],
   run: cli.command(co.wrap(run))
