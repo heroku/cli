@@ -6,9 +6,9 @@ const debug = require('debug')('heroku:analytics')
 
 async function run (config: Config) {
   try {
-    const Analytics = require('../../analytics').default
-    const analytics = new Analytics(config)
-    await analytics.submit()
+    const {default: MigrateV5Plugins} = require('cli-engine/lib/plugins/migrator')
+    const migrator = new MigrateV5Plugins(config)
+    await migrator.run()
   } catch (err) {
     debug(err)
   }

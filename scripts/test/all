@@ -4,7 +4,7 @@ source ./scripts/_init
 
 set -x
 
-script "/test/lint"
+script "test/lint"
 npx jest
 npx flow
-script "/test/smoke"
+script "test/smoke"
