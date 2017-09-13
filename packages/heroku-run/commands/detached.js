@@ -5,6 +5,7 @@ let cli = require('heroku-cli-util')
 let helpers = require('../lib/helpers')
 let logDisplayer = require('../lib/log_displayer')
 let Dyno = require('../lib/dyno')
+const {DynoSizeCompletion, ProcessTypeCompletion} = require('cli-engine-heroku/lib/completions')
 
 function * run (context, heroku) {
   let opts = {
@@ -45,9 +46,9 @@ module.exports = {
   needsAuth: true,
   needsApp: true,
   flags: [
-    {name: 'size', char: 's', description: 'dyno size', hasValue: true},
+    {name: 'size', char: 's', description: 'dyno size', hasValue: true, completion: DynoSizeCompletion},
     {name: 'tail', char: 't', description: 'stream logs from the dyno'},
-    {name: 'type', description: 'process type', hasValue: true},
+    {name: 'type', description: 'process type', hasValue: true, completion: ProcessTypeCompletion},
     {name: 'env', char: 'e', description: "environment variables to set (use ';' to split multiple vars)", hasValue: true}
   ],
   run: cli.command(co.wrap(run))
