@@ -30,6 +30,13 @@ function * run (context, heroku) {
   }
 }
 
+const ScopeCompletion = {
+  skipCache: true,
+  options: (ctx) => {
+    return ['global', 'identity', 'read', 'write', 'read-protected', 'write-protected']
+  }
+}
+
 module.exports = {
   topic: 'authorizations',
   command: 'create',
@@ -38,7 +45,7 @@ module.exports = {
   needsAuth: true,
   flags: [
     {char: 'd', name: 'description', hasValue: true, description: 'set a custom authorization description'},
-    {char: 's', name: 'scope', hasValue: true, description: 'set custom OAuth scopes'},
+    {char: 's', name: 'scope', hasValue: true, description: 'set custom OAuth scopes', completion: ScopeCompletion},
     {char: 'e', name: 'expires-in', hasValue: true, description: 'set expiration in seconds'},
     {name: 'short', description: 'only output token'},
     {name: 'json', description: 'output in json format'}
