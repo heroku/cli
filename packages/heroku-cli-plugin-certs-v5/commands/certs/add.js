@@ -229,6 +229,13 @@ function * run (context, heroku) {
   displayWarnings(cert)
 }
 
+const CertTypeCompletion = {
+  skipCache: true,
+  options: (ctx) => {
+    return ['sni', 'endpoint']
+  }
+}
+
 module.exports = {
   topic: 'certs',
   command: 'add',
@@ -239,7 +246,7 @@ module.exports = {
   ],
   flags: [
     {name: 'bypass', description: 'bypass the trust chain completion step', hasValue: false},
-    {name: 'type', description: "type to create, either 'sni' or 'endpoint'", hasValue: true},
+    {name: 'type', description: "type to create, either 'sni' or 'endpoint'", hasValue: true, completion: CertTypeCompletion},
     {name: 'domains', description: 'domains to create after certificate upload', hasValue: true}
   ],
   description: 'add an SSL certificate to an app',
