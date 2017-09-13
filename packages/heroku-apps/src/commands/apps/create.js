@@ -96,7 +96,7 @@ let cmd = {
  `,
   needsAuth: true,
   wantsOrg: true,
-  args: [{name: 'app', optional: true}],
+  args: [{name: 'app', optional: true, description: 'name of app to create'}],
   flags: [
     {name: 'app', char: 'a', hasValue: true, hidden: true},
     {name: 'addons', hasValue: true, description: 'comma-delimited list of addons to install'},
