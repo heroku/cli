@@ -3,6 +3,7 @@
 let co = require('co')
 let cli = require('heroku-cli-util')
 const {flags} = require('cli-engine-heroku')
+const {BuildpackCompletion, RegionComletion, RemoteCompletion, SpaceCompletion, StackCompletion} = require('cli-engine-heroku/lib/completions')
 
 function * run (context, heroku) {
   let git = require('../../git')(context)
@@ -100,12 +101,12 @@ let cmd = {
   flags: [
     {name: 'app', char: 'a', hasValue: true, hidden: true},
     {name: 'addons', hasValue: true, description: 'comma-delimited list of addons to install'},
-    {name: 'buildpack', char: 'b', hasValue: true, description: 'buildpack url to use for this app'},
+    {name: 'buildpack', char: 'b', hasValue: true, description: 'buildpack url to use for this app', completion: BuildpackCompletion},
     {name: 'no-remote', char: 'n', description: 'do not create a git remote'},
-    {name: 'remote', char: 'r', hasValue: true, description: 'the git remote to create, default "heroku"'},
-    {name: 'stack', char: 's', hasValue: true, description: 'the stack to create the app on'},
-    {name: 'space', hasValue: true, description: 'the private space to create the app in'},
-    {name: 'region', hasValue: true, description: 'specify region for the app to run in'},
+    {name: 'remote', char: 'r', hasValue: true, description: 'the git remote to create, default "heroku"', completion: RemoteCompletion},
+    {name: 'stack', char: 's', hasValue: true, description: 'the stack to create the app on', completion: StackCompletion},
+    {name: 'space', hasValue: true, description: 'the private space to create the app in', completion: SpaceCompletion},
+    {name: 'region', hasValue: true, description: 'specify region for the app to run in', completion: RegionComletion},
     {name: 'ssh-git', description: 'use SSH git protocol for local git remote'},
     {name: 'kernel', hidden: true, hasValue: true},
     {name: 'locked', hidden: true},

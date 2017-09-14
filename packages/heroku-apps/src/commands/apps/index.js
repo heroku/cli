@@ -3,6 +3,7 @@
 const co = require('co')
 const cli = require('heroku-cli-util')
 const {flags} = require('cli-engine-heroku')
+const {SpaceCompletion} = require('cli-engine-heroku/lib/completions')
 
 function * run (context, heroku) {
   const sortBy = require('lodash.sortby')
@@ -85,7 +86,7 @@ Example:
     === My Apps
     example
     example2
-    
+
     === Collaborated Apps
     theirapp   other@owner.name`,
   needsAuth: true,
@@ -93,7 +94,7 @@ Example:
   flags: [
     {name: 'all', char: 'A', description: 'include apps in all teams'},
     {name: 'json', description: 'output in json format'},
-    {name: 'space', char: 's', hasValue: true, description: 'filter by space'},
+    {name: 'space', char: 's', hasValue: true, description: 'filter by space', completion: SpaceCompletion},
     {name: 'personal', char: 'p', description: 'list apps in personal account when a default team is set'},
     // flags.org({name: 'org', hasValue: true}),
     flags.team({name: 'team', hasValue: true})
