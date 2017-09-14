@@ -2,6 +2,7 @@ const cli = require('heroku-cli-util')
 const co = require('co')
 const api = require('../../lib/heroku-api')
 const Utils = require('../../lib/utils')
+const PipelineCompletion = require('../../lib/completions')
 
 function validateArgs (args) {
   if (args.length === 0) {
@@ -52,7 +53,8 @@ module.exports = {
       name: 'pipeline',
       char: 'p',
       hasValue: true,
-      description: 'pipeline'
+      description: 'pipeline',
+      completion: PipelineCompletion
     }
   ],
   help: `Examples:

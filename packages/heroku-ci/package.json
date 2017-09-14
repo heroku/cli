@@ -3,6 +3,9 @@
   "version": "1.9.5",
   "description": "Heroku CLI plugin for Heroku CI",
   "main": "index.js",
+  "engines": {
+    "node": ">=8.3.0"
+  },
   "scripts": {
     "test": "mocha -R tap && standard --verbose | standard-tap",
     "format": "standard --format"
@@ -33,6 +36,7 @@
   "dependencies": {
     "ansi-escapes": "1.4.0",
     "bluebird": "^3.4.6",
+    "cli-engine-heroku": "^4.1.0",
     "co": "^4.6.0",
     "co-wait": "0.0.0",
     "github-url-to-object": "^2.2.6",

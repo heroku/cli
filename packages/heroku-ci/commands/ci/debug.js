@@ -6,6 +6,7 @@ const git = require('../../lib/git')
 const source = require('../../lib/source')
 const TestRun = require('../../lib/test-run')
 const Utils = require('../../lib/utils')
+const PipelineCompletion = require('../../lib/completions')
 
 // Default command. Run setup, source profile.d scripts and open a bash session
 const SETUP_COMMAND = 'ci setup && eval $(ci env)'
@@ -115,7 +116,8 @@ module.exports = {
       name: 'pipeline',
       char: 'p',
       hasValue: true,
-      description: 'pipeline'
+      description: 'pipeline',
+      completion: PipelineCompletion
     },
     {
       name: 'no-cache',

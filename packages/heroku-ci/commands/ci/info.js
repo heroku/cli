@@ -2,6 +2,7 @@ const cli = require('heroku-cli-util')
 const co = require('co')
 const TestRun = require('../../lib/test-run')
 const Utils = require('../../lib/utils')
+const PipelineCompletion = require('../../lib/completions')
 
 function* run (context, heroku) {
   const pipeline = yield Utils.getPipeline(context, heroku)
@@ -24,7 +25,8 @@ module.exports = {
       name: 'pipeline',
       char: 'p',
       hasValue: true,
-      description: 'pipeline'
+      description: 'pipeline',
+      completion: PipelineCompletion
     }
   ],
   description: 'test run information',

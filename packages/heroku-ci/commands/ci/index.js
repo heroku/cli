@@ -2,6 +2,7 @@ const cli = require('heroku-cli-util')
 const co = require('co')
 const RenderTestRuns = require('../../lib/render-test-runs')
 const Utils = require('../../lib/utils')
+const PipelineCompletion = require('../../lib/completions')
 
 function* run (context, heroku) {
   const pipeline = yield Utils.getPipeline(context, heroku)
@@ -19,7 +20,8 @@ const cmd = {
       name: 'pipeline',
       char: 'p',
       hasValue: true,
-      description: 'pipeline'
+      description: 'pipeline',
+      completion: PipelineCompletion
     },
     {
       name: 'watch',
