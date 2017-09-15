@@ -99,7 +99,7 @@ module.exports = {
   description: 'opens an interactive test debugging session with the contents of the current directory',
   help: `Example:
 
-   $ heroku ci:debug
+    $ heroku ci:debug
     Preparing source... done
     Creating test run... done
     Running setup and attaching to test dyno...

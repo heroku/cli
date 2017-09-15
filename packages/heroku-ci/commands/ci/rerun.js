@@ -50,7 +50,6 @@ module.exports = {
   wantsApp: true,
   needsAuth: true,
   description: 'rerun tests against current directory',
-  help: 'uploads the contents of the current directory, using git archive, to Heroku and runs the tests',
   args: [{ name: 'number', optional: true }],
   flags: [
     {
@@ -61,5 +60,10 @@ module.exports = {
       completion: PipelineCompletion
     }
   ],
-  run: cli.command(co.wrap(run))
+  run: cli.command(co.wrap(run)),
+  help: `uploads the contents of the current directory, using git archive, to Heroku and runs the tests
+
+  Example:
+
+    $ heroku ci:rerun 985 --app murmuring-headland-14719`
 }

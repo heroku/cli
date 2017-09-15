@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 - Add pipeline flag options completion
+- Fix help output
 
 ## [1.9.5] - 2017-08-08
 ### Added

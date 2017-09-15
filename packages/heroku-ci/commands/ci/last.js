@@ -31,6 +31,10 @@ module.exports = {
       completion: PipelineCompletion
     }
   ],
-  help: 'looks for the most recent run and returns the output of that run',
+  help: `looks for the most recent run and returns the output of that run
+
+  Example:
+
+  $ heroku ci:last --app murmuring-headland-14719`,
   run: cli.command(co.wrap(run))
 }

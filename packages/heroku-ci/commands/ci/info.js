@@ -30,6 +30,10 @@ module.exports = {
     }
   ],
   description: 'test run information',
-  help: 'show the status of a specific test run',
+  help: `show the status of a specific test run
+
+  Example:
+
+    $ heroku ci:info 1288 --app murmuring-headland-14719`,
   run: cli.command(co.wrap(run))
 }

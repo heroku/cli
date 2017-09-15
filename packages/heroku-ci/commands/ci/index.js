@@ -14,7 +14,6 @@ const cmd = {
   wantsApp: true,
   needsAuth: true,
   description: 'show the most recent runs',
-  help: 'display the most recent CI runs for the given pipeline',
   flags: [
     {
       name: 'pipeline',
@@ -36,7 +35,12 @@ const cmd = {
       description: 'output run info in json format'
     }
   ],
-  run: cli.command(co.wrap(run))
+  run: cli.command(co.wrap(run)),
+  help: `display the most recent CI runs for the given pipeline
+
+  Example:
+
+    $ heroku ci --app murmuring-headland-14719`
 }
 
 module.exports = [

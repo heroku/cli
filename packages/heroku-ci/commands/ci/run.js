@@ -48,6 +48,11 @@ module.exports = {
       completion: PipelineCompletion
     }
   ],
-  help: 'uploads the contents of the current directory to Heroku and runs the tests',
-  run: cli.command(co.wrap(run))
+  run: cli.command(co.wrap(run)),
+  help: `uploads the contents of the current directory to Heroku and runs the tests
+
+  Example:
+
+    $ heroku ci:run --app murmuring-headland-14719`
+
 }
