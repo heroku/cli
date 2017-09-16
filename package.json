@@ -15,7 +15,7 @@
     "defaultCommand": "dashboard",
     "legacyConverter": "./lib/legacy",
     "hooks": {
-      "init": "./lib/hooks/init/migrate",
+      "iit": "./lib/hooks/init/migrate",
       "prerun": "./lib/hooks/prerun/analytics",
       "update": [
         "./lib/hooks/update/analytics",
@@ -70,16 +70,20 @@
     "heroku-run": "3.5.2",
     "heroku-spaces": "2.9.6",
     "heroku-webhooks": "1.0.7",
-    "http-call": "3.0.2",
+    "http-call": "^4.0.0-ts2.0",
     "netrc-parser": "2.0.3"
   },
   "devDependencies": {
     "@heroku/heroku-cli-dev-center-generator": "1.1.5",
+    "@types/chalk": "^0.4.31",
+    "@types/fs-extra": "^4.0.2",
+    "@types/jest": "^20.0.8",
     "babel-core": "^6.26.0",
     "del-cli": "1.1.0",
     "husky": "0.14.3",
     "jest": "21.1.0",
     "nock": "9.0.14",
+    "ts-jest": "^21.0.1",
     "typescript": "^2.5.2"
   },
   "engineStrict": true,

@@ -1,20 +1,18 @@
-// @flow
+import * as fs from 'fs-extra'
+import {Config, ICommand} from 'cli-engine-config'
+import {HTTP} from 'http-call'
+import * as path from 'path'
+import {vars} from 'cli-engine-heroku'
 
-import fs from 'fs-extra'
-import type {Config} from 'cli-engine-config'
-import HTTP from 'http-call'
-import Netrc from 'netrc-parser'
-import path from 'path'
-import vars from 'cli-engine-heroku/lib/vars'
-import type {Command} from 'cli-engine-command'
-import type {Plugin} from 'cli-engine/lib/plugins/plugin'
+const Netrc = require('netrc-parser')
 
 const debug = require('debug')('heroku:analytics')
 
-type AnalyticsJSONCommand = {
+export type AnalyticsJSONCommand = {
   command: string,
   completion: number,
   version: string,
+  plugin: string,
   plugin_version: string,
   os: string,
   shell: string,
@@ -22,7 +20,7 @@ type AnalyticsJSONCommand = {
   valid: true
 }
 
-type AnalyticsJSON = {
+export type AnalyticsJSON = {
   schema: 1,
   commands: AnalyticsJSONCommand[]
 }
@@ -30,16 +28,17 @@ type AnalyticsJSON = {
 type AnalyticsJSONPost = {
   schema: 1,
   commands: AnalyticsJSONCommand[],
+  install: string | undefined
   user: string
+  cli: 'heroku'
 }
 
-type RecordOpts = {
-  Command: Class<Command<*>>,
+export type RecordOpts = {
+  command: ICommand
   argv: string[],
-  plugin: ?Plugin
 }
 
-export default class AnalyticsCommand {
+export class Analytics {
   config: Config
 
   constructor (config: Config) {
@@ -54,9 +53,13 @@ export default class AnalyticsCommand {
   }
 
   async record (opts: RecordOpts) {
-    const plugin = opts.plugin
+    const plugin = opts.command.__config.plugin
     if (!plugin) {
       debug('no plugin found for analytics')
+      return
+    }
+    if (!opts.command.__config.id) {
+      debug('no command id found for analytics')
       return
     }
 
@@ -65,7 +68,7 @@ export default class AnalyticsCommand {
     let analyticsJSON = await this._readJSON()
 
     analyticsJSON.commands.push({
-      command: opts.Command.id,
+      command: opts.command.__config.id,
       completion: await this._acAnalytics(),
       version: this.config.version,
       plugin: plugin.name,
@@ -92,7 +95,7 @@ export default class AnalyticsCommand {
         commands: local.commands,
         user: user,
         install: this.config.install,
-        cli: this.config.name
+        cli: 'heroku',
       }
 
       await HTTP.post(this.url, {body})
@@ -112,15 +115,16 @@ export default class AnalyticsCommand {
   get analyticsPath (): string { return path.join(this.config.cacheDir, 'analytics.json') }
 
   get usingHerokuAPIKey (): boolean {
-    return !!(process.env['HEROKU_API_KEY'] && process.env['HEROKU_API_KEY'].length > 0)
+    let apikey = process.env.HEROKU_API_KEY
+    return !!(apikey && apikey.length > 0)
   }
 
-  get netrcLogin (): ?string {
+  get netrcLogin (): string | undefined {
     let netrc = new Netrc()
     return netrc.machines[vars.apiHost].login
   }
 
-  get user (): ?string {
+  get user (): string | undefined {
     if (this.config.skipAnalytics || this.usingHerokuAPIKey) return
     return this.netrcLogin
   }
@@ -146,14 +150,14 @@ export default class AnalyticsCommand {
 
   async _acAnalytics (): Promise<number> {
     let meta = {
-      cmd: fs.exists(this._acAnalyticsPath('command')),
-      flag: fs.exists(this._acAnalyticsPath('flag')),
-      value: fs.exists(this._acAnalyticsPath('value'))
+      cmd: fs.existsSync(this._acAnalyticsPath('command')),
+      flag: fs.existsSync(this._acAnalyticsPath('flag')),
+      value: fs.existsSync(this._acAnalyticsPath('value'))
     }
     let score = 0
-    if (await meta.cmd) score += 1
-    if (await meta.flag) score += 2
-    if (await meta.value) score += 4
+    if (meta.cmd) score += 1
+    if (meta.flag) score += 2
+    if (meta.value) score += 4
     await fs.emptyDir(this._acAnalyticsPath(''))
     return score
   }

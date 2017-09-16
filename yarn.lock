@@ -36,6 +36,20 @@
   dependencies:
     ip-address "^5.8.8"
 
+"@types/chalk@^0.4.31":
+  version "0.4.31"
+  resolved "https://registry.yarnpkg.com/@types/chalk/-/chalk-0.4.31.tgz#a31d74241a6b1edbb973cf36d97a2896834a51f9"
+
+"@types/fs-extra@^4.0.2":
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/@types/fs-extra/-/fs-extra-4.0.2.tgz#7b9b1bbf85962cbe029b5a83c9b530d7c75af3ba"
+  dependencies:
+    "@types/node" "*"
+
+"@types/jest@^20.0.8":
+  version "20.0.8"
+  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-20.0.8.tgz#7f8c97f73d20d3bf5448fbe33661a342002b5954"
+
 "@types/nock@^8.2.1":
   version "8.2.1"
   resolved "https://registry.yarnpkg.com/@types/nock/-/nock-8.2.1.tgz#1fbe5bdecb943c109a778553fa4d2401cb9394b4"
@@ -291,7 +305,7 @@ babel-code-frame@^6.26.0:
     esutils "^2.0.2"
     js-tokens "^3.0.2"
 
-babel-core@^6.0.0, babel-core@^6.26.0:
+babel-core@^6.0.0, babel-core@^6.24.1, babel-core@^6.26.0:
   version "6.26.0"
   resolved "http://cli-npm.heroku.com/babel-core/-/babel-core-6.26.0/af32f78b31a6fcef119c87b0fd8d9753f03a0bb8.tgz#af32f78b31a6fcef119c87b0fd8d9753f03a0bb8"
   dependencies:
@@ -364,6 +378,14 @@ babel-plugin-istanbul@^4.0.0:
     istanbul-lib-instrument "^1.7.2"
     test-exclude "^4.1.1"
 
+babel-plugin-istanbul@^4.1.4:
+  version "4.1.5"
+  resolved "https://registry.yarnpkg.com/babel-plugin-istanbul/-/babel-plugin-istanbul-4.1.5.tgz#6760cdd977f411d3e175bb064f2bc327d99b2b6e"
+  dependencies:
+    find-up "^2.1.0"
+    istanbul-lib-instrument "^1.7.5"
+    test-exclude "^4.1.1"
+
 babel-plugin-jest-hoist@^20.0.3:
   version "20.0.3"
   resolved "http://cli-npm.heroku.com/babel-plugin-jest-hoist/-/babel-plugin-jest-hoist-20.0.3/afedc853bd3f8dc3548ea671fbe69d03cc2c1767.tgz#afedc853bd3f8dc3548ea671fbe69d03cc2c1767"
@@ -372,13 +394,29 @@ babel-plugin-jest-hoist@^21.0.2:
   version "21.0.2"
   resolved "https://registry.yarnpkg.com/babel-plugin-jest-hoist/-/babel-plugin-jest-hoist-21.0.2.tgz#cfdce5bca40d772a056cb8528ad159c7bb4bb03d"
 
+babel-plugin-transform-es2015-modules-commonjs@^6.24.1:
+  version "6.26.0"
+  resolved "https://registry.yarnpkg.com/babel-plugin-transform-es2015-modules-commonjs/-/babel-plugin-transform-es2015-modules-commonjs-6.26.0.tgz#0d8394029b7dc6abe1a97ef181e00758dd2e5d8a"
+  dependencies:
+    babel-plugin-transform-strict-mode "^6.24.1"
+    babel-runtime "^6.26.0"
+    babel-template "^6.26.0"
+    babel-types "^6.26.0"
+
+babel-plugin-transform-strict-mode@^6.24.1:
+  version "6.24.1"
+  resolved "https://registry.yarnpkg.com/babel-plugin-transform-strict-mode/-/babel-plugin-transform-strict-mode-6.24.1.tgz#d5faf7aa578a65bbe591cf5edae04a0c67020758"
+  dependencies:
+    babel-runtime "^6.22.0"
+    babel-types "^6.24.1"
+
 babel-preset-jest@^20.0.3:
   version "20.0.3"
   resolved "http://cli-npm.heroku.com/babel-preset-jest/-/babel-preset-jest-20.0.3/cbacaadecb5d689ca1e1de1360ebfc66862c178a.tgz#cbacaadecb5d689ca1e1de1360ebfc66862c178a"
   dependencies:
     babel-plugin-jest-hoist "^20.0.3"
 
-babel-preset-jest@^21.0.2:
+babel-preset-jest@^21.0.0, babel-preset-jest@^21.0.2:
   version "21.0.2"
   resolved "https://registry.yarnpkg.com/babel-preset-jest/-/babel-preset-jest-21.0.2.tgz#9db25def2329f49eace3f5ea0de42a0b898d12cc"
   dependencies:
@@ -427,7 +465,7 @@ babel-traverse@^6.18.0, babel-traverse@^6.26.0:
     invariant "^2.2.2"
     lodash "^4.17.4"
 
-babel-types@^6.18.0, babel-types@^6.26.0:
+babel-types@^6.18.0, babel-types@^6.24.1, babel-types@^6.26.0:
   version "6.26.0"
   resolved "http://cli-npm.heroku.com/babel-types/-/babel-types-6.26.0/a3b073f94ab49eb6fa55cd65227a334380632497.tgz#a3b073f94ab49eb6fa55cd65227a334380632497"
   dependencies:
@@ -1383,7 +1421,7 @@ format@^0.2.2:
   version "0.2.2"
   resolved "http://cli-npm.heroku.com/format/-/format-0.2.2/d6170107e9efdc4ed30c9dc39016df942b5cb58b.tgz#d6170107e9efdc4ed30c9dc39016df942b5cb58b"
 
-fs-extra@4.0.2, fs-extra@^4.0.2:
+fs-extra@4.0.2, fs-extra@^4.0.0, fs-extra@^4.0.2:
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-4.0.2.tgz#f91704c53d1b461f893452b0c307d9997647ab6b"
   dependencies:
@@ -2003,7 +2041,7 @@ html-encoding-sniffer@^1.0.1:
   dependencies:
     whatwg-encoding "^1.0.1"
 
-http-call@3.0.2, http-call@^3.0.1, http-call@^3.0.2:
+http-call@^3.0.1, http-call@^3.0.2:
   version "3.0.2"
   resolved "http://cli-npm.heroku.com/http-call/-/http-call-3.0.2/5e3be641449b13546480f651f095b693e22e59a8.tgz#5e3be641449b13546480f651f095b693e22e59a8"
   dependencies:
@@ -2410,7 +2448,7 @@ istanbul-lib-hook@^1.0.7:
   dependencies:
     append-transform "^0.4.0"
 
-istanbul-lib-instrument@^1.4.2, istanbul-lib-instrument@^1.7.2, istanbul-lib-instrument@^1.8.0:
+istanbul-lib-instrument@^1.4.2, istanbul-lib-instrument@^1.7.2, istanbul-lib-instrument@^1.7.5, istanbul-lib-instrument@^1.8.0:
   version "1.8.0"
   resolved "http://cli-npm.heroku.com/istanbul-lib-instrument/-/istanbul-lib-instrument-1.8.0/66f6c9421cc9ec4704f76f2db084ba9078a2b532.tgz#66f6c9421cc9ec4704f76f2db084ba9078a2b532"
   dependencies:
@@ -2548,7 +2586,7 @@ jest-config@^20.0.4:
     jest-validate "^20.0.3"
     pretty-format "^20.0.3"
 
-jest-config@^21.1.0:
+jest-config@^21.0.0, jest-config@^21.1.0:
   version "21.1.0"
   resolved "https://registry.yarnpkg.com/jest-config/-/jest-config-21.1.0.tgz#7ef8778af679de30dad75e355a0dfbb0330b8d2f"
   dependencies:
@@ -2848,7 +2886,7 @@ jest-util@^20.0.3:
     leven "^2.1.0"
     mkdirp "^0.5.1"
 
-jest-util@^21.1.0:
+jest-util@^21.0.0, jest-util@^21.1.0:
   version "21.1.0"
   resolved "https://registry.yarnpkg.com/jest-util/-/jest-util-21.1.0.tgz#f92ff756422cc0609ddf5a9bfa4d34b2835d8c30"
   dependencies:
@@ -3861,6 +3899,12 @@ pinkie@^2.0.0:
   version "2.0.4"
   resolved "http://cli-npm.heroku.com/pinkie/-/pinkie-2.0.4/72556b80cfa0d48a974e80e77248e80ed4f7f870.tgz#72556b80cfa0d48a974e80e77248e80ed4f7f870"
 
+pkg-dir@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/pkg-dir/-/pkg-dir-2.0.0.tgz#f6d5d1109e19d63edf428e0bd57e12777615334b"
+  dependencies:
+    find-up "^2.1.0"
+
 plist@^2.0.1:
   version "2.1.0"
   resolved "http://cli-npm.heroku.com/plist/-/plist-2.1.0/57ccdb7a0821df21831217a3cad54e3e146a1025.tgz#57ccdb7a0821df21831217a3cad54e3e146a1025"
@@ -4754,6 +4798,12 @@ source-map-support@^0.4.15:
   dependencies:
     source-map "^0.5.6"
 
+source-map-support@^0.4.4:
+  version "0.4.18"
+  resolved "https://registry.yarnpkg.com/source-map-support/-/source-map-support-0.4.18.tgz#0286a6de8be42641338594e97ccea75f0a2c585f"
+  dependencies:
+    source-map "^0.5.6"
+
 source-map@^0.4.4:
   version "0.4.4"
   resolved "http://cli-npm.heroku.com/source-map/-/source-map-0.4.4/eba4f5da9c0dc999de68032d8b4f76173652036b.tgz#eba4f5da9c0dc999de68032d8b4f76173652036b"
@@ -5122,6 +5172,21 @@ trim@0.0.1, trim@^0.0.1:
 trough@^1.0.0:
   version "1.0.1"
   resolved "http://cli-npm.heroku.com/trough/-/trough-1.0.1/a9fd8b0394b0ae8fff82e0633a0a36ccad5b5f86.tgz#a9fd8b0394b0ae8fff82e0633a0a36ccad5b5f86"
+
+ts-jest@^21.0.1:
+  version "21.0.1"
+  resolved "https://registry.yarnpkg.com/ts-jest/-/ts-jest-21.0.1.tgz#825138413eb299d12d60d0ae4d5a49f76b1cfeac"
+  dependencies:
+    babel-core "^6.24.1"
+    babel-plugin-istanbul "^4.1.4"
+    babel-plugin-transform-es2015-modules-commonjs "^6.24.1"
+    babel-preset-jest "^21.0.0"
+    fs-extra "^4.0.0"
+    jest-config "^21.0.0"
+    jest-util "^21.0.0"
+    pkg-dir "^2.0.0"
+    source-map-support "^0.4.4"
+    yargs "^8.0.1"
 
 ts-lodash@^4.0.5:
   version "4.0.5"
@@ -5666,6 +5731,24 @@ yargs@^7.0.2:
     which-module "^1.0.0"
     y18n "^3.2.1"
     yargs-parser "^5.0.0"
+
+yargs@^8.0.1:
+  version "8.0.2"
+  resolved "https://registry.yarnpkg.com/yargs/-/yargs-8.0.2.tgz#6299a9055b1cefc969ff7e79c1d918dceb22c360"
+  dependencies:
+    camelcase "^4.1.0"
+    cliui "^3.2.0"
+    decamelize "^1.1.1"
+    get-caller-file "^1.0.1"
+    os-locale "^2.0.0"
+    read-pkg-up "^2.0.0"
+    require-directory "^2.1.1"
+    require-main-filename "^1.0.1"
+    set-blocking "^2.0.0"
+    string-width "^2.0.0"
+    which-module "^2.0.0"
+    y18n "^3.2.1"
+    yargs-parser "^7.0.0"
 
 yargs@^9.0.0:
   version "9.0.0"
