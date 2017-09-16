@@ -945,14 +945,15 @@ cli-engine-heroku@^2.0.0:
     http-call "^3.0.1"
     netrc-parser "^2.0.3"
 
-cli-engine@4.6.2:
-  version "4.6.2"
-  resolved "https://registry.yarnpkg.com/cli-engine/-/cli-engine-4.6.2.tgz#8da2d4a327a32e36f093a64147fe7b36f6255a6e"
+cli-engine@4.6.3:
+  version "4.6.3"
+  resolved "https://registry.yarnpkg.com/cli-engine/-/cli-engine-4.6.3.tgz#1787dad66ad2356c171c0f42be9a065a3f7effea"
   dependencies:
     "@heroku/linewrap" "^1.0.0"
     ansi-escapes "^3.0.0"
     cli-engine-command "^8.0.15"
     cli-engine-config "^3.3.1"
+    cli-ux "^1.1.9"
     debug "^3.0.1"
     filesize "^3.5.10"
     find-up "^2.1.0"
@@ -992,6 +993,23 @@ cli-ux@^1.0.1:
     password-prompt "^1.0.3"
     strip-ansi "^4.0.0"
     supports-color "^4.4.0"
+
+cli-ux@^1.1.9:
+  version "1.1.9"
+  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-1.1.9.tgz#d5552429c0077d5982bcfb33c86b3b0165de9bba"
+  dependencies:
+    "@heroku/linewrap" "^1.0.0"
+    ansi-escapes "^3.0.0"
+    ansi-styles "^3.2.0"
+    cardinal "^1.0.0"
+    chalk "^2.1.0"
+    fs-extra "^4.0.2"
+    lodash "^4.17.4"
+    moment "^2.18.1"
+    password-prompt "^1.0.3"
+    strip-ansi "^4.0.0"
+    supports-color "^4.4.0"
+    ts-lodash "^4.0.5"
 
 cli-width@^2.0.0:
   version "2.2.0"
@@ -5498,6 +5516,12 @@ trough@^1.0.0:
 tryit@^1.0.1:
   version "1.0.3"
   resolved "http://cli-npm.heroku.com/tryit/-/tryit-1.0.3/393be730a9446fd1ead6da59a014308f36c289cb.tgz#393be730a9446fd1ead6da59a014308f36c289cb"
+
+ts-lodash@^4.0.5:
+  version "4.0.5"
+  resolved "https://registry.yarnpkg.com/ts-lodash/-/ts-lodash-4.0.5.tgz#1d0a74de2758df43a821d176e2cc85c50925ee67"
+  dependencies:
+    lodash "^4.17.4"
 
 tunnel-agent@^0.4.0, tunnel-agent@^0.4.3:
   version "0.4.3"
