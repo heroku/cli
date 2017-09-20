@@ -945,15 +945,15 @@ cli-engine-heroku@^2.0.0:
     http-call "^3.0.1"
     netrc-parser "^2.0.3"
 
-cli-engine@4.6.3:
-  version "4.6.3"
-  resolved "https://registry.yarnpkg.com/cli-engine/-/cli-engine-4.6.3.tgz#1787dad66ad2356c171c0f42be9a065a3f7effea"
+cli-engine@4.6.4:
+  version "4.6.4"
+  resolved "https://registry.yarnpkg.com/cli-engine/-/cli-engine-4.6.4.tgz#c688b18e3d5a1b0526c834ef0cb1b34a19df32d1"
   dependencies:
     "@heroku/linewrap" "^1.0.0"
     ansi-escapes "^3.0.0"
     cli-engine-command "^8.0.15"
     cli-engine-config "^3.3.1"
-    cli-ux "^1.1.9"
+    cli-ux "^1.1.10"
     debug "^3.0.1"
     filesize "^3.5.10"
     find-up "^2.1.0"
@@ -994,9 +994,9 @@ cli-ux@^1.0.1:
     strip-ansi "^4.0.0"
     supports-color "^4.4.0"
 
-cli-ux@^1.1.9:
-  version "1.1.9"
-  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-1.1.9.tgz#d5552429c0077d5982bcfb33c86b3b0165de9bba"
+cli-ux@^1.1.10:
+  version "1.1.10"
+  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-1.1.10.tgz#b0b95ba7b488b42e32e6e67b3e6f1e6964e2800d"
   dependencies:
     "@heroku/linewrap" "^1.0.0"
     ansi-escapes "^3.0.0"
