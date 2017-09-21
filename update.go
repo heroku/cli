@@ -74,7 +74,7 @@ func updateCLI(channel string) {
 		return
 	}
 	DownloadCLI(channel, filepath.Join(DataHome, "cli"), manifest)
-	loadNewCLI()
+	loadNewCLI(true)
 }
 
 // DownloadCLI downloads a CLI update to a given path
@@ -222,8 +222,8 @@ func expectedBinPath() string {
 	return bin
 }
 
-func loadNewCLI() {
-	if Autoupdate == "no" {
+func loadNewCLI(force bool) {
+	if !force && Autoupdate == "no" {
 		return
 	}
 	expected, err := os.Stat(expectedBinPath())
@@ -239,7 +239,7 @@ func loadNewCLI() {
 	}
 	current, err := os.Stat(BinPath)
 	must(err)
-	if !os.SameFile(current, expected) {
+	if force || !os.SameFile(current, expected) {
 		bin := expectedBinPath()
 		Debugf("Executing %s\n", bin)
 		swallowSigint = true
