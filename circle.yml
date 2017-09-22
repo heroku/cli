@@ -35,7 +35,7 @@ dependencies:
         cd ~/osslsigncode && ./configure && make
       fi &&
       cd ~/osslsigncode && sudo make install
-    - make deps build -j $JOBZ
+    - make deps build
     - sudo apt-get install cowsay nsis jq
 test:
   override:
