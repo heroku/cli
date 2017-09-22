@@ -49,14 +49,22 @@ var AutoupdateFile = filepath.Join(CacheHome, "autoupdate")
 // Update updates the CLI and plugins
 func Update(channel string) {
 	touchAutoupdateFile()
-	updateCLI(channel)
 	SubmitAnalytics()
 	installRequiredNamespace(&Namespace{Name: "force"})
 	UserPlugins.Update()
 	UserPlugins.MigrateRubyPlugins()
 	deleteOldPluginsDirectory()
+	updateCLI(channel)
 	truncate(ErrLogPath, 1000)
 	cleanTmp()
+}
+
+func runVersion() {
+	cmd := exec.Command(BinPath, "version")
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	cmd.Run()
 }
 
 func updateCLI(channel string) {
@@ -74,6 +82,7 @@ func updateCLI(channel string) {
 		return
 	}
 	DownloadCLI(channel, filepath.Join(DataHome, "cli"), manifest)
+	runVersion()
 	loadNewCLI()
 }
 
@@ -223,6 +232,7 @@ func expectedBinPath() string {
 }
 
 func loadNewCLI() {
+	Debugln("Auto update: " + Autoupdate)
 	if Autoupdate == "no" {
 		return
 	}
