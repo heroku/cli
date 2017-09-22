@@ -36,6 +36,12 @@ $(WORKSPACE)/lib/node: NODE_ARCH    := $(subst amd64,x64,$(shell go env GOARCH))
 	cp $(@D)/node-v$(NODE_VERSION)-$(NODE_OS)-$(NODE_ARCH)/bin/node $@
 	rm -rf $(@D)/node-*
 	@touch $@
+ $(WORKSPACE)/lib/node: $(CACHE_DIR)/node-v$(NODE_VERSION)/node-v$(NODE_VERSION)-$$(NODE_OS)-$$(NODE_ARCH).tar.gz
+	@mkdir -p $(@D)
+	tar -C $(@D) -xzf $<
+	cp $(@D)/node-v$(NODE_VERSION)-$(NODE_OS)-$(NODE_ARCH)/bin/node $@
+	rm -rf $(@D)/node-*
+	@touch $@
 
 tmp/windows-%/$(FOLDER_NAME)/lib/node.exe: $(CACHE_DIR)/node-v$(NODE_VERSION)/win-$$(NODE_ARCH)/node.exe
 	@mkdir -p $(@D)
@@ -47,6 +53,11 @@ $(NPM_ARCHIVE):
 	@mkdir -p $(@D)
 	curl -fsSLo $@ https://github.com/npm/npm/archive/v$(NPM_VERSION).tar.gz
 %/$(FOLDER_NAME)/lib/npm: $(NPM_ARCHIVE)
+	@mkdir -p $(@D)
+	tar -C $(@D) -xzf $(NPM_ARCHIVE)
+	mv $(@D)/npm-* $@
+	@touch $@
+$(WORKSPACE)/lib/npm: $(NPM_ARCHIVE)
 	@mkdir -p $(@D)
 	tar -C $(@D) -xzf $(NPM_ARCHIVE)
 	mv $(@D)/npm-* $@
@@ -72,6 +83,10 @@ tmp/%/$(FOLDER_NAME)/lib/plugins.json: $(WORKSPACE)/lib/plugins.json
 	echo $(VERSION) > $@
 
 %/$(FOLDER_NAME)/lib/cacert.pem: resources/cacert.pem
+	@mkdir -p $(@D)
+	cp $< $@
+
+$(WORKSPACE)/lib/cacert.pem: resources/cacert.pem
 	@mkdir -p $(@D)
 	cp $< $@
 
