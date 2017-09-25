@@ -11,14 +11,14 @@
     mustache "^2.2.1"
     shell-quote "^1.6.1"
 
-"@heroku/heroku-cli-dev-center-generator@1.1.5":
-  version "1.1.5"
-  resolved "http://cli-npm.heroku.com/@heroku/heroku-cli-dev-center-generator/-/heroku-cli-dev-center-generator-1.1.5/3aa30313b95e01b4fc88f7230de74a35002123bc.tgz#3aa30313b95e01b4fc88f7230de74a35002123bc"
+"@heroku/heroku-cli-dev-center-generator@1.1.7":
+  version "1.1.7"
+  resolved "https://registry.yarnpkg.com/@heroku/heroku-cli-dev-center-generator/-/heroku-cli-dev-center-generator-1.1.7.tgz#66e86d4a4c9752a408157f8713b65a8335ea0fdb"
   dependencies:
+    "@heroku/remark-heroku-bash-dollar" "^1.0.4"
+    "@heroku/remark-heroku-command-headings-inline-code" "^1.0.5"
     lodash "^4.17.4"
     remark-cli "^4.0.0"
-    remark-heroku-bash-dollar "^1.0.2"
-    remark-heroku-command-headings-inline-code "^1.0.4"
     remark-heroku-example-command "^1.0.5"
     remark-heroku-sample-code "^1.0.3"
     remark-heroku-topic-overview "^1.0.3"
@@ -29,6 +29,29 @@
 "@heroku/linewrap@^1.0.0":
   version "1.0.0"
   resolved "http://cli-npm.heroku.com/@heroku/linewrap/-/linewrap-1.0.0/a9d4e99f0a3e423a899b775f5f3d6747a1ff15c6.tgz#a9d4e99f0a3e423a899b775f5f3d6747a1ff15c6"
+
+"@heroku/remark-heroku-bash-dollar@^1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@heroku/remark-heroku-bash-dollar/-/remark-heroku-bash-dollar-1.0.4.tgz#93b083077b1c836cb0246e727f7f94f20a15cc78"
+  dependencies:
+    remark "^8.0.0"
+    remark-lint "^5.2.0"
+    unified-lint-rule "^1.0.1"
+    unist-util-find "^1.0.1"
+    unist-util-find-after "^2.0.1"
+    unist-util-is "^2.1.1"
+    unist-util-visit "^1.1.1"
+
+"@heroku/remark-heroku-command-headings-inline-code@^1.0.5":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@heroku/remark-heroku-command-headings-inline-code/-/remark-heroku-command-headings-inline-code-1.0.5.tgz#e9a6273f3f99570972f813497e001a165e0bf9e4"
+  dependencies:
+    remark "^8.0.0"
+    remark-lint "^5.2.0"
+    unified-lint-rule "^1.0.1"
+    unist-util-find "^1.0.1"
+    unist-util-is "^2.1.1"
+    unist-util-visit "^1.1.1"
 
 "@heroku/socksv5@^0.0.9":
   version "0.0.9"
@@ -1369,9 +1392,9 @@ eslint-module-utils@^2.1.1:
     debug "^2.6.8"
     pkg-dir "^1.0.0"
 
-eslint-plugin-flowtype@2.35.1:
-  version "2.35.1"
-  resolved "http://cli-npm.heroku.com/eslint-plugin-flowtype/-/eslint-plugin-flowtype-2.35.1/9ad98181b467a3645fbd2a8d430393cc17a4ea63.tgz#9ad98181b467a3645fbd2a8d430393cc17a4ea63"
+eslint-plugin-flowtype@2.36.0:
+  version "2.36.0"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-flowtype/-/eslint-plugin-flowtype-2.36.0.tgz#ec21cf685dc270c2b24a99bdba1a57999c1040ec"
   dependencies:
     lodash "^4.15.0"
 
@@ -1418,9 +1441,9 @@ eslint-scope@^3.7.1:
     esrecurse "^4.1.0"
     estraverse "^4.1.1"
 
-eslint@4.7.0:
-  version "4.7.0"
-  resolved "https://registry.yarnpkg.com/eslint/-/eslint-4.7.0.tgz#d35fc07c472520be3de85b3da11e99c576afd515"
+eslint@4.7.2:
+  version "4.7.2"
+  resolved "https://registry.yarnpkg.com/eslint/-/eslint-4.7.2.tgz#ff6f5f5193848a27ee9b627be3e73fb9cb5e662e"
   dependencies:
     ajv "^5.2.0"
     babel-code-frame "^6.22.0"
@@ -1676,9 +1699,9 @@ flexbuffer@0.0.6:
   version "0.0.6"
   resolved "http://cli-npm.heroku.com/flexbuffer/-/flexbuffer-0.0.6/039fdf23f8823e440c38f3277e6fef1174215b30.tgz#039fdf23f8823e440c38f3277e6fef1174215b30"
 
-flow-bin@0.54.1:
-  version "0.54.1"
-  resolved "http://cli-npm.heroku.com/flow-bin/-/flow-bin-0.54.1/7101bcccf006dc0652714a8aef0c72078a760510.tgz#7101bcccf006dc0652714a8aef0c72078a760510"
+flow-bin@0.55.0:
+  version "0.55.0"
+  resolved "https://registry.yarnpkg.com/flow-bin/-/flow-bin-0.55.0.tgz#9083da9327bd8cab6b4076d63d85f2247a7eae1b"
 
 fn-name@^2.0.1:
   version "2.0.1"
@@ -3795,7 +3818,7 @@ netrc-parser@2.0.3, netrc-parser@^2.0.3:
 
 nock@9.0.14:
   version "9.0.14"
-  resolved "http://cli-npm.heroku.com/nock/-/nock-9.0.14/2211550253173ce298bcd89fca825e83813ca72b.tgz#2211550253173ce298bcd89fca825e83813ca72b"
+  resolved "https://registry.yarnpkg.com/nock/-/nock-9.0.14.tgz#2211550253173ce298bcd89fca825e83813ca72b"
   dependencies:
     chai ">=1.9.2 <4.0.0"
     debug "^2.2.0"
@@ -4397,31 +4420,6 @@ remark-cli@^4.0.0:
     markdown-extensions "^1.1.0"
     remark "^8.0.0"
     unified-args "^4.0.0"
-
-remark-heroku-bash-dollar@^1.0.2:
-  version "1.0.2"
-  resolved "http://cli-npm.heroku.com/remark-heroku-bash-dollar/-/remark-heroku-bash-dollar-1.0.2/9b9ec35da91a8e7a7b5ee382a2d74e63b536fe28.tgz#9b9ec35da91a8e7a7b5ee382a2d74e63b536fe28"
-  dependencies:
-    jest "^20.0.4"
-    remark "^8.0.0"
-    remark-lint "^5.2.0"
-    unified-lint-rule "^1.0.1"
-    unist-util-find "^1.0.1"
-    unist-util-find-after "^2.0.1"
-    unist-util-is "^2.1.1"
-    unist-util-visit "^1.1.1"
-
-remark-heroku-command-headings-inline-code@^1.0.4:
-  version "1.0.4"
-  resolved "http://cli-npm.heroku.com/remark-heroku-command-headings-inline-code/-/remark-heroku-command-headings-inline-code-1.0.4/ef785f24e411f32581da33deaa690f8f9000daa6.tgz#ef785f24e411f32581da33deaa690f8f9000daa6"
-  dependencies:
-    jest "^20.0.4"
-    remark "^8.0.0"
-    remark-lint "^5.2.0"
-    unified-lint-rule "^1.0.1"
-    unist-util-find "^1.0.1"
-    unist-util-is "^2.1.1"
-    unist-util-visit "^1.1.1"
 
 remark-heroku-example-command@^1.0.5:
   version "1.0.5"
