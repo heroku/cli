@@ -6,14 +6,14 @@ grade: stable
 confinement: classic
 
 apps:
-    heroku:
-        command: bin/node $SNAP/lib/node_modules/heroku-cli/bin/run.js
+  heroku:
+    command: bin/node $SNAP/lib/node_modules/heroku-cli/bin/run.js
 
 parts:
   heroku:
     source: .
     plugin: nodejs
-    node-engine: 7.10.0
+    node-engine: 8.5.0
     # In Node 8 local projects get symlinked instead of copied. This results in
     # a dangling symlink back to the build directory in snapcraft. So until
     # http://pad.lv/1702661 is fixed, copy heroku-cli in place.
