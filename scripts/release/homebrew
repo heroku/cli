@@ -8,6 +8,7 @@ export ARCH=x64
 source ./scripts/_init
 
 rm -rf tmp/homebrew-brew
+git config --global core.pager cat
 git clone git@github.com:heroku/homebrew-brew.git tmp/homebrew-brew
 
 REMOTE_BASE="s3://$S3_BUCKET/homebrew"
