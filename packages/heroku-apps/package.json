@@ -81,7 +81,8 @@
     "std-mocks": "1.0.1",
     "testdouble": "^3.2.5",
     "time-require": "0.1.2",
-    "unexpected": "^10.35.0"
+    "unexpected": "^10.35.0",
+    "urijs": "^1.18.12"
   },
   "files": [
     "lib/index.js",

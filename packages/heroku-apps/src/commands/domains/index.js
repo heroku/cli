@@ -2,6 +2,7 @@
 
 let cli = require('heroku-cli-util')
 let co = require('co')
+let Uri = require('urijs')
 
 function * run (context, heroku) {
   let domains = yield heroku.request({path: `/apps/${context.app}/domains`})
@@ -18,15 +19,24 @@ function * run (context, heroku) {
     }
     cli.log()
     if (customDomains.length > 0) {
+      customDomains.forEach((record) => {
+        record.recordType = isApexDomain(record.hostname) ? 'ALIAS or ANAME' : 'CNAME'
+      })
       cli.styledHeader(`${context.app} Custom Domains`)
       cli.table(customDomains, {
         columns: [
           {key: 'hostname', label: 'Domain Name'},
+          {key: 'recordType', label: 'DNS Record Type'},
           {key: 'cname', label: 'DNS Target'}
         ]
       })
     }
   }
+}
+
+function isApexDomain (hostname) {
+  let a = new Uri('http://' + hostname)
+  return a.subdomain() === ''
 }
 
 module.exports = {
@@ -40,9 +50,9 @@ Example:
     example.herokuapp.com
     
     === example Custom Domains
-    Domain Name  DNS Target
-    ───────────  ─────────────────────
-    example.com  example.herokuapp.com
+    Domain Name      DNS Record Type  DNS Target
+    ───────────      ───────────────  ──────────
+    www.example.com  CNAME            www.example.herokudns.com
   `,
   needsApp: true,
   needsAuth: true,
