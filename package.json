@@ -47,7 +47,7 @@
     ]
   },
   "dependencies": {
-    "cli-engine": "4.6.8",
+    "cli-engine": "4.6.9",
     "cli-engine-command": "8.0.17",
     "cli-engine-config": "3.3.1",
     "cli-engine-heroku": "4.1.0",
@@ -93,7 +93,7 @@
     "eslint-plugin-standard": "3.0.1",
     "flow-bin": "0.55.0",
     "husky": "0.14.3",
-    "jest": "21.2.0",
+    "jest": "21.2.1",
     "nock": "9.0.18"
   },
   "engineStrict": true,
