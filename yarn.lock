@@ -2012,9 +2012,9 @@ here@0.0.2:
   version "0.0.2"
   resolved "http://cli-npm.heroku.com/here/-/here-0.0.2/69c1af3f02121f3d8788e02e84dc8b3905d71195.tgz#69c1af3f02121f3d8788e02e84dc8b3905d71195"
 
-heroku-apps@2.4.14:
-  version "2.4.14"
-  resolved "https://registry.yarnpkg.com/heroku-apps/-/heroku-apps-2.4.14.tgz#6f1ddb778fb3b8d609aae54a12dc3bd7aa6e92dc"
+heroku-apps@2.4.15:
+  version "2.4.15"
+  resolved "https://registry.yarnpkg.com/heroku-apps/-/heroku-apps-2.4.15.tgz#eb1d2bd82c0648a4fee14e7bce03897507401ffd"
   dependencies:
     bluebird "^3.5.0"
     cli-engine-command "^8.0.17"
@@ -2056,6 +2056,7 @@ heroku-apps@2.4.14:
     strftime "^0.10.0"
     string "^3.3.3"
     term-img "^2.1.0"
+    urijs "1.18.12"
 
 heroku-certs@1.1.41:
   version "1.1.41"
@@ -5796,6 +5797,10 @@ untildify@^2.1.0:
 unzip-response@^2.0.1:
   version "2.0.1"
   resolved "http://cli-npm.heroku.com/unzip-response/-/unzip-response-2.0.1/d2f0f737d16b0615e72a6935ed04214572d56f97.tgz#d2f0f737d16b0615e72a6935ed04214572d56f97"
+
+urijs@1.18.12:
+  version "1.18.12"
+  resolved "https://registry.yarnpkg.com/urijs/-/urijs-1.18.12.tgz#f04d91e1fabb29c16fc842f9a14ee8ddc3fda64e"
 
 url-parse-lax@^1.0.0:
   version "1.0.0"

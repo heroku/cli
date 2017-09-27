@@ -53,7 +53,7 @@
     "cli-engine-heroku": "4.1.0",
     "debug": "3.1.0",
     "fs-extra": "4.0.2",
-    "heroku-apps": "2.4.14",
+    "heroku-apps": "2.4.15",
     "heroku-certs": "1.1.41",
     "heroku-ci": "1.9.5",
     "heroku-cli-addons": "1.2.25",
