@@ -7,7 +7,6 @@ import Netrc from 'netrc-parser'
 import path from 'path'
 import vars from 'cli-engine-heroku/lib/vars'
 import type {Command} from 'cli-engine-command'
-import type {Plugin} from 'cli-engine/lib/plugins/plugin'
 
 const debug = require('debug')('heroku:analytics')
 
@@ -36,7 +35,6 @@ type AnalyticsJSONPost = {
 type RecordOpts = {
   Command: Class<Command<*>>,
   argv: string[],
-  plugin: ?Plugin
 }
 
 export default class AnalyticsCommand {
@@ -54,7 +52,7 @@ export default class AnalyticsCommand {
   }
 
   async record (opts: RecordOpts) {
-    const plugin = opts.plugin
+    const plugin = opts.Command.plugin
     if (!plugin) {
       debug('no plugin found for analytics')
       return

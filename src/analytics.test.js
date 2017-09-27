@@ -10,9 +10,10 @@ class TestCommand extends Command<*> {
   static command = 'fizz'
 }
 
-const plugin = {
-  name: 'fuzz',
-  version: '9.8.7'
+class TestCommandWithPlugin extends Command<*> {
+  static topic = 'fuzz'
+  static command = 'fizz'
+  static plugin = {name: 'fuzz', version: '9.8.7'}
 }
 
 function analyticsJson () {
@@ -203,7 +204,6 @@ describe('AnalyticsCommand', () => {
 
       await command.record({
         Command: TestCommand,
-        plugin: null,
         argv: []
       })
 
@@ -215,7 +215,6 @@ describe('AnalyticsCommand', () => {
 
       await command.record({
         Command: TestCommand,
-        plugin: null,
         argv: []
       })
 
@@ -229,7 +228,6 @@ describe('AnalyticsCommand', () => {
 
       await command.record({
         Command: TestCommand,
-        plugin: null,
         argv: []
       })
 
@@ -241,7 +239,6 @@ describe('AnalyticsCommand', () => {
 
       await command.record({
         Command: TestCommand,
-        plugin: null,
         argv: []
       })
 
@@ -265,8 +262,7 @@ describe('AnalyticsCommand', () => {
 
       let command = build({}, {json})
       await command.record({
-        Command: TestCommand,
-        plugin,
+        Command: TestCommandWithPlugin,
         argv: []
       })
       expect(command._writeJSON.mock.calls).toEqual([[expected]])
