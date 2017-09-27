@@ -22,6 +22,6 @@ export default class Whoami extends Command {
   }
 
   notloggedin () {
-    this.out.error('not logged in', 100)
+    this.out.error('not logged in', {exitCode: 100})
   }
 }
