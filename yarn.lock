@@ -985,16 +985,16 @@ cli-engine-heroku@^2.0.0:
     http-call "^3.0.1"
     netrc-parser "^2.0.3"
 
-cli-engine@4.6.7:
-  version "4.6.7"
-  resolved "https://registry.yarnpkg.com/cli-engine/-/cli-engine-4.6.7.tgz#3d0d2161cea96efc1fc9f48421e43914dc8b2894"
+cli-engine@4.6.8:
+  version "4.6.8"
+  resolved "https://registry.yarnpkg.com/cli-engine/-/cli-engine-4.6.8.tgz#344b7c88298a467dd6bd966d7994998bc22aff42"
   dependencies:
     "@heroku/linewrap" "^1.0.0"
     ansi-escapes "^3.0.0"
-    cli-engine-command "^8.0.15"
+    cli-engine-command "^8.0.17"
     cli-engine-config "^3.3.1"
     cli-ux "^1.1.10"
-    debug "^3.0.1"
+    debug "^3.1.0"
     filesize "^3.5.10"
     find-up "^2.1.0"
     fs-extra "^4.0.2"
@@ -1228,7 +1228,7 @@ debug@2.6.0:
   dependencies:
     ms "0.7.2"
 
-debug@3.1.0:
+debug@3.1.0, debug@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/debug/-/debug-3.1.0.tgz#5bb5a0672628b64149566ba16819e61518c67261"
   dependencies:
