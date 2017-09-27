@@ -1,40 +1,37 @@
-'use strict'
+// @flow
 
-const cli = require('heroku-cli-util')
-const co = require('co')
+import {Command, flags} from 'cli-engine-heroku'
 
-function * run (context, heroku) {
-  const sortBy = require('lodash.sortby')
-
-  let regions = yield heroku.get('/regions')
-  if (context.flags.private) {
-    regions = regions.filter(region => region.private_capable)
-  } else if (context.flags.common) {
-    regions = regions.filter(region => !region.private_capable)
+export default class LabsDisable extends Command {
+  static topic = 'regions'
+  static description = 'list available regions for deployment'
+  static flags = {
+    json: flags.boolean({description: 'output in json format'}),
+    private: flags.boolean({description: 'show regions for private spaces'}),
+    common: flags.boolean({description: 'show regions for common runtime'})
   }
-  regions = sortBy(regions, ['private_capable', 'name'])
 
-  if (context.flags.json) {
-    cli.log(JSON.stringify(regions, 0, 2))
-  } else {
-    cli.table(regions, {
-      columns: [
-        {key: 'name', label: 'ID', format: (n) => cli.color.green(n)},
-        {key: 'description', label: 'Location'},
-        {key: 'private_capable', label: 'Runtime', format: (c) => c ? 'Private Spaces' : 'Common Runtime'}
-      ]
-    })
+  async run () {
+    const sortBy = require('lodash.sortby')
+
+    let {body: regions} = await this.heroku.get('/regions')
+    if (this.flags.private) {
+      regions = regions.filter(region => region.private_capable)
+    } else if (this.flags.common) {
+      regions = regions.filter(region => !region.private_capable)
+    }
+    regions = sortBy(regions, ['private_capable', 'name'])
+
+    if (this.flags.json) {
+      this.cli.styledJSON(regions)
+    } else {
+      this.cli.table(regions, {
+        columns: [
+          {key: 'name', label: 'ID', format: (n) => this.cli.color.green(n)},
+          {key: 'description', label: 'Location'},
+          {key: 'private_capable', label: 'Runtime', format: (c) => c ? 'Private Spaces' : 'Common Runtime'}
+        ]
+      })
+    }
   }
-}
-
-module.exports = {
-  topic: 'regions',
-  description: 'list available regions for deployment',
-  needsAuth: true,
-  flags: [
-    {name: 'json', description: 'output in json format'},
-    {name: 'private', description: 'show regions for private spaces'},
-    {name: 'common', description: 'show regions for common runtime'}
-  ],
-  run: cli.command(co.wrap(run))
 }
