@@ -2,7 +2,6 @@
 
 let cli = require('heroku-cli-util')
 let co = require('co')
-let Uri = require('urijs')
 
 function * run (context, heroku) {
   let domains = yield heroku.request({path: `/apps/${context.app}/domains`})
@@ -35,6 +34,7 @@ function * run (context, heroku) {
 }
 
 function isApexDomain (hostname) {
+  let Uri = require('urijs')
   let a = new Uri('http://' + hostname)
   return a.subdomain() === ''
 }
