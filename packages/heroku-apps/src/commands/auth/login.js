@@ -5,7 +5,7 @@ const co = require('co')
 
 function * run (context, heroku) {
   try {
-    yield cli.login({save: true, sso: context.flags.sso, expires_in: context.flags['expires-in']})
+    yield cli.login({save: true, sso: context.flags.sso, expires_in: context.flags['expires-in'], browser: context.flags.browser})
   } catch (err) {
     if (err.statusCode === 401) return yield run(context, heroku)
     throw err
@@ -22,6 +22,7 @@ export default {
   description: 'login with your Heroku credentials',
   aliases: ['login'],
   flags: [
+    {name: 'browser', description: 'browser to open SSO with'},
     {name: 'sso', description: 'login for enterprise users under SSO'},
     {name: 'expires-in', char: 'e', description: 'duration of token in seconds', hasValue: true}
   ],
