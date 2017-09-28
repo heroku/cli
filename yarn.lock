@@ -890,15 +890,15 @@ cli-cursor@^2.1.0:
   dependencies:
     restore-cursor "^2.0.0"
 
-cli-engine-command@8.0.17, cli-engine-command@^8.0.17:
-  version "8.0.17"
-  resolved "https://registry.yarnpkg.com/cli-engine-command/-/cli-engine-command-8.0.17.tgz#f4344180c82c977f69672774e2a9d432f47a3579"
+cli-engine-command@8.0.18, cli-engine-command@^8.0.18:
+  version "8.0.18"
+  resolved "https://registry.yarnpkg.com/cli-engine-command/-/cli-engine-command-8.0.18.tgz#032ca59f4975ff770a018bdbed7d6ed5950a3a83"
   dependencies:
     "@heroku/linewrap" "^1.0.0"
     ansi-escapes "^3.0.0"
     cardinal "1.x"
     chalk "^2.1.0"
-    cli-ux "^1.1.10"
+    cli-ux "^1.1.11"
     fs-extra "^4.0.2"
     http-call "^3.0.2"
     lodash.maxby "^4.6.0"
@@ -945,6 +945,22 @@ cli-engine-command@^8.0.15:
     string "3.x"
     supports-color "^4.4.0"
 
+cli-engine-command@^8.0.17:
+  version "8.0.17"
+  resolved "https://registry.yarnpkg.com/cli-engine-command/-/cli-engine-command-8.0.17.tgz#f4344180c82c977f69672774e2a9d432f47a3579"
+  dependencies:
+    "@heroku/linewrap" "^1.0.0"
+    ansi-escapes "^3.0.0"
+    cardinal "1.x"
+    chalk "^2.1.0"
+    cli-ux "^1.1.10"
+    fs-extra "^4.0.2"
+    http-call "^3.0.2"
+    lodash.maxby "^4.6.0"
+    moment "^2.18.1"
+    string "3.x"
+    supports-color "^4.4.0"
+
 cli-engine-config@3.3.1, cli-engine-config@^3.3.1:
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/cli-engine-config/-/cli-engine-config-3.3.1.tgz#79970a47e97bd4caad29d40f5577a23ddd7982cc"
@@ -968,11 +984,11 @@ cli-engine-config@^3.2.0:
     fs-extra "^4.0.1"
     uuid "^3.1.0"
 
-cli-engine-heroku@4.1.0, cli-engine-heroku@^4.0.1, cli-engine-heroku@^4.1.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/cli-engine-heroku/-/cli-engine-heroku-4.1.0.tgz#ab751b2ecfe8d3cd4d673ae271ef8aac0c0a1a35"
+cli-engine-heroku@4.1.1:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/cli-engine-heroku/-/cli-engine-heroku-4.1.1.tgz#4ba1aec133524dc5ac9d8ee1b91c03099b197bcc"
   dependencies:
-    cli-ux "^1.0.1"
+    cli-ux "^1.1.11"
     heroku-client "^3.0.3"
     http-call "^3.0.2"
     netrc-parser "^2.0.3"
@@ -985,15 +1001,24 @@ cli-engine-heroku@^2.0.0:
     http-call "^3.0.1"
     netrc-parser "^2.0.3"
 
-cli-engine@4.6.10:
-  version "4.6.10"
-  resolved "https://registry.yarnpkg.com/cli-engine/-/cli-engine-4.6.10.tgz#03411695e9e2ab42667ae25e9cda4b77e0940345"
+cli-engine-heroku@^4.0.1, cli-engine-heroku@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/cli-engine-heroku/-/cli-engine-heroku-4.1.0.tgz#ab751b2ecfe8d3cd4d673ae271ef8aac0c0a1a35"
+  dependencies:
+    cli-ux "^1.0.1"
+    heroku-client "^3.0.3"
+    http-call "^3.0.2"
+    netrc-parser "^2.0.3"
+
+cli-engine@4.6.11:
+  version "4.6.11"
+  resolved "https://registry.yarnpkg.com/cli-engine/-/cli-engine-4.6.11.tgz#ca77ccbd8de4db1f6dac8f783c9e18ecd0373507"
   dependencies:
     "@heroku/linewrap" "^1.0.0"
     ansi-escapes "^3.0.0"
-    cli-engine-command "^8.0.17"
+    cli-engine-command "^8.0.18"
     cli-engine-config "^3.3.1"
-    cli-ux "^1.1.10"
+    cli-ux "^1.1.13"
     debug "^3.1.0"
     filesize "^3.5.10"
     find-up "^2.1.0"
@@ -1037,6 +1062,23 @@ cli-ux@^1.0.1:
 cli-ux@^1.1.10:
   version "1.1.10"
   resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-1.1.10.tgz#b0b95ba7b488b42e32e6e67b3e6f1e6964e2800d"
+  dependencies:
+    "@heroku/linewrap" "^1.0.0"
+    ansi-escapes "^3.0.0"
+    ansi-styles "^3.2.0"
+    cardinal "^1.0.0"
+    chalk "^2.1.0"
+    fs-extra "^4.0.2"
+    lodash "^4.17.4"
+    moment "^2.18.1"
+    password-prompt "^1.0.3"
+    strip-ansi "^4.0.0"
+    supports-color "^4.4.0"
+    ts-lodash "^4.0.5"
+
+cli-ux@^1.1.11, cli-ux@^1.1.13:
+  version "1.1.13"
+  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-1.1.13.tgz#886fe08daaee9d246489a74d468e1f7a33ec3878"
   dependencies:
     "@heroku/linewrap" "^1.0.0"
     ansi-escapes "^3.0.0"
@@ -1440,9 +1482,9 @@ eslint-plugin-jest@21.2.0:
   version "21.2.0"
   resolved "https://registry.yarnpkg.com/eslint-plugin-jest/-/eslint-plugin-jest-21.2.0.tgz#292044df9cf0866ad9c530e78e6528fae287b926"
 
-eslint-plugin-node@5.1.1:
-  version "5.1.1"
-  resolved "http://cli-npm.heroku.com/eslint-plugin-node/-/eslint-plugin-node-5.1.1/a7ed956e780c22aef6afd1116005acd82f26eac6.tgz#a7ed956e780c22aef6afd1116005acd82f26eac6"
+eslint-plugin-node@5.2.0:
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-node/-/eslint-plugin-node-5.2.0.tgz#e1efca04a385516cff3f2f04027ce8c5ae6db749"
   dependencies:
     ignore "^3.3.3"
     minimatch "^3.0.4"
@@ -2012,9 +2054,9 @@ here@0.0.2:
   version "0.0.2"
   resolved "http://cli-npm.heroku.com/here/-/here-0.0.2/69c1af3f02121f3d8788e02e84dc8b3905d71195.tgz#69c1af3f02121f3d8788e02e84dc8b3905d71195"
 
-heroku-apps@2.4.15:
-  version "2.4.15"
-  resolved "https://registry.yarnpkg.com/heroku-apps/-/heroku-apps-2.4.15.tgz#eb1d2bd82c0648a4fee14e7bce03897507401ffd"
+heroku-apps@2.4.16:
+  version "2.4.16"
+  resolved "https://registry.yarnpkg.com/heroku-apps/-/heroku-apps-2.4.16.tgz#55fe985500c4b068f1a0c89cdb15d2d899dc7657"
   dependencies:
     bluebird "^3.5.0"
     cli-engine-command "^8.0.17"
