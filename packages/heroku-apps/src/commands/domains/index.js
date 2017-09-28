@@ -34,6 +34,7 @@ function * run (context, heroku) {
 }
 
 function isApexDomain (hostname) {
+  if (hostname.includes('*')) return false
   let Uri = require('urijs')
   let a = new Uri('http://' + hostname)
   return a.subdomain() === ''

@@ -16,6 +16,7 @@ describe('domains', function () {
         {'cname': 'myapp.com.herokudns.com', 'hostname': 'myapp.com', 'kind': 'custom'},
         {'cname': 'myapp.co.uk.herokudns.com', 'hostname': 'myapp.co.uk', 'kind': 'custom'},
         {'cname': 'www.myapp.com.herokudns.com', 'hostname': 'www.myapp.com', 'kind': 'custom'},
+        {'cname': 'wildcard.thisisafake.tld.herokudns.com', 'hostname': '*.thisisafake.tld', 'kind': 'custom'},
         {'cname': null, 'hostname': 'myapp.herokuapp.com', 'kind': 'heroku'}
       ])
     return cmd.run({app: 'myapp', flags: {}})
@@ -23,11 +24,12 @@ describe('domains', function () {
 myapp.herokuapp.com
 
 === myapp Custom Domains
-Domain Name    DNS Record Type  DNS Target
-─────────────  ───────────────  ───────────────────────────
-myapp.com      ALIAS or ANAME   myapp.com.herokudns.com
-myapp.co.uk    ALIAS or ANAME   myapp.co.uk.herokudns.com
-www.myapp.com  CNAME            www.myapp.com.herokudns.com
+Domain Name        DNS Record Type  DNS Target
+─────────────────  ───────────────  ──────────────────────────────────────
+myapp.com          ALIAS or ANAME   myapp.com.herokudns.com
+myapp.co.uk        ALIAS or ANAME   myapp.co.uk.herokudns.com
+www.myapp.com      CNAME            www.myapp.com.herokudns.com
+*.thisisafake.tld  CNAME            wildcard.thisisafake.tld.herokudns.com
 `))
       .then(() => api.done())
   })
