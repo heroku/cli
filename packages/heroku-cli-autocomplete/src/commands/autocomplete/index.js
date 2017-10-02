@@ -27,7 +27,7 @@ export default class Autocomplete extends AutocompleteBase {
       // ${cmd}`)
       //         break
       case 'zsh':
-        const cmd1 = CustomColors.cmd(`$ printf $(heroku autocomplete:script zsh) >> ~/.zshrc`)
+        const cmd1 = CustomColors.cmd(`$ printf "$(heroku autocomplete:script zsh)" >> ~/.zshrc`)
         const cmd2 = CustomColors.cmd(`$ compaudit`)
         this.out.log(`Add the autocomplete setup script to your .zshrc via:
 
