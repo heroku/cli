@@ -1,19 +1,16 @@
-#!/usr/bin/env bash
-set -e
+#!/usr/bin/env node
 
-get_script_dir () {
-	SOURCE="${BASH_SOURCE[0]}"
-	# While $SOURCE is a symlink, resolve it
-	while [ -h "$SOURCE" ]; do
-		DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-		SOURCE="$( readlink "$SOURCE" )"
-		# If $SOURCE was a relative symlink (so no "/" as prefix, need to resolve it relative to the symlink base directory
-		[[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE"
-	done
-	DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-	echo "$DIR"
+const path = require('path')
+const root = path.join(__dirname, '..')
+const pjson = require(path.join(root, 'package.json'))
+const semver = require('semver')
+const nodeVersion = process.version.split('v')[1]
+if (!semver.satisfies(nodeVersion, pjson.engines.node)) {
+  process.stderr.write(`WARNING\nWARNING Node version must be ${pjson.engines.node} to use the Heroku CLI\nWARNING\n`)
 }
-DIR=$(get_script_dir)
-export CLI_BINPATH=$0
 
-node "$DIR/run.js" "$@"
+const {run} = require('cli-engine')
+const config = {
+  updateDisabled: 'Update CLI with `npm update -g heroku-cli`'
+}
+run({config})
