@@ -118,6 +118,20 @@ Backing up DATABASE to b005...
     .then(() => expect(cli.stderr, 'to equal', `Starting backup of postgres-1... done
 `))
   })
+
+  it('captures a snapshot if called with the --snapshot flag', () => {
+    addon.app.name = 'mybillingapp'
+    api = nock('https://api.heroku.com')
+    api.post('/actions/addon-attachments/resolve', {app: 'myapp', addon_attachment: 'DATABASE_URL'}).reply(200, [{addon}])
+
+    pg = nock('https://postgres-api.heroku.com')
+    pg.post('/postgres/v0/databases/1/snapshots').reply(200, {})
+    cli.mockConsole()
+
+    return cmdRun({app: 'myapp', args: {}, flags: {snapshot: true}})
+    .then(() => expect(cli.stderr, 'to equal', `Taking snapshot of postgres-1... done
+`))
+  })
 }
 
 describe('pg:backups:capture', () => {
