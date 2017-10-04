@@ -15,7 +15,7 @@
     "defaultCommand": "dashboard",
     "legacyConverter": "./lib/legacy",
     "hooks": {
-      "iit": "./lib/hooks/init/migrate",
+      "plugins:parse": "./lib/hooks/plugins/parse/v5",
       "prerun": "./lib/hooks/prerun/analytics",
       "update": [
         "./lib/hooks/update/analytics",
@@ -48,8 +48,8 @@
   },
   "dependencies": {
     "cli-engine": "5.0.0-ts.1",
-    "cli-engine-command": "9.0.0-ts.13",
-    "cli-engine-config": "4.0.1-ts.15",
+    "cli-engine-command": "9.0.0-ts.14",
+    "cli-engine-config": "4.0.1-ts.16",
     "cli-engine-heroku": "5.0.0-ts.3",
     "cli-ux": "^2.0.1",
     "debug": "3.1.0",
@@ -80,6 +80,7 @@
     "@types/chalk": "^0.4.31",
     "@types/fs-extra": "^4.0.2",
     "@types/jest": "^21.1.2",
+    "@types/lodash": "4.14.77",
     "@types/nock": "^8.2.1",
     "babel-core": "^6.26.0",
     "del-cli": "1.1.0",
