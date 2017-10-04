@@ -15,6 +15,7 @@ function build () {
   mkdir -p "$INSTALLER_BASE/bin"
 
   cp "$ROOT_DIR/resources/exe/heroku.cmd" "$INSTALLER_BASE/bin/heroku.cmd"
+  cp "$ROOT_DIR/resources/exe/heroku" "$INSTALLER_BASE/bin/heroku"
 
   tar xzf "$TGZ_PATH"
   mv "$VERSIONED_BASE" "$INSTALLER_BASE/client"
