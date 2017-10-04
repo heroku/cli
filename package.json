@@ -1,7 +1,7 @@
 {
   "name": "heroku-cli",
   "description": "CLI to interact with Heroku",
-  "version": "6.14.32",
+  "version": "6.14.31",
   "author": "Jeff Dickey @jdxcode",
   "bin": {
     "heroku": "bin/run"
@@ -11,7 +11,7 @@
     "bin": "heroku",
     "userPlugins": true,
     "dirname": "heroku",
-    "node": "8.6.0",
+    "node": "8.5.0",
     "defaultCommand": "dashboard",
     "legacyConverter": "./lib/legacy",
     "hooks": {
@@ -53,7 +53,7 @@
     "cli-engine-heroku": "5.0.0",
     "debug": "3.1.0",
     "fs-extra": "4.0.2",
-    "heroku-apps": "2.4.18",
+    "heroku-apps": "2.4.17",
     "heroku-certs": "1.1.41",
     "heroku-ci": "1.9.5",
     "heroku-cli-addons": "1.2.25",

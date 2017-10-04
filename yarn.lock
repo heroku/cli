@@ -2054,9 +2054,9 @@ here@0.0.2:
   version "0.0.2"
   resolved "http://cli-npm.heroku.com/here/-/here-0.0.2/69c1af3f02121f3d8788e02e84dc8b3905d71195.tgz#69c1af3f02121f3d8788e02e84dc8b3905d71195"
 
-heroku-apps@2.4.18:
-  version "2.4.18"
-  resolved "https://registry.yarnpkg.com/heroku-apps/-/heroku-apps-2.4.18.tgz#ec956a99bef36a6451021addb8e29cac44053ea9"
+heroku-apps@2.4.17:
+  version "2.4.17"
+  resolved "https://registry.yarnpkg.com/heroku-apps/-/heroku-apps-2.4.17.tgz#c0d0b321f12c5a759b8174d535683b09c437d32b"
   dependencies:
     bluebird "^3.5.0"
     cli-engine-command "^8.0.17"
@@ -2065,7 +2065,7 @@ heroku-apps@2.4.18:
     co "^4.6.0"
     co-wait "^0.0.0"
     filesize "^3.5.10"
-    heroku-cli-util "^6.2.10"
+    heroku-cli-util "^6.2.9"
     inquirer "^3.3.0"
     lodash "^4.17.4"
     lodash.compact "^3.0.1"
@@ -2221,9 +2221,9 @@ heroku-cli-util@^6.0.15, heroku-cli-util@^6.1.17, heroku-cli-util@^6.2.0, heroku
     supports-color "^3.1.2"
     tunnel-agent "^0.6.0"
 
-heroku-cli-util@^6.2.10:
-  version "6.2.10"
-  resolved "https://registry.yarnpkg.com/heroku-cli-util/-/heroku-cli-util-6.2.10.tgz#2dc1ad948213494e69f57842f0d965956dae2219"
+heroku-cli-util@^6.2.9:
+  version "6.2.9"
+  resolved "https://registry.yarnpkg.com/heroku-cli-util/-/heroku-cli-util-6.2.9.tgz#b9c3d73510f012bc480708ffaed24e60c60c3883"
   dependencies:
     ansi-escapes "^1.4.0"
     ansi-styles "^3.2.0"

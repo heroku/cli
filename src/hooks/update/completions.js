@@ -1,6 +1,6 @@
 // @flow
 
-import cli from 'cli-ux'
+import {CLI} from 'cli-ux'
 import Plugins from 'cli-engine/lib/plugins'
 import type {Config} from 'cli-engine-config'
 import type {PreRun} from 'cli-engine/lib/hooks'
@@ -13,6 +13,7 @@ async function run (config: Config, opts: PreRun) {
     if (config.windows) {
       debug('skipping autocomplete on windows')
     } else {
+      const cli = new CLI()
       const plugins = await (new Plugins(config)).list()
       const acPlugin = plugins.find(p => p.name === 'heroku-cli-autocomplete')
       if (acPlugin) {
@@ -26,7 +27,7 @@ async function run (config: Config, opts: PreRun) {
       } else {
         debug('skipping autocomplete, not installed')
       }
-      cli.done()
+      cli.action.done()
     }
   } catch (err) {
     debug(err)
