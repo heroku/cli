@@ -890,15 +890,15 @@ cli-cursor@^2.1.0:
   dependencies:
     restore-cursor "^2.0.0"
 
-cli-engine-command@9.0.0, cli-engine-command@^9.0.0:
-  version "9.0.0"
-  resolved "https://registry.yarnpkg.com/cli-engine-command/-/cli-engine-command-9.0.0.tgz#63ce9b5039b824ae171bb491d662c2cb2106fa88"
+cli-engine-command@9.0.2, cli-engine-command@^9.0.2:
+  version "9.0.2"
+  resolved "https://registry.yarnpkg.com/cli-engine-command/-/cli-engine-command-9.0.2.tgz#df1dc4e66ecde405e66ac3cc48711618968e9c09"
   dependencies:
     "@heroku/linewrap" "^1.0.0"
     ansi-escapes "^3.0.0"
     cardinal "1.x"
     chalk "^2.1.0"
-    cli-ux "^2.0.0"
+    cli-ux "^2.0.3"
     fs-extra "^4.0.2"
     http-call "^3.0.2"
     lodash.maxby "^4.6.0"
@@ -1010,15 +1010,15 @@ cli-engine-heroku@^4.0.1, cli-engine-heroku@^4.1.0:
     http-call "^3.0.2"
     netrc-parser "^2.0.3"
 
-cli-engine@4.6.12:
-  version "4.6.12"
-  resolved "https://registry.yarnpkg.com/cli-engine/-/cli-engine-4.6.12.tgz#62ffa69e60759529b9cc057b73472fc74b069d8a"
+cli-engine@4.6.14:
+  version "4.6.14"
+  resolved "https://registry.yarnpkg.com/cli-engine/-/cli-engine-4.6.14.tgz#4eaaa6cec98d3ea8277603902dab892dcb139533"
   dependencies:
     "@heroku/linewrap" "^1.0.0"
     ansi-escapes "^3.0.0"
-    cli-engine-command "^9.0.0"
+    cli-engine-command "^9.0.2"
     cli-engine-config "^3.3.1"
-    cli-ux "^2.0.1"
+    cli-ux "^2.0.3"
     debug "^3.1.0"
     filesize "^3.5.10"
     find-up "^2.1.0"
@@ -1076,9 +1076,26 @@ cli-ux@^1.1.10:
     supports-color "^4.4.0"
     ts-lodash "^4.0.5"
 
-cli-ux@^2.0.0, cli-ux@^2.0.1:
+cli-ux@^2.0.0:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-2.0.1.tgz#24cde45b405de39c527de8deb877c7a47ddba3d2"
+  dependencies:
+    "@heroku/linewrap" "^1.0.0"
+    ansi-escapes "^3.0.0"
+    ansi-styles "^3.2.0"
+    cardinal "^1.0.0"
+    chalk "^2.1.0"
+    fs-extra "^4.0.2"
+    lodash "^4.17.4"
+    moment "^2.18.1"
+    password-prompt "^1.0.3"
+    strip-ansi "^4.0.0"
+    supports-color "^4.4.0"
+    ts-lodash "^4.0.5"
+
+cli-ux@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-2.0.3.tgz#3baae3447557cbc50056ffa0bb93a10ebd58de87"
   dependencies:
     "@heroku/linewrap" "^1.0.0"
     ansi-escapes "^3.0.0"
@@ -2054,9 +2071,9 @@ here@0.0.2:
   version "0.0.2"
   resolved "http://cli-npm.heroku.com/here/-/here-0.0.2/69c1af3f02121f3d8788e02e84dc8b3905d71195.tgz#69c1af3f02121f3d8788e02e84dc8b3905d71195"
 
-heroku-apps@2.4.17:
-  version "2.4.17"
-  resolved "https://registry.yarnpkg.com/heroku-apps/-/heroku-apps-2.4.17.tgz#c0d0b321f12c5a759b8174d535683b09c437d32b"
+heroku-apps@2.4.18:
+  version "2.4.18"
+  resolved "https://registry.yarnpkg.com/heroku-apps/-/heroku-apps-2.4.18.tgz#ec956a99bef36a6451021addb8e29cac44053ea9"
   dependencies:
     bluebird "^3.5.0"
     cli-engine-command "^8.0.17"
@@ -2065,7 +2082,7 @@ heroku-apps@2.4.17:
     co "^4.6.0"
     co-wait "^0.0.0"
     filesize "^3.5.10"
-    heroku-cli-util "^6.2.9"
+    heroku-cli-util "^6.2.10"
     inquirer "^3.3.0"
     lodash "^4.17.4"
     lodash.compact "^3.0.1"
@@ -2221,9 +2238,9 @@ heroku-cli-util@^6.0.15, heroku-cli-util@^6.1.17, heroku-cli-util@^6.2.0, heroku
     supports-color "^3.1.2"
     tunnel-agent "^0.6.0"
 
-heroku-cli-util@^6.2.9:
-  version "6.2.9"
-  resolved "https://registry.yarnpkg.com/heroku-cli-util/-/heroku-cli-util-6.2.9.tgz#b9c3d73510f012bc480708ffaed24e60c60c3883"
+heroku-cli-util@^6.2.10:
+  version "6.2.10"
+  resolved "https://registry.yarnpkg.com/heroku-cli-util/-/heroku-cli-util-6.2.10.tgz#2dc1ad948213494e69f57842f0d965956dae2219"
   dependencies:
     ansi-escapes "^1.4.0"
     ansi-styles "^3.2.0"
