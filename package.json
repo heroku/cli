@@ -14,6 +14,7 @@
     "node": "8.6.0",
     "defaultCommand": "dashboard",
     "legacyConverter": "./lib/legacy",
+    "npmRegistry": "https://cli-npm.heroku.com",
     "hooks": {
       "init": "./lib/hooks/init/migrate",
       "prerun": "./lib/hooks/prerun/analytics",
