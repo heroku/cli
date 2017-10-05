@@ -42,6 +42,12 @@ const shouldCapture = function (cmdRun) {
       finished_at: '101',
       succeeded: true
     })
+
+    let dbA = {info: [
+      {name: 'Continuous Protection', values: ['On']}
+    ]}
+    pg.get('/client/v11/databases/1').reply(200, dbA)
+
     cli.mockConsole()
 
     return cmdRun({app: 'myapp', args: {}, flags: {}})
@@ -51,7 +57,8 @@ Use heroku pg:backups:info to check progress.
 Stop a running backup with heroku pg:backups:cancel.
 
 `))
-    .then(() => expect(cli.stderr, 'to equal', `Starting backup of postgres-1... done\n${captureText()}`))
+    .then(() => expect(cli.stderr, 'to match', new RegExp(`Starting backup of postgres-1... done\n${captureText()}`)))
+    .then(() => expect(cli.stderr, 'to match', new RegExp(`backups of large databases are likely to fail`)))
   })
 
   it('captures a db (verbose)', () => {
@@ -70,6 +77,12 @@ Stop a running backup with heroku pg:backups:cancel.
       succeeded: true,
       logs: [{created_at: '100', message: 'log message 1'}]
     })
+
+    let dbA = {info: [
+      {name: 'Continuous Protection', values: ['Off']}
+    ]}
+    pg.get('/client/v11/databases/1').reply(200, dbA)
+
     cli.mockConsole()
 
     return cmdRun({app: 'myapp', args: {}, flags: {verbose: true}})
@@ -81,8 +94,8 @@ Stop a running backup with heroku pg:backups:cancel.
 Backing up DATABASE to b005...
 100 log message 1
 `))
-    .then(() => expect(cli.stderr, 'to equal', `Starting backup of postgres-1... done
-`))
+    .then(() => expect(cli.stderr, 'to match', new RegExp(`Starting backup of postgres-1... done
+`))).then(() => expect(cli.stderr, 'not to match', new RegExp(`backups of large databases are likely to fail`)))
   })
 
   it('captures a db (verbose) with non billing app', () => {
@@ -101,6 +114,12 @@ Backing up DATABASE to b005...
       succeeded: true,
       logs: [{created_at: '100', message: 'log message 1'}]
     })
+
+    let dbA = {info: [
+      {name: 'Continuous Protection', values: ['On']}
+    ]}
+    pg.get('/client/v11/databases/1').reply(200, dbA)
+
     cli.mockConsole()
 
     return cmdRun({app: 'myapp', args: {}, flags: {verbose: true}})
@@ -115,8 +134,8 @@ Use heroku pg:backups -a mybillingapp to check the list of backups.
 Backing up DATABASE to b005...
 100 log message 1
 `))
-    .then(() => expect(cli.stderr, 'to equal', `Starting backup of postgres-1... done
-`))
+    .then(() => expect(cli.stderr, 'to match', new RegExp(`Starting backup of postgres-1... done
+`))).then(() => expect(cli.stderr, 'to match', new RegExp(`backups of large databases are likely to fail`)))
   })
 
   it('captures a snapshot if called with the --snapshot flag', () => {
@@ -126,6 +145,7 @@ Backing up DATABASE to b005...
 
     pg = nock('https://postgres-api.heroku.com')
     pg.post('/postgres/v0/databases/1/snapshots').reply(200, {})
+
     cli.mockConsole()
 
     return cmdRun({app: 'myapp', args: {}, flags: {snapshot: true}})
