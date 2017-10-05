@@ -12,7 +12,7 @@ function * run (context, heroku) {
 
   let formattedEndpoint = formatEndpoint(endpoint)
 
-  yield cli.confirmApp(context.app, context.flags.confirm, `Potentially Destructive Action\nThis command will remove the endpoint ${formattedEndpoint} from ${cli.color.app(context.app)}.`)
+  yield cli.confirmApp(context.app, context.flags.confirm, `WARNING: Destructive Action - you cannot rollback this change\nThis command will remove the endpoint ${formattedEndpoint} from ${cli.color.app(context.app)}.`)
 
   let actions = yield {
     action: cli.action(`Removing SSL certificate ${formattedEndpoint} from ${cli.color.app(context.app)}`, {}, heroku.request({
