@@ -9,17 +9,20 @@ async function run (_: Config, opts: PluginsParseOptions) {
   let m = opts.module
   m.commands = m.commands.map((c: any) => {
     class LegacyCommand extends Command {
+      static __config = {
+        id: lodash.compact([c.topic, c.command]).join(':'),
+        plugin: opts.plugin,
+        _version: require('cli-engine-command/package.json').version,
+      }
       options = {
         topic: c.topic,
         command: c.command,
         description: c.description
       }
-      async _run () {
+      async run () {
         console.log('x')
       }
     }
-    LegacyCommand.__config.id = lodash.compact([c.topic, c.command]).join(':')
-    LegacyCommand.__config.plugin = opts.plugin
     return LegacyCommand
   })
 }
