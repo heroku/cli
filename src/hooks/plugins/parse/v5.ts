@@ -20,9 +20,6 @@ async function run (_: Config, opts: PluginsParseOptions) {
     }
     LegacyCommand.__config.id = lodash.compact([c.topic, c.command]).join(':')
     LegacyCommand.__config.plugin = opts.plugin
-    let lc = new LegacyCommand({
-    })
-    console.dir(lc)
     return LegacyCommand
   })
 }

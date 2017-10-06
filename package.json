@@ -11,7 +11,7 @@
     "bin": "heroku",
     "userPlugins": true,
     "dirname": "heroku",
-    "node": "8.5.0",
+    "node": "8.6.0",
     "defaultCommand": "dashboard",
     "legacyConverter": "./lib/legacy",
     "hooks": {
@@ -47,7 +47,7 @@
     ]
   },
   "dependencies": {
-    "cli-engine": "5.0.0-ts.1",
+    "cli-engine": "5.0.0-ts.2",
     "cli-engine-command": "9.0.0-ts.14",
     "cli-engine-config": "4.0.1-ts.16",
     "cli-engine-heroku": "5.0.0-ts.3",
