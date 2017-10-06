@@ -47,7 +47,7 @@
     ]
   },
   "dependencies": {
-    "cli-engine": "5.0.0-ts.2",
+    "cli-engine": "5.0.0-ts.3",
     "cli-engine-command": "9.0.0-ts.14",
     "cli-engine-config": "4.0.1-ts.16",
     "cli-engine-heroku": "5.0.0-ts.3",
