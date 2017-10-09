@@ -65,11 +65,11 @@ describe('ps', function () {
     stubAppAndAccount()
 
     return cmd.run({app: 'myapp', args: [], flags: {}})
-      .then(() => expect(cli.stdout, 'to equal', `=== web (Free): npm start (1)
-web.1: up ${hourAgoStr} (~ 1h ago)
-
-=== run: one-off processes (1)
+      .then(() => expect(cli.stdout, 'to equal', `=== run: one-off processes (1)
 run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
+
+=== web (Free): npm start (1)
+web.1: up ${hourAgoStr} (~ 1h ago)
 
 `))
       .then(() => expect(cli.stderr, 'to be empty'))
@@ -89,11 +89,11 @@ run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
     stubAppAndAccount()
 
     return cmd.run({app: 'myapp', args: [], flags: {}})
-      .then(() => expect(cli.stdout, 'to equal', `=== web (Shield-M): npm start (1)
-web.1: up ${hourAgoStr} (~ 1h ago)
-
-=== run: one-off processes (1)
+      .then(() => expect(cli.stdout, 'to equal', `=== run: one-off processes (1)
 run.1 (Shield-L): up ${hourAgoStr} (~ 1h ago): bash
+
+=== web (Shield-M): npm start (1)
+web.1: up ${hourAgoStr} (~ 1h ago)
 
 `))
       .then(() => expect(cli.stderr, 'to be empty'))
