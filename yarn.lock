@@ -961,12 +961,12 @@ cli-engine-command@^8.0.17:
     string "3.x"
     supports-color "^4.4.0"
 
-cli-engine-config@3.3.1, cli-engine-config@^3.3.1:
-  version "3.3.1"
-  resolved "https://registry.yarnpkg.com/cli-engine-config/-/cli-engine-config-3.3.1.tgz#79970a47e97bd4caad29d40f5577a23ddd7982cc"
+cli-engine-config@3.4.0, cli-engine-config@^3.4.0:
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/cli-engine-config/-/cli-engine-config-3.4.0.tgz#b496169525a8e07aaface467995b6c52baf3611c"
   dependencies:
-    debug "^3.0.1"
-    fs-extra "^4.0.1"
+    debug "^3.1.0"
+    fs-extra "^4.0.2"
     uuid "^3.1.0"
 
 cli-engine-config@^2.0.0:
@@ -981,6 +981,14 @@ cli-engine-config@^3.2.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/cli-engine-config/-/cli-engine-config-3.2.0.tgz#5b1af55e64c1ef680e298ec6c1fab649c1d1e80c"
   dependencies:
+    fs-extra "^4.0.1"
+    uuid "^3.1.0"
+
+cli-engine-config@^3.3.1:
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/cli-engine-config/-/cli-engine-config-3.3.1.tgz#79970a47e97bd4caad29d40f5577a23ddd7982cc"
+  dependencies:
+    debug "^3.0.1"
     fs-extra "^4.0.1"
     uuid "^3.1.0"
 
@@ -1010,14 +1018,14 @@ cli-engine-heroku@^4.0.1, cli-engine-heroku@^4.1.0:
     http-call "^3.0.2"
     netrc-parser "^2.0.3"
 
-cli-engine@4.6.14:
-  version "4.6.14"
-  resolved "https://registry.yarnpkg.com/cli-engine/-/cli-engine-4.6.14.tgz#4eaaa6cec98d3ea8277603902dab892dcb139533"
+cli-engine@4.6.17:
+  version "4.6.17"
+  resolved "https://registry.yarnpkg.com/cli-engine/-/cli-engine-4.6.17.tgz#a957804ac0a260aed0eccada26d35662ea85d5e8"
   dependencies:
     "@heroku/linewrap" "^1.0.0"
     ansi-escapes "^3.0.0"
     cli-engine-command "^9.0.2"
-    cli-engine-config "^3.3.1"
+    cli-engine-config "^3.4.0"
     cli-ux "^2.0.3"
     debug "^3.1.0"
     filesize "^3.5.10"
@@ -1036,7 +1044,7 @@ cli-engine@4.6.14:
     rwlockfile "^1.4.8"
     string "3.x"
     string-similarity "^1.2.0"
-    tar-fs "1.x"
+    tar-fs "1.16.0"
     tmp "^0.0.33"
 
 cli-ux@^1.0.1:
@@ -1474,9 +1482,9 @@ eslint-module-utils@^2.1.1:
     debug "^2.6.8"
     pkg-dir "^1.0.0"
 
-eslint-plugin-flowtype@2.37.0:
-  version "2.37.0"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-flowtype/-/eslint-plugin-flowtype-2.37.0.tgz#2b09694deea6efdd8354eccd328db134b2d8b6d5"
+eslint-plugin-flowtype@2.39.1:
+  version "2.39.1"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-flowtype/-/eslint-plugin-flowtype-2.39.1.tgz#b5624622a0388bcd969f4351131232dcb9649cd5"
   dependencies:
     lodash "^4.15.0"
 
@@ -2117,9 +2125,9 @@ heroku-apps@2.4.18:
     term-img "^2.1.0"
     urijs "1.18.12"
 
-heroku-certs@1.1.41:
-  version "1.1.41"
-  resolved "http://cli-npm.heroku.com/heroku-certs/-/heroku-certs-1.1.41/687c5369fedd44384d09e95a50b62ab6baa59312.tgz#687c5369fedd44384d09e95a50b62ab6baa59312"
+heroku-certs@1.1.42:
+  version "1.1.42"
+  resolved "https://registry.yarnpkg.com/heroku-certs/-/heroku-certs-1.1.42.tgz#1f76010a2534a7d36274127669de86f55a63ff54"
   dependencies:
     co "4.6.0"
     co-wait "0.0.0"
@@ -5480,9 +5488,9 @@ table@^4.0.1:
     slice-ansi "0.0.4"
     string-width "^2.0.0"
 
-tar-fs@1.x:
-  version "1.15.3"
-  resolved "http://cli-npm.heroku.com/tar-fs/-/tar-fs-1.15.3/eccf935e941493d8151028e636e51ce4c3ca7f20.tgz#eccf935e941493d8151028e636e51ce4c3ca7f20"
+tar-fs@1.16.0:
+  version "1.16.0"
+  resolved "https://registry.yarnpkg.com/tar-fs/-/tar-fs-1.16.0.tgz#e877a25acbcc51d8c790da1c57c9cf439817b896"
   dependencies:
     chownr "^1.0.1"
     mkdirp "^0.5.1"
