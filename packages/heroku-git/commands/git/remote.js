@@ -2,7 +2,7 @@
 
 let co = require('co')
 let cli = require('heroku-cli-util')
-let git = require('../../lib/git')
+let Git = require('../../lib/git')
 let process = require('process')
 
 function includes (array, item) {
@@ -10,7 +10,7 @@ function includes (array, item) {
 }
 
 function * run (context, heroku) {
-  git = git(context)
+  let git = Git(context)
   let appName = context.flags.app || context.args.shift() || process.env.HEROKU_APP
   if (!appName) {
     throw new Error('Specify an app with --app')
