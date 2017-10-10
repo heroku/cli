@@ -1,7 +1,7 @@
 // @flow
 
 import {AutocompleteBase} from '../../autocomplete'
-import {CustomColors} from 'cli-engine-command/lib/output'
+import cli from 'cli-ux'
 
 export default class Autocomplete extends AutocompleteBase {
   static topic = 'autocomplete'
@@ -15,7 +15,7 @@ export default class Autocomplete extends AutocompleteBase {
 
     const shell = this.argv[0] || this.config.shell
     if (!shell) {
-      this.out.error('Error: Missing required argument shell')
+      cli.error('Error: Missing required argument shell')
     }
 
     switch (shell) {
@@ -27,9 +27,9 @@ export default class Autocomplete extends AutocompleteBase {
       // ${cmd}`)
       //         break
       case 'zsh':
-        const cmd1 = CustomColors.cmd(`$ printf "$(heroku autocomplete:script zsh)" >> ~/.zshrc`)
-        const cmd2 = CustomColors.cmd(`$ compaudit`)
-        this.out.log(`Add the autocomplete setup script to your .zshrc via:
+        const cmd1 = cli.color.cyan(`$ printf "$(heroku autocomplete:script zsh)" >> ~/.zshrc`)
+        const cmd2 = cli.color.cyan(`$ compaudit`)
+        cli.log(`Add the autocomplete setup script to your .zshrc via:
 
 ${cmd1}
 
@@ -38,8 +38,8 @@ Run the following zsh command to ensure no permissions conflicts:
 ${cmd2}`)
         break
       default:
-        this.out.error(`Currently ${shell} is not a supported shell for autocomplete`)
+        cli.error(`Currently ${shell} is not a supported shell for autocomplete`)
     }
-    this.out.log('\nLastly, restart your shell')
+    cli.log('\nLastly, restart your shell')
   }
 }

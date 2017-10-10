@@ -7,6 +7,8 @@ import Plugins from 'cli-engine/lib/plugins'
 import {convertFromV5} from 'cli-engine/lib/plugins/legacy'
 import {AutocompleteBase} from '../../autocomplete'
 
+const debug = require('debug')('heroku:autocomplete')
+
 export default class AutocompleteInit extends AutocompleteBase {
   static topic = 'autocomplete'
   static command = 'init'
@@ -28,7 +30,7 @@ export default class AutocompleteInit extends AutocompleteBase {
 
   async _createCommandsCache () {
     try {
-      const plugins = await new Plugins(this.out).list()
+      const plugins = await new Plugins(this.config).list()
       await Promise.all(plugins.map(async (p) => {
         const hydrated = await p.pluginPath.require()
         const cmds = hydrated.commands || []
@@ -42,8 +44,8 @@ export default class AutocompleteInit extends AutocompleteBase {
             const id = Command.command ? `${Command.topic}:${Command.command}` : Command.topic
             this.cmdsWithFlags.push(`${namespace}${id}${flags}`)
           } catch (err) {
-            this.out.debug(`Error creating autocomplete a command in ${p.name}, moving on...`)
-            this.out.debug(err.message)
+            debug(`Error creating autocomplete a command in ${p.name}, moving on...`)
+            debug(err.message)
             this.writeLogFile(err.message)
           }
         })
@@ -51,15 +53,15 @@ export default class AutocompleteInit extends AutocompleteBase {
       const commands = this.cmdsWithFlags.join('\n')
       fs.writeFileSync(path.join(this.completionsCachePath, 'commands'), commands)
     } catch (e) {
-      this.out.debug('Error creating autocomplete commands cache')
-      this.out.debug(e.message)
+      debug('Error creating autocomplete commands cache')
+      debug(e.message)
       this.writeLogFile(e.message)
     }
   }
 
   async _createCommandFuncsCache () {
     try {
-      const plugins = await new Plugins(this.out).list()
+      const plugins = await new Plugins(this.config).list()
       // for every plugin
       await Promise.all(plugins.map(async (p) => {
         // re-hydrate
@@ -78,8 +80,8 @@ export default class AutocompleteInit extends AutocompleteBase {
             this._addFlagsSetterFn(this._genCmdFlagSetter(cmd, namespace))
             this._addCmdWithDesc(this._genCmdWithDescription(cmd, namespace))
           } catch (err) {
-            this.out.debug(`Error creating azsh autocomplete command in ${p.name}, moving on...`)
-            this.out.debug(err.message)
+            debug(`Error creating azsh autocomplete command in ${p.name}, moving on...`)
+            debug(err.message)
             this.writeLogFile(err.message)
           }
         })
@@ -88,8 +90,8 @@ export default class AutocompleteInit extends AutocompleteBase {
       this._writeShellSetupsToCache()
       this._writeZshSetterFunctionsToCache()
     } catch (e) {
-      this.out.debug('Error creating zsh autocomplete functions cache')
-      this.out.debug(e.message)
+      debug('Error creating zsh autocomplete functions cache')
+      debug(e.message)
       this.writeLogFile(e.message)
     }
   }

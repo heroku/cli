@@ -12,3 +12,4 @@ emoji=true
 unsafe.enable_getters_and_setters=true
 module.use_strict=true
 module.ignore_non_literal_requires=true
+suppress_comment= \\(.\\|\n\\)*flow\\$ignore

@@ -3,9 +3,9 @@
 import Command from 'cli-engine-command'
 import path from 'path'
 import moment from 'moment'
-import {logToFile} from 'cli-engine-command/lib/output/stream'
+import cli from 'cli-ux'
 
-export class AutocompleteBase extends Command {
+export class AutocompleteBase extends Command<*> {
   get functionsPath (): string {
     return path.join(__dirname, '..', '..', '..', 'autocomplete')
   }
@@ -29,6 +29,6 @@ export class AutocompleteBase extends Command {
   }
 
   writeLogFile (msg: string) {
-    logToFile(`[${moment().format()}] ${msg}\n`, this.acLogfile)
+    cli.stdout.constructor.logToFile(`[${moment().format()}] ${msg}\n`, this.acLogfile)
   }
 }

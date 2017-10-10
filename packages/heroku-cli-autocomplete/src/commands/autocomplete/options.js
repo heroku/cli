@@ -5,6 +5,7 @@ import Plugins from 'cli-engine/lib/plugins'
 import path from 'path'
 import ACCache from '../../cache'
 import AutocompleteBase from '.'
+import cli from 'cli-ux'
 
 export default class AutocompleteOptions extends AutocompleteBase {
   static topic = 'autocomplete'
@@ -25,7 +26,7 @@ export default class AutocompleteOptions extends AutocompleteBase {
 
       // B - find cmd to complete
       const cmdId = commandLineToComplete[1]
-      const plugins = new Plugins(this.out)
+      const plugins = new Plugins(this.config)
       await plugins.load()
       let Command = await plugins.findCommand(cmdId)
       if (!Command) throw new Error(`Command ${cmdId} not found`)
@@ -64,7 +65,8 @@ export default class AutocompleteOptions extends AutocompleteBase {
       // build/retrieve & return options cache
       if (cacheCompletion && cacheCompletion.options) {
         // use cacheKey function or fallback to arg/flag name
-        const ctx = {args: this.parsedArgs, flags: this.parsedFlags, argv: this.argv, out: this.out}
+        // TO-DO: remove `out: cli` and require cli-ux in completions
+        const ctx = {args: this.parsedArgs, flags: this.parsedFlags, argv: this.argv, out: cli}
         const ckey = cacheCompletion.cacheKey ? await cacheCompletion.cacheKey(ctx) : null
         const key = (ckey || cacheKey)
         const flagCachePath = path.join(this.completionsPath, key)
@@ -75,7 +77,7 @@ export default class AutocompleteOptions extends AutocompleteBase {
         const options = await ACCache.fetch(flagCachePath, duration, opts)
 
         // return options cache
-        this.out.log((options || []).join('\n'))
+        cli.log((options || []).join('\n'))
       }
     } catch (err) {
       // on error make audible 'beep'

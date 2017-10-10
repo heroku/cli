@@ -3,6 +3,7 @@
 import path from 'path'
 import {AutocompleteBase} from '../../autocomplete'
 import AutocompleteInit from './init'
+import cli from 'cli-ux'
 
 export default class AutocompleteScript extends AutocompleteBase {
   static topic = 'autocomplete'
@@ -14,23 +15,23 @@ export default class AutocompleteScript extends AutocompleteBase {
 
   async run () {
     this.errorIfWindows()
-    await AutocompleteInit.run({config: this.config})
+    await AutocompleteInit.run(Object.assign(this.config, {argv: []}))
 
     const shell = this.argv[0] || this.config.shell
     if (!shell) {
-      this.out.error('Error: Missing required argument shell')
+      cli.error('Error: Missing required argument shell')
     }
 
     switch (shell) {
       case 'zsh':
-        this.out.log(`${this._prefix}HEROKU_ZSH_AC_SETUP_PATH=${path.join(this.completionsPath, 'zsh_setup')} && test -f $HEROKU_ZSH_AC_SETUP_PATH && source $HEROKU_ZSH_AC_SETUP_PATH;`)
+        cli.log(`${this._prefix}HEROKU_ZSH_AC_SETUP_PATH=${path.join(this.completionsPath, 'zsh_setup')} && test -f $HEROKU_ZSH_AC_SETUP_PATH && source $HEROKU_ZSH_AC_SETUP_PATH;`)
         break
       // for now, suspending bash completion
       // case 'bash':
-      //   this.out.log(`${this._prefix}HEROKU_BASH_AC_SETUP_PATH=${path.join(this.completionsPath, 'bash_setup')} && test -f $HEROKU_BASH_AC_SETUP_PATH && source $HEROKU_BASH_AC_SETUP_PATH;`)
+      //   cli.log(`${this._prefix}HEROKU_BASH_AC_SETUP_PATH=${path.join(this.completionsPath, 'bash_setup')} && test -f $HEROKU_BASH_AC_SETUP_PATH && source $HEROKU_BASH_AC_SETUP_PATH;`)
       //   break
       default:
-        this.out.error(`No autocomplete script for ${shell}. Run $ heroku autocomplete for install instructions.`)
+        cli.error(`No autocomplete script for ${shell}. Run $ heroku autocomplete for install instructions.`)
     }
   }
 
