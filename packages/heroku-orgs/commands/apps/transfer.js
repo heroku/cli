@@ -73,12 +73,12 @@ function * run (context, heroku) {
 let cmd = {
   topic: 'apps',
   command: 'transfer',
-  description: 'transfer applications to another user, organization or team',
+  description: 'transfer applications to another user or team',
   needsAuth: true,
   wantsApp: true,
   run: cli.command(co.wrap(run)),
   args: [
-    {name: 'recipient', description: 'user, organization or team to transfer applications to'}
+    {name: 'recipient', description: 'user or team to transfer applications to'}
   ],
   flags: [
     {name: 'locked', char: 'l', hasValue: false, required: false, description: 'lock the app upon transfer'},
