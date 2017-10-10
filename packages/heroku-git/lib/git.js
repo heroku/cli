@@ -1,6 +1,7 @@
 'use strict'
 
-let cp = require('child_process')
+const cp = require('child_process')
+const debug = require('debug')('git')
 
 module.exports = function (context) {
   function wrapReject (reject) {
@@ -14,6 +15,7 @@ module.exports = function (context) {
 
   function exec (args) {
     return new Promise(function (resolve, reject) {
+      debug('exec: git %o', args)
       cp.execFile('git', args, function (error, stdout) {
         if (error) return wrapReject(reject)(error)
         resolve(stdout.trim())
@@ -23,6 +25,7 @@ module.exports = function (context) {
 
   function spawn (args) {
     return new Promise(function (resolve, reject) {
+      debug('spawn: git %o', args)
       let s = cp.spawn('git', args, {stdio: [0, 1, 2]})
       s.on('error', wrapReject(reject))
       s.on('close', resolve)

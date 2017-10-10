@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "co": "4.6.0",
+    "debug": "3.1.0",
     "heroku-cli-util": "^6.2.4"
   },
   "devDependencies": {
