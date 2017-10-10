@@ -16,7 +16,6 @@
     "legacyConverter": "./lib/legacy",
     "npmRegistry": "https://cli-npm.heroku.com",
     "hooks": {
-      "init": "./lib/hooks/init/migrate",
       "prerun": "./lib/hooks/prerun/analytics",
       "update": [
         "./lib/hooks/update/analytics",
