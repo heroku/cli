@@ -2331,11 +2331,12 @@ heroku-fork@4.1.25:
     heroku-cli-util "^6.2.0"
     lodash "4.x"
 
-heroku-git@2.5.21:
-  version "2.5.21"
-  resolved "http://cli-npm.heroku.com/heroku-git/-/heroku-git-2.5.21/cdb297dfabae4c09a485a2c7b2f4f591a2fabe0b.tgz#cdb297dfabae4c09a485a2c7b2f4f591a2fabe0b"
+heroku-git@2.5.23:
+  version "2.5.23"
+  resolved "https://registry.yarnpkg.com/heroku-git/-/heroku-git-2.5.23.tgz#5c644f79d5d846bd0a4159578ab3a9c2c52c0f10"
   dependencies:
     co "4.6.0"
+    debug "3.1.0"
     heroku-cli-util "^6.2.4"
 
 heroku-local@5.1.21:
