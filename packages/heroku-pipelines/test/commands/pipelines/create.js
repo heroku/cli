@@ -21,7 +21,7 @@ describe('pipelines:create', function () {
       pipeline = {name: 'example', id: '0123', owner: { id: '1234-567', type: 'user' }}
 
       heroku
-      .get('/account')
+      .get('/users/~')
       .reply(200, { id: '1234-567' })
       .post('/pipelines')
       .reply(201, pipeline)

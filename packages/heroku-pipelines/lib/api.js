@@ -58,8 +58,8 @@ function getAppFilter (heroku, appIds) {
   })
 }
 
-function getAccountInfo (heroku) {
-  return heroku.get('/account')
+function getAccountInfo (heroku, id = '~') {
+  return heroku.get(`/users/${id}`)
 }
 
 function getAccountFeature (heroku, feature) {

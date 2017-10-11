@@ -114,7 +114,7 @@ describe('pipelines:setup', function () {
           api.get('/app-setups/1').reply(200, { status: 'succeeded' })
           api.get('/app-setups/2').reply(200, { status: 'succeeded' })
 
-          api.get('/account').reply(200, { id: '1234-567' })
+          api.get('/users/~').reply(200, { id: '1234-567' })
         })
 
         it('creates apps in the personal account', function* () {
