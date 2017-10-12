@@ -237,7 +237,6 @@ releasetxz: $(MANIFEST) $(MANIFEST).sig $(addprefix releasetxz/,$(DIST_TARGETS))
 	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/manifest.json s3://heroku-cli-assets/branches/$(AWS_PATH)/$(VERSION)/manifest.json
 	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/manifest.json s3://heroku-cli-assets/branches/$(AWS_PATH)/manifest.json
 	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/manifest.json.sig s3://heroku-cli-assets/branches/$(AWS_PATH)/manifest.json.sig
-	aws cloudfront create-invalidation --distribution-id EHF9FOCUJYVZ --paths "/branches/$(AWS_PATH)/*"
 
 .PHONY: releasetgz
 releasetgz: $(MANIFEST_GZ) $(MANIFEST_GZ).sig $(addprefix releasetgz/,$(DIST_TARGETS_GZ))
