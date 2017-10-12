@@ -7,7 +7,7 @@ mkdir -p tmp/osx/build
 rm -rf tmp/osx/build/*
 cd tmp/osx/build
 mkdir -p flat/base.pkg flat/Resources/en.lproj
-mkdir -p root/usr/local/lib root/usr/local/bin; cp -r ../../darwin-amd64/heroku root/usr/local/lib/heroku
+mkdir -p root/usr/local/lib root/usr/local/bin; cp -r ../../darwin-amd64/sfdx root/usr/local/lib/sfdx
 (cd root && find . | cpio -o --format odc --owner 0:80 | gzip -c) > flat/base.pkg/Payload
 sed "s/VERSION/$VERSION/" ../../../resources/osx/PackageInfo |
 sed "s/KBYTES/`du -ks root | awk '{print $1}'`/" |

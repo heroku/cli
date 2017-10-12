@@ -1,4 +1,4 @@
-<pkg-info format-version="2" identifier="com.heroku.cli" version="VERSION" install-location="/" auth="root">
+<pkg-info format-version="2" identifier="com.sfdx.cli" version="VERSION" install-location="/" auth="root">
   <payload installKBytes="KBYTES" numberOfFiles="NUM_FILES"/>
   <scripts>
     <postinstall file="./postinstall"/>

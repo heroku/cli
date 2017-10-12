@@ -2,6 +2,6 @@
 
 set -ex
 
-rm -rf ~/.local/share/heroku
-rm -rf ~/.config/heroku
-rm -rf ~/.cache/heroku
+rm -rf ~/.local/share/sfdx
+rm -rf ~/.config/sfdx
+rm -rf ~/.cache/sfdx
