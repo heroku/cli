@@ -24,6 +24,10 @@ TARGETS:=darwin-amd64 linux-amd64 linux-386 linux-arm windows-amd64 windows-386 
 	@mkdir -p $(@D)
 	cp $< $@
 
+$(WORKSPACE)/lib/cacert.pem: resources/cacert.pem
+	@mkdir -p $(@D)
+	cp $< $@
+
 %/sfdx/README: resources/standalone/README
 	@mkdir -p $(@D)
 	cp $< $@
@@ -46,7 +50,7 @@ $(WORKSPACE)/bin/sfdx tmp/%/sfdx/bin/sfdx: $(SOURCES) bin/version
 	GOOS=$(GOOS) GOARCH=$(ARCH) go build $(LDFLAGS) -o $@ -tags $(BUILD_TAGS)
 	@osslsigncode -pkcs12 resources/exe/heroku-codesign-cert.pfx \
 		-pass '$(HEROKU_WINDOWS_SIGNING_PASS)' \
-		-n 'Heroku CLI' \
+		-n 'SFDX CLI' \
 		-i https://toolbelt.heroku.com/ \
 		-in $@ -out $@.signed
 	mv $@.signed $@
@@ -133,16 +137,16 @@ $(DIST_DIR)/$(VERSION)/sfdx-windows-%.exe: tmp/windows-% $(CACHE_DIR)/git/Git-2.
 	cp -r tmp/windows-$* tmp/windows-$*-installer
 	cp $(CACHE_DIR)/git/Git-2.8.1-$*.exe tmp/windows-$*-installer/sfdx/git.exe
 	sed -e "s/!define Version 'VERSION'/!define Version '$(VERSION)'/" resources/exe/sfdx.nsi |\
-		sed -e "s/InstallDir .*/InstallDir \"\$$PROGRAMFILES$(if $(filter amd64,$*),64,)\\\Heroku\"/" \
+		sed -e "s/InstallDir .*/InstallDir \"\$$PROGRAMFILES$(if $(filter amd64,$*),64,)\\\sfdx\"/" \
 		> tmp/windows-$*-installer/sfdx/sfdx.nsi
 	makensis tmp/windows-$*-installer/sfdx/sfdx.nsi > /dev/null
 	@osslsigncode -pkcs12 resources/exe/sfdx-codesign-cert.pfx \
 		-pass '$(HEROKU_WINDOWS_SIGNING_PASS)' \
-		-n 'Heroku CLI' \
+		-n 'SFDX CLI' \
 		-i https://toolbelt.heroku.com/ \
-		-in tmp/windows-$*-installer/heroku/installer.exe -out $@
+		-in tmp/windows-$*-installer/sfdx/installer.exe -out $@
 
-$(DIST_DIR)/$(AWS_PATH)/$(VERSION)/heroku-osx.pkg: tmp/darwin-amd64
+$(DIST_DIR)/$(AWS_PATH)/$(VERSION)/sfdx-osx.pkg: tmp/darwin-amd64
 	@mkdir -p $(@D)
 	./resources/osx/build $@
 
@@ -163,7 +167,6 @@ clean:
 test: build
 	$(WORKSPACE)/bin/sfdx version
 	$(WORKSPACE)/bin/sfdx plugins
-	$(WORKSPACE)/bin/sfdx status
 
 .PHONY: all
 all: darwin linux windows freebsd openbsd
@@ -250,11 +253,11 @@ releasetgz/%.tar.gz: %.tar.gz
 	aws s3 cp --cache-control max-age=86400 $< s3://heroku-cli-assets/branches/$(AWS_PATH)/$(notdir $<)
 
 .PHONY: distosx
-distosx: $(DIST_DIR)/$(AWS_PATH)/$(VERSION)/heroku-osx.pkg
+distosx: $(DIST_DIR)/$(AWS_PATH)/$(VERSION)/sfdx-osx.pkg
 
 .PHONY: releaseosx
-releaseosx: $(DIST_DIR)/$(AWS_PATH)/$(VERSION)/heroku-osx.pkg
-	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(AWS_PATH)/$(VERSION)/heroku-osx.pkg s3://heroku-cli-assets/branches/$(AWS_PATH)/heroku-osx.pkg
+releaseosx: $(DIST_DIR)/$(AWS_PATH)/$(VERSION)/sfdx-osx.pkg
+	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(AWS_PATH)/$(VERSION)/sfdx-osx.pkg s3://heroku-cli-assets/branches/$(AWS_PATH)/sfdx-osx.pkg
 
 .PHONY: distdeb
 distdeb: $(DIST_DIR)/$(VERSION)/apt/Packages $(DIST_DIR)/$(VERSION)/apt/Release
@@ -274,9 +277,9 @@ releasedeb: $(DIST_DIR)/$(VERSION)/apt/Packages $(DIST_DIR)/$(VERSION)/apt/Relea
 	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/apt/Release.gpg s3://heroku-cli-assets/branches/$(AWS_PATH)/apt/Release.gpg
 
 .PHONY: releasewin
-releasewin: $(DIST_DIR)/$(VERSION)/heroku-windows-amd64.exe $(DIST_DIR)/$(VERSION)/heroku-windows-386.exe
-	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/heroku-windows-amd64.exe s3://heroku-cli-assets/branches/$(AWS_PATH)/heroku-windows-amd64.exe
-	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/heroku-windows-386.exe s3://heroku-cli-assets/branches/$(AWS_PATH)/heroku-windows-386.exe
+releasewin: $(DIST_DIR)/$(VERSION)/sfdx-windows-amd64.exe $(DIST_DIR)/$(VERSION)/sfdx-windows-386.exe
+	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/sfdx-windows-amd64.exe s3://heroku-cli-assets/branches/$(AWS_PATH)/sfdx-windows-amd64.exe
+	aws s3 cp --cache-control max-age=300 $(DIST_DIR)/$(VERSION)/sfdx-windows-386.exe s3://heroku-cli-assets/branches/$(AWS_PATH)/sfdx-windows-386.exe
 
 .PHONY: deps
 deps: $(CACHE_DIR)/git/Git-2.8.1-amd64.exe $(CACHE_DIR)/git/Git-2.8.1-386.exe
