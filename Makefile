@@ -140,7 +140,7 @@ $(DIST_DIR)/$(VERSION)/sfdx-windows-%.exe: tmp/windows-% $(CACHE_DIR)/git/Git-2.
 		sed -e "s/InstallDir .*/InstallDir \"\$$PROGRAMFILES$(if $(filter amd64,$*),64,)\\\sfdx\"/" \
 		> tmp/windows-$*-installer/sfdx/heroku.nsi
 	makensis tmp/windows-$*-installer/sfdx/heroku.nsi > /dev/null
-	@osslsigncode -pkcs12 resources/exe/sfdx-codesign-cert.pfx \
+	@osslsigncode -pkcs12 resources/exe/heroku-codesign-cert.pfx \
 		-pass '$(HEROKU_WINDOWS_SIGNING_PASS)' \
 		-n 'SFDX CLI' \
 		-i https://toolbelt.heroku.com/ \
