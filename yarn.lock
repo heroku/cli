@@ -2383,9 +2383,9 @@ heroku-pg@2.3.0:
     strip-eof "^1.0.0"
     tunnel-ssh "^4.1.3"
 
-heroku-pipelines@2.3.1:
-  version "2.3.1"
-  resolved "https://registry.yarnpkg.com/heroku-pipelines/-/heroku-pipelines-2.3.1.tgz#d7055a349e5f160e57f27c2df0bf2296d21d9788"
+heroku-pipelines@2.4.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/heroku-pipelines/-/heroku-pipelines-2.4.0.tgz#889cf6a227f61cd31e13793cac6b03e7c486268d"
   dependencies:
     bluebird "^3.4.7"
     cli-engine-command "^8.0.15"
