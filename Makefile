@@ -136,10 +136,10 @@ $(DIST_DIR)/$(VERSION)/sfdx-windows-%.exe: tmp/windows-% $(CACHE_DIR)/git/Git-2.
 	rm -rf tmp/windows-$*-installer
 	cp -r tmp/windows-$* tmp/windows-$*-installer
 	cp $(CACHE_DIR)/git/Git-2.8.1-$*.exe tmp/windows-$*-installer/sfdx/git.exe
-	sed -e "s/!define Version 'VERSION'/!define Version '$(VERSION)'/" resources/exe/sfdx.nsi |\
+	sed -e "s/!define Version 'VERSION'/!define Version '$(VERSION)'/" resources/exe/heroku.nsi |\
 		sed -e "s/InstallDir .*/InstallDir \"\$$PROGRAMFILES$(if $(filter amd64,$*),64,)\\\sfdx\"/" \
-		> tmp/windows-$*-installer/sfdx/sfdx.nsi
-	makensis tmp/windows-$*-installer/sfdx/sfdx.nsi > /dev/null
+		> tmp/windows-$*-installer/sfdx/heroku.nsi
+	makensis tmp/windows-$*-installer/sfdx/heroku.nsi > /dev/null
 	@osslsigncode -pkcs12 resources/exe/sfdx-codesign-cert.pfx \
 		-pass '$(HEROKU_WINDOWS_SIGNING_PASS)' \
 		-n 'SFDX CLI' \
