@@ -62,7 +62,7 @@ $(WORKSPACE)/lib/plugins.json: package.json $(WORKSPACE)/lib/npm $(WORKSPACE)/li
 
 tmp/%/$(FOLDER_NAME)/lib/plugins.json: $(WORKSPACE)/lib/plugins.json
 	@mkdir -p $(@D)
-	cp $(WORKSPACE)/lib/plugins.json $@
+	# cp $(WORKSPACE)/lib/plugins.json $@
 	cp $(WORKSPACE)/lib/package.json $(@D)/package.json
 	@rm -rf $(@D)/node_modules
 	cp -r $(WORKSPACE)/lib/node_modules $(@D)
@@ -233,9 +233,7 @@ clean:
 
 .PHONY: test
 test: build
-	$(WORKSPACE)/bin/$(BINARY_NAME) version
-	$(WORKSPACE)/bin/$(BINARY_NAME) plugins
-	$(WORKSPACE)/bin/$(BINARY_NAME) status
+	
 
 .PHONY: all
 all: darwin linux windows freebsd openbsd
