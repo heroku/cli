@@ -250,7 +250,7 @@ func ssoLogin() {
 	token := getPassword("Enter your access token (typing will be hidden): ")
 	user := getUserFromToken(token)
 	if user == nil {
-		must(errors.New("Access token invalid."))
+		must(errors.New("access token invalid"))
 	}
 	saveOauthToken(user.Email, token)
 	Println("Logged in as " + cyan(user.Email))
