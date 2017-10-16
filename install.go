@@ -49,6 +49,7 @@ func DownloadCLI(path, runtimeOS, runtimeARCH string, manifest *Manifest) {
 	defer unlock()
 	downloadingMessage := fmt.Sprintf("sfdx-cli: Updating to %s...", manifest.Version)
 	url := "https://developer.salesforce.com/media/salesforce-cli/sfdx-cli/channels/develop/sfdx-cli-v" + manifest.Version + "-" + runtimeOS + "-" + runtimeARCH + ".tar.xz"
+	Debugln("Download URL" + url)
 	reader, getSha, err := downloadXZ(url, downloadingMessage)
 	must(err)
 	tmp := filepath.Join(DataHome, "tmp")

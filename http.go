@@ -114,6 +114,7 @@ func downloadXZ(url, msg string) (io.Reader, func() string, error) {
 	var download io.Reader
 	if msg != "" {
 		size, _ := strconv.Atoi(resp.Header.Get("Content-Length"))
+		Debugln("Content size: %i", int64(size))
 		download = &ioprogress.Reader{
 			Reader:   resp.Body,
 			Size:     int64(size),
