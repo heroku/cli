@@ -12,6 +12,7 @@ import (
 )
 
 var installLockPath = filepath.Join(DataHome, "v5.lock")
+var SFDX_V6_CHANNEL = "develop"
 
 // Install installs the CLI
 func Install() {
@@ -48,7 +49,7 @@ func DownloadCLI(path, runtimeOS, runtimeARCH string, manifest *Manifest) {
 	}
 	defer unlock()
 	downloadingMessage := fmt.Sprintf("sfdx-cli: Updating to %s...", manifest.Version)
-	url := "https://developer.salesforce.com/media/salesforce-cli/sfdx-cli/channels/develop/sfdx-cli-v" + manifest.Version + "-" + runtimeOS + "-" + runtimeARCH + ".tar.xz"
+	url := "https://developer.salesforce.com/media/salesforce-cli/sfdx-cli/channels/" + SFDX_V6_CHANNEL + "/sfdx-cli-v" + manifest.Version + "-" + runtimeOS + "-" + runtimeARCH + ".tar.xz"
 	Debugln("Download URL" + url)
 	reader, getSha, err := downloadXZ(url, downloadingMessage)
 	must(err)
@@ -96,7 +97,8 @@ var updateManifestRetrying = false
 // GetUpdateManifest loads the manifest.json for a channel
 func GetUpdateManifest(os, arch string) *Manifest {
 	var m Manifest
-	url := "https://developer.salesforce.com/media/salesforce-cli/sfdx-cli/channels/stable/" + os + "-" + arch
+	url := "https://developer.salesforce.com/media/salesforce-cli/sfdx-cli/channels/" + SFDX_V6_CHANNEL + "/" + os + "-" + arch
+	Debugln("Manifest URL: " + url)
 	rsp, err := sling.New().Client(apiHTTPClient).Get(url).ReceiveSuccess(&m)
 	if err != nil && !updateManifestRetrying {
 		updateManifestRetrying = true
