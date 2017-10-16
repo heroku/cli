@@ -14,9 +14,6 @@ const GoFlagInitState = "unset"
 // BinaryName Go flag for the name of this binary on the filesystem
 var BinaryName = GoFlagInitState
 
-// CliToken Shared token between this binary and sfdx. This enables us to know if sfdx was invoked by this process.
-var CliToken = GoFlagInitState
-
 func isDebugging() bool {
 	debug := strings.ToUpper(os.Getenv("HEROKU_DEBUG"))
 	if debug == "TRUE" || debug == "1" {
@@ -29,7 +26,6 @@ func main() {
 	var path string
 	var lookPathErr error
 	args := os.Args
-	args = append(args, CliToken)
 
 	// Check abs path locations
 	curPath := strings.Split(args[0], string(os.PathSeparator))

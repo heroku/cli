@@ -5,7 +5,6 @@ NODE_VERSION=6.9.5
 
 FOLDER_NAME=heroku
 BINARY_NAME=heroku
-CLI_TOKEN=5D98FF27213533167357E4449C758
 ALIAS_NAME=sfdx
 
 DIST_DIR?=dist
@@ -56,7 +55,7 @@ $(NPM_ARCHIVE):
 $(WORKSPACE)/lib/plugins.json: package.json $(WORKSPACE)/lib/npm $(WORKSPACE)/lib/node$$(EXT) | $(WORKSPACE)/bin/$(BINARY_NAME)
 	@mkdir -p $(@D)
 	cp package.json $(@D)/package.json
-	$(WORKSPACE)/bin/$(BINARY_NAME) build:plugins
+	# $(WORKSPACE)/bin/$(BINARY_NAME) build:plugins
 	@ # this doesn't work in the CLI for some reason
 	cd $(WORKSPACE)/lib && ./npm/cli.js dedupe > /dev/null
 	cd $(WORKSPACE)/lib && ./npm/cli.js prune > /dev/null
@@ -86,7 +85,7 @@ tmp/%/$(FOLDER_NAME)/lib/plugins.json: $(WORKSPACE)/lib/plugins.json
 
 BUILD_TAGS=release
 SOURCES := $(shell ls | grep '\.go')
-LDFLAGS=-ldflags "-X=main.Version=$(VERSION) -X=main.Channel=$(CHANNEL) -X=main.GitSHA=$(REVISION) -X=main.Autoupdate=$(AUTOUPDATE) -X=main.BinaryName=$(BINARY_NAME) -X=main.CliToken=$(CLI_TOKEN) -X=main.AliasName=$(ALIAS_NAME) -X=main.FolderName=$(FOLDER_NAME)"
+LDFLAGS=-ldflags "-X=main.Version=$(VERSION) -X=main.Channel=$(CHANNEL) -X=main.GitSHA=$(REVISION) -X=main.Autoupdate=$(AUTOUPDATE) -X=main.BinaryName=$(BINARY_NAME) -X=main.AliasName=$(ALIAS_NAME) -X=main.FolderName=$(FOLDER_NAME)"
 GOOS=$(OS)
 $(WORKSPACE)/bin/$(BINARY_NAME): OS   := $(shell go env GOOS)
 $(WORKSPACE)/bin/$(BINARY_NAME): ARCH := $(shell go env GOARCH)

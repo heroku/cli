@@ -34,8 +34,6 @@ var ExitFn = os.Exit
 // Debugging is HEROKU_DEBUG
 var Debugging = isDebugging()
 
-// DebuggingHeaders is HEROKU_DEBUG_HEADERS
-var DebuggingHeaders = isDebuggingHeaders()
 var swallowSigint = false
 
 func newLogger(path string) *log.Logger {
@@ -199,14 +197,6 @@ const ONE = "1"
 
 func isDebugging() bool {
 	debug := strings.ToUpper(os.Getenv("HEROKU_DEBUG"))
-	if debug == "TRUE" || debug == ONE {
-		return true
-	}
-	return false
-}
-
-func isDebuggingHeaders() bool {
-	debug := strings.ToUpper(os.Getenv("HEROKU_DEBUG_HEADERS"))
 	if debug == "TRUE" || debug == ONE {
 		return true
 	}

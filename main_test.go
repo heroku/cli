@@ -41,18 +41,4 @@ var _ = Describe("version", func() {
 
 		It("ran dashboard command", func() { Expect(ran).To(BeTrue()) })
 	})
-
-	Describe("ShowDebugInfo", func() {
-		BeforeEach(func() {
-			cli.Debugging = true
-			cli.Args = []string{BinaryName, "test"}
-			cli.ShowDebugInfo()
-		})
-		AfterEach(func() {
-			cli.Debugging = false
-		})
-		It("shows command", func() {
-			Expect(stderr()).To(ContainSubstring("cmd: test"))
-		})
-	})
 })

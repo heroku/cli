@@ -1,13 +1,9 @@
 package main
 
 import (
-	"fmt"
-	"path/filepath"
 	"sort"
 	"strconv"
 	"strings"
-
-	"github.com/texttheater/golang-levenshtein/levenshtein"
 )
 
 // HELP is "help"
@@ -186,61 +182,8 @@ func printTopicCommandsHelp(namespace *Namespace, topic *Topic) {
 	}
 }
 
-func helpInvalidCommand() {
-	checkIfKnownTopic(Args[1])
-	var closest string
-	currentAnalyticsCommand.Valid = false
-	guess, distance := findClosestCommand(AllCommands(), Args[1])
-	if len(Args[1]) > 2 || distance < 2 {
-		newcmd := strings.TrimSpace(fmt.Sprintf("%s %s %s", getExecutableName(), guess, strings.Join(Args[2:], " ")))
-		WarnIfError(saveJSON(&Guess{guess.String(), Args[2:]}, guessPath()))
-		closest = fmt.Sprintf("Perhaps you meant %s?\nRun %s to run %s.\n", yellow(guess.String()), cyan(getExecutableName()+" _"), cyan(newcmd))
-	}
-	ExitWithMessage(`%s is not a %s command.
-%sRun %s for a list of available commands.
-`, yellow(Args[1]), getExecutableName(), closest, cyan(getExecutableName()+" help"))
-}
-
-func checkIfKnownTopic(cmd string) {
-	knownTopics := map[string]string{
-		"redis": "heroku-redis",
-		"kafka": "heroku-kafka",
-	}
-	topic := strings.Split(cmd, ":")[0]
-	plugin := knownTopics[topic]
-	if plugin != "" {
-		ExitWithMessage("Use %s commands by installing the %s plugin.\n%s", topic, yellow(plugin), cyan(getExecutableName()+" plugins:install "+plugin))
-	}
-}
-
-func findClosestCommand(from Commands, a string) (*Command, int) {
-	var top *Command
-	var val int
-	for _, b := range from {
-		if cur := stringDistance(a, b.String()); cur < val || top == nil {
-			top = b
-			val = cur
-		}
-	}
-	return top, val
-}
-
-func stringDistance(a, b string) int {
-	return levenshtein.DistanceForStrings([]rune(a), []rune(b), levenshtein.DefaultOptions)
-}
-
 // Guess is used with `getExecutableName() _`
 type Guess struct {
 	Guess string   `json:"guess"`
 	Args  []string `json:"args"`
-}
-
-func guessPath() string {
-	return filepath.Join(CacheHome, "guess.json")
-}
-
-func loadLastCommandGuess() (guess *Guess) {
-	err := readJSON(&guess, guessPath())
-	LogIfError(err)
-	return guess
 }
