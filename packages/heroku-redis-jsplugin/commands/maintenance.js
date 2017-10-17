@@ -29,7 +29,7 @@ module.exports = {
         cli.exit(1, 'Maintenance windows must be "Day HH:MM", where MM is 00 or 30.')
       }
 
-      let maintenance = yield api.request(context, `/client/v11/databases/${addon.name}/maintenance_window`, 'PUT', { description: context.flags.window })
+      let maintenance = yield api.request(context, `/redis/v0/databases/${addon.name}/maintenance_window`, 'PUT', { description: context.flags.window })
       cli.log(`Maintenance window for ${addon.name} (${addon.config_vars.join(', ')}) set to ${maintenance.window}.`)
       cli.exit(0)
     }
@@ -40,12 +40,12 @@ module.exports = {
         cli.exit(1, 'Application must be in maintenance mode or --force flag must be used')
       }
 
-      let maintenance = yield api.request(context, `/client/v11/databases/${addon.name}/maintenance`, 'POST')
+      let maintenance = yield api.request(context, `/redis/v0/databases/${addon.name}/maintenance`, 'POST')
       cli.log(maintenance.message)
       cli.exit(0)
     }
 
-    let maintenance = yield api.request(context, `/client/v11/databases/${addon.name}/maintenance`, 'GET', null)
+    let maintenance = yield api.request(context, `/redis/v0/databases/${addon.name}/maintenance`, 'GET', null)
     cli.log(maintenance.message)
   }))
 }
