@@ -7,7 +7,7 @@ install:
   - ps: Install-Product node $env:nodejs_version x64
   - yarn
 test_script:
-  - bin\run version
-  - bin\run help
+  - bin\run.cmd version
+  - bin\run.cmd help
 
 build: off
