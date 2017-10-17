@@ -6,6 +6,8 @@ Heroku Postgres CLI Plugin [![Circle CI](https://circleci.com/gh/heroku/heroku-p
 [![npm version](https://badge.fury.io/js/heroku-pg.svg)](https://badge.fury.io/js/heroku-pg)
 [![License](https://img.shields.io/github/license/heroku/heroku-pg.svg)](https://github.com/heroku/heroku-pg/blob/master/LICENSE)
 
-## Releasing a new version
+## Publishing
 
-https://devcenter.heroku.com/articles/developing-cli-plugins#releasing-plugins
+To publish new versions, see
+[https://github.com/heroku/dod-ops/blob/master/playbooks/cli-plugins.md](the
+data plugin documentation).
