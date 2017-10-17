@@ -7,6 +7,7 @@ _heroku () {
 
   ## all commands
   _complete_commands () {
+   mkdir -p "$HEROKU_AC_ANALYTICS_DIR"
    touch "$HEROKU_AC_ANALYTICS_DIR"/command
    local -a _all_commands_list
    if type _set_all_commands_list >/dev/null 2>&1; then
