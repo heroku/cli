@@ -1,18 +1,18 @@
 import {buildConfig} from 'cli-engine-config'
 import * as nock from 'nock'
 import {Analytics} from './analytics'
-import {Command} from 'cli-engine-command'
+// import {Command} from 'cli-engine-command'
 
-class TestCommand extends Command {
-  __config = {
-    id: 'fuzz:fizz',
-    plugin: {
-      name: 'fuzz',
-      version: '9.8.7',
-    },
-    _version: '1.0.0',
-  }
-}
+// class TestCommand extends Command {
+//   __config = {
+//     id: 'fuzz:fizz',
+//     plugin: {
+//       name: 'fuzz',
+//       version: '9.8.7',
+//     },
+//     _version: '1.0.0',
+//   }
+// }
 
 function analyticsJson () {
   return {
