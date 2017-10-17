@@ -170,92 +170,92 @@ describe('AnalyticsCommand', () => {
     })
   })
 
-  describe('record', () => {
-    const SHELL = process.env.SHELL
-
-    beforeAll(() => {
-      delete process.env.SHELL
-      process.env['COMSPEC'] = 'C:\\ProgramFiles\\cmd.exe'
-    })
-
-    afterAll(() => {
-      delete process.env.COMSPEC
-      process.env['SHELL'] = SHELL
-    })
-
-    it('does not record if no plugin', async () => {
-      let analytics = build()
-      let command = new TestCommand()
-      delete command.__config.plugin
-
-      await analytics.record({
-        command,
-        argv: []
-      })
-
-      expect((<any>analytics._writeJSON).mock.calls).toEqual([])
-    })
-
-    it('does not record if config skipAnalytics is true', async () => {
-      let analytics = build({skipAnalytics: true})
-      let command = new TestCommand()
-
-      await analytics.record({
-        command,
-        argv: []
-      })
-
-      expect((<any>analytics._writeJSON).mock.calls).toEqual([])
-    })
-
-    it('does not record if HEROKU_API_KEY is set', async () => {
-      process.env['HEROKU_API_KEY'] = 'secure-key'
-
-      let analytics = build()
-      let command = new TestCommand()
-
-      await analytics.record({
-        command,
-        argv: []
-      })
-
-      expect((<any>analytics._writeJSON).mock.calls).toEqual([])
-    })
-
-    it('does not record if login is not set', async () => {
-      let analytics = build({}, {netrcLogin: null})
-      let command = new TestCommand()
-
-      await analytics.record({
-        command,
-        argv: []
-      })
-
-      expect((<any>analytics._writeJSON).mock.calls).toEqual([])
-    })
-
-    it('records commands', async () => {
-      let json = analyticsJson()
-      let expected = analyticsJson()
-      expected.commands.push({
-        'command': 'fuzz:fizz',
-        'completion': 7,
-        'os': 'windows',
-        'shell': 'cmd.exe',
-        'plugin': 'fuzz',
-        'plugin_version': '9.8.7',
-        'valid': true,
-        'version': '1.2.3',
-        'language': 'node'
-      } as any)
-
-      let command = new TestCommand()
-      let analytics = build({}, {json})
-      await analytics.record({
-        command,
-        argv: []
-      })
-      expect((<any>analytics._writeJSON).mock.calls).toEqual([[expected]])
-    })
-  })
+  // describe('record', () => {
+  //   const SHELL = process.env.SHELL
+  //
+  //   beforeAll(() => {
+  //     delete process.env.SHELL
+  //     process.env['COMSPEC'] = 'C:\\ProgramFiles\\cmd.exe'
+  //   })
+  //
+  //   afterAll(() => {
+  //     delete process.env.COMSPEC
+  //     process.env['SHELL'] = SHELL
+  //   })
+  //
+  //   it('does not record if no plugin', async () => {
+  //     let analytics = build()
+  //     let command = new TestCommand()
+  //     delete command.__config.plugin
+  //
+  //     await analytics.record({
+  //       command,
+  //       argv: []
+  //     })
+  //
+  //     expect((<any>analytics._writeJSON).mock.calls).toEqual([])
+  //   })
+  //
+  //   it('does not record if config skipAnalytics is true', async () => {
+  //     let analytics = build({skipAnalytics: true})
+  //     let command = new TestCommand()
+  //
+  //     await analytics.record({
+  //       command,
+  //       argv: []
+  //     })
+  //
+  //     expect((<any>analytics._writeJSON).mock.calls).toEqual([])
+  //   })
+  //
+  //   it('does not record if HEROKU_API_KEY is set', async () => {
+  //     process.env['HEROKU_API_KEY'] = 'secure-key'
+  //
+  //     let analytics = build()
+  //     let command = new TestCommand()
+  //
+  //     await analytics.record({
+  //       command,
+  //       argv: []
+  //     })
+  //
+  //     expect((<any>analytics._writeJSON).mock.calls).toEqual([])
+  //   })
+  //
+  //   it('does not record if login is not set', async () => {
+  //     let analytics = build({}, {netrcLogin: null})
+  //     let command = new TestCommand()
+  //
+  //     await analytics.record({
+  //       command,
+  //       argv: []
+  //     })
+  //
+  //     expect((<any>analytics._writeJSON).mock.calls).toEqual([])
+  //   })
+  //
+  //   it('records commands', async () => {
+  //     let json = analyticsJson()
+  //     let expected = analyticsJson()
+  //     expected.commands.push({
+  //       'command': 'fuzz:fizz',
+  //       'completion': 7,
+  //       'os': 'windows',
+  //       'shell': 'cmd.exe',
+  //       'plugin': 'fuzz',
+  //       'plugin_version': '9.8.7',
+  //       'valid': true,
+  //       'version': '1.2.3',
+  //       'language': 'node'
+  //     } as any)
+  //
+  //     let command = new TestCommand()
+  //     let analytics = build({}, {json})
+  //     await analytics.record({
+  //       command,
+  //       argv: []
+  //     })
+  //     expect((<any>analytics._writeJSON).mock.calls).toEqual([[expected]])
+  //   })
+  // })
 })

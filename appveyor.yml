@@ -1,13 +1,14 @@
 environment:
   nodejs_version: "8"
 cache:
- - "%LOCALAPPDATA%\\Yarn"
+  - yarn
 
 install:
   - ps: Install-Product node $env:nodejs_version x64
+  - set PATH=%LOCALAPPDATA%\Yarn\config\global\node_modules\.bin;%PATH%
+  - yarn global add yarn
   - yarn
 test_script:
-  - bin\run version
-  - bin\run help
+  - ./node_modules/.bin/jest -i
 
 build: off
