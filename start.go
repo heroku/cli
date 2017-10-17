@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 	"runtime"
+	"strings"
 )
 
 // Version is the version of the cli.
@@ -40,6 +41,18 @@ var DefaultNamespace = BinaryName
 func Start(args ...string) {
 	Args = args
 	loadNewCLI()
+
+	if strings.Contains(Args[1], "build:") {
+		cmd := AllCommands().Find(Args[1])
+
+		if cmd == nil {
+			return
+		}
+		ctx, err := BuildContext(cmd, Args)
+		must(err)
+		cmd.Run(ctx)
+		return
+	}
 
 	Println("This pilot version (5.6.x) of the Salesforce DX CLI is deprecated and must be uninstalled, then the GA version must be installed.")
 	Println("")

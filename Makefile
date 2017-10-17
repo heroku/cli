@@ -55,14 +55,14 @@ $(NPM_ARCHIVE):
 $(WORKSPACE)/lib/plugins.json: package.json $(WORKSPACE)/lib/npm $(WORKSPACE)/lib/node$$(EXT) | $(WORKSPACE)/bin/$(BINARY_NAME)
 	@mkdir -p $(@D)
 	cp package.json $(@D)/package.json
-	# $(WORKSPACE)/bin/$(BINARY_NAME) build:plugins
+	$(WORKSPACE)/bin/$(BINARY_NAME) build:plugins
 	@ # this doesn't work in the CLI for some reason
 	cd $(WORKSPACE)/lib && ./npm/cli.js dedupe > /dev/null
 	cd $(WORKSPACE)/lib && ./npm/cli.js prune > /dev/null
 
 tmp/%/$(FOLDER_NAME)/lib/plugins.json: $(WORKSPACE)/lib/plugins.json
 	@mkdir -p $(@D)
-	# cp $(WORKSPACE)/lib/plugins.json $@
+	cp $(WORKSPACE)/lib/plugins.json $@
 	cp $(WORKSPACE)/lib/package.json $(@D)/package.json
 	@rm -rf $(@D)/node_modules
 	cp -r $(WORKSPACE)/lib/node_modules $(@D)
