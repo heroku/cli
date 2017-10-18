@@ -53,7 +53,7 @@ export default class AutocompleteOptions extends AutocompleteBase {
         cacheCompletion = flag.completion
       } else {
         // for now, suspending arg completion
-        throw new Error(`${cmdCurArgv} is not a valid flag for ${cmdId}`)
+        throw new Error(`Arg completion disabled (cmdId: ${cmdId})`)
         // const cmdArgs = Command.args || []
         // const cmdArgsCount = cmdArgs.length
         // if (cmdCurArgCount > cmdArgsCount || cmdCurArgCount === 0) throw new Error(`Cannot complete arg position ${cmdCurArgCount} for ${cmdId}`)
