@@ -4,7 +4,7 @@ import path from 'path'
 import Command from 'cli-engine-command'
 import fs from 'fs-extra'
 import Plugins from 'cli-engine/lib/plugins'
-import {convertFromV5} from 'cli-engine/lib/plugins/legacy'
+import {convertFromV5} from '../../legacy'
 import {AutocompleteBase} from '../../autocomplete'
 
 const debug = require('debug')('heroku:autocomplete')
