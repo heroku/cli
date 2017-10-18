@@ -65,8 +65,7 @@ export default class AutocompleteOptions extends AutocompleteBase {
       // build/retrieve & return options cache
       if (cacheCompletion && cacheCompletion.options) {
         // use cacheKey function or fallback to arg/flag name
-        // TO-DO: remove `out: cli` and require cli-ux in completions
-        const ctx = {args: this.parsedArgs, flags: this.parsedFlags, argv: this.argv, out: cli}
+        const ctx = {args: this.parsedArgs, flags: this.parsedFlags, argv: this.argv, config: this.config}
         const ckey = cacheCompletion.cacheKey ? await cacheCompletion.cacheKey(ctx) : null
         const key = (ckey || cacheKey)
         const flagCachePath = path.join(this.completionsPath, key)
