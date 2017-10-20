@@ -12,6 +12,6 @@ apps:
 parts:
   heroku:
     plugin: nodejs
-    node-engine: 8.6.0
+    node-engine: 8.7.0
     node-packages:
       - heroku-cli
