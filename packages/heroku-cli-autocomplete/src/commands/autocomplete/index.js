@@ -27,19 +27,40 @@ export default class Autocomplete extends AutocompleteBase {
       // ${cmd}`)
       //         break
       case 'zsh':
-        const cmd1 = cli.color.cyan(`$ printf "$(heroku autocomplete:script zsh)" >> ~/.zshrc`)
-        const cmd2 = cli.color.cyan(`$ compaudit`)
-        cli.log(`Add the autocomplete setup script to your .zshrc via:
+        cli.log(`Setup Instructions for Heroku CLI Command Completion ---
 
-${cmd1}
+1) Add the autocomplete env vars to your zsh profile
 
-Run the following zsh command to ensure no permissions conflicts:
+${cli.color.cyan('$ printf "$(heroku autocomplete:script zsh)" >> ~/.zshrc')}
 
-${cmd2}`)
+2) Run compaudit to ensure no permissions conflicts are present (some versions of zsh may not have this command)
+
+${cli.color.cyan('$ compaudit')}
+
+3) Source your updated zsh profile
+
+${cli.color.cyan('$ source ~/.zshrc')}
+
+4) Test command completion by pressing <TAB>, e.g.:
+
+${cli.color.cyan('$ heroku <TAB>')}
+
+5) Test flag completion by pressing <TAB>, e.g.:
+
+${cli.color.cyan('$ heroku apps:info --<TAB>')}
+
+6) Test flag options completion by pressing <TAB>, e.g.:
+
+${cli.color.cyan('$ heroku apps:info --app=<TAB>')}
+`)
         break
       default:
         cli.error(`Currently ${shell} is not a supported shell for autocomplete`)
     }
-    cli.log('\nLastly, restart your shell')
+    cli.log(`\nTo uninstall Heroku CLI Command Completion:
+-- Uninstall this plugin from your CLI (for help see: ${cli.color.cyan('heroku help plugins:uninstall')})
+-- Delete the env vars from your zsh profile & restart your terminal
+`)
+    cli.log('\nEnjoy!')
   }
 }
