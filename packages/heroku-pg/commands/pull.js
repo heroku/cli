@@ -22,6 +22,14 @@ function parseURL (db) {
   return db
 }
 
+function parseExclusions (rawExcludeList) {
+  return (rawExcludeList || '').split(';').map(function(tname) {
+      return tname.trim();
+    }).filter(function(tname) {
+      return (tname != '');
+    });
+}
+
 function exec (cmd, opts = {}) {
   const {execSync} = require('child_process')
   debug(cmd)
@@ -117,14 +125,17 @@ const maybeTunnel = function * (herokuDb) {
   return herokuDb
 }
 
-const run = co.wrap(function * (sourceIn, targetIn) {
+const run = co.wrap(function * (sourceIn, targetIn, exclusions) {
+  
   yield prepare(targetIn)
 
   const source = yield maybeTunnel(sourceIn)
   const target = yield maybeTunnel(targetIn)
 
+  const exclude = exclusions.map(function(e) { return '--exclude-table-data=' + e }).join(' ')
+
   let password = p => p ? ` PGPASSWORD="${p}"` : ''
-  let dump = `env${password(source.password)} PGSSLMODE=prefer pg_dump --verbose -F c -Z 0 ${connstring(source, true)}`
+  let dump = `env${password(source.password)} PGSSLMODE=prefer pg_dump --verbose -F c -Z 0 ${exclude} ${connstring(source, true)}`
   let restore = `env${password(target.password)} pg_restore --verbose --no-acl --no-owner ${connstring(target)}`
 
   yield spawn(`${dump} | ${restore}`)
@@ -138,24 +149,28 @@ const run = co.wrap(function * (sourceIn, targetIn) {
 function * push (context, heroku) {
   const fetcher = require('../lib/fetcher')(heroku)
   const {app, args} = context
+  const flags = context.flags
+  const exclusions = parseExclusions(flags['exclude-table-data'])
 
   const source = parseURL(args.source)
   const target = yield fetcher.database(app, args.target)
 
   cli.log(`heroku-cli: Pushing ${cli.color.cyan(args.source)} ---> ${cli.color.addon(target.attachment.addon.name)}`)
-  yield run(source, target)
+  yield run(source, target, exclusions)
   cli.log('heroku-cli: Pushing complete.')
 }
 
 function * pull (context, heroku) {
   const fetcher = require('../lib/fetcher')(heroku)
   const {app, args} = context
+  const flags = context.flags
+  const exclusions = parseExclusions(flags['exclude-table-data'])
 
   const source = yield fetcher.database(app, args.source)
   const target = parseURL(args.target)
 
   cli.log(`heroku-cli: Pulling ${cli.color.addon(source.attachment.addon.name)} ---> ${cli.color.cyan(args.target)}`)
-  yield run(source, target)
+  yield run(source, target, exclusions)
   cli.log('heroku-cli: Pulling complete.')
 }
 
@@ -163,7 +178,10 @@ let cmd = {
   topic: 'pg',
   needsApp: true,
   needsAuth: true,
-  args: [{name: 'source'}, {name: 'target'}]
+  args: [{name: 'source'}, {name: 'target'}],
+  flags: [
+    {name: 'exclude-table-data', hasValue: true, description: 'tables for which data should be excluded (use \';\' to split multiple names)'}
+  ],
 }
 
 module.exports = [
