@@ -27,7 +27,7 @@ export default class Autocomplete extends AutocompleteBase {
       // ${cmd}`)
       //         break
       case 'zsh':
-        cli.log(`Setup Instructions for Heroku CLI Command Completion ---
+        cli.log(`${cli.color.bold('Setup Instructions for Heroku CLI Autocomplete ---')}
 
 1) Add the autocomplete env vars to your zsh profile
 
@@ -57,7 +57,7 @@ ${cli.color.cyan('$ heroku apps:info --app=<TAB>')}
       default:
         cli.error(`Currently ${shell} is not a supported shell for autocomplete`)
     }
-    cli.log(`\nTo uninstall Heroku CLI Command Completion:
+    cli.log(`\n${cli.color.bold('To uninstall Heroku CLI Autocomplete:')}
 -- Uninstall this plugin from your CLI (for help see: ${cli.color.cyan('heroku help plugins:uninstall')})
 -- Delete the env vars from your zsh profile & restart your terminal
 `)
