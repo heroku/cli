@@ -139,7 +139,7 @@ export default class AnalyticsCommand {
   }
 
   _acAnalyticsPath (type: string): string {
-    return path.join(this.config.cacheDir, 'completion_analytics', type)
+    return path.join(this.config.cacheDir, 'completions', 'completion_analytics', type)
   }
 
   async _acAnalytics (): Promise<number> {
