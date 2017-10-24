@@ -44,12 +44,43 @@ let warnUsingOrgFlagInTeams = function (orgInfo, context) {
   }
 }
 
+let addMemberToOrg = function * (email, role, groupName, heroku, method = 'PUT') {
+  let request = heroku.request({
+    method: method,
+    path: `/organizations/${groupName}/members`,
+    body: {email, role}
+  })
+  yield cli.action(`Adding ${cli.color.cyan(email)} to ${cli.color.magenta(groupName)} as ${cli.color.green(role)}`, request)
+}
+
+let warnIfAtTeamMemberLimit = async function (orgInfo, groupName, context, heroku) {
+  // Users receive `You'll be billed monthly for teams over 5 members.`
+  const FREE_TEAM_LIMIT = 6
+
+  if (orgInfo.type === 'team') {
+    let membersAndInvites = {
+      invites: await heroku.request({
+        headers: {
+          Accept: 'application/vnd.heroku+json; version=3.team-invitations'
+        },
+        method: 'GET',
+        path: `/organizations/${groupName}/invitations`
+      }),
+      members: await heroku.get(`/organizations/${groupName}/members`)
+    }
+    const membersCount = membersAndInvites.invites.length + membersAndInvites.members.length
+    if (membersCount === FREE_TEAM_LIMIT) cli.warn("You'll be billed monthly for teams over 5 members.")
+  }
+}
+
 module.exports = {
+  addMemberToOrg,
   getOwner,
   isOrgApp,
   isValidEmail,
   orgInfo,
   printGroups,
   printGroupsJSON,
+  warnIfAtTeamMemberLimit,
   warnUsingOrgFlagInTeams
 }
