@@ -2,7 +2,6 @@
 
 import path from 'path'
 import {AutocompleteBase} from '../../autocomplete'
-import AutocompleteInit from './init'
 import cli from 'cli-ux'
 
 export default class AutocompleteScript extends AutocompleteBase {
@@ -15,7 +14,6 @@ export default class AutocompleteScript extends AutocompleteBase {
 
   async run () {
     this.errorIfWindows()
-    await AutocompleteInit.run(Object.assign(this.config, {argv: []}))
 
     const shell = this.argv[0] || this.config.shell
     if (!shell) {
@@ -35,6 +33,6 @@ export default class AutocompleteScript extends AutocompleteBase {
   }
 
   get _prefix (): string {
-    return '\\n# heroku autocomplete setup\\n'
+    return `\n# heroku autocomplete setup\n`
   }
 }

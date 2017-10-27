@@ -20,8 +20,13 @@ _heroku () {
   }
   ## end all commands
 
-  _compadd_cli () {
+  _compadd_args () {
     compadd $(echo $(heroku autocomplete:options "${words}"))
+  }
+
+  _compadd_flag_options () {
+    touch "$HEROKU_AC_ANALYTICS_DIR"/value
+    _compadd_args
   }
 
   if [ $CURRENT -gt 2 ]; then
@@ -30,9 +35,8 @@ _heroku () {
       local _flag_completion_func="_set_${_command_id//:/_}_flags"
       declare -f $_flag_completion_func >/dev/null && $_flag_completion_func
     else
-      if type _compadd_cli >/dev/null 2>&1; then
-        touch "$HEROKU_AC_ANALYTICS_DIR"/value
-        _compadd_cli
+      if type _compadd_args >/dev/null 2>&1; then
+        _compadd_args
       fi
     fi
   fi

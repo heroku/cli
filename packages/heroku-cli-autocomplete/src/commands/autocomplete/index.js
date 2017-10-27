@@ -2,6 +2,8 @@
 
 import {AutocompleteBase} from '../../autocomplete'
 import cli from 'cli-ux'
+import {flags} from 'cli-engine-heroku'
+import AutocompleteCacheBuilder from './cache'
 
 export default class Autocomplete extends AutocompleteBase {
   static topic = 'autocomplete'
@@ -9,6 +11,9 @@ export default class Autocomplete extends AutocompleteBase {
   // hide until beta release
   static hidden = true
   static args = [{name: 'shell', description: 'shell type', required: false}]
+  static flags = {
+    'skip-instructions': flags.boolean({description: 'Do not show installation instructions', char: 's'})
+  }
 
   async run () {
     this.errorIfWindows()
@@ -18,11 +23,12 @@ export default class Autocomplete extends AutocompleteBase {
       cli.error('Error: Missing required argument shell')
     }
 
-    if (shell !== 'bash' && shell !== 'zsh') {
-      cli.error(`Currently ${shell} is not a supported shell for autocomplete`)
-    }
+    if (!this.flags['skip-instructions']) {
+      if (shell !== 'bash' && shell !== 'zsh') {
+        cli.error(`Currently ${shell} is not a supported shell for autocomplete`)
+      }
 
-    cli.log(`${cli.color.bold('Setup Instructions for Heroku CLI Autocomplete ---')}
+      cli.log(`${cli.color.bold('Setup Instructions for Heroku CLI Autocomplete ---')}
 
 1) Add the autocomplete env vars to your ${shell} profile
 
@@ -47,10 +53,16 @@ ${cli.color.cyan('$ heroku apps:info --<TAB>')}
 ${cli.color.cyan('$ heroku apps:info --app=<TAB>')}
 `)
 
-    cli.log(`\n${cli.color.bold('To uninstall Heroku CLI Autocomplete:')}
+      cli.log(`\n${cli.color.bold('To uninstall Heroku CLI Autocomplete:')}
 -- Uninstall this plugin from your CLI (for help see: ${cli.color.cyan('heroku help plugins:uninstall')})
 -- Delete the env vars from your ${shell} profile & restart your terminal
 `)
+    }
+
+    cli.action.start(`${cli.color.bold('Building autocomplete cache')}`)
+    await AutocompleteCacheBuilder.run(Object.assign(this.config, {argv: [this.argv[0], 'autocomplete:cache']}))
+    cli.action.stop()
+
     cli.log('\nEnjoy!')
   }
 }
