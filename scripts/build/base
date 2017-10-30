@@ -29,6 +29,7 @@ if [ ! -f "${o}/node_modules/cli-engine/lib/cli.js" ]; then
 fi
 
 cat << EOF > "${o}/bin/heroku.js"
+#!/usr/bin/env node
 const {run} = require('cli-engine')
 const config = {
   channel: '${CHANNEL}',
