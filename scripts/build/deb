@@ -46,6 +46,7 @@ EOF
   chmod +x "$__workspace/usr/lib/heroku/bin/heroku"
 
   cat << EOF > "$__workspace/usr/lib/heroku/bin/heroku.js"
+#!/usr/bin/env node
 const {run} = require('cli-engine')
 const config = {
   channel: '${CHANNEL}',
