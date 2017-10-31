@@ -12,16 +12,16 @@ cli.config.mock = true
 runtest('outputs autocomplete script for .zshrc', async () => {
   let cmd = await AutocompleteScript.mock('zsh')
   expect(cli.stdout.output).toMatch(`
-# heroku autocomplete setup
-HEROKU_ZSH_AC_SETUP_PATH=${cmd.config.cacheDir}/completions/zsh_setup && test -f $HEROKU_ZSH_AC_SETUP_PATH && source $HEROKU_ZSH_AC_SETUP_PATH;
+# cli-engine autocomplete setup
+CLI_ENGINE_AC_ZSH_SETUP_PATH=${cmd.config.cacheDir}/completions/zsh_setup && test -f $CLI_ENGINE_AC_ZSH_SETUP_PATH && source $CLI_ENGINE_AC_ZSH_SETUP_PATH;
 `)
 })
 
 runtest('outputs autocomplete script for .bashrc', async () => {
   let cmd = await AutocompleteScript.mock('bash')
   expect(cli.stdout.output).toMatch(`
-# heroku autocomplete setup
-HEROKU_BASH_AC_SETUP_PATH=${cmd.config.cacheDir}/completions/bash_setup && test -f $HEROKU_BASH_AC_SETUP_PATH && source $HEROKU_BASH_AC_SETUP_PATH;
+# cli-engine autocomplete setup
+CLI_ENGINE_AC_BASH_SETUP_PATH=${cmd.config.cacheDir}/completions/bash_setup && test -f $CLI_ENGINE_AC_BASH_SETUP_PATH && source $CLI_ENGINE_AC_BASH_SETUP_PATH;
 `)
 })
 
@@ -29,7 +29,7 @@ runtest('errors on unsupported shell', async () => {
   try {
     await AutocompleteScript.mock('fish')
   } catch (e) {
-    expect(cli.stderr.output).toBe(` ▸    No autocomplete script for fish. Run $ heroku autocomplete for install instructions.
+    expect(cli.stderr.output).toBe(` ▸    No autocomplete script for fish. Run $ cli-engine autocomplete for install instructions.
 `)
   }
 })

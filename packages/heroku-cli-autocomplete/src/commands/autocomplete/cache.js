@@ -7,7 +7,7 @@ import Plugins from 'cli-engine/lib/plugins'
 import {convertFromV5} from '../../legacy'
 import {AutocompleteBase} from '../../autocomplete'
 
-const debug = require('debug')('heroku:autocomplete')
+const debug = require('debug')('cli-autocomplete:buildcache')
 
 type CacheStrings = {
   cmdsWithFlags: string,
@@ -48,7 +48,7 @@ export default class AutocompleteCacheBuilder extends AutocompleteBase {
   }
 
   get skipEllipsis (): boolean {
-    return process.env.HEROKU_AC_ZSH_SKIP_ELLIPSIS === '1'
+    return process.env.CLI_ENGINE_AC_ZSH_SKIP_ELLIPSIS === '1'
   }
 
   async hydratePlugins () {
@@ -141,12 +141,12 @@ ${cmdsWithDesc.join('\n')}
   }
 
   _genShellSetups (skipEllipsis: boolean = false): Array<string> {
-    const envAnalyticsDir = `HEROKU_AC_ANALYTICS_DIR=${path.join(this.completionsCachePath, 'completion_analytics')};`
-    const envCommandsPath = `HEROKU_AC_COMMANDS_PATH=${path.join(this.completionsCachePath, 'commands')};`
+    const envAnalyticsDir = `CLI_ENGINE_AC_ANALYTICS_DIR=${path.join(this.completionsCachePath, 'completion_analytics')};`
+    const envCommandsPath = `CLI_ENGINE_AC_COMMANDS_PATH=${path.join(this.completionsCachePath, 'commands')};`
     const zshSetup = `${skipEllipsis ? '' : this._genCompletionDotsFunc()}
 ${envAnalyticsDir}
 ${envCommandsPath}
-HEROKU_ZSH_AC_SETTERS_PATH=\${HEROKU_AC_COMMANDS_PATH}_functions && test -f $HEROKU_ZSH_AC_SETTERS_PATH && source $HEROKU_ZSH_AC_SETTERS_PATH;
+CLI_ENGINE_AC_ZSH_SETTERS_PATH=\${CLI_ENGINE_AC_COMMANDS_PATH}_functions && test -f $CLI_ENGINE_AC_ZSH_SETTERS_PATH && source $CLI_ENGINE_AC_ZSH_SETTERS_PATH;
 fpath=(
 ${path.join(__dirname, '..', '..', '..', 'autocomplete', 'zsh')}
 $fpath
@@ -156,7 +156,7 @@ compinit;
 `
     const bashSetup = `${envAnalyticsDir}
 ${envCommandsPath}
-HEROKU_BASH_AC_PATH=${path.join(__dirname, '..', '..', '..', 'autocomplete', 'bash', 'heroku.bash')} && test -f $HEROKU_BASH_AC_PATH && source $HEROKU_BASH_AC_PATH;
+CLI_ENGINE_AC_BASH_COMPFUNC_PATH=${path.join(__dirname, '..', '..', '..', 'autocomplete', 'bash', 'cli_engine.bash')} test -f $CLI_ENGINE_AC_BASH_COMPFUNC_PATH && source $CLI_ENGINE_AC_BASH_COMPFUNC_PATH;
 `
     return [bashSetup, zshSetup]
   }

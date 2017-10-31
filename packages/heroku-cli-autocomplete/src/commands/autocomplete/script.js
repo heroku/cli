@@ -20,19 +20,15 @@ export default class AutocompleteScript extends AutocompleteBase {
       cli.error('Error: Missing required argument shell')
     }
 
-    switch (shell) {
-      case 'zsh':
-        cli.log(`${this._prefix}HEROKU_ZSH_AC_SETUP_PATH=${path.join(this.completionsCachePath, 'zsh_setup')} && test -f $HEROKU_ZSH_AC_SETUP_PATH && source $HEROKU_ZSH_AC_SETUP_PATH;`)
-        break
-      case 'bash':
-        cli.log(`${this._prefix}HEROKU_BASH_AC_SETUP_PATH=${path.join(this.completionsCachePath, 'bash_setup')} && test -f $HEROKU_BASH_AC_SETUP_PATH && source $HEROKU_BASH_AC_SETUP_PATH;`)
-        break
-      default:
-        cli.error(`No autocomplete script for ${shell}. Run $ heroku autocomplete for install instructions.`)
+    if (shell === 'bash' || shell === 'zsh') {
+      let shellUpcase = shell.toUpperCase()
+      cli.log(`${this._prefix}CLI_ENGINE_AC_${shellUpcase}_SETUP_PATH=${path.join(this.completionsCachePath, `${shell}_setup`)} && test -f $CLI_ENGINE_AC_${shellUpcase}_SETUP_PATH && source $CLI_ENGINE_AC_${shellUpcase}_SETUP_PATH;`)
+    } else {
+      cli.error(`No autocomplete script for ${shell}. Run $ ${this.config.bin} autocomplete for install instructions.`)
     }
   }
 
   get _prefix (): string {
-    return `\n# heroku autocomplete setup\n`
+    return `\n# ${this.config.bin} autocomplete setup\n`
   }
 }

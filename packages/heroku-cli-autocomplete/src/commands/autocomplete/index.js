@@ -18,6 +18,7 @@ export default class Autocomplete extends AutocompleteBase {
   async run () {
     this.errorIfWindows()
 
+    const bin = this.config.bin
     const shell = this.argv[0] || this.config.shell
     if (!shell) {
       cli.error('Error: Missing required argument shell')
@@ -28,11 +29,11 @@ export default class Autocomplete extends AutocompleteBase {
         cli.error(`Currently ${shell} is not a supported shell for autocomplete`)
       }
 
-      cli.log(`${cli.color.bold('Setup Instructions for Heroku CLI Autocomplete ---')}
+      cli.log(`${cli.color.bold(`Setup Instructions for ${bin.toUpperCase()} CLI Autocomplete ---`)}
 
 1) Add the autocomplete env vars to your ${shell} profile
 
-${cli.color.cyan(`$ printf "$(heroku autocomplete:script ${shell})" >> ~/.${shell}rc`)}
+${cli.color.cyan(`$ printf "$(${bin} autocomplete:script ${shell})" >> ~/.${shell}rc`)}
 
 2) Source your updated ${shell} profile
 
@@ -42,19 +43,19 @@ NOTE: After sourcing, you can run \`${cli.color.cyan('$ compaudit')}\` to ensure
 ` : ''}
 3) Test command completion by pressing <TAB>, e.g.:
 
-${cli.color.cyan('$ heroku <TAB>')}
+${cli.color.cyan(`$ ${bin} <TAB>`)}
 
 4) Test flag completion by pressing <TAB>, e.g.:
 
-${cli.color.cyan('$ heroku apps:info --<TAB>')}
+${cli.color.cyan(`$ ${bin} apps:info --<TAB>`)}
 
 5) Test flag options completion by pressing <TAB>, e.g.:
 
-${cli.color.cyan('$ heroku apps:info --app=<TAB>')}
+${cli.color.cyan(`$ ${bin} apps:info --app=<TAB>`)}
 `)
 
-      cli.log(`\n${cli.color.bold('To uninstall Heroku CLI Autocomplete:')}
--- Uninstall this plugin from your CLI (for help see: ${cli.color.cyan('heroku help plugins:uninstall')})
+      cli.log(`\n${cli.color.bold(`To uninstall ${bin.toUpperCase()} CLI Autocomplete:`)}
+-- Uninstall this plugin from your CLI (for help see: ${cli.color.cyan(`${bin} help plugins:uninstall`)})
 -- Delete the env vars from your ${shell} profile & restart your terminal
 `)
     }
