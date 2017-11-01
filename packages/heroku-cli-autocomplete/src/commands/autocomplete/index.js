@@ -8,7 +8,7 @@ import AutocompleteCacheBuilder from './cache'
 export default class Autocomplete extends AutocompleteBase {
   static topic = 'autocomplete'
   static description = 'display autocomplete instructions'
-  // hide until beta release
+  // hide until public release
   static hidden = true
   static args = [{name: 'shell', description: 'shell type', required: false}]
   static flags = {

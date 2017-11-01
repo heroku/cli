@@ -1,5 +1,7 @@
 // @flow
 
+// Copied from heroku-cli (previously in cli-engine)
+// Don't add heroku-cli as a dependency
 import {type Arg, type Flag} from 'cli-engine-config'
 import {Command, flags as Flags} from 'cli-engine-heroku'
 import vars from 'cli-engine-heroku/lib/vars'

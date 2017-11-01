@@ -19,6 +19,7 @@ export default class AutocompleteCacheBuilder extends AutocompleteBase {
   static topic = 'autocomplete'
   static command = 'buildcache'
   static description = 'autocomplete cache builder'
+  // hide until public release
   static hidden = true
   static aliases = ['autocomplete:init']
 

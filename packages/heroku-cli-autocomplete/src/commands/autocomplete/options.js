@@ -68,7 +68,7 @@ export default class AutocompleteOptions extends AutocompleteBase {
         const ctx = {args: this.parsedArgs, flags: this.parsedFlags, argv: this.argv, config: this.config}
         const ckey = cacheCompletion.cacheKey ? await cacheCompletion.cacheKey(ctx) : null
         const key = (ckey || cacheKey)
-        const flagCachePath = path.join(this.completionsPath, key)
+        const flagCachePath = path.join(this.completionsCachePath, key)
 
         // build/retrieve cache
         const duration = cacheCompletion.cacheDuration || 60 * 60 * 24 // 1 day
