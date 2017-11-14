@@ -81,6 +81,7 @@ module.exports = {
     ──────────  ─────────────  ──────  ────────────────────  ──────────────
     Tunnel 1    52.44.146.197  UP      2016-10-25T22:09:05Z  status message
     Tunnel 2    52.44.146.197  UP      2016-10-25T22:09:05Z  status message`,
+  hidden: true,
   needsApp: false,
   needsAuth: true,
   args: [{name: 'space', optional: true, hidden: true}],

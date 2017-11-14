@@ -35,6 +35,7 @@ module.exports = {
     Creating VPN in space my-space... done
     ▸    Use spaces:vpn:wait to track allocation.
   `,
+  hidden: true,
   needsApp: false,
   needsAuth: true,
   args: [

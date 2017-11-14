@@ -21,6 +21,7 @@ module.exports = {
   help: `Example:
 
     $ heroku spaces:vpn:config my-space`,
+  hidden: true,
   needsApp: false,
   needsAuth: true,
   args: [{name: 'space', optional: true, hidden: true}],

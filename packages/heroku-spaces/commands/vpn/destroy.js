@@ -23,6 +23,7 @@ module.exports = {
     $ heroku spaces:vpn:destroy --confirm --space my-space
     Tearing down VPN in space my-space
   `,
+  hidden: true,
   needsApp: false,
   needsAuth: true,
   args: [{name: 'space', optional: true, hidden: true}],
