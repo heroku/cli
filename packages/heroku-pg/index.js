@@ -29,6 +29,7 @@ exports.commands = flatten([
   require('./commands/info'),
   require('./commands/kill'),
   require('./commands/killall'),
+  require('./commands/outliers'),
   require('./commands/links'),
   require('./commands/links/create'),
   require('./commands/links/destroy'),
