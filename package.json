@@ -11,7 +11,7 @@
     "bin": "heroku",
     "userPlugins": true,
     "dirname": "heroku",
-    "node": "8.7.0",
+    "node": "9.2.0",
     "defaultCommand": "dashboard",
     "legacyConverter": "./lib/legacy",
     "npmRegistry": "https://cli-npm.heroku.com",
