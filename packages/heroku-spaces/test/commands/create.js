@@ -111,4 +111,12 @@ Created at:   ${now.toISOString()}
 `))
       .then(() => api.done())
   })
+
+  it('create fails without team name', function (done) {
+    cmd.run({flags: {space: 'my-space', region: 'my-region'}})
+      .catch(reason => {
+        expect(reason.message).to.equal('No team specified')
+        done()
+      })
+  })
 })
