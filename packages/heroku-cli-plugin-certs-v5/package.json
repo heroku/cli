@@ -27,15 +27,15 @@
     "sinon-chai": "^2.11.0",
     "standard": "^8.0.0"
   },
-  "keywords": [
-    "heroku-plugin"
-  ],
-  "license": "ISC",
   "files": [
     "index.js",
     "lib",
     "commands"
   ],
+  "keywords": [
+    "heroku-plugin"
+  ],
+  "license": "ISC",
   "main": "index.js",
   "repository": "heroku/heroku-certs",
   "scripts": {
