@@ -1,7 +1,7 @@
 {
   "name": "heroku-certs",
   "description": "heroku ssl plugin",
-  "version": "1.1.43",
+  "version": "1.1.44",
   "author": "Ransom Briggs rbriggs@heroku.com",
   "bugs": {
     "url": "https://github.com/heroku/heroku-certs/issues"
