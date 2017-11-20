@@ -2,9 +2,12 @@
 
 let co = require('co')
 let cli = require('heroku-cli-util')
+let webhookType = require('../../lib/webhook_type.js')
 
 function * run (context, heroku) {
-  let webhook = yield heroku.get(`/apps/${context.app}/webhooks/${context.args.id}`, {
+  let {path} = webhookType(context)
+
+  let webhook = yield heroku.get(`${path}/webhooks/${context.args.id}`, {
     headers: {Accept: 'application/vnd.heroku+json; version=3.webhooks'}
   })
 
@@ -24,11 +27,14 @@ module.exports = {
   command: 'info',
   description: 'info for a webhook on an app',
   args: [{name: 'id'}],
+  flags: [
+    {name: 'pipeline', char: 'p', hasValue: true, description: 'pipeline on which to show info', hidden: true}
+  ],
   help: `Example:
 
  $ heroku webhooks:info 99999999-9999-9999-9999-999999999999
 `,
-  needsApp: true,
+  wantsApp: true,
   needsAuth: true,
   run: cli.command(co.wrap(run))
 }

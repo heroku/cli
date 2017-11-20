@@ -2,13 +2,15 @@
 
 let co = require('co')
 let cli = require('heroku-cli-util')
+let webhookType = require('../../../lib/webhook_type.js')
 
 function * run (context, heroku) {
-  let deliveries = yield heroku.get(`/apps/${context.app}/webhook-deliveries`, {
+  let {path, display} = webhookType(context)
+  let deliveries = yield heroku.get(`${path}/webhook-deliveries`, {
     headers: {Accept: 'application/vnd.heroku+json; version=3.webhooks'}
   })
   if (deliveries.length === 0) {
-    cli.log(`${cli.color.app(context.app)} has no deliveries`)
+    cli.log(`${display} has no deliveries`)
   } else {
     let code = (w) => {
       return (w.last_attempt && w.last_attempt.code && w.last_attempt.code + '') || ''
@@ -34,11 +36,14 @@ module.exports = {
   topic: 'webhooks',
   command: 'deliveries',
   description: 'list webhook deliveries on an app',
+  flags: [
+    {name: 'pipeline', char: 'p', hasValue: true, description: 'pipeline on which to list', hidden: true}
+  ],
   help: `Example:
 
  $ heroku webhooks:deliveries
 `,
-  needsApp: true,
+  wantsApp: true,
   needsAuth: true,
   run: cli.command(co.wrap(run))
 }

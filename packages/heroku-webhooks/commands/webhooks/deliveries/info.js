@@ -4,13 +4,15 @@ let co = require('co')
 let cli = require('heroku-cli-util')
 
 function * run (context, heroku) {
-  let delivery = yield heroku.get(`/apps/${context.app}/webhook-deliveries/${context.args.id}`, {
+  let webhookType = require('../../../lib/webhook_type.js')
+  let {path} = webhookType(context)
+
+  let delivery = yield heroku.get(`${path}/webhook-deliveries/${context.args.id}`, {
     headers: {Accept: 'application/vnd.heroku+json; version=3.webhooks'}
   })
 
-  let event = yield heroku.get(`/apps/${context.app}/webhook-events/${delivery.event.id}`, {
-    headers: {Accept: 'application/vnd.heroku+json; version=3.webhooks'},
-    method: 'GET'
+  let event = yield heroku.get(`${path}/webhook-events/${delivery.event.id}`, {
+    headers: {Accept: 'application/vnd.heroku+json; version=3.webhooks'}
   })
 
   let obj = {
@@ -38,11 +40,14 @@ module.exports = {
   command: 'deliveries:info',
   description: 'info for a webhook event on an app',
   args: [{name: 'id'}],
+  flags: [
+    {name: 'pipeline', char: 'p', hasValue: true, description: 'pipeline on which to show info', hidden: true}
+  ],
   help: `Example:
 
  $ heroku webhooks:deliveries:info 99999999-9999-9999-9999-999999999999
 `,
-  needsApp: true,
+  wantsApp: true,
   needsAuth: true,
   run: cli.command(co.wrap(run))
 }

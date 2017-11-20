@@ -2,6 +2,7 @@
 
 let co = require('co')
 let cli = require('heroku-cli-util')
+let webhookType = require('../../lib/webhook_type.js')
 
 let secret = null
 
@@ -24,8 +25,10 @@ function addSecretMiddleware (heroku) {
 function * run (context, heroku) {
   addSecretMiddleware(heroku)
 
-  yield cli.action(`Adding webhook to ${cli.color.app(context.app)}`, {},
-    heroku.post(`/apps/${context.app}/webhooks`, {
+  let {path, display} = webhookType(context)
+
+  yield cli.action(`Adding webhook to ${display}`, {},
+    heroku.post(`${path}/webhooks`, {
       headers: {Accept: 'application/vnd.heroku+json; version=3.webhooks'},
       body: {
         include: context.flags.include.split(',').map((s) => s.trim()),
@@ -51,14 +54,15 @@ module.exports = {
     {name: 'level', char: 'l', description: 'notify does not retry, sync will retry until successful or timeout', hasValue: true, required: true},
     {name: 'secret', char: 's', description: 'value to sign delivery with in Heroku-Webhook-Hmac-SHA256 header', hasValue: true},
     {name: 'authorization', char: 't', description: 'authoriation header to send with webhooks', hasValue: true},
-    {name: 'url', char: 'u', description: 'URL for receiver', hasValue: true, required: true}
+    {name: 'url', char: 'u', description: 'URL for receiver', hasValue: true, required: true},
+    {name: 'pipeline', char: 'p', hasValue: true, description: 'pipeline on which to add', hidden: true}
   ],
   description: 'add a webhook to an app',
   help: `Example:
 
  $ heroku webhooks:add -i api:dyno -l notify -u https://example.com/hooks
 `,
-  needsApp: true,
+  wantsApp: true,
   needsAuth: true,
   run: cli.command(co.wrap(run))
 }
