@@ -7,7 +7,7 @@ const assert = require('assert')
 
 describe('pipelines:transfer', function () {
   beforeEach(() => cli.mockConsole())
-  let api, pipeline, team, account
+  let api, pipeline, team, account, coupling, app
 
   beforeEach(function () {
     pipeline = {
@@ -25,18 +25,32 @@ describe('pipelines:transfer', function () {
       email: 'user@example.com'
     }
 
+    coupling = {
+      app: {
+        id: '579a2433-7afd-421c-8b87-1b89b5cfbf10'
+      }
+    }
+
+    app = {
+      id: coupling.app.id,
+      name: 'my-app'
+    }
+
     api = nock(`https://api.heroku.com`)
     api.get(`/pipelines/${pipeline.id}`).reply(200, pipeline)
+    api.get(`/pipelines/${pipeline.id}/pipeline-couplings`).reply(200, [coupling])
+    api.post(`/filters/apps`).reply(200, [app])
   })
 
   it('transfers to a team', function () {
     api.get(`/teams/${team.name}`).reply(200, team)
-    const update = api.patch(`/pipelines/${pipeline.id}`, {
-      owner: { id: team.id, type: 'team' }
+    const update = api.post(`/pipeline-transfers`, {
+      new_owner: { id: team.id, type: 'team' },
+      pipeline: { id: pipeline.id }
     }).reply(200, {})
 
     return cmd.run({
-      flags: { pipeline: pipeline.id },
+      flags: { pipeline: pipeline.id, confirm: pipeline.name },
       args: { owner: team.name }
     }).then(() => {
       const output = cli.stderr
@@ -49,12 +63,13 @@ describe('pipelines:transfer', function () {
 
   it('transfers to an account', function () {
     api.get(`/users/${account.email}`).reply(200, account)
-    const update = api.patch(`/pipelines/${pipeline.id}`, {
-      owner: { id: account.id, type: 'user' }
+    const update = api.post(`/pipeline-transfers`, {
+      new_owner: { id: account.id, type: 'user' },
+      pipeline: { id: pipeline.id }
     }).reply(200, {})
 
     return cmd.run({
-      flags: { pipeline: pipeline.id },
+      flags: { pipeline: pipeline.id, confirm: pipeline.name },
       args: { owner: account.email }
     }).then(() => {
       const output = cli.stderr

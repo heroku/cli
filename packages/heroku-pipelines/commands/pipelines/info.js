@@ -3,9 +3,8 @@
 const co = require('co')
 const cli = require('heroku-cli-util')
 const disambiguate = require('../../lib/disambiguate')
+const renderPipeline = require('../../lib/render-pipeline')
 const listPipelineApps = require('../../lib/api').listPipelineApps
-const sortBy = require('lodash.sortby')
-const PipelineOwner = require('../../lib/ownership')
 
 module.exports = {
   topic: 'pipelines',
@@ -14,7 +13,7 @@ module.exports = {
   help: `Example:
 
   $ heroku pipelines:info example
-  name:  example
+  === example
   owner: my-team (team)
 
   app name                     stage
@@ -36,41 +35,14 @@ module.exports = {
   run: cli.command(co.wrap(function* (context, heroku) {
     const pipeline = yield disambiguate(heroku, context.args.pipeline)
     const pipelineApps = yield listPipelineApps(heroku, pipeline.id)
-    let owner
 
     if (context.flags.json) {
       cli.styledJSON({pipeline, apps: pipelineApps})
     } else {
-      cli.log(`name:  ${pipeline.name}`)
-
-      if (pipeline.owner) {
-        owner = yield PipelineOwner.getOwner(heroku, pipelineApps, pipeline)
-        cli.log(`owner: ${owner}`)
-      }
-      cli.log('')
-
-      let columns = [
-        {key: 'name', label: 'app name', format: (n) => cli.color.app(n)},
-        {key: 'coupling.stage', label: 'stage'}
-      ]
-
-      if (context.flags['with-owners']) {
-        columns.push({
-          key: 'owner.email', label: 'owner', format: (e) => e.endsWith('@herokumanager.com') ? `${e.split('@')[0]} (team)` : e
-        })
-      }
-
-      const developmentApps = sortBy(pipelineApps.filter(app => app.coupling.stage === 'development'), ['name'])
-      const reviewApps = sortBy(pipelineApps.filter(app => app.coupling.stage === 'review'), ['name'])
-      const stagingApps = sortBy(pipelineApps.filter(app => app.coupling.stage === 'staging'), ['name'])
-      const productionApps = sortBy(pipelineApps.filter(app => app.coupling.stage === 'production'), ['name'])
-      const apps = developmentApps.concat(reviewApps).concat(stagingApps).concat(productionApps)
-
-      cli.table(apps, { columns })
-
-      if (pipeline.owner) {
-        PipelineOwner.warnMixedOwnership(pipelineApps, pipeline, owner)
-      }
+      yield renderPipeline(heroku, pipeline, pipelineApps, {
+        withOwners: context.flags['with-owners'],
+        showOwnerWarning: true
+      })
     }
   }))
 }

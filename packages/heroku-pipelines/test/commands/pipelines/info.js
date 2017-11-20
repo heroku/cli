@@ -27,7 +27,7 @@ describe('pipelines:info', function () {
   function itShowsPipelineApps () {
     it('displays the pipeline info and apps', function () {
       return cmd.run({ args: { pipeline: 'example' }, flags: {} }).then(() => {
-        cli.stdout.should.contain('name:  example')
+        cli.stdout.should.contain('=== example')
         appNames.forEach((name) => {
           cli.stdout.should.contain(name)
         })
