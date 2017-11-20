@@ -15,10 +15,10 @@ describe('spaces:wait', function () {
     let api = nock('https://api.heroku.com:443', {reqheaders: {'Accept-Expansion': 'region'}})
       .get('/spaces/my-space')
       .reply(200,
-        {shield: false, name: 'my-space', organization: {name: 'my-org'}, region: {name: 'my-region', description: 'region'}, state: 'allocating', created_at: now})
+        {shield: false, name: 'my-space', team: {name: 'my-team'}, region: {name: 'my-region', description: 'region'}, state: 'allocating', created_at: now})
       .get('/spaces/my-space')
       .reply(200,
-        {shield: false, name: 'my-space', organization: {name: 'my-org'}, region: {name: 'my-region', description: 'region'}, state: 'allocated', created_at: now}
+        {shield: false, name: 'my-space', team: {name: 'my-team'}, region: {name: 'my-region', description: 'region'}, state: 'allocated', created_at: now}
       )
     let outbound = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/nat')
@@ -30,7 +30,7 @@ describe('spaces:wait', function () {
       .then(() => expect(cli.stderr).to.equal(
         `Waiting for space my-space to allocate... done\n\n`))
       .then(() => expect(cli.stdout).to.equal(`=== my-space
-Organization: my-org
+Team:         my-team
 Region:       region
 State:        allocated
 Shield:       off
@@ -45,10 +45,10 @@ Created at:   ${now.toISOString()}
     let api = nock('https://api.heroku.com:443')
       .get('/spaces/my-space')
       .reply(200,
-        {name: 'my-space', organization: {name: 'my-org'}, region: {name: 'my-region', description: 'region'}, state: 'allocating', created_at: now})
+        {name: 'my-space', team: {name: 'my-team'}, region: {name: 'my-region', description: 'region'}, state: 'allocating', created_at: now})
       .get('/spaces/my-space')
       .reply(200,
-        {name: 'my-space', organization: {name: 'my-org'}, region: {name: 'my-region', description: 'region'}, state: 'allocated', created_at: now}
+        {name: 'my-space', team: {name: 'my-team'}, region: {name: 'my-region', description: 'region'}, state: 'allocated', created_at: now}
       )
     let outbound = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/nat')
@@ -61,8 +61,8 @@ Created at:   ${now.toISOString()}
         `Waiting for space my-space to allocate... done\n\n`))
       .then(() => expect(cli.stdout).to.equal(`{
   "name": "my-space",
-  "organization": {
-    "name": "my-org"
+  "team": {
+    "name": "my-team"
   },
   "region": {
     "name": "my-region",

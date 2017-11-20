@@ -8,7 +8,7 @@ function display (spaces) {
   cli.table(spaces, {
     columns: [
       {key: 'name', label: 'Name'},
-      {key: 'organization.name', label: 'Organization'},
+      {key: 'team.name', label: 'Team'},
       {key: 'region.name', label: 'Region'},
       {key: 'state', label: 'State'},
       {key: 'created_at', label: 'Created At'}
@@ -26,7 +26,7 @@ function * run (context, heroku) {
 
   let spaces = yield heroku.get('/spaces')
   if (team) {
-    spaces = spaces.filter((s) => s.organization.name === team)
+    spaces = spaces.filter((s) => s.team.name === team)
   }
   spaces = sortBy(spaces, 'name')
   if (context.flags.json) displayJSON(spaces)
@@ -45,7 +45,6 @@ module.exports = {
   wantsOrg: true,
   flags: [
     {name: 'json', description: 'output in json format'},
-    // flags.org({name: 'org', hasValue: true}),
     flags.team({name: 'team', hasValue: true})
   ],
   run: cli.command(co.wrap(run))

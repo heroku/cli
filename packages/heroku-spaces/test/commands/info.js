@@ -15,12 +15,12 @@ describe('spaces:info', function () {
     let api = nock('https://api.heroku.com:443', {reqheaders: {'Accept-Expansion': 'region'}})
       .get('/spaces/my-space')
       .reply(200,
-        {shield: false, name: 'my-space', organization: {name: 'my-org'}, region: {name: 'my-region', description: 'region'}, state: 'enabled', created_at: now}
+        {shield: false, name: 'my-space', team: {name: 'my-team'}, region: {name: 'my-region', description: 'region'}, state: 'enabled', created_at: now}
     )
     return cmd.run({flags: {space: 'my-space'}})
       .then(() => expect(cli.stdout).to.equal(
         `=== my-space
-Organization: my-org
+Team:         my-team
 Region:       region
 State:        enabled
 Shield:       off
@@ -30,7 +30,7 @@ Created at:   ${now.toISOString()}
   })
 
   it('shows space info --json', function () {
-    let space = {name: 'my-space', organization: {name: 'my-org'}, region: {name: 'my-region'}, state: 'enabled', created_at: now.toISOString()}
+    let space = {name: 'my-space', team: {name: 'my-team'}, region: {name: 'my-region'}, state: 'enabled', created_at: now.toISOString()}
 
     let api = nock('https://api.heroku.com:443')
       .get('/spaces/my-space')
@@ -45,7 +45,7 @@ Created at:   ${now.toISOString()}
     let api = nock('https://api.heroku.com:443', {reqheaders: {'Accept-Expansion': 'region'}})
       .get('/spaces/my-space')
       .reply(200,
-        {shield: false, name: 'my-space', organization: {name: 'my-org'}, region: {name: 'my-region', description: 'region'}, state: 'allocated', created_at: now}
+        {shield: false, name: 'my-space', team: {name: 'my-team'}, region: {name: 'my-region', description: 'region'}, state: 'allocated', created_at: now}
     )
     let outbound = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/nat')
@@ -55,7 +55,7 @@ Created at:   ${now.toISOString()}
     return cmd.run({flags: {space: 'my-space'}})
       .then(() => expect(cli.stdout).to.equal(
         `=== my-space
-Organization: my-org
+Team:         my-team
 Region:       region
 State:        allocated
 Shield:       off
@@ -70,7 +70,7 @@ Created at:   ${now.toISOString()}
     let api = nock('https://api.heroku.com:443', {reqheaders: {'Accept-Expansion': 'region'}})
       .get('/spaces/my-space')
       .reply(200,
-        {shield: false, name: 'my-space', organization: {name: 'my-org'}, region: {name: 'my-region', description: 'region'}, state: 'allocated', created_at: now}
+        {shield: false, name: 'my-space', team: {name: 'my-team'}, region: {name: 'my-region', description: 'region'}, state: 'allocated', created_at: now}
     )
     let outbound = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/nat')
@@ -80,7 +80,7 @@ Created at:   ${now.toISOString()}
     return cmd.run({flags: {space: 'my-space'}})
       .then(() => expect(cli.stdout).to.equal(
         `=== my-space
-Organization: my-org
+Team:         my-team
 Region:       region
 State:        allocated
 Shield:       off
@@ -95,12 +95,12 @@ Created at:   ${now.toISOString()}
     let api = nock('https://api.heroku.com:443')
       .get('/spaces/my-space')
       .reply(200,
-        {shield: false, name: 'my-space', organization: {name: 'my-org'}, region: {name: 'my-region', description: 'region'}, state: 'enabled', created_at: now}
+        {shield: false, name: 'my-space', team: {name: 'my-team'}, region: {name: 'my-region', description: 'region'}, state: 'enabled', created_at: now}
     )
     return cmd.run({flags: {space: 'my-space'}})
       .then(() => expect(cli.stdout).to.equal(
         `=== my-space
-Organization: my-org
+Team:         my-team
 Region:       region
 State:        enabled
 Shield:       off
@@ -113,12 +113,12 @@ Created at:   ${now.toISOString()}
     let api = nock('https://api.heroku.com:443')
       .get('/spaces/my-space')
       .reply(200,
-        {shield: true, name: 'my-space', organization: {name: 'my-org'}, region: {name: 'my-region', description: 'region'}, state: 'enabled', created_at: now}
+        {shield: true, name: 'my-space', team: {name: 'my-team'}, region: {name: 'my-region', description: 'region'}, state: 'enabled', created_at: now}
     )
     return cmd.run({flags: {space: 'my-space'}})
       .then(() => expect(cli.stdout).to.equal(
         `=== my-space
-Organization: my-org
+Team:         my-team
 Region:       region
 State:        enabled
 Shield:       on

@@ -27,13 +27,13 @@ function render (space, flags) {
     cli.styledHeader(space.name)
     cli.styledObject({
       ID: space.id,
-      Organization: space.organization.name,
+      Team: space.team.name,
       Region: space.region.description,
       State: space.state,
       Shield: lib.displayShieldState(space),
       'Outbound IPs': lib.displayNat(space.outbound_ips),
       'Created at': space.created_at
-    }, ['ID', 'Organization', 'Region', 'State', 'Shield', 'Outbound IPs', 'Created at'])
+    }, ['ID', 'Team', 'Region', 'State', 'Shield', 'Outbound IPs', 'Created at'])
   }
 }
 

@@ -20,7 +20,7 @@ function * run (context, heroku) {
     path: '/spaces',
     body: {
       name: space,
-      organization: team,
+      team: team,
       channel_name: context.flags.channel,
       region: context.flags.region,
       features: parsers.splitCsv(context.flags.features),
@@ -38,12 +38,12 @@ function * run (context, heroku) {
   cli.styledHeader(space.name)
   cli.styledObject({
     ID: space.id,
-    Organization: space.organization.name,
+    Team: space.team.name,
     Region: space.region.name,
     State: space.state,
     Shield: lib.displayShieldState(space),
     'Created at': space.created_at
-  }, ['ID', 'Organization', 'Region', 'State', 'Shield', 'Created at'])
+  }, ['ID', 'Team', 'Region', 'State', 'Shield', 'Created at'])
 }
 
 module.exports = {
@@ -52,14 +52,14 @@ module.exports = {
   description: 'create a new space',
   help: `Example:
 
-    $ heroku spaces:create --space my-space --org my-org --region oregon
-    Creating space my-space in organization my-org... done
+    $ heroku spaces:create --space my-space --team my-team --region oregon
+    Creating space my-space in team my-team... done
     === my-space
-    ID:           e7b99e37-69b3-4475-ad47-a5cc5d75fd9f
-    Organization: my-org
-    Region:       oregon
-    State:        allocating
-    Created at:   2016-01-06T03:23:13Z
+    ID:         e7b99e37-69b3-4475-ad47-a5cc5d75fd9f
+    Team:       my-team
+    Region:     oregon
+    State:      allocating
+    Created at: 2016-01-06T03:23:13Z
 
   `,
   needsApp: false,
@@ -76,7 +76,6 @@ module.exports = {
     {name: 'shield', hasValue: false, hidden: true, description: 'create a Shield space'},
     {name: 'cidr', hasValue: true, hidden: true, description: 'the RFC-1918 CIDR the space will use'},
     {name: 'kpi-url', hasValue: true, hidden: true, description: 'self-managed KPI endpoint to use'},
-    // flags.org({name: 'org', hasValue: true}),
     flags.team({name: 'team', hasValue: true})
   ],
   run: cli.command(co.wrap(run))
