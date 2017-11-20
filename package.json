@@ -54,7 +54,7 @@
     "debug": "3.1.0",
     "fs-extra": "4.0.2",
     "heroku-apps": "2.4.18",
-    "heroku-certs": "1.1.42",
+    "heroku-certs": "1.1.44",
     "heroku-ci": "1.9.5",
     "heroku-cli-addons": "1.2.25",
     "heroku-cli-oauth": "2.0.14",

@@ -2037,9 +2037,9 @@ heroku-apps@2.4.18:
     term-img "^2.1.0"
     urijs "1.18.12"
 
-heroku-certs@1.1.42:
-  version "1.1.42"
-  resolved "https://registry.yarnpkg.com/heroku-certs/-/heroku-certs-1.1.42.tgz#1f76010a2534a7d36274127669de86f55a63ff54"
+heroku-certs@1.1.44:
+  version "1.1.44"
+  resolved "https://registry.yarnpkg.com/heroku-certs/-/heroku-certs-1.1.44.tgz#e8335787fa5ae1f5c7c1e0bf2506e9b6d18360d7"
   dependencies:
     co "4.6.0"
     co-wait "0.0.0"
