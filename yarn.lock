@@ -884,15 +884,15 @@ cli-cursor@^2.1.0:
   dependencies:
     restore-cursor "^2.0.0"
 
-cli-engine-command@9.0.2, cli-engine-command@^9.0.2:
-  version "9.0.2"
-  resolved "https://registry.yarnpkg.com/cli-engine-command/-/cli-engine-command-9.0.2.tgz#df1dc4e66ecde405e66ac3cc48711618968e9c09"
+cli-engine-command@9.0.3, cli-engine-command@^9.0.3:
+  version "9.0.3"
+  resolved "https://registry.yarnpkg.com/cli-engine-command/-/cli-engine-command-9.0.3.tgz#3d823880f0f773d1edf4b69b6b5adddb20859814"
   dependencies:
     "@heroku/linewrap" "^1.0.0"
     ansi-escapes "^3.0.0"
     cardinal "1.x"
     chalk "^2.1.0"
-    cli-ux "^2.0.3"
+    cli-ux "^2.0.4"
     fs-extra "^4.0.2"
     http-call "^3.0.2"
     lodash.maxby "^4.6.0"
@@ -955,11 +955,11 @@ cli-engine-config@^2.0.0:
     jest-validate "^20.0.3"
     uuid "^3.1.0"
 
-cli-engine-heroku@5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/cli-engine-heroku/-/cli-engine-heroku-5.0.0.tgz#87589bbab10020adb142af35d21fb3aa97c57cf7"
+cli-engine-heroku@5.0.3:
+  version "5.0.3"
+  resolved "https://registry.yarnpkg.com/cli-engine-heroku/-/cli-engine-heroku-5.0.3.tgz#5a1986cd25f4c3969102fb1d42f80905150d156e"
   dependencies:
-    cli-ux "^2.0.0"
+    cli-ux "^2.0.4"
     heroku-client "^3.0.3"
     http-call "^3.0.2"
     netrc-parser "^2.0.3"
@@ -981,13 +981,13 @@ cli-engine-heroku@^4.0.1, cli-engine-heroku@^4.1.0:
     http-call "^3.0.2"
     netrc-parser "^2.0.3"
 
-cli-engine@4.6.19:
-  version "4.6.19"
-  resolved "https://registry.yarnpkg.com/cli-engine/-/cli-engine-4.6.19.tgz#59c49dfb69afd11d5589c0971a40e203b2a2f345"
+cli-engine@4.6.20:
+  version "4.6.20"
+  resolved "https://registry.yarnpkg.com/cli-engine/-/cli-engine-4.6.20.tgz#ef56d43fc24469ad409c1d4d45d74bb2f8d96dbf"
   dependencies:
     "@heroku/linewrap" "^1.0.0"
     ansi-escapes "^3.0.0"
-    cli-engine-command "^9.0.2"
+    cli-engine-command "^9.0.3"
     cli-engine-config "^3.4.0"
     cli-ux "^2.0.4"
     debug "^3.1.0"
@@ -1030,23 +1030,6 @@ cli-ux@2.0.4, cli-ux@^2.0.4:
 cli-ux@^1.0.1, cli-ux@^1.1.10:
   version "1.1.10"
   resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-1.1.10.tgz#b0b95ba7b488b42e32e6e67b3e6f1e6964e2800d"
-  dependencies:
-    "@heroku/linewrap" "^1.0.0"
-    ansi-escapes "^3.0.0"
-    ansi-styles "^3.2.0"
-    cardinal "^1.0.0"
-    chalk "^2.1.0"
-    fs-extra "^4.0.2"
-    lodash "^4.17.4"
-    moment "^2.18.1"
-    password-prompt "^1.0.3"
-    strip-ansi "^4.0.0"
-    supports-color "^4.4.0"
-    ts-lodash "^4.0.5"
-
-cli-ux@^2.0.0, cli-ux@^2.0.3:
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-2.0.3.tgz#3baae3447557cbc50056ffa0bb93a10ebd58de87"
   dependencies:
     "@heroku/linewrap" "^1.0.0"
     ansi-escapes "^3.0.0"
@@ -1311,12 +1294,11 @@ doctrine@1.5.0:
     esutils "^2.0.2"
     isarray "^1.0.0"
 
-doctrine@^2.0.0:
-  version "2.0.0"
-  resolved "http://cli-npm.heroku.com/doctrine/-/doctrine-2.0.0/c73d8d2909d22291e1a007a395804da8b665fe63.tgz#c73d8d2909d22291e1a007a395804da8b665fe63"
+doctrine@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/doctrine/-/doctrine-2.0.2.tgz#68f96ce8efc56cc42651f1faadb4f175273b0075"
   dependencies:
     esutils "^2.0.2"
-    isarray "^1.0.0"
 
 double-ended-queue@^2.1.0-0:
   version "2.1.0-0"
@@ -1464,9 +1446,9 @@ eslint-scope@^3.7.1:
     esrecurse "^4.1.0"
     estraverse "^4.1.1"
 
-eslint@4.11.0:
-  version "4.11.0"
-  resolved "https://registry.yarnpkg.com/eslint/-/eslint-4.11.0.tgz#39a8c82bc0a3783adf5a39fa27fdd9d36fac9a34"
+eslint@4.12.0:
+  version "4.12.0"
+  resolved "https://registry.yarnpkg.com/eslint/-/eslint-4.12.0.tgz#a7ce78eba8cc8f2443acfbbc870cc31a65135884"
   dependencies:
     ajv "^5.3.0"
     babel-code-frame "^6.22.0"
@@ -1474,7 +1456,7 @@ eslint@4.11.0:
     concat-stream "^1.6.0"
     cross-spawn "^5.1.0"
     debug "^3.0.1"
-    doctrine "^2.0.0"
+    doctrine "^2.0.2"
     eslint-scope "^3.7.1"
     espree "^3.5.2"
     esquery "^1.0.0"
@@ -1483,7 +1465,7 @@ eslint@4.11.0:
     file-entry-cache "^2.0.0"
     functional-red-black-tree "^1.0.1"
     glob "^7.1.2"
-    globals "^9.17.0"
+    globals "^11.0.1"
     ignore "^3.3.3"
     imurmurhash "^0.1.4"
     inquirer "^3.0.6"
@@ -1890,7 +1872,11 @@ globals@^10.0.0:
   version "10.1.0"
   resolved "https://registry.yarnpkg.com/globals/-/globals-10.1.0.tgz#4425a1881be0d336b4a823a82a7be725d5dd987c"
 
-globals@^9.17.0, globals@^9.18.0:
+globals@^11.0.1:
+  version "11.0.1"
+  resolved "https://registry.yarnpkg.com/globals/-/globals-11.0.1.tgz#12a87bb010e5154396acc535e1e43fc753b0e5e8"
+
+globals@^9.18.0:
   version "9.18.0"
   resolved "http://cli-npm.heroku.com/globals/-/globals-9.18.0/aa3896b3e69b487f17e31ed2143d69a8e30c2d8a.tgz#aa3896b3e69b487f17e31ed2143d69a8e30c2d8a"
 
