@@ -981,15 +981,15 @@ cli-engine-heroku@^4.0.1, cli-engine-heroku@^4.1.0:
     http-call "^3.0.2"
     netrc-parser "^2.0.3"
 
-cli-engine@4.6.18:
-  version "4.6.18"
-  resolved "https://registry.yarnpkg.com/cli-engine/-/cli-engine-4.6.18.tgz#866e8c1ab54290a259810bbd7be8b6a9cc30b83d"
+cli-engine@4.6.19:
+  version "4.6.19"
+  resolved "https://registry.yarnpkg.com/cli-engine/-/cli-engine-4.6.19.tgz#59c49dfb69afd11d5589c0971a40e203b2a2f345"
   dependencies:
     "@heroku/linewrap" "^1.0.0"
     ansi-escapes "^3.0.0"
     cli-engine-command "^9.0.2"
     cli-engine-config "^3.4.0"
-    cli-ux "^2.0.3"
+    cli-ux "^2.0.4"
     debug "^3.1.0"
     filesize "^3.5.11"
     find-up "^2.1.0"
@@ -1009,6 +1009,23 @@ cli-engine@4.6.18:
     string-similarity "^1.2.0"
     tar-fs "1.16.0"
     tmp "^0.0.33"
+
+cli-ux@2.0.4, cli-ux@^2.0.4:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-2.0.4.tgz#dbe5391a1f33ca82cd60331de9eec79296907be1"
+  dependencies:
+    "@heroku/linewrap" "^1.0.0"
+    ansi-escapes "^3.0.0"
+    ansi-styles "^3.2.0"
+    cardinal "^1.0.0"
+    chalk "^2.1.0"
+    fs-extra "^4.0.2"
+    lodash "^4.17.4"
+    moment "^2.18.1"
+    password-prompt "^1.0.3"
+    strip-ansi "^4.0.0"
+    supports-color "^4.4.0"
+    ts-lodash "^4.0.5"
 
 cli-ux@^1.0.1, cli-ux@^1.1.10:
   version "1.1.10"
