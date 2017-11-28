@@ -84,7 +84,7 @@ bindkey "^I" expand-or-complete-with-dots`)
       let shellSetups = await cmd._genShellSetups()
       expect(shellSetups[0]).toBe(`CLI_ENGINE_AC_ANALYTICS_DIR=${cmd.config.cacheDir}/completions/completion_analytics;
 CLI_ENGINE_AC_COMMANDS_PATH=${cmd.config.cacheDir}/completions/commands;
-CLI_ENGINE_AC_BASH_COMPFUNC_PATH=${AC_PLUGIN_PATH}/autocomplete/bash/cli_engine.bash test -f $CLI_ENGINE_AC_BASH_COMPFUNC_PATH && source $CLI_ENGINE_AC_BASH_COMPFUNC_PATH;
+CLI_ENGINE_AC_BASH_COMPFUNC_PATH=${AC_PLUGIN_PATH}/autocomplete/bash/cli_engine.bash && test -f $CLI_ENGINE_AC_BASH_COMPFUNC_PATH && source $CLI_ENGINE_AC_BASH_COMPFUNC_PATH;
 `)
     })
 

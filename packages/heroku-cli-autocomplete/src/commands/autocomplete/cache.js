@@ -156,7 +156,7 @@ compinit;
 `
     const bashSetup = `${envAnalyticsDir}
 ${envCommandsPath}
-CLI_ENGINE_AC_BASH_COMPFUNC_PATH=${path.join(__dirname, '..', '..', '..', 'autocomplete', 'bash', 'cli_engine.bash')} test -f $CLI_ENGINE_AC_BASH_COMPFUNC_PATH && source $CLI_ENGINE_AC_BASH_COMPFUNC_PATH;
+CLI_ENGINE_AC_BASH_COMPFUNC_PATH=${path.join(__dirname, '..', '..', '..', 'autocomplete', 'bash', 'cli_engine.bash')} && test -f $CLI_ENGINE_AC_BASH_COMPFUNC_PATH && source $CLI_ENGINE_AC_BASH_COMPFUNC_PATH;
 `
     return [bashSetup, zshSetup]
   }
