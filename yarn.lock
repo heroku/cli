@@ -1148,7 +1148,7 @@ convert-source-map@^1.4.0, convert-source-map@^1.5.0:
   version "1.5.0"
   resolved "http://cli-npm.heroku.com/convert-source-map/-/convert-source-map-1.5.0/9acd70851c6d5dfdd93d9282e5edf94a03ff46b5.tgz#9acd70851c6d5dfdd93d9282e5edf94a03ff46b5"
 
-core-js@^2.4.0, core-js@^2.5.0:
+core-js@^2.4.0, core-js@^2.5.0, core-js@^2.5.1:
   version "2.5.1"
   resolved "http://cli-npm.heroku.com/core-js/-/core-js-2.5.1/ae6874dc66937789b80754ff5428df66819ca50b.tgz#ae6874dc66937789b80754ff5428df66819ca50b"
 
@@ -1994,9 +1994,9 @@ here@0.0.2:
   version "0.0.2"
   resolved "http://cli-npm.heroku.com/here/-/here-0.0.2/69c1af3f02121f3d8788e02e84dc8b3905d71195.tgz#69c1af3f02121f3d8788e02e84dc8b3905d71195"
 
-heroku-apps@2.4.18:
-  version "2.4.18"
-  resolved "https://registry.yarnpkg.com/heroku-apps/-/heroku-apps-2.4.18.tgz#ec956a99bef36a6451021addb8e29cac44053ea9"
+heroku-apps@2.4.19:
+  version "2.4.19"
+  resolved "https://registry.yarnpkg.com/heroku-apps/-/heroku-apps-2.4.19.tgz#7f4b39299062783e546a926e52df97b4c6ed23bd"
   dependencies:
     bluebird "^3.5.0"
     cli-engine-command "^8.0.17"
@@ -2374,7 +2374,18 @@ html-encoding-sniffer@^1.0.1:
   dependencies:
     whatwg-encoding "^1.0.1"
 
-http-call@3.0.2, http-call@^3.0.1, http-call@^3.0.2:
+http-call@4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/http-call/-/http-call-4.0.0.tgz#78c4ab4056b01e8967088526ae762cf9b5371ea8"
+  dependencies:
+    core-js "^2.5.1"
+    debug "^3.0.1"
+    is-retry-allowed "^1.1.0"
+    is-stream "^1.1.0"
+    mime-types "^2.1.17"
+    tunnel-agent "^0.6.0"
+
+http-call@^3.0.1, http-call@^3.0.2:
   version "3.0.2"
   resolved "http://cli-npm.heroku.com/http-call/-/http-call-3.0.2/5e3be641449b13546480f651f095b693e22e59a8.tgz#5e3be641449b13546480f651f095b693e22e59a8"
   dependencies:
@@ -3739,7 +3750,7 @@ mime-db@~1.30.0:
   version "1.30.0"
   resolved "http://cli-npm.heroku.com/mime-db/-/mime-db-1.30.0/74c643da2dd9d6a45399963465b26d5ca7d71f01.tgz#74c643da2dd9d6a45399963465b26d5ca7d71f01"
 
-mime-types@^2.1.12, mime-types@~2.1.7:
+mime-types@^2.1.12, mime-types@^2.1.17, mime-types@~2.1.7:
   version "2.1.17"
   resolved "http://cli-npm.heroku.com/mime-types/-/mime-types-2.1.17/09d7a393f03e995a79f8af857b70a9e0ab16557a.tgz#09d7a393f03e995a79f8af857b70a9e0ab16557a"
   dependencies:
@@ -3822,9 +3833,9 @@ netrc-parser@2.0.3, netrc-parser@^2.0.3:
     debug "^3.0.1"
     lex "^1.7.9"
 
-nock@9.0.18:
-  version "9.0.18"
-  resolved "https://registry.yarnpkg.com/nock/-/nock-9.0.18.tgz#814b6af376b8399d1bbcbaa17f1a458c653a719b"
+nock@9.1.3:
+  version "9.1.3"
+  resolved "https://registry.yarnpkg.com/nock/-/nock-9.1.3.tgz#1ab95a973a876c9ae2a844241844e29dbb5a1d89"
   dependencies:
     chai ">=1.9.2 <4.0.0"
     debug "^2.2.0"
@@ -3833,7 +3844,7 @@ nock@9.0.18:
     lodash "~4.17.2"
     mkdirp "^0.5.0"
     propagate "0.4.0"
-    qs "^6.0.2"
+    qs "^6.5.1"
     semver "^5.3.0"
 
 node-forge@0.6.47:
@@ -4309,9 +4320,9 @@ q@^1.2.0:
   version "1.5.0"
   resolved "http://cli-npm.heroku.com/q/-/q-1.5.0/dd01bac9d06d30e6f219aecb8253ee9ebdc308f1.tgz#dd01bac9d06d30e6f219aecb8253ee9ebdc308f1"
 
-qs@^6.0.2:
-  version "6.5.0"
-  resolved "http://cli-npm.heroku.com/qs/-/qs-6.5.0/8d04954d364def3efc55b5a0793e1e2c8b1e6e49.tgz#8d04954d364def3efc55b5a0793e1e2c8b1e6e49"
+qs@^6.5.1:
+  version "6.5.1"
+  resolved "https://registry.yarnpkg.com/qs/-/qs-6.5.1.tgz#349cdf6eef89ec45c12d7d5eb3fc0c870343a6d8"
 
 qs@~6.4.0:
   version "6.4.0"

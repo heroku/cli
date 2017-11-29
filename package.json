@@ -54,7 +54,7 @@
     "cli-ux": "2.0.4",
     "debug": "3.1.0",
     "fs-extra": "4.0.2",
-    "heroku-apps": "2.4.18",
+    "heroku-apps": "2.4.19",
     "heroku-certs": "1.1.44",
     "heroku-ci": "1.9.5",
     "heroku-cli-addons": "1.2.25",
@@ -72,7 +72,7 @@
     "heroku-run": "3.5.2",
     "heroku-spaces": "2.10.0",
     "heroku-webhooks": "1.1.0",
-    "http-call": "3.0.2",
+    "http-call": "4.0.0",
     "netrc-parser": "2.0.3",
     "semver": "5.4.1"
   },
@@ -95,7 +95,7 @@
     "flow-bin": "0.56.0",
     "husky": "0.14.3",
     "jest": "21.2.1",
-    "nock": "9.0.18"
+    "nock": "9.1.3"
   },
   "engineStrict": true,
   "engines": {

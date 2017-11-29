@@ -2,7 +2,7 @@
 
 import fs from 'fs-extra'
 import type {Config} from 'cli-engine-config'
-import HTTP from 'http-call'
+import {HTTP} from 'http-call'
 import Netrc from 'netrc-parser'
 import path from 'path'
 import vars from 'cli-engine-heroku/lib/vars'
