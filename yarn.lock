@@ -1148,7 +1148,7 @@ convert-source-map@^1.4.0, convert-source-map@^1.5.0:
   version "1.5.0"
   resolved "http://cli-npm.heroku.com/convert-source-map/-/convert-source-map-1.5.0/9acd70851c6d5dfdd93d9282e5edf94a03ff46b5.tgz#9acd70851c6d5dfdd93d9282e5edf94a03ff46b5"
 
-core-js@^2.4.0, core-js@^2.5.0:
+core-js@^2.4.0, core-js@^2.5.0, core-js@^2.5.1:
   version "2.5.1"
   resolved "http://cli-npm.heroku.com/core-js/-/core-js-2.5.1/ae6874dc66937789b80754ff5428df66819ca50b.tgz#ae6874dc66937789b80754ff5428df66819ca50b"
 
@@ -2374,7 +2374,18 @@ html-encoding-sniffer@^1.0.1:
   dependencies:
     whatwg-encoding "^1.0.1"
 
-http-call@3.0.2, http-call@^3.0.1, http-call@^3.0.2:
+http-call@4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/http-call/-/http-call-4.0.0.tgz#78c4ab4056b01e8967088526ae762cf9b5371ea8"
+  dependencies:
+    core-js "^2.5.1"
+    debug "^3.0.1"
+    is-retry-allowed "^1.1.0"
+    is-stream "^1.1.0"
+    mime-types "^2.1.17"
+    tunnel-agent "^0.6.0"
+
+http-call@^3.0.1, http-call@^3.0.2:
   version "3.0.2"
   resolved "http://cli-npm.heroku.com/http-call/-/http-call-3.0.2/5e3be641449b13546480f651f095b693e22e59a8.tgz#5e3be641449b13546480f651f095b693e22e59a8"
   dependencies:
@@ -3739,7 +3750,7 @@ mime-db@~1.30.0:
   version "1.30.0"
   resolved "http://cli-npm.heroku.com/mime-db/-/mime-db-1.30.0/74c643da2dd9d6a45399963465b26d5ca7d71f01.tgz#74c643da2dd9d6a45399963465b26d5ca7d71f01"
 
-mime-types@^2.1.12, mime-types@~2.1.7:
+mime-types@^2.1.12, mime-types@^2.1.17, mime-types@~2.1.7:
   version "2.1.17"
   resolved "http://cli-npm.heroku.com/mime-types/-/mime-types-2.1.17/09d7a393f03e995a79f8af857b70a9e0ab16557a.tgz#09d7a393f03e995a79f8af857b70a9e0ab16557a"
   dependencies:

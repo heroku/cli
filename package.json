@@ -72,7 +72,7 @@
     "heroku-run": "3.5.2",
     "heroku-spaces": "2.10.0",
     "heroku-webhooks": "1.1.0",
-    "http-call": "3.0.2",
+    "http-call": "4.0.0",
     "netrc-parser": "2.0.3",
     "semver": "5.4.1"
   },
