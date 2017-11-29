@@ -21,6 +21,7 @@ function analyticsJson () {
     schema: 1,
     install: '5a8ef179-1129-4f81-877c-662c89f83f1f',
     cli: 'cli-engine',
+    user: 'foobar@heroku.com',
     commands: [
       {
         command: 'foo',
