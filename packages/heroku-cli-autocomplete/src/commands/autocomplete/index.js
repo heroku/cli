@@ -39,7 +39,7 @@ ${cli.color.cyan(`$ printf "$(${bin} autocomplete:script ${shell})" >> ~/.${shel
 
 ${cli.color.cyan(`$ source ~/.${shell}rc`)}
 ${shell === 'zsh' ? `
-NOTE: After sourcing, you can run \`${cli.color.cyan('$ compaudit')}\` to ensure no permissions conflicts are present
+NOTE: After sourcing, you can run \`${cli.color.cyan('$ compaudit -D')}\` to ensure no permissions conflicts are present
 ` : ''}
 3) Test command completion by pressing <TAB>, e.g.:
 

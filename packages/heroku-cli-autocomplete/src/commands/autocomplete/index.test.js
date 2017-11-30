@@ -21,7 +21,7 @@ $ printf "$(cli-engine autocomplete:script zsh)" >> ~/.zshrc
 
 $ source ~/.zshrc
 
-NOTE: After sourcing, you can run \`$ compaudit\` to ensure no permissions conflicts are present
+NOTE: After sourcing, you can run \`$ compaudit -D\` to ensure no permissions conflicts are present
 
 3) Test command completion by pressing <TAB>, e.g.:
 
