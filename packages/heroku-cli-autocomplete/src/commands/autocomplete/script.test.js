@@ -29,7 +29,6 @@ runtest('errors on unsupported shell', async () => {
   try {
     await AutocompleteScript.mock('fish')
   } catch (e) {
-    expect(cli.stderr.output).toBe(` ▸    No autocomplete script for fish. Run $ cli-engine autocomplete for install instructions.
-`)
+    expect(cli.stderr.output).toMatch(`No autocomplete script for fish. Run $ cli-engine autocomplete`)
   }
 })
