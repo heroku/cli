@@ -187,9 +187,9 @@ module.exports = [
   Object.assign({
     command: 'push',
     description: 'push local or remote into Heroku database',
-    help: `Push from SOURCE into TARGET. TARGET must not already exist.
+    help: `Push from SOURCE into TARGET. TARGET must be empty.
 
-To empty a Heroku database for import run \`heroku pg:reset\`
+To empty a Heroku database for push run \`heroku pg:reset\`
 
 SOURCE must be either the name of a database existing on your localhost or the
 fully qualified URL of a remote database.
@@ -207,18 +207,22 @@ Examples:
   Object.assign({
     command: 'pull',
     description: 'pull Heroku database into local or remote database',
-    help: `Pull from SOURCE into TARGET. TARGET must not already exist.
+    help: `Pull from SOURCE into TARGET.
+
+TARGET must be one of:
+  * a database name (i.e. on a local PostgreSQL server)  => TARGET must not exist and will be created
+  * a fully qualified URL to a local PostgreSQL server   => TARGET must not exist and will be created
+  * a fully qualified URL to a remote PostgreSQL server  => TARGET must exist and be empty
 
 To delete a local database run \`dropdb TARGET\`
-
-TARGET will be created locally if it's a database name or remotely if it's a fully qualified URL.
+To create an empty remote database, run \`createdb\` with connection command-line options (run \`createdb --help\` for details).
 
 Examples:
 
-    # pull Heroku DB named postgresql-swimmingly-100 into local DB mylocaldb
+    # pull Heroku DB named postgresql-swimmingly-100 into local DB mylocaldb that must not exist
     $ heroku pg:pull postgresql-swimmingly-100 mylocaldb --app sushi
 
-    # pull Heroku DB named postgresql-swimmingly-100 into remote DB at postgres://myhost/mydb
+    # pull Heroku DB named postgresql-swimmingly-100 into empty remote DB at postgres://myhost/mydb
     $ heroku pg:pull postgresql-swimmingly-100 postgres://myhost/mydb --app sushi
 `,
     run: cli.command({preauth: true}, co.wrap(pull))
