@@ -18,7 +18,12 @@ async function run (config: Config, opts: PreRun) {
       if (acPlugin) {
         cli.action.start('Updating completions')
         let ac = await acPlugin.findCommand('autocomplete:buildcache')
-        if (ac) await ac.run(Object.assign(config, {argv: []}))
+        if (ac) {
+          await ac.run({
+            ...config,
+            argv: []
+          })
+        }
         await AppCompletion.options({config})
         await PipelineCompletion.options({config})
         await SpaceCompletion.options({config})
