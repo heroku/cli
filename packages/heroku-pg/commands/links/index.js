@@ -39,7 +39,7 @@ function * run (context, heroku) {
 module.exports = {
   topic: 'pg',
   command: 'links',
-  description: 'lists all datbases and information on link',
+  description: 'lists all databases and information on link',
   needsApp: true,
   needsAuth: true,
   args: [{name: 'database', optional: true}],
