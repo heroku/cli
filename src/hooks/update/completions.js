@@ -17,8 +17,8 @@ async function run (config: Config, opts: PreRun) {
       const acPlugin = plugins.find(p => p.name === 'heroku-cli-autocomplete')
       if (acPlugin) {
         cli.action.start('Updating completions')
-        let ac = await acPlugin.findCommand('autocomplete:init')
-        if (ac) await ac.run(config)
+        let ac = await acPlugin.findCommand('autocomplete:buildcache')
+        if (ac) await ac.run(Object.assign(config, {argv: []}))
         await AppCompletion.options({config})
         await PipelineCompletion.options({config})
         await SpaceCompletion.options({config})
