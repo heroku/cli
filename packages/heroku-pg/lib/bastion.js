@@ -27,7 +27,7 @@ exports.getBastion = getBastion
 const env = function (db) {
   let baseEnv = Object.assign({
     PGAPPNAME: 'psql non-interactive',
-    PGSSLMODE: (!db.hostname || db.hostname === 'localhost') ? 'prefer' : 'require',
+    PGSSLMODE: (!db.hostname || db.hostname === 'localhost') ? 'prefer' : 'require'
   }, process.env)
   let mapping = {
     PGUSER: 'user',
