@@ -1072,7 +1072,7 @@ co@3.1.0:
   version "3.1.0"
   resolved "http://cli-npm.heroku.com/co/-/co-3.1.0/4ea54ea5a08938153185e15210c68d9092bc1b78.tgz#4ea54ea5a08938153185e15210c68d9092bc1b78"
 
-co@4.6.0, co@4.x, co@^4.6.0:
+co@4.6.0, co@^4.6.0:
   version "4.6.0"
   resolved "http://cli-npm.heroku.com/co/-/co-4.6.0/6ea6bdf3d853ae54ccb8e47bfa0bf3f9031fb184.tgz#6ea6bdf3d853ae54ccb8e47bfa0bf3f9031fb184"
 
@@ -2070,7 +2070,7 @@ heroku-ci@1.9.5:
     socket.io-client "^1.5.1"
     temp "^0.8.3"
 
-heroku-cli-addons@1.2.25, heroku-cli-addons@^1.2.22, heroku-cli-addons@^1.2.23:
+heroku-cli-addons@1.2.25, heroku-cli-addons@^1.2.22:
   version "1.2.25"
   resolved "http://cli-npm.heroku.com/heroku-cli-addons/-/heroku-cli-addons-1.2.25/02b86f99308fdbfca2bb10c533e408edc47bf918.tgz#02b86f99308fdbfca2bb10c533e408edc47bf918"
   dependencies:
@@ -2209,15 +2209,6 @@ heroku-exec-util@0.6.2:
     ssh2 "0.5.5"
     temp "0.8.3"
     uuid "3.0.1"
-
-heroku-fork@4.1.25:
-  version "4.1.25"
-  resolved "http://cli-npm.heroku.com/heroku-fork/-/heroku-fork-4.1.25/29aa4992e33133775aa550f894ccffc09699cdf7.tgz#29aa4992e33133775aa550f894ccffc09699cdf7"
-  dependencies:
-    co "4.x"
-    heroku-cli-addons "^1.2.23"
-    heroku-cli-util "^6.2.0"
-    lodash "4.x"
 
 heroku-git@2.5.23:
   version "2.5.23"
@@ -3617,7 +3608,7 @@ lodash.zip@^4.2.0:
   version "4.2.0"
   resolved "http://cli-npm.heroku.com/lodash.zip/-/lodash.zip-4.2.0/ec6662e4896408ed4ab6c542a3990b72cc080020.tgz#ec6662e4896408ed4ab6c542a3990b72cc080020"
 
-lodash@4.17.4, lodash@4.x, lodash@^4.0.0, lodash@^4.13.1, lodash@^4.14.0, lodash@^4.15.0, lodash@^4.17.4, lodash@^4.2.0, lodash@^4.3.0, lodash@^4.6.1, lodash@~4.17.2:
+lodash@4.17.4, lodash@^4.0.0, lodash@^4.13.1, lodash@^4.14.0, lodash@^4.15.0, lodash@^4.17.4, lodash@^4.2.0, lodash@^4.3.0, lodash@^4.6.1, lodash@~4.17.2:
   version "4.17.4"
   resolved "http://cli-npm.heroku.com/lodash/-/lodash-4.17.4/78203a4d1c328ae1d86dca6460e369b57f4055ae.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
 
