@@ -100,7 +100,9 @@ fixtures.addons = {
     addon_service: fixtures.services['heroku-postgresql'],
     plan: fixtures.plans['heroku-postgresql:hobby-dev'],
     state: 'provisioned',
-    billed_price_cents: 0
+    billed_price: {
+      cents: 0
+    }
   },
   'www-redis': {
     app: fixtures.apps.www,
@@ -109,7 +111,9 @@ fixtures.addons = {
     addon_service: fixtures.services['heroku-redis'],
     plan: fixtures.plans['heroku-redis:premium-2'],
     state: 'provisioning',
-    billed_price_cents: 6000
+    billed_price: {
+      cents: 6000
+    }
   },
   'api-redis': {
     app: fixtures.apps.api,
@@ -118,7 +122,9 @@ fixtures.addons = {
     addon_service: fixtures.services['heroku-redis'],
     plan: fixtures.plans['heroku-redis:premium-2'],
     state: 'provisioned',
-    billed_price_cents: 6000
+    billed_price: {
+      cents: 6000
+    }
   },
   'dwh-test-db': {
     app: fixtures.apps.dwh,
@@ -127,7 +133,9 @@ fixtures.addons = {
     addon_service: fixtures.services['heroku-postgresql'],
     plan: fixtures.plans['heroku-postgresql:hobby-dev'],
     state: 'provisioned',
-    billed_price_cents: 0
+    billed_price: {
+      cents: 0
+    }
   },
   'dwh-db': {
     app: fixtures.apps.dwh,
@@ -136,7 +144,9 @@ fixtures.addons = {
     addon_service: fixtures.services['heroku-postgresql'],
     plan: fixtures.plans['heroku-postgresql:standard-2'],
     state: 'provisioned',
-    billed_price_cents: 20000
+    billed_price: {
+      cents: 20000
+    }
   },
   'dwh-db-2': {
     app: fixtures.apps.dwh,
@@ -145,7 +155,9 @@ fixtures.addons = {
     addon_service: fixtures.services['heroku-postgresql'],
     plan: fixtures.plans['heroku-postgresql:standard-2'],
     state: 'provisioned',
-    billed_price_cents: 20000
+    billed_price: {
+      cents: 20000
+    }
   }
 }
 

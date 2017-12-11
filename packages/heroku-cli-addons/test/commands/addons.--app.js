@@ -14,8 +14,7 @@ describe('addons --app', function () {
     attachments = attachments || []
 
     nock('https://api.heroku.com', {reqheaders: {
-      'Accept-Expansion': 'addon_service,plan',
-      'Accept': 'application/vnd.heroku+json; version=3.with-addon-billing-info'
+      'Accept-Expansion': 'addon_service,plan'
     }})
       .get(`/apps/${appName}/addons`)
       .reply(200, addons)
@@ -246,7 +245,7 @@ The table above shows add-ons and the attachments to the current app (acme-inc-d
   context('with a grandfathered add-on', function () {
     beforeEach(function () {
       let addon = fixtures.addons['dwh-db']
-      addon.billed_price_cents = 10000
+      addon.billed_price = {cents: 10000}
 
       mockAPI('acme-inc-dwh', [
         addon

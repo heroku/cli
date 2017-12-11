@@ -24,8 +24,7 @@ function * run (ctx, api) {
 
     if (app) { // don't disploy attachments globally
       addons = api.get(`/apps/${app}/addons`, {headers: {
-        'Accept-Expansion': 'addon_service,plan',
-        'Accept': 'application/vnd.heroku+json; version=3.with-addon-billing-info'
+        'Accept-Expansion': 'addon_service,plan'
       }})
 
       let sudoHeaders = JSON.parse(process.env.HEROKU_HEADERS || '{}')
@@ -47,8 +46,7 @@ function * run (ctx, api) {
         method: 'GET',
         path: '/addons',
         headers: {
-          'Accept-Expansion': 'addon_service,plan',
-          'Accept': 'application/vnd.heroku+json; version=3.with-addon-billing-info'
+          'Accept-Expansion': 'addon_service,plan'
         }
       })
     }

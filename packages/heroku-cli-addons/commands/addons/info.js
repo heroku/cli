@@ -11,19 +11,11 @@ let style = require('../../lib/util').style
 let run = cli.command({preauth: true}, function (ctx, api) {
   const resolve = require('../../lib/resolve')
   return co(function * () {
-    let resolvedAddon = yield resolve.addon(api, ctx.app, ctx.args.addon)
-
-    // the resolve call uses a variant so we cannot also use the
-    // with-addon-billing-info in the resolve call so we have to run out
-    // and grab the addon again, but can bundle with the attachments request
-    let [addon, attachments] = yield [
-      api.get(`/addons/${resolvedAddon.id}`, {headers: {
-        'Accept-Expansion': 'addon_service,plan',
-        'Accept': 'application/vnd.heroku+json; version=3.with-addon-billing-info'
-      }}),
+    let addon = yield resolve.addon(api, ctx.app, ctx.args.addon)
+    let [attachments] = yield [
       api.request({
         method: 'GET',
-        path: `/addons/${resolvedAddon.id}/addon-attachments`
+        path: `/addons/${addon.id}/addon-attachments`
       })
     ]
 
