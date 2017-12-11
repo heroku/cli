@@ -68,12 +68,10 @@ const memoizePromise = function (func, resolver) {
 
     const result = func.apply(this, args)
 
-    result.then(function () {
+    return result.then(function () {
       memoized.cache = cache.set(key, result) || cache
-      return arguments
+      return result
     })
-
-    return result
   }
   memoized.cache = new memoize.Cache()
   return memoized

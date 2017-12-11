@@ -51,11 +51,13 @@ describe('addons:create', () => {
 
   context('calling addons:create without a plan', () => {
     it('errors out with usage', () => {
-      return expect(cmd.run({
+      return cmd.run({
         app: 'myapp',
         args: [],
         flags: {name: 'foobar'}
-      }), 'to be rejected with error satisfying', new Error('Usage: heroku addons:create SERVICE:PLAN'))
+      })
+      .then(() => { throw new Error('unreachable') })
+      .catch((err) => expect(err.message, 'to equal', 'Usage: heroku addons:create SERVICE:PLAN'))
     })
   })
 
@@ -249,7 +251,9 @@ Use heroku addons:docs heroku-db3 to view documentation
           flags: {as: 'mydb'}
         })
 
-        expect(cmdPromise, 'to be rejected with', 'The add-on was unable to be created, with status deprovisioned')
+        return cmdPromise
+        .then(() => { throw new Error('unreachable') })
+        .catch((err) => expect(err.message, 'to equal', 'The add-on was unable to be created, with status deprovisioned'))
       })
     })
   })

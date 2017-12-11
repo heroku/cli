@@ -28,9 +28,11 @@ describe('addons:destroy', () => {
     let api = nock('https://api.heroku.com:443')
       .post('/actions/addons/resolve', {'app': 'myapp', 'addon': 'heroku-db4'}).reply(200, [addon])
 
-    return expect(
-      cmd.run({app: 'myapp', args: ['heroku-db4'], flags: {confirm: 'myapp'}}),
-      'to be rejected with', 'db4-swiftly-123 is on myotherapp not myapp'
-    ).then(() => api.done())
+    return cmd.run({app: 'myapp', args: ['heroku-db4'], flags: {confirm: 'myapp'}})
+    .then(() => { throw new Error('unreachable') })
+    .catch((err) => {
+      api.done()
+      expect(err.message, 'to equal', 'db4-swiftly-123 is on myotherapp not myapp')
+    })
   })
 })

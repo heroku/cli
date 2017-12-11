@@ -77,10 +77,9 @@ describe('addons:wait', function () {
         nock('https://api.heroku.com', {reqheaders: expansionHeaders})
           .get('/apps/acme-inc-www/addons/www-redis')
           .reply(200, deprovisionedAddon)
-
-        let cmdPromise = cmd.run({flags: {}, args: {addon: 'www-redis'}})
-
-        expect(cmdPromise, 'to be rejected with', 'The add-on was unable to be created, with status deprovisioned')
+        return cmd.run({flags: {}, args: {addon: 'www-redis'}})
+        .then(() => { throw new Error('unreachable') })
+        .catch((err) => expect(err.message, 'to equal', 'The add-on was unable to be created, with status deprovisioned'))
       })
     })
   })

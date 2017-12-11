@@ -393,10 +393,14 @@ describe('resolve', () => {
       let api = nock('https://api.heroku.com:443')
         .post('/actions/addon-attachments/resolve', {'app': 'myapp', 'addon_attachment': 'myattachment-4'}).reply(404, {'resource': 'app'})
 
+      let appAddon = nock('https://api.heroku.com:443')
+        .post('/actions/addons/resolve', {'app': 'myapp', 'addon': 'myattachment-4'}).reply(200, [{id: '1e97e8ba-fd24-48a4-8118-eaf287eb7a0f', name: 'myaddon-4'}])
+
       return resolve.attachment(new Heroku(), 'myapp', 'myattachment-4')
         .then(() => { throw new Error('unreachable') })
         .catch((err) => expect(err, 'to satisfy', {body: {'resource': 'app'}}))
         .then(() => api.done())
+        .then(() => appAddon.done())
     })
 
     it('throws an error when not found with addon_service', () => {

@@ -34,8 +34,9 @@ describe('addons:upgrade', () => {
   })
 
   it('errors with no plan', () => {
-    return expect(cmd.run({app: 'myapp', args: {addon: 'heroku-redis'}})
-      , 'to be rejected with', /Error: No plan specified/)
+    return cmd.run({app: 'myapp', args: {addon: 'heroku-redis'}})
+    .then(() => { throw new Error('unreachable') })
+    .catch((err) => expect(err, 'to satisfy', /Error: No plan specified/))
   })
 
   it('errors with invalid plan', () => {
@@ -49,8 +50,9 @@ describe('addons:upgrade', () => {
       ])
       .patch('/apps/myapp/addons/db1-swiftly-123', {plan: {name: 'heroku-db1:invalid'}})
       .reply(422, {message: 'Couldn\'t find either the add-on service or the add-on plan of "heroku-db1:invalid".'})
-    return expect(cmd.run({app: 'myapp', args: {addon: 'heroku-db1:invalid'}})
-      , 'to be rejected with', `Couldn't find either the add-on service or the add-on plan of "heroku-db1:invalid".
+    return cmd.run({app: 'myapp', args: {addon: 'heroku-db1:invalid'}})
+    .then(() => { throw new Error('unreachable') })
+    .catch((err) => expect(err.message, 'to equal', `Couldn't find either the add-on service or the add-on plan of "heroku-db1:invalid".
 
 Here are the available plans for heroku-db1:
 heroku-db1:free
@@ -58,7 +60,7 @@ heroku-db1:premium-0
 
 See more plan information with heroku addons:plans heroku-db1
 
-https://devcenter.heroku.com/articles/managing-add-ons`)
+https://devcenter.heroku.com/articles/managing-add-ons`))
       .then(() => api.done())
   })
 
@@ -66,8 +68,11 @@ https://devcenter.heroku.com/articles/managing-add-ons`)
     let api = nock('https://api.heroku.com:443')
       .post('/actions/addons/resolve', {'app': null, 'addon': 'heroku-redis'})
       .reply(200, [{'name': 'db1-swiftly-123'}, {'name': 'db1-swiftly-456'}])
-    return expect(cmd.run({args: {addon: 'heroku-redis:invalid'}}),
-      'to be rejected with', /multiple matching add-ons found/)
-      .then(() => api.done())
+    return cmd.run({args: {addon: 'heroku-redis:invalid'}})
+    .then(() => { throw new Error('unreachable') })
+    .catch((err) => {
+      api.done()
+      expect(err, 'to satisfy', /multiple matching add-ons found/)
+    })
   })
 })

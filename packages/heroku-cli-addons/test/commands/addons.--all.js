@@ -20,10 +20,6 @@ describe('addons --all', function () {
   context('with add-ons', function () {
     beforeEach(function () {
       nock('https://api.heroku.com', {reqheaders: {'Accept-Expansion': 'addon_service,plan'}})
-        .matchHeader('Accept-Expansion', function (val) {
-          let vals = val.split(',')
-          return vals.indexOf('addon_service') > -1 && vals.indexOf('plan') > -1
-        })
         .get('/addons')
         .reply(200, addons)
     })

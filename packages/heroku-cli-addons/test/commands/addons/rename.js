@@ -38,8 +38,9 @@ describe('addons:rename', () => {
         .get('/addons/not-an-addon')
         .reply(404, {message: "Couldn't find that add-on.", id: 'not_found', resource: 'addon'})
 
-      return expect(cmd.run({flags: {}, args: {addon: 'not-an-addon', name: 'cache-redis'}}),
-        'to be rejected with', {body: {message: "Couldn't find that add-on."}})
+      return cmd.run({flags: {}, args: {addon: 'not-an-addon', name: 'cache-redis'}})
+      .then(() => { throw new Error('unreachable') })
+      .catch((err) => expect(err, 'to satisfy', {body: {message: "Couldn't find that add-on."}}))
     })
   })
 })

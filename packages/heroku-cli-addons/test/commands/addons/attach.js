@@ -109,10 +109,12 @@ Setting POSTGRES_HELLO config vars and restarting myapp... done, v10
       .get('/addons/postgres-123/config/credential:hello')
       .reply(200, [])
 
-    return expect(cmd.run({
+    return cmd.run({
       app: 'myapp',
       args: {addon_name: 'postgres-123'},
       flags: {credential: 'hello'}
-    }), 'to be rejected with error satisfying', new Error('Could not find credential hello for database postgres-123'))
+    })
+    .then(() => { throw new Error('unreachable') })
+    .catch((err) => expect(err.message, 'to equal', 'Could not find credential hello for database postgres-123'))
   })
 })
