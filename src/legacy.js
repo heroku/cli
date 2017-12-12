@@ -95,8 +95,9 @@ export function convertFromV5 (c: LegacyCommand) {
 }
 
 function convertFlagsFromV5 (flags: ?(LegacyFlag[] | {[name: string]: Flag}), Cmd: LegacyCommand): {[name: string]: any} {
-  if (!flags) return {}
-  if (Array.isArray(flags)) {
+  if (!flags) {
+    flags = {}
+  } else if (Array.isArray(flags)) {
     flags = flags.reduce((flags, flag) => {
       let opts: Flag = {
         char: (flag.char: any),

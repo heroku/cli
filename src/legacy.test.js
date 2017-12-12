@@ -43,3 +43,20 @@ test('exports a context', async function () {
   expect(ctx.httpGitHost).toEqual('git.foo.com')
   expect(ctx.auth.password).toEqual('1234')
 })
+
+test('add apps & orgs flags for needsApp & wantsOrg', async function () {
+  let l: LegacyCommand = {
+    topic: 'foo',
+    command: 'bar',
+    args: [],
+    flags: [],
+    needsApp: true,
+    wantsOrg: true,
+    run: function (context) {
+      return Promise.resolve()
+    }
+  }
+
+  let V5 = convertFromV5(l)
+  expect(Object.keys(V5.flags)).toEqual(['app', 'remote', 'org'])
+})
