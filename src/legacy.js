@@ -44,7 +44,7 @@ export function convertFromV5 (c: LegacyCommand) {
     static description = c.description
     static hidden = !!c.hidden
     static args = c.args || []
-    static flags = convertFlagsFromV5(c.flags)
+    static flags = convertFlagsFromV5(c.flags, c)
     static variableArgs = !!c.variableArgs
     static help = c.help
     static usage = c.usage
@@ -91,31 +91,34 @@ export function convertFromV5 (c: LegacyCommand) {
     }
   }
 
-  if (c.needsApp || c.wantsApp) {
-    V5.flags.app = Flags.app({required: !!c.needsApp})
-    V5.flags.remote = Flags.remote()
-  }
-  if (c.needsOrg || c.wantsOrg) {
-    let opts = {required: !!c.needsOrg, hidden: false, description: 'organization to use'}
-    V5.flags.org = Flags.org(opts)
-  }
   return V5
 }
 
-function convertFlagsFromV5 (flags: ?(LegacyFlag[] | {[name: string]: Flag})): {[name: string]: any} {
+function convertFlagsFromV5 (flags: ?(LegacyFlag[] | {[name: string]: Flag}), Cmd: LegacyCommand): {[name: string]: any} {
   if (!flags) return {}
-  if (!Array.isArray(flags)) return flags
-  return flags.reduce((flags, flag) => {
-    let opts: Flag = {
-      char: (flag.char: any),
-      description: flag.description,
-      hidden: flag.hidden,
-      required: flag.required,
-      optional: flag.optional,
-      parse: flag.parse
-    }
-    Object.keys(opts).forEach(k => opts[k] === undefined && delete opts[k])
-    flags[flag.name] = flag.hasValue ? Flags.string(opts) : Flags.boolean((opts: any))
-    return flags
-  }, {})
+  if (Array.isArray(flags)) {
+    flags = flags.reduce((flags, flag) => {
+      let opts: Flag = {
+        char: (flag.char: any),
+        description: flag.description,
+        hidden: flag.hidden,
+        required: flag.required,
+        optional: flag.optional,
+        parse: flag.parse
+      }
+      Object.keys(opts).forEach(k => opts[k] === undefined && delete opts[k])
+      flags[flag.name] = flag.hasValue ? Flags.string(opts) : Flags.boolean((opts: any))
+      return flags
+    }, {})
+  }
+
+  if (Cmd.needsApp || Cmd.wantsApp) {
+    flags.app = Flags.app({required: !!Cmd.needsApp})
+    flags.remote = Flags.remote()
+  }
+  if (Cmd.needsOrg || Cmd.wantsOrg) {
+    let opts = {required: !!Cmd.needsOrg, hidden: false, description: 'organization to use'}
+    flags.org = Flags.org(opts)
+  }
+  return flags
 }
