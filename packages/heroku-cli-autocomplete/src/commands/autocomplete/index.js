@@ -29,9 +29,11 @@ export default class Autocomplete extends AutocompleteBase {
         cli.error(`Currently ${shell} is not a supported shell for autocomplete`)
       }
 
+      let tabStr = shell === 'bash' ? '<TAB><TAB>' : '<TAB>'
+
       cli.log(`${cli.color.bold(`Setup Instructions for ${bin.toUpperCase()} CLI Autocomplete ---`)}
 
-1) Add the autocomplete env vars to your ${shell} profile
+1) Add the autocomplete env var to your ${shell} profile
 
 ${cli.color.cyan(`$ printf "$(${bin} autocomplete:script ${shell})" >> ~/.${shell}rc`)}
 
@@ -41,22 +43,22 @@ ${cli.color.cyan(`$ source ~/.${shell}rc`)}
 ${shell === 'zsh' ? `
 NOTE: After sourcing, you can run \`${cli.color.cyan('$ compaudit -D')}\` to ensure no permissions conflicts are present
 ` : ''}
-3) Test command completion by pressing <TAB>, e.g.:
+3) Test command completion by pressing ${tabStr}, e.g.:
 
-${cli.color.cyan(`$ ${bin} <TAB>`)}
+${cli.color.cyan(`$ ${bin} ${tabStr}`)}
 
-4) Test flag completion by pressing <TAB>, e.g.:
+4) Test flag completion by pressing ${tabStr}, e.g.:
 
-${cli.color.cyan(`$ ${bin} apps:info --<TAB>`)}
+${cli.color.cyan(`$ ${bin} apps:info --${tabStr}`)}
 
-5) Test flag options completion by pressing <TAB>, e.g.:
+5) Test flag options completion by pressing ${tabStr}, e.g.:
 
-${cli.color.cyan(`$ ${bin} apps:info --app=<TAB>`)}
+${cli.color.cyan(`$ ${bin} apps:info --app=${tabStr}`)}
 `)
 
       cli.log(`\n${cli.color.bold(`To uninstall ${bin.toUpperCase()} CLI Autocomplete:`)}
 -- Uninstall this plugin from your CLI (for help see: ${cli.color.cyan(`${bin} help plugins:uninstall`)})
--- Delete the env vars from your ${shell} profile & restart your terminal
+-- Delete the env var from your ${shell} profile & restart your terminal
 `)
     }
 
