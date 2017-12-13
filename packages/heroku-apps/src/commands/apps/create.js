@@ -3,7 +3,7 @@
 let co = require('co')
 let cli = require('heroku-cli-util')
 const {flags} = require('cli-engine-heroku')
-const {BuildpackCompletion, RegionComletion, RemoteCompletion, SpaceCompletion, StackCompletion} = require('cli-engine-heroku/lib/completions')
+const {BuildpackCompletion, RegionCompletion, RemoteCompletion, SpaceCompletion, StackCompletion} = require('cli-engine-heroku/lib/completions')
 
 function * run (context, heroku) {
   let git = require('../../git')(context)
@@ -106,7 +106,7 @@ let cmd = {
     {name: 'remote', char: 'r', hasValue: true, description: 'the git remote to create, default "heroku"', completion: RemoteCompletion},
     {name: 'stack', char: 's', hasValue: true, description: 'the stack to create the app on', completion: StackCompletion},
     {name: 'space', hasValue: true, description: 'the private space to create the app in', completion: SpaceCompletion},
-    {name: 'region', hasValue: true, description: 'specify region for the app to run in', completion: RegionComletion},
+    {name: 'region', hasValue: true, description: 'specify region for the app to run in', completion: RegionCompletion},
     {name: 'ssh-git', description: 'use SSH git protocol for local git remote'},
     {name: 'kernel', hidden: true, hasValue: true},
     {name: 'locked', hidden: true},
