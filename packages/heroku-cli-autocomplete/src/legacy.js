@@ -18,7 +18,8 @@ type LegacyFlag = {
   hidden?: boolean,
   required?: boolean,
   optional?: boolean,
-  parse?: any
+  parse?: any,
+  completion?: any
 }
 
 type LegacyCommand = {
@@ -114,7 +115,8 @@ function convertFlagsFromV5 (flags: ?(LegacyFlag[] | {[name: string]: Flag})): {
       hidden: flag.hidden,
       required: flag.required,
       optional: flag.optional,
-      parse: flag.parse
+      parse: flag.parse,
+      completion: flag.completion
     }
     Object.keys(opts).forEach(k => opts[k] === undefined && delete opts[k])
     flags[flag.name] = flag.hasValue ? Flags.string(opts) : Flags.boolean((opts: any))
