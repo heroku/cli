@@ -24,24 +24,12 @@ EOF
     cat << EOF > "${o}/bin/heroku"
 #!/usr/bin/env bash
 set -e
-get_script_dir () {
-  SOURCE="\${BASH_SOURCE[0]}"
-  # While \$SOURCE is a symlink, resolve it
-  while [ -h "\$SOURCE" ]; do
-    DIR="\$( cd -P "\$( dirname "\$SOURCE" )" && pwd )"
-    SOURCE="\$( readlink "\$SOURCE" )"
-    # If \$SOURCE was a relative symlink (so no "/" as prefix, need to resolve it relative to the symlink base directory
-    [[ \$SOURCE != /* ]] && SOURCE="\$DIR/\$SOURCE"
-  done
-  DIR="\$( cd -P "\$( dirname "\$SOURCE" )" && pwd )"
-  echo "\$DIR"
-}
-DIR=\$(get_script_dir)
+DIR=\$(realpath "\${BASH_SOURCE[0]}")
 # normalize home directory
 CLI_HOME=\$(cd && pwd)
 XDG_DATA_HOME=\${XDG_DATA_HOME:="\$CLI_HOME/.local/share"}
-BIN_DIR="\$XDG_DATA_HOME/heroku/client/bin"
-if [ -x "\$BIN_DIR/heroku" ] && [ ! "\$BIN_DIR" -ef "\$DIR" ]; then
+BIN_PATH=\$(realpath "\$XDG_DATA_HOME/heroku/client/bin/heroku")
+if [ -x "\$BIN_PATH" ] && [ ! "\$BIN_PATH" -ef "\$DIR/heroku" ]; then
   "\$XDG_DATA_HOME/heroku/client/bin/heroku" "\$@"
 else
   CLI_BINPATH="\$DIR/heroku" "\$DIR/node" "\$DIR/heroku.js" "\$@"
