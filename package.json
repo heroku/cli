@@ -74,6 +74,7 @@
     "@heroku/heroku-cli-dev-center-generator": "1.1.7",
     "@types/fs-extra": "5.0.0",
     "@types/node": "8.5.1",
+    "@types/supports-color": "3.1.0",
     "del-cli": "1.1.0",
     "husky": "0.14.3",
     "jest": "21.2.1",
