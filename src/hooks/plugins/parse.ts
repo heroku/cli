@@ -70,7 +70,10 @@ function getID (c: any): string {
 module.exports = (_: Config, opts: PluginsParseHookOptions) => {
   const m = opts.module
   m.commands = m.commands.map((c: any) => {
-    if (!c._version) c = convertFromV5(c)
+    if (typeof c === 'object') {
+      c = convertFromV5(c)
+    } else if (!c._version) {
+    }
     if (!c.id) c.id = getID(c)
     return c
   })
@@ -148,6 +151,7 @@ function convertFlagsFromV5 (flags: LegacyFlag[] | InputFlags | undefined): Inpu
     for (let [k, v] of Object.entries(opts)) {
       if (v === undefined) delete (<any>opts)[k]
     }
+    if (!opts.parse) delete opts.parse
     flags[flag.name] = flag.hasValue ? Flags.string(opts as any) : Flags.boolean(opts as any)
     return flags
   }, {} as InputFlags)
