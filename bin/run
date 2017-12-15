@@ -11,6 +11,7 @@ if (!semver.satisfies(nodeVersion, pjson.engines.node)) {
 
 const {run} = require('cli-engine')
 const config = {
+  reexecBin: __filename,
   updateDisabled: 'Update CLI with `npm update -g heroku-cli`'
 }
 run({config})

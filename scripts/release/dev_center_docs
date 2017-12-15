@@ -14,7 +14,7 @@ EOF
 chmod 0600 ~/.netrc
 set -ex
 
-"$scripts/prep"
+./scripts/prep
 ./bin/run whoami
 heroku-cli-dev-center-generator > /tmp/heroku-cli-commands.md
 remark /tmp/heroku-cli-commands.md -u remark-heroku-example-command -u remark-heroku-sample-code -u remark-heroku-bash-dollar -u remark-heroku-topic-overview -u remark-heroku-command-headings-inline-code

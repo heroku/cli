@@ -27,11 +27,11 @@ function build () {
   fi
 
   sed -e "s/!define Version 'VERSION'/!define Version '${SHORT_VERSION}'/" resources/exe/heroku.nsi |\
-    sed -e "s/InstallDir .*/InstallDir \"\$PROGRAMFILES$PROGRAMSUFFIX\\\Heroku\"/" \
+    sed -e "s/InstallDir .*/InstallDir \"\$PROGRAMFILES$PROGRAMSUFFIX\\\\Heroku\"/" \
     > "$INSTALLER_BASE/heroku.nsi"
 
   makensis "$INSTALLER_BASE/heroku.nsi" \
-    | grep -v "\[compress\]" \
+    | grep -v "\\[compress\\]" \
     | grep -v "^File: Descending to"
 
   set +x
