@@ -6,5 +6,4 @@ set -x
 
 script "test/lint"
 npx jest
-npx flow
 script "test/smoke"

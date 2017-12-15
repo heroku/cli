@@ -19,7 +19,6 @@ jobs:
             - v0-yarn
       - run: ./scripts/prep
       - run: {command: "./scripts/test/lint", when: always}
-      - run: {command: "npx flow check", when: always}
       - run: {command: "npx jest", when: always}
       - run: {command: "bash <(curl -s https://codecov.io/bash)"}
       - run: {command: "./scripts/test/smoke", when: always}
