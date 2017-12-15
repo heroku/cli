@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "alwaysStrict": true,
+    "module": "commonjs",
+    "outDir": "./lib",
+    "rootDir": "./src",
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "target": "esnext"
+  },
+  "include": [
+    "src/**/*"
+  ]
+}

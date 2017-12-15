@@ -11,12 +11,12 @@
     "bin": "heroku",
     "userPlugins": true,
     "dirname": "heroku",
-    "node": "9.2.0",
+    "node": "9.3.0",
     "defaultCommand": "dashboard",
-    "legacyConverter": "./lib/legacy",
     "npmRegistry": "https://cli-npm.heroku.com",
     "hooks": {
       "prerun": "./lib/hooks/prerun/analytics",
+      "plugins:parse": "./lib/hooks/plugins/parse",
       "update": [
         "./lib/hooks/update/analytics",
         "./lib/hooks/update/completions"
@@ -46,11 +46,7 @@
     ]
   },
   "dependencies": {
-    "cli-engine": "4.6.21",
-    "cli-engine-command": "9.0.6",
-    "cli-engine-config": "3.4.0",
-    "cli-engine-heroku": "5.0.4",
-    "cli-ux": "2.0.20",
+    "cli-ux": "2.0.7",
     "debug": "3.1.0",
     "fs-extra": "5.0.0",
     "heroku-apps": "2.4.19",
@@ -76,24 +72,16 @@
   },
   "devDependencies": {
     "@heroku/heroku-cli-dev-center-generator": "1.1.7",
-    "babel-cli": "6.26.0",
-    "babel-eslint": "8.0.2",
-    "babel-plugin-syntax-object-rest-spread": "^6.13.0",
-    "babel-plugin-transform-class-properties": "^6.24.1",
-    "babel-plugin-transform-es2015-modules-commonjs": "6.26.0",
-    "babel-preset-flow": "6.23.0",
-    "eslint": "4.12.0",
-    "eslint-config-standard": "10.2.1",
-    "eslint-plugin-flowtype": "2.39.1",
-    "eslint-plugin-import": "2.8.0",
-    "eslint-plugin-jest": "21.3.2",
-    "eslint-plugin-node": "5.2.1",
-    "eslint-plugin-promise": "3.6.0",
-    "eslint-plugin-standard": "3.0.1",
-    "flow-bin": "0.56.0",
+    "@types/fs-extra": "5.0.0",
+    "@types/node": "8.5.1",
+    "del-cli": "1.1.0",
     "husky": "0.14.3",
     "jest": "21.2.1",
-    "nock": "9.1.3"
+    "lint-staged": "6.0.0",
+    "nock": "9.1.4",
+    "prettier": "1.9.2",
+    "ts-jest": "21.2.4",
+    "typescript": "2.6.2"
   },
   "engineStrict": true,
   "engines": {
@@ -104,24 +92,18 @@
     "bin"
   ],
   "homepage": "https://cli.heroku.com",
-  "jest": {
-    "modulePathIgnorePatterns": [
-      "tmp"
-    ]
-  },
   "keywords": [
     "heroku",
     "heroku-cli-plugin"
   ],
   "license": "ISC",
-  "repository": "https://github.com/heroku/cli",
+  "repository": "heroku/cli",
   "scripts": {
-    "build": "babel src -d lib --ignore '*.test.js'",
-    "clean": "rimraf lib tmp dist",
-    "download": "./scripts/download-yarn",
     "lint": "./scripts/test/lint",
-    "precommit": "./scripts/precommit",
-    "prepare": "npm run build",
+    "posttest": "prettier -l 'src/**/*.ts'",
+    "precommit": "./scripts/precommit && lint-staged",
+    "prepare": "del-cli lib && tsc && del-cli \"lib/**/*.test.+(d.ts|js)\"",
+    "pretest": "tsc",
     "test": "./scripts/test/all"
   }
 }

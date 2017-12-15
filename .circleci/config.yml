@@ -2,7 +2,7 @@
 defaults: &defaults
   working_directory: /cli
   docker:
-    - image: node:8.4
+    - image: node:9
       environment: &env
         NPM_CONFIG_REGISTRY: https://cli-npm.heroku.com
 

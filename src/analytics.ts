@@ -1,12 +1,11 @@
-// @flow
-
-import fs from 'fs-extra'
-import type {Config} from 'cli-engine-config'
+import * as fs from 'fs-extra'
+import {Config} from 'cli-engine-config'
 import {HTTP} from 'http-call'
-import Netrc from 'netrc-parser'
-import path from 'path'
-import vars from 'cli-engine-heroku/lib/vars'
-import type {Command} from 'cli-engine-command'
+import * as path from 'path'
+import {vars} from 'cli-engine-heroku/lib/vars'
+import {ICommand} from 'cli-engine-config'
+
+const Netrc = require('netrc-parser')
 
 const debug = require('debug')('heroku:analytics')
 
@@ -14,6 +13,7 @@ type AnalyticsJSONCommand = {
   command: string,
   completion: number,
   version: string,
+  plugin: string,
   plugin_version: string,
   os: string,
   shell: string,
@@ -29,11 +29,13 @@ type AnalyticsJSON = {
 type AnalyticsJSONPost = {
   schema: 1,
   commands: AnalyticsJSONCommand[],
+  install: string
+  cli: string
   user: string
 }
 
 type RecordOpts = {
-  Command: Class<Command<*>>,
+  Command: ICommand,
   argv: string[],
 }
 
@@ -110,15 +112,16 @@ export default class AnalyticsCommand {
   get analyticsPath (): string { return path.join(this.config.cacheDir, 'analytics.json') }
 
   get usingHerokuAPIKey (): boolean {
-    return !!(process.env['HEROKU_API_KEY'] && process.env['HEROKU_API_KEY'].length > 0)
+    const k = process.env.HEROKU_API_KEY
+    return !!(k && k.length > 0)
   }
 
-  get netrcLogin (): ?string {
+  get netrcLogin (): string | undefined {
     let netrc = new Netrc()
     return netrc.machines[vars.apiHost].login
   }
 
-  get user (): ?string {
+  get user (): string | undefined {
     if (this.config.skipAnalytics || this.usingHerokuAPIKey) return
     return this.netrcLogin
   }
@@ -144,8 +147,11 @@ export default class AnalyticsCommand {
 
   async _acAnalytics (): Promise<number> {
     let meta = {
+      // @ts-ignore
       cmd: fs.exists(this._acAnalyticsPath('command')),
+      // @ts-ignore
       flag: fs.exists(this._acAnalyticsPath('flag')),
+      // @ts-ignore
       value: fs.exists(this._acAnalyticsPath('value'))
     }
     let score = 0

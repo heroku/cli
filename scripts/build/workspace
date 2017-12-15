@@ -5,7 +5,7 @@ source ./scripts/_init
 set -x
 
 function build () {
-  setarch $ARCH
+  setarch "$ARCH"
   # setup workspace
   o="$WORKSPACE_DIR"
   rm -rf "${o}"
