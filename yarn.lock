@@ -875,23 +875,6 @@ cli-truncate@^0.2.1:
     slice-ansi "0.0.4"
     string-width "^1.0.1"
 
-cli-ux@2.0.7:
-  version "2.0.7"
-  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-2.0.7.tgz#61ed276700a7fa90a4aa8456c2e28a944c91d268"
-  dependencies:
-    "@heroku/linewrap" "^1.0.0"
-    ansi-escapes "^3.0.0"
-    ansi-styles "^3.2.0"
-    cardinal "^1.0.0"
-    chalk "^2.1.0"
-    fs-extra "^4.0.2"
-    lodash "^4.17.4"
-    moment "^2.18.1"
-    password-prompt "^1.0.3"
-    strip-ansi "^4.0.0"
-    supports-color "^4.4.0"
-    ts-lodash "^4.0.5"
-
 cli-ux@^1.1.11:
   version "1.1.13"
   resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-1.1.13.tgz#886fe08daaee9d246489a74d468e1f7a33ec3878"
@@ -3832,8 +3815,8 @@ minimist@~0.0.1:
     minimist "0.0.8"
 
 moment@^2.18.1:
-  version "2.20.1"
-  resolved "https://registry.yarnpkg.com/moment/-/moment-2.20.1.tgz#d6eb1a46cbcc14a2b2f9434112c1ff8907f313fd"
+  version "2.19.2"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.19.2.tgz#8a7f774c95a64550b4c7ebd496683908f9419dbe"
 
 ms@0.7.1:
   version "0.7.1"
@@ -5462,7 +5445,7 @@ strip-ansi@^3.0.0, strip-ansi@^3.0.1:
 
 strip-ansi@^4.0.0:
   version "4.0.0"
-  resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-4.0.0.tgz#a8479022eb1ac368a871389b635262c505ee368f"
+  resolved "http://cli-npm.heroku.com/strip-ansi/-/strip-ansi-4.0.0/a8479022eb1ac368a871389b635262c505ee368f.tgz#a8479022eb1ac368a871389b635262c505ee368f"
   dependencies:
     ansi-regex "^3.0.0"
 
