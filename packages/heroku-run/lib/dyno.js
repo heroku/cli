@@ -38,8 +38,15 @@ class Dyno extends Duplex {
    * @returns {Promise} promise resolved when dyno process is created
    */
   start () {
+    const dynoStart = this._doStart()
+    if (this.opts.showStatus) {
+      return cli.action(`Running ${cli.color.cyan.bold(this.opts.command)} on ${cli.color.app(this.opts.app)}`, {success: false}, dynoStart)
+    } else return dynoStart
+  }
+
+  _doStart (retries = 2) {
     let command = this.opts['exit-code'] ? `${this.opts.command}; echo "\uFFFF heroku-command-exit-status $?"` : this.opts.command
-    let start = this.heroku.post(this.opts.dyno ? `/apps/${this.opts.app}/dynos/${this.opts.dyno}` : `/apps/${this.opts.app}/dynos`, {
+    return this.heroku.post(this.opts.dyno ? `/apps/${this.opts.app}/dynos/${this.opts.dyno}` : `/apps/${this.opts.app}/dynos`, {
       headers: {
         Accept: this.opts.dyno ? 'application/vnd.heroku+json; version=3.run-inside' : 'application/vnd.heroku+json; version=3'
       },
@@ -61,10 +68,19 @@ class Dyno extends Duplex {
         cli.action.done(this._status('done'))
       }
     })
-
-    if (this.opts.showStatus) {
-      return cli.action(`Running ${cli.color.cyan.bold(this.opts.command)} on ${cli.color.app(this.opts.app)}`, {success: false}, start)
-    } else return start
+    .catch(err => {
+      // Currently the runtime API sends back a 409 in the event the
+      // release isn't found yet. API just forwards this response back to
+      // the client, so we'll need to retry these. This usually
+      // happens when you create an app and immediately try to run a
+      // one-off dyno. No pause between attempts since this is
+      // typically a very short-lived condition.
+      if (err.statusCode === 409 && retries > 0) {
+        return this._doStart(retries - 1)
+      } else {
+        throw err
+      }
+    })
   }
 
   /**
