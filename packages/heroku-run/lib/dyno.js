@@ -117,7 +117,7 @@ class Dyno extends Duplex {
   }
 
   _ssh () {
-    const interval = 30 * 1000
+    const interval = 1000
     const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
     return this.heroku.get(`/apps/${this.opts.app}/dynos/${this.opts.dyno}`)
