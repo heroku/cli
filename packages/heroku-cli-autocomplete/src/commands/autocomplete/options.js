@@ -2,9 +2,10 @@
 
 import type Command from 'cli-engine-command'
 import Plugins from 'cli-engine/lib/plugins'
+import { APIClient, flags as Flags } from 'cli-engine-heroku'
 import path from 'path'
 import ACCache from '../../cache'
-import AutocompleteBase from '.'
+import { AutocompleteBase } from '../../autocomplete'
 import cli from 'cli-ux'
 
 export default class AutocompleteOptions extends AutocompleteBase {
@@ -13,6 +14,9 @@ export default class AutocompleteOptions extends AutocompleteBase {
   static description = 'dynamic completion'
   static variableArgs = true
   static hidden = true
+  static flags = {
+    app: Flags.app({required: false, hidden: true})
+  }
 
   beep: string = '\x07'
   parsedArgs: {[name: string]: ?string} = {}
@@ -52,14 +56,31 @@ export default class AutocompleteOptions extends AutocompleteBase {
         cacheKey = name || flag.name
         cacheCompletion = flag.completion
       } else {
-        // for now, suspending arg completion
-        throw new Error(`Arg completion disabled (cmdId: ${cmdId})`)
-        // const cmdArgs = Command.args || []
-        // const cmdArgsCount = cmdArgs.length
-        // if (cmdCurArgCount > cmdArgsCount || cmdCurArgCount === 0) throw new Error(`Cannot complete arg position ${cmdCurArgCount} for ${cmdId}`)
-        // const arg = cmdArgs[cmdCurArgCount - 1]
-        // cacheKey = arg.name
-        // cacheCompletion = arg.completion
+        // special config:* completions
+        if (cmdId.match(/config:(\w+)et$/)) {
+          if (this.flags.app) {
+            cacheKey = `${this.flags.app}_config_vars`
+            cacheCompletion = {
+              cacheDuration: 60 * 60 * 24,
+              options: async ctx => {
+                const heroku = new APIClient({ config: ctx.config })
+                let { body: configs } = await heroku.get(`/apps/${this.flags.app}/config-vars`)
+                return Object.keys(configs)
+              }
+            }
+          } else {
+            throw new Error(`No app found for config completion (cmdId: ${cmdId})`)
+          }
+        } else {
+          // for now, suspending arg completion
+          throw new Error(`Arg completion disabled (cmdId: ${cmdId})`)
+          // const cmdArgs = Command.args || []
+          // const cmdArgsCount = cmdArgs.length
+          // if (cmdCurArgCount > cmdArgsCount || cmdCurArgCount === 0) throw new Error(`Cannot complete arg position ${cmdCurArgCount} for ${cmdId}`)
+          // const arg = cmdArgs[cmdCurArgCount - 1]
+          // cacheKey = arg.name
+          // cacheCompletion = arg.completion
+        }
       }
 
       // build/retrieve & return options cache
@@ -67,7 +88,7 @@ export default class AutocompleteOptions extends AutocompleteBase {
         // use cacheKey function or fallback to arg/flag name
         const ctx = {args: this.parsedArgs, flags: this.parsedFlags, argv: this.argv, config: this.config}
         const ckey = cacheCompletion.cacheKey ? await cacheCompletion.cacheKey(ctx) : null
-        const key = (ckey || cacheKey)
+        const key: string = (ckey || cacheKey || 'unknown_key_error')
         const flagCachePath = path.join(this.completionsCachePath, key)
 
         // build/retrieve cache
