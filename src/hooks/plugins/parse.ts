@@ -1,10 +1,10 @@
-import {cli} from 'cli-ux'
-import {color} from 'heroku-cli-color'
-import {Config} from 'cli-engine-config'
-import {PluginsParseHookOptions} from 'cli-engine/lib/hooks'
-import {Command, flags as Flags} from 'cli-engine-heroku'
-import {IArg, InputFlags} from 'cli-engine-command'
-import {vars} from 'cli-engine-heroku/lib/vars'
+import { cli } from 'cli-ux'
+import { color } from 'heroku-cli-color'
+import { Config } from 'cli-engine-config'
+import { PluginsParseHookOptions } from 'cli-engine/lib/hooks'
+import { Command, flags as Flags } from 'cli-engine-heroku'
+import { IArg, InputFlags } from 'cli-engine-command'
+import { vars } from 'cli-engine-heroku/lib/vars'
 
 export type LegacyContext = {
   version: string
@@ -14,8 +14,8 @@ export type LegacyContext = {
   }
   debug: boolean
   debugHeaders: boolean
-  flags: {[k: string]: string}
-  args: string[] | {[k: string]: string}
+  flags: { [k: string]: string }
+  args: string[] | { [k: string]: string }
   app?: string
   org?: string
   team?: string
@@ -30,37 +30,37 @@ export type LegacyContext = {
 }
 
 export type LegacyFlag = {
-  name: string,
-  description?: string,
-  char?: string,
-  hasValue?: boolean,
-  hidden?: boolean,
-  required?: boolean,
-  optional?: boolean,
+  name: string
+  description?: string
+  char?: string
+  hasValue?: boolean
+  hidden?: boolean
+  required?: boolean
+  optional?: boolean
   parse?: any
 }
 
 export type LegacyCommand = {
-  topic: string,
-  command?: string,
-  aliases?: string[],
-  variableArgs?: boolean,
-  args: IArg[],
-  flags: LegacyFlag[],
-  description?: string,
-  help?: string,
-  usage?: string,
-  needsApp?: boolean,
-  wantsApp?: boolean,
-  needsAuth?: boolean,
-  needsOrg?: boolean,
-  wantsOrg?: boolean,
-  hidden?: boolean,
-  default?: boolean,
+  topic: string
+  command?: string
+  aliases?: string[]
+  variableArgs?: boolean
+  args: IArg[]
+  flags: LegacyFlag[]
+  description?: string
+  help?: string
+  usage?: string
+  needsApp?: boolean
+  wantsApp?: boolean
+  needsAuth?: boolean
+  needsOrg?: boolean
+  wantsOrg?: boolean
+  hidden?: boolean
+  default?: boolean
   run: (ctx: LegacyContext) => Promise<any>
 }
 
-function getID (c: any): string {
+function getID(c: any): string {
   let id = []
   if (c.topic) id.push(c.topic)
   if (c.command) id.push(c.command)
@@ -79,7 +79,7 @@ module.exports = (_: Config, opts: PluginsParseHookOptions) => {
   })
 }
 
-export function convertFromV5 (c: LegacyCommand) {
+export function convertFromV5(c: LegacyCommand) {
   class V5 extends Command {
     static topic = c.topic
     static command = c.command
@@ -91,7 +91,7 @@ export function convertFromV5 (c: LegacyCommand) {
     static help = c.help
     static usage = c.usage
 
-    async run () {
+    async run() {
       if (c.aliases && c.aliases.length) {
         cli.warn(`Using aliases: ${c.aliases}`)
       }
@@ -113,7 +113,7 @@ export function convertFromV5 (c: LegacyCommand) {
         apiHost: vars.apiHost,
         gitHost: vars.gitHost,
         httpGitHost: vars.httpGitHost,
-        cwd: process.cwd()
+        cwd: process.cwd(),
       }
       ctx.auth.password = ctx.apiToken
       const ansi = require('ansi-escapes')
@@ -127,32 +127,39 @@ export function convertFromV5 (c: LegacyCommand) {
   }
 
   if (c.needsApp || c.wantsApp) {
-    V5.flags.app = Flags.app({required: !!c.needsApp})
+    V5.flags.app = Flags.app({ required: !!c.needsApp })
     V5.flags.remote = Flags.remote()
   }
   if (c.needsOrg || c.wantsOrg) {
-    let opts = {required: !!c.needsOrg, hidden: false, description: 'organization to use'}
+    let opts = {
+      required: !!c.needsOrg,
+      hidden: false,
+      description: 'organization to use',
+    }
     V5.flags.org = Flags.org(opts)
   }
   return V5
 }
 
-function convertFlagsFromV5 (flags: LegacyFlag[] | InputFlags | undefined): InputFlags {
+function convertFlagsFromV5(flags: LegacyFlag[] | InputFlags | undefined): InputFlags {
   if (!flags) return {}
   if (!Array.isArray(flags)) return flags
-  return flags.reduce((flags, flag) => {
-    let opts = {
-      char: flag.char,
-      description: flag.description,
-      hidden: flag.hidden,
-      required: flag.required || flag.optional === false,
-      parse: flag.parse
-    }
-    for (let [k, v] of Object.entries(opts)) {
-      if (v === undefined) delete (<any>opts)[k]
-    }
-    if (!opts.parse) delete opts.parse
-    flags[flag.name] = flag.hasValue ? Flags.string(opts as any) : Flags.boolean(opts as any)
-    return flags
-  }, {} as InputFlags)
+  return flags.reduce(
+    (flags, flag) => {
+      let opts = {
+        char: flag.char,
+        description: flag.description,
+        hidden: flag.hidden,
+        required: flag.required || flag.optional === false,
+        parse: flag.parse,
+      }
+      for (let [k, v] of Object.entries(opts)) {
+        if (v === undefined) delete (<any>opts)[k]
+      }
+      if (!opts.parse) delete opts.parse
+      flags[flag.name] = flag.hasValue ? Flags.string(opts as any) : Flags.boolean(opts as any)
+      return flags
+    },
+    {} as InputFlags,
+  )
 }

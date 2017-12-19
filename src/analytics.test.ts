@@ -1,22 +1,20 @@
-// @flow
-
-import {buildConfig} from 'cli-engine-config'
-import nock from 'nock'
+import { buildConfig } from 'cli-engine-config'
+import * as nock from 'nock'
 import AnalyticsCommand from './analytics'
-import {Command} from 'cli-engine-command'
+import { Command } from 'cli-engine-command'
 
-class TestCommand extends Command<*> {
+class TestCommand extends Command {
   static topic = 'fuzz'
   static command = 'fizz'
 }
 
-class TestCommandWithPlugin extends Command<*> {
+class TestCommandWithPlugin extends Command {
   static topic = 'fuzz'
   static command = 'fizz'
-  static plugin = {name: 'fuzz', version: '9.8.7'}
+  static plugin = { type: 'user', name: 'fuzz', version: '9.8.7', root: '.' }
 }
 
-function analyticsJson () {
+function analyticsJson() {
   return {
     schema: 1,
     install: '5a8ef179-1129-4f81-877c-662c89f83f1f',
@@ -27,57 +25,58 @@ function analyticsJson () {
         command: 'foo',
         completion: 0,
         version: '1.2.3',
+        plugin: 'fuzz',
         plugin_version: '4.5.6',
         os: 'darwin',
         shell: 'fish',
-        valid: true
-      }
-    ]
+        language: 'node',
+        valid: true,
+      },
+    ],
   }
 }
 
-function build (configOptions = {}, options = {}) {
+function build(configOptions = {}, options: any = {}) {
   let config = buildConfig({
     version: '1.2.3',
     platform: 'windows',
     skipAnalytics: false,
     install: '5a8ef179-1129-4f81-877c-662c89f83f1f',
     name: 'cli-engine',
-    ...configOptions
+    ...configOptions,
   })
 
   let json = options.json || analyticsJson()
 
   let command = new AnalyticsCommand(config)
 
-  // flow$ignore
-  command._existsJSON = function () {
+  // @ts-ignore
+  command._existsJSON = function() {
     return true
   }
 
-  // flow$ignore
-  command._readJSON = function () {
+  command._readJSON = function() {
     return json
   }
 
-  // flow$ignore
+  // @ts-ignore
   command._writeJSON = jest.fn()
 
-  // flow$ignore
-  command._acAnalytics = function () {
+  // @ts-ignore
+  command._acAnalytics = function() {
     return 7
   }
 
-  // flow$ignore
+  // @ts-ignore
   Object.defineProperty(command, 'netrcLogin', {
-    get: function () {
+    get: function() {
       if (options.hasOwnProperty('netrcLogin')) {
         // flow$ignore
         return options['netrcLogin']
       }
 
       return 'foobar@heroku.com'
-    }
+    },
   })
 
   return command
@@ -96,9 +95,11 @@ describe('AnalyticsCommand', () => {
 
   describe('submit', () => {
     it('does not submit if config skipAnalytics is true', async () => {
-      let api = nock('https://cli-analytics.heroku.com').post('/record').reply(200, {})
+      let api = nock('https://cli-analytics.heroku.com')
+        .post('/record')
+        .reply(200, {})
 
-      let command = build({skipAnalytics: true})
+      let command = build({ skipAnalytics: true })
 
       await command.submit()
       expect(api.isDone()).toBe(false)
@@ -107,27 +108,33 @@ describe('AnalyticsCommand', () => {
     it('does not submit if HEROKU_API_KEY is set', async () => {
       process.env['HEROKU_API_KEY'] = 'secure-key'
 
-      let api = nock('https://cli-analytics.heroku.com').post('/record').reply(200, {})
+      let api = nock('https://cli-analytics.heroku.com')
+        .post('/record')
+        .reply(200, {})
 
       await build().submit()
       expect(api.isDone()).toBe(false)
     })
 
     it('does not submit if login is not set', async () => {
-      let api = nock('https://cli-analytics.heroku.com').post('/record').reply(200, {})
+      let api = nock('https://cli-analytics.heroku.com')
+        .post('/record')
+        .reply(200, {})
 
-      let command = build({}, {netrcLogin: null})
+      let command = build({}, { netrcLogin: null })
 
       await command.submit()
       expect(api.isDone()).toBe(false)
     })
 
     it('does not submit if commands is empty', async () => {
-      let api = nock('https://cli-analytics.heroku.com').post('/record').reply(200, {})
+      let api = nock('https://cli-analytics.heroku.com')
+        .post('/record')
+        .reply(200, {})
 
       let json = analyticsJson()
       json.commands = []
-      let command = build({}, {json})
+      let command = build({}, { json })
 
       await command.submit()
       expect(api.isDone()).toBe(false)
@@ -135,9 +142,11 @@ describe('AnalyticsCommand', () => {
 
     it('pushes data to the record endpoint', async () => {
       let json = analyticsJson()
-      let api = nock('https://cli-analytics.heroku.com').post('/record', json).reply(200, {})
+      let api = nock('https://cli-analytics.heroku.com')
+        .post('/record', json)
+        .reply(200, {})
 
-      let command = build({}, {json})
+      let command = build({}, { json })
 
       await command.submit()
       api.done()
@@ -145,13 +154,16 @@ describe('AnalyticsCommand', () => {
 
     it('clears the local commands after success', async () => {
       let json = analyticsJson()
-      let api = nock('https://cli-analytics.heroku.com').post('/record', json).reply(200, {})
+      let api = nock('https://cli-analytics.heroku.com')
+        .post('/record', json)
+        .reply(200, {})
 
-      let command = build({}, {json})
+      let command = build({}, { json })
 
       await command.submit()
 
-      let expected = Object.assign({}, json, {commands: []})
+      let expected = Object.assign({}, json, { commands: [] })
+      // @ts-ignore
       expect(command._writeJSON.mock.calls).toEqual([[expected]])
 
       api.done()
@@ -160,9 +172,11 @@ describe('AnalyticsCommand', () => {
     it('pushes data to the CLI_ENGINE_ANALYTICS_URL endpoint', async () => {
       process.env['CLI_ENGINE_ANALYTICS_URL'] = 'https://foobar.com/record'
       let json = analyticsJson()
-      let api = nock('https://foobar.com').post('/record', json).reply(200, {})
+      let api = nock('https://foobar.com')
+        .post('/record', json)
+        .reply(200, {})
 
-      let command = build({}, {json})
+      let command = build({}, { json })
 
       await command.submit()
       api.done()
@@ -170,17 +184,20 @@ describe('AnalyticsCommand', () => {
 
     it('traps errors sending to the endpoint', async () => {
       let json = analyticsJson()
-      let api = nock('https://cli-analytics.heroku.com').post('/record', json).reply(503, {})
+      let api = nock('https://cli-analytics.heroku.com')
+        .post('/record', json)
+        .reply(503, {})
 
-      let command = build({}, {json})
+      let command = build({}, { json })
 
       await command.submit()
 
       let expected = {
         schema: 1,
-        commands: []
+        commands: [],
       }
 
+      // @ts-ignore
       expect(command._writeJSON.mock.calls).toEqual([[expected]])
 
       api.done()
@@ -205,20 +222,22 @@ describe('AnalyticsCommand', () => {
 
       await command.record({
         Command: TestCommand,
-        argv: []
+        argv: [],
       })
 
+      // @ts-ignore
       expect(command._writeJSON.mock.calls).toEqual([])
     })
 
     it('does not record if config skipAnalytics is true', async () => {
-      let command = build({skipAnalytics: true})
+      let command = build({ skipAnalytics: true })
 
       await command.record({
         Command: TestCommand,
-        argv: []
+        argv: [],
       })
 
+      // @ts-ignore
       expect(command._writeJSON.mock.calls).toEqual([])
     })
 
@@ -229,20 +248,22 @@ describe('AnalyticsCommand', () => {
 
       await command.record({
         Command: TestCommand,
-        argv: []
+        argv: [],
       })
 
+      // @ts-ignore
       expect(command._writeJSON.mock.calls).toEqual([])
     })
 
     it('does not record if login is not set', async () => {
-      let command = build({}, {netrcLogin: null})
+      let command = build({}, { netrcLogin: null })
 
       await command.record({
         Command: TestCommand,
-        argv: []
+        argv: [],
       })
 
+      // @ts-ignore
       expect(command._writeJSON.mock.calls).toEqual([])
     })
 
@@ -250,22 +271,23 @@ describe('AnalyticsCommand', () => {
       let json = analyticsJson()
       let expected = analyticsJson()
       expected.commands.push({
-        'command': 'fuzz:fizz',
-        'completion': 7,
-        'os': 'windows',
-        'shell': 'cmd.exe',
-        'plugin': 'fuzz',
-        'plugin_version': '9.8.7',
-        'valid': true,
-        'version': '1.2.3',
-        'language': 'node'
+        command: 'fuzz:fizz',
+        completion: 7,
+        os: 'windows',
+        shell: 'cmd.exe',
+        plugin: 'fuzz',
+        plugin_version: '9.8.7',
+        valid: true,
+        version: '1.2.3',
+        language: 'node',
       })
 
-      let command = build({}, {json})
+      let command = build({}, { json })
       await command.record({
         Command: TestCommandWithPlugin,
-        argv: []
+        argv: [],
       })
+      // @ts-ignore
       expect(command._writeJSON.mock.calls).toEqual([[expected]])
     })
   })

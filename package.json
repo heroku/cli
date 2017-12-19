@@ -70,17 +70,19 @@
     "semver": "5.4.1"
   },
   "devDependencies": {
-    "@heroku/heroku-cli-dev-center-generator": "1.1.7",
+    "@heroku/heroku-cli-dev-center-generator": "1.1.10",
     "@types/fs-extra": "5.0.0",
+    "@types/jest": "21.1.8",
+    "@types/nock": "9.1.0",
     "@types/node": "8.5.1",
     "@types/supports-color": "3.1.0",
     "del-cli": "1.1.0",
     "husky": "0.14.3",
-    "jest": "21.2.1",
+    "jest": "21",
     "lint-staged": "6.0.0",
     "nock": "9.1.4",
     "prettier": "1.9.2",
-    "ts-jest": "21.2.4",
+    "ts-jest": "21",
     "typescript": "2.6.2"
   },
   "engineStrict": true,
@@ -99,11 +101,14 @@
   "license": "ISC",
   "repository": "heroku/cli",
   "scripts": {
+    "clean": "del-cli lib",
     "lint": "./scripts/test/lint",
     "posttest": "prettier -l 'src/**/*.ts'",
     "precommit": "./scripts/precommit && lint-staged",
-    "prepare": "del-cli lib && tsc && del-cli \"lib/**/*.test.+(d.ts|js)\"",
+    "prepare": "tsc",
+    "prepublishOnly": "yarn run clean && yarn run prepare && yarn run prune",
     "pretest": "tsc",
+    "prune": "del-cli \"lib/**/*\\.test\\.(d.ts|js)\"",
     "test": "./scripts/test/all"
   }
 }
