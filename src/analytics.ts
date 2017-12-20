@@ -1,7 +1,6 @@
 import cli from 'cli-ux'
 import deps from './deps'
 import { Config } from 'cli-engine-config'
-import { HTTP } from 'http-call'
 import * as path from 'path'
 import { vars } from 'cli-engine-heroku/lib/vars'
 import { ICommand } from 'cli-engine-config'
@@ -43,9 +42,13 @@ type RecordOpts = {
 export default class AnalyticsCommand {
   config: Config
   userConfig: typeof deps.UserConfig.prototype
+  http: typeof deps.HTTP
 
   constructor(config: Config) {
     this.config = config
+    this.http = deps.HTTP.defaults({
+      headers: { 'user-agent': config.userAgent },
+    })
   }
 
   private async init() {
@@ -104,7 +107,7 @@ export default class AnalyticsCommand {
         cli: this.config.name,
       }
 
-      await HTTP.post(this.url, { body })
+      await this.http.post(this.url, { body })
 
       await deps.file.remove(this.analyticsPath)
     } catch (err) {
