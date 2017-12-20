@@ -16,7 +16,6 @@
     "npmRegistry": "https://cli-npm.heroku.com",
     "hooks": {
       "prerun": "./lib/hooks/prerun/analytics",
-      "plugins:parse": "./lib/hooks/plugins/parse",
       "update": [
         "./lib/hooks/update/analytics",
         "./lib/hooks/update/completions"
@@ -46,10 +45,11 @@
     ]
   },
   "dependencies": {
-    "cli-engine": "5.0.0-ts.13",
-    "cli-engine-command": "10.1.0-ts.4",
-    "cli-engine-config": "4.3.0-ts.4",
-    "cli-engine-heroku": "6.1.0-ts.1",
+    "cli-engine": "5.0.0",
+    "cli-engine-command": "11.0.2",
+    "cli-engine-config": "5.0.2",
+    "cli-engine-heroku": "7.0.1",
+    "cli-flags": "2.0.1",
     "cli-ux": "2.0.9",
     "debug": "3.1.0",
     "fs-extra": "5.0.0",
@@ -75,7 +75,7 @@
     "semver": "5.4.1"
   },
   "devDependencies": {
-    "@heroku/heroku-cli-dev-center-generator": "1.1.10",
+    "@heroku/heroku-cli-dev-center-generator": "1.1.11",
     "@types/fs-extra": "5.0.0",
     "@types/jest": "21.1.8",
     "@types/nock": "9.1.0",
@@ -85,7 +85,7 @@
     "husky": "0.14.3",
     "jest": "21",
     "lint-staged": "6.0.0",
-    "nock": "9.1.4",
+    "nock": "9.1.5",
     "prettier": "1.9.2",
     "ts-jest": "21",
     "typescript": "2.6.2"
