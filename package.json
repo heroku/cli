@@ -45,7 +45,7 @@
     ]
   },
   "dependencies": {
-    "cli-engine": "5.0.0",
+    "cli-engine": "5.0.1",
     "cli-engine-command": "11.0.2",
     "cli-engine-config": "5.0.2",
     "cli-engine-heroku": "7.0.1",
@@ -113,7 +113,7 @@
     "prepare": "tsc",
     "prepublishOnly": "yarn run clean && yarn run prepare && yarn run prune",
     "pretest": "tsc",
-    "prune": "del-cli \"lib/**/*\\.test\\.(d.ts|js)\"",
+    "prune": "del-cli 'lib/**/*.test.+(d.ts|js)'",
     "test": "./scripts/test/all"
   }
 }

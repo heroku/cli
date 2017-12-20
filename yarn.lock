@@ -896,9 +896,9 @@ cli-engine-heroku@^4.0.1, cli-engine-heroku@^4.1.0:
     http-call "^3.0.2"
     netrc-parser "^2.0.3"
 
-cli-engine@5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/cli-engine/-/cli-engine-5.0.0.tgz#c718eaece70c6ef3515a13b6eeb32d7208772771"
+cli-engine@5.0.1:
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/cli-engine/-/cli-engine-5.0.1.tgz#7aa0622d1278a03f320976cb4de7ea1592ec43b1"
   dependencies:
     ansi-escapes "^3.0.0"
     cli-ux "^2.0.9"
