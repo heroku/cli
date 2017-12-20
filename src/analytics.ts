@@ -1,4 +1,5 @@
-import * as fs from 'fs-extra'
+import cli from 'cli-ux'
+import deps from './deps'
 import { Config } from 'cli-engine-config'
 import { HTTP } from 'http-call'
 import * as path from 'path'
@@ -41,9 +42,15 @@ type RecordOpts = {
 
 export default class AnalyticsCommand {
   config: Config
+  userConfig: typeof deps.UserConfig.prototype
 
   constructor(config: Config) {
     this.config = config
+  }
+
+  private async init() {
+    this.userConfig = new deps.UserConfig(this.config)
+    await this.userConfig.init()
   }
 
   _initialAnalyticsJSON(): AnalyticsJSON {
@@ -54,6 +61,7 @@ export default class AnalyticsCommand {
   }
 
   async record(opts: RecordOpts) {
+    await this.init()
     const plugin = opts.Command.plugin
     if (!plugin) {
       debug('no plugin found for analytics')
@@ -81,6 +89,7 @@ export default class AnalyticsCommand {
 
   async submit() {
     try {
+      await this.init()
       let user = this.user
       if (!user) return
 
@@ -91,22 +100,21 @@ export default class AnalyticsCommand {
         schema: local.schema,
         commands: local.commands,
         user: user,
-        install: this.config.install,
+        install: this.userConfig.install,
         cli: this.config.name,
       }
 
       await HTTP.post(this.url, { body })
 
-      local.commands = []
-      await this._writeJSON(local)
+      await deps.file.remove(this.analyticsPath)
     } catch (err) {
       debug(err)
-      await this._writeJSON(this._initialAnalyticsJSON())
+      await deps.file.remove(this.analyticsPath).catch(err => cli.warn(err))
     }
   }
 
   get url(): string {
-    return process.env['CLI_ENGINE_ANALYTICS_URL'] || 'https://cli-analytics.heroku.com/record'
+    return process.env['HEROKU_ANALYTICS_URL'] || 'https://cli-analytics.heroku.com/record'
   }
 
   get analyticsPath(): string {
@@ -124,13 +132,13 @@ export default class AnalyticsCommand {
   }
 
   get user(): string | undefined {
-    if (this.config.skipAnalytics || this.usingHerokuAPIKey) return
+    if (this.userConfig.skipAnalytics || this.usingHerokuAPIKey) return
     return this.netrcLogin
   }
 
   async _readJSON(): Promise<AnalyticsJSON> {
     try {
-      let analytics = await fs.readJson(this.analyticsPath)
+      let analytics = await deps.file.readJSON(this.analyticsPath)
       analytics.commands = analytics.commands || []
       return analytics
     } catch (err) {
@@ -140,27 +148,21 @@ export default class AnalyticsCommand {
   }
 
   async _writeJSON(analyticsJSON: AnalyticsJSON) {
-    return fs.outputJson(this.analyticsPath, analyticsJSON)
-  }
-
-  _acAnalyticsPath(type: string): string {
-    return path.join(this.config.cacheDir, 'completions', 'completion_analytics', type)
+    return deps.file.outputJSON(this.analyticsPath, analyticsJSON)
   }
 
   async _acAnalytics(): Promise<number> {
+    let root = path.join(this.config.cacheDir, 'completions', 'completion_analytics')
     let meta = {
-      // @ts-ignore
-      cmd: fs.exists(this._acAnalyticsPath('command')),
-      // @ts-ignore
-      flag: fs.exists(this._acAnalyticsPath('flag')),
-      // @ts-ignore
-      value: fs.exists(this._acAnalyticsPath('value')),
+      cmd: deps.file.exists(path.join(root, 'command')),
+      flag: deps.file.exists(path.join(root, 'flag')),
+      value: deps.file.exists(path.join(root, 'value')),
     }
     let score = 0
     if (await meta.cmd) score += 1
     if (await meta.flag) score += 2
     if (await meta.value) score += 4
-    await fs.emptyDir(this._acAnalyticsPath(''))
+    if (await deps.file.exists(root)) await deps.file.remove(root)
     return score
   }
 }

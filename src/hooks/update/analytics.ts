@@ -2,7 +2,7 @@ import { Config } from 'cli-engine-config'
 
 const debug = require('debug')('heroku:analytics')
 
-async function run(config: Config) {
+export default async function run(config: Config) {
   try {
     const Analytics = require('../../analytics').default
     const analytics = new Analytics(config)
@@ -11,5 +11,3 @@ async function run(config: Config) {
     debug(err)
   }
 }
-
-module.exports = run

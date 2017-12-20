@@ -18,6 +18,7 @@
       "prerun": "./lib/hooks/prerun/analytics",
       "update": [
         "./lib/hooks/update/analytics",
+        "./lib/hooks/update/tidy",
         "./lib/hooks/update/completions"
       ]
     },
@@ -45,12 +46,12 @@
     ]
   },
   "dependencies": {
-    "cli-engine": "5.0.1",
-    "cli-engine-command": "11.0.2",
-    "cli-engine-config": "5.0.2",
-    "cli-engine-heroku": "7.0.1",
-    "cli-flags": "2.0.1",
-    "cli-ux": "2.0.9",
+    "cli-engine": "5.0.3",
+    "cli-engine-command": "11.0.3",
+    "cli-engine-config": "5.0.4",
+    "cli-engine-heroku": "7.0.2",
+    "cli-flags": "2.0.2",
+    "cli-ux": "2.0.10",
     "debug": "3.1.0",
     "fs-extra": "5.0.0",
     "heroku-apps": "2.4.19",
@@ -70,24 +71,26 @@
     "heroku-run": "3.5.4",
     "heroku-spaces": "2.10.0",
     "heroku-webhooks": "1.1.0",
-    "http-call": "4.0.6",
+    "http-call": "4.0.5",
+    "klaw": "2.1.1",
     "netrc-parser": "2.0.3",
-    "semver": "5.4.1"
+    "semver": "5.4.1",
+    "uuid": "^3.1.0"
   },
   "devDependencies": {
-    "@heroku/heroku-cli-dev-center-generator": "1.1.11",
     "@types/fs-extra": "5.0.0",
     "@types/jest": "21.1.8",
+    "@types/klaw": "2.1.1",
     "@types/nock": "9.1.0",
     "@types/node": "8.5.1",
     "@types/supports-color": "3.1.0",
     "del-cli": "1.1.0",
     "husky": "0.14.3",
-    "jest": "21",
+    "jest": "22.0.3",
     "lint-staged": "6.0.0",
     "nock": "9.1.5",
     "prettier": "1.9.2",
-    "ts-jest": "21",
+    "ts-jest": "22.0.0",
     "typescript": "2.6.2"
   },
   "engineStrict": true,
