@@ -53,7 +53,7 @@ const config = {
   version: '${VERSION}',
   updateDisabled: 'update the CLI with "sudo apt-get upgrade heroku"'
 }
-run(process.argv, {config})
+run(process.argv, config)
 EOF
 
   # add debian config

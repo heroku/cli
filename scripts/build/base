@@ -36,5 +36,5 @@ const config = {
   channel: '${CHANNEL}',
   version: '${VERSION}'
 }
-run(process.argv, {config})
+run(process.argv, config)
 EOF
