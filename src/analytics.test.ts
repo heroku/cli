@@ -6,12 +6,14 @@ import { Command } from 'cli-engine-command'
 class TestCommand extends Command {
   static topic = 'fuzz'
   static command = 'fizz'
+  async run() {}
 }
 
 class TestCommandWithPlugin extends Command {
   static topic = 'fuzz'
   static command = 'fizz'
   static plugin = { type: 'user', name: 'fuzz', version: '9.8.7', root: '.' }
+  async run() {}
 }
 
 let api = nock('https://cli-analytics.heroku.com')

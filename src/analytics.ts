@@ -1,6 +1,6 @@
 import cli from 'cli-ux'
 import deps from './deps'
-import { Config } from 'cli-engine-config'
+import { IConfig } from 'cli-engine-config'
 import * as path from 'path'
 import { vars } from 'cli-engine-heroku/lib/vars'
 import { ICommand } from 'cli-engine-config'
@@ -40,11 +40,11 @@ type RecordOpts = {
 }
 
 export default class AnalyticsCommand {
-  config: Config
+  config: IConfig
   userConfig: typeof deps.UserConfig.prototype
   http: typeof deps.HTTP
 
-  constructor(config: Config) {
+  constructor(config: IConfig) {
     this.config = config
     this.http = deps.HTTP.defaults({
       headers: { 'user-agent': config.userAgent },
