@@ -14,4 +14,4 @@ const config = {
   reexecBin: __filename,
   updateDisabled: 'Update CLI with `npm update -g heroku-cli`'
 }
-run({config})
+run(process.argv, {config})
