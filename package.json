@@ -46,7 +46,7 @@
     ]
   },
   "dependencies": {
-    "cli-engine": "5.0.10",
+    "cli-engine": "5.0.13",
     "cli-engine-command": "11.0.11",
     "cli-engine-config": "5.0.6",
     "cli-engine-heroku": "7.0.5",
@@ -58,7 +58,7 @@
     "heroku-certs": "1.1.44",
     "heroku-ci": "1.9.5",
     "heroku-cli-addons": "1.2.26",
-    "heroku-cli-oauth": "2.0.14",
+    "heroku-cli-oauth": "2.0.15",
     "heroku-cli-status": "4.0.5",
     "heroku-container-registry": "4.4.1",
     "heroku-git": "2.5.23",

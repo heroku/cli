@@ -838,9 +838,9 @@ cli-engine-heroku@^4.0.1, cli-engine-heroku@^4.1.0:
     http-call "^3.0.2"
     netrc-parser "^2.0.3"
 
-cli-engine@5.0.10:
-  version "5.0.10"
-  resolved "https://registry.yarnpkg.com/cli-engine/-/cli-engine-5.0.10.tgz#25a29d5157e27e86f58617d3219e5f4fb8cbff57"
+cli-engine@5.0.13:
+  version "5.0.13"
+  resolved "https://registry.yarnpkg.com/cli-engine/-/cli-engine-5.0.13.tgz#f42feb7518d449e02345591cd0223875a6fb1bc1"
   dependencies:
     ansi-escapes "^3.0.0"
     assync "^1.0.3"
@@ -1990,9 +1990,9 @@ heroku-cli-color@1.0.2:
     chalk "2.3.0"
     supports-color "5.1.0"
 
-heroku-cli-oauth@2.0.14:
-  version "2.0.14"
-  resolved "https://registry.yarnpkg.com/heroku-cli-oauth/-/heroku-cli-oauth-2.0.14.tgz#706af632018514026ebcf57d7d76d143526e47b9"
+heroku-cli-oauth@2.0.15:
+  version "2.0.15"
+  resolved "https://registry.yarnpkg.com/heroku-cli-oauth/-/heroku-cli-oauth-2.0.15.tgz#eb12a8bce5a2e8ee8e640d0a44c7df330a7ad9a7"
   dependencies:
     co "^4.6.0"
     heroku-cli-util "^6.2.0"
