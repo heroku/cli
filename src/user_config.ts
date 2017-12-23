@@ -77,6 +77,7 @@ export default class UserConfig {
 
   private async migrate() {
     let old = path.join(this.config.configDir, 'config.json')
+    if (old === this.file) return
     if (!await deps.file.exists(old)) return
     this.debug('moving config into new place')
     await deps.file.rename(old, this.file)
