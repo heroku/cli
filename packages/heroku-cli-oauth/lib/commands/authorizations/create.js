@@ -2,7 +2,7 @@
 
 const co = require('co')
 const cli = require('heroku-cli-util')
-const authorizations = require('../../lib/authorizations')
+const authorizations = require('../../authorizations')
 
 function * run (context, heroku) {
   let promise = heroku.request({

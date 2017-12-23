@@ -4,7 +4,7 @@
 const cli = require('heroku-cli-util')
 const expect = require('unexpected')
 const nock = require('nock')
-const cmd = require('../../commands/clients/index')
+const cmd = require('../../lib/commands/clients/index')
 
 describe('clients', () => {
   let api

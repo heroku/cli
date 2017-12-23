@@ -2,7 +2,7 @@
 
 let co = require('co')
 let cli = require('heroku-cli-util')
-let authorizations = require('../../lib/authorizations')
+let authorizations = require('../../authorizations')
 
 function * run (context, heroku) {
   let auth = yield heroku.get(`/oauth/authorizations/${encodeURIComponent(context.args.id)}`)
