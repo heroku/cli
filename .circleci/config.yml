@@ -59,7 +59,7 @@ jobs:
   build_os_windows:
     <<: *defaults
     docker: &windows_docker
-      - image: dickeyxxx/cli-engine-docker-nsis:v3.0.3
+      - image: dickeyxxx/cli-engine-docker-nsis:v3.1.0
         environment: *env
     steps:
       - checkout
