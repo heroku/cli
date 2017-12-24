@@ -46,7 +46,7 @@
     ]
   },
   "dependencies": {
-    "cli-engine": "https://github.com/heroku/cli-engine#eebe6959",
+    "cli-engine": "https://github.com/heroku/cli-engine#c6108399",
     "cli-engine-command": "11.0.11",
     "cli-engine-config": "5.0.6",
     "cli-engine-heroku": "7.0.5",

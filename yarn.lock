@@ -838,9 +838,9 @@ cli-engine-heroku@^4.0.1, cli-engine-heroku@^4.1.0:
     http-call "^3.0.2"
     netrc-parser "^2.0.3"
 
-"cli-engine@https://github.com/heroku/cli-engine#26e041d8":
+"cli-engine@https://github.com/heroku/cli-engine#c6108399":
   version "5.0.13"
-  resolved "https://github.com/heroku/cli-engine#26e041d8db5fc0589d95c498a6bf8cf0765f0a97"
+  resolved "https://github.com/heroku/cli-engine#c6108399dee1622a8d8726cef8dfb2a343fb77d6"
   dependencies:
     ansi-escapes "^3.0.0"
     assync "^1.0.3"
