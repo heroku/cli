@@ -2,9 +2,15 @@
   "name": "heroku-apps",
   "description": "Heroku CLI plugin to manage apps.",
   "version": "2.4.19",
-  "author": "Jeff Dickey (@dickeyxxx)",
+  "author": "Jeff Dickey (@jdxcode)",
   "bugs": {
     "url": "https://github.com/heroku/heroku-apps/issues"
+  },
+  "cli-engine": {
+    "topics": {
+      "2fa": {"hidden": true},
+      "twofactor": {"hidden": true}
+    }
   },
   "dependencies": {
     "bluebird": "^3.5.0",
