@@ -17,7 +17,6 @@ exports.topics = [
 exports.commands = flatten([
   require('./commands/access'),
   require('./commands/access/add'),
-  require('./commands/access/set'),
   require('./commands/access/remove'),
   require('./commands/access/update'),
   require('./commands/apps/join'),
@@ -27,6 +26,7 @@ exports.commands = flatten([
   require('./commands/apps/unlock'),
   require('./commands/members'),
   require('./commands/members/add'),
+  require('./commands/members/set'),
   require('./commands/members/remove'),
   require('./commands/orgs'),
   require('./commands/orgs/default'),
