@@ -49,9 +49,9 @@ if [ -x "\$BIN_DIR/heroku" ] && [[ "\$DIR" != "\$CLIENT_DIR"* ]]; then
   "\$XDG_DATA_HOME/heroku/client/bin/heroku" "\$@"
 else
   if [ "\$DEBUG" == "*" ]; then
-    echo CLI_BINPATH="\$DIR/heroku" "\$DIR/node" "\$DIR/heroku.js" "\$@"
+    echo HEROKU_CLI_BINPATH="\$DIR/heroku" "\$DIR/node" "\$DIR/heroku.js" "\$@"
   fi
-  CLI_BINPATH="\$DIR/heroku" "\$DIR/node" "\$DIR/heroku.js" "\$@"
+  HEROKU_CLI_BINPATH="\$DIR/heroku" "\$DIR/node" "\$DIR/heroku.js" "\$@"
 fi
 EOF
     chmod +x "${o}/bin/heroku"

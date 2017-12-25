@@ -46,7 +46,7 @@
     ]
   },
   "dependencies": {
-    "cli-engine": "https://github.com/heroku/cli-engine#c6108399",
+    "cli-engine": "https://github.com/heroku/cli-engine#7cdf9ad2",
     "cli-engine-command": "11.0.11",
     "cli-engine-config": "5.0.6",
     "cli-engine-heroku": "7.0.5",
@@ -110,14 +110,11 @@
   "license": "ISC",
   "repository": "heroku/cli",
   "scripts": {
-    "clean": "del-cli lib",
     "lint": "./scripts/test/lint",
     "posttest": "prettier -l 'src/**/*.ts'",
     "precommit": "./scripts/precommit && lint-staged",
-    "prepare": "tsc",
-    "prepublishOnly": "yarn run clean && yarn run prepare && yarn run prune",
+    "prepare": "del-cli lib && tsc && del-cli 'lib/**/*.test.+(d.ts|js)'",
     "pretest": "tsc",
-    "prune": "del-cli 'lib/**/*.test.+(d.ts|js)'",
     "test": "./scripts/test/all"
   }
 }

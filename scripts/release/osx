@@ -5,7 +5,6 @@ export ARCH=x64
 
 source ./scripts/release/_init
 
-script "prep"
 script "darwin/build"
 
 set -x

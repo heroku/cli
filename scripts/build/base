@@ -32,7 +32,6 @@ cat << EOF > "${o}/bin/heroku.js"
 #!/usr/bin/env node
 const {run} = require('cli-engine')
 const config = {
-  reexecBin: process.env.CLI_BINPATH || __filename,
   channel: '${CHANNEL}',
   version: '${VERSION}'
 }
