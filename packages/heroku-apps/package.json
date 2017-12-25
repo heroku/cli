@@ -8,8 +8,12 @@
   },
   "cli-engine": {
     "topics": {
-      "2fa": {"hidden": true},
-      "twofactor": {"hidden": true}
+      "2fa": {
+        "hidden": true
+      },
+      "twofactor": {
+        "hidden": true
+      }
     }
   },
   "dependencies": {
@@ -47,7 +51,7 @@
     "lodash.zip": "^4.2.0",
     "mkdirp": "^0.5.1",
     "mz": "^2.7.0",
-    "netrc-parser": "^2.0.3",
+    "netrc-parser": "^2.0.4",
     "shell-escape": "^0.2.0",
     "sparkline": "^0.2.0",
     "strftime": "^0.10.0",

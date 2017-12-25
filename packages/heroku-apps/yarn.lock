@@ -3115,6 +3115,12 @@ netrc-parser@^2.0.3:
     debug "^3.0.1"
     lex "^1.7.9"
 
+netrc-parser@^2.0.4:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/netrc-parser/-/netrc-parser-2.0.4.tgz#59b70c3a1f5ff4a32c917f79989ee0cb0d1d0795"
+  dependencies:
+    lex "^1.7.9"
+
 nock@9.0.14:
   version "9.0.14"
   resolved "https://registry.yarnpkg.com/nock/-/nock-9.0.14.tgz#2211550253173ce298bcd89fca825e83813ca72b"
