@@ -46,10 +46,10 @@
     ]
   },
   "dependencies": {
-    "cli-engine": "https://github.com/heroku/cli-engine#7cdf9ad2",
-    "cli-engine-command": "11.0.11",
-    "cli-engine-config": "5.0.6",
-    "cli-engine-heroku": "7.0.5",
+    "cli-engine": "https://github.com/heroku/cli-engine#0e9d7a3f",
+    "cli-engine-command": "11.0.12",
+    "cli-engine-config": "5.0.7",
+    "cli-engine-heroku": "7.0.6",
     "cli-flags": "^2.0.3",
     "cli-ux": "2.0.12",
     "debug": "3.1.0",
@@ -63,7 +63,7 @@
     "heroku-container-registry": "4.4.1",
     "heroku-git": "2.5.23",
     "heroku-local": "5.1.21",
-    "heroku-orgs": "1.6.6",
+    "heroku-orgs": "1.7.1",
     "heroku-pg": "2.4.1",
     "heroku-pipelines": "2.5.0",
     "heroku-ps-exec": "2.2.1",
@@ -73,7 +73,7 @@
     "heroku-webhooks": "1.1.0",
     "http-call": "4.0.5",
     "klaw": "2.1.1",
-    "netrc-parser": "2.0.3",
+    "netrc-parser": "2.0.5",
     "semver": "5.4.1",
     "uuid": "^3.1.0"
   },
