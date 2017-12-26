@@ -8,12 +8,9 @@
   },
   "cli-engine": {
     "topics": {
-      "2fa": {
-        "hidden": true
-      },
-      "twofactor": {
-        "hidden": true
-      }
+      "2fa": { "hidden": true },
+      "stack": { "hidden": true },
+      "twofactor": { "hidden": true }
     }
   },
   "dependencies": {
