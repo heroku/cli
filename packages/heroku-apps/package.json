@@ -8,21 +8,27 @@
   },
   "cli-engine": {
     "topics": {
-      "2fa": { "hidden": true },
-      "stack": { "hidden": true },
-      "twofactor": { "hidden": true }
+      "2fa": {
+        "hidden": true
+      },
+      "stack": {
+        "hidden": true
+      },
+      "twofactor": {
+        "hidden": true
+      }
     }
   },
   "dependencies": {
-    "bluebird": "^3.5.0",
-    "cli-engine-command": "^8.0.17",
-    "cli-engine-config": "^3.3.1",
-    "cli-engine-heroku": "^4.1.0",
+    "bluebird": "^3.5.1",
+    "cli-engine-command": "^11.0.14",
+    "cli-engine-config": "^5.0.7",
+    "cli-engine-heroku": "^7.0.9",
     "co": "^4.6.0",
     "co-wait": "^0.0.0",
-    "filesize": "^3.5.10",
-    "heroku-cli-util": "^6.2.10",
-    "inquirer": "^3.3.0",
+    "filesize": "^3.5.11",
+    "heroku-cli-util": "^6.2.12",
+    "inquirer": "^4.0.1",
     "lodash": "^4.17.4",
     "lodash.compact": "^3.0.1",
     "lodash.countby": "^4.6.0",
@@ -48,13 +54,13 @@
     "lodash.zip": "^4.2.0",
     "mkdirp": "^0.5.1",
     "mz": "^2.7.0",
-    "netrc-parser": "^2.0.4",
+    "netrc-parser": "^2.0.5",
     "shell-escape": "^0.2.0",
     "sparkline": "^0.2.0",
     "strftime": "^0.10.0",
     "string": "^3.3.3",
     "term-img": "^2.1.0",
-    "urijs": "1.18.12"
+    "urijs": "1.19.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
