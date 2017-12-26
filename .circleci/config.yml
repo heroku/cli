@@ -17,7 +17,7 @@ jobs:
           keys:
             - v0-yarn-{{ checksum "yarn.lock" }}
             - v0-yarn
-      - run: ./scripts/prep
+      - run: yarn
       - run: {command: "./scripts/test/lint", when: always}
       - run: {command: "npx jest", when: always}
       - run: {command: "bash <(curl -s https://codecov.io/bash)"}
@@ -32,7 +32,7 @@ jobs:
       - checkout
       - restore_cache: *yarn_restore_cache
       - restore_cache: {keys: [node-v9.3.0-darwin]}
-      - run: ./scripts/prep
+      - run: yarn
       - run: ./scripts/build/base
       - run: ./scripts/build/workspace
       - run: ./scripts/build/tarballs
@@ -48,7 +48,7 @@ jobs:
       - checkout
       - restore_cache: *yarn_restore_cache
       - restore_cache: {keys: [node-v9.3.0-linux]}
-      - run: ./scripts/prep
+      - run: yarn
       - run: ./scripts/build/base
       - run: ./scripts/build/workspace
       - run: ./scripts/build/tarballs
@@ -65,7 +65,7 @@ jobs:
       - checkout
       - restore_cache: *yarn_restore_cache
       - restore_cache: {keys: [node-v9.3.0-windows]}
-      - run: ./scripts/prep
+      - run: yarn
       - run: ./scripts/build/base
       - run: ./scripts/build/workspace
       - run: ./scripts/build/tarballs
