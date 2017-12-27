@@ -2,37 +2,42 @@
   "name": "heroku-cli-status",
   "description": "CLI Plugin for Heroku Status",
   "version": "4.0.6",
-  "author": "Jeff Dickey @dickeyxxx",
+  "author": "Jeff Dickey @jdxcode",
   "bugs": {
     "url": "https://github.com/heroku/heroku-cli-status/issues"
   },
+  "cli-engine": {
+    "topics": {
+      "status": {
+        "description": "status of the Heroku platform"
+      }
+    },
+    "commands": "./lib/commands"
+  },
   "dependencies": {
-    "cli-engine-command": "^7.0.6",
-    "cli-engine-config": "^2.0.0",
-    "cli-engine-heroku": "^2.0.0",
-    "lodash.maxby": "^4.6.0",
-    "lodash.padend": "^4.6.1",
+    "@heroku-cli/command": "7",
+    "cli-ux": "2",
     "moment": "^2.20.1",
-    "sprintf-js": "^1.1.1"
+    "sprintf-js": "^1.1.1",
+    "ts-lodash": "4",
+    "tslib": "1"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-eslint": "7.2.3",
-    "babel-plugin-transform-class-properties": "6.24.1",
-    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.0",
-    "babel-plugin-transform-flow-strip-types": "6.22.0",
-    "eslint": "^4.6.0",
-    "eslint-config-standard": "10.2.1",
-    "eslint-plugin-flowtype": "^2.35.1",
-    "eslint-plugin-import": "^2.7.0",
-    "eslint-plugin-jest": "20.0.3",
-    "eslint-plugin-node": "^5.1.1",
-    "eslint-plugin-promise": "3.5.0",
-    "eslint-plugin-standard": "3.0.1",
-    "flow-bin": "^0.54.0",
-    "jest": "20.0.4",
-    "nock": "^9.0.14",
-    "rimraf": "2.6.1"
+    "@cli-engine/util": "^1.0.8",
+    "@heroku-cli/tslint": "1",
+    "@types/ansi-styles": "^2.0.30",
+    "@types/jest": "21",
+    "@types/lodash": "^4.14.91",
+    "@types/nock": "^9.1.0",
+    "@types/node": "8",
+    "@types/supports-color": "^3.1.0",
+    "husky": "0",
+    "jest": "22",
+    "nock": "^9.1.5",
+    "prettier": "1",
+    "ts-jest": "22",
+    "tslint": "5",
+    "typescript": "2"
   },
   "files": [
     "lib"
@@ -42,15 +47,10 @@
     "heroku-plugin"
   ],
   "license": "ISC",
-  "main": "lib/index.js",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/heroku/heroku-cli-status"
-  },
+  "repository": "heroku/heroku-cli-status",
   "scripts": {
-    "build": "babel src -d lib --ignore '*.test.js'",
-    "clean": "rimraf lib",
-    "prepare": "npm run clean && npm run build",
-    "test": "jest && flow && eslint ."
+    "posttest": "cli-engine-util",
+    "prepare": "cli-engine-util",
+    "test": "jest"
   }
 }
