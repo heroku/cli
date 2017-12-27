@@ -4,7 +4,7 @@ import {Command, flags} from 'cli-engine-heroku'
 
 export default class Status extends Command {
   static topic = 'status'
-  static description = 'display current status of Heroku platform'
+  static description = 'display current status of the Heroku platform'
   static flags = {
     json: flags.boolean({description: 'output in json format'})
   }

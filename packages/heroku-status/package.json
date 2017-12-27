@@ -12,7 +12,7 @@
     "cli-engine-heroku": "^2.0.0",
     "lodash.maxby": "^4.6.0",
     "lodash.padend": "^4.6.1",
-    "moment": "^2.18.1",
+    "moment": "^2.20.1",
     "sprintf-js": "^1.1.1"
   },
   "devDependencies": {
