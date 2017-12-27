@@ -2,6 +2,19 @@
 
 import {Command, flags} from 'cli-engine-heroku'
 
+const SecurityExceptionFeatures = {
+  'spaces-strict-tls': {
+    prompt: async function (out: any, app: string): Promise<string> {
+      const cliUtil = require('heroku-cli-util')
+      out.warn('WARNING: Insecure Action')
+      out.warn('You are enabling an older security protocol, TLS 1.0, which some organizations may not deem secure.')
+      out.warn(`To proceed, type ${app} or re-run this command with --confirm ${app}`)
+      let name = await cliUtil.prompt()
+      return name
+    }
+  }
+}
+
 export default class LabsDisable extends Command {
   static topic = 'labs'
   static command = 'disable'
@@ -9,13 +22,24 @@ export default class LabsDisable extends Command {
   static args = [{name: 'feature'}]
   static flags = {
     app: flags.app(),
-    remote: flags.remote()
+    remote: flags.remote(),
+    confirm: flags.string({required: false})
   }
 
   async run () {
     let feature = this.args.feature
     let request
     let target
+
+    if (SecurityExceptionFeatures[feature]) {
+      if (this.flags.confirm !== this.flags.app) {
+        let prompt = SecurityExceptionFeatures[feature].prompt
+        let confirm = await prompt(this.out, this.flags.app)
+        if (confirm !== this.flags.app) {
+          throw new Error('Confirmation name did not match app name. Try again.')
+        }
+      }
+    }
 
     try {
       await this.heroku.get(`/account/features/${feature}`)
