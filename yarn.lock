@@ -22,9 +22,9 @@
   version "5.0.10"
   resolved "https://registry.yarnpkg.com/@cli-engine/config/-/config-5.0.10.tgz#f8420b9c4cd44e4feafeb90165d9557168bb484c"
 
-"@cli-engine/engine@^6.1.9", "@cli-engine/engine@https://github.com/heroku/cli-engine#9e836495":
+"@cli-engine/engine@^6.1.9", "@cli-engine/engine@https://github.com/heroku/cli-engine#ffa18dbc":
   version "6.1.9"
-  resolved "https://github.com/heroku/cli-engine#9e836495acf6db8be7dfe4d2a8cc47180fd2c3a6"
+  resolved "https://github.com/heroku/cli-engine#ffa18dbca1c450287e299ca0fe3407324d5c0168"
   dependencies:
     "@heroku-cli/color" "^1.0.4"
     assync "^1.0.4"
@@ -38,7 +38,7 @@
     klaw "^2.1.1"
     log-chopper "^1.0.2"
     moment "^2.20.1"
-    rwlockfile "^2.0.11"
+    rwlockfile "^2.0.12"
     semver "5.4.1"
     string-similarity "^1.2.0"
     strip-ansi "4.0.0"
@@ -4289,9 +4289,9 @@ run-async@^2.2.0:
   dependencies:
     is-promise "^2.1.0"
 
-rwlockfile@^2.0.11:
-  version "2.0.11"
-  resolved "https://registry.yarnpkg.com/rwlockfile/-/rwlockfile-2.0.11.tgz#43893f50a8867c8189b1e853589aa9411e292d98"
+rwlockfile@^2.0.12:
+  version "2.0.12"
+  resolved "https://registry.yarnpkg.com/rwlockfile/-/rwlockfile-2.0.12.tgz#73c604b95b6173ac4837af10941c819bc7b0db1f"
   dependencies:
     fs-extra "^5.0.0"
     tslib "^1.8.1"
