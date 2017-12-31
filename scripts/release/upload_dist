@@ -10,7 +10,7 @@ rm -rf "$CACHE_DIR"
 mkdir -p "$CACHE_DIR"
 cd "$CACHE_DIR"
 
-TARGETS=(darwin linux windows)
+TARGETS=(darwin linux win32)
 for OS in "${TARGETS[@]}"; do
   setos "$OS"
   IFS='|' read -ra ARCHS <<< "$(archs)"
