@@ -47,8 +47,8 @@
   "dependencies": {
     "@cli-engine/command": "^12.0.3",
     "@cli-engine/config": "^5.0.10",
-    "@cli-engine/engine": "https://github.com/heroku/cli-engine#ef4920e3",
-    "@heroku-cli/command": "^7.0.10",
+    "@cli-engine/engine": "https://github.com/heroku/cli-engine#29008e7c",
+    "@heroku-cli/command": "^7.0.11",
     "cli-flags": "^2.0.7",
     "cli-ux": "2.0.21",
     "debug": "3.1.0",
@@ -88,7 +88,6 @@
     "del-cli": "1.1.0",
     "husky": "0.14.3",
     "jest": "22.0.4",
-    "lint-staged": "6.0.0",
     "nock": "9.1.5",
     "prettier": "1.9.2",
     "ts-jest": "22.0.0",
@@ -112,7 +111,7 @@
   "scripts": {
     "lint": "./scripts/test/lint",
     "posttest": "prettier -l 'src/**/*.ts'",
-    "precommit": "./scripts/precommit && lint-staged",
+    "precommit": "./scripts/precommit",
     "prepare": "del-cli lib && tsc && del-cli 'lib/**/*.test.+(d.ts|js)'",
     "pretest": "tsc",
     "test": "./scripts/test/all"

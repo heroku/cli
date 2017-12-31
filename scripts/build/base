@@ -23,7 +23,7 @@ cp -rv "$ROOT_DIR/lib" "${o}/lib"
 
 cat << EOF > "${o}/bin/heroku.js"
 #!/usr/bin/env node
-const {run} = require('cli-engine')
+const {run} = require('@cli-engine/engine')
 const config = {
   channel: '${CHANNEL}',
   version: '${VERSION}'
