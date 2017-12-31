@@ -9,9 +9,8 @@
   "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
     "bin": "heroku",
-    "userPlugins": true,
+    "userPluginsEnabled": true,
     "dirname": "heroku",
-    "node": "9.3.0",
     "defaultCommand": "dashboard",
     "npmRegistry": "https://cli-npm.heroku.com",
     "hooks": {
@@ -25,7 +24,7 @@
     "s3": {
       "host": "cli-assets.heroku.com"
     },
-    "plugins": [
+    "corePlugins": [
       "heroku-apps",
       "heroku-certs",
       "heroku-ci",
@@ -46,12 +45,12 @@
     ]
   },
   "dependencies": {
-    "cli-engine": "https://github.com/heroku/cli-engine#master",
-    "cli-engine-command": "11.0.14",
-    "cli-engine-config": "5.0.7",
-    "cli-engine-heroku": "7.0.9",
-    "cli-flags": "^2.0.3",
-    "cli-ux": "2.0.14",
+    "@cli-engine/command": "^12.0.3",
+    "@cli-engine/config": "^5.0.10",
+    "@cli-engine/engine": "https://github.com/heroku/cli-engine#ef4920e3",
+    "@heroku-cli/command": "^7.0.10",
+    "cli-flags": "^2.0.7",
+    "cli-ux": "2.0.21",
     "debug": "3.1.0",
     "fs-extra": "5.0.0",
     "heroku-apps": "2.4.19",
@@ -59,7 +58,7 @@
     "heroku-ci": "1.9.5",
     "heroku-cli-addons": "1.2.26",
     "heroku-cli-oauth": "2.0.15",
-    "heroku-cli-status": "4.0.5",
+    "heroku-cli-status": "5.0.0",
     "heroku-container-registry": "4.4.1",
     "heroku-git": "2.5.23",
     "heroku-local": "5.1.21",
@@ -71,7 +70,7 @@
     "heroku-run": "3.5.4",
     "heroku-spaces": "2.10.0",
     "heroku-webhooks": "1.1.0",
-    "http-call": "4.0.5",
+    "http-call": "4.0.6",
     "klaw": "2.1.1",
     "netrc-parser": "2.0.5",
     "semver": "5.4.1",
@@ -79,8 +78,9 @@
   },
   "devDependencies": {
     "@types/ansi-styles": "^2.0.30",
+    "@types/debug": "^0.0.30",
     "@types/fs-extra": "5.0.0",
-    "@types/jest": "21.1.9",
+    "@types/jest": "22.0.0",
     "@types/klaw": "2.1.1",
     "@types/nock": "9.1.0",
     "@types/node": "8.5.2",

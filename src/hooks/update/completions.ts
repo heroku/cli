@@ -1,8 +1,8 @@
-import { Hook } from 'cli-engine/lib/hooks'
+import { Hook } from '@cli-engine/engine/lib/hooks'
 const debug = require('debug')('heroku:completions')
 import cli from 'cli-ux'
-import { Plugins } from 'cli-engine/lib/plugins'
-import { AppCompletion, PipelineCompletion, SpaceCompletion, TeamCompletion } from 'cli-engine-heroku/lib/completions'
+import { Plugins } from '@cli-engine/engine/lib/plugins'
+import { AppCompletion, PipelineCompletion, SpaceCompletion, TeamCompletion } from '@heroku-cli/command/lib/completions'
 
 export default class CompletionsUpdateHook extends Hook<'update'> {
   async run() {

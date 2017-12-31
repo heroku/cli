@@ -1,4 +1,4 @@
-import { Hook, IHooks } from 'cli-engine/lib/hooks'
+import { Hook, IHooks } from '@cli-engine/engine/lib/hooks'
 
 const debug = require('debug')('heroku:analytics')
 

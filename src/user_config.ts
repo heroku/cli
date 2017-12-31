@@ -1,6 +1,6 @@
 import * as path from 'path'
 import deps from './deps'
-import { IConfig } from 'cli-engine-config'
+import { Config } from '@cli-engine/config'
 
 export type ConfigJSON = {
   schema: 1
@@ -9,7 +9,7 @@ export type ConfigJSON = {
 }
 
 export default class UserConfig {
-  constructor(private config: IConfig) {}
+  constructor(private config: Config) {}
 
   public get install() {
     return this.body.install || this.genInstall()

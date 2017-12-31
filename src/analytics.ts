@@ -1,9 +1,8 @@
 import cli from 'cli-ux'
 import deps from './deps'
-import { IConfig } from 'cli-engine-config'
+import { Config, ICommand } from '@cli-engine/config'
 import * as path from 'path'
-import { vars } from 'cli-engine-heroku/lib/vars'
-import { ICommand } from 'cli-engine-config'
+import { vars } from '@heroku-cli/command'
 
 const Netrc = require('netrc-parser')
 
@@ -40,11 +39,11 @@ type RecordOpts = {
 }
 
 export default class AnalyticsCommand {
-  config: IConfig
+  config: Config
   userConfig: typeof deps.UserConfig.prototype
   http: typeof deps.HTTP
 
-  constructor(config: IConfig) {
+  constructor(config: Config) {
     this.config = config
     this.http = deps.HTTP.defaults({
       headers: { 'user-agent': config.userAgent },

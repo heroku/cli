@@ -1,17 +1,15 @@
-import { buildConfig } from 'cli-engine-config'
+import { Config } from '@cli-engine/config'
 import * as nock from 'nock'
 import AnalyticsCommand from './analytics'
-import { Command } from 'cli-engine-command'
+import Command from '@cli-engine/command'
 
 class TestCommand extends Command {
-  static topic = 'fuzz'
-  static command = 'fizz'
+  static topic = 'fuzz:fizz'
   async run() {}
 }
 
 class TestCommandWithPlugin extends Command {
-  static topic = 'fuzz'
-  static command = 'fizz'
+  static id = 'fuzz:fizz'
   static plugin = { type: 'user', name: 'fuzz', version: '9.8.7', root: '.' }
   async run() {}
 }
@@ -48,10 +46,9 @@ function analyticsJson() {
 }
 
 function build(configOptions = {}, options: any = {}) {
-  let config = buildConfig({
+  let config = new Config({
     version: '1.2.3',
-    platform: 'windows',
-    name: 'cli-engine',
+    platform: 'win32',
     ...configOptions,
   })
 
@@ -254,7 +251,7 @@ describe('AnalyticsCommand', () => {
       expected.commands.push({
         command: 'fuzz:fizz',
         completion: 7,
-        os: 'windows',
+        os: 'win32',
         shell: 'cmd.exe',
         plugin: 'fuzz',
         plugin_version: '9.8.7',

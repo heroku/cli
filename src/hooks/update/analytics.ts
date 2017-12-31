@@ -1,4 +1,4 @@
-import { Hook } from 'cli-engine/lib/hooks'
+import { Hook } from '@cli-engine/engine/lib/hooks'
 const debug = require('debug')('heroku:analytics')
 
 export default class AnalyticsUpdateHook extends Hook<'update'> {

@@ -1,9 +1,9 @@
 import deps from '../../deps'
-import { IConfig } from 'cli-engine-config'
+import { Config } from '@cli-engine/config'
 import * as path from 'path'
 const debug = require('debug')('heroku:tidy')
 
-export default async function run(config: IConfig) {
+export default async function run(config: Config) {
   try {
     await deps.file.cleanup(config.configDir)
     await deps.file.cleanup(path.join(config.dataDir, 'tmp'))
@@ -17,7 +17,7 @@ export default async function run(config: IConfig) {
   }
 }
 
-async function cleanupPlugins(config: IConfig) {
+async function cleanupPlugins(config: Config) {
   let pluginsDir = path.join(config.dataDir, 'plugins')
   if (await deps.file.exists(path.join(pluginsDir, 'plugins.json'))) return
   let pjson = await deps.file.readJSON(path.join(pluginsDir, 'package.json'))
