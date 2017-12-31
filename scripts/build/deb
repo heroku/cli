@@ -41,7 +41,7 @@ get_script_dir () {
   echo "\$DIR"
 }
 DIR=\$(get_script_dir)
-CLI_BINPATH=\$DIR/heroku \$DIR/node \$DIR/heroku.js "\$@"
+HEROKU_CLI_BINPATH=\$DIR/heroku \$DIR/node \$DIR/heroku.js "\$@"
 EOF
   chmod +x "$__workspace/usr/lib/heroku/bin/heroku"
 

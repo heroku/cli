@@ -17,7 +17,7 @@ function build () {
   if [ "${OS}" == "windows" ]; then
     cat << EOF > "${o}/bin/heroku.cmd"
 @echo off
-set CLI_BINPATH=%~dp0\\heroku.cmd
+set HEROKU_CLI_BINPATH=%~dp0\\heroku.cmd
 "%~dp0\\node.exe" "%~dp0\\heroku.js" %*
 EOF
   else
