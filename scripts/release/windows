@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+set -x
+
+source ./scripts/release/_init
+
+CACHE_DIR="$TMP_DIR/s3"
+
+rm -rf "$CACHE_DIR"
+mkdir -p "$CACHE_DIR"
+
+mv "$DIST_DIR/heroku-cli-x64.exe" "$CACHE_DIR"
+mv "$DIST_DIR/heroku-cli-x86.exe" "$CACHE_DIR"
+s3upload --recursive "$CACHE_DIR" "$REMOTE_BASE"

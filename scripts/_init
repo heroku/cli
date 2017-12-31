@@ -37,7 +37,7 @@ DEB_VERSION="${SHORT_VERSION}-1"
 function archs () {
   if [ "$OS" = darwin ]; then
     echo "x64"
-  elif [ "$OS" = win32 ]; then
+  elif [ "$OS" = win32 ] || [ "$OS" = windows ]; then
     echo "x64|x86"
   elif [ "$OS" = linux ]; then
     echo "x64|x86|arm"

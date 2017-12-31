@@ -14,7 +14,7 @@ function build () {
   "$ROOT_DIR/scripts/build/_fetch_node_binary" "${o}/bin"
 
   # create bin runner
-  if [ "${OS}" == "win32" ]; then
+  if [ "${OS}" == "win32" ] || [ "${OS}" == "windows" ]; then
     cat << EOF > "${o}/bin/heroku.cmd"
 @echo off
 set HEROKU_CLI_BINPATH=%~dp0\\heroku.cmd
