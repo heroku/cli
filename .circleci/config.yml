@@ -60,15 +60,15 @@ jobs:
       - save_cache:
           <<: *node_cache_save
           key: node-v9.3.0-linux
-  build_os_windows:
+  build_os_win32:
     <<: *defaults
-    docker: &windows_docker
+    docker: &win32_docker
       - image: dickeyxxx/cli-engine-docker-nsis:v3.1.0
         environment: *env
     steps:
       - checkout
       - restore_cache: *yarn_restore_cache
-      - restore_cache: {keys: [node-v9.3.0-windows]}
+      - restore_cache: {keys: [node-v9.3.0-win32]}
       - run: yarn
       - run: ./scripts/build/base
       - run: ./scripts/build/workspace
@@ -76,7 +76,7 @@ jobs:
       - persist_to_workspace: *dist
       - save_cache:
           <<: *node_cache_save
-          key: node-v9.3.0-windows
+          key: node-v9.3.0-win32
   release:
     <<: *defaults
     docker: &release_docker
@@ -103,15 +103,15 @@ jobs:
       - run: ./scripts/release/deb
   build_and_release_win_inst:
     <<: *defaults
-    docker: *windows_docker
+    docker: *win32_docker
     steps:
       - checkout
       - attach_workspace: {at: dist}
-      - run: ./scripts/build/windows
+      - run: ./scripts/build/win32
       - run: ls dist
-      - run: ./scripts/release/windows
+      - run: ./scripts/release/win32
   # dev_center_docs:
-  #   docker: *windows_docker
+  #   docker: *win32_docker
   #   steps:
   #     - type: checkout
   #     - run: ./scripts/release/dev_center_docs
@@ -138,12 +138,12 @@ workflows:
                 - dev
                 - ts
       - build_os_linux: *release
-      - build_os_windows: *release
+      - build_os_win32: *release
       - build_and_release_win_inst:
           <<: *release
           requires:
             - test
-            - build_os_windows
+            - build_os_win32
       - build_and_release_deb:
           <<: *release
           requires:
@@ -155,7 +155,7 @@ workflows:
             - test
             - build_os_darwin
             - build_os_linux
-            - build_os_windows
+            - build_os_win32
       # skip devcenter for now
       # - dev_center_docs:
       #     requires:
