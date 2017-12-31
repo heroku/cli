@@ -21,13 +21,6 @@ cp -rv "$ROOT_DIR/lib" "${o}/lib"
   yarn install --no-progress --production --non-interactive
 )
 
-# build cli-engine if needed
-if [ ! -f "${o}/node_modules/cli-engine/lib/cli.js" ]; then
-  cd "${o}/node_modules/cli-engine" || exit 1
-  yarn
-  yarn run prepare
-fi
-
 cat << EOF > "${o}/bin/heroku.js"
 #!/usr/bin/env node
 const {run} = require('cli-engine')
