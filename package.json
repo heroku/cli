@@ -77,6 +77,8 @@
     "uuid": "^3.1.0"
   },
   "devDependencies": {
+    "@cli-engine/util": "^1.0.9",
+    "@heroku-cli/tslint": "^1.0.3",
     "@types/ansi-styles": "^2.0.30",
     "@types/debug": "^0.0.30",
     "@types/fs-extra": "5.0.0",
@@ -89,8 +91,9 @@
     "husky": "0.14.3",
     "jest": "22.0.4",
     "nock": "9.1.5",
-    "prettier": "1.9.2",
+    "prettier": "^1.9.2",
     "ts-jest": "22.0.0",
+    "tslint": "^5.8.0",
     "typescript": "2.6.2"
   },
   "engineStrict": true,
@@ -109,10 +112,9 @@
   "license": "ISC",
   "repository": "heroku/cli",
   "scripts": {
-    "lint": "./scripts/test/lint",
-    "posttest": "prettier -l 'src/**/*.ts'",
-    "precommit": "./scripts/precommit",
-    "prepare": "del-cli lib && tsc && del-cli 'lib/**/*.test.+(d.ts|js)'",
+    "posttest": "cli-engine-util",
+    "precommit": "cli-engine-util",
+    "prepare": "cli-engine-util",
     "pretest": "tsc",
     "test": "./scripts/test/all"
   }

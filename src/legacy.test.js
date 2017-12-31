@@ -1,35 +1,35 @@
 // @flow
 
-import {type LegacyCommand, convertFromV5} from './legacy'
+import { type LegacyCommand, convertFromV5 } from './legacy'
 
 jest.mock('cli-engine-heroku/lib/vars', () => ({
   apiHost: 'api.foo.com',
   apiUrl: 'https://api.foo.com',
   gitHost: 'foo.com',
-  httpGitHost: 'git.foo.com'
+  httpGitHost: 'git.foo.com',
 }))
 
 jest.mock('cli-engine-heroku/lib/api_client', () => {
-  return function () {
-    return {auth: '1234'}
+  return function() {
+    return { auth: '1234' }
   }
 })
 
-test('exports a context', async function () {
+test('exports a context', async function() {
   let ctx = {}
   let l: LegacyCommand = {
     topic: 'foo',
     command: 'bar',
     args: [],
     flags: [],
-    run: function (context) {
+    run: function(context) {
       ctx = context
       return Promise.resolve()
-    }
+    },
   }
 
   let V5 = convertFromV5(l)
-  let cmd = new V5({config: {cacheDir: '/Users/foo/.cache/heroku'}})
+  let cmd = new V5({ config: { cacheDir: '/Users/foo/.cache/heroku' } })
   cmd.argv = []
   await cmd.run()
 
