@@ -63,7 +63,7 @@ describe('requires confirmation to disable a secure feature', () => {
 
   test('warns and prompts for confirmation', async () => {
     cli.prompt = function () { return Promise.resolve('myapp') }
-    let {stdout, stderr} = await LabsDisable.mock(['spaces-strict-tls', '--app=myapp'])
+    let {stdout, stderr} = await LabsDisable.mock('spaces-strict-tls', '--app=myapp')
     expect(stdout).toEqual('')
     expect(stderr).toEqual(` ▸    WARNING: Insecure Action
  ▸    You are enabling an older security protocol, TLS 1.0, which some
@@ -74,7 +74,7 @@ Disabling spaces-strict-tls for myapp... done
   })
 
   test('uses confirm flag and does not warn', async () => {
-    let {stdout, stderr} = await LabsDisable.mock(['spaces-strict-tls', '--app=myapp', '--confirm=myapp'])
+    let {stdout, stderr} = await LabsDisable.mock('spaces-strict-tls', '--app=myapp', '--confirm=myapp')
     expect(stdout).toEqual('')
     expect(stderr).toEqual('Disabling spaces-strict-tls for myapp... done\n')
   })
