@@ -13,6 +13,7 @@
     "dirname": "heroku",
     "defaultCommand": "dashboard",
     "npmRegistry": "https://cli-npm.heroku.com",
+    "commands": "./lib/commands",
     "topics": {
       "outbound-rules": {
         "description": "space outbound IP rules",
@@ -53,7 +54,7 @@
   "dependencies": {
     "@cli-engine/command": "^12.0.3",
     "@cli-engine/config": "^5.0.10",
-    "@cli-engine/engine": "https://github.com/heroku/cli-engine#ffa18dbc",
+    "@cli-engine/engine": "https://github.com/heroku/cli-engine#6c7f82a1",
     "@heroku-cli/command": "^7.0.11",
     "cli-flags": "^2.0.7",
     "cli-ux": "2.0.21",
