@@ -13,6 +13,12 @@
     "dirname": "heroku",
     "defaultCommand": "dashboard",
     "npmRegistry": "https://cli-npm.heroku.com",
+    "topics": {
+      "outbound-rules": {
+        "description": "space outbound IP rules",
+        "hidden": true
+      }
+    },
     "hooks": {
       "prerun": "./lib/hooks/prerun/analytics",
       "update": [
