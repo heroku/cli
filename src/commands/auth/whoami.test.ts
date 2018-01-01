@@ -14,6 +14,7 @@ jest.mock(
 let api: nock.Scope
 
 beforeEach(() => {
+  delete process.env.HEROKU_API_KEY
   api = nock('https://api.heroku.com')
 })
 
