@@ -25,16 +25,19 @@ Sanbashi.getDockerfiles = function (rootdir, recursive) {
   return dockerfiles.map(file => Path.join(rootdir, file))
 }
 
-Sanbashi.getJobs = function (resourceRoot, dockerfiles) {
+Sanbashi.getJobs = function (resourceRoot, dockerfiles, processType) {
   return dockerfiles
   // convert all Dockerfiles into job Objects
     .map((dockerfile) => {
       let match = dockerfile.match(DOCKERFILE_REGEX)
       if (!match) return
-      let proc = (match[1] || '.standard').slice(1)
+      let proc = (match[1] || '.web').slice(1)
+      let isDefault = match[1] == undefined
+
       return {
         name: proc,
-        resource: `${ resourceRoot }/${ proc }`,
+        default: isDefault,
+        resource: `${ resourceRoot }/${ isDefault ? processType : proc }`,
         dockerfile: dockerfile,
         postfix: Path.basename(dockerfile) === 'Dockerfile' ? 0 : 1,
         depth: Path.normalize(dockerfile).split(Path.sep).length
@@ -52,9 +55,13 @@ Sanbashi.getJobs = function (resourceRoot, dockerfiles) {
     }, {})
 }
 
-Sanbashi.chooseJobs = async function (jobs) {
+Sanbashi.chooseJobs = async function (jobs, recurse) {
   let chosenJobs = []
   for (let processType in jobs) {
+    if (!recurse && processType != 'web') {
+      continue
+    }
+
     let group = jobs[processType]
     if (group.length > 1) {
       let prompt = {
