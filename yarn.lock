@@ -22,9 +22,9 @@
   version "5.0.11"
   resolved "https://registry.yarnpkg.com/@cli-engine/config/-/config-5.0.11.tgz#b3b1393da09469fbcaaa99329064e775e275de24"
 
-"@cli-engine/engine@^6.1.14", "@cli-engine/engine@https://github.com/heroku/cli-engine#0104e740":
-  version "6.1.16"
-  resolved "https://github.com/heroku/cli-engine#0104e74022dc8e86f5bbaecaff95a9231a55b099"
+"@cli-engine/engine@^6.1.14", "@cli-engine/engine@^6.1.17":
+  version "6.1.17"
+  resolved "https://registry.yarnpkg.com/@cli-engine/engine/-/engine-6.1.17.tgz#aa3e137f2d81913bab68b96ec14689829ee67864"
   dependencies:
     "@heroku-cli/color" "^1.0.4"
     assync "^1.0.4"
