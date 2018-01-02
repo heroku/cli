@@ -62,7 +62,7 @@ jobs:
   build_os_win32:
     <<: *defaults
     docker: &win32_docker
-      - image: dickeyxxx/cli-engine-docker-nsis:v3.1.0
+      - image: dickeyxxx/cli-engine-docker-nsis:v3.1.2
         environment: *env
     steps:
       - checkout
@@ -94,7 +94,7 @@ jobs:
   release:
     <<: *defaults
     docker: &release_docker
-      - image: dickeyxxx/cli-engine-docker:v3.0.7
+      - image: dickeyxxx/cli-engine-docker:v3.0.9
         environment: *env
     steps:
       - add_ssh_keys
