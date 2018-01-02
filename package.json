@@ -54,7 +54,7 @@
   "dependencies": {
     "@cli-engine/command": "^12.0.3",
     "@cli-engine/config": "^5.0.10",
-    "@cli-engine/engine": "https://github.com/heroku/cli-engine#fd0486ef",
+    "@cli-engine/engine": "^6.1.10",
     "@heroku-cli/command": "^7.0.11",
     "cli-flags": "^2.0.7",
     "cli-ux": "2.0.21",
@@ -84,7 +84,7 @@
     "uuid": "^3.1.0"
   },
   "devDependencies": {
-    "@cli-engine/util": "^1.0.9",
+    "@cli-engine/util": "^1.0.10",
     "@heroku-cli/tslint": "^1.0.3",
     "@types/ansi-styles": "^2.0.30",
     "@types/debug": "^0.0.30",
