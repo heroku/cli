@@ -9,7 +9,7 @@ install:
 test_script:
   - bin\run.cmd version
   - bin\run.cmd help
-  - .\node_modules\.bin\jest
+  - .\node_modules\.bin\jest --coverage
 after_test:
   - ps: |
       $env:PATH = 'C:\msys64\usr\bin;' + $env:PATH
