@@ -1,7 +1,8 @@
 environment:
   nodejs_version: "9"
+  CI: 1
 cache:
- - '%LOCALAPPDATA%\\Yarn -> appveyor.yml'
+ - '%LOCALAPPDATA%\Yarn -> appveyor.yml'
  - node_modules -> appveyor.yml
 
 install:

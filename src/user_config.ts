@@ -1,14 +1,21 @@
-import * as path from 'path'
-import deps from './deps'
 import { Config } from '@cli-engine/config'
+import * as path from 'path'
 
-export type ConfigJSON = {
+import deps from './deps'
+
+export interface ConfigJSON {
   schema: 1
   install?: string
   skipAnalytics?: boolean
 }
 
 export default class UserConfig {
+  private needsSave: boolean = false
+  private body: ConfigJSON
+  private mtime?: number
+  private saving?: Promise<void>
+  private _init: Promise<void>
+
   constructor(private config: Config) {}
 
   public get install() {
@@ -18,12 +25,6 @@ export default class UserConfig {
     this.body.install = install
     this.needsSave = true
   }
-  private genInstall() {
-    const uuid = require('uuid/v4')
-    this.install = uuid()
-    return this.install
-  }
-
   public get skipAnalytics() {
     if (typeof this.body.skipAnalytics !== 'boolean') {
       this.body.skipAnalytics = false
@@ -32,7 +33,6 @@ export default class UserConfig {
     return this.body.skipAnalytics
   }
 
-  private _init: Promise<void>
   public async init() {
     await this.saving
     if (this._init) return this._init
@@ -44,11 +44,21 @@ export default class UserConfig {
         this.body.schema = 1
         this.needsSave = true
       } else if (this.body.schema !== 1) this.body = { schema: 1 }
+      // tslint:disable-next-line
       this.install
+      // tslint:disable-next-line
       this.skipAnalytics
 
       if (this.needsSave) await this.save()
     })())
+  }
+
+  private get debug() {
+    return require('debug')('heroku:user_config')
+  }
+
+  private get file() {
+    return path.join(this.config.dataDir, 'config.json')
   }
 
   private async save(): Promise<void> {
@@ -97,16 +107,9 @@ export default class UserConfig {
     }
   }
 
-  private needsSave: boolean = false
-  private body: ConfigJSON
-  private mtime?: number
-  private saving?: Promise<void>
-
-  private get debug() {
-    return require('debug')('heroku:user_config')
-  }
-
-  private get file() {
-    return path.join(this.config.dataDir, 'config.json')
+  private genInstall() {
+    const uuid = require('uuid/v4')
+    this.install = uuid()
+    return this.install
   }
 }

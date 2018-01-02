@@ -1,6 +1,5 @@
-import { HTTP } from 'http-call'
 import FS = require('fs-extra')
-import * as klaw from 'klaw'
+import { HTTP } from 'http-call'
 
 import file = require('./file')
 import UserConfig from './user_config'
@@ -12,10 +11,6 @@ export default {
   get HTTP(): typeof HTTP {
     return fetch('http-call').HTTP
   },
-  get klaw(): typeof klaw {
-    return fetch('klaw')
-  },
-
   get file(): typeof file {
     return fetch('./file')
   },

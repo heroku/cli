@@ -4,6 +4,8 @@ module.exports = {
   coveragePathIgnorePatterns: ['/node_modules/', '<rootDir>/src/__test__'],
   moduleFileExtensions: ['ts', 'js'],
   testMatch: ['**/*.test.ts'],
+  globalSetup: '<rootDir>/src/__test__/setup.js',
+  globalTeardown: '<rootDir>/src/__test__/teardown.js',
   transform: {
     '^.+\\.ts$': '<rootDir>/node_modules/ts-jest/preprocessor.js',
   },

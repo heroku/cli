@@ -1,6 +1,8 @@
 import * as execa from 'execa'
 import * as path from 'path'
 
+import { integrationTest } from './__test__/init'
+
 const bin = path.join(__dirname, '../bin/run')
 
 function run(args: string[]) {
@@ -9,22 +11,22 @@ function run(args: string[]) {
 
 jest.setTimeout(60000)
 
-test('heroku version', async () => {
+integrationTest('heroku version', async () => {
   const { stdout } = await run(['version'])
   expect(stdout).toMatch(/^heroku-cli\//)
 })
 
-test('heroku help', async () => {
+integrationTest('heroku help', async () => {
   const { stdout } = await run(['help'])
   expect(stdout).toMatch(/^Usage: heroku COMMAND/)
 })
 
-test('heroku auth:whoami', async () => {
+integrationTest('heroku auth:whoami', async () => {
   const { stdout } = await run(['help'])
   expect(stdout).toMatch(/^Usage: heroku COMMAND/)
 })
 
-test('heroku apps && heroku apps info && heroku run', async () => {
+integrationTest('heroku apps && heroku apps info && heroku run', async () => {
   let cmd = await run(['apps'])
   expect(cmd.stdout).toMatch(/^===.*Apps/)
   let app = cmd.stdout.split('\n')[1]

@@ -1,0 +1,3 @@
+{
+  "extends": "@heroku-cli/tslint"
+}

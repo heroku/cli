@@ -18,13 +18,13 @@
     chalk "^2.3.0"
     cli-flags "^2.0.6"
 
-"@cli-engine/config@^5.0.10":
-  version "5.0.10"
-  resolved "https://registry.yarnpkg.com/@cli-engine/config/-/config-5.0.10.tgz#f8420b9c4cd44e4feafeb90165d9557168bb484c"
+"@cli-engine/config@^5.0.10", "@cli-engine/config@^5.0.11":
+  version "5.0.11"
+  resolved "https://registry.yarnpkg.com/@cli-engine/config/-/config-5.0.11.tgz#b3b1393da09469fbcaaa99329064e775e275de24"
 
-"@cli-engine/engine@^6.1.10":
-  version "6.1.10"
-  resolved "https://registry.yarnpkg.com/@cli-engine/engine/-/engine-6.1.10.tgz#a3035fd5a3d2d43fcb985adb0bf896d9cd4721c5"
+"@cli-engine/engine@^6.1.12", "@cli-engine/engine@^6.1.13":
+  version "6.1.13"
+  resolved "https://registry.yarnpkg.com/@cli-engine/engine/-/engine-6.1.13.tgz#3c50e7fcbd5a5c15b9ed6b60ad7d0505a296f585"
   dependencies:
     "@heroku-cli/color" "^1.0.4"
     assync "^1.0.4"
@@ -50,13 +50,13 @@
   version "0.0.0"
   resolved "https://registry.yarnpkg.com/@cli-engine/screen/-/screen-0.0.0.tgz#c2e847c7d4d998490c9097282bf21637d5162116"
 
-"@cli-engine/util@^1.0.10":
-  version "1.0.10"
-  resolved "https://registry.yarnpkg.com/@cli-engine/util/-/util-1.0.10.tgz#04003cc1d3fcf6a910a5984b8a54b52fc00ba852"
+"@cli-engine/util@^1.0.11":
+  version "1.0.11"
+  resolved "https://registry.yarnpkg.com/@cli-engine/util/-/util-1.0.11.tgz#b5bc3071d6b4feb3e63a2c6713517d1a6b4bc655"
   dependencies:
     "@cli-engine/command" "^12.0.3"
-    "@cli-engine/config" "^5.0.10"
-    "@cli-engine/engine" "^6.1.10"
+    "@cli-engine/config" "^5.0.11"
+    "@cli-engine/engine" "^6.1.12"
     cli-ux "^2.0.21"
     cross-spawn "^5.1.0"
     del "^3.0.0"
@@ -134,12 +134,6 @@
 "@types/jest@22.0.0":
   version "22.0.0"
   resolved "https://registry.yarnpkg.com/@types/jest/-/jest-22.0.0.tgz#23009941178aad7979a9591e026f7a96054d7bc0"
-
-"@types/klaw@2.1.1":
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/@types/klaw/-/klaw-2.1.1.tgz#8cfe201e95de97e5cfc7c31ecc4941aa12ab1b2e"
-  dependencies:
-    "@types/node" "*"
 
 "@types/nock@9.1.0":
   version "9.1.0"
@@ -3004,7 +2998,7 @@ kind-of@^4.0.0:
   dependencies:
     is-buffer "^1.1.5"
 
-klaw@2.1.1, klaw@^2.1.1:
+klaw@^2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/klaw/-/klaw-2.1.1.tgz#42b76894701169cc910fd0d19ce677b5fb378af1"
   dependencies:

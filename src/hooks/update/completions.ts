@@ -1,17 +1,24 @@
-import { Hook } from '@cli-engine/engine/lib/hooks'
-const debug = require('debug')('heroku:completions')
-import cli from 'cli-ux'
-import { Plugins } from '@cli-engine/engine/lib/plugins'
+import { Hook } from '@cli-engine/engine'
+import { Config } from '@cli-engine/engine/lib/config'
+import { IHooks } from '@cli-engine/engine/lib/hooks'
 import { AppCompletion, PipelineCompletion, SpaceCompletion, TeamCompletion } from '@heroku-cli/command/lib/completions'
+import cli from 'cli-ux'
+
+const debug = require('debug')('heroku:completions')
 
 export default class CompletionsUpdateHook extends Hook<'update'> {
+  protected config: Config
+  constructor(config: Config, options: IHooks['update']) {
+    super(config, options)
+  }
+
   async run() {
     try {
       const config = this.config
       if (this.config.windows) {
         debug('skipping autocomplete on windows')
       } else {
-        const plugins = await new Plugins(this.config).list()
+        const plugins = await this.config.plugins.list()
         const acPlugin = plugins.find(p => p.name === 'heroku-cli-autocomplete')
         if (acPlugin) {
           cli.action.start('Updating completions')

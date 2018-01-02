@@ -1,7 +1,8 @@
+import Command from '@cli-engine/command'
 import { Config } from '@cli-engine/config'
 import * as nock from 'nock'
+
 import AnalyticsCommand from './analytics'
-import Command from '@cli-engine/command'
 
 class TestCommand extends Command {
   static topic = 'fuzz:fizz'
@@ -57,11 +58,11 @@ function build(configOptions = {}, options: any = {}) {
   let command = new AnalyticsCommand(config)
 
   // @ts-ignore
-  command._existsJSON = function() {
+  command._existsJSON = () => {
     return true
   }
 
-  command._readJSON = function() {
+  command._readJSON = () => {
     return json
   }
 
@@ -69,16 +70,16 @@ function build(configOptions = {}, options: any = {}) {
   command._writeJSON = jest.fn()
 
   // @ts-ignore
-  command._acAnalytics = function() {
+  command._acAnalytics = () => {
     return 7
   }
 
   // @ts-ignore
   Object.defineProperty(command, 'netrcLogin', {
-    get: function() {
+    get: () => {
       if (options.hasOwnProperty('netrcLogin')) {
         // flow$ignore
-        return options['netrcLogin']
+        return options.netrcLogin
       }
 
       return 'foobar@heroku.com'
@@ -95,8 +96,8 @@ describe('AnalyticsCommand', () => {
 
   beforeEach(() => {
     nock.cleanAll()
-    delete process.env['HEROKU_API_KEY']
-    delete process.env['HEROKU_ANALYTICS_URL']
+    delete process.env.HEROKU_API_KEY
+    delete process.env.HEROKU_ANALYTICS_URL
   })
 
   describe('submit', () => {
@@ -112,7 +113,7 @@ describe('AnalyticsCommand', () => {
     })
 
     it('does not submit if HEROKU_API_KEY is set', async () => {
-      process.env['HEROKU_API_KEY'] = 'secure-key'
+      process.env.HEROKU_API_KEY = 'secure-key'
 
       let api = nock('https://cli-analytics.heroku.com')
         .post('/record')
@@ -169,7 +170,7 @@ describe('AnalyticsCommand', () => {
     })
 
     it.skip('pushes data to the HEROKU_ANALYTICS_URL endpoint', async () => {
-      process.env['HEROKU_ANALYTICS_URL'] = 'https://foobar.com/record'
+      process.env.HEROKU_ANALYTICS_URL = 'https://foobar.com/record'
       let json = analyticsJson()
       let api = nock('https://foobar.com')
         .post('/record', json)
@@ -187,19 +188,19 @@ describe('AnalyticsCommand', () => {
 
     beforeAll(() => {
       delete process.env.SHELL
-      process.env['COMSPEC'] = 'C:\\ProgramFiles\\cmd.exe'
+      process.env.COMSPEC = 'C:\\ProgramFiles\\cmd.exe'
     })
 
     afterAll(() => {
       delete process.env.COMSPEC
-      process.env['SHELL'] = SHELL
+      process.env.SHELL = SHELL
     })
 
     it('does not record if no plugin', async () => {
       let command = build()
 
       await command.record({
-        Command: TestCommand,
+        Command: TestCommand as any,
         argv: [],
       })
 
@@ -211,7 +212,7 @@ describe('AnalyticsCommand', () => {
       let command = build({ skipAnalytics: true })
 
       await command.record({
-        Command: TestCommand,
+        Command: TestCommand as any,
         argv: [],
       })
 
@@ -220,12 +221,12 @@ describe('AnalyticsCommand', () => {
     })
 
     it('does not record if HEROKU_API_KEY is set', async () => {
-      process.env['HEROKU_API_KEY'] = 'secure-key'
+      process.env.HEROKU_API_KEY = 'secure-key'
 
       let command = build()
 
       await command.record({
-        Command: TestCommand,
+        Command: TestCommand as any,
         argv: [],
       })
 
@@ -237,7 +238,7 @@ describe('AnalyticsCommand', () => {
       let command = build({}, { netrcLogin: null })
 
       await command.record({
-        Command: TestCommand,
+        Command: TestCommand as any,
         argv: [],
       })
 
@@ -262,7 +263,7 @@ describe('AnalyticsCommand', () => {
 
       let command = build({}, { json })
       await command.record({
-        Command: TestCommandWithPlugin,
+        Command: TestCommandWithPlugin as any,
         argv: [],
       })
       // @ts-ignore

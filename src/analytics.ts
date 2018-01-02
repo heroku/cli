@@ -1,14 +1,15 @@
-import cli from 'cli-ux'
-import deps from './deps'
-import { Config, ICommand } from '@cli-engine/config'
-import * as path from 'path'
+import { Config } from '@cli-engine/config'
+import { ICommandInfo } from '@cli-engine/engine'
 import { vars } from '@heroku-cli/command'
+import cli from 'cli-ux'
+import * as path from 'path'
+
+import deps from './deps'
 
 const Netrc = require('netrc-parser')
-
 const debug = require('debug')('heroku:analytics')
 
-export type AnalyticsJSONCommand = {
+export interface AnalyticsJSONCommand {
   command: string
   completion: number
   version: string
@@ -20,12 +21,12 @@ export type AnalyticsJSONCommand = {
   valid: true
 }
 
-export type AnalyticsJSON = {
+export interface AnalyticsJSON {
   schema: 1
   commands: AnalyticsJSONCommand[]
 }
 
-export type AnalyticsJSONPost = {
+export interface AnalyticsJSONPost {
   schema: 1
   commands: AnalyticsJSONCommand[]
   install: string
@@ -33,8 +34,8 @@ export type AnalyticsJSONPost = {
   user: string
 }
 
-export type RecordOpts = {
-  Command: ICommand
+export interface RecordOpts {
+  Command: ICommandInfo
   argv: string[]
 }
 
@@ -48,11 +49,6 @@ export default class AnalyticsCommand {
     this.http = deps.HTTP.defaults({
       headers: { 'user-agent': config.userAgent },
     })
-  }
-
-  private async init() {
-    this.userConfig = new deps.UserConfig(this.config)
-    await this.userConfig.init()
   }
 
   _initialAnalyticsJSON(): AnalyticsJSON {
@@ -101,7 +97,7 @@ export default class AnalyticsCommand {
       const body: AnalyticsJSONPost = {
         schema: local.schema,
         commands: local.commands,
-        user: user,
+        user,
         install: this.userConfig.install,
         cli: this.config.name,
       }
@@ -116,7 +112,7 @@ export default class AnalyticsCommand {
   }
 
   get url(): string {
-    return process.env['HEROKU_ANALYTICS_URL'] || 'https://cli-analytics.heroku.com/record'
+    return process.env.HEROKU_ANALYTICS_URL || 'https://cli-analytics.heroku.com/record'
   }
 
   get analyticsPath(): string {
@@ -166,5 +162,10 @@ export default class AnalyticsCommand {
     if (await meta.value) score += 4
     if (await deps.file.exists(root)) await deps.file.remove(root)
     return score
+  }
+
+  private async init() {
+    this.userConfig = new deps.UserConfig(this.config)
+    await this.userConfig.init()
   }
 }

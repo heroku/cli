@@ -1,5 +1,6 @@
-import Whoami from './whoami'
 import * as nock from 'nock'
+
+import Whoami from './whoami'
 
 let mockMachines: any
 
