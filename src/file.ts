@@ -3,7 +3,7 @@ import * as path from 'path'
 
 import deps from './deps'
 
-const debug = require('debug')('cli:file')
+const debug = require('debug')('heroku-cli:file')
 
 export function exists(f: string): Promise<boolean> {
   // debug('exists', f)
