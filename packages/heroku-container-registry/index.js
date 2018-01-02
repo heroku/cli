@@ -12,6 +12,7 @@ module.exports = {
     require('./commands/index')(pkg),
     require('./commands/login')(pkg.topic),
     require('./commands/logout')(pkg.topic),
-    require('./commands/push')(pkg.topic)
+    require('./commands/push')(pkg.topic),
+    require('./commands/run')(pkg.topic)
   ]
 }

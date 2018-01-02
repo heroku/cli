@@ -3,6 +3,7 @@
 let Glob = require('glob')
 let Path = require('path')
 let Inquirer = require('inquirer')
+let os = require("os")
 const Child = require('child_process')
 const log = require('./log')
 
@@ -97,6 +98,17 @@ Sanbashi.buildImage = function (dockerfile, resource, verbose, buildArg) {
 
 Sanbashi.pushImage = function (resource, verbose) {
   let args = ['push', resource]
+  log(verbose, args)
+  return Sanbashi.cmd('docker', args)
+}
+
+Sanbashi.runImage = function (resource, command, port, verbose) {
+  let args = ['run', '--user', os.userInfo().uid, '-e', `PORT=${port}`]
+  if (command == '') {
+    args.push(resource)
+  } else {
+    args.push('-it', resource, command)
+  }
   log(verbose, args)
   return Sanbashi.cmd('docker', args)
 }
