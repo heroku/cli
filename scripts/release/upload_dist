@@ -49,11 +49,11 @@ for OS in "${TARGETS[@]}"; do
 done
 
 # generate version file
-cat << EOF > "$CACHE_DIR/version"
-{
-  "channel": "${CHANNEL}",
-  "version": "${VERSION}"
-}
-EOF
+# cat << EOF > "$CACHE_DIR/version"
+# {
+#   "channel": "${CHANNEL}",
+#   "version": "${VERSION}"
+# }
+# EOF
 
 s3upload --content-type application/json --recursive "$CACHE_DIR" "$REMOTE_BASE"
