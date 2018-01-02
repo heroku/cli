@@ -32,12 +32,7 @@ describe('not logged in', () => {
   })
 
   it('errors', async () => {
-    expect.assertions(1)
-    try {
-      await Whoami.mock()
-    } catch (err) {
-      expect(err.code).toEqual(100)
-    }
+    await expect(Whoami.mock()).rejects.toHaveProperty('code', 100)
   })
 })
 
@@ -55,12 +50,20 @@ describe('logged in', () => {
   })
 
   it('has expired token', async () => {
-    expect.assertions(1)
     api.get('/account').reply(401)
-    try {
-      await Whoami.mock()
-    } catch (err) {
-      expect(err.code).toEqual(100)
+    await expect(Whoami.mock()).rejects.toHaveProperty('code', 100)
+  })
+})
+
+describe('errors out', () => {
+  beforeEach(() => {
+    mockMachines = {
+      'api.heroku.com': { password: 'myapikey' },
     }
+  })
+
+  it('shows login', async () => {
+    api.get('/account').reply(500, { message: 'uh oh!' })
+    await expect(Whoami.mock()).rejects.toThrowError('uh oh!')
   })
 })
