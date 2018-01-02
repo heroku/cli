@@ -27,9 +27,10 @@ test('heroku auth:whoami', async () => {
 test('heroku apps && heroku apps info && heroku run', async () => {
   let cmd = await run(['apps'])
   expect(cmd.stdout).toMatch(/^===.*Apps/)
-  const app = cmd.stdout.split('\n')[1]
+  let app = cmd.stdout.split('\n')[1]
   if (!app) throw new Error(`no app found, got ${cmd.stdout}`)
-  const appFlag = `-a=${app.split(' ')[0]}`
+  app = app.split(' ')[0]
+  const appFlag = `-a=${app}`
   expect((await run(['info', appFlag])).stdout).toContain(`=== ${app}`)
   expect((await run(['run', '--exit-code', appFlag, 'echo', 'it works!'])).stdout).toMatch(/^it works!/)
 })
