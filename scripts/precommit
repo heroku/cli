@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-
-source ./scripts/_init
-
-script "test/lint"

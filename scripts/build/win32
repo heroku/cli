@@ -2,7 +2,7 @@
 
 set +x
 
-OS=windows
+OS=win32
 echo "$HEROKU_WINDOWS_KEY" | base64 --decode > /tmp/heroku-windows-key
 
 source ./scripts/_init

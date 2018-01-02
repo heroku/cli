@@ -5,7 +5,7 @@ source ./scripts/_init
 set -x
 
 function build () {
-  setarch $ARCH
+  setarch "$ARCH"
   # setup workspace
   o="$WORKSPACE_DIR"
   rm -rf "${o}"
@@ -14,10 +14,10 @@ function build () {
   "$ROOT_DIR/scripts/build/_fetch_node_binary" "${o}/bin"
 
   # create bin runner
-  if [ "${OS}" == "windows" ]; then
+  if [ "${OS}" == "win32" ] || [ "${OS}" == "windows" ]; then
     cat << EOF > "${o}/bin/heroku.cmd"
 @echo off
-set CLI_BINPATH=%~dp0\\heroku.cmd
+set HEROKU_CLI_BINPATH=%~dp0\\heroku.cmd
 "%~dp0\\node.exe" "%~dp0\\heroku.js" %*
 EOF
   else
@@ -40,11 +40,18 @@ DIR=\$(get_script_dir)
 # normalize home directory
 CLI_HOME=\$(cd && pwd)
 XDG_DATA_HOME=\${XDG_DATA_HOME:="\$CLI_HOME/.local/share"}
-BIN_DIR="\$XDG_DATA_HOME/heroku/client/bin"
-if [ -x "\$BIN_DIR/heroku" ] && [ ! "\$BIN_DIR" -ef "\$DIR" ]; then
+CLIENT_DIR="\$XDG_DATA_HOME/heroku/client"
+BIN_DIR="\$CLIENT_DIR/bin"
+if [ -x "\$BIN_DIR/heroku" ] && [[ "\$DIR" != "\$CLIENT_DIR"* ]]; then
+  if [ "\$DEBUG" == "*" ]; then
+    echo "\$XDG_DATA_HOME/heroku/client/bin/heroku" "\$@"
+  fi
   "\$XDG_DATA_HOME/heroku/client/bin/heroku" "\$@"
 else
-  CLI_BINPATH="\$DIR/heroku" "\$DIR/node" "\$DIR/heroku.js" "\$@"
+  if [ "\$DEBUG" == "*" ]; then
+    echo HEROKU_CLI_BINPATH="\$DIR/heroku" "\$DIR/node" "\$DIR/heroku.js" "\$@"
+  fi
+  HEROKU_CLI_BINPATH="\$DIR/heroku" "\$DIR/node" "\$DIR/heroku.js" "\$@"
 fi
 EOF
     chmod +x "${o}/bin/heroku"

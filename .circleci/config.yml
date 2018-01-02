@@ -2,9 +2,12 @@
 defaults: &defaults
   working_directory: /cli
   docker:
-    - image: node:8.4
+    - image: node:9
       environment: &env
         NPM_CONFIG_REGISTRY: https://cli-npm.heroku.com
+        LANG: en_US.UTF-8
+        LANGUAGE: en_US.UTF-8
+        LC_TYPE: en_US.UTF-8
 
 version: 2
 executorType: docker
@@ -17,23 +20,21 @@ jobs:
           keys:
             - v0-yarn-{{ checksum "yarn.lock" }}
             - v0-yarn
-      - run: ./scripts/prep
-      - run: {command: "./scripts/test/lint", when: always}
-      - run: {command: "npx flow check", when: always}
-      - run: {command: "npx jest", when: always}
-      - run: {command: "bash <(curl -s https://codecov.io/bash)"}
-      - run: {command: "./scripts/test/smoke", when: always}
+      - run: yarn
+      - run: yarn test --coverage
+      - run: curl -s https://codecov.io/bash | bash
       - save_cache:
           key: v0-yarn-{{ checksum "yarn.lock" }}
           paths:
+            - /cli/node_modules
             - /usr/local/share/.cache/yarn
   build_os_darwin:
     <<: *defaults
     steps:
       - checkout
       - restore_cache: *yarn_restore_cache
-      - restore_cache: {keys: [node-v8.4.0-darwin]}
-      - run: ./scripts/prep
+      - restore_cache: {keys: [node-v9.3.0-darwin]}
+      - run: yarn
       - run: ./scripts/build/base
       - run: ./scripts/build/workspace
       - run: ./scripts/build/tarballs
@@ -41,43 +42,58 @@ jobs:
           root: dist
           paths: [ . ]
       - save_cache: &node_cache_save
-          key: node-v8.4.0-darwin
+          key: node-v9.3.0-darwin
           paths: [/cli/tmp/cache/node]
   build_os_linux:
     <<: *defaults
     steps:
       - checkout
       - restore_cache: *yarn_restore_cache
-      - restore_cache: {keys: [node-v8.4.0-linux]}
-      - run: ./scripts/prep
+      - restore_cache: {keys: [node-v9.3.0-linux]}
+      - run: yarn
       - run: ./scripts/build/base
       - run: ./scripts/build/workspace
       - run: ./scripts/build/tarballs
       - persist_to_workspace: *dist
       - save_cache:
           <<: *node_cache_save
-          key: node-v8.4.0-linux
-  build_os_windows:
+          key: node-v9.3.0-linux
+  build_os_win32:
     <<: *defaults
-    docker: &windows_docker
-      - image: dickeyxxx/cli-engine-docker-nsis:v3.0.3
+    docker: &win32_docker
+      - image: dickeyxxx/cli-engine-docker-nsis:v3.1.2
         environment: *env
     steps:
       - checkout
       - restore_cache: *yarn_restore_cache
-      - restore_cache: {keys: [node-v8.4.0-windows]}
-      - run: ./scripts/prep
+      - restore_cache: {keys: [node-v9.3.0-win32]}
+      - run: yarn
       - run: ./scripts/build/base
       - run: ./scripts/build/workspace
       - run: ./scripts/build/tarballs
       - persist_to_workspace: *dist
       - save_cache:
           <<: *node_cache_save
-          key: node-v8.4.0-windows
+          key: node-v9.3.0-win32
+  build_os_windows:
+    <<: *defaults
+    docker: *win32_docker
+    steps:
+      - checkout
+      - restore_cache: *yarn_restore_cache
+      - restore_cache: {keys: [node-v9.3.0-win32]}
+      - run: yarn
+      - run: ./scripts/build/base
+      - run: ./scripts/build/workspace
+      - run: ./scripts/build/tarballs
+      - persist_to_workspace: *dist
+      - save_cache:
+          <<: *node_cache_save
+          key: node-v9.3.0-win32
   release:
     <<: *defaults
     docker: &release_docker
-      - image: dickeyxxx/cli-engine-docker:v3.0.6
+      - image: dickeyxxx/cli-engine-docker:v3.0.9
         environment: *env
     steps:
       - add_ssh_keys
@@ -100,15 +116,15 @@ jobs:
       - run: ./scripts/release/deb
   build_and_release_win_inst:
     <<: *defaults
-    docker: *windows_docker
+    docker: *win32_docker
     steps:
       - checkout
       - attach_workspace: {at: dist}
-      - run: ./scripts/build/windows
+      - run: ./scripts/build/win32
       - run: ls dist
-      - run: ./scripts/release/windows
+      - run: ./scripts/release/win32
   # dev_center_docs:
-  #   docker: *windows_docker
+  #   docker: *win32_docker
   #   steps:
   #     - type: checkout
   #     - run: ./scripts/release/dev_center_docs
@@ -133,12 +149,15 @@ workflows:
               only:
                 - master
                 - dev
+                - ts
       - build_os_linux: *release
+      - build_os_win32: *release
       - build_os_windows: *release
       - build_and_release_win_inst:
           <<: *release
           requires:
             - test
+            - build_os_win32
             - build_os_windows
       - build_and_release_deb:
           <<: *release
@@ -151,6 +170,7 @@ workflows:
             - test
             - build_os_darwin
             - build_os_linux
+            - build_os_win32
             - build_os_windows
       # skip devcenter for now
       # - dev_center_docs:

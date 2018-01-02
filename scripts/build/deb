@@ -41,19 +41,19 @@ get_script_dir () {
   echo "\$DIR"
 }
 DIR=\$(get_script_dir)
-CLI_BINPATH=\$DIR/heroku \$DIR/node \$DIR/heroku.js "\$@"
+HEROKU_CLI_BINPATH=\$DIR/heroku \$DIR/node \$DIR/heroku.js "\$@"
 EOF
   chmod +x "$__workspace/usr/lib/heroku/bin/heroku"
 
   cat << EOF > "$__workspace/usr/lib/heroku/bin/heroku.js"
 #!/usr/bin/env node
-const {run} = require('cli-engine')
+const {run} = require('@cli-engine/engine')
 const config = {
   channel: '${CHANNEL}',
   version: '${VERSION}',
   updateDisabled: 'update the CLI with "sudo apt-get upgrade heroku"'
 }
-run({config})
+run(process.argv, config)
 EOF
 
   # add debian config
