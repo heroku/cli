@@ -33,7 +33,7 @@ Section "Heroku CLI ${VERSION}"
   ExpandEnvStrings $0 "%COMSPEC%"
 
   ; add Windows Defender exlusion
-  ExecShell "" '"$0"' "/C powershell -ExecutionPolicy Bypass -Command \"& {Add-MpPreference -ExclusionPath \"$LOCALAPPDATA\heroku\"}\" -FFFeatureOff" SW_HIDE
+  ExecShell "" '"$0"' "/C powershell -ExecutionPolicy Bypass -Command $\"& {Add-MpPreference -ExclusionPath $\"$LOCALAPPDATA\heroku$\"}$\" -FFFeatureOff" SW_HIDE
 
   WriteRegStr HKCU "Software\Heroku" "" $INSTDIR
   WriteUninstaller "$INSTDIR\Uninstall.exe"

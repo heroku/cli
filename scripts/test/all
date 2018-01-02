@@ -1,9 +1,0 @@
-#!/usr/bin/env bash
-
-source ./scripts/_init
-
-set -x
-
-script "test/lint"
-npx jest
-script "test/smoke"

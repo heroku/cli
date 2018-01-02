@@ -88,6 +88,7 @@
     "@heroku-cli/tslint": "^1.0.3",
     "@types/ansi-styles": "^2.0.30",
     "@types/debug": "^0.0.30",
+    "@types/execa": "^0.8.1",
     "@types/fs-extra": "5.0.0",
     "@types/jest": "22.0.0",
     "@types/klaw": "2.1.1",
@@ -95,6 +96,7 @@
     "@types/node": "8.5.2",
     "@types/supports-color": "3.1.0",
     "del-cli": "1.1.0",
+    "execa": "^0.8.0",
     "husky": "0.14.3",
     "jest": "22.0.4",
     "nock": "9.1.5",
@@ -119,10 +121,12 @@
   "license": "ISC",
   "repository": "heroku/cli",
   "scripts": {
-    "posttest": "cli-engine-util",
-    "precommit": "cli-engine-util",
+    "lint": "yarn run shellcheck",
+    "posttest": "yarn run lint && cli-engine-util",
+    "precommit": "yarn run lint && cli-engine-util",
     "prepare": "cli-engine-util",
     "pretest": "tsc",
-    "test": "./scripts/test/all"
+    "shellcheck": "find scripts -type f -print0 | xargs -0 shellcheck --external-sources",
+    "test": "jest"
   }
 }
