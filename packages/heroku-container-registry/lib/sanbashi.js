@@ -121,7 +121,7 @@ Sanbashi.runImage = function (resource, command, port, verbose) {
   return Sanbashi.cmd('docker', args)
 }
 
-Sanbashi.cmd = function (cmd, args) {
+Sanbashi.cmd = function (cmd, args, options = {}) {
   let stdio = [process.stdin, process.stdout, process.stderr]
   if (options.input) {
     stdio[0] = 'pipe'
