@@ -11,7 +11,7 @@ export function exists(f: string): Promise<boolean> {
   return deps.fs.exists(f)
 }
 
-export async function stat(file: string) {
+export async function stat(file: string): Promise<FS.Stats> {
   // debug('stat', file)
   return deps.fs.stat(file)
 }
@@ -26,7 +26,7 @@ export async function remove(file: string) {
   return deps.fs.remove(file)
 }
 
-export async function ls(dir: string) {
+export async function ls(dir: string): Promise<{ path: string; stat: FS.Stats }[]> {
   let files = await deps.fs.readdir(dir)
   let paths = files.map(f => path.join(dir, f))
   return Promise.all(paths.map(path => deps.fs.stat(path).then(stat => ({ path, stat }))))

@@ -21,13 +21,12 @@ jobs:
             - v0-yarn-{{ checksum "yarn.lock" }}
             - v0-yarn
       - run: yarn
-      - run: {command: "./scripts/test/lint", when: always}
-      - run: {command: "npx jest", when: always}
-      - run: {command: "bash <(curl -s https://codecov.io/bash)"}
-      - run: {command: "./scripts/test/smoke", when: always}
+      - run: yarn test --coverage
+      - run: curl -s https://codecov.io/bash | bash
       - save_cache:
           key: v0-yarn-{{ checksum "yarn.lock" }}
           paths:
+            - /cli/node_modules
             - /usr/local/share/.cache/yarn
   build_os_darwin:
     <<: *defaults

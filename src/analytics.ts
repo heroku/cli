@@ -8,7 +8,7 @@ const Netrc = require('netrc-parser')
 
 const debug = require('debug')('heroku:analytics')
 
-type AnalyticsJSONCommand = {
+export type AnalyticsJSONCommand = {
   command: string
   completion: number
   version: string
@@ -20,12 +20,12 @@ type AnalyticsJSONCommand = {
   valid: true
 }
 
-type AnalyticsJSON = {
+export type AnalyticsJSON = {
   schema: 1
   commands: AnalyticsJSONCommand[]
 }
 
-type AnalyticsJSONPost = {
+export type AnalyticsJSONPost = {
   schema: 1
   commands: AnalyticsJSONCommand[]
   install: string
@@ -33,7 +33,7 @@ type AnalyticsJSONPost = {
   user: string
 }
 
-type RecordOpts = {
+export type RecordOpts = {
   Command: ICommand
   argv: string[]
 }
