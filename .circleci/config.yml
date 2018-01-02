@@ -150,7 +150,6 @@ workflows:
               only:
                 - master
                 - dev
-                - ts
       - build_os_linux: *release
       - build_os_win32: *release
       - build_os_windows: *release
