@@ -8,7 +8,9 @@ const debug = require('debug')('heroku:tidy')
 export default class extends Hook<'update'> {
   async run() {
     try {
-      await deps.file.removeEmptyDirs(this.config.configDir)
+      if (this.config.configDir !== this.config.dataDir) {
+        await deps.file.removeEmptyDirs(this.config.configDir)
+      }
       await deps.file.removeEmptyDirs(path.join(this.config.dataDir, 'tmp'))
       try {
         await this.cleanupPlugins()

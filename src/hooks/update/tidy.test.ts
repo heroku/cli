@@ -20,6 +20,16 @@ test('cleans up configDir', async () => {
   expect(fs.existsSync(foo)).toEqual(false)
 })
 
+test('does not modify dataDir when equal to configDir', async () => {
+  process.env.HEROKU_CONFIG_DIR = config.dataDir
+  config = new Config()
+  tidy = new Tidy(config)
+  let bar = path.join(config.configDir, 'foo/bar')
+  fs.mkdirpSync(bar)
+  await tidy.run()
+  expect(fs.existsSync(bar)).toEqual(true)
+})
+
 test('does not empty dirs with files in them', async () => {
   let bar = path.join(config.configDir, 'foo/bar')
   fs.outputFileSync(bar, 'bar')
