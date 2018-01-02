@@ -1,7 +1,8 @@
 environment:
   nodejs_version: "9"
 cache:
- - "%LOCALAPPDATA%\\Yarn"
+ - "%LOCALAPPDATA%\\Yarn" -> appveyor.yml
+ - node_modules -> appveyor.yml
 
 install:
   - ps: Install-Product node $env:nodejs_version x64
