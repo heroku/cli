@@ -22,3 +22,4 @@ beforeEach(async () => {
 })
 
 export const integrationTest = process.env.CI || process.env.npm_lifecycle_event === 'test' ? test : test.skip
+export const skipIfWindows = process.platform === 'win32' ? test.skip : test
