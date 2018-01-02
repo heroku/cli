@@ -12,6 +12,7 @@ jest.mock(
 )
 
 let api: nock.Scope
+let apiKey = process.env.HEROKU_API_KEY
 
 beforeEach(() => {
   delete process.env.HEROKU_API_KEY
@@ -20,6 +21,7 @@ beforeEach(() => {
 
 afterEach(() => {
   api.done()
+  if (apiKey) process.env.HEROKU_API_KEY = apiKey
 })
 
 describe('not logged in', () => {
