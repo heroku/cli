@@ -22,9 +22,10 @@
   version "5.0.11"
   resolved "https://registry.yarnpkg.com/@cli-engine/config/-/config-5.0.11.tgz#b3b1393da09469fbcaaa99329064e775e275de24"
 
-"@cli-engine/engine@^6.1.12", "@cli-engine/engine@^6.1.14":
+"@cli-engine/engine@^6.1.14", "@cli-engine/engine@https://github.com/heroku/cli-engine#9daf1eee":
   version "6.1.14"
-  resolved "https://registry.yarnpkg.com/@cli-engine/engine/-/engine-6.1.14.tgz#470a48b64554af48ce949fb875343f7a59c5e784"
+  uid "9daf1eee014919d3b263f40ff3d8839a558f67bc"
+  resolved "https://github.com/heroku/cli-engine#9daf1eee014919d3b263f40ff3d8839a558f67bc"
   dependencies:
     "@heroku-cli/color" "^1.0.4"
     assync "^1.0.4"
@@ -51,12 +52,12 @@
   resolved "https://registry.yarnpkg.com/@cli-engine/screen/-/screen-0.0.0.tgz#c2e847c7d4d998490c9097282bf21637d5162116"
 
 "@cli-engine/util@^1.0.11":
-  version "1.0.11"
-  resolved "https://registry.yarnpkg.com/@cli-engine/util/-/util-1.0.11.tgz#b5bc3071d6b4feb3e63a2c6713517d1a6b4bc655"
+  version "1.0.12"
+  resolved "https://registry.yarnpkg.com/@cli-engine/util/-/util-1.0.12.tgz#ecbc1fd3e0093be7139c52d6217d5cfdd6ef5c22"
   dependencies:
     "@cli-engine/command" "^12.0.3"
     "@cli-engine/config" "^5.0.11"
-    "@cli-engine/engine" "^6.1.12"
+    "@cli-engine/engine" "^6.1.14"
     cli-ux "^2.0.21"
     cross-spawn "^5.1.0"
     del "^3.0.0"
@@ -3855,8 +3856,8 @@ pseudomap@^1.0.2:
   resolved "https://registry.yarnpkg.com/pseudomap/-/pseudomap-1.0.2.tgz#f052a28da70e618917ef0a8ac34c1ae5a68286b3"
 
 psl@^1.1.19:
-  version "1.1.21"
-  resolved "https://registry.yarnpkg.com/psl/-/psl-1.1.21.tgz#c8f9340ee7cee997fcd1aff2d47421cf4ab8326f"
+  version "1.1.22"
+  resolved "https://registry.yarnpkg.com/psl/-/psl-1.1.22.tgz#3fc5fe82c8c10146292b17dc88a75cbb11e234c9"
 
 pump@^1.0.0:
   version "1.0.3"
