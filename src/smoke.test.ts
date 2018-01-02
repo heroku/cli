@@ -29,7 +29,7 @@ test('heroku apps && heroku apps info && heroku run', async () => {
   expect(cmd.stdout).toMatch(/^===.*Apps/)
   const app = cmd.stdout.split('\n')[1]
   if (!app) throw new Error(`no app found, got ${cmd.stdout}`)
-  const appFlag = `-a=${app}`
+  const appFlag = `-a=${app.split(' ')[0]}`
   expect((await run(['info', appFlag])).stdout).toContain(`=== ${app}`)
   expect((await run(['run', '--exit-code', appFlag, 'echo', 'it works!'])).stdout).toMatch(/^it works!/)
 })
