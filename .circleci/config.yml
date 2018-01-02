@@ -18,14 +18,14 @@ jobs:
       - checkout
       - restore_cache: &yarn_restore_cache
           keys:
-            - v1-yarn-{{ checksum ".circle/config.yml" }}-{{ checksum "yarn.lock" }}
-            - v1-yarn-{{ checksum ".circle/config.yml" }}
+            - v1-yarn-{{ checksum ".circleci/config.yml" }}-{{ checksum "yarn.lock" }}
+            - v1-yarn-{{ checksum ".circleci/config.yml" }}
             - v1-yarn
       - run: yarn
       - run: yarn test --coverage
       - run: curl -s https://codecov.io/bash | bash
       - save_cache:
-          key: v1-yarn-{{ checksum ".circle/config.yml" }}-{{ checksum "yarn.lock" }}
+          key: v1-yarn-{{ checksum ".circleci/config.yml" }}-{{ checksum "yarn.lock" }}
           paths:
             - /cli/node_modules
             - /usr/local/share/.cache/yarn
