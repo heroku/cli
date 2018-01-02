@@ -17,10 +17,16 @@ export default class BrewMigrateHook extends Hook<'update'> {
     try {
       if (this.config.platform !== 'darwin') return
       const brewRoot = path.join(process.env.HOMEBREW_PREFIX || '/usr/local')
-      let p = fs.realpathSync(path.join(brewRoot, 'bin/heroku'))
+      let p
+      try {
+        p = fs.realpathSync(path.join(brewRoot, 'bin/heroku'))
+      } catch (err) {
+        if (err.code === 'ENOENT') return
+        throw err
+      }
 
       if (!p.startsWith(path.join(brewRoot, 'Cellar'))) return
-      if (this.taps().includes('homebrew/brew')) return
+      if (this.taps().includes('heroku/brew')) return
 
       debug('migrating from brew')
       // not on private tap, move to it
