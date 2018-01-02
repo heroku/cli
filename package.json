@@ -15,6 +15,18 @@
     "npmRegistry": "https://cli-npm.heroku.com",
     "commands": "./lib/commands",
     "topics": {
+      "2fa": {
+        "description": "two-factor authentication",
+        "hidden": true
+      },
+      "stack": {
+        "description": "list available stacks",
+        "hidden": true
+      },
+      "twofactor": {
+        "description": "two-factor authentication",
+        "hidden": true
+      },
       "outbound-rules": {
         "description": "space outbound IP rules",
         "hidden": true
