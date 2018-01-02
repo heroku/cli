@@ -10,8 +10,7 @@ rm -rf "$CACHE_DIR"
 mkdir -p "$CACHE_DIR"
 cd "$CACHE_DIR"
 
-# TARGETS=(darwin linux win32 windows)
-TARGETS=(win32 windows)
+TARGETS=(darwin linux win32 windows)
 for OS in "${TARGETS[@]}"; do
   setos "$OS"
   IFS='|' read -ra ARCHS <<< "$(archs)"
@@ -49,11 +48,11 @@ for OS in "${TARGETS[@]}"; do
 done
 
 # generate version file
-# cat << EOF > "$CACHE_DIR/version"
-# {
-#   "channel": "${CHANNEL}",
-#   "version": "${VERSION}"
-# }
-# EOF
+cat << EOF > "$CACHE_DIR/version"
+{
+  "channel": "${CHANNEL}",
+  "version": "${VERSION}"
+}
+EOF
 
 s3upload --content-type application/json --recursive "$CACHE_DIR" "$REMOTE_BASE"

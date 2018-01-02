@@ -5,7 +5,6 @@ export ARCH=x64
 
 source ./scripts/release/_init
 
-yarn
 script "darwin/build"
 
 set -x
