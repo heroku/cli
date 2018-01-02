@@ -23,8 +23,8 @@
   resolved "https://registry.yarnpkg.com/@cli-engine/config/-/config-5.0.11.tgz#b3b1393da09469fbcaaa99329064e775e275de24"
 
 "@cli-engine/engine@^6.1.14", "@cli-engine/engine@^6.1.15":
-  version "6.1.15"
-  resolved "https://registry.yarnpkg.com/@cli-engine/engine/-/engine-6.1.15.tgz#6fdc4ffc3c20034644d2c2517945afe743b3407d"
+  version "6.1.16"
+  resolved "https://registry.yarnpkg.com/@cli-engine/engine/-/engine-6.1.16.tgz#30593ed7eea8ed44dab019047f55fc5d53fd5ca3"
   dependencies:
     "@heroku-cli/color" "^1.0.4"
     assync "^1.0.4"
@@ -38,7 +38,7 @@
     klaw "^2.1.1"
     log-chopper "^1.0.2"
     moment "^2.20.1"
-    rwlockfile "^2.0.15"
+    rwlockfile "^2.0.16"
     semver "5.4.1"
     string-similarity "^1.2.0"
     strip-ansi "4.0.0"
@@ -4139,9 +4139,9 @@ run-async@^2.2.0:
   dependencies:
     is-promise "^2.1.0"
 
-rwlockfile@^2.0.15:
-  version "2.0.15"
-  resolved "https://registry.yarnpkg.com/rwlockfile/-/rwlockfile-2.0.15.tgz#244949065df3a78d65a4f91d37452523e170e13f"
+rwlockfile@^2.0.16:
+  version "2.0.16"
+  resolved "https://registry.yarnpkg.com/rwlockfile/-/rwlockfile-2.0.16.tgz#0327c8c51b19baac7af0057d0adda6f4a726a485"
   dependencies:
     fs-extra "^5.0.0"
     tslib "^1.8.1"
