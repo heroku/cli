@@ -35,9 +35,10 @@ function dockerLogin (registry, password, verbose) {
   let args = [
     'login',
     '--username=_',
-    `--password=${ password }`,
+    '--password-stdin',
     registry
   ]
+
   log(verbose, args)
-  return Sanbashi.cmd('docker', args)
+  return Sanbashi.cmd('docker', args, {input: password})
 }

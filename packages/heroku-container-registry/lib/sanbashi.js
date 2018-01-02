@@ -102,6 +102,7 @@ Sanbashi.pushImage = function (resource, verbose) {
   return Sanbashi.cmd('docker', args)
 }
 
+
 Sanbashi.runImage = function (resource, command, port, verbose) {
   let args = ['run', '--user', os.userInfo().uid, '-e', `PORT=${port}`]
   if (command == '') {
@@ -114,9 +115,18 @@ Sanbashi.runImage = function (resource, command, port, verbose) {
 }
 
 Sanbashi.cmd = function (cmd, args) {
+  let stdio = [process.stdin, process.stdout, process.stderr]
+  if (options.input) {
+    stdio[0] = 'pipe'
+  }
+
   return new Promise((resolve, reject) => {
-    Child.spawn(cmd, args, {stdio: 'inherit'})
-      .on('exit', (code, signal) => {
+    let child = Child.spawn(cmd, args, {stdio: stdio})
+
+    if (child.stdin) {
+      child.stdin.end(options.input)
+    }
+    child.on('exit', (code, signal) => {
         if (signal || code) reject(signal || code)
         else resolve()
       })
