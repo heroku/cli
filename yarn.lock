@@ -22,9 +22,9 @@
   version "5.0.11"
   resolved "https://registry.yarnpkg.com/@cli-engine/config/-/config-5.0.11.tgz#b3b1393da09469fbcaaa99329064e775e275de24"
 
-"@cli-engine/engine@^6.1.14", "@cli-engine/engine@^6.1.22":
-  version "6.1.22"
-  resolved "https://registry.yarnpkg.com/@cli-engine/engine/-/engine-6.1.22.tgz#f7950d2ec1e751717e7ce6daf849a114a3a63a13"
+"@cli-engine/engine@^6.1.14", "@cli-engine/engine@^6.1.23":
+  version "6.1.23"
+  resolved "https://registry.yarnpkg.com/@cli-engine/engine/-/engine-6.1.23.tgz#a0832f4c7140cce6ffbb86a20902e9b118891dc9"
   dependencies:
     "@heroku-cli/color" "^1.0.4"
     assync "^1.0.4"
@@ -145,9 +145,9 @@
   dependencies:
     "@types/node" "*"
 
-"@types/node@*", "@types/node@8.5.2":
-  version "8.5.2"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-8.5.2.tgz#83b8103fa9a2c2e83d78f701a9aa7c9539739aa5"
+"@types/node@*", "@types/node@8.5.4":
+  version "8.5.4"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-8.5.4.tgz#74bf463cb7ed54800df11ef4ec3f5d455655a593"
 
 "@types/supports-color@3.1.0":
   version "3.1.0"
@@ -3808,8 +3808,8 @@ plist@^2.0.1:
     xmldom "0.1.x"
 
 pn@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/pn/-/pn-1.0.0.tgz#1cf5a30b0d806cd18f88fc41a6b5d4ad615b3ba9"
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/pn/-/pn-1.1.0.tgz#e2f4cef0e219f463c179ab37463e4e1ecdccbafb"
 
 prelude-ls@~1.1.2:
   version "1.1.2"
