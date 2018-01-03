@@ -1,48 +1,59 @@
-jest.mock('fs-extra')
 jest.mock('child_process')
 
-const fs = require('fs-extra')
+import * as path from 'path'
 const { spawnSync } = require('child_process')
 
+import Config from '../../__test__/config'
+import { withFiles } from '../../__test__/file'
 import { skipIfWindows } from '../../__test__/init'
 
 import Brew from './brew'
 
-let config = { platform: 'darwin' } as any
+let config: Config
 
+let env = process.env
 beforeEach(() => {
+  config = new Config({ platform: 'darwin' })
+  process.env.HOMEBREW_PREFIX = path.join(config.dataDir, '/usr/local')
   jest.resetAllMocks()
 })
 
-skipIfWindows('does not migrate when bin is not found', async () => {
-  const brew = new Brew(config)
-  fs.realpathSync.mockImplementation(() => {
-    throw new ErrorEvent('ENOENT')
-  })
-  await brew.run()
-  expect(fs.realpathSync).toBeCalledWith('/usr/local/bin/heroku')
-  expect(spawnSync).not.toBeCalled()
-})
-
-skipIfWindows('does not migrate when bin is not in /usr/local/Cellar', async () => {
-  const brew = new Brew(config)
-  fs.realpathSync.mockReturnValue('/usr/local/Cellar/heroku/6.0.0/bin/heroku')
-  spawnSync.mockReturnValueOnce({ stdout: 'foo\nheroku/brew\nbar\n' })
-  await brew.run()
-  expect(spawnSync.mock.calls.length).toEqual(1)
-  expect(spawnSync.mock.calls[0]).toEqual(['brew', ['tap'], { encoding: 'utf8', stdio: [0, 'pipe', 2] }])
+afterEach(() => {
+  process.env = env
 })
 
 skipIfWindows('migrates', async () => {
+  let hb = process.env.HOMEBREW_PREFIX!
+  await withFiles(
+    {
+      'bin/heroku': { type: 'symlink', to: path.join(hb, 'Cellar/heroku/6.15.2/bin/heroku') },
+      'Cellar/heroku/6.15.2/bin/heroku': 'foo',
+      'Cellar/heroku/6.15.2/INSTALL_RECEIPT.json': { type: 'file', content: { source: { tap: 'homebrew/core' } } },
+    },
+    { root: process.env.HOMEBREW_PREFIX },
+  )
   const brew = new Brew(config)
-  fs.realpathSync.mockReturnValue('/usr/local/Cellar/heroku/6.0.0/bin/heroku')
-  spawnSync.mockReturnValueOnce({ stdout: 'foo\nbar\n' })
   await brew.run()
-  expect(spawnSync.mock.calls.length).toEqual(3)
-  expect(spawnSync.mock.calls[1]).toEqual(['brew', ['tap', 'heroku/brew'], { encoding: 'utf8', stdio: 'inherit' }])
-  expect(spawnSync.mock.calls[2]).toEqual([
+  expect(spawnSync.mock.calls.length).toEqual(2)
+  expect(spawnSync.mock.calls[0]).toEqual(['brew', ['tap', 'heroku/brew'], { encoding: 'utf8', stdio: 'inherit' }])
+  expect(spawnSync.mock.calls[1]).toEqual([
     'brew',
     ['upgrade', 'heroku/brew/heroku'],
     { encoding: 'utf8', stdio: 'inherit' },
   ])
+})
+
+skipIfWindows('does not migrate if already migrated', async () => {
+  let hb = process.env.HOMEBREW_PREFIX!
+  await withFiles(
+    {
+      'bin/heroku': { type: 'symlink', to: path.join(hb, 'Cellar/heroku/6.15.2/bin/heroku') },
+      'Cellar/heroku/6.15.2/bin/heroku': 'foo',
+      'Cellar/heroku/6.15.2/INSTALL_RECEIPT.json': { type: 'file', content: { source: { tap: 'heroku/brew' } } },
+    },
+    { root: process.env.HOMEBREW_PREFIX },
+  )
+  const brew = new Brew(config)
+  await brew.run()
+  expect(spawnSync).not.toBeCalled()
 })

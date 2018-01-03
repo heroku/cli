@@ -12,21 +12,18 @@ function brew(args: string[], opts: SpawnSyncOptions = {}) {
   return spawnSync('brew', args, { stdio: 'inherit', ...opts, encoding: 'utf8' })
 }
 
+interface InstallReceipt {
+  source: {
+    tap: string
+  }
+}
+
 export default class BrewMigrateHook extends Hook<'update'> {
   async run() {
     try {
       if (this.config.platform !== 'darwin') return
-      const brewRoot = path.join(process.env.HOMEBREW_PREFIX || '/usr/local')
-      let p
-      try {
-        p = fs.realpathSync(path.join(brewRoot, 'bin/heroku'))
-      } catch (err) {
-        if (err.code === 'ENOENT') return
-        throw err
-      }
 
-      if (!p.startsWith(path.join(brewRoot, 'Cellar'))) return
-      if (this.taps().includes('heroku/brew')) return
+      if (!await this.needsMigrate()) return
 
       debug('migrating from brew')
       // not on private tap, move to it
@@ -39,8 +36,37 @@ export default class BrewMigrateHook extends Hook<'update'> {
     }
   }
 
-  taps(): string[] {
-    const { stdout } = brew(['tap'], { stdio: [0, 'pipe', 2] })
-    return stdout.split('\n')
+  private get brewRoot() {
+    return path.join(process.env.HOMEBREW_PREFIX || '/usr/local')
+  }
+
+  private get binPath(): string | undefined {
+    try {
+      return fs.realpathSync(path.join(this.brewRoot, 'bin/heroku'))
+    } catch (err) {
+      if (err.code === 'ENOENT') return
+      throw err
+    }
+  }
+
+  private get cellarPath(): string | undefined {
+    if (!this.binPath) return
+    if (!this.binPath.startsWith(path.join(this.brewRoot, 'Cellar'))) return
+    let p = path.resolve(
+      this.binPath,
+      path.dirname(path.relative(this.binPath, path.join(this.brewRoot, 'Cellar/heroku'))),
+    )
+    return p
+  }
+
+  private async fetchInstallReceipt(): Promise<InstallReceipt | undefined> {
+    if (!this.cellarPath) return
+    return fs.readJSON(path.join(this.cellarPath, 'INSTALL_RECEIPT.json'))
+  }
+
+  private async needsMigrate(): Promise<boolean> {
+    let receipt = await this.fetchInstallReceipt()
+    if (!receipt) return false
+    return receipt.source.tap === 'homebrew/core'
   }
 }
