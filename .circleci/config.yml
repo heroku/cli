@@ -124,17 +124,14 @@ jobs:
       - run: ./scripts/build/win32
       - run: ls dist
       - run: ./scripts/release/win32
-  # dev_center_docs:
-  #   docker: *win32_docker
-  #   steps:
-  #     - type: checkout
-  #     - run: ./scripts/release/dev_center_docs
-  #     - store_artifacts:
-  #         path: /tmp/heroku-cli-commands.md
-  #     - run: |
-  #         if [ "$CIRCLE_TAG" != "" ]; then
-  #           devcenter push /tmp/heroku-cli-commands.md --trace
-  #         fi
+  dev_center_docs:
+    docker: *win32_docker
+    steps:
+      - type: checkout
+      - run: ./scripts/release/dev_center_docs
+      - store_artifacts:
+          path: /tmp/heroku-cli-commands-test.md
+      - run: devcenter push /tmp/heroku-cli-commands-test.md --trace
 workflows:
   version: 2
   heroku_cli:
@@ -143,36 +140,38 @@ workflows:
           filters: &all_pushes
             tags: &version_tags
               only: /^v.*/
-      - build_os_darwin: &release
-          filters:
-            tags: *version_tags
-            branches:
-              only:
-                - master
-                - dev
-      - build_os_linux: *release
-      - build_os_win32: *release
-      - build_os_windows: *release
-      - build_and_release_win_inst:
-          <<: *release
-          requires:
-            - test
-            - build_os_win32
-            - build_os_windows
-      - build_and_release_deb:
-          <<: *release
-          requires:
-            - test
-            - build_os_linux
-      - release:
-          <<: *release
-          requires:
-            - test
-            - build_os_darwin
-            - build_os_linux
-            - build_os_win32
-            - build_os_windows
-      # skip devcenter for now
-      # - dev_center_docs:
+      # - build_os_darwin: &release
+      #     filters:
+      #       tags: *version_tags
+      #       branches:
+      #         only:
+      #           - master
+      #           - dev
+      # - build_os_linux: *release
+      # - build_os_win32: *release
+      # - build_os_windows: *release
+      # - build_and_release_win_inst:
+      #     <<: *release
       #     requires:
       #       - test
+      #       - build_os_win32
+      #       - build_os_windows
+      # - build_and_release_deb:
+      #     <<: *release
+      #     requires:
+      #       - test
+      #       - build_os_linux
+      # - release:
+      #     <<: *release
+      #     requires:
+      #       - test
+      #       - build_os_darwin
+      #       - build_os_linux
+      #       - build_os_win32
+      #       - build_os_windows
+      - dev_center_docs:
+          requires:
+            - test
+          filters:
+            tags:
+              only: /^test-*/
