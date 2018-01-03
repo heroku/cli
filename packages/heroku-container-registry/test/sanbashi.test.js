@@ -130,4 +130,12 @@ describe('Sanbashi', () => {
       Sanbashi.cmd.restore() // Unwraps the spy
     });
   })
+  describe('.version', () => {
+    it('returns a major and a minor component', async () => {
+      let version = await Sanbashi.version()
+      expect(version).to.have.property('length', 2)
+      expect(version[0]).to.not.be.an('undefined')
+      expect(version[1]).to.not.be.an('undefined')
+    })
+  })
 })

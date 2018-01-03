@@ -121,10 +121,20 @@ Sanbashi.runImage = function (resource, command, port, verbose) {
   return Sanbashi.cmd('docker', args)
 }
 
+Sanbashi.version = function () {
+  return Sanbashi
+      .cmd('docker', ['version', '-f', '{{.Client.Version}}'], {output: true})
+      .then(version => version.split(/\./))
+      .then(([major, minor]) => [major, minor]) // ensure exactly 2 components
+}
+
 Sanbashi.cmd = function (cmd, args, options = {}) {
   let stdio = [process.stdin, process.stdout, process.stderr]
   if (options.input) {
     stdio[0] = 'pipe'
+  }
+  if (options.output) {
+    stdio[1] = 'pipe'
   }
 
   return new Promise((resolve, reject) => {
@@ -133,9 +143,16 @@ Sanbashi.cmd = function (cmd, args, options = {}) {
     if (child.stdin) {
       child.stdin.end(options.input)
     }
+    let stdout = undefined
+    if (child.stdout) {
+      stdout = ''
+      child.stdout.on('data', (data) => {
+        stdout += data.toString()
+      })
+    }
     child.on('exit', (code, signal) => {
         if (signal || code) reject(signal || code)
-        else resolve()
+        else resolve(stdout)
       })
   })
 }

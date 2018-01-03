@@ -31,7 +31,16 @@ async function login (context, heroku) {
   }
 }
 
-function dockerLogin (registry, password, verbose) {
+async function dockerLogin (registry, password, verbose) {
+  let [major, minor] = await Sanbashi.version()
+
+  if (major > 17 || major == 17 && minor >= 1) {
+    return await dockerLoginStdin(registry, password, verbose)
+  }
+  return await dockerLoginArgv(registry, password, verbose)
+}
+
+function dockerLoginStdin(registry, password, verbose) {
   let args = [
     'login',
     '--username=_',
@@ -41,4 +50,16 @@ function dockerLogin (registry, password, verbose) {
 
   log(verbose, args)
   return Sanbashi.cmd('docker', args, {input: password})
+}
+
+function dockerLoginArgv(registry, password, verbose) {
+  let args = [
+    'login',
+    '--username=_',
+    `--password=${password}`,
+    registry
+  ]
+
+  log(verbose, args)
+  return Sanbashi.cmd('docker', args)
 }
