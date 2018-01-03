@@ -166,4 +166,4 @@ workflows:
             - test
           filters:
             tags:
-              only: /^test-*/
+              only: /.*/
