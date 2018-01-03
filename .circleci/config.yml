@@ -111,17 +111,14 @@ jobs:
       - run: ./scripts/build/win32
       - run: ls dist
       - run: ./scripts/release/win32
-  # dev_center_docs:
-  #   docker: *win32_docker
-  #   steps:
-  #     - type: checkout
-  #     - run: ./scripts/release/dev_center_docs
-  #     - store_artifacts:
-  #         path: /tmp/heroku-cli-commands.md
-  #     - run: |
-  #         if [ "$CIRCLE_TAG" != "" ]; then
-  #           devcenter push /tmp/heroku-cli-commands.md --trace
-  #         fi
+  dev_center_docs:
+    docker: *win32_docker
+    steps:
+      - type: checkout
+      - run: ./scripts/release/dev_center_docs
+      - store_artifacts:
+          path: /tmp/heroku-cli-commands-test.md
+      - run: devcenter push /tmp/heroku-cli-commands-test.md --trace
 workflows:
   version: 2
   heroku_cli:
@@ -160,3 +157,13 @@ workflows:
       # - dev_center_docs:
       #     requires:
       #       - test
+      #       - build_os_darwin
+      #       - build_os_linux
+      #       - build_os_win32
+      #       - build_os_windows
+      - dev_center_docs:
+          requires:
+            - test
+          filters:
+            tags:
+              only: /^test-*/
