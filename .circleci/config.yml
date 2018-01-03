@@ -162,8 +162,8 @@ workflows:
       #       - build_os_win32
       #       - build_os_windows
       - dev_center_docs:
-          requires:
-            - test
+          # requires:
+          #   - test
           filters:
             tags:
               only: /.*/
