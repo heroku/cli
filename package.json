@@ -93,6 +93,7 @@
     "http-call": "4.0.6",
     "netrc-parser": "2.0.6",
     "semver": "5.4.1",
+    "ts-lodash": "^4.0.9",
     "tslib": "^1.8.1",
     "uuid": "^3.1.0"
   },
@@ -104,6 +105,7 @@
     "@types/execa": "^0.8.1",
     "@types/fs-extra": "5.0.0",
     "@types/jest": "22.0.0",
+    "@types/lodash": "^4.14.91",
     "@types/nock": "9.1.1",
     "@types/node": "8.5.2",
     "@types/supports-color": "3.1.0",

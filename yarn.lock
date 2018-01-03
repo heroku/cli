@@ -135,6 +135,10 @@
   version "22.0.0"
   resolved "https://registry.yarnpkg.com/@types/jest/-/jest-22.0.0.tgz#23009941178aad7979a9591e026f7a96054d7bc0"
 
+"@types/lodash@^4.14.91":
+  version "4.14.91"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.91.tgz#794611b28056d16b5436059c6d800b39d573cd3a"
+
 "@types/nock@9.1.1":
   version "9.1.1"
   resolved "https://registry.yarnpkg.com/@types/nock/-/nock-9.1.1.tgz#0a1d5df5b9fe5b5ac90926156c58f1544ddd3cf5"
@@ -4688,7 +4692,13 @@ ts-jest@22.0.0:
     source-map-support "^0.5.0"
     yargs "^10.0.3"
 
-ts-lodash@4, ts-lodash@4.0.8, ts-lodash@^4.0.5, ts-lodash@^4.0.8:
+ts-lodash@4, ts-lodash@^4.0.5, ts-lodash@^4.0.8, ts-lodash@^4.0.9:
+  version "4.0.9"
+  resolved "https://registry.yarnpkg.com/ts-lodash/-/ts-lodash-4.0.9.tgz#088d7ceefbf36c8c4bcdf28372249015ccafd429"
+  dependencies:
+    lodash "^4.17.4"
+
+ts-lodash@4.0.8:
   version "4.0.8"
   resolved "https://registry.yarnpkg.com/ts-lodash/-/ts-lodash-4.0.8.tgz#4f424e687f9c89a3dcf1473779a251f134170f6a"
   dependencies:

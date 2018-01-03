@@ -1,5 +1,6 @@
 import * as execa from 'execa'
 import * as path from 'path'
+import _ from 'ts-lodash'
 
 import { integrationTest } from './__test__/init'
 
@@ -29,7 +30,8 @@ integrationTest('heroku auth:whoami', async () => {
 integrationTest('heroku apps && heroku apps info && heroku run', async () => {
   let cmd = await run(['apps'])
   expect(cmd.stdout).toMatch(/^===.*Apps/)
-  let app = cmd.stdout.split('\n')[1]
+  let apps = cmd.stdout.split('\n').slice(1, -1)
+  let app = _.sample(apps)
   if (!app) throw new Error(`no app found, got ${cmd.stdout}`)
   app = app.split(' ')[0]
   const appFlag = `-a=${app}`
