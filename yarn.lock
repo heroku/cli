@@ -22,7 +22,7 @@
   version "5.0.11"
   resolved "https://registry.yarnpkg.com/@cli-engine/config/-/config-5.0.11.tgz#b3b1393da09469fbcaaa99329064e775e275de24"
 
-"@cli-engine/engine@^6.1.14", "@cli-engine/engine@^6.1.25":
+"@cli-engine/engine@^6.1.14":
   version "6.1.25"
   resolved "https://registry.yarnpkg.com/@cli-engine/engine/-/engine-6.1.25.tgz#e747a98d6acf694eba8d372ffec989a6551f234b"
   dependencies:
@@ -44,6 +44,29 @@
     strip-ansi "4.0.0"
     tar-fs "^1.16.0"
     ts-lodash "4.0.8"
+    yarn "^1.3.2"
+
+"@cli-engine/engine@^6.1.26":
+  version "6.1.27"
+  resolved "https://registry.yarnpkg.com/@cli-engine/engine/-/engine-6.1.27.tgz#0a5df0174a74327fbb1c7a9a1d3f3ca072da8173"
+  dependencies:
+    "@heroku-cli/color" "^1.0.4"
+    assync "^1.0.4"
+    cli-ux "^2.0.21"
+    cross-spawn "^5.1.0"
+    debug "^3.1.0"
+    filesize "^3.5.11"
+    fs-extra "^5.0.0"
+    graceful-fs "^4.1.11"
+    http-call "^4.0.6"
+    klaw "^2.1.1"
+    log-chopper "^1.0.2"
+    moment "^2.20.1"
+    rwlockfile "^2.0.17"
+    semver "5.4.1"
+    string-similarity "^1.2.0"
+    strip-ansi "4.0.0"
+    ts-lodash "4.0.9"
     yarn "^1.3.2"
 
 "@cli-engine/screen@^0.0.0":
@@ -4206,7 +4229,7 @@ run-async@^2.2.0:
   dependencies:
     is-promise "^2.1.0"
 
-rwlockfile@^2.0.16:
+rwlockfile@^2.0.16, rwlockfile@^2.0.17:
   version "2.0.17"
   resolved "https://registry.yarnpkg.com/rwlockfile/-/rwlockfile-2.0.17.tgz#8905f09144d440833877fbb614e57607979b81e9"
   dependencies:
@@ -4756,7 +4779,7 @@ ts-jest@22.0.0:
     source-map-support "^0.5.0"
     yargs "^10.0.3"
 
-ts-lodash@4, ts-lodash@^4.0.5, ts-lodash@^4.0.8, ts-lodash@^4.0.9:
+ts-lodash@4, ts-lodash@4.0.9, ts-lodash@^4.0.5, ts-lodash@^4.0.8, ts-lodash@^4.0.9:
   version "4.0.9"
   resolved "https://registry.yarnpkg.com/ts-lodash/-/ts-lodash-4.0.9.tgz#088d7ceefbf36c8c4bcdf28372249015ccafd429"
   dependencies:
