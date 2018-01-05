@@ -4,8 +4,6 @@ import * as execa from 'execa'
 import * as fs from 'fs-extra'
 import * as path from 'path'
 
-import { skipWindowsIntegrationTest } from './__test__/init'
-
 const readPkg = require('read-pkg')
 
 const plugins = ['heroku-ps-exec']

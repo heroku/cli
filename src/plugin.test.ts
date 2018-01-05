@@ -4,7 +4,7 @@ import * as execa from 'execa'
 import * as fs from 'fs-extra'
 import * as path from 'path'
 
-import { integrationTest } from './__test__/init'
+import { skipWindowsIntegrationTest } from './__test__/init'
 
 const readPkg = require('read-pkg')
 
@@ -14,7 +14,7 @@ jest.setTimeout(10000000)
 
 Promise.all(
   plugins.map(plugin => {
-    integrationTest(plugin, async () => {
+    skipWindowsIntegrationTest(plugin, async () => {
       const cwd = path.join(__dirname, '../tmp/plugin', plugin)
       await fs.remove(cwd)
       const pkg = await readPkg(path.join(__dirname, '../node_modules', plugin, 'package.json'))
