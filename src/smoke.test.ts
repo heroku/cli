@@ -30,7 +30,10 @@ integrationTest('heroku auth:whoami', async () => {
 integrationTest('heroku apps && heroku apps info && heroku run', async () => {
   let cmd = await run(['apps'])
   expect(cmd.stdout).toMatch(/^===.*Apps/)
-  let apps = cmd.stdout.split('\n').slice(1, -1)
+  let apps = cmd.stdout
+    .split('\n')
+    .slice(1, -1)
+    .filter(a => !a.match(/===/) && a)
   let app = _.sample(apps)
   if (!app) throw new Error(`no app found, got ${cmd.stdout}`)
   app = app.split(' ')[0]
