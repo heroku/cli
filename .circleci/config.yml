@@ -24,6 +24,8 @@ jobs:
       - run: yarn global add greenkeeper-lockfile@1 && greenkeeper-lockfile-update
       - run: yarn
       - run: yarn link
+        # TODO: get rid of this later
+      - run: mkdir -p ~/.cache/heroku
       - run: yarn test --coverage
       - run: greenkeeper-lockfile-upload
       - run: curl -s https://codecov.io/bash | bash
