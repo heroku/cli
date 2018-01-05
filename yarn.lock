@@ -22,9 +22,9 @@
   version "5.0.11"
   resolved "https://registry.yarnpkg.com/@cli-engine/config/-/config-5.0.11.tgz#b3b1393da09469fbcaaa99329064e775e275de24"
 
-"@cli-engine/engine@^6.1.14", "@cli-engine/engine@^6.1.23":
-  version "6.1.23"
-  resolved "https://registry.yarnpkg.com/@cli-engine/engine/-/engine-6.1.23.tgz#a0832f4c7140cce6ffbb86a20902e9b118891dc9"
+"@cli-engine/engine@^6.1.14", "@cli-engine/engine@^6.1.25":
+  version "6.1.25"
+  resolved "https://registry.yarnpkg.com/@cli-engine/engine/-/engine-6.1.25.tgz#e747a98d6acf694eba8d372ffec989a6551f234b"
   dependencies:
     "@heroku-cli/color" "^1.0.4"
     assync "^1.0.4"
@@ -82,10 +82,11 @@
     http-call "^4.0.6"
     netrc-parser "^2.0.5"
 
-"@heroku-cli/tslint@^1.0.3":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/tslint/-/tslint-1.0.3.tgz#a7258f8a365ea2d0e9199b73328f913bf2656443"
+"@heroku-cli/tslint@^1.1.2":
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/tslint/-/tslint-1.1.2.tgz#65a5738608d1d687df1a594f059b9d66ff52eddc"
   dependencies:
+    tslint "^5.8.0"
     tslint-config-prettier "*"
 
 "@heroku/foreman@^2.0.2":
@@ -131,13 +132,13 @@
   dependencies:
     "@types/node" "*"
 
-"@types/jest@22.0.0":
-  version "22.0.0"
-  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-22.0.0.tgz#23009941178aad7979a9591e026f7a96054d7bc0"
+"@types/jest@22.0.1":
+  version "22.0.1"
+  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-22.0.1.tgz#6370a6d60cce3845e4cd5d00bf65f654264685bc"
 
-"@types/lodash@^4.14.91":
-  version "4.14.91"
-  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.91.tgz#794611b28056d16b5436059c6d800b39d573cd3a"
+"@types/lodash@^4.14.92":
+  version "4.14.92"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.92.tgz#6e3cb0b71a1e12180a47a42a744e856c3ae99a57"
 
 "@types/nock@9.1.1":
   version "9.1.1"
@@ -145,7 +146,11 @@
   dependencies:
     "@types/node" "*"
 
-"@types/node@*", "@types/node@8.5.4":
+"@types/node@*":
+  version "7.0.52"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-7.0.52.tgz#8990d3350375542b0c21a83cd0331e6a8fc86716"
+
+"@types/node@8.5.4":
   version "8.5.4"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-8.5.4.tgz#74bf463cb7ed54800df11ef4ec3f5d455655a593"
 
@@ -2007,7 +2012,7 @@ heroku-client@3.0.2:
     is-retry-allowed "^1.0.0"
     tunnel-agent "^0.4.0"
 
-heroku-client@3.0.5, heroku-client@^3.0.3, heroku-client@^3.0.5:
+heroku-client@3.0.5:
   version "3.0.5"
   resolved "https://registry.yarnpkg.com/heroku-client/-/heroku-client-3.0.5.tgz#3a8a9445236cfc0e418bf795f51a2228610a575d"
   dependencies:
@@ -2022,6 +2027,13 @@ heroku-client@^2.4.0:
     path-proxy "^1.0"
     q "^1.2.0"
     tunnel-agent "^0.4.0"
+
+heroku-client@^3.0.3, heroku-client@^3.0.5:
+  version "3.0.6"
+  resolved "https://registry.yarnpkg.com/heroku-client/-/heroku-client-3.0.6.tgz#bf603716a9d469682d4f7f80489276d82b896305"
+  dependencies:
+    is-retry-allowed "^1.0.0"
+    tunnel-agent "^0.6.0"
 
 heroku-container-registry@4.4.1:
   version "4.4.1"
@@ -2495,6 +2507,10 @@ is-posix-bracket@^0.1.0:
 is-primitive@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/is-primitive/-/is-primitive-2.0.0.tgz#207bab91638499c07b2adf240a41a87210034575"
+
+is-process-active@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/is-process-active/-/is-process-active-1.0.0.tgz#d21529792e950d1120369442867e0d7608ca2aac"
 
 is-promise@^2.1.0:
   version "2.1.0"
@@ -3649,8 +3665,10 @@ p-is-promise@^1.1.0:
   resolved "https://registry.yarnpkg.com/p-is-promise/-/p-is-promise-1.1.0.tgz#9c9456989e9f6588017b0434d56097675c3da05e"
 
 p-limit@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/p-limit/-/p-limit-1.1.0.tgz#b07ff2d9a5d88bec806035895a2bab66a27988bc"
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/p-limit/-/p-limit-1.2.0.tgz#0e92b6bedcb59f022c13d0f1949dc82d15909f1c"
+  dependencies:
+    p-try "^1.0.0"
 
 p-locate@^2.0.0:
   version "2.0.0"
@@ -3667,6 +3685,10 @@ p-timeout@^2.0.1:
   resolved "https://registry.yarnpkg.com/p-timeout/-/p-timeout-2.0.1.tgz#d8dd1979595d2dc0139e1fe46b8b646cb3cdf038"
   dependencies:
     p-finally "^1.0.0"
+
+p-try@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/p-try/-/p-try-1.0.0.tgz#cbc79cdbaf8fd4228e13f621f2b1a237c1b207b3"
 
 package-json@^4.0.0:
   version "4.0.1"
@@ -4144,10 +4166,11 @@ run-async@^2.2.0:
     is-promise "^2.1.0"
 
 rwlockfile@^2.0.16:
-  version "2.0.16"
-  resolved "https://registry.yarnpkg.com/rwlockfile/-/rwlockfile-2.0.16.tgz#0327c8c51b19baac7af0057d0adda6f4a726a485"
+  version "2.0.17"
+  resolved "https://registry.yarnpkg.com/rwlockfile/-/rwlockfile-2.0.17.tgz#8905f09144d440833877fbb614e57607979b81e9"
   dependencies:
     fs-extra "^5.0.0"
+    is-process-active "^1.0.0"
     tslib "^1.8.1"
     uuid "^3.1.0"
 
