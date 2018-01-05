@@ -103,6 +103,7 @@
     "@cli-engine/util": "^1.2.11",
     "@heroku-cli/tslint": "^1.1.4",
     "@types/ansi-styles": "^2.0.30",
+    "read-pkg": "^3.0.0",
     "@types/debug": "^0.0.30",
     "@types/execa": "^0.8.1",
     "@types/fs-extra": "5.0.0",
