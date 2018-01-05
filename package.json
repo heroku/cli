@@ -134,6 +134,7 @@
     "heroku-cli-plugin"
   ],
   "license": "ISC",
+  "main": "./lib/index.js",
   "repository": "heroku/cli",
   "scripts": {
     "lint": "yarn run shellcheck",
@@ -143,5 +144,6 @@
     "pretest": "tsc",
     "shellcheck": "./scripts/shellcheck",
     "test": "jest"
-  }
+  },
+  "types": "./lib/index.d.ts"
 }
