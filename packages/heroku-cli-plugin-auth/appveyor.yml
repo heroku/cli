@@ -1,0 +1,25 @@
+---
+build: off
+version: '{build}'
+shallow_clone: true
+clone_depth: 1
+matrix:
+  fast_finish: true
+environment:
+  matrix:
+    - nodejs_version: '9'
+    - nodejs_version: '8'
+    - nodejs_version: '6'
+cache:
+  - '%LOCALAPPDATA%\Yarn -> appveyor.yml'
+  - node_modules -> package.json
+install:
+  - ps: Install-Product node $env:nodejs_version x64
+  - yarn
+test_script:
+  - yarn test --coverage
+after_test:
+  - ps: |
+      $env:PATH = 'C:\msys64\usr\bin;' + $env:PATH
+      Invoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh
+      bash codecov.sh
