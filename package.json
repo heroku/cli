@@ -93,6 +93,7 @@
     "http-call": "4.0.6",
     "netrc-parser": "2.0.6",
     "semver": "5.4.1",
+    "tar-fs": "^1.16.0",
     "ts-lodash": "^4.0.9",
     "tslib": "^1.8.1",
     "uuid": "^3.1.0"
