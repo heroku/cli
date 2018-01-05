@@ -8,13 +8,8 @@
   },
   "cli-engine": {
     "topics": {
-      "2fa": {
-        "hidden": true
-      },
       "stack": {
-        "hidden": true
-      },
-      "twofactor": {
+        "description": "manage heroku stacks",
         "hidden": true
       }
     }
