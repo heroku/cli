@@ -147,8 +147,8 @@
     "@types/node" "*"
 
 "@types/node@*":
-  version "7.0.52"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-7.0.52.tgz#8990d3350375542b0c21a83cd0331e6a8fc86716"
+  version "4.0.35"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-4.0.35.tgz#2b96b8e67bea7451e6e1ba8b65eaeb8f223261ed"
 
 "@types/node@8.5.4":
   version "8.5.4"
@@ -2509,8 +2509,10 @@ is-primitive@^2.0.0:
   resolved "https://registry.yarnpkg.com/is-primitive/-/is-primitive-2.0.0.tgz#207bab91638499c07b2adf240a41a87210034575"
 
 is-process-active@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/is-process-active/-/is-process-active-1.0.0.tgz#d21529792e950d1120369442867e0d7608ca2aac"
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/is-process-active/-/is-process-active-1.0.1.tgz#63616541f447d84b71783cb2002360cf7e690b4f"
+  dependencies:
+    debug "^3.1.0"
 
 is-promise@^2.1.0:
   version "2.1.0"
