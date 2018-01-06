@@ -18,37 +18,13 @@
     chalk "^2.3.0"
     cli-flags "^2.0.6"
 
-"@cli-engine/config@^5.0.10", "@cli-engine/config@^5.0.11":
+"@cli-engine/config@^5.0.11":
   version "5.0.11"
   resolved "https://registry.yarnpkg.com/@cli-engine/config/-/config-5.0.11.tgz#b3b1393da09469fbcaaa99329064e775e275de24"
 
-"@cli-engine/engine@^6.1.14":
-  version "6.1.25"
-  resolved "https://registry.yarnpkg.com/@cli-engine/engine/-/engine-6.1.25.tgz#e747a98d6acf694eba8d372ffec989a6551f234b"
-  dependencies:
-    "@heroku-cli/color" "^1.0.4"
-    assync "^1.0.4"
-    cli-ux "^2.0.21"
-    cross-spawn "^5.1.0"
-    debug "^3.1.0"
-    filesize "^3.5.11"
-    fs-extra "^5.0.0"
-    graceful-fs "^4.1.11"
-    http-call "^4.0.6"
-    klaw "^2.1.1"
-    log-chopper "^1.0.2"
-    moment "^2.20.1"
-    rwlockfile "^2.0.16"
-    semver "5.4.1"
-    string-similarity "^1.2.0"
-    strip-ansi "4.0.0"
-    tar-fs "^1.16.0"
-    ts-lodash "4.0.8"
-    yarn "^1.3.2"
-
-"@cli-engine/engine@^6.1.27":
-  version "6.1.27"
-  resolved "https://registry.yarnpkg.com/@cli-engine/engine/-/engine-6.1.27.tgz#0a5df0174a74327fbb1c7a9a1d3f3ca072da8173"
+"@cli-engine/engine@^6.1.25", "@cli-engine/engine@^6.1.28":
+  version "6.1.28"
+  resolved "https://registry.yarnpkg.com/@cli-engine/engine/-/engine-6.1.28.tgz#e846888e19ffecbb0363c42482311dd132c8ecf0"
   dependencies:
     "@heroku-cli/color" "^1.0.4"
     assync "^1.0.4"
@@ -73,28 +49,20 @@
   version "0.0.0"
   resolved "https://registry.yarnpkg.com/@cli-engine/screen/-/screen-0.0.0.tgz#c2e847c7d4d998490c9097282bf21637d5162116"
 
-"@cli-engine/util@^1.0.11":
-  version "1.0.12"
-  resolved "https://registry.yarnpkg.com/@cli-engine/util/-/util-1.0.12.tgz#ecbc1fd3e0093be7139c52d6217d5cfdd6ef5c22"
+"@cli-engine/util@^1.0.13":
+  version "1.0.13"
+  resolved "https://registry.yarnpkg.com/@cli-engine/util/-/util-1.0.13.tgz#bc9fec8c9df59110133d0d0ef7e26075466c2de5"
   dependencies:
     "@cli-engine/command" "^12.0.3"
     "@cli-engine/config" "^5.0.11"
-    "@cli-engine/engine" "^6.1.14"
+    "@cli-engine/engine" "^6.1.25"
     cli-ux "^2.0.21"
     cross-spawn "^5.1.0"
     del "^3.0.0"
     fs-extra "^5.0.0"
     tslib "^1.8.1"
 
-"@heroku-cli/color@^1.0.4":
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/color/-/color-1.0.4.tgz#8d55cd9fd74c9f5b0b22ecb621ef52121206cd77"
-  dependencies:
-    ansi-styles "^3.2.0"
-    chalk "^2.3.0"
-    supports-color "^5.1.0"
-
-"@heroku-cli/color@^1.1.1":
+"@heroku-cli/color@^1.0.4", "@heroku-cli/color@^1.1.1":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@heroku-cli/color/-/color-1.1.1.tgz#a2c25239ff1196733a79cabc7a750cd46b96dc30"
   dependencies:
@@ -103,16 +71,16 @@
     strip-ansi "^4.0.0"
     supports-color "^5.1.0"
 
-"@heroku-cli/command@7", "@heroku-cli/command@^7.0.11":
-  version "7.0.11"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-7.0.11.tgz#0a76cf4775e07dbdee35934f85fc2808989c6a97"
+"@heroku-cli/command@7", "@heroku-cli/command@^7.0.12":
+  version "7.0.12"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-7.0.12.tgz#a1fea2c1dcd715ce071a98c92da1bcc5d535b2dc"
   dependencies:
     "@cli-engine/command" "^12.0.3"
-    "@cli-engine/config" "^5.0.10"
+    "@cli-engine/config" "^5.0.11"
     cli-ux "^2.0.21"
-    heroku-client "3.0.5"
+    heroku-client "3.0.6"
     http-call "^4.0.6"
-    netrc-parser "^2.0.5"
+    netrc-parser "^2.0.6"
 
 "@heroku-cli/tslint@^1.1.2":
   version "1.1.2"
@@ -178,13 +146,9 @@
   dependencies:
     "@types/node" "*"
 
-"@types/node@*":
-  version "4.0.35"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-4.0.35.tgz#2b96b8e67bea7451e6e1ba8b65eaeb8f223261ed"
-
-"@types/node@8.5.4":
-  version "8.5.4"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-8.5.4.tgz#74bf463cb7ed54800df11ef4ec3f5d455655a593"
+"@types/node@*", "@types/node@8.5.7":
+  version "8.5.7"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-8.5.7.tgz#9c498c35af354dcfbca3790fb2e81129e93cf0e2"
 
 "@types/supports-color@3.1.0":
   version "3.1.0"
@@ -2074,9 +2038,9 @@ heroku-client@3.0.2:
     is-retry-allowed "^1.0.0"
     tunnel-agent "^0.4.0"
 
-heroku-client@3.0.5:
-  version "3.0.5"
-  resolved "https://registry.yarnpkg.com/heroku-client/-/heroku-client-3.0.5.tgz#3a8a9445236cfc0e418bf795f51a2228610a575d"
+heroku-client@3.0.6, heroku-client@^3.0.3, heroku-client@^3.0.5:
+  version "3.0.6"
+  resolved "https://registry.yarnpkg.com/heroku-client/-/heroku-client-3.0.6.tgz#bf603716a9d469682d4f7f80489276d82b896305"
   dependencies:
     is-retry-allowed "^1.0.0"
     tunnel-agent "^0.6.0"
@@ -2089,13 +2053,6 @@ heroku-client@^2.4.0:
     path-proxy "^1.0"
     q "^1.2.0"
     tunnel-agent "^0.4.0"
-
-heroku-client@^3.0.3, heroku-client@^3.0.5:
-  version "3.0.6"
-  resolved "https://registry.yarnpkg.com/heroku-client/-/heroku-client-3.0.6.tgz#bf603716a9d469682d4f7f80489276d82b896305"
-  dependencies:
-    is-retry-allowed "^1.0.0"
-    tunnel-agent "^0.6.0"
 
 heroku-container-registry@4.4.1:
   version "4.4.1"
@@ -3507,7 +3464,7 @@ netrc-parser@2.0.1:
   dependencies:
     lex "^1.7.9"
 
-netrc-parser@2.0.6, netrc-parser@^2.0.3, netrc-parser@^2.0.5:
+netrc-parser@2.0.6, netrc-parser@^2.0.3, netrc-parser@^2.0.5, netrc-parser@^2.0.6:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/netrc-parser/-/netrc-parser-2.0.6.tgz#0a21b96810dbb2c3ac42fac0a260bf838d20ef2f"
   dependencies:
@@ -4229,7 +4186,7 @@ run-async@^2.2.0:
   dependencies:
     is-promise "^2.1.0"
 
-rwlockfile@^2.0.16, rwlockfile@^2.0.17:
+rwlockfile@^2.0.17:
   version "2.0.17"
   resolved "https://registry.yarnpkg.com/rwlockfile/-/rwlockfile-2.0.17.tgz#8905f09144d440833877fbb614e57607979b81e9"
   dependencies:
@@ -4764,9 +4721,9 @@ trim-right@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/trim-right/-/trim-right-1.0.1.tgz#cb2e1203067e0c8de1f614094b9fe45704ea6003"
 
-ts-jest@22.0.0:
-  version "22.0.0"
-  resolved "https://registry.yarnpkg.com/ts-jest/-/ts-jest-22.0.0.tgz#cce1a5f1106150ca002d09f7e85913355ceb5e8d"
+ts-jest@22.0.1:
+  version "22.0.1"
+  resolved "https://registry.yarnpkg.com/ts-jest/-/ts-jest-22.0.1.tgz#48942936a466c2e76e259b02e2f1356f1839afc3"
   dependencies:
     babel-core "^6.24.1"
     babel-plugin-istanbul "^4.1.4"
@@ -4782,12 +4739,6 @@ ts-jest@22.0.0:
 ts-lodash@4, ts-lodash@4.0.9, ts-lodash@^4.0.5, ts-lodash@^4.0.8, ts-lodash@^4.0.9:
   version "4.0.9"
   resolved "https://registry.yarnpkg.com/ts-lodash/-/ts-lodash-4.0.9.tgz#088d7ceefbf36c8c4bcdf28372249015ccafd429"
-  dependencies:
-    lodash "^4.17.4"
-
-ts-lodash@4.0.8:
-  version "4.0.8"
-  resolved "https://registry.yarnpkg.com/ts-lodash/-/ts-lodash-4.0.8.tgz#4f424e687f9c89a3dcf1473779a251f134170f6a"
   dependencies:
     lodash "^4.17.4"
 
