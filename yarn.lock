@@ -3492,7 +3492,14 @@ netrc-parser@2.0.1:
   dependencies:
     lex "^1.7.9"
 
-netrc-parser@2.0.6, netrc-parser@^2.0.3, netrc-parser@^2.0.5, netrc-parser@^2.0.6:
+netrc-parser@3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/netrc-parser/-/netrc-parser-3.0.1.tgz#c5671c21046f90185a4976e8b378441f24a5b4d7"
+  dependencies:
+    graceful-fs "^4.1.11"
+    lex "^1.7.9"
+
+netrc-parser@^2.0.3, netrc-parser@^2.0.5, netrc-parser@^2.0.6:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/netrc-parser/-/netrc-parser-2.0.6.tgz#0a21b96810dbb2c3ac42fac0a260bf838d20ef2f"
   dependencies:

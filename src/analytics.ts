@@ -2,11 +2,11 @@ import { Config } from '@cli-engine/config'
 import { ICommandInfo } from '@cli-engine/engine'
 import { vars } from '@heroku-cli/command'
 import cli from 'cli-ux'
+import netrc from 'netrc-parser'
 import * as path from 'path'
 
 import deps from './deps'
 
-const Netrc = require('netrc-parser')
 const debug = require('debug')('heroku:analytics')
 
 export interface AnalyticsJSONCommand {
@@ -125,8 +125,7 @@ export default class AnalyticsCommand {
   }
 
   get netrcLogin(): string | undefined {
-    let netrc = new Netrc()
-    return netrc.machines[vars.apiHost].login
+    return netrc.machines[vars.apiHost] && netrc.machines[vars.apiHost].login
   }
 
   get user(): string | undefined {
@@ -165,6 +164,7 @@ export default class AnalyticsCommand {
   }
 
   private async init() {
+    await netrc.load()
     this.userConfig = new deps.UserConfig(this.config)
     await this.userConfig.init()
   }

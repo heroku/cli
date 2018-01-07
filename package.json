@@ -90,7 +90,7 @@
     "heroku-spaces": "2.10.0",
     "heroku-webhooks": "1.1.0",
     "http-call": "4.0.7",
-    "netrc-parser": "2.0.6",
+    "netrc-parser": "3.0.1",
     "semver": "5.4.1",
     "tar-fs": "^1.16.0",
     "ts-lodash": "^4.0.9",
