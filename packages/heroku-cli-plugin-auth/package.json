@@ -28,8 +28,8 @@
   "cli-engine": {
     "commands": "./lib/commands",
     "topics": {
-      "heroku-cli-auth": {
-        "description": "says hello (example plugin)"
+      "auth": {
+        "description": "login/logout and other authentication"
       }
     }
   },
