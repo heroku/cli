@@ -22,30 +22,7 @@
   version "5.0.11"
   resolved "https://registry.yarnpkg.com/@cli-engine/config/-/config-5.0.11.tgz#b3b1393da09469fbcaaa99329064e775e275de24"
 
-"@cli-engine/engine@^6.1.25":
-  version "6.1.28"
-  resolved "https://registry.yarnpkg.com/@cli-engine/engine/-/engine-6.1.28.tgz#e846888e19ffecbb0363c42482311dd132c8ecf0"
-  dependencies:
-    "@heroku-cli/color" "^1.0.4"
-    assync "^1.0.4"
-    cli-ux "^2.0.21"
-    cross-spawn "^5.1.0"
-    debug "^3.1.0"
-    filesize "^3.5.11"
-    fs-extra "^5.0.0"
-    graceful-fs "^4.1.11"
-    http-call "^4.0.6"
-    klaw "^2.1.1"
-    log-chopper "^1.0.2"
-    moment "^2.20.1"
-    rwlockfile "^2.0.17"
-    semver "5.4.1"
-    string-similarity "^1.2.0"
-    strip-ansi "4.0.0"
-    ts-lodash "4.0.9"
-    yarn "^1.3.2"
-
-"@cli-engine/engine@^6.1.29":
+"@cli-engine/engine@^6.1.25", "@cli-engine/engine@^6.1.29":
   version "6.1.29"
   resolved "https://registry.yarnpkg.com/@cli-engine/engine/-/engine-6.1.29.tgz#7b40b030db138f14ee05659e14cfc618777dab51"
   dependencies:
@@ -748,7 +725,7 @@ camelcase@^4.0.0, camelcase@^4.1.0:
 
 capture-stack-trace@^1.0.0:
   version "1.0.0"
-  resolved "https://registry.yarnpkg.com/capture-stack-trace/-/capture-stack-trace-1.0.0.tgz#4a6fa07399c26bba47f0b2496b4d0fb408c5550d"
+  resolved "http://registry.npmjs.org/capture-stack-trace/-/capture-stack-trace-1.0.0.tgz#4a6fa07399c26bba47f0b2496b4d0fb408c5550d"
 
 cardinal@1.0.0, cardinal@1.x, cardinal@^1.0.0:
   version "1.0.0"
@@ -1063,7 +1040,7 @@ cpx@^1.5.0:
 
 create-error-class@^3.0.0:
   version "3.0.2"
-  resolved "https://registry.yarnpkg.com/create-error-class/-/create-error-class-3.0.2.tgz#06be7abef947a3f14a30fd610671d401bca8b7b6"
+  resolved "http://registry.npmjs.org/create-error-class/-/create-error-class-3.0.2.tgz#06be7abef947a3f14a30fd610671d401bca8b7b6"
   dependencies:
     capture-stack-trace "^1.0.0"
 
@@ -2078,9 +2055,9 @@ heroku-client@^2.4.0:
     q "^1.2.0"
     tunnel-agent "^0.4.0"
 
-heroku-container-registry@4.4.1:
-  version "4.4.1"
-  resolved "https://registry.yarnpkg.com/heroku-container-registry/-/heroku-container-registry-4.4.1.tgz#e6d3d52e8a449247819094e3a4589f8d9390da50"
+heroku-container-registry@4.4.4:
+  version "4.4.4"
+  resolved "https://registry.yarnpkg.com/heroku-container-registry/-/heroku-container-registry-4.4.4.tgz#fd5a96a13812084bc422bd495c6c025152711415"
   dependencies:
     glob "7.1.0"
     heroku-cli-util "6.1.17"
@@ -2246,13 +2223,13 @@ http-cache-semantics@3.8.1:
   version "3.8.1"
   resolved "https://registry.yarnpkg.com/http-cache-semantics/-/http-cache-semantics-3.8.1.tgz#39b0e16add9b605bf0a9ef3d9daaf4843b4cacd2"
 
-http-call@4.0.7, http-call@^4.0.6:
-  version "4.0.7"
-  resolved "https://registry.yarnpkg.com/http-call/-/http-call-4.0.7.tgz#1c2a94161a379dc1e7f136e7701d4b685ed5c1f9"
+http-call@4.0.8, http-call@^4.0.6:
+  version "4.0.8"
+  resolved "https://registry.yarnpkg.com/http-call/-/http-call-4.0.8.tgz#fd0207764958a3f1238bb3344ff912b32ddfa64a"
   dependencies:
     content-type "^1.0.4"
     debug "^3.1.0"
-    is-retry-allowed "git+https://github.com/heroku/is-retry-allowed"
+    is-retry-allowed "^1.1.0"
     is-stream "^1.1.0"
     tslib "^1.8.1"
     tunnel-agent "^0.6.0"
@@ -2571,13 +2548,9 @@ is-regex@^1.0.4:
   dependencies:
     has "^1.0.1"
 
-is-retry-allowed@^1.0.0, "is-retry-allowed@git+https://github.com/heroku/is-retry-allowed":
+is-retry-allowed@^1.0.0, is-retry-allowed@^1.1.0:
   version "1.1.0"
-  resolved "git+https://github.com/heroku/is-retry-allowed#284f31a302956898b3caf78cff76b76d2a007f6d"
-
-is-retry-allowed@^1.1.0:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/is-retry-allowed/-/is-retry-allowed-1.1.1.tgz#9ebe9ff41794c928bbccf403a7ae498c182e319e"
+  resolved "https://registry.yarnpkg.com/is-retry-allowed/-/is-retry-allowed-1.1.0.tgz#11a060568b67339444033d0125a61a20d564fb34"
 
 is-stream@^1.0.0, is-stream@^1.1.0:
   version "1.1.0"

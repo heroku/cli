@@ -21,8 +21,10 @@ jobs:
             - v1-yarn-{{ checksum ".circleci/config.yml" }}-{{ checksum "yarn.lock" }}
             - v1-yarn-{{ checksum ".circleci/config.yml" }}
             - v1-yarn
+      - run: yarn global add greenkeeper-lockfile@1 && greenkeeper-lockfile-update
       - run: yarn
       - run: yarn test --coverage
+      - run: greenkeeper-lockfile-upload
       - run: curl -s https://codecov.io/bash | bash
       - save_cache:
           key: v1-yarn-{{ checksum ".circleci/config.yml" }}-{{ checksum "yarn.lock" }}
