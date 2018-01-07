@@ -13,7 +13,6 @@
     "dirname": "heroku",
     "defaultCommand": "dashboard",
     "npmRegistry": "https://cli-npm.heroku.com",
-    "commands": "./lib/commands",
     "topics": {
       "2fa": {
         "description": "two-factor authentication",
