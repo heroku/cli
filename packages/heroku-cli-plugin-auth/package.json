@@ -9,20 +9,21 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@heroku-cli/command": "^7.0.12",
+    "@heroku-cli/command": "^7.0.13",
     "cli-ux": "^2.0.21",
     "tslib": "^1.8.1"
   },
   "devDependencies": {
+    "@cli-engine/util": "^1.1.2",
     "@heroku-cli/tslint": "^1.1.2",
-    "@types/jest": "^22.0.1",
     "@types/ansi-styles": "^2.0.30",
+    "@types/jest": "^22.0.1",
     "@types/node": "^8.0.58",
     "husky": "^0.14.3",
     "jest": "^22.0.4",
-    "tslint": "^5.8.0",
     "prettier": "^1.9.2",
-    "ts-jest": "^22.0.0",
+    "ts-jest": "^22.0.1",
+    "tslint": "^5.8.0",
     "typescript": "^2.6.2"
   },
   "cli-engine": {
@@ -37,11 +38,8 @@
     "node": ">=6.0.0"
   },
   "scripts": {
-    "posttest": "cli-engine-util",
     "precommit": "cli-engine-util",
     "prepare": "cli-engine-util",
-    "pretest": "tsc",
-    "test": "jest",
-    "release": "np"
+    "test": "cli-engine-util"
   }
 }
