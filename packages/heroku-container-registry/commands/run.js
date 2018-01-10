@@ -45,8 +45,12 @@ let run = async function (context, heroku) {
   let registry = `registry.${ herokuHost }`
   let dockerfiles = Sanbashi.getDockerfiles(process.cwd(), false)
   let possibleJobs = Sanbashi.getJobs(`${ registry }/${ context.app }`, dockerfiles)
-  let jobs = await Sanbashi.chooseJobs(possibleJobs, false)
 
+  let jobs = []
+  if (possibleJobs.standard) {
+    possibleJobs.standard.forEach((pj) => { pj.resource = pj.resource.replace(/standard$/, processType)})
+    jobs = possibleJobs.standard || []
+  }
   if (!jobs.length) {
     cli.warn('No images to run')
     process.exit(1)

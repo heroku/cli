@@ -53,13 +53,17 @@ let push = async function (context, heroku) {
   let registry = `registry.${ herokuHost }`
   let dockerfiles = Sanbashi.getDockerfiles(process.cwd(), recurse)
 
-  let possibleJobs = Sanbashi.getJobs(`${ registry }/${ context.app }`, dockerfiles, context.args[0])
+  let possibleJobs = Sanbashi.getJobs(`${ registry }/${ context.app }`, dockerfiles)
   let jobs = []
-
-  if (context.args.length) {
-    possibleJobs = Sanbashi.filterByProcessType(possibleJobs, context.args)
+  if (recurse) {
+    if (context.args.length) {
+      possibleJobs = Sanbashi.filterByProcessType(possibleJobs, context.args)
+    }
+    jobs = await Sanbashi.chooseJobs(possibleJobs)
+  } else if (possibleJobs.standard) {
+    possibleJobs.standard.forEach((pj) => { pj.resource = pj.resource.replace(/standard$/, context.args[0])})
+    jobs = possibleJobs.standard || []
   }
-  jobs = await Sanbashi.chooseJobs(possibleJobs, recurse)
   if (!jobs.length) {
     cli.warn('No images to push')
     process.exit(1)
@@ -70,7 +74,7 @@ let push = async function (context, heroku) {
 
   try {
     for (let job of jobs) {
-      if (job.default) {
+      if (job.name === 'standard') {
         cli.styledHeader(`Building ${context.args} (${job.dockerfile })`)
       } else {
         cli.styledHeader(`Building ${job.name} (${job.dockerfile})`)
@@ -86,7 +90,7 @@ let push = async function (context, heroku) {
 
   try {
     for (let job of jobs) {
-      if (job.default) {
+      if (job.name === 'standard') {
         cli.styledHeader(`Pushing ${context.args} (${job.dockerfile })`)
       } else {
         cli.styledHeader(`Pushing ${job.name} (${job.dockerfile })`)
