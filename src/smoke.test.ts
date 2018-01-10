@@ -1,6 +1,9 @@
+import color from '@heroku-cli/color'
 import * as execa from 'execa'
 import * as path from 'path'
 import _ from 'ts-lodash'
+
+color.enabled = false
 
 import { integrationTest } from './__test__/init'
 

@@ -66,7 +66,8 @@
   "dependencies": {
     "@cli-engine/command": "^12.1.0",
     "@cli-engine/config": "^5.1.0",
-    "@cli-engine/engine": "^6.1.30",
+    "@cli-engine/engine": "^6.1.31",
+    "@heroku-cli/color": "^1.1.1",
     "@heroku-cli/command": "^7.0.13",
     "cli-flags": "^2.0.7",
     "cli-ux": "2.0.21",
@@ -91,7 +92,7 @@
     "heroku-spaces": "2.10.0",
     "heroku-webhooks": "1.1.0",
     "http-call": "4.0.8",
-    "netrc-parser": "3.0.2",
+    "netrc-parser": "3.0.3",
     "semver": "5.4.1",
     "tar-fs": "^1.16.0",
     "ts-lodash": "^4.0.11",
@@ -99,7 +100,7 @@
     "uuid": "^3.1.0"
   },
   "devDependencies": {
-    "@cli-engine/util": "^1.1.5",
+    "@cli-engine/util": "^1.2.11",
     "@heroku-cli/tslint": "^1.1.4",
     "@types/ansi-styles": "^2.0.30",
     "@types/debug": "^0.0.30",
@@ -112,11 +113,11 @@
     "@types/supports-color": "3.1.0",
     "del-cli": "1.1.0",
     "husky": "0.14.3",
-    "jest": "22.0.4",
+    "jest": "22.0.5",
     "nock": "9.1.6",
-    "prettier": "^1.9.2",
+    "prettier": "^1.10.1",
     "ts-jest": "22.0.1",
-    "tslint": "^5.8.0",
+    "tslint": "^5.9.0",
     "typescript": "2.6.2"
   },
   "engineStrict": true,
@@ -136,11 +137,10 @@
   "repository": "heroku/cli",
   "scripts": {
     "lint": "yarn run shellcheck",
-    "posttest": "yarn run lint && cli-engine-util",
+    "posttest": "yarn run lint",
     "precommit": "yarn run lint && cli-engine-util",
     "prepare": "cli-engine-util",
-    "pretest": "tsc",
     "shellcheck": "./scripts/shellcheck",
-    "test": "jest"
+    "test": "cli-engine-util"
   }
 }
