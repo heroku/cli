@@ -1,12 +1,15 @@
 // @flow
 
-import type Command from 'cli-engine-command'
-import Plugins from 'cli-engine/lib/plugins'
-import { APIClient, flags as Flags } from 'cli-engine-heroku'
-import path from 'path'
-import ACCache from '../../cache'
+import { ICommand } from '@cli-engine/config'
+import { CommandManager } from '@cli-engine/engine/lib/command'
+import { Config } from '@cli-engine/engine/lib/config'
+import { Plugins } from '@cli-engine/engine/lib/plugins'
+import { APIClient, flags as Flags } from '@heroku-cli/command'
+import { cli } from 'cli-ux'
+import * as path from 'path'
+
 import { AutocompleteBase } from '../../autocomplete'
-import cli from 'cli-ux'
+import ACCache from '../../cache'
 
 export default class AutocompleteOptions extends AutocompleteBase {
   static topic = 'autocomplete'
@@ -15,14 +18,14 @@ export default class AutocompleteOptions extends AutocompleteBase {
   static variableArgs = true
   static hidden = true
   static flags = {
-    app: Flags.app({required: false, hidden: true})
+    app: Flags.app({ required: false, hidden: true }),
   }
 
   beep: string = '\x07'
-  parsedArgs: {[name: string]: ?string} = {}
-  parsedFlags: {[name: string]: ?string} = {}
+  parsedArgs: { [name: string]: string } = {}
+  parsedFlags: { [name: string]: string } = {}
 
-  async run () {
+  async run() {
     // ex: heroku autocomplete:options 'heroku addons:destroy -a myapp myaddon'
     try {
       // A - grab cmd line to complete from argv
@@ -30,10 +33,11 @@ export default class AutocompleteOptions extends AutocompleteBase {
 
       // B - find cmd to complete
       const cmdId = commandLineToComplete[1]
-      const plugins = new Plugins(this.config)
-      await plugins.load()
-      let Command = await plugins.findCommand(cmdId)
-      if (!Command) throw new Error(`Command ${cmdId} not found`)
+      const config = new Config(this.config)
+      config.plugins = new Plugins(config)
+      const CM = new CommandManager(config)
+      const iCmd = await CM.findCommand(cmdId, true)
+      const Command = await iCmd.fetchCommand()
 
       // C -
       // 1. find what arg/flag is asking to be completed
@@ -46,12 +50,12 @@ export default class AutocompleteOptions extends AutocompleteBase {
       // for now, suspending arg completion
       // let [cmdCurArgCount, cmdCurArgvIsFlag, cmdCurArgvIsFlagValue] =
       let [cmdCurArgvIsFlag, cmdCurArgvIsFlagValue] = this._determineCmdState(cmdArgv, Command)
-      let cacheKey
-      let cacheCompletion
+      let cacheKey: any
+      let cacheCompletion: any
 
       if (cmdCurArgvIsFlag || cmdCurArgvIsFlagValue) {
         const argvFlag = cmdCurArgvIsFlagValue ? cmdPreviousArgv : cmdCurArgv
-        let {name, flag} = this._findFlagFromWildArg(argvFlag, Command)
+        let { name, flag } = this._findFlagFromWildArg(argvFlag, Command)
         if (!flag) throw new Error(`${argvFlag} is not a valid flag for ${cmdId}`)
         cacheKey = name || flag.name
         cacheCompletion = flag.completion
@@ -62,11 +66,11 @@ export default class AutocompleteOptions extends AutocompleteBase {
             cacheKey = `${this.flags.app}_config_vars`
             cacheCompletion = {
               cacheDuration: 60 * 60 * 24,
-              options: async ctx => {
-                const heroku = new APIClient({ config: ctx.config })
+              options: async (ctx: any) => {
+                const heroku = new APIClient(ctx.config)
                 let { body: configs } = await heroku.get(`/apps/${this.flags.app}/config-vars`)
                 return Object.keys(configs)
-              }
+              },
             }
           } else {
             throw new Error(`No app found for config completion (cmdId: ${cmdId})`)
@@ -86,14 +90,14 @@ export default class AutocompleteOptions extends AutocompleteBase {
       // build/retrieve & return options cache
       if (cacheCompletion && cacheCompletion.options) {
         // use cacheKey function or fallback to arg/flag name
-        const ctx = {args: this.parsedArgs, flags: this.parsedFlags, argv: this.argv, config: this.config}
+        const ctx = { args: this.parsedArgs, flags: this.parsedFlags, argv: this.argv, config: this.config }
         const ckey = cacheCompletion.cacheKey ? await cacheCompletion.cacheKey(ctx) : null
-        const key: string = (ckey || cacheKey || 'unknown_key_error')
+        const key: string = ckey || cacheKey || 'unknown_key_error'
         const flagCachePath = path.join(this.completionsCachePath, key)
 
         // build/retrieve cache
         const duration = cacheCompletion.cacheDuration || 60 * 60 * 24 // 1 day
-        const opts = {cacheFn: () => cacheCompletion.options(ctx)}
+        const opts = { cacheFn: () => cacheCompletion.options(ctx) }
         const options = await ACCache.fetch(flagCachePath, duration, opts)
 
         // return options cache
@@ -108,30 +112,35 @@ export default class AutocompleteOptions extends AutocompleteBase {
   }
 
   // TO-DO: create a return type
-  _findFlagFromWildArg (wild: string, Command: Class<Command<*>>): Object {
+  _findFlagFromWildArg(wild: string, Command: ICommand): { flag: any; name: any } {
     let name = wild.replace(/^-+/, '')
     name = name.replace(/=(.+)?$/, '')
 
-    let flag = Command.flags[name]
-    if (flag) return {name, flag}
+    let unknown = { flag: undefined, name: undefined }
+    if (!Command.flags) return unknown
+    const CFlags = Command.flags
 
-    name = Object.keys(Command.flags).find(k => Command.flags[k].char === name)
-    flag = Command.flags[name]
-    if (flag) return {name, flag}
-    return {}
+    let flag = CFlags[name]
+    if (flag) return { name, flag }
+
+    name = Object.keys(CFlags).find((k: string) => CFlags[k].char === name) || 'undefinedcommand'
+    flag = CFlags && CFlags[name]
+    if (flag) return { name, flag }
+    return unknown
   }
 
-  _determineCmdState (argv: Array<string>, Command: Class<Command<*>>): [boolean, boolean] {
+  _determineCmdState(argv: Array<string>, Command: ICommand): [boolean, boolean] {
     let needFlagValueSatisfied = false
     let argIsFlag = false
     let argIsFlagValue = false
     let argsIndex = 0
-    let flagName
+    let flagName: string
     // find cur index of argv (including empty '')
     // that are not flags or flag values
 
     // for now, suspending arg completion
-    argv.filter(wild => { // const nthArg = argv.filter(wild => {
+    argv.filter(wild => {
+      // const nthArg = argv.filter(wild => {
       if (wild.match(/^-(-)?/)) {
         // we're a flag
         argIsFlag = true
@@ -139,7 +148,7 @@ export default class AutocompleteOptions extends AutocompleteBase {
         // ignore me
         const wildSplit = wild.split('=')
         const key = wildSplit.length === 1 ? wild : wildSplit[0]
-        const {name, flag} = this._findFlagFromWildArg(key, Command)
+        const { name, flag } = this._findFlagFromWildArg(key, Command)
         flagName = name
         // end ignore me
 
@@ -184,8 +193,9 @@ export default class AutocompleteOptions extends AutocompleteBase {
 
       // add parsedArgs
       // TO-DO: how to handle variableArgs?
-      if (argsIndex < Command.args.length) {
-        this.parsedArgs[Command.args[argsIndex].name] = wild
+      if (argsIndex < (Command.args || []).length) {
+        let CArgs = Command.args || []
+        this.parsedArgs[CArgs[argsIndex].name] = wild
         argsIndex += 1
       }
 

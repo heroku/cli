@@ -1,22 +1,38 @@
 ---
 version: 2
 jobs:
-  build:
+  node-latest: &test-build
     docker:
-      - image: node:8
-    working_directory: ~/cli-plugin
+      - image: node:latest
+    working_directory: /cli-plugin
     steps:
       - checkout
       - restore_cache:
           keys:
-            - node-modules-{{ checksum "yarn.lock" }}
-            - node-modules-
+            - v0-yarn-{{ .Environment.CIRCLE_JOB }}-{{ .Branch }}-{{checksum "yarn.lock"}}
+            - v0-yarn-{{ .Environment.CIRCLE_JOB }}-{{ .Branch }}
+            - v0-yarn-{{ .Environment.CIRCLE_JOB }}-master
       - run: yarn
-      - run: ./node_modules/.bin/jest --coverage && bash <(curl -s https://codecov.io/bash)
-      - run: ./node_modules/.bin/flow check
-      - run: ./node_modules/.bin/eslint .
+      - run: yarn test --coverage
+      - run: curl -s https://codecov.io/bash | bash
       - save_cache:
-          key: node-modules-{{ checksum "yarn.lock" }}
+          key: v0-yarn-{{ .Environment.CIRCLE_JOB }}-{{ .Branch }}-{{checksum "yarn.lock"}}
           paths:
-            - node_modules
+            - /cli/node_modules
             - /usr/local/share/.cache/yarn
+  node-8:
+    <<: *test-build
+    docker:
+      - image: node:8
+  node-6:
+    <<: *test-build
+    docker:
+      - image: node:6
+
+workflows:
+  version: 2
+  test:
+    jobs:
+      - node-latest
+      - node-8
+      - node-6

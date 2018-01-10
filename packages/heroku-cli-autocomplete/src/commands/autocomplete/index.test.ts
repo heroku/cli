@@ -1,16 +1,17 @@
 // @flow
 
+import { cli } from 'cli-ux'
+import * as os from 'os'
+
 import Autocomplete from '.'
-import os from 'os'
-import cli from 'cli-ux'
 
 // autocomplete will throw error on windows
-let runtest = (os.platform() === 'windows' || os.platform() === 'win32') ? xtest : test
+let runtest = (os.platform() as any) === 'windows' || os.platform() === 'win32' ? xtest : test
 
 cli.config.mock = true
 
 runtest('outputs install instructions for zsh', async () => {
-  await Autocomplete.mock('zsh')
+  await Autocomplete.mock(['zsh'])
   expect(cli.stdout.output).toMatch(`Setup Instructions for CLI-ENGINE CLI Autocomplete ---
 
 1) Add the autocomplete env var to your zsh profile
@@ -45,7 +46,7 @@ Enjoy!`)
 })
 
 runtest('outputs install instructions for bash', async () => {
-  await Autocomplete.mock('bash')
+  await Autocomplete.mock(['bash'])
   expect(cli.stdout.output).toMatch(`Setup Instructions for CLI-ENGINE CLI Autocomplete ---
 
 1) Add the autocomplete env var to your bash profile
@@ -78,14 +79,14 @@ Enjoy!`)
 })
 
 runtest('skips instructions', async () => {
-  await Autocomplete.mock('--skip-instructions')
+  await Autocomplete.mock(['--skip-instructions'])
   expect(cli.stdout.output).toMatch(`
 Enjoy!`)
 })
 
 runtest('errors on unsupported shell', async () => {
   try {
-    await Autocomplete.mock('fish')
+    await Autocomplete.mock(['fish'])
   } catch (e) {
     expect(cli.stderr.output).toMatch(` ▸    Currently fish is not a supported shell for autocomplete
 `)

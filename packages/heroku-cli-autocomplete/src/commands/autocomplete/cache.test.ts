@@ -1,31 +1,46 @@
 // @flow
 
-import AutocompleteCacheBuilder from './cache'
-import os from 'os'
-import {flags} from 'cli-engine-heroku'
-import path from 'path'
+import Config from '@cli-engine/engine/lib/config'
+import { UserPlugin } from '@cli-engine/engine/lib/plugins/user'
+import { flags } from '@heroku-cli/command'
+import * as os from 'os'
+import * as path from 'path'
 
-const FooPlugin = require('../../../test/roots/foo-plugin')
-const AC_PLUGIN_PATH = path.join(__dirname, '..', '..', '..')
+import AutocompleteCacheBuilder from './cache'
+
+const FOO_PLUGIN_PATH = '../../../test/roots/foo-plugin'
+const FooPluginPjson = require(`${FOO_PLUGIN_PATH}/package.json`)
+const AC_PLUGIN_PATH = path.resolve(__dirname, '..', '..', '..')
 
 class CacheBuildFlagsTest extends AutocompleteCacheBuilder {
   static flags = {
     app: flags.app(),
-    visable: flags.boolean({description: 'Visable flag', char: 'v'}),
-    hidden: flags.boolean({description: 'Hidden flag', char: 'h', hidden: true})
+    visable: flags.boolean({ description: 'Visable flag', char: 'v' }),
+    hidden: flags.boolean({ description: 'Hidden flag', char: 'h', hidden: true }),
   }
 }
 
 // autocomplete will throw error on windows
-let runtest = (os.platform() === 'windows' || os.platform() === 'win32') ? xtest : test
+let runtest = (os.platform() as any) === 'windows' || os.platform() === 'win32' ? xtest : test
 
 describe('AutocompleteCacheBuilder', () => {
   // Unit test private methods for extra coverage
   describe('private methods', () => {
-    let cmd
+    let cmd: any
     beforeAll(() => {
-      cmd = new AutocompleteCacheBuilder()
-      cmd.plugins = [FooPlugin]
+      const root = path.resolve(__dirname, FOO_PLUGIN_PATH)
+      const config = new Config()
+      cmd = new AutocompleteCacheBuilder(config)
+      let u = new UserPlugin({
+        type: 'user',
+        pjson: FooPluginPjson,
+        tag: '0.0.0',
+        root,
+        config,
+      })
+      cmd.plugins = () => {
+        return [u]
+      }
     })
 
     runtest('#_genCmdID', async () => {
@@ -33,7 +48,9 @@ describe('AutocompleteCacheBuilder', () => {
     })
 
     runtest('#_genCmdWithDescription', async () => {
-      expect(await cmd._genCmdWithDescription(AutocompleteCacheBuilder)).toBe(`"autocomplete\\:buildcache":"autocomplete cache builder"`)
+      expect(await cmd._genCmdWithDescription(AutocompleteCacheBuilder)).toBe(
+        `"autocomplete\\:buildcache":"autocomplete cache builder"`,
+      )
     })
 
     runtest('#_genCmdPublicFlags', async () => {
@@ -80,7 +97,7 @@ bindkey "^I" expand-or-complete-with-dots`)
     })
 
     runtest('#_genShellSetups (0: bash)', async () => {
-      let cmd = await new AutocompleteCacheBuilder()
+      // let cmd = await new AutocompleteCacheBuilder(new Config())
       let shellSetups = await cmd._genShellSetups()
       expect(shellSetups[0]).toBe(`CLI_ENGINE_AC_ANALYTICS_DIR=${cmd.config.cacheDir}/completions/completion_analytics;
 CLI_ENGINE_AC_COMMANDS_PATH=${cmd.config.cacheDir}/completions/commands;
@@ -89,7 +106,7 @@ CLI_ENGINE_AC_BASH_COMPFUNC_PATH=${AC_PLUGIN_PATH}/autocomplete/bash/cli_engine.
     })
 
     runtest('#_genShellSetups (1: zsh)', async () => {
-      let cmd = await new AutocompleteCacheBuilder()
+      // let cmd = await new AutocompleteCacheBuilder(new Config())
       let shellSetups = await cmd._genShellSetups()
       expect(shellSetups[1]).toBe(`expand-or-complete-with-dots() {
   echo -n "..."
@@ -111,7 +128,7 @@ compinit;
     })
 
     runtest('#_genShellSetups (1: zsh w/o ellipsis)', async () => {
-      let cmd = await new AutocompleteCacheBuilder()
+      // let cmd = await new AutocompleteCacheBuilder()
       let shellSetups = await cmd._genShellSetups(true)
       expect(shellSetups[1]).toBe(`
 CLI_ENGINE_AC_ANALYTICS_DIR=${cmd.config.cacheDir}/completions/completion_analytics;

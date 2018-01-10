@@ -5,9 +5,10 @@ _heroku () {
   local _command_id=${words[2]}
   local _cur=${words[CURRENT]}
 
+  mkdir -p "$CLI_ENGINE_AC_ANALYTICS_DIR"
+
   ## all commands
   _complete_commands () {
-   mkdir -p "$CLI_ENGINE_AC_ANALYTICS_DIR"
    touch "$CLI_ENGINE_AC_ANALYTICS_DIR"/command
    local -a _all_commands_list
    if type _set_all_commands_list >/dev/null 2>&1; then

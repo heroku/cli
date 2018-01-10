@@ -1,8 +1,10 @@
 // @flow
 
-import {AutocompleteBase} from '../../autocomplete'
-import cli from 'cli-ux'
-import {flags} from 'cli-engine-heroku'
+import { flags } from '@heroku-cli/command'
+import { cli } from 'cli-ux'
+
+import { AutocompleteBase } from '../../autocomplete'
+
 import AutocompleteCacheBuilder from './cache'
 
 export default class Autocomplete extends AutocompleteBase {
@@ -10,12 +12,12 @@ export default class Autocomplete extends AutocompleteBase {
   static description = 'display autocomplete instructions'
   // hide until public release
   static hidden = true
-  static args = [{name: 'shell', description: 'shell type', required: false}]
+  static args = [{ name: 'shell', description: 'shell type', required: false }]
   static flags = {
-    'skip-instructions': flags.boolean({description: 'Do not show installation instructions', char: 's'})
+    'skip-instructions': flags.boolean({ description: 'Do not show installation instructions', char: 's' }),
   }
 
-  async run () {
+  async run() {
     this.errorIfWindows()
 
     const bin = this.config.bin
@@ -40,9 +42,13 @@ ${cli.color.cyan(`$ printf "$(${bin} autocomplete:script ${shell})" >> ~/.${shel
 2) Source your updated ${shell} profile
 
 ${cli.color.cyan(`$ source ~/.${shell}rc`)}
-${shell === 'zsh' ? `
+${
+        shell === 'zsh'
+          ? `
 NOTE: After sourcing, you can run \`${cli.color.cyan('$ compaudit -D')}\` to ensure no permissions conflicts are present
-` : ''}
+`
+          : ''
+      }
 3) Test command completion by pressing ${tabStr}, e.g.:
 
 ${cli.color.cyan(`$ ${bin} ${tabStr}`)}
@@ -63,7 +69,7 @@ ${cli.color.cyan(`$ ${bin} apps:info --app=${tabStr}`)}
     }
 
     cli.action.start(`${cli.color.bold('Building autocomplete cache')}`)
-    await AutocompleteCacheBuilder.run(Object.assign(this.config, {argv: [this.argv[0], 'autocomplete:cache']}))
+    await AutocompleteCacheBuilder.run([], this.config)
     cli.action.stop()
 
     cli.log('\nEnjoy!')
