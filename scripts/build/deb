@@ -41,6 +41,13 @@ get_script_dir () {
   echo "\$DIR"
 }
 DIR=\$(get_script_dir)
+CLI_HOME=\$(cd && pwd)
+XDG_DATA_HOME=\${XDG_DATA_HOME:="\$CLI_HOME/.local/share"}
+if [ "\$1" == "reset" ]; then
+  echo "Removing CLI data files and all plugins..."
+  remove "\${XDG_DATA_HOME}/heroku"
+  exit
+fi
 HEROKU_CLI_BINPATH=\$DIR/heroku \$DIR/node \$DIR/heroku.js "\$@"
 EOF
   chmod +x "$__workspace/usr/lib/heroku/bin/heroku"
