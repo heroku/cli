@@ -26,9 +26,11 @@
     "chai": "3.2.0",
     "depcheck": "0.4.7",
     "mocha": "2.2.4",
+    "mockdate": "2.0.1",
     "nyc": "10.1.2",
     "sinon": "2.1.0",
-    "standard": "8.6.0"
+    "standard": "8.6.0",
+    "unexpected": "10.25.0"
   },
   "standard": {
     "env": "mocha"

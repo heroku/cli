@@ -24,9 +24,7 @@ async function login (context, heroku) {
   try {
     await dockerLogin(registry, password, context.flags.verbose)
   } catch (err) {
-    cli.error(`Error: docker login exited with ${err}`)
-    cli.hush(err.stack || err)
-    cli.exit(1)
+    cli.error(`Error: docker login exited with ${err}`, 1)
   }
 }
 
@@ -58,7 +56,6 @@ function dockerLoginArgv (registry, password, verbose) {
     `--password=${password}`,
     registry
   ]
-
   log(verbose, args)
   return Sanbashi.cmd('docker', args)
 }
