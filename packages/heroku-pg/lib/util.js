@@ -76,7 +76,13 @@ exports.presentCredentialAttachments = presentCredentialAttachments
 
 exports.getConnectionDetails = function (attachment, config) {
   const url = require('url')
-  const connstringVar = getUrl(attachment.config_vars.filter((cv) => config[cv].startsWith('postgres://')))
+  const configVars = attachment.config_vars.filter((cv) => {
+    return config[cv] && config[cv].startsWith('postgres://')
+  })
+  if (configVars.length === 0) {
+    throw new Error(`No config vars found for ${attachment.name}; perhaps they were removed as a side effect of ${cli.color.cmd('heroku rollback')}? Use ${cli.color.cmd('heroku addons:attach')} to create a new attachment and then ${cli.color.cmd('heroku addons:detach')} to remove the current attachment.`)
+  }
+  const connstringVar = getUrl(configVars)
 
   // remove _URL from the end of the config var name
   const baseName = connstringVar.slice(0, -4)
