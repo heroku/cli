@@ -21,7 +21,6 @@ export default class AutocompleteOptions extends AutocompleteBase {
     app: Flags.app({ required: false, hidden: true }),
   }
 
-  beep: string = '\x07'
   parsedArgs: { [name: string]: string } = {}
   parsedFlags: { [name: string]: string } = {}
 
@@ -56,7 +55,7 @@ export default class AutocompleteOptions extends AutocompleteBase {
       if (cmdCurArgvIsFlag || cmdCurArgvIsFlagValue) {
         const argvFlag = cmdCurArgvIsFlagValue ? cmdPreviousArgv : cmdCurArgv
         let { name, flag } = this._findFlagFromWildArg(argvFlag, Command)
-        if (!flag) throw new Error(`${argvFlag} is not a valid flag for ${cmdId}`)
+        if (!flag) this.throwError(`${argvFlag} is not a valid flag for ${cmdId}`)
         cacheKey = name || flag.name
         cacheCompletion = flag.completion
       } else {
@@ -73,14 +72,19 @@ export default class AutocompleteOptions extends AutocompleteBase {
               },
             }
           } else {
-            throw new Error(`No app found for config completion (cmdId: ${cmdId})`)
+            this.throwError(`No app found for config completion (cmdId: ${cmdId})`)
           }
         } else {
+          const cmdArgs = Command.args || []
+          if (cmdArgs[0] && cmdArgs[0].name === 'app' && commandLineToComplete.length === 3) {
+            cacheCompletion = Flags.app().completion
+          } else {
+            this.throwError(`No arg completion found for cmd (cmdId: ${cmdId})`)
+          }
           // for now, suspending arg completion
-          throw new Error(`Arg completion disabled (cmdId: ${cmdId})`)
           // const cmdArgs = Command.args || []
           // const cmdArgsCount = cmdArgs.length
-          // if (cmdCurArgCount > cmdArgsCount || cmdCurArgCount === 0) throw new Error(`Cannot complete arg position ${cmdCurArgCount} for ${cmdId}`)
+          // if (cmdCurArgCount > cmdArgsCount || cmdCurArgCount === 0) this.throwError(`Cannot complete arg position ${cmdCurArgCount} for ${cmdId}`)
           // const arg = cmdArgs[cmdCurArgCount - 1]
           // cacheKey = arg.name
           // cacheCompletion = arg.completion
@@ -104,11 +108,15 @@ export default class AutocompleteOptions extends AutocompleteBase {
         cli.log((options || []).join('\n'))
       }
     } catch (err) {
-      // on error make audible 'beep'
-      process.stderr.write('\x07')
+      // on error make audible 'beep' (unless on bash)
+      // if (this.config.shell !== 'bash') process.stderr.write('\x07')
       // write to ac log
       this.writeLogFile(err.message)
     }
+  }
+
+  throwError(msg: string) {
+    throw new Error(msg)
   }
 
   // TO-DO: create a return type
