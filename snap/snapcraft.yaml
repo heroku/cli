@@ -7,11 +7,17 @@ confinement: classic
 
 apps:
   heroku:
-    command: bin/heroku
+    command: bin/run
 
 parts:
   heroku:
-    source: .
-    plugin: nodejs
-    node-engine: 9.3.0
-    node-package-manager: yarn
+    plugin: nil
+    install: |
+      curl -o- -L https://yarnpkg.com/install.sh | bash
+      yarn
+      yarn pack --filename heroku.tar.gz
+      tar -xzf heroku.tar.gz
+      rmdir ../install
+      mv package ../install
+      cd ../install && yarn --prod
+      cd ../install && bin/run -v
