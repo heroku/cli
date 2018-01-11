@@ -2,9 +2,9 @@ const cli = require('heroku-cli-util')
 const Sanbashi = require('../lib/sanbashi')
 
 let usage = `
-    ${ cli.color.bold.underline.magenta('Usage:')}
-    ${ cli.color.cmd('heroku container:run web bash')} # Runs bash on the local web docker container
-    ${ cli.color.cmd('heroku container:run worker')}   # Runs the container CMD on the local worker container`
+    ${cli.color.bold.underline.magenta('Usage:')}
+    ${cli.color.cmd('heroku container:run web bash')} # Runs bash on the local web docker container
+    ${cli.color.cmd('heroku container:run worker')}   # Runs the container CMD on the local worker container`
 
 module.exports = function (topic) {
   return {
@@ -26,7 +26,7 @@ module.exports = function (topic) {
         name: 'verbose',
         char: 'v',
         hasValue: false
-      },
+      }
     ],
     run: cli.command(run)
   }
@@ -42,13 +42,13 @@ let run = async function (context, heroku) {
   let command = context.args
 
   let herokuHost = process.env.HEROKU_HOST || 'heroku.com'
-  let registry = `registry.${ herokuHost }`
+  let registry = `registry.${herokuHost}`
   let dockerfiles = Sanbashi.getDockerfiles(process.cwd(), false)
-  let possibleJobs = Sanbashi.getJobs(`${ registry }/${ context.app }`, dockerfiles)
+  let possibleJobs = Sanbashi.getJobs(`${registry}/${context.app}`, dockerfiles)
 
   let jobs = []
   if (possibleJobs.standard) {
-    possibleJobs.standard.forEach((pj) => { pj.resource = pj.resource.replace(/standard$/, processType)})
+    possibleJobs.standard.forEach((pj) => { pj.resource = pj.resource.replace(/standard$/, processType) })
     jobs = possibleJobs.standard || []
   }
   if (!jobs.length) {
@@ -57,15 +57,15 @@ let run = async function (context, heroku) {
   }
   let job = jobs[0]
 
-  if (command == '') {
+  if (command === '') {
     cli.styledHeader(`Running ${job.resource}`)
   } else {
     cli.styledHeader(`Running '${command}' on ${job.resource}`)
   }
   try {
     await Sanbashi.runImage(job.resource, command, context.flags.port || 5000, context.flags.verbose)
-  } catch(err) {
-    cli.error(`Error: docker run exited with ${ err }`)
+  } catch (err) {
+    cli.error(`Error: docker run exited with ${err}`)
     cli.hush(err.stack || err)
     process.exit(1)
   }

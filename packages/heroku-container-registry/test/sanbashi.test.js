@@ -84,8 +84,9 @@ describe('Sanbashi', () => {
       expect(chosenJob).to.have.property('length', 1)
     })
     afterEach(() => {
-      if (Inquirer.prompt.restore)
+      if (Inquirer.prompt.restore) {
         Inquirer.prompt.restore()
+      }
     })
   })
   describe('.buildImage', () => {
@@ -98,7 +99,7 @@ describe('Sanbashi', () => {
       let cmd = Sinon.stub(Sanbashi, 'cmd')
       Sanbashi.buildImage(dockerfile, resource, false, buildArg)
       let dockerArg = ['build', '-f', dockerfile, '-t', 'web', '--build-arg', 'ENV=live', '--build-arg', 'HTTPS=on', path]
-      Sinon.assert.calledWith(cmd, 'docker', dockerArg);
+      Sinon.assert.calledWith(cmd, 'docker', dockerArg)
     })
 
     it('skip build-time variables if empty', () => {
@@ -106,12 +107,12 @@ describe('Sanbashi', () => {
       let cmd = Sinon.stub(Sanbashi, 'cmd')
       Sanbashi.buildImage(dockerfile, resource, false, buildArg)
       let dockerArg = ['build', '-f', dockerfile, '-t', 'web', path]
-      Sinon.assert.calledWith(cmd, 'docker', dockerArg);
+      Sinon.assert.calledWith(cmd, 'docker', dockerArg)
     })
 
     afterEach(() => {
       Sanbashi.cmd.restore() // Unwraps the spy
-    });
+    })
   })
   describe('.version', () => {
     it('returns a major and a minor component', async () => {

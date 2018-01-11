@@ -6,7 +6,7 @@
   "main": "index.js",
   "repository": "https://github.com/heroku/heroku-container-registry",
   "scripts": {
-    "test": "mocha",
+    "test": "TZ=utc nyc mocha && standard",
     "depcheck": "depcheck || true"
   },
   "keywords": [
@@ -26,6 +26,11 @@
     "chai": "3.2.0",
     "depcheck": "0.4.7",
     "mocha": "2.2.4",
-    "sinon": "2.1.0"
+    "nyc": "10.1.2",
+    "sinon": "2.1.0",
+    "standard": "8.6.0"
+  },
+  "standard": {
+    "env": "mocha"
   }
 }

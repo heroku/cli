@@ -2,11 +2,11 @@ const cli = require('heroku-cli-util')
 const Sanbashi = require('../lib/sanbashi')
 
 let usage = `
-    ${ cli.color.bold.underline.magenta('Usage:')}
-    ${ cli.color.cmd('heroku container:push web')}                          # Pushes Dockerfile to web process type
-    ${ cli.color.cmd('heroku container:push web worker --recursive')}       # Pushes Dockerfile.web and Dockerfile.worker
-    ${ cli.color.cmd('heroku container:push --recursive')}                  # Pushes Dockerfile.*
-    ${ cli.color.cmd('heroku container:push web --arg ENV=live,HTTPS=on')}  # Build-time variables`
+    ${cli.color.bold.underline.magenta('Usage:')}
+    ${cli.color.cmd('heroku container:push web')}                          # Pushes Dockerfile to web process type
+    ${cli.color.cmd('heroku container:push web worker --recursive')}       # Pushes Dockerfile.web and Dockerfile.worker
+    ${cli.color.cmd('heroku container:push --recursive')}                  # Pushes Dockerfile.*
+    ${cli.color.cmd('heroku container:push web --arg ENV=live,HTTPS=on')}  # Build-time variables`
 
 module.exports = function (topic) {
   return {
@@ -50,10 +50,10 @@ let push = async function (context, heroku) {
     process.exit(1)
   }
   let herokuHost = process.env.HEROKU_HOST || 'heroku.com'
-  let registry = `registry.${ herokuHost }`
+  let registry = `registry.${herokuHost}`
   let dockerfiles = Sanbashi.getDockerfiles(process.cwd(), recurse)
 
-  let possibleJobs = Sanbashi.getJobs(`${ registry }/${ context.app }`, dockerfiles)
+  let possibleJobs = Sanbashi.getJobs(`${registry}/${context.app}`, dockerfiles)
   let jobs = []
   if (recurse) {
     if (context.args.length) {
@@ -61,7 +61,7 @@ let push = async function (context, heroku) {
     }
     jobs = await Sanbashi.chooseJobs(possibleJobs)
   } else if (possibleJobs.standard) {
-    possibleJobs.standard.forEach((pj) => { pj.resource = pj.resource.replace(/standard$/, context.args[0])})
+    possibleJobs.standard.forEach((pj) => { pj.resource = pj.resource.replace(/standard$/, context.args[0]) })
     jobs = possibleJobs.standard || []
   }
   if (!jobs.length) {
@@ -69,21 +69,20 @@ let push = async function (context, heroku) {
     process.exit(1)
   }
 
-  let flagsArg = context.flags.arg;
+  let flagsArg = context.flags.arg
   let buildArg = (flagsArg !== undefined) ? flagsArg.split(',') : []
 
   try {
     for (let job of jobs) {
       if (job.name === 'standard') {
-        cli.styledHeader(`Building ${context.args} (${job.dockerfile })`)
+        cli.styledHeader(`Building ${context.args} (${job.dockerfile})`)
       } else {
         cli.styledHeader(`Building ${job.name} (${job.dockerfile})`)
       }
       await Sanbashi.buildImage(job.dockerfile, job.resource, context.flags.verbose, buildArg)
     }
-  }
-  catch (err) {
-    cli.error(`Error: docker build exited with ${ err }`)
+  } catch (err) {
+    cli.error(`Error: docker build exited with ${err}`)
     cli.hush(err.stack || err)
     process.exit(1)
   }
@@ -91,15 +90,14 @@ let push = async function (context, heroku) {
   try {
     for (let job of jobs) {
       if (job.name === 'standard') {
-        cli.styledHeader(`Pushing ${context.args} (${job.dockerfile })`)
+        cli.styledHeader(`Pushing ${context.args} (${job.dockerfile})`)
       } else {
-        cli.styledHeader(`Pushing ${job.name} (${job.dockerfile })`)
+        cli.styledHeader(`Pushing ${job.name} (${job.dockerfile})`)
       }
       await Sanbashi.pushImage(job.resource, context.flags.verbose)
     }
-  }
-  catch (err) {
-    cli.error(`Error: docker push exited with ${ err }`)
+  } catch (err) {
+    cli.error(`Error: docker push exited with ${err}`)
     cli.hush(err.stack || err)
     process.exit(1)
   }

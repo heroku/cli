@@ -3,7 +3,7 @@
 let Glob = require('glob')
 let Path = require('path')
 let Inquirer = require('inquirer')
-let os = require("os")
+let os = require('os')
 const Child = require('child_process')
 const log = require('./log')
 
@@ -34,7 +34,7 @@ Sanbashi.getJobs = function (resourceRoot, dockerfiles) {
       let proc = (match[1] || '.standard').slice(1)
       return {
         name: proc,
-        resource: `${ resourceRoot }/${ proc }`,
+        resource: `${resourceRoot}/${proc}`,
         dockerfile: dockerfile,
         postfix: Path.basename(dockerfile) === 'Dockerfile' ? 0 : 1,
         depth: Path.normalize(dockerfile).split(Path.sep).length
@@ -84,7 +84,7 @@ Sanbashi.buildImage = function (dockerfile, resource, verbose, buildArg) {
   let cwd = Path.dirname(dockerfile)
   let args = ['build', '-f', dockerfile, '-t', resource]
 
-  for (let i=0; i < buildArg.length; i++) {
+  for (let i = 0; i < buildArg.length; i++) {
     if (buildArg[i].length !== 0) {
       args.push('--build-arg')
       args.push(buildArg[i])
@@ -102,10 +102,9 @@ Sanbashi.pushImage = function (resource, verbose) {
   return Sanbashi.cmd('docker', args)
 }
 
-
 Sanbashi.runImage = function (resource, command, port, verbose) {
   let args = ['run', '--user', os.userInfo().uid, '-e', `PORT=${port}`]
-  if (command == '') {
+  if (command === '') {
     args.push(resource)
   } else {
     args.push('-it', resource, command)
@@ -136,7 +135,7 @@ Sanbashi.cmd = function (cmd, args, options = {}) {
     if (child.stdin) {
       child.stdin.end(options.input)
     }
-    let stdout = undefined
+    let stdout
     if (child.stdout) {
       stdout = ''
       child.stdout.on('data', (data) => {
@@ -144,9 +143,9 @@ Sanbashi.cmd = function (cmd, args, options = {}) {
       })
     }
     child.on('exit', (code, signal) => {
-        if (signal || code) reject(signal || code)
-        else resolve(stdout)
-      })
+      if (signal || code) reject(signal || code)
+      else resolve(stdout)
+    })
   })
 }
 

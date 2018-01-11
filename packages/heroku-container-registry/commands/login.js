@@ -18,14 +18,13 @@ module.exports = function (topic) {
 
 async function login (context, heroku) {
   let herokuHost = process.env.HEROKU_HOST || 'heroku.com'
-  let registry = `registry.${ herokuHost }`
+  let registry = `registry.${herokuHost}`
   let password = context.auth.password
 
   try {
-    let user = await dockerLogin(registry, password, context.flags.verbose)
-  }
-  catch (err) {
-    cli.error(`Error: docker login exited with ${ err }`)
+    await dockerLogin(registry, password, context.flags.verbose)
+  } catch (err) {
+    cli.error(`Error: docker login exited with ${err}`)
     cli.hush(err.stack || err)
     cli.exit(1)
   }
@@ -34,13 +33,13 @@ async function login (context, heroku) {
 async function dockerLogin (registry, password, verbose) {
   let [major, minor] = await Sanbashi.version()
 
-  if (major > 17 || major == 17 && minor >= 1) {
+  if (major > 17 || major === 17 && minor >= 1) {
     return await dockerLoginStdin(registry, password, verbose)
   }
   return await dockerLoginArgv(registry, password, verbose)
 }
 
-function dockerLoginStdin(registry, password, verbose) {
+function dockerLoginStdin (registry, password, verbose) {
   let args = [
     'login',
     '--username=_',
@@ -52,7 +51,7 @@ function dockerLoginStdin(registry, password, verbose) {
   return Sanbashi.cmd('docker', args, {input: password})
 }
 
-function dockerLoginArgv(registry, password, verbose) {
+function dockerLoginArgv (registry, password, verbose) {
   let args = [
     'login',
     '--username=_',

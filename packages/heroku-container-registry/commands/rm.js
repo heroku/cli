@@ -2,8 +2,8 @@ const cli = require('heroku-cli-util')
 
 let usage = `
     ${cli.color.bold.underline.magenta('Usage:')}
-    ${ cli.color.cmd('heroku container:rm web')}        # Destroys the web container
-    ${ cli.color.cmd('heroku container:rm web worker')} # Destroys the web and worker containers`
+    ${cli.color.cmd('heroku container:rm web')}        # Destroys the web container
+    ${cli.color.cmd('heroku container:rm web worker')} # Destroys the web and worker containers`
 
 module.exports = function (topic) {
   return {
@@ -21,10 +21,9 @@ module.exports = function (topic) {
 
 let rm = async function (context, heroku) {
   if (context.args.length === 0) {
-    kli.error(`Error: Please specify at least one target process type\n ${usage} `)
+    cli.error(`Error: Please specify at least one target process type\n ${usage} `)
     process.exit(1)
   }
-  let container = context.args[0]
 
   for (let container of context.args) {
     let r = heroku.request({

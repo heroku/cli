@@ -16,13 +16,12 @@ module.exports = function (topic) {
 
 async function logout (context, heroku) {
   let herokuHost = process.env.HEROKU_HOST || 'heroku.com'
-  let registry = `registry.${ herokuHost }`
+  let registry = `registry.${herokuHost}`
 
   try {
-    let user = await dockerLogout(registry, context.flags.verbose)
-  }
-  catch (err) {
-    cli.error(`Error: docker logout exited with ${ err }`)
+    await dockerLogout(registry, context.flags.verbose)
+  } catch (err) {
+    cli.error(`Error: docker logout exited with ${err}`)
   }
 }
 
