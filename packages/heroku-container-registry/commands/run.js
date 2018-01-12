@@ -34,8 +34,8 @@ module.exports = function (topic) {
 
 let run = async function (context, heroku) {
   if (context.args.length === 0) {
-    cli.error(`Error: Requires one process type\n ${usage} `)
-    process.exit(1)
+    cli.error(`Error: Requires one process type\n ${usage} `, 1)
+    return
   }
 
   let processType = context.args.shift()
@@ -52,12 +52,12 @@ let run = async function (context, heroku) {
     jobs = possibleJobs.standard || []
   }
   if (!jobs.length) {
-    cli.warn('No images to run')
-    process.exit(1)
+    cli.error('No images to run', 1)
+    return
   }
   let job = jobs[0]
 
-  if (command === '') {
+  if (command.length === 0) {
     cli.styledHeader(`Running ${job.resource}`)
   } else {
     cli.styledHeader(`Running '${command}' on ${job.resource}`)
@@ -65,8 +65,6 @@ let run = async function (context, heroku) {
   try {
     await Sanbashi.runImage(job.resource, command, context.flags.port || 5000, context.flags.verbose)
   } catch (err) {
-    cli.error(`Error: docker run exited with ${err}`)
-    cli.hush(err.stack || err)
-    process.exit(1)
+    cli.error(`Error: docker run exited with ${err}`, 1)
   }
 }
