@@ -21,8 +21,7 @@ module.exports = function (topic) {
 
 let rm = async function (context, heroku) {
   if (context.args.length === 0) {
-    cli.error(`Error: Please specify at least one target process type\n ${usage} `)
-    process.exit(1)
+    cli.error(`Error: Please specify at least one target process type\n ${usage} `, 1)
   }
 
   for (let container of context.args) {

@@ -27,6 +27,7 @@
     "depcheck": "0.4.7",
     "mocha": "2.2.4",
     "mockdate": "2.0.1",
+    "nock": "9.0.4",
     "nyc": "10.1.2",
     "sinon": "2.1.0",
     "standard": "8.6.0",
