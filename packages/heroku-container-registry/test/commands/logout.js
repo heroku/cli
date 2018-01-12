@@ -1,0 +1,27 @@
+'use strict'
+
+const cli = require('heroku-cli-util')
+const cmd = require('../..').commands.find(c => c.topic === 'container' && c.command === 'logout')
+const expect = require('unexpected')
+const sinon = require('sinon')
+
+const Sanbashi = require('../../lib/sanbashi')
+var sandbox
+
+describe('container logout', () => {
+  beforeEach(() => {
+    cli.mockConsole()
+    sandbox = sinon.sandbox.create()
+  })
+  afterEach(() => sandbox.restore())
+
+  it('logs out of the docker registry', () => {
+    let logout = sandbox.stub(Sanbashi, 'cmd')
+      .withArgs('docker', ['logout', 'registry.heroku.com'])
+
+    return cmd.run({flags: {}})
+      .then(() => expect(cli.stdout, 'to be empty'))
+      .then(() => expect(cli.stderr, 'to be empty'))
+      .then(() => sandbox.assert.calledOnce(logout))
+  })
+})
