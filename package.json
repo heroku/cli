@@ -91,7 +91,7 @@
     "heroku-run": "3.5.4",
     "heroku-spaces": "2.10.0",
     "heroku-webhooks": "1.1.0",
-    "http-call": "4.0.8",
+    "http-call": "5.0.0",
     "netrc-parser": "3.0.3",
     "semver": "5.4.1",
     "tar-fs": "^1.16.0",
