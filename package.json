@@ -93,7 +93,7 @@
     "heroku-webhooks": "1.1.0",
     "http-call": "4.0.8",
     "netrc-parser": "3.0.3",
-    "semver": "5.4.1",
+    "semver": "5.5.0",
     "tar-fs": "^1.16.0",
     "ts-lodash": "^4.0.11",
     "tslib": "^1.8.1",
