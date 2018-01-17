@@ -2,7 +2,6 @@
 
 let cli = require('heroku-cli-util')
 let co = require('co')
-let lib = require('../../clients')
 
 function * run (context, heroku) {
   let id = context.args.id
