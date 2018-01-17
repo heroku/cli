@@ -17,6 +17,7 @@ exports.commands = [
   require('./commands/clients/destroy'),
   require('./commands/clients/info'),
   require('./commands/clients/update'),
+  require('./commands/clients/rotate'),
   require('./commands/sessions'),
   require('./commands/sessions/destroy')
 ]
