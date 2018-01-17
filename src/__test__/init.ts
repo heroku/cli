@@ -6,6 +6,8 @@ import inc from './count'
 
 process.setMaxListeners(0)
 
+process.env.FORCE_COLOR = '0'
+
 beforeEach(async () => {
   global.columns = 80
   global.testing = true
@@ -21,5 +23,4 @@ beforeEach(async () => {
   process.env.HEROKU_CONFIG_DIR = path.join(root, `test-${count}`, 'config')
 })
 
-export const integrationTest = process.env.CI || process.env.npm_lifecycle_event === 'test' ? test : test.skip
 export const skipIfWindows = process.platform === 'win32' ? test.skip : test
