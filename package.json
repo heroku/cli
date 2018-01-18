@@ -78,7 +78,7 @@
     "heroku-certs": "1.1.44",
     "heroku-ci": "1.9.5",
     "heroku-cli-addons": "1.2.26",
-    "heroku-cli-oauth": "2.0.15",
+    "heroku-cli-oauth": "2.1.0",
     "heroku-cli-status": "5.0.0",
     "heroku-container-registry": "4.4.4",
     "heroku-git": "2.5.23",
