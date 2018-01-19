@@ -21,7 +21,8 @@ yarn
 # remark /tmp/heroku-cli-commands-test.md -u remark-heroku-example-command -u remark-heroku-sample-code -u remark-heroku-bash-dollar -u remark-heroku-topic-overview -u remark-heroku-command-headings-inline-code
 git clone https://github.com/heroku/heroku-cli-dev-center-generator.git --branch ts
 ./bin/run plugins:link ./heroku-cli-dev-center-generator
-./bin/run devcenter:generate  > /tmp/heroku-cli-commands-test.md
+# generate is not working?
+./bin/run generate > /tmp/heroku-cli-commands-test.md
 # cat /tmp/heroku-cli-commands-test.md
 gem intall devcenter
 # devcenter push /tmp/heroku-cli-commands-test.md --trace

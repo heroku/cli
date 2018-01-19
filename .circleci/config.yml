@@ -112,7 +112,9 @@ jobs:
       - run: ls dist
       - run: ./scripts/release/win32
   dev_center_docs:
-    docker: *release_docker
+    docker: &devdocs_docker
+       - image: dickeyxxx/cli-engine-docker:v2.1.0
+         environment: *env
     steps:
       - type: checkout
       - run: ./scripts/release/dev_center_docs
