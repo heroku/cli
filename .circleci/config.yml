@@ -114,8 +114,12 @@ jobs:
   dev_center_docs:
     docker: &devdocs_docker
       - image: rasphilco/cli-engine-devcenter:v0.1.0
-        environment: *env
-          LC_ALL: C.UTF-8
+        environment:
+          NPM_CONFIG_REGISTRY: https://cli-npm.heroku.com
+          LANG: en_US.UTF-8
+          LANGUAGE: en_US.UTF-8
+          LC_TYPE: en_US.UTF-8
+
 
     steps:
       - type: checkout
