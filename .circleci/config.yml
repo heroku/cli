@@ -113,7 +113,7 @@ jobs:
       - run: ./scripts/release/win32
   dev_center_docs:
     docker: &devdocs_docker
-       - image: dickeyxxx/cli-engine-docker:v3.0.5
+       - image: rasphilco/cli-engine-devcenter:v0.1.0
          environment: *env
     steps:
       - type: checkout
