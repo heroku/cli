@@ -167,9 +167,6 @@ workflows:
             - build_os_linux
             - build_os_win32
             - build_os_windows
-      - dev_center_docs:
-          requires:
-            - test
           filters:
             tags:
               only: /^v.*/

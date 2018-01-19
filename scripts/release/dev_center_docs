@@ -16,7 +16,7 @@ set -ex
 
 yarn
 ./bin/run whoami
-git clone https://github.com/heroku/heroku-cli-dev-center-generator.git --branch ts
+git clone https://github.com/heroku/heroku-cli-dev-center-generator.git
 ./bin/run plugins:link ./heroku-cli-dev-center-generator
 # id `devcenter:generate` is not working
 ./bin/run generate > /tmp/heroku-cli-commands.md
