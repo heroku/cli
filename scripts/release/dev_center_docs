@@ -15,7 +15,13 @@ chmod 0600 ~/.netrc
 set -ex
 
 yarn
-npm install -g heroku-plugin-readme-generator
+# npm install -g heroku-plugin-readme-generator
 ./bin/run whoami
-heroku-cli-dev-center-generator > /tmp/heroku-cli-commands-test.md
-remark /tmp/heroku-cli-commands-test.md -u remark-heroku-example-command -u remark-heroku-sample-code -u remark-heroku-bash-dollar -u remark-heroku-topic-overview -u remark-heroku-command-headings-inline-code
+# heroku-cli-dev-center-generator > /tmp/heroku-cli-commands-test.md
+# remark /tmp/heroku-cli-commands-test.md -u remark-heroku-example-command -u remark-heroku-sample-code -u remark-heroku-bash-dollar -u remark-heroku-topic-overview -u remark-heroku-command-headings-inline-code
+git clone https://github.com/heroku/heroku-cli-dev-center-generator.git --branch ts
+cd heroku-cli-dev-center-generator
+./bin/run plugins:link .
+./bin/run devcenter:generate  > /tmp/heroku-cli-commands-test.md
+cat /tmp/heroku-cli-commands-test.md
+# devcenter push /tmp/heroku-cli-commands-test.md --trace
