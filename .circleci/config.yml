@@ -160,7 +160,6 @@ workflows:
             - build_os_darwin
             - build_os_linux
             - build_os_win32
-      skip devcenter for now
       - dev_center_docs:
           requires:
             - test
