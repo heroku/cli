@@ -18,6 +18,6 @@ yarn
 ./bin/run whoami
 git clone https://github.com/heroku/heroku-cli-dev-center-generator.git --branch ts
 ./bin/run plugins:link ./heroku-cli-dev-center-generator
-# devcenter:generate is not working
-./bin/run generate --test > /tmp/heroku-cli-commands-test.md
-devcenter push /tmp/heroku-cli-commands-test.md --trace
+# id `devcenter:generate` is not working
+./bin/run generate > /tmp/heroku-cli-commands.md
+devcenter push /tmp/heroku-cli-commands.md --trace
