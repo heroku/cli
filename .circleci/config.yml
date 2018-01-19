@@ -111,17 +111,21 @@ jobs:
       - run: ./scripts/build/win32
       - run: ls dist
       - run: ./scripts/release/win32
-  # dev_center_docs:
-  #   docker: *win32_docker
-  #   steps:
-  #     - type: checkout
-  #     - run: ./scripts/release/dev_center_docs
-  #     - store_artifacts:
-  #         path: /tmp/heroku-cli-commands.md
-  #     - run: |
-  #         if [ "$CIRCLE_TAG" != "" ]; then
-  #           devcenter push /tmp/heroku-cli-commands.md --trace
-  #         fi
+  dev_center_docs:
+    docker: &devdocs_docker
+      - image: rasphilco/cli-engine-devcenter:v0.1.0
+        environment:
+          NPM_CONFIG_REGISTRY: https://cli-npm.heroku.com
+          LANG: en_US.UTF-8
+          LANGUAGE: en_US.UTF-8
+          LC_TYPE: en_US.UTF-8
+          LC_ALL: C.UTF-8
+
+    steps:
+      - type: checkout
+      - run: ./scripts/release/dev_center_docs
+      - store_artifacts:
+          path: /tmp/heroku-cli-commands-test.md
 workflows:
   version: 2
   heroku_cli:
@@ -156,7 +160,15 @@ workflows:
             - build_os_darwin
             - build_os_linux
             - build_os_win32
-      # skip devcenter for now
-      # - dev_center_docs:
-      #     requires:
-      #       - test
+      - dev_center_docs:
+          requires:
+            - test
+            - build_os_darwin
+            - build_os_linux
+            - build_os_win32
+            - build_os_windows
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*/
