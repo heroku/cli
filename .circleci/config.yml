@@ -112,7 +112,7 @@ jobs:
       - run: ls dist
       - run: ./scripts/release/win32
   dev_center_docs:
-    docker: *win32_docker
+    docker: *release_docker
     steps:
       - type: checkout
       - run: ./scripts/release/dev_center_docs
