@@ -168,5 +168,7 @@ workflows:
             - build_os_win32
             - build_os_windows
           filters:
+            branches:
+              ignore: /.*/
             tags:
               only: /^v.*/
