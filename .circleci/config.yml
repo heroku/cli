@@ -113,8 +113,10 @@ jobs:
       - run: ./scripts/release/win32
   dev_center_docs:
     docker: &devdocs_docker
-       - image: rasphilco/cli-engine-devcenter:v0.1.0
-         environment: *env
+      - image: rasphilco/cli-engine-devcenter:v0.1.0
+        environment: *env
+          LC_ALL: C.UTF-8
+
     steps:
       - type: checkout
       - run: ./scripts/release/dev_center_docs
