@@ -113,7 +113,7 @@
     "@types/supports-color": "3.1.0",
     "chai": "^4.1.2",
     "del-cli": "1.1.0",
-    "husky": "0.14.3",
+    "husky": "0.15.0-rc.2",
     "jest": "22.0.5",
     "mocha": "^4.1.0",
     "nock": "9.1.6",
