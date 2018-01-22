@@ -12,6 +12,7 @@ exports.commands = [
   require('./commands/authorizations/info'),
   require('./commands/authorizations/revoke'),
   require('./commands/authorizations/update'),
+  require('./commands/authorizations/rotate'),
   require('./commands/clients'),
   require('./commands/clients/create'),
   require('./commands/clients/destroy'),
