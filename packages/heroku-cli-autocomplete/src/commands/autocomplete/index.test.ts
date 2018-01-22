@@ -1,5 +1,3 @@
-// @flow
-
 import { cli } from 'cli-ux'
 import * as os from 'os'
 

@@ -1,5 +1,3 @@
-// @flow
-
 import { cli } from 'cli-ux'
 import * as path from 'path'
 
@@ -24,7 +22,7 @@ export default class AutocompleteScript extends AutocompleteBase {
     if (shell === 'bash' || shell === 'zsh') {
       let shellUpcase = shell.toUpperCase()
       cli.log(
-        `${this._prefix}CLI_ENGINE_AC_${shellUpcase}_SETUP_PATH=${path.join(
+        `${this.prefix}CLI_ENGINE_AC_${shellUpcase}_SETUP_PATH=${path.join(
           this.completionsCachePath,
           `${shell}_setup`,
         )} && test -f $CLI_ENGINE_AC_${shellUpcase}_SETUP_PATH && source $CLI_ENGINE_AC_${shellUpcase}_SETUP_PATH;`,
@@ -34,7 +32,7 @@ export default class AutocompleteScript extends AutocompleteBase {
     }
   }
 
-  get _prefix(): string {
+  private get prefix(): string {
     return `\n# ${this.config.bin} autocomplete setup\n`
   }
 }

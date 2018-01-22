@@ -1,10 +1,8 @@
-// @flow
-
 import { ICommand } from '@cli-engine/config'
 import { CommandManager } from '@cli-engine/engine/lib/command'
 import { Config } from '@cli-engine/engine/lib/config'
 import { Plugins } from '@cli-engine/engine/lib/plugins'
-import { APIClient, flags as Flags } from '@heroku-cli/command'
+import { flags as Flags } from '@heroku-cli/command'
 import { cli } from 'cli-ux'
 import * as path from 'path'
 
@@ -24,103 +22,121 @@ export default class AutocompleteOptions extends AutocompleteBase {
   parsedArgs: { [name: string]: string } = {}
   parsedFlags: { [name: string]: string } = {}
 
+  // helpful dictionary
+  //
+  // *args: refers to a Command's static args
+  // *argv: refers to the current execution's command line positional input
+  // Command: (class) Command class
+  // completion: (object) object with data/methods to build/retrive options from cache
+  // curPosition*: the current argv position the shell is trying to complete
+  // options: (string) white-space seperated list of values for the shell to use for completion
+
   async run() {
     // ex: heroku autocomplete:options 'heroku addons:destroy -a myapp myaddon'
     try {
-      // A - grab cmd line to complete from argv
-      const commandLineToComplete = this.argv[0].split(' ')
-
-      // B - find cmd to complete
-      const cmdId = commandLineToComplete[1]
-      const config = new Config(this.config)
-      config.plugins = new Plugins(config)
-      const CM = new CommandManager(config)
-      const iCmd = await CM.findCommand(cmdId, true)
-      const Command = await iCmd.fetchCommand()
-
-      // C -
-      // 1. find what arg/flag is asking to be completed
-      // 2. set any parsable context from exisitng args/flags
-      // 3. set vars needed to build/retrive options cache
-      const cmdArgv = commandLineToComplete.slice(2)
-      const cmdArgvCount = cmdArgv.length
-      const cmdCurArgv = cmdArgv[cmdArgvCount - 1]
-      const cmdPreviousArgv = cmdArgv[cmdArgvCount - 2]
-      // for now, suspending arg completion
-      // let [cmdCurArgCount, cmdCurArgvIsFlag, cmdCurArgvIsFlagValue] =
-      let [cmdCurArgvIsFlag, cmdCurArgvIsFlagValue] = this._determineCmdState(cmdArgv, Command)
-      let cacheKey: any
-      let cacheCompletion: any
-
-      if (cmdCurArgvIsFlag || cmdCurArgvIsFlagValue) {
-        const argvFlag = cmdCurArgvIsFlagValue ? cmdPreviousArgv : cmdCurArgv
-        let { name, flag } = this._findFlagFromWildArg(argvFlag, Command)
-        if (!flag) this.throwError(`${argvFlag} is not a valid flag for ${cmdId}`)
-        cacheKey = name || flag.name
-        cacheCompletion = flag.completion
-      } else {
-        // special config:* completions
-        if (cmdId.match(/config:(\w+)et$/)) {
-          if (this.flags.app) {
-            cacheKey = `${this.flags.app}_config_vars`
-            cacheCompletion = {
-              cacheDuration: 60 * 60 * 24,
-              options: async (ctx: any) => {
-                const heroku = new APIClient(ctx.config)
-                let { body: configs } = await heroku.get(`/apps/${this.flags.app}/config-vars`)
-                return Object.keys(configs)
-              },
-            }
-          } else {
-            this.throwError(`No app found for config completion (cmdId: ${cmdId})`)
-          }
-        } else {
-          const cmdArgs = Command.args || []
-          if (cmdArgs[0] && cmdArgs[0].name === 'app' && commandLineToComplete.length === 3) {
-            cacheCompletion = Flags.app().completion
-          } else {
-            this.throwError(`No arg completion found for cmd (cmdId: ${cmdId})`)
-          }
-          // for now, suspending arg completion
-          // const cmdArgs = Command.args || []
-          // const cmdArgsCount = cmdArgs.length
-          // if (cmdCurArgCount > cmdArgsCount || cmdCurArgCount === 0) this.throwError(`Cannot complete arg position ${cmdCurArgCount} for ${cmdId}`)
-          // const arg = cmdArgs[cmdCurArgCount - 1]
-          // cacheKey = arg.name
-          // cacheCompletion = arg.completion
-        }
-      }
-
-      // build/retrieve & return options cache
-      if (cacheCompletion && cacheCompletion.options) {
-        // use cacheKey function or fallback to arg/flag name
-        const ctx = { args: this.parsedArgs, flags: this.parsedFlags, argv: this.argv, config: this.config }
-        const ckey = cacheCompletion.cacheKey ? await cacheCompletion.cacheKey(ctx) : null
-        const key: string = ckey || cacheKey || 'unknown_key_error'
-        const flagCachePath = path.join(this.completionsCachePath, key)
-
-        // build/retrieve cache
-        const duration = cacheCompletion.cacheDuration || 60 * 60 * 24 // 1 day
-        const opts = { cacheFn: () => cacheCompletion.options(ctx) }
-        const options = await ACCache.fetch(flagCachePath, duration, opts)
-
-        // return options cache
-        cli.log((options || []).join('\n'))
-      }
+      const commandStateVars = await this.processCommandLine()
+      const completion = this.determineCompletion(commandStateVars)
+      const options = await this.fetchOptions(completion)
+      if (options) cli.log(options)
     } catch (err) {
-      // on error make audible 'beep' (unless on bash)
-      // if (this.config.shell !== 'bash') process.stderr.write('\x07')
       // write to ac log
       this.writeLogFile(err.message)
     }
   }
 
-  throwError(msg: string) {
+  private async processCommandLine() {
+    // find command id
+    const commandLineToComplete = this.argv[0].split(' ')
+    const CommandID = commandLineToComplete[1]
+    // setup cli-engine Command Manager
+    const config = new Config(this.config)
+    config.plugins = new Plugins(config)
+    const CM = new CommandManager(config)
+    const iCmd = await CM.findCommand(CommandID, true)
+    // find Command
+    const Command = await iCmd.fetchCommand()
+    // process Command state from command line data
+    const slicedArgv = commandLineToComplete.slice(2)
+    const [curPositionIsFlag, curPositionIsFlagValue] = this.determineCmdState(slicedArgv, Command)
+    return { CommandID, Command, curPositionIsFlag, curPositionIsFlagValue, slicedArgv }
+  }
+
+  private determineCompletion(commandStateVars: any) {
+    const { CommandID, Command, curPositionIsFlag, curPositionIsFlagValue, slicedArgv } = commandStateVars
+    // setup empty cache completion vars to assign
+    let cacheKey: any
+    let cacheCompletion: any
+
+    // completing a flag/value? else completing an arg
+    if (curPositionIsFlag || curPositionIsFlagValue) {
+      const slicedArgvCount = slicedArgv.length
+      const lastArgvArg = slicedArgv[slicedArgvCount - 1]
+      const previousArgvArg = slicedArgv[slicedArgvCount - 2]
+      const argvFlag = curPositionIsFlagValue ? previousArgvArg : lastArgvArg
+      let { name, flag } = this.findFlagFromWildArg(argvFlag, Command)
+      if (!flag) this.throwError(`${argvFlag} is not a valid flag for ${CommandID}`)
+      cacheKey = name || flag.name
+      cacheCompletion = flag.completion
+    } else {
+      const cmdArgs = Command.args || []
+      const cmdArgsCount = cmdArgs.length
+      const parsedArgsLength = Object.keys(this.parsedArgs).length
+      // TO-DO: how to handle variableArgs?
+      if (parsedArgsLength > cmdArgsCount || !parsedArgsLength)
+        this.throwError(`Cannot complete arg position ${parsedArgsLength - 1} for ${CommandID}`)
+      const arg = cmdArgs[parsedArgsLength - 1]
+      cacheKey = arg.name
+    }
+
+    // try to auto-populate the completion object
+    if (!cacheCompletion) {
+      cacheCompletion = this.findCompletion(cacheKey, CommandID)
+    }
+    return { cacheKey, cacheCompletion }
+  }
+
+  private async fetchOptions(cache: any) {
+    const { cacheCompletion, cacheKey } = cache
+    // build/retrieve & return options cache
+    if (cacheCompletion && cacheCompletion.options) {
+      const ctx = {
+        args: this.parsedArgs,
+        // special case for app & team env vars
+        flags: this.parsedFlagsWithEnvVars,
+        argv: this.argv,
+        config: this.config,
+      }
+      // use cacheKey function or fallback to arg/flag name
+      const ckey = cacheCompletion.cacheKey ? await cacheCompletion.cacheKey(ctx) : null
+      const key: string = ckey || cacheKey || 'unknown_key_error'
+      const flagCachePath = path.join(this.completionsCachePath, key)
+
+      // build/retrieve cache
+      const duration = cacheCompletion.cacheDuration || 60 * 60 * 24 // 1 day
+      const opts = { cacheFn: () => cacheCompletion.options(ctx) }
+      const options = await ACCache.fetch(flagCachePath, duration, opts)
+
+      // return options cache
+      return (options || []).join('\n')
+    }
+  }
+
+  private get parsedFlagsWithEnvVars() {
+    return Object.assign(
+      {
+        app: process.env.HEROKU_APP,
+        team: process.env.HEROKU_TEAM || process.env.HEROKU_ORG,
+      },
+      this.parsedFlags,
+    )
+  }
+
+  private throwError(msg: string) {
     throw new Error(msg)
   }
 
   // TO-DO: create a return type
-  _findFlagFromWildArg(wild: string, Command: ICommand): { flag: any; name: any } {
+  private findFlagFromWildArg(wild: string, Command: ICommand): { flag: any; name: any } {
     let name = wild.replace(/^-+/, '')
     name = name.replace(/=(.+)?$/, '')
 
@@ -137,18 +153,14 @@ export default class AutocompleteOptions extends AutocompleteBase {
     return unknown
   }
 
-  _determineCmdState(argv: Array<string>, Command: ICommand): [boolean, boolean] {
+  private determineCmdState(argv: string[], Command: ICommand): [boolean, boolean] {
     let needFlagValueSatisfied = false
     let argIsFlag = false
     let argIsFlagValue = false
     let argsIndex = 0
     let flagName: string
-    // find cur index of argv (including empty '')
-    // that are not flags or flag values
 
-    // for now, suspending arg completion
     argv.filter(wild => {
-      // const nthArg = argv.filter(wild => {
       if (wild.match(/^-(-)?/)) {
         // we're a flag
         argIsFlag = true
@@ -156,7 +168,7 @@ export default class AutocompleteOptions extends AutocompleteBase {
         // ignore me
         const wildSplit = wild.split('=')
         const key = wildSplit.length === 1 ? wild : wildSplit[0]
-        const { name, flag } = this._findFlagFromWildArg(key, Command)
+        const { name, flag } = this.findFlagFromWildArg(key, Command)
         flagName = name
         // end ignore me
 
@@ -201,8 +213,8 @@ export default class AutocompleteOptions extends AutocompleteBase {
 
       // add parsedArgs
       // TO-DO: how to handle variableArgs?
-      if (argsIndex < (Command.args || []).length) {
-        let CArgs = Command.args || []
+      let CArgs = Command.args || []
+      if (argsIndex < CArgs.length) {
         this.parsedArgs[CArgs[argsIndex].name] = wild
         argsIndex += 1
       }
@@ -210,10 +222,8 @@ export default class AutocompleteOptions extends AutocompleteBase {
       argIsFlagValue = false
       needFlagValueSatisfied = false
       return true
-    }) // .length
+    })
 
-    // for now, suspending arg completion
-    // return [nthArg, argIsFlag, argIsFlagValue]
     return [argIsFlag, argIsFlagValue]
   }
 }

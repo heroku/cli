@@ -1,5 +1,3 @@
-// @flow
-
 import Config from '@cli-engine/engine/lib/config'
 import { UserPlugin } from '@cli-engine/engine/lib/plugins/user'
 import { flags } from '@heroku-cli/command'
@@ -43,28 +41,28 @@ describe('AutocompleteCacheBuilder', () => {
       }
     })
 
-    runtest('#_genCmdID', async () => {
-      expect(cmd._genCmdID(AutocompleteCacheBuilder)).toBe('autocomplete:buildcache')
+    runtest('#genCmdID', async () => {
+      expect(cmd.genCmdID(AutocompleteCacheBuilder)).toBe('autocomplete:buildcache')
     })
 
-    runtest('#_genCmdWithDescription', async () => {
-      expect(await cmd._genCmdWithDescription(AutocompleteCacheBuilder)).toBe(
+    runtest('#genCmdWithDescription', async () => {
+      expect(await cmd.genCmdWithDescription(AutocompleteCacheBuilder)).toBe(
         `"autocomplete\\:buildcache":"autocomplete cache builder"`,
       )
     })
 
-    runtest('#_genCmdPublicFlags', async () => {
-      expect(cmd._genCmdPublicFlags(CacheBuildFlagsTest)).toBe('--app --visable')
-      expect(cmd._genCmdPublicFlags(AutocompleteCacheBuilder)).toBe('')
+    runtest('#genCmdPublicFlags', async () => {
+      expect(cmd.genCmdPublicFlags(CacheBuildFlagsTest)).toBe('--app --visable')
+      expect(cmd.genCmdPublicFlags(AutocompleteCacheBuilder)).toBe('')
     })
 
-    runtest('#_genCmdsCacheStrings (cmdsWithFlags)', async () => {
-      const cacheStrings = await cmd._genCmdsCacheStrings()
+    runtest('#genCmdsCacheStrings (cmdsWithFlags)', async () => {
+      const cacheStrings = await cmd.genCmdsCacheStrings()
       expect(cacheStrings.cmdsWithFlags).toBe('foo:alpha --bar\nfoo:beta')
     })
 
-    runtest('#_genCmdsCacheStrings (cmdFlagsSetters)', async () => {
-      const cacheStrings = await cmd._genCmdsCacheStrings()
+    runtest('#genCmdsCacheStrings (cmdFlagsSetters)', async () => {
+      const cacheStrings = await cmd.genCmdsCacheStrings()
       expect(cacheStrings.cmdFlagsSetters).toBe(`_set_foo_alpha_flags () {
 _flags=(
 "--bar[(switch) bar flag]"
@@ -74,8 +72,8 @@ _flags=(
 # no flags for foo:beta`)
     })
 
-    runtest('#_genCmdsCacheStrings (cmdsWithDescSetter)', async () => {
-      const cacheStrings = await cmd._genCmdsCacheStrings()
+    runtest('#genCmdsCacheStrings (cmdsWithDescSetter)', async () => {
+      const cacheStrings = await cmd.genCmdsCacheStrings()
       expect(cacheStrings.cmdsWithDescSetter).toBe(`
 _set_all_commands_list () {
 _all_commands_list=(
@@ -86,8 +84,8 @@ _all_commands_list=(
 `)
     })
 
-    runtest('#_genCompletionDotsFunc', async () => {
-      expect(await cmd._genCompletionDotsFunc()).toBe(`expand-or-complete-with-dots() {
+    runtest('#genCompletionDotsFunc', async () => {
+      expect(await cmd.genCompletionDotsFunc()).toBe(`expand-or-complete-with-dots() {
   echo -n "..."
   zle expand-or-complete
   zle redisplay
@@ -96,18 +94,18 @@ zle -N expand-or-complete-with-dots
 bindkey "^I" expand-or-complete-with-dots`)
     })
 
-    runtest('#_genShellSetups (0: bash)', async () => {
+    runtest('#genShellSetups (0: bash)', async () => {
       // let cmd = await new AutocompleteCacheBuilder(new Config())
-      let shellSetups = await cmd._genShellSetups()
+      let shellSetups = await cmd.genShellSetups()
       expect(shellSetups[0]).toBe(`CLI_ENGINE_AC_ANALYTICS_DIR=${cmd.config.cacheDir}/completions/completion_analytics;
 CLI_ENGINE_AC_COMMANDS_PATH=${cmd.config.cacheDir}/completions/commands;
 CLI_ENGINE_AC_BASH_COMPFUNC_PATH=${AC_PLUGIN_PATH}/autocomplete/bash/cli_engine.bash && test -f $CLI_ENGINE_AC_BASH_COMPFUNC_PATH && source $CLI_ENGINE_AC_BASH_COMPFUNC_PATH;
 `)
     })
 
-    runtest('#_genShellSetups (1: zsh)', async () => {
+    runtest('#genShellSetups (1: zsh)', async () => {
       // let cmd = await new AutocompleteCacheBuilder(new Config())
-      let shellSetups = await cmd._genShellSetups()
+      let shellSetups = await cmd.genShellSetups()
       expect(shellSetups[1]).toBe(`expand-or-complete-with-dots() {
   echo -n "..."
   zle expand-or-complete
@@ -127,9 +125,9 @@ compinit;
 `)
     })
 
-    runtest('#_genShellSetups (1: zsh w/o ellipsis)', async () => {
+    runtest('#genShellSetups (1: zsh w/o ellipsis)', async () => {
       // let cmd = await new AutocompleteCacheBuilder()
-      let shellSetups = await cmd._genShellSetups(true)
+      let shellSetups = await cmd.genShellSetups(true)
       expect(shellSetups[1]).toBe(`
 CLI_ENGINE_AC_ANALYTICS_DIR=${cmd.config.cacheDir}/completions/completion_analytics;
 CLI_ENGINE_AC_COMMANDS_PATH=${cmd.config.cacheDir}/completions/commands;
@@ -143,9 +141,9 @@ compinit;
 `)
     })
 
-    runtest('#_genZshAllCmdsListSetter', async () => {
+    runtest('#genZshAllCmdsListSetter', async () => {
       let cmdsWithDesc = [`"foo\\:alpha":"foo:alpha description"`, `"foo\\:beta":"foo:beta description"`]
-      expect(await cmd._genZshAllCmdsListSetter(cmdsWithDesc)).toBe(`
+      expect(await cmd.genZshAllCmdsListSetter(cmdsWithDesc)).toBe(`
 _set_all_commands_list () {
 _all_commands_list=(
 "foo\\:alpha":"foo:alpha description"
@@ -155,8 +153,8 @@ _all_commands_list=(
 `)
     })
 
-    runtest('#_genZshCmdFlagsSetter', async () => {
-      expect(await cmd._genZshCmdFlagsSetter(CacheBuildFlagsTest)).toBe(`_set_autocomplete_buildcache_flags () {
+    runtest('#genZshCmdFlagsSetter', async () => {
+      expect(await cmd.genZshCmdFlagsSetter(CacheBuildFlagsTest)).toBe(`_set_autocomplete_buildcache_flags () {
 _flags=(
 "--app=-[(autocomplete) app to run command against]: :_compadd_flag_options"
 "--visable[(switch) Visable flag]"

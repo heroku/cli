@@ -1,6 +1,5 @@
-// @flow
-
 import Config from '@cli-engine/config'
+import { flags } from '@heroku-cli/command'
 import * as os from 'os'
 import * as path from 'path'
 
@@ -10,6 +9,11 @@ import { AutocompleteBase } from './autocomplete'
 let runtest = (os.platform() as string) === 'windows' || os.platform() === 'win32' ? xtest : test
 
 class AutocompleteTest extends AutocompleteBase {
+  static id = 'test:foo'
+  static flags = {
+    app: flags.app(),
+    bar: flags.boolean(),
+  }
   async run() {}
 }
 const cmd = new AutocompleteTest(new Config())
@@ -30,5 +34,15 @@ describe('AutocompleteBase', () => {
 
   runtest('#acLogfile', async () => {
     expect(cmd.acLogfile).toBe(path.join(new Config().cacheDir, 'autocomplete.log'))
+  })
+
+  runtest('#findCompletion', async () => {
+    expect((cmd as any).findCompletion('app', AutocompleteTest.id)).toBeTruthy()
+    expect((cmd as any).findCompletion('bar', AutocompleteTest.id)).toBeFalsy()
+  })
+
+  runtest('#convertIfAlias', async () => {
+    expect((cmd as any).convertIfAlias('key')).toBe('config')
+    expect((cmd as any).convertIfAlias('bar')).toBe('bar')
   })
 })

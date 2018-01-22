@@ -1,5 +1,3 @@
-// @flow
-
 import Config from '@cli-engine/config'
 import { cli } from 'cli-ux'
 import * as os from 'os'

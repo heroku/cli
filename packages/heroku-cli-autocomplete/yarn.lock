@@ -10,9 +10,9 @@
     esutils "^2.0.2"
     js-tokens "^3.0.0"
 
-"@cli-engine/command@^12.1.0":
-  version "12.1.0"
-  resolved "https://registry.yarnpkg.com/@cli-engine/command/-/command-12.1.0.tgz#86300ad3c7f51b1c539f9c7b998204f52016e0a7"
+"@cli-engine/command@^12.1.0", "@cli-engine/command@^12.1.1":
+  version "12.1.1"
+  resolved "https://registry.yarnpkg.com/@cli-engine/command/-/command-12.1.1.tgz#bb6262f849b59531ec386414b2ea763fd9385415"
   dependencies:
     "@cli-engine/screen" "^0.0.0"
     chalk "^2.3.0"
@@ -103,15 +103,15 @@
     supports-color "^5.1.0"
 
 "@heroku-cli/command@^7.0.12":
-  version "7.0.13"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-7.0.13.tgz#d2eafe24e4a0e1857f8ac81e84791e5ca392b6b9"
+  version "7.0.15"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-7.0.15.tgz#b7c3d475842b2ec519a19f2895dbada4f9a3b010"
   dependencies:
-    "@cli-engine/command" "^12.1.0"
+    "@cli-engine/command" "^12.1.1"
     "@cli-engine/config" "^5.1.0"
     cli-ux "^2.0.21"
     heroku-client "3.0.6"
     http-call "^4.0.8"
-    netrc-parser "^3.0.0"
+    netrc-parser "^3.0.3"
 
 "@heroku-cli/tslint@^1.1.2":
   version "1.1.4"
@@ -783,7 +783,25 @@ cli-truncate@^0.2.1:
     slice-ansi "0.0.4"
     string-width "^1.0.1"
 
-cli-ux@^2.0.21, cli-ux@^2.0.3:
+cli-ux@^2.0.21:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-2.1.1.tgz#07021d2b084d739af5d3c0f9d3d07673cb203947"
+  dependencies:
+    "@cli-engine/screen" "^0.0.0"
+    "@heroku-cli/color" "^1.0.4"
+    "@heroku/linewrap" "^1.0.0"
+    ansi-escapes "^3.0.0"
+    ansi-styles "^3.2.0"
+    cardinal "^1.0.0"
+    chalk "^2.3.0"
+    lodash "^4.17.4"
+    moment "^2.20.1"
+    password-prompt "^1.0.3"
+    strip-ansi "^4.0.0"
+    supports-color "^5.1.0"
+    ts-lodash "^4.0.8"
+
+cli-ux@^2.0.3:
   version "2.0.21"
   resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-2.0.21.tgz#a7231097af95356e79f5d6a380f04be889703083"
   dependencies:
@@ -2635,7 +2653,7 @@ natural-compare@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/natural-compare/-/natural-compare-1.4.0.tgz#4abebfeed7541f2c27acfb29bdbbd15c8d5ba4f7"
 
-netrc-parser@^3.0.0:
+netrc-parser@^3.0.3:
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/netrc-parser/-/netrc-parser-3.0.3.tgz#1b3e6cf85e7dc3618dc7daaf639b1fa624392852"
   dependencies:
@@ -2909,8 +2927,8 @@ parse5@^3.0.2:
     "@types/node" "*"
 
 password-prompt@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/password-prompt/-/password-prompt-1.0.3.tgz#1478aad647c5afb65158e901bf4df0a3c367039a"
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/password-prompt/-/password-prompt-1.0.4.tgz#933bac8db3528fcb27e9fdbc0a6592adcbdb5ed9"
   dependencies:
     ansi-escapes "^3.0.0"
     cross-spawn "^5.1.0"
