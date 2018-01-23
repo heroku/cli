@@ -21,7 +21,11 @@ const shouldUnschedule = function (cmdRun) {
   beforeEach(() => {
     api = nock('https://api.heroku.com')
     api.get('/apps/myapp/addons').reply(200, [addon])
-    api.post('/actions/addon-attachments/resolve', {app: 'myapp', addon_attachment: 'DATABASE_URL'}).reply(200, [attachment])
+    api.post('/actions/addon-attachments/resolve', {
+      app: 'myapp',
+      addon_attachment: 'DATABASE_URL',
+      addon_service: 'heroku-postgresql'
+    }).reply(200, [attachment])
     pg = nock('https://postgres-api.heroku.com')
     pg.get('/client/v11/databases/1/transfer-schedules').twice().reply(200, [{name: 'DATABASE_URL', uuid: '100-001'}])
     pg.delete('/client/v11/databases/1/transfer-schedules/100-001').reply(200)

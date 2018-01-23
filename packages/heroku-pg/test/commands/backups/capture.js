@@ -30,8 +30,11 @@ const shouldCapture = function (cmdRun) {
   it('captures a db', () => {
     addon.app.name = 'myapp'
     api = nock('https://api.heroku.com')
-    api.post('/actions/addon-attachments/resolve', {app: 'myapp', addon_attachment: 'DATABASE_URL'}).reply(200, [{addon}])
-
+    api.post('/actions/addon-attachments/resolve', {
+      app: 'myapp',
+      addon_attachment: 'DATABASE_URL',
+      addon_service: 'heroku-postgresql'
+    }).reply(200, [{addon}])
     pg = nock('https://postgres-api.heroku.com')
     pg.post('/client/v11/databases/1/backups').reply(200, {
       num: 5,
@@ -64,7 +67,11 @@ Stop a running backup with heroku pg:backups:cancel.
   it('captures a db (verbose)', () => {
     addon.app.name = 'myapp'
     api = nock('https://api.heroku.com')
-    api.post('/actions/addon-attachments/resolve', {app: 'myapp', addon_attachment: 'DATABASE_URL'}).reply(200, [{addon}])
+    api.post('/actions/addon-attachments/resolve', {
+      app: 'myapp',
+      addon_attachment: 'DATABASE_URL',
+      addon_service: 'heroku-postgresql'
+    }).reply(200, [{addon}])
 
     pg = nock('https://postgres-api.heroku.com')
     pg.post('/client/v11/databases/1/backups').reply(200, {
@@ -101,7 +108,11 @@ Backing up DATABASE to b005...
   it('captures a db (verbose) with non billing app', () => {
     addon.app.name = 'mybillingapp'
     api = nock('https://api.heroku.com')
-    api.post('/actions/addon-attachments/resolve', {app: 'myapp', addon_attachment: 'DATABASE_URL'}).reply(200, [{addon}])
+    api.post('/actions/addon-attachments/resolve', {
+      app: 'myapp',
+      addon_attachment: 'DATABASE_URL',
+      addon_service: 'heroku-postgresql'
+    }).reply(200, [{addon}])
 
     pg = nock('https://postgres-api.heroku.com')
     pg.post('/client/v11/databases/1/backups').reply(200, {
@@ -141,7 +152,11 @@ Backing up DATABASE to b005...
   it('captures a snapshot if called with the --snapshot flag', () => {
     addon.app.name = 'mybillingapp'
     api = nock('https://api.heroku.com')
-    api.post('/actions/addon-attachments/resolve', {app: 'myapp', addon_attachment: 'DATABASE_URL'}).reply(200, [{addon}])
+    api.post('/actions/addon-attachments/resolve', {
+      app: 'myapp',
+      addon_attachment: 'DATABASE_URL',
+      addon_service: 'heroku-postgresql'
+    }).reply(200, [{addon}])
 
     pg = nock('https://postgres-api.heroku.com')
     pg.post('/postgres/v0/databases/1/snapshots').reply(200, {})

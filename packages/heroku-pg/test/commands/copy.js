@@ -45,7 +45,11 @@ describe('pg:copy', () => {
   context('url to heroku', () => {
     beforeEach(() => {
       api.get('/addons/postgres-1').reply(200, addon)
-      api.post('/actions/addon-attachments/resolve', {app: 'myapp', addon_attachment: 'DATABASE_URL'}).reply(200, [attachment])
+      api.post('/actions/addon-attachments/resolve', {
+        app: 'myapp',
+        addon_attachment: 'DATABASE_URL',
+        addon_service: 'heroku-postgresql'
+      }).reply(200, [attachment])
       api.get('/apps/myapp/config-vars').reply(200, {DATABASE_URL: 'postgres://heroku/db'})
       pg.post('/client/v11/databases/1/transfers', {
         from_name: 'database bar on foo.com:5432',
@@ -66,7 +70,11 @@ describe('pg:copy', () => {
   context('fails', () => {
     beforeEach(() => {
       api.get('/addons/postgres-1').reply(200, addon)
-      api.post('/actions/addon-attachments/resolve', {app: 'myapp', addon_attachment: 'DATABASE_URL'}).reply(200, [attachment])
+      api.post('/actions/addon-attachments/resolve', {
+        app: 'myapp',
+        addon_attachment: 'DATABASE_URL',
+        addon_service: 'heroku-postgresql'
+      }).reply(200, [attachment])
       api.get('/apps/myapp/config-vars').reply(200, {DATABASE_URL: 'postgres://heroku/db'})
       pg.post('/client/v11/databases/1/transfers', {
         from_name: 'database bar on foo.com:5432',

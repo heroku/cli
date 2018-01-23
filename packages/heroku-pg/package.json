@@ -28,7 +28,7 @@
   "devDependencies": {
     "heroku-client": "^3.0.2",
     "mocha": "^3.4.2",
-    "nock": "^9.0.13",
+    "nock": "9.1.6",
     "np": "^2.16.0",
     "nyc": "^11.0.3",
     "proxyquire": "^1.8.0",

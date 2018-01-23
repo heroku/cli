@@ -37,6 +37,7 @@ describe('pg', () => {
   context('with 0 dbs', () => {
     it('shows empty state', () => {
       all = []
+      api.get('/apps/myapp/config-vars').reply(200, {})
 
       return cmd.run({app: 'myapp', args: {}})
       .then(() => expect(cli.stdout, 'to equal', 'myapp has no heroku-postgresql databases.\n'))

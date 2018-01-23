@@ -11,7 +11,11 @@ const shouldSchedule = function (cmdRun) {
 
   beforeEach(() => {
     api = nock('https://api.heroku.com')
-    api.post('/actions/addon-attachments/resolve', {app: 'myapp', addon_attachment: 'DATABASE_URL'}).reply(200, [
+    api.post('/actions/addon-attachments/resolve', {
+      app: 'myapp',
+      addon_attachment: 'DATABASE_URL',
+      addon_service: 'heroku-postgresql'
+    }).reply(200, [
       {
         addon: {
           id: 1,

@@ -19,7 +19,11 @@ const shouldRestore = function (cmdRun) {
 
   beforeEach(() => {
     api = nock('https://api.heroku.com')
-    api.post('/actions/addon-attachments/resolve', {app: 'myapp', addon_attachment: 'DATABASE_URL'}).reply(200, [{addon}])
+    api.post('/actions/addon-attachments/resolve', {
+      app: 'myapp',
+      addon_attachment: 'DATABASE_URL',
+      addon_service: 'heroku-postgresql'
+    }).reply(200, [{addon}])
 
     pg = nock('https://postgres-api.heroku.com')
     cli.mockConsole()

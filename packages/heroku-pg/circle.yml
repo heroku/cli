@@ -7,7 +7,7 @@ dependencies:
 
 machine:
   node:
-    version: v7.10.0
+    version: v9.4.0
 
 test:
   post:
