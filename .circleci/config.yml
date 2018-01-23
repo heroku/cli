@@ -120,7 +120,6 @@ jobs:
           LANGUAGE: en_US.UTF-8
           LC_TYPE: en_US.UTF-8
           LC_ALL: C.UTF-8
-
     steps:
       - type: checkout
       - run: ./scripts/release/dev_center_docs
