@@ -15,10 +15,11 @@ function * run (context, heroku) {
   if (space) org = (yield heroku.get(`/spaces/${space}`)).organization.name
 
   function regionizeAppName (app) {
+    let name = app.locked ? `${app.name} [locked]` : app.name
     if (app.region && app.region.name !== 'us') {
-      return `${app.name} (${cli.color.green(app.region.name)})`
+      return `${name} (${cli.color.green(app.region.name)})`
     } else {
-      return app.name
+      return name
     }
   }
 

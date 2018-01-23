@@ -12,6 +12,13 @@ let example = {
   region: {name: 'us'}
 }
 
+let lockedApp = {
+  name: 'locked-app',
+  owner: {email: 'foo@bar.com'},
+  region: {name: 'us'},
+  locked: true
+}
+
 let euApp = {
   name: 'example-eu',
   owner: {email: 'foo@bar.com'},
@@ -132,6 +139,35 @@ org-app-1   test-org@herokumanager.com
         expect(cli.stdout).to.equal(`=== foo@bar.com Apps
 example
 example-eu (eu)
+
+`)
+      })
+    })
+
+    it('shows locked app', function () {
+      let mock = stubUserApps([example, euApp, lockedApp])
+      return apps.run({flags: {}, args: {}}).then(function () {
+        mock.done()
+        expect(cli.stderr).to.equal('')
+        expect(cli.stdout).to.equal(`=== foo@bar.com Apps
+example
+example-eu (eu)
+locked-app [locked]
+
+`)
+      })
+    })
+
+    it('shows locked eu app', function () {
+      let euLockedApp = Object.assign(lockedApp, {region: {name: 'eu'}})
+      let mock = stubUserApps([example, euApp, euLockedApp])
+      return apps.run({flags: {}, args: {}}).then(function () {
+        mock.done()
+        expect(cli.stderr).to.equal('')
+        expect(cli.stdout).to.equal(`=== foo@bar.com Apps
+example
+example-eu (eu)
+locked-app [locked] (eu)
 
 `)
       })
