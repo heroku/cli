@@ -16,3 +16,12 @@ EOF
 
 git submodule sync
 git submodule update --init --recursive
+
+cat <<EOF >> ~/.ssh/config
+Host heroku.com
+    StrictHostKeyChecking no
+    CheckHostIP no
+    UserKnownHostsFile=/dev/null
+Host github.com
+    StrictHostKeyChecking no
+EOF
