@@ -41,17 +41,8 @@ function * run (context, heroku) {
     })
   })
 
-  let reset = co.wrap(function * () {
-    const host = require('../lib/host')
-    let db = yield fetcher.addon(app, args.database)
-    cli.warn(`${cli.color.cmd('pg:credentials --reset')} is being deprecated. Please use ${cli.color.cmd('pg:credentials:rotate')} instead.`)
-    yield cli.action(`Resetting credentials on ${cli.color.addon(db.name)}`, co(function * () {
-      yield heroku.post(`/client/v11/databases/${db.id}/credentials_rotation`, {host: host(db)})
-    }))
-  })
-
   if (flags.reset) {
-    yield reset()
+    cli.error(`${cli.color.cmd('pg:credentials --reset')} is deprecated. Please use ${cli.color.cmd('pg:credentials:rotate')} instead.`)
   } else {
     yield showCredentials()
   }
@@ -63,7 +54,7 @@ module.exports = {
   description: 'show information on credentials in the database',
   needsApp: true,
   needsAuth: true,
-  flags: [{name: 'reset', description: 'reset database credentials'}],
+  flags: [{name: 'reset', description: 'DEPRECATED'}],
   args: [{name: 'database', optional: true}],
   run: cli.command({preauth: true}, co.wrap(run))
 }
