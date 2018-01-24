@@ -17,6 +17,13 @@ function build () {
   if [ "${OS}" == "win32" ]; then
     cat << EOF > "${o}/bin/heroku.cmd"
 @echo off
+
+if "%1" == "reset" (
+  echo "Removing CLI data files and all plugins..."
+  rd /s /q "%LOCALAPPDATA%\\heroku"
+  exit /b
+)
+
 set HEROKU_CLI_BINPATH=%~dp0\\heroku.cmd
 "%~dp0\\node.exe" "%~dp0\\heroku.js" %*
 EOF
@@ -36,12 +43,21 @@ get_script_dir () {
   DIR="\$( cd -P "\$( dirname "\$SOURCE" )" && pwd )"
   echo "\$DIR"
 }
+remove () {
+  echo "rm -rf \$1"
+  rm -rf "\$1"
+}
 DIR=\$(get_script_dir)
 # normalize home directory
 CLI_HOME=\$(cd && pwd)
 XDG_DATA_HOME=\${XDG_DATA_HOME:="\$CLI_HOME/.local/share"}
 CLIENT_DIR="\$XDG_DATA_HOME/heroku/client"
 BIN_DIR="\$CLIENT_DIR/bin"
+if [ "\$1" == "reset" ]; then
+  echo "Removing CLI data files and all plugins..."
+  remove "\${XDG_DATA_HOME}/heroku"
+  exit
+fi
 if [ -x "\$BIN_DIR/heroku" ] && [[ "\$DIR" != "\$CLIENT_DIR"* ]]; then
   if [ "\$DEBUG" == "*" ]; then
     echo "\$XDG_DATA_HOME/heroku/client/bin/heroku" "\$@"
