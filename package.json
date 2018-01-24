@@ -121,6 +121,7 @@
     "nock": "9.1.6",
     "prettier": "^1.10.2",
     "read-pkg": "^3.0.0",
+    "shelljs": "^0.8.1",
     "ts-jest": "22.0.1",
     "tslint": "^5.9.1",
     "typescript": "2.6.2"
@@ -147,6 +148,6 @@
     "precommit": "yarn run lint && cli-engine-util",
     "prepare": "cli-engine-util",
     "shellcheck": "./scripts/shellcheck",
-    "test": "cli-engine-util"
+    "test": "cli-engine-util && mocha && eslint ."
   }
 }
