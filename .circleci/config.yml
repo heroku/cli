@@ -27,7 +27,7 @@ jobs:
       - run: yarn link
         # TODO: get rid of this later
       - run: mkdir -p ~/.cache/heroku
-      - run: yarn test --coverage
+      - run: yarn test
       - run: greenkeeper-lockfile-upload
       - run: curl -s https://codecov.io/bash | bash
       - save_cache:
