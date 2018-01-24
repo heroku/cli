@@ -14,6 +14,8 @@ plugins.forEach(plugin => {
   describe(plugin.name, () => {
     it('yarn test', () => {
       const cwd = path.join(__dirname, '../../tmp/plugin', plugin.name)
+      sh.exec('heroku version')
+      sh.exec('which heroku')
       sh.rm('-rf', cwd)
       sh.exec(`git clone git@github.com:${plugin.repo} ${cwd}`)
       sh.cd(cwd)
