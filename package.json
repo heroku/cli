@@ -89,7 +89,7 @@
     "heroku-ps-exec": "2.3.0",
     "heroku-redis": "1.3.0",
     "heroku-run": "3.5.4",
-    "heroku-spaces": "2.10.0",
+    "heroku-spaces": "2.11.0",
     "heroku-webhooks": "1.1.0",
     "http-call": "4.0.8",
     "netrc-parser": "3.0.3",
