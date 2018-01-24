@@ -8,5 +8,11 @@ if [[ ! -z "$GIT_EMAIL" ]] & [[ ! -z "$GIT_USERNAME" ]]; then
   git config --global user.user "$GIT_USERNAME"
 fi
 
+cat <<EOF >> ~/.netrc
+machine git.heroku.com
+  login ${HEROKU_API_USER:-"heroku-exec@example.com"}
+  password ${HEROKU_API_KEY:-"password"}
+EOF
+
 git submodule sync
 git submodule update --init --recursive
