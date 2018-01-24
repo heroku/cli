@@ -22,6 +22,7 @@ jobs:
             - v1-yarn-{{ checksum ".circleci/config.yml" }}
             - v1-yarn
       - run: ./.circleci/setup_git
+      - run: ./.circleci/setup_deps
       - run: yarn global add greenkeeper-lockfile@1 && greenkeeper-lockfile-update
       - run: yarn
       - run: yarn link
