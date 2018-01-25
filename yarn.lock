@@ -26,6 +26,14 @@
     chalk "^2.3.0"
     cli-flags "^2.0.7"
 
+"@cli-engine/command@^12.1.1":
+  version "12.1.1"
+  resolved "https://registry.yarnpkg.com/@cli-engine/command/-/command-12.1.1.tgz#bb6262f849b59531ec386414b2ea763fd9385415"
+  dependencies:
+    "@cli-engine/screen" "^0.0.0"
+    chalk "^2.3.0"
+    cli-flags "^2.0.7"
+
 "@cli-engine/config@^5.0.11":
   version "5.0.11"
   resolved "https://registry.yarnpkg.com/@cli-engine/config/-/config-5.0.11.tgz#b3b1393da09469fbcaaa99329064e775e275de24"
@@ -34,9 +42,9 @@
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/@cli-engine/config/-/config-5.1.0.tgz#d8ac7122317bc505dc09e7fd778777602d6b7568"
 
-"@cli-engine/engine@6.1.35":
-  version "6.1.35"
-  resolved "https://registry.yarnpkg.com/@cli-engine/engine/-/engine-6.1.35.tgz#2087b746a5ea848aba1ec6c2059738af5f0f8a1f"
+"@cli-engine/engine@6.1.36":
+  version "6.1.36"
+  resolved "https://registry.yarnpkg.com/@cli-engine/engine/-/engine-6.1.36.tgz#a610f6e4f388225a50dde31928c975015589b59e"
   dependencies:
     "@heroku-cli/color" "^1.1.1"
     "@types/load-json-file" "^2.0.7"
