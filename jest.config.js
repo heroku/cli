@@ -1,5 +1,5 @@
 module.exports = {
-  setupTestFrameworkScriptFile: "<rootDir>/src/__test__/init.ts",
+  setupTestFrameworkScriptFile: '<rootDir>/src/__test__/init.ts',
   mapCoverage: true,
   coveragePathIgnorePatterns: ['/node_modules/', '<rootDir>/src/__test__'],
   moduleFileExtensions: ['ts', 'js'],
@@ -11,7 +11,7 @@ module.exports = {
   },
   globals: {
     'ts-jest': {
-      skipBabel: true
-    }
-  }
+      skipBabel: true,
+    },
+  },
 }

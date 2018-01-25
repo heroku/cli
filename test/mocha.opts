@@ -1,3 +1,4 @@
+--require test/init.js
 --recursive
 --reporter list
 --timeout 600000

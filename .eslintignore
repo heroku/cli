@@ -1,1 +1,4 @@
+lib
 tmp
+coverage
+src

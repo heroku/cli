@@ -1,4 +1,5 @@
-#!/usr/bin/env node
+/* eslint-disable no-div-regex */
+/* eslint-disable no-console */
 
 const path = require('path')
 const sh = require('shelljs')
@@ -7,24 +8,24 @@ const _ = require('lodash')
 
 const bin = path.join(__dirname, '../../bin/run')
 
-function run(args='') {
+function run(args = '') {
   console.log(`$ heroku ${args}`)
   return sh.exec([bin, args].join(' '))
 }
 
 it('heroku version', () => {
-  const { stdout } = run('version')
-  expect(stdout).to.match(/^heroku-cli\//)
+  const {stdout} = run('version')
+  expect(stdout).to.startWith('heroku-cli/')
 })
 
 it('heroku help', async () => {
-  const { stdout } = await run('help')
-  expect(stdout).to.match(/^Usage: heroku COMMAND/)
+  const {stdout} = await run('help')
+  expect(stdout).to.startWith('Usage: heroku COMMAND')
 })
 
 it('heroku auth:whoami', async () => {
-  const { stdout } = await run('help')
-  expect(stdout).to.match(/^Usage: heroku COMMAND/)
+  const {stdout} = await run('help')
+  expect(stdout).to.startWith('Usage: heroku COMMAND')
 })
 
 it('heroku apps && heroku apps info && heroku run', async () => {
@@ -39,5 +40,5 @@ it('heroku apps && heroku apps info && heroku run', async () => {
   app = app.split(' ')[0]
   const appFlag = `-a=${app}`
   expect((await run(['info', appFlag].join(' '))).stdout).to.contain(`=== ${app}`)
-  expect((await run(['run', '--exit-code', appFlag, 'echo', 'it works!'].join(' '))).stdout).to.match(/^it works!/)
+  expect((await run(['run', '--exit-code', appFlag, 'echo', 'it works!'].join(' '))).stdout).to.startWith('it works!')
 })
