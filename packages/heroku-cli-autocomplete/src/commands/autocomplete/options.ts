@@ -82,10 +82,15 @@ export default class AutocompleteOptions extends AutocompleteBase {
       const cmdArgsCount = cmdArgs.length
       const parsedArgsLength = Object.keys(this.parsedArgs).length
       // TO-DO: how to handle variableArgs?
-      if (parsedArgsLength > cmdArgsCount || !parsedArgsLength)
+      if (Command.variableArgs) {
+        cacheCompletion = this.findCompletion(cacheKey, CommandID)
+        if (!cacheCompletion) this.throwError(`Cannot complete variable arg position for ${CommandID}`)
+      } else if (parsedArgsLength > cmdArgsCount || !parsedArgsLength) {
         this.throwError(`Cannot complete arg position ${parsedArgsLength - 1} for ${CommandID}`)
-      const arg = cmdArgs[parsedArgsLength - 1]
-      cacheKey = arg.name
+      } else {
+        const arg = cmdArgs[parsedArgsLength - 1]
+        cacheKey = arg.name
+      }
     }
 
     // try to auto-populate the completion object

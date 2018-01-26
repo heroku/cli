@@ -51,6 +51,10 @@ const CompletionAliases: { [key: string]: string } = {
   key: 'config',
 }
 
+const CompletionVariableArgsLookup: { [key: string]: string } = {
+  'config:set': 'config',
+}
+
 export abstract class AutocompleteBase extends Command {
   public errorIfWindows() {
     if (this.config.windows) {
@@ -77,6 +81,7 @@ export abstract class AutocompleteBase extends Command {
 
   protected findCompletion(name: string, id: string): flags.ICompletion | undefined {
     if (this.blacklisted(name, id)) return
+    if (CompletionVariableArgsLookup[id]) return CompletionMapping[CompletionVariableArgsLookup[id]]
     const alias = this.convertIfAlias(name)
     if (CompletionMapping[alias]) return CompletionMapping[alias]
   }
