@@ -47,7 +47,8 @@ exports.commands = flatten([
   require('./commands/settings/log_statement'),
   require('./commands/unfollow'),
   require('./commands/upgrade'),
-  require('./commands/wait')
+  require('./commands/wait'),
+  require('./commands/connection_pooling')
 ])
 
 exports.host = require('./lib/host')
