@@ -221,9 +221,9 @@
   version "8.5.7"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-8.5.7.tgz#9c498c35af354dcfbca3790fb2e81129e93cf0e2"
 
-"@types/node@9.3.0":
-  version "9.3.0"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-9.3.0.tgz#3a129cda7c4e5df2409702626892cb4b96546dd5"
+"@types/node@9.4.0":
+  version "9.4.0"
+  resolved "http://cli-npm.heroku.com/@types/node/-/node-9.4.0/b85a0bcf1e1cc84eb4901b7e96966aedc6f078d1.tgz#b85a0bcf1e1cc84eb4901b7e96966aedc6f078d1"
 
 "@types/supports-color@3.1.0":
   version "3.1.0"
@@ -2524,9 +2524,9 @@ heroku-cli-addons@1.2.26, heroku-cli-addons@^1.2.26:
     lodash.values "4.3.0"
     printf "0.2.5"
 
-heroku-cli-oauth@2.0.15:
-  version "2.0.15"
-  resolved "https://registry.yarnpkg.com/heroku-cli-oauth/-/heroku-cli-oauth-2.0.15.tgz#eb12a8bce5a2e8ee8e640d0a44c7df330a7ad9a7"
+heroku-cli-oauth@2.1.0:
+  version "2.1.0"
+  resolved "http://cli-npm.heroku.com/heroku-cli-oauth/-/heroku-cli-oauth-2.1.0/e38fdf7307e010fa5b8612143f7ba4b97ed2830c.tgz#e38fdf7307e010fa5b8612143f7ba4b97ed2830c"
   dependencies:
     co "^4.6.0"
     heroku-cli-util "^6.2.0"
@@ -2771,9 +2771,9 @@ heroku-run@3.5.4, heroku-run@^3.4.16:
     heroku-cli-util "^6.2.7"
     shellwords "^0.1.1"
 
-heroku-spaces@2.10.0:
-  version "2.10.0"
-  resolved "https://registry.yarnpkg.com/heroku-spaces/-/heroku-spaces-2.10.0.tgz#573aacbca6a4f3843a4c60a9ee33b4045d4dbee9"
+heroku-spaces@2.11.0:
+  version "2.11.0"
+  resolved "http://cli-npm.heroku.com/heroku-spaces/-/heroku-spaces-2.11.0/b475633865dcfbaa18c9fb7080da3b84269c0858.tgz#b475633865dcfbaa18c9fb7080da3b84269c0858"
   dependencies:
     cli-engine-command "^8.0.15"
     cli-engine-config "^3.3.0"
