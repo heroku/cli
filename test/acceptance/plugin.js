@@ -10,7 +10,8 @@ sh.set('-ev')
 
 plugins.forEach(plugin => {
   describe(plugin.name, () => {
-    it('yarn test', () => {
+    it('yarn test', function () {
+      this.retries(2)
       const cwd = path.join(__dirname, '../../tmp/plugin', plugin.name)
       sh.exec('heroku version')
       sh.exec('which heroku')
