@@ -2524,9 +2524,9 @@ heroku-cli-addons@1.2.26, heroku-cli-addons@^1.2.26:
     lodash.values "4.3.0"
     printf "0.2.5"
 
-heroku-cli-oauth@2.0.15:
-  version "2.0.15"
-  resolved "https://registry.yarnpkg.com/heroku-cli-oauth/-/heroku-cli-oauth-2.0.15.tgz#eb12a8bce5a2e8ee8e640d0a44c7df330a7ad9a7"
+heroku-cli-oauth@2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/heroku-cli-oauth/-/heroku-cli-oauth-2.1.0.tgz#e38fdf7307e010fa5b8612143f7ba4b97ed2830c"
   dependencies:
     co "^4.6.0"
     heroku-cli-util "^6.2.0"
@@ -2653,9 +2653,9 @@ heroku-client@^2.4.0:
     q "^1.2.0"
     tunnel-agent "^0.4.0"
 
-heroku-container-registry@4.4.4:
-  version "4.4.4"
-  resolved "https://registry.yarnpkg.com/heroku-container-registry/-/heroku-container-registry-4.4.4.tgz#fd5a96a13812084bc422bd495c6c025152711415"
+heroku-container-registry@4.4.5:
+  version "4.4.5"
+  resolved "https://registry.yarnpkg.com/heroku-container-registry/-/heroku-container-registry-4.4.5.tgz#bb4bd48b6a883ef743535f55c0d3f565f8a61f8e"
   dependencies:
     glob "7.1.0"
     heroku-cli-util "6.1.17"
@@ -2705,9 +2705,9 @@ heroku-orgs@1.7.1:
     lodash "4.17.4"
     lodash.flatten "4.4.0"
 
-heroku-pg@2.5.0:
-  version "2.5.0"
-  resolved "https://registry.yarnpkg.com/heroku-pg/-/heroku-pg-2.5.0.tgz#d3339665b575455376e70d3f92b6baf0d7bf1ffb"
+heroku-pg@2.6.0:
+  version "2.6.0"
+  resolved "https://registry.yarnpkg.com/heroku-pg/-/heroku-pg-2.6.0.tgz#73eca2280f33ca2b58f380463727769320f57962"
   dependencies:
     bytes "^2.5.0"
     co "^4.6.0"
@@ -2771,9 +2771,9 @@ heroku-run@3.5.4, heroku-run@^3.4.16:
     heroku-cli-util "^6.2.7"
     shellwords "^0.1.1"
 
-heroku-spaces@2.10.0:
-  version "2.10.0"
-  resolved "https://registry.yarnpkg.com/heroku-spaces/-/heroku-spaces-2.10.0.tgz#573aacbca6a4f3843a4c60a9ee33b4045d4dbee9"
+heroku-spaces@2.11.0:
+  version "2.11.0"
+  resolved "https://registry.yarnpkg.com/heroku-spaces/-/heroku-spaces-2.11.0.tgz#b475633865dcfbaa18c9fb7080da3b84269c0858"
   dependencies:
     cli-engine-command "^8.0.15"
     cli-engine-config "^3.3.0"
