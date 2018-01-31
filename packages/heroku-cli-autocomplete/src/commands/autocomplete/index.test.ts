@@ -10,76 +10,49 @@ cli.config.mock = true
 
 runtest('outputs install instructions for zsh', async () => {
   await Autocomplete.mock(['zsh'])
-  expect(cli.stdout.output).toMatch(`Setup Instructions for CLI-ENGINE CLI Autocomplete ---
+  expect(cli.stdout.output).toMatch(`
+Setup Instructions for CLI-ENGINE CLI Autocomplete ---
 
-1) Add the autocomplete env var to your zsh profile
-
-$ printf "$(cli-engine autocomplete:script zsh)" >> ~/.zshrc
-
-2) Source your updated zsh profile
-
-$ source ~/.zshrc
+1) Add the autocomplete env var to your zsh profile and source it
+$ printf \"$(cli-engine autocomplete:script zsh)\" >> ~/.zshrc; source ~/.zshrc
 
 NOTE: After sourcing, you can run \`$ compaudit -D\` to ensure no permissions conflicts are present
 
-3) Test command completion by pressing <TAB>, e.g.:
+2) Test it out, e.g.:
+$ cli-engine <TAB>                 # Command completion
+$ cli-engine apps:info --<TAB>     # Flag completion
+$ cli-engine apps:info --app=<TAB> # Flag option completion
 
-$ cli-engine <TAB>
+Visit the autocomplete Dev Center doc at https://devcenter.heroku.com/articles/heroku-cli-autocomplete
 
-4) Test flag completion by pressing <TAB>, e.g.:
+Enjoy!
 
-$ cli-engine apps:info --<TAB>
-
-5) Test flag options completion by pressing <TAB>, e.g.:
-
-$ cli-engine apps:info --app=<TAB>
-
-
-To uninstall CLI-ENGINE CLI Autocomplete:
--- Uninstall this plugin from your CLI (for help see: cli-engine help plugins:uninstall)
--- Delete the env var from your zsh profile & restart your terminal
-
-
-Enjoy!`)
+`)
 })
 
 runtest('outputs install instructions for bash', async () => {
   await Autocomplete.mock(['bash'])
-  expect(cli.stdout.output).toMatch(`Setup Instructions for CLI-ENGINE CLI Autocomplete ---
+  expect(cli.stdout.output).toMatch(`
+Setup Instructions for CLI-ENGINE CLI Autocomplete ---
 
-1) Add the autocomplete env var to your bash profile
+1) Add the autocomplete env var to your bash profile and source it
+$ printf \"$(cli-engine autocomplete:script bash)\" >> ~/.bashrc; source ~/.bashrc
 
-$ printf "$(cli-engine autocomplete:script bash)" >> ~/.bashrc
+2) Test it out, e.g.:
+$ cli-engine <TAB><TAB>                 # Command completion
+$ cli-engine apps:info --<TAB><TAB>     # Flag completion
+$ cli-engine apps:info --app=<TAB><TAB> # Flag option completion
 
-2) Source your updated bash profile
+Visit the autocomplete Dev Center doc at https://devcenter.heroku.com/articles/heroku-cli-autocomplete
 
-$ source ~/.bashrc
+Enjoy!
 
-3) Test command completion by pressing <TAB><TAB>, e.g.:
-
-$ cli-engine <TAB><TAB>
-
-4) Test flag completion by pressing <TAB><TAB>, e.g.:
-
-$ cli-engine apps:info --<TAB><TAB>
-
-5) Test flag options completion by pressing <TAB><TAB>, e.g.:
-
-$ cli-engine apps:info --app=<TAB><TAB>
-
-
-To uninstall CLI-ENGINE CLI Autocomplete:
--- Uninstall this plugin from your CLI (for help see: cli-engine help plugins:uninstall)
--- Delete the env var from your bash profile & restart your terminal
-
-
-Enjoy!`)
+`)
 })
 
 runtest('skips instructions', async () => {
-  await Autocomplete.mock(['--skip-instructions'])
-  expect(cli.stdout.output).toMatch(`
-Enjoy!`)
+  await Autocomplete.mock(['bash', '--skip-instructions'])
+  expect(cli.stdout.output).toMatch(``)
 })
 
 runtest('errors on unsupported shell', async () => {
