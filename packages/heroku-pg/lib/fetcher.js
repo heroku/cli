@@ -139,11 +139,16 @@ module.exports = heroku => {
     return addon
   }
 
+  function * release (appName, id) {
+    return yield heroku.get(`/apps/${appName}/releases/${id}`)
+  }
+
   return {
     addon: co.wrap(addon),
     attachment: co.wrap(attachment),
     all: co.wrap(all),
     database: co.wrap(database),
-    arbitraryAppDB: co.wrap(arbitraryAppDB)
+    arbitraryAppDB: co.wrap(arbitraryAppDB),
+    release: co.wrap(release)
   }
 }

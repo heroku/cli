@@ -7,6 +7,7 @@ function * run (context, heroku) {
   const fetcher = require('../lib/fetcher')(heroku)
   const {app, args} = context
   const attachment = yield fetcher.attachment(app, args.database)
+  let current
 
   yield cli.action(`Ensuring an alternate alias for existing ${cli.color.configVar('DATABASE_URL')}`, co(function * () {
     // Finds or creates a non-DATABASE attachment for the DB currently
@@ -16,8 +17,9 @@ function * run (context, heroku) {
     // If current DATABASE is only attachment, create a new one and return it.
     // If no current DATABASE, return nil.
     let attachments = yield heroku.get(`/apps/${app}/addon-attachments`)
-    let current = attachments.find(a => a.name === 'DATABASE')
+    current = attachments.find(a => a.name === 'DATABASE')
     if (!current) return
+
     if (current.addon.name === attachment.addon.name && current.namespace === attachment.namespace) {
       if (attachment.namespace) {
         throw new Error(`${cli.color.attachment(attachment.name)} is already promoted on ${cli.color.app(app)}`)
@@ -61,6 +63,55 @@ function * run (context, heroku) {
       }
     })
   }))
+
+  let releasePhase = (yield heroku.get(`/apps/${app}/formation`))
+    .find((formation) => formation.type === 'release')
+
+  if (releasePhase) {
+    yield cli.action('Checking release phase', co(function * () {
+      let releases = yield heroku.request({
+        path: `/apps/${app}/releases`,
+        partial: true,
+        headers: {
+          'Range': `version ..; max=5, order=desc`
+        }
+      })
+      let attach = releases.find((release) => release.description.includes('Attach DATABASE'))
+      let detach = releases.find((release) => release.description.includes('Detach DATABASE'))
+
+      if (!attach || !detach) {
+        throw new Error('Unable to check release phase. Check your Attach DATABASE release for failures.')
+      }
+
+      let endTime = Date.now() + 900000 // 15 minutes from now
+      let [attachId, detachId] = [attach.id, detach.id]
+      while (true) {
+        let attach = yield fetcher.release(app, attachId)
+        if (attach && attach.status === 'succeeded') {
+          let msg = 'pg:promote succeeded.'
+          let detach = yield fetcher.release(app, detachId)
+          if (detach && detach.status === 'failed') {
+            msg += ` It is safe to ignore the failed ${detach.description} release.`
+          }
+          return cli.action.done(msg)
+        } else if (attach && attach.status === 'failed') {
+          let msg = `pg:promote failed because ${attach.description} release was unsuccessful. Your application is currently running `
+          let detach = yield fetcher.release(app, detachId)
+          if (detach && detach.status === 'succeeded') {
+            msg += 'without an attached DATABASE_URL.'
+          } else {
+            msg += `with ${current.addon.name} attached as DATABASE_URL.`
+          }
+          msg += ' Check your release phase logs for failure causes.'
+          return cli.action.done(msg)
+        } else if (Date.now() > endTime) {
+          return cli.action.done('timeout. Check your Attach DATABASE release for failures.')
+        }
+
+        yield new Promise((resolve) => setTimeout(resolve, 5000))
+      }
+    }))
+  }
 }
 
 module.exports = {
