@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+set -e
+
+if [[ ! -z "$GIT_EMAIL" ]] & [[ ! -z "$GIT_USERNAME" ]]; then
+  git config --global push.default simple
+  git config --global user.email "$GIT_EMAIL"
+  git config --global user.user "$GIT_USERNAME"
+fi
+
+cat <<EOF >> ~/.netrc
+machine git.heroku.com
+  login ${HEROKU_API_USER:-"heroku-exec@example.com"}
+  password ${HEROKU_API_KEY:-"password"}
+EOF
+
+git submodule sync
+git submodule update --init --recursive
+
+cat <<EOF >> ~/.ssh/config
+Host heroku.com
+    StrictHostKeyChecking no
+    CheckHostIP no
+    UserKnownHostsFile=/dev/null
+Host github.com
+    StrictHostKeyChecking no
+EOF

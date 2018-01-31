@@ -1,32 +1,26 @@
-#!/usr/bin/env node
+const sh = require('shelljs')
+const path = require('path')
 
-import * as execa from 'execa'
-import * as fs from 'fs-extra'
-import * as path from 'path'
+const plugins = [
+  {name: 'heroku-ps-exec', repo: 'heroku/heroku-ps-exec'},
+]
 
-import { skipWindowsIntegrationTest } from './__test__/init'
+sh.set('-ev')
 
-const readPkg = require('read-pkg')
-
-const plugins = ['heroku-ps-exec']
-
-jest.setTimeout(10000000)
-
-Promise.all(
-  plugins.map(plugin => {
-    skipWindowsIntegrationTest(plugin, async () => {
-      const cwd = path.join(__dirname, '../tmp/plugin', plugin)
-      await fs.remove(cwd)
-      const pkg = await readPkg(path.join(__dirname, '../node_modules', plugin, 'package.json'))
-      await execa('git', ['clone', pkg.repository.url.split('+')[1], cwd])
-      const opts = { cwd, stdio: [0, 1, 2] }
-      await execa('git', ['checkout', `v${pkg.version}`], opts)
-      await execa('yarn', [], opts)
-      await execa('yarn', ['test'], opts)
+plugins.forEach(plugin => {
+  describe(plugin.name, () => {
+    it('yarn test', function () {
+      this.retries(2)
+      const cwd = path.join(__dirname, '../../tmp/plugin', plugin.name)
+      sh.exec('heroku version')
+      sh.exec('which heroku')
+      sh.rm('-rf', cwd)
+      sh.exec(`git clone git@github.com:${plugin.repo} ${cwd}`)
+      sh.cd(cwd)
+      const pkg = require(path.join(cwd, 'package.json'))
+      sh.exec(`git checkout v${pkg.version}`)
+      sh.exec('yarn')
+      sh.exec('yarn test')
     })
-  }),
-).catch(err => {
-  // tslint:disable-next-line
-  console.error(err)
-  process.exit(1)
+  })
 })

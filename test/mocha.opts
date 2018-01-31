@@ -1,2 +1,5 @@
+--require test/init.js
 --recursive
---timeout 60000
+--reporter list
+--timeout 600000
+--exit

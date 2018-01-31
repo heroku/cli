@@ -8,10 +8,14 @@ cache:
 install:
   - ps: Install-Product node $env:nodejs_version x64
   - yarn
+  - git config --global user.email heroku-cli@example.com
+  - git config --global user.user heroku-cli
+
 test_script:
   - bin\run.cmd version
   - bin\run.cmd help
   - .\node_modules\.bin\jest --coverage
+  # - .\node_modules\.bin\mocha
 after_test:
   - ps: |
       $env:PATH = 'C:\msys64\usr\bin;' + $env:PATH

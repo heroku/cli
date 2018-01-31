@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+set -e
+
+command_exists () {
+  type "$1" &> /dev/null ;
+}
+
+
+if ! command_exists js; then
+  apt-get update && apt-get install -y jq
+fi
