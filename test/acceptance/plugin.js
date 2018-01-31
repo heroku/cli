@@ -1,5 +1,4 @@
 const sh = require('shelljs')
-// const fs = require('fs-extra')
 const path = require('path')
 
 const plugins = [
@@ -18,9 +17,8 @@ plugins.forEach(plugin => {
       sh.rm('-rf', cwd)
       sh.exec(`git clone git@github.com:${plugin.repo} ${cwd}`)
       sh.cd(cwd)
-      // const pkg = require(path.join(cwd, 'package.json'))
-      // TODO: sh.exec(`git checkout v${pkg.version}`)
-      sh.exec('git checkout develop')
+      const pkg = require(path.join(cwd, 'package.json'))
+      sh.exec(`git checkout v${pkg.version}`)
       sh.exec('yarn')
       sh.exec('yarn test')
     })
