@@ -2745,9 +2745,9 @@ heroku-pipelines@2.5.0, heroku-pipelines@^2.0.1:
     string-just "^0.0.2"
     validator "^6.2.1"
 
-heroku-ps-exec@2.3.0:
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/heroku-ps-exec/-/heroku-ps-exec-2.3.0.tgz#bab3c08024cbc48a5ccd76272afd9bf9b02aa322"
+heroku-ps-exec@2.3.1:
+  version "2.3.1"
+  resolved "http://cli-npm.heroku.com/heroku-ps-exec/-/heroku-ps-exec-2.3.1/282137897a5bf87304955f54a07d1b4a27c47d2e.tgz#282137897a5bf87304955f54a07d1b4a27c47d2e"
   dependencies:
     heroku-cli-util "^7.0.0"
     heroku-exec-util "0.7.0"
