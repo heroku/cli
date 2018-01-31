@@ -16,7 +16,7 @@ function * run (context, heroku) {
 module.exports = {
   topic: 'authorizations',
   command: 'rotate',
-  description: '(sudo) updates an OAuth authorization token',
+  description: 'updates an OAuth authorization token',
   needsAuth: true,
   args: [{name: 'id'}],
   flags: [],
