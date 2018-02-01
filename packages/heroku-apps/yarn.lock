@@ -14,9 +14,9 @@
     chalk "^2.3.0"
     supports-color "^5.1.0"
 
-"@heroku-cli/color@^1.1.1":
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/color/-/color-1.1.1.tgz#a2c25239ff1196733a79cabc7a750cd46b96dc30"
+"@heroku-cli/color@^1.1.2":
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/color/-/color-1.1.2.tgz#d76266d88d0411f2f259e6bf713e02895188e10a"
   dependencies:
     ansi-styles "^3.2.0"
     chalk "^2.3.0"
@@ -1916,11 +1916,11 @@ here@0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/here/-/here-0.0.2.tgz#69c1af3f02121f3d8788e02e84dc8b3905d71195"
 
-heroku-cli-util@^7.0.0:
-  version "7.0.0"
-  resolved "https://registry.yarnpkg.com/heroku-cli-util/-/heroku-cli-util-7.0.0.tgz#e13f30bfcd4329c950ab888341548c9b709dbc36"
+heroku-cli-util@^7.0.1:
+  version "7.0.1"
+  resolved "https://registry.yarnpkg.com/heroku-cli-util/-/heroku-cli-util-7.0.1.tgz#f0c8e524c98490544b23d87ec5c4e62888cb5e37"
   dependencies:
-    "@heroku-cli/color" "^1.1.1"
+    "@heroku-cli/color" "^1.1.2"
     ansi-escapes "^3.0.0"
     ansi-styles "^3.2.0"
     cardinal "^1.0.0"
