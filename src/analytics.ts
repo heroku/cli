@@ -139,7 +139,7 @@ export default class AnalyticsCommand {
       analytics.commands = analytics.commands || []
       return analytics
     } catch (err) {
-      if (err.code !== 'ENOENT') throw err
+      if (err.code !== 'ENOENT') debug(err)
       return this._initialAnalyticsJSON()
     }
   }
