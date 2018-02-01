@@ -127,6 +127,15 @@
     strip-ansi "^4.0.0"
     supports-color "^5.1.0"
 
+"@heroku-cli/color@^1.1.2":
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/color/-/color-1.1.2.tgz#d76266d88d0411f2f259e6bf713e02895188e10a"
+  dependencies:
+    ansi-styles "^3.2.0"
+    chalk "^2.3.0"
+    strip-ansi "^4.0.0"
+    supports-color "^5.1.0"
+
 "@heroku-cli/command@7":
   version "7.0.12"
   resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-7.0.12.tgz#a1fea2c1dcd715ce071a98c92da1bcc5d535b2dc"
@@ -703,7 +712,7 @@ bluebird@^2.9.21:
   version "2.11.0"
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-2.11.0.tgz#534b9033c022c9579c56ba3b3e5a5caafbb650e1"
 
-bluebird@^3.4.6, bluebird@^3.4.7, bluebird@^3.5.0:
+bluebird@^3.4.6, bluebird@^3.4.7, bluebird@^3.5.1:
   version "3.5.1"
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.5.1.tgz#d9551f9de98f1fcda1e683d17ee91a0602ee2eb9"
 
@@ -957,7 +966,7 @@ cli-cursor@^2.1.0:
   dependencies:
     restore-cursor "^2.0.0"
 
-cli-engine-command@^8.0.15, cli-engine-command@^8.0.17:
+cli-engine-command@^8.0.15:
   version "8.0.18"
   resolved "https://registry.yarnpkg.com/cli-engine-command/-/cli-engine-command-8.0.18.tgz#032ca59f4975ff770a018bdbed7d6ed5950a3a83"
   dependencies:
@@ -973,7 +982,7 @@ cli-engine-command@^8.0.15, cli-engine-command@^8.0.17:
     string "3.x"
     supports-color "^4.4.0"
 
-cli-engine-command@^9.0.2:
+cli-engine-command@^9.0.2, cli-engine-command@^9.0.7:
   version "9.0.7"
   resolved "https://registry.yarnpkg.com/cli-engine-command/-/cli-engine-command-9.0.7.tgz#3eef2c466c73a2d25808660152baf0ea9b7b6186"
   dependencies:
@@ -989,7 +998,7 @@ cli-engine-command@^9.0.2:
     string "3.x"
     supports-color "^5.1.0"
 
-cli-engine-config@^3.2.0, cli-engine-config@^3.3.0, cli-engine-config@^3.3.1, cli-engine-config@^3.4.0:
+cli-engine-config@^3.2.0, cli-engine-config@^3.3.0, cli-engine-config@^3.4.0:
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/cli-engine-config/-/cli-engine-config-3.4.0.tgz#b496169525a8e07aaface467995b6c52baf3611c"
   dependencies:
@@ -1006,7 +1015,7 @@ cli-engine-heroku@^4.0.1, cli-engine-heroku@^4.1.0:
     http-call "^3.0.2"
     netrc-parser "^2.0.3"
 
-cli-engine-heroku@^5.0.0:
+cli-engine-heroku@^5.0.0, cli-engine-heroku@^5.0.4:
   version "5.0.4"
   resolved "https://registry.yarnpkg.com/cli-engine-heroku/-/cli-engine-heroku-5.0.4.tgz#937fb488b4c41a0eff842d3386a3581d3b0111c2"
   dependencies:
@@ -1920,7 +1929,7 @@ extend@~3.0.0, extend@~3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/extend/-/extend-3.0.1.tgz#a755ea7bc1adfcc5a31ce7e762dbaadc5e636444"
 
-external-editor@^2.0.1, external-editor@^2.0.4:
+external-editor@^2.0.1, external-editor@^2.0.4, external-editor@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/external-editor/-/external-editor-2.1.0.tgz#3d026a21b7f95b5726387d4200ac160d372c3b48"
   dependencies:
@@ -2431,19 +2440,19 @@ here@0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/here/-/here-0.0.2.tgz#69c1af3f02121f3d8788e02e84dc8b3905d71195"
 
-heroku-apps@2.4.19:
-  version "2.4.19"
-  resolved "https://registry.yarnpkg.com/heroku-apps/-/heroku-apps-2.4.19.tgz#7f4b39299062783e546a926e52df97b4c6ed23bd"
+heroku-apps@2.4.20:
+  version "2.4.20"
+  resolved "https://registry.yarnpkg.com/heroku-apps/-/heroku-apps-2.4.20.tgz#8a7113ff1e90f742dc173f367c00fe9d5d2c3232"
   dependencies:
-    bluebird "^3.5.0"
-    cli-engine-command "^8.0.17"
-    cli-engine-config "^3.3.1"
-    cli-engine-heroku "^4.1.0"
+    bluebird "^3.5.1"
+    cli-engine-command "^9.0.7"
+    cli-engine-config "^3.4.0"
+    cli-engine-heroku "^5.0.4"
     co "^4.6.0"
     co-wait "^0.0.0"
-    filesize "^3.5.10"
-    heroku-cli-util "^6.2.10"
-    inquirer "^3.3.0"
+    filesize "^3.5.11"
+    heroku-cli-util "^7.0.1"
+    inquirer "^4.0.1"
     lodash "^4.17.4"
     lodash.compact "^3.0.1"
     lodash.countby "^4.6.0"
@@ -2469,13 +2478,13 @@ heroku-apps@2.4.19:
     lodash.zip "^4.2.0"
     mkdirp "^0.5.1"
     mz "^2.7.0"
-    netrc-parser "^2.0.3"
+    netrc-parser "^2.0.5"
     shell-escape "^0.2.0"
     sparkline "^0.2.0"
     strftime "^0.10.0"
     string "^3.3.3"
     term-img "^2.1.0"
-    urijs "1.18.12"
+    urijs "1.19.0"
 
 heroku-certs@1.1.44:
   version "1.1.44"
@@ -2629,6 +2638,36 @@ heroku-cli-util@^7.0.0:
     supports-color "^5.1.0"
     tunnel-agent "^0.6.0"
 
+heroku-cli-util@^7.0.1:
+  version "7.0.1"
+  resolved "https://registry.yarnpkg.com/heroku-cli-util/-/heroku-cli-util-7.0.1.tgz#f0c8e524c98490544b23d87ec5c4e62888cb5e37"
+  dependencies:
+    "@heroku-cli/color" "^1.1.2"
+    ansi-escapes "^3.0.0"
+    ansi-styles "^3.2.0"
+    cardinal "^1.0.0"
+    chalk "^2.3.0"
+    co "^4.6.0"
+    got "^6.3.0"
+    heroku-client "^3.0.5"
+    lodash.ary "^4.1.1"
+    lodash.defaults "^4.2.0"
+    lodash.get "^4.4.2"
+    lodash.identity "^3.0.0"
+    lodash.keys "^4.2.0"
+    lodash.mapvalues "^4.6.0"
+    lodash.noop "^3.0.1"
+    lodash.partial "^4.2.1"
+    lodash.pickby "^4.6.0"
+    lodash.property "^4.4.2"
+    lodash.repeat "^4.1.0"
+    lodash.result "^4.5.2"
+    netrc-parser "^2.0.5"
+    opn "^3.0.3"
+    strip-ansi "^4.0.0"
+    supports-color "^5.1.0"
+    tunnel-agent "^0.6.0"
+
 heroku-client@3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/heroku-client/-/heroku-client-3.0.2.tgz#7e06f303ff18f7a0731725dcccbe210b76198657"
@@ -2745,9 +2784,9 @@ heroku-pipelines@2.5.0, heroku-pipelines@^2.0.1:
     string-just "^0.0.2"
     validator "^6.2.1"
 
-heroku-ps-exec@2.3.0:
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/heroku-ps-exec/-/heroku-ps-exec-2.3.0.tgz#bab3c08024cbc48a5ccd76272afd9bf9b02aa322"
+heroku-ps-exec@2.3.1:
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/heroku-ps-exec/-/heroku-ps-exec-2.3.1.tgz#282137897a5bf87304955f54a07d1b4a27c47d2e"
   dependencies:
     heroku-cli-util "^7.0.0"
     heroku-exec-util "0.7.0"
@@ -2970,6 +3009,25 @@ inquirer@^3.0.1, inquirer@^3.1.1, inquirer@^3.3.0:
     cli-cursor "^2.1.0"
     cli-width "^2.0.0"
     external-editor "^2.0.4"
+    figures "^2.0.0"
+    lodash "^4.3.0"
+    mute-stream "0.0.7"
+    run-async "^2.2.0"
+    rx-lite "^4.0.8"
+    rx-lite-aggregates "^4.0.8"
+    string-width "^2.1.0"
+    strip-ansi "^4.0.0"
+    through "^2.3.6"
+
+inquirer@^4.0.1:
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/inquirer/-/inquirer-4.0.2.tgz#cc678b4cbc0e183a3500cc63395831ec956ab0a3"
+  dependencies:
+    ansi-escapes "^3.0.0"
+    chalk "^2.0.0"
+    cli-cursor "^2.1.0"
+    cli-width "^2.0.0"
+    external-editor "^2.1.0"
     figures "^2.0.0"
     lodash "^4.3.0"
     mute-stream "0.0.7"
@@ -6016,9 +6074,9 @@ update-notifier@^2.1.0:
     semver-diff "^2.0.0"
     xdg-basedir "^3.0.0"
 
-urijs@1.18.12:
-  version "1.18.12"
-  resolved "https://registry.yarnpkg.com/urijs/-/urijs-1.18.12.tgz#f04d91e1fabb29c16fc842f9a14ee8ddc3fda64e"
+urijs@1.19.0:
+  version "1.19.0"
+  resolved "https://registry.yarnpkg.com/urijs/-/urijs-1.19.0.tgz#d8aa284d0e7469703a6988ad045c4cbfdf08ada0"
 
 url-parse-lax@^1.0.0:
   version "1.0.0"
