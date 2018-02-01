@@ -22,7 +22,7 @@
     "co": "^4.6.0",
     "co-wait": "^0.0.0",
     "filesize": "^3.5.11",
-    "heroku-cli-util": "^7.0.1",
+    "heroku-cli-util": "^7.0.2",
     "inquirer": "^4.0.1",
     "lodash": "^4.17.4",
     "lodash.compact": "^3.0.1",
