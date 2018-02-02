@@ -1,5 +1,5 @@
 {
-  "name": "@heroku-cli/status",
+  "name": "@heroku-cli/status-plugin",
   "description": "CLI Plugin for Heroku Status",
   "version": "5.0.0",
   "author": "Jeff Dickey @jdxcode",
