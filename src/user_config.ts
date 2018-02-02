@@ -1,4 +1,4 @@
-import { Config } from '@cli-engine/config'
+import {Config} from '@cli-engine/config'
 import * as path from 'path'
 
 import deps from './deps'
@@ -16,7 +16,7 @@ export default class UserConfig {
   private saving?: Promise<void>
   private _init: Promise<void>
 
-  constructor(private config: Config) {}
+  constructor(private readonly config: Config) {}
 
   public get install() {
     return this.body.install || this.genInstall()
@@ -38,12 +38,12 @@ export default class UserConfig {
     if (this._init) return this._init
     return (this._init = (async () => {
       this.debug('init')
-      this.body = (await this.read()) || { schema: 1 }
+      this.body = (await this.read()) || {schema: 1}
 
       if (!this.body.schema) {
         this.body.schema = 1
         this.needsSave = true
-      } else if (this.body.schema !== 1) this.body = { schema: 1 }
+      } else if (this.body.schema !== 1) this.body = {schema: 1}
       // tslint:disable-next-line
       this.install
       // tslint:disable-next-line

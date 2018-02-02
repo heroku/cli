@@ -1,4 +1,4 @@
-import { Hook } from '@cli-engine/engine'
+import {Hook} from '@cli-engine/engine'
 import * as path from 'path'
 
 import deps from '../../deps'

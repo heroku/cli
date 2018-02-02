@@ -1,5 +1,5 @@
-import { Hook } from '@cli-engine/engine'
-import { spawnSync, SpawnSyncOptions } from 'child_process'
+import {Hook} from '@cli-engine/engine'
+import {spawnSync, SpawnSyncOptions} from 'child_process'
 import cli from 'cli-ux'
 import * as path from 'path'
 
@@ -9,7 +9,7 @@ const debug = require('debug')('heroku:completions')
 
 function brew(args: string[], opts: SpawnSyncOptions = {}) {
   debug('brew %o', args)
-  return spawnSync('brew', args, { stdio: 'inherit', ...opts, encoding: 'utf8' })
+  return spawnSync('brew', args, {stdio: 'inherit', ...opts, encoding: 'utf8'})
 }
 
 interface InstallReceipt {

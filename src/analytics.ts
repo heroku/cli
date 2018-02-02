@@ -1,6 +1,6 @@
-import { Config } from '@cli-engine/config'
-import { ICommandInfo } from '@cli-engine/engine'
-import { vars } from '@heroku-cli/command'
+import {Config} from '@cli-engine/config'
+import {ICommandInfo} from '@cli-engine/engine'
+import {vars} from '@heroku-cli/command'
 import cli from 'cli-ux'
 import netrc from 'netrc-parser'
 import * as path from 'path'
@@ -47,7 +47,7 @@ export default class AnalyticsCommand {
   constructor(config: Config) {
     this.config = config
     this.http = deps.HTTP.defaults({
-      headers: { 'user-agent': config.userAgent },
+      headers: {'user-agent': config.userAgent},
     })
   }
 
@@ -102,7 +102,7 @@ export default class AnalyticsCommand {
         cli: this.config.name,
       }
 
-      await this.http.post(this.url, { body })
+      await this.http.post(this.url, {body})
 
       await deps.file.remove(this.analyticsPath)
     } catch (err) {

@@ -1,4 +1,4 @@
-import { cli } from 'cli-ux'
+import {cli} from 'cli-ux'
 import * as nock from 'nock'
 import * as path from 'path'
 
@@ -16,7 +16,7 @@ beforeEach(async () => {
   cli.config.mock = true
 
   let count = await inc()
-  let root = path.join(__dirname, `../../tmp/test`)
+  let root = path.join(__dirname, '../../tmp/test')
 
   process.env.HEROKU_DATA_DIR = path.join(root, `test-${count}`, 'data')
   process.env.HEROKU_CACHE_DIR = path.join(root, 'cache')

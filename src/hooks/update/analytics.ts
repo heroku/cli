@@ -1,4 +1,4 @@
-import { Hook } from '@cli-engine/engine'
+import {Hook} from '@cli-engine/engine'
 
 import Analytics from '../../analytics'
 

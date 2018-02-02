@@ -1,5 +1,5 @@
 import Command from '@cli-engine/command'
-import { Config } from '@cli-engine/config'
+import {Config} from '@cli-engine/config'
 import * as nock from 'nock'
 
 import AnalyticsCommand from './analytics'
@@ -11,7 +11,7 @@ class TestCommand extends Command {
 
 class TestCommandWithPlugin extends Command {
   static id = 'fuzz:fizz'
-  static plugin = { type: 'user', name: 'fuzz', version: '9.8.7', root: '.' }
+  static plugin = {type: 'user', name: 'fuzz', version: '9.8.7', root: '.'}
   async run() {}
 }
 
@@ -106,7 +106,7 @@ describe('AnalyticsCommand', () => {
         .post('/record')
         .reply(200, {})
 
-      let command = build({ skipAnalytics: true })
+      let command = build({skipAnalytics: true})
 
       await command.submit()
       expect(api.isDone()).toBe(false)
@@ -128,7 +128,7 @@ describe('AnalyticsCommand', () => {
         .post('/record')
         .reply(200, {})
 
-      let command = build({}, { netrcLogin: null })
+      let command = build({}, {netrcLogin: null})
 
       await command.submit()
       expect(api.isDone()).toBe(false)
@@ -141,7 +141,7 @@ describe('AnalyticsCommand', () => {
 
       let json = analyticsJson()
       json.commands = []
-      let command = build({}, { json })
+      let command = build({}, {json})
 
       await command.submit()
       expect(api.isDone()).toBe(false)
@@ -151,7 +151,7 @@ describe('AnalyticsCommand', () => {
       let json = analyticsJson()
       api.post('/record', json).reply(200, {})
 
-      let command = build({}, { json })
+      let command = build({}, {json})
 
       await command.submit()
     })
@@ -160,11 +160,11 @@ describe('AnalyticsCommand', () => {
       let json = analyticsJson()
       api.post('/record', json).reply(200, {})
 
-      let command = build({}, { json })
+      let command = build({}, {json})
 
       await command.submit()
 
-      let expected = Object.assign({}, json, { commands: [] })
+      let expected = {...json,  commands: []}
       // @ts-ignore
       expect(command._writeJSON.mock.calls).toEqual([[expected]])
     })
@@ -176,7 +176,7 @@ describe('AnalyticsCommand', () => {
         .post('/record', json)
         .reply(200, {})
 
-      let command = build({}, { json })
+      let command = build({}, {json})
 
       await command.submit()
       api.done()
@@ -209,7 +209,7 @@ describe('AnalyticsCommand', () => {
     })
 
     it('does not record if config skipAnalytics is true', async () => {
-      let command = build({ skipAnalytics: true })
+      let command = build({skipAnalytics: true})
 
       await command.record({
         Command: TestCommand as any,
@@ -235,7 +235,7 @@ describe('AnalyticsCommand', () => {
     })
 
     it('does not record if login is not set', async () => {
-      let command = build({}, { netrcLogin: null })
+      let command = build({}, {netrcLogin: null})
 
       await command.record({
         Command: TestCommand as any,
@@ -261,7 +261,7 @@ describe('AnalyticsCommand', () => {
         language: 'node',
       })
 
-      let command = build({}, { json })
+      let command = build({}, {json})
       await command.record({
         Command: TestCommandWithPlugin as any,
         argv: [],

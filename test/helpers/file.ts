@@ -19,7 +19,7 @@ export function withFiles(files: { [k: string]: File | Symlink | string }, optio
     const filePath = path.join(root, p)
     await fs.mkdirp(path.dirname(filePath))
     const file: File | Symlink =
-      typeof files[p] === 'string' ? ({ type: 'file', content: files[p] } as File) : (files[p] as File | Symlink)
+      typeof files[p] === 'string' ? ({type: 'file', content: files[p]} as File) : (files[p] as File | Symlink)
     switch (file.type) {
       case 'file':
         let s = typeof file.content === 'object' ? JSON.stringify(file.content) : file.content || ''

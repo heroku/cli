@@ -1,5 +1,5 @@
 import FS = require('fs-extra')
-import { HTTP } from 'http-call'
+import {HTTP} from 'http-call'
 
 import file = require('./file')
 import UserConfig from './user_config'
