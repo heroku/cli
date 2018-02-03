@@ -1,7 +1,6 @@
-import {Config} from '@cli-engine/config'
+import {IConfig} from '@anycli/config'
+import * as fs from 'fs-extra'
 import * as path from 'path'
-
-import deps from './deps'
 
 export interface ConfigJSON {
   schema: 1
@@ -11,12 +10,12 @@ export interface ConfigJSON {
 
 export default class UserConfig {
   private needsSave: boolean = false
-  private body: ConfigJSON
+  private body!: ConfigJSON
   private mtime?: number
   private saving?: Promise<void>
-  private _init: Promise<void>
+  private _init?: Promise<void>
 
-  constructor(private readonly config: Config) {}
+  constructor(private readonly config: IConfig) {}
 
   public get install() {
     return this.body.install || this.genInstall()
@@ -69,7 +68,7 @@ export default class UserConfig {
       if (!await this.canWrite()) {
         throw new Error('file modified, cannot save')
       }
-      await deps.file.outputJSON(this.file, this.body)
+      await fs.outputJSON(this.file, this.body)
     })()
   }
 
@@ -77,7 +76,7 @@ export default class UserConfig {
     await this.migrate()
     try {
       this.mtime = await this.getLastUpdated()
-      let body = await deps.file.readJSON(this.file)
+      let body = await fs.readJSON(this.file)
       return body
     } catch (err) {
       if (err.code !== 'ENOENT') throw err
@@ -86,11 +85,11 @@ export default class UserConfig {
   }
 
   private async migrate() {
-    if (await deps.file.exists(this.file)) return
+    if (await fs.pathExists(this.file)) return
     let old = path.join(this.config.configDir, 'config.json')
-    if (!await deps.file.exists(old)) return
+    if (!await fs.pathExists(old)) return
     this.debug('moving config into new place')
-    await deps.file.rename(old, this.file)
+    await fs.rename(old, this.file)
   }
 
   private async canWrite() {
@@ -100,7 +99,7 @@ export default class UserConfig {
 
   private async getLastUpdated(): Promise<number | undefined> {
     try {
-      const stat = await deps.file.stat(this.file)
+      const stat = await fs.stat(this.file)
       return stat.mtime.getTime()
     } catch (err) {
       if (err.code !== 'ENOENT') throw err

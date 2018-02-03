@@ -1,37 +1,37 @@
-import {Hook} from '@cli-engine/engine'
+import {Hooks, IHook} from '@anycli/config'
 import * as path from 'path'
 
-import deps from '../../deps'
+import * as fs from '../../fs'
 
 const debug = require('debug')('heroku:tidy')
 
-export default class extends Hook<'update'> {
-  async run() {
-    try {
-      await deps.file.removeEmptyDirs(path.join(this.config.dataDir, 'tmp'))
-      if (this.config.configDir !== this.config.dataDir) {
-        await deps.file.removeEmptyDirs(this.config.configDir)
-      }
-      if (this.config.cacheDir !== this.config.dataDir) {
-        await this.cleanupPlugins()
-      }
-    } catch (err) {
-      debug(err)
-    }
-  }
-
-  private async cleanupPlugins() {
-    let pluginsDir = path.join(this.config.dataDir, 'plugins')
-    if (await deps.file.exists(path.join(pluginsDir, 'plugins.json'))) return
+const hook: IHook<Hooks['update']> = async opts => {
+  const cleanupPlugins = async () => {
+    let pluginsDir = path.join(opts.config.dataDir, 'plugins')
+    if (await fs.pathExists(path.join(pluginsDir, 'plugins.json'))) return
     let pjson
     try {
-      pjson = await deps.file.readJSON(path.join(pluginsDir, 'package.json'))
+      pjson = await fs.readJSON(path.join(pluginsDir, 'package.json'))
     } catch (err) {
       if (err.code !== 'ENOENT') throw err
       return
     }
     if (!pjson.dependencies || pjson.dependencies === {}) {
-      await deps.file.remove(path.join(pluginsDir))
+      await fs.remove(path.join(pluginsDir))
     }
   }
+
+  try {
+    await fs.removeEmptyDirs(path.join(opts.config.dataDir, 'tmp'))
+    if (opts.config.configDir !== opts.config.dataDir) {
+      await fs.removeEmptyDirs(opts.config.configDir)
+    }
+    if (opts.config.cacheDir !== opts.config.dataDir) {
+      await cleanupPlugins()
+    }
+  } catch (err) {
+    debug(err)
+  }
 }
+
+export default hook

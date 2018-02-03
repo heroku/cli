@@ -1,11 +1,12 @@
-import {Config} from '@cli-engine/config'
-import {ICommandInfo} from '@cli-engine/engine'
+import {ICommand, IConfig} from '@anycli/config'
 import {vars} from '@heroku-cli/command'
 import cli from 'cli-ux'
+import * as fs from 'fs-extra'
+import HTTP from 'http-call'
 import netrc from 'netrc-parser'
 import * as path from 'path'
 
-import deps from './deps'
+import UserConfig from './user_config'
 
 const debug = require('debug')('heroku:analytics')
 
@@ -35,20 +36,16 @@ export interface AnalyticsJSONPost {
 }
 
 export interface RecordOpts {
-  Command: ICommandInfo
+  Command: ICommand
   argv: string[]
 }
 
 export default class AnalyticsCommand {
-  config: Config
-  userConfig: typeof deps.UserConfig.prototype
-  http: typeof deps.HTTP
+  config: IConfig
+  userConfig!: typeof UserConfig.prototype
 
-  constructor(config: Config) {
+  constructor(config: IConfig) {
     this.config = config
-    this.http = deps.HTTP.defaults({
-      headers: {'user-agent': config.userAgent},
-    })
   }
 
   _initialAnalyticsJSON(): AnalyticsJSON {
@@ -102,12 +99,12 @@ export default class AnalyticsCommand {
         cli: this.config.name,
       }
 
-      await this.http.post(this.url, {body})
+      await HTTP.post(this.url, {body})
 
-      await deps.file.remove(this.analyticsPath)
+      await fs.remove(this.analyticsPath)
     } catch (err) {
       debug(err)
-      await deps.file.remove(this.analyticsPath).catch(err => cli.warn(err))
+      await fs.remove(this.analyticsPath).catch(err => cli.warn(err))
     }
   }
 
@@ -135,7 +132,7 @@ export default class AnalyticsCommand {
 
   async _readJSON(): Promise<AnalyticsJSON> {
     try {
-      let analytics = await deps.file.readJSON(this.analyticsPath)
+      let analytics = await fs.readJSON(this.analyticsPath)
       analytics.commands = analytics.commands || []
       return analytics
     } catch (err) {
@@ -145,27 +142,27 @@ export default class AnalyticsCommand {
   }
 
   async _writeJSON(analyticsJSON: AnalyticsJSON) {
-    return deps.file.outputJSON(this.analyticsPath, analyticsJSON)
+    return fs.outputJSON(this.analyticsPath, analyticsJSON)
   }
 
   async _acAnalytics(): Promise<number> {
     let root = path.join(this.config.cacheDir, 'completions', 'completion_analytics')
     let meta = {
-      cmd: deps.file.exists(path.join(root, 'command')),
-      flag: deps.file.exists(path.join(root, 'flag')),
-      value: deps.file.exists(path.join(root, 'value')),
+      cmd: fs.pathExists(path.join(root, 'command')),
+      flag: fs.pathExists(path.join(root, 'flag')),
+      value: fs.pathExists(path.join(root, 'value')),
     }
     let score = 0
     if (await meta.cmd) score += 1
     if (await meta.flag) score += 2
     if (await meta.value) score += 4
-    if (await deps.file.exists(root)) await deps.file.remove(root)
+    if (await fs.pathExists(root)) await fs.remove(root)
     return score
   }
 
   private async init() {
     await netrc.load()
-    this.userConfig = new deps.UserConfig(this.config)
+    this.userConfig = new UserConfig(this.config)
     await this.userConfig.init()
   }
 }

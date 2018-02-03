@@ -1,19 +1,18 @@
 {
-  "private": true,
   "name": "heroku-cli",
   "description": "CLI to interact with Heroku",
   "version": "6.15.22",
   "author": "Jeff Dickey @jdxcode",
   "anycli": {
+    "scope": "heroku-cli",
     "plugins": [
+      "@heroku-cli/plugin-status",
       "@anycli/plugin-help",
-      "@anycli/plugin-not-found",
-      "@anycli/plugin-version"
+      "@anycli/plugin-not-found"
     ],
     "bin": "heroku",
     "userPluginsEnabled": true,
     "dirname": "heroku",
-    "defaultCommand": "dashboard",
     "npmRegistry": "https://cli-npm.heroku.com",
     "topics": {
       "2fa": {
@@ -70,18 +69,13 @@
   },
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
-    "@anycli/command": "^0.3.7",
-    "@anycli/config": "^0.3.0",
-    "@anycli/engine": "^0.3.1",
-    "@anycli/plugin-help": "^0.4.6",
-    "@anycli/plugin-not-found": "^0.1.14",
-    "@anycli/plugin-version": "^0.1.30",
-    "@cli-engine/command": "^12.1.1",
-    "@cli-engine/config": "^5.1.0",
-    "@cli-engine/engine": "6.1.37",
+    "@anycli/command": "^1.2.4",
+    "@anycli/config": "^1.1.2",
+    "@anycli/plugin-help": "^0.6.0",
+    "@anycli/plugin-not-found": "^0.1.15",
     "@heroku-cli/color": "^1.1.3",
     "@heroku-cli/command": "^7.0.15",
-    "cli-flags": "^2.0.7",
+    "@heroku-cli/plugin-status": "^5.0.0",
     "cli-ux": "^3.3.13",
     "debug": "3.1.0",
     "execa": "^0.9.0",
@@ -106,14 +100,13 @@
     "http-call": "5.0.2",
     "netrc-parser": "3.0.3",
     "semver": "5.5.0",
-    "tar-fs": "^1.16.0",
     "ts-lodash": "^4.0.11",
     "tslib": "^1.9.0",
     "uuid": "^3.2.1"
   },
   "devDependencies": {
-    "@anycli/test": "^0.10.3",
-    "@anycli/tslint": "^0.2.2",
+    "@anycli/test": "^0.10.9",
+    "@anycli/tslint": "^0.2.5",
     "@types/ansi-styles": "^2.0.30",
     "@types/chai": "^4.1.2",
     "@types/debug": "^0.0.30",
@@ -129,8 +122,8 @@
     "@types/supports-color": "3.1.0",
     "chai": "^4.1.2",
     "concurrently": "^3.5.1",
-    "eslint": "^4.16.0",
-    "eslint-config-anycli": "^1.3.1",
+    "eslint": "^4.17.0",
+    "eslint-config-anycli": "^1.3.2",
     "mocha": "^5.0.0",
     "nock": "9.1.6",
     "ts-node": "^4.1.0",
@@ -151,6 +144,7 @@
   ],
   "license": "ISC",
   "main": "lib/index.js",
+  "private": true,
   "repository": "heroku/cli",
   "scripts": {
     "build": "rm -rf lib && tsc",
