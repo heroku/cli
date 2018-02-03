@@ -8,6 +8,7 @@
     "plugins": [
       "@heroku-cli/plugin-status",
       "@anycli/plugin-help",
+      "@anycli/plugin-plugins",
       "@anycli/plugin-not-found"
     ],
     "bin": "heroku",
@@ -73,6 +74,7 @@
     "@anycli/config": "^1.1.2",
     "@anycli/plugin-help": "^0.6.0",
     "@anycli/plugin-not-found": "^0.1.15",
+    "@anycli/plugin-plugins": "^0.2.11",
     "@heroku-cli/color": "^1.1.3",
     "@heroku-cli/command": "^7.0.15",
     "@heroku-cli/plugin-status": "^5.0.0",

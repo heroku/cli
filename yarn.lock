@@ -57,6 +57,24 @@
     cli-ux "^3.3.13"
     string-similarity "^1.2.0"
 
+"@anycli/plugin-plugins@^0.2.11":
+  version "0.2.11"
+  resolved "https://registry.yarnpkg.com/@anycli/plugin-plugins/-/plugin-plugins-0.2.11.tgz#8e2d42614db0b5c3f06fbdf059352c14afaedeba"
+  dependencies:
+    "@anycli/command" "^1.2.3"
+    "@heroku-cli/color" "^1.1.3"
+    chalk "^2.3.0"
+    cli-ux "^3.3.13"
+    debug "^3.1.0"
+    fs-extra "^5.0.0"
+    http-call "^5.0.2"
+    load-json-file "^4.0.0"
+    lodash "^4.17.4"
+    npm-run-path "^2.0.2"
+    semver "^5.5.0"
+    tslib "^1.9.0"
+    yarn "^1.3.2"
+
 "@anycli/screen@^0.0.3":
   version "0.0.3"
   resolved "https://registry.yarnpkg.com/@anycli/screen/-/screen-0.0.3.tgz#f0afd970c3ed725702948a45a874ede1fdd9362e"
@@ -1807,7 +1825,7 @@ http-cache-semantics@3.8.1:
   version "3.8.1"
   resolved "https://registry.yarnpkg.com/http-cache-semantics/-/http-cache-semantics-3.8.1.tgz#39b0e16add9b605bf0a9ef3d9daaf4843b4cacd2"
 
-http-call@5.0.2:
+http-call@5.0.2, http-call@^5.0.2:
   version "5.0.2"
   resolved "https://registry.yarnpkg.com/http-call/-/http-call-5.0.2.tgz#21bec3655f1631de128c0cdaa470777b1fbbc365"
   dependencies:
@@ -2508,7 +2526,7 @@ npm-run-path@^1.0.0:
   dependencies:
     path-key "^1.0.0"
 
-npm-run-path@^2.0.0:
+npm-run-path@^2.0.0, npm-run-path@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/npm-run-path/-/npm-run-path-2.0.2.tgz#35a9232dfa35d7067b4cb2ddf2357b1871536c5f"
   dependencies:
@@ -3488,6 +3506,10 @@ xmlhttprequest-ssl@1.5.3:
 yallist@^2.1.2:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/yallist/-/yallist-2.1.2.tgz#1c11f9218f076089a47dd512f93c6699a6a81d52"
+
+yarn@^1.3.2:
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/yarn/-/yarn-1.3.2.tgz#5939762581b5b4ddcd3418c0f6be42df3aee195f"
 
 yeast@0.1.2:
   version "0.1.2"
