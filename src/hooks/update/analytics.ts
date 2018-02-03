@@ -1,16 +1,10 @@
-import {Hook} from '@cli-engine/engine'
+import {Hook} from '@anycli/config'
 
 import Analytics from '../../analytics'
 
-const debug = require('debug')('heroku:analytics')
-
-export default class AnalyticsUpdateHook extends Hook<'update'> {
-  async run() {
-    try {
-      const analytics = new Analytics(this.config)
-      await analytics.submit()
-    } catch (err) {
-      debug(err)
-    }
-  }
+const hook: Hook<'update'> = async opts => {
+  const analytics = new Analytics(opts.config)
+  await analytics.submit()
 }
+
+export default hook

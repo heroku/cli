@@ -1,4 +1,4 @@
-import {ICommand, IConfig} from '@anycli/config'
+import * as Config from '@anycli/config'
 import {vars} from '@heroku-cli/command'
 import cli from 'cli-ux'
 import * as fs from 'fs-extra'
@@ -35,16 +35,11 @@ export interface AnalyticsJSONPost {
   user: string
 }
 
-export interface RecordOpts {
-  Command: ICommand
-  argv: string[]
-}
-
 export default class AnalyticsCommand {
-  config: IConfig
+  config: Config.IConfig
   userConfig!: typeof UserConfig.prototype
 
-  constructor(config: IConfig) {
+  constructor(config: Config.IConfig) {
     this.config = config
   }
 
@@ -55,7 +50,7 @@ export default class AnalyticsCommand {
     }
   }
 
-  async record(opts: RecordOpts) {
+  async record(opts: Config.Hooks['prerun']) {
     await this.init()
     const plugin = opts.Command.plugin
     if (!plugin) {

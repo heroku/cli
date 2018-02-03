@@ -29,7 +29,6 @@ export function withFiles(files: { [k: string]: File | Symlink | string }, optio
         // @ts-ignore
         if (!await fs.exists(file.to)) await fs.outputFile(file.to, '')
         await fs.symlink(file.to, filePath)
-        break
     }
     if (file.mtime) fs.utimesSync(filePath, new Date(), file.mtime)
   })
