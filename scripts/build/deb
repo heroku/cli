@@ -47,13 +47,12 @@ EOF
 
   cat << EOF > "$__workspace/usr/lib/heroku/bin/heroku.js"
 #!/usr/bin/env node
-const {run} = require('@cli-engine/engine')
-const config = {
+global.heroku = {
   channel: '${CHANNEL}',
   version: '${VERSION}',
-  updateDisabled: 'update the CLI with "sudo apt-get upgrade heroku"'
+  updateDisabled: 'update the CLI with "sudo apt-get upgrade heroku"',
 }
-run(process.argv, config)
+require('@anycli/command').run()
 EOF
 
   # add debian config
