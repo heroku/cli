@@ -1,9 +1,0 @@
-#!/usr/bin/env bash
-
-echoerr() { echo "$@" 1>&2; }
-
-if [ -x "$(command -v shellcheck)" ]; then
-  find scripts -type f -print0 | xargs -0 shellcheck --external-sources
-else
-  echoerr "install shellcheck to lint the scripts"
-fi
