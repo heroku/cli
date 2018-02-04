@@ -4,6 +4,8 @@ source ./scripts/_init
 
 set -x
 
+yarn run prepublishOnly
+
 # setup workspace
 o="$BASE_DIR"
 rm -rf "${o}"
@@ -19,7 +21,6 @@ cp -rv "$ROOT_DIR/lib" "${o}/lib"
   cd "${o}" || exit 1
   # install packages
   yarn install --no-progress --production --non-interactive
-  yarn run prepublishOnly
 )
 
 cat << EOF > "${o}/bin/heroku.js"
