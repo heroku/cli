@@ -95,6 +95,7 @@
     "unexpected": "^10.35.0"
   },
   "files": [
+    "/.anycli.manifest.json",
     "lib/index.js",
     "assets",
     "lib"
