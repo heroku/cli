@@ -18,6 +18,10 @@
   version "1.3.10"
   resolved "https://registry.yarnpkg.com/@anycli/config/-/config-1.3.10.tgz#8d821fe8a60ec400dd49d9b1a12f7062e590dd4f"
 
+"@anycli/config@^1.3.11":
+  version "1.3.11"
+  resolved "https://registry.yarnpkg.com/@anycli/config/-/config-1.3.11.tgz#4f34f2bccd6f2138f56559fb1b5502fa750467e0"
+
 "@anycli/dev-cli@^0.2.2":
   version "0.2.2"
   resolved "https://registry.yarnpkg.com/@anycli/dev-cli/-/dev-cli-0.2.2.tgz#578c1041f3ae8808b0ac90c513045b8015b6bcec"
@@ -126,6 +130,10 @@
   version "0.0.0"
   resolved "https://registry.yarnpkg.com/@cli-engine/screen/-/screen-0.0.0.tgz#c2e847c7d4d998490c9097282bf21637d5162116"
 
+"@fancy-test/nock@^0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@fancy-test/nock/-/nock-0.0.1.tgz#707de8f1fa9798b2eeb27619fec47b478f9e6f59"
+
 "@heroku-cli/color@^1.0.4", "@heroku-cli/color@^1.1.1":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@heroku-cli/color/-/color-1.1.1.tgz#a2c25239ff1196733a79cabc7a750cd46b96dc30"
@@ -211,16 +219,17 @@
     term-img "^2.1.0"
     urijs "1.19.0"
 
-"@heroku-cli/plugin-status@^5.0.0":
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-status/-/plugin-status-5.0.0.tgz#898f8d626653fdbf8efb40725770552b75aae261"
+"@heroku-cli/plugin-status@^5.0.1":
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-status/-/plugin-status-5.0.1.tgz#0b881bf95ac7b62aea4fc2b8be1535a2c9f07842"
   dependencies:
-    "@heroku-cli/command" "7"
-    cli-ux "2"
-    moment "^2.20.1"
-    sprintf-js "^1.1.1"
-    ts-lodash "4"
-    tslib "1"
+    "@anycli/command" "^1.2.10"
+    "@fancy-test/nock" "^0.0.1"
+    "@heroku-cli/color" "^1.1.3"
+    "@heroku-cli/command" "^8.0.0-anycli.1"
+    cli-ux "^3.3.18"
+    date-fns "^1.29.0"
+    http-call "^5.0.2"
 
 "@heroku/foreman@^2.0.2":
   version "2.0.2"
@@ -876,7 +885,7 @@ cross-spawn@^5.0.1, cross-spawn@^5.1.0:
     shebang-command "^1.2.0"
     which "^1.2.9"
 
-date-fns@^1.23.0:
+date-fns@^1.23.0, date-fns@^1.29.0:
   version "1.29.0"
   resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-1.29.0.tgz#12e609cdcb935127311d04d33334e2960a2a54e6"
 
