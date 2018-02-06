@@ -15,6 +15,7 @@ cp "$ROOT_DIR/README.md" "${o}"
 cp "$ROOT_DIR/LICENSE" "${o}"
 cp "$ROOT_DIR/package.json" "${o}"
 cp "$ROOT_DIR/yarn.lock" "${o}"
+cp "$ROOT_DIR/.anycli.manifest.json" "${o}"
 cp -rv "$ROOT_DIR/lib" "${o}/lib"
 
 (
