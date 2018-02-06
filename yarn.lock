@@ -18,7 +18,16 @@
   version "1.3.10"
   resolved "https://registry.yarnpkg.com/@anycli/config/-/config-1.3.10.tgz#8d821fe8a60ec400dd49d9b1a12f7062e590dd4f"
 
-"@anycli/errors@^0.2.1":
+"@anycli/dev-cli@^0.2.2":
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/@anycli/dev-cli/-/dev-cli-0.2.2.tgz#578c1041f3ae8808b0ac90c513045b8015b6bcec"
+  dependencies:
+    "@anycli/command" "^1.2.9"
+    "@anycli/config" "^1.3.10"
+    "@anycli/errors" "^0.2.0"
+    "@anycli/plugin-help" "^0.6.4"
+
+"@anycli/errors@^0.2.0", "@anycli/errors@^0.2.1":
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/@anycli/errors/-/errors-0.2.1.tgz#719a95cd9c23838c65929da5d625a7537dd7d035"
   dependencies:
