@@ -12,9 +12,9 @@
   version "1.3.10"
   resolved "https://registry.yarnpkg.com/@anycli/config/-/config-1.3.10.tgz#8d821fe8a60ec400dd49d9b1a12f7062e590dd4f"
 
-"@anycli/dev-cli@^0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@anycli/dev-cli/-/dev-cli-0.2.0.tgz#ba27499cd0c6ffd0066e93a87ddfe7a82fa9dab0"
+"@anycli/dev-cli@^0.2.1":
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/@anycli/dev-cli/-/dev-cli-0.2.1.tgz#4c5153ec2cd37c3800005c812c7088466e385d92"
   dependencies:
     "@anycli/command" "^1.2.9"
     "@anycli/config" "^1.3.10"

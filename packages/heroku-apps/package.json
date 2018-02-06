@@ -58,7 +58,7 @@
     "urijs": "1.19.0"
   },
   "devDependencies": {
-    "@anycli/dev-cli": "^0.2.0",
+    "@anycli/dev-cli": "^0.2.1",
     "@anycli/plugin-legacy": "^0.0.0",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
@@ -118,6 +118,7 @@
     "clean": "rimraf lib",
     "prepare": "npm run clean && npm run build",
     "prepublishOnly": "anycli-dev manifest",
+    "postpublish": "rm .anycli.manifest.json",
     "release": "np",
     "test": "TZ=utc mocha && jest && flow && eslint ."
   },
