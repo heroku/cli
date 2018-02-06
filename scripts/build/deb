@@ -53,6 +53,7 @@ global.heroku = {
   updateDisabled: 'update the CLI with "sudo apt-get upgrade heroku"',
 }
 require('@anycli/command').run()
+.catch(require('@anycli/errors/handle'))
 EOF
 
   # add debian config

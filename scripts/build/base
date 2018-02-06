@@ -30,4 +30,5 @@ global.heroku = {
   version: '${VERSION}',
 }
 require('@anycli/command').run()
+.catch(require('@anycli/errors/handle'))
 EOF
