@@ -1,16 +1,18 @@
 {
   "compilerOptions": {
-    "alwaysStrict": true,
-    "declaration": false,
+    "declaration": true,
+    "forceConsistentCasingInFileNames": true,
     "importHelpers": true,
-    "listEmittedFiles": true,
     "module": "commonjs",
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "outDir": "./lib",
-    "rootDir": "./src",
+    "pretty": true,
+    "rootDirs": [
+      "./src"
+    ],
     "strict": true,
-    "target": "es2016"
+    "target": "es2017"
   },
   "include": [
     "./src/**/*"

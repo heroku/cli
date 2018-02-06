@@ -3,6 +3,16 @@
   "description": "CLI Plugin for Heroku Status",
   "version": "5.0.0",
   "author": "Jeff Dickey @jdxcode",
+  "anycli": {
+    "commands": "./lib/commands",
+    "topics": {
+      "name": "status",
+      "description": "status of the Heroku platform"
+    },
+    "devPlugins": [
+      "@anycli/plugin-help"
+    ]
+  },
   "bugs": {
     "url": "https://github.com/heroku/heroku-cli-status/issues"
   },
@@ -15,31 +25,42 @@
     "commands": "./lib/commands"
   },
   "dependencies": {
-    "@heroku-cli/command": "7",
-    "cli-ux": "2",
-    "moment": "^2.20.1",
-    "sprintf-js": "^1.1.1",
-    "ts-lodash": "4",
-    "tslib": "1"
+    "@anycli/command": "^1.2.10",
+    "@fancy-test/nock": "^0.0.1",
+    "@heroku-cli/color": "^1.1.3",
+    "@heroku-cli/command": "^8.0.0-anycli.1",
+    "cli-ux": "^3.3.18",
+    "date-fns": "^1.29.0",
+    "http-call": "^5.0.2"
   },
   "devDependencies": {
-    "@cli-engine/util": "^1.0.8",
-    "@heroku-cli/tslint": "1",
+    "@anycli/config": "^1.3.11",
+    "@anycli/dev-cli": "^0.2.2",
+    "@anycli/errors": "^0.2.1",
+    "@anycli/plugin-help": "^0.6.4",
+    "@anycli/test": "^0.10.11",
+    "@anycli/tslint": "^0.2.6",
+    "@heroku-cli/tslint": "1.1.4",
     "@types/ansi-styles": "^2.0.30",
-    "@types/jest": "21",
-    "@types/lodash": "^4.14.91",
-    "@types/nock": "^9.1.0",
-    "@types/node": "8",
+    "@types/chai": "^4.1.2",
+    "@types/mocha": "^2.2.48",
+    "@types/nock": "^9.1.2",
+    "@types/node": "^9.4.0",
     "@types/supports-color": "^3.1.0",
-    "husky": "0",
-    "jest": "22",
-    "nock": "^9.1.5",
-    "prettier": "1",
-    "ts-jest": "22",
-    "tslint": "5",
-    "typescript": "2"
+    "chai": "^4.1.2",
+    "concurrently": "^3.5.1",
+    "globby": "^7.1.1",
+    "mocha": "^5.0.0",
+    "nock": "^9.1.6",
+    "ts-node": "^4.1.0",
+    "tslint": "5.9.1",
+    "typescript": "^2.7.1"
+  },
+  "engines": {
+    "node": ">=8.0.0"
   },
   "files": [
+    ".anycli.manifest.json",
     "lib"
   ],
   "homepage": "https://github.com/heroku/heroku-cli-status",
@@ -49,8 +70,11 @@
   "license": "ISC",
   "repository": "heroku/heroku-cli-status",
   "scripts": {
-    "posttest": "cli-engine-util",
-    "prepare": "cli-engine-util",
-    "test": "jest"
+    "build": "rm -rf lib && tsc",
+    "lint": "concurrently -p command \"tsc -p test --noEmit\" \"tslint -p test -t stylish\"",
+    "postpublish": "rm .anycli.manifest.json",
+    "posttest": "yarn run lint",
+    "prepublishOnly": "yarn run build && anycli-dev manifest",
+    "test": "mocha --forbid-only \"test/**/*.test.ts\""
   }
 }

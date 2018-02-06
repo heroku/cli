@@ -1,17 +1,19 @@
 import color from '@heroku-cli/color'
-import { Command, flags } from '@heroku-cli/command'
+import {Command, flags} from '@heroku-cli/command'
 import cli from 'cli-ux'
-import _ from 'ts-lodash'
+import * as distanceInWordsToNow from 'date-fns/distance_in_words_to_now'
+import HTTP from 'http-call'
+
+import {maxBy} from '../util'
 
 export default class Status extends Command {
   static description = 'display current status of the Heroku platform'
   static flags = {
-    json: flags.boolean({ description: 'output in json format' }),
+    json: flags.boolean({description: 'output in json format'}),
   }
 
   async run() {
-    const moment = require('moment')
-    const sprintf = require('sprintf-js').sprintf
+    const {flags} = this.parse(Status)
     const apiPath = '/api/v4/current-status'
 
     const capitalize = (str: string) => str.substr(0, 1).toUpperCase() + str.substr(1)
@@ -26,9 +28,9 @@ export default class Status extends Command {
     }
 
     let host = process.env.HEROKU_STATUS_HOST || 'https://status.heroku.com'
-    let { body } = await this.http.get(host + apiPath)
+    let {body} = await HTTP.get(host + apiPath)
 
-    if (this.flags.json) {
+    if (flags.json) {
       cli.styledJSON(body)
       return
     }
@@ -36,22 +38,16 @@ export default class Status extends Command {
     for (let item of body.status) {
       let message = printStatus(item.status)
 
-      cli.log(sprintf('%-10s %s', item.system + ':', message))
+      this.log(`${(item.system + ':').padEnd(11)}${message}`)
     }
 
     for (let incident of body.incidents) {
       cli.log()
-      cli.styledHeader(
-        `${incident.title} ${color.yellow(moment(incident.created_at).format('LT'))} ${color.cyan(incident.full_url)}`,
-      )
+      cli.styledHeader(`${incident.title} ${color.yellow(incident.created_at)} ${color.cyan(incident.full_url)}`)
 
-      let padding = (_.maxBy(incident.updates, 'update_type.length') as any).update_type.length + 0
+      let padding = maxBy(incident.updates, (i: any) => i.update_type.length).update_type.length + 0
       for (let u of incident.updates) {
-        cli.log(
-          `${color.yellow(_.padEnd(u.update_type, padding))} ${moment(u.updated_at).format('LT')} (${moment(
-            u.updated_at,
-          ).fromNow()})`,
-        )
+        cli.log(`${color.yellow(u.update_type.padEnd(padding))} ${new Date(u.updated_at).toISOString()} (${distanceInWordsToNow(new Date(u.updated_at))} ago)`)
         cli.log(`${u.contents}\n`)
       }
     }

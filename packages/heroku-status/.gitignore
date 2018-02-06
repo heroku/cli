@@ -1,2 +1,7 @@
+*-debug.log
+*-error.log
+/lib
+/node_modules
+/tmp
 lib
 node_modules
