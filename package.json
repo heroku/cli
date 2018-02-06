@@ -153,7 +153,7 @@
   "private": true,
   "repository": "heroku/cli",
   "scripts": {
-    "build": "rm -rf lib && tsc",
+    "build": "rm -rf lib && tsc && anycli-dev manifest",
     "lint": "concurrently -p command \"eslint .\" \"tsc -p test --noEmit\" \"tslint -p test\"",
     "posttest": "yarn run lint",
     "prepublishOnly": "yarn run build",
