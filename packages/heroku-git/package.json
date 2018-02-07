@@ -1,5 +1,5 @@
 {
-  "name": "heroku-git",
+  "name": "@heroku-cli/plugin-git",
   "description": "Heroku CLI plugin to manage local git repos.",
   "version": "2.5.23",
   "author": "Jeff Dickey (@dickeyxxx)",
@@ -12,6 +12,8 @@
     "heroku-cli-util": "^6.2.4"
   },
   "devDependencies": {
+    "@anycli/dev-cli": "^0.3.10",
+    "@anycli/plugin-legacy": "^0.1.4",
     "codeclimate-test-reporter": "^0.5.0",
     "coveralls": "^2.13.1",
     "mocha": "^3.5.0",
@@ -34,6 +36,8 @@
     "url": "https://github.com/heroku/heroku-git.git"
   },
   "scripts": {
-    "test": "nyc mocha && standard"
+    "test": "nyc mocha && standard",
+    "prepublishOnly": "anycli-dev manifest",
+    "version": "anycli-dev readme && git add README.md"
   }
 }
