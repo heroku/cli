@@ -16,6 +16,10 @@
   version "1.3.36"
   resolved "https://registry.yarnpkg.com/@anycli/config/-/config-1.3.36.tgz#ea69dd7b708c6d2543e3f13481bd2f6bca69fa83"
 
+"@anycli/config@^1.3.37":
+  version "1.3.37"
+  resolved "https://registry.yarnpkg.com/@anycli/config/-/config-1.3.37.tgz#67e9e383252fb977db174eab37f8d141e4901ba9"
+
 "@anycli/dev-cli@^0.3.7":
   version "0.3.7"
   resolved "https://registry.yarnpkg.com/@anycli/dev-cli/-/dev-cli-0.3.7.tgz#b03996f6f4973649b520a2ffe41c772035d68c59"
@@ -67,9 +71,9 @@
     widest-line "^2.0.0"
     wrap-ansi "^3.0.1"
 
-"@anycli/plugin-legacy@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@anycli/plugin-legacy/-/plugin-legacy-0.1.0.tgz#5b980d0decba6fbe569a0a49bd10ed9fd160afab"
+"@anycli/plugin-legacy@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@anycli/plugin-legacy/-/plugin-legacy-0.1.1.tgz#e1c2a71ccb2d7cc2aed4cd244e678b6674aca365"
   dependencies:
     "@anycli/command" "^1.2.14"
     "@heroku-cli/color" "^1.1.3"
