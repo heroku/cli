@@ -8,16 +8,16 @@
   dependencies:
     "@anycli/parser" "^3.2.6"
 
-"@anycli/config@^1.3.34":
-  version "1.3.34"
-  resolved "https://registry.yarnpkg.com/@anycli/config/-/config-1.3.34.tgz#785f9ac9416aa923d8c7ef65520f1f8b36be7fea"
+"@anycli/config@^1.3.36":
+  version "1.3.36"
+  resolved "https://registry.yarnpkg.com/@anycli/config/-/config-1.3.36.tgz#ea69dd7b708c6d2543e3f13481bd2f6bca69fa83"
 
-"@anycli/dev-cli@^0.3.6":
-  version "0.3.6"
-  resolved "https://registry.yarnpkg.com/@anycli/dev-cli/-/dev-cli-0.3.6.tgz#55172e4cee5a14bb3796f3a8e4a82fc073388973"
+"@anycli/dev-cli@^0.3.7":
+  version "0.3.7"
+  resolved "https://registry.yarnpkg.com/@anycli/dev-cli/-/dev-cli-0.3.7.tgz#b03996f6f4973649b520a2ffe41c772035d68c59"
   dependencies:
     "@anycli/command" "^1.2.14"
-    "@anycli/config" "^1.3.34"
+    "@anycli/config" "^1.3.36"
     "@anycli/errors" "^0.2.1"
     "@anycli/plugin-help" "^0.6.9"
     lodash.template "^4.4.0"
@@ -51,9 +51,9 @@
     widest-line "^2.0.0"
     wrap-ansi "^3.0.1"
 
-"@anycli/plugin-legacy@^0.0.5":
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/@anycli/plugin-legacy/-/plugin-legacy-0.0.5.tgz#88cf351dfe10416d5aa118dcd5494aa599a8d224"
+"@anycli/plugin-legacy@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@anycli/plugin-legacy/-/plugin-legacy-0.1.0.tgz#5b980d0decba6fbe569a0a49bd10ed9fd160afab"
   dependencies:
     "@anycli/command" "^1.2.14"
     "@heroku-cli/color" "^1.1.3"

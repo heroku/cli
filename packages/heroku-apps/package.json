@@ -59,8 +59,8 @@
     "urijs": "1.19.0"
   },
   "devDependencies": {
-    "@anycli/dev-cli": "^0.3.6",
-    "@anycli/plugin-legacy": "^0.0.5",
+    "@anycli/dev-cli": "^0.3.7",
+    "@anycli/plugin-legacy": "^0.1.0",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.0.1",
