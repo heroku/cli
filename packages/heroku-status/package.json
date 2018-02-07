@@ -76,6 +76,7 @@
     "posttest": "yarn run lint",
     "prepublishOnly": "yarn run build && anycli-dev manifest",
     "test": "mocha --forbid-only \"test/**/*.test.ts\"",
+    "preversion": "yarn run postpublish",
     "version": "anycli-dev readme && git add README.md"
   }
 }
