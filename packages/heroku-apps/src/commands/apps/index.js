@@ -80,16 +80,13 @@ function * run (context, heroku) {
 
 let cmd = {
   description: 'list your apps',
-  help: `
-Example:
+  examples: `$ heroku apps
+=== My Apps
+example
+example2
 
-    $ heroku apps
-    === My Apps
-    example
-    example2
-
-    === Collaborated Apps
-    theirapp   other@owner.name`,
+=== Collaborated Apps
+theirapp   other@owner.name`,
   needsAuth: true,
   wantsOrg: true,
   flags: [
