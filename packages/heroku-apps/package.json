@@ -119,7 +119,7 @@
     "prepare": "npm run clean && npm run build",
     "prepublishOnly": "anycli-dev manifest && anycli-dev readme --multi",
     "postpublish": "rm .anycli.manifest.json",
-    "version": "anycli-dev readme --multi && git add README.md",
+    "version": "anycli-dev readme --multi && git add README.md docs",
     "test": "TZ=utc mocha && jest && flow && eslint ."
   },
   "standard": {
