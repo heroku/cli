@@ -16,7 +16,7 @@
     "shellwords": "^0.1.1"
   },
   "devDependencies": {
-    "@anycli/dev-cli": "^0.3.9",
+    "@anycli/dev-cli": "^0.3.10",
     "@anycli/plugin-legacy": "^0.1.4",
     "fixture-stdout": "0.2.1",
     "mocha": "^3.5.0",
