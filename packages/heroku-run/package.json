@@ -44,6 +44,6 @@
     "postpublish": "rm -f .anycli.manifest.json",
     "prepublishOnly": "anycli-dev manifest",
     "test": "nyc mocha && standard",
-    "version": "anycli-dev readme"
+    "version": "anycli-dev readme && git add README.md"
   }
 }
