@@ -1,7 +1,7 @@
 import * as Config from '@anycli/config'
 import * as fs from 'fs-extra'
 import HTTP from 'http-call'
-import netrc from 'netrc-parser'
+import Netrc from 'netrc-parser'
 import * as path from 'path'
 
 import UserConfig from './user_config'
@@ -116,6 +116,7 @@ export default class AnalyticsCommand {
   }
 
   get netrcLogin(): string | undefined {
+    const netrc: typeof Netrc = require('netrc-parser').default
     return netrc.machines['api.heroku.com'] && netrc.machines['api.heroku.com'].login
   }
 
@@ -155,6 +156,7 @@ export default class AnalyticsCommand {
   }
 
   private async init() {
+    const netrc: typeof Netrc = require('netrc-parser').default
     await netrc.load()
     this.userConfig = new UserConfig(this.config)
     await this.userConfig.init()
