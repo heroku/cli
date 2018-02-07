@@ -115,14 +115,14 @@ function * run (context, heroku) {
     dynos: heroku.request({path: `/apps/${app}/dynos${suffix}`})
   }
 
-  promises.app_info = heroku.request({
+  promises.appInfo = heroku.request({
     path: `/apps/${context.app}`,
     headers: {Accept: 'application/vnd.heroku+json; version=3.process-tier'}
   })
-  promises.account_info = heroku.request({path: '/account'})
+  promises.accountInfo = heroku.request({path: '/account'})
 
-  let {dynos, app_info, account_info} = yield promises
-  const shielded = app_info.space && app_info.space.shield
+  let {dynos, appInfo, accountInfo} = yield promises
+  const shielded = appInfo.space && appInfo.space.shield
 
   if (shielded) {
     dynos.forEach(d => {
@@ -153,7 +153,7 @@ function * run (context, heroku) {
   if (json) cli.styledJSON(dynos)
   else if (extended) printExtended(dynos)
   else {
-    yield printAccountQuota(context, heroku, app_info, account_info)
+    yield printAccountQuota(context, heroku, appInfo, accountInfo)
     if (dynos.length === 0) cli.log(`No dynos on ${cli.color.app(app)}`)
     else printDynos(dynos)
   }
