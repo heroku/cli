@@ -1,7 +1,7 @@
 heroku features
 ===============
 
-Heroku CLI plugin to manage apps.
+manage optional features
 # Commands
 
 * [heroku features [OPTIONS]](#features)

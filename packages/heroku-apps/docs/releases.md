@@ -1,7 +1,7 @@
 heroku releases
 ===============
 
-Heroku CLI plugin to manage apps.
+manage app releases
 # Commands
 
 * [heroku releases [OPTIONS]](#releases)

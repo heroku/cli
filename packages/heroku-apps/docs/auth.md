@@ -1,7 +1,7 @@
 heroku auth
 ===========
 
-Heroku CLI plugin to manage apps.
+heroku authentication
 # Commands
 
 * [heroku auth:2fa](#auth2fa)

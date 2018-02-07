@@ -1,7 +1,7 @@
 heroku regions
 ==============
 
-Heroku CLI plugin to manage apps.
+list available regions
 # Commands
 
 * [heroku regions [OPTIONS]](#regions)

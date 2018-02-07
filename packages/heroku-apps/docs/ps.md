@@ -1,7 +1,7 @@
 heroku ps
 =========
 
-Heroku CLI plugin to manage apps.
+manage dynos (dynos, workers)
 # Commands
 
 * [heroku ps [TYPE [TYPE ...]]](#ps)

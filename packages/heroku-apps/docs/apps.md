@@ -1,7 +1,7 @@
 heroku apps
 ===========
 
-Heroku CLI plugin to manage apps.
+manage apps
 # Commands
 
 * [heroku apps [OPTIONS]](#apps)
@@ -30,18 +30,6 @@ OPTIONS
   -s, --space=space  filter by space
   -t, --team=team    team to use
   --json             output in json format
-
-DESCRIPTION
-
-  Example:
-
-       $ heroku apps
-       === My Apps
-       example
-       example2
-
-       === Collaborated Apps
-       theirapp   other@owner.name
 ```
 
 ### apps:create

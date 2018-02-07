@@ -1,7 +1,7 @@
 heroku buildpacks
 =================
 
-Heroku CLI plugin to manage apps.
+manage the buildpacks for an app
 # Commands
 
 * [heroku buildpacks [OPTIONS]](#buildpacks)

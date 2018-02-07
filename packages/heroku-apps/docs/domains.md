@@ -1,7 +1,7 @@
 heroku domains
 ==============
 
-Heroku CLI plugin to manage apps.
+manage the domains for an app
 # Commands
 
 * [heroku domains [OPTIONS]](#domains)

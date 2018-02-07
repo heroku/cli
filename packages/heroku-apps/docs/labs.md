@@ -1,7 +1,7 @@
 heroku labs
 ===========
 
-Heroku CLI plugin to manage apps.
+experimental features
 # Commands
 
 * [heroku labs [OPTIONS]](#labs)

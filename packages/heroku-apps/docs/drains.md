@@ -1,7 +1,7 @@
 heroku drains
 =============
 
-Heroku CLI plugin to manage apps.
+list all log drains
 # Commands
 
 * [heroku drains [OPTIONS]](#drains)

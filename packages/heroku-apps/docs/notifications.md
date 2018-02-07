@@ -1,7 +1,7 @@
 heroku notifications
 ====================
 
-Heroku CLI plugin to manage apps.
+display notifications
 # Commands
 
 * [heroku notifications [OPTIONS]](#notifications)

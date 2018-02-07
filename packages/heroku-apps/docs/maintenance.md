@@ -1,7 +1,7 @@
 heroku maintenance
 ==================
 
-Heroku CLI plugin to manage apps.
+manage maintenance mode for an app
 # Commands
 
 * [heroku maintenance [OPTIONS]](#maintenance)

@@ -1,7 +1,7 @@
 heroku config
 =============
 
-Heroku CLI plugin to manage apps.
+manage app config vars
 # Commands
 
 * [heroku config [OPTIONS]](#config)

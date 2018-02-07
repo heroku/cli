@@ -1,7 +1,7 @@
 heroku keys
 ===========
 
-Heroku CLI plugin to manage apps.
+manage ssh keys
 # Commands
 
 * [heroku keys [OPTIONS]](#keys)
