@@ -43,7 +43,9 @@ ${
           ? `
 NOTE: After sourcing, you can run \`${cli.color.cyan('$ compaudit -D')}\` to ensure no permissions conflicts are present
 `
-          : ''
+          : `
+NOTE: If your terminal starts as a login shell you may need to print the init script into ~/.bash_profile or ~/.profile.
+`
       }
 2) Test it out, e.g.:
 ${cli.color.cyan(`$ ${bin} ${tabStr}`)}                 # Command completion

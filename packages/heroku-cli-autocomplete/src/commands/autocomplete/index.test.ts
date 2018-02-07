@@ -38,6 +38,8 @@ Setup Instructions for CLI-ENGINE CLI Autocomplete ---
 1) Add the autocomplete env var to your bash profile and source it
 $ printf \"$(cli-engine autocomplete:script bash)\" >> ~/.bashrc; source ~/.bashrc
 
+NOTE: If your terminal starts as a login shell you may need to print the init script into ~/.bash_profile or ~/.profile.
+
 2) Test it out, e.g.:
 $ cli-engine <TAB><TAB>                 # Command completion
 $ cli-engine apps:info --<TAB><TAB>     # Flag completion
