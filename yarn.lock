@@ -1887,6 +1887,18 @@ execa@^0.8.0:
     signal-exit "^3.0.0"
     strip-eof "^1.0.0"
 
+execa@^0.9.0:
+  version "0.9.0"
+  resolved "http://cli-npm.heroku.com/execa/-/execa-0.9.0/adb7ce62cf985071f60580deb4a88b9e34712d01.tgz#adb7ce62cf985071f60580deb4a88b9e34712d01"
+  dependencies:
+    cross-spawn "^5.0.1"
+    get-stream "^3.0.0"
+    is-stream "^1.1.0"
+    npm-run-path "^2.0.0"
+    p-finally "^1.0.0"
+    signal-exit "^3.0.0"
+    strip-eof "^1.0.0"
+
 exit-hook@^1.0.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/exit-hook/-/exit-hook-1.1.1.tgz#f05ca233b48c05d54fff07765df8507e95c02ff8"
@@ -4397,13 +4409,11 @@ netrc-parser@2.0.1:
   dependencies:
     lex "^1.7.9"
 
-netrc-parser@3.0.3:
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/netrc-parser/-/netrc-parser-3.0.3.tgz#1b3e6cf85e7dc3618dc7daaf639b1fa624392852"
+netrc-parser@3.1.0:
+  version "3.1.0"
+  resolved "http://cli-npm.heroku.com/netrc-parser/-/netrc-parser-3.1.0/fefaadbe6de86676195709718c40e40e4733ca91.tgz#fefaadbe6de86676195709718c40e40e4733ca91"
   dependencies:
-    execa "^0.8.0"
-    fs-extra "^5.0.0"
-    graceful-fs "^4.1.11"
+    execa "^0.9.0"
     lex "^1.7.9"
 
 netrc-parser@^2.0.3, netrc-parser@^2.0.5, netrc-parser@^2.0.6:
