@@ -72,7 +72,7 @@
   "scripts": {
     "build": "rm -rf lib && tsc",
     "lint": "concurrently -p command \"tsc -p test --noEmit\" \"tslint -p test -t stylish\"",
-    "postpublish": "rm .anycli.manifest.json",
+    "postpublish": "rm -f .anycli.manifest.json",
     "posttest": "yarn run lint",
     "prepublishOnly": "yarn run build && anycli-dev manifest",
     "test": "mocha --forbid-only \"test/**/*.test.ts\"",
