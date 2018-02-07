@@ -1,6 +1,4 @@
 import * as Config from '@anycli/config'
-import {vars} from '@heroku-cli/command'
-import cli from 'cli-ux'
 import * as fs from 'fs-extra'
 import HTTP from 'http-call'
 import netrc from 'netrc-parser'
@@ -79,6 +77,7 @@ export default class AnalyticsCommand {
 
   async submit() {
     try {
+      const http = require('http-call').HTTP as typeof HTTP
       await this.init()
       let user = this.user
       if (!user) return
@@ -94,12 +93,12 @@ export default class AnalyticsCommand {
         cli: this.config.name,
       }
 
-      await HTTP.post(this.url, {body})
+      await http.post(this.url, {body})
 
       await fs.remove(this.analyticsPath)
     } catch (err) {
       debug(err)
-      await fs.remove(this.analyticsPath).catch(err => cli.warn(err))
+      await fs.remove(this.analyticsPath).catch(process.emitWarning)
     }
   }
 
@@ -117,7 +116,7 @@ export default class AnalyticsCommand {
   }
 
   get netrcLogin(): string | undefined {
-    return netrc.machines[vars.apiHost] && netrc.machines[vars.apiHost].login
+    return netrc.machines['api.heroku.com'] && netrc.machines['api.heroku.com'].login
   }
 
   get user(): string | undefined {
