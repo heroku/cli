@@ -158,6 +158,23 @@
     http-call "^4.0.8"
     netrc-parser "^3.0.0"
 
+"@heroku-cli/plugin-git@^2.5.24":
+  version "2.5.24"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-git/-/plugin-git-2.5.24.tgz#c334bcd69e6c605fe44478390c25aab48cecfeda"
+  dependencies:
+    co "4.6.0"
+    debug "3.1.0"
+    heroku-cli-util "^6.2.4"
+
+"@heroku-cli/plugin-run@^3.5.9":
+  version "3.5.9"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-run/-/plugin-run-3.5.9.tgz#216b5debf2720db4d77dd6da39327fcecdfa0f2c"
+  dependencies:
+    cli-engine-heroku "^5.0.4"
+    co "4.6.0"
+    heroku-cli-util "^8.0.0"
+    shellwords "^0.1.1"
+
 "@heroku-cli/tslint@^1.1.4":
   version "1.1.4"
   resolved "https://registry.yarnpkg.com/@heroku-cli/tslint/-/tslint-1.1.4.tgz#32f75496df3e3ecd7e14716c4250302025c7840f"
@@ -2783,14 +2800,6 @@ heroku-exec-util@0.7.0:
     temp "0.8.3"
     uuid "3.0.1"
 
-heroku-git@2.5.23:
-  version "2.5.23"
-  resolved "https://registry.yarnpkg.com/heroku-git/-/heroku-git-2.5.23.tgz#5c644f79d5d846bd0a4159578ab3a9c2c52c0f10"
-  dependencies:
-    co "4.6.0"
-    debug "3.1.0"
-    heroku-cli-util "^6.2.4"
-
 heroku-local@5.1.21:
   version "5.1.21"
   resolved "https://registry.yarnpkg.com/heroku-local/-/heroku-local-5.1.21.tgz#de7f366baf450a54651c2761f74df1ee2df460c5"
@@ -2870,7 +2879,7 @@ heroku-redis@1.3.0:
     ioredis "1.9.0"
     ssh2 "^0.4.11"
 
-heroku-run@3.5.4, heroku-run@^3.4.16:
+heroku-run@^3.4.16:
   version "3.5.4"
   resolved "https://registry.yarnpkg.com/heroku-run/-/heroku-run-3.5.4.tgz#8c11cc650c8c9d8d021b9413ecaf1f28a1762ca3"
   dependencies:
