@@ -1,15 +1,14 @@
-CLI Plugin for [Heroku Status](https://status.heroku.com) [![Circle CI](https://circleci.com/gh/heroku/heroku-cli-status.svg?style=svg)](https://circleci.com/gh/heroku/heroku-cli-status)
+CLI Plugin for [Heroku Status](https://status.heroku.com)
 ===========
 
-[![Code Climate](https://codeclimate.com/github/heroku/heroku-cli-status/badges/gpa.svg)](https://codeclimate.com/github/heroku/heroku-cli-status)
-[![Test Coverage](https://codeclimate.com/github/heroku/heroku-cli-status/badges/coverage.svg)](https://codeclimate.com/github/heroku/heroku-cli-status/coverage)
-[![npm version](https://badge.fury.io/js/heroku-cli-status.svg)](https://badge.fury.io/js/heroku-cli-status)
-[![License](https://img.shields.io/github/license/heroku/heroku-cli-status.svg)](https://github.com/heroku/heroku-cli-status/blob/master/LICENSE)
-
-[![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)
-
-Read more about Toolbelt 4.0 plugins [here](https://github.com/heroku/heroku-hello-world#heroku-hello-world).
-
+[![Version](https://img.shields.io/npm/v/@heroku-cli/plugin-status.svg)](https://npmjs.org/package/@heroku-cli/plugin-status)
+[![CircleCI](https://circleci.com/gh/heroku/heroku-cli-status/tree/master.svg?style=svg)](https://circleci.com/gh/heroku/heroku-cli-status/tree/master)
+[![Appveyor CI](https://ci.appveyor.com/api/projects/status/github/heroku/heroku-cli-status?branch=master&svg=true)](https://ci.appveyor.com/project/heroku/heroku-cli-status/branch/master)
+[![Codecov](https://codecov.io/gh/heroku/heroku-cli-status/branch/master/graph/badge.svg)](https://codecov.io/gh/heroku/heroku-cli-status)
+[![Greenkeeper](https://badges.greenkeeper.io/heroku/heroku-cli-status.svg)](https://greenkeeper.io/)
+[![Known Vulnerabilities](https://snyk.io/test/npm/@heroku-cli/plugin-status/badge.svg)](https://snyk.io/test/npm/@heroku-cli/plugin-status)
+[![Downloads/week](https://img.shields.io/npm/dw/@heroku-cli/plugin-status.svg)](https://npmjs.org/package/@heroku-cli/plugin-status)
+[![License](https://img.shields.io/npm/l/@heroku-cli/plugin-status.svg)](https://github.com/heroku/heroku-cli-status/blob/master/package.json)
 
 How to install this plugin
 -------------------

@@ -25,8 +25,8 @@
     "commands": "./lib/commands"
   },
   "dependencies": {
-    "@anycli/command": "^1.2.10",
-    "@anycli/config": "^1.3.14",
+    "@anycli/command": "^1.2.14",
+    "@anycli/config": "^1.3.32",
     "@anycli/errors": "^0.2.1",
     "@fancy-test/nock": "^0.0.1",
     "@heroku-cli/color": "^1.1.3",
@@ -36,16 +36,16 @@
     "http-call": "^5.0.2"
   },
   "devDependencies": {
-    "@anycli/dev-cli": "^0.2.2",
-    "@anycli/plugin-help": "^0.6.5",
-    "@anycli/test": "^0.10.11",
+    "@anycli/dev-cli": "^0.3.4",
+    "@anycli/plugin-help": "^0.6.9",
+    "@anycli/test": "^0.10.13",
     "@anycli/tslint": "^0.2.7",
     "@heroku-cli/tslint": "1.1.4",
     "@types/ansi-styles": "^2.0.30",
     "@types/chai": "^4.1.2",
     "@types/mocha": "^2.2.48",
     "@types/nock": "^9.1.2",
-    "@types/node": "^9.4.0",
+    "@types/node": "^9.4.1",
     "@types/supports-color": "^3.1.0",
     "chai": "^4.1.2",
     "concurrently": "^3.5.1",
@@ -75,6 +75,7 @@
     "postpublish": "rm .anycli.manifest.json",
     "posttest": "yarn run lint",
     "prepublishOnly": "yarn run build && anycli-dev manifest",
-    "test": "mocha --forbid-only \"test/**/*.test.ts\""
+    "test": "mocha --forbid-only \"test/**/*.test.ts\"",
+    "version": "anycli-dev readme && git add README.md"
   }
 }

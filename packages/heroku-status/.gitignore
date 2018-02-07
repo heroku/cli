@@ -1,5 +1,6 @@
 *-debug.log
 *-error.log
+.anycli.manifest.json
 /lib
 /node_modules
 /tmp
