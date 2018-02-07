@@ -75,7 +75,7 @@
     "execa": "^0.8.0",
     "fs-extra": "5.0.0",
     "heroku-apps": "2.4.21",
-    "heroku-certs": "1.1.44",
+    "heroku-certs": "1.1.45",
     "heroku-ci": "1.9.5",
     "heroku-cli-addons": "1.2.26",
     "heroku-cli-oauth": "2.1.0",
