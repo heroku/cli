@@ -18,6 +18,11 @@ function * run (context, heroku) {
   ]
 
   if (status.error) throw new Error(status.error)
+
+  if (!replica.following) {
+    throw new Error('pg:upgrade is only available for follower production databases')
+  }
+
   let origin = util.databaseNameFromUrl(replica.following, yield heroku.get(`/apps/${app}/config-vars`))
 
   yield cli.confirmApp(app, flags.confirm, `WARNING: Destructive action
