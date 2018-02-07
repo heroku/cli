@@ -4,14 +4,15 @@
   "version": "6.15.22",
   "author": "Jeff Dickey @jdxcode",
   "anycli": {
+    "commands": "./lib/commands",
     "scope": "heroku-cli",
     "plugins": [
-      "@heroku-cli/plugin-apps",
-      "@heroku-cli/plugin-status",
       "@anycli/plugin-help",
       "@anycli/plugin-legacy",
+      "@anycli/plugin-not-found",
       "@anycli/plugin-plugins",
-      "@anycli/plugin-not-found"
+      "@heroku-cli/plugin-apps",
+      "@heroku-cli/plugin-status"
     ],
     "bin": "heroku",
     "userPluginsEnabled": true,
@@ -48,7 +49,6 @@
       "host": "cli-assets.heroku.com"
     },
     "corePlugins": [
-      "heroku-apps",
       "heroku-certs",
       "heroku-ci",
       "heroku-cli-addons",
@@ -68,26 +68,25 @@
     ]
   },
   "bin": {
-    "heroku": "bin/run"
+    "heroku": "./bin/run"
   },
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
-    "@anycli/command": "^1.2.10",
-    "@anycli/config": "^1.3.11",
-    "@anycli/dev-cli": "^0.2.2",
+    "@anycli/command": "^1.2.14",
+    "@anycli/config": "^1.3.32",
     "@anycli/errors": "^0.2.1",
-    "@anycli/plugin-help": "^0.6.4",
-    "@anycli/plugin-legacy": "^0.0.2",
-    "@anycli/plugin-not-found": "^0.1.17",
-    "@anycli/plugin-plugins": "^0.2.13",
+    "@anycli/plugin-help": "^0.6.9",
+    "@anycli/plugin-legacy": "^0.0.5",
+    "@anycli/plugin-not-found": "^0.1.18",
+    "@anycli/plugin-plugins": "^0.2.14",
     "@heroku-cli/color": "^1.1.3",
     "@heroku-cli/command": "^8.0.0-anycli.1",
     "@heroku-cli/plugin-apps": "^2.4.23",
-    "@heroku-cli/plugin-status": "^5.0.1",
+    "@heroku-cli/plugin-status": "^5.0.4",
     "cli-ux": "^3.3.18",
     "debug": "3.1.0",
-    "execa": "^0.9.0",
     "fs-extra": "5.0.0",
+    "globby": "^7.1.1",
     "heroku-certs": "1.1.44",
     "heroku-ci": "1.9.5",
     "heroku-cli-addons": "1.2.26",
@@ -107,22 +106,21 @@
     "http-call": "5.0.2",
     "netrc-parser": "3.0.3",
     "semver": "5.5.0",
-    "ts-lodash": "^4.0.11",
     "tslib": "^1.9.0",
     "uuid": "^3.2.1"
   },
   "devDependencies": {
-    "@anycli/test": "^0.10.11",
-    "@anycli/tslint": "^0.2.6",
+    "@anycli/dev-cli": "^0.3.3",
+    "@anycli/test": "^0.10.13",
+    "@anycli/tslint": "^0.2.7",
     "@types/ansi-styles": "^2.0.30",
     "@types/chai": "^4.1.2",
     "@types/debug": "^0.0.30",
     "@types/execa": "^0.8.1",
     "@types/fs-extra": "5.0.0",
-    "@types/lodash": "^4.14.101",
     "@types/mocha": "^2.2.48",
     "@types/nock": "^9.1.2",
-    "@types/node": "^9.4.0",
+    "@types/node": "^9.4.1",
     "@types/node-notifier": "^0.0.28",
     "@types/read-pkg": "^3.0.0",
     "@types/shelljs": "^0.7.8",
@@ -141,8 +139,9 @@
     "node": ">=8.0.0"
   },
   "files": [
-    "/lib",
+    ".anycli.manifest.json",
     "/bin",
+    "/lib",
     "/yarn.lock"
   ],
   "homepage": "https://cli.heroku.com",
@@ -154,10 +153,11 @@
   "private": true,
   "repository": "heroku/cli",
   "scripts": {
-    "build": "rm -rf lib && tsc && anycli-dev manifest",
-    "lint": "concurrently -p command \"eslint .\" \"tsc -p test --noEmit\" \"tslint -p test\"",
+    "build": "rm -rf lib && tsc",
+    "lint": "concurrently -p command \"tsc -p test --noEmit\" \"tslint -p test -t stylish\"",
+    "postpublish": "rm .anycli.manifest.json",
     "posttest": "yarn run lint",
-    "prepublishOnly": "yarn run build",
+    "prepublishOnly": "yarn run build && anycli-dev manifest && anycli-dev readme",
     "test": "mocha --forbid-only \"test/**/*.test.ts\""
   },
   "types": "lib/index.d.ts"
