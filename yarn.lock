@@ -2,36 +2,32 @@
 # yarn lockfile v1
 
 
-"@anycli/command@^1.2.10":
-  version "1.2.10"
-  resolved "https://registry.yarnpkg.com/@anycli/command/-/command-1.2.10.tgz#6870c79a531513a31cdd12abd45f0cd2d4322b4b"
-  dependencies:
-    "@anycli/parser" "^3.2.6"
-
 "@anycli/command@^1.2.14":
   version "1.2.14"
   resolved "https://registry.yarnpkg.com/@anycli/command/-/command-1.2.14.tgz#de8e1be33f64143c49242c0deb7bf9a06a826813"
   dependencies:
     "@anycli/parser" "^3.2.6"
 
-"@anycli/config@^1.3.14":
-  version "1.3.15"
-  resolved "https://registry.yarnpkg.com/@anycli/config/-/config-1.3.15.tgz#5c3c85929af5b6b8d19ada8c15c13dc96523c40f"
-
-"@anycli/config@^1.3.31", "@anycli/config@^1.3.32":
+"@anycli/config@^1.3.32":
   version "1.3.32"
   resolved "https://registry.yarnpkg.com/@anycli/config/-/config-1.3.32.tgz#6e27153046cbb7cdc3783b698628221afeaf4010"
 
-"@anycli/dev-cli@^0.3.3":
-  version "0.3.3"
-  resolved "https://registry.yarnpkg.com/@anycli/dev-cli/-/dev-cli-0.3.3.tgz#f5f72dcb500ecf142dacabdc31eafc1d445b7d8b"
+"@anycli/config@^1.3.36":
+  version "1.3.36"
+  resolved "https://registry.yarnpkg.com/@anycli/config/-/config-1.3.36.tgz#ea69dd7b708c6d2543e3f13481bd2f6bca69fa83"
+
+"@anycli/dev-cli@^0.3.7":
+  version "0.3.7"
+  resolved "https://registry.yarnpkg.com/@anycli/dev-cli/-/dev-cli-0.3.7.tgz#b03996f6f4973649b520a2ffe41c772035d68c59"
   dependencies:
     "@anycli/command" "^1.2.14"
-    "@anycli/config" "^1.3.31"
+    "@anycli/config" "^1.3.36"
     "@anycli/errors" "^0.2.1"
     "@anycli/plugin-help" "^0.6.9"
     lodash.template "^4.4.0"
     normalize-package-data "^2.4.0"
+    require-relative "^0.8.7"
+    require-resolve "^0.0.2"
 
 "@anycli/errors@^0.2.1":
   version "0.2.1"
@@ -59,9 +55,21 @@
     widest-line "^2.0.0"
     wrap-ansi "^3.0.1"
 
-"@anycli/plugin-legacy@^0.0.5":
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/@anycli/plugin-legacy/-/plugin-legacy-0.0.5.tgz#88cf351dfe10416d5aa118dcd5494aa599a8d224"
+"@anycli/plugin-help@^0.7.0":
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/@anycli/plugin-help/-/plugin-help-0.7.0.tgz#dda7324ab6f5d8bf16deb4f7017301196ea1b22e"
+  dependencies:
+    "@anycli/command" "^1.2.14"
+    chalk "^2.3.0"
+    indent-string "^3.2.0"
+    lodash.template "^4.4.0"
+    string-width "^2.1.1"
+    widest-line "^2.0.0"
+    wrap-ansi "^3.0.1"
+
+"@anycli/plugin-legacy@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@anycli/plugin-legacy/-/plugin-legacy-0.1.0.tgz#5b980d0decba6fbe569a0a49bd10ed9fd160afab"
   dependencies:
     "@anycli/command" "^1.2.14"
     "@heroku-cli/color" "^1.1.3"
@@ -171,9 +179,9 @@
     http-call "^5.0.2"
     netrc-parser "^3.0.3"
 
-"@heroku-cli/plugin-apps@^2.4.23":
-  version "2.4.23"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-apps/-/plugin-apps-2.4.23.tgz#600d668cfdb07cdec7a07ecd18054d16bfec1fa9"
+"@heroku-cli/plugin-apps@^2.4.26":
+  version "2.4.26"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-apps/-/plugin-apps-2.4.26.tgz#662260a7d0f7404f3c8bd6711d617496c4287f98"
   dependencies:
     bluebird "^3.5.1"
     cli-engine-command "^9.0.7"
@@ -217,12 +225,12 @@
     term-img "^2.1.0"
     urijs "1.19.0"
 
-"@heroku-cli/plugin-status@^5.0.4":
-  version "5.0.4"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-status/-/plugin-status-5.0.4.tgz#5109aa0b2bda6caa8a5eb7179aa35eb651922880"
+"@heroku-cli/plugin-status@^5.0.5":
+  version "5.0.5"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-status/-/plugin-status-5.0.5.tgz#eb4a8b8b77676a90d7c78fde8fa136dcf23516e7"
   dependencies:
-    "@anycli/command" "^1.2.10"
-    "@anycli/config" "^1.3.14"
+    "@anycli/command" "^1.2.14"
+    "@anycli/config" "^1.3.32"
     "@anycli/errors" "^0.2.1"
     "@fancy-test/nock" "^0.0.1"
     "@heroku-cli/color" "^1.1.3"
@@ -2647,6 +2655,10 @@ password-prompt@^1.0.4:
     ansi-escapes "^3.0.0"
     cross-spawn "^5.1.0"
 
+path-extra@^1.0.2:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/path-extra/-/path-extra-1.0.3.tgz#7c112189a6e50d595790e7ad2037e44e410c1166"
+
 path-is-absolute@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/path-is-absolute/-/path-is-absolute-1.0.1.tgz#174b9268735534ffbc7ace6bf53a5a9e1b5c5f5f"
@@ -2795,6 +2807,16 @@ redeyed@~1.0.0:
   resolved "https://registry.yarnpkg.com/redeyed/-/redeyed-1.0.1.tgz#e96c193b40c0816b00aec842698e61185e55498a"
   dependencies:
     esprima "~3.0.0"
+
+require-relative@^0.8.7:
+  version "0.8.7"
+  resolved "https://registry.yarnpkg.com/require-relative/-/require-relative-0.8.7.tgz#7999539fc9e047a37928fa196f8e1563dabd36de"
+
+require-resolve@^0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/require-resolve/-/require-resolve-0.0.2.tgz#bab410ab1aee2f3f55b79317451dd3428764e6f3"
+  dependencies:
+    x-path "^0.0.2"
 
 require-uncached@^1.0.3:
   version "1.0.3"
@@ -3474,6 +3496,12 @@ ws@~1.1.5:
 wtf-8@1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/wtf-8/-/wtf-8-1.0.0.tgz#392d8ba2d0f1c34d1ee2d630f15d0efb68e1048a"
+
+x-path@^0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/x-path/-/x-path-0.0.2.tgz#294d076bb97a7706cc070bbb2a6fd8c54df67b12"
+  dependencies:
+    path-extra "^1.0.2"
 
 xmlbuilder@8.2.2:
   version "8.2.2"
