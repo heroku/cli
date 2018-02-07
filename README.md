@@ -52,3 +52,40 @@ cd ./node_modules/cli-engine
 yarn install
 yarn prepare
 ```
+
+<!-- usage -->
+# Usage
+
+```sh-session
+$ heroku COMMAND
+running command...
+$ heroku (-v|--version|version)
+heroku-cli/6.15.22 (darwin-x64) node-v9.5.0
+$ heroku --help [COMMAND]
+USAGE
+  $ heroku COMMAND [OPTIONS]
+...
+```
+<!-- usagestop -->
+<!-- commands -->
+# Command Topics
+
+* [heroku apps](docs/apps.md) - manage apps
+* [heroku auth](docs/auth.md) - heroku authentication
+* [heroku buildpacks](docs/buildpacks.md) - manage the buildpacks for an app
+* [heroku config](docs/config.md) - manage app config vars
+* [heroku domains](docs/domains.md) - manage the domains for an app
+* [heroku drains](docs/drains.md) - list all log drains
+* [heroku features](docs/features.md) - manage optional features
+* [heroku help](docs/help.md)
+* [heroku keys](docs/keys.md) - manage ssh keys
+* [heroku labs](docs/labs.md) - experimental features
+* [heroku logout](docs/logout.md)
+* [heroku maintenance](docs/maintenance.md) - manage maintenance mode for an app
+* [heroku notifications](docs/notifications.md) - display notifications
+* [heroku ps](docs/ps.md) - manage dynos (dynos, workers)
+* [heroku regions](docs/regions.md) - list available regions
+* [heroku releases](docs/releases.md) - manage app releases
+* [heroku status](docs/status.md)
+
+<!-- commandsstop -->

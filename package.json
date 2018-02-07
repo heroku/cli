@@ -157,7 +157,7 @@
     "lint": "concurrently -p command \"tsc -p test --noEmit\" \"tslint -p test -t stylish\"",
     "postpublish": "rm .anycli.manifest.json",
     "posttest": "yarn run lint",
-    "version": "anycli-dev readme",
+    "version": "anycli-dev readme --multi",
     "prepublishOnly": "yarn run build && anycli-dev manifest",
     "test": "mocha --forbid-only \"test/**/*.test.ts\""
   },
