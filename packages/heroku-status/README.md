@@ -40,3 +40,49 @@ Production: Yellow
 More about https://devcenter.heroku.com/articles/heroku-status
 
 
+
+<!-- install -->
+# Installing @heroku-cli/plugin-status
+
+with yarn:
+```
+$ yarn global add @heroku-cli/plugin-status
+```
+
+or with npm:
+```
+$ npm install -g @heroku-cli/plugin-status
+```
+<!-- installstop -->
+<!-- usage -->
+# Usage
+
+```sh-session
+$ @heroku-cli/plugin-status COMMAND
+running command...
+$ @heroku-cli/plugin-status (-v|--version|version)
+@heroku-cli/plugin-status/5.0.5 (darwin-x64) node-v9.5.0
+$ @heroku-cli/plugin-status --help [COMMAND]
+USAGE
+  $ @heroku-cli/plugin-status COMMAND [OPTIONS]
+...
+```
+<!-- usagestop -->
+<!-- commands -->
+# Commands
+
+* [@heroku-cli/plugin-status status [OPTIONS]](#status)
+## status
+
+display current status of the Heroku platform
+
+```
+USAGE
+  $ @heroku-cli/plugin-status status [OPTIONS]
+
+OPTIONS
+  --json  output in json format
+```
+
+_See code: [@heroku-cli/plugin-status](https://github.com/heroku/heroku-cli-status/blob/v5.0.5/src/commands/status.ts)_
+<!-- commandsstop -->
