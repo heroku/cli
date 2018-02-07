@@ -52,7 +52,7 @@ describe('heroku certs:update', function () {
     var thrown = false
     return certs.run({app: 'example', args: ['pem_file', 'key_file'], flags: {confirm: 'notexample', bypass: true}}).catch(function (err) {
       thrown = true
-      expect(err).to.equal('Confirmation notexample did not match example. Aborted.')
+      expect(err.message).to.equal('Confirmation notexample did not match example. Aborted.')
     }).then(function () {
       expect(thrown).to.equal(true)
     })

@@ -31,7 +31,7 @@ describe('heroku certs:rollback', function () {
       thrown = true
       mockSsl.done()
       mockSni.done()
-      expect(err).to.equal('Confirmation notexample did not match example. Aborted.')
+      expect(err.message).to.equal('Confirmation notexample did not match example. Aborted.')
     }).then(function () {
       expect(thrown).to.equal(true)
     })
