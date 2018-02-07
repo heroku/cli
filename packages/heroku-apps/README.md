@@ -10,19 +10,6 @@ heroku-apps [![Circle CI](https://circleci.com/gh/heroku/heroku-apps.svg?style=s
 
 This core plugin comes preinstalled to the [Heroku CLI](https://cli.heroku.com).
 
-<!-- install -->
-# Installing @heroku-cli/plugin-apps
-
-with yarn:
-```
-$ yarn global add @heroku-cli/plugin-apps
-```
-
-or with npm:
-```
-$ npm install -g @heroku-cli/plugin-apps
-```
-<!-- installstop -->
 <!-- usage -->
 # Usage
 
