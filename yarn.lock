@@ -203,6 +203,14 @@
     term-img "^2.1.0"
     urijs "1.19.0"
 
+"@heroku-cli/plugin-git@^2.5.24":
+  version "2.5.24"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-git/-/plugin-git-2.5.24.tgz#c334bcd69e6c605fe44478390c25aab48cecfeda"
+  dependencies:
+    co "4.6.0"
+    debug "3.1.0"
+    heroku-cli-util "^6.2.4"
+
 "@heroku-cli/plugin-run@^3.5.8":
   version "3.5.8"
   resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-run/-/plugin-run-3.5.8.tgz#58201624105cbc6c49c87d6ac901067f1a95aa54"
@@ -1570,14 +1578,6 @@ heroku-exec-util@0.7.0:
     ssh2 "0.5.5"
     temp "0.8.3"
     uuid "3.0.1"
-
-heroku-git@2.5.23:
-  version "2.5.23"
-  resolved "https://registry.yarnpkg.com/heroku-git/-/heroku-git-2.5.23.tgz#5c644f79d5d846bd0a4159578ab3a9c2c52c0f10"
-  dependencies:
-    co "4.6.0"
-    debug "3.1.0"
-    heroku-cli-util "^6.2.4"
 
 heroku-local@5.1.21:
   version "5.1.21"
