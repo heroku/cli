@@ -70,22 +70,43 @@ USAGE
 <!-- commands -->
 # Command Topics
 
+* [heroku access](docs/access.md) - manage user access to apps
+* [heroku addons](docs/addons.md)
 * [heroku apps](docs/apps.md) - manage apps
 * [heroku auth](docs/auth.md) - heroku authentication
+* [heroku authorizations](docs/authorizations.md) - OAuth authorizations
 * [heroku buildpacks](docs/buildpacks.md) - manage the buildpacks for an app
+* [heroku certs](docs/certs.md) - a topic for the ssl plugin
+* [heroku ci](docs/ci.md)
+* [heroku clients](docs/clients.md) - OAuth clients on the platform
 * [heroku config](docs/config.md) - manage app config vars
+* [heroku container](docs/container.md)
 * [heroku domains](docs/domains.md) - manage the domains for an app
 * [heroku drains](docs/drains.md) - list all log drains
 * [heroku features](docs/features.md) - manage optional features
+* [heroku git](docs/git.md)
 * [heroku help](docs/help.md)
 * [heroku keys](docs/keys.md) - manage ssh keys
 * [heroku labs](docs/labs.md) - experimental features
+* [heroku local](docs/local.md)
 * [heroku logout](docs/logout.md)
+* [heroku logs](docs/logs.md) - display recent log output
 * [heroku maintenance](docs/maintenance.md) - manage maintenance mode for an app
+* [heroku members](docs/members.md) - manage organization members
 * [heroku notifications](docs/notifications.md) - display notifications
+* [heroku orgs](docs/orgs.md) - manage organizations
+* [heroku pg](docs/pg.md) - manage postgresql databases
+* [heroku pipelines](docs/pipelines.md)
+* [heroku plugins](docs/plugins.md)
 * [heroku ps](docs/ps.md) - manage dynos (dynos, workers)
+* [heroku psql](docs/psql.md)
+* [heroku redis](docs/redis.md)
 * [heroku regions](docs/regions.md) - list available regions
 * [heroku releases](docs/releases.md) - manage app releases
-* [heroku status](docs/status.md)
+* [heroku run](docs/run.md) - run a one-off process inside a Heroku dyno
+* [heroku sessions](docs/sessions.md) - OAuth sessions
+* [heroku spaces](docs/spaces.md) - manage heroku private spaces
+* [heroku teams](docs/teams.md) - manage teams
+* [heroku webhooks](docs/webhooks.md)
 
 <!-- commandsstop -->

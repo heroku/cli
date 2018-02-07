@@ -5,12 +5,17 @@ manage dynos (dynos, workers)
 # Commands
 
 * [heroku ps [TYPE [TYPE ...]]](#ps)
+* [heroku ps:copy FILE [OPTIONS]](#pscopy)
+* [heroku ps:exec [OPTIONS]](#psexec)
+* [heroku ps:forward PORT [OPTIONS]](#psforward)
 * [heroku ps:kill DYNO [OPTIONS]](#pskill)
 * [heroku ps:resize [OPTIONS]](#psresize)
 * [heroku ps:restart [DYNO] [OPTIONS]](#psrestart)
 * [heroku ps:scale [OPTIONS]](#psscale)
+* [heroku ps:socks [OPTIONS]](#pssocks)
 * [heroku ps:stop DYNO [OPTIONS]](#psstop)
 * [heroku ps:type [OPTIONS]](#pstype)
+* [heroku psql [DATABASE] [OPTIONS]](#psql)
 ## ps
 
 list dynos for an app
@@ -38,6 +43,67 @@ DESCRIPTION
        $ heroku ps run # specifying types
        === run: one-off dyno
        run.1: up for 5m: bash
+```
+
+### ps:copy
+
+Copy a file from a dyno to the local filesystem
+
+```
+USAGE
+  $ heroku ps:copy FILE [OPTIONS]
+
+OPTIONS
+  -a, --app=app        (required) app to run command against
+  -d, --dyno=dyno      specify the dyno to connect to
+  -o, --output=output  the name of the output file
+  -r, --remote=remote  git remote of app to use
+
+DESCRIPTION
+  Example:
+
+       $ heroku ps:copy FILENAME --app murmuring-headland-14719
+```
+
+### ps:exec
+
+Create an SSH session to a dyno
+
+```
+USAGE
+  $ heroku ps:exec [OPTIONS]
+
+OPTIONS
+  -a, --app=app        (required) app to run command against
+  -d, --dyno=dyno      specify the dyno to connect to
+  -r, --remote=remote  git remote of app to use
+  --ssh                use native ssh
+  --status             lists the status of the SSH server in the dyno
+
+DESCRIPTION
+  Example:
+
+       $ heroku ps:exec 'node -i' --app murmuring-headland-14719
+```
+
+### ps:forward
+
+Forward traffic on a local port to a dyno
+
+```
+USAGE
+  $ heroku ps:forward PORT [OPTIONS]
+
+OPTIONS
+  -a, --app=app              (required) app to run command against
+  -d, --dyno=dyno            specify the dyno to connect to
+  -p, --localPort=localPort  the local port to use
+  -r, --remote=remote        git remote of app to use
+
+DESCRIPTION
+  Example:
+
+       $ heroku ps:forward 8080 --app murmuring-headland-14719
 ```
 
 ### ps:kill
@@ -142,6 +208,28 @@ DESCRIPTION
        web=3:Standard-2X worker=1:Standard-1X
 ```
 
+### ps:socks
+
+Launch a SOCKS proxy into a dyno
+
+```
+USAGE
+  $ heroku ps:socks [OPTIONS]
+
+OPTIONS
+  -a, --app=app        (required) app to run command against
+  -d, --dyno=dyno      specify the dyno to connect to
+  -r, --remote=remote  git remote of app to use
+
+DESCRIPTION
+  Example:
+
+       $ heroku ps:socks --app murmuring-headland-14719
+       Establishing credentials... done
+       SOCKSv5 proxy server started on port 1080
+       Use CTRL+C to stop the proxy
+```
+
 ### ps:stop
 
 stop app dyno
@@ -187,4 +275,34 @@ DESCRIPTION
   Where SIZE is one of free|hobby|standard-1x|standard-2x|performance
 
   Called with 1..n TYPE=SIZE arguments sets the quantity per type.
+```
+
+### psql
+
+open a psql shell to the database
+
+```
+USAGE
+  $ heroku psql [DATABASE] [OPTIONS]
+
+OPTIONS
+  -a, --app=app            (required) app to run command against
+  -c, --command=command    SQL command to run
+  -r, --remote=remote      git remote of app to use
+  --credential=credential  credential to use
+```
+
+## psql
+
+open a psql shell to the database
+
+```
+USAGE
+  $ heroku psql [DATABASE] [OPTIONS]
+
+OPTIONS
+  -a, --app=app            (required) app to run command against
+  -c, --command=command    SQL command to run
+  -r, --remote=remote      git remote of app to use
+  --credential=credential  credential to use
 ```

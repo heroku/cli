@@ -20,4 +20,4 @@ OPTIONS
   --all  see all commands in CLI
 ```
 
-_See code: [@anycli/plugin-help](https://github.com/anycli/plugin-help/blob/v0.7.0/src/commands/help.ts)_
+_See code: [@anycli/plugin-help](https://github.com/anycli/plugin-help/blob/v0.7.1/src/commands/help.ts)_

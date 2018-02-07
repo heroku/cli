@@ -12,10 +12,15 @@ manage apps
 * [heroku apps:favorites:add [OPTIONS]](#appsfavoritesadd)
 * [heroku apps:favorites:remove [OPTIONS]](#appsfavoritesremove)
 * [heroku apps:info [OPTIONS]](#appsinfo)
+* [heroku apps:join [OPTIONS]](#appsjoin)
+* [heroku apps:leave [OPTIONS]](#appsleave)
+* [heroku apps:lock [OPTIONS]](#appslock)
 * [heroku apps:open [PATH] [OPTIONS]](#appsopen)
 * [heroku apps:rename NEWNAME [OPTIONS]](#appsrename)
 * [heroku apps:stacks [OPTIONS]](#appsstacks)
 * [heroku apps:stacks:set STACK [OPTIONS]](#appsstacksset)
+* [heroku apps:transfer RECIPIENT [OPTIONS]](#appstransfer)
+* [heroku apps:unlock [OPTIONS]](#appsunlock)
 ## apps
 
 list your apps
@@ -30,6 +35,15 @@ OPTIONS
   -s, --space=space  filter by space
   -t, --team=team    team to use
   --json             output in json format
+
+EXAMPLES
+  $ heroku apps
+  === My Apps
+  example
+  example2
+
+  === Collaborated Apps
+  theirapp   other@owner.name
 ```
 
 ### apps:create
@@ -205,6 +219,45 @@ DESCRIPTION
        ...
 ```
 
+### apps:join
+
+add yourself to an organization app
+
+```
+USAGE
+  $ heroku apps:join [OPTIONS]
+
+OPTIONS
+  -a, --app=app        (required) app to run command against
+  -r, --remote=remote  git remote of app to use
+```
+
+### apps:leave
+
+remove yourself from an organization app
+
+```
+USAGE
+  $ heroku apps:leave [OPTIONS]
+
+OPTIONS
+  -a, --app=app        (required) app to run command against
+  -r, --remote=remote  git remote of app to use
+```
+
+### apps:lock
+
+prevent organization members from joining an app
+
+```
+USAGE
+  $ heroku apps:lock [OPTIONS]
+
+OPTIONS
+  -a, --app=app        (required) app to run command against
+  -r, --remote=remote  git remote of app to use
+```
+
 ### apps:open
 
 open the app in a web browser
@@ -305,4 +358,48 @@ DESCRIPTION
        $ heroku stack:set cedar-14 -a myapp
        Stack set. Next release on myapp will use cedar-14.
        Run git push heroku master to create a new release on myapp.
+```
+
+### apps:transfer
+
+transfer applications to another user or team
+
+```
+USAGE
+  $ heroku apps:transfer RECIPIENT [OPTIONS]
+
+ARGUMENTS
+  RECIPIENT  user or team to transfer applications to
+
+OPTIONS
+  -a, --app=app        app to run command against
+  -l, --locked         lock the app upon transfer
+  -r, --remote=remote  git remote of app to use
+  --bulk               transfer applications in bulk
+
+DESCRIPTION
+
+  Examples:
+
+       $ heroku apps:transfer collaborator@example.com
+       Transferring example to collaborator@example.com... done
+
+       $ heroku apps:transfer acme-widgets
+       Transferring example to acme-widgets... done
+
+       $ heroku apps:transfer --bulk acme-widgets
+       ...
+```
+
+### apps:unlock
+
+unlock an app so any organization member can join
+
+```
+USAGE
+  $ heroku apps:unlock [OPTIONS]
+
+OPTIONS
+  -a, --app=app        (required) app to run command against
+  -r, --remote=remote  git remote of app to use
 ```
