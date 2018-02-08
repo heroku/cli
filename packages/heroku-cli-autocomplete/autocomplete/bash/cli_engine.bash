@@ -30,6 +30,10 @@ _compreply_cli () {
 
 _heroku()
 {
+    # print error and exit if vars are not set
+    : "${CLI_ENGINE_AC_ANALYTICS_DIR?}"
+    : "${CLI_ENGINE_AC_COMMANDS_PATH?}"
+
     local cur="${COMP_WORDS[COMP_CWORD]}" opts IFS=$' \t\n'
     COMPREPLY=()
     mkdir -p "$CLI_ENGINE_AC_ANALYTICS_DIR"

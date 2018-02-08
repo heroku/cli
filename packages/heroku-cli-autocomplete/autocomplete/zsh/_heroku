@@ -1,6 +1,10 @@
 #compdef heroku
 
 _heroku () {
+  # exit if vars are not set
+  : "${CLI_ENGINE_AC_ANALYTICS_DIR?}"
+  : "${CLI_ENGINE_AC_COMMANDS_PATH?}"
+
   local -a _flags=()
   local _command_id=${words[2]}
   local _cur=${words[CURRENT]}
