@@ -115,11 +115,26 @@ describe('Sanbashi', () => {
     })
   })
   describe('.version', () => {
-    it('returns a major and a minor component', async () => {
+    it('returns a the major and minor version', async () => {
+      Sinon.stub(Sanbashi, 'cmd')
+        .withArgs('docker', ['version', '-f', '{{.Client.Version}}'], {output: true})
+        .resolves('18.02.0-ce-rc2')
+
       let version = await Sanbashi.version()
-      expect(version).to.have.property('length', 2)
-      expect(version[0]).to.not.be.an('undefined')
-      expect(version[1]).to.not.be.an('undefined')
+      expect(version).to.deep.equal([18, 2])
+    })
+
+    it('has an error', async () => {
+      Sinon.stub(Sanbashi, 'cmd')
+        .withArgs('docker', ['version', '-f', '{{.Client.Version}}'], {output: true})
+        .resolves('an error occured')
+
+      let version = await Sanbashi.version()
+      expect(version).to.deep.equal([0, 0])
+    })
+
+    afterEach(() => {
+      Sanbashi.cmd.restore() // Unwraps the spy
     })
   })
 })

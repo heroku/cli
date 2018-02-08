@@ -115,9 +115,9 @@ Sanbashi.runImage = function (resource, command, port, verbose) {
 
 Sanbashi.version = function () {
   return Sanbashi
-      .cmd('docker', ['version', '-f', '{{.Client.Version}}'], {output: true})
-      .then(version => version.split(/\./))
-      .then(([major, minor]) => [major, minor]) // ensure exactly 2 components
+    .cmd('docker', ['version', '-f', '{{.Client.Version}}'], {output: true})
+    .then(version => version.split(/\./))
+    .then(([major, minor]) => [parseInt(major) || 0, parseInt(minor) || 0]) // ensure exactly 2 components
 }
 
 Sanbashi.cmd = function (cmd, args, options = {}) {
