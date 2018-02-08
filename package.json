@@ -82,7 +82,7 @@
     "heroku-cli-addons": "1.2.26",
     "heroku-cli-oauth": "2.1.0",
     "heroku-cli-status": "5.0.0",
-    "heroku-container-registry": "4.4.5",
+    "heroku-container-registry": "4.4.6",
     "heroku-local": "5.1.21",
     "heroku-orgs": "1.7.1",
     "heroku-pg": "2.9.0",
