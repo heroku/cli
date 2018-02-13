@@ -7,13 +7,13 @@
     "url": "https://github.com/heroku/heroku-git/issues"
   },
   "dependencies": {
+    "@oclif/dev-cli": "^1.0.2",
+    "@oclif/plugin-legacy": "^1.0.1",
     "co": "4.6.0",
     "debug": "3.1.0",
     "heroku-cli-util": "^8.0.0"
   },
   "devDependencies": {
-    "@anycli/dev-cli": "^0.3.10",
-    "@anycli/plugin-legacy": "^0.1.4",
     "mocha": "^5.0.0",
     "mocha-junit-reporter": "1.17.0",
     "nock": "^9.1.6",
@@ -35,7 +35,7 @@
   },
   "scripts": {
     "test": "nyc mocha && standard",
-    "prepublishOnly": "anycli-dev manifest",
-    "version": "anycli-dev readme && git add README.md"
+    "prepublishOnly": "oclif-dev manifest",
+    "version": "oclif-dev readme && git add README.md"
   }
 }

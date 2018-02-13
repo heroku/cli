@@ -2,65 +2,6 @@
 # yarn lockfile v1
 
 
-"@anycli/command@^1.2.18", "@anycli/command@^1.2.19":
-  version "1.2.19"
-  resolved "https://registry.yarnpkg.com/@anycli/command/-/command-1.2.19.tgz#11a2f35a2438c4ae96026d28d4974ea8947d59b3"
-  dependencies:
-    "@anycli/parser" "^3.2.6"
-
-"@anycli/config@^1.3.45":
-  version "1.3.45"
-  resolved "https://registry.yarnpkg.com/@anycli/config/-/config-1.3.45.tgz#c92c96bab9fcb5b1347d85ef1dbeb93324f31182"
-
-"@anycli/dev-cli@^0.3.10":
-  version "0.3.10"
-  resolved "https://registry.yarnpkg.com/@anycli/dev-cli/-/dev-cli-0.3.10.tgz#c00172c353c354aaebdb51815bd7b4eb3900ea7f"
-  dependencies:
-    "@anycli/command" "^1.2.19"
-    "@anycli/config" "^1.3.45"
-    "@anycli/errors" "^0.2.2"
-    "@anycli/plugin-help" "^0.7.2"
-    lodash.template "^4.4.0"
-    normalize-package-data "^2.4.0"
-    require-resolve "^0.0.2"
-
-"@anycli/errors@^0.2.2":
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/@anycli/errors/-/errors-0.2.2.tgz#1e9c8716a2164a52053dae23d7659b23dcb5e143"
-  dependencies:
-    clean-stack "^1.3.0"
-    fs-extra "^5.0.0"
-    indent-string "^3.2.0"
-    strip-ansi "^4.0.0"
-    wrap-ansi "^3.0.1"
-
-"@anycli/parser@^3.2.6":
-  version "3.2.6"
-  resolved "https://registry.yarnpkg.com/@anycli/parser/-/parser-3.2.6.tgz#bbd119a80709099179a9f11af0dc44b68c54575b"
-
-"@anycli/plugin-help@^0.7.2":
-  version "0.7.2"
-  resolved "https://registry.yarnpkg.com/@anycli/plugin-help/-/plugin-help-0.7.2.tgz#8bf8aad477c358c0a13f29301d9cee062c7602e2"
-  dependencies:
-    "@anycli/command" "^1.2.18"
-    chalk "^2.3.0"
-    indent-string "^3.2.0"
-    lodash.template "^4.4.0"
-    string-width "^2.1.1"
-    widest-line "^2.0.0"
-    wrap-ansi "^3.0.1"
-
-"@anycli/plugin-legacy@^0.1.4":
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/@anycli/plugin-legacy/-/plugin-legacy-0.1.4.tgz#1c33a11567ce77e5215bead8959788917ce6b0ca"
-  dependencies:
-    "@anycli/command" "^1.2.19"
-    "@heroku-cli/color" "^1.1.3"
-    "@heroku-cli/command" "^8.0.0-anycli.1"
-    ansi-escapes "^3.0.0"
-    debug "^3.1.0"
-    semver "^5.5.0"
-
 "@anycli/screen@^0.0.3":
   version "0.0.3"
   resolved "https://registry.yarnpkg.com/@anycli/screen/-/screen-0.0.3.tgz#f0afd970c3ed725702948a45a874ede1fdd9362e"
@@ -74,9 +15,9 @@
     strip-ansi "^4.0.0"
     supports-color "^5.1.0"
 
-"@heroku-cli/command@^8.0.0-anycli.1":
-  version "8.0.0-anycli.1"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.0.0-anycli.1.tgz#ee50e8f21e47a83806c5ab8312f20a8858bebb9e"
+"@heroku-cli/command@^8.0.0-oclif.2":
+  version "8.0.0-oclif.2"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.0.0-oclif.2.tgz#7126b4cb1276cf31a2cf2700b2077a0b9a980ed1"
   dependencies:
     cli-ux "^3.3.18"
     debug "^3.1.0"
@@ -87,6 +28,65 @@
 "@heroku/linewrap@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@heroku/linewrap/-/linewrap-1.0.0.tgz#a9d4e99f0a3e423a899b775f5f3d6747a1ff15c6"
+
+"@oclif/command@^1.2.22", "@oclif/command@^1.2.23":
+  version "1.2.23"
+  resolved "https://registry.yarnpkg.com/@oclif/command/-/command-1.2.23.tgz#12bd96c3b4839a712f364d9aa36e463ba870d906"
+  dependencies:
+    "@oclif/parser" "^3.2.8"
+
+"@oclif/config@^1.3.45":
+  version "1.3.50"
+  resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.3.50.tgz#5a3d298d4941f756c2a3496ca50037f7c03107de"
+
+"@oclif/dev-cli@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.0.2.tgz#dd4dab98c28457542545289792ade373d4697efe"
+  dependencies:
+    "@oclif/command" "^1.2.22"
+    "@oclif/config" "^1.3.45"
+    "@oclif/errors" "^1.0.1"
+    "@oclif/plugin-help" "^1.0.0"
+    lodash.template "^4.4.0"
+    normalize-package-data "^2.4.0"
+    require-resolve "^0.0.2"
+
+"@oclif/errors@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@oclif/errors/-/errors-1.0.1.tgz#a660007a7d8b4a9573e2163d93359d510fbf05a1"
+  dependencies:
+    clean-stack "^1.3.0"
+    fs-extra "^5.0.0"
+    indent-string "^3.2.0"
+    strip-ansi "^4.0.0"
+    wrap-ansi "^3.0.1"
+
+"@oclif/parser@^3.2.8":
+  version "3.2.8"
+  resolved "https://registry.yarnpkg.com/@oclif/parser/-/parser-3.2.8.tgz#2b2e35b5c075d200d70950923acd64e258c5ae1d"
+
+"@oclif/plugin-help@^1.0.0":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-help/-/plugin-help-1.0.1.tgz#1421438edfade7fa6aed4ae9b4aa6a8ff2d226d3"
+  dependencies:
+    "@oclif/command" "^1.2.23"
+    chalk "^2.3.1"
+    indent-string "^3.2.0"
+    lodash.template "^4.4.0"
+    string-width "^2.1.1"
+    widest-line "^2.0.0"
+    wrap-ansi "^3.0.1"
+
+"@oclif/plugin-legacy@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-legacy/-/plugin-legacy-1.0.1.tgz#c25a6ddc87e73b70cf6a6293f6179ac4eccb8379"
+  dependencies:
+    "@heroku-cli/color" "^1.1.3"
+    "@heroku-cli/command" "^8.0.0-oclif.2"
+    "@oclif/command" "^1.2.23"
+    ansi-escapes "^3.0.0"
+    debug "^3.1.0"
+    semver "^5.5.0"
 
 "@sindresorhus/is@^0.7.0":
   version "0.7.0"
@@ -452,6 +452,14 @@ chalk@^2.3.0:
     ansi-styles "^3.1.0"
     escape-string-regexp "^1.0.5"
     supports-color "^4.0.0"
+
+chalk@^2.3.1:
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/chalk/-/chalk-2.3.1.tgz#523fe2678aec7b04e8041909292fe8b17059b796"
+  dependencies:
+    ansi-styles "^3.2.0"
+    escape-string-regexp "^1.0.5"
+    supports-color "^5.2.0"
 
 charenc@~0.0.1:
   version "0.0.2"
@@ -1281,6 +1289,10 @@ has-flag@^1.0.0:
 has-flag@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/has-flag/-/has-flag-2.0.0.tgz#e8207af1cc7b30d446cc70b734b5e8be18f88d51"
+
+has-flag@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/has-flag/-/has-flag-3.0.0.tgz#b5d454dc2199ae225699f3467e5a07f3b955bafd"
 
 has-symbol-support-x@^1.4.1:
   version "1.4.1"
@@ -2782,6 +2794,12 @@ supports-color@^5.1.0:
   resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-5.1.0.tgz#058a021d1b619f7ddf3980d712ea3590ce7de3d5"
   dependencies:
     has-flag "^2.0.0"
+
+supports-color@^5.2.0:
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-5.2.0.tgz#b0d5333b1184dd3666cbe5aa0b45c5ac7ac17a4a"
+  dependencies:
+    has-flag "^3.0.0"
 
 table@^3.7.8:
   version "3.8.3"
