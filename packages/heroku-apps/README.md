@@ -15,7 +15,7 @@ This core plugin comes preinstalled to the [Heroku CLI](https://cli.heroku.com).
 $ heroku COMMAND
 running command...
 $ heroku (-v|--version|version)
-@heroku-cli/plugin-apps/2.4.26 (darwin-x64) node-v9.5.0
+@heroku-cli/plugin-apps/2.4.27 (darwin-x64) node-v9.5.0
 $ heroku --help [COMMAND]
 USAGE
   $ heroku COMMAND [OPTIONS]

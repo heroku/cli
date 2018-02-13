@@ -30,6 +30,15 @@ OPTIONS
   -s, --space=space  filter by space
   -t, --team=team    team to use
   --json             output in json format
+
+EXAMPLES
+  $ heroku apps
+  === My Apps
+  example
+  example2
+
+  === Collaborated Apps
+  theirapp   other@owner.name
 ```
 
 ### apps:create
