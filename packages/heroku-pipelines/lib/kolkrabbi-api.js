@@ -8,10 +8,6 @@ module.exports = class KolkrabbiAPI {
   }
 
   request (url, options = {}) {
-    if (options.body) {
-      options.body = JSON.stringify(options.body)
-    }
-
     options.headers = Object.assign({
       Authorization: `Bearer ${this.token}`,
       'User-Agent': this.version

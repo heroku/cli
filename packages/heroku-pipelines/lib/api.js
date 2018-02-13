@@ -62,10 +62,6 @@ function getAccountInfo (heroku, id = '~') {
   return heroku.get(`/users/${id}`)
 }
 
-function getAccountFeature (heroku, feature) {
-  return heroku.get(`/account/features/${feature}`)
-}
-
 function getAppSetup (heroku, buildId) {
   return heroku.get(`/app-setups/${buildId}`)
 }
@@ -114,7 +110,6 @@ module.exports = {
   deleteCoupling,
   findPipelineByName,
   getAccountInfo,
-  getAccountFeature,
   getAppFilter,
   getAppSetup,
   getCoupling,
