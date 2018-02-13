@@ -40,13 +40,12 @@ DIR=\$(get_script_dir)
 # normalize home directory
 CLI_HOME=\$(cd && pwd)
 XDG_DATA_HOME=\${XDG_DATA_HOME:="\$CLI_HOME/.local/share"}
-CLIENT_DIR="\$XDG_DATA_HOME/heroku/client"
-BIN_DIR="\$CLIENT_DIR/bin"
-if [ -x "\$BIN_DIR/heroku" ] && [[ "\$DIR" != "\$CLIENT_DIR"* ]]; then
+BIN_PATH="\$XDG_DATA_HOME/heroku/client/bin/heroku"
+if [ -x "\$BIN_PATH" ] && [[ ! "\$DIR/heroku" -ef "\$BIN_PATH" ]]; then
   if [ "\$DEBUG" == "*" ]; then
-    echo "\$XDG_DATA_HOME/heroku/client/bin/heroku" "\$@"
+    echo "\$BIN_PATH" "\$@"
   fi
-  "\$XDG_DATA_HOME/heroku/client/bin/heroku" "\$@"
+  "\$BIN_PATH" "\$@"
 else
   if [ "\$DEBUG" == "*" ]; then
     echo HEROKU_CLI_BINPATH="\$DIR/heroku" "\$DIR/node" "\$DIR/heroku.js" "\$@"

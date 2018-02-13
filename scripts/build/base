@@ -15,21 +15,20 @@ cp "$ROOT_DIR/README.md" "${o}"
 cp "$ROOT_DIR/LICENSE" "${o}"
 cp "$ROOT_DIR/package.json" "${o}"
 cp "$ROOT_DIR/yarn.lock" "${o}"
+cp "$ROOT_DIR/bin/run" "${o}/bin/heroku.js"
 cp "$ROOT_DIR/.oclif.manifest.json" "${o}"
 cp -rv "$ROOT_DIR/lib" "${o}/lib"
+
+node -e "
+const fs = require('fs-extra')
+const pjson = fs.readJSONSync('$o/package.json')
+pjson.version = '$VERSION'
+pjson.oclif.channel = '$CHANNEL'
+fs.outputJSONSync('$o/package.json', pjson, {spaces: 2})
+"
 
 (
   cd "${o}" || exit 1
   # install packages
   yarn install --no-progress --production --non-interactive
 )
-
-cat << EOF > "${o}/bin/heroku.js"
-#!/usr/bin/env node
-global.heroku = {
-  channel: '${CHANNEL}',
-  version: '${VERSION}',
-}
-require('@oclif/command').run()
-.catch(require('@oclif/errors/handle'))
-EOF
