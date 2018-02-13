@@ -1,6 +1,6 @@
 import * as nock from 'nock'
 
-import {expect, test as base} from '@anycli/test'
+import {expect, test as base} from '@oclif/test'
 import Nock from '@fancy-test/nock'
 
 const test = base
