@@ -29,9 +29,9 @@
     http-call "^5.0.2"
     netrc-parser "^3.0.3"
 
-"@heroku-cli/plugin-apps@^2.4.26":
-  version "2.4.26"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-apps/-/plugin-apps-2.4.26.tgz#662260a7d0f7404f3c8bd6711d617496c4287f98"
+"@heroku-cli/plugin-apps@^2.4.27":
+  version "2.4.27"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-apps/-/plugin-apps-2.4.27.tgz#797df0d55b62908b45bd0b3a75f694445ed39416"
   dependencies:
     bluebird "^3.5.1"
     cli-engine-command "^9.0.7"
@@ -73,7 +73,7 @@
     strftime "^0.10.0"
     string "^3.3.3"
     term-img "^2.1.0"
-    urijs "1.19.0"
+    urijs "1.19.1"
 
 "@heroku-cli/plugin-git@^2.5.24":
   version "2.5.24"
@@ -3981,9 +3981,9 @@ unzip-response@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/unzip-response/-/unzip-response-2.0.1.tgz#d2f0f737d16b0615e72a6935ed04214572d56f97"
 
-urijs@1.19.0:
-  version "1.19.0"
-  resolved "https://registry.yarnpkg.com/urijs/-/urijs-1.19.0.tgz#d8aa284d0e7469703a6988ad045c4cbfdf08ada0"
+urijs@1.19.1:
+  version "1.19.1"
+  resolved "https://registry.yarnpkg.com/urijs/-/urijs-1.19.1.tgz#5b0ff530c0cbde8386f6342235ba5ca6e995d25a"
 
 urix@^0.1.0:
   version "0.1.0"
