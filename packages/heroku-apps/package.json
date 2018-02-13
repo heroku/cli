@@ -56,11 +56,11 @@
     "strftime": "^0.10.0",
     "string": "^3.3.3",
     "term-img": "^2.1.0",
-    "urijs": "1.19.0"
+    "urijs": "1.19.1"
   },
   "devDependencies": {
-    "@anycli/dev-cli": "^0.3.7",
-    "@anycli/plugin-legacy": "^0.1.0",
+    "@oclif/dev-cli": "^1.0.2",
+    "@oclif/plugin-legacy": "^1.0.1",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.0.1",
@@ -83,7 +83,7 @@
     "jest": "^21.2.0",
     "lolex": "^2.1.2",
     "mocha": "^3.5.3",
-    "mocha-junit-reporter": "1.13.0",
+    "mocha-junit-reporter": "1.17.0",
     "mockdate": "^2.0.2",
     "nock": "9.0.14",
     "nyc": "^11.2.1",
@@ -95,7 +95,7 @@
     "unexpected": "^10.35.0"
   },
   "files": [
-    "/.anycli.manifest.json",
+    "/.oclif.manifest.json",
     "lib/index.js",
     "assets",
     "lib"
@@ -117,9 +117,9 @@
     "build": "babel src -d lib --ignore '*.test.js'",
     "clean": "rimraf lib",
     "prepare": "npm run clean && npm run build",
-    "prepublishOnly": "anycli-dev manifest && anycli-dev readme --multi",
-    "postpublish": "rm .anycli.manifest.json",
-    "version": "anycli-dev readme --multi && git add README.md docs",
+    "prepublishOnly": "oclif-dev manifest && oclif-dev readme --multi",
+    "postpublish": "rm .oclif.manifest.json",
+    "version": "oclif-dev readme --multi && git add README.md docs",
     "test": "TZ=utc mocha && jest && flow && eslint ."
   },
   "standard": {
