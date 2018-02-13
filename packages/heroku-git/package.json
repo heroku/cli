@@ -9,21 +9,19 @@
   "dependencies": {
     "co": "4.6.0",
     "debug": "3.1.0",
-    "heroku-cli-util": "^6.2.4"
+    "heroku-cli-util": "^8.0.0"
   },
   "devDependencies": {
     "@anycli/dev-cli": "^0.3.10",
     "@anycli/plugin-legacy": "^0.1.4",
-    "codeclimate-test-reporter": "^0.5.0",
-    "coveralls": "^2.13.1",
-    "mocha": "^3.5.0",
-    "mocha-junit-reporter": "1.13.0",
-    "nock": "^9.0.14",
-    "nyc": "^11.1.0",
+    "mocha": "^5.0.0",
+    "mocha-junit-reporter": "1.17.0",
+    "nock": "^9.1.6",
+    "nyc": "^11.4.1",
     "proxyquire": "^1.8.0",
-    "sinon": "^3.0.0",
+    "sinon": "^4.3.0",
     "standard": "^10.0.3",
-    "unexpected": "^10.33.1"
+    "unexpected": "^10.37.2"
   },
   "homepage": "https://github.com/heroku/heroku-git",
   "keywords": [
