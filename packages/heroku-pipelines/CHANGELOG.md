@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+
+## [2.5.1] 2018-02-13
+
+- Fixes https://github.com/heroku/heroku-pipelines/issues/80.
+- Removes requirement for CI flag (Heroku CI has been GA for some time). This fix actually allows everybody to configure their pipelines with Heroku CI now.
+- Fixes an issue when not sending arguments in the `pipeline:setup` command.
+
 ## [2.5.0] 2017-11-20
 
 - Update `pipelines:transfer` to perform a full transfer including apps in the pipeline.
