@@ -83,7 +83,7 @@
     "@oclif/plugin-legacy": "^1.0.1",
     "@oclif/plugin-not-found": "^1.0.1",
     "@oclif/plugin-plugins": "^1.0.0",
-    "@oclif/plugin-update": "^1.0.0",
+    "@oclif/plugin-update": "^1.0.1",
     "cli-ux": "^3.3.18",
     "debug": "3.1.0",
     "fs-extra": "5.0.0",

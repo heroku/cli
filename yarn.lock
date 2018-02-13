@@ -219,9 +219,9 @@
     tslib "^1.9.0"
     yarn "^1.3.2"
 
-"@oclif/plugin-update@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@oclif/plugin-update/-/plugin-update-1.0.0.tgz#0133172f700e97f471ba3b3da26b54e021a95de4"
+"@oclif/plugin-update@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-update/-/plugin-update-1.0.1.tgz#ddcd9c9a3bf6cc750983ce83a58e7e9969cd0432"
   dependencies:
     "@heroku-cli/color" "^1.1.3"
     "@oclif/command" "^1.2.23"
