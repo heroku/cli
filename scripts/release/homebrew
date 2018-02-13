@@ -12,7 +12,7 @@ git config --global core.pager cat
 git clone git@github.com:heroku/homebrew-brew.git tmp/homebrew-brew
 
 REMOTE_BASE="s3://$S3_BUCKET/homebrew"
-NODE_VERSION=$(node -p "require('./package.json').anycli.node || process.versions.node")
+NODE_VERSION=$(node -p "require('./package.json').oclif.node || process.versions.node")
 (
   NODE_TARBALL_BASE=node-${NODE_VERSION}.tar.xz
   NODE_TARBALL_PATH=$DIST_DIR/$NODE_TARBALL_BASE

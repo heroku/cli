@@ -1,4 +1,4 @@
-import {Hook} from '@anycli/config'
+import {Hook} from '@oclif/config'
 // import * as path from 'path'
 
 // import * as fs from '../../fs'

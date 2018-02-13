@@ -1,7 +1,7 @@
 // import {AppCompletion, PipelineCompletion, SpaceCompletion, TeamCompletion} from '@heroku-cli/command/lib/completions'
 import cli from 'cli-ux'
 
-import {Hook} from '@anycli/config'
+import {Hook} from '@oclif/config'
 
 const debug = require('debug')('heroku:completions')
 

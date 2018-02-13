@@ -17,7 +17,7 @@ fi
 
 output=$1
 node_ext=""
-NODE_VERSION=$(node -p "require('./package.json').anycli.node || process.versions.node")
+NODE_VERSION=$(node -p "require('./package.json').oclif.node || process.versions.node")
 
 mkdir -p "$output"
 mkdir -p "$TMP_DIR/node"

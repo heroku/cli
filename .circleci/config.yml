@@ -140,7 +140,7 @@ workflows:
               only:
                 - master
                 - dev
-                - anycli
+                - oclif
       - build_os_linux: *release
       - build_os_win32: *release
       - build_and_release_win_inst:

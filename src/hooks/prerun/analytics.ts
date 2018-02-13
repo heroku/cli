@@ -1,4 +1,4 @@
-import {Hook} from '@anycli/config'
+import {Hook} from '@oclif/config'
 
 import Analytics from '../../analytics'
 

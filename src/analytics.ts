@@ -1,4 +1,4 @@
-import * as Config from '@anycli/config'
+import * as Config from '@oclif/config'
 import * as fs from 'fs-extra'
 import HTTP from 'http-call'
 import Netrc from 'netrc-parser'

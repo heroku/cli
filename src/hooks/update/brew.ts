@@ -1,4 +1,4 @@
-import {Hook} from '@anycli/config'
+import {Hook} from '@oclif/config'
 // import {spawnSync, SpawnSyncOptions} from 'child_process'
 // import cli from 'cli-ux'
 // import * as path from 'path'
