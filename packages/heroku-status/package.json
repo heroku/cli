@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-status",
   "description": "CLI Plugin for Heroku Status",
-  "version": "5.0.5",
+  "version": "5.0.6",
   "author": "Jeff Dickey @jdxcode",
   "oclif": {
     "commands": "./lib/commands",
