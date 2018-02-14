@@ -121,7 +121,7 @@
     "ts-jest": "22.0.1",
     "tslint": "^5.9.0",
     "typescript": "2.6.2",
-    "xo": "^0.18.2"
+    "xo": "^0.20.0"
   },
   "engineStrict": true,
   "engines": {
