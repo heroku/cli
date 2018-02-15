@@ -1,5 +1,5 @@
 {
-  "name": "@heroku-cli/oauth",
+  "name": "@heroku-cli/plugin-oauth",
   "description": "Heroku CLI plugin to manage OAuth clients.",
   "version": "2.1.0",
   "author": "Jeff Dickey (@dickeyxxx)",
