@@ -1,6 +1,6 @@
 {
   "name": "heroku-container-registry",
-  "version": "4.4.6",
+  "version": "4.4.7",
   "topic": "container",
   "description": "Use containers to build and deploy Heroku apps",
   "main": "index.js",
