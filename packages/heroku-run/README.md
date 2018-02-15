@@ -34,16 +34,16 @@ Example:
 <!-- commands -->
 # Commands
 
-* [heroku logs [OPTIONS]](#logs)
-* [heroku run [OPTIONS]](#run)
-* [heroku run:detached [OPTIONS]](#rundetached)
+* [@heroku-cli/plugin-run logs [OPTIONS]](#logs)
+* [@heroku-cli/plugin-run run [OPTIONS]](#run)
+* [@heroku-cli/plugin-run run:detached [OPTIONS]](#rundetached)
 ## logs
 
 display recent log output
 
 ```
 USAGE
-  $ heroku logs [OPTIONS]
+  $ @heroku-cli/plugin-run logs [OPTIONS]
 
 OPTIONS
   -a, --app=app        (required) [default: heroku-run-test-app] app to run command against
@@ -68,7 +68,7 @@ run a one-off process inside a heroku dyno
 
 ```
 USAGE
-  $ heroku run [OPTIONS]
+  $ @heroku-cli/plugin-run run [OPTIONS]
 
 OPTIONS
   -a, --app=app        (required) [default: heroku-run-test-app] app to run command against
@@ -96,7 +96,7 @@ run a detached dyno, where output is sent to your logs
 
 ```
 USAGE
-  $ heroku run:detached [OPTIONS]
+  $ @heroku-cli/plugin-run run:detached [OPTIONS]
 
 OPTIONS
   -a, --app=app        (required) [default: heroku-run-test-app] app to run command against
