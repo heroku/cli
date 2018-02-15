@@ -31,7 +31,7 @@ async function login (context, heroku) {
 async function dockerLogin (registry, password, verbose) {
   let [major, minor] = await Sanbashi.version()
 
-  if (major > 17 || major === 17 && minor >= 1) {
+  if (major > 17 || major === 17 && minor >= 7) {
     return await dockerLoginStdin(registry, password, verbose)
   }
   return await dockerLoginArgv(registry, password, verbose)
