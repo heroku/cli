@@ -41,7 +41,7 @@ export interface RecordOpts {
 
 export default class AnalyticsCommand {
   config: Config
-  userConfig: typeof deps.UserConfig.prototype
+  userConfig!: typeof deps.UserConfig.prototype
   http: typeof deps.HTTP
 
   constructor(config: Config) {

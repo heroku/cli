@@ -11,10 +11,10 @@ export interface ConfigJSON {
 
 export default class UserConfig {
   private needsSave: boolean = false
-  private body: ConfigJSON
+  private body!: ConfigJSON
   private mtime?: number
   private saving?: Promise<void>
-  private _init: Promise<void>
+  private _init!: Promise<void>
 
   constructor(private config: Config) {}
 

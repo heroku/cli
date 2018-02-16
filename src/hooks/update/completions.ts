@@ -7,7 +7,7 @@ import cli from 'cli-ux'
 const debug = require('debug')('heroku:completions')
 
 export default class CompletionsUpdateHook extends Hook<'update'> {
-  protected config: Config
+  protected config!: Config
   constructor(config: Config, options: IHooks['update']) {
     super(config, options)
   }
