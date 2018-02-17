@@ -1,5 +1,5 @@
 {
-  "name": "heroku-orgs",
+  "name": "@heroku-cli/plugin-orgs",
   "description": "CLI to manage Heroku Organizations",
   "version": "1.7.1",
   "author": "Raul Barroso @raulb",
@@ -7,24 +7,30 @@
     "url": "https://github.com/heroku/heroku-orgs/issues"
   },
   "dependencies": {
-    "cli-engine-command": "^9.0.2",
-    "cli-engine-config": "^3.4.0",
-    "cli-engine-heroku": "^5.0.0",
+    "cli-engine-command": "^9.0.7",
+    "cli-engine-config": "^3.5.0",
+    "cli-engine-heroku": "^5.0.4",
     "co": "4.6.0",
-    "heroku-cli-util": "^6.2.10",
-    "inquirer": "^3.3.0",
-    "lodash": "4.17.4",
+    "heroku-cli-util": "^8.0.0",
+    "inquirer": "^5.1.0",
+    "lodash": "4.17.5",
     "lodash.flatten": "4.4.0"
   },
   "devDependencies": {
     "chai": "^4.1.2",
-    "mocha": "^3.5.0",
-    "mocha-junit-reporter": "1.13.0",
+    "mocha": "^5.0.1",
+    "mocha-junit-reporter": "1.17.0",
     "nock": "^9.0.14",
-    "nyc": "^11.1.0",
+    "nyc": "^11.4.1",
     "proxyquire": "^1.8.0",
     "standard": "^10.0.3"
   },
+  "files": [
+    ".oclif.manifest.json",
+    "index.js",
+    "commands",
+    "lib"
+  ],
   "homepage": "https://github.com/heroku/heroku-orgs",
   "keywords": [
     "heroku-plugin"
@@ -36,11 +42,8 @@
     "url": "https://github.com/heroku/heroku-orgs"
   },
   "scripts": {
+    "postpublish": "rm .oclif.manifest.json",
+    "prepublishOnly": "oclif-dev manifest",
     "test": "nyc mocha && standard"
-  },
-  "files": [
-    "index.js",
-    "commands",
-    "lib"
-  ]
+  }
 }
