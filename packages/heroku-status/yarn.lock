@@ -15,7 +15,7 @@
     strip-ansi "^4.0.0"
     supports-color "^5.1.0"
 
-"@heroku-cli/command@^8.0.0-oclif.1":
+"@heroku-cli/command@^8.0.0-oclif.1", "@heroku-cli/command@^8.0.0-oclif.2":
   version "8.0.0-oclif.2"
   resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.0.0-oclif.2.tgz#7126b4cb1276cf31a2cf2700b2077a0b9a980ed1"
   dependencies:
@@ -94,6 +94,17 @@
     string-width "^2.1.1"
     widest-line "^2.0.0"
     wrap-ansi "^3.0.1"
+
+"@oclif/plugin-legacy@^1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-legacy/-/plugin-legacy-1.0.4.tgz#dcd4845e230c39ae98ca07982ac848e8a54a7f5c"
+  dependencies:
+    "@heroku-cli/color" "^1.1.3"
+    "@heroku-cli/command" "^8.0.0-oclif.2"
+    "@oclif/command" "^1.3.1"
+    ansi-escapes "^3.0.0"
+    debug "^3.1.0"
+    semver "^5.5.0"
 
 "@oclif/screen@^1.0.0":
   version "1.0.1"
