@@ -46,7 +46,7 @@ USAGE
   $ @heroku-cli/plugin-run logs [OPTIONS]
 
 OPTIONS
-  -a, --app=app        (required) [default: heroku-run-test-app] app to run command against
+  -a, --app=app        (required) app to run command against
   -d, --dyno=dyno      dyno to limit filter by
   -n, --num=num        number of lines to display
   -r, --remote=remote  git remote of app to use
@@ -71,7 +71,7 @@ USAGE
   $ @heroku-cli/plugin-run run [OPTIONS]
 
 OPTIONS
-  -a, --app=app        (required) [default: heroku-run-test-app] app to run command against
+  -a, --app=app        (required) app to run command against
   -e, --env=env        environment variables to set (use ';' to split multiple vars)
   -r, --remote=remote  git remote of app to use
   -s, --size=size      dyno size
@@ -99,7 +99,7 @@ USAGE
   $ @heroku-cli/plugin-run run:detached [OPTIONS]
 
 OPTIONS
-  -a, --app=app        (required) [default: heroku-run-test-app] app to run command against
+  -a, --app=app        (required) app to run command against
   -e, --env=env        environment variables to set (use ';' to split multiple vars)
   -r, --remote=remote  git remote of app to use
   -s, --size=size      dyno size
