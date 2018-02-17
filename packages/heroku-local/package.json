@@ -15,7 +15,7 @@
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.2.16",
-    "@oclif/plugin-legacy": "^1.0.2",
+    "@oclif/plugin-legacy": "^1.0.4",
     "standard": "^10.0.2"
   },
   "files": [
@@ -38,5 +38,12 @@
     "test": "bats test && standard",
     "prepublishOnly": "oclif-dev manifest",
     "postpublish": "rm .oclif.manifest.json"
+  },
+  "oclif": {
+    "topics": {
+      "local": {
+        "description": "run heroku app locally"
+      }
+    }
   }
 }
