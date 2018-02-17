@@ -14,7 +14,7 @@
   "devDependencies": {
     "@oclif/dev-cli": "^1.2.12",
     "@oclif/plugin-legacy": "^1.0.2",
-    "mocha": "^5.0.0",
+    "mocha": "^5.0.1",
     "mocha-junit-reporter": "1.17.0",
     "nock": "9.0.13",
     "nyc": "^11.4.1",
@@ -22,6 +22,7 @@
     "unexpected": "10.37.2"
   },
   "files": [
+    ".oclif.manifest.json",
     "commands",
     "lib",
     ".oclif.manifest.json"
@@ -40,5 +41,18 @@
     "test": "nyc mocha && standard",
     "prepublishOnly": "oclif-dev manifest",
     "postpublish": "rm .oclif.manifest.json"
+  },
+  "oclif": {
+    "topics": {
+      "authorizations": {
+        "description": "OAuth authorizations"
+      },
+      "clients": {
+        "description": "OAuth clients on the platform"
+      },
+      "sessions": {
+        "description": "OAuth sessions"
+      }
+    }
   }
 }
