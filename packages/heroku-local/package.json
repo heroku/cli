@@ -39,7 +39,7 @@
     "prepublishOnly": "oclif-dev manifest",
     "postpublish": "rm .oclif.manifest.json"
   },
-  "oclif": {
+  "cli-engine": {
     "topics": {
       "local": {
         "description": "run heroku app locally"
