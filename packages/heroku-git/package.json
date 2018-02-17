@@ -45,7 +45,7 @@
     "version": "oclif-dev readme && git add README.md",
     "postpublish": "rm .oclif.manifest.json"
   },
-  "oclif": {
+  "cli-engine": {
     "topics": {
       "git": {
         "description": "manage local git repository for app"
