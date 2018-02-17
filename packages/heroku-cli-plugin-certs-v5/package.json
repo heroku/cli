@@ -43,5 +43,15 @@
     "test": "TZ=utc nyc mocha && standard",
     "prepublishOnly": "oclif-dev manifest",
     "postpublish": "rm .oclif.manifest.json"
+  },
+  "oclif": {
+    "topics": {
+      "certs": {
+        "description": "a topic for the ssl plugin"
+      },
+      "_certs": {
+        "hidden": true
+      }
+    }
   }
 }
