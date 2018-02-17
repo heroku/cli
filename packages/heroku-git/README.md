@@ -52,4 +52,56 @@ Examples:
 ```
 <!-- commands -->
 # Commands
+
+* [@heroku-cli/plugin-git git:clone [DIRECTORY]](#gitclone-directory)
+* [@heroku-cli/plugin-git git:remote](#gitremote)
+## git:clone [DIRECTORY]
+
+clones a heroku app to your local machine at DIRECTORY (defaults to app name)
+
+```
+USAGE
+  $ @heroku-cli/plugin-git git:clone [DIRECTORY]
+
+ARGUMENTS
+  DIRECTORY  where to clone the app
+
+OPTIONS
+  -a, --app=app        the Heroku app to use
+  -r, --remote=remote  the git remote to create, default "heroku"
+  --ssh-git            use SSH git protocol
+
+DESCRIPTION
+  Examples:
+
+       $ heroku git:clone -a example
+       Cloning into 'example'...
+       remote: Counting objects: 42, done.
+       ...
+```
+
+## git:remote
+
+adds a git remote to an app repo
+
+```
+USAGE
+  $ @heroku-cli/plugin-git git:remote
+
+OPTIONS
+  -a, --app=app        the Heroku app to use
+  -r, --remote=remote  the git remote to create
+  --ssh-git            use SSH git protocol
+
+DESCRIPTION
+  extra arguments will be passed to git remote add
+
+  Examples:
+
+       # set git remote heroku to https://git.heroku.com/example.git
+       $ heroku git:remote -a example
+
+       # set git remote heroku-staging to https://git.heroku.com/example-staging.git
+       $ heroku git:remote --remote heroku-staging -a example
+```
 <!-- commandsstop -->
