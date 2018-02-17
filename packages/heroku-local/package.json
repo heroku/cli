@@ -1,5 +1,5 @@
 {
-  "name": "heroku-local",
+  "name": "@heroku-cli/plugin-local",
   "description": "run heroku apps locally",
   "version": "5.1.21",
   "author": "Jeff Dickey @dickeyxxx",
@@ -14,8 +14,16 @@
     "lodash.flatten": "^4.4.0"
   },
   "devDependencies": {
+    "@oclif/dev-cli": "^1.2.16",
+    "@oclif/plugin-legacy": "^1.0.2",
     "standard": "^10.0.2"
   },
+  "files": [
+    ".oclif.manifest.json",
+    "index.js",
+    "commands",
+    "lib"
+  ],
   "homepage": "https://github.com/heroku/heroku-local",
   "keywords": [
     "heroku-plugin"
@@ -27,6 +35,8 @@
     "url": "https://github.com/heroku/heroku-local"
   },
   "scripts": {
-    "test": "bats test && standard"
+    "test": "bats test && standard",
+    "prepublishOnly": "oclif-dev manifest",
+    "postpublish": "rm .oclif.manifest.json"
   }
 }
