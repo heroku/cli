@@ -3,7 +3,7 @@
   "description": "CLI Plugin for Heroku Status",
   "version": "5.0.7",
   "author": "Jeff Dickey @jdxcode",
-  "oclif": {
+  "cli-engine": {
     "commands": "./lib/commands",
     "topics": {
       "status": {
