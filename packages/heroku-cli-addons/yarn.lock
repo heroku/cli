@@ -77,7 +77,7 @@
     widest-line "^2.0.0"
     wrap-ansi "^3.0.1"
 
-"@oclif/plugin-legacy@^1.0.4":
+"@oclif/plugin-legacy@^1.0.2":
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/@oclif/plugin-legacy/-/plugin-legacy-1.0.4.tgz#dcd4845e230c39ae98ca07982ac848e8a54a7f5c"
   dependencies:
