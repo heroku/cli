@@ -6,6 +6,16 @@
   "bugs": {
     "url": "https://github.com/heroku/heroku-run/issues"
   },
+  "cli-engine": {
+    "topics": {
+      "run": {
+        "description": "run a one-off process inside a Heroku dyno"
+      },
+      "logs": {
+        "description": "display recent log output"
+      }
+    }
+  },
   "dependencies": {
     "cli-engine-heroku": "^5.0.4",
     "co": "4.6.0",
@@ -47,15 +57,5 @@
     "prepublishOnly": "oclif-dev manifest",
     "test": "nyc mocha && standard",
     "version": "anycli-dev readme && git add README.md"
-  },
-  "oclif": {
-    "topics": {
-      "run": {
-        "description": "run a one-off process inside a Heroku dyno"
-      },
-      "logs": {
-        "description": "display recent log output"
-      }
-    }
   }
 }
