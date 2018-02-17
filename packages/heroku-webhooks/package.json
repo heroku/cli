@@ -1,5 +1,5 @@
 {
-  "name": "heroku-webhooks",
+  "name": "@heroku-cli/plugin-webhooks",
   "description": "Heroku CLI plugin to manage webhooks.",
   "version": "1.1.0",
   "author": "Ransom Briggs (@ransombriggs)",
@@ -8,17 +8,25 @@
   },
   "dependencies": {
     "co": "4.6.0",
-    "heroku-cli-util": "^6.2.5"
+    "heroku-cli-util": "^8.0.0"
   },
   "devDependencies": {
-    "chai": "^3.3.0",
+    "@oclif/dev-cli": "^1.2.16",
+    "@oclif/plugin-legacy": "^1.0.2",
+    "chai": "^4.1.2",
     "mocha": "^2.3.3",
-    "mocha-junit-reporter": "1.11.1",
+    "mocha-junit-reporter": "1.17.0",
     "nock": "8.0.0",
-    "nyc": "6.4.4",
-    "snazzy": "4.0.0",
+    "nyc": "11.4.1",
+    "snazzy": "7.0.0",
     "standard": "7.1.0"
   },
+  "files": [
+    ".oclif.manifest.json",
+    "index.js",
+    "commands",
+    "lib"
+  ],
   "homepage": "https://github.com/heroku/heroku-webhooks",
   "keywords": [
     "heroku-plugin"
@@ -30,6 +38,8 @@
     "url": "https://github.com/heroku/heroku-webhooks.git"
   },
   "scripts": {
-    "test": "TZ=utc nyc mocha && standard | snazzy"
+    "test": "TZ=utc nyc mocha && standard | snazzy",
+    "prepublishOnly": "oclif-dev manifest",
+    "postpublish": "rm .oclif.manifest.json"
   }
 }
