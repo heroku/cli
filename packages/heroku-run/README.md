@@ -34,16 +34,16 @@ Example:
 <!-- commands -->
 # Commands
 
-* [@heroku-cli/plugin-run logs [OPTIONS]](#logs)
-* [@heroku-cli/plugin-run run [OPTIONS]](#run)
-* [@heroku-cli/plugin-run run:detached [OPTIONS]](#rundetached)
+* [@heroku-cli/plugin-run logs](#logs)
+* [@heroku-cli/plugin-run run](#run)
+* [@heroku-cli/plugin-run run:detached](#rundetached)
 ## logs
 
 display recent log output
 
 ```
 USAGE
-  $ @heroku-cli/plugin-run logs [OPTIONS]
+  $ @heroku-cli/plugin-run logs
 
 OPTIONS
   -a, --app=app        (required) app to run command against
@@ -68,7 +68,7 @@ run a one-off process inside a heroku dyno
 
 ```
 USAGE
-  $ @heroku-cli/plugin-run run [OPTIONS]
+  $ @heroku-cli/plugin-run run
 
 OPTIONS
   -a, --app=app        (required) app to run command against
@@ -96,7 +96,31 @@ run a detached dyno, where output is sent to your logs
 
 ```
 USAGE
-  $ @heroku-cli/plugin-run run:detached [OPTIONS]
+  $ @heroku-cli/plugin-run run:detached
+
+OPTIONS
+  -a, --app=app        (required) app to run command against
+  -e, --env=env        environment variables to set (use ';' to split multiple vars)
+  -r, --remote=remote  git remote of app to use
+  -s, --size=size      dyno size
+  -t, --tail           stream logs from the dyno
+  --type=type          process type
+
+DESCRIPTION
+  Example:
+
+       $ heroku run:detached ls
+       Running ls on app [detached]... up, run.1
+       Run heroku logs -a app -p run.1 to view the output.
+```
+
+## run:detached
+
+run a detached dyno, where output is sent to your logs
+
+```
+USAGE
+  $ @heroku-cli/plugin-run run:detached
 
 OPTIONS
   -a, --app=app        (required) app to run command against
