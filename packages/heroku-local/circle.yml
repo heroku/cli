@@ -3,9 +3,8 @@ machine:
     version: v9.5.0
 dependencies:
   pre:
-    - heroku update
     - sudo add-apt-repository ppa:duggan/bats -y
     - sudo apt-get update
     - sudo apt-get install bats
     - npm install
-    - heroku plugins:link .
+    - npx heroku-cli plugins:link .
