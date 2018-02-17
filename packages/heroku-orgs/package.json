@@ -45,5 +45,36 @@
     "postpublish": "rm .oclif.manifest.json",
     "prepublishOnly": "oclif-dev manifest",
     "test": "nyc mocha && standard"
+  },
+  "oclif": {
+    "topics": {
+      "access": {
+        "description": "manage user access to apps"
+      },
+      "orgs": {
+        "description": "manage organizations"
+      },
+      "members": {
+        "description": "manage organization members"
+      },
+      "teams": {
+        "description": "manage teams"
+      },
+      "sharing": {
+        "hidden": true
+      },
+      "join": {
+        "hidden": true
+      },
+      "leave": {
+        "hidden": true
+      },
+      "lock": {
+        "hidden": true
+      },
+      "unlock": {
+        "hidden": true
+      }
+    }
   }
 }
