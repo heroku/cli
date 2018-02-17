@@ -51,5 +51,12 @@
     "test": "nyc mocha && standard",
     "prepublishOnly": "oclif-dev manifest",
     "postpublish": "rm .oclif.manifest.json"
+  },
+  "oclif": {
+    "topics": {
+      "addons": {
+        "description": "tools and services for developing, extending, and operating your app"
+      }
+    }
   }
 }
