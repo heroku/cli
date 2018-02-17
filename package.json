@@ -7,10 +7,10 @@
     "commands": "./lib/commands",
     "scope": "heroku-cli",
     "plugins": [
+      "@heroku-cli/plugin-addons",
       "@heroku-cli/plugin-apps",
       "@heroku-cli/plugin-certs",
       "@heroku-cli/plugin-ci",
-      "@heroku-cli/plugin-cli-addons",
       "@heroku-cli/plugin-container-registry",
       "@heroku-cli/plugin-git",
       "@heroku-cli/plugin-local",
