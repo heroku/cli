@@ -109,18 +109,18 @@
     "@oclif/parser" "^3.2.9"
     semver "^5.5.0"
 
-"@oclif/config@^1.3.56":
-  version "1.3.56"
-  resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.3.56.tgz#daa92087dda5fd649d4aeea9cc44aef92b854e7f"
+"@oclif/config@^1.3.57":
+  version "1.3.57"
+  resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.3.57.tgz#845ed86c01911860d49853aaab28f76c7f7a5f43"
 
-"@oclif/dev-cli@^1.2.16":
-  version "1.2.16"
-  resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.2.16.tgz#50d3ff41f33d4100a44183494de3b3eff1a73dd5"
+"@oclif/dev-cli@^1.2.17":
+  version "1.2.17"
+  resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.2.17.tgz#1ef25368bf4d126be6fb0658c6f70bf40c161766"
   dependencies:
     "@oclif/command" "^1.3.1"
-    "@oclif/config" "^1.3.56"
+    "@oclif/config" "^1.3.57"
     "@oclif/errors" "^1.0.2"
-    "@oclif/plugin-help" "^1.1.0"
+    "@oclif/plugin-help" "^1.1.2"
     lodash "^4.17.5"
     lodash.template "^4.4.0"
     normalize-package-data "^2.4.0"
@@ -142,9 +142,9 @@
   dependencies:
     "@heroku/linewrap" "^1.0.0"
 
-"@oclif/plugin-help@^1.1.0":
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@oclif/plugin-help/-/plugin-help-1.1.1.tgz#29889ca64ef8fa07806fa29805dbdedcb957e796"
+"@oclif/plugin-help@^1.1.2":
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-help/-/plugin-help-1.1.3.tgz#2d0d280cb1cce485740237f029fd9a17fc568ce1"
   dependencies:
     "@oclif/command" "^1.3.1"
     chalk "^2.3.1"

@@ -24,8 +24,8 @@
     "shellwords": "^0.1.1"
   },
   "devDependencies": {
-    "@anycli/dev-cli": "^0.3.10",
-    "@anycli/plugin-legacy": "^0.1.4",
+    "@oclif/dev-cli": "^1.2.17",
+    "@oclif/plugin-legacy": "^1.0.4",
     "fixture-stdout": "0.2.1",
     "mocha": "^5.0.1",
     "mocha-junit-reporter": "1.17.0",
@@ -56,6 +56,6 @@
     "postpublish": "rm .oclif.manifest.json",
     "prepublishOnly": "oclif-dev manifest",
     "test": "nyc mocha && standard",
-    "version": "anycli-dev readme && git add README.md"
+    "version": "oclif-dev readme && git add README.md"
   }
 }
