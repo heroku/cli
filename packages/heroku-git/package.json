@@ -14,7 +14,7 @@
   "devDependencies": {
     "@oclif/dev-cli": "^1.0.2",
     "@oclif/plugin-legacy": "^1.0.1",
-    "mocha": "^5.0.0",
+    "mocha": "^5.0.1",
     "mocha-junit-reporter": "1.17.0",
     "nock": "^9.1.6",
     "nyc": "^11.4.1",
@@ -24,6 +24,7 @@
     "unexpected": "^10.37.2"
   },
   "files": [
+    ".oclif.manifest.json",
     "/lib",
     "/index.js",
     "/commands"
@@ -41,6 +42,14 @@
   "scripts": {
     "prepublishOnly": "oclif-dev manifest",
     "test": "nyc mocha && standard",
-    "version": "oclif-dev readme && git add README.md"
+    "version": "oclif-dev readme && git add README.md",
+    "postpublish": "rm .oclif.manifest.json"
+  },
+  "oclif": {
+    "topics": {
+      "git": {
+        "description": "manage local git repository for app"
+      }
+    }
   }
 }
