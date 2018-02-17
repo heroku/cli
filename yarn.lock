@@ -237,9 +237,9 @@
   dependencies:
     "@types/node" "*"
 
-"@types/jest@22.1.2":
-  version "22.1.2"
-  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-22.1.2.tgz#813a79ec98221633845627636dbc606f31220dbc"
+"@types/jest@22.1.3":
+  version "22.1.3"
+  resolved "http://cli-npm.heroku.com/@types/jest/-/jest-22.1.3/25da391935e6fac537551456f077ce03144ec168.tgz#25da391935e6fac537551456f077ce03144ec168"
 
 "@types/load-json-file@^2.0.7":
   version "2.0.7"
