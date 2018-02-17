@@ -46,7 +46,7 @@
     "prepublishOnly": "oclif-dev manifest",
     "test": "nyc mocha && standard"
   },
-  "oclif": {
+  "cli-engine": {
     "topics": {
       "access": {
         "description": "manage user access to apps"
