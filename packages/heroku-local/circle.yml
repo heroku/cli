@@ -1,6 +1,6 @@
 machine:
   node:
-    version: v6.2.0
+    version: v9.5.0
 dependencies:
   pre:
     - heroku update
