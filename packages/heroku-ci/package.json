@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.2.16",
-    "@oclif/plugin-legacy": "^1.0.2",
+    "@oclif/plugin-legacy": "^1.0.4",
     "chai": "^3.5.0",
     "co-mocha": "^1.1.3",
     "eslint-plugin-react": "^7.6.1",
@@ -60,5 +60,12 @@
     "test": "mocha -R tap && standard --verbose | standard-tap",
     "prepublishOnly": "oclif-dev manifest",
     "postpublish": "rm .oclif.manifest.json"
+  },
+  "oclif": {
+    "topics": {
+      "ci": {
+        "description": "run an application test suite on Heroku"
+      }
+    }
   }
 }
