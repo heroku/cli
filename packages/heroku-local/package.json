@@ -8,9 +8,9 @@
   },
   "dependencies": {
     "@heroku/foreman": "^2.0.2",
-    "cli-engine-heroku": "^4.1.0",
+    "cli-engine-heroku": "^5.0.4",
     "co": "^4.6.0",
-    "heroku-cli-util": "^6.2.5",
+    "heroku-cli-util": "^8.0.0",
     "lodash.flatten": "^4.4.0"
   },
   "devDependencies": {
