@@ -42,7 +42,7 @@ More about https://devcenter.heroku.com/articles/heroku-status
 
 
 <!-- install -->
-# Installing @heroku-cli/plugin-status
+# Install
 
 with yarn:
 ```
@@ -61,28 +61,28 @@ $ npm install -g @heroku-cli/plugin-status
 $ @heroku-cli/plugin-status COMMAND
 running command...
 $ @heroku-cli/plugin-status (-v|--version|version)
-@heroku-cli/plugin-status/5.0.6 (darwin-x64) node-v9.5.0
+@heroku-cli/plugin-status/5.0.7 (darwin-x64) node-v9.5.0
 $ @heroku-cli/plugin-status --help [COMMAND]
 USAGE
-  $ @heroku-cli/plugin-status COMMAND [OPTIONS]
+  $ @heroku-cli/plugin-status COMMAND
 ...
 ```
 <!-- usagestop -->
 <!-- commands -->
 # Commands
 
-* [@heroku-cli/plugin-status status [OPTIONS]](#status)
+* [@heroku-cli/plugin-status status](#status)
 ## status
 
 display current status of the Heroku platform
 
 ```
 USAGE
-  $ @heroku-cli/plugin-status status [OPTIONS]
+  $ @heroku-cli/plugin-status status
 
 OPTIONS
   --json  output in json format
 ```
 
-_See code: [@heroku-cli/plugin-status](https://github.com/heroku/heroku-cli-status/blob/v5.0.6/src/commands/status.ts)_
+_See code: [src/commands/status.ts](https://github.com/heroku/heroku-cli-status/blob/v5.0.7/src/commands/status.ts)_
 <!-- commandsstop -->
