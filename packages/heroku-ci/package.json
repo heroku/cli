@@ -1,37 +1,10 @@
 {
-  "name": "heroku-ci",
-  "version": "1.9.5",
+  "name": "@heroku-cli/plugin-ci",
   "description": "Heroku CLI plugin for Heroku CI",
-  "main": "index.js",
-  "engines": {
-    "node": ">=8.3.0"
-  },
-  "scripts": {
-    "test": "mocha -R tap && standard --verbose | standard-tap",
-    "format": "standard --format"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/heroku/heroku-ci.git"
-  },
-  "keywords": [
-    "heroku-plugin"
-  ],
+  "version": "1.9.5",
   "author": "Andrew Appleton, Gudmundur Bjarni Olafsson, Max Beizer, Ransom Briggs",
-  "license": "MIT",
   "bugs": {
     "url": "https://github.com/heroku/heroku-ci/issues"
-  },
-  "homepage": "https://github.com/heroku/heroku-ci#readme",
-  "devDependencies": {
-    "chai": "^3.5.0",
-    "co-mocha": "^1.1.3",
-    "mocha": "^3.1.2",
-    "nock": "^9.0.2",
-    "sinon": "^1.17.6",
-    "standard": "8.5.0",
-    "standard-tap": "^1.0.1",
-    "std-mocks": "^1.0.1"
   },
   "dependencies": {
     "ansi-escapes": "1.4.0",
@@ -48,5 +21,42 @@
     "shell-escape": "^0.2.0",
     "socket.io-client": "^1.5.1",
     "temp": "^0.8.3"
+  },
+  "devDependencies": {
+    "@oclif/dev-cli": "^1.2.16",
+    "@oclif/plugin-legacy": "^1.0.2",
+    "chai": "^3.5.0",
+    "co-mocha": "^1.1.3",
+    "mocha": "^3.1.2",
+    "nock": "^9.0.2",
+    "sinon": "^1.17.6",
+    "standard": "8.5.0",
+    "standard-tap": "^1.0.1",
+    "std-mocks": "^1.0.1"
+  },
+  "engines": {
+    "node": ">=8.3.0"
+  },
+  "files": [
+    ".oclif.manifest.json",
+    "index.js",
+    "commands",
+    "lib"
+  ],
+  "homepage": "https://github.com/heroku/heroku-ci#readme",
+  "keywords": [
+    "heroku-plugin"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/heroku/heroku-ci.git"
+  },
+  "scripts": {
+    "format": "standard --format",
+    "test": "mocha -R tap && standard --verbose | standard-tap",
+    "prepublishOnly": "oclif-dev manifest",
+    "postpublish": "rm .oclif.manifest.json"
   }
 }
