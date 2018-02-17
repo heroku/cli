@@ -52,7 +52,4 @@ Examples:
 ```
 <!-- commands -->
 # Commands
-
-* [@heroku-cli/plugin-git git:clone [DIRECTORY] [OPTIONS]](#gitclone)
-* [@heroku-cli/plugin-git git:remote [OPTIONS]](#gitremote)
 <!-- commandsstop -->
