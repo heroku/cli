@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
+## [2.5.2] 2018-02-19
+
+- Improves caching strategy and use new scope convention to declare this a core Heroku CLI plugin. 
+
 ## [2.5.1] 2018-02-13
 
 - Fixes https://github.com/heroku/heroku-pipelines/issues/80.

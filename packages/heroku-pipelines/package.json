@@ -1,7 +1,7 @@
 {
-  "name": "heroku-pipelines",
+  "name": "@heroku-cli/plugin-pipelines",
   "description": "pipelines heroku plugin",
-  "version": "2.5.1",
+  "version": "2.5.2",
   "author": "Heroku Developer Experience team",
   "bugs": {
     "url": "https://github.com/heroku/heroku-pipelines/issues"
@@ -43,6 +43,12 @@
     "std-mocks": "^1.0.1",
     "supervisor": "^0.12.0"
   },
+  "files": [
+    ".oclif.manifest.json",
+    "index.js",
+    "commands",
+    "lib"
+  ],
   "keywords": [
     "heroku-plugin"
   ],
@@ -50,8 +56,10 @@
   "main": "index.js",
   "repository": "heroku/heroku-pipelines",
   "scripts": {
+    "autotest": "./node_modules/.bin/supervisor -q -n exit -x ./node_modules/.bin/mocha -- -b",
     "test": "nyc mocha && standard",
-    "autotest": "./node_modules/.bin/supervisor -q -n exit -x ./node_modules/.bin/mocha -- -b"
+    "prepublishOnly": "oclif-dev manifest",
+    "postpublish": "rm .oclif.manifest.json"
   },
   "standard": {
     "globals": [
