@@ -1,7 +1,7 @@
 {
-  "name": "heroku-pg",
+  "name": "@heroku-cli/plugin-pg",
   "description": "Heroku CLI plugin to manage Postgres.",
-  "version": "2.9.0",
+  "version": "2.9.2",
   "author": "Jeff Dickey (@dickeyxxx)",
   "bugs": {
     "url": "https://github.com/heroku/heroku-pg/issues"
@@ -26,6 +26,8 @@
     "tunnel-ssh": "^4.1.3"
   },
   "devDependencies": {
+    "@oclif/dev-cli": "^1.2.16",
+    "@oclif/plugin-legacy": "^1.0.4",
     "heroku-client": "^3.0.2",
     "mocha": "^3.4.2",
     "nock": "9.1.6",
@@ -37,6 +39,7 @@
     "unexpected": "^10.29.0"
   },
   "files": [
+    ".oclif.manifest.json",
     "index.js",
     "lib",
     "commands"
@@ -53,6 +56,15 @@
   },
   "scripts": {
     "test": "TZ=utc nyc mocha && standard",
-    "release": "np"
+    "release": "np",
+    "prepublishOnly": "oclif-dev manifest",
+    "postpublish": "rm .oclif.manifest.json"
+  },
+  "cli-engine": {
+    "topics": {
+      "pg": {
+        "description": "manage postgresql databases"
+      }
+    }
   }
 }
