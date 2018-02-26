@@ -105,7 +105,7 @@
     "@types/ansi-styles": "^2.0.30",
     "@types/debug": "^0.0.30",
     "@types/execa": "^0.8.1",
-    "@types/fs-extra": "5.0.0",
+    "@types/fs-extra": "5.0.1",
     "@types/jest": "22.1.2",
     "@types/lodash": "^4.14.103",
     "@types/nock": "9.1.2",
