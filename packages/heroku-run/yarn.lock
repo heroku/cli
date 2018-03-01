@@ -1044,6 +1044,12 @@ event-emitter@~0.3.5:
     d "1"
     es5-ext "~0.10.14"
 
+eventsource@^1.0.5:
+  version "1.0.5"
+  resolved "http://cli-npm.heroku.com/eventsource/-/eventsource-1.0.5/1f012c9df0bd8832fd6b1744fea00ccdd479f046.tgz#1f012c9df0bd8832fd6b1744fea00ccdd479f046"
+  dependencies:
+    original "^1.0.0"
+
 execa@^0.7.0:
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/execa/-/execa-0.7.0.tgz#944becd34cc41ee32a63a9faf27ad5a65fc59777"
@@ -2218,6 +2224,12 @@ optionator@^0.8.2:
     type-check "~0.3.2"
     wordwrap "~1.0.0"
 
+original@^1.0.0:
+  version "1.0.0"
+  resolved "http://cli-npm.heroku.com/original/-/original-1.0.0/9147f93fa1696d04be61e01bd50baeaca656bd3b.tgz#9147f93fa1696d04be61e01bd50baeaca656bd3b"
+  dependencies:
+    url-parse "1.0.x"
+
 os-homedir@^1.0.0, os-homedir@^1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/os-homedir/-/os-homedir-1.0.2.tgz#ffbc4988336e0e833de0c168c7ef152121aa7fb3"
@@ -2420,6 +2432,10 @@ query-string@^5.0.1:
     object-assign "^4.1.0"
     strict-uri-encode "^1.0.0"
 
+querystringify@0.0.x:
+  version "0.0.4"
+  resolved "http://cli-npm.heroku.com/querystringify/-/querystringify-0.0.4/0cf7f84f9463ff0ae51c4c4b142d95be37724d9c.tgz#0cf7f84f9463ff0ae51c4c4b142d95be37724d9c"
+
 randomatic@^1.1.3:
   version "1.1.7"
   resolved "https://registry.yarnpkg.com/randomatic/-/randomatic-1.1.7.tgz#c7abe9cc8b87c0baa876b19fde83fd464797e38c"
@@ -2528,6 +2544,10 @@ require-uncached@^1.0.2:
   dependencies:
     caller-path "^0.1.0"
     resolve-from "^1.0.0"
+
+requires-port@1.0.x:
+  version "1.0.0"
+  resolved "http://cli-npm.heroku.com/requires-port/-/requires-port-1.0.0/925d2601d39ac485e091cf0da5c6e694dc3dcaff.tgz#925d2601d39ac485e091cf0da5c6e694dc3dcaff"
 
 resolve-from@^1.0.0:
   version "1.0.1"
@@ -2944,6 +2964,13 @@ url-parse-lax@^3.0.0:
   resolved "https://registry.yarnpkg.com/url-parse-lax/-/url-parse-lax-3.0.0.tgz#16b5cafc07dbe3676c1b1999177823d6503acb0c"
   dependencies:
     prepend-http "^2.0.0"
+
+url-parse@1.0.x:
+  version "1.0.5"
+  resolved "http://cli-npm.heroku.com/url-parse/-/url-parse-1.0.5/0854860422afdcfefeb6c965c662d4800169927b.tgz#0854860422afdcfefeb6c965c662d4800169927b"
+  dependencies:
+    querystringify "0.0.x"
+    requires-port "1.0.x"
 
 url-to-options@^1.0.1:
   version "1.0.1"

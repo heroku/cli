@@ -20,6 +20,7 @@
     "cli-engine-heroku": "^5.0.4",
     "co": "4.6.0",
     "fs-extra": "^5.0.0",
+    "eventsource": "^1.0.5",
     "heroku-cli-util": "^8.0.0",
     "shellwords": "^0.1.1"
   },
