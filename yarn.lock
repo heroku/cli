@@ -158,9 +158,9 @@
     http-call "^4.0.8"
     netrc-parser "^3.0.3"
 
-"@heroku-cli/plugin-git@^2.5.26":
-  version "2.5.26"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-git/-/plugin-git-2.5.26.tgz#c330181e57010ecdd7b5aac00695eade20c0e4f1"
+"@heroku-cli/plugin-git@^2.5.28":
+  version "2.5.28"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-git/-/plugin-git-2.5.28.tgz#dbb3c1fdb58e23b8b90cc5ce59c22898d99a1a05"
   dependencies:
     co "4.6.0"
     debug "3.1.0"
@@ -184,9 +184,9 @@
     string-just "^0.0.2"
     validator "^6.2.1"
 
-"@heroku-cli/plugin-run@^3.5.10":
-  version "3.5.10"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-run/-/plugin-run-3.5.10.tgz#8139e65d4bf5681e9415ad88c44d50bf306d323b"
+"@heroku-cli/plugin-run@^3.5.13":
+  version "3.5.13"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-run/-/plugin-run-3.5.13.tgz#bf647fec149780d50e9f08e19de0c2f7d5dcc1c0"
   dependencies:
     cli-engine-heroku "^5.0.4"
     co "4.6.0"
