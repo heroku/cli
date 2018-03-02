@@ -166,6 +166,14 @@
     debug "3.1.0"
     heroku-cli-util "^8.0.0"
 
+"@heroku-cli/plugin-oauth@^2.1.0":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-oauth/-/plugin-oauth-2.2.0.tgz#6808d12b20ff0049006562db08d4a6bd6fcbca5c"
+  dependencies:
+    co "^4.6.0"
+    heroku-cli-util "^8.0.0"
+    lodash "^4.17.5"
+
 "@heroku-cli/plugin-pipelines@^2.5.2":
   version "2.5.2"
   resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-pipelines/-/plugin-pipelines-2.5.2.tgz#f41c0d74e8f45faf2dbad0e46628cafece1c1fb6"
@@ -2852,14 +2860,6 @@ heroku-cli-addons@1.2.26, heroku-cli-addons@^1.2.26:
     lodash.values "4.3.0"
     printf "0.2.5"
 
-heroku-cli-oauth@2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/heroku-cli-oauth/-/heroku-cli-oauth-2.1.0.tgz#e38fdf7307e010fa5b8612143f7ba4b97ed2830c"
-  dependencies:
-    co "^4.6.0"
-    heroku-cli-util "^6.2.0"
-    lodash "^4.17.4"
-
 heroku-cli-status@5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/heroku-cli-status/-/heroku-cli-status-5.0.0.tgz#1d99f7efc2775d9da7a0e983e7abb7e2e8f38e11"
@@ -4649,7 +4649,7 @@ lodash@4.17.4, lodash@^4.13.1, lodash@^4.14.0, lodash@^4.3.0, lodash@^4.5.1, lod
   version "4.17.4"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
 
-lodash@4.17.5, lodash@^4.17.4:
+lodash@4.17.5, lodash@^4.17.4, lodash@^4.17.5:
   version "4.17.5"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.5.tgz#99a92d65c0272debe8c96b6057bc8fbfa3bed511"
 
