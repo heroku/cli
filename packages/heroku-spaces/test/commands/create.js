@@ -7,6 +7,7 @@ let expect = require('chai').expect
 let cli = require('heroku-cli-util')
 
 let now = new Date()
+let features = [ 'one', 'two' ]
 
 describe('spaces:create', function () {
   beforeEach(() => cli.mockConsole())
@@ -17,7 +18,8 @@ describe('spaces:create', function () {
         name: 'my-space',
         team: 'my-team',
         region: 'my-region',
-        owner_pool: 'party'
+        owner_pool: 'party',
+        features: features
       })
       .reply(201,
         {shield: false, name: 'my-space', team: {name: 'my-team'}, region: {name: 'my-region'}, features: [ 'one', 'two' ], state: 'enabled', created_at: now}
@@ -40,7 +42,8 @@ Created at: ${now.toISOString()}
         name: 'my-space',
         team: 'my-team',
         region: 'my-region',
-        owner_pool: 'party'
+        owner_pool: 'party',
+        features: features
       })
       .reply(201,
         {shield: false, name: 'my-space', team: {name: 'my-team'}, region: {name: 'my-region'}, features: [ 'one', 'two' ], state: 'enabled', created_at: now}
@@ -56,7 +59,9 @@ Created at: ${now.toISOString()}
       .post('/spaces', {
         name: 'my-space',
         team: 'my-team',
-        region: 'my-region'
+        region: 'my-region',
+        features: features,
+        shield: true
       })
       .reply(201,
         {shield: true, name: 'my-space', team: {name: 'my-team'}, region: {name: 'my-region'}, features: [ 'one', 'two' ], state: 'enabled', created_at: now}
@@ -78,7 +83,9 @@ Created at: ${now.toISOString()}
       .post('/spaces', {
         name: 'my-space',
         team: 'my-team',
-        region: 'my-region'
+        region: 'my-region',
+        features: features,
+        shield: true
       })
       .reply(201,
         {shield: true, name: 'my-space', team: {name: 'my-team'}, region: {name: 'my-region'}, features: [ 'one', 'two' ], state: 'enabled', created_at: now}
@@ -95,7 +102,8 @@ Created at: ${now.toISOString()}
         name: 'my-space',
         team: 'my-team',
         region: 'my-region',
-        cidr: '10.0.0.0/16'
+        cidr: '10.0.0.0/16',
+        features: features
       })
       .reply(201,
         {shield: false, name: 'my-space', team: {name: 'my-team'}, region: {name: 'my-region'}, features: [ 'one', 'two' ], state: 'enabled', created_at: now}
@@ -124,7 +132,8 @@ Created at: ${now.toISOString()}
     let api = nock('https://api.heroku.com:443')
       .post('/spaces', {
         name: 'my-space',
-        team: 'my-team'
+        team: 'my-team',
+        features: []
       })
       .reply(201,
         {shield: false, name: 'my-space', team: {name: 'my-team'}, region: {name: 'my-region'}, features: [ 'one', 'two' ], state: 'enabled', created_at: now}
