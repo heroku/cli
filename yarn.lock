@@ -158,6 +158,14 @@
     http-call "^4.0.8"
     netrc-parser "^3.0.3"
 
+"@heroku-cli/plugin-container-registry@^4.4.10":
+  version "4.4.10"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-container-registry/-/plugin-container-registry-4.4.10.tgz#0d5e52da06a57b193c893f3244e376edabc33e48"
+  dependencies:
+    glob "7.1.0"
+    heroku-cli-util "6.1.17"
+    inquirer "3.0.6"
+
 "@heroku-cli/plugin-git@^2.5.28":
   version "2.5.28"
   resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-git/-/plugin-git-2.5.28.tgz#dbb3c1fdb58e23b8b90cc5ce59c22898d99a1a05"
@@ -3055,14 +3063,6 @@ heroku-client@^2.4.0:
     path-proxy "^1.0"
     q "^1.2.0"
     tunnel-agent "^0.4.0"
-
-heroku-container-registry@4.4.7:
-  version "4.4.7"
-  resolved "https://registry.yarnpkg.com/heroku-container-registry/-/heroku-container-registry-4.4.7.tgz#a97ca242b0d5fdd98b497eedfb7e612324a64256"
-  dependencies:
-    glob "7.1.0"
-    heroku-cli-util "6.1.17"
-    inquirer "3.0.6"
 
 heroku-exec-util@0.7.0:
   version "0.7.0"
