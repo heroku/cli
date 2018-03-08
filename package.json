@@ -44,10 +44,11 @@
       "host": "cli-assets.heroku.com"
     },
     "corePlugins": [
-      "@heroku-cli/plugin-run",
       "@heroku-cli/plugin-git",
       "@heroku-cli/plugin-oauth",
       "@heroku-cli/plugin-pipelines",
+      "@heroku-cli/plugin-run",
+      "@heroku-cli/plugin-spaces",
       "heroku-apps",
       "heroku-certs",
       "heroku-ci",
@@ -59,7 +60,6 @@
       "heroku-pg",
       "heroku-ps-exec",
       "heroku-redis",
-      "heroku-spaces",
       "heroku-webhooks"
     ]
   },
@@ -73,6 +73,7 @@
     "@heroku-cli/plugin-oauth": "^2.1.0",
     "@heroku-cli/plugin-pipelines": "^2.5.2",
     "@heroku-cli/plugin-run": "^3.5.14",
+    "@heroku-cli/plugin-spaces": "^2.11.2",
     "cli-flags": "^2.0.7",
     "cli-ux": "2.0.21",
     "debug": "3.1.0",
@@ -89,7 +90,6 @@
     "heroku-pg": "2.9.0",
     "heroku-ps-exec": "2.3.1",
     "heroku-redis": "1.3.0",
-    "heroku-spaces": "2.11.0",
     "heroku-webhooks": "1.1.0",
     "http-call": "4.0.8",
     "netrc-parser": "3.1.0",

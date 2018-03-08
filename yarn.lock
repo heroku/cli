@@ -203,6 +203,20 @@
     heroku-cli-util "^8.0.0"
     shellwords "^0.1.1"
 
+"@heroku-cli/plugin-spaces@^2.11.2":
+  version "2.11.2"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-spaces/-/plugin-spaces-2.11.2.tgz#14f1dcbf03aec91c614e391524015fa1cdbe2989"
+  dependencies:
+    cli-engine-command "^8.0.15"
+    cli-engine-config "^3.3.0"
+    cli-engine-heroku "^4.1.0"
+    co "4.6.0"
+    heroku-cli-util "^6.2.7"
+    lodash.foreach "^4.5.0"
+    lodash.reduce "^4.6.0"
+    lodash.sortby "^4.7.0"
+    strftime "^0.10.0"
+
 "@heroku-cli/tslint@^1.1.4":
   version "1.1.4"
   resolved "https://registry.yarnpkg.com/@heroku-cli/tslint/-/tslint-1.1.4.tgz#32f75496df3e3ecd7e14716c4250302025c7840f"
@@ -3151,20 +3165,6 @@ heroku-run@^3.4.16:
     co "4.6.0"
     heroku-cli-util "^6.2.7"
     shellwords "^0.1.1"
-
-heroku-spaces@2.11.0:
-  version "2.11.0"
-  resolved "https://registry.yarnpkg.com/heroku-spaces/-/heroku-spaces-2.11.0.tgz#b475633865dcfbaa18c9fb7080da3b84269c0858"
-  dependencies:
-    cli-engine-command "^8.0.15"
-    cli-engine-config "^3.3.0"
-    cli-engine-heroku "^4.1.0"
-    co "4.6.0"
-    heroku-cli-util "^6.2.7"
-    lodash.foreach "^4.5.0"
-    lodash.reduce "^4.6.0"
-    lodash.sortby "^4.7.0"
-    strftime "^0.10.0"
 
 heroku-webhooks@1.1.0:
   version "1.1.0"
