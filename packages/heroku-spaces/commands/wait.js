@@ -10,7 +10,7 @@ function * run (context, heroku) {
   if (!spaceName) throw new Error('Space name required.\nUSAGE: heroku spaces:wait my-space')
 
   const interval = (typeof context.flags.interval !== 'undefined' ? context.flags.interval : 30) * 1000
-  const timeout = (typeof context.flags.timeout !== 'undefined' ? context.flags.timeout : 15 * 60) * 1000
+  const timeout = (typeof context.flags.timeout !== 'undefined' ? context.flags.timeout : 25 * 60) * 1000
   const deadline = new Date(new Date().getTime() + timeout)
   const spinner = new cli.Spinner({text: `Waiting for space ${cli.color.green(spaceName)} to allocate...`})
 
