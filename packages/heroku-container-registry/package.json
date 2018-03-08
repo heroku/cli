@@ -1,28 +1,16 @@
 {
-  "name": "heroku-container-registry",
-  "version": "4.4.7",
-  "topic": "container",
+  "name": "@heroku-cli/plugin-container-registry",
   "description": "Use containers to build and deploy Heroku apps",
-  "main": "index.js",
-  "repository": "https://github.com/heroku/heroku-container-registry",
-  "scripts": {
-    "test": "TZ=utc nyc mocha && standard",
-    "depcheck": "depcheck || true"
-  },
-  "keywords": [
-    "heroku",
-    "container",
-    "cli",
-    "heroku-plugin"
-  ],
+  "version": "4.4.10",
   "author": "Hunter Loftis <hunter@heroku.com>",
-  "license": "ISC",
   "dependencies": {
     "glob": "7.1.0",
     "heroku-cli-util": "6.1.17",
     "inquirer": "3.0.6"
   },
   "devDependencies": {
+    "@oclif/dev-cli": "^1.2.16",
+    "@oclif/plugin-legacy": "^1.0.4",
     "chai": "3.2.0",
     "depcheck": "0.4.7",
     "mocha": "2.2.4",
@@ -33,7 +21,36 @@
     "standard": "8.6.0",
     "unexpected": "10.25.0"
   },
+  "files": [
+    ".oclif.manifest.json",
+    "index.js",
+    "commands",
+    "lib"
+  ],
+  "keywords": [
+    "cli",
+    "container",
+    "heroku",
+    "heroku-plugin"
+  ],
+  "license": "ISC",
+  "main": "index.js",
+  "repository": "https://github.com/heroku/heroku-container-registry",
+  "scripts": {
+    "depcheck": "depcheck || true",
+    "postpublish": "rm .oclif.manifest.json",
+    "prepublishOnly": "oclif-dev manifest",
+    "test": "TZ=utc nyc mocha && standard"
+  },
   "standard": {
     "env": "mocha"
+  },
+  "topic": "container",
+  "cli-engine": {
+    "topics": {
+      "container": {
+        "description": "Use containers to build and deploy Heroku apps"
+      }
+    }
   }
 }
