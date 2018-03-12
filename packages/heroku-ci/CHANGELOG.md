@@ -4,9 +4,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
-- Add pipeline flag options completion
-- Fix help output
+## [1.9.8] - 2018-03-07
+### Fix
+
+- Fix package.json for oclif
+
+## [1.9.7] - 2018-03-07
+### Changed
+
+- Move plugin topics to package.json
+
+## [1.9.6] - 2018-03-07
+### Changed
+
+- Update plugin to be compatible with oclif
 
 ## [1.9.5] - 2017-08-08
 ### Added
