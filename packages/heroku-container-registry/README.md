@@ -1,11 +1,11 @@
 # Heroku Container Registry CLI plugin
 
-Heroku Toolbelt plugin to release apps to Heroku that are built on local containers.
+Heroku CLI plugin to release apps to Heroku that are built on local containers.
 
 ## Installation
 
 ```
-$ heroku plugins:install heroku-container-registry
+$ heroku plugins:install @heroku-cli/plugin-container-registry
 ```
 
 ## Use
