@@ -50,6 +50,8 @@ let push = async function (context, heroku) {
     cli.error(`Error: Requires exactly one target process type, or --recursive option\n ${usage} `, 1)
     return
   }
+  await heroku.get(`/apps/${context.app}`)
+
   let herokuHost = process.env.HEROKU_HOST || 'heroku.com'
   let registry = `registry.${herokuHost}`
   let dockerfiles = Sanbashi.getDockerfiles(process.cwd(), recurse)

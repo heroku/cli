@@ -4,6 +4,7 @@ const cli = require('heroku-cli-util')
 const cmd = require('../..').commands.find(c => c.topic === 'container' && c.command === 'push')
 const expect = require('unexpected')
 const sinon = require('sinon')
+const nock = require('nock')
 
 const Sanbashi = require('../../lib/sanbashi')
 var sandbox
@@ -16,6 +17,10 @@ describe('container push', () => {
   afterEach(() => sandbox.restore())
 
   it('gets a build error', () => {
+    let api = nock('https://api.heroku.com:443')
+      .get('/apps/testapp')
+      .reply(200, {name: 'testapp'})
+
     let dockerfiles = sandbox.stub(Sanbashi, 'getDockerfiles')
       .returns(['/path/to/Dockerfile'])
     let build = sandbox.stub(Sanbashi, 'buildImage').throws()
@@ -25,9 +30,14 @@ describe('container push', () => {
       .then(() => expect(cli.stdout, 'to contain', 'Building web (/path/to/Dockerfile)'))
       .then(() => sandbox.assert.calledOnce(dockerfiles))
       .then(() => sandbox.assert.calledOnce(build))
+      .then(() => api.done())
   })
 
   it('gets a push error', () => {
+    let api = nock('https://api.heroku.com:443')
+      .get('/apps/testapp')
+      .reply(200, {name: 'testapp'})
+
     let dockerfiles = sandbox.stub(Sanbashi, 'getDockerfiles')
       .returns(['/path/to/Dockerfile'])
     let build = sandbox.stub(Sanbashi, 'buildImage')
@@ -39,9 +49,14 @@ describe('container push', () => {
       .then(() => sandbox.assert.calledOnce(dockerfiles))
       .then(() => sandbox.assert.calledOnce(build))
       .then(() => sandbox.assert.calledOnce(push))
+      .then(() => api.done())
   })
 
   it('pushes to the docker registry', () => {
+    let api = nock('https://api.heroku.com:443')
+      .get('/apps/testapp')
+      .reply(200, {name: 'testapp'})
+
     let dockerfiles = sandbox.stub(Sanbashi, 'getDockerfiles')
       .returns(['/path/to/Dockerfile'])
     let build = sandbox.stub(Sanbashi, 'buildImage')
@@ -56,9 +71,14 @@ describe('container push', () => {
       .then(() => sandbox.assert.calledOnce(dockerfiles))
       .then(() => sandbox.assert.calledOnce(build))
       .then(() => sandbox.assert.calledOnce(push))
+      .then(() => api.done())
   })
 
   it('pushes the standard dockerfile to non-web', () => {
+    let api = nock('https://api.heroku.com:443')
+      .get('/apps/testapp')
+      .reply(200, {name: 'testapp'})
+
     let dockerfiles = sandbox.stub(Sanbashi, 'getDockerfiles')
       .returns(['/path/to/Dockerfile'])
     let build = sandbox.stub(Sanbashi, 'buildImage')
@@ -73,9 +93,14 @@ describe('container push', () => {
       .then(() => sandbox.assert.calledOnce(dockerfiles))
       .then(() => sandbox.assert.calledOnce(build))
       .then(() => sandbox.assert.calledOnce(push))
+      .then(() => api.done())
   })
 
   it('pushes several dockerfiles recursively', () => {
+    let api = nock('https://api.heroku.com:443')
+      .get('/apps/testapp')
+      .reply(200, {name: 'testapp'})
+
     let dockerfiles = sandbox.stub(Sanbashi, 'getDockerfiles')
       .returns(['/path/to/Dockerfile.web', '/path/to/Dockerfile.worker'])
     let build = sandbox.stub(Sanbashi, 'buildImage')
@@ -94,9 +119,14 @@ describe('container push', () => {
       .then(() => sandbox.assert.calledOnce(dockerfiles))
       .then(() => sandbox.assert.calledTwice(build))
       .then(() => sandbox.assert.calledTwice(push))
+      .then(() => api.done())
   })
 
   it('does not find an image to push', () => {
+    let api = nock('https://api.heroku.com:443')
+      .get('/apps/testapp')
+      .reply(200, {name: 'testapp'})
+
     let dockerfiles = sandbox.stub(Sanbashi, 'getDockerfiles')
       .returns([])
 
@@ -104,6 +134,7 @@ describe('container push', () => {
       .then(() => expect(cli.stderr, 'to contain', 'No images to push'))
       .then(() => expect(cli.stdout, 'to be empty'))
       .then(() => sandbox.assert.calledOnce(dockerfiles))
+      .then(() => api.done())
   })
 
   it('requires a process type if we are not recursive', () => {
