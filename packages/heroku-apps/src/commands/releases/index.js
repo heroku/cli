@@ -8,15 +8,17 @@ function * run (context, heroku) {
   const time = require('../../time')
   const truncate = require('lodash.truncate')
 
+  let optimizationWidth = 0
+
   let descriptionWithStatus = function (d, r) {
     const width = () => process.stdout.columns > 80 ? process.stdout.columns : 80
-    const trunc = (s, l) => truncate(s, {length: width() - (60 + l), omission: '…'})
+    const trunc = (s, l) => truncate(s, {length: width() - (optimizationWidth + l), omission: '…'})
     let status = statusHelper.description(r, runningRelease, runningSlug)
-    let sc = ''
     if (status) {
-      sc = cli.color[statusHelper.color(r.status)](status)
+      let sc = cli.color[statusHelper.color(r.status)](status)
+      return trunc(d, status.length + 1) + ' ' + sc
     }
-    return trunc(d, sc.length) + ' ' + sc
+    return trunc(d, 0)
   }
 
   let url = `/apps/${context.app}/releases`
@@ -40,11 +42,56 @@ function * run (context, heroku) {
     runningSlug = yield heroku.get(`/apps/${context.app}/slugs/${runningRelease.slug.id}`)
   }
 
+  let optimizeWidth = function (releases, columns, optimizeKey) {
+    for (let col of columns) {
+      col.optimizationWidth = 0
+    }
+
+    for (let row of releases) {
+      for (let colKey in row) {
+        if (colKey === optimizeKey) {
+          continue
+        }
+
+        for (let col of columns) {
+          let parts = col.key.split('.')
+          let matchKey = parts[0]
+          if (matchKey !== colKey) {
+            continue
+          }
+
+          let colValue = row
+          for (let part of parts) {
+            colValue = colValue[part]
+          }
+
+          let formattedValue
+          if (col.format) {
+            formattedValue = col.format(colValue, row)
+          } else {
+            formattedValue = colValue.toString()
+          }
+
+          col.optimizationWidth = Math.max(
+            col.optimizationWidth,
+            formattedValue.length
+          )
+        }
+      }
+    }
+
+    for (let col of columns) {
+      if (col.key !== optimizeKey) {
+        optimizationWidth += col.optimizationWidth + 2
+      }
+    }
+  }
+
   if (context.flags.json) {
     cli.log(JSON.stringify(releases, null, 2))
   } else if (context.flags.extended) {
     cli.styledHeader(header)
-    cli.table(releases, {
+    let options = {
       printHeader: false,
       columns: [
         {key: 'version', format: (v, r) => cli.color[statusHelper.color(r.status)]('v' + v)},
@@ -54,12 +101,14 @@ function * run (context, heroku) {
         {key: 'extended.slug_id'},
         {key: 'extended.slug_uuid'}
       ]
-    })
+    }
+    optimizeWidth(releases, options.columns, 'description')
+    cli.table(releases, options)
   } else if (releases.length === 0) {
     cli.log(`${context.app} has no releases.`)
   } else {
     cli.styledHeader(header)
-    cli.table(releases, {
+    let options = {
       printHeader: false,
       columns: [
         {key: 'version', label: '', format: (v, r) => cli.color[statusHelper.color(r.status)]('v' + v)},
@@ -67,7 +116,9 @@ function * run (context, heroku) {
         {key: 'user', format: (u) => cli.color.magenta(u.email)},
         {key: 'created_at', format: (t) => time.ago(new Date(t))}
       ]
-    })
+    }
+    optimizeWidth(releases, options.columns, 'description')
+    cli.table(releases, options)
   }
 }
 
