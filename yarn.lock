@@ -456,9 +456,9 @@
   version "0.0.30"
   resolved "https://registry.yarnpkg.com/@types/debug/-/debug-0.0.30.tgz#dc1e40f7af3b9c815013a7860e6252f6352a84df"
 
-"@types/execa@^0.8.1":
-  version "0.8.1"
-  resolved "https://registry.yarnpkg.com/@types/execa/-/execa-0.8.1.tgz#0a9398c7661015c7d6c8e09d1f0a4018d5002f6e"
+"@types/execa@^0.9.0":
+  version "0.9.0"
+  resolved "http://cli-npm.heroku.com/@types/execa/-/execa-0.9.0/9b025d2755f17e80beaf9368c3f4f319d8b0fb93.tgz#9b025d2755f17e80beaf9368c3f4f319d8b0fb93"
   dependencies:
     "@types/node" "*"
 
