@@ -27,7 +27,7 @@ function * run (context, heroku) {
 module.exports = {
   topic: 'clients',
   command: 'rotate',
-  description: '(sudo) rotate OAuth client secret',
+  description: 'rotate OAuth client secret',
   args: [{name: 'id'}],
   flags: [
     {name: 'json', description: 'output in json format'},

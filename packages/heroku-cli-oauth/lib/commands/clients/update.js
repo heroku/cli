@@ -30,7 +30,7 @@ function * run (context, heroku) {
 module.exports = {
   topic: 'clients',
   command: 'update',
-  description: '(sudo) update OAuth client',
+  description: 'update OAuth client',
   args: [{name: 'id'}],
   flags: [
     {name: 'name', char: 'n', hasValue: true, description: 'change the client name'},
