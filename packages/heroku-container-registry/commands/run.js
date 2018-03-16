@@ -1,5 +1,6 @@
 const cli = require('heroku-cli-util')
 const Sanbashi = require('../lib/sanbashi')
+const debug = require('../lib/debug')
 
 let usage = `
     ${cli.color.bold.underline.magenta('Usage:')}
@@ -33,6 +34,7 @@ module.exports = function (topic) {
 }
 
 let run = async function (context, heroku) {
+  if (context.flags.verbose) debug.enabled = true
   if (context.args.length === 0) {
     cli.error(`Error: Requires one process type\n ${usage} `, 1)
     return
@@ -63,7 +65,7 @@ let run = async function (context, heroku) {
     cli.styledHeader(`Running '${command}' on ${job.resource}`)
   }
   try {
-    await Sanbashi.runImage(job.resource, command, context.flags.port || 5000, context.flags.verbose)
+    await Sanbashi.runImage(job.resource, command, context.flags.port || 5000)
   } catch (err) {
     cli.error(`Error: docker run exited with ${err}`, 1)
   }

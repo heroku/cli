@@ -1,6 +1,6 @@
 const cli = require('heroku-cli-util')
-const log = require('../lib/log')
 const Sanbashi = require('../lib/sanbashi')
+const debug = require('../lib/debug')
 
 module.exports = function (topic) {
   return {
@@ -15,21 +15,21 @@ module.exports = function (topic) {
 }
 
 async function logout (context, heroku) {
+  if (context.flags.verbose) debug.enabled = true
   let herokuHost = process.env.HEROKU_HOST || 'heroku.com'
   let registry = `registry.${herokuHost}`
 
   try {
-    await dockerLogout(registry, context.flags.verbose)
+    await dockerLogout(registry)
   } catch (err) {
     cli.error(`Error: docker logout exited with ${err}`)
   }
 }
 
-function dockerLogout (registry, verbose) {
+function dockerLogout (registry) {
   let args = [
     'logout',
     registry
   ]
-  log(verbose, args)
   return Sanbashi.cmd('docker', args)
 }

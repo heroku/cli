@@ -1,5 +1,6 @@
 const cli = require('heroku-cli-util')
 const Sanbashi = require('../lib/sanbashi')
+const debug = require('../lib/debug')
 
 let usage = `
     ${cli.color.bold.underline.magenta('Usage:')}
@@ -41,6 +42,7 @@ module.exports = function (topic) {
 }
 
 let push = async function (context, heroku) {
+  if (context.flags.verbose) debug.enabled = true
   const recurse = !!context.flags.recursive
   if (context.args.length === 0 && !recurse) {
     cli.error(`Error: Requires either --recursive or one or more process types\n ${usage} `, 1)
@@ -74,7 +76,6 @@ let push = async function (context, heroku) {
 
   let flagsArg = context.flags.arg
   let buildArg = (flagsArg !== undefined) ? flagsArg.split(',') : []
-  let verbose = context.flags.verbose || false
 
   try {
     for (let job of jobs) {
@@ -83,7 +84,7 @@ let push = async function (context, heroku) {
       } else {
         cli.styledHeader(`Building ${job.name} (${job.dockerfile})`)
       }
-      await Sanbashi.buildImage(job.dockerfile, job.resource, verbose, buildArg)
+      await Sanbashi.buildImage(job.dockerfile, job.resource, buildArg)
     }
   } catch (err) {
     cli.error(`Error: docker build exited with ${err}`, 1)
@@ -97,7 +98,7 @@ let push = async function (context, heroku) {
       } else {
         cli.styledHeader(`Pushing ${job.name} (${job.dockerfile})`)
       }
-      await Sanbashi.pushImage(job.resource, verbose)
+      await Sanbashi.pushImage(job.resource)
     }
   } catch (err) {
     cli.error(`Error: docker push exited with ${err}`, 1)

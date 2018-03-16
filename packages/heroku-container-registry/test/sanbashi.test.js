@@ -97,7 +97,7 @@ describe('Sanbashi', () => {
     it('set build-time variables', () => {
       let buildArg = ['ENV=live', 'HTTPS=on']
       let cmd = Sinon.stub(Sanbashi, 'cmd')
-      Sanbashi.buildImage(dockerfile, resource, false, buildArg)
+      Sanbashi.buildImage(dockerfile, resource, buildArg)
       let dockerArg = ['build', '-f', dockerfile, '-t', 'web', '--build-arg', 'ENV=live', '--build-arg', 'HTTPS=on', path]
       Sinon.assert.calledWith(cmd, 'docker', dockerArg)
     })
@@ -105,7 +105,7 @@ describe('Sanbashi', () => {
     it('skip build-time variables if empty', () => {
       let buildArg = ['']
       let cmd = Sinon.stub(Sanbashi, 'cmd')
-      Sanbashi.buildImage(dockerfile, resource, false, buildArg)
+      Sanbashi.buildImage(dockerfile, resource, buildArg)
       let dockerArg = ['build', '-f', dockerfile, '-t', 'web', path]
       Sinon.assert.calledWith(cmd, 'docker', dockerArg)
     })

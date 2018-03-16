@@ -1,6 +1,6 @@
 const cli = require('heroku-cli-util')
-const log = require('../lib/log')
 const Sanbashi = require('../lib/sanbashi')
+const debug = require('../lib/debug')
 
 module.exports = function (topic) {
   return {
@@ -17,45 +17,44 @@ module.exports = function (topic) {
 }
 
 async function login (context, heroku) {
+  if (context.flags.verbose) debug.enabled = true
   let herokuHost = process.env.HEROKU_HOST || 'heroku.com'
   let registry = `registry.${herokuHost}`
   let password = context.auth.password
+  if (!password) throw new Error('not logged in')
 
   try {
-    await dockerLogin(registry, password, context.flags.verbose)
+    await dockerLogin(registry, password)
   } catch (err) {
     cli.error(`Error: docker login exited with ${err}`, 1)
   }
 }
 
-async function dockerLogin (registry, password, verbose) {
+async function dockerLogin (registry, password) {
   let [major, minor] = await Sanbashi.version()
 
   if (major > 17 || major === 17 && minor >= 7) {
-    return await dockerLoginStdin(registry, password, verbose)
+    return await dockerLoginStdin(registry, password)
   }
-  return await dockerLoginArgv(registry, password, verbose)
+  return await dockerLoginArgv(registry, password)
 }
 
-function dockerLoginStdin (registry, password, verbose) {
+function dockerLoginStdin (registry, password) {
   let args = [
     'login',
     '--username=_',
     '--password-stdin',
     registry
   ]
-
-  log(verbose, args)
   return Sanbashi.cmd('docker', args, {input: password})
 }
 
-function dockerLoginArgv (registry, password, verbose) {
+function dockerLoginArgv (registry, password) {
   let args = [
     'login',
     '--username=_',
     `--password=${password}`,
     registry
   ]
-  log(verbose, args)
   return Sanbashi.cmd('docker', args)
 }
