@@ -269,11 +269,12 @@
     heroku-cli-util "^8.0.0"
     lodash.flatten "^4.4.0"
 
-"@heroku-cli/plugin-oauth@^2.2.1":
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-oauth/-/plugin-oauth-2.2.1.tgz#97a1bf87379a6589c3eaac884b2ce14c17b08722"
+"@heroku-cli/plugin-oauth@^2.3.0":
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-oauth/-/plugin-oauth-2.3.0.tgz#9d1e6a6f13e4bb4edf8bb3173273b7ed15e089d8"
   dependencies:
     co "^4.6.0"
+    date-fns "^1.29.0"
     heroku-cli-util "^8.0.0"
     lodash "^4.17.5"
 
