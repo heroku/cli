@@ -17,7 +17,7 @@ describe('authorizations:info', () => {
     api.done()
   })
 
-  beforeEach(() => {
+  it('shows the authorization', () => {
     api
       .get('/oauth/authorizations/10')
       .reply(200, {
@@ -26,9 +26,6 @@ describe('authorizations:info', () => {
         scope: ['global'],
         access_token: {token: 'secrettoken'}
       })
-  })
-
-  it('shows the authorization', () => {
     return cmd.run({args: {id: '10'}, flags: {}})
     .then(() => expect(cli.stdout, 'to equal', `Client:      <none>
 ID:          10
@@ -38,7 +35,28 @@ Token:       secrettoken\n`))
   })
 
   it('shows the authorization as json', () => {
+    api
+      .get('/oauth/authorizations/10')
+      .reply(200, {
+        id: '10',
+        description: 'desc',
+        scope: ['global'],
+        access_token: {token: 'secrettoken'}
+      })
     return cmd.run({args: {id: '10'}, flags: {json: true}})
     .then(() => expect(JSON.parse(cli.stdout), 'to satisfy', {id: '10'}))
+  })
+
+  it('shows expires in', () => {
+    api
+      .get('/oauth/authorizations/10')
+      .reply(200, {
+        id: '10',
+        description: 'desc',
+        scope: ['global'],
+        access_token: {token: 'secrettoken', expires_in: 100000}
+      })
+    return cmd.run({args: {id: '10'}, flags: {}})
+    .then(() => expect(cli.stdout, 'to contain', '(1 day)'))
   })
 })

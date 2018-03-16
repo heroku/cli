@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "co": "^4.6.0",
+    "date-fns": "^1.29.0",
     "heroku-cli-util": "^8.0.0",
     "lodash": "^4.17.5"
   },
