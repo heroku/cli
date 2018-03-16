@@ -166,9 +166,9 @@
     lodash.values "4.3.0"
     printf "0.2.5"
 
-"@heroku-cli/plugin-apps@^2.4.27":
-  version "2.4.27"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-apps/-/plugin-apps-2.4.27.tgz#797df0d55b62908b45bd0b3a75f694445ed39416"
+"@heroku-cli/plugin-apps@^2.4.28":
+  version "2.4.28"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-apps/-/plugin-apps-2.4.28.tgz#07b5e03d6416bd4660c4f4cb0ec258a1a4fa5d7e"
   dependencies:
     bluebird "^3.5.1"
     cli-engine-command "^9.0.7"
@@ -269,9 +269,9 @@
     heroku-cli-util "^8.0.0"
     lodash.flatten "^4.4.0"
 
-"@heroku-cli/plugin-oauth@^2.3.0":
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-oauth/-/plugin-oauth-2.3.0.tgz#9d1e6a6f13e4bb4edf8bb3173273b7ed15e089d8"
+"@heroku-cli/plugin-oauth@^2.3.1":
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-oauth/-/plugin-oauth-2.3.1.tgz#1059505802a29702e658b6d41b102d5df45fd933"
   dependencies:
     co "^4.6.0"
     date-fns "^1.29.0"
