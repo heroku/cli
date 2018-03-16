@@ -24,7 +24,7 @@ export default {
   flags: [
     {name: 'browser', description: 'browser to open SSO with'},
     {name: 'sso', description: 'login for enterprise users under SSO'},
-    {name: 'expires-in', char: 'e', description: 'duration of token in seconds', hasValue: true}
+    {name: 'expires-in', char: 'e', description: 'duration of token in seconds (default 1 year)', hasValue: true}
   ],
   run: cli.command(co.wrap(run))
 }
