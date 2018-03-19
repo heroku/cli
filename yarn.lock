@@ -30,9 +30,9 @@
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/@cli-engine/config/-/config-5.1.0.tgz#d8ac7122317bc505dc09e7fd778777602d6b7568"
 
-"@cli-engine/engine@6.2.1":
-  version "6.2.1"
-  resolved "http://cli-npm.heroku.com/@cli-engine/engine/-/engine-6.2.1/d71e70027d9d92fd2b3f9f863d30af5a7a1f78fa.tgz#d71e70027d9d92fd2b3f9f863d30af5a7a1f78fa"
+"@cli-engine/engine@6.2.2":
+  version "6.2.2"
+  resolved "http://cli-npm.heroku.com/@cli-engine/engine/-/engine-6.2.2/4bdd569e4c70ce3bd115445a92bbd05680a0b16b.tgz#4bdd569e4c70ce3bd115445a92bbd05680a0b16b"
   dependencies:
     "@heroku-cli/color" "^1.1.1"
     "@types/load-json-file" "^2.0.7"
