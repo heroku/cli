@@ -47,8 +47,8 @@ const shouldInfo = function (cmdRun) {
 Database:         RED
 Status:           Pending
 Type:             Manual
-Original DB Size: 976.56kB
-Backup Size:      97.66kB
+Original DB Size: 976.56KB
+Backup Size:      97.66KB
 
 === Backup Logs
 100 foo
@@ -79,8 +79,8 @@ Backup Size:      97.66kB
 Database:         RED
 Status:           Pending
 Type:             Manual
-Original DB Size: 976.56kB
-Backup Size:      97.66kB
+Original DB Size: 976.56KB
+Backup Size:      97.66KB
 
 === Backup Logs
 100 foo
@@ -112,8 +112,8 @@ Database:         RED
 Finished at:      100
 Status:           Completed
 Type:             Manual
-Original DB Size: 976.56kB
-Backup Size:      97.66kB (90% compression)
+Original DB Size: 976.56KB
+Backup Size:      97.66KB (90% compression)
 
 === Backup Logs
 100 foo

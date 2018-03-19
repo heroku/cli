@@ -101,11 +101,11 @@ No copies found. Use heroku pg:copy to copy a database to another
       .then(() => expect(cli.stdout, 'to equal', `=== Backups
 ID    Created at                 Status                               Size    Database
 ────  ─────────────────────────  ───────────────────────────────────  ──────  ────────
-b006  2016-10-08 00:42:54 +0000  Running (processed 1.40kB)           1.40kB  DATABASE
-b005  2016-10-08 00:42:54 +0000  Pending                              1.40kB  DATABASE
-b004  2016-10-08 00:42:54 +0000  Failed 2016-10-08 00:43:00 +0000     1.40kB  DATABASE
-a010  2016-10-08 00:42:54 +0000  Completed 2016-10-08 00:43:00 +0000  1.40kB  DATABASE
-b003  2016-10-08 00:42:54 +0000  Finished with 2 warnings             1.40kB  DATABASE
+b006  2016-10-08 00:42:54 +0000  Running (processed 1.40KB)           1.40KB  DATABASE
+b005  2016-10-08 00:42:54 +0000  Pending                              1.40KB  DATABASE
+b004  2016-10-08 00:42:54 +0000  Failed 2016-10-08 00:43:00 +0000     1.40KB  DATABASE
+a010  2016-10-08 00:42:54 +0000  Completed 2016-10-08 00:43:00 +0000  1.40KB  DATABASE
+b003  2016-10-08 00:42:54 +0000  Finished with 2 warnings             1.40KB  DATABASE
 
 === Restores
 No restores found. Use heroku pg:backups:restore to restore a backup
@@ -142,7 +142,7 @@ No backups. Capture one with heroku pg:backups:capture
 === Restores
 ID    Started at                 Status                               Size    Database
 ────  ─────────────────────────  ───────────────────────────────────  ──────  ────────
-r003  2016-10-08 00:42:54 +0000  Completed 2016-10-08 00:43:00 +0000  1.40kB  IVORY
+r003  2016-10-08 00:42:54 +0000  Completed 2016-10-08 00:43:00 +0000  1.40KB  IVORY
 
 === Copies
 No copies found. Use heroku pg:copy to copy a database to another
@@ -181,7 +181,7 @@ No restores found. Use heroku pg:backups:restore to restore a backup
 === Copies
 ID    Started at                 Status                               Size    From  To
 ────  ─────────────────────────  ───────────────────────────────────  ──────  ────  ─────
-c003  2016-10-08 00:42:54 +0000  Completed 2016-10-08 00:43:00 +0000  1.40kB  RED   IVORY
+c003  2016-10-08 00:42:54 +0000  Completed 2016-10-08 00:43:00 +0000  1.40KB  RED   IVORY
 
 `))
     })

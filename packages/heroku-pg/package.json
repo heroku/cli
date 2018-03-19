@@ -7,13 +7,13 @@
     "url": "https://github.com/heroku/heroku-pg/issues"
   },
   "dependencies": {
-    "bytes": "^2.5.0",
+    "bytes": "^3.0.0",
     "co": "^4.6.0",
     "co-wait": "^0.0.0",
-    "debug": "^3.0.0",
-    "filesize": "^3.5.10",
+    "debug": "^3.1.0",
+    "filesize": "^3.6.0",
     "heroku-cli-addons": "^1.2.26",
-    "heroku-cli-util": "^6.2.0",
+    "heroku-cli-util": "^8.0.0",
     "lodash.capitalize": "^4.2.1",
     "lodash.flatten": "^4.4.0",
     "lodash.sample": "^4.2.1",
@@ -23,20 +23,20 @@
     "smooth-progress": "^1.1.0",
     "string": "^3.3.3",
     "strip-eof": "^1.0.0",
-    "tunnel-ssh": "^4.1.3"
+    "tunnel-ssh": "^4.1.4"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.2.16",
-    "@oclif/plugin-legacy": "^1.0.4",
-    "heroku-client": "^3.0.2",
-    "mocha": "^3.4.2",
+    "@oclif/dev-cli": "^1.2.20",
+    "@oclif/plugin-legacy": "^1.0.5",
+    "heroku-client": "^3.0.6",
+    "mocha": "^5.0.4",
     "nock": "9.1.6",
-    "np": "^2.16.0",
-    "nyc": "^11.0.3",
+    "np": "^2.20.1",
+    "nyc": "^11.6.0",
     "proxyquire": "^1.8.0",
     "sinon": "<2",
     "standard": "^10.0.2",
-    "unexpected": "^10.29.0"
+    "unexpected": "^10.37.2"
   },
   "files": [
     ".oclif.manifest.json",
