@@ -18,7 +18,7 @@ USAGE
   $ heroku buildpacks [OPTIONS]
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: foobar] app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
@@ -35,7 +35,7 @@ USAGE
   $ heroku buildpacks:add URL [OPTIONS]
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: foobar] app to run command against
   -i, --index=index    the 1-based index of the URL in the list of URLs
   -r, --remote=remote  git remote of app to use
 
@@ -54,7 +54,7 @@ USAGE
   $ heroku buildpacks:clear [OPTIONS]
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: foobar] app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -67,7 +67,7 @@ USAGE
   $ heroku buildpacks:remove [URL] [OPTIONS]
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: foobar] app to run command against
   -i, --index=index    the 1-based index of the URL to remove from the list of URLs
   -r, --remote=remote  git remote of app to use
 ```
@@ -81,7 +81,7 @@ USAGE
   $ heroku buildpacks:set URL [OPTIONS]
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: foobar] app to run command against
   -i, --index=index    the 1-based index of the URL in the list of URLs
   -r, --remote=remote  git remote of app to use
 

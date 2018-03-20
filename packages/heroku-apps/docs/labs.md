@@ -17,7 +17,7 @@ USAGE
   $ heroku labs [OPTIONS]
 
 OPTIONS
-  -a, --app=app        app to run command against
+  -a, --app=app        [default: foobar] app to run command against
   -r, --remote=remote  git remote of app to use
   --json               display as json
 ```
@@ -31,9 +31,9 @@ USAGE
   $ heroku labs:disable [FEATURE] [OPTIONS]
 
 OPTIONS
-  -a, --app     app to run command against
-  -r, --remote  git remote of app to use
-  --confirm
+  -a, --app=app        [default: foobar] app to run command against
+  -r, --remote=remote  git remote of app to use
+  --confirm=confirm
 ```
 
 ### labs:enable
@@ -45,7 +45,7 @@ USAGE
   $ heroku labs:enable FEATURE [OPTIONS]
 
 OPTIONS
-  -a, --app=app        app to run command against
+  -a, --app=app        [default: foobar] app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -58,7 +58,7 @@ USAGE
   $ heroku labs:info FEATURE [OPTIONS]
 
 OPTIONS
-  -a, --app=app        app to run command against
+  -a, --app=app        [default: foobar] app to run command against
   -r, --remote=remote  git remote of app to use
   --json               display as json
 ```

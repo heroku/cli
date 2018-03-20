@@ -17,7 +17,7 @@ USAGE
   $ heroku releases [OPTIONS]
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: foobar] app to run command against
   -n, --num=num        number of releases to show
   -r, --remote=remote  git remote of app to use
   --json               output releases in json format
@@ -42,7 +42,7 @@ USAGE
   $ heroku releases:info [RELEASE] [OPTIONS]
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: foobar] app to run command against
   -r, --remote=remote  git remote of app to use
   -s, --shell          output in shell format
   --json               output in json format
@@ -57,7 +57,7 @@ USAGE
   $ heroku releases:output [RELEASE] [OPTIONS]
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: foobar] app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -70,7 +70,7 @@ USAGE
   $ heroku releases:rollback [RELEASE] [OPTIONS]
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: foobar] app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION

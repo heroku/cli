@@ -16,7 +16,7 @@ USAGE
   $ heroku maintenance [OPTIONS]
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: foobar] app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -29,7 +29,7 @@ USAGE
   $ heroku maintenance:off [OPTIONS]
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: foobar] app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -42,6 +42,6 @@ USAGE
   $ heroku maintenance:on [OPTIONS]
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: foobar] app to run command against
   -r, --remote=remote  git remote of app to use
 ```

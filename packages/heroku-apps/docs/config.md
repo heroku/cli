@@ -17,7 +17,7 @@ USAGE
   $ heroku config [OPTIONS]
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: foobar] app to run command against
   -r, --remote=remote  git remote of app to use
   -s, --shell          output config vars in shell format
   --json               output config vars in json format
@@ -32,7 +32,7 @@ USAGE
   $ heroku config:get KEY [OPTIONS]
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: foobar] app to run command against
   -r, --remote=remote  git remote of app to use
   -s, --shell          output config var in shell format
 
@@ -52,7 +52,7 @@ USAGE
   $ heroku config:set [OPTIONS]
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: foobar] app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
@@ -77,7 +77,7 @@ USAGE
   $ heroku config:unset [OPTIONS]
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: foobar] app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
