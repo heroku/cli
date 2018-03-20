@@ -2,8 +2,8 @@
 
 let co = require('co')
 let cli = require('heroku-cli-util')
-const {flags} = require('cli-engine-heroku')
-const {BuildpackCompletion, RegionCompletion, RemoteCompletion, SpaceCompletion, StackCompletion} = require('cli-engine-heroku/lib/completions')
+const {flags} = require('@heroku-cli/command')
+const {BuildpackCompletion, RegionCompletion, RemoteCompletion, SpaceCompletion, StackCompletion} = require('@heroku-cli/command/lib/completions')
 
 function * run (context, heroku) {
   let git = require('../../git')(context)

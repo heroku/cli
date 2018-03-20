@@ -19,7 +19,7 @@ it('shows 2fa is enabled', async () => {
     .reply(200, {two_factor_authentication: true})
 
   let cmd = await Index.mock()
-  expect(cmd.out.stdout.output).toEqual('Two-factor authentication is enabled\n')
+  expect(cmd.stdout).toEqual('Two-factor authentication is enabled\n')
 })
 
 it('shows 2fa is disabled', async () => {
@@ -28,5 +28,5 @@ it('shows 2fa is disabled', async () => {
     .reply(200, {two_factor_authentication: false})
 
   let cmd = await Index.mock()
-  expect(cmd.out.stdout.output).toEqual('Two-factor authentication is not enabled\n')
+  expect(cmd.stdout).toEqual('Two-factor authentication is not enabled\n')
 })

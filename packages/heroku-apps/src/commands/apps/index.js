@@ -2,8 +2,8 @@
 
 const co = require('co')
 const cli = require('heroku-cli-util')
-const {flags} = require('cli-engine-heroku')
-const {SpaceCompletion} = require('cli-engine-heroku/lib/completions')
+const {flags} = require('@heroku-cli/command')
+const {SpaceCompletion} = require('@heroku-cli/command/lib/completions')
 
 function * run (context, heroku) {
   const sortBy = require('lodash.sortby')

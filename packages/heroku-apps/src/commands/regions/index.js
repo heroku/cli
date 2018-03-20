@@ -1,6 +1,7 @@
 // @flow
 
-import {Command, flags} from 'cli-engine-heroku'
+import {Command, flags} from '@heroku-cli/command'
+import {cli} from 'cli-ux'
 
 export default class LabsDisable extends Command {
   static topic = 'regions'
@@ -23,11 +24,11 @@ export default class LabsDisable extends Command {
     regions = sortBy(regions, ['private_capable', 'name'])
 
     if (this.flags.json) {
-      this.cli.styledJSON(regions)
+      cli.styledJSON(regions)
     } else {
-      this.cli.table(regions, {
+      cli.table(regions, {
         columns: [
-          {key: 'name', label: 'ID', format: (n) => this.cli.color.green(n)},
+          {key: 'name', label: 'ID', format: (n) => cli.color.green(n)},
           {key: 'description', label: 'Location'},
           {key: 'private_capable', label: 'Runtime', format: (c) => c ? 'Private Spaces' : 'Common Runtime'}
         ]

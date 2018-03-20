@@ -1,6 +1,7 @@
 // @flow
 
-import {Command} from 'cli-engine-heroku'
+import {Command} from '@heroku-cli/command'
+import {cli} from 'cli-ux'
 
 export default class Whoami extends Command {
   static topic = 'auth'
@@ -9,12 +10,12 @@ export default class Whoami extends Command {
   static aliases = ['whoami']
 
   async run () {
-    if (process.env.HEROKU_API_KEY) this.out.warn('HEROKU_API_KEY is set')
+    if (process.env.HEROKU_API_KEY) cli.warn('HEROKU_API_KEY is set')
     // flow$ignore
     if (!this.heroku.defaultOptions.headers.authorization) this.notloggedin()
     try {
       let {body: account} = await this.heroku.get('/account')
-      this.out.log(account.email)
+      cli.log(account.email)
     } catch (err) {
       if (err.statusCode === 401) this.notloggedin()
       throw err
@@ -22,6 +23,6 @@ export default class Whoami extends Command {
   }
 
   notloggedin () {
-    this.out.error('not logged in', {exitCode: 100})
+    cli.error('not logged in', {exitCode: 100})
   }
 }

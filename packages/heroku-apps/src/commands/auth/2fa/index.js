@@ -1,6 +1,7 @@
 // @flow
 
-import {Command} from 'cli-engine-heroku'
+import {Command} from '@heroku-cli/command'
+import {cli} from 'cli-ux'
 
 export default class Index extends Command {
   static topic = 'auth'
@@ -11,9 +12,9 @@ export default class Index extends Command {
   async run () {
     let {body: account} = await this.heroku.get('/account')
     if (account.two_factor_authentication) {
-      this.out.log('Two-factor authentication is enabled')
+      cli.log('Two-factor authentication is enabled')
     } else {
-      this.out.log('Two-factor authentication is not enabled')
+      cli.log('Two-factor authentication is not enabled')
     }
   }
 }

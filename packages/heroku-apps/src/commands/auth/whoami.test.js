@@ -5,8 +5,15 @@ import nock from 'nock'
 
 let mockMachines
 
-jest.mock('netrc-parser', () => class {
-  machines = mockMachines
+jest.mock('netrc-parser', () => {
+  return {
+    default: new class {
+      machines = {}
+      loadSync = () => {
+        this.machines = mockMachines
+      }
+    }()
+  }
 })
 
 let api
@@ -47,7 +54,7 @@ describe('logged in', () => {
     api.get('/account')
       .reply(200, {email: 'user@heroku.com'})
     let cmd = await Whoami.mock()
-    expect(cmd.out.stdout.output).toEqual('user@heroku.com\n')
+    expect(cmd.stdout).toEqual('user@heroku.com\n')
   })
 
   it('has expired token', async () => {

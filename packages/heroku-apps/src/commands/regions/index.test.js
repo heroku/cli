@@ -33,7 +33,7 @@ oregon  Oregon, United States  Private Spaces
 `)
   })
   test('--private', async () => {
-    let {stdout, stderr} = await Cmd.mock('--private')
+    let {stdout, stderr} = await Cmd.mock(['--private'])
     expect(stderr).toEqual('')
     expect(stdout).toEqual(`ID      Location               Runtime
 ──────  ─────────────────────  ──────────────
@@ -41,7 +41,7 @@ oregon  Oregon, United States  Private Spaces
 `)
   })
   test('--common', async () => {
-    let {stdout, stderr} = await Cmd.mock('--common')
+    let {stdout, stderr} = await Cmd.mock(['--common'])
     expect(stderr).toEqual('')
     expect(stdout).toEqual(`ID  Location       Runtime
 ──  ─────────────  ──────────────
@@ -50,7 +50,7 @@ us  United States  Common Runtime
 `)
   })
   test('--json', async () => {
-    let {stdout, stderr} = await Cmd.mock('--json')
+    let {stdout, stderr} = await Cmd.mock(['--json'])
     expect(stderr).toEqual('')
     expect(JSON.parse(stdout)[0].name).toEqual(`eu`)
   })

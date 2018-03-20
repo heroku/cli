@@ -1,6 +1,7 @@
 // @flow
 
-import {Command, flags} from 'cli-engine-heroku'
+import {Command, flags} from '@heroku-cli/command'
+import {cli} from 'cli-ux'
 
 const SecurityExceptionFeatures = {
   'spaces-strict-tls': {
@@ -34,7 +35,7 @@ export default class LabsDisable extends Command {
     if (SecurityExceptionFeatures[feature]) {
       if (this.flags.confirm !== this.flags.app) {
         let prompt = SecurityExceptionFeatures[feature].prompt
-        let confirm = await prompt(this.out, this.flags.app)
+        let confirm = await prompt(cli, this.flags.app)
         if (confirm !== this.flags.app) {
           throw new Error('Confirmation name did not match app name. Try again.')
         }
@@ -48,13 +49,13 @@ export default class LabsDisable extends Command {
     } catch (err) {
       if (err.http.statusCode !== 404) throw err
       // might be an app feature
-      if (!this.app) throw err
-      await this.heroku.get(`/apps/${this.app}/features/${feature}`)
-      request = this.disableFeature(feature, this.app)
-      target = this.app
+      if (!this.flags.app) throw err
+      await this.heroku.get(`/apps/${this.flags.app}/features/${feature}`)
+      request = this.disableFeature(feature, this.flags.app)
+      target = this.flags.app
     }
 
-    this.out.action.start(`Disabling ${this.out.color.green(feature)} for ${this.out.color.cyan(target)}`)
+    cli.action.start(`Disabling ${cli.color.green(feature)} for ${cli.color.cyan(target)}`)
     await request
   }
 

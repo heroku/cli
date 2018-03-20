@@ -54,6 +54,18 @@
     lodash "^4.2.0"
     to-fast-properties "^2.0.0"
 
+"@cli-engine/command@^12.1.1":
+  version "12.1.1"
+  resolved "https://registry.yarnpkg.com/@cli-engine/command/-/command-12.1.1.tgz#bb6262f849b59531ec386414b2ea763fd9385415"
+  dependencies:
+    "@cli-engine/screen" "^0.0.0"
+    chalk "^2.3.0"
+    cli-flags "^2.0.7"
+
+"@cli-engine/config@^5.1.0":
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/@cli-engine/config/-/config-5.1.0.tgz#d8ac7122317bc505dc09e7fd778777602d6b7568"
+
 "@cli-engine/screen@^0.0.0":
   version "0.0.0"
   resolved "https://registry.yarnpkg.com/@cli-engine/screen/-/screen-0.0.0.tgz#c2e847c7d4d998490c9097282bf21637d5162116"
@@ -66,6 +78,17 @@
     chalk "^2.3.0"
     strip-ansi "^4.0.0"
     supports-color "^5.1.0"
+
+"@heroku-cli/command@^7.0.16":
+  version "7.0.16"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-7.0.16.tgz#7dc941d26638c3b7cdbd21b151ef90123e4817e2"
+  dependencies:
+    "@cli-engine/command" "^12.1.1"
+    "@cli-engine/config" "^5.1.0"
+    cli-ux "^2.0.21"
+    heroku-client "3.0.6"
+    http-call "^4.0.8"
+    netrc-parser "^3.1.1"
 
 "@heroku-cli/command@^8.0.0-oclif.2":
   version "8.0.0-oclif.2"
@@ -762,7 +785,7 @@ capture-stack-trace@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/capture-stack-trace/-/capture-stack-trace-1.0.0.tgz#4a6fa07399c26bba47f0b2496b4d0fb408c5550d"
 
-cardinal@1.x, cardinal@^1.0.0:
+cardinal@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/cardinal/-/cardinal-1.0.0.tgz#50e21c1b0aa37729f9377def196b5a9cec932ee9"
   dependencies:
@@ -870,40 +893,15 @@ cli-cursor@^2.1.0:
   dependencies:
     restore-cursor "^2.0.0"
 
-cli-engine-command@^9.0.7:
-  version "9.0.7"
-  resolved "https://registry.yarnpkg.com/cli-engine-command/-/cli-engine-command-9.0.7.tgz#3eef2c466c73a2d25808660152baf0ea9b7b6186"
+cli-flags@^2.0.7:
+  version "2.0.7"
+  resolved "https://registry.yarnpkg.com/cli-flags/-/cli-flags-2.0.7.tgz#215b3f8d911142c3e4833eaf7f2f96ab97fd22cf"
   dependencies:
+    "@cli-engine/screen" "^0.0.0"
     "@heroku/linewrap" "^1.0.0"
-    ansi-escapes "^3.0.0"
-    cardinal "1.x"
-    chalk "^2.3.0"
-    cli-ux "^2.0.20"
-    fs-extra "^5.0.0"
-    http-call "^4.0.6"
-    lodash.maxby "^4.6.0"
-    moment "^2.20.1"
-    string "3.x"
-    supports-color "^5.1.0"
+    ts-lodash "^4.0.8"
 
-cli-engine-config@^3.4.0:
-  version "3.5.0"
-  resolved "https://registry.yarnpkg.com/cli-engine-config/-/cli-engine-config-3.5.0.tgz#8514e17020ad3443787c60c5f35951260b33478e"
-  dependencies:
-    debug "^3.1.0"
-    fs-extra "^4.0.2"
-    uuid "^3.1.0"
-
-cli-engine-heroku@^5.0.4:
-  version "5.0.4"
-  resolved "https://registry.yarnpkg.com/cli-engine-heroku/-/cli-engine-heroku-5.0.4.tgz#937fb488b4c41a0eff842d3386a3581d3b0111c2"
-  dependencies:
-    cli-ux "^2.0.17"
-    heroku-client "^3.0.5"
-    http-call "^4.0.6"
-    netrc-parser "^2.0.5"
-
-cli-ux@^2.0.17, cli-ux@^2.0.20:
+cli-ux@^2.0.21:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-2.1.1.tgz#07021d2b084d739af5d3c0f9d3d07673cb203947"
   dependencies:
@@ -1079,6 +1077,16 @@ cross-spawn@^5.0.1, cross-spawn@^5.1.0:
   resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-5.1.0.tgz#e8bd0efee58fcff6f8f94510a0a554bbfa235449"
   dependencies:
     lru-cache "^4.0.1"
+    shebang-command "^1.2.0"
+    which "^1.2.9"
+
+cross-spawn@^6.0.0:
+  version "6.0.5"
+  resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-6.0.5.tgz#4a5ec7c64dfae22c3a14124dbacdee846d80cbc4"
+  dependencies:
+    nice-try "^1.0.4"
+    path-key "^2.0.1"
+    semver "^5.5.0"
     shebang-command "^1.2.0"
     which "^1.2.9"
 
@@ -1511,6 +1519,18 @@ exec-sh@^0.2.0:
   resolved "https://registry.yarnpkg.com/exec-sh/-/exec-sh-0.2.1.tgz#163b98a6e89e6b65b47c2a28d215bc1f63989c38"
   dependencies:
     merge "^1.1.3"
+
+execa@^0.10.0:
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/execa/-/execa-0.10.0.tgz#ff456a8f53f90f8eccc71a96d11bdfc7f082cb50"
+  dependencies:
+    cross-spawn "^6.0.0"
+    get-stream "^3.0.0"
+    is-stream "^1.1.0"
+    npm-run-path "^2.0.0"
+    p-finally "^1.0.0"
+    signal-exit "^3.0.0"
+    strip-eof "^1.0.0"
 
 execa@^0.4.0:
   version "0.4.0"
@@ -2084,7 +2104,7 @@ html-encoding-sniffer@^1.0.1:
   dependencies:
     whatwg-encoding "^1.0.1"
 
-http-call@^4.0.6:
+http-call@^4.0.8:
   version "4.0.8"
   resolved "https://registry.yarnpkg.com/http-call/-/http-call-4.0.8.tgz#fd0207764958a3f1238bb3344ff912b32ddfa64a"
   dependencies:
@@ -2961,10 +2981,6 @@ lodash.mapvalues@^4.6.0:
   version "4.6.0"
   resolved "https://registry.yarnpkg.com/lodash.mapvalues/-/lodash.mapvalues-4.6.0.tgz#1bafa5005de9dd6f4f26668c30ca37230cc9689c"
 
-lodash.maxby@^4.6.0:
-  version "4.6.0"
-  resolved "https://registry.yarnpkg.com/lodash.maxby/-/lodash.maxby-4.6.0.tgz#082240068f3c7a227aa00a8380e4f38cf0786e3d"
-
 lodash.mean@^4.1.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/lodash.mean/-/lodash.mean-4.1.0.tgz#bb985349628c0b9d7fe0f5fcc0011a2ee2c0dd7a"
@@ -3268,6 +3284,17 @@ netrc-parser@^3.0.3:
   dependencies:
     execa "^0.9.0"
     lex "^1.7.9"
+
+netrc-parser@^3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/netrc-parser/-/netrc-parser-3.1.1.tgz#1e23228689c12d5e91ae4ec053389124fd1ef84b"
+  dependencies:
+    execa "^0.10.0"
+    lex "^1.7.9"
+
+nice-try@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/nice-try/-/nice-try-1.0.4.tgz#d93962f6c52f2c1558c0fbda6d512819f1efe1c4"
 
 nock@9.0.14:
   version "9.0.14"
@@ -3574,7 +3601,7 @@ path-key@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/path-key/-/path-key-1.0.0.tgz#5d53d578019646c0d68800db4e146e6bdc2ac7af"
 
-path-key@^2.0.0:
+path-key@^2.0.0, path-key@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/path-key/-/path-key-2.0.1.tgz#411cadb574c5a140d3a4b1910d40d80cc9f40b40"
 
@@ -4157,7 +4184,7 @@ string-width@^2.0.0, string-width@^2.1.0, string-width@^2.1.1:
     is-fullwidth-code-point "^2.0.0"
     strip-ansi "^4.0.0"
 
-string@3.x, string@^3.3.3:
+string@^3.3.3:
   version "3.3.3"
   resolved "https://registry.yarnpkg.com/string/-/string-3.3.3.tgz#5ea211cd92d228e184294990a6cc97b366a77cb0"
 
