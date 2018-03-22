@@ -489,9 +489,9 @@
   version "8.5.7"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-8.5.7.tgz#9c498c35af354dcfbca3790fb2e81129e93cf0e2"
 
-"@types/node@9.4.7":
-  version "9.4.7"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-9.4.7.tgz#57d81cd98719df2c9de118f2d5f3b1120dcd7275"
+"@types/node@9.6.0":
+  version "9.6.0"
+  resolved "http://cli-npm.heroku.com/@types/node/-/node-9.6.0/d3480ee666df9784b1001a1872a2f6ccefb6c2d7.tgz#d3480ee666df9784b1001a1872a2f6ccefb6c2d7"
 
 "@types/supports-color@3.1.0":
   version "3.1.0"
