@@ -15,5 +15,3 @@ parts:
     plugin: nodejs
     node-engine: 9.3.0
     node-package-manager: yarn
-    stage-packages:
-      - libc6
