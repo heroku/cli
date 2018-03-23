@@ -97,7 +97,8 @@
     "tar-fs": "^1.16.0",
     "ts-lodash": "^4.0.11",
     "tslib": "^1.9.0",
-    "uuid": "^3.2.1"
+    "uuid": "^3.2.1",
+    "snyk": "^1.69.10"
   },
   "devDependencies": {
     "@cli-engine/util": "^1.2.12",
@@ -145,6 +146,9 @@
     "precommit": "yarn run lint && cli-engine-util",
     "prepare": "cli-engine-util",
     "shellcheck": "./scripts/shellcheck",
-    "test": "cli-engine-util"
-  }
+    "test": "cli-engine-util",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
+  },
+  "snyk": true
 }
