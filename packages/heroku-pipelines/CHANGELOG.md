@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 - Improves caching strategy and use new scope convention to declare this a core Heroku CLI plugin. 
+- Added command `pipelines:connect` to connect an existing pipeline to a Github repo.
+- Added command `pipelines:reviewapps` to enable|disable review apps with an existing pipeline.
 
 ## [2.5.1] 2018-02-13
 

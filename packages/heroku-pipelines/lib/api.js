@@ -45,6 +45,10 @@ function getPipeline (heroku, id) {
   })
 }
 
+function getApp (heroku, app) {
+  return heroku.get(`/apps/${app}`)
+}
+
 function getTeam (heroku, teamId) {
   return heroku.get(`/teams/${teamId}`)
 }
@@ -112,6 +116,7 @@ module.exports = {
   getAccountInfo,
   getAppFilter,
   getAppSetup,
+  getApp,
   getCoupling,
   getPipeline,
   getTeam,

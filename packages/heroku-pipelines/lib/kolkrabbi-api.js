@@ -46,4 +46,22 @@ module.exports = class KolkrabbiAPI {
       body
     })
   }
+
+  getAppLink (app) {
+    return this.request(`/apps/${app}/github`, {
+      method: 'GET'
+    })
+  }
+
+  getPipelineRepository (pipeline) {
+    return this.request(`/pipelines/${pipeline}/repository`, {
+      method: 'GET'
+    })
+  }
+
+  getPipelineGithub (pipeline) {
+    return this.request(`/pipelines/${pipeline}/github`, {
+      method: 'GET'
+    })
+  }
 }
