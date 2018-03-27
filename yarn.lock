@@ -305,9 +305,9 @@
     heroku-cli-util "^8.0.0"
     shellwords "^0.1.1"
 
-"@heroku-cli/plugin-spaces@^2.11.3":
-  version "2.11.3"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-spaces/-/plugin-spaces-2.11.3.tgz#dce7f231e9ab24b29baf8f03bee1f80894a49f09"
+"@heroku-cli/plugin-spaces@^2.12.0":
+  version "2.12.0"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-spaces/-/plugin-spaces-2.12.0.tgz#95b59eff8ec74f84ceefcf649faf8704bb6304c2"
   dependencies:
     cli-engine-command "^8.0.15"
     cli-engine-config "^3.3.0"
@@ -1590,8 +1590,8 @@ core-assert@^0.2.0:
     is-error "^2.2.0"
 
 core-js@^2.0.0, core-js@^2.4.0, core-js@^2.5.0:
-  version "2.5.3"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.5.3.tgz#8acc38345824f16d8365b7c9b4259168e8ed603e"
+  version "2.5.4"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.5.4.tgz#f2c8bf181f2a80b92f360121429ce63a2f0aeae0"
 
 core-util-is@1.0.2, core-util-is@~1.0.0:
   version "1.0.2"
