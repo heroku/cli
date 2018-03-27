@@ -1,6 +1,5 @@
 module.exports = {
   setupTestFrameworkScriptFile: "<rootDir>/src/__test__/init.ts",
-  mapCoverage: true,
   coveragePathIgnorePatterns: ['/node_modules/', '<rootDir>/src/__test__'],
   moduleFileExtensions: ['ts', 'js'],
   testMatch: ['**/*.test.ts'],
