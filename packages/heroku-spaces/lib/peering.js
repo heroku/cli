@@ -33,34 +33,13 @@ module.exports = function (heroku) {
   }
 
   function displayPeers (space, peers) {
-    var sF = function (s) {
-      var colored = s
-      switch (s) {
-        case 'active':
-          colored = `${cli.color.green(colored)}`
-          break
-        case 'pending-acceptance':
-        case 'provisioning':
-          colored = `${cli.color.yellow(colored)}`
-          break
-        case 'expired':
-        case 'failed':
-        case 'deleted':
-        case 'rejected':
-          colored = `${cli.color.red(colored)}`
-          break
-      }
-
-      return colored
-    }
-
     cli.styledHeader(`${space} Peerings`)
     cli.table(peers, {
       columns: [
         {key: 'pcx_id', label: 'PCX ID'},
         {key: 'type', label: 'Type'},
-        {key: 'cidr_block', label: 'CIDR Block'},
-        {key: 'status', label: 'Status', format: status => sF(status)},
+        {key: 'cidr_blocks', label: 'CIDR Blocks', format: format.CIDRBlocksOrCIDRBlock},
+        {key: 'status', label: 'Status', format: format.Status},
         {key: 'aws_vpc_id', label: 'VPC ID'},
         {key: 'aws_account_id', label: 'AWS Account ID'},
         {key: 'expires', label: 'Expires'}
