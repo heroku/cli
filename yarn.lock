@@ -28,9 +28,9 @@
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/@cli-engine/config/-/config-5.1.0.tgz#d8ac7122317bc505dc09e7fd778777602d6b7568"
 
-"@cli-engine/engine@6.2.3", "@cli-engine/engine@^6.1.30":
-  version "6.2.3"
-  resolved "https://registry.yarnpkg.com/@cli-engine/engine/-/engine-6.2.3.tgz#4266874866bd4e7a3ff6c175a74bf269be1e1260"
+"@cli-engine/engine@6.2.4", "@cli-engine/engine@^6.1.30":
+  version "6.2.4"
+  resolved "https://registry.yarnpkg.com/@cli-engine/engine/-/engine-6.2.4.tgz#2e4d8fcb627ebdf43a1792eafe291630ed689fc2"
   dependencies:
     "@heroku-cli/color" "^1.1.1"
     "@types/load-json-file" "^2.0.7"
@@ -6522,8 +6522,8 @@ tslint@^5.8.0, tslint@^5.9.1:
     tsutils "^2.12.1"
 
 tsutils@^2.12.1:
-  version "2.22.2"
-  resolved "https://registry.yarnpkg.com/tsutils/-/tsutils-2.22.2.tgz#0b9f3d87aa3eb95bd32d26ce2b88aa329a657951"
+  version "2.24.0"
+  resolved "https://registry.yarnpkg.com/tsutils/-/tsutils-2.24.0.tgz#a84134358e10c42039fed0a8f1548413f118aff7"
   dependencies:
     tslib "^1.8.1"
 
