@@ -79,7 +79,7 @@
     "@heroku-cli/plugin-oauth": "^2.3.1",
     "@heroku-cli/plugin-orgs": "^1.7.3",
     "@heroku-cli/plugin-pg": "^2.9.3",
-    "@heroku-cli/plugin-pipelines": "^2.5.2",
+    "@heroku-cli/plugin-pipelines": "^2.5.3",
     "@heroku-cli/plugin-run": "^3.5.14",
     "@heroku-cli/plugin-spaces": "^2.11.3",
     "@heroku-cli/plugin-status": "^5.0.9",
