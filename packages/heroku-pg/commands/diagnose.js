@@ -16,10 +16,10 @@ function * run (context, heroku) {
     db = yield heroku.get(`/addons/${db.name}`)
     let config = yield heroku.get(`/apps/${app}/config-vars`)
     let params = {
-      url: config[util.getUrl(db.config_vars)],
+      url: config[util.getConfigVarName(db.config_vars)],
       plan: db.plan.name.split(':')[1],
       app: db.app.name,
-      database: util.getUrl(db.config_vars)
+      database: util.getConfigVarName(db.config_vars)
     }
     if (!util.starterPlan(db)) {
       params.metrics = yield heroku.get(`/client/v11/databases/${db.id}/metrics`, {host: host(db)})

@@ -7,13 +7,13 @@ const sortBy = require('lodash.sortby')
 const printf = require('printf')
 const URL = require('url').URL
 
-function getUrl (configVars) {
+function getConfigVarName (configVars) {
   let connstringVars = configVars.filter((cv) => (cv.endsWith('_URL')))
   if (connstringVars.length === 0) throw new Error('Database URL not found for this addon')
   return connstringVars[0]
 }
 
-exports.getUrl = getUrl
+exports.getConfigVarName = getConfigVarName
 
 function formatAttachment (attachment) {
   let attName = cli.color.addon(attachment.name)
@@ -82,7 +82,7 @@ exports.getConnectionDetails = function (attachment, config) {
   if (configVars.length === 0) {
     throw new Error(`No config vars found for ${attachment.name}; perhaps they were removed as a side effect of ${cli.color.cmd('heroku rollback')}? Use ${cli.color.cmd('heroku addons:attach')} to create a new attachment and then ${cli.color.cmd('heroku addons:detach')} to remove the current attachment.`)
   }
-  const connstringVar = getUrl(configVars)
+  const connstringVar = getConfigVarName(configVars)
 
   // remove _URL from the end of the config var name
   const baseName = connstringVar.slice(0, -4)

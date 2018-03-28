@@ -58,10 +58,10 @@ module.exports = heroku => {
         throw new Error(`${cli.color.app(app)} has no databases`)
       }
 
-      matches = attachments.filter(attachment => config[db] && config[db] === config[pgUtil.getUrl(attachment.config_vars)])
+      matches = attachments.filter(attachment => config[db] && config[db] === config[pgUtil.getConfigVarName(attachment.config_vars)])
 
       if (matches.length === 0) {
-        let validOptions = attachments.map(attachment => pgUtil.getUrl(attachment.config_vars))
+        let validOptions = attachments.map(attachment => pgUtil.getConfigVarName(attachment.config_vars))
         throw new Error(`Unknown database: ${passedDb}. Valid options are: ${validOptions.join(', ')}`)
       }
     }
@@ -73,7 +73,7 @@ module.exports = heroku => {
     if (matches.every((match) => first.addon.id === match.addon.id && first.app.id === match.app.id)) {
       let config = yield getConfig(heroku, first.app.name)
 
-      if (matches.every((match) => config[pgUtil.getUrl(first.config_vars)] === config[pgUtil.getUrl(match.config_vars)])) {
+      if (matches.every((match) => config[pgUtil.getConfigVarName(first.config_vars)] === config[pgUtil.getConfigVarName(match.config_vars)])) {
         return first
       }
     }

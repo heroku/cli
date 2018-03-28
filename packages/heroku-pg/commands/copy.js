@@ -32,7 +32,7 @@ function * run (context, heroku) {
       attachment.addon = addon
       return {
         name: attachment.name.replace(/^HEROKU_POSTGRESQL_/, '').replace(/_URL$/, ''),
-        url: config[util.getUrl(addon.config_vars)],
+        url: config[util.getConfigVarName(addon.config_vars)],
         attachment,
         confirm: app
       }
