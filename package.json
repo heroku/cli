@@ -109,7 +109,7 @@
     "@types/jest": "22.2.2",
     "@types/lodash": "^4.14.106",
     "@types/nock": "9.1.2",
-    "@types/node": "9.6.0",
+    "@types/node": "9.6.1",
     "@types/supports-color": "3.1.0",
     "chai": "^4.1.2",
     "del-cli": "1.1.0",
