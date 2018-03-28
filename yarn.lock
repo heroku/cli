@@ -450,9 +450,13 @@
   dependencies:
     "@types/node" "*"
 
-"@types/node@*", "@types/node@9.6.0":
+"@types/node@*":
   version "9.6.0"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-9.6.0.tgz#d3480ee666df9784b1001a1872a2f6ccefb6c2d7"
+
+"@types/node@9.6.1":
+  version "9.6.1"
+  resolved "http://cli-npm.heroku.com/@types/node/-/node-9.6.1/e2d374ef15b315b48e7efc308fa1a7cd51faa06c.tgz#e2d374ef15b315b48e7efc308fa1a7cd51faa06c"
 
 "@types/supports-color@3.1.0":
   version "3.1.0"
