@@ -61,6 +61,14 @@ Data from ${cli.color.yellow(source.name)} will then be transferred to ${cli.col
       host: host(attachment.addon)
     })
   }))
+
+  if (source.attachment) {
+    let credentials = yield heroku.get(`/postgres/v0/databases/${source.attachment.addon.name}/credentials`,
+                                     { host: host(source.attachment.addon) })
+    if (credentials.length > 1) {
+      cli.action.warn(`pg:copy will only copy your default credential and the data it has access to. Any additional credentials and data that only they can access will not be copied.`)
+    }
+  }
   yield pgbackups.wait('Copying', copy.uuid, interval, flags.verbose, attachment.addon.app.name)
 }
 
