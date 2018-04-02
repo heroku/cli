@@ -2,16 +2,16 @@ heroku notifications
 ====================
 
 display notifications
-# Commands
 
-* [heroku notifications [OPTIONS]](#notifications)
-## notifications
+* [heroku notifications](#heroku-notifications)
+
+## heroku notifications
 
 display notifications
 
 ```
 USAGE
-  $ heroku notifications [OPTIONS]
+  $ heroku notifications
 
 OPTIONS
   -a, --app=app        [default: foobar] app to run command against

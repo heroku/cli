@@ -1,21 +1,24 @@
 heroku buildpacks
 =================
 
-manage the buildpacks for an app
-# Commands
+add new app buildpack, inserting into list of buildpacks if necessary
+Example:
 
-* [heroku buildpacks [OPTIONS]](#buildpacks)
-* [heroku buildpacks:add URL [OPTIONS]](#buildpacksadd)
-* [heroku buildpacks:clear [OPTIONS]](#buildpacksclear)
-* [heroku buildpacks:remove [URL] [OPTIONS]](#buildpacksremove)
-* [heroku buildpacks:set URL [OPTIONS]](#buildpacksset)
-## buildpacks
+     $ heroku buildpacks:add -i 1 https://github.com/heroku/heroku-buildpack-ruby
+
+* [heroku buildpacks](#heroku-buildpacks)
+* [heroku buildpacks:add URL](#heroku-buildpacksadd-url)
+* [heroku buildpacks:clear](#heroku-buildpacksclear)
+* [heroku buildpacks:remove [URL]](#heroku-buildpacksremove-url)
+* [heroku buildpacks:set URL](#heroku-buildpacksset-url)
+
+## heroku buildpacks
 
 display the buildpack_url(s) for an app
 
 ```
 USAGE
-  $ heroku buildpacks [OPTIONS]
+  $ heroku buildpacks
 
 OPTIONS
   -a, --app=app        (required) [default: foobar] app to run command against
@@ -26,13 +29,13 @@ DESCRIPTION
        $ heroku buildpacks
 ```
 
-### buildpacks:add
+### heroku buildpacks:add URL
 
 add new app buildpack, inserting into list of buildpacks if necessary
 
 ```
 USAGE
-  $ heroku buildpacks:add URL [OPTIONS]
+  $ heroku buildpacks:add URL
 
 OPTIONS
   -a, --app=app        (required) [default: foobar] app to run command against
@@ -45,26 +48,26 @@ DESCRIPTION
         $ heroku buildpacks:add -i 1 https://github.com/heroku/heroku-buildpack-ruby
 ```
 
-### buildpacks:clear
+### heroku buildpacks:clear
 
 clear all buildpacks set on the app
 
 ```
 USAGE
-  $ heroku buildpacks:clear [OPTIONS]
+  $ heroku buildpacks:clear
 
 OPTIONS
   -a, --app=app        (required) [default: foobar] app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
-### buildpacks:remove
+### heroku buildpacks:remove [URL]
 
 remove a buildpack set on the app
 
 ```
 USAGE
-  $ heroku buildpacks:remove [URL] [OPTIONS]
+  $ heroku buildpacks:remove [URL]
 
 OPTIONS
   -a, --app=app        (required) [default: foobar] app to run command against
@@ -72,13 +75,78 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
 ```
 
-### buildpacks:set
+### heroku buildpacks:set URL
 
 set new app buildpack, overwriting into list of buildpacks if necessary
 
 ```
 USAGE
-  $ heroku buildpacks:set URL [OPTIONS]
+  $ heroku buildpacks:set URL
+
+OPTIONS
+  -a, --app=app        (required) [default: foobar] app to run command against
+  -i, --index=index    the 1-based index of the URL in the list of URLs
+  -r, --remote=remote  git remote of app to use
+
+DESCRIPTION
+  Example:
+
+        $ heroku buildpacks:set -i 1 heroku/ruby
+```
+
+## heroku buildpacks:add URL
+
+add new app buildpack, inserting into list of buildpacks if necessary
+
+```
+USAGE
+  $ heroku buildpacks:add URL
+
+OPTIONS
+  -a, --app=app        (required) [default: foobar] app to run command against
+  -i, --index=index    the 1-based index of the URL in the list of URLs
+  -r, --remote=remote  git remote of app to use
+
+DESCRIPTION
+  Example:
+
+        $ heroku buildpacks:add -i 1 https://github.com/heroku/heroku-buildpack-ruby
+```
+
+## heroku buildpacks:clear
+
+clear all buildpacks set on the app
+
+```
+USAGE
+  $ heroku buildpacks:clear
+
+OPTIONS
+  -a, --app=app        (required) [default: foobar] app to run command against
+  -r, --remote=remote  git remote of app to use
+```
+
+## heroku buildpacks:remove [URL]
+
+remove a buildpack set on the app
+
+```
+USAGE
+  $ heroku buildpacks:remove [URL]
+
+OPTIONS
+  -a, --app=app        (required) [default: foobar] app to run command against
+  -i, --index=index    the 1-based index of the URL to remove from the list of URLs
+  -r, --remote=remote  git remote of app to use
+```
+
+## heroku buildpacks:set URL
+
+set new app buildpack, overwriting into list of buildpacks if necessary
+
+```
+USAGE
+  $ heroku buildpacks:set URL
 
 OPTIONS
   -a, --app=app        (required) [default: foobar] app to run command against

@@ -1,45 +1,71 @@
 heroku maintenance
 ==================
 
-manage maintenance mode for an app
-# Commands
+display the current maintenance status of app
 
-* [heroku maintenance [OPTIONS]](#maintenance)
-* [heroku maintenance:off [OPTIONS]](#maintenanceoff)
-* [heroku maintenance:on [OPTIONS]](#maintenanceon)
-## maintenance
+* [heroku maintenance](#heroku-maintenance)
+* [heroku maintenance:off](#heroku-maintenanceoff)
+* [heroku maintenance:on](#heroku-maintenanceon)
+
+## heroku maintenance
 
 display the current maintenance status of app
 
 ```
 USAGE
-  $ heroku maintenance [OPTIONS]
+  $ heroku maintenance
 
 OPTIONS
   -a, --app=app        (required) [default: foobar] app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
-### maintenance:off
+### heroku maintenance:off
 
 take the app out of maintenance mode
 
 ```
 USAGE
-  $ heroku maintenance:off [OPTIONS]
+  $ heroku maintenance:off
 
 OPTIONS
   -a, --app=app        (required) [default: foobar] app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
-### maintenance:on
+### heroku maintenance:on
 
 put the app into maintenance mode
 
 ```
 USAGE
-  $ heroku maintenance:on [OPTIONS]
+  $ heroku maintenance:on
+
+OPTIONS
+  -a, --app=app        (required) [default: foobar] app to run command against
+  -r, --remote=remote  git remote of app to use
+```
+
+## heroku maintenance:off
+
+take the app out of maintenance mode
+
+```
+USAGE
+  $ heroku maintenance:off
+
+OPTIONS
+  -a, --app=app        (required) [default: foobar] app to run command against
+  -r, --remote=remote  git remote of app to use
+```
+
+## heroku maintenance:on
+
+put the app into maintenance mode
+
+```
+USAGE
+  $ heroku maintenance:on
 
 OPTIONS
   -a, --app=app        (required) [default: foobar] app to run command against

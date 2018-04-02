@@ -1,33 +1,45 @@
 heroku keys
 ===========
 
-manage ssh keys
-# Commands
+add an SSH key for a user
+if no KEY is specified, will try to find ~/.ssh/id_rsa.pub
 
-* [heroku keys [OPTIONS]](#keys)
-* [heroku keys:add [KEY] [OPTIONS]](#keysadd)
-* [heroku keys:clear](#keysclear)
-* [heroku keys:remove KEY](#keysremove)
-## keys
+Examples:
+
+    $ heroku keys:add
+    Could not find an existing public key.
+    Would you like to generate one? [Yn] y
+    Generating new SSH public key.
+    Uploading SSH public key /.ssh/id_rsa.pub... done
+
+    $ heroku keys:add /my/key.pub
+    Uploading SSH public key /my/key.pub... done
+
+* [heroku keys](#heroku-keys)
+* [heroku keys:add [KEY]](#heroku-keysadd-key)
+* [heroku keys:clear](#heroku-keysclear)
+* [heroku keys:remove KEY](#heroku-keysremove-key)
+
+## heroku keys
 
 display your SSH keys
 
 ```
 USAGE
-  $ heroku keys [OPTIONS]
+  $ heroku keys
 
 OPTIONS
   -l, --long  display full SSH keys
   --json      output in json format
 ```
 
-### keys:add
+### heroku keys:add [KEY]
 
 add an SSH key for a user
 
 ```
 USAGE
-  $ heroku keys:add [KEY] [OPTIONS]
+  $ heroku keys:add [KEY]
 
 OPTIONS
   -y, --yes  automatically answer yes for all prompts
@@ -47,7 +59,7 @@ DESCRIPTION
        Uploading SSH public key /my/key.pub... done
 ```
 
-### keys:clear
+### heroku keys:clear
 
 remove all SSH keys for current user
 
@@ -56,7 +68,58 @@ USAGE
   $ heroku keys:clear
 ```
 
-### keys:remove
+### heroku keys:remove KEY
+
+remove an SSH key from the user
+
+```
+USAGE
+  $ heroku keys:remove KEY
+
+DESCRIPTION
+
+  Example:
+
+       $ heroku keys:remove email@example.com
+       Removing email@example.com SSH key... done
+```
+
+## heroku keys:add [KEY]
+
+add an SSH key for a user
+
+```
+USAGE
+  $ heroku keys:add [KEY]
+
+OPTIONS
+  -y, --yes  automatically answer yes for all prompts
+
+DESCRIPTION
+  if no KEY is specified, will try to find ~/.ssh/id_rsa.pub
+
+  Examples:
+
+       $ heroku keys:add
+       Could not find an existing public key.
+       Would you like to generate one? [Yn] y
+       Generating new SSH public key.
+       Uploading SSH public key /.ssh/id_rsa.pub... done
+
+       $ heroku keys:add /my/key.pub
+       Uploading SSH public key /my/key.pub... done
+```
+
+## heroku keys:clear
+
+remove all SSH keys for current user
+
+```
+USAGE
+  $ heroku keys:clear
+```
+
+## heroku keys:remove KEY
 
 remove an SSH key from the user
 

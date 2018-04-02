@@ -1,19 +1,19 @@
 heroku drains
 =============
 
-list all log drains
-# Commands
+adds a log drain to an app
 
-* [heroku drains [OPTIONS]](#drains)
-* [heroku drains:add URL [OPTIONS]](#drainsadd)
-* [heroku drains:remove [URL|TOKEN]](#drainsremove)
-## drains
+* [heroku drains](#heroku-drains)
+* [heroku drains:add URL](#heroku-drainsadd-url)
+* [heroku drains:remove [URL|TOKEN]](#heroku-drainsremove-url-token)
+
+## heroku drains
 
 display the log drains of an app
 
 ```
 USAGE
-  $ heroku drains [OPTIONS]
+  $ heroku drains
 
 OPTIONS
   -a, --app=app        (required) [default: foobar] app to run command against
@@ -21,20 +21,46 @@ OPTIONS
   --json               output in json format
 ```
 
-### drains:add
+### heroku drains:add URL
 
 adds a log drain to an app
 
 ```
 USAGE
-  $ heroku drains:add URL [OPTIONS]
+  $ heroku drains:add URL
 
 OPTIONS
   -a, --app=app        (required) [default: foobar] app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
-### drains:remove
+### heroku drains:remove [URL|TOKEN]
+
+removes a log drain from an app
+
+```
+USAGE
+  $ heroku drains:remove [URL|TOKEN]
+
+OPTIONS
+  -a, --app=app        (required) [default: foobar] app to run command against
+  -r, --remote=remote  git remote of app to use
+```
+
+## heroku drains:add URL
+
+adds a log drain to an app
+
+```
+USAGE
+  $ heroku drains:add URL
+
+OPTIONS
+  -a, --app=app        (required) [default: foobar] app to run command against
+  -r, --remote=remote  git remote of app to use
+```
+
+## heroku drains:remove [URL|TOKEN]
 
 removes a log drain from an app
 

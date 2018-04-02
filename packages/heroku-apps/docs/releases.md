@@ -1,20 +1,27 @@
 heroku releases
 ===============
 
-manage app releases
-# Commands
+display the releases for an app
 
-* [heroku releases [OPTIONS]](#releases)
-* [heroku releases:info [RELEASE] [OPTIONS]](#releasesinfo)
-* [heroku releases:output [RELEASE] [OPTIONS]](#releasesoutput)
-* [heroku releases:rollback [RELEASE] [OPTIONS]](#releasesrollback)
-## releases
+Example:
+
+    $ heroku releases
+    === example Releases
+    v1 Config add FOO_BAR email@example.com 2015/11/17 17:37:41 (~ 1h ago)
+    v2 Config add BAR_BAZ email@example.com 2015/11/17 17:37:41 (~ 1h ago)
+    v3 Config add BAZ_QUX email@example.com 2015/11/17 17:37:41 (~ 1h ago)
+* [heroku releases](#heroku-releases)
+* [heroku releases:info [RELEASE]](#heroku-releasesinfo-release)
+* [heroku releases:output [RELEASE]](#heroku-releasesoutput-release)
+* [heroku releases:rollback [RELEASE]](#heroku-releasesrollback-release)
+
+## heroku releases
 
 display the releases for an app
 
 ```
 USAGE
-  $ heroku releases [OPTIONS]
+  $ heroku releases
 
 OPTIONS
   -a, --app=app        (required) [default: foobar] app to run command against
@@ -33,13 +40,13 @@ DESCRIPTION
        v3 Config add BAZ_QUX email@example.com 2015/11/17 17:37:41 (~ 1h ago)
 ```
 
-### releases:info
+### heroku releases:info [RELEASE]
 
 view detailed information for a release
 
 ```
 USAGE
-  $ heroku releases:info [RELEASE] [OPTIONS]
+  $ heroku releases:info [RELEASE]
 
 OPTIONS
   -a, --app=app        (required) [default: foobar] app to run command against
@@ -48,26 +55,70 @@ OPTIONS
   --json               output in json format
 ```
 
-### releases:output
+### heroku releases:output [RELEASE]
 
 View the release command output
 
 ```
 USAGE
-  $ heroku releases:output [RELEASE] [OPTIONS]
+  $ heroku releases:output [RELEASE]
 
 OPTIONS
   -a, --app=app        (required) [default: foobar] app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
-### releases:rollback
+### heroku releases:rollback [RELEASE]
 
 rollback to a previous release
 
 ```
 USAGE
-  $ heroku releases:rollback [RELEASE] [OPTIONS]
+  $ heroku releases:rollback [RELEASE]
+
+OPTIONS
+  -a, --app=app        (required) [default: foobar] app to run command against
+  -r, --remote=remote  git remote of app to use
+
+DESCRIPTION
+  If RELEASE is not specified, it will rollback one release
+```
+
+## heroku releases:info [RELEASE]
+
+view detailed information for a release
+
+```
+USAGE
+  $ heroku releases:info [RELEASE]
+
+OPTIONS
+  -a, --app=app        (required) [default: foobar] app to run command against
+  -r, --remote=remote  git remote of app to use
+  -s, --shell          output in shell format
+  --json               output in json format
+```
+
+## heroku releases:output [RELEASE]
+
+View the release command output
+
+```
+USAGE
+  $ heroku releases:output [RELEASE]
+
+OPTIONS
+  -a, --app=app        (required) [default: foobar] app to run command against
+  -r, --remote=remote  git remote of app to use
+```
+
+## heroku releases:rollback [RELEASE]
+
+rollback to a previous release
+
+```
+USAGE
+  $ heroku releases:rollback [RELEASE]
 
 OPTIONS
   -a, --app=app        (required) [default: foobar] app to run command against

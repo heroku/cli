@@ -1,20 +1,19 @@
 heroku labs
 ===========
 
-experimental features
-# Commands
+disables an experimental feature
+* [heroku labs](#heroku-labs)
+* [heroku labs:disable [FEATURE]](#heroku-labsdisable-feature)
+* [heroku labs:enable FEATURE](#heroku-labsenable-feature)
+* [heroku labs:info FEATURE](#heroku-labsinfo-feature)
 
-* [heroku labs [OPTIONS]](#labs)
-* [heroku labs:disable [FEATURE] [OPTIONS]](#labsdisable)
-* [heroku labs:enable FEATURE [OPTIONS]](#labsenable)
-* [heroku labs:info FEATURE [OPTIONS]](#labsinfo)
-## labs
+## heroku labs
 
 list experimental features
 
 ```
 USAGE
-  $ heroku labs [OPTIONS]
+  $ heroku labs
 
 OPTIONS
   -a, --app=app        [default: foobar] app to run command against
@@ -22,13 +21,13 @@ OPTIONS
   --json               display as json
 ```
 
-### labs:disable
+### heroku labs:disable [FEATURE]
 
 disables an experimental feature
 
 ```
 USAGE
-  $ heroku labs:disable [FEATURE] [OPTIONS]
+  $ heroku labs:disable [FEATURE]
 
 OPTIONS
   -a, --app=app        [default: foobar] app to run command against
@@ -36,26 +35,67 @@ OPTIONS
   --confirm=confirm
 ```
 
-### labs:enable
+### heroku labs:enable FEATURE
 
 enables an experimental feature
 
 ```
 USAGE
-  $ heroku labs:enable FEATURE [OPTIONS]
+  $ heroku labs:enable FEATURE
 
 OPTIONS
   -a, --app=app        [default: foobar] app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
-### labs:info
+### heroku labs:info FEATURE
 
 show feature info
 
 ```
 USAGE
-  $ heroku labs:info FEATURE [OPTIONS]
+  $ heroku labs:info FEATURE
+
+OPTIONS
+  -a, --app=app        [default: foobar] app to run command against
+  -r, --remote=remote  git remote of app to use
+  --json               display as json
+```
+
+## heroku labs:disable [FEATURE]
+
+disables an experimental feature
+
+```
+USAGE
+  $ heroku labs:disable [FEATURE]
+
+OPTIONS
+  -a, --app=app        [default: foobar] app to run command against
+  -r, --remote=remote  git remote of app to use
+  --confirm=confirm
+```
+
+## heroku labs:enable FEATURE
+
+enables an experimental feature
+
+```
+USAGE
+  $ heroku labs:enable FEATURE
+
+OPTIONS
+  -a, --app=app        [default: foobar] app to run command against
+  -r, --remote=remote  git remote of app to use
+```
+
+## heroku labs:info FEATURE
+
+show feature info
+
+```
+USAGE
+  $ heroku labs:info FEATURE
 
 OPTIONS
   -a, --app=app        [default: foobar] app to run command against

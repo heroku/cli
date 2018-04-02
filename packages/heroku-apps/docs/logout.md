@@ -1,11 +1,11 @@
 heroku logout
 =============
 
+clears local login credentials
 
-# Commands
+* [heroku logout](#heroku-logout)
 
-* [heroku logout](#logout)
-## logout
+## heroku logout
 
 clears local login credentials
 

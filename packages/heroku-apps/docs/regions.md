@@ -1,17 +1,16 @@
 heroku regions
 ==============
 
-list available regions
-# Commands
+list available regions for deployment
+* [heroku regions](#heroku-regions)
 
-* [heroku regions [OPTIONS]](#regions)
-## regions
+## heroku regions
 
 list available regions for deployment
 
 ```
 USAGE
-  $ heroku regions [OPTIONS]
+  $ heroku regions
 
 OPTIONS
   --common   show regions for common runtime
