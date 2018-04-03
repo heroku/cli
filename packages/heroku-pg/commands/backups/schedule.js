@@ -2,7 +2,6 @@
 
 const co = require('co')
 const cli = require('heroku-cli-util')
-const util = require('../../lib/util')
 
 const TZ = {
   'PST': 'America/Los_Angeles',
@@ -59,7 +58,8 @@ function * run (context, heroku) {
   }
 
   yield cli.action(`Scheduling automatic daily backups of ${cli.color.addon(db.name)} at ${at}`, co(function * () {
-    schedule.schedule_name = util.getConfigVarName(attachment.config_vars)
+    // We've been using config var name as schedule_name historically
+    schedule.schedule_name = attachment.name + '_URL'
 
     yield heroku.post(`/client/v11/databases/${db.id}/transfer-schedules`, {
       body: schedule,

@@ -15,6 +15,10 @@ function * run (context, heroku) {
     let db = yield fetcher.addon(app, database)
     db = yield heroku.get(`/addons/${db.name}`)
     let config = yield heroku.get(`/apps/${app}/config-vars`)
+    // TODO: util.getConfigVarName is only providing one of config vars of that
+    // addon, we should make sure that we either use the default cred or any
+    // cred that associated with the attachment name that was provided to
+    // pg:diagnose command
     let params = {
       url: config[util.getConfigVarName(db.config_vars)],
       plan: db.plan.name.split(':')[1],

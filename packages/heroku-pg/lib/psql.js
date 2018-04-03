@@ -57,8 +57,7 @@ function * exec (db, query) {
 }
 
 function * interactive (db) {
-  const pgUtil = require('./util')
-  let name = pgUtil.getConfigVarName(db.attachment.config_vars).replace(/^HEROKU_POSTGRESQL_/, '').replace(/_URL$/, '')
+  let name = db.attachment.name
   let prompt = `${db.attachment.app.name}::${name}%R%# `
   handleSignals()
   let configs = bastion.getConfigs(db)

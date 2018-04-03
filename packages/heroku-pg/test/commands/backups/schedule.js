@@ -24,7 +24,8 @@ const shouldSchedule = function (cmdRun) {
         },
         config_vars: [
           'DATABASE_URL'
-        ]
+        ],
+        name: 'DATABASE'
       }
     ])
     pg = nock('https://postgres-api.heroku.com')
