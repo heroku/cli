@@ -14,12 +14,12 @@ function * run (context, heroku) {
   let resolve = co.wrap(function * (db) {
     if (db.match(/^postgres:\/\//)) {
       let uri = url.parse(db)
-      let name = uri.path ? uri.path.slice(1) : ''
-      let hostname = `${uri.host}:${uri.port || 5432}`
+      let dbname = uri.path ? uri.path.slice(1) : ''
+      let host = `${uri.hostname}:${uri.port || 5432}`
       return {
-        name: name ? `database ${name} on ${hostname}` : `database on ${hostname}`,
+        name: dbname ? `database ${dbname} on ${host}` : `database on ${host}`,
         url: db,
-        confirm: name || uri.host
+        confirm: dbname || uri.host
       }
     } else {
       let attachment = yield fetcher.attachment(app, db)

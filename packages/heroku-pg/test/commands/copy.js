@@ -76,6 +76,12 @@ describe('pg:copy', () => {
         to_name: 'RED',
         to_url: 'postgres://heroku/db'
       }).reply(200, {uuid: '100-001'})
+      pg.post('/client/v11/databases/1/transfers', {
+        from_name: 'database bar on boop.com:5678',
+        from_url: 'postgres://boop.com:5678/bar',
+        to_name: 'RED',
+        to_url: 'postgres://heroku/db'
+      }).reply(200, {uuid: '100-001'})
       pg.get('/client/v11/apps/myapp/transfers/100-001').reply(200, {finished_at: '100', succeeded: true})
     })
 
@@ -83,6 +89,12 @@ describe('pg:copy', () => {
       return cmd.run({app: 'myapp', args: {source: 'postgres://foo.com/bar', target: 'HEROKU_POSTGRESQL_RED_URL'}, flags: {confirm: 'myapp'}})
       .then(() => expect(cli.stdout, 'to equal', ''))
       .then(() => expect(cli.stderr, 'to equal', `Starting copy of database bar on foo.com:5432 to RED... done\n${copyingText()}`))
+    })
+
+    it('copies (with port number)', () => {
+      return cmd.run({app: 'myapp', args: {source: 'postgres://boop.com:5678/bar', target: 'HEROKU_POSTGRESQL_RED_URL'}, flags: {confirm: 'myapp'}})
+      .then(() => expect(cli.stdout, 'to equal', ''))
+      .then(() => expect(cli.stderr, 'to equal', `Starting copy of database bar on boop.com:5678 to RED... done\n${copyingText()}`))
     })
   })
 
