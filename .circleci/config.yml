@@ -36,7 +36,7 @@ jobs:
     steps:
       - checkout
       - restore_cache: *yarn_restore_cache
-      - restore_cache: {keys: [node-v9.3.0-darwin]}
+      - restore_cache: {keys: [node-v9.10.1-darwin]}
       - run: yarn
       - run: ./scripts/build/base
       - run: ./scripts/build/workspace
@@ -45,14 +45,14 @@ jobs:
           root: dist
           paths: [ . ]
       - save_cache: &node_cache_save
-          key: node-v9.3.0-darwin
+          key: node-v9.10.1-darwin
           paths: [/cli/tmp/cache/node]
   build_os_linux:
     <<: *defaults
     steps:
       - checkout
       - restore_cache: *yarn_restore_cache
-      - restore_cache: {keys: [node-v9.3.0-linux]}
+      - restore_cache: {keys: [node-v9.10.1-linux]}
       - run: yarn
       - run: ./scripts/build/base
       - run: ./scripts/build/workspace
@@ -60,16 +60,16 @@ jobs:
       - persist_to_workspace: *dist
       - save_cache:
           <<: *node_cache_save
-          key: node-v9.3.0-linux
+          key: node-v9.10.1-linux
   build_os_win32:
     <<: *defaults
     docker: &win32_docker
-      - image: dickeyxxx/cli-engine-docker-nsis:v3.1.2
+      - image: dickeyxxx/cli-engine-docker-nsis:v3.1.3
         environment: *env
     steps:
       - checkout
       - restore_cache: *yarn_restore_cache
-      - restore_cache: {keys: [node-v9.3.0-win32]}
+      - restore_cache: {keys: [node-v9.10.1-win32]}
       - run: yarn
       - run: ./scripts/build/base
       - run: ./scripts/build/workspace
@@ -77,11 +77,11 @@ jobs:
       - persist_to_workspace: *dist
       - save_cache:
           <<: *node_cache_save
-          key: node-v9.3.0-win32
+          key: node-v9.10.1-win32
   release:
     <<: *defaults
     docker: &release_docker
-      - image: dickeyxxx/cli-engine-docker:v3.0.12
+      - image: dickeyxxx/cli-engine-docker:v3.0.13
         environment: *env
     steps:
       - add_ssh_keys
