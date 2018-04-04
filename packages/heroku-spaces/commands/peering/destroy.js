@@ -20,7 +20,7 @@ module.exports = {
   description: 'destroys an active peering connection in a private space',
   help: `Example:
 
-    $ heroku peerings:destroy pcx-4bd27022 --confirm pcx-4bd27022 --space example-space
+    $ heroku spaces:peerings:destroy pcx-4bd27022 --confirm pcx-4bd27022 --space example-space
     Tearing down peering connection pcx-4bd27022
   `,
   needsApp: false,
