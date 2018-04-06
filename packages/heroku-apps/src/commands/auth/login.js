@@ -1,5 +1,3 @@
-// @flow
-
 const cli = require('heroku-cli-util')
 const co = require('co')
 
@@ -16,7 +14,7 @@ function * run (context, heroku) {
   }))(context)
 }
 
-export default {
+module.exports = {
   topic: 'auth',
   command: 'login',
   description: 'login with your Heroku credentials',

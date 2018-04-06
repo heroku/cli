@@ -1,8 +1,8 @@
 'use strict'
 
-import cli from 'heroku-cli-util'
-import co from 'co'
-import push from '../../../push'
+const cli = require('heroku-cli-util')
+const co = require('co')
+const push = require('../../../push')
 
 function map (stack) {
   return stack === 'cedar-10' ? 'cedar' : stack

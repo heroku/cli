@@ -1,5 +1,3 @@
-// @flow
-
 module.exports = [
   {
     'name': 'H10',

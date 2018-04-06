@@ -1,10 +1,8 @@
-// @flow
+const fs = require('fs-extra')
+const path = require('path')
+const flatten = require('lodash.flatten')
 
-import fs from 'fs-extra'
-import path from 'path'
-import flatten from 'lodash.flatten'
-
-export const topics = [
+exports.topics = [
   { name: 'apps', description: 'manage apps' },
   { name: 'auth', description: 'heroku authentication' },
   { name: 'buildpacks', description: 'manage the buildpacks for an app' },
@@ -23,7 +21,6 @@ export const topics = [
 
 function getCommands (dir) {
   function requireCommand (f) {
-    // $FlowFixMe
     let c = require(f)
     return c.default ? c.default : c
   }
@@ -38,4 +35,4 @@ function getCommands (dir) {
   return flatten(commands.concat(flatten(subs)))
 }
 
-export const commands = getCommands(path.join(__dirname, 'commands'))
+exports.commands = getCommands(path.join(__dirname, 'commands'))

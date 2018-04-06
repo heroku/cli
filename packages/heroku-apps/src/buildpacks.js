@@ -1,7 +1,7 @@
 'use strict'
 
-import cli from 'heroku-cli-util'
-import push from './push'
+const cli = require('heroku-cli-util')
+const push = require('./push')
 
 function BuildpackCommand (context, heroku, command, action) {
   this.app = context.app

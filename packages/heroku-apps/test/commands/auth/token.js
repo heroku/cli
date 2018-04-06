@@ -8,8 +8,10 @@ netrc['@global'] = true
 
 let mockMachines = {}
 netrc.default = new class {
-  loadSync = () => {
-    this.machines = mockMachines
+  constructor () {
+    this.loadSync = () => {
+      this.machines = mockMachines
+    }
   }
 }()
 

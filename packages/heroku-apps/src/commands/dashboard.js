@@ -168,7 +168,7 @@ See other CLI commands with ${cli.color.cmd('heroku help')}
 `)
 }
 
-export default {
+module.exports = {
   topic: 'dashboard',
   description: 'display information about favorite apps',
   hidden: true,
