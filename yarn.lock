@@ -94,25 +94,25 @@
     supports-color "^5.1.0"
 
 "@heroku-cli/command@^7.0.16":
-  version "7.0.16"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-7.0.16.tgz#7dc941d26638c3b7cdbd21b151ef90123e4817e2"
+  version "7.1.3"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-7.1.3.tgz#1b48ec47034f1bb71b8d920c031aef85efa6aac8"
   dependencies:
     "@cli-engine/command" "^12.1.1"
     "@cli-engine/config" "^5.1.0"
     cli-ux "^2.0.21"
     heroku-client "3.0.6"
     http-call "^4.0.8"
-    netrc-parser "^3.1.1"
+    netrc-parser "^3.1.2"
 
 "@heroku-cli/command@^8.0.0-oclif.1":
-  version "8.0.0"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.0.0.tgz#7a6093f1c908b1de9e567a55cc530804bcac1fd8"
+  version "8.0.1"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.0.1.tgz#5e291fe13689c7bfbb9bfb76c681ae737c6cb7e9"
   dependencies:
     cli-ux "^3.3.26"
     debug "^3.1.0"
     heroku-client "3.0.6"
     http-call "^5.1.0"
-    netrc-parser "^3.1.1"
+    netrc-parser "^3.1.2"
 
 "@heroku-cli/plugin-addons@^1.2.28":
   version "1.2.28"
@@ -306,8 +306,8 @@
     shellwords "^0.1.1"
 
 "@heroku-cli/plugin-spaces@^2.12.0":
-  version "2.12.0"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-spaces/-/plugin-spaces-2.12.0.tgz#95b59eff8ec74f84ceefcf649faf8704bb6304c2"
+  version "2.12.1"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-spaces/-/plugin-spaces-2.12.1.tgz#f9a5a11a906eeeed1b21b9ce7571b9ae03907b69"
   dependencies:
     cli-engine-command "^8.0.15"
     cli-engine-config "^3.3.0"
@@ -536,7 +536,7 @@ ansi-escapes@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/ansi-escapes/-/ansi-escapes-2.0.0.tgz#5bae52be424878dd9783e8910e3fc2922e83c81b"
 
-ansi-escapes@^3.0.0:
+ansi-escapes@^3.0.0, ansi-escapes@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/ansi-escapes/-/ansi-escapes-3.1.0.tgz#f73207bb81207d75fd6c83f125af26eea378ca30"
 
@@ -3019,11 +3019,11 @@ heroku-cli-util@^7.0.0:
     tunnel-agent "^0.6.0"
 
 heroku-cli-util@^8.0.0, heroku-cli-util@^8.0.3:
-  version "8.0.3"
-  resolved "https://registry.yarnpkg.com/heroku-cli-util/-/heroku-cli-util-8.0.3.tgz#941933ef3e641935a421e8df6afe44d5c283ea45"
+  version "8.0.4"
+  resolved "https://registry.yarnpkg.com/heroku-cli-util/-/heroku-cli-util-8.0.4.tgz#4c98687b4a05660468cdc9bf42f079e7765f208c"
   dependencies:
     "@heroku-cli/color" "^1.1.3"
-    ansi-escapes "^3.0.0"
+    ansi-escapes "^3.1.0"
     ansi-styles "^3.2.1"
     cardinal "^1.0.0"
     chalk "^2.3.2"
@@ -3042,7 +3042,7 @@ heroku-cli-util@^8.0.0, heroku-cli-util@^8.0.3:
     lodash.property "^4.4.2"
     lodash.repeat "^4.1.0"
     lodash.result "^4.5.2"
-    netrc-parser "^3.1.1"
+    netrc-parser "^3.1.2"
     opn "^3.0.3"
     strip-ansi "^4.0.0"
     supports-color "^5.3.0"
@@ -4807,12 +4807,12 @@ natural-compare@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/natural-compare/-/natural-compare-1.4.0.tgz#4abebfeed7541f2c27acfb29bdbbd15c8d5ba4f7"
 
-netrc-parser@3.1.1, netrc-parser@^3.1.0, netrc-parser@^3.1.1:
-  version "3.1.1"
-  resolved "https://registry.yarnpkg.com/netrc-parser/-/netrc-parser-3.1.1.tgz#1e23228689c12d5e91ae4ec053389124fd1ef84b"
+netrc-parser@3.1.2, netrc-parser@^3.1.0, netrc-parser@^3.1.2:
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/netrc-parser/-/netrc-parser-3.1.2.tgz#4d857feb74500e0348b3cd557c23bd798f1a7776"
   dependencies:
+    debug "^3.1.0"
     execa "^0.10.0"
-    lex "^1.7.9"
 
 netrc-parser@^2.0.3, netrc-parser@^2.0.5:
   version "2.0.6"
@@ -5482,15 +5482,15 @@ read-pkg@^3.0.0:
     path-type "^3.0.0"
 
 readable-stream@^2.0.0, readable-stream@^2.0.1, readable-stream@^2.0.2, readable-stream@^2.0.6, readable-stream@^2.1.4, readable-stream@^2.2.2, readable-stream@^2.3.5:
-  version "2.3.5"
-  resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-2.3.5.tgz#b4f85003a938cbb6ecbce2a124fb1012bd1a838d"
+  version "2.3.6"
+  resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-2.3.6.tgz#b11c27d88b8ff1fbe070643cf94b0c79ae1b0aaf"
   dependencies:
     core-util-is "~1.0.0"
     inherits "~2.0.3"
     isarray "~1.0.0"
     process-nextick-args "~2.0.0"
     safe-buffer "~5.1.1"
-    string_decoder "~1.0.3"
+    string_decoder "~1.1.1"
     util-deprecate "~1.0.1"
 
 readable-stream@~1.0.0:
@@ -6184,9 +6184,9 @@ string_decoder@~0.10.x:
   version "0.10.31"
   resolved "https://registry.yarnpkg.com/string_decoder/-/string_decoder-0.10.31.tgz#62e203bc41766c6c28c9fc84301dab1c5310fa94"
 
-string_decoder@~1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/string_decoder/-/string_decoder-1.0.3.tgz#0fc67d7c141825de94282dd536bec6b9bce860ab"
+string_decoder@~1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/string_decoder/-/string_decoder-1.1.1.tgz#9cf1611ba62685d7030ae9e4ba34149c3af03fc8"
   dependencies:
     safe-buffer "~5.1.0"
 
@@ -6512,8 +6512,8 @@ tslint@^5.8.0, tslint@^5.9.1:
     tsutils "^2.12.1"
 
 tsutils@^2.12.1:
-  version "2.26.0"
-  resolved "https://registry.yarnpkg.com/tsutils/-/tsutils-2.26.0.tgz#706240d63bcf1ae1797d1716738d6c6be0d0848b"
+  version "2.26.1"
+  resolved "https://registry.yarnpkg.com/tsutils/-/tsutils-2.26.1.tgz#9e4a0cb9ff173863f34c22a961969081270d1878"
   dependencies:
     tslib "^1.8.1"
 
