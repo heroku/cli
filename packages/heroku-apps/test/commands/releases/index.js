@@ -5,6 +5,7 @@ const cli = require('heroku-cli-util')
 const nock = require('nock')
 const cmd = require('../../../src/commands/releases')
 const expect = require('unexpected')
+const stripAnsi = require('strip-ansi')
 
 const assertLineWidths = function (blob, lineWidth) {
   let lines = blob.split('\n')
@@ -323,6 +324,27 @@ v37  first commit                     jeff@heroku.com  2015/11/18 01:36:38 +0000
       .then(() => api.done())
   })
 
+  it('shows releases with correct width for ansi colors', () => {
+    process.stdout.columns = 80
+    let api = nock('https://api.heroku.com:443')
+      .get('/apps/myapp/releases')
+      .reply(200, releases)
+      .get('/apps/myapp/slugs/37994c83-39a3-4cbf-b318-8f9dc648f701')
+      .reply(200, slug)
+    return cmd.run({app: 'myapp', flags: {forceColor: true}})
+      .then(() => expect(stripAnsi(cli.stdout), 'to equal', `=== myapp Releases - Current: v37
+v41  thir… release command executing  jeff@heroku.com  2015/11/18 01:36:38 +0000
+v40  Set foo config vars              jeff@heroku.com  2015/11/18 01:37:41 +0000
+v39  Remove … release command failed  jeff@heroku.com  2015/11/18 01:36:38 +0000
+v38  seco… release command executing  jeff@heroku.com  2015/11/18 01:36:38 +0000
+v37  first commit                     jeff@heroku.com  2015/11/18 01:36:38 +0000
+`))
+      .then(() => assertLineWidths(stripAnsi(cli.stdout), 80))
+      .then(() => expect(stripAnsi(cli.stdout), 'not to equal', cli.stdout))
+      .then(() => expect(cli.stderr, 'to be empty'))
+      .then(() => api.done())
+  })
+
   it('shows pending releases without release phase', () => {
     process.stdout.columns = 80
     let api = nock('https://api.heroku.com:443')
@@ -400,6 +422,19 @@ v40      Set foo config vars  jeff@heroku.com  2015/11/18 01:37:41 +0000  1     
       .then(() => expect(cli.stdout, 'to equal', `=== myapp Releases
 v40      Set foo config vars  jeff@heroku.com  2015/11/18 01:37:41 +0000  1                 uuid
 `))
+      .then(() => expect(cli.stderr, 'to be empty'))
+      .then(() => api.done())
+  })
+
+  it('shows extended info with correct width for ansi colors', () => {
+    let api = nock('https://api.heroku.com:443')
+      .get('/apps/myapp/releases?extended=true')
+      .reply(200, extended)
+    return cmd.run({app: 'myapp', flags: {extended: true, forceColor: true}})
+      .then(() => expect(stripAnsi(cli.stdout), 'to equal', `=== myapp Releases
+v40      Set foo config vars  jeff@heroku.com  2015/11/18 01:37:41 +0000  1                 uuid
+`))
+      .then(() => expect(stripAnsi(cli.stdout), 'not to equal', cli.stdout))
       .then(() => expect(cli.stderr, 'to be empty'))
       .then(() => api.done())
   })

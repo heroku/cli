@@ -2,6 +2,7 @@
 
 const cli = require('heroku-cli-util')
 const co = require('co')
+const stripAnsi = require('strip-ansi')
 
 function * run (context, heroku) {
   const statusHelper = require('../../status_helper')
@@ -74,7 +75,7 @@ function * run (context, heroku) {
 
           col.optimizationWidth = Math.max(
             col.optimizationWidth,
-            formattedValue.length
+            stripAnsi(formattedValue).length
           )
         }
       }
@@ -84,6 +85,24 @@ function * run (context, heroku) {
       if (col.key !== optimizeKey) {
         optimizationWidth += col.optimizationWidth + 2
       }
+    }
+  }
+
+  let handleColorStatus = function (options) {
+    if (context.flags.forceColor !== true) {
+      return
+    }
+
+    cli.color.enabled = true
+
+    let concatArguments = function (args) {
+      return Array.prototype.map.call(args, function (arg) {
+        return arg + ''
+      }).join(' ')
+    }
+
+    options.printLine = function (...args) {
+      cli.stdout += concatArguments(args) + '\n'
     }
   }
 
@@ -102,6 +121,7 @@ function * run (context, heroku) {
         {key: 'extended.slug_uuid'}
       ]
     }
+    handleColorStatus(options)
     optimizeWidth(releases, options.columns, 'description')
     cli.table(releases, options)
   } else if (releases.length === 0) {
@@ -117,6 +137,7 @@ function * run (context, heroku) {
         {key: 'created_at', format: (t) => time.ago(new Date(t))}
       ]
     }
+    handleColorStatus(options)
     optimizeWidth(releases, options.columns, 'description')
     cli.table(releases, options)
   }
