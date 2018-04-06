@@ -68,7 +68,7 @@
   "dependencies": {
     "@cli-engine/command": "^12.1.1",
     "@cli-engine/config": "^5.1.0",
-    "@cli-engine/engine": "6.2.7",
+    "@cli-engine/engine": "6.2.8",
     "@heroku-cli/color": "^1.1.3",
     "@heroku-cli/command": "^8.0.4",
     "@heroku-cli/plugin-addons": "^1.2.28",
