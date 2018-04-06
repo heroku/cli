@@ -6,11 +6,11 @@
 auth core plugin for Heroku CLI
 
 [![Version](https://img.shields.io/npm/v/@heroku-cli/plugin-auth.svg)](https://npmjs.org/package/@heroku-cli/plugin-auth)
-[![CircleCI](https://circleci.com/gh/jdxcode/heroku-cli-auth/tree/master.svg?style=shield)](https://circleci.com/gh/jdxcode/heroku-cli-auth/tree/master)
-[![Appveyor CI](https://ci.appveyor.com/api/projects/status/github/jdxcode/heroku-cli-auth?branch=master&svg=true)](https://ci.appveyor.com/project/jdxcode/heroku-cli-auth/branch/master)
-[![Codecov](https://codecov.io/gh/jdxcode/heroku-cli-auth/branch/master/graph/badge.svg)](https://codecov.io/gh/jdxcode/heroku-cli-auth)
+[![CircleCI](https://circleci.com/gh/heroku/heroku-cli-plugin-auth/tree/master.svg?style=shield)](https://circleci.com/gh/heroku/heroku-cli-plugin-auth/tree/master)
+[![Appveyor CI](https://ci.appveyor.com/api/projects/status/github/heroku/heroku-cli-plugin-auth?branch=master&svg=true)](https://ci.appveyor.com/project/heroku/heroku-cli-plugin-auth/branch/master)
+[![Codecov](https://codecov.io/gh/heroku/heroku-cli-plugin-auth/branch/master/graph/badge.svg)](https://codecov.io/gh/heroku/heroku-cli-plugin-auth)
 [![Downloads/week](https://img.shields.io/npm/dw/@heroku-cli/plugin-auth.svg)](https://npmjs.org/package/@heroku-cli/plugin-auth)
-[![License](https://img.shields.io/npm/l/@heroku-cli/plugin-auth.svg)](https://github.com/jdxcode/heroku-cli-auth/blob/master/package.json)
+[![License](https://img.shields.io/npm/l/@heroku-cli/plugin-auth.svg)](https://github.com/heroku/heroku-cli-plugin-auth/blob/master/package.json)
 
 <!-- toc -->
 * [Usage](#usage)

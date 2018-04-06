@@ -4,5 +4,6 @@
 /coverage
 /lib
 /node_modules
+/package-lock.json
 /tmp
 package-lock.json
