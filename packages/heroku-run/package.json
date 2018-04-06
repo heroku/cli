@@ -32,7 +32,6 @@
     "mocha-junit-reporter": "1.17.0",
     "netrc": "0.1.4",
     "nock": "^9.2.3",
-    "nyc": "^11.6.0",
     "sinon": "^4.5.0",
     "standard": "^11.0.1",
     "unexpected": "^10.37.2"
@@ -56,7 +55,8 @@
   "scripts": {
     "postpublish": "rm .oclif.manifest.json",
     "prepublishOnly": "oclif-dev manifest",
-    "test": "nyc mocha && standard",
+    "test": "mocha",
+    "posttest": "standard",
     "version": "oclif-dev readme && git add README.md"
   }
 }

@@ -16,7 +16,7 @@ describe('run', () => {
     fixture.capture(s => { stdout += s })
     return cmd.run({app: 'heroku-run-test-app', flags: {}, auth: {password: apikey}, args: ['echo', '1', '2', '3']})
       .then(() => fixture.release())
-      .then(() => expect(stdout, 'to equal', '1 2 3\n'))
+      .then(() => expect(stdout, 'to contain', '1 2 3\n'))
   })
 
   it('runs a command with spaces', () => {
