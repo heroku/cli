@@ -1,3 +1,15 @@
+<a name="2.4.33"></a>
+## [2.4.33](https://github.com/heroku/heroku-apps/compare/v2.4.32...v2.4.33) (2018-04-06)
+
+
+### Bug Fixes
+
+* fixed circle workflow name ([9328e33](https://github.com/heroku/heroku-apps/commit/9328e33))
+* fixed greenkeeper script ([a303f41](https://github.com/heroku/heroku-apps/commit/a303f41))
+* remove ./bin/run script ([2f7e4b0](https://github.com/heroku/heroku-apps/commit/2f7e4b0))
+* updated mocha ([572b9ea](https://github.com/heroku/heroku-apps/commit/572b9ea))
+* use new circle config ([761efa9](https://github.com/heroku/heroku-apps/commit/761efa9))
+
 2.1.1 / 2016-05-20
 ==================
 

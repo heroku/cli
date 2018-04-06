@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-apps",
   "description": "Heroku CLI plugin to manage apps.",
-  "version": "2.4.32",
+  "version": "2.4.33",
   "author": "Jeff Dickey (@jdxcode)",
   "bugs": {
     "url": "https://github.com/heroku/heroku-apps/issues"

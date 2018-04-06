@@ -1,9 +1,9 @@
 heroku labs
 ===========
 
-disables an experimental feature
+enables an experimental feature
+
 * [heroku labs](#heroku-labs)
-* [heroku labs:disable [FEATURE]](#heroku-labsdisable-feature)
 * [heroku labs:enable FEATURE](#heroku-labsenable-feature)
 * [heroku labs:info FEATURE](#heroku-labsinfo-feature)
 
@@ -19,20 +19,6 @@ OPTIONS
   -a, --app=app        app to run command against
   -r, --remote=remote  git remote of app to use
   --json               display as json
-```
-
-### heroku labs:disable [FEATURE]
-
-disables an experimental feature
-
-```
-USAGE
-  $ heroku labs:disable [FEATURE]
-
-OPTIONS
-  -a, --app=app        app to run command against
-  -r, --remote=remote  git remote of app to use
-  --confirm=confirm
 ```
 
 ### heroku labs:enable FEATURE
@@ -60,20 +46,6 @@ OPTIONS
   -a, --app=app        app to run command against
   -r, --remote=remote  git remote of app to use
   --json               display as json
-```
-
-## heroku labs:disable [FEATURE]
-
-disables an experimental feature
-
-```
-USAGE
-  $ heroku labs:disable [FEATURE]
-
-OPTIONS
-  -a, --app=app        app to run command against
-  -r, --remote=remote  git remote of app to use
-  --confirm=confirm
 ```
 
 ## heroku labs:enable FEATURE

@@ -15,7 +15,7 @@ $ npm install -g @heroku-cli/plugin-apps
 $ heroku COMMAND
 running command...
 $ heroku (-v|--version|version)
-@heroku-cli/plugin-apps/2.4.32 darwin-x64 node-v9.10.1
+@heroku-cli/plugin-apps/2.4.33 linux-x64 node-v9.11.1
 $ heroku --help [COMMAND]
 USAGE
   $ heroku COMMAND
@@ -97,7 +97,8 @@ Examples:
     $ heroku keys:add /my/key.pub
     Uploading SSH public key /my/key.pub... done
 
-* [heroku labs](docs/labs.md) - disables an experimental feature
+* [heroku labs](docs/labs.md) - enables an experimental feature
+
 * [heroku logout](docs/logout.md) - clears local login credentials
 
 * [heroku maintenance](docs/maintenance.md) - display the current maintenance status of app
