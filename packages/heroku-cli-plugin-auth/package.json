@@ -1,45 +1,58 @@
 {
-  "name": "heroku-cli-auth",
+  "name": "@heroku-cli/plugin-auth",
+  "description": "auth core plugin for Heroku CLI",
   "version": "0.0.0",
-  "files": [
-    "lib"
-  ],
-  "keywords": [
-    "heroku-plugin"
-  ],
-  "license": "MIT",
+  "author": "Jeff Dickey @jdxcode",
+  "bugs": "https://github.com/heroku/heroku-cli-plugin-auth/issues",
   "dependencies": {
-    "@heroku-cli/command": "^7.0.13",
-    "cli-ux": "^2.0.21",
-    "tslib": "^1.8.1"
+    "@oclif/command": "^1.4.6",
+    "@oclif/config": "^1.3.62"
   },
   "devDependencies": {
-    "@cli-engine/util": "^1.1.2",
-    "@heroku-cli/tslint": "^1.1.2",
-    "@types/ansi-styles": "^2.0.30",
-    "@types/jest": "^22.0.1",
-    "@types/node": "^8.0.58",
-    "husky": "^0.14.3",
-    "jest": "^22.0.4",
-    "prettier": "^1.9.2",
-    "ts-jest": "^22.0.1",
-    "tslint": "^5.8.0",
-    "typescript": "^2.6.2"
-  },
-  "cli-engine": {
-    "commands": "./lib/commands",
-    "topics": {
-      "auth": {
-        "description": "login/logout and other authentication"
-      }
-    }
+    "@oclif/dev-cli": "^1.4.4",
+    "@oclif/plugin-help": "^1.2.2",
+    "@oclif/test": "^1.0.1",
+    "@oclif/tslint": "^1.0.2",
+    "@types/chai": "^4.1.2",
+    "@types/mocha": "^5.0.0",
+    "@types/node": "^9.6.2",
+    "chai": "^4.1.2",
+    "globby": "^8.0.1",
+    "mocha": "^5.0.5",
+    "ts-node": "5",
+    "tslib": "^1.9.0",
+    "tslint": "^5.9.1",
+    "typescript": "^2.8.1"
   },
   "engines": {
-    "node": ">=6.0.0"
+    "node": ">=8.0.0"
   },
+  "files": [
+    ".oclif.manifest.json",
+    "/lib"
+  ],
+  "homepage": "https://github.com/heroku/heroku-cli-plugin-auth",
+  "keywords": [
+    "oclif-plugin"
+  ],
+  "license": "MIT",
+  "oclif": {
+    "commands": "./lib/commands",
+    "bin": "oclif-example",
+    "devPlugins": [
+      "@oclif/plugin-help"
+    ]
+  },
+  "repository": "heroku/heroku-cli-plugin-auth",
   "scripts": {
-    "precommit": "cli-engine-util",
-    "prepare": "cli-engine-util",
-    "test": "cli-engine-util"
+    "build": "rm -rf lib && tsc",
+    "clean": "rm -f .oclif.manifest.json",
+    "lint": "tsc -p test --noEmit && tslint -p test -t stylish",
+    "postpublish": "yarn run clean",
+    "posttest": "yarn run lint",
+    "prepublishOnly": "yarn run build && oclif-dev manifest && oclif-dev readme",
+    "preversion": "yarn run clean",
+    "test": "mocha --forbid-only \"test/**/*.test.ts\"",
+    "version": "oclif-dev readme && git add README.md"
   }
 }
