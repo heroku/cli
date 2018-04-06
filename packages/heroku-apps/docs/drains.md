@@ -16,7 +16,7 @@ USAGE
   $ heroku drains
 
 OPTIONS
-  -a, --app=app        (required) [default: foobar] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
   --json               output in json format
 ```
@@ -30,7 +30,7 @@ USAGE
   $ heroku drains:add URL
 
 OPTIONS
-  -a, --app=app        (required) [default: foobar] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -43,7 +43,7 @@ USAGE
   $ heroku drains:remove [URL|TOKEN]
 
 OPTIONS
-  -a, --app=app        (required) [default: foobar] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -56,7 +56,7 @@ USAGE
   $ heroku drains:add URL
 
 OPTIONS
-  -a, --app=app        (required) [default: foobar] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -69,6 +69,6 @@ USAGE
   $ heroku drains:remove [URL|TOKEN]
 
 OPTIONS
-  -a, --app=app        (required) [default: foobar] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 ```

@@ -9,7 +9,6 @@ login with your Heroku credentials
 * [heroku auth:login](#heroku-authlogin)
 * [heroku auth:logout](#heroku-authlogout)
 * [heroku auth:token](#heroku-authtoken)
-* [heroku auth:whoami](#heroku-authwhoami)
 
 ## heroku auth:2fa
 
@@ -93,16 +92,4 @@ display the current auth token
 ```
 USAGE
   $ heroku auth:token
-```
-
-## heroku auth:whoami
-
-display the current logged in user
-
-```
-USAGE
-  $ heroku auth:whoami
-
-ALIASES
-  $ heroku whoami
 ```

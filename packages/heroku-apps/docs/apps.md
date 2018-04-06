@@ -116,7 +116,7 @@ USAGE
   $ heroku apps:destroy
 
 OPTIONS
-  -a, --app=app          [default: foobar] app to run command against
+  -a, --app=app          app to run command against
   -c, --confirm=confirm
   -r, --remote=remote    git remote of app to use
 
@@ -133,7 +133,7 @@ USAGE
   $ heroku apps:errors
 
 OPTIONS
-  -a, --app=app        (required) [default: foobar] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
   --dyno               show only dyno errors
   --hours=hours        number of hours to look back (default 24)
@@ -162,7 +162,7 @@ USAGE
   $ heroku apps:favorites:add
 
 OPTIONS
-  -a, --app=app        (required) [default: foobar] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -175,7 +175,7 @@ USAGE
   $ heroku apps:favorites:remove
 
 OPTIONS
-  -a, --app=app        (required) [default: foobar] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -188,7 +188,7 @@ USAGE
   $ heroku apps:favorites:add
 
 OPTIONS
-  -a, --app=app        (required) [default: foobar] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -201,7 +201,7 @@ USAGE
   $ heroku apps:favorites:remove
 
 OPTIONS
-  -a, --app=app        (required) [default: foobar] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -214,7 +214,7 @@ USAGE
   $ heroku apps:info
 
 OPTIONS
-  -a, --app=app        [default: foobar] app to run command against
+  -a, --app=app        app to run command against
   -j, --json
   -r, --remote=remote  git remote of app to use
   -s, --shell          output more shell friendly key/value pairs
@@ -243,7 +243,7 @@ USAGE
   $ heroku apps:open [PATH]
 
 OPTIONS
-  -a, --app=app        (required) [default: foobar] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
@@ -266,7 +266,7 @@ USAGE
   $ heroku apps:rename NEWNAME
 
 OPTIONS
-  -a, --app=app        (required) [default: foobar] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
   --ssh-git            use ssh git protocol instead of https
 
@@ -290,7 +290,7 @@ USAGE
   $ heroku apps:stacks
 
 OPTIONS
-  -a, --app=app        (required) [default: foobar] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -303,7 +303,7 @@ USAGE
   $ heroku apps:stacks:set STACK
 
 OPTIONS
-  -a, --app=app        (required) [default: foobar] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
@@ -324,7 +324,7 @@ USAGE
   $ heroku apps:stacks:set STACK
 
 OPTIONS
-  -a, --app=app        (required) [default: foobar] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
@@ -391,7 +391,7 @@ USAGE
   $ heroku apps:destroy
 
 OPTIONS
-  -a, --app=app          [default: foobar] app to run command against
+  -a, --app=app          app to run command against
   -c, --confirm=confirm
   -r, --remote=remote    git remote of app to use
 
@@ -408,7 +408,7 @@ USAGE
   $ heroku apps:errors
 
 OPTIONS
-  -a, --app=app        (required) [default: foobar] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
   --dyno               show only dyno errors
   --hours=hours        number of hours to look back (default 24)
@@ -437,7 +437,7 @@ USAGE
   $ heroku apps:favorites:add
 
 OPTIONS
-  -a, --app=app        (required) [default: foobar] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -450,7 +450,7 @@ USAGE
   $ heroku apps:favorites:remove
 
 OPTIONS
-  -a, --app=app        (required) [default: foobar] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -463,7 +463,7 @@ USAGE
   $ heroku apps:favorites:add
 
 OPTIONS
-  -a, --app=app        (required) [default: foobar] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -476,7 +476,7 @@ USAGE
   $ heroku apps:favorites:remove
 
 OPTIONS
-  -a, --app=app        (required) [default: foobar] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -489,7 +489,7 @@ USAGE
   $ heroku apps:info
 
 OPTIONS
-  -a, --app=app        [default: foobar] app to run command against
+  -a, --app=app        app to run command against
   -j, --json
   -r, --remote=remote  git remote of app to use
   -s, --shell          output more shell friendly key/value pairs
@@ -518,7 +518,7 @@ USAGE
   $ heroku apps:open [PATH]
 
 OPTIONS
-  -a, --app=app        (required) [default: foobar] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
@@ -541,7 +541,7 @@ USAGE
   $ heroku apps:rename NEWNAME
 
 OPTIONS
-  -a, --app=app        (required) [default: foobar] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
   --ssh-git            use ssh git protocol instead of https
 
@@ -565,7 +565,7 @@ USAGE
   $ heroku apps:stacks
 
 OPTIONS
-  -a, --app=app        (required) [default: foobar] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -578,7 +578,7 @@ USAGE
   $ heroku apps:stacks:set STACK
 
 OPTIONS
-  -a, --app=app        (required) [default: foobar] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
@@ -599,7 +599,7 @@ USAGE
   $ heroku apps:stacks:set STACK
 
 OPTIONS
-  -a, --app=app        (required) [default: foobar] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION

@@ -31,7 +31,7 @@ USAGE
   $ heroku dyno:kill DYNO
 
 OPTIONS
-  -a, --app=app        (required) [default: foobar] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
@@ -56,7 +56,7 @@ USAGE
   $ heroku dyno:resize
 
 OPTIONS
-  -a, --app=app        (required) [default: foobar] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
@@ -78,7 +78,7 @@ USAGE
   $ heroku dyno:restart [DYNO]
 
 OPTIONS
-  -a, --app=app        (required) [default: foobar] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
@@ -106,7 +106,7 @@ USAGE
   $ heroku dyno:scale
 
 OPTIONS
-  -a, --app=app        (required) [default: foobar] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
@@ -133,7 +133,7 @@ USAGE
   $ heroku dyno:stop DYNO
 
 OPTIONS
-  -a, --app=app        (required) [default: foobar] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
