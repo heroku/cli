@@ -5,6 +5,7 @@ heroku-apps [![Circle CI](https://circleci.com/gh/heroku/heroku-apps.svg?style=s
 [![codecov](https://codecov.io/gh/heroku/heroku-apps/branch/master/graph/badge.svg)](https://codecov.io/gh/heroku/heroku-apps)
 [![npm version](https://badge.fury.io/js/heroku-apps.svg)](https://badge.fury.io/js/heroku-apps)
 [![License](https://img.shields.io/github/license/heroku/heroku-apps.svg)](https://github.com/heroku/heroku-apps/blob/master/LICENSE)
+[![Greenkeeper badge](https://badges.greenkeeper.io/heroku/heroku-apps.svg)](https://greenkeeper.io/)
 
 This core plugin comes preinstalled to the [Heroku CLI](https://cli.heroku.com).
 
