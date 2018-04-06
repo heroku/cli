@@ -18,7 +18,6 @@ export const topics = [
   { name: 'maintenance', description: 'manage maintenance mode for an app' },
   { name: 'notifications', description: 'display notifications' },
   { name: 'ps', description: 'manage dynos (dynos, workers)' },
-  { name: 'regions', description: 'list available regions' },
   { name: 'releases', description: 'manage app releases' }
 ]
 
