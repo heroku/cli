@@ -10,6 +10,6 @@ describe('run:detached', () => {
 
   it('runs a command', () => {
     return cmd.run({app: 'heroku-run-test-app', flags: {}, auth: {password: apikey}, args: ['echo', '1', '2', '3']})
-    .then(() => expect(cli.stdout, 'to begin with', 'Run heroku logs --app heroku-run-test-app --dyno'))
+      .then(() => expect(cli.stdout, 'to begin with', 'Run heroku logs --app heroku-run-test-app --dyno'))
   })
 })

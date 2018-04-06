@@ -10,6 +10,6 @@ describe('logs', () => {
 
   it('shows the logs', () => {
     return cmd.run({app: 'heroku-run-test-app', flags: {}, auth: {password: apikey}})
-    .then(() => expect(cli.stdout, 'to begin with', '20')) // starts with the year
+      .then(() => expect(cli.stdout, 'to begin with', '20')) // starts with the year
   })
 })

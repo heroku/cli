@@ -18,7 +18,7 @@ describe('console', () => {
 
   it('runs console', () => {
     return cmd.run({app: 'heroku-run-test-app', flags: {}})
-    .then(() => expect(dynoOpts.command, 'to equal', 'console'))
+      .then(() => expect(dynoOpts.command, 'to equal', 'console'))
   })
 
   afterEach(() => {

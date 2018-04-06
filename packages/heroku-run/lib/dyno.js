@@ -59,28 +59,28 @@ class Dyno extends Duplex {
         force_no_tty: this.opts['no-tty']
       }
     })
-    .then(dyno => {
-      this.dyno = dyno
-      if (this.opts.attach || this.opts.dyno) {
-        if (this.dyno.name && this.opts.dyno === undefined) this.opts.dyno = this.dyno.name
-        return this.attach()
-      } else if (this.opts.showStatus) {
-        cli.action.done(this._status('done'))
-      }
-    })
-    .catch(err => {
+      .then(dyno => {
+        this.dyno = dyno
+        if (this.opts.attach || this.opts.dyno) {
+          if (this.dyno.name && this.opts.dyno === undefined) this.opts.dyno = this.dyno.name
+          return this.attach()
+        } else if (this.opts.showStatus) {
+          cli.action.done(this._status('done'))
+        }
+      })
+      .catch(err => {
       // Currently the runtime API sends back a 409 in the event the
       // release isn't found yet. API just forwards this response back to
       // the client, so we'll need to retry these. This usually
       // happens when you create an app and immediately try to run a
       // one-off dyno. No pause between attempts since this is
       // typically a very short-lived condition.
-      if (err.statusCode === 409 && retries > 0) {
-        return this._doStart(retries - 1)
-      } else {
-        throw err
-      }
-    })
+        if (err.statusCode === 409 && retries > 0) {
+          return this._doStart(retries - 1)
+        } else {
+          throw err
+        }
+      })
   }
 
   /**
@@ -137,16 +137,16 @@ class Dyno extends Duplex {
     const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
     return this.heroku.get(`/apps/${this.opts.app}/dynos/${this.opts.dyno}`)
-    .then(dyno => {
-      this.dyno = dyno
-      cli.action.done(this._status(this.dyno.state))
+      .then(dyno => {
+        this.dyno = dyno
+        cli.action.done(this._status(this.dyno.state))
 
-      if (this.dyno.state === 'starting' || this.dyno.state === 'up') return this._connect()
-      else return wait(interval).then(this._ssh.bind(this))
-    })
-    .catch(() => {
-      return wait(interval).then(this._ssh.bind(this))
-    })
+        if (this.dyno.state === 'starting' || this.dyno.state === 'up') return this._connect()
+        else return wait(interval).then(this._ssh.bind(this))
+      })
+      .catch(() => {
+        return wait(interval).then(this._ssh.bind(this))
+      })
   }
 
   _connect () {

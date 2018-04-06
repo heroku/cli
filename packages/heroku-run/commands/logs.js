@@ -3,7 +3,7 @@
 let co = require('co')
 let cli = require('heroku-cli-util')
 let logDisplayer = require('../lib/log_displayer')
-const {DynoCompletion, ProcessTypeCompletion} = require('cli-engine-heroku/lib/completions')
+const {DynoCompletion, ProcessTypeCompletion} = require('@heroku-cli/command/lib/completions')
 
 function * run (context, heroku) {
   cli.color.enabled = context.flags['force-colors'] || cli.color.enabled

@@ -15,8 +15,8 @@ describe('run', () => {
     let fixture = new StdOutFixture()
     fixture.capture(s => { stdout += s })
     return cmd.run({app: 'heroku-run-test-app', flags: {}, auth: {password: apikey}, args: ['echo', '1', '2', '3']})
-    .then(() => fixture.release())
-    .then(() => expect(stdout, 'to equal', '1 2 3\n'))
+      .then(() => fixture.release())
+      .then(() => expect(stdout, 'to equal', '1 2 3\n'))
   })
 
   it('runs a command with spaces', () => {
@@ -24,8 +24,8 @@ describe('run', () => {
     let fixture = new StdOutFixture()
     fixture.capture(s => { stdout += s })
     return cmd.run({app: 'heroku-run-test-app', flags: {}, auth: {password: apikey}, args: ['ruby', '-e', 'puts ARGV[0]', '{"foo": "bar"} ']})
-    .then(() => fixture.release())
-    .then(() => expect(stdout, 'to equal', '{"foo": "bar"} \n'))
+      .then(() => fixture.release())
+      .then(() => expect(stdout, 'to equal', '{"foo": "bar"} \n'))
   })
 
   it('runs a command with quotes', () => {
@@ -33,8 +33,8 @@ describe('run', () => {
     let fixture = new StdOutFixture()
     fixture.capture(s => { stdout += s })
     return cmd.run({app: 'heroku-run-test-app', flags: {}, auth: {password: apikey}, args: ['ruby', '-e', 'puts ARGV[0]', '{"foo":"bar"}']})
-    .then(() => fixture.release())
-    .then(() => expect(stdout, 'to equal', '{"foo":"bar"}\n'))
+      .then(() => fixture.release())
+      .then(() => expect(stdout, 'to equal', '{"foo":"bar"}\n'))
   })
 
   it('runs a command with env vars', () => {
@@ -42,8 +42,8 @@ describe('run', () => {
     let fixture = new StdOutFixture()
     fixture.capture(s => { stdout += s })
     return cmd.run({app: 'heroku-run-test-app', flags: {env: 'FOO=bar'}, auth: {password: apikey}, args: ['env']})
-    .then(() => fixture.release())
-    .then(() => expect(stdout, 'to contain', 'FOO=bar'))
+      .then(() => fixture.release())
+      .then(() => expect(stdout, 'to contain', 'FOO=bar'))
   })
 
   it('gets 127 status for invalid command', () => {

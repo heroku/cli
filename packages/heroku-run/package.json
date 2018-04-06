@@ -17,7 +17,7 @@
     }
   },
   "dependencies": {
-    "cli-engine-heroku": "^5.0.4",
+    "@heroku-cli/command": "^8.0.4",
     "co": "4.6.0",
     "eventsource": "^1.0.5",
     "fs-extra": "^5.0.0",

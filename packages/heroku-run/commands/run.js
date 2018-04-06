@@ -4,7 +4,7 @@ let co = require('co')
 let cli = require('heroku-cli-util')
 let helpers = require('../lib/helpers')
 let Dyno = require('../lib/dyno')
-const {DynoSizeCompletion, ProcessTypeCompletion} = require('cli-engine-heroku/lib/completions')
+const {DynoSizeCompletion, ProcessTypeCompletion} = require('@heroku-cli/command/lib/completions')
 
 function * run (context, heroku) {
   let opts = {
