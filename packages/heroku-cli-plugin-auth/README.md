@@ -15,7 +15,24 @@ auth core plugin for Heroku CLI
 <!-- tocstop -->
 # Commands
 <!-- commands -->
+* [heroku 2fa](#heroku-2-fa)
 * [heroku auth:whoami](#heroku-authwhoami)
+* [heroku labs:disable [FEATURE]](#heroku-labsdisable-feature)
+
+## heroku 2fa
+
+check 2fa status
+
+```
+USAGE
+  $ heroku 2fa
+
+ALIASES
+  $ heroku 2fa
+  $ heroku twofactor
+```
+
+_See code: [src/commands/2fa.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.1.2/src/commands/2fa.ts)_
 
 ## heroku auth:whoami
 
@@ -29,5 +46,21 @@ ALIASES
   $ heroku whoami
 ```
 
-_See code: [src/commands/auth/whoami.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.1.1/src/commands/auth/whoami.ts)_
+_See code: [src/commands/auth/whoami.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.1.2/src/commands/auth/whoami.ts)_
+
+## heroku labs:disable [FEATURE]
+
+disables an experimental feature
+
+```
+USAGE
+  $ heroku labs:disable [FEATURE]
+
+OPTIONS
+  -a, --app=app        app to run command against
+  -r, --remote=remote  git remote of app to use
+  --confirm=confirm
+```
+
+_See code: [src/commands/labs/disable.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.1.2/src/commands/labs/disable.ts)_
 <!-- commandsstop -->
