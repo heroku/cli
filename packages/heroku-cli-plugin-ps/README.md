@@ -11,29 +11,25 @@ ps core plugin for Heroku CLI
 [![License](https://img.shields.io/npm/l/@heroku-cli/plugin-ps.svg)](https://github.com/heroku/heroku-cli-plugin-ps/blob/master/package.json)
 
 <!-- toc -->
-* [Usage](#usage)
 * [Commands](#commands)
 <!-- tocstop -->
 # Commands
 <!-- commands -->
-* [oclif-example hello [FILE]](#oclif-example-hello-file)
+* [heroku regions](#heroku-regions)
 
-## oclif-example hello [FILE]
+## heroku regions
 
-describe the command here
+list available regions for deployment
 
 ```
 USAGE
-  $ oclif-example hello [FILE]
+  $ heroku regions
 
 OPTIONS
-  -f, --force
-  -n, --name=name  name to print
-
-EXAMPLE
-  $ oclif-example hello
-  hello world from ./src/hello.ts!
+  --common   show regions for common runtime
+  --json     output in json format
+  --private  show regions for private spaces
 ```
 
-_See code: [src/commands/hello.ts](https://github.com/heroku/heroku-cli-plugin-ps/blob/v1.0.0/src/commands/hello.ts)_
+_See code: [src/commands/regions.ts](https://github.com/heroku/heroku-cli-plugin-ps/blob/v1.0.0/src/commands/regions.ts)_
 <!-- commandsstop -->
