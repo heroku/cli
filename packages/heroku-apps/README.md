@@ -14,7 +14,7 @@ $ npm install -g @heroku-cli/plugin-apps
 $ heroku COMMAND
 running command...
 $ heroku (-v|--version|version)
-@heroku-cli/plugin-apps/2.4.31 darwin-x64 node-v9.10.1
+@heroku-cli/plugin-apps/2.4.32 darwin-x64 node-v9.10.1
 $ heroku --help [COMMAND]
 USAGE
   $ heroku COMMAND
@@ -117,7 +117,6 @@ Examples:
     $ heroku ps run # specifying types
     === run: one-off dyno
     run.1: up for 5m: bash
-* [heroku regions](docs/regions.md) - list available regions for deployment
 * [heroku releases](docs/releases.md) - display the releases for an app
 
 Example:
