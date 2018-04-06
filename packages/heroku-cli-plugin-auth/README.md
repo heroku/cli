@@ -1,6 +1,8 @@
 @heroku-cli/plugin-auth
 =======================
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/heroku/heroku-cli-plugin-auth.svg?token=ae336dd09ada821e6e8b569c57595ea56c163d1e21e3133b667103c80dcdccc3&ts=1522979250711)](https://greenkeeper.io/)
+
 auth core plugin for Heroku CLI
 
 [![Version](https://img.shields.io/npm/v/@heroku-cli/plugin-auth.svg)](https://npmjs.org/package/@heroku-cli/plugin-auth)
