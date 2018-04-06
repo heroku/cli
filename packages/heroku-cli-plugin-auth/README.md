@@ -23,7 +23,7 @@ $ npm install -g @heroku-cli/plugin-auth
 $ oclif-example COMMAND
 running command...
 $ oclif-example (-v|--version|version)
-@heroku-cli/plugin-auth/0.0.0 darwin-x64 node-v9.10.1
+@heroku-cli/plugin-auth/1.0.0 linux-x64 node-v9.10.1
 $ oclif-example --help [COMMAND]
 USAGE
   $ oclif-example COMMAND
@@ -51,5 +51,5 @@ EXAMPLE
   hello world from ./src/hello.ts!
 ```
 
-_See code: [src/commands/hello.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.0.0/src/commands/hello.ts)_
+_See code: [src/commands/hello.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v1.0.0/src/commands/hello.ts)_
 <!-- commandsstop -->
