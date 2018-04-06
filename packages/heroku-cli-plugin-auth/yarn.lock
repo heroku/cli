@@ -22,9 +22,9 @@
     reflect-metadata "^0.1.12"
     tslib "^1.8.1"
 
-"@heroku-cli/command@^8.0.2":
-  version "8.0.2"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.0.2.tgz#69940ae716d5a2a6e4a7ef566474d962ab563ab4"
+"@heroku-cli/command@^8.0.3":
+  version "8.0.3"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.0.3.tgz#04a799893057b520eb32aa0d987c508c396d4b22"
   dependencies:
     cli-ux "^3.3.26"
     debug "^3.1.0"
