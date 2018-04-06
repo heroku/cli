@@ -36,7 +36,7 @@ module.exports = {
   description: 'Update existing collaborators in an org app',
   help: `Example:
 
-    heroku access:update user@email.com --app APP --privileges deploy,manage,operate`,
+    heroku access:update user@email.com --app APP --permissions deploy,manage,operate`,
   args: [{name: 'email', optional: false}],
   flags: [
     { name: 'permissions', hasValue: true, description: 'comma-delimited list of permissions to update (deploy,manage,operate)' },
