@@ -1,3 +1,17 @@
+<a name="0.1.0"></a>
+# [0.1.0](https://github.com/heroku/heroku-cli-plugin-auth/compare/v0.0.0...v0.1.0) (2018-04-06)
+
+
+### Bug Fixes
+
+* fixed tests when logged out ([464a0f7](https://github.com/heroku/heroku-cli-plugin-auth/commit/464a0f7))
+* testing release ([582ac39](https://github.com/heroku/heroku-cli-plugin-auth/commit/582ac39))
+
+
+### Features
+
+* added auth:whoami ([85407a4](https://github.com/heroku/heroku-cli-plugin-auth/commit/85407a4))
+
 <a name="1.0.0"></a>
 # 1.0.0 (2018-04-06)
 

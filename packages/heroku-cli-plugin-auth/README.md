@@ -21,7 +21,7 @@ $ npm install -g @heroku-cli/plugin-auth
 $ oclif-example COMMAND
 running command...
 $ oclif-example (-v|--version|version)
-@heroku-cli/plugin-auth/1.0.0 linux-x64 node-v9.10.1
+@heroku-cli/plugin-auth/0.1.0 linux-x64 node-v9.10.1
 $ oclif-example --help [COMMAND]
 USAGE
   $ oclif-example COMMAND
@@ -30,24 +30,19 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [oclif-example hello [FILE]](#oclif-example-hello-file)
+* [oclif-example auth:whoami](#oclif-example-authwhoami)
 
-## oclif-example hello [FILE]
+## oclif-example auth:whoami
 
-describe the command here
+display the current logged in user
 
 ```
 USAGE
-  $ oclif-example hello [FILE]
+  $ oclif-example auth:whoami
 
-OPTIONS
-  -f, --force
-  -n, --name=name  name to print
-
-EXAMPLE
-  $ oclif-example hello
-  hello world from ./src/hello.ts!
+ALIASES
+  $ oclif-example whoami
 ```
 
-_See code: [src/commands/hello.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v1.0.0/src/commands/hello.ts)_
+_See code: [src/commands/auth/whoami.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.1.0/src/commands/auth/whoami.ts)_
 <!-- commandsstop -->
