@@ -2,6 +2,7 @@ import { Hook } from '@cli-engine/engine'
 import { Config } from '@cli-engine/engine/lib/config'
 import { IHooks } from '@cli-engine/engine/lib/hooks'
 import { AppCompletion, PipelineCompletion, SpaceCompletion, TeamCompletion } from '@heroku-cli/command/lib/completions'
+import { IConfig, load } from '@oclif/config'
 import cli from 'cli-ux'
 
 const debug = require('debug')('heroku:completions')
@@ -14,7 +15,6 @@ export default class CompletionsUpdateHook extends Hook<'update'> {
 
   async run() {
     try {
-      const config = this.config
       if (this.config.windows) {
         debug('skipping autocomplete on windows')
       } else {
@@ -23,7 +23,8 @@ export default class CompletionsUpdateHook extends Hook<'update'> {
         if (acPlugin) {
           cli.action.start('Updating completions')
           let ac = await acPlugin.findCommand('autocomplete:buildcache')
-          if (ac) await ac.run([], config)
+          if (ac) await ac.run([], this.config)
+          let config : IConfig = Object.assign(await load(), this.config)
           await AppCompletion.options({ config })
           await PipelineCompletion.options({ config })
           await SpaceCompletion.options({ config })
