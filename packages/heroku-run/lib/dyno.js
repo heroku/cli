@@ -179,14 +179,20 @@ class Dyno extends Duplex {
           client.on('data', (data) => remote.write(data))
         })
 
-        s.listen(0, 'localhost', () => this._handle(s.address()))
+        s.listen(0, 'localhost', () => this._handle(s))
+        // abort the request when the local pipe server is closed
+        s.on('close', () => {
+          r.abort()
+        })
       })
     })
   }
 
-  _handle (options) {
-    const host = options.address
-    const port = options.port
+  _handle (localServer) {
+    let addr = localServer.address()
+    let host = addr.address
+    let port = addr.port
+    let lastErr = ''
 
     // does not actually uncork but allows error to be displayed when attempting to read
     this.uncork()
@@ -194,12 +200,31 @@ class Dyno extends Duplex {
       cli.log(`listening on port ${host}:${port} for ssh client`)
     } else {
       let params = [host, '-p', port, '-oStrictHostKeyChecking=no', '-oUserKnownHostsFile=/dev/null', '-oServerAliveInterval=20']
-      if (!this._isDebug()) {
-        params.push('-q')
-      }
 
-      spawn('ssh', params, {
-        stdio: 'inherit'
+      // only intercept the stderr output
+      let sshProc = spawn('ssh', params, {
+        stdio: [process.stdin, process.stdout, 'pipe']
+      })
+      sshProc.stderr.on('data', (data) => {
+        lastErr = data
+
+        // supress host key and permission denied messages
+        if (this._isDebug() || (data.includes("Warning: Permanently added '[127.0.0.1]") && data.includes('Permission denied (publickey).'))) {
+          process.stderr.write(data)
+        }
+      })
+      sshProc.on('close', (code, signal) => {
+        // there was a problem connecting with the ssh key
+        if (lastErr.length > 0 && lastErr.includes('Permission denied')) {
+          cli.error('There was a problem connecting to the dyno.')
+          if (process.env.SSH_AUTH_SOCK) {
+            cli.error('Confirm that your ssh key is added to your agent by running `ssh-add`.')
+          }
+          cli.error('Check that your ssh key has been uploaded to heroku with `heroku keys:add`.')
+          cli.error(`See ${cli.color.cyan('https://devcenter.heroku.com/articles/one-off-dynos#shield-private-spaces')}`)
+        }
+        // cleanup local server
+        localServer.close()
       })
     }
   }
