@@ -80,7 +80,7 @@
     "@heroku-cli/plugin-git": "^2.5.28",
     "@heroku-cli/plugin-local": "^5.1.23",
     "@heroku-cli/plugin-oauth": "^2.3.1",
-    "@heroku-cli/plugin-orgs": "^1.7.3",
+    "@heroku-cli/plugin-orgs": "^1.7.4",
     "@heroku-cli/plugin-pg": "^2.9.5",
     "@heroku-cli/plugin-pipelines": "^2.5.3",
     "@heroku-cli/plugin-ps": "^1.0.0",

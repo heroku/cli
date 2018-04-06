@@ -228,16 +228,16 @@
     heroku-cli-util "^8.0.0"
     lodash "^4.17.5"
 
-"@heroku-cli/plugin-orgs@^1.7.3":
-  version "1.7.3"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-orgs/-/plugin-orgs-1.7.3.tgz#badc233e69b3b207bfcd22774f958858eb63677e"
+"@heroku-cli/plugin-orgs@^1.7.4":
+  version "1.7.4"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-orgs/-/plugin-orgs-1.7.4.tgz#2bcb0e80a4bab501df2263bcb495d37de8404588"
   dependencies:
     cli-engine-command "^9.0.7"
     cli-engine-config "^3.5.0"
     cli-engine-heroku "^5.0.4"
     co "4.6.0"
-    heroku-cli-util "^8.0.0"
-    inquirer "^5.1.0"
+    heroku-cli-util "^8.0.4"
+    inquirer "^5.2.0"
     lodash "4.17.5"
     lodash.flatten "4.4.0"
 
@@ -2964,7 +2964,7 @@ heroku-cli-util@^7.0.0:
     supports-color "^5.1.0"
     tunnel-agent "^0.6.0"
 
-heroku-cli-util@^8.0.0, heroku-cli-util@^8.0.3:
+heroku-cli-util@^8.0.0, heroku-cli-util@^8.0.3, heroku-cli-util@^8.0.4:
   version "8.0.4"
   resolved "https://registry.yarnpkg.com/heroku-cli-util/-/heroku-cli-util-8.0.4.tgz#4c98687b4a05660468cdc9bf42f079e7765f208c"
   dependencies:
@@ -3280,7 +3280,7 @@ inquirer@^4.0.1:
     strip-ansi "^4.0.0"
     through "^2.3.6"
 
-inquirer@^5.1.0:
+inquirer@^5.1.0, inquirer@^5.2.0:
   version "5.2.0"
   resolved "https://registry.yarnpkg.com/inquirer/-/inquirer-5.2.0.tgz#db350c2b73daca77ff1243962e9f22f099685726"
   dependencies:
