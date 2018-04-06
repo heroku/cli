@@ -21,20 +21,20 @@
     "co": "4.6.0",
     "eventsource": "^1.0.5",
     "fs-extra": "^5.0.0",
-    "heroku-cli-util": "^8.0.0",
+    "heroku-cli-util": "^8.0.4",
     "shellwords": "^0.1.1"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.2.17",
-    "@oclif/plugin-legacy": "^1.0.4",
+    "@oclif/dev-cli": "^1.4.4",
+    "@oclif/plugin-legacy": "^1.0.7",
     "fixture-stdout": "0.2.1",
-    "mocha": "^5.0.1",
+    "mocha": "^5.0.5",
     "mocha-junit-reporter": "1.17.0",
     "netrc": "0.1.4",
-    "nock": "^9.0.14",
-    "nyc": "^11.4.1",
-    "sinon": "^4.3.0",
-    "standard": "^10.0.3",
+    "nock": "^9.2.3",
+    "nyc": "^11.6.0",
+    "sinon": "^4.5.0",
+    "standard": "^11.0.1",
     "unexpected": "^10.37.2"
   },
   "files": [
