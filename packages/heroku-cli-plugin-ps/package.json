@@ -17,7 +17,7 @@
     "@oclif/dev-cli": "^1.4.4",
     "@oclif/plugin-help": "^1.2.2",
     "@oclif/test": "^1.0.4",
-    "@oclif/tslint": "^1.0.2",
+    "@oclif/tslint": "^1.1.0",
     "@types/chai": "^4.1.2",
     "@types/lodash": "^4.14.106",
     "@types/mocha": "^5.0.0",
