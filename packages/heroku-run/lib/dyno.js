@@ -333,8 +333,8 @@ class Dyno extends Duplex {
       notify({
         title: this.opts.app,
         subtitle: `heroku run ${this.opts.command}`,
-        message: 'dyno is up',
-        sound: true
+        message: 'dyno is up'
+        // sound: true
       })
     } catch (err) {
       cli.warn(err)
