@@ -4807,17 +4807,24 @@ natural-compare@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/natural-compare/-/natural-compare-1.4.0.tgz#4abebfeed7541f2c27acfb29bdbbd15c8d5ba4f7"
 
-netrc-parser@3.1.1, netrc-parser@^3.1.0, netrc-parser@^3.1.1:
-  version "3.1.1"
-  resolved "https://registry.yarnpkg.com/netrc-parser/-/netrc-parser-3.1.1.tgz#1e23228689c12d5e91ae4ec053389124fd1ef84b"
+netrc-parser@3.1.2:
+  version "3.1.2"
+  resolved "http://cli-npm.heroku.com/netrc-parser/-/netrc-parser-3.1.2/4d857feb74500e0348b3cd557c23bd798f1a7776.tgz#4d857feb74500e0348b3cd557c23bd798f1a7776"
   dependencies:
+    debug "^3.1.0"
     execa "^0.10.0"
-    lex "^1.7.9"
 
 netrc-parser@^2.0.3, netrc-parser@^2.0.5:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/netrc-parser/-/netrc-parser-2.0.6.tgz#0a21b96810dbb2c3ac42fac0a260bf838d20ef2f"
   dependencies:
+    lex "^1.7.9"
+
+netrc-parser@^3.1.0, netrc-parser@^3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/netrc-parser/-/netrc-parser-3.1.1.tgz#1e23228689c12d5e91ae4ec053389124fd1ef84b"
+  dependencies:
+    execa "^0.10.0"
     lex "^1.7.9"
 
 nice-try@^1.0.4:
