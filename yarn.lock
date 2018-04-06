@@ -28,11 +28,12 @@
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/@cli-engine/config/-/config-5.1.0.tgz#d8ac7122317bc505dc09e7fd778777602d6b7568"
 
-"@cli-engine/engine@6.2.7":
-  version "6.2.7"
-  resolved "https://registry.yarnpkg.com/@cli-engine/engine/-/engine-6.2.7.tgz#a3de2bd300378e779266e8f18c9ed631de22e369"
+"@cli-engine/engine@6.2.8":
+  version "6.2.8"
+  resolved "http://cli-npm.heroku.com/@cli-engine/engine/-/engine-6.2.8/41a5bbe7de090b6815fba85d28715166a4b67760.tgz#41a5bbe7de090b6815fba85d28715166a4b67760"
   dependencies:
     "@heroku-cli/color" "^1.1.1"
+    "@heroku-cli/command" "^7.0.13"
     "@types/load-json-file" "^2.0.7"
     assync "^1.0.4"
     cli-ux "^2.0.21"
@@ -70,6 +71,17 @@
     chalk "^2.3.0"
     strip-ansi "^4.0.0"
     supports-color "^5.1.0"
+
+"@heroku-cli/command@^7.0.13":
+  version "7.1.3"
+  resolved "http://cli-npm.heroku.com/@heroku-cli/command/-/command-7.1.3/1b48ec47034f1bb71b8d920c031aef85efa6aac8.tgz#1b48ec47034f1bb71b8d920c031aef85efa6aac8"
+  dependencies:
+    "@cli-engine/command" "^12.1.1"
+    "@cli-engine/config" "^5.1.0"
+    cli-ux "^2.0.21"
+    heroku-client "3.0.6"
+    http-call "^4.0.8"
+    netrc-parser "^3.1.2"
 
 "@heroku-cli/command@^8.0.0-oclif.1", "@heroku-cli/command@^8.0.3", "@heroku-cli/command@^8.0.4":
   version "8.0.4"
