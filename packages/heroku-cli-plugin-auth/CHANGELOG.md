@@ -1,3 +1,12 @@
+<a name="0.1.1"></a>
+## [0.1.1](https://github.com/heroku/heroku-cli-plugin-auth/compare/v0.1.0...v0.1.1) (2018-04-06)
+
+
+### Bug Fixes
+
+* remove docs ([0c20755](https://github.com/heroku/heroku-cli-plugin-auth/commit/0c20755))
+* set bin ([bcb7f69](https://github.com/heroku/heroku-cli-plugin-auth/commit/bcb7f69))
+
 <a name="0.1.0"></a>
 # [0.1.0](https://github.com/heroku/heroku-cli-plugin-auth/compare/v0.0.0...v0.1.0) (2018-04-06)
 

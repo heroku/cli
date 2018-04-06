@@ -11,29 +11,23 @@ auth core plugin for Heroku CLI
 [![License](https://img.shields.io/npm/l/@heroku-cli/plugin-auth.svg)](https://github.com/heroku/heroku-cli-plugin-auth/blob/master/package.json)
 
 <!-- toc -->
-* [Usage](#usage)
 * [Commands](#commands)
 <!-- tocstop -->
 # Commands
 <!-- commands -->
-* [oclif-example hello [FILE]](#oclif-example-hello-file)
+* [heroku auth:whoami](#heroku-authwhoami)
 
-## oclif-example hello [FILE]
+## heroku auth:whoami
 
-describe the command here
+display the current logged in user
 
 ```
 USAGE
-  $ oclif-example hello [FILE]
+  $ heroku auth:whoami
 
-OPTIONS
-  -f, --force
-  -n, --name=name  name to print
-
-EXAMPLE
-  $ oclif-example hello
-  hello world from ./src/hello.ts!
+ALIASES
+  $ heroku whoami
 ```
 
-_See code: [src/commands/hello.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v1.0.0/src/commands/hello.ts)_
+_See code: [src/commands/auth/whoami.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.1.1/src/commands/auth/whoami.ts)_
 <!-- commandsstop -->
