@@ -24,6 +24,7 @@ class Dyno extends Duplex {
    * @param {string} options.type - type of dyno to create
    * @param {boolean} options.no-tty - force not to use a tty
    * @param {Object} options.env - dyno environment variables
+   * @param {boolean} options.notify - show notifications or not
   */
   constructor (opts) {
     super()
@@ -38,6 +39,7 @@ class Dyno extends Duplex {
    * @returns {Promise} promise resolved when dyno process is created
    */
   start () {
+    this._startedAt = new Date()
     const dynoStart = this._doStart()
     if (this.opts.showStatus) {
       return cli.action(`Running ${cli.color.cyan.bold(this.opts.command)} on ${cli.color.app(this.opts.app)}`, {success: false}, dynoStart)
@@ -227,6 +229,7 @@ class Dyno extends Duplex {
         localServer.close()
       })
     }
+    this._notify()
   }
 
   _isDebug () {
@@ -259,6 +262,7 @@ class Dyno extends Duplex {
         this._readStdin(c)
         return
       }
+      this._notify()
       data = data.replace('\r\n', '\n')
       let exitCode = data.match(/\uFFFF heroku-command-exit-status (\d+)/m)
       if (exitCode) {
@@ -316,6 +320,25 @@ class Dyno extends Duplex {
     }
     if (!this.input) throw new Error('no input')
     this.input.write(chunk, encoding, callback)
+  }
+
+  _notify () {
+    try {
+      if (this._notified) return
+      this._notified = true
+      if (!this.opts.notify) return
+      // only show notifications if dyno took longer than 20 seconds to start
+      if (new Date() - this._startedAt < 1000 * 20) return
+      const {notify} = require('@heroku-cli/notifications')
+      notify({
+        title: this.opts.app,
+        subtitle: `heroku run ${this.opts.command}`,
+        message: 'dyno is up',
+        sound: true
+      })
+    } catch (err) {
+      cli.warn(err)
+    }
   }
 }
 

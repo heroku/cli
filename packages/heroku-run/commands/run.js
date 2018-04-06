@@ -13,6 +13,7 @@ function * run (context, heroku) {
     command: helpers.buildCommand(context.args),
     size: context.flags.size,
     type: context.flags.type,
+    notify: !context.flags['no-notify'],
     'exit-code': context.flags['exit-code'],
     env: context.flags.env,
     'no-tty': context.flags['no-tty'],
@@ -33,7 +34,9 @@ function * run (context, heroku) {
 module.exports = {
   topic: 'run',
   description: 'run a one-off process inside a heroku dyno',
-  help: `Examples:
+  help: `Shows a notification if the dyno takes more than 20 seconds to start.
+
+Examples:
 
     $ heroku run bash
     Running bash on app.... up, run.1
@@ -51,7 +54,8 @@ module.exports = {
     {name: 'exit-code', char: 'x', description: 'passthrough the exit code of the remote command'},
     {name: 'env', char: 'e', description: "environment variables to set (use ';' to split multiple vars)", hasValue: true},
     {name: 'no-tty', description: 'force the command to not run in a tty', hasValue: false},
-    {name: 'listen', description: 'listen on a local port', hasValue: false, hidden: true}
+    {name: 'listen', description: 'listen on a local port', hasValue: false, hidden: true},
+    {name: 'no-notify', description: 'disables notification when dyno is up (alternatively use HEROKU_NOTIFICATIONS=0)', hasValue: false}
   ],
   run: cli.command(co.wrap(run))
 }
