@@ -16,7 +16,6 @@ jobs:
             - v1-yarn-{{checksum ".circleci/config.yml"}}
       - run: .circleci/greenkeeper
       - run: yarn add -D nyc@11 @oclif/nyc-config@1 mocha-junit-reporter@1
-      - run: ./bin/run --help
       - run: |
           mkdir -p reports
           $NYC yarn test --reporter mocha-junit-reporter
