@@ -55,6 +55,7 @@ export default class LabsDisable extends Command {
 
     cli.action.start(`Disabling ${color.green(feature)} for ${color.cyan(target)}`)
     await request
+    cli.action.stop()
   }
 
   disableFeature(feature: string, app?: string): Promise<any> {
