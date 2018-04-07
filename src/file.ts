@@ -30,7 +30,7 @@ export async function remove(file: string) {
 export async function ls(dir: string): Promise<{ path: string; stat: FS.Stats }[]> {
   let files = await deps.fs.readdir(dir)
   let paths = files.map(f => path.join(dir, f))
-  return Promise.all(paths.map(path => deps.fs.stat(path).then(stat => ({ path, stat }))))
+  return Promise.all(paths.map(path => deps.fs.stat(path).then(stat => ({path, stat}))))
 }
 
 export async function removeEmptyDirs(dir: string): Promise<void> {
@@ -54,7 +54,7 @@ export async function readJSON(file: string) {
 
 export async function outputJSON(file: string, data: any, options: FS.WriteOptions = {}) {
   debug('outputJSON', file)
-  return deps.fs.outputJSON(file, data, { spaces: 2, ...options })
+  return deps.fs.outputJSON(file, data, {spaces: 2, ...options})
 }
 
 export function realpathSync(p: string) {

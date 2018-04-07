@@ -1,7 +1,15 @@
+*-debug.log
+*-error.log
+.oclif.manifest.json
+/dist
+/lib
+/node_modules
+/package-lock.json
+/tmp
 cli
 coverage
-lib
 dist
-tmp
+lib
 node_modules
 package-lock.json
+tmp

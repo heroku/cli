@@ -1,17 +1,4 @@
 #!/usr/bin/env node
 
-const path = require('path')
-const root = path.join(__dirname, '..')
-const pjson = require(path.join(root, 'package.json'))
-const semver = require('semver')
-const nodeVersion = process.versions.node
-if (!semver.satisfies(nodeVersion, pjson.engines.node)) {
-  process.stderr.write(`WARNING\nWARNING Node version must be ${pjson.engines.node} to use the Heroku CLI\nWARNING\n`)
-}
-
-const {run} = require('@cli-engine/engine')
-const config = {
-  reexecBin: __filename,
-  updateDisabled: 'Update CLI with `npm update -g heroku-cli`'
-}
-run(process.argv, config)
+require('@oclif/command').run()
+.catch(require('@oclif/errors/handle'))

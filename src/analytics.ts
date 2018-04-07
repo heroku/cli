@@ -1,7 +1,6 @@
-import { Config } from '@cli-engine/config'
-import { ICommandInfo } from '@cli-engine/engine'
-import { vars } from '@heroku-cli/command'
-import cli from 'cli-ux'
+import {vars} from '@heroku-cli/command'
+import * as Config from '@oclif/config'
+import ux from 'cli-ux'
 import netrc from 'netrc-parser'
 import * as path from 'path'
 
@@ -35,19 +34,19 @@ export interface AnalyticsJSONPost {
 }
 
 export interface RecordOpts {
-  Command: ICommandInfo
+  Command: Config.Command.Class
   argv: string[]
 }
 
 export default class AnalyticsCommand {
-  config: Config
+  config: Config.IConfig
   userConfig!: typeof deps.UserConfig.prototype
   http: typeof deps.HTTP
 
-  constructor(config: Config) {
+  constructor(config: Config.IConfig) {
     this.config = config
-    this.http = deps.HTTP.defaults({
-      headers: { 'user-agent': config.userAgent },
+    this.http = deps.HTTP.create({
+      headers: {'user-agent': config.userAgent},
     })
   }
 
@@ -102,12 +101,12 @@ export default class AnalyticsCommand {
         cli: this.config.name,
       }
 
-      await this.http.post(this.url, { body })
+      await this.http.post(this.url, {body})
 
       await deps.file.remove(this.analyticsPath)
     } catch (err) {
       debug(err)
-      await deps.file.remove(this.analyticsPath).catch(err => cli.warn(err))
+      await deps.file.remove(this.analyticsPath).catch(err => ux.warn(err))
     }
   }
 
