@@ -1,3 +1,11 @@
+<a name="2.4.35"></a>
+## [2.4.35](https://github.com/heroku/heroku-apps/compare/v2.4.34...v2.4.35) (2018-04-09)
+
+
+### Bug Fixes
+
+* move standard to dev ([5eb08bd](https://github.com/heroku/heroku-apps/commit/5eb08bd))
+
 <a name="2.4.34"></a>
 ## [2.4.34](https://github.com/heroku/heroku-apps/compare/v2.4.33...v2.4.34) (2018-04-09)
 
