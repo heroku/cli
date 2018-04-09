@@ -1,7 +1,7 @@
 {
   "name": "heroku-cli",
   "description": "CLI to interact with Heroku",
-  "version": "6.16.8-dev",
+  "version": "7.0.0",
   "author": "Jeff Dickey @jdxcode",
   "bin": {
     "heroku": "./bin/run"
@@ -72,15 +72,7 @@
       },
       "s3": {
         "bucket": "heroku-cli-assets",
-        "host": "https://cli-assets.heroku.com",
-        "templates": {
-          "platformBaseDir": "<%- name %>-v<%- version %>-<%- platform %>-<%- arch %>",
-          "vanillaBaseDir": "<%- name %>",
-          "platformTarball": "<%- name %>/channels/<%- channel %>/heroku-cli-v<%- version %>-<%- platform %>-<%- arch %>",
-          "vanillaTarball": "<%- name %>/channels/<%- channel %>/heroku-cli-v<%- version %>",
-          "platformManifest": "<%- name %>/channels/<%- channel %>/<%- platform %>-<%- arch %>",
-          "vanillaManifest": "<%- name %>/channels/<%- channel %>/version"
-        }
+        "host": "https://cli-assets.heroku.com"
       }
     }
   },
@@ -104,8 +96,8 @@
     "@heroku-cli/plugin-spaces": "^2.12.0",
     "@heroku-cli/plugin-status": "^5.0.9",
     "@heroku-cli/plugin-webhooks": "^1.1.2",
-    "@oclif/command": "^1.4.10",
-    "@oclif/config": "^1.4.11",
+    "@oclif/command": "^1.4.13",
+    "@oclif/config": "^1.4.12",
     "@oclif/plugin-help": "^1.2.3",
     "@oclif/plugin-legacy": "^1.0.9",
     "@oclif/plugin-update": "^1.1.3",
@@ -125,7 +117,7 @@
     "uuid": "^3.2.1"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.9.16",
+    "@oclif/dev-cli": "^1.9.18",
     "@oclif/test": "^1.0.4",
     "@oclif/tslint": "^1.1.0",
     "@types/ansi-styles": "^2.0.30",
@@ -140,11 +132,11 @@
     "@types/node": "^9.6.2",
     "@types/supports-color": "3.1.0",
     "@types/write-json-file": "^2.2.1",
-    "aws-sdk": "^2.222.1",
+    "aws-sdk": "^2.223.1",
     "chai": "^4.1.2",
     "lodash": "^4.17.5",
     "mocha": "^5.0.5",
-    "nock": "9.2.3",
+    "nock": "9.2.4",
     "qqjs": "^0.3.6",
     "read-pkg": "^3.0.0",
     "ts-node": "5",

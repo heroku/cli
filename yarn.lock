@@ -339,18 +339,33 @@
     debug "^3.1.0"
     semver "^5.5.0"
 
-"@oclif/config@^1.3.57", "@oclif/config@^1.3.62", "@oclif/config@^1.4.0", "@oclif/config@^1.4.10", "@oclif/config@^1.4.11":
+"@oclif/command@^1.4.13":
+  version "1.4.13"
+  resolved "https://registry.yarnpkg.com/@oclif/command/-/command-1.4.13.tgz#2ed3c42142307d20337ec04eabd1be410dfa2a5e"
+  dependencies:
+    "@oclif/errors" "^1.0.4"
+    "@oclif/parser" "^3.3.2"
+    debug "^3.1.0"
+    semver "^5.5.0"
+
+"@oclif/config@^1.3.57", "@oclif/config@^1.3.62", "@oclif/config@^1.4.0", "@oclif/config@^1.4.10":
   version "1.4.11"
   resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.4.11.tgz#fed33702815b7f1669cd26eae17c36c95812f2f9"
   dependencies:
     debug "^3.1.0"
 
-"@oclif/dev-cli@^1.9.16":
-  version "1.9.16"
-  resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.9.16.tgz#2cc2942d5e8b92041aed41a04c4436fa11aa9c9d"
+"@oclif/config@^1.4.12":
+  version "1.4.12"
+  resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.4.12.tgz#9ce66ef6fdb4cbc0bed9cb639dd118d8e8bde50d"
   dependencies:
-    "@oclif/command" "^1.4.10"
-    "@oclif/config" "^1.4.10"
+    debug "^3.1.0"
+
+"@oclif/dev-cli@^1.9.18":
+  version "1.9.18"
+  resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.9.18.tgz#e30f3cd30adb5d789dad0c53e4527d8bc623f90b"
+  dependencies:
+    "@oclif/command" "^1.4.13"
+    "@oclif/config" "^1.4.12"
     "@oclif/errors" "^1.0.4"
     "@oclif/plugin-help" "^1.2.3"
     "@oclif/plugin-warn-if-update-available" "^1.3.0"
@@ -380,6 +395,13 @@
 "@oclif/parser@^3.2.13":
   version "3.2.13"
   resolved "https://registry.yarnpkg.com/@oclif/parser/-/parser-3.2.13.tgz#4baf2b4ea23165e57adaae1f223861d8d9a33a24"
+  dependencies:
+    "@oclif/linewrap" "^1.0.0"
+    chalk "^2.3.2"
+
+"@oclif/parser@^3.3.2":
+  version "3.3.2"
+  resolved "https://registry.yarnpkg.com/@oclif/parser/-/parser-3.3.2.tgz#81af56d4f97beae376abb59e461005489abd9e19"
   dependencies:
     "@oclif/linewrap" "^1.0.0"
     chalk "^2.3.2"
@@ -688,9 +710,9 @@ atob@^2.0.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.0.tgz#ab2b150e51d7b122b9efc8d7340c06b6c41076bc"
 
-aws-sdk@^2.222.1:
-  version "2.222.1"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.222.1.tgz#d84c34003bb882d1fec17c41c74cb817bda84914"
+aws-sdk@^2.223.1:
+  version "2.223.1"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.223.1.tgz#b264bf6407d7c74152f08b4a8fda8aad3a84baa4"
   dependencies:
     buffer "4.9.1"
     events "1.1.1"
@@ -3114,9 +3136,9 @@ nice-try@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/nice-try/-/nice-try-1.0.4.tgz#d93962f6c52f2c1558c0fbda6d512819f1efe1c4"
 
-nock@9.2.3:
-  version "9.2.3"
-  resolved "https://registry.yarnpkg.com/nock/-/nock-9.2.3.tgz#39738087d6a0497d3a165fb352612b38a2f9b92f"
+nock@9.2.4:
+  version "9.2.4"
+  resolved "https://registry.yarnpkg.com/nock/-/nock-9.2.4.tgz#447ec8aedc7fe0234a93f5f3b2f678b999e51781"
   dependencies:
     chai "^4.1.2"
     debug "^3.1.0"
