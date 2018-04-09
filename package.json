@@ -126,6 +126,13 @@
     "typescript": "2.8.1",
     "xo": "^0.20.3"
   },
+  "oclif": {
+    "update": {
+      "autoupdate": {
+        "rollout": 10
+      }
+    }
+  },
   "engineStrict": true,
   "engines": {
     "node": ">=8.3.0"
