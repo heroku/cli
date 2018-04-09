@@ -119,9 +119,9 @@
     lodash.values "4.3.0"
     printf "0.2.5"
 
-"@heroku-cli/plugin-apps@^2.4.35":
-  version "2.4.35"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-apps/-/plugin-apps-2.4.35.tgz#f99d24d10203f71dbce29a01bfb6d233d536d33f"
+"@heroku-cli/plugin-apps@^2.4.36":
+  version "2.4.36"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-apps/-/plugin-apps-2.4.36.tgz#7425226b59110b896f7dec4a2c1093e74702489d"
   dependencies:
     "@heroku-cli/command" "^8.0.4"
     bluebird "^3.5.1"
@@ -401,9 +401,9 @@
   dependencies:
     debug "^3.1.0"
 
-"@oclif/config@^1.4.12":
-  version "1.4.12"
-  resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.4.12.tgz#9ce66ef6fdb4cbc0bed9cb639dd118d8e8bde50d"
+"@oclif/config@^1.4.13":
+  version "1.4.13"
+  resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.4.13.tgz#07650c368c2018caf65d5d610f23034c3fd05b2e"
   dependencies:
     debug "^3.1.0"
 
