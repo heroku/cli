@@ -65,9 +65,13 @@
     },
     "update": {
       "node": {
-        "version": "8.11.1",
+        "version": "9.11.1",
         "targets": [
-          "darwin-x64"
+          "darwin-x64",
+          "linux-x64",
+          "linux-x86",
+          "win32-x64",
+          "win32-x86"
         ]
       },
       "s3": {
