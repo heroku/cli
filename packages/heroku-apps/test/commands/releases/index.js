@@ -5,7 +5,7 @@ const cli = require('heroku-cli-util')
 const nock = require('nock')
 const cmd = require('../../../src/commands/releases')
 const expect = require('unexpected')
-const stripAnsi = require('strip-ansi')
+const isTTY = process.stdout.isTTY
 
 const assertLineWidths = function (blob, lineWidth) {
   let lines = blob.split('\n')
@@ -16,6 +16,9 @@ const assertLineWidths = function (blob, lineWidth) {
 
 describe('releases', () => {
   beforeEach(() => cli.mockConsole())
+  afterEach(() => {
+    process.stdout.isTTY = isTTY
+  })
 
   const releases = [
     {
@@ -229,6 +232,7 @@ describe('releases', () => {
   }
 
   it('shows releases', () => {
+    process.stdout.isTTY = true
     process.stdout.columns = 80
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/releases')
@@ -249,6 +253,7 @@ v37  first commit                     jeff@heroku.com  2015/11/18 01:36:38 +0000
   })
 
   it('shows successful releases', () => {
+    process.stdout.isTTY = true
     process.stdout.columns = 80
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/releases')
@@ -267,6 +272,7 @@ v37  first commit                     jeff@heroku.com  2015/11/18 01:36:38 +0000
   })
 
   it('shows releases in wider terminal', () => {
+    process.stdout.isTTY = true
     process.stdout.columns = 100
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/releases')
@@ -287,6 +293,7 @@ v37  first commit                                         jeff@heroku.com  2015/
   })
 
   it('shows successful releases in wider terminal', () => {
+    process.stdout.isTTY = true
     process.stdout.columns = 100
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/releases')
@@ -305,6 +312,7 @@ v37  first commit                              jeff@heroku.com  2015/11/18 01:36
   })
 
   it('shows releases in narrow terminal', () => {
+    process.stdout.isTTY = true
     process.stdout.columns = 65
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/releases')
@@ -324,28 +332,8 @@ v37  first commit                     jeff@heroku.com  2015/11/18 01:36:38 +0000
       .then(() => api.done())
   })
 
-  it('shows releases with correct width for ansi colors', () => {
-    process.stdout.columns = 80
-    let api = nock('https://api.heroku.com:443')
-      .get('/apps/myapp/releases')
-      .reply(200, releases)
-      .get('/apps/myapp/slugs/37994c83-39a3-4cbf-b318-8f9dc648f701')
-      .reply(200, slug)
-    return cmd.run({app: 'myapp', flags: {forceColor: true}})
-      .then(() => expect(stripAnsi(cli.stdout), 'to equal', `=== myapp Releases - Current: v37
-v41  thir… release command executing  jeff@heroku.com  2015/11/18 01:36:38 +0000
-v40  Set foo config vars              jeff@heroku.com  2015/11/18 01:37:41 +0000
-v39  Remove … release command failed  jeff@heroku.com  2015/11/18 01:36:38 +0000
-v38  seco… release command executing  jeff@heroku.com  2015/11/18 01:36:38 +0000
-v37  first commit                     jeff@heroku.com  2015/11/18 01:36:38 +0000
-`))
-      .then(() => assertLineWidths(stripAnsi(cli.stdout), 80))
-      .then(() => expect(stripAnsi(cli.stdout), 'not to equal', cli.stdout))
-      .then(() => expect(cli.stderr, 'to be empty'))
-      .then(() => api.done())
-  })
-
   it('shows pending releases without release phase', () => {
+    process.stdout.isTTY = true
     process.stdout.columns = 80
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/releases')
@@ -366,6 +354,7 @@ v37  first commit                     jeff@heroku.com  2015/11/18 01:36:38 +0000
   })
 
   it('shows pending releases without a slug', () => {
+    process.stdout.isTTY = true
     process.stdout.columns = 80
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/releases')
@@ -414,6 +403,7 @@ v40      Set foo config vars  jeff@heroku.com  2015/11/18 01:37:41 +0000  1     
   })
 
   it('shows extended info in wider terminal', () => {
+    process.stdout.isTTY = true
     process.stdout.columns = 100
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/releases?extended=true')
@@ -426,20 +416,8 @@ v40      Set foo config vars  jeff@heroku.com  2015/11/18 01:37:41 +0000  1     
       .then(() => api.done())
   })
 
-  it('shows extended info with correct width for ansi colors', () => {
-    let api = nock('https://api.heroku.com:443')
-      .get('/apps/myapp/releases?extended=true')
-      .reply(200, extended)
-    return cmd.run({app: 'myapp', flags: {extended: true, forceColor: true}})
-      .then(() => expect(stripAnsi(cli.stdout), 'to equal', `=== myapp Releases
-v40      Set foo config vars  jeff@heroku.com  2015/11/18 01:37:41 +0000  1                 uuid
-`))
-      .then(() => expect(stripAnsi(cli.stdout), 'not to equal', cli.stdout))
-      .then(() => expect(cli.stderr, 'to be empty'))
-      .then(() => api.done())
-  })
-
   it('shows no current release', () => {
+    process.stdout.isTTY = true
     process.stdout.columns = 80
     releases[releases.length - 1].current = false
 
