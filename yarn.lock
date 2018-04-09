@@ -388,29 +388,23 @@
     glob-to-regexp "^0.3.0"
 
 "@oclif/command@^1.3.1", "@oclif/command@^1.4.7":
-  version "1.4.7"
-  resolved "https://registry.yarnpkg.com/@oclif/command/-/command-1.4.7.tgz#32423fcb3317c1e9fd5b864c728ddd5e4f8fd361"
+  version "1.4.10"
+  resolved "https://registry.yarnpkg.com/@oclif/command/-/command-1.4.10.tgz#15d229ba975018ca62cf4a94bec6d9796e18b619"
   dependencies:
-    "@oclif/errors" "^1.0.3"
-    "@oclif/parser" "^3.2.9"
+    "@oclif/errors" "^1.0.4"
+    "@oclif/parser" "^3.2.13"
     debug "^3.1.0"
     semver "^5.5.0"
 
-"@oclif/config@^1.3.57", "@oclif/config@^1.3.62":
-  version "1.3.62"
-  resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.3.62.tgz#b703d97588a78141222dedb53ccb15277dfe9e45"
-  dependencies:
-    debug "^3.1.0"
-
-"@oclif/config@^1.4.10":
+"@oclif/config@^1.3.57", "@oclif/config@^1.3.62", "@oclif/config@^1.4.10":
   version "1.4.10"
   resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.4.10.tgz#79d10455378bf97b0910685659c00a7cca6e2e77"
   dependencies:
     debug "^3.1.0"
 
-"@oclif/errors@^1.0.2", "@oclif/errors@^1.0.3":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@oclif/errors/-/errors-1.0.3.tgz#f23c024075855c7d116d041ee158f99bd51175af"
+"@oclif/errors@^1.0.2", "@oclif/errors@^1.0.3", "@oclif/errors@^1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@oclif/errors/-/errors-1.0.4.tgz#8e34386ede530484ae3c98bc21d818c416214c66"
   dependencies:
     clean-stack "^1.3.0"
     fs-extra "^5.0.0"
@@ -418,11 +412,16 @@
     strip-ansi "^4.0.0"
     wrap-ansi "^3.0.1"
 
-"@oclif/parser@^3.2.9":
-  version "3.2.9"
-  resolved "https://registry.yarnpkg.com/@oclif/parser/-/parser-3.2.9.tgz#76d01106971e20dfcfec5be276c4e6e9edfee9ec"
+"@oclif/linewrap@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@oclif/linewrap/-/linewrap-1.0.0.tgz#aedcb64b479d4db7be24196384897b5000901d91"
+
+"@oclif/parser@^3.2.13":
+  version "3.2.13"
+  resolved "https://registry.yarnpkg.com/@oclif/parser/-/parser-3.2.13.tgz#4baf2b4ea23165e57adaae1f223861d8d9a33a24"
   dependencies:
-    "@heroku/linewrap" "^1.0.0"
+    "@oclif/linewrap" "^1.0.0"
+    chalk "^2.3.2"
 
 "@oclif/screen@^1.0.2":
   version "1.0.2"
@@ -771,8 +770,8 @@ aws-sign2@~0.7.0:
   resolved "https://registry.yarnpkg.com/aws-sign2/-/aws-sign2-0.7.0.tgz#b46e890934a9591f2d2f6f86d7e6a9f1b3fe76a8"
 
 aws4@^1.2.1, aws4@^1.6.0:
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/aws4/-/aws4-1.6.0.tgz#83ef5ca860b2b32e4a0deedee8c771b9db57471e"
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/aws4/-/aws4-1.7.0.tgz#d4d0e9b9dbfca77bf08eeb0a8a471550fe39e289"
 
 babel-code-frame@^6.22.0, babel-code-frame@^6.26.0:
   version "6.26.0"
@@ -840,12 +839,13 @@ babel-messages@^6.23.0:
     babel-runtime "^6.22.0"
 
 babel-plugin-istanbul@^4.1.4, babel-plugin-istanbul@^4.1.5:
-  version "4.1.5"
-  resolved "https://registry.yarnpkg.com/babel-plugin-istanbul/-/babel-plugin-istanbul-4.1.5.tgz#6760cdd977f411d3e175bb064f2bc327d99b2b6e"
+  version "4.1.6"
+  resolved "https://registry.yarnpkg.com/babel-plugin-istanbul/-/babel-plugin-istanbul-4.1.6.tgz#36c59b2192efce81c5b378321b74175add1c9a45"
   dependencies:
+    babel-plugin-syntax-object-rest-spread "^6.13.0"
     find-up "^2.1.0"
-    istanbul-lib-instrument "^1.7.5"
-    test-exclude "^4.1.1"
+    istanbul-lib-instrument "^1.10.1"
+    test-exclude "^4.2.1"
 
 babel-plugin-jest-hoist@^22.4.3:
   version "22.4.3"
@@ -1049,16 +1049,14 @@ braces@^1.8.2:
     repeat-element "^1.1.2"
 
 braces@^2.3.1:
-  version "2.3.1"
-  resolved "https://registry.yarnpkg.com/braces/-/braces-2.3.1.tgz#7086c913b4e5a08dbe37ac0ee6a2500c4ba691bb"
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/braces/-/braces-2.3.2.tgz#5979fd3f14cd531565e5fa2df1abfff1dfaee729"
   dependencies:
     arr-flatten "^1.1.0"
     array-unique "^0.3.2"
-    define-property "^1.0.0"
     extend-shallow "^2.0.1"
     fill-range "^4.0.0"
     isobject "^3.0.1"
-    kind-of "^6.0.2"
     repeat-element "^1.1.2"
     snapdragon "^0.8.1"
     snapdragon-node "^2.0.1"
@@ -1415,10 +1413,10 @@ cli-ux@^2.0.17, cli-ux@^2.0.20, cli-ux@^2.0.21:
     ts-lodash "^4.0.8"
 
 cli-ux@^3.3.23, cli-ux@^3.3.26, cli-ux@^3.3.27:
-  version "3.3.27"
-  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-3.3.27.tgz#1ee13e5d4dbce4980e14f2abf368a3aed54743b4"
+  version "3.3.28"
+  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-3.3.28.tgz#9d516d389a9bbca272e8a195f7cac6c61d0e69fa"
   dependencies:
-    "@heroku/linewrap" "^1.0.0"
+    "@oclif/linewrap" "^1.0.0"
     "@oclif/screen" "^1.0.2"
     ansi-styles "^3.2.1"
     cardinal "^1.0.0"
@@ -1578,8 +1576,8 @@ core-js@^1.0.0:
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-1.2.7.tgz#652294c14651db28fa93bd2d5ff2983a4f08c636"
 
 core-js@^2.0.0, core-js@^2.4.0, core-js@^2.5.0:
-  version "2.5.4"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.5.4.tgz#f2c8bf181f2a80b92f360121429ce63a2f0aeae0"
+  version "2.5.5"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.5.5.tgz#b14dde936c640c0579a6b50cabcc132dd6127e3b"
 
 core-util-is@1.0.2, core-util-is@~1.0.0:
   version "1.0.2"
@@ -3315,9 +3313,15 @@ husky@0.14.3:
     normalize-path "^1.0.0"
     strip-indent "^2.0.0"
 
-iconv-lite@0.4.19, iconv-lite@^0.4.17, iconv-lite@~0.4.13:
+iconv-lite@0.4.19:
   version "0.4.19"
   resolved "https://registry.yarnpkg.com/iconv-lite/-/iconv-lite-0.4.19.tgz#f7468f60135f5e5dad3399c0a81be9a1603a082b"
+
+iconv-lite@^0.4.17, iconv-lite@~0.4.13:
+  version "0.4.21"
+  resolved "https://registry.yarnpkg.com/iconv-lite/-/iconv-lite-0.4.21.tgz#c47f8733d02171189ebc4a400f3218d348094798"
+  dependencies:
+    safer-buffer "^2.1.0"
 
 ignore@^3.0.9, ignore@^3.3.3, ignore@^3.3.5, ignore@^3.3.6:
   version "3.3.7"
@@ -3839,7 +3843,7 @@ istanbul-lib-hook@^1.2.0:
   dependencies:
     append-transform "^0.4.0"
 
-istanbul-lib-instrument@^1.10.1, istanbul-lib-instrument@^1.7.5, istanbul-lib-instrument@^1.8.0:
+istanbul-lib-instrument@^1.10.1, istanbul-lib-instrument@^1.8.0:
   version "1.10.1"
   resolved "https://registry.yarnpkg.com/istanbul-lib-instrument/-/istanbul-lib-instrument-1.10.1.tgz#724b4b6caceba8692d3f1f9d0727e279c401af7b"
   dependencies:
@@ -4337,8 +4341,8 @@ lcid@^1.0.0:
     invert-kv "^1.0.0"
 
 left-pad@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/left-pad/-/left-pad-1.2.0.tgz#d30a73c6b8201d8f7d8e7956ba9616087a68e0ee"
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/left-pad/-/left-pad-1.3.0.tgz#5b8a3a7765dfe001261dde915589e782f8c94d1e"
 
 leven@^2.1.0:
   version "2.1.0"
@@ -5819,8 +5823,8 @@ resolve@1.1.7:
   resolved "https://registry.yarnpkg.com/resolve/-/resolve-1.1.7.tgz#203114d82ad2c5ed9e8e0411b3932875e889e97b"
 
 resolve@^1.1.7, resolve@^1.3.2, resolve@^1.3.3, resolve@^1.5.0:
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/resolve/-/resolve-1.6.0.tgz#0fbd21278b27b4004481c395349e7aba60a9ff5c"
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/resolve/-/resolve-1.7.0.tgz#2bdf5374811207285df0df652b78f118ab8f3c5e"
   dependencies:
     path-parse "^1.0.5"
 
@@ -5900,6 +5904,10 @@ safe-regex@^1.1.0:
   resolved "https://registry.yarnpkg.com/safe-regex/-/safe-regex-1.1.0.tgz#40a3669f3b077d1e943d44629e157dd48023bf2e"
   dependencies:
     ret "~0.1.10"
+
+safer-buffer@^2.1.0:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/safer-buffer/-/safer-buffer-2.1.2.tgz#44fa161b0187b9549dd84bb91802f9bd8385cd6a"
 
 sane@^2.0.0:
   version "2.5.0"
@@ -6471,7 +6479,7 @@ term-size@^1.2.0:
   dependencies:
     execa "^0.7.0"
 
-test-exclude@^4.1.1:
+test-exclude@^4.2.1:
   version "4.2.1"
   resolved "https://registry.yarnpkg.com/test-exclude/-/test-exclude-4.2.1.tgz#dfa222f03480bca69207ca728b37d74b45f724fa"
   dependencies:
