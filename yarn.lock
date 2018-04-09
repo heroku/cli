@@ -28,9 +28,9 @@
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/@cli-engine/config/-/config-5.1.0.tgz#d8ac7122317bc505dc09e7fd778777602d6b7568"
 
-"@cli-engine/engine@6.2.10":
-  version "6.2.10"
-  resolved "https://registry.yarnpkg.com/@cli-engine/engine/-/engine-6.2.10.tgz#6e0e816af81222b7463337e4da4f9e47ac02cecc"
+"@cli-engine/engine@6.3.0":
+  version "6.3.0"
+  resolved "http://cli-npm.heroku.com/@cli-engine/engine/-/engine-6.3.0/5de7003f36f8ee2e100bfe81ce380295b6c55554.tgz#5de7003f36f8ee2e100bfe81ce380295b6c55554"
   dependencies:
     "@cli-engine/command" "12.1.1"
     "@cli-engine/config" "^5.1.0"
