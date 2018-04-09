@@ -51,7 +51,6 @@
     "mz": "^2.7.0",
     "shell-escape": "^0.2.0",
     "sparkline": "^0.2.0",
-    "standard": "^11.0.1",
     "strftime": "^0.10.0",
     "string": "^3.3.3",
     "term-img": "^2.1.0",
@@ -68,6 +67,7 @@
     "netrc-parser": "^3.1.3",
     "nock": "9.0.14",
     "proxyquire": "^1.8.0",
+    "standard": "^11.0.1",
     "std-mocks": "1.0.1",
     "testdouble": "^3.2.6",
     "time-require": "0.1.2",
@@ -89,11 +89,11 @@
     "url": "https://github.com/heroku/heroku-apps.git"
   },
   "scripts": {
-    "prepublishOnly": "oclif-dev manifest && oclif-dev readme --multi",
     "postpublish": "rm .oclif.manifest.json",
-    "version": "oclif-dev readme --multi && git add README.md docs",
+    "posttest": "standard",
+    "prepublishOnly": "oclif-dev manifest && oclif-dev readme --multi",
     "test": "TZ=utc mocha",
-    "posttest": "standard"
+    "version": "oclif-dev readme --multi && git add README.md docs"
   },
   "standard": {
     "env": "mocha"
