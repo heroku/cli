@@ -28,9 +28,9 @@
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/@cli-engine/config/-/config-5.1.0.tgz#d8ac7122317bc505dc09e7fd778777602d6b7568"
 
-"@cli-engine/engine@6.2.10":
-  version "6.2.10"
-  resolved "https://registry.yarnpkg.com/@cli-engine/engine/-/engine-6.2.10.tgz#6e0e816af81222b7463337e4da4f9e47ac02cecc"
+"@cli-engine/engine@6.3.0":
+  version "6.3.0"
+  resolved "https://registry.yarnpkg.com/@cli-engine/engine/-/engine-6.3.0.tgz#5de7003f36f8ee2e100bfe81ce380295b6c55554"
   dependencies:
     "@cli-engine/command" "12.1.1"
     "@cli-engine/config" "^5.1.0"
@@ -396,9 +396,15 @@
     debug "^3.1.0"
     semver "^5.5.0"
 
-"@oclif/config@^1.3.57", "@oclif/config@^1.3.62", "@oclif/config@^1.4.10":
+"@oclif/config@^1.3.57", "@oclif/config@^1.3.62":
   version "1.4.10"
   resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.4.10.tgz#79d10455378bf97b0910685659c00a7cca6e2e77"
+  dependencies:
+    debug "^3.1.0"
+
+"@oclif/config@^1.4.12":
+  version "1.4.12"
+  resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.4.12.tgz#9ce66ef6fdb4cbc0bed9cb639dd118d8e8bde50d"
   dependencies:
     debug "^3.1.0"
 
