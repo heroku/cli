@@ -13,10 +13,15 @@ function * run (context, heroku) {
 
   let descriptionWithStatus = function (d, r) {
     const width = () => process.stdout.columns > 80 ? process.stdout.columns : 80
-    const trunc = (s, l) => truncate(s, {length: width() - (optimizationWidth + l), omission: '…'})
-    let status = statusHelper.description(r, runningRelease, runningSlug)
+    const trunc = (s, l) => {
+      if (process.stdout.isTTY) {
+        return truncate(s, {length: width() - (optimizationWidth + l), omission: '…'})
+      }
+      return s
+    }
+    const status = statusHelper.description(r, runningRelease, runningSlug)
     if (status) {
-      let sc = cli.color[statusHelper.color(r.status)](status)
+      const sc = cli.color[statusHelper.color(r.status)](status)
       return trunc(d, status.length + 1) + ' ' + sc
     }
     return trunc(d, 0)
