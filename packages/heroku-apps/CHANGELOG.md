@@ -1,3 +1,11 @@
+<a name="2.4.36"></a>
+## [2.4.36](https://github.com/heroku/heroku-apps/compare/v2.4.35...v2.4.36) (2018-04-09)
+
+
+### Bug Fixes
+
+* fixed tests on non-tty ([036ee3b](https://github.com/heroku/heroku-apps/commit/036ee3b))
+
 <a name="2.4.35"></a>
 ## [2.4.35](https://github.com/heroku/heroku-apps/compare/v2.4.34...v2.4.35) (2018-04-09)
 
