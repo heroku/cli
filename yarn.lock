@@ -35,7 +35,7 @@
     strip-ansi "^4.0.0"
     supports-color "^5.1.0"
 
-"@heroku-cli/command@^8.0.0-oclif.1", "@heroku-cli/command@^8.0.1", "@heroku-cli/command@^8.0.3", "@heroku-cli/command@^8.0.4":
+"@heroku-cli/command@^8.0.0-oclif.1", "@heroku-cli/command@^8.0.3", "@heroku-cli/command@^8.0.4":
   version "8.0.4"
   resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.0.4.tgz#008cc5efacb34943408d92ae693e05449755a627"
   dependencies:
@@ -330,7 +330,7 @@
     call-me-maybe "^1.0.1"
     glob-to-regexp "^0.3.0"
 
-"@oclif/command@^1.3.1", "@oclif/command@^1.4.6", "@oclif/command@^1.4.7":
+"@oclif/command@^1.3.1", "@oclif/command@^1.4.7":
   version "1.4.7"
   resolved "https://registry.yarnpkg.com/@oclif/command/-/command-1.4.7.tgz#32423fcb3317c1e9fd5b864c728ddd5e4f8fd361"
   dependencies:
@@ -433,13 +433,13 @@
     widest-line "^2.0.0"
     wrap-ansi "^3.0.1"
 
-"@oclif/plugin-legacy@^1.0.7":
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/@oclif/plugin-legacy/-/plugin-legacy-1.0.7.tgz#161eef7e1c685483e15a39adc8dd2f79880aa46f"
+"@oclif/plugin-legacy@^1.0.9":
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-legacy/-/plugin-legacy-1.0.9.tgz#0ab9bbfb27f3298af619e1011c7f3568aaf78afb"
   dependencies:
     "@heroku-cli/color" "^1.1.3"
-    "@heroku-cli/command" "^8.0.1"
-    "@oclif/command" "^1.4.6"
+    "@heroku-cli/command" "^8.0.4"
+    "@oclif/command" "^1.4.10"
     ansi-escapes "^3.1.0"
     debug "^3.1.0"
     semver "^5.5.0"
@@ -545,9 +545,9 @@
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/@types/mocha/-/mocha-5.0.0.tgz#a3014921991066193f6c8e47290d4d598dfd19e6"
 
-"@types/nock@9.1.2":
-  version "9.1.2"
-  resolved "https://registry.yarnpkg.com/@types/nock/-/nock-9.1.2.tgz#0515b27e3f6bbc11834d22508ad02e2921dd376a"
+"@types/nock@9.1.3":
+  version "9.1.3"
+  resolved "https://registry.yarnpkg.com/@types/nock/-/nock-9.1.3.tgz#1d445679375b9e25afd449dc56585f81729454e8"
   dependencies:
     "@types/node" "*"
 
