@@ -26,21 +26,23 @@ jobs:
       - run: yarn test
       - run: greenkeeper-lockfile-upload
       - run: curl -s https://codecov.io/bash | bash
-      - save_cache:
-          key: v1-yarn-{{ checksum ".circleci/config.yml" }}-{{ checksum "yarn.lock" }}
-          paths:
-            - /cli/node_modules
-            - /usr/local/share/.cache/yarn
   release:
     <<: *defaults
     steps:
       - add_ssh_keys
       - checkout
+      - run: yarn global add greenkeeper-lockfile@1 && greenkeeper-lockfile-update
+      - run: yarn
       - run: ./scripts/release/_github_setup
       - run: ./node_modules/.bin/oclif-dev pack
       - run: ./node_modules/.bin/oclif-dev publish
       # - run: {command: "./scripts/release/homebrew", when: always}
       # - run: {command: "./scripts/release/macos_installer_trigger", when: always}
+      - save_cache:
+          key: v1-yarn-{{ checksum ".circleci/config.yml" }}-{{ checksum "yarn.lock" }}
+          paths:
+            - /cli/node_modules
+            - /usr/local/share/.cache/yarn
   dev_center_docs:
     docker: &devdocs_docker
       - image: rasphilco/cli-engine-devcenter:v0.1.0
