@@ -102,8 +102,8 @@
     "@heroku-cli/plugin-status": "^5.0.9",
     "@heroku-cli/plugin-webhooks": "^1.1.2",
     "@oclif/command": "^1.4.13",
-    "@oclif/config": "^1.6.0",
-    "@oclif/plugin-help": "^1.2.3",
+    "@oclif/config": "^1.6.2",
+    "@oclif/plugin-help": "^1.2.4",
     "@oclif/plugin-legacy": "^1.0.9",
     "@oclif/plugin-update": "^1.1.6",
     "cli-flags": "^2.0.7",
@@ -122,7 +122,7 @@
     "uuid": "^3.2.1"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.12.0",
+    "@oclif/dev-cli": "^1.13.0",
     "@oclif/test": "^1.0.4",
     "@oclif/tslint": "^1.1.0",
     "@types/ansi-styles": "^2.0.30",

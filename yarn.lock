@@ -359,12 +359,18 @@
   dependencies:
     debug "^3.1.0"
 
-"@oclif/dev-cli@^1.12.0":
-  version "1.12.0"
-  resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.12.0.tgz#6cd3b5fb17ad7f7d4175b6f73ff51d6cf01e5c4c"
+"@oclif/config@^1.6.1", "@oclif/config@^1.6.2":
+  version "1.6.2"
+  resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.6.2.tgz#4f176fede5be7a669e6ed6a37c0b30a80b713379"
+  dependencies:
+    debug "^3.1.0"
+
+"@oclif/dev-cli@^1.13.0":
+  version "1.13.0"
+  resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.13.0.tgz#b46bf7e8cf247a1aa2acdd46be38819a2fd4febd"
   dependencies:
     "@oclif/command" "^1.4.13"
-    "@oclif/config" "^1.6.0"
+    "@oclif/config" "^1.6.1"
     "@oclif/errors" "^1.0.4"
     "@oclif/plugin-help" "^1.2.3"
     cli-ux "^3.3.28"
@@ -409,6 +415,18 @@
   resolved "https://registry.yarnpkg.com/@oclif/plugin-help/-/plugin-help-1.2.3.tgz#f85e88744ec271d38949fda5c51185ad7f99e77d"
   dependencies:
     "@oclif/command" "^1.4.7"
+    chalk "^2.3.2"
+    indent-string "^3.2.0"
+    lodash.template "^4.4.0"
+    string-width "^2.1.1"
+    widest-line "^2.0.0"
+    wrap-ansi "^3.0.1"
+
+"@oclif/plugin-help@^1.2.4":
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-help/-/plugin-help-1.2.4.tgz#1b4349f7d570445ad5cfe4f925bfd832d4552aa2"
+  dependencies:
+    "@oclif/command" "^1.4.13"
     chalk "^2.3.2"
     indent-string "^3.2.0"
     lodash.template "^4.4.0"
