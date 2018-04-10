@@ -100,6 +100,11 @@ Sanbashi.pushImage = function (resource) {
   return Sanbashi.cmd('docker', args)
 }
 
+Sanbashi.pullImage = function (resource) {
+  let args = ['pull', resource]
+  return Sanbashi.cmd('docker', args)
+}
+
 Sanbashi.runImage = function (resource, command, port) {
   let args = ['run', '--user', os.userInfo().uid, '-e', `PORT=${port}`]
   if (command === '') {

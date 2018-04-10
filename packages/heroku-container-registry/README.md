@@ -16,5 +16,6 @@ In a directory with a Dockerfile:
 $ heroku container:login
 $ heroku create
 $ heroku container:push
+$ heroku container:pull web
 $ heroku open
 ```
