@@ -294,6 +294,13 @@
     string-just "^0.0.2"
     validator "^6.2.1"
 
+"@heroku-cli/plugin-ps-exec@^2.3.3":
+  version "2.3.3"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-ps-exec/-/plugin-ps-exec-2.3.3.tgz#4d2469b62b9f0cb375ecabfa843a99b5d1d30ac6"
+  dependencies:
+    heroku-cli-util "^7.0.0"
+    heroku-exec-util "0.7.0"
+
 "@heroku-cli/plugin-ps@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-ps/-/plugin-ps-1.0.0.tgz#157ac86ec0db98860899d1d55b383ee0dd602cc2"
@@ -3076,13 +3083,6 @@ heroku-pipelines@^2.0.1:
     lodash.sortby "^4.7.0"
     string-just "^0.0.2"
     validator "^6.2.1"
-
-heroku-ps-exec@2.3.1:
-  version "2.3.1"
-  resolved "https://registry.yarnpkg.com/heroku-ps-exec/-/heroku-ps-exec-2.3.1.tgz#282137897a5bf87304955f54a07d1b4a27c47d2e"
-  dependencies:
-    heroku-cli-util "^7.0.0"
-    heroku-exec-util "0.7.0"
 
 heroku-run@^3.4.16:
   version "3.5.4"
