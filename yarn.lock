@@ -401,12 +401,6 @@
   dependencies:
     debug "^3.1.0"
 
-"@oclif/config@^1.4.13":
-  version "1.4.13"
-  resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.4.13.tgz#07650c368c2018caf65d5d610f23034c3fd05b2e"
-  dependencies:
-    debug "^3.1.0"
-
 "@oclif/errors@^1.0.2", "@oclif/errors@^1.0.3", "@oclif/errors@^1.0.4":
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/@oclif/errors/-/errors-1.0.4.tgz#8e34386ede530484ae3c98bc21d818c416214c66"

@@ -88,7 +88,6 @@
     "@heroku-cli/plugin-spaces": "^2.12.0",
     "@heroku-cli/plugin-status": "^5.0.9",
     "@heroku-cli/plugin-webhooks": "^1.1.2",
-    "@oclif/config": "^1.4.13",
     "cli-flags": "^2.0.7",
     "cli-ux": "2.0.21",
     "debug": "3.1.0",
