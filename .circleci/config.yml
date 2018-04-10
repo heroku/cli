@@ -18,9 +18,9 @@ jobs:
       - checkout
       - restore_cache: &yarn_restore_cache
           keys:
-            - v1-yarn-{{ checksum ".circleci/config.yml" }}-{{ checksum "yarn.lock" }}
-            - v1-yarn-{{ checksum ".circleci/config.yml" }}
-            - v1-yarn
+            - v2-yarn-{{ checksum ".circleci/config.yml" }}-{{ checksum "yarn.lock" }}
+            - v2-yarn-{{ checksum ".circleci/config.yml" }}
+            - v2-yarn
       - run: yarn global add greenkeeper-lockfile@1 && greenkeeper-lockfile-update
       - run: yarn
       - run: yarn test
@@ -39,7 +39,7 @@ jobs:
       # - run: {command: "./scripts/release/homebrew", when: always}
       # - run: {command: "./scripts/release/macos_installer_trigger", when: always}
       - save_cache:
-          key: v1-yarn-{{ checksum ".circleci/config.yml" }}-{{ checksum "yarn.lock" }}
+          key: v2-yarn-{{ checksum ".circleci/config.yml" }}-{{ checksum "yarn.lock" }}
           paths:
             - /cli/node_modules
             - /usr/local/share/.cache/yarn
