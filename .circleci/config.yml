@@ -31,86 +31,16 @@ jobs:
           paths:
             - /cli/node_modules
             - /usr/local/share/.cache/yarn
-  build_os_darwin:
-    <<: *defaults
-    steps:
-      - checkout
-      - restore_cache: *yarn_restore_cache
-      - restore_cache: {keys: [node-v9.10.1-darwin]}
-      - run: yarn
-      - run: ./scripts/build/base
-      - run: ./scripts/build/workspace
-      - run: ./scripts/build/tarballs
-      - persist_to_workspace: &dist
-          root: dist
-          paths: [ . ]
-      - save_cache: &node_cache_save
-          key: node-v9.10.1-darwin
-          paths: [/cli/tmp/cache/node]
-  build_os_linux:
-    <<: *defaults
-    steps:
-      - checkout
-      - restore_cache: *yarn_restore_cache
-      - restore_cache: {keys: [node-v9.10.1-linux]}
-      - run: yarn
-      - run: ./scripts/build/base
-      - run: ./scripts/build/workspace
-      - run: ./scripts/build/tarballs
-      - persist_to_workspace: *dist
-      - save_cache:
-          <<: *node_cache_save
-          key: node-v9.10.1-linux
-  build_os_win32:
-    <<: *defaults
-    docker: &win32_docker
-      - image: dickeyxxx/cli-engine-docker-nsis:v3.1.3
-        environment: *env
-    steps:
-      - checkout
-      - restore_cache: *yarn_restore_cache
-      - restore_cache: {keys: [node-v9.10.1-win32]}
-      - run: yarn
-      - run: ./scripts/build/base
-      - run: ./scripts/build/workspace
-      - run: ./scripts/build/tarballs
-      - persist_to_workspace: *dist
-      - save_cache:
-          <<: *node_cache_save
-          key: node-v9.10.1-win32
   release:
     <<: *defaults
-    docker: &release_docker
-      - image: dickeyxxx/cli-engine-docker:v3.0.13
-        environment: *env
     steps:
       - add_ssh_keys
       - checkout
-      - attach_workspace: {at: dist}
-      - run: {command: "ls dist", when: always}
-      - run: {command: "./scripts/release/_github_setup", when: always}
-      - run: {command: "./scripts/release/homebrew", when: always}
-      - run: {command: "./scripts/release/upload_dist", when: always}
-      - run: {command: "./scripts/release/macos_installer_trigger", when: always}
-      - run: {command: "./scripts/release/invalidate_cdn", when: always}
-  build_and_release_deb:
-    <<: *defaults
-    docker: *release_docker
-    steps:
-      - checkout
-      - attach_workspace: {at: dist}
-      - run: ./scripts/build/deb
-      - run: ls dist/apt
-      - run: ./scripts/release/deb
-  build_and_release_win_inst:
-    <<: *defaults
-    docker: *win32_docker
-    steps:
-      - checkout
-      - attach_workspace: {at: dist}
-      - run: ./scripts/build/win32
-      - run: ls dist
-      - run: ./scripts/release/win32
+      - run: ./scripts/release/_github_setup
+      - run: ./node_modules/.bin/oclif-dev pack
+      - run: ./node_modules/.bin/oclif-dev publish
+      # - run: {command: "./scripts/release/homebrew", when: always}
+      # - run: {command: "./scripts/release/macos_installer_trigger", when: always}
   dev_center_docs:
     docker: &devdocs_docker
       - image: rasphilco/cli-engine-devcenter:v0.1.0
@@ -133,38 +63,19 @@ workflows:
           filters: &all_pushes
             tags: &version_tags
               only: /^v.*/
-      - build_os_darwin: &release
+      - release:
           filters:
             tags: *version_tags
             branches:
               only:
                 - master
                 - dev
-      - build_os_linux: *release
-      - build_os_win32: *release
-      - build_and_release_win_inst:
-          <<: *release
+                - oclif
           requires:
             - test
-            - build_os_win32
-      - build_and_release_deb:
-          <<: *release
-          requires:
-            - test
-            - build_os_linux
-      - release:
-          <<: *release
-          requires:
-            - test
-            - build_os_darwin
-            - build_os_linux
-            - build_os_win32
       - dev_center_docs:
           requires:
             - test
-            - build_os_darwin
-            - build_os_linux
-            - build_os_win32
           filters:
             branches:
               ignore: /.*/
