@@ -1,7 +1,0 @@
-Package: heroku
-Version: VERSION
-Section: main
-Priority: standard
-Architecture: ARCHITECTURE
-Maintainer: Heroku
-Description: Client library and CLI to deploy apps on Heroku.
