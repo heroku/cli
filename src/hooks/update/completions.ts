@@ -24,7 +24,7 @@ export default class CompletionsUpdateHook extends Hook<'update'> {
           cli.action.start('Updating completions')
           let ac = await acPlugin.findCommand('autocomplete:buildcache')
           if (ac) await ac.run([], this.config)
-          let config : IConfig = Object.assign(await load(), this.config)
+          let config : IConfig = Object.assign(await load({root: __dirname, devPlugins: false}), this.config)
           await AppCompletion.options({ config })
           await PipelineCompletion.options({ config })
           await SpaceCompletion.options({ config })
