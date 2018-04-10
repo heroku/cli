@@ -20,6 +20,7 @@
     "lodash.sortby": "^4.7.0",
     "lodash.uniqby": "^4.7.0",
     "mkdirp": "^0.5.1",
+    "node-notifier": "^5.2.1",
     "smooth-progress": "^1.1.0",
     "string": "^3.3.3",
     "strip-eof": "^1.0.0",
@@ -41,6 +42,7 @@
   "files": [
     ".oclif.manifest.json",
     "index.js",
+    "assets",
     "lib",
     "commands"
   ],
