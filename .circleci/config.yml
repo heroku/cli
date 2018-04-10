@@ -2,7 +2,7 @@
 defaults: &defaults
   working_directory: /cli
   docker:
-    - image: node:9
+    - image: oclif/release:0.0.0-9.11.1
       environment: &env
         NPM_CONFIG_REGISTRY: https://cli-npm.heroku.com
         LANG: en_US.UTF-8
