@@ -75,6 +75,7 @@
         ]
       },
       "s3": {
+        "xz": true,
         "bucket": "heroku-cli-assets",
         "host": "https://cli-assets.heroku.com"
       }
