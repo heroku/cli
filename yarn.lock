@@ -478,9 +478,9 @@
   version "9.6.2"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-9.6.2.tgz#e49ac1adb458835e95ca6487bc20f916b37aff23"
 
-"@types/supports-color@3.1.0":
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/@types/supports-color/-/supports-color-3.1.0.tgz#3584b6b54f45333e988da2c29e6797eff5a20f8c"
+"@types/supports-color@3.1.1":
+  version "3.1.1"
+  resolved "http://cli-npm.heroku.com/@types/supports-color/-/supports-color-3.1.1/dcd9115636fe971263a2c6e11044de335db7af8b.tgz#dcd9115636fe971263a2c6e11044de335db7af8b"
 
 abab@^1.0.4:
   version "1.0.4"
