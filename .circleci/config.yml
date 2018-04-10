@@ -2,7 +2,7 @@
 defaults: &defaults
   working_directory: /cli
   docker:
-    - image: oclif/nsis:0.0.0-9.11.1
+    - image: oclif/nsis:0.0.1-9.11.1
       environment: &env
         NPM_CONFIG_REGISTRY: https://cli-npm.heroku.com
         LANG: en_US.UTF-8
@@ -35,9 +35,9 @@ jobs:
       - run: yarn
       - run: ./scripts/release/_github_setup
       - run: ./node_modules/.bin/oclif-dev pack
+      - run: ./node_modules/.bin/oclif-dev publish
       - run: ./node_modules/.bin/oclif-dev pack:deb
       - run: ./node_modules/.bin/oclif-dev pack:win
-      - run: ./node_modules/.bin/oclif-dev publish
       # - run: {command: "./scripts/release/homebrew", when: always}
       # - run: {command: "./scripts/release/macos_installer_trigger", when: always}
       - save_cache:
