@@ -6,7 +6,7 @@ let usage = `
     ${cli.color.bold.underline.magenta('Usage:')}
     ${cli.color.cmd('heroku container:pull web')}        # Pulls the web image from the app
     ${cli.color.cmd('heroku container:pull web worker')} # Pulls both the web and worker images from the app
-    ${cli.color.cmd('heroku container:push web:latest')} # Pulls the latest tag from the web image`
+    ${cli.color.cmd('heroku container:pull web:latest')} # Pulls the latest tag from the web image`
 
 let pull = async function (context, heroku) {
   if (context.flags.verbose) debug.enabled = true
