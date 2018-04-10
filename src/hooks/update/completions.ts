@@ -1,8 +1,8 @@
 import { Hook } from '@cli-engine/engine'
 import { Config } from '@cli-engine/engine/lib/config'
 import { IHooks } from '@cli-engine/engine/lib/hooks'
-import { AppCompletion, PipelineCompletion, SpaceCompletion, TeamCompletion } from '@heroku-cli/command/lib/completions'
-import { IConfig, load } from '@oclif/config'
+// import { AppCompletion, PipelineCompletion, SpaceCompletion, TeamCompletion } from '@heroku-cli/command/lib/completions'
+// import { IConfig, load } from '@oclif/config'
 import cli from 'cli-ux'
 
 const debug = require('debug')('heroku:completions')
@@ -24,11 +24,12 @@ export default class CompletionsUpdateHook extends Hook<'update'> {
           cli.action.start('Updating completions')
           let ac = await acPlugin.findCommand('autocomplete:buildcache')
           if (ac) await ac.run([], this.config)
-          let config : IConfig = Object.assign(await load(), this.config)
-          await AppCompletion.options({ config })
-          await PipelineCompletion.options({ config })
-          await SpaceCompletion.options({ config })
-          await TeamCompletion.options({ config })
+        // suspend until all plugins are converted to oclif
+        //   let config : IConfig = Object.assign(await load(), this.config)
+        //   await AppCompletion.options({ config })
+        //   await PipelineCompletion.options({ config })
+        //   await SpaceCompletion.options({ config })
+        //   await TeamCompletion.options({ config })
         } else {
           debug('skipping autocomplete, not installed')
         }
