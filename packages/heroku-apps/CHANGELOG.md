@@ -1,3 +1,11 @@
+<a name="2.4.37"></a>
+## [2.4.37](https://github.com/heroku/heroku-apps/compare/v2.4.36...v2.4.37) (2018-04-16)
+
+
+### Bug Fixes
+
+* update heroku-cli-util netrc multiline ([2de43da](https://github.com/heroku/heroku-apps/commit/2de43da))
+
 <a name="2.4.36"></a>
 ## [2.4.36](https://github.com/heroku/heroku-apps/compare/v2.4.35...v2.4.36) (2018-04-09)
 
