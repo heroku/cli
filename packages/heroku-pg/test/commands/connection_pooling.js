@@ -55,7 +55,8 @@ describe('pg:connection-polling:attach', () => {
   context('includes a credential', () => {
     beforeEach(() => {
       pg.post(`/client/v11/databases/${addon.name}/connection-pooling`, {
-        credential: readonlyCredential
+        credential: readonlyCredential,
+        app: 'myapp'
       }).reply(201, {name: 'HEROKU_COLOR'})
     })
 
@@ -71,7 +72,8 @@ describe('pg:connection-polling:attach', () => {
     beforeEach(() => {
       pg.post(`/client/v11/databases/${addon.name}/connection-pooling`, {
         credential: defaultCredential,
-        name: attachmentName
+        name: attachmentName,
+        app: 'myapp'
       }).reply(201, {name: attachmentName})
     })
 
@@ -86,7 +88,8 @@ describe('pg:connection-polling:attach', () => {
   context('base command with no credential or attachment name', () => {
     beforeEach(() => {
       pg.post(`/client/v11/databases/${addon.name}/connection-pooling`, {
-        credential: defaultCredential
+        credential: defaultCredential,
+        app: 'myapp'
       }).reply(201, {name: 'HEROKU_COLOR'})
     })
 
