@@ -304,12 +304,12 @@
     string-just "^0.0.2"
     validator "^6.2.1"
 
-"@heroku-cli/plugin-ps-exec@^2.3.3":
-  version "2.3.3"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-ps-exec/-/plugin-ps-exec-2.3.3.tgz#4d2469b62b9f0cb375ecabfa843a99b5d1d30ac6"
+"@heroku-cli/plugin-ps-exec@^2.3.4":
+  version "2.3.4"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-ps-exec/-/plugin-ps-exec-2.3.4.tgz#bfdd8c5b9cf1ef71eccaa406f212f523bfda87f6"
   dependencies:
     heroku-cli-util "^7.0.0"
-    heroku-exec-util "0.7.0"
+    heroku-exec-util "0.7.2"
 
 "@heroku-cli/plugin-ps@^1.0.0":
   version "1.0.0"
@@ -3116,9 +3116,9 @@ heroku-client@^2.4.0:
     q "^1.2.0"
     tunnel-agent "^0.4.0"
 
-heroku-exec-util@0.7.0:
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/heroku-exec-util/-/heroku-exec-util-0.7.0.tgz#66dfb2e7364bde77986a2c1ace5f057f5a821c4f"
+heroku-exec-util@0.7.2:
+  version "0.7.2"
+  resolved "https://registry.yarnpkg.com/heroku-exec-util/-/heroku-exec-util-0.7.2.tgz#834270dd4240c5f2b6c185be693dc25c2b5f3f58"
   dependencies:
     "@heroku/socksv5" "^0.0.9"
     co-wait "0.0.0"
