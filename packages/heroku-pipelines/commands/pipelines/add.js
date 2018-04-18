@@ -6,7 +6,7 @@ let infer = require('../../lib/infer')
 let disambiguate = require('../../lib/disambiguate')
 let prompt = require('../../lib/prompt')
 let stageNames = require('../../lib/stages').inferrableStageNames
-const {StageCompletion} = require('cli-engine-heroku/lib/completions')
+const {StageCompletion} = require('@heroku-cli/command/lib/completions')
 
 const createCoupling = require('../../lib/api').createCoupling
 

@@ -1,6 +1,6 @@
 const cli = require('heroku-cli-util')
 const co = require('co')
-const { flags } = require('cli-engine-heroku')
+const { flags } = require('@heroku-cli/command')
 const api = require('../../lib/api')
 const KolkrabbiAPI = require('../../lib/kolkrabbi-api')
 

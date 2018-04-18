@@ -1,4 +1,4 @@
-const cli = require('heroku-cli-util')
+const {HTTP} = require('http-call')
 const GITHUB_API = 'https://api.github.com'
 
 module.exports = class GitHubAPI {
@@ -13,9 +13,7 @@ module.exports = class GitHubAPI {
       'User-Agent': this.version
     }, options.headers)
 
-    options.json = true
-
-    return cli.got.get(`${GITHUB_API}${url}`, options)
+    return HTTP.get(`${GITHUB_API}${url}`, options)
   }
 
   getRepo (name) {

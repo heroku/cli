@@ -5,7 +5,7 @@ const cli = require('heroku-cli-util')
 const disambiguate = require('../../lib/disambiguate')
 const api = require('../../lib/api')
 const renderPipeline = require('../../lib/render-pipeline')
-const { flags } = require('cli-engine-heroku')
+const { flags } = require('@heroku-cli/command')
 
 function * getTeamOwner (heroku, name) {
   const team = yield api.getTeam(heroku, name)

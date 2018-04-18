@@ -17,9 +17,9 @@ describe('pipelines:setup', function () {
     cli.open.restore()
   })
 
-  it('errors if the user is not linked to GitHub', function * () {
+  it('errors if the user is not linked to GitHub', async () => {
     try {
-      yield cmd.run({ args: {}, flags: {} })
+      await cmd.run({ args: {}, flags: {} })
     } catch (error) {
       expect(error.message).to.equal('Account not connected to GitHub.')
     }

@@ -7,7 +7,7 @@ let infer = require('../../lib/infer')
 let prompt = require('../../lib/prompt')
 let stages = require('../../lib/stages').inferrableStageNames
 
-const {flags} = require('cli-engine-heroku')
+const {flags} = require('@heroku-cli/command')
 const createCoupling = require('../../lib/api').createCoupling
 
 function* run (context, heroku) {

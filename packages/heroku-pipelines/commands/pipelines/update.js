@@ -3,7 +3,7 @@
 let co = require('co')
 let cli = require('heroku-cli-util')
 const updateCoupling = require('../../lib/api').updateCoupling
-const {StageCompletion} = require('cli-engine-heroku/lib/completions')
+const {StageCompletion} = require('@heroku-cli/command/lib/completions')
 
 module.exports = {
   topic: 'pipelines',

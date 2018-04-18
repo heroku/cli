@@ -4,7 +4,7 @@ const api = require('../../lib/api')
 const KolkrabbiAPI = require('../../lib/kolkrabbi-api')
 const GitHubAPI = require('../../lib/github-api')
 
-const {flags} = require('cli-engine-heroku')
+const {flags} = require('@heroku-cli/command')
 
 const Validate = require('./setup/validate')
 const getGitHubToken = require('./setup/getGitHubToken')

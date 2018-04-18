@@ -1,4 +1,4 @@
-const cli = require('heroku-cli-util')
+const {HTTP} = require('http-call')
 const KOLKRABBI_BASE_URL = 'https://kolkrabbi.heroku.com'
 
 module.exports = class KolkrabbiAPI {
@@ -17,9 +17,7 @@ module.exports = class KolkrabbiAPI {
       options.headers['Content-type'] = 'application/json'
     }
 
-    options.json = true
-
-    return cli.got(KOLKRABBI_BASE_URL + url, options).then((res) => res.body)
+    return HTTP.request(KOLKRABBI_BASE_URL + url, options).then((res) => res.body)
   }
 
   getAccount () {
