@@ -13,8 +13,8 @@ function apps () {
 }
 
 function appCollaborators (collaborators =
-[{user: {email: 'raulb@heroku.com'}, role: 'owner'},
-  {user: {email: 'jeff@heroku.com'}, role: 'collaborator'}]) {
+  [{user: {email: 'raulb@heroku.com'}, role: 'owner'},
+    {user: {email: 'jeff@heroku.com'}, role: 'collaborator'}]) {
   return nock('https://api.heroku.com:443')
     .get('/apps/myapp/collaborators')
     .reply(200, collaborators)
@@ -172,8 +172,8 @@ function variableSizeOrgMembers (orgSize) {
       user: { email: `test${i}@heroku.com` }})
   }
   return nock('https://api.heroku.com:443')
-  .get('/organizations/myorg/members')
-  .reply(200, orgMembers)
+    .get('/organizations/myorg/members')
+    .reply(200, orgMembers)
 }
 
 module.exports = {

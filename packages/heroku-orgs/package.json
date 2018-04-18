@@ -23,7 +23,7 @@
     "nock": "^9.2.5",
     "nyc": "^11.6.0",
     "proxyquire": "^2.0.1",
-    "standard": "^10.0.3"
+    "standard": "^11.0.1"
   },
   "files": [
     ".oclif.manifest.json",

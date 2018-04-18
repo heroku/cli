@@ -87,8 +87,8 @@ b@heroku.com  collaborator
             {email: 'a@heroku.com', role: 'admin'}, {email: 'b@heroku.com', role: 'collaborator'}
           ])
           return cmd.run({org: 'myorg', flags: {}})
-          .then(() => expect(
-            `a@heroku.com  admin
+            .then(() => expect(
+              `a@heroku.com  admin
 b@heroku.com  collaborator\n`).to.eq(cli.stdout))
             .then(() => expect(' ▸    myorg is a Heroku Team\n ▸    Heroku CLI now supports Heroku Teams.\n ▸    Use -t or --team for teams like myorg\n').to.eq(cli.stderr))
             .then(() => apiGetOrgMembers.done())

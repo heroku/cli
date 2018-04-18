@@ -17,8 +17,8 @@ describe('heroku members:remove', () => {
     it('removes a member from an org', () => {
       let apiRemoveMemberFromOrg = stubDelete.memberFromOrg()
       return cmd.run({org: 'myorg', args: {email: 'foo@foo.com'}})
-      .then(() => expect('').to.eq(cli.stdout))
-      .then(() => expect(`Removing foo@foo.com from myorg... done\n`).to.eq(cli.stderr))
+        .then(() => expect('').to.eq(cli.stdout))
+        .then(() => expect(`Removing foo@foo.com from myorg... done\n`).to.eq(cli.stderr))
         .then(() => apiRemoveMemberFromOrg.done())
     })
   })
@@ -37,8 +37,8 @@ describe('heroku members:remove', () => {
         it('removes the member, but it shows a warning about the usage of -t instead', () => {
           let apiRemoveMemberFromOrg = stubDelete.memberFromOrg()
           return cmd.run({org: 'myorg', args: {email: 'foo@foo.com'}, flags: {}})
-          .then(() => expect('').to.eq(cli.stdout))
-          .then(() => expect(`Removing foo@foo.com from myorg... done
+            .then(() => expect('').to.eq(cli.stdout))
+            .then(() => expect(`Removing foo@foo.com from myorg... done
  ▸    myorg is a Heroku Team
  ▸    Heroku CLI now supports Heroku Teams.
  ▸    Use -t or --team for teams like myorg\n`).to.eq(cli.stderr))
@@ -49,9 +49,9 @@ describe('heroku members:remove', () => {
       it('removes a member from an org', () => {
         let apiRemoveMemberFromOrg = stubDelete.memberFromOrg()
         return cmd.run({args: {email: 'foo@foo.com'}, flags: {team: 'myorg'}})
-        .then(() => expect('').to.eq(cli.stdout))
-        .then(() => expect(`Removing foo@foo.com from myorg... done\n`).to.eq(cli.stderr))
-        .then(() => apiRemoveMemberFromOrg.done())
+          .then(() => expect('').to.eq(cli.stdout))
+          .then(() => expect(`Removing foo@foo.com from myorg... done\n`).to.eq(cli.stderr))
+          .then(() => apiRemoveMemberFromOrg.done())
       })
     })
 
@@ -70,10 +70,10 @@ describe('heroku members:remove', () => {
         it('removes a member', () => {
           let apiRemoveMemberFromOrg = stubDelete.memberFromOrg()
           return cmd.run({args: {email: 'foo@foo.com'}, flags: {team: 'myorg'}})
-          .then(() => expect('').to.eq(cli.stdout))
-          .then(() => expect(`Removing foo@foo.com from myorg... done\n`).to.eq(cli.stderr))
-          .then(() => apiGetTeamInvites.done())
-          .then(() => apiRemoveMemberFromOrg.done())
+            .then(() => expect('').to.eq(cli.stdout))
+            .then(() => expect(`Removing foo@foo.com from myorg... done\n`).to.eq(cli.stderr))
+            .then(() => apiGetTeamInvites.done())
+            .then(() => apiRemoveMemberFromOrg.done())
         })
       })
 
@@ -88,10 +88,10 @@ describe('heroku members:remove', () => {
           let apiRevokeTeamInvite = stubDelete.teamInvite('foo@foo.com')
 
           return cmd.run({args: {email: 'foo@foo.com'}, flags: {team: 'myorg'}})
-          .then(() => expect('').to.eq(cli.stdout))
-          .then(() => expect(`Revoking invite for foo@foo.com in myorg... done\n`).to.eq(cli.stderr))
-          .then(() => apiGetTeamInvites.done())
-          .then(() => apiRevokeTeamInvite.done())
+            .then(() => expect('').to.eq(cli.stdout))
+            .then(() => expect(`Revoking invite for foo@foo.com in myorg... done\n`).to.eq(cli.stderr))
+            .then(() => apiGetTeamInvites.done())
+            .then(() => apiRevokeTeamInvite.done())
         })
       })
     })
