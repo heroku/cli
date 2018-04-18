@@ -4,8 +4,8 @@ const cli = require('heroku-cli-util')
 const co = require('co')
 const lib = require('../lib/spaces')
 const parsers = require('../lib/parsers')()
-const {flags} = require('cli-engine-heroku')
-const {RegionCompletion} = require('cli-engine-heroku/lib/completions')
+const {flags} = require('@heroku-cli/command')
+const {RegionCompletion} = require('@heroku-cli/command/lib/completions')
 
 function * run (context, heroku) {
   let space = context.flags.space || context.args.space

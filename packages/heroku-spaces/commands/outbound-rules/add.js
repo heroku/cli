@@ -2,7 +2,7 @@
 
 let cli = require('heroku-cli-util')
 let co = require('co')
-const {SpaceCompletion} = require('cli-engine-heroku/lib/completions')
+const {SpaceCompletion} = require('@heroku-cli/command/lib/completions')
 
 const ProtocolCompletion = {
   cacheDuration: 60 * 60 * 24 * 365, // cache yearly

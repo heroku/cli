@@ -2,7 +2,7 @@
 
 const cli = require('heroku-cli-util')
 const co = require('co')
-const {flags} = require('cli-engine-heroku')
+const {flags} = require('@heroku-cli/command')
 
 function display (spaces) {
   cli.table(spaces, {

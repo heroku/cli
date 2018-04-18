@@ -7,26 +7,24 @@
     "url": "https://github.com/heroku/heroku-spaces/issues"
   },
   "dependencies": {
-    "cli-engine-command": "^8.0.15",
-    "cli-engine-config": "^3.3.0",
-    "cli-engine-heroku": "^4.1.0",
+    "@heroku-cli/command": "^8.0.5",
     "co": "4.6.0",
-    "heroku-cli-util": "^6.2.7",
+    "heroku-cli-util": "^8.0.6",
     "lodash.foreach": "^4.5.0",
     "lodash.reduce": "^4.6.0",
     "lodash.sortby": "^4.7.0",
     "strftime": "^0.10.0"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.2.16",
-    "@oclif/plugin-legacy": "^1.0.4",
+    "@oclif/dev-cli": "^1.13.1",
+    "@oclif/plugin-legacy": "^1.0.10",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
     "codeclimate-test-reporter": "^0.5.0",
-    "coveralls": "^2.13.1",
-    "mocha": "^3.5.0",
-    "nock": "^9.0.14",
-    "nyc": "^11.1.0",
+    "coveralls": "^3.0.0",
+    "mocha": "^5.1.0",
+    "nock": "^9.2.5",
+    "nyc": "^11.6.0",
     "standard": "^10.0.3"
   },
   "files": [
