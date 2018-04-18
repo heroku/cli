@@ -252,15 +252,13 @@
     heroku-cli-util "^8.0.0"
     lodash "^4.17.5"
 
-"@heroku-cli/plugin-orgs@^1.7.4":
-  version "1.7.4"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-orgs/-/plugin-orgs-1.7.4.tgz#2bcb0e80a4bab501df2263bcb495d37de8404588"
+"@heroku-cli/plugin-orgs@^1.7.5":
+  version "1.7.5"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-orgs/-/plugin-orgs-1.7.5.tgz#5c7019bf53a4d02a8901fe2308dc21d1b46bdfe9"
   dependencies:
-    cli-engine-command "^9.0.7"
-    cli-engine-config "^3.5.0"
-    cli-engine-heroku "^5.0.4"
+    "@heroku-cli/command" "^8.0.5"
     co "4.6.0"
-    heroku-cli-util "^8.0.4"
+    heroku-cli-util "^8.0.6"
     inquirer "^5.2.0"
     lodash "4.17.5"
     lodash.flatten "4.4.0"
@@ -1352,7 +1350,7 @@ cli-engine-command@^9.0.7:
     string "3.x"
     supports-color "^5.1.0"
 
-cli-engine-config@^3.3.0, cli-engine-config@^3.4.0, cli-engine-config@^3.5.0:
+cli-engine-config@^3.3.0, cli-engine-config@^3.4.0:
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/cli-engine-config/-/cli-engine-config-3.5.0.tgz#8514e17020ad3443787c60c5f35951260b33478e"
   dependencies:
