@@ -1,5 +1,5 @@
 const cli = require('heroku-cli-util')
-const Dyno = require('heroku-run').Dyno
+const Dyno = require('@heroku-cli/plugin-run').Dyno
 const co = require('co')
 const api = require('../../lib/heroku-api')
 const git = require('../../lib/git')

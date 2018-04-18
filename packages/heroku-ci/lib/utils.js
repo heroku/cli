@@ -1,6 +1,6 @@
 const api = require('./heroku-api')
 const cli = require('heroku-cli-util')
-const disambiguatePipeline = require('heroku-pipelines').disambiguatePipeline
+const disambiguatePipeline = require('@heroku-cli/plugin-pipelines').disambiguatePipeline
 
 function * getPipeline (context, client) {
   let pipeline = context.flags.pipeline
