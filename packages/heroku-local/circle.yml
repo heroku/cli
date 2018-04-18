@@ -7,4 +7,4 @@ dependencies:
     - sudo apt-get update
     - sudo apt-get install bats
     - npm install
-    - npx heroku-cli plugins:link .
+    - npx heroku-cli plugins:link . -f
