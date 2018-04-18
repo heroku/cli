@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
+
+## [1.9.9] - 2018-04-18
 ### Changed
 
 - Use @heroku-cli/command for completions
