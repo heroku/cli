@@ -2,7 +2,7 @@
 
 let cli = require('heroku-cli-util')
 let co = require('co')
-const {flags} = require('cli-engine-heroku')
+const {flags} = require('@heroku-cli/command')
 
 function * run (context, heroku) {
   let team = context.org || context.team || context.flags.team

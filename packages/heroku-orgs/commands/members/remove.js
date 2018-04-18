@@ -3,7 +3,7 @@
 let cli = require('heroku-cli-util')
 let co = require('co')
 let Utils = require('../../lib/utils')
-const {flags} = require('cli-engine-heroku')
+const {flags} = require('@heroku-cli/command')
 
 function * run (context, heroku) {
   let orgInfo = yield Utils.orgInfo(context, heroku)
