@@ -2,7 +2,7 @@
 
 const co = require('co')
 const cli = require('heroku-cli-util')
-const {FileCompletion} = require('cli-engine-heroku/lib/completions')
+const {FileCompletion} = require('@heroku-cli/command/lib/completions')
 
 function * run (context) {
   if (context.flags.restart) throw new Error('--restart is no longer available\nUse forego instead: https://github.com/ddollar/forego')
