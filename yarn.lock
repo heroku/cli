@@ -96,6 +96,17 @@
     http-call "^5.1.0"
     netrc-parser "^3.1.3"
 
+"@heroku-cli/command@^8.0.5":
+  version "8.0.5"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.0.5.tgz#eb7e596c5a17557339f227e058fa700d4c0821e6"
+  dependencies:
+    "@oclif/errors" "^1.0.4"
+    cli-ux "^3.3.30"
+    debug "^3.1.0"
+    heroku-client "3.0.6"
+    http-call "^5.1.0"
+    netrc-parser "^3.1.4"
+
 "@heroku-cli/notifications@^1.2.0":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@heroku-cli/notifications/-/notifications-1.2.0.tgz#aea6dd4ccac951ab62ded2ceef9b5cd482e14d96"
@@ -222,14 +233,14 @@
     debug "3.1.0"
     heroku-cli-util "^8.0.0"
 
-"@heroku-cli/plugin-local@^5.1.23":
-  version "5.1.23"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-local/-/plugin-local-5.1.23.tgz#d13b80bf6e0a3eac4f4ee277a4e0ac37b36818bf"
+"@heroku-cli/plugin-local@^5.1.24":
+  version "5.1.24"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-local/-/plugin-local-5.1.24.tgz#53bc713304a5792c7a582f9a948424677d6669fe"
   dependencies:
+    "@heroku-cli/command" "^8.0.5"
     "@heroku/foreman" "^2.0.2"
-    cli-engine-heroku "^5.0.4"
     co "^4.6.0"
-    heroku-cli-util "^8.0.0"
+    heroku-cli-util "^8.0.6"
     lodash.flatten "^4.4.0"
 
 "@heroku-cli/plugin-oauth@^2.3.1":
@@ -254,9 +265,9 @@
     lodash "4.17.5"
     lodash.flatten "4.4.0"
 
-"@heroku-cli/plugin-pg@^2.9.5":
-  version "2.9.5"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-pg/-/plugin-pg-2.9.5.tgz#b8707dba845828d01951334171a36754e3a9d553"
+"@heroku-cli/plugin-pg@^2.9.7":
+  version "2.9.7"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-pg/-/plugin-pg-2.9.7.tgz#4c9ad2b31bde76cb70106bae073992731186f963"
   dependencies:
     bytes "^3.0.0"
     co "^4.6.0"
@@ -271,6 +282,7 @@
     lodash.sortby "^4.7.0"
     lodash.uniqby "^4.7.0"
     mkdirp "^0.5.1"
+    node-notifier "^5.2.1"
     smooth-progress "^1.1.0"
     string "^3.3.3"
     strip-eof "^1.0.0"
@@ -418,9 +430,9 @@
   dependencies:
     debug "^3.1.0"
 
-"@oclif/config@^1.4.13":
-  version "1.4.13"
-  resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.4.13.tgz#07650c368c2018caf65d5d610f23034c3fd05b2e"
+"@oclif/config@^1.6.4":
+  version "1.6.4"
+  resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.6.4.tgz#4bcb51fa40646794031437d7904f0fbb56e5c072"
   dependencies:
     debug "^3.1.0"
 
@@ -467,23 +479,23 @@
   dependencies:
     "@types/node" "*"
 
-"@types/fs-extra@5.0.1":
-  version "5.0.1"
-  resolved "https://registry.yarnpkg.com/@types/fs-extra/-/fs-extra-5.0.1.tgz#cd856fbbdd6af2c11f26f8928fd8644c9e9616c9"
+"@types/fs-extra@5.0.2":
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/@types/fs-extra/-/fs-extra-5.0.2.tgz#235a7e2b56452cc0a6a4809b53e1d1eaffff9c96"
   dependencies:
     "@types/node" "*"
 
-"@types/jest@22.2.2":
-  version "22.2.2"
-  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-22.2.2.tgz#afe5dacbd00d65325f52da0ed3e76e259629ac9d"
+"@types/jest@22.2.3":
+  version "22.2.3"
+  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-22.2.3.tgz#0157c0316dc3722c43a7b71de3fdf3acbccef10d"
 
 "@types/load-json-file@^2.0.7":
   version "2.0.7"
   resolved "https://registry.yarnpkg.com/@types/load-json-file/-/load-json-file-2.0.7.tgz#c887826f5230b7507d5230994d26315c6776be06"
 
-"@types/lodash@^4.14.106":
-  version "4.14.106"
-  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.106.tgz#6093e9a02aa567ddecfe9afadca89e53e5dce4dd"
+"@types/lodash@^4.14.107":
+  version "4.14.107"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.107.tgz#b2d2ae3958bfb8ff828495cbe12214af9e4d035e"
 
 "@types/nock@9.1.3":
   version "9.1.3"
@@ -491,13 +503,17 @@
   dependencies:
     "@types/node" "*"
 
-"@types/node@*", "@types/node@9.6.2":
+"@types/node@*":
   version "9.6.2"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-9.6.2.tgz#e49ac1adb458835e95ca6487bc20f916b37aff23"
 
-"@types/supports-color@3.1.0":
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/@types/supports-color/-/supports-color-3.1.0.tgz#3584b6b54f45333e988da2c29e6797eff5a20f8c"
+"@types/node@9.6.5":
+  version "9.6.5"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-9.6.5.tgz#ee700810fdf49ac1c399fc5980b7559b3e5a381d"
+
+"@types/supports-color@5.3.0":
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/@types/supports-color/-/supports-color-5.3.0.tgz#eb6a52e9531fb3ebcd401cec774d1bdfb571f793"
 
 abab@^1.0.4:
   version "1.0.4"
@@ -1426,6 +1442,25 @@ cli-ux@^2.0.17, cli-ux@^2.0.20, cli-ux@^2.0.21:
 cli-ux@^3.3.23, cli-ux@^3.3.26, cli-ux@^3.3.27:
   version "3.3.28"
   resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-3.3.28.tgz#9d516d389a9bbca272e8a195f7cac6c61d0e69fa"
+  dependencies:
+    "@oclif/linewrap" "^1.0.0"
+    "@oclif/screen" "^1.0.2"
+    ansi-styles "^3.2.1"
+    cardinal "^1.0.0"
+    chalk "^2.3.2"
+    clean-stack "^1.3.0"
+    extract-stack "^1.0.0"
+    fs-extra "^5.0.0"
+    indent-string "^3.2.0"
+    lodash "^4.17.5"
+    password-prompt "^1.0.4"
+    semver "^5.5.0"
+    strip-ansi "^4.0.0"
+    supports-color "^5.3.0"
+
+cli-ux@^3.3.30:
+  version "3.3.30"
+  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-3.3.30.tgz#525e65bda07a04e913673dfd614519373053d003"
   dependencies:
     "@oclif/linewrap" "^1.0.0"
     "@oclif/screen" "^1.0.2"
@@ -4672,7 +4707,7 @@ mimic-response@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/mimic-response/-/mimic-response-1.0.0.tgz#df3d3652a73fded6b9b0b24146e6fd052353458e"
 
-minimatch@^3.0.0, minimatch@^3.0.2, minimatch@^3.0.3, minimatch@^3.0.4:
+minimatch@3.0.4, minimatch@^3.0.0, minimatch@^3.0.2, minimatch@^3.0.3, minimatch@^3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/minimatch/-/minimatch-3.0.4.tgz#5166e286457f03306064be5497e8dbb0c3d32083"
   dependencies:
@@ -4710,9 +4745,9 @@ mkdirp@0.5.1, "mkdirp@>=0.5 0", mkdirp@^0.5.0, mkdirp@^0.5.1:
   dependencies:
     minimist "0.0.8"
 
-mocha@^5.0.5:
-  version "5.0.5"
-  resolved "https://registry.yarnpkg.com/mocha/-/mocha-5.0.5.tgz#e228e3386b9387a4710007a641f127b00be44b52"
+mocha@^5.1.0:
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/mocha/-/mocha-5.1.0.tgz#5ff11cc39c0bb65330ac6c41f9086634e3e3f686"
   dependencies:
     browser-stdout "1.3.1"
     commander "2.11.0"
@@ -4722,6 +4757,7 @@ mocha@^5.0.5:
     glob "7.1.2"
     growl "1.10.3"
     he "1.1.1"
+    minimatch "3.0.4"
     mkdirp "0.5.1"
     supports-color "4.4.0"
 
@@ -4808,9 +4844,9 @@ nice-try@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/nice-try/-/nice-try-1.0.4.tgz#d93962f6c52f2c1558c0fbda6d512819f1efe1c4"
 
-nock@9.2.3:
-  version "9.2.3"
-  resolved "https://registry.yarnpkg.com/nock/-/nock-9.2.3.tgz#39738087d6a0497d3a165fb352612b38a2f9b92f"
+nock@9.2.5:
+  version "9.2.5"
+  resolved "https://registry.yarnpkg.com/nock/-/nock-9.2.5.tgz#c131fc8d3c4723f386be0269739638be84733f2f"
   dependencies:
     chai "^4.1.2"
     debug "^3.1.0"
@@ -6414,9 +6450,9 @@ trim-right@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/trim-right/-/trim-right-1.0.1.tgz#cb2e1203067e0c8de1f614094b9fe45704ea6003"
 
-ts-jest@22.4.2:
-  version "22.4.2"
-  resolved "https://registry.yarnpkg.com/ts-jest/-/ts-jest-22.4.2.tgz#2137bc0899b14dfb1d58257ee10b18ab8a2d92c5"
+ts-jest@22.4.3:
+  version "22.4.3"
+  resolved "https://registry.yarnpkg.com/ts-jest/-/ts-jest-22.4.3.tgz#5c06b89359e598d97f08802936ea400be555a9d1"
   dependencies:
     babel-core "^6.26.0"
     babel-plugin-istanbul "^4.1.4"
