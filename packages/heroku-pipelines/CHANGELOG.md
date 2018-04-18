@@ -6,8 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+## [2.5.4] 2018-04-18
+
 - Switch to http-call from got
-- Updated dependencies 
+- Updated dependencies
 
 ## [2.5.3] 2018-03-26
 
