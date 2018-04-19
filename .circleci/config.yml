@@ -39,6 +39,7 @@ jobs:
       # TODO: setup keys
       # - run: ./node_modules/.bin/oclif-dev pack:deb
       - run: ./node_modules/.bin/oclif-dev pack:win
+      - run: aws cloudfront create-invalidation --distribution-id "$CLOUDFRONT_DISTRIBUTION" --paths "/*"
       # - run: {command: "./scripts/release/homebrew", when: always}
       # - run: {command: "./scripts/release/macos_installer_trigger", when: always}
       - save_cache:
