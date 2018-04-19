@@ -46,6 +46,7 @@ jobs:
           key: v2-yarn-{{ checksum ".circleci/config.yml" }}-{{ checksum "yarn.lock" }}
           paths:
             - /cli/node_modules
+            - /cli/tmp/cache
             - /usr/local/share/.cache/yarn
   dev_center_docs:
     docker: &devdocs_docker
