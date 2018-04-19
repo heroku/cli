@@ -107,7 +107,7 @@
     "@oclif/plugin-help": "^1.2.4",
     "@oclif/plugin-legacy": "^1.0.10",
     "@oclif/plugin-plugins": "^1.0.9",
-    "@oclif/plugin-update": "^1.1.9",
+    "@oclif/plugin-update": "^1.1.11",
     "cli-flags": "^2.0.7",
     "cli-ux": "3.3.31",
     "debug": "3.1.0",
