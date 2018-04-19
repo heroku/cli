@@ -13,8 +13,8 @@ describe('heroku webhooks:add', function () {
 
   it('# removes webhooks', function () {
     let mock = nock('https://api.heroku.com')
-      .delete('/apps/example/webhooks/99999999-9999-9999-9999-999999999999')
-      .reply(200, {})
+    .delete('/apps/example/webhooks/99999999-9999-9999-9999-999999999999')
+    .reply(200, {})
 
     return certs.run({app: 'example', args: {id: '99999999-9999-9999-9999-999999999999'}, flags: {}}).then(function () {
       mock.done()
@@ -25,8 +25,8 @@ describe('heroku webhooks:add', function () {
 
   it('# removes webhooks', function () {
     let mock = nock('https://api.heroku.com')
-      .delete('/pipelines/example/webhooks/99999999-9999-9999-9999-999999999999')
-      .reply(200, {})
+    .delete('/pipelines/example/webhooks/99999999-9999-9999-9999-999999999999')
+    .reply(200, {})
 
     return certs.run({args: {id: '99999999-9999-9999-9999-999999999999'}, flags: {pipeline: 'example'}}).then(function () {
       mock.done()

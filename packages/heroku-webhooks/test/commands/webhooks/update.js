@@ -13,21 +13,21 @@ describe('heroku webhooks:update', function () {
 
   it('# updates a webhook', function () {
     let mock = nock('https://api.heroku.com')
-      .patch('/apps/example/webhooks/99999999-9999-9999-9999-999999999999', {
-        include: ['foo', 'bar'],
-        level: 'notify',
-        secret: '1234',
-        url: 'http://foobar.com'
-      })
-      .reply(200, {})
+    .patch('/apps/example/webhooks/99999999-9999-9999-9999-999999999999', {
+      include: ['foo', 'bar'],
+      level: 'notify',
+      secret: '1234',
+      url: 'http://foobar.com',
+    })
+    .reply(200, {})
 
     return certs.run({app: 'example', args: {
-      id: '99999999-9999-9999-9999-999999999999'
+      id: '99999999-9999-9999-9999-999999999999',
     }, flags: {
       include: ' foo , bar ',
       level: 'notify',
       secret: '1234',
-      url: 'http://foobar.com'
+      url: 'http://foobar.com',
     }}).then(function () {
       mock.done()
       expect(cli.stderr).to.equal('Updating webhook 99999999-9999-9999-9999-999999999999 for example... done\n')
@@ -37,22 +37,22 @@ describe('heroku webhooks:update', function () {
 
   it('# updates a webhook', function () {
     let mock = nock('https://api.heroku.com')
-      .patch('/pipelines/example/webhooks/99999999-9999-9999-9999-999999999999', {
-        include: ['foo', 'bar'],
-        level: 'notify',
-        secret: '1234',
-        url: 'http://foobar.com'
-      })
-      .reply(200, {})
+    .patch('/pipelines/example/webhooks/99999999-9999-9999-9999-999999999999', {
+      include: ['foo', 'bar'],
+      level: 'notify',
+      secret: '1234',
+      url: 'http://foobar.com',
+    })
+    .reply(200, {})
 
     return certs.run({args: {
-      id: '99999999-9999-9999-9999-999999999999'
+      id: '99999999-9999-9999-9999-999999999999',
     }, flags: {
       include: ' foo , bar ',
       level: 'notify',
       secret: '1234',
       url: 'http://foobar.com',
-      pipeline: 'example'
+      pipeline: 'example',
     }}).then(function () {
       mock.done()
       expect(cli.stderr).to.equal('Updating webhook 99999999-9999-9999-9999-999999999999 for example... done\n')

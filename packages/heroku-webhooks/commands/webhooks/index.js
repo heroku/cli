@@ -4,11 +4,11 @@ let co = require('co')
 let cli = require('heroku-cli-util')
 let webhookType = require('../../lib/webhook_type.js')
 
-function * run (context, heroku) {
+function * run(context, heroku) {
   let {path, display} = webhookType(context)
 
   let webhooks = yield heroku.get(`${path}/webhooks`, {
-    headers: {Accept: 'application/vnd.heroku+json; version=3.webhooks'}
+    headers: {Accept: 'application/vnd.heroku+json; version=3.webhooks'},
   })
 
   if (webhooks.length === 0) {
@@ -16,13 +16,13 @@ function * run (context, heroku) {
     return
   }
 
-  webhooks.sort((a, b) => Date.parse(a['created_at']) - Date.parse(b['created_at']))
+  webhooks.sort((a, b) => Date.parse(a.created_at) - Date.parse(b.created_at))
 
   cli.table(webhooks, {columns: [
     {key: 'id', label: 'Webhook ID'},
     {key: 'url', label: 'URL'},
     {key: 'include', label: 'Include'},
-    {key: 'level', label: 'Level'}
+    {key: 'level', label: 'Level'},
   ]})
 }
 
@@ -35,8 +35,8 @@ module.exports = {
 `,
   wantsApp: true,
   flags: [
-    {name: 'pipeline', char: 'p', hasValue: true, description: 'pipeline to list', hidden: true}
+    {name: 'pipeline', char: 'p', hasValue: true, description: 'pipeline to list', hidden: true},
   ],
   needsAuth: true,
-  run: cli.command(co.wrap(run))
+  run: cli.command(co.wrap(run)),
 }

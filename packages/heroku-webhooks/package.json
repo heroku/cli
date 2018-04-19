@@ -14,6 +14,8 @@
     "@oclif/dev-cli": "^1.2.16",
     "@oclif/plugin-legacy": "^1.0.4",
     "chai": "^4.1.2",
+    "eslint": "^4.19.1",
+    "eslint-config-oclif": "^1.4.0",
     "mocha": "^2.3.3",
     "mocha-junit-reporter": "1.17.0",
     "nock": "8.0.0",
@@ -38,7 +40,7 @@
     "url": "https://github.com/heroku/heroku-webhooks.git"
   },
   "scripts": {
-    "test": "TZ=utc nyc mocha && standard | snazzy",
+    "test": "TZ=utc nyc mocha && eslint .",
     "prepublishOnly": "oclif-dev manifest",
     "postpublish": "rm .oclif.manifest.json"
   },
@@ -48,5 +50,8 @@
         "description": "setup HTTP notifications of app activity"
       }
     }
+  },
+  "engines": {
+    "node": ">=8.0.0"
   }
 }

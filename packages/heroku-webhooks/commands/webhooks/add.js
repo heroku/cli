@@ -6,7 +6,7 @@ let webhookType = require('../../lib/webhook_type.js')
 
 let secret = null
 
-function secretMiddleware (middleware) {
+function secretMiddleware(middleware) {
   return function (response, cb) {
     secret = response.headers['heroku-webhook-secret']
     if (middleware) {
@@ -17,12 +17,12 @@ function secretMiddleware (middleware) {
   }
 }
 
-function addSecretMiddleware (heroku) {
+function addSecretMiddleware(heroku) {
   let middleware = heroku.options.middleware.bind(heroku)
   heroku.options.middleware = secretMiddleware(middleware)
 }
 
-function * run (context, heroku) {
+function * run(context, heroku) {
   addSecretMiddleware(heroku)
 
   let {path, display} = webhookType(context)
@@ -31,14 +31,14 @@ function * run (context, heroku) {
     heroku.post(`${path}/webhooks`, {
       headers: {Accept: 'application/vnd.heroku+json; version=3.webhooks'},
       body: {
-        include: context.flags.include.split(',').map((s) => s.trim()),
+        include: context.flags.include.split(',').map(s => s.trim()),
         level: context.flags.level,
         secret: context.flags.secret,
         url: context.flags.url,
-        authorization: context.flags.authorization
-      }
+        authorization: context.flags.authorization,
+      },
     }
-  ))
+    ))
 
   if (secret) {
     cli.styledHeader('Webhooks Signing Secret')
@@ -55,7 +55,7 @@ module.exports = {
     {name: 'secret', char: 's', description: 'value to sign delivery with in Heroku-Webhook-Hmac-SHA256 header', hasValue: true},
     {name: 'authorization', char: 't', description: 'authoriation header to send with webhooks', hasValue: true},
     {name: 'url', char: 'u', description: 'URL for receiver', hasValue: true, required: true},
-    {name: 'pipeline', char: 'p', hasValue: true, description: 'pipeline on which to add', hidden: true}
+    {name: 'pipeline', char: 'p', hasValue: true, description: 'pipeline on which to add', hidden: true},
   ],
   description: 'add a webhook to an app',
   help: `Example:
@@ -64,5 +64,5 @@ module.exports = {
 `,
   wantsApp: true,
   needsAuth: true,
-  run: cli.command(co.wrap(run))
+  run: cli.command(co.wrap(run)),
 }

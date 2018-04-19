@@ -3,7 +3,7 @@
 
 let expect = require('chai').expect
 let nock = require('nock')
-let certs = require('../../../commands/webhooks/index')
+let certs = require('../../../commands/webhooks')
 
 describe('heroku webhooks:add', function () {
   beforeEach(function () {
@@ -13,19 +13,19 @@ describe('heroku webhooks:add', function () {
 
   it('# lists webhooks', function () {
     let mock = nock('https://api.heroku.com')
-      .get('/apps/example/webhooks')
-      .reply(200, [{
-        id: '99999999-9999-9999-9999-999999999999',
-        include: ['foo', 'bar'],
-        level: 'notify',
-        url: 'http://foobar.com'
-      }])
+    .get('/apps/example/webhooks')
+    .reply(200, [{
+      id: '99999999-9999-9999-9999-999999999999',
+      include: ['foo', 'bar'],
+      level: 'notify',
+      url: 'http://foobar.com',
+    }])
 
     return certs.run({app: 'example', args: {}, flags: {}}).then(function () {
       mock.done()
       expect(cli.stderr).to.equal('')
       expect(cli.stdout).to.equal(
-`Webhook ID                            URL                Include  Level
+        `Webhook ID                            URL                Include  Level
 ────────────────────────────────────  ─────────────────  ───────  ──────
 99999999-9999-9999-9999-999999999999  http://foobar.com  foo,bar  notify
 `)
@@ -34,8 +34,8 @@ describe('heroku webhooks:add', function () {
 
   it('# lists empty webhooks', function () {
     let mock = nock('https://api.heroku.com')
-      .get('/apps/example/webhooks')
-      .reply(200, [])
+    .get('/apps/example/webhooks')
+    .reply(200, [])
 
     return certs.run({app: 'example', args: {}, flags: {}}).then(function () {
       mock.done()
@@ -46,19 +46,19 @@ describe('heroku webhooks:add', function () {
 
   it('# lists pipeline webhooks', function () {
     let mock = nock('https://api.heroku.com')
-      .get('/pipelines/example/webhooks')
-      .reply(200, [{
-        id: '99999999-9999-9999-9999-999999999999',
-        include: ['foo', 'bar'],
-        level: 'notify',
-        url: 'http://foobar.com'
-      }])
+    .get('/pipelines/example/webhooks')
+    .reply(200, [{
+      id: '99999999-9999-9999-9999-999999999999',
+      include: ['foo', 'bar'],
+      level: 'notify',
+      url: 'http://foobar.com',
+    }])
 
     return certs.run({args: {}, flags: {pipeline: 'example'}}).then(function () {
       mock.done()
       expect(cli.stderr).to.equal('')
       expect(cli.stdout).to.equal(
-`Webhook ID                            URL                Include  Level
+        `Webhook ID                            URL                Include  Level
 ────────────────────────────────────  ─────────────────  ───────  ──────
 99999999-9999-9999-9999-999999999999  http://foobar.com  foo,bar  notify
 `)
@@ -67,8 +67,8 @@ describe('heroku webhooks:add', function () {
 
   it('# lists empty pipeline webhooks', function () {
     let mock = nock('https://api.heroku.com')
-      .get('/pipelines/example/webhooks')
-      .reply(200, [])
+    .get('/pipelines/example/webhooks')
+    .reply(200, [])
 
     return certs.run({args: {}, flags: {pipeline: 'example'}}).then(function () {
       mock.done()

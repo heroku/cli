@@ -1,9 +1,10 @@
+/* eslint-disable camelcase */
 'use strict'
 /* globals describe it beforeEach cli */
 
 let expect = require('chai').expect
 let nock = require('nock')
-let certs = require('../../../../commands/webhooks/events/index')
+let certs = require('../../../../commands/webhooks/events')
 
 describe('heroku webhooks:events', function () {
   beforeEach(function () {
@@ -13,22 +14,22 @@ describe('heroku webhooks:events', function () {
 
   it('# lists events', function () {
     let mock = nock('https://api.heroku.com')
-      .get('/apps/example/webhook-events')
-      .reply(200, [{
-        id: '99999999-9999-9999-9999-999999999999',
-        payload: {
-          published_at: '2016-08-31T21:55:06Z',
-          resource: 'api:release',
-          action: 'create'
-        }
+    .get('/apps/example/webhook-events')
+    .reply(200, [{
+      id: '99999999-9999-9999-9999-999999999999',
+      payload: {
+        published_at: '2016-08-31T21:55:06Z',
+        resource: 'api:release',
+        action: 'create',
+      },
 
-      }])
+    }])
 
     return certs.run({app: 'example', args: {}, flags: {}}).then(function () {
       mock.done()
       expect(cli.stderr).to.equal(' ▸    heroku webhooks:event is deprecated, please use heroku webhooks:deliveries\n')
       expect(cli.stdout).to.equal(
-`Event ID                              Resource     Action  Published At
+        `Event ID                              Resource     Action  Published At
 ────────────────────────────────────  ───────────  ──────  ────────────────────
 99999999-9999-9999-9999-999999999999  api:release  create  2016-08-31T21:55:06Z
 `)
@@ -37,22 +38,22 @@ describe('heroku webhooks:events', function () {
 
   it('# lists events', function () {
     let mock = nock('https://api.heroku.com')
-      .get('/pipelines/example/webhook-events')
-      .reply(200, [{
-        id: '99999999-9999-9999-9999-999999999999',
-        payload: {
-          published_at: '2016-08-31T21:55:06Z',
-          resource: 'api:release',
-          action: 'create'
-        }
+    .get('/pipelines/example/webhook-events')
+    .reply(200, [{
+      id: '99999999-9999-9999-9999-999999999999',
+      payload: {
+        published_at: '2016-08-31T21:55:06Z',
+        resource: 'api:release',
+        action: 'create',
+      },
 
-      }])
+    }])
 
     return certs.run({args: {}, flags: {pipeline: 'example'}}).then(function () {
       mock.done()
       expect(cli.stderr).to.equal(' ▸    heroku webhooks:event is deprecated, please use heroku webhooks:deliveries\n')
       expect(cli.stdout).to.equal(
-`Event ID                              Resource     Action  Published At
+        `Event ID                              Resource     Action  Published At
 ────────────────────────────────────  ───────────  ──────  ────────────────────
 99999999-9999-9999-9999-999999999999  api:release  create  2016-08-31T21:55:06Z
 `)
@@ -61,8 +62,8 @@ describe('heroku webhooks:events', function () {
 
   it('# lists empty events', function () {
     let mock = nock('https://api.heroku.com')
-      .get('/apps/example/webhook-events')
-      .reply(200, [])
+    .get('/apps/example/webhook-events')
+    .reply(200, [])
 
     return certs.run({app: 'example', args: {}, flags: {}}).then(function () {
       mock.done()
@@ -73,8 +74,8 @@ describe('heroku webhooks:events', function () {
 
   it('# lists empty events', function () {
     let mock = nock('https://api.heroku.com')
-      .get('/pipelines/example/webhook-events')
-      .reply(200, [])
+    .get('/pipelines/example/webhook-events')
+    .reply(200, [])
 
     return certs.run({args: {}, flags: {pipeline: 'example'}}).then(function () {
       mock.done()
