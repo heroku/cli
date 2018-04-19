@@ -61,10 +61,6 @@
   version "0.0.0"
   resolved "https://registry.yarnpkg.com/@cli-engine/screen/-/screen-0.0.0.tgz#c2e847c7d4d998490c9097282bf21637d5162116"
 
-"@fancy-test/nock@^0.1.0", "@fancy-test/nock@^0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@fancy-test/nock/-/nock-0.1.1.tgz#0d9669d293f6a53dc1814b0c4ad1e8cae57c7046"
-
 "@heroku-cli/color@^1.0.4", "@heroku-cli/color@^1.1.1", "@heroku-cli/color@^1.1.3":
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/@heroku-cli/color/-/color-1.1.3.tgz#f5f3bb043c3c5c78888135a89633227cfca04b2b"
@@ -85,7 +81,7 @@
     http-call "^4.0.8"
     netrc-parser "^3.0.0"
 
-"@heroku-cli/command@^8.0.0-oclif.1", "@heroku-cli/command@^8.0.3", "@heroku-cli/command@^8.0.4", "@heroku-cli/command@^8.0.5":
+"@heroku-cli/command@^8.0.4", "@heroku-cli/command@^8.0.5":
   version "8.0.5"
   resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.0.5.tgz#eb7e596c5a17557339f227e058fa700d4c0821e6"
   dependencies:
@@ -163,17 +159,16 @@
     term-img "^2.1.0"
     urijs "1.19.1"
 
-"@heroku-cli/plugin-auth@^0.1.2":
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-auth/-/plugin-auth-0.1.2.tgz#ef18c6b843e37e49779932446dd80c052d3d65a8"
+"@heroku-cli/plugin-auth@^0.1.3":
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-auth/-/plugin-auth-0.1.3.tgz#1e05754976e3551ade8531f1d6651a1e4ecbf8e0"
   dependencies:
-    "@fancy-test/nock" "^0.1.1"
     "@heroku-cli/color" "^1.1.3"
-    "@heroku-cli/command" "^8.0.4"
-    "@oclif/command" "^1.4.7"
-    "@oclif/config" "^1.3.62"
-    cli-ux "^3.3.27"
-    heroku-cli-util "^8.0.4"
+    "@heroku-cli/command" "^8.0.5"
+    "@oclif/command" "1"
+    "@oclif/config" "1"
+    cli-ux "^3.3.31"
+    heroku-cli-util "^8.0.6"
 
 "@heroku-cli/plugin-certs@^1.1.48":
   version "1.1.48"
@@ -298,16 +293,15 @@
     heroku-cli-util "^7.0.0"
     heroku-exec-util "0.7.2"
 
-"@heroku-cli/plugin-ps@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-ps/-/plugin-ps-1.0.0.tgz#157ac86ec0db98860899d1d55b383ee0dd602cc2"
+"@heroku-cli/plugin-ps@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-ps/-/plugin-ps-1.0.1.tgz#13f018a0907fde83a5385db1279b3a9497566786"
   dependencies:
-    "@fancy-test/nock" "^0.1.1"
     "@heroku-cli/color" "^1.1.3"
-    "@heroku-cli/command" "^8.0.3"
-    "@oclif/command" "^1.4.7"
-    "@oclif/config" "^1.3.62"
-    cli-ux "^3.3.26"
+    "@heroku-cli/command" "^8.0.5"
+    "@oclif/command" "^1.4.13"
+    "@oclif/config" "^1.6.4"
+    cli-ux "^3.3.31"
     lodash "^4.17.5"
 
 "@heroku-cli/plugin-redis@^1.3.2":
@@ -344,19 +338,18 @@
     lodash.sortby "^4.7.0"
     strftime "^0.10.0"
 
-"@heroku-cli/plugin-status@^5.0.9":
-  version "5.0.9"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-status/-/plugin-status-5.0.9.tgz#51dd8a1bd87350e22a0dbf9c2c911851bb31b44b"
+"@heroku-cli/plugin-status@^5.0.10":
+  version "5.0.10"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-status/-/plugin-status-5.0.10.tgz#202ba6eedcd863d8ec5d5f948d090c1a30cd5dca"
   dependencies:
-    "@fancy-test/nock" "^0.1.0"
     "@heroku-cli/color" "^1.1.3"
-    "@heroku-cli/command" "^8.0.0-oclif.1"
-    "@oclif/command" "^1.3.1"
-    "@oclif/config" "^1.3.57"
-    "@oclif/errors" "^1.0.2"
-    cli-ux "^3.3.23"
+    "@heroku-cli/command" "^8.0.5"
+    "@oclif/command" "^1.4.13"
+    "@oclif/config" "^1.6.4"
+    "@oclif/errors" "^1.0.4"
+    cli-ux "^3.3.31"
     date-fns "^1.29.0"
-    http-call "^5.0.2"
+    http-call "^5.1.0"
 
 "@heroku-cli/plugin-webhooks@^1.1.2":
   version "1.1.2"
@@ -398,7 +391,7 @@
     call-me-maybe "^1.0.1"
     glob-to-regexp "^0.3.0"
 
-"@oclif/command@^1.3.1", "@oclif/command@^1.4.7":
+"@oclif/command@1", "@oclif/command@^1.4.13":
   version "1.4.13"
   resolved "https://registry.yarnpkg.com/@oclif/command/-/command-1.4.13.tgz#2ed3c42142307d20337ec04eabd1be410dfa2a5e"
   dependencies:
@@ -407,13 +400,13 @@
     debug "^3.1.0"
     semver "^5.5.0"
 
-"@oclif/config@^1.3.57", "@oclif/config@^1.3.62", "@oclif/config@^1.6.4":
+"@oclif/config@1", "@oclif/config@^1.6.4":
   version "1.6.4"
   resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.6.4.tgz#4bcb51fa40646794031437d7904f0fbb56e5c072"
   dependencies:
     debug "^3.1.0"
 
-"@oclif/errors@^1.0.2", "@oclif/errors@^1.0.4":
+"@oclif/errors@^1.0.4":
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/@oclif/errors/-/errors-1.0.4.tgz#8e34386ede530484ae3c98bc21d818c416214c66"
   dependencies:
@@ -1337,7 +1330,7 @@ cli-ux@^2.0.21:
     supports-color "^5.1.0"
     ts-lodash "^4.0.8"
 
-cli-ux@^3.3.23, cli-ux@^3.3.26, cli-ux@^3.3.27, cli-ux@^3.3.30:
+cli-ux@^3.3.30, cli-ux@^3.3.31:
   version "3.3.31"
   resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-3.3.31.tgz#e4f2a380df00ebf298189b83a77ae92cdfc7355f"
   dependencies:
@@ -3020,7 +3013,7 @@ http-call@4.0.8, http-call@^4.0.8:
     tslib "^1.8.1"
     tunnel-agent "^0.6.0"
 
-http-call@^5.0.2, http-call@^5.1.0:
+http-call@^5.1.0:
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/http-call/-/http-call-5.1.0.tgz#699847d9bcd635eb4e3fdfe3084456a9c89d716d"
   dependencies:
