@@ -2,8 +2,10 @@
 *-error.log
 .oclif.manifest.json
 /coverage
+/dist
 /lib
 /node_modules
 /package-lock.json
 /tmp
+node_modules
 package-lock.json

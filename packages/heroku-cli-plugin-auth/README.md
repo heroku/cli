@@ -15,11 +15,11 @@ auth core plugin for Heroku CLI
 <!-- tocstop -->
 # Commands
 <!-- commands -->
-* [heroku 2fa](#heroku-2-fa)
-* [heroku auth:whoami](#heroku-authwhoami)
-* [heroku labs:disable [FEATURE]](#heroku-labsdisable-feature)
+* [`heroku 2fa`](#heroku-2-fa)
+* [`heroku auth:whoami`](#heroku-authwhoami)
+* [`heroku labs:disable [FEATURE]`](#heroku-labsdisable-feature)
 
-## heroku 2fa
+## `heroku 2fa`
 
 check 2fa status
 
@@ -34,7 +34,7 @@ ALIASES
 
 _See code: [src/commands/2fa.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.1.2/src/commands/2fa.ts)_
 
-## heroku auth:whoami
+## `heroku auth:whoami`
 
 display the current logged in user
 
@@ -48,7 +48,7 @@ ALIASES
 
 _See code: [src/commands/auth/whoami.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.1.2/src/commands/auth/whoami.ts)_
 
-## heroku labs:disable [FEATURE]
+## `heroku labs:disable [FEATURE]`
 
 disables an experimental feature
 
