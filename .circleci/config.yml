@@ -36,7 +36,8 @@ jobs:
       - run: ./scripts/release/_github_setup
       - run: ./node_modules/.bin/oclif-dev pack
       - run: ./node_modules/.bin/oclif-dev publish
-      - run: ./node_modules/.bin/oclif-dev pack:deb
+      # TODO: setup keys
+      # - run: ./node_modules/.bin/oclif-dev pack:deb
       - run: ./node_modules/.bin/oclif-dev pack:win
       # - run: {command: "./scripts/release/homebrew", when: always}
       # - run: {command: "./scripts/release/macos_installer_trigger", when: always}
