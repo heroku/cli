@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-status",
   "description": "CLI Plugin for Heroku Status",
-  "version": "5.0.9",
+  "version": "5.0.10",
   "author": "Jeff Dickey @jdxcode",
   "bugs": {
     "url": "https://github.com/heroku/heroku-cli-status/issues"

@@ -55,13 +55,12 @@ $ npm install -g @heroku-cli/plugin-status
 ```
 <!-- installstop -->
 <!-- usage -->
-# Usage
-
 ```sh-session
+$ npm install -g @heroku-cli/plugin-status
 $ @heroku-cli/plugin-status COMMAND
 running command...
 $ @heroku-cli/plugin-status (-v|--version|version)
-@heroku-cli/plugin-status/5.0.9 (darwin-x64) node-v9.5.0
+@heroku-cli/plugin-status/5.0.10 darwin-x64 node-v9.11.1
 $ @heroku-cli/plugin-status --help [COMMAND]
 USAGE
   $ @heroku-cli/plugin-status COMMAND
@@ -69,10 +68,9 @@ USAGE
 ```
 <!-- usagestop -->
 <!-- commands -->
-# Commands
+* [`@heroku-cli/plugin-status status`](#heroku-cli-plugin-status-status)
 
-* [@heroku-cli/plugin-status status](#status)
-## status
+## `@heroku-cli/plugin-status status`
 
 display current status of the Heroku platform
 
@@ -84,5 +82,5 @@ OPTIONS
   --json  output in json format
 ```
 
-_See code: [src/commands/status.ts](https://github.com/heroku/heroku-cli-status/blob/v5.0.9/src/commands/status.ts)_
+_See code: [src/commands/status.ts](https://github.com/heroku/heroku-cli-status/blob/v5.0.10/src/commands/status.ts)_
 <!-- commandsstop -->
