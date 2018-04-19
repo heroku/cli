@@ -32,7 +32,7 @@ ALIASES
   $ heroku twofactor
 ```
 
-_See code: [src/commands/2fa.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.1.2/src/commands/2fa.ts)_
+_See code: [src/commands/2fa.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.1.3/src/commands/2fa.ts)_
 
 ## `heroku auth:whoami`
 
@@ -46,7 +46,7 @@ ALIASES
   $ heroku whoami
 ```
 
-_See code: [src/commands/auth/whoami.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.1.2/src/commands/auth/whoami.ts)_
+_See code: [src/commands/auth/whoami.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.1.3/src/commands/auth/whoami.ts)_
 
 ## `heroku labs:disable [FEATURE]`
 
@@ -62,5 +62,5 @@ OPTIONS
   --confirm=confirm
 ```
 
-_See code: [src/commands/labs/disable.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.1.2/src/commands/labs/disable.ts)_
+_See code: [src/commands/labs/disable.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.1.3/src/commands/labs/disable.ts)_
 <!-- commandsstop -->
