@@ -77,8 +77,8 @@ workflows:
                 - master
                 - dev
                 - oclif
-          # requires:
-          #   - test
+          requires:
+            - test
       - dev_center_docs:
           requires:
             - test
