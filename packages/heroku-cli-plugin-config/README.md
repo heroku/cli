@@ -18,32 +18,32 @@
 <!-- usage -->
 ```sh-session
 $ npm install -g @heroku-cli/plugin-config
-$ oclif-example COMMAND
+$ heroku COMMAND
 running command...
-$ oclif-example (-v|--version|version)
-@heroku-cli/plugin-config/0.0.0 darwin-x64 node-v8.11.1
-$ oclif-example --help [COMMAND]
+$ heroku (-v|--version|version)
+@heroku-cli/plugin-config/1.0.0 linux-x64 node-v9.11.1
+$ heroku --help [COMMAND]
 USAGE
-  $ oclif-example COMMAND
+  $ heroku COMMAND
 ...
 ```
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`oclif-example config:edit`](#oclif-example-configedit)
+* [`heroku config:edit`](#heroku-configedit)
 
-## `oclif-example config:edit`
+## `heroku config:edit`
 
 interactively edit config vars
 
 ```
 USAGE
-  $ oclif-example config:edit
+  $ heroku config:edit
 
 OPTIONS
   -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
-_See code: [src/commands/config/edit.ts](https://github.com/heroku/heroku-cli-plugin-config/blob/v0.0.0/src/commands/config/edit.ts)_
+_See code: [src/commands/config/edit.ts](https://github.com/heroku/heroku-cli-plugin-config/blob/v1.0.0/src/commands/config/edit.ts)_
 <!-- commandsstop -->
