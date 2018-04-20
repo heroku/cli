@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+## [2.5.5] 2018-04-20
+
+- Re-released 2.5.4 to include oclif manifest
+
 ## [2.5.4] 2018-04-18
 
 - Switch to http-call from got
