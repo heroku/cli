@@ -25,7 +25,7 @@ describe('heroku webhooks:events', function () {
 
     }])
 
-    return certs.run({app: 'example', args: {}, flags: {}}).then(function () {
+    return certs.run(['--app', 'example']).then(function () {
       mock.done()
       expect(cli.stderr).to.equal(' ▸    heroku webhooks:event is deprecated, please use heroku webhooks:deliveries\n')
       expect(cli.stdout).to.equal(
@@ -36,7 +36,7 @@ describe('heroku webhooks:events', function () {
     })
   })
 
-  it('# lists events', function () {
+  it('# lists events (pipelines)', function () {
     let mock = nock('https://api.heroku.com')
     .get('/pipelines/example/webhook-events')
     .reply(200, [{
@@ -49,7 +49,7 @@ describe('heroku webhooks:events', function () {
 
     }])
 
-    return certs.run({args: {}, flags: {pipeline: 'example'}}).then(function () {
+    return certs.run(['--pipeline', 'example']).then(function () {
       mock.done()
       expect(cli.stderr).to.equal(' ▸    heroku webhooks:event is deprecated, please use heroku webhooks:deliveries\n')
       expect(cli.stdout).to.equal(
@@ -65,19 +65,19 @@ describe('heroku webhooks:events', function () {
     .get('/apps/example/webhook-events')
     .reply(200, [])
 
-    return certs.run({app: 'example', args: {}, flags: {}}).then(function () {
+    return certs.run(['--app', 'example']).then(function () {
       mock.done()
       expect(cli.stderr).to.equal(' ▸    heroku webhooks:event is deprecated, please use heroku webhooks:deliveries\n')
       expect(cli.stdout).to.equal('example has no events\n')
     })
   })
 
-  it('# lists empty events', function () {
+  it('# lists empty events (pipelines)', function () {
     let mock = nock('https://api.heroku.com')
     .get('/pipelines/example/webhook-events')
     .reply(200, [])
 
-    return certs.run({args: {}, flags: {pipeline: 'example'}}).then(function () {
+    return certs.run(['--pipeline', 'example']).then(function () {
       mock.done()
       expect(cli.stderr).to.equal(' ▸    heroku webhooks:event is deprecated, please use heroku webhooks:deliveries\n')
       expect(cli.stdout).to.equal('example has no events\n')

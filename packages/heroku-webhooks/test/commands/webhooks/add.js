@@ -21,12 +21,13 @@ describe('heroku webhooks:add', function () {
     })
     .reply(200, {})
 
-    return certs.run({app: 'example', args: {}, flags: {
-      include: ' foo , bar ',
-      level: 'notify',
-      secret: '1234',
-      url: 'http://foobar.com',
-    }}).then(function () {
+    return certs.run([
+      '--app', 'example',
+      '--include', 'foo,bar',
+      '--secret', '1234',
+      '--level', 'notify',
+      '--url', 'http://foobar.com',
+    ]).then(function () {
       mock.done()
       expect(cli.stderr).to.equal('Adding webhook to example... done\n')
       expect(cli.stdout).to.equal('')
@@ -42,11 +43,12 @@ describe('heroku webhooks:add', function () {
     })
     .reply(200, {}, {'Heroku-Webhook-Secret': '1234'})
 
-    return certs.run({app: 'example', args: {}, flags: {
-      include: ' foo , bar ',
-      level: 'notify',
-      url: 'http://foobar.com',
-    }}).then(function () {
+    return certs.run([
+      '--app', 'example',
+      '--include', 'foo,bar',
+      '--level', 'notify',
+      '--url', 'http://foobar.com',
+    ]).then(function () {
       mock.done()
       expect(cli.stderr).to.equal('Adding webhook to example... done\n')
       expect(cli.stdout).to.equal('=== Webhooks Signing Secret\n1234\n')
@@ -63,13 +65,13 @@ describe('heroku webhooks:add', function () {
     })
     .reply(200, {})
 
-    return certs.run({args: {}, flags: {
-      include: ' foo , bar ',
-      level: 'notify',
-      secret: '1234',
-      url: 'http://foobar.com',
-      pipeline: 'example',
-    }}).then(function () {
+    return certs.run([
+      '--pipeline', 'example',
+      '--include', 'foo,bar',
+      '--secret', '1234',
+      '--level', 'notify',
+      '--url', 'http://foobar.com',
+    ]).then(function () {
       mock.done()
       expect(cli.stderr).to.equal('Adding webhook to example... done\n')
       expect(cli.stdout).to.equal('')

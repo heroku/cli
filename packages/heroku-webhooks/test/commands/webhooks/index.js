@@ -21,7 +21,7 @@ describe('heroku webhooks:add', function () {
       url: 'http://foobar.com',
     }])
 
-    return certs.run({app: 'example', args: {}, flags: {}}).then(function () {
+    return certs.run(['--app', 'example']).then(function () {
       mock.done()
       expect(cli.stderr).to.equal('')
       expect(cli.stdout).to.equal(
@@ -37,7 +37,7 @@ describe('heroku webhooks:add', function () {
     .get('/apps/example/webhooks')
     .reply(200, [])
 
-    return certs.run({app: 'example', args: {}, flags: {}}).then(function () {
+    return certs.run(['--app', 'example']).then(function () {
       mock.done()
       expect(cli.stderr).to.equal('')
       expect(cli.stdout).to.equal('example has no webhooks\nUse heroku webhooks:add to add one.\n')
@@ -54,7 +54,7 @@ describe('heroku webhooks:add', function () {
       url: 'http://foobar.com',
     }])
 
-    return certs.run({args: {}, flags: {pipeline: 'example'}}).then(function () {
+    return certs.run(['--pipeline', 'example']).then(function () {
       mock.done()
       expect(cli.stderr).to.equal('')
       expect(cli.stdout).to.equal(
@@ -70,7 +70,7 @@ describe('heroku webhooks:add', function () {
     .get('/pipelines/example/webhooks')
     .reply(200, [])
 
-    return certs.run({args: {}, flags: {pipeline: 'example'}}).then(function () {
+    return certs.run(['--pipeline', 'example']).then(function () {
       mock.done()
       expect(cli.stderr).to.equal('')
       expect(cli.stdout).to.equal('example has no webhooks\nUse heroku webhooks:add to add one.\n')

@@ -1,33 +1,32 @@
-'use strict'
+const {Command, flags} = require('@heroku-cli/command')
+const cli = require('heroku-cli-util')
+const webhookType = require('../../lib/webhook_type.js')
 
-let co = require('co')
-let cli = require('heroku-cli-util')
-let webhookType = require('../../lib/webhook_type.js')
-
-function * run(context, heroku) {
-  let {path, display} = webhookType(context)
-  yield cli.action(`Removing webhook ${context.args.id} from ${display}`, {},
-    heroku.delete(`${path}/webhooks/${context.args.id}`, {
-      headers: {Accept: 'application/vnd.heroku+json; version=3.webhooks'},
-    }
-    ))
+class Remove extends Command {
+  async run() {
+    const {flags, args} = this.parse(Remove)
+    let {path, display} = webhookType(flags)
+    await cli.action(`Removing webhook ${args.id} from ${display}`, {},
+      this.heroku.delete(`${path}/webhooks/${args.id}`, {
+        headers: {Accept: 'application/vnd.heroku+json; version=3.webhooks'},
+      }
+      ))
+  }
 }
 
-module.exports = {
-  topic: 'webhooks',
-  command: 'remove',
-  args: [
-    {name: 'id', description: 'id of webhook to remove'},
-  ],
-  flags: [
-    {name: 'pipeline', char: 'p', hasValue: true, description: 'pipeline on which to remove', hidden: true},
-  ],
-  description: 'removes a webhook from an app',
-  help: `Example:
+Remove.description = 'removes a webhook from an app'
 
- $ heroku webhooks:remove 99999999-9999-9999-9999-999999999999
-`,
-  wantsApp: true,
-  needsAuth: true,
-  run: cli.command(co.wrap(run)),
+Remove.examples = [
+  '$ heroku webhooks:remove 99999999-9999-9999-9999-999999999999',
+]
+
+Remove.flags = {
+  app: flags.app({char: 'a'}),
+  pipeline: flags.string({char: 'p', description: 'pipeline on which to list', hidden: true}),
 }
+
+Remove.args = [
+  {name: 'id', description: 'id of webhook to remove'},
+]
+
+module.exports = Remove

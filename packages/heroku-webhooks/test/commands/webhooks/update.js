@@ -21,14 +21,14 @@ describe('heroku webhooks:update', function () {
     })
     .reply(200, {})
 
-    return certs.run({app: 'example', args: {
-      id: '99999999-9999-9999-9999-999999999999',
-    }, flags: {
-      include: ' foo , bar ',
-      level: 'notify',
-      secret: '1234',
-      url: 'http://foobar.com',
-    }}).then(function () {
+    return certs.run([
+      '99999999-9999-9999-9999-999999999999',
+      '--app', 'example',
+      '--include', 'foo,bar',
+      '--secret', '1234',
+      '--level', 'notify',
+      '--url', 'http://foobar.com',
+    ]).then(function () {
       mock.done()
       expect(cli.stderr).to.equal('Updating webhook 99999999-9999-9999-9999-999999999999 for example... done\n')
       expect(cli.stdout).to.equal('')
@@ -45,15 +45,14 @@ describe('heroku webhooks:update', function () {
     })
     .reply(200, {})
 
-    return certs.run({args: {
-      id: '99999999-9999-9999-9999-999999999999',
-    }, flags: {
-      include: ' foo , bar ',
-      level: 'notify',
-      secret: '1234',
-      url: 'http://foobar.com',
-      pipeline: 'example',
-    }}).then(function () {
+    return certs.run([
+      '99999999-9999-9999-9999-999999999999',
+      '--pipeline', 'example',
+      '--include', 'foo,bar',
+      '--secret', '1234',
+      '--level', 'notify',
+      '--url', 'http://foobar.com',
+    ]).then(function () {
       mock.done()
       expect(cli.stderr).to.equal('Updating webhook 99999999-9999-9999-9999-999999999999 for example... done\n')
       expect(cli.stdout).to.equal('')

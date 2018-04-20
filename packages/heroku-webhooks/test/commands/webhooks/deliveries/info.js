@@ -40,7 +40,7 @@ describe('heroku webhooks:deliveries:info', function () {
       },
     })
 
-    return certs.run({app: 'example', args: {id: '99999999-9999-9999-9999-999999999999'}, flags: {}}).then(function () {
+    return certs.run(['99999999-9999-9999-9999-999999999999', '--app', 'example']).then(function () {
       mockDelivery.done()
       mockEvent.done()
       expect(cli.stderr).to.equal('')
@@ -62,7 +62,7 @@ Webhook:      77777777-7777-7777-7777-777777777777
     })
   })
 
-  it('# shows a delivery', function () {
+  it('# shows a delivery (piplines)', function () {
     let mockDelivery = nock('https://api.heroku.com')
     .get('/pipelines/example/webhook-deliveries/99999999-9999-9999-9999-999999999999')
     .reply(200, {
@@ -90,7 +90,7 @@ Webhook:      77777777-7777-7777-7777-777777777777
       },
     })
 
-    return certs.run({args: {id: '99999999-9999-9999-9999-999999999999'}, flags: {pipeline: 'example'}}).then(function () {
+    return certs.run(['99999999-9999-9999-9999-999999999999', '--pipeline', 'example']).then(function () {
       mockDelivery.done()
       mockEvent.done()
       expect(cli.stderr).to.equal('')

@@ -1,68 +1,49 @@
-'use strict'
+const {Command, flags} = require('@heroku-cli/command')
+const cli = require('heroku-cli-util')
+const webhookType = require('../../lib/webhook_type.js')
 
-let co = require('co')
-let cli = require('heroku-cli-util')
-let webhookType = require('../../lib/webhook_type.js')
+class Add extends Command {
+  async run() {
+    const {flags} = this.parse(Add)
+    let {path, display} = webhookType(flags)
 
-let secret = null
+    let secret = await cli.action(`Adding webhook to ${display}`, new Promise(async resolve => {
+      let {response} = await this.heroku.post(`${path}/webhooks`, {
+        headers: {Accept: 'application/vnd.heroku+json; version=3.webhooks'},
+        body: {
+          include: flags.include.split(',').map(s => s.trim()),
+          level: flags.level,
+          secret: flags.secret,
+          url: flags.url,
+          authorization: flags.authorization,
+        },
+      })
+      let secret
+      if (response.headers) secret = response.headers['heroku-webhook-secret']
+      resolve(secret)
+    }))
 
-function secretMiddleware(middleware) {
-  return function (response, cb) {
-    secret = response.headers['heroku-webhook-secret']
-    if (middleware) {
-      middleware(response, cb)
-    } else {
-      cb()
+    if (secret) {
+      cli.styledHeader('Webhooks Signing Secret')
+      cli.log(secret)
     }
   }
 }
 
-function addSecretMiddleware(heroku) {
-  let middleware = heroku.options.middleware.bind(heroku)
-  heroku.options.middleware = secretMiddleware(middleware)
+Add.description = 'add a webhook to an app'
+
+Add.examples = [
+  '$ heroku webhooks:add -i api:dyno -l notify -u https://example.com/hooks',
+]
+
+Add.flags = {
+  app: flags.app({char: 'a'}),
+  pipeline: flags.string({char: 'p', description: 'pipeline on which to list', hidden: true}),
+  include: flags.string({char: 'i', description: 'comma delimited event types your server will receive ', required: true}),
+  level: flags.string({char: 'l', description: 'notify does not retry, sync will retry until successful or timeout', required: true}),
+  secret: flags.string({char: 's', description: 'value to sign delivery with in Heroku-Webhook-Hmac-SHA256 header'}),
+  authorization: flags.string({char: 't', description: 'authoriation header to send with webhooks'}),
+  url: flags.string({char: 'u', description: 'URL for receiver', required: true}),
 }
 
-function * run(context, heroku) {
-  addSecretMiddleware(heroku)
-
-  let {path, display} = webhookType(context)
-
-  yield cli.action(`Adding webhook to ${display}`, {},
-    heroku.post(`${path}/webhooks`, {
-      headers: {Accept: 'application/vnd.heroku+json; version=3.webhooks'},
-      body: {
-        include: context.flags.include.split(',').map(s => s.trim()),
-        level: context.flags.level,
-        secret: context.flags.secret,
-        url: context.flags.url,
-        authorization: context.flags.authorization,
-      },
-    }
-    ))
-
-  if (secret) {
-    cli.styledHeader('Webhooks Signing Secret')
-    cli.log(secret)
-  }
-}
-
-module.exports = {
-  topic: 'webhooks',
-  command: 'add',
-  flags: [
-    {name: 'include', char: 'i', description: 'comma delimited event types your server will receive ', hasValue: true, required: true},
-    {name: 'level', char: 'l', description: 'notify does not retry, sync will retry until successful or timeout', hasValue: true, required: true},
-    {name: 'secret', char: 's', description: 'value to sign delivery with in Heroku-Webhook-Hmac-SHA256 header', hasValue: true},
-    {name: 'authorization', char: 't', description: 'authoriation header to send with webhooks', hasValue: true},
-    {name: 'url', char: 'u', description: 'URL for receiver', hasValue: true, required: true},
-    {name: 'pipeline', char: 'p', hasValue: true, description: 'pipeline on which to add', hidden: true},
-  ],
-  description: 'add a webhook to an app',
-  help: `Example:
-
- $ heroku webhooks:add -i api:dyno -l notify -u https://example.com/hooks
-`,
-  wantsApp: true,
-  needsAuth: true,
-  run: cli.command(co.wrap(run)),
-}
+module.exports = Add

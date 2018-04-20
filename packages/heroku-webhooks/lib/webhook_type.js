@@ -1,10 +1,10 @@
 let cli = require('heroku-cli-util')
 
 module.exports = function (context) {
-  if (context.flags.pipeline) {
+  if (context.pipeline) {
     return {
-      path: `/pipelines/${context.flags.pipeline}`,
-      display: context.flags.pipeline,
+      path: `/pipelines/${context.pipeline}`,
+      display: context.pipeline,
     }
   }
   if (context.app) {

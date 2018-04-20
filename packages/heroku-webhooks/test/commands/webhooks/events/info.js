@@ -27,7 +27,7 @@ describe('heroku webhooks:events:info', function () {
       },
     })
 
-    return certs.run({app: 'example', args: {id: '99999999-9999-9999-9999-999999999999'}, flags: {}}).then(function () {
+    return certs.run(['--app', 'example', '99999999-9999-9999-9999-999999999999']).then(function () {
       mock.done()
       expect(cli.stderr.replace('\n ▸    ', ' ')).to.equal(' ▸    heroku webhooks:event:info is deprecated, please use heroku webhooks:deliveries:info\n')
       expect(cli.stdout).to.equal(
@@ -44,7 +44,7 @@ payload: {
     })
   })
 
-  it('# shows an event', function () {
+  it('# shows an event (pipelines)', function () {
     let mock = nock('https://api.heroku.com')
     .get('/pipelines/example/webhook-events/99999999-9999-9999-9999-999999999999')
     .reply(200, {
@@ -59,7 +59,7 @@ payload: {
       },
     })
 
-    return certs.run({args: {id: '99999999-9999-9999-9999-999999999999'}, flags: {pipeline: 'example'}}).then(function () {
+    return certs.run(['--pipeline', 'example', '99999999-9999-9999-9999-999999999999']).then(function () {
       mock.done()
       expect(cli.stderr.replace('\n ▸    ', ' ')).to.equal(' ▸    heroku webhooks:event:info is deprecated, please use heroku webhooks:deliveries:info\n')
       expect(cli.stdout).to.equal(

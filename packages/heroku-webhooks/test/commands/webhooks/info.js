@@ -21,7 +21,7 @@ describe('heroku webhooks:deliveries:info', function () {
       url: 'http://foobar.com',
     })
 
-    return info.run({app: 'example', args: {id: '99999999-9999-9999-9999-999999999999'}, flags: {}}).then(function () {
+    return info.run(['99999999-9999-9999-9999-999999999999', '--app', 'example']).then(function () {
       mock.done()
       expect(cli.stderr).to.equal('')
       expect(cli.stdout).to.equal(
@@ -34,7 +34,7 @@ Webhook ID: 99999999-9999-9999-9999-999999999999
     })
   })
 
-  it('# shows a webhook', function () {
+  it('# shows a webhook (pipelines)', function () {
     let mock = nock('https://api.heroku.com')
     .get('/pipelines/example/webhooks/99999999-9999-9999-9999-999999999999')
     .reply(200, {
@@ -44,7 +44,7 @@ Webhook ID: 99999999-9999-9999-9999-999999999999
       url: 'http://foobar.com',
     })
 
-    return info.run({args: {id: '99999999-9999-9999-9999-999999999999'}, flags: {pipeline: 'example'}}).then(function () {
+    return info.run(['99999999-9999-9999-9999-999999999999', '--pipeline', 'example']).then(function () {
       mock.done()
       expect(cli.stderr).to.equal('')
       expect(cli.stdout).to.equal(

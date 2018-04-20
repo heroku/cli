@@ -48,7 +48,7 @@ describe('heroku webhooks:deliveries', function () {
       next_attempt_at: '2017-08-17T20:22:39Z',
     }])
 
-    return certs.run({app: 'example', args: {}, flags: {}}).then(function () {
+    return certs.run(['--app', 'example']).then(function () {
       mock.done()
       expect(cli.stderr).to.equal('')
       expect(cli.stdout).to.equal(
@@ -65,14 +65,14 @@ describe('heroku webhooks:deliveries', function () {
     .get('/apps/example/webhook-deliveries')
     .reply(200, [])
 
-    return certs.run({app: 'example', args: {}, flags: {}}).then(function () {
+    return certs.run(['--app', 'example']).then(function () {
       mock.done()
       expect(cli.stderr).to.equal('')
       expect(cli.stdout).to.equal('example has no deliveries\n')
     })
   })
 
-  it('# lists deliveries', function () {
+  it('# lists deliveries (piplines)', function () {
     let mock = nock('https://api.heroku.com')
     .get('/pipelines/example/webhook-deliveries')
     .reply(200, [{
@@ -90,7 +90,7 @@ describe('heroku webhooks:deliveries', function () {
       created_at: '2017-08-17T20:22:38Z',
     }])
 
-    return certs.run({args: {}, flags: {pipeline: 'example'}}).then(function () {
+    return certs.run(['--pipeline', 'example']).then(function () {
       mock.done()
       expect(cli.stderr).to.equal('')
       expect(cli.stdout).to.equal(
@@ -101,12 +101,12 @@ describe('heroku webhooks:deliveries', function () {
     })
   })
 
-  it('# lists empty deliveries', function () {
+  it('# lists empty deliveries (pipelines)', function () {
     let mock = nock('https://api.heroku.com')
     .get('/pipelines/example/webhook-deliveries')
     .reply(200, [])
 
-    return certs.run({args: {}, flags: {pipeline: 'example'}}).then(function () {
+    return certs.run(['--pipeline', 'example']).then(function () {
       mock.done()
       expect(cli.stderr).to.equal('')
       expect(cli.stdout).to.equal('example has no deliveries\n')

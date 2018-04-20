@@ -7,7 +7,7 @@
     "url": "https://github.com/heroku/heroku-webhooks/issues"
   },
   "dependencies": {
-    "co": "4.6.0",
+    "@heroku-cli/command": "^8.0.5",
     "heroku-cli-util": "^8.0.0"
   },
   "devDependencies": {
@@ -19,9 +19,7 @@
     "mocha": "^2.3.3",
     "mocha-junit-reporter": "1.17.0",
     "nock": "8.0.0",
-    "nyc": "11.4.1",
-    "snazzy": "7.0.0",
-    "standard": "7.1.0"
+    "nyc": "11.4.1"
   },
   "files": [
     ".oclif.manifest.json",
@@ -34,7 +32,6 @@
     "heroku-plugin"
   ],
   "license": "ISC",
-  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/heroku/heroku-webhooks.git"
@@ -44,7 +41,8 @@
     "prepublishOnly": "oclif-dev manifest",
     "postpublish": "rm .oclif.manifest.json"
   },
-  "cli-engine": {
+  "oclif": {
+    "commands": "./commands",
     "topics": {
       "webhooks": {
         "description": "setup HTTP notifications of app activity"
