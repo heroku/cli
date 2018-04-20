@@ -30,25 +30,20 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`oclif-example hello [FILE]`](#oclif-example-hello-file)
+* [`oclif-example config:edit`](#oclif-example-configedit)
 
-## `oclif-example hello [FILE]`
+## `oclif-example config:edit`
 
-describe the command here
+interactively edit config vars
 
 ```
 USAGE
-  $ oclif-example hello [FILE]
+  $ oclif-example config:edit
 
 OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
-
-EXAMPLE
-  $ oclif-example hello
-  hello world from ./src/hello.ts!
+  -a, --app=app        (required) app to run command against
+  -r, --remote=remote  git remote of app to use
 ```
 
-_See code: [src/commands/hello.ts](https://github.com/heroku/heroku-cli-plugin-config/blob/v0.0.0/src/commands/hello.ts)_
+_See code: [src/commands/config/edit.ts](https://github.com/heroku/heroku-cli-plugin-config/blob/v0.0.0/src/commands/config/edit.ts)_
 <!-- commandsstop -->
