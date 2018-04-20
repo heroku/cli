@@ -55,8 +55,8 @@
   "scripts": {
     "autotest": "./node_modules/.bin/supervisor -q -n exit -x ./node_modules/.bin/mocha -- -b",
     "test": "nyc mocha && standard",
-    "prepack": "oclif-dev manifest",
-    "postpack": "rm .oclif.manifest.json"
+    "prepublishOnly": "oclif-dev manifest",
+    "postpublish": "rm .oclif.manifest.json"
   },
   "standard": {
     "globals": [
