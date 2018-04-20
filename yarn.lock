@@ -31,18 +31,7 @@
     strip-ansi "^4.0.0"
     supports-color "^5.1.0"
 
-"@heroku-cli/command@^8.0.4":
-  version "8.0.4"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.0.4.tgz#008cc5efacb34943408d92ae693e05449755a627"
-  dependencies:
-    "@oclif/errors" "^1.0.3"
-    cli-ux "^3.3.26"
-    debug "^3.1.0"
-    heroku-client "3.0.6"
-    http-call "^5.1.0"
-    netrc-parser "^3.1.3"
-
-"@heroku-cli/command@^8.0.5":
+"@heroku-cli/command@^8.0.4", "@heroku-cli/command@^8.0.5":
   version "8.0.5"
   resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.0.5.tgz#eb7e596c5a17557339f227e058fa700d4c0821e6"
   dependencies:
@@ -244,9 +233,9 @@
     strip-eof "^1.0.0"
     tunnel-ssh "^4.1.4"
 
-"@heroku-cli/plugin-pipelines@^2.5.4":
-  version "2.5.4"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-pipelines/-/plugin-pipelines-2.5.4.tgz#b51bd71a04ff21b07eadee6afc7977bc295a8c50"
+"@heroku-cli/plugin-pipelines@^2.5.4", "@heroku-cli/plugin-pipelines@^2.5.6":
+  version "2.5.6"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-pipelines/-/plugin-pipelines-2.5.6.tgz#d96abe50783e03afccbcbe175621e1b401b29236"
   dependencies:
     "@heroku-cli/command" "^8.0.4"
     bluebird "^3.5.1"
@@ -260,6 +249,13 @@
     string-just "^0.0.2"
     validator "^6.2.1"
 
+"@heroku-cli/plugin-ps-exec@^2.3.4":
+  version "2.3.4"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-ps-exec/-/plugin-ps-exec-2.3.4.tgz#bfdd8c5b9cf1ef71eccaa406f212f523bfda87f6"
+  dependencies:
+    heroku-cli-util "^7.0.0"
+    heroku-exec-util "0.7.2"
+
 "@heroku-cli/plugin-ps@^1.0.1":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-ps/-/plugin-ps-1.0.1.tgz#13f018a0907fde83a5385db1279b3a9497566786"
@@ -270,6 +266,16 @@
     "@oclif/config" "^1.6.4"
     cli-ux "^3.3.31"
     lodash "^4.17.5"
+
+"@heroku-cli/plugin-redis@^1.3.2":
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-redis/-/plugin-redis-1.3.2.tgz#9d7d92918daa4f5590c31b7eff9d80da5814e9d0"
+  dependencies:
+    co "^4.6.0"
+    heroku-cli-util "^6.1.17"
+    heroku-client "^2.4.0"
+    ioredis "1.9.0"
+    ssh2 "^0.4.11"
 
 "@heroku-cli/plugin-run@^3.6.0":
   version "3.6.0"
@@ -350,13 +356,7 @@
     debug "^3.1.0"
     semver "^5.5.0"
 
-"@oclif/config@1", "@oclif/config@^1.6.4":
-  version "1.6.4"
-  resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.6.4.tgz#4bcb51fa40646794031437d7904f0fbb56e5c072"
-  dependencies:
-    debug "^3.1.0"
-
-"@oclif/config@^1.6.5":
+"@oclif/config@1", "@oclif/config@^1.6.4", "@oclif/config@^1.6.5":
   version "1.6.5"
   resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.6.5.tgz#fcf60764b3fd420c4483bfa8f7cf9e2eb118ba42"
   dependencies:
@@ -379,7 +379,7 @@
     require-resolve "^0.0.2"
     tslib "^1.9.0"
 
-"@oclif/errors@^1.0.3", "@oclif/errors@^1.0.4":
+"@oclif/errors@^1.0.4":
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/@oclif/errors/-/errors-1.0.4.tgz#8e34386ede530484ae3c98bc21d818c416214c66"
   dependencies:
@@ -394,11 +394,11 @@
   resolved "https://registry.yarnpkg.com/@oclif/linewrap/-/linewrap-1.0.0.tgz#aedcb64b479d4db7be24196384897b5000901d91"
 
 "@oclif/parser@^3.3.2":
-  version "3.3.2"
-  resolved "https://registry.yarnpkg.com/@oclif/parser/-/parser-3.3.2.tgz#81af56d4f97beae376abb59e461005489abd9e19"
+  version "3.3.3"
+  resolved "https://registry.yarnpkg.com/@oclif/parser/-/parser-3.3.3.tgz#bfde499b836178eee2b6b29ccb7fb3f95851d3c6"
   dependencies:
     "@oclif/linewrap" "^1.0.0"
-    chalk "^2.3.2"
+    chalk "^2.4.0"
 
 "@oclif/plugin-help@^1.2.4":
   version "1.2.4"
@@ -468,12 +468,12 @@
     semver "^5.5.0"
     tar-fs "^1.16.0"
 
-"@oclif/plugin-warn-if-update-available@^1.3.2":
-  version "1.3.2"
-  resolved "https://registry.yarnpkg.com/@oclif/plugin-warn-if-update-available/-/plugin-warn-if-update-available-1.3.2.tgz#f5e8982f4e43e89f7bc59f3c64025f437b598c07"
+"@oclif/plugin-warn-if-update-available@^1.3.3":
+  version "1.3.3"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-warn-if-update-available/-/plugin-warn-if-update-available-1.3.3.tgz#aa234b03794e975ea11e88007a953f58256f5f29"
   dependencies:
     "@oclif/command" "^1.4.13"
-    "@oclif/config" "^1.6.4"
+    "@oclif/config" "^1.6.5"
     "@oclif/errors" "^1.0.4"
     chalk "^2.4.0"
     debug "^3.1.0"
@@ -555,11 +555,7 @@
   dependencies:
     "@types/node" "*"
 
-"@types/node@*":
-  version "9.6.2"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-9.6.2.tgz#e49ac1adb458835e95ca6487bc20f916b37aff23"
-
-"@types/node@^9.6.6":
+"@types/node@*", "@types/node@^9.6.6":
   version "9.6.6"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-9.6.6.tgz#439b91f9caf3983cad2eef1e11f6bedcbf9431d2"
 
@@ -735,8 +731,8 @@ base64-js@1.2.0:
   resolved "https://registry.yarnpkg.com/base64-js/-/base64-js-1.2.0.tgz#a39992d723584811982be5e290bb6a53d86700f1"
 
 base64-js@^1.0.2:
-  version "1.2.3"
-  resolved "https://registry.yarnpkg.com/base64-js/-/base64-js-1.2.3.tgz#fb13668233d9614cf5fb4bce95a9ba4096cdf801"
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/base64-js/-/base64-js-1.3.0.tgz#cab1e6118f051095e58b5281aea8c1cd22bfc0e3"
 
 base@^0.11.1:
   version "0.11.2"
@@ -887,15 +883,7 @@ chalk@^1.1.1, chalk@^1.1.3:
     strip-ansi "^3.0.0"
     supports-color "^2.0.0"
 
-chalk@^2.0.0, chalk@^2.3.0, chalk@^2.3.2:
-  version "2.3.2"
-  resolved "https://registry.yarnpkg.com/chalk/-/chalk-2.3.2.tgz#250dc96b07491bfd601e648d66ddf5f60c7a5c65"
-  dependencies:
-    ansi-styles "^3.2.1"
-    escape-string-regexp "^1.0.5"
-    supports-color "^5.3.0"
-
-chalk@^2.4.0:
+chalk@^2.0.0, chalk@^2.3.0, chalk@^2.3.2, chalk@^2.4.0:
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/chalk/-/chalk-2.4.0.tgz#a060a297a6b57e15b61ca63ce84995daa0fe6e52"
   dependencies:
@@ -978,25 +966,6 @@ cli-ux@^2.0.21:
     strip-ansi "^4.0.0"
     supports-color "^5.1.0"
     ts-lodash "^4.0.8"
-
-cli-ux@^3.3.26:
-  version "3.3.28"
-  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-3.3.28.tgz#9d516d389a9bbca272e8a195f7cac6c61d0e69fa"
-  dependencies:
-    "@oclif/linewrap" "^1.0.0"
-    "@oclif/screen" "^1.0.2"
-    ansi-styles "^3.2.1"
-    cardinal "^1.0.0"
-    chalk "^2.3.2"
-    clean-stack "^1.3.0"
-    extract-stack "^1.0.0"
-    fs-extra "^5.0.0"
-    indent-string "^3.2.0"
-    lodash "^4.17.5"
-    password-prompt "^1.0.4"
-    semver "^5.5.0"
-    strip-ansi "^4.0.0"
-    supports-color "^5.3.0"
 
 cli-width@^2.0.0:
   version "2.2.0"
@@ -1271,9 +1240,9 @@ esutils@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/esutils/-/esutils-2.0.2.tgz#0abf4f1caa5bcb1f7a9d8acc6dea4faaa04bac9b"
 
-eventemitter3@1.x.x:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-1.2.0.tgz#1c86991d816ad1e504750e73874224ecf3bec508"
+eventemitter3@^3.0.0:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-3.0.1.tgz#4ce66c3fc5b5a6b9f2245e359e1938f1ab10f960"
 
 events@1.1.1:
   version "1.1.1"
@@ -1415,6 +1384,12 @@ find-up@^2.1.0:
 flexbuffer@0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/flexbuffer/-/flexbuffer-0.0.6.tgz#039fdf23f8823e440c38f3277e6fef1174215b30"
+
+follow-redirects@^1.0.0:
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.4.1.tgz#d8120f4518190f55aac65bb6fc7b85fcd666d6aa"
+  dependencies:
+    debug "^3.1.0"
 
 for-in@^1.0.2:
   version "1.0.2"
@@ -1728,38 +1703,7 @@ heroku-cli-util@^7.0.0:
     supports-color "^5.1.0"
     tunnel-agent "^0.6.0"
 
-heroku-cli-util@^8.0.0, heroku-cli-util@^8.0.4:
-  version "8.0.4"
-  resolved "https://registry.yarnpkg.com/heroku-cli-util/-/heroku-cli-util-8.0.4.tgz#4c98687b4a05660468cdc9bf42f079e7765f208c"
-  dependencies:
-    "@heroku-cli/color" "^1.1.3"
-    ansi-escapes "^3.1.0"
-    ansi-styles "^3.2.1"
-    cardinal "^1.0.0"
-    chalk "^2.3.2"
-    co "^4.6.0"
-    got "^8.3.0"
-    heroku-client "^3.0.6"
-    lodash.ary "^4.1.1"
-    lodash.defaults "^4.2.0"
-    lodash.get "^4.4.2"
-    lodash.identity "^3.0.0"
-    lodash.keys "^4.2.0"
-    lodash.mapvalues "^4.6.0"
-    lodash.noop "^3.0.1"
-    lodash.partial "^4.2.1"
-    lodash.pickby "^4.6.0"
-    lodash.property "^4.4.2"
-    lodash.repeat "^4.1.0"
-    lodash.result "^4.5.2"
-    netrc-parser "^3.1.2"
-    opn "^3.0.3"
-    strip-ansi "^4.0.0"
-    supports-color "^5.3.0"
-    tslib "^1.9.0"
-    tunnel-agent "^0.6.0"
-
-heroku-cli-util@^8.0.6:
+heroku-cli-util@^8.0.0, heroku-cli-util@^8.0.4, heroku-cli-util@^8.0.6:
   version "8.0.6"
   resolved "https://registry.yarnpkg.com/heroku-cli-util/-/heroku-cli-util-8.0.6.tgz#8fd3049329620136c729a4e002eca804fe24d87f"
   dependencies:
@@ -1806,9 +1750,9 @@ heroku-client@^2.4.0:
     q "^1.2.0"
     tunnel-agent "^0.4.0"
 
-heroku-exec-util@0.7.0:
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/heroku-exec-util/-/heroku-exec-util-0.7.0.tgz#66dfb2e7364bde77986a2c1ace5f057f5a821c4f"
+heroku-exec-util@0.7.2:
+  version "0.7.2"
+  resolved "https://registry.yarnpkg.com/heroku-exec-util/-/heroku-exec-util-0.7.2.tgz#834270dd4240c5f2b6c185be693dc25c2b5f3f58"
   dependencies:
     "@heroku/socksv5" "^0.0.9"
     co-wait "0.0.0"
@@ -1819,23 +1763,6 @@ heroku-exec-util@0.7.0:
     ssh2 "0.5.5"
     temp "0.8.3"
     uuid "3.0.1"
-
-heroku-ps-exec@2.3.1:
-  version "2.3.1"
-  resolved "https://registry.yarnpkg.com/heroku-ps-exec/-/heroku-ps-exec-2.3.1.tgz#282137897a5bf87304955f54a07d1b4a27c47d2e"
-  dependencies:
-    heroku-cli-util "^7.0.0"
-    heroku-exec-util "0.7.0"
-
-heroku-redis@1.3.0:
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/heroku-redis/-/heroku-redis-1.3.0.tgz#738331c34311d7f872e9f52332363e8811bd108b"
-  dependencies:
-    co "^4.6.0"
-    heroku-cli-util "^6.1.17"
-    heroku-client "^2.4.0"
-    ioredis "1.9.0"
-    ssh2 "^0.4.11"
 
 hosted-git-info@^2.1.4:
   version "2.6.0"
@@ -1857,11 +1784,12 @@ http-call@5.1.0, http-call@^5.1.0:
     tunnel-agent "^0.6.0"
 
 http-proxy@^1.16.2:
-  version "1.16.2"
-  resolved "https://registry.yarnpkg.com/http-proxy/-/http-proxy-1.16.2.tgz#06dff292952bf64dbe8471fa9df73066d4f37742"
+  version "1.17.0"
+  resolved "https://registry.yarnpkg.com/http-proxy/-/http-proxy-1.17.0.tgz#7ad38494658f84605e2f6db4436df410f4e5be9a"
   dependencies:
-    eventemitter3 "1.x.x"
-    requires-port "1.x.x"
+    eventemitter3 "^3.0.0"
+    follow-redirects "^1.0.0"
+    requires-port "^1.0.0"
 
 iconv-lite@^0.4.17:
   version "0.4.21"
@@ -1975,8 +1903,8 @@ into-stream@^3.1.0:
     p-is-promise "^1.1.0"
 
 inversify@^4.10.0:
-  version "4.11.1"
-  resolved "https://registry.yarnpkg.com/inversify/-/inversify-4.11.1.tgz#9a10635d1fd347da11da96475b3608babd5945a6"
+  version "4.13.0"
+  resolved "https://registry.yarnpkg.com/inversify/-/inversify-4.13.0.tgz#0ab40570bfa4474b04d5b919bbab3a4f682a72f5"
 
 ioredis@1.9.0:
   version "1.9.0"
@@ -2581,8 +2509,8 @@ mocha@^5.1.1:
     supports-color "4.4.0"
 
 moment@^2.20.1:
-  version "2.22.0"
-  resolved "https://registry.yarnpkg.com/moment/-/moment-2.22.0.tgz#7921ade01017dd45186e7fee5f424f0b8663a730"
+  version "2.22.1"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.22.1.tgz#529a2e9bf973f259c9643d237fda84de3a26e8ad"
 
 ms@0.7.1:
   version "0.7.1"
@@ -2629,7 +2557,7 @@ nanomatch@^1.2.9:
     snapdragon "^0.8.1"
     to-regex "^3.0.1"
 
-netrc-parser@3.1.4, netrc-parser@^3.1.0, netrc-parser@^3.1.2, netrc-parser@^3.1.3, netrc-parser@^3.1.4:
+netrc-parser@3.1.4, netrc-parser@^3.1.0, netrc-parser@^3.1.4:
   version "3.1.4"
   resolved "https://registry.yarnpkg.com/netrc-parser/-/netrc-parser-3.1.4.tgz#469f2bcd1169a9f9fb5430a5da96cfcd20f1461f"
   dependencies:
@@ -3057,7 +2985,7 @@ require-resolve@^0.0.2:
   dependencies:
     x-path "^0.0.2"
 
-requires-port@1.0.x, requires-port@1.x.x:
+requires-port@1.0.x, requires-port@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/requires-port/-/requires-port-1.0.0.tgz#925d2601d39ac485e091cf0da5c6e694dc3dcaff"
 
@@ -3066,8 +2994,8 @@ resolve-url@^0.2.1:
   resolved "https://registry.yarnpkg.com/resolve-url/-/resolve-url-0.2.1.tgz#2c637fe77c893afd2a663fe21aa9080068e2052a"
 
 resolve@^1.3.2:
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/resolve/-/resolve-1.7.0.tgz#2bdf5374811207285df0df652b78f118ab8f3c5e"
+  version "1.7.1"
+  resolved "https://registry.yarnpkg.com/resolve/-/resolve-1.7.1.tgz#aadd656374fd298aee895bc026b8297418677fd3"
   dependencies:
     path-parse "^1.0.5"
 
@@ -3109,8 +3037,8 @@ rx-lite@*, rx-lite@^4.0.8:
   resolved "https://registry.yarnpkg.com/rx-lite/-/rx-lite-4.0.8.tgz#0b1e11af8bc44836f04a6407e92da42467b79444"
 
 rxjs@^5.5.2:
-  version "5.5.8"
-  resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-5.5.8.tgz#b2b0809a57614ad6254c03d7446dea0d83ca3791"
+  version "5.5.10"
+  resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-5.5.10.tgz#fde02d7a614f6c8683d0d1957827f492e09db045"
   dependencies:
     symbol-observable "1.0.1"
 
@@ -3457,13 +3385,7 @@ supports-color@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-2.0.0.tgz#535d045ce6b6363fa40117084629995e9df324c7"
 
-supports-color@^5.1.0, supports-color@^5.3.0:
-  version "5.3.0"
-  resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-5.3.0.tgz#5b24ac15db80fa927cf5227a4a33fd3c4c7676c0"
-  dependencies:
-    has-flag "^3.0.0"
-
-supports-color@^5.4.0:
+supports-color@^5.1.0, supports-color@^5.3.0, supports-color@^5.4.0:
   version "5.4.0"
   resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-5.4.0.tgz#1c6b337402c2137605efe19f10fec390f6faab54"
   dependencies:
