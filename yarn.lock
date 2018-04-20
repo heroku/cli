@@ -356,21 +356,21 @@
     debug "^3.1.0"
     semver "^5.5.0"
 
-"@oclif/config@1", "@oclif/config@^1.6.4", "@oclif/config@^1.6.5":
-  version "1.6.5"
-  resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.6.5.tgz#fcf60764b3fd420c4483bfa8f7cf9e2eb118ba42"
+"@oclif/config@1", "@oclif/config@^1.6.4", "@oclif/config@^1.6.5", "@oclif/config@^1.6.6":
+  version "1.6.6"
+  resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.6.6.tgz#8a5aed05018b6294ce4a46cba75aacebb1a3bf16"
   dependencies:
     debug "^3.1.0"
 
-"@oclif/dev-cli@^1.13.1":
-  version "1.13.1"
-  resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.13.1.tgz#3a40b2c5890c86413ef3a2fcf232178cff7e897c"
+"@oclif/dev-cli@^1.13.2":
+  version "1.13.2"
+  resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.13.2.tgz#6b22b0ed186282bf8b20192e63bd394e462815e6"
   dependencies:
     "@oclif/command" "^1.4.13"
-    "@oclif/config" "^1.6.4"
+    "@oclif/config" "^1.6.6"
     "@oclif/errors" "^1.0.4"
     "@oclif/plugin-help" "^1.2.4"
-    cli-ux "^3.3.30"
+    cli-ux "^3.3.31"
     debug "^3.1.0"
     fs-extra "^5.0.0"
     lodash "^4.17.5"
@@ -412,12 +412,12 @@
     widest-line "^2.0.0"
     wrap-ansi "^3.0.1"
 
-"@oclif/plugin-legacy@^1.0.10":
-  version "1.0.10"
-  resolved "https://registry.yarnpkg.com/@oclif/plugin-legacy/-/plugin-legacy-1.0.10.tgz#5bb70894a81d53904bbe05892026aadca3225490"
+"@oclif/plugin-legacy@^1.0.11":
+  version "1.0.11"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-legacy/-/plugin-legacy-1.0.11.tgz#023d00e8c0bcfcd4b838221b097a7659b4a6ecc8"
   dependencies:
     "@heroku-cli/color" "^1.1.3"
-    "@heroku-cli/command" "^8.0.4"
+    "@heroku-cli/command" "^8.0.5"
     "@oclif/command" "^1.4.13"
     ansi-escapes "^3.1.0"
     debug "^3.1.0"
@@ -448,13 +448,13 @@
     tslib "^1.9.0"
     yarn "^1.6.0"
 
-"@oclif/plugin-update@^1.1.11":
-  version "1.1.11"
-  resolved "https://registry.yarnpkg.com/@oclif/plugin-update/-/plugin-update-1.1.11.tgz#367af46492ac4f4f4c3f198819978416cb3445d8"
+"@oclif/plugin-update@^1.1.12":
+  version "1.1.12"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-update/-/plugin-update-1.1.12.tgz#c1a84e459c388b19112dfdfec21f92afba420eb0"
   dependencies:
     "@heroku-cli/color" "^1.1.3"
     "@oclif/command" "^1.4.13"
-    "@oclif/config" "^1.6.4"
+    "@oclif/config" "^1.6.6"
     "@oclif/errors" "^1.0.4"
     "@types/semver" "^5.5.0"
     cli-ux "^3.3.31"
