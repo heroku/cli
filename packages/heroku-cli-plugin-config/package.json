@@ -46,7 +46,7 @@
   "license": "MIT",
   "oclif": {
     "commands": "./lib/commands",
-    "bin": "oclif-example",
+    "bin": "heroku",
     "devPlugins": [
       "@oclif/plugin-help"
     ]
