@@ -42,9 +42,9 @@
   },
   "files": [
     ".oclif.manifest.json",
-    "index.js",
-    "commands",
-    "lib"
+    "/index.js",
+    "/commands",
+    "/lib"
   ],
   "keywords": [
     "heroku-plugin"
