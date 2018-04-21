@@ -148,7 +148,12 @@
       }
     },
     "hooks": {
-      "prerun": "./lib/hooks/prerun/analytics",
+      "init": [
+        "./lib/hooks/init/plugin_migrate"
+      ],
+      "prerun": [
+        "./lib/hooks/prerun/analytics"
+      ],
       "update": [
         "./lib/hooks/update/brew",
         "./lib/hooks/update/analytics",
