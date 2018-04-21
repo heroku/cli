@@ -356,9 +356,24 @@
     debug "^3.1.0"
     semver "^5.5.0"
 
+"@oclif/command@^1.4.14":
+  version "1.4.14"
+  resolved "https://registry.yarnpkg.com/@oclif/command/-/command-1.4.14.tgz#b9a65945566711dba1d180af05e427da9a673166"
+  dependencies:
+    "@oclif/errors" "^1.0.4"
+    "@oclif/parser" "^3.3.2"
+    debug "^3.1.0"
+    semver "^5.5.0"
+
 "@oclif/config@1", "@oclif/config@^1.6.4", "@oclif/config@^1.6.5", "@oclif/config@^1.6.6":
   version "1.6.6"
   resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.6.6.tgz#8a5aed05018b6294ce4a46cba75aacebb1a3bf16"
+  dependencies:
+    debug "^3.1.0"
+
+"@oclif/config@^1.6.7":
+  version "1.6.7"
+  resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.6.7.tgz#0b924a4c99b08c19d40ec4661511ea5ce55c7a0b"
   dependencies:
     debug "^3.1.0"
 
@@ -431,14 +446,14 @@
     "@oclif/command" "^1.4.13"
     string-similarity "^1.2.0"
 
-"@oclif/plugin-plugins@^1.0.9":
-  version "1.0.9"
-  resolved "https://registry.yarnpkg.com/@oclif/plugin-plugins/-/plugin-plugins-1.0.9.tgz#698c5fe9bccaf035f2ec47d3a0785ce4a9bccbb2"
+"@oclif/plugin-plugins@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-plugins/-/plugin-plugins-1.1.1.tgz#4fa623ba7afb442f4db27dcae5fcc266fe7c3bde"
   dependencies:
     "@heroku-cli/color" "^1.1.3"
-    "@oclif/command" "^1.4.13"
+    "@oclif/command" "^1.4.14"
     chalk "^2.4.0"
-    cli-ux "^3.3.30"
+    cli-ux "^3.3.31"
     debug "^3.1.0"
     fs-extra "^5.0.0"
     http-call "^5.1.0"
