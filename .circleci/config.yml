@@ -47,6 +47,13 @@ jobs:
       - checkout
       - run: yarn
       - run: ./node_modules/.bin/oclif-dev pack:win
+      - run: |
+          echo "$HEROKU_WINDOWS_KEY" | base64 --decode > /tmp/heroku-windows-key
+          VERSION=$(node -p "require('./package.json').version")
+          mv dist/win/heroku-v$VERSION-x86.exe dist/win/heroku-v$VERSION-x86-unsigned.exe
+          mv dist/win/heroku-v$VERSION-x64.exe dist/win/heroku-v$VERSION-x64-unsigned.exe
+          osslsigncode -pkcs12 /tmp/heroku-windows-key -pass "$HEROKU_WINDOWS_SIGNING_PASS" -n 'Heroku CLI' -i https://toolbelt.heroku.com/ -in dist/win/heroku-v$VERSION-x86-unsigned.exe -out dist/win/heroku-v$VERSION-x86.exe
+          osslsigncode -pkcs12 /tmp/heroku-windows-key -pass "$HEROKU_WINDOWS_SIGNING_PASS" -n 'Heroku CLI' -i https://toolbelt.heroku.com/ -in dist/win/heroku-v$VERSION-x64-unsigned.exe -out dist/win/heroku-v$VERSION-x64.exe
       - run: ./node_modules/.bin/oclif-dev publish:win
   release_deb:
     <<: *defaults
