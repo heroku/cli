@@ -362,9 +362,9 @@
   dependencies:
     debug "^3.1.0"
 
-"@oclif/config@^1.6.12":
-  version "1.6.12"
-  resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.6.12.tgz#e422019e3a6e63a0e4bbb9d8ad8c8f6dab2c58af"
+"@oclif/config@^1.6.13":
+  version "1.6.13"
+  resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.6.13.tgz#fa4688a8a32afe49fd353a13aac6061b96eac1be"
   dependencies:
     debug "^3.1.0"
 
