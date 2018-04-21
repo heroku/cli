@@ -13,19 +13,25 @@ export const migrate: Hook<'init'> = async function () {
   if (!await fs.pathExists(pluginsDir)) return
   process.stderr.write('heroku-cli: migrating plugins\n')
   try {
-    const {manifest} = await fs.readJSON(path.join(pluginsDir, 'user.json'))
-    for (let plugin of Object.keys(manifest.plugins)) {
-      process.stderr.write(`heroku-cli: migrating ${plugin}\n`)
-      await exec('heroku', ['plugins:install', plugin])
+    const p = path.join(pluginsDir, 'user.json')
+    if (await fs.pathExists(p)) {
+      const {manifest} = await fs.readJSON(p)
+      for (let plugin of Object.keys(manifest.plugins)) {
+        process.stderr.write(`heroku-cli: migrating ${plugin}\n`)
+        await exec('heroku', ['plugins:install', plugin])
+      }
     }
   } catch (err) {
     this.warn(err)
   }
   try {
-    const {manifest} = await fs.readJSON(path.join(pluginsDir, 'link.json'))
-    for (let {root} of Object.values(manifest.plugins) as any) {
-      process.stderr.write(`heroku-cli: migrating ${root}\n`)
-      await exec('heroku', ['plugins:link', root])
+    const p = path.join(pluginsDir, 'link.json')
+    if (await fs.pathExists(p)) {
+      const {manifest} = await fs.readJSON(path.join(pluginsDir, 'link.json'))
+      for (let {root} of Object.values(manifest.plugins) as any) {
+        process.stderr.write(`heroku-cli: migrating ${root}\n`)
+        await exec('heroku', ['plugins:link', root])
+      }
     }
   } catch (err) {
     this.warn(err)

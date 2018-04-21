@@ -362,13 +362,13 @@
   dependencies:
     debug "^3.1.0"
 
-"@oclif/dev-cli@^1.13.4":
-  version "1.13.4"
-  resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.13.4.tgz#81d9e7266ef7745d287049f4126039087f91301f"
+"@oclif/dev-cli@^1.13.5":
+  version "1.13.5"
+  resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.13.5.tgz#5938f35e952aac14ac71017ddeaa1552f34ab5b7"
   dependencies:
-    "@oclif/command" "^1.4.13"
-    "@oclif/config" "^1.6.6"
-    "@oclif/errors" "^1.0.4"
+    "@oclif/command" "^1.4.14"
+    "@oclif/config" "^1.6.13"
+    "@oclif/errors" "^1.0.6"
     "@oclif/plugin-help" "^1.2.5"
     cli-ux "^3.3.31"
     debug "^3.1.0"
@@ -379,7 +379,7 @@
     require-resolve "^0.0.2"
     tslib "^1.9.0"
 
-"@oclif/errors@^1.0.4":
+"@oclif/errors@^1.0.4", "@oclif/errors@^1.0.6":
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/@oclif/errors/-/errors-1.0.6.tgz#76b17906ac1beea252add52e8e8ed78229c33a7b"
   dependencies:

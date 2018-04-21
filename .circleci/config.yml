@@ -1,6 +1,8 @@
 ---
 defaults: &defaults
   working_directory: /cli
+  environment:
+    HEROKU_AUTHOR: Heroku
   docker:
     - image: oclif/nsis:0.0.2-9.11.1
       environment: &env
