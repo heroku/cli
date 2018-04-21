@@ -2,7 +2,7 @@
 
 OS=linux
 set +x
-echo "$HEROKU_DEB_KEY" | base64 -d | gpg --import
+echo "$HEROKU_DEB_SECRET_KEY" | base64 -d | gpg --import
 set -x
 
 source ./scripts/_init

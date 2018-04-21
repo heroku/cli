@@ -5,7 +5,7 @@
 source ./scripts/_init
 
 set +x
-echo "$HEROKU_DEB_KEY" | base64 -d | gpg --import
+echo "$HEROKU_DEB_SECRET_KEY" | base64 -d | gpg --import
 cat << EOF > ~/.netrc
 machine api.heroku.com
   login me@example.com
