@@ -233,9 +233,9 @@
     strip-eof "^1.0.0"
     tunnel-ssh "^4.1.4"
 
-"@heroku-cli/plugin-pipelines@^2.5.4", "@heroku-cli/plugin-pipelines@^2.5.6":
-  version "2.5.6"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-pipelines/-/plugin-pipelines-2.5.6.tgz#d96abe50783e03afccbcbe175621e1b401b29236"
+"@heroku-cli/plugin-pipelines@^2.5.4", "@heroku-cli/plugin-pipelines@^2.5.7":
+  version "2.5.7"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-pipelines/-/plugin-pipelines-2.5.7.tgz#d90558ca993daf75f51022bb595ed7c240392eea"
   dependencies:
     "@heroku-cli/command" "^8.0.4"
     bluebird "^3.5.1"
@@ -356,13 +356,7 @@
     debug "^3.1.0"
     semver "^5.5.0"
 
-"@oclif/config@1", "@oclif/config@^1.6.4", "@oclif/config@^1.6.5", "@oclif/config@^1.6.6":
-  version "1.6.11"
-  resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.6.11.tgz#131c11e2051a48cc97e5d753862fa667d6df3aea"
-  dependencies:
-    debug "^3.1.0"
-
-"@oclif/config@^1.6.13":
+"@oclif/config@1", "@oclif/config@^1.6.13", "@oclif/config@^1.6.4", "@oclif/config@^1.6.5", "@oclif/config@^1.6.6":
   version "1.6.13"
   resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.6.13.tgz#fa4688a8a32afe49fd353a13aac6061b96eac1be"
   dependencies:
@@ -386,8 +380,8 @@
     tslib "^1.9.0"
 
 "@oclif/errors@^1.0.4":
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/@oclif/errors/-/errors-1.0.4.tgz#8e34386ede530484ae3c98bc21d818c416214c66"
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/@oclif/errors/-/errors-1.0.6.tgz#76b17906ac1beea252add52e8e8ed78229c33a7b"
   dependencies:
     clean-stack "^1.3.0"
     fs-extra "^5.0.0"
