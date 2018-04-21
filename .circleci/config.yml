@@ -31,24 +31,32 @@ jobs:
     steps:
       - add_ssh_keys
       - checkout
-      - run: yarn global add greenkeeper-lockfile@1 && greenkeeper-lockfile-update
       - run: yarn
-      - run: echo "$HEROKU_DEB_SECRET_KEY" | base64 -d | gpg --import
-      - run: ./scripts/release/_github_setup
-      # - run: ./node_modules/.bin/oclif-dev pack
-      # - run: ./node_modules/.bin/oclif-dev publish
-      - run: ./node_modules/.bin/oclif-dev pack:deb
-      - run: ./node_modules/.bin/oclif-dev publish:deb
-      # - run: ./node_modules/.bin/oclif-dev pack:win
-      - run: aws cloudfront create-invalidation --distribution-id "$CLOUDFRONT_DISTRIBUTION" --paths "/*"
-      # - run: {command: "./scripts/release/homebrew", when: always}
-      # - run: {command: "./scripts/release/macos_installer_trigger", when: always}
+      - run: ./node_modules/.bin/oclif-dev pack
+      - run: ./node_modules/.bin/oclif-dev publish
       - save_cache:
           key: v2-yarn-{{ checksum ".circleci/config.yml" }}-{{ checksum "yarn.lock" }}
           paths:
             - /cli/node_modules
             - /cli/tmp/cache
             - /usr/local/share/.cache/yarn
+  release_deb:
+    <<: *defaults
+    steps:
+      - add_ssh_keys
+      - checkout
+      - run: yarn
+      - run: echo "$HEROKU_DEB_SECRET_KEY" | base64 -d | gpg --import
+      - run: ./node_modules/.bin/oclif-dev pack:deb
+      - run: ./node_modules/.bin/oclif-dev publish:deb
+  postrelease:
+    <<: *defaults
+    steps:
+      - run: aws cloudfront create-invalidation --distribution-id "$CLOUDFRONT_DISTRIBUTION" --paths "/*"
+      # - run: ./node_modules/.bin/oclif-dev pack:win
+      # - run: ./scripts/release/_github_setup
+      # - run: {command: "./scripts/release/homebrew", when: always}
+      # - run: {command: "./scripts/release/macos_installer_trigger", when: always}
   dev_center_docs:
     docker: &devdocs_docker
       - image: rasphilco/cli-engine-devcenter:v0.1.0
@@ -71,7 +79,7 @@ workflows:
           filters: &all_pushes
             tags: &version_tags
               only: /^v.*/
-      - release:
+      - release: &release_workflow
           filters:
             tags: *version_tags
             branches:
@@ -81,6 +89,11 @@ workflows:
                 - oclif
           requires:
             - test
+      - release_deb: *release_workflow
+      - postrelease:
+          requires:
+            - release
+            - release_deb
       - dev_center_docs:
           requires:
             - test
