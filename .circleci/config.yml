@@ -33,12 +33,13 @@ jobs:
       - checkout
       - run: yarn global add greenkeeper-lockfile@1 && greenkeeper-lockfile-update
       - run: yarn
+      - run: echo "$HEROKU_DEB_SECRET_KEY" | base64 -d | gpg --import
       - run: ./scripts/release/_github_setup
-      - run: ./node_modules/.bin/oclif-dev pack
-      - run: ./node_modules/.bin/oclif-dev publish
-      # TODO: setup keys
-      # - run: ./node_modules/.bin/oclif-dev pack:deb
-      - run: ./node_modules/.bin/oclif-dev pack:win
+      # - run: ./node_modules/.bin/oclif-dev pack
+      # - run: ./node_modules/.bin/oclif-dev publish
+      - run: ./node_modules/.bin/oclif-dev pack:deb
+      - run: ./node_modules/.bin/oclif-dev publish:deb
+      # - run: ./node_modules/.bin/oclif-dev pack:win
       - run: aws cloudfront create-invalidation --distribution-id "$CLOUDFRONT_DISTRIBUTION" --paths "/*"
       # - run: {command: "./scripts/release/homebrew", when: always}
       # - run: {command: "./scripts/release/macos_installer_trigger", when: always}
