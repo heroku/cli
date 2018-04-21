@@ -40,6 +40,14 @@ jobs:
             - /cli/node_modules
             - /cli/tmp/cache
             - /usr/local/share/.cache/yarn
+  release_win:
+    <<: *defaults
+    steps:
+      - add_ssh_keys
+      - checkout
+      - run: yarn
+      - run: ./node_modules/.bin/oclif-dev pack:win
+      - run: ./node_modules/.bin/oclif-dev publish:win
   release_deb:
     <<: *defaults
     steps:
@@ -53,7 +61,6 @@ jobs:
     <<: *defaults
     steps:
       - run: aws cloudfront create-invalidation --distribution-id "$CLOUDFRONT_DISTRIBUTION" --paths "/*"
-      # - run: ./node_modules/.bin/oclif-dev pack:win
       # - run: ./scripts/release/_github_setup
       # - run: {command: "./scripts/release/homebrew", when: always}
       # - run: {command: "./scripts/release/macos_installer_trigger", when: always}
@@ -90,10 +97,12 @@ workflows:
           requires:
             - test
       - release_deb: *release_workflow
+      - release_win: *release_workflow
       - postrelease:
           requires:
             - release
             - release_deb
+            - release_win
       - dev_center_docs:
           requires:
             - test
