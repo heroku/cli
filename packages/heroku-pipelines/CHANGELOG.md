@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+## [2.5.7] 2018-04-21
+
+- Exclude tests files from tarball
+
 ## [2.5.6] 2018-04-20
 
 - Re-released 2.5.4 to include oclif manifest
