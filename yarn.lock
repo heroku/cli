@@ -362,9 +362,9 @@
   dependencies:
     debug "^3.1.0"
 
-"@oclif/dev-cli@^1.13.5":
-  version "1.13.5"
-  resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.13.5.tgz#5938f35e952aac14ac71017ddeaa1552f34ab5b7"
+"@oclif/dev-cli@^1.13.6":
+  version "1.13.6"
+  resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.13.6.tgz#9ef12d771acee7a231753b7ef4611603710f3fc3"
   dependencies:
     "@oclif/command" "^1.4.14"
     "@oclif/config" "^1.6.13"
@@ -930,9 +930,9 @@ cli-flags@^2.0.7:
     "@heroku/linewrap" "^1.0.0"
     ts-lodash "^4.0.8"
 
-cli-ux@3.3.31, cli-ux@^3.3.30, cli-ux@^3.3.31:
-  version "3.3.31"
-  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-3.3.31.tgz#e4f2a380df00ebf298189b83a77ae92cdfc7355f"
+cli-ux@3.4.1, cli-ux@^3.3.30, cli-ux@^3.3.31:
+  version "3.4.1"
+  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-3.4.1.tgz#bfa17e75cd1a60547a11c515166117b05ea89cdd"
   dependencies:
     "@oclif/linewrap" "^1.0.0"
     "@oclif/screen" "^1.0.2"
