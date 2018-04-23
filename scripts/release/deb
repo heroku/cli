@@ -1,0 +1,12 @@
+#!/usr/bin/env node
+
+const qq = require('qqjs')
+const version = require('../../package.json').version
+
+qq.config.silent = false
+qq.run(async () => {
+  await require('./update_channel')()
+  await qq.x('echo "$HEROKU_DEB_SECRET_KEY" | base64 -d | gpg --import')
+  await qq.x('./node_modules/.bin/oclif-dev pack:deb')
+  await qq.x('./node_modules/.bin/oclif-dev publish:deb')
+})

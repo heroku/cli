@@ -34,8 +34,7 @@ jobs:
       - add_ssh_keys
       - checkout
       - run: yarn
-      - run: ./node_modules/.bin/oclif-dev pack
-      - run: ./node_modules/.bin/oclif-dev publish
+      - run: ./scripts/release/tarballs
       - save_cache:
           key: v2-yarn-{{ checksum ".circleci/config.yml" }}-{{ checksum "yarn.lock" }}
           paths:
@@ -48,24 +47,14 @@ jobs:
       - add_ssh_keys
       - checkout
       - run: yarn
-      - run: ./node_modules/.bin/oclif-dev pack:win
-      - run: |
-          echo "$HEROKU_WINDOWS_KEY" | base64 --decode > /tmp/heroku-windows-key
-          VERSION=$(node -p "require('./package.json').version")
-          mv dist/win/heroku-v$VERSION-x86.exe dist/win/heroku-v$VERSION-x86-unsigned.exe
-          mv dist/win/heroku-v$VERSION-x64.exe dist/win/heroku-v$VERSION-x64-unsigned.exe
-          osslsigncode -pkcs12 /tmp/heroku-windows-key -pass "$HEROKU_WINDOWS_SIGNING_PASS" -n 'Heroku CLI' -i https://toolbelt.heroku.com/ -h sha512 -in dist/win/heroku-v$VERSION-x86-unsigned.exe -out dist/win/heroku-v$VERSION-x86.exe
-          osslsigncode -pkcs12 /tmp/heroku-windows-key -pass "$HEROKU_WINDOWS_SIGNING_PASS" -n 'Heroku CLI' -i https://toolbelt.heroku.com/ -h sha512 -in dist/win/heroku-v$VERSION-x64-unsigned.exe -out dist/win/heroku-v$VERSION-x64.exe
-      - run: ./node_modules/.bin/oclif-dev publish:win
+      - run: ./scripts/release/win
   release_deb:
     <<: *defaults
     steps:
       - add_ssh_keys
       - checkout
       - run: yarn
-      - run: echo "$HEROKU_DEB_SECRET_KEY" | base64 -d | gpg --import
-      - run: ./node_modules/.bin/oclif-dev pack:deb
-      - run: ./node_modules/.bin/oclif-dev publish:deb
+      - run: ./scripts/release/deb
   postrelease:
     <<: *defaults
     steps:

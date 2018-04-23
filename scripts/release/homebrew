@@ -2,17 +2,14 @@
 
 set -ex
 
-export OS=darwin
-export ARCH=x64
-
-source ./scripts/_init
-
 rm -rf tmp/homebrew-brew
 git config --global core.pager cat
 git clone git@github.com:heroku/homebrew-brew.git tmp/homebrew-brew
+DIST_DIR=./dist
 
 REMOTE_BASE="s3://$S3_BUCKET/homebrew"
-NODE_VERSION=$(node -p "require('./package.json')['cli-engine'].node || process.versions.node")
+NODE_VERSION=$(node -p "require('./package.json').oclif.node.version")
+SHORT_VERSION=$(node -p "require('./package.json').version")
 (
   NODE_TARBALL_BASE=node-${NODE_VERSION}.tar.xz
   NODE_TARBALL_PATH=$DIST_DIR/$NODE_TARBALL_BASE
@@ -43,8 +40,8 @@ NODE_VERSION=$(node -p "require('./package.json')['cli-engine'].node || process.
   fi
 )
 
-TARBALL_BASE=heroku-${SHORT_VERSION}.tar.xz
-TARBALL_PATH=$DIST_DIR/$TARBALL_BASE
+TARBALL_BASE=heroku-v${SHORT_VERSION}.tar.xz
+TARBALL_PATH=$DIST_DIR/heroku-v${SHORT_VERSION}/$TARBALL_BASE
 (
   rm -rf "$TMP_DIR/homebrew"
   mkdir "$TMP_DIR/homebrew"
@@ -67,5 +64,5 @@ if [[ ${CHANNEL} != "stable" ]]; then
 fi
 
 aws s3 cp --cache-control max-age=604800 "$TARBALL_PATH" "$REMOTE_BASE/$TARBALL_BASE"
-git commit -m "heroku ${SHORT_VERSION}"
+git commit -m "heroku v${SHORT_VERSION}"
 git push origin master
