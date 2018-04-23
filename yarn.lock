@@ -247,9 +247,9 @@
     lodash "4.17.5"
     lodash.flatten "4.4.0"
 
-"@heroku-cli/plugin-pg@^2.9.7":
-  version "2.9.7"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-pg/-/plugin-pg-2.9.7.tgz#4c9ad2b31bde76cb70106bae073992731186f963"
+"@heroku-cli/plugin-pg@^2.9.8":
+  version "2.9.8"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-pg/-/plugin-pg-2.9.8.tgz#6780e39daf376b62c407b4f4f4fd95f438244f86"
   dependencies:
     bytes "^3.0.0"
     co "^4.6.0"
@@ -273,6 +273,22 @@
 "@heroku-cli/plugin-pipelines@^2.5.4":
   version "2.5.4"
   resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-pipelines/-/plugin-pipelines-2.5.4.tgz#b51bd71a04ff21b07eadee6afc7977bc295a8c50"
+  dependencies:
+    "@heroku-cli/command" "^8.0.4"
+    bluebird "^3.5.1"
+    co "^4.6.0"
+    heroku-cli-util "^8.0.6"
+    http-call "^5.1.0"
+    inflection "^1.12.0"
+    inquirer "^5.2.0"
+    lodash.flatten "^4.4.0"
+    lodash.sortby "^4.7.0"
+    string-just "^0.0.2"
+    validator "^6.2.1"
+
+"@heroku-cli/plugin-pipelines@^2.5.7":
+  version "2.5.7"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-pipelines/-/plugin-pipelines-2.5.7.tgz#d90558ca993daf75f51022bb595ed7c240392eea"
   dependencies:
     "@heroku-cli/command" "^8.0.4"
     bluebird "^3.5.1"
@@ -403,6 +419,12 @@
 "@oclif/config@1", "@oclif/config@^1.6.4":
   version "1.6.4"
   resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.6.4.tgz#4bcb51fa40646794031437d7904f0fbb56e5c072"
+  dependencies:
+    debug "^3.1.0"
+
+"@oclif/config@^1.6.13":
+  version "1.6.13"
+  resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.6.13.tgz#fa4688a8a32afe49fd353a13aac6061b96eac1be"
   dependencies:
     debug "^3.1.0"
 
