@@ -59,8 +59,8 @@ jobs:
     <<: *defaults
     steps:
       - run: aws cloudfront create-invalidation --distribution-id "$CLOUDFRONT_DISTRIBUTION" --paths "/*"
-      # - run: ./scripts/release/_github_setup
-      # - run: {command: "./scripts/release/homebrew", when: always}
+      - run: ./scripts/release/_github_setup
+      - run: {command: "./scripts/release/homebrew", when: always}
       # - run: {command: "./scripts/release/macos_installer_trigger", when: always}
   dev_center_docs:
     docker: &devdocs_docker

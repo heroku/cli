@@ -3,7 +3,6 @@
 set -ex
 
 VERSION=$(node -p "require('./package.json').version")
-CHANNEL=$(./scripts/_vars/channel)
 
 # trigger a macos installer by committing and tagging to the repo
 
@@ -15,7 +14,7 @@ cd tmp/cli-macos-installer
 )
 git add cli
 
-if [[ ${CHANNEL} != "stable" ]]; then
+if [[ ! -z "${CIRCLE_TAG}" ]]; then
   echo "not on stable, skipping macos-installer trigger"
   exit
 fi
