@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 const qq = require('qqjs')
-const version = require('../../package.json').version
 
 qq.config.silent = false
 qq.run(async () => {
