@@ -29,7 +29,7 @@ SHORT_VERSION=$(node -p "require('./package.json').version")
     sed -i "s/sha256 \".*\"/sha256 \"${NODE_SHA256XZ}\"/" Formula/heroku-node.rb
     git add Formula/heroku-node.rb
     git diff --cached
-    if [[ -z "${CIRCLE_TAG}" ]]; then
+    if [[ ! -z "${CIRCLE_TAG}" ]]; then
       echo "not on stable, skipping homebrew"
       exit
     fi
@@ -49,7 +49,7 @@ sed -i "s/sha256 \".*\"/sha256 \"${SHA256XZ}\"/" Formula/heroku.rb
 git add Formula/heroku.rb
 git diff --cached
 
-if [[ -z "${CIRCLE_TAG}" ]]; then
+if [[ ! -z "${CIRCLE_TAG}" ]]; then
   echo "not on stable, skipping homebrew"
   exit
 fi
