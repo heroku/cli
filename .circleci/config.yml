@@ -105,6 +105,8 @@ workflows:
             - release_win
           filters:
             tags: *version_tags
+            branches:
+              ignore: /.*/
       - dev_center_docs:
           requires:
             - test
