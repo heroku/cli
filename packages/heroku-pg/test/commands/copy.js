@@ -23,11 +23,28 @@ const otherAddon = {
 }
 const attachment = {
   name: 'HEROKU_POSTGRESQL_RED',
+  app: {name: 'myapp'},
   addon
 }
 const otherAttachment = {
   name: 'HEROKU_POSTGRESQL_BLUE',
+  app: {name: 'myotherapp'},
   addon: otherAddon
+}
+const attachedBlueAttachment = {
+  name: 'ATTACHED_BLUE',
+  app: {name: 'myapp'},
+  addon: otherAddon
+}
+const myappConfig = {
+  READONLY_URL: 'postgres://readonly-heroku/db',
+  DATABASE_URL: 'postgres://heroku/db',
+  HEROKU_POSTGRESQL_RED_URL: 'postgres://heroku/db',
+  ATTACHED_BLUE_URL: 'postgres://heroku/otherdb'
+}
+const myotherappConfig = {
+  DATABASE_URL: 'postgres://heroku/otherdb',
+  HEROKU_POSTGRESQL_BLUE_URL: 'postgres://heroku/otherdb'
 }
 
 let copyingText = () => {
@@ -65,11 +82,7 @@ describe('pg:copy', () => {
         addon_attachment: 'HEROKU_POSTGRESQL_RED_URL',
         addon_service: 'heroku-postgresql'
       }).reply(200, [attachment])
-      api.get('/apps/myapp/config-vars').reply(200, {
-        READONLY_URL: 'postgres://readonly-heroku/db',
-        DATABASE_URL: 'postgres://heroku/db',
-        HEROKU_POSTGRESQL_RED_URL: 'postgres://heroku/db'
-      })
+      api.get('/apps/myapp/config-vars').reply(200, myappConfig)
       pg.post('/client/v11/databases/1/transfers', {
         from_name: 'database bar on foo.com:5432',
         from_url: 'postgres://foo.com/bar',
@@ -112,15 +125,8 @@ describe('pg:copy', () => {
         addon_attachment: 'myotherapp::DATABASE_URL',
         addon_service: 'heroku-postgresql'
       }).reply(200, [otherAttachment])
-      api.get('/apps/myapp/config-vars').reply(200, {
-        READONLY_URL: 'postgres://readonly-heroku/db',
-        DATABASE_URL: 'postgres://heroku/db',
-        HEROKU_POSTGRESQL_RED_URL: 'postgres://heroku/db'
-      })
-      api.get('/apps/myotherapp/config-vars').reply(200, {
-        DATABASE_URL: 'postgres://heroku/otherdb',
-        HEROKU_POSTGRESQL_BLUE_URL: 'postgres://heroku/otherdb'
-      })
+      api.get('/apps/myapp/config-vars').reply(200, myappConfig)
+      api.get('/apps/myotherapp/config-vars').reply(200, myotherappConfig)
       pg.get('/postgres/v0/databases/postgres-1/credentials').reply(200, ['two', 'things'])
       pg.post('/client/v11/databases/2/transfers', {
         from_name: 'RED',
@@ -137,6 +143,37 @@ describe('pg:copy', () => {
     })
   })
 
+  context('heroku to heroku with non-billing app attachment name', () => {
+    beforeEach(() => {
+      api.get('/addons/postgres-1').reply(200, addon)
+      api.get('/addons/postgres-2').reply(200, otherAddon)
+      api.post('/actions/addon-attachments/resolve', {
+        app: 'myapp',
+        addon_attachment: 'HEROKU_POSTGRESQL_RED_URL',
+        addon_service: 'heroku-postgresql'
+      }).reply(200, [attachment])
+      api.post('/actions/addon-attachments/resolve', {
+        app: 'myapp',
+        addon_attachment: 'ATTACHED_BLUE',
+        addon_service: 'heroku-postgresql'
+      }).reply(200, [attachedBlueAttachment])
+      api.get('/apps/myapp/config-vars').twice().reply(200, myappConfig)
+      pg.get('/postgres/v0/databases/postgres-1/credentials').reply(200, ['one'])
+      pg.post('/client/v11/databases/2/transfers', {
+        from_name: 'RED',
+        from_url: 'postgres://heroku/db',
+        to_name: 'ATTACHED_BLUE',
+        to_url: 'postgres://heroku/otherdb'
+      }).reply(200, {uuid: '100-001'})
+      pg.get('/client/v11/apps/myotherapp/transfers/100-001').reply(200, {finished_at: '100', succeeded: true})
+    })
+    it('copies', () => {
+      return cmd.run({app: 'myapp', args: {source: 'HEROKU_POSTGRESQL_RED_URL', target: 'ATTACHED_BLUE'}, flags: {confirm: 'myapp'}})
+      .then(() => expect(cli.stdout, 'to equal', ''))
+      .then(() => expect(cli.stderr, 'to equal', `Starting copy of RED to ATTACHED_BLUE... done\n${copyingText()}`))
+    })
+  })
+
   context('fails', () => {
     beforeEach(() => {
       api.get('/addons/postgres-1').reply(200, addon)
@@ -145,11 +182,7 @@ describe('pg:copy', () => {
         addon_attachment: 'HEROKU_POSTGRESQL_RED_URL',
         addon_service: 'heroku-postgresql'
       }).reply(200, [attachment])
-      api.get('/apps/myapp/config-vars').reply(200, {
-        READONLY_URL: 'postgres://readonly-heroku/db',
-        DATABASE_URL: 'postgres://heroku/db',
-        HEROKU_POSTGRESQL_RED_URL: 'postgres://heroku/db'
-      })
+      api.get('/apps/myapp/config-vars').reply(200, myappConfig)
       pg.post('/client/v11/databases/1/transfers', {
         from_name: 'database bar on foo.com:5432',
         from_url: 'postgres://foo.com/bar',

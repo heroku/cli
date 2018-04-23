@@ -13,6 +13,7 @@ function * run (context, heroku) {
 
   let resolve = co.wrap(function * (db) {
     if (db.match(/^postgres:\/\//)) {
+      // For the case an input is URL format
       let uri = url.parse(db)
       let dbname = uri.path ? uri.path.slice(1) : ''
       let host = `${uri.hostname}:${uri.port || 5432}`
@@ -22,11 +23,12 @@ function * run (context, heroku) {
         confirm: dbname || uri.host
       }
     } else {
+      // Other case (need to resolve attachment)
       let attachment = yield fetcher.attachment(app, db)
       if (!attachment) throw new Error(`${db} not found on ${cli.color.app(app)}`)
       let [addon, config] = yield [
         heroku.get(`/addons/${attachment.addon.name}`),
-        heroku.get(`/apps/${attachment.addon.app.name}/config-vars`)
+        heroku.get(`/apps/${attachment.app.name}/config-vars`)
       ]
       attachment.addon = addon
       return {
@@ -38,6 +40,13 @@ function * run (context, heroku) {
     }
   })
 
+  // Get source and target from inputs
+  // source/target format:
+  //  * url: postgres://foo/bar
+  //  * config var: DATABASE_URL
+  //  * just color: PINK
+  //  * addon name: my-heroku-addon-name
+  //  * app name + color/config: myapp::ORANGE
   let [source, target] = yield [resolve(args.source), resolve(args.target)]
   if (source.url === target.url) throw new Error('Cannot copy database onto itself')
 
