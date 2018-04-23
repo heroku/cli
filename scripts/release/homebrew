@@ -11,7 +11,7 @@ git clone git@github.com:heroku/homebrew-brew.git tmp/homebrew-brew
 DIST_DIR=./dist
 
 REMOTE_BASE="s3://$S3_BUCKET/homebrew"
-NODE_VERSION=$(node -p "require('./package.json').oclif.node.version")
+NODE_VERSION=$(node -p "require('./package.json').oclif.update.node.version")
 SHORT_VERSION=$(node -p "require('./package.json').version")
 (
   NODE_TARBALL_BASE=node-${NODE_VERSION}.tar.xz
