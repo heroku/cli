@@ -2,13 +2,11 @@
 
 set -ex
 
-echo "SKIP HOMEBREW FOR NOW"
-exit 0
-
 rm -rf tmp/homebrew-brew
 git config --global core.pager cat
 git clone git@github.com:heroku/homebrew-brew.git tmp/homebrew-brew
-DIST_DIR=./dist
+DIST_DIR=$(cd ./dist && pwd)
+TMP_DIR=$(cd ./tmp && pwd)
 
 REMOTE_BASE="s3://$S3_BUCKET/homebrew"
 NODE_VERSION=$(node -p "require('./package.json').oclif.update.node.version")
@@ -21,10 +19,8 @@ SHORT_VERSION=$(node -p "require('./package.json').version")
       rm -rf "$TMP_DIR/homebrew"
       mkdir "$TMP_DIR/homebrew"
       cd "$TMP_DIR/homebrew"
-      tar -xJf "$TXZ_PATH"
       mkdir bin
-      mv "$VERSIONED_BASE/bin/node" "bin/node"
-      rm -rf "$VERSIONED_BASE"
+      cp "$TMP_DIR/cache/node-v${NODE_VERSION}-darwin-x64" "bin/node"
       tar c bin | xz > "$NODE_TARBALL_PATH"
     )
     NODE_SHA256XZ=$(shasum -a 256 "$NODE_TARBALL_PATH" | awk \{'print $1'\})
@@ -33,7 +29,7 @@ SHORT_VERSION=$(node -p "require('./package.json').version")
     sed -i "s/sha256 \".*\"/sha256 \"${NODE_SHA256XZ}\"/" Formula/heroku-node.rb
     git add Formula/heroku-node.rb
     git diff --cached
-    if [[ ${CHANNEL} != "stable" ]]; then
+    if [[ ! -z "${CIRCLE_TAG}" ]]; then
       echo "not on stable, skipping homebrew"
       exit
     fi
@@ -45,27 +41,18 @@ SHORT_VERSION=$(node -p "require('./package.json').version")
 
 TARBALL_BASE=heroku-v${SHORT_VERSION}.tar.xz
 TARBALL_PATH=$DIST_DIR/heroku-v${SHORT_VERSION}/$TARBALL_BASE
-(
-  rm -rf "$TMP_DIR/homebrew"
-  mkdir "$TMP_DIR/homebrew"
-  cd "$TMP_DIR/homebrew"
-  tar -xJf "$TXZ_PATH"
-  rm "$VERSIONED_BASE/bin/node"
-  tar c "$VERSIONED_BASE" | xz > "$TARBALL_PATH"
-)
 SHA256XZ=$(shasum -a 256 "$TARBALL_PATH" | awk \{'print $1'\})
 
 cd tmp/homebrew-brew
-sed -i "s/heroku-.*.tar.xz/${TARBALL_BASE}/" Formula/heroku.rb
+sed -i "s/heroku-v.*\\/heroku-v.*\\.tar\\.xz/heroku-v${SHORT_VERSION}\\/${TARBALL_BASE}/" Formula/heroku.rb
 sed -i "s/sha256 \".*\"/sha256 \"${SHA256XZ}\"/" Formula/heroku.rb
 git add Formula/heroku.rb
 git diff --cached
 
-if [[ ${CHANNEL} != "stable" ]]; then
+if [[ ! -z "${CIRCLE_TAG}" ]]; then
   echo "not on stable, skipping homebrew"
   exit
 fi
 
-aws s3 cp --cache-control max-age=604800 "$TARBALL_PATH" "$REMOTE_BASE/$TARBALL_BASE"
 git commit -m "heroku v${SHORT_VERSION}"
 git push origin master
