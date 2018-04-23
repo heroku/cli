@@ -42,6 +42,14 @@ jobs:
             - /cli/node_modules
             - /cli/tmp/cache
             - /usr/local/share/.cache/yarn
+  homebrew:
+    <<: *defaults
+    steps:
+      - add_ssh_keys
+      - checkout
+      - run: yarn
+      - run: ./scripts/release/tarballs
+      - run: ./scripts/release/homebrew
   release_win:
     <<: *defaults
     steps:
@@ -82,36 +90,37 @@ workflows:
   version: 2
   heroku_cli:
     jobs:
-      - test:
-          filters: &all_pushes
-            tags: &version_tags
-              only: /^v.*/
-      - release: &release_workflow
-          filters:
-            tags: *version_tags
-            branches:
-              only:
-                - master
-                - dev
-                - oclif
-          requires:
-            - test
-      - release_deb: *release_workflow
-      - release_win: *release_workflow
-      - postrelease:
-          requires:
-            - release
-            - release_deb
-            - release_win
-          filters:
-            tags: *version_tags
-            branches:
-              ignore: /.*/
-      - dev_center_docs:
-          requires:
-            - test
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^v.*/
+      - homebrew
+      # - test:
+      #     filters: &all_pushes
+      #       tags: &version_tags
+      #         only: /^v.*/
+      # - release: &release_workflow
+      #     filters:
+      #       tags: *version_tags
+      #       branches:
+      #         only:
+      #           - master
+      #           - dev
+      #           - oclif
+      #     requires:
+      #       - test
+      # - release_deb: *release_workflow
+      # - release_win: *release_workflow
+      # - postrelease:
+      #     requires:
+      #       - release
+      #       - release_deb
+      #       - release_win
+      #     filters:
+      #       tags: *version_tags
+      #       branches:
+      #         ignore: /.*/
+      # - dev_center_docs:
+      #     requires:
+      #       - test
+      #     filters:
+      #       branches:
+      #         ignore: /.*/
+      #       tags:
+      #         only: /^v.*/
