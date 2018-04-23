@@ -35,6 +35,7 @@ jobs:
       - checkout
       - run: yarn
       - run: ./scripts/release/tarballs
+      - run: ./scripts/release/homebrew
       - save_cache:
           key: v2-yarn-{{ checksum ".circleci/config.yml" }}-{{ checksum "yarn.lock" }}
           paths:
@@ -58,10 +59,11 @@ jobs:
   postrelease:
     <<: *defaults
     steps:
-      - run: aws cloudfront create-invalidation --distribution-id "$CLOUDFRONT_DISTRIBUTION" --paths "/*"
+      - add_ssh_keys
+      - checkout
       - run: ./scripts/release/_github_setup
-      - run: {command: "./scripts/release/homebrew", when: always}
-      # - run: {command: "./scripts/release/macos_installer_trigger", when: always}
+      - run: {command: "./scripts/release/macos_installer_trigger", when: always}
+      - run: {command: "aws cloudfront create-invalidation --distribution-id \"$CLOUDFRONT_DISTRIBUTION\" --paths \"/*\"", when: always}
   dev_center_docs:
     docker: &devdocs_docker
       - image: rasphilco/cli-engine-devcenter:v0.1.0
