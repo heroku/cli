@@ -34,6 +34,7 @@ jobs:
       - add_ssh_keys
       - checkout
       - run: yarn
+      - run: ./scripts/release/_github_setup
       - run: ./scripts/release/tarballs
       - run: ./scripts/release/homebrew
       - save_cache:
