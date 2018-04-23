@@ -2,6 +2,9 @@
 
 set -ex
 
+echo "SKIP HOMEBREW FOR NOW"
+exit 0
+
 rm -rf tmp/homebrew-brew
 git config --global core.pager cat
 git clone git@github.com:heroku/homebrew-brew.git tmp/homebrew-brew
