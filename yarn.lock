@@ -28,9 +28,9 @@
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/@cli-engine/config/-/config-5.1.0.tgz#d8ac7122317bc505dc09e7fd778777602d6b7568"
 
-"@cli-engine/engine@6.3.2":
-  version "6.3.2"
-  resolved "https://registry.yarnpkg.com/@cli-engine/engine/-/engine-6.3.2.tgz#919f58cfd8ddfbea79726e2cc2f40faa84e88147"
+"@cli-engine/engine@6.3.3":
+  version "6.3.3"
+  resolved "https://registry.yarnpkg.com/@cli-engine/engine/-/engine-6.3.3.tgz#6a1198286d0d723fb9e01a0c4839e767da9c502d"
   dependencies:
     "@cli-engine/command" "12.1.1"
     "@cli-engine/config" "^5.1.0"
