@@ -103,6 +103,8 @@ workflows:
             - release
             - release_deb
             - release_win
+          filters:
+            tags: *version_tags
       - dev_center_docs:
           requires:
             - test
