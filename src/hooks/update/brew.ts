@@ -50,7 +50,7 @@ export const brewHook: Hook<'update'> = async function () {
   debug('migrating from brew')
   // not on private tap, move to it
   cli.action.start('Upgrading homebrew formula')
-  brew(['tap', 'heroku/brew'])
+  brew(['uninstall', 'heroku'])
   brew(['upgrade', 'heroku/brew/heroku'])
   cli.action.stop()
 }
