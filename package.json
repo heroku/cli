@@ -129,7 +129,7 @@
   "oclif": {
     "update": {
       "autoupdate": {
-        "rollout": 98
+        "rollout": 0
       }
     }
   },
