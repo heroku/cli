@@ -14,7 +14,7 @@ cd tmp/cli-macos-installer
 )
 git add cli
 
-if [[ ! -z "${CIRCLE_TAG}" ]]; then
+if [[ -z "${CIRCLE_TAG}" ]]; then
   echo "not on stable, skipping macos-installer trigger"
   exit
 fi
