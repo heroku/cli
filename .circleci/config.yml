@@ -138,7 +138,7 @@ workflows:
             tags: *version_tags
             branches:
               only:
-                # - master
+                - master
                 - dev
       - build_os_linux: *release
       - build_os_win32: *release
