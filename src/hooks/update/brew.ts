@@ -51,6 +51,6 @@ export const brewHook: Hook<'update'> = async function () {
   // not on private tap, move to it
   cli.action.start('Upgrading homebrew formula')
   brew(['uninstall', 'heroku'])
-  brew(['upgrade', 'heroku/brew/heroku'])
+  brew(['install', 'heroku/brew/heroku'])
   cli.action.stop()
 }
