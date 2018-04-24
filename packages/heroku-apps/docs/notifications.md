@@ -1,11 +1,11 @@
-heroku notifications
-====================
+`heroku notifications`
+======================
 
 display notifications
 
-* [heroku notifications](#heroku-notifications)
+* [`heroku notifications`](#heroku-notifications)
 
-## heroku notifications
+## `heroku notifications`
 
 display notifications
 

@@ -15,7 +15,7 @@ $ npm install -g @heroku-cli/plugin-apps
 $ heroku COMMAND
 running command...
 $ heroku (-v|--version|version)
-@heroku-cli/plugin-apps/2.4.37 linux-x64 node-v9.11.1
+@heroku-cli/plugin-apps/2.4.38 darwin-x64 node-v9.11.1
 $ heroku --help [COMMAND]
 USAGE
   $ heroku COMMAND
@@ -25,9 +25,9 @@ USAGE
 <!-- commands -->
 # Command Topics
 
-* [heroku 2fa](docs/2fa.md) - disable 2fa on account
+* [`heroku 2fa`](docs/2fa.md) - disable 2fa on account
 
-* [heroku apps](docs/apps.md) - creates a new app
+* [`heroku apps`](docs/apps.md) - creates a new app
 Examples:
 
     $ heroku apps:create
@@ -49,24 +49,24 @@ Examples:
     # create an app in the eu region
     $ heroku apps:create --region eu
  
-* [heroku auth](docs/auth.md) - login with your Heroku credentials
+* [`heroku auth`](docs/auth.md) - login with your Heroku credentials
 
-* [heroku buildpacks](docs/buildpacks.md) - add new app buildpack, inserting into list of buildpacks if necessary
+* [`heroku buildpacks`](docs/buildpacks.md) - add new app buildpack, inserting into list of buildpacks if necessary
 Example:
 
      $ heroku buildpacks:add -i 1 https://github.com/heroku/heroku-buildpack-ruby
 
-* [heroku config](docs/config.md) - display a config value for an app
+* [`heroku config`](docs/config.md) - display a config value for an app
 Example:
 
     $ heroku config:get RAILS_ENV
     production
  
-* [heroku domains](docs/domains.md) - add domain to an app
+* [`heroku domains`](docs/domains.md) - add domain to an app
 
-* [heroku drains](docs/drains.md) - adds a log drain to an app
+* [`heroku drains`](docs/drains.md) - adds a log drain to an app
 
-* [heroku dyno](docs/dyno.md) - restart app dynos
+* [`heroku dyno`](docs/dyno.md) - restart app dynos
 
 if DYNO is not specified, restarts all dynos on app
 
@@ -81,9 +81,9 @@ Examples:
     $ heroku ps:restart
     Restarting dynos... done
 
-* [heroku features](docs/features.md) - disables an app feature
+* [`heroku features`](docs/features.md) - disables an app feature
 
-* [heroku keys](docs/keys.md) - add an SSH key for a user
+* [`heroku keys`](docs/keys.md) - add an SSH key for a user
 if no KEY is specified, will try to find ~/.ssh/id_rsa.pub
 
 Examples:
@@ -97,15 +97,15 @@ Examples:
     $ heroku keys:add /my/key.pub
     Uploading SSH public key /my/key.pub... done
 
-* [heroku labs](docs/labs.md) - enables an experimental feature
+* [`heroku labs`](docs/labs.md) - enables an experimental feature
 
-* [heroku logout](docs/logout.md) - clears local login credentials
+* [`heroku logout`](docs/logout.md) - clears local login credentials
 
-* [heroku maintenance](docs/maintenance.md) - display the current maintenance status of app
+* [`heroku maintenance`](docs/maintenance.md) - display the current maintenance status of app
 
-* [heroku notifications](docs/notifications.md) - display notifications
+* [`heroku notifications`](docs/notifications.md) - display notifications
 
-* [heroku ps](docs/ps.md) - list dynos for an app
+* [`heroku ps`](docs/ps.md) - list dynos for an app
 
 Examples:
 
@@ -119,7 +119,7 @@ Examples:
     $ heroku ps run # specifying types
     === run: one-off dyno
     run.1: up for 5m: bash
-* [heroku releases](docs/releases.md) - display the releases for an app
+* [`heroku releases`](docs/releases.md) - display the releases for an app
 
 Example:
 
@@ -128,6 +128,6 @@ Example:
     v1 Config add FOO_BAR email@example.com 2015/11/17 17:37:41 (~ 1h ago)
     v2 Config add BAR_BAZ email@example.com 2015/11/17 17:37:41 (~ 1h ago)
     v3 Config add BAZ_QUX email@example.com 2015/11/17 17:37:41 (~ 1h ago)
-* [heroku twofactor](docs/twofactor.md) - disable 2fa on account
+* [`heroku twofactor`](docs/twofactor.md) - disable 2fa on account
 
 <!-- commandsstop -->

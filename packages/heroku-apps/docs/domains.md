@@ -1,15 +1,15 @@
-heroku domains
-==============
+`heroku domains`
+================
 
 add domain to an app
 
-* [heroku domains](#heroku-domains)
-* [heroku domains:add HOSTNAME](#heroku-domainsadd-hostname)
-* [heroku domains:clear](#heroku-domainsclear)
-* [heroku domains:remove HOSTNAME](#heroku-domainsremove-hostname)
-* [heroku domains:wait [HOSTNAME]](#heroku-domainswait-hostname)
+* [`heroku domains`](#heroku-domains)
+* [`heroku domains:add HOSTNAME`](#heroku-domainsadd-hostname)
+* [`heroku domains:clear`](#heroku-domainsclear)
+* [`heroku domains:remove HOSTNAME`](#heroku-domainsremove-hostname)
+* [`heroku domains:wait [HOSTNAME]`](#heroku-domainswait-hostname)
 
-## heroku domains
+## `heroku domains`
 
 list domains for an app
 
@@ -36,7 +36,7 @@ DESCRIPTION
        www.example.com  CNAME            www.example.herokudns.com
 ```
 
-### heroku domains:add HOSTNAME
+## `heroku domains:add HOSTNAME`
 
 add domain to an app
 
@@ -50,7 +50,7 @@ OPTIONS
   --wait
 ```
 
-### heroku domains:clear
+## `heroku domains:clear`
 
 remove all domains from an app
 
@@ -63,7 +63,7 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
 ```
 
-### heroku domains:remove HOSTNAME
+## `heroku domains:remove HOSTNAME`
 
 remove domain from an app
 
@@ -76,60 +76,7 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
 ```
 
-### heroku domains:wait [HOSTNAME]
-
-wait for domain to be active for an app
-
-```
-USAGE
-  $ heroku domains:wait [HOSTNAME]
-
-OPTIONS
-  -a, --app=app        (required) app to run command against
-  -r, --remote=remote  git remote of app to use
-```
-
-## heroku domains:add HOSTNAME
-
-add domain to an app
-
-```
-USAGE
-  $ heroku domains:add HOSTNAME
-
-OPTIONS
-  -a, --app=app        (required) app to run command against
-  -r, --remote=remote  git remote of app to use
-  --wait
-```
-
-## heroku domains:clear
-
-remove all domains from an app
-
-```
-USAGE
-  $ heroku domains:clear
-
-OPTIONS
-  -a, --app=app        (required) app to run command against
-  -r, --remote=remote  git remote of app to use
-```
-
-## heroku domains:remove HOSTNAME
-
-remove domain from an app
-
-```
-USAGE
-  $ heroku domains:remove HOSTNAME
-
-OPTIONS
-  -a, --app=app        (required) app to run command against
-  -r, --remote=remote  git remote of app to use
-```
-
-## heroku domains:wait [HOSTNAME]
+## `heroku domains:wait [HOSTNAME]`
 
 wait for domain to be active for an app
 

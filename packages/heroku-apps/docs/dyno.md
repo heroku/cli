@@ -1,5 +1,5 @@
-heroku dyno
-===========
+`heroku dyno`
+=============
 
 restart app dynos
 
@@ -16,13 +16,13 @@ Examples:
     $ heroku ps:restart
     Restarting dynos... done
 
-* [heroku dyno:kill DYNO](#heroku-dynokill-dyno)
-* [heroku dyno:resize](#heroku-dynoresize)
-* [heroku dyno:restart [DYNO]](#heroku-dynorestart-dyno)
-* [heroku dyno:scale](#heroku-dynoscale)
-* [heroku dyno:stop DYNO](#heroku-dynostop-dyno)
+* [`heroku dyno:kill DYNO`](#heroku-dynokill-dyno)
+* [`heroku dyno:resize`](#heroku-dynoresize)
+* [`heroku dyno:restart [DYNO]`](#heroku-dynorestart-dyno)
+* [`heroku dyno:scale`](#heroku-dynoscale)
+* [`heroku dyno:stop DYNO`](#heroku-dynostop-dyno)
 
-## heroku dyno:kill DYNO
+## `heroku dyno:kill DYNO`
 
 stop app dyno
 
@@ -47,7 +47,7 @@ DESCRIPTION
        Stopping run dynos... done
 ```
 
-## heroku dyno:resize
+## `heroku dyno:resize`
 
 manage dyno sizes
 
@@ -69,7 +69,7 @@ DESCRIPTION
   Called with 1..n TYPE=SIZE arguments sets the quantity per type.
 ```
 
-## heroku dyno:restart [DYNO]
+## `heroku dyno:restart [DYNO]`
 
 restart app dynos
 
@@ -97,7 +97,7 @@ DESCRIPTION
        Restarting dynos... done
 ```
 
-## heroku dyno:scale
+## `heroku dyno:scale`
 
 scale dyno quantity up or down
 
@@ -124,7 +124,7 @@ DESCRIPTION
        web=3:Standard-2X worker=1:Standard-1X
 ```
 
-## heroku dyno:stop DYNO
+## `heroku dyno:stop DYNO`
 
 stop app dyno
 
