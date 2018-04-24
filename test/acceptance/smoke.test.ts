@@ -15,7 +15,7 @@ function run(args = '') {
 describe('smoke', () => {
   it('heroku version', async () => {
     const {stdout} = await run('version')
-    expect(stdout).to.match(/^heroku-cli\//)
+    expect(stdout).to.match(/^heroku\//)
   })
 
   it('heroku help', async () => {

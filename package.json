@@ -1,5 +1,5 @@
 {
-  "name": "heroku-cli",
+  "name": "heroku",
   "description": "CLI to interact with Heroku",
   "version": "7.0.9",
   "author": "Jeff Dickey @jdxcode",
