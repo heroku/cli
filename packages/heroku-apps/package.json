@@ -16,15 +16,14 @@
     }
   },
   "dependencies": {
-    "@heroku-cli/command": "^8.0.4",
+    "@heroku-cli/command": "^8.0.5",
     "bluebird": "^3.5.1",
-    "cli-ux": "^2.0.21",
     "co": "^4.6.0",
     "co-wait": "^0.0.0",
     "filesize": "^3.5.11",
     "heroku-cli-util": "^8.0.6",
     "inquirer": "^5.2.0",
-    "lodash": "^4.17.4",
+    "lodash": "^4.17.10",
     "lodash.compact": "^3.0.1",
     "lodash.countby": "^4.6.0",
     "lodash.findindex": "^4.6.0",
@@ -57,21 +56,21 @@
     "urijs": "1.19.1"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.0.2",
-    "@oclif/plugin-legacy": "^1.0.7",
+    "@oclif/dev-cli": "^1.13.7",
+    "@oclif/plugin-legacy": "^1.0.11",
     "chai": "^4.1.2",
     "fs-extra": "^5.0.0",
     "lolex": "^2.1.2",
-    "mocha": "^5.0.5",
+    "mocha": "^5.1.1",
     "mockdate": "^2.0.2",
-    "netrc-parser": "^3.1.3",
-    "nock": "9.0.14",
-    "proxyquire": "^1.8.0",
+    "netrc-parser": "^3.1.4",
+    "nock": "9.2.5",
+    "proxyquire": "^2.0.1",
     "standard": "^11.0.1",
     "std-mocks": "1.0.1",
     "testdouble": "^3.2.6",
     "time-require": "0.1.2",
-    "unexpected": "^10.35.0"
+    "unexpected": "^10.37.5"
   },
   "files": [
     "/.oclif.manifest.json",

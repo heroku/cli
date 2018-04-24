@@ -10,10 +10,10 @@ describe('apps:favorites:add', () => {
   beforeEach(() => cli.mockConsole())
 
   it('adds the app as a favorite', () => {
-    let api = nock('https://longboard.heroku.com:443')
+    let api = nock('https://longboard.heroku.com')
       .get('/favorites?type=app')
       .reply(200, [])
-      .post('/favorites', {resource_id: 'myapp'})
+      .post('/favorites', {type: 'app', resource_id: 'myapp'})
       .reply(201)
 
     return cmd.run({app: 'myapp'})
