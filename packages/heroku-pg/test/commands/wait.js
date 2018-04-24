@@ -12,8 +12,8 @@ const all = [
 ]
 const fetcher = () => {
   return {
-    all: () => all,
-    addon: () => all[0]
+    all: () => Promise.resolve(all),
+    addon: () => Promise.resolve(all[0])
   }
 }
 
