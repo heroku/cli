@@ -8,15 +8,13 @@
   },
   "dependencies": {
     "@heroku-cli/command": "^8.0.5",
-    "@heroku/foreman": "^2.0.2",
-    "co": "^4.6.0",
-    "heroku-cli-util": "^8.0.6",
-    "lodash.flatten": "^4.4.0"
+    "@heroku/foreman": "^2.0.2"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.13.1",
     "@oclif/plugin-legacy": "^1.0.10",
-    "standard": "^11.0.1"
+    "eslint": "^4.19.1",
+    "eslint-config-oclif": "^1.4.0"
   },
   "files": [
     ".oclif.manifest.json",
@@ -29,21 +27,24 @@
     "heroku-plugin"
   ],
   "license": "ISC",
-  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/heroku/heroku-local"
   },
   "scripts": {
-    "test": "bats test && standard",
+    "test": "bats test && eslint .",
     "prepublishOnly": "oclif-dev manifest",
     "postpublish": "rm .oclif.manifest.json"
   },
-  "cli-engine": {
+  "oclif": {
+    "commands": "./commands",
     "topics": {
       "local": {
         "description": "run heroku app locally"
       }
     }
+  },
+  "engines": {
+    "node": ">=8.0.0"
   }
 }
