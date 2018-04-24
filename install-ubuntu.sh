@@ -27,7 +27,7 @@
   (dpkg -s heroku-toolbelt 1>/dev/null 2>/dev/null && (apt-get remove -y heroku-toolbelt heroku || true)) || true
 
   # install heroku's release key for package verification
-  wget -qO- https://cli-assets.heroku.com/apt/release.key | apt-key add -
+  curl https://cli-assets.heroku.com/apt/release.key | apt-key add -
 
   # update your sources
   apt-get update
