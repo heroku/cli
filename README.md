@@ -12,7 +12,7 @@ Heroku CLI
 [![homebrew](https://img.shields.io/homebrew/v/heroku.svg)](https://github.com/Homebrew/homebrew-core/blob/master/Formula/heroku.rb)
 [![npm](https://img.shields.io/npm/v/heroku-cli.svg)](https://www.npmjs.com/package/heroku-cli)
 
-The Heroku CLI is used to manage Heroku apps from the command line.
+The Heroku CLI is used to manage Heroku apps from the command line. It is built using [oclif](https://oclif.io).
 
 For more about Heroku see <https://www.heroku.com/home>
 
@@ -35,20 +35,3 @@ For problems directly related to the CLI, [add an issue on GitHub](https://githu
 For other issues, [submit a support ticket](https://help.heroku.com/).
 
 [Contributors](https://github.com/heroku/cli/contributors)
-
-Developing
-==========
-
-Developing the CLI locally requires node.
-
-The bulk of the code for this project lives at [heroku/cli-engine](https://github.com/heroku/cli-engine) and its dependencies.
-
-To run the CLI locally, use the `./bin/run` script.
-
-**Alpha build note:** To make the run script operable, you must use yarn >= 0.21.3. After the initial project `yarn install`, do the following:
-
-```
-cd ./node_modules/cli-engine
-yarn install
-yarn prepare
-```
