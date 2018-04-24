@@ -89,10 +89,10 @@ jobs:
       - attach_workspace: {at: dist}
       - run: {command: "ls dist", when: always}
       - run: {command: "./scripts/release/_github_setup", when: always}
-      - run: {command: "./scripts/release/homebrew", when: always}
+      # - run: {command: "./scripts/release/homebrew", when: always}
       - run: {command: "./scripts/release/upload_dist", when: always}
-      - run: {command: "./scripts/release/macos_installer_trigger", when: always}
-      - run: {command: "./scripts/release/invalidate_cdn", when: always}
+      # - run: {command: "./scripts/release/macos_installer_trigger", when: always}
+      # - run: {command: "./scripts/release/invalidate_cdn", when: always}
   build_and_release_deb:
     <<: *defaults
     docker: *release_docker
