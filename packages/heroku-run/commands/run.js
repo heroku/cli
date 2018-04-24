@@ -5,6 +5,7 @@ let cli = require('heroku-cli-util')
 let helpers = require('../lib/helpers')
 let Dyno = require('../lib/dyno')
 const {DynoSizeCompletion, ProcessTypeCompletion} = require('@heroku-cli/command/lib/completions')
+const debug = require('debug')('heroku:run')
 
 function * run (context, heroku) {
   let opts = {
@@ -25,7 +26,9 @@ function * run (context, heroku) {
   let dyno = new Dyno(opts)
   try {
     yield dyno.start()
+    debug('done running')
   } catch (err) {
+    debug(err)
     if (err.exitCode) cli.exit(err.exitCode, err)
     else throw err
   }

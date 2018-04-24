@@ -17,25 +17,25 @@
     }
   },
   "dependencies": {
-    "@heroku-cli/command": "^8.0.4",
+    "@heroku-cli/command": "^8.0.5",
     "@heroku-cli/notifications": "^1.2.0",
     "co": "4.6.0",
     "eventsource": "^1.0.5",
     "fs-extra": "^5.0.0",
-    "heroku-cli-util": "^8.0.4",
+    "heroku-cli-util": "^8.0.6",
     "shellwords": "^0.1.1"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.4.4",
-    "@oclif/plugin-legacy": "^1.0.7",
+    "@oclif/dev-cli": "^1.13.7",
+    "@oclif/plugin-legacy": "^1.0.11",
     "fixture-stdout": "0.2.1",
-    "mocha": "^5.0.5",
+    "mocha": "^5.1.1",
     "mocha-junit-reporter": "1.17.0",
     "netrc": "0.1.4",
-    "nock": "^9.2.3",
+    "nock": "^9.2.5",
     "sinon": "^4.5.0",
     "standard": "^11.0.1",
-    "unexpected": "^10.37.2"
+    "unexpected": "^10.37.5"
   },
   "files": [
     ".oclif.manifest.json",

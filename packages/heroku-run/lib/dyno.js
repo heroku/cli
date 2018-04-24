@@ -10,6 +10,7 @@ let helpers = require('../lib/helpers')
 const http = require('https')
 const net = require('net')
 const spawn = require('child_process').spawn
+const debug = require('debug')('heroku:run')
 
 /** Represents a dyno process */
 class Dyno extends Duplex {
@@ -116,17 +117,20 @@ class Dyno extends Duplex {
       c.setTimeout(1000 * 60 * 60)
       c.setEncoding('utf8')
       c.on('connect', () => {
+        debug('connect')
         c.write(this.uri.path.substr(1) + '\r\n', () => {
           if (this.opts.showStatus) cli.action.status(this._status('connecting'))
         })
       })
       c.on('data', this._readData(c))
       c.on('close', () => {
+        debug('close')
         this.opts['exit-code'] ? this.reject('No exit code returned') : this.resolve()
         if (this.unpipeStdin) this.unpipeStdin()
       })
       c.on('error', this.reject)
       c.on('timeout', () => {
+        debug('timeout')
         c.end()
         this.reject(new Error('timed out'))
       })
@@ -255,6 +259,7 @@ class Dyno extends Duplex {
   _readData (c) {
     let firstLine = true
     return data => {
+      debug('input: %s', data)
       // discard first line
       if (firstLine) {
         if (this.opts.showStatus) cli.action.done(this._status('up'))
@@ -266,6 +271,7 @@ class Dyno extends Duplex {
       data = data.replace('\r\n', '\n')
       let exitCode = data.match(/\uFFFF heroku-command-exit-status (\d+)/m)
       if (exitCode) {
+        debug('got exit code: %d', exitCode)
         this.push(data.replace(/^\uFFFF heroku-command-exit-status \d+$\n?/m, ''))
         let code = parseInt(exitCode[1])
         if (code === 0) this.resolve()
