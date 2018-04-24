@@ -43,7 +43,7 @@
     "debug": "3.1.0",
     "execa": "^0.10.0",
     "fs-extra": "5.0.0",
-    "http-call": "5.1.0",
+    "http-call": "5.1.1",
     "netrc-parser": "3.1.4",
     "semver": "5.5.0",
     "tar-fs": "^1.16.0",
