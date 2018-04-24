@@ -1772,7 +1772,17 @@ http-cache-semantics@3.8.1:
   version "3.8.1"
   resolved "https://registry.yarnpkg.com/http-cache-semantics/-/http-cache-semantics-3.8.1.tgz#39b0e16add9b605bf0a9ef3d9daaf4843b4cacd2"
 
-http-call@5.1.0, http-call@^5.1.0:
+http-call@5.1.1:
+  version "5.1.1"
+  resolved "http://cli-npm.heroku.com/http-call/-/http-call-5.1.1/0110095d455b876c64cc9fe820b3f836cc552ea7.tgz#0110095d455b876c64cc9fe820b3f836cc552ea7"
+  dependencies:
+    content-type "^1.0.4"
+    debug "^3.1.0"
+    is-retry-allowed "^1.1.0"
+    is-stream "^1.1.0"
+    tunnel-agent "^0.6.0"
+
+http-call@^5.1.0:
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/http-call/-/http-call-5.1.0.tgz#699847d9bcd635eb4e3fdfe3084456a9c89d716d"
   dependencies:
