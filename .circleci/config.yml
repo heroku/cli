@@ -129,39 +129,29 @@ workflows:
   version: 2
   heroku_cli:
     jobs:
-      - test:
-          filters: &all_pushes
-            tags: &version_tags
-              only: /^v.*/
       - build_os_darwin: &release
           filters:
-            tags: *version_tags
             branches:
               only:
-                # - master
-                - dev
+                - v6
       - build_os_linux: *release
       - build_os_win32: *release
       - build_and_release_win_inst:
           <<: *release
           requires:
-            - test
             - build_os_win32
       - build_and_release_deb:
           <<: *release
           requires:
-            - test
             - build_os_linux
       - release:
           <<: *release
           requires:
-            - test
             - build_os_darwin
             - build_os_linux
             - build_os_win32
       - dev_center_docs:
           requires:
-            - test
             - build_os_darwin
             - build_os_linux
             - build_os_win32

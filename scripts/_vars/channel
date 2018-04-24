@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 
-if [[ "${CHANNEL:-}" != "" ]]; then
-  echo "${CHANNEL}"
-elif [[ "${CIRCLE_TAG:-}" != "" ]]; then
-  echo "stable"
-elif [[ "${CIRCLE_BRANCH:-}" == "master" ]]; then
-  echo "beta"
-else
-  echo "dev"
-fi
+echo "stable"
+# if [[ "${CHANNEL:-}" != "" ]]; then
+#   echo "${CHANNEL}"
+# elif [[ "${CIRCLE_TAG:-}" != "" ]]; then
+#   echo "stable"
+# elif [[ "${CIRCLE_BRANCH:-}" == "master" ]]; then
+#   echo "beta"
+# else
+#   echo "dev"
+# fi
