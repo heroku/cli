@@ -72,7 +72,7 @@ async function run (context, heroku) {
 
   let dbs = []
   if (db) {
-    dbs = await [fetcher.addon(app, db)]
+    dbs = [ await fetcher.addon(app, db) ]
   } else {
     dbs = await fetcher.all(app)
   }
