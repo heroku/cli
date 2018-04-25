@@ -13,5 +13,5 @@ parts:
   heroku:
     source: .
     plugin: nodejs
-    node-engine: 9.11.1
+    node-engine: 10.0.0
     node-package-manager: yarn
