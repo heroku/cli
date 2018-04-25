@@ -346,9 +346,9 @@
     call-me-maybe "^1.0.1"
     glob-to-regexp "^0.3.0"
 
-"@oclif/command@1", "@oclif/command@^1.4.13", "@oclif/command@^1.4.14", "@oclif/command@^1.4.15":
-  version "1.4.15"
-  resolved "https://registry.yarnpkg.com/@oclif/command/-/command-1.4.15.tgz#1886c7dd88a40fbc29427bbca04bdb0e1a538133"
+"@oclif/command@1", "@oclif/command@^1.4.13", "@oclif/command@^1.4.14", "@oclif/command@^1.4.15", "@oclif/command@^1.4.16":
+  version "1.4.16"
+  resolved "https://registry.yarnpkg.com/@oclif/command/-/command-1.4.16.tgz#4e1cdae611d1eac28bfd3481797b38b8638767c0"
   dependencies:
     "@oclif/errors" "^1.0.6"
     "@oclif/parser" "^3.3.3"
@@ -690,9 +690,9 @@ atob@^2.0.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.0.tgz#ab2b150e51d7b122b9efc8d7340c06b6c41076bc"
 
-aws-sdk@^2.228.1:
-  version "2.228.1"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.228.1.tgz#57b3cc29671cbc80a36d45bbeada8ad269079f2d"
+aws-sdk@^2.229.1:
+  version "2.229.1"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.229.1.tgz#6123c8acee0de534a0585e1375ee19c4de54a39e"
   dependencies:
     buffer "4.9.1"
     events "1.1.1"
