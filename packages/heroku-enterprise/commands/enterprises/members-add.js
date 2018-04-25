@@ -6,12 +6,13 @@ function * membersAdd(context, heroku) {
   let member = context.args.email
   let permissionsString = context.flags.permissions
   let permissions = permissionsString.split(',')
-  let params = { body: { user: member, permissions: permissions } }
   let members = yield heroku.get(`/enterprise-accounts/${enterpriseAccount}/members`)
   let req = function() {
     if(members.map((m) => m.user.email).includes(member)) {
+      let params = { body: { permissions: permissions } }
       return heroku.patch(`/enterprise-accounts/${enterpriseAccount}/members/${member}`, params)
     } else {
+      let params = { body: { user: member, permissions: permissions } }
       return heroku.post(`/enterprise-accounts/${enterpriseAccount}/members`, params)
     }
   }()
