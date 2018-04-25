@@ -361,9 +361,9 @@
   dependencies:
     debug "^3.1.0"
 
-"@oclif/dev-cli@^1.13.7":
-  version "1.13.7"
-  resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.13.7.tgz#de93aa07d960835a3ff1cad1a3e5f273d96ae926"
+"@oclif/dev-cli@^1.13.8":
+  version "1.13.8"
+  resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.13.8.tgz#6b8db116d210740152443f8759cc4ad65125da6e"
   dependencies:
     "@oclif/command" "^1.4.15"
     "@oclif/config" "^1.6.13"
