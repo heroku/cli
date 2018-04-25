@@ -382,20 +382,20 @@
   dependencies:
     debug "^3.1.0"
 
-"@oclif/dev-cli@^1.13.6":
-  version "1.13.6"
-  resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.13.6.tgz#9ef12d771acee7a231753b7ef4611603710f3fc3"
+"@oclif/dev-cli@^1.13.7":
+  version "1.13.7"
+  resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.13.7.tgz#de93aa07d960835a3ff1cad1a3e5f273d96ae926"
   dependencies:
-    "@oclif/command" "^1.4.14"
+    "@oclif/command" "^1.4.15"
     "@oclif/config" "^1.6.13"
     "@oclif/errors" "^1.0.6"
     "@oclif/plugin-help" "^1.2.5"
-    cli-ux "^3.3.31"
+    cli-ux "^3.4.1"
     debug "^3.1.0"
     fs-extra "^5.0.0"
     lodash "^4.17.5"
     normalize-package-data "^2.4.0"
-    qqjs "^0.3.6"
+    qqjs "^0.3.7"
     require-resolve "^0.0.2"
     tslib "^1.9.0"
 
@@ -557,9 +557,9 @@
     "@types/minimatch" "*"
     "@types/node" "*"
 
-"@types/lodash@^4.14.107":
-  version "4.14.107"
-  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.107.tgz#b2d2ae3958bfb8ff828495cbe12214af9e4d035e"
+"@types/lodash@^4.14.108":
+  version "4.14.108"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.108.tgz#02656af3add2e5b3174f830862c47421c00ef817"
 
 "@types/minimatch@*":
   version "3.0.3"
@@ -711,9 +711,9 @@ atob@^2.0.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.0.tgz#ab2b150e51d7b122b9efc8d7340c06b6c41076bc"
 
-aws-sdk@^2.227.1:
-  version "2.227.1"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.227.1.tgz#e0051fa680f29cd83d66f4b751aafbc6beebe9ab"
+aws-sdk@^2.229.1:
+  version "2.229.1"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.229.1.tgz#6123c8acee0de534a0585e1375ee19c4de54a39e"
   dependencies:
     buffer "4.9.1"
     events "1.1.1"
@@ -2879,24 +2879,6 @@ punycode@1.3.2:
 q@^1.2.0:
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/q/-/q-1.5.1.tgz#7e32f75b41381291d04611f1bf14109ac00651d7"
-
-qqjs@^0.3.6:
-  version "0.3.6"
-  resolved "https://registry.yarnpkg.com/qqjs/-/qqjs-0.3.6.tgz#6e4b8008489a055fb95a93365154a9e777e9b784"
-  dependencies:
-    chalk "^2.3.2"
-    debug "^3.1.0"
-    execa "^0.10.0"
-    fs-extra "^5.0.0"
-    get-stream "^3.0.0"
-    glob "^7.1.2"
-    globby "^8.0.1"
-    http-call "^5.1.0"
-    load-json-file "^4.0.0"
-    pkg-dir "^2.0.0"
-    tar-fs "^1.16.0"
-    tmp "^0.0.33"
-    write-json-file "^2.3.0"
 
 qqjs@^0.3.7:
   version "0.3.7"
