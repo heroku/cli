@@ -3441,9 +3441,9 @@ ts-lodash@^4.0.11, ts-lodash@^4.0.8, ts-lodash@^4.0.9:
   dependencies:
     lodash "^4.17.4"
 
-ts-node@6.0.0:
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/ts-node/-/ts-node-6.0.0.tgz#46c25f8498593a9248eeea16906f1598fa098140"
+ts-node@6.0.1:
+  version "6.0.1"
+  resolved "http://cli-npm.heroku.com/ts-node/-/ts-node-6.0.1/e2dd65abcadae530d2b2109cfd19202ba9f90402.tgz#e2dd65abcadae530d2b2109cfd19202ba9f90402"
   dependencies:
     arrify "^1.0.0"
     chalk "^2.3.0"
