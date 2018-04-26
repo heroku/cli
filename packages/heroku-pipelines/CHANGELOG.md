@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+- Re-add the `disambiguatePipeline` export
+
 ## [2.5.7] 2018-04-21
 
 - Exclude tests files from tarball

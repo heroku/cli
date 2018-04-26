@@ -22,3 +22,5 @@ exports.commands = flatten([
   require('./commands/review_apps/disable.js'),
   require('./commands/review_apps/enable.js')
 ])
+
+exports.disambiguatePipeline = require('./lib/disambiguate')
