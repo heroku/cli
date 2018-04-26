@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-pipelines",
   "description": "pipelines heroku plugin",
-  "version": "2.5.7",
+  "version": "2.5.8",
   "author": "Heroku Developer Experience team",
   "bugs": {
     "url": "https://github.com/heroku/heroku-pipelines/issues"
