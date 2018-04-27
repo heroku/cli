@@ -6,9 +6,19 @@ class Deliveries extends Command {
   async run() {
     const {flags} = this.parse(Deliveries)
     let {path, display} = webhookType(flags)
+    let max = 1000
 
-    let {body} = await this.heroku.get(`${path}/webhook-deliveries`, {
-      headers: {Accept: 'application/vnd.heroku+json; version=3.webhooks'},
+    path = `${path}/webhook-deliveries`
+    if (flags.status) {
+      path += `?eq[status]=${encodeURIComponent(flags.status)}`
+    }
+
+    let {body} = await this.heroku.get(path, {
+      headers: {
+        Accept: 'application/vnd.heroku+json; version=3.webhooks',
+        Range: `seq ..; order=desc,max=${max}`,
+      },
+      partial: true,
     })
     let deliveries = body
 
@@ -19,7 +29,12 @@ class Deliveries extends Command {
         return (w.last_attempt && w.last_attempt.code && String(w.last_attempt.code)) || ''
       }
 
-      deliveries.sort((a, b) => Date.parse(a.created_at) - Date.parse(b.created_at))
+      deliveries.reverse()
+
+      if (deliveries.length === max) {
+        cli.error(`Only showing the ${max} most recent deliveries`)
+        cli.error('It is possible to filter deliveries by using the --status flag')
+      }
 
       cli.table(deliveries, {columns: [
         {key: 'id', label: 'Delivery ID'},
@@ -44,6 +59,7 @@ Deliveries.examples = [
 
 Deliveries.flags = {
   app: flags.app({char: 'a'}),
+  status: flags.string({char: 's', description: 'filter deliveries by status'}),
   pipeline: flags.string({char: 'p', description: 'pipeline on which to list', hidden: true}),
 }
 
