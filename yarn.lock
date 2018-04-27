@@ -313,11 +313,11 @@
     date-fns "^1.29.0"
     http-call "^5.1.0"
 
-"@heroku-cli/plugin-webhooks@^1.1.2":
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-webhooks/-/plugin-webhooks-1.1.2.tgz#ee59bb23dba0fd1ffccffcf3b0a12cd04d7beaf8"
+"@heroku-cli/plugin-webhooks@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-webhooks/-/plugin-webhooks-1.2.0.tgz#7971529b057ed9535819afbc4ceb9bb46e745fa8"
   dependencies:
-    co "4.6.0"
+    "@heroku-cli/command" "^8.0.5"
     heroku-cli-util "^8.0.0"
 
 "@heroku/foreman@^2.0.2":
