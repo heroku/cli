@@ -3,6 +3,7 @@
 const cli = require('heroku-cli-util')
 const co = require('co')
 const path = require('path')
+const wait = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 async function run (context, heroku) {
   const debug = require('debug')('heroku-pg')
@@ -13,7 +14,6 @@ async function run (context, heroku) {
   const notify = require('../lib/notify')(context)
 
   let waitFor = async function waitFor (db) {
-    const wait = require('co-wait')
     let interval = parseInt(context.flags['wait-interval'])
     if (!interval || interval < 0) interval = 5
 
