@@ -62,9 +62,7 @@ jobs:
     steps:
       - add_ssh_keys
       - checkout
-      - run: ./scripts/release/_github_setup
-      - run: {command: "./scripts/release/macos_installer_trigger", when: always}
-      - run: {command: "aws cloudfront create-invalidation --distribution-id \"$CLOUDFRONT_DISTRIBUTION\" --paths \"/*\"", when: always}
+      - run: ./scripts/release/postrelease
   dev_center_docs:
     docker: &devdocs_docker
       - image: rasphilco/cli-engine-devcenter:v0.1.0
@@ -94,7 +92,6 @@ workflows:
               only:
                 - master
                 - dev
-                - oclif
           requires:
             - test
       - release_deb: *release_workflow
@@ -107,7 +104,9 @@ workflows:
           filters:
             tags: *version_tags
             branches:
-              ignore: /.*/
+              only:
+                - master
+                - dev
       - dev_center_docs:
           requires:
             - test
