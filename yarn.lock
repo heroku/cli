@@ -355,9 +355,9 @@
     debug "^3.1.0"
     semver "^5.5.0"
 
-"@oclif/config@1", "@oclif/config@^1.6.13", "@oclif/config@^1.6.4":
-  version "1.6.13"
-  resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.6.13.tgz#fa4688a8a32afe49fd353a13aac6061b96eac1be"
+"@oclif/config@1", "@oclif/config@^1.6.13", "@oclif/config@^1.6.14", "@oclif/config@^1.6.4":
+  version "1.6.14"
+  resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.6.14.tgz#eca05d7347abc6011fbd54a814ede89209f8f399"
   dependencies:
     debug "^3.1.0"
 
@@ -554,13 +554,9 @@
   dependencies:
     "@types/node" "*"
 
-"@types/node@*":
-  version "7.0.62"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-7.0.62.tgz#62a939798fb2aabb32dd2a37228ca95c187fdc3e"
-
-"@types/node@^9.6.7":
-  version "9.6.7"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-9.6.7.tgz#5f3816d1db2155edcde1b2e3aa5d0e5c520cb564"
+"@types/node@*", "@types/node@^9.6.8":
+  version "9.6.8"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-9.6.8.tgz#32e3d3ef9ea285caeec70a05ab157847920a3fe4"
 
 "@types/semver@^5.5.0":
   version "5.5.0"
