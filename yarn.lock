@@ -209,9 +209,9 @@
     lodash "4.17.5"
     lodash.flatten "4.4.0"
 
-"@heroku-cli/plugin-pg@^2.9.9":
-  version "2.9.9"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-pg/-/plugin-pg-2.9.9.tgz#ad8c95ac3a8915593e3505fa4549e10a3a579ae8"
+"@heroku-cli/plugin-pg@^2.9.10":
+  version "2.9.10"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-pg/-/plugin-pg-2.9.10.tgz#67e9d3237ac25ea940d2647c5090e9d18836fbcc"
   dependencies:
     bytes "^3.0.0"
     co "^4.6.0"
@@ -346,9 +346,9 @@
     call-me-maybe "^1.0.1"
     glob-to-regexp "^0.3.0"
 
-"@oclif/command@1", "@oclif/command@^1.4.13", "@oclif/command@^1.4.15", "@oclif/command@^1.4.16":
-  version "1.4.16"
-  resolved "https://registry.yarnpkg.com/@oclif/command/-/command-1.4.16.tgz#4e1cdae611d1eac28bfd3481797b38b8638767c0"
+"@oclif/command@1", "@oclif/command@^1.4.13", "@oclif/command@^1.4.15", "@oclif/command@^1.4.16", "@oclif/command@^1.4.17":
+  version "1.4.17"
+  resolved "https://registry.yarnpkg.com/@oclif/command/-/command-1.4.17.tgz#1c4173d258b174fd2f965edcefc53afb1d06797d"
   dependencies:
     "@oclif/errors" "^1.0.6"
     "@oclif/parser" "^3.3.3"
@@ -555,8 +555,8 @@
     "@types/node" "*"
 
 "@types/node@*":
-  version "10.0.0"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.0.0.tgz#c40f8e07dce607d3ef25a626b93a6a7cdcf97881"
+  version "7.0.62"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-7.0.62.tgz#62a939798fb2aabb32dd2a37228ca95c187fdc3e"
 
 "@types/node@^9.6.7":
   version "9.6.7"
@@ -691,12 +691,12 @@ assign-symbols@^1.0.0:
   resolved "https://registry.yarnpkg.com/assign-symbols/-/assign-symbols-1.0.0.tgz#59667f41fadd4f20ccbc2bb96b8d4f7f78ec0367"
 
 atob@^2.0.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.0.tgz#ab2b150e51d7b122b9efc8d7340c06b6c41076bc"
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.1.tgz#ae2d5a729477f289d60dd7f96a6314a22dd6c22a"
 
-aws-sdk@^2.229.1:
-  version "2.229.1"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.229.1.tgz#6123c8acee0de534a0585e1375ee19c4de54a39e"
+aws-sdk@^2.230.1:
+  version "2.230.1"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.230.1.tgz#494cef6aed2e16db1ed9c12acf4bd2a7317f5365"
   dependencies:
     buffer "4.9.1"
     events "1.1.1"
@@ -3374,9 +3374,9 @@ symbol-observable@1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/symbol-observable/-/symbol-observable-1.0.1.tgz#8340fc4702c3122df5d22288f88283f513d3fdd4"
 
-tar-fs@^1.16.0:
-  version "1.16.0"
-  resolved "https://registry.yarnpkg.com/tar-fs/-/tar-fs-1.16.0.tgz#e877a25acbcc51d8c790da1c57c9cf439817b896"
+tar-fs@^1.16.0, tar-fs@^1.16.2:
+  version "1.16.2"
+  resolved "https://registry.yarnpkg.com/tar-fs/-/tar-fs-1.16.2.tgz#17e5239747e399f7e77344f5f53365f04af53577"
   dependencies:
     chownr "^1.0.1"
     mkdirp "^0.5.1"
@@ -3471,9 +3471,9 @@ ts-lodash@^4.0.11, ts-lodash@^4.0.8, ts-lodash@^4.0.9:
   dependencies:
     lodash "^4.17.4"
 
-ts-node@6.0.1:
-  version "6.0.1"
-  resolved "https://registry.yarnpkg.com/ts-node/-/ts-node-6.0.1.tgz#e2dd65abcadae530d2b2109cfd19202ba9f90402"
+ts-node@6.0.2:
+  version "6.0.2"
+  resolved "https://registry.yarnpkg.com/ts-node/-/ts-node-6.0.2.tgz#e132d530e53173bc6a8c21ea65f64d8b47bc573e"
   dependencies:
     arrify "^1.0.0"
     chalk "^2.3.0"
