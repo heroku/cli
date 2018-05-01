@@ -8,4 +8,4 @@ If the current behavior is a bug, please provide the steps to reproduce.
 
 What is the expected behavior?
 ------------------------------
-Please mention your heroku and OS version.
+Please mention your heroku and OS version. Please state if you are behind an HTTP proxy or company firewall as well.
