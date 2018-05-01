@@ -21,7 +21,7 @@ $ npm install -g @heroku-cli/plugin-config
 $ heroku COMMAND
 running command...
 $ heroku (-v|--version|version)
-@heroku-cli/plugin-config/1.0.0 linux-x64 node-v9.11.1
+@heroku-cli/plugin-config/1.0.1 linux-x64 node-v9.11.1
 $ heroku --help [COMMAND]
 USAGE
   $ heroku COMMAND
@@ -45,5 +45,5 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
 ```
 
-_See code: [src/commands/config/edit.ts](https://github.com/heroku/heroku-cli-plugin-config/blob/v1.0.0/src/commands/config/edit.ts)_
+_See code: [src/commands/config/edit.ts](https://github.com/heroku/heroku-cli-plugin-config/blob/v1.0.1/src/commands/config/edit.ts)_
 <!-- commandsstop -->
