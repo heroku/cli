@@ -16,11 +16,12 @@
     }
   },
   "dependencies": {
-    "@heroku-cli/command": "^8.0.5",
+    "@heroku-cli/command": "^8.0.6",
     "bluebird": "^3.5.1",
     "co": "^4.6.0",
     "co-wait": "^0.0.0",
     "filesize": "^3.5.11",
+    "fs-extra": "^6.0.0",
     "heroku-cli-util": "^8.0.6",
     "inquirer": "^5.2.0",
     "lodash": "^4.17.10",
@@ -56,10 +57,9 @@
     "urijs": "1.19.1"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.13.7",
-    "@oclif/plugin-legacy": "^1.0.11",
+    "@oclif/dev-cli": "^1.13.12",
+    "@oclif/plugin-legacy": "^1.0.12",
     "chai": "^4.1.2",
-    "fs-extra": "^5.0.0",
     "lolex": "^2.1.2",
     "mocha": "^5.1.1",
     "mockdate": "^2.0.2",
@@ -68,7 +68,7 @@
     "proxyquire": "^2.0.1",
     "standard": "^11.0.1",
     "std-mocks": "1.0.1",
-    "testdouble": "^3.2.6",
+    "testdouble": "^3.8.0",
     "time-require": "0.1.2",
     "unexpected": "^10.37.5"
   },
