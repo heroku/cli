@@ -7,35 +7,61 @@ const exec = (cmd: string, args: string[]) => {
   return execa(cmd, args, {stdio: 'inherit'})
 }
 
+const deprecated = {
+  'heroku-api-plugin': 'api',
+  'heroku-cli-plugin-generator': null,
+}
+
 export const migrate: Hook<'init'> = async function () {
   if (process.argv[2] && process.argv[2].startsWith('plugins')) return
   const pluginsDir = path.join(this.config.dataDir, 'plugins')
-  if (!await fs.pathExists(pluginsDir)) return
-  process.stderr.write('heroku-cli: migrating plugins\n')
-  try {
-    const p = path.join(pluginsDir, 'user.json')
-    if (await fs.pathExists(p)) {
-      const {manifest} = await fs.readJSON(p)
-      for (let plugin of Object.keys(manifest.plugins)) {
-        process.stderr.write(`heroku-cli: migrating ${plugin}\n`)
-        await exec('heroku', ['plugins:install', plugin])
+
+  const migrateV6Plugins = async () => {
+    if (!await fs.pathExists(pluginsDir)) return
+    process.stderr.write('heroku: migrating plugins\n')
+    try {
+      const p = path.join(pluginsDir, 'user.json')
+      if (await fs.pathExists(p)) {
+        const {manifest} = await fs.readJSON(p)
+        for (let plugin of Object.keys(manifest.plugins)) {
+          process.stderr.write(`heroku-cli: migrating ${plugin}\n`)
+          await exec('heroku', ['plugins:install', plugin])
+        }
+      }
+    } catch (err) {
+      this.warn(err)
+    }
+    try {
+      const p = path.join(pluginsDir, 'link.json')
+      if (await fs.pathExists(p)) {
+        const {manifest} = await fs.readJSON(path.join(pluginsDir, 'link.json'))
+        for (let {root} of Object.values(manifest.plugins) as any) {
+          process.stderr.write(`heroku-cli: migrating ${root}\n`)
+          await exec('heroku', ['plugins:link', root])
+        }
+      }
+    } catch (err) {
+      this.warn(err)
+    }
+    await fs.remove(pluginsDir)
+    process.stderr.write('heroku: done migrating plugins\n')
+  }
+
+  const migrateDeprecatedPlugins = async () => {
+    for (let [name, v] of Object.entries(deprecated)) {
+      const plugin = this.config.plugins.find(p => p.name === name)
+      if (!plugin) continue
+      if (v) {
+        process.stderr.write(`heroku: migrating plugin ${name} to ${v}\n`)
+        await exec('heroku', ['plugins:uninstall', name])
+        await exec('heroku', ['plugins:install', v])
+      } else {
+        process.stderr.write(`heroku: removing deprecated plugin ${name}\n`)
+        await exec('heroku', ['plugins:uninstall', name])
       }
     }
-  } catch (err) {
-    this.warn(err)
   }
-  try {
-    const p = path.join(pluginsDir, 'link.json')
-    if (await fs.pathExists(p)) {
-      const {manifest} = await fs.readJSON(path.join(pluginsDir, 'link.json'))
-      for (let {root} of Object.values(manifest.plugins) as any) {
-        process.stderr.write(`heroku-cli: migrating ${root}\n`)
-        await exec('heroku', ['plugins:link', root])
-      }
-    }
-  } catch (err) {
-    this.warn(err)
-  }
-  await fs.remove(pluginsDir)
-  process.stderr.write('heroku-cli: done migrating plugins\n')
+
+  await migrateV6Plugins()
+  await migrateDeprecatedPlugins()
 }
