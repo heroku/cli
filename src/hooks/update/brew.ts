@@ -1,6 +1,5 @@
 import {Hook} from '@oclif/config'
 import {spawnSync, SpawnSyncOptions} from 'child_process'
-import cli from 'cli-ux'
 import * as path from 'path'
 
 import * as fs from '../../file'
@@ -49,8 +48,6 @@ export const brewHook: Hook<'update'> = async function () {
 
   debug('migrating from brew')
   // not on private tap, move to it
-  cli.action.start('Upgrading homebrew formula')
   brew(['uninstall', 'heroku'])
   brew(['install', 'heroku/brew/heroku'])
-  cli.action.stop()
 }
