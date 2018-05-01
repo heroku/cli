@@ -7,7 +7,7 @@ const exec = (cmd: string, args: string[]) => {
   return execa(cmd, args, {stdio: 'inherit'})
 }
 
-const deprecated = {
+const deprecated: {[k: string]: string | null} = {
   'heroku-api-plugin': 'api',
   'heroku-cli-plugin-generator': null,
 }
@@ -24,6 +24,8 @@ export const migrate: Hook<'init'> = async function () {
       if (await fs.pathExists(p)) {
         const {manifest} = await fs.readJSON(p)
         for (let plugin of Object.keys(manifest.plugins)) {
+          if (deprecated[plugin] === null) continue
+          plugin = deprecated[plugin] || plugin
           process.stderr.write(`heroku-cli: migrating ${plugin}\n`)
           await exec('heroku', ['plugins:install', plugin])
         }
@@ -51,13 +53,17 @@ export const migrate: Hook<'init'> = async function () {
     for (let [name, v] of Object.entries(deprecated)) {
       const plugin = this.config.plugins.find(p => p.name === name)
       if (!plugin) continue
-      if (v) {
-        process.stderr.write(`heroku: migrating plugin ${name} to ${v}\n`)
-        await exec('heroku', ['plugins:uninstall', name])
-        await exec('heroku', ['plugins:install', v])
-      } else {
-        process.stderr.write(`heroku: removing deprecated plugin ${name}\n`)
-        await exec('heroku', ['plugins:uninstall', name])
+      try {
+        if (v) {
+            process.stderr.write(`heroku: migrating plugin ${name} to ${v}\n`)
+            await exec('heroku', ['plugins:uninstall', name])
+            await exec('heroku', ['plugins:install', v])
+        } else {
+          process.stderr.write(`heroku: removing deprecated plugin ${name}\n`)
+          await exec('heroku', ['plugins:uninstall', name])
+        }
+      } catch (err) {
+        this.warn(err)
       }
     }
   }
