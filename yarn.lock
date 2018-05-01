@@ -2,10 +2,6 @@
 # yarn lockfile v1
 
 
-"@cli-engine/screen@^0.0.0":
-  version "0.0.0"
-  resolved "https://registry.yarnpkg.com/@cli-engine/screen/-/screen-0.0.0.tgz#c2e847c7d4d998490c9097282bf21637d5162116"
-
 "@fimbul/bifrost@^0.6.0":
   version "0.6.0"
   resolved "https://registry.yarnpkg.com/@fimbul/bifrost/-/bifrost-0.6.0.tgz#5150302b63e1bd37ff95f561c3605949cb7e3770"
@@ -150,17 +146,17 @@
     socket.io-client "^1.5.1"
     temp "^0.8.3"
 
-"@heroku-cli/plugin-config@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-config/-/plugin-config-1.0.0.tgz#ec60d26e1d45ca223e432eebadc5f13c7056ef68"
+"@heroku-cli/plugin-config@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-config/-/plugin-config-1.0.1.tgz#c8c316f1976cc2762ae600b152e20c70fd63facf"
   dependencies:
     "@heroku-cli/color" "^1.1.3"
     "@heroku-cli/command" "^8.0.5"
-    "@oclif/command" "1"
-    "@oclif/config" "1"
-    cli-ux "^3.3.31"
-    edit-string "^1.1.5"
-    lodash "^4.17.5"
+    "@oclif/command" "1.4.17"
+    "@oclif/config" "1.6.16"
+    cli-ux "^3.4.1"
+    edit-string "^1.1.6"
+    lodash "^4.17.10"
     shell-quote "^1.6.1"
 
 "@heroku-cli/plugin-container-registry@^4.4.13":
@@ -329,10 +325,6 @@
     mustache "^2.2.1"
     shell-quote "^1.6.1"
 
-"@heroku/linewrap@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@heroku/linewrap/-/linewrap-1.0.0.tgz#a9d4e99f0a3e423a899b775f5f3d6747a1ff15c6"
-
 "@heroku/socksv5@^0.0.9":
   version "0.0.9"
   resolved "https://registry.yarnpkg.com/@heroku/socksv5/-/socksv5-0.0.9.tgz#7a3905921136b2666979a0f86bb4f062f657f793"
@@ -346,7 +338,7 @@
     call-me-maybe "^1.0.1"
     glob-to-regexp "^0.3.0"
 
-"@oclif/command@1", "@oclif/command@^1.4.13", "@oclif/command@^1.4.15", "@oclif/command@^1.4.16", "@oclif/command@^1.4.17":
+"@oclif/command@1", "@oclif/command@1.4.17", "@oclif/command@^1.4.13", "@oclif/command@^1.4.15", "@oclif/command@^1.4.16", "@oclif/command@^1.4.17":
   version "1.4.17"
   resolved "https://registry.yarnpkg.com/@oclif/command/-/command-1.4.17.tgz#1c4173d258b174fd2f965edcefc53afb1d06797d"
   dependencies:
@@ -355,20 +347,20 @@
     debug "^3.1.0"
     semver "^5.5.0"
 
-"@oclif/config@1", "@oclif/config@^1.6.13", "@oclif/config@^1.6.16", "@oclif/config@^1.6.4":
+"@oclif/config@1", "@oclif/config@1.6.16", "@oclif/config@^1.6.13", "@oclif/config@^1.6.16", "@oclif/config@^1.6.4":
   version "1.6.16"
   resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.6.16.tgz#6bcb03bf30ee54eeafa788777d965bf47bb5047d"
   dependencies:
     debug "^3.1.0"
 
-"@oclif/dev-cli@^1.13.11":
-  version "1.13.11"
-  resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.13.11.tgz#dbc8f6db371f9e24a0e54b7573fe2b5cd68d7c88"
+"@oclif/dev-cli@^1.13.12":
+  version "1.13.12"
+  resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.13.12.tgz#444edc1e4b4798ab369e90a797aa7a43534d6777"
   dependencies:
-    "@oclif/command" "^1.4.16"
-    "@oclif/config" "^1.6.13"
+    "@oclif/command" "^1.4.17"
+    "@oclif/config" "^1.6.16"
     "@oclif/errors" "^1.0.6"
-    "@oclif/plugin-help" "^1.2.5"
+    "@oclif/plugin-help" "^1.2.6"
     cli-ux "^3.4.1"
     debug "^3.1.0"
     fs-extra "^5.0.0"
@@ -399,25 +391,25 @@
     "@oclif/linewrap" "^1.0.0"
     chalk "^2.4.0"
 
-"@oclif/plugin-help@^1.2.5":
-  version "1.2.5"
-  resolved "https://registry.yarnpkg.com/@oclif/plugin-help/-/plugin-help-1.2.5.tgz#5a184cdac3d0cf9c12b444e693e5102b288bde24"
+"@oclif/plugin-help@^1.2.6":
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-help/-/plugin-help-1.2.6.tgz#b5613b854711cce2f784dbb8c10072dd0bdeb2a9"
   dependencies:
-    "@oclif/command" "^1.4.13"
-    chalk "^2.4.0"
+    "@oclif/command" "^1.4.17"
+    chalk "^2.4.1"
     indent-string "^3.2.0"
     lodash.template "^4.4.0"
     string-width "^2.1.1"
     widest-line "^2.0.0"
     wrap-ansi "^3.0.1"
 
-"@oclif/plugin-legacy@^1.0.11":
-  version "1.0.11"
-  resolved "https://registry.yarnpkg.com/@oclif/plugin-legacy/-/plugin-legacy-1.0.11.tgz#023d00e8c0bcfcd4b838221b097a7659b4a6ecc8"
+"@oclif/plugin-legacy@^1.0.12":
+  version "1.0.12"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-legacy/-/plugin-legacy-1.0.12.tgz#0093bb50d3e7742e15eb523d7c987827e8ea0c0b"
   dependencies:
     "@heroku-cli/color" "^1.1.3"
     "@heroku-cli/command" "^8.0.5"
-    "@oclif/command" "^1.4.13"
+    "@oclif/command" "^1.4.17"
     ansi-escapes "^3.1.0"
     debug "^3.1.0"
     semver "^5.5.0"
@@ -554,7 +546,11 @@
   dependencies:
     "@types/node" "*"
 
-"@types/node@*", "@types/node@^9.6.8":
+"@types/node@*":
+  version "8.10.11"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-8.10.11.tgz#971ea8cb91adbe0b74e3fbd867dec192d5893a5f"
+
+"@types/node@^9.6.8":
   version "9.6.8"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-9.6.8.tgz#32e3d3ef9ea285caeec70a05ab157847920a3fe4"
 
@@ -940,14 +936,6 @@ cli-cursor@^2.1.0:
   dependencies:
     restore-cursor "^2.0.0"
 
-cli-flags@^2.0.7:
-  version "2.0.7"
-  resolved "https://registry.yarnpkg.com/cli-flags/-/cli-flags-2.0.7.tgz#215b3f8d911142c3e4833eaf7f2f96ab97fd22cf"
-  dependencies:
-    "@cli-engine/screen" "^0.0.0"
-    "@heroku/linewrap" "^1.0.0"
-    ts-lodash "^4.0.8"
-
 cli-ux@3.4.1, cli-ux@^3.3.30, cli-ux@^3.3.31, cli-ux@^3.4.1:
   version "3.4.1"
   resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-3.4.1.tgz#bfa17e75cd1a60547a11c515166117b05ea89cdd"
@@ -1055,7 +1043,7 @@ cross-spawn-async@^2.1.1:
     lru-cache "^4.0.0"
     which "^1.2.8"
 
-cross-spawn@^5.0.1, cross-spawn@^5.1.0:
+cross-spawn@^5.1.0:
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-5.1.0.tgz#e8bd0efee58fcff6f8f94510a0a554bbfa235449"
   dependencies:
@@ -1170,15 +1158,15 @@ duplexer3@^0.1.4:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/duplexer3/-/duplexer3-0.1.4.tgz#ee01dd1cac0ed3cbc7fdbea37dc0a8f1ce002ce2"
 
-edit-string@^1.1.5:
-  version "1.1.5"
-  resolved "https://registry.yarnpkg.com/edit-string/-/edit-string-1.1.5.tgz#5fa869211ce8af5a3596dcf72d575f3f86f4a4bd"
+edit-string@^1.1.6:
+  version "1.1.6"
+  resolved "https://registry.yarnpkg.com/edit-string/-/edit-string-1.1.6.tgz#1c9a889dbc7e600767f4feca69d08a7ce15962f4"
   dependencies:
     debug "^3.1.0"
-    execa "^0.8.0"
+    execa "^0.10.0"
+    lodash "^4.17.10"
     tmp "^0.0.33"
-    ts-lodash "^4.0.9"
-    tslib "^1.8.1"
+    tslib "^1.9.0"
 
 end-of-stream@^1.0.0, end-of-stream@^1.1.0:
   version "1.4.1"
@@ -1275,18 +1263,6 @@ execa@^0.4.0:
     npm-run-path "^1.0.0"
     object-assign "^4.0.1"
     path-key "^1.0.0"
-    strip-eof "^1.0.0"
-
-execa@^0.8.0:
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/execa/-/execa-0.8.0.tgz#d8d76bbc1b55217ed190fd6dd49d3c774ecfc8da"
-  dependencies:
-    cross-spawn "^5.0.1"
-    get-stream "^3.0.0"
-    is-stream "^1.1.0"
-    npm-run-path "^2.0.0"
-    p-finally "^1.0.0"
-    signal-exit "^3.0.0"
     strip-eof "^1.0.0"
 
 expand-brackets@^2.1.4:
@@ -2370,7 +2346,7 @@ lodash.zip@^4.2.0:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/lodash.zip/-/lodash.zip-4.2.0.tgz#ec6662e4896408ed4ab6c542a3990b72cc080020"
 
-lodash@4.17.10, lodash@^4.0.0, lodash@^4.13.1, lodash@^4.17.10, lodash@^4.17.4, lodash@^4.17.5, lodash@^4.3.0:
+lodash@4.17.10, lodash@^4.0.0, lodash@^4.13.1, lodash@^4.17.10, lodash@^4.17.5, lodash@^4.3.0:
   version "4.17.10"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.10.tgz#1b7793cf7259ea38fb3661d4d38b3260af8ae4e7"
 
@@ -3370,7 +3346,7 @@ symbol-observable@1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/symbol-observable/-/symbol-observable-1.0.1.tgz#8340fc4702c3122df5d22288f88283f513d3fdd4"
 
-tar-fs@^1.16.0, tar-fs@^1.16.2:
+tar-fs@^1.16.0:
   version "1.16.2"
   resolved "https://registry.yarnpkg.com/tar-fs/-/tar-fs-1.16.2.tgz#17e5239747e399f7e77344f5f53365f04af53577"
   dependencies:
@@ -3460,12 +3436,6 @@ to-regex@^3.0.1, to-regex@^3.0.2:
     extend-shallow "^3.0.2"
     regex-not "^1.0.2"
     safe-regex "^1.1.0"
-
-ts-lodash@^4.0.11, ts-lodash@^4.0.8, ts-lodash@^4.0.9:
-  version "4.0.11"
-  resolved "https://registry.yarnpkg.com/ts-lodash/-/ts-lodash-4.0.11.tgz#f668e2ad4b6cb3bcbeceb894cf0a8cde48b3cd85"
-  dependencies:
-    lodash "^4.17.4"
 
 ts-node@6.0.2:
   version "6.0.2"
