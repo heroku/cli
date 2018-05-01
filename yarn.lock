@@ -128,13 +128,13 @@
     lodash "4.17.10"
     psl "^1.1.25"
 
-"@heroku-cli/plugin-ci@^1.9.10":
-  version "1.9.10"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-ci/-/plugin-ci-1.9.10.tgz#c239c20cd8a612d4a121b3e5230d2e3c4d3fd147"
+"@heroku-cli/plugin-ci@^1.9.11":
+  version "1.9.11"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-ci/-/plugin-ci-1.9.11.tgz#363bb47bfe2b77cd5f3341ccc82ba78b0f861438"
   dependencies:
     "@heroku-cli/command" "^8.0.5"
-    "@heroku-cli/plugin-pipelines" "^2.5.4"
-    "@heroku-cli/plugin-run" "^3.6.0"
+    "@heroku-cli/plugin-pipelines" "^2.5.8"
+    "@heroku-cli/plugin-run" "^3.6.1"
     ansi-escapes "3.1.0"
     bluebird "^3.5.1"
     co "^4.6.0"
@@ -229,7 +229,7 @@
     strip-eof "^1.0.0"
     tunnel-ssh "^4.1.4"
 
-"@heroku-cli/plugin-pipelines@^2.5.4", "@heroku-cli/plugin-pipelines@^2.5.8":
+"@heroku-cli/plugin-pipelines@^2.5.8":
   version "2.5.8"
   resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-pipelines/-/plugin-pipelines-2.5.8.tgz#2631fdedd03db4a71847da32f8dd7d67887ac59a"
   dependencies:
@@ -273,7 +273,7 @@
     ioredis "1.9.0"
     ssh2 "^0.4.11"
 
-"@heroku-cli/plugin-run@^3.6.0", "@heroku-cli/plugin-run@^3.6.1":
+"@heroku-cli/plugin-run@^3.6.1":
   version "3.6.1"
   resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-run/-/plugin-run-3.6.1.tgz#379803d81e019cc39005657bf7fc22740fb286a0"
   dependencies:
