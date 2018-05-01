@@ -1,3 +1,11 @@
+<a name="2.4.39"></a>
+## [2.4.39](https://github.com/heroku/heroku-apps/compare/v2.4.38...v2.4.39) (2018-05-01)
+
+
+### Bug Fixes
+
+* updated command ([09d1973](https://github.com/heroku/heroku-apps/commit/09d1973))
+
 <a name="2.4.37"></a>
 ## [2.4.37](https://github.com/heroku/heroku-apps/compare/v2.4.36...v2.4.37) (2018-04-16)
 
