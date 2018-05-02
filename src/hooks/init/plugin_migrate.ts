@@ -10,6 +10,8 @@ const exec = (cmd: string, args: string[]) => {
 const deprecated: {[k: string]: string | null} = {
   'heroku-api-plugin': 'api',
   'heroku-cli-plugin-generator': null,
+  '@heroku-cli/config-edit': null,
+  'heroku-cli-config-edit': null,
 }
 
 export const migrate: Hook<'init'> = async function () {
