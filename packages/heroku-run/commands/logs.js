@@ -1,13 +1,12 @@
 'use strict'
 
-let co = require('co')
 let cli = require('heroku-cli-util')
 let logDisplayer = require('../lib/log_displayer')
 const {DynoCompletion, ProcessTypeCompletion} = require('@heroku-cli/command/lib/completions')
 
-function * run (context, heroku) {
+async function run (context, heroku) {
   cli.color.enabled = context.flags['force-colors'] || cli.color.enabled
-  yield logDisplayer(heroku, {
+  await logDisplayer(heroku, {
     app: context.app,
     dyno: context.flags.dyno || context.flags.ps,
     lines: context.flags.num || 100,
@@ -35,5 +34,5 @@ module.exports = {
     {name: 'tail', char: 't', description: 'continually stream logs'},
     {name: 'force-colors', description: 'force use of colors (even on non-tty output)'}
   ],
-  run: cli.command(co.wrap(run))
+  run: cli.command(run)
 }

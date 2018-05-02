@@ -93,9 +93,16 @@ function readLogsV2 (logplexURL) {
   })
 }
 
-function logDisplayer (heroku, options) {
-  process.stdout.on('error', () => process.exit(1))
-  return heroku.request({
+async function logDisplayer (heroku, options) {
+  process.stdout.on('error', err => {
+    if (err.code === 'EPIPE') {
+      process.exit(0)
+    } else {
+      console.error(err.stack)
+      process.exit(1)
+    }
+  })
+  const response = await heroku.request({
     path: `/apps/${options.app}/log-sessions`,
     method: 'POST',
     body: {
@@ -105,7 +112,7 @@ function logDisplayer (heroku, options) {
       lines: options.lines
     }
   })
-    .then(response => readLogs(response.logplex_url))
+  return readLogs(response.logplex_url)
 }
 
 module.exports = logDisplayer
