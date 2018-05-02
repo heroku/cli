@@ -1,3 +1,11 @@
+<a name="3.6.2"></a>
+## [3.6.2](https://github.com/heroku/heroku-run/compare/v3.6.1...v3.6.2) (2018-05-02)
+
+
+### Bug Fixes
+
+* EPIPE is not a failing condition ([ee5d5f2](https://github.com/heroku/heroku-run/commit/ee5d5f2))
+
 <a name="3.6.0"></a>
 # [3.6.0](https://github.com/heroku/heroku-run/compare/v3.5.14...v3.6.0) (2018-04-06)
 
