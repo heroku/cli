@@ -6,9 +6,7 @@
 # $ARCH
 # $NODE_VERSION
 
-source ./scripts/_init
-
-set -x
+set -ex
 
 if [[ $# -ne 1 ]]; then
   echo "USAGE: $0 OUTPUT_DIR"
@@ -17,7 +15,7 @@ fi
 
 output=$1
 node_ext=""
-NODE_VERSION=$(node -p "require('./package.json')['cli-engine'].node || process.versions.node")
+NODE_VERSION=$(node -p "require('./package.json').oclif.update.node.version || process.versions.node")
 
 mkdir -p "$output"
 mkdir -p "$TMP_DIR/node"
