@@ -13,7 +13,7 @@ parts:
   heroku:
     plugin: nil
     install: |
-      set -euxo pipefail
+      set -ex
 
       # install yarn
       apt update
