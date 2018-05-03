@@ -33,3 +33,10 @@ parts:
       cd ../install && yarn --prod
       cd ../install && bin/run -v
       sed -i 's/#!\/usr\/bin\/env node/#!\/snap\/heroku\/current\/bin\/node/' ../install/bin/run
+      mkdir -p snap/hooks
+      cat << EOF > snap/hooks/configure
+      #!/bin/sh
+      set -e
+      heroku update
+      EOF
+      chmod +x snap/hooks/configure
