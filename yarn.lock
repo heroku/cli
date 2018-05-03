@@ -27,9 +27,9 @@
     strip-ansi "^4.0.0"
     supports-color "^5.1.0"
 
-"@heroku-cli/command@^8.0.4", "@heroku-cli/command@^8.0.5", "@heroku-cli/command@^8.0.6":
-  version "8.0.6"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.0.6.tgz#ad17fd53250da2a31a6775879af6ea18a673801d"
+"@heroku-cli/command@^8.0.4", "@heroku-cli/command@^8.0.5", "@heroku-cli/command@^8.0.6", "@heroku-cli/command@^8.0.7":
+  version "8.0.7"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.0.7.tgz#c601e0d9f8ed8a8a98b1856b3b8e71c3c663bc44"
   dependencies:
     "@oclif/errors" "^1.0.6"
     cli-ux "^3.4.1"
@@ -147,14 +147,14 @@
     socket.io-client "^1.5.1"
     temp "^0.8.3"
 
-"@heroku-cli/plugin-config@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-config/-/plugin-config-1.0.1.tgz#c8c316f1976cc2762ae600b152e20c70fd63facf"
+"@heroku-cli/plugin-config@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-config/-/plugin-config-1.0.2.tgz#3b03b39752b3ddd29bd76bad9b8e3ef6c88c1d78"
   dependencies:
     "@heroku-cli/color" "^1.1.3"
-    "@heroku-cli/command" "^8.0.5"
-    "@oclif/command" "1.4.17"
-    "@oclif/config" "1.6.16"
+    "@heroku-cli/command" "^8.0.7"
+    "@oclif/command" "^1.4.20"
+    "@oclif/config" "^1.6.17"
     cli-ux "^3.4.1"
     edit-string "^1.1.6"
     lodash "^4.17.10"
@@ -273,15 +273,15 @@
     ioredis "1.9.0"
     ssh2 "^0.4.11"
 
-"@heroku-cli/plugin-run@^3.6.1":
-  version "3.6.1"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-run/-/plugin-run-3.6.1.tgz#379803d81e019cc39005657bf7fc22740fb286a0"
+"@heroku-cli/plugin-run@^3.6.1", "@heroku-cli/plugin-run@^3.6.2":
+  version "3.6.2"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-run/-/plugin-run-3.6.2.tgz#40a1c5e6867b08809e200f0fc378ad48f0f2b6f3"
   dependencies:
-    "@heroku-cli/command" "^8.0.5"
+    "@heroku-cli/command" "^8.0.6"
     "@heroku-cli/notifications" "^1.2.0"
     co "4.6.0"
     eventsource "^1.0.5"
-    fs-extra "^5.0.0"
+    fs-extra "^6.0.0"
     heroku-cli-util "^8.0.6"
     shellwords "^0.1.1"
 
@@ -339,37 +339,28 @@
     call-me-maybe "^1.0.1"
     glob-to-regexp "^0.3.0"
 
-"@oclif/command@1", "@oclif/command@^1.4.13", "@oclif/command@^1.4.18":
-  version "1.4.18"
-  resolved "https://registry.yarnpkg.com/@oclif/command/-/command-1.4.18.tgz#1095bab6917287a5e87eb7529d4d39d7fc53d362"
+"@oclif/command@1", "@oclif/command@^1.4.13", "@oclif/command@^1.4.18", "@oclif/command@^1.4.19", "@oclif/command@^1.4.20":
+  version "1.4.20"
+  resolved "https://registry.yarnpkg.com/@oclif/command/-/command-1.4.20.tgz#7368c9c9f7f596fc8efffd7ec89118feed5203d8"
   dependencies:
-    "@oclif/errors" "^1.0.6"
+    "@oclif/errors" "^1.0.8"
     "@oclif/parser" "^3.3.3"
     debug "^3.1.0"
     semver "^5.5.0"
 
-"@oclif/command@1.4.17":
-  version "1.4.17"
-  resolved "https://registry.yarnpkg.com/@oclif/command/-/command-1.4.17.tgz#1c4173d258b174fd2f965edcefc53afb1d06797d"
-  dependencies:
-    "@oclif/errors" "^1.0.6"
-    "@oclif/parser" "^3.3.3"
-    debug "^3.1.0"
-    semver "^5.5.0"
-
-"@oclif/config@1", "@oclif/config@1.6.16", "@oclif/config@^1.6.16", "@oclif/config@^1.6.4":
-  version "1.6.16"
-  resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.6.16.tgz#6bcb03bf30ee54eeafa788777d965bf47bb5047d"
+"@oclif/config@1", "@oclif/config@^1.6.17", "@oclif/config@^1.6.4":
+  version "1.6.17"
+  resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.6.17.tgz#e9608f56e5acd49fcaf3bbfcc3e8818d81b1ba12"
   dependencies:
     debug "^3.1.0"
 
-"@oclif/dev-cli@^1.13.13":
-  version "1.13.13"
-  resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.13.13.tgz#40f60c002f2f915c11d9f7a09d2f46967ecc072a"
+"@oclif/dev-cli@^1.13.14":
+  version "1.13.14"
+  resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.13.14.tgz#fcfb899f6da512c6cdaf21e01667ec58217c677a"
   dependencies:
-    "@oclif/command" "^1.4.18"
-    "@oclif/config" "^1.6.16"
-    "@oclif/errors" "^1.0.7"
+    "@oclif/command" "^1.4.19"
+    "@oclif/config" "^1.6.17"
+    "@oclif/errors" "^1.0.8"
     "@oclif/plugin-help" "^1.2.7"
     cli-ux "^3.4.1"
     debug "^3.1.0"
@@ -380,9 +371,9 @@
     require-resolve "^0.0.2"
     tslib "^1.9.0"
 
-"@oclif/errors@^1.0.4", "@oclif/errors@^1.0.6", "@oclif/errors@^1.0.7":
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/@oclif/errors/-/errors-1.0.7.tgz#13d7205801944c341534370e65140d21ab929e24"
+"@oclif/errors@^1.0.4", "@oclif/errors@^1.0.6", "@oclif/errors@^1.0.8":
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/@oclif/errors/-/errors-1.0.8.tgz#2f8239267506bb7c3f5fd776144c2686e5b7fff7"
   dependencies:
     clean-stack "^1.3.0"
     fs-extra "^6.0.0"
@@ -401,11 +392,23 @@
     "@oclif/linewrap" "^1.0.0"
     chalk "^2.4.0"
 
-"@oclif/plugin-help@^1.2.7":
-  version "1.2.7"
-  resolved "https://registry.yarnpkg.com/@oclif/plugin-help/-/plugin-help-1.2.7.tgz#4fdfa9cfe53b8bc68b6fabba1126e13debebc87b"
+"@oclif/plugin-help@^1.2.10":
+  version "1.2.10"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-help/-/plugin-help-1.2.10.tgz#c2bb2b8f09027bf5a55e96346b8525d4dcff8c3e"
   dependencies:
-    "@oclif/command" "^1.4.18"
+    "@oclif/command" "^1.4.20"
+    chalk "^2.4.1"
+    indent-string "^3.2.0"
+    lodash.template "^4.4.0"
+    string-width "^2.1.1"
+    widest-line "^2.0.0"
+    wrap-ansi "^3.0.1"
+
+"@oclif/plugin-help@^1.2.7":
+  version "1.2.9"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-help/-/plugin-help-1.2.9.tgz#92a9fcfaf74341b28980aed86aeffaaf8d2e04c6"
+  dependencies:
+    "@oclif/command" "^1.4.20"
     chalk "^2.4.1"
     indent-string "^3.2.0"
     lodash.template "^4.4.0"
@@ -424,12 +427,12 @@
     debug "^3.1.0"
     semver "^5.5.0"
 
-"@oclif/plugin-not-found@^1.0.8":
-  version "1.0.8"
-  resolved "https://registry.yarnpkg.com/@oclif/plugin-not-found/-/plugin-not-found-1.0.8.tgz#5d71f8b9acfc5b45563196eebd3214313a06a14b"
+"@oclif/plugin-not-found@^1.0.9":
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-not-found/-/plugin-not-found-1.0.9.tgz#6758cf2fe349190256db4c9ba497e7fe9b53f27e"
   dependencies:
     "@heroku-cli/color" "^1.1.3"
-    "@oclif/command" "^1.4.18"
+    "@oclif/command" "^1.4.19"
     string-similarity "^1.2.0"
 
 "@oclif/plugin-plugins@^1.1.6":
@@ -449,14 +452,14 @@
     tslib "^1.9.0"
     yarn "^1.6.0"
 
-"@oclif/plugin-update@^1.1.20":
-  version "1.1.20"
-  resolved "https://registry.yarnpkg.com/@oclif/plugin-update/-/plugin-update-1.1.20.tgz#b0f88d8cbe2d21a1b110ff5b63605f469f5e5a72"
+"@oclif/plugin-update@^1.1.21":
+  version "1.1.21"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-update/-/plugin-update-1.1.21.tgz#180ad9df0c92bce181271c323fa38be7c1a1ed28"
   dependencies:
     "@heroku-cli/color" "^1.1.3"
-    "@oclif/command" "^1.4.18"
-    "@oclif/config" "^1.6.16"
-    "@oclif/errors" "^1.0.7"
+    "@oclif/command" "^1.4.20"
+    "@oclif/config" "^1.6.17"
+    "@oclif/errors" "^1.0.8"
     "@types/semver" "^5.5.0"
     cli-ux "^3.4.1"
     cross-spawn "^6.0.5"
@@ -469,13 +472,13 @@
     semver "^5.5.0"
     tar-fs "^1.16.2"
 
-"@oclif/plugin-warn-if-update-available@^1.3.7":
-  version "1.3.7"
-  resolved "https://registry.yarnpkg.com/@oclif/plugin-warn-if-update-available/-/plugin-warn-if-update-available-1.3.7.tgz#175aef19d0aa2caf8d75e3d3e97124664d5670a4"
+"@oclif/plugin-warn-if-update-available@^1.3.8":
+  version "1.3.8"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-warn-if-update-available/-/plugin-warn-if-update-available-1.3.8.tgz#bc42e86b83a29a138c8b7ee4e8c38ac066f9adf3"
   dependencies:
-    "@oclif/command" "^1.4.18"
-    "@oclif/config" "^1.6.16"
-    "@oclif/errors" "^1.0.7"
+    "@oclif/command" "^1.4.19"
+    "@oclif/config" "^1.6.17"
+    "@oclif/errors" "^1.0.8"
     chalk "^2.4.1"
     debug "^3.1.0"
     fs-extra "^6.0.0"
@@ -556,9 +559,9 @@
   dependencies:
     "@types/node" "*"
 
-"@types/node@*", "@types/node@^10.0.2":
-  version "10.0.2"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.0.2.tgz#180046ebbc37de8b64777765c2486ebecb59448e"
+"@types/node@*", "@types/node@^10.0.3":
+  version "10.0.3"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.0.3.tgz#1f89840c7aac2406cc43a2ecad98fc02a8e130e4"
 
 "@types/semver@^5.5.0":
   version "5.5.0"
@@ -692,9 +695,9 @@ atob@^2.0.0:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.1.tgz#ae2d5a729477f289d60dd7f96a6314a22dd6c22a"
 
-aws-sdk@^2.230.1:
-  version "2.230.1"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.230.1.tgz#494cef6aed2e16db1ed9c12acf4bd2a7317f5365"
+aws-sdk@^2.231.1:
+  version "2.231.1"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.231.1.tgz#ff0a63f73c71b6b098389b926b857b13816bd5f9"
   dependencies:
     buffer "4.9.1"
     events "1.1.1"
