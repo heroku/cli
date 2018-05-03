@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
+### Changed
+
+- Improve git-related error messages
 
 ## [1.9.9] - 2018-04-18
 ### Changed

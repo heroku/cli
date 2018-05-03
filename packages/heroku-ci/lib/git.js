@@ -4,8 +4,11 @@ const fs = Promise.promisifyAll(require('fs'))
 const tmp = Promise.promisifyAll(require('temp').track())
 const gh = require('github-url-to-object')
 
-const NOT_A_GIT_REPOSITORY = 'Not a git repository'
+const NOT_A_GIT_REPOSITORY = 'not a git repository'
 const RUN_IN_A_GIT_REPOSITORY = 'Please run this command from the directory containing your project\'s git repo'
+
+const NOT_ON_A_BRANCH = 'not a symbolic ref'
+const CHECKOUT_A_BRANCH = 'Please checkout a branch before running this command'
 
 function runGit (...args) {
   const git = spawn('git', args)
@@ -16,12 +19,16 @@ function runGit (...args) {
         return
       }
 
-      const stderr = git.stderr.read() || ''
-      if (stderr.toString().includes(NOT_A_GIT_REPOSITORY)) {
+      const error = (git.stderr.read() || 'unknown error').toString().trim()
+      if (error.toLowerCase().includes(NOT_A_GIT_REPOSITORY)) {
         reject(RUN_IN_A_GIT_REPOSITORY)
         return
       }
-      reject(exitCode)
+      if (error.includes(NOT_ON_A_BRANCH)) {
+        reject(CHECKOUT_A_BRANCH)
+        return
+      }
+      reject(`Error while running 'git ${args.join(' ')}' (${error})`)
     })
 
     git.stdout.on('data', (data) => resolve(data.toString().trim()))
