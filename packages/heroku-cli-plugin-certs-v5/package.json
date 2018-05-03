@@ -30,7 +30,7 @@
     "standard": "^8.0.0"
   },
   "files": [
-    ".oclif.manifest.json",
+    "oclif.manifest.json",
     "index.js",
     "lib",
     "commands"
@@ -44,7 +44,7 @@
   "scripts": {
     "test": "TZ=utc nyc mocha && standard",
     "prepublishOnly": "oclif-dev manifest",
-    "postpublish": "rm .oclif.manifest.json"
+    "postpublish": "rm oclif.manifest.json"
   },
   "cli-engine": {
     "topics": {
