@@ -380,4 +380,44 @@ heroku-failing.heroku-cli-sni-test.com  Failing
       apiCerts.done()
     })
   })
+
+  it('shows acm_status_reason', function () {
+    let api = nock('https://api.heroku.com', {
+      reqheaders: {'Accept': 'application/vnd.heroku+json; version=3.cedar-acm'}
+    })
+
+    let apiCerts = nock('https://api.heroku.com')
+
+    api.get('/apps/example').reply(200, {acm: true})
+    apiCerts.get('/apps/example/sni-endpoints').reply(200, [letsEncrypt])
+    api.get('/apps/example/domains').reply(200, [
+      {'kind': 'custom', 'hostname': 'heroku-acm.heroku-cli-sni-test.com', 'cname': 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'ok'},
+      {'kind': 'custom', 'hostname': 'heroku-failed.heroku-cli-sni-test.com', 'cname': 'heroku-failed.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'failed', 'acm_status_reason': 'uh oh something failed'}
+    ])
+
+    return certs.run({app: 'example'}).then(function () {
+      expect(cli.stderr).to.equal('')
+      expect(cli.stdout).to.equal(
+`=== Automatic Certificate Management is enabled on example
+
+Certificate details:
+Common Name(s): heroku-acm.heroku-cli-sni-test.com
+                heroku-san-test.heroku-cli-sni-test.com
+Expires At:     2012-08-01 21:34 UTC
+Issuer:         /C=US/O=Let's Encrypt/CN=Let's Encrypt Authority X3
+Starts At:      2013-08-01 21:34 UTC
+Subject:        /CN=heroku-acm.heroku-cli-sni-test.com
+SSL certificate is not trusted.
+
+Domain                                 Status  Reason
+─────────────────────────────────────  ──────  ──────────────────────
+heroku-acm.heroku-cli-sni-test.com     OK
+heroku-failed.heroku-cli-sni-test.com  Failed  uh oh something failed
+
+=== Some domains failed validation after multiple attempts, retry by running: heroku certs:auto:refresh
+`)
+      api.done()
+      apiCerts.done()
+    })
+  })
 })

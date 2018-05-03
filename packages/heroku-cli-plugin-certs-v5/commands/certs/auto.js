@@ -4,20 +4,24 @@ let co = require('co')
 let cli = require('heroku-cli-util')
 let certificateDetails = require('../../lib/certificate_details.js')
 let _ = require('lodash')
+const {default: color} = require('@heroku-cli/color')
 
 function humanize (value) {
   if (!value) {
-    return 'Waiting'
+    return color.yellow('Waiting')
   }
   if (value === 'ok') {
-    return 'OK'
+    return color.green('OK')
+  }
+  if (value === 'failed') {
+    return color.red('Failed')
   }
   // Remove the following lines once we address this in cedar-acm
   if (value === 'verified') {
-    return 'In Progress'
+    return color.yellow('In Progress')
   }
   if (value === 'dns-verified') {
-    return 'DNS Verified'
+    return color.yellow('DNS Verified')
   }
   return value.split('-').map((word) => _.capitalize(word)).join(' ')
 }
@@ -54,6 +58,12 @@ function * run (context, heroku) {
         {label: 'Domain', key: 'hostname'},
         {label: 'Status', key: 'acm_status', format: humanize}
       ]
+      if (domains.find(d => d.acm_status_reason)) {
+        columns.push({
+          label: 'Reason',
+          key: 'acm_status_reason'
+        })
+      }
 
       cli.log('')
       cli.table(domains, {columns})
