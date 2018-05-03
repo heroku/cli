@@ -45,7 +45,7 @@
     call-me-maybe "^1.0.1"
     glob-to-regexp "^0.3.0"
 
-"@oclif/command@^1.4.19", "@oclif/command@^1.4.20":
+"@oclif/command@^1.4.20":
   version "1.4.20"
   resolved "https://registry.yarnpkg.com/@oclif/command/-/command-1.4.20.tgz#7368c9c9f7f596fc8efffd7ec89118feed5203d8"
   dependencies:
@@ -60,14 +60,14 @@
   dependencies:
     debug "^3.1.0"
 
-"@oclif/dev-cli@^1.13.14":
-  version "1.13.14"
-  resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.13.14.tgz#fcfb899f6da512c6cdaf21e01667ec58217c677a"
+"@oclif/dev-cli@^1.13.15":
+  version "1.13.15"
+  resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.13.15.tgz#cc02e5b8c1fdb9b04973926e5b9f034c3f7ed64c"
   dependencies:
-    "@oclif/command" "^1.4.19"
+    "@oclif/command" "^1.4.20"
     "@oclif/config" "^1.6.17"
     "@oclif/errors" "^1.0.8"
-    "@oclif/plugin-help" "^1.2.7"
+    "@oclif/plugin-help" "^1.2.10"
     cli-ux "^3.4.1"
     debug "^3.1.0"
     fs-extra "^6.0.0"
@@ -108,11 +108,11 @@
     "@oclif/linewrap" "^1.0.0"
     chalk "^2.4.0"
 
-"@oclif/plugin-help@^1.2.7", "@oclif/plugin-help@^1.2.8":
-  version "1.2.8"
-  resolved "https://registry.yarnpkg.com/@oclif/plugin-help/-/plugin-help-1.2.8.tgz#35c3edd97d192d5bd741f95cc9e3642dfa6d9902"
+"@oclif/plugin-help@^1.2.10":
+  version "1.2.10"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-help/-/plugin-help-1.2.10.tgz#c2bb2b8f09027bf5a55e96346b8525d4dcff8c3e"
   dependencies:
-    "@oclif/command" "^1.4.19"
+    "@oclif/command" "^1.4.20"
     chalk "^2.4.1"
     indent-string "^3.2.0"
     lodash.template "^4.4.0"
