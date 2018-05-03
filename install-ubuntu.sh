@@ -38,6 +38,6 @@
 SCRIPT
   # test the CLI
   LOCATION=$(which heroku)
-  echo "heroku cli installed to $LOCATION"
+  echo "heroku installed to $LOCATION"
   heroku version
 }
