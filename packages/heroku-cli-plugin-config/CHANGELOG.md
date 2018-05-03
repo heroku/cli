@@ -1,3 +1,11 @@
+<a name="1.0.3"></a>
+## [1.0.3](https://github.com/heroku/heroku-cli-plugin-config/compare/v1.0.2...v1.0.3) (2018-05-03)
+
+
+### Bug Fixes
+
+* manifest ([4cc755e](https://github.com/heroku/heroku-cli-plugin-config/commit/4cc755e))
+
 <a name="1.0.2"></a>
 ## [1.0.2](https://github.com/heroku/heroku-cli-plugin-config/compare/v1.0.1...v1.0.2) (2018-05-03)
 
