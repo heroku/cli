@@ -116,9 +116,9 @@
     cli-ux "^3.3.31"
     heroku-cli-util "^8.0.6"
 
-"@heroku-cli/plugin-certs@^1.1.49":
-  version "1.1.49"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-certs/-/plugin-certs-1.1.49.tgz#e5f8d5781130f825c0b57976174deddca6a35796"
+"@heroku-cli/plugin-certs@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-certs/-/plugin-certs-1.2.1.tgz#d8e118d9f57115a3fcd684a02f2848bd8853527e"
   dependencies:
     co "4.6.0"
     co-wait "0.0.0"
@@ -339,7 +339,7 @@
     call-me-maybe "^1.0.1"
     glob-to-regexp "^0.3.0"
 
-"@oclif/command@1", "@oclif/command@^1.4.13", "@oclif/command@^1.4.18", "@oclif/command@^1.4.19", "@oclif/command@^1.4.20":
+"@oclif/command@1", "@oclif/command@^1.4.13", "@oclif/command@^1.4.19", "@oclif/command@^1.4.20":
   version "1.4.20"
   resolved "https://registry.yarnpkg.com/@oclif/command/-/command-1.4.20.tgz#7368c9c9f7f596fc8efffd7ec89118feed5203d8"
   dependencies:
@@ -423,12 +423,12 @@
     "@oclif/command" "^1.4.19"
     string-similarity "^1.2.0"
 
-"@oclif/plugin-plugins@^1.1.6":
-  version "1.1.6"
-  resolved "https://registry.yarnpkg.com/@oclif/plugin-plugins/-/plugin-plugins-1.1.6.tgz#4e2e89297bfe5e66acbb2b579a3a2904a6c3aab7"
+"@oclif/plugin-plugins@^1.1.7":
+  version "1.1.7"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-plugins/-/plugin-plugins-1.1.7.tgz#96e06af4bc48d60429725682d89018ec6af8bd0c"
   dependencies:
     "@heroku-cli/color" "^1.1.3"
-    "@oclif/command" "^1.4.18"
+    "@oclif/command" "^1.4.20"
     chalk "^2.4.1"
     cli-ux "^3.4.1"
     debug "^3.1.0"
@@ -683,9 +683,9 @@ atob@^2.0.0:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.1.tgz#ae2d5a729477f289d60dd7f96a6314a22dd6c22a"
 
-aws-sdk@^2.231.1:
-  version "2.231.1"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.231.1.tgz#ff0a63f73c71b6b098389b926b857b13816bd5f9"
+aws-sdk@^2.232.1:
+  version "2.232.1"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.232.1.tgz#7bfe18df4c581e795d84f51ee2ec4a16e9d56783"
   dependencies:
     buffer "4.9.1"
     events "1.1.1"
