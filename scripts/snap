@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+set -eux
+
+mkdir -p ~/.config/snapcraft
+set +x && echo "$SNAPCRAFT_MACAROON" | base64 --decode > ~/.config/snapcraft/snapcraft.cfg && set -x
+
+LATEST_64=$(snapcraft list-revisions heroku --arch amd64 | grep -v git | head -n 2 | tail -n 1 | awk '{print $1}')
+snapcraft release heroku "$LATEST_64" beta
+snapcraft release heroku "$LATEST_64" candidate
+snapcraft release heroku "$LATEST_64" stable
+
+LATEST_ARM=$(snapcraft list-revisions heroku --arch armhf | grep -v git | head -n 2 | tail -n 1 | awk '{print $1}')
+snapcraft release heroku "$LATEST_ARM" beta
+snapcraft release heroku "$LATEST_ARM" candidate
+snapcraft release heroku "$LATEST_ARM" stable

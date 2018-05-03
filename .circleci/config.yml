@@ -77,6 +77,14 @@ jobs:
       # - run: ./scripts/release/dev_center_docs
       # - store_artifacts:
       #     path: /tmp/heroku-cli-commands-test.md
+  snap:
+    docker:
+      - image: snapcore/snapcraft:stable
+        environment:
+          LC_ALL: C.UTF-8
+    steps:
+      - checkout
+      - run: ./scripts/snap
 workflows:
   version: 2
   heroku_cli:
@@ -115,3 +123,13 @@ workflows:
               ignore: /.*/
             tags:
               only: /^v.*/
+  nightly:
+    triggers:
+      - schedule:
+          cron: "0 14 * * *"
+          filters:
+            branches:
+              only:
+                - master
+    jobs:
+      - snap
