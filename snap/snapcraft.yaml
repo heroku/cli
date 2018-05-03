@@ -7,11 +7,25 @@ confinement: classic
 
 apps:
   heroku:
-    command: bin/heroku
+    command: bin/run
 
 parts:
   heroku:
-    source: .
-    plugin: nodejs
-    node-engine: 10.0.0
-    node-package-manager: yarn
+    plugin: nil
+    install: |
+      set -x
+      yarn -v || {
+        curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+        echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+        curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
+        apt-get install -y nodejs yarn
+      }
+      yarn
+      yarn pack --filename heroku.tar.gz
+      tar -xzf heroku.tar.gz
+      rmdir ../install
+      mv package ../install
+      OS=linux ./snap/fetch_node_binary ../install/bin
+      cd ../install && yarn --prod
+      cd ../install && bin/run -v
+      sed -i 's/#!\/usr\/bin\/env node/#!\/snap\/heroku\/current\/bin\/node/' ../install/bin/run
