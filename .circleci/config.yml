@@ -73,7 +73,7 @@ jobs:
           LC_TYPE: en_US.UTF-8
           LC_ALL: C.UTF-8
     steps:
-      - type: checkout
+      - checkout
       # - run: ./scripts/release/dev_center_docs
       # - store_artifacts:
       #     path: /tmp/heroku-cli-commands-test.md
