@@ -22,8 +22,8 @@ mkdir -p "$TMP_DIR/node"
 mkdir -p "$TMP_DIR/cache/node"
 
 
-if [ -z "${ARCH:-}" ] && [ ! -z "${SNAPCRAFT_IMAGE_INFO:-}" ]; then
-  ARCH=$(node -p "JSON.parse(process.env.SNAPCRAFT_IMAGE_INFO).architecture")
+if [ -z "${ARCH:-}" ] && [ ! -z "${SNAPCRAFT_ARCH_TRIPLET:-}" ]; then
+  ARCH=$(node -p "process.env.SNAPCRAFT_ARCH_TRIPLET.split('-')[0]")
 fi
 
 if [ "$ARCH" = amd64 ] || [ "$ARCH" = x86_64 ]; then
