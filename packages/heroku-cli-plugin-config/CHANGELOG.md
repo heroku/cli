@@ -1,3 +1,11 @@
+<a name="1.0.4"></a>
+## [1.0.4](https://github.com/heroku/heroku-cli-plugin-config/compare/v1.0.3...v1.0.4) (2018-05-04)
+
+
+### Bug Fixes
+
+* quoting of newlines ([1839db8](https://github.com/heroku/heroku-cli-plugin-config/commit/1839db8))
+
 <a name="1.0.3"></a>
 ## [1.0.3](https://github.com/heroku/heroku-cli-plugin-config/compare/v1.0.2...v1.0.3) (2018-05-03)
 
