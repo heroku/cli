@@ -46,6 +46,7 @@
   mkdir -p /usr/local/lib
   cd /usr/local/lib
   rm -rf heroku
+  rm -rf ~/.local/share/heroku/client
   curl https://cli-assets.heroku.com/heroku-\$OS-\$ARCH.tar.gz | tar xz
   rm /usr/local/bin/heroku
   ln -s /usr/local/lib/heroku/bin/heroku /usr/local/bin/heroku
@@ -53,6 +54,6 @@
 SCRIPT
   # test the CLI
   LOCATION=$(which heroku)
-  echo "heroku cli installed to $LOCATION"
+  echo "heroku installed to $LOCATION"
   heroku version
 }
