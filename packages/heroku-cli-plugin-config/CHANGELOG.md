@@ -1,3 +1,11 @@
+<a name="1.1.0"></a>
+# [1.1.0](https://github.com/heroku/heroku-cli-plugin-config/compare/v1.0.4...v1.1.0) (2018-05-04)
+
+
+### Features
+
+* support single key input ([069cf7d](https://github.com/heroku/heroku-cli-plugin-config/commit/069cf7d))
+
 <a name="1.0.4"></a>
 ## [1.0.4](https://github.com/heroku/heroku-cli-plugin-config/compare/v1.0.3...v1.0.4) (2018-05-04)
 

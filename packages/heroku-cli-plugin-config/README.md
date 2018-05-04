@@ -21,7 +21,7 @@ $ npm install -g @heroku-cli/plugin-config
 $ heroku COMMAND
 running command...
 $ heroku (-v|--version|version)
-@heroku-cli/plugin-config/1.0.4 linux-x64 node-v10.0.0
+@heroku-cli/plugin-config/1.1.0 linux-x64 node-v10.0.0
 $ heroku --help [COMMAND]
 USAGE
   $ heroku COMMAND
@@ -30,20 +30,23 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`heroku config:edit`](#heroku-configedit)
+* [`heroku config:edit [KEY]`](#heroku-configedit-key)
 
-## `heroku config:edit`
+## `heroku config:edit [KEY]`
 
 interactively edit config vars
 
 ```
 USAGE
-  $ heroku config:edit
+  $ heroku config:edit [KEY]
+
+ARGUMENTS
+  KEY  edit a single key
 
 OPTIONS
   -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
-_See code: [src/commands/config/edit.ts](https://github.com/heroku/heroku-cli-plugin-config/blob/v1.0.4/src/commands/config/edit.ts)_
+_See code: [src/commands/config/edit.ts](https://github.com/heroku/heroku-cli-plugin-config/blob/v1.1.0/src/commands/config/edit.ts)_
 <!-- commandsstop -->
