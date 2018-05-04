@@ -3,7 +3,8 @@ import {Command, flags} from '@heroku-cli/command'
 import {cli} from 'cli-ux'
 import * as _ from 'lodash'
 
-const shell = require('shell-quote')
+import {parse, quote} from '../../quote'
+
 const edit = require('edit-string')
 
 interface Config {
@@ -33,18 +34,6 @@ function stringToConfig(s: string): Config {
     config[line.slice(0, i)] = parse(line.slice(i + 1))
     return config
   }, {})
-}
-
-function quote(a: string): string {
-  a = a.replace(/\n/g, '\\n')
-  if (a.match(/[:@]/)) return shell.quote([`'${a}`]).replace(/^"'/, '"')
-  return shell.quote([a])
-}
-
-function parse(a: string): string {
-  let parsed = shell.parse(a)
-  if (parsed.length > 1) throw new Error(`Invalid token: ${a}`)
-  return parsed[0].replace(/\\\\n/g, '\n')
 }
 
 function allKeys(a: Config, b: Config): string[] {
