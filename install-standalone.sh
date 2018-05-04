@@ -1,6 +1,6 @@
 #!/bin/bash
 {
-    set -ex
+    set -e
     SUDO=''
     if [ "$(id -u)" != "0" ]; then
       SUDO='sudo'
