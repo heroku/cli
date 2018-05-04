@@ -43,10 +43,10 @@ function allKeys(a: Config, b: Config): string[] {
 function showDiff(from: Config, to: Config) {
   for (let k of allKeys(from, to)) {
     if (from[k] === to[k]) continue
-    if (from[k]) {
+    if (k in from) {
       cli.log(color.red(`${k}=${quote(from[k])}`))
     }
-    if (to[k]) {
+    if (k in to) {
       cli.log(color.green(`${k}=${quote(to[k])}`))
     }
   }
@@ -77,17 +77,30 @@ Examples:
     remote: flags.remote(),
   }
 
+  static args = [
+    {name: 'key', optional: true, description: 'edit a single key'},
+  ]
+
   app!: string
 
   async run() {
-    const {flags} = this.parse(ConfigEdit)
-    this.app = flags.app
+    const {flags: {app}, args: {key}} = this.parse(ConfigEdit)
+    this.app = app
     cli.action.start('Fetching config')
     const original = await this.fetchLatestConfig()
     cli.action.stop()
-    let newConfig = stringToConfig(
-      await edit(configToString(original), {prefix: `heroku-${this.app}-config-`, postfix: '.sh'}),
-    )
+    let newConfig = {...original}
+    const prefix = `heroku-${app}-config-`
+    if (key) {
+      newConfig[key] = await edit(original[key] || '', {prefix})
+      if (!original[key].endsWith('\n') && newConfig[key].endsWith('\n')) newConfig[key] = newConfig[key].slice(0, -1)
+    } else {
+      const s = await edit(configToString(original), {prefix, postfix: '.sh'})
+      newConfig = stringToConfig(s)
+    }
+    for (let k of Object.keys(newConfig)) {
+      if (!newConfig[k]) delete newConfig[k]
+    }
     if (!await this.diffPrompt(original, newConfig)) return
     cli.action.start('Verifying new config')
     await this.verifyUnchanged(original)
