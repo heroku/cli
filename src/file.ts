@@ -8,7 +8,7 @@ const debug = require('debug')('heroku-cli:file')
 export function exists(f: string): Promise<boolean> {
   // debug('exists', f)
   // @ts-ignore
-  return deps.fs.exists(f)
+  return deps.fs.pathExists(f)
 }
 
 export async function stat(file: string): Promise<FS.Stats> {
