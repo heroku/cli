@@ -47,6 +47,7 @@
   cd /usr/local/lib
   rm -rf heroku
   curl https://cli-assets.heroku.com/heroku-\$OS-\$ARCH.tar.gz | tar xz
+  rm /usr/local/bin/heroku
   ln -s /usr/local/lib/heroku/bin/heroku /usr/local/bin/heroku
 
 SCRIPT
