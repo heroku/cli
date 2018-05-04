@@ -1,3 +1,11 @@
+<a name="3.6.3"></a>
+## [3.6.3](https://github.com/heroku/heroku-run/compare/v3.6.2...v3.6.3) (2018-05-04)
+
+
+### Bug Fixes
+
+* fix process substitution hanging ([1e5a492](https://github.com/heroku/heroku-run/commit/1e5a492))
+
 <a name="3.6.2"></a>
 ## [3.6.2](https://github.com/heroku/heroku-run/compare/v3.6.1...v3.6.2) (2018-05-02)
 
