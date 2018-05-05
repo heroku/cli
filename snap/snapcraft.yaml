@@ -14,7 +14,6 @@ parts:
     plugin: nil
     install: |
       set -ex
-      env
 
       # install yarn
       apt-get update
@@ -37,6 +36,7 @@ parts:
       cat << EOF > snap/hooks/configure
       #!/bin/sh
       set -e
+      export PATH="$SNAP_DATA/bin:$PATH"
       heroku update
       EOF
       chmod +x snap/hooks/configure
