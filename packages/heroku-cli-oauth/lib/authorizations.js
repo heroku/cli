@@ -4,10 +4,13 @@ const cli = require('heroku-cli-util')
 
 function display (auth) {
   const obj = {
-    Client: auth.client ? auth.client.name : '<none>',
     ID: auth.id,
     Description: auth.description,
     Scope: auth.scope.join(',')
+  }
+  if (auth.client) {
+    obj.Client = auth.client.name
+    obj['Redirect URI'] = auth.client.redirect_uri
   }
   if (auth.access_token) {
     obj.Token = auth.access_token.token
@@ -22,6 +25,7 @@ function display (auth) {
 
   cli.styledObject(obj, [
     'Client',
+    'Redirect URI',
     'ID',
     'Description',
     'Scope',
