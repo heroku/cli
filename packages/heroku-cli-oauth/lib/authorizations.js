@@ -11,7 +11,7 @@ function display (auth) {
   if (auth.client) {
     obj.Client = auth.client.name
     obj['Redirect URI'] = auth.client.redirect_uri
-  }
+  } else obj.Client = '<none>'
   if (auth.access_token) {
     obj.Token = auth.access_token.token
     const addSeconds = require('date-fns/add_seconds')
