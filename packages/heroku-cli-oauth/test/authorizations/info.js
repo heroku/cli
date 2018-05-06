@@ -6,6 +6,8 @@ const nock = require('nock')
 const expect = require('unexpected')
 const cmd = commands.find(c => c.topic === 'authorizations' && c.command === 'info')
 
+const distanceInWordsToNow = require('date-fns/distance_in_words_to_now')
+
 describe('authorizations:info', () => {
   let api
   beforeEach(() => {
@@ -33,7 +35,7 @@ ID:          10
 Description: desc
 Scope:       global
 Token:       secrettoken
-Updated at:  Wed Dec 31 1969 16:00:00 GMT-0800 (PST) (over 48 years ago)
+Updated at:  Thu Jan 01 1970 00:00:00 GMT+0000 (UTC) (${distanceInWordsToNow(new Date(0))} ago)
 `))
   })
 

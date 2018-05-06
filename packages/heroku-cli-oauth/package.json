@@ -38,7 +38,8 @@
     "url": "https://github.com/heroku/heroku-cli-oauth.git"
   },
   "scripts": {
-    "test": "nyc mocha && standard",
+    "test": "TZ=utc nyc mocha",
+    "posttest": "standard",
     "prepublishOnly": "oclif-dev manifest",
     "postpublish": "rm oclif.manifest.json"
   },
