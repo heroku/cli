@@ -43,7 +43,7 @@ jobs:
 
 workflows:
   version: 2
-  "@heroku-cli/plugin-apps":
+  "@heroku-cli/plugin-oauth":
     jobs:
       - node-latest
       - node-8
