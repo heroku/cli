@@ -23,7 +23,7 @@ module.exports = {
   needsAuth: true,
   args: [{name: 'id'}],
   flags: [
-    {name: 'json', description: 'output in json format'},
+    {name: 'json', char: 'j', description: 'output in json format'},
     {name: 'shell', char: 's', description: 'output in shell format'}
   ],
   run: cli.command(co.wrap(run))

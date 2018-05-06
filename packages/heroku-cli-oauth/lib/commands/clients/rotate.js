@@ -30,7 +30,7 @@ module.exports = {
   description: 'rotate OAuth client secret',
   args: [{name: 'id'}],
   flags: [
-    {name: 'json', description: 'output in json format'},
+    {name: 'json', char: 'j', description: 'output in json format'},
     {name: 'shell', char: 's', description: 'output in shell format'}
   ],
   needsAuth: true,

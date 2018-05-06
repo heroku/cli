@@ -38,7 +38,7 @@ module.exports = {
   args: [{name: 'name'}, {name: 'redirect_uri'}],
   flags: [
     {name: 'shell', char: 's', description: 'output in shell format'},
-    {name: 'json', description: 'output in json format'}
+    {char: 'j', name: 'json', description: 'output in json format'}
   ],
   run: cli.command(co.wrap(run))
 }

@@ -47,8 +47,8 @@ module.exports = {
     {char: 'd', name: 'description', hasValue: true, description: 'set a custom authorization description'},
     {char: 's', name: 'scope', hasValue: true, description: 'set custom OAuth scopes', completion: ScopeCompletion},
     {char: 'e', name: 'expires-in', hasValue: true, description: 'set expiration in seconds (default no expiration)'},
-    {name: 'short', description: 'only output token'},
-    {name: 'json', description: 'output in json format'}
+    {char: 'S', name: 'short', description: 'only output token'},
+    {char: 'j', name: 'json', description: 'output in json format'}
   ],
   run: cli.command(co.wrap(run))
 }

@@ -28,7 +28,7 @@ module.exports = {
   description: 'list your OAuth sessions',
   needsAuth: true,
   flags: [
-    {name: 'json', description: 'output in json format'}
+    {char: 'j', name: 'json', description: 'output in json format'}
   ],
   run: cli.command(co.wrap(run))
 }
