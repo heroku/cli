@@ -1,6 +1,6 @@
 *-debug.log
 *-error.log
-.oclif.manifest.json
+/.nyc_output
 /coverage
 /dist
 /lib
