@@ -11,12 +11,12 @@ function display (auth) {
   }
   if (auth.access_token) {
     obj.Token = auth.access_token.token
+    const addSeconds = require('date-fns/add_seconds')
+    const distanceInWordsToNow = require('date-fns/distance_in_words_to_now')
+    obj['Updated at'] = `${addSeconds(auth.updated_at, 0)} (${distanceInWordsToNow(auth.updated_at)} ago)`
     if (auth.access_token.expires_in) {
-      const distanceInWordsToNow = require('date-fns/distance_in_words_to_now')
-      const addSeconds = require('date-fns/add_seconds')
-      console.dir(auth.access_token.expires_in)
       const date = addSeconds(new Date(), auth.access_token.expires_in)
-      obj['Expires at'] = `${date} (${distanceInWordsToNow(date)})`
+      obj['Expires at'] = `${date} (in ${distanceInWordsToNow(date)})`
     }
   }
 
@@ -26,7 +26,8 @@ function display (auth) {
     'Description',
     'Scope',
     'Token',
-    'Expires at'
+    'Expires at',
+    'Updated at'
   ])
 }
 
