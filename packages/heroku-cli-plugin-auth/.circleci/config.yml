@@ -61,5 +61,5 @@ workflows:
           filters:
             branches: {only: master}
           requires:
-            - node-latest
+            # - node-latest
             - node-8
