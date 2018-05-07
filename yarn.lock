@@ -274,7 +274,7 @@
     ioredis "1.9.0"
     ssh2 "^0.4.11"
 
-"@heroku-cli/plugin-run@^3.6.1", "@heroku-cli/plugin-run@^3.6.3":
+"@heroku-cli/plugin-run@^3.6.1":
   version "3.6.3"
   resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-run/-/plugin-run-3.6.3.tgz#11196235cb5974e2e61b9c7f6ae7ab69b2d22441"
   dependencies:
@@ -284,6 +284,19 @@
     eventsource "^1.0.5"
     fs-extra "^6.0.0"
     heroku-cli-util "^8.0.6"
+    shellwords "^0.1.1"
+
+"@heroku-cli/plugin-run@^3.8.1":
+  version "3.8.1"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-run/-/plugin-run-3.8.1.tgz#e79a58da412eb4eeae1921d394d1c46788188894"
+  dependencies:
+    "@heroku-cli/color" "^1.1.3"
+    "@heroku-cli/command" "^8.1.3"
+    "@heroku-cli/notifications" "^1.2.0"
+    co "4.6.0"
+    eventsource "^1.0.5"
+    fs-extra "^6.0.0"
+    heroku-cli-util "^8.0.8"
     shellwords "^0.1.1"
 
 "@heroku-cli/plugin-spaces@^2.12.2":
@@ -688,9 +701,9 @@ atob@^2.0.0:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.1.tgz#ae2d5a729477f289d60dd7f96a6314a22dd6c22a"
 
-aws-sdk@^2.233.1:
-  version "2.233.1"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.233.1.tgz#b4f541069a9f2781e9f73e1336ce81a9fc08bcf1"
+aws-sdk@^2.234.1:
+  version "2.234.1"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.234.1.tgz#bb8d3cbe4685db856e7bb056f38f14e7de1214f2"
   dependencies:
     buffer "4.9.1"
     events "1.1.1"
@@ -1711,7 +1724,7 @@ heroku-cli-util@^7.0.0:
     supports-color "^5.1.0"
     tunnel-agent "^0.6.0"
 
-heroku-cli-util@^8.0.0, heroku-cli-util@^8.0.6, heroku-cli-util@^8.0.7:
+heroku-cli-util@^8.0.0, heroku-cli-util@^8.0.6, heroku-cli-util@^8.0.7, heroku-cli-util@^8.0.8:
   version "8.0.8"
   resolved "https://registry.yarnpkg.com/heroku-cli-util/-/heroku-cli-util-8.0.8.tgz#a32c303f7c948b714b208d5b06bdae93289e9a27"
   dependencies:
