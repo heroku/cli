@@ -1,3 +1,11 @@
+<a name="3.8.1"></a>
+## [3.8.1](https://github.com/heroku/heroku-run/compare/v3.8.0...v3.8.1) (2018-05-07)
+
+
+### Bug Fixes
+
+* color tweaks ([42abf06](https://github.com/heroku/heroku-run/commit/42abf06))
+
 <a name="3.8.0"></a>
 # [3.8.0](https://github.com/heroku/heroku-run/compare/v3.7.0...v3.8.0) (2018-05-07)
 
