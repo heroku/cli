@@ -4,6 +4,8 @@ let co = require('co')
 let cli = require('heroku-cli-util')
 let certificateDetails = require('../../lib/certificate_details.js')
 let _ = require('lodash')
+let distanceInWordsToNow = require('date-fns/distance_in_words_to_now')
+
 const {default: color} = require('@heroku-cli/color')
 
 function humanize (value) {
@@ -64,6 +66,12 @@ function * run (context, heroku) {
           key: 'acm_status_reason'
         })
       }
+
+      columns.push({
+        label: 'Last Updated',
+        key: 'updated_at',
+        format: distanceInWordsToNow
+      })
 
       cli.log('')
       cli.table(domains, {columns})

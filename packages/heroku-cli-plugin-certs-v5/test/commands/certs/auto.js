@@ -35,13 +35,14 @@ describe('heroku certs:auto', function () {
     })
 
     let apiCerts = nock('https://api.heroku.com')
+    let now = new Date().toISOString()
 
     api.get('/apps/example').reply(200, {acm: true})
     apiCerts.get('/apps/example/sni-endpoints').reply(200, [letsEncrypt])
     api.get('/apps/example/domains').reply(200, [
       {'kind': 'heroku', 'hostname': 'tokyo-1050.herokuapp.com', 'cname': null, 'acm_status': null},
-      {'kind': 'custom', 'hostname': 'heroku-acm.heroku-cli-sni-test.com', 'cname': 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'ok'},
-      {'kind': 'custom', 'hostname': 'heroku-san-test.heroku-cli-sni-test.com', 'cname': 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'ok'}
+      {'kind': 'custom', 'hostname': 'heroku-acm.heroku-cli-sni-test.com', 'cname': 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'ok', 'updated_at': now},
+      {'kind': 'custom', 'hostname': 'heroku-san-test.heroku-cli-sni-test.com', 'cname': 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'ok', 'updated_at': now}
     ])
 
     return certs.run({app: 'example'}).then(function () {
@@ -58,10 +59,10 @@ Starts At:      2013-08-01 21:34 UTC
 Subject:        /CN=heroku-acm.heroku-cli-sni-test.com
 SSL certificate is not trusted.
 
-Domain                                   Status
-───────────────────────────────────────  ──────
-heroku-acm.heroku-cli-sni-test.com       OK
-heroku-san-test.heroku-cli-sni-test.com  OK
+Domain                                   Status  Last Updated
+───────────────────────────────────────  ──────  ──────────────────
+heroku-acm.heroku-cli-sni-test.com       OK      less than a minute
+heroku-san-test.heroku-cli-sni-test.com  OK      less than a minute
 `)
       api.done()
       apiCerts.done()
@@ -74,18 +75,19 @@ heroku-san-test.heroku-cli-sni-test.com  OK
     })
 
     let apiCerts = nock('https://api.heroku.com')
+    let now = new Date().toISOString()
 
     api.get('/apps/example').reply(200, {acm: true})
     apiCerts.get('/apps/example/sni-endpoints').reply(200, [letsEncrypt])
     api.get('/apps/example/domains').reply(200, [
       {'kind': 'heroku', 'hostname': 'tokyo-1050.herokuapp.com', 'cname': null, 'acm_status': null},
-      {'kind': 'custom', 'hostname': 'heroku-acm.heroku-cli-sni-test.com', 'cname': 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'ok'},
-      {'kind': 'custom', 'hostname': 'heroku-san-test.heroku-cli-sni-test.com', 'cname': 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'ok'},
-      {'kind': 'custom', 'hostname': 'heroku-in-prog.heroku-cli-sni-test.com', 'cname': 'heroku-in-prog.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'in-progress'},
-      {'kind': 'custom', 'hostname': 'heroku-verified.heroku-cli-sni-test.com', 'cname': 'heroku-verified.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'verified'},
-      {'kind': 'custom', 'hostname': 'heroku-dns-verified.heroku-cli-sni-test.com', 'cname': 'heroku-dns-verified.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'dns-verified'},
-      {'kind': 'custom', 'hostname': 'heroku-missing.heroku-cli-sni-test.com', 'cname': 'heroku-missing.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'failing'},
-      {'kind': 'custom', 'hostname': 'heroku-unknown.heroku-cli-sni-test.com', 'cname': 'heroku-unknown.heroku-cli-sni-test.com.herokudns.com', 'acm_status': null}
+      {'kind': 'custom', 'hostname': 'heroku-acm.heroku-cli-sni-test.com', 'cname': 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'ok', 'updated_at': now},
+      {'kind': 'custom', 'hostname': 'heroku-san-test.heroku-cli-sni-test.com', 'cname': 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'ok', 'updated_at': now},
+      {'kind': 'custom', 'hostname': 'heroku-in-prog.heroku-cli-sni-test.com', 'cname': 'heroku-in-prog.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'in-progress', 'updated_at': now},
+      {'kind': 'custom', 'hostname': 'heroku-verified.heroku-cli-sni-test.com', 'cname': 'heroku-verified.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'verified', 'updated_at': now},
+      {'kind': 'custom', 'hostname': 'heroku-dns-verified.heroku-cli-sni-test.com', 'cname': 'heroku-dns-verified.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'dns-verified', 'updated_at': now},
+      {'kind': 'custom', 'hostname': 'heroku-missing.heroku-cli-sni-test.com', 'cname': 'heroku-missing.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'failing', 'updated_at': now},
+      {'kind': 'custom', 'hostname': 'heroku-unknown.heroku-cli-sni-test.com', 'cname': 'heroku-unknown.heroku-cli-sni-test.com.herokudns.com', 'acm_status': null, 'updated_at': now}
     ])
 
     return certs.run({app: 'example'}).then(function () {
@@ -102,15 +104,15 @@ Starts At:      2013-08-01 21:34 UTC
 Subject:        /CN=heroku-acm.heroku-cli-sni-test.com
 SSL certificate is not trusted.
 
-Domain                                       Status
-───────────────────────────────────────────  ────────────
-heroku-acm.heroku-cli-sni-test.com           OK
-heroku-san-test.heroku-cli-sni-test.com      OK
-heroku-in-prog.heroku-cli-sni-test.com       In Progress
-heroku-verified.heroku-cli-sni-test.com      In Progress
-heroku-dns-verified.heroku-cli-sni-test.com  DNS Verified
-heroku-missing.heroku-cli-sni-test.com       Failing
-heroku-unknown.heroku-cli-sni-test.com       Waiting
+Domain                                       Status        Last Updated
+───────────────────────────────────────────  ────────────  ──────────────────
+heroku-acm.heroku-cli-sni-test.com           OK            less than a minute
+heroku-san-test.heroku-cli-sni-test.com      OK            less than a minute
+heroku-in-prog.heroku-cli-sni-test.com       In Progress   less than a minute
+heroku-verified.heroku-cli-sni-test.com      In Progress   less than a minute
+heroku-dns-verified.heroku-cli-sni-test.com  DNS Verified  less than a minute
+heroku-missing.heroku-cli-sni-test.com       Failing       less than a minute
+heroku-unknown.heroku-cli-sni-test.com       Waiting       less than a minute
 
 === Some domains are failing validation, please verify that your DNS matches: heroku domains
 `)
@@ -130,14 +132,16 @@ heroku-unknown.heroku-cli-sni-test.com       Waiting
 
     let acmFalse = Object.assign({}, letsEncrypt, {ssl_cert: sslCert})
 
+    let now = new Date().toISOString()
+
     api.get('/apps/example').reply(200, {acm: true})
     apiCerts.get('/apps/example/sni-endpoints').reply(200, [acmFalse])
     api.get('/apps/example/domains').reply(200, [
       {'kind': 'heroku', 'hostname': 'tokyo-1050.herokuapp.com', 'cname': null, 'acm_status': null},
-      {'kind': 'custom', 'hostname': 'heroku-acm.heroku-cli-sni-test.com', 'cname': 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'ok'},
-      {'kind': 'custom', 'hostname': 'heroku-san-test.heroku-cli-sni-test.com', 'cname': 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'ok'},
-      {'kind': 'custom', 'hostname': 'heroku-missing.heroku-cli-sni-test.com', 'cname': 'heroku-missing.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'failing'},
-      {'kind': 'custom', 'hostname': 'heroku-unknown.heroku-cli-sni-test.com', 'cname': 'heroku-unknown.heroku-cli-sni-test.com.herokudns.com', 'acm_status': null}
+      {'kind': 'custom', 'hostname': 'heroku-acm.heroku-cli-sni-test.com', 'cname': 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'ok', 'updated_at': now},
+      {'kind': 'custom', 'hostname': 'heroku-san-test.heroku-cli-sni-test.com', 'cname': 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'ok', 'updated_at': now},
+      {'kind': 'custom', 'hostname': 'heroku-missing.heroku-cli-sni-test.com', 'cname': 'heroku-missing.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'failing', 'updated_at': now},
+      {'kind': 'custom', 'hostname': 'heroku-unknown.heroku-cli-sni-test.com', 'cname': 'heroku-unknown.heroku-cli-sni-test.com.herokudns.com', 'acm_status': null, 'updated_at': now}
     ])
 
     return certs.run({app: 'example'}).then(function () {
@@ -145,12 +149,12 @@ heroku-unknown.heroku-cli-sni-test.com       Waiting
       expect(cli.stdout).to.equal(
 `=== Automatic Certificate Management is enabled on example
 
-Domain                                   Status
-───────────────────────────────────────  ───────
-heroku-acm.heroku-cli-sni-test.com       OK
-heroku-san-test.heroku-cli-sni-test.com  OK
-heroku-missing.heroku-cli-sni-test.com   Failing
-heroku-unknown.heroku-cli-sni-test.com   Waiting
+Domain                                   Status   Last Updated
+───────────────────────────────────────  ───────  ──────────────────
+heroku-acm.heroku-cli-sni-test.com       OK       less than a minute
+heroku-san-test.heroku-cli-sni-test.com  OK       less than a minute
+heroku-missing.heroku-cli-sni-test.com   Failing  less than a minute
+heroku-unknown.heroku-cli-sni-test.com   Waiting  less than a minute
 
 === Some domains are failing validation, please verify that your DNS matches: heroku domains
 `)
@@ -165,14 +169,15 @@ heroku-unknown.heroku-cli-sni-test.com   Waiting
     })
 
     let apiCerts = nock('https://api.heroku.com')
+    let now = new Date().toISOString()
 
     api.get('/apps/example').reply(200, {acm: true})
     apiCerts.get('/apps/example/sni-endpoints').reply(200, [letsEncrypt])
     api.get('/apps/example/domains').reply(200, [
       {'kind': 'heroku', 'hostname': 'tokyo-1050.herokuapp.com', 'cname': null, 'acm_status': null},
-      {'kind': 'custom', 'hostname': 'heroku-acm.heroku-cli-sni-test.com', 'cname': 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'ok'},
-      {'kind': 'custom', 'hostname': 'heroku-san-test.heroku-cli-sni-test.com', 'cname': 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'ok'},
-      {'kind': 'custom', 'hostname': 'heroku-failed.heroku-cli-sni-test.com', 'cname': 'heroku-failed.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'failed'}
+      {'kind': 'custom', 'hostname': 'heroku-acm.heroku-cli-sni-test.com', 'cname': 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'ok', 'updated_at': now},
+      {'kind': 'custom', 'hostname': 'heroku-san-test.heroku-cli-sni-test.com', 'cname': 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'ok', 'updated_at': now},
+      {'kind': 'custom', 'hostname': 'heroku-failed.heroku-cli-sni-test.com', 'cname': 'heroku-failed.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'failed', 'updated_at': now}
     ])
 
     return certs.run({app: 'example'}).then(function () {
@@ -189,11 +194,11 @@ Starts At:      2013-08-01 21:34 UTC
 Subject:        /CN=heroku-acm.heroku-cli-sni-test.com
 SSL certificate is not trusted.
 
-Domain                                   Status
-───────────────────────────────────────  ──────
-heroku-acm.heroku-cli-sni-test.com       OK
-heroku-san-test.heroku-cli-sni-test.com  OK
-heroku-failed.heroku-cli-sni-test.com    Failed
+Domain                                   Status  Last Updated
+───────────────────────────────────────  ──────  ──────────────────
+heroku-acm.heroku-cli-sni-test.com       OK      less than a minute
+heroku-san-test.heroku-cli-sni-test.com  OK      less than a minute
+heroku-failed.heroku-cli-sni-test.com    Failed  less than a minute
 
 === Some domains failed validation after multiple attempts, retry by running: heroku certs:auto:refresh
 `)
@@ -207,14 +212,15 @@ heroku-failed.heroku-cli-sni-test.com    Failed
       reqheaders: {'Accept': 'application/vnd.heroku+json; version=3.cedar-acm'}
     })
     let apiCerts = nock('https://api.heroku.com')
+    let now = new Date().toISOString()
 
     api.get('/apps/example').reply(200, {acm: true})
     apiCerts.get('/apps/example/sni-endpoints').reply(200, [letsEncrypt])
     api.get('/apps/example/domains').reply(200, [
       {'kind': 'heroku', 'hostname': 'tokyo-1050.herokuapp.com', 'cname': null, 'acm_status': null},
-      {'kind': 'custom', 'hostname': 'heroku-acm.heroku-cli-sni-test.com', 'cname': 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'ok'},
-      {'kind': 'custom', 'hostname': 'heroku-san-test.heroku-cli-sni-test.com', 'cname': 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'ok'},
-      {'kind': 'custom', 'hostname': 'heroku-failed.heroku-cli-sni-test.com', 'cname': 'heroku-failed.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'failing'}
+      {'kind': 'custom', 'hostname': 'heroku-acm.heroku-cli-sni-test.com', 'cname': 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'ok', 'updated_at': now},
+      {'kind': 'custom', 'hostname': 'heroku-san-test.heroku-cli-sni-test.com', 'cname': 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'ok', 'updated_at': now},
+      {'kind': 'custom', 'hostname': 'heroku-failed.heroku-cli-sni-test.com', 'cname': 'heroku-failed.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'failing', 'updated_at': now}
     ])
 
     return certs.run({app: 'example'}).then(function () {
@@ -231,11 +237,11 @@ Starts At:      2013-08-01 21:34 UTC
 Subject:        /CN=heroku-acm.heroku-cli-sni-test.com
 SSL certificate is not trusted.
 
-Domain                                   Status
-───────────────────────────────────────  ───────
-heroku-acm.heroku-cli-sni-test.com       OK
-heroku-san-test.heroku-cli-sni-test.com  OK
-heroku-failed.heroku-cli-sni-test.com    Failing
+Domain                                   Status   Last Updated
+───────────────────────────────────────  ───────  ──────────────────
+heroku-acm.heroku-cli-sni-test.com       OK       less than a minute
+heroku-san-test.heroku-cli-sni-test.com  OK       less than a minute
+heroku-failed.heroku-cli-sni-test.com    Failing  less than a minute
 
 === Some domains are failing validation, please verify that your DNS matches: heroku domains
 `)
@@ -269,13 +275,14 @@ heroku-failed.heroku-cli-sni-test.com    Failing
     })
 
     let apiCerts = nock('https://api.heroku.com')
+    let now = new Date().toISOString()
 
     api.get('/apps/example').reply(200, {acm: true})
     apiCerts.get('/apps/example/sni-endpoints').reply(200, [])
     api.get('/apps/example/domains').reply(200, [
       {'kind': 'heroku', 'hostname': 'tokyo-1050.herokuapp.com', 'cname': null, 'acm_status': null},
-      {'kind': 'custom', 'hostname': 'heroku-acm.heroku-cli-sni-test.com', 'cname': 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'ok'},
-      {'kind': 'custom', 'hostname': 'heroku-failing.heroku-cli-sni-test.com', 'cname': 'heroku-failed.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'failing'}
+      {'kind': 'custom', 'hostname': 'heroku-acm.heroku-cli-sni-test.com', 'cname': 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'ok', 'updated_at': now},
+      {'kind': 'custom', 'hostname': 'heroku-failing.heroku-cli-sni-test.com', 'cname': 'heroku-failed.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'failing', 'updated_at': now}
     ])
 
     return certs.run({app: 'example'}).then(function () {
@@ -283,10 +290,10 @@ heroku-failed.heroku-cli-sni-test.com    Failing
       expect(cli.stdout).to.equal(
 `=== Automatic Certificate Management is enabled on example
 
-Domain                                  Status
-──────────────────────────────────────  ───────
-heroku-acm.heroku-cli-sni-test.com      OK
-heroku-failing.heroku-cli-sni-test.com  Failing
+Domain                                  Status   Last Updated
+──────────────────────────────────────  ───────  ──────────────────
+heroku-acm.heroku-cli-sni-test.com      OK       less than a minute
+heroku-failing.heroku-cli-sni-test.com  Failing  less than a minute
 
 === Some domains are failing validation, please verify that your DNS matches: heroku domains
 `)
@@ -387,12 +394,13 @@ heroku-failing.heroku-cli-sni-test.com  Failing
     })
 
     let apiCerts = nock('https://api.heroku.com')
+    let now = new Date().toISOString()
 
     api.get('/apps/example').reply(200, {acm: true})
     apiCerts.get('/apps/example/sni-endpoints').reply(200, [letsEncrypt])
     api.get('/apps/example/domains').reply(200, [
-      {'kind': 'custom', 'hostname': 'heroku-acm.heroku-cli-sni-test.com', 'cname': 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'ok'},
-      {'kind': 'custom', 'hostname': 'heroku-failed.heroku-cli-sni-test.com', 'cname': 'heroku-failed.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'failed', 'acm_status_reason': 'uh oh something failed'}
+      {'kind': 'custom', 'hostname': 'heroku-acm.heroku-cli-sni-test.com', 'cname': 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'ok', 'updated_at': now},
+      {'kind': 'custom', 'hostname': 'heroku-failed.heroku-cli-sni-test.com', 'cname': 'heroku-failed.heroku-cli-sni-test.com.herokudns.com', 'acm_status': 'failed', 'acm_status_reason': 'uh oh something failed', 'updated_at': now}
     ])
 
     return certs.run({app: 'example'}).then(function () {
@@ -409,10 +417,10 @@ Starts At:      2013-08-01 21:34 UTC
 Subject:        /CN=heroku-acm.heroku-cli-sni-test.com
 SSL certificate is not trusted.
 
-Domain                                 Status  Reason
-─────────────────────────────────────  ──────  ──────────────────────
-heroku-acm.heroku-cli-sni-test.com     OK
-heroku-failed.heroku-cli-sni-test.com  Failed  uh oh something failed
+Domain                                 Status  Reason                  Last Updated
+─────────────────────────────────────  ──────  ──────────────────────  ──────────────────
+heroku-acm.heroku-cli-sni-test.com     OK                              less than a minute
+heroku-failed.heroku-cli-sni-test.com  Failed  uh oh something failed  less than a minute
 
 === Some domains failed validation after multiple attempts, retry by running: heroku certs:auto:refresh
 `)
