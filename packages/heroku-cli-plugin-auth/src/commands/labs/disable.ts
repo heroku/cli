@@ -5,7 +5,7 @@ import {cli} from 'cli-ux'
 const SecurityExceptionFeatures: any = {
   'spaces-strict-tls': {
     async prompt(out: any, app: string): Promise<string> {
-      out.warn('WARNING: Insecure Action')
+      out.warn('Insecure Action')
       let name = await cli.prompt(`You are enabling an older security protocol, TLS 1.0, which some organizations may not deem secure.
 To proceed, type ${app} or re-run this command with --confirm ${app}`)
       return name
