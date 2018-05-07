@@ -1,5 +1,5 @@
 const {default: ux} = require('cli-ux')
-const c = require('chalk')
+const {default: c} = require('@heroku-cli/color')
 
 const COLORS = [
   s => c.yellow(s),
@@ -88,28 +88,73 @@ function colorizeRouter (body) {
   }
 }
 
+const state = s => {
+  switch (s) {
+    case 'down': return red(s)
+    case 'up': return c.greenBright(s)
+    case 'starting': return c.yellowBright(s)
+    case 'complete': return c.greenBright(s)
+    default: return s
+  }
+}
+
+function colorizeRun (body) {
+  try {
+    if (body.match(/^Stopping all processes with SIGTERM$/)) return c.red(body)
+    let starting = body.match(/^(Starting process with command )(`.+`)(by user )?(.*)?$/)
+    if (starting) {
+      return [
+        starting[1],
+        c.cmd(starting[2]),
+        starting[3] || '',
+        c.green(starting[4] || '')
+      ].join('')
+    }
+    let stateChange = body.match(/^(State changed from )(\w+)( to )(\w+)$/)
+    if (stateChange) {
+      return [
+        stateChange[1],
+        state(stateChange[2]),
+        stateChange[3] || '',
+        state(stateChange[4] || '')
+      ].join('')
+    }
+    let exited = body.match(/^(Process exited with status )(\d+)$/)
+    if (exited) {
+      return [
+        exited[1],
+        exited[2] === '0' ? c.greenBright(exited[2]) : c.red(exited[2])
+      ].join('')
+    }
+  } catch (err) {
+    ux.warn(err)
+  }
+  return body
+}
+
 function colorizeWeb (body) {
   try {
     if (body.match(/^Unidling$/)) return c.yellow(body)
     if (body.match(/^Restarting$/)) return c.yellow(body)
     if (body.match(/^Stopping all processes with SIGTERM$/)) return c.red(body)
-    let starting = body.match(/^(Starting process with command )(`.+`)$/)
+    let starting = body.match(/^(Starting process with command )(`.+`)(by user )?(.*)?$/)
     if (starting) {
       return [
-        c.yellow(starting[1]),
-        starting[2]
+        (starting[1]),
+        c.cmd(starting[2]),
+        (starting[3] || ''),
+        c.green(starting[4] || '')
+      ].join('')
+    }
+    let exited = body.match(/^(Process exited with status )(\d+)$/)
+    if (exited) {
+      return [
+        exited[1],
+        exited[2] === '0' ? c.greenBright(exited[2]) : c.red(exited[2])
       ].join('')
     }
     let stateChange = body.match(/^(State changed from )(\w+)( to )(\w+)$/)
     if (stateChange) {
-      const state = s => {
-        switch (s) {
-          case 'down': return red(s)
-          case 'up': return c.greenBright(s)
-          case 'starting': return c.yellowBright(s)
-          default: return s
-        }
-      }
       return [
         stateChange[1],
         state(stateChange[2]),
@@ -151,26 +196,35 @@ function colorizeAPI (body) {
   const build = body.match(/^(Build started by user )(.+)$/)
   if (build) {
     return [
-      c.yellow(build[1]),
+      build[1],
       c.green(build[2])
     ].join('')
   }
   const deploy = body.match(/^(Deploy )([\w]+)( by user )(.+)$/)
   if (deploy) {
     return [
-      c.yellow(deploy[1]),
+      deploy[1],
       c.cyan(deploy[2]),
-      c.yellow(deploy[3]),
+      deploy[3],
       c.green(deploy[4])
     ].join('')
   }
   const release = body.match(/^(Release )(v[\d]+)( created by user )(.+)$/)
   if (release) {
     return [
-      c.yellow(release[1]),
+      release[1],
       c.magenta(release[2]),
-      c.yellow(release[3]),
+      release[3],
       c.green(release[4])
+    ].join('')
+  }
+  let starting = body.match(/^(Starting process with command )(`.+`)(by user )?(.*)?$/)
+  if (starting) {
+    return [
+      (starting[1]),
+      c.cmd(starting[2]),
+      (starting[3] || ''),
+      c.green(starting[4] || '')
     ].join('')
   }
   return body
@@ -184,6 +238,14 @@ function colorizeRedis (body) {
 }
 
 function colorizePG (body) {
+  let create = body.match(/^(\[DATABASE\].*)(CREATE TABLE)(.*)$/)
+  if (create) {
+    return [
+      other(create[1]),
+      c.magenta(create[2]),
+      c.cyan(create[3])
+    ].join('')
+  }
   if (body.match(/source=\w+ sample#/)) {
     body = dim(body)
   }
@@ -205,6 +267,9 @@ module.exports = function colorize (line) {
     case 'router':
       body = colorizeRouter(body)
       break
+    case 'run':
+      body = colorizeRun(body)
+      break
     case 'web':
       body = colorizeWeb(body)
       break
@@ -212,6 +277,7 @@ module.exports = function colorize (line) {
       body = colorizeRedis(body)
       break
     case 'heroku-postgres':
+    case 'postgres':
       body = colorizePG(body)
   }
   return getColorForIdentifier(identifier)(header) + ' ' + body
