@@ -30,7 +30,8 @@ let response = {
       },
       ike: { pre_shared_key: 'apresharedkey2' }
     }
-  ]
+  ],
+  full_space_cidr_block: '10.0.0.0/16'
 }
 
 describe('spaces:vpn:config', function () {
@@ -45,10 +46,10 @@ describe('spaces:vpn:config', function () {
     }})
             .then(() => expect(cli.stdout).to.equal(
             `=== my-space VPNs
-ID        Customer Gateway  VPN Gateway    Pre-shared Key
-────────  ────────────────  ─────────────  ──────────────
-Tunnel 1  52.44.146.197     52.44.146.197  apresharedkey1
-Tunnel 2  52.44.146.196     52.44.146.196  apresharedkey2\n`))
+VPN Tunnel  Customer Gateway  VPN Gateway    Pre-shared Key  Routable Subnets
+──────────  ────────────────  ─────────────  ──────────────  ────────────────
+Tunnel 1    52.44.146.197     52.44.146.197  apresharedkey1  10.0.0.0/16
+Tunnel 2    52.44.146.196     52.44.146.196  apresharedkey2  10.0.0.0/16\n`))
     .then(() => api.done())
   })
 
@@ -105,7 +106,8 @@ Tunnel 2  52.44.146.196     52.44.146.196  apresharedkey2\n`))
         "pre_shared_key": "apresharedkey2"
       }
     }
-  ]
+  ],
+  "full_space_cidr_block": "10.0.0.0/16"
 }\n`))
      .then(() => api.done())
   })

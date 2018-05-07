@@ -5,13 +5,18 @@ const co = require('co')
 
 function displayVPNConfigInfo (space, config) {
   cli.styledHeader(`${space} VPNs`)
-  config.ipsec_tunnels.forEach((val, i) => { val.tunnel_id = 'Tunnel ' + (i + 1) })
+  config.ipsec_tunnels.forEach((val, i) => {
+    val.tunnel_id = 'Tunnel ' + (i + 1)
+    val.routable_cidr = config.full_space_cidr_block
+  })
+
   cli.table(config.ipsec_tunnels, {
     columns: [
-      {key: 'tunnel_id', label: 'ID'},
+      {key: 'tunnel_id', label: 'VPN Tunnel'},
       {key: 'customer_gateway.outside_address.ip_address', label: 'Customer Gateway'},
       {key: 'vpn_gateway.outside_address.ip_address', label: 'VPN Gateway'},
-      {key: 'ike.pre_shared_key', label: 'Pre-shared Key'}
+      {key: 'ike.pre_shared_key', label: 'Pre-shared Key'},
+      {key: 'routable_cidr', label: 'Routable Subnets'}
     ]
   })
 }
