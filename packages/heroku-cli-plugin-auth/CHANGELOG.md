@@ -1,3 +1,17 @@
+<a name="0.2.0"></a>
+# [0.2.0](https://github.com/heroku/heroku-cli-plugin-auth/compare/v0.1.3...v0.2.0) (2018-05-07)
+
+
+### Bug Fixes
+
+* remove heroku-cli-util ([ab07d98](https://github.com/heroku/heroku-cli-plugin-auth/commit/ab07d98))
+* updated command ([764aac0](https://github.com/heroku/heroku-cli-plugin-auth/commit/764aac0))
+
+
+### Features
+
+* added login/logout commands ([e17d388](https://github.com/heroku/heroku-cli-plugin-auth/commit/e17d388))
+
 <a name="0.1.3"></a>
 ## [0.1.3](https://github.com/heroku/heroku-cli-plugin-auth/compare/v0.1.2...v0.1.3) (2018-04-19)
 

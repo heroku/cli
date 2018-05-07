@@ -16,6 +16,8 @@ auth core plugin for Heroku CLI
 # Commands
 <!-- commands -->
 * [`heroku 2fa`](#heroku-2-fa)
+* [`heroku auth:login`](#heroku-authlogin)
+* [`heroku auth:logout`](#heroku-authlogout)
 * [`heroku auth:whoami`](#heroku-authwhoami)
 * [`heroku labs:disable [FEATURE]`](#heroku-labsdisable-feature)
 
@@ -32,7 +34,41 @@ ALIASES
   $ heroku twofactor
 ```
 
-_See code: [src/commands/2fa.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.1.3/src/commands/2fa.ts)_
+_See code: [src/commands/2fa.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.2.0/src/commands/2fa.ts)_
+
+## `heroku auth:login`
+
+login with your Heroku credentials
+
+```
+USAGE
+  $ heroku auth:login
+
+OPTIONS
+  -e, --expires-in=expires-in  duration of token in seconds (default 1 year)
+  --browser=browser            browser to open SSO with
+  --interactive                login with username/password
+  --sso                        login for enterprise users under SSO
+
+ALIASES
+  $ heroku login
+```
+
+_See code: [src/commands/auth/login.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.2.0/src/commands/auth/login.ts)_
+
+## `heroku auth:logout`
+
+clears local login credentials and invalidates API session
+
+```
+USAGE
+  $ heroku auth:logout
+
+ALIASES
+  $ heroku logout
+```
+
+_See code: [src/commands/auth/logout.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.2.0/src/commands/auth/logout.ts)_
 
 ## `heroku auth:whoami`
 
@@ -46,7 +82,7 @@ ALIASES
   $ heroku whoami
 ```
 
-_See code: [src/commands/auth/whoami.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.1.3/src/commands/auth/whoami.ts)_
+_See code: [src/commands/auth/whoami.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.2.0/src/commands/auth/whoami.ts)_
 
 ## `heroku labs:disable [FEATURE]`
 
@@ -62,5 +98,5 @@ OPTIONS
   --confirm=confirm
 ```
 
-_See code: [src/commands/labs/disable.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.1.3/src/commands/labs/disable.ts)_
+_See code: [src/commands/labs/disable.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.2.0/src/commands/labs/disable.ts)_
 <!-- commandsstop -->
