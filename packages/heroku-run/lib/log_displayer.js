@@ -32,13 +32,42 @@ getColorForIdentifier('postgres')
 getColorForIdentifier('heroku-postgres')
 
 let lineRegex = /^(.*?\[([\w-]+)([\d.]+)?]:)(.*)?$/
+
+function colorizeBody (body) {
+  console.dir(body)
+  let apache = body.match(/^(\d+\.\d+\.\d+\.\d+ -[^-]*- \[[^\]]+\] ")(\w+)( )([^ ]+)( HTTP\/\d+\.\d+" )(\d+)( .+$)/)
+  if (apache) {
+    const path = i => cli.color.blue(i)
+    const method = i => cli.color.magenta(i)
+    const code = code => {
+      if (code < 200) return code
+      if (code < 300) return cli.color.green(code)
+      if (code < 400) return cli.color.cyan(code)
+      if (code < 500) return cli.color.yellow(code)
+      if (code < 600) return cli.color.red(code)
+      return code
+    }
+    const [, ...tokens] = apache
+    body = [
+      tokens[0],
+      method(tokens[1]),
+      tokens[2],
+      path(tokens[3]),
+      tokens[4],
+      code(tokens[5]),
+      tokens[6]
+    ].join('')
+  }
+  return body
+}
+
 function colorize (line) {
   let parsed = line.match(lineRegex)
   if (!parsed) return line
   let header = parsed[1]
   let identifier = parsed[2]
-  let body = parsed[4]
-  return getColorForIdentifier(identifier)(header) + body
+  let body = colorizeBody(parsed[4].trim())
+  return getColorForIdentifier(identifier)(header) + ' ' + body
 }
 
 function readLogs (logplexURL) {

@@ -22,6 +22,19 @@
     http-call "^5.1.1"
     netrc-parser "^3.1.4"
 
+"@heroku-cli/command@^8.1.3":
+  version "8.1.3"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.1.3.tgz#f2f1f53a15e5481b5b9058a02f1e5073fe92feed"
+  dependencies:
+    "@heroku-cli/color" "^1.1.3"
+    "@oclif/errors" "^1.0.9"
+    cli-ux "^4.0.0"
+    debug "^3.1.0"
+    heroku-client "3.0.6"
+    http-call "^5.1.2"
+    netrc-parser "^3.1.4"
+    opn "^5.3.0"
+
 "@heroku-cli/notifications@^1.2.0":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@heroku-cli/notifications/-/notifications-1.2.0.tgz#aea6dd4ccac951ab62ded2ceef9b5cd482e14d96"
@@ -44,21 +57,30 @@
     debug "^3.1.0"
     semver "^5.5.0"
 
+"@oclif/command@^1.4.21":
+  version "1.4.21"
+  resolved "https://registry.yarnpkg.com/@oclif/command/-/command-1.4.21.tgz#e45f252f8c375ad6e24a0a5f908e6aa692c5c56a"
+  dependencies:
+    "@oclif/errors" "^1.0.9"
+    "@oclif/parser" "^3.3.3"
+    debug "^3.1.0"
+    semver "^5.5.0"
+
 "@oclif/config@^1.6.17":
   version "1.6.17"
   resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.6.17.tgz#e9608f56e5acd49fcaf3bbfcc3e8818d81b1ba12"
   dependencies:
     debug "^3.1.0"
 
-"@oclif/dev-cli@^1.13.16":
-  version "1.13.16"
-  resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.13.16.tgz#5a36e6a44af085c7ad44bb3902f45bfcbc6eab48"
+"@oclif/dev-cli@^1.13.19":
+  version "1.13.19"
+  resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.13.19.tgz#da43d784d5a3a97922533ab4a9bb3f7c2435d6d0"
   dependencies:
-    "@oclif/command" "^1.4.20"
+    "@oclif/command" "^1.4.21"
     "@oclif/config" "^1.6.17"
-    "@oclif/errors" "^1.0.8"
+    "@oclif/errors" "^1.0.9"
     "@oclif/plugin-help" "^1.2.10"
-    cli-ux "^3.4.1"
+    cli-ux "^4.0.0"
     debug "^3.1.0"
     fs-extra "^6.0.0"
     lodash "^4.17.10"
@@ -80,6 +102,16 @@
 "@oclif/errors@^1.0.8":
   version "1.0.8"
   resolved "https://registry.yarnpkg.com/@oclif/errors/-/errors-1.0.8.tgz#2f8239267506bb7c3f5fd776144c2686e5b7fff7"
+  dependencies:
+    clean-stack "^1.3.0"
+    fs-extra "^6.0.0"
+    indent-string "^3.2.0"
+    strip-ansi "^4.0.0"
+    wrap-ansi "^3.0.1"
+
+"@oclif/errors@^1.0.9":
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/@oclif/errors/-/errors-1.0.9.tgz#6fe3afd8e7683c436df63674550899adec10c81c"
   dependencies:
     clean-stack "^1.3.0"
     fs-extra "^6.0.0"
@@ -110,9 +142,9 @@
     widest-line "^2.0.0"
     wrap-ansi "^3.0.1"
 
-"@oclif/plugin-legacy@^1.0.14":
-  version "1.0.14"
-  resolved "https://registry.yarnpkg.com/@oclif/plugin-legacy/-/plugin-legacy-1.0.14.tgz#31202b4502641305608b4c101abfe3ca4ad4700f"
+"@oclif/plugin-legacy@^1.0.15":
+  version "1.0.15"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-legacy/-/plugin-legacy-1.0.15.tgz#739f218b9eae3423a9b544efae28726ea78d254b"
   dependencies:
     "@heroku-cli/color" "^1.1.3"
     "@heroku-cli/command" "^8.0.7"
@@ -201,6 +233,10 @@ ansi-styles@^3.2.1:
 ansicolors@~0.2.1:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/ansicolors/-/ansicolors-0.2.1.tgz#be089599097b74a5c9c4a84a0cdbcdb62bd87aef"
+
+ansicolors@~0.3.2:
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/ansicolors/-/ansicolors-0.3.2.tgz#665597de86a9ffe3aa9bfbe6cae5c6ea426b4979"
 
 argparse@^1.0.7:
   version "1.0.9"
@@ -400,6 +436,13 @@ cardinal@^1.0.0:
     ansicolors "~0.2.1"
     redeyed "~1.0.0"
 
+cardinal@^2.0.0:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/cardinal/-/cardinal-2.0.1.tgz#2431630e6c006253b803967249b2d72e50d1985d"
+  dependencies:
+    ansicolors "~0.3.2"
+    redeyed "~2.0.0"
+
 chai@^4.1.2:
   version "4.1.2"
   resolved "https://registry.yarnpkg.com/chai/-/chai-4.1.2.tgz#0f64584ba642f0f2ace2806279f4f06ca23ad73c"
@@ -511,6 +554,25 @@ cli-ux@^3.4.1:
     strip-ansi "^4.0.0"
     supports-color "^5.4.0"
 
+cli-ux@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-4.0.0.tgz#8c68b3761332f3714ef3bdf517b5aacda53486b4"
+  dependencies:
+    "@oclif/linewrap" "^1.0.0"
+    "@oclif/screen" "^1.0.2"
+    ansi-styles "^3.2.1"
+    cardinal "^2.0.0"
+    chalk "^2.4.1"
+    clean-stack "^1.3.0"
+    extract-stack "^1.0.0"
+    fs-extra "^6.0.0"
+    indent-string "^3.2.0"
+    lodash "^4.17.10"
+    password-prompt "^1.0.5"
+    semver "^5.5.0"
+    strip-ansi "^4.0.0"
+    supports-color "^5.4.0"
+
 cli-width@^2.0.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/cli-width/-/cli-width-2.2.0.tgz#ff19ede8a9a5e579324147b0c11f0fbcbabed639"
@@ -599,7 +661,7 @@ cross-spawn@^5.1.0:
     shebang-command "^1.2.0"
     which "^1.2.9"
 
-cross-spawn@^6.0.0:
+cross-spawn@^6.0.0, cross-spawn@^6.0.5:
   version "6.0.5"
   resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-6.0.5.tgz#4a5ec7c64dfae22c3a14124dbacdee846d80cbc4"
   dependencies:
@@ -919,7 +981,7 @@ espree@^3.5.2:
     acorn "^5.5.0"
     acorn-jsx "^3.0.0"
 
-esprima@^4.0.0:
+esprima@^4.0.0, esprima@~4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/esprima/-/esprima-4.0.0.tgz#4499eddcd1110e0b218bacf2fa7f7f59f55ca804"
 
@@ -1319,9 +1381,9 @@ he@1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/he/-/he-1.1.1.tgz#93410fd21b009735151f8868c2f271f3427e23fd"
 
-heroku-cli-util@^8.0.6:
-  version "8.0.6"
-  resolved "https://registry.yarnpkg.com/heroku-cli-util/-/heroku-cli-util-8.0.6.tgz#8fd3049329620136c729a4e002eca804fe24d87f"
+heroku-cli-util@^8.0.8:
+  version "8.0.8"
+  resolved "https://registry.yarnpkg.com/heroku-cli-util/-/heroku-cli-util-8.0.8.tgz#a32c303f7c948b714b208d5b06bdae93289e9a27"
   dependencies:
     "@heroku-cli/color" "^1.1.3"
     ansi-escapes "^3.1.0"
@@ -1368,6 +1430,16 @@ http-cache-semantics@3.8.1:
 http-call@^5.1.1:
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/http-call/-/http-call-5.1.1.tgz#0110095d455b876c64cc9fe820b3f836cc552ea7"
+  dependencies:
+    content-type "^1.0.4"
+    debug "^3.1.0"
+    is-retry-allowed "^1.1.0"
+    is-stream "^1.1.0"
+    tunnel-agent "^0.6.0"
+
+http-call@^5.1.2:
+  version "5.1.2"
+  resolved "https://registry.yarnpkg.com/http-call/-/http-call-5.1.2.tgz#2320e1aef65f01574723a697aca31748ce578f9d"
   dependencies:
     content-type "^1.0.4"
     debug "^3.1.0"
@@ -1611,6 +1683,10 @@ is-symbol@^1.0.1:
 is-windows@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/is-windows/-/is-windows-1.0.2.tgz#d1850eb9791ecd18e6182ce12a30f396634bb19d"
+
+is-wsl@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/is-wsl/-/is-wsl-1.1.0.tgz#1f16e4aa22b04d1336b66188a66af3c600c3a66d"
 
 isarray@0.0.1:
   version "0.0.1"
@@ -2127,6 +2203,12 @@ opn@^3.0.3:
   dependencies:
     object-assign "^4.0.1"
 
+opn@^5.3.0:
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/opn/-/opn-5.3.0.tgz#64871565c863875f052cfdf53d3e3cb5adb53b1c"
+  dependencies:
+    is-wsl "^1.1.0"
+
 optionator@^0.8.2:
   version "0.8.2"
   resolved "https://registry.yarnpkg.com/optionator/-/optionator-0.8.2.tgz#364c5e409d3f4d6301d6c0b4c05bba50180aeb64"
@@ -2199,6 +2281,13 @@ password-prompt@^1.0.4:
   dependencies:
     ansi-escapes "^3.0.0"
     cross-spawn "^5.1.0"
+
+password-prompt@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/password-prompt/-/password-prompt-1.0.5.tgz#d2f2effd89bf26d359c87a4678339804ce782b87"
+  dependencies:
+    ansi-escapes "^3.1.0"
+    cross-spawn "^6.0.5"
 
 path-dirname@^1.0.0:
   version "1.0.2"
@@ -2437,6 +2526,12 @@ redeyed@~1.0.0:
   dependencies:
     esprima "~3.0.0"
 
+redeyed@~2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/redeyed/-/redeyed-2.0.0.tgz#e7ae722cd4ce4dbc537cb5810fef3de2ac76ff12"
+  dependencies:
+    esprima "~4.0.0"
+
 regenerator-runtime@^0.11.0:
   version "0.11.0"
   resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.11.0.tgz#7e54fe5b5ccd5d6624ea6255c3473be090b802e1"
@@ -2598,9 +2693,9 @@ signal-exit@^3.0.0, signal-exit@^3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/signal-exit/-/signal-exit-3.0.2.tgz#b5fdc08f1287ea1178628e415e25132b73646c6d"
 
-sinon@^5.0.3:
-  version "5.0.3"
-  resolved "https://registry.yarnpkg.com/sinon/-/sinon-5.0.3.tgz#9950f1616187ff0cd7d75a60d66bc27fed569945"
+sinon@^5.0.7:
+  version "5.0.7"
+  resolved "https://registry.yarnpkg.com/sinon/-/sinon-5.0.7.tgz#3bded6a73613ccc9e512e20246ced69a27c27dab"
   dependencies:
     "@sinonjs/formatio" "^2.0.0"
     diff "^3.1.0"
@@ -2913,9 +3008,9 @@ unexpected-bluebird@2.9.34-longstack2:
   version "2.9.34-longstack2"
   resolved "https://registry.yarnpkg.com/unexpected-bluebird/-/unexpected-bluebird-2.9.34-longstack2.tgz#49acac753b0556ded6025210ee96182307d2b2c9"
 
-unexpected@^10.37.6:
-  version "10.37.6"
-  resolved "https://registry.yarnpkg.com/unexpected/-/unexpected-10.37.6.tgz#212f01c2fc5a65b995f5c7b8af0c7ee28370b15f"
+unexpected@^10.37.7:
+  version "10.37.7"
+  resolved "https://registry.yarnpkg.com/unexpected/-/unexpected-10.37.7.tgz#38b445375877047511141a6f90e1decfa3f81c7d"
   dependencies:
     array-changes "3.0.1"
     array-changes-async "3.0.1"
