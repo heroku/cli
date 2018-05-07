@@ -1,3 +1,11 @@
+<a name="3.8.0"></a>
+# [3.8.0](https://github.com/heroku/heroku-run/compare/v3.7.0...v3.8.0) (2018-05-07)
+
+
+### Features
+
+* colorizing work ([98f520f](https://github.com/heroku/heroku-run/commit/98f520f))
+
 <a name="3.7.0"></a>
 # [3.7.0](https://github.com/heroku/heroku-run/compare/v3.6.3...v3.7.0) (2018-05-07)
 
