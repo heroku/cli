@@ -8,6 +8,14 @@ let run = function(fn) {
   }))
 }
 
+let run_admin = function(fn) {
+  return cli.command(co.wrap(function * (context, heroku) {
+    heroku.options.headers['accept'] = 'application/json'
+    yield fn(context, heroku)
+  }))
+}
+
 module.exports = {
-  run
+  run,
+  run_admin
 }

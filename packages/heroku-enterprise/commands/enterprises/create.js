@@ -7,7 +7,7 @@ function * create (context, heroku) {
   let enterpriseAccountName = context.args.name
   let managers = context.flags.managers.split(',')
   let params = { body: { name: enterpriseAccountName, managers: managers } }
-  let create = heroku.post(`/enterprise-accounts`, params)
+  let create = heroku.post(`/admin/enterprise-accounts`, params)
   cli.action(`Creating ${enterpriseAccountName}`, create)
 }
 
@@ -18,5 +18,5 @@ module.exports = {
   needsAuth: true,
   flags: [{name: 'managers', hasValue: true, required: true}],
   args: [{name: 'name', hasValue: true, required: true}],
-  run: cmd.run(create)
+  run: cmd.run_admin(create)
 }

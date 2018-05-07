@@ -7,7 +7,7 @@ function * transfer(context, heroku) {
   let internal = context.flags['internal']
 
   let params = { body: { enterprise_account: enterpriseAccount, internal: internal } }
-  let transfer = heroku.post(`/teams/${team}/actions/transfer`, params)
+  let transfer = heroku.post(`/admin/teams/${team}/actions/transfer`, params)
 
   yield cli.action(`Transferring ${cli.color.cyan(team)} to ${cli.color.green(enterpriseAccount)}`, transfer)
 }
@@ -31,5 +31,5 @@ module.exports = {
     }
   ],
   args: [{ name: 'team', description: 'name of the team to transfer' } ],
-  run: cmd.run(transfer)
+  run: cmd.run_admin(transfer)
 };
