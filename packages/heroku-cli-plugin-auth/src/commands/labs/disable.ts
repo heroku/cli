@@ -5,11 +5,9 @@ import {cli} from 'cli-ux'
 const SecurityExceptionFeatures: any = {
   'spaces-strict-tls': {
     async prompt(out: any, app: string): Promise<string> {
-      const cliUtil = require('heroku-cli-util')
       out.warn('WARNING: Insecure Action')
-      out.warn('You are enabling an older security protocol, TLS 1.0, which some organizations may not deem secure.')
-      out.warn(`To proceed, type ${app} or re-run this command with --confirm ${app}`)
-      let name = await cliUtil.prompt()
+      let name = await cli.prompt(`You are enabling an older security protocol, TLS 1.0, which some organizations may not deem secure.
+To proceed, type ${app} or re-run this command with --confirm ${app}`)
       return name
     }
   }
@@ -35,7 +33,7 @@ export default class LabsDisable extends Command {
         let prompt = SecurityExceptionFeatures[feature].prompt
         let confirm = await prompt(cli, flags.app)
         if (confirm !== flags.app) {
-          throw new Error('Confirmation name did not match app name. Try again.')
+          this.error('Confirmation name did not match app name. Try again.')
         }
       }
     }

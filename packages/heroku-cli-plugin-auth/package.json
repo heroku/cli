@@ -9,8 +9,7 @@
     "@heroku-cli/command": "^8.1.2",
     "@oclif/command": "1.4.21",
     "@oclif/config": "1.6.17",
-    "cli-ux": "^4.0.0",
-    "heroku-cli-util": "^8.0.6"
+    "cli-ux": "^4.0.0"
   },
   "devDependencies": {
     "@fancy-test/nock": "^0.1.1",
