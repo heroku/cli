@@ -10,14 +10,14 @@
     "co": "4.6.0",
     "co-wait": "0.0.0",
     "date-fns": "^1.29.0",
-    "heroku-cli-util": "^8.0.6",
+    "heroku-cli-util": "^8.0.7",
     "inquirer": "^5.2.0",
     "lodash": "4.17.10",
-    "psl": "^1.1.25"
+    "psl": "^1.1.26"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.13.15",
-    "@oclif/plugin-legacy": "^1.0.14",
+    "@oclif/dev-cli": "^1.13.19",
+    "@oclif/plugin-legacy": "^1.0.15",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
     "lolex": "^1.6.0",
