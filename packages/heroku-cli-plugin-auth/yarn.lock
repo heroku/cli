@@ -51,7 +51,7 @@
     call-me-maybe "^1.0.1"
     glob-to-regexp "^0.3.0"
 
-"@oclif/command@1.4.21", "@oclif/command@^1.4.20":
+"@oclif/command@^1.4.20", "@oclif/command@^1.4.21":
   version "1.4.21"
   resolved "https://registry.yarnpkg.com/@oclif/command/-/command-1.4.21.tgz#e45f252f8c375ad6e24a0a5f908e6aa692c5c56a"
   dependencies:
@@ -60,7 +60,7 @@
     debug "^3.1.0"
     semver "^5.5.0"
 
-"@oclif/config@1.6.17", "@oclif/config@^1.6.17":
+"@oclif/config@^1.6.17":
   version "1.6.17"
   resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.6.17.tgz#e9608f56e5acd49fcaf3bbfcc3e8818d81b1ba12"
   dependencies:
