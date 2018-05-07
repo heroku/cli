@@ -1,3 +1,11 @@
+<a name="0.2.1"></a>
+## [0.2.1](https://github.com/heroku/heroku-cli-plugin-auth/compare/v0.2.0...v0.2.1) (2018-05-07)
+
+
+### Bug Fixes
+
+* use semver for deps ([3a55561](https://github.com/heroku/heroku-cli-plugin-auth/commit/3a55561))
+
 <a name="0.2.0"></a>
 # [0.2.0](https://github.com/heroku/heroku-cli-plugin-auth/compare/v0.1.3...v0.2.0) (2018-05-07)
 
