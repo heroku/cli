@@ -1,3 +1,11 @@
+<a name="3.7.0"></a>
+# [3.7.0](https://github.com/heroku/heroku-run/compare/v3.6.3...v3.7.0) (2018-05-07)
+
+
+### Features
+
+* added apache colorized logs ([a988448](https://github.com/heroku/heroku-run/commit/a988448))
+
 <a name="3.6.3"></a>
 ## [3.6.3](https://github.com/heroku/heroku-run/compare/v3.6.2...v3.6.3) (2018-05-04)
 
