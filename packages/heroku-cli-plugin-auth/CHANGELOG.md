@@ -1,3 +1,11 @@
+<a name="0.2.2"></a>
+## [0.2.2](https://github.com/heroku/heroku-cli-plugin-auth/compare/v0.2.1...v0.2.2) (2018-05-07)
+
+
+### Bug Fixes
+
+* duplicate warning ([608d30e](https://github.com/heroku/heroku-cli-plugin-auth/commit/608d30e))
+
 <a name="0.2.1"></a>
 ## [0.2.1](https://github.com/heroku/heroku-cli-plugin-auth/compare/v0.2.0...v0.2.1) (2018-05-07)
 
