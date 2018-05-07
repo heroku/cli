@@ -37,6 +37,9 @@
     "standard": "^11.0.1",
     "unexpected": "^10.37.7"
   },
+  "standard": {
+    "env": "mocha"
+  },
   "files": [
     ".oclif.manifest.json",
     "lib",

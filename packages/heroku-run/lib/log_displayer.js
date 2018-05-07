@@ -4,71 +4,7 @@ let cli = require('heroku-cli-util')
 let EventSource = require('eventsource')
 let url = require('url')
 let liner = require('../lib/line_transform')
-
-const COLORS = [
-  s => cli.color.yellow(s),
-  s => cli.color.green(s),
-  s => cli.color.cyan(s),
-  s => cli.color.magenta(s),
-  s => cli.color.blue(s),
-  s => cli.color.bold.green(s),
-  s => cli.color.bold.cyan(s),
-  s => cli.color.bold.magenta(s),
-  s => cli.color.bold.yellow(s),
-  s => cli.color.bold.blue(s)
-]
-const assignedColors = {}
-function getColorForIdentifier (i) {
-  if (assignedColors[i]) return assignedColors[i]
-  assignedColors[i] = COLORS[Object.keys(assignedColors).length % COLORS.length]
-  return assignedColors[i]
-}
-
-// get initial colors so they are the same every time
-getColorForIdentifier('run')
-getColorForIdentifier('router')
-getColorForIdentifier('web')
-getColorForIdentifier('postgres')
-getColorForIdentifier('heroku-postgres')
-
-let lineRegex = /^(.*?\[([\w-]+)([\d.]+)?]:)(.*)?$/
-
-function colorizeBody (body) {
-  console.dir(body)
-  let apache = body.match(/^(\d+\.\d+\.\d+\.\d+ -[^-]*- \[[^\]]+\] ")(\w+)( )([^ ]+)( HTTP\/\d+\.\d+" )(\d+)( .+$)/)
-  if (apache) {
-    const path = i => cli.color.blue(i)
-    const method = i => cli.color.magenta(i)
-    const code = code => {
-      if (code < 200) return code
-      if (code < 300) return cli.color.green(code)
-      if (code < 400) return cli.color.cyan(code)
-      if (code < 500) return cli.color.yellow(code)
-      if (code < 600) return cli.color.red(code)
-      return code
-    }
-    const [, ...tokens] = apache
-    body = [
-      tokens[0],
-      method(tokens[1]),
-      tokens[2],
-      path(tokens[3]),
-      tokens[4],
-      code(tokens[5]),
-      tokens[6]
-    ].join('')
-  }
-  return body
-}
-
-function colorize (line) {
-  let parsed = line.match(lineRegex)
-  if (!parsed) return line
-  let header = parsed[1]
-  let identifier = parsed[2]
-  let body = colorizeBody(parsed[4].trim())
-  return getColorForIdentifier(identifier)(header) + ' ' + body
-}
+const colorize = require('./colorize')
 
 function readLogs (logplexURL) {
   let u = url.parse(logplexURL)
@@ -145,4 +81,3 @@ async function logDisplayer (heroku, options) {
 }
 
 module.exports = logDisplayer
-module.exports.COLORS = COLORS
