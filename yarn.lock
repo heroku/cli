@@ -107,14 +107,14 @@
     term-img "^2.1.0"
     urijs "1.19.1"
 
-"@heroku-cli/plugin-auth@^0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-auth/-/plugin-auth-0.2.0.tgz#f27d8b0d977864810b4057743fc0d2782fa9214d"
+"@heroku-cli/plugin-auth@^0.2.2":
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-auth/-/plugin-auth-0.2.2.tgz#b315fcf91f7cc94023866017e27db27d0f05ddb7"
   dependencies:
     "@heroku-cli/color" "^1.1.3"
     "@heroku-cli/command" "^8.1.2"
-    "@oclif/command" "1.4.21"
-    "@oclif/config" "1.6.17"
+    "@oclif/command" "^1.4.21"
+    "@oclif/config" "^1.6.17"
     cli-ux "^4.0.0"
 
 "@heroku-cli/plugin-certs@^1.2.1":
@@ -340,7 +340,7 @@
     call-me-maybe "^1.0.1"
     glob-to-regexp "^0.3.0"
 
-"@oclif/command@1.4.21", "@oclif/command@^1.4.13", "@oclif/command@^1.4.19", "@oclif/command@^1.4.20", "@oclif/command@^1.4.21":
+"@oclif/command@^1.4.13", "@oclif/command@^1.4.19", "@oclif/command@^1.4.20", "@oclif/command@^1.4.21":
   version "1.4.21"
   resolved "https://registry.yarnpkg.com/@oclif/command/-/command-1.4.21.tgz#e45f252f8c375ad6e24a0a5f908e6aa692c5c56a"
   dependencies:
@@ -349,7 +349,7 @@
     debug "^3.1.0"
     semver "^5.5.0"
 
-"@oclif/config@1.6.17", "@oclif/config@^1.6.17", "@oclif/config@^1.6.4":
+"@oclif/config@^1.6.17", "@oclif/config@^1.6.4":
   version "1.6.17"
   resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.6.17.tgz#e9608f56e5acd49fcaf3bbfcc3e8818d81b1ba12"
   dependencies:
@@ -405,9 +405,9 @@
     widest-line "^2.0.0"
     wrap-ansi "^3.0.1"
 
-"@oclif/plugin-legacy@^1.0.14":
-  version "1.0.14"
-  resolved "https://registry.yarnpkg.com/@oclif/plugin-legacy/-/plugin-legacy-1.0.14.tgz#31202b4502641305608b4c101abfe3ca4ad4700f"
+"@oclif/plugin-legacy@^1.0.15":
+  version "1.0.15"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-legacy/-/plugin-legacy-1.0.15.tgz#739f218b9eae3423a9b544efae28726ea78d254b"
   dependencies:
     "@heroku-cli/color" "^1.1.3"
     "@heroku-cli/command" "^8.0.7"
