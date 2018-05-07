@@ -27,16 +27,18 @@
     strip-ansi "^4.0.0"
     supports-color "^5.1.0"
 
-"@heroku-cli/command@^8.0.4", "@heroku-cli/command@^8.0.5", "@heroku-cli/command@^8.0.6", "@heroku-cli/command@^8.0.7":
-  version "8.0.7"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.0.7.tgz#c601e0d9f8ed8a8a98b1856b3b8e71c3c663bc44"
+"@heroku-cli/command@^8.0.4", "@heroku-cli/command@^8.0.5", "@heroku-cli/command@^8.0.6", "@heroku-cli/command@^8.0.7", "@heroku-cli/command@^8.1.2":
+  version "8.1.2"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.1.2.tgz#aeaf90a69bd8ccd4d96fb1c1b5d063db1697bd36"
   dependencies:
-    "@oclif/errors" "^1.0.6"
-    cli-ux "^3.4.1"
+    "@heroku-cli/color" "^1.1.3"
+    "@oclif/errors" "^1.0.9"
+    cli-ux "^4.0.0"
     debug "^3.1.0"
     heroku-client "3.0.6"
-    http-call "^5.1.1"
+    http-call "^5.1.2"
     netrc-parser "^3.1.4"
+    opn "^5.3.0"
 
 "@heroku-cli/notifications@^1.2.0":
   version "1.2.0"
@@ -105,16 +107,15 @@
     term-img "^2.1.0"
     urijs "1.19.1"
 
-"@heroku-cli/plugin-auth@^0.1.3":
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-auth/-/plugin-auth-0.1.3.tgz#1e05754976e3551ade8531f1d6651a1e4ecbf8e0"
+"@heroku-cli/plugin-auth@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-auth/-/plugin-auth-0.2.0.tgz#f27d8b0d977864810b4057743fc0d2782fa9214d"
   dependencies:
     "@heroku-cli/color" "^1.1.3"
-    "@heroku-cli/command" "^8.0.5"
-    "@oclif/command" "1"
-    "@oclif/config" "1"
-    cli-ux "^3.3.31"
-    heroku-cli-util "^8.0.6"
+    "@heroku-cli/command" "^8.1.2"
+    "@oclif/command" "1.4.21"
+    "@oclif/config" "1.6.17"
+    cli-ux "^4.0.0"
 
 "@heroku-cli/plugin-certs@^1.2.1":
   version "1.2.1"
@@ -186,14 +187,14 @@
     heroku-cli-util "^8.0.6"
     lodash.flatten "^4.4.0"
 
-"@heroku-cli/plugin-oauth@^2.3.1":
-  version "2.3.1"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-oauth/-/plugin-oauth-2.3.1.tgz#1059505802a29702e658b6d41b102d5df45fd933"
+"@heroku-cli/plugin-oauth@^2.3.4":
+  version "2.3.4"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-oauth/-/plugin-oauth-2.3.4.tgz#aa213c365c7ba01952e1b202d1996a3e354e0275"
   dependencies:
     co "^4.6.0"
     date-fns "^1.29.0"
-    heroku-cli-util "^8.0.0"
-    lodash "^4.17.5"
+    heroku-cli-util "^8.0.6"
+    lodash "^4.17.10"
 
 "@heroku-cli/plugin-orgs@^1.7.5":
   version "1.7.5"
@@ -339,16 +340,16 @@
     call-me-maybe "^1.0.1"
     glob-to-regexp "^0.3.0"
 
-"@oclif/command@1", "@oclif/command@^1.4.13", "@oclif/command@^1.4.19", "@oclif/command@^1.4.20":
-  version "1.4.20"
-  resolved "https://registry.yarnpkg.com/@oclif/command/-/command-1.4.20.tgz#7368c9c9f7f596fc8efffd7ec89118feed5203d8"
+"@oclif/command@1.4.21", "@oclif/command@^1.4.13", "@oclif/command@^1.4.19", "@oclif/command@^1.4.20", "@oclif/command@^1.4.21":
+  version "1.4.21"
+  resolved "https://registry.yarnpkg.com/@oclif/command/-/command-1.4.21.tgz#e45f252f8c375ad6e24a0a5f908e6aa692c5c56a"
   dependencies:
-    "@oclif/errors" "^1.0.8"
+    "@oclif/errors" "^1.0.9"
     "@oclif/parser" "^3.3.3"
     debug "^3.1.0"
     semver "^5.5.0"
 
-"@oclif/config@1", "@oclif/config@^1.6.17", "@oclif/config@^1.6.4":
+"@oclif/config@1.6.17", "@oclif/config@^1.6.17", "@oclif/config@^1.6.4":
   version "1.6.17"
   resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.6.17.tgz#e9608f56e5acd49fcaf3bbfcc3e8818d81b1ba12"
   dependencies:
@@ -371,9 +372,9 @@
     require-resolve "^0.0.2"
     tslib "^1.9.0"
 
-"@oclif/errors@^1.0.4", "@oclif/errors@^1.0.6", "@oclif/errors@^1.0.8":
-  version "1.0.8"
-  resolved "https://registry.yarnpkg.com/@oclif/errors/-/errors-1.0.8.tgz#2f8239267506bb7c3f5fd776144c2686e5b7fff7"
+"@oclif/errors@^1.0.4", "@oclif/errors@^1.0.8", "@oclif/errors@^1.0.9":
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/@oclif/errors/-/errors-1.0.9.tgz#6fe3afd8e7683c436df63674550899adec10c81c"
   dependencies:
     clean-stack "^1.3.0"
     fs-extra "^6.0.0"
@@ -423,9 +424,9 @@
     "@oclif/command" "^1.4.19"
     string-similarity "^1.2.0"
 
-"@oclif/plugin-plugins@^1.1.7":
-  version "1.1.7"
-  resolved "https://registry.yarnpkg.com/@oclif/plugin-plugins/-/plugin-plugins-1.1.7.tgz#96e06af4bc48d60429725682d89018ec6af8bd0c"
+"@oclif/plugin-plugins@^1.1.8":
+  version "1.1.8"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-plugins/-/plugin-plugins-1.1.8.tgz#57e3b00039fc0952304f8fa49532f8ff9c1ceaff"
   dependencies:
     "@heroku-cli/color" "^1.1.3"
     "@oclif/command" "^1.4.20"
@@ -434,7 +435,7 @@
     debug "^3.1.0"
     fs-extra "^6.0.0"
     http-call "^5.1.1"
-    load-json-file "^4.0.0"
+    load-json-file "^5.0.0"
     npm-run-path "^2.0.2"
     semver "^5.5.0"
     tslib "^1.9.0"
@@ -483,11 +484,11 @@
   dependencies:
     fancy-test "^1.0.6"
 
-"@oclif/tslint@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@oclif/tslint/-/tslint-1.1.0.tgz#a2d494a61afa882a685fe5f4d866dafd18990728"
+"@oclif/tslint@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@oclif/tslint/-/tslint-1.1.1.tgz#4d89d0fadbd233b8cd797d43557b5e987b0880a1"
   dependencies:
-    tslint-xo "^0.7.0"
+    tslint-xo "^0.7.2"
 
 "@sindresorhus/is@^0.7.0":
   version "0.7.0"
@@ -547,11 +548,7 @@
   dependencies:
     "@types/node" "*"
 
-"@types/node@*":
-  version "10.0.3"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.0.3.tgz#1f89840c7aac2406cc43a2ecad98fc02a8e130e4"
-
-"@types/node@^10.0.4":
+"@types/node@*", "@types/node@^10.0.4":
   version "10.0.4"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-10.0.4.tgz#130598ee56e9a1210a53f557d64935571f05390d"
 
@@ -608,6 +605,10 @@ ansi-styles@^3.2.0, ansi-styles@^3.2.1:
 ansicolors@~0.2.1:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/ansicolors/-/ansicolors-0.2.1.tgz#be089599097b74a5c9c4a84a0cdbcdb62bd87aef"
+
+ansicolors@~0.3.2:
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/ansicolors/-/ansicolors-0.3.2.tgz#665597de86a9ffe3aa9bfbe6cae5c6ea426b4979"
 
 any-promise@^1.0.0:
   version "1.3.0"
@@ -877,6 +878,13 @@ cardinal@^1.0.0:
     ansicolors "~0.2.1"
     redeyed "~1.0.0"
 
+cardinal@^2.0.0:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/cardinal/-/cardinal-2.0.1.tgz#2431630e6c006253b803967249b2d72e50d1985d"
+  dependencies:
+    ansicolors "~0.3.2"
+    redeyed "~2.0.0"
+
 chai@^4.1.2:
   version "4.1.2"
   resolved "https://registry.yarnpkg.com/chai/-/chai-4.1.2.tgz#0f64584ba642f0f2ace2806279f4f06ca23ad73c"
@@ -937,21 +945,40 @@ cli-cursor@^2.1.0:
   dependencies:
     restore-cursor "^2.0.0"
 
-cli-ux@3.4.1, cli-ux@^3.3.31, cli-ux@^3.4.1:
-  version "3.4.1"
-  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-3.4.1.tgz#bfa17e75cd1a60547a11c515166117b05ea89cdd"
+cli-ux@4.0.0, cli-ux@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-4.0.0.tgz#8c68b3761332f3714ef3bdf517b5aacda53486b4"
   dependencies:
     "@oclif/linewrap" "^1.0.0"
     "@oclif/screen" "^1.0.2"
     ansi-styles "^3.2.1"
-    cardinal "^1.0.0"
-    chalk "^2.4.0"
+    cardinal "^2.0.0"
+    chalk "^2.4.1"
     clean-stack "^1.3.0"
     extract-stack "^1.0.0"
-    fs-extra "^5.0.0"
+    fs-extra "^6.0.0"
     indent-string "^3.2.0"
-    lodash "^4.17.5"
-    password-prompt "^1.0.4"
+    lodash "^4.17.10"
+    password-prompt "^1.0.5"
+    semver "^5.5.0"
+    strip-ansi "^4.0.0"
+    supports-color "^5.4.0"
+
+cli-ux@^3.3.31, cli-ux@^3.4.1:
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-3.5.0.tgz#733db9ce24033d3c03509dfda15e06dd8152aafa"
+  dependencies:
+    "@oclif/linewrap" "^1.0.0"
+    "@oclif/screen" "^1.0.2"
+    ansi-styles "^3.2.1"
+    cardinal "^2.0.0"
+    chalk "^2.4.1"
+    clean-stack "^1.3.0"
+    extract-stack "^1.0.0"
+    fs-extra "^6.0.0"
+    indent-string "^3.2.0"
+    lodash "^4.17.10"
+    password-prompt "^1.0.5"
     semver "^5.5.0"
     strip-ansi "^4.0.0"
     supports-color "^5.4.0"
@@ -1043,14 +1070,6 @@ cross-spawn-async@^2.1.1:
   dependencies:
     lru-cache "^4.0.0"
     which "^1.2.8"
-
-cross-spawn@^5.1.0:
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-5.1.0.tgz#e8bd0efee58fcff6f8f94510a0a554bbfa235449"
-  dependencies:
-    lru-cache "^4.0.1"
-    shebang-command "^1.2.0"
-    which "^1.2.9"
 
 cross-spawn@^6.0.0, cross-spawn@^6.0.5:
   version "6.0.5"
@@ -1213,7 +1232,7 @@ escape-string-regexp@1.0.5, escape-string-regexp@^1.0.2, escape-string-regexp@^1
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-1.0.5.tgz#1b61c0562190a8dff6ae3bb2cf0200ca130b86d4"
 
-esprima@^4.0.0:
+esprima@^4.0.0, esprima@~4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/esprima/-/esprima-4.0.0.tgz#4499eddcd1110e0b218bacf2fa7f7f59f55ca804"
 
@@ -1693,8 +1712,8 @@ heroku-cli-util@^7.0.0:
     tunnel-agent "^0.6.0"
 
 heroku-cli-util@^8.0.0, heroku-cli-util@^8.0.6:
-  version "8.0.6"
-  resolved "https://registry.yarnpkg.com/heroku-cli-util/-/heroku-cli-util-8.0.6.tgz#8fd3049329620136c729a4e002eca804fe24d87f"
+  version "8.0.7"
+  resolved "https://registry.yarnpkg.com/heroku-cli-util/-/heroku-cli-util-8.0.7.tgz#f4cc55ee6d243bb744b8e23fffba38f33b076630"
   dependencies:
     "@heroku-cli/color" "^1.1.3"
     ansi-escapes "^3.1.0"
@@ -1761,9 +1780,9 @@ http-cache-semantics@3.8.1:
   version "3.8.1"
   resolved "https://registry.yarnpkg.com/http-cache-semantics/-/http-cache-semantics-3.8.1.tgz#39b0e16add9b605bf0a9ef3d9daaf4843b4cacd2"
 
-http-call@5.1.1, http-call@^5.1.0, http-call@^5.1.1:
-  version "5.1.1"
-  resolved "https://registry.yarnpkg.com/http-call/-/http-call-5.1.1.tgz#0110095d455b876c64cc9fe820b3f836cc552ea7"
+http-call@5.1.2, http-call@^5.1.0, http-call@^5.1.1, http-call@^5.1.2:
+  version "5.1.2"
+  resolved "https://registry.yarnpkg.com/http-call/-/http-call-5.1.2.tgz#2320e1aef65f01574723a697aca31748ce578f9d"
   dependencies:
     content-type "^1.0.4"
     debug "^3.1.0"
@@ -1780,10 +1799,10 @@ http-proxy@^1.16.2:
     requires-port "^1.0.0"
 
 iconv-lite@^0.4.17:
-  version "0.4.21"
-  resolved "https://registry.yarnpkg.com/iconv-lite/-/iconv-lite-0.4.21.tgz#c47f8733d02171189ebc4a400f3218d348094798"
+  version "0.4.22"
+  resolved "https://registry.yarnpkg.com/iconv-lite/-/iconv-lite-0.4.22.tgz#c6b16b9d05bc6c307dc9303a820412995d2eea95"
   dependencies:
-    safer-buffer "^2.1.0"
+    safer-buffer ">= 2.1.2 < 3"
 
 ieee754@1.1.8:
   version "1.1.8"
@@ -2035,6 +2054,10 @@ is-windows@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/is-windows/-/is-windows-1.0.2.tgz#d1850eb9791ecd18e6182ce12a30f396634bb19d"
 
+is-wsl@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/is-wsl/-/is-wsl-1.1.0.tgz#1f16e4aa22b04d1336b66188a66af3c600c3a66d"
+
 isarray@0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/isarray/-/isarray-0.0.1.tgz#8a18acfca9a8f4177e09abfc6038939b05d1eedf"
@@ -2153,6 +2176,15 @@ lex@^1.7.9:
 load-json-file@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/load-json-file/-/load-json-file-4.0.0.tgz#2f5f45ab91e33216234fd53adab668eb4ec0993b"
+  dependencies:
+    graceful-fs "^4.1.2"
+    parse-json "^4.0.0"
+    pify "^3.0.0"
+    strip-bom "^3.0.0"
+
+load-json-file@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/load-json-file/-/load-json-file-5.0.0.tgz#5b5ef7cb6e1e337408e02fe01fe679ccc0cd18d5"
   dependencies:
     graceful-fs "^4.1.2"
     parse-json "^4.0.0"
@@ -2381,7 +2413,7 @@ lowercase-keys@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/lowercase-keys/-/lowercase-keys-1.0.1.tgz#6f9e30b47084d971a7c820ff15a6c5167b74c26f"
 
-lru-cache@^4.0.0, lru-cache@^4.0.1:
+lru-cache@^4.0.0:
   version "4.1.2"
   resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-4.1.2.tgz#45234b2e6e2f2b33da125624c4664929a0224c3f"
   dependencies:
@@ -2409,8 +2441,8 @@ map-visit@^1.0.0:
     object-visit "^1.0.0"
 
 merge2@^1.2.1:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/merge2/-/merge2-1.2.1.tgz#271d2516ff52d4af7f7b710b8bf3e16e183fef66"
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/merge2/-/merge2-1.2.2.tgz#03212e3da8d86c4d8523cebd6318193414f94e34"
 
 micromatch@^3.1.10:
   version "3.1.10"
@@ -2652,6 +2684,12 @@ opn@^3.0.3:
   dependencies:
     object-assign "^4.0.1"
 
+opn@^5.3.0:
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/opn/-/opn-5.3.0.tgz#64871565c863875f052cfdf53d3e3cb5adb53b1c"
+  dependencies:
+    is-wsl "^1.1.0"
+
 options@>=0.0.5:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/options/-/options-0.0.6.tgz#ec22d312806bb53e731773e7cdaefcf1c643128f"
@@ -2740,12 +2778,12 @@ pascalcase@^0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/pascalcase/-/pascalcase-0.1.1.tgz#b363e55e8006ca6fe21784d2db22bd15d7917f14"
 
-password-prompt@^1.0.4:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/password-prompt/-/password-prompt-1.0.4.tgz#933bac8db3528fcb27e9fdbc0a6592adcbdb5ed9"
+password-prompt@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/password-prompt/-/password-prompt-1.0.5.tgz#d2f2effd89bf26d359c87a4678339804ce782b87"
   dependencies:
-    ansi-escapes "^3.0.0"
-    cross-spawn "^5.1.0"
+    ansi-escapes "^3.1.0"
+    cross-spawn "^6.0.5"
 
 path-dirname@^1.0.0:
   version "1.0.2"
@@ -2838,8 +2876,8 @@ pseudomap@^1.0.2:
   resolved "https://registry.yarnpkg.com/pseudomap/-/pseudomap-1.0.2.tgz#f052a28da70e618917ef0a8ac34c1ae5a68286b3"
 
 psl@^1.1.25:
-  version "1.1.25"
-  resolved "https://registry.yarnpkg.com/psl/-/psl-1.1.25.tgz#135edc9c7ba48cd8e4a6903fded8c7f348a5d2ee"
+  version "1.1.26"
+  resolved "https://registry.yarnpkg.com/psl/-/psl-1.1.26.tgz#b2d3248185d7d27ff616ba1536851db0b59d9e75"
 
 pump@^1.0.0:
   version "1.0.3"
@@ -2875,8 +2913,8 @@ qqjs@^0.3.8:
     write-json-file "^2.3.0"
 
 qs@^6.5.1:
-  version "6.5.1"
-  resolved "https://registry.yarnpkg.com/qs/-/qs-6.5.1.tgz#349cdf6eef89ec45c12d7d5eb3fc0c870343a6d8"
+  version "6.5.2"
+  resolved "https://registry.yarnpkg.com/qs/-/qs-6.5.2.tgz#cb3ae806e8740444584ef154ce8ee98d403f3e36"
 
 query-string@^5.0.1:
   version "5.1.1"
@@ -2928,6 +2966,12 @@ redeyed@~1.0.0:
   resolved "https://registry.yarnpkg.com/redeyed/-/redeyed-1.0.1.tgz#e96c193b40c0816b00aec842698e61185e55498a"
   dependencies:
     esprima "~3.0.0"
+
+redeyed@~2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/redeyed/-/redeyed-2.0.0.tgz#e7ae722cd4ce4dbc537cb5810fef3de2ac76ff12"
+  dependencies:
+    esprima "~4.0.0"
 
 reflect-metadata@^0.1.12:
   version "0.1.12"
@@ -3011,7 +3055,7 @@ safe-regex@^1.1.0:
   dependencies:
     ret "~0.1.10"
 
-safer-buffer@^2.1.0:
+"safer-buffer@>= 2.1.2 < 3":
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/safer-buffer/-/safer-buffer-2.1.2.tgz#44fa161b0187b9549dd84bb91802f9bd8385cd6a"
 
@@ -3446,9 +3490,9 @@ to-regex@^3.0.1, to-regex@^3.0.2:
     regex-not "^1.0.2"
     safe-regex "^1.1.0"
 
-ts-node@6.0.2:
-  version "6.0.2"
-  resolved "https://registry.yarnpkg.com/ts-node/-/ts-node-6.0.2.tgz#e132d530e53173bc6a8c21ea65f64d8b47bc573e"
+ts-node@6.0.3:
+  version "6.0.3"
+  resolved "https://registry.yarnpkg.com/ts-node/-/ts-node-6.0.3.tgz#28bf74bcad134fad17f7469dad04638ece03f0f4"
   dependencies:
     arrify "^1.0.0"
     chalk "^2.3.0"
@@ -3485,7 +3529,7 @@ tslint-microsoft-contrib@^5.0.2:
   dependencies:
     tsutils "^2.12.1"
 
-tslint-xo@^0.7.0:
+tslint-xo@^0.7.2:
   version "0.7.2"
   resolved "https://registry.yarnpkg.com/tslint-xo/-/tslint-xo-0.7.2.tgz#7523e9f2819e23c5ce66b501e4b76067c1e6f637"
   dependencies:
