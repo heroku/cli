@@ -27,9 +27,9 @@
     strip-ansi "^4.0.0"
     supports-color "^5.1.0"
 
-"@heroku-cli/command@^8.0.4", "@heroku-cli/command@^8.0.5", "@heroku-cli/command@^8.0.6", "@heroku-cli/command@^8.0.7", "@heroku-cli/command@^8.1.2", "@heroku-cli/command@^8.1.3", "@heroku-cli/command@^8.1.6":
-  version "8.1.6"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.1.6.tgz#0a78c554092b162d47536c6d031cde367b802c25"
+"@heroku-cli/command@^8.0.4", "@heroku-cli/command@^8.0.5", "@heroku-cli/command@^8.0.6", "@heroku-cli/command@^8.0.7", "@heroku-cli/command@^8.1.2", "@heroku-cli/command@^8.1.3", "@heroku-cli/command@^8.1.8":
+  version "8.1.8"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.1.8.tgz#602c18e919fa40c3f7b4f6deb78b0f77f57304ca"
   dependencies:
     "@heroku-cli/color" "^1.1.3"
     "@oclif/errors" "^1.0.9"
@@ -274,9 +274,9 @@
     ioredis "1.9.0"
     ssh2 "^0.4.11"
 
-"@heroku-cli/plugin-run@^3.6.1", "@heroku-cli/plugin-run@^3.8.1":
-  version "3.8.1"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-run/-/plugin-run-3.8.1.tgz#e79a58da412eb4eeae1921d394d1c46788188894"
+"@heroku-cli/plugin-run@^3.6.1", "@heroku-cli/plugin-run@^3.8.2":
+  version "3.8.2"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-run/-/plugin-run-3.8.2.tgz#f363fd1d43e55d8c1d76464bfd7c8911efc33856"
   dependencies:
     "@heroku-cli/color" "^1.1.3"
     "@heroku-cli/command" "^8.1.3"
@@ -495,13 +495,19 @@
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-0.7.0.tgz#9a06f4f137ee84d7df0460c1fdb1135ffa6c50fd"
 
-"@types/ansi-styles@^2.0.30":
-  version "2.0.30"
-  resolved "https://registry.yarnpkg.com/@types/ansi-styles/-/ansi-styles-2.0.30.tgz#9a645299020a224afc6a8cd055195850b3c2af85"
+"@types/ansi-styles@^3.2.0":
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/@types/ansi-styles/-/ansi-styles-3.2.0.tgz#fc9622eeed20a4d92bc5c28cb3507b748a4c7eba"
+  dependencies:
+    "@types/color-name" "*"
 
 "@types/chai@^4.1.3":
   version "4.1.3"
   resolved "https://registry.yarnpkg.com/@types/chai/-/chai-4.1.3.tgz#b8a74352977a23b604c01aa784f5b793443fb7dc"
+
+"@types/color-name@*":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@types/color-name/-/color-name-1.1.0.tgz#926f76f7e66f49cc59ad880bb15b030abbf0b66d"
 
 "@types/debug@^0.0.30":
   version "0.0.30"
@@ -549,9 +555,9 @@
   dependencies:
     "@types/node" "*"
 
-"@types/node@*", "@types/node@^10.0.4":
-  version "10.0.4"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.0.4.tgz#130598ee56e9a1210a53f557d64935571f05390d"
+"@types/node@*", "@types/node@^10.0.5":
+  version "10.0.5"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.0.5.tgz#08c97d0e8ef6ea8ed1df119c839834ffb9e0321a"
 
 "@types/semver@^5.5.0":
   version "5.5.0"
@@ -689,9 +695,9 @@ atob@^2.0.0:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.1.tgz#ae2d5a729477f289d60dd7f96a6314a22dd6c22a"
 
-aws-sdk@^2.234.1:
-  version "2.234.1"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.234.1.tgz#bb8d3cbe4685db856e7bb056f38f14e7de1214f2"
+aws-sdk@^2.235.1:
+  version "2.235.1"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.235.1.tgz#b895da9482bb5d90b2f54c45203b7a3c1c2b7cea"
   dependencies:
     buffer "4.9.1"
     events "1.1.1"
@@ -3517,8 +3523,8 @@ tslint-consistent-codestyle@^1.11.0:
     tsutils "^2.24.0"
 
 tslint-eslint-rules@^5.1.0:
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/tslint-eslint-rules/-/tslint-eslint-rules-5.1.0.tgz#3232b318da55dbb5a83e3f5d657c1ddbb27b9ff2"
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/tslint-eslint-rules/-/tslint-eslint-rules-5.2.0.tgz#3e767e7e9cc7877497a2bde5bcb6184dee9b28c4"
   dependencies:
     doctrine "0.7.2"
     tslib "1.9.0"
