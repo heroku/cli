@@ -1,3 +1,11 @@
+<a name="3.8.2"></a>
+## [3.8.2](https://github.com/heroku/heroku-run/compare/v3.8.1...v3.8.2) (2018-05-08)
+
+
+### Bug Fixes
+
+* empty log lines ([b5f5506](https://github.com/heroku/heroku-run/commit/b5f5506))
+
 <a name="3.8.1"></a>
 ## [3.8.1](https://github.com/heroku/heroku-run/compare/v3.8.0...v3.8.1) (2018-05-07)
 
