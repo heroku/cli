@@ -159,7 +159,6 @@
       ],
       "update": [
         "./lib/hooks/update/brew",
-        "./lib/hooks/update/analytics",
         "./lib/hooks/update/tidy",
         "./lib/hooks/update/completions"
       ]
