@@ -8,6 +8,7 @@ function displayVPNConfigInfo (space, config) {
   config.ipsec_tunnels.forEach((val, i) => {
     val.tunnel_id = 'Tunnel ' + (i + 1)
     val.routable_cidr = config.full_space_cidr_block
+    val.ike_version = config.ike_version
   })
 
   cli.table(config.ipsec_tunnels, {
@@ -16,7 +17,8 @@ function displayVPNConfigInfo (space, config) {
       {key: 'customer_gateway.outside_address.ip_address', label: 'Customer Gateway'},
       {key: 'vpn_gateway.outside_address.ip_address', label: 'VPN Gateway'},
       {key: 'ike.pre_shared_key', label: 'Pre-shared Key'},
-      {key: 'routable_cidr', label: 'Routable Subnets'}
+      {key: 'routable_cidr', label: 'Routable Subnets'},
+      {key: 'ike_version', label: 'IKE Version'}
     ]
   })
 }
