@@ -259,7 +259,7 @@ module.exports = function colorize (line) {
   if (!parsed) return line
   let header = parsed[1]
   let identifier = parsed[2]
-  let body = parsed[4].trim()
+  let body = (parsed[4] || '').trim()
   switch (identifier) {
     case 'api':
       body = colorizeAPI(body)
