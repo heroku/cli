@@ -41,7 +41,20 @@ module.exports = {
   description: 'display the configuration information for VPN',
   help: `Example:
 
-    $ heroku spaces:vpn:config my-space`,
+    $ heroku spaces:vpn:config example-space
+    === example-space VPNs
+    VPN Tunnel  Customer Gateway  VPN Gateway     Pre-shared Key  Routable Subnets  IKE Version
+    ──────────  ────────────────  ──────────────  ──────────────  ────────────────  ───────────
+    Tunnel 1    104.196.121.200   35.171.237.136  abcdef12345     10.0.0.0/16       1
+    Tunnel 2    104.196.121.200   52.44.7.216     fedcba54321     10.0.0.0/16       1
+
+You will use the information provided by this command to establish a Private Space VPN Connection.
+
+- You must configure your VPN Gateway to use both Tunnels provided by Heroku
+- The VPN Gateway values are the IP addresses of the Private Space Tunnels
+- The Customer Gateway value is the Public IP of your VPN Gateway
+- The VPN Gateway must use the IKE Version shown and the Pre-shared Keys as the authentication method
+`,
   hidden: true,
   needsApp: false,
   needsAuth: true,
