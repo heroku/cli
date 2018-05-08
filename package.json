@@ -150,7 +150,8 @@
     },
     "hooks": {
       "init": [
-        "./lib/hooks/init/plugin_migrate"
+        "./lib/hooks/init/plugin_migrate",
+        "./lib/hooks/init/refresh"
       ],
       "prerun": [
         "./lib/hooks/prerun/analytics"
