@@ -6,8 +6,8 @@ export default class Login extends Command {
   static aliases = ['login']
   static flags = {
     browser: flags.string({description: 'browser to open SSO with'}),
-    sso: flags.boolean({description: 'login for enterprise users under SSO'}),
-    interactive: flags.boolean({description: 'login with username/password'}),
+    sso: flags.boolean({char: 's', description: 'login for enterprise users under SSO'}),
+    interactive: flags.boolean({char: 'i', description: 'login with username/password'}),
     'expires-in': flags.integer({char: 'e', description: 'duration of token in seconds (default 1 year)'}),
   }
 

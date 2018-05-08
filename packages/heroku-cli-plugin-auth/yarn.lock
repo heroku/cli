@@ -31,13 +31,13 @@
     strip-ansi "^4.0.0"
     supports-color "^5.1.0"
 
-"@heroku-cli/command@^8.1.2":
-  version "8.1.2"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.1.2.tgz#aeaf90a69bd8ccd4d96fb1c1b5d063db1697bd36"
+"@heroku-cli/command@^8.1.9":
+  version "8.1.9"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.1.9.tgz#9c5c881767b3266982c7fd25906b4287087d0db6"
   dependencies:
     "@heroku-cli/color" "^1.1.3"
     "@oclif/errors" "^1.0.9"
-    cli-ux "^4.0.0"
+    cli-ux "^4.0.1"
     debug "^3.1.0"
     heroku-client "3.0.6"
     http-call "^5.1.2"
@@ -66,15 +66,15 @@
   dependencies:
     debug "^3.1.0"
 
-"@oclif/dev-cli@1.13.18":
-  version "1.13.18"
-  resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.13.18.tgz#d39c69245c6df1debe3a37c34fa715a5cfc6a48c"
+"@oclif/dev-cli@1.13.19":
+  version "1.13.19"
+  resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.13.19.tgz#da43d784d5a3a97922533ab4a9bb3f7c2435d6d0"
   dependencies:
-    "@oclif/command" "^1.4.20"
+    "@oclif/command" "^1.4.21"
     "@oclif/config" "^1.6.17"
-    "@oclif/errors" "^1.0.8"
+    "@oclif/errors" "^1.0.9"
     "@oclif/plugin-help" "^1.2.10"
-    cli-ux "^3.4.1"
+    cli-ux "^4.0.0"
     debug "^3.1.0"
     fs-extra "^6.0.0"
     lodash "^4.17.10"
@@ -83,7 +83,7 @@
     require-resolve "^0.0.2"
     tslib "^1.9.0"
 
-"@oclif/errors@^1.0.8", "@oclif/errors@^1.0.9":
+"@oclif/errors@^1.0.9":
   version "1.0.9"
   resolved "https://registry.yarnpkg.com/@oclif/errors/-/errors-1.0.9.tgz#6fe3afd8e7683c436df63674550899adec10c81c"
   dependencies:
@@ -150,9 +150,9 @@
   version "9.6.2"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-9.6.2.tgz#e49ac1adb458835e95ca6487bc20f916b37aff23"
 
-"@types/node@10.0.4":
-  version "10.0.4"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.0.4.tgz#130598ee56e9a1210a53f557d64935571f05390d"
+"@types/node@10.0.5":
+  version "10.0.5"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.0.5.tgz#08c97d0e8ef6ea8ed1df119c839834ffb9e0321a"
 
 "@types/supports-color@^5.3.0":
   version "5.3.0"
@@ -516,9 +516,9 @@ clean-stack@^1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/clean-stack/-/clean-stack-1.3.0.tgz#9e821501ae979986c46b1d66d2d432db2fd4ae31"
 
-cli-ux@^3.4.1:
-  version "3.5.0"
-  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-3.5.0.tgz#733db9ce24033d3c03509dfda15e06dd8152aafa"
+cli-ux@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-4.0.0.tgz#8c68b3761332f3714ef3bdf517b5aacda53486b4"
   dependencies:
     "@oclif/linewrap" "^1.0.0"
     "@oclif/screen" "^1.0.2"
@@ -535,9 +535,9 @@ cli-ux@^3.4.1:
     strip-ansi "^4.0.0"
     supports-color "^5.4.0"
 
-cli-ux@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-4.0.0.tgz#8c68b3761332f3714ef3bdf517b5aacda53486b4"
+cli-ux@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-4.0.1.tgz#100f863fc5738db85f031d261276c6c688ef9e81"
   dependencies:
     "@oclif/linewrap" "^1.0.0"
     "@oclif/screen" "^1.0.2"
