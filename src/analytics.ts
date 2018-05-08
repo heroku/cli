@@ -92,6 +92,7 @@ export default class AnalyticsCommand {
 
       const local: AnalyticsJSON = await this._readJSON()
       if (local.commands.length === 0) return
+      await deps.file.remove(this.analyticsPath)
 
       const body: AnalyticsJSONPost = {
         schema: local.schema,
@@ -102,8 +103,6 @@ export default class AnalyticsCommand {
       }
 
       await this.http.post(this.url, {body})
-
-      await deps.file.remove(this.analyticsPath)
     } catch (err) {
       debug(err)
       await deps.file.remove(this.analyticsPath).catch(err => ux.warn(err))
