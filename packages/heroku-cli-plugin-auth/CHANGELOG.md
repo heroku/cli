@@ -1,3 +1,11 @@
+<a name="0.3.0"></a>
+# [0.3.0](https://github.com/heroku/heroku-cli-plugin-auth/compare/v0.2.2...v0.3.0) (2018-05-08)
+
+
+### Features
+
+* added -s and -i flags to login ([183a184](https://github.com/heroku/heroku-cli-plugin-auth/commit/183a184))
+
 <a name="0.2.2"></a>
 ## [0.2.2](https://github.com/heroku/heroku-cli-plugin-auth/compare/v0.2.1...v0.2.2) (2018-05-07)
 
