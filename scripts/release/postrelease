@@ -6,6 +6,8 @@ set -ex
 
 if [[ ! -z "${CIRCLE_TAG}" ]]; then
   ./scripts/release/macos_installer_trigger
+  aws s3 cp --content-type text/plain --cache-control "max-age: 604800" ./install-standalone.sh s3://heroku-cli-assets/install-standalone.sh
+  aws s3 cp --content-type text/plain --cache-control "max-age: 604800" ./install-ubuntu.sh s3://heroku-cli-assets/install-ubuntu.sh
   aws cloudfront create-invalidation --distribution-id "$CLOUDFRONT_DISTRIBUTION" --paths "/*"
 elif [[ "$CIRCLE_BRANCH" == "master" ]]; then
   aws cloudfront create-invalidation --distribution-id "$CLOUDFRONT_DISTRIBUTION" --paths "/channels/beta/*"
