@@ -14,6 +14,7 @@ module.exports = {
     require('./commands/logout')(pkg.topic),
     require('./commands/pull')(pkg.topic),
     require('./commands/push')(pkg.topic),
+    require('./commands/release')(pkg.topic),
     require('./commands/run')(pkg.topic)
   ]
 }

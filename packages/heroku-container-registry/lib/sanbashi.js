@@ -122,6 +122,12 @@ Sanbashi.version = function () {
     .then(([major, minor]) => [parseInt(major) || 0, parseInt(minor) || 0]) // ensure exactly 2 components
 }
 
+Sanbashi.imageID = function (tag) {
+  return Sanbashi
+    .cmd('docker', ['inspect', tag, '--format=\'{{.Id}}\''], {output: true})
+    .then(id => id.slice(1, -2)) // Trim the ' and new line at the beginning and end of the string
+}
+
 Sanbashi.cmd = function (cmd, args, options = {}) {
   debug(cmd, args)
   let stdio = [process.stdin, process.stdout, process.stderr]
