@@ -27,9 +27,9 @@
     strip-ansi "^4.0.0"
     supports-color "^5.1.0"
 
-"@heroku-cli/command@^8.0.4", "@heroku-cli/command@^8.0.5", "@heroku-cli/command@^8.0.6", "@heroku-cli/command@^8.0.7", "@heroku-cli/command@^8.1.10", "@heroku-cli/command@^8.1.3", "@heroku-cli/command@^8.1.9":
-  version "8.1.10"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.1.10.tgz#6d800f4b6a645874f644f0b1ec569e00e5fb8125"
+"@heroku-cli/command@^8.0.4", "@heroku-cli/command@^8.0.5", "@heroku-cli/command@^8.0.6", "@heroku-cli/command@^8.0.7", "@heroku-cli/command@^8.1.12", "@heroku-cli/command@^8.1.3", "@heroku-cli/command@^8.1.9":
+  version "8.1.12"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.1.12.tgz#297563fe658738c729a53affa93937702c1577c4"
   dependencies:
     "@heroku-cli/color" "^1.1.3"
     "@oclif/errors" "^1.0.9"
@@ -555,9 +555,9 @@
   dependencies:
     "@types/node" "*"
 
-"@types/node@*", "@types/node@^10.0.5":
-  version "10.0.5"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.0.5.tgz#08c97d0e8ef6ea8ed1df119c839834ffb9e0321a"
+"@types/node@*", "@types/node@^10.0.6":
+  version "10.0.6"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.0.6.tgz#c0bce8e539bf34c1b850c13ff46bead2fecc2e58"
 
 "@types/semver@^5.5.0":
   version "5.5.0"
