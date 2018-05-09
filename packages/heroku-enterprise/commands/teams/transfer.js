@@ -15,7 +15,7 @@ function * transfer(context, heroku) {
 module.exports = {
   topic: 'teams',
   command: 'transfer',
-  description: 'transfer a team to an enterprise account',
+  description: '(sudo) transfer a team to an enterprise account',
   needsAuth: true,
   flags: [
     {

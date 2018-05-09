@@ -99,11 +99,11 @@ Creating acme-data in acme... done
 #### Transferring a Team
 
 To transfer a team, you must specify the team name and the enterprise account
-name. The following transfers the acme-web team into the acme enterprise
+name. **sudo is required** to transfer a team. The following transfers the acme-web team into the acme enterprise
 account:
 
 ```sh
-$ heroku teams:transfer acme-web --enterprise-account acme
+$ heroku sudo teams:transfer acme-web --enterprise-account acme
 Transferring acme-web to acme... done
 ```
 

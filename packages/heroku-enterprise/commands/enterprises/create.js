@@ -14,7 +14,7 @@ function * create (context, heroku) {
 module.exports = {
   topic: 'enterprises',
   command: 'create',
-  description: 'create an enterprise account',
+  description: '(sudo) create an enterprise account',
   needsAuth: true,
   flags: [{name: 'managers', hasValue: true, required: true}],
   args: [{name: 'name', hasValue: true, required: true}],
