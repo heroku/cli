@@ -161,9 +161,9 @@
     lodash "^4.17.10"
     shell-quote "^1.6.1"
 
-"@heroku-cli/plugin-container-registry@^4.4.13":
-  version "4.4.13"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-container-registry/-/plugin-container-registry-4.4.13.tgz#1dff411cd2bf52c39e72c8543c4876a5e7078954"
+"@heroku-cli/plugin-container-registry@^4.4.14":
+  version "4.4.14"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-container-registry/-/plugin-container-registry-4.4.14.tgz#a545f248d75e92505cce1d42ce8c4b4e8f8e8621"
   dependencies:
     glob "7.1.2"
     heroku-cli-util "8.0.0"
@@ -425,14 +425,14 @@
     "@oclif/command" "^1.4.19"
     string-similarity "^1.2.0"
 
-"@oclif/plugin-plugins@^1.1.9":
-  version "1.1.9"
-  resolved "https://registry.yarnpkg.com/@oclif/plugin-plugins/-/plugin-plugins-1.1.9.tgz#547f382d3d0a060dc13eb3d9661f94de9ee5848d"
+"@oclif/plugin-plugins@^1.1.10":
+  version "1.1.10"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-plugins/-/plugin-plugins-1.1.10.tgz#961c7f8a91d4ef70b5301de410c535e94e3a13f7"
   dependencies:
     "@heroku-cli/color" "^1.1.3"
     "@oclif/command" "^1.4.21"
     chalk "^2.4.1"
-    cli-ux "^4.0.0"
+    cli-ux "^4.0.1"
     debug "^3.1.0"
     fs-extra "^6.0.0"
     http-call "^5.1.2"
@@ -442,9 +442,9 @@
     tslib "^1.9.0"
     yarn "^1.6.0"
 
-"@oclif/plugin-update@^1.2.1":
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/@oclif/plugin-update/-/plugin-update-1.2.1.tgz#319c13452e31713a58492074f60df6478b641242"
+"@oclif/plugin-update@^1.2.2":
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-update/-/plugin-update-1.2.2.tgz#b47d63020db61e5fb454a2842af13c04bd420f50"
   dependencies:
     "@heroku-cli/color" "^1.1.3"
     "@oclif/command" "^1.4.20"
