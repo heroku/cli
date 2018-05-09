@@ -42,7 +42,7 @@
     "cli-ux": "4.1.0",
     "debug": "3.1.0",
     "execa": "^0.10.0",
-    "fs-extra": "6.0.0",
+    "fs-extra": "6.0.1",
     "http-call": "5.1.2",
     "netrc-parser": "3.1.4",
     "semver": "5.5.0",
