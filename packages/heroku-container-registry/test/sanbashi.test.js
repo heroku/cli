@@ -141,8 +141,8 @@ describe('Sanbashi', () => {
   describe('.imageID', () => {
     it('returns the image id for a tag', async () => {
       Sinon.stub(Sanbashi, 'cmd')
-        .withArgs('docker', ['inspect', 'image:tag', '--format=\'{{.Id}}\''], {output: true})
-        .resolves('\'sha256:image_id\'\n')
+        .withArgs('docker', ['inspect', 'image:tag', '--format={{.Id}}'], {output: true})
+        .resolves('sha256:image_id\n')
 
       let id = await Sanbashi.imageID('image:tag')
       expect(id).to.equal('sha256:image_id')

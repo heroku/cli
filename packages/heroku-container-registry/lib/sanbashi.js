@@ -124,8 +124,8 @@ Sanbashi.version = function () {
 
 Sanbashi.imageID = function (tag) {
   return Sanbashi
-    .cmd('docker', ['inspect', tag, '--format=\'{{.Id}}\''], {output: true})
-    .then(id => id.slice(1, -2)) // Trim the ' and new line at the beginning and end of the string
+    .cmd('docker', ['inspect', tag, '--format={{.Id}}'], {output: true})
+    .then(id => id.trimRight()) // Trim the new line at the end of the string
 }
 
 Sanbashi.cmd = function (cmd, args, options = {}) {
