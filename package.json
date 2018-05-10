@@ -47,7 +47,8 @@
     "netrc-parser": "^3.1.4",
     "semver": "^5.5.0",
     "tslib": "^1.9.0",
-    "uuid": "^3.2.1"
+    "uuid": "^3.2.1",
+    "snyk": "^1.73.0"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.13.19",
@@ -182,7 +183,10 @@
     "prepack": "yarn run build && oclif-dev manifest",
     "prepublishOnly": "yarn run prepack",
     "test": "mocha --forbid-only \"test/**/*.test.ts\"",
-    "version": "oclif-dev readme && git add README.md"
+    "version": "oclif-dev readme && git add README.md",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
-  "types": "lib/index.d.ts"
+  "types": "lib/index.d.ts",
+  "snyk": true
 }
