@@ -1,3 +1,11 @@
+<a name="2.4.42"></a>
+## [2.4.42](https://github.com/heroku/heroku-apps/compare/v2.4.41...v2.4.42) (2018-05-10)
+
+
+### Bug Fixes
+
+* remove config and config:get ([8c14e01](https://github.com/heroku/heroku-apps/commit/8c14e01))
+
 <a name="2.4.41"></a>
 ## [2.4.41](https://github.com/heroku/heroku-apps/compare/v2.4.40...v2.4.41) (2018-05-10)
 

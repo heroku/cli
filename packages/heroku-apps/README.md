@@ -15,7 +15,7 @@ $ npm install -g @heroku-cli/plugin-apps
 $ heroku COMMAND
 running command...
 $ heroku (-v|--version|version)
-@heroku-cli/plugin-apps/2.4.41 linux-x64 node-v10.1.0
+@heroku-cli/plugin-apps/2.4.42 linux-x64 node-v10.1.0
 $ heroku --help [COMMAND]
 USAGE
   $ heroku COMMAND
@@ -56,11 +56,17 @@ Example:
 
      $ heroku buildpacks:add -i 1 https://github.com/heroku/heroku-buildpack-ruby
 
-* [`heroku config`](docs/config.md) - display a config value for an app
-Example:
+* [`heroku config`](docs/config.md) - set one or more config vars
+Examples:
 
-    $ heroku config:get RAILS_ENV
-    production
+    $ heroku config:set RAILS_ENV=staging
+    Setting config vars and restarting example... done, v10
+    RAILS_ENV: staging
+    
+    $ heroku config:set RAILS_ENV=staging RACK_ENV=staging
+    Setting config vars and restarting example... done, v11
+    RAILS_ENV: staging
+    RACK_ENV:  staging
  
 * [`heroku domains`](docs/domains.md) - add domain to an app
 
