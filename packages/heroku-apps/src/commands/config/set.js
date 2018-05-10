@@ -8,9 +8,7 @@ function * run (context, heroku) {
     cli.exit(1, 'Usage: heroku config:set KEY1=VALUE1 [KEY2=VALUE2 ...]\nMust specify KEY and VALUE to set.')
   }
 
-  const reduce = require('lodash.reduce')
-  const pickBy = require('lodash.pickby')
-  const mapKeys = require('lodash.mapkeys')
+  const {reduce, pickBy, mapKeys} = require('lodash')
 
   function lastRelease () {
     return heroku.request({

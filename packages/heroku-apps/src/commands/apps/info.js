@@ -7,7 +7,7 @@ function * run (context, heroku) {
   const filesize = require('filesize')
   const util = require('util')
   const S = require('string')
-  const countBy = require('lodash.countby')
+  const {countBy} = require('lodash')
 
   function * getInfo (app) {
     const pipelineCouplings = heroku.get(`/apps/${app}/pipeline-couplings`).catch(() => null)

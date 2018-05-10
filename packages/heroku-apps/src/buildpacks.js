@@ -75,7 +75,7 @@ BuildpackCommand.prototype.clear = function * () {
 }
 
 BuildpackCommand.prototype.findIndex = function (buildpacks) {
-  const findIndex = require('lodash.findindex')
+  const {findIndex} = require('lodash')
   let index = this.index
   if (index) {
     return findIndex(buildpacks, function (b) {
@@ -87,7 +87,7 @@ BuildpackCommand.prototype.findIndex = function (buildpacks) {
 }
 
 BuildpackCommand.prototype.findUrl = function findUrl (buildpacks) {
-  const findIndex = require('lodash.findindex')
+  const {findIndex} = require('lodash')
   let url = this.url
   let mappedUrl = this.url.replace(/^urn:buildpack:/, '').replace(/^https:\/\/codon-buildpacks\.s3\.amazonaws\.com\/buildpacks\/heroku\/(.*)\.tgz$/, 'heroku/$1')
   return findIndex(buildpacks, function (b) { return b.buildpack.url === url || b.buildpack.url === mappedUrl })

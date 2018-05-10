@@ -2,6 +2,7 @@
 
 let cli = require('heroku-cli-util')
 let co = require('co')
+const {compact} = require('lodash')
 
 let emptyFormationErr = (app) => {
   return new Error(`No process types on ${cli.color.app(app)}.
@@ -10,7 +11,6 @@ https://devcenter.heroku.com/articles/procfile`)
 }
 
 function * run (context, heroku) {
-  const compact = require('lodash.compact')
   let app = context.app
 
   function parse (args) {

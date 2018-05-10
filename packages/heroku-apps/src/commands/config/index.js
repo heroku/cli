@@ -5,8 +5,7 @@ const co = require('co')
 
 function * run (context, heroku) {
   const shellescape = require('shell-escape')
-  const forEach = require('lodash.foreach')
-  const mapKeys = require('lodash.mapkeys')
+  const {forEach, mapKeys} = require('lodash')
 
   let configVars = yield heroku.request({path: `/apps/${context.app}/config-vars`})
   if (context.flags.shell) {

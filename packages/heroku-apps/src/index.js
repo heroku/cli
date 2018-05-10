@@ -1,6 +1,6 @@
 const fs = require('fs-extra')
 const path = require('path')
-const flatten = require('lodash.flatten')
+const {flatten} = require('lodash')
 
 exports.topics = [
   { name: 'apps', description: 'manage apps' },

@@ -7,7 +7,7 @@ const stripAnsi = require('strip-ansi')
 function * run (context, heroku) {
   const statusHelper = require('../../status_helper')
   const time = require('../../time')
-  const truncate = require('lodash.truncate')
+  const {truncate} = require('lodash')
 
   let optimizationWidth = 0
 

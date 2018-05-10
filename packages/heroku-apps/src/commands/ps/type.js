@@ -2,6 +2,7 @@
 
 let cli = require('heroku-cli-util')
 let co = require('co')
+const {sortBy, compact} = require('lodash')
 
 const costs = {'Free': 0, 'Hobby': 7, 'Standard-1X': 25, 'Standard-2X': 50, 'Performance-M': 250, 'Performance': 500, 'Performance-L': 500, '1X': 36, '2X': 72, 'PX': 576}
 
@@ -12,9 +13,6 @@ https://devcenter.heroku.com/articles/procfile`)
 }
 
 function * run (context, heroku) {
-  const compact = require('lodash.compact')
-  const sortBy = require('lodash.sortby')
-
   let app = context.app
 
   let parse = co.wrap(function * (args) {

@@ -2,23 +2,17 @@
 
 const co = require('co')
 const cli = require('heroku-cli-util')
+const {round, flatten, mean, groupBy, map, sum, sumBy, toPairs, sortBy, zip} = require('lodash')
 
 let empty = (o) => Object.keys(o).length === 0
 
 function displayFormation (formation) {
-  const groupBy = require('lodash.groupby')
-  const map = require('lodash.map')
-  const sumBy = require('lodash.sumby')
-
   formation = groupBy(formation, 'size')
   formation = map(formation, (p, size) => `${bold(sumBy(p, 'quantity'))} | ${size}`)
   cli.log(`  ${label('Dynos:')} ${formation.join(', ')}`)
 }
 
 function displayErrors (metrics) {
-  const toPairs = require('lodash.topairs')
-  const sum = require('lodash.sum')
-
   let errors = []
   if (metrics.routerErrors) {
     errors = errors.concat(toPairs(metrics.routerErrors.data).map((e) => cli.color.red(`${sum(e[1])} ${e[0]}`)))
@@ -32,17 +26,11 @@ function displayErrors (metrics) {
 }
 
 function displayMetrics (metrics) {
-  const flatten = require('lodash.flatten')
-  const mean = require('lodash.mean')
-  const round = require('lodash.round')
-  const sum = require('lodash.sum')
-  const values = require('lodash.values')
-
   function rpmSparkline () {
     if (['win32', 'windows'].includes(process.platform)) return ''
     let sparkline = require('sparkline')
     let points = []
-    values(metrics.routerStatus.data).forEach((cur) => {
+    Object.values(metrics.routerStatus.data).forEach((cur) => {
       for (let i = 0; i < cur.length; i++) {
         let j = Math.floor(i / 3)
         points[j] = (points[j] || 0) + cur[i]
@@ -58,7 +46,7 @@ function displayMetrics (metrics) {
     if (!empty(latency)) ms = `${round(mean(latency))} ms `
   }
   if (metrics.routerStatus && !empty(metrics.routerStatus.data)) {
-    rpm = `${round(sum(flatten(values(metrics.routerStatus.data))) / 24 / 60)} rpm ${rpmSparkline()}`
+    rpm = `${round(sum(flatten(Object.values(metrics.routerStatus.data))) / 24 / 60)} rpm ${rpmSparkline()}`
   }
   if (rpm || ms) cli.log(`  ${label('Metrics:')} ${ms}${rpm}`)
 }
@@ -78,7 +66,6 @@ let bold = (s) => cli.color.bold(s)
 let label = (s) => cli.color.blue(s)
 
 function displayApps (apps, appsMetrics) {
-  const zip = require('lodash.zip')
   const time = require('../time')
 
   let owner = (owner) => owner.email.endsWith('@herokumanager.com') ? owner.email.split('@')[0] : owner.email
@@ -101,7 +88,6 @@ function displayApps (apps, appsMetrics) {
 
 function * run (context, heroku) {
   const img = require('term-img')
-  const sortBy = require('lodash.sortby')
   const path = require('path')
 
   // if not testing and not logged in

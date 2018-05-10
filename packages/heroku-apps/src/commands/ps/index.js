@@ -3,13 +3,12 @@
 let cli = require('heroku-cli-util')
 let co = require('co')
 let time = require('../../time')
+const {truncate, sortBy, reduce, forEach} = require('lodash')
 
 // gets the process number from a string like web.19 => 19
 let getProcessNum = (s) => parseInt(s.split('.', 2)[1])
 
 function printExtended (dynos) {
-  const truncate = require('lodash.truncate')
-  const sortBy = require('lodash.sortby')
   const trunc = (s) => truncate(s, {length: 35, omission: '…'})
 
   dynos = sortBy(dynos, ['type'], (a) => getProcessNum(a.name))
@@ -77,9 +76,6 @@ function * printAccountQuota (context, heroku, app, account) {
 }
 
 function printDynos (dynos) {
-  const reduce = require('lodash.reduce')
-  const forEach = require('lodash.foreach')
-
   let dynosByCommand = reduce(dynos, function (dynosByCommand, dyno) {
     let since = time.ago(new Date(dyno.updated_at))
     let size = dyno.size || '1X'

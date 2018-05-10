@@ -27,8 +27,7 @@ function buildErrorTable (errors, source) {
 }
 
 function * run (context, heroku) {
-  const sum = require('lodash.sum')
-  const fromPairs = require('lodash.frompairs')
+  const {sum, fromPairs} = require('lodash')
 
   const hours = parseInt(context.flags.hours) || 24
   const NOW = new Date().toISOString()

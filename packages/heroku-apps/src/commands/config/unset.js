@@ -4,7 +4,7 @@ const cli = require('heroku-cli-util')
 const co = require('co')
 
 function * run (context, heroku) {
-  const reduce = require('lodash.reduce')
+  const {reduce} = require('lodash')
 
   function lastRelease () {
     return heroku.request({

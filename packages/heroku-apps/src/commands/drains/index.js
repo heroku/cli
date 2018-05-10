@@ -10,7 +10,7 @@ function styledDrain (id, name, drain) {
 }
 
 function * run (context, heroku) {
-  const partition = require('lodash.partition')
+  const {partition} = require('lodash')
 
   let path = `/apps/${context.app}/log-drains`
   if (context.flags.extended) path = path + '?extended=true'

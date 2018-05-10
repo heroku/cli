@@ -8,7 +8,7 @@ function printJSON (features) {
 }
 
 function printFeatures (features) {
-  const sortBy = require('lodash.sortby')
+  const {sortBy} = require('lodash')
   const S = require('string')
 
   features = sortBy(features, 'name')

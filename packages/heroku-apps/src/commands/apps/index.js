@@ -6,8 +6,7 @@ const {flags} = require('@heroku-cli/command')
 const {SpaceCompletion} = require('@heroku-cli/command/lib/completions')
 
 function * run (context, heroku) {
-  const sortBy = require('lodash.sortby')
-  const partition = require('lodash.partition')
+  const {sortBy, partition} = require('lodash')
 
   let team = context.org || context.team || context.flags.team
   let org = (!context.flags.personal && team) ? team : null
