@@ -9,9 +9,9 @@
   "dependencies": {
     "co": "4.6.0",
     "co-wait": "0.0.0",
-    "heroku-cli-util": "^6.2.0",
+    "heroku-cli-util": "^8.0.8",
     "lodash": "^4.17.10",
-    "printf": "0.2.5"
+    "printf": "0.3.0"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.2.16",
@@ -20,11 +20,9 @@
     "lolex": "^1.6.0",
     "mocha": "^3.4.2",
     "nock": "^9.0.13",
-    "np": "^2.16.0",
     "nyc": "^11.0.3",
     "standard": "^10.0.2",
-    "time-require": "0.1.2",
-    "unexpected": "^10.29.0"
+    "unexpected": "^10.37.7"
   },
   "files": [
     ".oclif.manifest.json",

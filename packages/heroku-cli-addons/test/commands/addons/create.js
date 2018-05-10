@@ -275,7 +275,7 @@ Use heroku addons:docs heroku-db3 to view documentation
         app: 'myapp',
         args: ['heroku-postgresql:standard-0', '--rollback', '--follow', 'otherdb', '--foo'],
         flags: {as: 'mydb', confirm: 'not-my-app'}
-      }), 'when rejected', 'to equal', 'Confirmation not-my-app did not match myapp. Aborted.')
+      }), 'to be rejected with error satisfying', 'Confirmation not-my-app did not match myapp. Aborted.')
     })
 
     it('succeeds if confirmation does match', () => {
