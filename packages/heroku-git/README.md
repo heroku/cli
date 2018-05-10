@@ -1,107 +1,54 @@
-# heroku-git [![Circle CI](https://circleci.com/gh/heroku/heroku-git/tree/master.svg?style=svg)](https://circleci.com/gh/heroku/heroku-git/tree/master)
-
-[![Code Climate](https://codeclimate.com/github/heroku/heroku-git/badges/gpa.svg)](https://codeclimate.com/github/heroku/heroku-git)
-[![Test Coverage](https://codeclimate.com/github/heroku/heroku-git/badges/coverage.svg)](https://codeclimate.com/github/heroku/heroku-git/coverage)
-[![npm version](https://badge.fury.io/js/heroku-git.svg)](https://badge.fury.io/js/heroku-git)
-[![License](https://img.shields.io/github/license/heroku/heroku-git.svg)](https://github.com/heroku/heroku-git/blob/master/LICENSE)
-
-[![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)
+@heroku-cli/plugin-git
+======================
 
 Heroku CLI plugin to manage local git repos.
 
-Commands
-========
+[![Version](https://img.shields.io/npm/v/@heroku-cli/plugin-git.svg)](https://npmjs.org/package/@heroku-cli/plugin-git)
+[![CircleCI](https://circleci.com/gh/[object Object]/tree/master.svg?style=shield)](https://circleci.com/gh/[object Object]/tree/master)
+[![Appveyor CI](https://ci.appveyor.com/api/projects/status/github/[object Object]?branch=master&svg=true)](https://ci.appveyor.com/project/[object Object]/branch/master)
+[![Codecov](https://codecov.io/gh/[object Object]/branch/master/graph/badge.svg)](https://codecov.io/gh/[object Object])
+[![Downloads/week](https://img.shields.io/npm/dw/@heroku-cli/plugin-git.svg)](https://npmjs.org/package/@heroku-cli/plugin-git)
+[![License](https://img.shields.io/npm/l/@heroku-cli/plugin-git.svg)](https://github.com/[object Object]/blob/master/package.json)
 
-heroku git:remote
------------------
-
-adds a git remote to an app repo
-
-`-a, --app` the Heroku app to use
-
-`-r, --remote` the git remote to create
-
-`--ssh-git` use SSH git protocol
-
+<!-- toc -->
+* [Usage](#usage)
+* [Commands](#commands)
+<!-- tocstop -->
+# Usage
+<!-- usage -->
+```sh-session
+$ npm install -g @heroku-cli/plugin-git
+$ oclif-example COMMAND
+running command...
+$ oclif-example (-v|--version|version)
+@heroku-cli/plugin-git/2.5.28 darwin-x64 node-v10.1.0
+$ oclif-example --help [COMMAND]
+USAGE
+  $ oclif-example COMMAND
+...
 ```
-extra arguments will be passed to git remote add
-
-Examples:
-
-  $ heroku git:remote -a example set git remote heroku to https://git.heroku.com/example.git
-```
-
-heroku git:clone [DIRECTORY]
-----------------------------
-
-clones a heroku app to your local machine at DIRECTORY (defaults to app name)
-
-`-a, --app` the Heroku app to use
-
-`-r, --remote` the git remote to create, default "heroku"
-
-`--ssh-git` use SSH git protocol
-
-```
-Examples:
-
-  $ heroku git:clone -a example
-  Cloning into 'example'...
-  remote: Counting objects: 42, done.
-  ...
-```
-<!-- commands -->
+<!-- usagestop -->
 # Commands
+<!-- commands -->
+* [`oclif-example hello [FILE]`](#oclif-example-hello-file)
 
-* [@heroku-cli/plugin-git git:clone [DIRECTORY]](#gitclone-directory)
-* [@heroku-cli/plugin-git git:remote](#gitremote)
-## git:clone [DIRECTORY]
+## `oclif-example hello [FILE]`
 
-clones a heroku app to your local machine at DIRECTORY (defaults to app name)
-
-```
-USAGE
-  $ @heroku-cli/plugin-git git:clone [DIRECTORY]
-
-ARGUMENTS
-  DIRECTORY  where to clone the app
-
-OPTIONS
-  -a, --app=app        the Heroku app to use
-  -r, --remote=remote  the git remote to create, default "heroku"
-  --ssh-git            use SSH git protocol
-
-DESCRIPTION
-  Examples:
-
-       $ heroku git:clone -a example
-       Cloning into 'example'...
-       remote: Counting objects: 42, done.
-       ...
-```
-
-## git:remote
-
-adds a git remote to an app repo
+describe the command here
 
 ```
 USAGE
-  $ @heroku-cli/plugin-git git:remote
+  $ oclif-example hello [FILE]
 
 OPTIONS
-  -a, --app=app        the Heroku app to use
-  -r, --remote=remote  the git remote to create
-  --ssh-git            use SSH git protocol
+  -f, --force
+  -h, --help       show CLI help
+  -n, --name=name  name to print
 
-DESCRIPTION
-  extra arguments will be passed to git remote add
-
-  Examples:
-
-       # set git remote heroku to https://git.heroku.com/example.git
-       $ heroku git:remote -a example
-
-       # set git remote heroku-staging to https://git.heroku.com/example-staging.git
-       $ heroku git:remote --remote heroku-staging -a example
+EXAMPLE
+  $ oclif-example hello
+  hello world from ./src/hello.ts!
 ```
+
+_See code: [src/commands/hello.ts](https://github.com/heroku/heroku-git/blob/v2.5.28/src/commands/hello.ts)_
 <!-- commandsstop -->
