@@ -1,3 +1,11 @@
+<a name="3.8.3"></a>
+## [3.8.3](https://github.com/heroku/heroku-run/compare/v3.8.2...v3.8.3) (2018-05-10)
+
+
+### Bug Fixes
+
+* use proxy for evented logs ([91ae450](https://github.com/heroku/heroku-run/commit/91ae450))
+
 <a name="3.8.2"></a>
 ## [3.8.2](https://github.com/heroku/heroku-run/compare/v3.8.1...v3.8.2) (2018-05-08)
 
