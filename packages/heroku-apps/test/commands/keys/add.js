@@ -6,9 +6,8 @@ const nock = require('nock')
 const expect = require('unexpected')
 const proxyquire = require('proxyquire')
 const util = require('../../../src/util')
-const bluebird = require('bluebird')
 const rimraf = require('rimraf')
-const fs = bluebird.promisifyAll(require('fs-extra'))
+const fs = require('fs-extra')
 const home = './tmp/home'
 
 let osHomedir
@@ -111,7 +110,7 @@ describe('keys:add', () => {
       return Promise.resolve('yes')
     }
 
-    return fs.copyAsync('./test/fixtures/id_rsa.pub', home + '/.ssh/id_rsa.pub')
+    return fs.copy('./test/fixtures/id_rsa.pub', home + '/.ssh/id_rsa.pub')
       .then(() => cmd.run({args: {}, flags: {}}))
       .then(() => expect(cli.stdout, 'to be empty'))
       .then(() => expect(cli.stderr, 'to equal', 'Found an SSH public key at tmp/home/.ssh/id_rsa.pub\nUploading tmp/home/.ssh/id_rsa.pub SSH key... done\n'))
@@ -131,7 +130,7 @@ describe('keys:add', () => {
       throw new Error('should not prompt')
     }
 
-    return fs.copyAsync('./test/fixtures/id_rsa.pub', home + '/.ssh/id_rsa.pub')
+    return fs.copy('./test/fixtures/id_rsa.pub', home + '/.ssh/id_rsa.pub')
       .then(() => cmd.run({args: {}, flags: {yes: true}}))
       .then(() => expect(cli.stdout, 'to be empty'))
       .then(() => expect(cli.stderr, 'to equal', 'Found an SSH public key at tmp/home/.ssh/id_rsa.pub\nUploading tmp/home/.ssh/id_rsa.pub SSH key... done\n'))
@@ -153,8 +152,8 @@ describe('keys:add', () => {
       }
     }
 
-    return fs.copyAsync('./test/fixtures/id_rsa.pub', home + '/.ssh/id_rsa.pub')
-      .then(() => fs.copyAsync('./test/fixtures/id_rsa.pub', home + '/.ssh/id_rsa2.pub'))
+    return fs.copy('./test/fixtures/id_rsa.pub', home + '/.ssh/id_rsa.pub')
+      .then(() => fs.copy('./test/fixtures/id_rsa.pub', home + '/.ssh/id_rsa2.pub'))
       .then(() => cmd.run({args: {}}))
       .then(() => expect(cli.stdout, 'to be empty'))
       .then(() => expect(cli.stderr, 'to equal', 'Uploading tmp/home/.ssh/id_rsa.pub SSH key... done\n'))

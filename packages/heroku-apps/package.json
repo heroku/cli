@@ -17,7 +17,6 @@
   },
   "dependencies": {
     "@heroku-cli/command": "^8.1.14",
-    "bluebird": "^3.5.1",
     "co": "^4.6.0",
     "co-wait": "^0.0.0",
     "filesize": "^3.5.11",
