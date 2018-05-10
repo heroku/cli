@@ -1,0 +1,30 @@
+import {Command, flags} from '@heroku-cli/command'
+
+import {quote} from '../../quote'
+
+export class ConfigGet extends Command {
+  static usage = 'config:get KEY...'
+  static description = 'display a single config value for an app'
+  static example = `$ heroku config:get RAILS_ENV
+production`
+  static strict = false
+  static args = [{name: 'KEY', required: true}]
+  static flags = {
+    app: flags.app({required: true}),
+    remote: flags.remote(),
+    shell: flags.boolean({char: 's', description: 'output config vars in shell format'}),
+  }
+
+  async run() {
+    const {flags, argv} = this.parse(ConfigGet)
+    const {body: config}: {body: {[k: string]: string}} = await this.heroku.get(`/apps/${flags.app}/config-vars`)
+    for (let key of argv) {
+      const v = config[key]
+      if (flags.shell) {
+        this.log(`${key}=${quote(v || '')}`)
+      } else {
+        this.log(v || '')
+      }
+    }
+  }
+}
