@@ -18,10 +18,9 @@
   "dependencies": {
     "@heroku-cli/command": "^8.1.14",
     "co": "^4.6.0",
-    "co-wait": "^0.0.0",
     "filesize": "^3.5.11",
     "fs-extra": "^6.0.1",
-    "heroku-cli-util": "^8.0.8",
+    "heroku-cli-util": "^8.0.9",
     "inquirer": "^5.2.0",
     "lodash": "^4.17.10",
     "mkdirp": "^0.5.1",

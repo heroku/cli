@@ -180,10 +180,6 @@ ansi-styles@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/ansi-styles/-/ansi-styles-1.0.0.tgz#cb102df1c56f5123eab8b67cd7b98027a0279178"
 
-ansicolors@~0.2.1:
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/ansicolors/-/ansicolors-0.2.1.tgz#be089599097b74a5c9c4a84a0cdbcdb62bd87aef"
-
 ansicolors@~0.3.2:
   version "0.3.2"
   resolved "https://registry.yarnpkg.com/ansicolors/-/ansicolors-0.3.2.tgz#665597de86a9ffe3aa9bfbe6cae5c6ea426b4979"
@@ -408,14 +404,7 @@ callsites@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/callsites/-/callsites-0.2.0.tgz#afab96262910a7f33c19a5775825c69f34e350ca"
 
-cardinal@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/cardinal/-/cardinal-1.0.0.tgz#50e21c1b0aa37729f9377def196b5a9cec932ee9"
-  dependencies:
-    ansicolors "~0.2.1"
-    redeyed "~1.0.0"
-
-cardinal@^2.0.0:
+cardinal@^2.0.0, cardinal@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/cardinal/-/cardinal-2.0.1.tgz#2431630e6c006253b803967249b2d72e50d1985d"
   dependencies:
@@ -451,7 +440,7 @@ chalk@^1.1.3:
     strip-ansi "^3.0.0"
     supports-color "^2.0.0"
 
-chalk@^2.0.0, chalk@^2.1.0, chalk@^2.3.0, chalk@^2.3.2, chalk@^2.4.0, chalk@^2.4.1:
+chalk@^2.0.0, chalk@^2.1.0, chalk@^2.3.0, chalk@^2.4.0, chalk@^2.4.1:
   version "2.4.1"
   resolved "https://registry.yarnpkg.com/chalk/-/chalk-2.4.1.tgz#18c49ab16a037b6eb0152cc83e3471338215b66e"
   dependencies:
@@ -524,10 +513,6 @@ clone-response@1.0.2:
   resolved "https://registry.yarnpkg.com/clone-response/-/clone-response-1.0.2.tgz#d1dc973920314df67fbeb94223b4ee350239e96b"
   dependencies:
     mimic-response "^1.0.0"
-
-co-wait@^0.0.0:
-  version "0.0.0"
-  resolved "https://registry.yarnpkg.com/co-wait/-/co-wait-0.0.0.tgz#c22372032218edbf6ed915e433546c21e445628b"
 
 co@^4.6.0:
   version "4.6.0"
@@ -978,10 +963,6 @@ esprima@^4.0.0, esprima@~4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/esprima/-/esprima-4.0.0.tgz#4499eddcd1110e0b218bacf2fa7f7f59f55ca804"
 
-esprima@~3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/esprima/-/esprima-3.0.0.tgz#53cf247acda77313e551c3aa2e73342d3fb4f7d9"
-
 esquery@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/esquery/-/esquery-1.0.1.tgz#406c51658b1f5991a5f9b62b1dc25b00e3e5c708"
@@ -1305,7 +1286,7 @@ globby@^8.0.1:
     pify "^3.0.0"
     slash "^1.0.0"
 
-got@^8.3.0:
+got@^8.3.1:
   version "8.3.1"
   resolved "https://registry.yarnpkg.com/got/-/got-8.3.1.tgz#093324403d4d955f5a16a7a8d39955d055ae10ed"
   dependencies:
@@ -1408,34 +1389,23 @@ here@0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/here/-/here-0.0.2.tgz#69c1af3f02121f3d8788e02e84dc8b3905d71195"
 
-heroku-cli-util@^8.0.8:
-  version "8.0.8"
-  resolved "https://registry.yarnpkg.com/heroku-cli-util/-/heroku-cli-util-8.0.8.tgz#a32c303f7c948b714b208d5b06bdae93289e9a27"
+heroku-cli-util@^8.0.9:
+  version "8.0.9"
+  resolved "https://registry.yarnpkg.com/heroku-cli-util/-/heroku-cli-util-8.0.9.tgz#bada2cc6ba0a8216ee6105f6f8658de971477208"
   dependencies:
     "@heroku-cli/color" "^1.1.3"
     ansi-escapes "^3.1.0"
     ansi-styles "^3.2.1"
-    cardinal "^1.0.0"
-    chalk "^2.3.2"
+    cardinal "^2.0.1"
+    chalk "^2.4.1"
     co "^4.6.0"
-    got "^8.3.0"
+    got "^8.3.1"
     heroku-client "^3.0.6"
-    lodash.ary "^4.1.1"
-    lodash.defaults "^4.2.0"
-    lodash.get "^4.4.2"
-    lodash.identity "^3.0.0"
-    lodash.keys "^4.2.0"
-    lodash.mapvalues "^4.6.0"
-    lodash.noop "^3.0.1"
-    lodash.partial "^4.2.1"
-    lodash.pickby "^4.6.0"
-    lodash.property "^4.4.2"
-    lodash.repeat "^4.1.0"
-    lodash.result "^4.5.2"
+    lodash "^4.17.10"
     netrc-parser "^3.1.4"
     opn "^3.0.3"
     strip-ansi "^4.0.0"
-    supports-color "^5.3.0"
+    supports-color "^5.4.0"
     tslib "^1.9.0"
     tunnel-agent "^0.6.0"
 
@@ -1880,54 +1850,6 @@ locate-path@^2.0.0:
 lodash._reinterpolate@~3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/lodash._reinterpolate/-/lodash._reinterpolate-3.0.0.tgz#0ccf2d89166af03b3663c796538b75ac6e114d9d"
-
-lodash.ary@^4.1.1:
-  version "4.1.1"
-  resolved "https://registry.yarnpkg.com/lodash.ary/-/lodash.ary-4.1.1.tgz#66065fa91bacc7a034d9c8fce52f83d3c7e40212"
-
-lodash.defaults@^4.2.0:
-  version "4.2.0"
-  resolved "https://registry.yarnpkg.com/lodash.defaults/-/lodash.defaults-4.2.0.tgz#d09178716ffea4dde9e5fb7b37f6f0802274580c"
-
-lodash.get@^4.4.2:
-  version "4.4.2"
-  resolved "https://registry.yarnpkg.com/lodash.get/-/lodash.get-4.4.2.tgz#2d177f652fa31e939b4438d5341499dfa3825e99"
-
-lodash.identity@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/lodash.identity/-/lodash.identity-3.0.0.tgz#ad7bc6a4e647d79c972e1b80feef7af156267876"
-
-lodash.keys@^4.2.0:
-  version "4.2.0"
-  resolved "https://registry.yarnpkg.com/lodash.keys/-/lodash.keys-4.2.0.tgz#a08602ac12e4fb83f91fc1fb7a360a4d9ba35205"
-
-lodash.mapvalues@^4.6.0:
-  version "4.6.0"
-  resolved "https://registry.yarnpkg.com/lodash.mapvalues/-/lodash.mapvalues-4.6.0.tgz#1bafa5005de9dd6f4f26668c30ca37230cc9689c"
-
-lodash.noop@^3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/lodash.noop/-/lodash.noop-3.0.1.tgz#38188f4d650a3a474258439b96ec45b32617133c"
-
-lodash.partial@^4.2.1:
-  version "4.2.1"
-  resolved "https://registry.yarnpkg.com/lodash.partial/-/lodash.partial-4.2.1.tgz#49f3d8cfdaa3bff8b3a91d127e923245418961d4"
-
-lodash.pickby@^4.6.0:
-  version "4.6.0"
-  resolved "https://registry.yarnpkg.com/lodash.pickby/-/lodash.pickby-4.6.0.tgz#7dea21d8c18d7703a27c704c15d3b84a67e33aff"
-
-lodash.property@^4.4.2:
-  version "4.4.2"
-  resolved "https://registry.yarnpkg.com/lodash.property/-/lodash.property-4.4.2.tgz#da07124821c6409d025f30db8df851314515bffe"
-
-lodash.repeat@^4.1.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/lodash.repeat/-/lodash.repeat-4.1.0.tgz#fc7de8131d8c8ac07e4b49f74ffe829d1f2bec44"
-
-lodash.result@^4.5.2:
-  version "4.5.2"
-  resolved "https://registry.yarnpkg.com/lodash.result/-/lodash.result-4.5.2.tgz#cb45b27fb914eaa8d8ee6f0ce7b2870b87cb70aa"
 
 lodash.template@^4.4.0:
   version "4.4.0"
@@ -2570,12 +2492,6 @@ readable-stream@^2.0.0, readable-stream@^2.2.2, readable-stream@^2.3.5:
     safe-buffer "~5.1.1"
     string_decoder "~1.1.1"
     util-deprecate "~1.0.1"
-
-redeyed@~1.0.0:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/redeyed/-/redeyed-1.0.1.tgz#e96c193b40c0816b00aec842698e61185e55498a"
-  dependencies:
-    esprima "~3.0.0"
 
 redeyed@~2.0.0:
   version "2.0.0"
