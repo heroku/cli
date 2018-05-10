@@ -1,3 +1,5 @@
+**This project is for the Heroku CLI only. Use https://help.heroku.com for anything that is not specific to the CLI itself.**
+
 Do you want to request a *feature* or report a *bug*?
 -----------------------------------------------------
 If bug, first try running `heroku update` and setting `DEBUG=*` to see extra debug information.
