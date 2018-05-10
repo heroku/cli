@@ -11,7 +11,7 @@
     "@heroku-cli/color": "^1.1.3",
     "@heroku-cli/command": "^8.1.14",
     "@heroku-cli/plugin-addons": "^1.2.29",
-    "@heroku-cli/plugin-apps": "^2.4.40",
+    "@heroku-cli/plugin-apps": "^2.4.41",
     "@heroku-cli/plugin-auth": "^0.3.0",
     "@heroku-cli/plugin-certs": "^1.2.2",
     "@heroku-cli/plugin-ci": "^1.9.12",
