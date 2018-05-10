@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 
 - Improve git-related error messages
+- Updated dependencies
 
 ## [1.9.9] - 2018-04-18
 ### Changed
