@@ -21,7 +21,7 @@ $ npm install -g @heroku-cli/plugin-config
 $ heroku COMMAND
 running command...
 $ heroku (-v|--version|version)
-@heroku-cli/plugin-config/1.2.0 linux-x64 node-v10.1.0
+@heroku-cli/plugin-config/1.3.0 linux-x64 node-v10.1.0
 $ heroku --help [COMMAND]
 USAGE
   $ heroku COMMAND
@@ -32,6 +32,7 @@ USAGE
 <!-- commands -->
 * [`heroku config`](#heroku-config)
 * [`heroku config:edit [KEY]`](#heroku-configedit-key)
+* [`heroku config:get KEY...`](#heroku-configget-key)
 
 ## `heroku config`
 
@@ -48,7 +49,7 @@ OPTIONS
   -s, --shell          output config vars in shell format
 ```
 
-_See code: [src/commands/config.ts](https://github.com/heroku/heroku-cli-plugin-config/blob/v1.2.0/src/commands/config.ts)_
+_See code: [src/commands/config.ts](https://github.com/heroku/heroku-cli-plugin-config/blob/v1.3.0/src/commands/config.ts)_
 
 ## `heroku config:edit [KEY]`
 
@@ -66,5 +67,25 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
 ```
 
-_See code: [src/commands/config/edit.ts](https://github.com/heroku/heroku-cli-plugin-config/blob/v1.2.0/src/commands/config/edit.ts)_
+_See code: [src/commands/config/edit.ts](https://github.com/heroku/heroku-cli-plugin-config/blob/v1.3.0/src/commands/config/edit.ts)_
+
+## `heroku config:get KEY...`
+
+display a single config value for an app
+
+```
+USAGE
+  $ heroku config:get KEY...
+
+OPTIONS
+  -a, --app=app        (required) app to run command against
+  -r, --remote=remote  git remote of app to use
+  -s, --shell          output config vars in shell format
+
+EXAMPLES
+  $ heroku config:get RAILS_ENV
+  production
+```
+
+_See code: [src/commands/config/get.ts](https://github.com/heroku/heroku-cli-plugin-config/blob/v1.3.0/src/commands/config/get.ts)_
 <!-- commandsstop -->

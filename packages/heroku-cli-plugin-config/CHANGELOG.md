@@ -1,3 +1,11 @@
+<a name="1.3.0"></a>
+# [1.3.0](https://github.com/heroku/heroku-cli-plugin-config/compare/v1.2.0...v1.3.0) (2018-05-10)
+
+
+### Features
+
+* added config:get ([aabfebb](https://github.com/heroku/heroku-cli-plugin-config/commit/aabfebb))
+
 <a name="1.2.0"></a>
 # [1.2.0](https://github.com/heroku/heroku-cli-plugin-config/compare/v1.1.0...v1.2.0) (2018-05-10)
 
