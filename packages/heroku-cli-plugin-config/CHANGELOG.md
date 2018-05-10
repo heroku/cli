@@ -1,3 +1,11 @@
+<a name="1.2.0"></a>
+# [1.2.0](https://github.com/heroku/heroku-cli-plugin-config/compare/v1.1.0...v1.2.0) (2018-05-10)
+
+
+### Features
+
+* config index ([a374cd8](https://github.com/heroku/heroku-cli-plugin-config/commit/a374cd8))
+
 <a name="1.1.0"></a>
 # [1.1.0](https://github.com/heroku/heroku-cli-plugin-config/compare/v1.0.4...v1.1.0) (2018-05-04)
 
