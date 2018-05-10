@@ -135,13 +135,13 @@
     heroku-cli-util "8.0.0"
     inquirer "5.1.0"
 
-"@heroku-cli/plugin-git@^2.5.28":
-  version "2.5.28"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-git/-/plugin-git-2.5.28.tgz#dbb3c1fdb58e23b8b90cc5ce59c22898d99a1a05"
+"@heroku-cli/plugin-git@^3.0.0":
+  version "3.0.0"
+  resolved "http://cli-npm.heroku.com/@heroku-cli/plugin-git/-/plugin-git-3.0.0/8348fd035e5ed86365de85435f885107e692cd33.tgz#8348fd035e5ed86365de85435f885107e692cd33"
   dependencies:
-    co "4.6.0"
+    "@oclif/command" "^1"
+    "@oclif/config" "^1"
     debug "3.1.0"
-    heroku-cli-util "^8.0.0"
 
 "@heroku-cli/plugin-local@^5.1.24":
   version "5.1.24"
@@ -307,7 +307,7 @@
     call-me-maybe "^1.0.1"
     glob-to-regexp "^0.3.0"
 
-"@oclif/command@^1.4.13", "@oclif/command@^1.4.19", "@oclif/command@^1.4.20", "@oclif/command@^1.4.21":
+"@oclif/command@^1", "@oclif/command@^1.4.13", "@oclif/command@^1.4.19", "@oclif/command@^1.4.20", "@oclif/command@^1.4.21":
   version "1.4.21"
   resolved "https://registry.yarnpkg.com/@oclif/command/-/command-1.4.21.tgz#e45f252f8c375ad6e24a0a5f908e6aa692c5c56a"
   dependencies:
@@ -316,7 +316,7 @@
     debug "^3.1.0"
     semver "^5.5.0"
 
-"@oclif/config@^1.6.17", "@oclif/config@^1.6.4":
+"@oclif/config@^1", "@oclif/config@^1.6.17", "@oclif/config@^1.6.4":
   version "1.6.17"
   resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.6.17.tgz#e9608f56e5acd49fcaf3bbfcc3e8818d81b1ba12"
   dependencies:
