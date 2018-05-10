@@ -8,7 +8,7 @@ function * create (context, heroku) {
   let managers = context.flags.managers.split(',')
   let params = { body: { name: enterpriseAccountName, managers: managers } }
   let create = heroku.post(`/admin/enterprise-accounts`, params)
-  cli.action(`Creating ${enterpriseAccountName}`, create)
+  yield cli.action(`Creating ${enterpriseAccountName}`, create)
 }
 
 module.exports = {
