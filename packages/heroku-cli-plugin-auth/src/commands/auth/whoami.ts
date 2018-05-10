@@ -10,7 +10,7 @@ export default class AuthWhoami extends Command {
     if (process.env.HEROKU_API_KEY) this.warn('HEROKU_API_KEY is set')
     if (!this.heroku.auth) this.notloggedin()
     try {
-      let {body: account} = await this.heroku.get('/account')
+      let {body: account} = await this.heroku.get('/account', {retryAuth: false})
       this.log(account.email)
     } catch (err) {
       if (err.statusCode === 401) this.notloggedin()
