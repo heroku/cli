@@ -9,12 +9,11 @@ function printJSON (features) {
 
 function printFeatures (features) {
   const {sortBy} = require('lodash')
-  const S = require('string')
 
   features = sortBy(features, 'name')
   let longest = Math.max.apply(null, features.map((f) => f.name.length))
   for (let f of features) {
-    let line = `${f.enabled ? '[+]' : '[ ]'} ${S(f.name).padRight(longest)}`
+    let line = `${f.enabled ? '[+]' : '[ ]'} ${f.name.padEnd(longest)}`
     if (f.enabled) line = cli.color.green(line)
     line = `${line}  ${f.description}`
     cli.log(line)

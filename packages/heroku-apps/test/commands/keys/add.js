@@ -5,7 +5,6 @@ const cli = require('heroku-cli-util')
 const nock = require('nock')
 const expect = require('unexpected')
 const proxyquire = require('proxyquire')
-const util = require('../../../src/util')
 const rimraf = require('rimraf')
 const fs = require('fs-extra')
 const home = './tmp/home'
@@ -29,7 +28,7 @@ describe('keys:add', () => {
 
     rimraf.sync(home)
     cli.mockConsole()
-    return util.mkdirp(home)
+    return fs.mkdirp(home)
   })
   afterEach(() => {
     nock.cleanAll()

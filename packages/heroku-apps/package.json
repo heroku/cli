@@ -23,12 +23,9 @@
     "heroku-cli-util": "^8.0.9",
     "inquirer": "^5.2.0",
     "lodash": "^4.17.10",
-    "mkdirp": "^0.5.1",
-    "mz": "^2.7.0",
     "shell-escape": "^0.2.0",
     "sparkline": "^0.2.0",
     "strftime": "^0.10.0",
-    "string": "^3.3.3",
     "term-img": "^2.1.0",
     "urijs": "1.19.1"
   },

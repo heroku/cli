@@ -6,8 +6,7 @@ const cli = require('heroku-cli-util')
 function * run (context, heroku) {
   const filesize = require('filesize')
   const util = require('util')
-  const S = require('string')
-  const {countBy} = require('lodash')
+  const {countBy, snakeCase} = require('lodash')
 
   function * getInfo (app) {
     const pipelineCouplings = heroku.get(`/apps/${app}/pipeline-couplings`).catch(() => null)
@@ -84,7 +83,7 @@ function * run (context, heroku) {
 
   function shell () {
     function print (k, v) {
-      cli.log(`${S(k).underscore()}=${v}`)
+      cli.log(`${snakeCase(k)}=${v}`)
     }
     print('auto_cert_mgmt', info.app.acm)
     print('addons', addons)

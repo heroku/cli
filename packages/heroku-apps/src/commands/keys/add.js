@@ -1,9 +1,8 @@
 'use strict'
 
-const co = require('co')
 const cli = require('heroku-cli-util')
-const util = require('../../util')
 const os = require('os')
+const fs = require('fs-extra')
 
 function sshKeygen (file, quiet) {
   let spawn = require('child_process').spawn
@@ -13,7 +12,7 @@ function sshKeygen (file, quiet) {
   })
 }
 
-function * run (context, heroku) {
+async function run (context, heroku) {
   const inquirer = require('inquirer')
   function confirmPrompt (message) {
     if (process.stdin.isTTY) {
@@ -29,30 +28,29 @@ function * run (context, heroku) {
     }
   }
 
-  let fs = require('mz/fs')
   let path = require('path')
 
   const sshdir = path.join(os.homedir(), '.ssh')
 
-  let generate = co.wrap(function * () {
-    yield util.mkdirp(sshdir, {mode: 0o700})
-    yield sshKeygen(path.join(sshdir, 'id_rsa'), context.flags.quiet)
-  })
+  let generate = async function () {
+    await fs.mkdirp(sshdir, {mode: 0o700})
+    await sshKeygen(path.join(sshdir, 'id_rsa'), context.flags.quiet)
+  }
 
-  let findKey = co.wrap(function * () {
+  let findKey = async function () {
     const defaultKey = path.join(sshdir, 'id_rsa.pub')
-    if (!(yield fs.exists(defaultKey))) {
+    if (!(await fs.pathExists(defaultKey))) {
       cli.console.error('Could not find an existing SSH key at ~/.ssh/id_rsa.pub')
 
       if (!context.flags.yes) {
-        let resp = yield confirmPrompt('Would you like to generate a new one?')
+        let resp = await confirmPrompt('Would you like to generate a new one?')
         if (!resp.yes) return
       }
 
-      yield generate()
+      await generate()
       return defaultKey
     }
-    let keys = yield fs.readdir(sshdir)
+    let keys = await fs.readdir(sshdir)
     keys = keys.map((k) => path.join(sshdir, k))
     keys = keys.filter((k) => path.extname(k) === '.pub')
     if (keys.length === 1) {
@@ -60,13 +58,13 @@ function * run (context, heroku) {
       cli.console.error(`Found an SSH public key at ${cli.color.cyan(key)}`)
 
       if (!context.flags.yes) {
-        let resp = yield confirmPrompt('Would you like to upload it to Heroku?')
+        let resp = await confirmPrompt('Would you like to upload it to Heroku?')
         if (!resp.yes) return
       }
 
       return key
     } else {
-      let resp = yield inquirer.prompt([{
+      let resp = await inquirer.prompt([{
         type: 'list',
         name: 'key',
         choices: keys,
@@ -74,24 +72,22 @@ function * run (context, heroku) {
       }])
       return resp.key
     }
-  })
+  }
 
-  let upload = co.wrap(function * (key) {
-    yield cli.action(`Uploading ${cli.color.cyan(key)} SSH key`, co(function * () {
-      yield heroku.request({
-        method: 'POST',
-        path: '/account/keys',
+  let upload = async function (key) {
+    await cli.action(`Uploading ${cli.color.cyan(key)} SSH key`, (async () => {
+      await heroku.post('/account/keys', {
         body: {
-          public_key: yield fs.readFile(key, 'utf8')
+          public_key: await fs.readFile(key, 'utf8')
         }
       })
-    }))
-  })
+    })())
+  }
 
   let key = context.args.key
-  if (!key) key = yield findKey()
+  if (!key) key = await findKey()
   if (!key) throw new Error('No key to upload')
-  yield upload(key)
+  await upload(key)
 }
 
 module.exports = {
@@ -117,5 +113,5 @@ Examples:
     {name: 'quiet', hidden: true},
     {name: 'yes', char: 'y', description: 'automatically answer yes for all prompts'}
   ],
-  run: cli.command(co.wrap(run))
+  run: cli.command(run)
 }
