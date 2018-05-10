@@ -5,8 +5,7 @@ const co = require('co')
 
 function * run (context, heroku) {
   const resolve = require('../../lib/resolve')
-  const groupBy = require('lodash.groupby')
-  const toPairs = require('lodash.topairs')
+  const {groupBy, toPairs} = require('lodash')
 
   let force = context.flags.force || process.env.HEROKU_FORCE === '1'
   if (context.args.length === 0) throw new Error('Missing add-on name')

@@ -10,14 +10,7 @@
     "co": "4.6.0",
     "co-wait": "0.0.0",
     "heroku-cli-util": "^6.2.0",
-    "lodash.flatten": "4.4.0",
-    "lodash.groupby": "4.6.0",
-    "lodash.memoize": "4.1.2",
-    "lodash.merge": "4.6.0",
-    "lodash.some": "4.6.0",
-    "lodash.sortby": "4.7.0",
-    "lodash.topairs": "4.3.0",
-    "lodash.values": "4.3.0",
+    "lodash": "^4.17.10",
     "printf": "0.2.5"
   },
   "devDependencies": {

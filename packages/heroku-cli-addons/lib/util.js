@@ -1,6 +1,7 @@
 'use strict'
 
 const cli = require('heroku-cli-util')
+const _ = require('lodash')
 
 let styles = {
   app: 'cyan',
@@ -16,9 +17,7 @@ module.exports = {
   },
 
   table: function (data, options) {
-    const merge = require('lodash.merge')
-
-    return cli.table(data, merge(options, {
+    return cli.table(data, _.merge(options, {
       printLine: cli.log
     }))
   },

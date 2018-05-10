@@ -1,6 +1,6 @@
 'use strict'
 
-const memoize = require('lodash.memoize')
+const _ = require('lodash')
 
 const addonHeaders = function () {
   return {
@@ -73,7 +73,7 @@ const memoizePromise = function (func, resolver) {
       return result
     })
   }
-  memoized.cache = new memoize.Cache()
+  memoized.cache = new _.memoize.Cache()
   return memoized
 }
 

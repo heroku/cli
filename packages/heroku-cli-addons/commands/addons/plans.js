@@ -5,10 +5,10 @@ const co = require('co')
 
 function * run (context, heroku) {
   const util = require('../../lib/util')
-  const sortBy = require('lodash.sortby')
+  const _ = require('lodash')
 
   let plans = yield heroku.get(`/addon-services/${context.args.service}/plans`)
-  plans = sortBy(plans, 'price.cents')
+  plans = _.sortBy(plans, 'price.cents')
 
   if (context.flags.json) {
     cli.styledJSON(plans)

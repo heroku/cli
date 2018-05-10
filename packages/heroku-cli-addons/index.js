@@ -1,6 +1,6 @@
 'use strict'
 
-const flatten = require('lodash.flatten')
+const _ = require('lodash')
 
 exports.topic = {
   name: 'addons',
@@ -70,7 +70,7 @@ exports.topic = {
   For more information, read [https://devcenter.heroku.com/articles/add-ons](https://devcenter.heroku.com/articles/add-ons).`
 }
 
-exports.commands = flatten([
+exports.commands = _.flatten([
   require('./commands/addons'),
   require('./commands/addons/attach'),
   require('./commands/addons/create'),

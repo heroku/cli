@@ -12,10 +12,7 @@ function * run (ctx, api) {
   const grandfatheredPrice = util.grandfatheredPrice
   const printf = require('printf')
 
-  const groupBy = require('lodash.groupby')
-  const some = require('lodash.some')
-  const sortBy = require('lodash.sortby')
-  const values = require('lodash.values')
+  const {groupBy, some, sortBy, values} = require('lodash')
 
   // Gets *all* attachments and add-ons and filters locally because the API
   // returns *owned* items not associated items.

@@ -20,7 +20,7 @@ ${cli.color.cyan('https://devcenter.heroku.com/articles/managing-add-ons')}`)
 }
 
 function handlePlanChangeAPIError (err) {
-  const sortBy = require('lodash.sortby')
+  const {sortBy} = require('lodash')
 
   if (err.statusCode === 422 && err.body.message && err.body.message.startsWith("Couldn't find either the add-on")) {
     return heroku.get(`/addon-services/${service}/plans`)
