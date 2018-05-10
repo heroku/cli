@@ -35,8 +35,8 @@ describe('addons:upgrade', () => {
 
   it('errors with no plan', () => {
     return cmd.run({app: 'myapp', args: {addon: 'heroku-redis'}})
-    .then(() => { throw new Error('unreachable') })
-    .catch((err) => expect(err, 'to satisfy', /Error: No plan specified/))
+      .then(() => { throw new Error('unreachable') })
+      .catch((err) => expect(err, 'to satisfy', /Error: No plan specified/))
   })
 
   it('errors with invalid plan', () => {
@@ -51,8 +51,8 @@ describe('addons:upgrade', () => {
       .patch('/apps/myapp/addons/db1-swiftly-123', {plan: {name: 'heroku-db1:invalid'}})
       .reply(422, {message: 'Couldn\'t find either the add-on service or the add-on plan of "heroku-db1:invalid".'})
     return cmd.run({app: 'myapp', args: {addon: 'heroku-db1:invalid'}})
-    .then(() => { throw new Error('unreachable') })
-    .catch((err) => expect(err.message, 'to equal', `Couldn't find either the add-on service or the add-on plan of "heroku-db1:invalid".
+      .then(() => { throw new Error('unreachable') })
+      .catch((err) => expect(err.message, 'to equal', `Couldn't find either the add-on service or the add-on plan of "heroku-db1:invalid".
 
 Here are the available plans for heroku-db1:
 heroku-db1:free
@@ -69,10 +69,10 @@ https://devcenter.heroku.com/articles/managing-add-ons`))
       .post('/actions/addons/resolve', {'app': null, 'addon': 'heroku-redis'})
       .reply(200, [{'name': 'db1-swiftly-123'}, {'name': 'db1-swiftly-456'}])
     return cmd.run({args: {addon: 'heroku-redis:invalid'}})
-    .then(() => { throw new Error('unreachable') })
-    .catch((err) => {
-      api.done()
-      expect(err, 'to satisfy', /multiple matching add-ons found/)
-    })
+      .then(() => { throw new Error('unreachable') })
+      .catch((err) => {
+        api.done()
+        expect(err, 'to satisfy', /multiple matching add-ons found/)
+      })
   })
 })

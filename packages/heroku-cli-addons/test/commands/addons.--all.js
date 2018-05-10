@@ -27,7 +27,7 @@ describe('addons --all', function () {
     it('prints add-ons in a table', function () {
       return cmd.run({flags: {}}).then(function () {
         util.expectOutput(cli.stdout,
-`Owning App    Add-on     Plan                         Price      State
+          `Owning App    Add-on     Plan                         Price      State
 ────────────  ─────────  ───────────────────────────  ─────────  ────────
 acme-inc-api  api-redis  heroku-redis:premium-2       $60/month  created
 acme-inc-www  www-db     heroku-postgresql:hobby-dev  free       created
@@ -67,7 +67,7 @@ acme-inc-www  www-redis  heroku-redis:premium-2       $60/month  creating`)
     it('prints add-ons in a table with the grandfathered price', function () {
       return cmd.run({flags: {}}).then(function () {
         util.expectOutput(cli.stdout,
-`Owning App    Add-on  Plan                          Price       State
+          `Owning App    Add-on  Plan                          Price       State
 ────────────  ──────  ────────────────────────────  ──────────  ───────
 acme-inc-dwh  dwh-db  heroku-postgresql:standard-2  $100/month  created`)
       })

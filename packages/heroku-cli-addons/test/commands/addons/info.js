@@ -33,7 +33,7 @@ describe('addons:info', function () {
     it('prints add-ons in a table', function () {
       return cmd.run({flags: {}, args: {addon: 'www-db'}}).then(function () {
         util.expectOutput(cli.stdout,
-`=== www-db
+          `=== www-db
 Attachments:  acme-inc-www::DATABASE
 Installed at: Invalid Date
 Owning app:   acme-inc-www
@@ -65,7 +65,7 @@ State:        created
     it('prints add-ons in a table', function () {
       return cmd.run({flags: {}, args: {addon: 'www-db'}, app: 'example'}).then(function () {
         util.expectOutput(cli.stdout,
-`=== www-db
+          `=== www-db
 Attachments:  acme-inc-www::DATABASE
 Installed at: Invalid Date
 Owning app:   acme-inc-www
@@ -99,7 +99,7 @@ State:        created
     it('prints add-ons in a table', function () {
       return cmd.run({flags: {}, args: {addon: 'www-db'}, app: 'example'}).then(function () {
         util.expectOutput(cli.stdout,
-`=== www-db
+          `=== www-db
 Attachments:  acme-inc-www::DATABASE
 Installed at: Invalid Date
 Owning app:   acme-inc-www
@@ -134,7 +134,7 @@ State:        created
     it('prints add-ons in a table with grandfathered price', function () {
       return cmd.run({flags: {}, args: {addon: 'dwh-db'}}).then(function () {
         util.expectOutput(cli.stdout,
-`=== dwh-db
+          `=== dwh-db
 Attachments:  acme-inc-dwh::DATABASE
 Installed at: Invalid Date
 Owning app:   acme-inc-dwh

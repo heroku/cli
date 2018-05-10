@@ -22,7 +22,7 @@ const appAddon = function (heroku, app, id, options = {}) {
     'headers': headers,
     'body': {'app': app, 'addon': id, 'addon_service': options.addon_service}
   })
-  .then(singularize('addon', options.namespace))
+    .then(singularize('addon', options.namespace))
 }
 
 const handleNotFound = function (err, resource) {
@@ -43,13 +43,13 @@ const addonResolver = function (heroku, app, id, options = {}) {
       'headers': headers,
       'body': {'app': null, 'addon': id, 'addon_service': options.addon_service}
     })
-    .then(singularize('addon', options.namespace))
+      .then(singularize('addon', options.namespace))
   }
 
   if (!app || id.includes('::')) return getAddon(id)
 
   return appAddon(heroku, app, id, options)
-  .catch(function (err) { if (handleNotFound(err, 'add_on')) return getAddon(id) })
+    .catch(function (err) { if (handleNotFound(err, 'add_on')) return getAddon(id) })
 }
 
 /**
@@ -139,7 +139,7 @@ exports.attachment = function (heroku, app, id, options = {}) {
     promise = getAttachment(id)
   } else {
     promise = appAttachment(heroku, app, id, options)
-    .catch(function (err) { handleNotFound(err, 'add_on attachment') })
+      .catch(function (err) { handleNotFound(err, 'add_on attachment') })
   }
 
   // first check to see if there is an attachment matching this app/id combo
@@ -161,11 +161,11 @@ exports.attachment = function (heroku, app, id, options = {}) {
       // correctly in the SSO payload.
       else if (app) {
         return exports.addon(heroku, app, id, options)
-        .then((addon) => getAppAddonAttachment(addon, app))
-        .catch((addonError) => {
-          if (error) throw error
-          throw addonError
-        })
+          .then((addon) => getAppAddonAttachment(addon, app))
+          .catch((addonError) => {
+            if (error) throw error
+            throw addonError
+          })
       } else {
         if (error) throw error
         throw new NotFound()

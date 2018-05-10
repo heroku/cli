@@ -39,11 +39,11 @@ module.exports = {
 
   trapConfirmationRequired: function * (app, confirm, fn) {
     return yield fn(confirm)
-    .catch((err) => {
-      if (!err.body || err.body.id !== 'confirmation_required') throw err
-      return cli.confirmApp(app, confirm, err.body.message)
-        .then(() => fn(app))
-    })
+      .catch((err) => {
+        if (!err.body || err.body.id !== 'confirmation_required') throw err
+        return cli.confirmApp(app, confirm, err.body.message)
+          .then(() => fn(app))
+      })
   },
 
   formatState: function (state) {

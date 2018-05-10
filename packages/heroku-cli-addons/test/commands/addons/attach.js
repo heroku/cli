@@ -114,7 +114,7 @@ Setting POSTGRES_HELLO config vars and restarting myapp... done, v10
       args: {addon_name: 'postgres-123'},
       flags: {credential: 'hello'}
     })
-    .then(() => { throw new Error('unreachable') })
-    .catch((err) => expect(err.message, 'to equal', 'Could not find credential hello for database postgres-123'))
+      .then(() => { throw new Error('unreachable') })
+      .catch((err) => expect(err.message, 'to equal', 'Could not find credential hello for database postgres-123'))
   })
 })

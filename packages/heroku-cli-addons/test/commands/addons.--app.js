@@ -257,7 +257,7 @@ The table above shows add-ons and the attachments to the current app (acme-inc-d
     it('prints add-ons in a table with the grandfathered price', function () {
       return run('acme-inc-dwh', function () {
         util.expectOutput(cli.stdout,
-`Add-on                      Plan        Price       State
+          `Add-on                      Plan        Price       State
 ──────────────────────────  ──────────  ──────────  ───────
 heroku-postgresql (dwh-db)  standard-2  $100/month  created
  └─ as DATABASE

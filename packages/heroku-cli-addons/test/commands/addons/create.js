@@ -36,7 +36,7 @@ describe('addons:create', () => {
         plan: {name: 'heroku-postgresql:standard-0'},
         name: 'foobar'
       })
-      .reply(200, addon)
+        .reply(200, addon)
     })
 
     it('passes name through to the API', () => {
@@ -56,8 +56,8 @@ describe('addons:create', () => {
         args: [],
         flags: {name: 'foobar'}
       })
-      .then(() => { throw new Error('unreachable') })
-      .catch((err) => expect(err.message, 'to equal', 'Usage: heroku addons:create SERVICE:PLAN'))
+        .then(() => { throw new Error('unreachable') })
+        .catch((err) => expect(err.message, 'to equal', 'Usage: heroku addons:create SERVICE:PLAN'))
     })
   })
 
@@ -68,7 +68,7 @@ describe('addons:create', () => {
         config: {follow: 'otherdb', rollback: true, foo: true},
         plan: {name: 'heroku-postgresql:standard-0'}
       })
-      .reply(200, addon)
+        .reply(200, addon)
     })
 
     it('creates an add-on with proper output', () => {
@@ -112,7 +112,7 @@ Use heroku addons:docs heroku-db3 to view documentation
           config: {},
           plan: {name: 'heroku-postgresql:standard-0'}
         })
-        .reply(200, asyncAddon)
+          .reply(200, asyncAddon)
       })
 
       it('creates an add-on with output about async provisioning', () => {
@@ -141,7 +141,7 @@ Use heroku addons:docs heroku-db3 to view documentation
           config: {},
           plan: {name: 'heroku-postgresql:standard-0'}
         })
-        .reply(200, asyncAddon)
+          .reply(200, asyncAddon)
       })
 
       it('creates an add-on with output about async provisioning', () => {
@@ -169,7 +169,7 @@ Use heroku addons:docs heroku-db3 to view documentation
           config: {},
           plan: {name: 'heroku-postgresql:standard-0'}
         })
-        .reply(200, asyncAddon)
+          .reply(200, asyncAddon)
       })
 
       it('creates an add-on with output about async provisioning', () => {
@@ -201,7 +201,7 @@ Use heroku addons:docs heroku-db3 to view documentation
           config: {wait: true},
           plan: {name: 'heroku-postgresql:standard-0'}
         })
-        .reply(200, asyncAddon)
+          .reply(200, asyncAddon)
 
         provisioningResponse = api.get('/apps/myapp/addons/db3-swiftly-123')
           .reply(200, asyncAddon)
@@ -243,7 +243,7 @@ Use heroku addons:docs heroku-db3 to view documentation
           attachment: {name: 'mydb'},
           plan: {name: 'heroku-postgresql:standard-0'}
         })
-        .reply(200, deprovisionedAddon) // failed
+          .reply(200, deprovisionedAddon) // failed
 
         let cmdPromise = cmd.run({
           app: 'myapp',
@@ -252,8 +252,8 @@ Use heroku addons:docs heroku-db3 to view documentation
         })
 
         return cmdPromise
-        .then(() => { throw new Error('unreachable') })
-        .catch((err) => expect(err.message, 'to equal', 'The add-on was unable to be created, with status deprovisioned'))
+          .then(() => { throw new Error('unreachable') })
+          .catch((err) => expect(err.message, 'to equal', 'The add-on was unable to be created, with status deprovisioned'))
       })
     })
   })
@@ -265,9 +265,9 @@ Use heroku addons:docs heroku-db3 to view documentation
         config: {follow: 'otherdb', rollback: true, foo: true},
         plan: {name: 'heroku-postgresql:standard-0'}
       })
-      .reply(423,
-        {'id': 'confirmation_required', 'message': 'This add-on is not automatically networked with this Private Space. '},
-        {'X-Confirmation-Required': 'myapp-confirm'})
+        .reply(423,
+          {'id': 'confirmation_required', 'message': 'This add-on is not automatically networked with this Private Space. '},
+          {'X-Confirmation-Required': 'myapp-confirm'})
     })
 
     it('aborts if confirmation does not match', () => {
@@ -285,7 +285,7 @@ Use heroku addons:docs heroku-db3 to view documentation
         plan: {name: 'heroku-postgresql:standard-0'},
         confirm: 'myapp'
       })
-      .reply(200, addon)
+        .reply(200, addon)
 
       return cmd.run({
         app: 'myapp',
@@ -306,7 +306,7 @@ Use heroku addons:docs heroku-db3 to view documentation
         config: {follow: '--otherdb', rollback: true, foo: true},
         plan: {name: 'heroku-postgresql:standard-0'}
       })
-      .reply(200, addon)
+        .reply(200, addon)
     })
 
     it('creates an addon with =-- args', () => {
@@ -327,7 +327,7 @@ Use heroku addons:docs heroku-db3 to view documentation
         config: {},
         plan: {name: 'heroku-postgresql:standard-0'}
       })
-      .reply(200, noConfigAddon)
+        .reply(200, noConfigAddon)
     })
 
     it('creates an add-on without the config vars listed', () => {

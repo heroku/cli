@@ -68,9 +68,9 @@ function * run (ctx, api) {
   if (process.env.HEROKU_SUDO) return sudo(ctx, api)
 
   let attachment = yield resolve.attachment(api, ctx.app, ctx.args.addon)
-  .catch(function (err) {
-    if (err.statusCode !== 404) throw err
-  })
+    .catch(function (err) {
+      if (err.statusCode !== 404) throw err
+    })
 
   let webUrl
   if (attachment) {

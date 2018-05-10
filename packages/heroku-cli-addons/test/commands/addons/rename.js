@@ -39,8 +39,8 @@ describe('addons:rename', () => {
         .reply(404, {message: "Couldn't find that add-on.", id: 'not_found', resource: 'addon'})
 
       return cmd.run({flags: {}, args: {addon: 'not-an-addon', name: 'cache-redis'}})
-      .then(() => { throw new Error('unreachable') })
-      .catch((err) => expect(err, 'to satisfy', {body: {message: "Couldn't find that add-on."}}))
+        .then(() => { throw new Error('unreachable') })
+        .catch((err) => expect(err, 'to satisfy', {body: {message: "Couldn't find that add-on."}}))
     })
   })
 })
