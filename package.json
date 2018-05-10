@@ -17,7 +17,7 @@
     "@heroku-cli/plugin-ci": "^1.9.12",
     "@heroku-cli/plugin-config": "^1.1.0",
     "@heroku-cli/plugin-container-registry": "^4.4.14",
-    "@heroku-cli/plugin-git": "^2.5.28",
+    "@heroku-cli/plugin-git": "^3.0.0",
     "@heroku-cli/plugin-local": "^5.1.24",
     "@heroku-cli/plugin-oauth": "^2.3.4",
     "@heroku-cli/plugin-orgs": "^1.7.5",
