@@ -46,22 +46,15 @@
   dependencies:
     node-notifier "^5.2.1"
 
-"@heroku-cli/plugin-addons@^1.2.28":
-  version "1.2.28"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-addons/-/plugin-addons-1.2.28.tgz#982e9b3172f3859d4d10ba6d130d6e5572c47f16"
+"@heroku-cli/plugin-addons@^1.2.29":
+  version "1.2.29"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-addons/-/plugin-addons-1.2.29.tgz#f53da43fdbab10d7ed94f4c830f883517571459b"
   dependencies:
     co "4.6.0"
     co-wait "0.0.0"
-    heroku-cli-util "^6.2.0"
-    lodash.flatten "4.4.0"
-    lodash.groupby "4.6.0"
-    lodash.memoize "4.1.2"
-    lodash.merge "4.6.0"
-    lodash.some "4.6.0"
-    lodash.sortby "4.7.0"
-    lodash.topairs "4.3.0"
-    lodash.values "4.3.0"
-    printf "0.2.5"
+    heroku-cli-util "^8.0.8"
+    lodash "^4.17.10"
+    printf "0.3.0"
 
 "@heroku-cli/plugin-apps@^2.4.39":
   version "2.4.39"
@@ -2760,8 +2753,8 @@ pascalcase@^0.1.1:
   resolved "https://registry.yarnpkg.com/pascalcase/-/pascalcase-0.1.1.tgz#b363e55e8006ca6fe21784d2db22bd15d7917f14"
 
 password-prompt@^1.0.5:
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/password-prompt/-/password-prompt-1.0.5.tgz#d2f2effd89bf26d359c87a4678339804ce782b87"
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/password-prompt/-/password-prompt-1.0.6.tgz#d657a16c80ae3932f55f38a51fee9f872a8e9b17"
   dependencies:
     ansi-escapes "^3.1.0"
     cross-spawn "^6.0.5"
@@ -2843,6 +2836,10 @@ prepend-http@^2.0.0:
 printf@0.2.5:
   version "0.2.5"
   resolved "https://registry.yarnpkg.com/printf/-/printf-0.2.5.tgz#c438ca2ca33e3927671db4ab69c0e52f936a4f0f"
+
+printf@0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/printf/-/printf-0.3.0.tgz#6918ca5237c047e19cf004b69e6bcfafbef1ce82"
 
 process-nextick-args@~2.0.0:
   version "2.0.0"
