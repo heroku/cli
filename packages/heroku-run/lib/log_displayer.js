@@ -29,10 +29,12 @@ function readLogsV1 (logplexURL) {
 
 function readLogsV2 (logplexURL) {
   return new Promise(function (resolve, reject) {
-    let u = url.parse(logplexURL, true)
-    let isTail = u.query.tail && u.query.tail === 'true'
-    let userAgent = process.env.HEROKU_DEBUG_USER_AGENT || 'heroku-run'
-    let es = new EventSource(logplexURL, {
+    const u = url.parse(logplexURL, true)
+    const isTail = u.query.tail && u.query.tail === 'true'
+    const userAgent = process.env.HEROKU_DEBUG_USER_AGENT || 'heroku-run'
+    const proxy = process.env.https_proxy || process.env.HTTPS_PROXY
+    const es = new EventSource(logplexURL, {
+      proxy,
       headers: {
         'User-Agent': userAgent
       }
