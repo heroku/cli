@@ -1,3 +1,12 @@
+<a name="0.3.1"></a>
+## [0.3.1](https://github.com/heroku/heroku-cli-plugin-auth/compare/v0.3.0...v0.3.1) (2018-05-10)
+
+
+### Bug Fixes
+
+* do not retryAuth when fetching email ([7d01101](https://github.com/heroku/heroku-cli-plugin-auth/commit/7d01101))
+* do not retryAuth when fetching email ([e149903](https://github.com/heroku/heroku-cli-plugin-auth/commit/e149903))
+
 <a name="0.3.0"></a>
 # [0.3.0](https://github.com/heroku/heroku-cli-plugin-auth/compare/v0.2.2...v0.3.0) (2018-05-08)
 
