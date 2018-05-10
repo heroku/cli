@@ -18,7 +18,7 @@ export default class Login extends Command {
     else if (flags.interactive) method = 'interactive'
     // TODO: handle browser
     await this.heroku.login({method, expiresIn: flags['expires-in']})
-    const {body: account} = await this.heroku.get('/account')
+    const {body: account} = await this.heroku.get('/account', {retryAuth: false})
     this.log(`Logged in as ${color.green(account.email)}`)
   }
 }
