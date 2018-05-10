@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-addons",
   "description": "`heroku addons:*` commands",
-  "version": "1.2.28",
+  "version": "1.2.29",
   "author": "Bo Jeanes @bjeanes",
   "bugs": {
     "url": "https://github.com/heroku/heroku-cli-addons/issues"
