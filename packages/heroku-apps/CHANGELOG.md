@@ -1,3 +1,13 @@
+<a name="2.4.41"></a>
+## [2.4.41](https://github.com/heroku/heroku-apps/compare/v2.4.40...v2.4.41) (2018-05-10)
+
+
+### Bug Fixes
+
+* remove co-wait ([e32be18](https://github.com/heroku/heroku-apps/commit/e32be18))
+* remove dependency on bluebird ([65dce95](https://github.com/heroku/heroku-apps/commit/65dce95))
+* remove mz, mkdirp, and string dependencies ([cc7c962](https://github.com/heroku/heroku-apps/commit/cc7c962))
+
 <a name="2.4.39"></a>
 ## [2.4.39](https://github.com/heroku/heroku-apps/compare/v2.4.38...v2.4.39) (2018-05-01)
 

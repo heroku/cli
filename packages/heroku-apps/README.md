@@ -15,7 +15,7 @@ $ npm install -g @heroku-cli/plugin-apps
 $ heroku COMMAND
 running command...
 $ heroku (-v|--version|version)
-@heroku-cli/plugin-apps/2.4.40 darwin-x64 node-v10.1.0
+@heroku-cli/plugin-apps/2.4.41 linux-x64 node-v10.1.0
 $ heroku --help [COMMAND]
 USAGE
   $ heroku COMMAND
@@ -49,7 +49,7 @@ Examples:
     # create an app in the eu region
     $ heroku apps:create --region eu
  
-* [`heroku auth`](docs/auth.md) - login with your Heroku credentials
+* [`heroku auth`](docs/auth.md) - display the current auth token
 
 * [`heroku buildpacks`](docs/buildpacks.md) - add new app buildpack, inserting into list of buildpacks if necessary
 Example:
@@ -98,8 +98,6 @@ Examples:
     Uploading SSH public key /my/key.pub... done
 
 * [`heroku labs`](docs/labs.md) - enables an experimental feature
-
-* [`heroku logout`](docs/logout.md) - clears local login credentials
 
 * [`heroku maintenance`](docs/maintenance.md) - display the current maintenance status of app
 
