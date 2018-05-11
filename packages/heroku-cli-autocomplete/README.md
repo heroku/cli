@@ -17,8 +17,14 @@
 # Usage
 <!-- usage -->
 ```sh-session
-$ heroku plugins:install @heroku-cli/plugin-autocomplete
-$ heroku autocomplete
+$ npm install -g @heroku-cli/plugin-autocomplete
+$ heroku COMMAND
+running command...
+$ heroku (-v|--version|version)
+@heroku-cli/plugin-autocomplete/1.0.1 darwin-x64 node-v9.3.0
+$ heroku --help [COMMAND]
+USAGE
+  $ heroku COMMAND
 ...
 ```
 <!-- usagestop -->
@@ -28,7 +34,7 @@ $ heroku autocomplete
 
 ## `heroku autocomplete [SHELL]`
 
-display autocomplete instructions
+display autocomplete installation instructions
 
 ```
 USAGE
@@ -38,7 +44,7 @@ ARGUMENTS
   SHELL  shell type
 
 OPTIONS
-  -s, --skip-instructions  Do not show installation instructions
+  -s, --skip-instructions  don't show installation instructions
 
 EXAMPLES
   $ heroku autocomplete
@@ -48,5 +54,5 @@ EXAMPLES
   $ heroku autocomplete zsh
 ```
 
-_See code: [src/commands/autocomplete.ts](https://github.com/heroku/heroku-cli-autocomplete/blob/v0.0.0/src/commands/autocomplete.ts)_
+_See code: [src/commands/autocomplete.ts](https://github.com/heroku/heroku-cli-autocomplete/blob/v1.0.1/src/commands/autocomplete.ts)_
 <!-- commandsstop -->
