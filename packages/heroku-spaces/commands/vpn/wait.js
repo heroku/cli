@@ -13,17 +13,20 @@ function * run (context, heroku) {
   const timeout = (typeof context.flags.timeout !== 'undefined' ? context.flags.timeout : 10 * 60) * 1000
   const deadline = new Date(new Date().getTime() + timeout)
   const spinner = new cli.Spinner({text: `Waiting for VPN in space ${cli.color.green(space)} to allocate...`})
+  const vpnConnectionFailedMessage = 'There was an error when creating the VPN connection. Please try running vpn:create again.'
 
   spinner.start()
 
   let lib = require('../../lib/vpn')(heroku)
-  let info = {}
+  let info = yield lib.getVPNInfo(space)
   do {
     try {
       info = yield lib.getVPNInfo(space)
     } catch (e) {
-      // ignore 422 since that means VPN is not ready
-      if (e.statusCode !== 422) {
+      // if 404 is received while in this loop, the VPN was deleted because provisioning failed
+      if (e.statusCode === 404) {
+        throw new Error(vpnConnectionFailedMessage)
+      } else if (e.statusCode !== 422) { // ignore 422 since that means VPN is not ready
         throw e
       }
     }
@@ -31,6 +34,11 @@ function * run (context, heroku) {
     if ((new Date()).getTime() >= deadline) {
       throw new Error('Timeout waiting for VPN to become allocated.')
     }
+
+    if (info.state === 'deleted') {
+      throw new Error(vpnConnectionFailedMessage)
+    }
+
     yield wait(interval)
   } while (info.state !== 'available')
 
