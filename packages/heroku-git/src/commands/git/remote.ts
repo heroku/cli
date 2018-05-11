@@ -24,7 +24,7 @@ extra arguments will be passed to git remote add
     const git = new Git()
     let appName = flags.app || argv.shift() || process.env.HEROKU_APP
     if (!appName) {
-      throw new Error('Specify an app with --app')
+      this.error('Specify an app with --app')
     }
     let {body: app} = await this.heroku.get(`/apps/${appName}`)
     let remote = flags.remote || (await git.remoteFromGitConfig()) || 'heroku'
