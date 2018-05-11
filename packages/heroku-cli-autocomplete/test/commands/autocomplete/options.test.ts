@@ -1,7 +1,12 @@
-import { Config } from '@cli-engine/engine/lib/config'
-import { Command, flags } from '@heroku-cli/command'
+import {Command, flags} from '@heroku-cli/command'
+import {Config} from '@oclif/config'
+import {expect} from 'chai'
+import * as path from 'path'
 
-import Options from './options'
+import Options from '../../../src/commands/autocomplete/options'
+
+const root = path.resolve(__dirname, '../../../package.json')
+const config = new Config({root})
 
 class TestCommand extends Command {
   static topic = 'foo'
@@ -10,29 +15,30 @@ class TestCommand extends Command {
   static flags = {
     app: flags.app(),
   }
-  static args = [{ name: 'app', required: false }]
+  static args = [{name: 'app', required: false}]
   async run() {}
 }
 
 describe('AutocompleteOptions', () => {
   let cmd: any
-  beforeAll(() => {
-    cmd = new Options(new Config())
+  before(async () => {
+    await config.load()
+    cmd = new Options([], config)
   })
 
   describe('#findFlagFromWildArg', () => {
-    test('finds flag from long and short name', () => {
+    it('finds flag from long and short name', () => {
       let output = cmd.findFlagFromWildArg('--app=my-app', TestCommand)
-      expect(output.name).toEqual('app')
+      expect(output.name).to.eq('app')
       output = cmd.findFlagFromWildArg('-a', TestCommand)
-      expect(output.name).toEqual('app')
+      expect(output.name).to.eq('app')
     })
 
-    test('returns empty', () => {
+    it('returns empty', () => {
       let output = cmd.findFlagFromWildArg('--', TestCommand)
-      expect(output).not.toHaveProperty('output.name')
+      expect(output).to.not.have.property('output.name')
       output = cmd.findFlagFromWildArg('', TestCommand)
-      expect(output).not.toHaveProperty('output.name')
+      expect(output).to.not.have.property('output.name')
     })
   })
 
@@ -58,59 +64,59 @@ describe('AutocompleteOptions', () => {
 
     // foo:bar -a my-app | false false
 
-    test('finds current state is neither a flag or flag value', () => {
+    it('finds current state is neither a flag or flag value', () => {
       let [isFlag, isFlagValue] = cmd.determineCmdState(['arg1'], TestCommand)
-      expect([isFlag, isFlagValue]).toEqual([false, false])
+      expect([isFlag, isFlagValue]).to.include.members([false, false])
       let [isFlag2, isFlagValue2] = cmd.determineCmdState(['arg1', ''], TestCommand)
-      expect([isFlag2, isFlagValue2]).toEqual([false, false])
+      expect([isFlag2, isFlagValue2]).to.include.members([false, false])
       let [isFlag3, isFlagValue3] = cmd.determineCmdState(['arg1', '--app=my-app', ''], TestCommand)
-      expect([isFlag3, isFlagValue3]).toEqual([false, false])
+      expect([isFlag3, isFlagValue3]).to.include.members([false, false])
     })
 
     describe('short flag', () => {
-      test('finds current state is a flag', () => {
+      it('finds current state is a flag', () => {
         let [isFlag, isFlagValue] = cmd.determineCmdState(['arg1', '-'], TestCommand)
-        expect([isFlag, isFlagValue]).toEqual([true, false])
+        expect([isFlag, isFlagValue]).to.include.members([true, false])
         let [isFlag2, isFlagValue2] = cmd.determineCmdState(['arg1', '-a'], TestCommand)
-        expect([isFlag2, isFlagValue2]).toEqual([true, false])
+        expect([isFlag2, isFlagValue2]).to.include.members([true, false])
       })
 
-      test('finds current state is a flag value', () => {
+      it('finds current state is a flag value', () => {
         let [isFlag, isFlagValue] = cmd.determineCmdState(['arg1', '-a', ''], TestCommand)
-        expect([isFlag, isFlagValue]).toEqual([false, true])
+        expect([isFlag, isFlagValue]).to.include.members([false, true])
       })
     })
 
     describe('long flag', () => {
-      test('finds current state is a flag', () => {
+      it('finds current state is a flag', () => {
         let [isFlag, isFlagValue] = cmd.determineCmdState(['arg1', '--'], TestCommand)
-        expect([isFlag, isFlagValue]).toEqual([true, false])
+        expect([isFlag, isFlagValue]).to.include.members([true, false])
         let [isFlag2, isFlagValue2] = cmd.determineCmdState(['arg1', '--a'], TestCommand)
-        expect([isFlag2, isFlagValue2]).toEqual([true, false])
+        expect([isFlag2, isFlagValue2]).to.include.members([true, false])
         let [isFlag3, isFlagValue3] = cmd.determineCmdState(['arg1', '--app'], TestCommand)
-        expect([isFlag3, isFlagValue3]).toEqual([true, false])
+        expect([isFlag3, isFlagValue3]).to.include.members([true, false])
       })
 
-      test('finds current state is a flag value', () => {
+      it('finds current state is a flag value', () => {
         let [isFlag, isFlagValue] = cmd.determineCmdState(['arg1', '--app', ''], TestCommand)
-        expect([isFlag, isFlagValue]).toEqual([false, true])
+        expect([isFlag, isFlagValue]).to.include.members([false, true])
         let [isFlag2, isFlagValue2] = cmd.determineCmdState(['arg1', '--app', 'my'], TestCommand)
-        expect([isFlag2, isFlagValue2]).toEqual([false, true])
+        expect([isFlag2, isFlagValue2]).to.include.members([false, true])
       })
 
-      test('finds current state is a flag (special case)', () => {
+      it('finds current state is a flag (special case)', () => {
         let [isFlag, isFlagValue] = cmd.determineCmdState(['arg1', '--app='], TestCommand)
-        expect([isFlag, isFlagValue]).toEqual([true, false])
+        expect([isFlag, isFlagValue]).to.include.members([true, false])
         let [isFlag2, isFlagValue2] = cmd.determineCmdState(['arg1', '--app=my'], TestCommand)
-        expect([isFlag2, isFlagValue2]).toEqual([true, false])
+        expect([isFlag2, isFlagValue2]).to.include.members([true, false])
       })
     })
 
     describe('flags before args', () => {
-      test('parsedArgs is 1', () => {
+      it('parsedArgs is 1', () => {
         let [isFlag, isFlagValue] = cmd.determineCmdState(['-a', 'my-app', ''], TestCommand)
-        expect([isFlag, isFlagValue]).toEqual([false, false])
-        expect(cmd.parsedArgs).toMatchObject({ app: '' })
+        expect([isFlag, isFlagValue]).to.include.members([false, false])
+        expect(cmd.parsedArgs).to.deep.equal({app: ''})
       })
     })
   })

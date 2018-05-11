@@ -1,35 +1,31 @@
-import { cli } from 'cli-ux'
 import * as path from 'path'
 
-import { AutocompleteBase } from '../../autocomplete'
+import {AutocompleteBase} from '../../base'
 
-export default class AutocompleteScript extends AutocompleteBase {
-  static topic = 'autocomplete'
-  static command = 'script'
-  static description = 'outputs autocomplete config script for shells'
-  // hide until public release
+export default class Script extends AutocompleteBase {
+  static description = 'display autocomplete setup script for shell'
   static hidden = true
-  static args = [{ name: 'shell', description: 'shell type', required: false }]
+  static args = [{name: 'shell', description: 'shell type', required: true}]
 
   async run() {
     this.errorIfWindows()
 
-    const shell = this.argv[0] || this.config.shell
+    const {args} = this.parse(Script)
+    const shell = args.shell || this.config.shell
+
     if (!shell) {
-      cli.error('Error: Missing required argument shell')
+      this.error('Missing required argument shell')
     }
 
-    if (shell === 'bash' || shell === 'zsh') {
-      let shellUpcase = shell.toUpperCase()
-      cli.log(
-        `${this.prefix}CLI_ENGINE_AC_${shellUpcase}_SETUP_PATH=${path.join(
-          this.completionsCachePath,
-          `${shell}_setup`,
-        )} && test -f $CLI_ENGINE_AC_${shellUpcase}_SETUP_PATH && source $CLI_ENGINE_AC_${shellUpcase}_SETUP_PATH;`,
-      )
-    } else {
-      cli.error(`No autocomplete script for ${shell}. Run $ ${this.config.bin} autocomplete for install instructions.`)
-    }
+    this.errorIfNotSupportedShell(shell)
+
+    let shellUpcase = shell.toUpperCase()
+    this.log(
+      `${this.prefix}HEROKU_AC_${shellUpcase}_SETUP_PATH=${path.join(
+        this.autocompleteCacheDir,
+        `${shell}_setup`,
+      )} && test -f $HEROKU_AC_${shellUpcase}_SETUP_PATH && source $HEROKU_AC_${shellUpcase}_SETUP_PATH;`,
+    )
   }
 
   private get prefix(): string {

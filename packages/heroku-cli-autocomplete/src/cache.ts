@@ -1,34 +1,26 @@
-// TODO: move to its own package
-
 import * as fs from 'fs-extra'
 import * as moment from 'moment'
 
-interface Options {
-  cacheFn: () => Promise<Array<string>>
+async function _updateCache(cachePath: string, cache: any) {
+  await fs.ensureFile(cachePath)
+  await fs.writeJSON(cachePath, cache)
 }
 
-export default class {
-  static async fetch(cachePath: string, cacheDuration: number, options: Options): Promise<Array<string>> {
-    let cachePresent = fs.existsSync(cachePath)
-    if (cachePresent && !this.isStale(cachePath, cacheDuration)) {
-      return fs.readJSON(cachePath)
-    }
-    const cache = await options.cacheFn()
-    // TODO: move this to a fork
-    await this.updateCache(cachePath, cache)
-    return cache
-  }
+function _isStale(cachePath: string, cacheDuration: number): boolean {
+  return _mtime(cachePath).isBefore(moment().subtract(cacheDuration, 'seconds'))
+}
 
-  private static async updateCache(cachePath: string, cache: any) {
-    await fs.ensureFile(cachePath)
-    await fs.writeJSON(cachePath, cache)
-  }
+function _mtime(f: any) {
+  return moment(fs.statSync(f).mtime)
+}
 
-  private static isStale(cachePath: string, cacheDuration: number): boolean {
-    return this.mtime(cachePath).isBefore(moment().subtract(cacheDuration, 'seconds'))
+export async function fetchCache(cachePath: string, cacheDuration: number, options: any): Promise<Array<string>> {
+  let cachePresent = fs.existsSync(cachePath)
+  if (cachePresent && !_isStale(cachePath, cacheDuration)) {
+    return fs.readJSON(cachePath)
   }
-
-  private static mtime(f: any) {
-    return moment(fs.statSync(f).mtime)
-  }
+  const cache = await options.cacheFn()
+  // TODO: move this to a fork
+  await _updateCache(cachePath, cache)
+  return cache
 }

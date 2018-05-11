@@ -2,18 +2,18 @@
 
 _heroku () {
   # exit if vars are not set
-  : "${CLI_ENGINE_AC_ANALYTICS_DIR?}"
-  : "${CLI_ENGINE_AC_COMMANDS_PATH?}"
+  : "${HEROKU_AC_ANALYTICS_DIR?}"
+  : "${HEROKU_AC_COMMANDS_PATH?}"
 
   local -a _flags=()
   local _command_id=${words[2]}
   local _cur=${words[CURRENT]}
 
-  mkdir -p "$CLI_ENGINE_AC_ANALYTICS_DIR"
+  mkdir -p "$HEROKU_AC_ANALYTICS_DIR"
 
   ## all commands
   _complete_commands () {
-   touch "$CLI_ENGINE_AC_ANALYTICS_DIR"/command
+   touch "$HEROKU_AC_ANALYTICS_DIR"/command
    local -a _all_commands_list
    if type _set_all_commands_list >/dev/null 2>&1; then
      _set_all_commands_list
@@ -21,7 +21,7 @@ _heroku () {
      return
    fi
    # fallback to grep'ing cmds from cache
-   compadd $(grep -oe '^[a-zA-Z0-9:_-]\+' $CLI_ENGINE_AC_COMMANDS_PATH)
+   compadd $(grep -oe '^[a-zA-Z0-9:_-]\+' $HEROKU_AC_COMMANDS_PATH)
   }
   ## end all commands
 
@@ -30,13 +30,13 @@ _heroku () {
   }
 
   _compadd_flag_options () {
-    touch "$CLI_ENGINE_AC_ANALYTICS_DIR"/value
+    touch "$HEROKU_AC_ANALYTICS_DIR"/value
     _compadd_args
   }
 
   if [ $CURRENT -gt 2 ]; then
     if [[ "$_cur" == -* ]]; then
-      touch "$CLI_ENGINE_AC_ANALYTICS_DIR"/flag
+      touch "$HEROKU_AC_ANALYTICS_DIR"/flag
       local _flag_completion_func="_set_${_command_id//:/_}_flags"
       declare -f $_flag_completion_func >/dev/null && $_flag_completion_func
     else

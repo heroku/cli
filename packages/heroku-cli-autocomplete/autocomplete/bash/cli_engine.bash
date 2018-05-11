@@ -31,25 +31,25 @@ _compreply_cli () {
 _heroku()
 {
     # print error and exit if vars are not set
-    : "${CLI_ENGINE_AC_ANALYTICS_DIR?}"
-    : "${CLI_ENGINE_AC_COMMANDS_PATH?}"
+    : "${HEROKU_AC_ANALYTICS_DIR?}"
+    : "${HEROKU_AC_COMMANDS_PATH?}"
 
     local cur="${COMP_WORDS[COMP_CWORD]}" opts IFS=$' \t\n'
     COMPREPLY=()
-    mkdir -p "$CLI_ENGINE_AC_ANALYTICS_DIR"
+    mkdir -p "$HEROKU_AC_ANALYTICS_DIR"
 
     if [[ "${COMP_CWORD}" -eq 1 ]] ; then
-        touch "$CLI_ENGINE_AC_ANALYTICS_DIR"/command
-        opts=$(grep -oe '^[a-zA-Z0-9:_-]\+' $CLI_ENGINE_AC_COMMANDS_PATH)
+        touch "$HEROKU_AC_ANALYTICS_DIR"/command
+        opts=$(grep -oe '^[a-zA-Z0-9:_-]\+' $HEROKU_AC_COMMANDS_PATH)
         COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
          __ltrim_colon_completions "$cur"
     else
         if [[ $cur == "-"* ]] ; then
-          touch "$CLI_ENGINE_AC_ANALYTICS_DIR"/flag
-          opts=$(grep "${COMP_WORDS[1]}" $CLI_ENGINE_AC_COMMANDS_PATH | sed -n "s/^${COMP_WORDS[1]} //p")
+          touch "$HEROKU_AC_ANALYTICS_DIR"/flag
+          opts=$(grep "${COMP_WORDS[1]}" $HEROKU_AC_COMMANDS_PATH | sed -n "s/^${COMP_WORDS[1]} //p")
           COMPREPLY=( $(compgen -W  "${opts}" -- ${cur}) )
         else
-          touch "$CLI_ENGINE_AC_ANALYTICS_DIR"/value
+          touch "$HEROKU_AC_ANALYTICS_DIR"/value
           _compreply_cli
         fi
     fi
