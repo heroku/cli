@@ -13,7 +13,7 @@
     "@heroku-cli/plugin-addons": "^1.2.29",
     "@heroku-cli/plugin-apps": "^2.4.42",
     "@heroku-cli/plugin-auth": "^0.3.0",
-    "@heroku-cli/plugin-build": "^0.0.3",
+    "@heroku-cli/plugin-build": "^0.0.4",
     "@heroku-cli/plugin-certs": "^1.2.2",
     "@heroku-cli/plugin-ci": "^1.9.12",
     "@heroku-cli/plugin-config": "^1.3.0",
