@@ -24,6 +24,26 @@ export class AppsList extends SubjectCommand {
         extended: true,
         get: stack => stack && stack.name
       },
+      {
+        key: 'region',
+        extended: true,
+        get: region => region && region.name
+      },
+      {
+        key: 'organization',
+        extended: true,
+        get: organization => organization && organization.name
+      },
+      {
+        key: 'team',
+        extended: true,
+        get: team => team && team.name
+      },
+      {
+        key: 'stack',
+        extended: true,
+        get: stack => stack && stack.name
+      },
     ])
   }
 }

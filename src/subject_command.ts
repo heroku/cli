@@ -25,17 +25,17 @@ export default abstract class Subject extends Command {
     if (flags.sort) sort = flags.sort
     if (flags.extended) {
       columns = _.uniq(_.flatMap(arr, row => Object.keys(row)))
-      .map(key => {
-        const column = columns.find(c => c.key === key) || ({key})
-        if (column.extended) column.extended = false
-        return column
-      })
+      .map(key => columns.find(c => c.key === key) || ({key}))
     }
     if (flags.columns) {
       columns = flags
       .columns
       .split(',')
-      .map(key => columns.find(c => c.key === key) || {key})
+      .map(key => {
+        const column = columns.find(c => c.key === key) || ({key})
+        if (column.extended) column.extended = false
+        return column
+      })
     }
     arr = _.sortBy(arr, row => {
       let prop = Object
@@ -44,7 +44,7 @@ export default abstract class Subject extends Command {
       if (prop) return prop[1]
     }
     )
-    const table = arr.map(row => columns.map(c => {
+    const table = arr.map(row => columns.filter(c => flags.extended || !c.extended).map(c => {
       let v = _.get(row, c.key)
       if (c.get) v = c.get(v, row)
       if (flags.json) {
