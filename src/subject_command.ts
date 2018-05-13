@@ -1,3 +1,4 @@
+import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import ux from 'cli-ux'
 import * as _ from 'lodash'
@@ -7,17 +8,19 @@ const sw = require('string-width')
 
 export interface TableColumn {
   key: string
+  header?: string
   extended?: boolean
   get?(cell: any, row: any): string
 }
 
 export default abstract class Subject extends Command {
   static flags = {
-    columns: flags.string({char: 'c'}),
+    columns: flags.string({char: 'c', exclusive: ['extended']}),
     json: flags.boolean({char: 'j'}),
     sort: flags.string({char: 's', description: 'property to sort by'}),
-    csv: flags.boolean(),
+    csv: flags.boolean({exclusive: ['json']}),
     extended: flags.boolean({char: 'x', description: 'show all properties'}),
+    'no-header': flags.boolean({exclusive: ['csv', 'json'], description: 'hide header from output'}),
   }
 
   output(arr: any[], sort: string, columns: TableColumn[]) {
@@ -53,9 +56,13 @@ export default abstract class Subject extends Command {
       if (v === undefined || v === null) v = ''
       return typeof v === 'string' ? v : inspect(v, {breakLength: Infinity})
     }))
-    if (flags.json) ux.styledJSON(table.map(_.fromPairs))
-    else if (flags.csv) this.csv(arr)
-    else this.table(table)
+    if (flags.json) {
+      ux.styledJSON(table.map(_.fromPairs))
+    } else if (flags.csv) {
+      this.csv(arr)
+    } else {
+      this.table(table, columns, flags)
+    }
   }
 
   csv(table: string[][]) {
@@ -69,9 +76,20 @@ export default abstract class Subject extends Command {
     }
   }
 
-  table(table: string[][]) {
-    if (!table.length) return
-    const widths = _.map(table[0], (__, i) => sw(_.maxBy(table.map(row => row[i]), r => sw(r)) || '') + 1)
+  table(table: string[][], columns: TableColumn[], options: {extended?: boolean, 'no-header'?: boolean}) {
+    const widths = _.map(table[0] || columns, (__, i) => {
+      const maxCell = _.maxBy(table.map(row => row[i]), r => sw(r))
+      return Math.max((maxCell || '').length, sw(columns[i].key)) + 1
+    })
+    if (!options['no-header']) {
+      let headers = ''
+      for (let i = 0; i < columns.length; i++) {
+        if (!options.extended && columns[i].extended) continue
+        let header = columns[i].header || columns[i].key
+        headers += header.padEnd(widths[i])
+      }
+      this.log(color.bold(headers))
+    }
     for (let row of table) {
       for (let i = 0; i < row.length; i++) {
         let o = row[i].padEnd(widths[i])
