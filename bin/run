@@ -1,7 +1,18 @@
 #!/usr/bin/env node
 
 process.env.HEROKU_UPDATE_INSTRUCTIONS = process.env.HEROKU_UPDATE_INSTRUCTIONS || 'update with: "npm update -g heroku"'
+process.stdout.on('error', err => {
+  if (err.code !== 'EPIPE') throw err
+})
 
-require('@oclif/command').run()
+const path = require('path')
+const fs = require('fs')
+let {run} = require('@oclif/command')
+if (fs.existsSync(path.join(__dirname, '../src'))) {
+  require('ts-node/register')
+  run = require('../src').run
+}
+
+run()
 .then(require('@oclif/command/flush'))
 .catch(require('@oclif/errors/handle'))

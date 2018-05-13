@@ -47,6 +47,7 @@
     "http-call": "^5.1.2",
     "netrc-parser": "^3.1.4",
     "semver": "^5.5.0",
+    "string-width": "^2.1.1",
     "tslib": "^1.9.1",
     "uuid": "^3.2.1"
   },
