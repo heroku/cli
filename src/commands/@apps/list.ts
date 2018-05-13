@@ -1,8 +1,14 @@
+import * as Config from '@oclif/config'
 import * as _ from 'lodash'
 
 import SubjectCommand from '../../subject_command'
 
 export class AppsList extends SubjectCommand {
+  static flags = {
+    ...SubjectCommand.flags,
+  }
+
+  config!: Config.IConfig
   async run() {
     const {body: apps} = await this.heroku.get('/apps')
     this.output(apps, 'name', [

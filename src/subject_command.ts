@@ -40,25 +40,27 @@ export default abstract class Subject extends Command {
         return column
       })
     }
+    arr = arr.map(row => {
+      for (let col of columns) {
+        let val = _.get(row, col.key)
+        if (col.get) val = col.get(val, row)
+        _.set(row, col.key, val)
+      }
+      return row
+    })
     arr = _.sortBy(arr, row => {
       let prop = Object
       .entries(row)
       .find(([k]) => k.toLowerCase() === sort.toLowerCase())
       if (prop) return prop[1]
-    }
-    )
+    })
+    if (flags.json) return ux.styledJSON(arr)
     const table = arr.map(row => columns.filter(c => flags.extended || !c.extended).map(c => {
-      let v = _.get(row, c.key)
-      if (c.get) v = c.get(v, row)
-      if (flags.json) {
-        return [c.key, v] as any
-      }
+      let v = c.get ? row[c.key] : _.get(row, c.key)
       if (v === undefined || v === null) v = ''
       return typeof v === 'string' ? v : inspect(v, {breakLength: Infinity})
     }))
-    if (flags.json) {
-      ux.styledJSON(table.map(_.fromPairs))
-    } else if (flags.csv) {
+    if (flags.csv) {
       this.csv(arr)
     } else {
       this.table(table, columns, flags)
