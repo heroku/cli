@@ -1,6 +1,5 @@
 import {Main as Base} from '@oclif/command'
 import * as Config from '@oclif/config'
-import ux from 'cli-ux'
 
 import Command from './subject'
 import SubjectCommand from './subject_command'
