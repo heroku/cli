@@ -1,5 +1,6 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
+import {stdtermwidth} from '@oclif/screen'
 import ux from 'cli-ux'
 import * as _ from 'lodash'
 import {inspect} from 'util'
@@ -10,6 +11,8 @@ export interface TableColumn {
   key: string
   header?: string
   extended?: boolean
+  minWidth?: number
+  width?: number
   get?(cell: any, row: any): string
 }
 
@@ -20,6 +23,7 @@ export default abstract class Subject extends Command {
     sort: flags.string({char: 's', description: 'property to sort by'}),
     csv: flags.boolean({exclusive: ['json']}),
     extended: flags.boolean({char: 'x', description: 'show all properties'}),
+    full: flags.boolean({description: 'do not truncate output to fit screen'}),
     'no-header': flags.boolean({exclusive: ['csv', 'json'], description: 'hide header from output'}),
   }
 
@@ -27,7 +31,7 @@ export default abstract class Subject extends Command {
     const {flags} = this.parse(Subject)
     if (flags.sort) sort = flags.sort
     if (flags.extended) {
-      columns = _.uniq(_.flatMap(arr, row => Object.keys(row)))
+      columns = _.uniq([...columns.map(c => c.key), ..._.flatMap(arr, row => Object.keys(row))] as string[])
       .map(key => columns.find(c => c.key === key) || ({key}))
     }
     if (flags.columns) {
@@ -39,6 +43,10 @@ export default abstract class Subject extends Command {
         if (column.extended) column.extended = false
         return column
       })
+    }
+    for (let col of columns) {
+      col.header = col.header || _.capitalize(col.key.replace('_', ' '))
+      if (col.minWidth) col.minWidth = Math.max(col.minWidth, sw(col.header))
     }
     arr = arr.map(row => {
       for (let col of columns) {
@@ -78,24 +86,41 @@ export default abstract class Subject extends Command {
     }
   }
 
-  table(table: string[][], columns: TableColumn[], options: {extended?: boolean, 'no-header'?: boolean}) {
-    const widths = _.map(table[0] || columns, (__, i) => {
-      const maxCell = _.maxBy(table.map(row => row[i]), r => sw(r))
-      return Math.max((maxCell || '').length, sw(columns[i].key)) + 1
-    })
+  table(table: string[][], columns: TableColumn[], options: {extended?: boolean, 'no-header'?: boolean, full?: boolean}) {
+    for (let i = 0; i < columns.length; i++) {
+      const col = columns[i]
+      const widths = [columns[i].header, ...table.map(row => row[i])].map(r => sw(r))
+      col.width = Math.max(...widths) + 1
+    }
+    const maxWidth = stdtermwidth
+    const shouldShorten = () => {
+      if (options.full || !process.stdout.isTTY) return
+      if (_.sumBy(columns, c => c.width!) <= maxWidth) return
+      for (let col of columns) {
+        if (!col.minWidth || col.width === col.minWidth) continue
+        return col
+      }
+    }
+    for (let col = shouldShorten(); col; col = shouldShorten()) {
+      col.width!--
+    }
     if (!options['no-header']) {
       let headers = ''
-      for (let i = 0; i < columns.length; i++) {
-        if (!options.extended && columns[i].extended) continue
-        let header = columns[i].header || columns[i].key
-        headers += header.padEnd(widths[i])
+      for (let col of columns) {
+        if (!options.extended && col.extended) continue
+        let header = col.header!
+        headers += header.padEnd(col.width! + 1)
       }
       this.log(color.bold(headers))
     }
     for (let row of table) {
       for (let i = 0; i < row.length; i++) {
-        let o = row[i].padEnd(widths[i])
-        process.stdout.write(o)
+        const width = columns[i].width!
+        let o = row[i].padEnd(width)
+        if (o.length > width) {
+          o = o.slice(0, width - 1) + '…'
+        }
+        process.stdout.write(o + ' ')
       }
       process.stdout.write('\n')
     }
