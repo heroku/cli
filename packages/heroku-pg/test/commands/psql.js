@@ -42,4 +42,13 @@ describe('psql', () => {
     .then(() => expect(cli.stderr, 'to equal', '--> Connecting to postgres-1\n'))
     .then(() => psql.exec.restore())
   }))
+
+  it('runs psql with file', sinon.test(() => {
+    let psql = require('../../lib/psql')
+    sinon.stub(psql, 'execFile').returns(Promise.resolve(''))
+    return cmd.run({args: {}, flags: {file: 'test.sql'}})
+    .then(() => expect(cli.stdout, 'to equal', ''))
+    .then(() => expect(cli.stderr, 'to equal', '--> Connecting to postgres-1\n'))
+    .then(() => psql.execFile.restore())
+  }))
 })

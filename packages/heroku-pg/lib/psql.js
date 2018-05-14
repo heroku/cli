@@ -30,6 +30,22 @@ function execPsql (query, dbEnv) {
   })
 }
 
+function execPsqlWithFile (file, dbEnv) {
+  const {spawn} = require('child_process')
+  return new Promise((resolve, reject) => {
+    let result = ''
+    debug('Running sql file: %s', file.trim())
+    let psql = spawn('psql', ['-f', file], {env: dbEnv, encoding: 'utf8', stdio: [ 'ignore', 'pipe', 'inherit' ]})
+    psql.stdout.on('data', function (data) {
+      result += data.toString()
+    })
+    psql.on('close', function (code) {
+      resolve(result)
+    })
+    handlePsqlError(reject, psql)
+  })
+}
+
 function psqlInteractive (dbEnv, prompt) {
   const {spawn} = require('child_process')
   return new Promise((resolve, reject) => {
@@ -56,6 +72,14 @@ function * exec (db, query) {
   return yield execPsql(query, configs.dbEnv)
 }
 
+async function execFile (db, file) {
+  handleSignals()
+  let configs = bastion.getConfigs(db)
+
+  await bastion.sshTunnel(db, configs.dbTunnelConfig)
+  return execPsqlWithFile(file, configs.dbEnv)
+}
+
 function * interactive (db) {
   let name = db.attachment.name
   let prompt = `${db.attachment.app.name}::${name}%R%# `
@@ -68,5 +92,6 @@ function * interactive (db) {
 
 module.exports = {
   exec: co.wrap(exec),
+  execFile: execFile,
   interactive: co.wrap(interactive)
 }

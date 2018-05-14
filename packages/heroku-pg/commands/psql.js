@@ -15,6 +15,8 @@ function * run (context, heroku) {
   cli.console.error(`--> Connecting to ${cli.color.addon(db.attachment.addon.name)}`)
   if (flags.command) {
     process.stdout.write(yield psql.exec(db, flags.command))
+  } else if (flags.file) {
+    process.stdout.write(yield psql.execFile(db, flags.file))
   } else {
     yield psql.interactive(db)
   }
@@ -26,6 +28,7 @@ let cmd = {
   needsAuth: true,
   flags: [
     {name: 'command', char: 'c', description: 'SQL command to run', hasValue: true},
+    {name: 'file', char: 'f', description: 'SQL file to run', hasValue: true},
     {name: 'credential', description: 'credential to use', hasValue: true}
   ],
   args: [{name: 'database', optional: true}],
