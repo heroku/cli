@@ -30,19 +30,19 @@ describe('heroku redis:maxmemory', function () {
       })
 
     return command.run({app: 'example', flags: {policy: 'noeviction'}, args: {}, auth: {username: 'foobar', password: 'password'}})
-    .then(() => app.done())
-    .then(() => redis.done())
-    .then(() => expect(cli.stdout).to.equal(
-`Maxmemory policy for redis-haiku (REDIS_FOO, REDIS_BAR) set to noeviction.
+      .then(() => app.done())
+      .then(() => redis.done())
+      .then(() => expect(cli.stdout).to.equal(
+        `Maxmemory policy for redis-haiku (REDIS_FOO, REDIS_BAR) set to noeviction.
 noeviction return errors when memory limit is reached.
 `
-))
-    .then(() => expect(cli.stderr).to.equal(''))
+      ))
+      .then(() => expect(cli.stderr).to.equal(''))
   })
 
   it('# errors on missing eviction policy', function () {
     return expect(command.run({app: 'example', flags: {}, args: {}})).to.be.rejectedWith(exit.ErrorExit)
-    .then(() => expect(cli.stdout).to.equal(''))
-    .then(() => expect(cli.stderr).to.equal(' ▸    Please specify a valid maxmemory eviction policy.\n'))
+      .then(() => expect(cli.stdout).to.equal(''))
+      .then(() => expect(cli.stderr).to.equal(' ▸    Please specify a valid maxmemory eviction policy.\n'))
   })
 })

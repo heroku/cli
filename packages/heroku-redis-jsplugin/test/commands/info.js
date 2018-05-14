@@ -22,9 +22,9 @@ commands.forEach((cmd) => {
         .get('/apps/example/addons').reply(200, [])
 
       return command.run({app: 'example', args: {}})
-      .then(() => app.done())
-      .then(() => expect(cli.stdout).to.equal(''))
-      .then(() => expect(cli.stderr).to.equal(''))
+        .then(() => app.done())
+        .then(() => expect(cli.stdout).to.equal(''))
+        .then(() => expect(cli.stderr).to.equal(''))
     })
 
     it('# prints out redis info', function () {
@@ -39,14 +39,14 @@ commands.forEach((cmd) => {
         ]})
 
       return command.run({app: 'example', args: {}, auth: {username: 'foobar', password: 'password'}})
-      .then(() => app.done())
-      .then(() => redis.done())
-      .then(() => expect(cli.stdout).to.equal(
-`=== redis-haiku (REDIS_FOO, REDIS_BAR)
+        .then(() => app.done())
+        .then(() => redis.done())
+        .then(() => expect(cli.stdout).to.equal(
+          `=== redis-haiku (REDIS_FOO, REDIS_BAR)
 Foo: Bar
      Biz
 `))
-      .then(() => expect(cli.stderr).to.equal(''))
+        .then(() => expect(cli.stderr).to.equal(''))
     })
 
     it('# prints out redis info when not found', function () {
@@ -59,10 +59,10 @@ Foo: Bar
         .get('/redis/v0/databases/redis-haiku').reply(404, {})
 
       return command.run({app: 'example', args: {}, auth: {username: 'foobar', password: 'password'}})
-      .then(() => app.done())
-      .then(() => redis.done())
-      .then(() => expect(cli.stdout).to.equal(''))
-      .then(() => expect(cli.stderr).to.equal(''))
+        .then(() => app.done())
+        .then(() => redis.done())
+        .then(() => expect(cli.stdout).to.equal(''))
+        .then(() => expect(cli.stderr).to.equal(''))
     })
 
     it('# prints out redis info when error', function () {

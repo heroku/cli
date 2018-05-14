@@ -62,12 +62,12 @@ describe('heroku redis:cli', function () {
         plan: 'hobby'
       })
     return command.run({app: 'example', flags: {confirm: 'example'}, args: {}, auth: {username: 'foobar', password: 'password'}})
-    .then(() => app.done())
-    .then(() => configVars.done())
-    .then(() => redis.done())
-    .then(() => expect(cli.stdout).to.equal('Connecting to redis-haiku (REDIS_FOO, REDIS_BAR):\n'))
-    .then(() => expect(cli.stderr).to.equal(''))
-    .then(() => expect(net.connect.called).to.equal(true))
+      .then(() => app.done())
+      .then(() => configVars.done())
+      .then(() => redis.done())
+      .then(() => expect(cli.stdout).to.equal('Connecting to redis-haiku (REDIS_FOO, REDIS_BAR):\n'))
+      .then(() => expect(cli.stderr).to.equal(''))
+      .then(() => expect(net.connect.called).to.equal(true))
   })
 
   it('# for premium it uses tls.connect', function () {
@@ -86,12 +86,12 @@ describe('heroku redis:cli', function () {
       })
 
     return command.run({app: 'example', flags: {confirm: 'example'}, args: {}, auth: {username: 'foobar', password: 'password'}})
-    .then(() => app.done())
-    .then(() => configVars.done())
-    .then(() => redis.done())
-    .then(() => expect(cli.stdout).to.equal('Connecting to redis-haiku (REDIS_FOO, REDIS_BAR):\n'))
-    .then(() => expect(cli.stderr).to.equal(''))
-    .then(() => expect(tls.connect.called).to.equal(true))
+      .then(() => app.done())
+      .then(() => configVars.done())
+      .then(() => redis.done())
+      .then(() => expect(cli.stdout).to.equal('Connecting to redis-haiku (REDIS_FOO, REDIS_BAR):\n'))
+      .then(() => expect(cli.stderr).to.equal(''))
+      .then(() => expect(tls.connect.called).to.equal(true))
   })
 
   it('# for bastion it uses tunnel.connect', function () {
@@ -112,10 +112,10 @@ describe('heroku redis:cli', function () {
       })
 
     return command.run({app: 'example', flags: {confirm: 'example'}, args: {}, auth: {username: 'foobar', password: 'password'}})
-    .then(() => app.done())
-    .then(() => configVars.done())
-    .then(() => redis.done())
-    .then(() => expect(cli.stdout).to.equal('Connecting to redis-haiku (REDIS_URL):\n'))
-    .then(() => expect(cli.stderr).to.equal(''))
+      .then(() => app.done())
+      .then(() => configVars.done())
+      .then(() => redis.done())
+      .then(() => expect(cli.stdout).to.equal('Connecting to redis-haiku (REDIS_URL):\n'))
+      .then(() => expect(cli.stderr).to.equal(''))
   })
 })

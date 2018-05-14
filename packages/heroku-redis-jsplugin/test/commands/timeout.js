@@ -30,13 +30,13 @@ describe('heroku redis:timeout', function () {
       })
 
     return command.run({app: 'example', flags: {seconds: '5'}, args: {}, auth: {username: 'foobar', password: 'password'}})
-    .then(() => app.done())
-    .then(() => redis.done())
-    .then(() => expect(cli.stdout).to.equal(
- `Timeout for redis-haiku (REDIS_FOO, REDIS_BAR) set to 5 seconds.
+      .then(() => app.done())
+      .then(() => redis.done())
+      .then(() => expect(cli.stdout).to.equal(
+        `Timeout for redis-haiku (REDIS_FOO, REDIS_BAR) set to 5 seconds.
 Connections to the Redis instance will be stopped after idling for 5 seconds.
 `))
-    .then(() => expect(cli.stderr).to.equal(''))
+      .then(() => expect(cli.stderr).to.equal(''))
   })
 
   it('# sets the timout to zero', function () {
@@ -51,18 +51,18 @@ Connections to the Redis instance will be stopped after idling for 5 seconds.
       })
 
     return command.run({app: 'example', flags: {seconds: '0'}, args: {}, auth: {username: 'foobar', password: 'password'}})
-    .then(() => app.done())
-    .then(() => redis.done())
-    .then(() => expect(cli.stdout).to.equal(
- `Timeout for redis-haiku (REDIS_FOO, REDIS_BAR) set to 0 seconds.
+      .then(() => app.done())
+      .then(() => redis.done())
+      .then(() => expect(cli.stdout).to.equal(
+        `Timeout for redis-haiku (REDIS_FOO, REDIS_BAR) set to 0 seconds.
 Connections to the Redis instance can idle indefinitely.
 `))
-    .then(() => expect(cli.stderr).to.equal(''))
+      .then(() => expect(cli.stderr).to.equal(''))
   })
 
   it('# errors on missing timeout', function () {
     return expect(command.run({app: 'example', flags: {}, args: {}})).to.be.rejectedWith(exit.ErrorExit)
-    .then(() => expect(cli.stdout).to.equal(''))
-    .then(() => expect(cli.stderr).to.equal(' ▸    Please specify a valid timeout value.\n'))
+      .then(() => expect(cli.stdout).to.equal(''))
+      .then(() => expect(cli.stderr).to.equal(' ▸    Please specify a valid timeout value.\n'))
   })
 })

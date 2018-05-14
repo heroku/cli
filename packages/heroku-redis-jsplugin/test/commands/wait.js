@@ -42,10 +42,10 @@ describe('heroku redis:wait waiting? false', function () {
       .get('/redis/v0/databases/redis-haiku/wait').reply(200, {'waiting?': false})
 
     command.run({app: 'example', flags: {}, args: {}, auth: {username: 'foobar', password: 'password'}})
-    .then(() => app.done())
-    .then(() => clock.next())
-    .then(() => redisWaiting.done())
-    .then(() => done())
+      .then(() => app.done())
+      .then(() => clock.next())
+      .then(() => redisWaiting.done())
+      .then(() => done())
   })
 })
 
@@ -73,10 +73,10 @@ describe('heroku redis:wait waiting? true', function () {
       .get('/redis/v0/databases/redis-haiku/wait').reply(200, {'waiting?': true})
 
     command.run({app: 'example', flags: {}, args: {}, auth: {username: 'foobar', password: 'password'}})
-    .then(() => app.done())
-    .then(() => clock.next())
-    .then(() => redisWaiting.done())
-    .then(() => done())
+      .then(() => app.done())
+      .then(() => clock.next())
+      .then(() => redisWaiting.done())
+      .then(() => done())
   })
 })
 
@@ -104,8 +104,8 @@ describe('heroku redis:timeout waiting? error', function () {
       .get('/redis/v0/databases/redis-haiku/wait').reply(503, {'error': 'Error'})
 
     return command.run({app: 'example', flags: {}, args: {}, auth: {username: 'foobar', password: 'password'}})
-    .then(() => app.done())
-    .then(() => clock.next())
-    .then(() => redisWaiting.done())
+      .then(() => app.done())
+      .then(() => clock.next())
+      .then(() => redisWaiting.done())
   })
 })

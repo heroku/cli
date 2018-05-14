@@ -8,24 +8,23 @@
   },
   "dependencies": {
     "co": "^4.6.0",
-    "heroku-cli-util": "^6.1.17",
+    "heroku-cli-util": "^8.0.9",
     "heroku-client": "^2.4.0",
-    "ioredis": "1.9.0",
-    "ssh2": "^0.4.11"
+    "redis-parser": "^3.0.0",
+    "ssh2": "^0.6.1"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.2.16",
-    "@oclif/plugin-legacy": "^1.0.4",
-    "chai": "^3.5.0",
-    "chai-as-promised": "^6.0.0",
-    "lolex": "^1.5.2",
-    "mocha": "^3.2.0",
-    "nock": "^9.0.4",
-    "nyc": "^10.1.2",
-    "proxyquire": "^1.7.11",
-    "sinon": "^1.17.7",
-    "snazzy": "^6.0.0",
-    "standard": "^8.6.0"
+    "@oclif/dev-cli": "^1.13.20",
+    "@oclif/plugin-legacy": "^1.0.15",
+    "chai": "^4.1.2",
+    "chai-as-promised": "^7.1.1",
+    "lolex": "^2.4.1",
+    "mocha": "^5.1.1",
+    "nock": "^9.2.5",
+    "nyc": "^11.7.3",
+    "proxyquire": "^2.0.1",
+    "sinon": "^5.0.7",
+    "standard": "^11.0.1"
   },
   "files": [
     ".oclif.manifest.json",
@@ -45,7 +44,8 @@
   "scripts": {
     "postpublish": "rm .oclif.manifest.json",
     "prepublishOnly": "oclif-dev manifest",
-    "test": "nyc mocha && standard | snazzy"
+    "test": "nyc mocha && standard",
+    "posttest": "standard"
   },
   "cli-engine": {
     "topics": {

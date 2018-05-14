@@ -32,10 +32,10 @@ describe('heroku redis:promote', function () {
       }).reply(200, {})
 
     return command.run({app: 'example', flags: {}, args: {database: 'redis-gold-haiku'}, auth: {username: 'foobar', password: 'password'}})
-    .then(() => app.done())
-    .then(() => attach.done())
-    .then(() => expect(cli.stdout).to.equal('Promoting redis-gold-haiku to REDIS_URL on example\n'))
-    .then(() => expect(cli.stderr).to.equal(''))
+      .then(() => app.done())
+      .then(() => attach.done())
+      .then(() => expect(cli.stdout).to.equal('Promoting redis-gold-haiku to REDIS_URL on example\n'))
+      .then(() => expect(cli.stderr).to.equal(''))
   })
 
   it('# promotes and attaches existing REDIS_URL', function () {
@@ -61,10 +61,10 @@ describe('heroku redis:promote', function () {
       }).reply(200, {})
 
     return command.run({app: 'example', flags: {}, args: {database: 'redis-gold-haiku'}, auth: {username: 'foobar', password: 'password'}})
-    .then(() => app.done())
-    .then(() => attachRedisUrl.done())
-    .then(() => attach.done())
-    .then(() => expect(cli.stdout).to.equal('Promoting redis-gold-haiku to REDIS_URL on example\n'))
-    .then(() => expect(cli.stderr).to.equal(''))
+      .then(() => app.done())
+      .then(() => attachRedisUrl.done())
+      .then(() => attach.done())
+      .then(() => expect(cli.stdout).to.equal('Promoting redis-gold-haiku to REDIS_URL on example\n'))
+      .then(() => expect(cli.stderr).to.equal(''))
   })
 })

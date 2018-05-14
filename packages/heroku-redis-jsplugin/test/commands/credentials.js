@@ -29,10 +29,10 @@ describe('heroku redis:credentials', function () {
       })
 
     return command.run({app: 'example', flags: {}, args: {}, auth: {username: 'foobar', password: 'password'}})
-    .then(() => app.done())
-    .then(() => redis.done())
-    .then(() => expect(cli.stdout).to.equal('redis://foobar:password@hostname:8649\n'))
-    .then(() => expect(cli.stderr).to.equal(''))
+      .then(() => app.done())
+      .then(() => redis.done())
+      .then(() => expect(cli.stdout).to.equal('redis://foobar:password@hostname:8649\n'))
+      .then(() => expect(cli.stderr).to.equal(''))
   })
 
   it('# resets the redis credentials', function () {
@@ -45,9 +45,9 @@ describe('heroku redis:credentials', function () {
       .post('/redis/v0/databases/redis-haiku/credentials_rotation').reply(200, {})
 
     return command.run({app: 'example', flags: {reset: true}, args: {}, auth: {username: 'foobar', password: 'password'}})
-    .then(() => app.done())
-    .then(() => redis.done())
-    .then(() => expect(cli.stdout).to.equal('Resetting credentials for redis-haiku\n'))
-    .then(() => expect(cli.stderr).to.equal(''))
+      .then(() => app.done())
+      .then(() => redis.done())
+      .then(() => expect(cli.stdout).to.equal('Resetting credentials for redis-haiku\n'))
+      .then(() => expect(cli.stderr).to.equal(''))
   })
 })
