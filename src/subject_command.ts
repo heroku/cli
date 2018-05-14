@@ -5,15 +5,25 @@ import ux from 'cli-ux'
 import * as _ from 'lodash'
 import {inspect} from 'util'
 
+import list from './list'
+
 const sw = require('string-width')
+
+export type TableColumnOptions = Partial<TableColumn> & {key: string}
 
 export interface TableColumn {
   key: string
-  header?: string
-  extended?: boolean
+  header: string
+  extended: boolean
   minWidth?: number
-  width?: number
-  get?(cell: any, row: any): string
+  width: number
+  get(cell: any, row: any): string
+}
+
+export interface OutputOptions {
+  extended?: boolean
+  full?: boolean
+  header?: boolean
 }
 
 export default abstract class Subject extends Command {
@@ -27,51 +37,99 @@ export default abstract class Subject extends Command {
     'no-header': flags.boolean({exclusive: ['csv', 'json'], description: 'hide header from output'}),
   }
 
-  output(arr: any[], sort: string, columns: TableColumn[]) {
+  path!: string[]
+  async init(): Promise<any> {
+    await super.init()
+    let [path, ...argv] = this.argv
+    this.path = path.slice(1).split(':')
+    this.argv = argv
+  }
+
+  output(obj: any, options: {sort?: string, columns: TableColumnOptions[]}) {
     const {flags} = this.parse(Subject)
-    if (flags.sort) sort = flags.sort
-    if (flags.extended) {
-      columns = _.uniq([...columns.map(c => c.key), ..._.flatMap(arr, row => Object.keys(row))] as string[])
-      .map(key => columns.find(c => c.key === key) || ({key}))
+    const addMissingProps = (row: any) => {
+      for (let key of Object.keys(row)) {
+        if (options.columns.find(c => c.key === key)) continue
+        options.columns.push({
+          key,
+          extended: true,
+        })
+      }
     }
+    if (Array.isArray(obj)) {
+      for (let row of obj) addMissingProps(row)
+    } else {
+      addMissingProps(obj)
+    }
+    let columns: TableColumn[] = options.columns.map(col => {
+      let header = col.header || _.capitalize(col.key.replace('_', ' '))
+      if (col.minWidth) col.minWidth = Math.max(col.minWidth, sw(header))
+      return {
+        extended: false,
+        get: (cell: any) => cell,
+        ...col,
+        header,
+        width: 0,
+      }
+    })
     if (flags.columns) {
-      columns = flags
-      .columns
-      .split(',')
-      .map(key => {
-        const column = columns.find(c => c.key === key) || ({key})
-        if (column.extended) column.extended = false
-        return column
-      })
+      let keys = flags.columns.split(',')
+      columns = columns.filter(c => keys.includes(c.key))
+    } else if (!flags.extended) {
+      columns = columns.filter(c => c.extended)
     }
-    for (let col of columns) {
-      col.header = col.header || _.capitalize(col.key.replace('_', ' '))
-      if (col.minWidth) col.minWidth = Math.max(col.minWidth, sw(col.header))
-    }
+    options.sort = flags.sort || options.sort
+    if (Array.isArray(obj)) return this.outputArray(obj, {sort: options.sort, columns})
+    return this.outputObject(obj, {columns})
+  }
+
+  outputObject(obj: any, options: {columns: TableColumn[]}) {
+    let props = _.uniqBy([
+      ...options.columns.map(col => {
+        let v = _.get(obj, col.key)
+        if (col.get) v = col.get(v, obj)
+        return [col.key, v]
+      }),
+      ...Object.entries(obj).map(([k, v]) => {
+        return [k, v]
+      }),
+    ], ([k]) => k)
+    props = props.map(([k, v]) => {
+      if (typeof v !== 'string') v = inspect(v)
+      const col = options.columns.find(col => col.key === k)
+      return [col ? col.header : k, v]
+    })
+    // TODO: non-tty full-width
+    const maxWidth = stdtermwidth
+    this.log(list(props, {maxWidth}))
+  }
+
+  outputArray(arr: any[], {sort, columns, format}: {sort?: string, columns: TableColumn[], format?: 'table' | 'json' | 'csv'}) {
     arr = arr.map(row => {
       for (let col of columns) {
         let val = _.get(row, col.key)
-        if (col.get) val = col.get(val, row)
+        val = col.get(val, row)
+        if (format !== 'json') val = inspect(val, {breakLength: Infinity})
         _.set(row, col.key, val)
       }
       return row
     })
-    arr = _.sortBy(arr, row => {
-      let prop = Object
-      .entries(row)
-      .find(([k]) => k.toLowerCase() === sort.toLowerCase())
-      if (prop) return prop[1]
-    })
-    if (flags.json) return ux.styledJSON(arr)
-    const table = arr.map(row => columns.filter(c => flags.extended || !c.extended).map(c => {
-      let v = c.get ? row[c.key] : _.get(row, c.key)
-      if (v === undefined || v === null) v = ''
-      return typeof v === 'string' ? v : inspect(v, {breakLength: Infinity})
-    }))
-    if (flags.csv) {
-      this.csv(arr)
-    } else {
-      this.table(table, columns, flags)
+    if (sort) {
+      arr = _.sortBy(arr, row => {
+        let prop = Object
+        .entries(row)
+        .find(([k]) => k.toLowerCase() === sort.toLowerCase())
+        if (prop) return prop[1]
+      })
+    }
+    switch (format) {
+      case 'json':
+        return ux.styledJSON(arr)
+      case 'csv':
+        return this.csv(arr)
+      case 'table':
+      default:
+        this.table(arr, columns, options)
     }
   }
 

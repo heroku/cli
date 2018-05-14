@@ -1,9 +1,9 @@
 import * as Config from '@oclif/config'
 import * as _ from 'lodash'
 
-import SubjectCommand, {TableColumn} from '../../subject_command'
-
 const filesize = require('filesize')
+
+import SubjectCommand, {TableColumn} from '../../subject_command'
 
 export class AppsList extends SubjectCommand {
   static flags = {
@@ -12,13 +12,12 @@ export class AppsList extends SubjectCommand {
 
   config!: Config.IConfig
   async run() {
-    const {body: apps} = await this.heroku.get('/apps')
+    const {body: app} = await this.heroku.get(`/apps/${this.path[1]}`)
     let space: TableColumn[] = []
-    if (apps.find((a: any) => a.space)) {
+    if (app.space) {
       space.push({key: 'space', get: s => s && s.name})
     }
-    this.output(apps, {
-      sort: 'name',
+    this.output(app, {
       columns: [
         {key: 'name'},
         {

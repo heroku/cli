@@ -13,13 +13,13 @@ export class Main extends Base {
     const Subject = Object.values(require(`./subjects/${root}`))[0] as {new(config: Config.IConfig, path: string[], argv: string[]): Command}
     const subject = new Subject(this.config, path, argv)
     const commands = await subject.commands()
-    if (cmd) await this.runCommand(commands, cmd, argv)
+    if (cmd) await this.runCommand(commands, path, cmd, argv)
     else await this.listCommands(commands)
   }
 
-  async runCommand(commands: {[k: string]: string}, cmd: string, argv: string[]) {
+  async runCommand(commands: {[k: string]: string}, path: string[], cmd: string, argv: string[]) {
     const Command = Object.values(require(`./commands/${commands[cmd]}`))[0] as typeof SubjectCommand
-    await Command.run(argv, this.config)
+    await Command.run([path.join(':'), ...argv], this.config)
   }
 
   listCommands(commands: {[k: string]: string}) {
