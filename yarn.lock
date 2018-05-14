@@ -374,11 +374,11 @@
     "@oclif/linewrap" "^1.0.0"
     chalk "^2.4.1"
 
-"@oclif/plugin-help@^1.2.10":
-  version "1.2.10"
-  resolved "https://registry.yarnpkg.com/@oclif/plugin-help/-/plugin-help-1.2.10.tgz#c2bb2b8f09027bf5a55e96346b8525d4dcff8c3e"
+"@oclif/plugin-help@^1.2.10", "@oclif/plugin-help@^1.2.11":
+  version "1.2.11"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-help/-/plugin-help-1.2.11.tgz#e6413a6009519230bc4c7e7fe45d8e139939e657"
   dependencies:
-    "@oclif/command" "^1.4.20"
+    "@oclif/command" "^1.4.29"
     chalk "^2.4.1"
     indent-string "^3.2.0"
     lodash.template "^4.4.0"

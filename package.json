@@ -34,7 +34,7 @@
     "@oclif/command": "^1.4.29",
     "@oclif/config": "^1.6.18",
     "@oclif/errors": "^1.1.1",
-    "@oclif/plugin-help": "^1.2.10",
+    "@oclif/plugin-help": "^1.2.11",
     "@oclif/plugin-legacy": "^1.0.15",
     "@oclif/plugin-not-found": "^1.0.9",
     "@oclif/plugin-plugins": "^1.1.13",
