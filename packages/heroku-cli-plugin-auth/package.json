@@ -14,7 +14,7 @@
   "devDependencies": {
     "@fancy-test/nock": "^0.1.1",
     "@oclif/dev-cli": "1.13.19",
-    "@oclif/plugin-help": "1.2.10",
+    "@oclif/plugin-help": "1.2.11",
     "@oclif/test": "1.0.6",
     "@oclif/tslint": "1.1.1",
     "@types/chai": "4.1.3",
