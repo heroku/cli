@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+## [2.5.9] 2018-05-14
+
+- Updated validator to fix snyk vuln
+
 ## [2.5.8] 2018-04-26
 
 - Re-add the `disambiguatePipeline` export
