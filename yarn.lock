@@ -318,6 +318,10 @@
     call-me-maybe "^1.0.1"
     glob-to-regexp "^0.3.0"
 
+"@nodelib/fs.stat@^1.0.1":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.0.2.tgz#d056b68999769728a1cff8d643bc59eb6f0be436"
+
 "@oclif/command@^1", "@oclif/command@^1.4.13", "@oclif/command@^1.4.19", "@oclif/command@^1.4.20", "@oclif/command@^1.4.21", "@oclif/command@^1.4.23", "@oclif/command@^1.4.29", "@oclif/command@^1.4.30":
   version "1.4.30"
   resolved "https://registry.yarnpkg.com/@oclif/command/-/command-1.4.30.tgz#631eb423182517dc38711d6270aecb621bfa24a9"
@@ -532,9 +536,9 @@
   dependencies:
     "@types/node" "*"
 
-"@types/node@*", "@types/node@^10.0.9":
-  version "10.0.9"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.0.9.tgz#7cb73a6ef9cf4e41e5354e114e824bfdfd96a6b4"
+"@types/node@*", "@types/node@^10.0.10":
+  version "10.0.10"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.0.10.tgz#7f4667269e086daeef8667069f9f2cd862f49eb7"
 
 "@types/semver@^5.5.0":
   version "5.5.0"
@@ -672,9 +676,9 @@ atob@^2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.1.tgz#ae2d5a729477f289d60dd7f96a6314a22dd6c22a"
 
-aws-sdk@^2.239.1:
-  version "2.239.1"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.239.1.tgz#299a3e611e5c47b39230bd1f51e2d25d1fbdb345"
+aws-sdk@^2.240.1:
+  version "2.240.1"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.240.1.tgz#ed9f137573277f4543740c04ac628b46df244717"
   dependencies:
     buffer "4.9.1"
     events "1.1.1"
@@ -1302,10 +1306,11 @@ fancy-test@^1.0.6:
     stdout-stderr "^0.1.9"
 
 fast-glob@^2.0.2:
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/fast-glob/-/fast-glob-2.2.1.tgz#686c2345be88f3741e174add0be6f2e5b6078889"
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/fast-glob/-/fast-glob-2.2.2.tgz#71723338ac9b4e0e2fff1d6748a2a13d5ed352bf"
   dependencies:
     "@mrmlnc/readdir-enhanced" "^2.2.1"
+    "@nodelib/fs.stat" "^1.0.1"
     glob-parent "^3.1.0"
     is-glob "^4.0.0"
     merge2 "^1.2.1"
@@ -2532,10 +2537,10 @@ opn@^5.3.0:
     is-wsl "^1.1.0"
 
 original@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/original/-/original-1.0.0.tgz#9147f93fa1696d04be61e01bd50baeaca656bd3b"
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/original/-/original-1.0.1.tgz#b0a53ff42ba997a8c9cd1fb5daaeb42b9d693190"
   dependencies:
-    url-parse "1.0.x"
+    url-parse "~1.4.0"
 
 os-homedir@^1.0.0:
   version "1.0.2"
@@ -2753,9 +2758,9 @@ querystring@0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/querystring/-/querystring-0.2.0.tgz#b209849203bb25df820da756e747005878521620"
 
-querystringify@0.0.x:
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/querystringify/-/querystringify-0.0.4.tgz#0cf7f84f9463ff0ae51c4c4b142d95be37724d9c"
+querystringify@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/querystringify/-/querystringify-2.0.0.tgz#fa3ed6e68eb15159457c89b37bc6472833195755"
 
 read-pkg@^3.0.0:
   version "3.0.0"
@@ -2824,7 +2829,7 @@ require-resolve@^0.0.2:
   dependencies:
     x-path "^0.0.2"
 
-requires-port@1.0.x, requires-port@^1.0.0:
+requires-port@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/requires-port/-/requires-port-1.0.0.tgz#925d2601d39ac485e091cf0da5c6e694dc3dcaff"
 
@@ -3454,12 +3459,12 @@ url-parse-lax@^3.0.0:
   dependencies:
     prepend-http "^2.0.0"
 
-url-parse@1.0.x:
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/url-parse/-/url-parse-1.0.5.tgz#0854860422afdcfefeb6c965c662d4800169927b"
+url-parse@~1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/url-parse/-/url-parse-1.4.0.tgz#6bfdaad60098c7fe06f623e42b22de62de0d3d75"
   dependencies:
-    querystringify "0.0.x"
-    requires-port "1.0.x"
+    querystringify "^2.0.0"
+    requires-port "^1.0.0"
 
 url-to-options@^1.0.1:
   version "1.0.1"
