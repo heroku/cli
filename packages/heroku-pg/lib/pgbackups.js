@@ -41,11 +41,9 @@ module.exports = (context, heroku) => ({
       }
     }),
     name: transfer => {
-      const S = require('string')
-
       let oldPGBName = transfer.options && transfer.options.pgbackups_name
       if (oldPGBName) return `o${oldPGBName}`
-      return `${prefix(transfer)}${S(transfer.num).padLeft(3, '0')}`
+      return `${prefix(transfer)}${(transfer.num || '').toString().padStart(3, '0')}`
     },
     status: transfer => {
       if (transfer.finished_at && transfer.succeeded) {
