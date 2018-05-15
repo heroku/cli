@@ -1,8 +1,6 @@
 'use strict'
 
-let co = require('co')
 let cli = require('heroku-cli-util')
-let api = require('../lib/shared')
 
 module.exports = {
   topic: 'redis',
@@ -21,15 +19,16 @@ module.exports = {
     volatile-random # evicts random keys but only those that have an expiry set
     volatile-ttl    # only evicts keys with an expiry set and a short TTL
   `,
-  run: cli.command(co.wrap(function * (context, heroku) {
+  run: cli.command(async (context, heroku) => {
+    let api = require('../lib/shared')(context, heroku)
     if (!context.flags.policy) {
       cli.exit(1, 'Please specify a valid maxmemory eviction policy.')
     }
 
-    let addon = yield api.getRedisAddon(context, heroku)
+    let addon = await api.getRedisAddon()
 
-    let config = yield api.request(context, `/redis/v0/databases/${addon.name}/config`, 'PATCH', { maxmemory_policy: context.flags.policy })
+    let config = await api.request(`/redis/v0/databases/${addon.name}/config`, 'PATCH', { maxmemory_policy: context.flags.policy })
     cli.log(`Maxmemory policy for ${addon.name} (${addon.config_vars.join(', ')}) set to ${config.maxmemory_policy.value}.`)
     cli.log(`${config.maxmemory_policy.value} ${config.maxmemory_policy.values[config.maxmemory_policy.value]}.`)
-  }))
+  })
 }

@@ -1,8 +1,6 @@
 'use strict'
 
-let co = require('co')
 let cli = require('heroku-cli-util')
-let api = require('../lib/shared')
 
 module.exports = {
   topic: 'redis',
@@ -12,15 +10,16 @@ module.exports = {
   args: [{name: 'database', optional: true}],
   flags: [{name: 'reset', description: 'reset credentials'}],
   description: 'display credentials information',
-  run: cli.command(co.wrap(function * (context, heroku) {
-    let addon = yield api.getRedisAddon(context, heroku)
+  run: cli.command(async (context, heroku) => {
+    const api = require('../lib/shared')(context, heroku)
+    const addon = await api.getRedisAddon()
 
     if (context.flags.reset) {
       cli.log(`Resetting credentials for ${addon.name}`)
-      yield api.request(context, `/redis/v0/databases/${addon.name}/credentials_rotation`, 'POST')
+      await api.request(`/redis/v0/databases/${addon.name}/credentials_rotation`, 'POST')
     } else {
-      let redis = yield api.request(context, `/redis/v0/databases/${addon.name}`)
+      let redis = await api.request(`/redis/v0/databases/${addon.name}`)
       cli.log(redis.resource_url)
     }
-  }))
+  })
 }

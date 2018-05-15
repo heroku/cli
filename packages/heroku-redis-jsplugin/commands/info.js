@@ -1,8 +1,7 @@
 'use strict'
 
-let co = require('co')
-let api = require('../lib/shared')
-let cli = require('heroku-cli-util')
+const api = require('../lib/shared')
+const cli = require('heroku-cli-util')
 
 module.exports = {
   topic: 'redis',
@@ -11,5 +10,5 @@ module.exports = {
   needsAuth: true,
   args: [{name: 'database', optional: true}],
   description: 'gets information about redis',
-  run: cli.command(co.wrap(api.info))
+  run: cli.command((ctx, heroku) => api(ctx, heroku).info())
 }

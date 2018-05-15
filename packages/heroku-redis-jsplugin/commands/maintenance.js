@@ -1,8 +1,6 @@
 'use strict'
 
-let co = require('co')
-let cli = require('heroku-cli-util')
-let api = require('../lib/shared')
+const cli = require('heroku-cli-util')
 
 module.exports = {
   topic: 'redis',
@@ -17,8 +15,9 @@ module.exports = {
   ],
   description: 'manage maintenance windows',
   help: 'Set or change the maintenance window for your Redis instance',
-  run: cli.command(co.wrap(function * (context, heroku) {
-    let addon = yield api.getRedisAddon(context, heroku)
+  run: cli.command(async (context, heroku) => {
+    const api = require('../lib/shared')(context, heroku)
+    let addon = await api.getRedisAddon()
 
     if (addon.plan.name.match(/hobby/) != null) {
       cli.exit(1, 'redis:maintenance is not available for hobby-dev instances')
@@ -29,23 +28,23 @@ module.exports = {
         cli.exit(1, 'Maintenance windows must be "Day HH:MM", where MM is 00 or 30.')
       }
 
-      let maintenance = yield api.request(context, `/redis/v0/databases/${addon.name}/maintenance_window`, 'PUT', { description: context.flags.window })
+      let maintenance = await api.request(`/redis/v0/databases/${addon.name}/maintenance_window`, 'PUT', { description: context.flags.window })
       cli.log(`Maintenance window for ${addon.name} (${addon.config_vars.join(', ')}) set to ${maintenance.window}.`)
       cli.exit(0)
     }
 
     if (context.flags.run) {
-      let app = yield heroku.get(`/apps/${context.app}`)
+      let app = await heroku.get(`/apps/${context.app}`)
       if (!app.maintenance && !context.flags.force) {
         cli.exit(1, 'Application must be in maintenance mode or --force flag must be used')
       }
 
-      let maintenance = yield api.request(context, `/redis/v0/databases/${addon.name}/maintenance`, 'POST')
+      let maintenance = await api.request(`/redis/v0/databases/${addon.name}/maintenance`, 'POST')
       cli.log(maintenance.message)
       cli.exit(0)
     }
 
-    let maintenance = yield api.request(context, `/redis/v0/databases/${addon.name}/maintenance`, 'GET', null)
+    let maintenance = await api.request(`/redis/v0/databases/${addon.name}/maintenance`, 'GET', null)
     cli.log(maintenance.message)
-  }))
+  })
 }

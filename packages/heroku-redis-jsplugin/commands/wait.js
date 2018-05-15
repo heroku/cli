@@ -1,8 +1,6 @@
 'use strict'
 
-let co = require('co')
-let api = require('../lib/shared')
-let cli = require('heroku-cli-util')
+const cli = require('heroku-cli-util')
 
 module.exports = {
   topic: 'redis',
@@ -11,11 +9,12 @@ module.exports = {
   needsAuth: true,
   args: [{name: 'database', optional: true}],
   description: 'wait for Redis instance to be available',
-  run: cli.command(co.wrap(function * (context, heroku) {
-    let addon = yield api.getRedisAddon(context, heroku)
+  run: cli.command(async (context, heroku) => {
+    const api = require('../lib/shared')(context, heroku)
+    const addon = await api.getRedisAddon()
 
     let interval = setInterval(function () {
-      api.request(context, `/redis/v0/databases/${addon.name}/wait`, 'GET').then(function (status) {
+      api.request(`/redis/v0/databases/${addon.name}/wait`, 'GET').then(function (status) {
         if (!status['waiting?']) {
           clearInterval(interval)
         }
@@ -24,5 +23,5 @@ module.exports = {
         clearInterval(interval)
       })
     }, 500)
-  }))
+  })
 }
