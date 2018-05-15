@@ -244,15 +244,13 @@
     cli-ux "^3.3.31"
     lodash "^4.17.5"
 
-"@heroku-cli/plugin-redis@^1.3.2":
-  version "1.3.2"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-redis/-/plugin-redis-1.3.2.tgz#9d7d92918daa4f5590c31b7eff9d80da5814e9d0"
+"@heroku-cli/plugin-redis@^1.3.3":
+  version "1.3.3"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-redis/-/plugin-redis-1.3.3.tgz#c3c54f7a0d73924e181af288fa21c7bc05b08aca"
   dependencies:
-    co "^4.6.0"
-    heroku-cli-util "^6.1.17"
-    heroku-client "^2.4.0"
-    ioredis "1.9.0"
-    ssh2 "^0.4.11"
+    heroku-cli-util "^8.0.9"
+    redis-parser "^3.0.0"
+    ssh2 "^0.6.1"
 
 "@heroku-cli/plugin-run@^3.8.3":
   version "3.8.3"
@@ -746,10 +744,6 @@ blob@0.0.4:
   version "0.0.4"
   resolved "https://registry.yarnpkg.com/blob/-/blob-0.0.4.tgz#bcf13052ca54463f30f9fc7e95b9a47630a94921"
 
-bluebird@^2.9.21:
-  version "2.11.0"
-  resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-2.11.0.tgz#534b9033c022c9579c56ba3b3e5a5caafbb650e1"
-
 bluebird@^3.5.1:
   version "3.5.1"
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.5.1.tgz#d9551f9de98f1fcda1e683d17ee91a0602ee2eb9"
@@ -1069,7 +1063,7 @@ date-fns@^1.29.0:
   version "1.29.0"
   resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-1.29.0.tgz#12e609cdcb935127311d04d33334e2960a2a54e6"
 
-debug@2.6.9, debug@^2.1.3, debug@^2.2.0, debug@^2.3.3:
+debug@2.6.9, debug@^2.2.0, debug@^2.3.3:
   version "2.6.9"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.9.tgz#5d128515df134ff327e90a4c93f4e077a536341f"
   dependencies:
@@ -1141,10 +1135,6 @@ doctrine@0.7.2:
   dependencies:
     esutils "^1.1.6"
     isarray "0.0.1"
-
-double-ended-queue@^2.1.0-0:
-  version "2.1.0-0"
-  resolved "https://registry.yarnpkg.com/double-ended-queue/-/double-ended-queue-2.1.0-0.tgz#103d3527fd31528f40188130c841efdd78264e5c"
 
 duplexer3@^0.1.4:
   version "0.1.4"
@@ -1346,10 +1336,6 @@ find-up@^2.1.0:
   resolved "https://registry.yarnpkg.com/find-up/-/find-up-2.1.0.tgz#45d1b7e506c717ddd482775a2b77920a3c0c57a7"
   dependencies:
     locate-path "^2.0.0"
-
-flexbuffer@0.0.6:
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/flexbuffer/-/flexbuffer-0.0.6.tgz#039fdf23f8823e440c38f3277e6fef1174215b30"
 
 follow-redirects@^1.0.0:
   version "1.4.1"
@@ -1613,7 +1599,7 @@ heroku-cli-util@8.0.0:
     tslib "^1.9.0"
     tunnel-agent "^0.6.0"
 
-heroku-cli-util@^6.1.17, heroku-cli-util@^6.2.0:
+heroku-cli-util@^6.2.0:
   version "6.2.13"
   resolved "https://registry.yarnpkg.com/heroku-cli-util/-/heroku-cli-util-6.2.13.tgz#7099dd8dd9ffd8c07f2a382504a756a68d50bcb5"
   dependencies:
@@ -1700,15 +1686,6 @@ heroku-client@3.0.6, heroku-client@^3.0.5, heroku-client@^3.0.6:
     is-retry-allowed "^1.0.0"
     tunnel-agent "^0.6.0"
 
-heroku-client@^2.4.0:
-  version "2.4.3"
-  resolved "https://registry.yarnpkg.com/heroku-client/-/heroku-client-2.4.3.tgz#c52fec7e37e7af0ac14f66ce63adf1af156e0747"
-  dependencies:
-    inflection "^1.7.0"
-    path-proxy "^1.0"
-    q "^1.2.0"
-    tunnel-agent "^0.4.0"
-
 heroku-exec-util@0.7.2:
   version "0.7.2"
   resolved "https://registry.yarnpkg.com/heroku-exec-util/-/heroku-exec-util-0.7.2.tgz#834270dd4240c5f2b6c185be693dc25c2b5f3f58"
@@ -1783,13 +1760,9 @@ indexof@0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/indexof/-/indexof-0.0.1.tgz#82dc336d232b9062179d05ab3293a66059fd435d"
 
-inflection@^1.12.0, inflection@^1.7.0:
+inflection@^1.12.0:
   version "1.12.0"
   resolved "https://registry.yarnpkg.com/inflection/-/inflection-1.12.0.tgz#a200935656d6f5f6bc4dc7502e1aecb703228416"
-
-inflection@~1.3.0:
-  version "1.3.8"
-  resolved "https://registry.yarnpkg.com/inflection/-/inflection-1.3.8.tgz#cbd160da9f75b14c3cc63578d4f396784bf3014e"
 
 inflight@^1.0.4:
   version "1.0.6"
@@ -1798,7 +1771,7 @@ inflight@^1.0.4:
     once "^1.3.0"
     wrappy "1"
 
-inherits@2, inherits@^2.0.1, inherits@~2.0.1, inherits@~2.0.3:
+inherits@2, inherits@^2.0.1, inherits@~2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/inherits/-/inherits-2.0.3.tgz#633c2c83e3da42a502f52466022480f4208261de"
 
@@ -1848,16 +1821,6 @@ into-stream@^3.1.0:
 inversify@^4.10.0:
   version "4.13.0"
   resolved "https://registry.yarnpkg.com/inversify/-/inversify-4.13.0.tgz#0ab40570bfa4474b04d5b919bbab3a4f682a72f5"
-
-ioredis@1.9.0:
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/ioredis/-/ioredis-1.9.0.tgz#493eda994d15b23e487b5e83e71ba505b0934b81"
-  dependencies:
-    bluebird "^2.9.21"
-    debug "^2.1.3"
-    double-ended-queue "^2.1.0-0"
-    flexbuffer "0.0.6"
-    lodash "^3.6.0"
 
 ip-address@^5.8.8:
   version "5.8.9"
@@ -2294,10 +2257,6 @@ lodash@4.17.5:
   version "4.17.5"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.5.tgz#99a92d65c0272debe8c96b6057bc8fbfa3bed511"
 
-lodash@^3.6.0:
-  version "3.10.1"
-  resolved "https://registry.yarnpkg.com/lodash/-/lodash-3.10.1.tgz#5bf45e8e49ba4189e17d482789dfd15bd140b7b6"
-
 log-chopper@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/log-chopper/-/log-chopper-1.0.2.tgz#a88da7a47a9f0e511eda4d5e1dc840e0eaf4547a"
@@ -2686,12 +2645,6 @@ path-parse@^1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/path-parse/-/path-parse-1.0.5.tgz#3c1adf871ea9cd6c9431b6ea2bd74a0ff055c4c1"
 
-path-proxy@^1.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/path-proxy/-/path-proxy-1.0.0.tgz#18e8a36859fc9d2f1a53b48dee138543c020de5e"
-  dependencies:
-    inflection "~1.3.0"
-
 path-type@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/path-type/-/path-type-3.0.0.tgz#cef31dc8e0a1a3bb0d105c0cd97cf3bf47f4e36f"
@@ -2767,10 +2720,6 @@ punycode@1.3.2:
   version "1.3.2"
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-1.3.2.tgz#9653a036fb7c1ee42342f2325cceefea3926c48d"
 
-q@^1.2.0:
-  version "1.5.1"
-  resolved "https://registry.yarnpkg.com/q/-/q-1.5.1.tgz#7e32f75b41381291d04611f1bf14109ac00651d7"
-
 qqjs@^0.3.8, qqjs@^0.3.9:
   version "0.3.9"
   resolved "https://registry.yarnpkg.com/qqjs/-/qqjs-0.3.9.tgz#8993e0be58aaf2e5b842a732b33de991d7edb625"
@@ -2829,15 +2778,6 @@ readable-stream@^2.0.0, readable-stream@^2.3.0, readable-stream@^2.3.5:
     string_decoder "~1.1.1"
     util-deprecate "~1.0.1"
 
-readable-stream@~1.0.0:
-  version "1.0.34"
-  resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-1.0.34.tgz#125820e34bc842d2f2aaafafe4c2916ee32c157c"
-  dependencies:
-    core-util-is "~1.0.0"
-    inherits "~2.0.1"
-    isarray "0.0.1"
-    string_decoder "~0.10.x"
-
 redeyed@~1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/redeyed/-/redeyed-1.0.1.tgz#e96c193b40c0816b00aec842698e61185e55498a"
@@ -2849,6 +2789,16 @@ redeyed@~2.0.0:
   resolved "https://registry.yarnpkg.com/redeyed/-/redeyed-2.0.0.tgz#e7ae722cd4ce4dbc537cb5810fef3de2ac76ff12"
   dependencies:
     esprima "~4.0.0"
+
+redis-errors@^1.0.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/redis-errors/-/redis-errors-1.2.0.tgz#eb62d2adb15e4eaf4610c04afe1529384250abad"
+
+redis-parser@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/redis-parser/-/redis-parser-3.0.0.tgz#b66d828cdcafe6b4b8a428a7def4c6bcac31c8b4"
+  dependencies:
+    redis-errors "^1.0.0"
 
 reflect-metadata@^0.1.12:
   version "0.1.12"
@@ -3146,17 +3096,17 @@ sprintf-js@~1.0.2:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/sprintf-js/-/sprintf-js-1.0.3.tgz#04e6926f662895354f3dd015203633b857297e2c"
 
-ssh2-streams@~0.0.22:
-  version "0.0.23"
-  resolved "https://registry.yarnpkg.com/ssh2-streams/-/ssh2-streams-0.0.23.tgz#aeef30831bb5fc4af6aa3f6d0a261a413531612b"
-  dependencies:
-    asn1 "~0.2.0"
-    readable-stream "~1.0.0"
-    streamsearch "~0.1.2"
-
 ssh2-streams@~0.1.15, ssh2-streams@~0.1.18:
   version "0.1.20"
   resolved "https://registry.yarnpkg.com/ssh2-streams/-/ssh2-streams-0.1.20.tgz#51118d154555df5469ee1f67e0cf1e7e8a2c0e3a"
+  dependencies:
+    asn1 "~0.2.0"
+    semver "^5.1.0"
+    streamsearch "~0.1.2"
+
+ssh2-streams@~0.2.0:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/ssh2-streams/-/ssh2-streams-0.2.1.tgz#9c9c9964be60e9644575af328677f64b1e5cbd79"
   dependencies:
     asn1 "~0.2.0"
     semver "^5.1.0"
@@ -3174,12 +3124,11 @@ ssh2@0.5.5:
   dependencies:
     ssh2-streams "~0.1.18"
 
-ssh2@^0.4.11:
-  version "0.4.15"
-  resolved "https://registry.yarnpkg.com/ssh2/-/ssh2-0.4.15.tgz#07c6f4106d9f7b6ea6e4df636c6c53f1f9817ff8"
+ssh2@^0.6.1:
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/ssh2/-/ssh2-0.6.1.tgz#5dde1a7394bb978b1f9c2f014affee2f5493bd40"
   dependencies:
-    readable-stream "~1.0.0"
-    ssh2-streams "~0.0.22"
+    ssh2-streams "~0.2.0"
 
 static-extend@^0.1.1:
   version "0.1.2"
@@ -3227,10 +3176,6 @@ string-width@^2.1.0, string-width@^2.1.1:
 string@^3.3.3:
   version "3.3.3"
   resolved "https://registry.yarnpkg.com/string/-/string-3.3.3.tgz#5ea211cd92d228e184294990a6cc97b366a77cb0"
-
-string_decoder@~0.10.x:
-  version "0.10.31"
-  resolved "https://registry.yarnpkg.com/string_decoder/-/string_decoder-0.10.31.tgz#62e203bc41766c6c28c9fc84301dab1c5310fa94"
 
 string_decoder@~1.1.1:
   version "1.1.1"
@@ -3443,10 +3388,6 @@ tsutils@^2.12.1, tsutils@^2.24.0:
   resolved "https://registry.yarnpkg.com/tsutils/-/tsutils-2.27.0.tgz#9efb252b188eaa0ca3ade41dc410d6ce7eaab816"
   dependencies:
     tslib "^1.8.1"
-
-tunnel-agent@^0.4.0:
-  version "0.4.3"
-  resolved "https://registry.yarnpkg.com/tunnel-agent/-/tunnel-agent-0.4.3.tgz#6373db76909fe570e08d73583365ed828a74eeeb"
 
 tunnel-agent@^0.6.0:
   version "0.6.0"
