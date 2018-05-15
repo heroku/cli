@@ -5,6 +5,7 @@ let EventSource = require('eventsource')
 let url = require('url')
 let liner = require('../lib/line_transform')
 const colorize = require('./colorize')
+const HTTP = require('http-call')
 
 function readLogs (logplexURL) {
   let u = url.parse(logplexURL)
@@ -15,15 +16,15 @@ function readLogs (logplexURL) {
   }
 }
 
-function readLogsV1 (logplexURL) {
+async function readLogsV1 (logplexURL) {
+  let {response} = await HTTP.stream(logplexURL)
   return new Promise(function (resolve, reject) {
-    let res = cli.got.stream(logplexURL)
-    res.setEncoding('utf8')
+    response.setEncoding('utf8')
     liner.setEncoding('utf8')
-    res.pipe(liner)
+    response.pipe(liner)
     liner.on('data', line => cli.log(colorize(line)))
-    res.on('end', resolve)
-    res.on('error', reject)
+    response.on('end', resolve)
+    response.on('error', reject)
   })
 }
 
