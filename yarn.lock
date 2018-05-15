@@ -27,15 +27,15 @@
     strip-ansi "^4.0.0"
     supports-color "^5.4.0"
 
-"@heroku-cli/command@^8.0.4", "@heroku-cli/command@^8.0.5", "@heroku-cli/command@^8.0.7", "@heroku-cli/command@^8.1.14", "@heroku-cli/command@^8.1.15", "@heroku-cli/command@^8.1.16", "@heroku-cli/command@^8.1.3":
-  version "8.1.16"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.1.16.tgz#39107e82d863cfd46ce8c83bd36bccf36c9fb9e1"
+"@heroku-cli/command@^8.0.5", "@heroku-cli/command@^8.0.7", "@heroku-cli/command@^8.1.14", "@heroku-cli/command@^8.1.15", "@heroku-cli/command@^8.1.16", "@heroku-cli/command@^8.1.17", "@heroku-cli/command@^8.1.3":
+  version "8.1.17"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.1.17.tgz#54fb886ecfdbf1a74d6e5c7c6c9af60dceca9f30"
   dependencies:
-    "@heroku-cli/color" "^1.1.3"
-    "@oclif/errors" "^1.0.11"
-    cli-ux "^4.2.0"
+    "@heroku-cli/color" "^1.1.5"
+    "@oclif/errors" "^1.1.1"
+    cli-ux "^4.3.0"
     debug "^3.1.0"
-    heroku-client "3.0.6"
+    heroku-client "^3.0.6"
     http-call "^5.1.2"
     netrc-parser "^3.1.4"
     opn "^5.3.0"
@@ -187,17 +187,17 @@
     lodash "4.17.5"
     lodash.flatten "4.4.0"
 
-"@heroku-cli/plugin-pg@^2.9.10":
-  version "2.9.10"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-pg/-/plugin-pg-2.9.10.tgz#67e9d3237ac25ea940d2647c5090e9d18836fbcc"
+"@heroku-cli/plugin-pg@^2.9.11":
+  version "2.9.11"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-pg/-/plugin-pg-2.9.11.tgz#0abf58ada35acd44ae7902fcfe287ddc5079f913"
   dependencies:
     bytes "^3.0.0"
     co "^4.6.0"
     co-wait "^0.0.0"
     debug "^3.1.0"
-    filesize "^3.6.0"
+    filesize "^3.6.1"
     heroku-cli-addons "^1.2.26"
-    heroku-cli-util "^8.0.0"
+    heroku-cli-util "^8.0.9"
     lodash.capitalize "^4.2.1"
     lodash.flatten "^4.4.0"
     lodash.sample "^4.2.1"
@@ -206,25 +206,24 @@
     mkdirp "^0.5.1"
     node-notifier "^5.2.1"
     smooth-progress "^1.1.0"
-    string "^3.3.3"
     strip-eof "^1.0.0"
     tunnel-ssh "^4.1.4"
 
-"@heroku-cli/plugin-pipelines@^2.5.8":
-  version "2.5.8"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-pipelines/-/plugin-pipelines-2.5.8.tgz#2631fdedd03db4a71847da32f8dd7d67887ac59a"
+"@heroku-cli/plugin-pipelines@^2.5.8", "@heroku-cli/plugin-pipelines@^2.5.9":
+  version "2.5.9"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-pipelines/-/plugin-pipelines-2.5.9.tgz#25a3248a5702805cb2678c8aba1dcafec03f6385"
   dependencies:
-    "@heroku-cli/command" "^8.0.4"
+    "@heroku-cli/command" "^8.1.17"
     bluebird "^3.5.1"
     co "^4.6.0"
-    heroku-cli-util "^8.0.6"
-    http-call "^5.1.0"
+    heroku-cli-util "^8.0.9"
+    http-call "^5.1.2"
     inflection "^1.12.0"
     inquirer "^5.2.0"
     lodash.flatten "^4.4.0"
     lodash.sortby "^4.7.0"
     string-just "^0.0.2"
-    validator "^6.2.1"
+    validator "^10.2.0"
 
 "@heroku-cli/plugin-ps-exec@^2.3.4":
   version "2.3.4"
@@ -252,9 +251,9 @@
     redis-parser "^3.0.0"
     ssh2 "^0.6.1"
 
-"@heroku-cli/plugin-run@^3.8.3":
-  version "3.8.3"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-run/-/plugin-run-3.8.3.tgz#b545bdc0d51e6acacb9819299d84144d564d2a6f"
+"@heroku-cli/plugin-run@^3.8.3", "@heroku-cli/plugin-run@^3.8.4":
+  version "3.8.4"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-run/-/plugin-run-3.8.4.tgz#004a0e1983d829cfc27747ed3eac4eb5d44effba"
   dependencies:
     "@heroku-cli/color" "^1.1.3"
     "@heroku-cli/command" "^8.1.3"
@@ -334,22 +333,22 @@
   dependencies:
     debug "^3.1.0"
 
-"@oclif/dev-cli@^1.13.20":
-  version "1.13.20"
-  resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.13.20.tgz#176d78a2b3b7f937f68d418ddf86dddc8c48fb2f"
+"@oclif/dev-cli@^1.13.21":
+  version "1.13.21"
+  resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.13.21.tgz#a3299bf83da2858ee30a69f5c7cb14be259eeb3f"
   dependencies:
-    "@oclif/command" "^1.4.21"
-    "@oclif/config" "^1.6.17"
-    "@oclif/errors" "^1.0.11"
-    "@oclif/plugin-help" "^1.2.10"
-    cli-ux "^4.2.0"
+    "@oclif/command" "^1.4.30"
+    "@oclif/config" "^1.6.18"
+    "@oclif/errors" "^1.1.1"
+    "@oclif/plugin-help" "^1.2.11"
+    cli-ux "^4.3.0"
     debug "^3.1.0"
     fs-extra "^6.0.1"
     lodash "^4.17.10"
     normalize-package-data "^2.4.0"
-    qqjs "^0.3.8"
+    qqjs "^0.3.9"
     require-resolve "^0.0.2"
-    tslib "^1.9.0"
+    tslib "^1.9.1"
 
 "@oclif/errors@^1.0.11", "@oclif/errors@^1.0.4", "@oclif/errors@^1.1.1":
   version "1.1.1"
@@ -372,7 +371,7 @@
     "@oclif/linewrap" "^1.0.0"
     chalk "^2.4.1"
 
-"@oclif/plugin-help@^1.2.10", "@oclif/plugin-help@^1.2.11":
+"@oclif/plugin-help@^1.2.11":
   version "1.2.11"
   resolved "https://registry.yarnpkg.com/@oclif/plugin-help/-/plugin-help-1.2.11.tgz#e6413a6009519230bc4c7e7fe45d8e139939e657"
   dependencies:
@@ -403,9 +402,9 @@
     "@oclif/command" "^1.4.19"
     string-similarity "^1.2.0"
 
-"@oclif/plugin-plugins@^1.1.13":
-  version "1.1.13"
-  resolved "https://registry.yarnpkg.com/@oclif/plugin-plugins/-/plugin-plugins-1.1.13.tgz#4725c5ccf1804eb3a33ba2309f3ffec4c9d0cc4c"
+"@oclif/plugin-plugins@^1.1.14":
+  version "1.1.14"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-plugins/-/plugin-plugins-1.1.14.tgz#ebbc61584581f94f1ced7efbe8492b5c9b0ff4d5"
   dependencies:
     "@heroku-cli/color" "^1.1.3"
     "@oclif/command" "^1.4.21"
@@ -1318,7 +1317,7 @@ figures@^2.0.0:
   dependencies:
     escape-string-regexp "^1.0.5"
 
-filesize@^3.5.11, filesize@^3.6.0, filesize@^3.6.1:
+filesize@^3.5.11, filesize@^3.6.1:
   version "3.6.1"
   resolved "https://registry.yarnpkg.com/filesize/-/filesize-3.6.1.tgz#090bb3ee01b6f801a8a8be99d31710b3422bb317"
 
@@ -1679,7 +1678,7 @@ heroku-cli-util@^8.0.0, heroku-cli-util@^8.0.6, heroku-cli-util@^8.0.7, heroku-c
     tslib "^1.9.0"
     tunnel-agent "^0.6.0"
 
-heroku-client@3.0.6, heroku-client@^3.0.5, heroku-client@^3.0.6:
+heroku-client@^3.0.5, heroku-client@^3.0.6:
   version "3.0.6"
   resolved "https://registry.yarnpkg.com/heroku-client/-/heroku-client-3.0.6.tgz#bf603716a9d469682d4f7f80489276d82b896305"
   dependencies:
@@ -2720,7 +2719,7 @@ punycode@1.3.2:
   version "1.3.2"
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-1.3.2.tgz#9653a036fb7c1ee42342f2325cceefea3926c48d"
 
-qqjs@^0.3.8, qqjs@^0.3.9:
+qqjs@^0.3.9:
   version "0.3.9"
   resolved "https://registry.yarnpkg.com/qqjs/-/qqjs-0.3.9.tgz#8993e0be58aaf2e5b842a732b33de991d7edb625"
   dependencies:
@@ -3173,10 +3172,6 @@ string-width@^2.1.0, string-width@^2.1.1:
     is-fullwidth-code-point "^2.0.0"
     strip-ansi "^4.0.0"
 
-string@^3.3.3:
-  version "3.3.3"
-  resolved "https://registry.yarnpkg.com/string/-/string-3.3.3.tgz#5ea211cd92d228e184294990a6cc97b366a77cb0"
-
 string_decoder@~1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/string_decoder/-/string_decoder-1.1.1.tgz#9cf1611ba62685d7030ae9e4ba34149c3af03fc8"
@@ -3506,9 +3501,9 @@ validate-npm-package-license@^3.0.1:
     spdx-correct "^3.0.0"
     spdx-expression-parse "^3.0.0"
 
-validator@^6.2.1:
-  version "6.3.0"
-  resolved "https://registry.yarnpkg.com/validator/-/validator-6.3.0.tgz#47ce23ed8d4eaddfa9d4b8ef0071b6cf1078d7c8"
+validator@^10.2.0:
+  version "10.2.0"
+  resolved "https://registry.yarnpkg.com/validator/-/validator-10.2.0.tgz#61d6b10c3d5c9f368c75c2ce8ca2b792522eaafa"
 
 which@^1.2.8, which@^1.2.9, which@^1.3.0:
   version "1.3.0"
