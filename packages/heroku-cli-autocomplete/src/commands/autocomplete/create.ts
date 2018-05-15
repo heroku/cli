@@ -165,7 +165,7 @@ HEROKU_AC_BASH_COMPFUNC_PATH=${path.join(
       '..',
       'autocomplete',
       'bash',
-      'cli_engine.bash',
+      'heroku.bash',
     )} && test -f $HEROKU_AC_BASH_COMPFUNC_PATH && source $HEROKU_AC_BASH_COMPFUNC_PATH;
 `
   }
