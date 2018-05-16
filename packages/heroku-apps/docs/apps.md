@@ -11,6 +11,9 @@ Examples:
     # or just
     $ heroku create
 
+    # use a heroku.yml manifest file
+    $ heroku apps:create --manifest
+
     # specify a buildpack
     $ heroku apps:create --buildpack https://github.com/some/buildpack.git
 
@@ -93,6 +96,9 @@ DESCRIPTION
 
        # or just
        $ heroku create
+
+       # use a heroku.yml manifest file
+       $ heroku apps:create --manifest
 
        # specify a buildpack
        $ heroku apps:create --buildpack https://github.com/some/buildpack.git

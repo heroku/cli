@@ -1,3 +1,11 @@
+<a name="2.5.0"></a>
+# [2.5.0](https://github.com/heroku/heroku-apps/compare/v2.4.42...v2.5.0) (2018-05-16)
+
+
+### Features
+
+* Add a `--manifest` option for beta users to support heroku.yml files. ([#228](https://github.com/heroku/heroku-apps/issues/228)) ([5b58a90](https://github.com/heroku/heroku-apps/commit/5b58a90))
+
 <a name="2.4.42"></a>
 ## [2.4.42](https://github.com/heroku/heroku-apps/compare/v2.4.41...v2.4.42) (2018-05-10)
 

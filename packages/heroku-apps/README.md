@@ -15,7 +15,7 @@ $ npm install -g @heroku-cli/plugin-apps
 $ heroku COMMAND
 running command...
 $ heroku (-v|--version|version)
-@heroku-cli/plugin-apps/2.4.42 linux-x64 node-v10.1.0
+@heroku-cli/plugin-apps/2.5.0 linux-x64 node-v10.1.0
 $ heroku --help [COMMAND]
 USAGE
   $ heroku COMMAND
@@ -36,6 +36,9 @@ Examples:
 
     # or just
     $ heroku create
+
+    # use a heroku.yml manifest file
+    $ heroku apps:create --manifest
 
     # specify a buildpack
     $ heroku apps:create --buildpack https://github.com/some/buildpack.git
