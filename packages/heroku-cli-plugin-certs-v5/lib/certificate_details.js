@@ -4,6 +4,14 @@ let cli = require('heroku-cli-util')
 let formatDate = require('./format_date.js')
 
 module.exports = function (cert, message) {
+  let now = new Date()
+  let autoRenewsAt = new Date(cert.ssl_cert.expires_at)
+  autoRenewsAt.setMonth(autoRenewsAt.getMonth() - 1)
+
+  if (autoRenewsAt > now) {
+    cli.log(`Renewal scheduled for ${cli.color.green(formatDate(autoRenewsAt))}.\n`)
+  }
+
   let logMessage = message || 'Certificate details:'
   cli.log(logMessage)
   cli.styledObject({
