@@ -56,9 +56,9 @@
     lodash "^4.17.10"
     printf "0.3.0"
 
-"@heroku-cli/plugin-apps@^2.4.42":
-  version "2.4.42"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-apps/-/plugin-apps-2.4.42.tgz#6c294ae0e332c176f587284445db5912f830eb7a"
+"@heroku-cli/plugin-apps@^2.5.0":
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-apps/-/plugin-apps-2.5.0.tgz#ac84504918dcc9458e6909a6fc16f36006b4c16d"
   dependencies:
     "@heroku-cli/command" "^8.1.14"
     co "^4.6.0"
@@ -66,6 +66,7 @@
     fs-extra "^6.0.1"
     heroku-cli-util "^8.0.9"
     inquirer "^5.2.0"
+    js-yaml "^3.9.1"
     lodash "^4.17.10"
     shell-escape "^0.2.0"
     sparkline "^0.2.0"
@@ -2032,7 +2033,7 @@ js-tokens@^3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/js-tokens/-/js-tokens-3.0.2.tgz#9866df395102130e38f7f996bceb65443209c25b"
 
-js-yaml@^3.7.0:
+js-yaml@^3.7.0, js-yaml@^3.9.1:
   version "3.11.0"
   resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-3.11.0.tgz#597c1a8bd57152f26d622ce4117851a51f5ebaef"
   dependencies:
