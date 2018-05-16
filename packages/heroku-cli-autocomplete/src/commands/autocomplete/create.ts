@@ -10,11 +10,13 @@ export default class Create extends AutocompleteBase {
   static hidden = true
   static description = 'create autocomplete setup scripts and completion functions'
 
+  private _commands?: Command[]
+
   async run() {
     this.errorIfWindows()
     // 1. ensure needed dirs
     await this.ensureDirs()
-    // 2. generate and save autocomplete files
+    // 2. save (generated) autocomplete files
     await this.createFiles()
   }
 
@@ -26,65 +28,105 @@ export default class Create extends AutocompleteBase {
   }
 
   private async createFiles() {
-    // 1. generate paths and files as strings to write
-    const bashSetupScript = this.genBashSetupScript
-    const bashSetupScriptPath = path.join(this.autocompleteCacheDir, 'bash_setup')
+    await fs.writeFile(this.bashSetupScriptPath, this.bashSetupScript)
+    await fs.writeFile(this.zshSetupScriptPath, this.zshSetupScript)
+    await fs.writeFile(this.bashCommandsListPath, this.bashCommandsList)
+    await fs.writeFile(this.zshCompletionSettersPath, this.zshCompletionSetters)
+  }
 
-    const zshSetupScript = this.genZshSetupScript
-    const zshSetupScriptPath = path.join(this.autocompleteCacheDir, 'zsh_setup')
+  private get bashSetupScriptPath(): string {
+    // <cacheDir>/autocomplete/bash_setup
+    return path.join(this.autocompleteCacheDir, 'bash_setup')
+  }
 
-    const {bashCmdsWithFlags, zshSetters} = this.genFileStrings
-    const bashCommandsListPath = path.join(this.autocompleteCacheDir, 'commands')
+  private get bashCommandsListPath(): string {
+    // <cacheDir>/autocomplete/commands
+    return path.join(this.autocompleteCacheDir, 'commands')
+  }
 
-    const zshSetupSettersPath = path.join(this.autocompleteCacheDir, 'commands_setters')
+  private get zshSetupScriptPath(): string {
+    // <cacheDir>/autocomplete/zsh_setup
+    return path.join(this.autocompleteCacheDir, 'zsh_setup')
+  }
 
-    // 2. save files
-    await fs.writeFile(bashSetupScriptPath, bashSetupScript)
-    await fs.writeFile(zshSetupScriptPath, zshSetupScript)
-    await fs.writeFile(bashCommandsListPath, bashCmdsWithFlags)
-    await fs.writeFile(zshSetupSettersPath, zshSetters)
+  private get zshCompletionSettersPath(): string {
+    // <cacheDir>/autocomplete/commands_setters
+    return path.join(this.autocompleteCacheDir, 'commands_setters')
   }
 
   private get skipEllipsis(): boolean {
     return process.env.HEROKU_AC_ZSH_SKIP_ELLIPSIS === '1'
   }
 
-  private get genFileStrings(): {[property: string]: string} {
-    // bash
-    let cmdsWithFlags: string[] = []
-    // zsh
-    let cmdFlagsSetters: string[] = []
-    let cmdsWithDesc: string[] = []
+  private get commands(): Command[] {
+  if (this._commands) return this._commands
 
-    this.config.plugins.map(p => {
-      p.commands.map(c => {
-        try {
-          if (c.hidden) return
+  const plugins = this.config.plugins
+  let commands: Command[] = []
 
-          const id = this.genCmdID(c)
-          const publicFlags = this.genCmdPublicFlags(c).trim()
-
-          cmdsWithFlags.push(`${id} ${publicFlags}`)
-          cmdFlagsSetters.push(this.genZshCmdFlagsSetter(c))
-          cmdsWithDesc.push(this.genCmdWithDescription(c))
-        } catch (err) {
-          debug(`Error creating autocomplete for command in ${this.genCmdID(c)}, moving on...`)
-          debug(err.message)
-          this.writeLogFile(err.message)
-        }
-      })
+  plugins.map(p => {
+    p.commands.map(c => {
+      if (c.hidden) return
+      try {
+        commands.push(c)
+      } catch (err) {
+        debug(`Error creating completions for command ${c.id}`)
+        debug(err.message)
+        this.writeLogFile(err.message)
+      }
     })
+  })
 
-    const cmdsSetter = this.genZshAllCmdsListSetter(cmdsWithDesc)
-    const flagSetters = cmdFlagsSetters.join('\n')
-    const bashCmdsWithFlags = cmdsWithFlags.join('\n')
-    const zshSetters = `${cmdsSetter}\n${flagSetters}`
+  this._commands = commands
+  return this._commands
+}
 
-    return {bashCmdsWithFlags, zshSetters}
+  private get bashCommandsList(): string {
+    return this.commands.map(c => {
+      try {
+        const publicFlags = this.genCmdPublicFlags(c).trim()
+        return `${c.id} ${publicFlags}`
+      } catch (err) {
+        debug(`Error creating bash completion for command ${c.id}, moving on...`)
+        debug(err.message)
+        this.writeLogFile(err.message)
+        return ''
+      }
+    }).join('\n')
   }
 
-  private genCmdID(Command: Command): string {
-    return Command.id || 'commandIdUndefined'
+  private get zshCompletionSetters(): string {
+    const cmdsSetter = this.zshCommandsSetter
+    const flagSetters = this.zshCommandsFlagsSetters
+    return `${cmdsSetter}\n${flagSetters}`
+  }
+
+  private get zshCommandsSetter(): string {
+    const cmdsWithDescriptions = this.commands.map(c => {
+      try {
+        return this.genCmdWithDescription(c)
+      } catch (err) {
+        debug(`Error creating zsh autocomplete for command ${c.id}, moving on...`)
+        debug(err.message)
+        this.writeLogFile(err.message)
+        return ''
+      }
+    })
+
+    return this.genZshAllCmdsListSetter(cmdsWithDescriptions)
+  }
+
+  private get zshCommandsFlagsSetters(): string {
+    return this.commands.map(c => {
+      try {
+        return this.genZshCmdFlagsSetter(c)
+      } catch (err) {
+        debug(`Error creating zsh autocomplete for command ${c.id}, moving on...`)
+        debug(err.message)
+        this.writeLogFile(err.message)
+        return ''
+      }
+    }).join('\n')
   }
 
   private genCmdPublicFlags(Command: Command): string {
@@ -101,11 +143,11 @@ export default class Create extends AutocompleteBase {
       let text = Command.description.split('\n')[0]
       description = `:"${text}"`
     }
-    return `"${this.genCmdID(Command).replace(/:/g, '\\:')}"${description}`
+    return `"${Command.id.replace(/:/g, '\\:')}"${description}`
   }
 
   private genZshCmdFlagsSetter(Command: Command): string {
-    const id = this.genCmdID(Command)
+    const id = Command.id
     const flagscompletions = Object.keys(Command.flags || {})
       .filter(flag => Command.flags && !Command.flags[flag].hidden)
       .map(flag => {
@@ -155,7 +197,7 @@ ${cmdsWithDesc.join('\n')}
     return `HEROKU_AC_COMMANDS_PATH=${path.join(this.autocompleteCacheDir, 'commands')};`
   }
 
-  private get genBashSetupScript(): string {
+  private get bashSetupScript(): string {
     return `${this.envAnalyticsDir}
 ${this.envCommandsPath}
 HEROKU_AC_BASH_COMPFUNC_PATH=${path.join(
@@ -170,8 +212,8 @@ HEROKU_AC_BASH_COMPFUNC_PATH=${path.join(
 `
   }
 
-  private get genZshSetupScript(): string {
-    return `${this.skipEllipsis ? '' : this.genCompletionDotsFunc()}
+  private get zshSetupScript(): string {
+    return `${this.skipEllipsis ? '' : this.completionDotsFunc}
 ${this.envAnalyticsDir}
 ${this.envCommandsPath}
 HEROKU_AC_ZSH_SETTERS_PATH=\${HEROKU_AC_COMMANDS_PATH}_setters && test -f $HEROKU_AC_ZSH_SETTERS_PATH && source $HEROKU_AC_ZSH_SETTERS_PATH;
@@ -184,7 +226,7 @@ compinit;
 `
   }
 
-  private genCompletionDotsFunc(): string {
+  private get completionDotsFunc(): string {
     return `expand-or-complete-with-dots() {
   echo -n "..."
   zle expand-or-complete

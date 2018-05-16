@@ -39,31 +39,32 @@ runtest('Create', () => {
       Klass = plugin.commands[1]
     })
 
-    it('#genCmdID', async () => {
-      expect(cmd.genCmdID(Klass)).to.eq('autocomplete:foo')
+    it('file paths', () => {
+      const dir = cmd.config.cacheDir
+      expect(cmd.bashSetupScriptPath).to.eq(`${dir}/autocomplete/bash_setup`)
+      expect(cmd.zshSetupScriptPath).to.eq(`${dir}/autocomplete/zsh_setup`)
+      expect(cmd.bashCommandsListPath).to.eq(`${dir}/autocomplete/commands`)
+      expect(cmd.zshCompletionSettersPath).to.eq(`${dir}/autocomplete/commands_setters`)
     })
 
-    it('#genCmdWithDescription', async () => {
-      expect(await cmd.genCmdWithDescription(Klass)).to.eq(
+    it('#genCmdWithDescription', () => {
+      expect(cmd.genCmdWithDescription(Klass)).to.eq(
         '"autocomplete\\:foo":"foo cmd for autocomplete testing"',
       )
     })
 
-    it('#genCmdPublicFlags', async () => {
+    it('#genCmdPublicFlags', () => {
       expect(cmd.genCmdPublicFlags(CacheBuildFlagsTest)).to.eq('--app --visable')
       expect(cmd.genCmdPublicFlags(CacheBuildFlagsTest)).to.not.match(/--hidden/)
       expect(cmd.genCmdPublicFlags(Create)).to.eq('')
     })
 
-    it('#genFileStrings (bashCmdsWithFlags)', async () => {
-      const cacheStrings = await cmd.genFileStrings
-      expect(cacheStrings.bashCmdsWithFlags).to.eq('autocomplete --skip-instructions\nautocomplete:foo --app --bar --json')
+    it('#bashCommandsList', () => {
+      expect(cmd.bashCommandsList).to.eq('autocomplete --skip-instructions\nautocomplete:foo --app --bar --json')
     })
 
-    it('#genFileStrings (zshSetters)', async () => {
-      const cacheStrings = await cmd.genFileStrings
-      // expect(cacheStrings.zshSetters).to.eq('')
-      expect(cacheStrings.zshSetters).to.eq(`
+    it('#zshCompletionSetters', () => {
+      expect(cmd.zshCompletionSetters).to.eq(`
 _set_all_commands_list () {
 _all_commands_list=(
 "autocomplete":"display autocomplete instructions"
@@ -87,8 +88,8 @@ _flags=(
 `)
     })
 
-    it('#genCompletionDotsFunc', async () => {
-      expect(await cmd.genCompletionDotsFunc()).to.eq(`expand-or-complete-with-dots() {
+    it('#genCompletionDotsFunc', () => {
+      expect(cmd.completionDotsFunc).to.eq(`expand-or-complete-with-dots() {
   echo -n "..."
   zle expand-or-complete
   zle redisplay
@@ -97,16 +98,16 @@ zle -N expand-or-complete-with-dots
 bindkey "^I" expand-or-complete-with-dots`)
     })
 
-    it('#genBashSetupScript', async () => {
-      let shellSetup = await cmd.genBashSetupScript
+    it('#bashSetupScript', () => {
+      let shellSetup = cmd.bashSetupScript
       expect(shellSetup).to.eq(`HEROKU_AC_ANALYTICS_DIR=${cmd.config.cacheDir}/autocomplete/completion_analytics;
 HEROKU_AC_COMMANDS_PATH=${cmd.config.cacheDir}/autocomplete/commands;
 HEROKU_AC_BASH_COMPFUNC_PATH=${AC_PLUGIN_PATH}/autocomplete/bash/heroku.bash && test -f $HEROKU_AC_BASH_COMPFUNC_PATH && source $HEROKU_AC_BASH_COMPFUNC_PATH;
 `)
     })
 
-    it('#genZshSetupScript', async () => {
-      let shellSetup = await cmd.genZshSetupScript
+    it('#zshSetupScript', () => {
+      let shellSetup = cmd.zshSetupScript
       expect(shellSetup).to.eq(`expand-or-complete-with-dots() {
   echo -n "..."
   zle expand-or-complete
@@ -126,10 +127,10 @@ compinit;
 `)
     })
 
-    it('#genZshSetupScript (w/o ellipsis)', async () => {
+    it('#zshSetupScript (w/o ellipsis)', () => {
       const oldEnv = process.env
       process.env.HEROKU_AC_ZSH_SKIP_ELLIPSIS = '1'
-      let shellSetup = await cmd.genZshSetupScript
+      let shellSetup = cmd.zshSetupScript
 
       expect(shellSetup).to.eq(`
 HEROKU_AC_ANALYTICS_DIR=${cmd.config.cacheDir}/autocomplete/completion_analytics;
@@ -145,9 +146,9 @@ compinit;
       process.env = oldEnv
     })
 
-    it('#genZshAllCmdsListSetter', async () => {
+    it('#genZshAllCmdsListSetter', () => {
       let cmdsWithDesc = ['"foo\\:alpha":"foo:alpha description"', '"foo\\:beta":"foo:beta description"']
-      expect(await cmd.genZshAllCmdsListSetter(cmdsWithDesc)).to.eq(`
+      expect(cmd.genZshAllCmdsListSetter(cmdsWithDesc)).to.eq(`
 _set_all_commands_list () {
 _all_commands_list=(
 "foo\\:alpha":"foo:alpha description"
@@ -157,8 +158,8 @@ _all_commands_list=(
 `)
     })
 
-    it('#genZshCmdFlagsSetter', async () => {
-      expect(await cmd.genZshCmdFlagsSetter(CacheBuildFlagsTest)).to.eq(`_set_autocomplete_create_flags () {
+    it('#genZshCmdFlagsSetter', () => {
+      expect(cmd.genZshCmdFlagsSetter(CacheBuildFlagsTest)).to.eq(`_set_autocomplete_create_flags () {
 _flags=(
 "--app=-[(autocomplete) app to run command against]: :_compadd_flag_options"
 "--visable[(switch) Visable flag]"
