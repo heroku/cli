@@ -22,7 +22,7 @@ describe('apps:create', function () {
         web_url: 'https://foobar.com'
       })
 
-    return apps.run({flags: {}, args: {}, httpGitHost: 'git.heroku.com'}).then(function () {
+    return apps.run({flags: {}, args: {}, httpGitHost: 'git.heroku.com', config: {channel: 'beta'}}).then(function () {
       mock.done()
       expect(cli.stderr).to.equal('Creating app... done, foobar\n')
       expect(cli.stdout).to.equal('https://foobar.com | https://git.heroku.com/foobar.git\n')
@@ -40,7 +40,7 @@ describe('apps:create', function () {
         web_url: 'https://foobar.com'
       })
 
-    return apps.run({flags: {space: 'my-space-name'}, args: {}, httpGitHost: 'git.heroku.com'}).then(function () {
+    return apps.run({flags: {space: 'my-space-name'}, args: {}, httpGitHost: 'git.heroku.com', config: {channel: 'beta'}}).then(function () {
       mock.done()
       expect(cli.stderr).to.equal('Creating app in space my-space-name... done, foobar\n')
       expect(cli.stdout).to.equal('https://foobar.com | https://git.heroku.com/foobar.git\n')
@@ -58,7 +58,7 @@ describe('apps:create', function () {
       })
       .reply(200, json)
 
-    return apps.run({flags: {json: true}, args: {}, httpGitHost: 'git.heroku.com'}).then(function () {
+    return apps.run({flags: {json: true}, args: {}, httpGitHost: 'git.heroku.com', config: {channel: 'beta'}}).then(function () {
       mock.done()
 
       expect(cli.stderr).to.equal('Creating app... done, foobar\n')
