@@ -5,7 +5,7 @@ const Sanbashi = require('../lib/sanbashi')
 let usage = `
     ${cli.color.bold.underline.magenta('Usage:')}
     ${cli.color.cmd('heroku container:release web')}                       # Releases the previously pushed web process type
-    ${cli.color.cmd('heroku container:push web worker')}                   # Releases the previously pushed web and worker process types`
+    ${cli.color.cmd('heroku container:release web worker')}                # Releases the previously pushed web and worker process types`
 
 module.exports = function (topic) {
   return {
