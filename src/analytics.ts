@@ -1,4 +1,5 @@
 import {vars} from '@heroku-cli/command'
+import {CLIError} from '@oclif/errors'
 import * as Config from '@oclif/config'
 import ux from 'cli-ux'
 import netrc from 'netrc-parser'
@@ -161,8 +162,20 @@ export default class AnalyticsCommand {
     return score
   }
 
+  async loadNetRc(): Promise<void> {
+    try {
+      await netrc.load()
+    } catch (err) {
+      if (err.code === 'EISDIR') {
+        throw new CLIError('Problem reading ~/.netrc config, directory found')
+      } else {
+        throw err
+      }
+    }
+  }
+
   private async init() {
-    await netrc.load()
+    await this.loadNetRc()
     this.userConfig = new deps.UserConfig(this.config)
     await this.userConfig.init()
   }
