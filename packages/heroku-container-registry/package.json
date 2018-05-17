@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-container-registry",
   "description": "Use containers to build and deploy Heroku apps",
-  "version": "4.4.14",
+  "version": "4.4.15",
   "author": "Hunter Loftis <hunter@heroku.com>",
   "dependencies": {
     "glob": "7.1.2",
