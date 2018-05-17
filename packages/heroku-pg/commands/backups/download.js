@@ -17,7 +17,7 @@ function * run (context, heroku) {
   const host = require('../../lib/host')()
   const pgbackups = require('../../lib/pgbackups')(context, heroku)
   const download = require('../../lib/download')
-  const sortBy = require('lodash.sortby')
+  const {sortBy} = require('lodash')
 
   const {app, args, flags} = context
   const output = flags.output || defaultFilename()

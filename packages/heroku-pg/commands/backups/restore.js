@@ -18,7 +18,7 @@ function * run (context, heroku) {
   const pgbackups = require('../../lib/pgbackups')(context, heroku)
   const fetcher = require('../../lib/fetcher')(heroku)
   const host = require('../../lib/host')
-  const sortBy = require('lodash.sortby')
+  const {sortBy} = require('lodash')
 
   const {app, args, flags} = context
   const interval = Math.max(3, parseInt(flags['wait-interval'])) || 3

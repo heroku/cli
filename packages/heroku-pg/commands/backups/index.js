@@ -35,7 +35,7 @@ function * run (context, heroku) {
 
 function * list (context, heroku) {
   const pgbackups = require('../../lib/pgbackups')(context, heroku)
-  const sortBy = require('lodash.sortby')
+  const {sortBy} = require('lodash')
   const host = require('../../lib/host')()
   const app = context.app
 

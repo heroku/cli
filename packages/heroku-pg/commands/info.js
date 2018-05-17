@@ -33,7 +33,7 @@ function displayDB (db, app) {
 }
 
 function * run (context, heroku) {
-  const sortBy = require('lodash.sortby')
+  const {sortBy} = require('lodash')
   const host = require('../lib/host')
   const fetcher = require('../lib/fetcher')(heroku)
   const app = context.app

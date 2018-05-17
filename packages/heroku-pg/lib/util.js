@@ -3,7 +3,7 @@
 const cli = require('heroku-cli-util')
 const debug = require('./debug')
 const getBastion = require('./bastion').getBastion
-const sortBy = require('lodash.sortby')
+const {sortBy} = require('lodash')
 const printf = require('printf')
 const URL = require('url').URL
 
@@ -116,8 +116,6 @@ exports.starterPlan = a => !!a.plan.name.match(/(dev|basic)$/)
 exports.legacyPlan = a => !!a.plan.name.match(/^legacy/)
 
 exports.configVarNamesFromValue = (config, value) => {
-  const sortBy = require('lodash.sortby')
-
   let keys = []
   for (let key of Object.keys(config)) {
     let configVal = config[key]

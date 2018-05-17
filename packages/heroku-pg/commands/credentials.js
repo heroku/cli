@@ -2,7 +2,7 @@
 
 const co = require('co')
 const cli = require('heroku-cli-util')
-const sortBy = require('lodash.sortby')
+const {sortBy} = require('lodash')
 const util = require('../lib/util')
 
 function * run (context, heroku) {

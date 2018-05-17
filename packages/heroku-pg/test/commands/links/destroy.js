@@ -13,7 +13,7 @@ const addon = {
 }
 
 const cmd = proxyquire('../../../commands/links/destroy', {
-  'heroku-cli-addons': {
+  '@heroku-cli/plugin-addons': {
     resolve: {addon: () => addon}
   },
   '../../lib/fetcher': () => ({

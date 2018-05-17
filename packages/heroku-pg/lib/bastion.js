@@ -5,7 +5,7 @@ const tunnel = require('tunnel-ssh')
 const cli = require('heroku-cli-util')
 
 const getBastion = function (config, baseName) {
-  const sample = require('lodash.sample')
+  const {sample} = require('lodash')
   // If there are bastions, extract a host and a key
   // otherwise, return an empty Object
 

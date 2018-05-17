@@ -11,7 +11,7 @@ module.exports = heroku => {
     let db = passedDb || 'DATABASE_URL'
 
     function matchesHelper (app, db) {
-      const {resolve} = require('heroku-cli-addons')
+      const {resolve} = require('@heroku-cli/plugin-addons')
 
       debug(`fetching ${db} on ${app}`)
 
@@ -110,7 +110,7 @@ module.exports = heroku => {
   }
 
   function * all (app) {
-    const uniqby = require('lodash.uniqby')
+    const {uniqBy} = require('lodash')
 
     debug(`fetching all DBs on ${app}`)
 
@@ -119,7 +119,7 @@ module.exports = heroku => {
 
     // Get the list of attachment names per addon here and add to each addon obj
     let attachmentNamesByAddon = getAttachmentNamesByAddon(attachments)
-    addons = uniqby(addons, 'id')
+    addons = uniqBy(addons, 'id')
     addons.forEach(addon => {
       addon.attachment_names = attachmentNamesByAddon[addon.id]
     })

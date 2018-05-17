@@ -6,7 +6,7 @@ const cli = require('heroku-cli-util')
 function * run (context, heroku) {
   const pgbackups = require('../../lib/pgbackups')(context, heroku)
   const host = require('../../lib/host')()
-  const sortBy = require('lodash.sortby')
+  const {sortBy} = require('lodash')
 
   const {app, args} = context
 

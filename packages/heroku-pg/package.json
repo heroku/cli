@@ -7,18 +7,14 @@
     "url": "https://github.com/heroku/heroku-pg/issues"
   },
   "dependencies": {
+    "@heroku-cli/plugin-addons": "^1.2.29",
     "bytes": "^3.0.0",
     "co": "^4.6.0",
     "co-wait": "^0.0.0",
     "debug": "^3.1.0",
     "filesize": "^3.6.1",
-    "heroku-cli-addons": "^1.2.26",
     "heroku-cli-util": "^8.0.9",
-    "lodash.capitalize": "^4.2.1",
-    "lodash.flatten": "^4.4.0",
-    "lodash.sample": "^4.2.1",
-    "lodash.sortby": "^4.7.0",
-    "lodash.uniqby": "^4.7.0",
+    "lodash": "^4.17.10",
     "mkdirp": "^0.5.1",
     "node-notifier": "^5.2.1",
     "smooth-progress": "^1.1.0",
@@ -26,14 +22,14 @@
     "tunnel-ssh": "^4.1.4"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.13.21",
+    "@oclif/dev-cli": "^1.13.22",
     "@oclif/plugin-legacy": "^1.0.15",
     "heroku-client": "^3.0.6",
     "mocha": "^5.1.1",
     "nock": "9.2.6",
     "np": "^2.20.1",
-    "nyc": "^11.7.3",
-    "proxyquire": "^1.8.0",
+    "nyc": "^11.8.0",
+    "proxyquire": "^2.0.1",
     "sinon": "<2",
     "standard": "^10.0.2",
     "unexpected": "^10.37.7"

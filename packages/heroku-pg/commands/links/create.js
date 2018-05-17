@@ -6,7 +6,7 @@ const co = require('co')
 function * run (context, heroku) {
   const host = require('../../lib/host')
   const fetcher = require('../../lib/fetcher')(heroku)
-  const addons = require('heroku-cli-addons').resolve
+  const addons = require('@heroku-cli/plugin-addons').resolve
   let {app, args, flags} = context
 
   let service = co.wrap(function * (name) {
