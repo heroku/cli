@@ -41,8 +41,8 @@
     opn "^5.3.0"
 
 "@heroku-cli/notifications@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/notifications/-/notifications-1.2.0.tgz#aea6dd4ccac951ab62ded2ceef9b5cd482e14d96"
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/notifications/-/notifications-1.2.1.tgz#f73e5b550af787f8fbf5461d51ff9f1f40d7d232"
   dependencies:
     node-notifier "^5.2.1"
 
@@ -332,9 +332,9 @@
     debug "^3.1.0"
     semver "^5.5.0"
 
-"@oclif/config@^1.6.17", "@oclif/config@^1.6.18", "@oclif/config@^1.6.4":
-  version "1.6.18"
-  resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.6.18.tgz#25693cb4badb81489a8c5f846761630dca8c516c"
+"@oclif/config@^1.6.17", "@oclif/config@^1.6.18", "@oclif/config@^1.6.19", "@oclif/config@^1.6.4":
+  version "1.6.19"
+  resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.6.19.tgz#727aee1e0859d18c56c0fa3e1ec08826f28a7aac"
   dependencies:
     debug "^3.1.0"
 
@@ -537,13 +537,9 @@
   dependencies:
     "@types/node" "*"
 
-"@types/node@*":
-  version "10.0.10"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.0.10.tgz#7f4667269e086daeef8667069f9f2cd862f49eb7"
-
-"@types/node@^10.1.0":
-  version "10.1.0"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.1.0.tgz#2783ee1b6c47cbd4044f4a233976c1ac5fa9e942"
+"@types/node@*", "@types/node@^10.1.1":
+  version "10.1.1"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.1.1.tgz#ca39d8607fa1fcb146b0530420b93f1dd4802f6c"
 
 "@types/semver@^5.5.0":
   version "5.5.0"
@@ -2415,9 +2411,9 @@ netrc-parser@^2.0.5:
   dependencies:
     lex "^1.7.9"
 
-netrc-parser@^3.1.0, netrc-parser@^3.1.4:
-  version "3.1.4"
-  resolved "https://registry.yarnpkg.com/netrc-parser/-/netrc-parser-3.1.4.tgz#469f2bcd1169a9f9fb5430a5da96cfcd20f1461f"
+netrc-parser@^3.1.0, netrc-parser@^3.1.4, netrc-parser@^3.1.5:
+  version "3.1.5"
+  resolved "https://registry.yarnpkg.com/netrc-parser/-/netrc-parser-3.1.5.tgz#77937b6feb27f8dda143d38fac6bbdbcafd480a7"
   dependencies:
     debug "^3.1.0"
     execa "^0.10.0"
@@ -3344,8 +3340,8 @@ tslint-consistent-codestyle@^1.11.0:
     tsutils "^2.24.0"
 
 tslint-eslint-rules@^5.1.0:
-  version "5.2.0"
-  resolved "https://registry.yarnpkg.com/tslint-eslint-rules/-/tslint-eslint-rules-5.2.0.tgz#3e767e7e9cc7877497a2bde5bcb6184dee9b28c4"
+  version "5.3.1"
+  resolved "https://registry.yarnpkg.com/tslint-eslint-rules/-/tslint-eslint-rules-5.3.1.tgz#10dec4361df0b3e4385d91ff8e0226bda4ec2ad4"
   dependencies:
     doctrine "0.7.2"
     tslib "1.9.0"
