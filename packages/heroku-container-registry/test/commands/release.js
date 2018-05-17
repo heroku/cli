@@ -5,6 +5,7 @@ const cmd = require('../..').commands.find(c => c.topic === 'container' && c.com
 const expect = require('unexpected')
 const sinon = require('sinon')
 const nock = require('nock')
+const stdMocks = require('std-mocks')
 
 const Sanbashi = require('../../lib/sanbashi')
 var sandbox
@@ -47,6 +48,8 @@ describe('container release', () => {
         ]
       })
       .reply(200, {})
+      .get('/apps/testapp/releases')
+      .reply(200, [{}])
 
     let imageID = sandbox.stub(Sanbashi, 'imageID')
       .withArgs('registry.heroku.com/testapp/web:latest')
@@ -70,6 +73,8 @@ describe('container release', () => {
         ]
       })
       .reply(200, {})
+      .get('/apps/testapp/releases')
+      .reply(200, [{}])
 
     let imageID = sandbox.stub(Sanbashi, 'imageID')
       .callsFake(function (tag) {
@@ -82,5 +87,37 @@ describe('container release', () => {
       .then(() => expect(cli.stdout, 'to be empty'))
       .then(() => sandbox.assert.calledTwice(imageID))
       .then(() => api.done())
+  })
+
+  it('releases with release phase', () => {
+    stdMocks.use()
+    let busl = nock('https://busl.test:443')
+      .get('/streams/release.log')
+      .reply(200, 'Release Output Content')
+    let api = nock('https://api.heroku.com:443')
+      .get('/apps/testapp')
+      .reply(200, {name: 'testapp'})
+      .patch('/apps/testapp/formation', {
+        updates: [
+          {type: 'web', docker_image: 'image_id'}
+        ]
+      })
+      .reply(200, {})
+      .get('/apps/testapp/releases')
+      .reply(200, [{output_stream_url: 'https://busl.test/streams/release.log'}])
+
+    let imageID = sandbox.stub(Sanbashi, 'imageID')
+      .withArgs('registry.heroku.com/testapp/web:latest')
+      .returns('image_id')
+
+    return cmd.run({app: 'testapp', args: ['web'], flags: {}})
+      .then(() => expect(stdMocks.flush().stdout.join('')).to.equal('Release Output Content'))
+      .then(() => expect(cli.stderr, 'to contain', 'Runnning release command...'))
+      .then(() => expect(cli.stdout, 'to be empty'))
+      .then(() => sandbox.assert.calledOnce(imageID))
+      .then(() => api.done())
+      .then(() => busl.done())
+      .then(() => stdMocks.restore())
+      .catch(() => stdMocks.restore())
   })
 })

@@ -63,4 +63,28 @@ let release = async function (context, heroku) {
     }
   })
   await cli.action(`Releasing images ${context.args.join(',')} to ${context.app}`, req)
+
+  let release = await heroku.request({
+    path: `/apps/${context.app}/releases`,
+    partial: true,
+    headers: { 'Range': 'version ..; max=2, order=desc' }
+  }).then((releases) => releases[0])
+
+  if (release.output_stream_url) {
+    cli.log('Running release command...')
+
+    await new Promise(function (resolve, reject) {
+      let stream = cli.got.stream(release.output_stream_url)
+      stream.on('error', reject)
+      stream.on('end', resolve)
+      let piped = stream.pipe(process.stdout)
+      piped.on('error', reject)
+    }).catch(err => {
+      if (err.statusCode === 404) {
+        cli.warn('Release command starting. Use `heroku releases:output` to view the log.')
+        return
+      }
+      throw err
+    })
+  }
 }

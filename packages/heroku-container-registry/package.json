@@ -19,6 +19,7 @@
     "nyc": "11.6.0",
     "sinon": "4.4.6",
     "standard": "8.6.0",
+    "std-mocks": "1.0.1",
     "unexpected": "10.37.2"
   },
   "files": [
