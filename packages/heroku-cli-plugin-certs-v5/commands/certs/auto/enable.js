@@ -1,31 +1,24 @@
 'use strict'
 
-let co = require('co')
 let cli = require('heroku-cli-util')
 let {waitForDomains, printDomains} = require('../../../lib/domains')
 
-function enable (context, heroku) {
-  return heroku.request({
-    path: `/apps/${context.app}/domains`,
+async function enable (context, heroku) {
+  const domains = await heroku.get(`/apps/${context.app}/domains`, {
     headers: {'Accept': 'application/vnd.heroku+json; version=3.cedar-acm'}
   })
-  .then(function (domains) {
-    return heroku.request({
-      method: 'POST',
-      path: `/apps/${context.app}/acm`,
-      headers: {'Accept': 'application/vnd.heroku+json; version=3.cedar-acm'},
-      body: {}
-    })
-    .then(function () {
-      return domains
-    })
+  await heroku.post(`/apps/${context.app}/acm`, {
+    headers: {'Accept': 'application/vnd.heroku+json; version=3.cedar-acm'},
+    body: {}
   })
+  cli.action.done(`${cli.color.yellow('starting')}. See status with ${cli.color.cmd('heroku certs:auto')} or wait until active with ${cli.color.cmd('heroku certs:auto:wait')}`)
+  return domains
 }
 
-function * run (context, heroku) {
-  let domainsBeforeEnable = yield cli.action('Enabling Automatic Certificate Management', enable(context, heroku))
+async function run (context, heroku) {
+  let domainsBeforeEnable = await cli.action('Enabling Automatic Certificate Management', enable(context, heroku))
 
-  let domains = yield waitForDomains(context, heroku)
+  let domains = await waitForDomains(context, heroku)
 
   // only output the domains table if stable cname was enabled as part of ACM enabling
   let changedCnames = domains.filter(function (domain) {
@@ -47,5 +40,5 @@ module.exports = {
   description: 'Enable ACM status for an app.',
   needsApp: true,
   needsAuth: true,
-  run: cli.command(co.wrap(run))
+  run: cli.command(run)
 }

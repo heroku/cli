@@ -1,31 +1,28 @@
 'use strict'
 
 let _ = require('lodash')
-let co = require('co')
 let cli = require('heroku-cli-util')
 let psl = require('psl')
+
+const wait = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 function type (domain) {
   return psl.parse(domain.hostname).subdomain === null ? 'ALIAS/ANAME' : 'CNAME'
 }
 
-function * waitForDomains (context, heroku) {
+async function waitForDomains (context, heroku) {
   function someNull (domains) {
     return _.some(domains, (domain) => domain.kind === 'custom' && !domain.cname)
   }
 
   function apiRequest (context, heroku) {
-    return heroku.request({
-      path: `/apps/${context.app}/domains`
-    })
+    return heroku.get(`/apps/${context.app}/domains`)
   }
 
-  let apiDomains = yield apiRequest(context, heroku)
+  let apiDomains = await apiRequest(context, heroku)
 
   if (someNull(apiDomains)) {
-    yield cli.action('Waiting for stable domains to be created', co(function * () {
-      const wait = require('co-wait')
-
+    await cli.action('Waiting for stable domains to be created', (async function () {
       let i = 0
       do {
         // trying 30 times was easier for me to test that setTimeout
@@ -33,12 +30,12 @@ function * waitForDomains (context, heroku) {
           throw new Error('Timed out while waiting for stable domains to be created')
         }
 
-        yield wait(1000)
-        apiDomains = yield apiRequest(context, heroku)
+        await wait(1000)
+        apiDomains = await apiRequest(context, heroku)
 
         i++
       } while (someNull(apiDomains))
-    }))
+    })())
   }
 
   return apiDomains
