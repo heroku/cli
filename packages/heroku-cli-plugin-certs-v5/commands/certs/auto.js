@@ -83,8 +83,10 @@ function * run (context, heroku) {
       message = `Add a custom domain to your app by running: ${cli.color.cmd('heroku domains:add <yourdomain.com>')}`
     } else if (_.some(domains, (domain) => domain.acm_status === 'failed')) {
       message = `Some domains failed validation after multiple attempts, retry by running: ${cli.color.cmd('heroku certs:auto:refresh')}`
+      message += `\n    See our documentation at https://devcenter.heroku.com/articles/automated-certificate-management#failure-reasons`
     } else if (_.some(domains, (domain) => domain.acm_status === 'failing')) {
       message = `Some domains are failing validation, please verify that your DNS matches: ${cli.color.cmd('heroku domains')}`
+      message += `\n    See our documentation at https://devcenter.heroku.com/articles/automated-certificate-management#failure-reasons`
     }
 
     if (message) {

@@ -115,6 +115,7 @@ heroku-missing.heroku-cli-sni-test.com       Failing       less than a minute
 heroku-unknown.heroku-cli-sni-test.com       Waiting       less than a minute
 
 === Some domains are failing validation, please verify that your DNS matches: heroku domains
+    See our documentation at https://devcenter.heroku.com/articles/automated-certificate-management#failure-reasons
 `)
       api.done()
       apiCerts.done()
@@ -157,6 +158,7 @@ heroku-missing.heroku-cli-sni-test.com   Failing  less than a minute
 heroku-unknown.heroku-cli-sni-test.com   Waiting  less than a minute
 
 === Some domains are failing validation, please verify that your DNS matches: heroku domains
+    See our documentation at https://devcenter.heroku.com/articles/automated-certificate-management#failure-reasons
 `)
       api.done()
       apiCerts.done()
@@ -201,6 +203,7 @@ heroku-san-test.heroku-cli-sni-test.com  OK      less than a minute
 heroku-failed.heroku-cli-sni-test.com    Failed  less than a minute
 
 === Some domains failed validation after multiple attempts, retry by running: heroku certs:auto:refresh
+    See our documentation at https://devcenter.heroku.com/articles/automated-certificate-management#failure-reasons
 `)
       api.done()
       apiCerts.done()
@@ -244,6 +247,7 @@ heroku-san-test.heroku-cli-sni-test.com  OK       less than a minute
 heroku-failed.heroku-cli-sni-test.com    Failing  less than a minute
 
 === Some domains are failing validation, please verify that your DNS matches: heroku domains
+    See our documentation at https://devcenter.heroku.com/articles/automated-certificate-management#failure-reasons
 `)
       api.done()
       apiCerts.done()
@@ -296,6 +300,7 @@ heroku-acm.heroku-cli-sni-test.com      OK       less than a minute
 heroku-failing.heroku-cli-sni-test.com  Failing  less than a minute
 
 === Some domains are failing validation, please verify that your DNS matches: heroku domains
+    See our documentation at https://devcenter.heroku.com/articles/automated-certificate-management#failure-reasons
 `)
       api.done()
       apiCerts.done()
@@ -423,6 +428,7 @@ heroku-acm.heroku-cli-sni-test.com     OK                              less than
 heroku-failed.heroku-cli-sni-test.com  Failed  uh oh something failed  less than a minute
 
 === Some domains failed validation after multiple attempts, retry by running: heroku certs:auto:refresh
+    See our documentation at https://devcenter.heroku.com/articles/automated-certificate-management#failure-reasons
 `)
       api.done()
       apiCerts.done()
