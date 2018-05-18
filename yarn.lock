@@ -188,22 +188,18 @@
     lodash "4.17.5"
     lodash.flatten "4.4.0"
 
-"@heroku-cli/plugin-pg@^2.9.11":
-  version "2.9.11"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-pg/-/plugin-pg-2.9.11.tgz#0abf58ada35acd44ae7902fcfe287ddc5079f913"
+"@heroku-cli/plugin-pg@^2.10.0":
+  version "2.10.0"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-pg/-/plugin-pg-2.10.0.tgz#ce4524a2234663524ae8afdaa43f4d5c7e6382c5"
   dependencies:
+    "@heroku-cli/plugin-addons" "^1.2.29"
     bytes "^3.0.0"
     co "^4.6.0"
     co-wait "^0.0.0"
     debug "^3.1.0"
     filesize "^3.6.1"
-    heroku-cli-addons "^1.2.26"
     heroku-cli-util "^8.0.9"
-    lodash.capitalize "^4.2.1"
-    lodash.flatten "^4.4.0"
-    lodash.sample "^4.2.1"
-    lodash.sortby "^4.7.0"
-    lodash.uniqby "^4.7.0"
+    lodash "^4.17.10"
     mkdirp "^0.5.1"
     node-notifier "^5.2.1"
     smooth-progress "^1.1.0"
@@ -677,9 +673,9 @@ atob@^2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.1.tgz#ae2d5a729477f289d60dd7f96a6314a22dd6c22a"
 
-aws-sdk@^2.241.1:
-  version "2.241.1"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.241.1.tgz#ae4e1ba772cc17284df00c03b58dcf914d5c72f9"
+aws-sdk@^2.242.1:
+  version "2.242.1"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.242.1.tgz#cb2a5d81b70b8dfd6416b686ae38f9c0611f087d"
   dependencies:
     buffer "4.9.1"
     events "1.1.1"
@@ -951,6 +947,27 @@ cli-ux@^3.3.31:
 cli-ux@^4.2.0, cli-ux@^4.2.1, cli-ux@^4.2.3, cli-ux@^4.3.0:
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-4.3.0.tgz#048f6334ef50cc5ab7cc0d51725c3888c75cbc41"
+  dependencies:
+    "@oclif/linewrap" "^1.0.0"
+    "@oclif/screen" "^1.0.2"
+    ansi-styles "^3.2.1"
+    cardinal "^2.0.0"
+    chalk "^2.4.1"
+    clean-stack "^1.3.0"
+    extract-stack "^1.0.0"
+    fs-extra "^6.0.1"
+    hyperlinker "^1.0.0"
+    indent-string "^3.2.0"
+    lodash "^4.17.10"
+    password-prompt "^1.0.6"
+    semver "^5.5.0"
+    strip-ansi "^4.0.0"
+    supports-color "^5.4.0"
+    supports-hyperlinks "^1.0.1"
+
+cli-ux@^4.3.1:
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-4.3.1.tgz#4c2ca652c72fa21fdc4a19a27e4cc76f4fe1e80b"
   dependencies:
     "@oclif/linewrap" "^1.0.0"
     "@oclif/screen" "^1.0.2"
@@ -1556,23 +1573,6 @@ here@0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/here/-/here-0.0.2.tgz#69c1af3f02121f3d8788e02e84dc8b3905d71195"
 
-heroku-cli-addons@^1.2.26:
-  version "1.2.26"
-  resolved "https://registry.yarnpkg.com/heroku-cli-addons/-/heroku-cli-addons-1.2.26.tgz#17131b4c5a1906e79de16cf9cac6910ab8e43c4a"
-  dependencies:
-    co "4.6.0"
-    co-wait "0.0.0"
-    heroku-cli-util "^6.2.0"
-    lodash.flatten "4.4.0"
-    lodash.groupby "4.6.0"
-    lodash.memoize "4.1.2"
-    lodash.merge "4.6.0"
-    lodash.some "4.6.0"
-    lodash.sortby "4.7.0"
-    lodash.topairs "4.3.0"
-    lodash.values "4.3.0"
-    printf "0.2.5"
-
 heroku-cli-util@8.0.0:
   version "8.0.0"
   resolved "https://registry.yarnpkg.com/heroku-cli-util/-/heroku-cli-util-8.0.0.tgz#08b86c680aad4a9b81b308edbb877f0be7241f2c"
@@ -1602,36 +1602,6 @@ heroku-cli-util@8.0.0:
     strip-ansi "^4.0.0"
     supports-color "^5.1.0"
     tslib "^1.9.0"
-    tunnel-agent "^0.6.0"
-
-heroku-cli-util@^6.2.0:
-  version "6.2.13"
-  resolved "https://registry.yarnpkg.com/heroku-cli-util/-/heroku-cli-util-6.2.13.tgz#7099dd8dd9ffd8c07f2a382504a756a68d50bcb5"
-  dependencies:
-    "@heroku-cli/color" "^1.1.3"
-    ansi-escapes "^3.0.0"
-    ansi-styles "^3.2.0"
-    cardinal "^1.0.0"
-    chalk "^2.3.0"
-    co "^4.6.0"
-    got "^6.3.0"
-    heroku-client "^3.0.5"
-    lodash.ary "^4.1.1"
-    lodash.defaults "^4.2.0"
-    lodash.get "^4.4.2"
-    lodash.identity "^3.0.0"
-    lodash.keys "^4.2.0"
-    lodash.mapvalues "^4.6.0"
-    lodash.noop "^3.0.1"
-    lodash.partial "^4.2.1"
-    lodash.pickby "^4.6.0"
-    lodash.property "^4.4.2"
-    lodash.repeat "^4.1.0"
-    lodash.result "^4.5.2"
-    netrc-parser "^2.0.5"
-    opn "^3.0.3"
-    strip-ansi "^4.0.0"
-    supports-color "^5.1.0"
     tunnel-agent "^0.6.0"
 
 heroku-cli-util@^7.0.0:
@@ -1716,6 +1686,16 @@ http-cache-semantics@3.8.1:
 http-call@^5.1.0, http-call@^5.1.2:
   version "5.1.2"
   resolved "https://registry.yarnpkg.com/http-call/-/http-call-5.1.2.tgz#2320e1aef65f01574723a697aca31748ce578f9d"
+  dependencies:
+    content-type "^1.0.4"
+    debug "^3.1.0"
+    is-retry-allowed "^1.1.0"
+    is-stream "^1.1.0"
+    tunnel-agent "^0.6.0"
+
+http-call@^5.1.3:
+  version "5.1.3"
+  resolved "https://registry.yarnpkg.com/http-call/-/http-call-5.1.3.tgz#1864c6588985538fbf97c6ba1b2dbbebb609c459"
   dependencies:
     content-type "^1.0.4"
     debug "^3.1.0"
@@ -2129,10 +2109,6 @@ lodash.ary@^4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/lodash.ary/-/lodash.ary-4.1.1.tgz#66065fa91bacc7a034d9c8fce52f83d3c7e40212"
 
-lodash.capitalize@^4.2.1:
-  version "4.2.1"
-  resolved "https://registry.yarnpkg.com/lodash.capitalize/-/lodash.capitalize-4.2.1.tgz#f826c9b4e2a8511d84e3aca29db05e1a4f3b72a9"
-
 lodash.defaults@^4.1.0, lodash.defaults@^4.2.0:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/lodash.defaults/-/lodash.defaults-4.2.0.tgz#d09178716ffea4dde9e5fb7b37f6f0802274580c"
@@ -2153,10 +2129,6 @@ lodash.get@^4.4.2:
   version "4.4.2"
   resolved "https://registry.yarnpkg.com/lodash.get/-/lodash.get-4.4.2.tgz#2d177f652fa31e939b4438d5341499dfa3825e99"
 
-lodash.groupby@4.6.0:
-  version "4.6.0"
-  resolved "https://registry.yarnpkg.com/lodash.groupby/-/lodash.groupby-4.6.0.tgz#0b08a1dcf68397c397855c3239783832df7403d1"
-
 lodash.identity@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/lodash.identity/-/lodash.identity-3.0.0.tgz#ad7bc6a4e647d79c972e1b80feef7af156267876"
@@ -2172,14 +2144,6 @@ lodash.mapvalues@^4.6.0:
 lodash.max@^4.0.1:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/lodash.max/-/lodash.max-4.0.1.tgz#8735566c618b35a9f760520b487ae79658af136a"
-
-lodash.memoize@4.1.2:
-  version "4.1.2"
-  resolved "https://registry.yarnpkg.com/lodash.memoize/-/lodash.memoize-4.1.2.tgz#bcc6c49a42a2840ed997f323eada5ecd182e0bfe"
-
-lodash.merge@4.6.0:
-  version "4.6.0"
-  resolved "https://registry.yarnpkg.com/lodash.merge/-/lodash.merge-4.6.0.tgz#69884ba144ac33fe699737a6086deffadd0f89c5"
 
 lodash.merge@^4.6.0:
   version "4.6.1"
@@ -2217,15 +2181,7 @@ lodash.result@^4.5.2:
   version "4.5.2"
   resolved "https://registry.yarnpkg.com/lodash.result/-/lodash.result-4.5.2.tgz#cb45b27fb914eaa8d8ee6f0ce7b2870b87cb70aa"
 
-lodash.sample@^4.2.1:
-  version "4.2.1"
-  resolved "https://registry.yarnpkg.com/lodash.sample/-/lodash.sample-4.2.1.tgz#5e4291b0c753fa1abeb0aab8fb29df1b66f07f6d"
-
-lodash.some@4.6.0:
-  version "4.6.0"
-  resolved "https://registry.yarnpkg.com/lodash.some/-/lodash.some-4.6.0.tgz#1bb9f314ef6b8baded13b549169b2a945eb68e4d"
-
-lodash.sortby@4.7.0, lodash.sortby@^4.7.0:
+lodash.sortby@^4.7.0:
   version "4.7.0"
   resolved "https://registry.yarnpkg.com/lodash.sortby/-/lodash.sortby-4.7.0.tgz#edd14c824e2cc9c1e0b0a1b42bb5210516a42438"
 
@@ -2241,18 +2197,6 @@ lodash.templatesettings@^4.0.0:
   resolved "https://registry.yarnpkg.com/lodash.templatesettings/-/lodash.templatesettings-4.1.0.tgz#2b4d4e95ba440d915ff08bc899e4553666713316"
   dependencies:
     lodash._reinterpolate "~3.0.0"
-
-lodash.topairs@4.3.0:
-  version "4.3.0"
-  resolved "https://registry.yarnpkg.com/lodash.topairs/-/lodash.topairs-4.3.0.tgz#3b6deaa37d60fb116713c46c5f17ea190ec48d64"
-
-lodash.uniqby@^4.7.0:
-  version "4.7.0"
-  resolved "https://registry.yarnpkg.com/lodash.uniqby/-/lodash.uniqby-4.7.0.tgz#d99c07a669e9e6d24e1362dfe266c67616af1302"
-
-lodash.values@4.3.0:
-  version "4.3.0"
-  resolved "https://registry.yarnpkg.com/lodash.values/-/lodash.values-4.3.0.tgz#a3a6c2b0ebecc5c2cba1c17e6e620fe81b53d347"
 
 lodash@4.17.10, lodash@^4.0.0, lodash@^4.13.1, lodash@^4.17.10, lodash@^4.17.5, lodash@^4.3.0:
   version "4.17.10"
@@ -2689,10 +2633,6 @@ prepend-http@^1.0.1:
 prepend-http@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/prepend-http/-/prepend-http-2.0.0.tgz#e92434bfa5ea8c19f41cdfd401d741a3c819d897"
-
-printf@0.2.5:
-  version "0.2.5"
-  resolved "https://registry.yarnpkg.com/printf/-/printf-0.2.5.tgz#c438ca2ca33e3927671db4ab69c0e52f936a4f0f"
 
 printf@0.3.0:
   version "0.3.0"
