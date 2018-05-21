@@ -34,8 +34,6 @@
   ARCH="\$(uname -m)"
   if [ "\$ARCH" == "x86_64" ]; then
     ARCH=x64
-  elif [ "\$ARCH" == "i386" ]; then
-    ARCH=x86
   elif [[ "\$ARCH" == arm* ]]; then
     ARCH=arm
   else
