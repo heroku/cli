@@ -18,6 +18,7 @@ auth core plugin for Heroku CLI
 * [`heroku 2fa`](#heroku-2-fa)
 * [`heroku auth:login`](#heroku-authlogin)
 * [`heroku auth:logout`](#heroku-authlogout)
+* [`heroku auth:token`](#heroku-authtoken)
 * [`heroku auth:whoami`](#heroku-authwhoami)
 * [`heroku labs:disable [FEATURE]`](#heroku-labsdisable-feature)
 
@@ -34,7 +35,7 @@ ALIASES
   $ heroku twofactor
 ```
 
-_See code: [src/commands/2fa.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.3.1/src/commands/2fa.ts)_
+_See code: [src/commands/2fa.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.4.0/src/commands/2fa.ts)_
 
 ## `heroku auth:login`
 
@@ -54,7 +55,7 @@ ALIASES
   $ heroku login
 ```
 
-_See code: [src/commands/auth/login.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.3.1/src/commands/auth/login.ts)_
+_See code: [src/commands/auth/login.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.4.0/src/commands/auth/login.ts)_
 
 ## `heroku auth:logout`
 
@@ -68,7 +69,25 @@ ALIASES
   $ heroku logout
 ```
 
-_See code: [src/commands/auth/logout.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.3.1/src/commands/auth/logout.ts)_
+_See code: [src/commands/auth/logout.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.4.0/src/commands/auth/logout.ts)_
+
+## `heroku auth:token`
+
+outputs current CLI authentication token.
+
+```
+USAGE
+  $ heroku auth:token
+
+OPTIONS
+  -h, --help  show CLI help
+
+DESCRIPTION
+  By default, the CLI auth token is only valid for 1 year. To generate a long-lived token, use heroku 
+  authorizations:create
+```
+
+_See code: [src/commands/auth/token.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.4.0/src/commands/auth/token.ts)_
 
 ## `heroku auth:whoami`
 
@@ -82,7 +101,7 @@ ALIASES
   $ heroku whoami
 ```
 
-_See code: [src/commands/auth/whoami.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.3.1/src/commands/auth/whoami.ts)_
+_See code: [src/commands/auth/whoami.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.4.0/src/commands/auth/whoami.ts)_
 
 ## `heroku labs:disable [FEATURE]`
 
@@ -98,5 +117,5 @@ OPTIONS
   --confirm=confirm
 ```
 
-_See code: [src/commands/labs/disable.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.3.1/src/commands/labs/disable.ts)_
+_See code: [src/commands/labs/disable.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.4.0/src/commands/labs/disable.ts)_
 <!-- commandsstop -->
