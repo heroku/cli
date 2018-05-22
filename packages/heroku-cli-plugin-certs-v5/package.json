@@ -1,5 +1,5 @@
 {
-  "name": "@heroku-cli/plugin-certs",
+  "name": "@heroku-cli/plugin-certs-v5",
   "description": "heroku ssl plugin",
   "version": "1.3.0",
   "author": "Ransom Briggs rbriggs@heroku.com",
