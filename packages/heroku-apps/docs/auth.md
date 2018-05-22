@@ -1,11 +1,10 @@
 `heroku auth`
 =============
 
-display the current auth token
+disable 2fa on account
 
 * [`heroku auth:2fa:disable`](#heroku-auth-2-fadisable)
 * [`heroku auth:2fa:generate`](#heroku-auth-2-fagenerate)
-* [`heroku auth:token`](#heroku-authtoken)
 
 ## `heroku auth:2fa:disable`
 
@@ -23,13 +22,4 @@ generates and replaces recovery codes
 ```
 USAGE
   $ heroku auth:2fa:generate
-```
-
-## `heroku auth:token`
-
-display the current auth token
-
-```
-USAGE
-  $ heroku auth:token
 ```

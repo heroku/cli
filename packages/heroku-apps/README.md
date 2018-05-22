@@ -15,7 +15,7 @@ $ npm install -g @heroku-cli/plugin-apps
 $ heroku COMMAND
 running command...
 $ heroku (-v|--version|version)
-@heroku-cli/plugin-apps/2.5.0 linux-x64 node-v10.1.0
+@heroku-cli/plugin-apps/2.5.1 linux-x64 node-v10.1.0
 $ heroku --help [COMMAND]
 USAGE
   $ heroku COMMAND
@@ -52,7 +52,7 @@ Examples:
     # create an app in the eu region
     $ heroku apps:create --region eu
  
-* [`heroku auth`](docs/auth.md) - display the current auth token
+* [`heroku auth`](docs/auth.md) - disable 2fa on account
 
 * [`heroku buildpacks`](docs/buildpacks.md) - add new app buildpack, inserting into list of buildpacks if necessary
 Example:

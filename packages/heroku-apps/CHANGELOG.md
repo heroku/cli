@@ -1,3 +1,11 @@
+<a name="2.5.1"></a>
+## [2.5.1](https://github.com/heroku/heroku-apps/compare/v2.5.0...v2.5.1) (2018-05-22)
+
+
+### Bug Fixes
+
+* remove auth:token ([318e028](https://github.com/heroku/heroku-apps/commit/318e028))
+
 <a name="2.5.0"></a>
 # [2.5.0](https://github.com/heroku/heroku-apps/compare/v2.4.42...v2.5.0) (2018-05-16)
 
