@@ -6,7 +6,6 @@ defaults: &defaults
   docker:
     - image: oclif/nsis:0.0.2-10.0.0
       environment: &env
-        NPM_CONFIG_REGISTRY: https://cli-npm.heroku.com
         LANG: en_US.UTF-8
         LANGUAGE: en_US.UTF-8
         LC_TYPE: en_US.UTF-8
@@ -67,7 +66,6 @@ jobs:
     docker: &devdocs_docker
       - image: rasphilco/cli-engine-devcenter:v0.1.0
         environment:
-          NPM_CONFIG_REGISTRY: https://cli-npm.heroku.com
           LANG: en_US.UTF-8
           LANGUAGE: en_US.UTF-8
           LC_TYPE: en_US.UTF-8
