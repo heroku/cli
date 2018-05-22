@@ -56,9 +56,9 @@
     lodash "^4.17.10"
     printf "0.3.0"
 
-"@heroku-cli/plugin-apps@^2.5.0":
-  version "2.5.0"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-apps/-/plugin-apps-2.5.0.tgz#ac84504918dcc9458e6909a6fc16f36006b4c16d"
+"@heroku-cli/plugin-apps@^2.5.1":
+  version "2.5.1"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-apps/-/plugin-apps-2.5.1.tgz#89f6053dd6c9f7b99f431cf65f33e0e9f7c7db2a"
   dependencies:
     "@heroku-cli/command" "^8.1.14"
     co "^4.6.0"
@@ -74,15 +74,16 @@
     term-img "^2.1.0"
     urijs "1.19.1"
 
-"@heroku-cli/plugin-auth@^0.3.0":
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-auth/-/plugin-auth-0.3.1.tgz#bbcc5bceca9a44af9af7e940edec8b8f8e96add7"
+"@heroku-cli/plugin-auth@^0.4.1":
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-auth/-/plugin-auth-0.4.1.tgz#e6ffc4aec6f356159e07e67b36f80b6b73a83206"
   dependencies:
-    "@heroku-cli/color" "^1.1.3"
-    "@heroku-cli/command" "^8.1.14"
-    "@oclif/command" "^1.4.21"
-    "@oclif/config" "^1.6.17"
-    cli-ux "^4.2.0"
+    "@heroku-cli/color" "^1.1.5"
+    "@heroku-cli/command" "^8.1.16"
+    "@oclif/command" "^1.4.29"
+    "@oclif/config" "^1.6.18"
+    cli-ux "^4.3.0"
+    date-fns "^2.0.0-alpha.8"
 
 "@heroku-cli/plugin-build@^0.0.4":
   version "0.0.4"
@@ -868,8 +869,8 @@ cardinal@^1.0.0:
     redeyed "~1.0.0"
 
 cardinal@^2.0.0, cardinal@^2.0.1:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/cardinal/-/cardinal-2.1.0.tgz#f601ebe3979005674a1eaec076237a8f3c3e61c4"
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/cardinal/-/cardinal-2.1.1.tgz#7cc1055d822d212954d07b085dea251cc7bc5505"
   dependencies:
     ansicolors "~0.3.2"
     redeyed "~2.1.0"
@@ -953,7 +954,7 @@ cli-ux@^3.3.31:
     strip-ansi "^4.0.0"
     supports-color "^5.4.0"
 
-cli-ux@^4.2.0, cli-ux@^4.2.1, cli-ux@^4.2.3, cli-ux@^4.3.0, cli-ux@^4.3.1:
+cli-ux@^4.2.1, cli-ux@^4.2.3, cli-ux@^4.3.0, cli-ux@^4.3.1:
   version "4.3.1"
   resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-4.3.1.tgz#4c2ca652c72fa21fdc4a19a27e4cc76f4fe1e80b"
   dependencies:
@@ -1067,6 +1068,10 @@ cross-spawn@^6.0.0, cross-spawn@^6.0.5:
 date-fns@^1.29.0:
   version "1.29.0"
   resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-1.29.0.tgz#12e609cdcb935127311d04d33334e2960a2a54e6"
+
+date-fns@^2.0.0-alpha.8:
+  version "2.0.0-alpha.8"
+  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.0.0-alpha.8.tgz#a62bd76a8f38e0194b2903245e9cb962b9bbe624"
 
 debug@2.6.9, debug@^2.2.0, debug@^2.3.3:
   version "2.6.9"
@@ -2625,8 +2630,8 @@ pseudomap@^1.0.2:
   resolved "https://registry.yarnpkg.com/pseudomap/-/pseudomap-1.0.2.tgz#f052a28da70e618917ef0a8ac34c1ae5a68286b3"
 
 psl@^1.1.26:
-  version "1.1.26"
-  resolved "https://registry.yarnpkg.com/psl/-/psl-1.1.26.tgz#b2d3248185d7d27ff616ba1536851db0b59d9e75"
+  version "1.1.27"
+  resolved "https://registry.yarnpkg.com/psl/-/psl-1.1.27.tgz#2b2c77019db86855170d903532400bf71ee085b6"
 
 pump@^1.0.0:
   version "1.0.3"
