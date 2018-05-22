@@ -18,7 +18,7 @@
     reflect-metadata "^0.1.12"
     tslib "^1.8.1"
 
-"@heroku-cli/color@^1.1.3", "@heroku-cli/color@^1.1.5":
+"@heroku-cli/color@1.1.5", "@heroku-cli/color@^1.1.3", "@heroku-cli/color@^1.1.5":
   version "1.1.5"
   resolved "https://registry.yarnpkg.com/@heroku-cli/color/-/color-1.1.5.tgz#d98781513f8daebb21aaaf54c9e8d497db3efcfb"
   dependencies:
@@ -27,7 +27,7 @@
     strip-ansi "^4.0.0"
     supports-color "^5.4.0"
 
-"@heroku-cli/command@^8.0.5", "@heroku-cli/command@^8.0.7", "@heroku-cli/command@^8.1.14", "@heroku-cli/command@^8.1.15", "@heroku-cli/command@^8.1.16", "@heroku-cli/command@^8.1.17", "@heroku-cli/command@^8.1.18", "@heroku-cli/command@^8.1.3":
+"@heroku-cli/command@8.1.18", "@heroku-cli/command@^8.0.5", "@heroku-cli/command@^8.0.7", "@heroku-cli/command@^8.1.14", "@heroku-cli/command@^8.1.15", "@heroku-cli/command@^8.1.16", "@heroku-cli/command@^8.1.17", "@heroku-cli/command@^8.1.3":
   version "8.1.18"
   resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.1.18.tgz#aef5e327ebfd05f0f236730ffc578db8f1183fe0"
   dependencies:
@@ -46,7 +46,7 @@
   dependencies:
     node-notifier "^5.2.1"
 
-"@heroku-cli/plugin-addons@^1.2.29":
+"@heroku-cli/plugin-addons@1.2.29", "@heroku-cli/plugin-addons@^1.2.29":
   version "1.2.29"
   resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-addons/-/plugin-addons-1.2.29.tgz#f53da43fdbab10d7ed94f4c830f883517571459b"
   dependencies:
@@ -56,7 +56,7 @@
     lodash "^4.17.10"
     printf "0.3.0"
 
-"@heroku-cli/plugin-apps@^2.5.1":
+"@heroku-cli/plugin-apps@2.5.1":
   version "2.5.1"
   resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-apps/-/plugin-apps-2.5.1.tgz#89f6053dd6c9f7b99f431cf65f33e0e9f7c7db2a"
   dependencies:
@@ -74,7 +74,7 @@
     term-img "^2.1.0"
     urijs "1.19.1"
 
-"@heroku-cli/plugin-auth@^0.4.1":
+"@heroku-cli/plugin-auth@0.4.1":
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-auth/-/plugin-auth-0.4.1.tgz#e6ffc4aec6f356159e07e67b36f80b6b73a83206"
   dependencies:
@@ -85,7 +85,7 @@
     cli-ux "^4.3.0"
     date-fns "^2.0.0-alpha.8"
 
-"@heroku-cli/plugin-build@^0.0.4":
+"@heroku-cli/plugin-build@0.0.4":
   version "0.0.4"
   resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-build/-/plugin-build-0.0.4.tgz#ffb12a2b08906f1728e4f39c9b9f8c02ae6f321e"
   dependencies:
@@ -99,7 +99,7 @@
     execa "^0.10.0"
     strip-ansi "^4.0.0"
 
-"@heroku-cli/plugin-certs@^1.3.0":
+"@heroku-cli/plugin-certs@1.3.0":
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-certs/-/plugin-certs-1.3.0.tgz#f747effc5d529830b04f220a1596b7bb27f3ff04"
   dependencies:
@@ -111,7 +111,7 @@
     lodash "4.17.10"
     psl "^1.1.26"
 
-"@heroku-cli/plugin-ci@^1.9.12":
+"@heroku-cli/plugin-ci@1.9.12":
   version "1.9.12"
   resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-ci/-/plugin-ci-1.9.12.tgz#4cd51a6c2ae244c76e17bd4b0605e08b4e2bbc69"
   dependencies:
@@ -130,7 +130,7 @@
     socket.io-client "^2.1.0"
     temp "^0.8.3"
 
-"@heroku-cli/plugin-config@^1.3.0":
+"@heroku-cli/plugin-config@1.3.0":
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-config/-/plugin-config-1.3.0.tgz#de55e36eab7f76852e787286f7619612b57620e5"
   dependencies:
@@ -143,7 +143,7 @@
     lodash "^4.17.10"
     shell-quote "^1.6.1"
 
-"@heroku-cli/plugin-container-registry@^4.4.15":
+"@heroku-cli/plugin-container-registry@4.4.15":
   version "4.4.15"
   resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-container-registry/-/plugin-container-registry-4.4.15.tgz#f4827709dfb2d1776e2fbd3220b50458ecba69be"
   dependencies:
@@ -151,7 +151,7 @@
     heroku-cli-util "8.0.0"
     inquirer "5.1.0"
 
-"@heroku-cli/plugin-git@^3.0.2":
+"@heroku-cli/plugin-git@3.0.2":
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-git/-/plugin-git-3.0.2.tgz#6c9e41fcd00e6d668246b074e3647df6abb29384"
   dependencies:
@@ -159,7 +159,7 @@
     "@oclif/config" "^1.6.18"
     debug "3.1.0"
 
-"@heroku-cli/plugin-local@^5.1.24":
+"@heroku-cli/plugin-local@5.1.24":
   version "5.1.24"
   resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-local/-/plugin-local-5.1.24.tgz#53bc713304a5792c7a582f9a948424677d6669fe"
   dependencies:
@@ -169,7 +169,7 @@
     heroku-cli-util "^8.0.6"
     lodash.flatten "^4.4.0"
 
-"@heroku-cli/plugin-oauth@^2.3.4":
+"@heroku-cli/plugin-oauth@2.3.4":
   version "2.3.4"
   resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-oauth/-/plugin-oauth-2.3.4.tgz#aa213c365c7ba01952e1b202d1996a3e354e0275"
   dependencies:
@@ -178,7 +178,7 @@
     heroku-cli-util "^8.0.6"
     lodash "^4.17.10"
 
-"@heroku-cli/plugin-orgs@^1.7.5":
+"@heroku-cli/plugin-orgs@1.7.5":
   version "1.7.5"
   resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-orgs/-/plugin-orgs-1.7.5.tgz#5c7019bf53a4d02a8901fe2308dc21d1b46bdfe9"
   dependencies:
@@ -189,7 +189,7 @@
     lodash "4.17.5"
     lodash.flatten "4.4.0"
 
-"@heroku-cli/plugin-pg@^2.10.0":
+"@heroku-cli/plugin-pg@2.10.0":
   version "2.10.0"
   resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-pg/-/plugin-pg-2.10.0.tgz#ce4524a2234663524ae8afdaa43f4d5c7e6382c5"
   dependencies:
@@ -207,7 +207,7 @@
     strip-eof "^1.0.0"
     tunnel-ssh "^4.1.4"
 
-"@heroku-cli/plugin-pipelines@^2.5.8", "@heroku-cli/plugin-pipelines@^2.5.9":
+"@heroku-cli/plugin-pipelines@2.5.9", "@heroku-cli/plugin-pipelines@^2.5.8":
   version "2.5.9"
   resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-pipelines/-/plugin-pipelines-2.5.9.tgz#25a3248a5702805cb2678c8aba1dcafec03f6385"
   dependencies:
@@ -223,14 +223,14 @@
     string-just "^0.0.2"
     validator "^10.2.0"
 
-"@heroku-cli/plugin-ps-exec@^2.3.4":
+"@heroku-cli/plugin-ps-exec@2.3.4":
   version "2.3.4"
   resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-ps-exec/-/plugin-ps-exec-2.3.4.tgz#bfdd8c5b9cf1ef71eccaa406f212f523bfda87f6"
   dependencies:
     heroku-cli-util "^7.0.0"
     heroku-exec-util "0.7.2"
 
-"@heroku-cli/plugin-ps@^1.0.1":
+"@heroku-cli/plugin-ps@1.0.1":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-ps/-/plugin-ps-1.0.1.tgz#13f018a0907fde83a5385db1279b3a9497566786"
   dependencies:
@@ -241,7 +241,7 @@
     cli-ux "^3.3.31"
     lodash "^4.17.5"
 
-"@heroku-cli/plugin-redis@^1.3.3":
+"@heroku-cli/plugin-redis@1.3.3":
   version "1.3.3"
   resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-redis/-/plugin-redis-1.3.3.tgz#c3c54f7a0d73924e181af288fa21c7bc05b08aca"
   dependencies:
@@ -249,7 +249,7 @@
     redis-parser "^3.0.0"
     ssh2 "^0.6.1"
 
-"@heroku-cli/plugin-run@^3.8.3", "@heroku-cli/plugin-run@^3.8.4":
+"@heroku-cli/plugin-run@3.8.4", "@heroku-cli/plugin-run@^3.8.3":
   version "3.8.4"
   resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-run/-/plugin-run-3.8.4.tgz#004a0e1983d829cfc27747ed3eac4eb5d44effba"
   dependencies:
@@ -262,7 +262,7 @@
     heroku-cli-util "^8.0.8"
     shellwords "^0.1.1"
 
-"@heroku-cli/plugin-spaces@^2.12.2":
+"@heroku-cli/plugin-spaces@2.12.2":
   version "2.12.2"
   resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-spaces/-/plugin-spaces-2.12.2.tgz#7f51637a7930d278a2ab35055e08235181a2e558"
   dependencies:
@@ -274,7 +274,7 @@
     lodash.sortby "^4.7.0"
     strftime "^0.10.0"
 
-"@heroku-cli/plugin-status@^5.0.10":
+"@heroku-cli/plugin-status@5.0.10":
   version "5.0.10"
   resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-status/-/plugin-status-5.0.10.tgz#202ba6eedcd863d8ec5d5f948d090c1a30cd5dca"
   dependencies:
@@ -287,7 +287,7 @@
     date-fns "^1.29.0"
     http-call "^5.1.0"
 
-"@heroku-cli/plugin-webhooks@^1.2.0":
+"@heroku-cli/plugin-webhooks@1.2.0":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-webhooks/-/plugin-webhooks-1.2.0.tgz#7971529b057ed9535819afbc4ceb9bb46e745fa8"
   dependencies:
@@ -320,7 +320,7 @@
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.0.2.tgz#d056b68999769728a1cff8d643bc59eb6f0be436"
 
-"@oclif/command@^1", "@oclif/command@^1.4.13", "@oclif/command@^1.4.19", "@oclif/command@^1.4.20", "@oclif/command@^1.4.21", "@oclif/command@^1.4.23", "@oclif/command@^1.4.29", "@oclif/command@^1.4.30":
+"@oclif/command@1.4.30", "@oclif/command@^1", "@oclif/command@^1.4.13", "@oclif/command@^1.4.19", "@oclif/command@^1.4.20", "@oclif/command@^1.4.21", "@oclif/command@^1.4.23", "@oclif/command@^1.4.29", "@oclif/command@^1.4.30":
   version "1.4.30"
   resolved "https://registry.yarnpkg.com/@oclif/command/-/command-1.4.30.tgz#631eb423182517dc38711d6270aecb621bfa24a9"
   dependencies:
@@ -329,7 +329,7 @@
     debug "^3.1.0"
     semver "^5.5.0"
 
-"@oclif/config@^1", "@oclif/config@^1.6.17", "@oclif/config@^1.6.18", "@oclif/config@^1.6.19", "@oclif/config@^1.6.4":
+"@oclif/config@1.6.19", "@oclif/config@^1", "@oclif/config@^1.6.17", "@oclif/config@^1.6.18", "@oclif/config@^1.6.4":
   version "1.6.19"
   resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.6.19.tgz#727aee1e0859d18c56c0fa3e1ec08826f28a7aac"
   dependencies:
@@ -352,7 +352,7 @@
     require-resolve "^0.0.2"
     tslib "^1.9.1"
 
-"@oclif/errors@^1.0.11", "@oclif/errors@^1.0.4", "@oclif/errors@^1.1.1", "@oclif/errors@^1.1.2":
+"@oclif/errors@1.1.2", "@oclif/errors@^1.0.11", "@oclif/errors@^1.0.4", "@oclif/errors@^1.1.1":
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@oclif/errors/-/errors-1.1.2.tgz#2a54aae07a7655cc4523cae270d0a50cbc5dbef3"
   dependencies:
@@ -373,7 +373,7 @@
     "@oclif/linewrap" "^1.0.0"
     chalk "^2.4.1"
 
-"@oclif/plugin-help@^1.2.11":
+"@oclif/plugin-help@1.2.11", "@oclif/plugin-help@^1.2.11":
   version "1.2.11"
   resolved "https://registry.yarnpkg.com/@oclif/plugin-help/-/plugin-help-1.2.11.tgz#e6413a6009519230bc4c7e7fe45d8e139939e657"
   dependencies:
@@ -385,7 +385,7 @@
     widest-line "^2.0.0"
     wrap-ansi "^3.0.1"
 
-"@oclif/plugin-legacy@^1.0.15":
+"@oclif/plugin-legacy@1.0.15":
   version "1.0.15"
   resolved "https://registry.yarnpkg.com/@oclif/plugin-legacy/-/plugin-legacy-1.0.15.tgz#739f218b9eae3423a9b544efae28726ea78d254b"
   dependencies:
@@ -396,7 +396,7 @@
     debug "^3.1.0"
     semver "^5.5.0"
 
-"@oclif/plugin-not-found@^1.0.9":
+"@oclif/plugin-not-found@1.0.9":
   version "1.0.9"
   resolved "https://registry.yarnpkg.com/@oclif/plugin-not-found/-/plugin-not-found-1.0.9.tgz#6758cf2fe349190256db4c9ba497e7fe9b53f27e"
   dependencies:
@@ -404,7 +404,7 @@
     "@oclif/command" "^1.4.19"
     string-similarity "^1.2.0"
 
-"@oclif/plugin-plugins@^1.1.14":
+"@oclif/plugin-plugins@1.1.14":
   version "1.1.14"
   resolved "https://registry.yarnpkg.com/@oclif/plugin-plugins/-/plugin-plugins-1.1.14.tgz#ebbc61584581f94f1ced7efbe8492b5c9b0ff4d5"
   dependencies:
@@ -421,7 +421,7 @@
     tslib "^1.9.0"
     yarn "^1.6.0"
 
-"@oclif/plugin-update@^1.2.4":
+"@oclif/plugin-update@1.2.4":
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/@oclif/plugin-update/-/plugin-update-1.2.4.tgz#5d8558ac788769a5a20eb7f50e083e3f6c80ee1d"
   dependencies:
@@ -441,7 +441,7 @@
     semver "^5.5.0"
     tar-fs "^1.16.2"
 
-"@oclif/plugin-warn-if-update-available@^1.3.9":
+"@oclif/plugin-warn-if-update-available@1.3.9":
   version "1.3.9"
   resolved "https://registry.yarnpkg.com/@oclif/plugin-warn-if-update-available/-/plugin-warn-if-update-available-1.3.9.tgz#ed1f55eea994b0e2bd918b4353daa0d937e84ad6"
   dependencies:
@@ -454,7 +454,7 @@
     http-call "^5.1.2"
     semver "^5.5.0"
 
-"@oclif/plugin-which@^1.0.1":
+"@oclif/plugin-which@1.0.1":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@oclif/plugin-which/-/plugin-which-1.0.1.tgz#a8f9ccebf1e67e5c9f355e7ce74d4948bc5735d3"
   dependencies:
@@ -935,26 +935,7 @@ cli-cursor@^2.1.0:
   dependencies:
     restore-cursor "^2.0.0"
 
-cli-ux@^3.3.31:
-  version "3.5.0"
-  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-3.5.0.tgz#733db9ce24033d3c03509dfda15e06dd8152aafa"
-  dependencies:
-    "@oclif/linewrap" "^1.0.0"
-    "@oclif/screen" "^1.0.2"
-    ansi-styles "^3.2.1"
-    cardinal "^2.0.0"
-    chalk "^2.4.1"
-    clean-stack "^1.3.0"
-    extract-stack "^1.0.0"
-    fs-extra "^6.0.0"
-    indent-string "^3.2.0"
-    lodash "^4.17.10"
-    password-prompt "^1.0.5"
-    semver "^5.5.0"
-    strip-ansi "^4.0.0"
-    supports-color "^5.4.0"
-
-cli-ux@^4.2.1, cli-ux@^4.2.3, cli-ux@^4.3.0, cli-ux@^4.3.1:
+cli-ux@4.3.1, cli-ux@^4.2.1, cli-ux@^4.2.3, cli-ux@^4.3.0, cli-ux@^4.3.1:
   version "4.3.1"
   resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-4.3.1.tgz#4c2ca652c72fa21fdc4a19a27e4cc76f4fe1e80b"
   dependencies:
@@ -974,6 +955,25 @@ cli-ux@^4.2.1, cli-ux@^4.2.3, cli-ux@^4.3.0, cli-ux@^4.3.1:
     strip-ansi "^4.0.0"
     supports-color "^5.4.0"
     supports-hyperlinks "^1.0.1"
+
+cli-ux@^3.3.31:
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-3.5.0.tgz#733db9ce24033d3c03509dfda15e06dd8152aafa"
+  dependencies:
+    "@oclif/linewrap" "^1.0.0"
+    "@oclif/screen" "^1.0.2"
+    ansi-styles "^3.2.1"
+    cardinal "^2.0.0"
+    chalk "^2.4.1"
+    clean-stack "^1.3.0"
+    extract-stack "^1.0.0"
+    fs-extra "^6.0.0"
+    indent-string "^3.2.0"
+    lodash "^4.17.10"
+    password-prompt "^1.0.5"
+    semver "^5.5.0"
+    strip-ansi "^4.0.0"
+    supports-color "^5.4.0"
 
 cli-width@^2.0.0:
   version "2.2.0"
@@ -1232,7 +1232,7 @@ eventsource@^1.0.5:
   dependencies:
     original "^1.0.0"
 
-execa@^0.10.0:
+execa@0.10.0, execa@^0.10.0:
   version "0.10.0"
   resolved "https://registry.yarnpkg.com/execa/-/execa-0.10.0.tgz#ff456a8f53f90f8eccc71a96d11bdfc7f082cb50"
   dependencies:
@@ -1375,7 +1375,7 @@ fs-constants@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/fs-constants/-/fs-constants-1.0.0.tgz#6be0de9be998ce16af8afc24497b9ee9b7ccd9ad"
 
-fs-extra@^6.0.0, fs-extra@^6.0.1:
+fs-extra@6.0.1, fs-extra@^6.0.0, fs-extra@^6.0.1:
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-6.0.1.tgz#8abc128f7946e310135ddc93b98bddb410e7a34b"
   dependencies:
@@ -1672,7 +1672,7 @@ http-cache-semantics@3.8.1:
   version "3.8.1"
   resolved "https://registry.yarnpkg.com/http-cache-semantics/-/http-cache-semantics-3.8.1.tgz#39b0e16add9b605bf0a9ef3d9daaf4843b4cacd2"
 
-http-call@^5.1.0, http-call@^5.1.2, http-call@^5.1.3:
+http-call@5.1.3, http-call@^5.1.0, http-call@^5.1.2:
   version "5.1.3"
   resolved "https://registry.yarnpkg.com/http-call/-/http-call-5.1.3.tgz#1864c6588985538fbf97c6ba1b2dbbebb609c459"
   dependencies:
@@ -2328,18 +2328,18 @@ nanomatch@^1.2.9:
     snapdragon "^0.8.1"
     to-regex "^3.0.1"
 
-netrc-parser@^2.0.5:
-  version "2.0.6"
-  resolved "https://registry.yarnpkg.com/netrc-parser/-/netrc-parser-2.0.6.tgz#0a21b96810dbb2c3ac42fac0a260bf838d20ef2f"
-  dependencies:
-    lex "^1.7.9"
-
-netrc-parser@^3.1.0, netrc-parser@^3.1.4, netrc-parser@^3.1.5:
+netrc-parser@3.1.5, netrc-parser@^3.1.0, netrc-parser@^3.1.4:
   version "3.1.5"
   resolved "https://registry.yarnpkg.com/netrc-parser/-/netrc-parser-3.1.5.tgz#77937b6feb27f8dda143d38fac6bbdbcafd480a7"
   dependencies:
     debug "^3.1.0"
     execa "^0.10.0"
+
+netrc-parser@^2.0.5:
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/netrc-parser/-/netrc-parser-2.0.6.tgz#0a21b96810dbb2c3ac42fac0a260bf838d20ef2f"
+  dependencies:
+    lex "^1.7.9"
 
 nice-try@^1.0.4:
   version "1.0.4"
@@ -2818,7 +2818,7 @@ sax@>=0.6.0:
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/sax/-/sax-1.2.4.tgz#2816234e2378bddc4e5354fab5caa895df7100d9"
 
-"semver@2 || 3 || 4 || 5", semver@^5.1.0, semver@^5.3.0, semver@^5.4.1, semver@^5.5.0:
+"semver@2 || 3 || 4 || 5", semver@5.5.0, semver@^5.1.0, semver@^5.3.0, semver@^5.4.1, semver@^5.5.0:
   version "5.5.0"
   resolved "https://registry.yarnpkg.com/semver/-/semver-5.5.0.tgz#dc4bbc7a6ca9d916dee5d43516f0092b58f7b8ab"
 
@@ -3240,7 +3240,7 @@ tslib@1.9.0:
   version "1.9.0"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.9.0.tgz#e37a86fda8cbbaf23a057f473c9f4dc64e5fc2e8"
 
-tslib@^1, tslib@^1.7.1, tslib@^1.8.0, tslib@^1.8.1, tslib@^1.9.0, tslib@^1.9.1:
+tslib@1.9.1, tslib@^1, tslib@^1.7.1, tslib@^1.8.0, tslib@^1.8.1, tslib@^1.9.0, tslib@^1.9.1:
   version "1.9.1"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.9.1.tgz#a5d1f0532a49221c87755cfcc89ca37197242ba7"
 
@@ -3409,7 +3409,7 @@ uuid@3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.1.0.tgz#3dd3d3e790abc24d7b0d3a034ffababe28ebbc04"
 
-uuid@^3.2.1:
+uuid@3.2.1:
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.2.1.tgz#12c528bb9d58d0b9265d9a2f6f0fe8be17ff1f14"
 
