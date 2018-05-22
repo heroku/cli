@@ -30,8 +30,10 @@ function displayVPNInfo (space, info) {
     ID: info.id,
     'Public IP': info.public_ip,
     'Routable CIDRs': format.CIDR(info.routable_cidrs),
-    State: `${sF(info.state)}`
-  }, ['ID', 'Public IP', 'Routable CIDRs', 'State'])
+    State: `${sF(info.state)}`,
+    'Provisioning Status': info.status,
+    'Status Message': info.status_message
+  }, ['ID', 'Public IP', 'Routable CIDRs', 'State', 'Provisioning Status', 'Status Message'])
 
   // make up tunnel IDs
   info.tunnels.forEach((val, i) => { val.tunnel_id = 'Tunnel ' + (i + 1) })
@@ -76,6 +78,8 @@ module.exports = {
     Public IP:      35.161.69.30
     Routable CIDRs: 172.16.0.0/16
     State:          available
+    Status:         failed
+    Status Message: supplied CIDR block already in use
     === my-space Tunnel Info
     VPN Tunnel  IP Address     Status  Status Last Changed   Details
     ──────────  ─────────────  ──────  ────────────────────  ──────────────

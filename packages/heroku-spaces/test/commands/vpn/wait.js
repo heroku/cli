@@ -61,10 +61,10 @@ describe('spaces:vpn:wait', function () {
         `Waiting for VPN in space my-space to allocate... done\n\n`))
       .then(() => expect(cli.stdout).to.equal(
         `=== my-space VPN Info
-ID:             123456789012
-Public IP:      35.161.69.30
-Routable CIDRs: 172.16.0.0/16
-State:          available
+ID:                  123456789012
+Public IP:           35.161.69.30
+Routable CIDRs:      172.16.0.0/16
+State:               available
 === my-space Tunnel Info
 VPN Tunnel  IP Address     Status  Status Last Changed   Details
 ──────────  ─────────────  ──────  ────────────────────  ──────────────

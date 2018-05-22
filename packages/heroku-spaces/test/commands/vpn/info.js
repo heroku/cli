@@ -16,7 +16,9 @@ describe('spaces:vpn:info', function () {
         id: '123456789012',
         public_ip: '35.161.69.30',
         routable_cidrs: [ '172.16.0.0/16' ],
-        state: 'pending',
+        state: 'deleted',
+        status: 'failed',
+        status_message: 'supplied CIDR block already in use',
         tunnels: [
           {
             last_status_change: '2016-10-25T22:09:05Z',
@@ -37,10 +39,12 @@ describe('spaces:vpn:info', function () {
     }})
       .then(() => expect(cli.stdout).to.equal(
         `=== my-space VPN Info
-ID:             123456789012
-Public IP:      35.161.69.30
-Routable CIDRs: 172.16.0.0/16
-State:          pending
+ID:                  123456789012
+Public IP:           35.161.69.30
+Routable CIDRs:      172.16.0.0/16
+State:               deleted
+Provisioning Status: failed
+Status Message:      supplied CIDR block already in use
 === my-space Tunnel Info
 VPN Tunnel  IP Address     Status  Status Last Changed   Details
 ──────────  ─────────────  ──────  ────────────────────  ──────────────
@@ -58,6 +62,8 @@ Tunnel 2    52.44.146.197  UP      2016-10-25T22:09:05Z  status message\n`
         public_ip: '35.161.69.30',
         routable_cidrs: [ '172.16.0.0/16' ],
         state: 'pending',
+        status: 'failed',
+        status_message: 'supplied CIDR block already in use',
         tunnels: [
           {
             last_status_change: '2016-10-25T22:09:05Z',
@@ -85,6 +91,8 @@ Tunnel 2    52.44.146.197  UP      2016-10-25T22:09:05Z  status message\n`
     "172.16.0.0/16"
   ],
   "state": "pending",
+  "status": "failed",
+  "status_message": "supplied CIDR block already in use",
   "tunnels": [
     {
       "last_status_change": "2016-10-25T22:09:05Z",
