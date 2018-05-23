@@ -43,6 +43,7 @@ function * run (context, heroku) {
 
   let addon = yield createAddon(heroku, app, args[0], context.flags.confirm, context.flags.wait, {config, name, as})
 
+  yield context.config.runHook('recache', {type: 'addon', app, addon})
   cli.log(`Use ${cli.color.cmd('heroku addons:docs ' + addon.addon_service.name)} to view documentation`)
 }
 
