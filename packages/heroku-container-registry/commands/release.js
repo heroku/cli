@@ -1,6 +1,7 @@
 const cli = require('heroku-cli-util')
 const debug = require('../lib/debug')
 const Sanbashi = require('../lib/sanbashi')
+const streamer = require('../lib/streamer')
 
 let usage = `
     ${cli.color.bold.underline.magenta('Usage:')}
@@ -72,19 +73,6 @@ let release = async function (context, heroku) {
 
   if (release.output_stream_url) {
     cli.log('Running release command...')
-
-    await new Promise(function (resolve, reject) {
-      let stream = cli.got.stream(release.output_stream_url)
-      stream.on('error', reject)
-      stream.on('end', resolve)
-      let piped = stream.pipe(process.stdout)
-      piped.on('error', reject)
-    }).catch(err => {
-      if (err.statusCode === 404) {
-        cli.warn('Release command starting. Use `heroku releases:output` to view the log.')
-        return
-      }
-      throw err
-    })
+    await streamer(release.output_stream_url, process.stdout)
   }
 }
