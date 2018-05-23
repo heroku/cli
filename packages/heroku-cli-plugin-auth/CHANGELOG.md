@@ -1,3 +1,11 @@
+<a name="0.4.3"></a>
+## [0.4.3](https://github.com/heroku/heroku-cli-plugin-auth/compare/v0.4.2...v0.4.3) (2018-05-23)
+
+
+### Bug Fixes
+
+* add recache hooks to login/logout ([952c23d](https://github.com/heroku/heroku-cli-plugin-auth/commit/952c23d))
+
 <a name="0.4.2"></a>
 ## [0.4.2](https://github.com/heroku/heroku-cli-plugin-auth/compare/v0.4.1...v0.4.2) (2018-05-22)
 
