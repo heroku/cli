@@ -5,6 +5,8 @@ const cmd = commands.find(c => c.topic === 'addons' && c.command === 'create')
 const expect = require('unexpected')
 const lolex = require('lolex')
 const _ = require('lodash')
+const Config = require('@oclif/config')
+let config
 
 describe('addons:create', () => {
   let api
@@ -20,7 +22,8 @@ describe('addons:create', () => {
     provision_message: 'provision message'
   }
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    config = await Config.load()
     cli.mockConsole()
     api = nock('https://api.heroku.com:443')
   })
@@ -41,6 +44,7 @@ describe('addons:create', () => {
 
     it('passes name through to the API', () => {
       return cmd.run({
+        config,
         app: 'myapp',
         args: ['heroku-postgresql:standard-0'],
         flags: {name: 'foobar'}
@@ -52,6 +56,7 @@ describe('addons:create', () => {
   context('calling addons:create without a plan', () => {
     it('errors out with usage', () => {
       return cmd.run({
+        config,
         app: 'myapp',
         args: [],
         flags: {name: 'foobar'}
@@ -73,6 +78,7 @@ describe('addons:create', () => {
 
     it('creates an add-on with proper output', () => {
       return cmd.run({
+        config,
         app: 'myapp',
         args: ['heroku-postgresql:standard-0', '--rollback', '--follow', 'otherdb', '--foo'],
         flags: {as: 'mydb'}
@@ -86,6 +92,7 @@ Use heroku addons:docs heroku-db3 to view documentation
 
     it('creates an addon with = args', () => {
       return cmd.run({
+        config,
         app: 'myapp',
         args: ['heroku-postgresql:standard-0', '--rollback', '--follow=otherdb', '--foo'],
         flags: {as: 'mydb'}
@@ -94,6 +101,7 @@ Use heroku addons:docs heroku-db3 to view documentation
 
     it('turns args value true into literal true, not a string', () => {
       return cmd.run({
+        config,
         app: 'myapp',
         args: ['heroku-postgresql:standard-0', '--rollback', '--follow=otherdb', '--foo=true'],
         flags: {as: 'mydb'}
@@ -117,6 +125,7 @@ Use heroku addons:docs heroku-db3 to view documentation
 
       it('creates an add-on with output about async provisioning', () => {
         return cmd.run({
+          config,
           app: 'myapp',
           args: ['heroku-postgresql:standard-0'],
           flags: {as: 'mydb'}
@@ -146,6 +155,7 @@ Use heroku addons:docs heroku-db3 to view documentation
 
       it('creates an add-on with output about async provisioning', () => {
         return cmd.run({
+          config,
           app: 'myapp',
           args: ['heroku-postgresql:standard-0'],
           flags: {as: 'mydb'}
@@ -174,6 +184,7 @@ Use heroku addons:docs heroku-db3 to view documentation
 
       it('creates an add-on with output about async provisioning', () => {
         return cmd.run({
+          config,
           app: 'myapp',
           args: ['heroku-postgresql:standard-0'],
           flags: {as: 'mydb'}
@@ -219,6 +230,7 @@ Use heroku addons:docs heroku-db3 to view documentation
 
       it('waits for response', () => {
         return cmd.run({
+          config,
           app: 'myapp',
           args: ['heroku-postgresql:standard-0', '--wait'],
           flags: {as: 'mydb', wait: true}
@@ -246,6 +258,7 @@ Use heroku addons:docs heroku-db3 to view documentation
           .reply(200, deprovisionedAddon) // failed
 
         let cmdPromise = cmd.run({
+          config,
           app: 'myapp',
           args: ['heroku-postgresql:standard-0'],
           flags: {as: 'mydb'}
@@ -272,6 +285,7 @@ Use heroku addons:docs heroku-db3 to view documentation
 
     it('aborts if confirmation does not match', () => {
       return expect(cmd.run({
+        config,
         app: 'myapp',
         args: ['heroku-postgresql:standard-0', '--rollback', '--follow', 'otherdb', '--foo'],
         flags: {as: 'mydb', confirm: 'not-my-app'}
@@ -288,6 +302,7 @@ Use heroku addons:docs heroku-db3 to view documentation
         .reply(200, addon)
 
       return cmd.run({
+        config,
         app: 'myapp',
         args: ['heroku-postgresql:standard-0', '--rollback', '--follow', 'otherdb', '--foo'],
         flags: {as: 'mydb', confirm: 'myapp'}
@@ -311,6 +326,7 @@ Use heroku addons:docs heroku-db3 to view documentation
 
     it('creates an addon with =-- args', () => {
       return cmd.run({
+        config,
         app: 'myapp',
         args: ['heroku-postgresql:standard-0', '--rollback', '--follow=--otherdb', '--foo'],
         flags: {as: 'mydb'}
@@ -332,6 +348,7 @@ Use heroku addons:docs heroku-db3 to view documentation
 
     it('creates an add-on without the config vars listed', () => {
       return cmd.run({
+        config,
         app: 'myapp',
         args: ['heroku-postgresql:standard-0'],
         flags: {as: 'mydb'}
