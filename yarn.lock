@@ -258,7 +258,20 @@
     redis-parser "^3.0.0"
     ssh2 "^0.6.1"
 
-"@heroku-cli/plugin-run@3.8.4", "@heroku-cli/plugin-run@^3.8.3":
+"@heroku-cli/plugin-run@3.8.5":
+  version "3.8.5"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-run/-/plugin-run-3.8.5.tgz#b2308627c65eedc600d5e66b092b57f72bb930b2"
+  dependencies:
+    "@heroku-cli/color" "^1.1.3"
+    "@heroku-cli/command" "^8.1.3"
+    "@heroku-cli/notifications" "^1.2.0"
+    co "4.6.0"
+    eventsource "^1.0.5"
+    fs-extra "^6.0.0"
+    heroku-cli-util "^8.0.8"
+    shellwords "^0.1.1"
+
+"@heroku-cli/plugin-run@^3.8.3":
   version "3.8.4"
   resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-run/-/plugin-run-3.8.4.tgz#004a0e1983d829cfc27747ed3eac4eb5d44effba"
   dependencies:
