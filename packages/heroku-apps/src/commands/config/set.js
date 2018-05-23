@@ -48,6 +48,7 @@ function * run (context, heroku) {
   config = pickBy(config, (_, k) => vars[k])
   config = mapKeys(config, (_, k) => cli.color.green(k))
   cli.styledObject(config)
+  yield context.config.runHook('recache', {type: 'config', app: context.app})
 }
 
 let cmd = {

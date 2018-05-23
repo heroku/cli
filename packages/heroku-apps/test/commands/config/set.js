@@ -5,11 +5,13 @@ const cli = require('heroku-cli-util')
 const nock = require('nock')
 const cmd = commands.find((c) => c.topic === 'config' && c.command === 'set')
 const expect = require('unexpected')
+let config
 
 const assertExit = require('../../assert_exit.js')
 
 describe('config:set', () => {
-  beforeEach(function () {
+  beforeEach(async () => {
+    config = await require('@oclif/config').load()
     cli.mockConsole()
     cli.exit.mock()
   })
@@ -21,7 +23,7 @@ describe('config:set', () => {
       .reply(200, {RACK_ENV: 'production', RAILS_ENV: 'production'})
       .get('/apps/myapp/releases')
       .reply(200, [{version: 10}])
-    return cmd.run({app: 'myapp', args: ['RACK_ENV=production']})
+    return cmd.run({config, app: 'myapp', args: ['RACK_ENV=production']})
       .then(() => expect(cli.stdout, 'to equal', 'RACK_ENV: production\n'))
       .then(() => expect(cli.stderr, 'to equal', 'Setting RACK_ENV and restarting myapp... done, v10\n'))
       .then(() => api.done())
@@ -33,14 +35,14 @@ describe('config:set', () => {
       .reply(200)
       .get('/apps/myapp/releases')
       .reply(200, [{version: 10}])
-    return cmd.run({app: 'myapp', args: ['RACK_ENV=production=foo']})
+    return cmd.run({config, app: 'myapp', args: ['RACK_ENV=production=foo']})
       .then(() => expect(cli.stdout, 'to be empty'))
       .then(() => expect(cli.stderr, 'to equal', 'Setting RACK_ENV and restarting myapp... done, v10\n'))
       .then(() => api.done())
   })
 
   it('errors out on empty', () => {
-    return assertExit(1, cmd.run({app: 'myapp', args: []}))
+    return assertExit(1, cmd.run({config, app: 'myapp', args: []}))
       .then(() => expect(cli.stdout, 'to equal', ''))
       .then(() => expect(cli.stderr, 'to equal',
         ` ▸    Usage: heroku config:set KEY1=VALUE1 [KEY2=VALUE2 ...]
