@@ -98,6 +98,7 @@ async function runFromFlags (context, heroku) {
   if (context.flags.buildpack) await addBuildpack(app, context.flags.buildpack)
   let remoteUrl = await configureGitRemote(context, app, git)
 
+  await context.config.runHook('recache', {type: 'app', app: app.name})
   printAppSummary(context, app, remoteUrl)
 }
 

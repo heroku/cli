@@ -16,7 +16,7 @@
     }
   },
   "dependencies": {
-    "@heroku-cli/command": "^8.1.14",
+    "@heroku-cli/command": "^8.1.18",
     "co": "^4.6.0",
     "filesize": "^3.5.11",
     "fs-extra": "^6.0.1",
@@ -31,20 +31,20 @@
     "urijs": "1.19.1"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.13.20",
+    "@oclif/dev-cli": "^1.13.22",
     "@oclif/plugin-legacy": "^1.0.15",
     "chai": "^4.1.2",
-    "lolex": "^2.4.1",
-    "mocha": "^5.1.1",
+    "lolex": "^2.6.0",
+    "mocha": "^5.2.0",
     "mockdate": "^2.0.2",
-    "netrc-parser": "^3.1.4",
-    "nock": "9.2.5",
+    "netrc-parser": "^3.1.5",
+    "nock": "9.2.6",
     "proxyquire": "^2.0.1",
     "standard": "^11.0.1",
     "std-mocks": "1.0.1",
     "testdouble": "^3.8.1",
     "time-require": "0.1.2",
-    "unexpected": "^10.37.7"
+    "unexpected": "^10.38.0"
   },
   "files": [
     "/.oclif.manifest.json",

@@ -5,9 +5,13 @@ const cli = require('heroku-cli-util')
 const nock = require('nock')
 const expect = require('chai').expect
 const apps = commands.find(c => c.topic === 'apps' && c.command === 'create')
+const Config = require('@oclif/config')
+let config
 
 describe('apps:create', function () {
-  beforeEach(function () {
+  beforeEach(async () => {
+    config = await Config.load()
+    config.channel = 'beta'
     cli.mockConsole()
     nock.cleanAll()
   })
@@ -22,7 +26,7 @@ describe('apps:create', function () {
         web_url: 'https://foobar.com'
       })
 
-    return apps.run({flags: {}, args: {}, httpGitHost: 'git.heroku.com', config: {channel: 'beta'}}).then(function () {
+    return apps.run({flags: {}, args: {}, httpGitHost: 'git.heroku.com', config}).then(function () {
       mock.done()
       expect(cli.stderr).to.equal('Creating app... done, foobar\n')
       expect(cli.stdout).to.equal('https://foobar.com | https://git.heroku.com/foobar.git\n')
@@ -40,7 +44,7 @@ describe('apps:create', function () {
         web_url: 'https://foobar.com'
       })
 
-    return apps.run({flags: {space: 'my-space-name'}, args: {}, httpGitHost: 'git.heroku.com', config: {channel: 'beta'}}).then(function () {
+    return apps.run({flags: {space: 'my-space-name'}, args: {}, httpGitHost: 'git.heroku.com', config}).then(function () {
       mock.done()
       expect(cli.stderr).to.equal('Creating app in space my-space-name... done, foobar\n')
       expect(cli.stdout).to.equal('https://foobar.com | https://git.heroku.com/foobar.git\n')
@@ -58,7 +62,7 @@ describe('apps:create', function () {
       })
       .reply(200, json)
 
-    return apps.run({flags: {json: true}, args: {}, httpGitHost: 'git.heroku.com', config: {channel: 'beta'}}).then(function () {
+    return apps.run({flags: {json: true}, args: {}, httpGitHost: 'git.heroku.com', config}).then(function () {
       mock.done()
 
       expect(cli.stderr).to.equal('Creating app... done, foobar\n')
