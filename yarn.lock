@@ -76,7 +76,7 @@
 
 "@heroku-cli/plugin-auth@0.4.2":
   version "0.4.2"
-  resolved "http://cli-npm.heroku.com/@heroku-cli/plugin-auth/-/plugin-auth-0.4.2/ce0e9777ecc7ebec643462203c027a0e81444d58.tgz#ce0e9777ecc7ebec643462203c027a0e81444d58"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-auth/-/plugin-auth-0.4.2.tgz#ce0e9777ecc7ebec643462203c027a0e81444d58"
   dependencies:
     "@heroku-cli/color" "^1.1.5"
     "@heroku-cli/command" "^8.1.18"
@@ -258,9 +258,9 @@
     redis-parser "^3.0.0"
     ssh2 "^0.6.1"
 
-"@heroku-cli/plugin-run@3.8.4", "@heroku-cli/plugin-run@^3.8.3":
-  version "3.8.4"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-run/-/plugin-run-3.8.4.tgz#004a0e1983d829cfc27747ed3eac4eb5d44effba"
+"@heroku-cli/plugin-run@3.8.6", "@heroku-cli/plugin-run@^3.8.3":
+  version "3.8.6"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-run/-/plugin-run-3.8.6.tgz#6b884da13919bb5525e837cddfb851fcf3358925"
   dependencies:
     "@heroku-cli/color" "^1.1.3"
     "@heroku-cli/command" "^8.1.3"
@@ -2714,8 +2714,8 @@ redeyed@~1.0.0:
     esprima "~3.0.0"
 
 redeyed@~2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/redeyed/-/redeyed-2.1.0.tgz#de8bbb0c89e496e2e285ddc200ea822fdbe25c2f"
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/redeyed/-/redeyed-2.1.1.tgz#8984b5815d99cb220469c99eeeffe38913e6cc0b"
   dependencies:
     esprima "~4.0.0"
 
@@ -2796,8 +2796,8 @@ run-async@^2.2.0:
     is-promise "^2.1.0"
 
 rxjs@^5.5.2:
-  version "5.5.10"
-  resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-5.5.10.tgz#fde02d7a614f6c8683d0d1957827f492e09db045"
+  version "5.5.11"
+  resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-5.5.11.tgz#f733027ca43e3bec6b994473be4ab98ad43ced87"
   dependencies:
     symbol-observable "1.0.1"
 
