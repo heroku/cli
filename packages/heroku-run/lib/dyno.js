@@ -48,7 +48,7 @@ class Dyno extends Duplex {
   }
 
   _doStart (retries = 2) {
-    let command = this.opts['exit-code'] ? `${this.opts.command}; echo "\uFFFF heroku-command-exit-status $?"` : this.opts.command
+    let command = this.opts['exit-code'] ? `${this.opts.command}; echo "\uFFFF heroku-command-exit-status: $?"` : this.opts.command
     return this.heroku.post(this.opts.dyno ? `/apps/${this.opts.app}/dynos/${this.opts.dyno}` : `/apps/${this.opts.app}/dynos`, {
       headers: {
         Accept: this.opts.dyno ? 'application/vnd.heroku+json; version=3.run-inside' : 'application/vnd.heroku+json; version=3'
@@ -92,13 +92,12 @@ class Dyno extends Duplex {
   attach () {
     this.pipe(process.stdout)
     this.uri = url.parse(this.dyno.attach_url)
-    let p
     if (this._useSSH) {
-      p = this._ssh()
+      this.p = this._ssh()
     } else {
-      p = this._rendezvous()
+      this.p = this._rendezvous()
     }
-    return p.then(() => {
+    return this.p.then(() => {
       this.end()
     })
   }
@@ -149,9 +148,6 @@ class Dyno extends Duplex {
 
         if (this.dyno.state === 'starting' || this.dyno.state === 'up') return this._connect()
         else return wait(interval).then(this._ssh.bind(this))
-      })
-      .catch(() => {
-        return wait(interval).then(this._ssh.bind(this))
       })
   }
 
@@ -207,10 +203,22 @@ class Dyno extends Duplex {
     } else {
       let params = [host, '-p', port, '-oStrictHostKeyChecking=no', '-oUserKnownHostsFile=/dev/null', '-oServerAliveInterval=20']
 
-      // only intercept the stderr output
-      let sshProc = spawn('ssh', params, {
-        stdio: [process.stdin, process.stdout, 'pipe']
-      })
+      const stdio = [0, 1, 'pipe']
+      if (this.opts['exit-code']) {
+        stdio[1] = 'pipe'
+        if (process.stdout.isTTY) {
+          // force tty
+          params.push('-t')
+        }
+      }
+      let sshProc = spawn('ssh', params, {stdio})
+
+      // only receives stdout with --exit-code
+      if (sshProc.stdout) {
+        sshProc.stdout.setEncoding('utf8')
+        sshProc.stdout.on('data', this._readData())
+      }
+
       sshProc.stderr.on('data', (data) => {
         lastErr = data
 
@@ -232,6 +240,9 @@ class Dyno extends Duplex {
         // cleanup local server
         localServer.close()
       })
+      this.p
+        .then(() => sshProc.kill())
+        .catch(() => sshProc.kill())
     }
     this._notify()
   }
@@ -259,20 +270,25 @@ class Dyno extends Duplex {
   _readData (c) {
     let firstLine = true
     return data => {
-      debug('input: %s', data)
+      debug('input: %o', data)
       // discard first line
-      if (firstLine) {
+      if (c && firstLine) {
         if (this.opts.showStatus) cli.action.done(this._status('up'))
         firstLine = false
         this._readStdin(c)
         return
       }
       this._notify()
-      data = data.replace('\r\n', '\n')
-      let exitCode = data.match(/\uFFFF heroku-command-exit-status (\d+)/m)
+
+      // TODO: this seems to break private spaces output
+      // I also can't see a good reason why we have it in the first place
+      // removing unless needed
+      // data = data.replace('\r\n', '\n')
+
+      let exitCode = data.match(/\uFFFF heroku-command-exit-status: (\d+)/m)
       if (exitCode) {
-        debug('got exit code: %d', exitCode)
-        this.push(data.replace(/^\uFFFF heroku-command-exit-status \d+$\n?/m, ''))
+        debug('got exit code: %d', exitCode[1])
+        this.push(data.replace(/^\uFFFF heroku-command-exit-status: \d+$\n?/m, ''))
         let code = parseInt(exitCode[1])
         if (code === 0) this.resolve()
         else {

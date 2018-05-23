@@ -1,13 +1,12 @@
 'use strict'
 
-let co = require('co')
 let cli = require('heroku-cli-util')
 let helpers = require('../lib/helpers')
 let Dyno = require('../lib/dyno')
 const {DynoSizeCompletion, ProcessTypeCompletion} = require('@heroku-cli/command/lib/completions')
 const debug = require('debug')('heroku:run')
 
-function * run (context, heroku) {
+async function run (context, heroku) {
   let opts = {
     heroku: heroku,
     app: context.app,
@@ -25,7 +24,7 @@ function * run (context, heroku) {
 
   let dyno = new Dyno(opts)
   try {
-    yield dyno.start()
+    await dyno.start()
     debug('done running')
   } catch (err) {
     debug(err)
@@ -60,5 +59,5 @@ Examples:
     {name: 'listen', description: 'listen on a local port', hasValue: false, hidden: true},
     {name: 'no-notify', description: 'disables notification when dyno is up (alternatively use HEROKU_NOTIFICATIONS=0)', hasValue: false}
   ],
-  run: cli.command(co.wrap(run))
+  run: cli.command(run)
 }
