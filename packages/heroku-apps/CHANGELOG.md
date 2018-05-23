@@ -1,3 +1,11 @@
+<a name="2.5.2"></a>
+## [2.5.2](https://github.com/heroku/heroku-apps/compare/v2.5.1...v2.5.2) (2018-05-23)
+
+
+### Bug Fixes
+
+* add recache hook ([667bf7e](https://github.com/heroku/heroku-apps/commit/667bf7e))
+
 <a name="2.5.1"></a>
 ## [2.5.1](https://github.com/heroku/heroku-apps/compare/v2.5.0...v2.5.1) (2018-05-22)
 
