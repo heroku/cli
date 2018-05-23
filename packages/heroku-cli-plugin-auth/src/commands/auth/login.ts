@@ -20,5 +20,6 @@ export default class Login extends Command {
     await this.heroku.login({method, expiresIn: flags['expires-in']})
     const {body: account} = await this.heroku.get('/account', {retryAuth: false})
     this.log(`Logged in as ${color.green(account.email)}`)
+    await this.config.runHook('recache', {type: 'login'})
   }
 }

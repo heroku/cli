@@ -8,5 +8,6 @@ export default class Logout extends Command {
   async run() {
     ux.action.start('Logging out')
     await this.heroku.logout()
+    await this.config.runHook('recache', {type: 'logout'})
   }
 }
