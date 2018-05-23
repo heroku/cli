@@ -1,3 +1,16 @@
+<a name="2.0.0"></a>
+# [2.0.0](https://github.com/heroku/heroku-cli-plugin-certs/compare/v1.0.0...v2.0.0) (2018-05-23)
+
+
+### Features
+
+* testing release ([d298cee](https://github.com/heroku/heroku-cli-plugin-certs/commit/d298cee))
+
+
+### BREAKING CHANGES
+
+* needs to be v2
+
 <a name="1.0.0"></a>
 # 1.0.0 (2018-05-23)
 
