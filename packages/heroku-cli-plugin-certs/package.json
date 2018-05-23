@@ -1,6 +1,6 @@
 {
   "name": "@heroku-cli/plugin-certs",
-  "version": "2.0.0",
+  "version": "1.0.0",
   "author": "Jeff Dickey @jdxcode",
   "bugs": "https://github.com/heroku/heroku-cli-plugin-certs/issues",
   "dependencies": {
