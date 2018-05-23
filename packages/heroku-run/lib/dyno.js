@@ -280,10 +280,9 @@ class Dyno extends Duplex {
       }
       this._notify()
 
-      // TODO: this seems to break private spaces output
-      // I also can't see a good reason why we have it in the first place
-      // removing unless needed
-      // data = data.replace('\r\n', '\n')
+      // carriage returns break json parsing of output
+      // eslint-disable-next-line
+      if (!process.stdout.isTTY) data = data.replace(new RegExp('\r\n', 'g'), '\n')
 
       let exitCode = data.match(/\uFFFF heroku-command-exit-status: (\d+)/m)
       if (exitCode) {
