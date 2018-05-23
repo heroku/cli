@@ -1,6 +1,5 @@
 import {APIClient, flags} from '@heroku-cli/command'
 import * as Completions from '@heroku-cli/command/lib/completions'
-import {AppCompletion, RemoteCompletion} from '@heroku-cli/command/lib/flags/app'
 
 const ConfigCompletion: flags.ICompletion = {
   cacheDuration: 60 * 60 * 24 * 7,
@@ -33,7 +32,7 @@ const ConfigSetCompletion: flags.ICompletion = {
 }
 
 export const CompletionMapping: { [key: string]: flags.ICompletion } = {
-  app: AppCompletion,
+  app: Completions.AppCompletion,
   addon: Completions.AppAddonCompletion,
   dyno: Completions.AppDynoCompletion,
   buildpack: Completions.BuildpackCompletion,
@@ -43,7 +42,7 @@ export const CompletionMapping: { [key: string]: flags.ICompletion } = {
   pipeline: Completions.PipelineCompletion,
   processtype: Completions.ProcessTypeCompletion,
   region: Completions.RegionCompletion,
-  remote: RemoteCompletion,
+  remote: Completions.RemoteCompletion,
   role: Completions.RoleCompletion,
   scope: Completions.ScopeCompletion,
   space: Completions.SpaceCompletion,
