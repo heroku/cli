@@ -42,10 +42,10 @@
     "env": "mocha"
   },
   "files": [
-    ".oclif.manifest.json",
-    "lib",
-    "index.js",
-    "commands"
+    "/oclif.manifest.json",
+    "/lib",
+    "/index.js",
+    "/commands"
   ],
   "homepage": "https://github.com/heroku/heroku-run",
   "keywords": [
@@ -58,8 +58,8 @@
     "url": "https://github.com/heroku/heroku-run.git"
   },
   "scripts": {
-    "postpublish": "rm .oclif.manifest.json",
-    "prepublishOnly": "oclif-dev manifest",
+    "postpack": "rm oclif.manifest.json",
+    "prepack": "oclif-dev manifest",
     "test": "mocha",
     "posttest": "standard",
     "version": "oclif-dev readme && git add README.md"
