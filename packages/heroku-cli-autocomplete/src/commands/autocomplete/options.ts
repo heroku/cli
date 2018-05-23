@@ -53,15 +53,15 @@ export default class Options extends AutocompleteBase {
         Klass = C.load()
         // process Command state from command line data
         const slicedArgv = commandLineToComplete.slice(2)
-        const [curPositionIsFlag, curPositionIsFlagValue] = this.determineCmdState(slicedArgv, (Klass as Command))
-        return {id, Klass, curPositionIsFlag, curPositionIsFlagValue, slicedArgv}
+        const [argsIndex, curPositionIsFlag, curPositionIsFlagValue] = this.determineCmdState(slicedArgv, (Klass as Command))
+        return {id, Klass, argsIndex, curPositionIsFlag, curPositionIsFlagValue, slicedArgv}
       } else {
         this.throwError(`Command ${id} not found`)
       }
     }
 
     private determineCompletion(commandStateVars: any) {
-      const {id, Klass, curPositionIsFlag, curPositionIsFlagValue, slicedArgv} = commandStateVars
+      const {id, Klass, argsIndex, curPositionIsFlag, curPositionIsFlagValue, slicedArgv} = commandStateVars
       // setup empty cache completion vars to assign
       let cacheKey: any
       let cacheCompletion: any
@@ -78,17 +78,16 @@ export default class Options extends AutocompleteBase {
         cacheCompletion = flag.completion
       } else {
         const cmdArgs = Klass.args || []
-        const cmdArgsCount = cmdArgs.length
-        const parsedArgsLength = Object.keys(this.parsedArgs).length
-        // TO-DO: how to handle variableArgs?
-        if (Klass.variableArgs) {
+        // variable arg (strict: false)
+        if (!Klass.strict) {
+          cacheKey = cmdArgs[0] && cmdArgs[0].name.toLowerCase()
           cacheCompletion = this.findCompletion(cacheKey, id)
           if (!cacheCompletion) this.throwError(`Cannot complete variable arg position for ${id}`)
-        } else if (parsedArgsLength > cmdArgsCount || !parsedArgsLength) {
-          this.throwError(`Cannot complete arg position ${parsedArgsLength - 1} for ${id}`)
+        } else if (argsIndex > cmdArgs.length - 1) {
+          this.throwError(`Cannot complete arg position ${argsIndex} for ${id}`)
         } else {
-          const arg = cmdArgs[parsedArgsLength - 1]
-          cacheKey = arg.name
+          const arg = cmdArgs[argsIndex]
+          cacheKey = arg.name.toLowerCase()
         }
       }
 
@@ -155,11 +154,12 @@ export default class Options extends AutocompleteBase {
       return unknown
     }
 
-    private determineCmdState(argv: string[], Klass: Command): [boolean, boolean] {
+    private determineCmdState(argv: string[], Klass: Command): [number, boolean, boolean] {
+      let Args = Klass.args || []
       let needFlagValueSatisfied = false
       let argIsFlag = false
       let argIsFlagValue = false
-      let argsIndex = 0
+      let argsIndex = -1
       let flagName: string
 
       argv.filter(wild => {
@@ -177,7 +177,7 @@ export default class Options extends AutocompleteBase {
           if (wildSplit.length === 1) {
             // we're a flag w/o a '=value'
             // (find flag & see if flag needs a value)
-            if (flag && flag.parse) {
+            if (flag && flag.type !== 'boolean') {
               // we're a flag who needs our value to be next
               argIsFlagValue = false
               needFlagValueSatisfied = true
@@ -215,10 +215,9 @@ export default class Options extends AutocompleteBase {
 
         // add parsedArgs
         // TO-DO: how to handle variableArgs?
-        let CArgs = Klass.args || []
-        if (argsIndex < CArgs.length) {
-          this.parsedArgs[CArgs[argsIndex].name] = wild
-          argsIndex += 1
+        argsIndex += 1
+        if (argsIndex < Args.length) {
+          this.parsedArgs[Args[argsIndex].name] = wild
         }
 
         argIsFlagValue = false
@@ -226,6 +225,6 @@ export default class Options extends AutocompleteBase {
         return true
       })
 
-      return [argIsFlag, argIsFlagValue]
+      return [argsIndex, argIsFlag, argIsFlagValue]
     }
 }
