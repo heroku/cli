@@ -190,16 +190,16 @@
     heroku-cli-util "^8.0.6"
     lodash "^4.17.10"
 
-"@heroku-cli/plugin-orgs@1.7.5":
-  version "1.7.5"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-orgs/-/plugin-orgs-1.7.5.tgz#5c7019bf53a4d02a8901fe2308dc21d1b46bdfe9"
+"@heroku-cli/plugin-orgs@1.7.6":
+  version "1.7.6"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-orgs/-/plugin-orgs-1.7.6.tgz#f00f63b11e774ec8336ec28e08b6018d4b206ef1"
   dependencies:
-    "@heroku-cli/command" "^8.0.5"
-    co "4.6.0"
-    heroku-cli-util "^8.0.6"
+    "@heroku-cli/command" "^8.1.18"
+    co "^4.6.0"
+    heroku-cli-util "^8.0.9"
     inquirer "^5.2.0"
-    lodash "4.17.5"
-    lodash.flatten "4.4.0"
+    lodash "^4.17.10"
+    lodash.flatten "^4.4.0"
 
 "@heroku-cli/plugin-pg@2.10.0":
   version "2.10.0"
@@ -2108,7 +2108,7 @@ lodash.find@^4.6.0:
   version "4.6.0"
   resolved "https://registry.yarnpkg.com/lodash.find/-/lodash.find-4.6.0.tgz#cb0704d47ab71789ffa0de8b97dd926fb88b13b1"
 
-lodash.flatten@4.4.0, lodash.flatten@^4.4.0:
+lodash.flatten@^4.4.0:
   version "4.4.0"
   resolved "https://registry.yarnpkg.com/lodash.flatten/-/lodash.flatten-4.4.0.tgz#f31c22225a9632d2bbf8e4addbef240aa765a61f"
 
@@ -2192,10 +2192,6 @@ lodash.templatesettings@^4.0.0:
 lodash@4.17.10, lodash@^4.0.0, lodash@^4.13.1, lodash@^4.17.10, lodash@^4.17.5, lodash@^4.3.0:
   version "4.17.10"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.10.tgz#1b7793cf7259ea38fb3661d4d38b3260af8ae4e7"
-
-lodash@4.17.5:
-  version "4.17.5"
-  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.5.tgz#99a92d65c0272debe8c96b6057bc8fbfa3bed511"
 
 log-chopper@^1.0.2:
   version "1.0.2"
