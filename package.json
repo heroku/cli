@@ -22,7 +22,7 @@
     "@heroku-cli/plugin-git": "3.0.2",
     "@heroku-cli/plugin-local": "5.1.24",
     "@heroku-cli/plugin-oauth": "2.3.4",
-    "@heroku-cli/plugin-orgs": "1.7.5",
+    "@heroku-cli/plugin-orgs": "1.7.6",
     "@heroku-cli/plugin-pg": "2.10.0",
     "@heroku-cli/plugin-pipelines": "2.5.9",
     "@heroku-cli/plugin-ps": "1.0.1",
