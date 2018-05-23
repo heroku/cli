@@ -46,7 +46,17 @@
   dependencies:
     node-notifier "^5.2.1"
 
-"@heroku-cli/plugin-addons@1.2.29", "@heroku-cli/plugin-addons@^1.2.29":
+"@heroku-cli/plugin-addons@1.2.30":
+  version "1.2.30"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-addons/-/plugin-addons-1.2.30.tgz#edbe6f947cf00fdde5fac071c6c011eafd45be43"
+  dependencies:
+    co "4.6.0"
+    co-wait "0.0.0"
+    heroku-cli-util "^8.0.8"
+    lodash "^4.17.10"
+    printf "0.3.0"
+
+"@heroku-cli/plugin-addons@^1.2.29":
   version "1.2.29"
   resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-addons/-/plugin-addons-1.2.29.tgz#f53da43fdbab10d7ed94f4c830f883517571459b"
   dependencies:
@@ -56,11 +66,11 @@
     lodash "^4.17.10"
     printf "0.3.0"
 
-"@heroku-cli/plugin-apps@2.5.1":
-  version "2.5.1"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-apps/-/plugin-apps-2.5.1.tgz#89f6053dd6c9f7b99f431cf65f33e0e9f7c7db2a"
+"@heroku-cli/plugin-apps@2.5.2":
+  version "2.5.2"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-apps/-/plugin-apps-2.5.2.tgz#6a8a15c9e7a213293daa8d74088e4a90f6ebf48d"
   dependencies:
-    "@heroku-cli/command" "^8.1.14"
+    "@heroku-cli/command" "^8.1.18"
     co "^4.6.0"
     filesize "^3.5.11"
     fs-extra "^6.0.1"

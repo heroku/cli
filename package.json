@@ -10,8 +10,8 @@
   "dependencies": {
     "@heroku-cli/color": "1.1.5",
     "@heroku-cli/command": "8.1.18",
-    "@heroku-cli/plugin-addons": "1.2.29",
-    "@heroku-cli/plugin-apps": "2.5.1",
+    "@heroku-cli/plugin-addons": "1.2.30",
+    "@heroku-cli/plugin-apps": "2.5.2",
     "@heroku-cli/plugin-auth": "0.4.2",
     "@heroku-cli/plugin-build": "0.0.4",
     "@heroku-cli/plugin-certs": "2.0.1",
@@ -165,8 +165,7 @@
       ],
       "update": [
         "./lib/hooks/update/brew",
-        "./lib/hooks/update/tidy",
-        "./lib/hooks/update/completions"
+        "./lib/hooks/update/tidy"
       ]
     },
     "update": {
