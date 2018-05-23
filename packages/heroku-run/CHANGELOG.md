@@ -1,3 +1,12 @@
+<a name="3.8.5"></a>
+## [3.8.5](https://github.com/heroku/heroku-run/compare/v3.8.4...v3.8.5) (2018-05-23)
+
+
+### Bug Fixes
+
+* only prune carriage returns if not tty ([e6b11fa](https://github.com/heroku/heroku-run/commit/e6b11fa))
+* private spaces with -x flag ([99512f3](https://github.com/heroku/heroku-run/commit/99512f3))
+
 <a name="3.8.3"></a>
 ## [3.8.3](https://github.com/heroku/heroku-run/compare/v3.8.2...v3.8.3) (2018-05-10)
 
