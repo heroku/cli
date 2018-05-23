@@ -4,23 +4,23 @@
   "version": "4.4.15",
   "author": "Heroku",
   "dependencies": {
-    "glob": "7.1.2",
-    "heroku-cli-util": "8.0.0",
-    "inquirer": "5.1.0"
+    "glob": "^7.1.2",
+    "heroku-cli-util": "^8.0.9",
+    "inquirer": "^5.2.0"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.2.20",
-    "@oclif/plugin-legacy": "^1.0.5",
-    "chai": "4.1.2",
-    "depcheck": "0.6.9",
-    "mocha": "5.0.4",
-    "mockdate": "2.0.2",
-    "nock": "9.2.3",
-    "nyc": "11.6.0",
-    "sinon": "4.4.6",
-    "standard": "8.6.0",
-    "std-mocks": "1.0.1",
-    "unexpected": "10.37.2"
+    "@oclif/dev-cli": "^1.13.22",
+    "@oclif/plugin-legacy": "^1.0.15",
+    "chai": "^4.1.2",
+    "depcheck": "^0.6.9",
+    "mocha": "^5.0.4",
+    "mockdate": "^2.0.2",
+    "nock": "^9.2.3",
+    "nyc": "^11.6.0",
+    "sinon": "^5.0.7",
+    "standard": "^8.6.0",
+    "std-mocks": "^1.0.1",
+    "unexpected": "^10.37.2"
   },
   "files": [
     ".oclif.manifest.json",
