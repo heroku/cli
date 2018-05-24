@@ -37,7 +37,8 @@
   "files": [
     "/.oclif.manifest.json",
     "autocomplete",
-    "/lib"
+    "/lib",
+    "yarn.lock"
   ],
   "homepage": "https://github.com/heroku/heroku-cli-autocomplete",
   "keywords": [
