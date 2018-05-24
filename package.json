@@ -9,7 +9,7 @@
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
     "@heroku-cli/color": "1.1.5",
-    "@heroku-cli/command": "8.1.18",
+    "@heroku-cli/command": "8.1.19",
     "@heroku-cli/plugin-addons": "1.2.30",
     "@heroku-cli/plugin-apps": "2.5.3",
     "@heroku-cli/plugin-auth": "0.4.3",
@@ -75,7 +75,7 @@
     "nock": "^9.2.6",
     "qqjs": "^0.3.9",
     "read-pkg": "^3.0.0",
-    "ts-node": "^6.0.4",
+    "ts-node": "^6.0.5",
     "tslint": "^5.10.0",
     "typescript": "^2.8.3"
   },
