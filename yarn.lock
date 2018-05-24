@@ -3181,9 +3181,9 @@ to-regex@^3.0.1, to-regex@^3.0.2:
     regex-not "^1.0.2"
     safe-regex "^1.1.0"
 
-ts-node@6.0.3:
-  version "6.0.3"
-  resolved "https://registry.yarnpkg.com/ts-node/-/ts-node-6.0.3.tgz#28bf74bcad134fad17f7469dad04638ece03f0f4"
+ts-node@6.0.4:
+  version "6.0.4"
+  resolved "https://registry.yarnpkg.com/ts-node/-/ts-node-6.0.4.tgz#245af3a8cdf3baa1121893fe12b9a54ee297c4c5"
   dependencies:
     arrify "^1.0.0"
     chalk "^2.3.0"
