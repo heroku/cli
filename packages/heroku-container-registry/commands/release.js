@@ -71,7 +71,7 @@ let release = async function (context, heroku) {
     headers: { 'Range': 'version ..; max=2, order=desc' }
   }).then((releases) => releases[0])
 
-  if (release.output_stream_url) {
+  if (release.output_stream_url && release.status === 'pending') {
     cli.log('Running release command...')
     await streamer(release.output_stream_url, process.stdout)
   }

@@ -104,7 +104,7 @@ describe('container release', () => {
       })
       .reply(200, {})
       .get('/apps/testapp/releases')
-      .reply(200, [{output_stream_url: 'https://busl.test/streams/release.log'}])
+      .reply(200, [{output_stream_url: 'https://busl.test/streams/release.log', status: 'pending'}])
 
     let imageID = sandbox.stub(Sanbashi, 'imageID')
       .withArgs('registry.heroku.com/testapp/web:latest')
@@ -119,5 +119,29 @@ describe('container release', () => {
       .then(() => busl.done())
       .then(() => stdMocks.restore())
       .catch(() => stdMocks.restore())
+  })
+
+  it('has release phase but no new release', () => {
+    let api = nock('https://api.heroku.com:443')
+      .get('/apps/testapp')
+      .reply(200, {name: 'testapp'})
+      .patch('/apps/testapp/formation', {
+        updates: [
+          {type: 'web', docker_image: 'image_id'}
+        ]
+      })
+      .reply(200, {})
+      .get('/apps/testapp/releases')
+      .reply(200, [{output_stream_url: 'https://busl.test/streams/release.log', status: 'succeeded'}])
+
+    let imageID = sandbox.stub(Sanbashi, 'imageID')
+      .withArgs('registry.heroku.com/testapp/web:latest')
+      .returns('image_id')
+
+    return cmd.run({app: 'testapp', args: ['web'], flags: {}})
+      .then(() => expect(cli.stderr, 'not to contain', 'Runnning release command...'))
+      .then(() => expect(cli.stdout, 'to be empty'))
+      .then(() => sandbox.assert.calledOnce(imageID))
+      .then(() => api.done())
   })
 })
