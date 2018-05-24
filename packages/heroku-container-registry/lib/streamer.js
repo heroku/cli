@@ -13,7 +13,11 @@ async function call (url, out, retries) {
     })
   } catch (err) {
     if (err.statusCode === 404 && retries <= maxRetries) {
-      return call(url, out, retries + 1)
+      return new Promise(function (resolve, reject) {
+        setTimeout(function () {
+          call(url, out, retries + 1).then(resolve, reject)
+        }, 1000)
+      })
     }
     throw err
   }

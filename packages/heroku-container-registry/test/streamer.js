@@ -49,7 +49,7 @@ describe('streaming', () => {
     return streamer('https://streamer.test/streams/data.log', ws)
       .then(() => expect(ws.data.join(''), 'to equal', 'My retried data'))
       .then(() => api.done())
-  })
+  }).timeout(5 * 1000 * 1.2)
 
   it('errors on too many retries', () => {
     var ws = new MockOut()
@@ -60,7 +60,7 @@ describe('streaming', () => {
 
     return expect(streamer('https://streamer.test/streams/data.log', ws), 'to be rejected')
       .then(() => api.done())
-  })
+  }).timeout(10 * 1000 * 1.2)
 
   it('does not retry on non-404 errors', () => {
     var ws = new MockOut()
