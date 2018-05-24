@@ -12,7 +12,7 @@ describe('container run', () => {
   beforeEach(() => {
     cli.mockConsole()
     process.env.HEROKU_API_KEY = 'heroku_token'
-    sandbox = sinon.sandbox.create()
+    sandbox = sinon.createSandbox()
   })
   afterEach(() => sandbox.restore())
 

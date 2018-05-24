@@ -11,7 +11,7 @@ var sandbox
 describe('container logout', () => {
   beforeEach(() => {
     cli.mockConsole()
-    sandbox = sinon.sandbox.create()
+    sandbox = sinon.createSandbox()
   })
   afterEach(() => sandbox.restore())
 

@@ -13,7 +13,7 @@ var sandbox
 describe('container release', () => {
   beforeEach(() => {
     cli.mockConsole()
-    sandbox = sinon.sandbox.create()
+    sandbox = sinon.createSandbox()
   })
   afterEach(() => sandbox.restore())
 

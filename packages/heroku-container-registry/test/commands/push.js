@@ -12,7 +12,7 @@ var sandbox
 describe('container push', () => {
   beforeEach(() => {
     cli.mockConsole()
-    sandbox = sinon.sandbox.create()
+    sandbox = sinon.createSandbox()
   })
   afterEach(() => sandbox.restore())
 
