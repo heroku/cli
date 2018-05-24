@@ -170,7 +170,7 @@
     },
     "update": {
       "node": {
-        "version": "10.1.0"
+        "version": "10.2.0"
       },
       "s3": {
         "xz": true,
