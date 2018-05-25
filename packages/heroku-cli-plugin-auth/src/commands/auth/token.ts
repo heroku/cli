@@ -1,5 +1,6 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
+import * as Heroku from '@heroku-cli/schema'
 import * as formatRelative from 'date-fns/formatRelative'
 
 export default class AuthToken extends Command {
@@ -14,7 +15,7 @@ By default, the CLI auth token is only valid for 1 year. To generate a long-live
     this.parse(AuthToken)
     if (!this.heroku.auth) this.error('not logged in')
     try {
-      const {body: tokens} = await this.heroku.get('/oauth/authorizations', {retryAuth: false})
+      const {body: tokens} = await this.heroku.get<Heroku.OAuthAuthorization>('/oauth/authorizations', {retryAuth: false})
       const token = tokens.find((t: any) => t.access_token && t.access_token.token === this.heroku.auth)
       if (token && token.access_token.expires_in) {
         const d = new Date()

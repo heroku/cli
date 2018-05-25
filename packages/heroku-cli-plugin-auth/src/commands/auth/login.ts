@@ -1,5 +1,6 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
+import * as Heroku from '@heroku-cli/schema'
 
 export default class Login extends Command {
   static description = 'login with your Heroku credentials'
@@ -18,8 +19,8 @@ export default class Login extends Command {
     else if (flags.interactive) method = 'interactive'
     // TODO: handle browser
     await this.heroku.login({method, expiresIn: flags['expires-in']})
-    const {body: account} = await this.heroku.get('/account', {retryAuth: false})
-    this.log(`Logged in as ${color.green(account.email)}`)
+    const {body: account} = await this.heroku.get<Heroku.Account>('/account', {retryAuth: false})
+    this.log(`Logged in as ${color.green(account.email!)}`)
     await this.config.runHook('recache', {type: 'login'})
   }
 }

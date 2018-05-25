@@ -1,5 +1,6 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
+import * as Heroku from '@heroku-cli/schema'
 import {cli} from 'cli-ux'
 
 const SecurityExceptionFeatures: any = {
@@ -41,17 +42,17 @@ export default class LabsDisable extends Command {
     try {
       await this.heroku.get(`/account/features/${feature}`)
       request = this.disableFeature(feature)
-      target = (await this.heroku.get('/account')).body.email
+      target = (await this.heroku.get<Heroku.Account>('/account')).body.email
     } catch (err) {
       if (err.http.statusCode !== 404) throw err
       // might be an app feature
       if (!flags.app) throw err
-      await this.heroku.get(`/apps/${flags.app}/features/${feature}`)
+      await this.heroku.get<Heroku.AppFeature>(`/apps/${flags.app}/features/${feature}`)
       request = this.disableFeature(feature, flags.app)
       target = flags.app
     }
 
-    cli.action.start(`Disabling ${color.green(feature)} for ${color.cyan(target)}`)
+    cli.action.start(`Disabling ${color.green(feature)} for ${color.cyan(target!)}`)
     await request
     cli.action.stop()
   }

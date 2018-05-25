@@ -6,14 +6,15 @@
   "bugs": "https://github.com/heroku/heroku-cli-plugin-auth/issues",
   "dependencies": {
     "@heroku-cli/color": "^1.1.5",
-    "@heroku-cli/command": "^8.1.18",
+    "@heroku-cli/command": "^8.1.20",
     "@oclif/command": "^1.4.30",
     "@oclif/config": "^1.6.19",
-    "cli-ux": "^4.3.1",
+    "cli-ux": "^4.4.0",
     "date-fns": "^2.0.0-alpha.8"
   },
   "devDependencies": {
     "@fancy-test/nock": "^0.1.1",
+    "@heroku-cli/schema": "^1.0.2",
     "@oclif/dev-cli": "^1.13.22",
     "@oclif/plugin-help": "^1.2.11",
     "@oclif/test": "^1.0.6",
@@ -28,7 +29,7 @@
     "mocha": "^5.2.0",
     "nock": "^9.2.6",
     "nyc": "^11.8.0",
-    "ts-node": "^6.0.3",
+    "ts-node": "^6.0.5",
     "tslib": "^1",
     "tslint": "^5.10.0",
     "typescript": "^2.8.3"
