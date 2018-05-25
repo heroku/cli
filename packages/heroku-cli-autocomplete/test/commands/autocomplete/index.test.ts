@@ -1,8 +1,33 @@
-import {expect, test} from '@oclif/test'
+import Nock from '@fancy-test/nock'
+import * as Test from '@oclif/test'
+
+const test = Test.test
+.register('nock', Nock)
+const expect = Test.expect
 
 describe('autocomplete index', () => {
   test
   .stdout()
+  .nock('https://api.heroku.com', (nock: any) => {
+    nock
+    .get('/apps')
+    .reply(200, [{name: 'foo'}, {name: 'bar'}])
+  })
+  .nock('https://api.heroku.com', (nock: any) => {
+    nock
+    .get('/pipelines')
+    .reply(200, [{name: 'foo'}, {name: 'bar'}])
+  })
+  .nock('https://api.heroku.com', (nock: any) => {
+    nock
+    .get('/spaces')
+    .reply(200, [{name: 'foo'}, {name: 'bar'}])
+  })
+  .nock('https://api.heroku.com', (nock: any) => {
+    nock
+    .get('/teams')
+    .reply(200, [{name: 'foo'}, {name: 'bar'}])
+  })
   .command(['autocomplete', 'bash'])
   .it('provides bash instructions', ctx => {
     expect(ctx.stdout).to.contain(`
@@ -28,6 +53,26 @@ Enjoy!
 
   test
   .stdout()
+  .nock('https://api.heroku.com', (nock: any) => {
+    nock
+    .get('/apps')
+    .reply(200, [{name: 'foo'}, {name: 'bar'}])
+  })
+  .nock('https://api.heroku.com', (nock: any) => {
+    nock
+    .get('/pipelines')
+    .reply(200, [{name: 'foo'}, {name: 'bar'}])
+  })
+  .nock('https://api.heroku.com', (nock: any) => {
+    nock
+    .get('/spaces')
+    .reply(200, [{name: 'foo'}, {name: 'bar'}])
+  })
+  .nock('https://api.heroku.com', (nock: any) => {
+    nock
+    .get('/teams')
+    .reply(200, [{name: 'foo'}, {name: 'bar'}])
+  })
   .command(['autocomplete', 'zsh'])
   .it('provides zsh instructions', ctx => {
     expect(ctx.stdout).to.contain(`

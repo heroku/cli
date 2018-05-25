@@ -1,8 +1,11 @@
 import {flags} from '@heroku-cli/command'
+import {AppCompletion, PipelineCompletion, SpaceCompletion, TeamCompletion} from '@heroku-cli/command/lib/completions'
 import chalk from 'chalk'
 import {cli} from 'cli-ux'
+import * as path from 'path'
 
 import {AutocompleteBase} from '../../base'
+import {updateCache} from '../../cache'
 
 import Create from './create'
 
@@ -35,6 +38,10 @@ export default class Index extends AutocompleteBase {
 
     cli.action.start(`${chalk.bold('Building the autocomplete cache')}`)
     await Create.run([], this.config)
+    await this.updateCache(AppCompletion, 'app')
+    await this.updateCache(PipelineCompletion, 'pipeline')
+    await this.updateCache(SpaceCompletion, 'space')
+    await this.updateCache(TeamCompletion, 'team')
     cli.action.stop()
 
     if (!flags['skip-instructions']) {
@@ -62,5 +69,11 @@ Visit the autocomplete Dev Center doc at https://devcenter.heroku.com/articles/h
 Enjoy!
 `)
     }
+  }
+
+  private async updateCache(completion: any, cacheKey: string) {
+    const cachePath = path.join(this.completionsCacheDir, cacheKey)
+    const options = await completion.options({config: this.config})
+    await updateCache(cachePath, options)
   }
 }

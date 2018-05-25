@@ -1,7 +1,7 @@
 import * as fs from 'fs-extra'
 import * as moment from 'moment'
 
-async function _updateCache(cachePath: string, cache: any) {
+export async function updateCache(cachePath: string, cache: any) {
   await fs.ensureFile(cachePath)
   await fs.writeJSON(cachePath, cache)
 }
@@ -21,6 +21,6 @@ export async function fetchCache(cachePath: string, cacheDuration: number, optio
   }
   const cache = await options.cacheFn()
   // TODO: move this to a fork
-  await _updateCache(cachePath, cache)
+  await updateCache(cachePath, cache)
   return cache
 }
