@@ -1,4 +1,5 @@
 import {Command, flags} from '@heroku-cli/command'
+import * as Heroku from '@heroku-cli/schema'
 
 import {quote} from '../../quote'
 
@@ -17,7 +18,7 @@ production`
 
   async run() {
     const {flags, argv} = this.parse(ConfigGet)
-    const {body: config}: {body: {[k: string]: string}} = await this.heroku.get(`/apps/${flags.app}/config-vars`)
+    const {body: config} = await this.heroku.get<Heroku.ConfigVars>(`/apps/${flags.app}/config-vars`)
     for (let key of argv) {
       const v = config[key]
       if (flags.shell) {

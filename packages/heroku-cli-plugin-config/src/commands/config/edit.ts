@@ -1,5 +1,6 @@
 import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
+import * as Heroku from '@heroku-cli/schema'
 import {cli} from 'cli-ux'
 import * as _ from 'lodash'
 
@@ -110,7 +111,7 @@ Examples:
   }
 
   private async fetchLatestConfig() {
-    const {body: original} = await this.heroku.get(`/apps/${this.app}/config-vars`)
+    const {body: original} = await this.heroku.get<Heroku.ConfigVars>(`/apps/${this.app}/config-vars`)
     return original
   }
 
