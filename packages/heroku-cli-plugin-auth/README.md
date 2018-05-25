@@ -35,7 +35,7 @@ ALIASES
   $ heroku twofactor
 ```
 
-_See code: [src/commands/2fa.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.4.3/src/commands/2fa.ts)_
+_See code: [src/commands/2fa.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.4.4/src/commands/2fa.ts)_
 
 ## `heroku auth:login`
 
@@ -55,7 +55,7 @@ ALIASES
   $ heroku login
 ```
 
-_See code: [src/commands/auth/login.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.4.3/src/commands/auth/login.ts)_
+_See code: [src/commands/auth/login.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.4.4/src/commands/auth/login.ts)_
 
 ## `heroku auth:logout`
 
@@ -69,7 +69,7 @@ ALIASES
   $ heroku logout
 ```
 
-_See code: [src/commands/auth/logout.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.4.3/src/commands/auth/logout.ts)_
+_See code: [src/commands/auth/logout.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.4.4/src/commands/auth/logout.ts)_
 
 ## `heroku auth:token`
 
@@ -87,7 +87,7 @@ DESCRIPTION
   authorizations:create
 ```
 
-_See code: [src/commands/auth/token.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.4.3/src/commands/auth/token.ts)_
+_See code: [src/commands/auth/token.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.4.4/src/commands/auth/token.ts)_
 
 ## `heroku auth:whoami`
 
@@ -101,7 +101,7 @@ ALIASES
   $ heroku whoami
 ```
 
-_See code: [src/commands/auth/whoami.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.4.3/src/commands/auth/whoami.ts)_
+_See code: [src/commands/auth/whoami.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.4.4/src/commands/auth/whoami.ts)_
 
 ## `heroku labs:disable [FEATURE]`
 
@@ -117,5 +117,5 @@ OPTIONS
   --confirm=confirm
 ```
 
-_See code: [src/commands/labs/disable.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.4.3/src/commands/labs/disable.ts)_
+_See code: [src/commands/labs/disable.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.4.4/src/commands/labs/disable.ts)_
 <!-- commandsstop -->

@@ -1,3 +1,11 @@
+<a name="0.4.4"></a>
+## [0.4.4](https://github.com/heroku/heroku-cli-plugin-auth/compare/v0.4.3...v0.4.4) (2018-05-25)
+
+
+### Bug Fixes
+
+* added typings ([d6e3df9](https://github.com/heroku/heroku-cli-plugin-auth/commit/d6e3df9))
+
 <a name="0.4.3"></a>
 ## [0.4.3](https://github.com/heroku/heroku-cli-plugin-auth/compare/v0.4.2...v0.4.3) (2018-05-23)
 
