@@ -4,11 +4,11 @@
   "author": "Philipe Navarro @RasPhilCo",
   "bugs": "https://github.com/heroku/heroku-cli-autocomplete/issues",
   "dependencies": {
-    "@heroku-cli/command": "^8.1.18",
+    "@heroku-cli/command": "^8.1.20",
     "@oclif/command": "1.4.30",
     "@oclif/config": "1.6.19",
     "chalk": "^2.4.1",
-    "cli-ux": "^4.3.1",
+    "cli-ux": "^4.4.0",
     "debug": "^3.1.0",
     "fs-extra": "^6.0.1",
     "moment": "^2.22.1",
@@ -30,7 +30,7 @@
     "mocha": "5.2.0",
     "nock": "^9.2.6",
     "nyc": "11.8.0",
-    "ts-node": "6.0.3",
+    "ts-node": "6.0.5",
     "tslint": "5.10.0",
     "typescript": "2.8"
   },
