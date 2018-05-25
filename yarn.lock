@@ -414,14 +414,14 @@
     "@oclif/command" "^1.4.19"
     string-similarity "^1.2.0"
 
-"@oclif/plugin-plugins@1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@oclif/plugin-plugins/-/plugin-plugins-1.2.0.tgz#69fb42c720f9be9d7b490a38320fc6d84a911d45"
+"@oclif/plugin-plugins@1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-plugins/-/plugin-plugins-1.2.1.tgz#d49df99a9ee6af81731adcd8b8fb978d1d4e5ec2"
   dependencies:
     "@heroku-cli/color" "^1.1.5"
     "@oclif/command" "^1.4.30"
     chalk "^2.4.1"
-    cli-ux "^4.3.1"
+    cli-ux "^4.4.0"
     debug "^3.1.0"
     fs-extra "^6.0.1"
     http-call "^5.1.3"
@@ -693,9 +693,9 @@ atob@^2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.1.tgz#ae2d5a729477f289d60dd7f96a6314a22dd6c22a"
 
-aws-sdk@^2.245.1:
-  version "2.245.1"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.245.1.tgz#756b3b7a5314651920fdbce032d4730f516ef360"
+aws-sdk@^2.246.1:
+  version "2.246.1"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.246.1.tgz#da24e62e69a4aaf8c5a98ac1ebbac9d24e601bc9"
   dependencies:
     buffer "4.9.1"
     events "1.1.1"
