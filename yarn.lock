@@ -339,7 +339,13 @@
     debug "^3.1.0"
     semver "^5.5.0"
 
-"@oclif/config@1.6.19", "@oclif/config@^1", "@oclif/config@^1.6.17", "@oclif/config@^1.6.18", "@oclif/config@^1.6.19", "@oclif/config@^1.6.4":
+"@oclif/config@1.6.20":
+  version "1.6.20"
+  resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.6.20.tgz#d328cda5dbeae247cd628c2450cf2cd3e0e3dad6"
+  dependencies:
+    debug "^3.1.0"
+
+"@oclif/config@^1", "@oclif/config@^1.6.17", "@oclif/config@^1.6.18", "@oclif/config@^1.6.19", "@oclif/config@^1.6.4":
   version "1.6.19"
   resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.6.19.tgz#727aee1e0859d18c56c0fa3e1ec08826f28a7aac"
   dependencies:
