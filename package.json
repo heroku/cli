@@ -9,7 +9,7 @@
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
     "@heroku-cli/color": "1.1.5",
-    "@heroku-cli/command": "8.1.19",
+    "@heroku-cli/command": "8.1.20",
     "@heroku-cli/plugin-addons": "1.2.30",
     "@heroku-cli/plugin-apps": "2.5.3",
     "@heroku-cli/plugin-auth": "0.4.3",
