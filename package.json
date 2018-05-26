@@ -165,6 +165,7 @@
       ],
       "update": [
         "./lib/hooks/update/brew",
+        "./lib/hooks/update/completions",
         "./lib/hooks/update/tidy"
       ]
     },

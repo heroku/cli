@@ -4,7 +4,7 @@ import * as path from 'path'
 
 import * as fs from '../../file'
 
-const debug = require('debug')('heroku:completions')
+const debug = require('debug')('heroku:brewhook')
 
 function brew(args: string[], opts: SpawnSyncOptions = {}) {
   debug('brew %o', args)
