@@ -11,6 +11,7 @@ const deprecated: {[k: string]: string | null} = {
   'heroku-api-plugin': 'api',
   'heroku-cli-autocomplete': 'autocomplete',
   'heroku-sudo': 'sudo',
+  'heroku-pipelines': null,
   'heroku-cli-plugin-generator': null,
   '@heroku-cli/config-edit': null,
   'heroku-cli-config-edit': null,
