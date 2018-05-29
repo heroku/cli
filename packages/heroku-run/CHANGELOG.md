@@ -1,3 +1,11 @@
+<a name="3.8.7"></a>
+## [3.8.7](https://github.com/heroku/heroku-run/compare/v3.8.6...v3.8.7) (2018-05-29)
+
+
+### Bug Fixes
+
+* updated deps ([b0039b2](https://github.com/heroku/heroku-run/commit/b0039b2))
+
 <a name="3.8.6"></a>
 ## [3.8.6](https://github.com/heroku/heroku-run/compare/v3.8.5...v3.8.6) (2018-05-23)
 
