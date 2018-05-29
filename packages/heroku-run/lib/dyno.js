@@ -305,7 +305,7 @@ class Dyno extends Duplex {
     this.input = c
     let stdin = process.stdin
     stdin.setEncoding('utf8')
-    if (stdin.unref) stdin.unref()
+    // if (stdin.unref) stdin.unref()
     if (!this.opts['no-tty'] && tty.isatty(0)) {
       stdin.setRawMode(true)
       stdin.pipe(c)
