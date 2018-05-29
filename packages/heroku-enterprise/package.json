@@ -10,6 +10,11 @@
     "co": "4.6.0",
     "heroku-cli-util": "^6.1.5"
   },
+  "files": [
+    "/index.js",
+    "/lib",
+    "/commands"
+  ],
   "homepage": "https://github.com/heroku/heroku-enterprise",
   "keywords": [
     "heroku-plugin"
