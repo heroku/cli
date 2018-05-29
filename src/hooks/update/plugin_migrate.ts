@@ -13,6 +13,7 @@ const deprecated: {[k: string]: string | null} = {
   'heroku-sudo': 'sudo',
   'heroku-pipelines': null,
   'heroku-cli-plugin-generator': null,
+  'heroku-container-registry': null,
   '@heroku-cli/config-edit': null,
   'heroku-cli-config-edit': null,
 }
