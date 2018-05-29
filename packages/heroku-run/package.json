@@ -17,26 +17,26 @@
     }
   },
   "dependencies": {
-    "@heroku-cli/color": "^1.1.3",
-    "@heroku-cli/command": "^8.1.3",
-    "@heroku-cli/notifications": "^1.2.0",
+    "@heroku-cli/color": "^1.1.5",
+    "@heroku-cli/command": "^8.1.20",
+    "@heroku-cli/notifications": "^1.2.1",
     "co": "4.6.0",
     "eventsource": "^1.0.5",
-    "fs-extra": "^6.0.0",
-    "heroku-cli-util": "^8.0.8",
+    "fs-extra": "^6.0.1",
+    "heroku-cli-util": "^8.0.9",
     "shellwords": "^0.1.1"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.13.19",
+    "@oclif/dev-cli": "^1.13.24",
     "@oclif/plugin-legacy": "^1.0.15",
     "fixture-stdout": "0.2.1",
-    "mocha": "^5.1.1",
+    "mocha": "^5.2.0",
     "mocha-junit-reporter": "1.17.0",
     "netrc": "0.1.4",
-    "nock": "^9.2.5",
-    "sinon": "^5.0.7",
+    "nock": "^9.2.6",
+    "sinon": "^5.0.10",
     "standard": "^11.0.1",
-    "unexpected": "^10.37.7"
+    "unexpected": "^10.38.0"
   },
   "standard": {
     "env": "mocha"
