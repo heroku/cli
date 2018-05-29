@@ -14,6 +14,7 @@ const deprecated: {[k: string]: string | null} = {
   'heroku-pipelines': null,
   'heroku-cli-plugin-generator': null,
   'heroku-container-registry': null,
+  'heroku-webhooks': null,
   '@heroku-cli/config-edit': null,
   'heroku-cli-config-edit': null,
 }
