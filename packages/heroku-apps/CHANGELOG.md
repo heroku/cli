@@ -1,3 +1,11 @@
+<a name="2.5.4"></a>
+## [2.5.4](https://github.com/heroku/heroku-apps/compare/v2.5.3...v2.5.4) (2018-05-30)
+
+
+### Bug Fixes
+
+* triggering release ([a8230db](https://github.com/heroku/heroku-apps/commit/a8230db))
+
 <a name="2.5.3"></a>
 ## [2.5.3](https://github.com/heroku/heroku-apps/compare/v2.5.2...v2.5.3) (2018-05-23)
 
