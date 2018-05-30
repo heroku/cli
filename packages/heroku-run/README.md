@@ -6,43 +6,18 @@ heroku-run [![Circle CI](https://circleci.com/gh/heroku/heroku-run.svg?style=svg
 
 Heroku CLI plugin to run one-off dyno processes.
 
-Commands
-========
-
-heroku run
-----------
-
-run a one-off process inside a heroku dyno
-
-`-s, --size` dyno size
-
-`--exit-code` passthrough the exit code of the remote command
-
-```
-run a one-off process inside a Heroku dyno
-Example:
-
-  $ heroku run bash
-  Running bash on app... up, run.1
-  ~ $
-
-  $ heroku run -s hobby -- myscript.sh -a arg1 -s arg2
-  Running myscript.sh -a arg1 -s arg2 on app... up, run.1
-
-```
-
 <!-- commands -->
-* [`@heroku-cli/plugin-run logs`](#heroku-cli-plugin-run-logs)
-* [`@heroku-cli/plugin-run run`](#heroku-cli-plugin-run-run)
-* [`@heroku-cli/plugin-run run:detached`](#heroku-cli-plugin-run-rundetached)
+* [`heroku logs`](#heroku-logs)
+* [`heroku run`](#heroku-run)
+* [`heroku run:detached`](#heroku-rundetached)
 
-## `@heroku-cli/plugin-run logs`
+## `heroku logs`
 
 display recent log output
 
 ```
 USAGE
-  $ @heroku-cli/plugin-run logs
+  $ heroku logs
 
 OPTIONS
   -a, --app=app        (required) app to run command against
@@ -63,13 +38,13 @@ EXAMPLES
   2012-01-01T12:00:01+00:00 heroku[api]: Release v1 created by email@example.com
 ```
 
-## `@heroku-cli/plugin-run run`
+## `heroku run`
 
 run a one-off process inside a heroku dyno
 
 ```
 USAGE
-  $ @heroku-cli/plugin-run run
+  $ heroku run
 
 OPTIONS
   -a, --app=app        (required) app to run command against
@@ -94,13 +69,13 @@ DESCRIPTION
        Running myscript.sh -a arg1 -s arg2 on app.... up, run.1
 ```
 
-## `@heroku-cli/plugin-run run:detached`
+## `heroku run:detached`
 
 run a detached dyno, where output is sent to your logs
 
 ```
 USAGE
-  $ @heroku-cli/plugin-run run:detached
+  $ heroku run:detached
 
 OPTIONS
   -a, --app=app        (required) app to run command against
