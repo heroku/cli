@@ -25,7 +25,7 @@
     "standard": "^11.0.1"
   },
   "files": [
-    ".oclif.manifest.json",
+    "oclif.manifest.json",
     "index.js",
     "lib",
     "commands"
@@ -40,12 +40,14 @@
     "url": "https://github.com/heroku/heroku-redis-jsplugin"
   },
   "scripts": {
-    "postpublish": "rm .oclif.manifest.json",
+    "postpublish": "rm oclif.manifest.json",
     "prepublishOnly": "oclif-dev manifest",
     "test": "nyc mocha && standard",
+    "version": "oclif-dev readme && git add README.md",
     "posttest": "standard"
   },
   "cli-engine": {
+    "bin": "heroku",
     "topics": {
       "redis": {
         "description": "manage heroku redis instances"
