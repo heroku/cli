@@ -189,7 +189,7 @@
     "prepack": "yarn run build && oclif-dev manifest",
     "prepublishOnly": "yarn run prepack",
     "test": "mocha --forbid-only \"test/**/*.test.ts\"",
-    "version": "oclif-dev readme --multi && git add README.md"
+    "version": "oclif-dev readme --multi && git add README.md docs"
   },
   "types": "lib/index.d.ts"
 }
