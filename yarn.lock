@@ -272,9 +272,9 @@
     heroku-cli-util "^8.0.8"
     shellwords "^0.1.1"
 
-"@heroku-cli/plugin-spaces@2.12.2":
-  version "2.12.2"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-spaces/-/plugin-spaces-2.12.2.tgz#7f51637a7930d278a2ab35055e08235181a2e558"
+"@heroku-cli/plugin-spaces@2.12.3":
+  version "2.12.3"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-spaces/-/plugin-spaces-2.12.3.tgz#70b2935b78b3fd2665a75691b4f6cb786bc6b255"
   dependencies:
     "@heroku-cli/command" "^8.0.5"
     co "4.6.0"
