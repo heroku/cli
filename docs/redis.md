@@ -2,6 +2,7 @@
 ==============
 
 manage heroku redis instances
+
 * [`heroku redis [DATABASE]`](#heroku-redis-database)
 * [`heroku redis:cli [DATABASE]`](#heroku-rediscli-database)
 * [`heroku redis:credentials [DATABASE]`](#heroku-rediscredentials-database)

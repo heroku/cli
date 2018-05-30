@@ -2,6 +2,7 @@
 ==============
 
 manage teams
+
 * [`heroku teams`](#heroku-teams)
 
 ## `heroku teams`

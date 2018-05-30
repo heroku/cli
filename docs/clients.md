@@ -2,6 +2,7 @@
 ================
 
 OAuth clients on the platform
+
 * [`heroku clients`](#heroku-clients)
 * [`heroku clients:create NAME REDIRECT_URI`](#heroku-clientscreate-name-redirect-uri)
 * [`heroku clients:destroy ID`](#heroku-clientsdestroy-id)

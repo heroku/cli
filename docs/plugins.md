@@ -2,6 +2,7 @@
 ================
 
 list installed plugins
+
 * [`heroku plugins`](#heroku-plugins)
 * [`heroku plugins:install PLUGIN...`](#heroku-pluginsinstall-plugin)
 * [`heroku plugins:link PLUGIN`](#heroku-pluginslink-plugin)

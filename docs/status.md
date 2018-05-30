@@ -2,6 +2,7 @@
 ===============
 
 status of the Heroku platform
+
 * [`heroku status`](#heroku-status)
 
 ## `heroku status`

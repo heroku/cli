@@ -2,6 +2,7 @@
 ===============
 
 interactively edit config vars
+
 * [`heroku config`](#heroku-config)
 * [`heroku config:edit [KEY]`](#heroku-configedit-key)
 * [`heroku config:get KEY...`](#heroku-configget-key)

@@ -2,6 +2,7 @@
 ===============
 
 manage heroku private spaces
+
 * [`heroku spaces`](#heroku-spaces)
 * [`heroku spaces:create`](#heroku-spacescreate)
 * [`heroku spaces:destroy`](#heroku-spacesdestroy)

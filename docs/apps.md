@@ -1,31 +1,8 @@
 `heroku apps`
 =============
 
-creates a new app
-Examples:
+add yourself to an organization app
 
-    $ heroku apps:create
-    Creating app... done, stack is cedar-14
-    https://floating-dragon-42.heroku.com/ | https://git.heroku.com/floating-dragon-42.git
-
-    # or just
-    $ heroku create
-
-    # use a heroku.yml manifest file
-    $ heroku apps:create --manifest
-
-    # specify a buildpack
-    $ heroku apps:create --buildpack https://github.com/some/buildpack.git
-
-    # specify a name
-    $ heroku apps:create example
-
-    # create a staging app
-    $ heroku apps:create example-staging --remote staging
-
-    # create an app in the eu region
-    $ heroku apps:create --region eu
- 
 * [`heroku apps`](#heroku-apps)
 * [`heroku apps:create [APP]`](#heroku-appscreate-app)
 * [`heroku apps:destroy`](#heroku-appsdestroy)

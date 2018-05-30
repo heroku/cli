@@ -2,6 +2,7 @@
 ==================
 
 Use containers to build and deploy Heroku apps
+
 * [`heroku container`](#heroku-container)
 * [`heroku container:login`](#heroku-containerlogin)
 * [`heroku container:logout`](#heroku-containerlogout)
@@ -84,14 +85,12 @@ OPTIONS
   -v, --verbose
   --arg=arg            set build-time variables
 
-DESCRIPTION
-
-       Usage:
-       heroku container:push web                          # Pushes Dockerfile to web process type
-       heroku container:push worker                       # Pushes Dockerfile to worker process type
-       heroku container:push web worker --recursive       # Pushes Dockerfile.web and Dockerfile.worker
-       heroku container:push --recursive                  # Pushes Dockerfile.*
-       heroku container:push web --arg ENV=live,HTTPS=on  # Build-time variables
+EXAMPLES
+  heroku container:push web                          # Pushes Dockerfile to web process type
+  heroku container:push worker                       # Pushes Dockerfile to worker process type
+  heroku container:push web worker --recursive       # Pushes Dockerfile.web and Dockerfile.worker
+  heroku container:push --recursive                  # Pushes Dockerfile.*
+  heroku container:push web --arg ENV=live,HTTPS=on  # Build-time variables
 ```
 
 ## `heroku container:release`

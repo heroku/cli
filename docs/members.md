@@ -2,6 +2,7 @@
 ================
 
 manage organization members
+
 * [`heroku members`](#heroku-members)
 * [`heroku members:add EMAIL`](#heroku-membersadd-email)
 * [`heroku members:remove EMAIL`](#heroku-membersremove-email)

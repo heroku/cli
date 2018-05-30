@@ -2,6 +2,7 @@
 ================
 
 list available regions for deployment
+
 * [`heroku regions`](#heroku-regions)
 
 ## `heroku regions`

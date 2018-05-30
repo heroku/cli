@@ -9,6 +9,7 @@ Example:
 
     $ heroku pipelines:add example -a example-admin -s production
     Adding example-admin to example pipeline as production... done
+
 * [`heroku pipelines`](#heroku-pipelines)
 * [`heroku pipelines:add PIPELINE`](#heroku-pipelinesadd-pipeline)
 * [`heroku pipelines:connect [NAME]`](#heroku-pipelinesconnect-name)

@@ -10,6 +10,7 @@ Example:
     v1 Config add FOO_BAR email@example.com 2015/11/17 17:37:41 (~ 1h ago)
     v2 Config add BAR_BAZ email@example.com 2015/11/17 17:37:41 (~ 1h ago)
     v3 Config add BAZ_QUX email@example.com 2015/11/17 17:37:41 (~ 1h ago)
+
 * [`heroku releases`](#heroku-releases)
 * [`heroku releases:info [RELEASE]`](#heroku-releasesinfo-release)
 * [`heroku releases:output [RELEASE]`](#heroku-releasesoutput-release)

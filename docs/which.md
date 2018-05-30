@@ -2,6 +2,7 @@
 ==============
 
 show which plugin a command is in
+
 * [`heroku which COMMAND`](#heroku-which-command)
 
 ## `heroku which COMMAND`

@@ -7,6 +7,7 @@ Example:
     $ heroku reviewapps:disable -p mypipeline -a myapp --autodeploy
     Disabling auto deployment ...
     Configuring pipeline... done
+
 * [`heroku reviewapps:disable`](#heroku-reviewappsdisable)
 * [`heroku reviewapps:enable`](#heroku-reviewappsenable)
 

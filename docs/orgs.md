@@ -2,6 +2,7 @@
 =============
 
 manage organizations
+
 * [`heroku orgs`](#heroku-orgs)
 * [`heroku orgs:open`](#heroku-orgsopen)
 

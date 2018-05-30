@@ -2,6 +2,7 @@
 =======================
 
 OAuth authorizations
+
 * [`heroku authorizations`](#heroku-authorizations)
 * [`heroku authorizations:create`](#heroku-authorizationscreate)
 * [`heroku authorizations:info ID`](#heroku-authorizationsinfo-id)

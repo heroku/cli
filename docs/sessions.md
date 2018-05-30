@@ -2,6 +2,7 @@
 =================
 
 OAuth sessions
+
 * [`heroku sessions`](#heroku-sessions)
 * [`heroku sessions:destroy ID`](#heroku-sessionsdestroy-id)
 

@@ -1,7 +1,8 @@
 `heroku help`
 =============
 
-display help for <%= config.bin %>
+display help for heroku
+
 * [`heroku help [COMMAND]`](#heroku-help-command)
 
 ## `heroku help [COMMAND]`
@@ -19,4 +20,4 @@ OPTIONS
   --all  see all commands in CLI
 ```
 
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.0.0/src/commands/help.ts)_
+_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.0.1/src/commands/help.ts)_

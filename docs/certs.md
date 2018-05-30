@@ -2,6 +2,7 @@
 ==============
 
 a topic for the ssl plugin
+
 * [`heroku certs`](#heroku-certs)
 * [`heroku certs:add CRT KEY`](#heroku-certsadd-crt-key)
 * [`heroku certs:auto`](#heroku-certsauto)

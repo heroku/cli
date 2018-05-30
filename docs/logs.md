@@ -2,6 +2,7 @@
 =============
 
 display recent log output
+
 * [`heroku logs`](#heroku-logs)
 
 ## `heroku logs`
