@@ -47,21 +47,21 @@
     debug "^3.1.0"
     semver "^5.5.0"
 
-"@oclif/config@^1.6.18":
-  version "1.6.18"
-  resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.6.18.tgz#25693cb4badb81489a8c5f846761630dca8c516c"
+"@oclif/config@^1.6.21":
+  version "1.6.21"
+  resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.6.21.tgz#44cb3136758562d5441885b63ef4791aeeae0c0f"
   dependencies:
     debug "^3.1.0"
 
-"@oclif/dev-cli@^1.13.22":
-  version "1.13.22"
-  resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.13.22.tgz#a9bc93551b8e4e749ead0a6c23fe6168ee072793"
+"@oclif/dev-cli@^1.13.25":
+  version "1.13.25"
+  resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.13.25.tgz#d9a5fb684fb7d4133832e1c6c1384f0912115486"
   dependencies:
     "@oclif/command" "^1.4.30"
-    "@oclif/config" "^1.6.18"
-    "@oclif/errors" "^1.1.1"
-    "@oclif/plugin-help" "^1.2.11"
-    cli-ux "^4.3.0"
+    "@oclif/config" "^1.6.21"
+    "@oclif/errors" "^1.1.2"
+    "@oclif/plugin-help" "^2.0.0"
+    cli-ux "^4.4.0"
     debug "^3.1.0"
     fs-extra "^6.0.1"
     lodash "^4.17.10"
@@ -100,6 +100,16 @@
     strip-ansi "^4.0.0"
     wrap-ansi "^3.0.1"
 
+"@oclif/errors@^1.1.2":
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/@oclif/errors/-/errors-1.1.2.tgz#2a54aae07a7655cc4523cae270d0a50cbc5dbef3"
+  dependencies:
+    clean-stack "^1.3.0"
+    fs-extra "^6.0.1"
+    indent-string "^3.2.0"
+    strip-ansi "^4.0.0"
+    wrap-ansi "^3.0.1"
+
 "@oclif/linewrap@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@oclif/linewrap/-/linewrap-1.0.0.tgz#aedcb64b479d4db7be24196384897b5000901d91"
@@ -118,9 +128,9 @@
     "@oclif/linewrap" "^1.0.0"
     chalk "^2.4.1"
 
-"@oclif/plugin-help@^1.2.11":
-  version "1.2.11"
-  resolved "https://registry.yarnpkg.com/@oclif/plugin-help/-/plugin-help-1.2.11.tgz#e6413a6009519230bc4c7e7fe45d8e139939e657"
+"@oclif/plugin-help@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-help/-/plugin-help-2.0.0.tgz#126f00af0b3274a5479ab70cb7619887049473c1"
   dependencies:
     "@oclif/command" "^1.4.29"
     chalk "^2.4.1"
@@ -501,12 +511,19 @@ cardinal@^1.0.0:
     ansicolors "~0.2.1"
     redeyed "~1.0.0"
 
-cardinal@^2.0.0, cardinal@^2.0.1:
+cardinal@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/cardinal/-/cardinal-2.0.1.tgz#2431630e6c006253b803967249b2d72e50d1985d"
   dependencies:
     ansicolors "~0.3.2"
     redeyed "~2.0.0"
+
+cardinal@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/cardinal/-/cardinal-2.1.1.tgz#7cc1055d822d212954d07b085dea251cc7bc5505"
+  dependencies:
+    ansicolors "~0.3.2"
+    redeyed "~2.1.0"
 
 center-align@^0.1.1:
   version "0.1.3"
@@ -634,20 +651,21 @@ cli-ux@^3.4.1:
     strip-ansi "^4.0.0"
     supports-color "^5.4.0"
 
-cli-ux@^4.3.0:
-  version "4.3.0"
-  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-4.3.0.tgz#048f6334ef50cc5ab7cc0d51725c3888c75cbc41"
+cli-ux@^4.4.0:
+  version "4.4.0"
+  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-4.4.0.tgz#b7536e144b48d18d960bb695cbac3707178f1e90"
   dependencies:
     "@oclif/linewrap" "^1.0.0"
     "@oclif/screen" "^1.0.2"
     ansi-styles "^3.2.1"
-    cardinal "^2.0.0"
+    cardinal "^2.1.1"
     chalk "^2.4.1"
     clean-stack "^1.3.0"
     extract-stack "^1.0.0"
     fs-extra "^6.0.1"
     hyperlinker "^1.0.0"
     indent-string "^3.2.0"
+    is-wsl "^1.1.0"
     lodash "^4.17.10"
     password-prompt "^1.0.6"
     semver "^5.5.0"
@@ -710,9 +728,9 @@ color-name@^1.1.1:
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/color-name/-/color-name-1.1.3.tgz#a7d0558bd89c42f795dd42328f740831ca53bc25"
 
-commander@2.11.0:
-  version "2.11.0"
-  resolved "https://registry.yarnpkg.com/commander/-/commander-2.11.0.tgz#157152fd1e7a6c8d98a5b715cf376df928004563"
+commander@2.15.1:
+  version "2.15.1"
+  resolved "https://registry.yarnpkg.com/commander/-/commander-2.15.1.tgz#df46e867d0fc2aec66a34662b406a9ccafff5b0f"
 
 commondir@^1.0.1:
   version "1.0.1"
@@ -1462,9 +1480,9 @@ graceful-fs@^4.1.11, graceful-fs@^4.1.2, graceful-fs@^4.1.6:
   version "4.1.11"
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.1.11.tgz#0e8bdfe4d1ddb8854d64e04ea7c00e2a026e5658"
 
-growl@1.10.3:
-  version "1.10.3"
-  resolved "https://registry.yarnpkg.com/growl/-/growl-1.10.3.tgz#1926ba90cf3edfe2adb4927f5880bc22c66c790f"
+growl@1.10.5:
+  version "1.10.5"
+  resolved "https://registry.yarnpkg.com/growl/-/growl-1.10.5.tgz#f2735dc2283674fa67478b10181059355c369e5e"
 
 handlebars@^4.0.3:
   version "4.0.6"
@@ -1878,6 +1896,10 @@ is-windows@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/is-windows/-/is-windows-1.0.2.tgz#d1850eb9791ecd18e6182ce12a30f396634bb19d"
 
+is-wsl@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/is-wsl/-/is-wsl-1.1.0.tgz#1f16e4aa22b04d1336b66188a66af3c600c3a66d"
+
 isarray@0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/isarray/-/isarray-0.0.1.tgz#8a18acfca9a8f4177e09abfc6038939b05d1eedf"
@@ -2117,9 +2139,9 @@ lolex@^1.6.0:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/lolex/-/lolex-1.6.0.tgz#3a9a0283452a47d7439e72731b9e07d7386e49f6"
 
-lolex@^2.6.0:
-  version "2.6.0"
-  resolved "https://registry.yarnpkg.com/lolex/-/lolex-2.6.0.tgz#cf9166f3c9dece3cdeb5d6b01fce50f14a1203e3"
+lolex@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/lolex/-/lolex-2.7.0.tgz#9c087a69ec440e39d3f796767cf1b2cdc43d5ea5"
 
 longest@^1.0.1:
   version "1.0.1"
@@ -2247,21 +2269,21 @@ mkdirp@0.5.1, mkdirp@^0.5.0, mkdirp@^0.5.1:
   dependencies:
     minimist "0.0.8"
 
-mocha@^5.1.1:
-  version "5.1.1"
-  resolved "https://registry.yarnpkg.com/mocha/-/mocha-5.1.1.tgz#b774c75609dac05eb48f4d9ba1d827b97fde8a7b"
+mocha@^5.2.0:
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/mocha/-/mocha-5.2.0.tgz#6d8ae508f59167f940f2b5b3c4a612ae50c90ae6"
   dependencies:
     browser-stdout "1.3.1"
-    commander "2.11.0"
+    commander "2.15.1"
     debug "3.1.0"
     diff "3.5.0"
     escape-string-regexp "1.0.5"
     glob "7.1.2"
-    growl "1.10.3"
+    growl "1.10.5"
     he "1.1.1"
     minimatch "3.0.4"
     mkdirp "0.5.1"
-    supports-color "4.4.0"
+    supports-color "5.4.0"
 
 module-not-found-error@^1.0.0:
   version "1.0.1"
@@ -2679,9 +2701,9 @@ pseudomap@^1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/pseudomap/-/pseudomap-1.0.2.tgz#f052a28da70e618917ef0a8ac34c1ae5a68286b3"
 
-psl@^1.1.26:
-  version "1.1.26"
-  resolved "https://registry.yarnpkg.com/psl/-/psl-1.1.26.tgz#b2d3248185d7d27ff616ba1536851db0b59d9e75"
+psl@^1.1.27:
+  version "1.1.27"
+  resolved "https://registry.yarnpkg.com/psl/-/psl-1.1.27.tgz#2b2c77019db86855170d903532400bf71ee085b6"
 
 pump@^1.0.0:
   version "1.0.3"
@@ -2794,6 +2816,12 @@ redeyed@~1.0.0:
 redeyed@~2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/redeyed/-/redeyed-2.0.0.tgz#e7ae722cd4ce4dbc537cb5810fef3de2ac76ff12"
+  dependencies:
+    esprima "~4.0.0"
+
+redeyed@~2.1.0:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/redeyed/-/redeyed-2.1.1.tgz#8984b5815d99cb220469c99eeeffe38913e6cc0b"
   dependencies:
     esprima "~4.0.0"
 
@@ -3234,11 +3262,11 @@ strip-json-comments@~1.0.1:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/strip-json-comments/-/strip-json-comments-1.0.4.tgz#1e15fbcac97d3ee99bf2d73b4c656b082bbafb91"
 
-supports-color@4.4.0:
-  version "4.4.0"
-  resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-4.4.0.tgz#883f7ddabc165142b2a61427f3352ded195d1a3e"
+supports-color@5.4.0, supports-color@^5.0.0, supports-color@^5.3.0, supports-color@^5.4.0:
+  version "5.4.0"
+  resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-5.4.0.tgz#1c6b337402c2137605efe19f10fec390f6faab54"
   dependencies:
-    has-flag "^2.0.0"
+    has-flag "^3.0.0"
 
 supports-color@^2.0.0:
   version "2.0.0"
@@ -3255,12 +3283,6 @@ supports-color@^4.0.0:
   resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-4.5.0.tgz#be7a0de484dec5c5cddf8b3d59125044912f635b"
   dependencies:
     has-flag "^2.0.0"
-
-supports-color@^5.0.0, supports-color@^5.3.0, supports-color@^5.4.0:
-  version "5.4.0"
-  resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-5.4.0.tgz#1c6b337402c2137605efe19f10fec390f6faab54"
-  dependencies:
-    has-flag "^3.0.0"
 
 supports-color@^5.1.0:
   version "5.1.0"

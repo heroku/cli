@@ -13,15 +13,15 @@
     "heroku-cli-util": "^8.0.9",
     "inquirer": "^5.2.0",
     "lodash": "4.17.10",
-    "psl": "^1.1.26"
+    "psl": "^1.1.27"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.13.22",
+    "@oclif/dev-cli": "^1.13.25",
     "@oclif/plugin-legacy": "^1.0.15",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
-    "lolex": "^2.6.0",
-    "mocha": "^5.1.1",
+    "lolex": "^2.7.0",
+    "mocha": "^5.2.0",
     "nock": "^9.0.13",
     "nyc": "^11.8.0",
     "proxyquire": "^2.0.1",
@@ -44,9 +44,11 @@
   "scripts": {
     "test": "TZ=utc nyc mocha && standard",
     "prepublishOnly": "oclif-dev manifest",
-    "postpublish": "rm oclif.manifest.json"
+    "postpublish": "rm oclif.manifest.json",
+    "version": "oclif-dev readme && git add README.md"
   },
   "cli-engine": {
+    "bin": "heroku",
     "topics": {
       "certs": {
         "description": "a topic for the ssl plugin"
