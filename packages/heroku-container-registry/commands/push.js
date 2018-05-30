@@ -2,14 +2,6 @@ const cli = require('heroku-cli-util')
 const Sanbashi = require('../lib/sanbashi')
 const debug = require('../lib/debug')
 
-let usage = `
-    ${cli.color.bold.underline.magenta('Usage:')}
-    ${cli.color.cmd('heroku container:push web')}                          # Pushes Dockerfile to web process type
-    ${cli.color.cmd('heroku container:push worker')}                       # Pushes Dockerfile to worker process type
-    ${cli.color.cmd('heroku container:push web worker --recursive')}       # Pushes Dockerfile.web and Dockerfile.worker
-    ${cli.color.cmd('heroku container:push --recursive')}                  # Pushes Dockerfile.*
-    ${cli.color.cmd('heroku container:push web --arg ENV=live,HTTPS=on')}  # Build-time variables`
-
 module.exports = function (topic) {
   return {
     topic: topic,
@@ -18,7 +10,13 @@ module.exports = function (topic) {
     needsApp: true,
     needsAuth: true,
     variableArgs: true,
-    help: usage,
+    examples: [
+      `${cli.color.cmd('heroku container:push web')}                          # Pushes Dockerfile to web process type`,
+      `${cli.color.cmd('heroku container:push worker')}                       # Pushes Dockerfile to worker process type`,
+      `${cli.color.cmd('heroku container:push web worker --recursive')}       # Pushes Dockerfile.web and Dockerfile.worker`,
+      `${cli.color.cmd('heroku container:push --recursive')}                  # Pushes Dockerfile.*`,
+      `${cli.color.cmd('heroku container:push web --arg ENV=live,HTTPS=on')}  # Build-time variables`
+    ],
     flags: [
       {
         name: 'verbose',
@@ -45,11 +43,11 @@ let push = async function (context, heroku) {
   if (context.flags.verbose) debug.enabled = true
   const recurse = !!context.flags.recursive
   if (context.args.length === 0 && !recurse) {
-    cli.error(`Error: Requires either --recursive or one or more process types\n ${usage} `, 1)
+    cli.error(`Error: Requires either --recursive or one or more process types`, 1)
     return
   }
   if (context.args.length > 1 && !recurse) {
-    cli.error(`Error: Requires exactly one target process type, or --recursive option\n ${usage} `, 1)
+    cli.error(`Error: Requires exactly one target process type, or --recursive option`, 1)
     return
   }
   await heroku.get(`/apps/${context.app}`)
@@ -100,9 +98,17 @@ let push = async function (context, heroku) {
       }
       await Sanbashi.pushImage(job.resource)
     }
-    cli.log(`Your images have been successfully pushed. You can now release with them with the 'container:release' command.`)
+    const plural = jobs.length !== 1
+    cli.log(`Your image${plural ? 's have' : ' has'} been successfully pushed. You can now release ${plural ? 'them' : 'it'} with the 'container:release' command.`)
+    warnThatReleaseIsRequired(plural)
   } catch (err) {
     cli.error(`Error: docker push exited with ${err}`, 1)
     return
   }
+}
+
+function warnThatReleaseIsRequired (plural) {
+  // TODO: delete this once this date has passed
+  if (new Date() > new Date(2018, 8, 1)) return
+  cli.warn(`${cli.color.cmd('heroku container:push')} no longer creates a release.\nRun ${cli.color.cmd('heroku container:release')} to create a release with ${plural ? 'these' : 'this'} image${plural ? 's' : ''}.`)
 }
