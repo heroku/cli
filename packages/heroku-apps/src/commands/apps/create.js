@@ -54,6 +54,14 @@ async function addAddons (heroku, app, addons) {
   }
 }
 
+async function addConfigVars (heroku, app, configVars) {
+  if (Object.keys(configVars).length > 0) {
+    await cli.action('Setting config vars', heroku.patch(`/apps/${app.name}/config-vars`, {
+      body: configVars
+    }))
+  }
+}
+
 function addonsFromPlans (plans) {
   return plans.map(plan => ({
     plan: plan.trim()
@@ -118,8 +126,10 @@ async function runFromManifest (context, heroku) {
 
   let setup = manifest.setup || {}
   let addons = setup.addons || []
+  let configVars = setup.config || {}
 
   await addAddons(heroku, app, addons)
+  await addConfigVars(heroku, app, configVars)
   let remoteUrl = await configureGitRemote(context, app, git)
 
   printAppSummary(context, app, remoteUrl)
