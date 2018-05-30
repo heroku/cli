@@ -17,8 +17,11 @@ export PATH="./node_modules/.bin:./bin:$PATH"
 yarn
 run whoami
 cat <<EOF > README.md
+---
 title: Heroku CLI Commands
 id: 4088
+
+
 ## Introduction
 These are the help texts for each of the core Heroku CLI commands. You can also see this text in your terminal with \`heroku help \`, \`heroku --help\`, or \`heroku -h\`.
 <!-- commands -->

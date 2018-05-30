@@ -74,7 +74,7 @@ jobs:
       - checkout
       - run: ./scripts/release/dev_center_docs
       - store_artifacts:
-          path: /tmp/heroku-cli-commands-test.md
+          path: /tmp/heroku-cli-commands.md
   snap:
     docker:
       - image: snapcore/snapcraft:stable
