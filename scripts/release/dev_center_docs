@@ -27,5 +27,6 @@ These are the help texts for each of the core Heroku CLI commands. You can also 
 <!-- commands -->
 EOF
 oclif-dev readme
-mv README.md /tmp/heroku-cli-commands.md
+grep -v "^\\* \\[\`" README.md > /tmp/heroku-cli-commands.md
+git checkout README.md
 devcenter push /tmp/heroku-cli-commands.md --trace
