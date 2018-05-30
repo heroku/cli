@@ -40,18 +40,18 @@ describe('spaces:vpn:config', function () {
 
   it('gets VPN config', function () {
     let api = nock('https://api.heroku.com:443')
-            .get('/spaces/my-space/vpn/config')
-            .reply(200, response)
+      .get('/spaces/my-space/vpn/config')
+      .reply(200, response)
     return cmd.run({flags: {
       space: 'my-space'
     }})
-            .then(() => expect(cli.stdout).to.equal(
-            `=== my-space VPNs
+      .then(() => expect(cli.stdout).to.equal(
+        `=== my-space VPNs
 VPN Tunnel  Customer Gateway  VPN Gateway    Pre-shared Key  Routable Subnets  IKE Version
 ──────────  ────────────────  ─────────────  ──────────────  ────────────────  ───────────
 Tunnel 1    52.44.146.197     52.44.146.197  apresharedkey1  10.0.0.0/16       1
 Tunnel 2    52.44.146.196     52.44.146.196  apresharedkey2  10.0.0.0/16       1\n`))
-    .then(() => api.done())
+      .then(() => api.done())
   })
 
   it('gets VPN config in JSON', function () {
