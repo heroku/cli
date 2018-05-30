@@ -100,6 +100,7 @@ let push = async function (context, heroku) {
       }
       await Sanbashi.pushImage(job.resource)
     }
+    cli.log(`Your images have been successfully pushed. You can now release with them with the 'container:release' command.`)
   } catch (err) {
     cli.error(`Error: docker push exited with ${err}`, 1)
     return
