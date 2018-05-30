@@ -259,9 +259,9 @@
     redis-parser "^3.0.0"
     ssh2 "^0.6.1"
 
-"@heroku-cli/plugin-run@3.8.7", "@heroku-cli/plugin-run@^3.8.3":
-  version "3.8.7"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-run/-/plugin-run-3.8.7.tgz#7fb0d6ef5c2db958cc2f75a64b0c84599f0a080d"
+"@heroku-cli/plugin-run@3.8.8", "@heroku-cli/plugin-run@^3.8.3":
+  version "3.8.8"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-run/-/plugin-run-3.8.8.tgz#3da2c52339c33a9fa850bd1fddc06a8dee133d75"
   dependencies:
     "@heroku-cli/color" "^1.1.5"
     "@heroku-cli/command" "^8.1.20"
@@ -345,14 +345,14 @@
   dependencies:
     debug "^3.1.0"
 
-"@oclif/dev-cli@^1.13.25":
-  version "1.13.25"
-  resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.13.25.tgz#d9a5fb684fb7d4133832e1c6c1384f0912115486"
+"@oclif/dev-cli@^1.13.26":
+  version "1.13.26"
+  resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.13.26.tgz#1dfa062cc410aa0b44953248edf2744bd0b51636"
   dependencies:
     "@oclif/command" "^1.4.30"
     "@oclif/config" "^1.6.21"
     "@oclif/errors" "^1.1.2"
-    "@oclif/plugin-help" "^2.0.0"
+    "@oclif/plugin-help" "^2.0.1"
     cli-ux "^4.4.0"
     debug "^3.1.0"
     fs-extra "^6.0.1"
@@ -360,7 +360,7 @@
     normalize-package-data "^2.4.0"
     qqjs "^0.3.9"
     require-resolve "^0.0.2"
-    tslib "^1.9.1"
+    tslib "^1.9.2"
 
 "@oclif/errors@1.1.2", "@oclif/errors@^1.0.11", "@oclif/errors@^1.0.4", "@oclif/errors@^1.1.1", "@oclif/errors@^1.1.2":
   version "1.1.2"
@@ -392,9 +392,9 @@
     cli-ux "^4.4.0"
     tslib "^1"
 
-"@oclif/plugin-help@2.0.1", "@oclif/plugin-help@^2.0.0":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@oclif/plugin-help/-/plugin-help-2.0.1.tgz#53b4ecbecf00b329feb8e57e2d917cdf3e6870a5"
+"@oclif/plugin-help@2.0.2", "@oclif/plugin-help@^2.0.1":
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-help/-/plugin-help-2.0.2.tgz#0529a5cf5c74d9a4571e3a2ed98fee963ecaba90"
   dependencies:
     "@oclif/command" "^1.4.30"
     chalk "^2.4.1"
@@ -3207,7 +3207,7 @@ tslib@1.9.0:
   version "1.9.0"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.9.0.tgz#e37a86fda8cbbaf23a057f473c9f4dc64e5fc2e8"
 
-tslib@1.9.2, tslib@^1, tslib@^1.7.1, tslib@^1.8.0, tslib@^1.8.1, tslib@^1.9.0, tslib@^1.9.1:
+tslib@1.9.2, tslib@^1, tslib@^1.7.1, tslib@^1.8.0, tslib@^1.8.1, tslib@^1.9.0, tslib@^1.9.1, tslib@^1.9.2:
   version "1.9.2"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.9.2.tgz#8be0cc9a1f6dc7727c38deb16c2ebd1a2892988e"
 
