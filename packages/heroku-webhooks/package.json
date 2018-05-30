@@ -22,7 +22,7 @@
     "nyc": "11.4.1"
   },
   "files": [
-    ".oclif.manifest.json",
+    "oclif.manifest.json",
     "index.js",
     "commands",
     "lib"
@@ -39,7 +39,8 @@
   "scripts": {
     "test": "TZ=utc nyc mocha && eslint .",
     "prepublishOnly": "oclif-dev manifest",
-    "postpublish": "rm .oclif.manifest.json"
+    "postpublish": "rm oclif.manifest.json",
+    "version": "oclif-dev readme && git add README.md"
   },
   "oclif": {
     "commands": "./commands",
