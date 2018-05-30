@@ -11,6 +11,7 @@ const http = require('https')
 const net = require('net')
 const spawn = require('child_process').spawn
 const debug = require('debug')('heroku:run')
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
 /** Represents a dyno process */
 class Dyno extends Duplex {
@@ -137,18 +138,28 @@ class Dyno extends Duplex {
     })
   }
 
-  _ssh () {
+  async _ssh (retries = 20) {
     const interval = 1000
-    const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
-    return this.heroku.get(`/apps/${this.opts.app}/dynos/${this.opts.dyno}`)
-      .then(dyno => {
-        this.dyno = dyno
-        cli.action.done(this._status(this.dyno.state))
+    try {
+      const dyno = await this.heroku.get(`/apps/${this.opts.app}/dynos/${this.opts.dyno}`)
+      this.dyno = dyno
+      cli.action.done(this._status(this.dyno.state))
 
-        if (this.dyno.state === 'starting' || this.dyno.state === 'up') return this._connect()
-        else return wait(interval).then(this._ssh.bind(this))
-      })
+      if (this.dyno.state === 'starting' || this.dyno.state === 'up') {
+        return this._connect()
+      } else {
+        await wait(interval)
+        return this._ssh()
+      }
+    } catch (err) {
+      // the API sometimes responds with a 404 when the dyno is not yet ready
+      if (err.statusCode === 404 && retries > 0) {
+        return this._ssh(retries - 1)
+      } else {
+        throw err
+      }
+    }
   }
 
   _connect () {
