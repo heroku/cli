@@ -41,7 +41,7 @@ For other issues, [submit a support ticket](https://help.heroku.com/).
 
 * [`heroku access`](docs/access.md) - manage user access to apps
 * [`heroku addons`](docs/addons.md) - tools and services for developing, extending, and operating your app
-* [`heroku apps`](docs/apps.md) - creates a new app
+* [`heroku apps`](docs/apps.md) - add yourself to an organization app
 * [`heroku auth`](docs/auth.md) - login with your Heroku credentials
 * [`heroku authorizations`](docs/authorizations.md) - OAuth authorizations
 * [`heroku buildpacks`](docs/buildpacks.md) - add new app buildpack, inserting into list of buildpacks if necessary
