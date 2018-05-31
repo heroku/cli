@@ -12,6 +12,5 @@ module.exports = {
   topic: 'local',
   command: 'version',
   description: 'display node-foreman version',
-  help: 'Display node-foreman version',
   run: cli.command(co.wrap(run))
 }

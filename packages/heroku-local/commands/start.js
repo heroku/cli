@@ -27,14 +27,11 @@ function * run (context) {
 const cmd = {
   topic: 'local',
   description: 'run heroku app locally',
-  help: `Start the application specified by a Procfile (defaults to ./Procfile)
-
-Examples:
-
-    heroku local
-    heroku local web
-    heroku local web=2
-    heroku local web=1,worker=2`,
+  help: 'Start the application specified by a Procfile (defaults to ./Procfile)',
+  examples: `$ heroku local
+$ heroku local web
+$ heroku local web=2
+$ heroku local web=1,worker=2`,
   args: [{name: 'processname', optional: true}],
   flags: [
     {name: 'procfile', char: 'f', hasValue: true, description: 'use a different Procfile', completion: FileCompletion},

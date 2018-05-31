@@ -18,29 +18,90 @@ $ heroku local
 
 This command internally uses [node-foreman](https://github.com/strongloop/node-foreman) to run the app locally.
 
-Help
-=======
+Commands
+========
+
+<!-- commands -->
+* [`@heroku-cli/plugin-local local [PROCESSNAME]`](#heroku-cli-plugin-local-local-processname)
+* [`@heroku-cli/plugin-local local:run`](#heroku-cli-plugin-local-localrun)
+* [`@heroku-cli/plugin-local local:start [PROCESSNAME]`](#heroku-cli-plugin-local-localstart-processname)
+* [`@heroku-cli/plugin-local local:version`](#heroku-cli-plugin-local-localversion)
+
+## `@heroku-cli/plugin-local local [PROCESSNAME]`
+
+run heroku app locally
 
 ```
-$ heroku help local
+USAGE
+  $ @heroku-cli/plugin-local local [PROCESSNAME]
 
-Usage: heroku local [PROCESSNAME]
+OPTIONS
+  -e, --env=env            location of env file (defaults to .env)
+  -f, --procfile=procfile  use a different Procfile
+  -p, --port=port          port to listen on
 
- run heroku app locally
+DESCRIPTION
+  Start the application specified by a Procfile (defaults to ./Procfile)
 
- Start the application specified by a Procfile (defaults to ./Procfile)
+  Examples:
 
- Examples:
-
-   heroku local
-   heroku local web
-   heroku local -f Procfile.test -e .env.test
-
- -f, --procfile PROCFILE
- -e, --env ENV
- -p, --port PORT
-
-Additional commands, type "heroku help COMMAND" for more details:
-
-  local:version  #  display node-foreman version
+       heroku local
+       heroku local web
+       heroku local web=2
+       heroku local web=1,worker=2
 ```
+
+## `@heroku-cli/plugin-local local:run`
+
+run a one-off command
+
+```
+USAGE
+  $ @heroku-cli/plugin-local local:run
+
+OPTIONS
+  -e, --env=env
+  -p, --port=port
+
+DESCRIPTION
+  Example:
+
+       heroku local:run bin/migrate
+```
+
+## `@heroku-cli/plugin-local local:start [PROCESSNAME]`
+
+run heroku app locally
+
+```
+USAGE
+  $ @heroku-cli/plugin-local local:start [PROCESSNAME]
+
+OPTIONS
+  -e, --env=env            location of env file (defaults to .env)
+  -f, --procfile=procfile  use a different Procfile
+  -p, --port=port          port to listen on
+
+DESCRIPTION
+  Start the application specified by a Procfile (defaults to ./Procfile)
+
+  Examples:
+
+       heroku local
+       heroku local web
+       heroku local web=2
+       heroku local web=1,worker=2
+```
+
+## `@heroku-cli/plugin-local local:version`
+
+display node-foreman version
+
+```
+USAGE
+  $ @heroku-cli/plugin-local local:version
+
+DESCRIPTION
+  Display node-foreman version
+```
+<!-- commandsstop -->
