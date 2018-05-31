@@ -27,9 +27,9 @@
     strip-ansi "^4.0.0"
     supports-color "^5.4.0"
 
-"@heroku-cli/command@8.1.21", "@heroku-cli/command@^8.0.5", "@heroku-cli/command@^8.0.7", "@heroku-cli/command@^8.1.14", "@heroku-cli/command@^8.1.16", "@heroku-cli/command@^8.1.17", "@heroku-cli/command@^8.1.18", "@heroku-cli/command@^8.1.20":
-  version "8.1.21"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.1.21.tgz#34342203e49fd6b1f7ed4e4b237fd2d33753d0d5"
+"@heroku-cli/command@8.1.22", "@heroku-cli/command@^8.0.5", "@heroku-cli/command@^8.0.7", "@heroku-cli/command@^8.1.14", "@heroku-cli/command@^8.1.16", "@heroku-cli/command@^8.1.17", "@heroku-cli/command@^8.1.18", "@heroku-cli/command@^8.1.20":
+  version "8.1.22"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.1.22.tgz#0141caddcf4e202d33c5837d83657d39c424922c"
   dependencies:
     "@heroku-cli/color" "^1.1.5"
     "@oclif/errors" "^1.1.2"
@@ -331,12 +331,12 @@
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.0.tgz#50c1e2260ac0ed9439a181de3725a0168d59c48a"
 
-"@oclif/command@1.4.30", "@oclif/command@^1", "@oclif/command@^1.4.13", "@oclif/command@^1.4.19", "@oclif/command@^1.4.20", "@oclif/command@^1.4.21", "@oclif/command@^1.4.30":
-  version "1.4.30"
-  resolved "https://registry.yarnpkg.com/@oclif/command/-/command-1.4.30.tgz#631eb423182517dc38711d6270aecb621bfa24a9"
+"@oclif/command@1.4.31", "@oclif/command@^1", "@oclif/command@^1.4.13", "@oclif/command@^1.4.19", "@oclif/command@^1.4.20", "@oclif/command@^1.4.21", "@oclif/command@^1.4.30":
+  version "1.4.31"
+  resolved "https://registry.yarnpkg.com/@oclif/command/-/command-1.4.31.tgz#14aece1d9d9e53cc5a5dc03d17cf315cd55818f9"
   dependencies:
-    "@oclif/errors" "^1.1.1"
-    "@oclif/parser" "^3.4.0"
+    "@oclif/errors" "^1.1.2"
+    "@oclif/parser" "^3.4.1"
     debug "^3.1.0"
     semver "^5.5.0"
 
@@ -377,9 +377,9 @@
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@oclif/linewrap/-/linewrap-1.0.0.tgz#aedcb64b479d4db7be24196384897b5000901d91"
 
-"@oclif/parser@^3.4.0":
-  version "3.4.0"
-  resolved "https://registry.yarnpkg.com/@oclif/parser/-/parser-3.4.0.tgz#bf61399c70f75a96070153df2fcbb7e7115c7fd9"
+"@oclif/parser@^3.4.1":
+  version "3.4.1"
+  resolved "https://registry.yarnpkg.com/@oclif/parser/-/parser-3.4.1.tgz#83942276f3cf9406a1a3dcf3eb917183d6333e1d"
   dependencies:
     "@oclif/linewrap" "^1.0.0"
     chalk "^2.4.1"
@@ -1328,8 +1328,8 @@ extract-stack@^1.0.0:
   resolved "https://registry.yarnpkg.com/extract-stack/-/extract-stack-1.0.0.tgz#b97acaf9441eea2332529624b732fc5a1c8165fa"
 
 fancy-test@^1.0.6:
-  version "1.0.8"
-  resolved "https://registry.yarnpkg.com/fancy-test/-/fancy-test-1.0.8.tgz#d66a5ffab73a0792bf3c8404812c5a774f0e3180"
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/fancy-test/-/fancy-test-1.0.9.tgz#2d75d49abd3855802953c0f6dcf26dddb8762b09"
   dependencies:
     lodash "^4.17.10"
     stdout-stderr "^0.1.9"

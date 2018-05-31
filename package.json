@@ -9,7 +9,7 @@
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
     "@heroku-cli/color": "1.1.5",
-    "@heroku-cli/command": "8.1.21",
+    "@heroku-cli/command": "8.1.22",
     "@heroku-cli/plugin-addons": "1.2.30",
     "@heroku-cli/plugin-apps": "2.5.10",
     "@heroku-cli/plugin-auth": "0.6.0",
@@ -32,7 +32,7 @@
     "@heroku-cli/plugin-spaces": "2.12.3",
     "@heroku-cli/plugin-status": "5.0.10",
     "@heroku-cli/plugin-webhooks": "1.2.0",
-    "@oclif/command": "1.4.30",
+    "@oclif/command": "1.4.31",
     "@oclif/config": "1.6.21",
     "@oclif/errors": "1.1.2",
     "@oclif/plugin-commands": "^1.1.0",
