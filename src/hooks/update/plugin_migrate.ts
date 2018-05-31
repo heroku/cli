@@ -10,6 +10,7 @@ const exec = (cmd: string, args: string[]) => {
 const deprecated: {[k: string]: string | null} = {
   // rename these plugins
   'heroku-api-plugin': 'api',
+  'heroku-cli-api': 'api',
   'heroku-cli-autocomplete': 'autocomplete',
 
   // remove these plugins
