@@ -20,6 +20,8 @@ async function run (context, heroku) {
   for (let stack of stacks) {
     if (stack.name === app.stack.name) {
       cli.log(cli.color.green('* ' + map(stack.name)))
+    } else if (stack.name === app.build_stack.name) {
+      cli.log(`  ${map(stack.name)} (active on next deploy)`)
     } else {
       cli.log(`  ${map(stack.name)}`)
     }
