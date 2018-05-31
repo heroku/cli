@@ -68,7 +68,13 @@ function * run (context, heroku) {
     data['Owner'] = info.app.owner.email
     data['Region'] = info.app.region.name
     data['Dynos'] = countBy(info.dynos, 'type')
-    data['Stack'] = info.app.stack.name
+    data['Stack'] = (function (app) {
+      let stack = info.app.stack.name
+      if (app.stack.name !== app.build_stack.name) {
+        stack += ` (next build will use ${app.build_stack.name})`
+      }
+      return stack
+    })(info.app)
 
     cli.styledHeader(info.app.name)
     cli.styledObject(data)

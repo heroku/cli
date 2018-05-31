@@ -16,10 +16,15 @@ let app = {
   git_url: 'https://git.heroku.com/myapp',
   web_url: 'https://myapp.herokuapp.com',
   region: {name: 'eu'},
+  build_stack: {name: 'cedar-14'},
   stack: {name: 'cedar-14'},
   owner: {email: 'foo@foo.com'},
   space: {name: 'myspace'}
 }
+
+let appStackChange = Object.assign({}, app, {
+  build_stack: {name: 'heroku-18'}
+})
 
 let appExtended = Object.assign({}, app, {
   extended: {
@@ -254,6 +259,36 @@ stack=cedar-14
         expect(json.dynos[0].type).to.equal('web')
         expect(json.pipeline_coupling.pipeline.name).to.equal('my-pipeline')
       })
+      .then(() => appApi.done())
+      .then(() => api.done())
+  })
+
+  it('shows app info with a stack change', () => {
+    let appApi = nock('https://api.heroku.com', {
+      reqheaders: {'Accept': 'application/vnd.heroku+json; version=3.cedar-acm'}
+    }).get('/apps/myapp').reply(200, appStackChange)
+
+    let api = nock('https://api.heroku.com:443')
+      .get('/apps/myapp/addons').reply(200, addons)
+      .get('/apps/myapp/collaborators').reply(200, collaborators)
+      .get('/apps/myapp/dynos').reply(200, [{type: 'web', size: 'Standard-1X', quantity: 2}])
+    return cmd.run({app: 'myapp', args: {}, flags: {}})
+      .then(() => expect(cli.stderr).to.equal(''))
+      .then(() => expect(cli.stdout).to.equal(`=== myapp
+Addons:         heroku-redis
+                papertrail
+Collaborators:  foo2@foo.com
+Database Size:  1000 B
+Dynos:          web: 1
+Git URL:        https://git.heroku.com/myapp
+Owner:          foo@foo.com
+Region:         eu
+Repo Size:      1000 B
+Slug Size:      1000 B
+Space:          myspace
+Stack:          cedar-14 (next build will use heroku-18)
+Web URL:        https://myapp.herokuapp.com
+`))
       .then(() => appApi.done())
       .then(() => api.done())
   })
