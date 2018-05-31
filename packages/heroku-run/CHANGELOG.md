@@ -1,3 +1,11 @@
+<a name="3.8.9"></a>
+## [3.8.9](https://github.com/heroku/heroku-run/compare/v3.8.8...v3.8.9) (2018-05-31)
+
+
+### Bug Fixes
+
+* example docs ([0802cb5](https://github.com/heroku/heroku-run/commit/0802cb5))
+
 <a name="3.8.7"></a>
 ## [3.8.7](https://github.com/heroku/heroku-run/compare/v3.8.6...v3.8.7) (2018-05-29)
 
