@@ -1,3 +1,11 @@
+<a name="2.5.5"></a>
+## [2.5.5](https://github.com/heroku/heroku-apps/compare/v2.5.4...v2.5.5) (2018-05-31)
+
+
+### Bug Fixes
+
+* move 2fa:generate to auth plugin ([c1a1aad](https://github.com/heroku/heroku-apps/commit/c1a1aad))
+
 <a name="2.5.4"></a>
 ## [2.5.4](https://github.com/heroku/heroku-apps/compare/v2.5.3...v2.5.4) (2018-05-30)
 
