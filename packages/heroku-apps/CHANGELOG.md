@@ -1,3 +1,11 @@
+<a name="2.5.8"></a>
+## [2.5.8](https://github.com/heroku/heroku-apps/compare/v2.5.7...v2.5.8) (2018-05-31)
+
+
+### Bug Fixes
+
+* sort stacks ([cfb52c4](https://github.com/heroku/heroku-apps/commit/cfb52c4))
+
 <a name="2.5.7"></a>
 ## [2.5.7](https://github.com/heroku/heroku-apps/compare/v2.5.6...v2.5.7) (2018-05-31)
 
