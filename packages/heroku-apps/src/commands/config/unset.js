@@ -36,14 +36,11 @@ function * run (context, heroku) {
 
 let cmd = {
   description: 'unset one or more config vars',
-  help: `
-Examples:
+  examples: `$ heroku config:unset RAILS_ENV
+Unsetting RAILS_ENV and restarting example... done, v10
 
-    $ heroku config:unset RAILS_ENV
-    Unsetting RAILS_ENV and restarting example... done, v10
-    
-    $ heroku config:unset RAILS_ENV RACK_ENV
-    Unsetting RAILS_ENV, RACK_ENV and restarting example... done, v10`,
+$ heroku config:unset RAILS_ENV RACK_ENV
+Unsetting RAILS_ENV, RACK_ENV and restarting example... done, v10`,
   needsApp: true,
   needsAuth: true,
   variableArgs: true,

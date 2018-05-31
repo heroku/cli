@@ -22,18 +22,15 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
   --json               output in json format
 
-DESCRIPTION
+EXAMPLES
+  $ heroku domains
+  === example Heroku Domain
+  example.herokuapp.com
 
-  Example:
-
-       $ heroku domains
-       === example Heroku Domain
-       example.herokuapp.com
-    
-       === example Custom Domains
-       Domain Name      DNS Record Type  DNS Target
-       ───────────      ───────────────  ──────────
-       www.example.com  CNAME            www.example.herokudns.com
+  === example Custom Domains
+  Domain Name      DNS Record Type  DNS Target
+  ───────────      ───────────────  ──────────
+  www.example.com  CNAME            www.example.herokudns.com
 ```
 
 ## `heroku domains:add HOSTNAME`

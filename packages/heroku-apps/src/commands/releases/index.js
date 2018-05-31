@@ -151,14 +151,11 @@ function * run (context, heroku) {
 module.exports = {
   topic: 'releases',
   description: 'display the releases for an app',
-  help: `
-Example:
-
-    $ heroku releases
-    === example Releases
-    v1 Config add FOO_BAR email@example.com 2015/11/17 17:37:41 (~ 1h ago)
-    v2 Config add BAR_BAZ email@example.com 2015/11/17 17:37:41 (~ 1h ago)
-    v3 Config add BAZ_QUX email@example.com 2015/11/17 17:37:41 (~ 1h ago)`,
+  examples: `$ heroku releases
+=== example Releases
+v1 Config add FOO_BAR email@example.com 2015/11/17 17:37:41 (~ 1h ago)
+v2 Config add BAR_BAZ email@example.com 2015/11/17 17:37:41 (~ 1h ago)
+v3 Config add BAZ_QUX email@example.com 2015/11/17 17:37:41 (~ 1h ago)`,
   needsApp: true,
   needsAuth: true,
   flags: [

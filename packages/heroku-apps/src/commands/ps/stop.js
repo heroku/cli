@@ -15,16 +15,12 @@ function * run (context, heroku) {
 let cmd = {
   description: 'stop app dyno',
   help: `
-stop app dyno or dyno type
+stop app dyno or dyno type`,
+  examples: `$ heroku ps:stop run.1828
+Stopping run.1828 dyno... done
 
-Examples:
-
-    $ heroku ps:stop run.1828
-    Stopping run.1828 dyno... done
-
-    $ heroku ps:stop run
-    Stopping run dynos... done
-`,
+$ heroku ps:stop run
+Stopping run dynos... done`,
   needsAuth: true,
   needsApp: true,
   args: [{name: 'dyno'}],

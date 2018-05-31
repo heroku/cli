@@ -20,12 +20,8 @@ module.exports = {
   topic: 'keys',
   command: 'remove',
   description: 'remove an SSH key from the user',
-  help: `
-Example:
-
-    $ heroku keys:remove email@example.com
-    Removing email@example.com SSH key... done
-  `,
+  examples: `$ heroku keys:remove email@example.com
+Removing email@example.com SSH key... done`,
   needsAuth: true,
   args: [{name: 'key'}],
   run: cli.command(co.wrap(run))

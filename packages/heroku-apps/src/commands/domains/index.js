@@ -43,18 +43,14 @@ function isApexDomain (hostname) {
 module.exports = {
   topic: 'domains',
   description: 'list domains for an app',
-  help: `
-Example:
+  examples: `$ heroku domains
+=== example Heroku Domain
+example.herokuapp.com
 
-    $ heroku domains
-    === example Heroku Domain
-    example.herokuapp.com
-    
-    === example Custom Domains
-    Domain Name      DNS Record Type  DNS Target
-    ───────────      ───────────────  ──────────
-    www.example.com  CNAME            www.example.herokudns.com
-  `,
+=== example Custom Domains
+Domain Name      DNS Record Type  DNS Target
+───────────      ───────────────  ──────────
+www.example.com  CNAME            www.example.herokudns.com`,
   needsApp: true,
   needsAuth: true,
   flags: [

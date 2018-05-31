@@ -19,20 +19,15 @@ function * run (context, heroku) {
 
 let cmd = {
   description: 'restart app dynos',
-  help: `
-if DYNO is not specified, restarts all dynos on app
+  help: 'if DYNO is not specified, restarts all dynos on app',
+  examples: `$ heroku ps:restart web.1
+Restarting web.1 dyno... done
 
-Examples:
+$ heroku ps:restart web
+Restarting web dynos... done
 
-    $ heroku ps:restart web.1
-    Restarting web.1 dyno... done
-
-    $ heroku ps:restart web
-    Restarting web dynos... done
-
-    $ heroku ps:restart
-    Restarting dynos... done
-`,
+$ heroku ps:restart
+Restarting dynos... done`,
   needsAuth: true,
   needsApp: true,
   args: [{name: 'dyno', optional: true}],

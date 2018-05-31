@@ -2,30 +2,7 @@
 =============
 
 creates a new app
-Examples:
 
-    $ heroku apps:create
-    Creating app... done, stack is cedar-14
-    https://floating-dragon-42.heroku.com/ | https://git.heroku.com/floating-dragon-42.git
-
-    # or just
-    $ heroku create
-
-    # use a heroku.yml manifest file
-    $ heroku apps:create --manifest
-
-    # specify a buildpack
-    $ heroku apps:create --buildpack https://github.com/some/buildpack.git
-
-    # specify a name
-    $ heroku apps:create example
-
-    # create a staging app
-    $ heroku apps:create example-staging --remote staging
-
-    # create an app in the eu region
-    $ heroku apps:create --region eu
- 
 * [`heroku apps`](#heroku-apps)
 * [`heroku apps:create [APP]`](#heroku-appscreate-app)
 * [`heroku apps:destroy`](#heroku-appsdestroy)
@@ -87,30 +64,28 @@ OPTIONS
   --space=space              the private space to create the app in
   --ssh-git                  use SSH git protocol for local git remote
 
-DESCRIPTION
-  Examples:
+EXAMPLES
+  $ heroku apps:create
+  Creating app... done, stack is cedar-14
+  https://floating-dragon-42.heroku.com/ | https://git.heroku.com/floating-dragon-42.git
 
-       $ heroku apps:create
-       Creating app... done, stack is cedar-14
-       https://floating-dragon-42.heroku.com/ | https://git.heroku.com/floating-dragon-42.git
+  # or just
+  $ heroku create
 
-       # or just
-       $ heroku create
+  # use a heroku.yml manifest file
+  $ heroku apps:create --manifest
 
-       # use a heroku.yml manifest file
-       $ heroku apps:create --manifest
+  # specify a buildpack
+  $ heroku apps:create --buildpack https://github.com/some/buildpack.git
 
-       # specify a buildpack
-       $ heroku apps:create --buildpack https://github.com/some/buildpack.git
+  # specify a name
+  $ heroku apps:create example
 
-       # specify a name
-       $ heroku apps:create example
+  # create a staging app
+  $ heroku apps:create example-staging --remote staging
 
-       # create a staging app
-       $ heroku apps:create example-staging --remote staging
-
-       # create an app in the eu region
-       $ heroku apps:create --region eu
+  # create an app in the eu region
+  $ heroku apps:create --region eu
 ```
 
 ## `heroku apps:destroy`
@@ -200,18 +175,16 @@ OPTIONS
   -s, --shell          output more shell friendly key/value pairs
 
 DESCRIPTION
-  Examples:
+  $ heroku apps:info
+  === example
+  Git URL:   https://git.heroku.com/example.git
+  Repo Size: 5M
+  ...
 
-       $ heroku apps:info
-       === example
-       Git URL:   https://git.heroku.com/example.git
-       Repo Size: 5M
-       ...
-
-       $ heroku apps:info --shell
-       git_url=https://git.heroku.com/example.git
-       repo_size=5000000
-       ...
+  $ heroku apps:info --shell
+  git_url=https://git.heroku.com/example.git
+  repo_size=5000000
+  ...
 ```
 
 ## `heroku apps:open [PATH]`
@@ -226,15 +199,12 @@ OPTIONS
   -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 
-DESCRIPTION
+EXAMPLES
+  $ heroku open -a myapp
+  # opens https://myapp.herokuapp.com
 
-  Examples:
-
-       $ heroku open -a myapp
-       # opens https://myapp.herokuapp.com
-
-       $ heroku open -a myapp /foo
-       # opens https://myapp.herokuapp.com/foo
+  $ heroku open -a myapp /foo
+  # opens https://myapp.herokuapp.com/foo
 ```
 
 ## `heroku apps:rename NEWNAME`
@@ -251,14 +221,12 @@ OPTIONS
   --ssh-git            use ssh git protocol instead of https
 
 DESCRIPTION
-
   This will locally update the git remote if it is set to the old app.
 
-  Example:
-
-       $ heroku apps:rename --app oldname newname
-       https://newname.herokuapp.com/ | https://git.heroku.com/newname.git
-       Git remote heroku updated
+EXAMPLES
+  $ heroku apps:rename --app oldname newname
+  https://newname.herokuapp.com/ | https://git.heroku.com/newname.git
+  Git remote heroku updated
 ```
 
 ## `heroku apps:stacks`
@@ -286,11 +254,8 @@ OPTIONS
   -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 
-DESCRIPTION
-
-  Example:
-
-       $ heroku stack:set cedar-14 -a myapp
-       Stack set. Next release on myapp will use cedar-14.
-       Run git push heroku master to create a new release on myapp.
+EXAMPLES
+  $ heroku stack:set cedar-14 -a myapp
+  Stack set. Next release on myapp will use cedar-14.
+  Run git push heroku master to create a new release on myapp.
 ```

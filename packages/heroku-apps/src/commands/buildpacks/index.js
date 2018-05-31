@@ -19,8 +19,9 @@ function * run (context, heroku) {
 module.exports = {
   topic: 'buildpacks',
   description: 'display the buildpack_url(s) for an app',
-  help: `Examples:
-    $ heroku buildpacks
+  examples: `$ heroku buildpacks -a myapp
+=== myapp Buildpack URL
+heroku/ruby
 `,
   needsApp: true,
   needsAuth: true,

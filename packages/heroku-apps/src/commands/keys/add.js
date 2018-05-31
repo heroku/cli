@@ -94,19 +94,15 @@ module.exports = {
   topic: 'keys',
   command: 'add',
   description: 'add an SSH key for a user',
-  help: `if no KEY is specified, will try to find ~/.ssh/id_rsa.pub
+  help: `if no KEY is specified, will try to find ~/.ssh/id_rsa.pub`,
+  examples: `$ heroku keys:add
+Could not find an existing public key.
+Would you like to generate one? [Yn] y
+Generating new SSH public key.
+Uploading SSH public key /.ssh/id_rsa.pub... done
 
-Examples:
-
-    $ heroku keys:add
-    Could not find an existing public key.
-    Would you like to generate one? [Yn] y
-    Generating new SSH public key.
-    Uploading SSH public key /.ssh/id_rsa.pub... done
-
-    $ heroku keys:add /my/key.pub
-    Uploading SSH public key /my/key.pub... done
-`,
+$ heroku keys:add /my/key.pub
+Uploading SSH public key /my/key.pub... done`,
   needsAuth: true,
   args: [{name: 'key', optional: true}],
   flags: [

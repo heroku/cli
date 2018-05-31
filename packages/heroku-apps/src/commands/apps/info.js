@@ -118,18 +118,16 @@ function * run (context, heroku) {
 
 let cmd = {
   description: 'show detailed app information',
-  help: `Examples:
+  help: `$ heroku apps:info
+=== example
+Git URL:   https://git.heroku.com/example.git
+Repo Size: 5M
+...
 
-    $ heroku apps:info
-    === example
-    Git URL:   https://git.heroku.com/example.git
-    Repo Size: 5M
-    ...
-
-    $ heroku apps:info --shell
-    git_url=https://git.heroku.com/example.git
-    repo_size=5000000
-    ...`,
+$ heroku apps:info --shell
+git_url=https://git.heroku.com/example.git
+repo_size=5000000
+...`,
   wantsApp: true,
   needsAuth: true,
   args: [{name: 'app', hidden: true, optional: true}],

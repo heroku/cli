@@ -35,10 +35,7 @@ module.exports = {
     {name: 'index', char: 'i', hasValue: true, description: 'the 1-based index of the URL in the list of URLs'}
   ],
   description: 'set new app buildpack, overwriting into list of buildpacks if necessary',
-  help: `Example:
-
-     $ heroku buildpacks:set -i 1 heroku/ruby
-`,
+  examples: '$ heroku buildpacks:set -i 1 heroku/ruby',
   needsApp: true,
   needsAuth: true,
   run: cli.command(co.wrap(run))

@@ -60,16 +60,12 @@ let cmd = {
   help: `Appending a size (eg. web=2:Standard-2X) allows simultaneous scaling and resizing.
 
 Omitting any arguments will display the app's current dyno formation, in a
-format suitable for passing back into ps:scale.
+format suitable for passing back into ps:scale.`,
+  examples: `$ heroku ps:scale web=3:Standard-2X worker+1
+Scaling dynos... done, now running web at 3:Standard-2X, worker at 1:Standard-1X.
 
-Examples:
-
-    $ heroku ps:scale web=3:Standard-2X worker+1
-    Scaling dynos... done, now running web at 3:Standard-2X, worker at 1:Standard-1X.
-
-    $ heroku ps:scale
-    web=3:Standard-2X worker=1:Standard-1X
-`,
+$ heroku ps:scale
+web=3:Standard-2X worker=1:Standard-1X`,
   needsAuth: true,
   needsApp: true,
   run: cli.command(co.wrap(run))

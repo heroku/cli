@@ -53,17 +53,14 @@ function * run (context, heroku) {
 
 let cmd = {
   description: 'set one or more config vars',
-  help: `Examples:
+  examples: `$ heroku config:set RAILS_ENV=staging
+Setting config vars and restarting example... done, v10
+RAILS_ENV: staging
 
-    $ heroku config:set RAILS_ENV=staging
-    Setting config vars and restarting example... done, v10
-    RAILS_ENV: staging
-    
-    $ heroku config:set RAILS_ENV=staging RACK_ENV=staging
-    Setting config vars and restarting example... done, v11
-    RAILS_ENV: staging
-    RACK_ENV:  staging
- `,
+$ heroku config:set RAILS_ENV=staging RACK_ENV=staging
+Setting config vars and restarting example... done, v11
+RAILS_ENV: staging
+RACK_ENV:  staging`,
   needsApp: true,
   needsAuth: true,
   variableArgs: true,

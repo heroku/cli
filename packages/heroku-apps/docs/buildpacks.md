@@ -2,9 +2,6 @@
 ===================
 
 add new app buildpack, inserting into list of buildpacks if necessary
-Example:
-
-     $ heroku buildpacks:add -i 1 https://github.com/heroku/heroku-buildpack-ruby
 
 * [`heroku buildpacks`](#heroku-buildpacks)
 * [`heroku buildpacks:add URL`](#heroku-buildpacksadd-url)
@@ -24,9 +21,10 @@ OPTIONS
   -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 
-DESCRIPTION
-  Examples:
-       $ heroku buildpacks
+EXAMPLES
+  $ heroku buildpacks -a myapp
+  === myapp Buildpack URL
+  heroku/ruby
 ```
 
 ## `heroku buildpacks:add URL`
@@ -42,10 +40,8 @@ OPTIONS
   -i, --index=index    the 1-based index of the URL in the list of URLs
   -r, --remote=remote  git remote of app to use
 
-DESCRIPTION
-  Example:
-
-        $ heroku buildpacks:add -i 1 https://github.com/heroku/heroku-buildpack-ruby
+EXAMPLES
+  $ heroku buildpacks:add -i 1 https://github.com/heroku/heroku-buildpack-ruby
 ```
 
 ## `heroku buildpacks:clear`
@@ -88,8 +84,6 @@ OPTIONS
   -i, --index=index    the 1-based index of the URL in the list of URLs
   -r, --remote=remote  git remote of app to use
 
-DESCRIPTION
-  Example:
-
-        $ heroku buildpacks:set -i 1 heroku/ruby
+EXAMPLES
+  $ heroku buildpacks:set -i 1 heroku/ruby
 ```

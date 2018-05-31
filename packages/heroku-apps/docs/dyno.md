@@ -2,19 +2,7 @@
 =============
 
 restart app dynos
-
 if DYNO is not specified, restarts all dynos on app
-
-Examples:
-
-    $ heroku ps:restart web.1
-    Restarting web.1 dyno... done
-
-    $ heroku ps:restart web
-    Restarting web dynos... done
-
-    $ heroku ps:restart
-    Restarting dynos... done
 
 * [`heroku dyno:kill DYNO`](#heroku-dynokill-dyno)
 * [`heroku dyno:resize`](#heroku-dynoresize)
@@ -38,13 +26,12 @@ DESCRIPTION
 
   stop app dyno or dyno type
 
-  Examples:
+EXAMPLES
+  $ heroku ps:stop run.1828
+  Stopping run.1828 dyno... done
 
-       $ heroku ps:stop run.1828
-       Stopping run.1828 dyno... done
-
-       $ heroku ps:stop run
-       Stopping run dynos... done
+  $ heroku ps:stop run
+  Stopping run dynos... done
 ```
 
 ## `heroku dyno:resize`
@@ -82,19 +69,17 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
-
   if DYNO is not specified, restarts all dynos on app
 
-  Examples:
+EXAMPLES
+  $ heroku ps:restart web.1
+  Restarting web.1 dyno... done
 
-       $ heroku ps:restart web.1
-       Restarting web.1 dyno... done
+  $ heroku ps:restart web
+  Restarting web dynos... done
 
-       $ heroku ps:restart web
-       Restarting web dynos... done
-
-       $ heroku ps:restart
-       Restarting dynos... done
+  $ heroku ps:restart
+  Restarting dynos... done
 ```
 
 ## `heroku dyno:scale`
@@ -115,13 +100,12 @@ DESCRIPTION
   Omitting any arguments will display the app's current dyno formation, in a
   format suitable for passing back into ps:scale.
 
-  Examples:
+EXAMPLES
+  $ heroku ps:scale web=3:Standard-2X worker+1
+  Scaling dynos... done, now running web at 3:Standard-2X, worker at 1:Standard-1X.
 
-       $ heroku ps:scale web=3:Standard-2X worker+1
-       Scaling dynos... done, now running web at 3:Standard-2X, worker at 1:Standard-1X.
-
-       $ heroku ps:scale
-       web=3:Standard-2X worker=1:Standard-1X
+  $ heroku ps:scale
+  web=3:Standard-2X worker=1:Standard-1X
 ```
 
 ## `heroku dyno:stop DYNO`
@@ -140,11 +124,10 @@ DESCRIPTION
 
   stop app dyno or dyno type
 
-  Examples:
+EXAMPLES
+  $ heroku ps:stop run.1828
+  Stopping run.1828 dyno... done
 
-       $ heroku ps:stop run.1828
-       Stopping run.1828 dyno... done
-
-       $ heroku ps:stop run
-       Stopping run dynos... done
+  $ heroku ps:stop run
+  Stopping run dynos... done
 ```
