@@ -176,18 +176,15 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
   --bulk               transfer applications in bulk
 
-DESCRIPTION
+EXAMPLES
+  $ heroku apps:transfer collaborator@example.com
+  Transferring example to collaborator@example.com... done
 
-  Examples:
+  $ heroku apps:transfer acme-widgets
+  Transferring example to acme-widgets... done
 
-       $ heroku apps:transfer collaborator@example.com
-       Transferring example to collaborator@example.com... done
-
-       $ heroku apps:transfer acme-widgets
-       Transferring example to acme-widgets... done
-
-       $ heroku apps:transfer --bulk acme-widgets
-       ...
+  $ heroku apps:transfer --bulk acme-widgets
+  ...
 ```
 
 ## `heroku apps:unlock`
