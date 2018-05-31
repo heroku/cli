@@ -1,3 +1,11 @@
+<a name="1.0.2"></a>
+## [1.0.2](https://github.com/heroku/heroku-cli-plugin-ps/compare/v1.0.1...v1.0.2) (2018-05-31)
+
+
+### Bug Fixes
+
+* updated deps ([45263ef](https://github.com/heroku/heroku-cli-plugin-ps/commit/45263ef))
+
 <a name="1.0.1"></a>
 ## [1.0.1](https://github.com/heroku/heroku-cli-plugin-ps/compare/v1.0.0...v1.0.1) (2018-04-19)
 
