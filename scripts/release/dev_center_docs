@@ -15,6 +15,7 @@ set -ex
 export PATH="./node_modules/.bin:./bin:$PATH"
 export COLUMNS=80
 
+yarn
 run whoami
 cat <<EOF > README.md
 ---
