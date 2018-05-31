@@ -11,7 +11,7 @@
     "@heroku-cli/color": "1.1.5",
     "@heroku-cli/command": "8.1.21",
     "@heroku-cli/plugin-addons": "1.2.30",
-    "@heroku-cli/plugin-apps": "2.5.8",
+    "@heroku-cli/plugin-apps": "2.5.10",
     "@heroku-cli/plugin-auth": "0.6.0",
     "@heroku-cli/plugin-build": "0.0.5",
     "@heroku-cli/plugin-certs": "2.0.1",
@@ -78,7 +78,7 @@
     "read-pkg": "^3.0.0",
     "ts-node": "^6.0.5",
     "tslint": "^5.10.0",
-    "typescript": "^2.8.4"
+    "typescript": "^2.9.1"
   },
   "engineStrict": true,
   "engines": {

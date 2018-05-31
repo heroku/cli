@@ -57,9 +57,9 @@
     lodash "^4.17.10"
     printf "0.3.0"
 
-"@heroku-cli/plugin-apps@2.5.8":
-  version "2.5.8"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-apps/-/plugin-apps-2.5.8.tgz#0f84d5beb4ba49991cab25b668d5297f4e2474d4"
+"@heroku-cli/plugin-apps@2.5.10":
+  version "2.5.10"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-apps/-/plugin-apps-2.5.10.tgz#f9948e9a046ead4e8826800d1201747cadda577e"
   dependencies:
     "@heroku-cli/command" "^8.1.20"
     co "^4.6.0"
@@ -3290,9 +3290,9 @@ type-detect@^4.0.0:
   version "4.0.8"
   resolved "https://registry.yarnpkg.com/type-detect/-/type-detect-4.0.8.tgz#7646fb5f18871cfbb7749e69bd39a6388eb7450c"
 
-typescript@^2.8.4:
-  version "2.8.4"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.8.4.tgz#0b1db68e6bdfb0b767fa2ab642136a35b059b199"
+typescript@^2.9.1:
+  version "2.9.1"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.9.1.tgz#fdb19d2c67a15d11995fd15640e373e09ab09961"
 
 ultron@~1.1.0:
   version "1.1.1"
