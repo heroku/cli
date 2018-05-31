@@ -7,7 +7,6 @@
   "dependencies": {
     "@heroku-cli/color": "^1.1.5",
     "@heroku-cli/command": "^8.1.20",
-    "@heroku-cli/schema": "^1.0.3",
     "@oclif/command": "^1.4.30",
     "@oclif/config": "^1.6.21",
     "cli-ux": "^4.4.0",
@@ -17,6 +16,7 @@
     "@fancy-test/nock": "^0.1.1",
     "@oclif/dev-cli": "^1.13.29",
     "@oclif/plugin-help": "^2.0.3",
+    "@heroku-cli/schema": "^1.0.3",
     "@oclif/test": "^1.0.6",
     "@oclif/tslint": "^1.1.2",
     "@types/chai": "^4.1.3",
