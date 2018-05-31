@@ -24,12 +24,11 @@ OPTIONS
 DESCRIPTION
   Start the application specified by a Procfile (defaults to ./Procfile)
 
-  Examples:
-
-       heroku local
-       heroku local web
-       heroku local web=2
-       heroku local web=1,worker=2
+EXAMPLES
+  $ heroku local
+  $ heroku local web
+  $ heroku local web=2
+  $ heroku local web=1,worker=2
 ```
 
 ## `heroku local:run`
@@ -44,10 +43,8 @@ OPTIONS
   -e, --env=env
   -p, --port=port
 
-DESCRIPTION
-  Example:
-
-       heroku local:run bin/migrate
+EXAMPLES
+  $ heroku local:run bin/migrate
 ```
 
 ## `heroku local:start [PROCESSNAME]`
@@ -66,12 +63,11 @@ OPTIONS
 DESCRIPTION
   Start the application specified by a Procfile (defaults to ./Procfile)
 
-  Examples:
-
-       heroku local
-       heroku local web
-       heroku local web=2
-       heroku local web=1,worker=2
+EXAMPLES
+  $ heroku local
+  $ heroku local web
+  $ heroku local web=2
+  $ heroku local web=1,worker=2
 ```
 
 ## `heroku local:version`
@@ -81,7 +77,4 @@ display node-foreman version
 ```
 USAGE
   $ heroku local:version
-
-DESCRIPTION
-  Display node-foreman version
 ```

@@ -4,17 +4,6 @@
 add an SSH key for a user
 if no KEY is specified, will try to find ~/.ssh/id_rsa.pub
 
-Examples:
-
-    $ heroku keys:add
-    Could not find an existing public key.
-    Would you like to generate one? [Yn] y
-    Generating new SSH public key.
-    Uploading SSH public key /.ssh/id_rsa.pub... done
-
-    $ heroku keys:add /my/key.pub
-    Uploading SSH public key /my/key.pub... done
-
 * [`heroku keys`](#heroku-keys)
 * [`heroku keys:add [KEY]`](#heroku-keysadd-key)
 * [`heroku keys:clear`](#heroku-keysclear)
@@ -47,16 +36,15 @@ OPTIONS
 DESCRIPTION
   if no KEY is specified, will try to find ~/.ssh/id_rsa.pub
 
-  Examples:
+EXAMPLES
+  $ heroku keys:add
+  Could not find an existing public key.
+  Would you like to generate one? [Yn] y
+  Generating new SSH public key.
+  Uploading SSH public key /.ssh/id_rsa.pub... done
 
-       $ heroku keys:add
-       Could not find an existing public key.
-       Would you like to generate one? [Yn] y
-       Generating new SSH public key.
-       Uploading SSH public key /.ssh/id_rsa.pub... done
-
-       $ heroku keys:add /my/key.pub
-       Uploading SSH public key /my/key.pub... done
+  $ heroku keys:add /my/key.pub
+  Uploading SSH public key /my/key.pub... done
 ```
 
 ## `heroku keys:clear`
@@ -76,10 +64,7 @@ remove an SSH key from the user
 USAGE
   $ heroku keys:remove KEY
 
-DESCRIPTION
-
-  Example:
-
-       $ heroku keys:remove email@example.com
-       Removing email@example.com SSH key... done
+EXAMPLES
+  $ heroku keys:remove email@example.com
+  Removing email@example.com SSH key... done
 ```
