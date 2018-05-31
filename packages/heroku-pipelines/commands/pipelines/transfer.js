@@ -45,7 +45,7 @@ module.exports = {
     ⬢ example-prod        production
 
      ▸    This will transfer example and all of the listed apps to the me@example.com account
-     ▸    to proceed, type edamame or re-run this command with --confirm example
+     ▸    to proceed, type example or re-run this command with --confirm example
     > example
     Transferring example pipeline to the me@example.com account... done
 
@@ -59,7 +59,7 @@ module.exports = {
     ⬢ example-prod        production
 
      ▸    This will transfer example and all of the listed apps to the acme-widgets team
-     ▸    to proceed, type edamame or re-run this command with --confirm example
+     ▸    to proceed, type example or re-run this command with --confirm example
     > example
 
     Transferring example pipeline to the acme-widgets team... done`,
