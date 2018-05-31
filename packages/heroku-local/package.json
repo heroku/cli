@@ -41,6 +41,7 @@
     "version": "oclif-dev readme && git add README.md"
   },
   "cli-engine": {
+    "bin": "heroku",
     "topics": {
       "local": {
         "description": "run heroku app locally"
