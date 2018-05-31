@@ -250,16 +250,11 @@ module.exports = {
     {name: 'domains', description: 'domains to create after certificate upload', hasValue: true}
   ],
   description: 'add an SSL certificate to an app',
-  help: `Note: certificates with PEM encoding are also valid
+  help: 'Note: certificates with PEM encoding are also valid',
+  examples: `$ heroku certs:add example.com.crt example.com.key
 
-Example:
-
-    $ heroku certs:add example.com.crt example.com.key
-
-Example (Certificate Intermediary):
-
-     $ heroku certs:add intermediary.crt example.com.crt example.com.key
-`,
+Certificate Intermediary:
+$ heroku certs:add intermediary.crt example.com.crt example.com.key`,
   needsApp: true,
   needsAuth: true,
   run: cli.command(co.wrap(run))

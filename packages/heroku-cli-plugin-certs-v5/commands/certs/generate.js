@@ -158,12 +158,8 @@ module.exports = {
     }
   ],
   description: 'generate a key and a CSR or self-signed certificate',
-  help: `Generate a key and certificate signing request (or self-signed certificate)\nfor an app. Prompts for information to put in the certificate unless --now\nis used, or at least one of the --subject, --owner, --country, --area, or\n--city options is specified.
-
-Example:
-
-    $ heroku certs:generate example.com
-`,
+  help: 'Generate a key and certificate signing request (or self-signed certificate)\nfor an app. Prompts for information to put in the certificate unless --now\nis used, or at least one of the --subject, --owner, --country, --area, or\n--city options is specified.',
+  examples: '$ heroku certs:generate example.com',
   needsApp: true,
   needsAuth: true,
   run: cli.command(co.wrap(run))

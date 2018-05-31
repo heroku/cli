@@ -52,13 +52,11 @@ OPTIONS
 DESCRIPTION
   Note: certificates with PEM encoding are also valid
 
-  Example:
+EXAMPLES
+  $ heroku certs:add example.com.crt example.com.key
 
-       $ heroku certs:add example.com.crt example.com.key
-
-  Example (Certificate Intermediary):
-
-        $ heroku certs:add intermediary.crt example.com.crt example.com.key
+  Certificate Intermediary:
+  $ heroku certs:add intermediary.crt example.com.crt example.com.key
 ```
 
 ## `heroku certs:auto`
@@ -152,9 +150,8 @@ DESCRIPTION
   is used, or at least one of the --subject, --owner, --country, --area, or
   --city options is specified.
 
-  Example:
-
-       $ heroku certs:generate example.com
+EXAMPLES
+  $ heroku certs:generate example.com
 ```
 
 ## `heroku certs:info`
@@ -188,9 +185,8 @@ DESCRIPTION
   You must pass one single certificate, and one or more keys.
   The first key that signs the certificate will be printed back.
 
-  Example:
-
-       $ heroku certs:key example.com.crt example.com.key
+EXAMPLES
+  $ heroku certs:key example.com.crt example.com.key
 ```
 
 ## `heroku certs:remove`
@@ -241,12 +237,10 @@ OPTIONS
 DESCRIPTION
   Note: certificates with PEM encoding are also valid
 
-  Example:
+EXAMPLES
+  $ heroku certs:update example.com.crt example.com.key
 
-       $ heroku certs:update example.com.crt example.com.key
-
-  Example (Certificate Intermediary) :
-
-       $ heroku certs:update intermediary.crt example.com.crt example.com.key
+  Certificate Intermediary:
+  $ heroku certs:update intermediary.crt example.com.crt example.com.key
 ```
 <!-- commandsstop -->

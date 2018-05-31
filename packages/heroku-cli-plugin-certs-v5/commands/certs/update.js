@@ -44,16 +44,11 @@ module.exports = {
     {name: 'endpoint', hasValue: true, description: 'endpoint to update'}
   ],
   description: 'update an SSL certificate on an app',
-  help: `Note: certificates with PEM encoding are also valid
+  help: 'Note: certificates with PEM encoding are also valid',
+  examples: `$ heroku certs:update example.com.crt example.com.key
 
-Example:
-
-    $ heroku certs:update example.com.crt example.com.key
-
-Example (Certificate Intermediary) :
-
-    $ heroku certs:update intermediary.crt example.com.crt example.com.key
-`,
+Certificate Intermediary:
+$ heroku certs:update intermediary.crt example.com.crt example.com.key`,
   needsApp: true,
   needsAuth: true,
   run: cli.command({preauth: true}, co.wrap(run))
