@@ -15,7 +15,7 @@ function * run (context, heroku) {
 module.exports = {
   topic: 'certs',
   command: 'auto:refresh',
-  description: 'Refresh ACM for an app.',
+  description: 'refresh ACM for an app',
   needsApp: true,
   needsAuth: true,
   run: cli.command(co.wrap(run))

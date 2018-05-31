@@ -26,7 +26,7 @@ are preferred which will also disable Automatic Certificate Management.
 module.exports = {
   topic: 'certs',
   command: 'auto:disable',
-  description: 'Disable Automatic Certificate Management for an app.',
+  description: 'disable ACM for an app',
   flags: [
     {name: 'confirm', hasValue: true, hidden: true}
   ],

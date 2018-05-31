@@ -18,7 +18,7 @@ function * run (context, heroku) {
 
 module.exports = {
   topic: 'certs',
-  description: 'List SSL certificates for an app.',
+  description: 'list SSL certificates for an app',
   needsApp: true,
   needsAuth: true,
   run: cli.command(co.wrap(run))

@@ -101,7 +101,7 @@ function * run (context, heroku) {
 module.exports = {
   topic: 'certs',
   command: 'auto',
-  description: 'Show ACM status for an app.',
+  description: 'show ACM status for an app',
   needsApp: true,
   needsAuth: true,
   run: cli.command(co.wrap(run))

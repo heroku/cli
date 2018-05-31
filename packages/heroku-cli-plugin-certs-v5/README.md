@@ -23,7 +23,7 @@ heroku-certs
 
 ## `heroku certs`
 
-List SSL certificates for an app.
+list SSL certificates for an app
 
 ```
 USAGE
@@ -61,7 +61,7 @@ EXAMPLES
 
 ## `heroku certs:auto`
 
-Show ACM status for an app.
+show ACM status for an app
 
 ```
 USAGE
@@ -74,7 +74,7 @@ OPTIONS
 
 ## `heroku certs:auto:disable`
 
-Disable Automatic Certificate Management for an app.
+disable ACM for an app
 
 ```
 USAGE
@@ -87,7 +87,7 @@ OPTIONS
 
 ## `heroku certs:auto:enable`
 
-Enable ACM status for an app.
+enable ACM status for an app
 
 ```
 USAGE
@@ -100,7 +100,7 @@ OPTIONS
 
 ## `heroku certs:auto:refresh`
 
-Refresh ACM for an app.
+refresh ACM for an app
 
 ```
 USAGE

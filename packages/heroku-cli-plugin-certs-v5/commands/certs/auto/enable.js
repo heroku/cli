@@ -37,7 +37,7 @@ async function run (context, heroku) {
 module.exports = {
   topic: 'certs',
   command: 'auto:enable',
-  description: 'Enable ACM status for an app.',
+  description: 'enable ACM status for an app',
   needsApp: true,
   needsAuth: true,
   run: cli.command(run)
