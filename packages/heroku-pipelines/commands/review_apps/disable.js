@@ -8,11 +8,9 @@ module.exports = {
   topic: 'reviewapps',
   command: 'disable',
   description: 'disable review apps or settings on an existing pipeline',
-  help: `Example:
-
-    $ heroku reviewapps:disable -p mypipeline -a myapp --autodeploy
-    Disabling auto deployment ...
-    Configuring pipeline... done`,
+  examples: `$ heroku reviewapps:disable -p mypipeline -a myapp --autodeploy
+Disabling auto deployment ...
+Configuring pipeline... done`,
   needsApp: false,
   needsAuth: true,
   wantsOrg: false,

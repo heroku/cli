@@ -182,7 +182,5 @@ module.exports = {
   needsAuth: true,
   needsApp: true,
   run: cli.command(co.wrap(run)),
-  help: `Example:
-
-    $ heroku pipelines:diff --app murmuring-headland-14719`
+  examples: '$ heroku pipelines:diff --app murmuring-headland-14719'
 }

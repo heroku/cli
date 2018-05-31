@@ -7,6 +7,7 @@
     "url": "https://github.com/heroku/heroku-pipelines/issues"
   },
   "cli-engine": {
+    "bin": "heroku",
     "topics": {
       "stack": {
         "description": "manage heroku stacks",
@@ -41,7 +42,7 @@
     "supervisor": "^0.12.0"
   },
   "files": [
-    ".oclif.manifest.json",
+    "oclif.manifest.json",
     "/index.js",
     "/commands",
     "/lib"
@@ -55,8 +56,9 @@
   "scripts": {
     "autotest": "./node_modules/.bin/supervisor -q -n exit -x ./node_modules/.bin/mocha -- -b",
     "test": "nyc mocha && standard",
+    "version": "oclif-dev readme && git add README.md",
     "prepublishOnly": "oclif-dev manifest",
-    "postpublish": "rm .oclif.manifest.json"
+    "postpublish": "rm oclif.manifest.json"
   },
   "standard": {
     "globals": [

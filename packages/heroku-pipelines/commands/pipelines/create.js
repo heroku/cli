@@ -65,15 +65,12 @@ module.exports = {
   help: `An existing app must be specified as the first app in the pipeline.
 The pipeline name will be inferred from the app name if not specified.
 The stage of the app will be guessed based on its name if not specified.
-The pipeline owner will be the user creating the pipeline if not specified with -t for teams or -o for orgs.
-
-Example:
-
-    $ heroku pipelines:create -a example-staging
-    ? Pipeline name: example
-    ? Stage of example-staging: staging
-    Creating example pipeline... done
-    Adding example-staging to example pipeline as staging... done`,
+The pipeline owner will be the user creating the pipeline if not specified with -t for teams or -o for orgs.`,
+  examples: `$ heroku pipelines:create -a example-staging
+? Pipeline name: example
+? Stage of example-staging: staging
+Creating example pipeline... done
+Adding example-staging to example pipeline as staging... done`,
   needsApp: true,
   needsAuth: true,
   wantsOrg: true,

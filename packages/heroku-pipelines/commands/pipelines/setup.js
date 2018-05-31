@@ -21,20 +21,18 @@ module.exports = {
   command: 'setup',
   description: 'bootstrap a new pipeline with common settings and create a production and staging app (requires a fully formed app.json in the repo)',
 
-  help: `Example:
-
-    $ heroku pipelines:setup example githuborg/reponame -o example-org
-    ? Automatically deploy the master branch to staging? Yes
-    ? Wait for CI to pass before deploying the master branch to staging? Yes
-    ? Enable review apps? Yes
-    ? Automatically create review apps for every PR? Yes
-    ? Automatically destroy idle review apps after 5 days? Yes
-    ? Enable automatic Heroku CI test runs? Yes
-    Creating pipeline... done
-    Linking to repo... done
-    Creating production and staging apps (⬢ example and ⬢ example-staging)
-    Configuring pipeline... done
-    View your new pipeline by running \`heroku pipelines:open e5a55ffa-de3f-11e6-a245-3c15c2e6bc1e\``,
+  examples: `$ heroku pipelines:setup example githuborg/reponame -o example-org
+? Automatically deploy the master branch to staging? Yes
+? Wait for CI to pass before deploying the master branch to staging? Yes
+? Enable review apps? Yes
+? Automatically create review apps for every PR? Yes
+? Automatically destroy idle review apps after 5 days? Yes
+? Enable automatic Heroku CI test runs? Yes
+Creating pipeline... done
+Linking to repo... done
+Creating production and staging apps (⬢ example and ⬢ example-staging)
+Configuring pipeline... done
+View your new pipeline by running \`heroku pipelines:open e5a55ffa-de3f-11e6-a245-3c15c2e6bc1e\``,
   needsApp: false,
   needsAuth: true,
   wantsOrg: true,

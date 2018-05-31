@@ -33,36 +33,34 @@ module.exports = {
   topic: 'pipelines',
   command: 'transfer',
   description: 'transfer ownership of a pipeline',
-  help: `Example:
+  examples: `$ heroku pipelines:transfer me@example.com -p example
+=== example
 
-    $ heroku pipelines:transfer me@example.com -p example
-    === example
+app name              stage
+────────────────────  ───────────
+⬢ example-dev         development
+⬢ example-staging     staging
+⬢ example-prod        production
 
-    app name              stage
-    ────────────────────  ───────────
-    ⬢ example-dev         development
-    ⬢ example-staging     staging
-    ⬢ example-prod        production
+ ▸    This will transfer example and all of the listed apps to the me@example.com account
+ ▸    to proceed, type example or re-run this command with --confirm example
+> example
+Transferring example pipeline to the me@example.com account... done
 
-     ▸    This will transfer example and all of the listed apps to the me@example.com account
-     ▸    to proceed, type example or re-run this command with --confirm example
-    > example
-    Transferring example pipeline to the me@example.com account... done
+$ heroku pipelines:transfer acme-widgets -p example
+=== example
 
-    $ heroku pipelines:transfer acme-widgets -p example
-    === example
+app name              stage
+────────────────────  ───────────
+⬢ example-dev         development
+⬢ example-staging     staging
+⬢ example-prod        production
 
-    app name              stage
-    ────────────────────  ───────────
-    ⬢ example-dev         development
-    ⬢ example-staging     staging
-    ⬢ example-prod        production
+ ▸    This will transfer example and all of the listed apps to the acme-widgets team
+ ▸    to proceed, type example or re-run this command with --confirm example
+> example
 
-     ▸    This will transfer example and all of the listed apps to the acme-widgets team
-     ▸    to proceed, type example or re-run this command with --confirm example
-    > example
-
-    Transferring example pipeline to the acme-widgets team... done`,
+Transferring example pipeline to the acme-widgets team... done`,
   needsApp: false,
   needsAuth: true,
   args: [
