@@ -260,9 +260,9 @@
     redis-parser "^3.0.0"
     ssh2 "^0.6.1"
 
-"@heroku-cli/plugin-run@3.8.9", "@heroku-cli/plugin-run@^3.8.3":
-  version "3.8.9"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-run/-/plugin-run-3.8.9.tgz#003bf8c2a903df0c6b1d87eb93aa5ae2e603118d"
+"@heroku-cli/plugin-run@3.8.10", "@heroku-cli/plugin-run@^3.8.3":
+  version "3.8.10"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-run/-/plugin-run-3.8.10.tgz#f7ba86965055196961997dfdbd9540a7e7c0dba4"
   dependencies:
     "@heroku-cli/color" "^1.1.5"
     "@heroku-cli/command" "^8.1.20"
@@ -340,9 +340,9 @@
     debug "^3.1.0"
     semver "^5.5.0"
 
-"@oclif/config@1.6.21", "@oclif/config@^1", "@oclif/config@^1.6.17", "@oclif/config@^1.6.18", "@oclif/config@^1.6.19", "@oclif/config@^1.6.21", "@oclif/config@^1.6.4":
-  version "1.6.21"
-  resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.6.21.tgz#44cb3136758562d5441885b63ef4791aeeae0c0f"
+"@oclif/config@1.6.22", "@oclif/config@^1", "@oclif/config@^1.6.17", "@oclif/config@^1.6.18", "@oclif/config@^1.6.19", "@oclif/config@^1.6.21", "@oclif/config@^1.6.4":
+  version "1.6.22"
+  resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.6.22.tgz#729d3868d25374764ab7c40381d187313864fe2e"
   dependencies:
     debug "^3.1.0"
 
