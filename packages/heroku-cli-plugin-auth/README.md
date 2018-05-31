@@ -15,27 +15,67 @@ auth core plugin for Heroku CLI
 <!-- tocstop -->
 # Commands
 <!-- commands -->
-* [`heroku 2fa`](#heroku-2-fa)
+* [`heroku auth:2fa`](#heroku-auth-2-fa)
+* [`heroku auth:2fa:generate-recovery-codes`](#heroku-auth-2-fagenerate-recovery-codes)
 * [`heroku auth:login`](#heroku-authlogin)
 * [`heroku auth:logout`](#heroku-authlogout)
 * [`heroku auth:token`](#heroku-authtoken)
 * [`heroku auth:whoami`](#heroku-authwhoami)
 * [`heroku labs:disable [FEATURE]`](#heroku-labsdisable-feature)
 
-## `heroku 2fa`
+## `heroku auth:2fa`
 
 check 2fa status
 
 ```
 USAGE
-  $ heroku 2fa
+  $ heroku auth:2fa
 
 ALIASES
   $ heroku 2fa
   $ heroku twofactor
 ```
 
-_See code: [src/commands/2fa.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.4.4/src/commands/2fa.ts)_
+_See code: [src/commands/auth/2fa.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.5.0/src/commands/auth/2fa.ts)_
+
+## `heroku auth:2fa:generate-recovery-codes`
+
+generates 2fa recovery codes
+
+```
+USAGE
+  $ heroku auth:2fa:generate-recovery-codes
+
+DESCRIPTION
+  If you lose access to your two-factor device, e.g. you lose your phone or it is wiped, you can still log in to your 
+  account. When prompted for the second factor after entering your account password, choose "Enter a Recovery Code.” You 
+  can then enter one of your recovery codes instead of a token from your two-factor device. Note that each recovery code 
+  can only be used once.
+
+  Running this command will replace existing codes.
+
+ALIASES
+  $ heroku twofactor:generate-recovery-codes
+  $ heroku 2fa:generate-recovery-codes
+  $ heroku auth:2fa:generate
+
+EXAMPLES
+  $ heroku auth:2fa:generate
+  Password: ********************
+  Recovery codes:
+  02799c92ab3ba7c7
+  09aea052a72b6a22
+  361e00bb82c7cbd4
+  588ac05dec23952c
+  6020ef9ec364066b
+  6cfd923315875e78
+  7c576b935eafc452
+  8c00eeb258ee565e
+  a37c5c6985f56e66
+  f82e7c2a50737494
+```
+
+_See code: [src/commands/auth/2fa/generate-recovery-codes.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.5.0/src/commands/auth/2fa/generate-recovery-codes.ts)_
 
 ## `heroku auth:login`
 
@@ -55,7 +95,7 @@ ALIASES
   $ heroku login
 ```
 
-_See code: [src/commands/auth/login.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.4.4/src/commands/auth/login.ts)_
+_See code: [src/commands/auth/login.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.5.0/src/commands/auth/login.ts)_
 
 ## `heroku auth:logout`
 
@@ -69,7 +109,7 @@ ALIASES
   $ heroku logout
 ```
 
-_See code: [src/commands/auth/logout.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.4.4/src/commands/auth/logout.ts)_
+_See code: [src/commands/auth/logout.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.5.0/src/commands/auth/logout.ts)_
 
 ## `heroku auth:token`
 
@@ -87,7 +127,7 @@ DESCRIPTION
   authorizations:create
 ```
 
-_See code: [src/commands/auth/token.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.4.4/src/commands/auth/token.ts)_
+_See code: [src/commands/auth/token.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.5.0/src/commands/auth/token.ts)_
 
 ## `heroku auth:whoami`
 
@@ -101,7 +141,7 @@ ALIASES
   $ heroku whoami
 ```
 
-_See code: [src/commands/auth/whoami.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.4.4/src/commands/auth/whoami.ts)_
+_See code: [src/commands/auth/whoami.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.5.0/src/commands/auth/whoami.ts)_
 
 ## `heroku labs:disable [FEATURE]`
 
@@ -117,5 +157,5 @@ OPTIONS
   --confirm=confirm
 ```
 
-_See code: [src/commands/labs/disable.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.4.4/src/commands/labs/disable.ts)_
+_See code: [src/commands/labs/disable.ts](https://github.com/heroku/heroku-cli-plugin-auth/blob/v0.5.0/src/commands/labs/disable.ts)_
 <!-- commandsstop -->
