@@ -54,25 +54,19 @@ function showDiff(from: Config, to: Config) {
 }
 
 export default class ConfigEdit extends Command {
-  static description = 'interactively edit config vars'
-  static help = `
+  static description = `interactively edit config vars
 This command opens the app config in a text editor set by $VISUAL or $EDITOR.
-Any variables added/removed/changed will be updated on the app after saving and closing the file.
-
-Examples:
-    # edit with vim
-    $ EDITOR="vim" heroku config:edit
-
-    # edit with emacs
-    $ EDITOR="emacs" heroku config:edit
-
-    # edit with pico
-    $ EDITOR="pico" heroku config:edit
-
-    # edit with atom editor
-    $ VISUAL="atom --wait" heroku config:edit
-
-`
+Any variables added/removed/changed will be updated on the app after saving and closing the file.`
+  static examples = [
+    `# edit with vim
+$ EDITOR="vim" heroku config:edit`,
+    `# edit with emacs
+$ EDITOR="emacs" heroku config:edit`,
+    `# edit with pico
+$ EDITOR="pico" heroku config:edit`,
+    `# edit with atom editor
+$ VISUAL="atom --wait" heroku config:edit`,
+  ]
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
