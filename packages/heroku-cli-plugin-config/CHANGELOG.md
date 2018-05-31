@@ -1,3 +1,12 @@
+<a name="1.3.1"></a>
+## [1.3.1](https://github.com/heroku/heroku-cli-plugin-config/compare/v1.3.0...v1.3.1) (2018-05-31)
+
+
+### Bug Fixes
+
+* added typings ([588788f](https://github.com/heroku/heroku-cli-plugin-config/commit/588788f))
+* config:edit help ([a7d410a](https://github.com/heroku/heroku-cli-plugin-config/commit/a7d410a))
+
 <a name="1.3.0"></a>
 # [1.3.0](https://github.com/heroku/heroku-cli-plugin-config/compare/v1.2.0...v1.3.0) (2018-05-10)
 
