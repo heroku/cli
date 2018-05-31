@@ -2,8 +2,6 @@ import {Command} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 
 export default class AuthWhoami extends Command {
-  static topic = 'auth'
-  static command = 'whoami'
   static description = 'display the current logged in user'
   static aliases = ['whoami']
 
