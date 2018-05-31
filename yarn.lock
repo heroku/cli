@@ -56,11 +56,11 @@
     lodash "^4.17.10"
     printf "0.3.0"
 
-"@heroku-cli/plugin-apps@2.5.6":
-  version "2.5.6"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-apps/-/plugin-apps-2.5.6.tgz#70201d0e738f6e9c46b560a4e5ebe380a906e360"
+"@heroku-cli/plugin-apps@2.5.7":
+  version "2.5.7"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-apps/-/plugin-apps-2.5.7.tgz#c97e4a6e96a03d19c23a84c96cc9f09fb2222c89"
   dependencies:
-    "@heroku-cli/command" "^8.1.18"
+    "@heroku-cli/command" "^8.1.20"
     co "^4.6.0"
     filesize "^3.5.11"
     fs-extra "^6.0.1"
@@ -345,9 +345,9 @@
   dependencies:
     debug "^3.1.0"
 
-"@oclif/dev-cli@^1.13.28":
-  version "1.13.28"
-  resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.13.28.tgz#b12e1a85632b7e25f8402ca58dbf84a3dd2f9d20"
+"@oclif/dev-cli@^1.13.29":
+  version "1.13.29"
+  resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.13.29.tgz#c3278810675a70c47ff7796b83c483e98b02fb95"
   dependencies:
     "@oclif/command" "^1.4.30"
     "@oclif/config" "^1.6.21"
@@ -383,16 +383,29 @@
     "@oclif/linewrap" "^1.0.0"
     chalk "^2.4.1"
 
-"@oclif/plugin-commands@^0.0.0":
-  version "0.0.0"
-  resolved "https://registry.yarnpkg.com/@oclif/plugin-commands/-/plugin-commands-0.0.0.tgz#cb777c8d7ea0c017d82c174cd5dd707172455625"
+"@oclif/plugin-commands@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-commands/-/plugin-commands-1.0.0.tgz#6097ad858b2c7823f2e04e9249716dcc692c3fc2"
   dependencies:
     "@oclif/command" "^1"
     "@oclif/config" "^1"
     cli-ux "^4.4.0"
-    tslib "^1"
+    lodash "^4.17.10"
+    tslib "^1.9.2"
 
-"@oclif/plugin-help@2.0.2", "@oclif/plugin-help@^2.0.1":
+"@oclif/plugin-help@2.0.3":
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-help/-/plugin-help-2.0.3.tgz#f64bfc69ad28e34ec046f3da195e6da67298c9b7"
+  dependencies:
+    "@oclif/command" "^1.4.30"
+    chalk "^2.4.1"
+    indent-string "^3.2.0"
+    lodash.template "^4.4.0"
+    string-width "^2.1.1"
+    widest-line "^2.0.0"
+    wrap-ansi "^3.0.1"
+
+"@oclif/plugin-help@^2.0.1":
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/@oclif/plugin-help/-/plugin-help-2.0.2.tgz#0529a5cf5c74d9a4571e3a2ed98fee963ecaba90"
   dependencies:

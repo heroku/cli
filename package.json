@@ -11,7 +11,7 @@
     "@heroku-cli/color": "1.1.5",
     "@heroku-cli/command": "8.1.20",
     "@heroku-cli/plugin-addons": "1.2.30",
-    "@heroku-cli/plugin-apps": "2.5.6",
+    "@heroku-cli/plugin-apps": "2.5.7",
     "@heroku-cli/plugin-auth": "0.6.0",
     "@heroku-cli/plugin-build": "0.0.5",
     "@heroku-cli/plugin-certs": "2.0.1",
@@ -35,8 +35,8 @@
     "@oclif/command": "1.4.30",
     "@oclif/config": "1.6.21",
     "@oclif/errors": "1.1.2",
-    "@oclif/plugin-commands": "^0.0.0",
-    "@oclif/plugin-help": "2.0.2",
+    "@oclif/plugin-commands": "^1.0.0",
+    "@oclif/plugin-help": "2.0.3",
     "@oclif/plugin-legacy": "1.0.15",
     "@oclif/plugin-not-found": "1.0.9",
     "@oclif/plugin-plugins": "1.2.1",
@@ -54,7 +54,7 @@
     "uuid": "3.2.1"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.13.28",
+    "@oclif/dev-cli": "^1.13.29",
     "@oclif/test": "^1.0.6",
     "@oclif/tslint": "^1.1.2",
     "@types/ansi-styles": "^3.2.0",
