@@ -1,3 +1,11 @@
+<a name="2.5.7"></a>
+## [2.5.7](https://github.com/heroku/heroku-apps/compare/v2.5.6...v2.5.7) (2018-05-31)
+
+
+### Bug Fixes
+
+* help formatting fixes ([ccf973c](https://github.com/heroku/heroku-apps/commit/ccf973c))
+
 <a name="2.5.6"></a>
 ## [2.5.6](https://github.com/heroku/heroku-apps/compare/v2.5.5...v2.5.6) (2018-05-31)
 
