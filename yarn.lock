@@ -27,7 +27,7 @@
     strip-ansi "^4.0.0"
     supports-color "^5.4.0"
 
-"@heroku-cli/command@8.1.20", "@heroku-cli/command@^8.0.5", "@heroku-cli/command@^8.0.7", "@heroku-cli/command@^8.1.14", "@heroku-cli/command@^8.1.15", "@heroku-cli/command@^8.1.16", "@heroku-cli/command@^8.1.17", "@heroku-cli/command@^8.1.18", "@heroku-cli/command@^8.1.20":
+"@heroku-cli/command@8.1.20", "@heroku-cli/command@^8.0.5", "@heroku-cli/command@^8.0.7", "@heroku-cli/command@^8.1.14", "@heroku-cli/command@^8.1.16", "@heroku-cli/command@^8.1.17", "@heroku-cli/command@^8.1.18", "@heroku-cli/command@^8.1.20":
   version "8.1.20"
   resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.1.20.tgz#94052450a239b3f3a46ba208c7169e8cf4d7f910"
   dependencies:
@@ -139,15 +139,15 @@
     socket.io-client "^2.1.0"
     temp "^0.8.3"
 
-"@heroku-cli/plugin-config@1.3.0":
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-config/-/plugin-config-1.3.0.tgz#de55e36eab7f76852e787286f7619612b57620e5"
+"@heroku-cli/plugin-config@1.3.1":
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-config/-/plugin-config-1.3.1.tgz#f21706c076ecc1ec37a9a3298846463c3262c74f"
   dependencies:
-    "@heroku-cli/color" "^1.1.3"
-    "@heroku-cli/command" "^8.1.15"
-    "@oclif/command" "^1.4.21"
-    "@oclif/config" "^1.6.17"
-    cli-ux "^4.2.1"
+    "@heroku-cli/color" "^1.1.5"
+    "@heroku-cli/command" "^8.1.20"
+    "@oclif/command" "^1.4.30"
+    "@oclif/config" "^1.6.19"
+    cli-ux "^4.4.0"
     edit-string "^1.1.6"
     lodash "^4.17.10"
     shell-quote "^1.6.1"
@@ -240,13 +240,12 @@
     heroku-cli-util "^7.0.0"
     heroku-exec-util "0.7.2"
 
-"@heroku-cli/plugin-ps@1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-ps/-/plugin-ps-1.0.2.tgz#2c026a1d3135697ccc47856920aef362364acaa1"
+"@heroku-cli/plugin-ps@1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-ps/-/plugin-ps-1.0.3.tgz#f54fd2f837c2384e8356832f7b7b010d4e5c6d4b"
   dependencies:
     "@heroku-cli/color" "^1.1.5"
     "@heroku-cli/command" "^8.1.20"
-    "@heroku-cli/schema" "^1.0.3"
     "@oclif/command" "^1.4.30"
     "@oclif/config" "^1.6.21"
     cli-ux "^4.4.0"
@@ -317,10 +316,6 @@
   dependencies:
     "@heroku-cli/command" "^8.0.5"
     heroku-cli-util "^8.0.0"
-
-"@heroku-cli/schema@^1.0.3":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/schema/-/schema-1.0.3.tgz#08009746670a253b8fed577d2278db30114032e9"
 
 "@heroku/foreman@^2.0.2":
   version "2.0.2"
@@ -411,9 +406,9 @@
     lodash "^4.17.10"
     tslib "^1.9.2"
 
-"@oclif/plugin-help@2.0.3":
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/@oclif/plugin-help/-/plugin-help-2.0.3.tgz#f64bfc69ad28e34ec046f3da195e6da67298c9b7"
+"@oclif/plugin-help@2.0.4":
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-help/-/plugin-help-2.0.4.tgz#32cf1dc7696f626a6065109a17b0f061adb14243"
   dependencies:
     "@oclif/command" "^1.4.30"
     chalk "^2.4.1"
@@ -985,7 +980,7 @@ cli-cursor@^2.1.0:
   dependencies:
     restore-cursor "^2.0.0"
 
-cli-ux@4.4.0, cli-ux@^4.2.1, cli-ux@^4.3.0, cli-ux@^4.3.1, cli-ux@^4.4.0:
+cli-ux@4.4.0, cli-ux@^4.3.0, cli-ux@^4.3.1, cli-ux@^4.4.0:
   version "4.4.0"
   resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-4.4.0.tgz#b7536e144b48d18d960bb695cbac3707178f1e90"
   dependencies:
