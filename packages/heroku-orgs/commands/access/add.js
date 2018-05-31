@@ -53,7 +53,7 @@ module.exports = [
     heroku access:add user@email.com --app APP --permissions deploy,manage,operate # permissions must be comma separated`,
     args: [{name: 'email', optional: false}],
     flags: [
-      {name: 'permissions', description: 'list of permissions comma separated', hasValue: true, optional: true},
+      {name: 'permissions', char: 'p', description: 'list of permissions comma separated', hasValue: true, optional: true},
       {name: 'privileges', hasValue: true, optional: true, hidden: true} // Deprecated flag
     ],
     run: cli.command(co.wrap(run))

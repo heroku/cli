@@ -39,7 +39,7 @@ module.exports = {
     heroku access:update user@email.com --app APP --permissions deploy,manage,operate`,
   args: [{name: 'email', optional: false}],
   flags: [
-    { name: 'permissions', hasValue: true, description: 'comma-delimited list of permissions to update (deploy,manage,operate)' },
+    { name: 'permissions', char: 'p', hasValue: true, description: 'comma-delimited list of permissions to update (deploy,manage,operate)' },
     { name: 'privileges', hasValue: true, hidden: true }
   ],
   run: cli.command(co.wrap(run))
