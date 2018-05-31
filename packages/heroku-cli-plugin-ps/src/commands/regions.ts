@@ -1,5 +1,6 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
+import * as Heroku from '@heroku-cli/schema'
 import {cli} from 'cli-ux'
 import * as _ from 'lodash'
 
@@ -14,7 +15,7 @@ export default class Regions extends Command {
 
   async run() {
     const {flags} = this.parse(Regions)
-    let {body: regions} = await this.heroku.get('/regions')
+    let {body: regions} = await this.heroku.get<Heroku.Region[]>('/regions')
     if (flags.private) {
       regions = regions.filter((region: any) => region.private_capable)
     } else if (flags.common) {
