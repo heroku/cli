@@ -59,14 +59,13 @@ OPTIONS
 DESCRIPTION
   Shows a notification if the dyno takes more than 20 seconds to start.
 
-  Examples:
+EXAMPLES
+  $ heroku run bash
+  Running bash on app.... up, run.1
+  ~ $
 
-       $ heroku run bash
-       Running bash on app.... up, run.1
-       ~ $
-
-       $ heroku run -s hobby -- myscript.sh -a arg1 -s arg2
-       Running myscript.sh -a arg1 -s arg2 on app.... up, run.1
+  $ heroku run -s hobby -- myscript.sh -a arg1 -s arg2
+  Running myscript.sh -a arg1 -s arg2 on app.... up, run.1
 ```
 
 ## `heroku run:detached`
@@ -85,11 +84,9 @@ OPTIONS
   -t, --tail           stream logs from the dyno
   --type=type          process type
 
-DESCRIPTION
-  Example:
-
-       $ heroku run:detached ls
-       Running ls on app [detached]... up, run.1
-       Run heroku logs -a app -p run.1 to view the output.
+EXAMPLES
+  $ heroku run:detached ls
+  Running ls on app [detached]... up, run.1
+  Run heroku logs -a app -p run.1 to view the output.
 ```
 <!-- commandsstop -->

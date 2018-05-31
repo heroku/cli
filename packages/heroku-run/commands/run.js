@@ -36,17 +36,13 @@ async function run (context, heroku) {
 module.exports = {
   topic: 'run',
   description: 'run a one-off process inside a heroku dyno',
-  help: `Shows a notification if the dyno takes more than 20 seconds to start.
+  help: 'Shows a notification if the dyno takes more than 20 seconds to start.',
+  examples: `$ heroku run bash
+Running bash on app.... up, run.1
+~ $
 
-Examples:
-
-    $ heroku run bash
-    Running bash on app.... up, run.1
-    ~ $
-
-    $ heroku run -s hobby -- myscript.sh -a arg1 -s arg2
-    Running myscript.sh -a arg1 -s arg2 on app.... up, run.1
-`,
+$ heroku run -s hobby -- myscript.sh -a arg1 -s arg2
+Running myscript.sh -a arg1 -s arg2 on app.... up, run.1`,
   variableArgs: true,
   needsAuth: true,
   needsApp: true,

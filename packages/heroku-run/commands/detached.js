@@ -36,12 +36,9 @@ module.exports = {
   topic: 'run',
   command: 'detached',
   description: 'run a detached dyno, where output is sent to your logs',
-  help: `Example:
-
-    $ heroku run:detached ls
-    Running ls on app [detached]... up, run.1
-    Run heroku logs -a app -p run.1 to view the output.
-`,
+  examples: `$ heroku run:detached ls
+Running ls on app [detached]... up, run.1
+Run heroku logs -a app -p run.1 to view the output.`,
   variableArgs: true,
   needsAuth: true,
   needsApp: true,
