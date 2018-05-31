@@ -3,20 +3,19 @@
 let cli = require('heroku-cli-util')
 let _ = require('lodash')
 let Utils = require('../../lib/utils')
-let co = require('co')
 let error = require('../../lib/error')
 
-function * run (context, heroku) {
+async function run (context, heroku) {
   let appName = context.app
   let permissions = context.flags.permissions || context.flags.privileges || ''
-  let appInfo = yield heroku.get(`/apps/${appName}`)
+  let appInfo = await heroku.get(`/apps/${appName}`)
   let output = `Adding ${cli.color.cyan(context.args.email)} access to the app ${cli.color.magenta(appName)}`
   let request
   let orgFeatures = []
 
   if (Utils.isOrgApp(appInfo.owner.email)) {
     let orgName = Utils.getOwner(appInfo.owner.email)
-    orgFeatures = yield heroku.get(`/organizations/${orgName}/features`)
+    orgFeatures = await heroku.get(`/organizations/${orgName}/features`)
   }
 
   if (orgFeatures.find(feature => feature.name === 'org-access-controls')) {
@@ -37,7 +36,7 @@ function * run (context, heroku) {
   } else {
     request = heroku.post(`/apps/${appName}/collaborators`, {body: { user: context.args.email }})
   }
-  yield cli.action(`${output}`, request)
+  await cli.action(`${output}`, request)
 }
 
 module.exports = [
@@ -46,17 +45,17 @@ module.exports = [
     needsAuth: true,
     needsApp: true,
     command: 'add',
-    description: 'Add new users to your app',
-    help: `Examples:
-
-    heroku access:add user@email.com --app APP # Add a collaborator to your app
-    heroku access:add user@email.com --app APP --permissions deploy,manage,operate # permissions must be comma separated`,
+    description: 'add new users to your app',
+    examples: [
+      '$ heroku access:add user@email.com --app APP # add a collaborator to your app',
+      '$ heroku access:add user@email.com --app APP --permissions deploy,manage,operate # permissions must be comma separated'
+    ],
     args: [{name: 'email', optional: false}],
     flags: [
       {name: 'permissions', char: 'p', description: 'list of permissions comma separated', hasValue: true, optional: true},
       {name: 'privileges', hasValue: true, optional: true, hidden: true} // Deprecated flag
     ],
-    run: cli.command(co.wrap(run))
+    run: cli.command(run)
   }, {
     topic: 'sharing',
     command: 'add',

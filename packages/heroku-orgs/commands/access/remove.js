@@ -1,12 +1,11 @@
 'use strict'
 
 let cli = require('heroku-cli-util')
-let co = require('co')
 
-function * run (context, heroku) {
+async function run (context, heroku) {
   let appName = context.app
   let request = heroku.delete(`/apps/${appName}/collaborators/${context.args.email}`)
-  yield cli.action(`Removing ${cli.color.cyan(context.args.email)} access from the app ${cli.color.magenta(appName)}`, request)
+  await cli.action(`Removing ${cli.color.cyan(context.args.email)} access from the app ${cli.color.magenta(appName)}`, request)
 }
 
 module.exports = [
@@ -15,12 +14,10 @@ module.exports = [
     needsAuth: true,
     needsApp: true,
     command: 'remove',
-    description: 'Remove users from your app',
-    help: `Example:
-
-    heroku access:remove user@email.com --app APP`,
+    description: 'remove users from a team app',
+    example: `$ heroku access:remove user@email.com --app APP`,
     args: [{name: 'email', optional: false}],
-    run: cli.command(co.wrap(run))
+    run: cli.command(run)
   },
   {
     topic: 'sharing',

@@ -3,7 +3,6 @@
 let cli = require('heroku-cli-util')
 let _ = require('lodash')
 let Utils = require('../../lib/utils')
-let co = require('co')
 
 function printJSON (collaborators) {
   cli.log(JSON.stringify(collaborators, null, 2))
@@ -33,21 +32,21 @@ function printAccess (app, collaborators) {
   cli.table(collaborators, {printHeader: false, columns})
 }
 
-function * run (context, heroku) {
+async function run (context, heroku) {
   let appName = context.app
 
-  let app = yield heroku.get(`/apps/${appName}`)
+  let app = await heroku.get(`/apps/${appName}`)
   let isOrgApp = Utils.isOrgApp(app.owner.email)
-  let collaborators = yield heroku.get(`/apps/${appName}/collaborators`)
+  let collaborators = await heroku.get(`/apps/${appName}/collaborators`)
 
   if (isOrgApp) {
     let orgName = Utils.getOwner(app.owner.email)
 
     try {
-      const members = yield heroku.get(`/organizations/${orgName}/members`)
+      const members = await heroku.get(`/organizations/${orgName}/members`)
       let admins = members.filter(member => member.role === 'admin')
 
-      let adminPermissions = yield heroku.get('/organizations/permissions')
+      let adminPermissions = await heroku.get('/organizations/permissions')
 
       admins = _.forEach(admins, function (admin) {
         admin.user = { email: admin.email }
@@ -75,7 +74,7 @@ module.exports = [
     flags: [
       {name: 'json', description: 'output in json format'}
     ],
-    run: cli.command(co.wrap(run))
+    run: cli.command(run)
   },
   {
     topic: 'sharing',
