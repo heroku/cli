@@ -7,7 +7,7 @@
     "url": "https://github.com/heroku/heroku-orgs/issues"
   },
   "dependencies": {
-    "@heroku-cli/command": "^8.1.18",
+    "@heroku-cli/command": "^8.1.20",
     "co": "^4.6.0",
     "heroku-cli-util": "^8.0.9",
     "inquirer": "^5.2.0",
@@ -15,11 +15,11 @@
     "lodash.flatten": "^4.4.0"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.13.22",
+    "@oclif/dev-cli": "^1.13.27",
     "@oclif/plugin-legacy": "^1.0.15",
     "chai": "^4.1.2",
     "mocha": "^5.2.0",
-    "nock": "^9.2.6",
+    "nock": "^9.3.0",
     "nyc": "^11.8.0",
     "proxyquire": "^2.0.1",
     "standard": "^11.0.1"

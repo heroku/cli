@@ -20,7 +20,7 @@
     strip-ansi "^4.0.0"
     supports-color "^5.4.0"
 
-"@heroku-cli/command@^8.0.7", "@heroku-cli/command@^8.1.18":
+"@heroku-cli/command@^8.0.7":
   version "8.1.18"
   resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.1.18.tgz#aef5e327ebfd05f0f236730ffc578db8f1183fe0"
   dependencies:
@@ -33,6 +33,19 @@
     netrc-parser "^3.1.4"
     opn "^5.3.0"
 
+"@heroku-cli/command@^8.1.20":
+  version "8.1.20"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.1.20.tgz#94052450a239b3f3a46ba208c7169e8cf4d7f910"
+  dependencies:
+    "@heroku-cli/color" "^1.1.5"
+    "@oclif/errors" "^1.1.2"
+    cli-ux "^4.4.0"
+    debug "^3.1.0"
+    heroku-client "^3.0.6"
+    http-call "^5.1.4"
+    netrc-parser "^3.1.5"
+    opn "^5.3.0"
+
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/@mrmlnc/readdir-enhanced/-/readdir-enhanced-2.2.1.tgz#524af240d1a360527b730475ecfa1344aa540dde"
@@ -40,7 +53,7 @@
     call-me-maybe "^1.0.1"
     glob-to-regexp "^0.3.0"
 
-"@oclif/command@^1.4.20", "@oclif/command@^1.4.29", "@oclif/command@^1.4.30":
+"@oclif/command@^1.4.20", "@oclif/command@^1.4.30":
   version "1.4.30"
   resolved "https://registry.yarnpkg.com/@oclif/command/-/command-1.4.30.tgz#631eb423182517dc38711d6270aecb621bfa24a9"
   dependencies:
@@ -49,30 +62,30 @@
     debug "^3.1.0"
     semver "^5.5.0"
 
-"@oclif/config@^1.6.18":
-  version "1.6.19"
-  resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.6.19.tgz#727aee1e0859d18c56c0fa3e1ec08826f28a7aac"
+"@oclif/config@^1.6.21":
+  version "1.6.21"
+  resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.6.21.tgz#44cb3136758562d5441885b63ef4791aeeae0c0f"
   dependencies:
     debug "^3.1.0"
 
-"@oclif/dev-cli@^1.13.22":
-  version "1.13.22"
-  resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.13.22.tgz#a9bc93551b8e4e749ead0a6c23fe6168ee072793"
+"@oclif/dev-cli@^1.13.27":
+  version "1.13.27"
+  resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.13.27.tgz#86ff50700cad3266cbd5e4295bebf496722a2247"
   dependencies:
     "@oclif/command" "^1.4.30"
-    "@oclif/config" "^1.6.18"
-    "@oclif/errors" "^1.1.1"
-    "@oclif/plugin-help" "^1.2.11"
-    cli-ux "^4.3.0"
+    "@oclif/config" "^1.6.21"
+    "@oclif/errors" "^1.1.2"
+    "@oclif/plugin-help" "^2.0.1"
+    cli-ux "^4.4.0"
     debug "^3.1.0"
     fs-extra "^6.0.1"
     lodash "^4.17.10"
     normalize-package-data "^2.4.0"
     qqjs "^0.3.9"
     require-resolve "^0.0.2"
-    tslib "^1.9.1"
+    tslib "^1.9.2"
 
-"@oclif/errors@^1.1.1":
+"@oclif/errors@^1.1.1", "@oclif/errors@^1.1.2":
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@oclif/errors/-/errors-1.1.2.tgz#2a54aae07a7655cc4523cae270d0a50cbc5dbef3"
   dependencies:
@@ -93,11 +106,11 @@
     "@oclif/linewrap" "^1.0.0"
     chalk "^2.4.1"
 
-"@oclif/plugin-help@^1.2.11":
-  version "1.2.11"
-  resolved "https://registry.yarnpkg.com/@oclif/plugin-help/-/plugin-help-1.2.11.tgz#e6413a6009519230bc4c7e7fe45d8e139939e657"
+"@oclif/plugin-help@^2.0.1":
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-help/-/plugin-help-2.0.2.tgz#0529a5cf5c74d9a4571e3a2ed98fee963ecaba90"
   dependencies:
-    "@oclif/command" "^1.4.29"
+    "@oclif/command" "^1.4.30"
     chalk "^2.4.1"
     indent-string "^3.2.0"
     lodash.template "^4.4.0"
@@ -462,7 +475,7 @@ camelcase@^4.1.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/camelcase/-/camelcase-4.1.0.tgz#d545635be1e33c542649c69173e5de6acfae34dd"
 
-cardinal@^2.0.0, cardinal@^2.0.1:
+cardinal@^2.0.0, cardinal@^2.0.1, cardinal@^2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/cardinal/-/cardinal-2.1.1.tgz#7cc1055d822d212954d07b085dea251cc7bc5505"
   dependencies:
@@ -578,6 +591,28 @@ cli-ux@^4.3.0:
     fs-extra "^6.0.1"
     hyperlinker "^1.0.0"
     indent-string "^3.2.0"
+    lodash "^4.17.10"
+    password-prompt "^1.0.6"
+    semver "^5.5.0"
+    strip-ansi "^4.0.0"
+    supports-color "^5.4.0"
+    supports-hyperlinks "^1.0.1"
+
+cli-ux@^4.4.0:
+  version "4.4.0"
+  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-4.4.0.tgz#b7536e144b48d18d960bb695cbac3707178f1e90"
+  dependencies:
+    "@oclif/linewrap" "^1.0.0"
+    "@oclif/screen" "^1.0.2"
+    ansi-styles "^3.2.1"
+    cardinal "^2.1.1"
+    chalk "^2.4.1"
+    clean-stack "^1.3.0"
+    extract-stack "^1.0.0"
+    fs-extra "^6.0.1"
+    hyperlinker "^1.0.0"
+    indent-string "^3.2.0"
+    is-wsl "^1.1.0"
     lodash "^4.17.10"
     password-prompt "^1.0.6"
     semver "^5.5.0"
@@ -1518,6 +1553,16 @@ http-call@^5.1.2:
     is-stream "^1.1.0"
     tunnel-agent "^0.6.0"
 
+http-call@^5.1.4:
+  version "5.1.4"
+  resolved "https://registry.yarnpkg.com/http-call/-/http-call-5.1.4.tgz#fc37a1f6638ece82aba3d12eb6030f0889da850a"
+  dependencies:
+    content-type "^1.0.4"
+    debug "^3.1.0"
+    is-retry-allowed "^1.1.0"
+    is-stream "^1.1.0"
+    tunnel-agent "^0.6.0"
+
 hyperlinker@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/hyperlinker/-/hyperlinker-1.0.0.tgz#23dc9e38a206b208ee49bc2d6c8ef47027df0c0e"
@@ -2224,13 +2269,20 @@ netrc-parser@^3.1.4:
     debug "^3.1.0"
     execa "^0.10.0"
 
+netrc-parser@^3.1.5:
+  version "3.1.5"
+  resolved "https://registry.yarnpkg.com/netrc-parser/-/netrc-parser-3.1.5.tgz#77937b6feb27f8dda143d38fac6bbdbcafd480a7"
+  dependencies:
+    debug "^3.1.0"
+    execa "^0.10.0"
+
 nice-try@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/nice-try/-/nice-try-1.0.4.tgz#d93962f6c52f2c1558c0fbda6d512819f1efe1c4"
 
-nock@^9.2.6:
-  version "9.2.6"
-  resolved "https://registry.yarnpkg.com/nock/-/nock-9.2.6.tgz#496ddb2c32e6d0848cda1b3ea51fbe054d4454d3"
+nock@^9.3.0:
+  version "9.3.0"
+  resolved "https://registry.yarnpkg.com/nock/-/nock-9.3.0.tgz#4dcfdd37bd249836754d05bbac5a1f05e12e0f16"
   dependencies:
     chai "^4.1.2"
     debug "^3.1.0"
@@ -3257,9 +3309,9 @@ tslib@^1.9.0:
   version "1.9.0"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.9.0.tgz#e37a86fda8cbbaf23a057f473c9f4dc64e5fc2e8"
 
-tslib@^1.9.1:
-  version "1.9.1"
-  resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.9.1.tgz#a5d1f0532a49221c87755cfcc89ca37197242ba7"
+tslib@^1.9.2:
+  version "1.9.2"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.9.2.tgz#8be0cc9a1f6dc7727c38deb16c2ebd1a2892988e"
 
 tunnel-agent@^0.6.0:
   version "0.6.0"
