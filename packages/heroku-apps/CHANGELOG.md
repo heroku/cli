@@ -1,3 +1,11 @@
+<a name="2.5.6"></a>
+## [2.5.6](https://github.com/heroku/heroku-apps/compare/v2.5.5...v2.5.6) (2018-05-31)
+
+
+### Bug Fixes
+
+* move 2fa:disable to auth plugin ([7ce6863](https://github.com/heroku/heroku-apps/commit/7ce6863))
+
 <a name="2.5.5"></a>
 ## [2.5.5](https://github.com/heroku/heroku-apps/compare/v2.5.4...v2.5.5) (2018-05-31)
 

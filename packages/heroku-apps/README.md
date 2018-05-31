@@ -15,7 +15,7 @@ $ npm install -g @heroku-cli/plugin-apps
 $ heroku COMMAND
 running command...
 $ heroku (-v|--version|version)
-@heroku-cli/plugin-apps/2.5.5 linux-x64 node-v10.2.1
+@heroku-cli/plugin-apps/2.5.6 linux-x64 node-v10.3.0
 $ heroku --help [COMMAND]
 USAGE
   $ heroku COMMAND
@@ -24,8 +24,6 @@ USAGE
 <!-- usagestop -->
 <!-- commands -->
 # Command Topics
-
-* [`heroku 2fa`](docs/2fa.md) - disable 2fa on account
 
 * [`heroku apps`](docs/apps.md) - creates a new app
 Examples:
@@ -52,8 +50,6 @@ Examples:
     # create an app in the eu region
     $ heroku apps:create --region eu
  
-* [`heroku auth`](docs/auth.md) - disable 2fa on account
-
 * [`heroku buildpacks`](docs/buildpacks.md) - add new app buildpack, inserting into list of buildpacks if necessary
 Example:
 
@@ -135,6 +131,5 @@ Example:
     v1 Config add FOO_BAR email@example.com 2015/11/17 17:37:41 (~ 1h ago)
     v2 Config add BAR_BAZ email@example.com 2015/11/17 17:37:41 (~ 1h ago)
     v3 Config add BAZ_QUX email@example.com 2015/11/17 17:37:41 (~ 1h ago)
-* [`heroku twofactor`](docs/twofactor.md) - disable 2fa on account
 
 <!-- commandsstop -->
