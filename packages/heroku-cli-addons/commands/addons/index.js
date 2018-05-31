@@ -282,12 +282,9 @@ module.exports = {
   help: `The default filter applied depends on whether you are in a Heroku app
 directory. If so, the --app flag is implied. If not, the default of --all
 is implied. Explicitly providing either flag overrides the default
-behavior.
-
-Examples:
-
-    $ heroku ${topic} --all
-    $ heroku ${topic} --app acme-inc-www
-
-`
+behavior.`,
+  examples: [
+    `$ heroku ${topic} --all`,
+    `$ heroku ${topic} --app acme-inc-www`
+  ]
 }

@@ -101,24 +101,19 @@ function * run (c, h) {
 let cmd = {
   topic: 'addons',
   description: 'change add-on plan',
-  help: `
-See available plans with \`heroku addons:plans SERVICE\`.
+  help: `See available plans with \`heroku addons:plans SERVICE\`.
 
 Note that \`heroku addons:upgrade\` and \`heroku addons:downgrade\` are the same.
 Either one can be used to change an add-on plan up or down.
 
-[https://devcenter.heroku.com/articles/managing-add-ons](https://devcenter.heroku.com/articles/managing-add-ons)
+[https://devcenter.heroku.com/articles/managing-add-ons](https://devcenter.heroku.com/articles/managing-add-ons)`,
+  examples: [
+    `Upgrade an add-on by service name:
+$ heroku addons:upgrade heroku-redis:premium-2
 
-Examples:
-
-  Upgrade an add-on by service name:
-
-    $ heroku addons:upgrade heroku-redis:premium-2
-
-  Upgrade a specific add-on:
-
-    $ heroku addons:upgrade swimming-briskly-123 heroku-redis:premium-2
-  `,
+Upgrade a specific add-on:
+$ heroku addons:upgrade swimming-briskly-123 heroku-redis:premium-2`
+  ],
   needsAuth: true,
   wantsApp: true,
   args: [{name: 'addon'}, {name: 'plan', optional: true}],

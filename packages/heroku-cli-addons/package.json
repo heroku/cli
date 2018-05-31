@@ -9,20 +9,20 @@
   "dependencies": {
     "co": "4.6.0",
     "co-wait": "0.0.0",
-    "heroku-cli-util": "^8.0.8",
+    "heroku-cli-util": "^8.0.9",
     "lodash": "^4.17.10",
     "printf": "0.3.0"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.13.20",
+    "@oclif/dev-cli": "^1.13.24",
     "@oclif/plugin-legacy": "^1.0.15",
     "chai": "^4.1.2",
-    "lolex": "^2.4.1",
-    "mocha": "^5.1.1",
+    "lolex": "^2.7.0",
+    "mocha": "^5.2.0",
     "nock": "^9.0.13",
-    "nyc": "^11.7.3",
+    "nyc": "^11.8.0",
     "standard": "^11.0.1",
-    "unexpected": "^10.37.7"
+    "unexpected": "^10.38.0"
   },
   "files": [
     ".oclif.manifest.json",
@@ -41,9 +41,11 @@
     "release": "np",
     "test": "nyc mocha && standard",
     "prepublishOnly": "oclif-dev manifest",
+    "version": "oclif-dev readme && git add README.md",
     "postpublish": "rm .oclif.manifest.json"
   },
   "cli-engine": {
+    "bin": "heroku",
     "topics": {
       "addons": {
         "description": "tools and services for developing, extending, and operating your app"

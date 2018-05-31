@@ -7,59 +7,254 @@
 
 [![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)
 
-This re-implements the `heroku addons [--app APP|--all]` command in Node with a
-new UX which aims to make the concepts clearer and the relationships between
-them more accessible.
+<!-- commands -->
+* [`heroku addons [--all|--app APP]`](#heroku-addons-all-app-app)
+* [`heroku addons:attach ADDON_NAME`](#heroku-addonsattach-addon-name)
+* [`heroku addons:create SERVICE:PLAN`](#heroku-addonscreate-serviceplan)
+* [`heroku addons:destroy [ADDON]... [flags]`](#heroku-addonsdestroy-addon-flags)
+* [`heroku addons:detach ATTACHMENT_NAME`](#heroku-addonsdetach-attachment-name)
+* [`heroku addons:docs ADDON`](#heroku-addonsdocs-addon)
+* [`heroku addons:downgrade ADDON [PLAN]`](#heroku-addonsdowngrade-addon-plan)
+* [`heroku addons:info ADDON`](#heroku-addonsinfo-addon)
+* [`heroku addons:open ADDON`](#heroku-addonsopen-addon)
+* [`heroku addons:plans SERVICE`](#heroku-addonsplans-service)
+* [`heroku addons:rename ADDON NEW_NAME`](#heroku-addonsrename-addon-new-name)
+* [`heroku addons:services`](#heroku-addonsservices)
+* [`heroku addons:upgrade ADDON [PLAN]`](#heroku-addonsupgrade-addon-plan)
+* [`heroku addons:wait ADDON`](#heroku-addonswait-addon)
 
-Example output:
+## `heroku addons [--all|--app APP]`
 
-``` sh-session
-$ heroku addons -a addons-reports
-Add-on                              Plan                              Price
-──────────────────────────────────  ────────────────────────────────  ───────────────────────────
-flowing-tidily-5466                 heroku-postgresql:kappa           (billed to addons app)
- ├─ support-api::ADDONS_DATABASE
- ├─ ADDONS_DATABASE
- ├─ addons::HEROKU_POSTGRESQL_BLUE
- └─ addons::DATABASE
-practicing-nobly-1495               heroku-postgresql:premium-yanari  $200/month
- ├─ DATABASE
- ├─ addons::ADDONS_REPORTS
- └─ HEROKU_POSTGRESQL_SILVER
-swimming-truly-2371                 openredis:micro                   $8/month
- └─ OPENREDIS
-cooling-avidly-8928                 ?                                 (billed to vault-usage app)
- └─ VAULT_USAGE
+lists your add-ons and attachments
 
 ```
+USAGE
+  $ heroku addons [--all|--app APP]
 
-As an experiment, it also makes use of ANSI colours where appropriate, by highlighting
-reference types by consistent colours and dimming non-critical information:
+OPTIONS
+  -A, --all            show add-ons and attachments for all accessible apps
+  -a, --app=app        app to run command against
+  -r, --remote=remote  git remote of app to use
+  --json               return add-ons in json format
 
-![colour example](https://cloud.githubusercontent.com/assets/66427/9675115/55693244-526e-11e5-95aa-dd437c24d5f1.png)
+DESCRIPTION
+  The default filter applied depends on whether you are in a Heroku app
+  directory. If so, the --app flag is implied. If not, the default of --all
+  is implied. Explicitly providing either flag overrides the default
+  behavior.
 
-## Install
+EXAMPLES
+  $ heroku addons --all
 
-### Latest dev version
-
-``` sh-session
-$ git clone https://github.com/heroku/heroku-cli-addons.git heroku-cli-addons
-$ cd heroku-cli-addons
-$ npm install                # dependencies
-$ heroku plugins:link
+  $ heroku addons --app acme-inc-www
 ```
 
-If you run into any problems, open an issue. You can remove the plugin in the
-meantime if it's borked:
+## `heroku addons:attach ADDON_NAME`
 
-``` sh-session
-$ rm ~/.heroku/node_modules/heroku-cli-addons
+attach add-on resource to a new app
+
+```
+USAGE
+  $ heroku addons:attach ADDON_NAME
+
+OPTIONS
+  -a, --app=app            (required) app to run command against
+  -r, --remote=remote      git remote of app to use
+  --as=as                  name for add-on attachment
+  --confirm=confirm        overwrite existing add-on attachment with same name
+  --credential=credential  credential name for scoped access to Heroku Postgres
 ```
 
-## Developing
+## `heroku addons:create SERVICE:PLAN`
 
-```sh-session
-$ npm install                     # install all dependencies
-$ npm test                        # run the tests
-$ npm version <major|minor|patch> # bump the version number and publish to npm
+create an add-on resource
+
 ```
+USAGE
+  $ heroku addons:create SERVICE:PLAN
+
+OPTIONS
+  -a, --app=app        (required) app to run command against
+  -r, --remote=remote  git remote of app to use
+  --as=as              name for the initial add-on attachment
+  --confirm=confirm    overwrite existing config vars or existing add-on attachments
+  --name=name          name for the add-on resource
+  --wait               watch add-on creation status and exit when complete
+```
+
+## `heroku addons:destroy [ADDON]... [flags]`
+
+destroy add-on resources
+
+```
+USAGE
+  $ heroku addons:destroy [ADDON]... [flags]
+
+OPTIONS
+  -a, --app=app          app to run command against
+  -c, --confirm=confirm
+  -f, --force            allow destruction even if connected to other apps
+  -r, --remote=remote    git remote of app to use
+```
+
+## `heroku addons:detach ATTACHMENT_NAME`
+
+detach an add-on resource from an app
+
+```
+USAGE
+  $ heroku addons:detach ATTACHMENT_NAME
+
+OPTIONS
+  -a, --app=app        (required) app to run command against
+  -r, --remote=remote  git remote of app to use
+```
+
+## `heroku addons:docs ADDON`
+
+open an add-on's Dev Center documentation in your browser
+
+```
+USAGE
+  $ heroku addons:docs ADDON
+
+OPTIONS
+  -a, --app=app        app to run command against
+  -r, --remote=remote  git remote of app to use
+  --show-url           show URL, do not open browser
+```
+
+## `heroku addons:downgrade ADDON [PLAN]`
+
+change add-on plan
+
+```
+USAGE
+  $ heroku addons:downgrade ADDON [PLAN]
+
+OPTIONS
+  -a, --app=app        app to run command against
+  -r, --remote=remote  git remote of app to use
+
+DESCRIPTION
+  See available plans with `heroku addons:plans SERVICE`.
+
+  Note that `heroku addons:upgrade` and `heroku addons:downgrade` are the same.
+  Either one can be used to change an add-on plan up or down.
+
+  [https://devcenter.heroku.com/articles/managing-add-ons](https://devcenter.heroku.com/articles/managing-add-ons)
+
+EXAMPLE
+  Upgrade an add-on by service name:
+  $ heroku addons:upgrade heroku-redis:premium-2
+
+  Upgrade a specific add-on:
+  $ heroku addons:upgrade swimming-briskly-123 heroku-redis:premium-2
+```
+
+## `heroku addons:info ADDON`
+
+Show info about an add-on and its attachments.
+
+```
+USAGE
+  $ heroku addons:info ADDON
+
+OPTIONS
+  -a, --app=app        app to run command against
+  -r, --remote=remote  git remote of app to use
+```
+
+## `heroku addons:open ADDON`
+
+open an add-on's dashboard in your browser
+
+```
+USAGE
+  $ heroku addons:open ADDON
+
+OPTIONS
+  -a, --app=app        app to run command against
+  -r, --remote=remote  git remote of app to use
+  --show-url           show URL, do not open browser
+```
+
+## `heroku addons:plans SERVICE`
+
+list all available plans for an add-on services
+
+```
+USAGE
+  $ heroku addons:plans SERVICE
+
+OPTIONS
+  --json  output in json format
+```
+
+## `heroku addons:rename ADDON NEW_NAME`
+
+Rename an add-on.
+
+```
+USAGE
+  $ heroku addons:rename ADDON NEW_NAME
+
+OPTIONS
+  -a, --app=app        app to run command against
+  -r, --remote=remote  git remote of app to use
+```
+
+## `heroku addons:services`
+
+list all available add-on services
+
+```
+USAGE
+  $ heroku addons:services
+
+OPTIONS
+  --json  output in json format
+```
+
+## `heroku addons:upgrade ADDON [PLAN]`
+
+change add-on plan
+
+```
+USAGE
+  $ heroku addons:upgrade ADDON [PLAN]
+
+OPTIONS
+  -a, --app=app        app to run command against
+  -r, --remote=remote  git remote of app to use
+
+DESCRIPTION
+  See available plans with `heroku addons:plans SERVICE`.
+
+  Note that `heroku addons:upgrade` and `heroku addons:downgrade` are the same.
+  Either one can be used to change an add-on plan up or down.
+
+  [https://devcenter.heroku.com/articles/managing-add-ons](https://devcenter.heroku.com/articles/managing-add-ons)
+
+EXAMPLE
+  Upgrade an add-on by service name:
+  $ heroku addons:upgrade heroku-redis:premium-2
+
+  Upgrade a specific add-on:
+  $ heroku addons:upgrade swimming-briskly-123 heroku-redis:premium-2
+```
+
+## `heroku addons:wait ADDON`
+
+Show provisioning status of the add-ons on the app
+
+```
+USAGE
+  $ heroku addons:wait ADDON
+
+OPTIONS
+  -a, --app=app                  app to run command against
+  -r, --remote=remote            git remote of app to use
+  --wait-interval=wait-interval  how frequently to poll in seconds
+```
+<!-- commandsstop -->
