@@ -54,7 +54,7 @@
     "uuid": "3.2.1"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.13.27",
+    "@oclif/dev-cli": "^1.13.28",
     "@oclif/test": "^1.0.6",
     "@oclif/tslint": "^1.1.2",
     "@types/ansi-styles": "^3.2.0",
