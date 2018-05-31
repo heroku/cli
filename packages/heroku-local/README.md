@@ -22,18 +22,18 @@ Commands
 ========
 
 <!-- commands -->
-* [`@heroku-cli/plugin-local local [PROCESSNAME]`](#heroku-cli-plugin-local-local-processname)
-* [`@heroku-cli/plugin-local local:run`](#heroku-cli-plugin-local-localrun)
-* [`@heroku-cli/plugin-local local:start [PROCESSNAME]`](#heroku-cli-plugin-local-localstart-processname)
-* [`@heroku-cli/plugin-local local:version`](#heroku-cli-plugin-local-localversion)
+* [`heroku local [PROCESSNAME]`](#heroku-local-processname)
+* [`heroku local:run`](#heroku-localrun)
+* [`heroku local:start [PROCESSNAME]`](#heroku-localstart-processname)
+* [`heroku local:version`](#heroku-localversion)
 
-## `@heroku-cli/plugin-local local [PROCESSNAME]`
+## `heroku local [PROCESSNAME]`
 
 run heroku app locally
 
 ```
 USAGE
-  $ @heroku-cli/plugin-local local [PROCESSNAME]
+  $ heroku local [PROCESSNAME]
 
 OPTIONS
   -e, --env=env            location of env file (defaults to .env)
@@ -43,39 +43,36 @@ OPTIONS
 DESCRIPTION
   Start the application specified by a Procfile (defaults to ./Procfile)
 
-  Examples:
-
-       heroku local
-       heroku local web
-       heroku local web=2
-       heroku local web=1,worker=2
+EXAMPLES
+  $ heroku local
+  $ heroku local web
+  $ heroku local web=2
+  $ heroku local web=1,worker=2
 ```
 
-## `@heroku-cli/plugin-local local:run`
+## `heroku local:run`
 
 run a one-off command
 
 ```
 USAGE
-  $ @heroku-cli/plugin-local local:run
+  $ heroku local:run
 
 OPTIONS
   -e, --env=env
   -p, --port=port
 
-DESCRIPTION
-  Example:
-
-       heroku local:run bin/migrate
+EXAMPLES
+  $ heroku local:run bin/migrate
 ```
 
-## `@heroku-cli/plugin-local local:start [PROCESSNAME]`
+## `heroku local:start [PROCESSNAME]`
 
 run heroku app locally
 
 ```
 USAGE
-  $ @heroku-cli/plugin-local local:start [PROCESSNAME]
+  $ heroku local:start [PROCESSNAME]
 
 OPTIONS
   -e, --env=env            location of env file (defaults to .env)
@@ -85,23 +82,19 @@ OPTIONS
 DESCRIPTION
   Start the application specified by a Procfile (defaults to ./Procfile)
 
-  Examples:
-
-       heroku local
-       heroku local web
-       heroku local web=2
-       heroku local web=1,worker=2
+EXAMPLES
+  $ heroku local
+  $ heroku local web
+  $ heroku local web=2
+  $ heroku local web=1,worker=2
 ```
 
-## `@heroku-cli/plugin-local local:version`
+## `heroku local:version`
 
 display node-foreman version
 
 ```
 USAGE
-  $ @heroku-cli/plugin-local local:version
-
-DESCRIPTION
-  Display node-foreman version
+  $ heroku local:version
 ```
 <!-- commandsstop -->
