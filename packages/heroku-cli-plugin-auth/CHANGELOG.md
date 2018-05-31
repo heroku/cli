@@ -1,3 +1,11 @@
+<a name="0.6.0"></a>
+# [0.6.0](https://github.com/heroku/heroku-cli-plugin-auth/compare/v0.5.0...v0.6.0) (2018-05-31)
+
+
+### Features
+
+* added auth:2fa:disable ([b7a5151](https://github.com/heroku/heroku-cli-plugin-auth/commit/b7a5151))
+
 <a name="0.5.0"></a>
 # [0.5.0](https://github.com/heroku/heroku-cli-plugin-auth/compare/v0.4.4...v0.5.0) (2018-05-31)
 
