@@ -373,7 +373,6 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
-
   defaults to DATABASE_URL database if no DATABASE is specified
   if REPORT_ID is specified instead, a previous report is displayed
 ```

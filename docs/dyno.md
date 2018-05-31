@@ -23,7 +23,6 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
-
   stop app dyno or dyno type
 
 EXAMPLES
@@ -47,7 +46,6 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
-
   Called with no arguments shows the current dyno size.
 
   Called with one argument sets the size.
@@ -121,7 +119,6 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
-
   stop app dyno or dyno type
 
 EXAMPLES

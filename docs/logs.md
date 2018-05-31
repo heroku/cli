@@ -25,7 +25,6 @@ OPTIONS
 DESCRIPTION
   disable colors with --no-color, HEROKU_LOGS_COLOR=0, or HEROKU_COLOR=0
 
-
 EXAMPLES
   $ heroku logs
   2012-01-01T12:00:00+00:00 heroku[api]: Config add EXAMPLE by email@example.com

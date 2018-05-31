@@ -63,8 +63,7 @@ OPTIONS
   -v, --verbose
 
 DESCRIPTION
-
-       Usage:
+  Usage:
        heroku container:pull web        # Pulls the web image from the app
        heroku container:pull web worker # Pulls both the web and worker images from the app
        heroku container:pull web:latest # Pulls the latest tag from the web image
@@ -107,8 +106,7 @@ OPTIONS
   -v, --verbose
 
 DESCRIPTION
-
-       Usage:
+  Usage:
        heroku container:release web                       # Releases the previously pushed web process type
        heroku container:release web worker                # Releases the previously pushed web and worker process types
 ```
@@ -126,8 +124,7 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
-
-       Usage:
+  Usage:
        heroku container:rm web        # Destroys the web container
        heroku container:rm web worker # Destroys the web and worker containers
 ```
@@ -147,8 +144,7 @@ OPTIONS
   -v, --verbose
 
 DESCRIPTION
-
-       Usage:
+  Usage:
        heroku container:run web bash # Runs bash on the local web docker container
        heroku container:run worker   # Runs the container CMD on the local worker container
 ```

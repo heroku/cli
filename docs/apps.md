@@ -322,7 +322,6 @@ OPTIONS
   --bulk               transfer applications in bulk
 
 DESCRIPTION
-
   Examples:
 
        $ heroku apps:transfer collaborator@example.com

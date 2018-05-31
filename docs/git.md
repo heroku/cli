@@ -47,7 +47,6 @@ OPTIONS
 DESCRIPTION
   extra arguments will be passed to git remote add
 
-
 EXAMPLES
   # set git remote heroku to https://git.heroku.com/example.git
        $ heroku git:remote -a example

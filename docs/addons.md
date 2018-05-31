@@ -132,7 +132,6 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
-
   See available plans with `heroku addons:plans SERVICE`.
 
   Note that `heroku addons:upgrade` and `heroku addons:downgrade` are the same.
@@ -228,7 +227,6 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
-
   See available plans with `heroku addons:plans SERVICE`.
 
   Note that `heroku addons:upgrade` and `heroku addons:downgrade` are the same.
