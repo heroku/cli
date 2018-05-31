@@ -188,11 +188,11 @@
     heroku-cli-util "^8.0.6"
     lodash "^4.17.10"
 
-"@heroku-cli/plugin-orgs@1.7.6":
-  version "1.7.6"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-orgs/-/plugin-orgs-1.7.6.tgz#f00f63b11e774ec8336ec28e08b6018d4b206ef1"
+"@heroku-cli/plugin-orgs@1.8.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-orgs/-/plugin-orgs-1.8.0.tgz#bf500dd2804f9492238305de9769e298c3d4ab4c"
   dependencies:
-    "@heroku-cli/command" "^8.1.18"
+    "@heroku-cli/command" "^8.1.20"
     co "^4.6.0"
     heroku-cli-util "^8.0.9"
     inquirer "^5.2.0"
