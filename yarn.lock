@@ -345,9 +345,9 @@
   dependencies:
     debug "^3.1.0"
 
-"@oclif/dev-cli@^1.13.26":
-  version "1.13.26"
-  resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.13.26.tgz#1dfa062cc410aa0b44953248edf2744bd0b51636"
+"@oclif/dev-cli@^1.13.27":
+  version "1.13.27"
+  resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.13.27.tgz#86ff50700cad3266cbd5e4295bebf496722a2247"
   dependencies:
     "@oclif/command" "^1.4.30"
     "@oclif/config" "^1.6.21"
@@ -702,9 +702,9 @@ atob@^2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.1.tgz#ae2d5a729477f289d60dd7f96a6314a22dd6c22a"
 
-aws-sdk@^2.248.1:
-  version "2.248.1"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.248.1.tgz#a6b65d3a1ef9cdc774b0cf9c552af997d2342c03"
+aws-sdk@^2.249.1:
+  version "2.249.1"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.249.1.tgz#29e9ef35afb14ce0e91f9905b33ed354417b965b"
   dependencies:
     buffer "4.9.1"
     events "1.1.1"
