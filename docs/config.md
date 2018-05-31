@@ -2,6 +2,8 @@
 ===============
 
 interactively edit config vars
+This command opens the app config in a text editor set by $VISUAL or $EDITOR.
+Any variables added/removed/changed will be updated on the app after saving and closing the file.
 
 * [`heroku config`](#heroku-config)
 * [`heroku config:edit [KEY]`](#heroku-configedit-key)
@@ -24,7 +26,7 @@ OPTIONS
   -s, --shell          output config vars in shell format
 ```
 
-_See code: [@heroku-cli/plugin-config](https://github.com/heroku/heroku-cli-plugin-config/blob/v1.3.0/src/commands/config/index.ts)_
+_See code: [@heroku-cli/plugin-config](https://github.com/heroku/heroku-cli-plugin-config/blob/v1.3.1/src/commands/config/index.ts)_
 
 ## `heroku config:edit [KEY]`
 
@@ -40,9 +42,23 @@ ARGUMENTS
 OPTIONS
   -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
+
+DESCRIPTION
+  This command opens the app config in a text editor set by $VISUAL or $EDITOR.
+  Any variables added/removed/changed will be updated on the app after saving and closing the file.
+
+EXAMPLES
+  # edit with vim
+  $ EDITOR="vim" heroku config:edit
+  # edit with emacs
+  $ EDITOR="emacs" heroku config:edit
+  # edit with pico
+  $ EDITOR="pico" heroku config:edit
+  # edit with atom editor
+  $ VISUAL="atom --wait" heroku config:edit
 ```
 
-_See code: [@heroku-cli/plugin-config](https://github.com/heroku/heroku-cli-plugin-config/blob/v1.3.0/src/commands/config/edit.ts)_
+_See code: [@heroku-cli/plugin-config](https://github.com/heroku/heroku-cli-plugin-config/blob/v1.3.1/src/commands/config/edit.ts)_
 
 ## `heroku config:get KEY...`
 
@@ -62,7 +78,7 @@ EXAMPLES
   production
 ```
 
-_See code: [@heroku-cli/plugin-config](https://github.com/heroku/heroku-cli-plugin-config/blob/v1.3.0/src/commands/config/get.ts)_
+_See code: [@heroku-cli/plugin-config](https://github.com/heroku/heroku-cli-plugin-config/blob/v1.3.1/src/commands/config/get.ts)_
 
 ## `heroku config:set`
 
