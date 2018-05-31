@@ -15,7 +15,6 @@ set -ex
 export PATH="./node_modules/.bin:./bin:$PATH"
 export COLUMNS=80
 
-yarn
 run whoami
 cat <<EOF > README.md
 ---
@@ -28,6 +27,6 @@ These are the help texts for each of the core Heroku CLI commands. You can also 
 <!-- commands -->
 EOF
 oclif-dev readme
-grep -v "^\\* \\[\`" README.md | sed "s/^## \`/### \`/g" > /tmp/heroku-cli-commands.md
+grep -v "^\\* \\[\`" README.md | grep -v "^<!--" | sed "s/^## \`/### \`/g" > /tmp/heroku-cli-commands.md
 git checkout README.md
 devcenter push /tmp/heroku-cli-commands.md --trace
