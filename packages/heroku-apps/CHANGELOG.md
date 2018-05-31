@@ -1,3 +1,11 @@
+<a name="2.5.9"></a>
+## [2.5.9](https://github.com/heroku/heroku-apps/compare/v2.5.8...v2.5.9) (2018-05-31)
+
+
+### Bug Fixes
+
+* show stack change in app info ([#232](https://github.com/heroku/heroku-apps/issues/232)) ([34642d2](https://github.com/heroku/heroku-apps/commit/34642d2))
+
 <a name="2.5.8"></a>
 ## [2.5.8](https://github.com/heroku/heroku-apps/compare/v2.5.7...v2.5.8) (2018-05-31)
 
