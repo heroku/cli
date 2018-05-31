@@ -31,9 +31,9 @@ USAGE
   $ heroku access:add EMAIL
 
 OPTIONS
-  -a, --app=app              (required) app to run command against
-  -r, --remote=remote        git remote of app to use
-  --permissions=permissions  list of permissions comma separated
+  -a, --app=app                  (required) app to run command against
+  -p, --permissions=permissions  list of permissions comma separated
+  -r, --remote=remote            git remote of app to use
 
 DESCRIPTION
   Examples:
@@ -70,9 +70,9 @@ USAGE
   $ heroku access:update EMAIL
 
 OPTIONS
-  -a, --app=app              (required) app to run command against
-  -r, --remote=remote        git remote of app to use
-  --permissions=permissions  comma-delimited list of permissions to update (deploy,manage,operate)
+  -a, --app=app                  (required) app to run command against
+  -p, --permissions=permissions  comma-delimited list of permissions to update (deploy,manage,operate)
+  -r, --remote=remote            git remote of app to use
 
 DESCRIPTION
   Example:
