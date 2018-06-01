@@ -49,7 +49,7 @@ function * run (context, heroku) {
 
 const cmd = {
   topic: 'addons',
-  description: 'create an add-on resource',
+  description: 'create a new add-on resource',
   needsAuth: true,
   needsApp: true,
   args: [{name: 'service:plan'}],

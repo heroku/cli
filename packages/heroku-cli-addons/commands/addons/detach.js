@@ -32,7 +32,7 @@ function * run (context, heroku) {
 module.exports = {
   topic: 'addons',
   command: 'detach',
-  description: 'detach an add-on resource from an app',
+  description: 'detach an existing add-on resource from an app',
   needsAuth: true,
   needsApp: true,
   args: [{name: 'attachment_name'}],

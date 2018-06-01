@@ -27,5 +27,5 @@ module.exports = {
   args: [{name: 'addon'}, {name: 'name'}],
   run: run,
   usage: `${topic}:rename ADDON NEW_NAME`,
-  description: 'Rename an add-on.'
+  description: 'rename an add-on'
 }

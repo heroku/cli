@@ -48,5 +48,5 @@ module.exports = {
   args: [{name: 'addon'}],
   run: run,
   usage: `${topic}:info ADDON`,
-  description: 'Show info about an add-on and its attachments.'
+  description: 'show detailed add-on resource and attachment information'
 }

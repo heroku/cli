@@ -54,7 +54,7 @@ function * run (context, heroku) {
 module.exports = {
   topic: 'addons',
   command: 'attach',
-  description: 'attach add-on resource to a new app',
+  description: 'attach an existing add-on resource to an app',
   needsAuth: true,
   needsApp: true,
   flags: [

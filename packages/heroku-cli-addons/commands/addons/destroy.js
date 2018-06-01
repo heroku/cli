@@ -34,7 +34,7 @@ function * run (context, heroku) {
 
 let cmd = {
   topic: 'addons',
-  description: 'destroy add-on resources',
+  description: 'permanently destroy an add-on resource',
   usage: 'addons:destroy [ADDON]... [flags]',
   needsAuth: true,
   wantsApp: true,
