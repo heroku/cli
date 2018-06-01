@@ -24,7 +24,7 @@ EXAMPLE
   $ heroku plugins
 ```
 
-_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v1.2.1/src/commands/plugins/index.ts)_
+_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v1.3.0/src/commands/plugins/index.ts)_
 
 ## `heroku plugins:install PLUGIN...`
 
@@ -48,7 +48,7 @@ EXAMPLE
   $ heroku plugins:install myplugin
 ```
 
-_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v1.2.1/src/commands/plugins/install.ts)_
+_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v1.3.0/src/commands/plugins/install.ts)_
 
 ## `heroku plugins:link PLUGIN`
 
@@ -69,7 +69,7 @@ EXAMPLE
   $ heroku plugins:link myplugin
 ```
 
-_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v1.2.1/src/commands/plugins/link.ts)_
+_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v1.3.0/src/commands/plugins/link.ts)_
 
 ## `heroku plugins:uninstall PLUGIN...`
 
@@ -91,7 +91,7 @@ ALIASES
   $ heroku plugins:remove
 ```
 
-_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v1.2.1/src/commands/plugins/uninstall.ts)_
+_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v1.3.0/src/commands/plugins/uninstall.ts)_
 
 ## `heroku plugins:update`
 
@@ -106,4 +106,4 @@ OPTIONS
   -v, --verbose
 ```
 
-_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v1.2.1/src/commands/plugins/update.ts)_
+_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v1.3.0/src/commands/plugins/update.ts)_
