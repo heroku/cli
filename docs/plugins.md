@@ -41,11 +41,16 @@ OPTIONS
   -h, --help     show CLI help
   -v, --verbose
 
+DESCRIPTION
+  Can be installed from npm or a git url.
+
 ALIASES
   $ heroku plugins:add
 
-EXAMPLE
-  $ heroku plugins:install myplugin
+EXAMPLES
+  $ heroku plugins:install myplugin 
+  $ heroku plugins:install https://github.com/someuser/someplugin
+  $ heroku plugins:install someuser/someplugin
 ```
 
 _See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v1.3.1/src/commands/plugins/install.ts)_

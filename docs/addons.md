@@ -38,15 +38,14 @@ DESCRIPTION
   is implied. Explicitly providing either flag overrides the default
   behavior.
 
-  Examples:
-
-       $ heroku addons --all
-       $ heroku addons --app acme-inc-www
+EXAMPLES
+  $ heroku addons --all
+  $ heroku addons --app acme-inc-www
 ```
 
 ## `heroku addons:attach ADDON_NAME`
 
-attach add-on resource to a new app
+attach an existing add-on resource to an app
 
 ```
 USAGE
@@ -62,7 +61,7 @@ OPTIONS
 
 ## `heroku addons:create SERVICE:PLAN`
 
-create an add-on resource
+create a new add-on resource
 
 ```
 USAGE
@@ -79,7 +78,7 @@ OPTIONS
 
 ## `heroku addons:destroy [ADDON]... [flags]`
 
-destroy add-on resources
+permanently destroy an add-on resource
 
 ```
 USAGE
@@ -94,7 +93,7 @@ OPTIONS
 
 ## `heroku addons:detach ATTACHMENT_NAME`
 
-detach an add-on resource from an app
+detach an existing add-on resource from an app
 
 ```
 USAGE
@@ -139,20 +138,17 @@ DESCRIPTION
 
   [https://devcenter.heroku.com/articles/managing-add-ons](https://devcenter.heroku.com/articles/managing-add-ons)
 
-  Examples:
+EXAMPLE
+  Upgrade an add-on by service name:
+  $ heroku addons:upgrade heroku-redis:premium-2
 
-     Upgrade an add-on by service name:
-
-       $ heroku addons:upgrade heroku-redis:premium-2
-
-     Upgrade a specific add-on:
-
-       $ heroku addons:upgrade swimming-briskly-123 heroku-redis:premium-2
+  Upgrade a specific add-on:
+  $ heroku addons:upgrade swimming-briskly-123 heroku-redis:premium-2
 ```
 
 ## `heroku addons:info ADDON`
 
-Show info about an add-on and its attachments.
+show detailed add-on resource and attachment information
 
 ```
 USAGE
@@ -191,7 +187,7 @@ OPTIONS
 
 ## `heroku addons:rename ADDON NEW_NAME`
 
-Rename an add-on.
+rename an add-on
 
 ```
 USAGE
@@ -234,20 +230,17 @@ DESCRIPTION
 
   [https://devcenter.heroku.com/articles/managing-add-ons](https://devcenter.heroku.com/articles/managing-add-ons)
 
-  Examples:
+EXAMPLE
+  Upgrade an add-on by service name:
+  $ heroku addons:upgrade heroku-redis:premium-2
 
-     Upgrade an add-on by service name:
-
-       $ heroku addons:upgrade heroku-redis:premium-2
-
-     Upgrade a specific add-on:
-
-       $ heroku addons:upgrade swimming-briskly-123 heroku-redis:premium-2
+  Upgrade a specific add-on:
+  $ heroku addons:upgrade swimming-briskly-123 heroku-redis:premium-2
 ```
 
 ## `heroku addons:wait ADDON`
 
-Show provisioning status of the add-ons on the app
+show provisioning status of the add-ons on the app
 
 ```
 USAGE
