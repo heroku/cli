@@ -180,9 +180,9 @@
     heroku-cli-util "^8.0.9"
     lodash.flatten "^4.4.0"
 
-"@heroku-cli/plugin-oauth@2.3.4":
-  version "2.3.4"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-oauth/-/plugin-oauth-2.3.4.tgz#aa213c365c7ba01952e1b202d1996a3e354e0275"
+"@heroku-cli/plugin-oauth@2.3.5":
+  version "2.3.5"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-oauth/-/plugin-oauth-2.3.5.tgz#f58050e82f5d6029a7d30438db473f1c280af7b7"
   dependencies:
     co "^4.6.0"
     date-fns "^1.29.0"
@@ -385,13 +385,13 @@
     "@oclif/linewrap" "^1.0.0"
     chalk "^2.4.1"
 
-"@oclif/plugin-commands@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@oclif/plugin-commands/-/plugin-commands-1.1.0.tgz#7887ecf0d0c4db2c2d835dee15f338744feb3724"
+"@oclif/plugin-commands@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-commands/-/plugin-commands-1.1.1.tgz#df76430ae69e588ef39ee7df8d87f33aa769b1ae"
   dependencies:
-    "@oclif/command" "^1"
-    "@oclif/config" "^1"
-    cli-ux "^4.4.0"
+    "@oclif/command" "^1.4.32"
+    "@oclif/config" "^1.6.27"
+    cli-ux "^4.6.1"
     lodash "^4.17.10"
     tslib "^1.9.2"
 
@@ -426,14 +426,14 @@
     "@oclif/command" "^1.4.19"
     string-similarity "^1.2.0"
 
-"@oclif/plugin-plugins@1.3.2":
-  version "1.3.2"
-  resolved "https://registry.yarnpkg.com/@oclif/plugin-plugins/-/plugin-plugins-1.3.2.tgz#529496c66ccd00bcc25c5759e82b3aeaff7f3fd8"
+"@oclif/plugin-plugins@1.4.0":
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-plugins/-/plugin-plugins-1.4.0.tgz#80cc8b3d55fc4499cc687b77f85de2b0b63d52a7"
   dependencies:
     "@heroku-cli/color" "^1.1.5"
     "@oclif/command" "^1.4.32"
     chalk "^2.4.1"
-    cli-ux "^4.6.0"
+    cli-ux "^4.6.1"
     debug "^3.1.0"
     fs-extra "^6.0.1"
     http-call "^5.1.4"
@@ -558,6 +558,10 @@
 "@types/mocha@^5.2.0":
   version "5.2.0"
   resolved "https://registry.yarnpkg.com/@types/mocha/-/mocha-5.2.0.tgz#b3c8e69f038835db1a7fdc0b3d879fc50506e29e"
+
+"@types/mocha@^5.2.1":
+  version "5.2.1"
+  resolved "https://registry.yarnpkg.com/@types/mocha/-/mocha-5.2.1.tgz#465450aaf5cec6f7d35523748c6cc89a5e222dc5"
 
 "@types/nock@^9.1.3":
   version "9.1.3"
@@ -709,9 +713,9 @@ atob@^2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.1.tgz#ae2d5a729477f289d60dd7f96a6314a22dd6c22a"
 
-aws-sdk@^2.249.1:
-  version "2.249.1"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.249.1.tgz#29e9ef35afb14ce0e91f9905b33ed354417b965b"
+aws-sdk@^2.250.1:
+  version "2.250.1"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.250.1.tgz#0cc04edfc41fa0a6a5eccbc56888832f59270141"
   dependencies:
     buffer "4.9.1"
     events "1.1.1"
@@ -961,9 +965,9 @@ cli-cursor@^2.1.0:
   dependencies:
     restore-cursor "^2.0.0"
 
-cli-ux@4.6.0, cli-ux@^4.3.0, cli-ux@^4.3.1, cli-ux@^4.4.0, cli-ux@^4.6.0:
-  version "4.6.0"
-  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-4.6.0.tgz#b3c6c4525c66ae0b6c0003db119609cd65c0a9ab"
+cli-ux@4.6.1, cli-ux@^4.6.1:
+  version "4.6.1"
+  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-4.6.1.tgz#2cc7feb4d48932a95bffe712426eaa36ec861004"
   dependencies:
     "@oclif/linewrap" "^1.0.0"
     "@oclif/screen" "^1.0.2"
@@ -1001,6 +1005,28 @@ cli-ux@^3.3.31:
     semver "^5.5.0"
     strip-ansi "^4.0.0"
     supports-color "^5.4.0"
+
+cli-ux@^4.3.0, cli-ux@^4.3.1, cli-ux@^4.4.0, cli-ux@^4.6.0:
+  version "4.6.0"
+  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-4.6.0.tgz#b3c6c4525c66ae0b6c0003db119609cd65c0a9ab"
+  dependencies:
+    "@oclif/linewrap" "^1.0.0"
+    "@oclif/screen" "^1.0.2"
+    ansi-styles "^3.2.1"
+    cardinal "^2.1.1"
+    chalk "^2.4.1"
+    clean-stack "^1.3.0"
+    extract-stack "^1.0.0"
+    fs-extra "^6.0.1"
+    hyperlinker "^1.0.0"
+    indent-string "^3.2.0"
+    is-wsl "^1.1.0"
+    lodash "^4.17.10"
+    password-prompt "^1.0.6"
+    semver "^5.5.0"
+    strip-ansi "^4.0.0"
+    supports-color "^5.4.0"
+    supports-hyperlinks "^1.0.1"
 
 cli-width@^2.0.0:
   version "2.2.0"
