@@ -19,4 +19,4 @@ OPTIONS
   --hidden    also show hidden commands
 ```
 
-_See code: [@oclif/plugin-commands](https://github.com/oclif/plugin-commands/blob/v1.1.0/src/commands/commands.ts)_
+_See code: [@oclif/plugin-commands](https://github.com/oclif/plugin-commands/blob/v1.1.1/src/commands/commands.ts)_

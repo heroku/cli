@@ -60,6 +60,9 @@ revoke OAuth authorization
 ```
 USAGE
   $ heroku authorizations:revoke ID
+
+ALIASES
+  $ heroku authorizations:destroy
 ```
 
 ## `heroku authorizations:rotate ID`
