@@ -395,7 +395,19 @@
     lodash "^4.17.10"
     tslib "^1.9.2"
 
-"@oclif/plugin-help@2.0.4", "@oclif/plugin-help@^2.0.4":
+"@oclif/plugin-help@2.0.5":
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-help/-/plugin-help-2.0.5.tgz#98084286099b44c8c6ed6214e3589f32525f4827"
+  dependencies:
+    "@oclif/command" "^1.4.30"
+    chalk "^2.4.1"
+    indent-string "^3.2.0"
+    lodash.template "^4.4.0"
+    string-width "^2.1.1"
+    widest-line "^2.0.0"
+    wrap-ansi "^3.0.1"
+
+"@oclif/plugin-help@^2.0.4":
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/@oclif/plugin-help/-/plugin-help-2.0.4.tgz#32cf1dc7696f626a6065109a17b0f061adb14243"
   dependencies:
