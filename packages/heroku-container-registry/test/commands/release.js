@@ -7,7 +7,6 @@ const sinon = require('sinon')
 const nock = require('nock')
 const stdMocks = require('std-mocks')
 
-const Sanbashi = require('../../lib/sanbashi')
 var sandbox
 
 describe('container release', () => {
@@ -23,21 +22,6 @@ describe('container release', () => {
       .then(() => expect(cli.stdout, 'to be empty'))
   })
 
-  it('has an unknown image', () => {
-    let api = nock('https://api.heroku.com:443')
-      .get('/apps/testapp')
-      .reply(200, {name: 'testapp'})
-    let imageID = sandbox.stub(Sanbashi, 'imageID')
-      .withArgs('registry.heroku.com/testapp/web:latest')
-      .returns(undefined)
-
-    return cmd.run({app: 'testapp', args: ['web'], flags: {}})
-      .then(() => expect(cli.stderr, 'to contain', 'Cannot find local image ID for process type web. Did you pull it?'))
-      .then(() => expect(cli.stdout, 'to be empty'))
-      .then(() => sandbox.assert.calledOnce(imageID))
-      .then(() => api.done())
-  })
-
   it('releases a single process type', () => {
     let api = nock('https://api.heroku.com:443')
       .get('/apps/testapp')
@@ -50,16 +34,15 @@ describe('container release', () => {
       .reply(200, {})
       .get('/apps/testapp/releases')
       .reply(200, [{}])
-
-    let imageID = sandbox.stub(Sanbashi, 'imageID')
-      .withArgs('registry.heroku.com/testapp/web:latest')
-      .returns('image_id')
+    let registry = nock('https://registry.heroku.com:443')
+      .get('/v2/testapp/web/manifests/latest')
+      .reply(200, {config: {digest: 'image_id'}})
 
     return cmd.run({app: 'testapp', args: ['web'], flags: {}})
       .then(() => expect(cli.stderr, 'to contain', 'Releasing images web to testapp... done'))
       .then(() => expect(cli.stdout, 'to be empty'))
-      .then(() => sandbox.assert.calledOnce(imageID))
       .then(() => api.done())
+      .then(() => registry.done())
   })
 
   it('releases multiple process types', () => {
@@ -75,18 +58,17 @@ describe('container release', () => {
       .reply(200, {})
       .get('/apps/testapp/releases')
       .reply(200, [{}])
-
-    let imageID = sandbox.stub(Sanbashi, 'imageID')
-      .callsFake(function (tag) {
-        let t = tag.split(':')[0].split('/').slice(-1)[0]
-        return `${t}_image_id`
-      })
+    let registry = nock('https://registry.heroku.com:443')
+      .get('/v2/testapp/web/manifests/latest')
+      .reply(200, {config: {digest: 'web_image_id'}})
+      .get('/v2/testapp/worker/manifests/latest')
+      .reply(200, {config: {digest: 'worker_image_id'}})
 
     return cmd.run({app: 'testapp', args: ['web', 'worker'], flags: {}})
       .then(() => expect(cli.stderr, 'to contain', 'Releasing images web,worker to testapp... done'))
       .then(() => expect(cli.stdout, 'to be empty'))
-      .then(() => sandbox.assert.calledTwice(imageID))
       .then(() => api.done())
+      .then(() => registry.done())
   })
 
   it('releases with release phase', () => {
@@ -105,17 +87,16 @@ describe('container release', () => {
       .reply(200, {})
       .get('/apps/testapp/releases')
       .reply(200, [{output_stream_url: 'https://busl.test/streams/release.log', status: 'pending'}])
-
-    let imageID = sandbox.stub(Sanbashi, 'imageID')
-      .withArgs('registry.heroku.com/testapp/web:latest')
-      .returns('image_id')
+    let registry = nock('https://registry.heroku.com:443')
+      .get('/v2/testapp/web/manifests/latest')
+      .reply(200, {config: {digest: 'image_id'}})
 
     return cmd.run({app: 'testapp', args: ['web'], flags: {}})
       .then(() => expect(stdMocks.flush().stdout.join('')).to.equal('Release Output Content'))
       .then(() => expect(cli.stderr, 'to contain', 'Runnning release command...'))
       .then(() => expect(cli.stdout, 'to be empty'))
-      .then(() => sandbox.assert.calledOnce(imageID))
       .then(() => api.done())
+      .then(() => registry.done())
       .then(() => busl.done())
       .then(() => stdMocks.restore())
       .catch(() => stdMocks.restore())
@@ -133,15 +114,14 @@ describe('container release', () => {
       .reply(200, {})
       .get('/apps/testapp/releases')
       .reply(200, [{output_stream_url: 'https://busl.test/streams/release.log', status: 'succeeded'}])
-
-    let imageID = sandbox.stub(Sanbashi, 'imageID')
-      .withArgs('registry.heroku.com/testapp/web:latest')
-      .returns('image_id')
+    let registry = nock('https://registry.heroku.com:443')
+      .get('/v2/testapp/web/manifests/latest')
+      .reply(200, {config: {digest: 'image_id'}})
 
     return cmd.run({app: 'testapp', args: ['web'], flags: {}})
       .then(() => expect(cli.stderr, 'not to contain', 'Runnning release command...'))
       .then(() => expect(cli.stdout, 'to be empty'))
-      .then(() => sandbox.assert.calledOnce(imageID))
       .then(() => api.done())
+      .then(() => registry.done())
   })
 })

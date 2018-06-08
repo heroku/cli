@@ -1,6 +1,5 @@
 const cli = require('heroku-cli-util')
 const debug = require('../lib/debug')
-const Sanbashi = require('../lib/sanbashi')
 const streamer = require('../lib/streamer')
 
 let usage = `
@@ -38,18 +37,19 @@ let release = async function (context, heroku) {
   await heroku.get(`/apps/${context.app}`)
 
   let herokuHost = process.env.HEROKU_HOST || 'heroku.com'
-  let registry = `registry.${herokuHost}`
 
   let updateData = []
   for (let process of context.args) {
     let image = `${context.app}/${process}`
     let tag = 'latest'
-    let imageID = await Sanbashi.imageID(`${registry}/${image}:${tag}`)
 
-    if (imageID === undefined) {
-      cli.error(`Cannot find local image ID for process type ${process}. Did you pull it?`)
-      return
-    }
+    let imageID = (await heroku.request({
+      host: `registry.${herokuHost}`,
+      path: `/v2/${image}/manifests/${tag}`,
+      headers: {
+        Accept: 'application/vnd.docker.distribution.manifest.v2+json'
+      }
+    })).config.digest
 
     updateData.push({
       type: process,
