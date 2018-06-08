@@ -153,9 +153,9 @@
     lodash "^4.17.10"
     shell-quote "^1.6.1"
 
-"@heroku-cli/plugin-container-registry@4.4.19":
-  version "4.4.19"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-container-registry/-/plugin-container-registry-4.4.19.tgz#762d257f3889c0d63db3961768fc07376bdc9924"
+"@heroku-cli/plugin-container-registry@4.4.20":
+  version "4.4.20"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-container-registry/-/plugin-container-registry-4.4.20.tgz#5d876ad0ecd27f5d495321a379b1f5eeabc6247a"
   dependencies:
     glob "^7.1.2"
     heroku-cli-util "^8.0.9"
