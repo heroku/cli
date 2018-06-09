@@ -1,3 +1,10 @@
+## [0.6.1](https://github.com/heroku/heroku-cli-plugin-auth/compare/v0.6.0...v0.6.1) (2018-06-09)
+
+
+### Bug Fixes
+
+* updated deps ([9b7a1cc](https://github.com/heroku/heroku-cli-plugin-auth/commit/9b7a1cc))
+
 <a name="0.6.0"></a>
 # [0.6.0](https://github.com/heroku/heroku-cli-plugin-auth/compare/v0.5.0...v0.6.0) (2018-05-31)
 
