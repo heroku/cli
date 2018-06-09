@@ -28,7 +28,7 @@
     strip-ansi "^4.0.0"
     supports-color "^5.4.0"
 
-"@heroku-cli/command@8.1.24", "@heroku-cli/command@^8.0.5", "@heroku-cli/command@^8.0.7", "@heroku-cli/command@^8.1.14", "@heroku-cli/command@^8.1.16", "@heroku-cli/command@^8.1.17", "@heroku-cli/command@^8.1.18", "@heroku-cli/command@^8.1.20":
+"@heroku-cli/command@8.1.24", "@heroku-cli/command@^8.0.5", "@heroku-cli/command@^8.0.7", "@heroku-cli/command@^8.1.14", "@heroku-cli/command@^8.1.16", "@heroku-cli/command@^8.1.17", "@heroku-cli/command@^8.1.18", "@heroku-cli/command@^8.1.20", "@heroku-cli/command@^8.1.24":
   version "8.1.24"
   resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.1.24.tgz#1156e526f811c7810b24c92541c23e81caa20030"
   dependencies:
@@ -76,15 +76,15 @@
     term-img "^2.1.0"
     urijs "1.19.1"
 
-"@heroku-cli/plugin-auth@0.6.0":
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-auth/-/plugin-auth-0.6.0.tgz#c22e8b07040155879d25cbcb28f91eadfc26fe1f"
+"@heroku-cli/plugin-auth@0.6.1":
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-auth/-/plugin-auth-0.6.1.tgz#4f5982d7ca8c7057b01de2924f04eda8673e6590"
   dependencies:
     "@heroku-cli/color" "^1.1.5"
-    "@heroku-cli/command" "^8.1.20"
-    "@oclif/command" "^1.4.30"
-    "@oclif/config" "^1.6.21"
-    cli-ux "^4.4.0"
+    "@heroku-cli/command" "^8.1.24"
+    "@oclif/command" "^1.4.33"
+    "@oclif/config" "^1.6.27"
+    cli-ux "^4.6.1"
     date-fns "^2.0.0-alpha.8"
 
 "@heroku-cli/plugin-build@0.0.5":
@@ -332,7 +332,7 @@
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.0.tgz#50c1e2260ac0ed9439a181de3725a0168d59c48a"
 
-"@oclif/command@1.4.33", "@oclif/command@^1", "@oclif/command@^1.4.13", "@oclif/command@^1.4.19", "@oclif/command@^1.4.20", "@oclif/command@^1.4.21", "@oclif/command@^1.4.30", "@oclif/command@^1.4.32":
+"@oclif/command@1.4.33", "@oclif/command@^1", "@oclif/command@^1.4.13", "@oclif/command@^1.4.19", "@oclif/command@^1.4.20", "@oclif/command@^1.4.21", "@oclif/command@^1.4.30", "@oclif/command@^1.4.32", "@oclif/command@^1.4.33":
   version "1.4.33"
   resolved "https://registry.yarnpkg.com/@oclif/command/-/command-1.4.33.tgz#40a48e7384d6b4394c2ca20e5c05ff45541087f5"
   dependencies:
