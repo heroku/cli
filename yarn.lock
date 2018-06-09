@@ -41,6 +41,20 @@
     netrc-parser "^3.1.5"
     opn "^5.3.0"
 
+"@heroku-cli/command@^8.1.24":
+  version "8.1.24"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.1.24.tgz#1156e526f811c7810b24c92541c23e81caa20030"
+  dependencies:
+    "@heroku-cli/color" "^1.1.5"
+    "@oclif/errors" "^1.1.2"
+    cli-ux "^4.6.1"
+    debug "^3.1.0"
+    fs-extra "^6.0.1"
+    heroku-client "^3.0.6"
+    http-call "^5.1.4"
+    netrc-parser "^3.1.5"
+    opn "^5.3.0"
+
 "@heroku-cli/notifications@^1.2.1":
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/@heroku-cli/notifications/-/notifications-1.2.1.tgz#f73e5b550af787f8fbf5461d51ff9f1f40d7d232"
@@ -75,15 +89,15 @@
     term-img "^2.1.0"
     urijs "1.19.1"
 
-"@heroku-cli/plugin-auth@0.6.0":
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-auth/-/plugin-auth-0.6.0.tgz#c22e8b07040155879d25cbcb28f91eadfc26fe1f"
+"@heroku-cli/plugin-auth@0.6.1":
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-auth/-/plugin-auth-0.6.1.tgz#4f5982d7ca8c7057b01de2924f04eda8673e6590"
   dependencies:
     "@heroku-cli/color" "^1.1.5"
-    "@heroku-cli/command" "^8.1.20"
-    "@oclif/command" "^1.4.30"
-    "@oclif/config" "^1.6.21"
-    cli-ux "^4.4.0"
+    "@heroku-cli/command" "^8.1.24"
+    "@oclif/command" "^1.4.33"
+    "@oclif/config" "^1.6.27"
+    cli-ux "^4.6.1"
     date-fns "^2.0.0-alpha.8"
 
 "@heroku-cli/plugin-build@0.0.5":
@@ -340,6 +354,15 @@
     debug "^3.1.0"
     semver "^5.5.0"
 
+"@oclif/command@^1.4.33":
+  version "1.4.33"
+  resolved "https://registry.yarnpkg.com/@oclif/command/-/command-1.4.33.tgz#40a48e7384d6b4394c2ca20e5c05ff45541087f5"
+  dependencies:
+    "@oclif/errors" "^1.1.2"
+    "@oclif/parser" "^3.5.1"
+    debug "^3.1.0"
+    semver "^5.5.0"
+
 "@oclif/config@1.6.27", "@oclif/config@^1", "@oclif/config@^1.6.17", "@oclif/config@^1.6.18", "@oclif/config@^1.6.19", "@oclif/config@^1.6.21", "@oclif/config@^1.6.27", "@oclif/config@^1.6.4":
   version "1.6.27"
   resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.6.27.tgz#d3de1cff71301784c8e4ee3903d3f7db21a18c3f"
@@ -381,6 +404,13 @@
 "@oclif/parser@^3.4.1":
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/@oclif/parser/-/parser-3.5.0.tgz#cd2429411513a77c4ed97c9fb22b72b76555eda9"
+  dependencies:
+    "@oclif/linewrap" "^1.0.0"
+    chalk "^2.4.1"
+
+"@oclif/parser@^3.5.1":
+  version "3.5.1"
+  resolved "https://registry.yarnpkg.com/@oclif/parser/-/parser-3.5.1.tgz#2f60ac9773565786b6e1afff967b36a6399defcc"
   dependencies:
     "@oclif/linewrap" "^1.0.0"
     chalk "^2.4.1"
