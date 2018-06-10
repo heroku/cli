@@ -1,3 +1,10 @@
+## [0.6.2](https://github.com/heroku/heroku-cli-plugin-auth/compare/v0.6.1...v0.6.2) (2018-06-10)
+
+
+### Bug Fixes
+
+* ensure latest cli-ux ([2c74a10](https://github.com/heroku/heroku-cli-plugin-auth/commit/2c74a10))
+
 ## [0.6.1](https://github.com/heroku/heroku-cli-plugin-auth/compare/v0.6.0...v0.6.1) (2018-06-09)
 
 
