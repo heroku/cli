@@ -76,15 +76,15 @@
     term-img "^2.1.0"
     urijs "1.19.1"
 
-"@heroku-cli/plugin-auth@0.6.1":
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-auth/-/plugin-auth-0.6.1.tgz#4f5982d7ca8c7057b01de2924f04eda8673e6590"
+"@heroku-cli/plugin-auth@0.6.2":
+  version "0.6.2"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-auth/-/plugin-auth-0.6.2.tgz#5e7b655f1f201e4581fd066f5477a672da43c972"
   dependencies:
     "@heroku-cli/color" "^1.1.5"
     "@heroku-cli/command" "^8.1.24"
     "@oclif/command" "^1.4.33"
     "@oclif/config" "^1.6.27"
-    cli-ux "^4.6.1"
+    cli-ux "^4.6.2"
     date-fns "^2.0.0-alpha.8"
 
 "@heroku-cli/plugin-build@0.0.5":
@@ -962,9 +962,9 @@ cli-cursor@^2.1.0:
   dependencies:
     restore-cursor "^2.0.0"
 
-cli-ux@4.6.1, cli-ux@^4.3.0, cli-ux@^4.3.1, cli-ux@^4.4.0, cli-ux@^4.6.0, cli-ux@^4.6.1:
-  version "4.6.1"
-  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-4.6.1.tgz#2cc7feb4d48932a95bffe712426eaa36ec861004"
+cli-ux@4.6.2, cli-ux@^4.3.0, cli-ux@^4.3.1, cli-ux@^4.4.0, cli-ux@^4.6.0, cli-ux@^4.6.1, cli-ux@^4.6.2:
+  version "4.6.2"
+  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-4.6.2.tgz#77a4eeb93ffb40c697e4f1d60975804134ba7a5a"
   dependencies:
     "@oclif/linewrap" "^1.0.0"
     "@oclif/screen" "^1.0.2"
@@ -1708,8 +1708,8 @@ ieee754@1.1.8:
   resolved "https://registry.yarnpkg.com/ieee754/-/ieee754-1.1.8.tgz#be33d40ac10ef1926701f6f08a2d86fbfd1ad3e4"
 
 ieee754@^1.1.4:
-  version "1.1.11"
-  resolved "https://registry.yarnpkg.com/ieee754/-/ieee754-1.1.11.tgz#c16384ffe00f5b7835824e67b6f2bd44a5229455"
+  version "1.1.12"
+  resolved "https://registry.yarnpkg.com/ieee754/-/ieee754-1.1.12.tgz#50bf24e5b9c8bb98af4964c941cdb0918da7b60b"
 
 ignore@^3.3.5:
   version "3.3.8"
