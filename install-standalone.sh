@@ -46,10 +46,8 @@
   rm -rf heroku
   rm -rf ~/.local/share/heroku/client
   curl https://cli-assets.heroku.com/heroku-\$OS-\$ARCH.tar.xz | tar xJ
-  if [ $(which heroku) != /usr/local/bin/heroku ]; then
-    # delete incorrect heroku path
-    rm -f $(which heroku)
-  fi
+  # delete old heroku bin if exists
+  rm -f $(which heroku) || true
   rm -f /usr/local/bin/heroku
   ln -s /usr/local/lib/heroku/bin/heroku /usr/local/bin/heroku
 
