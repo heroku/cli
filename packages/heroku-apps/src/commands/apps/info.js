@@ -58,6 +58,7 @@ function * run (context, heroku) {
     if (info.app.database_size) data['Database Size'] = filesize(info.app.database_size, {round: 0})
     if (info.app.create_status !== 'complete') data['Create Status'] = info.app.create_status
     if (info.app.space) data['Space'] = info.app.space.name
+    if (info.app.space && info.app.internal) data['Internal'] = info.app.internal
     if (info.pipeline_coupling) data['Pipeline'] = `${info.pipeline_coupling.pipeline.name} - ${info.pipeline.stage}`
 
     data['Auto Cert Mgmt'] = info.app.acm

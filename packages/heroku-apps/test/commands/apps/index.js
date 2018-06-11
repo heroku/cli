@@ -19,6 +19,23 @@ let lockedApp = {
   locked: true
 }
 
+let internalApp = {
+  name: 'internal-app',
+  owner: {email: 'foo@bar.com'},
+  region: {name: 'us'},
+  space: {id: 'test-space-id', name: 'test-space'},
+  internal: true
+}
+
+let internalLockedApp = {
+  name: 'internal-app',
+  owner: {email: 'foo@bar.com'},
+  region: {name: 'us'},
+  space: {id: 'test-space-id', name: 'test-space'},
+  internal: true,
+  locked: true
+}
+
 let euApp = {
   name: 'example-eu',
   owner: {email: 'foo@bar.com'},
@@ -50,6 +67,13 @@ let orgSpaceApp2 = {
   name: 'space-app-2',
   owner: {email: 'test-org@herokumanager.com'},
   space: {id: 'test-space-id', name: 'test-space'}
+}
+
+let orgSpaceInternalApp = {
+  name: 'space-internal-app',
+  owner: {email: 'test-org@herokumanager.com'},
+  space: {id: 'test-space-id', name: 'test-space'},
+  internal: true
 }
 
 function stubApps (apps) {
@@ -172,6 +196,64 @@ locked-app [locked] (eu)
 `)
       })
     })
+
+    it('shows internal app', function () {
+      let  mock = stubUserApps([example, euApp, internalApp])
+      return apps.run({flags: {}, args: {}}).then(function () {
+        mock.done()
+        expect(cli.stderr).to.equal('')
+        expect(cli.stdout).to.equal(`=== foo@bar.com Apps
+example
+example-eu (eu)
+internal-app [internal]
+
+`)
+      })
+    })
+
+    it('shows internal locked app', function () {
+      let mock = stubUserApps([example, euApp, internalLockedApp])
+      return apps.run({flags: {}, args: {}}).then(function () {
+        mock.done()
+        expect(cli.stderr).to.equal('')
+        expect(cli.stdout).to.equal(`=== foo@bar.com Apps
+example
+example-eu (eu)
+internal-app [internal/locked]
+
+`)
+      })
+    })
+
+    it('shows internal eu app', function () {
+      let euInternalApp = Object.assign(internalApp, {region: {name: 'eu'}})
+      let mock = stubUserApps([example, euApp, euInternalApp])
+      return apps.run({flags: {}, args: {}}).then(function () {
+        mock.done()
+        expect(cli.stderr).to.equal('')
+        expect(cli.stdout).to.equal(`=== foo@bar.com Apps
+example
+example-eu (eu)
+internal-app [internal] (eu)
+
+`)
+      })
+    })
+
+    it('shows internal locked eu app', function () {
+      let euInternalLockedApp = Object.assign(internalLockedApp, {region: {name: 'eu'}})
+      let mock = stubUserApps([example, euApp, euInternalLockedApp])
+      return apps.run({flags: {}, args: {}}).then(function () {
+        mock.done()
+        expect(cli.stderr).to.equal('')
+        expect(cli.stdout).to.equal(`=== foo@bar.com Apps
+example
+example-eu (eu)
+internal-app [internal/locked] (eu)
+
+`)
+      })
+    })
   })
 
   describe('with org', function () {
@@ -252,6 +334,20 @@ org-app-2
           `=== Apps in space test-space
 space-app-1
 space-app-2
+
+`
+        )
+      })
+    })
+
+    it('lists only internal apps in spaces by name', function () {
+      let mock = stubOrgApps('test-org', [orgSpaceApp1, orgSpaceApp2, orgApp1, orgSpaceInternalApp])
+      return apps.run({flags: {space: 'test-space', internal: true}, args: {}}).then(function () {
+        mock.done()
+        expect(cli.stderr).to.equal('')
+        expect(cli.stdout).to.equal(
+          `=== Apps in space test-space
+space-internal-app [internal]
 
 `
         )

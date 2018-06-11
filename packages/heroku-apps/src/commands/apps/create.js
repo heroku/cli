@@ -21,6 +21,7 @@ async function createApp (context, heroku, name, stack) {
     region: context.flags.region,
     space: context.flags.space,
     stack,
+    internal: context.flags.internal,
     kernel: context.flags.kernel,
     locked: context.flags.locked
   }
@@ -83,6 +84,8 @@ function printAppSummary (context, app, remoteUrl) {
 }
 
 async function runFromFlags (context, heroku) {
+  if (context.flags.internal && !context.flags.space) throw new Error('Space name required.\nInternal Web Apps are only available for Private Spaces.\nUSAGE: heroku apps:create --space my-space --internal')
+
   let git = require('../../git')(context)
   let name = context.flags.app || context.args.app || process.env.HEROKU_APP
 
@@ -181,6 +184,7 @@ $ heroku apps:create --region eu`,
     {name: 'space', hasValue: true, description: 'the private space to create the app in', completion: SpaceCompletion},
     {name: 'region', hasValue: true, description: 'specify region for the app to run in', completion: RegionCompletion},
     {name: 'ssh-git', description: 'use SSH git protocol for local git remote'},
+    {name: 'internal', hidden: true, description: 'private space-only. create as an Internal Web App that is only routable in the local network.'},
     {name: 'kernel', hidden: true, hasValue: true},
     {name: 'locked', hidden: true},
     {name: 'json', description: 'output in json format'},

@@ -19,7 +19,8 @@ let app = {
   build_stack: {name: 'cedar-14'},
   stack: {name: 'cedar-14'},
   owner: {email: 'foo@foo.com'},
-  space: {name: 'myspace'}
+  space: {name: 'myspace'},
+  internal: true
 }
 
 let appStackChange = Object.assign({}, app, {
@@ -69,6 +70,7 @@ Collaborators:  foo2@foo.com
 Database Size:  1000 B
 Dynos:          web: 1
 Git URL:        https://git.heroku.com/myapp
+Internal:       true
 Owner:          foo@foo.com
 Region:         eu
 Repo Size:      1000 B
@@ -101,6 +103,7 @@ Collaborators:  foo2@foo.com
 Database Size:  1000 B
 Dynos:          web: 1
 Git URL:        https://git.heroku.com/myapp
+Internal:       true
 Owner:          foo@foo.com
 Region:         eu
 Repo Size:      1000 B
@@ -139,6 +142,7 @@ Collaborators:  foo2@foo.com
 Database Size:  1000 B
 Dynos:          web: 1
 Git URL:        https://git.heroku.com/myapp
+Internal:       true
 Owner:          foo@foo.com
 Region:         eu
 Repo Size:      1000 B
@@ -175,6 +179,7 @@ Collaborators:  foo2@foo.com
 Database Size:  1000 B
 Dynos:          web: 1
 Git URL:        https://git.heroku.com/myapp
+Internal:       true
 Owner:          foo@foo.com
 Region:         eu
 Repo Size:      1000 B
@@ -281,6 +286,7 @@ Collaborators:  foo2@foo.com
 Database Size:  1000 B
 Dynos:          web: 1
 Git URL:        https://git.heroku.com/myapp
+Internal:       true
 Owner:          foo@foo.com
 Region:         eu
 Repo Size:      1000 B
