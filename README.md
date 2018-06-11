@@ -35,3 +35,52 @@ For problems directly related to the CLI, [add an issue on GitHub](https://githu
 For other issues, [submit a support ticket](https://help.heroku.com/).
 
 [Contributors](https://github.com/heroku/cli/contributors)
+
+<!-- commands -->
+# Command Topics
+
+* [`heroku access`](docs/access.md) - manage user access to apps
+* [`heroku addons`](docs/addons.md) - tools and services for developing, extending, and operating your app
+* [`heroku apps`](docs/apps.md) - add yourself to an organization app
+* [`heroku auth`](docs/auth.md) - login with your Heroku credentials
+* [`heroku authorizations`](docs/authorizations.md) - OAuth authorizations
+* [`heroku buildpacks`](docs/buildpacks.md) - add new app buildpack, inserting into list of buildpacks if necessary
+* [`heroku certs`](docs/certs.md) - a topic for the ssl plugin
+* [`heroku ci`](docs/ci.md) - run an application test suite on Heroku
+* [`heroku clients`](docs/clients.md) - OAuth clients on the platform
+* [`heroku commands`](docs/commands.md) - list all the commands
+* [`heroku config`](docs/config.md) - interactively edit config vars
+* [`heroku container`](docs/container.md) - Use containers to build and deploy Heroku apps
+* [`heroku domains`](docs/domains.md) - add domain to an app
+* [`heroku drains`](docs/drains.md) - adds a log drain to an app
+* [`heroku dyno`](docs/dyno.md) - restart app dynos
+* [`heroku features`](docs/features.md) - disables an app feature
+* [`heroku git`](docs/git.md) - manage local git repository for app
+* [`heroku help`](docs/help.md) - display help for heroku
+* [`heroku keys`](docs/keys.md) - add an SSH key for a user
+* [`heroku labs`](docs/labs.md) - disables an experimental feature
+* [`heroku local`](docs/local.md) - run heroku app locally
+* [`heroku logs`](docs/logs.md) - display recent log output
+* [`heroku maintenance`](docs/maintenance.md) - display the current maintenance status of app
+* [`heroku members`](docs/members.md) - manage organization members
+* [`heroku notifications`](docs/notifications.md) - display notifications
+* [`heroku orgs`](docs/orgs.md) - manage organizations
+* [`heroku pg`](docs/pg.md) - manage postgresql databases
+* [`heroku pipelines`](docs/pipelines.md) - add this app to a pipeline
+* [`heroku plugins`](docs/plugins.md) - list installed plugins
+* [`heroku ps`](docs/ps.md) - Client tools for Heroku Exec
+* [`heroku psql`](docs/psql.md) - open a psql shell to the database
+* [`heroku redis`](docs/redis.md) - manage heroku redis instances
+* [`heroku regions`](docs/regions.md) - list available regions for deployment
+* [`heroku releases`](docs/releases.md) - display the releases for an app
+* [`heroku reviewapps`](docs/reviewapps.md) - disable review apps or settings on an existing pipeline
+* [`heroku run`](docs/run.md) - run a one-off process inside a Heroku dyno
+* [`heroku sessions`](docs/sessions.md) - OAuth sessions
+* [`heroku spaces`](docs/spaces.md) - manage heroku private spaces
+* [`heroku status`](docs/status.md) - status of the Heroku platform
+* [`heroku teams`](docs/teams.md) - manage teams
+* [`heroku update`](docs/update.md) - update the heroku CLI
+* [`heroku webhooks`](docs/webhooks.md) - setup HTTP notifications of app activity
+* [`heroku which`](docs/which.md) - show which plugin a command is in
+
+<!-- commandsstop -->

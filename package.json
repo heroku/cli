@@ -1,7 +1,7 @@
 {
   "name": "heroku",
   "description": "CLI to interact with Heroku",
-  "version": "7.0.60",
+  "version": "7.0.88",
   "author": "Jeff Dickey @jdxcode",
   "bin": {
     "heroku": "./bin/run"
@@ -9,75 +9,76 @@
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
     "@heroku-cli/color": "1.1.5",
-    "@heroku-cli/command": "8.1.19",
-    "@heroku-cli/plugin-addons": "1.2.30",
-    "@heroku-cli/plugin-apps": "2.5.3",
-    "@heroku-cli/plugin-auth": "0.4.3",
+    "@heroku-cli/command": "8.1.24",
+    "@heroku-cli/plugin-addons": "1.2.31",
+    "@heroku-cli/plugin-apps": "2.5.10",
+    "@heroku-cli/plugin-auth": "0.6.2",
     "@heroku-cli/plugin-build": "0.0.5",
     "@heroku-cli/plugin-certs": "2.0.1",
-    "@heroku-cli/plugin-certs-v5": "^1.3.0",
+    "@heroku-cli/plugin-certs-v5": "^1.3.1",
     "@heroku-cli/plugin-ci": "1.9.12",
-    "@heroku-cli/plugin-config": "1.3.0",
-    "@heroku-cli/plugin-container-registry": "4.4.17",
+    "@heroku-cli/plugin-config": "1.3.1",
+    "@heroku-cli/plugin-container-registry": "4.4.20",
     "@heroku-cli/plugin-git": "3.0.2",
-    "@heroku-cli/plugin-local": "5.1.24",
-    "@heroku-cli/plugin-oauth": "2.3.4",
-    "@heroku-cli/plugin-orgs": "1.7.6",
+    "@heroku-cli/plugin-local": "5.1.25",
+    "@heroku-cli/plugin-oauth": "2.3.5",
+    "@heroku-cli/plugin-orgs": "1.8.2",
     "@heroku-cli/plugin-pg": "2.10.0",
     "@heroku-cli/plugin-pipelines": "2.5.9",
-    "@heroku-cli/plugin-ps": "1.0.1",
+    "@heroku-cli/plugin-ps": "1.0.3",
     "@heroku-cli/plugin-ps-exec": "2.3.4",
     "@heroku-cli/plugin-redis": "1.3.3",
-    "@heroku-cli/plugin-run": "3.8.6",
-    "@heroku-cli/plugin-spaces": "2.12.2",
+    "@heroku-cli/plugin-run": "3.8.10",
+    "@heroku-cli/plugin-spaces": "2.12.3",
     "@heroku-cli/plugin-status": "5.0.10",
     "@heroku-cli/plugin-webhooks": "1.2.0",
-    "@oclif/command": "1.4.30",
-    "@oclif/config": "1.6.19",
+    "@oclif/command": "1.4.33",
+    "@oclif/config": "1.6.27",
     "@oclif/errors": "1.1.2",
-    "@oclif/plugin-help": "1.2.11",
+    "@oclif/plugin-commands": "^1.1.1",
+    "@oclif/plugin-help": "2.0.5",
     "@oclif/plugin-legacy": "1.0.15",
     "@oclif/plugin-not-found": "1.0.9",
-    "@oclif/plugin-plugins": "1.2.1",
-    "@oclif/plugin-update": "1.2.6",
+    "@oclif/plugin-plugins": "1.4.0",
+    "@oclif/plugin-update": "1.2.8",
     "@oclif/plugin-warn-if-update-available": "1.3.9",
     "@oclif/plugin-which": "1.0.1",
-    "cli-ux": "4.4.0",
+    "cli-ux": "4.6.2",
     "debug": "3.1.0",
     "execa": "0.10.0",
     "fs-extra": "6.0.1",
     "http-call": "5.1.4",
     "netrc-parser": "3.1.5",
     "semver": "5.5.0",
-    "tslib": "1.9.1",
+    "tslib": "1.9.2",
     "uuid": "3.2.1"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.13.22",
-    "@oclif/test": "^1.0.6",
+    "@oclif/dev-cli": "^1.13.30",
+    "@oclif/test": "^1.0.9",
     "@oclif/tslint": "^1.1.2",
     "@types/ansi-styles": "^3.2.0",
     "@types/chai": "^4.1.3",
     "@types/debug": "^0.0.30",
     "@types/execa": "^0.9.0",
-    "@types/fs-extra": "^5.0.2",
+    "@types/fs-extra": "^5.0.3",
     "@types/glob": "^5.0.35",
     "@types/lodash": "^4.14.109",
-    "@types/mocha": "^5.2.0",
+    "@types/mocha": "^5.2.1",
     "@types/nock": "^9.1.3",
-    "@types/node": "^10.1.2",
+    "@types/node": "^10.3.2",
     "@types/supports-color": "^5.3.0",
     "@types/write-json-file": "^2.2.1",
-    "aws-sdk": "^2.246.1",
+    "aws-sdk": "^2.254.1",
     "chai": "^4.1.2",
     "lodash": "^4.17.10",
     "mocha": "^5.2.0",
-    "nock": "^9.2.6",
-    "qqjs": "^0.3.9",
+    "nock": "^9.3.2",
+    "qqjs": "^0.3.10",
     "read-pkg": "^3.0.0",
-    "ts-node": "^6.0.5",
+    "ts-node": "^6.1.0",
     "tslint": "^5.10.0",
-    "typescript": "^2.8.3"
+    "typescript": "^2.9.1"
   },
   "engineStrict": true,
   "engines": {
@@ -122,6 +123,7 @@
       "@heroku-cli/plugin-spaces",
       "@heroku-cli/plugin-status",
       "@heroku-cli/plugin-webhooks",
+      "@oclif/plugin-commands",
       "@oclif/plugin-help",
       "@oclif/plugin-not-found",
       "@oclif/plugin-plugins",
@@ -157,13 +159,13 @@
     },
     "hooks": {
       "init": [
-        "./lib/hooks/init/plugin_migrate",
         "./lib/hooks/init/refresh"
       ],
       "prerun": [
         "./lib/hooks/prerun/analytics"
       ],
       "update": [
+        "./lib/hooks/update/plugin_migrate",
         "./lib/hooks/update/brew",
         "./lib/hooks/update/completions",
         "./lib/hooks/update/tidy"
@@ -171,7 +173,7 @@
     },
     "update": {
       "node": {
-        "version": "10.2.1"
+        "version": "10.4.0"
       },
       "s3": {
         "xz": true,
@@ -188,7 +190,7 @@
     "prepack": "yarn run build && oclif-dev manifest",
     "prepublishOnly": "yarn run prepack",
     "test": "mocha --forbid-only \"test/**/*.test.ts\"",
-    "version": "oclif-dev readme && git add README.md"
+    "version": "oclif-dev readme --multi && git add README.md docs"
   },
   "types": "lib/index.d.ts"
 }

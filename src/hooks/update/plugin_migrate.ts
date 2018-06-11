@@ -8,12 +8,19 @@ const exec = (cmd: string, args: string[]) => {
 }
 
 const deprecated: {[k: string]: string | null} = {
+  // rename these plugins
   'heroku-api-plugin': 'api',
+  'heroku-cli-api': 'api',
   'heroku-cli-autocomplete': 'autocomplete',
-  'heroku-sudo': 'sudo',
-  'heroku-cli-plugin-generator': null,
+
+  // remove these plugins
   '@heroku-cli/config-edit': null,
   'heroku-cli-config-edit': null,
+  'heroku-cli-plugin-generator': null,
+  'heroku-container-registry': null,
+  'heroku-pipelines': null,
+  'heroku-sudo': 'sudo',
+  'heroku-webhooks': null,
 }
 
 export const migrate: Hook<'init'> = async function () {
