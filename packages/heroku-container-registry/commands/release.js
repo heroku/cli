@@ -43,13 +43,24 @@ let release = async function (context, heroku) {
     let image = `${context.app}/${process}`
     let tag = 'latest'
 
-    let imageID = (await heroku.request({
+    let imageResp = await heroku.request({
       host: `registry.${herokuHost}`,
       path: `/v2/${image}/manifests/${tag}`,
       headers: {
         Accept: 'application/vnd.docker.distribution.manifest.v2+json'
       }
-    })).config.digest
+    })
+
+    let imageID
+    switch (imageResp.schemaVersion) {
+      case 1:
+        let v1Comp = JSON.parse(imageResp.history[0].v1Compatibility)
+        imageID = v1Comp.id
+        break
+      case 2:
+        imageID = imageResp.config.digest
+        break
+    }
 
     updateData.push({
       type: process,
