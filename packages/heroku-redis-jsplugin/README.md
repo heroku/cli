@@ -40,7 +40,7 @@ USAGE
   $ heroku redis [DATABASE]
 
 OPTIONS
-  -a, --app=app        (required) [default: heroku-cli-auth-staging] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -53,7 +53,7 @@ USAGE
   $ heroku redis:cli [DATABASE]
 
 OPTIONS
-  -a, --app=app          (required) [default: heroku-cli-auth-staging] app to run command against
+  -a, --app=app          (required) app to run command against
   -c, --confirm=confirm
   -r, --remote=remote    git remote of app to use
 ```
@@ -67,7 +67,7 @@ USAGE
   $ heroku redis:credentials [DATABASE]
 
 OPTIONS
-  -a, --app=app        (required) [default: heroku-cli-auth-staging] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
   --reset              reset credentials
 ```
@@ -81,7 +81,7 @@ USAGE
   $ heroku redis:info [DATABASE]
 
 OPTIONS
-  -a, --app=app        (required) [default: heroku-cli-auth-staging] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -94,7 +94,7 @@ USAGE
   $ heroku redis:maintenance [DATABASE]
 
 OPTIONS
-  -a, --app=app        (required) [default: heroku-cli-auth-staging] app to run command against
+  -a, --app=app        (required) app to run command against
   -f, --force          start maintenance without entering application maintenance mode
   -r, --remote=remote  git remote of app to use
   -w, --window=window  set weekly UTC maintenance window
@@ -113,7 +113,7 @@ USAGE
   $ heroku redis:maxmemory [DATABASE]
 
 OPTIONS
-  -a, --app=app        (required) [default: heroku-cli-auth-staging] app to run command against
+  -a, --app=app        (required) app to run command against
   -p, --policy=policy  (required) set policy name
   -r, --remote=remote  git remote of app to use
 
@@ -137,7 +137,7 @@ USAGE
   $ heroku redis:promote DATABASE
 
 OPTIONS
-  -a, --app=app        (required) [default: heroku-cli-auth-staging] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -150,7 +150,7 @@ USAGE
   $ heroku redis:timeout [DATABASE]
 
 OPTIONS
-  -a, --app=app          (required) [default: heroku-cli-auth-staging] app to run command against
+  -a, --app=app          (required) app to run command against
   -r, --remote=remote    git remote of app to use
   -s, --seconds=seconds  set timeout value
 
@@ -168,7 +168,7 @@ USAGE
   $ heroku redis:wait [DATABASE]
 
 OPTIONS
-  -a, --app=app        (required) [default: heroku-cli-auth-staging] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 <!-- commandsstop -->
