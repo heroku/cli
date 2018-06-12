@@ -427,9 +427,9 @@
     "@oclif/command" "^1.4.19"
     string-similarity "^1.2.0"
 
-"@oclif/plugin-plugins@1.5.1":
-  version "1.5.1"
-  resolved "https://registry.yarnpkg.com/@oclif/plugin-plugins/-/plugin-plugins-1.5.1.tgz#3106654ff0be5cf65a557436806c2f314c057716"
+"@oclif/plugin-plugins@1.5.2":
+  version "1.5.2"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-plugins/-/plugin-plugins-1.5.2.tgz#a2d9096cae445c15b3d17c369b20f64e79976955"
   dependencies:
     "@heroku-cli/color" "^1.1.5"
     "@oclif/command" "^1.4.33"
