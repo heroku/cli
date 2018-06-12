@@ -348,15 +348,15 @@
     debug "^3.1.0"
     tslib "^1.9.2"
 
-"@oclif/dev-cli@^1.13.30":
-  version "1.13.30"
-  resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.13.30.tgz#bcda36f634b82d4591447f229cc5f735b477a598"
+"@oclif/dev-cli@^1.13.31":
+  version "1.13.31"
+  resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.13.31.tgz#ddcca19e1346de3656b63210305c87acdc98fd44"
   dependencies:
-    "@oclif/command" "^1.4.32"
+    "@oclif/command" "^1.4.33"
     "@oclif/config" "^1.6.27"
     "@oclif/errors" "^1.1.2"
-    "@oclif/plugin-help" "^2.0.4"
-    cli-ux "^4.6.0"
+    "@oclif/plugin-help" "^2.0.5"
+    cli-ux "^4.6.2"
     debug "^3.1.0"
     fs-extra "^6.0.1"
     lodash "^4.17.10"
@@ -396,7 +396,7 @@
     lodash "^4.17.10"
     tslib "^1.9.2"
 
-"@oclif/plugin-help@2.0.5", "@oclif/plugin-help@^2.0.4":
+"@oclif/plugin-help@2.0.5", "@oclif/plugin-help@^2.0.5":
   version "2.0.5"
   resolved "https://registry.yarnpkg.com/@oclif/plugin-help/-/plugin-help-2.0.5.tgz#98084286099b44c8c6ed6214e3589f32525f4827"
   dependencies:
@@ -444,9 +444,9 @@
     tslib "^1.9.2"
     yarn "^1.7.0"
 
-"@oclif/plugin-update@1.2.9":
-  version "1.2.9"
-  resolved "https://registry.yarnpkg.com/@oclif/plugin-update/-/plugin-update-1.2.9.tgz#35e784e2b31c067db2fcccb2f2d6195092bce9ee"
+"@oclif/plugin-update@1.2.11":
+  version "1.2.11"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-update/-/plugin-update-1.2.11.tgz#6217c15d16421a780baace5554c586e632c21aab"
   dependencies:
     "@heroku-cli/color" "^1.1.5"
     "@oclif/command" "^1.4.33"
@@ -710,9 +710,9 @@ atob@^2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.1.tgz#ae2d5a729477f289d60dd7f96a6314a22dd6c22a"
 
-aws-sdk@^2.254.1:
-  version "2.254.1"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.254.1.tgz#70d0a97bac0d5e8ceaf36ddb6b3651f01da4790e"
+aws-sdk@^2.255.1:
+  version "2.255.1"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.255.1.tgz#d780515e37121784880db310c43b18ebc16e98cb"
   dependencies:
     buffer "4.9.1"
     events "1.1.1"
@@ -962,7 +962,7 @@ cli-cursor@^2.1.0:
   dependencies:
     restore-cursor "^2.0.0"
 
-cli-ux@4.6.2, cli-ux@^4.3.0, cli-ux@^4.3.1, cli-ux@^4.4.0, cli-ux@^4.6.0, cli-ux@^4.6.1, cli-ux@^4.6.2:
+cli-ux@4.6.2, cli-ux@^4.3.0, cli-ux@^4.3.1, cli-ux@^4.4.0, cli-ux@^4.6.1, cli-ux@^4.6.2:
   version "4.6.2"
   resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-4.6.2.tgz#77a4eeb93ffb40c697e4f1d60975804134ba7a5a"
   dependencies:
