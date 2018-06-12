@@ -8,9 +8,9 @@ export const oneDay = 60 * 60 * 24
 
 export const herokuGet = async (resource: string, ctx: { config: Config.IConfig }): Promise<string[]> => {
   const heroku = new APIClient(ctx.config)
-  let {body: resources} = await heroku.get(`/${resource}`)
-  if (typeof resources === 'string') resources = JSON.parse(resources)
-  return resources.map((a: any) => a.name).sort()
+  let {body} = await heroku.get(`/${resource}`)
+  if (typeof body === 'string') body = JSON.parse(body)
+  return (body as any[]).map((a: any) => a.name).sort()
 }
 
 export const CompletionBlacklist: { [key: string]: string[] } = {
