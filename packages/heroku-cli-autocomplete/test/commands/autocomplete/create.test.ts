@@ -1,4 +1,3 @@
-import {flags} from '@heroku-cli/command'
 import {Config, Plugin} from '@oclif/config'
 import {loadJSON} from '@oclif/config/lib/util'
 import {expect} from 'chai'
@@ -14,12 +13,14 @@ const {default: runtest} = require('../../helpers/runtest')
 
 const AC_PLUGIN_PATH = path.resolve(__dirname, '..', '..', '..')
 
-class CacheBuildFlagsTest extends Create {
-  static flags = {
-    app: flags.app(),
-    visable: flags.boolean({description: 'Visable flag', char: 'v'}),
-    hidden: flags.boolean({description: 'Hidden flag', char: 'h', hidden: true}),
-  }
+const CacheBuildFlagsTest = {
+  id: 'autocomplete:create',
+  flags:
+   { app: {name: 'app', type: 'option', description: 'app to use'},
+     visable: {name: 'visable', type: 'boolean', description: 'visable flag'},
+     hidden: {name: 'hidden', type: 'boolean', description: 'hidden flag', hidden: true},
+  },
+  args: [],
 }
 
 runtest('Create', () => {
@@ -161,8 +162,8 @@ _all_commands_list=(
     it('#genZshCmdFlagsSetter', () => {
       expect(cmd.genZshCmdFlagsSetter(CacheBuildFlagsTest)).to.eq(`_set_autocomplete_create_flags () {
 _flags=(
-"--app=-[(autocomplete) app to run command against]: :_compadd_flag_options"
-"--visable[(switch) Visable flag]"
+"--app=-[(autocomplete) app to use]: :_compadd_flag_options"
+"--visable[(switch) visable flag]"
 )
 }
 `)
