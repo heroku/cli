@@ -154,9 +154,9 @@
     lodash "^4.17.10"
     shell-quote "^1.6.1"
 
-"@heroku-cli/plugin-container-registry@4.4.20":
-  version "4.4.20"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-container-registry/-/plugin-container-registry-4.4.20.tgz#5d876ad0ecd27f5d495321a379b1f5eeabc6247a"
+"@heroku-cli/plugin-container-registry@4.4.21":
+  version "4.4.21"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-container-registry/-/plugin-container-registry-4.4.21.tgz#3acbf3f37a74507989539514d268bc0048dc3776"
   dependencies:
     glob "^7.1.2"
     heroku-cli-util "^8.0.9"
@@ -253,9 +253,9 @@
     cli-ux "^4.4.0"
     lodash "^4.17.10"
 
-"@heroku-cli/plugin-redis@1.3.3":
-  version "1.3.3"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-redis/-/plugin-redis-1.3.3.tgz#c3c54f7a0d73924e181af288fa21c7bc05b08aca"
+"@heroku-cli/plugin-redis@1.3.4":
+  version "1.3.4"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-redis/-/plugin-redis-1.3.4.tgz#99002dc5a40c487b58854b2d5edc25dd44ada303"
   dependencies:
     heroku-cli-util "^8.0.9"
     redis-parser "^3.0.0"
@@ -341,22 +341,22 @@
     debug "^3.1.0"
     semver "^5.5.0"
 
-"@oclif/config@1.6.27", "@oclif/config@^1", "@oclif/config@^1.6.17", "@oclif/config@^1.6.18", "@oclif/config@^1.6.19", "@oclif/config@^1.6.21", "@oclif/config@^1.6.27", "@oclif/config@^1.6.4":
-  version "1.6.27"
-  resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.6.27.tgz#d3de1cff71301784c8e4ee3903d3f7db21a18c3f"
+"@oclif/config@1.6.28", "@oclif/config@^1", "@oclif/config@^1.6.17", "@oclif/config@^1.6.18", "@oclif/config@^1.6.19", "@oclif/config@^1.6.21", "@oclif/config@^1.6.27", "@oclif/config@^1.6.4":
+  version "1.6.28"
+  resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.6.28.tgz#bfda0718ba5dfbdeb364350990ed79540f9c3d0b"
   dependencies:
     debug "^3.1.0"
     tslib "^1.9.2"
 
-"@oclif/dev-cli@^1.13.30":
-  version "1.13.30"
-  resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.13.30.tgz#bcda36f634b82d4591447f229cc5f735b477a598"
+"@oclif/dev-cli@^1.13.31":
+  version "1.13.31"
+  resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.13.31.tgz#ddcca19e1346de3656b63210305c87acdc98fd44"
   dependencies:
-    "@oclif/command" "^1.4.32"
+    "@oclif/command" "^1.4.33"
     "@oclif/config" "^1.6.27"
     "@oclif/errors" "^1.1.2"
-    "@oclif/plugin-help" "^2.0.4"
-    cli-ux "^4.6.0"
+    "@oclif/plugin-help" "^2.0.5"
+    cli-ux "^4.6.2"
     debug "^3.1.0"
     fs-extra "^6.0.1"
     lodash "^4.17.10"
@@ -396,7 +396,7 @@
     lodash "^4.17.10"
     tslib "^1.9.2"
 
-"@oclif/plugin-help@2.0.5", "@oclif/plugin-help@^2.0.4":
+"@oclif/plugin-help@2.0.5", "@oclif/plugin-help@^2.0.5":
   version "2.0.5"
   resolved "https://registry.yarnpkg.com/@oclif/plugin-help/-/plugin-help-2.0.5.tgz#98084286099b44c8c6ed6214e3589f32525f4827"
   dependencies:
@@ -427,14 +427,14 @@
     "@oclif/command" "^1.4.19"
     string-similarity "^1.2.0"
 
-"@oclif/plugin-plugins@1.4.0":
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/@oclif/plugin-plugins/-/plugin-plugins-1.4.0.tgz#80cc8b3d55fc4499cc687b77f85de2b0b63d52a7"
+"@oclif/plugin-plugins@1.5.2":
+  version "1.5.2"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-plugins/-/plugin-plugins-1.5.2.tgz#a2d9096cae445c15b3d17c369b20f64e79976955"
   dependencies:
     "@heroku-cli/color" "^1.1.5"
-    "@oclif/command" "^1.4.32"
+    "@oclif/command" "^1.4.33"
     chalk "^2.4.1"
-    cli-ux "^4.6.1"
+    cli-ux "^4.6.2"
     debug "^3.1.0"
     fs-extra "^6.0.1"
     http-call "^5.1.4"
@@ -444,16 +444,16 @@
     tslib "^1.9.2"
     yarn "^1.7.0"
 
-"@oclif/plugin-update@1.2.8":
-  version "1.2.8"
-  resolved "https://registry.yarnpkg.com/@oclif/plugin-update/-/plugin-update-1.2.8.tgz#d172d6a121f9a585b8d4b3d482fbe573c4f613a1"
+"@oclif/plugin-update@1.2.11":
+  version "1.2.11"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-update/-/plugin-update-1.2.11.tgz#6217c15d16421a780baace5554c586e632c21aab"
   dependencies:
     "@heroku-cli/color" "^1.1.5"
-    "@oclif/command" "^1.4.32"
+    "@oclif/command" "^1.4.33"
     "@oclif/config" "^1.6.27"
     "@oclif/errors" "^1.1.2"
     "@types/semver" "^5.5.0"
-    cli-ux "^4.6.0"
+    cli-ux "^4.6.2"
     cross-spawn "^6.0.5"
     debug "^3.1.0"
     filesize "^3.6.1"
@@ -556,9 +556,9 @@
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/@types/minimatch/-/minimatch-3.0.3.tgz#3dca0e3f33b200fc7d1139c0cd96c1268cadfd9d"
 
-"@types/mocha@^5.2.0", "@types/mocha@^5.2.1":
-  version "5.2.1"
-  resolved "https://registry.yarnpkg.com/@types/mocha/-/mocha-5.2.1.tgz#465450aaf5cec6f7d35523748c6cc89a5e222dc5"
+"@types/mocha@^5.2.0", "@types/mocha@^5.2.2":
+  version "5.2.2"
+  resolved "https://registry.yarnpkg.com/@types/mocha/-/mocha-5.2.2.tgz#202d2b8fe1364c5b617b439b26a54f0e75eac0a7"
 
 "@types/nock@^9.1.3":
   version "9.1.3"
@@ -710,9 +710,9 @@ atob@^2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.1.tgz#ae2d5a729477f289d60dd7f96a6314a22dd6c22a"
 
-aws-sdk@^2.254.1:
-  version "2.254.1"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.254.1.tgz#70d0a97bac0d5e8ceaf36ddb6b3651f01da4790e"
+aws-sdk@^2.256.1:
+  version "2.256.1"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.256.1.tgz#a2b7e32a0170d9fa06f25c503b4ba92292bbe5ac"
   dependencies:
     buffer "4.9.1"
     events "1.1.1"
@@ -962,7 +962,7 @@ cli-cursor@^2.1.0:
   dependencies:
     restore-cursor "^2.0.0"
 
-cli-ux@4.6.2, cli-ux@^4.3.0, cli-ux@^4.3.1, cli-ux@^4.4.0, cli-ux@^4.6.0, cli-ux@^4.6.1, cli-ux@^4.6.2:
+cli-ux@4.6.2, cli-ux@^4.3.0, cli-ux@^4.3.1, cli-ux@^4.4.0, cli-ux@^4.6.1, cli-ux@^4.6.2:
   version "4.6.2"
   resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-4.6.2.tgz#77a4eeb93ffb40c697e4f1d60975804134ba7a5a"
   dependencies:
@@ -1029,14 +1029,14 @@ collection-visit@^1.0.0:
     object-visit "^1.0.0"
 
 color-convert@^1.9.0:
-  version "1.9.1"
-  resolved "https://registry.yarnpkg.com/color-convert/-/color-convert-1.9.1.tgz#c1261107aeb2f294ebffec9ed9ecad529a6097ed"
+  version "1.9.2"
+  resolved "https://registry.yarnpkg.com/color-convert/-/color-convert-1.9.2.tgz#49881b8fba67df12a96bdf3f56c0aab9e7913147"
   dependencies:
-    color-name "^1.1.1"
+    color-name "1.1.1"
 
-color-name@^1.1.1:
-  version "1.1.3"
-  resolved "https://registry.yarnpkg.com/color-name/-/color-name-1.1.3.tgz#a7d0558bd89c42f795dd42328f740831ca53bc25"
+color-name@1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/color-name/-/color-name-1.1.1.tgz#4b1415304cf50028ea81643643bd82ea05803689"
 
 commander@2.15.1, commander@^2.11.0, commander@^2.12.1:
   version "2.15.1"
@@ -3204,9 +3204,9 @@ to-regex@^3.0.1, to-regex@^3.0.2:
     regex-not "^1.0.2"
     safe-regex "^1.1.0"
 
-ts-node@^6.1.0:
-  version "6.1.0"
-  resolved "https://registry.yarnpkg.com/ts-node/-/ts-node-6.1.0.tgz#a2c37a11fdb58e60eca887a1269b025cf4d2f8b8"
+ts-node@^6.1.1:
+  version "6.1.1"
+  resolved "https://registry.yarnpkg.com/ts-node/-/ts-node-6.1.1.tgz#19607140acb06150441fcdb61be11f73f7b6657e"
   dependencies:
     arrify "^1.0.0"
     diff "^3.1.0"
