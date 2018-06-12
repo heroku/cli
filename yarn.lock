@@ -444,16 +444,16 @@
     tslib "^1.9.2"
     yarn "^1.7.0"
 
-"@oclif/plugin-update@1.2.8":
-  version "1.2.8"
-  resolved "https://registry.yarnpkg.com/@oclif/plugin-update/-/plugin-update-1.2.8.tgz#d172d6a121f9a585b8d4b3d482fbe573c4f613a1"
+"@oclif/plugin-update@1.2.9":
+  version "1.2.9"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-update/-/plugin-update-1.2.9.tgz#35e784e2b31c067db2fcccb2f2d6195092bce9ee"
   dependencies:
     "@heroku-cli/color" "^1.1.5"
-    "@oclif/command" "^1.4.32"
+    "@oclif/command" "^1.4.33"
     "@oclif/config" "^1.6.27"
     "@oclif/errors" "^1.1.2"
     "@types/semver" "^5.5.0"
-    cli-ux "^4.6.0"
+    cli-ux "^4.6.2"
     cross-spawn "^6.0.5"
     debug "^3.1.0"
     filesize "^3.6.1"
