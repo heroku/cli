@@ -427,14 +427,14 @@
     "@oclif/command" "^1.4.19"
     string-similarity "^1.2.0"
 
-"@oclif/plugin-plugins@1.4.0":
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/@oclif/plugin-plugins/-/plugin-plugins-1.4.0.tgz#80cc8b3d55fc4499cc687b77f85de2b0b63d52a7"
+"@oclif/plugin-plugins@1.5.0":
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-plugins/-/plugin-plugins-1.5.0.tgz#811a44fbd5aaa393c09d0b434585e7a5e7806a53"
   dependencies:
     "@heroku-cli/color" "^1.1.5"
-    "@oclif/command" "^1.4.32"
+    "@oclif/command" "^1.4.33"
     chalk "^2.4.1"
-    cli-ux "^4.6.1"
+    cli-ux "^4.6.2"
     debug "^3.1.0"
     fs-extra "^6.0.1"
     http-call "^5.1.4"
