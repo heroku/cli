@@ -183,6 +183,7 @@
     "aliases": {
       "@heroku-cli/config-edit": null,
       "heroku-api-plugin": "api",
+      "heroku-certs-acm": null,
       "heroku-cli-api": "api",
       "heroku-cli-autocomplete": "autocomplete",
       "heroku-cli-config-edit": null,
