@@ -26,7 +26,7 @@ export default class UserConfig {
     this.needsSave = true
   }
   public get skipAnalytics() {
-    if (this.config.scopedEnvVar('SKIP_ANALYTICS') === '1') return false
+    if (this.config.scopedEnvVar('SKIP_ANALYTICS') === '1') return true
     if (typeof this.body.skipAnalytics !== 'boolean') {
       this.body.skipAnalytics = false
       this.needsSave = true
