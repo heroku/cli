@@ -92,6 +92,15 @@ function orgInfo (type = 'enterprise') {
     })
 }
 
+function teams (teams = [
+  { name: 'team a', role: 'collaborator', type: 'enterprise' },
+  { name: 'team b', role: 'admin', type: 'team' }
+]) {
+  return nock('https://api.heroku.com:443')
+    .get('/teams')
+    .reply(200, teams)
+}
+
 function teamInvites (invites = [
   {
     invited_by: { email: 'raulb@heroku.com' },
@@ -188,6 +197,7 @@ module.exports = {
   teamInvites,
   orgMembers,
   personalApp,
+  teams,
   userAccount,
   userFeatureFlags,
   variableSizeOrgMembers,

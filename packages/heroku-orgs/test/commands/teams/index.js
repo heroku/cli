@@ -9,7 +9,7 @@ describe('heroku teams', () => {
   afterEach(() => nock.cleanAll())
 
   it('shows only the Heroku Teams', () => {
-    let apiGetOrgs = stubGet.orgs()
+    let apiGetOrgs = stubGet.teams()
 
     return cmd.run({flags: {}})
       .then(() => expect(
