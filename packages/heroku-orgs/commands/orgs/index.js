@@ -24,7 +24,8 @@ module.exports = {
   needsAuth: true,
   flags: [
     {name: 'json', description: 'output in json format'},
-    {name: 'enterprise', hasValue: false, description: 'filter by enterprise orgs'}
+    {name: 'enterprise', hasValue: false, description: 'filter by enterprise orgs'},
+    {name: 'teams', hasValue: false, description: 'filter by teams', hidden: true}
   ],
   run: cli.command(co.wrap(run))
 }
