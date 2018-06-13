@@ -5,8 +5,7 @@ let co = require('co')
 let Utils = require('../../lib/utils')
 
 function * run (context, heroku) {
-  let orgs = yield heroku.get('/organizations')
-  let teams = orgs.filter(o => o.type === 'team')
+  let teams = yield heroku.get('/teams')
   if (context.flags.json) Utils.printGroupsJSON(teams)
   else Utils.printGroups(teams, {label: 'Teams'})
 }
