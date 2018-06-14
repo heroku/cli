@@ -88,6 +88,7 @@
     "/oclif.manifest.json",
     "/bin",
     "/lib",
+    "/npm-shrinkwrap.json",
     "/yarn.lock"
   ],
   "homepage": "https://cli.heroku.com",
@@ -200,7 +201,7 @@
     "build": "rm -rf lib && tsc",
     "postpublish": "rm -f oclif.manifest.json",
     "posttest": "tsc -p test --noEmit && tslint -p test -t stylish",
-    "prepack": "yarn run build && oclif-dev manifest",
+    "prepack": "yarn run build && oclif-dev manifest && npm shrinkwrap",
     "prepublishOnly": "yarn run prepack",
     "test": "mocha --forbid-only \"test/**/*.test.ts\"",
     "version": "oclif-dev readme --multi && git add README.md docs"
