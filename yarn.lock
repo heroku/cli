@@ -341,9 +341,9 @@
     debug "^3.1.0"
     semver "^5.5.0"
 
-"@oclif/config@1.6.29", "@oclif/config@^1", "@oclif/config@^1.6.17", "@oclif/config@^1.6.18", "@oclif/config@^1.6.19", "@oclif/config@^1.6.21", "@oclif/config@^1.6.27", "@oclif/config@^1.6.4":
-  version "1.6.29"
-  resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.6.29.tgz#e273008d42128e9ab0fd1d3c3f1e1839d39c07de"
+"@oclif/config@1.6.30", "@oclif/config@^1", "@oclif/config@^1.6.17", "@oclif/config@^1.6.18", "@oclif/config@^1.6.19", "@oclif/config@^1.6.21", "@oclif/config@^1.6.27", "@oclif/config@^1.6.4":
+  version "1.6.30"
+  resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.6.30.tgz#ec5d60c86a5f5e4c04a02c73c43459d56140fafd"
   dependencies:
     debug "^3.1.0"
     tslib "^1.9.2"
