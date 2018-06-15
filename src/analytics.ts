@@ -71,7 +71,7 @@ export default class AnalyticsCommand {
 
     analyticsJSON.commands.push({
       command: opts.Command.id,
-      completion: await this._acAnalytics(),
+      completion: await this._acAnalytics(opts.Command.id),
       version: this.config.version,
       plugin: plugin.name,
       plugin_version: plugin.version,
@@ -146,8 +146,9 @@ export default class AnalyticsCommand {
     return deps.file.outputJSON(this.analyticsPath, analyticsJSON)
   }
 
-  async _acAnalytics(): Promise<number> {
-    let root = path.join(this.config.cacheDir, 'completions', 'completion_analytics')
+  async _acAnalytics(id: string): Promise<number> {
+    if (id === 'autocomplete:options') return 0
+    let root = path.join(this.config.cacheDir, 'autocomplete', 'completion_analytics')
     let meta = {
       cmd: deps.file.exists(path.join(root, 'command')),
       flag: deps.file.exists(path.join(root, 'flag')),
