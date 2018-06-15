@@ -1,7 +1,7 @@
 `heroku drains`
 ===============
 
-adds a log drain to an app
+display the log drains of an app
 
 * [`heroku drains`](#heroku-drains)
 * [`heroku drains:add URL`](#heroku-drainsadd-url)

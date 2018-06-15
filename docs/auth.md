@@ -1,7 +1,7 @@
 `heroku auth`
 =============
 
-login with your Heroku credentials
+check 2fa status
 
 * [`heroku auth:2fa`](#heroku-auth-2-fa)
 * [`heroku auth:2fa:disable`](#heroku-auth-2-fadisable)

@@ -1,8 +1,7 @@
 `heroku keys`
 =============
 
-add an SSH key for a user
-if no KEY is specified, will try to find ~/.ssh/id_rsa.pub
+display your SSH keys
 
 * [`heroku keys`](#heroku-keys)
 * [`heroku keys:add [KEY]`](#heroku-keysadd-key)

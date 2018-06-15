@@ -1,7 +1,7 @@
 `heroku buildpacks`
 ===================
 
-add new app buildpack, inserting into list of buildpacks if necessary
+display the buildpack_url(s) for an app
 
 * [`heroku buildpacks`](#heroku-buildpacks)
 * [`heroku buildpacks:add URL`](#heroku-buildpacksadd-url)

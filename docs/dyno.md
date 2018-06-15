@@ -1,8 +1,9 @@
 `heroku dyno`
 =============
 
-restart app dynos
-if DYNO is not specified, restarts all dynos on app
+stop app dyno
+
+stop app dyno or dyno type
 
 * [`heroku dyno:kill DYNO`](#heroku-dynokill-dyno)
 * [`heroku dyno:resize`](#heroku-dynoresize)

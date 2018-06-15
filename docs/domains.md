@@ -1,7 +1,7 @@
 `heroku domains`
 ================
 
-add domain to an app
+list domains for an app
 
 * [`heroku domains`](#heroku-domains)
 * [`heroku domains:add HOSTNAME`](#heroku-domainsadd-hostname)

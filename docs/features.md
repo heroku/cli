@@ -1,7 +1,7 @@
 `heroku features`
 =================
 
-disables an app feature
+list available app features
 
 * [`heroku features`](#heroku-features)
 * [`heroku features:disable FEATURE`](#heroku-featuresdisable-feature)

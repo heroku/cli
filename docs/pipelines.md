@@ -1,14 +1,13 @@
 `heroku pipelines`
 ==================
 
-add this app to a pipeline
-The app and pipeline names must be specified.
-The stage of the app will be guessed based on its name if not specified.
-
+list pipelines you have access to
 Example:
 
-    $ heroku pipelines:add example -a example-admin -s production
-    Adding example-admin to example pipeline as production... done
+    $ heroku pipelines
+    === My Pipelines
+    example
+    sushi
 
 * [`heroku pipelines`](#heroku-pipelines)
 * [`heroku pipelines:add PIPELINE`](#heroku-pipelinesadd-pipeline)

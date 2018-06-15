@@ -1,9 +1,7 @@
 `heroku config`
 ===============
 
-interactively edit config vars
-This command opens the app config in a text editor set by $VISUAL or $EDITOR.
-Any variables added/removed/changed will be updated on the app after saving and closing the file.
+display the config vars for an app
 
 * [`heroku config`](#heroku-config)
 * [`heroku config:edit [KEY]`](#heroku-configedit-key)
