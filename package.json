@@ -33,7 +33,7 @@
     "@heroku-cli/plugin-status": "5.0.10",
     "@heroku-cli/plugin-webhooks": "1.2.0",
     "@oclif/command": "1.4.33",
-    "@oclif/config": "1.6.29",
+    "@oclif/config": "1.6.30",
     "@oclif/errors": "1.1.2",
     "@oclif/plugin-commands": "^1.1.1",
     "@oclif/plugin-help": "2.0.5",
