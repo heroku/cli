@@ -419,9 +419,9 @@
     debug "^3.1.0"
     semver "^5.5.0"
 
-"@oclif/plugin-not-found@1.1.1":
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@oclif/plugin-not-found/-/plugin-not-found-1.1.1.tgz#037a2fc5177f907525e50cf0a3db823248763edd"
+"@oclif/plugin-not-found@1.1.2":
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-not-found/-/plugin-not-found-1.1.2.tgz#eb8379e0cac4e4d50c495d981726cc0d2c6f1750"
   dependencies:
     "@heroku-cli/color" "^1.1.5"
     "@oclif/command" "^1.4.33"
