@@ -419,14 +419,15 @@
     debug "^3.1.0"
     semver "^5.5.0"
 
-"@oclif/plugin-not-found@1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@oclif/plugin-not-found/-/plugin-not-found-1.1.0.tgz#7ec2a660607ea86ae0cfcc85b84cad012ef50a51"
+"@oclif/plugin-not-found@1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-not-found/-/plugin-not-found-1.1.1.tgz#037a2fc5177f907525e50cf0a3db823248763edd"
   dependencies:
     "@heroku-cli/color" "^1.1.5"
     "@oclif/command" "^1.4.33"
     cli-ux "^4.6.3"
-    string-similarity "^1.2.0"
+    fast-levenshtein "^2.0.6"
+    lodash "^4.17.10"
 
 "@oclif/plugin-plugins@1.5.2":
   version "1.5.2"
@@ -1359,6 +1360,10 @@ fast-glob@^2.0.2:
     merge2 "^1.2.1"
     micromatch "^3.1.10"
 
+fast-levenshtein@^2.0.6:
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/fast-levenshtein/-/fast-levenshtein-2.0.6.tgz#3d8a5c66883a16a30ca8643e851f19baa7797917"
+
 figures@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/figures/-/figures-2.0.0.tgz#3ab1a2d2a62c8bfb431a0c94cb797a2fce27c962"
@@ -2164,7 +2169,7 @@ lodash.templatesettings@^4.0.0:
   dependencies:
     lodash._reinterpolate "~3.0.0"
 
-lodash@4.17.10, lodash@^4.0.0, lodash@^4.13.1, lodash@^4.17.10, lodash@^4.17.5, lodash@^4.3.0:
+lodash@4.17.10, lodash@^4.0.0, lodash@^4.17.10, lodash@^4.17.5, lodash@^4.3.0:
   version "4.17.10"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.10.tgz#1b7793cf7259ea38fb3661d4d38b3260af8ae4e7"
 
@@ -3070,12 +3075,6 @@ strict-uri-encode@^1.0.0:
 string-just@^0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/string-just/-/string-just-0.0.2.tgz#8793188cba0b72892bffb74cc0e299cea6045b71"
-
-string-similarity@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/string-similarity/-/string-similarity-1.2.0.tgz#d75153cb383846318b7a39a8d9292bb4db4e9c30"
-  dependencies:
-    lodash "^4.13.1"
 
 string-width@^2.1.0, string-width@^2.1.1:
   version "2.1.1"
