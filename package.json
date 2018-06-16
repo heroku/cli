@@ -145,6 +145,61 @@
         "description": "two-factor authentication",
         "hidden": true
       },
+      "apps": {
+        "description": "manage apps on Heroku"
+      },
+      "buildpacks": {
+        "description": "scripts used to compile apps"
+      },
+      "certs": {
+        "description": "SSL certificates"
+      },
+      "ci": {
+        "description": "test runner for Heroku Pipelines"
+      },
+      "commands": {
+        "hidden": true
+      },
+      "config": {
+        "description": "environment variables of apps"
+      },
+      "container": {
+        "description": "deploy your Docker-based app to Heroku"
+      },
+      "domains": {
+        "description": "custom domains for apps"
+      },
+      "drains": {
+        "description": "forward logs to syslog or HTTPS"
+      },
+      "dyno": {
+        "hidden": true
+      },
+      "features": {
+        "description": "add/remove app features"
+      },
+      "git": {
+        "description": "set git remote and clone Heroku repository"
+      },
+      "keys": {
+        "description": "add/remove account ssh keys"
+      },
+      "labs": {
+        "description": "add/remove experimental features"
+      },
+      "local": {
+        "description": "run Heroku app locally"
+      },
+      "maintenance": {
+        "description": "enable/disable access to app"
+      },
+      "outbound-rules": {
+        "description": "space outbound IP rules",
+        "hidden": true
+      },
+      "ps": {
+        "description": "manage app dynos"
+      },
       "stack": {
         "description": "list available stacks",
         "hidden": true
@@ -153,8 +208,10 @@
         "description": "two-factor authentication",
         "hidden": true
       },
-      "outbound-rules": {
-        "description": "space outbound IP rules",
+      "update": {
+        "description": "update the Heroku CLI"
+      },
+      "which": {
         "hidden": true
       }
     },
