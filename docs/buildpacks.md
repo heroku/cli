@@ -1,7 +1,7 @@
 `heroku buildpacks`
 ===================
 
-display the buildpack_url(s) for an app
+scripts used to compile apps
 
 * [`heroku buildpacks`](#heroku-buildpacks)
 * [`heroku buildpacks:add URL`](#heroku-buildpacksadd-url)

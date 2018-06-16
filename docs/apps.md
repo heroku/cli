@@ -1,7 +1,7 @@
 `heroku apps`
 =============
 
-add yourself to an organization app
+manage apps on Heroku
 
 * [`heroku apps`](#heroku-apps)
 * [`heroku apps:create [APP]`](#heroku-appscreate-app)

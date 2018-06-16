@@ -1,7 +1,7 @@
 `heroku keys`
 =============
 
-display your SSH keys
+add/remove account ssh keys
 
 * [`heroku keys`](#heroku-keys)
 * [`heroku keys:add [KEY]`](#heroku-keysadd-key)

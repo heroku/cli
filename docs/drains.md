@@ -1,7 +1,7 @@
 `heroku drains`
 ===============
 
-display the log drains of an app
+forward logs to syslog or HTTPS
 
 * [`heroku drains`](#heroku-drains)
 * [`heroku drains:add URL`](#heroku-drainsadd-url)

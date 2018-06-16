@@ -1,7 +1,7 @@
 `heroku labs`
 =============
 
-disables an experimental feature
+add/remove experimental features
 
 * [`heroku labs`](#heroku-labs)
 * [`heroku labs:disable [FEATURE]`](#heroku-labsdisable-feature)

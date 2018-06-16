@@ -1,7 +1,7 @@
 `heroku features`
 =================
 
-list available app features
+add/remove app features
 
 * [`heroku features`](#heroku-features)
 * [`heroku features:disable FEATURE`](#heroku-featuresdisable-feature)

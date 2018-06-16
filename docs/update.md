@@ -1,7 +1,7 @@
 `heroku update`
 ===============
 
-update the heroku CLI
+update the Heroku CLI
 
 * [`heroku update [CHANNEL]`](#heroku-update-channel)
 

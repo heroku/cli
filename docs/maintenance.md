@@ -1,7 +1,7 @@
 `heroku maintenance`
 ====================
 
-display the current maintenance status of app
+enable/disable access to app
 
 * [`heroku maintenance`](#heroku-maintenance)
 * [`heroku maintenance:off`](#heroku-maintenanceoff)

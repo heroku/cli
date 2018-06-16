@@ -24,7 +24,7 @@ EXAMPLE
   $ heroku plugins
 ```
 
-_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v1.5.2/src/commands/plugins/index.ts)_
+_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v1.5.2/src/commands/plugins.ts)_
 
 ## `heroku plugins:install PLUGIN...`
 

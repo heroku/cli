@@ -1,7 +1,7 @@
 `heroku config`
 ===============
 
-display the config vars for an app
+environment variables of apps
 
 * [`heroku config`](#heroku-config)
 * [`heroku config:edit [KEY]`](#heroku-configedit-key)
@@ -24,7 +24,7 @@ OPTIONS
   -s, --shell          output config vars in shell format
 ```
 
-_See code: [@heroku-cli/plugin-config](https://github.com/heroku/heroku-cli-plugin-config/blob/v1.3.1/src/commands/config/index.ts)_
+_See code: [@heroku-cli/plugin-config](https://github.com/heroku/heroku-cli-plugin-config/blob/v1.3.1/src/commands/config.ts)_
 
 ## `heroku config:edit [KEY]`
 
