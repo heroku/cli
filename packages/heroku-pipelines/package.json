@@ -9,9 +9,11 @@
   "cli-engine": {
     "bin": "heroku",
     "topics": {
-      "stack": {
-        "description": "manage heroku stacks",
-        "hidden": true
+      "pipelines": {
+        "description": "groups of apps that share the same codebase"
+      },
+      "reviewapps": {
+        "description": "disposable apps built on GitHub pull requests"
       }
     }
   },
