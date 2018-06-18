@@ -19,7 +19,8 @@ let app = {
   build_stack: {name: 'cedar-14'},
   stack: {name: 'cedar-14'},
   owner: {email: 'foo@foo.com'},
-  space: {name: 'myspace'}
+  space: {name: 'myspace'},
+  internal_routing: true
 }
 
 let appStackChange = Object.assign({}, app, {
@@ -62,20 +63,21 @@ describe('apps:info', () => {
     return cmd.run({app: 'myapp', args: {}, flags: {}})
       .then(() => expect(cli.stderr).to.equal(''))
       .then(() => expect(cli.stdout).to.equal(`=== myapp
-Addons:         heroku-redis
-                papertrail
-Auto Cert Mgmt: true
-Collaborators:  foo2@foo.com
-Database Size:  1000 B
-Dynos:          web: 1
-Git URL:        https://git.heroku.com/myapp
-Owner:          foo@foo.com
-Region:         eu
-Repo Size:      1000 B
-Slug Size:      1000 B
-Space:          myspace
-Stack:          cedar-14
-Web URL:        https://myapp.herokuapp.com
+Addons:           heroku-redis
+                  papertrail
+Auto Cert Mgmt:   true
+Collaborators:    foo2@foo.com
+Database Size:    1000 B
+Dynos:            web: 1
+Git URL:          https://git.heroku.com/myapp
+Internal Routing: true
+Owner:            foo@foo.com
+Region:           eu
+Repo Size:        1000 B
+Slug Size:        1000 B
+Space:            myspace
+Stack:            cedar-14
+Web URL:          https://myapp.herokuapp.com
 `))
       .then(() => appApi.done())
       .then(() => api.done())
@@ -94,20 +96,21 @@ Web URL:        https://myapp.herokuapp.com
     return cmd.run({app: 'myapp', args: {}, flags: {extended: true}})
       .then(() => expect(cli.stderr).to.equal(''))
       .then(() => expect(cli.stdout).to.equal(`=== myapp
-Addons:         heroku-redis
-                papertrail
-Auto Cert Mgmt: true
-Collaborators:  foo2@foo.com
-Database Size:  1000 B
-Dynos:          web: 1
-Git URL:        https://git.heroku.com/myapp
-Owner:          foo@foo.com
-Region:         eu
-Repo Size:      1000 B
-Slug Size:      1000 B
-Space:          myspace
-Stack:          cedar-14
-Web URL:        https://myapp.herokuapp.com
+Addons:           heroku-redis
+                  papertrail
+Auto Cert Mgmt:   true
+Collaborators:    foo2@foo.com
+Database Size:    1000 B
+Dynos:            web: 1
+Git URL:          https://git.heroku.com/myapp
+Internal Routing: true
+Owner:            foo@foo.com
+Region:           eu
+Repo Size:        1000 B
+Slug Size:        1000 B
+Space:            myspace
+Stack:            cedar-14
+Web URL:          https://myapp.herokuapp.com
 
 
 --- Extended Information ---
@@ -132,20 +135,21 @@ Web URL:        https://myapp.herokuapp.com
     return cmd.run({app: 'myapp', args: {}, flags: {extended: true}})
       .then(() => expect(cli.stderr).to.equal(''))
       .then(() => expect(cli.stdout).to.equal(`=== myapp
-Addons:         heroku-redis
-                papertrail
-Auto Cert Mgmt: true
-Collaborators:  foo2@foo.com
-Database Size:  1000 B
-Dynos:          web: 1
-Git URL:        https://git.heroku.com/myapp
-Owner:          foo@foo.com
-Region:         eu
-Repo Size:      1000 B
-Slug Size:      1000 B
-Space:          myspace
-Stack:          cedar-14
-Web URL:        https://myapp.herokuapp.com
+Addons:           heroku-redis
+                  papertrail
+Auto Cert Mgmt:   true
+Collaborators:    foo2@foo.com
+Database Size:    1000 B
+Dynos:            web: 1
+Git URL:          https://git.heroku.com/myapp
+Internal Routing: true
+Owner:            foo@foo.com
+Region:           eu
+Repo Size:        1000 B
+Slug Size:        1000 B
+Space:            myspace
+Stack:            cedar-14
+Web URL:          https://myapp.herokuapp.com
 
 
 --- Extended Information ---
@@ -168,20 +172,21 @@ Web URL:        https://myapp.herokuapp.com
     return cmd.run(context)
       .then(() => expect(cli.stderr).to.equal(''))
       .then(() => expect(cli.stdout).to.equal(`=== myapp
-Addons:         heroku-redis
-                papertrail
-Auto Cert Mgmt: true
-Collaborators:  foo2@foo.com
-Database Size:  1000 B
-Dynos:          web: 1
-Git URL:        https://git.heroku.com/myapp
-Owner:          foo@foo.com
-Region:         eu
-Repo Size:      1000 B
-Slug Size:      1000 B
-Space:          myspace
-Stack:          cedar-14
-Web URL:        https://myapp.herokuapp.com
+Addons:           heroku-redis
+                  papertrail
+Auto Cert Mgmt:   true
+Collaborators:    foo2@foo.com
+Database Size:    1000 B
+Dynos:            web: 1
+Git URL:          https://git.heroku.com/myapp
+Internal Routing: true
+Owner:            foo@foo.com
+Region:           eu
+Repo Size:        1000 B
+Slug Size:        1000 B
+Space:            myspace
+Stack:            cedar-14
+Web URL:          https://myapp.herokuapp.com
 `))
       .then(() => appApi.done())
       .then(() => api.done())
@@ -275,19 +280,20 @@ stack=cedar-14
     return cmd.run({app: 'myapp', args: {}, flags: {}})
       .then(() => expect(cli.stderr).to.equal(''))
       .then(() => expect(cli.stdout).to.equal(`=== myapp
-Addons:         heroku-redis
-                papertrail
-Collaborators:  foo2@foo.com
-Database Size:  1000 B
-Dynos:          web: 1
-Git URL:        https://git.heroku.com/myapp
-Owner:          foo@foo.com
-Region:         eu
-Repo Size:      1000 B
-Slug Size:      1000 B
-Space:          myspace
-Stack:          cedar-14 (next build will use heroku-18)
-Web URL:        https://myapp.herokuapp.com
+Addons:           heroku-redis
+                  papertrail
+Collaborators:    foo2@foo.com
+Database Size:    1000 B
+Dynos:            web: 1
+Git URL:          https://git.heroku.com/myapp
+Internal Routing: true
+Owner:            foo@foo.com
+Region:           eu
+Repo Size:        1000 B
+Slug Size:        1000 B
+Space:            myspace
+Stack:            cedar-14 (next build will use heroku-18)
+Web URL:          https://myapp.herokuapp.com
 `))
       .then(() => appApi.done())
       .then(() => api.done())
