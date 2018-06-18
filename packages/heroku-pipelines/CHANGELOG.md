@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+## [2.5.10] 2018-06-18
+
+- Added help topic descriptions
+
 ## [2.5.9] 2018-05-14
 
 - Updated validator to fix snyk vuln
