@@ -1,3 +1,11 @@
+<a name="2.6.0"></a>
+# [2.6.0](https://github.com/heroku/heroku-apps/compare/v2.5.10...v2.6.0) (2018-06-18)
+
+
+### Features
+
+* iwa: Add --internal-routing flag for app creation ([#235](https://github.com/heroku/heroku-apps/issues/235)) ([c01a806](https://github.com/heroku/heroku-apps/commit/c01a806))
+
 <a name="2.5.10"></a>
 ## [2.5.10](https://github.com/heroku/heroku-apps/compare/v2.5.9...v2.5.10) (2018-05-31)
 

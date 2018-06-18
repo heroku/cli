@@ -15,7 +15,7 @@ $ npm install -g @heroku-cli/plugin-apps
 $ heroku COMMAND
 running command...
 $ heroku (-v|--version|version)
-@heroku-cli/plugin-apps/2.5.10 linux-x64 node-v10.3.0
+@heroku-cli/plugin-apps/2.6.0 linux-x64 node-v10.4.1
 $ heroku --help [COMMAND]
 USAGE
   $ heroku COMMAND
