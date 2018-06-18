@@ -58,9 +58,9 @@
     lodash "^4.17.10"
     printf "0.3.0"
 
-"@heroku-cli/plugin-apps@2.5.10":
-  version "2.5.10"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-apps/-/plugin-apps-2.5.10.tgz#f9948e9a046ead4e8826800d1201747cadda577e"
+"@heroku-cli/plugin-apps@2.6.0":
+  version "2.6.0"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-apps/-/plugin-apps-2.6.0.tgz#7f9ce2e9d2f7ab686d9bd4fdb2b3eed637f1ab61"
   dependencies:
     "@heroku-cli/command" "^8.1.20"
     co "^4.6.0"
