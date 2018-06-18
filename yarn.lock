@@ -219,25 +219,9 @@
     strip-eof "^1.0.0"
     tunnel-ssh "^4.1.4"
 
-"@heroku-cli/plugin-pipelines@2.5.10":
+"@heroku-cli/plugin-pipelines@2.5.10", "@heroku-cli/plugin-pipelines@^2.5.8":
   version "2.5.10"
   resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-pipelines/-/plugin-pipelines-2.5.10.tgz#ba1a3adab4d4039326a699757ce02d5e2ba89a3c"
-  dependencies:
-    "@heroku-cli/command" "^8.1.17"
-    bluebird "^3.5.1"
-    co "^4.6.0"
-    heroku-cli-util "^8.0.9"
-    http-call "^5.1.2"
-    inflection "^1.12.0"
-    inquirer "^5.2.0"
-    lodash.flatten "^4.4.0"
-    lodash.sortby "^4.7.0"
-    string-just "^0.0.2"
-    validator "^10.2.0"
-
-"@heroku-cli/plugin-pipelines@^2.5.8":
-  version "2.5.9"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-pipelines/-/plugin-pipelines-2.5.9.tgz#25a3248a5702805cb2678c8aba1dcafec03f6385"
   dependencies:
     "@heroku-cli/command" "^8.1.17"
     bluebird "^3.5.1"
@@ -357,16 +341,16 @@
     debug "^3.1.0"
     semver "^5.5.0"
 
-"@oclif/config@1.6.31", "@oclif/config@^1", "@oclif/config@^1.6.17", "@oclif/config@^1.6.18", "@oclif/config@^1.6.19", "@oclif/config@^1.6.21", "@oclif/config@^1.6.27", "@oclif/config@^1.6.4":
-  version "1.6.31"
-  resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.6.31.tgz#10b97f16b8318b5b2eba0c1d6737e9c151ceb083"
+"@oclif/config@1.6.32", "@oclif/config@^1", "@oclif/config@^1.6.17", "@oclif/config@^1.6.18", "@oclif/config@^1.6.19", "@oclif/config@^1.6.21", "@oclif/config@^1.6.27", "@oclif/config@^1.6.4":
+  version "1.6.32"
+  resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.6.32.tgz#c3d8fb76929d55b6ce4bfc20bd7e0f4e9888885c"
   dependencies:
     debug "^3.1.0"
     tslib "^1.9.2"
 
-"@oclif/dev-cli@^1.13.32":
-  version "1.13.32"
-  resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.13.32.tgz#e41a90691db8be8ce4b15909ca8c8ffc2fd9d72a"
+"@oclif/dev-cli@^1.13.33":
+  version "1.13.33"
+  resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.13.33.tgz#8fc4817dfc11ffba695ece104d2645e3404d45bb"
   dependencies:
     "@oclif/command" "^1.4.33"
     "@oclif/config" "^1.6.27"
@@ -2766,8 +2750,8 @@ resolve-url@^0.2.1:
   resolved "https://registry.yarnpkg.com/resolve-url/-/resolve-url-0.2.1.tgz#2c637fe77c893afd2a663fe21aa9080068e2052a"
 
 resolve@^1.3.2:
-  version "1.8.0"
-  resolved "https://registry.yarnpkg.com/resolve/-/resolve-1.8.0.tgz#a7f2ac27b78480ecc09c83782741d9f26e4f0c3e"
+  version "1.8.1"
+  resolved "https://registry.yarnpkg.com/resolve/-/resolve-1.8.1.tgz#82f1ec19a423ac1fbd080b0bab06ba36e84a7a26"
   dependencies:
     path-parse "^1.0.5"
 
