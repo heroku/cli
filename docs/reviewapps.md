@@ -1,12 +1,7 @@
 `heroku reviewapps`
 ===================
 
-disable review apps or settings on an existing pipeline
-Example:
-
-    $ heroku reviewapps:disable -p mypipeline -a myapp --autodeploy
-    Disabling auto deployment ...
-    Configuring pipeline... done
+disposable apps built on GitHub pull requests
 
 * [`heroku reviewapps:disable`](#heroku-reviewappsdisable)
 * [`heroku reviewapps:enable`](#heroku-reviewappsenable)
@@ -25,12 +20,10 @@ OPTIONS
   --autodeploy             disable autodeployments
   --autodestroy            disable automatically destroying review apps
 
-DESCRIPTION
-  Example:
-
-       $ heroku reviewapps:disable -p mypipeline -a myapp --autodeploy
-       Disabling auto deployment ...
-       Configuring pipeline... done
+EXAMPLES
+  $ heroku reviewapps:disable -p mypipeline -a myapp --autodeploy
+  Disabling auto deployment ...
+  Configuring pipeline... done
 ```
 
 ## `heroku reviewapps:enable`
@@ -47,12 +40,10 @@ OPTIONS
   --autodeploy             autodeploy the review app
   --autodestroy            autodestroy the review app
 
-DESCRIPTION
-  Example:
-
-       $ heroku reviewapps:enable -p mypipeline --a myapp --autodeploy --autodestroy
-       Enabling review apps ...
-       Enabling auto deployment ...
-       Enabling auto destroy ...
-       Configuring pipeline... done
+EXAMPLES
+  $ heroku reviewapps:enable -p mypipeline --a myapp --autodeploy --autodestroy
+  Enabling review apps ...
+  Enabling auto deployment ...
+  Enabling auto destroy ...
+  Configuring pipeline... done
 ```
