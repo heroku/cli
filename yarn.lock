@@ -28,13 +28,13 @@
     strip-ansi "^4.0.0"
     supports-color "^5.4.0"
 
-"@heroku-cli/command@8.1.24", "@heroku-cli/command@^8.0.5", "@heroku-cli/command@^8.0.7", "@heroku-cli/command@^8.1.14", "@heroku-cli/command@^8.1.16", "@heroku-cli/command@^8.1.17", "@heroku-cli/command@^8.1.18", "@heroku-cli/command@^8.1.20", "@heroku-cli/command@^8.1.24":
-  version "8.1.24"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.1.24.tgz#1156e526f811c7810b24c92541c23e81caa20030"
+"@heroku-cli/command@8.1.25", "@heroku-cli/command@^8.0.5", "@heroku-cli/command@^8.0.7", "@heroku-cli/command@^8.1.14", "@heroku-cli/command@^8.1.16", "@heroku-cli/command@^8.1.17", "@heroku-cli/command@^8.1.18", "@heroku-cli/command@^8.1.20", "@heroku-cli/command@^8.1.24":
+  version "8.1.25"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.1.25.tgz#7e1819c3950c780cde7e8ecdeb2749844f34bf75"
   dependencies:
     "@heroku-cli/color" "^1.1.5"
     "@oclif/errors" "^1.1.2"
-    cli-ux "^4.6.1"
+    cli-ux "^4.7.1"
     debug "^3.1.0"
     fs-extra "^6.0.1"
     heroku-client "^3.0.6"
@@ -348,9 +348,9 @@
     debug "^3.1.0"
     tslib "^1.9.2"
 
-"@oclif/dev-cli@^1.13.33":
-  version "1.13.33"
-  resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.13.33.tgz#8fc4817dfc11ffba695ece104d2645e3404d45bb"
+"@oclif/dev-cli@^1.13.34":
+  version "1.13.34"
+  resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.13.34.tgz#63c37e2b6dcfe7bab52a701799ef176ab7274e39"
   dependencies:
     "@oclif/command" "^1.4.33"
     "@oclif/config" "^1.6.27"
@@ -550,9 +550,9 @@
     "@types/minimatch" "*"
     "@types/node" "*"
 
-"@types/lodash@^4.14.109":
-  version "4.14.109"
-  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.109.tgz#b1c4442239730bf35cabaf493c772b18c045886d"
+"@types/lodash@^4.14.109", "@types/lodash@^4.14.110":
+  version "4.14.110"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.110.tgz#fb07498f84152947f30ea09d89207ca07123461e"
 
 "@types/minimatch@*":
   version "3.0.3"
@@ -568,9 +568,9 @@
   dependencies:
     "@types/node" "*"
 
-"@types/node@*", "@types/node@^10.3.2", "@types/node@^10.3.3":
-  version "10.3.3"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.3.3.tgz#8798d9e39af2fa604f715ee6a6b19796528e46c3"
+"@types/node@*", "@types/node@^10.3.3", "@types/node@^10.3.4":
+  version "10.3.4"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.3.4.tgz#c74e8aec19e555df44609b8057311052a2c84d9e"
 
 "@types/semver@^5.5.0":
   version "5.5.0"
@@ -964,7 +964,7 @@ cli-cursor@^2.1.0:
   dependencies:
     restore-cursor "^2.0.0"
 
-cli-ux@4.7.1, cli-ux@^4.3.0, cli-ux@^4.3.1, cli-ux@^4.4.0, cli-ux@^4.6.1, cli-ux@^4.6.2, cli-ux@^4.6.3:
+cli-ux@4.7.1, cli-ux@^4.3.0, cli-ux@^4.3.1, cli-ux@^4.4.0, cli-ux@^4.6.1, cli-ux@^4.6.2, cli-ux@^4.6.3, cli-ux@^4.7.1:
   version "4.7.1"
   resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-4.7.1.tgz#b954aa806620cc818cbdd0a75e587c54bf0a0bbe"
   dependencies:
