@@ -5,5 +5,9 @@
     "packages/*"
   ],
   "npmClient": "yarn",
+  "publish": {
+    "allowBranch": "master",
+    "conventionalCommits": true
+  },
   "version": "7.0.100"
 }
