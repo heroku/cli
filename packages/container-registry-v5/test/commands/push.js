@@ -122,6 +122,28 @@ describe('container push', () => {
       .then(() => api.done())
   })
 
+  it('builds with custom context path and pushes to the docker registry', () => {
+    let api = nock('https://api.heroku.com:443')
+      .get('/apps/testapp')
+      .reply(200, {name: 'testapp'})
+
+    let dockerfiles = sandbox.stub(Sanbashi, 'getDockerfiles')
+      .returns(['/path/to/Dockerfile'])
+    let build = sandbox.stub(Sanbashi, 'buildImage')
+      .withArgs('/path/to/Dockerfile', 'registry.heroku.com/testapp/web', [], '/custom/context/path')
+    let push = sandbox.stub(Sanbashi, 'pushImage')
+      .withArgs('registry.heroku.com/testapp/web')
+
+    return cmd.run({app: 'testapp', args: ['web'], flags: {'context-path': '/custom/context/path'}})
+    // .then(() => expect(cli.stderr, 'to be empty'))
+      .then(() => expect(cli.stdout, 'to contain', 'Building web (/path/to/Dockerfile)'))
+      .then(() => expect(cli.stdout, 'to contain', 'Pushing web (/path/to/Dockerfile)'))
+      .then(() => sandbox.assert.calledOnce(dockerfiles))
+      .then(() => sandbox.assert.calledOnce(build))
+      .then(() => sandbox.assert.calledOnce(push))
+      .then(() => api.done())
+  })
+
   it('does not find an image to push', () => {
     let api = nock('https://api.heroku.com:443')
       .get('/apps/testapp')
