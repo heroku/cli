@@ -1,0 +1,37 @@
+---
+engines:
+  duplication:
+    enabled: true
+    config:
+      languages:
+      - javascript
+    exclude_fingerprints:
+    - 6b85b4d620b4851db893bd54f66a9deb
+    - 0440c8d8d98339772eaf439660698b03
+    - 183dc1a4990d616dee4c5050f95a492d
+    - dc4c7e699fbcf413dadce288c541ff87
+    - 8a0a1147ddefca74b4febb8e503c8ba3
+    - 515ed254bbd045d49a8cd3089f7bbc83
+    - 53cba7676e7da2ab0fc43d156b8584c7
+    - deeace4e75dff1582b02c1ca28d53636
+    - 4fc6c47c055419d48b1163e5543bc581
+    - 5824965f102f5f8224e1de3c792847ae
+    - 47cb17ceb2e2223760dd35c158aa596f
+    - 70ee700bb3f78aa56de8394b6733b790
+    - d58cc7326f607907a6fda2ad562435c7
+    - d530817315c542743d4d2e0876910c28
+    - fad5ccd79d824ebdb65fc160277d139a
+    - c4fc0eac64c21397afc4cd45615cd675
+    - 3e894fe5470bc3d4cc2edae7d88de8cd
+    - d52f5922548c40b694124ac81440ae22
+    - 778435e957201669e0c2f69302f3ee5a
+    - 6b990883e115a0c87e2c064c94b86844
+  eslint:
+    enabled: false
+  fixme:
+    enabled: true
+ratings:
+  paths:
+  - "**.js"
+exclude_paths:
+- test/
