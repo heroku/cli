@@ -1,5 +1,5 @@
 {
-  "name": "@heroku-cli/plugin-redis",
+  "name": "@heroku-cli/plugin-redis-v5",
   "description": "Heroku plugin to manage Heroku Redis",
   "version": "1.3.4",
   "author": "Heroku",
