@@ -1,5 +1,5 @@
 {
-  "name": "@heroku-cli/plugin-run",
+  "name": "@heroku-cli/plugin-run-v5",
   "description": "Heroku CLI plugin to run one-off dyno processes.",
   "version": "7.1.0",
   "author": "Jeff Dickey (@dickeyxxx)",

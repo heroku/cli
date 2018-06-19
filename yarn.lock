@@ -28,7 +28,7 @@
     strip-ansi "^4.0.0"
     supports-color "^5.4.0"
 
-"@heroku-cli/command@8.1.26", "@heroku-cli/command@^8.0.5", "@heroku-cli/command@^8.0.6", "@heroku-cli/command@^8.0.7", "@heroku-cli/command@^8.1.14", "@heroku-cli/command@^8.1.16", "@heroku-cli/command@^8.1.17", "@heroku-cli/command@^8.1.18", "@heroku-cli/command@^8.1.20", "@heroku-cli/command@^8.1.24", "@heroku-cli/command@^8.1.26":
+"@heroku-cli/command@8.1.26", "@heroku-cli/command@^8.0.6", "@heroku-cli/command@^8.0.7", "@heroku-cli/command@^8.1.14", "@heroku-cli/command@^8.1.17", "@heroku-cli/command@^8.1.18", "@heroku-cli/command@^8.1.20", "@heroku-cli/command@^8.1.26":
   version "8.1.26"
   resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.1.26.tgz#9a40d29ae11e6e6c239e0c67c9e89f0c54beb391"
   dependencies:
@@ -48,7 +48,17 @@
   dependencies:
     node-notifier "^5.2.1"
 
-"@heroku-cli/plugin-addons@1.2.31", "@heroku-cli/plugin-addons@^1.2.29":
+"@heroku-cli/plugin-addons-v5@1.2.31":
+  version "1.2.31"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-addons-v5/-/plugin-addons-v5-1.2.31.tgz#5aa1202bfcce2ea5ce030a7de02c7368280a873f"
+  dependencies:
+    co "4.6.0"
+    co-wait "0.0.0"
+    heroku-cli-util "^8.0.9"
+    lodash "^4.17.10"
+    printf "0.3.0"
+
+"@heroku-cli/plugin-addons@^1.2.29":
   version "1.2.31"
   resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-addons/-/plugin-addons-1.2.31.tgz#62d979eecff72f261677ec789f37e04d615035a7"
   dependencies:
@@ -58,9 +68,9 @@
     lodash "^4.17.10"
     printf "0.3.0"
 
-"@heroku-cli/plugin-apps@2.6.0":
-  version "2.6.0"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-apps/-/plugin-apps-2.6.0.tgz#7f9ce2e9d2f7ab686d9bd4fdb2b3eed637f1ab61"
+"@heroku-cli/plugin-apps-v5@^7.3.0":
+  version "7.3.0"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-apps-v5/-/plugin-apps-v5-7.3.0.tgz#948e67831f195e86d63290e7a31d9b4959b3acf9"
   dependencies:
     "@heroku-cli/command" "^8.1.20"
     co "^4.6.0"
@@ -76,30 +86,16 @@
     term-img "^2.1.0"
     urijs "1.19.1"
 
-"@heroku-cli/plugin-auth@0.6.2":
-  version "0.6.2"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-auth/-/plugin-auth-0.6.2.tgz#5e7b655f1f201e4581fd066f5477a672da43c972"
+"@heroku-cli/plugin-auth@^7.2.0":
+  version "7.2.0"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-auth/-/plugin-auth-7.2.0.tgz#5cbc9b4b7c4dbbbc9c6a2a1b3dbd0977bb0ca8d8"
   dependencies:
     "@heroku-cli/color" "^1.1.5"
-    "@heroku-cli/command" "^8.1.24"
+    "@heroku-cli/command" "^8.1.26"
     "@oclif/command" "^1.4.33"
-    "@oclif/config" "^1.6.27"
-    cli-ux "^4.6.2"
+    "@oclif/config" "^1.6.32"
+    cli-ux "^4.7.1"
     date-fns "^2.0.0-alpha.8"
-
-"@heroku-cli/plugin-build@0.0.5":
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-build/-/plugin-build-0.0.5.tgz#cb0d8f0c8ff46d3c1edeff4d311075d53e1d0e65"
-  dependencies:
-    "@heroku-cli/color" "^1.1.5"
-    "@heroku-cli/command" "^8.1.16"
-    "@oclif/command" "^1.4.30"
-    "@oclif/config" "^1.6.18"
-    "@oclif/errors" "^1.1.1"
-    "@types/execa" "^0.9.0"
-    cli-ux "^4.3.0"
-    execa "^0.10.0"
-    strip-ansi "^4.0.0"
 
 "@heroku-cli/plugin-certs-v5@^1.3.1":
   version "1.3.1"
@@ -122,9 +118,9 @@
     "@oclif/config" "^1"
     tslib "^1"
 
-"@heroku-cli/plugin-ci@1.9.12":
+"@heroku-cli/plugin-ci-v5@1.9.12":
   version "1.9.12"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-ci/-/plugin-ci-1.9.12.tgz#4cd51a6c2ae244c76e17bd4b0605e08b4e2bbc69"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-ci-v5/-/plugin-ci-v5-1.9.12.tgz#2d2151486574d94fd94e766f9384b406b3193b4d"
   dependencies:
     "@heroku-cli/command" "^8.1.14"
     "@heroku-cli/plugin-pipelines" "^2.5.8"
@@ -154,9 +150,9 @@
     lodash "^4.17.10"
     shell-quote "^1.6.1"
 
-"@heroku-cli/plugin-container-registry@4.4.21":
+"@heroku-cli/plugin-container-registry-v5@4.4.21":
   version "4.4.21"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-container-registry/-/plugin-container-registry-4.4.21.tgz#3acbf3f37a74507989539514d268bc0048dc3776"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-container-registry-v5/-/plugin-container-registry-v5-4.4.21.tgz#0b03c1d945734f9e7d98842f3e85f8b9c083bc1b"
   dependencies:
     glob "^7.1.2"
     heroku-cli-util "^8.0.9"
@@ -174,9 +170,9 @@
     cli-ux "^4.7.1"
     debug "3.1.0"
 
-"@heroku-cli/plugin-local@5.1.25":
+"@heroku-cli/plugin-local-v5@5.1.25":
   version "5.1.25"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-local/-/plugin-local-5.1.25.tgz#fafcd61d2d034824e2feadc9a7cdddf5197bec9b"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-local-v5/-/plugin-local-v5-5.1.25.tgz#3647603dc2fb3e639ea021a818368bb1ff942b22"
   dependencies:
     "@heroku-cli/command" "^8.1.20"
     "@heroku/foreman" "^2.0.2"
@@ -184,18 +180,18 @@
     heroku-cli-util "^8.0.9"
     lodash.flatten "^4.4.0"
 
-"@heroku-cli/plugin-oauth@2.3.5":
-  version "2.3.5"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-oauth/-/plugin-oauth-2.3.5.tgz#f58050e82f5d6029a7d30438db473f1c280af7b7"
+"@heroku-cli/plugin-oauth-v5@^7.3.0":
+  version "7.3.0"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-oauth-v5/-/plugin-oauth-v5-7.3.0.tgz#bb589336f938771f467a7c0e2ea06258465c0fec"
   dependencies:
     co "^4.6.0"
     date-fns "^1.29.0"
-    heroku-cli-util "^8.0.6"
+    heroku-cli-util "^8.0.9"
     lodash "^4.17.10"
 
-"@heroku-cli/plugin-orgs@1.8.2":
+"@heroku-cli/plugin-orgs-v5@1.8.2":
   version "1.8.2"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-orgs/-/plugin-orgs-1.8.2.tgz#c6df304b455bbb164a730ad4aebe6688be0909c4"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-orgs-v5/-/plugin-orgs-v5-1.8.2.tgz#63b16648063f099c03bc09d61fda9418b4e2bdb7"
   dependencies:
     "@heroku-cli/command" "^8.1.20"
     co "^4.6.0"
@@ -204,9 +200,9 @@
     lodash "^4.17.10"
     lodash.flatten "^4.4.0"
 
-"@heroku-cli/plugin-pg@2.10.0":
+"@heroku-cli/plugin-pg-v5@2.10.0":
   version "2.10.0"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-pg/-/plugin-pg-2.10.0.tgz#ce4524a2234663524ae8afdaa43f4d5c7e6382c5"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-pg-v5/-/plugin-pg-v5-2.10.0.tgz#0665910310869ba5be4cd2c8b556875f32ea0e79"
   dependencies:
     "@heroku-cli/plugin-addons" "^1.2.29"
     bytes "^3.0.0"
@@ -222,7 +218,23 @@
     strip-eof "^1.0.0"
     tunnel-ssh "^4.1.4"
 
-"@heroku-cli/plugin-pipelines@2.5.10", "@heroku-cli/plugin-pipelines@^2.5.8":
+"@heroku-cli/plugin-pipelines-v5@2.5.10":
+  version "2.5.10"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-pipelines-v5/-/plugin-pipelines-v5-2.5.10.tgz#4a1d758f800d931dd1c283bccfc43cb644172b97"
+  dependencies:
+    "@heroku-cli/command" "^8.1.17"
+    bluebird "^3.5.1"
+    co "^4.6.0"
+    heroku-cli-util "^8.0.9"
+    http-call "^5.1.2"
+    inflection "^1.12.0"
+    inquirer "^5.2.0"
+    lodash.flatten "^4.4.0"
+    lodash.sortby "^4.7.0"
+    string-just "^0.0.2"
+    validator "^10.2.0"
+
+"@heroku-cli/plugin-pipelines@^2.5.8":
   version "2.5.10"
   resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-pipelines/-/plugin-pipelines-2.5.10.tgz#ba1a3adab4d4039326a699757ce02d5e2ba89a3c"
   dependencies:
@@ -256,13 +268,26 @@
     cli-ux "^4.4.0"
     lodash "^4.17.10"
 
-"@heroku-cli/plugin-redis@1.3.4":
+"@heroku-cli/plugin-redis-v5@1.3.4":
   version "1.3.4"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-redis/-/plugin-redis-1.3.4.tgz#99002dc5a40c487b58854b2d5edc25dd44ada303"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-redis-v5/-/plugin-redis-v5-1.3.4.tgz#bd661cf966c85e8d52a92ec4725230b7cb5460f8"
   dependencies:
     heroku-cli-util "^8.0.9"
     redis-parser "^3.0.0"
     ssh2 "^0.6.1"
+
+"@heroku-cli/plugin-run-v5@^7.1.0":
+  version "7.1.0"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-run-v5/-/plugin-run-v5-7.1.0.tgz#69365ee2a529a7c54efdc8b9249c6b87bb20ab15"
+  dependencies:
+    "@heroku-cli/color" "^1.1.5"
+    "@heroku-cli/command" "^8.1.20"
+    "@heroku-cli/notifications" "^1.2.1"
+    co "4.6.0"
+    eventsource "^1.0.5"
+    fs-extra "^6.0.1"
+    heroku-cli-util "^8.0.9"
+    shellwords "^0.1.1"
 
 "@heroku-cli/plugin-run@^3.8.3":
   version "3.8.10"
@@ -277,34 +302,21 @@
     heroku-cli-util "^8.0.9"
     shellwords "^0.1.1"
 
-"@heroku-cli/plugin-run@^7.1.0":
-  version "7.1.0"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-run/-/plugin-run-7.1.0.tgz#ff3abe7a3c2faf96d7eef584f3a272ef1398a8ff"
+"@heroku-cli/plugin-spaces@^7.3.0":
+  version "7.3.0"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-spaces/-/plugin-spaces-7.3.0.tgz#2cdc504f2819faec18d2c648490e7fb53f5e986a"
   dependencies:
-    "@heroku-cli/color" "^1.1.5"
     "@heroku-cli/command" "^8.1.20"
-    "@heroku-cli/notifications" "^1.2.1"
     co "4.6.0"
-    eventsource "^1.0.5"
-    fs-extra "^6.0.1"
     heroku-cli-util "^8.0.9"
-    shellwords "^0.1.1"
-
-"@heroku-cli/plugin-spaces@2.12.3":
-  version "2.12.3"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-spaces/-/plugin-spaces-2.12.3.tgz#70b2935b78b3fd2665a75691b4f6cb786bc6b255"
-  dependencies:
-    "@heroku-cli/command" "^8.0.5"
-    co "4.6.0"
-    heroku-cli-util "^8.0.6"
     lodash.foreach "^4.5.0"
     lodash.reduce "^4.6.0"
     lodash.sortby "^4.7.0"
     strftime "^0.10.0"
 
-"@heroku-cli/plugin-status@^7.1.0":
-  version "7.1.0"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-status/-/plugin-status-7.1.0.tgz#1156c9b4d443ad0ee6a07055c8833f4f14752165"
+"@heroku-cli/plugin-status@^7.2.0":
+  version "7.2.0"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-status/-/plugin-status-7.2.0.tgz#a96dcdad2a027e0cec133bf3cf7778a823c0eeb1"
   dependencies:
     "@heroku-cli/color" "^1.1.3"
     "@heroku-cli/command" "^8.0.6"
@@ -315,12 +327,12 @@
     date-fns "^1.29.0"
     http-call "^5.1.1"
 
-"@heroku-cli/plugin-webhooks@1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-webhooks/-/plugin-webhooks-1.2.0.tgz#7971529b057ed9535819afbc4ceb9bb46e745fa8"
+"@heroku-cli/plugin-webhooks-v5@1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-webhooks-v5/-/plugin-webhooks-v5-1.2.1.tgz#a65437f8c58b0849b8e5fe2467037f9f89f14296"
   dependencies:
-    "@heroku-cli/command" "^8.0.5"
-    heroku-cli-util "^8.0.0"
+    "@heroku-cli/command" "^8.1.26"
+    heroku-cli-util "^8.0.9"
 
 "@heroku/foreman@^2.0.2":
   version "2.0.2"
@@ -357,7 +369,7 @@
     debug "^3.1.0"
     semver "^5.5.0"
 
-"@oclif/config@1.6.32", "@oclif/config@^1", "@oclif/config@^1.6.16", "@oclif/config@^1.6.17", "@oclif/config@^1.6.18", "@oclif/config@^1.6.19", "@oclif/config@^1.6.21", "@oclif/config@^1.6.27", "@oclif/config@^1.6.32":
+"@oclif/config@1.6.32", "@oclif/config@^1", "@oclif/config@^1.6.16", "@oclif/config@^1.6.17", "@oclif/config@^1.6.19", "@oclif/config@^1.6.21", "@oclif/config@^1.6.27", "@oclif/config@^1.6.32":
   version "1.6.32"
   resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.6.32.tgz#c3d8fb76929d55b6ce4bfc20bd7e0f4e9888885c"
   dependencies:
@@ -381,7 +393,7 @@
     require-resolve "^0.0.2"
     tslib "^1.9.2"
 
-"@oclif/errors@1.1.2", "@oclif/errors@^1.0.11", "@oclif/errors@^1.0.7", "@oclif/errors@^1.1.1", "@oclif/errors@^1.1.2":
+"@oclif/errors@1.1.2", "@oclif/errors@^1.0.11", "@oclif/errors@^1.0.7", "@oclif/errors@^1.1.2":
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@oclif/errors/-/errors-1.1.2.tgz#2a54aae07a7655cc4523cae270d0a50cbc5dbef3"
   dependencies:
@@ -1064,7 +1076,7 @@ cli-cursor@^2.1.0:
   dependencies:
     restore-cursor "^2.0.0"
 
-cli-ux@4.7.1, cli-ux@^4.3.0, cli-ux@^4.3.1, cli-ux@^4.4.0, cli-ux@^4.6.1, cli-ux@^4.6.2, cli-ux@^4.6.3, cli-ux@^4.7.1:
+cli-ux@4.7.1, cli-ux@^4.3.1, cli-ux@^4.4.0, cli-ux@^4.6.1, cli-ux@^4.6.2, cli-ux@^4.6.3, cli-ux@^4.7.1:
   version "4.7.1"
   resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-4.7.1.tgz#b954aa806620cc818cbdd0a75e587c54bf0a0bbe"
   dependencies:
@@ -2113,7 +2125,7 @@ heroku-cli-util@^7.0.0:
     supports-color "^5.1.0"
     tunnel-agent "^0.6.0"
 
-heroku-cli-util@^8.0.0, heroku-cli-util@^8.0.6, heroku-cli-util@^8.0.8, heroku-cli-util@^8.0.9:
+heroku-cli-util@^8.0.8, heroku-cli-util@^8.0.9:
   version "8.0.9"
   resolved "https://registry.yarnpkg.com/heroku-cli-util/-/heroku-cli-util-8.0.9.tgz#bada2cc6ba0a8216ee6105f6f8658de971477208"
   dependencies:
