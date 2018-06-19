@@ -48,9 +48,9 @@
   dependencies:
     node-notifier "^5.2.1"
 
-"@heroku-cli/plugin-addons-v5@1.2.31":
-  version "1.2.31"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-addons-v5/-/plugin-addons-v5-1.2.31.tgz#5aa1202bfcce2ea5ce030a7de02c7368280a873f"
+"@heroku-cli/plugin-addons-v5@7.4.0":
+  version "7.4.0"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-addons-v5/-/plugin-addons-v5-7.4.0.tgz#c3a00182c00101df8351404b96ef704f4df6788d"
   dependencies:
     co "4.6.0"
     co-wait "0.0.0"
