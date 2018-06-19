@@ -1,5 +1,5 @@
 {
-  "name": "@heroku-cli/plugin-local",
+  "name": "@heroku-cli/plugin-local-v5",
   "description": "run heroku apps locally",
   "version": "5.1.25",
   "author": "Jeff Dickey @dickeyxxx",
