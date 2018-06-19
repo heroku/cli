@@ -1,0 +1,62 @@
+{
+  "name": "@heroku-cli/plugin-oauth-v5",
+  "description": "Heroku CLI plugin to manage OAuth clients.",
+  "version": "2.3.5",
+  "author": "Jeff Dickey (@dickeyxxx)",
+  "bugs": {
+    "url": "https://github.com/heroku/heroku-cli-oauth/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "co": "^4.6.0",
+    "date-fns": "^1.29.0",
+    "heroku-cli-util": "^8.0.9",
+    "lodash": "^4.17.10"
+  },
+  "devDependencies": {
+    "@oclif/dev-cli": "^1.13.34",
+    "@oclif/plugin-legacy": "^1.0.15",
+    "mocha": "^5.2.0",
+    "mocha-junit-reporter": "1.17.0",
+    "nock": "9.3.3",
+    "nyc": "^12.0.2",
+    "standard": "11.0.1",
+    "unexpected": "10.38.0"
+  },
+  "files": [
+    "oclif.manifest.json",
+    "commands",
+    "lib"
+  ],
+  "homepage": "https://github.com/heroku/heroku-cli-oauth",
+  "keywords": [
+    "heroku-plugin"
+  ],
+  "license": "ISC",
+  "main": "lib/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/heroku/heroku-cli-oauth.git"
+  },
+  "scripts": {
+    "test": "TZ=UTC nyc mocha",
+    "posttest": "standard",
+    "prepublishOnly": "oclif-dev manifest",
+    "postpublish": "rm oclif.manifest.json"
+  },
+  "cli-engine": {
+    "topics": {
+      "authorizations": {
+        "description": "OAuth authorizations"
+      },
+      "clients": {
+        "description": "OAuth clients on the platform"
+      },
+      "sessions": {
+        "description": "OAuth sessions"
+      }
+    }
+  }
+}
