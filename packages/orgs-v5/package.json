@@ -1,5 +1,5 @@
 {
-  "name": "@heroku-cli/plugin-orgs",
+  "name": "@heroku-cli/plugin-orgs-v5",
   "description": "CLI to manage Heroku Organizations",
   "version": "1.8.2",
   "author": "Raul Barroso @raulb",
