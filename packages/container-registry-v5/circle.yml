@@ -1,0 +1,14 @@
+---
+machine:
+  node:
+    version: v8.5.0
+  services:
+    - docker
+test:
+  pre:
+    - mkdir -p $CIRCLE_TEST_REPORTS/mocha
+  override:
+    - nyc mocha test
+    - standard
+  post:
+    - nyc report --reporter=text-lcov > coverage.lcov && bash <(curl -s https://codecov.io/bash)
