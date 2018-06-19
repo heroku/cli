@@ -35,7 +35,7 @@ ID:          10
 Description: desc
 Scope:       global
 Token:       secrettoken
-Updated at:  Thu Jan 01 1970 00:00:00 GMT+0000 (UTC) (${distanceInWordsToNow(new Date(0))} ago)
+Updated at:  Thu Jan 01 1970 00:00:00 GMT+0000 (Coordinated Universal Time) (${distanceInWordsToNow(new Date(0))} ago)
 `))
   })
 
