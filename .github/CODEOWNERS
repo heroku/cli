@@ -1,1 +1,3 @@
+packages/pg-v5/* @heroku/dod-ux
+packages/redis-v5/* @heroku/dod-ux
 * @heroku/cli
