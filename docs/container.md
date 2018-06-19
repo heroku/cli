@@ -78,11 +78,12 @@ USAGE
   $ heroku container:push
 
 OPTIONS
-  -R, --recursive      pushes Dockerfile.<process> found in current and subdirectories
-  -a, --app=app        (required) app to run command against
-  -r, --remote=remote  git remote of app to use
+  -R, --recursive              pushes Dockerfile.<process> found in current and subdirectories
+  -a, --app=app                (required) app to run command against
+  -r, --remote=remote          git remote of app to use
   -v, --verbose
-  --arg=arg            set build-time variables
+  --arg=arg                    set build-time variables
+  --context-path=context-path  path to use as build context (defaults to Dockerfile dir)
 
 EXAMPLES
   heroku container:push web                          # Pushes Dockerfile to web process type
@@ -90,6 +91,7 @@ EXAMPLES
   heroku container:push web worker --recursive       # Pushes Dockerfile.web and Dockerfile.worker
   heroku container:push --recursive                  # Pushes Dockerfile.*
   heroku container:push web --arg ENV=live,HTTPS=on  # Build-time variables
+  heroku container:push --recursive --context-path . # Pushes Dockerfile.* using current dir as build context
 ```
 
 ## `heroku container:release`
