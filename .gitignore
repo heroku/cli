@@ -1,15 +1,10 @@
 *-debug.log
 *-error.log
 .oclif.manifest.json
+/cli
+/coverage
 /dist
 /lib
 /node_modules
 /package-lock.json
 /tmp
-cli
-coverage
-dist
-lib
-node_modules
-package-lock.json
-tmp
