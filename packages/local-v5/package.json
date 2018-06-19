@@ -1,0 +1,51 @@
+{
+  "name": "@heroku-cli/plugin-local-v5",
+  "description": "run heroku apps locally",
+  "version": "5.1.25",
+  "author": "Jeff Dickey @dickeyxxx",
+  "bugs": {
+    "url": "https://github.com/heroku/heroku-local/issues"
+  },
+  "dependencies": {
+    "@heroku-cli/command": "^8.1.20",
+    "@heroku/foreman": "^2.0.2",
+    "co": "^4.6.0",
+    "heroku-cli-util": "^8.0.9",
+    "lodash.flatten": "^4.4.0"
+  },
+  "devDependencies": {
+    "@oclif/dev-cli": "^1.13.29",
+    "@oclif/plugin-legacy": "^1.0.15",
+    "standard": "^11.0.1"
+  },
+  "files": [
+    "oclif.manifest.json",
+    "index.js",
+    "commands",
+    "lib"
+  ],
+  "homepage": "https://github.com/heroku/heroku-local",
+  "keywords": [
+    "heroku-plugin"
+  ],
+  "license": "ISC",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/heroku/heroku-local"
+  },
+  "scripts": {
+    "test": "bats test && standard",
+    "prepublishOnly": "oclif-dev manifest",
+    "postpublish": "rm oclif.manifest.json",
+    "version": "oclif-dev readme && git add README.md"
+  },
+  "cli-engine": {
+    "bin": "heroku",
+    "topics": {
+      "local": {
+        "description": "run heroku app locally"
+      }
+    }
+  }
+}
