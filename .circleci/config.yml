@@ -23,6 +23,9 @@ jobs:
             - v2-yarn-{{ checksum ".circleci/config.yml" }}
             - v2-yarn
       - run: yarn global add greenkeeper-lockfile@1 && greenkeeper-lockfile-update
+      - run: add-apt-repository ppa:duggan/bats -y
+      - run: apt-get update
+      - run: apt-get install -y bats
       - run: yarn
       - run: ./node_modules/.bin/lerna bootstrap
       - run: ./node_modules/.bin/lerna run test --parallel
