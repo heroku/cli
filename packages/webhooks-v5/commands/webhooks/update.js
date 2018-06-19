@@ -1,6 +1,6 @@
 const {Command, flags} = require('@heroku-cli/command')
 const cli = require('heroku-cli-util')
-const webhookType = require('../../lib/webhook_type.js')
+const webhookType = require('../../lib/webhook-type.js')
 
 class Update extends Command {
   async run() {
@@ -47,7 +47,7 @@ module.exports = Update
 //
 // let co = require('co')
 // let cli = require('heroku-cli-util')
-// let webhookType = require('../../lib/webhook_type.js')
+// let webhookType = require('../../lib/webhook-type.js')
 //
 // function * run(context, heroku) {
 //   let {path, display} = webhookType(context)
