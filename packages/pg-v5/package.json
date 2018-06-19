@@ -1,5 +1,5 @@
 {
-  "name": "@heroku-cli/plugin-pg",
+  "name": "@heroku-cli/plugin-pg-v5",
   "description": "Heroku CLI plugin to manage Postgres.",
   "version": "2.10.0",
   "author": "Jeff Dickey (@dickeyxxx)",
