@@ -1,0 +1,69 @@
+{
+  "name": "@heroku-cli/plugin-ci-v5",
+  "description": "Heroku CLI plugin for Heroku CI",
+  "version": "1.9.12",
+  "author": "Andrew Appleton, Gudmundur Bjarni Olafsson, Max Beizer, Ransom Briggs",
+  "bugs": {
+    "url": "https://github.com/heroku/heroku-ci/issues"
+  },
+  "dependencies": {
+    "@heroku-cli/command": "^8.1.14",
+    "@heroku-cli/plugin-pipelines": "^2.5.8",
+    "@heroku-cli/plugin-run": "^3.8.3",
+    "ansi-escapes": "3.1.0",
+    "bluebird": "^3.5.1",
+    "co": "^4.6.0",
+    "co-wait": "0.0.0",
+    "github-url-to-object": "^4.0.4",
+    "got": "^8.3.1",
+    "heroku-cli-util": "^8.0.8",
+    "lodash.flatten": "^4.4.0",
+    "shell-escape": "^0.2.0",
+    "socket.io-client": "^2.1.0",
+    "temp": "^0.8.3"
+  },
+  "devDependencies": {
+    "@oclif/dev-cli": "^1.13.20",
+    "@oclif/plugin-legacy": "^1.0.15",
+    "chai": "^4.1.2",
+    "estraverse": "^4.2.0",
+    "mocha": "^5.1.1",
+    "nock": "^9.2.5",
+    "sinon": "^1.17.6",
+    "standard": "8.5.0",
+    "standard-tap": "^1.0.2",
+    "std-mocks": "^1.0.1"
+  },
+  "engines": {
+    "node": ">=8.3.0"
+  },
+  "files": [
+    ".oclif.manifest.json",
+    "index.js",
+    "commands",
+    "lib"
+  ],
+  "homepage": "https://github.com/heroku/heroku-ci#readme",
+  "keywords": [
+    "heroku-plugin"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/heroku/heroku-ci.git"
+  },
+  "scripts": {
+    "format": "standard --format",
+    "test": "mocha -R tap && standard --verbose | standard-tap",
+    "prepublishOnly": "oclif-dev manifest",
+    "postpublish": "rm .oclif.manifest.json"
+  },
+  "cli-engine": {
+    "topics": {
+      "ci": {
+        "description": "run an application test suite on Heroku"
+      }
+    }
+  }
+}
