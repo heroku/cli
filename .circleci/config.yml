@@ -23,6 +23,8 @@ jobs:
             - v2-yarn-{{ checksum ".circleci/config.yml" }}
             - v2-yarn
       - run: yarn global add greenkeeper-lockfile@1 && greenkeeper-lockfile-update
+      - run: apt-get update
+      - run: apt-get install -y software-properties-common
       - run: add-apt-repository ppa:duggan/bats -y
       - run: apt-get update
       - run: apt-get install -y bats
