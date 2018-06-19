@@ -1,3 +1,50 @@
+# Change Log
+
+All notable changes to this project will be documented in this file.
+See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
+<a name="7.2.0"></a>
+# [7.2.0](https://github.com/heroku/cli/compare/v7.1.1...v7.2.0) (2018-06-19)
+
+
+### Bug Fixes
+
+* add recache hooks to login/logout ([e7e210f](https://github.com/heroku/cli/commit/e7e210f))
+* added typings ([689a923](https://github.com/heroku/cli/commit/689a923))
+* do not retryAuth when fetching email ([4fa83d0](https://github.com/heroku/cli/commit/4fa83d0))
+* do not retryAuth when fetching email ([28c7987](https://github.com/heroku/cli/commit/28c7987))
+* duplicate warning ([bf1e39d](https://github.com/heroku/cli/commit/bf1e39d))
+* ensure latest cli-ux ([ba13a10](https://github.com/heroku/cli/commit/ba13a10))
+* fixed tests when logged out ([bbc12e3](https://github.com/heroku/cli/commit/bbc12e3))
+* **auth:** added prepare step ([e2e7ad4](https://github.com/heroku/cli/commit/e2e7ad4))
+* **auth:** heroku-cli-plugin-auth -> auth ([e06685c](https://github.com/heroku/cli/commit/e06685c))
+* remove heroku-cli-util ([ff5ecdd](https://github.com/heroku/cli/commit/ff5ecdd))
+* **auth:** updated deps ([94c2947](https://github.com/heroku/cli/commit/94c2947))
+* output tweak ([c0534b5](https://github.com/heroku/cli/commit/c0534b5))
+* remove docs ([09e03e4](https://github.com/heroku/cli/commit/09e03e4))
+* removed unneeded period ([5f4a79f](https://github.com/heroku/cli/commit/5f4a79f))
+* set bin ([4aa19d5](https://github.com/heroku/cli/commit/4aa19d5))
+* tests ([30c217d](https://github.com/heroku/cli/commit/30c217d))
+* updated command ([949f6ea](https://github.com/heroku/cli/commit/949f6ea))
+* updated deps ([95750f2](https://github.com/heroku/cli/commit/95750f2))
+* updated deps ([1494f72](https://github.com/heroku/cli/commit/1494f72))
+* use semver for deps ([f374f3b](https://github.com/heroku/cli/commit/f374f3b))
+
+
+### Features
+
+* added -s and -i flags to login ([f24a875](https://github.com/heroku/cli/commit/f24a875))
+* added 2fa:index ([f1ac034](https://github.com/heroku/cli/commit/f1ac034))
+* added auth:2fa:disable ([7a5df4a](https://github.com/heroku/cli/commit/7a5df4a))
+* added auth:2fa:generate-recovery-codes ([f0ca1d9](https://github.com/heroku/cli/commit/f0ca1d9))
+* added auth:token ([4f8ee5f](https://github.com/heroku/cli/commit/4f8ee5f))
+* added auth:whoami ([46c3a54](https://github.com/heroku/cli/commit/46c3a54))
+* added labs:disable ([e4a3199](https://github.com/heroku/cli/commit/e4a3199))
+* added login/logout commands ([89032cb](https://github.com/heroku/cli/commit/89032cb))
+
+
+
+
 <a name="7.1.0"></a>
 # [7.1.0](https://github.com/heroku/cli/compare/v7.0.100...v7.1.0) (2018-06-19)
 

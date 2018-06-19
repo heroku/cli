@@ -58,6 +58,7 @@ For other issues, [submit a support ticket](https://help.heroku.com/).
 * [`heroku keys`](docs/keys.md) - add/remove account ssh keys
 * [`heroku labs`](docs/labs.md) - add/remove experimental features
 * [`heroku local`](docs/local.md) - run heroku app locally
+* [`heroku logs`](docs/logs.md) - display recent log output
 * [`heroku maintenance`](docs/maintenance.md) - enable/disable access to app
 * [`heroku members`](docs/members.md) - manage organization members
 * [`heroku notifications`](docs/notifications.md) - display notifications
@@ -71,6 +72,7 @@ For other issues, [submit a support ticket](https://help.heroku.com/).
 * [`heroku regions`](docs/regions.md) - list available regions for deployment
 * [`heroku releases`](docs/releases.md) - display the releases for an app
 * [`heroku reviewapps`](docs/reviewapps.md) - disposable apps built on GitHub pull requests
+* [`heroku run`](docs/run.md) - run a one-off process inside a Heroku dyno
 * [`heroku sessions`](docs/sessions.md) - OAuth sessions
 * [`heroku spaces`](docs/spaces.md) - manage heroku private spaces
 * [`heroku status`](docs/status.md) - status of the Heroku platform

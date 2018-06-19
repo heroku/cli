@@ -1,16 +1,20 @@
-## [0.6.2](https://github.com/heroku/heroku-cli-plugin-auth/compare/v0.6.1...v0.6.2) (2018-06-10)
+# Change Log
+
+All notable changes to this project will be documented in this file.
+See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
+<a name="7.2.0"></a>
+# [7.2.0](https://github.com/heroku/heroku-cli-plugin-auth/compare/v7.1.1...v7.2.0) (2018-06-19)
 
 
 ### Bug Fixes
 
-* ensure latest cli-ux ([2c74a10](https://github.com/heroku/heroku-cli-plugin-auth/commit/2c74a10))
+* **auth:** added prepare step ([e2e7ad4](https://github.com/heroku/heroku-cli-plugin-auth/commit/e2e7ad4))
+* **auth:** heroku-cli-plugin-auth -> auth ([e06685c](https://github.com/heroku/heroku-cli-plugin-auth/commit/e06685c))
+* **auth:** updated deps ([94c2947](https://github.com/heroku/heroku-cli-plugin-auth/commit/94c2947))
 
-## [0.6.1](https://github.com/heroku/heroku-cli-plugin-auth/compare/v0.6.0...v0.6.1) (2018-06-09)
 
 
-### Bug Fixes
-
-* updated deps ([9b7a1cc](https://github.com/heroku/heroku-cli-plugin-auth/commit/9b7a1cc))
 
 <a name="0.6.0"></a>
 # [0.6.0](https://github.com/heroku/heroku-cli-plugin-auth/compare/v0.5.0...v0.6.0) (2018-05-31)
