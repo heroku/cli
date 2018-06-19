@@ -1,10 +1,13 @@
 {
-  "name": "@heroku-cli/plugin-apps",
+  "name": "@heroku-cli/plugin-apps-v5",
   "description": "Heroku CLI plugin to manage apps.",
   "version": "2.6.0",
   "author": "Jeff Dickey (@jdxcode)",
   "bugs": {
     "url": "https://github.com/heroku/heroku-apps/issues"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "cli-engine": {
     "bin": "heroku",
