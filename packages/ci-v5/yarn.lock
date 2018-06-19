@@ -11,6 +11,15 @@
     strip-ansi "^4.0.0"
     supports-color "^5.1.0"
 
+"@heroku-cli/color@^1.1.5":
+  version "1.1.5"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/color/-/color-1.1.5.tgz#d98781513f8daebb21aaaf54c9e8d497db3efcfb"
+  dependencies:
+    ansi-styles "^3.2.1"
+    chalk "^2.4.1"
+    strip-ansi "^4.0.0"
+    supports-color "^5.4.0"
+
 "@heroku-cli/command@^8.0.4":
   version "8.0.5"
   resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.0.5.tgz#eb7e596c5a17557339f227e058fa700d4c0821e6"
@@ -22,7 +31,7 @@
     http-call "^5.1.0"
     netrc-parser "^3.1.4"
 
-"@heroku-cli/command@^8.0.7", "@heroku-cli/command@^8.1.14", "@heroku-cli/command@^8.1.3":
+"@heroku-cli/command@^8.0.7", "@heroku-cli/command@^8.1.14":
   version "8.1.14"
   resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.1.14.tgz#ba54d5aeb78110cf6244abf59686b67d1ddf0849"
   dependencies:
@@ -35,9 +44,23 @@
     netrc-parser "^3.1.4"
     opn "^5.3.0"
 
-"@heroku-cli/notifications@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/notifications/-/notifications-1.2.0.tgz#aea6dd4ccac951ab62ded2ceef9b5cd482e14d96"
+"@heroku-cli/command@^8.1.20":
+  version "8.1.26"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.1.26.tgz#9a40d29ae11e6e6c239e0c67c9e89f0c54beb391"
+  dependencies:
+    "@heroku-cli/color" "^1.1.5"
+    "@oclif/errors" "^1.1.2"
+    cli-ux "^4.7.1"
+    debug "^3.1.0"
+    fs-extra "^6.0.1"
+    heroku-client "^3.0.6"
+    http-call "^5.1.4"
+    netrc-parser "^3.1.5"
+    opn "^5.3.0"
+
+"@heroku-cli/notifications@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/notifications/-/notifications-1.2.1.tgz#f73e5b550af787f8fbf5461d51ff9f1f40d7d232"
   dependencies:
     node-notifier "^5.2.1"
 
@@ -57,17 +80,17 @@
     string-just "^0.0.2"
     validator "^6.2.1"
 
-"@heroku-cli/plugin-run@^3.8.3":
-  version "3.8.3"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-run/-/plugin-run-3.8.3.tgz#b545bdc0d51e6acacb9819299d84144d564d2a6f"
+"@heroku-cli/plugin-run-v5@^7.1.0":
+  version "7.1.0"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-run-v5/-/plugin-run-v5-7.1.0.tgz#69365ee2a529a7c54efdc8b9249c6b87bb20ab15"
   dependencies:
-    "@heroku-cli/color" "^1.1.3"
-    "@heroku-cli/command" "^8.1.3"
-    "@heroku-cli/notifications" "^1.2.0"
+    "@heroku-cli/color" "^1.1.5"
+    "@heroku-cli/command" "^8.1.20"
+    "@heroku-cli/notifications" "^1.2.1"
     co "4.6.0"
     eventsource "^1.0.5"
-    fs-extra "^6.0.0"
-    heroku-cli-util "^8.0.8"
+    fs-extra "^6.0.1"
+    heroku-cli-util "^8.0.9"
     shellwords "^0.1.1"
 
 "@mrmlnc/readdir-enhanced@^2.2.1":
@@ -125,6 +148,16 @@
   dependencies:
     clean-stack "^1.3.0"
     fs-extra "^5.0.0"
+    indent-string "^3.2.0"
+    strip-ansi "^4.0.0"
+    wrap-ansi "^3.0.1"
+
+"@oclif/errors@^1.1.2":
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/@oclif/errors/-/errors-1.1.2.tgz#2a54aae07a7655cc4523cae270d0a50cbc5dbef3"
+  dependencies:
+    clean-stack "^1.3.0"
+    fs-extra "^6.0.1"
     indent-string "^3.2.0"
     strip-ansi "^4.0.0"
     wrap-ansi "^3.0.1"
@@ -459,6 +492,13 @@ cardinal@^2.0.0:
     ansicolors "~0.3.2"
     redeyed "~2.0.0"
 
+cardinal@^2.0.1, cardinal@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/cardinal/-/cardinal-2.1.1.tgz#7cc1055d822d212954d07b085dea251cc7bc5505"
+  dependencies:
+    ansicolors "~0.3.2"
+    redeyed "~2.1.0"
+
 chai@^4.1.2:
   version "4.1.2"
   resolved "https://registry.yarnpkg.com/chai/-/chai-4.1.2.tgz#0f64584ba642f0f2ace2806279f4f06ca23ad73c"
@@ -572,6 +612,28 @@ cli-ux@^4.2.0:
     indent-string "^3.2.0"
     lodash "^4.17.10"
     password-prompt "^1.0.5"
+    semver "^5.5.0"
+    strip-ansi "^4.0.0"
+    supports-color "^5.4.0"
+    supports-hyperlinks "^1.0.1"
+
+cli-ux@^4.7.1:
+  version "4.7.1"
+  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-4.7.1.tgz#b954aa806620cc818cbdd0a75e587c54bf0a0bbe"
+  dependencies:
+    "@oclif/linewrap" "^1.0.0"
+    "@oclif/screen" "^1.0.2"
+    ansi-styles "^3.2.1"
+    cardinal "^2.1.1"
+    chalk "^2.4.1"
+    clean-stack "^1.3.0"
+    extract-stack "^1.0.0"
+    fs-extra "^6.0.1"
+    hyperlinker "^1.0.0"
+    indent-string "^3.2.0"
+    is-wsl "^1.1.0"
+    lodash "^4.17.10"
+    password-prompt "^1.0.6"
     semver "^5.5.0"
     strip-ansi "^4.0.0"
     supports-color "^5.4.0"
@@ -1651,6 +1713,26 @@ heroku-cli-util@^8.0.8:
     tslib "^1.9.0"
     tunnel-agent "^0.6.0"
 
+heroku-cli-util@^8.0.9:
+  version "8.0.9"
+  resolved "https://registry.yarnpkg.com/heroku-cli-util/-/heroku-cli-util-8.0.9.tgz#bada2cc6ba0a8216ee6105f6f8658de971477208"
+  dependencies:
+    "@heroku-cli/color" "^1.1.3"
+    ansi-escapes "^3.1.0"
+    ansi-styles "^3.2.1"
+    cardinal "^2.0.1"
+    chalk "^2.4.1"
+    co "^4.6.0"
+    got "^8.3.1"
+    heroku-client "^3.0.6"
+    lodash "^4.17.10"
+    netrc-parser "^3.1.4"
+    opn "^3.0.3"
+    strip-ansi "^4.0.0"
+    supports-color "^5.4.0"
+    tslib "^1.9.0"
+    tunnel-agent "^0.6.0"
+
 heroku-client@3.0.6, heroku-client@^3.0.6:
   version "3.0.6"
   resolved "https://registry.yarnpkg.com/heroku-client/-/heroku-client-3.0.6.tgz#bf603716a9d469682d4f7f80489276d82b896305"
@@ -1687,6 +1769,16 @@ http-call@^5.1.0:
 http-call@^5.1.1, http-call@^5.1.2:
   version "5.1.2"
   resolved "https://registry.yarnpkg.com/http-call/-/http-call-5.1.2.tgz#2320e1aef65f01574723a697aca31748ce578f9d"
+  dependencies:
+    content-type "^1.0.4"
+    debug "^3.1.0"
+    is-retry-allowed "^1.1.0"
+    is-stream "^1.1.0"
+    tunnel-agent "^0.6.0"
+
+http-call@^5.1.4:
+  version "5.1.4"
+  resolved "https://registry.yarnpkg.com/http-call/-/http-call-5.1.4.tgz#fc37a1f6638ece82aba3d12eb6030f0889da850a"
   dependencies:
     content-type "^1.0.4"
     debug "^3.1.0"
@@ -2391,6 +2483,13 @@ netrc-parser@^3.1.4:
     debug "^3.1.0"
     execa "^0.10.0"
 
+netrc-parser@^3.1.5:
+  version "3.1.5"
+  resolved "https://registry.yarnpkg.com/netrc-parser/-/netrc-parser-3.1.5.tgz#77937b6feb27f8dda143d38fac6bbdbcafd480a7"
+  dependencies:
+    debug "^3.1.0"
+    execa "^0.10.0"
+
 next-tick@1:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/next-tick/-/next-tick-1.0.0.tgz#ca86d1fe8828169b0120208e3dc8424b9db8342c"
@@ -2611,7 +2710,7 @@ password-prompt@^1.0.4:
     ansi-escapes "^3.0.0"
     cross-spawn "^5.1.0"
 
-password-prompt@^1.0.5:
+password-prompt@^1.0.5, password-prompt@^1.0.6:
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/password-prompt/-/password-prompt-1.0.6.tgz#d657a16c80ae3932f55f38a51fee9f872a8e9b17"
   dependencies:
@@ -2852,6 +2951,12 @@ redeyed@~1.0.0:
 redeyed@~2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/redeyed/-/redeyed-2.0.0.tgz#e7ae722cd4ce4dbc537cb5810fef3de2ac76ff12"
+  dependencies:
+    esprima "~4.0.0"
+
+redeyed@~2.1.0:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/redeyed/-/redeyed-2.1.1.tgz#8984b5815d99cb220469c99eeeffe38913e6cc0b"
   dependencies:
     esprima "~4.0.0"
 
