@@ -4,7 +4,7 @@
   "version": "1.8.2",
   "author": "Raul Barroso @raulb",
   "bugs": {
-    "url": "https://github.com/heroku/heroku-orgs/issues"
+    "url": "https://github.com/heroku/cli/issues"
   },
   "dependencies": {
     "@heroku-cli/command": "^8.1.20",
@@ -30,7 +30,7 @@
     "commands",
     "lib"
   ],
-  "homepage": "https://github.com/heroku/heroku-orgs",
+  "homepage": "https://github.com/heroku/cli",
   "keywords": [
     "heroku-plugin"
   ],
@@ -38,7 +38,7 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/heroku/heroku-orgs"
+    "url": "https://github.com/heroku/cli"
   },
   "scripts": {
     "postpublish": "rm oclif.manifest.json",

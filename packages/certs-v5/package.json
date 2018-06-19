@@ -4,7 +4,7 @@
   "version": "1.3.1",
   "author": "Ransom Briggs rbriggs@heroku.com",
   "bugs": {
-    "url": "https://github.com/heroku/heroku-certs/issues"
+    "url": "https://github.com/heroku/cli/issues"
   },
   "dependencies": {
     "co": "4.6.0",
@@ -40,7 +40,7 @@
   ],
   "license": "ISC",
   "main": "index.js",
-  "repository": "heroku/heroku-certs",
+  "repository": "heroku/cli",
   "scripts": {
     "test": "TZ=utc nyc mocha && standard",
     "prepublishOnly": "oclif-dev manifest",

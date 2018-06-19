@@ -4,7 +4,7 @@
   "version": "7.2.0",
   "author": "Jeff Dickey @jdxcode",
   "bugs": {
-    "url": "https://github.com/heroku/heroku-cli-status/issues"
+    "url": "https://github.com/heroku/cli/issues"
   },
   "cli-engine": {
     "commands": "./lib/commands",
@@ -56,12 +56,12 @@
     ".oclif.manifest.json",
     "lib"
   ],
-  "homepage": "https://github.com/heroku/heroku-cli-status",
+  "homepage": "https://github.com/heroku/cli",
   "keywords": [
     "heroku-plugin"
   ],
   "license": "ISC",
-  "repository": "heroku/heroku-cli-status",
+  "repository": "heroku/cli",
   "scripts": {
     "build": "rm -rf lib && tsc",
     "lint": "tsc -p test --noEmit && tslint -p test -t stylish",

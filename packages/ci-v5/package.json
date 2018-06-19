@@ -4,7 +4,7 @@
   "version": "1.9.12",
   "author": "Andrew Appleton, Gudmundur Bjarni Olafsson, Max Beizer, Ransom Briggs",
   "bugs": {
-    "url": "https://github.com/heroku/heroku-ci/issues"
+    "url": "https://github.com/heroku/cli/issues"
   },
   "dependencies": {
     "@heroku-cli/command": "^8.1.14",
@@ -43,7 +43,7 @@
     "commands",
     "lib"
   ],
-  "homepage": "https://github.com/heroku/heroku-ci#readme",
+  "homepage": "https://github.com/heroku/cli#readme",
   "keywords": [
     "heroku-plugin"
   ],
@@ -51,7 +51,7 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/heroku/heroku-ci.git"
+    "url": "git+https://github.com/heroku/cli.git"
   },
   "scripts": {
     "format": "standard --format",

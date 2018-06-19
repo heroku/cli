@@ -4,7 +4,7 @@
   "version": "2.5.10",
   "author": "Heroku Developer Experience team",
   "bugs": {
-    "url": "https://github.com/heroku/heroku-pipelines/issues"
+    "url": "https://github.com/heroku/cli/issues"
   },
   "cli-engine": {
     "bin": "heroku",
@@ -54,7 +54,7 @@
   ],
   "license": "ISC",
   "main": "index.js",
-  "repository": "heroku/heroku-pipelines",
+  "repository": "heroku/cli",
   "scripts": {
     "autotest": "./node_modules/.bin/supervisor -q -n exit -x ./node_modules/.bin/mocha -- -b",
     "test": "nyc mocha && standard",

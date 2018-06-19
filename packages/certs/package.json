@@ -2,7 +2,7 @@
   "name": "@heroku-cli/plugin-certs",
   "version": "2.0.1",
   "author": "Jeff Dickey @jdxcode",
-  "bugs": "https://github.com/heroku/heroku-cli-plugin-certs/issues",
+  "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
     "@heroku-cli/command": "^8.1.18",
     "@oclif/command": "^1",
@@ -32,7 +32,7 @@
     "/lib",
     "/oclif.manifest.json"
   ],
-  "homepage": "https://github.com/heroku/heroku-cli-plugin-certs",
+  "homepage": "https://github.com/heroku/cli",
   "keywords": [
     "oclif-plugin"
   ],
@@ -44,7 +44,7 @@
       "@oclif/plugin-help"
     ]
   },
-  "repository": "heroku/heroku-cli-plugin-certs",
+  "repository": "heroku/cli",
   "scripts": {
     "postpack": "rm -f oclif.manifest.json",
     "posttest": "tsc -p test --noEmit && tslint -p test -t stylish",

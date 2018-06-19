@@ -4,7 +4,7 @@
   "version": "7.1.0",
   "author": "Jeff Dickey (@dickeyxxx)",
   "bugs": {
-    "url": "https://github.com/heroku/heroku-run/issues"
+    "url": "https://github.com/heroku/cli/issues"
   },
   "cli-engine": {
     "bin": "heroku",
@@ -48,7 +48,7 @@
     "/index.js",
     "/commands"
   ],
-  "homepage": "https://github.com/heroku/heroku-run",
+  "homepage": "https://github.com/heroku/cli",
   "keywords": [
     "heroku-plugin"
   ],
@@ -56,7 +56,7 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/heroku/heroku-run.git"
+    "url": "https://github.com/heroku/cli.git"
   },
   "scripts": {
     "postpack": "rm oclif.manifest.json",

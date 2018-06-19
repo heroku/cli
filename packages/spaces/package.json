@@ -4,7 +4,7 @@
   "version": "7.3.0",
   "author": "Heroku",
   "bugs": {
-    "url": "https://github.com/heroku/heroku-spaces/issues"
+    "url": "https://github.com/heroku/cli/issues"
   },
   "dependencies": {
     "@heroku-cli/command": "^8.1.20",
@@ -40,7 +40,7 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/heroku/heroku-spaces"
+    "url": "https://github.com/heroku/cli"
   },
   "scripts": {
     "test": "nyc mocha && standard",

@@ -4,7 +4,7 @@
   "version": "1.2.31",
   "author": "Bo Jeanes @bjeanes",
   "bugs": {
-    "url": "https://github.com/heroku/heroku-cli-addons/issues"
+    "url": "https://github.com/heroku/cli/issues"
   },
   "dependencies": {
     "co": "4.6.0",
@@ -30,13 +30,13 @@
     "lib",
     "commands"
   ],
-  "homepage": "https://github.com/heroku/heroku-cli-addons",
+  "homepage": "https://github.com/heroku/cli",
   "keywords": [
     "heroku-plugin"
   ],
   "license": "ISC",
   "main": "index.js",
-  "repository": "https://github.com/heroku/heroku-cli-addons",
+  "repository": "https://github.com/heroku/cli",
   "scripts": {
     "release": "np",
     "test": "nyc mocha && standard",

@@ -37,7 +37,7 @@
   ],
   "license": "ISC",
   "main": "index.js",
-  "repository": "https://github.com/heroku/heroku-container-registry",
+  "repository": "heroku/cli",
   "scripts": {
     "depcheck": "depcheck || true",
     "postpublish": "rm .oclif.manifest.json",

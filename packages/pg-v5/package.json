@@ -4,7 +4,7 @@
   "version": "2.10.0",
   "author": "Jeff Dickey (@dickeyxxx)",
   "bugs": {
-    "url": "https://github.com/heroku/heroku-pg/issues"
+    "url": "https://github.com/heroku/cli/issues"
   },
   "dependencies": {
     "@heroku-cli/plugin-addons": "^1.2.29",
@@ -41,7 +41,7 @@
     "lib",
     "commands"
   ],
-  "homepage": "https://github.com/heroku/heroku-pg",
+  "homepage": "https://github.com/heroku/cli",
   "keywords": [
     "heroku-plugin"
   ],
@@ -49,7 +49,7 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/heroku/heroku-pg.git"
+    "url": "https://github.com/heroku/cli.git"
   },
   "scripts": {
     "test": "TZ=utc nyc mocha && standard",

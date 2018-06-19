@@ -4,7 +4,7 @@
   "version": "7.1.0",
   "author": "Jeff Dickey (@jdxcode)",
   "bugs": {
-    "url": "https://github.com/heroku/heroku-git/issues"
+    "url": "https://github.com/heroku/cli/issues"
   },
   "dependencies": {
     "@heroku-cli/color": "^1.1.5",
@@ -43,7 +43,7 @@
     "/lib",
     "/oclif.manifest.json"
   ],
-  "homepage": "https://github.com/heroku/heroku-git",
+  "homepage": "https://github.com/heroku/cli",
   "keywords": [
     "heroku-plugin"
   ],
@@ -62,7 +62,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/heroku/heroku-git.git"
+    "url": "https://github.com/heroku/cli.git"
   },
   "scripts": {
     "postpack": "rm -f oclif.manifest.json",

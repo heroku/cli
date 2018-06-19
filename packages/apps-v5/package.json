@@ -4,7 +4,7 @@
   "version": "7.3.0",
   "author": "Jeff Dickey (@jdxcode)",
   "bugs": {
-    "url": "https://github.com/heroku/heroku-apps/issues"
+    "url": "https://github.com/heroku/cli/issues"
   },
   "publishConfig": {
     "access": "public"
@@ -54,7 +54,7 @@
     "assets",
     "src"
   ],
-  "homepage": "https://github.com/heroku/heroku-apps",
+  "homepage": "https://github.com/heroku/cli",
   "keywords": [
     "heroku-plugin"
   ],
@@ -62,7 +62,7 @@
   "main": "src/index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/heroku/heroku-apps.git"
+    "url": "https://github.com/heroku/cli.git"
   },
   "scripts": {
     "postpublish": "rm .oclif.manifest.json",
