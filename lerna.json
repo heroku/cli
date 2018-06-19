@@ -1,13 +1,15 @@
 {
+  "version": "7.1.1",
   "lerna": "2.11.0",
   "packages": [
     ".",
     "packages/*"
   ],
   "npmClient": "yarn",
-  "publish": {
-    "allowBranch": "master",
-    "conventionalCommits": true
-  },
-  "version": "7.1.1"
+  "command": {
+    "publish": {
+      "allowBranch": "master",
+      "conventionalCommits": true
+    }
+  }
 }
