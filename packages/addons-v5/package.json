@@ -1,5 +1,5 @@
 {
-  "name": "@heroku-cli/plugin-addons",
+  "name": "@heroku-cli/plugin-addons-v5",
   "description": "`heroku addons:*` commands",
   "version": "1.2.31",
   "author": "Bo Jeanes @bjeanes",

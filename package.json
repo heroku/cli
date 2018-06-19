@@ -10,7 +10,7 @@
   "dependencies": {
     "@heroku-cli/color": "1.1.5",
     "@heroku-cli/command": "8.1.26",
-    "@heroku-cli/plugin-addons": "1.2.31",
+    "@heroku-cli/plugin-addons-v5": "1.2.31",
     "@heroku-cli/plugin-apps-v5": "^7.3.0",
     "@heroku-cli/plugin-auth": "^7.2.0",
     "@heroku-cli/plugin-certs": "2.0.1",
@@ -103,7 +103,7 @@
     "plugins": [
       "@oclif/plugin-legacy",
       "@heroku-cli/plugin-auth",
-      "@heroku-cli/plugin-addons",
+      "@heroku-cli/plugin-addons-v5",
       "@heroku-cli/plugin-apps-v5",
       "@heroku-cli/plugin-certs",
       "@heroku-cli/plugin-certs-v5",
