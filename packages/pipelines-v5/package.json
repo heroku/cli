@@ -1,5 +1,5 @@
 {
-  "name": "@heroku-cli/plugin-pipelines",
+  "name": "@heroku-cli/plugin-pipelines-v5",
   "description": "pipelines heroku plugin",
   "version": "2.5.10",
   "author": "Heroku Developer Experience team",
