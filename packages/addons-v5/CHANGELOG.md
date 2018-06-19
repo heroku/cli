@@ -9,15 +9,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Bug Fixes
 
+* **addons:** merged https://github.com/heroku/heroku-cli-addons/pull/93 ([3e84b8b](https://github.com/heroku/cli/commit/3e84b8b))
+* **addons:** merged https://github.com/heroku/heroku-cli-addons/pull/93 ([2fdefc5](https://github.com/heroku/cli/commit/2fdefc5))
 * repo name ([c306c78](https://github.com/heroku/cli/commit/c306c78))
-
-
-
-
-<a name="7.3.0"></a>
-# [7.3.0](https://github.com/heroku/heroku-spaces/compare/v7.2.0...v7.3.0) (2018-06-19)
-
-
-
-
-**Note:** Version bump only for package @heroku-cli/plugin-spaces

@@ -21,7 +21,7 @@ $ npm install -g @heroku-cli/plugin-config
 $ heroku COMMAND
 running command...
 $ heroku (-v|--version|version)
-@heroku-cli/plugin-config/1.3.1 darwin-x64 node-v10.0.0
+@heroku-cli/plugin-config/7.4.0 darwin-x64 node-v10.0.0
 $ heroku --help [COMMAND]
 USAGE
   $ heroku COMMAND
@@ -49,7 +49,7 @@ OPTIONS
   -s, --shell          output config vars in shell format
 ```
 
-_See code: [src/commands/config.ts](https://github.com/heroku/heroku-cli-plugin-config/blob/v1.3.1/src/commands/config.ts)_
+_See code: [src/commands/config.ts](https://github.com/heroku/cli/blob/v7.4.0/src/commands/config.ts)_
 
 ## `heroku config:edit [KEY]`
 
@@ -81,7 +81,7 @@ EXAMPLES
   $ VISUAL="atom --wait" heroku config:edit
 ```
 
-_See code: [src/commands/config/edit.ts](https://github.com/heroku/heroku-cli-plugin-config/blob/v1.3.1/src/commands/config/edit.ts)_
+_See code: [src/commands/config/edit.ts](https://github.com/heroku/cli/blob/v7.4.0/src/commands/config/edit.ts)_
 
 ## `heroku config:get KEY...`
 
@@ -101,5 +101,5 @@ EXAMPLES
   production
 ```
 
-_See code: [src/commands/config/get.ts](https://github.com/heroku/heroku-cli-plugin-config/blob/v1.3.1/src/commands/config/get.ts)_
+_See code: [src/commands/config/get.ts](https://github.com/heroku/cli/blob/v7.4.0/src/commands/config/get.ts)_
 <!-- commandsstop -->

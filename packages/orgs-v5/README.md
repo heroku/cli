@@ -303,7 +303,6 @@ USAGE
 OPTIONS
   --enterprise  filter by enterprise orgs
   --json        output in json format
-  --teams       filter by teams
 ```
 
 ## `heroku orgs:open`
