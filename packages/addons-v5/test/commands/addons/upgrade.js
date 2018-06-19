@@ -3,8 +3,14 @@
 
 let cmd = commands.find((c) => c.topic === 'addons' && c.command === 'upgrade')
 let expect = require('unexpected')
+let cache = require('../../../lib/resolve').addon.cache
+
 describe('addons:upgrade', () => {
-  beforeEach(() => cli.mockConsole())
+  beforeEach(() => {
+    cli.mockConsole()
+    cache.clear()
+  })
+
   afterEach(() => nock.cleanAll())
 
   it('upgrades an add-on', () => {
@@ -17,6 +23,19 @@ describe('addons:upgrade', () => {
     return cmd.run({app: 'myapp', args: {addon: 'heroku-kafka', plan: 'heroku-kafka:hobby'}})
       .then(() => expect(cli.stdout, 'to equal', 'provision msg\n'))
       .then(() => expect(cli.stderr, 'to equal', 'Changing kafka-swiftly-123 on myapp from premium-0 to heroku-kafka:hobby... done, free\n'))
+      .then(() => api.done())
+  })
+
+  it('upgrades to a contract add-on', () => {
+    let addon = {name: 'connect-swiftly-123', addon_service: {name: 'heroku-connect'}, app: {name: 'myapp'}, plan: {name: 'free'}}
+
+    let api = nock('https://api.heroku.com:443')
+      .post('/actions/addons/resolve', {'app': 'myapp', 'addon': 'heroku-connect'}).reply(200, [addon])
+      .patch('/apps/myapp/addons/connect-swiftly-123', {plan: {name: 'heroku-connect:contract'}})
+      .reply(200, {plan: {price: {cents: 0, contract: true}}, provision_message: 'provision msg'})
+    return cmd.run({app: 'myapp', args: {addon: 'heroku-connect', plan: 'heroku-connect:contract'}})
+      .then(() => expect(cli.stdout, 'to equal', 'provision msg\n'))
+      .then(() => expect(cli.stderr, 'to equal', 'Changing connect-swiftly-123 on myapp from free to heroku-connect:contract... done, contract\n'))
       .then(() => api.done())
   })
 
