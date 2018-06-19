@@ -74,6 +74,28 @@ acme-inc-dwh  dwh-db  heroku-postgresql:standard-2  $100/month  created`)
     })
   })
 
+  context('with a contract add-on', function () {
+    beforeEach(function () {
+      let addon = fixtures.addons['dwh-db']
+      addon.billed_price = { cents: 0, contract: true }
+
+      nock('https://api.heroku.com', {reqheaders: {
+        'Accept-Expansion': 'addon_service,plan'
+      }})
+        .get('/addons')
+        .reply(200, [addon])
+    })
+
+    it('prints add-ons in a table with contract', function () {
+      return cmd.run({flags: {}}).then(function () {
+        util.expectOutput(cli.stdout,
+          `Owning App    Add-on  Plan                          Price     State
+────────────  ──────  ────────────────────────────  ────────  ───────
+acme-inc-dwh  dwh-db  heroku-postgresql:standard-2  contract  created`)
+      })
+    })
+  })
+
   it('prints message when there are no add-ons', function () {
     nock('https://api.heroku.com').get('/addons').reply(200, [])
     return cmd.run({flags: {}}).then(function () {

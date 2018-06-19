@@ -266,6 +266,30 @@ The table above shows add-ons and the attachments to the current app (acme-inc-d
     })
   })
 
+  context('with a contract add-on', function () {
+    beforeEach(function () {
+      let addon = fixtures.addons['dwh-db']
+      addon.billed_price = {cents: 0, contract: true}
+
+      mockAPI('acme-inc-dwh', [
+        addon
+      ], [
+        fixtures.attachments['acme-inc-dwh::DATABASE']
+      ])
+    })
+
+    it('prints add-ons in a table with contract', function () {
+      return run('acme-inc-dwh', function () {
+        util.expectOutput(cli.stdout,
+          `Add-on                      Plan        Price     State
+──────────────────────────  ──────────  ────────  ───────
+heroku-postgresql (dwh-db)  standard-2  contract  created
+ └─ as DATABASE
+The table above shows add-ons and the attachments to the current app (acme-inc-dwh) or other apps.`)
+      })
+    })
+  })
+
   it('prints add-on line for attachment when add-on info is missing from API (e.g. no permissions on billing app)', function () {
     mockAPI('acme-inc-api', [ /* no add-on ! */], [fixtures.attachments['acme-inc-api::WWW_DB']])
 

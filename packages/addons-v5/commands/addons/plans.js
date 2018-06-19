@@ -8,7 +8,7 @@ function * run (context, heroku) {
   const _ = require('lodash')
 
   let plans = yield heroku.get(`/addon-services/${context.args.service}/plans`)
-  plans = _.sortBy(plans, 'price.cents')
+  plans = _.sortBy(plans, ['price.contract', 'price.cents'])
 
   if (context.flags.json) {
     cli.styledJSON(plans)

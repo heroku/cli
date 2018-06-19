@@ -24,13 +24,17 @@ module.exports = {
 
   grandfatheredPrice: function (addon) {
     const price = addon.plan.price
-    return Object.assign({}, price, {cents: addon.billed_price.cents})
+    return Object.assign({}, price, {
+      cents: addon.billed_price.cents,
+      contract: addon.billed_price.contract
+    })
   },
 
   formatPrice: function (price) {
     const printf = require('printf')
 
     if (!price) return
+    if (price.contract) return 'contract'
     if (price.cents === 0) return 'free'
 
     let fmt = price.cents % 100 === 0 ? '$%.0f/%s' : '$%.02f/%s'
