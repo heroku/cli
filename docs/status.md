@@ -17,4 +17,4 @@ OPTIONS
   --json  output in json format
 ```
 
-_See code: [@heroku-cli/plugin-status](https://github.com/heroku/heroku-cli-status/blob/v5.0.10/src/commands/status.ts)_
+_See code: [@heroku-cli/plugin-status](https://github.com/heroku/heroku-cli-status/blob/v7.1.0/src/commands/status.ts)_

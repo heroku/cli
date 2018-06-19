@@ -9,5 +9,5 @@
     "allowBranch": "master",
     "conventionalCommits": true
   },
-  "version": "7.0.100"
+  "version": "7.1.0"
 }

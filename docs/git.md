@@ -29,7 +29,7 @@ EXAMPLES
   ...
 ```
 
-_See code: [@heroku-cli/plugin-git](https://github.com/heroku/heroku-git/blob/v3.0.2/src/commands/git/clone.ts)_
+_See code: [@heroku-cli/plugin-git](https://github.com/heroku/heroku-git/blob/v7.1.0/src/commands/git/clone.ts)_
 
 ## `heroku git:remote`
 
@@ -55,4 +55,4 @@ EXAMPLES
        $ heroku git:remote --remote heroku-staging -a example
 ```
 
-_See code: [@heroku-cli/plugin-git](https://github.com/heroku/heroku-git/blob/v3.0.2/src/commands/git/remote.ts)_
+_See code: [@heroku-cli/plugin-git](https://github.com/heroku/heroku-git/blob/v7.1.0/src/commands/git/remote.ts)_

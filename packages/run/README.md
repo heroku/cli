@@ -21,10 +21,10 @@ USAGE
 
 OPTIONS
   -a, --app=app        (required) app to run command against
-  -d, --dyno=dyno      dyno to limit filter by
+  -d, --dyno=dyno      only show output from this dyno type (such as "web" or "worker")
   -n, --num=num        number of lines to display
   -r, --remote=remote  git remote of app to use
-  -s, --source=source  log source to limit filter by
+  -s, --source=source  only show output from this source (such as "app" or "heroku")
   -t, --tail           continually stream logs
   --force-colors       force use of colors (even on non-tty output)
 
