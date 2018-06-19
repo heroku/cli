@@ -1,10 +1,8 @@
 import * as nock from 'nock'
 
-import Nock from '@fancy-test/nock'
 import {expect, test as base} from '@oclif/test'
 
 const test = base
-.register('nock', Nock)
 
 let api = nock('https://status.heroku.com:443')
 
