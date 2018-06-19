@@ -2,4 +2,5 @@ packages/pg-v5/* @heroku/dod-ux
 packages/pipelines-v5/* @heroku/devex
 packages/ci-v5/* @heroku/devex
 packages/redis-v5/* @heroku/dod-ux
+packages/container-registry-v5/* @heroku/build
 * @heroku/cli
