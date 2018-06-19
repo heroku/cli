@@ -1,5 +1,5 @@
 {
-  "name": "@heroku-cli/plugin-ci",
+  "name": "@heroku-cli/plugin-ci-v5",
   "description": "Heroku CLI plugin for Heroku CI",
   "version": "1.9.12",
   "author": "Andrew Appleton, Gudmundur Bjarni Olafsson, Max Beizer, Ransom Briggs",
