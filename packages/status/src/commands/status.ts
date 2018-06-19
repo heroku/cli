@@ -28,7 +28,7 @@ export default class Status extends Command {
     }
 
     let host = process.env.HEROKU_STATUS_HOST || 'https://status.heroku.com'
-    let {body} = await HTTP.get(host + apiPath)
+    let {body} = await HTTP.get<any>(host + apiPath)
 
     if (flags.json) {
       cli.styledJSON(body)

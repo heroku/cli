@@ -2,9 +2,6 @@
   "name": "heroku",
   "description": "CLI to interact with Heroku",
   "version": "7.0.100",
-  "workspaces": [
-    "packages/*"
-  ],
   "author": "Jeff Dickey @jdxcode",
   "bin": {
     "heroku": "./bin/run"
