@@ -1,0 +1,62 @@
+{
+  "name": "@heroku-cli/plugin-spaces",
+  "description": "Heroku plugin to manage Heroku Private Spaces",
+  "version": "2.12.3",
+  "author": "Heroku",
+  "bugs": {
+    "url": "https://github.com/heroku/heroku-spaces/issues"
+  },
+  "dependencies": {
+    "@heroku-cli/command": "^8.1.20",
+    "co": "4.6.0",
+    "heroku-cli-util": "^8.0.9",
+    "lodash.foreach": "^4.5.0",
+    "lodash.reduce": "^4.6.0",
+    "lodash.sortby": "^4.7.0",
+    "strftime": "^0.10.0"
+  },
+  "devDependencies": {
+    "@oclif/dev-cli": "^1.13.24",
+    "@oclif/plugin-legacy": "^1.0.15",
+    "chai": "^4.1.2",
+    "chai-as-promised": "^7.1.1",
+    "codeclimate-test-reporter": "^0.5.0",
+    "coveralls": "^3.0.1",
+    "mocha": "^5.2.0",
+    "nock": "^9.2.5",
+    "nyc": "^11.8.0",
+    "standard": "^10.0.3"
+  },
+  "files": [
+    "oclif.manifest.json",
+    "index.js",
+    "commands",
+    "lib"
+  ],
+  "keywords": [
+    "heroku-plugin"
+  ],
+  "license": "ISC",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/heroku/heroku-spaces"
+  },
+  "scripts": {
+    "test": "nyc mocha && standard",
+    "version": "oclif-dev readme && git add README.md",
+    "prepublishOnly": "oclif-dev manifest",
+    "postpublish": "rm oclif.manifest.json"
+  },
+  "cli-engine": {
+    "bin": "heroku",
+    "topics": {
+      "spaces": {
+        "description": "manage heroku private spaces"
+      },
+      "trusted-ips": {
+        "hidden": true
+      }
+    }
+  }
+}
