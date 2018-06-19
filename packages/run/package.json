@@ -1,0 +1,68 @@
+{
+  "name": "@heroku-cli/plugin-run",
+  "description": "Heroku CLI plugin to run one-off dyno processes.",
+  "version": "3.8.10",
+  "author": "Jeff Dickey (@dickeyxxx)",
+  "bugs": {
+    "url": "https://github.com/heroku/heroku-run/issues"
+  },
+  "cli-engine": {
+    "bin": "heroku",
+    "topics": {
+      "run": {
+        "description": "run a one-off process inside a Heroku dyno"
+      },
+      "logs": {
+        "description": "display recent log output"
+      }
+    }
+  },
+  "dependencies": {
+    "@heroku-cli/color": "^1.1.5",
+    "@heroku-cli/command": "^8.1.20",
+    "@heroku-cli/notifications": "^1.2.1",
+    "co": "4.6.0",
+    "eventsource": "^1.0.5",
+    "fs-extra": "^6.0.1",
+    "heroku-cli-util": "^8.0.9",
+    "shellwords": "^0.1.1"
+  },
+  "devDependencies": {
+    "@oclif/dev-cli": "^1.13.24",
+    "@oclif/plugin-legacy": "^1.0.15",
+    "fixture-stdout": "0.2.1",
+    "mocha": "^5.2.0",
+    "mocha-junit-reporter": "1.17.0",
+    "netrc": "0.1.4",
+    "nock": "^9.2.6",
+    "sinon": "^5.0.10",
+    "standard": "^11.0.1",
+    "unexpected": "^10.38.0"
+  },
+  "standard": {
+    "env": "mocha"
+  },
+  "files": [
+    "/oclif.manifest.json",
+    "/lib",
+    "/index.js",
+    "/commands"
+  ],
+  "homepage": "https://github.com/heroku/heroku-run",
+  "keywords": [
+    "heroku-plugin"
+  ],
+  "license": "ISC",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/heroku/heroku-run.git"
+  },
+  "scripts": {
+    "postpack": "rm oclif.manifest.json",
+    "prepack": "oclif-dev manifest",
+    "test": "mocha",
+    "posttest": "standard",
+    "version": "oclif-dev readme && git add README.md"
+  }
+}

@@ -24,7 +24,8 @@ jobs:
             - v2-yarn
       - run: yarn global add greenkeeper-lockfile@1 && greenkeeper-lockfile-update
       - run: yarn
-      - run: yarn test
+      - run: ./node_modules/.bin/lerna bootstrap
+      - run: ./node_modules/.bin/lerna run test --parallel
       - run: greenkeeper-lockfile-upload
       - run: curl -s https://codecov.io/bash | bash
   release:
