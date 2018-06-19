@@ -2,6 +2,9 @@
   "name": "heroku",
   "description": "CLI to interact with Heroku",
   "version": "7.0.100",
+  "workspaces": [
+    "packages/*"
+  ],
   "author": "Jeff Dickey @jdxcode",
   "bin": {
     "heroku": "./bin/run"
@@ -71,6 +74,7 @@
     "@types/write-json-file": "^2.2.1",
     "aws-sdk": "^2.259.1",
     "chai": "^4.1.2",
+    "lerna": "^2.11.0",
     "lodash": "^4.17.10",
     "mocha": "^5.2.0",
     "nock": "^9.3.2",
