@@ -21,7 +21,7 @@ $ npm install -g @heroku-cli/plugin-config
 $ heroku COMMAND
 running command...
 $ heroku (-v|--version|version)
-@heroku-cli/plugin-config/1.3.1 linux-x64 node-v10.2.1
+@heroku-cli/plugin-config/1.3.1 darwin-x64 node-v10.0.0
 $ heroku --help [COMMAND]
 USAGE
   $ heroku COMMAND
@@ -73,13 +73,10 @@ DESCRIPTION
 EXAMPLES
   # edit with vim
   $ EDITOR="vim" heroku config:edit
-
   # edit with emacs
   $ EDITOR="emacs" heroku config:edit
-
   # edit with pico
   $ EDITOR="pico" heroku config:edit
-
   # edit with atom editor
   $ VISUAL="atom --wait" heroku config:edit
 ```
