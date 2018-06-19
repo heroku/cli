@@ -1,4 +1,5 @@
 import {Command, flags} from '@heroku-cli/command'
+import * as Heroku from '@heroku-cli/schema'
 
 import Git from '../../git'
 
@@ -19,9 +20,9 @@ remote: Counting objects: 42, done.
   async run() {
     const git = new Git()
     const {flags, args} = this.parse(GitClone)
-    const {body: app} = await this.heroku.get(`/apps/${flags.app}`)
+    const {body: app} = await this.heroku.get<Heroku.App>(`/apps/${flags.app}`)
     const directory = args.DIRECTORY || app.name
     const remote = flags.remote || 'heroku'
-    await git.spawn(['clone', '-o', remote, git.url(app.name, flags['ssh-git']), directory])
+    await git.spawn(['clone', '-o', remote, git.url(app.name!, flags['ssh-git']), directory])
   }
 }

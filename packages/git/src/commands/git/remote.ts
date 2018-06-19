@@ -1,5 +1,6 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
+import * as Heroku from '@heroku-cli/schema'
 
 import Git from '../../git'
 
@@ -26,10 +27,10 @@ extra arguments will be passed to git remote add
     if (!appName) {
       this.error('Specify an app with --app')
     }
-    let {body: app} = await this.heroku.get(`/apps/${appName}`)
+    let {body: app} = await this.heroku.get<Heroku.App>(`/apps/${appName}`)
     let remote = flags.remote || (await git.remoteFromGitConfig()) || 'heroku'
     let remotes = await git.exec(['remote'])
-    let url = git.url(app.name, flags['ssh-git'])
+    let url = git.url(app.name!, flags['ssh-git'])
     if (remotes.split('\n').includes(remote)) {
       await git.exec(['remote', 'set-url', remote, url].concat(argv))
     } else {
