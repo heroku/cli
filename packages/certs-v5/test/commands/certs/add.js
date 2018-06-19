@@ -1071,9 +1071,7 @@ SSL certificate is self signed.
           expect(unwrap(cli.stderr)).to.equal('Adding SSL certificate to example... done\nWaiting for stable domains to be created... done\n')
           /* eslint-disable no-trailing-spaces */
           expect(cli.stdout).to.equal(
-            `Renewal scheduled for 2013-07-01 21:34 UTC.
-
-Certificate details:
+            `Certificate details:
 Common Name(s): foo.example.org
                 bar.example.org
                 biz.example.com
@@ -1122,9 +1120,7 @@ biz.example.com  CNAME        biz.example.com.herokudns.com
           expect(unwrap(cli.stderr)).to.equal('Adding SSL certificate to example... done\nWaiting for stable domains to be created... !\n')
           /* eslint-disable no-trailing-spaces */
           expect(cli.stdout).to.equal(
-            `Renewal scheduled for 2013-07-01 21:34 UTC.
-
-Certificate details:
+            `Certificate details:
 Common Name(s): foo.example.org
                 bar.example.org
                 biz.example.com
