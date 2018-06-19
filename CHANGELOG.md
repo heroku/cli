@@ -3,6 +3,66 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="7.3.0"></a>
+# [7.3.0](https://github.com/heroku/cli/compare/v7.2.0...v7.3.0) (2018-06-19)
+
+
+### Bug Fixes
+
+* add -j ([edf169a](https://github.com/heroku/cli/commit/edf169a))
+* add -j flags ([b6890f4](https://github.com/heroku/cli/commit/b6890f4))
+* add docs ([181d100](https://github.com/heroku/cli/commit/181d100))
+* add recache hook ([dcc07e4](https://github.com/heroku/cli/commit/dcc07e4))
+* add redirect uri ([7b72beb](https://github.com/heroku/cli/commit/7b72beb))
+* added manifest to build ([f0c314b](https://github.com/heroku/cli/commit/f0c314b))
+* added manifest to build ([1d63d75](https://github.com/heroku/cli/commit/1d63d75))
+* bump dev-cli ([2dede94](https://github.com/heroku/cli/commit/2dede94))
+* dev-cli updates ([68e9c2f](https://github.com/heroku/cli/commit/68e9c2f))
+* fixed circle workflow name ([f66a597](https://github.com/heroku/cli/commit/f66a597))
+* fixed example syntax ([1cce1d6](https://github.com/heroku/cli/commit/1cce1d6))
+* fixed greenkeeper script ([d9c7c48](https://github.com/heroku/cli/commit/d9c7c48))
+* fixed lint ([e317ee0](https://github.com/heroku/cli/commit/e317ee0))
+* fixed release output when not tty ([e87bf30](https://github.com/heroku/cli/commit/e87bf30))
+* fixed tests on non-tty ([aabe885](https://github.com/heroku/cli/commit/aabe885))
+* help formatting fixes ([0ffb267](https://github.com/heroku/cli/commit/0ffb267))
+* move 2fa:disable to auth plugin ([461a748](https://github.com/heroku/cli/commit/461a748))
+* move 2fa:generate to auth plugin ([977e376](https://github.com/heroku/cli/commit/977e376))
+* move standard to dev ([2888489](https://github.com/heroku/cli/commit/2888489))
+* netrc-parser test mock ([2f7f217](https://github.com/heroku/cli/commit/2f7f217))
+* new package name ([476640a](https://github.com/heroku/cli/commit/476640a))
+* no longer using standard ([8119629](https://github.com/heroku/cli/commit/8119629))
+* recache on config:set ([69c51cf](https://github.com/heroku/cli/commit/69c51cf))
+* remove ./bin/run script ([f0b5a2a](https://github.com/heroku/cli/commit/f0b5a2a))
+* remove auth:token ([ff8a907](https://github.com/heroku/cli/commit/ff8a907))
+* remove co-wait ([dbd6cdf](https://github.com/heroku/cli/commit/dbd6cdf))
+* remove config and config:get ([fc866f9](https://github.com/heroku/cli/commit/fc866f9))
+* remove dependency on bluebird ([8d5aac4](https://github.com/heroku/cli/commit/8d5aac4))
+* remove install from README ([752720e](https://github.com/heroku/cli/commit/752720e))
+* remove mz, mkdirp, and string dependencies ([b8fe904](https://github.com/heroku/cli/commit/b8fe904))
+* remove sudo ([84da1f2](https://github.com/heroku/cli/commit/84da1f2))
+* set HEROKU_HIDE_HEXAGON ([b5ff87d](https://github.com/heroku/cli/commit/b5ff87d))
+* show stack change in app info ([#232](https://github.com/heroku/cli/issues/232)) ([ee3fd37](https://github.com/heroku/cli/commit/ee3fd37))
+* show the build stack in the stack command ([#231](https://github.com/heroku/cli/issues/231)) ([6d38977](https://github.com/heroku/cli/commit/6d38977))
+* sort stacks ([e0f50c5](https://github.com/heroku/cli/commit/e0f50c5))
+* update dev-cli ([7f76366](https://github.com/heroku/cli/commit/7f76366))
+* update heroku-cli-util ([739246a](https://github.com/heroku/cli/commit/739246a))
+* update heroku-cli-util ([9852ff8](https://github.com/heroku/cli/commit/9852ff8))
+* update heroku-cli-util netrc multiline ([87f6080](https://github.com/heroku/cli/commit/87f6080))
+* updated command ([80e1344](https://github.com/heroku/cli/commit/80e1344))
+* updated heroku-cli-util ([d247128](https://github.com/heroku/cli/commit/d247128))
+* updated mocha ([041d3ae](https://github.com/heroku/cli/commit/041d3ae))
+* use new circle config ([7cac1c9](https://github.com/heroku/cli/commit/7cac1c9))
+* whoami moved to [@heroku-cli](https://github.com/heroku-cli)/plugin-auth ([acad435](https://github.com/heroku/cli/commit/acad435))
+
+
+### Features
+
+* Add a `--manifest` option for beta users to support heroku.yml files. ([#228](https://github.com/heroku/cli/issues/228)) ([b12d975](https://github.com/heroku/cli/commit/b12d975))
+* iwa: Add --internal-routing flag for app creation ([#235](https://github.com/heroku/cli/issues/235)) ([dadb992](https://github.com/heroku/cli/commit/dadb992))
+
+
+
+
 <a name="7.2.0"></a>
 # [7.2.0](https://github.com/heroku/cli/compare/v7.1.1...v7.2.0) (2018-06-19)
 

@@ -11,11 +11,11 @@ This core plugin comes preinstalled to the [Heroku CLI](https://cli.heroku.com).
 
 <!-- usage -->
 ```sh-session
-$ npm install -g @heroku-cli/plugin-apps
+$ npm install -g @heroku-cli/plugin-apps-v5
 $ heroku COMMAND
 running command...
 $ heroku (-v|--version|version)
-@heroku-cli/plugin-apps/2.6.0 linux-x64 node-v10.4.1
+@heroku-cli/plugin-apps-v5/7.3.0 darwin-x64 node-v10.4.1
 $ heroku --help [COMMAND]
 USAGE
   $ heroku COMMAND
