@@ -1,0 +1,81 @@
+{
+  "name": "@heroku-cli/plugin-orgs-v5",
+  "description": "CLI to manage Heroku Organizations",
+  "version": "1.8.2",
+  "author": "Raul Barroso @raulb",
+  "bugs": {
+    "url": "https://github.com/heroku/heroku-orgs/issues"
+  },
+  "dependencies": {
+    "@heroku-cli/command": "^8.1.20",
+    "co": "^4.6.0",
+    "heroku-cli-util": "^8.0.9",
+    "inquirer": "^5.2.0",
+    "lodash": "^4.17.10",
+    "lodash.flatten": "^4.4.0"
+  },
+  "devDependencies": {
+    "@oclif/dev-cli": "^1.13.27",
+    "@oclif/plugin-legacy": "^1.0.15",
+    "chai": "^4.1.2",
+    "mocha": "^5.2.0",
+    "nock": "^9.3.0",
+    "nyc": "^11.8.0",
+    "proxyquire": "^2.0.1",
+    "standard": "^11.0.1"
+  },
+  "files": [
+    "oclif.manifest.json",
+    "index.js",
+    "commands",
+    "lib"
+  ],
+  "homepage": "https://github.com/heroku/heroku-orgs",
+  "keywords": [
+    "heroku-plugin"
+  ],
+  "license": "ISC",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/heroku/heroku-orgs"
+  },
+  "scripts": {
+    "postpublish": "rm oclif.manifest.json",
+    "prepublishOnly": "oclif-dev manifest",
+    "test": "nyc mocha && standard",
+    "version": "oclif-dev readme && git add README.md"
+  },
+  "cli-engine": {
+    "bin": "heroku",
+    "topics": {
+      "access": {
+        "description": "manage user access to apps"
+      },
+      "orgs": {
+        "description": "manage organizations"
+      },
+      "members": {
+        "description": "manage organization members"
+      },
+      "teams": {
+        "description": "manage teams"
+      },
+      "sharing": {
+        "hidden": true
+      },
+      "join": {
+        "hidden": true
+      },
+      "leave": {
+        "hidden": true
+      },
+      "lock": {
+        "hidden": true
+      },
+      "unlock": {
+        "hidden": true
+      }
+    }
+  }
+}
