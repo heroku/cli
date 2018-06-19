@@ -1,0 +1,5 @@
+--require ./test/init.js
+--require sinon
+--recursive
+--reporter list
+--exit
