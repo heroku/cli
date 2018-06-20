@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="7.4.2"></a>
+## [7.4.2](https://github.com/heroku/cli/compare/v7.4.1...v7.4.2) (2018-06-20)
+
+
+### Bug Fixes
+
+* **certs:** load certs commands dynamically ([c39372b](https://github.com/heroku/cli/commit/c39372b))
+
+
+
+
 <a name="7.4.1"></a>
 ## [7.4.1](https://github.com/heroku/cli/compare/v7.4.0...v7.4.1) (2018-06-19)
 
