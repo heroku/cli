@@ -30,7 +30,7 @@ jobs:
       - run: apt-get install -y bats
       - run: yarn
       - run: ./node_modules/.bin/lerna bootstrap
-      - run: ./node_modules/.bin/lerna run test --stream --concurrency 4
+      - run: ./node_modules/.bin/lerna run test --stream --concurrency 2
       - run: greenkeeper-lockfile-upload
       - run: curl -s https://codecov.io/bash | bash
   release:
