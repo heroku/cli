@@ -24,7 +24,7 @@ ALIASES
   $ heroku twofactor
 ```
 
-_See code: [@heroku-cli/plugin-auth](https://github.com/heroku/cli/blob/v7.4.5/packages/auth/src/commands/auth/2fa.ts)_
+_See code: [@heroku-cli/plugin-auth](https://github.com/heroku/cli/blob/v7.4.5/packages/auth/src/commands/auth/2fa/index.ts)_
 
 ## `heroku auth:2fa:disable`
 

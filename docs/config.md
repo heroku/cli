@@ -24,7 +24,7 @@ OPTIONS
   -s, --shell          output config vars in shell format
 ```
 
-_See code: [@heroku-cli/plugin-config](https://github.com/heroku/cli/blob/v7.4.5/packages/config/src/commands/config.ts)_
+_See code: [@heroku-cli/plugin-config](https://github.com/heroku/cli/blob/v7.4.5/packages/config/src/commands/config/index.ts)_
 
 ## `heroku config:edit [KEY]`
 

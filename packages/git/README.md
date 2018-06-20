@@ -56,7 +56,7 @@ EXAMPLES
   ...
 ```
 
-_See code: [src/commands/git/clone.ts](https://github.com/heroku/cli/blob/v7.4.5/src/commands/git/clone.ts)_
+_See code: [src/commands/git/clone.ts](https://github.com/heroku/cli/blob/v7.4.5/packages/git/src/commands/git/clone.ts)_
 
 ## `oclif-example git:remote`
 
@@ -82,5 +82,5 @@ EXAMPLES
        $ heroku git:remote --remote heroku-staging -a example
 ```
 
-_See code: [src/commands/git/remote.ts](https://github.com/heroku/cli/blob/v7.4.5/src/commands/git/remote.ts)_
+_See code: [src/commands/git/remote.ts](https://github.com/heroku/cli/blob/v7.4.5/packages/git/src/commands/git/remote.ts)_
 <!-- commandsstop -->

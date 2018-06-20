@@ -82,5 +82,5 @@ OPTIONS
   --json  output in json format
 ```
 
-_See code: [src/commands/status.ts](https://github.com/heroku/cli/blob/v7.4.5/src/commands/status.ts)_
+_See code: [src/commands/status.ts](https://github.com/heroku/cli/blob/v7.4.5/packages/status/src/commands/status.ts)_
 <!-- commandsstop -->

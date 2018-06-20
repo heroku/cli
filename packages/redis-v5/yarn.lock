@@ -49,28 +49,27 @@
     debug "^3.1.0"
     semver "^5.5.0"
 
-"@oclif/config@^1.6.27":
-  version "1.6.28"
-  resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.6.28.tgz#bfda0718ba5dfbdeb364350990ed79540f9c3d0b"
+"@oclif/config@^1.6.33":
+  version "1.6.33"
+  resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.6.33.tgz#61906143b30751d96dd29991c20c214bf4d9e4ff"
   dependencies:
     debug "^3.1.0"
     tslib "^1.9.2"
 
-"@oclif/dev-cli@^1.13.31":
-  version "1.13.31"
-  resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.13.31.tgz#ddcca19e1346de3656b63210305c87acdc98fd44"
+"@oclif/dev-cli@^1.15.2":
+  version "1.15.2"
+  resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.15.2.tgz#d1b1364315721fcfdcc1bce82be462400bc28adb"
   dependencies:
     "@oclif/command" "^1.4.33"
-    "@oclif/config" "^1.6.27"
+    "@oclif/config" "^1.6.33"
     "@oclif/errors" "^1.1.2"
     "@oclif/plugin-help" "^2.0.5"
-    cli-ux "^4.6.2"
+    cli-ux "^4.7.2"
     debug "^3.1.0"
     fs-extra "^6.0.1"
     lodash "^4.17.10"
     normalize-package-data "^2.4.0"
     qqjs "^0.3.10"
-    require-resolve "^0.0.2"
     tslib "^1.9.2"
 
 "@oclif/errors@^1.0.11", "@oclif/errors@^1.1.1":
@@ -601,9 +600,9 @@ cli-ux@^4.2.0:
     supports-color "^5.4.0"
     supports-hyperlinks "^1.0.1"
 
-cli-ux@^4.6.2:
-  version "4.6.2"
-  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-4.6.2.tgz#77a4eeb93ffb40c697e4f1d60975804134ba7a5a"
+cli-ux@^4.7.2:
+  version "4.7.2"
+  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-4.7.2.tgz#51661802fb0ad07d56c3029046d2abb6bd6dd61b"
   dependencies:
     "@oclif/linewrap" "^1.0.0"
     "@oclif/screen" "^1.0.2"
@@ -2469,10 +2468,6 @@ path-exists@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/path-exists/-/path-exists-3.0.0.tgz#ce0ebeaa5f78cb18925ea7d810d7b59b010fd515"
 
-path-extra@^1.0.2:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/path-extra/-/path-extra-1.0.3.tgz#7c112189a6e50d595790e7ad2037e44e410c1166"
-
 path-is-absolute@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/path-is-absolute/-/path-is-absolute-1.0.1.tgz#174b9268735534ffbc7ace6bf53a5a9e1b5c5f5f"
@@ -2751,12 +2746,6 @@ require-directory@^2.1.1:
 require-main-filename@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/require-main-filename/-/require-main-filename-1.0.1.tgz#97f717b69d48784f5f526a6c5aa8ffdda055a4d1"
-
-require-resolve@^0.0.2:
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/require-resolve/-/require-resolve-0.0.2.tgz#bab410ab1aee2f3f55b79317451dd3428764e6f3"
-  dependencies:
-    x-path "^0.0.2"
 
 require-uncached@^1.0.3:
   version "1.0.3"
@@ -3440,12 +3429,6 @@ write@^0.2.1:
   resolved "https://registry.yarnpkg.com/write/-/write-0.2.1.tgz#5fc03828e264cea3fe91455476f7a3c566cb0757"
   dependencies:
     mkdirp "^0.5.1"
-
-x-path@^0.0.2:
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/x-path/-/x-path-0.0.2.tgz#294d076bb97a7706cc070bbb2a6fd8c54df67b12"
-  dependencies:
-    path-extra "^1.0.2"
 
 xtend@^4.0.0, xtend@^4.0.1:
   version "4.0.1"

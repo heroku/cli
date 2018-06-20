@@ -36,7 +36,6 @@ OPTIONS
   --json             output in json format
 
 DESCRIPTION
-
   Outbound Rules are only available on Private Spaces.
 
   Newly created spaces will have an "Allow All" rule set by default
@@ -68,7 +67,6 @@ OPTIONS
                        Valid protocols are "tcp", "udp", "icmp", "0-255" and "any".
 
 DESCRIPTION
-
   The destination flag uses CIDR notation.
 
     Example:
@@ -344,7 +342,6 @@ OPTIONS
   --json             output in json format
 
 DESCRIPTION
-
   Trusted IP ranges are only available on Private Spaces.
 
   The space name is a required parameter. Newly created spaces will have 0.0.0.0/0 set by default
@@ -365,7 +362,6 @@ OPTIONS
   --confirm=confirm  set to space name to bypass confirm prompt
 
 DESCRIPTION
-
   Uses CIDR notation.
 
   Example:
@@ -387,7 +383,6 @@ OPTIONS
   --space=space      (required) space to remove rule from
 
 DESCRIPTION
-
   Uses CIDR notation.
 
   Example:

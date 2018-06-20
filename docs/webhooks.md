@@ -28,7 +28,7 @@ EXAMPLE
   $ heroku webhooks
 ```
 
-_See code: [@heroku-cli/plugin-webhooks-v5](https://github.com/heroku/cli/blob/v7.4.5/packages/webhooks-v5/commands/webhooks.js)_
+_See code: [@heroku-cli/plugin-webhooks-v5](https://github.com/heroku/cli/blob/v7.4.5/packages/webhooks-v5/commands/webhooks/index.js)_
 
 ## `heroku webhooks:add`
 
@@ -68,7 +68,7 @@ EXAMPLE
   $ heroku webhooks:deliveries
 ```
 
-_See code: [@heroku-cli/plugin-webhooks-v5](https://github.com/heroku/cli/blob/v7.4.5/packages/webhooks-v5/commands/webhooks/deliveries.js)_
+_See code: [@heroku-cli/plugin-webhooks-v5](https://github.com/heroku/cli/blob/v7.4.5/packages/webhooks-v5/commands/webhooks/deliveries/index.js)_
 
 ## `heroku webhooks:deliveries:info [ID]`
 
@@ -102,7 +102,7 @@ EXAMPLE
   $ heroku webhooks:events
 ```
 
-_See code: [@heroku-cli/plugin-webhooks-v5](https://github.com/heroku/cli/blob/v7.4.5/packages/webhooks-v5/commands/webhooks/events.js)_
+_See code: [@heroku-cli/plugin-webhooks-v5](https://github.com/heroku/cli/blob/v7.4.5/packages/webhooks-v5/commands/webhooks/events/index.js)_
 
 ## `heroku webhooks:events:info [ID]`
 

@@ -30,7 +30,7 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
 ```
 
-_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v7.4.5/packages/certs-v5/commands/certs.js)_
+_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v7.4.5/packages/certs-v5/commands/certs/index.js)_
 
 ## `heroku certs:add CRT KEY`
 
@@ -72,7 +72,7 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
 ```
 
-_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v7.4.5/packages/certs-v5/commands/certs/auto.js)_
+_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v7.4.5/packages/certs-v5/commands/certs/auto/index.js)_
 
 ## `heroku certs:auto:disable`
 

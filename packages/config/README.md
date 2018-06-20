@@ -49,7 +49,7 @@ OPTIONS
   -s, --shell          output config vars in shell format
 ```
 
-_See code: [src/commands/config.ts](https://github.com/heroku/cli/blob/v7.4.5/src/commands/config.ts)_
+_See code: [src/commands/config/index.ts](https://github.com/heroku/cli/blob/v7.4.5/packages/config/src/commands/config/index.ts)_
 
 ## `heroku config:edit [KEY]`
 
@@ -81,7 +81,7 @@ EXAMPLES
   $ VISUAL="atom --wait" heroku config:edit
 ```
 
-_See code: [src/commands/config/edit.ts](https://github.com/heroku/cli/blob/v7.4.5/src/commands/config/edit.ts)_
+_See code: [src/commands/config/edit.ts](https://github.com/heroku/cli/blob/v7.4.5/packages/config/src/commands/config/edit.ts)_
 
 ## `heroku config:get KEY...`
 
@@ -101,5 +101,5 @@ EXAMPLES
   production
 ```
 
-_See code: [src/commands/config/get.ts](https://github.com/heroku/cli/blob/v7.4.5/src/commands/config/get.ts)_
+_See code: [src/commands/config/get.ts](https://github.com/heroku/cli/blob/v7.4.5/packages/config/src/commands/config/get.ts)_
 <!-- commandsstop -->

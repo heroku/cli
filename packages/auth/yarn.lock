@@ -150,13 +150,6 @@
     debug "^3.1.0"
     semver "^5.5.0"
 
-"@oclif/config@^1.6.27":
-  version "1.6.27"
-  resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.6.27.tgz#d3de1cff71301784c8e4ee3903d3f7db21a18c3f"
-  dependencies:
-    debug "^3.1.0"
-    tslib "^1.9.2"
-
 "@oclif/config@^1.6.32":
   version "1.6.32"
   resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.6.32.tgz#c3d8fb76929d55b6ce4bfc20bd7e0f4e9888885c"
@@ -164,21 +157,27 @@
     debug "^3.1.0"
     tslib "^1.9.2"
 
-"@oclif/dev-cli@^1.13.34":
-  version "1.13.34"
-  resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.13.34.tgz#63c37e2b6dcfe7bab52a701799ef176ab7274e39"
+"@oclif/config@^1.6.33":
+  version "1.6.33"
+  resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.6.33.tgz#61906143b30751d96dd29991c20c214bf4d9e4ff"
+  dependencies:
+    debug "^3.1.0"
+    tslib "^1.9.2"
+
+"@oclif/dev-cli@^1.15.2":
+  version "1.15.2"
+  resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.15.2.tgz#d1b1364315721fcfdcc1bce82be462400bc28adb"
   dependencies:
     "@oclif/command" "^1.4.33"
-    "@oclif/config" "^1.6.27"
+    "@oclif/config" "^1.6.33"
     "@oclif/errors" "^1.1.2"
     "@oclif/plugin-help" "^2.0.5"
-    cli-ux "^4.6.2"
+    cli-ux "^4.7.2"
     debug "^3.1.0"
     fs-extra "^6.0.1"
     lodash "^4.17.10"
     normalize-package-data "^2.4.0"
     qqjs "^0.3.10"
-    require-resolve "^0.0.2"
     tslib "^1.9.2"
 
 "@oclif/errors@^1.1.2":
@@ -542,9 +541,9 @@ clean-stack@^1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/clean-stack/-/clean-stack-1.3.0.tgz#9e821501ae979986c46b1d66d2d432db2fd4ae31"
 
-cli-ux@^4.6.2:
-  version "4.6.2"
-  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-4.6.2.tgz#77a4eeb93ffb40c697e4f1d60975804134ba7a5a"
+cli-ux@^4.7.1:
+  version "4.7.1"
+  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-4.7.1.tgz#b954aa806620cc818cbdd0a75e587c54bf0a0bbe"
   dependencies:
     "@oclif/linewrap" "^1.0.0"
     "@oclif/screen" "^1.0.2"
@@ -564,9 +563,9 @@ cli-ux@^4.6.2:
     supports-color "^5.4.0"
     supports-hyperlinks "^1.0.1"
 
-cli-ux@^4.7.1:
-  version "4.7.1"
-  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-4.7.1.tgz#b954aa806620cc818cbdd0a75e587c54bf0a0bbe"
+cli-ux@^4.7.2:
+  version "4.7.2"
+  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-4.7.2.tgz#51661802fb0ad07d56c3029046d2abb6bd6dd61b"
   dependencies:
     "@oclif/linewrap" "^1.0.0"
     "@oclif/screen" "^1.0.2"
@@ -1795,10 +1794,6 @@ path-exists@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/path-exists/-/path-exists-3.0.0.tgz#ce0ebeaa5f78cb18925ea7d810d7b59b010fd515"
 
-path-extra@^1.0.2:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/path-extra/-/path-extra-1.0.3.tgz#7c112189a6e50d595790e7ad2037e44e410c1166"
-
 path-is-absolute@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/path-is-absolute/-/path-is-absolute-1.0.1.tgz#174b9268735534ffbc7ace6bf53a5a9e1b5c5f5f"
@@ -1963,12 +1958,6 @@ require-directory@^2.1.1:
 require-main-filename@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/require-main-filename/-/require-main-filename-1.0.1.tgz#97f717b69d48784f5f526a6c5aa8ffdda055a4d1"
-
-require-resolve@^0.0.2:
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/require-resolve/-/require-resolve-0.0.2.tgz#bab410ab1aee2f3f55b79317451dd3428764e6f3"
-  dependencies:
-    x-path "^0.0.2"
 
 resolve-from@^2.0.0:
   version "2.0.0"
@@ -2543,12 +2532,6 @@ write-json-file@^2.3.0:
     pify "^3.0.0"
     sort-keys "^2.0.0"
     write-file-atomic "^2.0.0"
-
-x-path@^0.0.2:
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/x-path/-/x-path-0.0.2.tgz#294d076bb97a7706cc070bbb2a6fd8c54df67b12"
-  dependencies:
-    path-extra "^1.0.2"
 
 xtend@^4.0.0:
   version "4.0.1"

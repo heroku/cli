@@ -19,7 +19,7 @@
     "inquirer": "^5.2.0"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.13.22",
+    "@oclif/dev-cli": "^1.15.2",
     "@oclif/plugin-legacy": "^1.0.15",
     "chai": "^4.1.2",
     "depcheck": "^0.6.9",
@@ -52,7 +52,8 @@
     "depcheck": "depcheck || true",
     "postpublish": "rm .oclif.manifest.json",
     "prepublishOnly": "oclif-dev manifest",
-    "test": "TZ=utc nyc mocha && standard"
+    "test": "TZ=utc nyc mocha && standard",
+    "version": "oclif-dev readme && git add README.md"
   },
   "standard": {
     "env": "mocha"

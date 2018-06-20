@@ -1,0 +1,12 @@
+#!/bin/bash
+
+CWD=$(pwd)
+for DIR in "$CWD"/packages/*; do
+  cd "$DIR" || exit
+  yarn run version
+done
+cd "$CWD" || exit
+
+oclif-dev readme --multi
+npm shrinkwrap
+git add README.md docs npm-shrinkwrap.json

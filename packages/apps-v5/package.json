@@ -30,7 +30,7 @@
     "urijs": "1.19.1"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.13.28",
+    "@oclif/dev-cli": "^1.15.2",
     "@oclif/plugin-legacy": "^1.0.15",
     "chai": "^4.1.2",
     "lolex": "^2.7.0",
@@ -65,7 +65,7 @@
     "posttest": "standard",
     "prepublishOnly": "oclif-dev manifest && oclif-dev readme --multi",
     "test": "TZ=utc mocha",
-    "version": "oclif-dev readme --multi && git add README.md docs"
+    "version": "oclif-dev readme && git add README.md"
   },
   "standard": {
     "env": "mocha"
