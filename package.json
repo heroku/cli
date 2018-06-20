@@ -259,7 +259,7 @@
     "prepack": "yarn run build && oclif-dev manifest",
     "prepublishOnly": "yarn run prepack",
     "test": "mocha --forbid-only \"test/**/*.test.ts\"",
-    "version": "oclif-dev readme --multi && npm shrinkwrap && git add README.md docs npm-shrinkwrap.json"
+    "version": "./scripts/version"
   },
   "types": "lib/index.d.ts"
 }

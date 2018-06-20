@@ -8,5 +8,4 @@ done
 cd "$CWD" || exit
 
 oclif-dev readme --multi
-npm shrinkwrap
-git add README.md docs npm-shrinkwrap.json
+git add README.md docs
