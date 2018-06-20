@@ -36,7 +36,7 @@
     "@oclif/errors": "1.1.2",
     "@oclif/plugin-commands": "^1.1.1",
     "@oclif/plugin-help": "2.0.5",
-    "@oclif/plugin-legacy": "1.0.15",
+    "@oclif/plugin-legacy": "1.0.16",
     "@oclif/plugin-not-found": "1.1.2",
     "@oclif/plugin-plugins": "1.5.2",
     "@oclif/plugin-update": "1.2.13",
