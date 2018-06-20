@@ -38,6 +38,7 @@ jobs:
       - add_ssh_keys
       - checkout
       - run: |
+          cp yarn.lock packages/cli
           cd packages/cli
           yarn
           ./scripts/release/_github_setup
@@ -55,6 +56,7 @@ jobs:
       - add_ssh_keys
       - checkout
       - run: |
+          cp yarn.lock packages/cli
           cd packages/cli
           yarn
           ./scripts/release/win
@@ -64,6 +66,7 @@ jobs:
       - add_ssh_keys
       - checkout
       - run: |
+          cp yarn.lock packages/cli
           cd packages/cli
           yarn
           ./scripts/release/deb
