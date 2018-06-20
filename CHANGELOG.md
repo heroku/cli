@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="7.4.7"></a>
+## [7.4.7](https://github.com/heroku/cli/compare/v7.4.6...v7.4.7) (2018-06-20)
+
+
+### Bug Fixes
+
+* remove shrinkwrap ([922aea3](https://github.com/heroku/cli/commit/922aea3))
+
+
+
+
 <a name="7.4.6"></a>
 ## [7.4.6](https://github.com/heroku/cli/compare/v7.4.5...v7.4.6) (2018-06-20)
 
