@@ -3,15 +3,14 @@
   "description": "Heroku CLI plugin to manage Postgres.",
   "version": "7.4.0",
   "author": "Jeff Dickey (@dickeyxxx)",
-  "bugs": {
-    "url": "https://github.com/heroku/cli/issues"
-  },
+  "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
     "topics": {
       "pg": {
         "description": "manage postgresql databases"
       }
-    }
+    },
+    "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/pg-v5/<%- commandPath %>"
   },
   "dependencies": {
     "@heroku-cli/plugin-addons": "^1.2.29",
@@ -48,16 +47,13 @@
     "lib",
     "commands"
   ],
-  "homepage": "https://github.com/heroku/cli",
+  "homepage": "https://github.com/heroku/cli/tree/master/packages/pg-v5",
   "keywords": [
     "heroku-plugin"
   ],
   "license": "ISC",
   "main": "index.js",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/heroku/cli.git"
-  },
+  "repository": "heroku/cli",
   "scripts": {
     "postpublish": "rm .oclif.manifest.json",
     "prepublishOnly": "oclif-dev manifest",

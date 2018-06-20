@@ -3,9 +3,7 @@
   "description": "Heroku CLI plugin to manage apps.",
   "version": "7.4.0",
   "author": "Jeff Dickey (@jdxcode)",
-  "bugs": {
-    "url": "https://github.com/heroku/cli/issues"
-  },
+  "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
     "bin": "heroku",
     "topics": {
@@ -13,7 +11,8 @@
         "description": "manage heroku stacks",
         "hidden": true
       }
-    }
+    },
+    "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/apps-v5/<%- commandPath %>"
   },
   "dependencies": {
     "@heroku-cli/command": "^8.1.20",
@@ -51,7 +50,7 @@
     "assets",
     "src"
   ],
-  "homepage": "https://github.com/heroku/cli",
+  "homepage": "https://github.com/heroku/cli/tree/master/packages/apps-v5",
   "keywords": [
     "heroku-plugin"
   ],
@@ -60,10 +59,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/heroku/cli.git"
-  },
+  "repository": "heroku/cli",
   "scripts": {
     "postpublish": "rm .oclif.manifest.json",
     "posttest": "standard",

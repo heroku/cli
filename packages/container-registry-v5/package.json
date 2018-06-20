@@ -3,12 +3,14 @@
   "description": "Use containers to build and deploy Heroku apps",
   "version": "7.4.0",
   "author": "Heroku",
+  "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
     "topics": {
       "container": {
         "description": "Use containers to build and deploy Heroku apps"
       }
-    }
+    },
+    "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/container-registry-v5/<%- commandPath %>"
   },
   "dependencies": {
     "glob": "^7.1.2",
@@ -36,6 +38,7 @@
     "commands",
     "lib"
   ],
+  "homepage": "https://github.com/heroku/cli/tree/master/packages/container-registry-v5",
   "keywords": [
     "cli",
     "container",

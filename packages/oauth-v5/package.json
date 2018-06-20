@@ -3,9 +3,7 @@
   "description": "Heroku CLI plugin to manage OAuth clients.",
   "version": "7.4.0",
   "author": "Jeff Dickey (@dickeyxxx)",
-  "bugs": {
-    "url": "https://github.com/heroku/cli/issues"
-  },
+  "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
     "topics": {
       "authorizations": {
@@ -17,7 +15,8 @@
       "sessions": {
         "description": "OAuth sessions"
       }
-    }
+    },
+    "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/oauth-v5/<%- commandPath %>"
   },
   "dependencies": {
     "co": "^4.6.0",
@@ -40,7 +39,7 @@
     "commands",
     "lib"
   ],
-  "homepage": "https://github.com/heroku/cli",
+  "homepage": "https://github.com/heroku/cli/tree/master/packages/oauth-v5",
   "keywords": [
     "heroku-plugin"
   ],
@@ -49,10 +48,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/heroku/cli.git"
-  },
+  "repository": "heroku/cli",
   "scripts": {
     "postpublish": "rm oclif.manifest.json",
     "posttest": "standard",

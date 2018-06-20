@@ -3,9 +3,7 @@
   "description": "Heroku CLI plugin to run one-off dyno processes.",
   "version": "7.4.0",
   "author": "Jeff Dickey (@dickeyxxx)",
-  "bugs": {
-    "url": "https://github.com/heroku/cli/issues"
-  },
+  "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
     "bin": "heroku",
     "topics": {
@@ -15,7 +13,8 @@
       "logs": {
         "description": "display recent log output"
       }
-    }
+    },
+    "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/run-v5/<%- commandPath %>"
   },
   "dependencies": {
     "@heroku-cli/color": "^1.1.5",
@@ -45,16 +44,13 @@
     "/index.js",
     "/commands"
   ],
-  "homepage": "https://github.com/heroku/cli",
+  "homepage": "https://github.com/heroku/cli/tree/master/packages/run-v5",
   "keywords": [
     "heroku-plugin"
   ],
   "license": "ISC",
   "main": "index.js",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/heroku/cli.git"
-  },
+  "repository": "heroku/cli",
   "scripts": {
     "postpack": "rm oclif.manifest.json",
     "posttest": "standard",

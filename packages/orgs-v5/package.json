@@ -3,9 +3,7 @@
   "description": "CLI to manage Heroku Organizations",
   "version": "7.4.0",
   "author": "Raul Barroso @raulb",
-  "bugs": {
-    "url": "https://github.com/heroku/cli/issues"
-  },
+  "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
     "bin": "heroku",
     "topics": {
@@ -36,7 +34,8 @@
       "unlock": {
         "hidden": true
       }
-    }
+    },
+    "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/orgs-v5/<%- commandPath %>"
   },
   "dependencies": {
     "@heroku-cli/command": "^8.1.20",
@@ -62,16 +61,13 @@
     "commands",
     "lib"
   ],
-  "homepage": "https://github.com/heroku/cli",
+  "homepage": "https://github.com/heroku/cli/tree/master/packages/orgs-v5",
   "keywords": [
     "heroku-plugin"
   ],
   "license": "ISC",
   "main": "index.js",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/heroku/cli"
-  },
+  "repository": "heroku/cli",
   "scripts": {
     "postpublish": "rm oclif.manifest.json",
     "prepublishOnly": "oclif-dev manifest",

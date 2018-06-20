@@ -3,9 +3,7 @@
   "description": "Heroku CLI plugin to manage local git repos.",
   "version": "7.4.0",
   "author": "Jeff Dickey (@jdxcode)",
-  "bugs": {
-    "url": "https://github.com/heroku/cli/issues"
-  },
+  "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
     "@heroku-cli/color": "^1.1.5",
     "@heroku-cli/command": "^8.1.26",
@@ -43,7 +41,7 @@
     "/lib",
     "/oclif.manifest.json"
   ],
-  "homepage": "https://github.com/heroku/cli",
+  "homepage": "https://github.com/heroku/cli/tree/master/packages/git",
   "keywords": [
     "heroku-plugin"
   ],
@@ -58,12 +56,10 @@
     "bin": "oclif-example",
     "devPlugins": [
       "@oclif/plugin-help"
-    ]
+    ],
+    "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/git/<%- commandPath %>"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/heroku/cli.git"
-  },
+  "repository": "heroku/cli",
   "scripts": {
     "postpack": "rm -f oclif.manifest.json",
     "posttest": "tsc -p test --noEmit && tslint -p test -t stylish",

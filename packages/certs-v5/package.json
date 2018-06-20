@@ -3,9 +3,7 @@
   "description": "heroku ssl plugin",
   "version": "7.4.2",
   "author": "Ransom Briggs rbriggs@heroku.com",
-  "bugs": {
-    "url": "https://github.com/heroku/cli/issues"
-  },
+  "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
     "bin": "heroku",
     "commands": "./commands",
@@ -13,7 +11,8 @@
       "certs": {
         "description": "a topic for the ssl plugin"
       }
-    }
+    },
+    "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/certs-v5/<%- commandPath %>"
   },
   "dependencies": {
     "co": "4.6.0",
@@ -44,6 +43,7 @@
     "lib",
     "commands"
   ],
+  "homepage": "https://github.com/heroku/cli/tree/master/packages/certs-v5",
   "keywords": [
     "heroku-plugin"
   ],

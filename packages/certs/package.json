@@ -32,7 +32,7 @@
     "/lib",
     "/oclif.manifest.json"
   ],
-  "homepage": "https://github.com/heroku/cli",
+  "homepage": "https://github.com/heroku/cli/tree/master/packages/certs",
   "keywords": [
     "oclif-plugin"
   ],
@@ -42,7 +42,8 @@
     "bin": "oclif-example",
     "devPlugins": [
       "@oclif/plugin-help"
-    ]
+    ],
+    "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/certs/<%- commandPath %>"
   },
   "repository": "heroku/cli",
   "scripts": {

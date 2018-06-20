@@ -32,7 +32,7 @@
     "@heroku-cli/plugin-status": "^7.4.0",
     "@heroku-cli/plugin-webhooks-v5": "^7.4.0",
     "@oclif/command": "1.4.33",
-    "@oclif/config": "1.6.32",
+    "@oclif/config": "1.6.33",
     "@oclif/errors": "1.1.2",
     "@oclif/plugin-commands": "^1.1.1",
     "@oclif/plugin-help": "2.0.5",
@@ -53,7 +53,7 @@
     "uuid": "3.2.1"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.14.0",
+    "@oclif/dev-cli": "^1.15.0",
     "@oclif/test": "^1.0.9",
     "@oclif/tslint": "^1.1.2",
     "@types/ansi-styles": "^3.2.0",

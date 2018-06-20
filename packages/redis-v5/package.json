@@ -3,16 +3,15 @@
   "description": "Heroku plugin to manage Heroku Redis",
   "version": "7.4.0",
   "author": "Heroku",
-  "bugs": {
-    "url": "https://github.com/heroku/cli/issues"
-  },
+  "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
     "bin": "heroku",
     "topics": {
       "redis": {
         "description": "manage heroku redis instances"
       }
-    }
+    },
+    "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/redis-v5/<%- commandPath %>"
   },
   "dependencies": {
     "heroku-cli-util": "^8.0.9",
@@ -38,15 +37,13 @@
     "lib",
     "commands"
   ],
+  "homepage": "https://github.com/heroku/cli/tree/master/packages/redis-v5",
   "keywords": [
     "heroku-plugin"
   ],
   "license": "ISC",
   "main": "index.js",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/heroku/cli"
-  },
+  "repository": "heroku/cli",
   "scripts": {
     "postpublish": "rm oclif.manifest.json",
     "posttest": "standard",

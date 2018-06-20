@@ -3,15 +3,14 @@
   "description": "Heroku CLI plugin for Heroku CI",
   "version": "7.4.0",
   "author": "Andrew Appleton, Gudmundur Bjarni Olafsson, Max Beizer, Ransom Briggs",
-  "bugs": {
-    "url": "https://github.com/heroku/cli/issues"
-  },
+  "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
     "topics": {
       "ci": {
         "description": "run an application test suite on Heroku"
       }
-    }
+    },
+    "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/ci-v5/<%- commandPath %>"
   },
   "dependencies": {
     "@heroku-cli/command": "^8.1.14",
@@ -50,16 +49,13 @@
     "commands",
     "lib"
   ],
-  "homepage": "https://github.com/heroku/cli#readme",
+  "homepage": "https://github.com/heroku/cli/tree/master/packages/ci-v5",
   "keywords": [
     "heroku-plugin"
   ],
   "license": "MIT",
   "main": "index.js",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/heroku/cli.git"
-  },
+  "repository": "heroku/cli",
   "scripts": {
     "format": "standard --format",
     "postpublish": "rm .oclif.manifest.json",

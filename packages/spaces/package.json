@@ -3,9 +3,7 @@
   "description": "Heroku plugin to manage Heroku Private Spaces",
   "version": "7.4.0",
   "author": "Heroku",
-  "bugs": {
-    "url": "https://github.com/heroku/cli/issues"
-  },
+  "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
     "bin": "heroku",
     "topics": {
@@ -15,7 +13,8 @@
       "trusted-ips": {
         "hidden": true
       }
-    }
+    },
+    "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/spaces/<%- commandPath %>"
   },
   "dependencies": {
     "@heroku-cli/command": "^8.1.20",
@@ -44,15 +43,13 @@
     "commands",
     "lib"
   ],
+  "homepage": "https://github.com/heroku/cli/tree/master/packages/spaces",
   "keywords": [
     "heroku-plugin"
   ],
   "license": "ISC",
   "main": "index.js",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/heroku/cli"
-  },
+  "repository": "heroku/cli",
   "scripts": {
     "postpublish": "rm oclif.manifest.json",
     "prepublishOnly": "oclif-dev manifest",

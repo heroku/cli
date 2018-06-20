@@ -3,9 +3,7 @@
   "description": "Heroku CLI plugin to manage webhooks.",
   "version": "7.4.0",
   "author": "Ransom Briggs (@ransombriggs)",
-  "bugs": {
-    "url": "https://github.com/heroku/cli/issues"
-  },
+  "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
     "@heroku-cli/command": "^8.1.26",
     "heroku-cli-util": "^8.0.9"
@@ -30,7 +28,7 @@
     "commands",
     "lib"
   ],
-  "homepage": "https://github.com/heroku/cli",
+  "homepage": "https://github.com/heroku/cli/tree/master/packages/webhooks-v5",
   "keywords": [
     "heroku-plugin"
   ],
@@ -41,12 +39,10 @@
       "webhooks": {
         "description": "setup HTTP notifications of app activity"
       }
-    }
+    },
+    "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/webhooks-v5/<%- commandPath %>"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/heroku/cli.git"
-  },
+  "repository": "heroku/cli",
   "scripts": {
     "postpublish": "rm oclif.manifest.json",
     "prepublishOnly": "oclif-dev manifest",

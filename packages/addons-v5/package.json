@@ -3,16 +3,15 @@
   "description": "`heroku addons:*` commands",
   "version": "7.4.0",
   "author": "Bo Jeanes @bjeanes",
-  "bugs": {
-    "url": "https://github.com/heroku/cli/issues"
-  },
+  "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
     "bin": "heroku",
     "topics": {
       "addons": {
         "description": "tools and services for developing, extending, and operating your app"
       }
-    }
+    },
+    "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/addons-v5/<%- commandPath %>"
   },
   "dependencies": {
     "co": "4.6.0",
@@ -38,13 +37,13 @@
     "lib",
     "commands"
   ],
-  "homepage": "https://github.com/heroku/cli",
+  "homepage": "https://github.com/heroku/cli/tree/master/packages/addons-v5",
   "keywords": [
     "heroku-plugin"
   ],
   "license": "ISC",
   "main": "index.js",
-  "repository": "https://github.com/heroku/cli",
+  "repository": "heroku/cli",
   "scripts": {
     "postpublish": "rm .oclif.manifest.json",
     "prepublishOnly": "oclif-dev manifest",
