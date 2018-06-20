@@ -30,7 +30,7 @@ USAGE
   $ heroku certs
 ```
 
-_See code: [commands/certs.js](https://github.com/heroku/cli/blob/v7.4.2/commands/certs.js)_
+_See code: [commands/certs.js](https://github.com/heroku/cli/blob/v7.4.5/commands/certs.js)_
 
 ## `heroku certs:add [CRT] [KEY]`
 
@@ -52,7 +52,7 @@ EXAMPLES
   $ heroku certs:add intermediary.crt example.com.crt example.com.key
 ```
 
-_See code: [commands/certs/add.js](https://github.com/heroku/cli/blob/v7.4.2/commands/certs/add.js)_
+_See code: [commands/certs/add.js](https://github.com/heroku/cli/blob/v7.4.5/commands/certs/add.js)_
 
 ## `heroku certs:auto`
 
@@ -63,7 +63,7 @@ USAGE
   $ heroku certs:auto
 ```
 
-_See code: [commands/certs/auto.js](https://github.com/heroku/cli/blob/v7.4.2/commands/certs/auto.js)_
+_See code: [commands/certs/auto.js](https://github.com/heroku/cli/blob/v7.4.5/commands/certs/auto.js)_
 
 ## `heroku certs:auto:disable`
 
@@ -74,7 +74,7 @@ USAGE
   $ heroku certs:auto:disable
 ```
 
-_See code: [commands/certs/auto/disable.js](https://github.com/heroku/cli/blob/v7.4.2/commands/certs/auto/disable.js)_
+_See code: [commands/certs/auto/disable.js](https://github.com/heroku/cli/blob/v7.4.5/commands/certs/auto/disable.js)_
 
 ## `heroku certs:auto:enable`
 
@@ -85,7 +85,7 @@ USAGE
   $ heroku certs:auto:enable
 ```
 
-_See code: [commands/certs/auto/enable.js](https://github.com/heroku/cli/blob/v7.4.2/commands/certs/auto/enable.js)_
+_See code: [commands/certs/auto/enable.js](https://github.com/heroku/cli/blob/v7.4.5/commands/certs/auto/enable.js)_
 
 ## `heroku certs:auto:refresh`
 
@@ -96,7 +96,7 @@ USAGE
   $ heroku certs:auto:refresh
 ```
 
-_See code: [commands/certs/auto/refresh.js](https://github.com/heroku/cli/blob/v7.4.2/commands/certs/auto/refresh.js)_
+_See code: [commands/certs/auto/refresh.js](https://github.com/heroku/cli/blob/v7.4.5/commands/certs/auto/refresh.js)_
 
 ## `heroku certs:chain`
 
@@ -107,7 +107,7 @@ USAGE
   $ heroku certs:chain
 ```
 
-_See code: [commands/certs/chain.js](https://github.com/heroku/cli/blob/v7.4.2/commands/certs/chain.js)_
+_See code: [commands/certs/chain.js](https://github.com/heroku/cli/blob/v7.4.5/commands/certs/chain.js)_
 
 ## `heroku certs:generate [DOMAIN]`
 
@@ -131,7 +131,7 @@ EXAMPLES
   $ heroku certs:generate example.com
 ```
 
-_See code: [commands/certs/generate.js](https://github.com/heroku/cli/blob/v7.4.2/commands/certs/generate.js)_
+_See code: [commands/certs/generate.js](https://github.com/heroku/cli/blob/v7.4.5/commands/certs/generate.js)_
 
 ## `heroku certs:info`
 
@@ -146,7 +146,7 @@ OPTIONS
   --1  endpoint to check info on
 ```
 
-_See code: [commands/certs/info.js](https://github.com/heroku/cli/blob/v7.4.2/commands/certs/info.js)_
+_See code: [commands/certs/info.js](https://github.com/heroku/cli/blob/v7.4.5/commands/certs/info.js)_
 
 ## `heroku certs:key`
 
@@ -160,7 +160,7 @@ EXAMPLES
   $ heroku certs:key example.com.crt example.com.key
 ```
 
-_See code: [commands/certs/key.js](https://github.com/heroku/cli/blob/v7.4.2/commands/certs/key.js)_
+_See code: [commands/certs/key.js](https://github.com/heroku/cli/blob/v7.4.5/commands/certs/key.js)_
 
 ## `heroku certs:remove`
 
@@ -175,7 +175,7 @@ OPTIONS
   --2  endpoint to remove
 ```
 
-_See code: [commands/certs/remove.js](https://github.com/heroku/cli/blob/v7.4.2/commands/certs/remove.js)_
+_See code: [commands/certs/remove.js](https://github.com/heroku/cli/blob/v7.4.5/commands/certs/remove.js)_
 
 ## `heroku certs:rollback`
 
@@ -190,7 +190,7 @@ OPTIONS
   --2  endpoint to rollback
 ```
 
-_See code: [commands/certs/rollback.js](https://github.com/heroku/cli/blob/v7.4.2/commands/certs/rollback.js)_
+_See code: [commands/certs/rollback.js](https://github.com/heroku/cli/blob/v7.4.5/commands/certs/rollback.js)_
 
 ## `heroku certs:update [CRT] [KEY]`
 
@@ -212,5 +212,5 @@ EXAMPLES
   $ heroku certs:update intermediary.crt example.com.crt example.com.key
 ```
 
-_See code: [commands/certs/update.js](https://github.com/heroku/cli/blob/v7.4.2/commands/certs/update.js)_
+_See code: [commands/certs/update.js](https://github.com/heroku/cli/blob/v7.4.5/commands/certs/update.js)_
 <!-- commandsstop -->

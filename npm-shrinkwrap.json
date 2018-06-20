@@ -1,6 +1,6 @@
 {
   "name": "heroku",
-  "version": "7.4.4",
+  "version": "7.4.5",
   "lockfileVersion": 1,
   "requires": true,
   "dependencies": {
@@ -47,7 +47,7 @@
       }
     },
     "@heroku-cli/plugin-addons-v5": {
-      "version": "7.4.0",
+      "version": "7.4.5",
       "requires": {
         "co": "4.6.0",
         "co-wait": "0.0.0",
@@ -6526,7 +6526,7 @@
       }
     },
     "@heroku-cli/plugin-apps-v5": {
-      "version": "7.4.0",
+      "version": "7.4.5",
       "requires": {
         "@heroku-cli/command": "8.1.20",
         "co": "4.6.0",
@@ -10354,7 +10354,7 @@
       }
     },
     "@heroku-cli/plugin-auth": {
-      "version": "7.4.0",
+      "version": "7.4.5",
       "requires": {
         "@heroku-cli/color": "1.1.5",
         "@oclif/command": "1.4.33",
@@ -15203,7 +15203,7 @@
       }
     },
     "@heroku-cli/plugin-certs": {
-      "version": "7.4.0",
+      "version": "7.4.5",
       "requires": {
         "@heroku-cli/command": "8.1.18",
         "@oclif/command": "1.4.30",
@@ -20458,7 +20458,7 @@
       }
     },
     "@heroku-cli/plugin-certs-v5": {
-      "version": "7.4.2",
+      "version": "7.4.5",
       "requires": {
         "co": "4.6.0",
         "co-wait": "0.0.0",
@@ -27283,11 +27283,11 @@
       }
     },
     "@heroku-cli/plugin-ci-v5": {
-      "version": "7.4.0",
+      "version": "7.4.5",
       "requires": {
         "@heroku-cli/command": "8.1.14",
         "@heroku-cli/plugin-pipelines": "2.5.8",
-        "@heroku-cli/plugin-run-v5": "7.4.0",
+        "@heroku-cli/plugin-run-v5": "7.4.5",
         "ansi-escapes": "3.1.0",
         "bluebird": "3.5.1",
         "co": "4.6.0",
@@ -27505,7 +27505,7 @@
           }
         },
         "@heroku-cli/plugin-run-v5": {
-          "version": "7.4.0",
+          "version": "7.4.5",
           "bundled": true,
           "requires": {
             "@heroku-cli/color": "1.1.5",
@@ -35998,7 +35998,7 @@
       }
     },
     "@heroku-cli/plugin-config": {
-      "version": "7.4.0",
+      "version": "7.4.5",
       "requires": {
         "@heroku-cli/color": "1.1.5",
         "@heroku-cli/command": "8.1.26",
@@ -40908,7 +40908,7 @@
       }
     },
     "@heroku-cli/plugin-container-registry-v5": {
-      "version": "7.4.0",
+      "version": "7.4.5",
       "requires": {
         "glob": "7.1.2",
         "heroku-cli-util": "8.0.9",
@@ -47676,7 +47676,7 @@
       }
     },
     "@heroku-cli/plugin-git": {
-      "version": "7.4.0",
+      "version": "7.4.5",
       "requires": {
         "@heroku-cli/color": "1.1.5",
         "@heroku-cli/command": "8.1.26",
@@ -53021,7 +53021,7 @@
       }
     },
     "@heroku-cli/plugin-local-v5": {
-      "version": "7.4.0",
+      "version": "7.4.5",
       "requires": {
         "@heroku-cli/command": "8.1.20",
         "@heroku/foreman": "2.0.2",
@@ -56261,7 +56261,7 @@
       }
     },
     "@heroku-cli/plugin-oauth-v5": {
-      "version": "7.4.0",
+      "version": "7.4.5",
       "requires": {
         "co": "4.6.0",
         "date-fns": "1.29.0",
@@ -62611,7 +62611,7 @@
       }
     },
     "@heroku-cli/plugin-orgs-v5": {
-      "version": "7.4.0",
+      "version": "7.4.5",
       "requires": {
         "@heroku-cli/command": "8.1.20",
         "co": "4.6.0",
@@ -69270,7 +69270,7 @@
       }
     },
     "@heroku-cli/plugin-pg-v5": {
-      "version": "7.4.0",
+      "version": "7.4.5",
       "requires": {
         "@heroku-cli/plugin-addons": "1.2.29",
         "bytes": "3.0.0",
@@ -77390,7 +77390,7 @@
       }
     },
     "@heroku-cli/plugin-pipelines-v5": {
-      "version": "7.4.0",
+      "version": "7.4.5",
       "requires": {
         "@heroku-cli/command": "8.1.17",
         "bluebird": "3.5.1",
@@ -83720,7 +83720,7 @@
       }
     },
     "@heroku-cli/plugin-ps": {
-      "version": "7.4.0",
+      "version": "7.4.5",
       "requires": {
         "@heroku-cli/color": "1.1.5",
         "@heroku-cli/command": "8.1.26",
@@ -86050,7 +86050,7 @@
       }
     },
     "@heroku-cli/plugin-redis-v5": {
-      "version": "7.4.0",
+      "version": "7.4.5",
       "requires": {
         "heroku-cli-util": "8.0.9",
         "redis-parser": "3.0.0",
@@ -92483,7 +92483,7 @@
       }
     },
     "@heroku-cli/plugin-run-v5": {
-      "version": "7.4.0",
+      "version": "7.4.5",
       "requires": {
         "@heroku-cli/color": "1.1.5",
         "@heroku-cli/command": "8.1.20",
@@ -95424,7 +95424,7 @@
       }
     },
     "@heroku-cli/plugin-spaces": {
-      "version": "7.4.0",
+      "version": "7.4.5",
       "requires": {
         "@heroku-cli/command": "8.1.20",
         "co": "4.6.0",
@@ -102264,7 +102264,7 @@
       }
     },
     "@heroku-cli/plugin-status": {
-      "version": "7.4.0",
+      "version": "7.4.5",
       "requires": {
         "@heroku-cli/color": "1.1.5",
         "@heroku-cli/command": "8.1.26",
@@ -104558,7 +104558,7 @@
       }
     },
     "@heroku-cli/plugin-webhooks-v5": {
-      "version": "7.4.0",
+      "version": "7.4.5",
       "requires": {
         "@heroku-cli/command": "8.1.26",
         "heroku-cli-util": "8.0.9"
