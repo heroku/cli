@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="7.4.6"></a>
+## [7.4.6](https://github.com/heroku/cli/compare/v7.4.5...v7.4.6) (2018-06-20)
+
+
+### Bug Fixes
+
+* update dev-cli readme generation ([42a77bc](https://github.com/heroku/cli/commit/42a77bc))
+
+
+
+
 <a name="7.4.5"></a>
 ## [7.4.5](https://github.com/heroku/cli/compare/v7.4.4...v7.4.5) (2018-06-20)
 
