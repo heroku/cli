@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="7.4.4"></a>
+## [7.4.4](https://github.com/heroku/cli/compare/v7.4.3...v7.4.4) (2018-06-20)
+
+
+### Bug Fixes
+
+* added shrinkwrap ([c21cd6c](https://github.com/heroku/cli/commit/c21cd6c))
+* do not remove shrinkwrap after packing ([5a120d6](https://github.com/heroku/cli/commit/5a120d6))
+* shrinkwrap on version ([b0a155f](https://github.com/heroku/cli/commit/b0a155f))
+* updated [@oclif](https://github.com/oclif)/plugin-legacy to fix certs commands ([6fa245e](https://github.com/heroku/cli/commit/6fa245e))
+
+
+
+
 <a name="7.4.3"></a>
 ## [7.4.3](https://github.com/heroku/cli/compare/v7.4.2...v7.4.3) (2018-06-20)
 
