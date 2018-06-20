@@ -2,7 +2,7 @@
 
 let co = require('co')
 let cli = require('heroku-cli-util')
-let certificateDetails = require('../../lib/certificate_details.js')
+let certificateDetails = require('../../../lib/certificate_details.js')
 let _ = require('lodash')
 let distanceInWordsToNow = require('date-fns/distance_in_words_to_now')
 

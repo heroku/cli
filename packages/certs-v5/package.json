@@ -39,7 +39,6 @@
     "heroku-plugin"
   ],
   "license": "ISC",
-  "main": "index.js",
   "repository": "heroku/cli",
   "scripts": {
     "test": "TZ=utc nyc mocha && standard",
@@ -49,12 +48,10 @@
   },
   "cli-engine": {
     "bin": "heroku",
+    "commands": "./commands",
     "topics": {
       "certs": {
         "description": "a topic for the ssl plugin"
-      },
-      "_certs": {
-        "hidden": true
       }
     }
   }

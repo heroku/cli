@@ -3,7 +3,7 @@
 
 let expect = require('chai').expect
 let nock = require('nock')
-let certs = require('../../../commands/certs/auto.js')
+let certs = require('../../../../commands/certs/auto')
 
 let letsEncrypt = {
   ssl_cert: {
