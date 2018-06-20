@@ -3,13 +3,13 @@ const cli = require('heroku-cli-util')
 const webhookType = require('../../../lib/webhook-type.js')
 
 class Events extends Command {
-  async run() {
+  async run () {
     const {flags} = this.parse(Events)
     cli.warn('heroku webhooks:event is deprecated, please use heroku webhooks:deliveries')
     let {path, display} = webhookType(flags)
 
     let {body} = await this.heroku.get(`${path}/webhook-events`, {
-      headers: {Accept: 'application/vnd.heroku+json; version=3.webhooks'},
+      headers: {Accept: 'application/vnd.heroku+json; version=3.webhooks'}
     })
     let events = body
 
@@ -22,7 +22,7 @@ class Events extends Command {
         {key: 'id', label: 'Event ID'},
         {key: 'resource', label: 'Resource', get: w => w.payload.resource},
         {key: 'action', label: 'Action', get: w => w.payload.action},
-        {key: 'published_at', label: 'Published At', get: w => w.payload.published_at},
+        {key: 'published_at', label: 'Published At', get: w => w.payload.published_at}
       ]})
     }
   }
@@ -31,12 +31,12 @@ class Events extends Command {
 Events.description = 'list webhook events on an app'
 
 Events.examples = [
-  '$ heroku webhooks:events',
+  '$ heroku webhooks:events'
 ]
 
 Events.flags = {
   app: flags.app({char: 'a'}),
-  pipeline: flags.string({char: 'p', description: 'pipeline on which to list', hidden: true}),
+  pipeline: flags.string({char: 'p', description: 'pipeline on which to list', hidden: true})
 }
 
 module.exports = Events

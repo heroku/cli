@@ -3,12 +3,12 @@ const cli = require('heroku-cli-util')
 const webhookType = require('../../lib/webhook-type.js')
 
 class Info extends Command {
-  async run() {
+  async run () {
     const {flags, args} = this.parse(Info)
     let {path} = webhookType(flags)
 
     let {body} = await this.heroku.get(`${path}/webhooks/${args.id}`, {
-      headers: {Accept: 'application/vnd.heroku+json; version=3.webhooks'},
+      headers: {Accept: 'application/vnd.heroku+json; version=3.webhooks'}
     })
     let webhook = body
 
@@ -16,7 +16,7 @@ class Info extends Command {
       'Webhook ID': webhook.id,
       URL: webhook.url,
       Include: webhook.include.join(','),
-      Level: webhook.level,
+      Level: webhook.level
     }
 
     cli.styledHeader(webhook.id)
@@ -27,16 +27,16 @@ class Info extends Command {
 Info.description = 'info for a webhook on an app'
 
 Info.examples = [
-  '$ heroku webhooks:info 99999999-9999-9999-9999-999999999999',
+  '$ heroku webhooks:info 99999999-9999-9999-9999-999999999999'
 ]
 
 Info.flags = {
   app: flags.app({char: 'a'}),
-  pipeline: flags.string({char: 'p', description: 'pipeline on which to list', hidden: true}),
+  pipeline: flags.string({char: 'p', description: 'pipeline on which to list', hidden: true})
 }
 
 Info.args = [
-  {name: 'id'},
+  {name: 'id'}
 ]
 
 module.exports = Info

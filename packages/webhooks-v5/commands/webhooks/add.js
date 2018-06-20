@@ -3,7 +3,7 @@ const cli = require('heroku-cli-util')
 const webhookType = require('../../lib/webhook-type.js')
 
 class Add extends Command {
-  async run() {
+  async run () {
     const {flags} = this.parse(Add)
     let {path, display} = webhookType(flags)
 
@@ -15,8 +15,8 @@ class Add extends Command {
           level: flags.level,
           secret: flags.secret,
           url: flags.url,
-          authorization: flags.authorization,
-        },
+          authorization: flags.authorization
+        }
       })
       let secret
       if (response.headers) secret = response.headers['heroku-webhook-secret']
@@ -33,7 +33,7 @@ class Add extends Command {
 Add.description = 'add a webhook to an app'
 
 Add.examples = [
-  '$ heroku webhooks:add -i api:dyno -l notify -u https://example.com/hooks',
+  '$ heroku webhooks:add -i api:dyno -l notify -u https://example.com/hooks'
 ]
 
 Add.flags = {
@@ -43,7 +43,7 @@ Add.flags = {
   level: flags.string({char: 'l', description: 'notify does not retry, sync will retry until successful or timeout', required: true}),
   secret: flags.string({char: 's', description: 'value to sign delivery with in Heroku-Webhook-Hmac-SHA256 header'}),
   authorization: flags.string({char: 't', description: 'authoriation header to send with webhooks'}),
-  url: flags.string({char: 'u', description: 'URL for receiver', required: true}),
+  url: flags.string({char: 'u', description: 'URL for receiver', required: true})
 }
 
 module.exports = Add

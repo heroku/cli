@@ -162,7 +162,7 @@ function colorizeWeb (body) {
         state(stateChange[4])
       ].join('')
     }
-    let apache = body.match(/^(\d+\.\d+\.\d+\.\d+ -[^-]*- \[[^\]]+\] ")(\w+)( )([^ ]+)( HTTP\/\d+\.\d+" )(\d+)( .+$)/)
+    let apache = body.match(/^(\d+\.\d+\.\d+\.\d+ -[^-]*- \[[^\]]+] ")(\w+)( )([^ ]+)( HTTP\/\d+\.\d+" )(\d+)( .+$)/)
     if (apache) {
       const [, ...tokens] = apache
       return [
@@ -238,7 +238,7 @@ function colorizeRedis (body) {
 }
 
 function colorizePG (body) {
-  let create = body.match(/^(\[DATABASE\].*)(CREATE TABLE)(.*)$/)
+  let create = body.match(/^(\[DATABASE].*)(CREATE TABLE)(.*)$/)
   if (create) {
     return [
       other(create[1]),

@@ -13,13 +13,13 @@ describe('heroku webhooks:deliveries:info', function () {
 
   it('# shows a webhook', function () {
     let mock = nock('https://api.heroku.com')
-    .get('/apps/example/webhooks/99999999-9999-9999-9999-999999999999')
-    .reply(200, {
-      id: '99999999-9999-9999-9999-999999999999',
-      include: ['foo', 'bar'],
-      level: 'notify',
-      url: 'http://foobar.com',
-    })
+      .get('/apps/example/webhooks/99999999-9999-9999-9999-999999999999')
+      .reply(200, {
+        id: '99999999-9999-9999-9999-999999999999',
+        include: ['foo', 'bar'],
+        level: 'notify',
+        url: 'http://foobar.com'
+      })
 
     return info.run(['99999999-9999-9999-9999-999999999999', '--app', 'example']).then(function () {
       mock.done()
@@ -36,13 +36,13 @@ Webhook ID: 99999999-9999-9999-9999-999999999999
 
   it('# shows a webhook (pipelines)', function () {
     let mock = nock('https://api.heroku.com')
-    .get('/pipelines/example/webhooks/99999999-9999-9999-9999-999999999999')
-    .reply(200, {
-      id: '99999999-9999-9999-9999-999999999999',
-      include: ['foo', 'bar'],
-      level: 'notify',
-      url: 'http://foobar.com',
-    })
+      .get('/pipelines/example/webhooks/99999999-9999-9999-9999-999999999999')
+      .reply(200, {
+        id: '99999999-9999-9999-9999-999999999999',
+        include: ['foo', 'bar'],
+        level: 'notify',
+        url: 'http://foobar.com'
+      })
 
     return info.run(['99999999-9999-9999-9999-999999999999', '--pipeline', 'example']).then(function () {
       mock.done()

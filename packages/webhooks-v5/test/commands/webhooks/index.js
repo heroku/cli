@@ -13,13 +13,13 @@ describe('heroku webhooks:add', function () {
 
   it('# lists webhooks', function () {
     let mock = nock('https://api.heroku.com')
-    .get('/apps/example/webhooks')
-    .reply(200, [{
-      id: '99999999-9999-9999-9999-999999999999',
-      include: ['foo', 'bar'],
-      level: 'notify',
-      url: 'http://foobar.com',
-    }])
+      .get('/apps/example/webhooks')
+      .reply(200, [{
+        id: '99999999-9999-9999-9999-999999999999',
+        include: ['foo', 'bar'],
+        level: 'notify',
+        url: 'http://foobar.com'
+      }])
 
     return certs.run(['--app', 'example']).then(function () {
       mock.done()
@@ -34,8 +34,8 @@ describe('heroku webhooks:add', function () {
 
   it('# lists empty webhooks', function () {
     let mock = nock('https://api.heroku.com')
-    .get('/apps/example/webhooks')
-    .reply(200, [])
+      .get('/apps/example/webhooks')
+      .reply(200, [])
 
     return certs.run(['--app', 'example']).then(function () {
       mock.done()
@@ -46,13 +46,13 @@ describe('heroku webhooks:add', function () {
 
   it('# lists pipeline webhooks', function () {
     let mock = nock('https://api.heroku.com')
-    .get('/pipelines/example/webhooks')
-    .reply(200, [{
-      id: '99999999-9999-9999-9999-999999999999',
-      include: ['foo', 'bar'],
-      level: 'notify',
-      url: 'http://foobar.com',
-    }])
+      .get('/pipelines/example/webhooks')
+      .reply(200, [{
+        id: '99999999-9999-9999-9999-999999999999',
+        include: ['foo', 'bar'],
+        level: 'notify',
+        url: 'http://foobar.com'
+      }])
 
     return certs.run(['--pipeline', 'example']).then(function () {
       mock.done()
@@ -67,8 +67,8 @@ describe('heroku webhooks:add', function () {
 
   it('# lists empty pipeline webhooks', function () {
     let mock = nock('https://api.heroku.com')
-    .get('/pipelines/example/webhooks')
-    .reply(200, [])
+      .get('/pipelines/example/webhooks')
+      .reply(200, [])
 
     return certs.run(['--pipeline', 'example']).then(function () {
       mock.done()

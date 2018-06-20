@@ -3,7 +3,7 @@ const cli = require('heroku-cli-util')
 const webhookType = require('../../../lib/webhook-type.js')
 
 class Deliveries extends Command {
-  async run() {
+  async run () {
     const {flags} = this.parse(Deliveries)
     let {path, display} = webhookType(flags)
     let max = 1000
@@ -16,9 +16,9 @@ class Deliveries extends Command {
     let {body} = await this.heroku.get(path, {
       headers: {
         Accept: 'application/vnd.heroku+json; version=3.webhooks',
-        Range: `seq ..; order=desc,max=${max}`,
+        Range: `seq ..; order=desc,max=${max}`
       },
-      partial: true,
+      partial: true
     })
     let deliveries = body
 
@@ -45,7 +45,7 @@ class Deliveries extends Command {
         {key: 'num_attempts', label: 'Attempts', get: w => String(w.num_attempts)},
         {key: 'last_code', label: 'Code', get: code},
         {key: 'last_error', label: 'Error', get: w => (w.last_attempt && w.last_attempt.error_class) || ''},
-        {key: 'next_attempt_at', label: 'Next Attempt', get: w => w.next_attempt_at || ''},
+        {key: 'next_attempt_at', label: 'Next Attempt', get: w => w.next_attempt_at || ''}
       ]})
     }
   }
@@ -54,13 +54,13 @@ class Deliveries extends Command {
 Deliveries.description = 'list webhook deliveries on an app'
 
 Deliveries.examples = [
-  '$ heroku webhooks:deliveries',
+  '$ heroku webhooks:deliveries'
 ]
 
 Deliveries.flags = {
   app: flags.app({char: 'a'}),
   status: flags.string({char: 's', description: 'filter deliveries by status'}),
-  pipeline: flags.string({char: 'p', description: 'pipeline on which to list', hidden: true}),
+  pipeline: flags.string({char: 'p', description: 'pipeline on which to list', hidden: true})
 }
 
 module.exports = Deliveries

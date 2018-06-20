@@ -14,16 +14,16 @@ describe('heroku webhooks:events', function () {
 
   it('# lists events', function () {
     let mock = nock('https://api.heroku.com')
-    .get('/apps/example/webhook-events')
-    .reply(200, [{
-      id: '99999999-9999-9999-9999-999999999999',
-      payload: {
-        published_at: '2016-08-31T21:55:06Z',
-        resource: 'api:release',
-        action: 'create',
-      },
+      .get('/apps/example/webhook-events')
+      .reply(200, [{
+        id: '99999999-9999-9999-9999-999999999999',
+        payload: {
+          published_at: '2016-08-31T21:55:06Z',
+          resource: 'api:release',
+          action: 'create'
+        }
 
-    }])
+      }])
 
     return certs.run(['--app', 'example']).then(function () {
       mock.done()
@@ -38,16 +38,16 @@ describe('heroku webhooks:events', function () {
 
   it('# lists events (pipelines)', function () {
     let mock = nock('https://api.heroku.com')
-    .get('/pipelines/example/webhook-events')
-    .reply(200, [{
-      id: '99999999-9999-9999-9999-999999999999',
-      payload: {
-        published_at: '2016-08-31T21:55:06Z',
-        resource: 'api:release',
-        action: 'create',
-      },
+      .get('/pipelines/example/webhook-events')
+      .reply(200, [{
+        id: '99999999-9999-9999-9999-999999999999',
+        payload: {
+          published_at: '2016-08-31T21:55:06Z',
+          resource: 'api:release',
+          action: 'create'
+        }
 
-    }])
+      }])
 
     return certs.run(['--pipeline', 'example']).then(function () {
       mock.done()
@@ -62,8 +62,8 @@ describe('heroku webhooks:events', function () {
 
   it('# lists empty events', function () {
     let mock = nock('https://api.heroku.com')
-    .get('/apps/example/webhook-events')
-    .reply(200, [])
+      .get('/apps/example/webhook-events')
+      .reply(200, [])
 
     return certs.run(['--app', 'example']).then(function () {
       mock.done()
@@ -74,8 +74,8 @@ describe('heroku webhooks:events', function () {
 
   it('# lists empty events (pipelines)', function () {
     let mock = nock('https://api.heroku.com')
-    .get('/pipelines/example/webhook-events')
-    .reply(200, [])
+      .get('/pipelines/example/webhook-events')
+      .reply(200, [])
 
     return certs.run(['--pipeline', 'example']).then(function () {
       mock.done()
