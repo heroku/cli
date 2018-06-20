@@ -6,6 +6,14 @@
   "bugs": {
     "url": "https://github.com/heroku/cli/issues"
   },
+  "cli-engine": {
+    "bin": "heroku",
+    "topics": {
+      "redis": {
+        "description": "manage heroku redis instances"
+      }
+    }
+  },
   "dependencies": {
     "heroku-cli-util": "^8.0.9",
     "redis-parser": "^3.0.0",
@@ -41,17 +49,9 @@
   },
   "scripts": {
     "postpublish": "rm oclif.manifest.json",
+    "posttest": "standard",
     "prepublishOnly": "oclif-dev manifest",
     "test": "nyc mocha && standard",
-    "version": "oclif-dev readme && git add README.md",
-    "posttest": "standard"
-  },
-  "cli-engine": {
-    "bin": "heroku",
-    "topics": {
-      "redis": {
-        "description": "manage heroku redis instances"
-      }
-    }
+    "version": "oclif-dev readme && git add README.md"
   }
 }

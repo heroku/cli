@@ -6,8 +6,18 @@
   "bugs": {
     "url": "https://github.com/heroku/cli/issues"
   },
-  "publishConfig": {
-    "access": "public"
+  "cli-engine": {
+    "topics": {
+      "authorizations": {
+        "description": "OAuth authorizations"
+      },
+      "clients": {
+        "description": "OAuth clients on the platform"
+      },
+      "sessions": {
+        "description": "OAuth sessions"
+      }
+    }
   },
   "dependencies": {
     "co": "^4.6.0",
@@ -36,27 +46,17 @@
   ],
   "license": "ISC",
   "main": "lib/index.js",
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/heroku/cli.git"
   },
   "scripts": {
-    "test": "TZ=UTC nyc mocha",
+    "postpublish": "rm oclif.manifest.json",
     "posttest": "standard",
     "prepublishOnly": "oclif-dev manifest",
-    "postpublish": "rm oclif.manifest.json"
-  },
-  "cli-engine": {
-    "topics": {
-      "authorizations": {
-        "description": "OAuth authorizations"
-      },
-      "clients": {
-        "description": "OAuth clients on the platform"
-      },
-      "sessions": {
-        "description": "OAuth sessions"
-      }
-    }
+    "test": "TZ=UTC nyc mocha"
   }
 }

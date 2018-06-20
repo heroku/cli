@@ -3,6 +3,13 @@
   "description": "Use containers to build and deploy Heroku apps",
   "version": "7.4.0",
   "author": "Heroku",
+  "cli-engine": {
+    "topics": {
+      "container": {
+        "description": "Use containers to build and deploy Heroku apps"
+      }
+    }
+  },
   "dependencies": {
     "glob": "^7.1.2",
     "heroku-cli-util": "^8.0.9",
@@ -47,12 +54,5 @@
   "standard": {
     "env": "mocha"
   },
-  "topic": "container",
-  "cli-engine": {
-    "topics": {
-      "container": {
-        "description": "Use containers to build and deploy Heroku apps"
-      }
-    }
-  }
+  "topic": "container"
 }

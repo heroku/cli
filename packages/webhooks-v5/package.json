@@ -21,6 +21,9 @@
     "nock": "9.3.3",
     "nyc": "12.0.2"
   },
+  "engines": {
+    "node": ">=8.0.0"
+  },
   "files": [
     "oclif.manifest.json",
     "index.js",
@@ -32,16 +35,6 @@
     "heroku-plugin"
   ],
   "license": "ISC",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/heroku/cli.git"
-  },
-  "scripts": {
-    "test": "TZ=utc nyc mocha && eslint .",
-    "prepublishOnly": "oclif-dev manifest",
-    "postpublish": "rm oclif.manifest.json",
-    "version": "oclif-dev readme && git add README.md"
-  },
   "oclif": {
     "commands": "./commands",
     "topics": {
@@ -50,7 +43,14 @@
       }
     }
   },
-  "engines": {
-    "node": ">=8.0.0"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/heroku/cli.git"
+  },
+  "scripts": {
+    "postpublish": "rm oclif.manifest.json",
+    "prepublishOnly": "oclif-dev manifest",
+    "test": "TZ=utc nyc mocha && eslint .",
+    "version": "oclif-dev readme && git add README.md"
   }
 }

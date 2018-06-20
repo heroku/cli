@@ -39,9 +39,6 @@
     "standard": "^11.0.1",
     "unexpected": "^10.38.0"
   },
-  "standard": {
-    "env": "mocha"
-  },
   "files": [
     "/oclif.manifest.json",
     "/lib",
@@ -60,9 +57,12 @@
   },
   "scripts": {
     "postpack": "rm oclif.manifest.json",
+    "posttest": "standard",
     "prepack": "oclif-dev manifest",
     "test": "mocha",
-    "posttest": "standard",
     "version": "oclif-dev readme && git add README.md"
+  },
+  "standard": {
+    "env": "mocha"
   }
 }

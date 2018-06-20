@@ -6,6 +6,17 @@
   "bugs": {
     "url": "https://github.com/heroku/cli/issues"
   },
+  "cli-engine": {
+    "bin": "heroku",
+    "topics": {
+      "spaces": {
+        "description": "manage heroku private spaces"
+      },
+      "trusted-ips": {
+        "hidden": true
+      }
+    }
+  },
   "dependencies": {
     "@heroku-cli/command": "^8.1.20",
     "co": "4.6.0",
@@ -43,20 +54,9 @@
     "url": "https://github.com/heroku/cli"
   },
   "scripts": {
-    "test": "nyc mocha && standard",
-    "version": "oclif-dev readme && git add README.md",
+    "postpublish": "rm oclif.manifest.json",
     "prepublishOnly": "oclif-dev manifest",
-    "postpublish": "rm oclif.manifest.json"
-  },
-  "cli-engine": {
-    "bin": "heroku",
-    "topics": {
-      "spaces": {
-        "description": "manage heroku private spaces"
-      },
-      "trusted-ips": {
-        "hidden": true
-      }
-    }
+    "test": "nyc mocha && standard",
+    "version": "oclif-dev readme && git add README.md"
   }
 }

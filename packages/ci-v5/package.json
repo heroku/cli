@@ -6,6 +6,13 @@
   "bugs": {
     "url": "https://github.com/heroku/cli/issues"
   },
+  "cli-engine": {
+    "topics": {
+      "ci": {
+        "description": "run an application test suite on Heroku"
+      }
+    }
+  },
   "dependencies": {
     "@heroku-cli/command": "^8.1.14",
     "@heroku-cli/plugin-pipelines": "^2.5.8",
@@ -55,15 +62,8 @@
   },
   "scripts": {
     "format": "standard --format",
-    "test": "mocha -R tap && standard --verbose | standard-tap",
+    "postpublish": "rm .oclif.manifest.json",
     "prepublishOnly": "oclif-dev manifest",
-    "postpublish": "rm .oclif.manifest.json"
-  },
-  "cli-engine": {
-    "topics": {
-      "ci": {
-        "description": "run an application test suite on Heroku"
-      }
-    }
+    "test": "mocha -R tap && standard --verbose | standard-tap"
   }
 }

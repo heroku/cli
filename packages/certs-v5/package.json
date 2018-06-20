@@ -6,6 +6,15 @@
   "bugs": {
     "url": "https://github.com/heroku/cli/issues"
   },
+  "cli-engine": {
+    "bin": "heroku",
+    "commands": "./commands",
+    "topics": {
+      "certs": {
+        "description": "a topic for the ssl plugin"
+      }
+    }
+  },
   "dependencies": {
     "co": "4.6.0",
     "co-wait": "0.0.0",
@@ -41,18 +50,9 @@
   "license": "ISC",
   "repository": "heroku/cli",
   "scripts": {
-    "test": "TZ=utc nyc mocha && standard",
-    "prepublishOnly": "oclif-dev manifest",
     "postpublish": "rm oclif.manifest.json",
+    "prepublishOnly": "oclif-dev manifest",
+    "test": "TZ=utc nyc mocha && standard",
     "version": "oclif-dev readme && git add README.md"
-  },
-  "cli-engine": {
-    "bin": "heroku",
-    "commands": "./commands",
-    "topics": {
-      "certs": {
-        "description": "a topic for the ssl plugin"
-      }
-    }
   }
 }

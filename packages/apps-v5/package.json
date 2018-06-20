@@ -6,9 +6,6 @@
   "bugs": {
     "url": "https://github.com/heroku/cli/issues"
   },
-  "publishConfig": {
-    "access": "public"
-  },
   "cli-engine": {
     "bin": "heroku",
     "topics": {
@@ -60,6 +57,9 @@
   ],
   "license": "ISC",
   "main": "src/index.js",
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/heroku/cli.git"
