@@ -37,10 +37,12 @@ jobs:
     steps:
       - add_ssh_keys
       - checkout
-      - run: yarn
-      - run: ./scripts/release/_github_setup
-      - run: ./scripts/release/tarballs
-      - run: ./scripts/release/homebrew
+      - run: |
+          cd packages/cli
+          yarn
+          ./scripts/release/_github_setup
+          ./scripts/release/tarballs
+          ./scripts/release/homebrew
       - save_cache:
           key: v2-yarn-{{ checksum ".circleci/config.yml" }}-{{ checksum "yarn.lock" }}
           paths:
@@ -52,15 +54,19 @@ jobs:
     steps:
       - add_ssh_keys
       - checkout
-      - run: yarn
-      - run: ./scripts/release/win
+      - run: |
+          cd packages/cli
+          yarn
+          ./scripts/release/win
   release_deb:
     <<: *defaults
     steps:
       - add_ssh_keys
       - checkout
-      - run: yarn
-      - run: ./scripts/release/deb
+      - run: |
+          cd packages/cli
+          yarn
+          ./scripts/release/deb
   postrelease:
     <<: *defaults
     steps:
