@@ -23,8 +23,11 @@ parts:
       curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
       apt-get install -y nodejs yarn
 
+      pushd packages/cli
       yarn
       yarn pack --filename heroku.tar.gz
+      mv heroku.tar.gz ../..
+      popd
       tar xvzf heroku.tar.gz
       rmdir ../install
       mv package ../install

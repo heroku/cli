@@ -1,10 +1,7 @@
 {
   "version": "7.4.7",
   "lerna": "2.11.0",
-  "packages": [
-    ".",
-    "packages/*"
-  ],
+  "useWorkspaces": true,
   "npmClient": "yarn",
   "command": {
     "publish": {

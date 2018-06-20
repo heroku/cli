@@ -20,7 +20,7 @@
     "filesize": "^3.5.11",
     "fs-extra": "^6.0.1",
     "heroku-cli-util": "^8.0.9",
-    "inquirer": "^5.2.0",
+    "inquirer": "^6.0.0",
     "js-yaml": "^3.9.1",
     "lodash": "^4.17.10",
     "shell-escape": "^0.2.0",
