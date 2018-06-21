@@ -13,7 +13,7 @@
 
     # run inside sudo
     $SUDO bash <<SCRIPT
-  set -ex
+  set -e
 
   echoerr() { echo "\$@" 1>&2; }
 
@@ -45,15 +45,27 @@
   cd /usr/local/lib
   rm -rf heroku
   rm -rf ~/.local/share/heroku/client
-  curl https://cli-assets.heroku.com/heroku-\$OS-\$ARCH.tar.xz | tar xJ
+  if [ \$(command -v xz) ]; then
+    URL=https://cli-assets.heroku.com/heroku-\$OS-\$ARCH.tar.xz
+    TAR_ARGS="xJ"
+  else
+    URL=https://cli-assets.heroku.com/heroku-\$OS-\$ARCH.tar.gz
+    TAR_ARGS="xz"
+  fi
+  echo "Installing CLI from \$URL"
+  if [ \$(command -v curl) ]; then
+    curl "\$URL" | tar "\$TAR_ARGS"
+  else
+    wget -O- "\$URL" | tar "\$TAR_ARGS"
+  fi
   # delete old heroku bin if exists
-  rm -f $(which heroku) || true
+  rm -f \$(command -v heroku) || true
   rm -f /usr/local/bin/heroku
   ln -s /usr/local/lib/heroku/bin/heroku /usr/local/bin/heroku
 
 SCRIPT
   # test the CLI
-  LOCATION=$(which heroku)
+  LOCATION=$(command -v heroku)
   echo "heroku installed to $LOCATION"
   heroku version
 }
