@@ -15,7 +15,7 @@ Destroying example pipeline... done`,
   args: [
     {name: 'pipeline', description: 'name of pipeline', optional: false}
   ],
-  run: cli.command(co.wrap(function* (context, heroku) {
+  run: cli.command(co.wrap(function * (context, heroku) {
     const pipeline = yield disambiguate(heroku, context.args.pipeline)
 
     const promise = heroku.request({

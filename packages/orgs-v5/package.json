@@ -52,8 +52,7 @@
     "mocha": "^5.2.0",
     "nock": "^9.3.0",
     "nyc": "^12.0.2",
-    "proxyquire": "^2.0.1",
-    "standard": "^11.0.1"
+    "proxyquire": "^2.0.1"
   },
   "files": [
     "oclif.manifest.json",
@@ -71,7 +70,7 @@
   "scripts": {
     "postpublish": "rm oclif.manifest.json",
     "prepublishOnly": "oclif-dev manifest",
-    "test": "nyc mocha && standard",
+    "test": "nyc mocha",
     "version": "oclif-dev readme && git add README.md"
   }
 }

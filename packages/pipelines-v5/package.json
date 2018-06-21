@@ -38,7 +38,6 @@
     "nyc": "^12.0.2",
     "sinon": "^4.5.0",
     "sinon-chai": "^3.0.0",
-    "standard": "^8.6.0",
     "std-mocks": "^1.0.1",
     "supervisor": "^0.12.0"
   },
@@ -59,16 +58,7 @@
     "autotest": "./node_modules/.bin/supervisor -q -n exit -x ./node_modules/.bin/mocha -- -b",
     "postpublish": "rm oclif.manifest.json",
     "prepublishOnly": "oclif-dev manifest",
-    "test": "nyc mocha && standard",
+    "test": "nyc mocha",
     "version": "oclif-dev readme && git add README.md"
-  },
-  "standard": {
-    "globals": [
-      "describe",
-      "context",
-      "beforeEach",
-      "afterEach",
-      "it"
-    ]
   }
 }

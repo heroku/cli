@@ -34,8 +34,7 @@
     "nyc": "^12.0.2",
     "proxyquire": "^2.0.1",
     "sinon": "^2.3.6",
-    "sinon-chai": "^2.14.0",
-    "standard": "^8.0.0"
+    "sinon-chai": "^2.14.0"
   },
   "files": [
     "oclif.manifest.json",
@@ -52,7 +51,7 @@
   "scripts": {
     "postpublish": "rm oclif.manifest.json",
     "prepublishOnly": "oclif-dev manifest",
-    "test": "TZ=utc nyc mocha && standard",
+    "test": "TZ=utc nyc mocha",
     "version": "oclif-dev readme && git add README.md"
   }
 }

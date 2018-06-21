@@ -66,7 +66,7 @@ exports.shouldHandleArgs = function (command, txt, certs, callback, options) {
         .get('/apps/example/sni-endpoints')
         .reply(200, [])
 
-      let mock = callback('/apps/example/ssl-endpoints/tokyo-1050', endpoint, 'ssl_cert')
+      let mock = callback(null, '/apps/example/ssl-endpoints/tokyo-1050', endpoint, 'ssl_cert')
 
       return certs.run({app: 'example', args: args, flags: Object.assign({}, flags, {endpoint: 'tokyo-1050.herokussl.com'})}).then(function () {
         mockSsl.done()

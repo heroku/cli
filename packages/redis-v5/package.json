@@ -28,8 +28,7 @@
     "nock": "^9.2.5",
     "nyc": "^12.0.2",
     "proxyquire": "^2.0.1",
-    "sinon": "^5.0.7",
-    "standard": "^11.0.1"
+    "sinon": "^5.0.7"
   },
   "files": [
     "oclif.manifest.json",
@@ -46,9 +45,8 @@
   "repository": "heroku/cli",
   "scripts": {
     "postpublish": "rm oclif.manifest.json",
-    "posttest": "standard",
     "prepublishOnly": "oclif-dev manifest",
-    "test": "nyc mocha && standard",
+    "test": "nyc mocha",
     "version": "oclif-dev readme && git add README.md"
   }
 }

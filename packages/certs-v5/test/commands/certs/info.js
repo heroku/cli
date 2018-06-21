@@ -108,7 +108,8 @@ SSL certificate is verified by a root authority.
 })
 
 describe('heroku', function () {
-  let callback = function (path, endpoint, variant) {
+  let callback = function (err, path, endpoint, variant) {
+    if (err) throw err
     return nock('https://api.heroku.com', {
       reqheaders: {'Accept': `application/vnd.heroku+json; version=3.${variant}`}
     })

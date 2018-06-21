@@ -25,8 +25,8 @@ SELECT '${num}' || '${num}' WHERE EXISTS (
 `
   let waitingOutput = yield psql.exec(db, waitingQuery)
   let waiting = waitingOutput.includes(waitingMarker)
-                ? 'waiting'
-                : 'wait_event IS NOT NULL AS waiting'
+    ? 'waiting'
+    : 'wait_event IS NOT NULL AS waiting'
   let query = `
 SELECT
  pid,

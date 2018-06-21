@@ -15,8 +15,7 @@
     "mocha": "^5.2.0",
     "mocha-junit-reporter": "1.17.0",
     "nock": "9.3.3",
-    "nyc": "12.0.2",
-    "standard": "^11.0.1"
+    "nyc": "12.0.2"
   },
   "engines": {
     "node": ">=8.0.0"
@@ -45,7 +44,7 @@
   "scripts": {
     "postpublish": "rm oclif.manifest.json",
     "prepublishOnly": "oclif-dev manifest",
-    "test": "TZ=utc nyc mocha && standard",
+    "test": "TZ=utc nyc mocha",
     "version": "oclif-dev readme && git add README.md"
   }
 }

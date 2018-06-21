@@ -18,7 +18,7 @@ function validateInput (str) {
   return true
 }
 
-function* run (context, heroku) {
+function * run (context, heroku) {
   validateArgs(context.args)
 
   const vars = context.args.reduce((memo, str) => {

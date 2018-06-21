@@ -51,19 +51,19 @@ function pollPromotionStatus (heroku, id, needsReleaseCommand) {
   })
 }
 
-function* getCoupling (heroku, app) {
+function * getCoupling (heroku, app) {
   return yield cli.action(`Fetching app info`, heroku.request({
     method: 'GET',
     path: `/apps/${app}/pipeline-couplings`
   }))
 }
 
-function* getApps (heroku, pipeline) {
+function * getApps (heroku, pipeline) {
   return yield cli.action(`Fetching apps from ${cli.color.pipeline(pipeline.name)}`,
     listPipelineApps(heroku, pipeline.id))
 }
 
-function* promote (heroku, label, id, sourceAppId, targetApps, secondFactor) {
+function * promote (heroku, label, id, sourceAppId, targetApps, secondFactor) {
   const options = {
     method: 'POST',
     path: `/pipeline-promotions`,
@@ -112,14 +112,14 @@ function findAppInPipeline (apps, target) {
   return found
 }
 
-function* getRelease (heroku, app, release) {
+function * getRelease (heroku, app, release) {
   return yield cli.action(`Fetching release info`, heroku.request({
     method: 'GET',
     path: `/apps/${app}/releases/${release}`
   }))
 }
 
-function* streamReleaseCommand (heroku, targets, promotion) {
+function * streamReleaseCommand (heroku, targets, promotion) {
   if (targets.length !== 1 || targets.every(isComplete)) {
     return yield pollPromotionStatus(heroku, promotion.id, false)
   }
@@ -166,7 +166,7 @@ my-production-app2: succeeded`,
       hasValue: true
     }
   ],
-  run: cli.command(co.wrap(function* (context, heroku) {
+  run: cli.command(co.wrap(function * (context, heroku) {
     const app = context.app
     const coupling = yield getCoupling(heroku, app)
     const allApps = yield getApps(heroku, coupling.pipeline)

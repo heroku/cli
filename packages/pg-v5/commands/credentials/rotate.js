@@ -47,12 +47,12 @@ ${warnings.join('\n')}`)
   if (all) {
     yield cli.action(`Rotating all credentials on ${cli.color.addon(db.name)}`, co(function * () {
       yield heroku.post(`/postgres/v0/databases/${db.name}/credentials_rotation`,
-                        body)
+        body)
     }))
   } else {
     yield cli.action(`Rotating ${cred} on ${cli.color.addon(db.name)}`, co(function * () {
       yield heroku.post(`/postgres/v0/databases/${db.name}/credentials/${encodeURIComponent(cred)}/credentials_rotation`,
-                        body)
+        body)
     }))
   }
 }

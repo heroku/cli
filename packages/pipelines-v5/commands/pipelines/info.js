@@ -30,7 +30,7 @@ app name                     stage
     {name: 'json', description: 'output in json format'},
     {name: 'with-owners', description: 'shows owner of every app', hidden: true}
   ],
-  run: cli.command(co.wrap(function* (context, heroku) {
+  run: cli.command(co.wrap(function * (context, heroku) {
     const pipeline = yield disambiguate(heroku, context.args.pipeline)
     const pipelineApps = yield listPipelineApps(heroku, pipeline.id)
 

@@ -18,7 +18,7 @@ describe('outbound-rules:remove', function () {
           {target: '128.0.0.1/20', from_port: 443, to_port: 443, protocol: 'udp'}
         ]
       }
-    )
+      )
       .put('/spaces/my-space/outbound-ruleset', {
         created_by: 'dickeyxxx',
         rules: [

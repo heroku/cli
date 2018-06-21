@@ -56,7 +56,7 @@ Rule Number  Destination   From Port  To Port  Protocol
       created_at: now.toISOString(),
       created_by: 'dickeyxxx',
       rules: [
-          {target: '128.0.0.1/20', from_port: 80, to_port: 80, protocol: 'tcp'}
+        {target: '128.0.0.1/20', from_port: 80, to_port: 80, protocol: 'tcp'}
       ]
     }
 

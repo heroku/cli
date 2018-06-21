@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 const cli = require('heroku-cli-util')
 const nock = require('nock')
 const sinon = require('sinon')
@@ -73,7 +74,7 @@ describe('pipelines:setup', function () {
     })
 
     context('when pipeline name is too long', function () {
-      it('shows a warning', function* () {
+      it('shows a warning', function * () {
         return cmd.run({
           app: 'myapp',
           args: {
@@ -113,19 +114,19 @@ describe('pipelines:setup', function () {
           api.get('/users/~').reply(200, { id: '1234-567' })
         })
 
-        it('creates apps in the personal account with CI enabled', function* () {
+        it('creates apps in the personal account with CI enabled', function * () {
           stubCI({ name: pipeline.name, repo: repo.name, ci: true })
           return cmd.run({ args: {}, flags: {} }).then(() => { nockDone() })
         })
 
-        it('downcases capitalised pipeline names', function* () {
+        it('downcases capitalised pipeline names', function * () {
           stubCI({ name: pipeline.name, repo: repo.name, ci: true })
 
           return cmd.run({ args: { name: pipeline.name.toUpperCase() },
             flags: {} }).then(() => nockDone())
         })
 
-        it('does not prompt for options with the -y flag', function* () {
+        it('does not prompt for options with the -y flag', function * () {
           stubCI({ ci: true })
           return cmd.run({
             args: {
@@ -160,7 +161,7 @@ describe('pipelines:setup', function () {
           stubCI({ name: pipeline.name, repo: repo.name, organization: team, ci: true })
         })
 
-        it('creates apps in a team with CI enabled', function* () {
+        it('creates apps in a team with CI enabled', function * () {
           return cmd.run({ args: {}, flags: { team } }).then(() => { nockDone() })
         })
       })

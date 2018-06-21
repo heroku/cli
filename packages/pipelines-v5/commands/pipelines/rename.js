@@ -16,7 +16,7 @@ Renaming example pipeline to www... done`,
     {name: 'pipeline', description: 'current name of pipeline', optional: false},
     {name: 'name', description: 'new name of pipeline', optional: false}
   ],
-  run: cli.command(co.wrap(function* (context, heroku) {
+  run: cli.command(co.wrap(function * (context, heroku) {
     const pipeline = yield disambiguate(heroku, context.args.pipeline)
 
     const promise = heroku.request({

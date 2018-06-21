@@ -117,7 +117,7 @@ ${certificateDetails}
 ${certificateDetails}
 `)
     })
-      /* eslint-enable no-irregular-whitespace */
+    /* eslint-enable no-irregular-whitespace */
   })
 
   it('# errors out when args < 2', function () {
@@ -209,7 +209,8 @@ ${certificateDetails}
       mockFile(fs, 'key_file', 'key content')
     })
 
-    let callback = function (path, endpoint, variant) {
+    let callback = function (err, path, endpoint, variant) {
+      if (err) throw err
       return nock('https://api.heroku.com', {
         reqheaders: {'Accept': `application/vnd.heroku+json; version=3.${variant}`}
       })

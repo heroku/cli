@@ -28,7 +28,6 @@
     "nock": "^9.2.3",
     "nyc": "^12.0.2",
     "sinon": "^5.0.7",
-    "standard": "^8.6.0",
     "std-mocks": "^1.0.1",
     "unexpected": "^10.37.2"
   },
@@ -52,11 +51,8 @@
     "depcheck": "depcheck || true",
     "postpublish": "rm .oclif.manifest.json",
     "prepublishOnly": "oclif-dev manifest",
-    "test": "TZ=utc nyc mocha && standard",
+    "test": "TZ=utc nyc mocha",
     "version": "oclif-dev readme && git add README.md"
-  },
-  "standard": {
-    "env": "mocha"
   },
   "topic": "container"
 }

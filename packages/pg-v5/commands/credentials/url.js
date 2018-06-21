@@ -17,7 +17,7 @@ function * run (context, heroku) {
     throw new Error(`Only one default credential is supported for Hobby tier databases.`)
   }
   let credInfo = yield heroku.get(`/postgres/v0/databases/${db.name}/credentials/${encodeURIComponent(cred)}`,
-                                   { host: host(db) })
+    { host: host(db) })
 
   let activeCreds = credInfo.credentials.find((c) => c.state === 'active')
   if (!activeCreds) {

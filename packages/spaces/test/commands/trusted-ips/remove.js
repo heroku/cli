@@ -18,7 +18,7 @@ describe('trusted-ips:remove', function () {
           {source: '127.0.0.1/20', action: 'allow'}
         ]
       }
-    )
+      )
       .put('/spaces/my-space/inbound-ruleset', {
         created_by: 'dickeyxxx',
         rules: [

@@ -50,8 +50,8 @@ function psqlInteractive (dbEnv, prompt) {
   const {spawn} = require('child_process')
   return new Promise((resolve, reject) => {
     let psql = spawn('psql',
-                     ['--set', `PROMPT1=${prompt}`, '--set', `PROMPT2=${prompt}`],
-                     {env: dbEnv, stdio: 'inherit'})
+      ['--set', `PROMPT1=${prompt}`, '--set', `PROMPT2=${prompt}`],
+      {env: dbEnv, stdio: 'inherit'})
     handlePsqlError(reject, psql)
     psql.on('close', (data) => {
       resolve()

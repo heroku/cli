@@ -16,18 +16,18 @@ module.exports = heroku => {
       debug(`fetching ${db} on ${app}`)
 
       return resolve.appAttachment(heroku, app, db, {addon_service: 'heroku-postgresql', namespace: namespace})
-      .then(attached => ({matches: [attached]}))
-      .catch(function (err) {
-        if (err.statusCode === 422 && err.body && err.body.id === 'multiple_matches' && err.matches) {
-          return {matches: err.matches, err: err}
-        }
+        .then(attached => ({matches: [attached]}))
+        .catch(function (err) {
+          if (err.statusCode === 422 && err.body && err.body.id === 'multiple_matches' && err.matches) {
+            return {matches: err.matches, err: err}
+          }
 
-        if (err.statusCode === 404 && err.body && err.body.id === 'not_found') {
-          return {matches: null, err: err}
-        }
+          if (err.statusCode === 404 && err.body && err.body.id === 'not_found') {
+            return {matches: null, err: err}
+          }
 
-        throw err
-      })
+          throw err
+        })
     }
 
     let {matches, err} = yield matchesHelper(app, db)

@@ -10,7 +10,7 @@ const DEFAULT_SETTINGS = {
   }
 }
 
-function* getSettings (yes, branch) {
+function * getSettings (yes, branch) {
   if (yes) {
     return DEFAULT_SETTINGS
   }

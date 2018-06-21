@@ -5,7 +5,7 @@ const git = require('./git')
 const Promise = require('bluebird')
 const fs = Promise.promisifyAll(require('fs'))
 
-function* uploadArchive (url, filePath) {
+function * uploadArchive (url, filePath) {
   const request = got.stream.put(url, {
     headers: {
       'content-length': (yield fs.statAsync(filePath)).size
@@ -20,7 +20,7 @@ function* uploadArchive (url, filePath) {
   })
 }
 
-function* prepareSource (ref, context, heroku) {
+function * prepareSource (ref, context, heroku) {
   const [filePath, source] = yield [
     git.createArchive(ref),
     api.createSource(heroku)
@@ -29,11 +29,11 @@ function* prepareSource (ref, context, heroku) {
   return Promise.resolve(source)
 }
 
-function* urlExists (url) {
+function * urlExists (url) {
   return yield got.head(url)
 }
 
-function* createSourceBlob (ref, context, heroku) {
+function * createSourceBlob (ref, context, heroku) {
   try {
     const githubRepository = yield git.githubRepository()
     const { user, repo } = githubRepository

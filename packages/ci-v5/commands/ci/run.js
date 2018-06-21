@@ -7,11 +7,11 @@ const TestRun = require('../../lib/test-run')
 const Utils = require('../../lib/utils')
 const PipelineCompletion = require('../../lib/completions')
 
-function* run (context, heroku) {
+function * run (context, heroku) {
   const pipeline = yield Utils.getPipeline(context, heroku)
 
   const commit = yield git.readCommit('HEAD')
-  const sourceBlobUrl = yield cli.action('Preparing source', co(function* () {
+  const sourceBlobUrl = yield cli.action('Preparing source', co(function * () {
     return yield source.createSourceBlob(commit.ref, context, heroku)
   }))
 
@@ -19,7 +19,7 @@ function* run (context, heroku) {
   const organization = pipelineRepository.organization &&
                        pipelineRepository.organization.name
 
-  const testRun = yield cli.action('Starting test run', co(function* () {
+  const testRun = yield cli.action('Starting test run', co(function * () {
     return yield api.createTestRun(heroku, {
       commit_branch: commit.branch,
       commit_message: commit.message,

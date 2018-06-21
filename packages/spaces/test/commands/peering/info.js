@@ -21,7 +21,7 @@ describe('spaces:peering-info', function () {
       .get('/spaces/my-space/peering-info')
       .reply(200,
         info
-    )
+      )
     return cmd.run({flags: {space: 'my-space'}})
       .then(() => expect(cli.stdout).to.equal(
         `=== my-space Peering Info

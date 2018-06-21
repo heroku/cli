@@ -1,5 +1,5 @@
 'use strict'
-/* globals describe it beforeEach afterEach */
+/* eslint-disable no-unused-expressions */
 
 let chai = require('chai')
 let expect = require('chai').expect

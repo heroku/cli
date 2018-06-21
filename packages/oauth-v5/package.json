@@ -31,7 +31,6 @@
     "mocha-junit-reporter": "1.17.0",
     "nock": "9.3.3",
     "nyc": "^12.0.2",
-    "standard": "11.0.1",
     "unexpected": "10.38.0"
   },
   "files": [
@@ -51,7 +50,6 @@
   "repository": "heroku/cli",
   "scripts": {
     "postpublish": "rm oclif.manifest.json",
-    "posttest": "standard",
     "prepublishOnly": "oclif-dev manifest",
     "test": "TZ=UTC nyc mocha",
     "version": "oclif-dev readme && git add README.md"

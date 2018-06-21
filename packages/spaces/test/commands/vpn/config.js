@@ -111,6 +111,6 @@ Tunnel 2    52.44.146.196     52.44.146.196  apresharedkey2  10.0.0.0/16       1
   "full_space_cidr_block": "10.0.0.0/16",
   "ike_version": 1
 }\n`))
-     .then(() => api.done())
+      .then(() => api.done())
   })
 })

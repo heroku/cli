@@ -55,7 +55,7 @@ describe('pg:promote when argument is database', () => {
       confirm: 'myapp'
     }).reply(201)
     return cmd.run({app: 'myapp', args: {}, flags: {}})
-    .then(() => expect(cli.stderr, 'to equal', `Ensuring an alternate alias for existing DATABASE_URL... RED_URL
+      .then(() => expect(cli.stderr, 'to equal', `Ensuring an alternate alias for existing DATABASE_URL... RED_URL
 Promoting postgres-1 to DATABASE_URL on myapp... done
 `))
   })
@@ -73,7 +73,7 @@ Promoting postgres-1 to DATABASE_URL on myapp... done
       confirm: 'myapp'
     }).reply(201)
     return cmd.run({app: 'myapp', args: {}, flags: {}})
-    .then(() => expect(cli.stderr, 'to equal', `Ensuring an alternate alias for existing DATABASE_URL... RED_URL
+      .then(() => expect(cli.stderr, 'to equal', `Ensuring an alternate alias for existing DATABASE_URL... RED_URL
 Promoting postgres-1 to DATABASE_URL on myapp... done
 `))
   })
@@ -136,7 +136,7 @@ describe('pg:promote when argument is a credential attachment', () => {
       confirm: 'myapp'
     }).reply(201)
     return cmd.run({app: 'myapp', args: {}, flags: {}})
-    .then(() => expect(cli.stderr, 'to equal', `Ensuring an alternate alias for existing DATABASE_URL... RED_URL
+      .then(() => expect(cli.stderr, 'to equal', `Ensuring an alternate alias for existing DATABASE_URL... RED_URL
 Promoting PURPLE to DATABASE_URL on myapp... done
 `))
   })
@@ -160,7 +160,7 @@ Promoting PURPLE to DATABASE_URL on myapp... done
       confirm: 'myapp'
     }).reply(201)
     return cmd.run({app: 'myapp', args: {}, flags: {}})
-    .then(() => expect(cli.stderr, 'to equal', `Ensuring an alternate alias for existing DATABASE_URL... RED_URL
+      .then(() => expect(cli.stderr, 'to equal', `Ensuring an alternate alias for existing DATABASE_URL... RED_URL
 Promoting PURPLE to DATABASE_URL on myapp... done
 `))
   })
@@ -179,7 +179,7 @@ Promoting PURPLE to DATABASE_URL on myapp... done
       confirm: 'myapp'
     }).reply(201)
     return cmd.run({app: 'myapp', args: {}, flags: {}})
-    .then(() => expect(cli.stderr, 'to equal', `Ensuring an alternate alias for existing DATABASE_URL... RED_URL
+      .then(() => expect(cli.stderr, 'to equal', `Ensuring an alternate alias for existing DATABASE_URL... RED_URL
 Promoting PURPLE to DATABASE_URL on myapp... done
 `))
   })
@@ -198,7 +198,7 @@ Promoting PURPLE to DATABASE_URL on myapp... done
       confirm: 'myapp'
     }).reply(201)
     return cmd.run({app: 'myapp', args: {}, flags: {}})
-    .then(() => expect(cli.stderr, 'to equal', `Ensuring an alternate alias for existing DATABASE_URL... RED_URL
+      .then(() => expect(cli.stderr, 'to equal', `Ensuring an alternate alias for existing DATABASE_URL... RED_URL
 Promoting PURPLE to DATABASE_URL on myapp... done
 `))
   })
@@ -217,7 +217,7 @@ Promoting PURPLE to DATABASE_URL on myapp... done
       confirm: 'myapp'
     }).reply(201)
     return cmd.run({app: 'myapp', args: {}, flags: {}})
-    .then(() => expect(cli.stderr, 'to equal', `Ensuring an alternate alias for existing DATABASE_URL... RED_URL
+      .then(() => expect(cli.stderr, 'to equal', `Ensuring an alternate alias for existing DATABASE_URL... RED_URL
 Promoting PURPLE to DATABASE_URL on myapp... done
 `))
   })
@@ -236,7 +236,7 @@ Promoting PURPLE to DATABASE_URL on myapp... done
       confirm: 'myapp'
     }).reply(201)
     return cmd.run({app: 'myapp', args: {}, flags: {}})
-    .then(() => expect(cli.stderr, 'to equal', `Ensuring an alternate alias for existing DATABASE_URL... RED_URL
+      .then(() => expect(cli.stderr, 'to equal', `Ensuring an alternate alias for existing DATABASE_URL... RED_URL
 Promoting PURPLE to DATABASE_URL on myapp... done
 `))
   })
@@ -302,7 +302,7 @@ describe('pg:promote when release phase is present', () => {
     api.get('/apps/myapp/releases/1').reply(200, {status: 'succeeded'})
     api.get('/apps/myapp/releases/2').reply(200, {status: 'succeeded'})
     return cmd.run({app: 'myapp', args: {}, flags: {}})
-        .then(() => expect(cli.stderr, 'to equal', `Ensuring an alternate alias for existing DATABASE_URL... RED_URL
+      .then(() => expect(cli.stderr, 'to equal', `Ensuring an alternate alias for existing DATABASE_URL... RED_URL
 Promoting PURPLE to DATABASE_URL on myapp... done
 Checking release phase... pg:promote succeeded.
 `))
@@ -313,7 +313,7 @@ Checking release phase... pg:promote succeeded.
     api.get('/apps/myapp/releases/1').reply(200, {status: 'succeeded'})
     api.get('/apps/myapp/releases/2').reply(200, {status: 'failed', description: 'Detach DATABASE'})
     return cmd.run({app: 'myapp', args: {}, flags: {}})
-        .then(() => expect(cli.stderr, 'to equal', `Ensuring an alternate alias for existing DATABASE_URL... RED_URL
+      .then(() => expect(cli.stderr, 'to equal', `Ensuring an alternate alias for existing DATABASE_URL... RED_URL
 Promoting PURPLE to DATABASE_URL on myapp... done
 Checking release phase... pg:promote succeeded. It is safe to ignore the failed Detach DATABASE release.
 `))
@@ -324,7 +324,7 @@ Checking release phase... pg:promote succeeded. It is safe to ignore the failed 
     api.get('/apps/myapp/releases/1').reply(200, {status: 'failed', description: 'Attach DATABASE'})
     api.get('/apps/myapp/releases/2').reply(200, {status: 'failed', description: 'Attach DATABASE'})
     return cmd.run({app: 'myapp', args: {}, flags: {}})
-        .then(() => expect(cli.stderr, 'to equal', `Ensuring an alternate alias for existing DATABASE_URL... RED_URL
+      .then(() => expect(cli.stderr, 'to equal', `Ensuring an alternate alias for existing DATABASE_URL... RED_URL
 Promoting PURPLE to DATABASE_URL on myapp... done
 Checking release phase... pg:promote failed because Attach DATABASE release was unsuccessful. Your application is currently running with postgres-1 attached as DATABASE_URL. Check your release phase logs for failure causes.
 `))
@@ -335,7 +335,7 @@ Checking release phase... pg:promote failed because Attach DATABASE release was 
     api.get('/apps/myapp/releases/1').reply(200, {status: 'failed', description: 'Attach DATABASE'})
     api.get('/apps/myapp/releases/2').reply(200, {status: 'succeeded', description: 'Attach DATABASE'})
     return cmd.run({app: 'myapp', args: {}, flags: {}})
-        .then(() => expect(cli.stderr, 'to equal', `Ensuring an alternate alias for existing DATABASE_URL... RED_URL
+      .then(() => expect(cli.stderr, 'to equal', `Ensuring an alternate alias for existing DATABASE_URL... RED_URL
 Promoting PURPLE to DATABASE_URL on myapp... done
 Checking release phase... pg:promote failed because Attach DATABASE release was unsuccessful. Your application is currently running without an attached DATABASE_URL. Check your release phase logs for failure causes.
 `))

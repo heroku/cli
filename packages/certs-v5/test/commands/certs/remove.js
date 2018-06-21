@@ -119,7 +119,8 @@ describe('heroku certs:remove', function () {
     })
   })
 
-  let callback = function (path, endpoint, variant) {
+  let callback = function (err, path, endpoint, variant) {
+    if (err) throw err
     nock('https://api.heroku.com')
       .get('/apps/example/addons/ssl%3Aendpoint')
       .reply(200, {})

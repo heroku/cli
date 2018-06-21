@@ -14,7 +14,7 @@ sushi`,
     {name: 'json', description: 'output in json format'}
   ],
   needsAuth: true,
-  run: cli.command(co.wrap(function* (context, heroku) {
+  run: cli.command(co.wrap(function * (context, heroku) {
     let pipelines = yield heroku.get('/pipelines')
 
     if (context.flags.json) {

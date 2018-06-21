@@ -4,7 +4,7 @@ const RenderTestRuns = require('../../lib/render-test-runs')
 const Utils = require('../../lib/utils')
 const PipelineCompletion = require('../../lib/completions')
 
-function* run (context, heroku) {
+function * run (context, heroku) {
   const pipeline = yield Utils.getPipeline(context, heroku)
   return yield RenderTestRuns.render(pipeline, { heroku, watch: context.flags.watch, json: context.flags.json })
 }

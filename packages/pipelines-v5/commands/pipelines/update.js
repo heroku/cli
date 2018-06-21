@@ -16,7 +16,7 @@ Changing example-admin to staging... done`,
   flags: [
     {name: 'stage', char: 's', description: 'new stage of app', hasValue: true, completion: StageCompletion}
   ],
-  run: cli.command(co.wrap(function* (context, heroku) {
+  run: cli.command(co.wrap(function * (context, heroku) {
     if (!context.flags.stage) {
       cli.error('Stage must be specified with -s')
       process.exit(1)

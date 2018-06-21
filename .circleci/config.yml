@@ -30,7 +30,6 @@ jobs:
       - run: apt-get install -y bats
       - run: yarn
       - run: yarn test
-      - run: eslint .
       - run: ./node_modules/.bin/lerna exec "curl -s https://codecov.io/bash | bash"
       - run: greenkeeper-lockfile-upload
   release:

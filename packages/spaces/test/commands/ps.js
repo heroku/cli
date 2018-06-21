@@ -63,8 +63,8 @@ web.1: up ${hourAgoStr} (~ 1h ago)
 run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
 
 `))
-  .then(() => api.done())
-  .then(() => apiSpace.done())
+      .then(() => api.done())
+      .then(() => apiSpace.done())
   })
 
   it('shows shield space dynos', function () {
@@ -79,8 +79,8 @@ run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
 web.1: up ${hourAgoStr} (~ 1h ago)
 
 `))
-  .then(() => api.done())
-  .then(() => apiSpace.done())
+      .then(() => api.done())
+      .then(() => apiSpace.done())
   })
 
   it('shows private space dynos', function () {
@@ -95,8 +95,8 @@ web.1: up ${hourAgoStr} (~ 1h ago)
 web.1: up ${hourAgoStr} (~ 1h ago)
 
 `))
-  .then(() => api.done())
-  .then(() => apiSpace.done())
+      .then(() => api.done())
+      .then(() => apiSpace.done())
   })
 
   it('shows space dynos with --json', function () {

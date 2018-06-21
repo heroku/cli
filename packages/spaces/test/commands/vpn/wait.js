@@ -76,57 +76,57 @@ Tunnel 2    52.44.146.197  UP      2016-10-25T22:09:05Z  status message\n`
 
   it('returns an error if the VPN status is updated to failed', function () {
     let api = nock('https://api.heroku.com:443')
-            .get('/spaces/my-space/vpn')
-            .reply(200)
-            .get('/spaces/my-space/vpn')
-            .reply(200, {
-              id: '123456789012',
-              public_ip: '35.161.69.30',
-              routable_cidrs: [ '172.16.0.0/16' ],
-              state: 'pending',
-              tunnels: [
-                {
-                  last_status_change: '2016-10-25T22:09:05Z',
-                  outside_ip_address: '52.44.146.197',
-                  status: 'UP',
-                  status_message: 'status message'
-                },
-                {
-                  last_status_change: '2016-10-25T22:09:05Z',
-                  outside_ip_address: '52.44.146.197',
-                  status: 'UP',
-                  status_message: 'status message'
-                }
-              ]
-            })
-            .get('/spaces/my-space/vpn')
-            .reply(200, {
-              id: '123456789012',
-              public_ip: '35.161.69.30',
-              routable_cidrs: [ '172.16.0.0/16' ],
-              state: 'deleted',
-              status: 'failed',
-              status_message: 'supplied CIDR block already in use',
-              tunnels: [
-                {
-                  last_status_change: '2016-10-25T22:09:05Z',
-                  outside_ip_address: '52.44.146.197',
-                  status: 'UP',
-                  status_message: 'status message'
-                },
-                {
-                  last_status_change: '2016-10-25T22:09:05Z',
-                  outside_ip_address: '52.44.146.197',
-                  status: 'UP',
-                  status_message: 'status message'
-                }
-              ]
-            })
+      .get('/spaces/my-space/vpn')
+      .reply(200)
+      .get('/spaces/my-space/vpn')
+      .reply(200, {
+        id: '123456789012',
+        public_ip: '35.161.69.30',
+        routable_cidrs: [ '172.16.0.0/16' ],
+        state: 'pending',
+        tunnels: [
+          {
+            last_status_change: '2016-10-25T22:09:05Z',
+            outside_ip_address: '52.44.146.197',
+            status: 'UP',
+            status_message: 'status message'
+          },
+          {
+            last_status_change: '2016-10-25T22:09:05Z',
+            outside_ip_address: '52.44.146.197',
+            status: 'UP',
+            status_message: 'status message'
+          }
+        ]
+      })
+      .get('/spaces/my-space/vpn')
+      .reply(200, {
+        id: '123456789012',
+        public_ip: '35.161.69.30',
+        routable_cidrs: [ '172.16.0.0/16' ],
+        state: 'deleted',
+        status: 'failed',
+        status_message: 'supplied CIDR block already in use',
+        tunnels: [
+          {
+            last_status_change: '2016-10-25T22:09:05Z',
+            outside_ip_address: '52.44.146.197',
+            status: 'UP',
+            status_message: 'status message'
+          },
+          {
+            last_status_change: '2016-10-25T22:09:05Z',
+            outside_ip_address: '52.44.146.197',
+            status: 'UP',
+            status_message: 'status message'
+          }
+        ]
+      })
 
     return cmd.run({flags: {space: 'my-space', interval: 0}})
-            .catch(reason => {
-              expect(reason.message).to.equal('supplied CIDR block already in use')
-            })
-    .then(() => api.done())
+      .catch(reason => {
+        expect(reason.message).to.equal('supplied CIDR block already in use')
+      })
+      .then(() => api.done())
   })
 })

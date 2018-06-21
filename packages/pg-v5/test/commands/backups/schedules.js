@@ -46,7 +46,7 @@ const shouldSchedules = function (cmdRun) {
         {name: 'DATABASE_URL', hour: 5, timezone: 'UTC'}
       ])
       return cmdRun({app: 'myapp'})
-      .then(() => expect(cli.stdout, 'to equal', `=== Backup Schedules
+        .then(() => expect(cli.stdout, 'to equal', `=== Backup Schedules
 DATABASE_URL: daily at 5:00 UTC
 `))
     })

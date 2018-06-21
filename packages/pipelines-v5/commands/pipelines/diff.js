@@ -33,7 +33,7 @@ function kolkrabbiRequest (url, token) {
     })
 }
 
-function* getAppInfo (heroku, appName, appId) {
+function * getAppInfo (heroku, appName, appId) {
   // Find GitHub connection for the app
   let githubApp
   try {
@@ -67,7 +67,7 @@ function* getAppInfo (heroku, appName, appId) {
   return {name: appName, repo: githubApp.repo, hash: slug.commit}
 }
 
-function* diff (targetApp, downstreamApp, githubToken, herokuUserAgent) {
+function * diff (targetApp, downstreamApp, githubToken, herokuUserAgent) {
   if (downstreamApp.repo === null) {
     return cli.log(`\n${cli.color.app(targetApp.name)} was not compared to ${cli.color.app(downstreamApp.name)} as ${cli.color.app(downstreamApp.name)} is not connected to GitHub`)
   } else if (downstreamApp.repo !== targetApp.repo) {
@@ -115,7 +115,7 @@ function* diff (targetApp, downstreamApp, githubToken, herokuUserAgent) {
   }
 }
 
-function* run (context, heroku) {
+function * run (context, heroku) {
   // jshint maxstatements:65
   const targetAppName = context.app
   let coupling

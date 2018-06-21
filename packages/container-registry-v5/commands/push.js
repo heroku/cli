@@ -109,7 +109,6 @@ let push = async function (context, heroku) {
     warnThatReleaseIsRequired(plural)
   } catch (err) {
     cli.error(`Error: docker push exited with ${err}`, 1)
-    return
   }
 }
 

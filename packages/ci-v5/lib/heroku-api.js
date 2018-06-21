@@ -4,11 +4,11 @@ const V3_HEADER = 'application/vnd.heroku+json; version=3'
 const VERSION_HEADER = `${V3_HEADER}.ci`
 const PIPELINE_HEADER = `${V3_HEADER}.pipelines`
 
-function* pipelineCoupling (client, app) {
+function * pipelineCoupling (client, app) {
   return client.get(`/apps/${app}/pipeline-couplings`)
 }
 
-function* pipelineRepository (client, pipelineID) {
+function * pipelineRepository (client, pipelineID) {
   return client.request({
     host: KOLKRABBI,
     path: `/pipelines/${pipelineID}/repository`,
@@ -18,7 +18,7 @@ function* pipelineRepository (client, pipelineID) {
   })
 }
 
-function* getDyno (client, appID, dynoID) {
+function * getDyno (client, appID, dynoID) {
   return client.request({
     path: `/apps/${appID}/dynos/${dynoID}`,
     headers: {
@@ -28,7 +28,7 @@ function* getDyno (client, appID, dynoID) {
   })
 }
 
-function* githubArchiveLink (client, user, repository, ref) {
+function * githubArchiveLink (client, user, repository, ref) {
   return client.request({
     host: KOLKRABBI,
     path: `/github/repos/${user}/${repository}/tarball/${ref}`,
@@ -38,7 +38,7 @@ function* githubArchiveLink (client, user, repository, ref) {
   })
 }
 
-function* testRun (client, pipelineID, number) {
+function * testRun (client, pipelineID, number) {
   return client.request({
     path: `/pipelines/${pipelineID}/test-runs/${number}`,
     headers: {
@@ -48,7 +48,7 @@ function* testRun (client, pipelineID, number) {
   })
 }
 
-function* testNodes (client, testRunIdD) {
+function * testNodes (client, testRunIdD) {
   return client.request({
     path: `/test-runs/${testRunIdD}/test-nodes`,
     headers: {
@@ -58,7 +58,7 @@ function* testNodes (client, testRunIdD) {
   })
 }
 
-function* testRuns (client, pipelineID) {
+function * testRuns (client, pipelineID) {
   return client.request({
     path: `/pipelines/${pipelineID}/test-runs`,
     headers: {
@@ -68,7 +68,7 @@ function* testRuns (client, pipelineID) {
   })
 }
 
-function* latestTestRun (client, pipelineID) {
+function * latestTestRun (client, pipelineID) {
   const latestTestRuns = yield client.request({
     path: `/pipelines/${pipelineID}/test-runs`,
     headers: {
@@ -96,11 +96,11 @@ function logStream (url, fn) {
   return https.get(url, fn)
 }
 
-function* createSource (client) {
+function * createSource (client) {
   return yield client.post(`/sources`)
 }
 
-function* createTestRun (client, body) {
+function * createTestRun (client, body) {
   const headers = {
     Accept: VERSION_HEADER
   }

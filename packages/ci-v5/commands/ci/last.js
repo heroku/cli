@@ -5,7 +5,7 @@ const TestRun = require('../../lib/test-run')
 const Utils = require('../../lib/utils')
 const PipelineCompletion = require('../../lib/completions')
 
-function* run (context, heroku) {
+function * run (context, heroku) {
   const pipeline = yield Utils.getPipeline(context, heroku)
   const lastRun = yield api.latestTestRun(heroku, pipeline.id)
 

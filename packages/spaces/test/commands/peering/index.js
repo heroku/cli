@@ -56,7 +56,7 @@ describe('spaces:peerings', function () {
       .get('/spaces/my-space/peerings')
       .reply(200,
         peers
-    )
+      )
     return cmd.run({flags: {space: 'my-space'}})
       .then(() => expect(cli.stdout).to.equal(
         `=== my-space Peerings

@@ -33,10 +33,10 @@ async function login (context, heroku) {
 async function dockerLogin (registry, password) {
   let [major, minor] = await Sanbashi.version()
 
-  if (major > 17 || major === 17 && minor >= 7) {
-    return await dockerLoginStdin(registry, password)
+  if (major > 17 || (major === 17 && minor >= 7)) {
+    return dockerLoginStdin(registry, password)
   }
-  return await dockerLoginArgv(registry, password)
+  return dockerLoginArgv(registry, password)
 }
 
 function dockerLoginStdin (registry, password) {

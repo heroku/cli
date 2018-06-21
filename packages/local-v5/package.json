@@ -22,8 +22,7 @@
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.15.2",
-    "@oclif/plugin-legacy": "^1.0.15",
-    "standard": "^11.0.1"
+    "@oclif/plugin-legacy": "^1.0.15"
   },
   "files": [
     "oclif.manifest.json",
@@ -41,7 +40,7 @@
   "scripts": {
     "postpublish": "rm oclif.manifest.json",
     "prepublishOnly": "oclif-dev manifest",
-    "test": "bats test && standard",
+    "test": "bats test",
     "version": "oclif-dev readme && git add README.md"
   }
 }

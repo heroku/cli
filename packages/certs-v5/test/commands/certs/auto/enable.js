@@ -31,7 +31,7 @@ describe('heroku certs:auto:enable', function () {
     return certs.run({app: 'example'}).then(function () {
       expect(cli.stderr).to.equal('Enabling Automatic Certificate Management... starting. See status with heroku certs:auto or wait until active with heroku certs:auto:wait\n')
       expect(cli.stdout).to.equal(
-`=== Your certificate will now be managed by Heroku.  Check the status by running heroku certs:auto.
+        `=== Your certificate will now be managed by Heroku.  Check the status by running heroku certs:auto.
 `)
       domainsApi.done()
       acmApi.done()
@@ -61,7 +61,7 @@ describe('heroku certs:auto:enable', function () {
     return certs.run({app: 'example'}).then(function () {
       expect(cli.stderr).to.equal('Enabling Automatic Certificate Management... starting. See status with heroku certs:auto or wait until active with heroku certs:auto:wait\n')
       expect(cli.stdout).to.equal(
-`=== Your certificate will now be managed by Heroku.  Check the status by running heroku certs:auto.  Update your application's DNS settings as follows
+        `=== Your certificate will now be managed by Heroku.  Check the status by running heroku certs:auto.  Update your application's DNS settings as follows
 Domain           Record Type  DNS Target
 ───────────────  ───────────  ─────────────────────────────
 foo.example.org  CNAME        foo.example.org.herokudns.com

@@ -11,7 +11,7 @@ const PipelineCompletion = require('../../lib/completions')
 // Default command. Run setup, source profile.d scripts and open a bash session
 const SETUP_COMMAND = 'ci setup && eval $(ci env)'
 
-function* run (context, heroku) {
+function * run (context, heroku) {
   const pipeline = yield Utils.getPipeline(context, heroku)
 
   const pipelineRepository = yield api.pipelineRepository(heroku, pipeline.id)
@@ -19,12 +19,12 @@ function* run (context, heroku) {
                        pipelineRepository.organization.name
 
   const commit = yield git.readCommit('HEAD')
-  const sourceBlobUrl = yield cli.action('Preparing source', co(function* () {
+  const sourceBlobUrl = yield cli.action('Preparing source', co(function * () {
     return yield source.createSourceBlob(commit.ref, context, heroku)
   }))
 
   // Create test run and wait for it to transition to `debugging`
-  const testRun = yield cli.action('Creating test run', co(function* () {
+  const testRun = yield cli.action('Creating test run', co(function * () {
     const run = yield api.createTestRun(heroku, {
       commit_branch: commit.branch,
       commit_message: commit.message,

@@ -51,7 +51,7 @@ VPN Tunnel  IP Address     Status  Status Last Changed   Details
 Tunnel 1    52.44.146.197  UP      2016-10-25T22:09:05Z  status message
 Tunnel 2    52.44.146.197  UP      2016-10-25T22:09:05Z  status message\n`
       ))
-     .then(() => api.done())
+      .then(() => api.done())
   })
 
   it('gets VPN info in JSON', function () {
@@ -108,6 +108,6 @@ Tunnel 2    52.44.146.197  UP      2016-10-25T22:09:05Z  status message\n`
     }
   ]
 }\n`))
-     .then(() => api.done())
+      .then(() => api.done())
   })
 })

@@ -57,7 +57,7 @@ View your new pipeline by running \`heroku pipelines:open e5a55ffa-de3f-11e6-a24
       hasValue: false
     }
   ],
-  run: cli.command(co.wrap(function* (context, heroku) {
+  run: cli.command(co.wrap(function * (context, heroku) {
     const errors = Validate.nameAndRepo(context.args)
 
     if (errors.length) {

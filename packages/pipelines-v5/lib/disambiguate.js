@@ -4,7 +4,7 @@ let validator = require('validator')
 let inquirer = require('inquirer')
 let api = require('./api')
 
-function* disambiguate (heroku, pipelineIDOrName) {
+function * disambiguate (heroku, pipelineIDOrName) {
   var pipeline
   if (validator.isUUID(pipelineIDOrName)) {
     pipeline = yield api.getPipeline(heroku, pipelineIDOrName)

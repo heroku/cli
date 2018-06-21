@@ -1,6 +1,6 @@
 const prompt = require('../../../lib/prompt')
 
-function* getCISettings (yes, organization) {
+function * getCISettings (yes, organization) {
   const settings = yes ? {ci: true} : yield prompt([{
     type: 'confirm',
     name: 'ci',

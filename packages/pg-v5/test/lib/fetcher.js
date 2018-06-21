@@ -37,9 +37,9 @@ describe('fetcher', () => {
     it('returns addon attached to app', () => {
       stub.withArgs(sinon.match.any, 'myapp', 'DATABASE_URL', {addon_service: 'heroku-postgresql', namespace: null}).returns(Promise.resolve({addon: {name: 'postgres-1'}}))
       return fetcher(new Heroku()).addon('myapp', 'DATABASE_URL')
-      .then(addon => {
-        expect(addon.name, 'to equal', 'postgres-1')
-      })
+        .then(addon => {
+          expect(addon.name, 'to equal', 'postgres-1')
+        })
     })
   })
 
@@ -54,7 +54,7 @@ describe('fetcher', () => {
         'DATABASE_URL': 'postgres://pguser:pgpass@pghost.com/pgdb'
       })
       return fetcher(new Heroku()).database('myapp', 'DATABASE_URL')
-      .then(db => expect(db.user, 'to equal', 'pguser'))
+        .then(db => expect(db.user, 'to equal', 'pguser'))
     })
 
     it('uses attachment db config', () => {
@@ -67,7 +67,7 @@ describe('fetcher', () => {
         'DATABASE_URL': 'postgres://pguser:pgpass@pghost.com/pgdb'
       })
       return fetcher(new Heroku()).database('myapp', 'attach-myapp::DATABASE_URL')
-      .then(db => expect(db.user, 'to equal', 'pguser'))
+        .then(db => expect(db.user, 'to equal', 'pguser'))
     })
 
     it('returns db connection info when multiple but no ambiguity', () => {
@@ -91,7 +91,7 @@ describe('fetcher', () => {
       })
 
       return fetcher(new Heroku()).database('myapp', 'DATABASE_URL')
-      .then(db => expect(db.user, 'to equal', 'pguser'))
+        .then(db => expect(db.user, 'to equal', 'pguser'))
     })
 
     it('returns db connection for app::config info when multiple but no ambiguity', () => {
@@ -115,7 +115,7 @@ describe('fetcher', () => {
       })
 
       return fetcher(new Heroku()).database('myapp', 'DATABASE_URL')
-      .then(db => expect(db.user, 'to equal', 'pguser'))
+        .then(db => expect(db.user, 'to equal', 'pguser'))
     })
 
     it('errors when config var value ambiguity', () => {
@@ -199,15 +199,15 @@ describe('fetcher', () => {
         api.get('/apps/myapp/addon-attachments').reply(200, attachments)
 
         return fetcher(new Heroku()).database('myapp')
-        .then((db) => expect(db, 'to equal', {
-          user: 'pguser',
-          password: 'pgpass',
-          database: 'pgdb',
-          host: 'pghost.com',
-          port: null,
-          attachment: attachments[0],
-          url: url.parse('postgres://pguser:pgpass@pghost.com/pgdb')
-        }))
+          .then((db) => expect(db, 'to equal', {
+            user: 'pguser',
+            password: 'pgpass',
+            database: 'pgdb',
+            host: 'pghost.com',
+            port: null,
+            attachment: attachments[0],
+            url: url.parse('postgres://pguser:pgpass@pghost.com/pgdb')
+          }))
       })
 
       it('returns when DATABASE_URL db arg', () => {
@@ -235,15 +235,15 @@ describe('fetcher', () => {
         api.get('/apps/myapp/addon-attachments').reply(200, attachments)
 
         return fetcher(new Heroku()).database('myapp', 'DATABASE_URL')
-        .then((db) => expect(db, 'to equal', {
-          user: 'pguser',
-          password: 'pgpass',
-          database: 'pgdb',
-          host: 'pghost.com',
-          port: null,
-          attachment: attachments[0],
-          url: url.parse('postgres://pguser:pgpass@pghost.com/pgdb')
-        }))
+          .then((db) => expect(db, 'to equal', {
+            user: 'pguser',
+            password: 'pgpass',
+            database: 'pgdb',
+            host: 'pghost.com',
+            port: null,
+            attachment: attachments[0],
+            url: url.parse('postgres://pguser:pgpass@pghost.com/pgdb')
+          }))
       })
 
       it('returns when attach-app::DATABASE_URL db arg', () => {
@@ -271,15 +271,15 @@ describe('fetcher', () => {
         api.get('/apps/attach-app/addon-attachments').reply(200, attachments)
 
         return fetcher(new Heroku()).database('myapp', 'attach-app::DATABASE_URL')
-        .then((db) => expect(db, 'to equal', {
-          user: 'pguser',
-          password: 'pgpass',
-          database: 'pgdb',
-          host: 'pghost.com',
-          port: null,
-          attachment: attachments[0],
-          url: url.parse('postgres://pguser:pgpass@pghost.com/pgdb')
-        }))
+          .then((db) => expect(db, 'to equal', {
+            user: 'pguser',
+            password: 'pgpass',
+            database: 'pgdb',
+            host: 'pghost.com',
+            port: null,
+            attachment: attachments[0],
+            url: url.parse('postgres://pguser:pgpass@pghost.com/pgdb')
+          }))
       })
 
       it('returns when DATABASE db arg', () => {
@@ -307,15 +307,15 @@ describe('fetcher', () => {
         api.get('/apps/myapp/addon-attachments').reply(200, attachments)
 
         return fetcher(new Heroku()).database('myapp', 'DATABASE')
-        .then((db) => expect(db, 'to equal', {
-          user: 'pguser',
-          password: 'pgpass',
-          database: 'pgdb',
-          host: 'pghost.com',
-          port: null,
-          attachment: attachments[0],
-          url: url.parse('postgres://pguser:pgpass@pghost.com/pgdb')
-        }))
+          .then((db) => expect(db, 'to equal', {
+            user: 'pguser',
+            password: 'pgpass',
+            database: 'pgdb',
+            host: 'pghost.com',
+            port: null,
+            attachment: attachments[0],
+            url: url.parse('postgres://pguser:pgpass@pghost.com/pgdb')
+          }))
       })
 
       it('throws not found if not neither set', () => {
@@ -409,12 +409,12 @@ describe('fetcher', () => {
       api.get('/apps/myapp/addon-attachments').reply(200, attachments)
 
       return fetcher(new Heroku()).all('myapp')
-      .then(addons => {
-        expect(addons[0], 'to satisfy', {name: 'postgres-1'})
-        expect(addons[1], 'to satisfy', {name: 'postgres-2'})
-        expect(addons[0], 'to satisfy', {attachment_names: ['DATABASE', 'HEROKU_POSTGRESQL_PINK']})
-        expect(addons.length, 'to equal', 2)
-      })
+        .then(addons => {
+          expect(addons[0], 'to satisfy', {name: 'postgres-1'})
+          expect(addons[1], 'to satisfy', {name: 'postgres-2'})
+          expect(addons[0], 'to satisfy', {attachment_names: ['DATABASE', 'HEROKU_POSTGRESQL_PINK']})
+          expect(addons.length, 'to equal', 2)
+        })
     })
   })
 })

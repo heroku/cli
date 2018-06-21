@@ -70,7 +70,7 @@ Transferring example pipeline to the acme-widgets team... done`,
     flags.pipeline({ name: 'pipeline', required: true, hasValue: true }),
     { name: 'confirm', char: 'c', hasValue: true }
   ],
-  run: cli.command(co.wrap(function* (context, heroku) {
+  run: cli.command(co.wrap(function * (context, heroku) {
     const pipeline = yield disambiguate(heroku, context.flags.pipeline)
     const newOwner = yield getOwner(heroku, context.args.owner)
     const apps = yield api.listPipelineApps(heroku, pipeline.id)

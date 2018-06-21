@@ -26,7 +26,7 @@ Adding example-admin to example pipeline as production... done`,
   flags: [
     {name: 'stage', char: 's', description: 'stage of first app in pipeline', hasValue: true, completion: StageCompletion}
   ],
-  run: cli.command(co.wrap(function* (context, heroku) {
+  run: cli.command(co.wrap(function * (context, heroku) {
     const app = context.app
 
     var stage

@@ -7,7 +7,7 @@ function filter (obj) {
   return ret
 }
 
-function* getNameAndRepo (args) {
+function * getNameAndRepo (args) {
   const answer = yield prompt([{
     type: 'input',
     name: 'name',

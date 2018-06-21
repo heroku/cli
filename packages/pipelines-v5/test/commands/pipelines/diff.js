@@ -97,10 +97,10 @@ describe('pipelines:diff', function () {
         .reply(404, { message: 'Not found.' })
 
       return cmd.run({ app: targetApp.name })
-      .then(function () {
-        req.done()
-        expect(cli.stderr).to.contain('to be a part of any pipeline')
-      })
+        .then(function () {
+          req.done()
+          expect(cli.stderr).to.contain('to be a part of any pipeline')
+        })
     })
   })
 
@@ -116,9 +116,9 @@ describe('pipelines:diff', function () {
         .reply(200, [targetApp])
 
       return cmd.run({ app: targetApp.name })
-      .then(function () {
-        expect(cli.stderr).to.contain('no downstream apps')
-      })
+        .then(function () {
+          expect(cli.stderr).to.contain('no downstream apps')
+        })
     })
   })
 
@@ -139,10 +139,10 @@ describe('pipelines:diff', function () {
         .reply(404, { message: 'Not found.' })
 
       return cmd.run({ app: targetApp.name })
-      .then(function () {
-        req.done()
-        expect(cli.stderr).to.contain('connected to GitHub')
-      })
+        .then(function () {
+          req.done()
+          expect(cli.stderr).to.contain('connected to GitHub')
+        })
     })
 
     it('should return an error if the target app has no release', function () {
@@ -154,10 +154,10 @@ describe('pipelines:diff', function () {
         .reply(200, [{ slug: null }])
 
       return cmd.run({ app: targetApp.name })
-      .then(function () {
-        req.done()
-        expect(cli.stderr).to.contain('No release was found')
-      })
+        .then(function () {
+          req.done()
+          expect(cli.stderr).to.contain('No release was found')
+        })
     })
   })
 
@@ -197,13 +197,13 @@ describe('pipelines:diff', function () {
         .reply(200, { commit: 'COMMIT-HASH' })
 
       return cmd.run({ app: targetApp.name })
-      .then(function () {
-        req1.done()
-        req2.done()
+        .then(function () {
+          req1.done()
+          req2.done()
 
-        expect(cli.stdout).to.contain(`${targetApp.name} is up to date with ${downstreamApp1.name}`)
-        expect(cli.stdout).to.contain(`${targetApp.name} was not compared to ${downstreamApp2.name}`)
-      })
+          expect(cli.stdout).to.contain(`${targetApp.name} is up to date with ${downstreamApp1.name}`)
+          expect(cli.stdout).to.contain(`${targetApp.name} was not compared to ${downstreamApp2.name}`)
+        })
     })
 
     it('should handle non-200 responses from GitHub', function () {
@@ -219,10 +219,10 @@ describe('pipelines:diff', function () {
         .reply(404)
 
       return cmd.run({ app: targetApp.name })
-      .then(function () {
-        req.done()
-        expect(cli.stdout).to.contain(`unable to perform a diff`)
-      })
+        .then(function () {
+          req.done()
+          expect(cli.stdout).to.contain(`unable to perform a diff`)
+        })
     })
   })
 })

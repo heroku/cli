@@ -10,7 +10,7 @@ let stages = require('../../lib/stages').inferrableStageNames
 const {flags} = require('@heroku-cli/command')
 const createCoupling = require('../../lib/api').createCoupling
 
-function* run (context, heroku) {
+function * run (context, heroku) {
   let name, stage, owner, ownerID, ownerType
   let guesses = infer(context.app)
   let questions = []

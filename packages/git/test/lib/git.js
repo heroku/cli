@@ -17,10 +17,10 @@ describe('git', function () {
   it('runs exec', function () {
     mock.expects('execFile').withArgs('git', ['remote']).yieldsAsync(null, 'foo')
     return git.exec(['remote'])
-    .then((data) => {
-      expect(data, 'to equal', 'foo')
-      mock.verify()
-    })
+      .then((data) => {
+        expect(data, 'to equal', 'foo')
+        mock.verify()
+      })
   })
 
   it('translates exec Errno::ENOENT to a friendlier error message', function () {
@@ -45,7 +45,7 @@ describe('git', function () {
     mock.expects('spawn').withExactArgs('git', ['remote'], {stdio: [0, 1, 2]}).returns(emitter)
     process.nextTick(() => emitter.emit('close'))
     return git.spawn(['remote'])
-    .then(() => mock.verify())
+      .then(() => mock.verify())
   })
 
   it('translates spawn Errno::ENOENT to a friendlier error message', function () {
@@ -72,8 +72,8 @@ describe('git', function () {
   it('gets heroku git remote config', function () {
     mock.expects('execFile').withArgs('git', ['config', 'heroku.remote']).yieldsAsync(null, 'staging')
     return git.remoteFromGitConfig()
-    .then((remote) => expect(remote, 'to equal', 'staging'))
-    .then(() => mock.verify())
+      .then((remote) => expect(remote, 'to equal', 'staging'))
+      .then(() => mock.verify())
   })
 
   it('returns an http git url', function () {

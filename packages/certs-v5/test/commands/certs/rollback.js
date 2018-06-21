@@ -54,7 +54,8 @@ describe('heroku certs:rollback', function () {
     })
   })
 
-  let callback = function (path, endpoint) {
+  let callback = function (err, path, endpoint) {
+    if (err) throw err
     return nock('https://api.heroku.com', {
       reqheaders: {'Accept': 'application/vnd.heroku+json; version=3.ssl_cert'}
     })

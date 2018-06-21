@@ -111,11 +111,11 @@ production-app-1   production`)
 
     it('displays json format', function () {
       return cmd.run({ args: { pipeline: 'example' }, flags: { json: true } })
-      .then(() => {
-        JSON.parse(cli.stdout).pipeline.name.should.eq('example')
-        JSON.parse(cli.stdout).apps.length.should.eq(9)
-      })
-      .then(() => api.done())
+        .then(() => {
+          JSON.parse(cli.stdout).pipeline.name.should.eq('example')
+          JSON.parse(cli.stdout).apps.length.should.eq(9)
+        })
+        .then(() => api.done())
     })
 
     itShowsPipelineApps()

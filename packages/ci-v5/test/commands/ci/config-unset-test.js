@@ -14,7 +14,7 @@ describe('heroku ci:config:unset', function () {
     pipeline = Factory.pipeline
   })
 
-  it('unsets config', function* () {
+  it('unsets config', function * () {
     const api = nock('https://api.heroku.com')
       .get(`/pipelines/${pipeline.id}`)
       .reply(200, pipeline)

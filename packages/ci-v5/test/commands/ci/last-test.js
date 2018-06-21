@@ -39,7 +39,7 @@ describe('heroku ci:last', function () {
     process.exit.restore()
   })
 
-  it('with runs, displays the results of the latest run', function* () {
+  it('with runs, displays the results of the latest run', function * () {
     const api = nock('https://api.heroku.com')
       .get(`/pipelines/${pipeline.id}`)
       .reply(200, pipeline)
@@ -65,7 +65,7 @@ describe('heroku ci:last', function () {
     streamAPI.done()
   })
 
-  it('without any runs, reports that there are no runs', function* () {
+  it('without any runs, reports that there are no runs', function * () {
     let api = nock('https://api.heroku.com')
       .get(`/pipelines/${pipeline.id}`)
       .reply(200, pipeline)

@@ -69,7 +69,7 @@ describe('pg:diagnose', () => {
       ]
     })
     return cmd.run({app: 'myapp', args: {}})
-    .then(() => expect(cli.stdout, 'to equal', `Report 697c8bd7-dbba-4f2d-83b6-789c58cc3a9c for myapp::postgres-1
+      .then(() => expect(cli.stdout, 'to equal', `Report 697c8bd7-dbba-4f2d-83b6-789c58cc3a9c for myapp::postgres-1
 available for one month after creation on 101
 
 RED: Connection count
@@ -101,7 +101,7 @@ Load 100
       ]
     })
     return cmd.run({app: 'myapp', args: {'DATABASE|REPORT_ID': '697c8bd7-dbba-4f2d-83b6-789c58cc3a9c'}})
-    .then(() => expect(cli.stdout, 'to equal', `Report 697c8bd7-dbba-4f2d-83b6-789c58cc3a9c for myapp::postgres-1
+      .then(() => expect(cli.stdout, 'to equal', `Report 697c8bd7-dbba-4f2d-83b6-789c58cc3a9c for myapp::postgres-1
 available for one month after creation on 101
 
 RED: Connection count
@@ -133,7 +133,7 @@ Load 100
       ]
     })
     return cmd.run({app: 'myapp', args: {'DATABASE|REPORT_ID': '697c8bd7-dbba-4f2d-83b6-789c58cc3a9c'}})
-    .then(() => expect(cli.stdout, 'to equal', `Report 697c8bd7-dbba-4f2d-83b6-789c58cc3a9c for myapp::postgres-1
+      .then(() => expect(cli.stdout, 'to equal', `Report 697c8bd7-dbba-4f2d-83b6-789c58cc3a9c for myapp::postgres-1
 available for one month after creation on 101
 
 RED: Connection count
@@ -168,7 +168,7 @@ RED: Load
       ]
     })
     return cmd.run({app: 'myapp', args: {'DATABASE|REPORT_ID': '697c8bd7-dbba-4f2d-83b6-789c58cc3a9c'}})
-    .then(() => expect(cli.stdout, 'to equal', `Report abc123 for appname::dbcolor
+      .then(() => expect(cli.stdout, 'to equal', `Report abc123 for appname::dbcolor
 available for one month after creation on 2014-06-24 01:26:11.941197+00
 
 RED: Connection Count
@@ -203,7 +203,7 @@ Error Load check not supported on this plan
       ]
     })
     return cmd.run({app: 'myapp', args: {'DATABASE|REPORT_ID': '697c8bd7-dbba-4f2d-83b6-789c58cc3a9c'}})
-    .then(() => expect(cli.stdout, 'to equal', `Report abc123 for appname::dbcolor
+      .then(() => expect(cli.stdout, 'to equal', `Report abc123 for appname::dbcolor
 available for one month after creation on 2014-06-24 01:26:11.941197+00
 
 SKIPPED: Load

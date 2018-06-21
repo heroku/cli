@@ -78,8 +78,8 @@ describe('psql', () => {
         }
       )
       return psql.exec(db, 'SELECT NOW();')
-      .then(() => cp.verify())
-      .then(() => cp.restore())
+        .then(() => cp.verify())
+        .then(() => cp.restore())
     }))
     it('opens an SSH tunnel and runs psql for bastion databases', sinon.test(() => {
       let cp = sinon.mock(require('child_process'))
@@ -111,10 +111,10 @@ describe('psql', () => {
         }
       )
       return psql.exec(bastionDb, 'SELECT NOW();', 1000)
-      .then(() => expect(
-        tunnelStub.withArgs(tunnelConf).calledOnce, 'to equal', true))
-      .then(() => cp.verify())
-      .then(() => cp.restore())
+        .then(() => expect(
+          tunnelStub.withArgs(tunnelConf).calledOnce, 'to equal', true))
+        .then(() => cp.verify())
+        .then(() => cp.restore())
     }))
   })
 
@@ -150,8 +150,8 @@ describe('psql', () => {
         }
       )
       return psql.execFile(db, 'test.sql')
-      .then(() => cp.verify())
-      .then(() => cp.restore())
+        .then(() => cp.verify())
+        .then(() => cp.restore())
     }))
     it('opens an SSH tunnel and runs psql for bastion databases', sinon.test(() => {
       let cp = sinon.mock(require('child_process'))
@@ -183,10 +183,10 @@ describe('psql', () => {
         }
       )
       return psql.execFile(bastionDb, 'test.sql', 1000)
-      .then(() => expect(
-        tunnelStub.withArgs(tunnelConf).calledOnce, 'to equal', true))
-      .then(() => cp.verify())
-      .then(() => cp.restore())
+        .then(() => expect(
+          tunnelStub.withArgs(tunnelConf).calledOnce, 'to equal', true))
+        .then(() => cp.verify())
+        .then(() => cp.restore())
     }))
   })
 })

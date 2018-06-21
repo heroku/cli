@@ -27,7 +27,7 @@ function * run (context, heroku) {
     }
 
     credentials = yield heroku.get(`/postgres/v0/databases/${addon.name}/credentials`,
-                                     { host: host(addon) })
+      { host: host(addon) })
     let isDefaultCredential = (cred) => cred.name !== 'default'
     credentials = sortBy(credentials, isDefaultCredential, 'name')
     attachments = yield heroku.get(`/addons/${addon.name}/addon-attachments`)

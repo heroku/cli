@@ -53,9 +53,9 @@ function printDomains (domainsTable, msg) {
     cli.styledHeader(`${msg}  Update your application's DNS settings as follows`)
 
     let columns = [
-        {label: 'Domain', key: 'hostname'},
-        {label: 'Record Type', key: 'type'},
-        {label: 'DNS Target', key: 'cname'}
+      {label: 'Domain', key: 'hostname'},
+      {label: 'Record Type', key: 'type'},
+      {label: 'DNS Target', key: 'cname'}
     ]
 
     if (_.some(domainsTable, (domain) => domain.warning)) {

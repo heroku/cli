@@ -5,7 +5,7 @@ const api = require('../../lib/heroku-api')
 const Utils = require('../../lib/utils')
 const PipelineCompletion = require('../../lib/completions')
 
-function* run (context, heroku) {
+function * run (context, heroku) {
   const pipeline = yield Utils.getPipeline(context, heroku)
   const config = yield api.configVars(heroku, pipeline.id)
   const value = config[context.args.key]

@@ -120,9 +120,9 @@ ransom                                                                         a
 `
 
     return cmd.run({app: 'myapp', args: {}, flags: {name: 'jeff'}})
-              .then(() => expect(cli.stdout,
-                                 'to equal',
-                                 displayed))
+      .then(() => expect(cli.stdout,
+        'to equal',
+        displayed))
   })
 
   it('shows the correct rotation information if no connection information is available yet', () => {
@@ -195,8 +195,8 @@ ransom                                                active
 `
 
     return cmd.run({app: 'myapp', args: {}, flags: {name: 'jeff'}})
-              .then(() => expect(cli.stdout,
-                                 'to equal',
-                                 displayed))
+      .then(() => expect(cli.stdout,
+        'to equal',
+        displayed))
   })
 })

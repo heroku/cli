@@ -1,12 +1,29 @@
 {
-  "private": true,
+  "devDependencies": {
+    "eslint": "4.19.1",
+    "eslint-config-standard": "11.0.0",
+    "eslint-plugin-import": "^2.12.0",
+    "eslint-plugin-node": "^6.0.1",
+    "eslint-plugin-promise": "^3.8.0",
+    "eslint-plugin-standard": "^3.1.0",
+    "standard": "11.0.1"
+  },
+  "standard": {
+    "env": "mocha",
+    "ignore": [
+      "**/node_modules/**",
+      "packages/*/lib/**"
+    ]
+  },
   "engines": {
     "node": ">=8.0.0"
   },
+  "private": true,
+  "scripts": {
+    "test": "lerna run test --stream --concurrency 2",
+    "posttest": "standard"
+  },
   "workspaces": [
     "packages/*"
-  ],
-  "scripts": {
-    "test": "lerna run test --stream --concurrency 2"
-  }
+  ]
 }

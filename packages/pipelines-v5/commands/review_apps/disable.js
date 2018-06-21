@@ -35,7 +35,7 @@ Configuring pipeline... done`,
       hasValue: false
     }
   ],
-  run: cli.command(co.wrap(function* (context, heroku) {
+  run: cli.command(co.wrap(function * (context, heroku) {
     let disable = false
 
     // if no flags are passed then the user is disabling review apps

@@ -37,7 +37,7 @@ Configuring pipeline... done`,
       hasValue: false
     }
   ],
-  run: cli.command(co.wrap(function* (context, heroku) {
+  run: cli.command(co.wrap(function * (context, heroku) {
     const kolkrabbi = new KolkrabbiAPI(context.version, heroku.options.token)
 
     const settings = {

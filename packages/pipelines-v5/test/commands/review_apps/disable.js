@@ -50,7 +50,7 @@ describe('reviewapps:disable', function () {
     })
   })
 
-  it('it disables autodeploys', function* () {
+  it('it disables autodeploys', function * () {
     return cmd.run({
       flags: {
         pipeline: pipeline.name,
@@ -62,7 +62,7 @@ describe('reviewapps:disable', function () {
     })
   })
 
-  it('it disables autodestroy', function* () {
+  it('it disables autodestroy', function * () {
     return cmd.run({
       flags: {
         pipeline: pipeline.name,
@@ -74,7 +74,7 @@ describe('reviewapps:disable', function () {
     })
   })
 
-  it('it succeeds with autodeploy and autodestroy', function* () {
+  it('it succeeds with autodeploy and autodestroy', function * () {
     return cmd.run({
       flags: {
         pipeline: pipeline.name,

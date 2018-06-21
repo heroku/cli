@@ -32,12 +32,12 @@ describe('git:remote', function () {
       .reply(200, {name: 'myapp'})
 
     return remote.run({flags: {app: 'myapp'}, args: []})
-    .then(() => expect(cli.stdout, 'to equal', 'set git remote heroku to https://git.heroku.com/myapp.git\n'))
-    .then(() => {
-      mock.verify()
-      mock.restore()
-      api.done()
-    })
+      .then(() => expect(cli.stdout, 'to equal', 'set git remote heroku to https://git.heroku.com/myapp.git\n'))
+      .then(() => {
+        mock.verify()
+        mock.restore()
+        api.done()
+      })
   })
 
   it('adds an http-git remote', function () {
@@ -51,11 +51,11 @@ describe('git:remote', function () {
       .reply(200, {name: 'myapp'})
 
     return remote.run({flags: {app: 'myapp'}, args: []})
-    .then(() => expect(cli.stdout, 'to equal', 'set git remote heroku to https://git.heroku.com/myapp.git\n'))
-    .then(() => {
-      mock.verify()
-      mock.restore()
-      api.done()
-    })
+      .then(() => expect(cli.stdout, 'to equal', 'set git remote heroku to https://git.heroku.com/myapp.git\n'))
+      .then(() => {
+        mock.verify()
+        mock.restore()
+        api.done()
+      })
   })
 })

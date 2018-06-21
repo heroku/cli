@@ -18,14 +18,14 @@ describe('pipelines', () => {
       .reply(200, pipelines)
 
     return cmd.run({flags: {}})
-    .then(() => {
-      const output = cli.stdout
+      .then(() => {
+        const output = cli.stdout
 
-      output.should.contain('My Pipelines')
-      output.should.contain('Betelgeuse')
-      output.should.contain('Sirius')
-    })
-    .then(() => api.done())
+        output.should.contain('My Pipelines')
+        output.should.contain('Betelgeuse')
+        output.should.contain('Sirius')
+      })
+      .then(() => api.done())
   })
 
   it('outputs json format', () => {
@@ -39,7 +39,7 @@ describe('pipelines', () => {
       .reply(200, pipelines)
 
     return cmd.run({flags: {json: true}})
-    .then(() => JSON.parse(cli.stdout)[0].name.should.eq('Betelgeuse'))
-    .then(() => api.done())
+      .then(() => JSON.parse(cli.stdout)[0].name.should.eq('Betelgeuse'))
+      .then(() => api.done())
   })
 })

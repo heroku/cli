@@ -40,7 +40,7 @@ describe('pg:ps', () => {
 
   it('runs query', () => {
     return cmd.run({app: 'myapp', args: {}, flags: {}})
-    .then(() => expect(psql._query.trim(), 'to equal', `SELECT
+      .then(() => expect(psql._query.trim(), 'to equal', `SELECT
  pid,
  state,
  application_name AS source,
@@ -59,7 +59,7 @@ WHERE
 
   it('runs verbose query', () => {
     return cmd.run({app: 'myapp', args: {}, flags: {verbose: true}})
-    .then(() => expect(psql._query.trim(), 'to equal', `SELECT
+      .then(() => expect(psql._query.trim(), 'to equal', `SELECT
  pid,
  state,
  application_name AS source,

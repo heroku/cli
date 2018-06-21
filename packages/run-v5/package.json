@@ -35,7 +35,6 @@
     "netrc": "0.1.4",
     "nock": "^9.2.6",
     "sinon": "^5.0.10",
-    "standard": "^11.0.1",
     "unexpected": "^10.38.0"
   },
   "files": [
@@ -53,12 +52,8 @@
   "repository": "heroku/cli",
   "scripts": {
     "postpack": "rm oclif.manifest.json",
-    "posttest": "standard",
     "prepack": "oclif-dev manifest",
     "test": "mocha",
     "version": "oclif-dev readme && git add README.md"
-  },
-  "standard": {
-    "env": "mocha"
   }
 }

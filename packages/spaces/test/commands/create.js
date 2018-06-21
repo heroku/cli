@@ -23,7 +23,7 @@ describe('spaces:create', function () {
       })
       .reply(201,
         {shield: false, name: 'my-space', team: {name: 'my-team'}, region: {name: 'my-region'}, features: [ 'one', 'two' ], state: 'enabled', created_at: now}
-    )
+      )
     return cmd.run({team: 'my-team', flags: {space: 'my-space', region: 'my-region', features: 'one, two', 'owner-pool': 'party'}})
       .then(() => expect(cli.stdout).to.equal(
         `=== my-space
@@ -47,7 +47,7 @@ Created at: ${now.toISOString()}
       })
       .reply(201,
         {shield: false, name: 'my-space', team: {name: 'my-team'}, region: {name: 'my-region'}, features: [ 'one', 'two' ], state: 'enabled', created_at: now}
-    )
+      )
     return cmd.run({team: 'my-team', flags: {space: 'my-space', region: 'my-region', features: 'one, two', 'owner-pool': 'party'}})
       .then(() => expect(cli.stderr).to.include(
         `Each Heroku Standard Private Space costs $1000`))
@@ -65,7 +65,7 @@ Created at: ${now.toISOString()}
       })
       .reply(201,
         {shield: true, name: 'my-space', team: {name: 'my-team'}, region: {name: 'my-region'}, features: [ 'one', 'two' ], state: 'enabled', created_at: now}
-    )
+      )
     return cmd.run({team: 'my-team', flags: {space: 'my-space', region: 'my-region', features: 'one, two', shield: true}, log_drain_url: 'https://logs.cheetah.com'})
       .then(() => expect(cli.stdout).to.equal(
         `=== my-space
@@ -89,7 +89,7 @@ Created at: ${now.toISOString()}
       })
       .reply(201,
         {shield: true, name: 'my-space', team: {name: 'my-team'}, region: {name: 'my-region'}, features: [ 'one', 'two' ], state: 'enabled', created_at: now}
-    )
+      )
     return cmd.run({team: 'my-team', flags: {space: 'my-space', region: 'my-region', features: 'one, two', shield: true}, log_drain_url: 'https://logs.cheetah.com'})
       .then(() => expect(cli.stderr).to.include(
         `Each Heroku Shield Private Space costs $3000`))
@@ -107,7 +107,7 @@ Created at: ${now.toISOString()}
       })
       .reply(201,
         {shield: false, name: 'my-space', team: {name: 'my-team'}, region: {name: 'my-region'}, features: [ 'one', 'two' ], state: 'enabled', created_at: now}
-    )
+      )
     return cmd.run({team: 'my-team', flags: {space: 'my-space', region: 'my-region', features: 'one, two', cidr: '10.0.0.0/16'}, shield: true, log_drain_url: 'https://logs.cheetah.com'})
       .then(() => expect(cli.stdout).to.equal(
         `=== my-space

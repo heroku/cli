@@ -23,7 +23,7 @@ describe('heroku ci', function () {
     pipeline = Factory.pipeline
   })
 
-  it('displays recent runs', function* () {
+  it('displays recent runs', function * () {
     const api = nock('https://api.heroku.com')
       .get(`/pipelines/${pipeline.id}`)
       .reply(200, pipeline)
@@ -45,7 +45,7 @@ describe('heroku ci', function () {
     api.done()
   })
 
-  it('displays recent runs formatted as JSON', function* () {
+  it('displays recent runs formatted as JSON', function * () {
     const api = nock('https://api.heroku.com')
       .get(`/pipelines/${pipeline.id}`)
       .reply(200, pipeline)

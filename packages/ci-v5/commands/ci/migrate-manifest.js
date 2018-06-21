@@ -5,7 +5,7 @@ const BB = require('bluebird')
 const writeFile = BB.promisify(fs.writeFile)
 const unlinkFile = BB.promisify(fs.unlink)
 
-function* run (context, heroku) {
+function * run (context, heroku) {
   const appJSONPath = `${process.cwd()}/app.json`
   const appCiJSONPath = `${process.cwd()}/app-ci.json`
   let action
@@ -14,7 +14,7 @@ function* run (context, heroku) {
     cli.log(cli.color.green('Please check the contents of your app.json before committing to your repo.'))
   }
 
-  function* updateAppJson () {
+  function * updateAppJson () {
     yield cli.action(
       // Updating / Creating
       `${action.charAt(0).toUpperCase() + action.slice(1)} app.json file`,

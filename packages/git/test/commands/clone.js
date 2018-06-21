@@ -11,7 +11,7 @@ describe('git:clone', function () {
     let clone = require('../..').commands.find((c) => c.topic === 'git' && c.command === 'clone')
 
     return expect(clone.run({flags: {}, args: []}),
-                  'to be rejected with', {message: 'Specify an app with --app'})
+      'to be rejected with', {message: 'Specify an app with --app'})
   })
 
   it('clones the repo', function () {
@@ -24,10 +24,10 @@ describe('git:clone', function () {
       .reply(200, {name: 'myapp'})
 
     return clone.run({flags: {app: 'myapp'}, args: []})
-    .then(() => {
-      mock.verify()
-      mock.restore()
-      api.done()
-    })
+      .then(() => {
+        mock.verify()
+        mock.restore()
+        api.done()
+      })
   })
 })

@@ -48,7 +48,7 @@ describe('heroku certs:auto', function () {
     return certs.run({app: 'example'}).then(function () {
       expect(cli.stderr).to.equal('')
       expect(cli.stdout).to.equal(
-`=== Automatic Certificate Management is enabled on example
+        `=== Automatic Certificate Management is enabled on example
 
 Certificate details:
 Common Name(s): heroku-acm.heroku-cli-sni-test.com
@@ -93,7 +93,7 @@ heroku-san-test.heroku-cli-sni-test.com  OK      less than a minute
     return certs.run({app: 'example'}).then(function () {
       expect(cli.stderr).to.equal('')
       expect(cli.stdout).to.equal(
-`=== Automatic Certificate Management is enabled on example
+        `=== Automatic Certificate Management is enabled on example
 
 Certificate details:
 Common Name(s): heroku-acm.heroku-cli-sni-test.com
@@ -148,7 +148,7 @@ heroku-unknown.heroku-cli-sni-test.com       Waiting       less than a minute
     return certs.run({app: 'example'}).then(function () {
       expect(cli.stderr).to.equal('')
       expect(cli.stdout).to.equal(
-`=== Automatic Certificate Management is enabled on example
+        `=== Automatic Certificate Management is enabled on example
 
 Domain                                   Status   Last Updated
 ───────────────────────────────────────  ───────  ──────────────────
@@ -185,7 +185,7 @@ heroku-unknown.heroku-cli-sni-test.com   Waiting  less than a minute
     return certs.run({app: 'example'}).then(function () {
       expect(cli.stderr).to.equal('')
       expect(cli.stdout).to.equal(
-`=== Automatic Certificate Management is enabled on example
+        `=== Automatic Certificate Management is enabled on example
 
 Certificate details:
 Common Name(s): heroku-acm.heroku-cli-sni-test.com
@@ -229,7 +229,7 @@ heroku-failed.heroku-cli-sni-test.com    Failed  less than a minute
     return certs.run({app: 'example'}).then(function () {
       expect(cli.stderr).to.equal('')
       expect(cli.stdout).to.equal(
-`=== Automatic Certificate Management is enabled on example
+        `=== Automatic Certificate Management is enabled on example
 
 Certificate details:
 Common Name(s): heroku-acm.heroku-cli-sni-test.com
@@ -292,7 +292,7 @@ heroku-failed.heroku-cli-sni-test.com    Failing  less than a minute
     return certs.run({app: 'example'}).then(function () {
       expect(cli.stderr).to.equal('')
       expect(cli.stdout).to.equal(
-`=== Automatic Certificate Management is enabled on example
+        `=== Automatic Certificate Management is enabled on example
 
 Domain                                  Status   Last Updated
 ──────────────────────────────────────  ───────  ──────────────────
@@ -323,7 +323,7 @@ heroku-failing.heroku-cli-sni-test.com  Failing  less than a minute
     return certs.run({app: 'example'}).then(function () {
       expect(cli.stderr).to.equal('')
       expect(cli.stdout).to.equal(
-`=== Automatic Certificate Management is enabled on example
+        `=== Automatic Certificate Management is enabled on example
 
 === Add a custom domain to your app by running: heroku domains:add <yourdomain.com>
 `)
@@ -365,7 +365,7 @@ heroku-failing.heroku-cli-sni-test.com  Failing  less than a minute
     return certs.run({app: 'example'}).then(function () {
       expect(cli.stderr).to.equal('')
       expect(cli.stdout).to.equal(
-`=== Automatic Certificate Management is enabled on example
+        `=== Automatic Certificate Management is enabled on example
 
 === Add a custom domain to your app by running: heroku domains:add <yourdomain.com>
 `)
@@ -411,7 +411,7 @@ heroku-failing.heroku-cli-sni-test.com  Failing  less than a minute
     return certs.run({app: 'example'}).then(function () {
       expect(cli.stderr).to.equal('')
       expect(cli.stdout).to.equal(
-`=== Automatic Certificate Management is enabled on example
+        `=== Automatic Certificate Management is enabled on example
 
 Certificate details:
 Common Name(s): heroku-acm.heroku-cli-sni-test.com

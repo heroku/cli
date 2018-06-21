@@ -13,7 +13,7 @@ module.exports = {
 Removing example-admin... done`,
   needsApp: true,
   needsAuth: true,
-  run: cli.command(co.wrap(function* (context, heroku) {
+  run: cli.command(co.wrap(function * (context, heroku) {
     const app = context.app
 
     yield cli.action(`Removing ${cli.color.app(app)}`, removeCoupling(heroku, app))

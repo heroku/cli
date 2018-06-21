@@ -36,8 +36,6 @@
     "mocha": "^5.1.1",
     "nock": "^9.2.5",
     "sinon": "^1.17.6",
-    "standard": "8.5.0",
-    "standard-tap": "^1.0.2",
     "std-mocks": "^1.0.1"
   },
   "engines": {
@@ -57,10 +55,9 @@
   "main": "index.js",
   "repository": "heroku/cli",
   "scripts": {
-    "format": "standard --format",
     "postpublish": "rm .oclif.manifest.json",
     "prepublishOnly": "oclif-dev manifest",
-    "test": "mocha -R tap && standard --verbose | standard-tap",
+    "test": "mocha -R tap",
     "version": "oclif-dev readme && git add README.md"
   }
 }

@@ -1,4 +1,4 @@
-/* eslint-env mocha */
+/* eslint-disable no-unused-expressions */
 
 const nock = require('nock')
 const expect = require('chai').expect
@@ -10,7 +10,7 @@ describe('Utils', function () {
   afterEach(() => nock.cleanAll())
 
   describe('#getPipeline', function () {
-    it('disambiguates when passing a pipeline', function* () {
+    it('disambiguates when passing a pipeline', function * () {
       const pipeline = Factory.pipeline
       const context = { flags: { pipeline: pipeline.id } }
       const api = nock(`https://api.heroku.com`)
@@ -22,7 +22,7 @@ describe('Utils', function () {
       api.done()
     })
 
-    it('uses pipeline-couplings when passing an application', function* () {
+    it('uses pipeline-couplings when passing an application', function * () {
       const app = '123-app'
 
       const coupling = { pipeline: Factory.pipeline }

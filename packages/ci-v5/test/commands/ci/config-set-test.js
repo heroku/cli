@@ -16,7 +16,7 @@ describe('heroku ci:config:set', function () {
     pipeline = Factory.pipeline
   })
 
-  it('sets new config', function* () {
+  it('sets new config', function * () {
     const api = nock('https://api.heroku.com')
       .get(`/pipelines/${pipeline.id}`)
       .reply(200, pipeline)

@@ -39,7 +39,6 @@
     "netrc-parser": "^3.1.5",
     "nock": "9.3.0",
     "proxyquire": "^2.0.1",
-    "standard": "^11.0.1",
     "std-mocks": "1.0.1",
     "testdouble": "^3.8.1",
     "time-require": "0.1.2",
@@ -62,12 +61,8 @@
   "repository": "heroku/cli",
   "scripts": {
     "postpublish": "rm .oclif.manifest.json",
-    "posttest": "standard",
     "prepublishOnly": "oclif-dev manifest && oclif-dev readme",
     "test": "TZ=utc mocha",
     "version": "oclif-dev readme && git add README.md"
-  },
-  "standard": {
-    "env": "mocha"
   }
 }

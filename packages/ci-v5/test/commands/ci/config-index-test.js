@@ -16,7 +16,7 @@ describe('heroku ci:config', function () {
     pipeline = Factory.pipeline
   })
 
-  it('displays config', function* () {
+  it('displays config', function * () {
     const api = nock('https://api.heroku.com')
       .get(`/pipelines/${pipeline.id}`)
       .reply(200, pipeline)
@@ -29,7 +29,7 @@ describe('heroku ci:config', function () {
     api.done()
   })
 
-  it('displays config formatted for shell', function* () {
+  it('displays config formatted for shell', function * () {
     const api = nock('https://api.heroku.com')
       .get(`/pipelines/${pipeline.id}`)
       .reply(200, pipeline)
@@ -42,7 +42,7 @@ describe('heroku ci:config', function () {
     api.done()
   })
 
-  it('displays config formatted as JSON', function* () {
+  it('displays config formatted as JSON', function * () {
     const api = nock('https://api.heroku.com')
       .get(`/pipelines/${pipeline.id}`)
       .reply(200, pipeline)

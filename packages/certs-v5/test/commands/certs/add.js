@@ -141,7 +141,7 @@ ${certificateDetails}
 === Your certificate has been added successfully.  Add a custom domain to your app by running heroku domains:add <yourdomain.com>
 `)
     })
-      /* eslint-enable no-irregular-whitespace */
+    /* eslint-enable no-irregular-whitespace */
   })
 
   it('# posts intermediaries to ssl doctor', function () {
@@ -191,7 +191,7 @@ ${certificateDetails}
 === Your certificate has been added successfully.  Add a custom domain to your app by running heroku domains:add <yourdomain.com>
 `)
     })
-      /* eslint-enable no-irregular-whitespace */
+    /* eslint-enable no-irregular-whitespace */
   })
 
   it('# errors out when args < 2', function () {
@@ -375,7 +375,7 @@ ${certificateDetails}
 === Your certificate has been added successfully.  Add a custom domain to your app by running heroku domains:add <yourdomain.com>
 `)
     })
-      /* eslint-enable no-irregular-whitespace */
+    /* eslint-enable no-irregular-whitespace */
   })
 
   it('# automatically creates an SSL endpoint if in dogwood', function () {
@@ -415,7 +415,7 @@ ${certificateDetails}
 === Your certificate has been added successfully.  Add a custom domain to your app by running heroku domains:add <yourdomain.com>
 `)
     })
-      /* eslint-enable no-irregular-whitespace */
+    /* eslint-enable no-irregular-whitespace */
   })
 
   describe('stable cnames', function () {
@@ -465,7 +465,7 @@ ${certificateDetails}
         .post('/apps/example/domains', {hostname: 'foo.example.org'})
         .reply(200,
           {'kind': 'custom', 'cname': 'foo.example.org.herokudns.com', 'hostname': 'foo.example.org'}
-      )
+        )
 
       return certs.run({app: 'example', args: ['pem_file', 'key_file'], flags: {bypass: true}}).then(function () {
         mock.done()
@@ -517,13 +517,13 @@ foo.example.org  CNAME        foo.example.org.herokudns.com
         .post('/apps/example/domains', {hostname: 'foo.example.org'})
         .reply(200,
           {'kind': 'custom', 'cname': 'foo.example.com.herokudns.com', 'hostname': 'foo.example.org'}
-      )
+        )
 
       let domainsCreateBar = nock('https://api.heroku.com')
         .post('/apps/example/domains', {hostname: 'bar.example.org'})
         .reply(200,
           {'kind': 'custom', 'cname': 'bar.example.com.herokudns.com', 'hostname': 'bar.example.org'}
-      )
+        )
 
       return certs.run({app: 'example', args: ['pem_file', 'key_file'], flags: {bypass: true, domains: 'foo.example.org,bar.example.org'}}).then(function () {
         mock.done()
@@ -569,18 +569,18 @@ bar.example.org  CNAME        bar.example.com.herokudns.com
         .post('/apps/example/domains', {hostname: 'foo.example.org'})
         .reply(200,
           {'kind': 'custom', 'cname': 'foo.example.org.herokudns.com', 'hostname': 'foo.example.org'}
-      )
+        )
 
       let domainsCreateBar = nock('https://api.heroku.com')
         .post('/apps/example/domains', {hostname: 'bar.example.org'})
         .reply(422, {'id': 'invalid_params', 'message': 'example.com is currently in use by another app.'}
-      )
+        )
 
       let domainsCreateBiz = nock('https://api.heroku.com')
         .post('/apps/example/domains', {hostname: 'biz.example.com'})
         .reply(200,
           {'kind': 'custom', 'cname': 'biz.example.com.herokudns.com', 'hostname': 'biz.example.com'}
-      )
+        )
 
       return assertExit(2, certs.run({app: 'example', args: ['pem_file', 'key_file'], flags: {bypass: true, domains: 'foo.example.org,bar.example.org,biz.example.com'}})).then(function () {
         mock.done()
@@ -672,7 +672,7 @@ foo.example.org  CNAME        foo.example.org.herokudns.com
         .post('/apps/example/domains', {hostname: 'foo.example.org'})
         .reply(200,
           {'kind': 'custom', 'cname': 'foo.example.org.herokudns.com', 'hostname': 'foo.example.org'}
-      )
+        )
 
       return certs.run({app: 'example', args: ['pem_file', 'key_file'], flags: {bypass: true, domains: 'foo.example.org'}}).then(function () {
         mock.done()
