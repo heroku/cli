@@ -1,10 +1,9 @@
 'use strict'
-/* globals describe it beforeEach afterEach commands */
 
 const cli = require('heroku-cli-util')
 const nock = require('nock')
 const expect = require('unexpected')
-const cmd = commands.find(c => c.topic === 'authorizations' && c.command === 'info')
+const cmd = require('../../lib/commands/authorizations/info')
 
 const distanceInWordsToNow = require('date-fns/distance_in_words_to_now')
 

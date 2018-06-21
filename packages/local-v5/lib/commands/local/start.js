@@ -21,10 +21,11 @@ function * run (context) {
     let processes = Object.keys(procHash).filter((x) => x !== 'release')
     execArgv.push(processes.join(','))
   }
-  yield require('../lib/fork_foreman')(execArgv)
+  yield require('../../fork_foreman')(execArgv)
 }
 
-const cmd = {
+module.exports = {
+  aliases: ['local:start'],
   topic: 'local',
   description: 'run heroku app locally',
   help: 'Start the application specified by a Procfile (defaults to ./Procfile)',
@@ -42,8 +43,3 @@ $ heroku local web=1,worker=2`,
   ],
   run: cli.command(co.wrap(run))
 }
-
-module.exports = [
-  cmd,
-  Object.assign({command: 'start'}, cmd)
-]

@@ -18,7 +18,7 @@ function * run (context) {
   execArgv.push('--') // disable node-foreman flag parsing
   execArgv.push(...context.args)
 
-  yield require('../lib/fork_foreman')(execArgv)
+  yield require('../../fork_foreman')(execArgv)
 }
 
 module.exports = {

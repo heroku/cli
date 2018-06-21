@@ -6,6 +6,7 @@
   "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
     "bin": "heroku",
+    "commands": "lib/commands",
     "topics": {
       "local": {
         "description": "run heroku app locally"
@@ -26,8 +27,6 @@
   },
   "files": [
     "oclif.manifest.json",
-    "index.js",
-    "commands",
     "lib"
   ],
   "homepage": "https://github.com/heroku/cli/tree/master/packages/local-v5",
@@ -35,7 +34,6 @@
     "heroku-plugin"
   ],
   "license": "ISC",
-  "main": "index.js",
   "repository": "heroku/cli",
   "scripts": {
     "postpublish": "rm oclif.manifest.json",

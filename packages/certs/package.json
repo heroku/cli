@@ -15,7 +15,7 @@
     "@oclif/test": "^1",
     "@oclif/tslint": "^1",
     "@types/chai": "^4",
-    "@types/mocha": "^5",
+    "@types/mocha": "^5.2.3",
     "@types/node": "^10",
     "chai": "^4",
     "globby": "^8",

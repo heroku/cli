@@ -5,7 +5,7 @@ const cli = require('heroku-cli-util')
 
 function * run () {
   let execArgv = ['--version']
-  yield require('../lib/fork_foreman')(execArgv)
+  yield require('../../fork_foreman')(execArgv)
 }
 
 module.exports = {

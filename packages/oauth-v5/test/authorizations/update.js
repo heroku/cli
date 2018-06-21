@@ -1,9 +1,8 @@
 'use strict'
-/* globals describe it beforeEach afterEach commands */
 
 const cli = require('heroku-cli-util')
 const nock = require('nock')
-const cmd = commands.find(c => c.topic === 'authorizations' && c.command === 'update')
+const cmd = require('../../lib/commands/authorizations/update')
 
 describe('authorizations:update', () => {
   let api
