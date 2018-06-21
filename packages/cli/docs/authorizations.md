@@ -22,6 +22,8 @@ OPTIONS
   -j, --json  output in json format
 ```
 
+_See code: [@heroku-cli/plugin-oauth-v5](https://github.com/heroku/cli/blob/v7.4.6/packages/oauth-v5/lib/commands/authorizations/index.js)_
+
 ## `heroku authorizations:create`
 
 create a new OAuth authorization
@@ -41,6 +43,8 @@ DESCRIPTION
   This creates an authorization with access to your Heroku account.
 ```
 
+_See code: [@heroku-cli/plugin-oauth-v5](https://github.com/heroku/cli/blob/v7.4.6/packages/oauth-v5/lib/commands/authorizations/create.js)_
+
 ## `heroku authorizations:info ID`
 
 show an existing OAuth authorization
@@ -52,6 +56,8 @@ USAGE
 OPTIONS
   -j, --json  output in json format
 ```
+
+_See code: [@heroku-cli/plugin-oauth-v5](https://github.com/heroku/cli/blob/v7.4.6/packages/oauth-v5/lib/commands/authorizations/info.js)_
 
 ## `heroku authorizations:revoke ID`
 
@@ -65,6 +71,8 @@ ALIASES
   $ heroku authorizations:destroy
 ```
 
+_See code: [@heroku-cli/plugin-oauth-v5](https://github.com/heroku/cli/blob/v7.4.6/packages/oauth-v5/lib/commands/authorizations/revoke.js)_
+
 ## `heroku authorizations:rotate ID`
 
 updates an OAuth authorization token
@@ -73,6 +81,8 @@ updates an OAuth authorization token
 USAGE
   $ heroku authorizations:rotate ID
 ```
+
+_See code: [@heroku-cli/plugin-oauth-v5](https://github.com/heroku/cli/blob/v7.4.6/packages/oauth-v5/lib/commands/authorizations/rotate.js)_
 
 ## `heroku authorizations:update ID`
 
@@ -87,3 +97,5 @@ OPTIONS
   --client-id=client-id          identifier of OAuth client to set
   --client-secret=client-secret  secret of OAuth client to set
 ```
+
+_See code: [@heroku-cli/plugin-oauth-v5](https://github.com/heroku/cli/blob/v7.4.6/packages/oauth-v5/lib/commands/authorizations/update.js)_

@@ -5,6 +5,8 @@
   "author": "Jeff Dickey (@dickeyxxx)",
   "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
+    "bin": "heroku",
+    "commands": "lib/commands",
     "topics": {
       "authorizations": {
         "description": "OAuth authorizations"
@@ -43,7 +45,6 @@
     "heroku-plugin"
   ],
   "license": "ISC",
-  "main": "lib/index.js",
   "publishConfig": {
     "access": "public"
   },
