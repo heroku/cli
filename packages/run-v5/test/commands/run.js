@@ -1,8 +1,7 @@
 'use strict'
-/* globals describe beforeEach it commands apikey */
 
 const cli = require('heroku-cli-util')
-const cmd = commands.find(c => c.topic === 'run' && !c.command)
+const cmd = require('../../commands/run')
 const expect = require('unexpected')
 const StdOutFixture = require('fixture-stdout')
 const assertExit = require('../assert_exit')
@@ -14,7 +13,7 @@ describe('run', () => {
     let stdout = ''
     let fixture = new StdOutFixture()
     fixture.capture(s => { stdout += s })
-    return cmd.run({app: 'heroku-run-test-app', flags: {}, auth: {password: apikey}, args: ['echo', '1', '2', '3']})
+    return cmd.run({app: 'heroku-run-test-app', flags: {}, auth: {password: global.apikey}, args: ['echo', '1', '2', '3']})
       .then(() => fixture.release())
       .then(() => expect(stdout, 'to contain', '1 2 3\n'))
   })
@@ -23,7 +22,7 @@ describe('run', () => {
     let stdout = ''
     let fixture = new StdOutFixture()
     fixture.capture(s => { stdout += s })
-    return cmd.run({app: 'heroku-run-test-app', flags: {}, auth: {password: apikey}, args: ['ruby', '-e', 'puts ARGV[0]', '{"foo": "bar"} ']})
+    return cmd.run({app: 'heroku-run-test-app', flags: {}, auth: {password: global.apikey}, args: ['ruby', '-e', 'puts ARGV[0]', '{"foo": "bar"} ']})
       .then(() => fixture.release())
       .then(() => expect(stdout, 'to equal', '{"foo": "bar"} \n'))
   })
@@ -32,7 +31,7 @@ describe('run', () => {
     let stdout = ''
     let fixture = new StdOutFixture()
     fixture.capture(s => { stdout += s })
-    return cmd.run({app: 'heroku-run-test-app', flags: {}, auth: {password: apikey}, args: ['ruby', '-e', 'puts ARGV[0]', '{"foo":"bar"}']})
+    return cmd.run({app: 'heroku-run-test-app', flags: {}, auth: {password: global.apikey}, args: ['ruby', '-e', 'puts ARGV[0]', '{"foo":"bar"}']})
       .then(() => fixture.release())
       .then(() => expect(stdout, 'to equal', '{"foo":"bar"}\n'))
   })
@@ -41,7 +40,7 @@ describe('run', () => {
     let stdout = ''
     let fixture = new StdOutFixture()
     fixture.capture(s => { stdout += s })
-    return cmd.run({app: 'heroku-run-test-app', flags: {env: 'FOO=bar'}, auth: {password: apikey}, args: ['env']})
+    return cmd.run({app: 'heroku-run-test-app', flags: {env: 'FOO=bar'}, auth: {password: global.apikey}, args: ['env']})
       .then(() => fixture.release())
       .then(() => expect(stdout, 'to contain', 'FOO=bar'))
   })
@@ -51,7 +50,7 @@ describe('run', () => {
     return assertExit(127, cmd.run({
       app: 'heroku-run-test-app',
       flags: {'exit-code': true},
-      auth: {password: apikey},
+      auth: {password: global.apikey},
       args: ['invalid-command']}))
   })
 })

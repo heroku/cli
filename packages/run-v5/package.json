@@ -6,6 +6,7 @@
   "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
     "bin": "heroku",
+    "commands": "commands",
     "topics": {
       "run": {
         "description": "run a one-off process inside a Heroku dyno"
@@ -48,7 +49,6 @@
     "heroku-plugin"
   ],
   "license": "ISC",
-  "main": "index.js",
   "repository": "heroku/cli",
   "scripts": {
     "postpack": "rm oclif.manifest.json",

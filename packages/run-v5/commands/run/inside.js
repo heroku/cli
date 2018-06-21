@@ -2,8 +2,8 @@
 
 const co = require('co')
 const cli = require('heroku-cli-util')
-const helpers = require('../lib/helpers')
-const Dyno = require('../lib/dyno')
+const helpers = require('../../lib/helpers')
+const Dyno = require('../../lib/dyno')
 
 function * run (context, heroku) {
   if (context.args.length < 2) throw new Error('Usage: heroku run:inside DYNO COMMAND\n\nExample: heroku run:inside web.1 bash')

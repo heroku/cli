@@ -37,6 +37,8 @@ EXAMPLES
   2012-01-01T12:00:01+00:00 heroku[api]: Release v1 created by email@example.com
 ```
 
+_See code: [commands/logs.js](https://github.com/heroku/cli/blob/v7.4.8/packages/run-v5/commands/logs.js)_
+
 ## `heroku run`
 
 run a one-off process inside a heroku dyno
@@ -67,6 +69,8 @@ EXAMPLES
   Running myscript.sh -a arg1 -s arg2 on app.... up, run.1
 ```
 
+_See code: [commands/run.js](https://github.com/heroku/cli/blob/v7.4.8/packages/run-v5/commands/run.js)_
+
 ## `heroku run:detached`
 
 run a detached dyno, where output is sent to your logs
@@ -88,4 +92,6 @@ EXAMPLES
   Running ls on app [detached]... up, run.1
   Run heroku logs -a app -p run.1 to view the output.
 ```
+
+_See code: [commands/run/detached.js](https://github.com/heroku/cli/blob/v7.4.8/packages/run-v5/commands/run/detached.js)_
 <!-- commandsstop -->

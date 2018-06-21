@@ -1,10 +1,9 @@
 'use strict'
-/* globals describe beforeEach afterEach it */
 
 const expect = require('unexpected')
 const sinon = require('sinon')
 const Dyno = require('../../lib/dyno')
-const cmd = require('../..').commands.find(c => c.topic === 'console' && !c.command)
+const cmd = require('../../commands/console')
 
 describe('console', () => {
   let dynoStub, dynoOpts
