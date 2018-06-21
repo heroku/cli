@@ -30,3 +30,5 @@ EXAMPLES
   2012-01-01T12:00:00+00:00 heroku[api]: Config add EXAMPLE by email@example.com
   2012-01-01T12:00:01+00:00 heroku[api]: Release v1 created by email@example.com
 ```
+
+_See code: [@heroku-cli/plugin-run-v5](https://github.com/heroku/cli/blob/v7.4.8/packages/run-v5/commands/logs.js)_
