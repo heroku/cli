@@ -30,14 +30,14 @@
     "urijs": "1.19.1"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.15.2",
+    "@oclif/dev-cli": "^1.15.4",
     "@oclif/plugin-legacy": "^1.0.15",
     "chai": "^4.1.2",
     "lolex": "^2.7.0",
     "mocha": "^5.2.0",
     "mockdate": "^2.0.2",
     "netrc-parser": "^3.1.5",
-    "nock": "9.3.0",
+    "nock": "9.3.3",
     "proxyquire": "^2.0.1",
     "std-mocks": "1.0.1",
     "testdouble": "^3.8.1",
