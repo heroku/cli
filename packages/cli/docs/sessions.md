@@ -18,7 +18,7 @@ OPTIONS
   -j, --json  output in json format
 ```
 
-_See code: [@heroku-cli/plugin-oauth-v5](https://github.com/heroku/cli/blob/v7.4.8/packages/oauth-v5/lib/commands/sessions/index.js)_
+_See code: [@heroku-cli/plugin-oauth-v5](https://github.com/heroku/cli/blob/v7.5.0/packages/oauth-v5/lib/commands/sessions/index.js)_
 
 ## `heroku sessions:destroy ID`
 
@@ -29,4 +29,4 @@ USAGE
   $ heroku sessions:destroy ID
 ```
 
-_See code: [@heroku-cli/plugin-oauth-v5](https://github.com/heroku/cli/blob/v7.4.8/packages/oauth-v5/lib/commands/sessions/destroy.js)_
+_See code: [@heroku-cli/plugin-oauth-v5](https://github.com/heroku/cli/blob/v7.5.0/packages/oauth-v5/lib/commands/sessions/destroy.js)_
