@@ -18,7 +18,7 @@ module.exports = {
   description: '(sudo) create an enterprise account',
   needsAuth: true,
   flags: [
-    {name: 'managers', hasValue: true, required: true}
+    {name: 'managers', hasValue: true, required: true},
     {name: 'domain',   hasValue: true, required: true}
   ],
   args: [{name: 'name', hasValue: true, required: true}],

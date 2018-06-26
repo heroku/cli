@@ -10,7 +10,12 @@
     "co": "4.6.0",
     "heroku-cli-util": "^6.1.5"
   },
+  "devDependencies": {
+    "@oclif/dev-cli": "^1.15.3",
+    "@oclif/plugin-legacy": "^1.0.16"
+  },
   "files": [
+    "/oclif.manifest.json",
     "/index.js",
     "/lib",
     "/commands"
@@ -24,5 +29,10 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/heroku/heroku-enterprise"
+  },
+  "scripts": {
+    "postpack": "rm -f oclif.manifest.json",
+    "prepack": "oclif-dev manifest",
+    "version": "oclif-dev readme && git add README.md"
   }
 }
