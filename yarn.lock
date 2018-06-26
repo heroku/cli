@@ -443,7 +443,11 @@
   dependencies:
     "@types/node" "*"
 
-"@types/node@*", "@types/node@^10.3.3", "@types/node@^10.5.0":
+"@types/node@*", "@types/node@^10.3.3":
+  version "10.3.6"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.3.6.tgz#ea8aab9439b59f40d19ec5f13b44642344872b11"
+
+"@types/node@^10.5.0":
   version "10.5.0"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-10.5.0.tgz#f5b61395c09b47ac46aaa1452750c9a72b3d3673"
 
@@ -3374,14 +3378,14 @@ istanbul-lib-hook@^1.1.0:
     append-transform "^0.4.0"
 
 istanbul-lib-instrument@^2.1.0:
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/istanbul-lib-instrument/-/istanbul-lib-instrument-2.3.0.tgz#777d3ba7aad2594105e60834efcbe968d11bebbc"
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/istanbul-lib-instrument/-/istanbul-lib-instrument-2.2.1.tgz#4ed9b523da5c0bd33f00568d97dcd440fa58669e"
   dependencies:
-    "@babel/generator" "7.0.0-beta.51"
-    "@babel/parser" "7.0.0-beta.51"
-    "@babel/template" "7.0.0-beta.51"
-    "@babel/traverse" "7.0.0-beta.51"
-    "@babel/types" "7.0.0-beta.51"
+    "@babel/generator" "7.0.0-beta.49"
+    "@babel/parser" "7.0.0-beta.49"
+    "@babel/template" "7.0.0-beta.49"
+    "@babel/traverse" "7.0.0-beta.49"
+    "@babel/types" "7.0.0-beta.49"
     istanbul-lib-coverage "^2.0.0"
     semver "^5.5.0"
 
