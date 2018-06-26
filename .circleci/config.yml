@@ -23,11 +23,10 @@ jobs:
             - v2-yarn-{{ checksum ".circleci/config.yml" }}
             - v2-yarn
       - run: yarn global add greenkeeper-lockfile@2 && greenkeeper-lockfile-update
-      - run: apt-get update
-      - run: apt-get install -y software-properties-common
-      - run: add-apt-repository ppa:duggan/bats -y
-      - run: apt-get update
-      - run: apt-get install -y bats
+      - run: |
+          git clone https://github.com/sstephenson/bats.git
+          cd bats
+          ./install.sh /usr/local
       - run: yarn
       - run: yarn test
       - run: ./node_modules/.bin/lerna exec "curl -s https://codecov.io/bash | bash"
