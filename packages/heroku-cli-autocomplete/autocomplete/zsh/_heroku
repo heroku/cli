@@ -26,7 +26,7 @@ _heroku () {
   ## end all commands
 
   _compadd_args () {
-    compadd $(echo $(heroku autocomplete:options "${words}"))
+    compadd $(echo $([[ -n $REPORTTIME ]] && REPORTTIME=100; heroku autocomplete:options "${words}"))
   }
 
   _compadd_flag_options () {
