@@ -43,8 +43,8 @@ runtest('AutocompleteBase', () => {
     expect(cmd.completionsCacheDir).to.eq(path.join(config.cacheDir, 'autocomplete', 'completions'))
   })
 
-  it('#acLogfile', async () => {
-    expect(cmd.acLogfile).to.eq(path.join(config.cacheDir, 'autocomplete.log'))
+  it('#acLogfilePath', async () => {
+    expect(cmd.acLogfilePath).to.eq(path.join(config.cacheDir, 'autocomplete.log'))
   })
 
   it('#findCompletion', async () => {

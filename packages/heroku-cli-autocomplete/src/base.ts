@@ -13,8 +13,12 @@ export abstract class AutocompleteBase extends Command {
   }
 
   public errorIfNotSupportedShell(shell: string) {
+    if (!shell) {
+      this.error('Missing required argument shell')
+    }
+    this.errorIfWindows()
     if (!['bash', 'zsh'].includes(shell)) {
-      throw new Error(`Currently ${shell} is not a supported shell for autocomplete`)
+      throw new Error(`${shell} is not a supported shell for autocomplete`)
     }
   }
 
@@ -26,13 +30,13 @@ export abstract class AutocompleteBase extends Command {
     return path.join(this.config.cacheDir, 'autocomplete', 'completions')
   }
 
-  public get acLogfile(): string {
+  public get acLogfilePath(): string {
     return path.join(this.config.cacheDir, 'autocomplete.log')
   }
 
   writeLogFile(msg: string) {
     let entry = `[${moment().format()}] ${msg}\n`
-    let fd = fs.openSync(this.acLogfile, 'a')
+    let fd = fs.openSync(this.acLogfilePath, 'a')
     // @ts-ignore
     fs.write(fd, entry)
   }

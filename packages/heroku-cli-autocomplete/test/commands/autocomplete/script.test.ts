@@ -33,7 +33,7 @@ HEROKU_AC_ZSH_SETUP_PATH=${
   .stdout()
   .command(['autocomplete:script', 'fish'])
   .catch(e => {
-    expect(e.message).to.contain('Currently fish is not a supported shell for autocomplete')
+    expect(e.message).to.contain('fish is not a supported shell for autocomplete')
   })
   .it('errors on unsupported shell')
 })
