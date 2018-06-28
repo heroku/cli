@@ -15,7 +15,7 @@ $ npm install -g @heroku-cli/plugin-apps-v5
 $ heroku COMMAND
 running command...
 $ heroku (-v|--version|version)
-@heroku-cli/plugin-apps-v5/7.5.1 darwin-x64 node-v10.5.0
+@heroku-cli/plugin-apps-v5/7.5.3 darwin-x64 node-v10.5.0
 $ heroku --help [COMMAND]
 USAGE
   $ heroku COMMAND
@@ -41,7 +41,6 @@ USAGE
 * [`heroku buildpacks:remove [URL]`](#heroku-buildpacksremove-url)
 * [`heroku buildpacks:set URL`](#heroku-buildpacksset-url)
 * [`heroku config:set`](#heroku-configset)
-* [`heroku config:unset`](#heroku-configunset)
 * [`heroku domains`](#heroku-domains)
 * [`heroku domains:add HOSTNAME`](#heroku-domainsadd-hostname)
 * [`heroku domains:clear`](#heroku-domainsclear)
@@ -426,26 +425,6 @@ EXAMPLES
   Setting config vars and restarting example... done, v11
   RAILS_ENV: staging
   RACK_ENV:  staging
-```
-
-## `heroku config:unset`
-
-unset one or more config vars
-
-```
-USAGE
-  $ heroku config:unset
-
-OPTIONS
-  -a, --app=app        (required) app to run command against
-  -r, --remote=remote  git remote of app to use
-
-EXAMPLES
-  $ heroku config:unset RAILS_ENV
-  Unsetting RAILS_ENV and restarting example... done, v10
-
-  $ heroku config:unset RAILS_ENV RACK_ENV
-  Unsetting RAILS_ENV, RACK_ENV and restarting example... done, v10
 ```
 
 ## `heroku domains`

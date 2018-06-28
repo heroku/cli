@@ -21,7 +21,7 @@ $ npm install -g @heroku-cli/plugin-config
 $ heroku COMMAND
 running command...
 $ heroku (-v|--version|version)
-@heroku-cli/plugin-config/7.5.1 darwin-x64 node-v10.5.0
+@heroku-cli/plugin-config/7.5.3 darwin-x64 node-v10.5.0
 $ heroku --help [COMMAND]
 USAGE
   $ heroku COMMAND
@@ -33,6 +33,7 @@ USAGE
 * [`heroku config`](#heroku-config)
 * [`heroku config:edit [KEY]`](#heroku-configedit-key)
 * [`heroku config:get KEY...`](#heroku-configget-key)
+* [`heroku config:unset`](#heroku-configunset)
 
 ## `heroku config`
 
@@ -49,7 +50,7 @@ OPTIONS
   -s, --shell          output config vars in shell format
 ```
 
-_See code: [src/commands/config/index.ts](https://github.com/heroku/cli/blob/v7.5.1/packages/config/src/commands/config/index.ts)_
+_See code: [src/commands/config/index.ts](https://github.com/heroku/cli/blob/v7.5.3/packages/config/src/commands/config/index.ts)_
 
 ## `heroku config:edit [KEY]`
 
@@ -81,7 +82,7 @@ EXAMPLES
   $ VISUAL="atom --wait" heroku config:edit
 ```
 
-_See code: [src/commands/config/edit.ts](https://github.com/heroku/cli/blob/v7.5.1/packages/config/src/commands/config/edit.ts)_
+_See code: [src/commands/config/edit.ts](https://github.com/heroku/cli/blob/v7.5.3/packages/config/src/commands/config/edit.ts)_
 
 ## `heroku config:get KEY...`
 
@@ -101,5 +102,29 @@ EXAMPLES
   production
 ```
 
-_See code: [src/commands/config/get.ts](https://github.com/heroku/cli/blob/v7.5.1/packages/config/src/commands/config/get.ts)_
+_See code: [src/commands/config/get.ts](https://github.com/heroku/cli/blob/v7.5.3/packages/config/src/commands/config/get.ts)_
+
+## `heroku config:unset`
+
+unset one or more config vars
+
+```
+USAGE
+  $ heroku config:unset
+
+OPTIONS
+  -a, --app=app        (required) app to run command against
+  -r, --remote=remote  git remote of app to use
+
+ALIASES
+  $ heroku config:remove
+
+EXAMPLES
+  $ heroku config:unset RAILS_ENV
+  Unsetting RAILS_ENV and restarting example... done, v10
+  $ heroku config:unset RAILS_ENV RACK_ENV
+  Unsetting RAILS_ENV, RACK_ENV and restarting example... done, v10
+```
+
+_See code: [src/commands/config/unset.ts](https://github.com/heroku/cli/blob/v7.5.3/packages/config/src/commands/config/unset.ts)_
 <!-- commandsstop -->

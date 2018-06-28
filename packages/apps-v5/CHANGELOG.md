@@ -3,7 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-      <a name="7.5.1"></a>
+    <a name="7.5.3"></a>
+## [7.5.3](https://github.com/heroku/cli/compare/v7.5.2...v7.5.3) (2018-06-28)
+
+
+
+
+**Note:** Version bump only for package @heroku-cli/plugin-apps-v5
+
+    <a name="7.5.1"></a>
 ## [7.5.1](https://github.com/heroku/cli/compare/v7.5.0...v7.5.1) (2018-06-26)
 
 
@@ -14,7 +22,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-      <a name="7.5.0"></a>
+  <a name="7.5.0"></a>
 # [7.5.0](https://github.com/heroku/cli/compare/v7.4.11...v7.5.0) (2018-06-26)
 
 
@@ -22,7 +30,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 **Note:** Version bump only for package @heroku-cli/plugin-apps-v5
 
-    <a name="7.4.8"></a>
+<a name="7.4.8"></a>
 ## [7.4.8](https://github.com/heroku/cli/compare/v7.4.7...v7.4.8) (2018-06-21)
 
 

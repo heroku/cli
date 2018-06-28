@@ -113,10 +113,14 @@ OPTIONS
   -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 
+ALIASES
+  $ heroku config:remove
+
 EXAMPLES
   $ heroku config:unset RAILS_ENV
   Unsetting RAILS_ENV and restarting example... done, v10
-
   $ heroku config:unset RAILS_ENV RACK_ENV
   Unsetting RAILS_ENV, RACK_ENV and restarting example... done, v10
 ```
+
+_See code: [@heroku-cli/plugin-config](https://github.com/heroku/cli/blob/v7.5.1/packages/config/src/commands/config/unset.ts)_
