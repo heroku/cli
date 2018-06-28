@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="7.5.4"></a>
+## [7.5.4](https://github.com/heroku/cli/compare/v7.5.3...v7.5.4) (2018-06-28)
+
+
+### Bug Fixes
+
+* move docs symlink ([5da3c1c](https://github.com/heroku/cli/commit/5da3c1c))
+* updated color dependency ([3602276](https://github.com/heroku/cli/commit/3602276))
+* updated commands plugin ([c4a91cc](https://github.com/heroku/cli/commit/c4a91cc))
+
+
+
+
 <a name="7.5.3"></a>
 ## [7.5.3](https://github.com/heroku/cli/compare/v7.5.2...v7.5.3) (2018-06-28)
 
