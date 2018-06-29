@@ -27,7 +27,7 @@
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.15.4",
-    "@oclif/plugin-legacy": "^1.0.15",
+    "@oclif/plugin-legacy": "^1.0.17",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
     "codeclimate-test-reporter": "^0.5.0",

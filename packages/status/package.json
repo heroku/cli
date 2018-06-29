@@ -31,7 +31,7 @@
     "@heroku-cli/tslint": "1.1.4",
     "@oclif/dev-cli": "^1.15.4",
     "@oclif/plugin-help": "^2.0.5",
-    "@oclif/plugin-legacy": "^1.0.13",
+    "@oclif/plugin-legacy": "^1.0.17",
     "@oclif/test": "^1.0.6",
     "@oclif/tslint": "^1.1.0",
     "@types/ansi-styles": "^3.2.0",
