@@ -2,9 +2,8 @@
 
 const cli = require('heroku-cli-util')
 const co = require('co')
-const forEach = require('lodash.foreach')
-const reduce = require('lodash.reduce')
 const strftime = require('strftime')
+const _ = require('lodash')
 
 const getProcessNum = (s) => parseInt(s.split('.', 2)[1])
 
@@ -44,13 +43,13 @@ function * run (context, heroku) {
 }
 
 function render (spaceDynos) {
-  forEach(spaceDynos, (spaceDyno) => {
+  _.forEach(spaceDynos, (spaceDyno) => {
     printDynos(spaceDyno.app_name, spaceDyno.dynos)
   })
 }
 
 function printDynos (appName, dynos) {
-  let dynosByCommand = reduce(dynos, function (dynosByCommand, dyno) {
+  let dynosByCommand = _.reduce(dynos, function (dynosByCommand, dyno) {
     let since = timeAgo(new Date(dyno.updated_at))
     let size = dyno.size || '1X'
 
@@ -67,7 +66,7 @@ function printDynos (appName, dynos) {
     }
     return dynosByCommand
   }, {})
-  forEach(dynosByCommand, function (dynos, key) {
+  _.forEach(dynosByCommand, function (dynos, key) {
     cli.styledHeader(`${appName} ${key} (${cli.color.yellow(dynos.length)})`)
     dynos = dynos.sort((a, b) => getProcessNum(a) - getProcessNum(b))
     for (let dyno of dynos) cli.log(dyno)

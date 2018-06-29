@@ -3,6 +3,7 @@
 const cli = require('heroku-cli-util')
 const co = require('co')
 const {flags} = require('@heroku-cli/command')
+const _ = require('lodash')
 
 function display (spaces) {
   cli.table(spaces, {
@@ -21,14 +22,13 @@ function displayJSON (spaces) {
 }
 
 function * run (context, heroku) {
-  const sortBy = require('lodash.sortby')
   let team = context.org || context.team || context.flags.team
 
   let spaces = yield heroku.get('/spaces')
   if (team) {
     spaces = spaces.filter((s) => s.team.name === team)
   }
-  spaces = sortBy(spaces, 'name')
+  spaces = _.sortBy(spaces, 'name')
   if (context.flags.json) displayJSON(spaces)
   else if (spaces.length === 0) {
     if (team) throw new Error(`No spaces in ${cli.color.cyan(team)}.`)
