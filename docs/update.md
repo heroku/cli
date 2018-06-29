@@ -14,4 +14,4 @@ USAGE
   $ heroku update [CHANNEL]
 ```
 
-_See code: [@oclif/plugin-update](https://github.com/oclif/plugin-update/blob/v1.2.13/src/commands/update.ts)_
+_See code: [@oclif/plugin-update](https://github.com/oclif/plugin-update/blob/v1.2.14/src/commands/update.ts)_

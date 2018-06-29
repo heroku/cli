@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="7.5.6"></a>
+## [7.5.6](https://github.com/heroku/cli/compare/v7.5.5...v7.5.6) (2018-06-29)
+
+
+### Bug Fixes
+
+* bump legacy and color ([a3fa970](https://github.com/heroku/cli/commit/a3fa970))
+
+
+
+
 <a name="7.5.4"></a>
 ## [7.5.4](https://github.com/heroku/cli/compare/v7.5.3...v7.5.4) (2018-06-28)
 

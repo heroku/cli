@@ -36,7 +36,7 @@ EXAMPLES
   Running myscript.sh -a arg1 -s arg2 on app.... up, run.1
 ```
 
-_See code: [@heroku-cli/plugin-run-v5](https://github.com/heroku/cli/blob/v7.5.1/packages/run-v5/commands/run.js)_
+_See code: [@heroku-cli/plugin-run-v5](https://github.com/heroku/cli/blob/v7.5.5/packages/run-v5/commands/run.js)_
 
 ## `heroku run:detached`
 
@@ -60,4 +60,4 @@ EXAMPLES
   Run heroku logs -a app -p run.1 to view the output.
 ```
 
-_See code: [@heroku-cli/plugin-run-v5](https://github.com/heroku/cli/blob/v7.5.1/packages/run-v5/commands/run/detached.js)_
+_See code: [@heroku-cli/plugin-run-v5](https://github.com/heroku/cli/blob/v7.5.5/packages/run-v5/commands/run/detached.js)_
