@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="7.5.8"></a>
+## [7.5.8](https://github.com/heroku/cli/compare/v7.5.7...v7.5.8) (2018-07-02)
+
+
+### Bug Fixes
+
+* **spaces:** Increase vpn wait timeout from 10 minutes to 20 minutes ([#928](https://github.com/heroku/cli/issues/928)) ([cce5fd0](https://github.com/heroku/cli/commit/cce5fd0))
+
+
+
+
 <a name="7.5.7"></a>
 ## [7.5.7](https://github.com/heroku/cli/compare/v7.5.6...v7.5.7) (2018-06-29)
 
