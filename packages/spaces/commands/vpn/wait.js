@@ -2,7 +2,7 @@
 
 const cli = require('heroku-cli-util')
 const co = require('co')
-const infoCmd = require('./info')
+const configCmd = require('./config')
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
 function * run (context, heroku) {
@@ -40,7 +40,8 @@ function * run (context, heroku) {
   } while (info.state !== 'available')
 
   spinner.stop('done\n')
-  infoCmd.render(space, info, context.flags)
+  var config = yield lib.getVPNConfig(space)
+  configCmd.displayVPNConfigInfo(space, config)
 }
 
 module.exports = {

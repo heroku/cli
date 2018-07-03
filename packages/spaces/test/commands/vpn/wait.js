@@ -9,7 +9,7 @@ const cli = require('heroku-cli-util')
 describe('spaces:vpn:wait', function () {
   beforeEach(() => cli.mockConsole())
 
-  it('waits for VPN to allocate and then shows space info', function () {
+  it('waits for VPN to allocate and then shows space config', function () {
     let api = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/vpn')
       .reply(200)
@@ -55,21 +55,45 @@ describe('spaces:vpn:wait', function () {
           }
         ]
       })
+      .get('/spaces/my-space/vpn/config')
+      .reply(200, {
+        ipsec_tunnels: [
+          {
+            customer_gateway: {
+              outside_address: { ip_address: '52.44.146.197' },
+              inside_address: { ip_address: '52.44.146.198' }
+            },
+            vpn_gateway: {
+              outside_address: { ip_address: '52.44.146.197' },
+              inside_address: { ip_address: '52.44.146.198' }
+            },
+            ike: { pre_shared_key: 'apresharedkey1' }
+          },
+          {
+            customer_gateway: {
+              outside_address: { ip_address: '52.44.146.196' },
+              inside_address: { ip_address: '52.44.146.198' }
+            },
+            vpn_gateway: {
+              outside_address: { ip_address: '52.44.146.196' },
+              inside_address: { ip_address: '52.44.146.198' }
+            },
+            ike: { pre_shared_key: 'apresharedkey2' }
+          }
+        ],
+        full_space_cidr_block: '10.0.0.0/16',
+        ike_version: 1
+      })
 
     return cmd.run({flags: {space: 'my-space', interval: 0}})
       .then(() => expect(cli.stderr).to.equal(
         `Waiting for VPN in space my-space to allocate... done\n\n`))
       .then(() => expect(cli.stdout).to.equal(
-        `=== my-space VPN Info
-ID:                  123456789012
-Public IP:           35.161.69.30
-Routable CIDRs:      172.16.0.0/16
-State:               available
-=== my-space Tunnel Info
-VPN Tunnel  IP Address     Status  Status Last Changed   Details
-──────────  ─────────────  ──────  ────────────────────  ──────────────
-Tunnel 1    52.44.146.197  UP      2016-10-25T22:09:05Z  status message
-Tunnel 2    52.44.146.197  UP      2016-10-25T22:09:05Z  status message\n`
+        `=== my-space VPNs
+VPN Tunnel  Customer Gateway  VPN Gateway    Pre-shared Key  Routable Subnets  IKE Version
+──────────  ────────────────  ─────────────  ──────────────  ────────────────  ───────────
+Tunnel 1    52.44.146.197     52.44.146.197  apresharedkey1  10.0.0.0/16       1
+Tunnel 2    52.44.146.196     52.44.146.196  apresharedkey2  10.0.0.0/16       1\n`
       ))
       .then(() => api.done())
   })

@@ -65,5 +65,6 @@ You will use the information provided by this command to establish a Private Spa
     {name: 'space', char: 's', hasValue: true, description: 'space to get VPN config from'},
     {name: 'json', description: 'output in json format'}
   ],
-  run: cli.command(co.wrap(run))
+  run: cli.command(co.wrap(run)),
+  displayVPNConfigInfo: displayVPNConfigInfo
 }
