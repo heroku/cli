@@ -21,7 +21,7 @@
     "co": "^4.6.0",
     "co-wait": "0.0.0",
     "github-url-to-object": "^4.0.4",
-    "got": "^8.3.1",
+    "got": "^8.3.2",
     "heroku-cli-util": "^8.0.8",
     "lodash.flatten": "^4.4.0",
     "shell-escape": "^0.2.0",
