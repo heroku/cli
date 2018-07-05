@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="7.5.11"></a>
+## [7.5.11](https://github.com/heroku/cli/compare/v7.5.10...v7.5.11) (2018-07-05)
+
+
+### Bug Fixes
+
+* node 10.6.0 ([fd46cff](https://github.com/heroku/cli/commit/fd46cff))
+
+
+
+
 <a name="7.5.10"></a>
 ## [7.5.10](https://github.com/heroku/cli/compare/v7.5.9...v7.5.10) (2018-07-03)
 
