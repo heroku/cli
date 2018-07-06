@@ -11,6 +11,7 @@ const http = require('https')
 const net = require('net')
 const spawn = require('child_process').spawn
 const debug = require('debug')('heroku:run')
+const shellwords = require('shellwords')
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
 /** Represents a dyno process */
@@ -49,7 +50,8 @@ class Dyno extends Duplex {
   }
 
   _doStart (retries = 2) {
-    let command = this.opts['exit-code'] ? `${this.opts.command}; echo "\uFFFF heroku-command-exit-status: $?"` : this.opts.command
+    const exitCodeCommand = `${this.opts.command}; echo "\uFFFF heroku-command-exit-status: $?"`
+    let command = this.opts['exit-code'] ? `sh -c ${shellwords.escape(exitCodeCommand)}` : this.opts.command
     return this.heroku.post(this.opts.dyno ? `/apps/${this.opts.app}/dynos/${this.opts.dyno}` : `/apps/${this.opts.app}/dynos`, {
       headers: {
         Accept: this.opts.dyno ? 'application/vnd.heroku+json; version=3.run-inside' : 'application/vnd.heroku+json; version=3'
