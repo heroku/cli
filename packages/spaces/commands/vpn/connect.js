@@ -24,7 +24,7 @@ function * run (context, heroku) {
   check(cidrs, 'CIDRs required')
   cidrs = parsers.splitCsv(cidrs)
 
-  yield cli.action(`Creating VPN in space ${cli.color.green(space)}`, lib.postVPNConnections(space, name, ip, cidrs))
+  yield cli.action(`Creating VPN Connection in space ${cli.color.green(space)}`, lib.postVPNConnections(space, name, ip, cidrs))
   cli.warn('Use spaces:vpn:wait to track allocation.')
 }
 

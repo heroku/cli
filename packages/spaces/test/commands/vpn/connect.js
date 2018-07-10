@@ -24,7 +24,7 @@ describe('spaces:vpn:connect', function () {
       cidrs: '192.168.0.1/16,192.168.0.2/16'
     }})
       .then(() => expect(cli.stderr).to.equal(
-        `Creating VPN in space my-space... done\n ▸    Use spaces:vpn:wait to track allocation.\n`))
+        `Creating VPN Connection in space my-space... done\n ▸    Use spaces:vpn:wait to track allocation.\n`))
       .then(() => api.done())
   })
 })

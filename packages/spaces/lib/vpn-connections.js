@@ -13,8 +13,7 @@ module.exports = function (heroku) {
     return heroku.request({
       method: method,
       path: path,
-      body: body,
-      headers: { Accept: 'application/vnd.heroku+json; version=3.dogwood' }
+      body: body
     })
   }
 
