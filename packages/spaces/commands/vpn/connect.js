@@ -35,7 +35,7 @@ module.exports = {
   help: `Example:
 
     $ heroku spaces:vpn:connect --name office --ip 35.161.69.30 --cidrs 172.16.0.0/16,10.0.0.0/24 --space my-space
-    Creating VPN in space my-space... done
+    Creating VPN Connection in space my-space... done
     ▸    Use spaces:vpn:wait to track allocation.
   `,
   hidden: true,
