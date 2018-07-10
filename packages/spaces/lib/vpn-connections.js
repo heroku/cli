@@ -9,6 +9,10 @@ module.exports = function (heroku) {
     })
   }
 
+  function getVPNConnections (space) {
+    return request('GET', `/spaces/${space}/vpn-connections`)
+  }
+
   function request (method, path, body) {
     return heroku.request({
       method: method,
@@ -18,6 +22,7 @@ module.exports = function (heroku) {
   }
 
   return {
-    postVPNConnections
+    postVPNConnections,
+    getVPNConnections
   }
 }
