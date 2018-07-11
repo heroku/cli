@@ -9,6 +9,10 @@ module.exports = function (heroku) {
     })
   }
 
+  function deleteVPNConnection (space, name) {
+    return request('DELETE', `/spaces/${space}/vpn-connections/${name}`)
+  }
+
   function request (method, path, body) {
     return heroku.request({
       method: method,
@@ -18,6 +22,7 @@ module.exports = function (heroku) {
   }
 
   return {
-    postVPNConnections
+    postVPNConnections,
+    deleteVPNConnection
   }
 }

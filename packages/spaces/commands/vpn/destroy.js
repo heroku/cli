@@ -3,15 +3,22 @@
 const cli = require('heroku-cli-util')
 const co = require('co')
 
+function check (val, message) {
+  if (!val) throw new Error(`${message}.\nUSAGE: heroku spaces:vpn:destroy --space example-space vpn-connection-name-or-uuid`)
+}
+
 function * run (context, heroku) {
   let space = context.flags.space || context.args.space
-  if (!space) throw new Error('Space name required.\nUSAGE: heroku spaces:vpn:destroy --space my-space')
+  check(space, 'Space name required')
+
+  let name = context.args.name
+  check(name, 'VPN name required')
 
   let lib = require('../../lib/vpn')(heroku)
 
   yield cli.confirmApp(space, context.flags.confirm, `Destructive Action
-This command will attempt to destroy VPN in space ${cli.color.green(space)}`)
-  yield cli.action(`Tearing down VPN in space ${cli.color.cyan(space)}`, lib.deleteVPN(space))
+This command will attempt to destroy the specified VPN Connection in space ${cli.color.green(space)}`)
+  yield cli.action(`Tearing down VPN Connection in space ${cli.color.cyan(space)}`, lib.deleteVPN(space))
 }
 
 module.exports = {
@@ -20,13 +27,15 @@ module.exports = {
   description: 'destroys VPN in a private space',
   help: `Example:
 
-    $ heroku spaces:vpn:destroy --confirm --space my-space
-    Tearing down VPN in space my-space
+    $ heroku spaces:vpn:destroy --confirm --space example-space vpn-connection-name-or-uuid
+    Tearing down VPN Connection in space example-space
   `,
   hidden: true,
   needsApp: false,
   needsAuth: true,
-  args: [{name: 'space', optional: true, hidden: true}],
+  args: [
+    {name: 'name', optional: false, hidden: false}
+  ],
   flags: [
     {name: 'space', char: 's', hasValue: true, description: 'space to get peering info from'},
     {name: 'confirm', hasValue: true, description: 'set to space name bypass confirm prompt'}
