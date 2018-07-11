@@ -15,7 +15,7 @@ function * run (context, heroku) {
   // For when we've fully migrated to the multiple VPN UX
   // check(name, 'VPN name required')
 
-  let lib = require('../../lib/vpn')(heroku)
+  let lib = require('../../lib/vpn-connections')(heroku)
 
   yield cli.confirmApp(space, context.flags.confirm, `Destructive Action
 This command will attempt to destroy the specified VPN Connection in space ${cli.color.green(space)}`)
