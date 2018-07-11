@@ -38,9 +38,15 @@ function * run (context, heroku) {
 
 module.exports = {
   topic: 'spaces',
-  command: 'vpn:info',
+  command: 'vpn:connections',
   description: 'list the VPN Connections for a space',
-  help: `$TODO
+  help: `Example:
+
+  $ heroku spaces:vpn:connections --space my-space
+  === my-space VPN Connections
+  Name    Status  Tunnels
+  ──────  ──────  ───────
+  office  active  UP/UP
   `,
   hidden: true,
   needsApp: false,
