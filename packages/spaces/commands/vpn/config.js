@@ -3,20 +3,20 @@
 const cli = require('heroku-cli-util')
 const co = require('co')
 
-function displayVPNConfigInfo (space, config) {
-  cli.styledHeader(`${space} VPNs`)
-  config.ipsec_tunnels.forEach((val, i) => {
+function displayVPNConfigInfo (space, name, config) {
+  cli.styledHeader(`${name} VPNs`)
+  config.tunnels.forEach((val, i) => {
     val.tunnel_id = 'Tunnel ' + (i + 1)
-    val.routable_cidr = config.full_space_cidr_block
+    val.routable_cidr = config.space_cidr_block
     val.ike_version = config.ike_version
   })
 
-  cli.table(config.ipsec_tunnels, {
+  cli.table(config.tunnels, {
     columns: [
       {key: 'tunnel_id', label: 'VPN Tunnel'},
-      {key: 'customer_gateway.outside_address.ip_address', label: 'Customer Gateway'},
-      {key: 'vpn_gateway.outside_address.ip_address', label: 'VPN Gateway'},
-      {key: 'ike.pre_shared_key', label: 'Pre-shared Key'},
+      {key: 'customer_ip', label: 'Customer Gateway'},
+      {key: 'ip', label: 'VPN Gateway'},
+      {key: 'pre_shared_key', label: 'Pre-shared Key'},
       {key: 'routable_cidr', label: 'Routable Subnets'},
       {key: 'ike_version', label: 'IKE Version'}
     ]
@@ -25,15 +25,16 @@ function displayVPNConfigInfo (space, config) {
 
 function * run (context, heroku) {
   let space = context.flags.space || context.args.space
+  let name = context.flags.name || context.args.name
   if (!space) throw new Error('Space name required.\nUSAGE: heroku spaces:vpn:config --space my-space')
 
-  let lib = require('../../lib/vpn')(heroku)
-  let config = yield lib.getVPNConfig(space)
+  let lib = require('../../lib/vpn-connections')(heroku)
+  let config = yield lib.getVPNConnection(space, name)
 
   if (context.flags.json) {
     cli.styledJSON(config)
   } else {
-    displayVPNConfigInfo(space, config)
+    displayVPNConfigInfo(space, name, config)
   }
 }
 
@@ -63,6 +64,7 @@ You will use the information provided by this command to establish a Private Spa
   args: [{name: 'space', optional: true, hidden: true}],
   flags: [
     {name: 'space', char: 's', hasValue: true, description: 'space to get VPN config from'},
+    {name: 'name', char: 'n', hasValue: true, description: 'name of the VPN connection to retrieve config from'},
     {name: 'json', description: 'output in json format'}
   ],
   run: cli.command(co.wrap(run))
