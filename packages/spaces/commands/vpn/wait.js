@@ -55,7 +55,7 @@ module.exports = {
   args: [{name: 'space', optional: true, hidden: true}],
   flags: [
     {name: 'space', char: 's', hasValue: true, description: 'space the vpn connection belongs to'},
-    {name: 'name', char: 'n', hasValue: true, description: 'name of the vpn connection to wait for'},
+    {name: 'name', char: 'n', hasValue: true, description: 'name or id of the vpn connection to wait for'},
     {name: 'json', description: 'output in json format'},
     {name: 'interval', char: 'i', hasValue: true, description: 'seconds to wait between poll intervals'},
     {name: 'timeout', char: 't', hasValue: true, description: 'maximum number of seconds to wait'}

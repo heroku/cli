@@ -93,7 +93,7 @@ module.exports = {
   flags: [
     {name: 'space', char: 's', hasValue: true, description: 'space the vpn connection belongs to'},
     {name: 'json', description: 'output in json format'},
-    {name: 'name', char: 'n', hasValue: true, description: 'name or UUID of the VPN connection to get info from'}
+    {name: 'name', char: 'n', hasValue: true, description: 'name or id of the VPN connection to get info from'}
   ],
   run: cli.command(co.wrap(run)),
   render: render

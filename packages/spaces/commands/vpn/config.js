@@ -63,8 +63,8 @@ You will use the information provided by this command to establish a Private Spa
   needsAuth: true,
   args: [{name: 'space', optional: true, hidden: true}],
   flags: [
-    {name: 'space', char: 's', hasValue: true, description: 'space to get VPN config from'},
-    {name: 'name', char: 'n', hasValue: true, description: 'name of the VPN connection to retrieve config from'},
+    {name: 'space', char: 's', hasValue: true, description: 'space the VPN connection belongs to'},
+    {name: 'name', char: 'n', hasValue: true, description: 'name or id of the VPN connection to retrieve config from'},
     {name: 'json', description: 'output in json format'}
   ],
   run: cli.command(co.wrap(run))
