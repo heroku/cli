@@ -52,7 +52,7 @@ module.exports = {
   hidden: true,
   needsApp: false,
   needsAuth: true,
-  args: [{name: 'space', optional: true, hidden: true}, {name: 'name', optional: true, hidden: true}],
+  args: [{name: 'space', optional: true, hidden: true}],
   flags: [
     {name: 'space', char: 's', hasValue: true, description: 'space the vpn connection belongs to'},
     {name: 'name', char: 'n', hasValue: true, description: 'name of the vpn connection to wait for'},

@@ -44,8 +44,8 @@ module.exports = {
   description: 'display the configuration information for VPN',
   help: `Example:
 
-    $ heroku spaces:vpn:config example-space
-    === example-space VPNs
+    $ heroku spaces:vpn:config example-space --name vpn-connection-name
+    === vpn-connection-name VPNs
     VPN Tunnel  Customer Gateway  VPN Gateway     Pre-shared Key  Routable Subnets  IKE Version
     ──────────  ────────────────  ──────────────  ──────────────  ────────────────  ───────────
     Tunnel 1    104.196.121.200   35.171.237.136  abcdef12345     10.0.0.0/16       1

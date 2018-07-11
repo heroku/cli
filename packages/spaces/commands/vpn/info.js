@@ -73,7 +73,7 @@ module.exports = {
   description: 'display the information for VPN',
   help: `Example:
 
-    $ heroku spaces:vpn:info my-space vpn-connection-name
+    $ heroku spaces:vpn:info my-space --name vpn-connection-name
     === vpn-connection-name VPN Info
     Name:           vpn-connection-name
     ID:             123456789012
@@ -89,7 +89,7 @@ module.exports = {
   hidden: true,
   needsApp: false,
   needsAuth: true,
-  args: [{name: 'space', optional: false, hidden: true}, {name: 'name', optional: false, hidden: false}],
+  args: [{name: 'space', optional: false, hidden: true}],
   flags: [
     {name: 'space', char: 's', hasValue: true, description: 'space the vpn connection belongs to'},
     {name: 'json', description: 'output in json format'},
