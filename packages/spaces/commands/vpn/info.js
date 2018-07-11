@@ -4,7 +4,7 @@ const cli = require('heroku-cli-util')
 const co = require('co')
 const format = require('../../lib/format')()
 
-function displayVPNInfo (space, info) {
+function displayVPNInfo (space, name, info) {
   let sF = function (s) {
     let colored = s
     switch (s) {
@@ -25,23 +25,22 @@ function displayVPNInfo (space, info) {
     return colored
   }
 
-  cli.styledHeader(`${space} VPN Info`)
+  cli.styledHeader(`${name} VPN Info`)
   cli.styledObject({
     ID: info.id,
     'Public IP': info.public_ip,
     'Routable CIDRs': format.CIDR(info.routable_cidrs),
-    State: `${sF(info.state)}`,
-    'Provisioning Status': info.status,
+    'Status': info.status,
     'Status Message': info.status_message
-  }, ['ID', 'Public IP', 'Routable CIDRs', 'State', 'Provisioning Status', 'Status Message'])
+  }, ['ID', 'Public IP', 'Routable CIDRs', 'State', 'Status', 'Status Message'])
 
   // make up tunnel IDs
   info.tunnels.forEach((val, i) => { val.tunnel_id = 'Tunnel ' + (i + 1) })
-  cli.styledHeader(`${space} Tunnel Info`)
+  cli.styledHeader(`${name} Tunnel Info`)
   cli.table(info.tunnels, {
     columns: [
       {key: 'tunnel_id', label: 'VPN Tunnel'},
-      {key: 'outside_ip_address', label: 'IP Address'},
+      {key: 'ip', label: 'IP Address'},
       {key: 'status', label: 'Status', format: status => sF(status)},
       {key: 'last_status_change', label: 'Status Last Changed'},
       {key: 'status_message', label: 'Details'}
@@ -49,21 +48,23 @@ function displayVPNInfo (space, info) {
   })
 }
 
-function render (space, info, flags) {
+function render (space, name, info, flags) {
   if (flags.json) {
     cli.styledJSON(info)
   } else {
-    displayVPNInfo(space, info)
+    displayVPNInfo(space, name, info)
   }
 }
 
 function * run (context, heroku) {
   let space = context.flags.space || context.args.space
+  let name = context.flags.name || context.args.name
   if (!space) throw new Error('Space name required.\nUSAGE: heroku spaces:vpn:info --space my-space')
+  if (!name) throw new Error('VPN connection name required.\nUSAGE: heroku spaces:vpn:info --space my-space --name vpn-connection-name')
 
-  let lib = require('../../lib/vpn')(heroku)
-  let info = yield lib.getVPNInfo(space)
-  render(space, info, context.flags)
+  let lib = require('../../lib/vpn-connections')(heroku)
+  let info = yield lib.getVPNConnection(space, name)
+  render(space, name, info, context.flags)
 }
 
 module.exports = {
@@ -72,12 +73,12 @@ module.exports = {
   description: 'display the information for VPN',
   help: `Example:
 
-    $ heroku spaces:vpn:info my-space
-    === my-space VPN Info
+    $ heroku spaces:vpn:info my-space vpn-connection-name
+    === vpn-connection-name VPN Info
+    Name:           vpn-connection-name
     ID:             123456789012
     Public IP:      35.161.69.30
     Routable CIDRs: 172.16.0.0/16
-    State:          available
     Status:         failed
     Status Message: supplied CIDR block already in use
     === my-space Tunnel Info
@@ -88,10 +89,11 @@ module.exports = {
   hidden: true,
   needsApp: false,
   needsAuth: true,
-  args: [{name: 'space', optional: true, hidden: true}],
+  args: [{name: 'space', optional: false, hidden: true}, {name: 'name', optional: false, hidden: false}],
   flags: [
-    {name: 'space', char: 's', hasValue: true, description: 'space to get VPN info from'},
-    {name: 'json', description: 'output in json format'}
+    {name: 'space', char: 's', hasValue: true, description: 'space the vpn connection belongs to'},
+    {name: 'json', description: 'output in json format'},
+    {name: 'name', char: 'n', hasValue: true, description: 'name or UUID of the VPN connection to get info from'}
   ],
   run: cli.command(co.wrap(run)),
   render: render
