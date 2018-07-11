@@ -10,6 +10,10 @@ module.exports = function (heroku) {
   }
 
   function deleteVPNConnection (space, name) {
+    if (!name) {
+      return lib.deleteVPN(space)
+    }
+
     return request('DELETE', `/spaces/${space}/vpn-connections/${name}`)
   }
 

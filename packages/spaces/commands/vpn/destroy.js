@@ -12,13 +12,14 @@ function * run (context, heroku) {
   check(space, 'Space name required')
 
   let name = context.args.name
-  check(name, 'VPN name required')
+  // For when we've fully migrated to the multiple VPN UX
+  // check(name, 'VPN name required')
 
   let lib = require('../../lib/vpn')(heroku)
 
   yield cli.confirmApp(space, context.flags.confirm, `Destructive Action
 This command will attempt to destroy the specified VPN Connection in space ${cli.color.green(space)}`)
-  yield cli.action(`Tearing down VPN Connection in space ${cli.color.cyan(space)}`, lib.deleteVPN(space))
+  yield cli.action(`Tearing down VPN Connection in space ${cli.color.cyan(space)}`, lib.deleteVPNConnection(space, name))
 }
 
 module.exports = {
@@ -34,7 +35,7 @@ module.exports = {
   needsApp: false,
   needsAuth: true,
   args: [
-    {name: 'name', optional: false, hidden: false}
+    {name: 'name', optional: true, hidden: false}
   ],
   flags: [
     {name: 'space', char: 's', hasValue: true, description: 'space to get peering info from'},
