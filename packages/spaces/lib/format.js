@@ -21,6 +21,8 @@ module.exports = function () {
         colored = `${cli.color.green(colored)}`
         break
       case 'pending':
+      case 'provisioning':
+      case 'deprovisioning':
         colored = `${cli.color.yellow(colored)}`
         break
       case 'DOWN':
