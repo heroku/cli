@@ -5,14 +5,20 @@ const co = require('co')
 const format = require('../../lib/format')()
 
 function displayVPNConnections (space, connections) {
+  let tunnelFormat = function (t) {
+    return t.map((tunnel) => format.VPNStatus(tunnel.status)).join('/')
+  }
+
   cli.styledHeader(`${space} VPN Connections`)
   cli.table(connections, {
     columns: [
-      {key: 'name', label: 'Name'},
-      {key: 'status', label: 'Status', format: format.VPNStatus}
+      {label: 'Name', key: 'name'},
+      {label: 'Status', key: 'status', format: format.VPNStatus},
+      {label: 'Tunnels', key: 'tunnels', format: t => tunnelFormat(t)}
     ]
   })
 }
+
 function render (space, connections, flags) {
   if (flags.json) {
     cli.styledJSON(connections)
