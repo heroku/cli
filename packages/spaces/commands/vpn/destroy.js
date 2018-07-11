@@ -11,7 +11,7 @@ function * run (context, heroku) {
   let space = context.flags.space || context.args.space
   check(space, 'Space name required')
 
-  let name = context.args.name
+  let name = context.args && context.args.name
   // For when we've fully migrated to the multiple VPN UX
   // check(name, 'VPN name required')
 
