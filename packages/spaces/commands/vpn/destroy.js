@@ -4,7 +4,7 @@ const cli = require('heroku-cli-util')
 const co = require('co')
 
 function check (val, message) {
-  if (!val) throw new Error(`${message}.\nUSAGE: heroku spaces:vpn:destroy --space example-space vpn-connection-name-or-uuid`)
+  if (!val) throw new Error(`${message}.\nUSAGE: heroku spaces:vpn:destroy --space example-space vpn-connection-name`)
 }
 
 function * run (context, heroku) {
@@ -28,7 +28,7 @@ module.exports = {
   description: 'destroys VPN in a private space',
   help: `Example:
 
-    $ heroku spaces:vpn:destroy --confirm --space example-space vpn-connection-name-or-uuid
+    $ heroku spaces:vpn:destroy --confirm --space example-space vpn-connection-name
     Tearing down VPN Connection in space example-space
   `,
   hidden: true,
