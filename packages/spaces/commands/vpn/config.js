@@ -3,37 +3,44 @@
 const cli = require('heroku-cli-util')
 const co = require('co')
 
-function displayVPNConfigInfo (space, config) {
-  cli.styledHeader(`${space} VPNs`)
-  config.ipsec_tunnels.forEach((val, i) => {
+function displayVPNConfigInfo (space, name, config) {
+  cli.styledHeader(`${name} VPN Tunnels`)
+  config.tunnels.forEach((val, i) => {
     val.tunnel_id = 'Tunnel ' + (i + 1)
-    val.routable_cidr = config.full_space_cidr_block
+    val.routable_cidr = config.space_cidr_block
     val.ike_version = config.ike_version
   })
 
-  cli.table(config.ipsec_tunnels, {
+  cli.table(config.tunnels, {
     columns: [
       {key: 'tunnel_id', label: 'VPN Tunnel'},
-      {key: 'customer_gateway.outside_address.ip_address', label: 'Customer Gateway'},
-      {key: 'vpn_gateway.outside_address.ip_address', label: 'VPN Gateway'},
-      {key: 'ike.pre_shared_key', label: 'Pre-shared Key'},
+      {key: 'customer_ip', label: 'Customer Gateway'},
+      {key: 'ip', label: 'VPN Gateway'},
+      {key: 'pre_shared_key', label: 'Pre-shared Key'},
       {key: 'routable_cidr', label: 'Routable Subnets'},
       {key: 'ike_version', label: 'IKE Version'}
     ]
   })
 }
 
+function check (val, message) {
+  if (!val) throw new Error(`${message}.\nUSAGE: heroku spaces:vpn:config --space my-space vpn-connection-name`)
+}
+
 function * run (context, heroku) {
   let space = context.flags.space || context.args.space
-  if (!space) throw new Error('Space name required.\nUSAGE: heroku spaces:vpn:config --space my-space')
+  check(space, 'Space name required')
 
-  let lib = require('../../lib/vpn')(heroku)
-  let config = yield lib.getVPNConfig(space)
+  let name = context.flags.name || context.args.name
+  check(name, 'VPN connection name required')
+
+  let lib = require('../../lib/vpn-connections')(heroku)
+  let config = yield lib.getVPNConnection(space, name)
 
   if (context.flags.json) {
     cli.styledJSON(config)
   } else {
-    displayVPNConfigInfo(space, config)
+    displayVPNConfigInfo(space, name, config)
   }
 }
 
@@ -43,8 +50,8 @@ module.exports = {
   description: 'display the configuration information for VPN',
   help: `Example:
 
-    $ heroku spaces:vpn:config example-space
-    === example-space VPNs
+    $ heroku spaces:vpn:config --space my-space vpn-connection-name
+    === vpn-connection-name VPN Tunnels
     VPN Tunnel  Customer Gateway  VPN Gateway     Pre-shared Key  Routable Subnets  IKE Version
     ──────────  ────────────────  ──────────────  ──────────────  ────────────────  ───────────
     Tunnel 1    104.196.121.200   35.171.237.136  abcdef12345     10.0.0.0/16       1
@@ -60,9 +67,10 @@ You will use the information provided by this command to establish a Private Spa
   hidden: true,
   needsApp: false,
   needsAuth: true,
-  args: [{name: 'space', optional: true, hidden: true}],
+  args: [{name: 'name', optional: true, hidden: true}],
   flags: [
-    {name: 'space', char: 's', hasValue: true, description: 'space to get VPN config from'},
+    {name: 'space', char: 's', hasValue: true, description: 'space the VPN connection belongs to'},
+    {name: 'name', char: 'n', hasValue: true, description: 'name or id of the VPN connection to retrieve config from'},
     {name: 'json', description: 'output in json format'}
   ],
   run: cli.command(co.wrap(run))

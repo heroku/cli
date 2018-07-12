@@ -5,14 +5,20 @@ const co = require('co')
 const infoCmd = require('./info')
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
+function check (val, message) {
+  if (!val) throw new Error(`${message}.\nUSAGE: heroku spaces:vpn:wait --space my-space vpn-connection-name`)
+}
+
 function * run (context, heroku) {
   const space = context.flags.space || context.args.space
-  if (!space) throw new Error('Space name required.\nUSAGE: heroku spaces:vpn:wait my-space')
+  check(space, 'Space name required')
+  const name = context.flags.name || context.args.name
+  check(name, 'VPN connection name required')
 
   const interval = (typeof context.flags.interval !== 'undefined' ? context.flags.interval : 10) * 1000
   const timeout = (typeof context.flags.timeout !== 'undefined' ? context.flags.timeout : 20 * 60) * 1000
   const deadline = new Date(new Date().getTime() + timeout)
-  const spinner = new cli.Spinner({text: `Waiting for VPN in space ${cli.color.green(space)} to allocate...`})
+  const spinner = new cli.Spinner({text: `Waiting for VPN Connection ${cli.color.green(name)} to allocate...`})
 
   spinner.start()
 
@@ -20,7 +26,7 @@ function * run (context, heroku) {
   let info = {}
   do {
     try {
-      info = yield lib.getVPNInfo(space)
+      info = yield lib.getVPNInfo(space, name)
     } catch (e) {
       // if 404 is received while in this loop, the VPN was deleted because provisioning failed
       if (e.statusCode !== 422) { // ignore 422 since that means VPN is not ready
@@ -37,22 +43,23 @@ function * run (context, heroku) {
     }
 
     yield wait(interval)
-  } while (info.state !== 'available')
+  } while (info.status !== 'available')
 
   spinner.stop('done\n')
-  infoCmd.render(space, info, context.flags)
+  infoCmd.render(space, name, info, context.flags)
 }
 
 module.exports = {
   topic: 'spaces',
   command: 'vpn:wait',
-  description: 'wait for VPN to be created',
+  description: 'wait for VPN Connection to be created',
   hidden: true,
   needsApp: false,
   needsAuth: true,
-  args: [{name: 'space', optional: true, hidden: true}],
+  args: [{name: 'name', optional: true, hidden: true}],
   flags: [
-    {name: 'space', char: 's', hasValue: true, description: 'space to wait for VPN from'},
+    {name: 'space', char: 's', hasValue: true, description: 'space the vpn connection belongs to'},
+    {name: 'name', char: 'n', hasValue: true, description: 'name or id of the vpn connection to wait for'},
     {name: 'json', description: 'output in json format'},
     {name: 'interval', char: 'i', hasValue: true, description: 'seconds to wait between poll intervals'},
     {name: 'timeout', char: 't', hasValue: true, description: 'maximum number of seconds to wait'}
