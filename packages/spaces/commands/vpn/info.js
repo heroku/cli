@@ -94,7 +94,7 @@ module.exports = {
   hidden: true,
   needsApp: false,
   needsAuth: true,
-  args: [{name: 'space', optional: false, hidden: true}],
+  args: [{name: 'name', optional: true, hidden: true}],
   flags: [
     {name: 'space', char: 's', hasValue: true, description: 'space the vpn connection belongs to'},
     {name: 'json', description: 'output in json format'},

@@ -67,7 +67,7 @@ You will use the information provided by this command to establish a Private Spa
   hidden: true,
   needsApp: false,
   needsAuth: true,
-  args: [{name: 'space', optional: true, hidden: true}],
+  args: [{name: 'name', optional: true, hidden: true}],
   flags: [
     {name: 'space', char: 's', hasValue: true, description: 'space the VPN connection belongs to'},
     {name: 'name', char: 'n', hasValue: true, description: 'name or id of the VPN connection to retrieve config from'},
