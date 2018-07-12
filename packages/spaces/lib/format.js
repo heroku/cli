@@ -13,7 +13,29 @@ module.exports = function () {
     return CIDR(cidrBlocks)
   }
 
-  function Status (s) {
+  function VPNStatus (s) {
+    let colored = s
+    switch (s) {
+      case 'UP':
+      case 'available':
+        colored = `${cli.color.green(colored)}`
+        break
+      case 'pending':
+      case 'provisioning':
+      case 'deprovisioning':
+        colored = `${cli.color.yellow(colored)}`
+        break
+      case 'DOWN':
+      case 'deleting':
+      case 'deleted':
+        colored = `${cli.color.red(colored)}`
+        break
+    }
+
+    return colored
+  }
+
+  function PeeringStatus (s) {
     var colored = s
     switch (s) {
       case 'active':
@@ -37,6 +59,7 @@ module.exports = function () {
   return {
     CIDR,
     CIDRBlocksOrCIDRBlock,
-    Status
+    PeeringStatus,
+    VPNStatus
   }
 }

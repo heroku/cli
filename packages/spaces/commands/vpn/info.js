@@ -5,32 +5,12 @@ const co = require('co')
 const format = require('../../lib/format')()
 
 function displayVPNInfo (space, info) {
-  let sF = function (s) {
-    let colored = s
-    switch (s) {
-      case 'UP':
-      case 'available':
-        colored = `${cli.color.green(colored)}`
-        break
-      case 'pending':
-        colored = `${cli.color.yellow(colored)}`
-        break
-      case 'DOWN':
-      case 'deleting':
-      case 'deleted':
-        colored = `${cli.color.red(colored)}`
-        break
-    }
-
-    return colored
-  }
-
   cli.styledHeader(`${space} VPN Info`)
   cli.styledObject({
     ID: info.id,
     'Public IP': info.public_ip,
     'Routable CIDRs': format.CIDR(info.routable_cidrs),
-    State: `${sF(info.state)}`,
+    State: `${format.VPNStatus(info.state)}`,
     'Provisioning Status': info.status,
     'Status Message': info.status_message
   }, ['ID', 'Public IP', 'Routable CIDRs', 'State', 'Provisioning Status', 'Status Message'])
@@ -42,7 +22,7 @@ function displayVPNInfo (space, info) {
     columns: [
       {key: 'tunnel_id', label: 'VPN Tunnel'},
       {key: 'outside_ip_address', label: 'IP Address'},
-      {key: 'status', label: 'Status', format: status => sF(status)},
+      {key: 'status', label: 'Status', format: format.VPNStatus},
       {key: 'last_status_change', label: 'Status Last Changed'},
       {key: 'status_message', label: 'Details'}
     ]
