@@ -5,11 +5,15 @@ const co = require('co')
 const infoCmd = require('./info')
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
+function check (val, message) {
+  if (!val) throw new Error(`${message}.\nUSAGE: heroku spaces:vpn:wait my-space --name vpn-connection-name`)
+}
+
 function * run (context, heroku) {
   const space = context.flags.space || context.args.space
+  check(space, 'Space name required')
   const name = context.flags.name || context.args.name
-  if (!space) throw new Error('Space name required.\nUSAGE: heroku spaces:vpn:wait my-space')
-  if (!space) throw new Error('VPN connection name required.\nUSAGE: heroku spaces:vpn:wait my-space --name vpn-connection-name')
+  check(name, 'VPN connection name required')
 
   const interval = (typeof context.flags.interval !== 'undefined' ? context.flags.interval : 10) * 1000
   const timeout = (typeof context.flags.timeout !== 'undefined' ? context.flags.timeout : 20 * 60) * 1000
