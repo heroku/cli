@@ -39,7 +39,7 @@ module.exports = function (heroku) {
         {key: 'pcx_id', label: 'PCX ID'},
         {key: 'type', label: 'Type'},
         {key: 'cidr_blocks', label: 'CIDR Blocks', format: format.CIDRBlocksOrCIDRBlock},
-        {key: 'status', label: 'Status', format: format.Status},
+        {key: 'status', label: 'Status', format: format.PeeringStatus},
         {key: 'aws_vpc_id', label: 'VPC ID'},
         {key: 'aws_account_id', label: 'AWS Account ID'},
         {key: 'expires', label: 'Expires'}

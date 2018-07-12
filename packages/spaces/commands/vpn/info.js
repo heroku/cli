@@ -4,33 +4,13 @@ const cli = require('heroku-cli-util')
 const co = require('co')
 const format = require('../../lib/format')()
 
-function displayVPNInfo (space, name, info) {
-  let sF = function (s) {
-    let colored = s
-    switch (s) {
-      case 'UP':
-      case 'available':
-        colored = `${cli.color.green(colored)}`
-        break
-      case 'pending':
-        colored = `${cli.color.yellow(colored)}`
-        break
-      case 'DOWN':
-      case 'deleting':
-      case 'deleted':
-        colored = `${cli.color.red(colored)}`
-        break
-    }
-
-    return colored
-  }
-
+function displayVPNInfo (space, info) {
   cli.styledHeader(`${name} VPN Info`)
   cli.styledObject({
     ID: info.id,
     'Public IP': info.public_ip,
     'Routable CIDRs': format.CIDR(info.routable_cidrs),
-    'Status': info.status,
+    'Status': `${format.VPNStatus(info.state)}`,
     'Status Message': info.status_message
   }, ['ID', 'Public IP', 'Routable CIDRs', 'State', 'Status', 'Status Message'])
 

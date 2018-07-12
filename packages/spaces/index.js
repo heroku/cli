@@ -18,6 +18,7 @@ exports.commands = [
   require('./commands/peering/destroy'),
   require('./commands/vpn/connect'),
   require('./commands/vpn/create'),
+  require('./commands/vpn/index'),
   require('./commands/vpn/info'),
   require('./commands/vpn/config'),
   require('./commands/vpn/wait'),
