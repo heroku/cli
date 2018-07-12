@@ -4,13 +4,13 @@ const cli = require('heroku-cli-util')
 const co = require('co')
 const format = require('../../lib/format')()
 
-function displayVPNInfo (space, info) {
+function displayVPNInfo (space, name, info) {
   cli.styledHeader(`${name} VPN Info`)
   cli.styledObject({
     ID: info.id,
     'Public IP': info.public_ip,
     'Routable CIDRs': format.CIDR(info.routable_cidrs),
-    'Status': `${format.VPNStatus(info.state)}`,
+    'Status': `${format.VPNStatus(info.status)}`,
     'Status Message': info.status_message
   }, ['ID', 'Public IP', 'Routable CIDRs', 'State', 'Status', 'Status Message'])
 
@@ -21,7 +21,7 @@ function displayVPNInfo (space, info) {
     columns: [
       {key: 'tunnel_id', label: 'VPN Tunnel'},
       {key: 'ip', label: 'IP Address'},
-      {key: 'status', label: 'Status', format: status => sF(status)},
+      {key: 'status', label: 'Status', format: status => format.VPNStatus(status)},
       {key: 'last_status_change', label: 'Status Last Changed'},
       {key: 'status_message', label: 'Details'}
     ]
