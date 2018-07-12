@@ -23,7 +23,7 @@ describe('spaces:vpn:destroy', function () {
     let api = nock('https://api.heroku.com:443')
       .delete('/spaces/my-space/vpn')
       .reply(202)
-    return cmd.run({flags: {space: 'my-space', confirm: 'my-space'}})
+    return cmd.run({args: {}, flags: {space: 'my-space', confirm: 'my-space'}})
       .then(() => expect(cli.stderr).to.equal(
         `Tearing down VPN Connection in space my-space... done\n`))
       .then(() => api.done())

@@ -8,11 +8,11 @@ function check (val, message) {
 }
 
 function * run (context, heroku) {
-  let space = context.flags.space || context.args.space
+  let space = context.flags.space
   check(space, 'Space name required')
 
-  let name = context.args && context.args.name
-  // For when we've fully migrated to the multiple VPN UX
+  let name = context.flags.name || context.args.name
+  // TODO: uncomment when we've fully migrated to the multiple VPN UX
   // check(name, 'VPN name required')
 
   let lib = require('../../lib/vpn-connections')(heroku)
@@ -35,10 +35,11 @@ module.exports = {
   needsApp: false,
   needsAuth: true,
   args: [
-    {name: 'name', optional: true, hidden: false}
+    {name: 'name', optional: true, hidden: true}
   ],
   flags: [
     {name: 'space', char: 's', hasValue: true, description: 'space to get peering info from'},
+    {name: 'name', char: 'n', hasValue: true, description: 'name or id of the VPN connection to retrieve config from'},
     {name: 'confirm', hasValue: true, description: 'set to space name bypass confirm prompt'}
   ],
   run: cli.command(co.wrap(run))
