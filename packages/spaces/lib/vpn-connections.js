@@ -13,6 +13,16 @@ module.exports = function (heroku) {
     return request('GET', `/spaces/${space}/vpn-connections`)
   }
 
+  function deleteVPNConnection (space, name) {
+    let lib = require('../lib/vpn')(heroku)
+
+    if (!name) {
+      return lib.deleteVPN(space)
+    }
+
+    return request('DELETE', `/spaces/${space}/vpn-connections/${name}`)
+  }
+
   function request (method, path, body) {
     return heroku.request({
       method: method,
@@ -23,6 +33,7 @@ module.exports = function (heroku) {
 
   return {
     postVPNConnections,
-    getVPNConnections
+    getVPNConnections,
+    deleteVPNConnection
   }
 }
