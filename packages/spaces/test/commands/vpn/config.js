@@ -47,7 +47,7 @@ describe('spaces:vpn:config', function () {
       name: 'vpn-connection-name-config'
     }})
       .then(() => expect(cli.stdout).to.equal(
-        `=== vpn-connection-name-config VPNs
+        `=== vpn-connection-name-config VPN Tunnels
 VPN Tunnel  Customer Gateway  VPN Gateway    Pre-shared Key  Routable Subnets  IKE Version
 ──────────  ────────────────  ─────────────  ──────────────  ────────────────  ───────────
 Tunnel 1    52.44.146.197     52.44.146.196  apresharedkey1  10.0.0.0/16       1

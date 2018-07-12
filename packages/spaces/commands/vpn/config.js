@@ -4,7 +4,7 @@ const cli = require('heroku-cli-util')
 const co = require('co')
 
 function displayVPNConfigInfo (space, name, config) {
-  cli.styledHeader(`${name} VPNs`)
+  cli.styledHeader(`${name} VPN Tunnels`)
   config.tunnels.forEach((val, i) => {
     val.tunnel_id = 'Tunnel ' + (i + 1)
     val.routable_cidr = config.space_cidr_block
@@ -23,10 +23,16 @@ function displayVPNConfigInfo (space, name, config) {
   })
 }
 
+function check (val, message) {
+  if (!val) throw new Error(`${message}.\nUSAGE: heroku spaces:vpn:info --space example-space --name vpn-connection-name`)
+}
+
 function * run (context, heroku) {
   let space = context.flags.space || context.args.space
+  check(space, 'Space name required')
+
   let name = context.flags.name || context.args.name
-  if (!space) throw new Error('Space name required.\nUSAGE: heroku spaces:vpn:config --space my-space')
+  check(name, 'VPN connection name required')
 
   let lib = require('../../lib/vpn-connections')(heroku)
   let config = yield lib.getVPNConnection(space, name)
@@ -45,7 +51,7 @@ module.exports = {
   help: `Example:
 
     $ heroku spaces:vpn:config example-space --name vpn-connection-name
-    === vpn-connection-name VPNs
+    === vpn-connection-name VPN Tunnels
     VPN Tunnel  Customer Gateway  VPN Gateway     Pre-shared Key  Routable Subnets  IKE Version
     ──────────  ────────────────  ──────────────  ──────────────  ────────────────  ───────────
     Tunnel 1    104.196.121.200   35.171.237.136  abcdef12345     10.0.0.0/16       1

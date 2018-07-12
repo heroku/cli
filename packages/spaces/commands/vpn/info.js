@@ -36,7 +36,7 @@ function displayVPNInfo (space, name, info) {
 
   // make up tunnel IDs
   info.tunnels.forEach((val, i) => { val.tunnel_id = 'Tunnel ' + (i + 1) })
-  cli.styledHeader(`${name} Tunnel Info`)
+  cli.styledHeader(`${name} VPN Tunnel Info`)
   cli.table(info.tunnels, {
     columns: [
       {key: 'tunnel_id', label: 'VPN Tunnel'},
@@ -56,11 +56,16 @@ function render (space, name, info, flags) {
   }
 }
 
+function check (val, message) {
+  if (!val) throw new Error(`${message}.\nUSAGE: heroku spaces:vpn:info --space example-space --name vpn-connection-name`)
+}
+
 function * run (context, heroku) {
   let space = context.flags.space || context.args.space
+  check(space, 'Space name required')
+
   let name = context.flags.name || context.args.name
-  if (!space) throw new Error('Space name required.\nUSAGE: heroku spaces:vpn:info --space my-space')
-  if (!name) throw new Error('VPN connection name required.\nUSAGE: heroku spaces:vpn:info --space my-space --name vpn-connection-name')
+  check(name, 'VPN connection name required')
 
   let lib = require('../../lib/vpn-connections')(heroku)
   let info = yield lib.getVPNConnection(space, name)
@@ -74,7 +79,7 @@ module.exports = {
   help: `Example:
 
     $ heroku spaces:vpn:info my-space --name vpn-connection-name
-    === vpn-connection-name VPN Info
+    === vpn-connection-name VPN Tunnel Info
     Name:           vpn-connection-name
     ID:             123456789012
     Public IP:      35.161.69.30

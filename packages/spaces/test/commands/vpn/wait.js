@@ -74,7 +74,7 @@ Public IP:      35.161.69.30
 Routable CIDRs: 172.16.0.0/16
 Status:         available
 Status Message: 
-=== vpn-connection-name Tunnel Info
+=== vpn-connection-name VPN Tunnel Info
 VPN Tunnel  IP Address     Status  Status Last Changed   Details
 ──────────  ─────────────  ──────  ────────────────────  ──────────────
 Tunnel 1    52.44.146.197  UP      2016-10-25T22:09:05Z  status message
