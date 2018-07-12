@@ -6,7 +6,7 @@ const infoCmd = require('./info')
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
 function check (val, message) {
-  if (!val) throw new Error(`${message}.\nUSAGE: heroku spaces:vpn:wait my-space --name vpn-connection-name`)
+  if (!val) throw new Error(`${message}.\nUSAGE: heroku spaces:vpn:wait --space my-space vpn-connection-name`)
 }
 
 function * run (context, heroku) {

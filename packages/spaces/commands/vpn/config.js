@@ -24,7 +24,7 @@ function displayVPNConfigInfo (space, name, config) {
 }
 
 function check (val, message) {
-  if (!val) throw new Error(`${message}.\nUSAGE: heroku spaces:vpn:info --space example-space --name vpn-connection-name`)
+  if (!val) throw new Error(`${message}.\nUSAGE: heroku spaces:vpn:config --space my-space vpn-connection-name`)
 }
 
 function * run (context, heroku) {
@@ -50,7 +50,7 @@ module.exports = {
   description: 'display the configuration information for VPN',
   help: `Example:
 
-    $ heroku spaces:vpn:config example-space --name vpn-connection-name
+    $ heroku spaces:vpn:config --space my-space vpn-connection-name
     === vpn-connection-name VPN Tunnels
     VPN Tunnel  Customer Gateway  VPN Gateway     Pre-shared Key  Routable Subnets  IKE Version
     ──────────  ────────────────  ──────────────  ──────────────  ────────────────  ───────────

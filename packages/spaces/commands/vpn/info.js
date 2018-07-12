@@ -37,7 +37,7 @@ function render (space, name, info, flags) {
 }
 
 function check (val, message) {
-  if (!val) throw new Error(`${message}.\nUSAGE: heroku spaces:vpn:info --space example-space --name vpn-connection-name`)
+  if (!val) throw new Error(`${message}.\nUSAGE: heroku spaces:vpn:info --space my-space vpn-connection-name`)
 }
 
 function * run (context, heroku) {
@@ -58,7 +58,7 @@ module.exports = {
   description: 'display the information for VPN',
   help: `Example:
 
-    $ heroku spaces:vpn:info my-space --name vpn-connection-name
+    $ heroku spaces:vpn:info --space my-space vpn-connection-name
     === vpn-connection-name VPN Tunnel Info
     Name:           vpn-connection-name
     ID:             123456789012
