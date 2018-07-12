@@ -24,6 +24,7 @@ $ npm publish
 * [`heroku-enterprise enterprises:members`](#heroku-enterprise-enterprisesmembers)
 * [`heroku-enterprise enterprises:members-add EMAIL`](#heroku-enterprise-enterprisesmembers-add-email)
 * [`heroku-enterprise enterprises:members-remove EMAIL`](#heroku-enterprise-enterprisesmembers-remove-email)
+* [`heroku-enterprise enterprises:teams`](#heroku-enterprise-enterprisesteams)
 * [`heroku-enterprise enterprises:usage`](#heroku-enterprise-enterprisesusage)
 * [`heroku-enterprise teams`](#heroku-enterprise-teams)
 * [`heroku-enterprise teams:create TEAM`](#heroku-enterprise-teamscreate-team)
@@ -83,6 +84,18 @@ remove a member from an enterprise account
 ```
 USAGE
   $ heroku-enterprise enterprises:members-remove EMAIL
+
+OPTIONS
+  --enterprise-account=enterprise-account  (required) enterprise account name
+```
+
+## `heroku-enterprise enterprises:teams`
+
+list teams within an enterprise account
+
+```
+USAGE
+  $ heroku-enterprise enterprises:teams
 
 OPTIONS
   --enterprise-account=enterprise-account  (required) enterprise account name
