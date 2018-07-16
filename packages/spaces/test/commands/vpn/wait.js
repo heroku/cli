@@ -46,7 +46,7 @@ describe('spaces:vpn:wait', function () {
         routable_cidrs: [ '172.16.0.0/16' ],
         ike_version: 1,
         space_cidr_block: '10.0.0.0/16',
-        status: 'available',
+        status: 'active',
         status_message: '',
         tunnels: [
           {
@@ -72,7 +72,7 @@ describe('spaces:vpn:wait', function () {
 ID:             123456789012
 Public IP:      35.161.69.30
 Routable CIDRs: 172.16.0.0/16
-Status:         available
+Status:         active
 Status Message: 
 === vpn-connection-name VPN Tunnel Info
 VPN Tunnel  IP Address     Status  Status Last Changed   Details
