@@ -13,6 +13,7 @@
     "@heroku-cli/plugin-addons-v5": "^7.5.6",
     "@heroku-cli/plugin-apps-v5": "^7.5.6",
     "@heroku-cli/plugin-auth": "^7.5.9",
+    "@heroku-cli/plugin-autocomplete": "^1.1.0",
     "@heroku-cli/plugin-certs": "^7.5.9",
     "@heroku-cli/plugin-certs-v5": "^7.5.6",
     "@heroku-cli/plugin-ci-v5": "^7.5.10",
@@ -102,6 +103,7 @@
     "plugins": [
       "@oclif/plugin-legacy",
       "@heroku-cli/plugin-auth",
+      "@heroku-cli/plugin-autocomplete",
       "@heroku-cli/plugin-addons-v5",
       "@heroku-cli/plugin-apps-v5",
       "@heroku-cli/plugin-certs",
