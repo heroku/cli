@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="7.6.1"></a>
+## [7.6.1](https://github.com/heroku/cli/compare/v7.6.0...v7.6.1) (2018-07-16)
+
+
+### Bug Fixes
+
+* **spaces:** wait should check that the status is active, not available ([#939](https://github.com/heroku/cli/issues/939)) ([649ff1c](https://github.com/heroku/cli/commit/649ff1c))
+
+
+
+
 <a name="7.6.0"></a>
 # [7.6.0](https://github.com/heroku/cli/compare/v7.5.11...v7.6.0) (2018-07-12)
 
