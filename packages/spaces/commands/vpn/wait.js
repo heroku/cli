@@ -43,7 +43,7 @@ function * run (context, heroku) {
     }
 
     yield wait(interval)
-  } while (info.status !== 'available')
+  } while (info.status !== 'active')
 
   spinner.stop('done\n')
   infoCmd.render(space, name, info, context.flags)
