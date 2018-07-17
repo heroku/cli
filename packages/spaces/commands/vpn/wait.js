@@ -22,11 +22,11 @@ function * run (context, heroku) {
 
   spinner.start()
 
-  let lib = require('../../lib/vpn')(heroku)
+  let lib = require('../../lib/vpn-connections')(heroku)
   let info = {}
   do {
     try {
-      info = yield lib.getVPNInfo(space, name)
+      info = yield lib.getVPNConnection(space, name)
     } catch (e) {
       // if 404 is received while in this loop, the VPN was deleted because provisioning failed
       if (e.statusCode !== 422) { // ignore 422 since that means VPN is not ready
@@ -47,8 +47,8 @@ function * run (context, heroku) {
 
   spinner.stop('done\n')
 
-  var config = yield lib.getVPNConfig(space)
-  configCmd.displayVPNConfigInfo(space, config)
+  var config = yield lib.getVPNConnection(space, name)
+  configCmd.displayVPNConfigInfo(space, name, config)
 }
 
 module.exports = {
