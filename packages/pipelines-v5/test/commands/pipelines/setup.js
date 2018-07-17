@@ -91,8 +91,9 @@ describe('pipelines:setup', function () {
     context('and pipeline name is valid', function () {
       beforeEach(function () {
         github.get(`/repos/${repo.name}`).reply(200, repo)
-        github.get(`/repos/${repo.name}/tarball/${repo.default_branch}`).reply(301, '', {
-          location: archiveURL
+
+        kolkrabbi.get(`/github/repos/${repo.name}/tarball/${repo.default_branch}`).reply(200, {
+          archive_link: archiveURL
         })
 
         api = nock('https://api.heroku.com')
