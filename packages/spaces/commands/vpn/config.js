@@ -73,5 +73,6 @@ You will use the information provided by this command to establish a Private Spa
     {name: 'name', char: 'n', hasValue: true, description: 'name or id of the VPN connection to retrieve config from'},
     {name: 'json', description: 'output in json format'}
   ],
-  run: cli.command(co.wrap(run))
+  run: cli.command(co.wrap(run)),
+  displayVPNConfigInfo: displayVPNConfigInfo
 }
