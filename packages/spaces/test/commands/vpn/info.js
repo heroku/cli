@@ -119,7 +119,7 @@ Tunnel 2    52.44.146.197  UP      2016-10-25T22:09:05Z  status message\n`
 }\n`))
       .then(() => api.done())
   })
-  it('gets VPN info and uses id as the name', function () {
+  it('gets VPN info with id', function () {
     let api = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/vpn-connections/123456789012')
       .reply(200, {
@@ -152,14 +152,14 @@ Tunnel 2    52.44.146.197  UP      2016-10-25T22:09:05Z  status message\n`
       name: '123456789012'
     }})
       .then(() => expect(cli.stdout).to.equal(
-        `=== 123456789012 VPN Info
-Name:           123456789012
+        `=== vpn-connection-name VPN Info
+Name:           vpn-connection-name
 ID:             123456789012
 Public IP:      35.161.69.30
 Routable CIDRs: 172.16.0.0/16
 Status:         failed
 Status Message: supplied CIDR block already in use
-=== 123456789012 VPN Tunnel Info
+=== vpn-connection-name VPN Tunnel Info
 VPN Tunnel  IP Address     Status  Status Last Changed   Details
 ──────────  ─────────────  ──────  ────────────────────  ──────────────
 Tunnel 1    52.44.146.197  UP      2016-10-25T22:09:05Z  status message
