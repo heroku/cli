@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="7.7.1"></a>
+## [7.7.1](https://github.com/heroku/cli/compare/v7.7.0...v7.7.1) (2018-07-17)
+
+
+### Bug Fixes
+
+* **pipelines:** change source_blob url to come from kolkrabbi ([#944](https://github.com/heroku/cli/issues/944)) ([2f50f07](https://github.com/heroku/cli/commit/2f50f07))
+
+
+
+
 <a name="7.5.6"></a>
 ## [7.5.6](https://github.com/heroku/cli/compare/v7.5.5...v7.5.6) (2018-06-29)
 

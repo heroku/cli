@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="7.7.1"></a>
+## [7.7.1](https://github.com/heroku/cli/compare/v7.7.0...v7.7.1) (2018-07-17)
+
+
+### Bug Fixes
+
+* **spaces:** default name to ID in list if missing ([#941](https://github.com/heroku/cli/issues/941)) ([1ba091a](https://github.com/heroku/cli/commit/1ba091a))
+* **spaces:** display the config info after VPN wait ([#929](https://github.com/heroku/cli/issues/929)) ([6bf1d7b](https://github.com/heroku/cli/commit/6bf1d7b))
+* **spaces:** display the name in vpn:info ([#943](https://github.com/heroku/cli/issues/943)) ([e3cbce0](https://github.com/heroku/cli/commit/e3cbce0))
+
+
+
+
 <a name="7.6.1"></a>
 ## [7.6.1](https://github.com/heroku/cli/compare/v7.6.0...v7.6.1) (2018-07-16)
 
