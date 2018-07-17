@@ -93,7 +93,7 @@ View your new pipeline by running \`heroku pipelines:open e5a55ffa-de3f-11e6-a24
       kolkrabbi.createPipelineRepository(pipeline.id, repo.id)
     )
 
-    const archiveURL = yield github.getArchiveURL(repoName, repo.default_branch)
+    const archiveURL = yield kolkrabbi.getArchiveURL(repoName, repo.default_branch)
     const appSetups = yield createApps(heroku, archiveURL, pipeline, pipelineName, stagingAppName, organization)
 
     yield cli.action(
