@@ -69,6 +69,7 @@ describe('spaces:vpn:wait', function () {
         `Waiting for VPN Connection vpn-connection-name to allocate... done\n\n`))
       .then(() => expect(cli.stdout).to.equal(
         `=== vpn-connection-name VPN Info
+Name:           vpn-connection-name
 ID:             123456789012
 Public IP:      35.161.69.30
 Routable CIDRs: 172.16.0.0/16
