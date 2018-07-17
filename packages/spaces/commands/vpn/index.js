@@ -12,7 +12,7 @@ function displayVPNConnections (space, connections) {
   cli.styledHeader(`${space} VPN Connections`)
   cli.table(connections, {
     columns: [
-      {label: 'Name', key: 'name'},
+      {label: 'Name', format: (_, v) => v.name || v.id},
       {label: 'Status', key: 'status', format: format.VPNStatus},
       {label: 'Tunnels', key: 'tunnels', format: t => tunnelFormat(t)}
     ]
