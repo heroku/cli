@@ -51,7 +51,7 @@ function * run (context, heroku) {
   let lib = require('../../lib/vpn-connections')(heroku)
   let info = yield lib.getVPNConnection(space, name)
 
-  if (info.name != null) {
+  if (info.name) {
     name = info.name
   }
   render(space, name, info, context.flags)
