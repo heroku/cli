@@ -7,12 +7,13 @@ const format = require('../../lib/format')()
 function displayVPNInfo (space, name, info) {
   cli.styledHeader(`${name} VPN Info`)
   cli.styledObject({
+    Name: name,
     ID: info.id,
     'Public IP': info.public_ip,
     'Routable CIDRs': format.CIDR(info.routable_cidrs),
     'Status': `${format.VPNStatus(info.status)}`,
     'Status Message': info.status_message
-  }, ['ID', 'Public IP', 'Routable CIDRs', 'State', 'Status', 'Status Message'])
+  }, ['Name', 'ID', 'Public IP', 'Routable CIDRs', 'State', 'Status', 'Status Message'])
 
   // make up tunnel IDs
   info.tunnels.forEach((val, i) => { val.tunnel_id = 'Tunnel ' + (i + 1) })
