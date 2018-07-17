@@ -3,6 +3,44 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="7.7.0"></a>
+# [7.7.0](https://github.com/heroku/cli/compare/v7.6.1...v7.7.0) (2018-07-17)
+
+
+### Features
+
+* **cli:** add autocomplete to core ([#940](https://github.com/heroku/cli/issues/940)) ([6c58437](https://github.com/heroku/cli/commit/6c58437))
+
+
+
+
+<a name="7.6.1"></a>
+## [7.6.1](https://github.com/heroku/cli/compare/v7.6.0...v7.6.1) (2018-07-16)
+
+
+
+
+**Note:** Version bump only for package heroku
+
+<a name="7.6.0"></a>
+# [7.6.0](https://github.com/heroku/cli/compare/v7.5.11...v7.6.0) (2018-07-12)
+
+
+
+
+**Note:** Version bump only for package heroku
+
+<a name="7.5.11"></a>
+## [7.5.11](https://github.com/heroku/cli/compare/v7.5.10...v7.5.11) (2018-07-05)
+
+
+### Bug Fixes
+
+* node 10.6.0 ([fd46cff](https://github.com/heroku/cli/commit/fd46cff))
+
+
+
+
 <a name="7.5.10"></a>
 ## [7.5.10](https://github.com/heroku/cli/compare/v7.5.9...v7.5.10) (2018-07-03)
 

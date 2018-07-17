@@ -102,7 +102,7 @@ USAGE
   $ heroku apps:destroy
 
 OPTIONS
-  -a, --app=app          [default: safe-sea-44297] app to run command against
+  -a, --app=app          [default: keycomb-heroku] app to run command against
   -c, --confirm=confirm
   -r, --remote=remote    git remote of app to use
 
@@ -119,7 +119,7 @@ USAGE
   $ heroku apps:errors
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) [default: keycomb-heroku] app to run command against
   -r, --remote=remote  git remote of app to use
   --dyno               show only dyno errors
   --hours=hours        number of hours to look back (default 24)
@@ -148,7 +148,7 @@ USAGE
   $ heroku apps:favorites:add
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) [default: keycomb-heroku] app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -161,7 +161,7 @@ USAGE
   $ heroku apps:favorites:remove
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) [default: keycomb-heroku] app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -174,7 +174,7 @@ USAGE
   $ heroku apps:info
 
 OPTIONS
-  -a, --app=app        [default: safe-sea-44297] app to run command against
+  -a, --app=app        [default: keycomb-heroku] app to run command against
   -j, --json
   -r, --remote=remote  git remote of app to use
   -s, --shell          output more shell friendly key/value pairs
@@ -201,7 +201,7 @@ USAGE
   $ heroku apps:join
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) [default: keycomb-heroku] app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -214,7 +214,7 @@ USAGE
   $ heroku apps:leave
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) [default: keycomb-heroku] app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -227,7 +227,7 @@ USAGE
   $ heroku apps:lock
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) [default: keycomb-heroku] app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -240,7 +240,7 @@ USAGE
   $ heroku apps:open [PATH]
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) [default: keycomb-heroku] app to run command against
   -r, --remote=remote  git remote of app to use
 
 EXAMPLES
@@ -260,7 +260,7 @@ USAGE
   $ heroku apps:rename NEWNAME
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) [default: keycomb-heroku] app to run command against
   -r, --remote=remote  git remote of app to use
   --ssh-git            use ssh git protocol instead of https
 
@@ -282,7 +282,7 @@ USAGE
   $ heroku apps:stacks
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) [default: keycomb-heroku] app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -295,7 +295,7 @@ USAGE
   $ heroku apps:stacks:set STACK
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) [default: keycomb-heroku] app to run command against
   -r, --remote=remote  git remote of app to use
 
 EXAMPLES
@@ -316,7 +316,7 @@ ARGUMENTS
   RECIPIENT  user or team to transfer applications to
 
 OPTIONS
-  -a, --app=app        [default: safe-sea-44297] app to run command against
+  -a, --app=app        [default: keycomb-heroku] app to run command against
   -l, --locked         lock the app upon transfer
   -r, --remote=remote  git remote of app to use
   --bulk               transfer applications in bulk
@@ -341,6 +341,6 @@ USAGE
   $ heroku apps:unlock
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) [default: keycomb-heroku] app to run command against
   -r, --remote=remote  git remote of app to use
 ```

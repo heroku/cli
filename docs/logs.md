@@ -14,7 +14,7 @@ USAGE
   $ heroku logs
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) [default: keycomb-heroku] app to run command against
   -d, --dyno=dyno      only show output from this dyno type (such as "web" or "worker")
   -n, --num=num        number of lines to display
   -r, --remote=remote  git remote of app to use

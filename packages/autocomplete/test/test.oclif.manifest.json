@@ -1,0 +1,57 @@
+{
+  "version": "0.0.0",
+  "commands": {
+    "autocomplete": {
+      "id": "autocomplete",
+      "description": "display autocomplete instructions",
+      "pluginName": "@heroku-cli/plugin-autocomplete",
+      "pluginType": "core",
+      "aliases": [],
+      "examples": [
+        "$ heroku autocomplete",
+        "$ heroku autocomplete bash",
+        "$ heroku autocomplete zsh"
+      ],
+      "flags": {
+        "skip-instructions": {
+          "name": "skip-instructions",
+          "type": "boolean",
+          "char": "s",
+          "description": "Do not show installation instructions"
+        }
+      },
+      "args": [
+        {
+          "name": "shell",
+          "description": "shell type",
+          "required": false
+        }
+      ]
+    },
+    "autocomplete:foo": {
+      "id": "autocomplete:foo",
+      "description": "foo cmd for autocomplete testing",
+      "pluginName": "@heroku-cli/plugin-autocomplete",
+      "pluginType": "core",
+      "aliases": [],
+      "flags": {
+        "app": {
+          "name": "app",
+          "type": "option",
+          "description": "app to use"
+        },
+        "bar": {
+          "name": "bar",
+          "type": "option",
+          "description": "bar for testing"
+        },
+        "json": {
+          "name": "json",
+          "type": "boolean",
+          "description": "output in json format"
+        }
+      },
+      "args": []
+    }
+  }
+}

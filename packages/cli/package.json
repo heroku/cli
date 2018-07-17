@@ -1,7 +1,7 @@
 {
   "name": "heroku",
   "description": "CLI to interact with Heroku",
-  "version": "7.5.10",
+  "version": "7.7.0",
   "author": "Jeff Dickey @jdxcode",
   "bin": {
     "heroku": "./bin/run"
@@ -13,6 +13,7 @@
     "@heroku-cli/plugin-addons-v5": "^7.5.6",
     "@heroku-cli/plugin-apps-v5": "^7.5.6",
     "@heroku-cli/plugin-auth": "^7.5.9",
+    "@heroku-cli/plugin-autocomplete": "^7.7.0",
     "@heroku-cli/plugin-certs": "^7.5.9",
     "@heroku-cli/plugin-certs-v5": "^7.5.6",
     "@heroku-cli/plugin-ci-v5": "^7.5.10",
@@ -28,7 +29,7 @@
     "@heroku-cli/plugin-ps-exec": "2.3.4",
     "@heroku-cli/plugin-redis-v5": "^7.5.6",
     "@heroku-cli/plugin-run-v5": "^7.5.6",
-    "@heroku-cli/plugin-spaces": "^7.5.8",
+    "@heroku-cli/plugin-spaces": "^7.6.1",
     "@heroku-cli/plugin-status": "^7.5.9",
     "@heroku-cli/plugin-webhooks-v5": "^7.5.6",
     "@oclif/command": "1.4.34",
@@ -102,6 +103,7 @@
     "plugins": [
       "@oclif/plugin-legacy",
       "@heroku-cli/plugin-auth",
+      "@heroku-cli/plugin-autocomplete",
       "@heroku-cli/plugin-addons-v5",
       "@heroku-cli/plugin-apps-v5",
       "@heroku-cli/plugin-certs",
@@ -229,7 +231,7 @@
     },
     "update": {
       "node": {
-        "version": "10.5.0"
+        "version": "10.6.0"
       },
       "s3": {
         "xz": true,

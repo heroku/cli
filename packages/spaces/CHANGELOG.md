@@ -3,6 +3,36 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="7.6.1"></a>
+## [7.6.1](https://github.com/heroku/cli/compare/v7.6.0...v7.6.1) (2018-07-16)
+
+
+### Bug Fixes
+
+* **spaces:** wait should check that the status is active, not available ([#939](https://github.com/heroku/cli/issues/939)) ([649ff1c](https://github.com/heroku/cli/commit/649ff1c))
+
+
+
+
+<a name="7.6.0"></a>
+# [7.6.0](https://github.com/heroku/cli/compare/v7.5.11...v7.6.0) (2018-07-12)
+
+
+### Bug Fixes
+
+* **space:** update vpn:destroy for multiple vpn connections ([#933](https://github.com/heroku/cli/issues/933)) ([1a2074f](https://github.com/heroku/cli/commit/1a2074f))
+* **spaces:** tweaks to vpn:destroy ([#936](https://github.com/heroku/cli/issues/936)) ([65dcbf8](https://github.com/heroku/cli/commit/65dcbf8))
+* **spaces:** update vpn wait / info / config ([#934](https://github.com/heroku/cli/issues/934)) ([36551d3](https://github.com/heroku/cli/commit/36551d3))
+
+
+### Features
+
+* **spaces:** add vpn:connect command ([#931](https://github.com/heroku/cli/issues/931)) ([4accdc5](https://github.com/heroku/cli/commit/4accdc5))
+* **spaces:** add vpn:connections command ([#935](https://github.com/heroku/cli/issues/935)) ([21b6254](https://github.com/heroku/cli/commit/21b6254))
+
+
+
+
 <a name="7.5.8"></a>
 ## [7.5.8](https://github.com/heroku/cli/compare/v7.5.7...v7.5.8) (2018-07-02)
 

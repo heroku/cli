@@ -19,10 +19,4 @@ module.exports = class GitHubAPI {
   getRepo (name) {
     return this.request(`/repos/${name}`).then((res) => res.body)
   }
-
-  getArchiveURL (repo, ref) {
-    return this.request(`/repos/${repo}/tarball/${ref}`, {
-      followRedirect: false
-    }).then((res) => res.headers.location)
-  }
 }
