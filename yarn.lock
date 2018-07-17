@@ -227,6 +227,22 @@
     debug "^3.1.0"
     tslib "^1.9.2"
 
+"@oclif/dev-cli@1.15.3":
+  version "1.15.3"
+  resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.15.3.tgz#e8b5989536d460d18c470eaa1c41cfac926fef4b"
+  dependencies:
+    "@oclif/command" "^1.4.33"
+    "@oclif/config" "^1.6.33"
+    "@oclif/errors" "^1.1.2"
+    "@oclif/plugin-help" "^2.0.5"
+    cli-ux "^4.7.2"
+    debug "^3.1.0"
+    fs-extra "^6.0.1"
+    lodash "^4.17.10"
+    normalize-package-data "^2.4.0"
+    qqjs "^0.3.10"
+    tslib "^1.9.2"
+
 "@oclif/dev-cli@^1.15.4":
   version "1.15.4"
   resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.15.4.tgz#ffd91e36adcb08dcecc7b8c905428ba0ca17bef3"
@@ -372,13 +388,13 @@
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/@oclif/screen/-/screen-1.0.2.tgz#c9d7c84b0ea60ecec8dd7a9b22c012ba9967aed8"
 
-"@oclif/test@^1", "@oclif/test@^1.0.6", "@oclif/test@^1.0.9", "@oclif/test@^1.1.0":
+"@oclif/test@1.1.0", "@oclif/test@^1", "@oclif/test@^1.0.6", "@oclif/test@^1.0.9", "@oclif/test@^1.1.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@oclif/test/-/test-1.1.0.tgz#63eea93f3b20ff534831b1a281d217eb02073a9c"
   dependencies:
     fancy-test "^1.2.0"
 
-"@oclif/tslint@^1", "@oclif/tslint@^1.1.0", "@oclif/tslint@^1.1.2":
+"@oclif/tslint@1.1.2", "@oclif/tslint@^1", "@oclif/tslint@^1.1.0", "@oclif/tslint@^1.1.2":
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@oclif/tslint/-/tslint-1.1.2.tgz#23503ebb56c25556242e23e9df8706efc0b1fafb"
   dependencies:
@@ -400,7 +416,7 @@
   dependencies:
     "@types/color-name" "*"
 
-"@types/chai@^4", "@types/chai@^4.1.3", "@types/chai@^4.1.4":
+"@types/chai@4.1.4", "@types/chai@^4", "@types/chai@^4.1.3", "@types/chai@^4.1.4":
   version "4.1.4"
   resolved "https://registry.yarnpkg.com/@types/chai/-/chai-4.1.4.tgz#5ca073b330d90b4066d6ce18f60d57f2084ce8ca"
 
@@ -436,6 +452,16 @@
     "@types/minimatch" "*"
     "@types/node" "*"
 
+"@types/lodash.flatten@^4.4.3":
+  version "4.4.3"
+  resolved "https://registry.yarnpkg.com/@types/lodash.flatten/-/lodash.flatten-4.4.3.tgz#7806caef7eca7aa75600b2f87c474e3af980304a"
+  dependencies:
+    "@types/lodash" "*"
+
+"@types/lodash@*":
+  version "4.14.112"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.112.tgz#4a8d8e5716b97a1ac01fe1931ad1e4cba719de5a"
+
 "@types/lodash@^4.14.109", "@types/lodash@^4.14.110":
   version "4.14.110"
   resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.110.tgz#fb07498f84152947f30ea09d89207ca07123461e"
@@ -443,6 +469,10 @@
 "@types/minimatch@*":
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/@types/minimatch/-/minimatch-3.0.3.tgz#3dca0e3f33b200fc7d1139c0cd96c1268cadfd9d"
+
+"@types/mocha@5.2.3":
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/@types/mocha/-/mocha-5.2.3.tgz#11f3a5629d67cd444fa6c94536576244e6a52ea9"
 
 "@types/mocha@^5.2.2", "@types/mocha@^5.2.4":
   version "5.2.4"
@@ -457,6 +487,10 @@
 "@types/node@*", "@types/node@^10.3.3", "@types/node@^10.5.1":
   version "10.5.1"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-10.5.1.tgz#d578446f4abff5c0b49ade9b4e5274f6badaadfc"
+
+"@types/node@10.3.6":
+  version "10.3.6"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.3.6.tgz#ea8aab9439b59f40d19ec5f13b44642344872b11"
 
 "@types/semver@^5.5.0":
   version "5.5.0"
@@ -1006,15 +1040,7 @@ chai-as-promised@^7.1.1:
   dependencies:
     check-error "^1.0.2"
 
-"chai@>=1.9.2 <4.0.0":
-  version "3.5.0"
-  resolved "https://registry.yarnpkg.com/chai/-/chai-3.5.0.tgz#4d02637b067fe958bdbfdd3a40ec56fef7373247"
-  dependencies:
-    assertion-error "^1.0.1"
-    deep-eql "^0.1.3"
-    type-detect "^1.0.0"
-
-chai@^4, chai@^4.1.2:
+chai@4, chai@^4, chai@^4.1.2:
   version "4.1.2"
   resolved "https://registry.yarnpkg.com/chai/-/chai-4.1.2.tgz#0f64584ba642f0f2ace2806279f4f06ca23ad73c"
   dependencies:
@@ -1024,6 +1050,14 @@ chai@^4, chai@^4.1.2:
     get-func-name "^2.0.0"
     pathval "^1.0.0"
     type-detect "^4.0.0"
+
+"chai@>=1.9.2 <4.0.0":
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/chai/-/chai-3.5.0.tgz#4d02637b067fe958bdbfdd3a40ec56fef7373247"
+  dependencies:
+    assertion-error "^1.0.1"
+    deep-eql "^0.1.3"
+    type-detect "^1.0.0"
 
 chalk@^0.4.0:
   version "0.4.0"
@@ -2486,6 +2520,18 @@ globals@^9.18.0:
   version "9.18.0"
   resolved "https://registry.yarnpkg.com/globals/-/globals-9.18.0.tgz#aa3896b3e69b487f17e31ed2143d69a8e30c2d8a"
 
+globby@8, globby@^8, globby@^8.0.1:
+  version "8.0.1"
+  resolved "https://registry.yarnpkg.com/globby/-/globby-8.0.1.tgz#b5ad48b8aa80b35b814fc1281ecc851f1d2b5b50"
+  dependencies:
+    array-union "^1.0.1"
+    dir-glob "^2.0.0"
+    fast-glob "^2.0.2"
+    glob "^7.1.2"
+    ignore "^3.3.5"
+    pify "^3.0.0"
+    slash "^1.0.0"
+
 globby@^5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/globby/-/globby-5.0.0.tgz#ebd84667ca0dbb330b99bcfc68eac2bc54370e0d"
@@ -2506,18 +2552,6 @@ globby@^6.1.0:
     object-assign "^4.0.1"
     pify "^2.0.0"
     pinkie-promise "^2.0.0"
-
-globby@^8, globby@^8.0.1:
-  version "8.0.1"
-  resolved "https://registry.yarnpkg.com/globby/-/globby-8.0.1.tgz#b5ad48b8aa80b35b814fc1281ecc851f1d2b5b50"
-  dependencies:
-    array-union "^1.0.1"
-    dir-glob "^2.0.0"
-    fast-glob "^2.0.2"
-    glob "^7.1.2"
-    ignore "^3.3.5"
-    pify "^3.0.0"
-    slash "^1.0.0"
 
 got@^6.3.0, got@^6.7.1:
   version "6.7.1"
@@ -3749,7 +3783,7 @@ mocha-junit-reporter@1.17.0:
     strip-ansi "^4.0.0"
     xml "^1.0.0"
 
-mocha@^5, mocha@^5.0.4, mocha@^5.1.1, mocha@^5.2.0:
+mocha@5.2.0, mocha@^5, mocha@^5.0.4, mocha@^5.1.1, mocha@^5.2.0:
   version "5.2.0"
   resolved "https://registry.yarnpkg.com/mocha/-/mocha-5.2.0.tgz#6d8ae508f59167f940f2b5b3c4a612ae50c90ae6"
   dependencies:
@@ -5576,7 +5610,7 @@ typedarray@^0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
 
-typescript@^2.8, typescript@^2.8.3, typescript@^2.9.1, typescript@^2.9.2:
+typescript@2.9.2, typescript@^2.8, typescript@^2.8.3, typescript@^2.9.1, typescript@^2.9.2:
   version "2.9.2"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.9.2.tgz#1cbf61d05d6b96269244eb6a3bce4bd914e0f00c"
 
