@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="7.7.0"></a>
+# [7.7.0](https://github.com/heroku/cli/compare/v7.6.1...v7.7.0) (2018-07-17)
+
+
+### Features
+
+* **cli:** add autocomplete to core ([#940](https://github.com/heroku/cli/issues/940)) ([6c58437](https://github.com/heroku/cli/commit/6c58437))
+
+
+
+
 <a name="7.6.1"></a>
 ## [7.6.1](https://github.com/heroku/cli/compare/v7.6.0...v7.6.1) (2018-07-16)
 
