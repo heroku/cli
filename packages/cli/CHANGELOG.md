@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="7.7.3"></a>
+## [7.7.3](https://github.com/heroku/cli/compare/v7.7.2...v7.7.3) (2018-07-18)
+
+
+### Bug Fixes
+
+* **autocomplete:** skip autocomplete hooks on windows ([83be305](https://github.com/heroku/cli/commit/83be305))
+
+
+
+
 <a name="7.7.2"></a>
 ## [7.7.2](https://github.com/heroku/cli/compare/v7.7.1...v7.7.2) (2018-07-18)
 
