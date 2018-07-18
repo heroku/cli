@@ -66,6 +66,6 @@ module.exports = class KolkrabbiAPI {
   getArchiveURL (repo, ref) {
     return this.request(`/github/repos/${repo}/tarball/${ref}`, {
       followRedirect: false
-    }).then((res) => res.body.archive_link);
+    }).then((res) => res.archive_link)
   }
 }
