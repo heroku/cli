@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="7.7.2"></a>
+## [7.7.2](https://github.com/heroku/cli/compare/v7.7.1...v7.7.2) (2018-07-18)
+
+
+### Bug Fixes
+
+* **pipelines:** get archive_link from payload instead of body ([#946](https://github.com/heroku/cli/issues/946)) ([402d195](https://github.com/heroku/cli/commit/402d195))
+
+
+
+
 <a name="7.7.1"></a>
 ## [7.7.1](https://github.com/heroku/cli/compare/v7.7.0...v7.7.1) (2018-07-17)
 

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="7.7.2"></a>
+## [7.7.2](https://github.com/heroku/cli/compare/v7.7.1...v7.7.2) (2018-07-18)
+
+
+### Bug Fixes
+
+* **pg:** changes 'force' to 'forced' ([#945](https://github.com/heroku/cli/issues/945)) ([2183c90](https://github.com/heroku/cli/commit/2183c90))
+
+
+
+
 <a name="7.5.6"></a>
 ## [7.5.6](https://github.com/heroku/cli/compare/v7.5.5...v7.5.6) (2018-06-29)
 
