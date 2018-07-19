@@ -1,3 +1,5 @@
+#compdef heroku
+
 ### Keep in sync with zsh shim
 HEROKU_AC_ANALYTICS_DIR=$HOME/Library/Caches/heroku/autocomplete/completion_analytics;
 HEROKU_AC_COMMANDS_PATH=$HOME/Library/Caches/heroku/autocomplete/commands;
