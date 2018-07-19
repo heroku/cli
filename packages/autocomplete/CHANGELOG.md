@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="7.7.4"></a>
+## [7.7.4](https://github.com/heroku/heroku-cli-autocomplete/compare/v7.7.3...v7.7.4) (2018-07-19)
+
+
+### Bug Fixes
+
+* **autocomplete:** zsh compdef ([e207261](https://github.com/heroku/heroku-cli-autocomplete/commit/e207261))
+
+
+
+
 <a name="7.7.3"></a>
 ## [7.7.3](https://github.com/heroku/heroku-cli-autocomplete/compare/v7.7.2...v7.7.3) (2018-07-18)
 
