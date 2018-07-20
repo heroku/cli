@@ -55,7 +55,6 @@ module.exports = {
   topic: 'spaces',
   command: 'vpn:wait',
   description: 'wait for VPN Connection to be created',
-  hidden: true,
   needsApp: false,
   needsAuth: true,
   args: [{name: 'name', optional: true, hidden: true}],

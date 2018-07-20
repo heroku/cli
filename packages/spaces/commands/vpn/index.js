@@ -48,7 +48,6 @@ module.exports = {
   ──────  ──────  ───────
   office  active  UP/UP
   `,
-  hidden: true,
   needsApp: false,
   needsAuth: true,
   args: [{name: 'space', optional: true, hidden: true}],
