@@ -25,14 +25,7 @@ function * run (context, heroku) {
   let lib = require('../../lib/vpn-connections')(heroku)
   let info = {}
   do {
-    try {
-      info = yield lib.getVPNConnection(space, name)
-    } catch (e) {
-      // if 404 is received while in this loop, the VPN was deleted because provisioning failed
-      if (e.statusCode !== 422) { // ignore 422 since that means VPN is not ready
-        throw e
-      }
-    }
+    info = yield lib.getVPNConnection(space, name)
 
     if ((new Date()).getTime() >= deadline) {
       throw new Error('Timeout waiting for VPN to become allocated.')
