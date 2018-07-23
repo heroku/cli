@@ -11,10 +11,10 @@ function check (val, message) {
 function * run (context, heroku) {
   let lib = require('../../lib/vpn-connections')(heroku)
 
-  let space = context.flags.space || context.args.space
+  let space = context.flags.space
   check(space, 'Space name required')
 
-  let name = context.flags.name
+  let name = context.flags.name || context.args.name
   check(name, 'VPN name required')
 
   let ip = context.flags.ip
@@ -42,7 +42,7 @@ module.exports = {
   needsApp: false,
   needsAuth: true,
   args: [
-    {name: 'space', optional: true, hidden: true}
+    {name: 'name', optional: true, hidden: true}
   ],
   flags: [
     {name: 'name', char: 'n', hasValue: true, description: 'VPN name'},
