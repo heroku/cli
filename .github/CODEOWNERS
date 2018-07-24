@@ -3,4 +3,5 @@ packages/pipelines-v5/* @heroku/devex
 packages/ci-v5/* @heroku/devex
 packages/redis-v5/* @heroku/dod-ux
 packages/container-registry-v5/* @heroku/build
+packages/spaces/* @heroku/runtime-cli-owners
 * @heroku/cli
