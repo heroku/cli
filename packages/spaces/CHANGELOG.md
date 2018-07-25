@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="7.7.6"></a>
+## [7.7.6](https://github.com/heroku/cli/compare/v7.7.5...v7.7.6) (2018-07-25)
+
+
+### Bug Fixes
+
+* **spaces:** Fix inconsistencies in vpn:connect and vpn:wait  ([#953](https://github.com/heroku/cli/issues/953)) ([78f9d3e](https://github.com/heroku/cli/commit/78f9d3e))
+* **spaces:** remove vpn:create reference ([#960](https://github.com/heroku/cli/issues/960)) ([92f18d1](https://github.com/heroku/cli/commit/92f18d1))
+* **spaces:** remove vpn:create which has been replaced by vpn:connect ([#950](https://github.com/heroku/cli/issues/950)) ([69897f8](https://github.com/heroku/cli/commit/69897f8))
+* **spaces:** rename dyno cidrs to space cidrs ([#958](https://github.com/heroku/cli/issues/958)) ([437ad62](https://github.com/heroku/cli/commit/437ad62))
+* **spaces:** update destroy command to require a name ([#954](https://github.com/heroku/cli/issues/954)) ([8dbb189](https://github.com/heroku/cli/commit/8dbb189))
+
+
+
+
 <a name="7.7.1"></a>
 ## [7.7.1](https://github.com/heroku/cli/compare/v7.7.0...v7.7.1) (2018-07-17)
 
