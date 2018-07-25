@@ -10,7 +10,7 @@ let info = {
   aws_region: 'us-west-2',
   vpc_id: 'vpc-1234568a',
   vpc_cidr: '10.0.0.0/16',
-  dyno_cidr_blocks: ['10.0.128.0/20', '10.0.144.0/20'],
+  space_cidr_blocks: ['10.0.128.0/20', '10.0.144.0/20'],
   unavailable_cidr_blocks: ['192.168.2.0/30']}
 
 describe('spaces:peering-info', function () {
@@ -29,7 +29,7 @@ AWS Account ID:    012345678900
 AWS Region:        us-west-2
 AWS VPC ID:        vpc-1234568a
 AWS VPC CIDR:      10.0.0.0/16
-Dyno CIDRs:        10.0.128.0/20, 10.0.144.0/20
+Space CIDRs:       10.0.128.0/20, 10.0.144.0/20
 Unavailable CIDRs: 192.168.2.0/30
 `))
       .then(() => api.done())
