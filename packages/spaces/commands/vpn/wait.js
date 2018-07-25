@@ -10,7 +10,7 @@ function check (val, message) {
 }
 
 function * run (context, heroku) {
-  const space = context.flags.space || context.args.space
+  const space = context.flags.space
   check(space, 'Space name required')
   const name = context.flags.name || context.args.name
   check(name, 'VPN connection name required')
