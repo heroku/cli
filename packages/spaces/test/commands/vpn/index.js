@@ -39,6 +39,16 @@ describe('spaces:vpn:connections', function () {
       }
     ]
   }
+  it('displays no connection message if none exist', function () {
+    let api = nock('https://api.heroku.com:443')
+      .get('/spaces/my-space/vpn-connections')
+      .reply(200, [])
+    return cmd.run({flags: {
+      space: 'my-space'
+    }})
+      .then(() => expect(cli.stdout).to.equal('No VPN Connections have been created yet\n'))
+      .then(() => api.done())
+  })
   it('displays VPN Connections', function () {
     let api = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/vpn-connections')

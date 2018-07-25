@@ -5,6 +5,11 @@ const co = require('co')
 const format = require('../../lib/format')()
 
 function displayVPNConnections (space, connections) {
+  if (connections.length === 0) {
+    cli.log('No VPN Connections have been created yet')
+    return
+  }
+
   let tunnelFormat = function (t) {
     return t.map((tunnel) => format.VPNStatus(tunnel.status)).join('/')
   }
