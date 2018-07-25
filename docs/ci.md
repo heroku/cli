@@ -25,7 +25,7 @@ USAGE
   $ heroku ci
 
 OPTIONS
-  -a, --app=app            [default: keycomb-heroku] app to run command against
+  -a, --app=app            [default: safe-sea-44297] app to run command against
   -j, --json               output run info in json format
   -p, --pipeline=pipeline  pipeline
   -r, --remote=remote      git remote of app to use
@@ -48,7 +48,7 @@ USAGE
   $ heroku ci:config
 
 OPTIONS
-  -a, --app=app            [default: keycomb-heroku] app to run command against
+  -a, --app=app            [default: safe-sea-44297] app to run command against
   -p, --pipeline=pipeline  pipeline
   -r, --remote=remote      git remote of app to use
   -s, --shell              output config vars in shell format
@@ -69,7 +69,7 @@ USAGE
   $ heroku ci:config:get KEY
 
 OPTIONS
-  -a, --app=app            [default: keycomb-heroku] app to run command against
+  -a, --app=app            [default: safe-sea-44297] app to run command against
   -p, --pipeline=pipeline  pipeline
   -r, --remote=remote      git remote of app to use
   -s, --shell              output config var in shell format
@@ -90,7 +90,7 @@ USAGE
   $ heroku ci:config:set
 
 OPTIONS
-  -a, --app=app            [default: keycomb-heroku] app to run command against
+  -a, --app=app            [default: safe-sea-44297] app to run command against
   -p, --pipeline=pipeline  pipeline
   -r, --remote=remote      git remote of app to use
 
@@ -112,7 +112,7 @@ USAGE
   $ heroku ci:config:unset
 
 OPTIONS
-  -a, --app=app            [default: keycomb-heroku] app to run command against
+  -a, --app=app            [default: safe-sea-44297] app to run command against
   -p, --pipeline=pipeline  pipeline
   -r, --remote=remote      git remote of app to use
 
@@ -132,7 +132,7 @@ USAGE
   $ heroku ci:debug
 
 OPTIONS
-  -a, --app=app            [default: keycomb-heroku] app to run command against
+  -a, --app=app            [default: safe-sea-44297] app to run command against
   -p, --pipeline=pipeline  pipeline
   -r, --remote=remote      git remote of app to use
   --no-cache               start test run with an empty cache
@@ -161,7 +161,7 @@ ARGUMENTS
   NUMBER  the test run number to show
 
 OPTIONS
-  -a, --app=app            [default: keycomb-heroku] app to run command against
+  -a, --app=app            [default: safe-sea-44297] app to run command against
   -p, --pipeline=pipeline  pipeline
   -r, --remote=remote      git remote of app to use
 
@@ -182,7 +182,7 @@ USAGE
   $ heroku ci:last
 
 OPTIONS
-  -a, --app=app            [default: keycomb-heroku] app to run command against
+  -a, --app=app            [default: safe-sea-44297] app to run command against
   -p, --pipeline=pipeline  pipeline
   -r, --remote=remote      git remote of app to use
 
@@ -221,7 +221,7 @@ USAGE
   $ heroku ci:open
 
 OPTIONS
-  -a, --app=app            [default: keycomb-heroku] app to run command against
+  -a, --app=app            [default: safe-sea-44297] app to run command against
   -p, --pipeline=pipeline  pipeline
   -r, --remote=remote      git remote of app to use
 
@@ -242,7 +242,7 @@ USAGE
   $ heroku ci:rerun [NUMBER]
 
 OPTIONS
-  -a, --app=app            [default: keycomb-heroku] app to run command against
+  -a, --app=app            [default: safe-sea-44297] app to run command against
   -p, --pipeline=pipeline  pipeline
   -r, --remote=remote      git remote of app to use
 
@@ -263,7 +263,7 @@ USAGE
   $ heroku ci:run
 
 OPTIONS
-  -a, --app=app            [default: keycomb-heroku] app to run command against
+  -a, --app=app            [default: safe-sea-44297] app to run command against
   -p, --pipeline=pipeline  pipeline
   -r, --remote=remote      git remote of app to use
 

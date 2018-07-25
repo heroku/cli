@@ -24,7 +24,7 @@ USAGE
   $ heroku ps [TYPE [TYPE ...]]
 
 OPTIONS
-  -a, --app=app        (required) [default: keycomb-heroku] app to run command against
+  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
   -r, --remote=remote  git remote of app to use
   --json               display as json
 
@@ -111,7 +111,7 @@ USAGE
   $ heroku ps:kill DYNO
 
 OPTIONS
-  -a, --app=app        (required) [default: keycomb-heroku] app to run command against
+  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
@@ -134,7 +134,7 @@ USAGE
   $ heroku ps:resize
 
 OPTIONS
-  -a, --app=app        (required) [default: keycomb-heroku] app to run command against
+  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
@@ -155,7 +155,7 @@ USAGE
   $ heroku ps:restart [DYNO]
 
 OPTIONS
-  -a, --app=app        (required) [default: keycomb-heroku] app to run command against
+  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
@@ -181,7 +181,7 @@ USAGE
   $ heroku ps:scale
 
 OPTIONS
-  -a, --app=app        (required) [default: keycomb-heroku] app to run command against
+  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
@@ -229,7 +229,7 @@ USAGE
   $ heroku ps:stop DYNO
 
 OPTIONS
-  -a, --app=app        (required) [default: keycomb-heroku] app to run command against
+  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
@@ -252,7 +252,7 @@ USAGE
   $ heroku ps:type
 
 OPTIONS
-  -a, --app=app        (required) [default: keycomb-heroku] app to run command against
+  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION

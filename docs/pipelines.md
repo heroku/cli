@@ -48,7 +48,7 @@ ARGUMENTS
   PIPELINE  name of pipeline
 
 OPTIONS
-  -a, --app=app        (required) [default: keycomb-heroku] app to run command against
+  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
   -r, --remote=remote  git remote of app to use
   -s, --stage=stage    stage of first app in pipeline
 
@@ -92,7 +92,7 @@ ARGUMENTS
   NAME  name of pipeline, defaults to basename of app
 
 OPTIONS
-  -a, --app=app        (required) [default: keycomb-heroku] app to run command against
+  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
   -r, --remote=remote  git remote of app to use
   -s, --stage=stage    stage of first app in pipeline
   -t, --team=team      team to use
@@ -136,7 +136,7 @@ USAGE
   $ heroku pipelines:diff
 
 OPTIONS
-  -a, --app=app        (required) [default: keycomb-heroku] app to run command against
+  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
   -r, --remote=remote  git remote of app to use
 
 EXAMPLES
@@ -214,7 +214,7 @@ USAGE
   $ heroku pipelines:promote
 
 OPTIONS
-  -a, --app=app        (required) [default: keycomb-heroku] app to run command against
+  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
   -r, --remote=remote  git remote of app to use
   -t, --to=to          comma separated list of apps to promote to
 
@@ -240,7 +240,7 @@ USAGE
   $ heroku pipelines:remove
 
 OPTIONS
-  -a, --app=app        (required) [default: keycomb-heroku] app to run command against
+  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
   -r, --remote=remote  git remote of app to use
 
 EXAMPLES

@@ -28,7 +28,7 @@ USAGE
 
 OPTIONS
   -A, --all            show add-ons and attachments for all accessible apps
-  -a, --app=app        [default: keycomb-heroku] app to run command against
+  -a, --app=app        [default: safe-sea-44297] app to run command against
   -r, --remote=remote  git remote of app to use
   --json               return add-ons in json format
 
@@ -52,7 +52,7 @@ USAGE
   $ heroku addons:attach ADDON_NAME
 
 OPTIONS
-  -a, --app=app            (required) [default: keycomb-heroku] app to run command against
+  -a, --app=app            (required) [default: safe-sea-44297] app to run command against
   -r, --remote=remote      git remote of app to use
   --as=as                  name for add-on attachment
   --confirm=confirm        overwrite existing add-on attachment with same name
@@ -68,7 +68,7 @@ USAGE
   $ heroku addons:create SERVICE:PLAN
 
 OPTIONS
-  -a, --app=app        (required) [default: keycomb-heroku] app to run command against
+  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
   -r, --remote=remote  git remote of app to use
   --as=as              name for the initial add-on attachment
   --confirm=confirm    overwrite existing config vars or existing add-on attachments
@@ -85,7 +85,7 @@ USAGE
   $ heroku addons:destroy [ADDON]... [flags]
 
 OPTIONS
-  -a, --app=app          [default: keycomb-heroku] app to run command against
+  -a, --app=app          [default: safe-sea-44297] app to run command against
   -c, --confirm=confirm
   -f, --force            allow destruction even if connected to other apps
   -r, --remote=remote    git remote of app to use
@@ -100,7 +100,7 @@ USAGE
   $ heroku addons:detach ATTACHMENT_NAME
 
 OPTIONS
-  -a, --app=app        (required) [default: keycomb-heroku] app to run command against
+  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -113,7 +113,7 @@ USAGE
   $ heroku addons:docs ADDON
 
 OPTIONS
-  -a, --app=app        [default: keycomb-heroku] app to run command against
+  -a, --app=app        [default: safe-sea-44297] app to run command against
   -r, --remote=remote  git remote of app to use
   --show-url           show URL, do not open browser
 ```
@@ -127,7 +127,7 @@ USAGE
   $ heroku addons:downgrade ADDON [PLAN]
 
 OPTIONS
-  -a, --app=app        [default: keycomb-heroku] app to run command against
+  -a, --app=app        [default: safe-sea-44297] app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
@@ -155,7 +155,7 @@ USAGE
   $ heroku addons:info ADDON
 
 OPTIONS
-  -a, --app=app        [default: keycomb-heroku] app to run command against
+  -a, --app=app        [default: safe-sea-44297] app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -168,7 +168,7 @@ USAGE
   $ heroku addons:open ADDON
 
 OPTIONS
-  -a, --app=app        [default: keycomb-heroku] app to run command against
+  -a, --app=app        [default: safe-sea-44297] app to run command against
   -r, --remote=remote  git remote of app to use
   --show-url           show URL, do not open browser
 ```
@@ -194,7 +194,7 @@ USAGE
   $ heroku addons:rename ADDON NEW_NAME
 
 OPTIONS
-  -a, --app=app        [default: keycomb-heroku] app to run command against
+  -a, --app=app        [default: safe-sea-44297] app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -219,7 +219,7 @@ USAGE
   $ heroku addons:upgrade ADDON [PLAN]
 
 OPTIONS
-  -a, --app=app        [default: keycomb-heroku] app to run command against
+  -a, --app=app        [default: safe-sea-44297] app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
@@ -247,7 +247,7 @@ USAGE
   $ heroku addons:wait ADDON
 
 OPTIONS
-  -a, --app=app                  [default: keycomb-heroku] app to run command against
+  -a, --app=app                  [default: safe-sea-44297] app to run command against
   -r, --remote=remote            git remote of app to use
   --wait-interval=wait-interval  how frequently to poll in seconds
 ```
