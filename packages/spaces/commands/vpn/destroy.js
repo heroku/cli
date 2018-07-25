@@ -12,14 +12,13 @@ function * run (context, heroku) {
   check(space, 'Space name required')
 
   let name = context.flags.name || context.args.name
-  // TODO: uncomment when we've fully migrated to the multiple VPN UX
-  // check(name, 'VPN name required')
+  check(name, 'VPN name required')
 
   let lib = require('../../lib/vpn-connections')(heroku)
 
-  yield cli.confirmApp(space, context.flags.confirm, `Destructive Action
+  yield cli.confirmApp(name, context.flags.confirm, `Destructive Action
 This command will attempt to destroy the specified VPN Connection in space ${cli.color.green(space)}`)
-  yield cli.action(`Tearing down VPN Connection in space ${cli.color.cyan(space)}`, lib.deleteVPNConnection(space, name))
+  yield cli.action(`Tearing down VPN Connection ${cli.color.cyan(name)} in space ${cli.color.cyan(space)}`, lib.deleteVPNConnection(space, name))
 }
 
 module.exports = {
@@ -28,8 +27,8 @@ module.exports = {
   description: 'destroys VPN in a private space',
   help: `Example:
 
-    $ heroku spaces:vpn:destroy --confirm --space example-space vpn-connection-name
-    Tearing down VPN Connection in space example-space
+    $ heroku spaces:vpn:destroy --space example-space vpn-connection-name --confirm vpn-connection-name
+    Tearing down VPN Connection vpn-connection-name in space example-space
   `,
   hidden: true,
   needsApp: false,
@@ -40,7 +39,7 @@ module.exports = {
   flags: [
     {name: 'space', char: 's', hasValue: true, description: 'space to get peering info from'},
     {name: 'name', char: 'n', hasValue: true, description: 'name or id of the VPN connection to retrieve config from'},
-    {name: 'confirm', hasValue: true, description: 'set to space name bypass confirm prompt'}
+    {name: 'confirm', hasValue: true, description: 'set to VPN connection name to bypass confirm prompt'}
   ],
   run: cli.command(co.wrap(run))
 }
