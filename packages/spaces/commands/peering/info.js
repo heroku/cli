@@ -28,7 +28,7 @@ module.exports = {
     AWS Region:        us-west-2
     AWS VPC ID:        vpc-baadf00d
     AWS VPC CIDR:      10.0.0.0/16
-    Dyno CIDRs:        10.0.128.0/20, 10.0.144.0/20
+    Space CIDRs:       10.0.128.0/20, 10.0.144.0/20
     Unavailable CIDRs: 10.1.0.0/16
 
 You will use the information provied by this command to establish a peering connection request from your AWS VPC to your private space.
