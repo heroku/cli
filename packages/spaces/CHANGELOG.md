@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="7.7.7"></a>
+## [7.7.7](https://github.com/heroku/cli/compare/v7.7.6...v7.7.7) (2018-07-26)
+
+
+### Bug Fixes
+
+* **spaces:** add top-level help for spaces:vpn ([#949](https://github.com/heroku/cli/issues/949)) ([04fc675](https://github.com/heroku/cli/commit/04fc675))
+
+
+
+
 <a name="7.7.6"></a>
 ## [7.7.6](https://github.com/heroku/cli/compare/v7.7.5...v7.7.6) (2018-07-25)
 

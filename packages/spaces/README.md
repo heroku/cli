@@ -18,6 +18,11 @@ heroku-spaces CLI plugin [![Circle CI](https://circleci.com/gh/heroku/heroku-spa
 * [`heroku spaces:ps`](#heroku-spacesps)
 * [`heroku spaces:rename`](#heroku-spacesrename)
 * [`heroku spaces:topology`](#heroku-spacestopology)
+* [`heroku spaces:vpn:connect`](#heroku-spacesvpnconnect)
+* [`heroku spaces:vpn:connections`](#heroku-spacesvpnconnections)
+* [`heroku spaces:vpn:destroy`](#heroku-spacesvpndestroy)
+* [`heroku spaces:vpn:info`](#heroku-spacesvpninfo)
+* [`heroku spaces:vpn:wait`](#heroku-spacesvpnwait)
 * [`heroku spaces:wait`](#heroku-spaceswait)
 * [`heroku trusted-ips`](#heroku-trusted-ips)
 * [`heroku trusted-ips:add SOURCE`](#heroku-trusted-ipsadd-source)
@@ -312,6 +317,120 @@ USAGE
 OPTIONS
   -s, --space=space  space to get topology of
   --json             output in json format
+```
+
+## `heroku spaces:vpn:connect`
+
+create VPN
+
+```
+USAGE
+  $ heroku spaces:vpn:connect
+
+OPTIONS
+  -c, --cidrs=cidrs  a list of routable CIDRs separated by commas
+  -i, --ip=ip        public IP of customer gateway
+  -n, --name=name    VPN name
+  -s, --space=space  space name
+
+DESCRIPTION
+  Private Spaces can be connected to another private network via an IPSec VPN connection allowing dynos to connect to 
+  hosts on your private networks and vice versa.
+  The connection is established over the public Internet but all traffic is encrypted using IPSec.
+
+EXAMPLES
+  $ heroku spaces:vpn:connect --name office --ip 35.161.69.30 --cidrs 172.16.0.0/16,10.0.0.0/24 --space my-space
+       Creating VPN Connection in space my-space... done
+       ▸    Use spaces:vpn:wait to track allocation.
+```
+
+## `heroku spaces:vpn:connections`
+
+list the VPN Connections for a space
+
+```
+USAGE
+  $ heroku spaces:vpn:connections
+
+OPTIONS
+  -s, --space=space  space to get VPN connections from
+  --json             output in json format
+
+DESCRIPTION
+  Example:
+
+     $ heroku spaces:vpn:connections --space my-space
+     === my-space VPN Connections
+     Name    Status  Tunnels
+     ──────  ──────  ───────
+     office  active  UP/UP
+```
+
+## `heroku spaces:vpn:destroy`
+
+destroys VPN in a private space
+
+```
+USAGE
+  $ heroku spaces:vpn:destroy
+
+OPTIONS
+  -n, --name=name    name or id of the VPN connection to retrieve config from
+  -s, --space=space  space to get peering info from
+  --confirm=confirm  set to VPN connection name to bypass confirm prompt
+
+DESCRIPTION
+  Example:
+
+       $ heroku spaces:vpn:destroy --space example-space vpn-connection-name --confirm vpn-connection-name
+       Tearing down VPN Connection vpn-connection-name in space example-space
+```
+
+## `heroku spaces:vpn:info`
+
+display the information for VPN
+
+```
+USAGE
+  $ heroku spaces:vpn:info
+
+OPTIONS
+  -n, --name=name    name or id of the VPN connection to get info from
+  -s, --space=space  space the vpn connection belongs to
+  --json             output in json format
+
+DESCRIPTION
+  Example:
+
+       $ heroku spaces:vpn:info --space my-space vpn-connection-name
+       === vpn-connection-name VPN Tunnel Info
+       Name:           vpn-connection-name
+       ID:             123456789012
+       Public IP:      35.161.69.30
+       Routable CIDRs: 172.16.0.0/16
+       Status:         failed
+       Status Message: supplied CIDR block already in use
+       === my-space Tunnel Info
+       VPN Tunnel  IP Address     Status  Status Last Changed   Details
+       ──────────  ─────────────  ──────  ────────────────────  ──────────────
+       Tunnel 1    52.44.146.197  UP      2016-10-25T22:09:05Z  status message
+       Tunnel 2    52.44.146.197  UP      2016-10-25T22:09:05Z  status message
+```
+
+## `heroku spaces:vpn:wait`
+
+wait for VPN Connection to be created
+
+```
+USAGE
+  $ heroku spaces:vpn:wait
+
+OPTIONS
+  -i, --interval=interval  seconds to wait between poll intervals
+  -n, --name=name          name or id of the vpn connection to wait for
+  -s, --space=space        space the vpn connection belongs to
+  -t, --timeout=timeout    maximum number of seconds to wait
+  --json                   output in json format
 ```
 
 ## `heroku spaces:wait`
