@@ -32,15 +32,12 @@ module.exports = {
   topic: 'spaces',
   command: 'vpn:connect',
   description: 'create VPN',
-  help: `Private Spaces can be connected to another private network via an IPSec VPN connection allowing dynos to connect to hosts on your private networks and vice versa.
-The connection is established over the public Internet but all traffic is encrypted using IPSec.
-  
-  Example:
-
-    $ heroku spaces:vpn:connect --name office --ip 35.161.69.30 --cidrs 172.16.0.0/16,10.0.0.0/24 --space my-space
+  example: `$ heroku spaces:vpn:connect --name office --ip 35.161.69.30 --cidrs 172.16.0.0/16,10.0.0.0/24 --space my-space
     Creating VPN Connection in space my-space... done
     ▸    Use spaces:vpn:wait to track allocation.
   `,
+  help: `Private Spaces can be connected to another private network via an IPSec VPN connection allowing dynos to connect to hosts on your private networks and vice versa.
+The connection is established over the public Internet but all traffic is encrypted using IPSec.`,
   needsApp: false,
   needsAuth: true,
   args: [
