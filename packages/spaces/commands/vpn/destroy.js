@@ -30,7 +30,6 @@ module.exports = {
     $ heroku spaces:vpn:destroy --space example-space vpn-connection-name --confirm vpn-connection-name
     Tearing down VPN Connection vpn-connection-name in space example-space
   `,
-  hidden: true,
   needsApp: false,
   needsAuth: true,
   args: [
