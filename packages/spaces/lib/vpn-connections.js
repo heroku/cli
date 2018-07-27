@@ -18,12 +18,6 @@ module.exports = function (heroku) {
   }
 
   function deleteVPNConnection (space, name) {
-    let lib = require('../lib/vpn')(heroku)
-
-    if (!name) {
-      return lib.deleteVPN(space)
-    }
-
     return request('DELETE', `/spaces/${space}/vpn-connections/${name}`)
   }
 
