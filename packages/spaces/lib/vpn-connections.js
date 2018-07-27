@@ -30,7 +30,7 @@ module.exports = function (heroku) {
   function request (method, path, body) {
     return heroku.request({
       method: method,
-      path: path,
+      path: encodeURI(path),
       body: body
     })
   }
