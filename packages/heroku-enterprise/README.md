@@ -19,77 +19,77 @@ $ npm publish
 ```
 
 <!-- commands -->
-* [`heroku-enterprise enterprises`](#heroku-enterprise-enterprises)
-* [`heroku-enterprise enterprises:create NAME`](#heroku-enterprise-enterprisescreate-name)
-* [`heroku-enterprise enterprises:members`](#heroku-enterprise-enterprisesmembers)
-* [`heroku-enterprise enterprises:members-add EMAIL`](#heroku-enterprise-enterprisesmembers-add-email)
-* [`heroku-enterprise enterprises:members-remove EMAIL`](#heroku-enterprise-enterprisesmembers-remove-email)
-* [`heroku-enterprise enterprises:teams`](#heroku-enterprise-enterprisesteams)
-* [`heroku-enterprise enterprises:usage`](#heroku-enterprise-enterprisesusage)
-* [`heroku-enterprise teams`](#heroku-enterprise-teams)
-* [`heroku-enterprise teams:create TEAM`](#heroku-enterprise-teamscreate-team)
-* [`heroku-enterprise teams:transfer TEAM`](#heroku-enterprise-teamstransfer-team)
+* [`heroku enterprises`](#heroku-enterprises)
+* [`heroku enterprises:create NAME`](#heroku-enterprisescreate-name)
+* [`heroku enterprises:members`](#heroku-enterprisesmembers)
+* [`heroku enterprises:members-add EMAIL`](#heroku-enterprisesmembers-add-email)
+* [`heroku enterprises:members-remove EMAIL`](#heroku-enterprisesmembers-remove-email)
+* [`heroku enterprises:teams`](#heroku-enterprisesteams)
+* [`heroku enterprises:usage`](#heroku-enterprisesusage)
+* [`heroku teams`](#heroku-teams)
+* [`heroku teams:create TEAM`](#heroku-teamscreate-team)
+* [`heroku teams:transfer TEAM`](#heroku-teamstransfer-team)
 
-## `heroku-enterprise enterprises`
+## `heroku enterprises`
 
 list your enterprise accounts
 
 ```
 USAGE
-  $ heroku-enterprise enterprises
+  $ heroku enterprises
 ```
 
-## `heroku-enterprise enterprises:create NAME`
+## `heroku enterprises:create NAME`
 
 (sudo) create an enterprise account
 
 ```
 USAGE
-  $ heroku-enterprise enterprises:create NAME
+  $ heroku enterprises:create NAME
 
 OPTIONS
   --domain=domain      (required)
   --managers=managers  (required)
 ```
 
-## `heroku-enterprise enterprises:members`
+## `heroku enterprises:members`
 
 list members of an enterprise account
 
 ```
 USAGE
-  $ heroku-enterprise enterprises:members
+  $ heroku enterprises:members
 
 OPTIONS
   --enterprise-account=enterprise-account  (required) enterprise account name
 ```
 
-## `heroku-enterprise enterprises:members-add EMAIL`
+## `heroku enterprises:members-add EMAIL`
 
 add a member to an enterprise account
 
 ```
 USAGE
-  $ heroku-enterprise enterprises:members-add EMAIL
+  $ heroku enterprises:members-add EMAIL
 
 OPTIONS
   --enterprise-account=enterprise-account  (required) enterprise account name
   --permissions=permissions                (required) permissions to grant the member
 ```
 
-## `heroku-enterprise enterprises:members-remove EMAIL`
+## `heroku enterprises:members-remove EMAIL`
 
 remove a member from an enterprise account
 
 ```
 USAGE
-  $ heroku-enterprise enterprises:members-remove EMAIL
+  $ heroku enterprises:members-remove EMAIL
 
 OPTIONS
   --enterprise-account=enterprise-account  (required) enterprise account name
 ```
 
-## `heroku-enterprise enterprises:teams`
+## `heroku enterprises:teams`
 
 list teams within an enterprise account
 
@@ -101,13 +101,13 @@ OPTIONS
   --enterprise-account=enterprise-account  (required) enterprise account name
 ```
 
-## `heroku-enterprise enterprises:usage`
+## `heroku enterprises:usage`
 
 list the usage for an enterprise account
 
 ```
 USAGE
-  $ heroku-enterprise enterprises:usage
+  $ heroku enterprises:usage
 
 OPTIONS
   --end-date=end-date                      end date of the usage period
@@ -115,7 +115,7 @@ OPTIONS
   --start-date=start-date                  start date of the usage period
 ```
 
-## `heroku-enterprise teams`
+## `heroku teams`
 
 list the teams that you are a member of
 
@@ -124,13 +124,13 @@ USAGE
   $ heroku-enterprise teams
 ```
 
-## `heroku-enterprise teams:create TEAM`
+## `heroku teams:create TEAM`
 
 Create a team in an enterprise account
 
 ```
 USAGE
-  $ heroku-enterprise teams:create TEAM
+  $ heroku teams:create TEAM
 
 ARGUMENTS
   TEAM  name of the team to create
@@ -139,13 +139,13 @@ OPTIONS
   --enterprise-account=enterprise-account  (required) enterprise account name
 ```
 
-## `heroku-enterprise teams:transfer TEAM`
+## `heroku teams:transfer TEAM`
 
 (sudo) transfer a team to an enterprise account
 
 ```
 USAGE
-  $ heroku-enterprise teams:transfer TEAM
+  $ heroku teams:transfer TEAM
 
 ARGUMENTS
   TEAM  name of the team to transfer
