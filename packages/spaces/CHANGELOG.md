@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="7.7.8"></a>
+## [7.7.8](https://github.com/heroku/cli/compare/v7.7.7...v7.7.8) (2018-07-30)
+
+
+### Bug Fixes
+
+* **spaces:** remove 422 check from vpn:wait ([#952](https://github.com/heroku/cli/issues/952)) ([171b4e5](https://github.com/heroku/cli/commit/171b4e5))
+
+
+
+
 <a name="7.7.7"></a>
 ## [7.7.7](https://github.com/heroku/cli/compare/v7.7.6...v7.7.7) (2018-07-26)
 
