@@ -1,6 +1,6 @@
 import {expect, test} from '../../test'
 
-describe('auth:whoami', () => {
+describe('auth:token', () => {
   test
   .env({HEROKU_API_KEY: 'foobar'})
   .nock('https://api.heroku.com', api => api
