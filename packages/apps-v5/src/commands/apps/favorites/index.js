@@ -4,7 +4,7 @@ let cli = require('heroku-cli-util')
 let co = require('co')
 
 function * run (context, heroku) {
-  let favorites = yield heroku.request({host: 'longboard.heroku.com', path: '/favorites?type=app', headers: {Range: ''}})
+  let favorites = yield heroku.request({host: 'particleboard.heroku.com', path: '/favorites?type=app', headers: {Range: ''}})
 
   if (context.flags.json) {
     cli.styledJSON(favorites)

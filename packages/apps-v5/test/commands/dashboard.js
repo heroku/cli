@@ -46,7 +46,7 @@ describe('dashboard', () => {
 
   describe('with no favorites', () => {
     it('shows the dashboard', () => {
-      let longboard = nock('https://longboard.heroku.com:443')
+      let longboard = nock('https://particleboard.heroku.com:443')
         .get('/favorites?type=app').reply(200, [])
       let heroku = nock('https://api.heroku.com:443')
         .get('/organizations').reply(200, [])
@@ -69,7 +69,7 @@ See other CLI commands with heroku help
 
   describe('with no telex', () => {
     it('shows the dashboard', () => {
-      let longboard = nock('https://longboard.heroku.com:443')
+      let longboard = nock('https://particleboard.heroku.com:443')
         .get('/favorites?type=app').reply(200, [])
       let heroku = nock('https://api.heroku.com:443')
         .get('/organizations').reply(200, [])
@@ -92,7 +92,7 @@ See other CLI commands with heroku help
 
   describe('with a favorite app', () => {
     it('shows the dashboard', () => {
-      let longboard = nock('https://longboard.heroku.com:443')
+      let longboard = nock('https://particleboard.heroku.com:443')
         .get('/favorites?type=app').reply(200, [{app_name: 'myapp'}])
       let heroku = nock('https://api.heroku.com:443')
         .get('/organizations').reply(200, [])

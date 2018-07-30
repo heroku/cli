@@ -11,7 +11,7 @@ describe('apps:favorites:remove', () => {
   afterEach(() => nock.cleanAll())
 
   it('shows all favorite apps', () => {
-    let api = nock('https://longboard.heroku.com:443')
+    let api = nock('https://particleboard.heroku.com:443')
       .get('/favorites?type=app')
       .reply(200, [{resource_name: 'myapp'}, {resource_name: 'myotherapp'}])
 
@@ -25,7 +25,7 @@ myotherapp
   })
 
   it('shows all favorite apps as json', () => {
-    let api = nock('https://longboard.heroku.com:443')
+    let api = nock('https://particleboard.heroku.com:443')
       .get('/favorites?type=app')
       .reply(200, [{resource_name: 'myapp'}, {resource_name: 'myotherapp'}])
 

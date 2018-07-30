@@ -10,7 +10,7 @@ describe('apps:favorites:remove', () => {
   beforeEach(() => cli.mockConsole())
 
   it('removes the app as a favorite', () => {
-    let api = nock('https://longboard.heroku.com:443')
+    let api = nock('https://particleboard.heroku.com:443')
       .get('/favorites?type=app')
       .reply(200, [{id: 'favoriteid', resource_name: 'myapp'}])
       .delete('/favorites/favoriteid')
