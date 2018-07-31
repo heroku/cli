@@ -156,9 +156,8 @@ export default class Create extends AutocompleteBase {
         const hasCompletion = f.hasOwnProperty('completion') || this.findCompletion(flag, id)
         const name = isBoolean ? flag : `${flag}=-`
         let cachecompl = ''
-        if (hasCompletion) {
-          cachecompl = this.wantsLocalFiles(flag) ? ':_files' : ': :_compadd_flag_options'
-        }
+        if (hasCompletion) { cachecompl = ': :_compadd_flag_options' }
+        if (this.wantsLocalFiles(flag)) { cachecompl = ': :_files' }
         const help = isBoolean ? '(switch) ' : (hasCompletion ? '(autocomplete) ' : '')
         const completion = `--${name}[${help}${f.description}]${cachecompl}`
         return `"${completion}"`
