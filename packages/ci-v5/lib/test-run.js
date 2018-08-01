@@ -57,6 +57,26 @@ function * display (pipeline, number, { heroku }) {
   return firstTestNode
 }
 
+function * displayInfo (pipeline, number, { heroku }, nodeIndex) {
+  let testRun = yield api.testRun(heroku, pipeline.id, number)
+  let testNodes = yield api.testNodes(heroku, testRun.id)
+  let testNode = testNodes[0] //defaults to the first node
+
+  if ((nodeIndex) && (testNodes[nodeIndex])) {
+    testNode = testNodes[nodeIndex]
+  } else {
+    cli.warn(`Test run ${number} didn't have a node with number ${nodeIndex}`)
+    cli.warn(`Fetching the first node instead`)
+  }
+
+  yield stream(testNode.setup_stream_url)
+  yield stream(testNode.output_stream_url)
+
+  cli.log(/* newline 💃 */)
+  cli.log(RenderTestRuns.printLine(testRun))
+  process.exit(testNode.exit_code)
+}
+
 function * displayAndExit (pipeline, number, { heroku }) {
   let testNode = yield display(pipeline, number, { heroku })
   process.exit(testNode.exit_code)
@@ -64,6 +84,7 @@ function * displayAndExit (pipeline, number, { heroku }) {
 
 module.exports = {
   display,
+  displayInfo,
   displayAndExit,
   waitForStates
 }
