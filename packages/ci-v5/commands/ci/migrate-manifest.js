@@ -1,3 +1,6 @@
+// NOTE: Do not migrate this command over oclif
+// Let it silently go away once we migrate these over.
+
 const fs = require('fs')
 const cli = require('heroku-cli-util')
 const co = require('co')
