@@ -57,24 +57,55 @@ function * display (pipeline, number, { heroku }) {
   return firstTestNode
 }
 
-function * displayInfo (pipeline, number, { heroku }, nodeIndex) {
-  let testRun = yield api.testRun(heroku, pipeline.id, number)
-  let testNodes = yield api.testNodes(heroku, testRun.id)
-  let testNode = testNodes[0] //defaults to the first node
-
-  if ((nodeIndex) && (testNodes[nodeIndex])) {
-    testNode = testNodes[nodeIndex]
-  } else {
-    cli.warn(`Test run ${number} didn't have a node with number ${nodeIndex}`)
-    cli.warn(`Fetching the first node instead`)
-  }
-
+function * renderNodeOutput(testRun, testNode) {
   yield stream(testNode.setup_stream_url)
   yield stream(testNode.output_stream_url)
 
   cli.log(/* newline 💃 */)
   cli.log(RenderTestRuns.printLine(testRun))
-  process.exit(testNode.exit_code)
+}
+
+function hasParallelTestRuns (testNodes) {
+  return testNodes.length > 1;
+}
+
+function * displayInfo (pipeline, testRunNumber, { heroku }, nodeIndex) {
+  let testRun = yield api.testRun(heroku, pipeline.id, testRunNumber)
+  let testNodes = yield api.testNodes(heroku, testRun.id)
+  let testNode
+
+  if (nodeIndex) {
+    if (hasParallelTestRuns(testNodes)) {
+      testNode = testNodes[nodeIndex]
+
+      if (!testNode) {
+        cli.error(`There isn't a test node ${nodeIndex} for test run ${testRunNumber}`)
+      }
+    } else {
+      testNode = testNodes[0]
+    }
+
+    yield renderNodeOutput(testRun, testNode)
+
+    if (!hasParallelTestRuns(testNodes)) {
+      cli.log(/* newline 💃 */)
+      cli.warn(`This pipeline doesn't have parallel test runs, but you specified a node`)
+      cli.warn(`See https://devcenter.heroku.com/articles/heroku-ci-parallel-test-runs for more info`)
+    }
+    process.exit(testNode.exit_code)
+  } else {
+    if (hasParallelTestRuns(testNodes)) {
+      cli.log(RenderTestRuns.printLine(testRun))
+      cli.log(/* newline 💃 */)
+      testNodes.forEach((testNode) => {
+        cli.log(RenderTestRuns.printLineTestNode(testNode))
+      })
+    } else {
+      testNode = testNodes[0]
+      yield renderNodeOutput(testRun, testNode);
+      process.exit(testNode.exit_code)
+    }
+  }
 }
 
 function * displayAndExit (pipeline, number, { heroku }) {

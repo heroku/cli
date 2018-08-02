@@ -13,7 +13,7 @@ function * run (context, heroku) {
     return cli.error('No Heroku CI runs found for this pipeline.')
   }
 
-  return yield TestRun.displayAndExit(pipeline, lastRun.number, { heroku })
+  return yield TestRun.displayInfo(pipeline, lastRun.number, { heroku }, context.flags.node)
 }
 
 module.exports = {
@@ -29,6 +29,11 @@ module.exports = {
       hasValue: true,
       description: 'pipeline',
       completion: PipelineCompletion
+    },
+    {
+      name: 'node',
+      hasValue: true,
+      description: 'the node number to show its setup and output'
     }
   ],
   help: `looks for the most recent run and returns the output of that run

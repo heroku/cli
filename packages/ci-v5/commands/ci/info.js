@@ -31,7 +31,7 @@ module.exports = {
     {
       name: 'node',
       hasValue: true,
-      description: 'test node'
+      description: 'the node number to show its setup and output'
     }
   ],
   description: 'test run information',

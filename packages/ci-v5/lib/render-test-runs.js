@@ -45,6 +45,10 @@ function printLine (testRun) {
   return `${statusIcon(testRun)} #${testRun.number} ${testRun.commit_branch}:${testRun.commit_sha.slice(0, 7)} ${testRun.status}`
 }
 
+function printLineTestNode (testNode) {
+  return `${statusIcon(testNode)} #${testNode.index} ${testNode.status}`
+}
+
 function limit (testRuns, count) {
   return testRuns.slice(0, count)
 }
@@ -190,5 +194,6 @@ function columns (testRun, allTestRuns) {
 
 module.exports = {
   render,
-  printLine
+  printLine,
+  printLineTestNode
 }
