@@ -13,6 +13,7 @@ let peers = [
     cidr_blocks: ['10.1.0.0/16'],
     status: 'active',
     aws_vpc_id: '******',
+    aws_region: '******',
     aws_account_id: '******',
     expires: ''
   },
@@ -23,6 +24,7 @@ let peers = [
     cidr_blocks: ['10.2.0.0/16', '10.3.0.0/16'],
     status: 'active',
     aws_vpc_id: 'vpc-12345678',
+    aws_region: 'us-east-1',
     aws_account_id: '012345678901',
     expires: ''
   },
@@ -33,6 +35,7 @@ let peers = [
     cidr_blocks: ['10.4.0.0/16'],
     status: 'pending-acceptance',
     aws_vpc_id: 'vpc-87654321',
+    aws_region: 'us-west-1',
     aws_account_id: '012345678901',
     expires: ''
   },
@@ -43,6 +46,7 @@ let peers = [
     cidr_blocks: ['10.5.0.0/16'],
     status: 'failed',
     aws_vpc_id: 'vpc-665544332',
+    aws_region: 'us-east-2',
     aws_account_id: '012345678901',
     expires: ''
   }
@@ -60,12 +64,12 @@ describe('spaces:peerings', function () {
     return cmd.run({flags: {space: 'my-space'}})
       .then(() => expect(cli.stdout).to.equal(
         `=== my-space Peerings
-PCX ID             Type      CIDR Blocks               Status              VPC ID         AWS Account ID  Expires
-─────────────────  ────────  ────────────────────────  ──────────────────  ─────────────  ──────────────  ───────
-******             heroku    10.1.0.0/16               active              ******         ******
-pcx-123456789012   external  10.2.0.0/16, 10.3.0.0/16  active              vpc-12345678   012345678901
-pcx-0987654321098  unknown   10.4.0.0/16               pending-acceptance  vpc-87654321   012345678901
-pcx-abcdefg        unknown   10.5.0.0/16               failed              vpc-665544332  012345678901
+PCX ID             Type      CIDR Blocks               Status              VPC ID         AWS Region  AWS Account ID  Expires
+─────────────────  ────────  ────────────────────────  ──────────────────  ─────────────  ──────────  ──────────────  ───────
+******             heroku    10.1.0.0/16               active              ******         ******      ******
+pcx-123456789012   external  10.2.0.0/16, 10.3.0.0/16  active              vpc-12345678   us-east-1   012345678901
+pcx-0987654321098  unknown   10.4.0.0/16               pending-acceptance  vpc-87654321   us-west-1   012345678901
+pcx-abcdefg        unknown   10.5.0.0/16               failed              vpc-665544332  us-east-2   012345678901
 `))
       .then(() => api.done())
   })
