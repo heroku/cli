@@ -43,7 +43,7 @@ export async function disambiguatePipeline(pipelineIDOrName: any, command: Comma
       case 1:
         return pipelines[0]
       default:
-        let choices = pipelines.map(function (x: any) { return {name: new Date(x.created_at), value: x} })
+        let choices = pipelines.map(function (x: Heroku.Pipeline) { return {name: new Date(x.created_at!), value: x} })
         let questions = [{
           type: 'list',
           name: 'pipeline',
