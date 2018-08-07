@@ -5,9 +5,15 @@
   "author": "Raúl Barroso @raulb",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
+    "@heroku-cli/command": "^8.1.26",
+    "@heroku-cli/schema": "^1.0.6",
     "@oclif/command": "^1",
     "@oclif/config": "^1",
-    "tslib": "^1"
+    "@types/inquirer": "0.0.42",
+    "@types/validator": "^9.4.1",
+    "inquirer": "^6.0.0",
+    "tslib": "^1",
+    "validator": "^10.5.0"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1",
@@ -41,7 +47,7 @@
   "license": "MIT",
   "oclif": {
     "commands": "./lib/commands",
-    "bin": "oclif-example",
+    "bin": "heroku",
     "devPlugins": [
       "@oclif/plugin-help"
     ]
