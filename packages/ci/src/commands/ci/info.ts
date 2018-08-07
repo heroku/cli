@@ -118,11 +118,10 @@ export default class Info extends Command {
     const {args, flags} = this.parse(Info)
 
     const pipeline = await getPipeline(flags, this)
-    const headers = {Accept: 'application/vnd.heroku+json; version=3.ci'}
 
     try {
-      const {body: testRun} = await this.heroku.get<Heroku.TestRun>(`/pipelines/${pipeline.id}/test-runs/${args['test-run']}`, {headers})
-      const {body: testNodes} = await this.heroku.get<Heroku.TestNode[]>(`/test-runs/${testRun.id}/test-nodes`, {headers})
+      const {body: testRun} = await this.heroku.get<Heroku.TestRun>(`/pipelines/${pipeline.id}/test-runs/${args['test-run']}`)
+      const {body: testNodes} = await this.heroku.get<Heroku.TestNode[]>(`/test-runs/${testRun.id}/test-nodes`)
 
       await displayTestRunInfo(this, testRun, testNodes, args.node)
     } catch (e) {
