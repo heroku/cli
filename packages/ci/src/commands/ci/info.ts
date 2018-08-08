@@ -1,15 +1,22 @@
 import color from '@heroku-cli/color'
 import * as Heroku from '@heroku-cli/schema'
+import * as http from 'http'
+
+import {get, RequestOptions} from 'https'
 
 import {Command, flags} from '@heroku-cli/command'
 
 import {getPipeline} from '../../lib/utils/pipelines'
 
-function stream(url) {
+function logStream(url: RequestOptions | string, fn: (res: http.IncomingMessage) => void) {
+  return get(url, fn)
+}
+
+function stream(url: string) {
   return new Promise((resolve, reject) => {
-    const request = api.logStream(url, output => {
+    const request = logStream(url, output => {
       output.on('data', data => {
-        if (data.toString() === new Buffer('\0').toString()) {
+        if (data.toString() === new Buffer('134 060').toString()) {
           request.abort()
           resolve()
         }
@@ -48,6 +55,7 @@ const STATUS_COLORS = {
 }
 
 function statusIcon({status}: Heroku.TestRun | Heroku.TestNode) {
+  if (!status) { return color.yellow('-') }
   return color[STATUS_COLORS[status]](STATUS_ICONS[status!] || '-')
 
   // return color[STATUS_COLORS[status!]] || 'yellow'](STATUS_ICONS[status!] || '-')
@@ -62,17 +70,18 @@ function printLineTestNode(testNode: Heroku.TestNode) {
 }
 
 async function renderNodeOutput(command: Command, testRun: Heroku.TestRun, testNode: Heroku.TestNode) {
-  await stream(testNode.setup_stream_url)
-  await stream(testNode.output_stream_url)
+  await stream(testNode.setup_stream_url!)
+  await stream(testNode.output_stream_url!)
 
   command.log()
   command.log(printLine(testRun))
 }
 
-async function displayTestRunInfo(command: Command, testRun: Heroku.TestRun, testNodes: Heroku.TestNode[], nodeIndex: number) {
+async function displayTestRunInfo(command: Command, testRun: Heroku.TestRun, testNodes: Heroku.TestNode[], nodeArg: string | undefined) {
   let testNode: Heroku.TestNode
 
-  if (nodeIndex) {
+  if (nodeArg) {
+    const nodeIndex = parseInt(nodeArg, 2)
     testNode = testNodes.length > 1 ? testNodes[nodeIndex] : testNodes[0]
 
     await renderNodeOutput(command, testRun, testNode)
@@ -84,7 +93,7 @@ async function displayTestRunInfo(command: Command, testRun: Heroku.TestRun, tes
     }
     process.exit(testNode.exit_code!)
   } else {
-    if (testRun.hasParallelTestRuns()) {
+    if (testNodes.length > 1) {
       command.log(printLine(testRun))
       command.log()
 
@@ -92,7 +101,7 @@ async function displayTestRunInfo(command: Command, testRun: Heroku.TestRun, tes
         command.log(printLineTestNode(testNode))
       })
     } else {
-      testNode = testRun.testNodes[0]
+      testNode = testNodes[0]
       await renderNodeOutput(command, testRun, testNode)
       process.exit(testNode.exit_code!)
     }
@@ -123,9 +132,9 @@ export default class Info extends Command {
       const {body: testRun} = await this.heroku.get<Heroku.TestRun>(`/pipelines/${pipeline.id}/test-runs/${args['test-run']}`)
       const {body: testNodes} = await this.heroku.get<Heroku.TestNode[]>(`/test-runs/${testRun.id}/test-nodes`)
 
-      await displayTestRunInfo(this, testRun, testNodes, args.node)
+      await displayTestRunInfo(this, testRun, testNodes, flags.node)
     } catch (e) {
-      this.error(e.body.message) // This currently shows a  ›   Error: Not found.
+      this.error(e) // This currently shows a  ›   Error: Not found.
     }
   }
 }
