@@ -166,7 +166,7 @@
     heroku-cli-util "^7.0.0"
     heroku-exec-util "0.7.2"
 
-"@heroku-cli/schema@^1.0.10":
+"@heroku-cli/schema@^1.0.11":
   version "1.0.11"
   resolved "https://registry.yarnpkg.com/@heroku-cli/schema/-/schema-1.0.11.tgz#6676d928f0d6ab3db39aa1335d4df3263f54ee4c"
 

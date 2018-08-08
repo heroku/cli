@@ -7,7 +7,7 @@
   "dependencies": {
     "@heroku-cli/command": "^8.1.26",
     "@heroku-cli/color": "^1.1.9",
-    "@heroku-cli/schema": "^1.0.10",
+    "@heroku-cli/schema": "^1.0.11",
     "@oclif/command": "^1",
     "@oclif/config": "^1",
     "@types/inquirer": "0.0.42",
