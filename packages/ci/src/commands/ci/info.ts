@@ -29,36 +29,27 @@ function stream(url: string) {
   })
 }
 
-const STATUS_ICONS = {
-  pending: '⋯',
-  creating: '⋯',
-  building: '⋯',
-  running: '⋯',
-  debugging: '⋯',
-  errored: '!',
-  failed: '✗',
-  succeeded: '✓',
-  cancelled: '!'
-}
-
-const STATUS_COLORS = {
-  pending: 'yellow',
-  creating: 'yellow',
-  building: 'yellow',
-  running: 'yellow',
-  debugging: 'yellow',
-  errored: 'red',
-  failed: 'red',
-  succeeded: 'green',
-  cancelled: 'yellow',
-  undefined: 'yellow'
-}
-
 function statusIcon({status}: Heroku.TestRun | Heroku.TestNode) {
   if (!status) { return color.yellow('-') }
-  return color[STATUS_COLORS[status]](STATUS_ICONS[status!] || '-')
 
-  // return color[STATUS_COLORS[status!]] || 'yellow'](STATUS_ICONS[status!] || '-')
+  switch (status) {
+    case 'pending':
+    case 'creating':
+    case 'building':
+    case 'running':
+      return color.yellow('-')
+    case 'errored':
+      return color.red('!')
+    case 'failed':
+      return color.red('✗')
+    case 'succeeded':
+      return color.green('✓')
+    case 'cancelled':
+      return color.yellow('!')
+    default:
+      return color.yellow('?')
+
+  }
 }
 
 function printLine(testRun: Heroku.TestRun) {
@@ -107,6 +98,7 @@ async function displayTestRunInfo(command: Command, testRun: Heroku.TestRun, tes
     }
   }
 }
+
 export default class Info extends Command {
   static description = 'show the status of a specific test run'
 
