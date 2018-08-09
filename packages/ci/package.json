@@ -17,9 +17,12 @@
     "validator": "^10.5.0"
   },
   "devDependencies": {
+    "@fancy-test/nock": "^0.1.1",
     "@oclif/dev-cli": "^1",
     "@oclif/plugin-help": "^2",
-    "@oclif/test": "^1",
+    "@oclif/test": "^1.1.0",
+    "@types/nock": "^9.3.0",
+    "nock": "^9.2.5",
     "@oclif/tslint": "^1",
     "@types/chai": "^4",
     "@types/mocha": "^5",

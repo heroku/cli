@@ -5,7 +5,7 @@ import {Command, flags} from '@heroku-cli/command'
 import {getPipeline} from '../../lib/utils/pipelines'
 import {displayTestRunInfo} from '../../lib/utils/test-run'
 
-export default class Info extends Command {
+export default class CIInfo extends Command {
   static description = 'show the status of a specific test run'
 
   static examples = [
@@ -22,7 +22,7 @@ export default class Info extends Command {
   static args = [{name: 'test-run', required: true}]
 
   async run() {
-    const {args, flags} = this.parse(Info)
+    const {args, flags} = this.parse(CIInfo)
     const pipeline = await getPipeline(flags, this)
 
     try {
@@ -31,7 +31,7 @@ export default class Info extends Command {
 
       await displayTestRunInfo(this, testRun, testNodes, flags.node)
     } catch (e) {
-      this.error(e.body.message) // This currently shows a  ›   Error: Not found.
+      this.error(e) // This currently shows a  ›   Error: Not found.
     }
   }
 }

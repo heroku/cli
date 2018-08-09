@@ -14,7 +14,7 @@ function stream(url: string) {
   return new Promise((resolve, reject) => {
     const request = logStream(url, output => {
       output.on('data', data => {
-        if (data.toString() === new Buffer('134 060').toString()) {
+        if (data.toString() === Buffer.from('').toString()) {
           request.abort()
           resolve()
         }
