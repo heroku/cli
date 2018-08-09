@@ -5,7 +5,7 @@ import {Command, flags} from '@heroku-cli/command'
 import {getPipeline} from '../../lib/utils/pipelines'
 import {displayTestRunInfo} from '../../lib/utils/test-run'
 
-export default class CILast extends Command {
+export default class CiLast extends Command {
   static description = 'looks for the most recent run and returns the output of that run'
 
   static examples = [
@@ -20,7 +20,7 @@ export default class CILast extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(CILast)
+    const {flags} = this.parse(CiLast)
     const pipeline = await getPipeline(flags, this)
 
     try {
