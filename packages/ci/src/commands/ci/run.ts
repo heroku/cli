@@ -8,6 +8,7 @@ import {getPipeline} from '../../utils/pipelines'
 import {displayAndExit} from '../../utils/test-run'
 
 import {createSourceBlob} from '../../utils/source'
+import cli from 'cli-ux'
 
 const git = require('../../utils/git')
 export default class CiRun extends Command {
@@ -28,12 +29,13 @@ export default class CiRun extends Command {
     const pipeline = await getPipeline(flags, this)
     const commit = await git.readCommit('HEAD')
 
-    this.log('Preparing source')
+    cli.action.start('Preparing source')
     const sourceBlobUrl = await createSourceBlob(commit.ref, this)
     // TODO: Be able to change the host
     const {body: pipelineRepository} = await this.heroku.get<Kolkrabbi.KolkrabbiApiPipelineRepositories>(`https://kolkrabbi.heroku.com/pipelines/${pipeline.id}/repository`)
+    cli.done()
 
-    this.log('Starting test run')
+    cli.action.start('Starting test run')
     const organization = pipelineRepository.organization && pipelineRepository.organization.name
 
     try {
@@ -46,6 +48,7 @@ export default class CiRun extends Command {
         source_blob_url: sourceBlobUrl
         }
       })
+      cli.done()
 
       await displayAndExit(pipeline, testRun.number!, this)
     } catch (e) {
