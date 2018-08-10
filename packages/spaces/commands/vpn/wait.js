@@ -18,15 +18,19 @@ function * run (context, heroku) {
   const interval = (typeof context.flags.interval !== 'undefined' ? context.flags.interval : 10) * 1000
   const timeout = (typeof context.flags.timeout !== 'undefined' ? context.flags.timeout : 20 * 60) * 1000
   const deadline = new Date(new Date().getTime() + timeout)
+
+  let lib = require('../../lib/vpn-connections')(heroku)
+  let info = yield lib.getVPNConnection(space, name)
+  if (info.status === 'active') {
+    cli.log('VPN has been allocated.')
+    return
+  }
+
   const spinner = new cli.Spinner({text: `Waiting for VPN Connection ${cli.color.green(name)} to allocate...`})
 
   spinner.start()
 
-  let lib = require('../../lib/vpn-connections')(heroku)
-  let info = {}
   do {
-    info = yield lib.getVPNConnection(space, name)
-
     if ((new Date()).getTime() >= deadline) {
       throw new Error('Timeout waiting for VPN to become allocated.')
     }
@@ -36,6 +40,7 @@ function * run (context, heroku) {
     }
 
     yield wait(interval)
+    info = yield lib.getVPNConnection(space, name)
   } while (info.status !== 'active')
 
   spinner.stop('done\n')
