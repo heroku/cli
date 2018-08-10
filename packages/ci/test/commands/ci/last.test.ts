@@ -21,7 +21,6 @@ describe('ci:last', () => {
 
     test
     .stdout()
-    .stderr()
     .nock('https://api.heroku.com', api => {
       api.get(`/pipelines?eq[name]=${pipeline.name}`)
       .reply(200, [
@@ -73,21 +72,22 @@ describe('ci:last', () => {
           number: testRunNumber,
           pipeline: {id: pipeline.id},
           status: 'succeeded',
-          setup_stream_url: `https://test-output.heroku.com/streams/${testRunId.substring(0, 3)}/test-runs/${testRunId}`,
+          setup_stream_url: `https://test-setup-output.heroku.com/streams/${testRunId.substring(0, 3)}/test-runs/${testRunId}`,
           output_stream_url: `https://test-output.heroku.com/streams/${testRunId.substring(0, 3)}/test-runs/${testRunId}`,
         }
       ])
     })
+    .nock('https://test-setup-output.heroku.com/streams', testOutputAPI => {
+      testOutputAPI.get(`/${testRunId.substring(0, 3)}/test-runs/${testRunId}`)
+      .reply(200, 'Test setup output')
+    })
     .nock('https://test-output.heroku.com/streams', testOutputAPI => {
-      testOutputAPI.get(`${testRunId.substring(0, 3)}/test-runs/${testRunId}`)
+      testOutputAPI.get(`/${testRunId.substring(0, 3)}/test-runs/${testRunId}`)
       .reply(200, 'Test output')
     })
     .command(['ci:last', `--pipeline=${pipeline.name}`])
-    .catch(e => {
-      expect(e.message).to.contain('WTH')
-    })
     .it('and a pipeline without parallel test runs it shows node output', ({stdout}) => {
-      expect(stdout).to.equal('Show info here----\n')
+      expect(stdout).to.equal('Test setup outputTest output\n✓ #10 master:b9e982a succeeded\n')
     })
   })
 })

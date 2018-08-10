@@ -28,7 +28,6 @@ describe('ci:info', () => {
 
     test
     .stdout()
-    .stderr()
     .nock('https://api.heroku.com', api => {
       api.get(`/pipelines?eq[name]=${pipeline.name}`)
       .reply(200, [
@@ -57,11 +56,16 @@ describe('ci:info', () => {
           id: testRun.id,
           number: testRun.number,
           pipeline: {id: pipeline.id},
+          exit_code: 0,
           status: 'succeeded',
-          setup_stream_url: `https://test-output.heroku.com/streams/${testRun.id.substring(0, 3)}/test-runs/${testRun.id}`,
+          setup_stream_url: `https://test-setup-output.heroku.com/streams/${testRun.id.substring(0, 3)}/test-runs/${testRun.id}`,
           output_stream_url: `https://test-output.heroku.com/streams/${testRun.id.substring(0, 3)}/test-runs/${testRun.id}`
         }
       ])
+    })
+    .nock('https://test-setup-output.heroku.com/streams', testOutputAPI => {
+      testOutputAPI.get(`/${testRun.id.substring(0, 3)}/test-runs/${testRun.id}`)
+      .reply(200, 'Test setup output')
     })
     .nock('https://test-output.heroku.com/streams', testOutputAPI => {
       testOutputAPI.get(`/${testRun.id.substring(0, 3)}/test-runs/${testRun.id}`)
@@ -69,7 +73,7 @@ describe('ci:info', () => {
     })
     .command(['ci:info', `${testRun.number}`, `--pipeline=${pipeline.name}`])
     .it('and a pipeline without parallel test runs it shows node output', ({stdout}) => {
-      expect(stdout).to.equal('Show info here----\n')
+      expect(stdout).to.equal('Test setup outputTest output\n✓ #10 master:b9e982a succeeded\n')
     })
   })
 })

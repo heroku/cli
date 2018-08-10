@@ -61,6 +61,12 @@ function printLineTestNode(testNode: Heroku.TestNode) {
   return `${statusIcon(testNode)} #${testNode.index} ${testNode.status}`
 }
 
+function processExitCode(command: Command, testNode: Heroku.TestNode) {
+  if (testNode.exit_code && testNode.exit_code !== 0) {
+    command.exit(testNode.exit_code)
+  }
+}
+
 async function renderNodeOutput(command: Command, testRun: Heroku.TestRun, testNode: Heroku.TestNode) {
   await stream(testNode.setup_stream_url!)
   await stream(testNode.output_stream_url!)
@@ -140,7 +146,7 @@ export async function displayTestRunInfo(command: Command, testRun: Heroku.TestR
       command.warn('This pipeline doesn\'t have parallel test runs, but you specified a node')
       command.warn('See https://devcenter.heroku.com/articles/heroku-ci-parallel-test-runs for more info')
     }
-    process.exit(testNode.exit_code!)
+    processExitCode(command, testNode)
   } else {
     if (testNodes.length > 1) {
       command.log(printLine(testRun))
@@ -152,7 +158,7 @@ export async function displayTestRunInfo(command: Command, testRun: Heroku.TestR
     } else {
       testNode = testNodes[0]
       await renderNodeOutput(command, testRun, testNode)
-      process.exit(testNode.exit_code!)
+      processExitCode(command, testNode)
     }
   }
 }
