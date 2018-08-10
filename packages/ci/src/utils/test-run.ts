@@ -5,6 +5,7 @@ import {Command} from '@heroku-cli/command'
 
 import * as Heroku from '@heroku-cli/schema'
 import * as http from 'http'
+import cli from 'cli-ux'
 
 function logStream(url: RequestOptions | string, fn: (res: http.IncomingMessage) => void) {
   return get(url, fn)
@@ -78,10 +79,10 @@ const TERMINAL_STATES = [SUCCEEDED, FAILED, ERRORED, CANCELLED]
 const RUNNING_STATES = [RUNNING].concat(TERMINAL_STATES)
 const BUILDING_STATES = [BUILDING, RUNNING].concat(TERMINAL_STATES)
 
-async function waitForStates(states: any, testRun: Heroku.TestRun, command: Command) {
-  let newTestRun
+async function waitForStates(states: string[], testRun: Heroku.TestRun, command: Command) {
+  let newTestRun = testRun;
 
-  while (!states.includes(testRun.status)) {
+  while (!states.includes(newTestRun.status!.toString())) {
     let {body: bodyTestRun} = await command.heroku.get<Heroku.TestRun>(`/pipelines/${testRun.pipeline!.id}/test-runs/${testRun.number}`)
     newTestRun = bodyTestRun
   }
@@ -91,10 +92,13 @@ async function waitForStates(states: any, testRun: Heroku.TestRun, command: Comm
 async function display(pipeline: Heroku.Pipeline, number: number, command: Command) {
   let {body: testRun} = await command.heroku.get<Heroku.TestRun | undefined>(`/pipelines/${pipeline.id}/test-runs/${number}`)
   if (testRun) {
+    cli.action.start('Waiting for build to start')
+    testRun = await waitForStates(BUILDING_STATES, testRun, command)
+    cli.done()
+
     let {body: testNodes} = await command.heroku.get<Heroku.TestNode[]>(`/test-runs/${testRun.id}/test-nodes`)
     let firstTestNode = testNodes[0]
 
-    if (testRun) { testRun = await waitForStates(BUILDING_STATES, testRun, command) }
     if (firstTestNode) { await stream(firstTestNode.setup_stream_url!) }
 
     if (testRun) { testRun = await waitForStates(RUNNING_STATES, testRun, command) }
@@ -115,7 +119,7 @@ async function display(pipeline: Heroku.Pipeline, number: number, command: Comma
   }
 }
 
-export async function displayAndExit(pipeline: any, number: number, command: Command) {
+export async function displayAndExit(pipeline: Heroku.Pipeline, number: number, command: Command) {
   let testNode = await display(pipeline, number, command)
 
   testNode && testNode.exit_code ? process.exit(testNode.exit_code) : process.exit(1)
