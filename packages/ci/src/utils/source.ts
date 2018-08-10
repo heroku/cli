@@ -38,7 +38,7 @@ export async function createSourceBlob(ref: any, command: Command) {
     const githubRepository = await git.githubRepository()
     const {user, repo} = githubRepository
 
-    let {body: archiveLink} = await command.heroku.get<any>(`/github/repos/${user}/${repo}/tarball/${ref}`, {hostname: 'https://kolkrabbi.heroku.com'})
+    let {body: archiveLink} = await command.heroku.get<any>(`https://kolkrabbi.heroku.com/github/repos/${user}/${repo}/tarball/${ref}`)
     if (await urlExists(archiveLink.archive_link)) {
       return archiveLink.archive_link
     }
