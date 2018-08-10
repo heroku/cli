@@ -1,11 +1,12 @@
 import color from '@heroku-cli/color'
 import {get, RequestOptions} from 'https'
 
+import cli from 'cli-ux'
+
 import {Command} from '@heroku-cli/command'
 
 import * as Heroku from '@heroku-cli/schema'
 import * as http from 'http'
-import cli from 'cli-ux'
 
 function logStream(url: RequestOptions | string, fn: (res: http.IncomingMessage) => void) {
   return get(url, fn)
@@ -80,7 +81,7 @@ const RUNNING_STATES = [RUNNING].concat(TERMINAL_STATES)
 const BUILDING_STATES = [BUILDING, RUNNING].concat(TERMINAL_STATES)
 
 async function waitForStates(states: string[], testRun: Heroku.TestRun, command: Command) {
-  let newTestRun = testRun;
+  let newTestRun = testRun
 
   while (!states.includes(newTestRun.status!.toString())) {
     let {body: bodyTestRun} = await command.heroku.get<Heroku.TestRun>(`/pipelines/${testRun.pipeline!.id}/test-runs/${testRun.number}`)

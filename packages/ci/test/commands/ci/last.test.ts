@@ -5,19 +5,12 @@ const test = Test.test
 .register('nock', Nock)
 const expect = Test.expect
 
-describe('ci:info', () => {
+describe('ci:last', () => {
   const testRunNumber = 10
-  const testRun = {id: 'f53d34b4-c3a9-4608-a186-17257cf71d62', number: 10}
+  const testRunId = 'f53d34b4-c3a9-4608-a186-17257cf71d62'
 
   test
-  .command(['ci:info'])
-  .catch(e => {
-    expect(e.message).to.contain('Missing 1 required arg:\ntest-run\nSee more help with --help')
-  })
-  .it('errors when not specifying a test run')
-
-  test
-  .command(['ci:info', `${testRun.number}`])
+  .command(['ci:last'])
   .catch(e => {
     expect(e.message).to.contain('Required flag:  --pipeline PIPELINE or --app APP')
   })
@@ -41,33 +34,58 @@ describe('ci:info', () => {
           commit_branch: 'master',
           commit_message: 'Merge pull request #5848 from heroku/cli',
           commit_sha: 'b9e982a60904730510a1c9e2dd2df64aef6f0d84',
-          id: testRun.id,
-          number: testRun.number,
+          id: testRunId,
+          number: testRunNumber,
           pipeline: {id: pipeline.id},
           status: 'succeeded'
         }
       )
 
-      api.get(`/test-runs/${testRun.id}/test-nodes`)
+      api.get(`/pipelines/${pipeline.id}/test-runs`)
+      .reply(200, [
+        {
+          commit_branch: 'master',
+          commit_message: 'Merge pull request #5849 from heroku/cli',
+          commit_sha: 'b9e982a60904730510a1c9e2dd2df64aef6f0d84',
+          id: testRunId,
+          number: testRunNumber,
+          pipeline: {id: pipeline.id},
+          status: 'succeeded'
+        },
+        {
+          commit_branch: 'master',
+          commit_message: 'Merge pull request #5848 from heroku/cli',
+          commit_sha: 'b9e982a60904730510a1c9e2dd2df64aef6f0d84',
+          id: 'testRun.id',
+          number: 9,
+          pipeline: {id: pipeline.id},
+          status: 'succeeded'
+        }
+      ])
+
+      api.get(`/test-runs/${testRunId}/test-nodes`)
       .reply(200, [
         {
           commit_branch: 'master',
           commit_message: 'Merge pull request #5848 from heroku/cli',
           commit_sha: 'b9e982a60904730510a1c9e2dd2df64aef6f0d84',
-          id: testRun.id,
-          number: testRun.number,
+          id: testRunId,
+          number: testRunNumber,
           pipeline: {id: pipeline.id},
           status: 'succeeded',
-          setup_stream_url: `https://test-output.heroku.com/streams/${testRun.id.substring(0, 3)}/test-runs/${testRun.id}`,
-          output_stream_url: `https://test-output.heroku.com/streams/${testRun.id.substring(0, 3)}/test-runs/${testRun.id}`
+          setup_stream_url: `https://test-output.heroku.com/streams/${testRunId.substring(0, 3)}/test-runs/${testRunId}`,
+          output_stream_url: `https://test-output.heroku.com/streams/${testRunId.substring(0, 3)}/test-runs/${testRunId}`,
         }
       ])
     })
     .nock('https://test-output.heroku.com/streams', testOutputAPI => {
-      testOutputAPI.get(`/${testRun.id.substring(0, 3)}/test-runs/${testRun.id}`)
+      testOutputAPI.get(`${testRunId.substring(0, 3)}/test-runs/${testRunId}`)
       .reply(200, 'Test output')
     })
-    .command(['ci:info', `${testRun.number}`, `--pipeline=${pipeline.name}`])
+    .command(['ci:last', `--pipeline=${pipeline.name}`])
+    .catch(e => {
+      expect(e.message).to.contain('WTH')
+    })
     .it('and a pipeline without parallel test runs it shows node output', ({stdout}) => {
       expect(stdout).to.equal('Show info here----\n')
     })

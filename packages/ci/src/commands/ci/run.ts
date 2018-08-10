@@ -2,13 +2,14 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 
+import cli from 'cli-ux'
+
 import * as Kolkrabbi from '../../interfaces/kolkrabbi'
 
 import {getPipeline} from '../../utils/pipelines'
 import {displayAndExit} from '../../utils/test-run'
 
 import {createSourceBlob} from '../../utils/source'
-import cli from 'cli-ux'
 
 const git = require('../../utils/git')
 export default class CiRun extends Command {
