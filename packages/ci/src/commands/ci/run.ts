@@ -31,7 +31,6 @@ export default class CiRun extends Command {
 
     cli.action.start('Preparing source')
     const sourceBlobUrl = await createSourceBlob(commit.ref, this)
-    // TODO: Be able to change the host
     const {body: pipelineRepository} = await this.heroku.get<Kolkrabbi.KolkrabbiApiPipelineRepositories>(`https://kolkrabbi.heroku.com/pipelines/${pipeline.id}/repository`)
     cli.done()
 
