@@ -1,9 +1,5 @@
 #!/usr/bin/env bats
 
-setup() {
-  run ../../bin/run plugins:link .
-}
-
 @test "version" {
   run ../../bin/run local:version
   echo $output
