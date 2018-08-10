@@ -2,8 +2,8 @@ import * as Heroku from '@heroku-cli/schema'
 
 import {Command, flags} from '@heroku-cli/command'
 
-import {getPipeline} from '../../lib/utils/pipelines'
-import {displayTestRunInfo} from '../../lib/utils/test-run'
+import {getPipeline} from '../../utils/pipelines'
+import {displayTestRunInfo} from '../../utils/test-run'
 
 export default class CiInfo extends Command {
   static description = 'show the status of a specific test run'

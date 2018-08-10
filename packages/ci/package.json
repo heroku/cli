@@ -7,12 +7,13 @@
   "dependencies": {
     "@heroku-cli/color": "^1.1.9",
     "@heroku-cli/command": "^8.1.26",
-    "@heroku-cli/schema": "^1.0.11",
+    "@heroku-cli/schema": "^1.0.12",
     "@oclif/command": "^1",
     "@oclif/config": "^1",
-    "@types/bluebird": "^3.5.23",
+    "async-file": "^2.0.2",
     "@types/inquirer": "0.0.42",
     "@types/validator": "^9.4.1",
+    "got": "^8.3.2",
     "inquirer": "^6.0.0",
     "tslib": "^1",
     "validator": "^10.5.0"

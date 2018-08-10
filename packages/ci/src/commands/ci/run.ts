@@ -1,14 +1,15 @@
+
 import {Command, flags} from '@heroku-cli/command'
-
-import {createSourceBlob} from '../../lib/utils/source'
-import {displayTestRunInfo} from '../../lib/utils/test-run'
-
-import {getPipeline} from '../../lib/utils/pipelines'
-
-import {readCommit} from '../../lib/utils/git'
+import * as Heroku from '@heroku-cli/schema'
 
 import * as Kolkrabbi from '../../interfaces/kolkrabbi'
 
+import {getPipeline} from '../../utils/pipelines'
+import {displayAndExit} from '../../utils/test-run'
+
+import {createSourceBlob} from '../../utils/source'
+
+const git = require('../../utils/git')
 export default class CiRun extends Command {
   static description = 'run tests against current directory'
 
@@ -25,25 +26,29 @@ export default class CiRun extends Command {
   async run() {
     const {flags} = this.parse(CiRun)
     const pipeline = await getPipeline(flags, this)
-    const commit = await readCommit('HEAD')
+    const commit = await git.readCommit('HEAD')
 
     this.log('Preparing source')
-    const sourceBlobUrl = await createSourceBlob(commit.ref, this.heroku)
+    const sourceBlobUrl = await createSourceBlob(commit.ref, this)
     const {body: pipelineRepository} = await this.heroku.get<Kolkrabbi.KolkrabbiApiPipelineRepositories>(`/pipelines/${pipeline.id}/repository`, {hostname: 'https://kolkrabbi.heroku.com'})
     const organization = pipelineRepository.organization && pipelineRepository.organization.name
 
     this.log('Starting test run')
 
-    const {body: testRun} = this.heroku.post('/test-runs', {body: {
+    try {
+      const {body: testRun} = await this.heroku.post<Heroku.TestRun>('/test-runs', {body: {
         commit_branch: commit.branch,
         commit_message: commit.message,
         commit_sha: commit.ref,
         pipeline: pipeline.id,
         organization,
         source_blob_url: sourceBlobUrl
-      }
-    })
+        }
+      })
 
-  // return yield TestRun.displayAndExit(pipeline, testRun.number, { heroku })
+      await displayAndExit(pipeline, testRun.number!, this)
+    } catch (e) {
+      this.error(e) // This currently shows a  ›   Error: Not found.
+    }
   }
 }

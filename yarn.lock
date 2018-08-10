@@ -166,9 +166,9 @@
     heroku-cli-util "^7.0.0"
     heroku-exec-util "0.7.2"
 
-"@heroku-cli/schema@^1.0.11":
-  version "1.0.11"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/schema/-/schema-1.0.11.tgz#6676d928f0d6ab3db39aa1335d4df3263f54ee4c"
+"@heroku-cli/schema@^1.0.12":
+  version "1.0.12"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/schema/-/schema-1.0.12.tgz#f9d8f413a35160c3baebc0f6d3d63b8a9f531add"
 
 "@heroku-cli/schema@^1.0.6":
   version "1.0.6"
@@ -419,10 +419,6 @@
   resolved "https://registry.yarnpkg.com/@types/ansi-styles/-/ansi-styles-3.2.0.tgz#fc9622eeed20a4d92bc5c28cb3507b748a4c7eba"
   dependencies:
     "@types/color-name" "*"
-
-"@types/bluebird@^3.5.23":
-  version "3.5.23"
-  resolved "https://registry.yarnpkg.com/@types/bluebird/-/bluebird-3.5.23.tgz#e805da976b76892b2b2e50eec29e84914c730670"
 
 "@types/chai@4.1.4", "@types/chai@^4", "@types/chai@^4.1.3", "@types/chai@^4.1.4":
   version "4.1.4"
@@ -858,6 +854,12 @@ assertion-error@^1.0.1:
 assign-symbols@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/assign-symbols/-/assign-symbols-1.0.0.tgz#59667f41fadd4f20ccbc2bb96b8d4f7f78ec0367"
+
+async-file@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/async-file/-/async-file-2.0.2.tgz#02ad07856ac3717e836b20aec5a4cfe00c46df23"
+  dependencies:
+    rimraf "^2.5.2"
 
 async-limiter@~1.0.0:
   version "1.0.0"
@@ -4838,7 +4840,7 @@ right-align@^0.1.1:
   dependencies:
     align-text "^0.1.1"
 
-rimraf@^2.2.8, rimraf@^2.6.1, rimraf@^2.6.2:
+rimraf@^2.2.8, rimraf@^2.5.2, rimraf@^2.6.1, rimraf@^2.6.2:
   version "2.6.2"
   resolved "https://registry.yarnpkg.com/rimraf/-/rimraf-2.6.2.tgz#2ed8150d24a16ea8651e6d6ef0f47c4158ce7a36"
   dependencies:
