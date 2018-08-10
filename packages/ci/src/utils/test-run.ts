@@ -35,6 +35,7 @@ function statusIcon({status}: Heroku.TestRun | Heroku.TestNode) {
     case 'creating':
     case 'building':
     case 'running':
+    case 'debugging':
       return color.yellow('-')
     case 'errored':
       return color.red('!')

@@ -28,10 +28,12 @@ export default class CiRun extends Command {
     const pipeline = await getPipeline(flags, this)
     const commit = await git.readCommit('HEAD')
 
+    this.log('Preparing source')
     const sourceBlobUrl = await createSourceBlob(commit.ref, this)
     // TODO: Be able to change the host
     const {body: pipelineRepository} = await this.heroku.get<Kolkrabbi.KolkrabbiApiPipelineRepositories>(`https://kolkrabbi.heroku.com/pipelines/${pipeline.id}/repository`)
 
+    this.log('Starting test run')
     const organization = pipelineRepository.organization && pipelineRepository.organization.name
 
     try {
