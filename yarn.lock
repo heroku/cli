@@ -177,15 +177,6 @@
     tslint "^5.8.0"
     tslint-config-prettier "*"
 
-"@heroku/foreman@^2.0.2":
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/@heroku/foreman/-/foreman-2.0.2.tgz#e24f8611bb0633ca89095648243d3a90564749fc"
-  dependencies:
-    commander "^2.11.0"
-    http-proxy "^1.16.2"
-    mustache "^2.2.1"
-    shell-quote "^1.6.1"
-
 "@heroku/socksv5@^0.0.9":
   version "0.0.9"
   resolved "https://registry.yarnpkg.com/@heroku/socksv5/-/socksv5-0.0.9.tgz#7a3905921136b2666979a0f86bb4f062f657f793"
@@ -1941,6 +1932,10 @@ commander@^2.11.0, commander@^2.12.1:
   version "2.17.1"
   resolved "https://registry.yarnpkg.com/commander/-/commander-2.17.1.tgz#bd77ab7de6de94205ceacc72f1716d29f20a77bf"
 
+commander@^2.15.1:
+  version "2.17.1"
+  resolved "https://registry.yarnpkg.com/commander/-/commander-2.17.1.tgz#bd77ab7de6de94205ceacc72f1716d29f20a77bf"
+
 commondir@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/commondir/-/commondir-1.0.1.tgz#ddd800da0c66127393cca5950ea968a3aaf1253b"
@@ -3116,6 +3111,15 @@ foreground-child@^1.5.3, foreground-child@^1.5.6:
   dependencies:
     cross-spawn "^4"
     signal-exit "^3.0.0"
+
+foreman@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/foreman/-/foreman-3.0.1.tgz#805f28afc5a4bbaf08dbb1f5018c557dcbb8a410"
+  dependencies:
+    commander "^2.15.1"
+    http-proxy "^1.17.0"
+    mustache "^2.2.1"
+    shell-quote "^1.6.1"
 
 forever-agent@~0.6.1:
   version "0.6.1"
