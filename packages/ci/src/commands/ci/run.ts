@@ -37,22 +37,17 @@ export default class CiRun extends Command {
     cli.action.start('Starting test run')
     const {body: pipelineRepository} = await this.heroku.get<Kolkrabbi.KolkrabbiApiPipelineRepositories>(`https://kolkrabbi.heroku.com/pipelines/${pipeline.id}/repository`)
     const organization = pipelineRepository.organization && pipelineRepository.organization.name
+    const {body: testRun} = await this.heroku.post<Heroku.TestRun>('/test-runs', {body: {
+      commit_branch: commit.branch,
+      commit_message: commit.message,
+      commit_sha: commit.ref,
+      pipeline: pipeline.id,
+      organization,
+      source_blob_url: sourceBlobUrl
+      }
+    })
+    cli.done()
 
-    try {
-      const {body: testRun} = await this.heroku.post<Heroku.TestRun>('/test-runs', {body: {
-        commit_branch: commit.branch,
-        commit_message: commit.message,
-        commit_sha: commit.ref,
-        pipeline: pipeline.id,
-        organization,
-        source_blob_url: sourceBlobUrl
-        }
-      })
-      cli.done()
-
-      await displayAndExit(pipeline, testRun.number!, this)
-    } catch (e) {
-      this.error(e) // This currently shows a  ›   Error: Not found.
-    }
+    await displayAndExit(pipeline, testRun.number!, this)
   }
 }

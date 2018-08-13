@@ -22,16 +22,11 @@ export default class CiLast extends Command {
   async run() {
     const {flags} = this.parse(CiLast)
     const pipeline = await getPipeline(flags, this)
+    const headers = {Range: 'number ..; order=desc,max=1'}
+    const {body: latestTestRuns} = await this.heroku.get<Heroku.TestRun[]>(`/pipelines/${pipeline.id}/test-runs`, {headers})
+    const {body: testRun} = await this.heroku.get<Heroku.TestRun>(`/pipelines/${pipeline.id}/test-runs/${latestTestRuns[0].number}`)
+    const {body: testNodes} = await this.heroku.get<Heroku.TestNode[]>(`/test-runs/${testRun.id}/test-nodes`)
 
-    try {
-      const headers = {Range: 'number ..; order=desc,max=1'}
-      const {body: latestTestRuns} = await this.heroku.get<Heroku.TestRun[]>(`/pipelines/${pipeline.id}/test-runs`, {headers})
-      const {body: testRun} = await this.heroku.get<Heroku.TestRun>(`/pipelines/${pipeline.id}/test-runs/${latestTestRuns[0].number}`)
-      const {body: testNodes} = await this.heroku.get<Heroku.TestNode[]>(`/test-runs/${testRun.id}/test-nodes`)
-
-      await displayTestRunInfo(this, testRun, testNodes, flags.node)
-    } catch (e) {
-      this.error(e.body.message) // This currently shows a  ›   Error: Not found.
-    }
+    await displayTestRunInfo(this, testRun, testNodes, flags.node)
   }
 }

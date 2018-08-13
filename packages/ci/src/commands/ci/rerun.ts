@@ -50,21 +50,17 @@ export default class CiReRun extends Command {
     cli.action.start('Starting test run')
     const organization = pipelineRepository.organization && pipelineRepository.organization.name
 
-    try {
-      const {body: testRun} = await this.heroku.post<Heroku.TestRun>('/test-runs', {body: {
-        commit_branch: sourceTestRun.commit_branch,
-        commit_message: sourceTestRun.commit_message,
-        commit_sha: sourceTestRun.commit_sha,
-        pipeline: pipeline.id,
-        organization,
-        source_blob_url: sourceBlobUrl
-        }
-      })
-      cli.done()
+    const {body: testRun} = await this.heroku.post<Heroku.TestRun>('/test-runs', {body: {
+      commit_branch: sourceTestRun.commit_branch,
+      commit_message: sourceTestRun.commit_message,
+      commit_sha: sourceTestRun.commit_sha,
+      pipeline: pipeline.id,
+      organization,
+      source_blob_url: sourceBlobUrl
+      }
+    })
+    cli.done()
 
-      await displayAndExit(pipeline, testRun.number!, this)
-    } catch (e) {
-      this.error(e) // This currently shows a  ›   Error: Not found.
-    }
+    await displayAndExit(pipeline, testRun.number!, this)
   }
 }

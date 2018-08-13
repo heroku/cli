@@ -77,6 +77,7 @@ describe('ci:info', () => {
     })
 
     describe('and the exit was not successful', () => {
+      const testRunExitCode = 34
       test
       .stdout()
       .nock('https://api.heroku.com', api => {
@@ -107,7 +108,7 @@ describe('ci:info', () => {
             id: testRun.id,
             number: testRun.number,
             pipeline: {id: pipeline.id},
-            exit_code: 34,
+            exit_code: testRunExitCode,
             status: 'succeeded',
             setup_stream_url: `https://test-setup-output.heroku.com/streams/${testRun.id.substring(0, 3)}/test-runs/${testRun.id}`,
             output_stream_url: `https://test-output.heroku.com/streams/${testRun.id.substring(0, 3)}/test-runs/${testRun.id}`
@@ -123,9 +124,7 @@ describe('ci:info', () => {
         .reply(200, 'Test output')
       })
       .command(['ci:info', `${testRun.number}`, `--pipeline=${pipeline.name}`])
-      .catch(error => {
-        expect(error.toString()).to.equal('Error: EEXIT: 34')
-      })
+      .exit(testRunExitCode)
       .it('it shows the setup, test, and final result output', ({stdout}) => {
         expect(stdout).to.equal('Test setup outputTest output\n✗ #10 master:b9e982a failed\n')
       })

@@ -24,14 +24,9 @@ export default class CiInfo extends Command {
   async run() {
     const {args, flags} = this.parse(CiInfo)
     const pipeline = await getPipeline(flags, this)
+    const {body: testRun} = await this.heroku.get<Heroku.TestRun>(`/pipelines/${pipeline.id}/test-runs/${args['test-run']}`)
+    const {body: testNodes} = await this.heroku.get<Heroku.TestNode[]>(`/test-runs/${testRun.id}/test-nodes`)
 
-    try {
-      const {body: testRun} = await this.heroku.get<Heroku.TestRun>(`/pipelines/${pipeline.id}/test-runs/${args['test-run']}`)
-      const {body: testNodes} = await this.heroku.get<Heroku.TestNode[]>(`/test-runs/${testRun.id}/test-nodes`)
-
-      await displayTestRunInfo(this, testRun, testNodes, flags.node)
-    } catch (e) {
-      this.error(e) // This currently shows a  ›   Error: Not found.
-    }
+    await displayTestRunInfo(this, testRun, testNodes, flags.node)
   }
 }
