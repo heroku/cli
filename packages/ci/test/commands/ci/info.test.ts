@@ -123,7 +123,7 @@ describe('ci:info', () => {
         .reply(200, 'Test output')
       })
       .command(['ci:info', `${testRun.number}`, `--pipeline=${pipeline.name}`])
-      .catch((error) => {
+      .catch(error => {
         expect(error.toString()).to.equal('Error: EEXIT: 34')
       })
       .it('it shows the setup, test, and final result output', ({stdout}) => {
@@ -250,6 +250,7 @@ describe('ci:info', () => {
         describe('and the pipeline does not have parallel tests enabled', () => {
           test
           .stdout()
+          .stderr()
           .nock('https://api.heroku.com', api => {
             api.get(`/pipelines?eq[name]=${pipeline.name}`)
             .reply(200, [
@@ -295,8 +296,9 @@ describe('ci:info', () => {
             .reply(200, 'Test output')
           })
           .command(['ci:info', `${testRun.number}`, `--pipeline=${pipeline.name}`, '--node=1'])
-          .it('displays the setup and test output for the first node', ({stdout}) => {
+          .it('displays the setup and test output for the first node and a warning', ({stdout, stderr}) => {
             expect(stdout).to.equal('Test setup outputTest output\n✓ #10 master:b9e982a succeeded\n\n')
+            expect(stderr).to.contain('This pipeline doesn\'t have parallel test runs, but you specified \n ›   a node')
           })
         })
       })

@@ -18,3 +18,43 @@ Heroku CLI plugin for Heroku CI
 <!-- usage -->
 # Commands
 <!-- commands -->
+* [`heroku ci:info`](#heroku-ci-info)
+* [`heroku ci:last`](#heroku-ci-last)
+* [`heroku ci:run`](#heroku-ci-run)
+* [`heroku ci:rerun`](#heroku-ci-rerun)
+
+## `heroku ci:info`
+
+Shows the information for a particular ci run on a pipeline.
+
+```
+USAGE
+  $ heroku ci:info 555 --pipeline=my-pipeline # 555 is the test number
+```
+
+## `heroku ci:last`
+
+Shows the information for the last run for a given pipeline.
+
+```
+USAGE
+  $ heroku ci:last --pipeline=my-pipeline
+```
+
+## `heroku ci:run`
+
+Run this from within your repo directory to trigger a test agains the current branch and commit.
+
+```
+USAGE
+  $ heroku ci:run --pipeline=my-pipeline
+```
+
+## `heroku ci:rerun`
+
+Re-run a previous test run. If no test run number is provided, the most recent test run will be re-run.
+
+```
+USAGE
+  $ heroku ci:rerun 555 --pipeline=my-pipeline  # 555 is the test number
+```
