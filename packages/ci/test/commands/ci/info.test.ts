@@ -72,11 +72,235 @@ describe('ci:info', () => {
       .reply(200, 'Test output')
     })
     .command(['ci:info', `${testRun.number}`, `--pipeline=${pipeline.name}`])
-    .it('and a pipeline without parallel test runs it only shows node output', ({stdout}) => {
+    .it('it shows the setup, test, and final result output', ({stdout}) => {
       expect(stdout).to.equal('Test setup outputTest output\n✓ #10 master:b9e982a succeeded\n')
     })
 
-    // TODO: Add tests for not showing output/setup when parallel tests runs is enabled
+    describe('and the exit was not successful', () => {
+      test
+      .stdout()
+      .nock('https://api.heroku.com', api => {
+        api.get(`/pipelines?eq[name]=${pipeline.name}`)
+        .reply(200, [
+          {id: pipeline.id}
+        ])
+
+        api.get(`/pipelines/${pipeline.id}/test-runs/${testRunNumber}`)
+        .reply(200,
+          {
+            commit_branch: 'master',
+            commit_message: 'Merge pull request #5848 from heroku/cli',
+            commit_sha: 'b9e982a60904730510a1c9e2dd2df64aef6f0d84',
+            id: testRun.id,
+            number: testRun.number,
+            pipeline: {id: pipeline.id},
+            status: 'failed'
+          }
+        )
+
+        api.get(`/test-runs/${testRun.id}/test-nodes`)
+        .reply(200, [
+          {
+            commit_branch: 'master',
+            commit_message: 'Merge pull request #5848 from heroku/cli',
+            commit_sha: 'b9e982a60904730510a1c9e2dd2df64aef6f0d84',
+            id: testRun.id,
+            number: testRun.number,
+            pipeline: {id: pipeline.id},
+            exit_code: 34,
+            status: 'succeeded',
+            setup_stream_url: `https://test-setup-output.heroku.com/streams/${testRun.id.substring(0, 3)}/test-runs/${testRun.id}`,
+            output_stream_url: `https://test-output.heroku.com/streams/${testRun.id.substring(0, 3)}/test-runs/${testRun.id}`
+          }
+        ])
+      })
+      .nock('https://test-setup-output.heroku.com/streams', testOutputAPI => {
+        testOutputAPI.get(`/${testRun.id.substring(0, 3)}/test-runs/${testRun.id}`)
+        .reply(200, 'Test setup output')
+      })
+      .nock('https://test-output.heroku.com/streams', testOutputAPI => {
+        testOutputAPI.get(`/${testRun.id.substring(0, 3)}/test-runs/${testRun.id}`)
+        .reply(200, 'Test output')
+      })
+      .command(['ci:info', `${testRun.number}`, `--pipeline=${pipeline.name}`])
+      .catch((error) => {
+        expect(error.toString()).to.equal('Error: EEXIT: 34')
+      })
+      .it('it shows the setup, test, and final result output', ({stdout}) => {
+        expect(stdout).to.equal('Test setup outputTest output\n✗ #10 master:b9e982a failed\n')
+      })
+    })
+
+    describe('when the pipeline has parallel test runs enabled', () => {
+      test
+      .stdout()
+      .nock('https://api.heroku.com', api => {
+        api.get(`/pipelines?eq[name]=${pipeline.name}`)
+        .reply(200, [
+          {id: pipeline.id}
+        ])
+
+        api.get(`/pipelines/${pipeline.id}/test-runs/${testRunNumber}`)
+        .reply(200,
+          {
+            commit_branch: 'master',
+            commit_message: 'Merge pull request #5848 from heroku/cli',
+            commit_sha: 'b9e982a60904730510a1c9e2dd2df64aef6f0d84',
+            id: testRun.id,
+            number: testRun.number,
+            pipeline: {id: pipeline.id},
+            status: 'succeeded'
+          }
+        )
+
+        api.get(`/test-runs/${testRun.id}/test-nodes`)
+        .reply(200, [
+          {
+            commit_branch: 'master',
+            commit_message: 'Merge pull request #5848 from heroku/cli',
+            commit_sha: 'b9e982a60904730510a1c9e2dd2df64aef6f0d84',
+            id: testRun.id,
+            number: testRun.number,
+            pipeline: {id: pipeline.id},
+            exit_code: 0,
+            index: 0,
+            status: 'succeeded'
+          },
+          {
+            commit_branch: 'master',
+            commit_message: 'Merge pull request #5848 from heroku/cli',
+            commit_sha: 'b9e982a60904730510a1c9e2dd2df64aef6f0d84',
+            id: testRun.id,
+            number: testRun.number,
+            pipeline: {id: pipeline.id},
+            exit_code: 0,
+            index: 1,
+            status: 'succeeded'
+          }
+        ])
+      })
+      .command(['ci:info', `${testRun.number}`, `--pipeline=${pipeline.name}`])
+      .it('shows a result for each node', ({stdout}) => {
+        expect(stdout).to.equal('✓ #10 master:b9e982a succeeded\n\n✓ #0 succeeded\n✓ #1 succeeded\n')
+      })
+
+      describe('and the user passes in a test node index', () => {
+        test
+        .stdout()
+        .nock('https://api.heroku.com', api => {
+          api.get(`/pipelines?eq[name]=${pipeline.name}`)
+          .reply(200, [
+            {id: pipeline.id}
+          ])
+
+          api.get(`/pipelines/${pipeline.id}/test-runs/${testRunNumber}`)
+          .reply(200,
+            {
+              commit_branch: 'master',
+              commit_message: 'Merge pull request #5848 from heroku/cli',
+              commit_sha: 'b9e982a60904730510a1c9e2dd2df64aef6f0d84',
+              id: testRun.id,
+              number: testRun.number,
+              pipeline: {id: pipeline.id},
+              status: 'succeeded'
+            }
+          )
+
+          api.get(`/test-runs/${testRun.id}/test-nodes`)
+          .reply(200, [
+            {
+              commit_branch: 'master',
+              commit_message: 'Merge pull request #5848 from heroku/cli',
+              commit_sha: 'b9e982a60904730510a1c9e2dd2df64aef6f0d84',
+              id: testRun.id,
+              number: testRun.number,
+              pipeline: {id: pipeline.id},
+              exit_code: 0,
+              index: 0,
+              status: 'succeeded'
+            },
+            {
+              commit_branch: 'master',
+              commit_message: 'Merge pull request #5848 from heroku/cli',
+              commit_sha: 'b9e982a60904730510a1c9e2dd2df64aef6f0d84',
+              id: testRun.id,
+              number: testRun.number,
+              pipeline: {id: pipeline.id},
+              exit_code: 0,
+              index: 1,
+              setup_stream_url: `https://test-setup-output.heroku.com/streams/${testRun.id.substring(0, 3)}/test-runs/${testRun.id}`,
+              output_stream_url: `https://test-output.heroku.com/streams/${testRun.id.substring(0, 3)}/test-runs/${testRun.id}`,
+              status: 'succeeded'
+            }
+          ])
+        })
+        .nock('https://test-setup-output.heroku.com/streams', testOutputAPI => {
+          testOutputAPI.get(`/${testRun.id.substring(0, 3)}/test-runs/${testRun.id}`)
+          .reply(200, 'Test setup output')
+        })
+        .nock('https://test-output.heroku.com/streams', testOutputAPI => {
+          testOutputAPI.get(`/${testRun.id.substring(0, 3)}/test-runs/${testRun.id}`)
+          .reply(200, 'Test output')
+        })
+        .command(['ci:info', `${testRun.number}`, `--pipeline=${pipeline.name}`, '--node=1'])
+        .it('displays the setup and test output for the specified node', ({stdout}) => {
+          expect(stdout).to.equal('Test setup outputTest output\n✓ #10 master:b9e982a succeeded\n')
+        })
+
+        describe('and the pipeline does not have parallel tests enabled', () => {
+          test
+          .stdout()
+          .nock('https://api.heroku.com', api => {
+            api.get(`/pipelines?eq[name]=${pipeline.name}`)
+            .reply(200, [
+              {id: pipeline.id}
+            ])
+
+            api.get(`/pipelines/${pipeline.id}/test-runs/${testRunNumber}`)
+            .reply(200,
+              {
+                commit_branch: 'master',
+                commit_message: 'Merge pull request #5848 from heroku/cli',
+                commit_sha: 'b9e982a60904730510a1c9e2dd2df64aef6f0d84',
+                id: testRun.id,
+                number: testRun.number,
+                pipeline: {id: pipeline.id},
+                status: 'succeeded'
+              }
+            )
+
+            api.get(`/test-runs/${testRun.id}/test-nodes`)
+            .reply(200, [
+              {
+                commit_branch: 'master',
+                commit_message: 'Merge pull request #5848 from heroku/cli',
+                commit_sha: 'b9e982a60904730510a1c9e2dd2df64aef6f0d84',
+                id: testRun.id,
+                number: testRun.number,
+                pipeline: {id: pipeline.id},
+                exit_code: 0,
+                index: 1,
+                setup_stream_url: `https://test-setup-output.heroku.com/streams/${testRun.id.substring(0, 3)}/test-runs/${testRun.id}`,
+                output_stream_url: `https://test-output.heroku.com/streams/${testRun.id.substring(0, 3)}/test-runs/${testRun.id}`,
+                status: 'succeeded'
+              }
+            ])
+          })
+          .nock('https://test-setup-output.heroku.com/streams', testOutputAPI => {
+            testOutputAPI.get(`/${testRun.id.substring(0, 3)}/test-runs/${testRun.id}`)
+            .reply(200, 'Test setup output')
+          })
+          .nock('https://test-output.heroku.com/streams', testOutputAPI => {
+            testOutputAPI.get(`/${testRun.id.substring(0, 3)}/test-runs/${testRun.id}`)
+            .reply(200, 'Test output')
+          })
+          .command(['ci:info', `${testRun.number}`, `--pipeline=${pipeline.name}`, '--node=1'])
+          .it('displays the setup and test output for the first node', ({stdout}) => {
+            expect(stdout).to.equal('Test setup outputTest output\n✓ #10 master:b9e982a succeeded\n\n')
+          })
+        })
+      })
+    })
   })
 
   describe('when specifying an application', () => {
