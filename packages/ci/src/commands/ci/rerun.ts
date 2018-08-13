@@ -36,7 +36,6 @@ export default class CiReRun extends Command {
       const testRunResponse = await this.heroku.get<Heroku.TestRun>(`/pipelines/${pipeline.id}/test-runs/${args.number}`)
       sourceTestRun = testRunResponse.body
     } else {
-      // TODO: why is this returning more than 1 record with that header in place?
       const {body: testRuns} = await this.heroku.get<Heroku.TestRun[]>(`/pipelines/${pipeline.id}/test-runs`, {headers: {Range: 'number ..; order=desc,max=1'}})
       sourceTestRun = testRuns[0]
     }
