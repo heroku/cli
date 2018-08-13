@@ -11,6 +11,7 @@
     "@oclif/command": "^1",
     "@oclif/config": "^1",
     "@types/inquirer": "0.0.42",
+    "@types/sinon": "^5.0.1",
     "@types/validator": "^9.4.1",
     "async-file": "^2.0.2",
     "cli-ux": "^4.7.3",
