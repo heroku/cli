@@ -298,7 +298,7 @@ describe('ci:info', () => {
           .command(['ci:info', `${testRun.number}`, `--pipeline=${pipeline.name}`, '--node=1'])
           .it('displays the setup and test output for the first node and a warning', ({stdout, stderr}) => {
             expect(stdout).to.equal('Test setup outputTest output\n✓ #10 master:b9e982a succeeded\n\n')
-            expect(stderr).to.contain('This pipeline doesn\'t have parallel test runs, but you specified \n ›   a node')
+            expect(stderr).to.contain('Warning: This pipeline doesn\'t have parallel test runs')
           })
         })
       })
