@@ -1,15 +1,12 @@
 import Nock from '@fancy-test/nock'
 import * as Test from '@oclif/test'
-import {mock} from 'sinon'
+const git = require('../../../src/utils/git')
 
 const test = Test.test
 .register('nock', Nock)
 const expect = Test.expect
 
 describe('ci:run', () => {
-  const testRunNumber = 10
-  const testRun = {id: 'f53d34b4-c3a9-4608-a186-17257cf71d62', number: 10}
-
   test
   .command(['ci:run'])
   .catch(e => {
@@ -20,16 +17,26 @@ describe('ci:run', () => {
   describe('when specifying a pipeline', () => {
     const pipeline = {id: '14402644-c207-43aa-9bc1-974a34914010', name: 'pipeline'}
     const ghRepository = {
-      user: 'heroku', repo: 'cli', ref: '668a5ce22eefc7b67c84c1cfe3a766f1958e0add'
+      user: 'heroku-fake', repo: 'my-repo', ref: '668a5ce22eefc7b67c84c1cfe3a766f1958e0add', branch: 'my-test-branch'
+    }
+    const newTestRun = {
+      commit_branch: ghRepository.branch,
+      commit_message: 'lastest commit',
+      commit_sha: ghRepository.ref,
+      id: 'b6512323-3a11-43ac-b4e4-9668b6a6b30c',
+      number: 11,
+      pipeline: {id: pipeline.id},
+      status: 'succeeded'
     }
 
-    const git = {
+    const gitFake = {
+      readCommit: () => ({branch: ghRepository.branch, ref: ghRepository.ref}),
       remoteFromGitConfig: () => Promise.resolve('heroku'),
-      getBranch: () => Promise.resolve('master'),
+      getBranch: () => Promise.resolve(ghRepository.branch),
       getRef: () => Promise.resolve(ghRepository.ref),
-      getCommitTitle: () => Promise.resolve('pushed to master'),
+      getCommitTitle: () => Promise.resolve(`pushed to ${ghRepository.branch}`),
       githubRepository: () => Promise.resolve({user: ghRepository.user, repo: ghRepository.repo}),
-      createArchive: () => Promise.resolve(),
+      createArchive: () => Promise.resolve('https://someurl'),
       spawn: () => Promise.resolve(),
       urlExists: () => Promise.resolve(),
       exec: (args: any) => {
@@ -42,51 +49,44 @@ describe('ci:run', () => {
       }
     }
 
-    mock(git).expects('exec').resolves()
-
     test
     .stdout()
-    .stderr()
     .nock('https://api.heroku.com', api => {
       api.get(`/pipelines?eq[name]=${pipeline.name}`)
       .reply(200, [
         {id: pipeline.id}
       ])
-      api.get(`/pipelines/${pipeline.id}/test-runs/${testRunNumber}`)
-      .reply(200,
-        {
-          commit_branch: 'master',
-          commit_message: 'Merge pull request #5848 from ',
-          commit_sha: 'b9e982a60904730510a1c9e2dd2df64aef6f0d84',
-          id: testRun.id,
-          number: testRun.number,
-          pipeline: {id: pipeline.id},
-          status: 'succeeded'
-        }
-      )
-      api.get(`/test-runs/${testRun.id}/test-nodes`)
+
+      api.post('/test-runs')
+      .reply(200, newTestRun)
+
+      api.get(`/pipelines/${pipeline.id}/test-runs/${newTestRun.number}`)
+      .reply(200, newTestRun)
+
+      api.get(`/test-runs/${newTestRun.id}/test-nodes`)
+      .times(2)
       .reply(200, [
         {
-          commit_branch: 'master',
-          commit_message: 'Merge pull request #5848 from heroku/cli',
-          commit_sha: 'b9e982a60904730510a1c9e2dd2df64aef6f0d84',
-          id: testRun.id,
-          number: testRun.number,
+          commit_branch: newTestRun.commit_branch,
+          commit_message: newTestRun.commit_message,
+          commit_sha: newTestRun.commit_sha,
+          id: newTestRun.id,
+          number: newTestRun.number,
           pipeline: {id: pipeline.id},
           exit_code: 0,
-          status: 'succeeded',
-          setup_stream_url: `https://test-setup-output.heroku.com/streams/${testRun.id.substring(0, 3)}/test-runs/${testRun.id}`,
-          output_stream_url: `https://test-output.heroku.com/streams/${testRun.id.substring(0, 3)}/test-runs/${testRun.id}`
+          status: newTestRun.status,
+          setup_stream_url: `https://test-setup-output.heroku.com/streams/${newTestRun.id.substring(0, 3)}/test-runs/${newTestRun.id}`,
+          output_stream_url: `https://test-output.heroku.com/streams/${newTestRun.id.substring(0, 3)}/test-runs/${newTestRun.id}`
         }
       ])
     })
     .nock('https://test-setup-output.heroku.com/streams', testOutputAPI => {
-      testOutputAPI.get(`/${testRun.id.substring(0, 3)}/test-runs/${testRun.id}`)
-      .reply(200, 'Test setup output')
+      testOutputAPI.get(`/${newTestRun.id.substring(0, 3)}/test-runs/${newTestRun.id}`)
+      .reply(200, 'New Test setup output')
     })
     .nock('https://test-output.heroku.com/streams', testOutputAPI => {
-      testOutputAPI.get(`/${testRun.id.substring(0, 3)}/test-runs/${testRun.id}`)
-      .reply(200, 'Test output')
+      testOutputAPI.get(`/${newTestRun.id.substring(0, 3)}/test-runs/${newTestRun.id}`)
+      .reply(200, 'New Test output')
     })
     .nock('https://kolkrabbi.heroku.com', kolkrabbiAPI => {
       kolkrabbiAPI.get(`/github/repos/${ghRepository.user}/${ghRepository.repo}/tarball/${ghRepository.ref}`).
@@ -109,11 +109,15 @@ describe('ci:run', () => {
             type: 'github'
           }
       })
+      kolkrabbiAPI.head('/source/archive/gAAAAABb')
+      .reply(200)
     })
+    .stub(git, 'readCommit', gitFake.readCommit)
+    .stub(git, 'githubRepository', gitFake.githubRepository)
+    .stub(git, 'createArchive', gitFake.createArchive)
     .command(['ci:run', `--pipeline=${pipeline.name}`])
-    .it('and a pipeline without parallel test runs it runs the test', ({stdout, stderr}) => {
-      expect(stdout).to.equal('Test setup outputTest output\n✓ #10 master:b9e982a succeeded\n')
-      expect(stderr).to.equal('Tell me what happened')
+    .it('it runs the test and displays the test output for the first node', ({stdout}) => {
+      expect(stdout).to.equal('New Test setup outputNew Test output\n✓ #11 my-test-branch:668a5ce succeeded\n')
     })
   })
 })
