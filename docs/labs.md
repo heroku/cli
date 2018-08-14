@@ -17,7 +17,7 @@ USAGE
   $ heroku labs
 
 OPTIONS
-  -a, --app=app        [default: safe-sea-44297] app to run command against
+  -a, --app=app        app to run command against
   -r, --remote=remote  git remote of app to use
   --json               display as json
 ```
@@ -31,12 +31,12 @@ USAGE
   $ heroku labs:disable [FEATURE]
 
 OPTIONS
-  -a, --app=app        [default: safe-sea-44297] app to run command against
+  -a, --app=app        app to run command against
   -r, --remote=remote  git remote of app to use
   --confirm=confirm
 ```
 
-_See code: [@heroku-cli/plugin-auth](https://github.com/heroku/cli/blob/v7.5.9/packages/auth/src/commands/labs/disable.ts)_
+_See code: [@heroku-cli/plugin-auth](https://github.com/heroku/cli/blob/v7.7.9/packages/auth/src/commands/labs/disable.ts)_
 
 ## `heroku labs:enable FEATURE`
 
@@ -47,7 +47,7 @@ USAGE
   $ heroku labs:enable FEATURE
 
 OPTIONS
-  -a, --app=app        [default: safe-sea-44297] app to run command against
+  -a, --app=app        app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -60,7 +60,7 @@ USAGE
   $ heroku labs:info FEATURE
 
 OPTIONS
-  -a, --app=app        [default: safe-sea-44297] app to run command against
+  -a, --app=app        app to run command against
   -r, --remote=remote  git remote of app to use
   --json               display as json
 ```

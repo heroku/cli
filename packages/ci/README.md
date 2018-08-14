@@ -14,10 +14,104 @@ Heroku CLI plugin for Heroku CI
 [![License](https://img.shields.io/npm/l/@heroku-cli/plugin-ci.svg)](https://github.com/heroku/cli/blob/master/package.json)
 
 <!-- toc -->
+* [Usage](#usage)
+* [Commands](#commands)
+<!-- tocstop -->
 # Usage
 <!-- usage -->
+```sh-session
+$ npm install -g @heroku-cli/plugin-ci
+$ heroku COMMAND
+running command...
+$ heroku (-v|--version|version)
+@heroku-cli/plugin-ci/7.7.9 darwin-x64 node-v8.11.0
+$ heroku --help [COMMAND]
+USAGE
+  $ heroku COMMAND
+...
+```
+<!-- usagestop -->
 # Commands
 <!-- commands -->
+* [`heroku ci:info TEST-RUN`](#heroku-ciinfo-test-run)
+* [`heroku ci:last`](#heroku-cilast)
+* [`heroku ci:rerun [NUMBER]`](#heroku-cirerun-number)
+* [`heroku ci:run`](#heroku-cirun)
+
+## `heroku ci:info TEST-RUN`
+
+show the status of a specific test run
+
+```
+USAGE
+  $ heroku ci:info TEST-RUN
+
+OPTIONS
+  -a, --app=app            app to run command against
+  -p, --pipeline=pipeline  name of pipeline
+  --node=node              the node number to show its setup and output
+
+EXAMPLE
+  $ heroku ci:info 1288 --app murmuring-headland-14719
+```
+
+_See code: [src/commands/ci/info.ts](https://github.com/heroku/cli/blob/v7.7.9/src/commands/ci/info.ts)_
+
+## `heroku ci:last`
+
+looks for the most recent run and returns the output of that run
+
+```
+USAGE
+  $ heroku ci:last
+
+OPTIONS
+  -a, --app=app            app to run command against
+  -p, --pipeline=pipeline  name of pipeline
+  --node=node              the node number to show its setup and output
+
+EXAMPLE
+  $ heroku ci:last --app murmuring-headland-14719 --node 100
+```
+
+_See code: [src/commands/ci/last.ts](https://github.com/heroku/cli/blob/v7.7.9/src/commands/ci/last.ts)_
+
+## `heroku ci:rerun [NUMBER]`
+
+rerun tests against current directory
+
+```
+USAGE
+  $ heroku ci:rerun [NUMBER]
+
+OPTIONS
+  -a, --app=app            app to run command against
+  -p, --pipeline=pipeline  name of pipeline
+
+EXAMPLE
+  $ heroku ci:rerun 985 --app murmuring-headland-14719
+```
+
+_See code: [src/commands/ci/rerun.ts](https://github.com/heroku/cli/blob/v7.7.9/src/commands/ci/rerun.ts)_
+
+## `heroku ci:run`
+
+run tests against current directory
+
+```
+USAGE
+  $ heroku ci:run
+
+OPTIONS
+  -a, --app=app            app to run command against
+  -p, --pipeline=pipeline  name of pipeline
+
+EXAMPLE
+  $ heroku ci:run --app murmuring-headland-14719
+```
+
+_See code: [src/commands/ci/run.ts](https://github.com/heroku/cli/blob/v7.7.9/src/commands/ci/run.ts)_
+<!-- commandsstop -->
 * [`heroku ci:info`](#heroku-ci-info)
 * [`heroku ci:last`](#heroku-ci-last)
 * [`heroku ci:run`](#heroku-ci-run)
