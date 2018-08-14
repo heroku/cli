@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="7.7.10"></a>
+## [7.7.10](https://github.com/heroku/heroku-cli-autocomplete/compare/v7.7.8...v7.7.10) (2018-08-14)
+
+
+### Bug Fixes
+
+* **autocomplete:** filepath completions ([#968](https://github.com/heroku/heroku-cli-autocomplete/issues/968)) ([b681eb5](https://github.com/heroku/heroku-cli-autocomplete/commit/b681eb5))
+
+
+
+
 <a name="7.7.9"></a>
 ## [7.7.9](https://github.com/heroku/heroku-cli-autocomplete/compare/v7.7.8...v7.7.9) (2018-08-14)
 
