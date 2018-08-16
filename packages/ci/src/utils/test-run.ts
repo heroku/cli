@@ -67,6 +67,41 @@ function processExitCode(command: Command, testNode: Heroku.TestNode) {
   }
 }
 
+export async function renderList(command: Command, testRuns: Heroku.TestRun[], pipeline: Heroku.Pipeline, watchOption: boolean) {
+  const header = `${watchOption ? 'Watching' : 'Showing'} latest test runs for the ${pipeline.name} pipeline`
+  const latestTestRuns = testRuns.slice(0, 15)
+  let data: any = []
+
+  latestTestRuns.forEach(testRun => {
+    data.push(
+      {
+        iconStatus: `${statusIcon(testRun)}`,
+        number: testRun.number,
+        branch: testRun.commit_branch,
+        sha: testRun.commit_sha!.slice(0, 7),
+        status: testRun.status
+      }
+    )
+  })
+
+  // TODO: iconStatus doesn't seem to respect width 1
+  // TODO: not sure how to render the defined header
+  cli.table(data, {
+    printHeader: undefined,
+    columns: [
+      {key: 'iconStatus', width: 5},
+      {key: 'number'},
+      {key: 'branch'},
+      {key: 'sha'},
+      {key: 'status'}
+    ]
+  })
+
+  if (watchOption) {
+    command.log('Connect to SIMI')
+  }
+}
+
 async function renderNodeOutput(command: Command, testRun: Heroku.TestRun, testNode: Heroku.TestNode) {
   await stream(testNode.setup_stream_url!)
   await stream(testNode.output_stream_url!)
