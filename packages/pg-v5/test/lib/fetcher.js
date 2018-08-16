@@ -48,7 +48,7 @@ describe('fetcher', () => {
       let addonApp = { name: 'addon-app' }
       let app = { name: 'myapp' }
       stub.withArgs(sinon.match.any, 'myapp', 'DATABASE_URL', { addon_service: 'heroku-postgresql', namespace: null }).returns(Promise.resolve(
-        { addon: { id: 100, name: 'postgres-1', app: addonApp }, app, config_vars: ['DATABASE_URL'] }
+        { addon: { id: 100, name: 'postgres-1', app: addonApp, plan: { name: 'standard-0' } }, app, config_vars: ['DATABASE_URL'] }
       ))
       api.get('/apps/myapp/config-vars').reply(200, {
         'DATABASE_URL': 'postgres://pguser:pgpass@pghost.com/pgdb'
@@ -61,7 +61,7 @@ describe('fetcher', () => {
       let addonApp = { name: 'addon-app' }
       let attachApp = { name: 'attach-myapp' }
       stub.withArgs(sinon.match.any, 'myapp', 'attach-myapp::DATABASE_URL', { addon_service: 'heroku-postgresql', namespace: null }).returns(Promise.resolve(
-        { addon: { id: 100, name: 'postgres-1', app: addonApp }, app: attachApp, config_vars: ['DATABASE_URL'] }
+        { addon: { id: 100, name: 'postgres-1', app: addonApp, plan: { name: 'standard-0' } }, app: attachApp, config_vars: ['DATABASE_URL'] }
       ))
       api.get('/apps/attach-myapp/config-vars').reply(200, {
         'DATABASE_URL': 'postgres://pguser:pgpass@pghost.com/pgdb'
@@ -77,9 +77,9 @@ describe('fetcher', () => {
         statusCode: 422,
         body: { 'id': 'multiple_matches' },
         matches: [
-          { addon: { id: 100, name: 'postgres-1', app: addonApp }, app, config_vars: ['FOO_URL'] },
-          { addon: { id: 100, name: 'postgres-1', app: addonApp }, app, config_vars: ['BAR_URL'] },
-          { addon: { id: 100, name: 'postgres-1', app: addonApp }, app, namespace: 'credential:something', config_vars: ['CRED_URL'] }
+          { addon: { id: 100, name: 'postgres-1', app: addonApp, plan: { name: 'standard-0' } }, app, config_vars: ['FOO_URL'] },
+          { addon: { id: 100, name: 'postgres-1', app: addonApp, plan: { name: 'standard-0' } }, app, config_vars: ['BAR_URL'] },
+          { addon: { id: 100, name: 'postgres-1', app: addonApp, plan: { name: 'standard-0' } }, app, namespace: 'credential:something', config_vars: ['CRED_URL'] }
         ]
       })
       stub.withArgs(sinon.match.any, 'myapp', 'DATABASE_URL').returns(Promise.reject(err))
@@ -101,9 +101,9 @@ describe('fetcher', () => {
         statusCode: 422,
         body: { 'id': 'multiple_matches' },
         matches: [
-          { addon: { id: 100, name: 'postgres-1', app: addonApp }, app: attachApp, config_vars: ['FOO_URL'] },
-          { addon: { id: 100, name: 'postgres-1', app: addonApp }, app: attachApp, config_vars: ['BAR_URL'] },
-          { addon: { id: 100, name: 'postgres-1', app: addonApp }, app: attachApp, namespace: 'credential:something', config_vars: ['CRED_URL'] }
+          { addon: { id: 100, name: 'postgres-1', app: addonApp, plan: { name: 'standard-0' } }, app: attachApp, config_vars: ['FOO_URL'] },
+          { addon: { id: 100, name: 'postgres-1', app: addonApp, plan: { name: 'standard-0' } }, app: attachApp, config_vars: ['BAR_URL'] },
+          { addon: { id: 100, name: 'postgres-1', app: addonApp, plan: { name: 'standard-0' } }, app: attachApp, namespace: 'credential:something', config_vars: ['CRED_URL'] }
         ]
       })
       stub.withArgs(sinon.match.any, 'myapp', 'DATABASE_URL').returns(Promise.reject(err))
