@@ -74,6 +74,7 @@ jobs:
     steps:
       - add_ssh_keys
       - checkout
+      - run: yarn
       - run: ./scripts/release/postrelease
   dev_center_docs:
     docker: &devdocs_docker
