@@ -105,6 +105,7 @@ workflows:
             tags: &version_tags
               only: /^v.*/
       - release: &release_workflow
+          context: org-global
           filters:
             tags: *version_tags
             branches:
@@ -116,6 +117,7 @@ workflows:
       - release_deb: *release_workflow
       - release_win: *release_workflow
       - postrelease:
+          context: org-global
           requires:
             - release
             - release_deb
