@@ -33,5 +33,5 @@ export const completions: Hook<any> = async function ({type, app}: {type?: 'app'
   await update(PipelineCompletion, 'pipeline')
   await update(SpaceCompletion, 'space')
   await update(TeamCompletion, 'team')
-  cli.done()
+  await cli.done()
 }

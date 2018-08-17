@@ -29,12 +29,12 @@
     "temp": "^0.8.3"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.15.4",
-    "@oclif/plugin-legacy": "^1.0.18",
+    "@oclif/dev-cli": "^1.17.0",
+    "@oclif/plugin-legacy": "^1.1.0",
     "chai": "^4.1.2",
     "estraverse": "^4.2.0",
     "mocha": "^5.1.1",
-    "nock": "^9.2.5",
+    "nock": "^9.6.1",
     "sinon": "^1.17.6",
     "std-mocks": "^1.0.1"
   },

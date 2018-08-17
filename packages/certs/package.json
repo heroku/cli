@@ -5,25 +5,25 @@
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
     "@heroku-cli/command": "^8.1.18",
-    "@oclif/command": "^1.4.34",
-    "@oclif/config": "^1",
+    "@oclif/command": "^1.5.0",
+    "@oclif/config": "^1.7.0",
     "tslib": "^1.9.3"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.15.4",
-    "@oclif/plugin-help": "^2.0.5",
-    "@oclif/test": "^1",
-    "@oclif/tslint": "^1",
+    "@oclif/dev-cli": "^1.17.0",
+    "@oclif/plugin-help": "^2.1.0",
+    "@oclif/test": "^1.2.0",
+    "@oclif/tslint": "^2.0.0",
     "@types/chai": "^4",
-    "@types/mocha": "^5.2.4",
-    "@types/node": "^10.5.1",
+    "@types/mocha": "^5.2.5",
+    "@types/node": "^10.7.1",
     "chai": "^4",
     "globby": "^8",
     "mocha": "^5",
     "nyc": "^12.0.2",
-    "ts-node": "^7.0.0",
-    "tslint": "^5",
-    "typescript": "^2.8"
+    "ts-node": "^7.0.1",
+    "tslint": "^5.11.0",
+    "typescript": "^3.0.1"
   },
   "engines": {
     "node": ">=8.0.0"

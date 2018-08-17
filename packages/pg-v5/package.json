@@ -28,11 +28,11 @@
     "tunnel-ssh": "^4.1.4"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.15.4",
-    "@oclif/plugin-legacy": "^1.0.18",
+    "@oclif/dev-cli": "^1.17.0",
+    "@oclif/plugin-legacy": "^1.1.0",
     "heroku-client": "^3.0.6",
     "mocha": "^5.1.1",
-    "nock": "9.2.6",
+    "nock": "9.6.1",
     "nyc": "^12.0.2",
     "proxyquire": "^2.0.1",
     "sinon": "<2",

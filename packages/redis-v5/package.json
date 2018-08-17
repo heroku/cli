@@ -19,13 +19,13 @@
     "ssh2": "^0.6.1"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.15.4",
-    "@oclif/plugin-legacy": "^1.0.18",
+    "@oclif/dev-cli": "^1.17.0",
+    "@oclif/plugin-legacy": "^1.1.0",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
-    "lolex": "^2.7.0",
+    "lolex": "^2.7.1",
     "mocha": "^5.2.0",
-    "nock": "^9.2.5",
+    "nock": "^9.6.1",
     "nyc": "^12.0.2",
     "proxyquire": "^2.0.1",
     "sinon": "^5.0.7"
