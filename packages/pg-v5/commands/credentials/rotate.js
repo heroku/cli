@@ -35,6 +35,9 @@ function * run (context, heroku) {
   } else {
     warnings.push(`Connections older than 30 minutes will be reset, and a temporary rotation username will be used during the process.`)
   }
+  if (flags.force) {
+      warnings.push(`Any followers lagging in replication (see ${cli.color.cmd('heroku pg:info')}) will be inaccessible until caught up.`)
+  }
   if (attachments.length > 0) {
     warnings.push(`This command will affect the app${(attachments.length > 1) ? 's' : ''} ${[...new Set(attachments.map(c => cli.color.app(c.app.name)))].sort().join(', ')}.`)
   }
