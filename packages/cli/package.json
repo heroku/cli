@@ -234,7 +234,7 @@
     },
     "update": {
       "node": {
-        "version": "10.7.0"
+        "version": "10.9.0"
       },
       "s3": {
         "xz": true,
