@@ -17,7 +17,7 @@
     "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/status/<%- commandPath %>"
   },
   "dependencies": {
-    "@heroku-cli/color": "^1.1.9",
+    "@heroku-cli/color": "^1.1.10",
     "@heroku-cli/command": "^8.0.6",
     "@oclif/command": "^1.4.34",
     "@oclif/config": "^1.6.16",
@@ -29,7 +29,7 @@
   "devDependencies": {
     "@fancy-test/nock": "^0.1.1",
     "@heroku-cli/tslint": "1.1.4",
-    "@oclif/dev-cli": "^1.15.4",
+    "@oclif/dev-cli": "^1.17.0",
     "@oclif/plugin-help": "^2.0.5",
     "@oclif/plugin-legacy": "^1.0.18",
     "@oclif/test": "^1.0.6",

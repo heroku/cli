@@ -5,7 +5,7 @@
   "author": "Jeff Dickey (@jdxcode)",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
-    "@heroku-cli/color": "^1.1.9",
+    "@heroku-cli/color": "^1.1.10",
     "@heroku-cli/command": "^8.1.26",
     "@oclif/command": "^1.4.34",
     "@oclif/config": "^1.6.32",
@@ -13,8 +13,8 @@
     "debug": "3.1.0"
   },
   "devDependencies": {
-    "@heroku-cli/schema": "^1.0.6",
-    "@oclif/dev-cli": "^1.15.4",
+    "@heroku-cli/schema": "^1.0.15",
+    "@oclif/dev-cli": "^1.17.0",
     "@oclif/plugin-help": "^2.0.5",
     "@oclif/plugin-legacy": "^1.0.18",
     "@oclif/test": "^1.1.0",

@@ -27,7 +27,7 @@
     "lodash": "^4.17.10"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.15.4",
+    "@oclif/dev-cli": "^1.17.0",
     "@oclif/plugin-legacy": "^1.0.18",
     "mocha": "^5.2.0",
     "mocha-junit-reporter": "1.17.0",

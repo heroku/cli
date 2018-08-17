@@ -18,7 +18,7 @@
     "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/run-v5/<%- commandPath %>"
   },
   "dependencies": {
-    "@heroku-cli/color": "^1.1.9",
+    "@heroku-cli/color": "^1.1.10",
     "@heroku-cli/command": "^8.1.20",
     "@heroku-cli/notifications": "^1.2.1",
     "co": "4.6.0",
@@ -28,7 +28,7 @@
     "shellwords": "^0.1.1"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.15.4",
+    "@oclif/dev-cli": "^1.17.0",
     "@oclif/plugin-legacy": "^1.0.18",
     "fixture-stdout": "0.2.1",
     "mocha": "^5.2.0",

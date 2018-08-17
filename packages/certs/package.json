@@ -10,7 +10,7 @@
     "tslib": "^1.9.3"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.15.4",
+    "@oclif/dev-cli": "^1.17.0",
     "@oclif/plugin-help": "^2.0.5",
     "@oclif/test": "^1",
     "@oclif/tslint": "^1",
