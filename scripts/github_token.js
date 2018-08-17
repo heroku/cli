@@ -11,9 +11,9 @@ const env = k => {
   else throw new Error(`Must set ${k}`)
 }
 
-const token = jwt.sign({
-  // iss: env('GITHUB_APP_ID')
-}, env('GITHUB_APP_PEM'), {
+const token = jwt.sign(
+  {},
+  new Buffer(env('GITHUB_APP_PEM'), 'base64').toString('utf8'), {
   issuer: env('GITHUB_APP_ID'),
   algorithm: 'RS256',
   expiresIn: '10m'
