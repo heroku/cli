@@ -15,7 +15,7 @@ USAGE
   $ heroku run
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -e, --env=env        environment variables to set (use ';' to split multiple vars)
   -r, --remote=remote  git remote of app to use
   -s, --size=size      dyno size
@@ -47,7 +47,7 @@ USAGE
   $ heroku run:detached
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -e, --env=env        environment variables to set (use ';' to split multiple vars)
   -r, --remote=remote  git remote of app to use
   -s, --size=size      dyno size
