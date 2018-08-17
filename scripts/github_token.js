@@ -13,11 +13,11 @@ const env = k => {
 
 const token = jwt.sign(
   {},
-  new Buffer(env('GITHUB_APP_PEM'), 'base64').toString('utf8'), {
-  issuer: env('GITHUB_APP_ID'),
-  algorithm: 'RS256',
-  expiresIn: '10m'
-})
+  Buffer.from(env('GITHUB_APP_PEM'), 'base64').toString('utf8'), {
+    issuer: env('GITHUB_APP_ID'),
+    algorithm: 'RS256',
+    expiresIn: '10m'
+  })
 
 const installation = process.argv[2]
 
