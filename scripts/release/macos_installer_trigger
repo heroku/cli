@@ -23,4 +23,4 @@ git commit -m "heroku $VERSION"
 git tag "v$VERSION"
 git push --tags
 
-git push origin master
+git push -q origin master

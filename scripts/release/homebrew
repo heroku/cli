@@ -55,4 +55,4 @@ if [[ -z "${CIRCLE_TAG}" ]]; then
 fi
 
 git commit -m "heroku v${SHORT_VERSION}"
-git push origin master
+git push -q origin master
