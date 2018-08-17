@@ -72,6 +72,7 @@
     "@types/write-json-file": "^2.2.1",
     "aws-sdk": "^2.267.1",
     "chai": "^4.1.2",
+    "jsonwebtoken": "^8.3.0",
     "lerna": "^2.11.0",
     "lodash": "^4.17.10",
     "mocha": "^5.2.0",
