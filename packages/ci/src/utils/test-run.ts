@@ -101,7 +101,7 @@ async function display(pipeline: Heroku.Pipeline, number: number, command: Comma
   if (testRun) {
     cli.action.start('Waiting for build to start')
     testRun = await waitForStates(BUILDING_STATES, testRun, command)
-    cli.done()
+    cli.action.stop()
 
     let {body: testNodes} = await command.heroku.get<Heroku.TestNode[]>(`/test-runs/${testRun.id}/test-nodes`)
     let firstTestNode = testNodes[0]

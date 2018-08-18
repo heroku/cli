@@ -32,7 +32,7 @@ export default class CiRun extends Command {
 
     cli.action.start('Preparing source')
     const sourceBlobUrl = await createSourceBlob(commit.ref, this)
-    cli.done()
+    cli.action.stop()
 
     cli.action.start('Starting test run')
     const {body: pipelineRepository} = await this.heroku.get<Kolkrabbi.KolkrabbiApiPipelineRepositories>(`https://kolkrabbi.heroku.com/pipelines/${pipeline.id}/repository`)
@@ -46,7 +46,7 @@ export default class CiRun extends Command {
       source_blob_url: sourceBlobUrl
       }
     })
-    cli.done()
+    cli.action.stop()
 
     await displayAndExit(pipeline, testRun.number!, this)
   }
