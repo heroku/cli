@@ -31,5 +31,5 @@ OPTIONS
   --private  show regions for private spaces
 ```
 
-_See code: [src/commands/regions.ts](https://github.com/heroku/cli/blob/v7.9.2/packages/ps/src/commands/regions.ts)_
+_See code: [src/commands/regions.ts](https://github.com/heroku/cli/blob/v7.9.3/packages/ps/src/commands/regions.ts)_
 <!-- commandsstop -->
