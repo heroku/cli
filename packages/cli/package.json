@@ -226,8 +226,8 @@
         "./lib/hooks/prerun/analytics"
       ],
       "update": [
-        "./lib/hooks/update/plugin_migrate",
-        "./lib/hooks/update/brew",
+        "./lib/hooks/update/plugin-migrate",
+        "./lib/hooks/update/b",
         "./lib/hooks/update/completions",
         "./lib/hooks/update/tidy"
       ]
