@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="7.9.2"></a>
+## [7.9.2](https://github.com/heroku/cli/compare/v7.9.1...v7.9.2) (2018-08-18)
+
+
+### Bug Fixes
+
+* lint issues ([6f5531b](https://github.com/heroku/cli/commit/6f5531b))
+* typescript 3.0 ([268c0af](https://github.com/heroku/cli/commit/268c0af))
+
+
+
+
+
 <a name="7.9.1"></a>
 ## [7.9.1](https://github.com/heroku/cli/compare/v7.9.0...v7.9.1) (2018-08-17)
 
