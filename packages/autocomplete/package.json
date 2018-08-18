@@ -40,7 +40,7 @@
     "node": ">=8.0.0"
   },
   "files": [
-    "/.oclif.manifest.json",
+    "/oclif.manifest.json",
     "autocomplete",
     "/lib",
     "yarn.lock"
@@ -63,9 +63,9 @@
   },
   "repository": "heroku/heroku-cli-autocomplete",
   "scripts": {
-    "postpublish": "rm -f .oclif.manifest.json",
+    "postpublish": "rm -f oclif.manifest.json",
     "posttest": "tsc -p test --noEmit && tslint -p test -t stylish",
-    "prepublishOnly": "rm -rf lib && tsc && oclif-dev manifest",
+    "prepack": "rm -rf lib && tsc && oclif-dev manifest",
     "test": "nyc mocha --forbid-only \"test/**/*.test.ts\""
   }
 }

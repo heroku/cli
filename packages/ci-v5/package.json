@@ -42,7 +42,7 @@
     "node": ">=8.3.0"
   },
   "files": [
-    ".oclif.manifest.json",
+    "oclif.manifest.json",
     "index.js",
     "commands",
     "lib"
@@ -55,8 +55,8 @@
   "main": "index.js",
   "repository": "heroku/cli",
   "scripts": {
-    "postpublish": "rm .oclif.manifest.json",
-    "prepublishOnly": "oclif-dev manifest",
+    "postpublish": "rm oclif.manifest.json",
+    "prepack": "oclif-dev manifest",
     "test": "mocha -R tap",
     "version": "oclif-dev readme && git add README.md"
   }

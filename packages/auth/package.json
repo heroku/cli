@@ -38,7 +38,7 @@
     "node": ">=8.0.0"
   },
   "files": [
-    ".oclif.manifest.json",
+    "oclif.manifest.json",
     "/lib"
   ],
   "homepage": "https://github.com/heroku/cli/tree/master/packages/auth",
@@ -56,7 +56,7 @@
   },
   "repository": "heroku/cli",
   "scripts": {
-    "postpack": "rm -f .oclif.manifest.json",
+    "postpack": "rm -f oclif.manifest.json",
     "posttest": "tsc -p test --noEmit && tslint -p test -t stylish",
     "prepack": "rm -rf lib && tsc && oclif-dev manifest && oclif-dev readme",
     "prepare": "rm -rf lib && tsc && oclif-dev manifest && oclif-dev readme",

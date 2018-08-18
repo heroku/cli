@@ -51,7 +51,7 @@
   "repository": "heroku/cli",
   "scripts": {
     "postpublish": "rm oclif.manifest.json",
-    "prepublishOnly": "oclif-dev manifest",
+    "prepack": "oclif-dev manifest",
     "test": "TZ=UTC nyc mocha",
     "version": "oclif-dev readme && git add README.md"
   }

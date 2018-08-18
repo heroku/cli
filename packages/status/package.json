@@ -52,7 +52,7 @@
     "node": ">=8.0.0"
   },
   "files": [
-    ".oclif.manifest.json",
+    "oclif.manifest.json",
     "lib"
   ],
   "homepage": "https://github.com/heroku/cli/tree/master/packages/status",
@@ -64,9 +64,9 @@
   "scripts": {
     "build": "rm -rf lib && tsc",
     "lint": "tsc -p test --noEmit && tslint -p test -t stylish",
-    "postpublish": "rm -f .oclif.manifest.json",
+    "postpublish": "rm -f oclif.manifest.json",
     "posttest": "yarn run lint",
-    "prepublishOnly": "yarn run build && oclif-dev manifest",
+    "prepack": "yarn run build && oclif-dev manifest",
     "preversion": "yarn run postpublish",
     "test": "mocha --forbid-only \"test/**/*.test.ts\"",
     "version": "oclif-dev readme && git add README.md"

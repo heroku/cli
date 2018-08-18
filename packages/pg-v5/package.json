@@ -39,7 +39,7 @@
     "unexpected": "^10.37.7"
   },
   "files": [
-    ".oclif.manifest.json",
+    "oclif.manifest.json",
     "index.js",
     "assets",
     "lib",
@@ -53,8 +53,8 @@
   "main": "index.js",
   "repository": "heroku/cli",
   "scripts": {
-    "postpublish": "rm .oclif.manifest.json",
-    "prepublishOnly": "oclif-dev manifest",
+    "postpublish": "rm oclif.manifest.json",
+    "prepack": "oclif-dev manifest",
     "release": "np",
     "test": "TZ=utc nyc mocha",
     "version": "oclif-dev readme && git add README.md"
