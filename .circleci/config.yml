@@ -19,9 +19,9 @@ jobs:
       - checkout
       - restore_cache: &yarn_restore_cache
           keys:
-            - v3-yarn-{{ checksum ".circleci/config.yml" }}-{{ checksum "yarn.lock" }}
-            - v3-yarn-{{ checksum ".circleci/config.yml" }}
-            - v3-yarn
+            - v4-yarn-{{ checksum ".circleci/config.yml" }}-{{ checksum "yarn.lock" }}
+            - v4-yarn-{{ checksum ".circleci/config.yml" }}
+            - v4-yarn
       - run: yarn global add greenkeeper-lockfile@2 && greenkeeper-lockfile-update
       - run: |
           git clone https://github.com/sstephenson/bats.git
@@ -44,7 +44,7 @@ jobs:
           ./scripts/release/tarballs
           ./scripts/release/homebrew
       - save_cache:
-          key: v3-yarn-{{ checksum ".circleci/config.yml" }}-{{ checksum "yarn.lock" }}
+          key: v4-yarn-{{ checksum ".circleci/config.yml" }}-{{ checksum "yarn.lock" }}
           paths:
             - /cli/node_modules
             - /cli/tmp/cache
