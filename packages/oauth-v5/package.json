@@ -28,9 +28,9 @@
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.17.0",
-    "@oclif/plugin-legacy": "^1.0.18",
+    "@oclif/plugin-legacy": "^1.1.0",
     "mocha": "^5.2.0",
-    "mocha-junit-reporter": "1.17.0",
+    "mocha-junit-reporter": "1.18.0",
     "nock": "9.3.3",
     "nyc": "^12.0.2",
     "unexpected": "10.38.0"

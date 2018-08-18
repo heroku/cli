@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.17.0",
-    "@oclif/plugin-legacy": "^1.0.18"
+    "@oclif/plugin-legacy": "^1.1.0"
   },
   "files": [
     "oclif.manifest.json",
