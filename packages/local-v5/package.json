@@ -16,8 +16,8 @@
   },
   "dependencies": {
     "@heroku-cli/command": "^8.1.20",
-    "@heroku/foreman": "^2.0.2",
     "co": "^4.6.0",
+    "foreman": "^3.0.1",
     "heroku-cli-util": "^8.0.9",
     "lodash.flatten": "^4.4.0"
   },
