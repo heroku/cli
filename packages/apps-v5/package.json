@@ -38,7 +38,7 @@
     "mockdate": "^2.0.2",
     "netrc-parser": "^3.1.6",
     "nock": "9.3.3",
-    "proxyquire": "^2.0.1",
+    "proxyquire": "^2.1.0",
     "std-mocks": "1.0.1",
     "testdouble": "^3.8.1",
     "time-require": "0.1.2",

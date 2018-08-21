@@ -20,7 +20,7 @@
   "dependencies": {
     "@heroku-cli/color": "^1.1.10",
     "@heroku-cli/command": "^8.1.20",
-    "@heroku-cli/notifications": "^1.2.1",
+    "@heroku-cli/notifications": "^1.2.2",
     "co": "4.6.0",
     "eventsource": "^1.0.5",
     "fs-extra": "^7.0.0",
