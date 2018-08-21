@@ -16,10 +16,10 @@
     "@types/validator": "^9.4.1",
     "ansi-escapes": "3.1.0",
     "async-file": "^2.0.2",
-    "cli-ux": "^4.8.0",
-    "got": "^8.3.2",
-    "inquirer": "^6.1.0",
-    "tslib": "^1",
+    "cli-ux": "^4.7.3",
+    "got": "^9.0.0",
+    "inquirer": "^6.0.0",
+    "tslib": "^1.9.3",
     "validator": "^10.6.0"
   },
   "devDependencies": {
