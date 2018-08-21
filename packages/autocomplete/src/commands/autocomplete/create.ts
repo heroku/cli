@@ -235,8 +235,8 @@ zle -N expand-or-complete-with-dots
 bindkey "^I" expand-or-complete-with-dots`
   }
 
-  private wantsLocalFiles(flag: string) {
-    [
+  private wantsLocalFiles(flag: string): boolean {
+    return [
       'file',
       'procfile'
     ].includes(flag)
