@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-redis-v5",
   "description": "Heroku plugin to manage Heroku Redis",
-  "version": "7.9.3",
+  "version": "7.9.4",
   "author": "Heroku",
   "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
@@ -27,7 +27,7 @@
     "mocha": "^5.2.0",
     "nock": "^9.2.5",
     "nyc": "^12.0.2",
-    "proxyquire": "^2.0.1",
+    "proxyquire": "^2.1.0",
     "sinon": "^5.0.7"
   },
   "files": [

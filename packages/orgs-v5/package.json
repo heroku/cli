@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-orgs-v5",
   "description": "CLI to manage Heroku Organizations",
-  "version": "7.9.3",
+  "version": "7.9.4",
   "author": "Raul Barroso @raulb",
   "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
@@ -52,7 +52,7 @@
     "mocha": "^5.2.0",
     "nock": "^9.3.0",
     "nyc": "^12.0.2",
-    "proxyquire": "^2.0.1"
+    "proxyquire": "^2.1.0"
   },
   "files": [
     "oclif.manifest.json",
