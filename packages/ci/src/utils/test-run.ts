@@ -7,6 +7,11 @@ import {Command} from '@heroku-cli/command'
 
 import * as Heroku from '@heroku-cli/schema'
 import * as http from 'http'
+import * as io from 'socket.io-client'
+
+const ansiEscapes = require('ansi-escapes')
+
+const SIMI_URL = 'https://simi.heroku.com'
 
 function logStream(url: RequestOptions | string, fn: (res: http.IncomingMessage) => void) {
   return get(url, fn)
@@ -53,6 +58,17 @@ function statusIcon({status}: Heroku.TestRun | Heroku.TestNode) {
   }
 }
 
+const BUILDING = 'building'
+const RUNNING = 'running'
+const ERRORED = 'errored'
+const FAILED = 'failed'
+const SUCCEEDED = 'succeeded'
+const CANCELLED = 'cancelled'
+
+const TERMINAL_STATES = [SUCCEEDED, FAILED, ERRORED, CANCELLED]
+const RUNNING_STATES = [RUNNING].concat(TERMINAL_STATES)
+const BUILDING_STATES = [BUILDING, RUNNING].concat(TERMINAL_STATES)
+
 function printLine(testRun: Heroku.TestRun) {
   return `${statusIcon(testRun)} #${testRun.number} ${testRun.commit_branch}:${testRun.commit_sha!.slice(0, 7)} ${testRun.status}`
 }
@@ -67,9 +83,29 @@ function processExitCode(command: Command, testNode: Heroku.TestNode) {
   }
 }
 
-export async function renderList(command: Command, testRuns: Heroku.TestRun[], pipeline: Heroku.Pipeline, watchOption: boolean) {
-  const header = `${watchOption ? 'Watching' : 'Showing'} latest test runs for the ${pipeline.name} pipeline`
-  const latestTestRuns = testRuns.slice(0, 15)
+function handleTestRunEvent(newTestRun: Heroku.TestRun, testRuns: Heroku.TestRun[]) {
+  const previousTestRun = testRuns.find(({id}) => id === newTestRun.id)
+
+  if (previousTestRun) {
+    const previousTestRunIndex = testRuns.indexOf(previousTestRun)
+    testRuns.splice(previousTestRunIndex, 1)
+  }
+
+  testRuns.push(newTestRun)
+  return testRuns
+}
+
+function sort(testRuns: Heroku.TestRun[]) {
+  return testRuns.sort((a: Heroku.TestRun, b: Heroku.TestRun) => a.number! < b.number! ? 1 : -1)
+}
+
+function draw(testRuns: Heroku.TestRun[], watchOption = false, count = 15) {
+  const latestTestRuns = sort(testRuns).slice(0, count)
+
+  if (watchOption) {
+    process.stdout.write(ansiEscapes.eraseDown)
+  }
+
   let data: any = []
 
   latestTestRuns.forEach(testRun => {
@@ -84,13 +120,11 @@ export async function renderList(command: Command, testRuns: Heroku.TestRun[], p
     )
   })
 
-  // TODO: iconStatus doesn't seem to respect width 1
-  // TODO: not sure how to render the defined header
   cli.table(data, {
     printHeader: undefined,
     columns: [
-      {key: 'iconStatus', width: 5},
-      {key: 'number'},
+      {key: 'iconStatus', width: 1, label: ''}, // label '' is to make sure that widh is 1 character
+      {key: 'number', label: ''},
       {key: 'branch'},
       {key: 'sha'},
       {key: 'status'}
@@ -98,8 +132,45 @@ export async function renderList(command: Command, testRuns: Heroku.TestRun[], p
   })
 
   if (watchOption) {
-    command.log('Connect to SIMI')
+    process.stdout.write(ansiEscapes.cursorUp(latestTestRuns.length))
   }
+}
+
+export async function renderList(command: Command, testRuns: Heroku.TestRun[], pipeline: Heroku.Pipeline, watchOption: boolean) {
+  const header = `${watchOption ? 'Watching' : 'Showing'} latest test runs for the ${pipeline.name} pipeline`
+  cli.styledHeader(header)
+
+  if (watchOption) {
+    process.stdout.write(ansiEscapes.cursorHide)
+  }
+
+  draw(testRuns, watchOption)
+
+  if (!watchOption) { return }
+
+  let socket = io.connect(SIMI_URL, {transports: ['websocket']})
+
+  socket.on('connect', function () {
+    socket.emit('joinRoom', {room: `pipelines/${pipeline.id}/test-runs`, token: command.heroku.auth})
+  })
+
+  socket.on('disconnect', function () {
+    process.stdout.write(ansiEscapes.cursorShow)
+  })
+
+  socket.on('create', ({resource, data}: any) => {
+    if (resource === 'test-run') {
+      testRuns = handleTestRunEvent(data, testRuns)
+      draw(testRuns, watchOption)
+    }
+  })
+
+  socket.on('update', ({resource, data}: any) => {
+    if (resource === 'test-run') {
+      testRuns = handleTestRunEvent(data, testRuns)
+      draw(testRuns, watchOption)
+    }
+  })
 }
 
 async function renderNodeOutput(command: Command, testRun: Heroku.TestRun, testNode: Heroku.TestNode) {
@@ -109,17 +180,6 @@ async function renderNodeOutput(command: Command, testRun: Heroku.TestRun, testN
   command.log()
   command.log(printLine(testRun))
 }
-
-const BUILDING = 'building'
-const RUNNING = 'running'
-const ERRORED = 'errored'
-const FAILED = 'failed'
-const SUCCEEDED = 'succeeded'
-const CANCELLED = 'cancelled'
-
-const TERMINAL_STATES = [SUCCEEDED, FAILED, ERRORED, CANCELLED]
-const RUNNING_STATES = [RUNNING].concat(TERMINAL_STATES)
-const BUILDING_STATES = [BUILDING, RUNNING].concat(TERMINAL_STATES)
 
 async function waitForStates(states: string[], testRun: Heroku.TestRun, command: Command) {
   let newTestRun = testRun
