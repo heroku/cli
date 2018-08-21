@@ -7,7 +7,7 @@ const fs = require('fs-extra')
 function sshKeygen (file, quiet) {
   let spawn = require('child_process').spawn
   return new Promise(function (resolve, reject) {
-    spawn('ssh-keygen', ['-t', 'rsa', '-N', '', '-f', file], {stdio: quiet ? null : 'inherit'})
+    spawn('ssh-keygen', ['-o', '-t', 'rsa', '-N', '', '-f', file], {stdio: quiet ? null : 'inherit'})
       .on('close', (code) => code === 0 ? resolve() : reject(code))
   })
 }
