@@ -1,7 +1,7 @@
 {
   "name": "heroku",
   "description": "CLI to interact with Heroku",
-  "version": "7.11.0",
+  "version": "7.12.0",
   "author": "Jeff Dickey @jdxcode",
   "bin": {
     "heroku": "./bin/run"
@@ -11,7 +11,7 @@
     "@heroku-cli/color": "1.1.10",
     "@heroku-cli/command": "8.1.26",
     "@heroku-cli/plugin-addons-v5": "^7.9.3",
-    "@heroku-cli/plugin-apps-v5": "^7.11.0",
+    "@heroku-cli/plugin-apps-v5": "^7.12.0",
     "@heroku-cli/plugin-auth": "^7.9.3",
     "@heroku-cli/plugin-autocomplete": "^7.9.4",
     "@heroku-cli/plugin-certs": "^7.9.2",
@@ -26,7 +26,7 @@
     "@heroku-cli/plugin-orgs-v5": "^7.9.4",
     "@heroku-cli/plugin-pg-v5": "^7.9.4",
     "@heroku-cli/plugin-pipelines-v5": "^7.9.3",
-    "@heroku-cli/plugin-ps": "^7.9.3",
+    "@heroku-cli/plugin-ps": "^7.12.0",
     "@heroku-cli/plugin-ps-exec": "2.3.5",
     "@heroku-cli/plugin-redis-v5": "^7.9.4",
     "@heroku-cli/plugin-run-v5": "^7.9.4",

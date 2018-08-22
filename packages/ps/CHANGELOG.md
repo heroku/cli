@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="7.12.0"></a>
+# [7.12.0](https://github.com/heroku/cli/compare/v7.11.0...v7.12.0) (2018-08-22)
+
+
+### Features
+
+* **ps:** add ps:autoscale:(enable|disable) ([#948](https://github.com/heroku/cli/issues/948)) ([eed39dc](https://github.com/heroku/cli/commit/eed39dc))
+
+
+
+
+
 <a name="7.9.3"></a>
 ## [7.9.3](https://github.com/heroku/cli/compare/v7.9.2...v7.9.3) (2018-08-18)
 
