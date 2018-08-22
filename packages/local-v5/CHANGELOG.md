@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="7.10.0"></a>
+# [7.10.0](https://github.com/heroku/cli/compare/v7.9.4...v7.10.0) (2018-08-22)
+
+
+### Bug Fixes
+
+* **local-v5:** switch back to maintained foreman ([#976](https://github.com/heroku/cli/issues/976)) ([fe24a47](https://github.com/heroku/cli/commit/fe24a47))
+
+
+
+
+
 <a name="7.9.3"></a>
 ## [7.9.3](https://github.com/heroku/cli/compare/v7.9.2...v7.9.3) (2018-08-18)
 
