@@ -18,7 +18,7 @@ run an application test suite on Heroku
 
 ## `heroku ci`
 
-show the most recent runs
+display the most recent CI runs for the given pipeline
 
 ```
 USAGE
@@ -26,18 +26,14 @@ USAGE
 
 OPTIONS
   -a, --app=app            app to run command against
-  -j, --json               output run info in json format
-  -p, --pipeline=pipeline  pipeline
-  -r, --remote=remote      git remote of app to use
-  -w, --watch              keep running and watch for new and update tests
+  -p, --pipeline=pipeline  name of pipeline
+  --watch                  keep running and watch for new and update tests
 
-DESCRIPTION
-  display the most recent CI runs for the given pipeline
-
-     Example:
-
-       $ heroku ci --app murmuring-headland-14719
+EXAMPLE
+  $ heroku ci --app murmuring-headland-14719
 ```
+
+_See code: [@heroku-cli/plugin-ci](https://github.com/heroku/cli/blob/v7.11.0/src/commands/ci/index.ts)_
 
 ## `heroku ci:config`
 
@@ -166,7 +162,7 @@ EXAMPLE
   $ heroku ci:info 1288 --app murmuring-headland-14719
 ```
 
-_See code: [@heroku-cli/plugin-ci](https://github.com/heroku/cli/blob/v7.9.2/src/commands/ci/info.ts)_
+_See code: [@heroku-cli/plugin-ci](https://github.com/heroku/cli/blob/v7.11.0/src/commands/ci/info.ts)_
 
 ## `heroku ci:last`
 
@@ -185,7 +181,7 @@ EXAMPLE
   $ heroku ci:last --app murmuring-headland-14719 --node 100
 ```
 
-_See code: [@heroku-cli/plugin-ci](https://github.com/heroku/cli/blob/v7.9.2/src/commands/ci/last.ts)_
+_See code: [@heroku-cli/plugin-ci](https://github.com/heroku/cli/blob/v7.11.0/src/commands/ci/last.ts)_
 
 ## `heroku ci:migrate-manifest`
 
@@ -242,7 +238,7 @@ EXAMPLE
   $ heroku ci:rerun 985 --app murmuring-headland-14719
 ```
 
-_See code: [@heroku-cli/plugin-ci](https://github.com/heroku/cli/blob/v7.9.2/src/commands/ci/rerun.ts)_
+_See code: [@heroku-cli/plugin-ci](https://github.com/heroku/cli/blob/v7.11.0/src/commands/ci/rerun.ts)_
 
 ## `heroku ci:run`
 
@@ -260,4 +256,4 @@ EXAMPLE
   $ heroku ci:run --app murmuring-headland-14719
 ```
 
-_See code: [@heroku-cli/plugin-ci](https://github.com/heroku/cli/blob/v7.9.2/src/commands/ci/run.ts)_
+_See code: [@heroku-cli/plugin-ci](https://github.com/heroku/cli/blob/v7.11.0/src/commands/ci/run.ts)_

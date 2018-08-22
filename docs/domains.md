@@ -43,6 +43,7 @@ USAGE
 
 OPTIONS
   -a, --app=app        (required) app to run command against
+  -j, --json           output in json format
   -r, --remote=remote  git remote of app to use
   --wait
 ```
