@@ -138,6 +138,7 @@
     "bin": "heroku",
     "dirname": "heroku",
     "scope": "heroku-cli",
+    "npmRegistry": "https://registry.npmjs.org",
     "macos": {
       "sign": "Developer ID Installer: Heroku INC",
       "identifier": "com.heroku.cli"
