@@ -243,7 +243,8 @@
     },
     "aliases": {
       "@heroku-cli/config-edit": null,
-      "@heroku-cli/plugin-sudo": "@heroku/plugin-sudo",
+      "@heroku-cli/plugin-sudo": "@heroku/sudo",
+      "@heroku/plugin-sudo": "@heroku/sudo",
       "heroku-api-plugin": "api",
       "heroku-certs-acm": null,
       "heroku-cli-api": "api",
@@ -252,8 +253,9 @@
       "heroku-cli-plugin-generator": null,
       "heroku-container-registry": null,
       "heroku-pipelines": null,
-      "heroku-sudo": "@heroku/plugin-sudo",
-      "heroku-webhooks": null
+      "heroku-sudo": "@heroku/sudo",
+      "heroku-webhooks": null,
+      "sudo": "@heroku/sudo"
     }
   },
   "repository": "heroku/cli",
