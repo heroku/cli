@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="7.11.0"></a>
+# [7.11.0](https://github.com/heroku/cli/compare/v7.10.1...v7.11.0) (2018-08-22)
+
+
+### Features
+
+* Allow returning JSON when adding domains ([#992](https://github.com/heroku/cli/issues/992)) ([058834f](https://github.com/heroku/cli/commit/058834f))
+
+
+
+
+
 <a name="7.9.4"></a>
 ## [7.9.4](https://github.com/heroku/cli/compare/v7.9.3...v7.9.4) (2018-08-21)
 

@@ -15,7 +15,7 @@ $ npm install -g @heroku-cli/plugin-apps-v5
 $ heroku COMMAND
 running command...
 $ heroku (-v|--version|version)
-@heroku-cli/plugin-apps-v5/7.9.4 darwin-x64 node-v10.9.0
+@heroku-cli/plugin-apps-v5/7.11.0 darwin-x64 node-v10.9.0
 $ heroku --help [COMMAND]
 USAGE
   $ heroku COMMAND
@@ -461,6 +461,7 @@ USAGE
 
 OPTIONS
   -a, --app=app        (required) app to run command against
+  -j, --json           output in json format
   -r, --remote=remote  git remote of app to use
   --wait
 ```
