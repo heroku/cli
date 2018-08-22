@@ -255,6 +255,7 @@
       "heroku-container-registry": null,
       "heroku-event-log": "@heroku/event-log",
       "heroku-pipelines": null,
+      "heroku-skynet-cli": "@heroku/skynet",
       "heroku-sudo": "@heroku/sudo",
       "heroku-webhooks": null,
       "sudo": "@heroku/sudo"
