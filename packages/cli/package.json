@@ -252,6 +252,7 @@
       "heroku-cli-config-edit": null,
       "heroku-cli-plugin-generator": null,
       "heroku-container-registry": null,
+      "heroku-event-log": "@heroku/event-log",
       "heroku-pipelines": null,
       "heroku-sudo": "@heroku/sudo",
       "heroku-webhooks": null,
