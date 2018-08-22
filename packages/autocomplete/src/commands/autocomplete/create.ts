@@ -156,9 +156,8 @@ export default class Create extends AutocompleteBase {
         const hasCompletion = f.hasOwnProperty('completion') || this.findCompletion(flag, id)
         const name = isBoolean ? flag : `${flag}=-`
         let cachecompl = ''
-        if (hasCompletion) {
-          cachecompl = this.wantsLocalFiles(flag) ? ':_files' : ': :_compadd_flag_options'
-        }
+        if (hasCompletion) { cachecompl = ': :_compadd_flag_options' }
+        if (this.wantsLocalFiles(flag)) { cachecompl = ': :_files' }
         const help = isBoolean ? '(switch) ' : (hasCompletion ? '(autocomplete) ' : '')
         const completion = `--${name}[${help}${f.description}]${cachecompl}`
         return `"${completion}"`
@@ -236,8 +235,8 @@ zle -N expand-or-complete-with-dots
 bindkey "^I" expand-or-complete-with-dots`
   }
 
-  private wantsLocalFiles(flag: string) {
-    [
+  private wantsLocalFiles(flag: string): boolean {
+    return [
       'file',
       'procfile'
     ].includes(flag)

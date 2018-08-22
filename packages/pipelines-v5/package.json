@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-pipelines-v5",
   "description": "pipelines heroku plugin",
-  "version": "7.7.2",
+  "version": "7.9.3",
   "author": "Heroku Developer Experience team",
   "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
@@ -21,17 +21,17 @@
     "bluebird": "^3.5.1",
     "co": "^4.6.0",
     "heroku-cli-util": "^8.0.9",
-    "http-call": "^5.1.2",
+    "http-call": "^5.2.0",
     "inflection": "^1.12.0",
-    "inquirer": "^6.0.0",
+    "inquirer": "^6.1.0",
     "lodash.flatten": "^4.4.0",
     "lodash.sortby": "^4.7.0",
     "string-just": "^0.0.2",
-    "validator": "^10.2.0"
+    "validator": "^10.6.0"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.15.4",
-    "@oclif/plugin-legacy": "^1.0.18",
+    "@oclif/dev-cli": "^1.17.0",
+    "@oclif/plugin-legacy": "^1.1.0",
     "chai": "^4.1.2",
     "mocha": "^5.1.1",
     "nock": "^9.2.6",
@@ -57,7 +57,7 @@
   "scripts": {
     "autotest": "./node_modules/.bin/supervisor -q -n exit -x ./node_modules/.bin/mocha -- -b",
     "postpublish": "rm oclif.manifest.json",
-    "prepublishOnly": "oclif-dev manifest",
+    "prepack": "oclif-dev manifest",
     "test": "nyc mocha",
     "version": "oclif-dev readme && git add README.md"
   }

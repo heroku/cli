@@ -190,6 +190,7 @@ This command will affect the apps appname_1, appname_2, appname_3.`
     const message = `WARNING: Destructive Action
 This forces rotation on all credentials including the default credential.
 Connections will be reset and applications will be restarted.
+Any followers lagging in replication (see heroku pg:info) will be inaccessible until caught up.
 This command will affect the apps appname_1, appname_2, appname_3.`
 
     return cmd.run({app: 'myapp',
@@ -226,6 +227,7 @@ This command will affect the apps appname_1, appname_2.`
     const message = `WARNING: Destructive Action
 The password for the my_role credential will rotate.
 Connections will be reset and applications will be restarted.
+Any followers lagging in replication (see heroku pg:info) will be inaccessible until caught up.
 This command will affect the apps appname_1, appname_2.`
 
     return cmd.run({app: 'myapp',

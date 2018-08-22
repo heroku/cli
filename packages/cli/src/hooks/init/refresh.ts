@@ -19,7 +19,7 @@ export const migrate: Hook<'init'> = async function () {
     await fs.outputFile(refreshFile, '')
     spawn(
       process.execPath,
-      [path.join(__dirname, '../../../lib/hooks/init/refresh_run')],
+      [path.join(__dirname, '../../../lib/hooks/init/refresh-run')],
       {
         detached: !this.config.windows,
         // stdio: 'inherit',

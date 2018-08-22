@@ -15,7 +15,7 @@ USAGE
   $ heroku run
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -e, --env=env        environment variables to set (use ';' to split multiple vars)
   -r, --remote=remote  git remote of app to use
   -s, --size=size      dyno size
@@ -36,7 +36,7 @@ EXAMPLES
   Running myscript.sh -a arg1 -s arg2 on app.... up, run.1
 ```
 
-_See code: [@heroku-cli/plugin-run-v5](https://github.com/heroku/cli/blob/v7.5.6/packages/run-v5/commands/run.js)_
+_See code: [@heroku-cli/plugin-run-v5](https://github.com/heroku/cli/blob/v7.9.4/packages/run-v5/commands/run.js)_
 
 ## `heroku run:detached`
 
@@ -47,7 +47,7 @@ USAGE
   $ heroku run:detached
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -e, --env=env        environment variables to set (use ';' to split multiple vars)
   -r, --remote=remote  git remote of app to use
   -s, --size=size      dyno size
@@ -60,4 +60,4 @@ EXAMPLES
   Run heroku logs -a app -p run.1 to view the output.
 ```
 
-_See code: [@heroku-cli/plugin-run-v5](https://github.com/heroku/cli/blob/v7.5.6/packages/run-v5/commands/run/detached.js)_
+_See code: [@heroku-cli/plugin-run-v5](https://github.com/heroku/cli/blob/v7.9.4/packages/run-v5/commands/run/detached.js)_

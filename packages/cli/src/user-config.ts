@@ -10,7 +10,7 @@ export interface ConfigJSON {
 }
 
 export default class UserConfig {
-  private needsSave: boolean = false
+  private needsSave = false
   private body!: ConfigJSON
   private mtime?: number
   private saving?: Promise<void>

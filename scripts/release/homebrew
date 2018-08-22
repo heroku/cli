@@ -4,7 +4,11 @@ set -ex
 
 rm -rf tmp/homebrew-brew
 git config --global core.pager cat
-git clone git@github.com:heroku/homebrew-brew.git tmp/homebrew-brew
+
+set +x
+git clone "https://x-access-token:$(./scripts/github_token.js 290530)@github.com/heroku/homebrew-brew.git" tmp/homebrew-brew
+set -x
+
 DIST_DIR=$(cd ./dist && pwd)
 TMP_DIR=$(cd ./tmp && pwd)
 
@@ -35,7 +39,7 @@ SHORT_VERSION=$(node -p "require('./package.json').version")
     fi
     aws s3 cp --cache-control max-age=604800 "$NODE_TARBALL_PATH" "$REMOTE_BASE/$NODE_TARBALL_BASE"
     git commit -m "heroku-node ${NODE_VERSION}"
-    git push origin master
+    git push -q origin master
   fi
 )
 
@@ -55,4 +59,4 @@ if [[ -z "${CIRCLE_TAG}" ]]; then
 fi
 
 git commit -m "heroku v${SHORT_VERSION}"
-git push origin master
+git push -q origin master

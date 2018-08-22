@@ -3,6 +3,66 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="7.9.3"></a>
+## [7.9.3](https://github.com/heroku/cli/compare/v7.9.2...v7.9.3) (2018-08-18)
+
+**Note:** Version bump only for package @heroku-cli/plugin-spaces
+
+
+
+
+
+<a name="7.9.2"></a>
+## [7.9.2](https://github.com/heroku/cli/compare/v7.9.1...v7.9.2) (2018-08-18)
+
+
+### Bug Fixes
+
+* typescript 3.0 ([268c0af](https://github.com/heroku/cli/commit/268c0af))
+
+
+
+
+
+<a name="7.9.1"></a>
+## [7.9.1](https://github.com/heroku/cli/compare/v7.9.0...v7.9.1) (2018-08-17)
+
+
+### Bug Fixes
+
+* updated some dependencies ([0306f88](https://github.com/heroku/cli/commit/0306f88))
+
+
+
+
+<a name="7.8.0"></a>
+# [7.8.0](https://github.com/heroku/cli/compare/v7.7.10...v7.8.0) (2018-08-17)
+
+
+### Features
+
+* **spaces:** Add --data-cidr flag for specifying cidr that's used with Heroku Data peerings ([#981](https://github.com/heroku/cli/issues/981)) ([69f4c29](https://github.com/heroku/cli/commit/69f4c29))
+
+
+
+
+<a name="7.7.10"></a>
+## [7.7.10](https://github.com/heroku/cli/compare/v7.7.8...v7.7.10) (2018-08-14)
+
+
+
+
+**Note:** Version bump only for package @heroku-cli/plugin-spaces
+
+<a name="7.7.9"></a>
+## [7.7.9](https://github.com/heroku/cli/compare/v7.7.8...v7.7.9) (2018-08-14)
+
+**Note:** Version bump only for package @heroku-cli/plugin-spaces
+
+
+
+
+
 <a name="7.7.8"></a>
 ## [7.7.8](https://github.com/heroku/cli/compare/v7.7.7...v7.7.8) (2018-07-30)
 

@@ -3,6 +3,71 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="7.9.4"></a>
+## [7.9.4](https://github.com/heroku/heroku-cli-autocomplete/compare/v7.9.3...v7.9.4) (2018-08-21)
+
+**Note:** Version bump only for package @heroku-cli/plugin-autocomplete
+
+
+
+
+
+<a name="7.9.3"></a>
+## [7.9.3](https://github.com/heroku/heroku-cli-autocomplete/compare/v7.9.2...v7.9.3) (2018-08-18)
+
+**Note:** Version bump only for package @heroku-cli/plugin-autocomplete
+
+
+
+
+
+<a name="7.9.2"></a>
+## [7.9.2](https://github.com/heroku/heroku-cli-autocomplete/compare/v7.9.1...v7.9.2) (2018-08-18)
+
+
+### Bug Fixes
+
+* lint issues ([6f5531b](https://github.com/heroku/heroku-cli-autocomplete/commit/6f5531b))
+* typescript 3.0 ([268c0af](https://github.com/heroku/heroku-cli-autocomplete/commit/268c0af))
+
+
+
+
+
+<a name="7.9.1"></a>
+## [7.9.1](https://github.com/heroku/heroku-cli-autocomplete/compare/v7.9.0...v7.9.1) (2018-08-17)
+
+
+### Bug Fixes
+
+* updated some dependencies ([0306f88](https://github.com/heroku/heroku-cli-autocomplete/commit/0306f88))
+
+
+
+
+<a name="7.7.10"></a>
+## [7.7.10](https://github.com/heroku/heroku-cli-autocomplete/compare/v7.7.8...v7.7.10) (2018-08-14)
+
+
+### Bug Fixes
+
+* **autocomplete:** filepath completions ([#968](https://github.com/heroku/heroku-cli-autocomplete/issues/968)) ([b681eb5](https://github.com/heroku/heroku-cli-autocomplete/commit/b681eb5))
+
+
+
+
+<a name="7.7.9"></a>
+## [7.7.9](https://github.com/heroku/heroku-cli-autocomplete/compare/v7.7.8...v7.7.9) (2018-08-14)
+
+
+### Bug Fixes
+
+* **autocomplete:** filepath completions ([#968](https://github.com/heroku/heroku-cli-autocomplete/issues/968)) ([b681eb5](https://github.com/heroku/heroku-cli-autocomplete/commit/b681eb5))
+
+
+
+
+
 <a name="7.7.4"></a>
 ## [7.7.4](https://github.com/heroku/heroku-cli-autocomplete/compare/v7.7.3...v7.7.4) (2018-07-19)
 

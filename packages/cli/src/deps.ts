@@ -2,7 +2,7 @@ import FS = require('fs-extra')
 import {HTTP} from 'http-call'
 
 import file = require('./file')
-import UserConfig from './user_config'
+import UserConfig from './user-config'
 
 export default {
   get fs(): typeof FS {
@@ -15,7 +15,7 @@ export default {
     return fetch('./file')
   },
   get UserConfig(): typeof UserConfig {
-    return fetch('./user_config').default
+    return fetch('./user-config').default
   },
 }
 

@@ -64,7 +64,7 @@ You will use the information provided by this command to establish a Private Spa
 - The Customer Gateway value is the Public IP of your VPN Gateway
 - The VPN Gateway must use the IKE Version shown and the Pre-shared Keys as the authentication method
 `,
-  hidden: true,
+  hidden: false,
   needsApp: false,
   needsAuth: true,
   args: [{name: 'name', optional: true, hidden: true}],
