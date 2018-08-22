@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-local-v5",
   "description": "run heroku apps locally",
-  "version": "7.9.3",
+  "version": "7.10.0",
   "author": "Jeff Dickey @dickeyxxx",
   "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
@@ -16,8 +16,8 @@
   },
   "dependencies": {
     "@heroku-cli/command": "^8.1.20",
-    "@heroku/foreman": "^2.0.2",
     "co": "^4.6.0",
+    "foreman": "^3.0.1",
     "heroku-cli-util": "^8.0.9",
     "lodash.flatten": "^4.4.0"
   },

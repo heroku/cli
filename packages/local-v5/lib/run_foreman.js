@@ -1,1 +1,1 @@
-require('@heroku/foreman/nf.js')
+require('foreman/nf.js')

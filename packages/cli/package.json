@@ -1,7 +1,7 @@
 {
   "name": "heroku",
   "description": "CLI to interact with Heroku",
-  "version": "7.9.4",
+  "version": "7.10.1",
   "author": "Jeff Dickey @jdxcode",
   "bin": {
     "heroku": "./bin/run"
@@ -21,7 +21,7 @@
     "@heroku-cli/plugin-config": "^7.9.2",
     "@heroku-cli/plugin-container-registry-v5": "^7.9.3",
     "@heroku-cli/plugin-git": "^7.9.3",
-    "@heroku-cli/plugin-local-v5": "^7.9.3",
+    "@heroku-cli/plugin-local-v5": "^7.10.0",
     "@heroku-cli/plugin-oauth-v5": "^7.9.3",
     "@heroku-cli/plugin-orgs-v5": "^7.9.4",
     "@heroku-cli/plugin-pg-v5": "^7.9.4",
@@ -138,7 +138,6 @@
     "bin": "heroku",
     "dirname": "heroku",
     "scope": "heroku-cli",
-    "npmRegistry": "https://cli-npm.heroku.com",
     "macos": {
       "sign": "Developer ID Installer: Heroku INC",
       "identifier": "com.heroku.cli"
@@ -244,6 +243,8 @@
     },
     "aliases": {
       "@heroku-cli/config-edit": null,
+      "@heroku-cli/plugin-sudo": "@heroku/sudo",
+      "@heroku/plugin-sudo": "@heroku/sudo",
       "heroku-api-plugin": "api",
       "heroku-certs-acm": null,
       "heroku-cli-api": "api",
@@ -252,8 +253,9 @@
       "heroku-cli-plugin-generator": null,
       "heroku-container-registry": null,
       "heroku-pipelines": null,
-      "heroku-sudo": "sudo",
-      "heroku-webhooks": null
+      "heroku-sudo": "@heroku/sudo",
+      "heroku-webhooks": null,
+      "sudo": "@heroku/sudo"
     }
   },
   "repository": "heroku/cli",
