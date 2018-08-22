@@ -34,6 +34,34 @@ describe('domains:add', function () {
 `))
   })
 
+  it('shows as json', function () {
+    let domainResponse = {
+      acm_status: null,
+      acm_status_reason: null,
+      app: {
+        id: 'f3e479b9-fb39-4a9e-ae26-fde106320f4e',
+        name: 'foo'
+      },
+      cname: 'sample-app-0001.herokudns.com',
+      created_at: null,
+      hostname: 'foo.com',
+      id: null,
+      kind: 'custom',
+      status: 'none',
+      updated_at: null
+    }
+
+    let api = nock('https://api.heroku.com:443')
+      .post('/apps/myapp/domains', {hostname: 'foo.com'})
+      .reply(200, domainResponse)
+
+    return cmd.run({app: 'myapp', args: {hostname: 'foo.com'}, flags: {json: true}})
+      .then(() => api.done())
+      .then(() =>
+        expect(JSON.parse(cli.stdout).cname).to.equal(domainResponse.cname)
+      )
+  })
+
   it('adds a domain with status pending and wait false', function () {
     let api = nock('https://api.heroku.com:443')
       .post('/apps/myapp/domains', {hostname: 'foo.com'})

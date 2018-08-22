@@ -12,17 +12,21 @@ function * run (context, heroku) {
     method: 'POST',
     body: {hostname}
   }))
-  cli.warn(`Configure your app's DNS provider to point to the DNS Target ${cli.color.green(domain.cname)}.
-For help, see https://devcenter.heroku.com/articles/custom-domains`)
 
-  if (domain.status !== 'none') {
-    cli.console.error('')
-    if (context.flags.wait) {
-      yield waitForDomain(context, heroku, domain)
-    } else {
-      cli.console.error(`The domain ${cli.color.green(hostname)} has been enqueued for addition`)
-      let command = `heroku domains:wait ${shellescape([hostname])}`
-      cli.warn(`Run ${cli.color.cmd(command)} to wait for completion`)
+  if (context.flags.json) {
+    cli.styledJSON(domain)
+  } else {
+    cli.warn(`Configure your app's DNS provider to point to the DNS Target ${cli.color.green(domain.cname)}.
+  For help, see https://devcenter.heroku.com/articles/custom-domains`)
+    if (domain.status !== 'none') {
+      cli.console.error('')
+      if (context.flags.wait) {
+        yield waitForDomain(context, heroku, domain)
+      } else {
+        cli.console.error(`The domain ${cli.color.green(hostname)} has been enqueued for addition`)
+        let command = `heroku domains:wait ${shellescape([hostname])}`
+        cli.warn(`Run ${cli.color.cmd(command)} to wait for completion`)
+      }
     }
   }
 }
@@ -34,6 +38,9 @@ module.exports = {
   needsApp: true,
   needsAuth: true,
   args: [{name: 'hostname'}],
-  flags: [{name: 'wait'}],
+  flags: [
+    {name: 'json', description: 'output in json format', char: 'j'},
+    {name: 'wait'}
+  ],
   run: cli.command(co.wrap(run))
 }
