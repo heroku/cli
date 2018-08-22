@@ -138,7 +138,6 @@
     "bin": "heroku",
     "dirname": "heroku",
     "scope": "heroku-cli",
-    "npmRegistry": "https://cli-npm.heroku.com",
     "macos": {
       "sign": "Developer ID Installer: Heroku INC",
       "identifier": "com.heroku.cli"
@@ -244,6 +243,7 @@
     },
     "aliases": {
       "@heroku-cli/config-edit": null,
+      "@heroku-cli/plugin-sudo": "@heroku/plugin-sudo",
       "heroku-api-plugin": "api",
       "heroku-certs-acm": null,
       "heroku-cli-api": "api",
@@ -252,7 +252,7 @@
       "heroku-cli-plugin-generator": null,
       "heroku-container-registry": null,
       "heroku-pipelines": null,
-      "heroku-sudo": "sudo",
+      "heroku-sudo": "@heroku/plugin-sudo",
       "heroku-webhooks": null
     }
   },
