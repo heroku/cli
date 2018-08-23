@@ -210,7 +210,7 @@ run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
       .then(() => expect(cli.stderr, 'to be empty'))
   })
 
- it('shows free quota usage of free apps', function () {
+  it('shows free quota usage of free apps', function () {
     stubAccountQuota(200, {account_quota: 3600000, quota_used: 178200, apps: [{app_uuid: '6789', quota_used: 178200}]})
 
     let freeExpression =

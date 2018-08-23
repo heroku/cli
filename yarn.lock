@@ -181,6 +181,12 @@
     tslint "^5.8.0"
     tslint-config-prettier "*"
 
+"@heroku/eventsource@^1.0.7":
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/@heroku/eventsource/-/eventsource-1.0.7.tgz#0e6d44fb8d48ac1b205402d9da8cd0ed73b8259a"
+  dependencies:
+    original "^1.0.0"
+
 "@heroku/socksv5@^0.0.9":
   version "0.0.9"
   resolved "https://registry.yarnpkg.com/@heroku/socksv5/-/socksv5-0.0.9.tgz#7a3905921136b2666979a0f86bb4f062f657f793"
@@ -2874,12 +2880,6 @@ eventemitter3@^3.0.0:
 events@1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/events/-/events-1.1.1.tgz#9ebdb7635ad099c70dcc4c2a1f5004288e8bd924"
-
-eventsource@^1.0.5:
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/eventsource/-/eventsource-1.0.5.tgz#1f012c9df0bd8832fd6b1744fea00ccdd479f046"
-  dependencies:
-    original "^1.0.0"
 
 execa@0.11.0:
   version "0.11.0"

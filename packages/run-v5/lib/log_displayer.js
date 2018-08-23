@@ -1,7 +1,7 @@
 'use strict'
 
 let cli = require('heroku-cli-util')
-let EventSource = require('eventsource')
+let EventSource = require('@heroku/eventsource')
 let url = require('url')
 let liner = require('../lib/line_transform')
 const colorize = require('./colorize')
