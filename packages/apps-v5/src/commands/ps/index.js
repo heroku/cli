@@ -56,20 +56,20 @@ function * printAccountQuota (context, heroku, app, account) {
 
   if (!quota) return
 
-  let remaining, percentage
-  if (quota.account_quota === 0) {
-    remaining = 0
-    percentage = 0
-  } else {
-    remaining = quota.account_quota - quota.quota_used
-    percentage = Math.floor(remaining / quota.account_quota * 100)
-  }
-
+  let remaining = (quota.account_quota === 0) ? 0 : quota.account_quota - quota.quota_used
+  let percentage = (quota.account_quota === 0) ? 0 : Math.floor(remaining / quota.account_quota * 100)
   let remainingMinutes = remaining / 60
   let hours = Math.floor(remainingMinutes / 60)
   let minutes = Math.floor(remainingMinutes % 60)
 
+  let appQuota = quota.apps.find((appQuota) => { return appQuota.app_uuid === app.id })
+  let appQuotaUsed = appQuota ? appQuota.quota_used / 60 : 0
+  let appPercentage = appQuota ? Math.floor(appQuota.quota_used * 100 / quota.account_quota) : 0
+  let appHours = Math.floor(appQuotaUsed / 60)
+  let appMinutes = Math.floor(appQuotaUsed % 60)
+
   cli.log(`Free dyno hours quota remaining this month: ${hours}h ${minutes}m (${percentage}%)`)
+  cli.log(`Free dyno usage for this app: ${appHours}h ${appMinutes}m (${appPercentage}%)`)
   cli.log('For more information on dyno sleeping and how to upgrade, see:')
   cli.log('https://devcenter.heroku.com/articles/dyno-sleeping')
   cli.log()
