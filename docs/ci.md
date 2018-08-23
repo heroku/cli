@@ -9,7 +9,7 @@ run an application test suite on Heroku
 * [`heroku ci:config:set`](#heroku-ciconfigset)
 * [`heroku ci:config:unset`](#heroku-ciconfigunset)
 * [`heroku ci:debug`](#heroku-cidebug)
-* [`heroku ci:info NUMBER`](#heroku-ciinfo-number)
+* [`heroku ci:info TEST-RUN`](#heroku-ciinfo-test-run)
 * [`heroku ci:last`](#heroku-cilast)
 * [`heroku ci:migrate-manifest`](#heroku-cimigrate-manifest)
 * [`heroku ci:open`](#heroku-ciopen)
@@ -18,26 +18,22 @@ run an application test suite on Heroku
 
 ## `heroku ci`
 
-show the most recent runs
+display the most recent CI runs for the given pipeline
 
 ```
 USAGE
   $ heroku ci
 
 OPTIONS
-  -a, --app=app            [default: safe-sea-44297] app to run command against
-  -j, --json               output run info in json format
-  -p, --pipeline=pipeline  pipeline
-  -r, --remote=remote      git remote of app to use
-  -w, --watch              keep running and watch for new and update tests
+  -a, --app=app            app to run command against
+  -p, --pipeline=pipeline  name of pipeline
+  --watch                  keep running and watch for new and update tests
 
-DESCRIPTION
-  display the most recent CI runs for the given pipeline
-
-     Example:
-
-       $ heroku ci --app murmuring-headland-14719
+EXAMPLE
+  $ heroku ci --app murmuring-headland-14719
 ```
+
+_See code: [@heroku-cli/plugin-ci](https://github.com/heroku/cli/blob/v7.11.0/src/commands/ci/index.ts)_
 
 ## `heroku ci:config`
 
@@ -48,7 +44,7 @@ USAGE
   $ heroku ci:config
 
 OPTIONS
-  -a, --app=app            [default: safe-sea-44297] app to run command against
+  -a, --app=app            app to run command against
   -p, --pipeline=pipeline  pipeline
   -r, --remote=remote      git remote of app to use
   -s, --shell              output config vars in shell format
@@ -69,7 +65,7 @@ USAGE
   $ heroku ci:config:get KEY
 
 OPTIONS
-  -a, --app=app            [default: safe-sea-44297] app to run command against
+  -a, --app=app            app to run command against
   -p, --pipeline=pipeline  pipeline
   -r, --remote=remote      git remote of app to use
   -s, --shell              output config var in shell format
@@ -90,7 +86,7 @@ USAGE
   $ heroku ci:config:set
 
 OPTIONS
-  -a, --app=app            [default: safe-sea-44297] app to run command against
+  -a, --app=app            app to run command against
   -p, --pipeline=pipeline  pipeline
   -r, --remote=remote      git remote of app to use
 
@@ -112,7 +108,7 @@ USAGE
   $ heroku ci:config:unset
 
 OPTIONS
-  -a, --app=app            [default: safe-sea-44297] app to run command against
+  -a, --app=app            app to run command against
   -p, --pipeline=pipeline  pipeline
   -r, --remote=remote      git remote of app to use
 
@@ -132,7 +128,7 @@ USAGE
   $ heroku ci:debug
 
 OPTIONS
-  -a, --app=app            [default: safe-sea-44297] app to run command against
+  -a, --app=app            app to run command against
   -p, --pipeline=pipeline  pipeline
   -r, --remote=remote      git remote of app to use
   --no-cache               start test run with an empty cache
@@ -149,50 +145,43 @@ DESCRIPTION
   ~ $
 ```
 
-## `heroku ci:info NUMBER`
+## `heroku ci:info TEST-RUN`
 
-test run information
+show the status of a specific test run
 
 ```
 USAGE
-  $ heroku ci:info NUMBER
-
-ARGUMENTS
-  NUMBER  the test run number to show
+  $ heroku ci:info TEST-RUN
 
 OPTIONS
-  -a, --app=app            [default: safe-sea-44297] app to run command against
-  -p, --pipeline=pipeline  pipeline
-  -r, --remote=remote      git remote of app to use
+  -a, --app=app            app to run command against
+  -p, --pipeline=pipeline  name of pipeline
+  --node=node              the node number to show its setup and output
 
-DESCRIPTION
-  show the status of a specific test run
-
-     Example:
-
-       $ heroku ci:info 1288 --app murmuring-headland-14719
+EXAMPLE
+  $ heroku ci:info 1288 --app murmuring-headland-14719
 ```
+
+_See code: [@heroku-cli/plugin-ci](https://github.com/heroku/cli/blob/v7.11.0/src/commands/ci/info.ts)_
 
 ## `heroku ci:last`
 
-get the results of the last run
+looks for the most recent run and returns the output of that run
 
 ```
 USAGE
   $ heroku ci:last
 
 OPTIONS
-  -a, --app=app            [default: safe-sea-44297] app to run command against
-  -p, --pipeline=pipeline  pipeline
-  -r, --remote=remote      git remote of app to use
+  -a, --app=app            app to run command against
+  -p, --pipeline=pipeline  name of pipeline
+  --node=node              the node number to show its setup and output
 
-DESCRIPTION
-  looks for the most recent run and returns the output of that run
-
-     Example:
-
-     $ heroku ci:last --app murmuring-headland-14719
+EXAMPLE
+  $ heroku ci:last --app murmuring-headland-14719 --node 100
 ```
+
+_See code: [@heroku-cli/plugin-ci](https://github.com/heroku/cli/blob/v7.11.0/src/commands/ci/last.ts)_
 
 ## `heroku ci:migrate-manifest`
 
@@ -221,7 +210,7 @@ USAGE
   $ heroku ci:open
 
 OPTIONS
-  -a, --app=app            [default: safe-sea-44297] app to run command against
+  -a, --app=app            app to run command against
   -p, --pipeline=pipeline  pipeline
   -r, --remote=remote      git remote of app to use
 
@@ -242,17 +231,14 @@ USAGE
   $ heroku ci:rerun [NUMBER]
 
 OPTIONS
-  -a, --app=app            [default: safe-sea-44297] app to run command against
-  -p, --pipeline=pipeline  pipeline
-  -r, --remote=remote      git remote of app to use
+  -a, --app=app            app to run command against
+  -p, --pipeline=pipeline  name of pipeline
 
-DESCRIPTION
-  uploads the contents of the current directory, using git archive, to Heroku and runs the tests
-
-     Example:
-
-       $ heroku ci:rerun 985 --app murmuring-headland-14719
+EXAMPLE
+  $ heroku ci:rerun 985 --app murmuring-headland-14719
 ```
+
+_See code: [@heroku-cli/plugin-ci](https://github.com/heroku/cli/blob/v7.11.0/src/commands/ci/rerun.ts)_
 
 ## `heroku ci:run`
 
@@ -263,14 +249,11 @@ USAGE
   $ heroku ci:run
 
 OPTIONS
-  -a, --app=app            [default: safe-sea-44297] app to run command against
-  -p, --pipeline=pipeline  pipeline
-  -r, --remote=remote      git remote of app to use
+  -a, --app=app            app to run command against
+  -p, --pipeline=pipeline  name of pipeline
 
-DESCRIPTION
-  uploads the contents of the current directory to Heroku and runs the tests
-
-     Example:
-
-       $ heroku ci:run --app murmuring-headland-14719
+EXAMPLE
+  $ heroku ci:run --app murmuring-headland-14719
 ```
+
+_See code: [@heroku-cli/plugin-ci](https://github.com/heroku/cli/blob/v7.11.0/src/commands/ci/run.ts)_

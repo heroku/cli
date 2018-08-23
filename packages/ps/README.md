@@ -15,7 +15,41 @@ ps core plugin for Heroku CLI
 <!-- tocstop -->
 # Commands
 <!-- commands -->
+* [`heroku ps:autoscale:disable`](#heroku-psautoscaledisable)
+* [`heroku ps:autoscale:enable`](#heroku-psautoscaleenable)
 * [`heroku regions`](#heroku-regions)
+
+## `heroku ps:autoscale:disable`
+
+disable web dyno autoscaling
+
+```
+USAGE
+  $ heroku ps:autoscale:disable
+
+OPTIONS
+  -a, --app=app  (required) app to run command against
+```
+
+_See code: [src/commands/ps/autoscale/disable.ts](https://github.com/heroku/cli/blob/v7.12.0/packages/ps/src/commands/ps/autoscale/disable.ts)_
+
+## `heroku ps:autoscale:enable`
+
+enable web dyno autoscaling
+
+```
+USAGE
+  $ heroku ps:autoscale:enable
+
+OPTIONS
+  -a, --app=app    (required) app to run command against
+  --max=max        (required) maximum number of dynos
+  --min=min        (required) minimum number of dynos
+  --notifications  receive email notifications when the max dyno limit is reached
+  --p95=p95        desired p95 response time
+```
+
+_See code: [src/commands/ps/autoscale/enable.ts](https://github.com/heroku/cli/blob/v7.12.0/packages/ps/src/commands/ps/autoscale/enable.ts)_
 
 ## `heroku regions`
 
@@ -31,5 +65,5 @@ OPTIONS
   --private  show regions for private spaces
 ```
 
-_See code: [src/commands/regions.ts](https://github.com/heroku/cli/blob/v7.5.9/packages/ps/src/commands/regions.ts)_
+_See code: [src/commands/regions.ts](https://github.com/heroku/cli/blob/v7.12.0/packages/ps/src/commands/regions.ts)_
 <!-- commandsstop -->

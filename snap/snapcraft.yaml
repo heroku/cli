@@ -12,7 +12,7 @@ apps:
 parts:
   heroku:
     plugin: nil
-    install: |
+    override-build: |
       set -ex
 
       # install yarn

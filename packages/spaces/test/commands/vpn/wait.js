@@ -183,4 +183,24 @@ Tunnel 2    52.44.146.199     52.44.146.198  apresharedkey2  10.0.0.0/16       1
       })
       .then(() => api.done())
   })
+
+  it('tells the user if the VPN has been allocated', function () {
+    let api = nock('https://api.heroku.com:443')
+      .get('/spaces/my-space/vpn-connections/vpn-connection-allocated')
+      .reply(200, {
+        id: '123456789012',
+        name: 'vpn-connection-name-config',
+        public_ip: '35.161.69.30',
+        routable_cidrs: [ '172.16.0.0/16' ],
+        ike_version: 1,
+        space_cidr_block: '10.0.0.0/16',
+        status: 'active',
+        status_message: ''
+      })
+
+    return cmd.run({flags: {space: 'my-space', name: 'vpn-connection-allocated', interval: 0}})
+      .then(() => expect(cli.stdout).to.equal(
+        `VPN has been allocated.\n`))
+      .then(() => api.done())
+  })
 })

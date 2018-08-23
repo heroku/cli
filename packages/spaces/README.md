@@ -18,6 +18,7 @@ heroku-spaces CLI plugin [![Circle CI](https://circleci.com/gh/heroku/heroku-spa
 * [`heroku spaces:ps`](#heroku-spacesps)
 * [`heroku spaces:rename`](#heroku-spacesrename)
 * [`heroku spaces:topology`](#heroku-spacestopology)
+* [`heroku spaces:vpn:config`](#heroku-spacesvpnconfig)
 * [`heroku spaces:vpn:connect`](#heroku-spacesvpnconnect)
 * [`heroku spaces:vpn:connections`](#heroku-spacesvpnconnections)
 * [`heroku spaces:vpn:destroy`](#heroku-spacesvpndestroy)
@@ -317,6 +318,37 @@ USAGE
 OPTIONS
   -s, --space=space  space to get topology of
   --json             output in json format
+```
+
+## `heroku spaces:vpn:config`
+
+display the configuration information for VPN
+
+```
+USAGE
+  $ heroku spaces:vpn:config
+
+OPTIONS
+  -n, --name=name    name or id of the VPN connection to retrieve config from
+  -s, --space=space  space the VPN connection belongs to
+  --json             output in json format
+
+DESCRIPTION
+  Example:
+
+       $ heroku spaces:vpn:config --space my-space vpn-connection-name
+       === vpn-connection-name VPN Tunnels
+       VPN Tunnel  Customer Gateway  VPN Gateway     Pre-shared Key  Routable Subnets  IKE Version
+       ──────────  ────────────────  ──────────────  ──────────────  ────────────────  ───────────
+       Tunnel 1    104.196.121.200   35.171.237.136  abcdef12345     10.0.0.0/16       1
+       Tunnel 2    104.196.121.200   52.44.7.216     fedcba54321     10.0.0.0/16       1
+
+  You will use the information provided by this command to establish a Private Space VPN Connection.
+
+  - You must configure your VPN Gateway to use both Tunnels provided by Heroku
+  - The VPN Gateway values are the IP addresses of the Private Space Tunnels
+  - The Customer Gateway value is the Public IP of your VPN Gateway
+  - The VPN Gateway must use the IKE Version shown and the Pre-shared Keys as the authentication method
 ```
 
 ## `heroku spaces:vpn:connect`

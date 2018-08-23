@@ -96,19 +96,20 @@ Created at: ${now.toISOString()}
       .then(() => api.done())
   })
 
-  it('creates a space with custom cidr', function () {
+  it('creates a space with custom cidr and data cidr', function () {
     let api = nock('https://api.heroku.com:443')
       .post('/spaces', {
         name: 'my-space',
         team: 'my-team',
         region: 'my-region',
         cidr: '10.0.0.0/16',
+        data_cidr: '10.2.0.0/16',
         features: features
       })
       .reply(201,
         {shield: false, name: 'my-space', team: {name: 'my-team'}, region: {name: 'my-region'}, features: [ 'one', 'two' ], state: 'enabled', created_at: now}
       )
-    return cmd.run({team: 'my-team', flags: {space: 'my-space', region: 'my-region', features: 'one, two', cidr: '10.0.0.0/16'}, shield: true, log_drain_url: 'https://logs.cheetah.com'})
+    return cmd.run({team: 'my-team', flags: {space: 'my-space', region: 'my-region', features: 'one, two', cidr: '10.0.0.0/16', 'data-cidr': '10.2.0.0/16'}, shield: true, log_drain_url: 'https://logs.cheetah.com'})
       .then(() => expect(cli.stdout).to.equal(
         `=== my-space
 Team:       my-team

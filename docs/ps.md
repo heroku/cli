@@ -4,6 +4,8 @@
 Client tools for Heroku Exec
 
 * [`heroku ps [TYPE [TYPE ...]]`](#heroku-ps-type-type)
+* [`heroku ps:autoscale:disable`](#heroku-psautoscaledisable)
+* [`heroku ps:autoscale:enable`](#heroku-psautoscaleenable)
 * [`heroku ps:copy FILE`](#heroku-pscopy-file)
 * [`heroku ps:exec`](#heroku-psexec)
 * [`heroku ps:forward PORT`](#heroku-psforward-port)
@@ -24,7 +26,7 @@ USAGE
   $ heroku ps [TYPE [TYPE ...]]
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
   --json               display as json
 
@@ -40,6 +42,38 @@ EXAMPLES
   === run: one-off dyno
   run.1: up for 5m: bash
 ```
+
+## `heroku ps:autoscale:disable`
+
+disable web dyno autoscaling
+
+```
+USAGE
+  $ heroku ps:autoscale:disable
+
+OPTIONS
+  -a, --app=app  (required) app to run command against
+```
+
+_See code: [@heroku-cli/plugin-ps](https://github.com/heroku/cli/blob/v7.12.0/packages/ps/src/commands/ps/autoscale/disable.ts)_
+
+## `heroku ps:autoscale:enable`
+
+enable web dyno autoscaling
+
+```
+USAGE
+  $ heroku ps:autoscale:enable
+
+OPTIONS
+  -a, --app=app    (required) app to run command against
+  --max=max        (required) maximum number of dynos
+  --min=min        (required) minimum number of dynos
+  --notifications  receive email notifications when the max dyno limit is reached
+  --p95=p95        desired p95 response time
+```
+
+_See code: [@heroku-cli/plugin-ps](https://github.com/heroku/cli/blob/v7.12.0/packages/ps/src/commands/ps/autoscale/enable.ts)_
 
 ## `heroku ps:copy FILE`
 
@@ -111,7 +145,7 @@ USAGE
   $ heroku ps:kill DYNO
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
@@ -134,7 +168,7 @@ USAGE
   $ heroku ps:resize
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
@@ -155,7 +189,7 @@ USAGE
   $ heroku ps:restart [DYNO]
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
@@ -181,7 +215,7 @@ USAGE
   $ heroku ps:scale
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
@@ -229,7 +263,7 @@ USAGE
   $ heroku ps:stop DYNO
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
@@ -252,7 +286,7 @@ USAGE
   $ heroku ps:type
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION

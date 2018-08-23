@@ -1,9 +1,5 @@
 #!/usr/bin/env bats
 
-setup() {
-  run ../../bin/run plugins:link .
-}
-
 @test "run" {
   run ../../bin/run local:run echo 'it works!'
   echo $output

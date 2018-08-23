@@ -15,7 +15,7 @@ $ npm install -g @heroku-cli/plugin-apps-v5
 $ heroku COMMAND
 running command...
 $ heroku (-v|--version|version)
-@heroku-cli/plugin-apps-v5/7.7.8 darwin-x64 node-v10.7.0
+@heroku-cli/plugin-apps-v5/7.12.0 darwin-x64 node-v10.9.0
 $ heroku --help [COMMAND]
 USAGE
   $ heroku COMMAND
@@ -162,7 +162,7 @@ USAGE
   $ heroku apps:destroy
 
 OPTIONS
-  -a, --app=app          [default: safe-sea-44297] app to run command against
+  -a, --app=app          app to run command against
   -c, --confirm=confirm
   -r, --remote=remote    git remote of app to use
 
@@ -179,7 +179,7 @@ USAGE
   $ heroku apps:errors
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
   --dyno               show only dyno errors
   --hours=hours        number of hours to look back (default 24)
@@ -208,7 +208,7 @@ USAGE
   $ heroku apps:favorites:add
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -221,7 +221,7 @@ USAGE
   $ heroku apps:favorites:remove
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -234,7 +234,7 @@ USAGE
   $ heroku apps:info
 
 OPTIONS
-  -a, --app=app        [default: safe-sea-44297] app to run command against
+  -a, --app=app        app to run command against
   -j, --json
   -r, --remote=remote  git remote of app to use
   -s, --shell          output more shell friendly key/value pairs
@@ -261,7 +261,7 @@ USAGE
   $ heroku apps:open [PATH]
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 
 EXAMPLES
@@ -281,7 +281,7 @@ USAGE
   $ heroku apps:rename NEWNAME
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
   --ssh-git            use ssh git protocol instead of https
 
@@ -303,7 +303,7 @@ USAGE
   $ heroku apps:stacks
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -316,7 +316,7 @@ USAGE
   $ heroku apps:stacks:set STACK
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 
 EXAMPLES
@@ -334,7 +334,7 @@ USAGE
   $ heroku buildpacks
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 
 EXAMPLES
@@ -352,7 +352,7 @@ USAGE
   $ heroku buildpacks:add URL
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -i, --index=index    the 1-based index of the URL in the list of URLs
   -r, --remote=remote  git remote of app to use
 
@@ -369,7 +369,7 @@ USAGE
   $ heroku buildpacks:clear
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -382,7 +382,7 @@ USAGE
   $ heroku buildpacks:remove [URL]
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -i, --index=index    the 1-based index of the URL to remove from the list of URLs
   -r, --remote=remote  git remote of app to use
 ```
@@ -396,7 +396,7 @@ USAGE
   $ heroku buildpacks:set URL
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -i, --index=index    the 1-based index of the URL in the list of URLs
   -r, --remote=remote  git remote of app to use
 
@@ -413,7 +413,7 @@ USAGE
   $ heroku config:set
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 
 EXAMPLES
@@ -436,7 +436,7 @@ USAGE
   $ heroku domains
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
   --json               output in json format
 
@@ -460,7 +460,8 @@ USAGE
   $ heroku domains:add HOSTNAME
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
+  -j, --json           output in json format
   -r, --remote=remote  git remote of app to use
   --wait
 ```
@@ -474,7 +475,7 @@ USAGE
   $ heroku domains:clear
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -487,7 +488,7 @@ USAGE
   $ heroku domains:remove HOSTNAME
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -500,7 +501,7 @@ USAGE
   $ heroku domains:wait [HOSTNAME]
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -513,7 +514,7 @@ USAGE
   $ heroku drains
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
   --json               output in json format
 ```
@@ -527,7 +528,7 @@ USAGE
   $ heroku drains:add URL
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -540,7 +541,7 @@ USAGE
   $ heroku drains:remove [URL|TOKEN]
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -553,7 +554,7 @@ USAGE
   $ heroku dyno:kill DYNO
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
@@ -576,7 +577,7 @@ USAGE
   $ heroku dyno:resize
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
@@ -597,7 +598,7 @@ USAGE
   $ heroku dyno:restart [DYNO]
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
@@ -623,7 +624,7 @@ USAGE
   $ heroku dyno:scale
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
@@ -649,7 +650,7 @@ USAGE
   $ heroku dyno:stop DYNO
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
@@ -672,7 +673,7 @@ USAGE
   $ heroku features
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
   --json               output in json format
 ```
@@ -686,7 +687,7 @@ USAGE
   $ heroku features:disable FEATURE
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -699,7 +700,7 @@ USAGE
   $ heroku features:enable FEATURE
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -712,7 +713,7 @@ USAGE
   $ heroku features:info FEATURE
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
   --json               output in json format
 ```
@@ -786,7 +787,7 @@ USAGE
   $ heroku labs
 
 OPTIONS
-  -a, --app=app        [default: safe-sea-44297] app to run command against
+  -a, --app=app        app to run command against
   -r, --remote=remote  git remote of app to use
   --json               display as json
 ```
@@ -800,7 +801,7 @@ USAGE
   $ heroku labs:enable FEATURE
 
 OPTIONS
-  -a, --app=app        [default: safe-sea-44297] app to run command against
+  -a, --app=app        app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -813,7 +814,7 @@ USAGE
   $ heroku labs:info FEATURE
 
 OPTIONS
-  -a, --app=app        [default: safe-sea-44297] app to run command against
+  -a, --app=app        app to run command against
   -r, --remote=remote  git remote of app to use
   --json               display as json
 ```
@@ -827,7 +828,7 @@ USAGE
   $ heroku maintenance
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -840,7 +841,7 @@ USAGE
   $ heroku maintenance:off
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -853,7 +854,7 @@ USAGE
   $ heroku maintenance:on
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -866,7 +867,7 @@ USAGE
   $ heroku notifications
 
 OPTIONS
-  -a, --app=app        [default: safe-sea-44297] app to run command against
+  -a, --app=app        app to run command against
   -r, --remote=remote  git remote of app to use
   --all                view all notifications (not just the ones for the current app)
   --json               output in json format
@@ -882,7 +883,7 @@ USAGE
   $ heroku ps [TYPE [TYPE ...]]
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
   --json               display as json
 
@@ -908,7 +909,7 @@ USAGE
   $ heroku ps:kill DYNO
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
@@ -931,7 +932,7 @@ USAGE
   $ heroku ps:resize
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
@@ -952,7 +953,7 @@ USAGE
   $ heroku ps:restart [DYNO]
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
@@ -978,7 +979,7 @@ USAGE
   $ heroku ps:scale
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
@@ -1004,7 +1005,7 @@ USAGE
   $ heroku ps:stop DYNO
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
@@ -1027,7 +1028,7 @@ USAGE
   $ heroku ps:type
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
@@ -1048,7 +1049,7 @@ USAGE
   $ heroku releases
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -n, --num=num        number of releases to show
   -r, --remote=remote  git remote of app to use
   --json               output releases in json format
@@ -1070,7 +1071,7 @@ USAGE
   $ heroku releases:info [RELEASE]
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
   -s, --shell          output in shell format
   --json               output in json format
@@ -1085,7 +1086,7 @@ USAGE
   $ heroku releases:output [RELEASE]
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -1098,7 +1099,7 @@ USAGE
   $ heroku releases:rollback [RELEASE]
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION

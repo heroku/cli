@@ -18,13 +18,13 @@ USAGE
   $ heroku config
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -j, --json           output config vars in json format
   -r, --remote=remote  git remote of app to use
   -s, --shell          output config vars in shell format
 ```
 
-_See code: [@heroku-cli/plugin-config](https://github.com/heroku/cli/blob/v7.5.9/packages/config/src/commands/config/index.ts)_
+_See code: [@heroku-cli/plugin-config](https://github.com/heroku/cli/blob/v7.9.2/packages/config/src/commands/config/index.ts)_
 
 ## `heroku config:edit [KEY]`
 
@@ -38,7 +38,7 @@ ARGUMENTS
   KEY  edit a single key
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
@@ -56,7 +56,7 @@ EXAMPLES
   $ VISUAL="atom --wait" heroku config:edit
 ```
 
-_See code: [@heroku-cli/plugin-config](https://github.com/heroku/cli/blob/v7.5.9/packages/config/src/commands/config/edit.ts)_
+_See code: [@heroku-cli/plugin-config](https://github.com/heroku/cli/blob/v7.9.2/packages/config/src/commands/config/edit.ts)_
 
 ## `heroku config:get KEY...`
 
@@ -67,7 +67,7 @@ USAGE
   $ heroku config:get KEY...
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
   -s, --shell          output config vars in shell format
 
@@ -76,7 +76,7 @@ EXAMPLES
   production
 ```
 
-_See code: [@heroku-cli/plugin-config](https://github.com/heroku/cli/blob/v7.5.9/packages/config/src/commands/config/get.ts)_
+_See code: [@heroku-cli/plugin-config](https://github.com/heroku/cli/blob/v7.9.2/packages/config/src/commands/config/get.ts)_
 
 ## `heroku config:set`
 
@@ -87,7 +87,7 @@ USAGE
   $ heroku config:set
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 
 EXAMPLES
@@ -110,7 +110,7 @@ USAGE
   $ heroku config:unset
 
 OPTIONS
-  -a, --app=app        (required) [default: safe-sea-44297] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 
 ALIASES
@@ -123,4 +123,4 @@ EXAMPLES
   Unsetting RAILS_ENV, RACK_ENV and restarting example... done, v10
 ```
 
-_See code: [@heroku-cli/plugin-config](https://github.com/heroku/cli/blob/v7.5.9/packages/config/src/commands/config/unset.ts)_
+_See code: [@heroku-cli/plugin-config](https://github.com/heroku/cli/blob/v7.9.2/packages/config/src/commands/config/unset.ts)_

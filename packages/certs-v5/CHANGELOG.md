@@ -3,6 +3,50 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="7.9.4"></a>
+## [7.9.4](https://github.com/heroku/cli/compare/v7.9.3...v7.9.4) (2018-08-21)
+
+
+### Bug Fixes
+
+* updated notifier ([85ad480](https://github.com/heroku/cli/commit/85ad480))
+
+
+
+
+
+<a name="7.9.3"></a>
+## [7.9.3](https://github.com/heroku/cli/compare/v7.9.2...v7.9.3) (2018-08-18)
+
+**Note:** Version bump only for package @heroku-cli/plugin-certs-v5
+
+
+
+
+
+<a name="7.9.2"></a>
+## [7.9.2](https://github.com/heroku/cli/compare/v7.9.1...v7.9.2) (2018-08-18)
+
+
+### Bug Fixes
+
+* typescript 3.0 ([268c0af](https://github.com/heroku/cli/commit/268c0af))
+
+
+
+
+
+<a name="7.9.1"></a>
+## [7.9.1](https://github.com/heroku/cli/compare/v7.9.0...v7.9.1) (2018-08-17)
+
+
+### Bug Fixes
+
+* updated some dependencies ([0306f88](https://github.com/heroku/cli/commit/0306f88))
+
+
+
+
 <a name="7.5.6"></a>
 ## [7.5.6](https://github.com/heroku/cli/compare/v7.5.5...v7.5.6) (2018-06-29)
 

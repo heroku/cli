@@ -28,7 +28,8 @@ function * run (context, heroku) {
       shield: context.flags['shield'],
       owner_pool: context.flags['owner-pool'],
       cidr: context.flags['cidr'],
-      kpi_url: context.flags['kpi-url']
+      kpi_url: context.flags['kpi-url'],
+      data_cidr: context.flags['data-cidr']
     }
   })
 
@@ -76,6 +77,7 @@ module.exports = {
     {name: 'shield', hasValue: false, hidden: true, description: 'create a Shield space'},
     {name: 'cidr', hasValue: true, hidden: true, description: 'the RFC-1918 CIDR the space will use'},
     {name: 'kpi-url', hasValue: true, hidden: true, description: 'self-managed KPI endpoint to use'},
+    {name: 'data-cidr', hasValue: true, hidden: true, description: "the RFC-1918 CIDR that the space will use when peering with DoD's spaces"},
     flags.team({name: 'team', hasValue: true})
   ],
   run: cli.command(co.wrap(run))

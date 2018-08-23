@@ -3,6 +3,153 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="7.12.1"></a>
+## [7.12.1](https://github.com/heroku/cli/compare/v7.12.0...v7.12.1) (2018-08-22)
+
+
+### Bug Fixes
+
+* rename skynet cli plugin ([4e7aa6f](https://github.com/heroku/cli/commit/4e7aa6f))
+
+
+
+
+
+<a name="7.12.0"></a>
+# [7.12.0](https://github.com/heroku/cli/compare/v7.11.0...v7.12.0) (2018-08-22)
+
+
+### Bug Fixes
+
+* rename event log plugin ([f530861](https://github.com/heroku/cli/commit/f530861))
+* set npm registry explicitly ([d0815e8](https://github.com/heroku/cli/commit/d0815e8))
+
+
+
+
+
+<a name="7.11.0"></a>
+# [7.11.0](https://github.com/heroku/cli/compare/v7.10.1...v7.11.0) (2018-08-22)
+
+**Note:** Version bump only for package heroku
+
+
+
+
+
+<a name="7.10.1"></a>
+## [7.10.1](https://github.com/heroku/cli/compare/v7.10.0...v7.10.1) (2018-08-22)
+
+
+### Bug Fixes
+
+* point sudo to [@heroku](https://github.com/heroku)/sudo ([5082fd1](https://github.com/heroku/cli/commit/5082fd1))
+
+
+
+
+
+<a name="7.10.0"></a>
+# [7.10.0](https://github.com/heroku/cli/compare/v7.9.4...v7.10.0) (2018-08-22)
+
+
+### Features
+
+* use npmjs.org registry ([#873](https://github.com/heroku/cli/issues/873)) ([2f4e748](https://github.com/heroku/cli/commit/2f4e748))
+
+
+
+
+
+<a name="7.9.4"></a>
+## [7.9.4](https://github.com/heroku/cli/compare/v7.9.3...v7.9.4) (2018-08-21)
+
+
+### Bug Fixes
+
+* updated notifier ([85ad480](https://github.com/heroku/cli/commit/85ad480))
+
+
+
+
+
+<a name="7.9.3"></a>
+## [7.9.3](https://github.com/heroku/cli/compare/v7.9.2...v7.9.3) (2018-08-18)
+
+**Note:** Version bump only for package heroku
+
+
+
+
+
+<a name="7.9.2"></a>
+## [7.9.2](https://github.com/heroku/cli/compare/v7.9.1...v7.9.2) (2018-08-18)
+
+
+### Bug Fixes
+
+* lint issues with cli ([86e9c75](https://github.com/heroku/cli/commit/86e9c75))
+* typescript 3.0 ([268c0af](https://github.com/heroku/cli/commit/268c0af))
+
+
+
+
+
+<a name="7.9.1"></a>
+## [7.9.1](https://github.com/heroku/cli/compare/v7.9.0...v7.9.1) (2018-08-17)
+
+
+### Bug Fixes
+
+* updated some dependencies ([0306f88](https://github.com/heroku/cli/commit/0306f88))
+
+
+
+
+<a name="7.9.0"></a>
+# [7.9.0](https://github.com/heroku/cli/compare/v7.8.1...v7.9.0) (2018-08-17)
+
+
+### Features
+
+* node 10.9.0 ([530c104](https://github.com/heroku/cli/commit/530c104))
+
+
+
+
+<a name="7.8.1"></a>
+## [7.8.1](https://github.com/heroku/cli/compare/v7.8.0...v7.8.1) (2018-08-17)
+
+
+
+
+**Note:** Version bump only for package heroku
+
+<a name="7.8.0"></a>
+# [7.8.0](https://github.com/heroku/cli/compare/v7.7.10...v7.8.0) (2018-08-17)
+
+
+
+
+**Note:** Version bump only for package heroku
+
+<a name="7.7.10"></a>
+## [7.7.10](https://github.com/heroku/cli/compare/v7.7.8...v7.7.10) (2018-08-14)
+
+
+
+
+**Note:** Version bump only for package heroku
+
+<a name="7.7.9"></a>
+## [7.7.9](https://github.com/heroku/cli/compare/v7.7.8...v7.7.9) (2018-08-14)
+
+**Note:** Version bump only for package heroku
+
+
+
+
+
 <a name="7.7.8"></a>
 ## [7.7.8](https://github.com/heroku/cli/compare/v7.7.7...v7.7.8) (2018-07-30)
 
