@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="7.12.3"></a>
+## [7.12.3](https://github.com/heroku/cli/compare/v7.12.2...v7.12.3) (2018-08-27)
+
+
+### Bug Fixes
+
+* migrate heroku-splunk ([34f286f](https://github.com/heroku/cli/commit/34f286f))
+
+
+
+
+
 <a name="7.12.2"></a>
 ## [7.12.2](https://github.com/heroku/cli/compare/v7.12.1...v7.12.2) (2018-08-24)
 
