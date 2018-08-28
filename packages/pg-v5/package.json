@@ -19,7 +19,7 @@
     "co-wait": "^0.0.0",
     "debug": "^3.1.0",
     "filesize": "^3.6.1",
-    "heroku-cli-util": "^8.0.9",
+    "heroku-cli-util": "^8.0.10",
     "lodash": "^4.17.10",
     "mkdirp": "^0.5.1",
     "node-notifier": "^5.2.1",
@@ -33,7 +33,7 @@
     "heroku-client": "^3.0.6",
     "mocha": "^5.1.1",
     "nock": "9.2.6",
-    "nyc": "^12.0.2",
+    "nyc": "^13.0.1",
     "proxyquire": "^2.1.0",
     "sinon": "<2",
     "unexpected": "^10.37.7"

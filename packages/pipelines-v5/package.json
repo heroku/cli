@@ -17,17 +17,17 @@
     "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/pipelines-v5/<%- commandPath %>"
   },
   "dependencies": {
-    "@heroku-cli/command": "^8.1.17",
+    "@heroku-cli/command": "^8.1.27",
     "bluebird": "^3.5.1",
     "co": "^4.6.0",
-    "heroku-cli-util": "^8.0.9",
-    "http-call": "^5.2.0",
+    "heroku-cli-util": "^8.0.10",
+    "http-call": "^5.2.1",
     "inflection": "^1.12.0",
-    "inquirer": "^6.1.0",
+    "inquirer": "^6.2.0",
     "lodash.flatten": "^4.4.0",
     "lodash.sortby": "^4.7.0",
     "string-just": "^0.0.2",
-    "validator": "^10.6.0"
+    "validator": "^10.7.0"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.17.0",
@@ -35,7 +35,7 @@
     "chai": "^4.1.2",
     "mocha": "^5.1.1",
     "nock": "^9.2.6",
-    "nyc": "^12.0.2",
+    "nyc": "^13.0.1",
     "sinon": "^4.5.0",
     "sinon-chai": "^3.0.0",
     "std-mocks": "^1.0.1",
