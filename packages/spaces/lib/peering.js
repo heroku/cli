@@ -13,7 +13,7 @@ module.exports = function (heroku) {
   }
 
   function acceptPeeringRequest (space, pcxID) {
-    return request('POST', `/spaces/${space}/peerings`, {pcx_id: pcxID})
+    return request('POST', `/spaces/${space}/peerings`, { pcx_id: pcxID })
   }
 
   function destroyPeeringRequest (space, pcxID) {
@@ -36,14 +36,14 @@ module.exports = function (heroku) {
     cli.styledHeader(`${space} Peerings`)
     cli.table(peers, {
       columns: [
-        {key: 'pcx_id', label: 'PCX ID'},
-        {key: 'type', label: 'Type'},
-        {key: 'cidr_blocks', label: 'CIDR Blocks', format: format.CIDRBlocksOrCIDRBlock},
-        {key: 'status', label: 'Status', format: format.PeeringStatus},
-        {key: 'aws_vpc_id', label: 'VPC ID'},
-        {key: 'aws_region', label: 'AWS Region'},
-        {key: 'aws_account_id', label: 'AWS Account ID'},
-        {key: 'expires', label: 'Expires'}
+        { key: 'pcx_id', label: 'PCX ID' },
+        { key: 'type', label: 'Type' },
+        { key: 'cidr_blocks', label: 'CIDR Blocks', format: format.CIDRBlocksOrCIDRBlock },
+        { key: 'status', label: 'Status', format: format.PeeringStatus },
+        { key: 'aws_vpc_id', label: 'VPC ID' },
+        { key: 'aws_region', label: 'AWS Region' },
+        { key: 'aws_account_id', label: 'AWS Account ID' },
+        { key: 'expires', label: 'Expires' }
       ]
     })
   }
@@ -53,7 +53,7 @@ module.exports = function (heroku) {
       method: method,
       path: path,
       body: body,
-      headers: {Accept: 'application/vnd.heroku+json; version=3.dogwood'}
+      headers: { Accept: 'application/vnd.heroku+json; version=3.dogwood' }
     })
   }
 

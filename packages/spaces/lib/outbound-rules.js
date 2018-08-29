@@ -6,7 +6,7 @@ module.exports = function (heroku) {
   function getOutboundRules (space) {
     return heroku.request({
       path: `/spaces/${space}/outbound-ruleset`,
-      headers: {Accept: 'application/vnd.heroku+json; version=3.dogwood'}
+      headers: { Accept: 'application/vnd.heroku+json; version=3.dogwood' }
     })
   }
 
@@ -15,7 +15,7 @@ module.exports = function (heroku) {
       method: 'PUT',
       path: `/spaces/${space}/outbound-ruleset`,
       body: ruleset,
-      headers: {Accept: 'application/vnd.heroku+json; version=3.dogwood'}
+      headers: { Accept: 'application/vnd.heroku+json; version=3.dogwood' }
     })
   }
 
@@ -51,11 +51,11 @@ module.exports = function (heroku) {
 
     cli.table(lined(rules), {
       columns: [
-        {key: 'line', label: 'Rule Number'},
-        {key: 'target', label: 'Destination'},
-        {key: 'from_port', label: 'From Port', format: fromPort => f(fromPort)},
-        {key: 'to_port', label: 'To Port', format: toPort => f(toPort)},
-        {key: 'protocol', label: 'Protocol'}
+        { key: 'line', label: 'Rule Number' },
+        { key: 'target', label: 'Destination' },
+        { key: 'from_port', label: 'From Port', format: fromPort => f(fromPort) },
+        { key: 'to_port', label: 'To Port', format: toPort => f(toPort) },
+        { key: 'protocol', label: 'Protocol' }
       ]
     })
   }

@@ -6,7 +6,7 @@ module.exports = function (heroku) {
   function getRules (space) {
     return heroku.request({
       path: `/spaces/${space}/inbound-ruleset`,
-      headers: {Accept: 'application/vnd.heroku+json; version=3.dogwood'}
+      headers: { Accept: 'application/vnd.heroku+json; version=3.dogwood' }
     })
   }
 
@@ -15,7 +15,7 @@ module.exports = function (heroku) {
       method: 'PUT',
       path: `/spaces/${space}/inbound-ruleset`,
       body: ruleset,
-      headers: {Accept: 'application/vnd.heroku+json; version=3.dogwood'}
+      headers: { Accept: 'application/vnd.heroku+json; version=3.dogwood' }
     })
   }
 
