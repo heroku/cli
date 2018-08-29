@@ -4,7 +4,7 @@ let cli = require('heroku-cli-util')
 let co = require('co')
 
 function * run (context, heroku) {
-  let domains = yield heroku.request({path: `/apps/${context.app}/domains`})
+  let domains = yield heroku.request({ path: `/apps/${context.app}/domains` })
   if (context.flags.json) {
     cli.log(JSON.stringify(domains, null, 2))
   } else {
@@ -24,9 +24,9 @@ function * run (context, heroku) {
       cli.styledHeader(`${context.app} Custom Domains`)
       cli.table(customDomains, {
         columns: [
-          {key: 'hostname', label: 'Domain Name'},
-          {key: 'recordType', label: 'DNS Record Type'},
-          {key: 'cname', label: 'DNS Target'}
+          { key: 'hostname', label: 'Domain Name' },
+          { key: 'recordType', label: 'DNS Record Type' },
+          { key: 'cname', label: 'DNS Target' }
         ]
       })
     }
@@ -54,7 +54,7 @@ www.example.com  CNAME            www.example.herokudns.com`,
   needsApp: true,
   needsAuth: true,
   flags: [
-    {name: 'json', description: 'output in json format'}
+    { name: 'json', description: 'output in json format' }
   ],
   run: cli.command(co.wrap(run))
 }

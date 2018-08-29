@@ -34,7 +34,7 @@ BuildpackCommand.prototype.get = function () {
   let buildpackCommand = this
   return this.heroku.request({
     path: `/apps/${this.app}/buildpack-installations`,
-    headers: {Range: ''}
+    headers: { Range: '' }
   }).then(function (buildpacks) {
     return buildpackCommand.mapBuildpackResponse(buildpacks)
   })
@@ -45,9 +45,9 @@ BuildpackCommand.prototype.put = function (buildpackUpdates) {
   let buildpackCommand = this
   return this.heroku.request({
     path: `/apps/${app}/buildpack-installations`,
-    headers: {Range: ''},
+    headers: { Range: '' },
     method: 'PUT',
-    body: {updates: buildpackUpdates}
+    body: { updates: buildpackUpdates }
   }).then(function (buildpacks) {
     return buildpackCommand.mapBuildpackResponse(buildpacks)
   })
@@ -75,7 +75,7 @@ BuildpackCommand.prototype.clear = function * () {
 }
 
 BuildpackCommand.prototype.findIndex = function (buildpacks) {
-  const {findIndex} = require('lodash')
+  const { findIndex } = require('lodash')
   let index = this.index
   if (index) {
     return findIndex(buildpacks, function (b) {
@@ -87,7 +87,7 @@ BuildpackCommand.prototype.findIndex = function (buildpacks) {
 }
 
 BuildpackCommand.prototype.findUrl = function findUrl (buildpacks) {
-  const {findIndex} = require('lodash')
+  const { findIndex } = require('lodash')
   let url = this.url
   let mappedUrl = this.url.replace(/^urn:buildpack:/, '').replace(/^https:\/\/codon-buildpacks\.s3\.amazonaws\.com\/buildpacks\/heroku\/(.*)\.tgz$/, 'heroku/$1')
   return findIndex(buildpacks, function (b) { return b.buildpack.url === url || b.buildpack.url === mappedUrl })
@@ -116,11 +116,11 @@ BuildpackCommand.prototype.displayUpdate = function (buildpacks) {
 
 BuildpackCommand.prototype.mutate = function (buildpacksGet, spliceIndex) {
   let buildpackUpdates = buildpacksGet.map(function (b) {
-    return {buildpack: b.buildpack.url}
+    return { buildpack: b.buildpack.url }
   })
 
   let howmany = (this.command === 'add') ? 0 : 1
-  let urls = (this.command === 'remove') ? [] : [{buildpack: this.url}]
+  let urls = (this.command === 'remove') ? [] : [{ buildpack: this.url }]
 
   Array.prototype.splice.apply(buildpackUpdates, [spliceIndex, howmany].concat(urls))
 

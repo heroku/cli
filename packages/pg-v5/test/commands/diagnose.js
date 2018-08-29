@@ -9,9 +9,9 @@ const proxyquire = require('proxyquire')
 const db = {
   id: 1,
   name: 'postgres-1',
-  plan: {name: 'heroku-postgresql:standard-0'},
+  plan: { name: 'heroku-postgresql:standard-0' },
   config_vars: ['DATABASE_URL'],
-  app: {name: 'myapp'}
+  app: { name: 'myapp' }
 }
 
 const fetcher = () => {
@@ -42,7 +42,7 @@ describe('pg:diagnose', () => {
 
   it('generates a report', () => {
     api.get('/addons/postgres-1').reply(200, db)
-    api.get('/apps/myapp/config-vars').reply(200, {DATABASE_URL: 'postgres://db'})
+    api.get('/apps/myapp/config-vars').reply(200, { DATABASE_URL: 'postgres://db' })
     pg.get('/client/v11/databases/1/metrics').reply(200, [])
     diagnose.post('/reports', {
       url: 'postgres://db',
@@ -59,16 +59,16 @@ describe('pg:diagnose', () => {
         {
           name: 'Connection count',
           status: 'red',
-          results: [{count: 1}]
+          results: [{ count: 1 }]
         },
         {
           name: 'Load',
           status: 'red',
-          results: {load: 100}
+          results: { load: 100 }
         }
       ]
     })
-    return cmd.run({app: 'myapp', args: {}})
+    return cmd.run({ app: 'myapp', args: {} })
       .then(() => expect(cli.stdout, 'to equal', `Report 697c8bd7-dbba-4f2d-83b6-789c58cc3a9c for myapp::postgres-1
 available for one month after creation on 101
 
@@ -91,16 +91,16 @@ Load 100
         {
           name: 'Connection count',
           status: 'red',
-          results: [{count: 1}]
+          results: [{ count: 1 }]
         },
         {
           name: 'Load',
           status: 'red',
-          results: {load: 100}
+          results: { load: 100 }
         }
       ]
     })
-    return cmd.run({app: 'myapp', args: {'DATABASE|REPORT_ID': '697c8bd7-dbba-4f2d-83b6-789c58cc3a9c'}})
+    return cmd.run({ app: 'myapp', args: { 'DATABASE|REPORT_ID': '697c8bd7-dbba-4f2d-83b6-789c58cc3a9c' } })
       .then(() => expect(cli.stdout, 'to equal', `Report 697c8bd7-dbba-4f2d-83b6-789c58cc3a9c for myapp::postgres-1
 available for one month after creation on 101
 
@@ -132,7 +132,7 @@ Load 100
         }
       ]
     })
-    return cmd.run({app: 'myapp', args: {'DATABASE|REPORT_ID': '697c8bd7-dbba-4f2d-83b6-789c58cc3a9c'}})
+    return cmd.run({ app: 'myapp', args: { 'DATABASE|REPORT_ID': '697c8bd7-dbba-4f2d-83b6-789c58cc3a9c' } })
       .then(() => expect(cli.stdout, 'to equal', `Report 697c8bd7-dbba-4f2d-83b6-789c58cc3a9c for myapp::postgres-1
 available for one month after creation on 101
 
@@ -148,14 +148,14 @@ RED: Load
       'created_at': '2014-06-24 01:26:11.941197+00',
       'database': 'dbcolor',
       'checks': [
-        {'name': 'Hit Rate', 'status': 'green', 'results': null},
-        {'name': 'Connection Count', 'status': 'red', 'results': [{'count': 150}]},
+        { 'name': 'Hit Rate', 'status': 'green', 'results': null },
+        { 'name': 'Connection Count', 'status': 'red', 'results': [{ 'count': 150 }] },
         {
           'name': 'list',
           'status': 'yellow',
           'results': [
-            {'thing': 'one'},
-            {'thing': 'two'}
+            { 'thing': 'one' },
+            { 'thing': 'two' }
           ]
         },
         {
@@ -167,7 +167,7 @@ RED: Load
         }
       ]
     })
-    return cmd.run({app: 'myapp', args: {'DATABASE|REPORT_ID': '697c8bd7-dbba-4f2d-83b6-789c58cc3a9c'}})
+    return cmd.run({ app: 'myapp', args: { 'DATABASE|REPORT_ID': '697c8bd7-dbba-4f2d-83b6-789c58cc3a9c' } })
       .then(() => expect(cli.stdout, 'to equal', `Report abc123 for appname::dbcolor
 available for one month after creation on 2014-06-24 01:26:11.941197+00
 
@@ -202,7 +202,7 @@ Error Load check not supported on this plan
         }
       ]
     })
-    return cmd.run({app: 'myapp', args: {'DATABASE|REPORT_ID': '697c8bd7-dbba-4f2d-83b6-789c58cc3a9c'}})
+    return cmd.run({ app: 'myapp', args: { 'DATABASE|REPORT_ID': '697c8bd7-dbba-4f2d-83b6-789c58cc3a9c' } })
       .then(() => expect(cli.stdout, 'to equal', `Report abc123 for appname::dbcolor
 available for one month after creation on 2014-06-24 01:26:11.941197+00
 

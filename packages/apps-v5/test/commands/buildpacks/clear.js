@@ -32,7 +32,7 @@ describe('heroku buildpacks:clear', function () {
   it('# clears and warns about buildpack URL config var', function () {
     nock('https://api.heroku.com')
       .get('/apps/example/config-vars')
-      .reply(200, {BUILDPACK_URL: 'http://github.com/foo/foo'})
+      .reply(200, { BUILDPACK_URL: 'http://github.com/foo/foo' })
 
     let mock = stubPut()
 
@@ -48,7 +48,7 @@ describe('heroku buildpacks:clear', function () {
   it('# clears and warns about language pack URL config var', function () {
     nock('https://api.heroku.com')
       .get('/apps/example/config-vars')
-      .reply(200, {LANGUAGE_PACK_URL: 'http://github.com/foo/foo'})
+      .reply(200, { LANGUAGE_PACK_URL: 'http://github.com/foo/foo' })
 
     let mock = stubPut()
 

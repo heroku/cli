@@ -15,7 +15,7 @@ describe('ps:stop', function () {
     let api = nock('https://api.heroku.com')
       .post('/apps/myapp/dynos/web/actions/stop').reply(200)
 
-    return cmd.run({app: 'myapp', args: {dyno: 'web'}})
+    return cmd.run({ app: 'myapp', args: { dyno: 'web' } })
       .then(() => api.done())
   })
 
@@ -23,7 +23,7 @@ describe('ps:stop', function () {
     let api = nock('https://api.heroku.com')
       .post('/apps/myapp/dynos/run.10/actions/stop').reply(200)
 
-    return cmd.run({app: 'myapp', args: {dyno: 'run.10'}})
+    return cmd.run({ app: 'myapp', args: { dyno: 'run.10' } })
       .then(() => api.done())
   })
 })

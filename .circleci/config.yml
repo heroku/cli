@@ -137,13 +137,13 @@ workflows:
               ignore: /.*/
             tags:
               only: /^v.*/
-  nightly:
-    triggers:
-      - schedule:
-          cron: "0 14 * * *"
-          filters:
-            branches:
-              only:
-                - master
-    jobs:
-      - snap
+  # nightly:
+  #   triggers:
+  #     - schedule:
+  #         cron: "0 14 * * *"
+  #         filters:
+  #           branches:
+  #             only:
+  #               - master
+  #   jobs:
+  #     - snap

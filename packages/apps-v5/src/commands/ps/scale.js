@@ -2,7 +2,7 @@
 
 let cli = require('heroku-cli-util')
 let co = require('co')
-const {compact} = require('lodash')
+const { compact } = require('lodash')
 
 let emptyFormationErr = (app) => {
   return new Error(`No process types on ${cli.color.app(app)}.
@@ -19,7 +19,7 @@ function * run (context, heroku) {
       if (!change) return
       let quantity = change[2][0] === '=' ? change[2].substr(1) : change[2]
       if (change[3]) change[3] = change[3].replace('Shield-', 'Private-')
-      return {type: change[1], quantity, size: change[3]}
+      return { type: change[1], quantity, size: change[3] }
     }))
   }
 
@@ -38,8 +38,8 @@ function * run (context, heroku) {
     if (formation.length === 0) throw emptyFormationErr(app)
     cli.log(formation.map((d) => `${d.type}=${d.quantity}:${d.size}`).sort().join(' '))
   } else {
-    yield cli.action('Scaling dynos', {success: false}, co(function * () {
-      let formation = yield heroku.request({method: 'PATCH', path: `/apps/${app}/formation`, body: {updates: changes}})
+    yield cli.action('Scaling dynos', { success: false }, co(function * () {
+      let formation = yield heroku.request({ method: 'PATCH', path: `/apps/${app}/formation`, body: { updates: changes } })
       const appProps = yield heroku.get(`/apps/${app}`)
       const shielded = appProps.space && appProps.space.shield
       if (shielded) {
@@ -72,7 +72,7 @@ web=3:Standard-2X worker=1:Standard-1X`,
 }
 
 module.exports = [
-  Object.assign({topic: 'ps', command: 'scale'}, cmd),
-  Object.assign({topic: 'dyno', command: 'scale'}, cmd),
-  Object.assign({topic: 'scale', hidden: true}, cmd)
+  Object.assign({ topic: 'ps', command: 'scale' }, cmd),
+  Object.assign({ topic: 'dyno', command: 'scale' }, cmd),
+  Object.assign({ topic: 'scale', hidden: true }, cmd)
 ]

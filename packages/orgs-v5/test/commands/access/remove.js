@@ -14,7 +14,7 @@ describe('heroku access:remove', () => {
     afterEach(() => nock.cleanAll())
 
     it('removes the user from an app', () => {
-      return cmd.run({app: 'myapp', args: {email: 'raulb@heroku.com'}})
+      return cmd.run({ app: 'myapp', args: { email: 'raulb@heroku.com' } })
         .then(() => expect('').to.eq(cli.stdout))
         .then(() => expect(`Removing raulb@heroku.com access from the app myapp... done
 `).to.eq(cli.stderr))

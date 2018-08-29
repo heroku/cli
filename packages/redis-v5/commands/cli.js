@@ -96,7 +96,7 @@ function redisCLI (uri, client) {
   })
 }
 
-function bastionConnect ({uri, bastions, config}) {
+function bastionConnect ({ uri, bastions, config }) {
   return new Promise((resolve, reject) => {
     let tunnel = new Client()
     tunnel.on('ready', function () {
@@ -130,13 +130,13 @@ function maybeTunnel (redis, config) {
   let uri = url.parse(redis.resource_url)
 
   if (bastions != null) {
-    return bastionConnect({uri, bastions, config})
+    return bastionConnect({ uri, bastions, config })
   } else {
     let client
     if (!hobby) {
-      client = tls.connect({port: parseInt(uri.port, 10) + 1, host: uri.hostname, rejectUnauthorized: false})
+      client = tls.connect({ port: parseInt(uri.port, 10) + 1, host: uri.hostname, rejectUnauthorized: false })
     } else {
-      client = net.connect({port: uri.port, host: uri.hostname})
+      client = net.connect({ port: uri.port, host: uri.hostname })
     }
     return redisCLI(uri, client)
   }
@@ -148,9 +148,9 @@ module.exports = {
   needsApp: true,
   needsAuth: true,
   description: 'opens a redis prompt',
-  args: [{name: 'database', optional: true}],
-  flags: [{name: 'confirm', char: 'c', hasValue: true}],
-  run: cli.command({preauth: true}, async (context, heroku) => {
+  args: [{ name: 'database', optional: true }],
+  flags: [{ name: 'confirm', char: 'c', hasValue: true }],
+  run: cli.command({ preauth: true }, async (context, heroku) => {
     const api = require('../lib/shared')(context, heroku)
     let addon = await api.getRedisAddon()
 

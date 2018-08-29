@@ -13,12 +13,12 @@ describe('git:remote', function () {
 
   it('errors if no app', function () {
     let git = require('../mock/git')
-    let remote = proxyquire('../../commands/git/remote', {'../../lib/git': () => git})
+    let remote = proxyquire('../../commands/git/remote', { '../../lib/git': () => git })
 
     return expect(
-      remote.run({flags: {}, args: []}),
+      remote.run({ flags: {}, args: [] }),
       'to be rejected with',
-      {message: 'Specify an app with --app'})
+      { message: 'Specify an app with --app' })
   })
 
   it('replaces an http-git remote', function () {
@@ -26,12 +26,12 @@ describe('git:remote', function () {
     let mock = sinon.mock(git)
     mock.expects('exec').withExactArgs(['remote']).once().returns(Promise.resolve('heroku'))
     mock.expects('exec').withExactArgs(['remote', 'set-url', 'heroku', 'https://git.heroku.com/myapp.git']).once().returns(Promise.resolve())
-    let remote = proxyquire('../../commands/git/remote', {'../../lib/git': () => git})
+    let remote = proxyquire('../../commands/git/remote', { '../../lib/git': () => git })
     let api = nock('https://api.heroku.com')
       .get('/apps/myapp')
-      .reply(200, {name: 'myapp'})
+      .reply(200, { name: 'myapp' })
 
-    return remote.run({flags: {app: 'myapp'}, args: []})
+    return remote.run({ flags: { app: 'myapp' }, args: [] })
       .then(() => expect(cli.stdout, 'to equal', 'set git remote heroku to https://git.heroku.com/myapp.git\n'))
       .then(() => {
         mock.verify()
@@ -45,12 +45,12 @@ describe('git:remote', function () {
     let mock = sinon.mock(git)
     mock.expects('exec').withExactArgs(['remote']).once().returns(Promise.resolve(''))
     mock.expects('exec').withExactArgs(['remote', 'add', 'heroku', 'https://git.heroku.com/myapp.git']).once().returns(Promise.resolve())
-    let remote = proxyquire('../../commands/git/remote', {'../../lib/git': () => git})
+    let remote = proxyquire('../../commands/git/remote', { '../../lib/git': () => git })
     let api = nock('https://api.heroku.com')
       .get('/apps/myapp')
-      .reply(200, {name: 'myapp'})
+      .reply(200, { name: 'myapp' })
 
-    return remote.run({flags: {app: 'myapp'}, args: []})
+    return remote.run({ flags: { app: 'myapp' }, args: [] })
       .then(() => expect(cli.stdout, 'to equal', 'set git remote heroku to https://git.heroku.com/myapp.git\n'))
       .then(() => {
         mock.verify()

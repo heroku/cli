@@ -20,7 +20,7 @@ ${cli.color.cyan('https://devcenter.heroku.com/articles/managing-add-ons')}`)
 }
 
 function handlePlanChangeAPIError (err) {
-  const {sortBy} = require('lodash')
+  const { sortBy } = require('lodash')
 
   if (err.statusCode === 422 && err.body.message && err.body.message.startsWith("Couldn't find either the add-on")) {
     return heroku.get(`/addon-services/${service}/plans`)
@@ -83,11 +83,11 @@ function * run (c, h) {
   service = addon.addon_service.name
   app = addon.app.name
   plan = `${service}:${plan}`
-  yield cli.action(`Changing ${cli.color.magenta(addon.name)} on ${cli.color.cyan(app)} from ${cli.color.blue(addon.plan.name)} to ${cli.color.blue(plan)}`, {success: false}, co(function * () {
+  yield cli.action(`Changing ${cli.color.magenta(addon.name)} on ${cli.color.cyan(app)} from ${cli.color.blue(addon.plan.name)} to ${cli.color.blue(plan)}`, { success: false }, co(function * () {
     addon = yield heroku.request({
       path: `/apps/${app}/addons/${addon.name}`,
       method: 'PATCH',
-      body: {plan: {name: plan}},
+      body: { plan: { name: plan } },
       headers: {
         'Accept-Expansion': 'plan',
         'X-Heroku-Legacy-Provider-Messages': 'true'
@@ -116,11 +116,11 @@ $ heroku addons:upgrade swimming-briskly-123 heroku-redis:premium-2`
   ],
   needsAuth: true,
   wantsApp: true,
-  args: [{name: 'addon'}, {name: 'plan', optional: true}],
-  run: cli.command({preauth: true}, co.wrap(run))
+  args: [{ name: 'addon' }, { name: 'plan', optional: true }],
+  run: cli.command({ preauth: true }, co.wrap(run))
 }
 
 module.exports = [
-  Object.assign({command: 'upgrade'}, cmd),
-  Object.assign({command: 'downgrade'}, cmd)
+  Object.assign({ command: 'upgrade' }, cmd),
+  Object.assign({ command: 'downgrade' }, cmd)
 ]

@@ -36,6 +36,6 @@ let cmd = {
 }
 
 module.exports = [
-  Object.assign({topic: 'apps', command: 'stacks'}, cmd),
-  Object.assign({topic: 'stack', hidden: true}, cmd)
+  Object.assign({ topic: 'apps', command: 'stacks' }, cmd),
+  Object.assign({ topic: 'stack', hidden: true }, cmd)
 ]

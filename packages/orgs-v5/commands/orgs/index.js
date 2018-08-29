@@ -14,7 +14,7 @@ function * run (context, heroku) {
   if (context.flags.json) {
     Utils.printGroupsJSON(orgs)
   } else {
-    Utils.printGroups(orgs, {label: 'Organizations'})
+    Utils.printGroups(orgs, { label: 'Organizations' })
   }
 }
 
@@ -23,9 +23,9 @@ module.exports = {
   description: 'list the organizations that you are a member of',
   needsAuth: true,
   flags: [
-    {name: 'json', description: 'output in json format'},
-    {name: 'enterprise', hasValue: false, description: 'filter by enterprise orgs'},
-    {name: 'teams', hasValue: false, description: 'filter by teams', hidden: true}
+    { name: 'json', description: 'output in json format' },
+    { name: 'enterprise', hasValue: false, description: 'filter by enterprise orgs' },
+    { name: 'teams', hasValue: false, description: 'filter by teams', hidden: true }
   ],
   run: cli.command(co.wrap(run))
 }

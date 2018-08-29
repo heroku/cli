@@ -46,7 +46,7 @@ describe('pg', () => {
           name: 'postgres-1'
         },
         config_vars: ['DATABASE_URL'],
-        app: {name: 'myapp'}
+        app: { name: 'myapp' }
       }
     }
 
@@ -96,7 +96,7 @@ describe('pg', () => {
         }
       )
 
-      return push.run({args: {source: 'localdb', target: 'postgres-1'}, flags: {}})
+      return push.run({ args: { source: 'localdb', target: 'postgres-1' }, flags: {} })
         .then(() => cp.verify())
         .then(() => expect(cli.stdout, 'to equal', 'heroku-cli: Pushing localdb ---> postgres-1\nheroku-cli: Pushing complete.\n'))
         .then(() => expect(cli.stderr, 'to equal', ''))
@@ -118,7 +118,7 @@ describe('pg', () => {
         }
       )
 
-      return push.run({args: {source: 'postgres://localhost:5433/localdb', target: 'postgres-1'}, flags: {}})
+      return push.run({ args: { source: 'postgres://localhost:5433/localdb', target: 'postgres-1' }, flags: {} })
         .then(() => cp.verify())
         .then(() => expect(cli.stdout, 'to equal', 'heroku-cli: Pushing postgres://localhost:5433/localdb ---> postgres-1\nheroku-cli: Pushing complete.\n'))
         .then(() => expect(cli.stderr, 'to equal', ''))
@@ -142,7 +142,7 @@ describe('pg', () => {
         }
       )
 
-      return push.run({args: {source: 'localdb', target: 'postgres-1'}, flags: {}})
+      return push.run({ args: { source: 'localdb', target: 'postgres-1' }, flags: {} })
         .then(() => cp.verify())
         .then(() => expect(cli.stdout, 'to equal', 'heroku-cli: Pushing localdb ---> postgres-1\nheroku-cli: Pushing complete.\n'))
         .then(() => expect(cli.stderr, 'to equal', ''))
@@ -176,7 +176,7 @@ describe('pg', () => {
         }
       )
 
-      return push.run({args: {source: 'localdb', target: 'postgres-1'}, flags: {}})
+      return push.run({ args: { source: 'localdb', target: 'postgres-1' }, flags: {} })
         .then(() => cp.verify())
         .then(() => expect(cli.stdout, 'to equal', 'heroku-cli: Pushing localdb ---> postgres-1\nheroku-cli: Pushing complete.\n'))
         .then(() => expect(cli.stderr, 'to equal', ''))
@@ -203,7 +203,7 @@ describe('pg', () => {
         }
       )
 
-      return expect(push.run({args: {source: 'localdb', target: 'postgres-1'}, flags: {}}), 'to be rejected with', {code: 1})
+      return expect(push.run({ args: { source: 'localdb', target: 'postgres-1' }, flags: {} }), 'to be rejected with', { code: 1 })
         .then(() => cp.verify())
         .then(() => expect(cli.stdout, 'to equal', 'heroku-cli: Pushing localdb ---> postgres-1\n'))
         .then(() => expect(cli.stderr, 'to equal', ''))
@@ -216,7 +216,7 @@ describe('pg', () => {
       let psql = require('../../lib/psql')
       sinon.stub(psql, 'exec')
       let cp = sinon.mock(require('child_process'))
-      cp.expects('execSync').withExactArgs('createdb     localdb', {stdio: 'inherit'}).once()
+      cp.expects('execSync').withExactArgs('createdb     localdb', { stdio: 'inherit' }).once()
 
       let cmd = 'env PGPASSWORD="pass" PGSSLMODE=prefer pg_dump --verbose -F c -Z 0  -U jeff -h herokai.com -p 5432  mydb | env pg_restore --verbose --no-acl --no-owner    -d localdb'
       cp.expects('spawn').withExactArgs(cmd, [], opts).once().returns(
@@ -228,7 +228,7 @@ describe('pg', () => {
         }
       )
 
-      return pull.run({args: {source: 'postgres-1', target: 'localdb'}, flags: {}})
+      return pull.run({ args: { source: 'postgres-1', target: 'localdb' }, flags: {} })
         .then(() => cp.verify())
         .then(() => expect(cli.stdout, 'to equal', 'heroku-cli: Pulling postgres-1 ---> localdb\nheroku-cli: Pulling complete.\n'))
         .then(() => expect(cli.stderr, 'to equal', ''))
@@ -252,7 +252,7 @@ describe('pg', () => {
       let psql = require('../../lib/psql')
       sinon.stub(psql, 'exec')
       let cp = sinon.mock(require('child_process'))
-      cp.expects('execSync').withExactArgs('createdb     localdb', {stdio: 'inherit'}).once()
+      cp.expects('execSync').withExactArgs('createdb     localdb', { stdio: 'inherit' }).once()
 
       let cmd = 'env PGPASSWORD="pass" PGSSLMODE=prefer pg_dump --verbose -F c -Z 0  -U jeff -h herokai.com -p 5432  mydb | env pg_restore --verbose --no-acl --no-owner    -d localdb'
       cp.expects('spawn').withExactArgs(cmd, [], opts).once().returns(
@@ -264,7 +264,7 @@ describe('pg', () => {
         }
       )
 
-      return pull.run({args: {source: 'postgres-1', target: 'localdb'}, flags: {}})
+      return pull.run({ args: { source: 'postgres-1', target: 'localdb' }, flags: {} })
         .then(() => cp.verify())
         .then(() => expect(cli.stdout, 'to equal', 'heroku-cli: Pulling postgres-1 ---> localdb\nheroku-cli: Pulling complete.\n'))
         .then(() => expect(cli.stderr, 'to equal', ''))

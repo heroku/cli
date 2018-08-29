@@ -18,29 +18,29 @@ describe('clients:update', () => {
   })
 
   it('updates the client url', () => {
-    api.patch('/oauth/clients/f6e8d969-129f-42d2-854b-c2eca9d5a42e', {redirect_uri: 'https://heroku.com'})
+    api.patch('/oauth/clients/f6e8d969-129f-42d2-854b-c2eca9d5a42e', { redirect_uri: 'https://heroku.com' })
       .reply(200, {
         name: 'awesome',
         id: 'f6e8d969-129f-42d2-854b-c2eca9d5a42e',
         redirect_uri: 'https://myapp.com',
         secret: 'clientsecret'
       })
-    return cmd.run({args: {id: 'f6e8d969-129f-42d2-854b-c2eca9d5a42e'}, flags: {url: 'https://heroku.com'}})
+    return cmd.run({ args: { id: 'f6e8d969-129f-42d2-854b-c2eca9d5a42e' }, flags: { url: 'https://heroku.com' } })
   })
 
   it('updates the client name', () => {
-    api.patch('/oauth/clients/f6e8d969-129f-42d2-854b-c2eca9d5a42e', {name: 'newname'})
+    api.patch('/oauth/clients/f6e8d969-129f-42d2-854b-c2eca9d5a42e', { name: 'newname' })
       .reply(200, {
         name: 'awesome',
         id: 'f6e8d969-129f-42d2-854b-c2eca9d5a42e',
         redirect_uri: 'https://myapp.com',
         secret: 'clientsecret'
       })
-    return cmd.run({args: {id: 'f6e8d969-129f-42d2-854b-c2eca9d5a42e'}, flags: {name: 'newname'}})
+    return cmd.run({ args: { id: 'f6e8d969-129f-42d2-854b-c2eca9d5a42e' }, flags: { name: 'newname' } })
   })
 
   it('does nothing with no changes', () => {
-    return expect(cmd.run({args: {id: 'f6e8d969-129f-42d2-854b-c2eca9d5a42e'}, flags: {}}),
+    return expect(cmd.run({ args: { id: 'f6e8d969-129f-42d2-854b-c2eca9d5a42e' }, flags: {} }),
       'to be rejected with', 'No changes provided.')
   })
 })

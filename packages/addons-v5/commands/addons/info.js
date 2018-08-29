@@ -8,7 +8,7 @@ let formatPrice = require('../../lib/util').formatPrice
 let formatState = require('../../lib/util').formatState
 let style = require('../../lib/util').style
 
-let run = cli.command({preauth: true}, function (ctx, api) {
+let run = cli.command({ preauth: true }, function (ctx, api) {
   const resolve = require('../../lib/resolve')
   return co(function * () {
     let addon = yield resolve.addon(api, ctx.app, ctx.args.addon)
@@ -45,7 +45,7 @@ module.exports = {
   command: 'info',
   wantsApp: true,
   needsAuth: true,
-  args: [{name: 'addon'}],
+  args: [{ name: 'addon' }],
   run: run,
   usage: `${topic}:info ADDON`,
   description: 'show detailed add-on resource and attachment information'

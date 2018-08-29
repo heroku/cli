@@ -9,7 +9,7 @@ const proxyquire = require('proxyquire')
 const db = {
   id: 1,
   name: 'postgres-1',
-  plan: {name: 'heroku-postgresql:standard-0'}
+  plan: { name: 'heroku-postgresql:standard-0' }
 }
 const fetcher = () => {
   return {
@@ -47,14 +47,14 @@ describe('setter', () => {
       it(`shows the current value for ${name}`, () => {
         pg.get('/postgres/v0/databases/1/config').reply(200,
           { [name]: { value: value } })
-        return cli.command(fn)({app: 'myapp', args: {}, flags: {}})
+        return cli.command(fn)({ app: 'myapp', args: {}, flags: {} })
           .then(() => expect(cli.stdout, 'to equal', `${name.replace(/_/g, '-')} is set to ${value} for postgres-1.\n\n`))
       })
 
       it(`change the value for ${name}`, () => {
         pg.patch('/postgres/v0/databases/1/config').reply(200,
           { [name]: { value: value } })
-        return cli.command(fn)({app: 'myapp', args: {value: value}, flags: {}})
+        return cli.command(fn)({ app: 'myapp', args: { value: value }, flags: {} })
           .then(() => expect(cli.stdout, 'to equal', `${name.replace(/_/g, '-')} has been set to ${value} for postgres-1.\n\n`))
       })
     })

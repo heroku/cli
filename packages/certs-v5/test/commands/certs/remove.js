@@ -28,7 +28,7 @@ describe('heroku certs:remove', function () {
       .reply(200, [])
 
     var thrown = false
-    return certs.run({app: 'example', flags: {confirm: 'notexample'}}).catch(function (err) {
+    return certs.run({ app: 'example', flags: { confirm: 'notexample' } }).catch(function (err) {
       thrown = true
       mockSsl.done()
       mockSni.done()
@@ -55,12 +55,12 @@ describe('heroku certs:remove', function () {
       .reply(200, [endpoint])
 
     let mock = nock('https://api.heroku.com', {
-      reqheaders: {'Accept': 'application/vnd.heroku+json; version=3.sni_ssl_cert'}
+      reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3.sni_ssl_cert' }
     })
       .delete('/apps/example/sni-endpoints/tokyo-1050')
       .reply(200, endpoint)
 
-    return certs.run({app: 'example', flags: {confirm: 'example'}}).then(function () {
+    return certs.run({ app: 'example', flags: { confirm: 'example' } }).then(function () {
       mockAddons.done()
       mockSsl.done()
       mockSni.done()
@@ -84,12 +84,12 @@ describe('heroku certs:remove', function () {
       .reply(200, [endpoint])
 
     let mock = nock('https://api.heroku.com', {
-      reqheaders: {'Accept': 'application/vnd.heroku+json; version=3.sni_ssl_cert'}
+      reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3.sni_ssl_cert' }
     })
       .delete('/apps/example/sni-endpoints/tokyo-1050')
       .reply(200, endpoint)
 
-    return certs.run({app: 'example', flags: {confirm: 'example'}}).then(function () {
+    return certs.run({ app: 'example', flags: { confirm: 'example' } }).then(function () {
       mockAddon.done()
       mockSsl.done()
       mockSni.done()
@@ -109,7 +109,7 @@ describe('heroku certs:remove', function () {
       .reply(200, [])
 
     var thrown = false
-    return certs.run({app: 'example', flags: {confirm: 'notexample'}}).catch(function (err) {
+    return certs.run({ app: 'example', flags: { confirm: 'notexample' } }).catch(function (err) {
       thrown = true
       mockSsl.done()
       mockSni.done()
@@ -126,7 +126,7 @@ describe('heroku certs:remove', function () {
       .reply(200, {})
 
     return nock('https://api.heroku.com', {
-      reqheaders: {'Accept': `application/vnd.heroku+json; version=3.${variant}`}
+      reqheaders: { 'Accept': `application/vnd.heroku+json; version=3.${variant}` }
     })
       .delete(path)
       .reply(200, endpoint)
@@ -143,14 +143,14 @@ describe('heroku certs:remove', function () {
   }
 
   shared.shouldHandleArgs('certs:remove', 'removes an endpoint', certs, callback, {
-    stderr, stdout, flags: {confirm: 'example'}
+    stderr, stdout, flags: { confirm: 'example' }
   })
 
   sharedSsl.shouldHandleArgs('certs:remove', 'removes an endpoint', certs, callback, {
-    stderr, stdout, flags: {confirm: 'example'}
+    stderr, stdout, flags: { confirm: 'example' }
   })
 
   sharedSni.shouldHandleArgs('certs:remove', 'removes an endpoint', certs, callback, {
-    stderr, stdout, flags: {confirm: 'example'}
+    stderr, stdout, flags: { confirm: 'example' }
   })
 })

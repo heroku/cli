@@ -10,7 +10,7 @@ function * run (context, heroku) {
   let domain = yield cli.action(`Adding ${cli.color.green(hostname)} to ${cli.color.app(context.app)}`, heroku.request({
     path: `/apps/${context.app}/domains`,
     method: 'POST',
-    body: {hostname}
+    body: { hostname }
   }))
 
   if (context.flags.json) {
@@ -37,10 +37,10 @@ module.exports = {
   description: 'add domain to an app',
   needsApp: true,
   needsAuth: true,
-  args: [{name: 'hostname'}],
+  args: [{ name: 'hostname' }],
   flags: [
-    {name: 'json', description: 'output in json format', char: 'j'},
-    {name: 'wait'}
+    { name: 'json', description: 'output in json format', char: 'j' },
+    { name: 'wait' }
   ],
   run: cli.command(co.wrap(run))
 }

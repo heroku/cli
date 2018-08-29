@@ -11,13 +11,13 @@ const db = {
   host: 'foo.com',
   user: 'jeff',
   password: 'pass',
-  url: {href: 'postgres://jeff:pass@foo.com/mydb'}
+  url: { href: 'postgres://jeff:pass@foo.com/mydb' }
 }
 
 const addon = {
   id: 1,
   name: 'postgres-1',
-  plan: {name: 'heroku-postgresql:standard-0'}
+  plan: { name: 'heroku-postgresql:standard-0' }
 }
 
 const attachments = [
@@ -76,34 +76,34 @@ describe('pg:credentials:rotate', () => {
 
   it('rotates credentials for a specific role with --name', () => {
     pg.post('/postgres/v0/databases/postgres-1/credentials/my_role/credentials_rotation').reply(200)
-    return cmd.run({app: 'myapp', args: {}, flags: {name: 'my_role', confirm: 'myapp'}})
+    return cmd.run({ app: 'myapp', args: {}, flags: { name: 'my_role', confirm: 'myapp' } })
       .then(() => expect(cli.stdout, 'to equal', ''))
       .then(() => expect(cli.stderr, 'to equal', 'Rotating my_role on postgres-1... done\n'))
   })
 
   it('rotates credentials for all roles with --all', () => {
     pg.post('/postgres/v0/databases/postgres-1/credentials_rotation').reply(200)
-    return cmd.run({app: 'myapp', args: {}, flags: {all: true, confirm: 'myapp'}})
+    return cmd.run({ app: 'myapp', args: {}, flags: { all: true, confirm: 'myapp' } })
       .then(() => expect(cli.stdout, 'to equal', ''))
       .then(() => expect(cli.stderr, 'to equal', 'Rotating all credentials on postgres-1... done\n'))
   })
 
   it('rotates credentials for a specific role with --name and --force', () => {
     pg.post('/postgres/v0/databases/postgres-1/credentials/my_role/credentials_rotation').reply(200)
-    return cmd.run({app: 'myapp', args: {}, flags: {name: 'my_role', confirm: 'myapp', force: true}})
+    return cmd.run({ app: 'myapp', args: {}, flags: { name: 'my_role', confirm: 'myapp', force: true } })
       .then(() => expect(cli.stdout, 'to equal', ''))
       .then(() => expect(cli.stderr, 'to equal', 'Rotating my_role on postgres-1... done\n'))
   })
 
   it('fails with an error if both --all and --name are included', () => {
     const err = new Error(`cannot pass both --all and --name`)
-    return expect(cmd.run({app: 'myapp', args: {}, flags: {all: true, name: 'my_role', confirm: 'myapp'}}), 'to be rejected with', err)
+    return expect(cmd.run({ app: 'myapp', args: {}, flags: { all: true, name: 'my_role', confirm: 'myapp' } }), 'to be rejected with', err)
   })
 
   it('throws an error when the db is starter plan but the name is specified', () => {
     const hobbyAddon = {
       name: 'postgres-1',
-      plan: {name: 'heroku-postgresql:hobby-dev'}
+      plan: { name: 'heroku-postgresql:hobby-dev' }
     }
 
     const fetcher = () => {
@@ -118,13 +118,13 @@ describe('pg:credentials:rotate', () => {
     })
 
     const err = new Error(`Only one default credential is supported for Hobby tier databases.`)
-    return expect(cmd.run({app: 'myapp', args: {}, flags: {name: 'jeff'}}), 'to be rejected with', err)
+    return expect(cmd.run({ app: 'myapp', args: {}, flags: { name: 'jeff' } }), 'to be rejected with', err)
   })
 
   it('rotates credentials with no --name with starter plan', () => {
     const hobbyAddon = {
       name: 'postgres-1',
-      plan: {name: 'heroku-postgresql:hobby-dev'}
+      plan: { name: 'heroku-postgresql:hobby-dev' }
     }
 
     const fetcher = () => {
@@ -139,7 +139,7 @@ describe('pg:credentials:rotate', () => {
     })
 
     starter.post('/postgres/v0/databases/postgres-1/credentials/default/credentials_rotation').reply(200)
-    return cmd.run({app: 'myapp', args: {}, flags: {confirm: 'myapp'}})
+    return cmd.run({ app: 'myapp', args: {}, flags: { confirm: 'myapp' } })
       .then(() => expect(cli.stdout, 'to equal', ''))
       .then(() => expect(cli.stderr, 'to equal', 'Rotating default on postgres-1... done\n'))
   })
@@ -147,7 +147,7 @@ describe('pg:credentials:rotate', () => {
   it('rotates credentials with --all with starter plan', () => {
     const hobbyAddon = {
       name: 'postgres-1',
-      plan: {name: 'heroku-postgresql:hobby-dev'}
+      plan: { name: 'heroku-postgresql:hobby-dev' }
     }
 
     const fetcher = () => {
@@ -162,7 +162,7 @@ describe('pg:credentials:rotate', () => {
     })
 
     starter.post('/postgres/v0/databases/postgres-1/credentials_rotation').reply(200)
-    return cmd.run({app: 'myapp', args: {}, flags: {all: true, confirm: 'myapp'}})
+    return cmd.run({ app: 'myapp', args: {}, flags: { all: true, confirm: 'myapp' } })
       .then(() => expect(cli.stdout, 'to equal', ''))
       .then(() => expect(cli.stderr, 'to equal', 'Rotating all credentials on postgres-1... done\n'))
   })
@@ -174,9 +174,9 @@ describe('pg:credentials:rotate', () => {
 Connections will be reset and applications will be restarted.
 This command will affect the apps appname_1, appname_2, appname_3.`
 
-    return cmd.run({app: 'myapp',
+    return cmd.run({ app: 'myapp',
       args: {},
-      flags: { all: true, confirm: 'myapp' }})
+      flags: { all: true, confirm: 'myapp' } })
       .then(() => {
         expect(lastApp, 'to equal', 'myapp')
         expect(lastConfirm, 'to equal', 'myapp')
@@ -193,9 +193,9 @@ Connections will be reset and applications will be restarted.
 Any followers lagging in replication (see heroku pg:info) will be inaccessible until caught up.
 This command will affect the apps appname_1, appname_2, appname_3.`
 
-    return cmd.run({app: 'myapp',
+    return cmd.run({ app: 'myapp',
       args: {},
-      flags: { all: true, force: true, confirm: 'myapp' }})
+      flags: { all: true, force: true, confirm: 'myapp' } })
       .then(() => {
         expect(lastApp, 'to equal', 'myapp')
         expect(lastConfirm, 'to equal', 'myapp')
@@ -211,9 +211,9 @@ The password for the my_role credential will rotate.
 Connections older than 30 minutes will be reset, and a temporary rotation username will be used during the process.
 This command will affect the apps appname_1, appname_2.`
 
-    return cmd.run({app: 'myapp',
+    return cmd.run({ app: 'myapp',
       args: {},
-      flags: { name: 'my_role', confirm: 'myapp' }})
+      flags: { name: 'my_role', confirm: 'myapp' } })
       .then(() => {
         expect(lastApp, 'to equal', 'myapp')
         expect(lastConfirm, 'to equal', 'myapp')
@@ -230,9 +230,9 @@ Connections will be reset and applications will be restarted.
 Any followers lagging in replication (see heroku pg:info) will be inaccessible until caught up.
 This command will affect the apps appname_1, appname_2.`
 
-    return cmd.run({app: 'myapp',
+    return cmd.run({ app: 'myapp',
       args: {},
-      flags: { name: 'my_role', force: true, confirm: 'myapp' }})
+      flags: { name: 'my_role', force: true, confirm: 'myapp' } })
       .then(() => {
         expect(lastApp, 'to equal', 'myapp')
         expect(lastConfirm, 'to equal', 'myapp')

@@ -11,7 +11,7 @@ const cmd = {
 example
 sushi`,
   flags: [
-    {name: 'json', description: 'output in json format'}
+    { name: 'json', description: 'output in json format' }
   ],
   needsAuth: true,
   run: cli.command(co.wrap(function * (context, heroku) {
@@ -28,5 +28,5 @@ sushi`,
 
 module.exports = [
   cmd,
-  Object.assign({command: 'list'}, cmd)
+  Object.assign({ command: 'list' }, cmd)
 ]

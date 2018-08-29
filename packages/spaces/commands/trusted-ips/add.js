@@ -9,7 +9,7 @@ function * run (context, heroku) {
   let ruleset = yield lib.getRules(space)
   ruleset.rules = ruleset.rules || []
   if (ruleset.rules.find((rs) => rs.source === context.args.source)) throw new Error(`A rule already exists for ${context.args.source}.`)
-  ruleset.rules.push({action: 'allow', source: context.args.source})
+  ruleset.rules.push({ action: 'allow', source: context.args.source })
   ruleset = yield lib.putRules(space, ruleset)
   cli.log(`Added ${cli.color.cyan.bold(context.args.source)} to trusted IP ranges on ${cli.color.cyan.bold(space)}`)
   cli.warn('It may take a few moments for the changes to take effect.')
@@ -30,11 +30,11 @@ Example:
   needsApp: false,
   needsAuth: true,
   args: [
-    {name: 'source'}
+    { name: 'source' }
   ],
   flags: [
-    {name: 'space', char: 's', hasValue: true, description: 'space to add rule to'},
-    {name: 'confirm', hasValue: true, description: 'set to space name to bypass confirm prompt'}
+    { name: 'space', char: 's', hasValue: true, description: 'space to add rule to' },
+    { name: 'confirm', hasValue: true, description: 'set to space name to bypass confirm prompt' }
   ],
   run: cli.command(co.wrap(run))
 }

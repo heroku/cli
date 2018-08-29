@@ -11,12 +11,12 @@ const db = {
   host: 'foo.com',
   user: 'jeff',
   password: 'pass',
-  url: {href: 'postgres://jeff:pass@foo.com/mydb'}
+  url: { href: 'postgres://jeff:pass@foo.com/mydb' }
 }
 
 const addon = {
   name: 'postgres-1',
-  plan: {name: 'heroku-postgresql:standard-0'}
+  plan: { name: 'heroku-postgresql:standard-0' }
 }
 
 const fetcher = () => {
@@ -48,13 +48,13 @@ describe('pg:credentials:destroy', () => {
     pg.delete('/postgres/v0/databases/postgres-1/credentials/credname').reply(200)
     let attachments = [
       {
-        app: {name: 'myapp'},
-        addon: {id: 100, name: 'postgres-1'},
+        app: { name: 'myapp' },
+        addon: { id: 100, name: 'postgres-1' },
         config_vars: ['HEROKU_POSTGRESQL_PINK_URL']
       }
     ]
     api.get('/addons/postgres-1/addon-attachments').reply(200, attachments)
-    return cmd.run({app: 'myapp', args: {}, flags: {name: 'credname', confirm: 'myapp'}})
+    return cmd.run({ app: 'myapp', args: {}, flags: { name: 'credname', confirm: 'myapp' } })
       .then(() => expect(cli.stderr, 'to equal', 'Destroying credential credname... done\n'))
       .then(() => expect(cli.stdout, 'to equal', `The credential has been destroyed within postgres-1.
 Database objects owned by credname will be assigned to the default credential.
@@ -64,7 +64,7 @@ Database objects owned by credname will be assigned to the default credential.
   it('throws an error when the db is starter plan', () => {
     const hobbyAddon = {
       name: 'postgres-1',
-      plan: {name: 'heroku-postgresql:hobby-dev'}
+      plan: { name: 'heroku-postgresql:hobby-dev' }
     }
 
     const fetcher = () => {
@@ -79,19 +79,19 @@ Database objects owned by credname will be assigned to the default credential.
     })
 
     const err = new Error(`Only one default credential is supported for Hobby tier databases.`)
-    return expect(cmd.run({app: 'myapp', args: {}, flags: {name: 'jeff'}}), 'to be rejected with', err)
+    return expect(cmd.run({ app: 'myapp', args: {}, flags: { name: 'jeff' } }), 'to be rejected with', err)
   })
 
   it('throws an error when the credential is still used for an attachment', () => {
     let attachments = [
       {
-        app: {name: 'myapp'},
-        addon: {id: 100, name: 'postgres-1'},
+        app: { name: 'myapp' },
+        addon: { id: 100, name: 'postgres-1' },
         config_vars: ['HEROKU_POSTGRESQL_PINK_URL']
       },
       {
-        app: {name: 'otherapp'},
-        addon: {id: 100, name: 'postgres-1'},
+        app: { name: 'otherapp' },
+        addon: { id: 100, name: 'postgres-1' },
         namespace: 'credential:jeff',
         config_vars: ['HEROKU_POSTGRESQL_PURPLE_URL']
       }
@@ -99,31 +99,31 @@ Database objects owned by credname will be assigned to the default credential.
     api.get('/addons/postgres-1/addon-attachments').reply(200, attachments)
 
     const err = new Error('Credential jeff must be detached from the app otherapp before destroying.')
-    return expect(cmd.run({app: 'myapp', args: {}, flags: {name: 'jeff'}}), 'to be rejected with', err)
+    return expect(cmd.run({ app: 'myapp', args: {}, flags: { name: 'jeff' } }), 'to be rejected with', err)
   })
 
   it('only mentions an app with multiple attachments once', () => {
     let attachments = [
       {
-        app: {name: 'myapp'},
-        addon: {id: 100, name: 'postgres-1'},
+        app: { name: 'myapp' },
+        addon: { id: 100, name: 'postgres-1' },
         config_vars: ['HEROKU_POSTGRESQL_PINK_URL']
       },
       {
-        app: {name: 'otherapp'},
-        addon: {id: 100, name: 'postgres-1'},
+        app: { name: 'otherapp' },
+        addon: { id: 100, name: 'postgres-1' },
         namespace: 'credential:jeff',
         config_vars: ['HEROKU_POSTGRESQL_PURPLE_URL']
       },
       {
-        app: {name: 'otherapp'},
-        addon: {id: 100, name: 'postgres-1'},
+        app: { name: 'otherapp' },
+        addon: { id: 100, name: 'postgres-1' },
         namespace: 'credential:jeff',
         config_vars: ['HEROKU_POSTGRESQL_RED_URL']
       },
       {
-        app: {name: 'yetanotherapp'},
-        addon: {id: 100, name: 'postgres-1'},
+        app: { name: 'yetanotherapp' },
+        addon: { id: 100, name: 'postgres-1' },
         namespace: 'credential:jeff',
         config_vars: ['HEROKU_POSTGRESQL_BLUE_URL']
       }
@@ -131,6 +131,6 @@ Database objects owned by credname will be assigned to the default credential.
     api.get('/addons/postgres-1/addon-attachments').reply(200, attachments)
 
     const err = new Error('Credential jeff must be detached from the apps otherapp, yetanotherapp before destroying.')
-    return expect(cmd.run({app: 'myapp', args: {}, flags: {name: 'jeff'}}), 'to be rejected with', err)
+    return expect(cmd.run({ app: 'myapp', args: {}, flags: { name: 'jeff' } }), 'to be rejected with', err)
   })
 })

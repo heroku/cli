@@ -8,7 +8,7 @@ function * run (context, heroku) {
   const host = require('../../lib/host')
   const util = require('../../lib/util')
 
-  const {app, args, flags} = context
+  const { app, args, flags } = context
 
   let db = yield fetcher.addon(app, args.database)
   if (util.starterPlan(db)) throw new Error('This operation is not supported by Hobby tier databases.')
@@ -19,7 +19,7 @@ This command will also grant the default credential admin option for all additio
 `)
 
   yield cli.action(`Resetting permissions and object ownership for default role to factory settings`, co(function * () {
-    yield heroku.post(`/postgres/v0/databases/${db.name}/repair-default`, {host: host(db)})
+    yield heroku.post(`/postgres/v0/databases/${db.name}/repair-default`, { host: host(db) })
   }))
 }
 
@@ -33,9 +33,9 @@ module.exports = {
 
     heroku pg:credentials:repair-default postgresql-something-12345
 `,
-  args: [{name: 'database', optional: true}],
+  args: [{ name: 'database', optional: true }],
   flags: [
-    {name: 'confirm', char: 'c', hasValue: true}
+    { name: 'confirm', char: 'c', hasValue: true }
   ],
-  run: cli.command({preauth: true}, co.wrap(run))
+  run: cli.command({ preauth: true }, co.wrap(run))
 }

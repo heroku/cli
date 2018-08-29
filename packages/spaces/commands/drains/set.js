@@ -19,10 +19,10 @@ module.exports = {
   needsApp: false,
   needsAuth: true,
   args: [
-    {name: 'url'}
+    { name: 'url' }
   ],
   flags: [
-    {name: 'space', char: 's', hasValue: true, description: 'space for which to set log drain', required: true}
+    { name: 'space', char: 's', hasValue: true, description: 'space for which to set log drain', required: true }
   ],
   run: cli.command(co.wrap(run))
 }

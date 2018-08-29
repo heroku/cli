@@ -25,8 +25,8 @@ module.exports = {
   needsAuth: true,
   needsApp: true,
   flags: [
-    {name: 'size', char: 's', description: 'dyno size', hasValue: true},
-    {name: 'env', char: 'e', description: "environment variables to set (use ';' to split multiple vars)", hasValue: true}
+    { name: 'size', char: 's', description: 'dyno size', hasValue: true },
+    { name: 'env', char: 'e', description: "environment variables to set (use ';' to split multiple vars)", hasValue: true }
   ],
   run: cli.command(co.wrap(run))
 }

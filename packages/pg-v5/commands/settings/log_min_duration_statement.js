@@ -21,6 +21,6 @@ VALUE needs to specified as a whole number, in milliseconds.`,
   help: `Setting log_min_duration_statement to zero prints all statement durations and -1 will disable logging statement durations.`,
   needsApp: true,
   needsAuth: true,
-  args: [{name: 'value', optional: true}, {name: 'database', optional: true}],
-  run: cli.command({preauth: true}, settings.generate('log_min_duration_statement', settings.numeric, explain))
+  args: [{ name: 'value', optional: true }, { name: 'database', optional: true }],
+  run: cli.command({ preauth: true }, settings.generate('log_min_duration_statement', settings.numeric, explain))
 }

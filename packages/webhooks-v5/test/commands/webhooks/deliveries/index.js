@@ -14,7 +14,7 @@ describe('heroku webhooks:deliveries', function () {
 
   it('# lists deliveries', function () {
     let mock = nock('https://api.heroku.com', {
-      reqheaders: {range: 'seq ..; order=desc,max=1000'}
+      reqheaders: { range: 'seq ..; order=desc,max=1000' }
     })
       .get('/apps/example/webhook-deliveries')
       .reply(206, [{
@@ -48,7 +48,7 @@ describe('heroku webhooks:deliveries', function () {
         num_attempts: 4,
         created_at: '2017-08-17T20:22:37Z',
         next_attempt_at: '2017-08-17T20:22:39Z'
-      }], {'next-range': 'id 99999999-9999-9999-9999-999999999999'})
+      }], { 'next-range': 'id 99999999-9999-9999-9999-999999999999' })
 
     return certs.run(['--app', 'example']).then(function () {
       mock.done()
@@ -64,7 +64,7 @@ describe('heroku webhooks:deliveries', function () {
 
   it('# lists deliveries by state', function () {
     let mock = nock('https://api.heroku.com', {
-      reqheaders: {range: 'seq ..; order=desc,max=1000'}
+      reqheaders: { range: 'seq ..; order=desc,max=1000' }
     })
       .get('/apps/example/webhook-deliveries?eq[status]=pending')
       .reply(206, [{
@@ -110,7 +110,7 @@ describe('heroku webhooks:deliveries', function () {
     }
 
     let mock = nock('https://api.heroku.com', {
-      reqheaders: {range: 'seq ..; order=desc,max=1000'}
+      reqheaders: { range: 'seq ..; order=desc,max=1000' }
     })
       .get('/apps/example/webhook-deliveries')
       .reply(206, new Array(1000).fill().map(() => delivery))

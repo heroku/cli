@@ -2,7 +2,7 @@
 
 const co = require('co')
 const cli = require('heroku-cli-util')
-const {round, flatten, mean, groupBy, map, sum, sumBy, toPairs, sortBy, zip} = require('lodash')
+const { round, flatten, mean, groupBy, map, sum, sumBy, toPairs, sortBy, zip } = require('lodash')
 
 let empty = (o) => Object.keys(o).length === 0
 
@@ -92,8 +92,8 @@ function * run (context, heroku) {
 
   // if not testing and not logged in
   if (!cli.raiseErrors && (!context.auth || !context.auth.password)) {
-    let {execSync} = require('child_process')
-    execSync('heroku help', {stdio: 'inherit'})
+    let { execSync } = require('child_process')
+    execSync('heroku help', { stdio: 'inherit' })
     return
   }
 
@@ -101,7 +101,7 @@ function * run (context, heroku) {
     return heroku.request({
       host: 'particleboard.heroku.com',
       path: '/favorites?type=app',
-      headers: {Range: ''}
+      headers: { Range: '' }
     }).then((apps) => apps.map((app) => app.app_name))
   }
 
@@ -112,10 +112,10 @@ function * run (context, heroku) {
     return apps.map((app) => {
       let types = app.formation.map((p) => p.type)
       return {
-        dynoErrors: types.map((type) => heroku.request({host: 'api.metrics.herokai.com', path: `/apps/${app.app.name}/formation/${type}/metrics/errors?${date}`, headers: {Range: ''}}).catch(() => null)),
-        routerLatency: heroku.request({host: 'api.metrics.herokai.com', path: `/apps/${app.app.name}/router-metrics/latency?${date}&process_type=${types[0]}`, headers: {Range: ''}}).catch(() => null),
-        routerErrors: heroku.request({host: 'api.metrics.herokai.com', path: `/apps/${app.app.name}/router-metrics/errors?${date}&process_type=${types[0]}`, headers: {Range: ''}}).catch(() => null),
-        routerStatus: heroku.request({host: 'api.metrics.herokai.com', path: `/apps/${app.app.name}/router-metrics/status?${date}&process_type=${types[0]}`, headers: {Range: ''}}).catch(() => null)
+        dynoErrors: types.map((type) => heroku.request({ host: 'api.metrics.herokai.com', path: `/apps/${app.app.name}/formation/${type}/metrics/errors?${date}`, headers: { Range: '' } }).catch(() => null)),
+        routerLatency: heroku.request({ host: 'api.metrics.herokai.com', path: `/apps/${app.app.name}/router-metrics/latency?${date}&process_type=${types[0]}`, headers: { Range: '' } }).catch(() => null),
+        routerErrors: heroku.request({ host: 'api.metrics.herokai.com', path: `/apps/${app.app.name}/router-metrics/errors?${date}&process_type=${types[0]}`, headers: { Range: '' } }).catch(() => null),
+        routerStatus: heroku.request({ host: 'api.metrics.herokai.com', path: `/apps/${app.app.name}/router-metrics/status?${date}&process_type=${types[0]}`, headers: { Range: '' } }).catch(() => null)
       }
     })
   }
@@ -123,15 +123,15 @@ function * run (context, heroku) {
   let apps, data, metrics
 
   try {
-    img(path.join(__dirname, '..', '..', 'assets', 'heroku.png'), {fallback: () => {}})
+    img(path.join(__dirname, '..', '..', 'assets', 'heroku.png'), { fallback: () => {} })
   } catch (err) { }
 
-  yield cli.action('Loading', {clear: true}, co(function * () {
+  yield cli.action('Loading', { clear: true }, co(function * () {
     apps = yield favoriteApps()
 
     data = yield {
-      orgs: heroku.request({path: '/organizations'}),
-      notifications: heroku.request({host: 'telex.heroku.com', path: '/user/notifications'}).catch(() => null),
+      orgs: heroku.request({ path: '/organizations' }),
+      notifications: heroku.request({ host: 'telex.heroku.com', path: '/user/notifications' }).catch(() => null),
       apps: apps.map((app) => ({
         app: heroku.get(`/apps/${app}`),
         formation: heroku.get(`/apps/${app}/formation`),

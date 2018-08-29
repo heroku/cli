@@ -2,13 +2,13 @@
 
 const co = require('co')
 const cli = require('heroku-cli-util')
-const {sortBy} = require('lodash')
+const { sortBy } = require('lodash')
 const util = require('../lib/util')
 
 function * run (context, heroku) {
   const fetcher = require('../lib/fetcher')(heroku)
 
-  const {app, args, flags} = context
+  const { app, args, flags } = context
 
   let showCredentials = co.wrap(function * () {
     const host = require('../lib/host')
@@ -35,8 +35,8 @@ function * run (context, heroku) {
     cli.warn(`${cli.color.cmd('pg:credentials')} has recently changed. Please use ${cli.color.cmd('pg:credentials:url')} for the previous output.`)
     cli.table(credentials, {
       columns: [
-        {key: 'name', label: 'Credential', format: presentCredential},
-        {key: 'state', label: 'State'}
+        { key: 'name', label: 'Credential', format: presentCredential },
+        { key: 'state', label: 'State' }
       ]
     })
   })
@@ -54,7 +54,7 @@ module.exports = {
   description: 'show information on credentials in the database',
   needsApp: true,
   needsAuth: true,
-  flags: [{name: 'reset', description: 'DEPRECATED'}],
-  args: [{name: 'database', optional: true}],
-  run: cli.command({preauth: true}, co.wrap(run))
+  flags: [{ name: 'reset', description: 'DEPRECATED' }],
+  args: [{ name: 'database', optional: true }],
+  run: cli.command({ preauth: true }, co.wrap(run))
 }

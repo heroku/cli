@@ -31,6 +31,6 @@ module.exports = {
   description: 'View the release command output',
   needsAuth: true,
   needsApp: true,
-  args: [{name: 'release', optional: true}],
-  run: cli.command({preauth: true}, co.wrap(run))
+  args: [{ name: 'release', optional: true }],
+  run: cli.command({ preauth: true }, co.wrap(run))
 }

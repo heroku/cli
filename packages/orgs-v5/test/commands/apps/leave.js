@@ -18,7 +18,7 @@ describe('heroku apps:leave', () => {
 
   context('when it is an org app', () => {
     it('leaves the app', () => {
-      return cmd.run({app: 'myapp'})
+      return cmd.run({ app: 'myapp' })
         .then(() => expect('').to.eq(cli.stdout))
         .then(() => expect(`Leaving myapp... done
 `).to.eq(cli.stderr))
@@ -29,7 +29,7 @@ describe('heroku apps:leave', () => {
 
   context('when it is not an org app', () => {
     it('leaves the app', () => {
-      return cmd.run({app: 'myapp'})
+      return cmd.run({ app: 'myapp' })
         .then(() => expect('').to.eq(cli.stdout))
         .then(() => expect(`Leaving myapp... done
 `).to.eq(cli.stderr))

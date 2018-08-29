@@ -7,7 +7,7 @@ const fs = require('fs-extra')
 function sshKeygen (file, quiet) {
   let spawn = require('child_process').spawn
   return new Promise(function (resolve, reject) {
-    spawn('ssh-keygen', ['-o', '-t', 'rsa', '-N', '', '-f', file], {stdio: quiet ? null : 'inherit'})
+    spawn('ssh-keygen', ['-o', '-t', 'rsa', '-N', '', '-f', file], { stdio: quiet ? null : 'inherit' })
       .on('close', (code) => code === 0 ? resolve() : reject(code))
   })
 }
@@ -23,7 +23,7 @@ async function run (context, heroku) {
       }])
     } else {
       return cli.prompt(message + ' [Y/n]').then(function (data) {
-        return {yes: /^y(es)?/i.test(data)}
+        return { yes: /^y(es)?/i.test(data) }
       })
     }
   }
@@ -33,7 +33,7 @@ async function run (context, heroku) {
   const sshdir = path.join(os.homedir(), '.ssh')
 
   let generate = async function () {
-    await fs.mkdirp(sshdir, {mode: 0o700})
+    await fs.mkdirp(sshdir, { mode: 0o700 })
     await sshKeygen(path.join(sshdir, 'id_rsa'), context.flags.quiet)
   }
 
@@ -104,10 +104,10 @@ Uploading SSH public key /.ssh/id_rsa.pub... done
 $ heroku keys:add /my/key.pub
 Uploading SSH public key /my/key.pub... done`,
   needsAuth: true,
-  args: [{name: 'key', optional: true}],
+  args: [{ name: 'key', optional: true }],
   flags: [
-    {name: 'quiet', hidden: true},
-    {name: 'yes', char: 'y', description: 'automatically answer yes for all prompts'}
+    { name: 'quiet', hidden: true },
+    { name: 'yes', char: 'y', description: 'automatically answer yes for all prompts' }
   ],
   run: cli.command(run)
 }

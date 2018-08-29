@@ -22,7 +22,7 @@ describe('drains:set', function () {
         updated_at: '2016-03-23T18:31:50Z',
         url: 'https://example.com'
       })
-    return cmd.run({args: {url: 'https://example.com'}, flags: {space: 'my-space'}})
+    return cmd.run({ args: { url: 'https://example.com' }, flags: { space: 'my-space' } })
       .then(() => expect(cli.stdout).to.equal(
         `Successfully set drain https://example.com for my-space.
 `

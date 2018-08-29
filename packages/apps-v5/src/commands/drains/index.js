@@ -10,11 +10,11 @@ function styledDrain (id, name, drain) {
 }
 
 function * run (context, heroku) {
-  const {partition} = require('lodash')
+  const { partition } = require('lodash')
 
   let path = `/apps/${context.app}/log-drains`
   if (context.flags.extended) path = path + '?extended=true'
-  let drains = yield heroku.request({path})
+  let drains = yield heroku.request({ path })
   if (context.flags.json) {
     cli.styledJSON(drains)
   } else {
@@ -41,8 +41,8 @@ module.exports = {
   needsApp: true,
   needsAuth: true,
   flags: [
-    {name: 'json', description: 'output in json format'},
-    {name: 'extended', char: 'x', hidden: true}
+    { name: 'json', description: 'output in json format' },
+    { name: 'extended', char: 'x', hidden: true }
   ],
   run: cli.command(co.wrap(run))
 }

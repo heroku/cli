@@ -39,12 +39,12 @@ describe('pg:outliers', () => {
   })
 
   it('reset queries stats', () => {
-    return cmd.run({app: 'myapp', args: {}, flags: { reset: true }})
+    return cmd.run({ app: 'myapp', args: {}, flags: { reset: true } })
       .then(() => expect(psql._query.trim(), 'to equal', 'SELECT pg_stat_statements_reset()'))
   })
 
   it('returns queries outliers', () => {
-    return cmd.run({app: 'myapp', args: {}, flags: {}})
+    return cmd.run({ app: 'myapp', args: {}, flags: {} })
       .then(() => expect(psql._query.trim(), 'to contain', 'FROM pg_stat_statements'))
   })
 })

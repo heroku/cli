@@ -18,7 +18,7 @@ describe('labs:info', function () {
         description: 'a user lab feature',
         doc_url: 'https://devcenter.heroku.com'
       })
-    return cmd.run({args: {feature: 'feature-a'}, flags: {}})
+    return cmd.run({ args: { feature: 'feature-a' }, flags: {} })
       .then(() => expect(cli.stdout, 'to equal', `=== feature-a
 Description: a user lab feature
 Docs:        https://devcenter.heroku.com
@@ -37,8 +37,8 @@ Enabled:     true
         description: 'a user lab feature',
         doc_url: 'https://devcenter.heroku.com'
       })
-    return cmd.run({args: {feature: 'feature-a'}, flags: {json: true}})
-      .then(() => expect(JSON.parse(cli.stdout), 'to satisfy', {name: 'feature-a'}))
+    return cmd.run({ args: { feature: 'feature-a' }, flags: { json: true } })
+      .then(() => expect(JSON.parse(cli.stdout), 'to satisfy', { name: 'feature-a' }))
       .then(() => expect(cli.stderr, 'to be empty'))
       .then(() => api.done())
   })
@@ -53,7 +53,7 @@ Enabled:     true
         description: 'an app labs feature',
         doc_url: 'https://devcenter.heroku.com'
       })
-    return cmd.run({app: 'myapp', args: {feature: 'feature-a'}, flags: {}})
+    return cmd.run({ app: 'myapp', args: { feature: 'feature-a' }, flags: {} })
       .then(() => expect(cli.stdout, 'to equal', `=== feature-a
 Description: an app labs feature
 Docs:        https://devcenter.heroku.com

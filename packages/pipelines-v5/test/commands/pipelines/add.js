@@ -10,7 +10,7 @@ describe('pipelines:add', function () {
   })
 
   it('displays the right messages', function () {
-    let pipeline = {name: 'example', id: '0123'}
+    let pipeline = { name: 'example', id: '0123' }
     let pipelines = [pipeline]
     let coupling = { id: '0123', stage: 'production' }
 

@@ -18,6 +18,6 @@ mod  - Includes all statements from ddl as well as data-modifying statements suc
 all  - All statements are logged`,
   needsApp: true,
   needsAuth: true,
-  args: [{name: 'value', optional: true}, {name: 'database', optional: true}],
-  run: cli.command({preauth: true}, settings.generate('log_statement', settings.enum, explain))
+  args: [{ name: 'value', optional: true }, { name: 'database', optional: true }],
+  run: cli.command({ preauth: true }, settings.generate('log_statement', settings.enum, explain))
 }

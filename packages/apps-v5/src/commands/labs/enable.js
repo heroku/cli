@@ -8,7 +8,7 @@ function * run (context, heroku) {
     return heroku.request({
       path: app ? `/apps/${app}/features/${feature}` : `/account/features/${feature}`,
       method: 'PATCH',
-      body: {enabled: true}
+      body: { enabled: true }
     })
   }
 
@@ -35,7 +35,7 @@ module.exports = {
   topic: 'labs',
   command: 'enable',
   description: 'enables an experimental feature',
-  args: [{name: 'feature'}],
+  args: [{ name: 'feature' }],
   needsAuth: true,
   wantsApp: true,
   run: cli.command(co.wrap(run))

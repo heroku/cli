@@ -4,7 +4,7 @@ let cli = require('heroku-cli-util')
 let co = require('co')
 
 function * run (context, heroku) {
-  let favorites = yield heroku.request({host: 'particleboard.heroku.com', path: '/favorites?type=app', headers: {Range: ''}})
+  let favorites = yield heroku.request({ host: 'particleboard.heroku.com', path: '/favorites?type=app', headers: { Range: '' } })
 
   if (context.flags.json) {
     cli.styledJSON(favorites)
@@ -20,7 +20,7 @@ module.exports = {
   description: 'list favorited apps',
   needsAuth: true,
   flags: [
-    {name: 'json', description: 'output in json format'}
+    { name: 'json', description: 'output in json format' }
   ],
   run: cli.command(co.wrap(run))
 }

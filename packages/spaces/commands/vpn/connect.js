@@ -41,13 +41,13 @@ The connection is established over the public Internet but all traffic is encryp
   needsApp: false,
   needsAuth: true,
   args: [
-    {name: 'name', optional: true, hidden: true}
+    { name: 'name', optional: true, hidden: true }
   ],
   flags: [
-    {name: 'name', char: 'n', hasValue: true, description: 'VPN name'},
-    {name: 'ip', char: 'i', hasValue: true, description: 'public IP of customer gateway'},
-    {name: 'cidrs', char: 'c', hasValue: true, description: 'a list of routable CIDRs separated by commas'},
-    {name: 'space', char: 's', hasValue: true, description: 'space name'}
+    { name: 'name', char: 'n', hasValue: true, description: 'VPN name' },
+    { name: 'ip', char: 'i', hasValue: true, description: 'public IP of customer gateway' },
+    { name: 'cidrs', char: 'c', hasValue: true, description: 'a list of routable CIDRs separated by commas' },
+    { name: 'space', char: 's', hasValue: true, description: 'space name' }
   ],
   run: cli.command(co.wrap(run))
 }

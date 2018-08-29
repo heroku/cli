@@ -7,7 +7,7 @@ const stripAnsi = require('strip-ansi')
 function * run (context, heroku) {
   const statusHelper = require('../../status_helper')
   const time = require('../../time')
-  const {truncate} = require('lodash')
+  const { truncate } = require('lodash')
 
   let optimizationWidth = 0
 
@@ -15,7 +15,7 @@ function * run (context, heroku) {
     const width = () => process.stdout.columns > 80 ? process.stdout.columns : 80
     const trunc = (s, l) => {
       if (process.stdout.isTTY) {
-        return truncate(s, {length: width() - (optimizationWidth + l), omission: '…'})
+        return truncate(s, { length: width() - (optimizationWidth + l), omission: '…' })
       }
       return s
     }
@@ -118,12 +118,12 @@ function * run (context, heroku) {
     let options = {
       printHeader: false,
       columns: [
-        {key: 'version', format: (v, r) => cli.color[statusHelper.color(r.status)]('v' + v)},
-        {key: 'description', format: descriptionWithStatus},
-        {key: 'user', format: (u) => cli.color.magenta(u.email.replace(/@addons\.heroku\.com$/, ''))},
-        {key: 'created_at', format: (t) => time.ago(new Date(t))},
-        {key: 'extended.slug_id'},
-        {key: 'extended.slug_uuid'}
+        { key: 'version', format: (v, r) => cli.color[statusHelper.color(r.status)]('v' + v) },
+        { key: 'description', format: descriptionWithStatus },
+        { key: 'user', format: (u) => cli.color.magenta(u.email.replace(/@addons\.heroku\.com$/, '')) },
+        { key: 'created_at', format: (t) => time.ago(new Date(t)) },
+        { key: 'extended.slug_id' },
+        { key: 'extended.slug_uuid' }
       ]
     }
     handleColorStatus(options)
@@ -136,10 +136,10 @@ function * run (context, heroku) {
     let options = {
       printHeader: false,
       columns: [
-        {key: 'version', label: '', format: (v, r) => cli.color[statusHelper.color(r.status)]('v' + v)},
-        {key: 'description', format: descriptionWithStatus},
-        {key: 'user', format: (u) => cli.color.magenta(u.email)},
-        {key: 'created_at', format: (t) => time.ago(new Date(t))}
+        { key: 'version', label: '', format: (v, r) => cli.color[statusHelper.color(r.status)]('v' + v) },
+        { key: 'description', format: descriptionWithStatus },
+        { key: 'user', format: (u) => cli.color.magenta(u.email) },
+        { key: 'created_at', format: (t) => time.ago(new Date(t)) }
       ]
     }
     handleColorStatus(options)
@@ -159,9 +159,9 @@ v3 Config add BAZ_QUX email@example.com 2015/11/17 17:37:41 (~ 1h ago)`,
   needsApp: true,
   needsAuth: true,
   flags: [
-    {name: 'num', char: 'n', description: 'number of releases to show', hasValue: true},
-    {name: 'json', description: 'output releases in json format'},
-    {name: 'extended', char: 'x', hidden: true}
+    { name: 'num', char: 'n', description: 'number of releases to show', hasValue: true },
+    { name: 'json', description: 'output releases in json format' },
+    { name: 'extended', char: 'x', hidden: true }
   ],
   run: cli.command(co.wrap(run))
 }

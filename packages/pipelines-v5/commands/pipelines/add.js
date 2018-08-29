@@ -6,7 +6,7 @@ let infer = require('../../lib/infer')
 let disambiguate = require('../../lib/disambiguate')
 let prompt = require('../../lib/prompt')
 let stageNames = require('../../lib/stages').inferrableStageNames
-const {StageCompletion} = require('@heroku-cli/command/lib/completions')
+const { StageCompletion } = require('@heroku-cli/command/lib/completions')
 
 const createCoupling = require('../../lib/api').createCoupling
 
@@ -21,10 +21,10 @@ Adding example-admin to example pipeline as production... done`,
   needsApp: true,
   needsAuth: true,
   args: [
-    {name: 'pipeline', description: 'name of pipeline', optional: false}
+    { name: 'pipeline', description: 'name of pipeline', optional: false }
   ],
   flags: [
-    {name: 'stage', char: 's', description: 'stage of first app in pipeline', hasValue: true, completion: StageCompletion}
+    { name: 'stage', char: 's', description: 'stage of first app in pipeline', hasValue: true, completion: StageCompletion }
   ],
   run: cli.command(co.wrap(function * (context, heroku) {
     const app = context.app

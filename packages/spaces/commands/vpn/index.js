@@ -17,9 +17,9 @@ function displayVPNConnections (space, connections) {
   cli.styledHeader(`${space} VPN Connections`)
   cli.table(connections, {
     columns: [
-      {label: 'Name', format: (_, v) => v.name || v.id},
-      {label: 'Status', key: 'status', format: format.VPNStatus},
-      {label: 'Tunnels', key: 'tunnels', format: t => tunnelFormat(t)}
+      { label: 'Name', format: (_, v) => v.name || v.id },
+      { label: 'Status', key: 'status', format: format.VPNStatus },
+      { label: 'Tunnels', key: 'tunnels', format: t => tunnelFormat(t) }
     ]
   })
 }
@@ -55,10 +55,10 @@ module.exports = {
   `,
   needsApp: false,
   needsAuth: true,
-  args: [{name: 'space', optional: true, hidden: true}],
+  args: [{ name: 'space', optional: true, hidden: true }],
   flags: [
-    {name: 'space', char: 's', hasValue: true, description: 'space to get VPN connections from'},
-    {name: 'json', description: 'output in json format'}
+    { name: 'space', char: 's', hasValue: true, description: 'space to get VPN connections from' },
+    { name: 'json', description: 'output in json format' }
   ],
   run: cli.command(co.wrap(run)),
   render: render

@@ -5,7 +5,7 @@ const cli = require('heroku-cli-util')
 
 function * run (context, heroku) {
   let app = context.app
-  let p = heroku.patch(`/apps/${app}`, {body: {maintenance: false}})
+  let p = heroku.patch(`/apps/${app}`, { body: { maintenance: false } })
   yield cli.action(`Disabling maintenance mode for ${cli.color.app(app)}`, p)
 }
 

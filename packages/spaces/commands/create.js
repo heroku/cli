@@ -4,8 +4,8 @@ const cli = require('heroku-cli-util')
 const co = require('co')
 const lib = require('../lib/spaces')
 const parsers = require('../lib/parsers')()
-const {flags} = require('@heroku-cli/command')
-const {RegionCompletion} = require('@heroku-cli/command/lib/completions')
+const { flags } = require('@heroku-cli/command')
+const { RegionCompletion } = require('@heroku-cli/command/lib/completions')
 
 function * run (context, heroku) {
   let space = context.flags.space || context.args.space
@@ -66,19 +66,19 @@ module.exports = {
   needsApp: false,
   needsAuth: true,
   wantsOrg: true,
-  args: [{name: 'space', optional: true, hidden: true}],
+  args: [{ name: 'space', optional: true, hidden: true }],
   flags: [
-    {name: 'space', char: 's', hasValue: true, description: 'name of space to create'},
-    {name: 'channel', hasValue: true, hidden: true},
-    {name: 'region', hasValue: true, description: 'region name', completion: RegionCompletion},
-    {name: 'features', hasValue: true, hidden: true, description: 'a list of features separated by commas'},
-    {name: 'log-drain-url', hasValue: true, hidden: true, description: 'direct log drain url'},
-    {name: 'owner-pool', hasValue: true, hidden: true, description: 'owner pool name'},
-    {name: 'shield', hasValue: false, hidden: true, description: 'create a Shield space'},
-    {name: 'cidr', hasValue: true, hidden: true, description: 'the RFC-1918 CIDR the space will use'},
-    {name: 'kpi-url', hasValue: true, hidden: true, description: 'self-managed KPI endpoint to use'},
-    {name: 'data-cidr', hasValue: true, hidden: true, description: "the RFC-1918 CIDR that the space will use when peering with DoD's spaces"},
-    flags.team({name: 'team', hasValue: true})
+    { name: 'space', char: 's', hasValue: true, description: 'name of space to create' },
+    { name: 'channel', hasValue: true, hidden: true },
+    { name: 'region', hasValue: true, description: 'region name', completion: RegionCompletion },
+    { name: 'features', hasValue: true, hidden: true, description: 'a list of features separated by commas' },
+    { name: 'log-drain-url', hasValue: true, hidden: true, description: 'direct log drain url' },
+    { name: 'owner-pool', hasValue: true, hidden: true, description: 'owner pool name' },
+    { name: 'shield', hasValue: false, hidden: true, description: 'create a Shield space' },
+    { name: 'cidr', hasValue: true, hidden: true, description: 'the RFC-1918 CIDR the space will use' },
+    { name: 'kpi-url', hasValue: true, hidden: true, description: 'self-managed KPI endpoint to use' },
+    { name: 'data-cidr', hasValue: true, hidden: true, description: "the RFC-1918 CIDR that the space will use when peering with DoD's spaces" },
+    flags.team({ name: 'team', hasValue: true })
   ],
   run: cli.command(co.wrap(run))
 }

@@ -42,10 +42,10 @@ describe('spaces:vpn:config', function () {
     let api = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/vpn-connections/vpn-connection-name-config')
       .reply(200, vpnResponse)
-    return cmd.run({flags: {
+    return cmd.run({ flags: {
       space: 'my-space',
       name: 'vpn-connection-name-config'
-    }})
+    } })
       .then(() => expect(cli.stdout).to.equal(
         `=== vpn-connection-name-config VPN Tunnels
 VPN Tunnel  Customer Gateway  VPN Gateway    Pre-shared Key  Routable Subnets  IKE Version
@@ -59,11 +59,11 @@ Tunnel 2    52.44.146.199     52.44.146.198  apresharedkey2  10.0.0.0/16       1
     let api = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/vpn-connections/vpn-connection-name-config')
       .reply(200, vpnResponse)
-    return cmd.run({flags: {
+    return cmd.run({ flags: {
       space: 'my-space',
       name: 'vpn-connection-name-config',
       json: true
-    }})
+    } })
       .then(() => expect(cli.stdout).to.equal(
         `{
   "id": "123456789012",

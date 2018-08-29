@@ -4,7 +4,7 @@ const api = require('../../lib/api')
 const KolkrabbiAPI = require('../../lib/kolkrabbi-api')
 const GitHubAPI = require('../../lib/github-api')
 
-const {flags} = require('@heroku-cli/command')
+const { flags } = require('@heroku-cli/command')
 
 const Validate = require('./setup/validate')
 const getGitHubToken = require('./setup/getGitHubToken')
@@ -49,7 +49,7 @@ View your new pipeline by running \`heroku pipelines:open e5a55ffa-de3f-11e6-a24
     }
   ],
   flags: [
-    flags.team({name: 'team', hasValue: true, description: 'the team which will own the apps (can also use --org)'}),
+    flags.team({ name: 'team', hasValue: true, description: 'the team which will own the apps (can also use --org)' }),
     {
       name: 'yes',
       char: 'y',
@@ -69,7 +69,7 @@ View your new pipeline by running \`heroku pipelines:open e5a55ffa-de3f-11e6-a24
     const github = new GitHubAPI(context.version, yield getGitHubToken(kolkrabbi))
 
     const organization = context.org || context.team || context.flags.team || context.flags.organization
-    const {name: pipelineName, repo: repoName} = yield getNameAndRepo(context.args)
+    const { name: pipelineName, repo: repoName } = yield getNameAndRepo(context.args)
     const stagingAppName = pipelineName + Validate.STAGING_APP_INDICATOR
     const repo = yield getRepo(github, repoName)
     const settings = yield getSettings(context.flags.yes, repo.default_branch)

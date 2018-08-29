@@ -35,15 +35,15 @@ let cmd = {
   help: 'This will also destroy all add-ons on the app.',
   needsAuth: true,
   wantsApp: true,
-  args: [{name: 'app', hidden: true, optional: true}],
+  args: [{ name: 'app', hidden: true, optional: true }],
   flags: [
-    {name: 'confirm', char: 'c', hasValue: true}
+    { name: 'confirm', char: 'c', hasValue: true }
   ],
   run: cli.command(co.wrap(run))
 }
 
 module.exports = [
-  Object.assign({topic: 'apps', command: 'destroy'}, cmd),
-  Object.assign({hidden: true, topic: 'destroy'}, cmd),
-  Object.assign({hidden: true, topic: 'apps', command: 'delete'}, cmd)
+  Object.assign({ topic: 'apps', command: 'destroy' }, cmd),
+  Object.assign({ hidden: true, topic: 'destroy' }, cmd),
+  Object.assign({ hidden: true, topic: 'apps', command: 'delete' }, cmd)
 ]

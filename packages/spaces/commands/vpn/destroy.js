@@ -33,12 +33,12 @@ module.exports = {
   needsApp: false,
   needsAuth: true,
   args: [
-    {name: 'name', optional: true, hidden: true}
+    { name: 'name', optional: true, hidden: true }
   ],
   flags: [
-    {name: 'space', char: 's', hasValue: true, description: 'space to get peering info from'},
-    {name: 'name', char: 'n', hasValue: true, description: 'name or id of the VPN connection to retrieve config from'},
-    {name: 'confirm', hasValue: true, description: 'set to VPN connection name to bypass confirm prompt'}
+    { name: 'space', char: 's', hasValue: true, description: 'space to get peering info from' },
+    { name: 'name', char: 'n', hasValue: true, description: 'name or id of the VPN connection to retrieve config from' },
+    { name: 'confirm', hasValue: true, description: 'set to VPN connection name to bypass confirm prompt' }
   ],
   run: cli.command(co.wrap(run))
 }

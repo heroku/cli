@@ -17,7 +17,7 @@ module.exports = {
   description: 'removes a log drain from an app',
   needsApp: true,
   needsAuth: true,
-  args: [{name: 'url'}],
+  args: [{ name: 'url' }],
   usage: 'drains:remove [URL|TOKEN]',
   run: cli.command(co.wrap(run))
 }

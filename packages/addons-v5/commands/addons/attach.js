@@ -12,8 +12,8 @@ function * run (context, heroku) {
   function createAttachment (app, as, confirm, credential) {
     let body = {
       name: as,
-      app: {name: app},
-      addon: {name: addon.name},
+      app: { name: app },
+      addon: { name: addon.name },
       confirm
     }
     if (credential && credential !== 'default') {
@@ -40,7 +40,7 @@ function * run (context, heroku) {
 
   yield cli.action(
     `Setting ${cli.color.attachment(attachment.name)} config vars and restarting ${cli.color.app(app)}`,
-    {success: false},
+    { success: false },
     co(function * () {
       let releases = yield heroku.get(`/apps/${app}/releases`, {
         partial: true,
@@ -58,10 +58,10 @@ module.exports = {
   needsAuth: true,
   needsApp: true,
   flags: [
-    {name: 'as', description: 'name for add-on attachment', hasValue: true},
-    {name: 'credential', description: 'credential name for scoped access to Heroku Postgres', hasValue: true},
-    {name: 'confirm', description: 'overwrite existing add-on attachment with same name', hasValue: true}
+    { name: 'as', description: 'name for add-on attachment', hasValue: true },
+    { name: 'credential', description: 'credential name for scoped access to Heroku Postgres', hasValue: true },
+    { name: 'confirm', description: 'overwrite existing add-on attachment with same name', hasValue: true }
   ],
-  args: [{name: 'addon_name'}],
-  run: cli.command({preauth: true}, co.wrap(run))
+  args: [{ name: 'addon_name' }],
+  run: cli.command({ preauth: true }, co.wrap(run))
 }

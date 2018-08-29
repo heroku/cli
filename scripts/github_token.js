@@ -3,7 +3,7 @@
 // gets a github auth token for a github app
 
 const jwt = require('jsonwebtoken')
-const {HTTP} = require('http-call')
+const { HTTP } = require('http-call')
 const exp = new Date()
 exp.setMinutes(exp.getMinutes() + 10)
 const env = k => {
@@ -22,7 +22,7 @@ const token = jwt.sign(
 const installation = process.argv[2]
 
 async function run () {
-  const {body} = await HTTP.post(`https://api.github.com/app/installations/${installation}/access_tokens`, {
+  const { body } = await HTTP.post(`https://api.github.com/app/installations/${installation}/access_tokens`, {
     headers: {
       Authorization: `Bearer ${token}`,
       Accept: 'application/vnd.github.machine-man-preview+json"'

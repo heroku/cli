@@ -8,7 +8,7 @@ function printJSON (features) {
 }
 
 function printFeatures (features) {
-  const {sortBy} = require('lodash')
+  const { sortBy } = require('lodash')
 
   features = sortBy(features, 'name')
   let longest = Math.max.apply(null, features.map((f) => f.name.length))
@@ -47,7 +47,7 @@ module.exports = {
   topic: 'labs',
   description: 'list experimental features',
   flags: [
-    {name: 'json', description: 'display as json'}
+    { name: 'json', description: 'display as json' }
   ],
   needsAuth: true,
   wantsApp: true,

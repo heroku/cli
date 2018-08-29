@@ -18,10 +18,10 @@ describe('authorizations:rotate', () => {
   beforeEach(() => {
     api
       .post('/oauth/authorizations/10/actions/regenerate-tokens')
-      .reply(200, {scope: ['global'], access_token: {token: 'secrettoken'}})
+      .reply(200, { scope: ['global'], access_token: { token: 'secrettoken' } })
   })
 
   it('updates the authorization', () => {
-    return cmd.run({args: {id: '10'}})
+    return cmd.run({ args: { id: '10' } })
   })
 })

@@ -7,7 +7,7 @@ let releases = require('../../releases')
 function * run (context, heroku) {
   const shellescape = require('shell-escape')
   const statusHelper = require('../../status_helper')
-  const {forEach} = require('lodash')
+  const { forEach } = require('lodash')
 
   let release = yield releases.FindByLatestOrId(heroku, context.app, context.args.release)
 
@@ -47,10 +47,10 @@ module.exports = {
   description: 'view detailed information for a release',
   needsApp: true,
   needsAuth: true,
-  args: [{name: 'release', optional: true}],
+  args: [{ name: 'release', optional: true }],
   flags: [
-    {name: 'json', description: 'output in json format'},
-    {name: 'shell', char: 's', description: 'output in shell format'}
+    { name: 'json', description: 'output in json format' },
+    { name: 'shell', char: 's', description: 'output in shell format' }
   ],
   run: cli.command(co.wrap(run))
 }

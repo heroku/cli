@@ -19,9 +19,9 @@ describe('container login', () => {
   it('logs to the docker registry', () => {
     let version = sandbox.stub(Sanbashi, 'version').returns([19, 12])
     let login = sandbox.stub(Sanbashi, 'cmd')
-      .withArgs('docker', ['login', '--username=_', '--password-stdin', 'registry.heroku.com'], {input: 'heroku_token'})
+      .withArgs('docker', ['login', '--username=_', '--password-stdin', 'registry.heroku.com'], { input: 'heroku_token' })
 
-    return cmd.run({flags: {}})
+    return cmd.run({ flags: {} })
       .then(() => expect(cli.stdout, 'to be empty'))
       .then(() => expect(cli.stderr, 'to be empty'))
       .then(() => sandbox.assert.calledOnce(version))
@@ -33,7 +33,7 @@ describe('container login', () => {
     let login = sandbox.stub(Sanbashi, 'cmd')
       .withArgs('docker', ['login', '--username=_', '--password=heroku_token', 'registry.heroku.com'])
 
-    return cmd.run({flags: {}, auth: {password: 'token'}})
+    return cmd.run({ flags: {}, auth: { password: 'token' } })
       .then(() => expect(cli.stdout, 'to be empty'))
       .then(() => expect(cli.stderr, 'to be empty'))
       .then(() => sandbox.assert.calledOnce(version))

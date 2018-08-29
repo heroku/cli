@@ -3,29 +3,29 @@
 let cli = require('heroku-cli-util')
 let co = require('co')
 let time = require('../../time')
-const {truncate, sortBy, reduce, forEach} = require('lodash')
+const { truncate, sortBy, reduce, forEach } = require('lodash')
 
 // gets the process number from a string like web.19 => 19
 let getProcessNum = (s) => parseInt(s.split('.', 2)[1])
 
 function printExtended (dynos) {
-  const trunc = (s) => truncate(s, {length: 35, omission: '…'})
+  const trunc = (s) => truncate(s, { length: 35, omission: '…' })
 
   dynos = sortBy(dynos, ['type'], (a) => getProcessNum(a.name))
   cli.table(dynos, {
     columns: [
-      {key: 'id', label: 'ID'},
-      {key: 'name', label: 'Process'},
-      {key: 'state', label: 'State', format: (state, row) => `${state} ${time.ago(new Date(row.updated_at))}`},
-      {key: 'extended.region', label: 'Region'},
-      {key: 'extended.instance', label: 'Instance'},
-      {key: 'extended.ip', label: 'IP'},
-      {key: 'extended.port', label: 'Port'},
-      {key: 'extended.az', label: 'AZ'},
-      {key: 'release.version', label: 'Release'},
-      {key: 'command', label: 'Command', format: trunc},
-      {key: 'extended.route', label: 'Route'},
-      {key: 'size', label: 'Size'}
+      { key: 'id', label: 'ID' },
+      { key: 'name', label: 'Process' },
+      { key: 'state', label: 'State', format: (state, row) => `${state} ${time.ago(new Date(row.updated_at))}` },
+      { key: 'extended.region', label: 'Region' },
+      { key: 'extended.instance', label: 'Instance' },
+      { key: 'extended.ip', label: 'IP' },
+      { key: 'extended.port', label: 'Port' },
+      { key: 'extended.az', label: 'AZ' },
+      { key: 'release.version', label: 'Release' },
+      { key: 'command', label: 'Command', format: trunc },
+      { key: 'extended.route', label: 'Route' },
+      { key: 'size', label: 'Size' }
     ]
   })
 }
@@ -41,7 +41,7 @@ function * printAccountQuota (context, heroku, app, account) {
 
   let quota = yield heroku.request({
     path: `/accounts/${account.id}/actions/get-quota`,
-    headers: {Accept: 'application/vnd.heroku+json; version=3.account-quotas'}
+    headers: { Accept: 'application/vnd.heroku+json; version=3.account-quotas' }
   })
     .then(function (data) {
     // very temporary fix, the person who can fix this is on vacation
@@ -102,22 +102,22 @@ function printDynos (dynos) {
 }
 
 function * run (context, heroku) {
-  const {app, flags, args} = context
+  const { app, flags, args } = context
   const types = args
-  const {json, extended} = flags
+  const { json, extended } = flags
   const suffix = extended ? '?extended=true' : ''
 
   let promises = {
-    dynos: heroku.request({path: `/apps/${app}/dynos${suffix}`})
+    dynos: heroku.request({ path: `/apps/${app}/dynos${suffix}` })
   }
 
   promises.appInfo = heroku.request({
     path: `/apps/${context.app}`,
-    headers: {Accept: 'application/vnd.heroku+json; version=3.process-tier'}
+    headers: { Accept: 'application/vnd.heroku+json; version=3.process-tier' }
   })
-  promises.accountInfo = heroku.request({path: '/account'})
+  promises.accountInfo = heroku.request({ path: '/account' })
 
-  let {dynos, appInfo, accountInfo} = yield promises
+  let { dynos, appInfo, accountInfo } = yield promises
   const shielded = appInfo.space && appInfo.space.shield
 
   if (shielded) {
@@ -161,8 +161,8 @@ module.exports = {
   variableArgs: true,
   usage: 'ps [TYPE [TYPE ...]]',
   flags: [
-    {name: 'json', description: 'display as json'},
-    {name: 'extended', char: 'x', hidden: true}
+    { name: 'json', description: 'display as json' },
+    { name: 'extended', char: 'x', hidden: true }
   ],
   examples: `$ heroku ps
 === run: one-off dyno

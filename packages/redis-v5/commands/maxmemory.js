@@ -7,8 +7,8 @@ module.exports = {
   command: 'maxmemory',
   needsApp: true,
   needsAuth: true,
-  args: [{name: 'database', optional: true}],
-  flags: [{name: 'policy', char: 'p', description: 'set policy name', hasValue: true, optional: false}],
+  args: [{ name: 'database', optional: true }],
+  flags: [{ name: 'policy', char: 'p', description: 'set policy name', hasValue: true, optional: false }],
   description: 'set the key eviction policy',
   help: `Set the key eviction policy when instance reaches its storage limit. Available policies for key eviction include:
 

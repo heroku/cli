@@ -20,7 +20,7 @@ const shouldSchedule = function (cmdRun) {
         addon: {
           id: 1,
           name: 'postgres-1',
-          plan: {name: 'heroku-postgresql:standard-0'}
+          plan: { name: 'heroku-postgresql:standard-0' }
         },
         config_vars: [
           'DATABASE_URL'
@@ -43,32 +43,32 @@ const shouldSchedule = function (cmdRun) {
   })
 
   it('schedules a backup', () => {
-    let dbA = {info: [
-      {name: 'Continuous Protection', values: ['On']}
-    ]}
+    let dbA = { info: [
+      { name: 'Continuous Protection', values: ['On'] }
+    ] }
     pg.get('/client/v11/databases/1').reply(200, dbA)
-    return cmdRun({app: 'myapp', args: {}, flags: {at: '06:00 EDT', confirm: 'myapp'}})
+    return cmdRun({ app: 'myapp', args: {}, flags: { at: '06:00 EDT', confirm: 'myapp' } })
       .then(() => expect(cli.stdout, 'to equal', ''))
       .then(() => expect(cli.stderr, 'to match', /Scheduling automatic daily backups of postgres-1 at 06:00 America\/New_York... done\n/))
   })
 
   it('warns user that logical backups are error prone if continuous proctecion is on', () => {
-    let dbA = {info: [
-      {name: 'Continuous Protection', values: ['On']}
-    ]}
+    let dbA = { info: [
+      { name: 'Continuous Protection', values: ['On'] }
+    ] }
     pg.get('/client/v11/databases/1').reply(200, dbA)
 
-    return cmdRun({app: 'myapp', args: {}, flags: {at: '06:00 EDT'}})
+    return cmdRun({ app: 'myapp', args: {}, flags: { at: '06:00 EDT' } })
       .then(() => expect(cli.stderr, 'to match', /backups of large databases are likely to fail/))
   })
 
   it('does not warn user that logical backups are error prone if continuous proctecion is off', () => {
-    let dbA = {info: [
-      {name: 'Continuous Protection', values: ['Off']}
-    ]}
+    let dbA = { info: [
+      { name: 'Continuous Protection', values: ['Off'] }
+    ] }
     pg.get('/client/v11/databases/1').reply(200, dbA)
 
-    return cmdRun({app: 'myapp', args: {}, flags: {at: '06:00 EDT'}})
+    return cmdRun({ app: 'myapp', args: {}, flags: { at: '06:00 EDT' } })
       .then(() => expect(cli.stderr, 'not to match', /backups of large databases are likely to fail/))
   })
 }

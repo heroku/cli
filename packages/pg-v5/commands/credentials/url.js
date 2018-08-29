@@ -9,7 +9,7 @@ function * run (context, heroku) {
   const fetcher = require('../../lib/fetcher')(heroku)
   const util = require('../../lib/util')
 
-  const {app, args, flags} = context
+  const { app, args, flags } = context
 
   let db = yield fetcher.addon(app, args.database)
   let cred = flags.name || 'default'
@@ -54,8 +54,8 @@ module.exports = {
   needsApp: true,
   needsAuth: true,
   flags: [
-    {name: 'name', char: 'n', description: 'which credential to show (default credentials if not specified)', hasValue: true}
+    { name: 'name', char: 'n', description: 'which credential to show (default credentials if not specified)', hasValue: true }
   ],
-  args: [{name: 'database', optional: true}],
-  run: cli.command({preauth: true}, co.wrap(run))
+  args: [{ name: 'database', optional: true }],
+  run: cli.command({ preauth: true }, co.wrap(run))
 }

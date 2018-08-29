@@ -31,9 +31,9 @@ function parseExclusions (rawExcludeList) {
 }
 
 function exec (cmd, opts = {}) {
-  const {execSync} = require('child_process')
+  const { execSync } = require('child_process')
   debug(cmd)
-  opts = Object.assign({}, opts, {stdio: 'inherit'})
+  opts = Object.assign({}, opts, { stdio: 'inherit' })
   try {
     return execSync(cmd, opts)
   } catch (err) {
@@ -43,10 +43,10 @@ function exec (cmd, opts = {}) {
 }
 
 function spawn (cmd) {
-  const {spawn} = require('child_process')
+  const { spawn } = require('child_process')
   return new Promise((resolve, reject) => {
     let result = ''
-    let psql = spawn(cmd, [], {encoding: 'utf8', stdio: [ 'ignore', 'pipe', 'inherit' ], shell: true})
+    let psql = spawn(cmd, [], { encoding: 'utf8', stdio: [ 'ignore', 'pipe', 'inherit' ], shell: true })
     psql.stdout.on('data', function (data) {
       result += data.toString()
     })
@@ -147,7 +147,7 @@ const run = co.wrap(function * (sourceIn, targetIn, exclusions) {
 
 function * push (context, heroku) {
   const fetcher = require('../lib/fetcher')(heroku)
-  const {app, args} = context
+  const { app, args } = context
   const flags = context.flags
   const exclusions = parseExclusions(flags['exclude-table-data'])
 
@@ -161,7 +161,7 @@ function * push (context, heroku) {
 
 function * pull (context, heroku) {
   const fetcher = require('../lib/fetcher')(heroku)
-  const {app, args} = context
+  const { app, args } = context
   const flags = context.flags
   const exclusions = parseExclusions(flags['exclude-table-data'])
 
@@ -177,9 +177,9 @@ let cmd = {
   topic: 'pg',
   needsApp: true,
   needsAuth: true,
-  args: [{name: 'source'}, {name: 'target'}],
+  args: [{ name: 'source' }, { name: 'target' }],
   flags: [
-    {name: 'exclude-table-data', hasValue: true, description: 'tables for which data should be excluded (use \';\' to split multiple names)'}
+    { name: 'exclude-table-data', hasValue: true, description: 'tables for which data should be excluded (use \';\' to split multiple names)' }
   ]
 }
 
@@ -202,7 +202,7 @@ Examples:
     # push remote DB at postgres://myhost/mydb into a Heroku DB named postgresql-swimmingly-100
     $ heroku pg:push postgres://myhost/mydb postgresql-swimmingly-100
 `,
-    run: cli.command({preauth: true}, co.wrap(push))
+    run: cli.command({ preauth: true }, co.wrap(push))
   }, cmd),
   Object.assign({
     command: 'pull',
@@ -225,6 +225,6 @@ Examples:
     # pull Heroku DB named postgresql-swimmingly-100 into empty remote DB at postgres://myhost/mydb
     $ heroku pg:pull postgresql-swimmingly-100 postgres://myhost/mydb --app sushi
 `,
-    run: cli.command({preauth: true}, co.wrap(pull))
+    run: cli.command({ preauth: true }, co.wrap(pull))
   }, cmd)
 ]

@@ -23,7 +23,7 @@ const shouldDelete = function (cmdRun) {
   })
 
   it('shows URL', () => {
-    return cmd.run({app: 'myapp', args: {backup_id: 'b003'}, flags: {confirm: 'myapp'}})
+    return cmd.run({ app: 'myapp', args: { backup_id: 'b003' }, flags: { confirm: 'myapp' } })
       .then(() => expect(cli.stderr, 'to equal', 'Deleting backup b003 on myapp... done\n'))
   })
 }

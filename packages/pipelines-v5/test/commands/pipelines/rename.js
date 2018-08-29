@@ -14,13 +14,13 @@ describe('pipelines:rename', function () {
 
     nock('https://api.heroku.com')
       .get(`/pipelines?eq[name]=${oldName}`)
-      .reply(200, [{id, name: oldName}])
+      .reply(200, [{ id, name: oldName }])
 
     nock('https://api.heroku.com')
       .patch(`/pipelines/${id}`)
-      .reply(200, {id, name: newName})
+      .reply(200, { id, name: newName })
 
-    return cmd.run({args: { pipeline: oldName, name: newName }}).then(() => {
+    return cmd.run({ args: { pipeline: oldName, name: newName } }).then(() => {
       const output = cli.stderr
       output.should.contain(`Renaming ${oldName} pipeline to ${newName}... done`)
     })

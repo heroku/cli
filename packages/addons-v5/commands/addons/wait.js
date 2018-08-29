@@ -40,9 +40,9 @@ module.exports = {
   command: 'wait',
   wantsApp: true,
   needsAuth: true,
-  args: [{name: 'addon', optional: true}],
-  flags: [{name: 'wait-interval', description: 'how frequently to poll in seconds', hasValue: true}],
-  run: cli.command({preauth: true}, co.wrap(run)),
+  args: [{ name: 'addon', optional: true }],
+  flags: [{ name: 'wait-interval', description: 'how frequently to poll in seconds', hasValue: true }],
+  run: cli.command({ preauth: true }, co.wrap(run)),
   usage: `${topic}:wait ADDON`,
   description: 'show provisioning status of the add-ons on the app'
 }

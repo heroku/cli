@@ -18,6 +18,6 @@ module.exports = {
 Applications and their query patterns should try to avoid changes to many different tables within the same transaction.`,
   needsApp: true,
   needsAuth: true,
-  args: [{name: 'value', optional: true}, {name: 'database', optional: true}],
-  run: cli.command({preauth: true}, settings.generate('log_lock_waits', settings.boolean, explain))
+  args: [{ name: 'value', optional: true }, { name: 'database', optional: true }],
+  run: cli.command({ preauth: true }, settings.generate('log_lock_waits', settings.boolean, explain))
 }

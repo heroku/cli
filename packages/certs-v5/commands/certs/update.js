@@ -21,8 +21,8 @@ function * run (context, heroku) {
   let cert = yield cli.action(`Updating SSL certificate ${formattedEndpoint} for ${cli.color.app(context.app)}`, {}, heroku.request({
     path: endpoint._meta.path,
     method: 'PATCH',
-    headers: {'Accept': `application/vnd.heroku+json; version=3.${endpoint._meta.variant}`},
-    body: {certificate_chain: files.crt, private_key: files.key}
+    headers: { 'Accept': `application/vnd.heroku+json; version=3.${endpoint._meta.variant}` },
+    body: { certificate_chain: files.crt, private_key: files.key }
   }))
 
   certificateDetails(cert, 'Updated certificate details:')
@@ -34,14 +34,14 @@ module.exports = {
   command: 'update',
   variableArgs: true,
   args: [
-    {name: 'CRT', optional: false},
-    {name: 'KEY', optional: false}
+    { name: 'CRT', optional: false },
+    { name: 'KEY', optional: false }
   ],
   flags: [
-    {name: 'bypass', description: 'bypass the trust chain completion step', hasValue: false},
-    {name: 'confirm', hasValue: true, hidden: true},
-    {name: 'name', hasValue: true, description: 'name to update'},
-    {name: 'endpoint', hasValue: true, description: 'endpoint to update'}
+    { name: 'bypass', description: 'bypass the trust chain completion step', hasValue: false },
+    { name: 'confirm', hasValue: true, hidden: true },
+    { name: 'name', hasValue: true, description: 'name to update' },
+    { name: 'endpoint', hasValue: true, description: 'endpoint to update' }
   ],
   description: 'update an SSL certificate on an app',
   help: 'Note: certificates with PEM encoding are also valid',
@@ -51,5 +51,5 @@ Certificate Intermediary:
 $ heroku certs:update intermediary.crt example.com.crt example.com.key`,
   needsApp: true,
   needsAuth: true,
-  run: cli.command({preauth: true}, co.wrap(run))
+  run: cli.command({ preauth: true }, co.wrap(run))
 }

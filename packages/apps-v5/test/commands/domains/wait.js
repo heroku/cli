@@ -23,8 +23,8 @@ describe('domains:wait', function () {
   it('waits for a domain', function () {
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/domains/foo.com')
-      .reply(200, {status: 'none', hostname: 'foo.com'})
-    return cmd.run({app: 'myapp', args: {hostname: 'foo.com'}})
+      .reply(200, { status: 'none', hostname: 'foo.com' })
+    return cmd.run({ app: 'myapp', args: { hostname: 'foo.com' } })
       .then(() => api.done())
       .then(() => expect(cli.stderr).to.equal('Waiting for foo.com... done\n'))
   })
@@ -33,19 +33,19 @@ describe('domains:wait', function () {
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/domains')
       .reply(200, [
-        {id: '1234', status: 'pending', hostname: 'foo.com'},
-        {id: '5678', status: 'pending', hostname: 'bar.com'},
-        {id: '9012', status: 'none', hostname: 'biz.com'}
+        { id: '1234', status: 'pending', hostname: 'foo.com' },
+        { id: '5678', status: 'pending', hostname: 'bar.com' },
+        { id: '9012', status: 'none', hostname: 'biz.com' }
       ])
 
     let foo = nock('https://api.heroku.com:443')
       .get('/apps/myapp/domains/1234')
-      .reply(200, {status: 'none', hostname: 'foo.com'})
+      .reply(200, { status: 'none', hostname: 'foo.com' })
     let bar = nock('https://api.heroku.com:443')
       .get('/apps/myapp/domains/5678')
-      .reply(200, {status: 'none', hostname: 'bar.com'})
+      .reply(200, { status: 'none', hostname: 'bar.com' })
 
-    return cmd.run({app: 'myapp', args: {}})
+    return cmd.run({ app: 'myapp', args: {} })
       .then(() => api.done())
       .then(() => foo.done())
       .then(() => bar.done())
@@ -55,17 +55,17 @@ describe('domains:wait', function () {
   it('adds a domain with the wait message succeeded', function () {
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/domains/foo.com')
-      .reply(200, {status: 'pending', id: '1234', hostname: 'foo.com'})
+      .reply(200, { status: 'pending', id: '1234', hostname: 'foo.com' })
 
     let status1 = nock('https://api.heroku.com:443')
       .get('/apps/myapp/domains/1234')
-      .reply(200, {status: 'pending', id: '1234', hostname: 'foo.com'})
+      .reply(200, { status: 'pending', id: '1234', hostname: 'foo.com' })
 
     let status2 = nock('https://api.heroku.com:443')
       .get('/apps/myapp/domains/1234')
-      .reply(200, {status: 'succeeded', id: '1234', hostname: 'foo.com'})
+      .reply(200, { status: 'succeeded', id: '1234', hostname: 'foo.com' })
 
-    return cmd.run({app: 'myapp', args: {hostname: 'foo.com'}})
+    return cmd.run({ app: 'myapp', args: { hostname: 'foo.com' } })
       .then(() => api.done())
       .then(() => status1.done())
       .then(() => status2.done())
@@ -76,18 +76,18 @@ describe('domains:wait', function () {
   it('adds a domain with the wait message failed', function () {
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/domains/foo.com')
-      .reply(200, {status: 'pending', id: '1234', hostname: 'foo.com'})
+      .reply(200, { status: 'pending', id: '1234', hostname: 'foo.com' })
 
     let status1 = nock('https://api.heroku.com:443')
       .get('/apps/myapp/domains/1234')
-      .reply(200, {status: 'pending', id: '1234', hostname: 'foo.com'})
+      .reply(200, { status: 'pending', id: '1234', hostname: 'foo.com' })
 
     let status2 = nock('https://api.heroku.com:443')
       .get('/apps/myapp/domains/1234')
-      .reply(200, {status: 'failed', id: '1234', hostname: 'foo.com'})
+      .reply(200, { status: 'failed', id: '1234', hostname: 'foo.com' })
 
     let thrown = false
-    return cmd.run({app: 'myapp', args: {hostname: 'foo.com'}})
+    return cmd.run({ app: 'myapp', args: { hostname: 'foo.com' } })
       .catch(function (err) {
         expect(err).to.be.an.instanceof(Error)
         expect(err.message).to.equal('The domain creation finished with status failed')
@@ -104,10 +104,10 @@ describe('domains:wait', function () {
   it('adds a domain with the wait message failed immediately', function () {
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/domains/foo.com')
-      .reply(200, {status: 'failed', id: '1234', hostname: 'foo.com'})
+      .reply(200, { status: 'failed', id: '1234', hostname: 'foo.com' })
 
     let thrown = false
-    return cmd.run({app: 'myapp', args: {hostname: 'foo.com'}})
+    return cmd.run({ app: 'myapp', args: { hostname: 'foo.com' } })
       .catch(function (err) {
         expect(err).to.be.an.instanceof(Error)
         expect(err.message).to.equal('The domain creation finished with status failed')

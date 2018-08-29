@@ -1,9 +1,9 @@
 'use strict'
 
-const {flatten} = require('lodash')
+const { flatten } = require('lodash')
 
 exports.topics = [
-  {name: 'pg', description: 'manage postgresql databases'}
+  { name: 'pg', description: 'manage postgresql databases' }
 ]
 
 exports.commands = flatten([

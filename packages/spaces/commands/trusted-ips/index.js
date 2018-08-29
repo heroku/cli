@@ -28,10 +28,10 @@ a time to the commands listed below. For example 1.2.3.4/20 and 5.6.7.8/20 can b
   `,
   needsApp: false,
   needsAuth: true,
-  args: [{name: 'space', optional: true, hidden: true}],
+  args: [{ name: 'space', optional: true, hidden: true }],
   flags: [
-    {name: 'space', char: 's', hasValue: true, description: 'space to get inbound rules from'},
-    {name: 'json', description: 'output in json format'}
+    { name: 'space', char: 's', hasValue: true, description: 'space to get inbound rules from' },
+    { name: 'json', description: 'output in json format' }
   ],
   run: cli.command(co.wrap(run))
 }

@@ -19,10 +19,10 @@ describe('outbound-rules', function () {
         created_at: now,
         created_by: 'dickeyxxx',
         rules: [
-          {target: '128.0.0.1/20', from_port: 80, to_port: 80, protocol: 'tcp'}
+          { target: '128.0.0.1/20', from_port: 80, to_port: 80, protocol: 'tcp' }
         ]
       })
-    return cmd.run({flags: {space: 'my-space'}})
+    return cmd.run({ flags: { space: 'my-space' } })
       .then(() => expect(cli.stdout).to.equal(
         `=== Outbound Rules
 Rule Number  Destination   From Port  To Port  Protocol
@@ -42,7 +42,7 @@ Rule Number  Destination   From Port  To Port  Protocol
         created_by: 'dickeyxxx',
         rules: []
       })
-    return cmd.run({flags: {space: 'my-space'}})
+    return cmd.run({ flags: { space: 'my-space' } })
       .then(() => expect(cli.stdout).to.equal(
         `=== my-space has no Outbound Rules. Your Dynos cannot communicate with hosts outside of my-space.
 `))
@@ -56,7 +56,7 @@ Rule Number  Destination   From Port  To Port  Protocol
       created_at: now.toISOString(),
       created_by: 'dickeyxxx',
       rules: [
-        {target: '128.0.0.1/20', from_port: 80, to_port: 80, protocol: 'tcp'}
+        { target: '128.0.0.1/20', from_port: 80, to_port: 80, protocol: 'tcp' }
       ]
     }
 
@@ -64,7 +64,7 @@ Rule Number  Destination   From Port  To Port  Protocol
       .get('/spaces/my-space/outbound-ruleset')
       .reply(200, ruleSet)
 
-    return cmd.run({flags: {space: 'my-space', json: true}})
+    return cmd.run({ flags: { space: 'my-space', json: true } })
       .then(() => expect(JSON.parse(cli.stdout)).to.eql(ruleSet))
       .then(() => api.done())
   })

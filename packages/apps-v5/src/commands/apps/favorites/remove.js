@@ -7,7 +7,7 @@ function * run (context, heroku) {
   let app = context.app
 
   yield cli.action(`Removing ${cli.color.app(app)} from favorites`, co(function * () {
-    let favorites = yield heroku.request({host: 'particleboard.heroku.com', path: '/favorites?type=app', headers: {Range: ''}})
+    let favorites = yield heroku.request({ host: 'particleboard.heroku.com', path: '/favorites?type=app', headers: { Range: '' } })
     let favorite = favorites.find((f) => f.resource_name === app)
     if (!favorite) throw new Error(`${cli.color.app(app)} is not already a favorite app.`)
     yield heroku.request({

@@ -29,7 +29,7 @@ describe('heroku buildpacks:remove', function () {
       let mock = stubPut()
 
       return buildpacks.run({
-        app: 'example', flags: {index: '1'}
+        app: 'example', flags: { index: '1' }
       }).then(function () {
         mock.done()
         expect(cli.stdout).to.equal(
@@ -41,7 +41,7 @@ describe('heroku buildpacks:remove', function () {
     it('# with one buildpack successfully removes index with langauge warn', function () {
       nock('https://api.heroku.com')
         .get('/apps/example/config-vars')
-        .reply(200, {LANGUAGE_PACK_URL: 'http://github.com/foo/foo'})
+        .reply(200, { LANGUAGE_PACK_URL: 'http://github.com/foo/foo' })
 
       stubGet(
         'https://github.com/heroku/heroku-buildpack-ruby'
@@ -50,7 +50,7 @@ describe('heroku buildpacks:remove', function () {
       let mock = stubPut()
 
       return buildpacks.run({
-        app: 'example', flags: {index: '1'}
+        app: 'example', flags: { index: '1' }
       }).then(function () {
         mock.done()
         expect(cli.stdout).to.equal(
@@ -63,7 +63,7 @@ describe('heroku buildpacks:remove', function () {
     it('# with one buildpack successfully removes index with buildpack warn', function () {
       nock('https://api.heroku.com')
         .get('/apps/example/config-vars')
-        .reply(200, {BUILDPACK_URL: 'http://github.com/foo/foo'})
+        .reply(200, { BUILDPACK_URL: 'http://github.com/foo/foo' })
 
       stubGet(
         'https://github.com/heroku/heroku-buildpack-ruby'
@@ -71,7 +71,7 @@ describe('heroku buildpacks:remove', function () {
 
       let mock = stubPut()
       return buildpacks.run({
-        app: 'example', flags: {index: '1'}
+        app: 'example', flags: { index: '1' }
       }).then(function () {
         mock.done()
         expect(cli.stdout).to.equal(
@@ -90,7 +90,7 @@ describe('heroku buildpacks:remove', function () {
       let mock = stubPut('https://github.com/heroku/heroku-buildpack-java')
 
       return buildpacks.run({
-        app: 'example', flags: {index: '2'}
+        app: 'example', flags: { index: '2' }
       }).then(function () {
         mock.done()
         expect(cli.stdout).to.equal(
@@ -109,7 +109,7 @@ Run git push heroku master to create a new release using this buildpack.
       let mock = stubPut('https://github.com/heroku/heroku-buildpack-ruby')
 
       return buildpacks.run({
-        app: 'example', flags: {index: '1'}
+        app: 'example', flags: { index: '1' }
       }).then(function () {
         mock.done()
         expect(cli.stdout).to.equal(
@@ -131,7 +131,7 @@ Run git push heroku master to create a new release using this buildpack.
         'https://github.com/heroku/heroku-buildpack-ruby'
       )
       return buildpacks.run({
-        app: 'example', flags: {index: '2'}
+        app: 'example', flags: { index: '2' }
       }).then(function () {
         mock.done()
         expect(cli.stdout).to.equal(
@@ -145,7 +145,7 @@ Run git push heroku master to create a new release using these buildpacks.
 
     it('# returns an error message when i is not an integer', function () {
       return assertExit(1, buildpacks.run({
-        app: 'example', flags: {index: 'notaninteger'}
+        app: 'example', flags: { index: 'notaninteger' }
       })).then(function () {
         expect(cli.stderr).to.equal(' ▸    Invalid index. Must be greater than 0.\n')
       })
@@ -155,7 +155,7 @@ Run git push heroku master to create a new release using these buildpacks.
       stubGet()
 
       return assertExit(1, buildpacks.run({
-        app: 'example', flags: {index: '1'}
+        app: 'example', flags: { index: '1' }
       })).then(function () {
         expect(unwrap(cli.stderr)).to.equal(' ▸    No buildpacks were found. Next release on example will detect buildpack normally.\n')
       })
@@ -165,7 +165,7 @@ Run git push heroku master to create a new release using these buildpacks.
       stubGet('http://github.com/foo/foo')
 
       return assertExit(1, buildpacks.run({
-        app: 'example', flags: {index: '2'}
+        app: 'example', flags: { index: '2' }
       })).then(function () {
         expect(cli.stderr).to.equal(' ▸    Invalid index. Only valid value is 1.\n')
       })
@@ -178,7 +178,7 @@ Run git push heroku master to create a new release using these buildpacks.
       )
 
       return assertExit(1, buildpacks.run({
-        app: 'example', flags: {index: '3'}
+        app: 'example', flags: { index: '3' }
       })).then(function () {
         expect(cli.stderr).to.equal(' ▸    Invalid index. Please choose a value between 1 and 2\n')
       })
@@ -198,7 +198,7 @@ Run git push heroku master to create a new release using these buildpacks.
       let mock = stubPut()
 
       return buildpacks.run({
-        app: 'example', args: {url: 'https://github.com/heroku/heroku-buildpack-ruby'}
+        app: 'example', args: { url: 'https://github.com/heroku/heroku-buildpack-ruby' }
       }).then(function () {
         mock.done()
         expect(cli.stdout).to.equal(
@@ -216,7 +216,7 @@ Run git push heroku master to create a new release using these buildpacks.
       let mock = stubPut('https://github.com/heroku/heroku-buildpack-java')
 
       return buildpacks.run({
-        app: 'example', args: {url: 'https://github.com/heroku/heroku-buildpack-ruby'}, flags: {}
+        app: 'example', args: { url: 'https://github.com/heroku/heroku-buildpack-ruby' }, flags: {}
       }).then(function () {
         mock.done()
         expect(cli.stderr).to.equal('')
@@ -239,7 +239,7 @@ Run git push heroku master to create a new release using this buildpack.
         .reply(200, {})
 
       return buildpacks.run({
-        app: 'example', args: {url: 'heroku/ruby'}
+        app: 'example', args: { url: 'heroku/ruby' }
       }).then(function () {
         mock.done()
         expect(cli.stderr).to.equal('')
@@ -253,7 +253,7 @@ Run git push heroku master to create a new release using this buildpack.
       stubGet()
 
       return assertExit(1, buildpacks.run({
-        app: 'example', args: {url: 'http://github.com/bar/bar'}
+        app: 'example', args: { url: 'http://github.com/bar/bar' }
       })).then(function () {
         expect(unwrap(cli.stderr)).to.equal(' ▸    No buildpacks were found. Next release on example will detect buildpack normally.\n')
       })
@@ -263,7 +263,7 @@ Run git push heroku master to create a new release using this buildpack.
       stubGet('http://github.com/foo/foo')
 
       return assertExit(1, buildpacks.run({
-        app: 'example', args: {url: 'http://github.com/bar/bar'}
+        app: 'example', args: { url: 'http://github.com/bar/bar' }
       })).then(function () {
         expect(cli.stderr).to.equal(' ▸    Buildpack not found. Nothing was removed.\n')
       })
@@ -281,7 +281,7 @@ Run git push heroku master to create a new release using this buildpack.
         'https://github.com/heroku/heroku-buildpack-nodejs'
       )
       return buildpacks.run({
-        app: 'example', args: {url: 'https://github.com/heroku/heroku-buildpack-ruby'}, flags: {}
+        app: 'example', args: { url: 'https://github.com/heroku/heroku-buildpack-ruby' }, flags: {}
       }).then(function () {
         mock.done()
         expect(cli.stdout).to.equal(
@@ -297,7 +297,7 @@ Run git push heroku master to create a new release using these buildpacks.
   describe('-i INDEX URL', function () {
     it('# returns an error message when i and url are specified', function () {
       return assertExit(1, buildpacks.run({
-        app: 'example', flags: {index: '1'}, args: {url: 'http://github.com/foo/foo'}
+        app: 'example', flags: { index: '1' }, args: { url: 'http://github.com/foo/foo' }
       })).then(function () {
         expect(unwrap(cli.stderr)).to.equal(' ▸    Please choose either index or Buildpack URL, but not both.\n')
       })

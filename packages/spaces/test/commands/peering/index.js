@@ -61,7 +61,7 @@ describe('spaces:peerings', function () {
       .reply(200,
         peers
       )
-    return cmd.run({flags: {space: 'my-space'}})
+    return cmd.run({ flags: { space: 'my-space' } })
       .then(() => expect(cli.stdout).to.equal(
         `=== my-space Peerings
 PCX ID             Type      CIDR Blocks               Status              VPC ID         AWS Region  AWS Account ID  Expires
@@ -79,7 +79,7 @@ pcx-abcdefg        unknown   10.5.0.0/16               failed              vpc-6
       .get('/spaces/my-space/peerings')
       .reply(200, peers)
 
-    return cmd.run({flags: {space: 'my-space', json: true}})
+    return cmd.run({ flags: { space: 'my-space', json: true } })
       .then(() => expect(JSON.parse(cli.stdout)).to.eql(peers))
       .then(() => api.done())
   })

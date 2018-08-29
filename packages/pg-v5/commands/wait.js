@@ -32,7 +32,7 @@ async function run (context, heroku) {
         debug(err)
         if (!retries || err.statusCode !== 404) throw err
         retries--
-        status = {'waiting?': true}
+        status = { 'waiting?': true }
       }
 
       if (status['error?']) {
@@ -86,10 +86,10 @@ module.exports = {
   description: 'blocks until database is available',
   needsApp: true,
   needsAuth: true,
-  args: [{name: 'database', optional: true}],
+  args: [{ name: 'database', optional: true }],
   flags: [
-    {name: 'wait-interval', description: 'how frequently to poll in seconds (to avoid rate limiting)', hasValue: true},
-    {name: 'no-notify', description: 'do not show OS notification'}
+    { name: 'wait-interval', description: 'how frequently to poll in seconds (to avoid rate limiting)', hasValue: true },
+    { name: 'no-notify', description: 'do not show OS notification' }
   ],
-  run: cli.command({preauth: true}, co.wrap(run))
+  run: cli.command({ preauth: true }, co.wrap(run))
 }

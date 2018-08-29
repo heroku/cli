@@ -12,7 +12,7 @@ function * run (ctx, api) {
   const grandfatheredPrice = util.grandfatheredPrice
   const printf = require('printf')
 
-  const {groupBy, some, sortBy, values} = require('lodash')
+  const { groupBy, some, sortBy, values } = require('lodash')
 
   // Gets *all* attachments and add-ons and filters locally because the API
   // returns *owned* items not associated items.
@@ -20,9 +20,9 @@ function * run (ctx, api) {
     let attachments, addons
 
     if (app) { // don't disploy attachments globally
-      addons = api.get(`/apps/${app}/addons`, {headers: {
+      addons = api.get(`/apps/${app}/addons`, { headers: {
         'Accept-Expansion': 'addon_service,plan'
-      }})
+      } })
 
       let sudoHeaders = JSON.parse(process.env.HEROKU_HEADERS || '{}')
       if (sudoHeaders['X-Heroku-Sudo'] && !sudoHeaders['X-Heroku-Sudo-User']) {
@@ -276,7 +276,7 @@ module.exports = {
     }
   ],
 
-  run: cli.command({preauth: true}, co.wrap(run)),
+  run: cli.command({ preauth: true }, co.wrap(run)),
   usage: `${topic} [--all|--app APP]`,
   description: 'lists your add-ons and attachments',
   help: `The default filter applied depends on whether you are in a Heroku app

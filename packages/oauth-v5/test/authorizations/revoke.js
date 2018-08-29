@@ -18,10 +18,10 @@ describe('authorizations:create', () => {
   beforeEach(() => {
     api
       .delete('/oauth/authorizations/10')
-      .reply(201, {description: 'fooo'})
+      .reply(201, { description: 'fooo' })
   })
 
   it('revokes the authorization', () => {
-    return cmd.run({args: {id: '10'}})
+    return cmd.run({ args: { id: '10' } })
   })
 })

@@ -26,7 +26,7 @@ describe('heroku certs:chain', function () {
   })
 
   it('# validates that at least one argument is passed', function () {
-    return assertExit(1, certs.run({app: 'example', args: []})).then(function () {
+    return assertExit(1, certs.run({ app: 'example', args: [] })).then(function () {
       expect(cli.stderr).to.equal(
         ` ▸    Usage: heroku certs:chain CRT [CRT ...]
  ▸    Must specify at least one certificate file.
@@ -52,7 +52,7 @@ describe('heroku certs:chain', function () {
       .post('/resolve-chain', 'pem a content\npem b content')
       .reply(200, 'pem a content\npem b content\n')
 
-    return certs.run({app: 'example', args: ['a_file', 'b_file']}).then(function () {
+    return certs.run({ app: 'example', args: ['a_file', 'b_file'] }).then(function () {
       sslDoctor.done()
       expect(cli.stderr).to.equal('Resolving trust chain... done\n')
       expect(cli.stdout).to.equal(

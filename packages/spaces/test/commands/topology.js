@@ -43,7 +43,7 @@ describe('spaces:toplogy', function () {
       .get('/spaces/my-space/topology').reply(200, topo)
       .get(`/apps/${app['id']}`).reply(200, app)
 
-    return cmd.run({flags: {space: 'my-space'}})
+    return cmd.run({ flags: { space: 'my-space' } })
       .then(() => expect(cli.stdout).to.equal(
         `=== app-name (web)
 Domains: example.com
@@ -59,7 +59,7 @@ Dynos:   web.1 - 10.0.134.42 - 1.example-app-90210.app.localspace
       .get('/spaces/my-space/topology').reply(200, topo)
       .get(`/apps/${app['id']}`).reply(200, app)
 
-    return cmd.run({flags: {space: 'my-space', json: true}})
+    return cmd.run({ flags: { space: 'my-space', json: true } })
       .then(() => expect(JSON.parse(cli.stdout)).to.eql(topo))
       .then(() => api.done())
   })
@@ -69,7 +69,7 @@ Dynos:   web.1 - 10.0.134.42 - 1.example-app-90210.app.localspace
       .get('/spaces/my-space/topology').reply(200, topo)
       .get(`/apps/${app['id']}`).reply(200, app)
 
-    return cmd.run({flags: {space: 'my-space', json: true}})
+    return cmd.run({ flags: { space: 'my-space', json: true } })
       .then(() => expect(JSON.parse(cli.stdout)).to.eql(topo))
       .then(() => api.done())
   })

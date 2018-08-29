@@ -11,13 +11,13 @@ const db = {
   host: 'foo.com',
   user: 'jeff',
   password: 'pass',
-  url: {href: 'postgres://jeff:pass@foo.com/mydb'}
+  url: { href: 'postgres://jeff:pass@foo.com/mydb' }
 }
 
 const addon = {
   id: 1,
   name: 'postgres-1',
-  plan: {name: 'heroku-postgresql:standard-0'}
+  plan: { name: 'heroku-postgresql:standard-0' }
 }
 
 const fetcher = () => {
@@ -119,7 +119,7 @@ ransom                                                                         a
  └─ as HEROKU_POSTGRESQL_BLUE on yet-another-app app
 `
 
-    return cmd.run({app: 'myapp', args: {}, flags: {name: 'jeff'}})
+    return cmd.run({ app: 'myapp', args: {}, flags: { name: 'jeff' } })
       .then(() => expect(cli.stdout,
         'to equal',
         displayed))
@@ -194,7 +194,7 @@ ransom                                                active
  └─ as HEROKU_POSTGRESQL_BLUE on yet-another-app app
 `
 
-    return cmd.run({app: 'myapp', args: {}, flags: {name: 'jeff'}})
+    return cmd.run({ app: 'myapp', args: {}, flags: { name: 'jeff' } })
       .then(() => expect(cli.stdout,
         'to equal',
         displayed))

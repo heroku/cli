@@ -14,10 +14,10 @@ describe('addons:create', () => {
   let addon = {
     id: 201,
     name: 'db3-swiftly-123',
-    addon_service: {name: 'heroku-db3'},
-    app: {name: 'myapp', id: 101},
+    addon_service: { name: 'heroku-db3' },
+    app: { name: 'myapp', id: 101 },
     config_vars: ['DATABASE_URL'],
-    plan: {price: {cents: 10000, unit: 'month'}},
+    plan: { price: { cents: 10000, unit: 'month' } },
     state: 'provisioned',
     provision_message: 'provision message'
   }
@@ -36,7 +36,7 @@ describe('addons:create', () => {
   context('creating a db with a name', () => {
     beforeEach(() => {
       api.post('/apps/myapp/addons', {
-        plan: {name: 'heroku-postgresql:standard-0'},
+        plan: { name: 'heroku-postgresql:standard-0' },
         name: 'foobar'
       })
         .reply(200, addon)
@@ -47,7 +47,7 @@ describe('addons:create', () => {
         config,
         app: 'myapp',
         args: ['heroku-postgresql:standard-0'],
-        flags: {name: 'foobar'}
+        flags: { name: 'foobar' }
       })
         .then(() => api.done())
     })
@@ -59,7 +59,7 @@ describe('addons:create', () => {
         config,
         app: 'myapp',
         args: [],
-        flags: {name: 'foobar'}
+        flags: { name: 'foobar' }
       })
         .then(() => { throw new Error('unreachable') })
         .catch((err) => expect(err.message, 'to equal', 'Usage: heroku addons:create SERVICE:PLAN'))
@@ -69,9 +69,9 @@ describe('addons:create', () => {
   context('creating a db', () => {
     beforeEach(() => {
       api.post('/apps/myapp/addons', {
-        attachment: {name: 'mydb'},
-        config: {follow: 'otherdb', rollback: true, foo: true},
-        plan: {name: 'heroku-postgresql:standard-0'}
+        attachment: { name: 'mydb' },
+        config: { follow: 'otherdb', rollback: true, foo: true },
+        plan: { name: 'heroku-postgresql:standard-0' }
       })
         .reply(200, addon)
     })
@@ -81,7 +81,7 @@ describe('addons:create', () => {
         config,
         app: 'myapp',
         args: ['heroku-postgresql:standard-0', '--rollback', '--follow', 'otherdb', '--foo'],
-        flags: {as: 'mydb'}
+        flags: { as: 'mydb' }
       })
         .then(() => expect(cli.stderr, 'to equal', 'Creating heroku-postgresql:standard-0 on myapp... $100/month\n'))
         .then(() => expect(cli.stdout, 'to equal', `provision message
@@ -95,7 +95,7 @@ Use heroku addons:docs heroku-db3 to view documentation
         config,
         app: 'myapp',
         args: ['heroku-postgresql:standard-0', '--rollback', '--follow=otherdb', '--foo'],
-        flags: {as: 'mydb'}
+        flags: { as: 'mydb' }
       })
     })
 
@@ -104,7 +104,7 @@ Use heroku addons:docs heroku-db3 to view documentation
         config,
         app: 'myapp',
         args: ['heroku-postgresql:standard-0', '--rollback', '--follow=otherdb', '--foo=true'],
-        flags: {as: 'mydb'}
+        flags: { as: 'mydb' }
       })
     })
   })
@@ -116,9 +116,9 @@ Use heroku addons:docs heroku-db3 to view documentation
         asyncAddon.state = 'provisioning'
 
         api.post('/apps/myapp/addons', {
-          attachment: {name: 'mydb'},
+          attachment: { name: 'mydb' },
           config: {},
-          plan: {name: 'heroku-postgresql:standard-0'}
+          plan: { name: 'heroku-postgresql:standard-0' }
         })
           .reply(200, asyncAddon)
       })
@@ -128,7 +128,7 @@ Use heroku addons:docs heroku-db3 to view documentation
           config,
           app: 'myapp',
           args: ['heroku-postgresql:standard-0'],
-          flags: {as: 'mydb'}
+          flags: { as: 'mydb' }
         })
           .then(() => expect(cli.stderr, 'to equal', 'Creating heroku-postgresql:standard-0 on myapp... $100/month\n'))
           .then(() => expect(cli.stdout, 'to equal', `provision message
@@ -146,9 +146,9 @@ Use heroku addons:docs heroku-db3 to view documentation
         asyncAddon.provision_message = undefined
 
         api.post('/apps/myapp/addons', {
-          attachment: {name: 'mydb'},
+          attachment: { name: 'mydb' },
           config: {},
-          plan: {name: 'heroku-postgresql:standard-0'}
+          plan: { name: 'heroku-postgresql:standard-0' }
         })
           .reply(200, asyncAddon)
       })
@@ -158,7 +158,7 @@ Use heroku addons:docs heroku-db3 to view documentation
           config,
           app: 'myapp',
           args: ['heroku-postgresql:standard-0'],
-          flags: {as: 'mydb'}
+          flags: { as: 'mydb' }
         })
           .then(() => expect(cli.stderr, 'to equal', 'Creating heroku-postgresql:standard-0 on myapp... $100/month\n'))
           .then(() => expect(cli.stdout, 'to equal', `db3-swiftly-123 is being created in the background. The app will restart when complete...
@@ -175,9 +175,9 @@ Use heroku addons:docs heroku-db3 to view documentation
         asyncAddon.config_vars = undefined
 
         api.post('/apps/myapp/addons', {
-          attachment: {name: 'mydb'},
+          attachment: { name: 'mydb' },
           config: {},
-          plan: {name: 'heroku-postgresql:standard-0'}
+          plan: { name: 'heroku-postgresql:standard-0' }
         })
           .reply(200, asyncAddon)
       })
@@ -187,7 +187,7 @@ Use heroku addons:docs heroku-db3 to view documentation
           config,
           app: 'myapp',
           args: ['heroku-postgresql:standard-0'],
-          flags: {as: 'mydb'}
+          flags: { as: 'mydb' }
         })
           .then(() => expect(cli.stderr, 'to equal', 'Creating heroku-postgresql:standard-0 on myapp... $100/month\n'))
           .then(() => expect(cli.stdout, 'to equal', `provision message
@@ -208,9 +208,9 @@ Use heroku addons:docs heroku-db3 to view documentation
         asyncAddon.state = 'provisioning'
 
         post = api.post('/apps/myapp/addons', {
-          attachment: {name: 'mydb'},
-          config: {wait: true},
-          plan: {name: 'heroku-postgresql:standard-0'}
+          attachment: { name: 'mydb' },
+          config: { wait: true },
+          plan: { name: 'heroku-postgresql:standard-0' }
         })
           .reply(200, asyncAddon)
 
@@ -233,7 +233,7 @@ Use heroku addons:docs heroku-db3 to view documentation
           config,
           app: 'myapp',
           args: ['heroku-postgresql:standard-0', '--wait'],
-          flags: {as: 'mydb', wait: true}
+          flags: { as: 'mydb', wait: true }
         })
           .then(() => post.done())
           .then(() => provisioningResponse.done())
@@ -252,8 +252,8 @@ Use heroku addons:docs heroku-db3 to view documentation
         deprovisionedAddon.state = 'deprovisioned'
 
         api.post('/apps/myapp/addons', {
-          attachment: {name: 'mydb'},
-          plan: {name: 'heroku-postgresql:standard-0'}
+          attachment: { name: 'mydb' },
+          plan: { name: 'heroku-postgresql:standard-0' }
         })
           .reply(200, deprovisionedAddon) // failed
 
@@ -261,7 +261,7 @@ Use heroku addons:docs heroku-db3 to view documentation
           config,
           app: 'myapp',
           args: ['heroku-postgresql:standard-0'],
-          flags: {as: 'mydb'}
+          flags: { as: 'mydb' }
         })
 
         return cmdPromise
@@ -274,13 +274,13 @@ Use heroku addons:docs heroku-db3 to view documentation
   context('creating a db requiring confirmation', () => {
     beforeEach(() => {
       api.post('/apps/myapp/addons', {
-        attachment: {name: 'mydb'},
-        config: {follow: 'otherdb', rollback: true, foo: true},
-        plan: {name: 'heroku-postgresql:standard-0'}
+        attachment: { name: 'mydb' },
+        config: { follow: 'otherdb', rollback: true, foo: true },
+        plan: { name: 'heroku-postgresql:standard-0' }
       })
         .reply(423,
-          {'id': 'confirmation_required', 'message': 'This add-on is not automatically networked with this Private Space. '},
-          {'X-Confirmation-Required': 'myapp-confirm'})
+          { 'id': 'confirmation_required', 'message': 'This add-on is not automatically networked with this Private Space. ' },
+          { 'X-Confirmation-Required': 'myapp-confirm' })
     })
 
     it('aborts if confirmation does not match', () => {
@@ -288,15 +288,15 @@ Use heroku addons:docs heroku-db3 to view documentation
         config,
         app: 'myapp',
         args: ['heroku-postgresql:standard-0', '--rollback', '--follow', 'otherdb', '--foo'],
-        flags: {as: 'mydb', confirm: 'not-my-app'}
+        flags: { as: 'mydb', confirm: 'not-my-app' }
       }), 'to be rejected with error satisfying', 'Confirmation not-my-app did not match myapp. Aborted.')
     })
 
     it('succeeds if confirmation does match', () => {
       api.post('/apps/myapp/addons', {
-        attachment: {name: 'mydb'},
-        config: {follow: 'otherdb', rollback: true, foo: true},
-        plan: {name: 'heroku-postgresql:standard-0'},
+        attachment: { name: 'mydb' },
+        config: { follow: 'otherdb', rollback: true, foo: true },
+        plan: { name: 'heroku-postgresql:standard-0' },
         confirm: 'myapp'
       })
         .reply(200, addon)
@@ -305,7 +305,7 @@ Use heroku addons:docs heroku-db3 to view documentation
         config,
         app: 'myapp',
         args: ['heroku-postgresql:standard-0', '--rollback', '--follow', 'otherdb', '--foo'],
-        flags: {as: 'mydb', confirm: 'myapp'}
+        flags: { as: 'mydb', confirm: 'myapp' }
       }).then(() => expect(cli.stderr, 'to equal', 'Creating heroku-postgresql:standard-0 on myapp... !\nCreating heroku-postgresql:standard-0 on myapp... $100/month\n'))
         .then(() => expect(cli.stdout, 'to equal', `provision message
 Created db3-swiftly-123 as DATABASE_URL
@@ -317,9 +317,9 @@ Use heroku addons:docs heroku-db3 to view documentation
   context('--follow=--otherdb', () => {
     beforeEach(() => {
       api.post('/apps/myapp/addons', {
-        attachment: {name: 'mydb'},
-        config: {follow: '--otherdb', rollback: true, foo: true},
-        plan: {name: 'heroku-postgresql:standard-0'}
+        attachment: { name: 'mydb' },
+        config: { follow: '--otherdb', rollback: true, foo: true },
+        plan: { name: 'heroku-postgresql:standard-0' }
       })
         .reply(200, addon)
     })
@@ -329,7 +329,7 @@ Use heroku addons:docs heroku-db3 to view documentation
         config,
         app: 'myapp',
         args: ['heroku-postgresql:standard-0', '--rollback', '--follow=--otherdb', '--foo'],
-        flags: {as: 'mydb'}
+        flags: { as: 'mydb' }
       })
     })
   })
@@ -339,9 +339,9 @@ Use heroku addons:docs heroku-db3 to view documentation
       noConfigAddon.config_vars = undefined
 
       api.post('/apps/myapp/addons', {
-        attachment: {name: 'mydb'},
+        attachment: { name: 'mydb' },
         config: {},
-        plan: {name: 'heroku-postgresql:standard-0'}
+        plan: { name: 'heroku-postgresql:standard-0' }
       })
         .reply(200, noConfigAddon)
     })
@@ -351,7 +351,7 @@ Use heroku addons:docs heroku-db3 to view documentation
         config,
         app: 'myapp',
         args: ['heroku-postgresql:standard-0'],
-        flags: {as: 'mydb'}
+        flags: { as: 'mydb' }
       })
         .then(() => expect(cli.stderr, 'to equal', 'Creating heroku-postgresql:standard-0 on myapp... $100/month\n'))
         .then(() => expect(cli.stdout, 'to equal', `provision message

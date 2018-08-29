@@ -33,7 +33,7 @@ EXAMPLE
   $ heroku ci --app murmuring-headland-14719
 ```
 
-_See code: [@heroku-cli/plugin-ci](https://github.com/heroku/cli/blob/v7.11.0/src/commands/ci/index.ts)_
+_See code: [@heroku-cli/plugin-ci](https://github.com/heroku/cli/blob/v7.12.4/src/commands/ci/index.ts)_
 
 ## `heroku ci:config`
 
@@ -162,7 +162,7 @@ EXAMPLE
   $ heroku ci:info 1288 --app murmuring-headland-14719
 ```
 
-_See code: [@heroku-cli/plugin-ci](https://github.com/heroku/cli/blob/v7.11.0/src/commands/ci/info.ts)_
+_See code: [@heroku-cli/plugin-ci](https://github.com/heroku/cli/blob/v7.12.4/src/commands/ci/info.ts)_
 
 ## `heroku ci:last`
 
@@ -181,7 +181,7 @@ EXAMPLE
   $ heroku ci:last --app murmuring-headland-14719 --node 100
 ```
 
-_See code: [@heroku-cli/plugin-ci](https://github.com/heroku/cli/blob/v7.11.0/src/commands/ci/last.ts)_
+_See code: [@heroku-cli/plugin-ci](https://github.com/heroku/cli/blob/v7.12.4/src/commands/ci/last.ts)_
 
 ## `heroku ci:migrate-manifest`
 
@@ -238,7 +238,7 @@ EXAMPLE
   $ heroku ci:rerun 985 --app murmuring-headland-14719
 ```
 
-_See code: [@heroku-cli/plugin-ci](https://github.com/heroku/cli/blob/v7.11.0/src/commands/ci/rerun.ts)_
+_See code: [@heroku-cli/plugin-ci](https://github.com/heroku/cli/blob/v7.12.4/src/commands/ci/rerun.ts)_
 
 ## `heroku ci:run`
 
@@ -256,4 +256,4 @@ EXAMPLE
   $ heroku ci:run --app murmuring-headland-14719
 ```
 
-_See code: [@heroku-cli/plugin-ci](https://github.com/heroku/cli/blob/v7.11.0/src/commands/ci/run.ts)_
+_See code: [@heroku-cli/plugin-ci](https://github.com/heroku/cli/blob/v7.12.4/src/commands/ci/run.ts)_

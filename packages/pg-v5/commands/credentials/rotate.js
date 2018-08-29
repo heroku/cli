@@ -7,7 +7,7 @@ function * run (context, heroku) {
   const host = require('../../lib/host')
   const fetcher = require('../../lib/fetcher')(heroku)
   const util = require('../../lib/util')
-  const {app, args, flags} = context
+  const { app, args, flags } = context
   let db = yield fetcher.addon(app, args.database)
   let all = flags.all
   let warnings = []
@@ -45,7 +45,7 @@ function * run (context, heroku) {
   yield cli.confirmApp(app, flags.confirm, `WARNING: Destructive Action
 ${warnings.join('\n')}`)
 
-  let body = flags.force ? {host: host(db), forced: true} : {host: host(db)}
+  let body = flags.force ? { host: host(db), forced: true } : { host: host(db) }
   if (all) {
     yield cli.action(`Rotating all credentials on ${cli.color.addon(db.name)}`, co(function * () {
       yield heroku.post(`/postgres/v0/databases/${db.name}/credentials_rotation`,
@@ -66,11 +66,11 @@ module.exports = {
   needsApp: true,
   needsAuth: true,
   flags: [
-    {name: 'name', char: 'n', description: 'which credential to rotate (default credentials if not specified)', hasValue: true},
-    {name: 'all', description: 'rotate all credentials', hasValue: false},
-    {name: 'confirm', char: 'c', hasValue: true},
-    {name: 'force', description: 'forces rotating the targeted credentials', hasValue: false}
+    { name: 'name', char: 'n', description: 'which credential to rotate (default credentials if not specified)', hasValue: true },
+    { name: 'all', description: 'rotate all credentials', hasValue: false },
+    { name: 'confirm', char: 'c', hasValue: true },
+    { name: 'force', description: 'forces rotating the targeted credentials', hasValue: false }
   ],
-  args: [{name: 'database', optional: true}],
-  run: cli.command({preauth: true}, co.wrap(run))
+  args: [{ name: 'database', optional: true }],
+  run: cli.command({ preauth: true }, co.wrap(run))
 }

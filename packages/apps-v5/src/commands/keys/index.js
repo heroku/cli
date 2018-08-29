@@ -30,7 +30,7 @@ module.exports = {
   needsAuth: true,
   run: cli.command(co.wrap(run)),
   flags: [
-    {name: 'long', char: 'l', description: 'display full SSH keys'},
-    {name: 'json', description: 'output in json format'}
+    { name: 'long', char: 'l', description: 'display full SSH keys' },
+    { name: 'json', description: 'output in json format' }
   ]
 }

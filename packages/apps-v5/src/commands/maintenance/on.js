@@ -5,7 +5,7 @@ const co = require('co')
 
 function * run (context, heroku) {
   let app = context.app
-  let p = heroku.patch(`/apps/${app}`, {body: {maintenance: true}})
+  let p = heroku.patch(`/apps/${app}`, { body: { maintenance: true } })
   yield cli.action(`Enabling maintenance mode for ${cli.color.app(app)}`, p)
 }
 

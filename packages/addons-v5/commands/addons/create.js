@@ -33,17 +33,17 @@ function parseConfig (args) {
 function * run (context, heroku) {
   let createAddon = require('../../lib/create_addon')
 
-  let {app, flags, args} = context
+  let { app, flags, args } = context
   if (args.length === 0) {
     throw new Error('Usage: heroku addons:create SERVICE:PLAN')
   }
 
-  let {name, as} = flags
+  let { name, as } = flags
   let config = parseConfig(args.slice(1))
 
-  let addon = yield createAddon(heroku, app, args[0], context.flags.confirm, context.flags.wait, {config, name, as})
+  let addon = yield createAddon(heroku, app, args[0], context.flags.confirm, context.flags.wait, { config, name, as })
 
-  yield context.config.runHook('recache', {type: 'addon', app, addon})
+  yield context.config.runHook('recache', { type: 'addon', app, addon })
   cli.log(`Use ${cli.color.cmd('heroku addons:docs ' + addon.addon_service.name)} to view documentation`)
 }
 
@@ -52,18 +52,18 @@ const cmd = {
   description: 'create a new add-on resource',
   needsAuth: true,
   needsApp: true,
-  args: [{name: 'service:plan'}],
+  args: [{ name: 'service:plan' }],
   variableArgs: true,
   flags: [
-    {name: 'name', description: 'name for the add-on resource', hasValue: true},
-    {name: 'as', description: 'name for the initial add-on attachment', hasValue: true},
-    {name: 'confirm', description: 'overwrite existing config vars or existing add-on attachments', hasValue: true},
-    {name: 'wait', description: 'watch add-on creation status and exit when complete'}
+    { name: 'name', description: 'name for the add-on resource', hasValue: true },
+    { name: 'as', description: 'name for the initial add-on attachment', hasValue: true },
+    { name: 'confirm', description: 'overwrite existing config vars or existing add-on attachments', hasValue: true },
+    { name: 'wait', description: 'watch add-on creation status and exit when complete' }
   ],
-  run: cli.command({preauth: true}, co.wrap(run))
+  run: cli.command({ preauth: true }, co.wrap(run))
 }
 
 module.exports = [
-  Object.assign({command: 'create'}, cmd),
-  Object.assign({command: 'add', hidden: true}, cmd)
+  Object.assign({ command: 'create' }, cmd),
+  Object.assign({ command: 'add', hidden: true }, cmd)
 ]

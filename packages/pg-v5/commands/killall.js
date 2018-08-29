@@ -9,7 +9,7 @@ function * run (context, heroku) {
 
   yield cli.action('Terminating connections for all credentials', co(function * () {
     const db = yield fetcher.addon(context.app, context.args.database)
-    yield heroku.post(`/client/v11/databases/${db.id}/connection_reset`, {host: host(db)})
+    yield heroku.post(`/client/v11/databases/${db.id}/connection_reset`, { host: host(db) })
   }))
 }
 
@@ -19,6 +19,6 @@ module.exports = {
   description: 'terminates all connections for all credentials',
   needsApp: true,
   needsAuth: true,
-  args: [{name: 'database', optional: true}],
-  run: cli.command({preauth: true}, co.wrap(run))
+  args: [{ name: 'database', optional: true }],
+  run: cli.command({ preauth: true }, co.wrap(run))
 }

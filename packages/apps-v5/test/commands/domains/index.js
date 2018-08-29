@@ -13,13 +13,13 @@ describe('domains', function () {
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/domains')
       .reply(200, [
-        {'cname': 'myapp.com.herokudns.com', 'hostname': 'myapp.com', 'kind': 'custom'},
-        {'cname': 'myapp.co.uk.herokudns.com', 'hostname': 'myapp.co.uk', 'kind': 'custom'},
-        {'cname': 'www.myapp.com.herokudns.com', 'hostname': 'www.myapp.com', 'kind': 'custom'},
-        {'cname': 'wildcard.thisisafake.tld.herokudns.com', 'hostname': '*.thisisafake.tld', 'kind': 'custom'},
-        {'cname': null, 'hostname': 'myapp.herokuapp.com', 'kind': 'heroku'}
+        { 'cname': 'myapp.com.herokudns.com', 'hostname': 'myapp.com', 'kind': 'custom' },
+        { 'cname': 'myapp.co.uk.herokudns.com', 'hostname': 'myapp.co.uk', 'kind': 'custom' },
+        { 'cname': 'www.myapp.com.herokudns.com', 'hostname': 'www.myapp.com', 'kind': 'custom' },
+        { 'cname': 'wildcard.thisisafake.tld.herokudns.com', 'hostname': '*.thisisafake.tld', 'kind': 'custom' },
+        { 'cname': null, 'hostname': 'myapp.herokuapp.com', 'kind': 'heroku' }
       ])
-    return cmd.run({app: 'myapp', flags: {}})
+    return cmd.run({ app: 'myapp', flags: {} })
       .then(() => expect(cli.stdout).to.equal(`=== myapp Heroku Domain
 myapp.herokuapp.com
 

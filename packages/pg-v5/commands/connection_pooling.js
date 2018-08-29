@@ -7,7 +7,7 @@ const host = require('../lib/host')
 function * run (context, heroku) {
   const util = require('../lib/util')
   const fetcher = require('../lib/fetcher')(heroku)
-  const {app, args, flags} = context
+  const { app, args, flags } = context
 
   let db = yield fetcher.addon(app, args.database)
   let addon = yield heroku.get(`/addons/${encodeURIComponent(db.name)}`)
@@ -25,7 +25,7 @@ function * run (context, heroku) {
 
   yield cli.action(
     `Setting ${cli.color.attachment(attachment.name)} config vars and restarting ${cli.color.app(app)}`,
-    {success: false},
+    { success: false },
     co(function * () {
       let releases = yield heroku.get(`/apps/${app}/releases`, {
         partial: true,
@@ -46,10 +46,10 @@ module.exports = {
 
   heroku pg:connection-pooling:attach postgresql-something-12345 --credential cred-name
 `,
-  args: [{name: 'database', optional: true}],
+  args: [{ name: 'database', optional: true }],
   flags: [
-    {name: 'as', description: 'name for add-on attachment', hasValue: true},
-    {name: 'credential', char: 'n', hasValue: true, required: false, description: 'name of the credential within the database'}
+    { name: 'as', description: 'name for add-on attachment', hasValue: true },
+    { name: 'credential', char: 'n', hasValue: true, required: false, description: 'name of the credential within the database' }
   ],
-  run: cli.command({preauth: true}, co.wrap(run))
+  run: cli.command({ preauth: true }, co.wrap(run))
 }

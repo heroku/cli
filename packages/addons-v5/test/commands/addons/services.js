@@ -10,10 +10,10 @@ describe('addons:services', function () {
     let api = nock('https://api.heroku.com:443')
       .get('/addon-services')
       .reply(200, [
-        {name: 'foo', human_name: 'Foo', state: 'ga'},
-        {name: 'bar', human_name: 'Bar', state: 'ga'}
+        { name: 'foo', human_name: 'Foo', state: 'ga' },
+        { name: 'bar', human_name: 'Bar', state: 'ga' }
       ])
-    return cmd.run({flags: {}})
+    return cmd.run({ flags: {} })
       .then(() => expect(cli.stdout).to.equal(`slug  name  state
 ────  ────  ─────
 foo   Foo   ga

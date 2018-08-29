@@ -14,7 +14,7 @@ function * run (context, heroku) {
   let request = heroku.request({
     method: 'PATCH',
     path: `/apps/${oldApp}`,
-    body: {name: newApp}
+    body: { name: newApp }
   })
   let app = yield cli.action(`Renaming ${cli.color.cyan(oldApp)} to ${cli.color.green(newApp)}`, request)
   let gitUrl = context.flags['ssh-git'] ? git.sshGitHurl(app.name) : git.gitUrl(app.name)
@@ -44,14 +44,14 @@ https://newname.herokuapp.com/ | https://git.heroku.com/newname.git
 Git remote heroku updated`,
   needsAuth: true,
   needsApp: true,
-  args: [{name: 'newname'}],
+  args: [{ name: 'newname' }],
   flags: [
-    {name: 'ssh-git', description: 'use ssh git protocol instead of https'}
+    { name: 'ssh-git', description: 'use ssh git protocol instead of https' }
   ],
   run: cli.command(co.wrap(run))
 }
 
 module.exports = [
-  Object.assign({topic: 'apps', command: 'rename'}, cmd),
-  Object.assign({topic: 'rename', hidden: true}, cmd)
+  Object.assign({ topic: 'apps', command: 'rename' }, cmd),
+  Object.assign({ topic: 'rename', hidden: true }, cmd)
 ]

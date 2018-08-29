@@ -77,7 +77,7 @@ describe('heroku-api', function () {
       const pipeline = '123-abc'
       const number = 1
       const testRun = { number }
-      const api = nock(`https://api.heroku.com`, {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.ci'}})
+      const api = nock(`https://api.heroku.com`, { reqheaders: { Accept: 'application/vnd.heroku+json; version=3.ci' } })
         .get(`/pipelines/${pipeline}/test-runs/${number}`)
         // nock node 8 bug https://github.com/node-nock/nock/issues/925
         // .matchHeader('Accept', 'application/vnd.heroku+json; version=3.ci')
@@ -94,7 +94,7 @@ describe('heroku-api', function () {
       const testRun = { id: 'uuid-999' }
       const testNode = { test_run: { id: testRun.id } }
 
-      const api = nock(`https://api.heroku.com`, {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.ci'}})
+      const api = nock(`https://api.heroku.com`, { reqheaders: { Accept: 'application/vnd.heroku+json; version=3.ci' } })
         .get(`/test-runs/${testRun.id}/test-nodes`)
         // nock node 8 bug https://github.com/node-nock/nock/issues/925
         // .matchHeader('Accept', 'application/vnd.heroku+json; version=3.ci')
@@ -110,7 +110,7 @@ describe('heroku-api', function () {
     it('gets test runs given a pipeline', function * () {
       const pipeline = '123-abc'
       const testRuns = [{ id: '123' }]
-      const api = nock(`https://api.heroku.com`, {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.ci'}})
+      const api = nock(`https://api.heroku.com`, { reqheaders: { Accept: 'application/vnd.heroku+json; version=3.ci' } })
         .get(`/pipelines/${pipeline}/test-runs`)
         // nock node 8 bug https://github.com/node-nock/nock/issues/925
         // .matchHeader('Accept', 'application/vnd.heroku+json; version=3.ci')
@@ -126,7 +126,7 @@ describe('heroku-api', function () {
     it('gets the latest test run given a pipeline', function * () {
       const pipeline = '123-abc'
       const testRuns = [{ number: 123 }, { number: 122 }]
-      const api = nock(`https://api.heroku.com`, {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.ci'}})
+      const api = nock(`https://api.heroku.com`, { reqheaders: { Accept: 'application/vnd.heroku+json; version=3.ci' } })
         .get(`/pipelines/${pipeline}/test-runs`)
         // nock node 8 bug https://github.com/node-nock/nock/issues/925
         // .matchHeader('Accept', 'application/vnd.heroku+json; version=3.ci')

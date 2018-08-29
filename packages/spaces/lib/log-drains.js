@@ -4,7 +4,7 @@ module.exports = function (heroku) {
   function getLogDrain (space) {
     return heroku.request({
       path: `/spaces/${space}/log-drain`,
-      headers: {Accept: 'application/vnd.heroku+json; version=3.dogwood'}
+      headers: { Accept: 'application/vnd.heroku+json; version=3.dogwood' }
     })
   }
 
@@ -15,7 +15,7 @@ module.exports = function (heroku) {
       body: {
         url: url
       },
-      headers: {Accept: 'application/vnd.heroku+json; version=3.dogwood'}
+      headers: { Accept: 'application/vnd.heroku+json; version=3.dogwood' }
     })
   }
 

@@ -6,7 +6,7 @@ const co = require('co')
 function * run (context, heroku) {
   const host = require('../../lib/host')
   const fetcher = require('../../lib/fetcher')(heroku)
-  let {app, args} = context
+  let { app, args } = context
 
   let dbs
   if (args.database) dbs = yield [fetcher.addon(app, args.database)]
@@ -15,7 +15,7 @@ function * run (context, heroku) {
   if (!dbs.length) throw new Error(`No databases on ${cli.color.app(app)}`)
 
   dbs = yield dbs.map(db => {
-    db.links = heroku.get(`/client/v11/databases/${db.id}/links`, {host: host(db)})
+    db.links = heroku.get(`/client/v11/databases/${db.id}/links`, { host: host(db) })
     return db
   })
 
@@ -42,6 +42,6 @@ module.exports = {
   description: 'lists all databases and information on link',
   needsApp: true,
   needsAuth: true,
-  args: [{name: 'database', optional: true}],
-  run: cli.command({preauth: true}, co.wrap(run))
+  args: [{ name: 'database', optional: true }],
+  run: cli.command({ preauth: true }, co.wrap(run))
 }

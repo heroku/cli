@@ -6,10 +6,10 @@ const cli = require('heroku-cli-util')
 function * run (context, heroku) {
   const host = require('../../lib/host')
   const fetcher = require('../../lib/fetcher')(heroku)
-  const {app} = context
+  const { app } = context
 
   let db = yield fetcher.arbitraryAppDB(app)
-  let schedules = yield heroku.get(`/client/v11/databases/${db.id}/transfer-schedules`, {host: host(db)})
+  let schedules = yield heroku.get(`/client/v11/databases/${db.id}/transfer-schedules`, { host: host(db) })
 
   if (!schedules.length) {
     throw new Error(`No backup schedules found on ${cli.color.app(app)}
@@ -28,5 +28,5 @@ module.exports = {
   description: 'list backup schedule',
   needsApp: true,
   needsAuth: true,
-  run: cli.command({preauth: true}, co.wrap(run))
+  run: cli.command({ preauth: true }, co.wrap(run))
 }

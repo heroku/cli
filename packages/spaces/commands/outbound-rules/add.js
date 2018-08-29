@@ -2,7 +2,7 @@
 
 let cli = require('heroku-cli-util')
 let co = require('co')
-const {SpaceCompletion} = require('@heroku-cli/command/lib/completions')
+const { SpaceCompletion } = require('@heroku-cli/command/lib/completions')
 
 const ProtocolCompletion = {
   cacheDuration: 60 * 60 * 24 * 365, // cache yearly
@@ -22,7 +22,7 @@ function * run (context, heroku) {
     target: context.flags.dest,
     from_port: ports[0],
     to_port: ports[1] || ports[0],
-    protocol: context.flags.protocol})
+    protocol: context.flags.protocol })
   ruleset = yield lib.putOutboundRules(space, ruleset)
   cli.log(`Added rule to the Outbound Rules of ${cli.color.cyan.bold(space)}`)
   cli.warn('Modifying the Outbound Rules may break Add-ons for Apps in this Private Space')
@@ -59,11 +59,11 @@ allow. ICMP types are numbered, 0-255.
   needsAuth: true,
   args: [],
   flags: [
-    {name: 'space', char: 's', hasValue: true, description: 'space to add rule to', completion: SpaceCompletion},
-    {name: 'confirm', hasValue: true, description: 'set to space name to bypass confirm prompt'},
-    {name: 'dest', hasValue: true, description: 'target CIDR block dynos are allowed to communicate with'},
-    {name: 'protocol', hasValue: true, description: 'the protocol dynos are allowed to use when communicating with hosts in destination CIDR block. Valid protocols are "tcp", "udp", "icmp", "0-255" and "any".', completion: ProtocolCompletion},
-    {name: 'port', hasValue: true, description: 'the port dynos are allowed to use when communicating with hosts in destination CIDR block. Accepts a range in `<lowest port>-<highest port>` format. 0 is the minimum. The maximum port allowed is 65535, except for ICMP with a maximum of 255.'}
+    { name: 'space', char: 's', hasValue: true, description: 'space to add rule to', completion: SpaceCompletion },
+    { name: 'confirm', hasValue: true, description: 'set to space name to bypass confirm prompt' },
+    { name: 'dest', hasValue: true, description: 'target CIDR block dynos are allowed to communicate with' },
+    { name: 'protocol', hasValue: true, description: 'the protocol dynos are allowed to use when communicating with hosts in destination CIDR block. Valid protocols are "tcp", "udp", "icmp", "0-255" and "any".', completion: ProtocolCompletion },
+    { name: 'port', hasValue: true, description: 'the port dynos are allowed to use when communicating with hosts in destination CIDR block. Accepts a range in `<lowest port>-<highest port>` format. 0 is the minimum. The maximum port allowed is 65535, except for ICMP with a maximum of 255.' }
   ],
   run: cli.command(co.wrap(run))
 }

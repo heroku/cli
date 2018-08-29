@@ -9,7 +9,7 @@ const proxyquire = require('proxyquire')
 const addon = {
   id: 1,
   name: 'postgres-1',
-  plan: {name: 'heroku-postgresql:standard-0'}
+  plan: { name: 'heroku-postgresql:standard-0' }
 }
 const fetcher = () => {
   return {
@@ -38,7 +38,7 @@ describe('pg:reset', () => {
 
   it('reset db', () => {
     pg.put('/client/v11/databases/1/reset').reply(200)
-    return cmd.run({app: 'myapp', args: {}, flags: {confirm: 'myapp'}})
+    return cmd.run({ app: 'myapp', args: {}, flags: { confirm: 'myapp' } })
       .then(() => expect(cli.stderr, 'to equal', 'Resetting postgres-1... done\n'))
   })
 })

@@ -2,7 +2,7 @@
 
 let cli = require('heroku-cli-util')
 let co = require('co')
-const {flags} = require('@heroku-cli/command')
+const { flags } = require('@heroku-cli/command')
 
 function * run (context, heroku) {
   let team = context.org || context.team || context.flags.team
@@ -19,7 +19,7 @@ module.exports = {
   wantsOrg: true,
   flags: [
     // flags.org({name: 'org', hasValue: true, description: 'org to use', hidden: false}),
-    flags.team({name: 'team', hasValue: true, hidden: true})
+    flags.team({ name: 'team', hasValue: true, hidden: true })
   ],
   run: cli.command(co.wrap(run))
 }

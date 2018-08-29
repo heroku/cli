@@ -18,9 +18,9 @@ function * run (context, heroku) {
   const pgbackups = require('../../lib/pgbackups')(context, heroku)
   const fetcher = require('../../lib/fetcher')(heroku)
   const host = require('../../lib/host')
-  const {sortBy} = require('lodash')
+  const { sortBy } = require('lodash')
 
-  const {app, args, flags} = context
+  const { app, args, flags } = context
   const interval = Math.max(3, parseInt(flags['wait-interval'])) || 3
   const db = yield fetcher.addon(app, args.database)
 
@@ -36,7 +36,7 @@ function * run (context, heroku) {
     } else {
       backupApp = app
     }
-    let transfers = yield heroku.get(`/client/v11/apps/${backupApp}/transfers`, {host: host()})
+    let transfers = yield heroku.get(`/client/v11/apps/${backupApp}/transfers`, { host: host() })
     let backups = transfers.filter(t => t.from_type === 'pg_dump' && t.to_type === 'gof3r')
     let backup
     if (backupName) {
@@ -55,7 +55,7 @@ function * run (context, heroku) {
   let restore
   yield cli.action(`Starting restore of ${cli.color.cyan(backupName)} to ${cli.color.addon(db.name)}`, co(function * () {
     restore = yield heroku.post(`/client/v11/databases/${db.id}/restores`, {
-      body: {backup_url: backupURL},
+      body: { backup_url: backupURL },
       host: host(db)
     })
   }))
@@ -76,13 +76,13 @@ module.exports = {
   needsApp: true,
   needsAuth: true,
   args: [
-    {name: 'backup', optional: true},
-    {name: 'database', optional: true}
+    { name: 'backup', optional: true },
+    { name: 'database', optional: true }
   ],
   flags: [
-    {name: 'wait-interval', hasValue: true},
-    {name: 'verbose', char: 'v'},
-    {name: 'confirm', char: 'c', hasValue: true}
+    { name: 'wait-interval', hasValue: true },
+    { name: 'verbose', char: 'v' },
+    { name: 'confirm', char: 'c', hasValue: true }
   ],
-  run: cli.command({preauth: true}, co.wrap(run))
+  run: cli.command({ preauth: true }, co.wrap(run))
 }

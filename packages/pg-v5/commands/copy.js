@@ -8,7 +8,7 @@ function * run (context, heroku) {
   const host = require('../lib/host')
   const pgbackups = require('../lib/pgbackups')(context, heroku)
   const fetcher = require('../lib/fetcher')(heroku)
-  const {app, args, flags} = context
+  const { app, args, flags } = context
   const interval = Math.max(3, parseInt(flags['wait-interval'])) || 3
 
   let resolve = co.wrap(function * (db) {
@@ -88,13 +88,13 @@ module.exports = {
   description: 'copy all data from source db to target',
   help: 'at least one of the databases must be a Heroku PostgreSQL DB',
   args: [
-    {name: 'source'},
-    {name: 'target'}
+    { name: 'source' },
+    { name: 'target' }
   ],
   flags: [
-    {name: 'wait-interval', hasValue: true},
-    {name: 'verbose'},
-    {name: 'confirm', hasValue: true}
+    { name: 'wait-interval', hasValue: true },
+    { name: 'verbose' },
+    { name: 'confirm', hasValue: true }
   ],
-  run: cli.command({preauth: true}, co.wrap(run))
+  run: cli.command({ preauth: true }, co.wrap(run))
 }

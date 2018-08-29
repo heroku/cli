@@ -22,8 +22,8 @@ module.exports = {
   topic: 'features',
   command: 'info',
   description: 'display information about a feature',
-  args: [{name: 'feature'}],
-  flags: [{name: 'json', description: 'output in json format'}],
+  args: [{ name: 'feature' }],
+  flags: [{ name: 'json', description: 'output in json format' }],
   needsAuth: true,
   needsApp: true,
   run: cli.command(co.wrap(run))

@@ -23,15 +23,15 @@ $ heroku ps:stop run
 Stopping run dynos... done`,
   needsAuth: true,
   needsApp: true,
-  args: [{name: 'dyno'}],
+  args: [{ name: 'dyno' }],
   run: cli.command(co.wrap(run))
 }
 
 module.exports = [
-  Object.assign({}, cmd, {topic: 'ps', command: 'stop'}),
-  Object.assign({}, cmd, {topic: 'dyno', command: 'stop'}),
-  Object.assign({}, cmd, {topic: 'ps', command: 'kill'}),
-  Object.assign({}, cmd, {topic: 'dyno', command: 'kill'}),
-  Object.assign({}, cmd, {topic: 'stop', hidden: true}),
-  Object.assign({}, cmd, {topic: 'kill', hidden: true})
+  Object.assign({}, cmd, { topic: 'ps', command: 'stop' }),
+  Object.assign({}, cmd, { topic: 'dyno', command: 'stop' }),
+  Object.assign({}, cmd, { topic: 'ps', command: 'kill' }),
+  Object.assign({}, cmd, { topic: 'dyno', command: 'kill' }),
+  Object.assign({}, cmd, { topic: 'stop', hidden: true }),
+  Object.assign({}, cmd, { topic: 'kill', hidden: true })
 ]

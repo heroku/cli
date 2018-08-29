@@ -25,11 +25,11 @@ function printAccess (app, collaborators) {
     }).value()
 
   let columns = [
-    {key: 'email', label: 'Email', format: e => cli.color.cyan(e)},
-    {key: 'role', label: 'Role', format: r => cli.color.green(r)}
+    { key: 'email', label: 'Email', format: e => cli.color.cyan(e) },
+    { key: 'role', label: 'Role', format: r => cli.color.green(r) }
   ]
-  if (showPermissions) columns.push({key: 'permissions', label: 'Permissions'})
-  cli.table(collaborators, {printHeader: false, columns})
+  if (showPermissions) columns.push({ key: 'permissions', label: 'Permissions' })
+  cli.table(collaborators, { printHeader: false, columns })
 }
 
 async function run (context, heroku) {
@@ -54,7 +54,7 @@ async function run (context, heroku) {
         return admin
       })
 
-      collaborators = _.reject(collaborators, {role: 'admin'}) // Admins might have already permissions
+      collaborators = _.reject(collaborators, { role: 'admin' }) // Admins might have already permissions
       collaborators = _.union(collaborators, admins)
     } catch (err) {
       if (err.statusCode !== 403) throw err
@@ -72,7 +72,7 @@ module.exports = [
     needsAuth: true,
     needsApp: true,
     flags: [
-      {name: 'json', description: 'output in json format'}
+      { name: 'json', description: 'output in json format' }
     ],
     run: cli.command(run)
   },

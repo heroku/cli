@@ -3,7 +3,7 @@
 let cli = require('heroku-cli-util')
 let helpers = require('../lib/helpers')
 let Dyno = require('../lib/dyno')
-const {DynoSizeCompletion, ProcessTypeCompletion} = require('@heroku-cli/command/lib/completions')
+const { DynoSizeCompletion, ProcessTypeCompletion } = require('@heroku-cli/command/lib/completions')
 const debug = require('debug')('heroku:run')
 
 async function run (context, heroku) {
@@ -47,13 +47,13 @@ Running myscript.sh -a arg1 -s arg2 on app.... up, run.1`,
   needsAuth: true,
   needsApp: true,
   flags: [
-    {name: 'size', char: 's', description: 'dyno size', hasValue: true, completion: DynoSizeCompletion},
-    {name: 'type', description: 'process type', hasValue: true, completion: ProcessTypeCompletion},
-    {name: 'exit-code', char: 'x', description: 'passthrough the exit code of the remote command'},
-    {name: 'env', char: 'e', description: "environment variables to set (use ';' to split multiple vars)", hasValue: true},
-    {name: 'no-tty', description: 'force the command to not run in a tty', hasValue: false},
-    {name: 'listen', description: 'listen on a local port', hasValue: false, hidden: true},
-    {name: 'no-notify', description: 'disables notification when dyno is up (alternatively use HEROKU_NOTIFICATIONS=0)', hasValue: false}
+    { name: 'size', char: 's', description: 'dyno size', hasValue: true, completion: DynoSizeCompletion },
+    { name: 'type', description: 'process type', hasValue: true, completion: ProcessTypeCompletion },
+    { name: 'exit-code', char: 'x', description: 'passthrough the exit code of the remote command' },
+    { name: 'env', char: 'e', description: "environment variables to set (use ';' to split multiple vars)", hasValue: true },
+    { name: 'no-tty', description: 'force the command to not run in a tty', hasValue: false },
+    { name: 'listen', description: 'listen on a local port', hasValue: false, hidden: true },
+    { name: 'no-notify', description: 'disables notification when dyno is up (alternatively use HEROKU_NOTIFICATIONS=0)', hasValue: false }
   ],
   run: cli.command(run)
 }

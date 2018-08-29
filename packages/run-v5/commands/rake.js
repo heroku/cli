@@ -36,10 +36,10 @@ module.exports = {
   needsAuth: true,
   needsApp: true,
   flags: [
-    {name: 'size', char: 's', description: 'dyno size', hasValue: true},
-    {name: 'exit-code', char: 'x', description: 'passthrough the exit code of the remote command'},
-    {name: 'env', char: 'e', description: "environment variables to set (use ';' to split multiple vars)", hasValue: true},
-    {name: 'no-tty', description: 'force the command to not run in a tty', hasValue: false}
+    { name: 'size', char: 's', description: 'dyno size', hasValue: true },
+    { name: 'exit-code', char: 'x', description: 'passthrough the exit code of the remote command' },
+    { name: 'env', char: 'e', description: "environment variables to set (use ';' to split multiple vars)", hasValue: true },
+    { name: 'no-tty', description: 'force the command to not run in a tty', hasValue: false }
   ],
   run: cli.command(co.wrap(run))
 }

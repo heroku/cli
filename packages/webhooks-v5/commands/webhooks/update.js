@@ -1,14 +1,14 @@
-const {Command, flags} = require('@heroku-cli/command')
+const { Command, flags } = require('@heroku-cli/command')
 const cli = require('heroku-cli-util')
 const webhookType = require('../../lib/webhook-type.js')
 
 class Update extends Command {
   async run () {
-    const {flags, args} = this.parse(Update)
-    let {path, display} = webhookType(flags)
+    const { flags, args } = this.parse(Update)
+    let { path, display } = webhookType(flags)
     await cli.action(`Updating webhook ${args.id} for ${display}`, {},
       this.heroku.patch(`${path}/webhooks/${args.id}`, {
-        headers: {Accept: 'application/vnd.heroku+json; version=3.webhooks'},
+        headers: { Accept: 'application/vnd.heroku+json; version=3.webhooks' },
         body: {
           include: flags.include && flags.include.split(',').map(s => s.trim()),
           level: flags.level,
@@ -27,17 +27,17 @@ Update.examples = [
 ]
 
 Update.flags = {
-  app: flags.app({char: 'a'}),
-  pipeline: flags.string({char: 'p', description: 'pipeline on which to list', hidden: true}),
-  include: flags.string({char: 'i', description: 'comma delimited event types your server will receive ', required: true}),
-  level: flags.string({char: 'l', description: 'notify does not retry, sync will retry until successful or timeout', required: true}),
-  secret: flags.string({char: 's', description: 'value to sign delivery with in Heroku-Webhook-Hmac-SHA256 header'}),
-  authorization: flags.string({char: 't', description: 'authoriation header to send with webhooks'}),
-  url: flags.string({char: 'u', description: 'URL for receiver', required: true})
+  app: flags.app({ char: 'a' }),
+  pipeline: flags.string({ char: 'p', description: 'pipeline on which to list', hidden: true }),
+  include: flags.string({ char: 'i', description: 'comma delimited event types your server will receive ', required: true }),
+  level: flags.string({ char: 'l', description: 'notify does not retry, sync will retry until successful or timeout', required: true }),
+  secret: flags.string({ char: 's', description: 'value to sign delivery with in Heroku-Webhook-Hmac-SHA256 header' }),
+  authorization: flags.string({ char: 't', description: 'authoriation header to send with webhooks' }),
+  url: flags.string({ char: 'u', description: 'URL for receiver', required: true })
 }
 
 Update.args = [
-  {name: 'id'}
+  { name: 'id' }
 ]
 
 module.exports = Update

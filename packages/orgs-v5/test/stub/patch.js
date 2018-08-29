@@ -17,13 +17,13 @@ function orgAppTransfer () {
 
 function personalToPersonal () {
   return nock('https://api.heroku.com:443')
-    .patch('/organizations/apps/myapp', {owner: 'raulb@heroku.com'})
+    .patch('/organizations/apps/myapp', { owner: 'raulb@heroku.com' })
     .reply(200, { name: 'myapp', owner: { email: 'raulb@heroku.com' } })
 }
 
 function updateMemberRole (email = 'raulb@heroku.com', role = 'admin') {
   return nock('https://api.heroku.com:443')
-    .patch('/organizations/myorg/members', {email, role})
+    .patch('/organizations/myorg/members', { email, role })
     .reply(200)
 }
 

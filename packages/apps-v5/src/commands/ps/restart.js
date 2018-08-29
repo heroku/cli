@@ -30,12 +30,12 @@ $ heroku ps:restart
 Restarting dynos... done`,
   needsAuth: true,
   needsApp: true,
-  args: [{name: 'dyno', optional: true}],
+  args: [{ name: 'dyno', optional: true }],
   run: cli.command(co.wrap(run))
 }
 
 module.exports = [
-  Object.assign({topic: 'ps', command: 'restart'}, cmd),
-  Object.assign({topic: 'dyno', command: 'restart'}, cmd),
-  Object.assign({topic: 'restart', hidden: true}, cmd)
+  Object.assign({ topic: 'ps', command: 'restart' }, cmd),
+  Object.assign({ topic: 'dyno', command: 'restart' }, cmd),
+  Object.assign({ topic: 'restart', hidden: true }, cmd)
 ]

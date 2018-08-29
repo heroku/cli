@@ -239,7 +239,7 @@ describe('releases', () => {
       .reply(200, releases)
       .get('/apps/myapp/slugs/37994c83-39a3-4cbf-b318-8f9dc648f701')
       .reply(200, slug)
-    return cmd.run({app: 'myapp', flags: {}})
+    return cmd.run({ app: 'myapp', flags: {} })
       .then(() => expect(cli.stdout, 'to equal', `=== myapp Releases - Current: v37
 v41  thir… release command executing  jeff@heroku.com  2015/11/18 01:36:38 +0000
 v40  Set foo config vars              jeff@heroku.com  2015/11/18 01:37:41 +0000
@@ -258,7 +258,7 @@ v37  first commit                     jeff@heroku.com  2015/11/18 01:36:38 +0000
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/releases')
       .reply(200, onlySuccessfulReleases)
-    return cmd.run({app: 'myapp', flags: {}})
+    return cmd.run({ app: 'myapp', flags: {} })
       .then(() => expect(cli.stdout, 'to equal', `=== myapp Releases - Current: v37
 v41  third commit                     jeff@heroku.com  2015/11/18 01:36:38 +0000
 v40  Set foo config vars              jeff@heroku.com  2015/11/18 01:37:41 +0000
@@ -279,7 +279,7 @@ v37  first commit                     jeff@heroku.com  2015/11/18 01:36:38 +0000
       .reply(200, releases)
       .get('/apps/myapp/slugs/37994c83-39a3-4cbf-b318-8f9dc648f701')
       .reply(200, slug)
-    return cmd.run({app: 'myapp', flags: {}})
+    return cmd.run({ app: 'myapp', flags: {} })
       .then(() => expect(cli.stdout, 'to equal', `=== myapp Releases - Current: v37
 v41  third commit release command executing               jeff@heroku.com  2015/11/18 01:36:38 +0000
 v40  Set foo config vars                                  jeff@heroku.com  2015/11/18 01:37:41 +0000
@@ -298,7 +298,7 @@ v37  first commit                                         jeff@heroku.com  2015/
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/releases')
       .reply(200, onlySuccessfulReleases)
-    return cmd.run({app: 'myapp', flags: {}})
+    return cmd.run({ app: 'myapp', flags: {} })
       .then(() => expect(cli.stdout, 'to equal', `=== myapp Releases - Current: v37
 v41  third commit                              jeff@heroku.com  2015/11/18 01:36:38 +0000
 v40  Set foo config vars                       jeff@heroku.com  2015/11/18 01:37:41 +0000
@@ -319,7 +319,7 @@ v37  first commit                              jeff@heroku.com  2015/11/18 01:36
       .reply(200, releases)
       .get('/apps/myapp/slugs/37994c83-39a3-4cbf-b318-8f9dc648f701')
       .reply(200, slug)
-    return cmd.run({app: 'myapp', flags: {}})
+    return cmd.run({ app: 'myapp', flags: {} })
       .then(() => expect(cli.stdout, 'to equal', `=== myapp Releases - Current: v37
 v41  thir… release command executing  jeff@heroku.com  2015/11/18 01:36:38 +0000
 v40  Set foo config vars              jeff@heroku.com  2015/11/18 01:37:41 +0000
@@ -340,7 +340,7 @@ v37  first commit                     jeff@heroku.com  2015/11/18 01:36:38 +0000
       .reply(200, releases)
       .get('/apps/myapp/slugs/37994c83-39a3-4cbf-b318-8f9dc648f701')
       .reply(200, {})
-    return cmd.run({app: 'myapp', flags: {}})
+    return cmd.run({ app: 'myapp', flags: {} })
       .then(() => expect(cli.stdout, 'to equal', `=== myapp Releases - Current: v37
 v41  thir… release command executing  jeff@heroku.com  2015/11/18 01:36:38 +0000
 v40  Set foo config vars              jeff@heroku.com  2015/11/18 01:37:41 +0000
@@ -359,7 +359,7 @@ v37  first commit                     jeff@heroku.com  2015/11/18 01:36:38 +0000
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/releases')
       .reply(200, releasesNoSlug)
-    return cmd.run({app: 'myapp', flags: {}})
+    return cmd.run({ app: 'myapp', flags: {} })
       .then(() => expect(cli.stdout, 'to equal', `=== myapp Releases
 v1  first… release command executing  jeff@heroku.com  2015/11/18 01:36:38 +0000
 `))
@@ -374,8 +374,8 @@ v1  first… release command executing  jeff@heroku.com  2015/11/18 01:36:38 +00
       .reply(200, releases)
       .get('/apps/myapp/slugs/37994c83-39a3-4cbf-b318-8f9dc648f701')
       .reply(200, slug)
-    return cmd.run({app: 'myapp', flags: {json: true}})
-      .then(() => expect(JSON.parse(cli.stdout)[0], 'to satisfy', {version: 41}))
+    return cmd.run({ app: 'myapp', flags: { json: true } })
+      .then(() => expect(JSON.parse(cli.stdout)[0], 'to satisfy', { version: 41 }))
       .then(() => expect(cli.stderr, 'to be empty'))
       .then(() => api.done())
   })
@@ -384,7 +384,7 @@ v1  first… release command executing  jeff@heroku.com  2015/11/18 01:36:38 +00
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/releases')
       .reply(200, [])
-    return cmd.run({app: 'myapp', flags: {}})
+    return cmd.run({ app: 'myapp', flags: {} })
       .then(() => expect(cli.stdout, 'to equal', 'myapp has no releases.\n'))
       .then(() => expect(cli.stderr, 'to be empty'))
       .then(() => api.done())
@@ -394,7 +394,7 @@ v1  first… release command executing  jeff@heroku.com  2015/11/18 01:36:38 +00
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/releases?extended=true')
       .reply(200, extended)
-    return cmd.run({app: 'myapp', flags: {extended: true}})
+    return cmd.run({ app: 'myapp', flags: { extended: true } })
       .then(() => expect(cli.stdout, 'to equal', `=== myapp Releases
 v40      Set foo config vars  jeff@heroku.com  2015/11/18 01:37:41 +0000  1                 uuid
 `))
@@ -408,7 +408,7 @@ v40      Set foo config vars  jeff@heroku.com  2015/11/18 01:37:41 +0000  1     
     let api = nock('https://api.heroku.com:443')
       .get('/apps/myapp/releases?extended=true')
       .reply(200, extended)
-    return cmd.run({app: 'myapp', flags: {extended: true}})
+    return cmd.run({ app: 'myapp', flags: { extended: true } })
       .then(() => expect(cli.stdout, 'to equal', `=== myapp Releases
 v40      Set foo config vars  jeff@heroku.com  2015/11/18 01:37:41 +0000  1                 uuid
 `))
@@ -426,7 +426,7 @@ v40      Set foo config vars  jeff@heroku.com  2015/11/18 01:37:41 +0000  1     
       .reply(200, releases)
       .get('/apps/myapp/slugs/37994c83-39a3-4cbf-b318-8f9dc648f701')
       .reply(200, slug)
-    return cmd.run({app: 'myapp', flags: {}})
+    return cmd.run({ app: 'myapp', flags: {} })
       .then(() => expect(cli.stdout, 'to equal', `=== myapp Releases
 v41  thir… release command executing  jeff@heroku.com  2015/11/18 01:36:38 +0000
 v40  Set foo config vars              jeff@heroku.com  2015/11/18 01:37:41 +0000

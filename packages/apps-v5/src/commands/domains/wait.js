@@ -24,6 +24,6 @@ module.exports = {
   description: 'wait for domain to be active for an app',
   needsApp: true,
   needsAuth: true,
-  args: [{name: 'hostname', optional: true}],
+  args: [{ name: 'hostname', optional: true }],
   run: cli.command(co.wrap(run))
 }

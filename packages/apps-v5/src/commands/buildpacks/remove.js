@@ -43,10 +43,10 @@ module.exports = {
   topic: 'buildpacks',
   command: 'remove',
   args: [
-    {name: 'url', optional: true}
+    { name: 'url', optional: true }
   ],
   flags: [
-    {name: 'index', char: 'i', hasValue: true, description: 'the 1-based index of the URL to remove from the list of URLs'}
+    { name: 'index', char: 'i', hasValue: true, description: 'the 1-based index of the URL to remove from the list of URLs' }
   ],
   description: 'remove a buildpack set on the app',
   help: '',

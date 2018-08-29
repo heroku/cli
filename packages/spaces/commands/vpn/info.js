@@ -20,11 +20,11 @@ function displayVPNInfo (space, name, info) {
   cli.styledHeader(`${name} VPN Tunnel Info`)
   cli.table(info.tunnels, {
     columns: [
-      {key: 'tunnel_id', label: 'VPN Tunnel'},
-      {key: 'ip', label: 'IP Address'},
-      {key: 'status', label: 'Status', format: status => format.VPNStatus(status)},
-      {key: 'last_status_change', label: 'Status Last Changed'},
-      {key: 'status_message', label: 'Details'}
+      { key: 'tunnel_id', label: 'VPN Tunnel' },
+      { key: 'ip', label: 'IP Address' },
+      { key: 'status', label: 'Status', format: status => format.VPNStatus(status) },
+      { key: 'last_status_change', label: 'Status Last Changed' },
+      { key: 'status_message', label: 'Details' }
     ]
   })
 }
@@ -78,11 +78,11 @@ module.exports = {
     Tunnel 2    52.44.146.197  UP      2016-10-25T22:09:05Z  status message`,
   needsApp: false,
   needsAuth: true,
-  args: [{name: 'name', optional: true, hidden: true}],
+  args: [{ name: 'name', optional: true, hidden: true }],
   flags: [
-    {name: 'space', char: 's', hasValue: true, description: 'space the vpn connection belongs to'},
-    {name: 'json', description: 'output in json format'},
-    {name: 'name', char: 'n', hasValue: true, description: 'name or id of the VPN connection to get info from'}
+    { name: 'space', char: 's', hasValue: true, description: 'space the vpn connection belongs to' },
+    { name: 'json', description: 'output in json format' },
+    { name: 'name', char: 'n', hasValue: true, description: 'name or id of the VPN connection to get info from' }
   ],
   run: cli.command(co.wrap(run)),
   render: render

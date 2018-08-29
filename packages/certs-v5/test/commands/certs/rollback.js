@@ -27,7 +27,7 @@ describe('heroku certs:rollback', function () {
       .reply(200, [])
 
     var thrown = false
-    return certs.run({app: 'example', flags: {confirm: 'notexample'}}).catch(function (err) {
+    return certs.run({ app: 'example', flags: { confirm: 'notexample' } }).catch(function (err) {
       thrown = true
       mockSsl.done()
       mockSni.done()
@@ -46,7 +46,7 @@ describe('heroku certs:rollback', function () {
       .get('/apps/example/sni-endpoints')
       .reply(200, [endpoint])
 
-    return assertExit(1, certs.run({app: 'example', args: {}, flags: {confirm: 'example'}})).then(function () {
+    return assertExit(1, certs.run({ app: 'example', args: {}, flags: { confirm: 'example' } })).then(function () {
       mockSsl.done()
       mockSni.done()
       expect(cli.stderr).to.equal(' ▸    SNI Endpoints cannot be rolled back, please update with a new cert.\n')
@@ -57,7 +57,7 @@ describe('heroku certs:rollback', function () {
   let callback = function (err, path, endpoint) {
     if (err) throw err
     return nock('https://api.heroku.com', {
-      reqheaders: {'Accept': 'application/vnd.heroku+json; version=3.ssl_cert'}
+      reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3.ssl_cert' }
     })
       .patch('/apps/example/ssl-endpoints/tokyo-1050.herokussl.com', {
         rollback: true
@@ -77,8 +77,8 @@ ${certificateDetails}
   }
 
   shared.shouldHandleArgs('certs:update', 'performs a rollback on an endpoint', certs, callback, {
-    stderr, stdout, flags: {confirm: 'example'}
+    stderr, stdout, flags: { confirm: 'example' }
   })
 
-  sharedSsl.shouldHandleArgs('certs:update', 'performs a rollback on an endpoint', certs, callback, {stderr, stdout, flags: {confirm: 'example'}})
+  sharedSsl.shouldHandleArgs('certs:update', 'performs a rollback on an endpoint', certs, callback, { stderr, stdout, flags: { confirm: 'example' } })
 })

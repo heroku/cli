@@ -7,7 +7,7 @@ function * run (context, heroku) {
   const host = require('../../lib/host')
   const fetcher = require('../../lib/fetcher')(heroku)
   const addons = require('@heroku-cli/plugin-addons').resolve
-  let {app, args, flags} = context
+  let { app, args, flags } = context
 
   let service = co.wrap(function * (name) {
     let addon = yield addons.addon(heroku, app, name)
@@ -42,7 +42,7 @@ module.exports = {
     heroku pg:links:create HEROKU_REDIS_RED HEROKU_POSTGRESQL_CERULEAN`,
   needsApp: true,
   needsAuth: true,
-  args: [{name: 'remote'}, {name: 'database'}],
-  flags: [{name: 'as', hasValue: true, description: 'name of link to create'}],
-  run: cli.command({preauth: true}, co.wrap(run))
+  args: [{ name: 'remote' }, { name: 'database' }],
+  flags: [{ name: 'as', hasValue: true, description: 'name of link to create' }],
+  run: cli.command({ preauth: true }, co.wrap(run))
 }

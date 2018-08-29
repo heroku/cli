@@ -6,8 +6,8 @@ module.exports = {
   command: 'timeout',
   needsApp: true,
   needsAuth: true,
-  args: [{name: 'database', optional: true}],
-  flags: [{name: 'seconds', char: 's', description: 'set timeout value', hasValue: true}],
+  args: [{ name: 'database', optional: true }],
+  flags: [{ name: 'seconds', char: 's', description: 'set timeout value', hasValue: true }],
   description: 'set the number of seconds to wait before killing idle connections',
   help: 'Sets the number of seconds to wait before killing idle connections. A value of zero means that connections will not be closed.',
   run: cli.command(async (context, heroku) => {

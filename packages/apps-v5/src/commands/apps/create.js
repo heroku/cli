@@ -1,10 +1,10 @@
 'use strict'
 
 let cli = require('heroku-cli-util')
-const {safeLoad} = require('js-yaml')
-const {readFile} = require('fs-extra')
-const {flags} = require('@heroku-cli/command')
-const {BuildpackCompletion, RegionCompletion, RemoteCompletion, SpaceCompletion, StackCompletion} = require('@heroku-cli/command/lib/completions')
+const { safeLoad } = require('js-yaml')
+const { readFile } = require('fs-extra')
+const { flags } = require('@heroku-cli/command')
+const { BuildpackCompletion, RegionCompletion, RemoteCompletion, SpaceCompletion, StackCompletion } = require('@heroku-cli/command/lib/completions')
 
 function createText (name, space) {
   let text = `Creating ${name ? cli.color.app(name) : 'app'}`
@@ -50,7 +50,7 @@ async function addAddons (heroku, app, addons) {
       }
     }
 
-    let request = heroku.post(`/apps/${app.name}/addons`, {body})
+    let request = heroku.post(`/apps/${app.name}/addons`, { body })
     await cli.action(`Adding ${cli.color.green(addon.plan)}`, request)
   }
 }
@@ -93,13 +93,13 @@ async function runFromFlags (context, heroku) {
     return cli.action(`Setting buildpack to ${cli.color.cyan(buildpack)}`, heroku.request({
       method: 'PUT',
       path: `/apps/${app.name}/buildpack-installations`,
-      headers: {Range: ''},
-      body: {updates: [{buildpack: buildpack}]}
+      headers: { Range: '' },
+      body: { updates: [{ buildpack: buildpack }] }
     }))
   }
 
   let app = await cli.action(
-    createText(name, context.flags.space), {success: false}, createApp(context, heroku, name, context.flags.stack))
+    createText(name, context.flags.space), { success: false }, createApp(context, heroku, name, context.flags.stack))
 
   if (context.flags.addons) {
     let plans = context.flags.addons.split(',')
@@ -109,13 +109,13 @@ async function runFromFlags (context, heroku) {
   if (context.flags.buildpack) await addBuildpack(app, context.flags.buildpack)
   let remoteUrl = await configureGitRemote(context, app, git)
 
-  await context.config.runHook('recache', {type: 'app', app: app.name})
+  await context.config.runHook('recache', { type: 'app', app: app.name })
   printAppSummary(context, app, remoteUrl)
 }
 
 async function readManifest () {
   let buffer = await readFile('heroku.yml')
-  return safeLoad(buffer, {filename: 'heroku.yml'})
+  return safeLoad(buffer, { filename: 'heroku.yml' })
 }
 
 async function runFromManifest (context, heroku) {
@@ -125,7 +125,7 @@ async function runFromManifest (context, heroku) {
   let manifest = await cli.action('Reading heroku.yml manifest', readManifest())
 
   let app = await cli.action(
-    createText(name, context.flags.space), {success: false}, createApp(context, heroku, name, 'container'))
+    createText(name, context.flags.space), { success: false }, createApp(context, heroku, name, 'container'))
 
   let setup = manifest.setup || {}
   let addons = setup.addons || []
@@ -172,29 +172,29 @@ $ heroku apps:create example-staging --remote staging
 $ heroku apps:create --region eu`,
   needsAuth: true,
   wantsOrg: true,
-  args: [{name: 'app', optional: true, description: 'name of app to create'}],
+  args: [{ name: 'app', optional: true, description: 'name of app to create' }],
   flags: [
-    {name: 'app', char: 'a', hasValue: true, hidden: true},
-    {name: 'addons', hasValue: true, description: 'comma-delimited list of addons to install'},
-    {name: 'buildpack', char: 'b', hasValue: true, description: 'buildpack url to use for this app', completion: BuildpackCompletion},
-    {name: 'manifest', char: 'm', hasValue: false, description: 'use heroku.yml settings for this app', hidden: true},
-    {name: 'no-remote', char: 'n', description: 'do not create a git remote'},
-    {name: 'remote', char: 'r', hasValue: true, description: 'the git remote to create, default "heroku"', completion: RemoteCompletion},
-    {name: 'stack', char: 's', hasValue: true, description: 'the stack to create the app on', completion: StackCompletion},
-    {name: 'space', hasValue: true, description: 'the private space to create the app in', completion: SpaceCompletion},
-    {name: 'region', hasValue: true, description: 'specify region for the app to run in', completion: RegionCompletion},
-    {name: 'ssh-git', description: 'use SSH git protocol for local git remote'},
-    {name: 'internal-routing', hidden: true, description: 'private space-only. create as an Internal Web App that is only routable in the local network.'},
-    {name: 'kernel', hidden: true, hasValue: true},
-    {name: 'locked', hidden: true},
-    {name: 'json', description: 'output in json format'},
+    { name: 'app', char: 'a', hasValue: true, hidden: true },
+    { name: 'addons', hasValue: true, description: 'comma-delimited list of addons to install' },
+    { name: 'buildpack', char: 'b', hasValue: true, description: 'buildpack url to use for this app', completion: BuildpackCompletion },
+    { name: 'manifest', char: 'm', hasValue: false, description: 'use heroku.yml settings for this app', hidden: true },
+    { name: 'no-remote', char: 'n', description: 'do not create a git remote' },
+    { name: 'remote', char: 'r', hasValue: true, description: 'the git remote to create, default "heroku"', completion: RemoteCompletion },
+    { name: 'stack', char: 's', hasValue: true, description: 'the stack to create the app on', completion: StackCompletion },
+    { name: 'space', hasValue: true, description: 'the private space to create the app in', completion: SpaceCompletion },
+    { name: 'region', hasValue: true, description: 'specify region for the app to run in', completion: RegionCompletion },
+    { name: 'ssh-git', description: 'use SSH git protocol for local git remote' },
+    { name: 'internal-routing', hidden: true, description: 'private space-only. create as an Internal Web App that is only routable in the local network.' },
+    { name: 'kernel', hidden: true, hasValue: true },
+    { name: 'locked', hidden: true },
+    { name: 'json', description: 'output in json format' },
     // flags.org({name: 'org', hasValue: true}),
-    flags.team({name: 'team', hasValue: true})
+    flags.team({ name: 'team', hasValue: true })
   ],
   run: cli.command(run)
 }
 
 module.exports = [
-  Object.assign({topic: 'apps', command: 'create'}, cmd),
-  Object.assign({hidden: true, topic: 'create'}, cmd)
+  Object.assign({ topic: 'apps', command: 'create' }, cmd),
+  Object.assign({ hidden: true, topic: 'create' }, cmd)
 ]

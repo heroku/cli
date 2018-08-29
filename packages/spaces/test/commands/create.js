@@ -22,9 +22,9 @@ describe('spaces:create', function () {
         features: features
       })
       .reply(201,
-        {shield: false, name: 'my-space', team: {name: 'my-team'}, region: {name: 'my-region'}, features: [ 'one', 'two' ], state: 'enabled', created_at: now}
+        { shield: false, name: 'my-space', team: { name: 'my-team' }, region: { name: 'my-region' }, features: [ 'one', 'two' ], state: 'enabled', created_at: now }
       )
-    return cmd.run({team: 'my-team', flags: {space: 'my-space', region: 'my-region', features: 'one, two', 'owner-pool': 'party'}})
+    return cmd.run({ team: 'my-team', flags: { space: 'my-space', region: 'my-region', features: 'one, two', 'owner-pool': 'party' } })
       .then(() => expect(cli.stdout).to.equal(
         `=== my-space
 Team:       my-team
@@ -46,9 +46,9 @@ Created at: ${now.toISOString()}
         features: features
       })
       .reply(201,
-        {shield: false, name: 'my-space', team: {name: 'my-team'}, region: {name: 'my-region'}, features: [ 'one', 'two' ], state: 'enabled', created_at: now}
+        { shield: false, name: 'my-space', team: { name: 'my-team' }, region: { name: 'my-region' }, features: [ 'one', 'two' ], state: 'enabled', created_at: now }
       )
-    return cmd.run({team: 'my-team', flags: {space: 'my-space', region: 'my-region', features: 'one, two', 'owner-pool': 'party'}})
+    return cmd.run({ team: 'my-team', flags: { space: 'my-space', region: 'my-region', features: 'one, two', 'owner-pool': 'party' } })
       .then(() => expect(cli.stderr).to.include(
         `Each Heroku Standard Private Space costs $1000`))
       .then(() => api.done())
@@ -64,9 +64,9 @@ Created at: ${now.toISOString()}
         shield: true
       })
       .reply(201,
-        {shield: true, name: 'my-space', team: {name: 'my-team'}, region: {name: 'my-region'}, features: [ 'one', 'two' ], state: 'enabled', created_at: now}
+        { shield: true, name: 'my-space', team: { name: 'my-team' }, region: { name: 'my-region' }, features: [ 'one', 'two' ], state: 'enabled', created_at: now }
       )
-    return cmd.run({team: 'my-team', flags: {space: 'my-space', region: 'my-region', features: 'one, two', shield: true}, log_drain_url: 'https://logs.cheetah.com'})
+    return cmd.run({ team: 'my-team', flags: { space: 'my-space', region: 'my-region', features: 'one, two', shield: true }, log_drain_url: 'https://logs.cheetah.com' })
       .then(() => expect(cli.stdout).to.equal(
         `=== my-space
 Team:       my-team
@@ -88,9 +88,9 @@ Created at: ${now.toISOString()}
         shield: true
       })
       .reply(201,
-        {shield: true, name: 'my-space', team: {name: 'my-team'}, region: {name: 'my-region'}, features: [ 'one', 'two' ], state: 'enabled', created_at: now}
+        { shield: true, name: 'my-space', team: { name: 'my-team' }, region: { name: 'my-region' }, features: [ 'one', 'two' ], state: 'enabled', created_at: now }
       )
-    return cmd.run({team: 'my-team', flags: {space: 'my-space', region: 'my-region', features: 'one, two', shield: true}, log_drain_url: 'https://logs.cheetah.com'})
+    return cmd.run({ team: 'my-team', flags: { space: 'my-space', region: 'my-region', features: 'one, two', shield: true }, log_drain_url: 'https://logs.cheetah.com' })
       .then(() => expect(cli.stderr).to.include(
         `Each Heroku Shield Private Space costs $3000`))
       .then(() => api.done())
@@ -107,9 +107,9 @@ Created at: ${now.toISOString()}
         features: features
       })
       .reply(201,
-        {shield: false, name: 'my-space', team: {name: 'my-team'}, region: {name: 'my-region'}, features: [ 'one', 'two' ], state: 'enabled', created_at: now}
+        { shield: false, name: 'my-space', team: { name: 'my-team' }, region: { name: 'my-region' }, features: [ 'one', 'two' ], state: 'enabled', created_at: now }
       )
-    return cmd.run({team: 'my-team', flags: {space: 'my-space', region: 'my-region', features: 'one, two', cidr: '10.0.0.0/16', 'data-cidr': '10.2.0.0/16'}, shield: true, log_drain_url: 'https://logs.cheetah.com'})
+    return cmd.run({ team: 'my-team', flags: { space: 'my-space', region: 'my-region', features: 'one, two', cidr: '10.0.0.0/16', 'data-cidr': '10.2.0.0/16' }, shield: true, log_drain_url: 'https://logs.cheetah.com' })
       .then(() => expect(cli.stdout).to.equal(
         `=== my-space
 Team:       my-team
@@ -122,7 +122,7 @@ Created at: ${now.toISOString()}
   })
 
   it('create fails without team name', function (done) {
-    cmd.run({flags: {space: 'my-space', region: 'my-region'}})
+    cmd.run({ flags: { space: 'my-space', region: 'my-region' } })
       .catch(reason => {
         expect(reason.message).to.equal('No team specified')
         done()
@@ -137,9 +137,9 @@ Created at: ${now.toISOString()}
         features: []
       })
       .reply(201,
-        {shield: false, name: 'my-space', team: {name: 'my-team'}, region: {name: 'my-region'}, features: [ 'one', 'two' ], state: 'enabled', created_at: now}
+        { shield: false, name: 'my-space', team: { name: 'my-team' }, region: { name: 'my-region' }, features: [ 'one', 'two' ], state: 'enabled', created_at: now }
       )
-    return cmd.run({org: 'my-team', flags: {space: 'my-space'}})
+    return cmd.run({ org: 'my-team', flags: { space: 'my-space' } })
       .then(() => api.done())
   })
 })

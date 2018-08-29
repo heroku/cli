@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="7.12.5"></a>
+## [7.12.5](https://github.com/heroku/cli/compare/v7.12.4...v7.12.5) (2018-08-29)
+
+**Note:** Version bump only for package @heroku-cli/plugin-spaces
+
+
+
+
+
+<a name="7.12.4"></a>
+## [7.12.4](https://github.com/heroku/cli/compare/v7.12.3...v7.12.4) (2018-08-29)
+
+**Note:** Version bump only for package @heroku-cli/plugin-spaces
+
+
+
+
+
 <a name="7.9.3"></a>
 ## [7.9.3](https://github.com/heroku/cli/compare/v7.9.2...v7.9.3) (2018-08-18)
 
