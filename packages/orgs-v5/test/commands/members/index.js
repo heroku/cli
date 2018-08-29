@@ -3,6 +3,7 @@
 
 let cmd = require('../../../commands/members')
 let stubGet = require('../../stub/get')
+const unwrap = require('../../unwrap')
 
 describe('heroku members', () => {
   beforeEach(() => cli.mockConsole())
@@ -90,7 +91,9 @@ b@heroku.com  collaborator
             .then(() => expect(
               `a@heroku.com  admin
 b@heroku.com  collaborator\n`).to.eq(cli.stdout))
-            .then(() => expect(' ▸    myorg is a Heroku Team\n ▸    Heroku CLI now supports Heroku Teams.\n ▸    Use -t or --team for teams like myorg\n').to.eq(cli.stderr))
+            .then(() => expect(unwrap(cli.stderr)).to.equal(`myorg is a Heroku Team Heroku CLI now supports Heroku Teams. \
+Use -t or --team for teams like myorg
+`))
             .then(() => apiGetOrgMembers.done())
         })
       })

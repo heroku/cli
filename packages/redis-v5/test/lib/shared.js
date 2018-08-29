@@ -4,6 +4,7 @@
 let expect = require('chai').expect
 let nock = require('nock')
 let exit = require('heroku-cli-util').exit
+const unwrap = require('../unwrap')
 
 exports.shouldHandleArgs = function (command, flags) {
   flags = flags || {}
@@ -21,7 +22,7 @@ exports.shouldHandleArgs = function (command, flags) {
       return expect(command.run({ app: 'example', flags: flags, args: {} })).to.be.rejectedWith(exit.ErrorExit)
         .then(() => app.done())
         .then(() => expect(cli.stdout).to.equal(''))
-        .then(() => expect(cli.stderr).to.equal(' ▸    No Redis instances found.\n'))
+        .then(() => expect(unwrap(cli.stderr)).to.equal('No Redis instances found.\n'))
     })
 
     it('# shows an error if the addon is ambiguous', function () {
@@ -33,7 +34,7 @@ exports.shouldHandleArgs = function (command, flags) {
       return expect(command.run({ app: 'example', flags: flags, args: {} })).to.be.rejectedWith(exit.ErrorExit)
         .then(() => app.done())
         .then(() => expect(cli.stdout).to.equal(''))
-        .then(() => expect(cli.stderr).to.equal(' ▸    Please specify a single instance. Found: redis-haiku-a, redis-haiku-b\n'))
+        .then(() => expect(unwrap(cli.stderr)).to.equal('Please specify a single instance. Found: redis-haiku-a, redis-haiku-b\n'))
     })
   })
 }

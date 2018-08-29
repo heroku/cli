@@ -6,6 +6,7 @@ const nock = require('nock')
 const cmd = commands.find(c => c.topic === 'releases' && c.command === 'output')
 const expect = require('chai').expect
 const stdMocks = require('std-mocks')
+const unwrap = require('../../unwrap')
 
 describe('releases:output', function () {
   beforeEach(() => cli.mockConsole())
@@ -17,7 +18,7 @@ describe('releases:output', function () {
       .reply(200, { 'version': 40 })
     return cmd.run({ app: 'myapp', args: { release: 'v10' } })
       .then(() => expect(cli.stdout).to.equal(''))
-      .then(() => expect(cli.stderr).to.equal(' ▸    Release v40 has no release output available.\n'))
+      .then(() => expect(unwrap(cli.stderr)).to.equal('Release v40 has no release output available.\n'))
       .then(() => api.done())
   })
 

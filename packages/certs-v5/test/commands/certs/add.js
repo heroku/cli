@@ -208,7 +208,7 @@ ${certificateDetails}
 
     return assertExit(1, certs.run({ app: 'example', args: ['pem_file'], flags: {} })).then(function () {
       mockSsl.done()
-      expect(cli.stderr).to.equal(' ▸    Usage: heroku certs:add CRT KEY\n')
+      expect(unwrap(cli.stderr)).to.equal('Usage: heroku certs:add CRT KEY\n')
       expect(cli.stdout).to.equal('')
     })
   })
@@ -305,7 +305,7 @@ ${certificateDetails}
 
     return assertExit(1, certs.run({ app: 'example', args: ['pem_file', 'int_file', 'key_file'], flags: { bypass: true } })).then(function () {
       mockSsl.done()
-      expect(cli.stderr).to.equal(' ▸    Usage: heroku certs:add CRT KEY\n')
+      expect(unwrap(cli.stderr)).to.equal('Usage: heroku certs:add CRT KEY\n')
       expect(cli.stdout).to.equal('')
     })
   })
@@ -1147,14 +1147,14 @@ SSL certificate is self signed.
 
     return assertExit(1, certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: { bypass: true } })).then(function () {
       mockAddons.done()
-      expect(cli.stderr).to.equal(" ▸    Must pass --type with either 'endpoint' or 'sni'\n")
+      expect(unwrap(cli.stderr)).to.equal("Must pass --type with either 'endpoint' or 'sni'\n")
       expect(cli.stdout).to.equal('')
     })
   })
 
   it('# errors out if type is not known', function () {
     return assertExit(1, certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: { bypass: true, type: 'foo' } })).then(function () {
-      expect(cli.stderr).to.equal(" ▸    Must pass --type with either 'endpoint' or 'sni'\n")
+      expect(unwrap(cli.stderr)).to.equal("Must pass --type with either 'endpoint' or 'sni'\n")
       expect(cli.stdout).to.equal('')
     })
   })

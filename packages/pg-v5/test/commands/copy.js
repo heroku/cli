@@ -4,6 +4,7 @@
 const cli = require('heroku-cli-util')
 const expect = require('unexpected')
 const nock = require('nock')
+const unwrap = require('../unwrap')
 
 const cmd = require('../..').commands.find(c => c.topic === 'pg' && c.command === 'copy')
 
@@ -56,7 +57,9 @@ let copyingFailText = () => {
 }
 
 let credentialWarningText = () => {
-  return ' ▸    pg:copy will only copy your default credential and the data it has access\n ▸    to. Any additional credentials and data that only they can access will not\n ▸    be copied.\n'
+  return `pg:copy will only copy your default credential and the data it has access to. Any additional credentials \
+and data that only they can access will not be copied.
+`
 }
 
 describe('pg:copy', () => {
@@ -139,7 +142,7 @@ describe('pg:copy', () => {
     it('copies', () => {
       return cmd.run({ app: 'myapp', args: { source: 'HEROKU_POSTGRESQL_RED_URL', target: 'myotherapp::DATABASE_URL' }, flags: { confirm: 'myapp' } })
         .then(() => expect(cli.stdout, 'to equal', ''))
-        .then(() => expect(cli.stderr, 'to equal', `Starting copy of RED to BLUE... done\n${credentialWarningText()}${copyingText()}`))
+        .then(() => expect(unwrap(cli.stderr), 'to equal', `Starting copy of RED to BLUE... done ${credentialWarningText()}${copyingText()}`))
     })
   })
 

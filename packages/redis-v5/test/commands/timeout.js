@@ -6,6 +6,7 @@ let nock = require('nock')
 let exit = require('heroku-cli-util').exit
 
 let command = require('../../commands/timeout')
+const unwrap = require('../unwrap')
 
 describe('heroku redis:timeout', function () {
   require('../lib/shared').shouldHandleArgs(command, { seconds: '5' })
@@ -63,6 +64,6 @@ Connections to the Redis instance can idle indefinitely.
   it('# errors on missing timeout', function () {
     return expect(command.run({ app: 'example', flags: {}, args: {} })).to.be.rejectedWith(exit.ErrorExit)
       .then(() => expect(cli.stdout).to.equal(''))
-      .then(() => expect(cli.stderr).to.equal(' ▸    Please specify a valid timeout value.\n'))
+      .then(() => expect(unwrap(cli.stderr)).to.equal('Please specify a valid timeout value.\n'))
   })
 })

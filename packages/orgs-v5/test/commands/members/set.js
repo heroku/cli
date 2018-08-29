@@ -4,6 +4,7 @@
 let cmd = require('../../../commands/members/set')
 let stubGet = require('../../stub/get')
 let stubPatch = require('../../stub/patch')
+const unwrap = require('../../unwrap')
 
 describe('heroku members:set', () => {
   let apiUpdateMemberRole
@@ -50,8 +51,9 @@ describe('heroku members:set', () => {
 
       return cmd.run({ args: { email: 'foo@foo.com' }, flags: { role: 'admin', team: 'myorg' } })
         .then(() => expect('').to.eq(cli.stdout))
-        .then(() => expect(`Adding foo@foo.com to myorg as admin... done
- ▸    You'll be billed monthly for teams over 5 members.\n`).to.eq(cli.stderr))
+        .then(() => expect(unwrap(cli.stderr)).to.equal(`Adding foo@foo.com to myorg as admin... done \
+You'll be billed monthly for teams over 5 members.
+`))
         .then(() => apiUpdateMemberRole.done())
     })
 
@@ -63,8 +65,9 @@ describe('heroku members:set', () => {
         apiUpdateMemberRole = stubPatch.updateMemberRole('foo@foo.com', 'admin')
         return cmd.run({ org: 'myorg', args: { email: 'foo@foo.com' }, flags: { role: 'admin' } })
           .then(() => expect('').to.eq(cli.stdout))
-          .then(() => expect(`Adding foo@foo.com to myorg as admin... done
- ▸    myorg is a Heroku Team\n ▸    Heroku CLI now supports Heroku Teams.\n ▸    Use -t or --team for teams like myorg\n`).to.eq(cli.stderr))
+          .then(() => expect(unwrap(cli.stderr)).to.equal(`Adding foo@foo.com to myorg as admin... done \
+myorg is a Heroku Team Heroku CLI now supports Heroku Teams. Use -t or --team for teams like myorg
+`))
           .then(() => apiUpdateMemberRole.done())
       })
     })

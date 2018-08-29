@@ -40,7 +40,7 @@ async function run (context, heroku) {
   let findKey = async function () {
     const defaultKey = path.join(sshdir, 'id_rsa.pub')
     if (!(await fs.pathExists(defaultKey))) {
-      cli.console.error('Could not find an existing SSH key at ~/.ssh/id_rsa.pub')
+      cli.console.error('Could not find an existing SSH key at ' + path.join('~', '.ssh', 'id_rsa.pub'))
 
       if (!context.flags.yes) {
         let resp = await confirmPrompt('Would you like to generate a new one?')

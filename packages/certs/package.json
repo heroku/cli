@@ -4,7 +4,7 @@
   "author": "Jeff Dickey @jdxcode",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
-    "@heroku-cli/command": "^8.1.27",
+    "@heroku-cli/command": "^8.1.28",
     "@oclif/command": "^1.5.0",
     "@oclif/config": "^1.7.2",
     "tslib": "^1.9.3"

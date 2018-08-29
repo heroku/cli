@@ -51,15 +51,16 @@ describe('heroku access:add', () => {
         apiGetOrgFeatures.done()
         apiPost.done()
       })).then(function () {
-        expect(unwrap(cli.stderr)).to.equal(` ▸    Missing argument: permissions
-`)
+        expect(unwrap(cli.stderr)).to.equal('Missing argument: permissions\n')
       })
     })
 
     it('supports --privileges, but shows deprecation warning', () => {
       return cmd.run({ app: 'myapp', args: { email: 'raulb@heroku.com' }, flags: { privileges: 'deploy,view' } })
         .then(() => expect('').to.eq(cli.stdout))
-        .then(() => expect(' ▸    DEPRECATION WARNING: use `--permissions` not `--privileges`\nAdding raulb@heroku.com access to the app myapp with deploy,view permissions... done\n').to.eq(cli.stderr))
+        .then(() => expect(unwrap(cli.stderr)).to.equal(`DEPRECATION WARNING: use \`--permissions\` not \`--privileges\`
+Adding raulb@heroku.com access to the app myapp with deploy,view permissions... done
+`))
     })
   })
 

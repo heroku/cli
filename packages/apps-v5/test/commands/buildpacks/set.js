@@ -41,7 +41,7 @@ Run git push heroku master to create a new release using this buildpack.
       return assertExit(1, buildpacks.run({
         app: 'example', args: { url: 'http://github.com/foobar/foobar' }
       })).then(function () {
-        expect(unwrap(cli.stderr)).to.equal(' ▸    The buildpack http://github.com/foobar/foobar is already set on your app.\n')
+        expect(unwrap(cli.stderr)).to.equal('The buildpack http://github.com/foobar/foobar is already set on your app.\n')
       })
     })
 
@@ -130,7 +130,7 @@ Run git push heroku master to create a new release using this buildpack.
       })).then(function () {
         expect(cli.stdout).to.equal('')
         expect(unwrap(cli.stderr)).to.equal(
-          ` ▸    The buildpack https://github.com/heroku/heroku-buildpack-ruby is already set on your app.
+          `The buildpack https://github.com/heroku/heroku-buildpack-ruby is already set on your app.
 `)
       })
     })
@@ -233,7 +233,7 @@ Run git push heroku master to create a new release using these buildpacks.
       })).then(function () {
         expect(cli.stdout).to.equal('')
         expect(unwrap(cli.stderr)).to.equal(
-          ` ▸    The buildpack https://github.com/heroku/heroku-buildpack-java is already set on your app.
+          `The buildpack https://github.com/heroku/heroku-buildpack-java is already set on your app.
 `)
       })
     })
@@ -244,7 +244,7 @@ Run git push heroku master to create a new release using these buildpacks.
         args: { url: 'http://github.com/bar/bar' },
         flags: { index: 'notaninteger' }
       })).then(function () {
-        expect(cli.stderr).to.equal(' ▸    Invalid index. Must be greater than 0.\n')
+        expect(unwrap(cli.stderr)).to.equal('Invalid index. Must be greater than 0.\n')
       })
     })
 
@@ -254,7 +254,7 @@ Run git push heroku master to create a new release using these buildpacks.
         args: { url: 'http://github.com/bar/bar' },
         flags: { index: '-1' }
       })).then(function () {
-        expect(cli.stderr).to.equal(' ▸    Invalid index. Must be greater than 0.\n')
+        expect(unwrap(cli.stderr)).to.equal('Invalid index. Must be greater than 0.\n')
       })
     })
   })
@@ -263,10 +263,7 @@ Run git push heroku master to create a new release using these buildpacks.
     return assertExit(1, buildpacks.run({
       app: 'example', args: {}
     })).then(function () {
-      expect(cli.stderr).to.equal(
-        ` ▸    Usage: heroku buildpacks:set BUILDPACK_URL.
- ▸    Must specify target buildpack URL.
-`)
+      expect(unwrap(cli.stderr)).to.equal('Usage: heroku buildpacks:set BUILDPACK_URL. Must specify target buildpack URL.\n')
       expect(cli.stdout).to.equal('')
     })
   })

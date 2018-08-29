@@ -5,6 +5,7 @@
 let expect = require('chai').expect
 let nock = require('nock')
 let certs = require('../../../../commands/webhooks/deliveries')
+const unwrap = require('../../../unwrap')
 
 describe('heroku webhooks:deliveries', function () {
   beforeEach(function () {
@@ -117,7 +118,7 @@ describe('heroku webhooks:deliveries', function () {
 
     return certs.run(['--app', 'example']).then(function () {
       mock.done()
-      expect(cli.stderr).to.equal(' ▸    Only showing the 1000 most recent deliveries\n ▸    It is possible to filter deliveries by using the --status flag\n')
+      expect(unwrap(cli.stderr)).to.equal('Only showing the 1000 most recent deliveries It is possible to filter deliveries by using the --status flag\n')
     })
   })
 

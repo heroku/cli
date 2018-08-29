@@ -5,6 +5,7 @@ const nock = require('nock')
 const cmd = require('../../../commands/vpn/connect')
 const expect = require('chai').expect
 const cli = require('heroku-cli-util')
+const unwrap = require('../../unwrap')
 
 describe('spaces:vpn:connect', function () {
   beforeEach(() => cli.mockConsole())
@@ -23,8 +24,8 @@ describe('spaces:vpn:connect', function () {
       ip: '192.168.0.1',
       cidrs: '192.168.0.1/16,192.168.0.2/16'
     } })
-      .then(() => expect(cli.stderr).to.equal(
-        `Creating VPN Connection in space my-space... done\n ▸    Use spaces:vpn:wait to track allocation.\n`))
+      .then(() => expect(unwrap(cli.stderr)).to.equal(
+        'Creating VPN Connection in space my-space... done Use spaces:vpn:wait to track allocation.\n'))
       .then(() => api.done())
   })
 })

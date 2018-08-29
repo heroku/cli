@@ -130,10 +130,8 @@ Run git push heroku master to create a new release using these buildpacks.
         app: 'example', args: {}
       })).then(function () {
         expect(cli.stdout).to.equal('')
-        expect(cli.stderr).to.equal(
-          ` ▸    Usage: heroku buildpacks:add BUILDPACK_URL.
- ▸    Must specify target buildpack URL.
-`)
+        expect(unwrap(cli.stderr)).to.equal(
+          'Usage: heroku buildpacks:add BUILDPACK_URL. Must specify target buildpack URL.\n')
       })
     })
 
@@ -143,7 +141,7 @@ Run git push heroku master to create a new release using these buildpacks.
       return assertExit(1, buildpacks.run({
         app: 'example', args: { url: 'http://github.com/foobar/foobar' }
       })).then(function () {
-        expect(unwrap(cli.stderr)).to.equal(' ▸    The buildpack http://github.com/foobar/foobar is already set on your app.\n')
+        expect(unwrap(cli.stderr)).to.equal('The buildpack http://github.com/foobar/foobar is already set on your app.\n')
       })
     })
 
@@ -153,7 +151,7 @@ Run git push heroku master to create a new release using these buildpacks.
       return assertExit(1, buildpacks.run({
         app: 'example', args: { url: 'https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/jvm-common.tgz' }
       })).then(function () {
-        expect(unwrap(cli.stderr)).to.equal(' ▸    The buildpack https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/jvm-common.tgz is already set on your app.\n')
+        expect(unwrap(cli.stderr)).to.equal('The buildpack https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/jvm-common.tgz is already set on your app.\n')
       })
     })
 
@@ -163,7 +161,7 @@ Run git push heroku master to create a new release using these buildpacks.
       return assertExit(1, buildpacks.run({
         app: 'example', args: { url: 'heroku/ruby' }
       })).then(function () {
-        expect(cli.stderr).to.equal(' ▸    The buildpack heroku/ruby is already set on your app.\n')
+        expect(unwrap(cli.stderr)).to.equal('The buildpack heroku/ruby is already set on your app.\n')
       })
     })
   })
@@ -247,7 +245,7 @@ Run git push heroku master to create a new release using these buildpacks.
         args: { url: 'http://github.com/bar/bar' },
         flags: { index: 'notaninteger' }
       })).then(function () {
-        expect(cli.stderr).to.equal(' ▸    Invalid index. Must be greater than 0.\n')
+        expect(unwrap(cli.stderr)).to.equal('Invalid index. Must be greater than 0.\n')
       })
     })
 
@@ -257,7 +255,7 @@ Run git push heroku master to create a new release using these buildpacks.
         args: { url: 'http://github.com/bar/bar' },
         flags: { index: '-1' }
       })).then(function () {
-        expect(cli.stderr).to.equal(' ▸    Invalid index. Must be greater than 0.\n')
+        expect(unwrap(cli.stderr)).to.equal('Invalid index. Must be greater than 0.\n')
       })
     })
 
@@ -267,7 +265,7 @@ Run git push heroku master to create a new release using these buildpacks.
         args: { url: 'http://github.com/bar/bar' },
         flags: { index: '0' }
       })).then(function () {
-        expect(cli.stderr).to.equal(' ▸    Invalid index. Must be greater than 0.\n')
+        expect(unwrap(cli.stderr)).to.equal('Invalid index. Must be greater than 0.\n')
       })
     })
   })

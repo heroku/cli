@@ -126,7 +126,7 @@ ${certificateDetails}
       .reply(200, { 'space': null })
 
     return assertExit(1, certs.run({ app: 'example', args: ['pem_file'], flags: {} })).then(function () {
-      expect(cli.stderr).to.equal(' ▸    Usage: heroku certs:add CRT KEY\n')
+      expect(unwrap(cli.stderr)).to.equal('Usage: heroku certs:add CRT KEY\n')
       expect(cli.stdout).to.equal('')
     })
   })
@@ -182,7 +182,7 @@ ${certificateDetails}
       .reply(200, { 'space': null })
 
     return assertExit(1, certs.run({ app: 'example', args: ['pem_file', 'int_file', 'key_file'], flags: { bypass: true } })).then(function () {
-      expect(cli.stderr).to.equal(' ▸    Usage: heroku certs:add CRT KEY\n')
+      expect(unwrap(cli.stderr)).to.equal('Usage: heroku certs:add CRT KEY\n')
       expect(cli.stdout).to.equal('')
     })
   })

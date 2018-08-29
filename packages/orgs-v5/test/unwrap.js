@@ -1,7 +1,10 @@
 'use strict'
 
 function unwrap (str) {
-  return str.replace(/\n ▸ {3}/g, '')
+  let sanitize = str.replace(/\n ([▸!]) {3}/g, '')
+  sanitize = sanitize.replace(/ ([▸!]) {4}/g, '')
+
+  return sanitize
 }
 
 module.exports = unwrap

@@ -10,6 +10,7 @@ let assertExit = require('../../assert_exit.js')
 let endpoint = require('../../stubs/sni-endpoints.js').endpoint
 let shared = require('./shared.js')
 let sharedSsl = require('./shared_ssl.js')
+const unwrap = require('../../unwrap')
 
 describe('heroku certs:rollback', function () {
   beforeEach(function () {
@@ -26,7 +27,7 @@ describe('heroku certs:rollback', function () {
       .get('/apps/example/sni-endpoints')
       .reply(200, [])
 
-    var thrown = false
+    let thrown = false
     return certs.run({ app: 'example', flags: { confirm: 'notexample' } }).catch(function (err) {
       thrown = true
       mockSsl.done()
@@ -49,7 +50,7 @@ describe('heroku certs:rollback', function () {
     return assertExit(1, certs.run({ app: 'example', args: {}, flags: { confirm: 'example' } })).then(function () {
       mockSsl.done()
       mockSni.done()
-      expect(cli.stderr).to.equal(' ▸    SNI Endpoints cannot be rolled back, please update with a new cert.\n')
+      expect(unwrap(cli.stderr)).to.equal('SNI Endpoints cannot be rolled back, please update with a new cert.\n')
       expect(cli.stdout).to.equal('')
     })
   })

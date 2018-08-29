@@ -45,7 +45,9 @@ describe('heroku access:update', () => {
 
       return cmd.run({ app: 'myapp', args: { email: 'raulb@heroku.com' }, flags: { privileges: 'deploy' } })
         .then(() => expect('').to.eq(cli.stdout))
-        .then(() => expect(' ▸    DEPRECATION WARNING: use `--permissions` not `--privileges`\nUpdating raulb@heroku.com in application myapp with deploy,view permissions... done\n').to.eq(cli.stderr))
+        .then(() => expect(unwrap(cli.stderr)).to.equal(`DEPRECATION WARNING: use \`--permissions\` not \`--privileges\`
+Updating raulb@heroku.com in application myapp with deploy,view permissions... done
+`))
         .then(() => apiGetApp.done())
         .then(() => apiPatchAppCollaborators.done())
     })
@@ -66,8 +68,7 @@ describe('heroku access:update', () => {
         args: { email: 'raulb@heroku.com' },
         flags: { permissions: 'view,deploy' }
       }).then(() => apiGetApp.done())).then(function () {
-        expect(unwrap(cli.stderr)).to.equal(` ▸    Error: cannot update permissions. The app myapp is not owned by an organization
-`)
+        expect(unwrap(cli.stderr)).to.equal('Error: cannot update permissions. The app myapp is not owned by an organization\n')
       })
     })
   })
