@@ -57,8 +57,9 @@ let copyingFailText = () => {
 }
 
 let credentialWarningText = () => {
-  return 'pg:copy will only copy your default credential and the data it has access to. Any additional credentials ' +
-    'and data that only they can access will not be copied.\n'
+  return `pg:copy will only copy your default credential and the data it has access to. Any additional credentials \
+and data that only they can access will not be copied.
+`
 }
 
 describe('pg:copy', () => {

@@ -153,8 +153,9 @@ Following: ec2-55-111-111-1.compute-1.amazonaws.com:5432/dxxxxxxxxxxxx
 Add-on:    postgres-2
 
 `))
-        .then(() => expect(unwrap(cli.stderr), 'to equal', 'postgres-1 is not yet provisioned. ' +
-          'Run heroku addons:wait to wait until the db is provisioned.\n'))
+        .then(() => expect(unwrap(cli.stderr), 'to equal', `postgres-1 is not yet provisioned. \
+Run heroku addons:wait to wait until the db is provisioned.
+`))
     })
   })
 })
