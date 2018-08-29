@@ -39,16 +39,13 @@ describe('keys:add', () => {
 
   it('adds a given key', () => {
     let api = nock('https://api.heroku.com:443')
-      .post('/account/keys', { public_key: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDsAbr7QvJUwDC0dfX3p884w7T06MgJcwbvK' +
-          'DeMpOGg7FXhVSjpXz0SrFrbzbUfs9LtIDIvBPfA5+LTA45+apQTt+A3fiMsKElFjiJgO0ag12vbttHxjda12tmm/Sc0CBpOOeLJxJYboW' +
-          'eN7G4LfW+llUXhb45gNp48qJKbCZKZN2RTd3F8BFUgLedVKg9xs1OyyioFaQJC0N8Ka4CyfTn0mpWnkyrzYvziG1KMELohbP74hAEmW7+' +
-          '/PM9KjXdLeFaOJXTYZLGYJR6DX2Wdd/AP1JFljtXNXlVQ224IPRuwrnVK/KqegY1tk+io4+Ju7mL9PyyXtFOESK+yinzQ3MJn' + os.EOL })
+      .post('/account/keys', { public_key: `ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDsAbr7QvJUwDC0dfX3p884w7T06MgJcwbvKDeMpOGg7FXhVSjpXz0SrFrbzbUfs9LtIDIvBPfA5+LTA45+apQTt+A3fiMsKElFjiJgO0ag12vbttHxjda12tmm/Sc0CBpOOeLJxJYboWeN7G4LfW+llUXhb45gNp48qJKbCZKZN2RTd3F8BFUgLedVKg9xs1OyyioFaQJC0N8Ka4CyfTn0mpWnkyrzYvziG1KMELohbP74hAEmW7+/PM9KjXdLeFaOJXTYZLGYJR6DX2Wdd/AP1JFljtXNXlVQ224IPRuwrnVK/KqegY1tk+io4+Ju7mL9PyyXtFOESK+yinzQ3MJn${os.EOL}` })
       .reply(200)
 
     return cmd.run({ args: { key: path.join('test', 'fixtures', 'id_rsa.pub') } })
       .then(() => expect(cli.stdout, 'to be empty'))
-      .then(() => expect(cli.stderr, 'to equal', 'Uploading ' +
-        path.join('.', 'test', 'fixtures', 'id_rsa.pub') + ' SSH key... done\n'))
+      .then(() => expect(cli.stderr, 'to equal', `Uploading ${path.join('.', 'test', 'fixtures', 'id_rsa.pub')} SSH key... done
+`))
       .then(() => api.done())
   })
 
@@ -73,8 +70,9 @@ describe('keys:add', () => {
 
     return cmd.run({ args: {}, flags: { quiet: true } })
       .then(() => expect(cli.stdout, 'to be empty'))
-      .then(() => expect(cli.stderr, 'to equal', 'Could not find an existing SSH key at ' +
-        path.join('~', '.ssh', 'id_rsa.pub') + '\nUploading ' + path.join('tmp', 'home', '.ssh', 'id_rsa.pub') + ' SSH key... done\n'))
+      .then(() => expect(cli.stderr, 'to equal', `Could not find an existing SSH key at ${path.join('~', '.ssh', 'id_rsa.pub')}
+Uploading ${path.join('tmp', 'home', '.ssh', 'id_rsa.pub')} SSH key... done
+`))
       .then(() => api.done())
   })
 
@@ -93,17 +91,15 @@ describe('keys:add', () => {
 
     return cmd.run({ args: {}, flags: { quiet: true, yes: true } })
       .then(() => expect(cli.stdout, 'to be empty'))
-      .then(() => expect(cli.stderr, 'to equal', 'Could not find an existing SSH key at ' +
-        path.join('~', '.ssh', 'id_rsa.pub') + '\nUploading ' + path.join('tmp', 'home', '.ssh', 'id_rsa.pub') + ' SSH key... done\n'))
+      .then(() => expect(cli.stderr, 'to equal', `Could not find an existing SSH key at ${path.join('~', '.ssh', 'id_rsa.pub')}
+Uploading ${path.join('tmp', 'home', '.ssh', 'id_rsa.pub')} SSH key... done
+`))
       .then(() => api.done())
   })
 
   it('adds a key when prompted to upload one', () => {
     let api = nock('https://api.heroku.com:443')
-      .post('/account/keys', { public_key: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDsAbr7QvJUwDC0dfX3p884w7T06MgJcwbvK' +
-          'DeMpOGg7FXhVSjpXz0SrFrbzbUfs9LtIDIvBPfA5+LTA45+apQTt+A3fiMsKElFjiJgO0ag12vbttHxjda12tmm/Sc0CBpOOeLJxJYboW' +
-          'eN7G4LfW+llUXhb45gNp48qJKbCZKZN2RTd3F8BFUgLedVKg9xs1OyyioFaQJC0N8Ka4CyfTn0mpWnkyrzYvziG1KMELohbP74hAEmW7+' +
-          '/PM9KjXdLeFaOJXTYZLGYJR6DX2Wdd/AP1JFljtXNXlVQ224IPRuwrnVK/KqegY1tk+io4+Ju7mL9PyyXtFOESK+yinzQ3MJn' + os.EOL })
+      .post('/account/keys', { public_key: `ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDsAbr7QvJUwDC0dfX3p884w7T06MgJcwbvKDeMpOGg7FXhVSjpXz0SrFrbzbUfs9LtIDIvBPfA5+LTA45+apQTt+A3fiMsKElFjiJgO0ag12vbttHxjda12tmm/Sc0CBpOOeLJxJYboWeN7G4LfW+llUXhb45gNp48qJKbCZKZN2RTd3F8BFUgLedVKg9xs1OyyioFaQJC0N8Ka4CyfTn0mpWnkyrzYvziG1KMELohbP74hAEmW7+/PM9KjXdLeFaOJXTYZLGYJR6DX2Wdd/AP1JFljtXNXlVQ224IPRuwrnVK/KqegY1tk+io4+Ju7mL9PyyXtFOESK+yinzQ3MJn${os.EOL}` })
       .reply(200)
 
     inquirer.prompt = (choices) => {
@@ -123,17 +119,15 @@ describe('keys:add', () => {
     return fs.copy('./test/fixtures/id_rsa.pub', home + '/.ssh/id_rsa.pub')
       .then(() => cmd.run({ args: {}, flags: {} }))
       .then(() => expect(cli.stdout, 'to be empty'))
-      .then(() => expect(cli.stderr, 'to equal', 'Found an SSH public key at ' + path.join('tmp', 'home', '.ssh', 'id_rsa.pub') +
-        '\nUploading ' + path.join('tmp', 'home', '.ssh/id_rsa.pub') + ' SSH key... done\n'))
+      .then(() => expect(cli.stderr, 'to equal', `Found an SSH public key at ${path.join('tmp', 'home', '.ssh', 'id_rsa.pub')}
+Uploading ${path.join('tmp', 'home', '.ssh/id_rsa.pub')} SSH key... done
+`))
       .then(() => api.done())
   })
 
   it('adds a key when passed yes and has key', () => {
     let api = nock('https://api.heroku.com:443')
-      .post('/account/keys', { public_key: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDsAbr7QvJUwDC0dfX3p884w7T06MgJcwbvK' +
-          'DeMpOGg7FXhVSjpXz0SrFrbzbUfs9LtIDIvBPfA5+LTA45+apQTt+A3fiMsKElFjiJgO0ag12vbttHxjda12tmm/Sc0CBpOOeLJxJYboW' +
-          'eN7G4LfW+llUXhb45gNp48qJKbCZKZN2RTd3F8BFUgLedVKg9xs1OyyioFaQJC0N8Ka4CyfTn0mpWnkyrzYvziG1KMELohbP74hAEmW7+' +
-          '/PM9KjXdLeFaOJXTYZLGYJR6DX2Wdd/AP1JFljtXNXlVQ224IPRuwrnVK/KqegY1tk+io4+Ju7mL9PyyXtFOESK+yinzQ3MJn' + os.EOL })
+      .post('/account/keys', { public_key: `ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDsAbr7QvJUwDC0dfX3p884w7T06MgJcwbvKDeMpOGg7FXhVSjpXz0SrFrbzbUfs9LtIDIvBPfA5+LTA45+apQTt+A3fiMsKElFjiJgO0ag12vbttHxjda12tmm/Sc0CBpOOeLJxJYboWeN7G4LfW+llUXhb45gNp48qJKbCZKZN2RTd3F8BFUgLedVKg9xs1OyyioFaQJC0N8Ka4CyfTn0mpWnkyrzYvziG1KMELohbP74hAEmW7+/PM9KjXdLeFaOJXTYZLGYJR6DX2Wdd/AP1JFljtXNXlVQ224IPRuwrnVK/KqegY1tk+io4+Ju7mL9PyyXtFOESK+yinzQ3MJn${os.EOL}` })
       .reply(200)
 
     inquirer.prompt = () => {
@@ -147,17 +141,15 @@ describe('keys:add', () => {
     return fs.copy('./test/fixtures/id_rsa.pub', home + '/.ssh/id_rsa.pub')
       .then(() => cmd.run({ args: {}, flags: { yes: true } }))
       .then(() => expect(cli.stdout, 'to be empty'))
-      .then(() => expect(cli.stderr, 'to equal', 'Found an SSH public key at ' + path.join('tmp', 'home', '.ssh', 'id_rsa.pub') +
-        '\nUploading ' + path.join('tmp', 'home', '.ssh', 'id_rsa.pub') + ' SSH key... done\n'))
+      .then(() => expect(cli.stderr, 'to equal', `Found an SSH public key at ${path.join('tmp', 'home', '.ssh', 'id_rsa.pub')}
+Uploading ${path.join('tmp', 'home', '.ssh', 'id_rsa.pub')} SSH key... done
+`))
       .then(() => api.done())
   })
 
   it('adds a key when prompted to upload multiple', () => {
     let api = nock('https://api.heroku.com:443')
-      .post('/account/keys', { public_key: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDsAbr7QvJUwDC0dfX3p884w7T06MgJcwbvK' +
-          'DeMpOGg7FXhVSjpXz0SrFrbzbUfs9LtIDIvBPfA5+LTA45+apQTt+A3fiMsKElFjiJgO0ag12vbttHxjda12tmm/Sc0CBpOOeLJxJYboWe' +
-          'N7G4LfW+llUXhb45gNp48qJKbCZKZN2RTd3F8BFUgLedVKg9xs1OyyioFaQJC0N8Ka4CyfTn0mpWnkyrzYvziG1KMELohbP74hAEmW7+/P' +
-          'M9KjXdLeFaOJXTYZLGYJR6DX2Wdd/AP1JFljtXNXlVQ224IPRuwrnVK/KqegY1tk+io4+Ju7mL9PyyXtFOESK+yinzQ3MJn' + os.EOL })
+      .post('/account/keys', { public_key: `ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDsAbr7QvJUwDC0dfX3p884w7T06MgJcwbvKDeMpOGg7FXhVSjpXz0SrFrbzbUfs9LtIDIvBPfA5+LTA45+apQTt+A3fiMsKElFjiJgO0ag12vbttHxjda12tmm/Sc0CBpOOeLJxJYboWeN7G4LfW+llUXhb45gNp48qJKbCZKZN2RTd3F8BFUgLedVKg9xs1OyyioFaQJC0N8Ka4CyfTn0mpWnkyrzYvziG1KMELohbP74hAEmW7+/PM9KjXdLeFaOJXTYZLGYJR6DX2Wdd/AP1JFljtXNXlVQ224IPRuwrnVK/KqegY1tk+io4+Ju7mL9PyyXtFOESK+yinzQ3MJn${os.EOL}` })
       .reply(200)
 
     inquirer.prompt = (choices) => {
@@ -174,7 +166,8 @@ describe('keys:add', () => {
       .then(() => fs.copy(path.join('test', 'fixtures', 'id_rsa.pub'), path.join(home, '.ssh', 'id_rsa2.pub')))
       .then(() => cmd.run({ args: {} }))
       .then(() => expect(cli.stdout, 'to be empty'))
-      .then(() => expect(cli.stderr, 'to equal', 'Uploading ' + path.join('tmp', 'home', '.ssh', 'id_rsa.pub') + ' SSH key... done\n'))
+      .then(() => expect(cli.stderr, 'to equal', `Uploading ${path.join('tmp', 'home', '.ssh', 'id_rsa.pub')} SSH key... done
+`))
       .then(() => api.done())
   })
 })
