@@ -217,7 +217,7 @@ Run git push heroku master to create a new release using these buildpacks.
     test
       .command(['buildpacks:set', '-a', 'example'])
       .catch(`Missing 1 required arg:
-buildpack
+buildpack  namespace/name of the buildpack
 See more help with --help`)
       .it('# handles a missing buildpack URL arg')
   })

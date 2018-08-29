@@ -1,11 +1,10 @@
 import color from '@heroku-cli/color'
 import {APIClient} from '@heroku-cli/command'
+import {BuildpackRegistry} from 'buildpack-registry'
 import {cli} from 'cli-ux'
 import {HTTP} from 'http-call'
 import {findIndex as lodashFindIndex} from 'lodash'
 import {Result} from 'true-myth'
-
-import {BuildpackRegistry} from 'buildpack-registry'
 
 const push = require('./push')
 const validUrl = require('valid-url')

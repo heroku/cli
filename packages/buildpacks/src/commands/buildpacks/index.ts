@@ -4,7 +4,7 @@ import {cli} from 'cli-ux'
 import {BuildpackCommand} from '../../buildpacks'
 
 export default class Index extends Command {
-  static description: 'display the buildpacks for an app'
+  static description = 'display the buildpacks for an app'
   static flags = {
     app: Flags.app({required: true})
   }

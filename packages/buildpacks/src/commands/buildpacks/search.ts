@@ -14,7 +14,7 @@ export default class Search extends Command {
   static args = [
     {
       name: 'term',
-      description: 'Search term that searches across name, namespace, and description'
+      description: 'search term that searches across name, namespace, and description'
     }
   ]
 

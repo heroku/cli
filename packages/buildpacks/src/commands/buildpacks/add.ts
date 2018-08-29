@@ -3,18 +3,21 @@ import {Command, flags as Flags} from '@heroku-cli/command'
 import {BuildpackCommand} from '../../buildpacks'
 
 export default class Add extends Command {
-  static description: 'add new app buildpack, inserting into list of buildpacks if necessary'
+  static description = 'add new app buildpack, inserting into list of buildpacks if necessary'
   static flags = {
     app: Flags.app({required: true}),
     remote: Flags.remote(),
     index: Flags.integer({
-      name: 'index',
       description: 'the 1-based index of the URL in the list of URLs',
       char: 'i'
     })
   }
   static args = [
-    {name: 'buildpack', required: true}
+    {
+      name: 'buildpack',
+      required: true,
+      description: 'namespace/name of the buildpack'
+    }
   ]
 
   async run() {

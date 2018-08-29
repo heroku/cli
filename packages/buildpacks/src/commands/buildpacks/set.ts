@@ -8,13 +8,16 @@ export default class Set extends Command {
     app: Flags.app({required: true}),
     remote: Flags.remote(),
     index: Flags.integer({
-      name: 'index',
       description: 'the 1-based index of the URL in the list of URLs',
       char: 'i'
     })
   }
   static args = [
-    {name: 'buildpack', required: true}
+    {
+      name: 'buildpack',
+      required: true,
+      description: 'namespace/name of the buildpack'
+    }
   ]
 
   async run() {

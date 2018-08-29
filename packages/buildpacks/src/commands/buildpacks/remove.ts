@@ -4,18 +4,20 @@ import {cli} from 'cli-ux'
 import {BuildpackCommand} from '../../buildpacks'
 
 export default class Remove extends Command {
-  static description: 'remove a buildpack set on the app'
+  static description = 'remove a buildpack set on the app'
   static flags = {
     app: Flags.app({required: true}),
     remote: Flags.remote(),
     index: Flags.integer({
-      name: 'index',
       description: 'the 1-based index of the URL to remove from the list of URLs',
       char: 'i'
     })
   }
   static args = [
-    {name: 'buildpack'}
+    {
+      name: 'buildpack',
+      description: 'namespace/name of the buildpack'
+    }
   ]
 
   async run() {
