@@ -11,7 +11,7 @@ function _isStale(cachePath: string, cacheDuration: number): boolean {
   return past.getTime() > _mtime(cachePath).getTime()
 }
 
-function _mtime(f: any) {
+function _mtime(f: any): Date {
   return fs.statSync(f).mtime
 }
 
