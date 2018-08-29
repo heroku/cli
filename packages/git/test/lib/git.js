@@ -3,7 +3,7 @@
 
 let sinon = require('sinon')
 let expect = require('unexpected')
-let git = require('../../lib/git')({httpGitHost: 'git.heroku.com', gitHost: 'heroku.com'})
+let git = require('../../lib/git')({ httpGitHost: 'git.heroku.com', gitHost: 'heroku.com' })
 let cp = require('child_process')
 let EventEmitter = require('events')
 
@@ -42,7 +42,7 @@ describe('git', function () {
 
   it('runs spawn', function () {
     let emitter = new EventEmitter()
-    mock.expects('spawn').withExactArgs('git', ['remote'], {stdio: [0, 1, 2]}).returns(emitter)
+    mock.expects('spawn').withExactArgs('git', ['remote'], { stdio: [0, 1, 2] }).returns(emitter)
     process.nextTick(() => emitter.emit('close'))
     return git.spawn(['remote'])
       .then(() => mock.verify())
@@ -53,7 +53,7 @@ describe('git', function () {
     err.code = 'ENOENT'
 
     let emitter = new EventEmitter()
-    mock.expects('spawn').withExactArgs('git', ['remote'], {stdio: [0, 1, 2]}).returns(emitter)
+    mock.expects('spawn').withExactArgs('git', ['remote'], { stdio: [0, 1, 2] }).returns(emitter)
     process.nextTick(() => emitter.emit('error', err))
 
     return expect(git.spawn(['remote']), 'to be rejected with', 'Git must be installed to use the Heroku CLI.  See instructions here: http://git-scm.com')
@@ -63,7 +63,7 @@ describe('git', function () {
     let err = new Error('Some other error message')
 
     let emitter = new EventEmitter()
-    mock.expects('spawn').withExactArgs('git', ['remote'], {stdio: [0, 1, 2]}).returns(emitter)
+    mock.expects('spawn').withExactArgs('git', ['remote'], { stdio: [0, 1, 2] }).returns(emitter)
     process.nextTick(() => emitter.emit('error', err))
 
     return expect(git.spawn(['remote']), 'to be rejected with', err.message)

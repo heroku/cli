@@ -14,7 +14,7 @@ let isWildcard = require('../../lib/is_wildcard.js')
 let isWildcardMatch = require('../../lib/is_wildcard_match.js')
 let getCertAndKey = require('../../lib/get_cert_and_key.js')
 
-let {waitForDomains, printDomains} = require('../../lib/domains')
+let { waitForDomains, printDomains } = require('../../lib/domains')
 
 function Domains (domains) {
   this.domains = domains
@@ -39,7 +39,7 @@ function * getMeta (context, heroku) {
     }
   }
 
-  let {hasSpace, hasAddon} = yield {
+  let { hasSpace, hasAddon } = yield {
     hasSpace: endpoints.hasSpace(context.app, heroku),
     hasAddon: endpoints.hasAddon(context.app, heroku)
   }
@@ -73,7 +73,7 @@ function getPromptChoices (context, certDomains, existingDomains, newDomains) {
   let nonWildcardDomains = newDomains.filter((domain) => !isWildcard(domain))
 
   if (nonWildcardDomains.length === 0) {
-    return Promise.resolve({domains: []})
+    return Promise.resolve({ domains: [] })
   }
 
   return inquirer.prompt([{
@@ -81,7 +81,7 @@ function getPromptChoices (context, certDomains, existingDomains, newDomains) {
     name: 'domains',
     message: 'Select domains you would like to add',
     choices: nonWildcardDomains.map(function (domain) {
-      return {name: domain}
+      return { name: domain }
     })
   }])
 }
@@ -145,9 +145,9 @@ function * addDomains (context, heroku, meta, cert) {
       return heroku.request({
         path: `/apps/${context.app}/domains`,
         method: 'POST',
-        body: {'hostname': certDomain}
+        body: { 'hostname': certDomain }
       }).catch(function (err) {
-        return {_hostname: certDomain, _failed: true, _err: err}
+        return { _hostname: certDomain, _failed: true, _err: err }
       })
     })).then(function (data) {
       let domains = new Domains(data)
@@ -189,7 +189,7 @@ function * addDomains (context, heroku, meta, cert) {
         }
       }
 
-      return Object.assign({}, domain, {warning: warning})
+      return Object.assign({}, domain, { warning: warning })
     })
 
   printDomains(domainsTable, 'Your certificate has been added successfully.')
@@ -207,8 +207,8 @@ function * run (context, heroku) {
   let cert = yield cli.action(`Adding SSL certificate to ${cli.color.app(context.app)}`, {}, heroku.request({
     path: meta.path,
     method: 'POST',
-    body: {certificate_chain: files.crt, private_key: files.key},
-    headers: {'Accept': `application/vnd.heroku+json; version=3.${meta.variant}`}
+    body: { certificate_chain: files.crt, private_key: files.key },
+    headers: { 'Accept': `application/vnd.heroku+json; version=3.${meta.variant}` }
   }))
 
   cert._meta = meta
@@ -241,13 +241,13 @@ module.exports = {
   command: 'add',
   variableArgs: true,
   args: [
-    {name: 'CRT', optional: false},
-    {name: 'KEY', optional: false}
+    { name: 'CRT', optional: false },
+    { name: 'KEY', optional: false }
   ],
   flags: [
-    {name: 'bypass', description: 'bypass the trust chain completion step', hasValue: false},
-    {name: 'type', description: "type to create, either 'sni' or 'endpoint'", hasValue: true, completion: CertTypeCompletion},
-    {name: 'domains', description: 'domains to create after certificate upload', hasValue: true}
+    { name: 'bypass', description: 'bypass the trust chain completion step', hasValue: false },
+    { name: 'type', description: "type to create, either 'sni' or 'endpoint'", hasValue: true, completion: CertTypeCompletion },
+    { name: 'domains', description: 'domains to create after certificate upload', hasValue: true }
   ],
   description: 'add an SSL certificate to an app',
   help: 'Note: certificates with PEM encoding are also valid',

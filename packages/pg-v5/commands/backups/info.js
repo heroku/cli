@@ -25,7 +25,7 @@ function compression (compressed, total) {
 
 function * run (context, heroku) {
   const pgbackups = require('../../lib/pgbackups')(context, heroku)
-  const {sortBy} = require('lodash')
+  const { sortBy } = require('lodash')
   const host = require('../../lib/host')()
   const app = context.app
 
@@ -35,14 +35,14 @@ function * run (context, heroku) {
       backupID = yield pgbackups.transfer.num(id)
       if (!backupID) throw new Error(`Invalid ID: ${id}`)
     } else {
-      let transfers = yield heroku.get(`/client/v11/apps/${app}/transfers`, {host})
+      let transfers = yield heroku.get(`/client/v11/apps/${app}/transfers`, { host })
       transfers = sortBy(transfers, 'created_at')
       let backups = transfers.filter(t => t.from_type === 'pg_dump' && t.to_type === 'gof3r')
       let lastBackup = backups.pop()
       if (!lastBackup) throw new Error(`No backups. Capture one with ${cli.color.cmd('heroku pg:backups:capture')}`)
       backupID = lastBackup.num
     }
-    return yield heroku.get(`/client/v11/apps/${app}/transfers/${backupID}?verbose=true`, {host})
+    return yield heroku.get(`/client/v11/apps/${app}/transfers/${backupID}?verbose=true`, { host })
   })
 
   let displayBackup = backup => {
@@ -76,6 +76,6 @@ module.exports = {
   description: 'get information about a specific backup',
   needsApp: true,
   needsAuth: true,
-  args: [{name: 'backup_id', optional: true}],
-  run: cli.command({preauth: true}, co.wrap(run))
+  args: [{ name: 'backup_id', optional: true }],
+  run: cli.command({ preauth: true }, co.wrap(run))
 }

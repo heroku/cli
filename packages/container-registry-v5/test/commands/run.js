@@ -17,7 +17,7 @@ describe('container run', () => {
   afterEach(() => sandbox.restore())
 
   it('requires a process type', () => {
-    return cmd.run({app: 'testapp', args: [], flags: {}})
+    return cmd.run({ app: 'testapp', args: [], flags: {} })
       .then(() => expect(cli.stdout, 'to be empty'))
       .then(() => expect(cli.stderr, 'to contain', 'Requires one process type'))
   })
@@ -28,7 +28,7 @@ describe('container run', () => {
     let run = sandbox.stub(Sanbashi, 'runImage')
       .withArgs('registry.heroku.com/testapp/web', [])
 
-    return cmd.run({app: 'testapp', args: ['web'], flags: {}})
+    return cmd.run({ app: 'testapp', args: ['web'], flags: {} })
       .then(() => expect(cli.stdout, 'to contain', 'Running registry.heroku.com/testapp/web'))
       .then(() => expect(cli.stderr, 'to be empty'))
       .then(() => sandbox.assert.calledOnce(dockerfiles))
@@ -41,7 +41,7 @@ describe('container run', () => {
     let run = sandbox.stub(Sanbashi, 'runImage')
       .withArgs('registry.heroku.com/testapp/web', ['bash'])
 
-    return cmd.run({app: 'testapp', args: ['web', 'bash'], flags: {}})
+    return cmd.run({ app: 'testapp', args: ['web', 'bash'], flags: {} })
       .then(() => expect(cli.stdout, 'to contain', 'Running \'bash\' on registry.heroku.com/testapp/web'))
       .then(() => expect(cli.stderr, 'to be empty'))
       .then(() => sandbox.assert.calledOnce(dockerfiles))
@@ -52,7 +52,7 @@ describe('container run', () => {
     let dockerfiles = sandbox.stub(Sanbashi, 'getDockerfiles')
       .returns([])
 
-    return cmd.run({app: 'testapp', args: ['worker'], flags: {}})
+    return cmd.run({ app: 'testapp', args: ['worker'], flags: {} })
       .then(() => expect(cli.stdout, 'to be empty'))
       .then(() => expect(cli.stderr, 'to contain', 'No images to run'))
       .then(() => sandbox.assert.calledOnce(dockerfiles))

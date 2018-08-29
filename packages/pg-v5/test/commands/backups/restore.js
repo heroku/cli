@@ -5,7 +5,7 @@ const cli = require('heroku-cli-util')
 const expect = require('unexpected')
 const nock = require('nock')
 
-const addon = {id: 1, name: 'postgres-1', plan: {name: 'heroku-postgresql:standard-0'}, app: {name: 'myapp'}}
+const addon = { id: 1, name: 'postgres-1', plan: { name: 'heroku-postgresql:standard-0' }, app: { name: 'myapp' } }
 
 const cmd = require('../../../commands/backups/restore')
 
@@ -23,7 +23,7 @@ const shouldRestore = function (cmdRun) {
       app: 'myapp',
       addon_attachment: 'DATABASE_URL',
       addon_service: 'heroku-postgresql'
-    }).reply(200, [{addon}])
+    }).reply(200, [{ addon }])
 
     pg = nock('https://postgres-api.heroku.com')
     cli.mockConsole()
@@ -38,9 +38,9 @@ const shouldRestore = function (cmdRun) {
   context('b005', () => {
     beforeEach(() => {
       pg.get('/client/v11/apps/myapp/transfers').reply(200, [
-        {num: 5, from_type: 'pg_dump', to_type: 'gof3r', succeeded: true, to_url: 'https://myurl'}
+        { num: 5, from_type: 'pg_dump', to_type: 'gof3r', succeeded: true, to_url: 'https://myurl' }
       ])
-      pg.post('/client/v11/databases/1/restores', {backup_url: 'https://myurl'}).reply(200, {
+      pg.post('/client/v11/databases/1/restores', { backup_url: 'https://myurl' }).reply(200, {
         num: 5,
         from_name: 'DATABASE',
         uuid: '100-001'
@@ -52,7 +52,7 @@ const shouldRestore = function (cmdRun) {
     })
 
     it('restores a db', () => {
-      return cmdRun({app: 'myapp', args: {}, flags: {confirm: 'myapp'}})
+      return cmdRun({ app: 'myapp', args: {}, flags: { confirm: 'myapp' } })
         .then(() => expect(cli.stdout, 'to equal', `
 Use Ctrl-C at any time to stop monitoring progress; the backup will continue restoring.
 Use heroku pg:backups to check progress.
@@ -63,7 +63,7 @@ Stop a running restore with heroku pg:backups:cancel.
     })
 
     it('restores a specific db', () => {
-      return cmdRun({app: 'myapp', args: {backup: 'b005'}, flags: {confirm: 'myapp'}})
+      return cmdRun({ app: 'myapp', args: { backup: 'b005' }, flags: { confirm: 'myapp' } })
         .then(() => expect(cli.stdout, 'to equal', `
 Use Ctrl-C at any time to stop monitoring progress; the backup will continue restoring.
 Use heroku pg:backups to check progress.
@@ -74,7 +74,7 @@ Stop a running restore with heroku pg:backups:cancel.
     })
 
     it('restores a specific app db', () => {
-      return cmdRun({app: 'myapp', args: {backup: 'myapp::b005'}, flags: {confirm: 'myapp'}})
+      return cmdRun({ app: 'myapp', args: { backup: 'myapp::b005' }, flags: { confirm: 'myapp' } })
         .then(() => expect(cli.stdout, 'to equal', `
 Use Ctrl-C at any time to stop monitoring progress; the backup will continue restoring.
 Use heroku pg:backups to check progress.
@@ -88,9 +88,9 @@ Stop a running restore with heroku pg:backups:cancel.
   context('b005 (verbose)', () => {
     beforeEach(() => {
       pg.get('/client/v11/apps/myapp/transfers').reply(200, [
-        {num: 5, from_type: 'pg_dump', to_type: 'gof3r', succeeded: true, to_url: 'https://myurl'}
+        { num: 5, from_type: 'pg_dump', to_type: 'gof3r', succeeded: true, to_url: 'https://myurl' }
       ])
-      pg.post('/client/v11/databases/1/restores', {backup_url: 'https://myurl'}).reply(200, {
+      pg.post('/client/v11/databases/1/restores', { backup_url: 'https://myurl' }).reply(200, {
         num: 5,
         from_name: 'DATABASE',
         uuid: '100-001'
@@ -98,12 +98,12 @@ Stop a running restore with heroku pg:backups:cancel.
       pg.get('/client/v11/apps/myapp/transfers/100-001?verbose=true').reply(200, {
         finished_at: '101',
         succeeded: true,
-        logs: [{created_at: '100', message: 'log message 1'}]
+        logs: [{ created_at: '100', message: 'log message 1' }]
       })
     })
 
     it('shows verbose output', () => {
-      return cmdRun({app: 'myapp', args: {}, flags: {confirm: 'myapp', verbose: true}})
+      return cmdRun({ app: 'myapp', args: {}, flags: { confirm: 'myapp', verbose: true } })
         .then(() => expect(cli.stdout, 'to equal', `
 Use Ctrl-C at any time to stop monitoring progress; the backup will continue restoring.
 Use heroku pg:backups to check progress.
@@ -118,7 +118,7 @@ Restoring...
 
   context('with a URL', () => {
     beforeEach(() => {
-      pg.post('/client/v11/databases/1/restores', {backup_url: 'https://www.dropbox.com?dl=1'}).reply(200, {
+      pg.post('/client/v11/databases/1/restores', { backup_url: 'https://www.dropbox.com?dl=1' }).reply(200, {
         num: 5,
         from_name: 'DATABASE',
         uuid: '100-001'
@@ -130,7 +130,7 @@ Restoring...
     })
 
     it('restores a db from a URL', () => {
-      return cmdRun({app: 'myapp', args: {backup: 'https://www.dropbox.com'}, flags: {confirm: 'myapp'}})
+      return cmdRun({ app: 'myapp', args: { backup: 'https://www.dropbox.com' }, flags: { confirm: 'myapp' } })
         .then(() => expect(cli.stdout, 'to equal', `
 Use Ctrl-C at any time to stop monitoring progress; the backup will continue restoring.
 Use heroku pg:backups to check progress.

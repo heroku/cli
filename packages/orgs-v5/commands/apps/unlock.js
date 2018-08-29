@@ -12,7 +12,7 @@ This app is not locked.`)
   let request = heroku.request({
     method: 'PATCH',
     path: `/organizations/apps/${app.name}`,
-    body: {locked: false}
+    body: { locked: false }
   })
   yield cli.action(`Unlocking ${cli.color.cyan(app.name)}`, request)
 }
@@ -26,5 +26,5 @@ let cmd = {
   run: cli.command(co.wrap(run))
 }
 
-let root = Object.assign({}, cmd, {topic: 'unlock', command: null})
+let root = Object.assign({}, cmd, { topic: 'unlock', command: null })
 module.exports = [cmd, root]

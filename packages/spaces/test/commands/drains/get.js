@@ -20,7 +20,7 @@ describe('drains:get', function () {
         updated_at: '2016-03-23T18:31:50Z',
         url: 'https://example.com'
       })
-    return cmd.run({flags: {space: 'my-space'}})
+    return cmd.run({ flags: { space: 'my-space' } })
       .then(() => expect(cli.stdout).to.equal(
         `https://example.com (d.a55ecbe1-5513-4d19-91e4-58a08b419d19)
 `
@@ -40,7 +40,7 @@ describe('drains:get', function () {
     let api = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/log-drain')
       .reply(200, drain)
-    return cmd.run({flags: {space: 'my-space', json: true}})
+    return cmd.run({ flags: { space: 'my-space', json: true } })
       .then(() => expect(JSON.parse(cli.stdout)).to.eql(drain))
       .then(() => api.done())
   })

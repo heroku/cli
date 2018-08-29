@@ -4,7 +4,7 @@ const nock = require('nock')
 
 function collaboratorsOrgApp (app, email) {
   return nock('https://api.heroku.com:443', {
-    reqheaders: {Accept: 'application/vnd.heroku+json; version=3'}
+    reqheaders: { Accept: 'application/vnd.heroku+json; version=3' }
   })
     .delete(`/organizations/apps/${app}/collaborators/${email}`).reply(200, {})
 }
@@ -16,7 +16,7 @@ function collaboratorsPersonalApp (app, email) {
 
 function teamInvite (email = 'foo@email.com') {
   return nock('https://api.heroku.com:443', {
-    reqheaders: {Accept: 'application/vnd.heroku+json; version=3.team-invitations'}
+    reqheaders: { Accept: 'application/vnd.heroku+json; version=3.team-invitations' }
   })
     .delete(`/organizations/myorg/invitations/${email}`).reply(200, {})
 }

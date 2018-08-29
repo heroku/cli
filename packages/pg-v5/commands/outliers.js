@@ -21,8 +21,8 @@ You can install it by running: CREATE EXTENSION pg_stat_statements;`)
 function * run (context, heroku) {
   const fetcher = require('../lib/fetcher')
 
-  const {app, args, flags} = context
-  const {database} = args
+  const { app, args, flags } = context
+  const { database } = args
 
   let db = yield fetcher(heroku).database(app, database)
 
@@ -67,11 +67,11 @@ module.exports = {
   description: 'show 10 queries that have longest execution time in aggregate',
   needsApp: true,
   needsAuth: true,
-  args: [{name: 'database', optional: true}],
+  args: [{ name: 'database', optional: true }],
   flags: [
-    {name: 'reset', description: 'resets statistics gathered by pg_stat_statements'},
-    {name: 'truncate', char: 't', description: 'truncate queries to 40 characters'},
-    {name: 'num', char: 'n', description: 'the number of queries to display (default: 10)', hasValue: true}
+    { name: 'reset', description: 'resets statistics gathered by pg_stat_statements' },
+    { name: 'truncate', char: 't', description: 'truncate queries to 40 characters' },
+    { name: 'num', char: 'n', description: 'the number of queries to display (default: 10)', hasValue: true }
   ],
-  run: cli.command({preauth: true}, co.wrap(run))
+  run: cli.command({ preauth: true }, co.wrap(run))
 }

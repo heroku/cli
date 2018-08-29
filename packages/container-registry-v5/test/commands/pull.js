@@ -16,7 +16,7 @@ describe('container pull', () => {
   afterEach(() => sandbox.restore())
 
   it('requires a process type', () => {
-    return cmd.run({app: 'testapp', args: [], flags: {}})
+    return cmd.run({ app: 'testapp', args: [], flags: {} })
       .then(() => expect(cli.stderr, 'to contain', 'Requires one or more process types'))
       .then(() => expect(cli.stdout, 'to be empty'))
   })
@@ -25,7 +25,7 @@ describe('container pull', () => {
     let pull = sandbox.stub(Sanbashi, 'pullImage')
       .withArgs('registry.heroku.com/testapp/web')
 
-    return cmd.run({app: 'testapp', args: ['web'], flags: {}})
+    return cmd.run({ app: 'testapp', args: ['web'], flags: {} })
       .then(() => expect(cli.stderr, 'to be empty'))
       .then(() => expect(cli.stdout, 'to contain', 'Pulling web as registry.heroku.com/testapp/web'))
       .then(() => sandbox.assert.calledOnce(pull))

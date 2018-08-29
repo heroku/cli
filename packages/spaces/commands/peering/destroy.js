@@ -25,11 +25,11 @@ module.exports = {
   `,
   needsApp: false,
   needsAuth: true,
-  args: [{name: 'pcxid', optional: true, hidden: true}],
+  args: [{ name: 'pcxid', optional: true, hidden: true }],
   flags: [
-    {name: 'pcxid', char: 'p', hasValue: true, description: 'PCX ID of a pending peering'},
-    {name: 'space', char: 's', hasValue: true, description: 'space to get peering info from'},
-    {name: 'confirm', hasValue: true, description: 'set to PCX ID to bypass confirm prompt'}
+    { name: 'pcxid', char: 'p', hasValue: true, description: 'PCX ID of a pending peering' },
+    { name: 'space', char: 's', hasValue: true, description: 'space to get peering info from' },
+    { name: 'confirm', hasValue: true, description: 'set to PCX ID to bypass confirm prompt' }
   ],
   run: cli.command(co.wrap(run))
 }

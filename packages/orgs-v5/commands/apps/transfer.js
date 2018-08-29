@@ -78,11 +78,11 @@ let cmd = {
   wantsApp: true,
   run: cli.command(co.wrap(run)),
   args: [
-    {name: 'recipient', description: 'user or team to transfer applications to'}
+    { name: 'recipient', description: 'user or team to transfer applications to' }
   ],
   flags: [
-    {name: 'locked', char: 'l', hasValue: false, required: false, description: 'lock the app upon transfer'},
-    {name: 'bulk', hasValue: false, required: false, description: 'transfer applications in bulk'}
+    { name: 'locked', char: 'l', hasValue: false, required: false, description: 'lock the app upon transfer' },
+    { name: 'bulk', hasValue: false, required: false, description: 'transfer applications in bulk' }
   ],
   examples: `$ heroku apps:transfer collaborator@example.com
 Transferring example to collaborator@example.com... done

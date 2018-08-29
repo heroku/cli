@@ -15,10 +15,10 @@ function * run (context, heroku) {
   } else {
     cli.table(plans, {
       columns: [
-        {key: 'default', label: '', format: (d) => d ? 'default' : ''},
-        {key: 'name', label: 'slug'},
-        {key: 'human_name', label: 'name'},
-        {key: 'price', format: util.formatPrice}
+        { key: 'default', label: '', format: (d) => d ? 'default' : '' },
+        { key: 'name', label: 'slug' },
+        { key: 'human_name', label: 'name' },
+        { key: 'price', format: util.formatPrice }
       ]
     })
   }
@@ -28,9 +28,9 @@ module.exports = {
   topic: 'addons',
   command: 'plans',
   description: 'list all available plans for an add-on services',
-  args: [{name: 'service'}],
+  args: [{ name: 'service' }],
   flags: [
-    {name: 'json', description: 'output in json format'}
+    { name: 'json', description: 'output in json format' }
   ],
   run: cli.command(co.wrap(run))
 }

@@ -55,7 +55,7 @@ describe('pipelines:connect', function () {
       kolkrabbi.get('/account/github/token').reply(200, kolkrabbiAccount)
       kolkrabbi.post(`/pipelines/${pipeline.id}/repository`).reply(201, {})
 
-      github.get(`/repos/${repo.name}`).reply(200, {repo})
+      github.get(`/repos/${repo.name}`).reply(200, { repo })
 
       api.get(`/pipelines/${pipeline.name}`)
         .reply(200, {

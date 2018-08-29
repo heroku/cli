@@ -7,9 +7,9 @@ function * run (context, heroku) {
   const fetcher = require('../lib/fetcher')(heroku)
   const psql = require('../lib/psql')
 
-  const {app, args, flags} = context
-  const {database} = args
-  const {verbose} = flags
+  const { app, args, flags } = context
+  const { database } = args
+  const { verbose } = flags
 
   let db = yield fetcher.database(app, database)
 
@@ -55,7 +55,7 @@ module.exports = {
   description: 'view active queries with execution time',
   needsApp: true,
   needsAuth: true,
-  flags: [{name: 'verbose', char: 'v'}],
-  args: [{name: 'database', optional: true}],
-  run: cli.command({preauth: true}, co.wrap(run))
+  flags: [{ name: 'verbose', char: 'v' }],
+  args: [{ name: 'database', optional: true }],
+  run: cli.command({ preauth: true }, co.wrap(run))
 }

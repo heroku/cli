@@ -35,13 +35,13 @@ describe('heroku redis:wait waiting? false', function () {
   it('# waits until waiting? false', function (done) {
     let app = nock('https://api.heroku.com:443')
       .get('/apps/example/addons').reply(200, [
-        {name: 'redis-haiku', addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_FOO', 'REDIS_BAR']}
+        { name: 'redis-haiku', addon_service: { name: 'heroku-redis' }, config_vars: ['REDIS_FOO', 'REDIS_BAR'] }
       ])
 
     let redisWaiting = nock('https://redis-api.heroku.com:443')
-      .get('/redis/v0/databases/redis-haiku/wait').reply(200, {'waiting?': false})
+      .get('/redis/v0/databases/redis-haiku/wait').reply(200, { 'waiting?': false })
 
-    command.run({app: 'example', flags: {}, args: {}, auth: {username: 'foobar', password: 'password'}})
+    command.run({ app: 'example', flags: {}, args: {}, auth: { username: 'foobar', password: 'password' } })
       .then(() => app.done())
       .then(() => clock.next())
       .then(() => redisWaiting.done())
@@ -66,13 +66,13 @@ describe('heroku redis:wait waiting? true', function () {
   it('# waits', function (done) {
     let app = nock('https://api.heroku.com:443')
       .get('/apps/example/addons').reply(200, [
-        {name: 'redis-haiku', addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_FOO', 'REDIS_BAR']}
+        { name: 'redis-haiku', addon_service: { name: 'heroku-redis' }, config_vars: ['REDIS_FOO', 'REDIS_BAR'] }
       ])
 
     let redisWaiting = nock('https://redis-api.heroku.com:443')
-      .get('/redis/v0/databases/redis-haiku/wait').reply(200, {'waiting?': true})
+      .get('/redis/v0/databases/redis-haiku/wait').reply(200, { 'waiting?': true })
 
-    command.run({app: 'example', flags: {}, args: {}, auth: {username: 'foobar', password: 'password'}})
+    command.run({ app: 'example', flags: {}, args: {}, auth: { username: 'foobar', password: 'password' } })
       .then(() => app.done())
       .then(() => clock.next())
       .then(() => redisWaiting.done())
@@ -97,13 +97,13 @@ describe('heroku redis:timeout waiting? error', function () {
   it('# waits until error', function () {
     let app = nock('https://api.heroku.com:443')
       .get('/apps/example/addons').reply(200, [
-        {name: 'redis-haiku', addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_FOO', 'REDIS_BAR']}
+        { name: 'redis-haiku', addon_service: { name: 'heroku-redis' }, config_vars: ['REDIS_FOO', 'REDIS_BAR'] }
       ])
 
     let redisWaiting = nock('https://redis-api.heroku.com:443')
-      .get('/redis/v0/databases/redis-haiku/wait').reply(503, {'error': 'Error'})
+      .get('/redis/v0/databases/redis-haiku/wait').reply(503, { 'error': 'Error' })
 
-    return command.run({app: 'example', flags: {}, args: {}, auth: {username: 'foobar', password: 'password'}})
+    return command.run({ app: 'example', flags: {}, args: {}, auth: { username: 'foobar', password: 'password' } })
       .then(() => app.done())
       .then(() => clock.next())
       .then(() => redisWaiting.done())

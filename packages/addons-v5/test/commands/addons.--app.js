@@ -13,9 +13,9 @@ describe('addons --app', function () {
     addons = addons || []
     attachments = attachments || []
 
-    nock('https://api.heroku.com', {reqheaders: {
+    nock('https://api.heroku.com', { reqheaders: {
       'Accept-Expansion': 'addon_service,plan'
-    }})
+    } })
       .get(`/apps/${appName}/addons`)
       .reply(200, addons)
 
@@ -27,7 +27,7 @@ describe('addons --app', function () {
   beforeEach(() => cli.mockConsole())
 
   function run (app, cb) {
-    return cmd.run({flags: {}, app: app}).then(cb)
+    return cmd.run({ flags: {}, app: app }).then(cb)
   }
 
   it('prints message when there are no add-ons', function () {
@@ -245,7 +245,7 @@ The table above shows add-ons and the attachments to the current app (acme-inc-d
   context('with a grandfathered add-on', function () {
     beforeEach(function () {
       let addon = fixtures.addons['dwh-db']
-      addon.billed_price = {cents: 10000}
+      addon.billed_price = { cents: 10000 }
 
       mockAPI('acme-inc-dwh', [
         addon
@@ -269,7 +269,7 @@ The table above shows add-ons and the attachments to the current app (acme-inc-d
   context('with a contract add-on', function () {
     beforeEach(function () {
       let addon = fixtures.addons['dwh-db']
-      addon.billed_price = {cents: 0, contract: true}
+      addon.billed_price = { cents: 0, contract: true }
 
       mockAPI('acme-inc-dwh', [
         addon

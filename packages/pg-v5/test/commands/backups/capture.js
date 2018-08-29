@@ -5,7 +5,7 @@ const cli = require('heroku-cli-util')
 const expect = require('unexpected')
 const nock = require('nock')
 
-const addon = {id: 1, name: 'postgres-1', plan: {name: 'heroku-postgresql:standard-0'}, app: {name: 'myapp'}}
+const addon = { id: 1, name: 'postgres-1', plan: { name: 'heroku-postgresql:standard-0' }, app: { name: 'myapp' } }
 
 const cmd = require('../../../commands/backups/capture')
 
@@ -34,7 +34,7 @@ const shouldCapture = function (cmdRun) {
       app: 'myapp',
       addon_attachment: 'DATABASE_URL',
       addon_service: 'heroku-postgresql'
-    }).reply(200, [{addon}])
+    }).reply(200, [{ addon }])
     pg = nock('https://postgres-api.heroku.com')
     pg.post('/client/v11/databases/1/backups').reply(200, {
       num: 5,
@@ -46,14 +46,14 @@ const shouldCapture = function (cmdRun) {
       succeeded: true
     })
 
-    let dbA = {info: [
-      {name: 'Continuous Protection', values: ['On']}
-    ]}
+    let dbA = { info: [
+      { name: 'Continuous Protection', values: ['On'] }
+    ] }
     pg.get('/client/v11/databases/1').reply(200, dbA)
 
     cli.mockConsole()
 
-    return cmdRun({app: 'myapp', args: {}, flags: {}})
+    return cmdRun({ app: 'myapp', args: {}, flags: {} })
       .then(() => expect(cli.stdout, 'to equal', `
 Use Ctrl-C at any time to stop monitoring progress; the backup will continue running.
 Use heroku pg:backups:info to check progress.
@@ -71,7 +71,7 @@ Stop a running backup with heroku pg:backups:cancel.
       app: 'myapp',
       addon_attachment: 'DATABASE_URL',
       addon_service: 'heroku-postgresql'
-    }).reply(200, [{addon}])
+    }).reply(200, [{ addon }])
 
     pg = nock('https://postgres-api.heroku.com')
     pg.post('/client/v11/databases/1/backups').reply(200, {
@@ -82,17 +82,17 @@ Stop a running backup with heroku pg:backups:cancel.
     pg.get('/client/v11/apps/myapp/transfers/100-001?verbose=true').reply(200, {
       finished_at: '101',
       succeeded: true,
-      logs: [{created_at: '100', message: 'log message 1'}]
+      logs: [{ created_at: '100', message: 'log message 1' }]
     })
 
-    let dbA = {info: [
-      {name: 'Continuous Protection', values: ['Off']}
-    ]}
+    let dbA = { info: [
+      { name: 'Continuous Protection', values: ['Off'] }
+    ] }
     pg.get('/client/v11/databases/1').reply(200, dbA)
 
     cli.mockConsole()
 
-    return cmdRun({app: 'myapp', args: {}, flags: {verbose: true}})
+    return cmdRun({ app: 'myapp', args: {}, flags: { verbose: true } })
       .then(() => expect(cli.stdout, 'to equal', `
 Use Ctrl-C at any time to stop monitoring progress; the backup will continue running.
 Use heroku pg:backups:info to check progress.
@@ -112,7 +112,7 @@ Backing up DATABASE to b005...
       app: 'myapp',
       addon_attachment: 'DATABASE_URL',
       addon_service: 'heroku-postgresql'
-    }).reply(200, [{addon}])
+    }).reply(200, [{ addon }])
 
     pg = nock('https://postgres-api.heroku.com')
     pg.post('/client/v11/databases/1/backups').reply(200, {
@@ -123,17 +123,17 @@ Backing up DATABASE to b005...
     pg.get('/client/v11/apps/mybillingapp/transfers/100-001?verbose=true').reply(200, {
       finished_at: '101',
       succeeded: true,
-      logs: [{created_at: '100', message: 'log message 1'}]
+      logs: [{ created_at: '100', message: 'log message 1' }]
     })
 
-    let dbA = {info: [
-      {name: 'Continuous Protection', values: ['On']}
-    ]}
+    let dbA = { info: [
+      { name: 'Continuous Protection', values: ['On'] }
+    ] }
     pg.get('/client/v11/databases/1').reply(200, dbA)
 
     cli.mockConsole()
 
-    return cmdRun({app: 'myapp', args: {}, flags: {verbose: true}})
+    return cmdRun({ app: 'myapp', args: {}, flags: { verbose: true } })
       .then(() => expect(cli.stdout, 'to equal', `
 Use Ctrl-C at any time to stop monitoring progress; the backup will continue running.
 Use heroku pg:backups:info to check progress.
@@ -156,14 +156,14 @@ Backing up DATABASE to b005...
       app: 'myapp',
       addon_attachment: 'DATABASE_URL',
       addon_service: 'heroku-postgresql'
-    }).reply(200, [{addon}])
+    }).reply(200, [{ addon }])
 
     pg = nock('https://postgres-api.heroku.com')
     pg.post('/postgres/v0/databases/1/snapshots').reply(200, {})
 
     cli.mockConsole()
 
-    return cmdRun({app: 'myapp', args: {}, flags: {snapshot: true}})
+    return cmdRun({ app: 'myapp', args: {}, flags: { snapshot: true } })
       .then(() => expect(cli.stderr, 'to equal', `Taking snapshot of postgres-1... done
 `))
   })

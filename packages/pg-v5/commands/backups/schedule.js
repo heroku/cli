@@ -24,14 +24,14 @@ function parse (at) {
   if (!m) throw new Error("Invalid schedule format: expected --at '[HOUR]:00 [TIMEZONE]'")
   let [, hour, timezone] = m
 
-  return {hour, timezone: TZ[timezone.toUpperCase()] || timezone || 'UTC'}
+  return { hour, timezone: TZ[timezone.toUpperCase()] || timezone || 'UTC' }
 }
 
 function * run (context, heroku) {
   const host = require('../../lib/host')
   const fetcher = require('../../lib/fetcher')(heroku)
 
-  const {app, args, flags} = context
+  const { app, args, flags } = context
 
   let schedule = parse(flags.at)
 
@@ -75,10 +75,10 @@ module.exports = {
   needsApp: true,
   needsAuth: true,
   args: [
-    {name: 'database', optional: true}
+    { name: 'database', optional: true }
   ],
   flags: [
-    {name: 'at', required: true, hasValue: true, description: "at a specific (24h) hour in the given timezone. Defaults to UTC. --at '[HOUR]:00 [TIMEZONE]'"}
+    { name: 'at', required: true, hasValue: true, description: "at a specific (24h) hour in the given timezone. Defaults to UTC. --at '[HOUR]:00 [TIMEZONE]'" }
   ],
-  run: cli.command({preauth: true}, co.wrap(run))
+  run: cli.command({ preauth: true }, co.wrap(run))
 }

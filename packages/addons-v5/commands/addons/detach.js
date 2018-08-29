@@ -17,7 +17,7 @@ function * run (context, heroku) {
 
   yield cli.action(
     `Unsetting ${cli.color.attachment(attachment.name)} config vars and restarting ${cli.color.app(app)}`,
-    {success: false},
+    { success: false },
     co(function * () {
       let releases = yield heroku.request({
         path: `/apps/${app}/releases`,
@@ -35,6 +35,6 @@ module.exports = {
   description: 'detach an existing add-on resource from an app',
   needsAuth: true,
   needsApp: true,
-  args: [{name: 'attachment_name'}],
-  run: cli.command({preauth: true}, co.wrap(run))
+  args: [{ name: 'attachment_name' }],
+  run: cli.command({ preauth: true }, co.wrap(run))
 }

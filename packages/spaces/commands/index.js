@@ -2,17 +2,17 @@
 
 const cli = require('heroku-cli-util')
 const co = require('co')
-const {flags} = require('@heroku-cli/command')
+const { flags } = require('@heroku-cli/command')
 const _ = require('lodash')
 
 function display (spaces) {
   cli.table(spaces, {
     columns: [
-      {key: 'name', label: 'Name'},
-      {key: 'team.name', label: 'Team'},
-      {key: 'region.name', label: 'Region'},
-      {key: 'state', label: 'State'},
-      {key: 'created_at', label: 'Created At'}
+      { key: 'name', label: 'Name' },
+      { key: 'team.name', label: 'Team' },
+      { key: 'region.name', label: 'Region' },
+      { key: 'state', label: 'State' },
+      { key: 'created_at', label: 'Created At' }
     ]
   })
 }
@@ -44,8 +44,8 @@ module.exports = {
   needsAuth: true,
   wantsOrg: true,
   flags: [
-    {name: 'json', description: 'output in json format'},
-    flags.team({name: 'team', hasValue: true})
+    { name: 'json', description: 'output in json format' },
+    flags.team({ name: 'team', hasValue: true })
   ],
   run: cli.command(co.wrap(run))
 }

@@ -34,7 +34,7 @@ async function run (context, heroku) {
       body: { user: context.args.email, permissions: permissions }
     })
   } else {
-    request = heroku.post(`/apps/${appName}/collaborators`, {body: { user: context.args.email }})
+    request = heroku.post(`/apps/${appName}/collaborators`, { body: { user: context.args.email } })
   }
   await cli.action(`${output}`, request)
 }
@@ -50,10 +50,10 @@ module.exports = [
       '$ heroku access:add user@email.com --app APP # add a collaborator to your app',
       '$ heroku access:add user@email.com --app APP --permissions deploy,manage,operate # permissions must be comma separated'
     ],
-    args: [{name: 'email', optional: false}],
+    args: [{ name: 'email', optional: false }],
     flags: [
-      {name: 'permissions', char: 'p', description: 'list of permissions comma separated', hasValue: true, optional: true},
-      {name: 'privileges', hasValue: true, optional: true, hidden: true} // Deprecated flag
+      { name: 'permissions', char: 'p', description: 'list of permissions comma separated', hasValue: true, optional: true },
+      { name: 'privileges', hasValue: true, optional: true, hidden: true } // Deprecated flag
     ],
     run: cli.command(run)
   }, {

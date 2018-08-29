@@ -22,10 +22,10 @@ module.exports = {
   description: 'list peering connections for a space',
   needsApp: false,
   needsAuth: true,
-  args: [{name: 'space', optional: true, hidden: true}],
+  args: [{ name: 'space', optional: true, hidden: true }],
   flags: [
-    {name: 'space', char: 's', hasValue: true, description: 'space to get peer list from'},
-    {name: 'json', description: 'output in json format'}
+    { name: 'space', char: 's', hasValue: true, description: 'space to get peer list from' },
+    { name: 'json', description: 'output in json format' }
   ],
   run: cli.command(co.wrap(run))
 }

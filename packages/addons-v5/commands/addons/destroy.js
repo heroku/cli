@@ -5,7 +5,7 @@ const co = require('co')
 
 function * run (context, heroku) {
   const resolve = require('../../lib/resolve')
-  const {groupBy, toPairs} = require('lodash')
+  const { groupBy, toPairs } = require('lodash')
 
   let force = context.flags.force || process.env.HEROKU_FORCE === '1'
   if (context.args.length === 0) throw new Error('Missing add-on name')
@@ -25,8 +25,8 @@ function * run (context, heroku) {
       yield cli.action(msg, heroku.request({
         method: 'DELETE',
         path: `/apps/${addon.app.id}/addons/${addon.id}`,
-        headers: {'Accept-Expansion': 'plan'},
-        body: {force}
+        headers: { 'Accept-Expansion': 'plan' },
+        body: { force }
       }))
     }
   }
@@ -39,14 +39,14 @@ let cmd = {
   needsAuth: true,
   wantsApp: true,
   flags: [
-    {name: 'force', char: 'f', description: 'allow destruction even if connected to other apps'},
-    {name: 'confirm', char: 'c', hasValue: true}
+    { name: 'force', char: 'f', description: 'allow destruction even if connected to other apps' },
+    { name: 'confirm', char: 'c', hasValue: true }
   ],
   variableArgs: true,
-  run: cli.command({preauth: true}, co.wrap(run))
+  run: cli.command({ preauth: true }, co.wrap(run))
 }
 
 module.exports = [
-  Object.assign({command: 'destroy'}, cmd),
-  Object.assign({command: 'remove', hidden: true}, cmd)
+  Object.assign({ command: 'destroy' }, cmd),
+  Object.assign({ command: 'remove', hidden: true }, cmd)
 ]

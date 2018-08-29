@@ -1,10 +1,10 @@
 const cli = require('heroku-cli-util')
 const api = require('../../../lib/api')
 
-function createApp (heroku, {archiveURL, name, organization, pipeline, stage}) {
+function createApp (heroku, { archiveURL, name, organization, pipeline, stage }) {
   const params = {
-    source_blob: {url: archiveURL},
-    app: {name},
+    source_blob: { url: archiveURL },
+    app: { name },
     pipeline_coupling: {
       stage,
       pipeline: pipeline.id

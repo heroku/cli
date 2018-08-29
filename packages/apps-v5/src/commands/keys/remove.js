@@ -12,7 +12,7 @@ function * run (context, heroku) {
       throw new Error(`SSH Key ${cli.color.red(context.args.key)} not found.
 Found keys: ${cli.color.yellow(keys.map((k) => k.comment).join(', '))}.`)
     }
-    yield Promise.all(toRemove.map((key) => heroku.request({method: 'DELETE', path: `/account/keys/${key.id}`})))
+    yield Promise.all(toRemove.map((key) => heroku.request({ method: 'DELETE', path: `/account/keys/${key.id}` })))
   }))
 }
 
@@ -23,6 +23,6 @@ module.exports = {
   examples: `$ heroku keys:remove email@example.com
 Removing email@example.com SSH key... done`,
   needsAuth: true,
-  args: [{name: 'key'}],
+  args: [{ name: 'key' }],
   run: cli.command(co.wrap(run))
 }

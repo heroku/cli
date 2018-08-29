@@ -1,14 +1,14 @@
 'use strict'
 
 let cli = require('heroku-cli-util')
-let {waitForDomains, printDomains} = require('../../../lib/domains')
+let { waitForDomains, printDomains } = require('../../../lib/domains')
 
 async function enable (context, heroku) {
   const domains = await heroku.get(`/apps/${context.app}/domains`, {
-    headers: {'Accept': 'application/vnd.heroku+json; version=3.cedar-acm'}
+    headers: { 'Accept': 'application/vnd.heroku+json; version=3.cedar-acm' }
   })
   await heroku.post(`/apps/${context.app}/acm`, {
-    headers: {'Accept': 'application/vnd.heroku+json; version=3.cedar-acm'},
+    headers: { 'Accept': 'application/vnd.heroku+json; version=3.cedar-acm' },
     body: {}
   })
   cli.action.done(`${cli.color.yellow('starting')}. See status with ${cli.color.cmd('heroku certs:auto')} or wait until active with ${cli.color.cmd('heroku certs:auto:wait')}`)

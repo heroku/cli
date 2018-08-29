@@ -6,11 +6,11 @@ let host = require('../../lib/host')
 
 describe('host', () => {
   it('shows dev host', () => {
-    expect(host({plan: {name: 'heroku-postgresql:hobby-dev'}}), 'to equal', 'https://postgres-starter-api.heroku.com')
+    expect(host({ plan: { name: 'heroku-postgresql:hobby-dev' } }), 'to equal', 'https://postgres-starter-api.heroku.com')
   })
 
   it('shows prod host', () => {
-    expect(host({plan: {name: 'heroku-postgresql:premium-0'}}), 'to equal', 'https://postgres-api.heroku.com')
+    expect(host({ plan: { name: 'heroku-postgresql:premium-0' } }), 'to equal', 'https://postgres-api.heroku.com')
   })
 
   context('with HEROKU_POSTGRESQL_HOST set', () => {
@@ -18,11 +18,11 @@ describe('host', () => {
     afterEach(() => delete process.env.HEROKU_POSTGRESQL_HOST)
 
     it('shows dev host', () => {
-      expect(host({plan: {name: 'heroku-postgresql:hobby-dev'}}), 'to equal', 'https://foo.herokuapp.com')
+      expect(host({ plan: { name: 'heroku-postgresql:hobby-dev' } }), 'to equal', 'https://foo.herokuapp.com')
     })
 
     it('shows shogun host', () => {
-      expect(host({plan: {name: 'heroku-postgresql:premium-0'}}), 'to equal', 'https://foo.herokuapp.com')
+      expect(host({ plan: { name: 'heroku-postgresql:premium-0' } }), 'to equal', 'https://foo.herokuapp.com')
     })
   })
 })

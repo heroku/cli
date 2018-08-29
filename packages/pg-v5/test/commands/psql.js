@@ -18,7 +18,7 @@ const db = {
       name: 'postgres-1'
     },
     config_vars: ['DATABASE_URL'],
-    app: {name: 'myapp'}
+    app: { name: 'myapp' }
   }
 }
 
@@ -37,7 +37,7 @@ describe('psql', () => {
   it('runs psql', sinon.test(() => {
     let psql = require('../../lib/psql')
     sinon.stub(psql, 'exec').returns(Promise.resolve(''))
-    return cmd.run({args: {}, flags: {command: 'SELECT 1'}})
+    return cmd.run({ args: {}, flags: { command: 'SELECT 1' } })
       .then(() => expect(cli.stdout, 'to equal', ''))
       .then(() => expect(cli.stderr, 'to equal', '--> Connecting to postgres-1\n'))
       .then(() => psql.exec.restore())
@@ -46,7 +46,7 @@ describe('psql', () => {
   it('runs psql with file', sinon.test(() => {
     let psql = require('../../lib/psql')
     sinon.stub(psql, 'execFile').returns(Promise.resolve(''))
-    return cmd.run({args: {}, flags: {file: 'test.sql'}})
+    return cmd.run({ args: {}, flags: { file: 'test.sql' } })
       .then(() => expect(cli.stdout, 'to equal', ''))
       .then(() => expect(cli.stderr, 'to equal', '--> Connecting to postgres-1\n'))
       .then(() => psql.execFile.restore())

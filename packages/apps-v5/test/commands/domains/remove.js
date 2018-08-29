@@ -12,7 +12,7 @@ describe('domains:remove', function () {
     let api = nock('https://api.heroku.com:443')
       .delete('/apps/myapp/domains/foo.com')
       .reply(200, {})
-    return cmd.run({app: 'myapp', args: {hostname: 'foo.com'}})
+    return cmd.run({ app: 'myapp', args: { hostname: 'foo.com' } })
       .then(() => api.done())
   })
 })

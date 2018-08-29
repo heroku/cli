@@ -33,9 +33,9 @@ module.exports = {
   topic: 'labs',
   command: 'info',
   description: 'show feature info',
-  args: [{name: 'feature'}],
+  args: [{ name: 'feature' }],
   flags: [
-    {name: 'json', description: 'display as json'}
+    { name: 'json', description: 'display as json' }
   ],
   needsAuth: true,
   wantsApp: true,

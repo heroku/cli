@@ -24,7 +24,7 @@ describe('heroku buildpacks:set', function () {
       )
 
       return buildpacks.run({
-        app: 'example', args: {url: 'https://github.com/heroku/heroku-buildpack-ruby'}, flags: {}
+        app: 'example', args: { url: 'https://github.com/heroku/heroku-buildpack-ruby' }, flags: {}
       }).then(function () {
         mock.done()
         expect(cli.stderr).to.equal('')
@@ -39,7 +39,7 @@ Run git push heroku master to create a new release using this buildpack.
       stubGet('http://github.com/foobar/foobar')
 
       return assertExit(1, buildpacks.run({
-        app: 'example', args: {url: 'http://github.com/foobar/foobar'}
+        app: 'example', args: { url: 'http://github.com/foobar/foobar' }
       })).then(function () {
         expect(unwrap(cli.stderr)).to.equal(' ▸    The buildpack http://github.com/foobar/foobar is already set on your app.\n')
       })
@@ -59,7 +59,7 @@ Run git push heroku master to create a new release using this buildpack.
       )
 
       return buildpacks.run({
-        app: 'example', args: {url: 'http://github.com/bar/bar'}, flags: {}
+        app: 'example', args: { url: 'http://github.com/bar/bar' }, flags: {}
       }).then(function () {
         mock.done()
         expect(cli.stdout).to.equal(
@@ -83,8 +83,8 @@ Run git push heroku master to create a new release using these buildpacks.
 
       return buildpacks.run({
         app: 'example',
-        args: {url: 'https://github.com/heroku/heroku-buildpack-ruby'},
-        flags: {index: '1'}
+        args: { url: 'https://github.com/heroku/heroku-buildpack-ruby' },
+        flags: { index: '1' }
       }).then(function () {
         mock.done()
         expect(cli.stderr).to.equal('')
@@ -106,8 +106,8 @@ Run git push heroku master to create a new release using this buildpack.
 
       return buildpacks.run({
         app: 'example',
-        args: {url: 'https://github.com/heroku/heroku-buildpack-ruby'},
-        flags: {index: '1'}
+        args: { url: 'https://github.com/heroku/heroku-buildpack-ruby' },
+        flags: { index: '1' }
       }).then(function () {
         mock.done()
         expect(cli.stderr).to.equal('')
@@ -125,8 +125,8 @@ Run git push heroku master to create a new release using this buildpack.
 
       return assertExit(1, buildpacks.run({
         app: 'example',
-        args: {url: 'https://github.com/heroku/heroku-buildpack-ruby'},
-        flags: {index: '1'}
+        args: { url: 'https://github.com/heroku/heroku-buildpack-ruby' },
+        flags: { index: '1' }
       })).then(function () {
         expect(cli.stdout).to.equal('')
         expect(unwrap(cli.stderr)).to.equal(
@@ -148,8 +148,8 @@ Run git push heroku master to create a new release using this buildpack.
 
       return buildpacks.run({
         app: 'example',
-        args: {url: 'https://github.com/heroku/heroku-buildpack-ruby'},
-        flags: {index: '1'}
+        args: { url: 'https://github.com/heroku/heroku-buildpack-ruby' },
+        flags: { index: '1' }
       }).then(function () {
         mock.done()
         expect(cli.stderr).to.equal('')
@@ -176,8 +176,8 @@ Run git push heroku master to create a new release using these buildpacks.
 
       return buildpacks.run({
         app: 'example',
-        args: {url: 'https://github.com/heroku/heroku-buildpack-ruby'},
-        flags: {index: '3'}
+        args: { url: 'https://github.com/heroku/heroku-buildpack-ruby' },
+        flags: { index: '3' }
       }).then(function () {
         mock.done()
         expect(cli.stderr).to.equal('')
@@ -205,8 +205,8 @@ Run git push heroku master to create a new release using these buildpacks.
 
       return buildpacks.run({
         app: 'example',
-        args: {url: 'https://github.com/heroku/heroku-buildpack-ruby'},
-        flags: {index: '99'}
+        args: { url: 'https://github.com/heroku/heroku-buildpack-ruby' },
+        flags: { index: '99' }
       }).then(function () {
         mock.done()
         expect(cli.stderr).to.equal('')
@@ -228,8 +228,8 @@ Run git push heroku master to create a new release using these buildpacks.
 
       return assertExit(1, buildpacks.run({
         app: 'example',
-        args: {url: 'https://github.com/heroku/heroku-buildpack-java'},
-        flags: {index: '2'}
+        args: { url: 'https://github.com/heroku/heroku-buildpack-java' },
+        flags: { index: '2' }
       })).then(function () {
         expect(cli.stdout).to.equal('')
         expect(unwrap(cli.stderr)).to.equal(
@@ -241,8 +241,8 @@ Run git push heroku master to create a new release using these buildpacks.
     it('# returns an error message when i is not an integer', function () {
       return assertExit(1, buildpacks.run({
         app: 'example',
-        args: {url: 'http://github.com/bar/bar'},
-        flags: {index: 'notaninteger'}
+        args: { url: 'http://github.com/bar/bar' },
+        flags: { index: 'notaninteger' }
       })).then(function () {
         expect(cli.stderr).to.equal(' ▸    Invalid index. Must be greater than 0.\n')
       })
@@ -251,8 +251,8 @@ Run git push heroku master to create a new release using these buildpacks.
     it('# returns an error message when i < 0', function () {
       return assertExit(1, buildpacks.run({
         app: 'example',
-        args: {url: 'http://github.com/bar/bar'},
-        flags: {index: '-1'}
+        args: { url: 'http://github.com/bar/bar' },
+        flags: { index: '-1' }
       })).then(function () {
         expect(cli.stderr).to.equal(' ▸    Invalid index. Must be greater than 0.\n')
       })

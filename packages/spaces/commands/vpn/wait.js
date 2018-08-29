@@ -26,7 +26,7 @@ function * run (context, heroku) {
     return
   }
 
-  const spinner = new cli.Spinner({text: `Waiting for VPN Connection ${cli.color.green(name)} to allocate...`})
+  const spinner = new cli.Spinner({ text: `Waiting for VPN Connection ${cli.color.green(name)} to allocate...` })
 
   spinner.start()
 
@@ -55,13 +55,13 @@ module.exports = {
   description: 'wait for VPN Connection to be created',
   needsApp: false,
   needsAuth: true,
-  args: [{name: 'name', optional: true, hidden: true}],
+  args: [{ name: 'name', optional: true, hidden: true }],
   flags: [
-    {name: 'space', char: 's', hasValue: true, description: 'space the vpn connection belongs to'},
-    {name: 'name', char: 'n', hasValue: true, description: 'name or id of the vpn connection to wait for'},
-    {name: 'json', description: 'output in json format'},
-    {name: 'interval', char: 'i', hasValue: true, description: 'seconds to wait between poll intervals'},
-    {name: 'timeout', char: 't', hasValue: true, description: 'maximum number of seconds to wait'}
+    { name: 'space', char: 's', hasValue: true, description: 'space the vpn connection belongs to' },
+    { name: 'name', char: 'n', hasValue: true, description: 'name or id of the vpn connection to wait for' },
+    { name: 'json', description: 'output in json format' },
+    { name: 'interval', char: 'i', hasValue: true, description: 'seconds to wait between poll intervals' },
+    { name: 'timeout', char: 't', hasValue: true, description: 'maximum number of seconds to wait' }
   ],
   run: cli.command(co.wrap(run))
 }

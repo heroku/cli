@@ -8,7 +8,7 @@ describe('pipelines:destroy', function () {
   beforeEach(() => cli.mockConsole())
 
   it('displays the right messages', function () {
-    const pipeline = {name: 'example', id: '0123'}
+    const pipeline = { name: 'example', id: '0123' }
 
     nock('https://api.heroku.com')
       .get(`/pipelines?eq[name]=${pipeline.name}`)
@@ -18,7 +18,7 @@ describe('pipelines:destroy', function () {
       .delete(`/pipelines/${pipeline.id}`)
       .reply(200, pipeline)
 
-    return cmd.run({args: { pipeline: pipeline.name }})
+    return cmd.run({ args: { pipeline: pipeline.name } })
       .then(() => cli.stderr.should.contain(`Destroying ${pipeline.name} pipeline... done`))
   })
 })

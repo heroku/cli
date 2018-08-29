@@ -24,18 +24,18 @@ app name                     stage
 ⬢ example-production         production`,
   needsAuth: true,
   args: [
-    {name: 'pipeline', description: 'pipeline to show', optional: false}
+    { name: 'pipeline', description: 'pipeline to show', optional: false }
   ],
   flags: [
-    {name: 'json', description: 'output in json format'},
-    {name: 'with-owners', description: 'shows owner of every app', hidden: true}
+    { name: 'json', description: 'output in json format' },
+    { name: 'with-owners', description: 'shows owner of every app', hidden: true }
   ],
   run: cli.command(co.wrap(function * (context, heroku) {
     const pipeline = yield disambiguate(heroku, context.args.pipeline)
     const pipelineApps = yield listPipelineApps(heroku, pipeline.id)
 
     if (context.flags.json) {
-      cli.styledJSON({pipeline, apps: pipelineApps})
+      cli.styledJSON({ pipeline, apps: pipelineApps })
     } else {
       yield renderPipeline(heroku, pipeline, pipelineApps, {
         withOwners: context.flags['with-owners'],

@@ -25,7 +25,7 @@ describe('pipelines:open', () => {
       .get(`/pipelines?eq[name]=${pipeline.name}`)
       .reply(200, [pipeline])
 
-    return cmd.run({args: {pipeline: pipeline.name}}).then(() => {
+    return cmd.run({ args: { pipeline: pipeline.name } }).then(() => {
       const opened = openStub.calledOnce
       const openedUrl = openStub.getCall(0).args[0]
 

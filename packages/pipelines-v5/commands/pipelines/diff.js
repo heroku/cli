@@ -40,7 +40,7 @@ function * getAppInfo (heroku, appName, appId) {
     githubApp = yield kolkrabbiRequest(`/apps/${appId}/github`, heroku.options.token)
   } catch (err) {
     cli.hush(err)
-    return {name: appName, repo: null, hash: null}
+    return { name: appName, repo: null, hash: null }
   }
 
   // Find the commit hash of the latest release for this app
@@ -49,7 +49,7 @@ function * getAppInfo (heroku, appName, appId) {
     const release = yield heroku.request({
       method: 'GET',
       path: `/apps/${appId}/releases`,
-      headers: {'Accept': V3_HEADER, 'Range': 'version ..; order=desc,max=1'},
+      headers: { 'Accept': V3_HEADER, 'Range': 'version ..; order=desc,max=1' },
       partial: true
     })
     if (release[0].slug === null) {
@@ -58,13 +58,13 @@ function * getAppInfo (heroku, appName, appId) {
     slug = yield heroku.request({
       method: 'GET',
       path: `/apps/${appId}/slugs/${release[0].slug.id}`,
-      headers: {'Accept': V3_HEADER}
+      headers: { 'Accept': V3_HEADER }
     })
   } catch (err) {
     cli.hush(err)
-    return {name: appName, repo: githubApp.repo, hash: null}
+    return { name: appName, repo: githubApp.repo, hash: null }
   }
-  return {name: appName, repo: githubApp.repo, hash: slug.commit}
+  return { name: appName, repo: githubApp.repo, hash: slug.commit }
 }
 
 function * diff (targetApp, downstreamApp, githubToken, herokuUserAgent) {
@@ -81,7 +81,7 @@ function * diff (targetApp, downstreamApp, githubToken, herokuUserAgent) {
   // Do the actual Github diff
   try {
     const path = `${targetApp.repo}/compare/${downstreamApp.hash}...${targetApp.hash}`
-    const headers = {authorization: 'token ' + githubToken}
+    const headers = { authorization: 'token ' + githubToken }
 
     if (herokuUserAgent) headers['user-agent'] = herokuUserAgent
 
@@ -101,10 +101,10 @@ function * diff (targetApp, downstreamApp, githubToken, herokuUserAgent) {
     }).reverse()
     cli.table(mapped, {
       columns: [
-        {key: 'sha', label: 'SHA'},
-        {key: 'date', label: 'Date'},
-        {key: 'author', label: 'Author'},
-        {key: 'message', label: 'Message'}
+        { key: 'sha', label: 'SHA' },
+        { key: 'date', label: 'Date' },
+        { key: 'author', label: 'Author' },
+        { key: 'message', label: 'Message' }
       ]
     })
     cli.log(`\nhttps://github.com/${path}`)
@@ -123,7 +123,7 @@ function * run (context, heroku) {
     coupling = yield heroku.request({
       method: 'GET',
       path: `/apps/${targetAppName}/pipeline-couplings`,
-      headers: {'Accept': V3_HEADER}
+      headers: { 'Accept': V3_HEADER }
     })
   } catch (err) {
     return cli.error(`This app (${targetAppName}) does not seem to be a part of any pipeline`)

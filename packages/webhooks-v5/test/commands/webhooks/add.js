@@ -41,7 +41,7 @@ describe('heroku webhooks:add', function () {
         level: 'notify',
         url: 'http://foobar.com'
       })
-      .reply(200, {}, {'Heroku-Webhook-Secret': '1234'})
+      .reply(200, {}, { 'Heroku-Webhook-Secret': '1234' })
 
     return certs.run([
       '--app', 'example',

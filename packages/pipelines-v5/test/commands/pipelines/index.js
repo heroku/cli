@@ -17,7 +17,7 @@ describe('pipelines', () => {
       .get(`/pipelines`)
       .reply(200, pipelines)
 
-    return cmd.run({flags: {}})
+    return cmd.run({ flags: {} })
       .then(() => {
         const output = cli.stdout
 
@@ -38,7 +38,7 @@ describe('pipelines', () => {
       .get(`/pipelines`)
       .reply(200, pipelines)
 
-    return cmd.run({flags: {json: true}})
+    return cmd.run({ flags: { json: true } })
       .then(() => JSON.parse(cli.stdout)[0].name.should.eq('Betelgeuse'))
       .then(() => api.done())
   })

@@ -14,7 +14,7 @@ describe('heroku buildpacks', function () {
   it('# displays the buildpack URL', function () {
     stubGet('https://github.com/heroku/heroku-buildpack-ruby')
 
-    return buildpacks.run({app: 'example'})
+    return buildpacks.run({ app: 'example' })
       .then(function () {
         expect(cli.stderr).to.equal('')
         expect(cli.stdout).to.equal(
@@ -27,7 +27,7 @@ https://github.com/heroku/heroku-buildpack-ruby
   it('# maps buildpack urns to names', function () {
     stubGet('urn:buildpack:heroku/ruby')
 
-    return buildpacks.run({app: 'example'})
+    return buildpacks.run({ app: 'example' })
       .then(function () {
         expect(cli.stderr).to.equal('')
         expect(cli.stdout).to.equal(
@@ -40,7 +40,7 @@ heroku/ruby
   it('# does not map buildpack s3 to names', function () {
     stubGet('https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/ruby.tgz')
 
-    return buildpacks.run({app: 'example'})
+    return buildpacks.run({ app: 'example' })
       .then(function () {
         expect(cli.stderr).to.equal('')
         expect(cli.stdout).to.equal(
@@ -53,7 +53,7 @@ https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/ruby.tgz
   it('# with no buildpack URL set does not display a buildpack URL', function () {
     stubGet()
 
-    return buildpacks.run({app: 'example'})
+    return buildpacks.run({ app: 'example' })
       .then(function () {
         expect(cli.stderr).to.equal('')
         expect(cli.stdout).to.equal(
@@ -67,7 +67,7 @@ https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/ruby.tgz
       'https://github.com/heroku/heroku-buildpack-java',
       'https://github.com/heroku/heroku-buildpack-ruby'
     )
-    return buildpacks.run({app: 'example'})
+    return buildpacks.run({ app: 'example' })
       .then(function () {
         expect(cli.stderr).to.equal('')
         expect(cli.stdout).to.equal(

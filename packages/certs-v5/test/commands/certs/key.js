@@ -26,7 +26,7 @@ describe('heroku certs:key', function () {
   })
 
   it('# validates that at least one argument is passed', function () {
-    return assertExit(1, certs.run({app: 'example', args: ['foo']})).then(function () {
+    return assertExit(1, certs.run({ app: 'example', args: ['foo'] })).then(function () {
       expect(cli.stderr).to.equal(
         ` ▸    Usage: heroku certs:key CRT KEY [KEY ...]
  ▸    Must specify one certificate file and at least one key file.
@@ -53,9 +53,9 @@ describe('heroku certs:key', function () {
       }
     })
       .post('/resolve-chain-and-key', 'pem content\nkey a content\nkey b content')
-      .reply(200, {pem: 'pem content', key: 'key b content'})
+      .reply(200, { pem: 'pem content', key: 'key b content' })
 
-    return certs.run({app: 'example', args: ['a_file', 'b_file', 'c_file']}).then(function () {
+    return certs.run({ app: 'example', args: ['a_file', 'b_file', 'c_file'] }).then(function () {
       sslDoctor.done()
       expect(cli.stderr).to.equal('Testing for signing key... done\n')
       expect(cli.stdout).to.equal(

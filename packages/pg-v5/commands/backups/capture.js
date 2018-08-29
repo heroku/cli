@@ -8,13 +8,13 @@ function * run (context, heroku) {
   const fetcher = require('../../lib/fetcher')(heroku)
   const host = require('../../lib/host')
 
-  const {app, args, flags} = context
+  const { app, args, flags } = context
   const interval = Math.max(3, parseInt(flags['wait-interval'])) || 3
   const db = yield fetcher.addon(app, args.database)
 
   if (flags.snapshot) {
     yield cli.action(`Taking snapshot of ${cli.color.addon(db.name)}`, co(function * () {
-      yield heroku.post(`/postgres/v0/databases/${db.id}/snapshots`, {host: host(db)})
+      yield heroku.post(`/postgres/v0/databases/${db.id}/snapshots`, { host: host(db) })
     }))
   } else {
     let dbInfo = yield heroku.request({
@@ -34,7 +34,7 @@ function * run (context, heroku) {
     }
     let backup
     yield cli.action(`Starting backup of ${cli.color.addon(db.name)}`, co(function * () {
-      backup = yield heroku.post(`/client/v11/databases/${db.id}/backups`, {host: host(db)})
+      backup = yield heroku.post(`/client/v11/databases/${db.id}/backups`, { host: host(db) })
     }))
     cli.log(`
 Use Ctrl-C at any time to stop monitoring progress; the backup will continue running.
@@ -56,11 +56,11 @@ module.exports = {
   description: 'capture a new backup',
   needsApp: true,
   needsAuth: true,
-  args: [{name: 'database', optional: true}],
+  args: [{ name: 'database', optional: true }],
   flags: [
-    {name: 'wait-interval', hasValue: true},
-    {name: 'snapshot'},
-    {name: 'verbose', char: 'v'}
+    { name: 'wait-interval', hasValue: true },
+    { name: 'snapshot' },
+    { name: 'verbose', char: 'v' }
   ],
-  run: cli.command({preauth: true}, co.wrap(run))
+  run: cli.command({ preauth: true }, co.wrap(run))
 }

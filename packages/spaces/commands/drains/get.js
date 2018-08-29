@@ -22,8 +22,8 @@ module.exports = {
   needsApp: false,
   needsAuth: true,
   flags: [
-    {name: 'space', char: 's', hasValue: true, description: 'space for which to get log drain', required: true},
-    {name: 'json', description: 'output in json format'}
+    { name: 'space', char: 's', hasValue: true, description: 'space for which to get log drain', required: true },
+    { name: 'json', description: 'output in json format' }
   ],
   run: cli.command(co.wrap(run))
 }

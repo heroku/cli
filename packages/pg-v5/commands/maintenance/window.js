@@ -7,7 +7,7 @@ function * run (context, heroku) {
   const fetcher = require('../../lib/fetcher')(heroku)
   const host = require('../../lib/host')
   const util = require('../../lib/util')
-  const {app, args} = context
+  const { app, args } = context
   const db = yield fetcher.addon(app, args.database)
 
   if (util.starterPlan(db)) throw new Error('pg:maintenance is only available for production databases')
@@ -16,7 +16,7 @@ function * run (context, heroku) {
 
   yield cli.action(`Setting maintenance window for ${cli.color.addon(db.name)} to ${cli.color.cyan(args.window)}`, co(function * () {
     let response = yield heroku.put(`/client/v11/databases/${db.id}/maintenance_window`, {
-      body: {description: args.window},
+      body: { description: args.window },
       host: host(db)
     })
     cli.action.done(response.message || 'done')
@@ -34,6 +34,6 @@ Example:
     heroku pg:maintenance:window postgres-slippery-100 "Sunday 06:00"`,
   needsApp: true,
   needsAuth: true,
-  args: [{name: 'database'}, {name: 'window'}],
-  run: cli.command({preauth: true}, co.wrap(run))
+  args: [{ name: 'database' }, { name: 'window' }],
+  run: cli.command({ preauth: true }, co.wrap(run))
 }

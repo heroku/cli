@@ -27,18 +27,18 @@ describe('pg:backups:download', () => {
   context('with no id', () => {
     beforeEach(() => {
       pg.get('/client/v11/apps/myapp/transfers').reply(200, [
-        {succeeded: true, to_type: 'gof3r', num: 3}
+        { succeeded: true, to_type: 'gof3r', num: 3 }
       ])
     })
     it('downloads to latest.dump', () => {
-      return cmd.run({app: 'myapp', args: {}, flags: {output: './tmp/latest.dump'}})
+      return cmd.run({ app: 'myapp', args: {}, flags: { output: './tmp/latest.dump' } })
         .then(() => expect(fs.readFileSync('./tmp/latest.dump', 'utf8'), 'to equal', '{}'))
     })
   })
 
   context('with id', () => {
     it('downloads to latest.dump', () => {
-      return cmd.run({app: 'myapp', args: {backup_id: 'b003'}, flags: {output: './tmp/latest.dump'}})
+      return cmd.run({ app: 'myapp', args: { backup_id: 'b003' }, flags: { output: './tmp/latest.dump' } })
         .then(() => expect(fs.readFileSync('./tmp/latest.dump', 'utf8'), 'to equal', '{}'))
     })
   })

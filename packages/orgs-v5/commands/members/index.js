@@ -4,8 +4,8 @@ let _ = require('lodash')
 let cli = require('heroku-cli-util')
 let co = require('co')
 let Utils = require('../../lib/utils')
-const {flags} = require('@heroku-cli/command')
-const {RoleCompletion} = require('@heroku-cli/command/lib/completions')
+const { flags } = require('@heroku-cli/command')
+const { RoleCompletion } = require('@heroku-cli/command/lib/completions')
 
 function * run (context, heroku) {
   let orgInfo = yield Utils.orgInfo(context, heroku)
@@ -24,7 +24,7 @@ function * run (context, heroku) {
         path: `/organizations/${groupName}/invitations`
       })
       teamInvites = _.map(teamInvites, function (invite) {
-        return {email: invite.user.email, role: invite.role, status: 'pending'}
+        return { email: invite.user.email, role: invite.role, status: 'pending' }
       })
     }
   }
@@ -45,9 +45,9 @@ function * run (context, heroku) {
     cli.table(members, {
       printHeader: false,
       columns: [
-        {key: 'email', label: 'Email', format: e => cli.color.cyan(e)},
-        {key: 'role', label: 'Role', format: r => cli.color.green(r)},
-        {key: 'status', label: 'Status', format: r => cli.color.green(r)}
+        { key: 'email', label: 'Email', format: e => cli.color.cyan(e) },
+        { key: 'role', label: 'Role', format: r => cli.color.green(r) },
+        { key: 'status', label: 'Status', format: r => cli.color.green(r) }
       ]
     })
   }
@@ -61,11 +61,11 @@ module.exports = {
   needsAuth: true,
   wantsOrg: true,
   flags: [
-    {name: 'role', char: 'r', hasValue: true, description: 'filter by role', completion: RoleCompletion},
-    {name: 'pending', hasValue: false, description: 'filter by pending team invitations'},
-    {name: 'json', description: 'output in json format'},
+    { name: 'role', char: 'r', hasValue: true, description: 'filter by role', completion: RoleCompletion },
+    { name: 'pending', hasValue: false, description: 'filter by pending team invitations' },
+    { name: 'json', description: 'output in json format' },
     // flags.org({name: 'org', hasValue: true, description: 'org to use', hidden: false}),
-    flags.team({name: 'team', hasValue: true, hidden: true})
+    flags.team({ name: 'team', hasValue: true, hidden: true })
   ],
   run: cli.command(co.wrap(run))
 }

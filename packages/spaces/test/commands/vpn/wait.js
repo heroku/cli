@@ -101,7 +101,7 @@ describe('spaces:vpn:wait', function () {
         ]
       })
 
-    return cmd.run({flags: {space: 'my-space', name: 'vpn-connection-name-wait', interval: 0}})
+    return cmd.run({ flags: { space: 'my-space', name: 'vpn-connection-name-wait', interval: 0 } })
       .then(() => expect(cli.stderr).to.equal(
         `Waiting for VPN Connection vpn-connection-name-wait to allocate... done\n\n`))
       .then(() => expect(cli.stdout).to.equal(
@@ -177,7 +177,7 @@ Tunnel 2    52.44.146.199     52.44.146.198  apresharedkey2  10.0.0.0/16       1
         ]
       })
 
-    return cmd.run({flags: {space: 'my-space', name: 'vpn-connection-name-wait', interval: 0}})
+    return cmd.run({ flags: { space: 'my-space', name: 'vpn-connection-name-wait', interval: 0 } })
       .catch(reason => {
         expect(reason.message).to.equal('supplied CIDR block already in use')
       })
@@ -198,7 +198,7 @@ Tunnel 2    52.44.146.199     52.44.146.198  apresharedkey2  10.0.0.0/16       1
         status_message: ''
       })
 
-    return cmd.run({flags: {space: 'my-space', name: 'vpn-connection-allocated', interval: 0}})
+    return cmd.run({ flags: { space: 'my-space', name: 'vpn-connection-allocated', interval: 0 } })
       .then(() => expect(cli.stdout).to.equal(
         `VPN has been allocated.\n`))
       .then(() => api.done())

@@ -93,10 +93,10 @@ See other CLI commands with heroku help
   describe('with a favorite app', () => {
     it('shows the dashboard', () => {
       let longboard = nock('https://particleboard.heroku.com:443')
-        .get('/favorites?type=app').reply(200, [{app_name: 'myapp'}])
+        .get('/favorites?type=app').reply(200, [{ app_name: 'myapp' }])
       let heroku = nock('https://api.heroku.com:443')
         .get('/organizations').reply(200, [])
-        .get('/apps/myapp').reply(200, {name: 'myapp', owner: {email: 'foo@bar.com'}, released_at: now.toString()})
+        .get('/apps/myapp').reply(200, { name: 'myapp', owner: { email: 'foo@bar.com' }, released_at: now.toString() })
         .get('/apps/myapp/formation').reply(200, formation)
       let telex = nock('https://telex.heroku.com:443')
         .get('/user/notifications').reply(200, [])
@@ -108,9 +108,9 @@ See other CLI commands with heroku help
         .get(`/apps/myapp/router-metrics/errors?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h&process_type=web`)
         .reply(200, router.errors)
         .get(`/apps/myapp/formation/node/metrics/errors?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h`)
-        .reply(200, {data: {}})
+        .reply(200, { data: {} })
         .get(`/apps/myapp/formation/web/metrics/errors?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h`)
-        .reply(200, {data: {}})
+        .reply(200, { data: {} })
 
       return cmd.run({})
         .then(() => expect(cli.stdout, 'to be', `myapp

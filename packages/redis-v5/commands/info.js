@@ -8,7 +8,7 @@ module.exports = {
   command: 'info',
   needsApp: true,
   needsAuth: true,
-  args: [{name: 'database', optional: true}],
+  args: [{ name: 'database', optional: true }],
   description: 'gets information about redis',
   run: cli.command((ctx, heroku) => api(ctx, heroku).info())
 }

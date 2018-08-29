@@ -11,12 +11,12 @@ const db = {
   host: 'foo.com',
   user: 'jeff',
   password: 'pass',
-  url: {href: 'postgres://jeff:pass@foo.com/mydb'}
+  url: { href: 'postgres://jeff:pass@foo.com/mydb' }
 }
 
 const addon = {
   name: 'postgres-1',
-  plan: {name: 'heroku-postgresql:standard-0'}
+  plan: { name: 'heroku-postgresql:standard-0' }
 }
 
 const fetcher = () => {
@@ -46,7 +46,7 @@ describe('pg:credentials:create', () => {
 
   it('creates the credential', () => {
     pg.post('/postgres/v0/databases/postgres-1/credentials').reply(200)
-    return cmd.run({app: 'myapp', args: {}, flags: {name: 'credname'}})
+    return cmd.run({ app: 'myapp', args: {}, flags: { name: 'credname' } })
       .then(() => expect(cli.stdout, 'to equal', `
 Please attach the credential to the apps you want to use it in by running heroku addons:attach postgres-1 --credential credname -a myapp.
 Please define the new grants for the credential within Postgres: heroku pg:psql postgres-1 -a myapp.
@@ -57,7 +57,7 @@ Please define the new grants for the credential within Postgres: heroku pg:psql 
   it('throws an error when the db is starter plan', () => {
     const hobbyAddon = {
       name: 'postgres-1',
-      plan: {name: 'heroku-postgresql:hobby-dev'}
+      plan: { name: 'heroku-postgresql:hobby-dev' }
     }
 
     const fetcher = () => {
@@ -72,6 +72,6 @@ Please define the new grants for the credential within Postgres: heroku pg:psql 
     })
 
     const err = new Error('This operation is not supported by Hobby tier databases.')
-    return expect(cmd.run({app: 'myapp', args: {}, flags: {name: 'jeff'}}), 'to be rejected with', err)
+    return expect(cmd.run({ app: 'myapp', args: {}, flags: { name: 'jeff' } }), 'to be rejected with', err)
   })
 })

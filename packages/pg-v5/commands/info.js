@@ -12,9 +12,9 @@ function displayDB (db, app) {
   }
 
   if (db.addon.app.name !== app) {
-    db.db.info.push({name: 'Billing App', values: [cli.color.cyan(db.addon.app.name)]})
+    db.db.info.push({ name: 'Billing App', values: [cli.color.cyan(db.addon.app.name)] })
   }
-  db.db.info.push({name: 'Add-on', values: [cli.color.addon(db.addon.name)]})
+  db.db.info.push({ name: 'Add-on', values: [cli.color.addon(db.addon.name)] })
 
   let info = db.db.info.reduce((info, i) => {
     if (i.values.length > 0) {
@@ -33,7 +33,7 @@ function displayDB (db, app) {
 }
 
 function * run (context, heroku) {
-  const {sortBy} = require('lodash')
+  const { sortBy } = require('lodash')
   const host = require('../lib/host')
   const fetcher = require('../lib/fetcher')(heroku)
   const app = context.app
@@ -79,11 +79,11 @@ let cmd = {
   description: 'show database information',
   needsApp: true,
   needsAuth: true,
-  args: [{name: 'database', optional: true}],
-  run: cli.command({preauth: true}, co.wrap(run))
+  args: [{ name: 'database', optional: true }],
+  run: cli.command({ preauth: true }, co.wrap(run))
 }
 
 module.exports = [
   cmd,
-  Object.assign({command: 'info'}, cmd)
+  Object.assign({ command: 'info' }, cmd)
 ]

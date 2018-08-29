@@ -17,12 +17,12 @@ describe('spaces:vpn:connect', function () {
         routable_cidrs: [ '192.168.0.1/16', '192.168.0.2/16' ]
       })
       .reply(201)
-    return cmd.run({flags: {
+    return cmd.run({ flags: {
       name: 'office',
       space: 'my-space',
       ip: '192.168.0.1',
       cidrs: '192.168.0.1/16,192.168.0.2/16'
-    }})
+    } })
       .then(() => expect(cli.stderr).to.equal(
         `Creating VPN Connection in space my-space... done\n ▸    Use spaces:vpn:wait to track allocation.\n`))
       .then(() => api.done())

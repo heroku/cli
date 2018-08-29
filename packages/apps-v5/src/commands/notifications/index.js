@@ -6,11 +6,11 @@ let time = require('../../time')
 
 function * run (context, heroku) {
   let app = context.app && !context.flags.all ? yield heroku.get(`/apps/${context.app}`) : null
-  let notifications = yield heroku.request({host: 'telex.heroku.com', path: '/user/notifications'})
+  let notifications = yield heroku.request({ host: 'telex.heroku.com', path: '/user/notifications' })
   if (app) notifications = notifications.filter((n) => n.target.id === app.id)
   if (!context.flags.read) {
     notifications = notifications.filter((n) => !n.read)
-    yield Promise.all(notifications.map((n) => heroku.request({host: 'telex.heroku.com', path: `/user/notifications/${n.id}`, method: 'PATCH', body: {read: true}})))
+    yield Promise.all(notifications.map((n) => heroku.request({ host: 'telex.heroku.com', path: `/user/notifications/${n.id}`, method: 'PATCH', body: { read: true } })))
   }
 
   function displayNotifications (notifications) {
@@ -45,9 +45,9 @@ module.exports = {
   needsAuth: true,
   wantsApp: true,
   flags: [
-    {name: 'all', description: 'view all notifications (not just the ones for the current app)'},
-    {name: 'json', description: 'output in json format'},
-    {name: 'read', description: 'show notifications already read'}
+    { name: 'all', description: 'view all notifications (not just the ones for the current app)' },
+    { name: 'json', description: 'output in json format' },
+    { name: 'read', description: 'show notifications already read' }
   ],
   run: cli.command(co.wrap(run))
 }

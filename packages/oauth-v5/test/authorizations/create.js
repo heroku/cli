@@ -18,16 +18,16 @@ describe('authorizations:create', () => {
 
   beforeEach(() => {
     api
-      .post('/oauth/authorizations', {description: 'awesome'})
-      .reply(201, {scope: ['global'], access_token: {token: 'secrettoken'}})
+      .post('/oauth/authorizations', { description: 'awesome' })
+      .reply(201, { scope: ['global'], access_token: { token: 'secrettoken' } })
   })
 
   it('creates the authorization', () => {
-    return cmd.run({flags: {description: 'awesome'}})
+    return cmd.run({ flags: { description: 'awesome' } })
   })
 
   it('creates the authorization and just shows the token', () => {
-    return cmd.run({flags: {description: 'awesome', short: true}})
+    return cmd.run({ flags: { description: 'awesome', short: true } })
       .then(() => expect(cli.stdout, 'to equal', 'secrettoken\n'))
   })
 })

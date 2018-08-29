@@ -5,7 +5,7 @@ const co = require('co')
 
 function * run (context, heroku) {
   const fetcher = require('../lib/fetcher')(heroku)
-  const {app, args} = context
+  const { app, args } = context
   const attachment = yield fetcher.attachment(app, args.database)
   let current
 
@@ -36,8 +36,8 @@ function * run (context, heroku) {
 
     let backup = yield heroku.post('/addon-attachments', {
       body: {
-        app: {name: app},
-        addon: {name: current.addon.name},
+        app: { name: app },
+        addon: { name: current.addon.name },
         namespace: current.namespace,
         confirm: app
       }
@@ -56,8 +56,8 @@ function * run (context, heroku) {
     yield heroku.post('/addon-attachments', {
       body: {
         name: 'DATABASE',
-        app: {name: app},
-        addon: {name: attachment.addon.name},
+        app: { name: app },
+        addon: { name: attachment.addon.name },
         namespace: attachment.namespace,
         confirm: app
       }
@@ -120,6 +120,6 @@ module.exports = {
   description: 'sets DATABASE as your DATABASE_URL',
   needsApp: true,
   needsAuth: true,
-  args: [{name: 'database'}],
-  run: cli.command({preauth: true}, co.wrap(run))
+  args: [{ name: 'database' }],
+  run: cli.command({ preauth: true }, co.wrap(run))
 }

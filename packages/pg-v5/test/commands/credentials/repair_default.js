@@ -11,12 +11,12 @@ const db = {
   host: 'foo.com',
   user: 'jeff',
   password: 'pass',
-  url: {href: 'postgres://jeff:pass@foo.com/mydb'}
+  url: { href: 'postgres://jeff:pass@foo.com/mydb' }
 }
 
 const addon = {
   name: 'postgres-1',
-  plan: {name: 'heroku-postgresql:standard-0'}
+  plan: { name: 'heroku-postgresql:standard-0' }
 }
 
 const fetcher = () => {
@@ -46,7 +46,7 @@ describe('pg:credentials:repair-default', () => {
 
   it('resets the credential permissions', () => {
     pg.post('/postgres/v0/databases/postgres-1/repair-default').reply(200)
-    return cmd.run({app: 'myapp', args: {}, flags: {confirm: 'myapp'}})
+    return cmd.run({ app: 'myapp', args: {}, flags: { confirm: 'myapp' } })
       .then(() => expect(cli.stdout, 'to equal', ''))
       .then(() => expect(cli.stderr, 'to equal', 'Resetting permissions and object ownership for default role to factory settings... done\n'))
   })
@@ -54,7 +54,7 @@ describe('pg:credentials:repair-default', () => {
   it('throws an error when the db is starter plan', () => {
     const hobbyAddon = {
       name: 'postgres-1',
-      plan: {name: 'heroku-postgresql:hobby-dev'}
+      plan: { name: 'heroku-postgresql:hobby-dev' }
     }
 
     const fetcher = () => {
@@ -69,6 +69,6 @@ describe('pg:credentials:repair-default', () => {
     })
 
     const err = new Error('This operation is not supported by Hobby tier databases.')
-    return expect(cmd.run({app: 'myapp', args: {}, flags: {confirm: 'myapp'}}), 'to be rejected with', err)
+    return expect(cmd.run({ app: 'myapp', args: {}, flags: { confirm: 'myapp' } }), 'to be rejected with', err)
   })
 })

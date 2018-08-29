@@ -38,10 +38,10 @@ module.exports = {
 `,
   needsApp: false,
   needsAuth: true,
-  args: [{name: 'space', optional: true, hidden: true}],
+  args: [{ name: 'space', optional: true, hidden: true }],
   flags: [
-    {name: 'space', char: 's', hasValue: true, description: 'space to destroy'},
-    {name: 'confirm', hasValue: true, description: 'set to space name to bypass confirm prompt'}
+    { name: 'space', char: 's', hasValue: true, description: 'space to destroy' },
+    { name: 'confirm', hasValue: true, description: 'set to space name to bypass confirm prompt' }
   ],
   run: cli.command(co.wrap(run))
 }

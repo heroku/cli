@@ -58,7 +58,7 @@ describe('psql', () => {
         PGPORT: 5432,
         PGHOST: 'localhost'
       })
-      let opts = {env: env, encoding: 'utf8', stdio: [ 'ignore', 'pipe', 'inherit' ]}
+      let opts = { env: env, encoding: 'utf8', stdio: [ 'ignore', 'pipe', 'inherit' ] }
       cp.expects('spawn').withExactArgs('psql', ['-c', 'SELECT NOW();'], opts).once().returns(
         {
           stdout: {
@@ -130,7 +130,7 @@ describe('psql', () => {
         PGPORT: 5432,
         PGHOST: 'localhost'
       })
-      let opts = {env: env, encoding: 'utf8', stdio: [ 'ignore', 'pipe', 'inherit' ]}
+      let opts = { env: env, encoding: 'utf8', stdio: [ 'ignore', 'pipe', 'inherit' ] }
       cp.expects('spawn').withExactArgs('psql', ['-f', 'test.sql'], opts).once().returns(
         {
           stdout: {

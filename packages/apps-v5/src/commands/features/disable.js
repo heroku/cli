@@ -14,7 +14,7 @@ function * run (context, heroku) {
     yield heroku.request({
       path: `/apps/${app}/features/${feature}`,
       method: 'PATCH',
-      body: {enabled: false}
+      body: { enabled: false }
     })
   }))
 }
@@ -23,7 +23,7 @@ module.exports = {
   topic: 'features',
   command: 'disable',
   description: 'disables an app feature',
-  args: [{name: 'feature'}],
+  args: [{ name: 'feature' }],
   needsAuth: true,
   needsApp: true,
   run: cli.command(co.wrap(run))

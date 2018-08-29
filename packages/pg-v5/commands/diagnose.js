@@ -2,14 +2,14 @@
 
 const cli = require('heroku-cli-util')
 const co = require('co')
-const {capitalize} = require('lodash')
+const { capitalize } = require('lodash')
 const PGDIAGNOSE_HOST = process.env.PGDIAGNOSE_URL || 'https://pgdiagnose.herokai.com'
 
 function * run (context, heroku) {
   const fetcher = require('../lib/fetcher')(heroku)
   const host = require('../lib/host')
   const util = require('../lib/util')
-  const {app, args} = context
+  const { app, args } = context
 
   let generateReport = co.wrap(function * (database) {
     let db = yield fetcher.addon(app, database)
@@ -26,7 +26,7 @@ function * run (context, heroku) {
       database: util.getConfigVarName(db.config_vars)
     }
     if (!util.starterPlan(db)) {
-      params.metrics = yield heroku.get(`/client/v11/databases/${db.id}/metrics`, {host: host(db)})
+      params.metrics = yield heroku.get(`/client/v11/databases/${db.id}/metrics`, { host: host(db) })
     }
     return yield heroku.post('/reports', {
       host: PGDIAGNOSE_HOST,
@@ -51,7 +51,7 @@ available for one month after creation on ${report.created_at}
 
           let keys = Object.keys(check.results[0])
           cli.table(check.results, {
-            columns: keys.map(key => ({label: capitalize(key), key: key}))
+            columns: keys.map(key => ({ label: capitalize(key), key: key }))
           })
         } else {
           if (!Object.keys(check.results).length) return
@@ -70,7 +70,7 @@ available for one month after creation on ${report.created_at}
   let report
   let id = args['DATABASE|REPORT_ID']
   if (id && id.match(/^[a-z0-9-]{36}$/)) {
-    report = yield heroku.get(`/reports/${encodeURIComponent(id)}`, {host: PGDIAGNOSE_HOST})
+    report = yield heroku.get(`/reports/${encodeURIComponent(id)}`, { host: PGDIAGNOSE_HOST })
   } else {
     report = yield generateReport(id)
   }
@@ -88,6 +88,6 @@ if REPORT_ID is specified instead, a previous report is displayed
 `,
   needsApp: true,
   needsAuth: true,
-  args: [{name: 'DATABASE|REPORT_ID', optional: true}],
-  run: cli.command({preauth: true}, co.wrap(run))
+  args: [{ name: 'DATABASE|REPORT_ID', optional: true }],
+  run: cli.command({ preauth: true }, co.wrap(run))
 }

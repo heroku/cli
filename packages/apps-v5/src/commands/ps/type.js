@@ -2,9 +2,9 @@
 
 let cli = require('heroku-cli-util')
 let co = require('co')
-const {sortBy, compact} = require('lodash')
+const { sortBy, compact } = require('lodash')
 
-const costs = {'Free': 0, 'Hobby': 7, 'Standard-1X': 25, 'Standard-2X': 50, 'Performance-M': 250, 'Performance': 500, 'Performance-L': 500, '1X': 36, '2X': 72, 'PX': 576}
+const costs = { 'Free': 0, 'Hobby': 7, 'Standard-1X': 25, 'Standard-2X': 50, 'Performance-M': 250, 'Performance': 500, 'Performance-L': 500, '1X': 36, '2X': 72, 'PX': 576 }
 
 let emptyFormationErr = (app) => {
   return new Error(`No process types on ${app}.
@@ -27,10 +27,10 @@ function * run (context, heroku) {
           throw new Error(`Type ${cli.color.red(type)} not found in process formation.
 Types: ${cli.color.yellow(formation.map((f) => f.type).join(', '))}`)
         }
-        return {type, size}
+        return { type, size }
       }))
     } else {
-      return formation.map((p) => ({type: p.type, size: args[0]}))
+      return formation.map((p) => ({ type: p.type, size: args[0] }))
     }
   })
 
@@ -57,10 +57,10 @@ Types: ${cli.color.yellow(formation.map((f) => f.type).join(', '))}`)
 
     cli.table(formation, {
       columns: [
-        {key: 'type'},
-        {key: 'size'},
-        {key: 'qty'},
-        {key: 'cost/mo'}
+        { key: 'type' },
+        { key: 'size' },
+        { key: 'qty' },
+        { key: 'cost/mo' }
       ]
     })
   })
@@ -68,7 +68,7 @@ Types: ${cli.color.yellow(formation.map((f) => f.type).join(', '))}`)
   let changes = yield parse(context.args)
   if (changes.length > 0) {
     yield cli.action(`Scaling dynos on ${cli.color.app(app)}`,
-      heroku.request({method: 'PATCH', path: `/apps/${app}/formation`, body: {updates: changes}})
+      heroku.request({ method: 'PATCH', path: `/apps/${app}/formation`, body: { updates: changes } })
     )
   }
   yield displayFormation()
@@ -91,9 +91,9 @@ Called with 1..n TYPE=SIZE arguments sets the quantity per type.
 }
 
 module.exports = [
-  Object.assign({}, cmd, {topic: 'ps', command: 'type'}),
-  Object.assign({}, cmd, {topic: 'ps', command: 'resize'}),
-  Object.assign({}, cmd, {topic: 'resize', hidden: true}),
-  Object.assign({}, cmd, {topic: 'dyno', command: 'type', hidden: true}),
-  Object.assign({}, cmd, {topic: 'dyno', command: 'resize'})
+  Object.assign({}, cmd, { topic: 'ps', command: 'type' }),
+  Object.assign({}, cmd, { topic: 'ps', command: 'resize' }),
+  Object.assign({}, cmd, { topic: 'resize', hidden: true }),
+  Object.assign({}, cmd, { topic: 'dyno', command: 'type', hidden: true }),
+  Object.assign({}, cmd, { topic: 'dyno', command: 'resize' })
 ]

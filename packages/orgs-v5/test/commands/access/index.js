@@ -13,7 +13,7 @@ describe('heroku access', () => {
       let apiGetPersonalApp = stubGet.personalApp()
       let apiGetAppCollaborators = stubGet.appCollaborators()
 
-      return cmd.run({app: 'myapp', flags: {}})
+      return cmd.run({ app: 'myapp', flags: {} })
         .then(() => expect(
           `jeff@heroku.com   collaborator
 raulb@heroku.com  owner
@@ -34,7 +34,7 @@ raulb@heroku.com  owner
       let apiGetAppPermissions = stubGet.appPermissions()
       let apiGetOrgAppCollaboratorsWithPermissions = stubGet.orgAppCollaboratorsWithPermissions()
 
-      return cmd.run({app: 'myapp', flags: {}})
+      return cmd.run({ app: 'myapp', flags: {} })
         .then(() => expect(
           `bob@heroku.com    member  deploy,view
 raulb@heroku.com  admin   deploy,manage,operate,view

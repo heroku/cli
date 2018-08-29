@@ -64,7 +64,7 @@ Transferring example pipeline to the acme-widgets team... done`,
   needsApp: false,
   needsAuth: true,
   args: [
-    {name: 'owner', description: 'the owner to transfer the pipeline to', optional: false}
+    { name: 'owner', description: 'the owner to transfer the pipeline to', optional: false }
   ],
   flags: [
     flags.pipeline({ name: 'pipeline', required: true, hasValue: true }),
@@ -94,7 +94,7 @@ Transferring example pipeline to the acme-widgets team... done`,
       method: 'POST',
       path: '/pipeline-transfers',
       body: { pipeline: { id: pipeline.id }, new_owner: newOwner },
-      headers: {'Accept': 'application/vnd.heroku+json; version=3.pipelines'}
+      headers: { 'Accept': 'application/vnd.heroku+json; version=3.pipelines' }
     })
 
     yield cli.action(

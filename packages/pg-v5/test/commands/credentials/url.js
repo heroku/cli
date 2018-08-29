@@ -11,12 +11,12 @@ const db = {
   host: 'foo.com',
   user: 'jeff',
   password: 'pass',
-  url: {href: 'postgres://jeff:pass@foo.com/mydb'}
+  url: { href: 'postgres://jeff:pass@foo.com/mydb' }
 }
 
 const addon = {
   name: 'postgres-1',
-  plan: {name: 'heroku-postgresql:standard-0'}
+  plan: { name: 'heroku-postgresql:standard-0' }
 }
 
 const fetcher = () => {
@@ -68,7 +68,7 @@ describe('pg:credentials:url', () => {
     }
     pg.get('/postgres/v0/databases/postgres-1/credentials/jeff').reply(200, roleInfo)
 
-    return cmd.run({app: 'myapp', args: {}, flags: {name: 'jeff'}})
+    return cmd.run({ app: 'myapp', args: {}, flags: { name: 'jeff' } })
       .then(() => expect(cli.stdout, 'to equal', `Connection information for jeff credential.\nConnection info string:
    "dbname=d123 host=localhost port=5442 user=jeff password=hunter2 sslmode=require"
 Connection URL:
@@ -79,7 +79,7 @@ Connection URL:
   it('throws an error when the db is starter plan but the name is specified', () => {
     const hobbyAddon = {
       name: 'postgres-1',
-      plan: {name: 'heroku-postgresql:hobby-dev'}
+      plan: { name: 'heroku-postgresql:hobby-dev' }
     }
 
     const fetcher = () => {
@@ -94,13 +94,13 @@ Connection URL:
     })
 
     const err = new Error(`Only one default credential is supported for Hobby tier databases.`)
-    return expect(cmd.run({app: 'myapp', args: {}, flags: {name: 'jeff'}}), 'to be rejected with', err)
+    return expect(cmd.run({ app: 'myapp', args: {}, flags: { name: 'jeff' } }), 'to be rejected with', err)
   })
 
   it('shows the correct credentials with starter plan', () => {
     const hobbyAddon = {
       name: 'postgres-1',
-      plan: {name: 'heroku-postgresql:hobby-dev'}
+      plan: { name: 'heroku-postgresql:hobby-dev' }
     }
 
     const fetcher = () => {
@@ -131,7 +131,7 @@ Connection URL:
     }
     starter.get('/postgres/v0/databases/postgres-1/credentials/default').reply(200, roleInfo)
 
-    return cmd.run({app: 'myapp', args: {}, flags: {}})
+    return cmd.run({ app: 'myapp', args: {}, flags: {} })
       .then(() => expect(cli.stdout, 'to equal', `Connection information for default credential.\nConnection info string:
    "dbname=d123 host=localhost port=5442 user=abcdef password=hunter2 sslmode=require"
 Connection URL:

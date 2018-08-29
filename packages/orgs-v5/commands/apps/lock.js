@@ -12,7 +12,7 @@ This app is already locked.`)
   let request = heroku.request({
     method: 'PATCH',
     path: `/organizations/apps/${app.name}`,
-    body: {locked: true}
+    body: { locked: true }
   })
   yield cli.action(`Locking ${cli.color.cyan(app.name)}`, request)
 }
@@ -25,6 +25,6 @@ let cmd = {
 }
 
 module.exports = [
-  Object.assign({topic: 'apps', command: 'lock'}, cmd),
-  Object.assign({topic: 'lock'}, cmd)
+  Object.assign({ topic: 'apps', command: 'lock' }, cmd),
+  Object.assign({ topic: 'lock' }, cmd)
 ]

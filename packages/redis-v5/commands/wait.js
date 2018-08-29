@@ -7,7 +7,7 @@ module.exports = {
   command: 'wait',
   needsApp: true,
   needsAuth: true,
-  args: [{name: 'database', optional: true}],
+  args: [{ name: 'database', optional: true }],
   description: 'wait for Redis instance to be available',
   run: cli.command(async (context, heroku) => {
     const api = require('../lib/shared')(context, heroku)

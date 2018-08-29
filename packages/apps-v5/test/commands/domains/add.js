@@ -23,9 +23,9 @@ describe('domains:add', function () {
 
   it('adds a domain', function () {
     let api = nock('https://api.heroku.com:443')
-      .post('/apps/myapp/domains', {hostname: 'foo.com'})
-      .reply(200, {status: 'none'})
-    return cmd.run({app: 'myapp', args: {hostname: 'foo.com'}, flags: {}})
+      .post('/apps/myapp/domains', { hostname: 'foo.com' })
+      .reply(200, { status: 'none' })
+    return cmd.run({ app: 'myapp', args: { hostname: 'foo.com' }, flags: {} })
       .then(() => api.done())
       .then(() => expect(cli.stderr).to.equal(
         `Adding foo.com to myapp... done
@@ -52,10 +52,10 @@ describe('domains:add', function () {
     }
 
     let api = nock('https://api.heroku.com:443')
-      .post('/apps/myapp/domains', {hostname: 'foo.com'})
+      .post('/apps/myapp/domains', { hostname: 'foo.com' })
       .reply(200, domainResponse)
 
-    return cmd.run({app: 'myapp', args: {hostname: 'foo.com'}, flags: {json: true}})
+    return cmd.run({ app: 'myapp', args: { hostname: 'foo.com' }, flags: { json: true } })
       .then(() => api.done())
       .then(() =>
         expect(JSON.parse(cli.stdout).cname).to.equal(domainResponse.cname)
@@ -64,9 +64,9 @@ describe('domains:add', function () {
 
   it('adds a domain with status pending and wait false', function () {
     let api = nock('https://api.heroku.com:443')
-      .post('/apps/myapp/domains', {hostname: 'foo.com'})
-      .reply(200, {status: 'pending'})
-    return cmd.run({app: 'myapp', args: {hostname: 'foo.com'}, flags: {}})
+      .post('/apps/myapp/domains', { hostname: 'foo.com' })
+      .reply(200, { status: 'pending' })
+    return cmd.run({ app: 'myapp', args: { hostname: 'foo.com' }, flags: {} })
       .then(() => api.done())
       .then(() => expect(cli.stderr).to.equal(
         `Adding foo.com to myapp... done
@@ -80,9 +80,9 @@ The domain foo.com has been enqueued for addition
 
   it('adds a wildcard domain with status pending and wait false', function () {
     let api = nock('https://api.heroku.com:443')
-      .post('/apps/myapp/domains', {hostname: '*.foo.com'})
-      .reply(200, {status: 'pending'})
-    return cmd.run({app: 'myapp', args: {hostname: '*.foo.com'}, flags: {}})
+      .post('/apps/myapp/domains', { hostname: '*.foo.com' })
+      .reply(200, { status: 'pending' })
+    return cmd.run({ app: 'myapp', args: { hostname: '*.foo.com' }, flags: {} })
       .then(() => api.done())
       .then(() => expect(cli.stderr).to.equal(
         `Adding *.foo.com to myapp... done
@@ -96,18 +96,18 @@ The domain *.foo.com has been enqueued for addition
 
   it('adds a domain with the wait message succeeded', function () {
     let api = nock('https://api.heroku.com:443')
-      .post('/apps/myapp/domains', {hostname: 'foo.com'})
-      .reply(200, {status: 'pending', id: '1234', hostname: 'foo.com'})
+      .post('/apps/myapp/domains', { hostname: 'foo.com' })
+      .reply(200, { status: 'pending', id: '1234', hostname: 'foo.com' })
 
     let status1 = nock('https://api.heroku.com:443')
       .get('/apps/myapp/domains/1234')
-      .reply(200, {status: 'pending', id: '1234', hostname: 'foo.com'})
+      .reply(200, { status: 'pending', id: '1234', hostname: 'foo.com' })
 
     let status2 = nock('https://api.heroku.com:443')
       .get('/apps/myapp/domains/1234')
-      .reply(200, {status: 'succeeded', id: '1234', hostname: 'foo.com'})
+      .reply(200, { status: 'succeeded', id: '1234', hostname: 'foo.com' })
 
-    return cmd.run({app: 'myapp', args: {hostname: 'foo.com'}, flags: {wait: true}})
+    return cmd.run({ app: 'myapp', args: { hostname: 'foo.com' }, flags: { wait: true } })
       .then(() => api.done())
       .then(() => status1.done())
       .then(() => status2.done())
@@ -123,19 +123,19 @@ Waiting for foo.com... done
 
   it('adds a domain with the wait message failed', function () {
     let api = nock('https://api.heroku.com:443')
-      .post('/apps/myapp/domains', {hostname: 'foo.com'})
-      .reply(200, {status: 'pending', id: '1234', hostname: 'foo.com'})
+      .post('/apps/myapp/domains', { hostname: 'foo.com' })
+      .reply(200, { status: 'pending', id: '1234', hostname: 'foo.com' })
 
     let status1 = nock('https://api.heroku.com:443')
       .get('/apps/myapp/domains/1234')
-      .reply(200, {status: 'pending', id: '1234', hostname: 'foo.com'})
+      .reply(200, { status: 'pending', id: '1234', hostname: 'foo.com' })
 
     let status2 = nock('https://api.heroku.com:443')
       .get('/apps/myapp/domains/1234')
-      .reply(200, {status: 'failed', id: '1234', hostname: 'foo.com'})
+      .reply(200, { status: 'failed', id: '1234', hostname: 'foo.com' })
 
     let thrown = false
-    return cmd.run({app: 'myapp', args: {hostname: 'foo.com'}, flags: {wait: true}})
+    return cmd.run({ app: 'myapp', args: { hostname: 'foo.com' }, flags: { wait: true } })
       .catch(function (err) {
         expect(err).to.be.an.instanceof(Error)
         expect(err.message).to.equal('The domain creation finished with status failed')
@@ -157,11 +157,11 @@ Waiting for foo.com... !
 
   it('adds a domain with the wait message failed immediately', function () {
     let api = nock('https://api.heroku.com:443')
-      .post('/apps/myapp/domains', {hostname: 'foo.com'})
-      .reply(200, {status: 'failed', id: '1234', hostname: 'foo.com'})
+      .post('/apps/myapp/domains', { hostname: 'foo.com' })
+      .reply(200, { status: 'failed', id: '1234', hostname: 'foo.com' })
 
     let thrown = false
-    return cmd.run({app: 'myapp', args: {hostname: 'foo.com'}, flags: {wait: true}})
+    return cmd.run({ app: 'myapp', args: { hostname: 'foo.com' }, flags: { wait: true } })
       .catch(function (err) {
         expect(err).to.be.an.instanceof(Error)
         expect(err.message).to.equal('The domain creation finished with status failed')

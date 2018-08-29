@@ -21,7 +21,7 @@ describe('clients:create', function () {
         redirect_uri: 'https://myapp.com',
         secret: 'clientsecret'
       })
-    return cmd.run({args: {name: 'awesome', redirect_uri: 'https://myapp.com'}, flags: {}})
+    return cmd.run({ args: { name: 'awesome', redirect_uri: 'https://myapp.com' }, flags: {} })
       .then(() => expect(cli.stdout, 'to equal', `HEROKU_OAUTH_ID=f6e8d969-129f-42d2-854b-c2eca9d5a42e
 HEROKU_OAUTH_SECRET=clientsecret
 `))

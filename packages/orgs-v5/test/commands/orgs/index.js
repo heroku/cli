@@ -11,7 +11,7 @@ describe('heroku orgs', () => {
   it('shows Enterprise orgs only when passing the --enterprise flag', () => {
     let apiGetOrgs = stubGet.orgs()
 
-    return cmd.run({flags: { enterprise: true }})
+    return cmd.run({ flags: { enterprise: true } })
       .then(() => expect(
         `org a          collaborator
 org b          admin\n`).to.eq(cli.stdout))
@@ -21,11 +21,11 @@ org b          admin\n`).to.eq(cli.stdout))
 
   it('shows orgs (now called teams)', () => {
     let apiGetOrgsOnly = stubGet.orgs([
-      {name: 'org a', role: 'collaborator', type: 'enterprise'},
-      {name: 'org b', role: 'admin', type: 'enterprise'}
+      { name: 'org a', role: 'collaborator', type: 'enterprise' },
+      { name: 'org b', role: 'admin', type: 'enterprise' }
     ])
 
-    return cmd.run({flags: {}})
+    return cmd.run({ flags: {} })
       .then(() => expect(
         `org a          collaborator
 org b          admin\n`).to.eq(cli.stdout))

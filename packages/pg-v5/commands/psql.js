@@ -7,7 +7,7 @@ function * run (context, heroku) {
   const fetcher = require('../lib/fetcher')(heroku)
   const psql = require('../lib/psql')
 
-  const {app, args, flags} = context
+  const { app, args, flags } = context
 
   let namespace = flags.credential ? `credential:${flags.credential}` : null
 
@@ -27,15 +27,15 @@ let cmd = {
   needsApp: true,
   needsAuth: true,
   flags: [
-    {name: 'command', char: 'c', description: 'SQL command to run', hasValue: true},
-    {name: 'file', char: 'f', description: 'SQL file to run', hasValue: true},
-    {name: 'credential', description: 'credential to use', hasValue: true}
+    { name: 'command', char: 'c', description: 'SQL command to run', hasValue: true },
+    { name: 'file', char: 'f', description: 'SQL file to run', hasValue: true },
+    { name: 'credential', description: 'credential to use', hasValue: true }
   ],
-  args: [{name: 'database', optional: true}],
-  run: cli.command({preauth: true}, co.wrap(run))
+  args: [{ name: 'database', optional: true }],
+  run: cli.command({ preauth: true }, co.wrap(run))
 }
 
 module.exports = [
-  Object.assign({topic: 'pg', command: 'psql'}, cmd),
-  Object.assign({topic: 'psql'}, cmd)
+  Object.assign({ topic: 'pg', command: 'psql' }, cmd),
+  Object.assign({ topic: 'psql' }, cmd)
 ]

@@ -7,7 +7,7 @@ let infer = require('../../lib/infer')
 let prompt = require('../../lib/prompt')
 let stages = require('../../lib/stages').inferrableStageNames
 
-const {flags} = require('@heroku-cli/command')
+const { flags } = require('@heroku-cli/command')
 const createCoupling = require('../../lib/api').createCoupling
 
 function * run (context, heroku) {
@@ -75,11 +75,11 @@ Adding example-staging to example pipeline as staging... done`,
   needsAuth: true,
   wantsOrg: true,
   args: [
-    {name: 'name', description: 'name of pipeline, defaults to basename of app', optional: true}
+    { name: 'name', description: 'name of pipeline, defaults to basename of app', optional: true }
   ],
   flags: [
-    {name: 'stage', char: 's', description: 'stage of first app in pipeline', hasValue: true},
-    flags.team({name: 'team', hasValue: true, description: 'the team which will own the apps (can also use --org)'})
+    { name: 'stage', char: 's', description: 'stage of first app in pipeline', hasValue: true },
+    flags.team({ name: 'team', hasValue: true, description: 'the team which will own the apps (can also use --org)' })
   ],
   run: cli.command(co.wrap(run))
 }

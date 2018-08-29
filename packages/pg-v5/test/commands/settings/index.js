@@ -9,7 +9,7 @@ const proxyquire = require('proxyquire')
 const db = {
   id: 1,
   name: 'postgres-1',
-  plan: {name: 'heroku-postgresql:standard-0'}
+  plan: { name: 'heroku-postgresql:standard-0' }
 }
 const fetcher = () => {
   return {
@@ -39,7 +39,7 @@ describe('pg:settings', () => {
   it('shows settings', () => {
     pg.get('/postgres/v0/databases/1/config').reply(200,
       { log_statement: { value: 'none' } })
-    return cmd.run({app: 'myapp', args: {}, flags: {}})
+    return cmd.run({ app: 'myapp', args: {}, flags: {} })
       .then(() => expect(cli.stdout, 'to equal', '=== postgres-1\nlog-statement: none\n'))
   })
 })

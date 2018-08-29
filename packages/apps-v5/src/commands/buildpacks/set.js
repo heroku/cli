@@ -29,10 +29,10 @@ module.exports = {
   topic: 'buildpacks',
   command: 'set',
   args: [
-    {name: 'url', optional: false}
+    { name: 'url', optional: false }
   ],
   flags: [
-    {name: 'index', char: 'i', hasValue: true, description: 'the 1-based index of the URL in the list of URLs'}
+    { name: 'index', char: 'i', hasValue: true, description: 'the 1-based index of the URL in the list of URLs' }
   ],
   description: 'set new app buildpack, overwriting into list of buildpacks if necessary',
   examples: '$ heroku buildpacks:set -i 1 heroku/ruby',

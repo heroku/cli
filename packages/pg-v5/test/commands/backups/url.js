@@ -25,18 +25,18 @@ const shouldUrl = function (cmdRun) {
   context('with no id', () => {
     beforeEach(() => {
       pg.get('/client/v11/apps/myapp/transfers').reply(200, [
-        {succeeded: true, to_type: 'gof3r', num: 3}
+        { succeeded: true, to_type: 'gof3r', num: 3 }
       ])
     })
     it('shows URL', () => {
-      return cmdRun({app: 'myapp', args: {}})
+      return cmdRun({ app: 'myapp', args: {} })
         .then(() => expect(cli.stdout, 'to equal', 'https://dburl\n'))
     })
   })
 
   context('with id', () => {
     it('shows URL', () => {
-      return cmdRun({app: 'myapp', args: {backup_id: 'b003'}})
+      return cmdRun({ app: 'myapp', args: { backup_id: 'b003' } })
         .then(() => expect(cli.stdout, 'to equal', 'https://dburl\n'))
     })
   })

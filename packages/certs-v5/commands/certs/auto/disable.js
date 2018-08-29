@@ -19,7 +19,7 @@ are preferred which will also disable Automatic Certificate Management.
   yield cli.action('Disabling Automatic Certificate Management', heroku.request({
     method: 'DELETE',
     path: `/apps/${context.app}/acm`,
-    headers: {'Accept': 'application/vnd.heroku+json; version=3.cedar-acm'}
+    headers: { 'Accept': 'application/vnd.heroku+json; version=3.cedar-acm' }
   }))
 }
 
@@ -28,7 +28,7 @@ module.exports = {
   command: 'auto:disable',
   description: 'disable ACM for an app',
   flags: [
-    {name: 'confirm', hasValue: true, hidden: true}
+    { name: 'confirm', hasValue: true, hidden: true }
   ],
   needsApp: true,
   needsAuth: true,

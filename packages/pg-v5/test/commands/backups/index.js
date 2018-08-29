@@ -26,7 +26,7 @@ describe('pg:backups', () => {
     })
 
     it('shows empty message', () => {
-      return cmd.run({app: 'myapp', args: []})
+      return cmd.run({ app: 'myapp', args: [] })
         .then(() => expect(cli.stdout, 'to equal', `=== Backups
 No backups. Capture one with heroku pg:backups:capture
 
@@ -97,7 +97,7 @@ No copies found. Use heroku pg:copy to copy a database to another
     })
 
     it('shows backups', () => {
-      return cmd.run({app: 'myapp', args: []})
+      return cmd.run({ app: 'myapp', args: [] })
         .then(() => expect(cli.stdout, 'to equal', `=== Backups
 ID    Created at                 Status                               Size    Database
 ────  ─────────────────────────  ───────────────────────────────────  ──────  ────────
@@ -135,7 +135,7 @@ No copies found. Use heroku pg:copy to copy a database to another
     })
 
     it('shows restore', () => {
-      return cmd.run({app: 'myapp', args: []})
+      return cmd.run({ app: 'myapp', args: [] })
         .then(() => expect(cli.stdout, 'to equal', `=== Backups
 No backups. Capture one with heroku pg:backups:capture
 
@@ -171,7 +171,7 @@ No copies found. Use heroku pg:copy to copy a database to another
     })
 
     it('shows copy', () => {
-      return cmd.run({app: 'myapp', args: []})
+      return cmd.run({ app: 'myapp', args: [] })
         .then(() => expect(cli.stdout, 'to equal', `=== Backups
 No backups. Capture one with heroku pg:backups:capture
 

@@ -13,10 +13,10 @@ describe('apps:favorites:add', () => {
     let api = nock('https://particleboard.heroku.com')
       .get('/favorites?type=app')
       .reply(200, [])
-      .post('/favorites', {type: 'app', resource_id: 'myapp'})
+      .post('/favorites', { type: 'app', resource_id: 'myapp' })
       .reply(201)
 
-    return cmd.run({app: 'myapp'})
+    return cmd.run({ app: 'myapp' })
       .then(() => expect(cli.stdout).to.equal(''))
       .then(() => expect(cli.stderr).to.equal('Adding myapp to favorites... done\n'))
       .then(() => api.done())

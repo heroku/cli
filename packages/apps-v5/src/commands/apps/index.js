@@ -2,11 +2,11 @@
 
 const co = require('co')
 const cli = require('heroku-cli-util')
-const {flags} = require('@heroku-cli/command')
-const {SpaceCompletion} = require('@heroku-cli/command/lib/completions')
+const { flags } = require('@heroku-cli/command')
+const { SpaceCompletion } = require('@heroku-cli/command/lib/completions')
 
 function * run (context, heroku) {
-  const {sortBy, partition} = require('lodash')
+  const { sortBy, partition } = require('lodash')
 
   let team = context.org || context.team || context.flags.team
   let org = (!context.flags.personal && team) ? team : null
@@ -63,8 +63,8 @@ function * run (context, heroku) {
         cli.table(apps[1], {
           printHeader: false,
           columns: [
-            {key: 'name', get: regionizeAppName},
-            {key: 'owner.email'}
+            { key: 'name', get: regionizeAppName },
+            { key: 'owner.email' }
           ]
         })
       }
@@ -105,19 +105,19 @@ theirapp   other@owner.name`,
   needsAuth: true,
   wantsOrg: true,
   flags: [
-    {name: 'all', char: 'A', description: 'include apps in all teams'},
-    {name: 'json', description: 'output in json format'},
-    {name: 'space', char: 's', hasValue: true, description: 'filter by space', completion: SpaceCompletion},
-    {name: 'personal', char: 'p', description: 'list apps in personal account when a default team is set'},
-    {name: 'internal-routing', hidden: true, char: 'i', description: 'filter to Internal Web Apps'},
+    { name: 'all', char: 'A', description: 'include apps in all teams' },
+    { name: 'json', description: 'output in json format' },
+    { name: 'space', char: 's', hasValue: true, description: 'filter by space', completion: SpaceCompletion },
+    { name: 'personal', char: 'p', description: 'list apps in personal account when a default team is set' },
+    { name: 'internal-routing', hidden: true, char: 'i', description: 'filter to Internal Web Apps' },
     // flags.org({name: 'org', hasValue: true}),
-    flags.team({name: 'team', hasValue: true})
+    flags.team({ name: 'team', hasValue: true })
   ],
   run: cli.command(co.wrap(run))
 }
 
 module.exports = [
-  Object.assign({topic: 'apps'}, cmd),
-  Object.assign({topic: 'list', hidden: true}, cmd),
-  Object.assign({topic: 'apps', command: 'list', hidden: true}, cmd)
+  Object.assign({ topic: 'apps' }, cmd),
+  Object.assign({ topic: 'list', hidden: true }, cmd),
+  Object.assign({ topic: 'apps', command: 'list', hidden: true }, cmd)
 ]

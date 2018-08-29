@@ -1,7 +1,7 @@
 const prompt = require('../../../lib/prompt')
 
 function * getCISettings (yes, organization) {
-  const settings = yes ? {ci: true} : yield prompt([{
+  const settings = yes ? { ci: true } : yield prompt([{
     type: 'confirm',
     name: 'ci',
     message: 'Enable automatic Heroku CI test runs?'

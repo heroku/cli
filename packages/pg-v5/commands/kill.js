@@ -7,9 +7,9 @@ function * run (context, heroku) {
   const fetcher = require('../lib/fetcher')
   const psql = require('../lib/psql')
 
-  const {app, args, flags} = context
-  const {pid, database} = args
-  const {force} = flags
+  const { app, args, flags } = context
+  const { pid, database } = args
+  const { force } = flags
 
   let db = yield fetcher(heroku).database(app, database)
 
@@ -26,10 +26,10 @@ module.exports = {
   description: 'kill a query',
   needsApp: true,
   needsAuth: true,
-  flags: [{name: 'force', char: 'f'}],
+  flags: [{ name: 'force', char: 'f' }],
   args: [
-    {name: 'pid'},
-    {name: 'database', optional: true}
+    { name: 'pid' },
+    { name: 'database', optional: true }
   ],
-  run: cli.command({preauth: true}, co.wrap(run))
+  run: cli.command({ preauth: true }, co.wrap(run))
 }

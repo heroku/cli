@@ -112,7 +112,7 @@ module.exports = {
   topic: 'certs',
   command: 'generate',
   args: [
-    {name: 'domain', optional: false}
+    { name: 'domain', optional: false }
   ],
   flags: [
     {

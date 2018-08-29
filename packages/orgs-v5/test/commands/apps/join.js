@@ -18,7 +18,7 @@ describe('heroku apps:join', () => {
   it('joins the app', () => {
     apiPostCollaborators = stubPost.orgAppcollaborators('raulb@heroku.com')
 
-    return cmd.run({app: 'myapp'})
+    return cmd.run({ app: 'myapp' })
       .then(() => expect('').to.eq(cli.stdout))
       .then(() => expect(`Joining myapp... done
 `).to.eq(cli.stderr))
@@ -35,7 +35,7 @@ describe('heroku apps:join', () => {
     apiPostCollaborators = stubPost.orgAppcollaborators('raulb@heroku.com', [], response)
     let thrown = false
 
-    return cmd.run({app: 'myapp'})
+    return cmd.run({ app: 'myapp' })
       .then(() => apiGetUserAccount.done())
       .catch(function (err) {
         thrown = true

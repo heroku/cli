@@ -13,7 +13,7 @@ function * run (context, heroku) {
     headers = { 'Accept-Expansion': 'region' }
   }
 
-  let space = yield heroku.get(`/spaces/${spaceName}`, {headers})
+  let space = yield heroku.get(`/spaces/${spaceName}`, { headers })
   if (space.state === 'allocated') {
     space.outbound_ips = yield heroku.get(`/spaces/${spaceName}/nat`)
   }
@@ -42,10 +42,10 @@ module.exports = {
   command: 'info',
   description: 'show info about a space',
   needsAuth: true,
-  args: [{name: 'space', optional: true, hidden: true}],
+  args: [{ name: 'space', optional: true, hidden: true }],
   flags: [
-    {name: 'space', char: 's', hasValue: true, description: 'space to get info of'},
-    {name: 'json', description: 'output in json format'}
+    { name: 'space', char: 's', hasValue: true, description: 'space to get info of' },
+    { name: 'json', description: 'output in json format' }
   ],
   render: render,
   run: cli.command(co.wrap(run))

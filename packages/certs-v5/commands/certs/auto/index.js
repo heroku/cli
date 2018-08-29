@@ -6,7 +6,7 @@ let certificateDetails = require('../../../lib/certificate_details.js')
 let _ = require('lodash')
 let distanceInWordsToNow = require('date-fns/distance_in_words_to_now')
 
-const {default: color} = require('@heroku-cli/color')
+const { default: color } = require('@heroku-cli/color')
 
 function humanize (value) {
   if (!value) {
@@ -32,15 +32,15 @@ function * run (context, heroku) {
   let [app, certs, domains] = yield [
     heroku.request({
       path: `/apps/${context.app}`,
-      headers: {'Accept': 'application/vnd.heroku+json; version=3.cedar-acm'}
+      headers: { 'Accept': 'application/vnd.heroku+json; version=3.cedar-acm' }
     }),
     heroku.request({
       path: `/apps/${context.app}/sni-endpoints`,
-      headers: {'Accept': 'application/vnd.heroku+json; version=3.sni_ssl_cert'}
+      headers: { 'Accept': 'application/vnd.heroku+json; version=3.sni_ssl_cert' }
     }),
     heroku.request({
       path: `/apps/${context.app}/domains`,
-      headers: {'Accept': 'application/vnd.heroku+json; version=3.cedar-acm'}
+      headers: { 'Accept': 'application/vnd.heroku+json; version=3.cedar-acm' }
     })
   ]
 
@@ -57,8 +57,8 @@ function * run (context, heroku) {
 
     if (domains.length > 0) {
       let columns = [
-        {label: 'Domain', key: 'hostname'},
-        {label: 'Status', key: 'acm_status', format: humanize}
+        { label: 'Domain', key: 'hostname' },
+        { label: 'Status', key: 'acm_status', format: humanize }
       ]
       if (domains.find(d => d.acm_status_reason)) {
         columns.push({
@@ -74,7 +74,7 @@ function * run (context, heroku) {
       })
 
       cli.log('')
-      cli.table(domains, {columns})
+      cli.table(domains, { columns })
     }
 
     let _ = require('lodash')

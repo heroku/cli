@@ -16,8 +16,8 @@ function * run (context, heroku) {
   }
 
   let latest
-  yield cli.action(`Rolling back ${cli.color.app(context.app)} to ${cli.color.green('v' + release.version)}`, {success: false}, co(function * () {
-    latest = yield heroku.post(`/apps/${context.app}/releases`, {body: {release: release.id}})
+  yield cli.action(`Rolling back ${cli.color.app(context.app)} to ${cli.color.green('v' + release.version)}`, { success: false }, co(function * () {
+    latest = yield heroku.post(`/apps/${context.app}/releases`, { body: { release: release.id } })
 
     cli.action.done(`done, ${cli.color.green('v' + latest.version)}`)
     cli.warn(`Rollback affects code and config vars; it doesn't add or remove addons.
@@ -42,11 +42,11 @@ let cmd = {
   help: 'If RELEASE is not specified, it will rollback one release',
   needsApp: true,
   needsAuth: true,
-  args: [{name: 'release', optional: true}],
-  run: cli.command({preauth: true}, co.wrap(run))
+  args: [{ name: 'release', optional: true }],
+  run: cli.command({ preauth: true }, co.wrap(run))
 }
 
 module.exports = [
-  Object.assign({topic: 'releases', command: 'rollback'}, cmd),
-  Object.assign({hidden: true, topic: 'rollback'}, cmd)
+  Object.assign({ topic: 'releases', command: 'rollback' }, cmd),
+  Object.assign({ hidden: true, topic: 'rollback' }, cmd)
 ]

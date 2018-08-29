@@ -12,7 +12,7 @@ module.exports = {
   needsApp: false,
   needsAuth: true,
   args: [
-    {name: 'pipeline', description: 'name of pipeline', optional: false}
+    { name: 'pipeline', description: 'name of pipeline', optional: false }
   ],
   run: cli.command(co.wrap(function * (context, heroku) {
     let pipeline = yield disambiguate(heroku, context.args.pipeline)

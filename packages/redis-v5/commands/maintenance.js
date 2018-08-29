@@ -7,11 +7,11 @@ module.exports = {
   command: 'maintenance',
   needsApp: true,
   needsAuth: true,
-  args: [{name: 'database', optional: true}],
+  args: [{ name: 'database', optional: true }],
   flags: [
-    {name: 'window', char: 'w', description: 'set weekly UTC maintenance window', hasValue: true, optional: true},
-    {name: 'run', description: 'start maintenance', optional: true},
-    {name: 'force', char: 'f', description: 'start maintenance without entering application maintenance mode', optional: true}
+    { name: 'window', char: 'w', description: 'set weekly UTC maintenance window', hasValue: true, optional: true },
+    { name: 'run', description: 'start maintenance', optional: true },
+    { name: 'force', char: 'f', description: 'start maintenance without entering application maintenance mode', optional: true }
   ],
   description: 'manage maintenance windows',
   help: 'Set or change the maintenance window for your Redis instance',

@@ -6,7 +6,7 @@ module.exports = function (topic) {
   return {
     topic: topic,
     command: 'login',
-    flags: [{name: 'verbose', char: 'v', hasValue: false}],
+    flags: [{ name: 'verbose', char: 'v', hasValue: false }],
     description: 'log in to Heroku Container Registry',
     help: `Usage:
         heroku container:login`,
@@ -46,7 +46,7 @@ function dockerLoginStdin (registry, password) {
     '--password-stdin',
     registry
   ]
-  return Sanbashi.cmd('docker', args, {input: password})
+  return Sanbashi.cmd('docker', args, { input: password })
 }
 
 function dockerLoginArgv (registry, password) {

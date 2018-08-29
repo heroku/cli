@@ -17,6 +17,6 @@ module.exports = {
   description: 'remove domain from an app',
   needsApp: true,
   needsAuth: true,
-  args: [{name: 'hostname'}],
+  args: [{ name: 'hostname' }],
   run: cli.command(co.wrap(run))
 }

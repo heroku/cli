@@ -25,7 +25,7 @@ function isFailed (promotionTarget) {
 
 function * getSecondFactor () {
   cli.yubikey.enable()
-  const secondFactor = yield cli.prompt('Two-factor code', {mask: true})
+  const secondFactor = yield cli.prompt('Two-factor code', { mask: true })
   cli.yubikey.disable()
   return secondFactor
 }
@@ -68,14 +68,14 @@ function * promote (heroku, label, id, sourceAppId, targetApps, secondFactor) {
     method: 'POST',
     path: `/pipeline-promotions`,
     body: {
-      pipeline: {id: id},
-      source: {app: {id: sourceAppId}},
-      targets: targetApps.map((app) => { return {app: {id: app.id}} })
+      pipeline: { id: id },
+      source: { app: { id: sourceAppId } },
+      targets: targetApps.map((app) => { return { app: { id: app.id } } })
     }
   }
 
   if (secondFactor) {
-    options.headers = {'Heroku-Two-Factor-Code': secondFactor}
+    options.headers = { 'Heroku-Two-Factor-Code': secondFactor }
   }
 
   try {
@@ -90,7 +90,7 @@ function * promote (heroku, label, id, sourceAppId, targetApps, secondFactor) {
 }
 
 function assertNotPromotingToSelf (source, target) {
-  assert.notEqual(source, target, `Cannot promote from an app to itself: ${target}. Specify a different target app.`)
+  assert.notStrictEqual(source, target, `Cannot promote from an app to itself: ${target}. Specify a different target app.`)
 }
 
 function assertValidPromotion (app, source, target) {

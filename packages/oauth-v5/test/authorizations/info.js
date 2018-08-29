@@ -25,10 +25,10 @@ describe('authorizations:info', () => {
         id: '10',
         description: 'desc',
         scope: ['global'],
-        access_token: {token: 'secrettoken'},
+        access_token: { token: 'secrettoken' },
         updated_at: new Date(0)
       })
-    return cmd.run({args: {id: '10'}, flags: {}})
+    return cmd.run({ args: { id: '10' }, flags: {} })
       .then(() => expect(cli.stdout, 'to equal', `Client:      <none>
 ID:          10
 Description: desc
@@ -45,10 +45,10 @@ Updated at:  ${new Date(0)} (${distanceInWordsToNow(new Date(0))} ago)
         id: '10',
         description: 'desc',
         scope: ['global'],
-        access_token: {token: 'secrettoken'}
+        access_token: { token: 'secrettoken' }
       })
-    return cmd.run({args: {id: '10'}, flags: {json: true}})
-      .then(() => expect(JSON.parse(cli.stdout), 'to satisfy', {id: '10'}))
+    return cmd.run({ args: { id: '10' }, flags: { json: true } })
+      .then(() => expect(JSON.parse(cli.stdout), 'to satisfy', { id: '10' }))
   })
 
   it('shows expires in', () => {
@@ -58,9 +58,9 @@ Updated at:  ${new Date(0)} (${distanceInWordsToNow(new Date(0))} ago)
         id: '10',
         description: 'desc',
         scope: ['global'],
-        access_token: {token: 'secrettoken', expires_in: 100000}
+        access_token: { token: 'secrettoken', expires_in: 100000 }
       })
-    return cmd.run({args: {id: '10'}, flags: {}})
+    return cmd.run({ args: { id: '10' }, flags: {} })
       .then(() => expect(cli.stdout, 'to contain', '(in 1 day)'))
   })
 })

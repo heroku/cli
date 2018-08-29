@@ -9,11 +9,11 @@ const cmd = require('../../..').commands.find(c => c.topic === 'pg' && c.command
 const addon = {
   id: 1,
   name: 'postgres-1',
-  app: {name: 'myapp'},
-  plan: {name: 'heroku-postgresql:standard-0'}
+  app: { name: 'myapp' },
+  plan: { name: 'heroku-postgresql:standard-0' }
 }
 
-const attachment = {addon}
+const attachment = { addon }
 
 const shouldUnschedule = function (cmdRun) {
   let pg, api
@@ -27,7 +27,7 @@ const shouldUnschedule = function (cmdRun) {
       addon_service: 'heroku-postgresql'
     }).reply(200, [attachment])
     pg = nock('https://postgres-api.heroku.com')
-    pg.get('/client/v11/databases/1/transfer-schedules').twice().reply(200, [{name: 'DATABASE_URL', uuid: '100-001'}])
+    pg.get('/client/v11/databases/1/transfer-schedules').twice().reply(200, [{ name: 'DATABASE_URL', uuid: '100-001' }])
     pg.delete('/client/v11/databases/1/transfer-schedules/100-001').reply(200)
     cli.mockConsole()
   })
@@ -39,7 +39,7 @@ const shouldUnschedule = function (cmdRun) {
   })
 
   it('unschedules a backup', () => {
-    return cmdRun({app: 'myapp', args: {}, flags: {at: '06:00 EDT'}})
+    return cmdRun({ app: 'myapp', args: {}, flags: { at: '06:00 EDT' } })
       .then(() => expect(cli.stdout, 'to equal', ''))
       .then(() => expect(cli.stderr, 'to equal', 'Unscheduling DATABASE_URL daily backups... done\n'))
   })

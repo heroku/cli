@@ -23,5 +23,5 @@ let cmd = {
   run: cli.command(co.wrap(run))
 }
 
-let root = Object.assign({}, cmd, {topic: 'leave', command: null})
+let root = Object.assign({}, cmd, { topic: 'leave', command: null })
 module.exports = [cmd, root]

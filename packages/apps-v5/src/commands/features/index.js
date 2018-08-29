@@ -3,7 +3,7 @@
 const cli = require('heroku-cli-util')
 
 async function run (context, heroku) {
-  const {sortBy} = require('lodash')
+  const { sortBy } = require('lodash')
 
   let features = await heroku.get(`/apps/${context.app}/features`)
   features = features.filter((f) => f.state === 'general')
@@ -29,7 +29,7 @@ module.exports = {
   needsApp: true,
   needsAuth: true,
   flags: [
-    {name: 'json', description: 'output in json format'}
+    { name: 'json', description: 'output in json format' }
   ],
   run: cli.command(run)
 }

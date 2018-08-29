@@ -18,7 +18,7 @@ describe('pipelines:create', function () {
 
   context('when not specifying ownership', function () {
     beforeEach(function () {
-      pipeline = {name: 'example', id: '0123', owner: { id: '1234-567', type: 'user' }}
+      pipeline = { name: 'example', id: '0123', owner: { id: '1234-567', type: 'user' } }
 
       heroku
         .get('/users/~')
@@ -28,7 +28,7 @@ describe('pipelines:create', function () {
     })
 
     it('displays the pipeline name and app stage', function () {
-      return cmd.run({app: 'example', args: {name: 'example'}, flags: {stage: 'production'}})
+      return cmd.run({ app: 'example', args: { name: 'example' }, flags: { stage: 'production' } })
         .then(function () {
           cli.stderr.should.contain('Creating example pipeline... done')
           cli.stderr.should.contain('Adding example to example pipeline as production... done')
@@ -39,7 +39,7 @@ describe('pipelines:create', function () {
 
   context('when specifying a team as owner', function () {
     beforeEach(function () {
-      pipeline = {name: 'example', id: '0123', owner: { id: '89-0123-456', type: 'team' }}
+      pipeline = { name: 'example', id: '0123', owner: { id: '89-0123-456', type: 'team' } }
 
       heroku
         .get('/teams/my-team')
@@ -49,7 +49,7 @@ describe('pipelines:create', function () {
     })
 
     it('displays the pipeline name and app stage', function () {
-      return cmd.run({app: 'example', args: {name: 'example'}, flags: {stage: 'production', team: 'my-team'}})
+      return cmd.run({ app: 'example', args: { name: 'example' }, flags: { stage: 'production', team: 'my-team' } })
         .then(function () {
           cli.stderr.should.contain('Creating example pipeline... done')
           cli.stderr.should.contain('Adding example to example pipeline as production... done')

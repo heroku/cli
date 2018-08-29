@@ -28,12 +28,12 @@ describe('heroku certs:info ported', function () {
       .reply(200, [])
 
     let mock = nock('https://api.heroku.com', {
-      reqheaders: {'Accept': 'application/vnd.heroku+json; version=3.ssl_cert'}
+      reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3.ssl_cert' }
     })
       .get('/apps/example/ssl-endpoints/tokyo-1050')
       .reply(200, endpoint)
 
-    return certs.run({app: 'example', args: {}, flags: {}}).then(function () {
+    return certs.run({ app: 'example', args: {}, flags: {} }).then(function () {
       mockSsl.done()
       mockSni.done()
       mock.done()
@@ -54,12 +54,12 @@ ${certificateDetails}
       .reply(200, [])
 
     let mock = nock('https://api.heroku.com', {
-      reqheaders: {'Accept': 'application/vnd.heroku+json; version=3.ssl_cert'}
+      reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3.ssl_cert' }
     })
       .get('/apps/example/ssl-endpoints/tokyo-1050')
       .reply(200, endpointUntrusted)
 
-    return certs.run({app: 'example', args: {}, flags: {}}).then(function () {
+    return certs.run({ app: 'example', args: {}, flags: {} }).then(function () {
       mockSsl.done()
       mockSni.done()
       mock.done()
@@ -85,12 +85,12 @@ SSL certificate is not trusted.
       .reply(200, [])
 
     let mock = nock('https://api.heroku.com', {
-      reqheaders: {'Accept': 'application/vnd.heroku+json; version=3.ssl_cert'}
+      reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3.ssl_cert' }
     })
       .get('/apps/example/ssl-endpoints/tokyo-1050')
       .reply(200, endpointTrusted)
 
-    return certs.run({app: 'example', args: {}, flags: {}}).then(function () {
+    return certs.run({ app: 'example', args: {}, flags: {} }).then(function () {
       mockSsl.done()
       mockSni.done()
       mock.done()
@@ -111,7 +111,7 @@ describe('heroku', function () {
   let callback = function (err, path, endpoint, variant) {
     if (err) throw err
     return nock('https://api.heroku.com', {
-      reqheaders: {'Accept': `application/vnd.heroku+json; version=3.${variant}`}
+      reqheaders: { 'Accept': `application/vnd.heroku+json; version=3.${variant}` }
     })
       .get(path)
       .reply(200, endpoint)
@@ -128,9 +128,9 @@ ${certificateDetails}
 `
   }
 
-  shared.shouldHandleArgs('certs:info', 'shows certificate details', certs, callback, {stderr, stdout})
+  shared.shouldHandleArgs('certs:info', 'shows certificate details', certs, callback, { stderr, stdout })
 
-  sharedSni.shouldHandleArgs('certs:info', 'shows certificate details', certs, callback, {stderr, stdout})
+  sharedSni.shouldHandleArgs('certs:info', 'shows certificate details', certs, callback, { stderr, stdout })
 
-  sharedSsl.shouldHandleArgs('certs:info', 'shows certificate details', certs, callback, {stderr, stdout})
+  sharedSsl.shouldHandleArgs('certs:info', 'shows certificate details', certs, callback, { stderr, stdout })
 })

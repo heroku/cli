@@ -9,7 +9,7 @@ function * run (context, heroku) {
   let request = heroku.request({
     method: 'PATCH',
     path: `/spaces/${from}`,
-    body: {name: to}
+    body: { name: to }
   })
   yield cli.action(`Renaming space from ${cli.color.cyan(from)} to ${cli.color.green(to)}`, request)
 }
@@ -26,8 +26,8 @@ module.exports = {
   needsApp: false,
   needsAuth: true,
   flags: [
-    {name: 'from', hasValue: true, required: true, description: 'current name of space'},
-    {name: 'to', hasValue: true, required: true, description: 'desired name of space'}
+    { name: 'from', hasValue: true, required: true, description: 'current name of space' },
+    { name: 'to', hasValue: true, required: true, description: 'desired name of space' }
   ],
   run: cli.command(co.wrap(run))
 }

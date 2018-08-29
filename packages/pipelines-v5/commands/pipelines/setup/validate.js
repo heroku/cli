@@ -6,7 +6,7 @@ const ERR_REPO_FORMAT = 'Repository name must be in the format organization/repo
 
 const REPO_REGEX = /.+\/.+/
 
-function nameAndRepo ({name, repo}) {
+function nameAndRepo ({ name, repo }) {
   const errors = []
   const [nameIsValid, nameMsg] = pipelineName(name || '')
   const [repoIsValid, repoMsg] = repoName(repo || '')

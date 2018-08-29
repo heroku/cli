@@ -13,12 +13,12 @@ function displayVPNConfigInfo (space, name, config) {
 
   cli.table(config.tunnels, {
     columns: [
-      {key: 'tunnel_id', label: 'VPN Tunnel'},
-      {key: 'customer_ip', label: 'Customer Gateway'},
-      {key: 'ip', label: 'VPN Gateway'},
-      {key: 'pre_shared_key', label: 'Pre-shared Key'},
-      {key: 'routable_cidr', label: 'Routable Subnets'},
-      {key: 'ike_version', label: 'IKE Version'}
+      { key: 'tunnel_id', label: 'VPN Tunnel' },
+      { key: 'customer_ip', label: 'Customer Gateway' },
+      { key: 'ip', label: 'VPN Gateway' },
+      { key: 'pre_shared_key', label: 'Pre-shared Key' },
+      { key: 'routable_cidr', label: 'Routable Subnets' },
+      { key: 'ike_version', label: 'IKE Version' }
     ]
   })
 }
@@ -67,11 +67,11 @@ You will use the information provided by this command to establish a Private Spa
   hidden: false,
   needsApp: false,
   needsAuth: true,
-  args: [{name: 'name', optional: true, hidden: true}],
+  args: [{ name: 'name', optional: true, hidden: true }],
   flags: [
-    {name: 'space', char: 's', hasValue: true, description: 'space the VPN connection belongs to'},
-    {name: 'name', char: 'n', hasValue: true, description: 'name or id of the VPN connection to retrieve config from'},
-    {name: 'json', description: 'output in json format'}
+    { name: 'space', char: 's', hasValue: true, description: 'space the VPN connection belongs to' },
+    { name: 'name', char: 'n', hasValue: true, description: 'name or id of the VPN connection to retrieve config from' },
+    { name: 'json', description: 'output in json format' }
   ],
   run: cli.command(co.wrap(run)),
   displayVPNConfigInfo: displayVPNConfigInfo
