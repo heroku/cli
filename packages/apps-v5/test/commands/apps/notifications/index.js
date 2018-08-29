@@ -6,6 +6,7 @@ const nock = require('nock')
 const expect = require('chai').expect
 const cmd = commands.find((c) => c.topic === 'notifications' && !c.command)
 const time = require('../../../../src/time')
+const unwrap = require('../../../unwrap.js')
 
 describe('notifications', () => {
   beforeEach(() => cli.mockConsole())
@@ -20,7 +21,7 @@ describe('notifications', () => {
           .reply(200, [])
         return cmd.run({ app: 'myapp', flags: { read: true } })
           .then(() => expect(cli.stdout).to.equal(''))
-          .then(() => expect(cli.stderr).to.equal(' ▸    You have no notifications on myapp.\n ▸    Run heroku notifications --all to view notifications for all apps.\n'))
+          .then(() => expect(unwrap(cli.stderr)).to.equal('You have no notifications on myapp. Run heroku notifications --all to view notifications for all apps.\n'))
           .then(() => heroku.done())
           .then(() => telex.done())
       })
@@ -33,7 +34,7 @@ describe('notifications', () => {
           .reply(200, [])
         return cmd.run({ app: 'myapp', flags: { read: false } })
           .then(() => expect(cli.stdout).to.equal(''))
-          .then(() => expect(cli.stderr).to.equal(' ▸    No unread notifications on myapp.\n ▸    Run heroku notifications --all to view notifications for all apps.\n'))
+          .then(() => expect(unwrap(cli.stderr)).to.equal('No unread notifications on myapp. Run heroku notifications --all to view notifications for all apps.\n'))
           .then(() => heroku.done())
           .then(() => telex.done())
       })
@@ -46,7 +47,7 @@ describe('notifications', () => {
           .reply(200, [])
         return cmd.run({ flags: { read: true } })
           .then(() => expect(cli.stdout).to.equal(''))
-          .then(() => expect(cli.stderr).to.equal(' ▸    You have no notifications.\n'))
+          .then(() => expect(unwrap(cli.stderr)).to.equal('You have no notifications.\n'))
           .then(() => telex.done())
       })
 
@@ -56,7 +57,7 @@ describe('notifications', () => {
           .reply(200, [])
         return cmd.run({ flags: { read: false } })
           .then(() => expect(cli.stdout).to.equal(''))
-          .then(() => expect(cli.stderr).to.equal(' ▸    No unread notifications.\n ▸    Run heroku notifications --read to view read notifications.\n'))
+          .then(() => expect(unwrap(cli.stderr)).to.equal('No unread notifications. Run heroku notifications --read to view read notifications.\n'))
           .then(() => telex.done())
       })
     })

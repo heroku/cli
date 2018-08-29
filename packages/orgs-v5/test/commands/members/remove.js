@@ -4,6 +4,7 @@
 let cmd = require('../../../commands/members/remove')
 let stubDelete = require('../../stub/delete')
 let stubGet = require('../../stub/get')
+const unwrap = require('../../unwrap')
 
 describe('heroku members:remove', () => {
   beforeEach(() => cli.mockConsole())
@@ -38,10 +39,8 @@ describe('heroku members:remove', () => {
           let apiRemoveMemberFromOrg = stubDelete.memberFromOrg()
           return cmd.run({ org: 'myorg', args: { email: 'foo@foo.com' }, flags: {} })
             .then(() => expect('').to.eq(cli.stdout))
-            .then(() => expect(`Removing foo@foo.com from myorg... done
- ▸    myorg is a Heroku Team
- ▸    Heroku CLI now supports Heroku Teams.
- ▸    Use -t or --team for teams like myorg\n`).to.eq(cli.stderr))
+            .then(() => expect(unwrap(cli.stderr)).to.equal('Removing foo@foo.com from myorg... done ' +
+              'myorg is a Heroku Team Heroku CLI now supports Heroku Teams. Use -t or --team for teams like myorg\n'))
             .then(() => apiRemoveMemberFromOrg.done())
         })
       })

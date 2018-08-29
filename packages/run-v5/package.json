@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@heroku-cli/color": "^1.1.10",
-    "@heroku-cli/command": "^8.1.27",
+    "@heroku-cli/command": "^8.1.28",
     "@heroku-cli/notifications": "^1.2.2",
     "@heroku/eventsource": "^1.0.7",
     "co": "4.6.0",

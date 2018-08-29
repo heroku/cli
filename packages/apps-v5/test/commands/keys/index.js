@@ -5,6 +5,7 @@ const nock = require('nock')
 const cli = require('heroku-cli-util')
 const cmd = commands.find((c) => c.topic === 'keys' && !c.command)
 const expect = require('unexpected')
+const unwrap = require('../../unwrap')
 
 describe('heroku keys', () => {
   beforeEach(() => cli.mockConsole())
@@ -15,7 +16,7 @@ describe('heroku keys', () => {
       .get('/account/keys').reply(200, [])
     return cmd.run({ flags: {} })
       .then(() => expect(cli.stdout, 'to be empty'))
-      .then(() => expect(cli.stderr, 'to equal', ' ▸    You have no SSH keys.\n'))
+      .then(() => expect(unwrap(cli.stderr), 'to equal', 'You have no SSH keys.\n'))
       .then(() => api.done())
   })
 

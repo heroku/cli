@@ -113,7 +113,7 @@
     supports-color "^5.4.0"
     tslib "^1.9.3"
 
-"@heroku-cli/command@8.1.28", "@heroku-cli/command@^8.1.17", "@heroku-cli/command@^8.1.26", "@heroku-cli/command@^8.1.27":
+"@heroku-cli/command@8.1.28", "@heroku-cli/command@^8.1.17", "@heroku-cli/command@^8.1.26", "@heroku-cli/command@^8.1.28":
   version "8.1.28"
   resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.1.28.tgz#e437b42f6c9ce84469f0c291dae7d796ceed725e"
   dependencies:
@@ -1488,6 +1488,10 @@ base@^0.11.1:
     mixin-deep "^1.2.0"
     pascalcase "^0.1.1"
 
+bats@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/bats/-/bats-1.1.0.tgz#6fc44f283ed4e7af2b6ffac93ec5026a1acbdc66"
+
 bcrypt-pbkdf@^1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/bcrypt-pbkdf/-/bcrypt-pbkdf-1.0.2.tgz#a4301d389b6a43f9b67ff3ca11a3f6637e360e9e"
@@ -2113,6 +2117,13 @@ cosmiconfig@^5.0.2:
     js-yaml "^3.9.0"
     parse-json "^4.0.0"
 
+cross-env@^5.2.0:
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/cross-env/-/cross-env-5.2.0.tgz#6ecd4c015d5773e614039ee529076669b9d126f2"
+  dependencies:
+    cross-spawn "^6.0.5"
+    is-windows "^1.0.0"
+
 cross-spawn-async@^2.1.1:
   version "2.2.5"
   resolved "https://registry.yarnpkg.com/cross-spawn-async/-/cross-spawn-async-2.2.5.tgz#845ff0c0834a3ded9d160daca6d390906bb288cc"
@@ -2349,8 +2360,8 @@ depcheck@^0.6.11:
     yargs "^8.0.2"
 
 deprecate@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/deprecate/-/deprecate-1.0.0.tgz#661490ed2428916a6c8883d8834e5646f4e4a4a8"
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/deprecate/-/deprecate-1.1.0.tgz#bbd069d62b232175b4e8459b2650cd2bad51f4b8"
 
 deps-regex@^0.1.4:
   version "0.1.4"
@@ -3930,7 +3941,7 @@ is-utf8@^0.2.0:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/is-utf8/-/is-utf8-0.2.1.tgz#4b0da1442104d1b336340e80797e865cf39f7d72"
 
-is-windows@^1.0.2:
+is-windows@^1.0.0, is-windows@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/is-windows/-/is-windows-1.0.2.tgz#d1850eb9791ecd18e6182ce12a30f396634bb19d"
 
@@ -4195,7 +4206,7 @@ lcid@^1.0.0:
   dependencies:
     invert-kv "^1.0.0"
 
-lerna@^3.2.0:
+lerna@^3.2.1:
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/lerna/-/lerna-3.2.1.tgz#7ec57c1972ec3fb6b0bced3cbbacd4485ebc1c14"
   dependencies:
@@ -5977,6 +5988,10 @@ semver@~5.3.0:
 set-blocking@^2.0.0, set-blocking@~2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/set-blocking/-/set-blocking-2.0.0.tgz#045f9782d011ae9a6803ddd382b24392b3d890f7"
+
+set-tz@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/set-tz/-/set-tz-0.1.0.tgz#9dde06576a09d8c5548820eddb3f6ba636290cf3"
 
 set-value@^0.4.3:
   version "0.4.3"

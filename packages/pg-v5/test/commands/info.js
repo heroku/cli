@@ -5,6 +5,7 @@ const cli = require('heroku-cli-util')
 const expect = require('unexpected')
 const nock = require('nock')
 const proxyquire = require('proxyquire')
+const unwrap = require('../unwrap')
 
 let all = []
 let addon
@@ -152,9 +153,8 @@ Following: ec2-55-111-111-1.compute-1.amazonaws.com:5432/dxxxxxxxxxxxx
 Add-on:    postgres-2
 
 `))
-        .then(() => expect(cli.stderr, 'to equal', ` ▸    postgres-1 is not yet provisioned.
- ▸    Run heroku addons:wait to wait until the db is provisioned.
-`))
+        .then(() => expect(unwrap(cli.stderr), 'to equal', 'postgres-1 is not yet provisioned. ' +
+          'Run heroku addons:wait to wait until the db is provisioned.\n'))
     })
   })
 })

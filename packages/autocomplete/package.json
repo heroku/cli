@@ -4,7 +4,7 @@
   "author": "Philipe Navarro @RasPhilCo",
   "bugs": "https://github.com/heroku/heroku-cli-autocomplete/issues",
   "dependencies": {
-    "@heroku-cli/command": "^8.1.27",
+    "@heroku-cli/command": "^8.1.28",
     "@oclif/command": "1.5.0",
     "@oclif/config": "1.7.2",
     "chalk": "^2.4.1",

@@ -51,7 +51,7 @@
   "scripts": {
     "postpublish": "rm oclif.manifest.json",
     "prepack": "oclif-dev manifest",
-    "test": "TZ=utc nyc mocha",
+    "test": "nyc mocha",
     "version": "oclif-dev readme && git add README.md"
   }
 }

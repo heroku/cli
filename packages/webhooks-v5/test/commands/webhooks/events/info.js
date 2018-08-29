@@ -5,6 +5,7 @@
 let expect = require('chai').expect
 let nock = require('nock')
 let certs = require('../../../../commands/webhooks/events/info')
+const unwrap = require('../../../unwrap')
 
 describe('heroku webhooks:events:info', function () {
   beforeEach(function () {
@@ -29,7 +30,7 @@ describe('heroku webhooks:events:info', function () {
 
     return certs.run(['--app', 'example', '99999999-9999-9999-9999-999999999999']).then(function () {
       mock.done()
-      expect(cli.stderr.replace('\n ▸    ', ' ')).to.equal(' ▸    heroku webhooks:event:info is deprecated, please use heroku webhooks:deliveries:info\n')
+      expect(unwrap(cli.stderr)).to.equal('heroku webhooks:event:info is deprecated, please use heroku webhooks:deliveries:info\n')
       expect(cli.stdout).to.equal(
         `=== 99999999-9999-9999-9999-999999999999
 payload: {
@@ -61,7 +62,7 @@ payload: {
 
     return certs.run(['--pipeline', 'example', '99999999-9999-9999-9999-999999999999']).then(function () {
       mock.done()
-      expect(cli.stderr.replace('\n ▸    ', ' ')).to.equal(' ▸    heroku webhooks:event:info is deprecated, please use heroku webhooks:deliveries:info\n')
+      expect(unwrap(cli.stderr)).to.equal('heroku webhooks:event:info is deprecated, please use heroku webhooks:deliveries:info\n')
       expect(cli.stdout).to.equal(
         `=== 99999999-9999-9999-9999-999999999999
 payload: {

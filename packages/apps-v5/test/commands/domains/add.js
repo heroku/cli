@@ -6,6 +6,7 @@ const nock = require('nock')
 const cmd = require('../../../src/commands/domains/add')
 const expect = require('chai').expect
 const lolex = require('lolex')
+const unwrap = require('../../unwrap')
 
 let clock
 
@@ -27,11 +28,9 @@ describe('domains:add', function () {
       .reply(200, { status: 'none' })
     return cmd.run({ app: 'myapp', args: { hostname: 'foo.com' }, flags: {} })
       .then(() => api.done())
-      .then(() => expect(cli.stderr).to.equal(
-        `Adding foo.com to myapp... done
- ▸    Configure your app's DNS provider to point to the DNS Target undefined.
- ▸    For help, see https://devcenter.heroku.com/articles/custom-domains
-`))
+      .then(() => expect(unwrap(cli.stderr)).to.equal('Adding foo.com to myapp... done ' +
+        'Configure your app\'s DNS provider to point to the DNS Target undefined. ' +
+        'For help, see https://devcenter.heroku.com/articles/custom-domains\n'))
   })
 
   it('shows as json', function () {
@@ -68,14 +67,11 @@ describe('domains:add', function () {
       .reply(200, { status: 'pending' })
     return cmd.run({ app: 'myapp', args: { hostname: 'foo.com' }, flags: {} })
       .then(() => api.done())
-      .then(() => expect(cli.stderr).to.equal(
-        `Adding foo.com to myapp... done
- ▸    Configure your app's DNS provider to point to the DNS Target undefined.
- ▸    For help, see https://devcenter.heroku.com/articles/custom-domains
-
-The domain foo.com has been enqueued for addition
- ▸    Run heroku domains:wait 'foo.com' to wait for completion
-`))
+      .then(() => expect(unwrap(cli.stderr)).to.equal('Adding foo.com to myapp... done ' +
+        'Configure your app\'s DNS provider to point to the DNS Target undefined. ' +
+        'For help, see https://devcenter.heroku.com/articles/custom-domains\n\n' +
+        'The domain foo.com has been enqueued for addition Run heroku domains:wait ' +
+        '\'foo.com\' to wait for completion\n'))
   })
 
   it('adds a wildcard domain with status pending and wait false', function () {
@@ -84,14 +80,11 @@ The domain foo.com has been enqueued for addition
       .reply(200, { status: 'pending' })
     return cmd.run({ app: 'myapp', args: { hostname: '*.foo.com' }, flags: {} })
       .then(() => api.done())
-      .then(() => expect(cli.stderr).to.equal(
-        `Adding *.foo.com to myapp... done
- ▸    Configure your app's DNS provider to point to the DNS Target undefined.
- ▸    For help, see https://devcenter.heroku.com/articles/custom-domains
-
-The domain *.foo.com has been enqueued for addition
- ▸    Run heroku domains:wait '*.foo.com' to wait for completion
-`))
+      .then(() => expect(unwrap(cli.stderr)).to.equal('Adding *.foo.com to myapp... done ' +
+        'Configure your app\'s DNS provider to point to the DNS Target undefined. ' +
+        'For help, see https://devcenter.heroku.com/articles/custom-domains\n\n' +
+        'The domain *.foo.com has been enqueued for addition Run heroku domains:wait ' +
+        '\'*.foo.com\' to wait for completion\n'))
   })
 
   it('adds a domain with the wait message succeeded', function () {
@@ -112,13 +105,10 @@ The domain *.foo.com has been enqueued for addition
       .then(() => status1.done())
       .then(() => status2.done())
       .then(() => expect(cli.stdout).to.equal(''))
-      .then(() => expect(cli.stderr).to.equal(
-        `Adding foo.com to myapp... done
- ▸    Configure your app's DNS provider to point to the DNS Target undefined.
- ▸    For help, see https://devcenter.heroku.com/articles/custom-domains
-
-Waiting for foo.com... done
-`))
+      .then(() => expect(unwrap(cli.stderr)).to.equal('Adding foo.com to myapp... done ' +
+        'Configure your app\'s DNS provider to point to the DNS Target undefined. ' +
+        'For help, see https://devcenter.heroku.com/articles/custom-domains\n\n' +
+        'Waiting for foo.com... done\n'))
   })
 
   it('adds a domain with the wait message failed', function () {
@@ -146,13 +136,10 @@ Waiting for foo.com... done
       .then(() => status1.done())
       .then(() => status2.done())
       .then(() => expect(cli.stdout).to.equal(''))
-      .then(() => expect(cli.stderr).to.equal(
-        `Adding foo.com to myapp... done
- ▸    Configure your app's DNS provider to point to the DNS Target undefined.
- ▸    For help, see https://devcenter.heroku.com/articles/custom-domains
-
-Waiting for foo.com... !
-`))
+      .then(() => expect(unwrap(cli.stderr)).to.equal('Adding foo.com to myapp... done ' +
+        'Configure your app\'s DNS provider to point to the DNS Target undefined. ' +
+        'For help, see https://devcenter.heroku.com/articles/custom-domains\n\n' +
+        'Waiting for foo.com... !\n'))
   })
 
   it('adds a domain with the wait message failed immediately', function () {
@@ -170,12 +157,9 @@ Waiting for foo.com... !
       .then(() => expect(thrown).to.equal(true))
       .then(() => api.done())
       .then(() => expect(cli.stdout).to.equal(''))
-      .then(() => expect(cli.stderr).to.equal(
-        `Adding foo.com to myapp... done
- ▸    Configure your app's DNS provider to point to the DNS Target undefined.
- ▸    For help, see https://devcenter.heroku.com/articles/custom-domains
-
-Waiting for foo.com... !
-`))
+      .then(() => expect(unwrap(cli.stderr)).to.equal('Adding foo.com to myapp... done ' +
+        'Configure your app\'s DNS provider to point to the DNS Target undefined. ' +
+        'For help, see https://devcenter.heroku.com/articles/custom-domains\n\n' +
+        'Waiting for foo.com... !\n'))
   })
 })

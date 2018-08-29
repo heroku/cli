@@ -29,6 +29,7 @@
   "devDependencies": {
     "@oclif/dev-cli": "^1.17.0",
     "@oclif/plugin-legacy": "^1.1.0",
+    "cross-env": "^5.2.0",
     "mocha": "^5.2.0",
     "mocha-junit-reporter": "1.18.0",
     "nock": "9.3.3",
@@ -52,7 +53,7 @@
   "scripts": {
     "postpublish": "rm oclif.manifest.json",
     "prepack": "oclif-dev manifest",
-    "test": "TZ=UTC nyc mocha",
+    "test": "cross-env TZ=UTC nyc mocha",
     "version": "oclif-dev readme && git add README.md"
   }
 }

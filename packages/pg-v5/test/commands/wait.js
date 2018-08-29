@@ -5,6 +5,7 @@ const cli = require('heroku-cli-util')
 const expect = require('unexpected')
 const nock = require('nock')
 const proxyquire = require('proxyquire')
+const unwrap = require('../unwrap')
 
 const all = [
   { id: 1, name: 'postgres-1', plan: { name: 'heroku-postgresql:hobby-dev' } },
@@ -65,7 +66,7 @@ Waiting for database postgres-1... available
       .catch(err => {
         if (err.code !== 1) throw err
         expect(cli.stdout, 'to equal', '')
-        expect(cli.stderr, 'to equal', ' ▸    this is an error message\n')
+        expect(unwrap(cli.stderr), 'to equal', 'this is an error message\n')
       })
   })
 })

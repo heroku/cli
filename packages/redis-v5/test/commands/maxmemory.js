@@ -6,6 +6,7 @@ let nock = require('nock')
 let exit = require('heroku-cli-util').exit
 
 let command = require('../../commands/maxmemory')
+const unwrap = require('../unwrap')
 
 describe('heroku redis:maxmemory', function () {
   require('../lib/shared').shouldHandleArgs(command, { policy: 'noeviction' })
@@ -43,6 +44,6 @@ noeviction return errors when memory limit is reached.
   it('# errors on missing eviction policy', function () {
     return expect(command.run({ app: 'example', flags: {}, args: {} })).to.be.rejectedWith(exit.ErrorExit)
       .then(() => expect(cli.stdout).to.equal(''))
-      .then(() => expect(cli.stderr).to.equal(' ▸    Please specify a valid maxmemory eviction policy.\n'))
+      .then(() => expect(unwrap(cli.stderr)).to.equal('Please specify a valid maxmemory eviction policy.\n'))
   })
 })

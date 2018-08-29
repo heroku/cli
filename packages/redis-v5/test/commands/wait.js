@@ -6,6 +6,7 @@ let lolex = require('lolex')
 let expect = require('chai').expect
 
 let command = require('../../commands/wait')
+const unwrap = require('../unwrap')
 
 let clock
 
@@ -91,7 +92,7 @@ describe('heroku redis:timeout waiting? error', function () {
     clock.uninstall()
     expect(Object.keys(clock.timers).length).to.equal(0)
     expect(cli.stdout).to.equal('')
-    expect(cli.stderr).to.equal(' ▸    Error\n')
+    expect(unwrap(cli.stderr)).to.equal('Error\n')
   })
 
   it('# waits until error', function () {

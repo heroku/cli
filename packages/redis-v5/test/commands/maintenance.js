@@ -6,6 +6,7 @@ let nock = require('nock')
 let exit = require('heroku-cli-util').exit
 
 let command = require('../../commands/maintenance')
+const unwrap = require('../unwrap')
 
 describe('heroku redis:maintenance', function () {
   require('../lib/shared').shouldHandleArgs(command)
@@ -85,7 +86,7 @@ describe('heroku redis:maintenance', function () {
       .then(() => app.done())
       .then(() => appInfo.done())
       .then(() => expect(cli.stdout).to.equal(''))
-      .then(() => expect(cli.stderr).to.equal(' ▸    Application must be in maintenance mode or --force flag must be used\n'))
+      .then(() => expect(unwrap(cli.stderr)).to.equal('Application must be in maintenance mode or --force flag must be used\n'))
   })
 
   it('# errors out on hobby dynos', function () {
@@ -95,7 +96,7 @@ describe('heroku redis:maintenance', function () {
       ])
 
     return expect(command.run({ app: 'example', args: {}, auth: { username: 'foobar', password: 'password' } })).to.be.rejected
-      .then(() => expect(cli.stderr).to.equal(' ▸    redis:maintenance is not available for hobby-dev instances\n'))
+      .then(() => expect(unwrap(cli.stderr)).to.equal('redis:maintenance is not available for hobby-dev instances\n'))
       .then(() => app.done())
   })
 
@@ -108,6 +109,6 @@ describe('heroku redis:maintenance', function () {
     return expect(command.run({ app: 'example', args: {}, flags: { window: 'Mon 10:45' }, auth: { username: 'foobar', password: 'password' } })).to.be.rejected
       .then(() => app.done())
       .then(() => expect(cli.stdout).to.equal(''))
-      .then(() => expect(cli.stderr).to.equal(' ▸    Maintenance windows must be "Day HH:MM", where MM is 00 or 30.\n'))
+      .then(() => expect(unwrap(cli.stderr)).to.equal('Maintenance windows must be "Day HH:MM", where MM is 00 or 30.\n'))
   })
 })

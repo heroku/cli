@@ -56,7 +56,7 @@ describe('heroku buildpacks:remove', function () {
         expect(cli.stdout).to.equal(
           `Buildpack removed.
 `)
-        expect(unwrap(cli.stderr)).to.equal(' ▸    The LANGUAGE_PACK_URL config var is still set and will be used for the next release\n')
+        expect(unwrap(cli.stderr)).to.equal('The LANGUAGE_PACK_URL config var is still set and will be used for the next release\n')
       })
     })
 
@@ -77,7 +77,7 @@ describe('heroku buildpacks:remove', function () {
         expect(cli.stdout).to.equal(
           `Buildpack removed.
 `)
-        expect(unwrap(cli.stderr)).to.equal(' ▸    The BUILDPACK_URL config var is still set and will be used for the next release\n')
+        expect(unwrap(cli.stderr)).to.equal('The BUILDPACK_URL config var is still set and will be used for the next release\n')
       })
     })
 
@@ -147,7 +147,7 @@ Run git push heroku master to create a new release using these buildpacks.
       return assertExit(1, buildpacks.run({
         app: 'example', flags: { index: 'notaninteger' }
       })).then(function () {
-        expect(cli.stderr).to.equal(' ▸    Invalid index. Must be greater than 0.\n')
+        expect(unwrap(cli.stderr)).to.equal('Invalid index. Must be greater than 0.\n')
       })
     })
 
@@ -157,7 +157,7 @@ Run git push heroku master to create a new release using these buildpacks.
       return assertExit(1, buildpacks.run({
         app: 'example', flags: { index: '1' }
       })).then(function () {
-        expect(unwrap(cli.stderr)).to.equal(' ▸    No buildpacks were found. Next release on example will detect buildpack normally.\n')
+        expect(unwrap(cli.stderr)).to.equal('No buildpacks were found. Next release on example will detect buildpack normally.\n')
       })
     })
 
@@ -167,7 +167,7 @@ Run git push heroku master to create a new release using these buildpacks.
       return assertExit(1, buildpacks.run({
         app: 'example', flags: { index: '2' }
       })).then(function () {
-        expect(cli.stderr).to.equal(' ▸    Invalid index. Only valid value is 1.\n')
+        expect(unwrap(cli.stderr)).to.equal('Invalid index. Only valid value is 1.\n')
       })
     })
 
@@ -180,7 +180,7 @@ Run git push heroku master to create a new release using these buildpacks.
       return assertExit(1, buildpacks.run({
         app: 'example', flags: { index: '3' }
       })).then(function () {
-        expect(cli.stderr).to.equal(' ▸    Invalid index. Please choose a value between 1 and 2\n')
+        expect(unwrap(cli.stderr)).to.equal('Invalid index. Please choose a value between 1 and 2\n')
       })
     })
   })
@@ -255,7 +255,7 @@ Run git push heroku master to create a new release using this buildpack.
       return assertExit(1, buildpacks.run({
         app: 'example', args: { url: 'http://github.com/bar/bar' }
       })).then(function () {
-        expect(unwrap(cli.stderr)).to.equal(' ▸    No buildpacks were found. Next release on example will detect buildpack normally.\n')
+        expect(unwrap(cli.stderr)).to.equal('No buildpacks were found. Next release on example will detect buildpack normally.\n')
       })
     })
 
@@ -265,7 +265,7 @@ Run git push heroku master to create a new release using this buildpack.
       return assertExit(1, buildpacks.run({
         app: 'example', args: { url: 'http://github.com/bar/bar' }
       })).then(function () {
-        expect(cli.stderr).to.equal(' ▸    Buildpack not found. Nothing was removed.\n')
+        expect(unwrap(cli.stderr)).to.equal('Buildpack not found. Nothing was removed.\n')
       })
     })
 
@@ -299,7 +299,7 @@ Run git push heroku master to create a new release using these buildpacks.
       return assertExit(1, buildpacks.run({
         app: 'example', flags: { index: '1' }, args: { url: 'http://github.com/foo/foo' }
       })).then(function () {
-        expect(unwrap(cli.stderr)).to.equal(' ▸    Please choose either index or Buildpack URL, but not both.\n')
+        expect(unwrap(cli.stderr)).to.equal('Please choose either index or Buildpack URL, but not both.\n')
       })
     })
   })
@@ -308,9 +308,7 @@ Run git push heroku master to create a new release using these buildpacks.
     return assertExit(1, buildpacks.run({
       app: 'example'
     })).then(function () {
-      expect(unwrap(cli.stderr)).to.equal(
-        ` ▸    Usage: heroku buildpacks:remove [BUILDPACK_URL]. Must specify a buildpack to remove, either by index or URL.
-`)
+      expect(unwrap(cli.stderr)).to.equal('Usage: heroku buildpacks:remove [BUILDPACK_URL]. Must specify a buildpack to remove, either by index or URL.\n')
     })
   })
 })

@@ -25,7 +25,7 @@ describe('heroku buildpacks:clear', function () {
       app: 'example'
     }).then(function () {
       mock.done()
-      expect(cli.stdout).to.equal('Buildpacks cleared. Next release on example will detect buildpack normally.\n')
+      expect(unwrap(cli.stdout)).to.equal('Buildpacks cleared. Next release on example will detect buildpack normally.\n')
     })
   })
 
@@ -41,7 +41,7 @@ describe('heroku buildpacks:clear', function () {
     }).then(function () {
       mock.done()
       expect(cli.stdout).to.equal('Buildpacks cleared.\n')
-      expect(unwrap(cli.stderr)).to.equal(' ▸    The BUILDPACK_URL config var is still set and will be used for the next release\n')
+      expect(unwrap(cli.stderr)).to.equal('The BUILDPACK_URL config var is still set and will be used for the next release\n')
     })
   })
 
@@ -57,7 +57,7 @@ describe('heroku buildpacks:clear', function () {
     }).then(function () {
       mock.done()
       expect(cli.stdout).to.equal('Buildpacks cleared.\n')
-      expect(unwrap(cli.stderr)).to.equal(' ▸    The LANGUAGE_PACK_URL config var is still set and will be used for the next release\n')
+      expect(unwrap(cli.stderr)).to.equal('The LANGUAGE_PACK_URL config var is still set and will be used for the next release\n')
     })
   })
 })

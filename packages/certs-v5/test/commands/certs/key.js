@@ -9,6 +9,7 @@ var sinon = require('sinon')
 let certs = require('../../../commands/certs/key.js')
 let assertExit = require('../../assert_exit.js')
 let error = require('../../../lib/error.js')
+const unwrap = require('../../unwrap')
 
 describe('heroku certs:key', function () {
   beforeEach(function () {
@@ -27,10 +28,8 @@ describe('heroku certs:key', function () {
 
   it('# validates that at least one argument is passed', function () {
     return assertExit(1, certs.run({ app: 'example', args: ['foo'] })).then(function () {
-      expect(cli.stderr).to.equal(
-        ` ▸    Usage: heroku certs:key CRT KEY [KEY ...]
- ▸    Must specify one certificate file and at least one key file.
-`)
+      expect(unwrap(cli.stderr)).to.equal(
+        'Usage: heroku certs:key CRT KEY [KEY ...] Must specify one certificate file and at least one key file.\n')
       expect(cli.stdout).to.equal('')
     })
   })

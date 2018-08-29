@@ -5,6 +5,7 @@ const cli = require('heroku-cli-util')
 const nock = require('nock')
 const cmd = commands.find((c) => c.topic === 'config' && c.command === 'set')
 const expect = require('unexpected')
+const unwrap = require('../../unwrap')
 let config
 
 const assertExit = require('../../assert_exit.js')
@@ -44,9 +45,7 @@ describe('config:set', () => {
   it('errors out on empty', () => {
     return assertExit(1, cmd.run({ config, app: 'myapp', args: [] }))
       .then(() => expect(cli.stdout, 'to equal', ''))
-      .then(() => expect(cli.stderr, 'to equal',
-        ` ▸    Usage: heroku config:set KEY1=VALUE1 [KEY2=VALUE2 ...]
- ▸    Must specify KEY and VALUE to set.
-`))
+      .then(() => expect(unwrap(cli.stderr), 'to equal',
+        'Usage: heroku config:set KEY1=VALUE1 [KEY2=VALUE2 ...] Must specify KEY and VALUE to set.\n'))
   })
 })

@@ -10,6 +10,7 @@ let endpoint2 = require('../../stubs/sni-endpoints.js').endpoint2
 let endpointCname = require('../../stubs/sni-endpoints.js').endpoint_cname
 let assertExit = require('../../assert_exit.js')
 let certificateDetails = require('../../stubs/sni-endpoints.js').certificate_details
+const unwrap = require('../../unwrap')
 
 exports.shouldHandleArgs = function (command, txt, certs, callback, options) {
   let args = options.args || {}
@@ -76,7 +77,7 @@ exports.shouldHandleArgs = function (command, txt, certs, callback, options) {
       return assertExit(1, certs.run({ app: 'example', args: args, flags: { bypass: true, endpoint: 'tokyo-1050.herokussl.com', confirm: 'example' } })).then(function () {
         mockSsl.done()
         mockSni.done()
-        expect(cli.stderr).to.equal(' ▸    Must pass --name when more than one endpoint matches --endpoint\n')
+        expect(unwrap(cli.stderr)).to.equal('Must pass --name when more than one endpoint matches --endpoint\n')
         expect(cli.stdout).to.equal('')
       })
     })
@@ -113,7 +114,7 @@ exports.shouldHandleArgs = function (command, txt, certs, callback, options) {
       return assertExit(1, certs.run({ app: 'example', args: args, flags: Object.assign({}, flags, { endpoint: 'tokyo-1050.herokussl.com' }) })).then(function () {
         mockSsl.done()
         mockSni.done()
-        expect(cli.stderr).to.equal(' ▸    Record not found.\n')
+        expect(unwrap(cli.stderr)).to.equal('Record not found.\n')
         expect(cli.stdout).to.equal('')
       })
     })
@@ -130,7 +131,7 @@ exports.shouldHandleArgs = function (command, txt, certs, callback, options) {
       return assertExit(1, certs.run({ app: 'example', args: args, flags: { bypass: true, name: 'tokyo-1050', confirm: 'example' } })).then(function () {
         mockSsl.done()
         mockSni.done()
-        expect(cli.stderr).to.equal(' ▸    More than one endpoint matches tokyo-1050, please file a support ticket\n')
+        expect(unwrap(cli.stderr)).to.equal('More than one endpoint matches tokyo-1050, please file a support ticket\n')
         expect(cli.stdout).to.equal('')
       })
     })
