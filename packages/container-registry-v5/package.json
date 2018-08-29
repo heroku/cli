@@ -15,7 +15,7 @@
   "dependencies": {
     "glob": "^7.1.3",
     "heroku-cli-util": "^8.0.10",
-    "http-call": "^5.2.1",
+    "http-call": "^5.2.2",
     "inquirer": "^6.2.0"
   },
   "devDependencies": {

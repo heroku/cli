@@ -3617,9 +3617,9 @@ http-cache-semantics@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/http-cache-semantics/-/http-cache-semantics-4.0.0.tgz#2d0069a73c36c80e3297bc3a0cadd669b78a69ce"
 
-http-call@5.2.1, http-call@^5.1.2, http-call@^5.2.0, http-call@^5.2.1:
-  version "5.2.1"
-  resolved "https://registry.yarnpkg.com/http-call/-/http-call-5.2.1.tgz#4349beed8258617f5217516711bb7217d68acef5"
+http-call@5.2.2, http-call@^5.1.2, http-call@^5.2.0, http-call@^5.2.1, http-call@^5.2.2:
+  version "5.2.2"
+  resolved "https://registry.yarnpkg.com/http-call/-/http-call-5.2.2.tgz#d8eb37eef701e566d44373ef19b22444ebb7c02e"
   dependencies:
     content-type "^1.0.4"
     debug "^3.1.0"

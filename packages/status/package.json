@@ -24,7 +24,7 @@
     "@oclif/errors": "^1.2.0",
     "cli-ux": "^4.8.1",
     "date-fns": "^1.29.0",
-    "http-call": "^5.2.1"
+    "http-call": "^5.2.2"
   },
   "devDependencies": {
     "@fancy-test/nock": "^0.1.1",

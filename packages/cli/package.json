@@ -48,7 +48,7 @@
     "debug": "3.1.0",
     "execa": "1.0.0",
     "fs-extra": "7.0.0",
-    "http-call": "5.2.1",
+    "http-call": "5.2.2",
     "netrc-parser": "3.1.6",
     "semver": "5.5.1",
     "tslib": "1.9.3",
