@@ -1,6 +1,5 @@
 import Command, {flags} from '@heroku-cli/command'
 import * as fs from 'fs-extra'
-import * as moment from 'moment'
 import * as path from 'path'
 
 import {CompletionAliases, CompletionBlacklist, CompletionMapping, CompletionVariableArgsLookup} from './completions'
@@ -35,7 +34,8 @@ export abstract class AutocompleteBase extends Command {
   }
 
   writeLogFile(msg: string) {
-    let entry = `[${moment().format()}] ${msg}\n`
+    const now = new Date()
+    let entry = `[${now}] ${msg}\n`
     let fd = fs.openSync(this.acLogfilePath, 'a')
     // @ts-ignore
     fs.write(fd, entry)

@@ -1,5 +1,4 @@
 import * as fs from 'fs-extra'
-import * as moment from 'moment'
 
 export async function updateCache(cachePath: string, cache: any) {
   await fs.ensureFile(cachePath)
@@ -7,11 +6,13 @@ export async function updateCache(cachePath: string, cache: any) {
 }
 
 function _isStale(cachePath: string, cacheDuration: number): boolean {
-  return _mtime(cachePath).isBefore(moment().subtract(cacheDuration, 'seconds'))
+  const past = new Date()
+  past.setSeconds(past.getSeconds() - cacheDuration)
+  return past.getTime() > _mtime(cachePath).getTime()
 }
 
-function _mtime(f: any) {
-  return moment(fs.statSync(f).mtime)
+function _mtime(f: any): Date {
+  return fs.statSync(f).mtime
 }
 
 export async function fetchCache(cachePath: string, cacheDuration: number, options: any): Promise<Array<string>> {
