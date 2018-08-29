@@ -126,11 +126,12 @@ production-app-1   production`)
     function itShowsMixedOwnershipWarning (owner) {
       it('displays mixed ownership warning', function () {
         return cmd.run({ args: { pipeline: 'example' }, flags: {} }).then(() => {
-          const warningMessage = `Some apps in this pipeline do not belong to ${owner}.  ` +
-                'All apps in a pipeline must have the same owner as the pipeline owner. ' +
-                'Transfer these apps or change the pipeline owner in pipeline settings. ' +
-                'See https://devcenter.heroku.com/articles/pipeline-ownership-transition ' +
-                'for more info.\n'
+          const warningMessage = `Some apps in this pipeline do not belong to ${owner}.  \
+All apps in a pipeline must have the same owner as the pipeline owner. \
+Transfer these apps or change the pipeline owner in pipeline settings. \
+See https://devcenter.heroku.com/articles/pipeline-ownership-transition \
+for more info.
+`
           unwrap(cli.stderr).should.contain(warningMessage)
         }).then(() => api.done())
       })
