@@ -39,8 +39,9 @@ describe('heroku members:remove', () => {
           let apiRemoveMemberFromOrg = stubDelete.memberFromOrg()
           return cmd.run({ org: 'myorg', args: { email: 'foo@foo.com' }, flags: {} })
             .then(() => expect('').to.eq(cli.stdout))
-            .then(() => expect(unwrap(cli.stderr)).to.equal('Removing foo@foo.com from myorg... done ' +
-              'myorg is a Heroku Team Heroku CLI now supports Heroku Teams. Use -t or --team for teams like myorg\n'))
+            .then(() => expect(unwrap(cli.stderr)).to.equal(`Removing foo@foo.com from myorg... done \
+myorg is a Heroku Team Heroku CLI now supports Heroku Teams. Use -t or --team for teams like myorg
+`))
             .then(() => apiRemoveMemberFromOrg.done())
         })
       })

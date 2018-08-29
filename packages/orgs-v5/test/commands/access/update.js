@@ -45,8 +45,9 @@ describe('heroku access:update', () => {
 
       return cmd.run({ app: 'myapp', args: { email: 'raulb@heroku.com' }, flags: { privileges: 'deploy' } })
         .then(() => expect('').to.eq(cli.stdout))
-        .then(() => expect(unwrap(cli.stderr)).to.equal('DEPRECATION WARNING: use `--permissions` not `--privileges`\n' +
-          'Updating raulb@heroku.com in application myapp with deploy,view permissions... done\n'))
+        .then(() => expect(unwrap(cli.stderr)).to.equal(`DEPRECATION WARNING: use \`--permissions\` not \`--privileges\`
+Updating raulb@heroku.com in application myapp with deploy,view permissions... done
+`))
         .then(() => apiGetApp.done())
         .then(() => apiPatchAppCollaborators.done())
     })

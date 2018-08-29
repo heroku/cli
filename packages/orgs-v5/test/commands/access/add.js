@@ -58,8 +58,9 @@ describe('heroku access:add', () => {
     it('supports --privileges, but shows deprecation warning', () => {
       return cmd.run({ app: 'myapp', args: { email: 'raulb@heroku.com' }, flags: { privileges: 'deploy,view' } })
         .then(() => expect('').to.eq(cli.stdout))
-        .then(() => expect(unwrap(cli.stderr)).to.equal('DEPRECATION WARNING: use `--permissions` not `--privileges`\n' +
-          'Adding raulb@heroku.com access to the app myapp with deploy,view permissions... done\n'))
+        .then(() => expect(unwrap(cli.stderr)).to.equal(`DEPRECATION WARNING: use \`--permissions\` not \`--privileges\`
+Adding raulb@heroku.com access to the app myapp with deploy,view permissions... done
+`))
     })
   })
 
