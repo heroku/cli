@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="7.12.6"></a>
+## [7.12.6](https://github.com/heroku/cli/compare/v7.12.5...v7.12.6) (2018-08-30)
+
+
+### Bug Fixes
+
+* windows test failures ([5b4d171](https://github.com/heroku/cli/commit/5b4d171))
+
+
+
+
+
 <a name="7.12.4"></a>
 ## [7.12.4](https://github.com/heroku/cli/compare/v7.12.3...v7.12.4) (2018-08-29)
 
