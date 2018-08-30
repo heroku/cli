@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+type -t uname && bats test

@@ -39,7 +39,7 @@
   "scripts": {
     "postpublish": "rm oclif.manifest.json",
     "prepack": "oclif-dev manifest",
-    "test": "bats test",
+    "test": "./bin/test_runner",
     "version": "oclif-dev readme && git add README.md"
   }
 }

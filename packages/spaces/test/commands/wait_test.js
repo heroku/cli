@@ -1,6 +1,7 @@
 'use strict'
 /* globals describe beforeEach it */
 
+let sinon = require('sinon')
 let nock = require('nock')
 let cmd = require('../../commands/wait')
 let expect = require('chai').expect
@@ -12,6 +13,9 @@ describe('spaces:wait', function () {
   beforeEach(() => cli.mockConsole())
 
   it('waits for space to allocate and then shows space info', function () {
+    const sandbox = sinon.createSandbox()
+    const notifySpy = sandbox.spy(require('@heroku-cli/notifications'), 'notify')
+
     let api = nock('https://api.heroku.com:443', { reqheaders: { 'Accept-Expansion': 'region' } })
       .get('/spaces/my-space')
       .reply(200,
@@ -39,6 +43,9 @@ Created at:   ${now.toISOString()}
 `))
       .then(() => outbound.done())
       .then(() => api.done())
+      .then(() => expect(notifySpy.called).to.be.true)
+      .then(() => expect(notifySpy.calledOnce).to.be.true)
+      .then(() => sandbox.restore())
   })
 
   it('waits for space with --json', function () {
