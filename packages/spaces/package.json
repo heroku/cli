@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@heroku-cli/command": "^8.1.28",
+    "@heroku-cli/notifications": "^1.2.2",
     "co": "4.6.0",
     "heroku-cli-util": "^8.0.10",
     "lodash": "^4.17.10",
