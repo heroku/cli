@@ -815,17 +815,17 @@
     fast-levenshtein "^2.0.6"
     lodash "^4.17.10"
 
-"@oclif/plugin-plugins@1.6.1":
-  version "1.6.1"
-  resolved "https://registry.yarnpkg.com/@oclif/plugin-plugins/-/plugin-plugins-1.6.1.tgz#2454fbbe9edc2502c9c6882744cb87aae62d6d47"
+"@oclif/plugin-plugins@1.6.2":
+  version "1.6.2"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-plugins/-/plugin-plugins-1.6.2.tgz#0733dca5bcf817f520867a9d077cc66f6add38d7"
   dependencies:
     "@oclif/color" "^0.0.0"
     "@oclif/command" "^1.5.0"
     chalk "^2.4.1"
-    cli-ux "^4.8.0"
+    cli-ux "^4.8.1"
     debug "^3.1.0"
     fs-extra "^7.0.0"
-    http-call "^5.2.0"
+    http-call "^5.2.2"
     load-json-file "^5.0.0"
     npm-run-path "^2.0.2"
     semver "^5.5.1"
@@ -1392,9 +1392,9 @@ atob@^2.1.1:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.2.tgz#6d9517eb9e030d2436666651e86bd9f6f13533c9"
 
-aws-sdk@^2.305.0:
-  version "2.305.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.305.0.tgz#90236eca599adac65001264b1f651a48ffbf8cc5"
+aws-sdk@^2.306.0:
+  version "2.306.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.306.0.tgz#104f69b6d2291ba94cb401105514c242be51aac4"
   dependencies:
     buffer "4.9.1"
     events "1.1.1"
