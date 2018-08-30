@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@heroku-cli/command": "^8.1.28",
+    "@heroku-cli/notifications": "^1.2.2",
     "co": "4.6.0",
     "heroku-cli-util": "^8.0.10",
     "lodash": "^4.17.10",
@@ -30,7 +31,8 @@
     "chai-as-promised": "^7.1.1",
     "mocha": "^5.2.0",
     "nock": "^9.2.5",
-    "nyc": "^13.0.1"
+    "nyc": "^13.0.1",
+    "sinon": "^6.1.5"
   },
   "files": [
     "oclif.manifest.json",

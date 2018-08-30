@@ -34,6 +34,21 @@ function * run (context, heroku) {
   spinner.stop('done\n')
 
   info.render(space, context.flags)
+  _notify(context.flags['space'] || context.args['space'])
+}
+
+function _notify (spaceName) {
+  try {
+    const { notify } = require('@heroku-cli/notifications')
+    notify({
+      title: `${spaceName}`,
+      subtitle: `heroku spaces:wait ${spaceName}`,
+      message: 'space was successfully created',
+      sound: true
+    })
+  } catch (err) {
+    cli.warn(err)
+  }
 }
 
 module.exports = {
