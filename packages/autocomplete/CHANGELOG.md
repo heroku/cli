@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="7.14.2"></a>
+## [7.14.2](https://github.com/heroku/cli/compare/v7.14.1...v7.14.2) (2018-08-30)
+
+
+### Bug Fixes
+
+* docs urls ([1ec13c2](https://github.com/heroku/cli/commit/1ec13c2))
+
+
+
+
+
 <a name="7.14.1"></a>
 ## [7.14.1](https://github.com/heroku/heroku-cli-autocomplete/compare/v7.14.0...v7.14.1) (2018-08-30)
 
