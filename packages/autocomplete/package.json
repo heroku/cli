@@ -2,7 +2,7 @@
   "name": "@heroku-cli/plugin-autocomplete",
   "version": "7.14.1",
   "author": "Philipe Navarro @RasPhilCo",
-  "bugs": "https://github.com/heroku/heroku-cli-autocomplete/issues",
+  "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
     "@heroku-cli/command": "^8.1.28",
     "@oclif/command": "1.5.0",
@@ -61,7 +61,7 @@
     ],
     "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/autocomplete/<%- commandPath %>"
   },
-  "repository": "heroku/heroku-cli-autocomplete",
+  "repository": "heroku/cli",
   "scripts": {
     "postpublish": "rm -f oclif.manifest.json",
     "posttest": "tsc -p test --noEmit && tslint -p test -t stylish",
