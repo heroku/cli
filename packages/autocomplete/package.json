@@ -58,7 +58,8 @@
     },
     "devPlugins": [
       "@oclif/plugin-help"
-    ]
+    ],
+    "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/autocomplete/<%- commandPath %>"
   },
   "repository": "heroku/heroku-cli-autocomplete",
   "scripts": {

@@ -59,7 +59,8 @@
     "bin": "heroku",
     "devPlugins": [
       "@oclif/plugin-help"
-    ]
+    ],
+    "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/buildpacks/<%- commandPath %>"
   },
   "repository": "heroku/cli",
   "scripts": {
