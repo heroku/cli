@@ -11,7 +11,9 @@ function * run (context, heroku) {
 }
 module.exports = {
   topic: 'teams',
-  description: 'list the teams that you are a member of',
+  description: `list the teams that you are a member of
+
+Use ${cli.color.cmd('heroku members:*')} to manage team members.`,
   needsAuth: true,
   flags: [
     { name: 'json', description: 'output in json format' }
