@@ -42,7 +42,7 @@ function _notify (spaceName) {
     const { notify } = require('@heroku-cli/notifications')
     notify({
       title: `${spaceName}`,
-      subtitle: `heroku spaces:await ${spaceName}`,
+      subtitle: `heroku spaces:wait ${spaceName}`,
       message: 'space was successfully created',
       sound: true
     })
