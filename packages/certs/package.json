@@ -16,14 +16,14 @@
     "@oclif/tslint": "^2.0.0",
     "@types/chai": "^4",
     "@types/mocha": "^5.2.5",
-    "@types/node": "^10.9.3",
+    "@types/node": "^10.9.4",
     "chai": "^4",
     "globby": "^8",
     "mocha": "^5",
     "nyc": "^13.0.1",
     "ts-node": "^7.0.1",
     "tslint": "^5.11.0",
-    "typescript": "^3.0.1"
+    "typescript": "^3.0.3"
   },
   "engines": {
     "node": ">=8.0.0"
