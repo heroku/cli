@@ -2,13 +2,13 @@ import Nock from '@fancy-test/nock'
 import {expect, test as otest} from '@oclif/test'
 import {Fixture} from 'buildpack-registry'
 import * as nock from 'nock'
-import {unwrap} from '../../unwrap'
 // tslint:disable-next-line:no-duplicate-imports
 import {Scope} from 'nock'
 nock.disableNetConnect()
 const test = otest.register('nock', Nock)
 
 import {BuildpackInstallationsStub as Stubber} from '../../helpers/buildpack-installations-stub'
+import {unwrap} from '../../unwrap'
 
 describe('buildpacks:remove', () => {
   describe('-i INDEX', () => {
