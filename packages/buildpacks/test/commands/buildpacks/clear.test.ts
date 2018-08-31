@@ -7,6 +7,7 @@ nock.disableNetConnect()
 const test = otest.register('nock', Nock)
 
 import {BuildpackInstallationsStub as Stubber} from '../../helpers/buildpack-installations-stub'
+import {unwrap} from '../../unwrap'
 
 describe('buildpacks:clear', () => {
   test
@@ -36,7 +37,7 @@ describe('buildpacks:clear', () => {
     .command(['buildpacks:clear', '-a', 'example'])
     .it('# clears and warns about buildpack URL config var', ctx => {
       expect(ctx.stdout).to.equal('Buildpacks cleared.\n')
-      expect(ctx.stderr).to.equal(' ›   Warning: The BUILDPACK_URL config var is still set and will be used for \n ›   the next release\n')
+      expect(unwrap(ctx.stderr)).to.equal('Warning: The BUILDPACK_URL config var is still set and will be used for the next release\n')
     })
 
   test
@@ -51,6 +52,6 @@ describe('buildpacks:clear', () => {
     .command(['buildpacks:clear', '-a', 'example'])
     .it('# clears and warns about language pack URL config var', ctx => {
       expect(ctx.stdout).to.equal('Buildpacks cleared.\n')
-      expect(ctx.stderr).to.equal(' ›   Warning: The LANGUAGE_PACK_URL config var is still set and will be used \n ›   for the next release\n')
+      expect(unwrap(ctx.stderr)).to.equal('Warning: The LANGUAGE_PACK_URL config var is still set and will be used for the next release\n')
     })
 })
