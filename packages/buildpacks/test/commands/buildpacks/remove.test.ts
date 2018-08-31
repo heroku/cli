@@ -2,6 +2,7 @@ import Nock from '@fancy-test/nock'
 import {expect, test as otest} from '@oclif/test'
 import {Fixture} from 'buildpack-registry'
 import * as nock from 'nock'
+import {unwrap} from '../../unwrap'
 // tslint:disable-next-line:no-duplicate-imports
 import {Scope} from 'nock'
 nock.disableNetConnect()
@@ -45,7 +46,7 @@ describe('buildpacks:remove', () => {
         expect(ctx.stdout).to.equal(
           `Buildpack removed.
 `)
-        expect(ctx.stderr).to.equal(' ›   Warning: The LANGUAGE_PACK_URL config var is still set and will be used \n ›   for the next release\n')
+        expect(unwrap(ctx.stderr)).to.equal('Warning: The LANGUAGE_PACK_URL config var is still set and will be used for the next release\n')
       })
 
     test
@@ -65,7 +66,7 @@ describe('buildpacks:remove', () => {
         expect(ctx.stdout).to.equal(
           `Buildpack removed.
 `)
-        expect(ctx.stderr).to.equal(' ›   Warning: The BUILDPACK_URL config var is still set and will be used for \n ›   the next release\n')
+        expect(unwrap(ctx.stderr)).to.equal('Warning: The BUILDPACK_URL config var is still set and will be used for the next release\n')
       })
 
     test
