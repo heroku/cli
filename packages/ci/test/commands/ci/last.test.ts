@@ -90,4 +90,51 @@ describe('ci:last', () => {
       expect(stdout).to.equal('Test setup outputTest output\n✓ #10 master:b9e982a succeeded\n')
     })
   })
+
+  describe('when test nodes is an empty array', () => {
+    const pipeline = {id: '14402644-c207-43aa-9bc1-974a34914010', name: 'pipeline'}
+
+    test
+    .stdout()
+    .nock('https://api.heroku.com', api => {
+      api.get(`/pipelines?eq[name]=${pipeline.name}`)
+      .reply(200, [
+        {id: pipeline.id}
+      ])
+
+      api.get(`/pipelines/${pipeline.id}/test-runs/${testRunNumber}`)
+      .reply(200,
+        {
+          commit_branch: 'master',
+          commit_message: 'Merge pull request #5848 from heroku/cli',
+          commit_sha: 'b9e982a60904730510a1c9e2dd2df64aef6f0d84',
+          id: testRunId,
+          number: testRunNumber,
+          pipeline: {id: pipeline.id},
+          status: 'cancelled'
+        }
+      )
+
+      api.get(`/pipelines/${pipeline.id}/test-runs`)
+      .reply(200, [
+        {
+          commit_branch: 'master',
+          commit_message: 'Merge pull request #5849 from heroku/cli',
+          commit_sha: 'b9e982a60904730510a1c9e2dd2df64aef6f0d84',
+          id: testRunId,
+          number: testRunNumber,
+          pipeline: {id: pipeline.id},
+          status: 'cancelled'
+        }
+      ])
+
+      api.get(`/test-runs/${testRunId}/test-nodes`)
+      .reply(200, [])
+    })
+    .command(['ci:last', `--pipeline=${pipeline.name}`])
+    .catch(e => {
+      expect(e.message).to.contain(`Test run ${testRunNumber} was cancelled. No Heroku CI runs found for this pipeline.`)
+    })
+    .it('shows an error about not test nodes found')
+  })
 })
