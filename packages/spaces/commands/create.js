@@ -75,9 +75,9 @@ module.exports = {
     { name: 'log-drain-url', hasValue: true, hidden: true, description: 'direct log drain url' },
     { name: 'owner-pool', hasValue: true, hidden: true, description: 'owner pool name' },
     { name: 'shield', hasValue: false, hidden: true, description: 'create a Shield space' },
-    { name: 'cidr', hasValue: true, hidden: true, description: 'the RFC-1918 CIDR the space will use' },
+    { name: 'cidr', hasValue: true, description: 'the RFC-1918 CIDR the space will use' },
     { name: 'kpi-url', hasValue: true, hidden: true, description: 'self-managed KPI endpoint to use' },
-    { name: 'data-cidr', hasValue: true, hidden: true, description: "the RFC-1918 CIDR that the space will use when peering with DoD's spaces" },
+    { name: 'data-cidr', hasValue: true, description: "the RFC-1918 CIDR that the space will use when peering with DoD's spaces" },
     flags.team({ name: 'team', hasValue: true })
   ],
   run: cli.command(co.wrap(run))
