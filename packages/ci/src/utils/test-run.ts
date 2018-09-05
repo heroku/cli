@@ -174,6 +174,10 @@ export async function renderList(command: Command, testRuns: Heroku.TestRun[], p
 }
 
 async function renderNodeOutput(command: Command, testRun: Heroku.TestRun, testNode: Heroku.TestNode) {
+  if (!testNode) {
+    command.error(`Test run ${testRun.number} was ${testRun.status}. No Heroku CI runs found for this pipeline.`)
+  }
+
   await stream(testNode.setup_stream_url!)
   await stream(testNode.output_stream_url!)
 
