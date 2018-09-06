@@ -87,7 +87,5 @@ describe('ci', () => {
           expect(jsonOut[i].pipeline.id).to.equal(pipeline.id)
         }
       })
-
-
   })
 })
