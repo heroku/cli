@@ -92,13 +92,13 @@ To cut a release, simply run `lerna publish` and it will create a CHANGELOG from
 
 # Conventional Commits
 
-When creating your PR, be sure to prepend the PR title with the Convential Commit type (`feat`, `fix` or `chore`) and the package it refers to.
+When creating a PR, be sure to prepend the PR title with the Conventional Commit type (`feat`, `fix`, or `chore`) and the package name.
 
 Examples:
 
 `feat(spaces): add growl notification to spaces:wait`
 
-`fix(apps): handle special characters in app names`
+`fix(apps-v5): handle special characters in app names`
 
 `chore(ci): refactor tests`
 
