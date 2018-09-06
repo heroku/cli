@@ -1,6 +1,7 @@
 import Nock from '@fancy-test/nock'
 import * as Test from '@oclif/test'
-const git = require('../../../src/utils/git')
+
+import * as git from '../../../src/utils/git'
 
 const test = Test.test
 .register('nock', Nock)
