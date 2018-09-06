@@ -7,8 +7,8 @@ const tmp = require('tmp')
 const NOT_A_GIT_REPOSITORY = 'not a git repository'
 const RUN_IN_A_GIT_REPOSITORY = 'Please run this command from the directory containing your project\'s git repo'
 
-const NOT_ON_A_BRANCH = new Error('not a symbolic ref')
-const CHECKOUT_A_BRANCH = new Error('Please checkout a branch before running this command')
+const NOT_ON_A_BRANCH = 'not a symbolic ref'
+const CHECKOUT_A_BRANCH = 'Please checkout a branch before running this command'
 
 function runGit(...args: string[]): Promise <string | undefined> {
   const git = spawn('git', args)
@@ -69,7 +69,7 @@ async function githubRepository() {
   return repository
 }
 
-async function readCommit(commit: any) {
+async function readCommit(commit: string) {
   const branch = await getBranch('HEAD')
   const ref = await getRef(commit)
   const message = await getCommitTitle(ref!)
