@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="7.14.3"></a>
+## [7.14.3](https://github.com/heroku/cli/compare/v7.14.2...v7.14.3) (2018-09-06)
+
+
+### Bug Fixes
+
+* windows test failures ([23cd00d](https://github.com/heroku/cli/commit/23cd00d))
+* **ci:** convert git.js to .ts ([#1015](https://github.com/heroku/cli/issues/1015)) ([451f312](https://github.com/heroku/cli/commit/451f312))
+
+
+
+
 <a name="7.14.1"></a>
 ## [7.14.1](https://github.com/heroku/cli/compare/v7.14.0...v7.14.1) (2018-08-30)
 

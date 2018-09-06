@@ -15,4 +15,7 @@ USAGE
 
 OPTIONS
   --json  output in json format
+
+DESCRIPTION
+  Use heroku members:* to manage team members.
 ```
