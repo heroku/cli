@@ -22,13 +22,15 @@ describe('spaces:create', function () {
         features: features
       })
       .reply(201,
-        { shield: false, name: 'my-space', team: { name: 'my-team' }, region: { name: 'my-region' }, features: [ 'one', 'two' ], state: 'enabled', created_at: now }
+        { shield: false, name: 'my-space', team: { name: 'my-team' }, region: { name: 'my-region' }, features: [ 'one', 'two' ], state: 'enabled', created_at: now, cidr: '10.0.0.0/16', data_cidr: '172.23.0.0/20' }
       )
     return cmd.run({ team: 'my-team', flags: { space: 'my-space', region: 'my-region', features: 'one, two', 'owner-pool': 'party' } })
       .then(() => expect(cli.stdout).to.equal(
         `=== my-space
 Team:       my-team
 Region:     my-region
+CIDR:       10.0.0.0/16
+Data CIDR:  172.23.0.0/20
 State:      enabled
 Shield:     off
 Created at: ${now.toISOString()}
@@ -46,7 +48,7 @@ Created at: ${now.toISOString()}
         features: features
       })
       .reply(201,
-        { shield: false, name: 'my-space', team: { name: 'my-team' }, region: { name: 'my-region' }, features: [ 'one', 'two' ], state: 'enabled', created_at: now }
+        { shield: false, name: 'my-space', team: { name: 'my-team' }, region: { name: 'my-region' }, features: [ 'one', 'two' ], state: 'enabled', created_at: now, cidr: '10.0.0.0/16', data_cidr: '172.23.0.0/20' }
       )
     return cmd.run({ team: 'my-team', flags: { space: 'my-space', region: 'my-region', features: 'one, two', 'owner-pool': 'party' } })
       .then(() => expect(cli.stderr).to.include(
@@ -64,13 +66,15 @@ Created at: ${now.toISOString()}
         shield: true
       })
       .reply(201,
-        { shield: true, name: 'my-space', team: { name: 'my-team' }, region: { name: 'my-region' }, features: [ 'one', 'two' ], state: 'enabled', created_at: now }
+        { shield: true, name: 'my-space', team: { name: 'my-team' }, region: { name: 'my-region' }, features: [ 'one', 'two' ], state: 'enabled', created_at: now, cidr: '10.0.0.0/16', data_cidr: '172.23.0.0/20' }
       )
     return cmd.run({ team: 'my-team', flags: { space: 'my-space', region: 'my-region', features: 'one, two', shield: true }, log_drain_url: 'https://logs.cheetah.com' })
       .then(() => expect(cli.stdout).to.equal(
         `=== my-space
 Team:       my-team
 Region:     my-region
+CIDR:       10.0.0.0/16
+Data CIDR:  172.23.0.0/20
 State:      enabled
 Shield:     on
 Created at: ${now.toISOString()}
@@ -88,7 +92,7 @@ Created at: ${now.toISOString()}
         shield: true
       })
       .reply(201,
-        { shield: true, name: 'my-space', team: { name: 'my-team' }, region: { name: 'my-region' }, features: [ 'one', 'two' ], state: 'enabled', created_at: now }
+        { shield: true, name: 'my-space', team: { name: 'my-team' }, region: { name: 'my-region' }, features: [ 'one', 'two' ], state: 'enabled', created_at: now, cidr: '10.0.0.0/16', data_cidr: '172.23.0.0/20' }
       )
     return cmd.run({ team: 'my-team', flags: { space: 'my-space', region: 'my-region', features: 'one, two', shield: true }, log_drain_url: 'https://logs.cheetah.com' })
       .then(() => expect(cli.stderr).to.include(
@@ -103,17 +107,19 @@ Created at: ${now.toISOString()}
         team: 'my-team',
         region: 'my-region',
         cidr: '10.0.0.0/16',
-        data_cidr: '10.2.0.0/16',
+        data_cidr: '172.23.0.0/20',
         features: features
       })
       .reply(201,
-        { shield: false, name: 'my-space', team: { name: 'my-team' }, region: { name: 'my-region' }, features: [ 'one', 'two' ], state: 'enabled', created_at: now }
+        { shield: false, name: 'my-space', team: { name: 'my-team' }, region: { name: 'my-region' }, features: [ 'one', 'two' ], state: 'enabled', created_at: now, cidr: '10.0.0.0/16', data_cidr: '172.23.0.0/20' }
       )
-    return cmd.run({ team: 'my-team', flags: { space: 'my-space', region: 'my-region', features: 'one, two', cidr: '10.0.0.0/16', 'data-cidr': '10.2.0.0/16' }, shield: true, log_drain_url: 'https://logs.cheetah.com' })
+    return cmd.run({ team: 'my-team', flags: { space: 'my-space', region: 'my-region', features: 'one, two', cidr: '10.0.0.0/16', 'data-cidr': '172.23.0.0/20' }, shield: true, log_drain_url: 'https://logs.cheetah.com', cidr: '10.0.0.0/16', data_cidr: '172.23.0.0/20' })
       .then(() => expect(cli.stdout).to.equal(
         `=== my-space
 Team:       my-team
 Region:     my-region
+CIDR:       10.0.0.0/16
+Data CIDR:  172.23.0.0/20
 State:      enabled
 Shield:     off
 Created at: ${now.toISOString()}

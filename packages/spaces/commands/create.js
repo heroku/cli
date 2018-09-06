@@ -41,10 +41,12 @@ function * run (context, heroku) {
     ID: space.id,
     Team: space.team.name,
     Region: space.region.name,
+    CIDR: space.cidr,
+    'Data CIDR': space.data_cidr,
     State: space.state,
     Shield: lib.displayShieldState(space),
     'Created at': space.created_at
-  }, ['ID', 'Team', 'Region', 'State', 'Shield', 'Created at'])
+  }, ['ID', 'Team', 'Region', 'CIDR', 'Data CIDR', 'State', 'Shield', 'Created at'])
 }
 
 module.exports = {
@@ -59,6 +61,8 @@ module.exports = {
     ID:         e7b99e37-69b3-4475-ad47-a5cc5d75fd9f
     Team:       my-team
     Region:     oregon
+    CIDR:       10.0.0.0/16
+    Data CIDR:  172.23.0.0/20
     State:      allocating
     Created at: 2016-01-06T03:23:13Z
 
