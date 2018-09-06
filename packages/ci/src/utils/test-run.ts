@@ -35,7 +35,7 @@ function stream(url: string) {
 }
 
 function statusIcon({status}: Heroku.TestRun | Heroku.TestNode) {
-  if (!status) { return color.yellow('-') }
+  if (!status) {return color.yellow('-')}
 
   switch (status) {
     case 'pending':
@@ -99,7 +99,7 @@ function sort(testRuns: Heroku.TestRun[]) {
   return testRuns.sort((a: Heroku.TestRun, b: Heroku.TestRun) => a.number! < b.number! ? 1 : -1)
 }
 
-function draw(testRuns: Heroku.TestRun[], watchOption = false, count = 15) {
+function draw(testRuns: Heroku.TestRun[], watchOption = false, jsonOption = false, count = 15) {
   const latestTestRuns = sort(testRuns).slice(0, count)
 
   if (watchOption) {
@@ -120,33 +120,39 @@ function draw(testRuns: Heroku.TestRun[], watchOption = false, count = 15) {
     )
   })
 
-  cli.table(data, {
-    printHeader: undefined,
-    columns: [
-      {key: 'iconStatus', width: 1, label: ''}, // label '' is to make sure that widh is 1 character
-      {key: 'number', label: ''},
-      {key: 'branch'},
-      {key: 'sha'},
-      {key: 'status'}
-    ]
-  })
+  if (jsonOption) {
+    cli.styledJSON(testRuns)
+  } else {
+    cli.table(data, {
+      printHeader: undefined,
+      columns: [
+        {key: 'iconStatus', width: 1, label: ''}, // label '' is to make sure that widh is 1 character
+        {key: 'number', label: ''},
+        {key: 'branch'},
+        {key: 'sha'},
+        {key: 'status'}
+      ]
+    })
+  }
 
   if (watchOption) {
     process.stdout.write(ansiEscapes.cursorUp(latestTestRuns.length))
   }
 }
 
-export async function renderList(command: Command, testRuns: Heroku.TestRun[], pipeline: Heroku.Pipeline, watchOption: boolean) {
-  const header = `${watchOption ? 'Watching' : 'Showing'} latest test runs for the ${pipeline.name} pipeline`
-  cli.styledHeader(header)
+export async function renderList(command: Command, testRuns: Heroku.TestRun[], pipeline: Heroku.Pipeline, watchOption: boolean, jsonOption: boolean) {
+  if (!jsonOption) {
+    const header = `${watchOption ? 'Watching' : 'Showing'} latest test runs for the ${pipeline.name} pipeline`
+    cli.styledHeader(header)
+  }
 
   if (watchOption) {
     process.stdout.write(ansiEscapes.cursorHide)
   }
 
-  draw(testRuns, watchOption)
+  draw(testRuns, watchOption, jsonOption)
 
-  if (!watchOption) { return }
+  if (!watchOption) {return }
 
   let socket = io.connect(SIMI_URL, {transports: ['websocket']})
 
@@ -161,14 +167,14 @@ export async function renderList(command: Command, testRuns: Heroku.TestRun[], p
   socket.on('create', ({resource, data}: any) => {
     if (resource === 'test-run') {
       testRuns = handleTestRunEvent(data, testRuns)
-      draw(testRuns, watchOption)
+      draw(testRuns, watchOption, jsonOption)
     }
   })
 
   socket.on('update', ({resource, data}: any) => {
     if (resource === 'test-run') {
       testRuns = handleTestRunEvent(data, testRuns)
-      draw(testRuns, watchOption)
+      draw(testRuns, watchOption, jsonOption)
     }
   })
 }
@@ -205,12 +211,12 @@ async function display(pipeline: Heroku.Pipeline, number: number, command: Comma
     let {body: testNodes} = await command.heroku.get<Heroku.TestNode[]>(`/test-runs/${testRun.id}/test-nodes`)
     let firstTestNode = testNodes[0]
 
-    if (firstTestNode) { await stream(firstTestNode.setup_stream_url!) }
+    if (firstTestNode) {await stream(firstTestNode.setup_stream_url!)}
 
-    if (testRun) { testRun = await waitForStates(RUNNING_STATES, testRun, command) }
-    if (firstTestNode) { await stream(firstTestNode.output_stream_url!) }
+    if (testRun) {testRun = await waitForStates(RUNNING_STATES, testRun, command)}
+    if (firstTestNode) {await stream(firstTestNode.output_stream_url!)}
 
-    if (testRun) { testRun = await waitForStates(TERMINAL_STATES, testRun, command) }
+    if (testRun) {testRun = await waitForStates(TERMINAL_STATES, testRun, command)}
 
     // At this point, we know that testRun has a finished status,
     // and we can check for exit_code from firstTestNode

@@ -16,7 +16,8 @@ export default class CiIndex extends Command {
   static flags = {
     app: flags.app({required: false}),
     watch: flags.boolean({description: 'keep running and watch for new and update tests', required: false}),
-    pipeline: flags.pipeline({required: false})
+    pipeline: flags.pipeline({required: false}),
+    json: flags.boolean({description: 'output in json format', required: false})
   }
 
   async run() {
@@ -24,6 +25,6 @@ export default class CiIndex extends Command {
     const pipeline = await getPipeline(flags, this)
     const {body: testRuns} = await this.heroku.get<Heroku.TestRun[]>(`/pipelines/${pipeline.id}/test-runs`)
 
-    await renderList(this, testRuns, pipeline, flags.watch)
+    await renderList(this, testRuns, pipeline, flags.watch, flags.json)
   }
 }
