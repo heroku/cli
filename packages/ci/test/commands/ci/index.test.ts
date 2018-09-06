@@ -49,7 +49,7 @@ describe('ci', () => {
           .reply(200, testRuns)
       })
       .command(['ci', `--pipeline=${pipeline.name}`])
-      .it('it shows the latest 15 test runs', ({stdout}) => {
+      .it('shows the latest 15 test runs', ({stdout}) => {
         expect(stdout).to.contain(`=== Showing latest test runs for the ${pipeline.name} pipeline`)
 
         for (let i = 5; i < 10; i++) {
@@ -77,9 +77,9 @@ describe('ci', () => {
           .reply(200, testRuns)
       })
       .command(['ci', '--json', `--pipeline=${pipeline.name}`])
-      .it('it shows the latest 15 test runs in json', ({stdout}) => {
+      .it('shows the latest 15 test runs in json', ({stdout}) => {
         expect(stdout).not.to.contain(`=== Showing latest test runs for the ${pipeline.name} pipeline`)
-        let jsonOut = JSON.parse(stdout)
+        const jsonOut = JSON.parse(stdout)
         for (let i = 0; i < 4; i++) {
           expect(jsonOut[i].commit_branch).to.equal('master')
           expect(jsonOut[i].commit_sha).to.equal(commit_sha[3 - i])
