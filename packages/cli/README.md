@@ -89,3 +89,5 @@ Developing
 This project is built with [lerna](http://lernajs.io). The core plugins are located in [./packages](./packages). Run `lerna bootstrap` after cloning the repository to set it up.
 
 To cut a release, simply run `lerna publish` and it will create a CHANGELOG from the pending commits using [Conventional Commits](http://conventionalcommits.org). CircleCI will run the jobs to publish the CLI once it receives the git tag.
+
+Review our [PR guidelines](./.github/PULL_REQUEST_TEMPLATE.md).
