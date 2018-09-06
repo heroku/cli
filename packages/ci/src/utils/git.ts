@@ -10,7 +10,7 @@ const RUN_IN_A_GIT_REPOSITORY = 'Please run this command from the directory cont
 const NOT_ON_A_BRANCH = 'not a symbolic ref'
 const CHECKOUT_A_BRANCH = 'Please checkout a branch before running this command'
 
-function runGit(...args: string[]): Promise <string | undefined> {
+function runGit(...args: string[]): Promise <string> {
   const git = spawn('git', args)
 
   return new Promise((resolve, reject) => {
