@@ -88,4 +88,22 @@ Developing
 
 This project is built with [lerna](http://lernajs.io). The core plugins are located in [./packages](./packages). Run `lerna bootstrap` after cloning the repository to set it up.
 
-To cut a release, simply run `lerna publish` and it will create a CHANGELOG from the pending commits using [Conventional Commits](http://conventionalcommits.org). CircleCI will run the jobs to publish the CLI once it receives the git tag.
+To cut a release, simply run `lerna publish` and it will create a CHANGELOG from the pending commits using [Conventional Commits](http://conventionalcommits.org) (see below). CircleCI will run the jobs to publish the CLI once it receives the git tag.
+
+# Conventional Commits
+
+When creating your PR, be sure to prepend the PR title with the Convential Commit type (`feat`, `fix` or `chore`) and the package it refers to.
+
+Examples:
+
+`feat(spaces): add growl notification to spaces:wait`
+
+`fix(apps): handle special characters in app names`
+
+`chore(ci): refactor tests`
+
+`chore(autocomplete): update typings`
+
+`chore(cli): edit README`
+
+Learn more about [Conventional Commits](http://conventionalcommits.org).
