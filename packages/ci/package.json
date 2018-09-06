@@ -13,10 +13,13 @@
     "ansi-escapes": "3.1.0",
     "async-file": "^2.0.2",
     "cli-ux": "^4.8.1",
+    "fs-extra": "^7.0.0",
+    "github-url-to-object": "^4.0.4",
     "got": "^9.0.0",
     "inquirer": "^6.2.0",
     "sinon": "^6.1.5",
     "socket.io-client": "^2.1.1",
+    "tmp": "^0.0.33",
     "tslib": "^1.9.3",
     "validator": "^10.7.0"
   },
