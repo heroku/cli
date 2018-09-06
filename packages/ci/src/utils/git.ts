@@ -1,8 +1,8 @@
-const spawn = require('child_process').spawn
-const Promise = require('bluebird')
-const fs = Promise.promisifyAll(require('fs'))
-const tmp = Promise.promisifyAll(require('temp').track())
+import * as fs from 'fs-extra'
+
 const gh = require('github-url-to-object')
+const spawn = require('child_process').spawn
+const tmp = require('tmp')
 
 const NOT_A_GIT_REPOSITORY = 'not a git repository'
 const RUN_IN_A_GIT_REPOSITORY = 'Please run this command from the directory containing your project\'s git repo'
@@ -10,11 +10,11 @@ const RUN_IN_A_GIT_REPOSITORY = 'Please run this command from the directory cont
 const NOT_ON_A_BRANCH = new Error('not a symbolic ref')
 const CHECKOUT_A_BRANCH = new Error('Please checkout a branch before running this command')
 
-function runGit (...args) {
+function runGit(...args: string[]): Promise <string | undefined> {
   const git = spawn('git', args)
 
   return new Promise((resolve, reject) => {
-    git.on('exit', (exitCode) => {
+    git.on('exit', (exitCode: number) => {
       if (exitCode === 0) {
         return
       }
@@ -31,34 +31,34 @@ function runGit (...args) {
       reject(new Error(`Error while running 'git ${args.join(' ')}' (${error})`))
     })
 
-    git.stdout.on('data', (data) => resolve(data.toString().trim()))
+    git.stdout.on('data', (data: any) => resolve(data.toString().trim()))
   })
 }
 
-async function getRef (branch) {
+async function getRef(branch: string): Promise<string | undefined> {
   return runGit('rev-parse', branch || 'HEAD')
 }
 
-async function getBranch (symbolicRef) {
+async function getBranch(symbolicRef: string): Promise<string | undefined> {
   return runGit('symbolic-ref', '--short', symbolicRef)
 }
 
-async function getCommitTitle (ref) {
+async function getCommitTitle(ref: string): Promise<string | undefined> {
   return runGit('log', ref || '', '-1', '--pretty=format:%s')
 }
 
-async function createArchive (ref) {
+async function createArchive(ref: string): Promise<any> {
   const tar = spawn('git', ['archive', '--format', 'tar.gz', ref])
-  const file = await tmp.openAsync({ suffix: '.tar.gz' })
-  const write = tar.stdout.pipe(fs.createWriteStream(file.path))
+  const file = tmp.fileSync({postfix: '.tar.gz'})
+  const write = tar.stdout.pipe(fs.createWriteStream(file.name))
 
   return new Promise((resolve, reject) => {
-    write.on('close', () => resolve(file.path))
+    write.on('close', () => resolve(file.name))
     write.on('error', reject)
   })
 }
 
-async function githubRepository () {
+async function githubRepository() {
   const remote = await runGit('remote', 'get-url', 'origin')
   const repository = gh(remote)
 
@@ -69,19 +69,19 @@ async function githubRepository () {
   return repository
 }
 
-async function readCommit (commit) {
+async function readCommit(commit: any) {
   const branch = await getBranch('HEAD')
   const ref = await getRef(commit)
-  const message = await getCommitTitle(ref)
+  const message = await getCommitTitle(ref!)
 
   return Promise.resolve({
-    branch: branch,
-    ref: ref,
-    message: message
+    branch,
+    ref,
+    message
   })
 }
 
-module.exports = {
+export {
   createArchive,
   githubRepository,
   readCommit
