@@ -46,7 +46,7 @@ function readLogsV2 (logplexURL) {
 
       if (!isTail) {
         if (err) {
-          eject(new Error(msg))
+          reject(new Error(msg))
         } else {
           resolve()
         }
