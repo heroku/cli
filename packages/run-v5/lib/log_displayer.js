@@ -53,7 +53,7 @@ function readLogsV2 (logplexURL) {
         es.close()
       }
 
-      if (err) {
+      if (err && (err.status || err.message)) {
         if (err.status === 404 || err.status === 403) {
           msg = 'Log stream timed out. Please try again.'
         }
