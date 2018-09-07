@@ -102,6 +102,11 @@ function sort(testRuns: Heroku.TestRun[]) {
 function draw(testRuns: Heroku.TestRun[], watchOption = false, jsonOption = false, count = 15) {
   const latestTestRuns = sort(testRuns).slice(0, count)
 
+  if (jsonOption) {
+    cli.styledJSON(latestTestRuns)
+    return
+  }
+
   if (watchOption) {
     process.stdout.write(ansiEscapes.eraseDown)
   }
@@ -120,20 +125,16 @@ function draw(testRuns: Heroku.TestRun[], watchOption = false, jsonOption = fals
     )
   })
 
-  if (jsonOption) {
-    cli.styledJSON(testRuns)
-  } else {
-    cli.table(data, {
-      printHeader: undefined,
-      columns: [
-        {key: 'iconStatus', width: 1, label: ''}, // label '' is to make sure that widh is 1 character
-        {key: 'number', label: ''},
-        {key: 'branch'},
-        {key: 'sha'},
-        {key: 'status'}
-      ]
-    })
-  }
+  cli.table(data, {
+    printHeader: undefined,
+    columns: [
+      {key: 'iconStatus', width: 1, label: ''}, // label '' is to make sure that widh is 1 character
+      {key: 'number', label: ''},
+      {key: 'branch'},
+      {key: 'sha'},
+      {key: 'status'}
+    ]
+  })
 
   if (watchOption) {
     process.stdout.write(ansiEscapes.cursorUp(latestTestRuns.length))
@@ -141,18 +142,20 @@ function draw(testRuns: Heroku.TestRun[], watchOption = false, jsonOption = fals
 }
 
 export async function renderList(command: Command, testRuns: Heroku.TestRun[], pipeline: Heroku.Pipeline, watchOption: boolean, jsonOption: boolean) {
+  const watchable = (watchOption && !jsonOption ? true : false)
+
   if (!jsonOption) {
     const header = `${watchOption ? 'Watching' : 'Showing'} latest test runs for the ${pipeline.name} pipeline`
     cli.styledHeader(header)
   }
 
-  if (watchOption) {
+  if (watchable) {
     process.stdout.write(ansiEscapes.cursorHide)
   }
 
   draw(testRuns, watchOption, jsonOption)
 
-  if (!watchOption) {return }
+  if (!watchable) {return }
 
   let socket = io.connect(SIMI_URL, {transports: ['websocket']})
 
@@ -167,14 +170,14 @@ export async function renderList(command: Command, testRuns: Heroku.TestRun[], p
   socket.on('create', ({resource, data}: any) => {
     if (resource === 'test-run') {
       testRuns = handleTestRunEvent(data, testRuns)
-      draw(testRuns, watchOption, jsonOption)
+      draw(testRuns, watchOption)
     }
   })
 
   socket.on('update', ({resource, data}: any) => {
     if (resource === 'test-run') {
       testRuns = handleTestRunEvent(data, testRuns)
-      draw(testRuns, watchOption, jsonOption)
+      draw(testRuns, watchOption)
     }
   })
 }
