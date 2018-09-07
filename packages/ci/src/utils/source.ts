@@ -21,10 +21,8 @@ async function uploadArchive(url: string, filePath: string) {
 }
 
 async function prepareSource(ref: any, command: Command) {
-  const [filePath, source] = await [
-    git.createArchive(ref),
-    command.heroku.post('/sources', {body: command})
-  ]
+  const filePath = await git.createArchive(ref)
+  const {body: source} = await command.heroku.post<any>('/sources')
   await uploadArchive(source.source_blob.put_url, filePath)
   return Promise.resolve(source)
 }
@@ -42,7 +40,7 @@ export async function createSourceBlob(ref: any, command: Command) {
     if (await urlExists(archiveLink.archive_link)) {
       return archiveLink.archive_link
     }
-  } catch (ex) { command.error(ex) }
+  } catch { }
 
   const sourceBlob = await prepareSource(ref, command)
   return sourceBlob.source_blob.get_url
