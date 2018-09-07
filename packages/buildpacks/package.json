@@ -6,7 +6,7 @@
   "dependencies": {
     "@heroku-cli/color": "^1.1.5",
     "@heroku-cli/command": "^8.1.28",
-    "@oclif/config": "^1.6.17",
+    "@oclif/config": "^1.7.4",
     "@oclif/plugin-legacy": "^1.0.15",
     "@types/ansi-styles": "^3.2.0",
     "@types/lodash": "^4.14.108",
@@ -16,13 +16,13 @@
     "heroku-cli-util": "^8.0.0",
     "http-call": "^5.2.2",
     "lodash": "^4.14.0",
-    "true-myth": "^2.0.0",
+    "true-myth": "^2.1.5",
     "valid-url": "^1.0.9"
   },
   "devDependencies": {
     "@fancy-test/nock": "^0.1.1",
-    "@oclif/dev-cli": "^1.17.0",
-    "@oclif/plugin-help": "^2.1.0",
+    "@oclif/dev-cli": "^1.18.0",
+    "@oclif/plugin-help": "^2.1.1",
     "@oclif/test": "^1",
     "@oclif/tslint": "^2.0.0",
     "@types/chai": "^4",

@@ -22,7 +22,7 @@
     "lodash.flatten": "^4.4.0"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.17.0",
+    "@oclif/dev-cli": "^1.18.0",
     "@oclif/plugin-legacy": "^1.1.0",
     "bats": "^1.1.0"
   },

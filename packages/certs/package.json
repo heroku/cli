@@ -6,12 +6,12 @@
   "dependencies": {
     "@heroku-cli/command": "^8.1.28",
     "@oclif/command": "^1.5.0",
-    "@oclif/config": "^1.7.2",
+    "@oclif/config": "^1.7.4",
     "tslib": "^1.9.3"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.17.0",
-    "@oclif/plugin-help": "^2.1.0",
+    "@oclif/dev-cli": "^1.18.0",
+    "@oclif/plugin-help": "^2.1.1",
     "@oclif/test": "^1.2.0",
     "@oclif/tslint": "^2.0.0",
     "@types/chai": "^4",

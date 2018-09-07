@@ -9,7 +9,7 @@
     "heroku-cli-util": "^8.0.10"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.17.0",
+    "@oclif/dev-cli": "^1.18.0",
     "@oclif/plugin-legacy": "^1.1.0",
     "chai": "^4.1.2",
     "cross-env": "^5.2.0",
