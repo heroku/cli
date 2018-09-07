@@ -42,10 +42,10 @@ function readLogsV2 (logplexURL) {
     })
 
     es.onerror = function (err) {
-      let msg = `${err.status} ${err.message}`
+      let msg = `Logs eventsource failed with: ${err.status} ${err.message}`
 
       if (!isTail) {
-        if (err) {
+        if (err && (err.status || err.message)) {
           reject(new Error(msg))
         } else {
           resolve()
