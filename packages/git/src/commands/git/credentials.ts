@@ -9,19 +9,19 @@ export class GitCredentials extends Command {
   async run() {
     const {args} = this.parse(GitCredentials)
     switch (args.command) {
-      case 'get':
-        if (!this.heroku.auth) throw new Error('not logged in')
-        this.log(`protocol=https
+    case 'get':
+      if (!this.heroku.auth) throw new Error('not logged in')
+      this.log(`protocol=https
 host=git.heroku.com
 username=heroku
 password=${this.heroku.auth}`)
-        break
-      case 'erase':
-      case 'store':
+      break
+    case 'erase':
+    case 'store':
         // ignore
-        break
-      default:
-        throw new Error(`unknown command: ${args.command}`)
+      break
+    default:
+      throw new Error(`unknown command: ${args.command}`)
     }
   }
 }

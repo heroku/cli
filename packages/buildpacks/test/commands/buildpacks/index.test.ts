@@ -62,8 +62,8 @@ https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/ruby.tgz
     .stderr()
     .command(['buildpacks', '-a', 'example'])
     .it('# with no buildpack URL set does not display a buildpack URL', ctx => {
-        expect(ctx.stderr).to.equal('')
-        expect(ctx.stdout).to.equal(
+      expect(ctx.stderr).to.equal('')
+      expect(ctx.stdout).to.equal(
           `example has no Buildpack URL set.
 `)
     })

@@ -44,7 +44,7 @@ describe('buildpacks:clear', () => {
     .nock('https://api.heroku.com', (api: Scope) => {
       Stubber.put(api)
       api
-      .get('/apps/example/config-vars')
+        .get('/apps/example/config-vars')
         .reply(200, {LANGUAGE_PACK_URL: 'https://github.com/foo/foo'})
     })
     .stdout()

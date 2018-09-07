@@ -38,22 +38,22 @@ function statusIcon({status}: Heroku.TestRun | Heroku.TestNode) {
   if (!status) { return color.yellow('-') }
 
   switch (status) {
-    case 'pending':
-    case 'creating':
-    case 'building':
-    case 'running':
-    case 'debugging':
-      return color.yellow('-')
-    case 'errored':
-      return color.red('!')
-    case 'failed':
-      return color.red('✗')
-    case 'succeeded':
-      return color.green('✓')
-    case 'cancelled':
-      return color.yellow('!')
-    default:
-      return color.yellow('?')
+  case 'pending':
+  case 'creating':
+  case 'building':
+  case 'running':
+  case 'debugging':
+    return color.yellow('-')
+  case 'errored':
+    return color.red('!')
+  case 'failed':
+    return color.red('✗')
+  case 'succeeded':
+    return color.green('✓')
+  case 'cancelled':
+    return color.yellow('!')
+  default:
+    return color.yellow('?')
 
   }
 }

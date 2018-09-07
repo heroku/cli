@@ -13,7 +13,7 @@
     "@oclif/dev-cli": "^1.18.0",
     "@oclif/plugin-help": "^2.1.1",
     "@oclif/test": "^1.2.0",
-    "@oclif/tslint": "^2.0.0",
+    "@oclif/tslint": "^3.0.1",
     "@types/chai": "^4",
     "@types/mocha": "^5.2.5",
     "@types/node": "^10.9.4",
