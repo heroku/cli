@@ -4,6 +4,7 @@ const git = require('./git')
 import {Command} from '@heroku-cli/command'
 
 import * as fs from 'async-file'
+import {ux} from 'cli-ux'
 
 async function uploadArchive(url: string, filePath: string) {
   const request = got.stream.put(url, {
@@ -40,7 +41,10 @@ export async function createSourceBlob(ref: any, command: Command) {
     if (await urlExists(archiveLink.archive_link)) {
       return archiveLink.archive_link
     }
-  } catch { }
+  } catch (ex) {
+    // the commit isn't in the repo, we will package the local git commit instead
+    ux.debug(`Commit not found in pipeline repository: ${ex}`)
+  }
 
   const sourceBlob = await prepareSource(ref, command)
   return sourceBlob.source_blob.get_url
