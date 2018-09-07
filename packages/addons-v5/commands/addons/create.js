@@ -2,6 +2,7 @@
 
 const cli = require('heroku-cli-util')
 const co = require('co')
+const { notify } = require('../../lib/notify')
 
 function parseConfig (args) {
   let config = {}
@@ -41,7 +42,14 @@ function * run (context, heroku) {
   let { name, as } = flags
   let config = parseConfig(args.slice(1))
 
-  let addon = yield createAddon(heroku, app, args[0], context.flags.confirm, context.flags.wait, { config, name, as })
+  let addon
+  try {
+    addon = yield createAddon(heroku, app, args[0], context.flags.confirm, context.flags.wait, { config, name, as })
+    if (context.flags.wait) { notify(`heroku addons:create ${addon.name}`, 'Addon successfully provisioned') }
+  } catch (error) {
+    if (context.flags.wait) { notify(`heroku addons:create ${args[0]}`, 'Addon failed to provision') }
+    throw error
+  }
 
   yield context.config.runHook('recache', { type: 'addon', app, addon })
   cli.log(`Use ${cli.color.cmd('heroku addons:docs ' + addon.addon_service.name)} to view documentation`)

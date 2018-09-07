@@ -1,8 +1,9 @@
 'use strict'
 
-let cli = require('heroku-cli-util')
-let co = require('co')
-let waitForAddonProvisioning = require('../../lib/addons_wait')
+const cli = require('heroku-cli-util')
+const co = require('co')
+const { notify } = require('../../lib/notify')
+const waitForAddonProvisioning = require('../../lib/addons_wait')
 
 function * run (ctx, api) {
   const resolve = require('../../lib/resolve')
@@ -16,19 +17,29 @@ function * run (ctx, api) {
     } else {
       addons = yield api.get('/addons')
     }
-    addons = addons.filter(addon => addon.state === 'provisioning')
   }
+  addons = addons.filter(addon => addon.state === 'provisioning')
 
   let interval = parseInt(ctx.flags['wait-interval'])
   if (!interval || interval < 0) { interval = 5 }
 
   for (let addon of addons) {
-    addon = yield waitForAddonProvisioning(api, addon, interval)
+    const startDate = new Date()
+    try {
+      addon = yield waitForAddonProvisioning(api, addon, interval)
+    } catch (error) {
+      cli.error(error)
+      notify(`heroku addons:wait ${addon.name}`, 'Addon failed to provision')
+    }
 
     let configVars = (addon.config_vars || [])
     if (configVars.length > 0) {
       configVars = configVars.map(c => cli.color.configVar(c)).join(', ')
       cli.log(`Created ${cli.color.addon(addon.name)} as ${configVars}`)
+    }
+
+    if ((new Date() - startDate) >= 1000 * 20) {
+      notify(`heroku addons:wait ${addon.name}`, 'Addon successfully provisioned')
     }
   }
 }
