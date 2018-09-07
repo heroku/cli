@@ -42,13 +42,22 @@ function readLogsV2 (logplexURL) {
     })
 
     es.onerror = function (err) {
+      let msg = `${err.status} ${err.message}`
+
       if (!isTail) {
-        resolve()
+        if (err) {
+          eject(new Error(msg))
+        } else {
+          resolve()
+        }
         es.close()
       }
 
-      if (err && (err.status === 404 || err.status === 403)) {
-        reject(new Error('Log stream timed out. Please try again.'))
+      if (err) {
+        if (err.status === 404 || err.status === 403) {
+          msg = 'Log stream timed out. Please try again.'
+        }
+        reject(new Error(msg))
         es.close()
       }
     }
