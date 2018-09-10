@@ -72,7 +72,6 @@ describe('ci', () => {
               name: pipeline.name
             }
           ])
-
         api.get(`/pipelines/${pipeline.id}/test-runs`)
           .reply(200, testRuns)
       })

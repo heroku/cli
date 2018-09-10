@@ -57,7 +57,7 @@ export default class CiReRun extends Command {
       pipeline: pipeline.id,
       organization,
       source_blob_url: sourceBlobUrl
-      }
+    }
     })
     cli.action.stop()
 

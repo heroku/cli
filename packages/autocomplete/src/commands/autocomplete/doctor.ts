@@ -60,12 +60,12 @@ export default class Doctor extends AutocompleteBase {
     data.push({name: 'apps completion cache', value: appsCacheValue})
 
     ux.table(data, {
-        printHeader: undefined,
-        columns: [
+      printHeader: undefined,
+      columns: [
           {key: 'name'},
           {key: 'value'},
-        ]
-      })
+      ]
+    })
 
     if (flags.verbose) this.printList()
   }

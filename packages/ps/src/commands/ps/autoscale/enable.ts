@@ -53,10 +53,10 @@ export default class Enable extends Command {
       }
 
       await this.heroku.patch(`/apps/${app.id}/formation/web/monitors/${scaleMonitor.id}`,
-      {
-        body: updatedValues,
-        hostname: METRICS_HOST
-      })
+        {
+          body: updatedValues,
+          hostname: METRICS_HOST
+        })
     } else {
       updatedValues = {...updatedValues,
         name: 'LATENCY_SCALE',
