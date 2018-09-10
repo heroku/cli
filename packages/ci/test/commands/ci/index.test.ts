@@ -13,7 +13,7 @@ describe('ci', () => {
     .it('errors when not specifying a pipeline or an app')
 
   describe('when specifying a pipeline', () => {
-    const pipeline = { id: '14402644-c207-43aa-9bc1-974a34914010', name: 'my-pipeline' }
+    const pipeline = {id: '14402644-c207-43aa-9bc1-974a34914010', name: 'my-pipeline'}
 
     let testRuns: any = []
     const statusIcon = ['✓', '!', '✗', '-']
@@ -28,7 +28,7 @@ describe('ci', () => {
           commit_branch,
           commit_sha: commit_sha[i % 4],
           number: i,
-          pipeline: { id: pipeline.id },
+          pipeline: {id: pipeline.id},
           status: statuses[i % 4]
         })
       }
@@ -49,7 +49,7 @@ describe('ci', () => {
           .reply(200, testRuns)
       })
       .command(['ci', `--pipeline=${pipeline.name}`])
-      .it('shows the latest 15 test runs', ({ stdout }) => {
+      .it('shows the latest 15 test runs', ({stdout}) => {
         expect(stdout).to.contain(`=== Showing latest test runs for the ${pipeline.name} pipeline`)
 
         for (let i = 5; i < 10; i++) {
@@ -77,7 +77,7 @@ describe('ci', () => {
           .reply(200, testRuns)
       })
       .command(['ci', '--json', `--pipeline=${pipeline.name}`])
-      .it('shows the latest 15 test runs in json', ({ stdout }) => {
+      .it('shows the latest 15 test runs in json', ({stdout}) => {
         expect(stdout).not.to.contain(`=== Showing latest test runs for the ${pipeline.name} pipeline`)
         const jsonOut = JSON.parse(stdout)
         for (let i = 0; i < 4; i++) {
