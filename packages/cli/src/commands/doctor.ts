@@ -2,6 +2,7 @@ import {Command} from '@heroku-cli/command'
 
 export default class extends Command {
   static description = 'debugging output for Heroku support tickets'
+  static hidden = true
 
   static examples = [
     '$ heroku doctor',
