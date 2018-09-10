@@ -139,10 +139,12 @@ describe('addons:wait', () => {
           .reply(200, deprovisionedAddon)
 
         return cmd.run({ flags: {}, args: { addon: 'www-redis' } })
-          .then(() => expect(unwrap(cli.stderr)).to.equal(`\
-Creating www-redis... ! The add-on was unable to be created, with status deprovisioned\n`))
-          .then(() => expect(notifySpy.called).to.be.true)
-          .then(() => expect(notifySpy.calledOnce).to.be.true)
+          .catch(() => {
+            expect(unwrap(cli.stderr)).to.equal(`\
+Creating www-redis... ! The add-on was unable to be created, with status deprovisioned\n`)
+            expect(notifySpy.called).to.be.true
+            expect(notifySpy.calledOnce).to.be.true
+          })
       })
 
       it('shows that it failed to provision', function () {

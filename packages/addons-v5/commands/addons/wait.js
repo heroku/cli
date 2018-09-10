@@ -24,12 +24,13 @@ function * run (ctx, api) {
   if (!interval || interval < 0) { interval = 5 }
 
   for (let addon of addons) {
-    const startDate = new Date()
+    const startTime = new Date()
     try {
       addon = yield waitForAddonProvisioning(api, addon, interval)
     } catch (error) {
       cli.error(error)
-      notify(`heroku addons:wait ${addon.name}`, 'Addon failed to provision')
+      notify(`heroku addons:wait ${addon.name}`, 'Addon failed to provision', false)
+      throw error
     }
 
     let configVars = (addon.config_vars || [])
@@ -38,7 +39,8 @@ function * run (ctx, api) {
       cli.log(`Created ${cli.color.addon(addon.name)} as ${configVars}`)
     }
 
-    if ((new Date() - startDate) >= 1000 * 20) {
+    // only show notification if addon took longer than 20 seconds to provision
+    if (new Date() - startTime >= 1000 * 20) {
       notify(`heroku addons:wait ${addon.name}`, 'Addon successfully provisioned')
     }
   }

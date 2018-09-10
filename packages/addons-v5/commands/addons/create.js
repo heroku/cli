@@ -41,13 +41,17 @@ function * run (context, heroku) {
 
   let { name, as } = flags
   let config = parseConfig(args.slice(1))
-
   let addon
+
   try {
     addon = yield createAddon(heroku, app, args[0], context.flags.confirm, context.flags.wait, { config, name, as })
-    if (context.flags.wait) { notify(`heroku addons:create ${addon.name}`, 'Addon successfully provisioned') }
+    if (context.flags.wait) {
+      notify(`heroku addons:create ${addon.name}`, 'Addon successfully provisioned')
+    }
   } catch (error) {
-    if (context.flags.wait) { notify(`heroku addons:create ${args[0]}`, 'Addon failed to provision') }
+    if (context.flags.wait) {
+      notify(`heroku addons:create ${args[0]}`, 'Addon failed to provision', false)
+    }
     throw error
   }
 
