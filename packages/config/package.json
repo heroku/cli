@@ -1,6 +1,6 @@
 {
   "name": "@heroku-cli/plugin-config",
-  "version": "7.13.0",
+  "version": "7.15.0",
   "author": "Jeff Dickey @jdxcode",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {

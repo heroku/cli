@@ -27,13 +27,14 @@ USAGE
 OPTIONS
   -a, --app=app            app to run command against
   -p, --pipeline=pipeline  name of pipeline
+  --json                   output in json format
   --watch                  keep running and watch for new and update tests
 
 EXAMPLE
   $ heroku ci --app murmuring-headland-14719
 ```
 
-_See code: [@heroku-cli/plugin-ci](https://github.com/heroku/cli/blob/v7.14.4/packages/ci/src/commands/ci/index.ts)_
+_See code: [@heroku-cli/plugin-ci](https://github.com/heroku/cli/blob/v7.15.0/packages/ci/src/commands/ci/index.ts)_
 
 ## `heroku ci:config`
 
@@ -162,7 +163,7 @@ EXAMPLE
   $ heroku ci:info 1288 --app murmuring-headland-14719
 ```
 
-_See code: [@heroku-cli/plugin-ci](https://github.com/heroku/cli/blob/v7.14.4/packages/ci/src/commands/ci/info.ts)_
+_See code: [@heroku-cli/plugin-ci](https://github.com/heroku/cli/blob/v7.15.0/packages/ci/src/commands/ci/info.ts)_
 
 ## `heroku ci:last`
 
@@ -181,7 +182,7 @@ EXAMPLE
   $ heroku ci:last --app murmuring-headland-14719 --node 100
 ```
 
-_See code: [@heroku-cli/plugin-ci](https://github.com/heroku/cli/blob/v7.14.4/packages/ci/src/commands/ci/last.ts)_
+_See code: [@heroku-cli/plugin-ci](https://github.com/heroku/cli/blob/v7.15.0/packages/ci/src/commands/ci/last.ts)_
 
 ## `heroku ci:migrate-manifest`
 
@@ -238,7 +239,7 @@ EXAMPLE
   $ heroku ci:rerun 985 --app murmuring-headland-14719
 ```
 
-_See code: [@heroku-cli/plugin-ci](https://github.com/heroku/cli/blob/v7.14.4/packages/ci/src/commands/ci/rerun.ts)_
+_See code: [@heroku-cli/plugin-ci](https://github.com/heroku/cli/blob/v7.15.0/packages/ci/src/commands/ci/rerun.ts)_
 
 ## `heroku ci:run`
 
@@ -256,4 +257,4 @@ EXAMPLE
   $ heroku ci:run --app murmuring-headland-14719
 ```
 
-_See code: [@heroku-cli/plugin-ci](https://github.com/heroku/cli/blob/v7.14.4/packages/ci/src/commands/ci/run.ts)_
+_See code: [@heroku-cli/plugin-ci](https://github.com/heroku/cli/blob/v7.15.0/packages/ci/src/commands/ci/run.ts)_
