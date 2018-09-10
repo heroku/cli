@@ -19,7 +19,7 @@
     "inquirer": "^6.2.0"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.17.0",
+    "@oclif/dev-cli": "^1.18.0",
     "@oclif/plugin-legacy": "^1.1.0",
     "chai": "^4.1.2",
     "cross-env": "^5.2.0",
@@ -30,7 +30,7 @@
     "nyc": "^13.0.1",
     "sinon": "^5.0.7",
     "std-mocks": "^1.0.1",
-    "unexpected": "^10.37.2"
+    "unexpected": "^10.39.0"
   },
   "files": [
     "oclif.manifest.json",

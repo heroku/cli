@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@heroku-cli/command": "^8.1.28",
-    "bluebird": "^3.5.1",
+    "bluebird": "^3.5.2",
     "co": "^4.6.0",
     "heroku-cli-util": "^8.0.10",
     "http-call": "^5.2.2",
@@ -27,10 +27,10 @@
     "lodash.flatten": "^4.4.0",
     "lodash.sortby": "^4.7.0",
     "string-just": "^0.0.2",
-    "validator": "^10.7.0"
+    "validator": "^10.7.1"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.17.0",
+    "@oclif/dev-cli": "^1.18.0",
     "@oclif/plugin-legacy": "^1.1.0",
     "chai": "^4.1.2",
     "mocha": "^5.1.1",

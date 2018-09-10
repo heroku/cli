@@ -8,14 +8,14 @@
     "@heroku-cli/color": "^1.1.10",
     "@heroku-cli/command": "^8.1.28",
     "@oclif/command": "^1.5.0",
-    "@oclif/config": "^1.7.2",
+    "@oclif/config": "^1.7.4",
     "cli-ux": "^4.8.1",
     "debug": "3.1.0"
   },
   "devDependencies": {
-    "@heroku-cli/schema": "^1.0.17",
-    "@oclif/dev-cli": "^1.17.0",
-    "@oclif/plugin-help": "^2.1.0",
+    "@heroku-cli/schema": "^1.0.19",
+    "@oclif/dev-cli": "^1.18.0",
+    "@oclif/plugin-help": "^2.1.1",
     "@oclif/plugin-legacy": "^1.1.0",
     "@oclif/test": "^1.2.0",
     "@oclif/tslint": "^2.0.0",

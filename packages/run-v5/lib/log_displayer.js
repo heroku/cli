@@ -42,15 +42,20 @@ function readLogsV2 (logplexURL) {
     })
 
     es.onerror = function (err) {
+      if (err && (err.status || err.message)) {
+        const msg = (isTail && (err.status === 404 || err.status === 403)) ?
+          'Log stream timed out. Please try again.' :
+          `Logs eventsource failed with: ${err.status} ${err.message}`
+        reject(msg)
+        es.close()
+      }
+
       if (!isTail) {
         resolve()
         es.close()
       }
 
-      if (err && (err.status === 404 || err.status === 403)) {
-        reject(new Error('Log stream timed out. Please try again.'))
-        es.close()
-      }
+      // should only land here if --tail and no error status or message
     }
 
     es.onmessage = function (e) {
