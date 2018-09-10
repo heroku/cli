@@ -41,10 +41,12 @@ function * run (context, heroku) {
     ID: space.id,
     Team: space.team.name,
     Region: space.region.name,
+    CIDR: space.cidr,
+    'Data CIDR': space.data_cidr,
     State: space.state,
     Shield: lib.displayShieldState(space),
     'Created at': space.created_at
-  }, ['ID', 'Team', 'Region', 'State', 'Shield', 'Created at'])
+  }, ['ID', 'Team', 'Region', 'CIDR', 'Data CIDR', 'State', 'Shield', 'Created at'])
 }
 
 module.exports = {
@@ -59,6 +61,8 @@ module.exports = {
     ID:         e7b99e37-69b3-4475-ad47-a5cc5d75fd9f
     Team:       my-team
     Region:     oregon
+    CIDR:       10.0.0.0/16
+    Data CIDR:  172.23.0.0/20
     State:      allocating
     Created at: 2016-01-06T03:23:13Z
 
@@ -75,9 +79,9 @@ module.exports = {
     { name: 'log-drain-url', hasValue: true, hidden: true, description: 'direct log drain url' },
     { name: 'owner-pool', hasValue: true, hidden: true, description: 'owner pool name' },
     { name: 'shield', hasValue: false, hidden: true, description: 'create a Shield space' },
-    { name: 'cidr', hasValue: true, hidden: true, description: 'the RFC-1918 CIDR the space will use' },
+    { name: 'cidr', hasValue: true, description: 'the RFC-1918 CIDR the space will use' },
     { name: 'kpi-url', hasValue: true, hidden: true, description: 'self-managed KPI endpoint to use' },
-    { name: 'data-cidr', hasValue: true, hidden: true, description: "the RFC-1918 CIDR that the space will use when peering with DoD's spaces" },
+    { name: 'data-cidr', hasValue: true, description: "the RFC-1918 CIDR that the space will use when peering with DoD's spaces" },
     flags.team({ name: 'team', hasValue: true })
   ],
   run: cli.command(co.wrap(run))

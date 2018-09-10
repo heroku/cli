@@ -29,11 +29,13 @@ function render (space, flags) {
       ID: space.id,
       Team: space.team.name,
       Region: space.region.description,
+      CIDR: space.cidr,
+      'Data CIDR': space.data_cidr,
       State: space.state,
       Shield: lib.displayShieldState(space),
       'Outbound IPs': lib.displayNat(space.outbound_ips),
       'Created at': space.created_at
-    }, ['ID', 'Team', 'Region', 'State', 'Shield', 'Outbound IPs', 'Created at'])
+    }, ['ID', 'Team', 'Region', 'CIDR', 'Data CIDR', 'State', 'Shield', 'Outbound IPs', 'Created at'])
   }
 }
 
