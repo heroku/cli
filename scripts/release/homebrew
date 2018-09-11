@@ -5,9 +5,7 @@ set -ex
 rm -rf tmp/homebrew-brew
 git config --global core.pager cat
 
-set +x
-git clone "https://x-access-token:$(./scripts/github_token.js 290530)@github.com/heroku/homebrew-brew.git" tmp/homebrew-brew
-set -x
+git clone "git@github.com:heroku/homebrew-brew.git" tmp/homebrew-brew
 
 DIST_DIR=$(cd ./dist && pwd)
 TMP_DIR=$(cd ./tmp && pwd)
