@@ -6,9 +6,7 @@ VERSION=$(node -p "require('./packages/cli/package.json').version")
 
 # trigger a macos installer by committing and tagging to the repo
 
-set +x
-git clone --recurse-submodules "https://x-access-token:$(./scripts/github_token.js 290530)@github.com/heroku/cli-macos-installer.git" tmp/cli-macos-installer
-set -x
+git clone --recurse-submodules "git@github.com:heroku/cli-macos-installer.git" tmp/cli-macos-installer
 
 cd tmp/cli-macos-installer
 (
@@ -24,6 +22,6 @@ fi
 
 git commit -m "heroku $VERSION"
 git tag "v$VERSION"
-git push -q --tags
+git push --tags
 
-git push -q origin master
+git push origin master
