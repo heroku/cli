@@ -1,3 +1,4 @@
+<!--
 When creating a PR, be sure to prepend the PR title with the Conventional Commit type (`feat`, `fix`, or `chore`) and the package name.
 
 Examples:
@@ -13,3 +14,4 @@ Examples:
 `chore(cli): edit README`
 
 Learn more about [Conventional Commits](http://conventionalcommits.org).
+-->

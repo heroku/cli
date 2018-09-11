@@ -39,7 +39,7 @@ SHORT_VERSION=$(node -p "require('./package.json').version")
     fi
     aws s3 cp --cache-control max-age=604800 "$NODE_TARBALL_PATH" "$REMOTE_BASE/$NODE_TARBALL_BASE"
     git commit -m "heroku-node ${NODE_VERSION}"
-    git push -q origin master
+    git push origin master
   fi
 )
 
@@ -59,4 +59,4 @@ if [[ -z "${CIRCLE_TAG}" ]]; then
 fi
 
 git commit -m "heroku v${SHORT_VERSION}"
-git push -q origin master
+git push origin master
