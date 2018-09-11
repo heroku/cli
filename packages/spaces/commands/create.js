@@ -79,9 +79,9 @@ module.exports = {
     { name: 'log-drain-url', hasValue: true, hidden: true, description: 'direct log drain url' },
     { name: 'owner-pool', hasValue: true, hidden: true, description: 'owner pool name' },
     { name: 'shield', hasValue: false, hidden: true, description: 'create a Shield space' },
-    { name: 'cidr', hasValue: true, description: 'the RFC-1918 CIDR the space will use' },
+    { name: 'cidr', hasValue: true, description: 'RFC-1918 CIDR the space will use' },
     { name: 'kpi-url', hasValue: true, hidden: true, description: 'self-managed KPI endpoint to use' },
-    { name: 'data-cidr', hasValue: true, description: "the RFC-1918 CIDR used for Heroku Data resources for the space" },
+    { name: 'data-cidr', hasValue: true, description: 'RFC-1918 CIDR used by Heroku Data resources for the space' },
     flags.team({ name: 'team', hasValue: true })
   ],
   run: cli.command(co.wrap(run))
