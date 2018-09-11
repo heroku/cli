@@ -38,22 +38,22 @@ function statusIcon({status}: Heroku.TestRun | Heroku.TestNode) {
   if (!status) { return color.yellow('-') }
 
   switch (status) {
-    case 'pending':
-    case 'creating':
-    case 'building':
-    case 'running':
-    case 'debugging':
-      return color.yellow('-')
-    case 'errored':
-      return color.red('!')
-    case 'failed':
-      return color.red('✗')
-    case 'succeeded':
-      return color.green('✓')
-    case 'cancelled':
-      return color.yellow('!')
-    default:
-      return color.yellow('?')
+  case 'pending':
+  case 'creating':
+  case 'building':
+  case 'running':
+  case 'debugging':
+    return color.yellow('-')
+  case 'errored':
+    return color.red('!')
+  case 'failed':
+    return color.red('✗')
+  case 'succeeded':
+    return color.green('✓')
+  case 'cancelled':
+    return color.yellow('!')
+  default:
+    return color.yellow('?')
 
   }
 }
@@ -99,8 +99,13 @@ function sort(testRuns: Heroku.TestRun[]) {
   return testRuns.sort((a: Heroku.TestRun, b: Heroku.TestRun) => a.number! < b.number! ? 1 : -1)
 }
 
-function draw(testRuns: Heroku.TestRun[], watchOption = false, count = 15) {
+function draw(testRuns: Heroku.TestRun[], watchOption = false, jsonOption = false, count = 15) {
   const latestTestRuns = sort(testRuns).slice(0, count)
+
+  if (jsonOption) {
+    cli.styledJSON(latestTestRuns)
+    return
+  }
 
   if (watchOption) {
     process.stdout.write(ansiEscapes.eraseDown)
@@ -136,17 +141,21 @@ function draw(testRuns: Heroku.TestRun[], watchOption = false, count = 15) {
   }
 }
 
-export async function renderList(command: Command, testRuns: Heroku.TestRun[], pipeline: Heroku.Pipeline, watchOption: boolean) {
-  const header = `${watchOption ? 'Watching' : 'Showing'} latest test runs for the ${pipeline.name} pipeline`
-  cli.styledHeader(header)
+export async function renderList(command: Command, testRuns: Heroku.TestRun[], pipeline: Heroku.Pipeline, watchOption: boolean, jsonOption: boolean) {
+  const watchable = (watchOption && !jsonOption ? true : false)
 
-  if (watchOption) {
+  if (!jsonOption) {
+    const header = `${watchOption ? 'Watching' : 'Showing'} latest test runs for the ${pipeline.name} pipeline`
+    cli.styledHeader(header)
+  }
+
+  if (watchable) {
     process.stdout.write(ansiEscapes.cursorHide)
   }
 
-  draw(testRuns, watchOption)
+  draw(testRuns, watchOption, jsonOption)
 
-  if (!watchOption) { return }
+  if (!watchable) { return }
 
   let socket = io.connect(SIMI_URL, {transports: ['websocket']})
 

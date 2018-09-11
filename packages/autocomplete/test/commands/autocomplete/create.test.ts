@@ -16,9 +16,9 @@ const AC_PLUGIN_PATH = path.resolve(__dirname, '..', '..', '..')
 const CacheBuildFlagsTest = {
   id: 'autocomplete:create',
   flags:
-   { app: {name: 'app', type: 'option', description: 'app to use'},
-     visable: {name: 'visable', type: 'boolean', description: 'visable flag'},
-     hidden: {name: 'hidden', type: 'boolean', description: 'hidden flag', hidden: true},
+  { app: {name: 'app', type: 'option', description: 'app to use'},
+    visable: {name: 'visable', type: 'boolean', description: 'visable flag'},
+    hidden: {name: 'hidden', type: 'boolean', description: 'hidden flag', hidden: true},
   },
   args: [],
 }

@@ -1,6 +1,6 @@
 {
   "name": "@heroku-cli/plugin-buildpacks",
-  "version": "7.14.3",
+  "version": "7.15.0",
   "author": "Terence Lee @hone",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
@@ -24,7 +24,7 @@
     "@oclif/dev-cli": "^1.18.0",
     "@oclif/plugin-help": "^2.1.1",
     "@oclif/test": "^1",
-    "@oclif/tslint": "^2.0.0",
+    "@oclif/tslint": "^3.0.1",
     "@types/chai": "^4",
     "@types/mocha": "^5",
     "@types/nock": "^9.1.3",

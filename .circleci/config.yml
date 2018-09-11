@@ -22,15 +22,35 @@ jobs:
             - v4-yarn-{{ checksum ".circleci/config.yml" }}-{{ checksum "yarn.lock" }}
             - v4-yarn-{{ checksum ".circleci/config.yml" }}
             - v4-yarn
-      - run: yarn global add greenkeeper-lockfile@2 && greenkeeper-lockfile-update
-      - run: |
-          git clone https://github.com/sstephenson/bats.git
-          cd bats
-          ./install.sh /usr/local
-      - run: yarn
-      - run: yarn test
-      - run: ./node_modules/.bin/lerna exec "curl -s https://codecov.io/bash | bash"
-      - run: greenkeeper-lockfile-upload
+      - run:
+          name: Installing greenkeeper
+          command: yarn global add greenkeeper-lockfile@2 && greenkeeper-lockfile-update
+      - run:
+          name: Installing bats
+          command: |
+            git clone https://github.com/sstephenson/bats.git
+            cd bats
+            ./install.sh /usr/local
+      - run:
+          name: Installing dependencies
+          command: yarn
+      - run:
+          name: Running all tests
+          command: yarn test
+      - run:
+          name: Uploading code coverage to codecov
+          command: ./node_modules/.bin/lerna exec "curl -s https://codecov.io/bash | bash"
+      - run:
+          name: Upload lockfile to greenkeeper
+          command: greenkeeper-lockfile-upload
+      - run:
+          name: Build tarball for BundleSize
+          command: |
+            cp yarn.lock packages/cli
+            cd packages/cli
+            ./node_modules/.bin/oclif-dev pack --no-xz --targets ''
+      - store_artifacts:
+          path: ./packages/cli/dist
   release:
     <<: *defaults
     steps:

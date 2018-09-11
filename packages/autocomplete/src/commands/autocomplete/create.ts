@@ -59,27 +59,27 @@ export default class Create extends AutocompleteBase {
   }
 
   private get commands(): Command[] {
-  if (this._commands) return this._commands
+    if (this._commands) return this._commands
 
-  const plugins = this.config.plugins
-  let commands: Command[] = []
+    const plugins = this.config.plugins
+    let commands: Command[] = []
 
-  plugins.map(p => {
-    p.commands.map(c => {
-      if (c.hidden) return
-      try {
-        commands.push(c)
-      } catch (err) {
-        debug(`Error creating completions for command ${c.id}`)
-        debug(err.message)
-        this.writeLogFile(err.message)
-      }
+    plugins.map(p => {
+      p.commands.map(c => {
+        if (c.hidden) return
+        try {
+          commands.push(c)
+        } catch (err) {
+          debug(`Error creating completions for command ${c.id}`)
+          debug(err.message)
+          this.writeLogFile(err.message)
+        }
+      })
     })
-  })
 
-  this._commands = commands
-  return this._commands
-}
+    this._commands = commands
+    return this._commands
+  }
 
   private get bashCommandsList(): string {
     return this.commands.map(c => {

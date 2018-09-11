@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-ci",
   "description": "Heroku CLI plugin for Heroku CI",
-  "version": "7.14.4",
+  "version": "7.15.0",
   "author": "Raúl Barroso @raulb",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
@@ -27,13 +27,12 @@
     "@oclif/dev-cli": "^1.18.0",
     "@oclif/plugin-help": "^2.1.1",
     "@oclif/test": "^1.2.0",
-    "@oclif/tslint": "^2.0.0",
+    "@oclif/tslint": "^3.0.1",
     "@types/chai": "^4",
     "@types/inquirer": "0.0.43",
     "@types/mocha": "^5",
     "@types/nock": "^9.3.0",
     "@types/node": "^10.9.4",
-    "@types/sinon": "^5.0.2",
     "@types/socket.io-client": "^1.4.32",
     "@types/validator": "^9.4.1",
     "chai": "^4",

@@ -1,6 +1,6 @@
 {
   "name": "@heroku-cli/plugin-autocomplete",
-  "version": "7.14.2",
+  "version": "7.15.0",
   "author": "Philipe Navarro @RasPhilCo",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
@@ -19,7 +19,7 @@
     "@oclif/dev-cli": "1.18.0",
     "@oclif/plugin-help": "2.1.1",
     "@oclif/test": "1.2.0",
-    "@oclif/tslint": "2.0.0",
+    "@oclif/tslint": "3.1.0",
     "@types/chai": "4.1.4",
     "@types/fs-extra": "^5.0.4",
     "@types/lodash.flatten": "^4.4.4",

@@ -8,4 +8,4 @@ async function run() {
   await analytics.submit()
 }
 run()
-.catch(require('@oclif/errors/handle'))
+  .catch(require('@oclif/errors/handle'))

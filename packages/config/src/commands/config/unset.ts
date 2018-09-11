@@ -10,9 +10,9 @@ export class ConfigUnset extends Command {
   ]
   static description = 'unset one or more config vars'
   static examples = [
-  `$ heroku config:unset RAILS_ENV
+    `$ heroku config:unset RAILS_ENV
 Unsetting RAILS_ENV and restarting example... done, v10`,
-  `$ heroku config:unset RAILS_ENV RACK_ENV
+    `$ heroku config:unset RAILS_ENV RACK_ENV
 Unsetting RAILS_ENV, RACK_ENV and restarting example... done, v10`,
   ]
   static strict = false

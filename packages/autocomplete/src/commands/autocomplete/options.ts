@@ -42,189 +42,189 @@ export default class Options extends AutocompleteBase {
     }
   }
 
-    private async processCommandLine() {
+  private async processCommandLine() {
       // find command id
-      const commandLineToComplete = this.argv[0].split(' ')
-      const id = commandLineToComplete[1]
+    const commandLineToComplete = this.argv[0].split(' ')
+    const id = commandLineToComplete[1]
       // find Command
-      const C = this.config.findCommand(id)
-      let Klass
-      if (C) {
-        Klass = C.load()
+    const C = this.config.findCommand(id)
+    let Klass
+    if (C) {
+      Klass = C.load()
         // process Command state from command line data
-        const slicedArgv = commandLineToComplete.slice(2)
-        const [argsIndex, curPositionIsFlag, curPositionIsFlagValue] = this.determineCmdState(slicedArgv, (Klass as Command))
-        return {id, Klass, argsIndex, curPositionIsFlag, curPositionIsFlagValue, slicedArgv}
-      } else {
-        this.throwError(`Command ${id} not found`)
-      }
+      const slicedArgv = commandLineToComplete.slice(2)
+      const [argsIndex, curPositionIsFlag, curPositionIsFlagValue] = this.determineCmdState(slicedArgv, (Klass as Command))
+      return {id, Klass, argsIndex, curPositionIsFlag, curPositionIsFlagValue, slicedArgv}
+    } else {
+      this.throwError(`Command ${id} not found`)
     }
+  }
 
-    private determineCompletion(commandStateVars: any) {
-      const {id, Klass, argsIndex, curPositionIsFlag, curPositionIsFlagValue, slicedArgv} = commandStateVars
+  private determineCompletion(commandStateVars: any) {
+    const {id, Klass, argsIndex, curPositionIsFlag, curPositionIsFlagValue, slicedArgv} = commandStateVars
       // setup empty cache completion vars to assign
-      let cacheKey: any
-      let cacheCompletion: any
+    let cacheKey: any
+    let cacheCompletion: any
 
       // completing a flag/value? else completing an arg
-      if (curPositionIsFlag || curPositionIsFlagValue) {
-        const slicedArgvCount = slicedArgv.length
-        const lastArgvArg = slicedArgv[slicedArgvCount - 1]
-        const previousArgvArg = slicedArgv[slicedArgvCount - 2]
-        const argvFlag = curPositionIsFlagValue ? previousArgvArg : lastArgvArg
-        let {name, flag} = this.findFlagFromWildArg(argvFlag, Klass)
-        if (!flag) this.throwError(`${argvFlag} is not a valid flag for ${id}`)
-        cacheKey = name || flag.name
-        cacheCompletion = flag.completion
-      } else {
-        const cmdArgs = Klass.args || []
+    if (curPositionIsFlag || curPositionIsFlagValue) {
+      const slicedArgvCount = slicedArgv.length
+      const lastArgvArg = slicedArgv[slicedArgvCount - 1]
+      const previousArgvArg = slicedArgv[slicedArgvCount - 2]
+      const argvFlag = curPositionIsFlagValue ? previousArgvArg : lastArgvArg
+      let {name, flag} = this.findFlagFromWildArg(argvFlag, Klass)
+      if (!flag) this.throwError(`${argvFlag} is not a valid flag for ${id}`)
+      cacheKey = name || flag.name
+      cacheCompletion = flag.completion
+    } else {
+      const cmdArgs = Klass.args || []
         // variable arg (strict: false)
-        if (!Klass.strict) {
-          cacheKey = cmdArgs[0] && cmdArgs[0].name.toLowerCase()
-          cacheCompletion = this.findCompletion(cacheKey, id)
-          if (!cacheCompletion) this.throwError(`Cannot complete variable arg position for ${id}`)
-        } else if (argsIndex > cmdArgs.length - 1) {
-          this.throwError(`Cannot complete arg position ${argsIndex} for ${id}`)
-        } else {
-          const arg = cmdArgs[argsIndex]
-          cacheKey = arg.name.toLowerCase()
-        }
+      if (!Klass.strict) {
+        cacheKey = cmdArgs[0] && cmdArgs[0].name.toLowerCase()
+        cacheCompletion = this.findCompletion(cacheKey, id)
+        if (!cacheCompletion) this.throwError(`Cannot complete variable arg position for ${id}`)
+      } else if (argsIndex > cmdArgs.length - 1) {
+        this.throwError(`Cannot complete arg position ${argsIndex} for ${id}`)
+      } else {
+        const arg = cmdArgs[argsIndex]
+        cacheKey = arg.name.toLowerCase()
       }
+    }
 
       // try to auto-populate the completion object
-      if (!cacheCompletion) {
-        cacheCompletion = this.findCompletion(cacheKey, id)
-      }
-      return {cacheKey, cacheCompletion}
+    if (!cacheCompletion) {
+      cacheCompletion = this.findCompletion(cacheKey, id)
     }
+    return {cacheKey, cacheCompletion}
+  }
 
-    private async fetchOptions(cache: any) {
-      const {cacheCompletion, cacheKey} = cache
+  private async fetchOptions(cache: any) {
+    const {cacheCompletion, cacheKey} = cache
       // build/retrieve & return options cache
-      if (cacheCompletion && cacheCompletion.options) {
-        const ctx = {
-          args: this.parsedArgs,
+    if (cacheCompletion && cacheCompletion.options) {
+      const ctx = {
+        args: this.parsedArgs,
           // special case for app & team env vars
-          flags: this.parsedFlagsWithEnvVars,
-          argv: this.argv,
-          config: this.config,
-        }
+        flags: this.parsedFlagsWithEnvVars,
+        argv: this.argv,
+        config: this.config,
+      }
         // use cacheKey function or fallback to arg/flag name
-        const ckey = cacheCompletion.cacheKey ? await cacheCompletion.cacheKey(ctx) : null
-        const key: string = ckey || cacheKey || 'unknown_key_error'
-        const flagCachePath = path.join(this.completionsCacheDir, key)
+      const ckey = cacheCompletion.cacheKey ? await cacheCompletion.cacheKey(ctx) : null
+      const key: string = ckey || cacheKey || 'unknown_key_error'
+      const flagCachePath = path.join(this.completionsCacheDir, key)
 
         // build/retrieve cache
-        const duration = cacheCompletion.cacheDuration || 60 * 60 * 24 // 1 day
-        const opts = {cacheFn: () => cacheCompletion.options(ctx)}
-        const options = await fetchCache(flagCachePath, duration, opts)
+      const duration = cacheCompletion.cacheDuration || 60 * 60 * 24 // 1 day
+      const opts = {cacheFn: () => cacheCompletion.options(ctx)}
+      const options = await fetchCache(flagCachePath, duration, opts)
 
         // return options cache
-        return (options || []).join('\n')
-      }
+      return (options || []).join('\n')
     }
+  }
 
-    private get parsedFlagsWithEnvVars() {
-      const {flags} = this.parse(Options)
-      return {
-          app: process.env.HEROKU_APP || flags.app,
-          team: process.env.HEROKU_TEAM || process.env.HEROKU_ORG,
-        ...this.parsedFlags,
-      }
+  private get parsedFlagsWithEnvVars() {
+    const {flags} = this.parse(Options)
+    return {
+      app: process.env.HEROKU_APP || flags.app,
+      team: process.env.HEROKU_TEAM || process.env.HEROKU_ORG,
+      ...this.parsedFlags,
     }
+  }
 
-    private throwError(msg: string) {
-      throw new Error(msg)
-    }
+  private throwError(msg: string) {
+    throw new Error(msg)
+  }
 
-    private findFlagFromWildArg(wild: string, Klass: Command): { flag: any; name: any } {
-      let name = wild.replace(/^-+/, '')
-      name = name.replace(/=(.+)?$/, '')
+  private findFlagFromWildArg(wild: string, Klass: Command): { flag: any; name: any } {
+    let name = wild.replace(/^-+/, '')
+    name = name.replace(/=(.+)?$/, '')
 
-      let unknown = {flag: undefined, name: undefined}
-      if (!Klass.flags) return unknown
-      const CFlags = Klass.flags
+    let unknown = {flag: undefined, name: undefined}
+    if (!Klass.flags) return unknown
+    const CFlags = Klass.flags
 
-      let flag = CFlags[name]
-      if (flag) return {name, flag}
+    let flag = CFlags[name]
+    if (flag) return {name, flag}
 
-      name = Object.keys(CFlags).find((k: string) => CFlags[k].char === name) || 'undefinedcommand'
-      flag = CFlags && CFlags[name]
-      if (flag) return {name, flag}
-      return unknown
-    }
+    name = Object.keys(CFlags).find((k: string) => CFlags[k].char === name) || 'undefinedcommand'
+    flag = CFlags && CFlags[name]
+    if (flag) return {name, flag}
+    return unknown
+  }
 
-    private determineCmdState(argv: string[], Klass: Command): [number, boolean, boolean] {
-      let Args = Klass.args || []
-      let needFlagValueSatisfied = false
-      let argIsFlag = false
-      let argIsFlagValue = false
-      let argsIndex = -1
-      let flagName: string
+  private determineCmdState(argv: string[], Klass: Command): [number, boolean, boolean] {
+    let Args = Klass.args || []
+    let needFlagValueSatisfied = false
+    let argIsFlag = false
+    let argIsFlagValue = false
+    let argsIndex = -1
+    let flagName: string
 
-      argv.filter(wild => {
-        if (wild.match(/^-(-)?/)) {
+    argv.filter(wild => {
+      if (wild.match(/^-(-)?/)) {
           // we're a flag
-          argIsFlag = true
+        argIsFlag = true
 
           // ignore me
-          const wildSplit = wild.split('=')
-          const key = wildSplit.length === 1 ? wild : wildSplit[0]
-          const {name, flag} = this.findFlagFromWildArg(key, Klass)
-          flagName = name
+        const wildSplit = wild.split('=')
+        const key = wildSplit.length === 1 ? wild : wildSplit[0]
+        const {name, flag} = this.findFlagFromWildArg(key, Klass)
+        flagName = name
           // end ignore me
 
-          if (wildSplit.length === 1) {
+        if (wildSplit.length === 1) {
             // we're a flag w/o a '=value'
             // (find flag & see if flag needs a value)
-            if (flag && flag.type !== 'boolean') {
+          if (flag && flag.type !== 'boolean') {
               // we're a flag who needs our value to be next
-              argIsFlagValue = false
-              needFlagValueSatisfied = true
-              return false
-            }
+            argIsFlagValue = false
+            needFlagValueSatisfied = true
+            return false
           }
+        }
 
           // --app=my-app is consided a flag & not a flag value
           // the shell's autocomplete handles partial value matching
 
           // add parsedFlag
-          if (wildSplit.length === 2 && name) this.parsedFlags[name] = wildSplit[1]
+        if (wildSplit.length === 2 && name) this.parsedFlags[name] = wildSplit[1]
 
           // we're a flag who is satisfied
-          argIsFlagValue = false
-          needFlagValueSatisfied = false
-          return false
-        }
+        argIsFlagValue = false
+        needFlagValueSatisfied = false
+        return false
+      }
 
         // we're not a flag
-        argIsFlag = false
+      argIsFlag = false
 
-        if (needFlagValueSatisfied) {
+      if (needFlagValueSatisfied) {
           // we're a flag value
 
           // add parsedFlag
-          if (flagName) this.parsedFlags[flagName] = wild
+        if (flagName) this.parsedFlags[flagName] = wild
 
-          argIsFlagValue = true
-          needFlagValueSatisfied = false
-          return false
-        }
+        argIsFlagValue = true
+        needFlagValueSatisfied = false
+        return false
+      }
 
         // we're an arg!
 
         // add parsedArgs
         // TO-DO: how to handle variableArgs?
-        argsIndex += 1
-        if (argsIndex < Args.length) {
-          this.parsedArgs[Args[argsIndex].name] = wild
-        }
+      argsIndex += 1
+      if (argsIndex < Args.length) {
+        this.parsedArgs[Args[argsIndex].name] = wild
+      }
 
-        argIsFlagValue = false
-        needFlagValueSatisfied = false
-        return true
-      })
+      argIsFlagValue = false
+      needFlagValueSatisfied = false
+      return true
+    })
 
-      return [argsIndex, argIsFlag, argIsFlagValue]
-    }
+    return [argsIndex, argIsFlag, argIsFlagValue]
+  }
 }

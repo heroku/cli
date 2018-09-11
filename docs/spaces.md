@@ -44,9 +44,11 @@ USAGE
   $ heroku spaces:create
 
 OPTIONS
-  -s, --space=space  name of space to create
-  -t, --team=team    team to use
-  --region=region    region name
+  -s, --space=space      name of space to create
+  -t, --team=team        team to use
+  --cidr=cidr            the RFC-1918 CIDR the space will use
+  --data-cidr=data-cidr  the RFC-1918 CIDR that the space will use when peering with DoD's spaces
+  --region=region        region name
 
 DESCRIPTION
   Example:
@@ -57,6 +59,8 @@ DESCRIPTION
        ID:         e7b99e37-69b3-4475-ad47-a5cc5d75fd9f
        Team:       my-team
        Region:     oregon
+       CIDR:       10.0.0.0/16
+       Data CIDR:  172.23.0.0/20
        State:      allocating
        Created at: 2016-01-06T03:23:13Z
 ```

@@ -37,21 +37,21 @@ export async function disambiguatePipeline(pipelineIDOrName: any, command: Comma
     const {body: pipelines} = await command.heroku.get<Heroku.Pipeline>(`/pipelines?eq[name]=${pipelineIDOrName}`, {headers})
 
     switch (pipelines.length) {
-      case 0:
-        command.error('Pipeline not found')
-        break
-      case 1:
-        return pipelines[0]
-      default:
-        let choices = pipelines.map(function (x: Heroku.Pipeline) { return {name: new Date(x.created_at!), value: x} })
-        let questions = [{
-          type: 'list',
-          name: 'pipeline',
-            message: `Which ${pipelineIDOrName} pipeline?`,
-            choices
-        }]
+    case 0:
+      command.error('Pipeline not found')
+      break
+    case 1:
+      return pipelines[0]
+    default:
+      let choices = pipelines.map(function (x: Heroku.Pipeline) { return {name: new Date(x.created_at!), value: x} })
+      let questions = [{
+        type: 'list',
+        name: 'pipeline',
+        message: `Which ${pipelineIDOrName} pipeline?`,
+        choices
+      }]
 
-        return prompt(questions)
+      return prompt(questions)
     }
   }
 }
