@@ -29,7 +29,7 @@ function * run (ctx, api) {
       addon = yield waitForAddonProvisioning(api, addon, interval)
     } catch (error) {
       cli.error(error)
-      notify(`heroku addons:wait ${addon.name}`, 'Addon failed to provision', false)
+      notify(`heroku addons:wait ${addon.name}`, 'Add-on failed to provision', false)
       throw error
     }
 
@@ -41,7 +41,7 @@ function * run (ctx, api) {
 
     // only show notification if addon took longer than 20 seconds to provision
     if (new Date() - startTime >= 1000 * 20) {
-      notify(`heroku addons:wait ${addon.name}`, 'Addon successfully provisioned')
+      notify(`heroku addons:wait ${addon.name}`, 'Add-on successfully provisioned')
     }
   }
 }

@@ -46,11 +46,11 @@ function * run (context, heroku) {
   try {
     addon = yield createAddon(heroku, app, args[0], context.flags.confirm, context.flags.wait, { config, name, as })
     if (context.flags.wait) {
-      notify(`heroku addons:create ${addon.name}`, 'Addon successfully provisioned')
+      notify(`heroku addons:create ${addon.name}`, 'Add-on successfully provisioned')
     }
   } catch (error) {
     if (context.flags.wait) {
-      notify(`heroku addons:create ${args[0]}`, 'Addon failed to provision', false)
+      notify(`heroku addons:create ${args[0]}`, 'Add-on failed to provision', false)
     }
     throw error
   }
