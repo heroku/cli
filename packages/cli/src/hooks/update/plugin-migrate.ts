@@ -10,6 +10,16 @@ const exec = (cmd: string, args: string[]) => {
 export const migrate: Hook<'init'> = async function () {
   if (process.argv[2] && process.argv[2].startsWith('plugins')) return
   const pluginsDir = path.join(this.config.dataDir, 'plugins')
+  const yarnLockFilePath = path.join(this.config.dataDir, 'yarn.lock')
+
+  const removeYarnLockFile = async () => {
+    if (await fs.existsSync(yarnLockFilePath)) {
+      const yarnLockFile = await fs.readFileSync(yarnLockFilePath)
+      if (yarnLockFile.toString().includes('cli-npm.heroku.com')) {
+        await fs.remove(yarnLockFilePath)
+      }
+    }
+  }
 
   const migrateV6Plugins = async () => {
     if (!await fs.pathExists(pluginsDir)) return
@@ -42,5 +52,6 @@ export const migrate: Hook<'init'> = async function () {
     process.stderr.write('heroku: done migrating plugins\n')
   }
 
+  await removeYarnLockFile()
   await migrateV6Plugins()
 }
