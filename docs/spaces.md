@@ -46,8 +46,8 @@ USAGE
 OPTIONS
   -s, --space=space      name of space to create
   -t, --team=team        team to use
-  --cidr=cidr            the RFC-1918 CIDR the space will use
-  --data-cidr=data-cidr  the RFC-1918 CIDR that the space will use when peering with DoD's spaces
+  --cidr=cidr            RFC-1918 CIDR the space will use
+  --data-cidr=data-cidr  RFC-1918 CIDR used by Heroku Data resources for the space
   --region=region        region name
 
 DESCRIPTION
