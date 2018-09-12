@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="7.15.2"></a>
+## [7.15.2](https://github.com/heroku/cli/compare/v7.15.1...v7.15.2) (2018-09-12)
+
+
+### Bug Fixes
+
+* **cli:** invalid package references ([33e1900](https://github.com/heroku/cli/commit/33e1900))
+
+
+
+
+
 <a name="7.15.1"></a>
 ## [7.15.1](https://github.com/heroku/cli/compare/v7.15.0...v7.15.1) (2018-09-11)
 

@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="7.15.2"></a>
+## [7.15.2](https://github.com/heroku/cli/compare/v7.15.1...v7.15.2) (2018-09-12)
+
+
+### Bug Fixes
+
+* **spaces:** clarify --data-cidr description ([#1027](https://github.com/heroku/cli/issues/1027)) ([83e394a](https://github.com/heroku/cli/commit/83e394a))
+
+
+
+
+
 <a name="7.15.0"></a>
 # [7.15.0](https://github.com/heroku/cli/compare/v7.14.4...v7.15.0) (2018-09-10)
 
