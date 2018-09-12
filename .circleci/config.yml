@@ -35,6 +35,9 @@ jobs:
           name: Installing dependencies
           command: yarn
       - run:
+          name: heroku whoami
+          command: ./bin/run whoami
+      - run:
           name: Running all tests
           command: yarn test
       - run:
