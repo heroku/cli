@@ -138,6 +138,7 @@ describe('addons:wait', () => {
           .get('/apps/acme-inc-www/addons/www-redis')
           .reply(200, deprovisionedAddon)
 
+        /* eslint-disable no-unused-expressions */
         return cmd.run({ flags: {}, args: { addon: 'www-redis' } })
           .catch(() => {
             expect(unwrap(cli.stderr)).to.equal(`\
