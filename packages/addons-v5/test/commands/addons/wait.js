@@ -8,7 +8,6 @@ let cmd = require('../../../commands/addons/wait')
 let _ = require('lodash')
 const lolex = require('lolex')
 const sinon = require('sinon')
-const unwrap = require('../../unwrap')
 
 let clock
 const expansionHeaders = { 'Accept-Expansion': 'addon_service,plan' }
@@ -71,7 +70,7 @@ describe('addons:wait', () => {
           .then(() => expect(cli.stdout).to.equal('Created www-redis as REDIS_URL\n'))
       })
 
-      it('does NOT notify the user when provisioning takes less than 20 seconds', () => {
+      it('does NOT notify the user when provisioning takes less than 5 seconds', () => {
         const notifySpy = sandbox.spy(require('@heroku-cli/notifications'), 'notify')
 
         // Call to resolve the add-on:
@@ -140,9 +139,8 @@ describe('addons:wait', () => {
 
         /* eslint-disable no-unused-expressions */
         return cmd.run({ flags: {}, args: { addon: 'www-redis' } })
-          .catch(() => {
-            expect(unwrap(cli.stderr)).to.equal(`\
-Creating www-redis... ! The add-on was unable to be created, with status deprovisioned\n`)
+          .catch((err) => {
+            expect(err.message).to.equal('The add-on was unable to be created, with status deprovisioned')
             expect(notifySpy.called).to.be.true
             expect(notifySpy.calledOnce).to.be.true
           })

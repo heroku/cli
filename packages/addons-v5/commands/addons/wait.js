@@ -28,7 +28,6 @@ function * run (ctx, api) {
     try {
       addon = yield waitForAddonProvisioning(api, addon, interval)
     } catch (error) {
-      cli.error(error)
       notify(`heroku addons:wait ${addon.name}`, 'Add-on failed to provision', false)
       throw error
     }
