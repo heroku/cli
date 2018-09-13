@@ -6,11 +6,11 @@ const expect = require('unexpected')
 const lolex = require('lolex')
 const _ = require('lodash')
 const Config = require('@oclif/config')
+const sinon = require('sinon')
 let config
 
 describe('addons:create', () => {
   let api
-
   let addon = {
     id: 201,
     name: 'db3-swiftly-123',
@@ -199,36 +199,38 @@ Use heroku addons:docs heroku-db3 to view documentation
     })
     context('--wait', () => {
       let clock
-      let post
-      let provisioningResponse
-      let provisionedResponse
+      let sandbox
 
       beforeEach(() => {
-        let asyncAddon = _.clone(addon)
-        asyncAddon.state = 'provisioning'
-
-        post = api.post('/apps/myapp/addons', {
-          attachment: { name: 'mydb' },
-          config: { wait: true },
-          plan: { name: 'heroku-postgresql:standard-0' }
-        })
-          .reply(200, asyncAddon)
-
-        provisioningResponse = api.get('/apps/myapp/addons/db3-swiftly-123')
-          .reply(200, asyncAddon)
-
-        provisionedResponse = api.get('/apps/myapp/addons/db3-swiftly-123')
-          .reply(200, addon) // when it has provisioned
-
+        sandbox = sinon.createSandbox()
         clock = lolex.install()
         clock.setTimeout = function (fn, timeout) { fn() }
       })
 
       afterEach(function () {
         clock.uninstall()
+        sandbox.restore()
       })
 
-      it('waits for response', () => {
+      it('waits for response and notifies', () => {
+        const notifySpy = sandbox.spy(require('@heroku-cli/notifications'), 'notify')
+
+        let asyncAddon = _.clone(addon)
+        asyncAddon.state = 'provisioning'
+
+        const post = api.post('/apps/myapp/addons', {
+          attachment: { name: 'mydb' },
+          config: { wait: true },
+          plan: { name: 'heroku-postgresql:standard-0' }
+        })
+          .reply(200, asyncAddon)
+
+        const provisioningResponse = api.get('/apps/myapp/addons/db3-swiftly-123')
+          .reply(200, asyncAddon)
+
+        const provisionedResponse = api.get('/apps/myapp/addons/db3-swiftly-123')
+          .reply(200, addon) // when it has provisioned
+
         return cmd.run({
           config,
           app: 'myapp',
@@ -238,12 +240,48 @@ Use heroku addons:docs heroku-db3 to view documentation
           .then(() => post.done())
           .then(() => provisioningResponse.done())
           .then(() => provisionedResponse.done())
+          .then(() => expect(notifySpy.called, 'to equal', true))
+          .then(() => expect(notifySpy.calledOnce, 'to equal', true))
           .then(() => expect(cli.stderr, 'to equal', 'Creating heroku-postgresql:standard-0 on myapp... $100/month\nCreating db3-swiftly-123... done\n'))
           .then(() => expect(cli.stdout, 'to equal', `provision message
 Waiting for db3-swiftly-123...
 Created db3-swiftly-123 as DATABASE_URL
 Use heroku addons:docs heroku-db3 to view documentation
 `))
+      })
+
+      it('notifies when provisioning failure occurs', () => {
+        const notifySpy = sandbox.spy(require('@heroku-cli/notifications'), 'notify')
+
+        let asyncAddon = _.clone(addon)
+        asyncAddon.state = 'provisioning'
+
+        api.post('/apps/myapp/addons', {
+          attachment: { name: 'mydb' },
+          config: { wait: true },
+          plan: { name: 'heroku-postgresql:standard-0' }
+        })
+          .reply(200, asyncAddon)
+
+        api.get('/apps/myapp/addons/db3-swiftly-123')
+          .reply(200, asyncAddon)
+
+        const deprovisionedAddon = _.clone(addon)
+        deprovisionedAddon.state = 'deprovisioned'
+
+        api.get('/apps/myapp/addons/db3-swiftly-123')
+          .reply(200, deprovisionedAddon) // failed
+
+        return cmd.run({
+          config,
+          app: 'myapp',
+          args: ['heroku-postgresql:standard-0', '--wait'],
+          flags: { as: 'mydb', wait: true }
+        })
+          .catch(() => {
+            expect(notifySpy.called, 'to equal', true)
+            expect(notifySpy.calledOnce, 'to equal', true)
+          })
       })
     })
     context('when add-on provision errors', () => {
@@ -266,7 +304,9 @@ Use heroku addons:docs heroku-db3 to view documentation
 
         return cmdPromise
           .then(() => { throw new Error('unreachable') })
-          .catch((err) => expect(err.message, 'to equal', 'The add-on was unable to be created, with status deprovisioned'))
+          .catch((err) => {
+            expect(err.message, 'to equal', 'The add-on was unable to be created, with status deprovisioned')
+          })
       })
     })
   })
