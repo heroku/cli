@@ -94,7 +94,7 @@ describe('addons:wait', () => {
           .then(() => expect(notifySpy.calledOnce).to.be.false)
       })
 
-      it('notifies the user when provisioning takes longer than 20 seconds', () => {
+      it('notifies the user when provisioning takes longer than 5 seconds', () => {
         const notifySpy = sandbox.spy(require('@heroku-cli/notifications'), 'notify')
 
         // Call to resolve the add-on:
@@ -109,7 +109,7 @@ describe('addons:wait', () => {
         nock('https://api.heroku.com', { reqheaders: expansionHeaders })
           .get('/apps/acme-inc-www/addons/www-redis')
           .reply(200, () => {
-            clock.tick(20000)
+            clock.tick(5000)
             return provisionedAddon
           })
 
