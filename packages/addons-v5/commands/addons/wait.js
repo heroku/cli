@@ -39,7 +39,7 @@ function * run (ctx, api) {
       cli.log(`Created ${cli.color.addon(addon.name)} as ${configVars}`)
     }
 
-    // only show notification if addon took longer than 20 seconds to provision
+    // only show notification if addon took longer than 5 seconds to provision
     if (new Date() - startTime >= 1000 * 5) {
       notify(`heroku addons:wait ${addon.name}`, 'Add-on successfully provisioned')
     }
