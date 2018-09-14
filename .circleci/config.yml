@@ -30,7 +30,7 @@ jobs:
             ./install.sh /usr/local
       - run:
           name: Installing dependencies
-          command: yarn
+          command: yarn && yarn check
       - run:
           name: heroku whoami
           command: ./bin/run whoami
