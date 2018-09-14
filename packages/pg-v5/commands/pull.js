@@ -6,6 +6,7 @@ const debug = require('debug')('push')
 const psql = require('../lib/psql')
 const env = require('process').env
 const bastion = require('../lib/bastion')
+const { spawn } = require('child_process');
 
 function parseURL (db) {
   const url = require('url')
@@ -42,23 +43,23 @@ function exec (cmd, opts = {}) {
   }
 }
 
-function spawn (cmd) {
-  const { spawn } = require('child_process')
-  return new Promise((resolve, reject) => {
-    let result = ''
-    let psql = spawn(cmd, [], { encoding: 'utf8', stdio: [ 'ignore', 'pipe', 'inherit' ], shell: true })
-    psql.stdout.on('data', function (data) {
-      result += data.toString()
-    })
-    psql.on('close', function (code) {
-      if (code === 0) {
-        resolve(result)
-      } else {
-        cli.exit(code)
-      }
-    })
-  })
-}
+// function spawn (cmd) {
+//   // const { spawn } = require('child_process')
+//   return new Promise((resolve, reject) => {
+//     let result = ''
+//     let psql = spawn(cmd, [], { encoding: 'utf8', stdio: [ 'ignore', 'pipe', 'inherit' ], shell: true })
+//     psql.stdout.on('data', function (data) {
+//       result += data.toString()
+//     })
+//     psql.on('close', function (code) {
+//       if (code === 0) {
+//         resolve(result)
+//       } else {
+//         cli.exit(code)
+//       }
+//     })
+//   })
+// }
 
 const prepare = co.wrap(function * (target) {
   if (target.host === 'localhost' || !target.host) {
@@ -137,12 +138,69 @@ const run = co.wrap(function * (sourceIn, targetIn, exclusions) {
   let dump = `env${password(source.password)} PGSSLMODE=prefer pg_dump --verbose -F c -Z 0 ${exclude} ${connstring(source, true)}`
   let restore = `env${password(target.password)} pg_restore --verbose --no-acl --no-owner ${connstring(target)}`
 
-  yield spawn(`${dump} | ${restore}`)
+  console.log(dump)
+  console.log(restore)
 
-  if (source._tunnel) source._tunnel.close()
-  if (target._tunnel) target._tunnel.close()
+  // DUMP env PGPASSWORD="cb87befdaf83488ae83ed1f0c81c4d3016f8adc2c6624776d36c990c400d0dc3" PGSSLMODE=prefer pg_dump --verbose -F c -Z 0  -U ioilfgggkeulqg -h ec2-54-83-4-76.compute-1.amazonaws.com -p 5432  d5ejvjbr8klbae
 
-  yield verifyExtensionsMatch(sourceIn, targetIn)
+  const pgDumpFlags = ['--verbose', '-F', 'c', '-Z', '0'].concat(connstring(source, true).split(' '))
+  const pgRestoreFlags = ['--verbose', '--no-acl', '--no-owner'].concat(connstring(target).split(' '))
+
+  // console.log(pgRestoreFlags)
+
+  const pgDumpOptions = {
+    env: {
+      PGPASSWORD: `${source.password}`,
+      PGSSLMODE: 'prefer'
+    },
+    encoding: 'utf8',
+    shell: true,
+    stdio: [ 'ignore', 'pipe', 'inherit' ] //  stdin, stdout, and stderr
+  }
+
+  const pgDump = spawn('pg_dump', pgDumpFlags, pgDumpOptions)
+  const pgRestore = spawn('pg_restore', pgRestoreFlags)
+
+  let result
+  pgDump.stdout.on('data', (data) => {
+    // pgRestore.stdin.write(data)
+    // console.log(`stdout: ${data}`)
+    // console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^')
+    result += data.toString()
+  })
+
+  pgDump.on('close', (code) => {
+    console.log(`child process exited with code ${code}`)
+    // console.log('9999999999999999999999999999999999999999999999999999999')
+    // pgRestore.stdin.end()
+    if (code === 0) {
+      // cli.log(result)
+      // pgRestore.stdin.write(result)
+    } else {
+      cli.exit(code)
+    }
+  })
+
+  // pgRestore.stdout.on('data', (data) => {
+  //   console.log(data.toString())
+  // })
+  //
+  // pgRestore.stderr.on('data', (data) => {
+  //   console.log(`pgRestore stderr: ${data}`)
+  // })
+  //
+  // pgRestore.on('close', (code) => {
+  //   if (code !== 0) {
+  //     console.log(`pgRestore process exited with code ${code}`)
+  //   }
+  // })
+
+  // yield spawn(`${dump} | ${restore}`)
+  //
+  // if (source._tunnel) source._tunnel.close()
+  // if (target._tunnel) target._tunnel.close()
+  //
+  // yield verifyExtensionsMatch(sourceIn, targetIn)
 })
 
 function * push (context, heroku) {
