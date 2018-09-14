@@ -6,7 +6,7 @@ const debug = require('debug')('push')
 const psql = require('../lib/psql')
 const env = require('process').env
 const bastion = require('../lib/bastion')
-const { spawn } = require('child_process');
+const cp = require('child_process')
 
 function parseURL (db) {
   const url = require('url')
@@ -32,34 +32,15 @@ function parseExclusions (rawExcludeList) {
 }
 
 function exec (cmd, opts = {}) {
-  const { execSync } = require('child_process')
   debug(cmd)
   opts = Object.assign({}, opts, { stdio: 'inherit' })
   try {
-    return execSync(cmd, opts)
+    return cp.execSync(cmd, opts)
   } catch (err) {
     if (err.status) process.exit(err.status)
     throw err
   }
 }
-
-// function spawn (cmd) {
-//   // const { spawn } = require('child_process')
-//   return new Promise((resolve, reject) => {
-//     let result = ''
-//     let psql = spawn(cmd, [], { encoding: 'utf8', stdio: [ 'ignore', 'pipe', 'inherit' ], shell: true })
-//     psql.stdout.on('data', function (data) {
-//       result += data.toString()
-//     })
-//     psql.on('close', function (code) {
-//       if (code === 0) {
-//         resolve(result)
-//       } else {
-//         cli.exit(code)
-//       }
-//     })
-//   })
-// }
 
 const prepare = co.wrap(function * (target) {
   if (target.host === 'localhost' || !target.host) {
@@ -77,10 +58,15 @@ const prepare = co.wrap(function * (target) {
 })
 
 function connstring (uri, skipDFlag) {
-  let user = uri.user ? `-U ${uri.user}` : ''
-  let host = uri.host ? `-h ${uri.host}` : ''
-  let port = uri.port ? `-p ${uri.port}` : ''
-  return `${user} ${host} ${port} ${skipDFlag ? '' : '-d'} ${uri.database}`
+  const args = []
+
+  if (uri.user) args.push(`-U ${uri.user}`)
+  if (uri.host) args.push(`-h ${uri.host}`)
+  if (uri.port) args.push(`-p ${uri.port}`)
+  if (!skipDFlag) args.push('-d')
+  args.push(`${uri.database}`)
+
+  return args.join(' ')
 }
 
 const verifyExtensionsMatch = co.wrap(function * (source, target) {
@@ -126,81 +112,74 @@ const maybeTunnel = function * (herokuDb) {
   return herokuDb
 }
 
+function spawnPipe (commandOne, commandTwo) {
+  return new Promise((resolve, reject) => {
+    commandOne.stdout.on('data', (data) => {
+      commandTwo.stdin.write(data)
+    })
+
+    commandOne.stderr.on('data', (data) => {
+      console.log(`${data.toString().trim()}`)
+    })
+
+    commandOne.on('close', (code) => {
+      if (code !== 0) {
+        cli.exit(code)
+      }
+      commandTwo.stdin.end()
+    })
+
+    commandTwo.stderr.on('data', (data) => {
+      console.log(`${data.toString().trim()}`)
+    })
+
+    commandTwo.on('close', (code) => {
+      if (code === 0) {
+        resolve(undefined)
+      } else {
+        cli.exit(code)
+      }
+    })
+  })
+}
+
 const run = co.wrap(function * (sourceIn, targetIn, exclusions) {
   yield prepare(targetIn)
 
   const source = yield maybeTunnel(sourceIn)
   const target = yield maybeTunnel(targetIn)
-
   const exclude = exclusions.map(function (e) { return '--exclude-table-data=' + e }).join(' ')
 
-  let password = p => p ? ` PGPASSWORD="${p}"` : ''
-  let dump = `env${password(source.password)} PGSSLMODE=prefer pg_dump --verbose -F c -Z 0 ${exclude} ${connstring(source, true)}`
-  let restore = `env${password(target.password)} pg_restore --verbose --no-acl --no-owner ${connstring(target)}`
+  let dumpFlags = ['--verbose', '-F', 'c', '-Z', '0']
+  if (exclude !== '') { dumpFlags.push(`${exclude}`) }
 
-  console.log(dump)
-  console.log(restore)
+  dumpFlags = dumpFlags.concat(connstring(source, true).split(' '))
 
-  // DUMP env PGPASSWORD="cb87befdaf83488ae83ed1f0c81c4d3016f8adc2c6624776d36c990c400d0dc3" PGSSLMODE=prefer pg_dump --verbose -F c -Z 0  -U ioilfgggkeulqg -h ec2-54-83-4-76.compute-1.amazonaws.com -p 5432  d5ejvjbr8klbae
-
-  const pgDumpFlags = ['--verbose', '-F', 'c', '-Z', '0'].concat(connstring(source, true).split(' '))
-  const pgRestoreFlags = ['--verbose', '--no-acl', '--no-owner'].concat(connstring(target).split(' '))
-
-  // console.log(pgRestoreFlags)
-
-  const pgDumpOptions = {
+  const dumpOptions = {
     env: {
-      PGPASSWORD: `${source.password}`,
+      ...(source.password && { PGPASSWORD: `${source.password}` }),
       PGSSLMODE: 'prefer'
     },
     encoding: 'utf8',
-    shell: true,
-    stdio: [ 'ignore', 'pipe', 'inherit' ] //  stdin, stdout, and stderr
+    shell: true
   }
 
-  const pgDump = spawn('pg_dump', pgDumpFlags, pgDumpOptions)
-  const pgRestore = spawn('pg_restore', pgRestoreFlags)
+  const restoreFlags = (['--verbose', '-F', 'c', '--no-acl', '--no-owner'].concat(connstring(target).split(' ')))
+  const restoreOptions = {
+    ...(target.password && { env: { PGPASSWORD: `${target.password}` } }),
+    encoding: 'utf8',
+    shell: true
+  }
 
-  let result
-  pgDump.stdout.on('data', (data) => {
-    // pgRestore.stdin.write(data)
-    // console.log(`stdout: ${data}`)
-    // console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^')
-    result += data.toString()
-  })
+  const pgDump = cp.spawn('pg_dump', dumpFlags, dumpOptions)
+  const pgRestore = cp.spawn('pg_restore', restoreFlags, restoreOptions)
 
-  pgDump.on('close', (code) => {
-    console.log(`child process exited with code ${code}`)
-    // console.log('9999999999999999999999999999999999999999999999999999999')
-    // pgRestore.stdin.end()
-    if (code === 0) {
-      // cli.log(result)
-      // pgRestore.stdin.write(result)
-    } else {
-      cli.exit(code)
-    }
-  })
+  yield spawnPipe(pgDump, pgRestore)
 
-  // pgRestore.stdout.on('data', (data) => {
-  //   console.log(data.toString())
-  // })
-  //
-  // pgRestore.stderr.on('data', (data) => {
-  //   console.log(`pgRestore stderr: ${data}`)
-  // })
-  //
-  // pgRestore.on('close', (code) => {
-  //   if (code !== 0) {
-  //     console.log(`pgRestore process exited with code ${code}`)
-  //   }
-  // })
+  if (source._tunnel) source._tunnel.close()
+  if (target._tunnel) target._tunnel.close()
 
-  // yield spawn(`${dump} | ${restore}`)
-  //
-  // if (source._tunnel) source._tunnel.close()
-  // if (target._tunnel) target._tunnel.close()
-  //
-  // yield verifyExtensionsMatch(sourceIn, targetIn)
+  yield verifyExtensionsMatch(sourceIn, targetIn)
 })
 
 function * push (context, heroku) {
