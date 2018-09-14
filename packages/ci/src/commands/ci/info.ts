@@ -16,7 +16,8 @@ export default class CiInfo extends Command {
   static flags = {
     app: flags.app({required: false}),
     node: flags.string({description: 'the node number to show its setup and output', required: false}),
-    pipeline: flags.pipeline({required: false})
+    pipeline: flags.pipeline({required: false}),
+    json: flags.boolean({description: 'output in json format', required: false})
   }
 
   static args = [{name: 'test-run', required: true}]
@@ -26,7 +27,6 @@ export default class CiInfo extends Command {
     const pipeline = await getPipeline(flags, this)
     const {body: testRun} = await this.heroku.get<Heroku.TestRun>(`/pipelines/${pipeline.id}/test-runs/${args['test-run']}`)
     const {body: testNodes} = await this.heroku.get<Heroku.TestNode[]>(`/test-runs/${testRun.id}/test-nodes`)
-
-    await displayTestRunInfo(this, testRun, testNodes, flags.node)
+    await displayTestRunInfo(this, testRun, testNodes, flags.node, flags.json)
   }
 }

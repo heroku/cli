@@ -182,9 +182,14 @@ export async function renderList(command: Command, testRuns: Heroku.TestRun[], p
   })
 }
 
-async function renderNodeOutput(command: Command, testRun: Heroku.TestRun, testNode: Heroku.TestNode) {
+async function renderNodeOutput(command: Command, testRun: Heroku.TestRun, testNode: Heroku.TestNode, jsonOption: boolean) {
   if (!testNode) {
     command.error(`Test run ${testRun.number} was ${testRun.status}. No Heroku CI runs found for this pipeline.`)
+  }
+
+  if (jsonOption) {
+    cli.styledJSON(testRun)
+    return
   }
 
   await stream(testNode.setup_stream_url!)
@@ -240,14 +245,14 @@ export async function displayAndExit(pipeline: Heroku.Pipeline, number: number, 
   testNode ? processExitCode(command, testNode) : command.exit(1)
 }
 
-export async function displayTestRunInfo(command: Command, testRun: Heroku.TestRun, testNodes: Heroku.TestNode[], nodeArg: string | undefined) {
+export async function displayTestRunInfo(command: Command, testRun: Heroku.TestRun, testNodes: Heroku.TestNode[], nodeArg: string | undefined, jsonOption: boolean | false) {
   let testNode: Heroku.TestNode
 
   if (nodeArg) {
     const nodeIndex = parseInt(nodeArg, 2)
     testNode = testNodes.length > 1 ? testNodes[nodeIndex] : testNodes[0]
 
-    await renderNodeOutput(command, testRun, testNode)
+    await renderNodeOutput(command, testRun, testNode, jsonOption)
 
     if (testNodes.length === 1) {
       command.log()
@@ -257,6 +262,12 @@ export async function displayTestRunInfo(command: Command, testRun: Heroku.TestR
     processExitCode(command, testNode)
   } else {
     if (testNodes.length > 1) {
+      if (jsonOption) {
+        // Merge the test nodes result in the main result
+        testRun.test_nodes = testNodes
+        cli.styledJSON(testRun)
+        return
+      }
       command.log(printLine(testRun))
       command.log()
 
@@ -265,7 +276,7 @@ export async function displayTestRunInfo(command: Command, testRun: Heroku.TestR
       })
     } else {
       testNode = testNodes[0]
-      await renderNodeOutput(command, testRun, testNode)
+      await renderNodeOutput(command, testRun, testNode, jsonOption)
       processExitCode(command, testNode)
     }
   }
