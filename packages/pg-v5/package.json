@@ -28,7 +28,7 @@
     "tunnel-ssh": "^4.1.4"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.18.0",
+    "@oclif/dev-cli": "^1.18.1",
     "@oclif/plugin-legacy": "^1.1.1",
     "cross-env": "^5.2.0",
     "heroku-client": "^3.0.6",
