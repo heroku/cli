@@ -38,16 +38,16 @@
     "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/orgs-v5/<%- commandPath %>"
   },
   "dependencies": {
-    "@heroku-cli/command": "^8.1.28",
+    "@heroku-cli/command": "^8.1.29",
     "co": "^4.6.0",
     "heroku-cli-util": "^8.0.10",
     "inquirer": "^6.2.0",
-    "lodash": "^4.17.10",
+    "lodash": "^4.17.11",
     "lodash.flatten": "^4.4.0"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.18.0",
-    "@oclif/plugin-legacy": "^1.1.0",
+    "@oclif/plugin-legacy": "^1.1.1",
     "chai": "^4.1.2",
     "mocha": "^5.2.0",
     "nock": "^9.3.0",

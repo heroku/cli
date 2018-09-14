@@ -17,7 +17,7 @@
     "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/pipelines-v5/<%- commandPath %>"
   },
   "dependencies": {
-    "@heroku-cli/command": "^8.1.28",
+    "@heroku-cli/command": "^8.1.29",
     "bluebird": "^3.5.2",
     "co": "^4.6.0",
     "heroku-cli-util": "^8.0.10",
@@ -31,7 +31,7 @@
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.18.0",
-    "@oclif/plugin-legacy": "^1.1.0",
+    "@oclif/plugin-legacy": "^1.1.1",
     "chai": "^4.1.2",
     "mocha": "^5.1.1",
     "nock": "^9.2.6",

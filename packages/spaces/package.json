@@ -17,22 +17,22 @@
     "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/spaces/<%- commandPath %>"
   },
   "dependencies": {
-    "@heroku-cli/command": "^8.1.28",
+    "@heroku-cli/command": "^8.1.29",
     "@heroku-cli/notifications": "^1.2.2",
     "co": "4.6.0",
     "heroku-cli-util": "^8.0.10",
-    "lodash": "^4.17.10",
+    "lodash": "^4.17.11",
     "strftime": "^0.10.0"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.18.0",
-    "@oclif/plugin-legacy": "^1.1.0",
+    "@oclif/plugin-legacy": "^1.1.1",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
     "mocha": "^5.2.0",
     "nock": "^9.2.5",
     "nyc": "^13.0.1",
-    "sinon": "^6.2.0"
+    "sinon": "^6.3.3"
   },
   "files": [
     "oclif.manifest.json",
