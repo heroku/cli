@@ -151,25 +151,25 @@ const run = co.wrap(function * (sourceIn, targetIn, exclusions) {
   const exclude = exclusions.map(function (e) { return '--exclude-table-data=' + e }).join(' ')
 
   let dumpFlags = ['--verbose', '-F', 'c', '-Z', '0']
-  if (exclude !== '') { dumpFlags.push(`${exclude}`) }
+  if (exclude !== '') dumpFlags.push(exclude)
 
   dumpFlags = dumpFlags.concat(connstring(source, true).split(' '))
 
   const dumpOptions = {
     env: {
-      ...(source.password && { PGPASSWORD: `${source.password}` }),
       PGSSLMODE: 'prefer'
     },
     encoding: 'utf8',
     shell: true
   }
+  if (source.password) dumpOptions.env.PGPASSWORD = source.password
 
   const restoreFlags = (['--verbose', '-F', 'c', '--no-acl', '--no-owner'].concat(connstring(target).split(' ')))
   const restoreOptions = {
-    ...(target.password && { env: { PGPASSWORD: `${target.password}` } }),
     encoding: 'utf8',
     shell: true
   }
+  if (target.password) restoreOptions.env = { PGPASSWORD: target.password }
 
   const pgDump = cp.spawn('pg_dump', dumpFlags, dumpOptions)
   const pgRestore = cp.spawn('pg_restore', restoreFlags, restoreOptions)
