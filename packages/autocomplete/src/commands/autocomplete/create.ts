@@ -153,7 +153,7 @@ export default class Create extends AutocompleteBase {
       .map(flag => {
         const f = (Command.flags && Command.flags[flag]) || {description: ''}
         const isBoolean = f.type === 'boolean'
-        const hasCompletion = f.hasOwnProperty('completion') || this.findCompletion(flag, id)
+        const hasCompletion = f.hasOwnProperty('completion') || this.findCompletion(id, flag, f.description)
         const name = isBoolean ? flag : `${flag}=-`
         let cachecompl = ''
         if (hasCompletion) { cachecompl = ': :_compadd_flag_options' }

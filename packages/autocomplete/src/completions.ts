@@ -7,23 +7,54 @@ import * as path from 'path'
 
 export const oneDay = 60 * 60 * 24
 
+export class CompletionLookup {
+  private get key(): string {
+    return this.commandArgsMap[this.cmdId] || this.keyAlias() || this.descriptionAlias() || this.name
+  }
+
+  private blacklistMap: { [key: string]: string[] } = {
+    app: ['apps:create'],
+    space: ['spaces:create'],
+  }
+
+  private keyAliasMap: { [key: string]: any } = {
+    key: {
+      'config:get': 'config',
+    },
+  }
+
+  private commandArgsMap: { [key: string]: string } = {
+    'config:set': 'configSet',
+  }
+
+  constructor(private cmdId: string, private name: string, private description?: string) {
+  }
+
+  run(): flags.ICompletion | undefined {
+    if (this.blacklisted()) return
+    return CompletionMapping[this.key]
+  }
+
+  private keyAlias(): string | undefined {
+    return this.keyAliasMap[this.name] && this.keyAliasMap[this.cmdId][this.name]
+  }
+
+  private descriptionAlias(): string | undefined {
+    const d = this.description!
+    if (d.match(/^dyno size/)) return 'dynosize'
+    if (d.match(/^process type/)) return 'processtype'
+  }
+
+  private blacklisted(): boolean {
+    return this.blacklistMap[this.name] && this.blacklistMap[this.name].includes(this.cmdId)
+  }
+}
+
 export const herokuGet = async (resource: string, ctx: { config: Config.IConfig }): Promise<string[]> => {
   const heroku = new APIClient(ctx.config)
   let {body} = await heroku.get(`/${resource}`)
   if (typeof body === 'string') body = JSON.parse(body)
   return (body as any[]).map((a: any) => a.name).sort()
-}
-
-export const CompletionBlacklist: { [key: string]: string[] } = {
-  app: ['apps:create'],
-}
-
-export const CompletionAliases: { [key: string]: string } = {
-  key: 'config',
-}
-
-export const CompletionVariableArgsLookup: { [key: string]: string } = {
-  'config:set': 'configSet',
 }
 
 export const AppCompletion: flags.ICompletion = {
