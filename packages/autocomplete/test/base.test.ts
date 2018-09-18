@@ -48,12 +48,7 @@ runtest('AutocompleteBase', () => {
   })
 
   it('#findCompletion', async () => {
-    expect((cmd as any).findCompletion('app', AutocompleteTest.id)).to.be.ok
-    expect((cmd as any).findCompletion('bar', AutocompleteTest.id)).to.not.be.ok
-  })
-
-  it('#convertIfAlias', async () => {
-    expect((cmd as any).convertIfAlias('key')).to.eq('config')
-    expect((cmd as any).convertIfAlias('bar')).to.eq('bar')
+    expect((cmd as any).findCompletion(AutocompleteTest.id, 'app')).to.be.ok
+    expect((cmd as any).findCompletion(AutocompleteTest.id, 'bar')).to.not.be.ok
   })
 })

@@ -12,22 +12,22 @@ export class CompletionLookup {
     return this.commandArgsMap[this.cmdId] || this.keyAlias() || this.descriptionAlias() || this.name
   }
 
-  private blacklistMap: { [key: string]: string[] } = {
+  private readonly blacklistMap: { [key: string]: string[] } = {
     app: ['apps:create'],
     space: ['spaces:create'],
   }
 
-  private keyAliasMap: { [key: string]: any } = {
+  private readonly keyAliasMap: { [key: string]: any } = {
     key: {
       'config:get': 'config',
     },
   }
 
-  private commandArgsMap: { [key: string]: string } = {
+  private readonly commandArgsMap: { [key: string]: string } = {
     'config:set': 'configSet',
   }
 
-  constructor(private cmdId: string, private name: string, private description?: string) {
+  constructor(private readonly cmdId: string, private readonly name: string, private readonly description?: string) {
   }
 
   run(): flags.ICompletion | undefined {
