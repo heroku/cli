@@ -226,16 +226,16 @@ describe('pg', () => {
       spawnStub.withArgs('pg_restore', restoreFlags, restoreOpts).returns({
         stdin: {
           end: () => {}
-        },
-        on: (key, func) => {
-          func(1)
         }
       })
 
-      return expect(push.run({ args: { source: 'localdb', target: 'postgres-1' }, flags: {} }), 'to be rejected with', { code: 1 })
-        .then(() => expect(spawnStub.callCount, 'to equal', 2))
-        .then(() => expect(cli.stdout, 'to equal', 'heroku-cli: Pushing localdb ---> postgres-1\n'))
-        .then(() => expect(cli.stderr, 'to equal', ''))
+      return push.run({ args: { source: 'localdb', target: 'postgres-1' }, flags: {} })
+        .catch((error) => {
+          expect(error.message, 'to equal', 'pg_dump errored with 1')
+          expect(spawnStub.callCount, 'to equal', 2)
+          expect(cli.stdout, 'to equal', 'heroku-cli: Pushing localdb ---> postgres-1\n')
+          expect(cli.stderr, 'to equal', '')
+        })
     })
   })
 

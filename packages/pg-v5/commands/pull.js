@@ -112,21 +112,21 @@ const maybeTunnel = function * (herokuDb) {
   return herokuDb
 }
 
-function spawnPipe (commandOne, commandTwo) {
-  return new Promise((resolve) => {
-    commandOne.stdout.pipe(commandTwo.stdin)
-    commandOne.on('close', (code) => {
+function spawnPipe (pgDump, pgRestore) {
+  return new Promise((resolve, reject) => {
+    pgDump.stdout.pipe(pgRestore.stdin)
+    pgDump.on('close', (code) => {
       if (code !== 0) {
-        cli.exit(code)
+        reject(new Error(`pg_dump errored with ${code}`))
       }
-      commandTwo.stdin.end()
+      pgRestore.stdin.end()
     })
 
-    commandTwo.on('close', (code) => {
+    pgRestore.on('close', (code) => {
       if (code === 0) {
         resolve(undefined)
       } else {
-        cli.exit(code)
+        reject(new Error(`pg_restore errored with ${code}`))
       }
     })
   })
@@ -143,7 +143,6 @@ const run = co.wrap(function * (sourceIn, targetIn, exclusions) {
   if (exclude !== '') dumpFlags.push(exclude)
 
   dumpFlags = dumpFlags.concat(connstring(source, true).split(' '))
-
   const dumpOptions = {
     env: {
       PGSSLMODE: 'prefer'
