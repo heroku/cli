@@ -38,6 +38,7 @@ export const completions: Hook<any> = async function ({type, app}: {type?: 'app'
     await heroku.get('/account', {retryAuth: false})
   } catch (err) {
     this.debug(err.message)
+    cli.action.stop()
     return
   }
 
