@@ -31,20 +31,13 @@ export const completions: Hook<any> = async function ({type, app}: {type?: 'app'
   await rm()
   await acCreate.run([], this.config)
 
-  // if user is not logged in, exit
   try {
-    const heroku = new ApiClient(this.config)
-    if (!heroku.auth) return
-    await heroku.get('/account', {retryAuth: false})
+    await update(AppCompletion, 'app')
+    await update(PipelineCompletion, 'pipeline')
+    await update(SpaceCompletion, 'space')
+    await update(TeamCompletion, 'team')
   } catch (err) {
     this.debug(err.message)
-    cli.action.stop()
-    return
   }
-
-  await update(AppCompletion, 'app')
-  await update(PipelineCompletion, 'pipeline')
-  await update(SpaceCompletion, 'space')
-  await update(TeamCompletion, 'team')
   cli.action.stop()
 }

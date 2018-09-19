@@ -9,7 +9,7 @@ export const oneDay = 60 * 60 * 24
 
 export const herokuGet = async (resource: string, ctx: { config: Config.IConfig }): Promise<string[]> => {
   const heroku = new APIClient(ctx.config)
-  let {body} = await heroku.get(`/${resource}`)
+  let {body} = await heroku.get(`/${resource}`, {retryAuth: false})
   if (typeof body === 'string') body = JSON.parse(body)
   return (body as any[]).map((a: any) => a.name).sort()
 }
@@ -86,7 +86,7 @@ const ConfigCompletion: flags.ICompletion = {
   options: async (ctx: any) => {
     const heroku = new APIClient(ctx.config)
     if (ctx.flags && ctx.flags.app) {
-      let {body: configs} = await heroku.get(`/apps/${ctx.flags.app}/config-vars`)
+      let {body: configs} = await heroku.get(`/apps/${ctx.flags.app}/config-vars`, {retryAuth: false})
       return Object.keys(configs)
     }
     return []
@@ -101,7 +101,7 @@ const ConfigSetCompletion: flags.ICompletion = {
   options: async (ctx: any) => {
     const heroku = new APIClient(ctx.config)
     if (ctx.flags && ctx.flags.app) {
-      let {body: configs} = await heroku.get(`/apps/${ctx.flags.app}/config-vars`)
+      let {body: configs} = await heroku.get(`/apps/${ctx.flags.app}/config-vars`, {retryAuth: false})
       return Object.keys(configs).map(k => `${k}=`)
     }
     return []
