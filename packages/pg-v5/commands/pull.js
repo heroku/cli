@@ -115,7 +115,6 @@ const maybeTunnel = function * (herokuDb) {
 function spawnPipe (pgDump, pgRestore) {
   return new Promise((resolve, reject) => {
     pgDump.stdout.pipe(pgRestore.stdin)
-
     pgDump.on('close', code => code ? reject(new Error(`pg_dump errored with ${code}`)) : pgRestore.stdin.end())
     pgRestore.on('close', code => code ? reject(new Error(`pg_restore errored with ${code}`)) : resolve())
   })
