@@ -9,7 +9,7 @@ export const oneDay = 60 * 60 * 24
 
 export class CompletionLookup {
   private get key(): string {
-    return this.commandArgsMap[this.cmdId] || this.keyAlias() || this.descriptionAlias() || this.name
+    return this.argAlias() || this.keyAlias() || this.descriptionAlias() || this.name
   }
 
   private readonly blacklistMap: { [key: string]: string[] } = {
@@ -17,14 +17,16 @@ export class CompletionLookup {
     space: ['spaces:create'],
   }
 
-  private readonly keyAliasMap: { [key: string]: any } = {
+  private readonly keyAliasMap: { [key: string]: { [key: string]: string } }  = {
     key: {
       'config:get': 'config',
     },
   }
 
-  private readonly commandArgsMap: { [key: string]: string } = {
-    'config:set': 'configSet',
+  private readonly commandArgsMap: { [key: string]: { [key: string]: string} } = {
+    key: {
+      'config:set': 'configSet',
+    }
   }
 
   constructor(private readonly cmdId: string, private readonly name: string, private readonly description?: string) {
@@ -35,8 +37,12 @@ export class CompletionLookup {
     return CompletionMapping[this.key]
   }
 
+  private argAlias(): string | undefined {
+    return this.commandArgsMap[this.name] && this.commandArgsMap[this.name][this.cmdId]
+  }
+
   private keyAlias(): string | undefined {
-    return this.keyAliasMap[this.name] && this.keyAliasMap[this.cmdId][this.name]
+    return this.keyAliasMap[this.name] && this.keyAliasMap[this.name][this.cmdId]
   }
 
   private descriptionAlias(): string | undefined {
