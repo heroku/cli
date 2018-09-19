@@ -44,7 +44,7 @@ function exec (cmd, opts = {}) {
 
 const prepare = co.wrap(function * (target) {
   if (target.host === 'localhost' || !target.host) {
-    exec(`createdb ${connstring(target, true)}`)
+    exec(`createdb ${connArgs(target, true).join(' ')}`)
   } else {
     // N.B.: we don't have a proper postgres driver and we don't want to rely on overriding
     // possible .psqlrc output configurations, so we generate a random marker that is returned
@@ -57,16 +57,27 @@ const prepare = co.wrap(function * (target) {
   }
 })
 
-function connstring (uri, skipDFlag) {
+function connArgs (uri, skipDFlag) {
   const args = []
 
-  if (uri.user) args.push(`-U ${uri.user}`)
-  if (uri.host) args.push(`-h ${uri.host}`)
-  if (uri.port) args.push(`-p ${uri.port}`)
-  if (!skipDFlag) args.push('-d')
+  if (uri.user) {
+    args.push('-U')
+    args.push(`${uri.user}`)
+  }
+  if (uri.host) {
+    args.push('-h')
+    args.push(`${uri.host}`)
+  }
+  if (uri.port) {
+    args.push('-p')
+    args.push(`${uri.port}`)
+  }
+  if (!skipDFlag) {
+    args.push('-d')
+  }
   args.push(`${uri.database}`)
 
-  return args.join(' ')
+  return args
 }
 
 const verifyExtensionsMatch = co.wrap(function * (source, target) {
@@ -139,10 +150,9 @@ const run = co.wrap(function * (sourceIn, targetIn, exclusions) {
   const target = yield maybeTunnel(targetIn)
   const exclude = exclusions.map(function (e) { return '--exclude-table-data=' + e }).join(' ')
 
-  let dumpFlags = ['--verbose', '-F', 'c', '-Z', '0']
+  let dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', ...connArgs(source, true)]
   if (exclude !== '') dumpFlags.push(exclude)
 
-  dumpFlags = dumpFlags.concat(connstring(source, true).split(' '))
   const dumpOptions = {
     env: {
       PGSSLMODE: 'prefer'
@@ -153,7 +163,7 @@ const run = co.wrap(function * (sourceIn, targetIn, exclusions) {
   }
   if (source.password) dumpOptions.env.PGPASSWORD = source.password
 
-  const restoreFlags = (['--verbose', '-F', 'c', '--no-acl', '--no-owner'].concat(connstring(target).split(' ')))
+  const restoreFlags = ['--verbose', '-F', 'c', '--no-acl', '--no-owner', ...connArgs(target)]
   const restoreOptions = {
     stdio: ['pipe', 'pipe', 2],
     encoding: 'utf8',
