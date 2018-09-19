@@ -17,7 +17,7 @@ export class CompletionLookup {
     space: ['spaces:create'],
   }
 
-  private readonly keyAliasMap: { [key: string]: { [key: string]: string } }  = {
+  private readonly keyAliasMap: { [key: string]: { [key: string]: string } } = {
     key: {
       'config:get': 'config',
     },
