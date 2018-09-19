@@ -60,22 +60,11 @@ const prepare = co.wrap(function * (target) {
 function connArgs (uri, skipDFlag) {
   const args = []
 
-  if (uri.user) {
-    args.push('-U')
-    args.push(`${uri.user}`)
-  }
-  if (uri.host) {
-    args.push('-h')
-    args.push(`${uri.host}`)
-  }
-  if (uri.port) {
-    args.push('-p')
-    args.push(`${uri.port}`)
-  }
-  if (!skipDFlag) {
-    args.push('-d')
-  }
-  args.push(`${uri.database}`)
+  if (uri.user) args.push('-U', uri.user)
+  if (uri.host) args.push('-h', uri.host)
+  if (uri.port) args.push('-p', `${uri.port}`)
+  if (!skipDFlag) args.push('-d')
+  args.push(uri.database)
 
   return args
 }
@@ -126,20 +115,9 @@ const maybeTunnel = function * (herokuDb) {
 function spawnPipe (pgDump, pgRestore) {
   return new Promise((resolve, reject) => {
     pgDump.stdout.pipe(pgRestore.stdin)
-    pgDump.on('close', (code) => {
-      if (code !== 0) {
-        reject(new Error(`pg_dump errored with ${code}`))
-      }
-      pgRestore.stdin.end()
-    })
 
-    pgRestore.on('close', (code) => {
-      if (code === 0) {
-        resolve(undefined)
-      } else {
-        reject(new Error(`pg_restore errored with ${code}`))
-      }
-    })
+    pgDump.on('close', code => code ? reject(new Error(`pg_dump errored with ${code}`)) : pgRestore.stdin.end())
+    pgRestore.on('close', code => code ? reject(new Error(`pg_restore errored with ${code}`)) : resolve())
   })
 }
 
