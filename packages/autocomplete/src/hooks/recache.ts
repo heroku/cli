@@ -1,4 +1,3 @@
-import {ApiClient} from '@heroku-cli/command'
 import {AppCompletion, PipelineCompletion, SpaceCompletion, TeamCompletion} from '@heroku-cli/command/lib/completions'
 import {Hook} from '@oclif/config'
 import cli from 'cli-ux'
