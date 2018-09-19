@@ -20,15 +20,7 @@ let push
 let pull
 let emptyResponse
 
-let stdoutHandler = function (key, func) {
-  func('')
-}
-
-let stderrHandler = function (key, func) {
-  func('')
-}
-
-let exitHandler = function (key, func) {
+let exitHandler = (key, func) => {
   func(0)
 }
 
@@ -82,6 +74,7 @@ describe('pg', () => {
       env: {
         PGSSLMODE: 'prefer'
       },
+      stdio: ['pipe', 'pipe', 2],
       encoding: 'utf8',
       shell: true
     }
@@ -89,6 +82,7 @@ describe('pg', () => {
       env: {
         PGPASSWORD: 'pass'
       },
+      stdio: ['pipe', 'pipe', 2],
       encoding: 'utf8',
       shell: true
     }
@@ -115,23 +109,13 @@ describe('pg', () => {
 
       spawnStub.withArgs('pg_dump', dumpFlags, dumpOpts).returns({
         stdout: {
-          on: stdoutHandler
-        },
-        stderr: {
-          on: stderrHandler
+          pipe: () => {}
         },
         on: exitHandler
       })
       spawnStub.withArgs('pg_restore', restoreFlags, restoreOpts).returns({
-        stdout: {
-          on: stdoutHandler
-        },
         stdin: {
-          write: () => {},
           end: () => {}
-        },
-        stderr: {
-          on: stderrHandler
         },
         on: exitHandler
       })
@@ -148,23 +132,13 @@ describe('pg', () => {
 
       spawnStub.withArgs('pg_dump', dumpFlags, dumpOpts).returns({
         stdout: {
-          on: stdoutHandler
-        },
-        stderr: {
-          on: stderrHandler
+          pipe: () => {}
         },
         on: exitHandler
       })
       spawnStub.withArgs('pg_restore', restoreFlags, restoreOpts).returns({
-        stdout: {
-          on: stdoutHandler
-        },
         stdin: {
-          write: () => {},
           end: () => {}
-        },
-        stderr: {
-          on: stderrHandler
         },
         on: exitHandler
       })
@@ -183,23 +157,13 @@ describe('pg', () => {
 
       spawnStub.withArgs('pg_dump', dumpFlags, dumpOpts).returns({
         stdout: {
-          on: stdoutHandler
-        },
-        stderr: {
-          on: stderrHandler
+          pipe: () => {}
         },
         on: exitHandler
       })
       spawnStub.withArgs('pg_restore', restoreFlags, restoreOpts).returns({
-        stdout: {
-          on: stdoutHandler
-        },
         stdin: {
-          write: () => {},
           end: () => {}
-        },
-        stderr: {
-          on: stderrHandler
         },
         on: exitHandler
       })
@@ -229,23 +193,13 @@ describe('pg', () => {
 
       spawnStub.withArgs('pg_dump', dumpFlags, dumpOpts).returns({
         stdout: {
-          on: stdoutHandler
-        },
-        stderr: {
-          on: stderrHandler
+          pipe: () => {}
         },
         on: exitHandler
       })
       spawnStub.withArgs('pg_restore', restoreFlags, restoreOpts).returns({
-        stdout: {
-          on: stdoutHandler
-        },
         stdin: {
-          write: () => {},
           end: () => {}
-        },
-        stderr: {
-          on: stderrHandler
         },
         on: exitHandler
       })
@@ -263,27 +217,17 @@ describe('pg', () => {
 
       spawnStub.withArgs('pg_dump', dumpFlags, dumpOpts).returns({
         stdout: {
-          on: stdoutHandler
+          pipe: () => {}
         },
-        stderr: {
-          on: stderrHandler
-        },
-        on: function (key, func) {
+        on: (key, func) => {
           func(1)
         }
       })
       spawnStub.withArgs('pg_restore', restoreFlags, restoreOpts).returns({
-        stdout: {
-          on: stdoutHandler
-        },
         stdin: {
-          write: () => {},
           end: () => {}
         },
-        stderr: {
-          on: stderrHandler
-        },
-        on: function (key, func) {
+        on: (key, func) => {
           func(1)
         }
       })
@@ -302,11 +246,13 @@ describe('pg', () => {
         PGPASSWORD: 'pass',
         PGSSLMODE: 'prefer'
       },
+      stdio: ['pipe', 'pipe', 2],
       encoding: 'utf8',
       shell: true
     }
     const restoreFlags = ['--verbose', '-F', 'c', '--no-acl', '--no-owner', '-d', 'localdb']
     const restoreOpts = {
+      stdio: ['pipe', 'pipe', 2],
       encoding: 'utf8',
       shell: true
     }
@@ -324,23 +270,13 @@ describe('pg', () => {
 
       spawnStub.withArgs('pg_dump', dumpFlags, dumpOpts).returns({
         stdout: {
-          on: stdoutHandler
-        },
-        stderr: {
-          on: stderrHandler
+          pipe: () => {}
         },
         on: exitHandler
       })
       spawnStub.withArgs('pg_restore', restoreFlags, restoreOpts).returns({
-        stdout: {
-          on: stdoutHandler
-        },
         stdin: {
-          write: () => {},
           end: () => {}
-        },
-        stderr: {
-          on: stderrHandler
         },
         on: exitHandler
       })

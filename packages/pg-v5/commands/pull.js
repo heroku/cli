@@ -113,24 +113,13 @@ const maybeTunnel = function * (herokuDb) {
 }
 
 function spawnPipe (commandOne, commandTwo) {
-  return new Promise((resolve, reject) => {
-    commandOne.stdout.on('data', (data) => {
-      commandTwo.stdin.write(data)
-    })
-
-    commandOne.stderr.on('data', (data) => {
-      console.log(`${data.toString().trim()}`)
-    })
-
+  return new Promise((resolve) => {
+    commandOne.stdout.pipe(commandTwo.stdin)
     commandOne.on('close', (code) => {
       if (code !== 0) {
         cli.exit(code)
       }
       commandTwo.stdin.end()
-    })
-
-    commandTwo.stderr.on('data', (data) => {
-      console.log(`${data.toString().trim()}`)
     })
 
     commandTwo.on('close', (code) => {
@@ -159,6 +148,7 @@ const run = co.wrap(function * (sourceIn, targetIn, exclusions) {
     env: {
       PGSSLMODE: 'prefer'
     },
+    stdio: ['pipe', 'pipe', 2],
     encoding: 'utf8',
     shell: true
   }
@@ -166,6 +156,7 @@ const run = co.wrap(function * (sourceIn, targetIn, exclusions) {
 
   const restoreFlags = (['--verbose', '-F', 'c', '--no-acl', '--no-owner'].concat(connstring(target).split(' ')))
   const restoreOptions = {
+    stdio: ['pipe', 'pipe', 2],
     encoding: 'utf8',
     shell: true
   }
