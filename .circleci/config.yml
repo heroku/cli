@@ -118,6 +118,11 @@ workflows:
   version: 2
   heroku_cli:
     jobs:
+      - snap:
+          filters:
+            branches:
+              only:
+                - snap
       - test:
           filters: &all_pushes
             tags: &version_tags
