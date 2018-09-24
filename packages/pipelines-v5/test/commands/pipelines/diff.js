@@ -183,9 +183,12 @@ describe('pipelines:diff', function () {
       // Mock latest release/slug endpoints for two apps:
       nock(api)
         .get(`/apps/${targetApp.id}/releases`)
-        .reply(200, [{ slug: { id: targetSlugId } }])
+        .reply(200, [{ slug: { id: targetSlugId }, status: 'succeeded' }])
         .get(`/apps/${downstreamApp1.id}/releases`)
-        .reply(200, [{ slug: { id: downstreamSlugId } }])
+        .reply(200, [
+          { status: 'failed' },
+          { slug: { id: downstreamSlugId }, status: 'succeeded' }
+        ])
     })
 
     it('should not compare apps if update to date NOR if repo differs', function () {
