@@ -52,7 +52,7 @@ function * getAppInfo (heroku, appName, appId) {
       headers: { 'Accept': V3_HEADER, 'Range': 'version ..; order=desc' },
       partial: true
     })
-    const release = releases.filter((r) => r.status === 'succeeded')[0]
+    const release = releases.find((r) => r.status === 'succeeded')
     if (release === null || release.slug === null) {
       throw new Error(`no release found for ${appName}`)
     }
