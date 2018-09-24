@@ -53,7 +53,7 @@ function * getAppInfo (heroku, appName, appId) {
       partial: true
     })
     const release = releases.filter((r) => r.status === 'succeeded')[0]
-    if (release.slug === null) {
+    if (release === null || release.slug === null) {
       throw new Error(`no release found for ${appName}`)
     }
     slug = yield heroku.request({
