@@ -145,13 +145,28 @@ describe('pipelines:diff', function () {
         })
     })
 
-    it('should return an error if the target app has no release', function () {
+    it('should return an error if the target app has a release with no slug', function () {
       nock(kolkrabbiApi)
         .get(`/apps/${targetApp.id}/github`)
         .reply(200, targetGithubApp)
       const req = nock(api)
         .get(`/apps/${targetApp.id}/releases`)
         .reply(200, [{ slug: null }])
+
+      return cmd.run({ app: targetApp.name })
+        .then(function () {
+          req.done()
+          expect(cli.stderr).to.contain('No release was found')
+        })
+    })
+
+    it('should return an error if the target app has no release', function () {
+      nock(kolkrabbiApi)
+        .get(`/apps/${targetApp.id}/github`)
+        .reply(200, targetGithubApp)
+      const req = nock(api)
+        .get(`/apps/${targetApp.id}/releases`)
+        .reply(200, [])
 
       return cmd.run({ app: targetApp.name })
         .then(function () {
