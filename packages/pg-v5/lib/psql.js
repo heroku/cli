@@ -49,9 +49,22 @@ function execPsqlWithFile (file, dbEnv) {
 function psqlInteractive (dbEnv, prompt) {
   const {spawn} = require('child_process')
   return new Promise((resolve, reject) => {
-    let psql = spawn('psql',
-      ['--set', `PROMPT1=${prompt}`, '--set', `PROMPT2=${prompt}`],
-      {env: dbEnv, stdio: 'inherit'})
+    let psql_args = ['--set', `PROMPT1=${prompt}`, '--set', `PROMPT2=${prompt}`, ]
+    let path = process.env.HEROKU_PG_HISTORY
+    if(path) {
+      const fs = require('fs')
+      if(fs.existsSync(path) && fs.statSync(path).isDirectory()) {
+        psql_args = psql_args.concat(['--set', `HISTFILE=${path}/${prompt.split(':')[0]}`])
+      }
+      else if (fs.existsSync(require('path').dirname(path))) {
+        psql_args = psql_args.concat(['--set', `HISTFILE=${path}`])
+      }
+      else {
+        console.warn(`HEROKU_PG_HISTORY is set but is not a valid path (${path})`)
+      }
+    }
+
+    let psql = spawn('psql', psql_args, {env: dbEnv, stdio: 'inherit'})
     handlePsqlError(reject, psql)
     psql.on('close', (data) => {
       resolve()
