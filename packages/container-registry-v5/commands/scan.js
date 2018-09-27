@@ -68,23 +68,21 @@ let scan = async function (context, heroku) {
   }
 
     let password = context.auth.password
-    console.log(`password: ${password}`)
+    if (!password) throw new Error('not logged in')
 
     let klarConfig = {
-      DOCKER_USER: `_`,
-      DOCKER_PASSWORD: password,
-      CLAIR_ADDR: "https://wschmitt-clair.herokuapp.com:443",
-      CLAIR_OUTPUT: "High",
-      CLAIR_THRESHOLD: "10",
-      PATH: process.env.PATH,
     }
 
-    let image = `${context.app}/web`
-    let fullDockerImageURL = `registry.heroku.com/${image}`
-    console.log(fullDockerImageURL)
-
-    const klar = spawn('klar', [`${fullDockerImageURL}`], {
-      env: klarConfig,
+    // Requires klar, install with go get -u github.com/optiopay/klar
+    const klar = spawn('klar', [`registry.${herokuHost}/${context.app}/${context.args}`], {
+      env: {
+        DOCKER_USER: `_`,
+        DOCKER_PASSWORD: password,
+        CLAIR_ADDR: "https://wschmitt-clair.herokuapp.com:443",
+        CLAIR_OUTPUT: "High",
+        CLAIR_THRESHOLD: "10",
+        PATH: process.env.PATH
+      }
     })
 
     klar.stdout.on('data', (data) => {
