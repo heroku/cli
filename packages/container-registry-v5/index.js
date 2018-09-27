@@ -15,6 +15,7 @@ module.exports = {
     require('./commands/pull')(pkg.topic),
     require('./commands/push')(pkg.topic),
     require('./commands/release')(pkg.topic),
-    require('./commands/run')(pkg.topic)
+    require('./commands/run')(pkg.topic),
+    require('./commands/scan')(pkg.topic),
   ]
 }
