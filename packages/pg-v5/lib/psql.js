@@ -49,22 +49,27 @@ function execPsqlWithFile (file, dbEnv) {
 function psqlInteractive (dbEnv, prompt) {
   const {spawn} = require('child_process')
   return new Promise((resolve, reject) => {
-    let psql_args = ['--set', `PROMPT1=${prompt}`, '--set', `PROMPT2=${prompt}`, ]
-    let path = process.env.HEROKU_PG_HISTORY
-    if(path) {
+    let psqlArgs = ['--set', `PROMPT1=${prompt}`, '--set', `PROMPT2=${prompt}`, ]
+    let psqlHistoryPath = process.env.HEROKU_PSQL_HISTORY
+    if(psqlHistoryPath) {
       const fs = require('fs')
-      if(fs.existsSync(path) && fs.statSync(path).isDirectory()) {
-        psql_args = psql_args.concat(['--set', `HISTFILE=${path}/${prompt.split(':')[0]}`])
+      const path = require('path')
+      if(fs.existsSync(psqlHistoryPath) && fs.statSync(psqlHistoryPath).isDirectory()) {
+        let appLogFile = `${psqlHistoryPath}/${prompt.split(':')[0]}`
+        debug('Logging psql history to %s', appLogFile)
+        psqlArgs = psqlArgs.concat(['--set', `HISTFILE=${appLogFile}`])
       }
-      else if (fs.existsSync(require('path').dirname(path))) {
-        psql_args = psql_args.concat(['--set', `HISTFILE=${path}`])
+      else if (fs.existsSync(path.dirname(psqlHistoryPath))) {
+        debug('Logging psql history to %s', psqlHistoryPath)
+        psqlArgs = psqlArgs.concat(['--set', `HISTFILE=${psqlHistoryPath}`])
       }
       else {
-        console.warn(`HEROKU_PG_HISTORY is set but is not a valid path (${path})`)
+        const cli = require('heroku-cli-util')
+        cli.warn(`HEROKU_PSQL_HISTORY is set but is not a valid path (${psqlHistoryPath})`)
       }
     }
 
-    let psql = spawn('psql', psql_args, {env: dbEnv, stdio: 'inherit'})
+    let psql = spawn('psql', psqlArgs, {env: dbEnv, stdio: 'inherit'})
     handlePsqlError(reject, psql)
     psql.on('close', (data) => {
       resolve()
