@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-redis-v5",
   "description": "Heroku plugin to manage Heroku Redis",
-  "version": "7.15.0",
+  "version": "7.16.0",
   "author": "Heroku",
   "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
@@ -19,8 +19,8 @@
     "ssh2": "^0.6.1"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.18.0",
-    "@oclif/plugin-legacy": "^1.1.0",
+    "@oclif/dev-cli": "^1.18.1",
+    "@oclif/plugin-legacy": "^1.1.1",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
     "lolex": "^2.7.4",

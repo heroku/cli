@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="7.16.0"></a>
+# [7.16.0](https://github.com/heroku/cli/compare/v7.15.2...v7.16.0) (2018-09-14)
+
+
+### Bug Fixes
+
+* updated deps ([6d3be5a](https://github.com/heroku/cli/commit/6d3be5a))
+* updated dev-cli ([022396b](https://github.com/heroku/cli/commit/022396b))
+
+
+### Features
+
+* **addons:** create notifications for addons:wait ([550cf08](https://github.com/heroku/cli/commit/550cf08))
+
+
+
+
+
 <a name="7.15.0"></a>
 # [7.15.0](https://github.com/heroku/cli/compare/v7.14.4...v7.15.0) (2018-09-10)
 

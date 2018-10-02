@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-run-v5",
   "description": "Heroku CLI plugin to run one-off dyno processes.",
-  "version": "7.15.0",
+  "version": "7.16.0",
   "author": "Jeff Dickey (@dickeyxxx)",
   "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@heroku-cli/color": "^1.1.10",
-    "@heroku-cli/command": "^8.1.28",
+    "@heroku-cli/command": "^8.1.29",
     "@heroku-cli/notifications": "^1.2.2",
     "@heroku/eventsource": "^1.0.7",
     "co": "4.6.0",
@@ -28,8 +28,8 @@
     "shellwords": "^0.1.1"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.18.0",
-    "@oclif/plugin-legacy": "^1.1.0",
+    "@oclif/dev-cli": "^1.18.1",
+    "@oclif/plugin-legacy": "^1.1.1",
     "fixture-stdout": "0.2.1",
     "mocha": "^5.2.0",
     "mocha-junit-reporter": "1.18.0",

@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-pg-v5",
   "description": "Heroku CLI plugin to manage Postgres.",
-  "version": "7.15.0",
+  "version": "7.16.0",
   "author": "Jeff Dickey (@dickeyxxx)",
   "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
@@ -17,10 +17,10 @@
     "bytes": "^3.0.0",
     "co": "^4.6.0",
     "co-wait": "^0.0.0",
-    "debug": "^3.1.0",
+    "debug": "^4.0.1",
     "filesize": "^3.6.1",
     "heroku-cli-util": "^8.0.10",
-    "lodash": "^4.17.10",
+    "lodash": "^4.17.11",
     "mkdirp": "^0.5.1",
     "node-notifier": "^5.2.1",
     "smooth-progress": "^1.1.0",
@@ -28,8 +28,8 @@
     "tunnel-ssh": "^4.1.4"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.18.0",
-    "@oclif/plugin-legacy": "^1.1.0",
+    "@oclif/dev-cli": "^1.18.1",
+    "@oclif/plugin-legacy": "^1.1.1",
     "cross-env": "^5.2.0",
     "heroku-client": "^3.0.6",
     "mocha": "^5.1.1",
