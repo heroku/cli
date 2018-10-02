@@ -42,12 +42,9 @@ jobs:
           command: ./node_modules/.bin/lerna exec "curl -s https://codecov.io/bash | bash"
       - run:
           name: Build tarball for BundleSize
-          command: |
-            cp yarn.lock packages/cli
-            cd packages/cli
-            ./node_modules/.bin/oclif-dev pack --no-xz --targets ''
+          command: ./scripts/bundlesize
       - store_artifacts:
-          path: ./packages/cli/dist
+          path: ./bundlesize.tar
   release:
     <<: *defaults
     steps:
@@ -154,13 +151,13 @@ workflows:
               ignore: /.*/
             tags:
               only: /^v.*/
-  # nightly:
-  #   triggers:
-  #     - schedule:
-  #         cron: "0 14 * * *"
-  #         filters:
-  #           branches:
-  #             only:
-  #               - master
-  #   jobs:
-  #     - snap
+  nightly:
+    triggers:
+      - schedule:
+          cron: "0 14 * * *"
+          filters:
+            branches:
+              only:
+                - master
+    jobs:
+      - snap
