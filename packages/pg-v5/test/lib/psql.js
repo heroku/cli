@@ -309,7 +309,7 @@ describe('psql', () => {
           '--set',
           'PROMPT1=sleepy-hollow-9876::DATABASE%R%# ',
           '--set',
-          'PROMPT2=sleepy-hollow-9876::DATABASE%R%# ',
+          'PROMPT2=sleepy-hollow-9876::DATABASE%R%# '
         ]
 
         cpMock.expects('spawn').withExactArgs('psql', args, opts).once().returns(
