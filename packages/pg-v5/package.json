@@ -28,7 +28,7 @@
     "tunnel-ssh": "^4.1.4"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.18.1",
+    "@oclif/dev-cli": "^1.19.0",
     "@oclif/plugin-legacy": "^1.1.1",
     "cross-env": "^5.2.0",
     "heroku-client": "^3.0.6",
@@ -37,7 +37,7 @@
     "nyc": "^13.0.1",
     "proxyquire": "^2.1.0",
     "sinon": "<2",
-    "unexpected": "^10.39.0"
+    "unexpected": "^10.39.1"
   },
   "files": [
     "oclif.manifest.json",

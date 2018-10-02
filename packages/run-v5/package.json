@@ -28,7 +28,7 @@
     "shellwords": "^0.1.1"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.18.1",
+    "@oclif/dev-cli": "^1.19.0",
     "@oclif/plugin-legacy": "^1.1.1",
     "fixture-stdout": "0.2.1",
     "mocha": "^5.2.0",
@@ -36,7 +36,7 @@
     "netrc": "0.1.4",
     "nock": "^9.2.6",
     "sinon": "^5.0.10",
-    "unexpected": "^10.39.0"
+    "unexpected": "^10.39.1"
   },
   "files": [
     "/oclif.manifest.json",

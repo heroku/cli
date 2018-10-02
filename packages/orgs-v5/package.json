@@ -46,9 +46,9 @@
     "lodash.flatten": "^4.4.0"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.18.1",
+    "@oclif/dev-cli": "^1.19.0",
     "@oclif/plugin-legacy": "^1.1.1",
-    "chai": "^4.1.2",
+    "chai": "^4.2.0",
     "mocha": "^5.2.0",
     "nock": "^9.3.0",
     "nyc": "^13.0.1",

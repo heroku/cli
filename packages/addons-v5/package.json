@@ -21,15 +21,15 @@
     "printf": "0.5.1"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.18.1",
+    "@oclif/dev-cli": "^1.19.0",
     "@oclif/plugin-legacy": "^1.1.1",
-    "chai": "^4.1.2",
-    "lolex": "^2.7.4",
+    "chai": "^4.2.0",
+    "lolex": "^2.7.5",
     "mocha": "^5.2.0",
     "nock": "9.0.13",
     "nyc": "^13.0.1",
-    "sinon": "^6.3.3",
-    "unexpected": "^10.39.0"
+    "sinon": "^6.3.4",
+    "unexpected": "^10.39.1"
   },
   "files": [
     "oclif.manifest.json",
