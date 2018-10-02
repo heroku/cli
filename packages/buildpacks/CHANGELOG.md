@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="7.16.1"></a>
+## [7.16.1](https://github.com/heroku/cli/compare/v7.16.0...v7.16.1) (2018-10-02)
+
+
+### Bug Fixes
+
+* remove [@types](https://github.com/types)/* from dependencies ([#1035](https://github.com/heroku/cli/issues/1035)) ([70ac64a](https://github.com/heroku/cli/commit/70ac64a))
+
+
+
+
+
 <a name="7.16.0"></a>
 # [7.16.0](https://github.com/heroku/cli/compare/v7.15.2...v7.16.0) (2018-09-14)
 
