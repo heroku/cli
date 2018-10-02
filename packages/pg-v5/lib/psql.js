@@ -103,6 +103,7 @@ function * interactive (db) {
   let prompt = `${db.attachment.app.name}::${name}%R%# `
   handleSignals()
   let configs = bastion.getConfigs(db)
+  configs.dbEnv.PGAPPNAME = 'psql interactive' // default was 'psql non-interactive`
 
   yield bastion.sshTunnel(db, configs.dbTunnelConfig)
   return yield psqlInteractive(configs.dbEnv, prompt)
