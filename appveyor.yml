@@ -19,3 +19,4 @@ after_test:
       bash codecov.sh
 
 build: off
+skip_branch_with_pr: true
