@@ -95,7 +95,7 @@ list teams within an enterprise account
 
 ```
 USAGE
-  $ heroku-enterprise enterprises:teams
+  $ heroku enterprises:teams
 
 OPTIONS
   --enterprise-account=enterprise-account  (required) enterprise account name
@@ -121,7 +121,7 @@ list the teams that you are a member of
 
 ```
 USAGE
-  $ heroku-enterprise teams
+  $ heroku teams
 ```
 
 ## `heroku teams:create TEAM`
