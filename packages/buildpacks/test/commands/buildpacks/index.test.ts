@@ -86,4 +86,23 @@ https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/ruby.tgz
 2. https://github.com/heroku/heroku-buildpack-ruby
 `)
     })
+
+  test
+    .nock('https://api.heroku.com', (api: Scope) => {
+      Stubber.get(api, [
+        'https://buildpack-registry.s3.amazonaws.com/buildpacks/heroku/java.tgz',
+        'https://buildpack-registry.s3.amazonaws.com/buildpacks/rust-lang/rust.tgz',
+      ])
+    })
+    .stdout()
+    .stderr()
+    .command(['buildpacks', '-a', 'example'])
+    .it('# returns the buildpack registry name back', ctx => {
+      expect(ctx.stderr).to.equal('')
+      expect(ctx.stdout).to.equal(
+        `=== example Buildpack URLs
+1. heroku/java
+2. rust-lang/rust
+`)
+    })
 })
