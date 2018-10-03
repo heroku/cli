@@ -1,15 +1,15 @@
 let cli = require('heroku-cli-util')
 let cmd = require('../../lib/cmd')
+let querystring = require('querystring');
 
 function * usage(context, heroku) {
   let enterpriseAccount = context.flags['enterprise-account']
   let startDate = context.flags['start-date'] || null
   let endDate = context.flags['end-date'] || null
 
-  let query = { start_date: startDate, end_date: endDate }
+  let query = querystring.stringify({ start_date: startDate, end_date: endDate })
   let usage = yield heroku.request({
-    path: `/enterprise-accounts/${enterpriseAccount}/usage`,
-    queryString: query
+    path: `/enterprise-accounts/${enterpriseAccount}/usage?${query}`
   })
 
   // usage always comes back as an array
