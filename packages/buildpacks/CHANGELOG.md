@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="7.16.4"></a>
+## [7.16.4](https://github.com/heroku/cli/compare/v7.16.3...v7.16.4) (2018-10-03)
+
+
+### Bug Fixes
+
+* display buildpack registry name instead of URL when running buildpacks index ([#1055](https://github.com/heroku/cli/issues/1055)) ([710ecef](https://github.com/heroku/cli/commit/710ecef))
+
+
+
+
+
 <a name="7.16.3"></a>
 ## [7.16.3](https://github.com/heroku/cli/compare/v7.16.2...v7.16.3) (2018-10-03)
 
