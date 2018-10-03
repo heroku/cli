@@ -6,6 +6,9 @@
   "bugs": {
     "url": "https://github.com/heroku/heroku-enterprise/issues"
   },
+  "cli-engine": {
+    "bin": "heroku"
+  },
   "dependencies": {
     "co": "4.6.0",
     "heroku-cli-util": "^6.1.5"
