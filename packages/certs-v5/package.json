@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-certs-v5",
   "description": "heroku ssl plugin",
-  "version": "7.16.0",
+  "version": "7.16.2",
   "author": "Ransom Briggs rbriggs@heroku.com",
   "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
@@ -24,11 +24,11 @@
     "psl": "^1.1.29"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.18.1",
+    "@oclif/dev-cli": "^1.19.0",
     "@oclif/plugin-legacy": "^1.1.1",
-    "chai": "^4.1.2",
+    "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
-    "lolex": "^2.7.4",
+    "lolex": "^2.7.5",
     "mocha": "^5.2.0",
     "nock": "^9.3.3",
     "nyc": "^13.0.1",
