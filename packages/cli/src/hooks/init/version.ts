@@ -11,7 +11,7 @@ const Whitelist = [
   'SSL_KEY_FILE',
 ]
 
-export const version: Hook<'init'> = async function () {
+export const version: Hook.Init = async function () {
   if (['-v', '--version', 'version'].includes(process.argv[2])) {
     for (let env of Whitelist) {
       if (process.env[env]) {
