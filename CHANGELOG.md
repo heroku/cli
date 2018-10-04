@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="7.16.5"></a>
+## [7.16.5](https://github.com/heroku/cli/compare/v7.16.4...v7.16.5) (2018-10-04)
+
+
+### Bug Fixes
+
+* **cli:** whitelist version env var warnings ([#1057](https://github.com/heroku/cli/issues/1057)) ([e71214d](https://github.com/heroku/cli/commit/e71214d))
+
+
+
+
+
 <a name="7.16.4"></a>
 ## [7.16.4](https://github.com/heroku/cli/compare/v7.16.3...v7.16.4) (2018-10-03)
 
