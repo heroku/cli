@@ -26,4 +26,4 @@ EXAMPLES
   $ heroku autocomplete --refresh-cache
 ```
 
-_See code: [@heroku-cli/plugin-autocomplete](https://github.com/heroku/cli/blob/v7.16.3/packages/autocomplete/src/commands/autocomplete/index.ts)_
+_See code: [@heroku-cli/plugin-autocomplete](https://github.com/heroku/cli/blob/v7.16.6/packages/autocomplete/src/commands/autocomplete/index.ts)_
