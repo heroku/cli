@@ -8,7 +8,7 @@
     "@heroku-cli/color": "^1.1.10",
     "@heroku-cli/command": "^8.1.29",
     "@oclif/command": "^1.5.2",
-    "@oclif/config": "^1.8.2",
+    "@oclif/config": "^1.8.6",
     "ansi-escapes": "3.1.0",
     "async-file": "^2.0.2",
     "cli-ux": "^4.8.2",

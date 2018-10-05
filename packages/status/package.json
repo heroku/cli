@@ -20,7 +20,7 @@
     "@heroku-cli/color": "^1.1.10",
     "@heroku-cli/command": "^8.1.29",
     "@oclif/command": "^1.5.2",
-    "@oclif/config": "^1.8.2",
+    "@oclif/config": "^1.8.6",
     "@oclif/errors": "^1.2.1",
     "cli-ux": "^4.8.2",
     "date-fns": "^1.29.0",
