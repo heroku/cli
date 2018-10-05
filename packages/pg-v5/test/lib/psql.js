@@ -4,6 +4,8 @@
 
 const sinon = require('sinon')
 const expect = require('unexpected')
+const unwrap = require('../unwrap')
+const path = require('path')
 const db = {
   user: 'jeff',
   password: 'pass',
@@ -201,7 +203,7 @@ describe('psql', () => {
     }
 
     context('when HEROKU_PSQL_HISTORY is set', () => {
-      process.env.HEROKU_PSQL_HISTORY = '/path/to/history'
+      process.env.HEROKU_PSQL_HISTORY = `${path.join('/', 'path', 'to', 'history')}`
 
       it('and is a valid directory path HEROKU_PSQL_HISTORY is the directory part of a per-app history file', sinon.test(() => {
         const env = Object.assign({}, process.env, {
@@ -227,7 +229,7 @@ describe('psql', () => {
           '--set',
           'PROMPT2=sleepy-hollow-9876::DATABASE%R%# ',
           '--set',
-          'HISTFILE=/path/to/history/sleepy-hollow-9876'
+          `HISTFILE=${process.env.HEROKU_PSQL_HISTORY}/sleepy-hollow-9876`
         ]
 
         cpMock.expects('spawn').withExactArgs('psql', args, opts).once().returns(
@@ -242,9 +244,11 @@ describe('psql', () => {
 
         return psql.interactive(db)
           .then(() => cpMock.verify())
-          .then(() => cpMock.restore())
-          .then(() => existsSyncStub.restore())
-          .then(() => statSyncStub.restore())
+          .finally(() => {
+            cpMock.restore()
+            existsSyncStub.restore()
+            statSyncStub.restore()
+          })
       }))
 
       it('and is a valid non-directory file path HEROKU_PSQL_HISTORY is used as the history path', sinon.test(() => {
@@ -271,7 +275,7 @@ describe('psql', () => {
           '--set',
           'PROMPT2=sleepy-hollow-9876::DATABASE%R%# ',
           '--set',
-          'HISTFILE=/path/to/history'
+          `HISTFILE=${process.env.HEROKU_PSQL_HISTORY}`
         ]
 
         cpMock.expects('spawn').withExactArgs('psql', args, opts).once().returns(
@@ -286,9 +290,11 @@ describe('psql', () => {
 
         return psql.interactive(db)
           .then(() => cpMock.verify())
-          .then(() => cpMock.restore())
-          .then(() => existsSyncStub.restore())
-          .then(() => statSyncStub.restore())
+          .finally(() => {
+            cpMock.restore()
+            existsSyncStub.restore()
+            statSyncStub.restore()
+          })
       }))
 
       it('issues a warning for an invalid HEROKU_PSQL_HISTORY path', sinon.test(() => {
@@ -324,9 +330,11 @@ describe('psql', () => {
 
         return psql.interactive(db)
           .then(() => cpMock.verify())
-          .then(() => expect(cli.stderr, 'to match', /HEROKU_PSQL_HISTORY is set but is not a valid path \(\/path\/to\/history\)/))
-          .then(() => cpMock.restore())
-          .then(() => existsSyncStub.restore())
+          .then(() => expect(unwrap(cli.stderr), 'to equal', `HEROKU_PSQL_HISTORY is set but is not a valid path (${path.join('/', 'path', 'to', 'history')})\n`))
+          .finally(() => {
+            cpMock.restore()
+            existsSyncStub.restore()
+          })
       }))
     })
   })
