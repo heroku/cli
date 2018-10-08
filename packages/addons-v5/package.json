@@ -24,7 +24,7 @@
     "@oclif/dev-cli": "^1.19.0",
     "@oclif/plugin-legacy": "^1.1.1",
     "chai": "^4.2.0",
-    "lolex": "^2.7.5",
+    "lolex": "^3.0.0",
     "mocha": "^5.2.0",
     "nock": "9.0.13",
     "nyc": "^13.0.1",
