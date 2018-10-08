@@ -10,6 +10,7 @@ async function run (context, heroku) {
     app: context.app,
     dyno: context.flags.dyno || context.flags.ps,
     lines: context.flags.num || 100,
+    localTimezone: context.flags['local-timezone'],
     tail: context.flags.tail,
     source: context.flags.source
   })
@@ -30,6 +31,7 @@ disable colors with --no-color, HEROKU_LOGS_COLOR=0, or HEROKU_COLOR=0`,
     { name: 'dyno', char: 'd', description: 'only show output from this dyno type (such as "web" or "worker")', hasValue: true, completion: DynoCompletion },
     { name: 'source', char: 's', description: 'only show output from this source (such as "app" or "heroku")', hasValue: true, completion: ProcessTypeCompletion },
     { name: 'tail', char: 't', description: 'continually stream logs' },
+    { name: 'local-timezone', description: 'show timestamps in local timezone' },
     { name: 'force-colors', description: 'force use of colors (even on non-tty output)' }
   ],
   run: cli.command(run)

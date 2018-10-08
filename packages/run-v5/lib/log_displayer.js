@@ -7,12 +7,12 @@ let liner = require('../lib/line_transform')
 const colorize = require('./colorize')
 const HTTP = require('http-call')
 
-function readLogs (logplexURL) {
+function readLogs (logplexURL, localTimezone) {
   let u = url.parse(logplexURL)
   if (u.query && u.query.includes('srv')) {
     return readLogsV1(logplexURL)
   } else {
-    return readLogsV2(logplexURL)
+    return readLogsV2(logplexURL, localTimezone)
   }
 }
 
@@ -28,7 +28,7 @@ async function readLogsV1 (logplexURL) {
   })
 }
 
-function readLogsV2 (logplexURL) {
+function readLogsV2 (logplexURL, localTimezone) {
   return new Promise(function (resolve, reject) {
     const u = url.parse(logplexURL, true)
     const isTail = u.query.tail && u.query.tail === 'true'
@@ -60,7 +60,7 @@ function readLogsV2 (logplexURL) {
 
     es.onmessage = function (e) {
       e.data.trim().split(/\n+/).forEach((line) => {
-        cli.log(colorize(line))
+        cli.log(colorize(line, localTimezone))
       })
     }
   })
@@ -85,7 +85,7 @@ async function logDisplayer (heroku, options) {
       lines: options.lines
     }
   })
-  return readLogs(response.logplex_url)
+  return readLogs(response.logplex_url, options.localTimezone)
 }
 
 module.exports = logDisplayer

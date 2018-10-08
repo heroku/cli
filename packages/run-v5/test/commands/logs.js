@@ -11,4 +11,9 @@ describe('logs', () => {
     return cmd.run({ app: 'heroku-run-test-app', flags: {}, auth: { password: global.apikey } })
       .then(() => expect(cli.stdout, 'to begin with', '20')) // starts with the year
   })
+
+  it('shows the logs in timezone', () => {
+    return cmd.run({ app: 'heroku-run-test-app', flags: { 'local-timezone': 'true' }, auth: { password: global.apikey } })
+      .then(() => expect(cli.stdout, 'to begin with', '20')) // starts with the year
+  })
 })

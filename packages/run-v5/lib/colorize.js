@@ -1,3 +1,5 @@
+let dateFormat = require('dateformat')
+
 const {default: ux} = require('cli-ux')
 const {default: c} = require('@heroku-cli/color')
 
@@ -28,7 +30,7 @@ getColorForIdentifier('web')
 getColorForIdentifier('postgres')
 getColorForIdentifier('heroku-postgres')
 
-let lineRegex = /^(.*?\[([\w-]+)([\d.]+)?]:)(.*)?$/
+let lineRegex = /^(.*?)( .*?)(\[([\w-]+)([\d.]+)?]:)(.*)?$/
 
 const red = c.red
 const dim = i => c.dim(i)
@@ -256,14 +258,19 @@ function colorizePG (body) {
   return body
 }
 
-module.exports = function colorize (line) {
+module.exports = function colorize (line, localTimezone) {
   if (process.env.HEROKU_LOGS_COLOR === '0') return line
 
   let parsed = line.match(lineRegex)
   if (!parsed) return line
-  let header = parsed[1]
-  let identifier = parsed[2]
-  let body = (parsed[4] || '').trim()
+
+  let time = parsed[1]
+  if (localTimezone) {
+    time = dateFormat(Date.parse(time), "yyyy-mm-dd'T'HH:MM:ss.lo")
+  }
+  let header = time + parsed[2] + parsed[3]
+  let identifier = parsed[4]
+  let body = (parsed[6] || '').trim()
   switch (identifier) {
     case 'api':
       body = colorizeAPI(body)
