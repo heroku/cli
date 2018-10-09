@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-pipelines-v5",
   "description": "pipelines heroku plugin",
-  "version": "7.16.0",
+  "version": "7.16.2",
   "author": "Heroku Developer Experience team",
   "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
@@ -17,7 +17,7 @@
     "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/pipelines-v5/<%- commandPath %>"
   },
   "dependencies": {
-    "@heroku-cli/command": "^8.1.29",
+    "@heroku-cli/command": "^8.2.0",
     "bluebird": "^3.5.2",
     "co": "^4.6.0",
     "heroku-cli-util": "^8.0.10",
@@ -27,12 +27,12 @@
     "lodash.flatten": "^4.4.0",
     "lodash.sortby": "^4.7.0",
     "string-just": "^0.0.2",
-    "validator": "^10.7.1"
+    "validator": "^10.8.0"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.18.1",
+    "@oclif/dev-cli": "^1.19.0",
     "@oclif/plugin-legacy": "^1.1.1",
-    "chai": "^4.1.2",
+    "chai": "^4.2.0",
     "mocha": "^5.1.1",
     "nock": "^9.2.6",
     "nyc": "^13.0.1",

@@ -1,16 +1,13 @@
 {
   "name": "@heroku-cli/plugin-buildpacks",
-  "version": "7.16.0",
+  "version": "7.16.6",
   "author": "Terence Lee @hone",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
     "@heroku-cli/color": "^1.1.5",
-    "@heroku-cli/command": "^8.1.29",
-    "@oclif/config": "^1.7.6",
+    "@heroku-cli/command": "^8.2.0",
+    "@oclif/config": "^1.8.6",
     "@oclif/plugin-legacy": "^1.1.1",
-    "@types/ansi-styles": "^3.2.0",
-    "@types/lodash": "^4.14.108",
-    "@types/supports-color": "^5.3.0",
     "buildpack-registry": "^1.0.1",
     "cli-ux": "^4.8.2",
     "heroku-cli-util": "^8.0.0",
@@ -21,15 +18,18 @@
   },
   "devDependencies": {
     "@fancy-test/nock": "^0.1.1",
-    "@oclif/dev-cli": "^1.18.1",
+    "@oclif/dev-cli": "^1.19.0",
     "@oclif/plugin-help": "^2.1.2",
     "@oclif/test": "^1.2.1",
     "@oclif/tslint": "^3.0.1",
-    "@types/chai": "^4",
+    "@types/ansi-styles": "^3.2.0",
+    "@types/chai": "^4.1.6",
+    "@types/lodash": "^4.14.108",
     "@types/mocha": "^5",
     "@types/nock": "^9.1.3",
-    "@types/node": "^10.9.4",
-    "chai": "^4",
+    "@types/node": "^10.11.4",
+    "@types/supports-color": "^5.3.0",
+    "chai": "^4.2.0",
     "globby": "^8",
     "mocha": "^5",
     "nock": "^9.2.6",
@@ -38,7 +38,7 @@
     "ts-node": "^7.0.1",
     "tslib": "^1",
     "tslint": "^5",
-    "typescript": "^3.0.3"
+    "typescript": "^3.1.1"
   },
   "engines": {
     "node": ">=8.0.0"

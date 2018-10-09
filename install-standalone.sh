@@ -63,6 +63,10 @@
   rm -f /usr/local/bin/heroku
   ln -s /usr/local/lib/heroku/bin/heroku /usr/local/bin/heroku
 
+  # on alpine (and maybe others) the basic node binary does not work
+  # remove our node binary and fall back to whatever node is on the PATH
+  /usr/local/lib/heroku/bin/node -v || rm /usr/local/lib/heroku/bin/node
+
 SCRIPT
   # test the CLI
   LOCATION=$(command -v heroku)
