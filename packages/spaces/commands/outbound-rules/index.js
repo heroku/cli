@@ -32,6 +32,7 @@ You can add specific rules that only allow your dyno to communicate with trusted
   `,
   needsApp: false,
   needsAuth: true,
+  hidden: true,
   args: [{ name: 'space', optional: true, hidden: true }],
   flags: [
     { name: 'space', char: 's', hasValue: true, description: 'space to get outbound rules from', completion: SpaceCompletion },
