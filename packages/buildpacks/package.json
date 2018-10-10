@@ -1,6 +1,6 @@
 {
   "name": "@heroku-cli/plugin-buildpacks",
-  "version": "7.16.6",
+  "version": "7.16.7",
   "author": "Terence Lee @hone",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
