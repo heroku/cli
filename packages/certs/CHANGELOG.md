@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.16.7](https://github.com/heroku/cli/compare/v7.16.6...v7.16.7) (2018-10-10)
+
+
+### Bug Fixes
+
+* updated command ([fbd11fd](https://github.com/heroku/cli/commit/fbd11fd))
+
+
+
+
+
 ## [7.16.6](https://github.com/heroku/cli/compare/v7.16.5...v7.16.6) (2018-10-05)
 
 **Note:** Version bump only for package @heroku-cli/plugin-certs

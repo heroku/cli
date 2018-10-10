@@ -57,6 +57,7 @@ allow. ICMP types are numbered, 0-255.
   `,
   needsApp: false,
   needsAuth: true,
+  hidden: true,
   args: [],
   flags: [
     { name: 'space', char: 's', hasValue: true, description: 'space to add rule to', completion: SpaceCompletion },
