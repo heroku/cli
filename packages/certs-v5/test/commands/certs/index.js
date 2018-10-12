@@ -29,14 +29,9 @@ describe('heroku certs', function () {
         .get('/apps/example/ssl-endpoints')
         .reply(200, [endpoint, endpoint2])
 
-      let mockDomains = nock('https://api.heroku.com')
-        .get('/apps/example/domains')
-        .reply(200, [])
-
       return certs.run({ app: 'example' }).then(function () {
         mockSni.done()
         mockSsl.done()
-        mockDomains.done()
         expect(cli.stderr).to.equal('')
         /* eslint-disable no-trailing-spaces */
         expect(cli.stdout).to.equal(
@@ -58,14 +53,9 @@ akita-7777  akita-7777.herokussl.com  heroku.com      2013-08-01 21:34 UTC  True
         .get('/apps/example/ssl-endpoints')
         .reply(200, [])
 
-      let mockDomains = nock('https://api.heroku.com')
-        .get('/apps/example/domains')
-        .reply(200, [])
-
       return certs.run({ app: 'example' }).then(function () {
         mockSni.done()
         mockSsl.done()
-        mockDomains.done()
         expect(cli.stderr).to.equal('')
         expect(cli.stdout).to.equal(`example has no SSL certificates.\nUse heroku certs:add CRT KEY to add one.\n`)
       })
@@ -85,14 +75,9 @@ akita-7777  akita-7777.herokussl.com  heroku.com      2013-08-01 21:34 UTC  True
       .get('/apps/example/ssl-endpoints')
       .reply(200, [endpoint2])
 
-    let mockDomains = nock('https://api.heroku.com')
-      .get('/apps/example/domains')
-      .reply(200, [])
-
     return certs.run({ app: 'example' }).then(function () {
       mockSni.done()
       mockSsl.done()
-      mockDomains.done()
       expect(cli.stderr).to.equal('')
       /* eslint-disable no-trailing-spaces */
       expect(cli.stdout).to.equal(
@@ -119,14 +104,9 @@ akita-7777  akita-7777.herokussl.com  heroku.com                                
       .get('/apps/example/ssl-endpoints')
       .reply(200, [endpointSpace])
 
-    let mockDomains = nock('https://api.heroku.com')
-      .get('/apps/example/domains')
-      .reply(200, [])
-
     return certs.run({ app: 'example' }).then(function () {
       mockSni.done()
       mockSsl.done()
-      mockDomains.done()
       expect(cli.stderr).to.equal('')
       /* eslint-disable no-trailing-spaces */
       expect(cli.stdout).to.equal(
@@ -151,14 +131,9 @@ tokyo-1050  tokyo-1050.japan-4321.herokuspace.com  heroku.com      2013-08-01 21
       .get('/apps/example/ssl-endpoints')
       .reply(200, [])
 
-    let mockDomains = nock('https://api.heroku.com')
-      .get('/apps/example/domains')
-      .reply(200, [])
-
     return certs.run({ app: 'example' }).then(function () {
       mockSni.done()
       mockSsl.done()
-      mockDomains.done()
       expect(cli.stderr).to.equal('')
       /* eslint-disable no-trailing-spaces */
       expect(cli.stdout).to.equal(
@@ -183,18 +158,9 @@ tokyo-1050  heroku.com      2013-08-01 21:34 UTC  True     ACM
       .get('/apps/example/ssl-endpoints')
       .reply(200, [])
 
-    let mockDomains = nock('https://api.heroku.com')
-      .get('/apps/example/domains')
-      .reply(200, [
-        { 'kind': 'custom', 'hostname': '*.other.org', 'cname': 'wildcard.other.org.herokudns.com' },
-        { 'kind': 'custom', 'hostname': '*.example.org', 'cname': 'wildcard.example.org.herokudns.com' },
-        { 'kind': 'custom', 'hostname': 'foo.example.org', 'cname': 'foo.example.org.herokudns.com' }
-      ])
-
     return certs.run({ app: 'example' }).then(function () {
       mockSni.done()
       mockSsl.done()
-      mockDomains.done()
       expect(cli.stderr).to.equal('')
       /* eslint-disable no-trailing-spaces */
       expect(cli.stdout).to.equal(
@@ -219,16 +185,9 @@ tokyo-1050  foo.example.org, bar.example.org, biz.example.com  2013-08-01 21:34 
       .get('/apps/example/ssl-endpoints')
       .reply(200, [])
 
-    let mockDomains = nock('https://api.heroku.com')
-      .get('/apps/example/domains')
-      .reply(200, [
-        { 'kind': 'custom', 'hostname': '*.example.org', 'cname': 'wildcard.example.org.herokudns.com' }
-      ])
-
     return certs.run({ app: 'example' }).then(function () {
       mockSni.done()
       mockSsl.done()
-      mockDomains.done()
       expect(cli.stderr).to.equal('')
       /* eslint-disable no-trailing-spaces */
       expect(cli.stdout).to.equal(
@@ -253,17 +212,9 @@ tokyo-1050  fooexample.org  2013-08-01 21:34 UTC  False    SNI
       .get('/apps/example/ssl-endpoints')
       .reply(200, [])
 
-    let mockDomains = nock('https://api.heroku.com')
-      .get('/apps/example/domains')
-      .reply(200, [
-        { 'kind': 'custom', 'hostname': '*.example.org', 'cname': 'wildcard.example.org.herokudns.com' },
-        { 'kind': 'custom', 'hostname': 'foo.example.org', 'cname': 'foo.example.org.herokudns.com' }
-      ])
-
     return certs.run({ app: 'example' }).then(function () {
       mockSni.done()
       mockSsl.done()
-      mockDomains.done()
       expect(cli.stderr).to.equal('')
       /* eslint-disable no-trailing-spaces */
       expect(cli.stdout).to.equal(
@@ -288,18 +239,9 @@ tokyo-1050  *.example.org   2013-08-01 21:34 UTC  False    SNI
       .get('/apps/example/ssl-endpoints')
       .reply(200, [])
 
-    let mockDomains = nock('https://api.heroku.com')
-      .get('/apps/example/domains')
-      .reply(200, [
-        { 'kind': 'custom', 'hostname': 'foo.example.org', 'cname': 'foo.example.org.herokudns.com' },
-        { 'kind': 'custom', 'hostname': 'bar.example.org', 'cname': 'haiku.herokussl.com' },
-        { 'kind': 'custom', 'hostname': '*.example.com', 'cname': 'haiku.herokussl.com' }
-      ])
-
     return certs.run({ app: 'example' }).then(function () {
       mockSni.done()
       mockSsl.done()
-      mockDomains.done()
       expect(cli.stderr).to.equal('')
       /* eslint-disable no-trailing-spaces */
       expect(cli.stdout).to.equal(
