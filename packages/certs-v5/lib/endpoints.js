@@ -66,8 +66,7 @@ function * all (app, heroku) {
 function * certsAndDomains (app, heroku) {
   let requests = yield {
     ssl_certs: sslCertsPromise(app, heroku),
-    sni_certs: sniCertsPromise(app, heroku),
-    domains: heroku.request({path: `/apps/${app}/domains`})
+    sni_certs: sniCertsPromise(app, heroku)
   }
 
   return {certs: tagAndSort(app, requests), domains: requests.domains}

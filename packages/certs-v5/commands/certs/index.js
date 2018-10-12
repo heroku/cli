@@ -12,7 +12,7 @@ function * run (context, heroku) {
   if (certsAndDomains.certs.length === 0) {
     cli.log(`${cli.color.app(context.app)} has no SSL certificates.\nUse ${cli.color.cmd('heroku certs:add CRT KEY')} to add one.`)
   } else {
-    displayTable(certsAndDomains.certs, certsAndDomains.domains)
+    displayTable(certsAndDomains.certs)
   }
 }
 
