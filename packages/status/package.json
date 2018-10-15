@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-status",
   "description": "CLI Plugin for Heroku Status",
-  "version": "7.16.3",
+  "version": "7.16.7",
   "author": "Jeff Dickey @jdxcode",
   "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
@@ -18,9 +18,9 @@
   },
   "dependencies": {
     "@heroku-cli/color": "^1.1.10",
-    "@heroku-cli/command": "^8.1.29",
+    "@heroku-cli/command": "^8.2.0",
     "@oclif/command": "^1.5.2",
-    "@oclif/config": "^1.8.2",
+    "@oclif/config": "^1.8.6",
     "@oclif/errors": "^1.2.1",
     "cli-ux": "^4.8.2",
     "date-fns": "^1.29.0",

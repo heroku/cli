@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.16.8](https://github.com/heroku/cli/compare/v7.16.7...v7.16.8) (2018-10-11)
+
+
+### Bug Fixes
+
+* **certs:** remove domains call ([34ed9aa](https://github.com/heroku/cli/commit/34ed9aa))
+
+
+
+
+
+## [7.16.7](https://github.com/heroku/cli/compare/v7.16.6...v7.16.7) (2018-10-10)
+
+
+### Bug Fixes
+
+* updated command ([fbd11fd](https://github.com/heroku/cli/commit/fbd11fd))
+
+
+
+
+
 <a name="7.16.2"></a>
 ## [7.16.2](https://github.com/heroku/cli/compare/v7.16.1...v7.16.2) (2018-10-02)
 

@@ -1,14 +1,14 @@
 {
   "name": "@heroku-cli/plugin-ci",
   "description": "Heroku CLI plugin for Heroku CI",
-  "version": "7.16.3",
+  "version": "7.16.7",
   "author": "Raúl Barroso @raulb",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
     "@heroku-cli/color": "^1.1.10",
-    "@heroku-cli/command": "^8.1.29",
+    "@heroku-cli/command": "^8.2.0",
     "@oclif/command": "^1.5.2",
-    "@oclif/config": "^1.8.2",
+    "@oclif/config": "^1.8.6",
     "ansi-escapes": "3.1.0",
     "async-file": "^2.0.2",
     "cli-ux": "^4.8.2",

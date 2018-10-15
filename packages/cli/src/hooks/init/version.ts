@@ -1,11 +1,22 @@
 import {Hook} from '@oclif/config'
 
-export const migrate: Hook<'init'> = async function () {
+const Whitelist = [
+  'HEROKU_API_KEY',
+  'HEROKU_APP',
+  'HTTPS_PROXY',
+  'HTTP_PROXY',
+  'SSL_CERT_FILE',
+  'SSL_CERT_DIR',
+  'SSL_CA_FILE',
+  'SSL_KEY_FILE',
+]
+
+export const version: Hook.Init = async function () {
   if (['-v', '--version', 'version'].includes(process.argv[2])) {
-    for (let envs of Object.keys(process.env)) {
-      if (envs.match(/^HEROKU_/) && envs !== 'HEROKU_UPDATE_INSTRUCTIONS') {
-        let value = envs === 'HEROKU_API_KEY' ? 'to [REDACTED]' : `to ${process.env[envs]}`
-        this.warn(`${envs} set ${value}`)
+    for (let env of Whitelist) {
+      if (process.env[env]) {
+        let value = env === 'HEROKU_API_KEY' ? 'to [REDACTED]' : `to ${process.env[env]}`
+        this.warn(`${env} set ${value}`)
       }
     }
   }
