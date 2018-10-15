@@ -151,6 +151,12 @@ Sanbashi.cmd = function (cmd, args, options = {}) {
         stdout += data.toString()
       })
     }
+    child.on('error', (err) => {
+      if (err.code === 'ENOENT' && err.path === 'docker') {
+        reject(new Error(`Cannot find docker, please ensure docker is installed.
+        If you need help installing docker, visit https://docs.docker.com/install/#supported-platforms`))
+      }
+    })
     child.on('exit', (code, signal) => {
       if (signal || code) reject(signal || code)
       else resolve(stdout)

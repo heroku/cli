@@ -26,7 +26,7 @@ async function login (context, heroku) {
   try {
     await dockerLogin(registry, password)
   } catch (err) {
-    cli.error(`Error: docker login exited with ${err}`, 1)
+    cli.error(`Login failed with: ${err.message}`, 1)
   }
 }
 
