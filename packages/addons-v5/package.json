@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-addons-v5",
   "description": "`heroku addons:*` commands",
-  "version": "7.16.0",
+  "version": "7.16.7",
   "author": "Bo Jeanes @bjeanes",
   "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
@@ -21,15 +21,15 @@
     "printf": "0.5.1"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.18.1",
+    "@oclif/dev-cli": "^1.19.0",
     "@oclif/plugin-legacy": "^1.1.1",
-    "chai": "^4.1.2",
-    "lolex": "^2.7.4",
+    "chai": "^4.2.0",
+    "lolex": "^3.0.0",
     "mocha": "^5.2.0",
     "nock": "9.0.13",
     "nyc": "^13.0.1",
-    "sinon": "^6.3.3",
-    "unexpected": "^10.39.0"
+    "sinon": "^6.3.5",
+    "unexpected": "^10.39.1"
   },
   "files": [
     "oclif.manifest.json",

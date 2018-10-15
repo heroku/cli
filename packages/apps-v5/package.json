@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-apps-v5",
   "description": "Heroku CLI plugin to manage apps.",
-  "version": "7.16.0",
+  "version": "7.16.7",
   "author": "Jeff Dickey (@jdxcode)",
   "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
@@ -15,7 +15,7 @@
     "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/apps-v5/<%- commandPath %>"
   },
   "dependencies": {
-    "@heroku-cli/command": "^8.1.29",
+    "@heroku-cli/command": "^8.2.0",
     "co": "^4.6.0",
     "filesize": "^3.5.11",
     "fs-extra": "^7.0.0",
@@ -30,10 +30,10 @@
     "urijs": "1.19.1"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.18.1",
+    "@oclif/dev-cli": "^1.19.0",
     "@oclif/plugin-legacy": "^1.1.1",
-    "chai": "^4.1.2",
-    "lolex": "^2.7.4",
+    "chai": "^4.2.0",
+    "lolex": "^3.0.0",
     "mocha": "^5.2.0",
     "mockdate": "^2.0.2",
     "netrc-parser": "^3.1.6",
@@ -43,7 +43,7 @@
     "std-mocks": "1.0.1",
     "testdouble": "^3.8.1",
     "time-require": "0.1.2",
-    "unexpected": "^10.39.0"
+    "unexpected": "^10.39.1"
   },
   "files": [
     "/oclif.manifest.json",

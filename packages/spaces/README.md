@@ -4,9 +4,6 @@ heroku-spaces CLI plugin [![Circle CI](https://circleci.com/gh/heroku/heroku-spa
 [![npm version](https://img.shields.io/npm/v/@heroku-cli/plugin-spaces.svg)](https://www.npmjs.com/package/@heroku-cli/plugin-spaces)
 
 <!-- commands -->
-* [`heroku outbound-rules`](#heroku-outbound-rules)
-* [`heroku outbound-rules:add`](#heroku-outbound-rulesadd)
-* [`heroku outbound-rules:remove RULENUMBER`](#heroku-outbound-rulesremove-rulenumber)
 * [`heroku spaces`](#heroku-spaces)
 * [`heroku spaces:create`](#heroku-spacescreate)
 * [`heroku spaces:destroy`](#heroku-spacesdestroy)
@@ -28,92 +25,6 @@ heroku-spaces CLI plugin [![Circle CI](https://circleci.com/gh/heroku/heroku-spa
 * [`heroku trusted-ips`](#heroku-trusted-ips)
 * [`heroku trusted-ips:add SOURCE`](#heroku-trusted-ipsadd-source)
 * [`heroku trusted-ips:remove SOURCE`](#heroku-trusted-ipsremove-source)
-
-## `heroku outbound-rules`
-
-list Outbound Rules for a space
-
-```
-USAGE
-  $ heroku outbound-rules
-
-OPTIONS
-  -s, --space=space  space to get outbound rules from
-  --json             output in json format
-
-DESCRIPTION
-  Outbound Rules are only available on Private Spaces.
-
-  Newly created spaces will have an "Allow All" rule set by default
-  allowing all egress dyno traffic outside of the space.  You can
-  remove this default rule to completely stop your private dynos from
-  talking to the world.
-
-  You can add specific rules that only allow your dyno to communicate with trusted hosts.
-```
-
-## `heroku outbound-rules:add`
-
-Add outbound rules to a Private Space
-
-```
-USAGE
-  $ heroku outbound-rules:add
-
-OPTIONS
-  -s, --space=space    space to add rule to
-  --confirm=confirm    set to space name to bypass confirm prompt
-  --dest=dest          target CIDR block dynos are allowed to communicate with
-
-  --port=port          the port dynos are allowed to use when communicating with hosts in destination CIDR block.
-                       Accepts a range in `<lowest port>-<highest port>` format. 0 is the minimum. The maximum port
-                       allowed is 65535, except for ICMP with a maximum of 255.
-
-  --protocol=protocol  the protocol dynos are allowed to use when communicating with hosts in destination CIDR block.
-                       Valid protocols are "tcp", "udp", "icmp", "0-255" and "any".
-
-DESCRIPTION
-  The destination flag uses CIDR notation.
-
-    Example:
-
-       $ heroku outbound-rules:add --space my-space --dest 192.168.2.0/24 --protocol tcp --port 80
-       Added 192.168.0.1/24 to the outbound rules on my-space
-
-    Example with port range:
-
-       $ heroku outbound-rules:add --space my-space --dest 192.168.2.0/24 --protocol tcp --port 80-100
-       Added 192.168.0.1/24 to the outbound rules on my-space
-
-    Example opening up everything
-
-       $ heroku outbound-rules:add --space my-space --dest 0.0.0.0/0 --protocol any --port any
-       Added 0.0.0.0/0 to the outbound rules on my-space
-
-  ICMP Rules
-  The ICMP protocol has types, not ports, but the underlying systems treat them as the same. For this reason,
-  when you want to allow ICMP traffic you will use the --port flag to specify the ICMP types you want to
-  allow. ICMP types are numbered, 0-255.
-```
-
-## `heroku outbound-rules:remove RULENUMBER`
-
-Remove a Rules from the list of Outbound Rules
-
-```
-USAGE
-  $ heroku outbound-rules:remove RULENUMBER
-
-OPTIONS
-  --confirm=confirm  set to space name to bypass confirm prompt
-  --space=space      (required) space to remove rule from
-
-DESCRIPTION
-  Example:
-
-       $ heroku outbound-rules:remove --space my-space 4
-       Removed 192.168.2.0/24 from trusted IP ranges on my-space
-```
 
 ## `heroku spaces`
 

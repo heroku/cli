@@ -22,6 +22,7 @@ async function createApp (context, heroku, name, stack) {
     space: context.flags.space,
     stack,
     internal_routing: context.flags['internal-routing'],
+    feature_flags: context.flags.features,
     kernel: context.flags.kernel,
     locked: context.flags.locked
   }
@@ -185,6 +186,7 @@ $ heroku apps:create --region eu`,
     { name: 'region', hasValue: true, description: 'specify region for the app to run in', completion: RegionCompletion },
     { name: 'ssh-git', description: 'use SSH git protocol for local git remote' },
     { name: 'internal-routing', hidden: true, description: 'private space-only. create as an Internal Web App that is only routable in the local network.' },
+    { name: 'features', hidden: true, hasValue: true },
     { name: 'kernel', hidden: true, hasValue: true },
     { name: 'locked', hidden: true },
     { name: 'json', description: 'output in json format' },

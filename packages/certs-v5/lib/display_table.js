@@ -23,7 +23,7 @@ function type (f) {
   throw new Error(`Unexpected flag ${f._meta.flag}`)
 }
 
-module.exports = function (certs, domains) {
+module.exports = function (certs) {
   let mapped = certs.filter(function (f) { return f.ssl_cert }).map(function (f) {
     return {
       name: f.name,
