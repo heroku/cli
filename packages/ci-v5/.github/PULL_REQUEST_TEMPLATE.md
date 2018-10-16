@@ -17,7 +17,7 @@ The checklist enumerates the tasks you set out to do before the PR becomes ready
 A short description of the problem being addressed or feature being added.
 
 ## What are the acceptance criteria for the change?
-- [ ] [DevEx](https://github.com/heroku/devex) gives a :+1:
+- [ ] [lifecycle](https://github.com/heroku/lifecycle-team) gives a :+1:
 - [ ] @person provides a :+1: that this PR yields the desired results
 
 ## How can the change be tested
