@@ -33,6 +33,24 @@ describe('apps:create', function () {
     })
   })
 
+  it('creates an app with feature flags', function () {
+    let mock = nock('https://api.heroku.com')
+      .post('/apps', {
+        feature_flags: 'feature-1,feature-2'
+      })
+      .reply(200, {
+        name: 'foobar',
+        stack: { name: 'cedar-14' },
+        web_url: 'https://foobar.com'
+      })
+
+    return apps.run({ flags: { features: 'feature-1,feature-2' }, args: {}, httpGitHost: 'git.heroku.com', config }).then(function () {
+      mock.done()
+      expect(cli.stderr).to.equal('Creating app... done, foobar\n')
+      expect(cli.stdout).to.equal('https://foobar.com | https://git.heroku.com/foobar.git\n')
+    })
+  })
+
   it('creates an app in a space', function () {
     let mock = nock('https://api.heroku.com')
       .post('/organizations/apps', {
