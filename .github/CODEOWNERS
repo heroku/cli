@@ -1,7 +1,4 @@
 * @heroku/cli
 /packages/pg-v5/ @heroku/dod-ux
-/packages/pipelines-v5/ @heroku/lifecycle
-/packages/ci-v5/ @heroku/lifecycle
 /packages/redis-v5/ @heroku/dod-ux
-/packages/container-registry-v5/ @heroku/lifecycle
 /packages/spaces/ @heroku/runtime-cli-owners
