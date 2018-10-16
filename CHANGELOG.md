@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.17.0](https://github.com/heroku/cli/compare/v7.16.8...v7.17.0) (2018-10-15)
+
+
+### Features
+
+* node 10.12.0 ([9f5b635](https://github.com/heroku/cli/commit/9f5b635))
+
+
+
+
+
 ## [7.16.8](https://github.com/heroku/cli/compare/v7.16.7...v7.16.8) (2018-10-11)
 
 **Note:** Version bump only for package heroku
