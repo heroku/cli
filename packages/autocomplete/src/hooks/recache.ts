@@ -29,9 +29,14 @@ export const completions: Hook<any> = async function ({type, app}: {type?: 'app'
   cli.action.start('Updating completions')
   await rm()
   await acCreate.run([], this.config)
-  await update(AppCompletion, 'app')
-  await update(PipelineCompletion, 'pipeline')
-  await update(SpaceCompletion, 'space')
-  await update(TeamCompletion, 'team')
+
+  try {
+    await update(AppCompletion, 'app')
+    await update(PipelineCompletion, 'pipeline')
+    await update(SpaceCompletion, 'space')
+    await update(TeamCompletion, 'team')
+  } catch (err) {
+    this.debug(err.message)
+  }
   cli.action.stop()
 }
