@@ -115,6 +115,8 @@ exports.starterPlan = a => !!a.plan.name.match(/(dev|basic)$/)
 
 exports.legacyPlan = a => !!a.plan.name.match(/^legacy/)
 
+exports.bastionKeyPlan = a => !!a.plan.name.match(/private/)
+
 exports.configVarNamesFromValue = (config, value) => {
   let keys = []
   for (let key of Object.keys(config)) {

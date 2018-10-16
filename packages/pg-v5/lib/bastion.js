@@ -3,6 +3,7 @@
 const debug = require('./debug')
 const tunnel = require('tunnel-ssh')
 const cli = require('heroku-cli-util')
+const host = require('./host')
 
 const getBastion = function (config, baseName) {
   const {sample} = require('lodash')
@@ -108,3 +109,14 @@ function sshTunnel (db, dbTunnelConfig, timeout) {
 }
 
 exports.sshTunnel = sshTunnel
+
+function * fetchConfig (heroku, db) {
+  return yield heroku.get(
+    `/client/v11/databases/${encodeURIComponent(db.id)}/bastion`,
+    {
+      host: host(db),
+    }
+  )
+}
+
+exports.fetchConfig = fetchConfig

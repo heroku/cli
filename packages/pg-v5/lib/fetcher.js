@@ -5,6 +5,7 @@ const debug = require('./debug')
 const pgUtil = require('./util')
 const getConfig = require('./config')
 const cli = require('heroku-cli-util')
+const bastion = require('./bastion')
 
 module.exports = heroku => {
   function * attachment (app, passedDb, namespace = null) {
@@ -92,7 +93,17 @@ module.exports = heroku => {
     // as well and we would request twice at the same time but I did not want
     // to push this down into attachment because we do not always need config
     let config = yield getConfig(heroku, attached.app.name)
-    return pgUtil.getConnectionDetails(attached, config)
+
+    let database = pgUtil.getConnectionDetails(attached, config)
+    if (pgUtil.bastionKeyPlan(attached.addon) && !database.bastionKey) {
+      let bastionConfig = yield bastion.fetchConfig(heroku, attached.addon)
+      let bastionHost = bastionConfig.host
+      let bastionKey = bastionConfig.private_key
+
+      Object.assign(database, {bastionHost, bastionKey})
+    }
+
+    return database
   }
 
   function * allAttachments (app) {
