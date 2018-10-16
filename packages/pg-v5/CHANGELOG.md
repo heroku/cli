@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.17.1](https://github.com/heroku/cli/compare/v7.17.0...v7.17.1) (2018-10-16)
+
+
+### Bug Fixes
+
+* allow fetching postgres bastion keys via data api ([#1068](https://github.com/heroku/cli/issues/1068)) ([bec6d61](https://github.com/heroku/cli/commit/bec6d61))
+
+
+
+
+
 ## [7.16.8](https://github.com/heroku/cli/compare/v7.16.7...v7.16.8) (2018-10-11)
 
 
