@@ -1,6 +1,6 @@
 import color from '@heroku-cli/color'
 import {APIClient} from '@heroku-cli/command'
-import {BuildpackRegistry} from 'buildpack-registry'
+import {BuildpackRegistry} from '@heroku/buildpack-registry'
 import {cli} from 'cli-ux'
 import {HTTP} from 'http-call'
 import {findIndex as lodashFindIndex} from 'lodash'
