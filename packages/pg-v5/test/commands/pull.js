@@ -72,7 +72,8 @@ describe('pg', () => {
   describe('push', () => {
     const dumpOpts = {
       env: {
-        PGSSLMODE: 'prefer'
+        PGSSLMODE: 'prefer',
+        ...env
       },
       stdio: ['pipe', 'pipe', 2],
       encoding: 'utf8',
@@ -80,7 +81,8 @@ describe('pg', () => {
     }
     const restoreOpts = {
       env: {
-        PGPASSWORD: 'pass'
+        PGPASSWORD: 'pass',
+        ...env
       },
       stdio: ['pipe', 'pipe', 2],
       encoding: 'utf8',
@@ -101,6 +103,8 @@ describe('pg', () => {
       psql.exec.restore()
       spawnStub.restore()
       delete env.PGPORT
+      delete restoreOpts.env.PGPORT
+      delete dumpOpts.env.PGPORT
     })
 
     it('pushes out a db', () => {
@@ -150,7 +154,8 @@ describe('pg', () => {
     })
 
     it('pushes out a db using PGPORT', () => {
-      env.PGPORT = 5433
+      env.PGPORT = dumpOpts.env.PGPORT = '5433'
+      restoreOpts.env.PGPORT = '5433'
 
       const dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', '-p', '5433', 'localdb']
       const restoreFlags = ['--verbose', '-F', 'c', '--no-acl', '--no-owner', '-U', 'jeff', '-h', 'herokai.com', '-p', '5432', '-d', 'mydb']
@@ -244,7 +249,8 @@ describe('pg', () => {
     const dumpOpts = {
       env: {
         PGPASSWORD: 'pass',
-        PGSSLMODE: 'prefer'
+        PGSSLMODE: 'prefer',
+        ...env
       },
       stdio: ['pipe', 'pipe', 2],
       encoding: 'utf8',
@@ -252,6 +258,7 @@ describe('pg', () => {
     }
     const restoreFlags = ['--verbose', '-F', 'c', '--no-acl', '--no-owner', '-d', 'localdb']
     const restoreOpts = {
+      env: { ...env },
       stdio: ['pipe', 'pipe', 2],
       encoding: 'utf8',
       shell: true

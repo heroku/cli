@@ -203,7 +203,12 @@ describe('psql', () => {
     }
 
     context('when HEROKU_PSQL_HISTORY is set', () => {
-      process.env.HEROKU_PSQL_HISTORY = `${path.join('/', 'path', 'to', 'history')}`
+      beforeEach(() => {
+        process.env.HEROKU_PSQL_HISTORY = `${path.join('/', 'path', 'to', 'history')}`
+      })
+      afterEach(() => {
+        delete process.env.HEROKU_PSQL_HISTORY
+      })
 
       context('when HEROKU_PSQL_HISTORY is a valid directory path', () => {
         it('is the directory path to per-app history files', sinon.test(() => {

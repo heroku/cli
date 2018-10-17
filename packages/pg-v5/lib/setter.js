@@ -31,8 +31,8 @@ exports.generate = (name, convert, explain) => {
     const host = require('./host')
     const util = require('./util')
     const fetcher = require('./fetcher')(heroku)
-    const {app, args} = context
-    const {value, database} = args
+    const { app, args } = context
+    const { value, database } = args
 
     const db = yield fetcher.addon(app, database)
 
@@ -40,7 +40,7 @@ exports.generate = (name, convert, explain) => {
     if (util.legacyPlan(db)) throw new Error('This operation is not supported by Legacy tier databases.')
 
     if (!value) {
-      let settings = yield heroku.get(`/postgres/v0/databases/${db.id}/config`, {host: host(db)})
+      let settings = yield heroku.get(`/postgres/v0/databases/${db.id}/config`, { host: host(db) })
       let setting = settings[name]
       cli.log(`${name.replace(/_/g, '-')} is set to ${setting.value} for ${db.name}.`)
       cli.log(explain(setting))

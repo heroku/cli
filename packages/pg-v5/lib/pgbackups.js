@@ -35,7 +35,7 @@ module.exports = (context, heroku) => ({
       m = name.match(/^o[ab]\d+$/)
       if (m) {
         const host = require('./host')()
-        let transfers = yield heroku.get(`/client/v11/apps/${context.app}/transfers`, {host})
+        let transfers = yield heroku.get(`/client/v11/apps/${context.app}/transfers`, { host })
         let transfer = transfers.find(t => module.exports(context, heroku).transfer.name(t) === name)
         if (transfer) return transfer.num
       }
@@ -91,7 +91,7 @@ module.exports = (context, heroku) => ({
 
       while (true) {
         try {
-          backup = yield heroku.get(url, {host})
+          backup = yield heroku.get(url, { host })
         } catch (err) {
           if (failures++ > 20) throw err
         }
@@ -110,7 +110,7 @@ module.exports = (context, heroku) => ({
           if (backup.succeeded) return
           else {
             // logs is undefined unless verbose=true is passed
-            backup = yield heroku.get(verboseUrl, {host})
+            backup = yield heroku.get(verboseUrl, { host })
 
             throw new Error(`An error occurred and the backup did not finish.
 
