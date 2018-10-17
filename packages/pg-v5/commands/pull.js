@@ -132,6 +132,7 @@ const run = co.wrap(function * (sourceIn, targetIn, exclusions) {
 
   const dumpOptions = {
     env: {
+      ...env,
       PGSSLMODE: 'prefer'
     },
     stdio: ['pipe', 'pipe', 2],
@@ -142,11 +143,12 @@ const run = co.wrap(function * (sourceIn, targetIn, exclusions) {
 
   const restoreFlags = ['--verbose', '-F', 'c', '--no-acl', '--no-owner', ...connArgs(target)]
   const restoreOptions = {
+    env,
     stdio: ['pipe', 'pipe', 2],
     encoding: 'utf8',
     shell: true
   }
-  if (target.password) restoreOptions.env = { PGPASSWORD: target.password }
+  if (target.password) restoreOptions.env.PGPASSWORD = target.password
 
   const pgDump = cp.spawn('pg_dump', dumpFlags, dumpOptions)
   const pgRestore = cp.spawn('pg_restore', restoreFlags, restoreOptions)
