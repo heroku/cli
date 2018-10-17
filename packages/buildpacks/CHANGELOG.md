@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.18.1](https://github.com/heroku/cli/compare/v7.18.0...v7.18.1) (2018-10-17)
+
+
+### Bug Fixes
+
+* move to [@heroku](https://github.com/heroku)/buildpack-registry ([27f92a7](https://github.com/heroku/cli/commit/27f92a7))
+
+
+
+
+
 # [7.18.0](https://github.com/heroku/cli/compare/v7.17.2...v7.18.0) (2018-10-17)
 
 **Note:** Version bump only for package @heroku-cli/plugin-buildpacks
