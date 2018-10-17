@@ -258,7 +258,7 @@ describe('pg', () => {
     }
     const restoreFlags = ['--verbose', '-F', 'c', '--no-acl', '--no-owner', '-d', 'localdb']
     const restoreOpts = {
-      env: {...env},
+      env: { ...env },
       stdio: ['pipe', 'pipe', 2],
       encoding: 'utf8',
       shell: true

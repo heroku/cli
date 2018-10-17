@@ -143,7 +143,7 @@ const run = co.wrap(function * (sourceIn, targetIn, exclusions) {
 
   const restoreFlags = ['--verbose', '-F', 'c', '--no-acl', '--no-owner', ...connArgs(target)]
   const restoreOptions = {
-    env: {...env},
+    env: { ...env },
     stdio: ['pipe', 'pipe', 2],
     encoding: 'utf8',
     shell: true

@@ -12,26 +12,26 @@ module.exports = heroku => {
     let db = passedDb || 'DATABASE_URL'
 
     function matchesHelper (app, db) {
-      const {resolve} = require('@heroku-cli/plugin-addons')
+      const { resolve } = require('@heroku-cli/plugin-addons')
 
       debug(`fetching ${db} on ${app}`)
 
-      return resolve.appAttachment(heroku, app, db, {addon_service: 'heroku-postgresql', namespace: namespace})
-        .then(attached => ({matches: [attached]}))
+      return resolve.appAttachment(heroku, app, db, { addon_service: 'heroku-postgresql', namespace: namespace })
+        .then(attached => ({ matches: [attached] }))
         .catch(function (err) {
           if (err.statusCode === 422 && err.body && err.body.id === 'multiple_matches' && err.matches) {
-            return {matches: err.matches, err: err}
+            return { matches: err.matches, err: err }
           }
 
           if (err.statusCode === 404 && err.body && err.body.id === 'not_found') {
-            return {matches: null, err: err}
+            return { matches: null, err: err }
           }
 
           throw err
         })
     }
 
-    let {matches, err} = yield matchesHelper(app, db)
+    let { matches, err } = yield matchesHelper(app, db)
 
     // happy path where the resolver matches just one
     if (matches && matches.length === 1) {
@@ -100,7 +100,7 @@ module.exports = heroku => {
       let bastionHost = bastionConfig.host
       let bastionKey = bastionConfig.private_key
 
-      Object.assign(database, {bastionHost, bastionKey})
+      Object.assign(database, { bastionHost, bastionKey })
     }
 
     return database
@@ -108,7 +108,7 @@ module.exports = heroku => {
 
   function * allAttachments (app) {
     let attachments = yield heroku.get(`/apps/${app}/addon-attachments`, {
-      headers: {'Accept-Inclusion': 'addon:plan,config_vars'}
+      headers: { 'Accept-Inclusion': 'addon:plan,config_vars' }
     })
     return attachments.filter(a => a.addon.plan.name.startsWith('heroku-postgresql'))
   }
@@ -121,7 +121,7 @@ module.exports = heroku => {
   }
 
   function * all (app) {
-    const {uniqBy} = require('lodash')
+    const { uniqBy } = require('lodash')
 
     debug(`fetching all DBs on ${app}`)
 

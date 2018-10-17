@@ -3,7 +3,7 @@
 const cli = require('heroku-cli-util')
 const debug = require('./debug')
 const getBastion = require('./bastion').getBastion
-const {sortBy} = require('lodash')
+const { sortBy } = require('lodash')
 const printf = require('printf')
 const URL = require('url').URL
 
@@ -62,9 +62,9 @@ function presentCredentialAttachments (app, credAttachments, credentials, cred) 
         printHeader: false,
         printLine: function (line) { rotationLines.push(line) },
         columns: [
-          {key: 'user', format: (v, r) => `${prefix}${v}`},
-          {key: 'state', format: (v, r) => (v === 'revoking') ? 'waiting for no connections to be revoked' : v},
-          {key: 'connections', format: (v, r) => `${v} connections`}
+          { key: 'user', format: (v, r) => `${prefix}${v}` },
+          { key: 'state', format: (v, r) => (v === 'revoking') ? 'waiting for no connections to be revoked' : v },
+          { key: 'connections', format: (v, r) => `${v} connections` }
         ]
       })
     }
