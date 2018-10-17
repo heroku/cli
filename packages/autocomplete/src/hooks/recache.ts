@@ -1,3 +1,4 @@
+import {APIClient} from '@heroku-cli/command'
 import {AppCompletion, PipelineCompletion, SpaceCompletion, TeamCompletion} from '@heroku-cli/command/lib/completions'
 import {Hook} from '@oclif/config'
 import cli from 'cli-ux'
@@ -24,6 +25,16 @@ export const completions: Hook<any> = async function ({type, app}: {type?: 'app'
     const cachePath = path.join(completionsDir, cacheKey)
     const options = await completion.options({config: this.config})
     await updateCache(cachePath, options)
+  }
+
+  // if user is not logged in, exit
+  try {
+    const heroku = new APIClient(this.config)
+    if (!heroku.auth) return
+    await heroku.get('/account', {retryAuth: false})
+  } catch (err) {
+    this.debug(err.message)
+    return
   }
 
   cli.action.start('Updating completions')
