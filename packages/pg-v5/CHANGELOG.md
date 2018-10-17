@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.18.0](https://github.com/heroku/cli/compare/v7.17.2...v7.18.0) (2018-10-17)
+
+
+### Bug Fixes
+
+* pass env vars down to pg_pull/pg_drop ([#1074](https://github.com/heroku/cli/issues/1074)) ([5442383](https://github.com/heroku/cli/commit/5442383))
+
+
+### Features
+
+* **pg:** add psql history env var ([28e74a8](https://github.com/heroku/cli/commit/28e74a8))
+
+
+
+
+
 ## [7.17.1](https://github.com/heroku/cli/compare/v7.17.0...v7.17.1) (2018-10-16)
 
 
