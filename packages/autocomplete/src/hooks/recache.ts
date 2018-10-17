@@ -1,3 +1,4 @@
+import {APIClient} from '@heroku-cli/command'
 import {AppCompletion, PipelineCompletion, SpaceCompletion, TeamCompletion} from '@heroku-cli/command/lib/completions'
 import {Hook} from '@oclif/config'
 import cli from 'cli-ux'
@@ -26,12 +27,27 @@ export const completions: Hook<any> = async function ({type, app}: {type?: 'app'
     await updateCache(cachePath, options)
   }
 
+  // if user is not logged in, exit
+  try {
+    const heroku = new APIClient(this.config)
+    if (!heroku.auth) return
+    await heroku.get('/account', {retryAuth: false})
+  } catch (err) {
+    this.debug(err.message)
+    return
+  }
+
   cli.action.start('Updating completions')
   await rm()
   await acCreate.run([], this.config)
-  await update(AppCompletion, 'app')
-  await update(PipelineCompletion, 'pipeline')
-  await update(SpaceCompletion, 'space')
-  await update(TeamCompletion, 'team')
+
+  try {
+    await update(AppCompletion, 'app')
+    await update(PipelineCompletion, 'pipeline')
+    await update(SpaceCompletion, 'space')
+    await update(TeamCompletion, 'team')
+  } catch (err) {
+    this.debug(err.message)
+  }
   cli.action.stop()
 }

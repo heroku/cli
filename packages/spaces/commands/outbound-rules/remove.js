@@ -35,6 +35,7 @@ module.exports = {
   `,
   needsApp: false,
   needsAuth: true,
+  hidden: true,
   args: [
     { name: 'ruleNumber' }
   ],

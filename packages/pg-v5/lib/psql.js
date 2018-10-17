@@ -15,11 +15,11 @@ function handlePsqlError (reject, psql) {
 }
 
 function execPsql (query, dbEnv) {
-  const {spawn} = require('child_process')
+  const { spawn } = require('child_process')
   return new Promise((resolve, reject) => {
     let result = ''
     debug('Running query: %s', query.trim())
-    let psql = spawn('psql', ['-c', query], {env: dbEnv, encoding: 'utf8', stdio: [ 'ignore', 'pipe', 'inherit' ]})
+    let psql = spawn('psql', ['-c', query], { env: dbEnv, encoding: 'utf8', stdio: [ 'ignore', 'pipe', 'inherit' ] })
     psql.stdout.on('data', function (data) {
       result += data.toString()
     })
@@ -31,11 +31,11 @@ function execPsql (query, dbEnv) {
 }
 
 function execPsqlWithFile (file, dbEnv) {
-  const {spawn} = require('child_process')
+  const { spawn } = require('child_process')
   return new Promise((resolve, reject) => {
     let result = ''
     debug('Running sql file: %s', file.trim())
-    let psql = spawn('psql', ['-f', file], {env: dbEnv, encoding: 'utf8', stdio: [ 'ignore', 'pipe', 'inherit' ]})
+    let psql = spawn('psql', ['-f', file], { env: dbEnv, encoding: 'utf8', stdio: [ 'ignore', 'pipe', 'inherit' ] })
     psql.stdout.on('data', function (data) {
       result += data.toString()
     })
@@ -47,11 +47,27 @@ function execPsqlWithFile (file, dbEnv) {
 }
 
 function psqlInteractive (dbEnv, prompt) {
-  const {spawn} = require('child_process')
+  const { spawn } = require('child_process')
   return new Promise((resolve, reject) => {
-    let psql = spawn('psql',
-      ['--set', `PROMPT1=${prompt}`, '--set', `PROMPT2=${prompt}`],
-      {env: dbEnv, stdio: 'inherit'})
+    let psqlArgs = ['--set', `PROMPT1=${prompt}`, '--set', `PROMPT2=${prompt}`]
+    let psqlHistoryPath = process.env.HEROKU_PSQL_HISTORY
+    if (psqlHistoryPath) {
+      const fs = require('fs')
+      const path = require('path')
+      if (fs.existsSync(psqlHistoryPath) && fs.statSync(psqlHistoryPath).isDirectory()) {
+        let appLogFile = `${psqlHistoryPath}/${prompt.split(':')[0]}`
+        debug('Logging psql history to %s', appLogFile)
+        psqlArgs = psqlArgs.concat(['--set', `HISTFILE=${appLogFile}`])
+      } else if (fs.existsSync(path.dirname(psqlHistoryPath))) {
+        debug('Logging psql history to %s', psqlHistoryPath)
+        psqlArgs = psqlArgs.concat(['--set', `HISTFILE=${psqlHistoryPath}`])
+      } else {
+        const cli = require('heroku-cli-util')
+        cli.warn(`HEROKU_PSQL_HISTORY is set but is not a valid path (${psqlHistoryPath})`)
+      }
+    }
+
+    let psql = spawn('psql', psqlArgs, { env: dbEnv, stdio: 'inherit' })
     handlePsqlError(reject, psql)
     psql.on('close', (data) => {
       resolve()
@@ -85,6 +101,7 @@ function * interactive (db) {
   let prompt = `${db.attachment.app.name}::${name}%R%# `
   handleSignals()
   let configs = bastion.getConfigs(db)
+  configs.dbEnv.PGAPPNAME = 'psql interactive' // default was 'psql non-interactive`
 
   yield bastion.sshTunnel(db, configs.dbTunnelConfig)
   return yield psqlInteractive(configs.dbEnv, prompt)

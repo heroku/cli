@@ -3,9 +3,10 @@
 const debug = require('./debug')
 const tunnel = require('tunnel-ssh')
 const cli = require('heroku-cli-util')
+const host = require('./host')
 
 const getBastion = function (config, baseName) {
-  const {sample} = require('lodash')
+  const { sample } = require('lodash')
   // If there are bastions, extract a host and a key
   // otherwise, return an empty Object
 
@@ -19,7 +20,7 @@ const getBastion = function (config, baseName) {
   const bastionHost = sample((config[`${baseName}_BASTIONS`] || '').split(','))
   return (!(bastionKey && bastionHost))
     ? {}
-    : {bastionHost, bastionKey}
+    : { bastionHost, bastionKey }
 }
 
 exports.getBastion = getBastion
@@ -108,3 +109,14 @@ function sshTunnel (db, dbTunnelConfig, timeout) {
 }
 
 exports.sshTunnel = sshTunnel
+
+function * fetchConfig (heroku, db) {
+  return yield heroku.get(
+    `/client/v11/databases/${encodeURIComponent(db.id)}/bastion`,
+    {
+      host: host(db)
+    }
+  )
+}
+
+exports.fetchConfig = fetchConfig

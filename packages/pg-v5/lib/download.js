@@ -17,7 +17,7 @@ function download (url, path, opts) {
     let total = 0
     rsp.on('data', function (chunk) {
       total += chunk.length
-      bar.tick(chunk.length, {data: bytes(total, {decimalPlaces: 2, fixedDecimals: 2})})
+      bar.tick(chunk.length, { data: bytes(total, { decimalPlaces: 2, fixedDecimals: 2 }) })
     })
   }
 

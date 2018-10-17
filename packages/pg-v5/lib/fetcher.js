@@ -5,32 +5,33 @@ const debug = require('./debug')
 const pgUtil = require('./util')
 const getConfig = require('./config')
 const cli = require('heroku-cli-util')
+const bastion = require('./bastion')
 
 module.exports = heroku => {
   function * attachment (app, passedDb, namespace = null) {
     let db = passedDb || 'DATABASE_URL'
 
     function matchesHelper (app, db) {
-      const {resolve} = require('@heroku-cli/plugin-addons')
+      const { resolve } = require('@heroku-cli/plugin-addons')
 
       debug(`fetching ${db} on ${app}`)
 
-      return resolve.appAttachment(heroku, app, db, {addon_service: 'heroku-postgresql', namespace: namespace})
-        .then(attached => ({matches: [attached]}))
+      return resolve.appAttachment(heroku, app, db, { addon_service: 'heroku-postgresql', namespace: namespace })
+        .then(attached => ({ matches: [attached] }))
         .catch(function (err) {
           if (err.statusCode === 422 && err.body && err.body.id === 'multiple_matches' && err.matches) {
-            return {matches: err.matches, err: err}
+            return { matches: err.matches, err: err }
           }
 
           if (err.statusCode === 404 && err.body && err.body.id === 'not_found') {
-            return {matches: null, err: err}
+            return { matches: null, err: err }
           }
 
           throw err
         })
     }
 
-    let {matches, err} = yield matchesHelper(app, db)
+    let { matches, err } = yield matchesHelper(app, db)
 
     // happy path where the resolver matches just one
     if (matches && matches.length === 1) {
@@ -92,12 +93,22 @@ module.exports = heroku => {
     // as well and we would request twice at the same time but I did not want
     // to push this down into attachment because we do not always need config
     let config = yield getConfig(heroku, attached.app.name)
-    return pgUtil.getConnectionDetails(attached, config)
+
+    let database = pgUtil.getConnectionDetails(attached, config)
+    if (pgUtil.bastionKeyPlan(attached.addon) && !database.bastionKey) {
+      let bastionConfig = yield bastion.fetchConfig(heroku, attached.addon)
+      let bastionHost = bastionConfig.host
+      let bastionKey = bastionConfig.private_key
+
+      Object.assign(database, { bastionHost, bastionKey })
+    }
+
+    return database
   }
 
   function * allAttachments (app) {
     let attachments = yield heroku.get(`/apps/${app}/addon-attachments`, {
-      headers: {'Accept-Inclusion': 'addon:plan,config_vars'}
+      headers: { 'Accept-Inclusion': 'addon:plan,config_vars' }
     })
     return attachments.filter(a => a.addon.plan.name.startsWith('heroku-postgresql'))
   }
@@ -110,7 +121,7 @@ module.exports = heroku => {
   }
 
   function * all (app) {
-    const {uniqBy} = require('lodash')
+    const { uniqBy } = require('lodash')
 
     debug(`fetching all DBs on ${app}`)
 

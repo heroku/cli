@@ -3,6 +3,44 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.18.0](https://github.com/heroku/cli/compare/v7.17.2...v7.18.0) (2018-10-17)
+
+**Note:** Version bump only for package @heroku-cli/plugin-apps-v5
+
+
+
+
+
+## [7.17.1](https://github.com/heroku/cli/compare/v7.17.0...v7.17.1) (2018-10-16)
+
+**Note:** Version bump only for package @heroku-cli/plugin-apps-v5
+
+
+
+
+
+# [7.17.0](https://github.com/heroku/cli/compare/v7.16.8...v7.17.0) (2018-10-15)
+
+
+### Features
+
+* **apps:** support creating an app with initial features ([#1040](https://github.com/heroku/cli/issues/1040)) ([3d0bfe6](https://github.com/heroku/cli/commit/3d0bfe6))
+
+
+
+
+
+## [7.16.7](https://github.com/heroku/cli/compare/v7.16.6...v7.16.7) (2018-10-10)
+
+
+### Bug Fixes
+
+* updated command ([fbd11fd](https://github.com/heroku/cli/commit/fbd11fd))
+
+
+
+
+
 <a name="7.16.2"></a>
 ## [7.16.2](https://github.com/heroku/cli/compare/v7.16.1...v7.16.2) (2018-10-02)
 

@@ -1,6 +1,6 @@
 import color from '@heroku-cli/color'
 import {APIClient} from '@heroku-cli/command'
-import {BuildpackRegistry} from 'buildpack-registry'
+import {BuildpackRegistry} from '@heroku/buildpack-registry'
 import {cli} from 'cli-ux'
 import {HTTP} from 'http-call'
 import {findIndex as lodashFindIndex} from 'lodash'
@@ -41,10 +41,10 @@ export class BuildpackCommand {
 
   display(buildpacks: BuildpackResponse[], indent: string) {
     if (buildpacks.length === 1) {
-      cli.log(buildpacks[0].buildpack.url)
+      cli.log(this.registryUrlToName(buildpacks[0].buildpack.url, true))
     } else {
       buildpacks.forEach((b, i) => {
-        cli.log(`${indent}${i + 1}. ${b.buildpack.url}`)
+        cli.log(`${indent}${i + 1}. ${this.registryUrlToName(b.buildpack.url, true)}`)
       })
     }
   }
@@ -136,16 +136,19 @@ export class BuildpackCommand {
     }
   }
 
-  registryUrlToName(buildpack: string): string {
+  registryUrlToName(buildpack: string, registryOnly = false): string {
     let match = /^https:\/\/buildpack\-registry\.s3\.amazonaws\.com\/buildpacks\/([\w\-]+\/[\w\-]+).tgz$/.exec(buildpack)
     if (match) {
       return match[1]
     }
 
-    match = /^https:\/\/codon\-buildpacks\.s3\.amazonaws\.com\/buildpacks\/heroku\/([\w\-]+).tgz$/.exec(buildpack)
-    if (match) {
-      return `heroku/${match[1]}`
+    if (!registryOnly) {
+      match = /^https:\/\/codon\-buildpacks\.s3\.amazonaws\.com\/buildpacks\/heroku\/([\w\-]+).tgz$/.exec(buildpack)
+      if (match) {
+        return `heroku/${match[1]}`
+      }
     }
+
     return buildpack
   }
 

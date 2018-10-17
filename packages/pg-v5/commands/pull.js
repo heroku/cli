@@ -6,6 +6,7 @@ const debug = require('debug')('push')
 const psql = require('../lib/psql')
 const env = require('process').env
 const bastion = require('../lib/bastion')
+const cp = require('child_process')
 
 function parseURL (db) {
   const url = require('url')
@@ -31,38 +32,19 @@ function parseExclusions (rawExcludeList) {
 }
 
 function exec (cmd, opts = {}) {
-  const { execSync } = require('child_process')
   debug(cmd)
   opts = Object.assign({}, opts, { stdio: 'inherit' })
   try {
-    return execSync(cmd, opts)
+    return cp.execSync(cmd, opts)
   } catch (err) {
     if (err.status) process.exit(err.status)
     throw err
   }
 }
 
-function spawn (cmd) {
-  const { spawn } = require('child_process')
-  return new Promise((resolve, reject) => {
-    let result = ''
-    let psql = spawn(cmd, [], { encoding: 'utf8', stdio: [ 'ignore', 'pipe', 'inherit' ], shell: true })
-    psql.stdout.on('data', function (data) {
-      result += data.toString()
-    })
-    psql.on('close', function (code) {
-      if (code === 0) {
-        resolve(result)
-      } else {
-        cli.exit(code)
-      }
-    })
-  })
-}
-
 const prepare = co.wrap(function * (target) {
   if (target.host === 'localhost' || !target.host) {
-    exec(`createdb ${connstring(target, true)}`)
+    exec(`createdb ${connArgs(target, true).join(' ')}`)
   } else {
     // N.B.: we don't have a proper postgres driver and we don't want to rely on overriding
     // possible .psqlrc output configurations, so we generate a random marker that is returned
@@ -75,11 +57,16 @@ const prepare = co.wrap(function * (target) {
   }
 })
 
-function connstring (uri, skipDFlag) {
-  let user = uri.user ? `-U ${uri.user}` : ''
-  let host = uri.host ? `-h ${uri.host}` : ''
-  let port = uri.port ? `-p ${uri.port}` : ''
-  return `${user} ${host} ${port} ${skipDFlag ? '' : '-d'} ${uri.database}`
+function connArgs (uri, skipDFlag) {
+  const args = []
+
+  if (uri.user) args.push('-U', uri.user)
+  if (uri.host) args.push('-h', uri.host)
+  if (uri.port) args.push('-p', `${uri.port}`)
+  if (!skipDFlag) args.push('-d')
+  args.push(uri.database)
+
+  return args
 }
 
 const verifyExtensionsMatch = co.wrap(function * (source, target) {
@@ -125,19 +112,48 @@ const maybeTunnel = function * (herokuDb) {
   return herokuDb
 }
 
+function spawnPipe (pgDump, pgRestore) {
+  return new Promise((resolve, reject) => {
+    pgDump.stdout.pipe(pgRestore.stdin)
+    pgDump.on('close', code => code ? reject(new Error(`pg_dump errored with ${code}`)) : pgRestore.stdin.end())
+    pgRestore.on('close', code => code ? reject(new Error(`pg_restore errored with ${code}`)) : resolve())
+  })
+}
+
 const run = co.wrap(function * (sourceIn, targetIn, exclusions) {
   yield prepare(targetIn)
 
   const source = yield maybeTunnel(sourceIn)
   const target = yield maybeTunnel(targetIn)
-
   const exclude = exclusions.map(function (e) { return '--exclude-table-data=' + e }).join(' ')
 
-  let password = p => p ? ` PGPASSWORD="${p}"` : ''
-  let dump = `env${password(source.password)} PGSSLMODE=prefer pg_dump --verbose -F c -Z 0 ${exclude} ${connstring(source, true)}`
-  let restore = `env${password(target.password)} pg_restore --verbose --no-acl --no-owner ${connstring(target)}`
+  let dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', ...connArgs(source, true)]
+  if (exclude !== '') dumpFlags.push(exclude)
 
-  yield spawn(`${dump} | ${restore}`)
+  const dumpOptions = {
+    env: {
+      PGSSLMODE: 'prefer',
+      ...env
+    },
+    stdio: ['pipe', 'pipe', 2],
+    encoding: 'utf8',
+    shell: true
+  }
+  if (source.password) dumpOptions.env.PGPASSWORD = source.password
+
+  const restoreFlags = ['--verbose', '-F', 'c', '--no-acl', '--no-owner', ...connArgs(target)]
+  const restoreOptions = {
+    env: { ...env },
+    stdio: ['pipe', 'pipe', 2],
+    encoding: 'utf8',
+    shell: true
+  }
+  if (target.password) restoreOptions.env.PGPASSWORD = target.password
+
+  const pgDump = cp.spawn('pg_dump', dumpFlags, dumpOptions)
+  const pgRestore = cp.spawn('pg_restore', restoreFlags, restoreOptions)
+
+  yield spawnPipe(pgDump, pgRestore)
 
   if (source._tunnel) source._tunnel.close()
   if (target._tunnel) target._tunnel.close()

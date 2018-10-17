@@ -3,6 +3,119 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.18.2](https://github.com/heroku/cli/compare/v7.18.1...v7.18.2) (2018-10-17)
+
+**Note:** Version bump only for package heroku
+
+
+
+
+
+## [7.18.1](https://github.com/heroku/cli/compare/v7.18.0...v7.18.1) (2018-10-17)
+
+**Note:** Version bump only for package heroku
+
+
+
+
+
+# [7.18.0](https://github.com/heroku/cli/compare/v7.17.2...v7.18.0) (2018-10-17)
+
+**Note:** Version bump only for package heroku
+
+
+
+
+
+## [7.17.2](https://github.com/heroku/cli/compare/v7.17.1...v7.17.2) (2018-10-16)
+
+**Note:** Version bump only for package heroku
+
+
+
+
+
+## [7.17.1](https://github.com/heroku/cli/compare/v7.17.0...v7.17.1) (2018-10-16)
+
+**Note:** Version bump only for package heroku
+
+
+
+
+
+# [7.17.0](https://github.com/heroku/cli/compare/v7.16.8...v7.17.0) (2018-10-15)
+
+
+### Features
+
+* node 10.12.0 ([9f5b635](https://github.com/heroku/cli/commit/9f5b635))
+
+
+
+
+
+## [7.16.8](https://github.com/heroku/cli/compare/v7.16.7...v7.16.8) (2018-10-11)
+
+**Note:** Version bump only for package heroku
+
+
+
+
+
+## [7.16.7](https://github.com/heroku/cli/compare/v7.16.6...v7.16.7) (2018-10-10)
+
+
+### Bug Fixes
+
+* updated command ([fbd11fd](https://github.com/heroku/cli/commit/fbd11fd))
+
+
+
+
+
+## [7.16.6](https://github.com/heroku/cli/compare/v7.16.5...v7.16.6) (2018-10-05)
+
+
+### Bug Fixes
+
+* node 10.11.0 ([5bfa4ec](https://github.com/heroku/cli/commit/5bfa4ec))
+
+
+
+
+
+<a name="7.16.5"></a>
+## [7.16.5](https://github.com/heroku/cli/compare/v7.16.4...v7.16.5) (2018-10-04)
+
+
+### Bug Fixes
+
+* **cli:** whitelist version env var warnings ([#1057](https://github.com/heroku/cli/issues/1057)) ([e71214d](https://github.com/heroku/cli/commit/e71214d))
+
+
+
+
+
+<a name="7.16.4"></a>
+## [7.16.4](https://github.com/heroku/cli/compare/v7.16.3...v7.16.4) (2018-10-03)
+
+**Note:** Version bump only for package heroku
+
+
+
+
+
+<a name="7.16.3"></a>
+## [7.16.3](https://github.com/heroku/cli/compare/v7.16.2...v7.16.3) (2018-10-03)
+
+
+### Bug Fixes
+
+* updated deps ([#1058](https://github.com/heroku/cli/issues/1058)) ([ce1fd6b](https://github.com/heroku/cli/commit/ce1fd6b))
+
+
+
+
 <a name="7.16.2"></a>
 ## [7.16.2](https://github.com/heroku/cli/compare/v7.16.1...v7.16.2) (2018-10-02)
 

@@ -1,6 +1,6 @@
 import Nock from '@fancy-test/nock'
+import {Fixture} from '@heroku/buildpack-registry'
 import {expect, test as otest} from '@oclif/test'
-import {Fixture} from 'buildpack-registry'
 import * as nock from 'nock'
 // tslint:disable-next-line:no-duplicate-imports
 import {Scope} from 'nock'
