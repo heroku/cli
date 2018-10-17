@@ -28,8 +28,8 @@
     "shellwords": "^0.1.1"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.19.0",
-    "@oclif/plugin-legacy": "^1.1.1",
+    "@oclif/dev-cli": "^1.19.2",
+    "@oclif/plugin-legacy": "^1.1.2",
     "fixture-stdout": "0.2.1",
     "mocha": "^5.2.0",
     "mocha-junit-reporter": "1.18.0",

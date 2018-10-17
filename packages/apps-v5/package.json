@@ -30,8 +30,8 @@
     "urijs": "1.19.1"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.19.0",
-    "@oclif/plugin-legacy": "^1.1.1",
+    "@oclif/dev-cli": "^1.19.2",
+    "@oclif/plugin-legacy": "^1.1.2",
     "chai": "^4.2.0",
     "lolex": "^3.0.0",
     "mocha": "^5.2.0",
@@ -41,7 +41,7 @@
     "proxyquire": "^2.1.0",
     "set-tz": "^0.1.0",
     "std-mocks": "1.0.1",
-    "testdouble": "^3.8.1",
+    "testdouble": "^3.8.2",
     "time-require": "0.1.2",
     "unexpected": "^10.39.1"
   },

@@ -21,13 +21,13 @@
     "printf": "0.5.1"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.19.0",
-    "@oclif/plugin-legacy": "^1.1.1",
+    "@oclif/dev-cli": "^1.19.2",
+    "@oclif/plugin-legacy": "^1.1.2",
     "chai": "^4.2.0",
     "lolex": "^3.0.0",
     "mocha": "^5.2.0",
     "nock": "9.0.13",
-    "nyc": "^13.0.1",
+    "nyc": "^13.1.0",
     "sinon": "^6.3.5",
     "unexpected": "^10.39.1"
   },
