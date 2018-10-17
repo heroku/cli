@@ -160,7 +160,7 @@ Sanbashi.cmd = function (cmd, args, options = {}) {
       }
     })
     child.on('exit', (code, signal) => {
-      if (signal || code) reject(signal || code)
+      if (signal || code) reject(new Error(signal || code))
       else resolve(stdout)
     })
   })
