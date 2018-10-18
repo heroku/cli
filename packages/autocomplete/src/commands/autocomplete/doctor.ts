@@ -82,11 +82,14 @@ export default class Doctor extends AutocompleteBase {
             this.log(`${c.id} (hidden)`)
           } else {
             let results = Object.keys(c.flags).map((f: string) => {
-              let flag: any = c.flags[f]
-              if (flag.hidden) return `--${f} (hidden)`
-              else if (flag.completion) {
-                return `--${f} (completion)`
-              } else return `--${f}`
+              let out = `--${f}`
+              let flag = c.flags[f]
+              if (flag.type === 'option') out += '='
+              if (flag.hasOwnProperty('completion') || this.findCompletion(c.id, f, flag.description)) {
+                out += '(c)'
+              }
+              if (flag.hidden) out += '(h)'
+              return out
             })
             if (results.length) this.log(`${c.id} -> ${results}`)
           }

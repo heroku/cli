@@ -7,23 +7,60 @@ import * as path from 'path'
 
 export const oneDay = 60 * 60 * 24
 
+export class CompletionLookup {
+  private get key(): string {
+    return this.argAlias() || this.keyAlias() || this.descriptionAlias() || this.name
+  }
+
+  private readonly blacklistMap: { [key: string]: string[] } = {
+    app: ['apps:create'],
+    space: ['spaces:create'],
+  }
+
+  private readonly keyAliasMap: { [key: string]: { [key: string]: string } } = {
+    key: {
+      'config:get': 'config',
+    },
+  }
+
+  private readonly commandArgsMap: { [key: string]: { [key: string]: string} } = {
+    key: {
+      'config:set': 'configSet',
+    }
+  }
+
+  constructor(private readonly cmdId: string, private readonly name: string, private readonly description?: string) {
+  }
+
+  run(): flags.ICompletion | undefined {
+    if (this.blacklisted()) return
+    return CompletionMapping[this.key]
+  }
+
+  private argAlias(): string | undefined {
+    return this.commandArgsMap[this.name] && this.commandArgsMap[this.name][this.cmdId]
+  }
+
+  private keyAlias(): string | undefined {
+    return this.keyAliasMap[this.name] && this.keyAliasMap[this.name][this.cmdId]
+  }
+
+  private descriptionAlias(): string | undefined {
+    const d = this.description!
+    if (d.match(/^dyno size/)) return 'dynosize'
+    if (d.match(/^process type/)) return 'processtype'
+  }
+
+  private blacklisted(): boolean {
+    return this.blacklistMap[this.name] && this.blacklistMap[this.name].includes(this.cmdId)
+  }
+}
+
 export const herokuGet = async (resource: string, ctx: { config: Config.IConfig }): Promise<string[]> => {
   const heroku = new APIClient(ctx.config)
   let {body} = await heroku.get(`/${resource}`, {retryAuth: false})
   if (typeof body === 'string') body = JSON.parse(body)
   return (body as any[]).map((a: any) => a.name).sort()
-}
-
-export const CompletionBlacklist: { [key: string]: string[] } = {
-  app: ['apps:create'],
-}
-
-export const CompletionAliases: { [key: string]: string } = {
-  key: 'config',
-}
-
-export const CompletionVariableArgsLookup: { [key: string]: string } = {
-  'config:set': 'configSet',
 }
 
 export const AppCompletion: flags.ICompletion = {

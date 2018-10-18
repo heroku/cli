@@ -2,7 +2,7 @@ import Command, {flags} from '@heroku-cli/command'
 import * as fs from 'fs-extra'
 import * as path from 'path'
 
-import {CompletionAliases, CompletionBlacklist, CompletionMapping, CompletionVariableArgsLookup} from './completions'
+import {CompletionLookup} from './completions'
 
 export abstract class AutocompleteBase extends Command {
   public errorIfWindows() {
@@ -41,20 +41,7 @@ export abstract class AutocompleteBase extends Command {
     fs.write(fd, entry)
   }
 
-  protected findCompletion(name: string, id: string): flags.ICompletion | undefined {
-    if (this.blacklisted(name, id)) return
-    if (CompletionVariableArgsLookup[id]) return CompletionMapping[CompletionVariableArgsLookup[id]]
-    const alias = this.convertIfAlias(name)
-    if (CompletionMapping[alias]) return CompletionMapping[alias]
-  }
-
-  private blacklisted(name: string, id: string): boolean {
-    return CompletionBlacklist[name] && CompletionBlacklist[name].includes(id)
-  }
-
-  private convertIfAlias(name: string): string {
-    let alias = CompletionAliases[name]
-    if (alias) return alias
-    return name
+  protected findCompletion(cmdId: string, name: string, description = ''): flags.ICompletion | undefined {
+    return new CompletionLookup(cmdId, name, description).run()
   }
 }
