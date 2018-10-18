@@ -18,7 +18,7 @@
     "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/run-v5/<%- commandPath %>"
   },
   "dependencies": {
-    "@heroku-cli/color": "^1.1.10",
+    "@heroku-cli/color": "^1.1.12",
     "@heroku-cli/command": "^8.2.0",
     "@heroku-cli/notifications": "^1.2.2",
     "@heroku/eventsource": "^1.0.7",
