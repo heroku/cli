@@ -254,6 +254,8 @@
       "heroku-cli-autocomplete": "autocomplete",
       "heroku-cli-buildpacks": "buildpack-registry",
       "heroku-cli-config-edit": null,
+      "heroku-cli-deploy": "java",
+      "heroku-cli-java": "java",
       "heroku-cli-plugin-generator": null,
       "heroku-container-registry": null,
       "heroku-event-log": "@heroku/event-log",
