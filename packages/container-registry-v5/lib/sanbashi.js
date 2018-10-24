@@ -18,7 +18,7 @@ Sanbashi.getDockerfiles = function (rootdir, recursive) {
     nodir: true
   })
   if (recursive) {
-    dockerfiles = dockerfiles.filter(df => df.match(/Dockerfile\.[\w]+$/))
+    dockerfiles = dockerfiles.filter(df => df.match(/Dockerfile\.[\w]+/))
   } else {
     dockerfiles = dockerfiles.filter(df => df.match(/Dockerfile$/))
   }
