@@ -1,4 +1,5 @@
 'use strict'
+/* globals describe it beforeEach afterEach */
 
 const cli = require('heroku-cli-util')
 const cmd = require('../..').commands.find(c => c.topic === 'container' && c.command === 'release')
@@ -7,7 +8,7 @@ const sinon = require('sinon')
 const nock = require('nock')
 const stdMocks = require('std-mocks')
 
-var sandbox
+let sandbox
 
 describe('container release', () => {
   beforeEach(() => {
@@ -17,9 +18,12 @@ describe('container release', () => {
   afterEach(() => sandbox.restore())
 
   it('has no process type specified', () => {
+    sandbox.stub(process, 'exit')
+
     return cmd.run({ app: 'testapp', args: [], flags: {} })
       .then(() => expect(cli.stderr, 'to contain', 'Requires one or more process types'))
       .then(() => expect(cli.stdout, 'to be empty'))
+      .then(() => expect(process.exit.calledWith(1), 'to equal', true))
   })
 
   it('releases a single process type', () => {

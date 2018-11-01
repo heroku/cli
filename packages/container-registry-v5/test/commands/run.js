@@ -1,4 +1,5 @@
 'use strict'
+/* globals describe it beforeEach afterEach */
 
 const cli = require('heroku-cli-util')
 const cmd = require('../..').commands.find(c => c.topic === 'container' && c.command === 'run')
@@ -6,7 +7,7 @@ const expect = require('unexpected')
 const sinon = require('sinon')
 
 const Sanbashi = require('../../lib/sanbashi')
-var sandbox
+let sandbox
 
 describe('container run', () => {
   beforeEach(() => {
@@ -17,9 +18,12 @@ describe('container run', () => {
   afterEach(() => sandbox.restore())
 
   it('requires a process type', () => {
+    sandbox.stub(process, 'exit')
+
     return cmd.run({ app: 'testapp', args: [], flags: {} })
       .then(() => expect(cli.stdout, 'to be empty'))
       .then(() => expect(cli.stderr, 'to contain', 'Requires one process type'))
+      .then(() => expect(process.exit.calledWith(1), 'to equal', true))
   })
 
   it('runs a container', () => {

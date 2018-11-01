@@ -31,7 +31,7 @@ let release = async function (context, heroku) {
   if (context.flags.verbose) debug.enabled = true
 
   if (context.args.length === 0) {
-    cli.error(`Error: Requires one or more process types\n ${usage} `, 1)
+    cli.exit(1, `Error: Requires one or more process types\n ${usage}`)
     return
   }
   await heroku.get(`/apps/${context.app}`)

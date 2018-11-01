@@ -1,4 +1,5 @@
 'use strict'
+/* globals describe it beforeEach afterEach */
 
 const cli = require('heroku-cli-util')
 const cmd = require('../..').commands.find(c => c.topic === 'container' && c.command === 'logout')
@@ -6,7 +7,7 @@ const expect = require('unexpected')
 const sinon = require('sinon')
 
 const Sanbashi = require('../../lib/sanbashi')
-var sandbox
+let sandbox
 
 describe('container logout', () => {
   beforeEach(() => {

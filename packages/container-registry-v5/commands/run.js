@@ -36,8 +36,7 @@ module.exports = function (topic) {
 let run = async function (context, heroku) {
   if (context.flags.verbose) debug.enabled = true
   if (context.args.length === 0) {
-    cli.error(`Error: Requires one process type\n ${usage} `, 1)
-    return
+    cli.exit(1, `Error: Requires one process type\n ${usage}`)
   }
 
   let processType = context.args.shift()
@@ -67,6 +66,6 @@ let run = async function (context, heroku) {
   try {
     await Sanbashi.runImage(job.resource, command, context.flags.port || 5000)
   } catch (err) {
-    cli.error(`Error: docker run exited with ${err}`, 1)
+    cli.exit(1, `Error: docker run exited with ${err}`)
   }
 }

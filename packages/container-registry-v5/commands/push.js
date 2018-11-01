@@ -49,11 +49,11 @@ let push = async function (context, heroku) {
   if (context.flags.verbose) debug.enabled = true
   const recurse = !!context.flags.recursive
   if (context.args.length === 0 && !recurse) {
-    cli.error(`Error: Requires either --recursive or one or more process types`, 1)
+    cli.exit(1, `Error: Requires either --recursive or one or more process types`)
     return
   }
   if (context.args.length > 1 && !recurse) {
-    cli.error(`Error: Requires exactly one target process type, or --recursive option`, 1)
+    cli.exit(1, `Error: Requires exactly one target process type, or --recursive option`)
     return
   }
   await heroku.get(`/apps/${context.app}`)
@@ -74,7 +74,7 @@ let push = async function (context, heroku) {
     jobs = possibleJobs.standard || []
   }
   if (!jobs.length) {
-    cli.error('No images to push', 1)
+    cli.exit(1, 'No images to push')
     return
   }
 
@@ -91,7 +91,7 @@ let push = async function (context, heroku) {
       await Sanbashi.buildImage(job.dockerfile, job.resource, buildArg, context.flags['context-path'])
     }
   } catch (err) {
-    cli.error(`Error: docker build exited with ${err}`, 1)
+    cli.exit(1, `Error: docker build exited with ${err}`)
     return
   }
 
@@ -108,7 +108,7 @@ let push = async function (context, heroku) {
     cli.log(`Your image${plural ? 's have' : ' has'} been successfully pushed. You can now release ${plural ? 'them' : 'it'} with the 'container:release' command.`)
     warnThatReleaseIsRequired(plural)
   } catch (err) {
-    cli.error(`Error: docker push exited with ${err}`, 1)
+    cli.exit(1, `Error: docker push exited with ${err}`)
   }
 }
 
