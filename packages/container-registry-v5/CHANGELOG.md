@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.18.4](https://github.com/heroku/cli/compare/v7.18.3...v7.18.4) (2018-11-02)
+
+
+### Bug Fixes
+
+* **container:** exit with status code 1 for errors ([52c2f4a](https://github.com/heroku/cli/commit/52c2f4a))
+* **container:** handle missing docker install ([cf45581](https://github.com/heroku/cli/commit/cf45581))
+
+
+
+
+
 # [7.18.0](https://github.com/heroku/cli/compare/v7.17.2...v7.18.0) (2018-10-17)
 
 **Note:** Version bump only for package @heroku-cli/plugin-container-registry-v5

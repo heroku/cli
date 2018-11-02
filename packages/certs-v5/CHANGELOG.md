@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.18.4](https://github.com/heroku/cli/compare/v7.18.3...v7.18.4) (2018-11-02)
+
+
+### Bug Fixes
+
+* Correct certs-v5 date formatting ([#1079](https://github.com/heroku/cli/issues/1079)) ([b7c692f](https://github.com/heroku/cli/commit/b7c692f))
+
+
+
+
+
 # [7.18.0](https://github.com/heroku/cli/compare/v7.17.2...v7.18.0) (2018-10-17)
 
 **Note:** Version bump only for package @heroku-cli/plugin-certs-v5
