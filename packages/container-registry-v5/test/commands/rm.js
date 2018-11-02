@@ -1,9 +1,11 @@
 'use strict'
+/* globals describe it beforeEach */
 
 const cli = require('heroku-cli-util')
 const cmd = require('../..').commands.find(c => c.topic === 'container' && c.command === 'rm')
 const expect = require('unexpected')
 const nock = require('nock')
+const sinon = require('sinon')
 
 describe('container removal', () => {
   beforeEach(() => cli.mockConsole())
@@ -34,8 +36,13 @@ describe('container removal', () => {
   })
 
   it('requires a container to be specified', () => {
+    const sandbox = sinon.createSandbox()
+    sandbox.stub(process, 'exit')
+
     return cmd.run({ app: 'testapp', args: [], flags: {} })
       .then(() => expect(cli.stdout, 'to be empty'))
       .then(() => expect(cli.stderr, 'to contain', 'Please specify at least one target process type'))
+      .then(() => expect(process.exit.calledWith(1), 'to equal', true))
+      .finally(() => sandbox.restore())
   })
 })

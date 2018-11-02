@@ -1,4 +1,5 @@
 const cli = require('heroku-cli-util')
+
 const Sanbashi = require('../lib/sanbashi')
 const debug = require('../lib/debug')
 
@@ -12,8 +13,7 @@ let pull = async function (context, heroku) {
   if (context.flags.verbose) debug.enabled = true
 
   if (context.args.length === 0) {
-    cli.error(`Error: Requires one or more process types\n ${usage} `, 1)
-    return
+    cli.exit(1, `Error: Requires one or more process types\n ${usage}`)
   }
 
   let herokuHost = process.env.HEROKU_HOST || 'heroku.com'
