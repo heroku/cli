@@ -145,13 +145,28 @@ describe('pipelines:diff', function () {
         })
     })
 
-    it('should return an error if the target app has no release', function () {
+    it('should return an error if the target app has a release with no slug', function () {
       nock(kolkrabbiApi)
         .get(`/apps/${targetApp.id}/github`)
         .reply(200, targetGithubApp)
       const req = nock(api)
         .get(`/apps/${targetApp.id}/releases`)
         .reply(200, [{ slug: null }])
+
+      return cmd.run({ app: targetApp.name })
+        .then(function () {
+          req.done()
+          expect(cli.stderr).to.contain('No release was found')
+        })
+    })
+
+    it('should return an error if the target app has no release', function () {
+      nock(kolkrabbiApi)
+        .get(`/apps/${targetApp.id}/github`)
+        .reply(200, targetGithubApp)
+      const req = nock(api)
+        .get(`/apps/${targetApp.id}/releases`)
+        .reply(200, [])
 
       return cmd.run({ app: targetApp.name })
         .then(function () {
@@ -183,9 +198,12 @@ describe('pipelines:diff', function () {
       // Mock latest release/slug endpoints for two apps:
       nock(api)
         .get(`/apps/${targetApp.id}/releases`)
-        .reply(200, [{ slug: { id: targetSlugId } }])
+        .reply(200, [{ slug: { id: targetSlugId }, status: 'succeeded' }])
         .get(`/apps/${downstreamApp1.id}/releases`)
-        .reply(200, [{ slug: { id: downstreamSlugId } }])
+        .reply(200, [
+          { status: 'failed' },
+          { slug: { id: downstreamSlugId }, status: 'succeeded' }
+        ])
     })
 
     it('should not compare apps if update to date NOR if repo differs', function () {

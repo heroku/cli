@@ -46,18 +46,19 @@ function * getAppInfo (heroku, appName, appId) {
   // Find the commit hash of the latest release for this app
   let slug
   try {
-    const release = yield heroku.request({
+    const releases = yield heroku.request({
       method: 'GET',
       path: `/apps/${appId}/releases`,
-      headers: { 'Accept': V3_HEADER, 'Range': 'version ..; order=desc,max=1' },
+      headers: { 'Accept': V3_HEADER, 'Range': 'version ..; order=desc' },
       partial: true
     })
-    if (release[0].slug === null) {
+    const release = releases.find((r) => r.status === 'succeeded')
+    if (!release || !release.slug) {
       throw new Error(`no release found for ${appName}`)
     }
     slug = yield heroku.request({
       method: 'GET',
-      path: `/apps/${appId}/slugs/${release[0].slug.id}`,
+      path: `/apps/${appId}/slugs/${release.slug.id}`,
       headers: { 'Accept': V3_HEADER }
     })
   } catch (err) {
