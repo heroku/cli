@@ -1,34 +1,44 @@
-# Heroku Enterprise
-The enterprise plugin provides you with commands to interact with your Heroku
-Enterprise account.
+@heroku-cli/plugin-enterprise
+==========
 
-## Install
+CLI to manage Heroku Enterprise Accounts
 
-```sh
-heroku plugins:install heroku-enterprise
+[![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
+[![Version](https://img.shields.io/npm/v/plugin-enterprise.svg)](https://npmjs.org/package/plugin-enterprise)
+
+[![CircleCI](https://circleci.com/gh/heroku/heroku-enterprise/tree/master.svg?style=shield)](https://circleci.com/gh/heroku/heroku-enterprise/tree/master)
+
+[![Appveyor CI](https://ci.appveyor.com/api/projects/status/github/heroku/heroku-enterprise?branch=master&svg=true)](https://ci.appveyor.com/project/heroku/heroku-enterprise/branch/master)
+[![Codecov](https://codecov.io/gh/heroku/heroku-enterprise/branch/master/graph/badge.svg)](https://codecov.io/gh/heroku/heroku-enterprise)
+[![Downloads/week](https://img.shields.io/npm/dw/plugin-enterprise.svg)](https://npmjs.org/package/plugin-enterprise)
+[![License](https://img.shields.io/npm/l/plugin-enterprise.svg)](https://github.com/heroku/heroku-enterprise/blob/master/package.json)
+
+<!-- toc -->
+* [Usage](#usage)
+* [Commands](#commands)
+<!-- tocstop -->
+# Usage
+```sh-session
+$ heroku plugins:install heroku-enterprise
+$ heroku COMMAND
+running command...
+$ heroku --help [COMMAND]
+USAGE
+  $ heroku COMMAND
+...
 ```
-
-## Develop
-Please refer to [Developing CLI Plugins](https://devcenter.heroku.com/articles/developing-cli-plugins)
-
-## Deploy
-
-```sh
-$ npm version patch/minor/major
-$ npm publish
-```
-
+# Commands
 <!-- commands -->
 * [`heroku enterprises`](#heroku-enterprises)
-* [`heroku enterprises:create NAME`](#heroku-enterprisescreate-name)
 * [`heroku enterprises:members`](#heroku-enterprisesmembers)
-* [`heroku enterprises:members-add EMAIL`](#heroku-enterprisesmembers-add-email)
-* [`heroku enterprises:members-remove EMAIL`](#heroku-enterprisesmembers-remove-email)
+* [`heroku enterprises:members:add EMAIL`](#heroku-enterprisesmembersadd-email)
+* [`heroku enterprises:members:permissions:add EMAIL`](#heroku-enterprisesmemberspermissionsadd-email)
+* [`heroku enterprises:members:permissions:remove EMAIL`](#heroku-enterprisesmemberspermissionsremove-email)
+* [`heroku enterprises:members:remove EMAIL`](#heroku-enterprisesmembersremove-email)
 * [`heroku enterprises:teams`](#heroku-enterprisesteams)
+* [`heroku enterprises:teams:create [TEAM]`](#heroku-enterprisesteamscreate-team)
+* [`heroku enterprises:teams:remove TEAM`](#heroku-enterprisesteamsremove-team)
 * [`heroku enterprises:usage`](#heroku-enterprisesusage)
-* [`heroku teams`](#heroku-teams)
-* [`heroku teams:create TEAM`](#heroku-teamscreate-team)
-* [`heroku teams:transfer TEAM`](#heroku-teamstransfer-team)
 
 ## `heroku enterprises`
 
@@ -37,57 +47,116 @@ list your enterprise accounts
 ```
 USAGE
   $ heroku enterprises
+
+EXAMPLE
+  $ heroku enterprises
 ```
 
-## `heroku enterprises:create NAME`
-
-(sudo) create an enterprise account
-
-```
-USAGE
-  $ heroku enterprises:create NAME
-
-OPTIONS
-  --domain=domain      (required)
-  --managers=managers  (required)
-```
+_See code: [src/commands/enterprises/index.ts](https://github.com/heroku/heroku-enterprise/blob/v1.5.1/src/commands/enterprises/index.ts)_
 
 ## `heroku enterprises:members`
 
-list members of an enterprise account
+list members of the enterprise account and their permissions
 
 ```
 USAGE
   $ heroku enterprises:members
 
 OPTIONS
-  --enterprise-account=enterprise-account  (required) enterprise account name
+  -e, --enterprise-account=enterprise-account  (required) enterprise account name
+  --columns=columns                            only show provided columns (comma-seperated)
+  --csv                                        output is csv format
+  --extra                                      show extra columns
+  --filter=filter                              filter property by partial string matching, ex: name=foo
+  --no-header                                  hide table header from output
+  --no-truncate                                do not truncate output to fit screen
+  --sort=sort                                  property to sort by (prepend '-' for descending)
+
+EXAMPLE
+  $ heroku enterprises:members --enterprise-account=account-name
 ```
 
-## `heroku enterprises:members-add EMAIL`
+_See code: [src/commands/enterprises/members/index.ts](https://github.com/heroku/heroku-enterprise/blob/v1.5.1/src/commands/enterprises/members/index.ts)_
+
+## `heroku enterprises:members:add EMAIL`
 
 add a member to an enterprise account
 
 ```
 USAGE
-  $ heroku enterprises:members-add EMAIL
+  $ heroku enterprises:members:add EMAIL
 
 OPTIONS
-  --enterprise-account=enterprise-account  (required) enterprise account name
-  --permissions=permissions                (required) permissions to grant the member
+  -e, --enterprise-account=enterprise-account  (required) enterprise account name
+  -p, --permissions=permissions                (required) permissions to grant the member (comma-separated)
+
+ALIASES
+  $ heroku enterprises:members-add
+
+EXAMPLE
+  $ heroku enterprises:members:add member-name --enterprise-account=account-name 
+  --permissions=billing,create,manage,view
 ```
 
-## `heroku enterprises:members-remove EMAIL`
+_See code: [src/commands/enterprises/members/add.ts](https://github.com/heroku/heroku-enterprise/blob/v1.5.1/src/commands/enterprises/members/add.ts)_
+
+## `heroku enterprises:members:permissions:add EMAIL`
+
+adds permissions to the member of an enterprise account
+
+```
+USAGE
+  $ heroku enterprises:members:permissions:add EMAIL
+
+OPTIONS
+  -e, --enterprise-account=enterprise-account  (required) enterprise account name
+  -p, --permissions=permissions                (required) permissions to grant the member (comma-separated)
+
+EXAMPLE
+  $ heroku enterprises:members:permissions:add member-name --enterprise-account=account-name 
+  --permissions=billing,create,manage,view
+```
+
+_See code: [src/commands/enterprises/members/permissions/add.ts](https://github.com/heroku/heroku-enterprise/blob/v1.5.1/src/commands/enterprises/members/permissions/add.ts)_
+
+## `heroku enterprises:members:permissions:remove EMAIL`
+
+removes permissions from the member of an enterprise account
+
+```
+USAGE
+  $ heroku enterprises:members:permissions:remove EMAIL
+
+OPTIONS
+  -e, --enterprise-account=enterprise-account  (required) enterprise account name
+  -p, --permissions=permissions                (required) permissions to remove from the member (comma-separated)
+
+EXAMPLE
+  $ heroku enterprises:members:permissions:remove member-name --enterprise-account=account-name 
+  --permissions=billing,create,manage,view
+```
+
+_See code: [src/commands/enterprises/members/permissions/remove.ts](https://github.com/heroku/heroku-enterprise/blob/v1.5.1/src/commands/enterprises/members/permissions/remove.ts)_
+
+## `heroku enterprises:members:remove EMAIL`
 
 remove a member from an enterprise account
 
 ```
 USAGE
-  $ heroku enterprises:members-remove EMAIL
+  $ heroku enterprises:members:remove EMAIL
 
 OPTIONS
-  --enterprise-account=enterprise-account  (required) enterprise account name
+  -e, --enterprise-account=enterprise-account  (required) enterprise account name
+
+ALIASES
+  $ heroku enterprises:members-remove
+
+EXAMPLE
+  $ heroku enterprises:members:remove member-name --enterprise-account=account-name
 ```
+
+_See code: [src/commands/enterprises/members/remove.ts](https://github.com/heroku/heroku-enterprise/blob/v1.5.1/src/commands/enterprises/members/remove.ts)_
 
 ## `heroku enterprises:teams`
 
@@ -98,8 +167,54 @@ USAGE
   $ heroku enterprises:teams
 
 OPTIONS
-  --enterprise-account=enterprise-account  (required) enterprise account name
+  -e, --enterprise-account=enterprise-account  (required) enterprise account name
+  --columns=columns                            only show provided columns (comma-seperated)
+  --csv                                        output is csv format
+  --extra                                      show extra columns
+  --filter=filter                              filter property by partial string matching, ex: name=foo
+  --no-header                                  hide table header from output
+  --no-truncate                                do not truncate output to fit screen
+  --sort=sort                                  property to sort by (prepend '-' for descending)
+
+EXAMPLE
+  $ heroku enterprises:teams --enterprise-account=account-name
 ```
+
+_See code: [src/commands/enterprises/teams/index.ts](https://github.com/heroku/heroku-enterprise/blob/v1.5.1/src/commands/enterprises/teams/index.ts)_
+
+## `heroku enterprises:teams:create [TEAM]`
+
+create a team in an enterprise account
+
+```
+USAGE
+  $ heroku enterprises:teams:create [TEAM]
+
+ARGUMENTS
+  TEAM  name of the team to create
+
+OPTIONS
+  -e, --enterprise-account=enterprise-account  (required) enterprise account name
+
+EXAMPLE
+  $ heroku enterprise:teams:create team-name --enterprise-account=account-name
+```
+
+_See code: [src/commands/enterprises/teams/create.ts](https://github.com/heroku/heroku-enterprise/blob/v1.5.1/src/commands/enterprises/teams/create.ts)_
+
+## `heroku enterprises:teams:remove TEAM`
+
+remove a team from an enterprise account
+
+```
+USAGE
+  $ heroku enterprises:teams:remove TEAM
+
+EXAMPLE
+  $ heroku enterprises:teams:remove team-name
+```
+
+_See code: [src/commands/enterprises/teams/remove.ts](https://github.com/heroku/heroku-enterprise/blob/v1.5.1/src/commands/enterprises/teams/remove.ts)_
 
 ## `heroku enterprises:usage`
 
@@ -110,48 +225,20 @@ USAGE
   $ heroku enterprises:usage
 
 OPTIONS
-  --end-date=end-date                      end date of the usage period
-  --enterprise-account=enterprise-account  (required) enterprise account name
-  --start-date=start-date                  start date of the usage period
+  -e, --enterprise-account=enterprise-account  (required) enterprise account name
+  -t, --team=team                              team name
+  --columns=columns                            only show provided columns (comma-seperated)
+  --csv                                        output is csv format
+  --extra                                      show extra columns
+  --filter=filter                              filter property by partial string matching, ex: name=foo
+  --no-header                                  hide table header from output
+  --no-truncate                                do not truncate output to fit screen
+  --sort=sort                                  property to sort by (prepend '-' for descending)
+
+EXAMPLES
+  $ heroku enterprises:usage --enterprise-account=account-name
+  $ heroku enterprises:usage --enterprise-account=account-name --team=team-name
 ```
 
-## `heroku teams`
-
-list the teams that you are a member of
-
-```
-USAGE
-  $ heroku teams
-```
-
-## `heroku teams:create TEAM`
-
-Create a team in an enterprise account
-
-```
-USAGE
-  $ heroku teams:create TEAM
-
-ARGUMENTS
-  TEAM  name of the team to create
-
-OPTIONS
-  --enterprise-account=enterprise-account  (required) enterprise account name
-```
-
-## `heroku teams:transfer TEAM`
-
-(sudo) transfer a team to an enterprise account
-
-```
-USAGE
-  $ heroku teams:transfer TEAM
-
-ARGUMENTS
-  TEAM  name of the team to transfer
-
-OPTIONS
-  --enterprise-account=enterprise-account  (required) enterprise account name
-  --internal                               mark the billing for the team as internal
-```
+_See code: [src/commands/enterprises/usage.ts](https://github.com/heroku/heroku-enterprise/blob/v1.5.1/src/commands/enterprises/usage.ts)_
 <!-- commandsstop -->
