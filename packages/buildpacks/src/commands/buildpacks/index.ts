@@ -6,7 +6,8 @@ import {BuildpackCommand} from '../../buildpacks'
 export default class Index extends Command {
   static description = 'display the buildpacks for an app'
   static flags = {
-    app: Flags.app({required: true})
+    app: Flags.app({required: true}),
+    remote: Flags.remote()
   }
 
   async run() {
