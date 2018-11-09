@@ -11,6 +11,14 @@ function * run (context, heroku) {
   const { app, args, flags } = context
   const interval = Math.max(3, parseInt(flags['wait-interval'])) || 3
 
+  const upperCaseConfig = function (config) {
+    const output = {}
+    for (const key in config) {
+      output[key.toUpperCase()] = config[key]
+    }
+    return output
+  }
+
   let resolve = co.wrap(function * (db) {
     if (db.match(/^postgres:\/\//)) {
       // For the case an input is URL format
@@ -31,9 +39,10 @@ function * run (context, heroku) {
         heroku.get(`/apps/${attachment.app.name}/config-vars`)
       ]
       attachment.addon = addon
+      config = upperCaseConfig(config) // Upper case config var keys
       return {
         name: attachment.name.replace(/^HEROKU_POSTGRESQL_/, '').replace(/_URL$/, ''),
-        url: config[attachment.name + '_URL'],
+        url: config[attachment.name.toUpperCase() + '_URL'], // Upper case attachment name
         attachment,
         confirm: app
       }
