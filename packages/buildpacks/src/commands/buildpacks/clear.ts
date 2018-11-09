@@ -5,7 +5,8 @@ import {BuildpackCommand} from '../../buildpacks'
 export default class Clear extends Command {
   static description = 'clear all buildpacks set on the app'
   static flags = {
-    app: Flags.app({required: true})
+    app: Flags.app({required: true}),
+    remote: Flags.remote()
   }
 
   async run() {
