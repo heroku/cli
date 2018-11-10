@@ -1,0 +1,51 @@
+{
+  "name": "@heroku-cli/plugin-webhooks-v5",
+  "description": "Heroku CLI plugin to manage webhooks.",
+  "version": "7.18.0",
+  "author": "Ransom Briggs (@ransombriggs)",
+  "bugs": "https://github.com/heroku/cli/issues",
+  "dependencies": {
+    "@heroku-cli/command": "^8.2.0",
+    "heroku-cli-util": "^8.0.10"
+  },
+  "devDependencies": {
+    "@oclif/dev-cli": "^1.19.2",
+    "@oclif/plugin-legacy": "^1.1.2",
+    "chai": "^4.2.0",
+    "cross-env": "^5.2.0",
+    "mocha": "^5.2.0",
+    "mocha-junit-reporter": "1.18.0",
+    "nock": "9.3.3",
+    "nyc": "13.1.0"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "files": [
+    "oclif.manifest.json",
+    "index.js",
+    "commands",
+    "lib"
+  ],
+  "homepage": "https://github.com/heroku/cli/tree/master/packages/webhooks-v5",
+  "keywords": [
+    "heroku-plugin"
+  ],
+  "license": "ISC",
+  "oclif": {
+    "commands": "./commands",
+    "topics": {
+      "webhooks": {
+        "description": "setup HTTP notifications of app activity"
+      }
+    },
+    "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/webhooks-v5/<%- commandPath %>"
+  },
+  "repository": "heroku/cli",
+  "scripts": {
+    "postpublish": "rm oclif.manifest.json",
+    "prepack": "oclif-dev manifest",
+    "test": "cross-env TZ=utc nyc mocha",
+    "version": "oclif-dev readme && git add README.md"
+  }
+}

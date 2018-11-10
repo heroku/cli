@@ -1,0 +1,280 @@
+{
+  "name": "heroku",
+  "description": "CLI to interact with Heroku",
+  "version": "7.18.5",
+  "author": "Jeff Dickey @jdxcode",
+  "bin": {
+    "heroku": "./bin/run"
+  },
+  "bugs": "https://github.com/heroku/cli/issues",
+  "dependencies": {
+    "@heroku-cli/color": "1.1.12",
+    "@heroku-cli/command": "8.2.0",
+    "@heroku-cli/plugin-addons-v5": "^7.18.0",
+    "@heroku-cli/plugin-apps-v5": "^7.18.0",
+    "@heroku-cli/plugin-auth": "^7.18.3",
+    "@heroku-cli/plugin-autocomplete": "^7.18.3",
+    "@heroku-cli/plugin-buildpacks": "^7.18.3",
+    "@heroku-cli/plugin-certs": "^7.18.0",
+    "@heroku-cli/plugin-certs-v5": "^7.18.4",
+    "@heroku-cli/plugin-ci": "^7.18.3",
+    "@heroku-cli/plugin-ci-v5": "^7.18.3",
+    "@heroku-cli/plugin-config": "^7.18.3",
+    "@heroku-cli/plugin-container-registry-v5": "^7.18.4",
+    "@heroku-cli/plugin-git": "^7.18.3",
+    "@heroku-cli/plugin-local-v5": "^7.18.0",
+    "@heroku-cli/plugin-oauth-v5": "^7.18.0",
+    "@heroku-cli/plugin-orgs-v5": "^7.18.0",
+    "@heroku-cli/plugin-pg-v5": "^7.18.0",
+    "@heroku-cli/plugin-pipelines-v5": "^7.18.5",
+    "@heroku-cli/plugin-ps": "^7.18.3",
+    "@heroku-cli/plugin-ps-exec": "2.3.5",
+    "@heroku-cli/plugin-redis-v5": "^7.18.0",
+    "@heroku-cli/plugin-run-v5": "^7.18.3",
+    "@heroku-cli/plugin-spaces": "^7.18.0",
+    "@heroku-cli/plugin-status": "^7.18.3",
+    "@heroku-cli/plugin-webhooks-v5": "^7.18.0",
+    "@oclif/command": "1.5.4",
+    "@oclif/config": "1.8.8",
+    "@oclif/errors": "1.2.2",
+    "@oclif/plugin-commands": "^1.2.2",
+    "@oclif/plugin-help": "2.1.3",
+    "@oclif/plugin-legacy": "1.1.2",
+    "@oclif/plugin-not-found": "1.2.2",
+    "@oclif/plugin-plugins": "1.7.2",
+    "@oclif/plugin-update": "1.3.4",
+    "@oclif/plugin-warn-if-update-available": "1.5.4",
+    "@oclif/plugin-which": "1.0.3",
+    "cli-ux": "4.9.1",
+    "debug": "4.1.0",
+    "execa": "1.0.0",
+    "fs-extra": "7.0.0",
+    "http-call": "5.2.2",
+    "netrc-parser": "3.1.6",
+    "semver": "5.6.0",
+    "tslib": "1.9.3",
+    "uuid": "3.3.2"
+  },
+  "devDependencies": {
+    "@oclif/dev-cli": "^1.19.2",
+    "@oclif/test": "^1.2.2",
+    "@oclif/tslint": "^3.1.1",
+    "@types/ansi-styles": "^3.2.1",
+    "@types/chai": "^4.1.6",
+    "@types/debug": "^0.0.31",
+    "@types/execa": "^0.9.0",
+    "@types/fs-extra": "^5.0.4",
+    "@types/glob": "^7.1.1",
+    "@types/lodash": "^4.14.117",
+    "@types/mocha": "^5.2.5",
+    "@types/nock": "^9.3.0",
+    "@types/node": "^10.12.0",
+    "@types/supports-color": "^5.3.0",
+    "@types/write-json-file": "^2.2.1",
+    "aws-sdk": "^2.337.0",
+    "chai": "^4.2.0",
+    "lerna": "^3.4.3",
+    "lodash": "^4.17.11",
+    "mocha": "^5.2.0",
+    "nock": "^9.3.2",
+    "qqjs": "^0.3.10",
+    "read-pkg": "^4.0.1",
+    "ts-node": "^7.0.1",
+    "tslint": "^5.11.0",
+    "typescript": "^3.1.3"
+  },
+  "engines": {
+    "node": ">=8.3.0"
+  },
+  "files": [
+    "/oclif.manifest.json",
+    "/bin",
+    "/lib",
+    "/npm-shrinkwrap.json",
+    "/yarn.lock"
+  ],
+  "homepage": "https://cli.heroku.com",
+  "keywords": [
+    "heroku",
+    "heroku-cli-plugin"
+  ],
+  "license": "ISC",
+  "main": "lib/index.js",
+  "oclif": {
+    "commands": "./lib/commands",
+    "plugins": [
+      "@oclif/plugin-legacy",
+      "@heroku-cli/plugin-addons-v5",
+      "@heroku-cli/plugin-apps-v5",
+      "@heroku-cli/plugin-auth",
+      "@heroku-cli/plugin-autocomplete",
+      "@heroku-cli/plugin-buildpacks",
+      "@heroku-cli/plugin-certs",
+      "@heroku-cli/plugin-certs-v5",
+      "@heroku-cli/plugin-ci-v5",
+      "@heroku-cli/plugin-ci",
+      "@heroku-cli/plugin-config",
+      "@heroku-cli/plugin-container-registry-v5",
+      "@heroku-cli/plugin-git",
+      "@heroku-cli/plugin-local-v5",
+      "@heroku-cli/plugin-oauth-v5",
+      "@heroku-cli/plugin-orgs-v5",
+      "@heroku-cli/plugin-pg-v5",
+      "@heroku-cli/plugin-pipelines-v5",
+      "@heroku-cli/plugin-ps",
+      "@heroku-cli/plugin-ps-exec",
+      "@heroku-cli/plugin-redis-v5",
+      "@heroku-cli/plugin-run-v5",
+      "@heroku-cli/plugin-spaces",
+      "@heroku-cli/plugin-status",
+      "@heroku-cli/plugin-webhooks-v5",
+      "@oclif/plugin-commands",
+      "@oclif/plugin-help",
+      "@oclif/plugin-not-found",
+      "@oclif/plugin-plugins",
+      "@oclif/plugin-update",
+      "@oclif/plugin-warn-if-update-available",
+      "@oclif/plugin-which"
+    ],
+    "bin": "heroku",
+    "dirname": "heroku",
+    "scope": "heroku-cli",
+    "npmRegistry": "https://registry.npmjs.org",
+    "macos": {
+      "sign": "Developer ID Installer: Heroku INC",
+      "identifier": "com.heroku.cli"
+    },
+    "topics": {
+      "2fa": {
+        "description": "two-factor authentication",
+        "hidden": true
+      },
+      "apps": {
+        "description": "manage apps on Heroku"
+      },
+      "buildpacks": {
+        "description": "scripts used to compile apps"
+      },
+      "certs": {
+        "description": "SSL certificates"
+      },
+      "ci": {
+        "description": "test runner for Heroku Pipelines"
+      },
+      "commands": {
+        "hidden": true
+      },
+      "config": {
+        "description": "environment variables of apps"
+      },
+      "container": {
+        "description": "deploy your Docker-based app to Heroku"
+      },
+      "domains": {
+        "description": "custom domains for apps"
+      },
+      "drains": {
+        "description": "forward logs to syslog or HTTPS"
+      },
+      "dyno": {
+        "hidden": true
+      },
+      "features": {
+        "description": "add/remove app features"
+      },
+      "git": {
+        "description": "set git remote and clone Heroku repository"
+      },
+      "keys": {
+        "description": "add/remove account ssh keys"
+      },
+      "labs": {
+        "description": "add/remove experimental features"
+      },
+      "local": {
+        "description": "run Heroku app locally"
+      },
+      "maintenance": {
+        "description": "enable/disable access to app"
+      },
+      "outbound-rules": {
+        "description": "space outbound IP rules",
+        "hidden": true
+      },
+      "ps": {
+        "description": "manage app dynos"
+      },
+      "stack": {
+        "description": "list available stacks",
+        "hidden": true
+      },
+      "twofactor": {
+        "description": "two-factor authentication",
+        "hidden": true
+      },
+      "update": {
+        "description": "update the Heroku CLI"
+      },
+      "which": {
+        "hidden": true
+      }
+    },
+    "hooks": {
+      "init": [
+        "./lib/hooks/init/refresh",
+        "./lib/hooks/init/version"
+      ],
+      "prerun": [
+        "./lib/hooks/prerun/analytics"
+      ],
+      "update": [
+        "./lib/hooks/update/plugin-migrate",
+        "./lib/hooks/update/b",
+        "./lib/hooks/update/completions",
+        "./lib/hooks/update/tidy"
+      ]
+    },
+    "update": {
+      "node": {
+        "version": "11.0.0"
+      },
+      "s3": {
+        "xz": true,
+        "bucket": "heroku-cli-assets",
+        "host": "https://cli-assets.heroku.com"
+      }
+    },
+    "aliases": {
+      "@heroku-cli/config-edit": null,
+      "@heroku-cli/plugin-sudo": "@heroku/sudo",
+      "@heroku/plugin-sudo": "@heroku/sudo",
+      "heroku-api-plugin": "api",
+      "heroku-certs-acm": null,
+      "heroku-cli-api": "api",
+      "heroku-cli-autocomplete": "autocomplete",
+      "heroku-cli-buildpacks": "buildpack-registry",
+      "heroku-cli-config-edit": null,
+      "heroku-cli-deploy": "java",
+      "heroku-cli-java": "java",
+      "heroku-cli-plugin-generator": null,
+      "heroku-container-registry": null,
+      "heroku-event-log": "@heroku/event-log",
+      "heroku-pipelines": null,
+      "heroku-skynet-cli": "@heroku/skynet",
+      "heroku-splunk": "@heroku/splunk",
+      "heroku-sudo": "@heroku/sudo",
+      "heroku-webhooks": null,
+      "sudo": "@heroku/sudo"
+    }
+  },
+  "repository": "heroku/cli",
+  "scripts": {
+    "build": "rm -rf lib && tsc",
+    "postpublish": "rm -f oclif.manifest.json",
+    "posttest": "tsc -p test --noEmit && tslint -p test -t stylish",
+    "prepack": "yarn run build && oclif-dev manifest",
+    "test": "mocha --forbid-only \"test/**/*.test.ts\"",
+    "version": "oclif-dev readme --multi && git add README.md ../../docs"
+  },
+  "types": "lib/index.d.ts"
+}

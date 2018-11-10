@@ -4,7 +4,9 @@ set -ex
 
 rm -rf tmp/homebrew-brew
 git config --global core.pager cat
-git clone git@github.com:heroku/homebrew-brew.git tmp/homebrew-brew
+
+git clone "git@github.com:heroku/homebrew-brew.git" tmp/homebrew-brew
+
 DIST_DIR=$(cd ./dist && pwd)
 TMP_DIR=$(cd ./tmp && pwd)
 

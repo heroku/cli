@@ -2,8 +2,6 @@
 
 # builds the dev center documentation to /tmp/heroku-cli-commands.md
 
-source ./scripts/_init
-
 set +x
 echo "$HEROKU_DEB_SECRET_KEY" | base64 -d | gpg --import
 cat << EOF > ~/.netrc
@@ -14,10 +12,22 @@ EOF
 chmod 0600 ~/.netrc
 set -ex
 
+export PATH="./node_modules/.bin:./bin:$PATH"
+export COLUMNS=80
+
 yarn
-./bin/run whoami
-git clone https://github.com/heroku/heroku-cli-dev-center-generator.git
-./bin/run plugins:link ./heroku-cli-dev-center-generator
-# id `devcenter:generate` is not working
-./bin/run generate > /tmp/heroku-cli-commands.md
+run whoami
+cat <<EOF > README.md
+---
+title: Heroku CLI Commands
+id: 4088
+
+
+These are the help texts for each of the core Heroku CLI commands. You can also see this text in your terminal with \`heroku help \`, \`heroku --help\`, or \`heroku -h\`.
+
+<!-- commands -->
+EOF
+oclif-dev readme
+grep -v "^\\* \\[\`" README.md | grep -v "^<!--" | sed "s/^## \`/### \`/g" > /tmp/heroku-cli-commands.md
+git checkout README.md
 devcenter push /tmp/heroku-cli-commands.md --trace

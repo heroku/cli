@@ -4,7 +4,7 @@ defaults: &defaults
   environment:
     HEROKU_AUTHOR: Heroku
   docker:
-    - image: oclif/nsis:0.0.2-10.0.0
+    - image: oclif/nsis:10.9.0-16
       environment: &env
         LANG: en_US.UTF-8
         LANGUAGE: en_US.UTF-8
@@ -19,25 +19,46 @@ jobs:
       - checkout
       - restore_cache: &yarn_restore_cache
           keys:
-            - v2-yarn-{{ checksum ".circleci/config.yml" }}-{{ checksum "yarn.lock" }}
-            - v2-yarn-{{ checksum ".circleci/config.yml" }}
-            - v2-yarn
-      - run: yarn global add greenkeeper-lockfile@1 && greenkeeper-lockfile-update
-      - run: yarn
-      - run: yarn test
-      - run: greenkeeper-lockfile-upload
-      - run: curl -s https://codecov.io/bash | bash
+            - v4-yarn-{{ checksum ".circleci/config.yml" }}-{{ checksum "yarn.lock" }}
+            - v4-yarn-{{ checksum ".circleci/config.yml" }}
+            - v4-yarn
+      - run:
+          name: Installing bats
+          command: |
+            git clone https://github.com/sstephenson/bats.git
+            cd bats
+            ./install.sh /usr/local
+      - run:
+          name: Installing dependencies
+          command: yarn && yarn check
+      - run:
+          name: heroku whoami
+          command: ./bin/run whoami
+      - run:
+          name: Running all tests
+          command: yarn test
+      - run:
+          name: Uploading code coverage to codecov
+          command: ./node_modules/.bin/lerna exec "curl -s https://codecov.io/bash | bash"
+      - run:
+          name: Build tarball for BundleSize
+          command: ./scripts/bundlesize
+      - store_artifacts:
+          path: ./bundlesize.tar
   release:
     <<: *defaults
     steps:
       - add_ssh_keys
       - checkout
-      - run: yarn
-      - run: ./scripts/release/_github_setup
-      - run: ./scripts/release/tarballs
-      - run: ./scripts/release/homebrew
+      - run: |
+          cp yarn.lock packages/cli
+          cd packages/cli
+          yarn
+          ./scripts/release/_github_setup
+          ./scripts/release/tarballs
+          ./scripts/release/homebrew
       - save_cache:
-          key: v2-yarn-{{ checksum ".circleci/config.yml" }}-{{ checksum "yarn.lock" }}
+          key: v4-yarn-{{ checksum ".circleci/config.yml" }}-{{ checksum "yarn.lock" }}
           paths:
             - /cli/node_modules
             - /cli/tmp/cache
@@ -47,24 +68,31 @@ jobs:
     steps:
       - add_ssh_keys
       - checkout
-      - run: yarn
-      - run: ./scripts/release/win
+      - run: |
+          cp yarn.lock packages/cli
+          cd packages/cli
+          yarn
+          ./scripts/release/win
   release_deb:
     <<: *defaults
     steps:
       - add_ssh_keys
       - checkout
-      - run: yarn
-      - run: ./scripts/release/deb
+      - run: |
+          cp yarn.lock packages/cli
+          cd packages/cli
+          yarn
+          ./scripts/release/deb
   postrelease:
     <<: *defaults
     steps:
       - add_ssh_keys
       - checkout
+      - run: yarn
       - run: ./scripts/release/postrelease
   dev_center_docs:
     docker: &devdocs_docker
-      - image: rasphilco/cli-engine-devcenter:v0.1.0
+      - image: rasphilco/cli-engine-devcenter:v0.1.3
         environment:
           LANG: en_US.UTF-8
           LANGUAGE: en_US.UTF-8
@@ -72,9 +100,9 @@ jobs:
           LC_ALL: C.UTF-8
     steps:
       - checkout
-      # - run: ./scripts/release/dev_center_docs
-      # - store_artifacts:
-      #     path: /tmp/heroku-cli-commands-test.md
+      - run: cd packages/cli && ./scripts/release/dev_center_docs
+      - store_artifacts:
+          path: /tmp/heroku-cli-commands.md
   snap:
     docker:
       - image: snapcore/snapcraft:stable
@@ -92,6 +120,7 @@ workflows:
             tags: &version_tags
               only: /^v.*/
       - release: &release_workflow
+          context: org-global
           filters:
             tags: *version_tags
             branches:
@@ -103,6 +132,7 @@ workflows:
       - release_deb: *release_workflow
       - release_win: *release_workflow
       - postrelease:
+          context: org-global
           requires:
             - release
             - release_deb

@@ -1,5 +1,5 @@
 environment:
-  nodejs_version: "9"
+  nodejs_version: "10"
   CI: 1
 cache:
  - '%LOCALAPPDATA%\Yarn -> appveyor.yml'
@@ -9,9 +9,9 @@ install:
   - ps: Install-Product node $env:nodejs_version x64
   - yarn
 test_script:
-  - bin\run.cmd version
-  - bin\run.cmd help
-  # - yarn test
+  - packages\cli\bin\run.cmd version
+  - packages\cli\bin\run.cmd help
+  - yarn test
 after_test:
   - ps: |
       $env:PATH = 'C:\msys64\usr\bin;' + $env:PATH
@@ -19,3 +19,4 @@ after_test:
       bash codecov.sh
 
 build: off
+skip_branch_with_pr: true

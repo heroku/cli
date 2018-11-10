@@ -1,0 +1,4 @@
+--reporter list
+--recursive
+--check-leaks
+--require ./test/init.js

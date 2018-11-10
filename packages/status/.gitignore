@@ -1,0 +1,8 @@
+*-debug.log
+*-error.log
+.oclif.manifest.json
+/lib
+/node_modules
+/tmp
+lib
+node_modules

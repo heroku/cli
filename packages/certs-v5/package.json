@@ -1,0 +1,57 @@
+{
+  "name": "@heroku-cli/plugin-certs-v5",
+  "description": "heroku ssl plugin",
+  "version": "7.18.4",
+  "author": "Ransom Briggs rbriggs@heroku.com",
+  "bugs": "https://github.com/heroku/cli/issues",
+  "cli-engine": {
+    "bin": "heroku",
+    "commands": "./commands",
+    "topics": {
+      "certs": {
+        "description": "a topic for the ssl plugin"
+      }
+    },
+    "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/certs-v5/<%- commandPath %>"
+  },
+  "dependencies": {
+    "co": "4.6.0",
+    "co-wait": "0.0.0",
+    "date-fns": "^1.29.0",
+    "heroku-cli-util": "^8.0.10",
+    "inquirer": "^6.2.0",
+    "lodash": "4.17.11",
+    "psl": "^1.1.29"
+  },
+  "devDependencies": {
+    "@oclif/dev-cli": "^1.19.2",
+    "@oclif/plugin-legacy": "^1.1.2",
+    "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
+    "lolex": "^3.0.0",
+    "mocha": "^5.2.0",
+    "nock": "^9.3.3",
+    "nyc": "^13.1.0",
+    "proxyquire": "^2.1.0",
+    "sinon": "^2.3.6",
+    "sinon-chai": "^2.14.0"
+  },
+  "files": [
+    "oclif.manifest.json",
+    "index.js",
+    "lib",
+    "commands"
+  ],
+  "homepage": "https://github.com/heroku/cli/tree/master/packages/certs-v5",
+  "keywords": [
+    "heroku-plugin"
+  ],
+  "license": "ISC",
+  "repository": "heroku/cli",
+  "scripts": {
+    "postpublish": "rm oclif.manifest.json",
+    "prepack": "oclif-dev manifest",
+    "test": "nyc mocha",
+    "version": "oclif-dev readme && git add README.md"
+  }
+}

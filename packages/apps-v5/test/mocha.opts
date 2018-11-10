@@ -1,0 +1,4 @@
+--require ./test/init.js
+--require ./test/helpers.js
+--reporter list
+--recursive

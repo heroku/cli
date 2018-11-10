@@ -1,0 +1,54 @@
+{
+  "name": "@heroku-cli/plugin-addons-v5",
+  "description": "`heroku addons:*` commands",
+  "version": "7.18.0",
+  "author": "Bo Jeanes @bjeanes",
+  "bugs": "https://github.com/heroku/cli/issues",
+  "cli-engine": {
+    "bin": "heroku",
+    "topics": {
+      "addons": {
+        "description": "tools and services for developing, extending, and operating your app"
+      }
+    },
+    "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/addons-v5/<%- commandPath %>"
+  },
+  "dependencies": {
+    "co": "4.6.0",
+    "co-wait": "0.0.0",
+    "heroku-cli-util": "^8.0.10",
+    "lodash": "^4.17.11",
+    "printf": "0.5.1"
+  },
+  "devDependencies": {
+    "@oclif/dev-cli": "^1.19.2",
+    "@oclif/plugin-legacy": "^1.1.2",
+    "chai": "^4.2.0",
+    "lolex": "^3.0.0",
+    "mocha": "^5.2.0",
+    "nock": "9.0.13",
+    "nyc": "^13.1.0",
+    "sinon": "^6.3.5",
+    "unexpected": "^10.39.1"
+  },
+  "files": [
+    "oclif.manifest.json",
+    "index.js",
+    "lib",
+    "commands"
+  ],
+  "homepage": "https://github.com/heroku/cli/tree/master/packages/addons-v5",
+  "keywords": [
+    "heroku-plugin"
+  ],
+  "license": "ISC",
+  "main": "index.js",
+  "repository": "heroku/cli",
+  "scripts": {
+    "postpublish": "rm oclif.manifest.json",
+    "prepack": "oclif-dev manifest",
+    "release": "np",
+    "test": "nyc mocha",
+    "version": "oclif-dev readme && git add README.md"
+  }
+}

@@ -1,0 +1,4 @@
+--require ./test/init.js
+--reporter list
+--recursive
+--exit

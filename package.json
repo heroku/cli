@@ -1,195 +1,30 @@
 {
-  "name": "heroku",
-  "description": "CLI to interact with Heroku",
-  "version": "7.0.62",
-  "author": "Jeff Dickey @jdxcode",
-  "bin": {
-    "heroku": "./bin/run"
-  },
-  "bugs": "https://github.com/heroku/cli/issues",
-  "dependencies": {
-    "@heroku-cli/color": "1.1.5",
-    "@heroku-cli/command": "8.1.20",
-    "@heroku-cli/plugin-addons": "1.2.30",
-    "@heroku-cli/plugin-apps": "2.5.3",
-    "@heroku-cli/plugin-auth": "0.4.4",
-    "@heroku-cli/plugin-build": "0.0.5",
-    "@heroku-cli/plugin-certs": "2.0.1",
-    "@heroku-cli/plugin-certs-v5": "^1.3.0",
-    "@heroku-cli/plugin-ci": "1.9.12",
-    "@heroku-cli/plugin-config": "1.3.0",
-    "@heroku-cli/plugin-container-registry": "4.4.17",
-    "@heroku-cli/plugin-git": "3.0.2",
-    "@heroku-cli/plugin-local": "5.1.24",
-    "@heroku-cli/plugin-oauth": "2.3.4",
-    "@heroku-cli/plugin-orgs": "1.7.6",
-    "@heroku-cli/plugin-pg": "2.10.0",
-    "@heroku-cli/plugin-pipelines": "2.5.9",
-    "@heroku-cli/plugin-ps": "1.0.1",
-    "@heroku-cli/plugin-ps-exec": "2.3.4",
-    "@heroku-cli/plugin-redis": "1.3.3",
-    "@heroku-cli/plugin-run": "3.8.6",
-    "@heroku-cli/plugin-spaces": "2.12.2",
-    "@heroku-cli/plugin-status": "5.0.10",
-    "@heroku-cli/plugin-webhooks": "1.2.0",
-    "@oclif/command": "1.4.30",
-    "@oclif/config": "1.6.21",
-    "@oclif/errors": "1.1.2",
-    "@oclif/plugin-commands": "^0.0.0",
-    "@oclif/plugin-help": "2.0.0",
-    "@oclif/plugin-legacy": "1.0.15",
-    "@oclif/plugin-not-found": "1.0.9",
-    "@oclif/plugin-plugins": "1.2.1",
-    "@oclif/plugin-update": "1.2.7",
-    "@oclif/plugin-warn-if-update-available": "1.3.9",
-    "@oclif/plugin-which": "1.0.1",
-    "cli-ux": "4.4.0",
-    "debug": "3.1.0",
-    "execa": "0.10.0",
-    "fs-extra": "6.0.1",
-    "http-call": "5.1.4",
-    "netrc-parser": "3.1.5",
-    "semver": "5.5.0",
-    "tslib": "1.9.1",
-    "uuid": "3.2.1"
-  },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.13.23",
-    "@oclif/test": "^1.0.6",
-    "@oclif/tslint": "^1.1.2",
-    "@types/ansi-styles": "^3.2.0",
-    "@types/chai": "^4.1.3",
-    "@types/debug": "^0.0.30",
-    "@types/execa": "^0.9.0",
-    "@types/fs-extra": "^5.0.2",
-    "@types/glob": "^5.0.35",
-    "@types/lodash": "^4.14.109",
-    "@types/mocha": "^5.2.0",
-    "@types/nock": "^9.1.3",
-    "@types/node": "^10.1.3",
-    "@types/supports-color": "^5.3.0",
-    "@types/write-json-file": "^2.2.1",
-    "aws-sdk": "^2.247.1",
-    "chai": "^4.1.2",
-    "lodash": "^4.17.10",
-    "mocha": "^5.2.0",
-    "nock": "^9.2.6",
-    "qqjs": "^0.3.9",
-    "read-pkg": "^3.0.0",
-    "ts-node": "^6.0.5",
-    "tslint": "^5.10.0",
-    "typescript": "^2.8.3"
+    "eslint": "5.7.0",
+    "eslint-config-standard": "12.0.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-node": "^7.0.1",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "standard": "12.0.1"
   },
-  "engineStrict": true,
+  "standard": {
+    "env": "mocha",
+    "ignore": [
+      "**/node_modules/**",
+      "packages/*/lib/**"
+    ]
+  },
   "engines": {
-    "node": ">=8.3.0"
+    "node": ">=8.0.0"
   },
-  "files": [
-    "/oclif.manifest.json",
-    "/bin",
-    "/lib",
-    "/yarn.lock"
-  ],
-  "homepage": "https://cli.heroku.com",
-  "keywords": [
-    "heroku",
-    "heroku-cli-plugin"
-  ],
-  "license": "ISC",
-  "main": "lib/index.js",
-  "oclif": {
-    "commands": "./lib/commands",
-    "plugins": [
-      "@oclif/plugin-legacy",
-      "@heroku-cli/plugin-auth",
-      "@heroku-cli/plugin-addons",
-      "@heroku-cli/plugin-apps",
-      "@heroku-cli/plugin-build",
-      "@heroku-cli/plugin-certs",
-      "@heroku-cli/plugin-certs-v5",
-      "@heroku-cli/plugin-ci",
-      "@heroku-cli/plugin-config",
-      "@heroku-cli/plugin-container-registry",
-      "@heroku-cli/plugin-git",
-      "@heroku-cli/plugin-local",
-      "@heroku-cli/plugin-oauth",
-      "@heroku-cli/plugin-orgs",
-      "@heroku-cli/plugin-pg",
-      "@heroku-cli/plugin-pipelines",
-      "@heroku-cli/plugin-ps",
-      "@heroku-cli/plugin-ps-exec",
-      "@heroku-cli/plugin-redis",
-      "@heroku-cli/plugin-run",
-      "@heroku-cli/plugin-spaces",
-      "@heroku-cli/plugin-status",
-      "@heroku-cli/plugin-webhooks",
-      "@oclif/plugin-commands",
-      "@oclif/plugin-help",
-      "@oclif/plugin-not-found",
-      "@oclif/plugin-plugins",
-      "@oclif/plugin-update",
-      "@oclif/plugin-warn-if-update-available",
-      "@oclif/plugin-which"
-    ],
-    "bin": "heroku",
-    "dirname": "heroku",
-    "scope": "heroku-cli",
-    "npmRegistry": "https://cli-npm.heroku.com",
-    "macos": {
-      "sign": "Developer ID Installer: Heroku INC",
-      "identifier": "com.heroku.cli"
-    },
-    "topics": {
-      "2fa": {
-        "description": "two-factor authentication",
-        "hidden": true
-      },
-      "stack": {
-        "description": "list available stacks",
-        "hidden": true
-      },
-      "twofactor": {
-        "description": "two-factor authentication",
-        "hidden": true
-      },
-      "outbound-rules": {
-        "description": "space outbound IP rules",
-        "hidden": true
-      }
-    },
-    "hooks": {
-      "init": [
-        "./lib/hooks/init/refresh"
-      ],
-      "prerun": [
-        "./lib/hooks/prerun/analytics"
-      ],
-      "update": [
-        "./lib/hooks/update/plugin_migrate",
-        "./lib/hooks/update/brew",
-        "./lib/hooks/update/tidy"
-      ]
-    },
-    "update": {
-      "node": {
-        "version": "10.2.1"
-      },
-      "s3": {
-        "xz": true,
-        "bucket": "heroku-cli-assets",
-        "host": "https://cli-assets.heroku.com"
-      }
-    }
-  },
-  "repository": "heroku/cli",
+  "private": true,
   "scripts": {
-    "build": "rm -rf lib && tsc",
-    "postpublish": "rm -f oclif.manifest.json",
-    "posttest": "tsc -p test --noEmit && tslint -p test -t stylish",
-    "prepack": "yarn run build && oclif-dev manifest",
-    "prepublishOnly": "yarn run prepack",
-    "test": "mocha --forbid-only \"test/**/*.test.ts\"",
-    "version": "oclif-dev readme && git add README.md"
+    "test": "lerna run test --stream --concurrency 2",
+    "version": "cp packages/cli/CHANGELOG.md CHANGELOG.md && git add CHANGELOG.md",
+    "posttest": "standard"
   },
-  "types": "lib/index.d.ts"
+  "workspaces": [
+    "packages/*"
+  ]
 }

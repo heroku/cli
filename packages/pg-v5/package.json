@@ -1,0 +1,64 @@
+{
+  "name": "@heroku-cli/plugin-pg-v5",
+  "description": "Heroku CLI plugin to manage Postgres.",
+  "version": "7.18.0",
+  "author": "Jeff Dickey (@dickeyxxx)",
+  "bugs": "https://github.com/heroku/cli/issues",
+  "cli-engine": {
+    "topics": {
+      "pg": {
+        "description": "manage postgresql databases"
+      }
+    },
+    "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/pg-v5/<%- commandPath %>"
+  },
+  "dependencies": {
+    "@heroku-cli/plugin-addons": "^1.2.29",
+    "bytes": "^3.0.0",
+    "co": "^4.6.0",
+    "co-wait": "^0.0.0",
+    "debug": "^4.1.0",
+    "filesize": "^3.6.1",
+    "heroku-cli-util": "^8.0.10",
+    "lodash": "^4.17.11",
+    "mkdirp": "^0.5.1",
+    "node-notifier": "^5.2.1",
+    "smooth-progress": "^1.1.0",
+    "strip-eof": "^1.0.0",
+    "tunnel-ssh": "^4.1.4"
+  },
+  "devDependencies": {
+    "@oclif/dev-cli": "^1.19.2",
+    "@oclif/plugin-legacy": "^1.1.2",
+    "cross-env": "^5.2.0",
+    "heroku-client": "^3.0.6",
+    "mocha": "^5.1.1",
+    "nock": "9.2.6",
+    "nyc": "^13.1.0",
+    "proxyquire": "^2.1.0",
+    "sinon": "<2",
+    "standard": "^12.0.1",
+    "unexpected": "^10.39.1"
+  },
+  "files": [
+    "oclif.manifest.json",
+    "index.js",
+    "assets",
+    "lib",
+    "commands"
+  ],
+  "homepage": "https://github.com/heroku/cli/tree/master/packages/pg-v5",
+  "keywords": [
+    "heroku-plugin"
+  ],
+  "license": "ISC",
+  "main": "index.js",
+  "repository": "heroku/cli",
+  "scripts": {
+    "postpublish": "rm oclif.manifest.json",
+    "prepack": "oclif-dev manifest",
+    "release": "np",
+    "test": "cross-env TZ=utc nyc mocha",
+    "version": "oclif-dev readme && git add README.md"
+  }
+}

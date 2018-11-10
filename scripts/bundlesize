@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+set -ex
+
+ROOT=$(pwd)
+
+mkdir -p "$ROOT/bundlesize"
+echo {} > "$ROOT/bundlesize/package.json"
+
+tarballs=()
+for pkg in $(ls packages); do
+  cd "$ROOT/packages/$pkg"
+  yarn pack --filename pack.tar.gz &
+  tarballs+=("$ROOT/packages/$pkg/pack.tar.gz")
+done
+
+wait
+cd "$ROOT/bundlesize"
+yarn add ${tarballs[*]}
+mv node_modules bundlesize
+tar -cf "$ROOT/bundlesize.tar" bundlesize

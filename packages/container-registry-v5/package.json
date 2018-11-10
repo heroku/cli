@@ -1,0 +1,59 @@
+{
+  "name": "@heroku-cli/plugin-container-registry-v5",
+  "description": "Use containers to build and deploy Heroku apps",
+  "version": "7.18.4",
+  "author": "Heroku",
+  "bugs": "https://github.com/heroku/cli/issues",
+  "cli-engine": {
+    "topics": {
+      "container": {
+        "description": "Use containers to build and deploy Heroku apps"
+      }
+    },
+    "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/container-registry-v5/<%- commandPath %>"
+  },
+  "dependencies": {
+    "glob": "^7.1.3",
+    "heroku-cli-util": "^8.0.10",
+    "http-call": "^5.2.2",
+    "inquirer": "^6.2.0"
+  },
+  "devDependencies": {
+    "@oclif/dev-cli": "^1.19.2",
+    "@oclif/plugin-legacy": "^1.1.2",
+    "chai": "^4.2.0",
+    "cross-env": "^5.2.0",
+    "depcheck": "^0.6.11",
+    "mocha": "^5.0.4",
+    "mockdate": "^2.0.2",
+    "nock": "^9.2.3",
+    "nyc": "^13.1.0",
+    "sinon": "^5.0.7",
+    "std-mocks": "^1.0.1",
+    "unexpected": "^10.39.1"
+  },
+  "files": [
+    "oclif.manifest.json",
+    "index.js",
+    "commands",
+    "lib"
+  ],
+  "homepage": "https://github.com/heroku/cli/tree/master/packages/container-registry-v5",
+  "keywords": [
+    "cli",
+    "container",
+    "heroku",
+    "heroku-plugin"
+  ],
+  "license": "ISC",
+  "main": "index.js",
+  "repository": "heroku/cli",
+  "scripts": {
+    "depcheck": "depcheck || true",
+    "postpublish": "rm oclif.manifest.json",
+    "prepack": "oclif-dev manifest",
+    "test": "cross-env TZ=utc nyc mocha",
+    "version": "oclif-dev readme && git add README.md"
+  },
+  "topic": "container"
+}
