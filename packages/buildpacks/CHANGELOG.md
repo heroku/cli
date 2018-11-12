@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.18.6](https://github.com/heroku/cli/compare/v7.18.5...v7.18.6) (2018-11-12)
+
+
+### Bug Fixes
+
+* **buildpacks:** support remote flag ([b59ce1c](https://github.com/heroku/cli/commit/b59ce1c))
+
+
+
+
+
 ## [7.18.3](https://github.com/heroku/cli/compare/v7.18.2...v7.18.3) (2018-10-18)
 
 **Note:** Version bump only for package @heroku-cli/plugin-buildpacks
