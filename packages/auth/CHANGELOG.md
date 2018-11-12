@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.18.7](https://github.com/heroku/cli/compare/v7.18.6...v7.18.7) (2018-11-12)
+
+
+### Bug Fixes
+
+* updated oclif ([0d0e905](https://github.com/heroku/cli/commit/0d0e905))
+
+
+
+
+
 ## [7.18.6](https://github.com/heroku/cli/compare/v7.18.5...v7.18.6) (2018-11-12)
 
 **Note:** Version bump only for package @heroku-cli/plugin-auth
