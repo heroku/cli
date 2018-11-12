@@ -799,13 +799,13 @@
     supports-color "^5.4.0"
     tslib "^1"
 
-"@oclif/command@1.5.4", "@oclif/command@^1.5.3", "@oclif/command@^1.5.4":
-  version "1.5.4"
-  resolved "https://registry.yarnpkg.com/@oclif/command/-/command-1.5.4.tgz#659456def965454e1c0115e8265533980eefb200"
-  integrity sha512-R76o9r2nMYLmpiRyEGDyIlwWIs5n+7aL6TncnqHCtjk990bN4ax5GyKf1S/+vw+2GswwOzNJ/wvxy5gbB3QZbg==
+"@oclif/command@1.5.5", "@oclif/command@^1.5.3", "@oclif/command@^1.5.4", "@oclif/command@^1.5.5":
+  version "1.5.5"
+  resolved "https://registry.yarnpkg.com/@oclif/command/-/command-1.5.5.tgz#7d37cd8cc96191ceb82d42b8ca1487f9558750bf"
+  integrity sha512-qx3hk59Gj9uc50Nv7o/lnv6bfol0sgFcCVCZiP1c4ieALtUqkT9XpGI6S06vxhkVVye0h4+XGRvMdeJh4+2A+w==
   dependencies:
     "@oclif/errors" "^1.2.2"
-    "@oclif/parser" "^3.6.1"
+    "@oclif/parser" "^3.7.0"
     debug "^4.1.0"
     semver "^5.6.0"
 
@@ -850,7 +850,7 @@
   resolved "https://registry.yarnpkg.com/@oclif/linewrap/-/linewrap-1.0.0.tgz#aedcb64b479d4db7be24196384897b5000901d91"
   integrity sha512-Ups2dShK52xXa8w6iBWLgcjPJWjais6KPJQq3gQ/88AY6BXoTX+MIGFPrWQO1KLMiQfoTpcLnUwloN4brrVUHw==
 
-"@oclif/parser@^3.6.1":
+"@oclif/parser@^3.7.0":
   version "3.7.0"
   resolved "https://registry.yarnpkg.com/@oclif/parser/-/parser-3.7.0.tgz#cda3eea341e87cc7390511cf369a0126d0b39a93"
   integrity sha512-CtRbCBJQ8prt9o3nCTSRi/UEw68t7mUf19vu3QKbh6sGc6BkD7OAX6Hfjxif636LSlR+N8eh3PELw9SxHdJcbQ==
@@ -908,23 +908,23 @@
     fast-levenshtein "^2.0.6"
     lodash "^4.17.11"
 
-"@oclif/plugin-plugins@1.7.2":
-  version "1.7.2"
-  resolved "https://registry.yarnpkg.com/@oclif/plugin-plugins/-/plugin-plugins-1.7.2.tgz#5b0eb8260186fec9037be4be29cf1b85e93ce0b5"
-  integrity sha512-cmYu9GA4/MGGzfAb4w56xHnXusnkLTzmORSTHKgpRsf5rVCXk1hA7EE4+SxBWAl44GDyBuUlU+lqk0pK+WveYQ==
+"@oclif/plugin-plugins@1.7.3":
+  version "1.7.3"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-plugins/-/plugin-plugins-1.7.3.tgz#d4b8e659e2098a65afc34bbe7617fb404ef4c6f8"
+  integrity sha512-9aBcrETArBXLaS/21h0kMbiHNApgMF8gntRPcPhJTJ5zgsa29t2KOHRaTXZoy6on+E6Km/wvTiLx564zS0GqSA==
   dependencies:
     "@oclif/color" "^0.0.0"
-    "@oclif/command" "^1.5.3"
+    "@oclif/command" "^1.5.4"
     chalk "^2.4.1"
-    cli-ux "^4.9.0"
+    cli-ux "^4.9.3"
     debug "^4.1.0"
-    fs-extra "^7.0.0"
+    fs-extra "^7.0.1"
     http-call "^5.2.2"
     load-json-file "^5.1.0"
     npm-run-path "^2.0.2"
     semver "^5.6.0"
     tslib "^1.9.3"
-    yarn "^1.10.1"
+    yarn "^1.12.3"
 
 "@oclif/plugin-update@1.3.7":
   version "1.3.7"
@@ -8533,7 +8533,7 @@ yargs@^8.0.2:
     y18n "^3.2.1"
     yargs-parser "^7.0.0"
 
-yarn@^1.10.1:
+yarn@^1.12.3:
   version "1.12.3"
   resolved "https://registry.yarnpkg.com/yarn/-/yarn-1.12.3.tgz#fb4599bf1f8da01552bcc7e1571dfd4e53788203"
   integrity sha512-8f5rWNDvkhAmCxmn8C0LsNWMxTYVk4VGKiq0sIB6HGZjaZTHsGIH87SUmVDUEd2Wk54bqKoUlbVWgQFCQhRkVw==
