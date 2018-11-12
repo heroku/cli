@@ -83,8 +83,8 @@ akita-7777  akita-7777.herokussl.com  heroku.com      2013-08-01 21:34 UTC  True
       expect(cli.stdout).to.equal(
         `Name        Endpoint                  Common Name(s)                                     Expires               Trusted  Type
 ──────────  ────────────────────────  ─────────────────────────────────────────────────  ────────────────────  ───────  ────────
-tokyo-1050  (Not applicable for SNI)  foo.example.org, bar.example.org, biz.example.com  2013-08-01 21:34 UTC  False    SNI
 akita-7777  akita-7777.herokussl.com  heroku.com                                         2013-08-01 21:34 UTC  True     Endpoint
+tokyo-1050  (Not applicable for SNI)  foo.example.org, bar.example.org, biz.example.com  2013-08-01 21:34 UTC  False    SNI
 `)
       /* eslint-enable no-trailing-spaces */
     })
