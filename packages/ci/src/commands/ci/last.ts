@@ -14,7 +14,6 @@ export default class CiLast extends Command {
   ]
 
   static flags = {
-    app: flags.app({required: false}),
     node: flags.string({description: 'the node number to show its setup and output', required: false}),
     pipeline: flags.pipeline({required: false})
   }
