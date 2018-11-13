@@ -29,7 +29,7 @@ Configuring pipeline... done`,
     {
       name: 'remote',
       char: 'r',
-      description: 'parent app used by review apps',
+      description: 'git remote of parent app used by review apps',
       hasValue: true,
       required: false
     },
