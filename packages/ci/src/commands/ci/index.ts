@@ -14,7 +14,6 @@ export default class CiIndex extends Command {
   ]
 
   static flags = {
-    app: flags.app({required: false}),
     watch: flags.boolean({description: 'keep running and watch for new and update tests', required: false}),
     pipeline: flags.pipeline({required: false}),
     json: flags.boolean({description: 'output in json format', required: false})
