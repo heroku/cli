@@ -25,6 +25,13 @@ Configuring pipeline... done`,
       required: true
     },
     {
+      name: 'remote',
+      char: 'r',
+      description: 'git remote of parent app used by review apps',
+      hasValue: true,
+      required: false
+    },
+    {
       name: 'autodeploy',
       description: 'disable autodeployments',
       hasValue: false
