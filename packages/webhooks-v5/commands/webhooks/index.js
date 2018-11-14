@@ -35,7 +35,8 @@ Webhooks.examples = [
 ]
 
 Webhooks.flags = {
-  app: flags.app({ char: 'a' }),
+  app: flags.app(),
+  remote: flags.remote(),
   pipeline: flags.string({ char: 'p', description: 'pipeline on which to list', hidden: true })
 }
 
