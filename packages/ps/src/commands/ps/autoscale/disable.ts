@@ -7,7 +7,8 @@ const METRICS_HOST = 'api.metrics.heroku.com'
 export default class Disable extends Command {
   static description = 'disable web dyno autoscaling'
   static flags = {
-    app: flags.app({required: true})
+    app: flags.app({required: true}),
+    remote: flags.remote(),
   }
 
   async run() {

@@ -8,6 +8,7 @@ export default class Enable extends Command {
   static description = 'enable web dyno autoscaling'
   static flags = {
     app: flags.app({required: true}),
+    remote: flags.remote(),
     min: flags.integer({required: true, description: 'minimum number of dynos'}),
     max: flags.integer({required: true, description: 'maximum number of dynos'}),
     p95: flags.integer({description: 'desired p95 response time'}),
