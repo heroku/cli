@@ -2,6 +2,7 @@
 
 let co = require('co')
 let cli = require('heroku-cli-util')
+let _ = require('lodash')
 
 let endpoints = require('../../lib/endpoints.js').certsAndDomains
 let displayTable = require('../../lib/display_table.js')
@@ -12,7 +13,7 @@ function * run (context, heroku) {
   if (certsAndDomains.certs.length === 0) {
     cli.log(`${cli.color.app(context.app)} has no SSL certificates.\nUse ${cli.color.cmd('heroku certs:add CRT KEY')} to add one.`)
   } else {
-    displayTable(certsAndDomains.certs)
+    displayTable(_.sortBy(certsAndDomains.certs, 'name'))
   }
 }
 
