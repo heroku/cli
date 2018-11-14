@@ -18,7 +18,7 @@ USAGE
   $ heroku domains
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
   -r, --remote=remote  git remote of app to use
   --json               output in json format
 
@@ -42,7 +42,7 @@ USAGE
   $ heroku domains:add HOSTNAME
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
   -j, --json           output in json format
   -r, --remote=remote  git remote of app to use
   --wait
@@ -57,7 +57,7 @@ USAGE
   $ heroku domains:clear
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -70,7 +70,7 @@ USAGE
   $ heroku domains:remove HOSTNAME
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -83,6 +83,6 @@ USAGE
   $ heroku domains:wait [HOSTNAME]
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
   -r, --remote=remote  git remote of app to use
 ```

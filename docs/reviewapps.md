@@ -17,6 +17,7 @@ USAGE
 OPTIONS
   -a, --app=app            (required) parent app used by review apps
   -p, --pipeline=pipeline  (required) name of pipeline
+  -r, --remote=remote      git remote of parent app used by review apps
   --autodeploy             disable autodeployments
   --autodestroy            disable automatically destroying review apps
 
@@ -37,6 +38,7 @@ USAGE
 OPTIONS
   -a, --app=app            (required) parent app used by review apps
   -p, --pipeline=pipeline  (required) name of pipeline
+  -r, --remote=remote      git remote of parent app used by review apps
   --autodeploy             autodeploy the review app
   --autodestroy            autodestroy the review app
 

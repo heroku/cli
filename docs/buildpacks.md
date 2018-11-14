@@ -21,7 +21,7 @@ USAGE
   $ heroku buildpacks
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -39,7 +39,7 @@ ARGUMENTS
   BUILDPACK  namespace/name of the buildpack
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
   -i, --index=index    the 1-based index of the URL in the list of URLs
   -r, --remote=remote  git remote of app to use
 ```
@@ -55,7 +55,7 @@ USAGE
   $ heroku buildpacks:clear
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -87,7 +87,7 @@ ARGUMENTS
   BUILDPACK  namespace/name of the buildpack
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
   -i, --index=index    the 1-based index of the URL to remove from the list of URLs
   -r, --remote=remote  git remote of app to use
 ```
@@ -123,7 +123,7 @@ ARGUMENTS
   BUILDPACK  namespace/name of the buildpack
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
   -i, --index=index    the 1-based index of the URL in the list of URLs
   -r, --remote=remote  git remote of app to use
 ```

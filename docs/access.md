@@ -17,7 +17,7 @@ USAGE
   $ heroku access
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
   -r, --remote=remote  git remote of app to use
   --json               output in json format
 ```
@@ -31,7 +31,7 @@ USAGE
   $ heroku access:add EMAIL
 
 OPTIONS
-  -a, --app=app                  (required) app to run command against
+  -a, --app=app                  (required) [default: afternoon-basin-67698] app to run command against
   -p, --permissions=permissions  list of permissions comma separated
   -r, --remote=remote            git remote of app to use
 
@@ -49,7 +49,7 @@ USAGE
   $ heroku access:remove EMAIL
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
   -r, --remote=remote  git remote of app to use
 
 EXAMPLES
@@ -65,7 +65,7 @@ USAGE
   $ heroku access:update EMAIL
 
 OPTIONS
-  -a, --app=app                  (required) app to run command against
+  -a, --app=app                  (required) [default: afternoon-basin-67698] app to run command against
   -p, --permissions=permissions  comma-delimited list of permissions to update (deploy,manage,operate)
   -r, --remote=remote            git remote of app to use
 

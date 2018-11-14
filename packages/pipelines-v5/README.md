@@ -96,7 +96,7 @@ ARGUMENTS
   PIPELINE  name of pipeline
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
   -r, --remote=remote  git remote of app to use
   -s, --stage=stage    stage of first app in pipeline
 
@@ -140,7 +140,7 @@ ARGUMENTS
   NAME  name of pipeline, defaults to basename of app
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
   -r, --remote=remote  git remote of app to use
   -s, --stage=stage    stage of first app in pipeline
   -t, --team=team      team to use
@@ -184,7 +184,7 @@ USAGE
   $ heroku pipelines:diff
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
   -r, --remote=remote  git remote of app to use
 
 EXAMPLES
@@ -262,7 +262,7 @@ USAGE
   $ heroku pipelines:promote
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
   -r, --remote=remote  git remote of app to use
   -t, --to=to          comma separated list of apps to promote to
 
@@ -288,7 +288,7 @@ USAGE
   $ heroku pipelines:remove
 
 OPTIONS
-  -a, --app=app        (required) app to run command against
+  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
   -r, --remote=remote  git remote of app to use
 
 EXAMPLES
@@ -401,6 +401,7 @@ USAGE
 OPTIONS
   -a, --app=app            (required) parent app used by review apps
   -p, --pipeline=pipeline  (required) name of pipeline
+  -r, --remote=remote      git remote of parent app used by review apps
   --autodeploy             disable autodeployments
   --autodestroy            disable automatically destroying review apps
 
@@ -421,6 +422,7 @@ USAGE
 OPTIONS
   -a, --app=app            (required) parent app used by review apps
   -p, --pipeline=pipeline  (required) name of pipeline
+  -r, --remote=remote      git remote of parent app used by review apps
   --autodeploy             autodeploy the review app
   --autodestroy            autodestroy the review app
 

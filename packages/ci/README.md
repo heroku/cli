@@ -24,7 +24,7 @@ $ npm install -g @heroku-cli/plugin-ci
 $ heroku COMMAND
 running command...
 $ heroku (-v|--version|version)
-@heroku-cli/plugin-ci/7.18.7 darwin-x64 node-v11.1.0
+@heroku-cli/plugin-ci/7.18.8 darwin-x64 node-v10.2.1
 $ heroku --help [COMMAND]
 USAGE
   $ heroku COMMAND
@@ -48,7 +48,6 @@ USAGE
   $ heroku ci
 
 OPTIONS
-  -a, --app=app            app to run command against
   -p, --pipeline=pipeline  name of pipeline
   --json                   output in json format
   --watch                  keep running and watch for new and update tests
@@ -57,7 +56,7 @@ EXAMPLE
   $ heroku ci --app murmuring-headland-14719
 ```
 
-_See code: [src/commands/ci/index.ts](https://github.com/heroku/cli/blob/v7.18.7/packages/ci/src/commands/ci/index.ts)_
+_See code: [src/commands/ci/index.ts](https://github.com/heroku/cli/blob/v7.18.8/packages/ci/src/commands/ci/index.ts)_
 
 ## `heroku ci:info TEST-RUN`
 
@@ -68,7 +67,6 @@ USAGE
   $ heroku ci:info TEST-RUN
 
 OPTIONS
-  -a, --app=app            app to run command against
   -p, --pipeline=pipeline  name of pipeline
   --node=node              the node number to show its setup and output
 
@@ -76,7 +74,7 @@ EXAMPLE
   $ heroku ci:info 1288 --app murmuring-headland-14719
 ```
 
-_See code: [src/commands/ci/info.ts](https://github.com/heroku/cli/blob/v7.18.7/packages/ci/src/commands/ci/info.ts)_
+_See code: [src/commands/ci/info.ts](https://github.com/heroku/cli/blob/v7.18.8/packages/ci/src/commands/ci/info.ts)_
 
 ## `heroku ci:last`
 
@@ -87,7 +85,6 @@ USAGE
   $ heroku ci:last
 
 OPTIONS
-  -a, --app=app            app to run command against
   -p, --pipeline=pipeline  name of pipeline
   --node=node              the node number to show its setup and output
 
@@ -95,7 +92,7 @@ EXAMPLE
   $ heroku ci:last --app murmuring-headland-14719 --node 100
 ```
 
-_See code: [src/commands/ci/last.ts](https://github.com/heroku/cli/blob/v7.18.7/packages/ci/src/commands/ci/last.ts)_
+_See code: [src/commands/ci/last.ts](https://github.com/heroku/cli/blob/v7.18.8/packages/ci/src/commands/ci/last.ts)_
 
 ## `heroku ci:rerun [NUMBER]`
 
@@ -106,14 +103,13 @@ USAGE
   $ heroku ci:rerun [NUMBER]
 
 OPTIONS
-  -a, --app=app            app to run command against
   -p, --pipeline=pipeline  name of pipeline
 
 EXAMPLE
   $ heroku ci:rerun 985 --app murmuring-headland-14719
 ```
 
-_See code: [src/commands/ci/rerun.ts](https://github.com/heroku/cli/blob/v7.18.7/packages/ci/src/commands/ci/rerun.ts)_
+_See code: [src/commands/ci/rerun.ts](https://github.com/heroku/cli/blob/v7.18.8/packages/ci/src/commands/ci/rerun.ts)_
 
 ## `heroku ci:run`
 
@@ -124,14 +120,13 @@ USAGE
   $ heroku ci:run
 
 OPTIONS
-  -a, --app=app            app to run command against
   -p, --pipeline=pipeline  name of pipeline
 
 EXAMPLE
   $ heroku ci:run --app murmuring-headland-14719
 ```
 
-_See code: [src/commands/ci/run.ts](https://github.com/heroku/cli/blob/v7.18.7/packages/ci/src/commands/ci/run.ts)_
+_See code: [src/commands/ci/run.ts](https://github.com/heroku/cli/blob/v7.18.8/packages/ci/src/commands/ci/run.ts)_
 <!-- commandsstop -->
 * [`heroku ci:info`](#heroku-ci-info)
 * [`heroku ci:last`](#heroku-ci-last)

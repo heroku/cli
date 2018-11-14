@@ -3,56 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-## [7.18.7](https://github.com/heroku/cli/compare/v7.18.6...v7.18.7) (2018-11-12)
+<a name="7.18.8"></a>
+## [7.18.8](https://github.com/heroku/cli/compare/v7.18.7...v7.18.8) (2018-11-14)
 
 
 ### Bug Fixes
 
-* updated oclif ([0d0e905](https://github.com/heroku/cli/commit/0d0e905))
-
-
-
-
-
-## [7.18.6](https://github.com/heroku/cli/compare/v7.18.5...v7.18.6) (2018-11-12)
-
-**Note:** Version bump only for package @heroku-cli/plugin-ci
-
-
-
-
-
-## [7.18.3](https://github.com/heroku/cli/compare/v7.18.2...v7.18.3) (2018-10-18)
-
-**Note:** Version bump only for package @heroku-cli/plugin-ci
-
-
-
-
-
-# [7.18.0](https://github.com/heroku/cli/compare/v7.17.2...v7.18.0) (2018-10-17)
-
-**Note:** Version bump only for package @heroku-cli/plugin-ci
-
-
-
-
-
-## [7.16.7](https://github.com/heroku/cli/compare/v7.16.6...v7.16.7) (2018-10-10)
-
-
-### Bug Fixes
-
-* updated command ([fbd11fd](https://github.com/heroku/cli/commit/fbd11fd))
-
-
-
-
-
-## [7.16.6](https://github.com/heroku/cli/compare/v7.16.5...v7.16.6) (2018-10-05)
-
-**Note:** Version bump only for package @heroku-cli/plugin-ci
-
+* **ci:** remove unused app flag ([#1137](https://github.com/heroku/cli/issues/1137)) ([d961fec](https://github.com/heroku/cli/commit/d961fec))
 
 
 
