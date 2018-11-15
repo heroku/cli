@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.18.9](https://github.com/heroku/cli/compare/v7.18.8...v7.18.9) (2018-11-15)
+
+**Note:** Version bump only for package @heroku-cli/plugin-config
+
+
+
+
+
 ## [7.18.7](https://github.com/heroku/cli/compare/v7.18.6...v7.18.7) (2018-11-12)
 
 

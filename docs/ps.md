@@ -26,7 +26,7 @@ USAGE
   $ heroku ps [TYPE [TYPE ...]]
 
 OPTIONS
-  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
   --json               display as json
 
@@ -52,11 +52,11 @@ USAGE
   $ heroku ps:autoscale:disable
 
 OPTIONS
-  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
-_See code: [@heroku-cli/plugin-ps](https://github.com/heroku/cli/blob/v7.18.7/packages/ps/src/commands/ps/autoscale/disable.ts)_
+_See code: [@heroku-cli/plugin-ps](https://github.com/heroku/cli/blob/v7.18.9/packages/ps/src/commands/ps/autoscale/disable.ts)_
 
 ## `heroku ps:autoscale:enable`
 
@@ -67,7 +67,7 @@ USAGE
   $ heroku ps:autoscale:enable
 
 OPTIONS
-  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
   --max=max            (required) maximum number of dynos
   --min=min            (required) minimum number of dynos
@@ -75,7 +75,7 @@ OPTIONS
   --p95=p95            desired p95 response time
 ```
 
-_See code: [@heroku-cli/plugin-ps](https://github.com/heroku/cli/blob/v7.18.7/packages/ps/src/commands/ps/autoscale/enable.ts)_
+_See code: [@heroku-cli/plugin-ps](https://github.com/heroku/cli/blob/v7.18.9/packages/ps/src/commands/ps/autoscale/enable.ts)_
 
 ## `heroku ps:copy FILE`
 
@@ -147,7 +147,7 @@ USAGE
   $ heroku ps:kill DYNO
 
 OPTIONS
-  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
@@ -170,7 +170,7 @@ USAGE
   $ heroku ps:resize
 
 OPTIONS
-  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
@@ -191,7 +191,7 @@ USAGE
   $ heroku ps:restart [DYNO]
 
 OPTIONS
-  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
@@ -217,7 +217,7 @@ USAGE
   $ heroku ps:scale
 
 OPTIONS
-  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
@@ -265,7 +265,7 @@ USAGE
   $ heroku ps:stop DYNO
 
 OPTIONS
-  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
@@ -288,7 +288,7 @@ USAGE
   $ heroku ps:type
 
 OPTIONS
-  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION

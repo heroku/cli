@@ -33,7 +33,7 @@ EXAMPLE
   $ heroku ci --app murmuring-headland-14719
 ```
 
-_See code: [@heroku-cli/plugin-ci](https://github.com/heroku/cli/blob/v7.18.8/packages/ci/src/commands/ci/index.ts)_
+_See code: [@heroku-cli/plugin-ci](https://github.com/heroku/cli/blob/v7.18.9/packages/ci/src/commands/ci/index.ts)_
 
 ## `heroku ci:config`
 
@@ -44,7 +44,7 @@ USAGE
   $ heroku ci:config
 
 OPTIONS
-  -a, --app=app            [default: afternoon-basin-67698] app to run command against
+  -a, --app=app            app to run command against
   -p, --pipeline=pipeline  pipeline
   -r, --remote=remote      git remote of app to use
   -s, --shell              output config vars in shell format
@@ -65,7 +65,7 @@ USAGE
   $ heroku ci:config:get KEY
 
 OPTIONS
-  -a, --app=app            [default: afternoon-basin-67698] app to run command against
+  -a, --app=app            app to run command against
   -p, --pipeline=pipeline  pipeline
   -r, --remote=remote      git remote of app to use
   -s, --shell              output config var in shell format
@@ -86,7 +86,7 @@ USAGE
   $ heroku ci:config:set
 
 OPTIONS
-  -a, --app=app            [default: afternoon-basin-67698] app to run command against
+  -a, --app=app            app to run command against
   -p, --pipeline=pipeline  pipeline
   -r, --remote=remote      git remote of app to use
 
@@ -108,7 +108,7 @@ USAGE
   $ heroku ci:config:unset
 
 OPTIONS
-  -a, --app=app            [default: afternoon-basin-67698] app to run command against
+  -a, --app=app            app to run command against
   -p, --pipeline=pipeline  pipeline
   -r, --remote=remote      git remote of app to use
 
@@ -128,7 +128,7 @@ USAGE
   $ heroku ci:debug
 
 OPTIONS
-  -a, --app=app            [default: afternoon-basin-67698] app to run command against
+  -a, --app=app            app to run command against
   -p, --pipeline=pipeline  pipeline
   -r, --remote=remote      git remote of app to use
   --no-cache               start test run with an empty cache
@@ -161,7 +161,7 @@ EXAMPLE
   $ heroku ci:info 1288 --app murmuring-headland-14719
 ```
 
-_See code: [@heroku-cli/plugin-ci](https://github.com/heroku/cli/blob/v7.18.8/packages/ci/src/commands/ci/info.ts)_
+_See code: [@heroku-cli/plugin-ci](https://github.com/heroku/cli/blob/v7.18.9/packages/ci/src/commands/ci/info.ts)_
 
 ## `heroku ci:last`
 
@@ -179,7 +179,7 @@ EXAMPLE
   $ heroku ci:last --app murmuring-headland-14719 --node 100
 ```
 
-_See code: [@heroku-cli/plugin-ci](https://github.com/heroku/cli/blob/v7.18.8/packages/ci/src/commands/ci/last.ts)_
+_See code: [@heroku-cli/plugin-ci](https://github.com/heroku/cli/blob/v7.18.9/packages/ci/src/commands/ci/last.ts)_
 
 ## `heroku ci:migrate-manifest`
 
@@ -208,7 +208,7 @@ USAGE
   $ heroku ci:open
 
 OPTIONS
-  -a, --app=app            [default: afternoon-basin-67698] app to run command against
+  -a, --app=app            app to run command against
   -p, --pipeline=pipeline  pipeline
   -r, --remote=remote      git remote of app to use
 
@@ -235,7 +235,7 @@ EXAMPLE
   $ heroku ci:rerun 985 --app murmuring-headland-14719
 ```
 
-_See code: [@heroku-cli/plugin-ci](https://github.com/heroku/cli/blob/v7.18.8/packages/ci/src/commands/ci/rerun.ts)_
+_See code: [@heroku-cli/plugin-ci](https://github.com/heroku/cli/blob/v7.18.9/packages/ci/src/commands/ci/rerun.ts)_
 
 ## `heroku ci:run`
 
@@ -252,4 +252,4 @@ EXAMPLE
   $ heroku ci:run --app murmuring-headland-14719
 ```
 
-_See code: [@heroku-cli/plugin-ci](https://github.com/heroku/cli/blob/v7.18.8/packages/ci/src/commands/ci/run.ts)_
+_See code: [@heroku-cli/plugin-ci](https://github.com/heroku/cli/blob/v7.18.9/packages/ci/src/commands/ci/run.ts)_

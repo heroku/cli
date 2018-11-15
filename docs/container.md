@@ -58,7 +58,7 @@ USAGE
   $ heroku container:pull
 
 OPTIONS
-  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
   -v, --verbose
 
@@ -79,7 +79,7 @@ USAGE
 
 OPTIONS
   -R, --recursive              pushes Dockerfile.<process> found in current and subdirectories
-  -a, --app=app                (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app                (required) app to run command against
   -r, --remote=remote          git remote of app to use
   -v, --verbose
   --arg=arg                    set build-time variables
@@ -103,7 +103,7 @@ USAGE
   $ heroku container:release
 
 OPTIONS
-  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
   -v, --verbose
 
@@ -122,7 +122,7 @@ USAGE
   $ heroku container:rm
 
 OPTIONS
-  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
@@ -140,7 +140,7 @@ USAGE
   $ heroku container:run
 
 OPTIONS
-  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app        (required) app to run command against
   -p, --port=port      port the app will run on
   -r, --remote=remote  git remote of app to use
   -v, --verbose

@@ -57,7 +57,7 @@ USAGE
   $ heroku pg [DATABASE]
 
 OPTIONS
-  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -70,7 +70,7 @@ USAGE
   $ heroku pg:backups
 
 OPTIONS
-  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -83,7 +83,7 @@ USAGE
   $ heroku pg:backups:cancel [BACKUP_ID]
 
 OPTIONS
-  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -96,7 +96,7 @@ USAGE
   $ heroku pg:backups:capture [DATABASE]
 
 OPTIONS
-  -a, --app=app                  (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app                  (required) app to run command against
   -r, --remote=remote            git remote of app to use
   -v, --verbose
   --snapshot
@@ -112,7 +112,7 @@ USAGE
   $ heroku pg:backups:delete BACKUP_ID
 
 OPTIONS
-  -a, --app=app          (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app          (required) app to run command against
   -c, --confirm=confirm
   -r, --remote=remote    git remote of app to use
 ```
@@ -126,7 +126,7 @@ USAGE
   $ heroku pg:backups:download [BACKUP_ID]
 
 OPTIONS
-  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app        (required) app to run command against
   -o, --output=output  location to download to. Defaults to latest.dump
   -r, --remote=remote  git remote of app to use
 ```
@@ -140,7 +140,7 @@ USAGE
   $ heroku pg:backups:info [BACKUP_ID]
 
 OPTIONS
-  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -153,7 +153,7 @@ USAGE
   $ heroku pg:backups:restore [BACKUP] [DATABASE]
 
 OPTIONS
-  -a, --app=app                  (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app                  (required) app to run command against
   -c, --confirm=confirm
   -r, --remote=remote            git remote of app to use
   -v, --verbose
@@ -172,7 +172,7 @@ USAGE
   $ heroku pg:backups:schedule [DATABASE]
 
 OPTIONS
-  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 
   --at=at              (required) at a specific (24h) hour in the given timezone. Defaults to UTC. --at '[HOUR]:00
@@ -188,7 +188,7 @@ USAGE
   $ heroku pg:backups:schedules
 
 OPTIONS
-  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -201,7 +201,7 @@ USAGE
   $ heroku pg:backups:unschedule [DATABASE]
 
 OPTIONS
-  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -214,7 +214,7 @@ USAGE
   $ heroku pg:backups:url [BACKUP_ID]
 
 OPTIONS
-  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -227,7 +227,7 @@ USAGE
   $ heroku pg:connection-pooling:attach [DATABASE]
 
 OPTIONS
-  -a, --app=app                (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app                (required) app to run command against
   -n, --credential=credential  name of the credential within the database
   -r, --remote=remote          git remote of app to use
   --as=as                      name for add-on attachment
@@ -247,7 +247,7 @@ USAGE
   $ heroku pg:copy SOURCE TARGET
 
 OPTIONS
-  -a, --app=app                  (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app                  (required) app to run command against
   -r, --remote=remote            git remote of app to use
   --confirm=confirm
   --verbose
@@ -266,7 +266,7 @@ USAGE
   $ heroku pg:credentials [DATABASE]
 
 OPTIONS
-  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
   --reset              DEPRECATED
 ```
@@ -280,7 +280,7 @@ USAGE
   $ heroku pg:credentials:create [DATABASE]
 
 OPTIONS
-  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app        (required) app to run command against
   -n, --name=name      (required) name of the new credential within the database
   -r, --remote=remote  git remote of app to use
 
@@ -299,7 +299,7 @@ USAGE
   $ heroku pg:credentials:destroy [DATABASE]
 
 OPTIONS
-  -a, --app=app          (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app          (required) app to run command against
   -c, --confirm=confirm
   -n, --name=name        (required) unique identifier for the credential
   -r, --remote=remote    git remote of app to use
@@ -319,7 +319,7 @@ USAGE
   $ heroku pg:credentials:repair-default [DATABASE]
 
 OPTIONS
-  -a, --app=app          (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app          (required) app to run command against
   -c, --confirm=confirm
   -r, --remote=remote    git remote of app to use
 
@@ -338,7 +338,7 @@ USAGE
   $ heroku pg:credentials:rotate [DATABASE]
 
 OPTIONS
-  -a, --app=app          (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app          (required) app to run command against
   -c, --confirm=confirm
   -n, --name=name        which credential to rotate (default credentials if not specified)
   -r, --remote=remote    git remote of app to use
@@ -355,7 +355,7 @@ USAGE
   $ heroku pg:credentials:url [DATABASE]
 
 OPTIONS
-  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app        (required) app to run command against
   -n, --name=name      which credential to show (default credentials if not specified)
   -r, --remote=remote  git remote of app to use
 ```
@@ -369,7 +369,7 @@ USAGE
   $ heroku pg:diagnose [DATABASE|REPORT_ID]
 
 OPTIONS
-  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
@@ -386,7 +386,7 @@ USAGE
   $ heroku pg:info [DATABASE]
 
 OPTIONS
-  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -399,7 +399,7 @@ USAGE
   $ heroku pg:kill PID [DATABASE]
 
 OPTIONS
-  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app        (required) app to run command against
   -f, --force
   -r, --remote=remote  git remote of app to use
 ```
@@ -413,7 +413,7 @@ USAGE
   $ heroku pg:killall [DATABASE]
 
 OPTIONS
-  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -426,7 +426,7 @@ USAGE
   $ heroku pg:links [DATABASE]
 
 OPTIONS
-  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -439,7 +439,7 @@ USAGE
   $ heroku pg:links:create REMOTE DATABASE
 
 OPTIONS
-  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
   --as=as              name of link to create
 
@@ -458,7 +458,7 @@ USAGE
   $ heroku pg:links:destroy DATABASE LINK
 
 OPTIONS
-  -a, --app=app          (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app          (required) app to run command against
   -c, --confirm=confirm
   -r, --remote=remote    git remote of app to use
 
@@ -477,7 +477,7 @@ USAGE
   $ heroku pg:maintenance [DATABASE]
 
 OPTIONS
-  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -490,7 +490,7 @@ USAGE
   $ heroku pg:maintenance:run [DATABASE]
 
 OPTIONS
-  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app        (required) app to run command against
   -f, --force
   -r, --remote=remote  git remote of app to use
 ```
@@ -504,7 +504,7 @@ USAGE
   $ heroku pg:maintenance:window DATABASE WINDOW
 
 OPTIONS
-  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
@@ -524,7 +524,7 @@ USAGE
   $ heroku pg:outliers [DATABASE]
 
 OPTIONS
-  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app        (required) app to run command against
   -n, --num=num        the number of queries to display (default: 10)
   -r, --remote=remote  git remote of app to use
   -t, --truncate       truncate queries to 40 characters
@@ -540,7 +540,7 @@ USAGE
   $ heroku pg:promote DATABASE
 
 OPTIONS
-  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -553,7 +553,7 @@ USAGE
   $ heroku pg:ps [DATABASE]
 
 OPTIONS
-  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
   -v, --verbose
 ```
@@ -567,7 +567,7 @@ USAGE
   $ heroku pg:psql [DATABASE]
 
 OPTIONS
-  -a, --app=app            (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app            (required) app to run command against
   -c, --command=command    SQL command to run
   -f, --file=file          SQL file to run
   -r, --remote=remote      git remote of app to use
@@ -583,7 +583,7 @@ USAGE
   $ heroku pg:pull SOURCE TARGET
 
 OPTIONS
-  -a, --app=app                            (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app                            (required) app to run command against
   -r, --remote=remote                      git remote of app to use
   --exclude-table-data=exclude-table-data  tables for which data should be excluded (use ';' to split multiple names)
 
@@ -617,7 +617,7 @@ USAGE
   $ heroku pg:push SOURCE TARGET
 
 OPTIONS
-  -a, --app=app                            (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app                            (required) app to run command against
   -r, --remote=remote                      git remote of app to use
   --exclude-table-data=exclude-table-data  tables for which data should be excluded (use ';' to split multiple names)
 
@@ -647,7 +647,7 @@ USAGE
   $ heroku pg:reset [DATABASE]
 
 OPTIONS
-  -a, --app=app          (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app          (required) app to run command against
   -c, --confirm=confirm
   -r, --remote=remote    git remote of app to use
 ```
@@ -661,7 +661,7 @@ USAGE
   $ heroku pg:settings [DATABASE]
 
 OPTIONS
-  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 ```
 
@@ -674,7 +674,7 @@ USAGE
   $ heroku pg:settings:log-lock-waits [VALUE] [DATABASE]
 
 OPTIONS
-  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
@@ -693,7 +693,7 @@ USAGE
   $ heroku pg:settings:log-min-duration-statement [VALUE] [DATABASE]
 
 OPTIONS
-  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
@@ -711,7 +711,7 @@ USAGE
   $ heroku pg:settings:log-statement [VALUE] [DATABASE]
 
 OPTIONS
-  -a, --app=app        (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
@@ -732,7 +732,7 @@ USAGE
   $ heroku pg:unfollow DATABASE
 
 OPTIONS
-  -a, --app=app          (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app          (required) app to run command against
   -c, --confirm=confirm
   -r, --remote=remote    git remote of app to use
 ```
@@ -746,7 +746,7 @@ USAGE
   $ heroku pg:upgrade [DATABASE]
 
 OPTIONS
-  -a, --app=app          (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app          (required) app to run command against
   -c, --confirm=confirm
   -r, --remote=remote    git remote of app to use
   -v, --version=version  PostgreSQL version to upgrade to
@@ -764,7 +764,7 @@ USAGE
   $ heroku pg:wait [DATABASE]
 
 OPTIONS
-  -a, --app=app                  (required) [default: afternoon-basin-67698] app to run command against
+  -a, --app=app                  (required) app to run command against
   -r, --remote=remote            git remote of app to use
   --no-notify                    do not show OS notification
   --wait-interval=wait-interval  how frequently to poll in seconds (to avoid rate limiting)
