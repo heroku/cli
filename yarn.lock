@@ -125,21 +125,6 @@
     supports-color "^5.5.0"
     tslib "^1.9.3"
 
-"@heroku-cli/command@8.2.1":
-  version "8.2.1"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.2.1.tgz#f4a66a6b76b536ea03f245a9c8269853fab2e888"
-  integrity sha512-prjyA8JRrRrJVatMC4I3n7Udwj1+/DwR3OWuHzpwG9WO91SGzb0zHBcLU2M+jDE3N0991hkyppSk5de3NQ5gvQ==
-  dependencies:
-    "@heroku-cli/color" "^1.1.14"
-    "@oclif/errors" "^1.2.2"
-    cli-ux "^4.9.3"
-    debug "^4.1.0"
-    fs-extra "^7.0.1"
-    heroku-client "^3.0.6"
-    http-call "^5.2.2"
-    netrc-parser "^3.1.6"
-    opn "^5.4.0"
-
 "@heroku-cli/command@^8.1.17", "@heroku-cli/command@^8.2.0", "@heroku-cli/command@^8.2.2":
   version "8.2.2"
   resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.2.2.tgz#bb57016eb498e8883215a5aa3b06383f306c015c"
@@ -814,17 +799,7 @@
     supports-color "^5.4.0"
     tslib "^1"
 
-"@oclif/command@1.5.5":
-  version "1.5.5"
-  resolved "https://registry.yarnpkg.com/@oclif/command/-/command-1.5.5.tgz#7d37cd8cc96191ceb82d42b8ca1487f9558750bf"
-  integrity sha512-qx3hk59Gj9uc50Nv7o/lnv6bfol0sgFcCVCZiP1c4ieALtUqkT9XpGI6S06vxhkVVye0h4+XGRvMdeJh4+2A+w==
-  dependencies:
-    "@oclif/errors" "^1.2.2"
-    "@oclif/parser" "^3.7.0"
-    debug "^4.1.0"
-    semver "^5.6.0"
-
-"@oclif/command@^1.5.3", "@oclif/command@^1.5.4", "@oclif/command@^1.5.5":
+"@oclif/command@1.5.6", "@oclif/command@^1.5.3", "@oclif/command@^1.5.4", "@oclif/command@^1.5.5":
   version "1.5.6"
   resolved "https://registry.yarnpkg.com/@oclif/command/-/command-1.5.6.tgz#318e03bc81513e90347ee6a0258140312e06e3d6"
   integrity sha512-XBj13dw13qrRzUfAc4d6b8PlZXALFglJ8xydX34aazLJCzeP8mtTcAJTi6ylTwWVhIW2HDO9npTd4FviDY279g==
