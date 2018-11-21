@@ -30,6 +30,7 @@ USAGE
 # Commands
 <!-- commands -->
 * [`heroku enterprises`](#heroku-enterprises)
+* [`heroku enterprises:audits`](#heroku-enterprisesaudits)
 * [`heroku enterprises:members`](#heroku-enterprisesmembers)
 * [`heroku enterprises:members:add EMAIL`](#heroku-enterprisesmembersadd-email)
 * [`heroku enterprises:members:permissions:add EMAIL`](#heroku-enterprisesmemberspermissionsadd-email)
@@ -54,6 +55,25 @@ EXAMPLE
 
 _See code: [src/commands/enterprises/index.ts](https://github.com/heroku/heroku-enterprise/blob/v1.5.1/src/commands/enterprises/index.ts)_
 
+## `heroku enterprises:audits`
+
+list available audit logs for an enterprise account
+
+```
+USAGE
+  $ heroku enterprises:audits
+
+OPTIONS
+  -e, --enterprise-account=enterprise-account  (required) enterprise account name
+  -x, --extended                               show extra columns
+  --json                                       display as json
+
+EXAMPLE
+  $ heroku enterprises:audits --enterprise-account=account-name
+```
+
+_See code: [src/commands/enterprises/audits/index.ts](https://github.com/heroku/heroku-enterprise/blob/v1.5.1/src/commands/enterprises/audits/index.ts)_
+
 ## `heroku enterprises:members`
 
 list members of the enterprise account and their permissions
@@ -66,7 +86,6 @@ OPTIONS
   -e, --enterprise-account=enterprise-account  (required) enterprise account name
   --columns=columns                            only show provided columns (comma-seperated)
   --csv                                        output is csv format
-  --extra                                      show extra columns
   --filter=filter                              filter property by partial string matching, ex: name=foo
   --no-header                                  hide table header from output
   --no-truncate                                do not truncate output to fit screen
@@ -170,7 +189,6 @@ OPTIONS
   -e, --enterprise-account=enterprise-account  (required) enterprise account name
   --columns=columns                            only show provided columns (comma-seperated)
   --csv                                        output is csv format
-  --extra                                      show extra columns
   --filter=filter                              filter property by partial string matching, ex: name=foo
   --no-header                                  hide table header from output
   --no-truncate                                do not truncate output to fit screen
@@ -229,7 +247,6 @@ OPTIONS
   -t, --team=team                              team name
   --columns=columns                            only show provided columns (comma-seperated)
   --csv                                        output is csv format
-  --extra                                      show extra columns
   --filter=filter                              filter property by partial string matching, ex: name=foo
   --no-header                                  hide table header from output
   --no-truncate                                do not truncate output to fit screen
@@ -238,6 +255,11 @@ OPTIONS
 EXAMPLES
   $ heroku enterprises:usage --enterprise-account=account-name
   $ heroku enterprises:usage --enterprise-account=account-name --team=team-name
+  $ heroku enterprises:usage --enterprise-account=account-name --columns='account,team,app,dyno'
+  $ heroku enterprises:usage --enterprise-account=account-name --columns='account,team,app,dyno' --csv
+  $ heroku enterprises:usage --enterprise-account=account-name --columns='account,team,app,addon' --sort='-addon'
+  $ heroku enterprises:usage --enterprise-account=account-name --columns='account,team,app,addon' --filter='app=myapp'
+  $ heroku enterprises:usage --enterprise-account=account-name --columns='account,team,app,data' --sort='-data,app'
 ```
 
 _See code: [src/commands/enterprises/usage.ts](https://github.com/heroku/heroku-enterprise/blob/v1.5.1/src/commands/enterprises/usage.ts)_
