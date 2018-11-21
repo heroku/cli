@@ -31,14 +31,11 @@ export default class Usage extends BaseCommand {
       required: false
     }),
     'start-date': Flags.string({
-      description: 'start date of the usage period',
-      dependsOn: ['end-date'],
-      hidden: true
+      description: 'start date of the usage period'
     }),
     'end-date': Flags.string({
       description: 'end date of the usage period',
-      dependsOn: ['start-date'],
-      hidden: true
+      dependsOn: ['start-date']
     }),
     ...cli.table.flags({except: 'extended'})
   }
@@ -60,42 +57,38 @@ export default class Usage extends BaseCommand {
     this._flags = flags
     const startDate = flags['start-date']
     const endDate = flags['end-date']
-    const query = startDate && endDate ? `?${QueryString.stringify({start_date: startDate, end_date: endDate})}` : ''
+    let query = ''
+
+    if (startDate && endDate) query = `?${QueryString.stringify({start_date: startDate, end_date: endDate})}`
+    else if (startDate && !endDate) query = `?${QueryString.stringify({start_date: startDate})}`
 
     if (flags.team) {
-      const {body} = await this.heroku.get<any[]>(`/enterprise-accounts/${flags['enterprise-account']}/teams/${flags.team}/usage${query}`)
-      if (body.length === 0) {
-        cli.warn(`No usage for ${flags.team}`)
-        return
-      }
-      this.displayTeamUsage(body[0])
+      const {body: teamUsages} = await this.heroku.get<any[]>(`/enterprise-accounts/${flags['enterprise-account']}/teams/${flags.team}/usage${query}`)
+      this.displayTeamUsage(teamUsages)
     } else {
-      const {body} = await this.heroku.get<any[]>(`/enterprise-accounts/${flags['enterprise-account']}/usage${query}`)
-      const usage: any = body[0]
-      const teams = usage.teams
-      if (!teams) {
-        cli.warn(`No usage for ${flags['enterprise-account']}`)
-        return
-      }
-      this.displayEnterpriseAccoutUsage(teams, usage.name, usage.date)
+      const {body: accountUsages} = await this.heroku.get<any[]>(`/enterprise-accounts/${flags['enterprise-account']}/usage${query}`)
+      this.displayEnterpriseAccoutUsage(accountUsages)
     }
   }
 
-  private displayTeamUsage(team: any) {
+  private displayTeamUsage(allTeamUsage: any[]) {
     const usageData: Array<any> = []
-    if (team.apps) {
-      team.apps.forEach((teamApp: any) => {
-        usageData.push({
-          date: team.date,
-          appName: teamApp.app_name,
-          addons: teamApp.addons,
-          connect: teamApp.connect,
-          data: teamApp.data,
-          dynos: teamApp.dynos,
-          partner: teamApp.partner
+
+    allTeamUsage.forEach((teamUsage: any) => {
+      if (teamUsage.apps) {
+        teamUsage.apps.forEach((teamApp: any) => {
+          usageData.push({
+            date: teamUsage.date,
+            appName: teamApp.app_name,
+            addons: teamApp.addons,
+            connect: teamApp.connect,
+            data: teamApp.data,
+            dynos: teamApp.dynos,
+            partner: teamApp.partner
+          })
         })
-      })
-    }
+      }
+    })
 
     cli.table(usageData,
       Usage.tableHeaders,
@@ -106,30 +99,33 @@ export default class Usage extends BaseCommand {
     )
   }
 
-  private displayEnterpriseAccoutUsage(teams: any, accountName: string, date: string) {
+  private displayEnterpriseAccoutUsage(allUsage: any[]) {
     const usageData: Array<any> = []
-    teams.forEach((team: any) => {
-      const teamInfo = {
-        accountName,
-        teamName: team.name,
-        date
-      }
 
-      if (team.apps) {
-        team.apps.forEach((teamApp: any) => {
-          usageData.push({
-            ...teamInfo,
-            appName: teamApp.app_name,
-            addons: teamApp.addons,
-            connect: teamApp.connect,
-            data: teamApp.data,
-            dynos: teamApp.dynos,
-            partner: teamApp.partner
+    allUsage.forEach((usage: any) => {
+      usage.teams.forEach((team: any) => {
+        const teamInfo = {
+          accountName: usage.name,
+          teamName: team.name,
+          date: usage.date
+        }
+
+        if (team.apps) {
+          team.apps.forEach((teamApp: any) => {
+            usageData.push({
+              ...teamInfo,
+              appName: teamApp.app_name,
+              addons: teamApp.addons,
+              connect: teamApp.connect,
+              data: teamApp.data,
+              dynos: teamApp.dynos,
+              partner: teamApp.partner
+            })
           })
-        })
-      } else {
-        usageData.push(teamInfo)
-      }
+        } else {
+          usageData.push(teamInfo)
+        }
+      })
     })
 
     cli.table(usageData,

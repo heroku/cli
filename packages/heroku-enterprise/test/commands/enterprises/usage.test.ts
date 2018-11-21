@@ -1,3 +1,4 @@
+/* tslint:disable:number-literal-format */
 import {expect, test} from '@oclif/test'
 
 describe('enterprises:usage', () => {
@@ -37,25 +38,62 @@ describe('enterprises:usage', () => {
 
   const enterpriseTeamUsageResponse = [
     {
-      addons: 25000,
+      addons: 1873385.0,
+      connect: 0,
+      data: 442249,
+      date: '2017-01-01',
+      dynos: 1967.4409999999837,
+      id: '5436a8dd-e3c4-495e-9974-ac6f451e6606',
+      name: 'team-0001',
+      partner: 1431136,
+      space: 3.87095,
       apps: [
         {
-          addons: 25000,
-          app_name: 'moneyapp',
+          addons: 19941.0,
+          app_name: 'froyo-expcore',
           connect: 0,
-          data: 3489,
+          data: 15484,
           dynos: 1.548,
-          partner: 1234
+          partner: 4457
+        },
+        {
+          addons: 1075.0,
+          app_name: 'froyo-expcore-dev',
+          connect: 0,
+          data: 1075,
+          dynos: 3.853,
+          partner: 12
         }
-      ],
+      ]
+    },
+    {
+      addons: 1873385.0,
       connect: 0,
-      data: 3489,
-      date: '2017-01-01',
-      dynos: 1.548,
-      id: '01234567-89ab-cdef-0123-456789abcdef',
-      name: 'grumpy',
-      partner: 1234,
-      space: 1.548
+      data: 442249,
+      date: '2017-02-01',
+      dynos: 1967.4409999999837,
+      id: '5436a8dd-e3c4-495e-9974-ac6f451e6606',
+      name: 'team-0001',
+      partner: 1431136,
+      space: 3.87095,
+      apps: [
+        {
+          addons: 19941.0,
+          app_name: 'froyo-expcore',
+          connect: 0,
+          data: 15484,
+          dynos: 0.0,
+          partner: 4457
+        },
+        {
+          addons: 1075.0,
+          app_name: 'froyo-expcore-dev',
+          connect: 0,
+          data: 1075,
+          dynos: 3.853,
+          partner: 0
+        }
+      ]
     }
   ]
 
@@ -91,8 +129,11 @@ describe('enterprises:usage', () => {
     )
     .command(['enterprises:usage', '--enterprise-account', 'wallyworld', '--team', 'grumpy'])
     .it('lists the usage for an enterprise team', ctx => {
-      expect(ctx.stdout).to.contain('App      Date       Dyno  Connect Addon Partner Data ')
-      expect(ctx.stdout).to.contain('moneyapp 2017-01-01 1.548 0       25000 1234    3489 ')
+      expect(ctx.stdout).to.contain('App               Date       Dyno  Connect Addon Partner Data ')
+      expect(ctx.stdout).to.contain('froyo-expcore     2017-01-01 1.548 0       19941 4457    15484 ')
+      expect(ctx.stdout).to.contain('froyo-expcore-dev 2017-01-01 3.853 0       1075  12      1075 ')
+      expect(ctx.stdout).to.contain('froyo-expcore     2017-02-01 0     0       19941 4457    15484 ')
+      expect(ctx.stdout).to.contain('froyo-expcore-dev 2017-02-01 3.853 0       1075  0       1075 ')
     })
 
   test
@@ -103,7 +144,10 @@ describe('enterprises:usage', () => {
     )
     .command(['enterprises:usage', '--enterprise-account', 'wallyworld', '--start-date', '2018-09-01', '--end-date', '2018-10-01', '--team', 'grumpy'])
     .it('lists the usage for an enterprise team using start and end dates', ctx => {
-      expect(ctx.stdout).to.contain('App      Date       Dyno  Connect Addon Partner Data ')
-      expect(ctx.stdout).to.contain('moneyapp 2017-01-01 1.548 0       25000 1234    3489 ')
+      expect(ctx.stdout).to.contain('App               Date       Dyno  Connect Addon Partner Data ')
+      expect(ctx.stdout).to.contain('froyo-expcore     2017-01-01 1.548 0       19941 4457    15484 ')
+      expect(ctx.stdout).to.contain('froyo-expcore-dev 2017-01-01 3.853 0       1075  12      1075 ')
+      expect(ctx.stdout).to.contain('froyo-expcore     2017-02-01 0     0       19941 4457    15484 ')
+      expect(ctx.stdout).to.contain('froyo-expcore-dev 2017-02-01 3.853 0       1075  0       1075 ')
     })
 })
