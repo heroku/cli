@@ -14,7 +14,12 @@ function parseURL (db) {
   let [user, password] = db.auth ? db.auth.split(':') : []
   db.user = user
   db.password = password
-  db.database = db.path ? db.path.split('/', 2)[1] : null
+  let databaseName = db.pathname || null
+  if (databaseName && databaseName.charAt(0) === '/') {
+    db.database = databaseName.slice(1) || null
+  } else {
+    db.database = databaseName
+  }
   db.host = db.hostname
   db.port = db.port || env.PGPORT
   if (db.hostname) {
