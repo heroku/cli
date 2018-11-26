@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.18.10](https://github.com/heroku/cli/compare/v7.18.9...v7.18.10) (2018-11-26)
+
+
+### Bug Fixes
+
+* updated deps ([576c85a](https://github.com/heroku/cli/commit/576c85a))
+* **pg-v5:** fix pg:pull & pg:push database identifiers ([#1149](https://github.com/heroku/cli/issues/1149)) ([5cfc82b](https://github.com/heroku/cli/commit/5cfc82b))
+
+
+
+
+
 ## [7.18.6](https://github.com/heroku/cli/compare/v7.18.5...v7.18.6) (2018-11-12)
 
 **Note:** Version bump only for package @heroku-cli/plugin-pg-v5
