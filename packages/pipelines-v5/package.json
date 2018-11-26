@@ -17,7 +17,7 @@
     "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/pipelines-v5/<%- commandPath %>"
   },
   "dependencies": {
-    "@heroku-cli/command": "^8.2.2",
+    "@heroku-cli/command": "^8.2.3",
     "bluebird": "^3.5.3",
     "co": "^4.6.0",
     "heroku-cli-util": "^8.0.10",
@@ -37,7 +37,7 @@
     "nock": "^9.2.6",
     "nyc": "^13.1.0",
     "sinon": "^4.5.0",
-    "sinon-chai": "^3.0.0",
+    "sinon-chai": "^3.3.0",
     "std-mocks": "^1.0.1",
     "supervisor": "^0.12.0"
   },

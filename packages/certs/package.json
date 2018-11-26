@@ -4,7 +4,7 @@
   "author": "Jeff Dickey @jdxcode",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
-    "@heroku-cli/command": "^8.2.2",
+    "@heroku-cli/command": "^8.2.3",
     "@oclif/command": "^1.5.5",
     "@oclif/config": "^1.9.0",
     "tslib": "^1.9.3"
@@ -16,7 +16,7 @@
     "@oclif/tslint": "^3.1.1",
     "@types/chai": "^4.1.7",
     "@types/mocha": "^5.2.5",
-    "@types/node": "^10.12.5",
+    "@types/node": "^10.12.10",
     "chai": "^4.2.0",
     "globby": "^8",
     "mocha": "^5",

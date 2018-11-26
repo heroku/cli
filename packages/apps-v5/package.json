@@ -15,7 +15,7 @@
     "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/apps-v5/<%- commandPath %>"
   },
   "dependencies": {
-    "@heroku-cli/command": "^8.2.2",
+    "@heroku-cli/command": "^8.2.3",
     "co": "^4.6.0",
     "filesize": "^3.5.11",
     "fs-extra": "^7.0.1",
@@ -41,9 +41,9 @@
     "proxyquire": "^2.1.0",
     "set-tz": "^0.1.0",
     "std-mocks": "1.0.1",
-    "testdouble": "^3.8.2",
+    "testdouble": "^3.9.0",
     "time-require": "0.1.2",
-    "unexpected": "^10.39.1"
+    "unexpected": "^10.39.2"
   },
   "files": [
     "/oclif.manifest.json",

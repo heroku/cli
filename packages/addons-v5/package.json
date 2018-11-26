@@ -29,7 +29,7 @@
     "nock": "9.0.13",
     "nyc": "^13.1.0",
     "sinon": "^6.3.5",
-    "unexpected": "^10.39.1"
+    "unexpected": "^10.39.2"
   },
   "files": [
     "oclif.manifest.json",

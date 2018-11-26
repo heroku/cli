@@ -6,7 +6,7 @@
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
     "@heroku-cli/color": "^1.1.14",
-    "@heroku-cli/command": "^8.2.2",
+    "@heroku-cli/command": "^8.2.3",
     "@oclif/command": "^1.5.5",
     "@oclif/config": "^1.9.0",
     "ansi-escapes": "3.1.0",
@@ -32,7 +32,7 @@
     "@types/inquirer": "0.0.43",
     "@types/mocha": "^5",
     "@types/nock": "^9.3.0",
-    "@types/node": "^10.12.5",
+    "@types/node": "^10.12.10",
     "@types/socket.io-client": "^1.4.32",
     "@types/validator": "^9.4.2",
     "chai": "^4.2.0",
