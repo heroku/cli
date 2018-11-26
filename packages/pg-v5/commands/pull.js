@@ -7,21 +7,7 @@ const psql = require('../lib/psql')
 const env = require('process').env
 const bastion = require('../lib/bastion')
 const cp = require('child_process')
-
-function parseURL (db) {
-  const url = require('url')
-  db = url.parse(db.match(/:\/\//) ? db : `postgres:///${db}`)
-  let [user, password] = db.auth ? db.auth.split(':') : []
-  db.user = user
-  db.password = password
-  db.database = db.path ? db.path.split('/', 2)[1] : null
-  db.host = db.hostname
-  db.port = db.port || env.PGPORT
-  if (db.hostname) {
-    db.port = db.port || 5432
-  }
-  return db
-}
+const util = require('../lib/util')
 
 function parseExclusions (rawExcludeList) {
   return (rawExcludeList || '').split(';').map(function (tname) {
@@ -167,7 +153,7 @@ function * push (context, heroku) {
   const flags = context.flags
   const exclusions = parseExclusions(flags['exclude-table-data'])
 
-  const source = parseURL(args.source)
+  const source = util.parsePostgresConnectionString(args.source)
   const target = yield fetcher.database(app, args.target)
 
   cli.log(`heroku-cli: Pushing ${cli.color.cyan(args.source)} ---> ${cli.color.addon(target.attachment.addon.name)}`)
@@ -182,7 +168,7 @@ function * pull (context, heroku) {
   const exclusions = parseExclusions(flags['exclude-table-data'])
 
   const source = yield fetcher.database(app, args.source)
-  const target = parseURL(args.target)
+  const target = util.parsePostgresConnectionString(args.target)
 
   cli.log(`heroku-cli: Pulling ${cli.color.addon(source.attachment.addon.name)} ---> ${cli.color.cyan(args.target)}`)
   yield run(source, target, exclusions)

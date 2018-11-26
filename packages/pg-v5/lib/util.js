@@ -6,6 +6,7 @@ const getBastion = require('./bastion').getBastion
 const { sortBy } = require('lodash')
 const printf = require('printf')
 const URL = require('url').URL
+const env = require('process').env
 
 function getConfigVarName (configVars) {
   let connstringVars = configVars.filter((cv) => (cv.endsWith('_URL')))
@@ -148,4 +149,25 @@ exports.databaseNameFromUrl = (uri, config) => {
   if (name) return cli.color.configVar(name.replace(/_URL$/, ''))
   uri = url.parse(uri)
   return `${uri.hostname}:${uri.port || 5432}${uri.path}`
+}
+
+exports.parsePostgresConnectionString = (db) => {
+  const url = require('url')
+
+  db = url.parse(db.match(/:\/\//) ? db : `postgres:///${db}`)
+  const [user, password] = db.auth ? db.auth.split(':') : []
+  db.user = user
+  db.password = password
+  const databaseName = db.pathname || null
+  if (databaseName && databaseName.charAt(0) === '/') {
+    db.database = databaseName.slice(1) || null
+  } else {
+    db.database = databaseName
+  }
+  db.host = db.hostname
+  db.port = db.port || env.PGPORT
+  if (db.hostname) {
+    db.port = db.port || 5432
+  }
+  return db
 }
