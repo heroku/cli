@@ -8,7 +8,7 @@ describe('enterprises:audits', () => {
     updated_at: '2012-01-01T12:00:00Z',
     identity_provider: {}
   }
-  const auditsResponse: any[] = [
+  const auditsResponse = [
     {
       year: 2018,
       month: '06',

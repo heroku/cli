@@ -31,6 +31,7 @@ USAGE
 <!-- commands -->
 * [`heroku enterprises`](#heroku-enterprises)
 * [`heroku enterprises:audits`](#heroku-enterprisesaudits)
+* [`heroku enterprises:audits:export [LOG]`](#heroku-enterprisesauditsexport-log)
 * [`heroku enterprises:members`](#heroku-enterprisesmembers)
 * [`heroku enterprises:members:add EMAIL`](#heroku-enterprisesmembersadd-email)
 * [`heroku enterprises:members:permissions:add EMAIL`](#heroku-enterprisesmemberspermissionsadd-email)
@@ -73,6 +74,27 @@ EXAMPLE
 ```
 
 _See code: [src/commands/enterprises/audits/index.ts](https://github.com/heroku/heroku-enterprise/blob/v1.5.1/src/commands/enterprises/audits/index.ts)_
+
+## `heroku enterprises:audits:export [LOG]`
+
+export an audit log for an enterprise account
+
+```
+USAGE
+  $ heroku enterprises:audits:export [LOG]
+
+ARGUMENTS
+  LOG  audit log date (YYYY-MM)
+
+OPTIONS
+  -e, --enterprise-account=enterprise-account  (required) enterprise account name
+  -o, --output                                 file output location
+
+EXAMPLE
+  $ heroku enterprises:audits:export 2018-11 --enterprise-account=account-name
+```
+
+_See code: [src/commands/enterprises/audits/export.ts](https://github.com/heroku/heroku-enterprise/blob/v1.5.1/src/commands/enterprises/audits/export.ts)_
 
 ## `heroku enterprises:members`
 
@@ -247,10 +269,12 @@ OPTIONS
   -t, --team=team                              team name
   --columns=columns                            only show provided columns (comma-seperated)
   --csv                                        output is csv format
+  --end-date=end-date                          end date of the usage period
   --filter=filter                              filter property by partial string matching, ex: name=foo
   --no-header                                  hide table header from output
   --no-truncate                                do not truncate output to fit screen
   --sort=sort                                  property to sort by (prepend '-' for descending)
+  --start-date=start-date                      start date of the usage period
 
 EXAMPLES
   $ heroku enterprises:usage --enterprise-account=account-name
