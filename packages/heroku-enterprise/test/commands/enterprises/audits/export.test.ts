@@ -25,7 +25,7 @@ describe('enterprises:audits:export', () => {
 
   const fixtureArchive = path.join(__dirname, '..', '..', '..', 'fixtures', 'archive.json.gz')
   const writeStreamMock = sinon.createStubInstance(fs.WriteStream)
-  const createWriteStreamStub = sinon.stub().withArgs('enterprise-audit-log-dingo-201811.json.gz').returns(writeStreamMock)
+  const createWriteStreamStub = sinon.stub().returns(writeStreamMock)
 
   test
     .stderr()
@@ -45,7 +45,7 @@ describe('enterprises:audits:export', () => {
     )
     .command(['enterprises:audits:export', '2018-11', '--enterprise-account', 'dingo'])
     .it('exports the specified audit log', (ctx: any) => {
-      expect(createWriteStreamStub.called).to.equal(true)
+      expect(createWriteStreamStub.calledOnceWithExactly('enterprise-audit-log-dingo-201811.json.gz')).to.equal(true)
       expect(ctx.stderr).to.contain('done')
     })
 
@@ -67,7 +67,6 @@ describe('enterprises:audits:export', () => {
     )
     .command(['enterprises:audits:export', '2018-11', '--enterprise-account', 'dingo'])
     .catch(error => {
-      expect(createWriteStreamStub.called).to.equal(true)
       expect(error.message).to.contain('Invalid checksum, please try again.')
     })
     .it('fails to export when checksum is invalid')
