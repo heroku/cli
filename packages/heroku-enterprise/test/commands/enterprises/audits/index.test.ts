@@ -63,4 +63,18 @@ describe('enterprises:audits', () => {
     .it('warns when there are no audit logs to list', ctx => {
       expect(ctx.stderr).to.contain('No enterprise audit logs to list')
     })
+  test
+    .stdout()
+    .nock('https://api.heroku.com', (api: any) => api
+      .get('/enterprise-accounts/dingo')
+      .reply(200, accountsResponse)
+      .get('/enterprise-accounts/01234567-89ab-cdef-0123-456789abcdef/archives')
+      .reply(200, auditsResponse)
+    )
+    .command(['enterprises:audits', '--enterprise-account', 'dingo', '-x'])
+    .it('displays extended columns', ctx => {
+      expect(ctx.stdout.trim()).to.eq(`Audit Log${''.padEnd(1)}Checksum${''.padEnd(57)}Size${''.padEnd(1)}
+2018-06${''.padEnd(3)}993dfc6f38c05311808ee919fe90bc191b8f9a5fa96562d8b0e942d82080c874${''.padEnd(1)}4277${''.padEnd(1)}
+2018-05${''.padEnd(3)}d1ef422b912595ccdb557b80b21e213c6744de32cb9308e4f4804fa53a39918c${''.padEnd(1)}6743`)
+    })
 })

@@ -67,7 +67,7 @@ export default class Export extends BaseCommand {
     }
   }
 
-  updateStatus(newStatus: string) {
+  private updateStatus(newStatus: string) {
     _.throttle(
       (newStatus: string) => { cli.action.status = newStatus },
       250,
@@ -75,7 +75,7 @@ export default class Export extends BaseCommand {
     )(newStatus)
   }
 
-  async getAuditLogYearMonth(args: any, accountId: string): Promise<string[]> {
+  private async getAuditLogYearMonth(args: any, accountId: string): Promise<string[]> {
     let logYearMonth: string[]
     if (!args.log) {
       const responses: any = await inquirer.prompt([{
@@ -92,7 +92,7 @@ export default class Export extends BaseCommand {
     return logYearMonth
   }
 
-  async getAuditLogChoices(enterpriseAccountId: string): Promise<{name: string}[]> {
+  private async getAuditLogChoices(enterpriseAccountId: string): Promise<{name: string}[]> {
     const headers = {headers: {Accept: 'application/vnd.heroku+json; version=3.audit-trail'}}
     const {body: archives} = await this.heroku.get<any[]>(`/enterprise-accounts/${enterpriseAccountId}/archives`, headers)
     const auditChoices: {name: string}[] = []
@@ -103,7 +103,7 @@ export default class Export extends BaseCommand {
     return auditChoices
   }
 
-  async getAccountId(enterpriseAccount: string): Promise<string> {
+  private async getAccountId(enterpriseAccount: string): Promise<string> {
     const {body} = await this.heroku.get<any>(`/enterprise-accounts/${enterpriseAccount}`)
     return body.id
   }

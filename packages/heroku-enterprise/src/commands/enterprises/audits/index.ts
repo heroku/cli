@@ -24,7 +24,6 @@ export default class Audits extends BaseCommand {
 
   async run() {
     const {flags} = this.parse(Audits)
-
     const enterpriseAccountId = await this.getEnterpriseAccountId(flags['enterprise-account'])
     const headers = {headers: {Accept: 'application/vnd.heroku+json; version=3.audit-trail'}}
     const {body: archives} = await this.heroku.get<any[]>(`/enterprise-accounts/${enterpriseAccountId}/archives`, headers)
@@ -52,6 +51,7 @@ export default class Audits extends BaseCommand {
       },
       {
         printLine: this.log,
+        ...flags
       }
     )
   }

@@ -88,7 +88,6 @@ ARGUMENTS
 
 OPTIONS
   -e, --enterprise-account=enterprise-account  (required) enterprise account name
-  -o, --output                                 file output location
 
 EXAMPLE
   $ heroku enterprises:audits:export 2018-11 --enterprise-account=account-name
