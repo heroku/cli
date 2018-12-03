@@ -15,7 +15,7 @@
     "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/apps-v5/<%- commandPath %>"
   },
   "dependencies": {
-    "@heroku-cli/command": "^8.2.4",
+    "@heroku-cli/command": "^8.2.5",
     "co": "^4.6.0",
     "filesize": "^3.5.11",
     "fs-extra": "^7.0.1",
