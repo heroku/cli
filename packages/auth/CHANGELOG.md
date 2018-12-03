@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.19.0](https://github.com/heroku/cli/compare/v7.18.10...v7.19.0) (2018-12-03)
+
+
+### Bug Fixes
+
+* clarify sso variable ([416a7f5](https://github.com/heroku/cli/commit/416a7f5))
+* updated command ([1c49051](https://github.com/heroku/cli/commit/1c49051))
+
+
+### Features
+
+* default SSO login to new behavior ([1605071](https://github.com/heroku/cli/commit/1605071))
+
+
+
+
+
 ## [7.18.10](https://github.com/heroku/cli/compare/v7.18.9...v7.18.10) (2018-11-26)
 
 
