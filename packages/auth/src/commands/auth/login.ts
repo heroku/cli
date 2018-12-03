@@ -7,7 +7,7 @@ export default class Login extends Command {
   static aliases = ['login']
   static flags = {
     browser: flags.string({description: 'browser to open SSO with'}),
-    sso: flags.boolean({char: 's', description: 'login for enterprise users under SSO'}),
+    sso: flags.boolean({hidden: true, char: 's', description: 'login for enterprise users under SSO'}),
     interactive: flags.boolean({char: 'i', description: 'login with username/password'}),
     'expires-in': flags.integer({char: 'e', description: 'duration of token in seconds (default 1 year)'}),
   }
@@ -15,8 +15,9 @@ export default class Login extends Command {
   async run() {
     const {flags} = await this.parse(Login)
     let method: 'sso' | 'interactive' | undefined
-    if (flags.sso) method = 'sso'
-    else if (flags.interactive) method = 'interactive'
+    if (flags.sso && process.env.HEROKU_LEGACY_SSO !== '1') {
+      this.warn('If you encounter issues with the new CLI authentication page, revert to the legacy sso login with HEROKU_LEGACY_SSO=1')
+    } else if (flags.interactive) method = 'interactive'
     // TODO: handle browser
     await this.heroku.login({method, expiresIn: flags['expires-in']})
     const {body: account} = await this.heroku.get<Heroku.Account>('/account', {retryAuth: false})
