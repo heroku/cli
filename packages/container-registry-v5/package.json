@@ -16,10 +16,10 @@
     "glob": "^7.1.3",
     "heroku-cli-util": "^8.0.10",
     "http-call": "^5.2.2",
-    "inquirer": "^6.2.0"
+    "inquirer": "^6.2.1"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.19.4",
+    "@oclif/dev-cli": "^1.19.5",
     "@oclif/plugin-legacy": "^1.1.3",
     "chai": "^4.2.0",
     "cross-env": "^5.2.0",

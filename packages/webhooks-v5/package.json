@@ -5,11 +5,11 @@
   "author": "Ransom Briggs (@ransombriggs)",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
-    "@heroku-cli/command": "^8.2.3",
+    "@heroku-cli/command": "^8.2.4",
     "heroku-cli-util": "^8.0.10"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.19.4",
+    "@oclif/dev-cli": "^1.19.5",
     "@oclif/plugin-legacy": "^1.1.3",
     "chai": "^4.2.0",
     "cross-env": "^5.2.0",
