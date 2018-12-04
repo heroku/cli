@@ -13,7 +13,7 @@
     "heroku-cli-util": "^8.0.0",
     "http-call": "^5.2.2",
     "lodash": "^4.17.11",
-    "true-myth": "^2.2.3",
+    "true-myth": "2.2.2",
     "valid-url": "^1.0.9"
   },
   "devDependencies": {

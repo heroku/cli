@@ -111,7 +111,7 @@ export class BuildpackCommand {
 
     let indexes: any[] = [spliceIndex, howmany]
     let array: any[] = indexes.concat(urls)
-    Array.prototype.splice.apply(buildpackUpdates, array)
+    Array.prototype.splice.apply(buildpackUpdates, array as any)
 
     return this.put(app, buildpackUpdates)
   }

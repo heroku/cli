@@ -7915,15 +7915,10 @@ trim-right@^1.0.1:
   resolved "https://registry.yarnpkg.com/trim-right/-/trim-right-1.0.1.tgz#cb2e1203067e0c8de1f614094b9fe45704ea6003"
   integrity sha1-yy4SAwZ+DI3h9hQJS5/kVwTqYAM=
 
-"true-myth@^2.0.0":
+"true-myth@2.2.2", "true-myth@^2.0.0":
   version "2.2.2"
   resolved "https://registry.yarnpkg.com/true-myth/-/true-myth-2.2.2.tgz#3df349bdc4cb1ab9f557f5a40e094ff10e6e89b0"
   integrity sha512-z/jcPRyqCtSmv1GRa3tVO9/3dVTSXstL0LBW7/96FX7r4aCDXo4nrCH8fOpUT1gHkifVzn4YCOZSNYqJfvrd7g==
-
-"true-myth@^2.2.3":
-  version "2.2.3"
-  resolved "https://registry.yarnpkg.com/true-myth/-/true-myth-2.2.3.tgz#7450cdfef2f81d8ea03d32a112167b16e0228e34"
-  integrity sha512-ZdlJjMyNBtOjlR0qbYboAfdnXYhUPuD5F5QOAaKEgdUPg3UTxuTfC5cu3MidWIRemI3iWcuUZEwKybDJXP0Ocw==
 
 ts-node@7.0.1, ts-node@^7.0.1:
   version "7.0.1"
