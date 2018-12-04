@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.19.3](https://github.com/heroku/cli/compare/v7.19.2...v7.19.3) (2018-12-04)
+
+
+### Bug Fixes
+
+* remove login warnings ([39d8c47](https://github.com/heroku/cli/commit/39d8c47))
+
+
+
+
+
 ## [7.19.2](https://github.com/heroku/cli/compare/v7.19.1...v7.19.2) (2018-12-04)
 
 

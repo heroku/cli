@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-local-v5",
   "description": "run heroku apps locally",
-  "version": "7.19.0",
+  "version": "7.19.3",
   "author": "Jeff Dickey @dickeyxxx",
   "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
