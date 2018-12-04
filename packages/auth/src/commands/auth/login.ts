@@ -14,10 +14,8 @@ export default class Login extends Command {
 
   async run() {
     const {flags} = await this.parse(Login)
-    let method: 'sso' | 'interactive' | undefined
-    if (flags.sso && process.env.HEROKU_LEGACY_SSO !== '1') {
-      this.warn('If you encounter issues with the new CLI authentication page, revert to the legacy sso login by setting the environment variable: HEROKU_LEGACY_SSO=1')
-    } else if (flags.interactive) method = 'interactive'
+    let method: 'interactive' | undefined
+    if (flags.interactive) method = 'interactive'
     await this.heroku.login({method, expiresIn: flags['expires-in'], browser: flags.browser})
     const {body: account} = await this.heroku.get<Heroku.Account>('/account', {retryAuth: false})
     this.log(`Logged in as ${color.green(account.email!)}`)

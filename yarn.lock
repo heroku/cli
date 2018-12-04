@@ -125,10 +125,25 @@
     supports-color "^5.5.0"
     tslib "^1.9.3"
 
-"@heroku-cli/command@^8.1.17", "@heroku-cli/command@^8.2.0", "@heroku-cli/command@^8.2.5":
+"@heroku-cli/command@^8.1.17", "@heroku-cli/command@^8.2.0":
   version "8.2.5"
   resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.2.5.tgz#260b30ab5fb3948cf27cc503a42bb807cbe85e75"
   integrity sha512-ENcSI81EkzRff7Om0VttyG9ddY/qsLQ/Um1sAKli+PGITQxENLoIyq4gegu4hn+2SFklgVY5WhT83F0vEhAM2g==
+  dependencies:
+    "@heroku-cli/color" "^1.1.14"
+    "@oclif/errors" "^1.2.2"
+    cli-ux "^4.9.3"
+    debug "^4.1.0"
+    fs-extra "^7.0.1"
+    heroku-client "^3.0.6"
+    http-call "^5.2.2"
+    netrc-parser "^3.1.6"
+    opn "^5.4.0"
+
+"@heroku-cli/command@^8.2.6":
+  version "8.2.6"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.2.6.tgz#9bb957e4a43e1a9d71afe689d408acdbab8fce64"
+  integrity sha512-zavEQKM2oAXLMeBUlSGYAL+61b10qvehzvc/s4gJjE0sxRPupKhW3ENsSK3VOCqxNWR9ncKSXJvsXIn/IvQkUg==
   dependencies:
     "@heroku-cli/color" "^1.1.14"
     "@oclif/errors" "^1.2.2"
@@ -1114,10 +1129,15 @@
   dependencies:
     "@types/lodash" "*"
 
-"@types/lodash@*", "@types/lodash@^4.14.116", "@types/lodash@^4.14.118":
+"@types/lodash@*", "@types/lodash@^4.14.116":
   version "4.14.118"
   resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.118.tgz#247bab39bfcc6d910d4927c6e06cbc70ec376f27"
   integrity sha512-iiJbKLZbhSa6FYRip/9ZDX6HXhayXLDGY2Fqws9cOkEQ6XeKfaxB0sC541mowZJueYyMnVUmmG+al5/4fCDrgw==
+
+"@types/lodash@^4.14.119":
+  version "4.14.119"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.119.tgz#be847e5f4bc3e35e46d041c394ead8b603ad8b39"
+  integrity sha512-Z3TNyBL8Vd/M9D9Ms2S3LmFq2sSMzahodD6rCS9V2N44HUMINb75jNkSuwAx7eo2ufqTdfOdtGQpNbieUjPQmw==
 
 "@types/minimatch@*":
   version "3.0.3"
@@ -1614,10 +1634,10 @@ atob@^2.1.1:
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.2.tgz#6d9517eb9e030d2436666651e86bd9f6f13533c9"
   integrity sha512-Wm6ukoaOGJi/73p/cl2GvLjTI5JM1k/O14isD73YML8StrH/7/lRFgmg8nICZgD3bZZvjwCGxtMOD3wWNAu8cg==
 
-aws-sdk@^2.369.0:
-  version "2.369.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.369.0.tgz#f20737b7feb00addfa675589685fb4e47056e7a9"
-  integrity sha512-9/j4HeTxZTo6bIX+vVIhn0KjwUcFV3pBVwfFJjY5oyyRX62eWei7q3CXLjXR5edTCFkCclSvxIxxZDVgQD+q1g==
+aws-sdk@^2.370.0:
+  version "2.370.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.370.0.tgz#9f22251e4e69022c434ffedccbcd0711b1b3caf2"
+  integrity sha512-MyOrX6bb4Vp+NLt767sKSbWpZj5drM7I1GM2VuAF40RoJLwTr+UpJp2waY8xFPWWbV4hl1seK0W4rJzWCkd8Yg==
   dependencies:
     buffer "4.9.1"
     events "1.1.1"
