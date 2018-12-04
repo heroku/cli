@@ -9,6 +9,7 @@ defaults: &defaults
         LANG: en_US.UTF-8
         LANGUAGE: en_US.UTF-8
         LC_TYPE: en_US.UTF-8
+        NODE_OPTIONS: --max_old_space_size=4096
 
 version: 2
 executorType: docker
