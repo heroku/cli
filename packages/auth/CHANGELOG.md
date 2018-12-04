@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.19.2](https://github.com/heroku/cli/compare/v7.19.1...v7.19.2) (2018-12-04)
+
+
+### Bug Fixes
+
+* pass browser flag to login ([5310c1f](https://github.com/heroku/cli/commit/5310c1f))
+
+
+
+
+
 ## [7.19.1](https://github.com/heroku/cli/compare/v7.19.0...v7.19.1) (2018-12-04)
 
 **Note:** Version bump only for package @heroku-cli/plugin-auth
