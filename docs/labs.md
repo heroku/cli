@@ -36,7 +36,7 @@ OPTIONS
   --confirm=confirm
 ```
 
-_See code: [@heroku-cli/plugin-auth](https://github.com/heroku/cli/blob/v7.19.0/packages/auth/src/commands/labs/disable.ts)_
+_See code: [@heroku-cli/plugin-auth](https://github.com/heroku/cli/blob/v7.19.1/packages/auth/src/commands/labs/disable.ts)_
 
 ## `heroku labs:enable FEATURE`
 

@@ -56,7 +56,7 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
 ```
 
-_See code: [@heroku-cli/plugin-ps](https://github.com/heroku/cli/blob/v7.19.0/packages/ps/src/commands/ps/autoscale/disable.ts)_
+_See code: [@heroku-cli/plugin-ps](https://github.com/heroku/cli/blob/v7.19.1/packages/ps/src/commands/ps/autoscale/disable.ts)_
 
 ## `heroku ps:autoscale:enable`
 
@@ -75,7 +75,7 @@ OPTIONS
   --p95=p95            desired p95 response time
 ```
 
-_See code: [@heroku-cli/plugin-ps](https://github.com/heroku/cli/blob/v7.19.0/packages/ps/src/commands/ps/autoscale/enable.ts)_
+_See code: [@heroku-cli/plugin-ps](https://github.com/heroku/cli/blob/v7.19.1/packages/ps/src/commands/ps/autoscale/enable.ts)_
 
 ## `heroku ps:copy FILE`
 
