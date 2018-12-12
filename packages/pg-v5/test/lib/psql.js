@@ -6,6 +6,8 @@ const sinon = require('sinon')
 const expect = require('unexpected')
 const unwrap = require('../unwrap')
 const path = require('path')
+const proxyquire = require('proxyquire')
+
 const db = {
   user: 'jeff',
   password: 'pass',
@@ -26,31 +28,38 @@ const bastionDb = {
   hostname: 'localhost'
 }
 
-const proxyquire = require('proxyquire')
-var tunnelStub = sinon.stub().callsArg(1)
-
-const bastion = proxyquire('../../lib/bastion', {
-  'tunnel-ssh': tunnelStub
-})
-const psql = proxyquire('../../lib/psql', {
-  './bastion': bastion
-})
-
 describe('psql', () => {
   beforeEach(() => {
-    sinon.stub(Math, 'random', function () {
-      return 0
-    })
+    sinon.stub(Math, 'random').callsFake(() => 0)
   })
 
   afterEach(() => {
     Math.random.restore()
-    tunnelStub.reset()
   })
 
   describe('exec', () => {
-    it('runs psql', sinon.test(() => {
-      let cp = sinon.mock(require('child_process'))
+    let sandbox
+    let tunnelStub
+    let bastion
+    let psql
+
+    beforeEach(() => {
+      sandbox = sinon.createSandbox()
+      tunnelStub = sandbox.stub().callsArg(1)
+      bastion = proxyquire('../../lib/bastion', {
+        'tunnel-ssh': tunnelStub
+      })
+      psql = proxyquire('../../lib/psql', {
+        './bastion': bastion
+      })
+    })
+
+    afterEach(() => {
+      sandbox.restore()
+    })
+
+    it('runs psql', () => {
+      let cp = sandbox.mock(require('child_process'))
       let env = Object.assign({}, process.env, {
         PGAPPNAME: 'psql non-interactive',
         PGSSLMODE: 'prefer',
@@ -82,9 +91,9 @@ describe('psql', () => {
       return psql.exec(db, 'SELECT NOW();')
         .then(() => cp.verify())
         .then(() => cp.restore())
-    }))
-    it('opens an SSH tunnel and runs psql for bastion databases', sinon.test(() => {
-      let cp = sinon.mock(require('child_process'))
+    })
+    it('opens an SSH tunnel and runs psql for bastion databases', () => {
+      let cp = sandbox.mock(require('child_process'))
       let tunnelConf = {
         username: 'bastion',
         host: 'bastion-host',
@@ -117,12 +126,32 @@ describe('psql', () => {
           tunnelStub.withArgs(tunnelConf).calledOnce, 'to equal', true))
         .then(() => cp.verify())
         .then(() => cp.restore())
-    }))
+    })
   })
 
   describe('execFile', () => {
-    it('runs psql', sinon.test(() => {
-      let cp = sinon.mock(require('child_process'))
+    let sandbox
+    let tunnelStub
+    let bastion
+    let psql
+
+    beforeEach(() => {
+      sandbox = sinon.createSandbox()
+      tunnelStub = sandbox.stub().callsArg(1)
+      bastion = proxyquire('../../lib/bastion', {
+        'tunnel-ssh': tunnelStub
+      })
+      psql = proxyquire('../../lib/psql', {
+        './bastion': bastion
+      })
+    })
+
+    afterEach(() => {
+      sandbox.restore()
+    })
+
+    it('runs psql', () => {
+      let cp = sandbox.mock(require('child_process'))
       let env = Object.assign({}, process.env, {
         PGAPPNAME: 'psql non-interactive',
         PGSSLMODE: 'prefer',
@@ -154,9 +183,9 @@ describe('psql', () => {
       return psql.execFile(db, 'test.sql')
         .then(() => cp.verify())
         .then(() => cp.restore())
-    }))
-    it('opens an SSH tunnel and runs psql for bastion databases', sinon.test(() => {
-      let cp = sinon.mock(require('child_process'))
+    })
+    it('opens an SSH tunnel and runs psql for bastion databases', () => {
+      let cp = sandbox.mock(require('child_process'))
       let tunnelConf = {
         username: 'bastion',
         host: 'bastion-host',
@@ -189,10 +218,11 @@ describe('psql', () => {
           tunnelStub.withArgs(tunnelConf).calledOnce, 'to equal', true))
         .then(() => cp.verify())
         .then(() => cp.restore())
-    }))
+    })
   })
 
   describe('psqlInteractive', () => {
+    const psql = proxyquire('../../lib/psql', {})
     const db = {
       attachment: {
         app: {
@@ -211,7 +241,7 @@ describe('psql', () => {
       })
 
       context('when HEROKU_PSQL_HISTORY is a valid directory path', () => {
-        it('is the directory path to per-app history files', sinon.test(() => {
+        it('is the directory path to per-app history files', () => {
           const env = Object.assign({}, process.env, {
             PGAPPNAME: 'psql interactive',
             PGSSLMODE: 'prefer'
@@ -219,15 +249,8 @@ describe('psql', () => {
 
           const opts = { env: env, stdio: 'inherit' }
           const cpMock = sinon.mock(require('child_process'))
-          const existsSyncStub = sinon.stub(require('fs'), 'existsSync', () => {
-            return true
-          })
-
-          const statSyncStub = sinon.stub(require('fs'), 'statSync', () => {
-            return {
-              isDirectory: () => true
-            }
-          })
+          const existsSyncStub = sinon.stub(require('fs'), 'existsSync').callsFake(() => true)
+          const statSyncStub = sinon.stub(require('fs'), 'statSync').returns({ isDirectory: () => true })
 
           const args = [
             '--set',
@@ -255,11 +278,11 @@ describe('psql', () => {
               existsSyncStub.restore()
               statSyncStub.restore()
             })
-        }))
+        })
       })
 
       context('when HEROKU_PSQL_HISTORY is a valid file path', () => {
-        it('is the path to the history file', sinon.test(() => {
+        it('is the path to the history file', () => {
           const env = Object.assign({}, process.env, {
             PGAPPNAME: 'psql interactive',
             PGSSLMODE: 'prefer'
@@ -267,15 +290,8 @@ describe('psql', () => {
 
           const opts = { env: env, stdio: 'inherit' }
           const cpMock = sinon.mock(require('child_process'))
-          const existsSyncStub = sinon.stub(require('fs'), 'existsSync', () => {
-            return true
-          })
-
-          const statSyncStub = sinon.stub(require('fs'), 'statSync', () => {
-            return {
-              isDirectory: () => false
-            }
-          })
+          const existsSyncStub = sinon.stub(require('fs'), 'existsSync').callsFake(() => true)
+          const statSyncStub = sinon.stub(require('fs'), 'statSync').returns({ isDirectory: () => false })
 
           const args = [
             '--set',
@@ -303,11 +319,11 @@ describe('psql', () => {
               existsSyncStub.restore()
               statSyncStub.restore()
             })
-        }))
+        })
       })
 
       context('when HEROKU_PSQL_HISTORY is an invalid path', () => {
-        it('issues a warning', sinon.test(() => {
+        it('issues a warning', () => {
           const cli = require('heroku-cli-util')
           cli.mockConsole()
           const env = Object.assign({}, process.env, {
@@ -317,9 +333,7 @@ describe('psql', () => {
 
           const opts = { env: env, stdio: 'inherit' }
           const cpMock = sinon.mock(require('child_process'))
-          const existsSyncStub = sinon.stub(require('fs'), 'existsSync', () => {
-            return false
-          })
+          const existsSyncStub = sinon.stub(require('fs'), 'existsSync').callsFake(() => false)
 
           const args = [
             '--set',
@@ -345,7 +359,7 @@ describe('psql', () => {
               cpMock.restore()
               existsSyncStub.restore()
             })
-        }))
+        })
       })
     })
   })

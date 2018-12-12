@@ -60,7 +60,7 @@ describe('pg', () => {
       '../lib/bastion': bastion
     })[1]
 
-    sinon.stub(Math, 'random', () => 0)
+    sinon.stub(Math, 'random').callsFake(() => 0)
     emptyResponse = '00'
   })
 
