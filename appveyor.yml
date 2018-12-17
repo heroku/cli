@@ -1,9 +1,10 @@
 environment:
   nodejs_version: "10"
+  NODE_OPTIONS: --max_old_space_size=4096
   CI: 1
 cache:
- - '%LOCALAPPDATA%\Yarn -> appveyor.yml'
- - node_modules -> appveyor.yml
+  - '%LOCALAPPDATA%\Yarn -> appveyor.yml'
+  - node_modules -> appveyor.yml
 
 install:
   - ps: Install-Product node $env:nodejs_version x64

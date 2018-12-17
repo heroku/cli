@@ -1,16 +1,12 @@
 import color from '@heroku-cli/color'
-import {get, RequestOptions} from 'https'
-
-import cli from 'cli-ux'
-
 import {Command} from '@heroku-cli/command'
-
 import * as Heroku from '@heroku-cli/schema'
+import cli from 'cli-ux'
 import * as http from 'http'
+import {get, RequestOptions} from 'https'
 import * as io from 'socket.io-client'
 
 const ansiEscapes = require('ansi-escapes')
-
 const SIMI_URL = 'https://simi.heroku.com'
 
 function logStream(url: RequestOptions | string, fn: (res: http.IncomingMessage) => void) {

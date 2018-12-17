@@ -1,8 +1,7 @@
 import {Command} from '@heroku-cli/command'
+import {BuildpackRegistry, RevisionBody} from '@heroku/buildpack-registry'
 import {cli} from 'cli-ux'
 import {Result} from 'true-myth'
-
-import {BuildpackRegistry, RevisionBody} from '@heroku/buildpack-registry'
 
 export default class Versions extends Command {
   static description = 'list versions of a buildpack'

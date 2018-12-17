@@ -2,3 +2,4 @@
 --require ./test/helpers.js
 --reporter list
 --recursive
+--timeout 10000

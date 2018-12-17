@@ -1,8 +1,7 @@
 import {Command} from '@heroku-cli/command'
+import {BuildpackRegistry} from '@heroku/buildpack-registry'
 import {cli} from 'cli-ux'
 import {Result} from 'true-myth'
-
-import {BuildpackRegistry} from '@heroku/buildpack-registry'
 
 export default class Info extends Command {
   static description = 'fetch info about a buildpack'

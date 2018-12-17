@@ -34,8 +34,8 @@
     "@heroku-cli/plugin-spaces": "^7.19.3",
     "@heroku-cli/plugin-status": "^7.19.3",
     "@heroku-cli/plugin-webhooks-v5": "^7.19.3",
-    "@oclif/command": "1.5.6",
-    "@oclif/config": "1.9.0",
+    "@oclif/command": "1.5.8",
+    "@oclif/config": "1.10.2",
     "@oclif/errors": "1.2.2",
     "@oclif/plugin-commands": "^1.2.2",
     "@oclif/plugin-help": "2.1.4",
@@ -81,7 +81,7 @@
     "read-pkg": "^4.0.1",
     "ts-node": "^7.0.1",
     "tslint": "^5.11.0",
-    "typescript": "3.2.1"
+    "typescript": "3.2.2"
   },
   "engines": {
     "node": ">=8.3.0"

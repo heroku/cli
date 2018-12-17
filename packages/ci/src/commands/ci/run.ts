@@ -1,17 +1,13 @@
-
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-
 import cli from 'cli-ux'
 
 import * as Kolkrabbi from '../../interfaces/kolkrabbi'
-
+import * as git from '../../utils/git'
 import {getPipeline} from '../../utils/pipelines'
+import {createSourceBlob} from '../../utils/source'
 import {displayAndExit} from '../../utils/test-run'
 
-import {createSourceBlob} from '../../utils/source'
-
-import * as git from '../../utils/git'
 export default class CiRun extends Command {
   static description = 'run tests against current directory'
 
