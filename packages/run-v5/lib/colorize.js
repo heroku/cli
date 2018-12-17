@@ -54,34 +54,38 @@ const ms = s => {
 }
 
 function colorizeRouter (body) {
-  try {
-    const tokens = body.split('=')
-    let cur = tokens[0]
-    const obj = {}
-    for (let i = 1; i < tokens.length; i++) {
-      obj[cur] = tokens[i].split(' ').slice(0, -1).join(' ')
-      let next = tokens[i].split(' ').pop()
-      if (i + 1 === tokens.length) obj[cur] = next
-      cur = next
+  const encodeColor = ([k, v]) => {
+    switch (k) {
+      case 'at': return [k, v === 'error' ? red(v) : other(v)]
+      case 'code': return [k, red.bold(v)]
+      case 'method': return [k, method(v)]
+      case 'dyno': return [k, getColorForIdentifier(v)(v)]
+      case 'status': return [k, status(v)]
+      case 'path': return [k, path(v)]
+      case 'connect': return [k, ms(v)]
+      case 'service': return [k, ms(v)]
+      default: return [k, other(v)]
     }
-    if (Object.keys(obj).length === 0) return body
-    return Object.entries(obj)
-      .map(([k, v]) => {
-        switch (k) {
-          case 'at': return [k, v === 'error' ? red(v) : other(v)]
-          case 'desc': return [k, red(v)]
-          case 'code': return [k, red.bold(v)]
-          case 'method': return [k, method(v)]
-          case 'dyno': return [k, getColorForIdentifier(v)(v)]
-          case 'status': return [k, status(v)]
-          case 'path': return [k, path(v)]
-          case 'connect': return [k, ms(v)]
-          case 'service': return [k, ms(v)]
-          default: return [k, other(v)]
-        }
-      })
-      .map(([k, v]) => other(k + '=') + v)
-      .join(' ')
+  }
+
+  try {
+    const tokens = body.split(/\s+/).map((sub) => {
+      const parts = sub.split('=')
+      if (parts.length === 1) {
+        return parts
+      } else if (parts.length === 2) {
+        return encodeColor(parts)
+      } else {
+        return encodeColor([parts[0], parts.splice(1).join()])
+      }
+    })
+
+    return tokens.map(([k, v]) => {
+      if (v === undefined) {
+        return other(k)
+      }
+      return other(k + '=') + v
+    }).join(' ')
   } catch (err) {
     ux.warn(err)
     return body
