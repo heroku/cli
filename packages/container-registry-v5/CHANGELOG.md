@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.19.4](https://github.com/heroku/cli/compare/v7.19.3...v7.19.4) (2018-12-19)
+
+
+### Bug Fixes
+
+* upgrade dependencies ([f1b3886](https://github.com/heroku/cli/commit/f1b3886))
+
+
+
+
+
 # [7.19.0](https://github.com/heroku/cli/compare/v7.18.10...v7.19.0) (2018-12-03)
 
 **Note:** Version bump only for package @heroku-cli/plugin-container-registry-v5

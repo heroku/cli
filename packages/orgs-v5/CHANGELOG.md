@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.19.4](https://github.com/heroku/cli/compare/v7.19.3...v7.19.4) (2018-12-19)
+
+
+### Bug Fixes
+
+* upgrade dependencies ([f1b3886](https://github.com/heroku/cli/commit/f1b3886))
+
+
+
+
+
 ## [7.19.3](https://github.com/heroku/cli/compare/v7.19.2...v7.19.3) (2018-12-04)
 
 
