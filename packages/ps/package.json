@@ -20,7 +20,7 @@
     "@oclif/test": "^1.2.2",
     "@oclif/tslint": "^3.1.1",
     "@types/chai": "^4.1.7",
-    "@types/lodash": "^4.14.118",
+    "@types/lodash": "^4.14.119",
     "@types/mocha": "^5.2.5",
     "@types/nock": "^9.3.0",
     "@types/node": "^10.12.10",
