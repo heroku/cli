@@ -24,7 +24,7 @@
     "psl": "^1.1.29"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.19.4",
+    "@oclif/dev-cli": "^1.21.0",
     "@oclif/plugin-legacy": "^1.1.3",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
