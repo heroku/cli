@@ -87,10 +87,15 @@ ARGUMENTS
   LOG  audit log date (YYYY-MM)
 
 OPTIONS
+  -d, --dest=dest                              download destination for the exported audit log
   -e, --enterprise-account=enterprise-account  (required) enterprise account name
+  -f, --force                                  overwrite existing file during download
 
-EXAMPLE
+EXAMPLES
   $ heroku enterprises:audits:export 2018-11 --enterprise-account=account-name
+  $ heroku enterprises:audits:export 2018-11 --enterprise-account=account-name --dest=/tmp
+  $ heroku enterprises:audits:export 2018-11 --enterprise-account=account-name --dest=/tmp/audit_report.json.gz
+  $ heroku enterprises:audits:export 2018-11 --enterprise-account=account-name --dest=/tmp/audit_report.json.gz --force
 ```
 
 _See code: [src/commands/enterprises/audits/export.ts](https://github.com/heroku/heroku-enterprise/blob/v2.0.1/src/commands/enterprises/audits/export.ts)_

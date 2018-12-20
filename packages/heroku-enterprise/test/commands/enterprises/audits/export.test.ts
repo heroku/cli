@@ -24,9 +24,8 @@ describe('enterprises:audits:export', () => {
   }
 
   const fixtureArchive = path.join(__dirname, '..', '..', '..', 'fixtures', 'archive.json.gz')
-  const writeStreamMock = sinon.createStubInstance(fs.WriteStream)
-  const createWriteStreamStub = sinon.stub().returns(writeStreamMock)
-
+  const writeStreamStub = sinon.createStubInstance(fs.WriteStream)
+  const createWriteStreamStub = sinon.stub().withArgs('enterprise-audit-log-dingo-201811.json.gz').returns(writeStreamStub)
   test
     .stderr()
     .stub(fs, 'createWriteStream', createWriteStreamStub)
@@ -70,4 +69,56 @@ describe('enterprises:audits:export', () => {
       expect(error.message).to.contain('Invalid checksum, please try again.')
     })
     .it('fails to export when checksum is invalid')
+
+  let writeStreamOutputStub = sinon.createStubInstance(fs.WriteStream)
+  let stats = sinon.stub().withArgs('/tmp').returns({isDirectory: () => true})
+  const createWriteStreamOutputDirStub = sinon.stub().withArgs('/tmp/enterprise-audit-log-dingo-201811.json.gz').returns(writeStreamOutputStub)
+  test
+    .stderr()
+    .stub(fs, 'statSync', stats)
+    .stub(fs, 'createWriteStream', createWriteStreamOutputDirStub)
+    .stub(logdash.prototype, 'throttle', sinon.stub())
+    .stub(Utils, 'filesize', sinon.stub())
+    .stub(Utils, 'hasValidChecksum', sinon.stub().returns(true))
+    .nock('https://api.heroku.com', (api: any) => api
+      .get('/enterprise-accounts/dingo')
+      .reply(200, accountsResponse)
+      .get('/enterprise-accounts/01234567-89ab-cdef-0123-456789abcdef/archives/2018/11')
+      .reply(200, archiveResponse)
+    )
+    .nock('https://heroku-audit-trail-production.s3.amazonaws.com', (api: any) => api
+      .get('/aY5d996MH3MdNSiFKNv5oQTz')
+      .replyWithFile(200, fixtureArchive)
+    )
+    .command(['enterprises:audits:export', '2018-11', '--enterprise-account', 'dingo', '--dest', '/tmp', '--force'])
+    .it('exports the audit log to a specified directory location', (ctx: any) => {
+      expect(createWriteStreamOutputDirStub.calledOnceWithExactly('/tmp/enterprise-audit-log-dingo-201811.json.gz')).to.equal(true)
+      expect(ctx.stderr).to.contain('done')
+    })
+
+  writeStreamOutputStub = sinon.createStubInstance(fs.WriteStream)
+  stats = sinon.stub().withArgs('./myauditlog.json.gz').returns({isDirectory: () => false})
+  const createWriteStreamOutputFileStub = sinon.stub().withArgs('./myauditlog.json.gz').returns(writeStreamOutputStub)
+  test
+    .stderr()
+    .stub(fs, 'statSync', stats)
+    .stub(fs, 'createWriteStream', createWriteStreamOutputFileStub)
+    .stub(logdash.prototype, 'throttle', sinon.stub())
+    .stub(Utils, 'filesize', sinon.stub())
+    .stub(Utils, 'hasValidChecksum', sinon.stub().returns(true))
+    .nock('https://api.heroku.com', (api: any) => api
+      .get('/enterprise-accounts/dingo')
+      .reply(200, accountsResponse)
+      .get('/enterprise-accounts/01234567-89ab-cdef-0123-456789abcdef/archives/2018/11')
+      .reply(200, archiveResponse)
+    )
+    .nock('https://heroku-audit-trail-production.s3.amazonaws.com', (api: any) => api
+      .get('/aY5d996MH3MdNSiFKNv5oQTz')
+      .replyWithFile(200, fixtureArchive)
+    )
+    .command(['enterprises:audits:export', '2018-11', '--enterprise-account', 'dingo', '-d', './myauditlog.json.gz', '--force'])
+    .it('exports the audit log to a specified file location', (ctx: any) => {
+      expect(createWriteStreamOutputFileStub.calledOnceWithExactly('./myauditlog.json.gz')).to.equal(true)
+      expect(ctx.stderr).to.contain('done')
+    })
 })

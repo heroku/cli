@@ -5,6 +5,7 @@ import cli from 'cli-ux'
 import * as fs from 'fs'
 import * as inquirer from 'inquirer'
 import * as _ from 'lodash'
+import * as Path from 'path'
 
 import BaseCommand from '../../../base'
 import Utils from '../../../utils'
@@ -13,6 +14,9 @@ export default class Export extends BaseCommand {
   static description = 'export an audit log for an enterprise account'
   static examples = [
     '$ heroku enterprises:audits:export 2018-11 --enterprise-account=account-name',
+    '$ heroku enterprises:audits:export 2018-11 --enterprise-account=account-name --dest=/tmp',
+    '$ heroku enterprises:audits:export 2018-11 --enterprise-account=account-name --dest=/tmp/audit_report.json.gz',
+    '$ heroku enterprises:audits:export 2018-11 --enterprise-account=account-name --dest=/tmp/audit_report.json.gz --force',
   ]
   static args = [
     {name: 'log', description: 'audit log date (YYYY-MM)', required: false},
@@ -22,6 +26,16 @@ export default class Export extends BaseCommand {
       char: 'e',
       description: 'enterprise account name',
       required: true
+    }),
+    dest: Flags.string({
+      char: 'd',
+      description: 'download destination for the exported audit log',
+      required: false
+    }),
+    force: Flags.boolean({
+      char: 'f',
+      description: 'overwrite existing file during download',
+      required: false
     })
   }
 
@@ -29,15 +43,17 @@ export default class Export extends BaseCommand {
     const {args, flags} = this.parse(Export)
     const accountId = await this.getAccountId(flags['enterprise-account'])
     const logYearMonth = await this.getAuditLogYearMonth(args, accountId)
-
     const headers: any = {headers: {Accept: 'application/vnd.heroku+json; version=3.audit-trail'}}
     const {body: archive} = await this.heroku.get<any>(`/enterprise-accounts/${accountId}/archives/${logYearMonth[0]}/${logYearMonth[1]}`, headers)
 
-    const filePath = `enterprise-audit-log-${flags['enterprise-account']}-${logYearMonth[0]}${logYearMonth[1]}.json.gz`
+    const filePath = await this.getFilePath(flags, logYearMonth)
     const formattedFilePath = color.cyan(filePath)
     const fileStream = fs.createWriteStream(filePath)
+    fileStream.on('error', err => {
+      fileStream.end()
+      cli.error(err)
+    })
 
-    cli.action.start(`Downloading audit log to ${formattedFilePath}`)
     const response = await axios({
       method: 'GET',
       url: archive.url,
@@ -48,6 +64,8 @@ export default class Export extends BaseCommand {
     let current = 0
 
     response.data.pipe(fileStream)
+
+    cli.action.start(`Downloading audit log to ${formattedFilePath}`)
     await new Promise((resolve, reject) => {
       response.data.on('data', (data: any) => {
         current += data.length
@@ -67,9 +85,39 @@ export default class Export extends BaseCommand {
     }
   }
 
+  /*
+    Three things can happen when trying to calculate the correct path:
+    1) The user specifies a directory.
+       - In this case, we simply append the default filename to the path
+    2) The user specifies an existing file
+       - In this case, use the entire path of the file
+    3) The user specifies a completely new file path
+       - In this case, an error is thrown because it doesn't exist yet.  Still, we'll assume the path is valid.
+   */
+  private async getFilePath(flags: any, logYearMonth: string[]): Promise<string> {
+    const defaultPath = `enterprise-audit-log-${flags['enterprise-account']}-${logYearMonth[0]}${logYearMonth[1]}.json.gz`
+    if (flags.dest) {
+      try {
+        if (fs.statSync(flags.dest).isDirectory()) {
+          return `${Path.join(flags.dest, defaultPath)}`
+        }
+        if (!flags.force && !await cli.confirm(`Overwrite exiting file: ${flags.dest}?`)) {
+          process.exit(1)
+        }
+        return flags.dest
+      } catch {
+        return flags.dest
+      }
+    }
+
+    return defaultPath
+  }
+
   private updateStatus(newStatus: string) {
     _.throttle(
-      (newStatus: string) => { cli.action.status = newStatus },
+      (newStatus: string) => {
+        cli.action.status = newStatus
+      },
       250,
       {leading: true, trailing: false},
     )(newStatus)
@@ -92,10 +140,10 @@ export default class Export extends BaseCommand {
     return logYearMonth
   }
 
-  private async getAuditLogChoices(enterpriseAccountId: string): Promise<{name: string}[]> {
+  private async getAuditLogChoices(enterpriseAccountId: string): Promise<{ name: string }[]> {
     const headers = {headers: {Accept: 'application/vnd.heroku+json; version=3.audit-trail'}}
     const {body: archives} = await this.heroku.get<any[]>(`/enterprise-accounts/${enterpriseAccountId}/archives`, headers)
-    const auditChoices: {name: string}[] = []
+    const auditChoices: { name: string }[] = []
     archives.forEach(archives => auditChoices.push({
       name: `${archives.year}-${archives.month}`
     }))
