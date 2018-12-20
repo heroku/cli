@@ -1,3 +1,4 @@
 test
 --recursive
+--timeout 50000
 -R dot
