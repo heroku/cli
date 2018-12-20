@@ -4,4 +4,4 @@
 --watch-extensions ts
 --recursive
 --reporter spec
---timeout 20000
+--timeout 50000
