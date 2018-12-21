@@ -4,13 +4,11 @@
 CLI to manage Heroku Enterprise Accounts
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
-[![Version](https://img.shields.io/npm/v/plugin-enterprise.svg)](https://npmjs.org/package/plugin-enterprise)
-
+[![Version](https://img.shields.io/npm/v/plugin-enterprise.svg)](https://npmjs.org/package/@heroku-cli/plugin-enterprise)
 [![CircleCI](https://circleci.com/gh/heroku/heroku-enterprise/tree/master.svg?style=shield)](https://circleci.com/gh/heroku/heroku-enterprise/tree/master)
-
-[![Appveyor CI](https://ci.appveyor.com/api/projects/status/github/heroku/heroku-enterprise?branch=master&svg=true)](https://ci.appveyor.com/project/heroku/heroku-enterprise/branch/master)
+<!-- [![Appveyor CI](https://ci.appveyor.com/api/projects/status/github/heroku/heroku-enterprise?branch=master&svg=true)](https://ci.appveyor.com/project/heroku/heroku-enterprise/branch/master) -->
 [![Codecov](https://codecov.io/gh/heroku/heroku-enterprise/branch/master/graph/badge.svg)](https://codecov.io/gh/heroku/heroku-enterprise)
-[![Downloads/week](https://img.shields.io/npm/dw/plugin-enterprise.svg)](https://npmjs.org/package/plugin-enterprise)
+[![Downloads/week](https://img.shields.io/npm/dw/plugin-enterprise.svg)](https://npmjs.org/package/@heroku-cli/plugin-enterprise)
 [![License](https://img.shields.io/npm/l/plugin-enterprise.svg)](https://github.com/heroku/heroku-enterprise/blob/master/package.json)
 
 <!-- toc -->
