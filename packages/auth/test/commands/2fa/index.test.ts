@@ -19,7 +19,7 @@ describe('2fa', () => {
   )
     .stdout()
     .command(['2fa'])
-    .it('shows 2fa is enabled', ({stdout}) => {
+    .it('shows 2fa is not enabled', ({stdout}) => {
       expect(stdout).to.equal('Two-factor authentication is not enabled\n')
     })
 })
