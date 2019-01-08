@@ -5,7 +5,7 @@
   "author": "Philipe Navarro @RasPhilCo",
   "bugs": "https://github.com/heroku/heroku-cli-plugin-addons/issues",
   "dependencies": {
-    "@heroku-cli/command": "^1",
+    "@heroku-cli/command": "^8.2.6",
     "@oclif/config": "^1",
     "tslib": "^1"
   },
