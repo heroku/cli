@@ -122,6 +122,17 @@ describe('enterprises:usage', () => {
     })
 
   test
+    .stderr()
+    .nock('https://api.heroku.com', (api: any) => api
+      .get('/enterprise-accounts/wallyworld/usage')
+      .reply(200, [])
+    )
+    .command(['enterprises:usage', '--enterprise-account', 'wallyworld'])
+    .it('warns when no usage data is available', ctx => {
+      expect(ctx.stderr).to.contain('Warning: No usage data to list')
+    })
+
+  test
     .stdout()
     .nock('https://api.heroku.com', (api: any) => api
       .get('/enterprise-accounts/wallyworld/teams/grumpy/usage')
@@ -149,5 +160,16 @@ describe('enterprises:usage', () => {
       expect(ctx.stdout).to.contain('froyo-expcore-dev 2017-01-01 3.853 0       1075  12      1075 ')
       expect(ctx.stdout).to.contain('froyo-expcore     2017-02-01 0     0       19941 4457    15484 ')
       expect(ctx.stdout).to.contain('froyo-expcore-dev 2017-02-01 3.853 0       1075  0       1075 ')
+    })
+
+  test
+    .stderr()
+    .nock('https://api.heroku.com', (api: any) => api
+      .get('/enterprise-accounts/wallyworld/teams/grumpy/usage')
+      .reply(200, [])
+    )
+    .command(['enterprises:usage', '--enterprise-account', 'wallyworld', '--team', 'grumpy'])
+    .it('warns when no team usage data is available', ctx => {
+      expect(ctx.stderr).to.contain('Warning: No usage data to list')
     })
 })

@@ -90,6 +90,7 @@ export default class Usage extends BaseCommand {
       }
     })
 
+    if (usageData.length === 0) return this.warn('No usage data to list')
     cli.table(usageData,
       Usage.tableHeaders,
       {
@@ -128,6 +129,7 @@ export default class Usage extends BaseCommand {
       })
     })
 
+    if (usageData.length === 0) return this.warn('No usage data to list')
     cli.table(usageData,
       {
         accountName: {header: 'Account'},
