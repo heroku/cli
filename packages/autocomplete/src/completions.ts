@@ -149,6 +149,7 @@ export const DynoSizeCompletion: flags.ICompletion = {
   cacheDuration: oneDay * 90,
   options: async ctx => {
     let sizes = await herokuGet('dyno-sizes', ctx)
+    if (sizes) sizes = sizes.map(s => s.toLowerCase())
     return sizes
   },
 }
