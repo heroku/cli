@@ -1,8 +1,7 @@
 import {Command, flags as Flags} from '@heroku-cli/command'
+import {BuildpackBody, BuildpackRegistry, Category} from '@heroku/buildpack-registry'
 import {cli} from 'cli-ux'
 import {truncate} from 'lodash'
-
-import {BuildpackBody, BuildpackRegistry, Category} from '@heroku/buildpack-registry'
 
 export default class Search extends Command {
   static description = 'search for buildpacks'
