@@ -7,9 +7,11 @@
   "dependencies": {
     "@heroku-cli/command": "^8.2.6",
     "@oclif/config": "^1",
+    "cli-ux": "^5.0.0",
     "tslib": "^1"
   },
   "devDependencies": {
+    "@heroku-cli/schema": "^1.0.25",
     "@oclif/dev-cli": "^1",
     "@oclif/plugin-help": "^2",
     "@oclif/test": "^1",

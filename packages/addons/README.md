@@ -14,5 +14,21 @@ Heroku CLI plugin to manage addons
 
 # Commands
 <!-- commands -->
+* [`heroku addons [FILE]`](#heroku-addons-file)
 
+## `heroku addons [FILE]`
+
+describe the command here
+
+```
+USAGE
+  $ heroku addons [FILE]
+
+OPTIONS
+  -f, --force
+  -h, --help       show CLI help
+  -n, --name=name  name to print
+```
+
+_See code: [src/commands/addons/index.ts](https://github.com/heroku/heroku-cli-plugin-addons/blob/v0.0.0/src/commands/addons/index.ts)_
 <!-- commandsstop -->
