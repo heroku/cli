@@ -1,6 +1,5 @@
-import * as nock from 'nock'
-
 import {expect, test as base} from '@oclif/test'
+import * as nock from 'nock'
 
 const test = base
 

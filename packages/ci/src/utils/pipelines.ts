@@ -1,9 +1,7 @@
+import {Command} from '@heroku-cli/command'
+import * as Heroku from '@heroku-cli/schema'
 import {prompt} from 'inquirer'
 import {isUUID} from 'validator'
-
-import {Command} from '@heroku-cli/command'
-
-import * as Heroku from '@heroku-cli/schema'
 
 export async function getPipeline(flags: any, command: Command) {
   let pipeline
