@@ -7,7 +7,7 @@ function * run (context, heroku) {
   const fetcher = require('../lib/fetcher')(heroku)
   const psql = require('../lib/psql')
 
-  let db = yield fetcher(heroku).database(context.app, context.args.database)
+  let db = yield fetcher.database(context.app, context.args.database)
 
   let query = `
 WITH constants AS (
