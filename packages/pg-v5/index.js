@@ -20,7 +20,7 @@ exports.commands = flatten([
   require('./commands/backups/url'),
   require('./commands/bloat'),
   require('./commands/blocking'),
-  require('./commands/connection_pooling')
+  require('./commands/connection_pooling'),
   require('./commands/copy'),
   require('./commands/credentials'),
   require('./commands/credentials/create'),
