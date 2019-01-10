@@ -30,7 +30,7 @@
     "validator": "^10.9.0"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.19.5",
+    "@oclif/dev-cli": "^1.21.0",
     "@oclif/plugin-legacy": "^1.1.3",
     "chai": "^4.2.0",
     "mocha": "^5.1.1",

@@ -7,32 +7,32 @@
   "dependencies": {
     "@heroku-cli/color": "^1.1.14",
     "@heroku-cli/command": "^8.2.6",
-    "@oclif/command": "^1.5.5",
-    "@oclif/config": "^1.9.0",
+    "@oclif/command": "^1.5.8",
+    "@oclif/config": "^1.10.4",
     "cli-ux": "^4.9.3",
     "date-fns": "^2.0.0-alpha.8"
   },
   "devDependencies": {
     "@fancy-test/nock": "^0.1.1",
-    "@heroku-cli/schema": "^1.0.23",
-    "@oclif/dev-cli": "^1.19.5",
+    "@heroku-cli/schema": "^1.0.25",
+    "@oclif/dev-cli": "^1.21.0",
     "@oclif/plugin-help": "^2.1.4",
     "@oclif/test": "^1.2.2",
     "@oclif/tslint": "^3.1.1",
     "@types/chai": "^4.1.7",
     "@types/mocha": "^5.2.5",
     "@types/nock": "^9.3.0",
-    "@types/node": "^10.12.12",
+    "@types/node": "^10.12.18",
     "@types/supports-color": "^5.3.0",
     "chai": "^4.2.0",
-    "globby": "^8",
+    "globby": "^8.0.2",
     "mocha": "^5.2.0",
     "nock": "^9.3.3",
     "nyc": "^13.1.0",
     "ts-node": "^7.0.1",
     "tslib": "^1.9.3",
-    "tslint": "^5.11.0",
-    "typescript": "3.2.1"
+    "tslint": "^5.12.0",
+    "typescript": "3.2.2"
   },
   "engines": {
     "node": ">=8.0.0"
