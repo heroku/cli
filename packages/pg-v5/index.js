@@ -52,7 +52,7 @@ exports.commands = flatten([
   require('./commands/unfollow'),
   require('./commands/upgrade'),
   require('./commands/vacuum_stats'),
-  require('./commands/wait'),
+  require('./commands/wait')
 ])
 
 exports.host = require('./lib/host')
