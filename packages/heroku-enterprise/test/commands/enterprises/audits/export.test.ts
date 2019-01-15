@@ -71,8 +71,8 @@ describe('enterprises:audits:export', () => {
     .it('fails to export when checksum is invalid')
 
   let writeStreamOutputStub = sinon.createStubInstance(fs.WriteStream)
-  let stats = sinon.stub().withArgs('/tmp').returns({isDirectory: () => true})
-  const createWriteStreamOutputDirStub = sinon.stub().withArgs('/tmp/enterprise-audit-log-dingo-201811.json.gz').returns(writeStreamOutputStub)
+  let stats = sinon.stub().withArgs(path.join('/tmp')).returns({isDirectory: () => true})
+  const createWriteStreamOutputDirStub = sinon.stub().withArgs(path.join('/tmp/enterprise-audit-log-dingo-201811.json.gz')).returns(writeStreamOutputStub)
   test
     .stderr()
     .stub(fs, 'statSync', stats)
@@ -90,9 +90,9 @@ describe('enterprises:audits:export', () => {
       .get('/aY5d996MH3MdNSiFKNv5oQTz')
       .replyWithFile(200, fixtureArchive)
     )
-    .command(['enterprises:audits:export', '2018-11', '--enterprise-account', 'dingo', '--dest', '/tmp', '--force'])
+    .command(['enterprises:audits:export', '2018-11', '--enterprise-account', 'dingo', '--dest', path.join('/tmp'), '--force'])
     .it('exports the audit log to a specified directory location', (ctx: any) => {
-      expect(createWriteStreamOutputDirStub.calledOnceWithExactly('/tmp/enterprise-audit-log-dingo-201811.json.gz')).to.equal(true)
+      expect(createWriteStreamOutputDirStub.calledOnceWithExactly(path.join('/tmp/enterprise-audit-log-dingo-201811.json.gz'))).to.equal(true)
       expect(ctx.stderr).to.contain('done')
     })
 
