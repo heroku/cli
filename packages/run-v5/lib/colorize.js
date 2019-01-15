@@ -76,7 +76,7 @@ function colorizeRouter (body) {
       } else if (parts.length === 2) {
         return encodeColor(parts)
       } else {
-        return encodeColor([parts[0], parts.splice(1).join()])
+        return encodeColor([parts[0], parts.splice(1).join("=")])
       }
     })
 
