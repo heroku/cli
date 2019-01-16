@@ -18,6 +18,9 @@ exports.commands = flatten([
   require('./commands/backups/schedules'),
   require('./commands/backups/unschedule'),
   require('./commands/backups/url'),
+  require('./commands/bloat'),
+  require('./commands/blocking'),
+  require('./commands/connection_pooling'),
   require('./commands/copy'),
   require('./commands/credentials'),
   require('./commands/credentials/create'),
@@ -29,13 +32,14 @@ exports.commands = flatten([
   require('./commands/info'),
   require('./commands/kill'),
   require('./commands/killall'),
-  require('./commands/outliers'),
   require('./commands/links'),
   require('./commands/links/create'),
   require('./commands/links/destroy'),
+  require('./commands/locks'),
   require('./commands/maintenance'),
   require('./commands/maintenance/run'),
   require('./commands/maintenance/window'),
+  require('./commands/outliers'),
   require('./commands/promote'),
   require('./commands/ps'),
   require('./commands/psql'),
@@ -47,8 +51,8 @@ exports.commands = flatten([
   require('./commands/settings/log_statement'),
   require('./commands/unfollow'),
   require('./commands/upgrade'),
-  require('./commands/wait'),
-  require('./commands/connection_pooling')
+  require('./commands/vacuum_stats'),
+  require('./commands/wait')
 ])
 
 exports.host = require('./lib/host')
