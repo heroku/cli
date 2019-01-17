@@ -5,20 +5,28 @@
 // - Maybe we should deprecate support on `--all` considering how little performant it is
 import * as Heroku from '@heroku-cli/schema'
 
-import {Command, flags} from '@heroku-cli/command'
+import {Command, flags as Flags} from '@heroku-cli/command'
 
+// import {string} from '@oclif/parser/lib/flags'
 import ux, {cli} from 'cli-ux'
 
 function getAddonName(addon: Heroku.AddOn) {
   let addonService: Heroku.AddOnService | undefined = addon.addon_service
   if (addonService && addonService.human_name) {
-    return `${addonService.human_name} (${addon.name})`
+    let out = `${addonService.human_name} (${addon.name})`
+    if (addon.config_vars && addon.config_vars.length > 0) {
+      addon.config_vars.forEach((v: string) => {
+        out += '\n'
+        out += `└─ ${v}`
+      })
+    }
+    return out
   } else {
     return addon.name
   }
 }
 
-function getPrice(addon: Heroku.AddOn, app: string | undefined, cli: any) {
+function getPrice(addon: Heroku.AddOn, app: string | undefined) {
   if (addon.billing_entity) {
     if (app) {
       if ((addon.billing_entity.type === 'app') && (addon.billing_entity.name === app)) {
@@ -63,10 +71,10 @@ export default class AddonsIndex extends Command {
   ]
 
   static flags = {
-    all: flags.boolean({char: 'A', description: 'show add-ons and attachments for all accessible apps', required: false}),
-    app: flags.app(),
-    json: flags.boolean({description: 'returns add-ons in json format', required: false}),
-    ...cli.table.flags()
+    all: Flags.boolean({char: 'A', description: 'show add-ons and attachments for all accessible apps', required: false}),
+    app: Flags.app(),
+    json: Flags.boolean({description: 'returns add-ons in json format', required: false}),
+    ...cli.table.flags({})
   }
 
   async run() {
@@ -110,7 +118,7 @@ export default class AddonsIndex extends Command {
           }
         },
         price: {
-          get: row => getPrice(row, flags.app, cli)
+          get: row => getPrice(row, flags.app)
         },
         state: {
           get: getAddonState,
