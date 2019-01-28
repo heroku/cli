@@ -136,9 +136,9 @@ Initiating transfer of myapp... email sent
       let api = stubPatch.orgAppTransfer()
 
       let lockedAPI = nock('https://api.heroku.com:443')
-        .get('/organizations/apps/myapp')
+        .get('/teams/apps/myapp')
         .reply(200, { name: 'myapp', locked: false })
-        .patch('/organizations/apps/myapp', { locked: true })
+        .patch('/teams/apps/myapp', { locked: true })
         .reply(200)
 
       return cmd.run({ app: 'myapp', args: { recipient: 'team' }, flags: { locked: true } })
