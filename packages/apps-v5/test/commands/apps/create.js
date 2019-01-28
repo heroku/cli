@@ -53,7 +53,7 @@ describe('apps:create', function () {
 
   it('creates an app in a space', function () {
     let mock = nock('https://api.heroku.com')
-      .post('/organizations/apps', {
+      .post('/teams/apps', {
         space: 'my-space-name'
       })
       .reply(200, {
@@ -71,7 +71,7 @@ describe('apps:create', function () {
 
   it('creates an Internal Web App in a space', function () {
     let mock = nock('https://api.heroku.com')
-      .post('/organizations/apps', {
+      .post('/teams/apps', {
         space: 'my-space-name',
         internal_routing: true
       })

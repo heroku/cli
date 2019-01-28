@@ -17,7 +17,7 @@ function createText (name, space) {
 async function createApp (context, heroku, name, stack) {
   let params = {
     name,
-    organization: context.org || context.team || context.flags.team,
+    team: context.org || context.team || context.flags.team,
     region: context.flags.region,
     space: context.flags.space,
     stack,
@@ -29,7 +29,7 @@ async function createApp (context, heroku, name, stack) {
 
   let app = await heroku.request({
     method: 'POST',
-    path: (params.space || params.organization) ? '/organizations/apps' : '/apps',
+    path: (params.space || params.team) ? '/teams/apps' : '/apps',
     body: params
   })
 
