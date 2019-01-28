@@ -57,7 +57,7 @@ runtest('Dashboard', () => {
         let longboard = nock('https://particleboard.heroku.com:443')
           .get('/favorites?type=app').reply(200, [])
         let heroku = nock('https://api.heroku.com:443')
-          .get('/organizations').reply(200, [])
+          .get('/teams').reply(200, [])
         let telex = nock('https://telex.heroku.com:443')
           .get('/user/notifications').reply(200, [])
 
@@ -80,7 +80,7 @@ See other CLI commands with heroku help
         let longboard = nock('https://particleboard.heroku.com:443')
           .get('/favorites?type=app').reply(200, [])
         let heroku = nock('https://api.heroku.com:443')
-          .get('/organizations').reply(200, [])
+          .get('/teams').reply(200, [])
         let telex = nock('https://telex.heroku.com:443')
           .get('/user/notifications').reply(401, [])
 
@@ -103,7 +103,7 @@ See other CLI commands with heroku help
         let longboard = nock('https://particleboard.heroku.com:443')
           .get('/favorites?type=app').reply(200, [{ app_name: 'myapp' }])
         let heroku = nock('https://api.heroku.com:443')
-          .get('/organizations').reply(200, [])
+          .get('/teams').reply(200, [])
           .get('/apps/myapp').reply(200, {
             name: 'myapp',
             owner: { email: 'foo@bar.com' },

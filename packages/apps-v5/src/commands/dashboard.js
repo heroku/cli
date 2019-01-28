@@ -130,7 +130,7 @@ function * run (context, heroku) {
     apps = yield favoriteApps()
 
     data = yield {
-      orgs: heroku.request({ path: '/organizations' }),
+      teams: heroku.request({ path: '/teams' }),
       notifications: heroku.request({ host: 'telex.heroku.com', path: '/user/notifications' }).catch(() => null),
       apps: apps.map((app) => ({
         app: heroku.get(`/apps/${app}`),
@@ -145,8 +145,8 @@ function * run (context, heroku) {
   else cli.warn(`Add apps to this dashboard by favoriting them with ${cli.color.cmd('heroku apps:favorites:add')}`)
 
   cli.log(`See all add-ons with ${cli.color.cmd('heroku addons')}`)
-  let sampleOrg = sortBy(data.orgs.filter((o) => o.role !== 'collaborator'), (o) => new Date(o.created_at))[0]
-  if (sampleOrg) cli.log(`See all apps in ${cli.color.yellow.dim(sampleOrg.name)} with ${cli.color.cmd('heroku apps --team ' + sampleOrg.name)}`)
+  let sampleTeam = sortBy(data.teams.filter((o) => o.role !== 'collaborator'), (o) => new Date(o.created_at))[0]
+  if (sampleTeam) cli.log(`See all apps in ${cli.color.yellow.dim(sampleTeam.name)} with ${cli.color.cmd('heroku apps --team ' + sampleTeam.name)}`)
   cli.log(`See all apps with ${cli.color.cmd('heroku apps --all')}`)
   displayNotifications(data.notifications)
   cli.log(`
