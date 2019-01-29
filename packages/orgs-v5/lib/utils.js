@@ -17,7 +17,7 @@ let isValidEmail = function (email) {
   return /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email)
 }
 
-let printGroups = function (group, type = {label: 'Organization'}) {
+let printGroups = function (group, type = {label: 'Team'}) {
   group = _.sortBy(group, 'name')
   cli.table(group, {
     columns: [
