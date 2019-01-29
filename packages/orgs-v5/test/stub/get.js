@@ -84,7 +84,7 @@ function orgInfo (type = 'enterprise') {
   return nock('https://api.heroku.com:443', {
     reqheaders: { Accept: 'application/vnd.heroku+json; version=3' }
   })
-    .get('/organizations/myorg')
+    .get('/teams/myorg')
     .reply(200, {
       name: 'myorg',
       role: 'admin',

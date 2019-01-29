@@ -10,7 +10,7 @@ function sendInvite (email = 'raulb@heroku.com', role = 'admin') {
 
 function updateMemberRole (email = 'raulb@heroku.com', role = 'admin') {
   return nock('https://api.heroku.com:443')
-    .put('/organizations/myorg/members', { email, role })
+    .put('/teams/myorg/members', { email, role })
     .reply(200)
 }
 
