@@ -30,5 +30,5 @@ function personalToPersonal () {
 module.exports = {
   collaborators,
   personalToPersonal,
-  teamAppCollaborators,
+  teamAppCollaborators
 }
