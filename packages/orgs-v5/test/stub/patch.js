@@ -23,7 +23,7 @@ function personalToPersonal () {
 
 function updateMemberRole (email = 'raulb@heroku.com', role = 'admin') {
   return nock('https://api.heroku.com:443')
-    .patch('/teams/myorg/members', { email, role })
+    .patch('/teams/myteam/members', { email, role })
     .reply(200)
 }
 

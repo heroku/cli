@@ -17,9 +17,9 @@ describe('heroku members:remove', () => {
 
     it('removes a member from an org', () => {
       let apiRemoveMemberFromOrg = stubDelete.memberFromTeam()
-      return cmd.run({ org: 'myorg', args: { email: 'foo@foo.com' } })
+      return cmd.run({ org: 'myteam', args: { email: 'foo@foo.com' } })
         .then(() => expect('').to.eq(cli.stdout))
-        .then(() => expect(`Removing foo@foo.com from myorg... done\n`).to.eq(cli.stderr))
+        .then(() => expect(`Removing foo@foo.com from myteam... done\n`).to.eq(cli.stderr))
         .then(() => apiRemoveMemberFromOrg.done())
     })
   })
@@ -37,10 +37,10 @@ describe('heroku members:remove', () => {
       context('using --org instead of --team', () => {
         it('removes the member, but it shows a warning about the usage of -t instead', () => {
           let apiRemoveMemberFromOrg = stubDelete.memberFromTeam()
-          return cmd.run({ org: 'myorg', args: { email: 'foo@foo.com' }, flags: {} })
+          return cmd.run({ org: 'myteam', args: { email: 'foo@foo.com' }, flags: {} })
             .then(() => expect('').to.eq(cli.stdout))
-            .then(() => expect(unwrap(cli.stderr)).to.equal(`Removing foo@foo.com from myorg... done \
-myorg is a Heroku Team Heroku CLI now supports Heroku Teams. Use -t or --team for teams like myorg
+            .then(() => expect(unwrap(cli.stderr)).to.equal(`Removing foo@foo.com from myteam... done \
+myteam is a Heroku Team Heroku CLI now supports Heroku Teams. Use -t or --team for teams like myteam
 `))
             .then(() => apiRemoveMemberFromOrg.done())
         })
@@ -48,9 +48,9 @@ myorg is a Heroku Team Heroku CLI now supports Heroku Teams. Use -t or --team fo
 
       it('removes a member from an org', () => {
         let apiRemoveMemberFromOrg = stubDelete.memberFromTeam()
-        return cmd.run({ args: { email: 'foo@foo.com' }, flags: { team: 'myorg' } })
+        return cmd.run({ args: { email: 'foo@foo.com' }, flags: { team: 'myteam' } })
           .then(() => expect('').to.eq(cli.stdout))
-          .then(() => expect(`Removing foo@foo.com from myorg... done\n`).to.eq(cli.stderr))
+          .then(() => expect(`Removing foo@foo.com from myteam... done\n`).to.eq(cli.stderr))
           .then(() => apiRemoveMemberFromOrg.done())
       })
     })
@@ -69,9 +69,9 @@ myorg is a Heroku Team Heroku CLI now supports Heroku Teams. Use -t or --team fo
 
         it('removes a member', () => {
           let apiRemoveMemberFromOrg = stubDelete.memberFromTeam()
-          return cmd.run({ args: { email: 'foo@foo.com' }, flags: { team: 'myorg' } })
+          return cmd.run({ args: { email: 'foo@foo.com' }, flags: { team: 'myteam' } })
             .then(() => expect('').to.eq(cli.stdout))
-            .then(() => expect(`Removing foo@foo.com from myorg... done\n`).to.eq(cli.stderr))
+            .then(() => expect(`Removing foo@foo.com from myteam... done\n`).to.eq(cli.stderr))
             .then(() => apiGetTeamInvites.done())
             .then(() => apiRemoveMemberFromOrg.done())
         })
@@ -87,9 +87,9 @@ myorg is a Heroku Team Heroku CLI now supports Heroku Teams. Use -t or --team fo
         it('revokes the invite', () => {
           let apiRevokeTeamInvite = stubDelete.teamInvite('foo@foo.com')
 
-          return cmd.run({ args: { email: 'foo@foo.com' }, flags: { team: 'myorg' } })
+          return cmd.run({ args: { email: 'foo@foo.com' }, flags: { team: 'myteam' } })
             .then(() => expect('').to.eq(cli.stdout))
-            .then(() => expect(`Revoking invite for foo@foo.com in myorg... done\n`).to.eq(cli.stderr))
+            .then(() => expect(`Revoking invite for foo@foo.com in myteam... done\n`).to.eq(cli.stderr))
             .then(() => apiGetTeamInvites.done())
             .then(() => apiRevokeTeamInvite.done())
         })

@@ -28,7 +28,7 @@ describe('heroku apps:transfer', () => {
         expect(choices).to.eql([
           {
             name: 'my-org-app (organization)',
-            value: { name: 'my-org-app', owner: 'organization@herokumanager.com' }
+            value: { name: 'my-org-app', owner: 'team@herokumanager.com' }
           },
           {
             name: 'my-team-app (team)',
@@ -59,7 +59,7 @@ Transferring myapp... done
         expect(choices).to.eql([
           {
             name: 'my-org-app (organization)',
-            value: { name: 'my-org-app', owner: 'organization@herokumanager.com' }
+            value: { name: 'my-org-app', owner: 'team@herokumanager.com' }
           },
           {
             name: 'my-team-app (team)',
