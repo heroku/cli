@@ -14,7 +14,7 @@ function * run (context, heroku) {
   if (context.flags.json) {
     Utils.printGroupsJSON(orgs)
   } else {
-    Utils.printGroups(orgs, { label: 'Organizations' })
+    Utils.printGroups(orgs, { label: 'Teams' })
   }
 }
 
