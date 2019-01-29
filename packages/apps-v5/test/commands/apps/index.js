@@ -88,7 +88,7 @@ function stubUserApps (apps) {
     .reply(200, apps)
 }
 
-function stubOrgApps (team, apps) {
+function stubteamApps (team, apps) {
   return nock('https://api.heroku.com')
     .get(`/teams/${team}/apps`)
     .reply(200, apps)
@@ -258,7 +258,7 @@ internal-app [internal/locked] (eu)
 
   describe('with team', function () {
     it('displays a message when the team has no apps', function () {
-      let mock = stubOrgApps('test-team', [])
+      let mock = stubteamApps('test-team', [])
       return apps.run({ org: 'test-team', flags: {}, args: {} }).then(function () {
         mock.done()
         expect(cli.stderr).to.equal('')
@@ -268,7 +268,7 @@ internal-app [internal/locked] (eu)
     })
 
     it('list all in a team', function () {
-      let mock = stubOrgApps('test-team', [teamApp1, teamApp2])
+      let mock = stubteamApps('test-team', [teamApp1, teamApp2])
       return apps.run({ org: 'test-team', flags: {}, args: {} }).then(function () {
         mock.done()
         expect(cli.stderr).to.equal('')
@@ -284,7 +284,7 @@ team-app-2
 
   describe('with team', function () {
     it('displays a message when the team has no apps', function () {
-      let mock = stubOrgApps('test-team', [])
+      let mock = stubteamApps('test-team', [])
       return apps.run({ team: 'test-team', flags: {}, args: {} }).then(function () {
         mock.done()
         expect(cli.stderr).to.equal('')
@@ -294,7 +294,7 @@ team-app-2
     })
 
     it('list all in an team', function () {
-      let mock = stubOrgApps('test-team', [teamApp1, teamApp2])
+      let mock = stubteamApps('test-team', [teamApp1, teamApp2])
       return apps.run({ team: 'test-team', flags: {}, args: {} }).then(function () {
         mock.done()
         expect(cli.stderr).to.equal('')
@@ -316,7 +316,7 @@ team-app-2
     })
 
     it('displays a message when the space has no apps', function () {
-      let mock = stubOrgApps('test-team', [])
+      let mock = stubteamApps('test-team', [])
       return apps.run({ flags: { space: 'test-space' }, args: {} }).then(function () {
         mock.done()
         expect(cli.stderr).to.equal('')
@@ -326,7 +326,7 @@ team-app-2
     })
 
     it('lists only apps in spaces by name', function () {
-      let mock = stubOrgApps('test-team', [teamSpaceApp1, teamSpaceApp2, teamApp1])
+      let mock = stubteamApps('test-team', [teamSpaceApp1, teamSpaceApp2, teamApp1])
       return apps.run({ flags: { space: 'test-space' }, args: {} }).then(function () {
         mock.done()
         expect(cli.stderr).to.equal('')
@@ -341,7 +341,7 @@ space-app-2
     })
 
     it('lists only internal apps in spaces by name', function () {
-      let mock = stubOrgApps('test-team', [teamSpaceApp1, teamSpaceApp2, teamApp1, teamSpaceInternalApp])
+      let mock = stubteamApps('test-team', [teamSpaceApp1, teamSpaceApp2, teamApp1, teamSpaceInternalApp])
       return apps.run({ flags: { space: 'test-space', 'internal-routing': true }, args: {} }).then(function () {
         mock.done()
         expect(cli.stderr).to.equal('')

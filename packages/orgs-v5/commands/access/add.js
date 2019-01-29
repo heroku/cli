@@ -13,7 +13,7 @@ async function run (context, heroku) {
   let request
   let teamFeatures = []
 
-  if (Utils.isOrgApp(appInfo.owner.email)) {
+  if (Utils.isteamApp(appInfo.owner.email)) {
     let teamName = Utils.getOwner(appInfo.owner.email)
     teamFeatures = await heroku.get(`/teams/${teamName}/features`)
   }

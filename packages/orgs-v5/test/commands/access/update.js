@@ -16,7 +16,7 @@ describe('heroku access:update', () => {
     afterEach(() => nock.cleanAll())
 
     it('updates the app permissions, view being implicit', () => {
-      apiGetApp = stubGet.orgApp()
+      apiGetApp = stubGet.teamApp()
       apiPatchAppCollaborators = stubPatch.appCollaboratorWithPermissions({ email: 'raulb@heroku.com', permissions: ['deploy', 'view'] })
 
       return cmd.run({ app: 'myapp', args: { email: 'raulb@heroku.com' }, flags: { permissions: 'deploy' } })
@@ -28,7 +28,7 @@ describe('heroku access:update', () => {
     })
 
     it('updates the app permissions, even specifying view as a permission', () => {
-      apiGetApp = stubGet.orgApp()
+      apiGetApp = stubGet.teamApp()
       apiPatchAppCollaborators = stubPatch.appCollaboratorWithPermissions({ email: 'raulb@heroku.com', permissions: ['deploy', 'view'] })
 
       return cmd.run({ app: 'myapp', args: { email: 'raulb@heroku.com' }, flags: { permissions: 'deploy,view' } })
@@ -40,7 +40,7 @@ describe('heroku access:update', () => {
     })
 
     it('supports --privileges, but shows deprecation warning', () => {
-      apiGetApp = stubGet.orgApp()
+      apiGetApp = stubGet.teamApp()
       apiPatchAppCollaborators = stubPatch.appCollaboratorWithPermissions({ email: 'raulb@heroku.com', permissions: ['deploy', 'view'] })
 
       return cmd.run({ app: 'myapp', args: { email: 'raulb@heroku.com' }, flags: { privileges: 'deploy' } })

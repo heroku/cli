@@ -2,7 +2,7 @@
 
 const nock = require('nock')
 
-function collaboratorsOrgApp (app, email) {
+function collaboratorsteamApp (app, email) {
   return nock('https://api.heroku.com:443', {
     reqheaders: { Accept: 'application/vnd.heroku+json; version=3' }
   })
@@ -27,7 +27,7 @@ function memberFromTeam () {
 }
 
 module.exports = {
-  collaboratorsOrgApp,
+  collaboratorsteamApp,
   collaboratorsPersonalApp,
   memberFromTeam,
   teamInvite

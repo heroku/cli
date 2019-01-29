@@ -42,7 +42,7 @@ describe('heroku apps:transfer', () => {
         return Promise.resolve({ choices: [{ name: 'myapp', owner: 'foo@foo.com' }] })
       }
 
-      let api = stubPatch.orgAppTransfer()
+      let api = stubPatch.teamAppTransfer()
       return cmd.run({ args: { recipient: 'team' }, flags: { bulk: true } })
         .then(function () {
           api.done()
@@ -100,7 +100,7 @@ Initiating transfer of myapp... email sent
     })
 
     it('transfers the app to an organization', () => {
-      let api = stubPatch.orgAppTransfer()
+      let api = stubPatch.teamAppTransfer()
       return cmd.run({ app: 'myapp', args: { recipient: 'team' }, flags: {} })
         .then(() => expect('').to.eq(cli.stdout))
         .then(() => expect(`Transferring myapp to team... done
@@ -111,11 +111,11 @@ Initiating transfer of myapp... email sent
 
   context('when it is an org app', () => {
     beforeEach(() => {
-      stubGet.orgApp()
+      stubGet.teamApp()
     })
 
     it('transfers the app to a personal account confirming app name', () => {
-      let api = stubPatch.orgAppTransfer()
+      let api = stubPatch.teamAppTransfer()
       return cmd.run({ app: 'myapp', args: { recipient: 'team' }, flags: { confirm: 'myapp' } })
         .then(() => expect('').to.eq(cli.stdout))
         .then(() => expect(`Transferring myapp to team... done
@@ -124,7 +124,7 @@ Initiating transfer of myapp... email sent
     })
 
     it('transfers the app to an organization', () => {
-      let api = stubPatch.orgAppTransfer()
+      let api = stubPatch.teamAppTransfer()
       return cmd.run({ app: 'myapp', args: { recipient: 'team' }, flags: {} })
         .then(() => expect('').to.eq(cli.stdout))
         .then(() => expect(`Transferring myapp to team... done
@@ -133,7 +133,7 @@ Initiating transfer of myapp... email sent
     })
 
     it('transfers and locks the app if --locked is passed', () => {
-      let api = stubPatch.orgAppTransfer()
+      let api = stubPatch.teamAppTransfer()
 
       let lockedAPI = nock('https://api.heroku.com:443')
         .get('/teams/apps/myapp')

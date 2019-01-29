@@ -9,7 +9,7 @@ function printJSON (collaborators) {
 }
 
 function printAccess (app, collaborators) {
-  let showPermissions = Utils.isOrgApp(app.owner.email)
+  let showPermissions = Utils.isteamApp(app.owner.email)
   collaborators = _.chain(collaborators)
     .sortBy(c => c.email || c.user.email)
     .reject(c => /herokumanager\.com$/.test(c.user.email))
@@ -36,7 +36,7 @@ async function run (context, heroku) {
   let appName = context.app
 
   let app = await heroku.get(`/apps/${appName}`)
-  let isTeamApp = Utils.isOrgApp(app.owner.email)
+  let isTeamApp = Utils.isteamApp(app.owner.email)
   let collaborators = await heroku.get(`/apps/${appName}/collaborators`)
 
   if (isTeamApp) {

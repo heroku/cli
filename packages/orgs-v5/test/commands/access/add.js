@@ -15,7 +15,7 @@ describe('heroku access:add', () => {
   context('with a team app with user permissions', () => {
     beforeEach(() => {
       cli.mockConsole()
-      apiGet = stubGet.orgApp()
+      apiGet = stubGet.teamApp()
       apiPost = stubPost.teamAppCollaborators('raulb@heroku.com', ['deploy', 'view'])
       apiGetOrgFeatures = stubGet.teamFeatures([{ name: 'org-access-controls' }])
     })
@@ -67,7 +67,7 @@ Adding raulb@heroku.com access to the app myapp with deploy,view permissions... 
   context('with a team app without user permissions', () => {
     beforeEach(() => {
       cli.mockConsole()
-      apiGet = stubGet.orgApp()
+      apiGet = stubGet.teamApp()
       apiPost = stubPost.collaborators()
       apiGetOrgFeatures = stubGet.teamFeatures([])
     })

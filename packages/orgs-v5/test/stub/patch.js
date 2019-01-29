@@ -9,7 +9,7 @@ function appCollaboratorWithPermissions (args) {
     }).reply(200)
 }
 
-function orgAppTransfer () {
+function teamAppTransfer () {
   return nock('https://api.heroku.com:443')
     .patch('/teams/apps/myapp', { owner: 'team' })
     .reply(200, { name: 'myapp', owner: { email: 'team@herokumanager.com' } })
@@ -29,7 +29,7 @@ function updateMemberRole (email = 'raulb@heroku.com', role = 'admin') {
 
 module.exports = {
   appCollaboratorWithPermissions,
-  orgAppTransfer,
+  teamAppTransfer,
   personalToPersonal,
   updateMemberRole
 }
