@@ -13,7 +13,7 @@ describe('heroku members', () => {
 
   context('when it is an Enterprise team', () => {
     beforeEach(() => {
-      stubGet.orgInfo('enterprise')
+      stubGet.teamInfo('enterprise')
     })
 
     it('shows there are not team members if it is an orphan team', () => {
@@ -74,7 +74,7 @@ b@heroku.com  collaborator
 
   context('when it is a team', () => {
     beforeEach(() => {
-      stubGet.orgInfo('team')
+      stubGet.teamInfo('team')
     })
 
     context('without the feature flag team-invite-acceptance', () => {

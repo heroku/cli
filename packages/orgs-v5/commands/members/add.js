@@ -7,7 +7,7 @@ const { flags } = require('@heroku-cli/command')
 const { RoleCompletion } = require('@heroku-cli/command/lib/completions')
 
 function * run (context, heroku) {
-  let orgInfo = yield Utils.orgInfo(context, heroku)
+  let teamInfo = yield Utils.teamInfo(context, heroku)
   let groupName = context.org || context.team || context.flags.team
   let email = context.args.email
   let role = context.flags.role
@@ -28,14 +28,14 @@ function * run (context, heroku) {
     yield cli.action(`Inviting ${cli.color.cyan(email)} to ${cli.color.magenta(groupName)} as ${cli.color.green(role)}`, request)
   }
 
-  if (orgInfo.type === 'team' && groupFeatures.find(feature => { return feature.name === 'team-invite-acceptance' && feature.enabled })) {
+  if (teamInfo.type === 'team' && groupFeatures.find(feature => { return feature.name === 'team-invite-acceptance' && feature.enabled })) {
     yield inviteMemberToTeam(email, role, groupName)
   } else {
     yield Utils.addMemberToOrg(email, role, groupName, heroku)
   }
 
-  yield Utils.warnIfAtTeamMemberLimit(orgInfo, groupName, context, heroku)
-  Utils.warnUsingOrgFlagInTeams(orgInfo, context)
+  yield Utils.warnIfAtTeamMemberLimit(teamInfo, groupName, context, heroku)
+  Utils.warnUsingOrgFlagInTeams(teamInfo, context)
 }
 
 let add = {

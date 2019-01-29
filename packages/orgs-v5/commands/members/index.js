@@ -8,11 +8,11 @@ const { flags } = require('@heroku-cli/command')
 const { RoleCompletion } = require('@heroku-cli/command/lib/completions')
 
 function * run (context, heroku) {
-  let orgInfo = yield Utils.orgInfo(context, heroku)
+  let teamInfo = yield Utils.teamInfo(context, heroku)
   let groupName = context.org || context.team || context.flags.team
   let teamInvites = []
 
-  if (orgInfo.type === 'team') {
+  if (teamInfo.type === 'team') {
     let orgFeatures = yield heroku.get(`/teams/${groupName}/features`)
 
     if (orgFeatures.find(feature => feature.name === 'team-invite-acceptance' && feature.enabled)) {
@@ -52,7 +52,7 @@ function * run (context, heroku) {
     })
   }
 
-  Utils.warnUsingOrgFlagInTeams(orgInfo, context)
+  Utils.warnUsingOrgFlagInTeams(teamInfo, context)
 }
 
 module.exports = {

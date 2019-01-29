@@ -12,7 +12,7 @@ describe('heroku members:remove', () => {
 
   context('from an org', () => {
     beforeEach(() => {
-      stubGet.orgInfo('enterprise')
+      stubGet.teamInfo('enterprise')
     })
 
     it('removes a member from an org', () => {
@@ -26,7 +26,7 @@ describe('heroku members:remove', () => {
 
   context('from a team', () => {
     beforeEach(() => {
-      stubGet.orgInfo('team')
+      stubGet.teamInfo('team')
     })
 
     context('without the feature flag team-invite-acceptance', () => {

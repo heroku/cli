@@ -19,7 +19,7 @@ describe('heroku members:add', () => {
 
     context('and group is a team', () => {
       beforeEach(() => {
-        stubGet.orgInfo('team')
+        stubGet.teamInfo('team')
       })
 
       it('does not warn the user when under the free org limit', () => {
@@ -77,7 +77,7 @@ Heroku Team Heroku CLI now supports Heroku Teams. Use -t or --team for teams lik
 
     context('and group is an enterprise org', () => {
       beforeEach(() => {
-        stubGet.orgInfo('enterprise')
+        stubGet.teamInfo('enterprise')
         stubGet.variableSizeTeamMembers(1)
       })
 
@@ -96,7 +96,7 @@ Heroku Team Heroku CLI now supports Heroku Teams. Use -t or --team for teams lik
   context('with the feature flag team-invite-acceptance for a team', () => {
     beforeEach(() => {
       stubGet.teamFeatures([{ name: 'team-invite-acceptance', enabled: true }])
-      stubGet.orgInfo('team')
+      stubGet.teamInfo('team')
     })
 
     it('does warn the user when free org limit is caused by invites', () => {

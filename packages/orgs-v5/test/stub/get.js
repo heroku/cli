@@ -80,7 +80,7 @@ function teamFeatures (features) {
     .reply(200, features)
 }
 
-function orgInfo (type = 'enterprise') {
+function teamInfo (type = 'enterprise') {
   return nock('https://api.heroku.com:443', {
     reqheaders: { Accept: 'application/vnd.heroku+json; version=3' }
   })
@@ -182,14 +182,14 @@ module.exports = {
   apps,
   orgApp,
   orgAppCollaboratorsWithPermissions,
-  orgInfo,
   personalApp,
   teamFeatures,
+  teamInfo,
   teamInvites,
   teamMembers,
   teams,
   userAccount,
   userFeatureFlags,
-  variableSizeTeamMembers,
-  variableSizeTeamInvites
+  variableSizeTeamInvites,
+  variableSizeTeamMembers
 }

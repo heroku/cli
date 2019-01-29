@@ -6,7 +6,7 @@ let Utils = require('../../lib/utils')
 const { flags } = require('@heroku-cli/command')
 
 function * run (context, heroku) {
-  let orgInfo = yield Utils.orgInfo(context, heroku)
+  let teamInfo = yield Utils.teamInfo(context, heroku)
   let groupName = context.org || context.team || context.flags.team
   let teamInviteFeatureEnabled = false
   let isInvitedUser = false
@@ -38,7 +38,7 @@ function * run (context, heroku) {
     yield cli.action(`Removing ${cli.color.cyan(email)} from ${cli.color.magenta(groupName)}`, request)
   }
 
-  if (orgInfo.type === 'team') {
+  if (teamInfo.type === 'team') {
     let teamFeatures = yield heroku.get(`/teams/${groupName}/features`)
     teamInviteFeatureEnabled = !!teamFeatures.find(feature => feature.name === 'team-invite-acceptance' && feature.enabled)
 
@@ -54,7 +54,7 @@ function * run (context, heroku) {
     yield removeUserMembership()
   }
 
-  Utils.warnUsingOrgFlagInTeams(orgInfo, context)
+  Utils.warnUsingOrgFlagInTeams(teamInfo, context)
 }
 
 module.exports = {

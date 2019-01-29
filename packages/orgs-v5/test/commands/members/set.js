@@ -17,7 +17,7 @@ describe('heroku members:set', () => {
 
   context('and group is a team', () => {
     beforeEach(() => {
-      stubGet.orgInfo('team')
+      stubGet.teamInfo('team')
     })
 
     it('does not warn the user when under the free org limit', () => {
@@ -75,7 +75,7 @@ myorg is a Heroku Team Heroku CLI now supports Heroku Teams. Use -t or --team fo
 
   context('and group is an enterprise org', () => {
     beforeEach(() => {
-      stubGet.orgInfo('enterprise')
+      stubGet.teamInfo('enterprise')
       stubGet.variableSizeTeamMembers(1)
     })
 

@@ -32,14 +32,14 @@ let printGroupsJSON = function (group) {
   cli.log(JSON.stringify(group, null, 2))
 }
 
-let orgInfo = function * (context, heroku) {
+let teamInfo = function * (context, heroku) {
   let teamOrOrgName = context.org || context.flags.team
   if (!teamOrOrgName) error.exit(1, 'No team or org specified.\nRun this command with --team or --org')
   return yield heroku.get(`/teams/${context.org || context.flags.team}`)
 }
 
-let warnUsingOrgFlagInTeams = function (orgInfo, context) {
-  if ((orgInfo.type === 'team') && (!context.flags.team)) {
+let warnUsingOrgFlagInTeams = function (teamInfo, context) {
+  if ((teamInfo.type === 'team') && (!context.flags.team)) {
     cli.warn(`${cli.color.cmd(context.org)} is a Heroku Team\nHeroku CLI now supports Heroku Teams.\nUse ${cli.color.cmd('-t')} or ${cli.color.cmd('--team')} for teams like ${cli.color.cmd(context.org)}`)
   }
 }
@@ -53,11 +53,11 @@ let addMemberToOrg = function * (email, role, groupName, heroku, method = 'PUT')
   yield cli.action(`Adding ${cli.color.cyan(email)} to ${cli.color.magenta(groupName)} as ${cli.color.green(role)}`, request)
 }
 
-let warnIfAtTeamMemberLimit = async function (orgInfo, groupName, context, heroku) {
+let warnIfAtTeamMemberLimit = async function (teamInfo, groupName, context, heroku) {
   // Users receive `You'll be billed monthly for teams over 5 members.`
   const FREE_TEAM_LIMIT = 6
 
-  if (orgInfo.type === 'team') {
+  if (teamInfo.type === 'team') {
     let membersAndInvites = {
       invites: await heroku.request({
         headers: {
@@ -78,7 +78,7 @@ module.exports = {
   getOwner,
   isOrgApp,
   isValidEmail,
-  orgInfo,
+  teamInfo,
   printGroups,
   printGroupsJSON,
   warnIfAtTeamMemberLimit,
