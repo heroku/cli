@@ -11,7 +11,7 @@ function * run (context, heroku) {
   let groupName = context.org || context.team || context.flags.team
   let email = context.args.email
   let role = context.flags.role
-  let groupFeatures = yield heroku.get(`/organizations/${groupName}/features`)
+  let groupFeatures = yield heroku.get(`/teams/${groupName}/features`)
 
   let inviteMemberToTeam = function * (email, role, groupName) {
     let request = heroku.request({
@@ -19,7 +19,7 @@ function * run (context, heroku) {
         Accept: 'application/vnd.heroku+json; version=3.team-invitations'
       },
       method: 'PUT',
-      path: `/organizations/${groupName}/invitations`,
+      path: `/teams/${groupName}/invitations`,
       body: { email, role }
     }).then(request => {
       cli.action.done('email sent')
@@ -41,7 +41,7 @@ function * run (context, heroku) {
 let add = {
   topic: 'members',
   command: 'add',
-  description: 'adds a user to an organization or a team',
+  description: 'adds a user to a team',
   needsAuth: true,
   wantsOrg: true,
   args: [{ name: 'email' }],
