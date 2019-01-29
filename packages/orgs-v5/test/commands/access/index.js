@@ -24,11 +24,11 @@ raulb@heroku.com  owner
     })
   })
 
-  context('with organization/team', () => {
+  context('with team', () => {
     beforeEach(() => cli.mockConsole())
     afterEach(() => nock.cleanAll())
 
-    it('shows the app collaborators and hides the org collaborator record', () => {
+    it('shows the app collaborators and hides the team collaborator record', () => {
       let apiGetOrgApp = stubGet.orgApp()
       let apiGetOrgMembers = stubGet.teamMembers()
       let apiGetAppPermissions = stubGet.appPermissions()
