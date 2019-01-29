@@ -16,7 +16,7 @@ describe('heroku access:add', () => {
     beforeEach(() => {
       cli.mockConsole()
       apiGet = stubGet.orgApp()
-      apiPost = stubPost.teamAppCollaborators,('raulb@heroku.com', ['deploy', 'view'])
+      apiPost = stubPost.teamAppCollaborators('raulb@heroku.com', ['deploy', 'view'])
       apiGetOrgFeatures = stubGet.teamFeatures([{ name: 'org-access-controls' }])
     })
     afterEach(() => nock.cleanAll())
