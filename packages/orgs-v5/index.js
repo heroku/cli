@@ -4,8 +4,8 @@ const flatten = require('lodash.flatten')
 
 exports.topics = [
   { name: 'access', description: 'manage user access to apps' },
-  { name: 'orgs', description: 'manage organizations' },
-  { name: 'members', description: 'manage organization members' },
+  { name: 'orgs', description: 'manage teams' },
+  { name: 'members', description: 'manage team members' },
   { name: 'teams', description: 'manage teams' },
   { name: 'sharing', hidden: true },
   { name: 'join', hidden: true },
