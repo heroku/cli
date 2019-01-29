@@ -13,8 +13,8 @@ describe('heroku teams', () => {
 
     return cmd.run({ flags: {} })
       .then(() => expect(
-        `team a  collaborator
-team b  admin
+        `enterprise a  collaborator
+enterprise b  admin
 `).to.eq(cli.stdout))
       .then(() => expect('').to.eq(cli.stderr))
       .then(() => apiGetOrgs.done())
