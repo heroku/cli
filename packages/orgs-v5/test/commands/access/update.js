@@ -11,7 +11,7 @@ let apiPatchAppCollaborators
 let apiGetApp
 
 describe('heroku access:update', () => {
-  context('with an org app with permissions', () => {
+  context('with a team app with permissions', () => {
     beforeEach(() => cli.mockConsole())
     afterEach(() => nock.cleanAll())
 
@@ -53,7 +53,7 @@ Updating raulb@heroku.com in application myapp with deploy,view permissions... d
     })
   })
 
-  context('with a non org app', () => {
+  context('with a non team app', () => {
     beforeEach(() => {
       cli.mockConsole()
       error.exit.mock()
@@ -68,7 +68,7 @@ Updating raulb@heroku.com in application myapp with deploy,view permissions... d
         args: { email: 'raulb@heroku.com' },
         flags: { permissions: 'view,deploy' }
       }).then(() => apiGetApp.done())).then(function () {
-        expect(unwrap(cli.stderr)).to.equal('Error: cannot update permissions. The app myapp is not owned by an organization\n')
+        expect(unwrap(cli.stderr)).to.equal('Error: cannot update permissions. The app myapp is not owned by a team\n')
       })
     })
   })
