@@ -29,7 +29,7 @@ describe('heroku apps:join', () => {
   it('is forbidden from joining the app', () => {
     let response = {
       code: 403,
-      description: { id: 'forbidden', error: 'You do not have access to the organization heroku-tools.' }
+      description: { id: 'forbidden', error: 'You do not have access to the team heroku-tools.' }
     }
 
     apiPostCollaborators = stubPost.orgAppcollaborators('raulb@heroku.com', [], response)
