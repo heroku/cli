@@ -21,7 +21,7 @@ describe('heroku members:set', () => {
     })
 
     it('does not warn the user when under the free org limit', () => {
-      stubGet.variableSizeOrgMembers(1)
+      stubGet.variableSizeTeamMembers(1)
       stubGet.variableSizeTeamInvites(0)
       apiUpdateMemberRole = stubPatch.updateMemberRole('foo@foo.com', 'admin')
 
@@ -33,7 +33,7 @@ describe('heroku members:set', () => {
     })
 
     it('does not warn the user when over the free org limit', () => {
-      stubGet.variableSizeOrgMembers(7)
+      stubGet.variableSizeTeamMembers(7)
       stubGet.variableSizeTeamInvites(0)
       apiUpdateMemberRole = stubPatch.updateMemberRole('foo@foo.com', 'admin')
 
@@ -45,7 +45,7 @@ describe('heroku members:set', () => {
     })
 
     it('does warn the user when at the free org limit', () => {
-      stubGet.variableSizeOrgMembers(6)
+      stubGet.variableSizeTeamMembers(6)
       stubGet.variableSizeTeamInvites(0)
       apiUpdateMemberRole = stubPatch.updateMemberRole('foo@foo.com', 'admin')
 
@@ -59,7 +59,7 @@ You'll be billed monthly for teams over 5 members.
 
     context('using --org instead of --team', () => {
       it('adds the member, but it shows a warning about the usage of -t instead', () => {
-        stubGet.variableSizeOrgMembers(1)
+        stubGet.variableSizeTeamMembers(1)
         stubGet.variableSizeTeamInvites(0)
 
         apiUpdateMemberRole = stubPatch.updateMemberRole('foo@foo.com', 'admin')
@@ -76,7 +76,7 @@ myorg is a Heroku Team Heroku CLI now supports Heroku Teams. Use -t or --team fo
   context('and group is an enterprise org', () => {
     beforeEach(() => {
       stubGet.orgInfo('enterprise')
-      stubGet.variableSizeOrgMembers(1)
+      stubGet.variableSizeTeamMembers(1)
     })
 
     it('adds a member to an org', () => {

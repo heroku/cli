@@ -172,7 +172,7 @@ function variableSizeTeamInvites (teamSize) {
     .reply(200, invites)
 }
 
-function variableSizeOrgMembers (orgSize) {
+function variableSizeTeamMembers (orgSize) {
   orgSize = (typeof (orgSize) === 'undefined') ? 1 : orgSize
   let teamMembers = []
   for (let i = 0; i < orgSize; i++) {
@@ -181,7 +181,7 @@ function variableSizeOrgMembers (orgSize) {
       user: { email: `test${i}@heroku.com` } })
   }
   return nock('https://api.heroku.com:443')
-    .get('/organizations/myorg/members')
+    .get('/teams/myorg/members')
     .reply(200, teamMembers)
 }
 
@@ -200,6 +200,6 @@ module.exports = {
   teams,
   userAccount,
   userFeatureFlags,
-  variableSizeOrgMembers,
+  variableSizeTeamMembers,
   variableSizeTeamInvites
 }

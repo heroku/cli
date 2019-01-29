@@ -23,7 +23,7 @@ describe('heroku members:add', () => {
       })
 
       it('does not warn the user when under the free org limit', () => {
-        stubGet.variableSizeOrgMembers(1)
+        stubGet.variableSizeTeamMembers(1)
         stubGet.variableSizeTeamInvites(0)
         apiUpdateMemberRole = stubPut.updateMemberRole('foo@foo.com', 'admin')
 
@@ -35,7 +35,7 @@ describe('heroku members:add', () => {
       })
 
       it('does not warn the user when over the free org limit', () => {
-        stubGet.variableSizeOrgMembers(7)
+        stubGet.variableSizeTeamMembers(7)
         stubGet.variableSizeTeamInvites(0)
         apiUpdateMemberRole = stubPut.updateMemberRole('foo@foo.com', 'admin')
 
@@ -47,7 +47,7 @@ describe('heroku members:add', () => {
       })
 
       it('does warn the user when at the free org limit', () => {
-        stubGet.variableSizeOrgMembers(6)
+        stubGet.variableSizeTeamMembers(6)
         stubGet.variableSizeTeamInvites(0)
         apiUpdateMemberRole = stubPut.updateMemberRole('foo@foo.com', 'admin')
 
@@ -61,7 +61,7 @@ You'll be billed monthly for teams over 5 members.
 
       context('using --org instead of --team', () => {
         it('adds the member, but it shows a warning about the usage of -t instead', () => {
-          stubGet.variableSizeOrgMembers(1)
+          stubGet.variableSizeTeamMembers(1)
           stubGet.variableSizeTeamInvites(0)
 
           apiUpdateMemberRole = stubPut.updateMemberRole('foo@foo.com', 'admin')
@@ -78,7 +78,7 @@ Heroku Team Heroku CLI now supports Heroku Teams. Use -t or --team for teams lik
     context('and group is an enterprise org', () => {
       beforeEach(() => {
         stubGet.orgInfo('enterprise')
-        stubGet.variableSizeOrgMembers(1)
+        stubGet.variableSizeTeamMembers(1)
       })
 
       it('adds a member to an org', () => {
@@ -102,7 +102,7 @@ Heroku Team Heroku CLI now supports Heroku Teams. Use -t or --team for teams lik
     it('does warn the user when free org limit is caused by invites', () => {
       let apiSendInvite = stubPut.sendInvite('foo@foo.com', 'admin')
 
-      let apiGetOrgMembers = stubGet.variableSizeOrgMembers(1)
+      let apiGetOrgMembers = stubGet.variableSizeTeamMembers(1)
       let apiGetTeamInvites = stubGet.variableSizeTeamInvites(5)
 
       return cmd.run({ args: { email: 'foo@foo.com' }, flags: { role: 'admin', team: 'myorg' } })
@@ -118,7 +118,7 @@ You'll be billed monthly for teams over 5 members.
     it('sends an invite when adding a new user to the team', () => {
       let apiSendInvite = stubPut.sendInvite('foo@foo.com', 'admin')
 
-      stubGet.variableSizeOrgMembers(1)
+      stubGet.variableSizeTeamMembers(1)
       stubGet.variableSizeTeamInvites(0)
 
       return cmd.run({ args: { email: 'foo@foo.com' }, flags: { role: 'admin', team: 'myorg' } })
