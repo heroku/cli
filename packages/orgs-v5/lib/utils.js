@@ -64,9 +64,9 @@ let warnIfAtTeamMemberLimit = async function (orgInfo, groupName, context, herok
           Accept: 'application/vnd.heroku+json; version=3.team-invitations'
         },
         method: 'GET',
-        path: `/organizations/${groupName}/invitations`
+        path: `/teams/${groupName}/invitations`
       }),
-      members: await heroku.get(`/organizations/${groupName}/members`)
+      members: await heroku.get(`/teams/${groupName}/members`)
     }
     const membersCount = membersAndInvites.invites.length + membersAndInvites.members.length
     if (membersCount === FREE_TEAM_LIMIT) cli.warn("You'll be billed monthly for teams over 5 members.")
