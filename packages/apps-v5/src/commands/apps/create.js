@@ -190,7 +190,6 @@ $ heroku apps:create --region eu`,
     { name: 'kernel', hidden: true, hasValue: true },
     { name: 'locked', hidden: true },
     { name: 'json', description: 'output in json format' },
-    // flags.org({name: 'org', hasValue: true}),
     flags.team({ name: 'team', hasValue: true })
   ],
   run: cli.command(run)

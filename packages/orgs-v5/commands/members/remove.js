@@ -65,7 +65,6 @@ module.exports = {
   wantsOrg: true,
   args: [{ name: 'email' }],
   flags: [
-    // flags.org({name: 'org', hasValue: true, description: 'org to use', hidden: false}),
     flags.team({ name: 'team', hasValue: true, hidden: true })
   ],
   run: cli.command(co.wrap(run))
