@@ -31,7 +31,7 @@ describe('heroku members:remove', () => {
 
     context('without the feature flag team-invite-acceptance', () => {
       beforeEach(() => {
-        stubGet.orgFeatures([])
+        stubGet.teamFeatures([])
       })
 
       context('using --org instead of --team', () => {
@@ -59,7 +59,7 @@ myorg is a Heroku Team Heroku CLI now supports Heroku Teams. Use -t or --team fo
       let apiGetTeamInvites
 
       beforeEach(() => {
-        stubGet.orgFeatures([{ name: 'team-invite-acceptance', enabled: true }])
+        stubGet.teamFeatures([{ name: 'team-invite-acceptance', enabled: true }])
       })
 
       context('with no pending invites', () => {

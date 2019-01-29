@@ -39,7 +39,7 @@ describe('heroku apps:join', () => {
       .then(() => apiGetUserAccount.done())
       .catch(function (err) {
         thrown = true
-        expect(err.body.error).to.eq('You do not have access to the organization heroku-tools.')
+        expect(err.body.error).to.eq('You do not have access to the team heroku-tools.')
       })
       .then(function () {
         expect(thrown).to.eq(true)

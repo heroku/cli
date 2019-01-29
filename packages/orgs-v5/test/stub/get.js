@@ -72,11 +72,11 @@ function orgAppCollaboratorsWithPermissions () {
     ])
 }
 
-function orgFeatures (features) {
+function teamFeatures (features) {
   return nock('https://api.heroku.com:443', {
     reqheaders: { Accept: 'application/vnd.heroku+json; version=3' }
   })
-    .get('/organizations/myorg/features')
+    .get('/teams/myorg/features')
     .reply(200, features)
 }
 
@@ -193,7 +193,7 @@ module.exports = {
   orgApp,
   orgAppCollaboratorsWithPermissions,
   orgInfo,
-  orgFeatures,
+  teamFeatures,
   teamInvites,
   orgMembers,
   personalApp,

@@ -11,12 +11,12 @@ describe('heroku members', () => {
 
   let apiGetOrgMembers
 
-  context('when it is an Enterprise org', () => {
+  context('when it is an Enterprise team', () => {
     beforeEach(() => {
       stubGet.orgInfo('enterprise')
     })
 
-    it('shows there are not org members if it is an orphan org', () => {
+    it('shows there are not team members if it is an orphan team', () => {
       apiGetOrgMembers = stubGet.orgMembers([])
       return cmd.run({ org: 'myorg', flags: {} })
         .then(() => expect(
@@ -26,7 +26,7 @@ describe('heroku members', () => {
         .then(() => apiGetOrgMembers.done())
     })
 
-    it('shows all the org members', () => {
+    it('shows all the team members', () => {
       apiGetOrgMembers = stubGet.orgMembers([
         { email: 'a@heroku.com', role: 'admin' }, { email: 'b@heroku.com', role: 'collaborator' }
       ])
@@ -79,7 +79,7 @@ b@heroku.com  collaborator
 
     context('without the feature flag team-invite-acceptance', () => {
       beforeEach(() => {
-        stubGet.orgFeatures([])
+        stubGet.teamFeatures([])
       })
 
       context('using --org instead of --team', () => {
@@ -101,7 +101,7 @@ Use -t or --team for teams like myorg
 
     context('with the feature flag team-invite-acceptance', () => {
       beforeEach(() => {
-        stubGet.orgFeatures([{ name: 'team-invite-acceptance', enabled: true }])
+        stubGet.teamFeatures([{ name: 'team-invite-acceptance', enabled: true }])
       })
 
       it('shows all members including those with pending invites', () => {

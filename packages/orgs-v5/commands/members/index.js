@@ -13,7 +13,7 @@ function * run (context, heroku) {
   let teamInvites = []
 
   if (orgInfo.type === 'team') {
-    let orgFeatures = yield heroku.get(`/organizations/${groupName}/features`)
+    let orgFeatures = yield heroku.get(`/teams/${groupName}/features`)
 
     if (orgFeatures.find(feature => feature.name === 'team-invite-acceptance' && feature.enabled)) {
       teamInvites = yield heroku.request({
@@ -21,7 +21,7 @@ function * run (context, heroku) {
           Accept: 'application/vnd.heroku+json; version=3.team-invitations'
         },
         method: 'GET',
-        path: `/organizations/${groupName}/invitations`
+        path: `/teams/${groupName}/invitations`
       })
       teamInvites = _.map(teamInvites, function (invite) {
         return { email: invite.user.email, role: invite.role, status: 'pending' }
@@ -29,7 +29,7 @@ function * run (context, heroku) {
     }
   }
 
-  let members = yield heroku.get(`/organizations/${groupName}/members`)
+  let members = yield heroku.get(`/teams/${groupName}/members`)
   // Set status '' to all existing members
   _.map(members, (member) => { member.status = '' })
   members = _.sortBy(_.union(members, teamInvites), 'email')

@@ -17,7 +17,7 @@ describe('heroku access:add', () => {
       cli.mockConsole()
       apiGet = stubGet.orgApp()
       apiPost = stubPost.teamAppCollaborators,('raulb@heroku.com', ['deploy', 'view'])
-      apiGetOrgFeatures = stubGet.orgFeatures([{ name: 'org-access-controls' }])
+      apiGetOrgFeatures = stubGet.teamFeatures([{ name: 'org-access-controls' }])
     })
     afterEach(() => nock.cleanAll())
 
@@ -69,7 +69,7 @@ Adding raulb@heroku.com access to the app myapp with deploy,view permissions... 
       cli.mockConsole()
       apiGet = stubGet.orgApp()
       apiPost = stubPost.collaborators()
-      apiGetOrgFeatures = stubGet.orgFeatures([])
+      apiGetOrgFeatures = stubGet.teamFeatures([])
     })
     afterEach(() => nock.cleanAll())
 

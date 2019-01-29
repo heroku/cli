@@ -14,7 +14,7 @@ describe('heroku members:add', () => {
 
   context('without the feature flag team-invite-acceptance', () => {
     beforeEach(() => {
-      stubGet.orgFeatures([])
+      stubGet.teamFeatures([])
     })
 
     context('and group is a team', () => {
@@ -95,7 +95,7 @@ Heroku Team Heroku CLI now supports Heroku Teams. Use -t or --team for teams lik
 
   context('with the feature flag team-invite-acceptance for a team', () => {
     beforeEach(() => {
-      stubGet.orgFeatures([{ name: 'team-invite-acceptance', enabled: true }])
+      stubGet.teamFeatures([{ name: 'team-invite-acceptance', enabled: true }])
       stubGet.orgInfo('team')
     })
 

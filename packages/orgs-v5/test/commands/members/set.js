@@ -11,7 +11,7 @@ describe('heroku members:set', () => {
 
   beforeEach(() => {
     cli.mockConsole()
-    stubGet.orgFeatures([])
+    stubGet.teamFeatures([])
   })
   afterEach(() => nock.cleanAll())
 

@@ -39,8 +39,8 @@ function * run (context, heroku) {
   }
 
   if (orgInfo.type === 'team') {
-    let orgFeatures = yield heroku.get(`/organizations/${groupName}/features`)
-    teamInviteFeatureEnabled = !!orgFeatures.find(feature => feature.name === 'team-invite-acceptance' && feature.enabled)
+    let teamFeatures = yield heroku.get(`/teams/${groupName}/features`)
+    teamInviteFeatureEnabled = !!teamFeatures.find(feature => feature.name === 'team-invite-acceptance' && feature.enabled)
 
     if (teamInviteFeatureEnabled) {
       let invites = yield teamInvites()
