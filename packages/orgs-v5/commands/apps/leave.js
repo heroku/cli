@@ -17,7 +17,7 @@ function * run (context, heroku) {
 let cmd = {
   topic: 'apps',
   command: 'leave',
-  description: 'remove yourself from an organization app',
+  description: 'remove yourself from a team app',
   needsAuth: true,
   needsApp: true,
   run: cli.command(co.wrap(run))
