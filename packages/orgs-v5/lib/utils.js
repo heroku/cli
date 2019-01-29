@@ -35,7 +35,7 @@ let printGroupsJSON = function (group) {
 let orgInfo = function * (context, heroku) {
   let teamOrOrgName = context.org || context.flags.team
   if (!teamOrOrgName) error.exit(1, 'No team or org specified.\nRun this command with --team or --org')
-  return yield heroku.get(`/organizations/${context.org || context.flags.team}`)
+  return yield heroku.get(`/teams/${context.org || context.flags.team}`)
 }
 
 let warnUsingOrgFlagInTeams = function (orgInfo, context) {
@@ -47,7 +47,7 @@ let warnUsingOrgFlagInTeams = function (orgInfo, context) {
 let addMemberToOrg = function * (email, role, groupName, heroku, method = 'PUT') {
   let request = heroku.request({
     method: method,
-    path: `/organizations/${groupName}/members`,
+    path: `/teams/${groupName}/members`,
     body: {email, role}
   })
   yield cli.action(`Adding ${cli.color.cyan(email)} to ${cli.color.magenta(groupName)} as ${cli.color.green(role)}`, request)
