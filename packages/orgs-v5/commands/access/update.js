@@ -21,7 +21,7 @@ async function run (context, heroku) {
   permissions.push('view')
   permissions = _.uniq(permissions.sort())
 
-  let request = heroku.patch(`/organizations/apps/${appName}/collaborators/${context.args.email}`, {
+  let request = heroku.patch(`/teams/apps/${appName}/collaborators/${context.args.email}`, {
     body: { permissions: permissions }
   })
   await cli.action(`Updating ${context.args.email} in application ${cli.color.cyan(appName)} with ${permissions} permissions`, request)
