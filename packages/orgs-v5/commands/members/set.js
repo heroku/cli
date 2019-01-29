@@ -12,7 +12,7 @@ function * run (context, heroku) {
   let email = context.args.email
   let role = context.flags.role
 
-  yield Utils.addMemberToOrg(email, role, groupName, heroku, 'PATCH')
+  yield Utils.addMemberToTeam(email, role, groupName, heroku, 'PATCH')
   yield Utils.warnIfAtTeamMemberLimit(teamInfo, groupName, context, heroku)
   Utils.warnUsingOrgFlagInTeams(teamInfo, context)
 }

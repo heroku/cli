@@ -31,7 +31,7 @@ function * run (context, heroku) {
   if (teamInfo.type === 'team' && groupFeatures.find(feature => { return feature.name === 'team-invite-acceptance' && feature.enabled })) {
     yield inviteMemberToTeam(email, role, groupName)
   } else {
-    yield Utils.addMemberToOrg(email, role, groupName, heroku)
+    yield Utils.addMemberToTeam(email, role, groupName, heroku)
   }
 
   yield Utils.warnIfAtTeamMemberLimit(teamInfo, groupName, context, heroku)

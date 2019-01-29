@@ -44,7 +44,7 @@ let warnUsingOrgFlagInTeams = function (teamInfo, context) {
   }
 }
 
-let addMemberToOrg = function * (email, role, groupName, heroku, method = 'PUT') {
+let addMemberToTeam = function * (email, role, groupName, heroku, method = 'PUT') {
   let request = heroku.request({
     method: method,
     path: `/teams/${groupName}/members`,
@@ -74,7 +74,7 @@ let warnIfAtTeamMemberLimit = async function (teamInfo, groupName, context, hero
 }
 
 module.exports = {
-  addMemberToOrg,
+  addMemberToTeam,
   getOwner,
   isteamApp,
   isValidEmail,
