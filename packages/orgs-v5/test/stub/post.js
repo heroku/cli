@@ -9,7 +9,7 @@ function collaborators () {
     }).reply(200)
 }
 
-function orgAppcollaborators (email = 'raulb@heroku.com', permissions = [], response = {}) {
+function teamAppCollaborators (email = 'raulb@heroku.com', permissions = [], response = {}) {
   let body = { user: email }
   if (permissions.length) {
     body.permissions = permissions
@@ -18,7 +18,7 @@ function orgAppcollaborators (email = 'raulb@heroku.com', permissions = [], resp
   return nock('https://api.heroku.com:443', {
     reqheaders: { Accept: 'application/vnd.heroku+json; version=3' }
   })
-    .post('/organizations/apps/myapp/collaborators', body).reply(response.code || 200, response.description)
+    .post('/teams/apps/myapp/collaborators', body).reply(response.code || 200, response.description)
 }
 
 function personalToPersonal () {
@@ -30,5 +30,5 @@ function personalToPersonal () {
 module.exports = {
   collaborators,
   personalToPersonal,
-  orgAppcollaborators
+  teamAppCollaborators,
 }
