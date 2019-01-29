@@ -59,7 +59,6 @@ module.exports = {
   topic: 'members',
   description: 'list members of a team',
   needsAuth: true,
-  wantsOrg: true,
   flags: [
     { name: 'role', char: 'r', hasValue: true, description: 'filter by role', completion: RoleCompletion },
     { name: 'pending', hasValue: false, description: 'filter by pending team invitations' },

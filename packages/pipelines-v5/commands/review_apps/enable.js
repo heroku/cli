@@ -15,7 +15,6 @@ Enabling auto destroy ...
 Configuring pipeline... done`,
   needsApp: false,
   needsAuth: true,
-  wantsOrg: false,
   args: [],
   flags: [
     flags.pipeline({ name: 'pipeline', required: true, hasValue: true }),

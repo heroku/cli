@@ -62,7 +62,6 @@ module.exports = {
   command: 'remove',
   description: 'removes a user from a team',
   needsAuth: true,
-  wantsOrg: true,
   args: [{ name: 'email' }],
   flags: [
     flags.team({ name: 'team', hasValue: true, hidden: true })
