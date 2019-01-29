@@ -8,20 +8,20 @@ manage organizations
 
 ## `heroku orgs`
 
-list the organizations that you are a member of
+list the teams that you are a member of
 
 ```
 USAGE
   $ heroku orgs
 
 OPTIONS
-  --enterprise  filter by enterprise orgs
+  --enterprise  filter by enterprise teams
   --json        output in json format
 ```
 
 ## `heroku orgs:open`
 
-open the organization interface in a browser window
+open the team interface in a browser window
 
 ```
 USAGE
