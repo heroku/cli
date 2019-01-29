@@ -18,7 +18,7 @@ function teamInvite (email = 'foo@email.com') {
   return nock('https://api.heroku.com:443', {
     reqheaders: { Accept: 'application/vnd.heroku+json; version=3.team-invitations' }
   })
-    .delete(`/organizations/myorg/invitations/${email}`).reply(200, {})
+    .delete(`/teams/myorg/invitations/${email}`).reply(200, {})
 }
 
 function memberFromOrg () {

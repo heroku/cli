@@ -18,7 +18,7 @@ function * run (context, heroku) {
         Accept: 'application/vnd.heroku+json; version=3.team-invitations'
       },
       method: 'GET',
-      path: `/organizations/${groupName}/invitations`
+      path: `/teams/${groupName}/invitations`
     })
   }
 
@@ -28,13 +28,13 @@ function * run (context, heroku) {
         Accept: 'application/vnd.heroku+json; version=3.team-invitations'
       },
       method: 'DELETE',
-      path: `/organizations/${groupName}/invitations/${email}`
+      path: `/teams/${groupName}/invitations/${email}`
     })
     yield cli.action(`Revoking invite for ${cli.color.cyan(email)} in ${cli.color.magenta(groupName)}`, request)
   }
 
   let removeUserMembership = function * () {
-    let request = heroku.delete(`/organizations/${groupName}/members/${encodeURIComponent(email)}`)
+    let request = heroku.delete(`/teams/${groupName}/members/${encodeURIComponent(email)}`)
     yield cli.action(`Removing ${cli.color.cyan(email)} from ${cli.color.magenta(groupName)}`, request)
   }
 
@@ -60,7 +60,7 @@ function * run (context, heroku) {
 module.exports = {
   topic: 'members',
   command: 'remove',
-  description: 'removes a user from an organization or a team',
+  description: 'removes a user from a team',
   needsAuth: true,
   wantsOrg: true,
   args: [{ name: 'email' }],

@@ -4,7 +4,7 @@ const nock = require('nock')
 
 function sendInvite (email = 'raulb@heroku.com', role = 'admin') {
   return nock('https://api.heroku.com:443')
-    .put('/organizations/myorg/invitations', { email, role })
+    .put('/teams/myorg/invitations', { email, role })
     .reply(200)
 }
 
