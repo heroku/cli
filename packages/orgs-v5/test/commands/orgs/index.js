@@ -4,32 +4,32 @@
 let cmd = require('../../../commands/orgs')
 let stubGet = require('../../stub/get')
 
-describe('heroku orgs', () => {
+describe('heroku teams', () => {
   beforeEach(() => cli.mockConsole())
   afterEach(() => nock.cleanAll())
 
-  it('shows Enterprise orgs only when passing the --enterprise flag', () => {
-    let apiGetOrgs = stubGet.orgs()
+  it('shows Enterprise teams only when passing the --enterprise flag', () => {
+    let apiGetTeams = stubGet.teams()
 
     return cmd.run({ flags: { enterprise: true } })
       .then(() => expect(
-        `org a          collaborator
-org b          admin\n`).to.eq(cli.stdout))
+        `enterprise a          collaborator
+enterprise b          admin\n`).to.eq(cli.stdout))
       .then(() => expect('').to.eq(cli.stderr))
-      .then(() => apiGetOrgs.done())
+      .then(() => apiGetTeams.done())
   })
 
-  it('shows orgs (now called teams)', () => {
-    let apiGetOrgsOnly = stubGet.orgs([
-      { name: 'org a', role: 'collaborator', type: 'enterprise' },
-      { name: 'org b', role: 'admin', type: 'enterprise' }
+  it('shows teams', () => {
+    let apiGetTeamsOnly = stubGet.teams([
+      { name: 'enterprise a', role: 'collaborator', type: 'enterprise' },
+      { name: 'enterprise b', role: 'admin', type: 'enterprise' }
     ])
 
     return cmd.run({ flags: {} })
       .then(() => expect(
-        `org a          collaborator
-org b          admin\n`).to.eq(cli.stdout))
+        `enterprise a          collaborator
+enterprise b          admin\n`).to.eq(cli.stdout))
       .then(() => expect('').to.eq(cli.stderr))
-      .then(() => apiGetOrgsOnly.done())
+      .then(() => apiGetTeamsOnly.done())
   })
 })

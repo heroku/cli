@@ -33,14 +33,14 @@ function appPermissions () {
     ])
 }
 
-function orgs (orgs = [
-  { name: 'org a', role: 'collaborator', type: 'enterprise' },
+function teams (orgs = [
+  { name: 'enterprise a', role: 'collaborator', type: 'enterprise' },
   { name: 'team a', role: 'collaborator', type: 'team' },
-  { name: 'org b', role: 'admin', type: 'enterprise' },
+  { name: 'enterprise b', role: 'admin', type: 'enterprise' },
   { name: 'team b', role: 'admin', type: 'team' }
 ]) {
   return nock('https://api.heroku.com:443')
-    .get('/organizations')
+    .get('/teams')
     .reply(200, orgs)
 }
 
@@ -90,15 +90,6 @@ function orgInfo (type = 'enterprise') {
       role: 'admin',
       type: type
     })
-}
-
-function teams (teams = [
-  { name: 'team a', role: 'collaborator', type: 'enterprise' },
-  { name: 'team b', role: 'admin', type: 'team' }
-]) {
-  return nock('https://api.heroku.com:443')
-    .get('/teams')
-    .reply(200, teams)
 }
 
 function teamInvites (invites = [
@@ -192,7 +183,6 @@ module.exports = {
   orgApp,
   orgAppCollaboratorsWithPermissions,
   orgInfo,
-  orgs,
   personalApp,
   teamFeatures,
   teamInvites,
