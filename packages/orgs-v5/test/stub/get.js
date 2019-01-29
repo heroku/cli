@@ -114,7 +114,7 @@ function teamInvites (invites = [
     .reply(200, invites)
 }
 
-function orgMembers (members = [
+function teamMembers (members = [
   {
     email: 'raulb@heroku.com',
     role: 'admin',
@@ -132,7 +132,7 @@ function orgMembers (members = [
   }
 ]) {
   return nock('https://api.heroku.com:443')
-    .get('/organizations/myorg/members')
+    .get('/teams/myorg/members')
     .reply(200, members)
 }
 
@@ -174,29 +174,29 @@ function variableSizeTeamInvites (teamSize) {
 
 function variableSizeOrgMembers (orgSize) {
   orgSize = (typeof (orgSize) === 'undefined') ? 1 : orgSize
-  let orgMembers = []
+  let teamMembers = []
   for (let i = 0; i < orgSize; i++) {
-    orgMembers.push({ email: `test${i}@heroku.com`,
+    teamMembers.push({ email: `test${i}@heroku.com`,
       role: 'admin',
       user: { email: `test${i}@heroku.com` } })
   }
   return nock('https://api.heroku.com:443')
     .get('/organizations/myorg/members')
-    .reply(200, orgMembers)
+    .reply(200, teamMembers)
 }
 
 module.exports = {
-  apps,
   appCollaborators,
   appPermissions,
-  orgs,
+  apps,
   orgApp,
   orgAppCollaboratorsWithPermissions,
   orgInfo,
+  orgs,
+  personalApp,
   teamFeatures,
   teamInvites,
-  orgMembers,
-  personalApp,
+  teamMembers,
   teams,
   userAccount,
   userFeatureFlags,

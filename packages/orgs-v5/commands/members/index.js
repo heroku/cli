@@ -57,7 +57,7 @@ function * run (context, heroku) {
 
 module.exports = {
   topic: 'members',
-  description: 'list members of an organization or a team',
+  description: 'list members of a team',
   needsAuth: true,
   wantsOrg: true,
   flags: [

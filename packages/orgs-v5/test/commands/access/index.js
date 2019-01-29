@@ -30,7 +30,7 @@ raulb@heroku.com  owner
 
     it('shows the app collaborators and hides the org collaborator record', () => {
       let apiGetOrgApp = stubGet.orgApp()
-      let apiGetOrgMembers = stubGet.orgMembers()
+      let apiGetOrgMembers = stubGet.teamMembers()
       let apiGetAppPermissions = stubGet.appPermissions()
       let apiGetOrgAppCollaboratorsWithPermissions = stubGet.orgAppCollaboratorsWithPermissions()
 

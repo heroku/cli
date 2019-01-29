@@ -17,7 +17,7 @@ describe('heroku members', () => {
     })
 
     it('shows there are not team members if it is an orphan team', () => {
-      apiGetOrgMembers = stubGet.orgMembers([])
+      apiGetOrgMembers = stubGet.teamMembers([])
       return cmd.run({ org: 'myorg', flags: {} })
         .then(() => expect(
           `No members in myorg
@@ -27,7 +27,7 @@ describe('heroku members', () => {
     })
 
     it('shows all the team members', () => {
-      apiGetOrgMembers = stubGet.orgMembers([
+      apiGetOrgMembers = stubGet.teamMembers([
         { email: 'a@heroku.com', role: 'admin' }, { email: 'b@heroku.com', role: 'collaborator' }
       ])
       return cmd.run({ org: 'myorg', flags: {} })
@@ -42,7 +42,7 @@ b@heroku.com  collaborator
     let expectedOrgMembers = [{ email: 'a@heroku.com', role: 'admin' }, { email: 'b@heroku.com', role: 'member' }]
 
     it('filters members by role', () => {
-      apiGetOrgMembers = stubGet.orgMembers(expectedOrgMembers)
+      apiGetOrgMembers = stubGet.teamMembers(expectedOrgMembers)
       return cmd.run({ org: 'myorg', flags: { role: 'member' } })
         .then(() => expect(
           `b@heroku.com  member
@@ -52,7 +52,7 @@ b@heroku.com  collaborator
     })
 
     it("shows the right message when filter doesn't return results", () => {
-      apiGetOrgMembers = stubGet.orgMembers(expectedOrgMembers)
+      apiGetOrgMembers = stubGet.teamMembers(expectedOrgMembers)
       return cmd.run({ org: 'myorg', flags: { role: 'collaborator' } })
         .then(() => expect(
           `No members in myorg with role collaborator
@@ -62,7 +62,7 @@ b@heroku.com  collaborator
     })
 
     it('filters members by role', () => {
-      apiGetOrgMembers = stubGet.orgMembers(expectedOrgMembers)
+      apiGetOrgMembers = stubGet.teamMembers(expectedOrgMembers)
       return cmd.run({ org: 'myorg', flags: { role: 'member' } })
         .then(() => expect(
           `b@heroku.com  member
@@ -84,7 +84,7 @@ b@heroku.com  collaborator
 
       context('using --org instead of --team', () => {
         it('shows members either way including a warning', () => {
-          apiGetOrgMembers = stubGet.orgMembers([
+          apiGetOrgMembers = stubGet.teamMembers([
             { email: 'a@heroku.com', role: 'admin' }, { email: 'b@heroku.com', role: 'collaborator' }
           ])
           return cmd.run({ org: 'myorg', flags: {} })
@@ -107,7 +107,7 @@ Use -t or --team for teams like myorg
       it('shows all members including those with pending invites', () => {
         let apiGetTeamInvites = stubGet.teamInvites()
 
-        apiGetOrgMembers = stubGet.orgMembers([
+        apiGetOrgMembers = stubGet.teamMembers([
           { email: 'a@heroku.com', role: 'admin' }, { email: 'b@heroku.com', role: 'collaborator' }
         ])
 
@@ -125,7 +125,7 @@ invited-user@mail.com  admin         pending
       it('filters members by pending invites', () => {
         let apiGetTeamInvites = stubGet.teamInvites()
 
-        apiGetOrgMembers = stubGet.orgMembers([
+        apiGetOrgMembers = stubGet.teamMembers([
           { email: 'a@heroku.com', role: 'admin' }, { email: 'b@heroku.com', role: 'collaborator' }
         ])
 
