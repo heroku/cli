@@ -204,7 +204,10 @@ describe('pipelines:promote', function () {
         expect(cli.stdout).to.contain('successful')
       })
         .then(() => stdMocks.restore())
-        .catch(() => stdMocks.restore())
+        .catch(err => {
+          stdMocks.restore()
+          throw err
+        })
     })
   })
 })
