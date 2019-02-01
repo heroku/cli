@@ -142,7 +142,7 @@ function * streamReleaseCommand (heroku, targets, promotion) {
       } else reject(err)
     })
     stream.on('end', resolve)
-    let piped = stream.pipe(process.stdout)
+    const piped = stream.pipe(process.stdout)
     piped.on('error', reject)
   })
   yield fetch()
