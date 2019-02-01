@@ -11,7 +11,7 @@ const listPipelineApps = api.listPipelineApps
 
 const PROMOTION_ORDER = ['development', 'staging', 'production']
 
-const wait = (ms = 100) => new Promise(cb => setTimeout(cb, ms))
+const wait = (ms = 100) => new Promise(resolve => setTimeout(resolve, ms))
 
 function isComplete (promotionTarget) {
   return promotionTarget.status !== 'pending'
