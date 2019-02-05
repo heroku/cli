@@ -15,6 +15,8 @@ manage postgresql databases
 * [`heroku pg:backups:schedules`](#heroku-pgbackupsschedules)
 * [`heroku pg:backups:unschedule [DATABASE]`](#heroku-pgbackupsunschedule-database)
 * [`heroku pg:backups:url [BACKUP_ID]`](#heroku-pgbackupsurl-backup-id)
+* [`heroku pg:bloat [DATABASE]`](#heroku-pgbloat-database)
+* [`heroku pg:blocking [DATABASE]`](#heroku-pgblocking-database)
 * [`heroku pg:connection-pooling:attach [DATABASE]`](#heroku-pgconnection-poolingattach-database)
 * [`heroku pg:copy SOURCE TARGET`](#heroku-pgcopy-source-target)
 * [`heroku pg:credentials [DATABASE]`](#heroku-pgcredentials-database)
@@ -30,6 +32,7 @@ manage postgresql databases
 * [`heroku pg:links [DATABASE]`](#heroku-pglinks-database)
 * [`heroku pg:links:create REMOTE DATABASE`](#heroku-pglinkscreate-remote-database)
 * [`heroku pg:links:destroy DATABASE LINK`](#heroku-pglinksdestroy-database-link)
+* [`heroku pg:locks [DATABASE]`](#heroku-pglocks-database)
 * [`heroku pg:maintenance [DATABASE]`](#heroku-pgmaintenance-database)
 * [`heroku pg:maintenance:run [DATABASE]`](#heroku-pgmaintenancerun-database)
 * [`heroku pg:maintenance:window DATABASE WINDOW`](#heroku-pgmaintenancewindow-database-window)
@@ -46,6 +49,7 @@ manage postgresql databases
 * [`heroku pg:settings:log-statement [VALUE] [DATABASE]`](#heroku-pgsettingslog-statement-value-database)
 * [`heroku pg:unfollow DATABASE`](#heroku-pgunfollow-database)
 * [`heroku pg:upgrade [DATABASE]`](#heroku-pgupgrade-database)
+* [`heroku pg:vacuum-stats [DATABASE]`](#heroku-pgvacuum-stats-database)
 * [`heroku pg:wait [DATABASE]`](#heroku-pgwait-database)
 
 ## `heroku pg [DATABASE]`
@@ -212,6 +216,32 @@ get secret but publicly accessible URL of a backup
 ```
 USAGE
   $ heroku pg:backups:url [BACKUP_ID]
+
+OPTIONS
+  -a, --app=app        (required) app to run command against
+  -r, --remote=remote  git remote of app to use
+```
+
+## `heroku pg:bloat [DATABASE]`
+
+show table and index bloat in your database ordered by most wasteful
+
+```
+USAGE
+  $ heroku pg:bloat [DATABASE]
+
+OPTIONS
+  -a, --app=app        (required) app to run command against
+  -r, --remote=remote  git remote of app to use
+```
+
+## `heroku pg:blocking [DATABASE]`
+
+display queries holding locks other queries are waiting to be released
+
+```
+USAGE
+  $ heroku pg:blocking [DATABASE]
 
 OPTIONS
   -a, --app=app        (required) app to run command against
@@ -466,6 +496,20 @@ DESCRIPTION
   Example:
 
        heroku pg:links:destroy HEROKU_POSTGRESQL_CERULEAN redis-symmetrical-100
+```
+
+## `heroku pg:locks [DATABASE]`
+
+display queries with active locks
+
+```
+USAGE
+  $ heroku pg:locks [DATABASE]
+
+OPTIONS
+  -a, --app=app        (required) app to run command against
+  -r, --remote=remote  git remote of app to use
+  -t, --truncate       truncates queries to 40 charaters
 ```
 
 ## `heroku pg:maintenance [DATABASE]`
@@ -753,6 +797,19 @@ OPTIONS
 
 DESCRIPTION
   to upgrade to another PostgreSQL version, use pg:copy instead
+```
+
+## `heroku pg:vacuum-stats [DATABASE]`
+
+show dead rows and whether an automatic vacuum is expected to be triggered
+
+```
+USAGE
+  $ heroku pg:vacuum-stats [DATABASE]
+
+OPTIONS
+  -a, --app=app        (required) app to run command against
+  -r, --remote=remote  git remote of app to use
 ```
 
 ## `heroku pg:wait [DATABASE]`

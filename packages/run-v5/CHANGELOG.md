@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.20.0](https://github.com/heroku/cli/compare/v7.19.4...v7.20.0) (2019-02-05)
+
+
+### Bug Fixes
+
+* **run-v5:** Join parsed router logs correctly ([#1184](https://github.com/heroku/cli/issues/1184)) ([2a7fcad](https://github.com/heroku/cli/commit/2a7fcad))
+
+
+
+
+
 ## [7.19.4](https://github.com/heroku/cli/compare/v7.19.3...v7.19.4) (2018-12-19)
 
 

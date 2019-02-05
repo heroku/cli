@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.20.0](https://github.com/heroku/cli/compare/v7.19.4...v7.20.0) (2019-02-05)
+
+
+### Bug Fixes
+
+* increase mocha timeouts ([7d31bc1](https://github.com/heroku/cli/commit/7d31bc1))
+* use lowercase dyno-sizes for completion ([#1180](https://github.com/heroku/cli/issues/1180)) ([2d12edb](https://github.com/heroku/cli/commit/2d12edb))
+
+
+
+
+
 ## [7.19.3](https://github.com/heroku/cli/compare/v7.19.2...v7.19.3) (2018-12-04)
 
 

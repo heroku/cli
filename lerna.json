@@ -1,5 +1,5 @@
 {
-  "version": "7.19.4",
+  "version": "7.20.0",
   "lerna": "2.11.0",
   "useWorkspaces": true,
   "npmClient": "yarn",
