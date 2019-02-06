@@ -11,6 +11,8 @@ const listPipelineApps = api.listPipelineApps
 
 const PROMOTION_ORDER = ['development', 'staging', 'production']
 
+const wait = (ms = 100) => new Promise(resolve => setTimeout(resolve, ms))
+
 function isComplete (promotionTarget) {
   return promotionTarget.status !== 'pending'
 }
@@ -131,13 +133,19 @@ function * streamReleaseCommand (heroku, targets, promotion) {
   }
 
   cli.log('Running release command...')
-  yield new Promise(function (resolve, reject) {
-    let stream = cli.got.stream(release.output_stream_url)
-    stream.on('error', reject)
+  const fetch = (retry = 100) => new Promise((resolve, reject) => {
+    const stream = cli.got.stream(release.output_stream_url)
+    stream.on('error', async err => {
+      await wait(100)
+      if (retry && err.statusCode === 404) {
+        fetch(retry - 1).then(resolve).catch(reject)
+      } else reject(err)
+    })
     stream.on('end', resolve)
-    let piped = stream.pipe(process.stdout)
+    const piped = stream.pipe(process.stdout)
     piped.on('error', reject)
   })
+  yield fetch()
 
   return yield pollPromotionStatus(heroku, promotion.id, false)
 }

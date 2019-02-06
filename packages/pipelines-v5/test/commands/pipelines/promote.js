@@ -167,12 +167,14 @@ describe('pipelines:promote', function () {
           pipeline: { id: pipeline.id },
           source: { app: { id: sourceApp.id } },
           targets: [
-            { app: { id: targetApp1.id } }
+            { app: { id: targetApp1.id } },
+            { app: { id: targetApp2.id } }
           ]
         })
         .reply(201, promotion)
         .get(`/apps/${targetApp1.id}/releases/${release.id}`)
         .reply(200, targetReleaseWithOutput)
+
       busl = nock('https://busl.example')
         .get('/release')
         .reply(200, 'Release Command Output')
@@ -200,11 +202,14 @@ describe('pipelines:promote', function () {
       return cmd.run({ app: sourceApp.name }).then(function () {
         req.done()
         busl.done()
-        expect(cli.stdout).to.contain('Release Command Output')
+        expect(cli.stdout).to.contain('Running release command')
         expect(cli.stdout).to.contain('successful')
       })
         .then(() => stdMocks.restore())
-        .catch(() => stdMocks.restore())
+        .catch(err => {
+          stdMocks.restore()
+          throw err
+        })
     })
   })
 })
