@@ -7,8 +7,8 @@
   "dependencies": {
     "@heroku-cli/color": "^1.1.14",
     "@heroku-cli/command": "^8.2.6",
-    "@oclif/command": "^1.5.5",
-    "@oclif/config": "^1.9.0",
+    "@oclif/command": "^1.5.10",
+    "@oclif/config": "^1.12.6",
     "cli-ux": "^4.9.3",
     "date-fns": "^2.0.0-alpha.8"
   },

@@ -5,8 +5,8 @@
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
     "@heroku-cli/command": "^8.2.6",
-    "@oclif/command": "^1.5.5",
-    "@oclif/config": "^1.9.0",
+    "@oclif/command": "^1.5.10",
+    "@oclif/config": "^1.12.6",
     "tslib": "^1.9.3"
   },
   "devDependencies": {
