@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.21.0](https://github.com/heroku/cli/compare/v7.20.1...v7.21.0) (2019-02-11)
+
+
+### Features
+
+* **ps:** bring ps:wait into the mainline ps plugin ([#1175](https://github.com/heroku/cli/issues/1175)) ([43040b6](https://github.com/heroku/cli/commit/43040b6))
+
+
+
+
+
 # [7.20.0](https://github.com/heroku/cli/compare/v7.19.4...v7.20.0) (2019-02-05)
 
 

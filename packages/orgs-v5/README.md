@@ -241,7 +241,7 @@ OPTIONS
 
 ## `heroku members`
 
-list members of a team or a team
+list members of a team
 
 ```
 USAGE
@@ -249,14 +249,13 @@ USAGE
 
 OPTIONS
   -r, --role=role  filter by role
-  -t, --team=team  team to use
   --json           output in json format
   --pending        filter by pending team invitations
 ```
 
 ## `heroku members:add EMAIL`
 
-adds a user to a team or a team
+adds a user to a team
 
 ```
 USAGE
@@ -264,19 +263,15 @@ USAGE
 
 OPTIONS
   -r, --role=role  (required) member role (admin, collaborator, member, owner)
-  -t, --team=team  team to use
 ```
 
 ## `heroku members:remove EMAIL`
 
-removes a user from a team or a team
+removes a user from a team
 
 ```
 USAGE
   $ heroku members:remove EMAIL
-
-OPTIONS
-  -t, --team=team  team to use
 ```
 
 ## `heroku members:set EMAIL`
@@ -289,7 +284,6 @@ USAGE
 
 OPTIONS
   -r, --role=role  (required) member role (admin, collaborator, member, owner)
-  -t, --team=team  team to use
 ```
 
 ## `heroku orgs`
@@ -301,7 +295,7 @@ USAGE
   $ heroku orgs
 
 OPTIONS
-  --enterprise  filter by enterprise orgs
+  --enterprise  filter by enterprise teams
   --json        output in json format
 ```
 
@@ -312,9 +306,6 @@ open the team interface in a browser window
 ```
 USAGE
   $ heroku orgs:open
-
-OPTIONS
-  -t, --team=team  team to use
 ```
 
 ## `heroku teams`

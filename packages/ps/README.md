@@ -17,6 +17,7 @@ ps core plugin for Heroku CLI
 <!-- commands -->
 * [`heroku ps:autoscale:disable`](#heroku-psautoscaledisable)
 * [`heroku ps:autoscale:enable`](#heroku-psautoscaleenable)
+* [`heroku ps:wait`](#heroku-pswait)
 * [`heroku regions`](#heroku-regions)
 
 ## `heroku ps:autoscale:disable`
@@ -32,7 +33,7 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
 ```
 
-_See code: [src/commands/ps/autoscale/disable.ts](https://github.com/heroku/cli/blob/v7.20.0/packages/ps/src/commands/ps/autoscale/disable.ts)_
+_See code: [src/commands/ps/autoscale/disable.ts](https://github.com/heroku/cli/blob/v7.21.0/packages/ps/src/commands/ps/autoscale/disable.ts)_
 
 ## `heroku ps:autoscale:enable`
 
@@ -51,7 +52,27 @@ OPTIONS
   --p95=p95            desired p95 response time
 ```
 
-_See code: [src/commands/ps/autoscale/enable.ts](https://github.com/heroku/cli/blob/v7.20.0/packages/ps/src/commands/ps/autoscale/enable.ts)_
+_See code: [src/commands/ps/autoscale/enable.ts](https://github.com/heroku/cli/blob/v7.21.0/packages/ps/src/commands/ps/autoscale/enable.ts)_
+
+## `heroku ps:wait`
+
+wait for all dynos to be running latest version after a release
+
+```
+USAGE
+  $ heroku ps:wait
+
+OPTIONS
+  -R, --with-run                     whether to wait for one-off run dynos
+  -a, --app=app                      (required) app to run command against
+  -r, --remote=remote                git remote of app to use
+  -t, --type=type                    wait for one specific dyno type
+
+  -w, --wait-interval=wait-interval  [default: 10] how frequently to poll in seconds (to avoid hitting Heroku API rate
+                                     limits)
+```
+
+_See code: [src/commands/ps/wait.ts](https://github.com/heroku/cli/blob/v7.21.0/packages/ps/src/commands/ps/wait.ts)_
 
 ## `heroku regions`
 
@@ -67,5 +88,5 @@ OPTIONS
   --private  show regions for private spaces
 ```
 
-_See code: [src/commands/regions.ts](https://github.com/heroku/cli/blob/v7.20.0/packages/ps/src/commands/regions.ts)_
+_See code: [src/commands/regions.ts](https://github.com/heroku/cli/blob/v7.21.0/packages/ps/src/commands/regions.ts)_
 <!-- commandsstop -->

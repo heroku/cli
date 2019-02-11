@@ -194,7 +194,7 @@ DESCRIPTION
 
 ## `heroku apps:join`
 
-add yourself to an organization app
+add yourself to a team app
 
 ```
 USAGE
@@ -207,7 +207,7 @@ OPTIONS
 
 ## `heroku apps:leave`
 
-remove yourself from an organization app
+remove yourself from a team app
 
 ```
 USAGE
@@ -220,7 +220,7 @@ OPTIONS
 
 ## `heroku apps:lock`
 
-prevent organization members from joining an app
+prevent team members from joining an app
 
 ```
 USAGE
@@ -334,7 +334,7 @@ EXAMPLES
 
 ## `heroku apps:unlock`
 
-unlock an app so any organization member can join
+unlock an app so any team member can join
 
 ```
 USAGE

@@ -16,6 +16,7 @@ Client tools for Heroku Exec
 * [`heroku ps:socks`](#heroku-pssocks)
 * [`heroku ps:stop DYNO`](#heroku-psstop-dyno)
 * [`heroku ps:type`](#heroku-pstype)
+* [`heroku ps:wait`](#heroku-pswait)
 
 ## `heroku ps [TYPE [TYPE ...]]`
 
@@ -56,7 +57,7 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
 ```
 
-_See code: [@heroku-cli/plugin-ps](https://github.com/heroku/cli/blob/v7.20.0/packages/ps/src/commands/ps/autoscale/disable.ts)_
+_See code: [@heroku-cli/plugin-ps](https://github.com/heroku/cli/blob/v7.21.0/packages/ps/src/commands/ps/autoscale/disable.ts)_
 
 ## `heroku ps:autoscale:enable`
 
@@ -75,7 +76,7 @@ OPTIONS
   --p95=p95            desired p95 response time
 ```
 
-_See code: [@heroku-cli/plugin-ps](https://github.com/heroku/cli/blob/v7.20.0/packages/ps/src/commands/ps/autoscale/enable.ts)_
+_See code: [@heroku-cli/plugin-ps](https://github.com/heroku/cli/blob/v7.21.0/packages/ps/src/commands/ps/autoscale/enable.ts)_
 
 ## `heroku ps:copy FILE`
 
@@ -299,3 +300,23 @@ DESCRIPTION
 
   Called with 1..n TYPE=SIZE arguments sets the quantity per type.
 ```
+
+## `heroku ps:wait`
+
+wait for all dynos to be running latest version after a release
+
+```
+USAGE
+  $ heroku ps:wait
+
+OPTIONS
+  -R, --with-run                     whether to wait for one-off run dynos
+  -a, --app=app                      (required) app to run command against
+  -r, --remote=remote                git remote of app to use
+  -t, --type=type                    wait for one specific dyno type
+
+  -w, --wait-interval=wait-interval  [default: 10] how frequently to poll in seconds (to avoid hitting Heroku API rate
+                                     limits)
+```
+
+_See code: [@heroku-cli/plugin-ps](https://github.com/heroku/cli/blob/v7.21.0/packages/ps/src/commands/ps/wait.ts)_
