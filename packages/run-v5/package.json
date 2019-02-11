@@ -36,7 +36,7 @@
     "netrc": "0.1.4",
     "nock": "^9.2.6",
     "sinon": "^6.3.5",
-    "unexpected": "^10.39.2"
+    "unexpected": "^11.0.1"
   },
   "files": [
     "/oclif.manifest.json",
