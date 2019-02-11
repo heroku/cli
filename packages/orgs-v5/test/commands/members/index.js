@@ -11,26 +11,26 @@ describe('heroku members', () => {
 
   let apiGetOrgMembers
 
-  context('when it is an Enterprise org', () => {
+  context('when it is an Enterprise team', () => {
     beforeEach(() => {
-      stubGet.orgInfo('enterprise')
+      stubGet.teamInfo('enterprise')
     })
 
-    it('shows there are not org members if it is an orphan org', () => {
-      apiGetOrgMembers = stubGet.orgMembers([])
-      return cmd.run({ org: 'myorg', flags: {} })
+    it('shows there are not team members if it is an orphan team', () => {
+      apiGetOrgMembers = stubGet.teamMembers([])
+      return cmd.run({ org: 'myteam', flags: {} })
         .then(() => expect(
-          `No members in myorg
+          `No members in myteam
 `).to.eq(cli.stdout))
         .then(() => expect('').to.eq(cli.stderr))
         .then(() => apiGetOrgMembers.done())
     })
 
-    it('shows all the org members', () => {
-      apiGetOrgMembers = stubGet.orgMembers([
+    it('shows all the team members', () => {
+      apiGetOrgMembers = stubGet.teamMembers([
         { email: 'a@heroku.com', role: 'admin' }, { email: 'b@heroku.com', role: 'collaborator' }
       ])
-      return cmd.run({ org: 'myorg', flags: {} })
+      return cmd.run({ org: 'myteam', flags: {} })
         .then(() => expect(
           `a@heroku.com  admin
 b@heroku.com  collaborator
@@ -42,8 +42,8 @@ b@heroku.com  collaborator
     let expectedOrgMembers = [{ email: 'a@heroku.com', role: 'admin' }, { email: 'b@heroku.com', role: 'member' }]
 
     it('filters members by role', () => {
-      apiGetOrgMembers = stubGet.orgMembers(expectedOrgMembers)
-      return cmd.run({ org: 'myorg', flags: { role: 'member' } })
+      apiGetOrgMembers = stubGet.teamMembers(expectedOrgMembers)
+      return cmd.run({ org: 'myteam', flags: { role: 'member' } })
         .then(() => expect(
           `b@heroku.com  member
 `).to.eq(cli.stdout))
@@ -52,18 +52,18 @@ b@heroku.com  collaborator
     })
 
     it("shows the right message when filter doesn't return results", () => {
-      apiGetOrgMembers = stubGet.orgMembers(expectedOrgMembers)
-      return cmd.run({ org: 'myorg', flags: { role: 'collaborator' } })
+      apiGetOrgMembers = stubGet.teamMembers(expectedOrgMembers)
+      return cmd.run({ org: 'myteam', flags: { role: 'collaborator' } })
         .then(() => expect(
-          `No members in myorg with role collaborator
+          `No members in myteam with role collaborator
 `).to.eq(cli.stdout))
         .then(() => expect('').to.eq(cli.stderr))
         .then(() => apiGetOrgMembers.done())
     })
 
     it('filters members by role', () => {
-      apiGetOrgMembers = stubGet.orgMembers(expectedOrgMembers)
-      return cmd.run({ org: 'myorg', flags: { role: 'member' } })
+      apiGetOrgMembers = stubGet.teamMembers(expectedOrgMembers)
+      return cmd.run({ org: 'myteam', flags: { role: 'member' } })
         .then(() => expect(
           `b@heroku.com  member
 `).to.eq(cli.stdout))
@@ -74,25 +74,25 @@ b@heroku.com  collaborator
 
   context('when it is a team', () => {
     beforeEach(() => {
-      stubGet.orgInfo('team')
+      stubGet.teamInfo('team')
     })
 
     context('without the feature flag team-invite-acceptance', () => {
       beforeEach(() => {
-        stubGet.orgFeatures([])
+        stubGet.teamFeatures([])
       })
 
       context('using --org instead of --team', () => {
         it('shows members either way including a warning', () => {
-          apiGetOrgMembers = stubGet.orgMembers([
+          apiGetOrgMembers = stubGet.teamMembers([
             { email: 'a@heroku.com', role: 'admin' }, { email: 'b@heroku.com', role: 'collaborator' }
           ])
-          return cmd.run({ org: 'myorg', flags: {} })
+          return cmd.run({ org: 'myteam', flags: {} })
             .then(() => expect(
               `a@heroku.com  admin
 b@heroku.com  collaborator\n`).to.eq(cli.stdout))
-            .then(() => expect(unwrap(cli.stderr)).to.equal(`myorg is a Heroku Team Heroku CLI now supports Heroku Teams. \
-Use -t or --team for teams like myorg
+            .then(() => expect(unwrap(cli.stderr)).to.equal(`myteam is a Heroku Team Heroku CLI now supports Heroku Teams. \
+Use -t or --team for teams like myteam
 `))
             .then(() => apiGetOrgMembers.done())
         })
@@ -101,17 +101,17 @@ Use -t or --team for teams like myorg
 
     context('with the feature flag team-invite-acceptance', () => {
       beforeEach(() => {
-        stubGet.orgFeatures([{ name: 'team-invite-acceptance', enabled: true }])
+        stubGet.teamFeatures([{ name: 'team-invite-acceptance', enabled: true }])
       })
 
       it('shows all members including those with pending invites', () => {
         let apiGetTeamInvites = stubGet.teamInvites()
 
-        apiGetOrgMembers = stubGet.orgMembers([
+        apiGetOrgMembers = stubGet.teamMembers([
           { email: 'a@heroku.com', role: 'admin' }, { email: 'b@heroku.com', role: 'collaborator' }
         ])
 
-        return cmd.run({ flags: { team: 'myorg' } })
+        return cmd.run({ flags: { team: 'myteam' } })
           .then(() => expect(
             `a@heroku.com           admin
 b@heroku.com           collaborator
@@ -125,11 +125,11 @@ invited-user@mail.com  admin         pending
       it('filters members by pending invites', () => {
         let apiGetTeamInvites = stubGet.teamInvites()
 
-        apiGetOrgMembers = stubGet.orgMembers([
+        apiGetOrgMembers = stubGet.teamMembers([
           { email: 'a@heroku.com', role: 'admin' }, { email: 'b@heroku.com', role: 'collaborator' }
         ])
 
-        return cmd.run({ flags: { team: 'myorg', pending: true } })
+        return cmd.run({ flags: { team: 'myteam', pending: true } })
           .then(() => expect(
             `invited-user@mail.com  admin  pending
 `).to.eq(cli.stdout))

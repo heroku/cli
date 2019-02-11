@@ -11,14 +11,14 @@ async function run (context, heroku) {
   let appInfo = await heroku.get(`/apps/${appName}`)
   let output = `Adding ${cli.color.cyan(context.args.email)} access to the app ${cli.color.magenta(appName)}`
   let request
-  let orgFeatures = []
+  let teamFeatures = []
 
-  if (Utils.isOrgApp(appInfo.owner.email)) {
-    let orgName = Utils.getOwner(appInfo.owner.email)
-    orgFeatures = await heroku.get(`/organizations/${orgName}/features`)
+  if (Utils.isteamApp(appInfo.owner.email)) {
+    let teamName = Utils.getOwner(appInfo.owner.email)
+    teamFeatures = await heroku.get(`/teams/${teamName}/features`)
   }
 
-  if (orgFeatures.find(feature => feature.name === 'org-access-controls')) {
+  if (teamFeatures.find(feature => feature.name === 'org-access-controls')) {
     if (!permissions) error.exit(1, 'Missing argument: permissions')
 
     if (context.flags.privileges) cli.warn('DEPRECATION WARNING: use `--permissions` not `--privileges`')
@@ -30,7 +30,7 @@ async function run (context, heroku) {
     permissions = _.uniq(permissions.sort())
     output += ` with ${cli.color.green(permissions)} permissions`
 
-    request = heroku.post(`/organizations/apps/${appName}/collaborators`, {
+    request = heroku.post(`/teams/apps/${appName}/collaborators`, {
       body: { user: context.args.email, permissions: permissions }
     })
   } else {

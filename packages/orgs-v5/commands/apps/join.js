@@ -6,7 +6,7 @@ let co = require('co')
 function * run (context, heroku) {
   let request = heroku.get('/account')
     .then(function (user) {
-      return heroku.post(`/organizations/apps/${context.app}/collaborators`, {
+      return heroku.post(`/teams/apps/${context.app}/collaborators`, {
         body: { user: user.email }
       })
     })
@@ -17,7 +17,7 @@ function * run (context, heroku) {
 let cmd = {
   topic: 'apps',
   command: 'join',
-  description: 'add yourself to an organization app',
+  description: 'add yourself to a team app',
   needsAuth: true,
   needsApp: true,
   run: cli.command(co.wrap(run))

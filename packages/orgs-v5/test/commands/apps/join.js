@@ -16,7 +16,7 @@ describe('heroku apps:join', () => {
   afterEach(() => nock.cleanAll())
 
   it('joins the app', () => {
-    apiPostCollaborators = stubPost.orgAppcollaborators('raulb@heroku.com')
+    apiPostCollaborators = stubPost.teamAppCollaborators('raulb@heroku.com')
 
     return cmd.run({ app: 'myapp' })
       .then(() => expect('').to.eq(cli.stdout))
@@ -29,17 +29,17 @@ describe('heroku apps:join', () => {
   it('is forbidden from joining the app', () => {
     let response = {
       code: 403,
-      description: { id: 'forbidden', error: 'You do not have access to the organization heroku-tools.' }
+      description: { id: 'forbidden', error: 'You do not have access to the team heroku-tools.' }
     }
 
-    apiPostCollaborators = stubPost.orgAppcollaborators('raulb@heroku.com', [], response)
+    apiPostCollaborators = stubPost.teamAppCollaborators('raulb@heroku.com', [], response)
     let thrown = false
 
     return cmd.run({ app: 'myapp' })
       .then(() => apiGetUserAccount.done())
       .catch(function (err) {
         thrown = true
-        expect(err.body.error).to.eq('You do not have access to the organization heroku-tools.')
+        expect(err.body.error).to.eq('You do not have access to the team heroku-tools.')
       })
       .then(function () {
         expect(thrown).to.eq(true)

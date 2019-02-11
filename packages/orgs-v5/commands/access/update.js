@@ -15,13 +15,13 @@ async function run (context, heroku) {
   let appInfo = await heroku.get(`/apps/${appName}`)
 
   if (context.flags.privileges) cli.warn('DEPRECATION WARNING: use `--permissions` not `--privileges`')
-  if (!Utils.isOrgApp(appInfo.owner.email)) error.exit(1, `Error: cannot update permissions. The app ${cli.color.cyan(appName)} is not owned by an organization`)
+  if (!Utils.isteamApp(appInfo.owner.email)) error.exit(1, `Error: cannot update permissions. The app ${cli.color.cyan(appName)} is not owned by a team`)
 
   // Give implicit `view` access
   permissions.push('view')
   permissions = _.uniq(permissions.sort())
 
-  let request = heroku.patch(`/organizations/apps/${appName}/collaborators/${context.args.email}`, {
+  let request = heroku.patch(`/teams/apps/${appName}/collaborators/${context.args.email}`, {
     body: { permissions: permissions }
   })
   await cli.action(`Updating ${context.args.email} in application ${cli.color.cyan(appName)} with ${permissions} permissions`, request)

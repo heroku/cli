@@ -9,9 +9,9 @@ describe('heroku apps:unlock', () => {
 
   it('unlocks the app', () => {
     let api = nock('https://api.heroku.com:443')
-      .get('/organizations/apps/myapp')
+      .get('/teams/apps/myapp')
       .reply(200, { name: 'myapp', locked: true })
-      .patch('/organizations/apps/myapp', { locked: false })
+      .patch('/teams/apps/myapp', { locked: false })
       .reply(200)
     return cmd.run({ app: 'myapp' })
       .then(() => expect('').to.eq(cli.stdout))

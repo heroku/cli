@@ -8,13 +8,15 @@ describe('heroku teams', () => {
   beforeEach(() => cli.mockConsole())
   afterEach(() => nock.cleanAll())
 
-  it('shows only the Heroku Teams', () => {
+  it('shows the teams you are a member of', () => {
     let apiGetOrgs = stubGet.teams()
 
     return cmd.run({ flags: {} })
       .then(() => expect(
-        `team a  collaborator
-team b  admin
+        `enterprise a  collaborator
+enterprise b  admin
+team a        collaborator
+team b        admin
 `).to.eq(cli.stdout))
       .then(() => expect('').to.eq(cli.stderr))
       .then(() => apiGetOrgs.done())

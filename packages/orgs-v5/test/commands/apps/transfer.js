@@ -27,10 +27,6 @@ describe('heroku apps:transfer', () => {
         let choices = prompts[0].choices
         expect(choices).to.eql([
           {
-            name: 'my-org-app (organization)',
-            value: { name: 'my-org-app', owner: 'organization@herokumanager.com' }
-          },
-          {
             name: 'my-team-app (team)',
             value: { name: 'my-team-app', owner: 'team@herokumanager.com' }
           },
@@ -42,7 +38,7 @@ describe('heroku apps:transfer', () => {
         return Promise.resolve({ choices: [{ name: 'myapp', owner: 'foo@foo.com' }] })
       }
 
-      let api = stubPatch.orgAppTransfer()
+      let api = stubPatch.teamAppTransfer()
       return cmd.run({ args: { recipient: 'team' }, flags: { bulk: true } })
         .then(function () {
           api.done()
@@ -57,10 +53,6 @@ Transferring myapp... done
       inquirer.prompt = (prompts) => {
         let choices = prompts[0].choices
         expect(choices).to.eql([
-          {
-            name: 'my-org-app (organization)',
-            value: { name: 'my-org-app', owner: 'organization@herokumanager.com' }
-          },
           {
             name: 'my-team-app (team)',
             value: { name: 'my-team-app', owner: 'team@herokumanager.com' }
@@ -99,8 +91,8 @@ Initiating transfer of myapp... email sent
         .then(() => api.done())
     })
 
-    it('transfers the app to an organization', () => {
-      let api = stubPatch.orgAppTransfer()
+    it('transfers the app to a team', () => {
+      let api = stubPatch.teamAppTransfer()
       return cmd.run({ app: 'myapp', args: { recipient: 'team' }, flags: {} })
         .then(() => expect('').to.eq(cli.stdout))
         .then(() => expect(`Transferring myapp to team... done
@@ -111,11 +103,11 @@ Initiating transfer of myapp... email sent
 
   context('when it is an org app', () => {
     beforeEach(() => {
-      stubGet.orgApp()
+      stubGet.teamApp()
     })
 
     it('transfers the app to a personal account confirming app name', () => {
-      let api = stubPatch.orgAppTransfer()
+      let api = stubPatch.teamAppTransfer()
       return cmd.run({ app: 'myapp', args: { recipient: 'team' }, flags: { confirm: 'myapp' } })
         .then(() => expect('').to.eq(cli.stdout))
         .then(() => expect(`Transferring myapp to team... done
@@ -123,8 +115,8 @@ Initiating transfer of myapp... email sent
         .then(() => api.done())
     })
 
-    it('transfers the app to an organization', () => {
-      let api = stubPatch.orgAppTransfer()
+    it('transfers the app to a team', () => {
+      let api = stubPatch.teamAppTransfer()
       return cmd.run({ app: 'myapp', args: { recipient: 'team' }, flags: {} })
         .then(() => expect('').to.eq(cli.stdout))
         .then(() => expect(`Transferring myapp to team... done
@@ -133,12 +125,12 @@ Initiating transfer of myapp... email sent
     })
 
     it('transfers and locks the app if --locked is passed', () => {
-      let api = stubPatch.orgAppTransfer()
+      let api = stubPatch.teamAppTransfer()
 
       let lockedAPI = nock('https://api.heroku.com:443')
-        .get('/organizations/apps/myapp')
+        .get('/teams/apps/myapp')
         .reply(200, { name: 'myapp', locked: false })
-        .patch('/organizations/apps/myapp', { locked: true })
+        .patch('/teams/apps/myapp', { locked: true })
         .reply(200)
 
       return cmd.run({ app: 'myapp', args: { recipient: 'team' }, flags: { locked: true } })

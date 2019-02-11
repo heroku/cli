@@ -6,7 +6,7 @@ let Utils = require('../../lib/utils')
 const { flags } = require('@heroku-cli/command')
 
 function * run (context, heroku) {
-  let orgInfo = yield Utils.orgInfo(context, heroku)
+  let teamInfo = yield Utils.teamInfo(context, heroku)
   let groupName = context.org || context.team || context.flags.team
   let teamInviteFeatureEnabled = false
   let isInvitedUser = false
@@ -18,7 +18,7 @@ function * run (context, heroku) {
         Accept: 'application/vnd.heroku+json; version=3.team-invitations'
       },
       method: 'GET',
-      path: `/organizations/${groupName}/invitations`
+      path: `/teams/${groupName}/invitations`
     })
   }
 
@@ -28,19 +28,19 @@ function * run (context, heroku) {
         Accept: 'application/vnd.heroku+json; version=3.team-invitations'
       },
       method: 'DELETE',
-      path: `/organizations/${groupName}/invitations/${email}`
+      path: `/teams/${groupName}/invitations/${email}`
     })
     yield cli.action(`Revoking invite for ${cli.color.cyan(email)} in ${cli.color.magenta(groupName)}`, request)
   }
 
   let removeUserMembership = function * () {
-    let request = heroku.delete(`/organizations/${groupName}/members/${encodeURIComponent(email)}`)
+    let request = heroku.delete(`/teams/${groupName}/members/${encodeURIComponent(email)}`)
     yield cli.action(`Removing ${cli.color.cyan(email)} from ${cli.color.magenta(groupName)}`, request)
   }
 
-  if (orgInfo.type === 'team') {
-    let orgFeatures = yield heroku.get(`/organizations/${groupName}/features`)
-    teamInviteFeatureEnabled = !!orgFeatures.find(feature => feature.name === 'team-invite-acceptance' && feature.enabled)
+  if (teamInfo.type === 'team') {
+    let teamFeatures = yield heroku.get(`/teams/${groupName}/features`)
+    teamInviteFeatureEnabled = !!teamFeatures.find(feature => feature.name === 'team-invite-acceptance' && feature.enabled)
 
     if (teamInviteFeatureEnabled) {
       let invites = yield teamInvites()
@@ -54,18 +54,16 @@ function * run (context, heroku) {
     yield removeUserMembership()
   }
 
-  Utils.warnUsingOrgFlagInTeams(orgInfo, context)
+  Utils.warnUsingOrgFlagInTeams(teamInfo, context)
 }
 
 module.exports = {
   topic: 'members',
   command: 'remove',
-  description: 'removes a user from an organization or a team',
+  description: 'removes a user from a team',
   needsAuth: true,
-  wantsOrg: true,
   args: [{ name: 'email' }],
   flags: [
-    // flags.org({name: 'org', hasValue: true, description: 'org to use', hidden: false}),
     flags.team({ name: 'team', hasValue: true, hidden: true })
   ],
   run: cli.command(co.wrap(run))

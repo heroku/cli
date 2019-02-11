@@ -11,12 +11,12 @@ let apiPatchAppCollaborators
 let apiGetApp
 
 describe('heroku access:update', () => {
-  context('with an org app with permissions', () => {
+  context('with a team app with permissions', () => {
     beforeEach(() => cli.mockConsole())
     afterEach(() => nock.cleanAll())
 
     it('updates the app permissions, view being implicit', () => {
-      apiGetApp = stubGet.orgApp()
+      apiGetApp = stubGet.teamApp()
       apiPatchAppCollaborators = stubPatch.appCollaboratorWithPermissions({ email: 'raulb@heroku.com', permissions: ['deploy', 'view'] })
 
       return cmd.run({ app: 'myapp', args: { email: 'raulb@heroku.com' }, flags: { permissions: 'deploy' } })
@@ -28,7 +28,7 @@ describe('heroku access:update', () => {
     })
 
     it('updates the app permissions, even specifying view as a permission', () => {
-      apiGetApp = stubGet.orgApp()
+      apiGetApp = stubGet.teamApp()
       apiPatchAppCollaborators = stubPatch.appCollaboratorWithPermissions({ email: 'raulb@heroku.com', permissions: ['deploy', 'view'] })
 
       return cmd.run({ app: 'myapp', args: { email: 'raulb@heroku.com' }, flags: { permissions: 'deploy,view' } })
@@ -40,7 +40,7 @@ describe('heroku access:update', () => {
     })
 
     it('supports --privileges, but shows deprecation warning', () => {
-      apiGetApp = stubGet.orgApp()
+      apiGetApp = stubGet.teamApp()
       apiPatchAppCollaborators = stubPatch.appCollaboratorWithPermissions({ email: 'raulb@heroku.com', permissions: ['deploy', 'view'] })
 
       return cmd.run({ app: 'myapp', args: { email: 'raulb@heroku.com' }, flags: { privileges: 'deploy' } })
@@ -53,7 +53,7 @@ Updating raulb@heroku.com in application myapp with deploy,view permissions... d
     })
   })
 
-  context('with a non org app', () => {
+  context('with a non team app', () => {
     beforeEach(() => {
       cli.mockConsole()
       error.exit.mock()
@@ -68,7 +68,7 @@ Updating raulb@heroku.com in application myapp with deploy,view permissions... d
         args: { email: 'raulb@heroku.com' },
         flags: { permissions: 'view,deploy' }
       }).then(() => apiGetApp.done())).then(function () {
-        expect(unwrap(cli.stderr)).to.equal('Error: cannot update permissions. The app myapp is not owned by an organization\n')
+        expect(unwrap(cli.stderr)).to.equal('Error: cannot update permissions. The app myapp is not owned by a team\n')
       })
     })
   })

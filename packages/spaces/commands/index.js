@@ -42,7 +42,6 @@ module.exports = {
   topic: 'spaces',
   description: 'list available spaces',
   needsAuth: true,
-  wantsOrg: true,
   flags: [
     { name: 'json', description: 'output in json format' },
     flags.team({ name: 'team', hasValue: true })

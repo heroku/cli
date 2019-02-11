@@ -122,7 +122,7 @@ EXAMPLES
 
 ## `heroku apps:join`
 
-add yourself to an organization app
+add yourself to a team app
 
 ```
 USAGE
@@ -135,7 +135,7 @@ OPTIONS
 
 ## `heroku apps:leave`
 
-remove yourself from an organization app
+remove yourself from a team app
 
 ```
 USAGE
@@ -148,7 +148,7 @@ OPTIONS
 
 ## `heroku apps:lock`
 
-prevent organization members from joining an app
+prevent team members from joining an app
 
 ```
 USAGE
@@ -189,7 +189,7 @@ EXAMPLES
 
 ## `heroku apps:unlock`
 
-unlock an app so any organization member can join
+unlock an app so any team member can join
 
 ```
 USAGE
@@ -202,7 +202,7 @@ OPTIONS
 
 ## `heroku join`
 
-add yourself to an organization app
+add yourself to a team app
 
 ```
 USAGE
@@ -215,7 +215,7 @@ OPTIONS
 
 ## `heroku leave`
 
-remove yourself from an organization app
+remove yourself from a team app
 
 ```
 USAGE
@@ -228,7 +228,7 @@ OPTIONS
 
 ## `heroku lock`
 
-prevent organization members from joining an app
+prevent team members from joining an app
 
 ```
 USAGE
@@ -241,7 +241,7 @@ OPTIONS
 
 ## `heroku members`
 
-list members of an organization or a team
+list members of a team or a team
 
 ```
 USAGE
@@ -256,7 +256,7 @@ OPTIONS
 
 ## `heroku members:add EMAIL`
 
-adds a user to an organization or a team
+adds a user to a team or a team
 
 ```
 USAGE
@@ -269,7 +269,7 @@ OPTIONS
 
 ## `heroku members:remove EMAIL`
 
-removes a user from an organization or a team
+removes a user from a team or a team
 
 ```
 USAGE
@@ -281,7 +281,7 @@ OPTIONS
 
 ## `heroku members:set EMAIL`
 
-sets a members role in an organization or a team
+sets a members role in a team
 
 ```
 USAGE
@@ -294,7 +294,7 @@ OPTIONS
 
 ## `heroku orgs`
 
-list the organizations that you are a member of
+list the teams that you are a member of
 
 ```
 USAGE
@@ -307,7 +307,7 @@ OPTIONS
 
 ## `heroku orgs:open`
 
-open the organization interface in a browser window
+open the team interface in a browser window
 
 ```
 USAGE
@@ -334,7 +334,7 @@ DESCRIPTION
 
 ## `heroku unlock`
 
-unlock an app so any organization member can join
+unlock an app so any team member can join
 
 ```
 USAGE

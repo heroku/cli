@@ -4,14 +4,14 @@ let cli = require('heroku-cli-util')
 let co = require('co')
 
 function * run (context, heroku) {
-  let app = yield heroku.get(`/organizations/apps/${context.app}`)
+  let app = yield heroku.get(`/teams/apps/${context.app}`)
   if (!app.locked) {
     throw new Error(`Error: cannot unlock ${cli.color.cyan(app.name)}
 This app is not locked.`)
   }
   let request = heroku.request({
     method: 'PATCH',
-    path: `/organizations/apps/${app.name}`,
+    path: `/teams/apps/${app.name}`,
     body: { locked: false }
   })
   yield cli.action(`Unlocking ${cli.color.cyan(app.name)}`, request)
@@ -20,7 +20,7 @@ This app is not locked.`)
 let cmd = {
   topic: 'apps',
   command: 'unlock',
-  description: 'unlock an app so any organization member can join',
+  description: 'unlock an app so any team member can join',
   needsAuth: true,
   needsApp: true,
   run: cli.command(co.wrap(run))

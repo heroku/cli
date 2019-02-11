@@ -16,7 +16,6 @@ module.exports = {
 Configuring pipeline... done`,
   needsApp: false,
   needsAuth: true,
-  wantsOrg: false,
   args: [{
     name: 'name',
     description: 'name of pipeline',

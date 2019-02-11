@@ -12,12 +12,12 @@ let apiPost
 let apiGetOrgFeatures
 
 describe('heroku access:add', () => {
-  context('with an org app with user permissions', () => {
+  context('with a team app with user permissions', () => {
     beforeEach(() => {
       cli.mockConsole()
-      apiGet = stubGet.orgApp()
-      apiPost = stubPost.orgAppcollaborators('raulb@heroku.com', ['deploy', 'view'])
-      apiGetOrgFeatures = stubGet.orgFeatures([{ name: 'org-access-controls' }])
+      apiGet = stubGet.teamApp()
+      apiPost = stubPost.teamAppCollaborators('raulb@heroku.com', ['deploy', 'view'])
+      apiGetOrgFeatures = stubGet.teamFeatures([{ name: 'org-access-controls' }])
     })
     afterEach(() => nock.cleanAll())
 
@@ -64,12 +64,12 @@ Adding raulb@heroku.com access to the app myapp with deploy,view permissions... 
     })
   })
 
-  context('with an org app without user permissions', () => {
+  context('with a team app without user permissions', () => {
     beforeEach(() => {
       cli.mockConsole()
-      apiGet = stubGet.orgApp()
+      apiGet = stubGet.teamApp()
       apiPost = stubPost.collaborators()
-      apiGetOrgFeatures = stubGet.orgFeatures([])
+      apiGetOrgFeatures = stubGet.teamFeatures([])
     })
     afterEach(() => nock.cleanAll())
 
@@ -84,7 +84,7 @@ Adding raulb@heroku.com access to the app myapp with deploy,view permissions... 
     })
   })
 
-  context('with a non org app', () => {
+  context('with a non team app', () => {
     beforeEach(() => {
       cli.mockConsole()
       apiGet = stubGet.personalApp()

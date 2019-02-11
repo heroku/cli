@@ -7,7 +7,6 @@ function apps () {
     .get('/apps')
     .reply(200, [
       { name: 'my-team-app', owner: { email: 'team@herokumanager.com' } },
-      { name: 'my-org-app', owner: { email: 'organization@herokumanager.com' } },
       { name: 'myapp', owner: { email: 'foo@foo.com' } }
     ])
 }
@@ -24,7 +23,7 @@ function appPermissions () {
   return nock('https://api.heroku.com:443', {
     reqheaders: { Accept: 'application/vnd.heroku+json; version=3' }
   })
-    .get('/organizations/permissions')
+    .get('/teams/permissions')
     .reply(200, [
       { name: 'deploy' },
       { name: 'manage' },
@@ -33,28 +32,28 @@ function appPermissions () {
     ])
 }
 
-function orgs (orgs = [
-  { name: 'org a', role: 'collaborator', type: 'enterprise' },
+function teams (teams = [
+  { name: 'enterprise a', role: 'collaborator', type: 'enterprise' },
   { name: 'team a', role: 'collaborator', type: 'team' },
-  { name: 'org b', role: 'admin', type: 'enterprise' },
+  { name: 'enterprise b', role: 'admin', type: 'enterprise' },
   { name: 'team b', role: 'admin', type: 'team' }
 ]) {
   return nock('https://api.heroku.com:443')
-    .get('/organizations')
-    .reply(200, orgs)
+    .get('/teams')
+    .reply(200, teams)
 }
 
-function orgApp (locked = false) {
+function teamApp (locked = false) {
   return nock('https://api.heroku.com:443')
     .get('/apps/myapp')
     .reply(200, {
       name: 'myapp',
-      owner: { email: 'myorg@herokumanager.com' },
+      owner: { email: 'myteam@herokumanager.com' },
       locked: locked
     })
 }
 
-function orgAppCollaboratorsWithPermissions () {
+function teamAppCollaboratorsWithPermissions () {
   return nock('https://api.heroku.com:443', {
     reqheaders: { Accept: 'application/vnd.heroku+json; version=3' }
   })
@@ -62,7 +61,7 @@ function orgAppCollaboratorsWithPermissions () {
     .reply(200, [
       { permissions: [],
         role: 'owner',
-        user: { email: 'myorg@herokumanager.com' }
+        user: { email: 'myteam@herokumanager.com' }
       },
       {
         permissions: [ { name: 'deploy' }, { name: 'view' } ],
@@ -72,33 +71,24 @@ function orgAppCollaboratorsWithPermissions () {
     ])
 }
 
-function orgFeatures (features) {
+function teamFeatures (features) {
   return nock('https://api.heroku.com:443', {
     reqheaders: { Accept: 'application/vnd.heroku+json; version=3' }
   })
-    .get('/organizations/myorg/features')
+    .get('/teams/myteam/features')
     .reply(200, features)
 }
 
-function orgInfo (type = 'enterprise') {
+function teamInfo (type = 'enterprise') {
   return nock('https://api.heroku.com:443', {
     reqheaders: { Accept: 'application/vnd.heroku+json; version=3' }
   })
-    .get('/organizations/myorg')
+    .get('/teams/myteam')
     .reply(200, {
-      name: 'myorg',
+      name: 'myteam',
       role: 'admin',
       type: type
     })
-}
-
-function teams (teams = [
-  { name: 'team a', role: 'collaborator', type: 'enterprise' },
-  { name: 'team b', role: 'admin', type: 'team' }
-]) {
-  return nock('https://api.heroku.com:443')
-    .get('/teams')
-    .reply(200, teams)
 }
 
 function teamInvites (invites = [
@@ -110,11 +100,11 @@ function teamInvites (invites = [
   return nock('https://api.heroku.com:443', {
     reqheaders: { Accept: 'application/vnd.heroku+json; version=3.team-invitations' }
   })
-    .get('/organizations/myorg/invitations')
+    .get('/teams/myteam/invitations')
     .reply(200, invites)
 }
 
-function orgMembers (members = [
+function teamMembers (members = [
   {
     email: 'raulb@heroku.com',
     role: 'admin',
@@ -132,7 +122,7 @@ function orgMembers (members = [
   }
 ]) {
   return nock('https://api.heroku.com:443')
-    .get('/organizations/myorg/members')
+    .get('/teams/myteam/members')
     .reply(200, members)
 }
 
@@ -168,38 +158,37 @@ function variableSizeTeamInvites (teamSize) {
   return nock('https://api.heroku.com:443', {
     reqheaders: { Accept: 'application/vnd.heroku+json; version=3.team-invitations' }
   })
-    .get('/organizations/myorg/invitations')
+    .get('/teams/myteam/invitations')
     .reply(200, invites)
 }
 
-function variableSizeOrgMembers (orgSize) {
-  orgSize = (typeof (orgSize) === 'undefined') ? 1 : orgSize
-  let orgMembers = []
-  for (let i = 0; i < orgSize; i++) {
-    orgMembers.push({ email: `test${i}@heroku.com`,
+function variableSizeTeamMembers (teamSize) {
+  teamSize = (typeof (teamSize) === 'undefined') ? 1 : teamSize
+  let teamMembers = []
+  for (let i = 0; i < teamSize; i++) {
+    teamMembers.push({ email: `test${i}@heroku.com`,
       role: 'admin',
       user: { email: `test${i}@heroku.com` } })
   }
   return nock('https://api.heroku.com:443')
-    .get('/organizations/myorg/members')
-    .reply(200, orgMembers)
+    .get('/teams/myteam/members')
+    .reply(200, teamMembers)
 }
 
 module.exports = {
-  apps,
   appCollaborators,
   appPermissions,
-  orgs,
-  orgApp,
-  orgAppCollaboratorsWithPermissions,
-  orgInfo,
-  orgFeatures,
-  teamInvites,
-  orgMembers,
+  apps,
   personalApp,
+  teamApp,
+  teamAppCollaboratorsWithPermissions,
+  teamFeatures,
+  teamInfo,
+  teamInvites,
+  teamMembers,
   teams,
   userAccount,
   userFeatureFlags,
-  variableSizeOrgMembers,
-  variableSizeTeamInvites
+  variableSizeTeamInvites,
+  variableSizeTeamMembers
 }

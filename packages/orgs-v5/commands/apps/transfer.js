@@ -40,7 +40,7 @@ function * run (context, heroku) {
           heroku: heroku,
           appName: app.name,
           recipient: recipient,
-          personalToPersonal: Utils.isValidEmail(recipient) && !Utils.isOrgApp(app.owner),
+          personalToPersonal: Utils.isValidEmail(recipient) && !Utils.isteamApp(app.owner),
           bulk: true
         })
         yield appTransfer.start()
@@ -52,7 +52,7 @@ function * run (context, heroku) {
     let appInfo = yield heroku.get(`/apps/${app}`)
 
     // Shows warning when app is transferred from a team/org to a personal account
-    if (Utils.isValidEmail(recipient) && Utils.isOrgApp(appInfo.owner.email)) {
+    if (Utils.isValidEmail(recipient) && Utils.isteamApp(appInfo.owner.email)) {
       yield cli.confirmApp(app, context.flags.confirm, 'All collaborators will be removed from this app')
     }
 
@@ -60,7 +60,7 @@ function * run (context, heroku) {
       heroku: heroku,
       appName: appInfo.name,
       recipient: recipient,
-      personalToPersonal: Utils.isValidEmail(recipient) && !Utils.isOrgApp(appInfo.owner.email)
+      personalToPersonal: Utils.isValidEmail(recipient) && !Utils.isteamApp(appInfo.owner.email)
     })
     yield appTransfer.start()
 

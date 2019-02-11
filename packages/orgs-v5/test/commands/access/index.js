@@ -24,15 +24,15 @@ raulb@heroku.com  owner
     })
   })
 
-  context('with organization/team', () => {
+  context('with team', () => {
     beforeEach(() => cli.mockConsole())
     afterEach(() => nock.cleanAll())
 
-    it('shows the app collaborators and hides the org collaborator record', () => {
-      let apiGetOrgApp = stubGet.orgApp()
-      let apiGetOrgMembers = stubGet.orgMembers()
+    it('shows the app collaborators and hides the team collaborator record', () => {
+      let apiGetteamApp = stubGet.teamApp()
+      let apiGetOrgMembers = stubGet.teamMembers()
       let apiGetAppPermissions = stubGet.appPermissions()
-      let apiGetOrgAppCollaboratorsWithPermissions = stubGet.orgAppCollaboratorsWithPermissions()
+      let apiGetteamAppCollaboratorsWithPermissions = stubGet.teamAppCollaboratorsWithPermissions()
 
       return cmd.run({ app: 'myapp', flags: {} })
         .then(() => expect(
@@ -40,10 +40,10 @@ raulb@heroku.com  owner
 raulb@heroku.com  admin   deploy,manage,operate,view
 `).to.eq(cli.stdout))
         .then(() => expect('').to.eq(cli.stderr))
-        .then(() => apiGetOrgApp.done())
+        .then(() => apiGetteamApp.done())
         .then(() => apiGetOrgMembers.done())
         .then(() => apiGetAppPermissions.done())
-        .then(() => apiGetOrgAppCollaboratorsWithPermissions.done())
+        .then(() => apiGetteamAppCollaboratorsWithPermissions.done())
     })
   })
 })

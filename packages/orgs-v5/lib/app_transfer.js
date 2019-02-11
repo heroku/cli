@@ -29,7 +29,7 @@ class AppTransfer {
       this.body = { owner: this.recipient }
       this.transferMsg = `Transferring ${cli.color.app(this.appName)}`
       if (!this.opts.bulk) this.transferMsg += ` to ${cli.color.magenta(this.recipient)}`
-      this.path = `/organizations/apps/${this.appName}`
+      this.path = `/teams/apps/${this.appName}`
       this.method = 'PATCH'
     }
   }

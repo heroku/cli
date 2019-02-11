@@ -8,12 +8,12 @@ const { flags } = require('@heroku-cli/command')
 const { RoleCompletion } = require('@heroku-cli/command/lib/completions')
 
 function * run (context, heroku) {
-  let orgInfo = yield Utils.orgInfo(context, heroku)
+  let teamInfo = yield Utils.teamInfo(context, heroku)
   let groupName = context.org || context.team || context.flags.team
   let teamInvites = []
 
-  if (orgInfo.type === 'team') {
-    let orgFeatures = yield heroku.get(`/organizations/${groupName}/features`)
+  if (teamInfo.type === 'team') {
+    let orgFeatures = yield heroku.get(`/teams/${groupName}/features`)
 
     if (orgFeatures.find(feature => feature.name === 'team-invite-acceptance' && feature.enabled)) {
       teamInvites = yield heroku.request({
@@ -21,7 +21,7 @@ function * run (context, heroku) {
           Accept: 'application/vnd.heroku+json; version=3.team-invitations'
         },
         method: 'GET',
-        path: `/organizations/${groupName}/invitations`
+        path: `/teams/${groupName}/invitations`
       })
       teamInvites = _.map(teamInvites, function (invite) {
         return { email: invite.user.email, role: invite.role, status: 'pending' }
@@ -29,7 +29,7 @@ function * run (context, heroku) {
     }
   }
 
-  let members = yield heroku.get(`/organizations/${groupName}/members`)
+  let members = yield heroku.get(`/teams/${groupName}/members`)
   // Set status '' to all existing members
   _.map(members, (member) => { member.status = '' })
   members = _.sortBy(_.union(members, teamInvites), 'email')
@@ -52,19 +52,17 @@ function * run (context, heroku) {
     })
   }
 
-  Utils.warnUsingOrgFlagInTeams(orgInfo, context)
+  Utils.warnUsingOrgFlagInTeams(teamInfo, context)
 }
 
 module.exports = {
   topic: 'members',
-  description: 'list members of an organization or a team',
+  description: 'list members of a team',
   needsAuth: true,
-  wantsOrg: true,
   flags: [
     { name: 'role', char: 'r', hasValue: true, description: 'filter by role', completion: RoleCompletion },
     { name: 'pending', hasValue: false, description: 'filter by pending team invitations' },
     { name: 'json', description: 'output in json format' },
-    // flags.org({name: 'org', hasValue: true, description: 'org to use', hidden: false}),
     flags.team({ name: 'team', hasValue: true, hidden: true })
   ],
   run: cli.command(co.wrap(run))

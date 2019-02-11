@@ -6,19 +6,17 @@ const { flags } = require('@heroku-cli/command')
 
 function * run (context, heroku) {
   let team = context.org || context.team || context.flags.team
-  if (!team) throw new Error('No organization specified')
-  let org = yield heroku.get(`/organizations/${team}`)
-  yield cli.open(`https://dashboard.heroku.com/orgs/${org.name}`)
+  if (!team) throw new Error('No team specified')
+  let org = yield heroku.get(`/teams/${team}`)
+  yield cli.open(`https://dashboard.heroku.com/teams/${org.name}`)
 }
 
 module.exports = {
   topic: 'orgs',
   command: 'open',
-  description: 'open the organization interface in a browser window',
+  description: 'open the team interface in a browser window',
   needsAuth: true,
-  wantsOrg: true,
   flags: [
-    // flags.org({name: 'org', hasValue: true, description: 'org to use', hidden: false}),
     flags.team({ name: 'team', hasValue: true, hidden: true })
   ],
   run: cli.command(co.wrap(run))
