@@ -27,7 +27,7 @@
     "lodash.flatten": "^4.4.0",
     "lodash.sortby": "^4.7.0",
     "string-just": "^0.0.2",
-    "validator": "^10.9.0"
+    "validator": "^10.11.0"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.21.0",

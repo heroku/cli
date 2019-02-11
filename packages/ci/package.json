@@ -19,7 +19,7 @@
     "socket.io-client": "^2.2.0",
     "tmp": "^0.0.33",
     "tslib": "^1.9.3",
-    "validator": "^10.9.0"
+    "validator": "^10.11.0"
   },
   "devDependencies": {
     "@fancy-test/nock": "^0.1.1",
