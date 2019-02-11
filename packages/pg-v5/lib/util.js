@@ -2,7 +2,6 @@
 
 const cli = require('heroku-cli-util')
 const debug = require('./debug')
-const getBastion = require('./bastion').getBastion
 const { sortBy } = require('lodash')
 const printf = require('printf')
 const URL = require('url').URL
@@ -76,6 +75,7 @@ function presentCredentialAttachments (app, credAttachments, credentials, cred) 
 exports.presentCredentialAttachments = presentCredentialAttachments
 
 exports.getConnectionDetails = function (attachment, config) {
+  const {getBastion} = require('./bastion')
   const url = require('url')
   const configVars = attachment.config_vars.filter((cv) => {
     return config[cv] && config[cv].startsWith('postgres://')
