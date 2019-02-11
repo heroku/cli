@@ -5916,7 +5916,7 @@ nock@9.3.3:
     qs "^6.5.1"
     semver "^5.5.0"
 
-nock@^9.2.3, nock@^9.2.5, nock@^9.2.6, nock@^9.3.0, nock@^9.3.3, nock@^9.6.1:
+nock@^9.2.3, nock@^9.2.5, nock@^9.2.6, nock@^9.3.3, nock@^9.6.1:
   version "9.6.1"
   resolved "https://registry.yarnpkg.com/nock/-/nock-9.6.1.tgz#d96e099be9bc1d0189a77f4490bbbb265c381b49"
   integrity sha512-EDgl/WgNQ0C1BZZlASOQkQdE6tAWXJi8QQlugqzN64JJkvZ7ILijZuG24r4vCC7yOfnm6HKpne5AGExLGCeBWg==
