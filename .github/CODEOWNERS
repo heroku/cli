@@ -1,4 +1,1 @@
 * @heroku/cli
-/packages/pg-v5/ @heroku/dod-ux @heroku/cli
-/packages/redis-v5/ @heroku/dod-ux @heroku/cli
-/packages/spaces/ @heroku/cli
