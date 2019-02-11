@@ -14,7 +14,7 @@
     "cli-ux": "^4.9.3",
     "fs-extra": "^7.0.1",
     "github-url-to-object": "^4.0.4",
-    "got": "^9.3.2",
+    "got": "^9.6.0",
     "inquirer": "^6.2.2",
     "socket.io-client": "^2.2.0",
     "tmp": "^0.0.33",
