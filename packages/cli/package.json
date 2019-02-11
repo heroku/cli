@@ -79,7 +79,7 @@
     "nock": "^9.3.2",
     "qqjs": "^0.3.10",
     "read-pkg": "^4.0.1",
-    "ts-node": "^7.0.1",
+    "ts-node": "^8.0.2",
     "tslint": "^5.11.0",
     "typescript": "3.3.3"
   },
@@ -236,7 +236,7 @@
     },
     "update": {
       "node": {
-        "version": "11.3.0"
+        "version": "11.9.0"
       },
       "s3": {
         "xz": true,
