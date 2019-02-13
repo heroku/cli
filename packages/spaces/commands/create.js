@@ -26,7 +26,6 @@ function * run (context, heroku) {
       features: parsers.splitCsv(context.flags.features),
       log_drain_url: context.flags['log-drain-url'],
       shield: context.flags['shield'],
-      owner_pool: context.flags['owner-pool'],
       cidr: context.flags['cidr'],
       kpi_url: context.flags['kpi-url'],
       data_cidr: context.flags['data-cidr']
@@ -76,7 +75,6 @@ module.exports = {
     { name: 'region', hasValue: true, description: 'region name', completion: RegionCompletion },
     { name: 'features', hasValue: true, hidden: true, description: 'a list of features separated by commas' },
     { name: 'log-drain-url', hasValue: true, hidden: true, description: 'direct log drain url' },
-    { name: 'owner-pool', hasValue: true, hidden: true, description: 'owner pool name' },
     { name: 'shield', hasValue: false, hidden: true, description: 'create a Shield space' },
     { name: 'cidr', hasValue: true, description: 'RFC-1918 CIDR the space will use' },
     { name: 'kpi-url', hasValue: true, hidden: true, description: 'self-managed KPI endpoint to use' },
