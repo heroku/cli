@@ -2,20 +2,20 @@ import {flags as Flags} from '@heroku-cli/command'
 import cli from 'cli-ux'
 import * as QueryString from 'querystring'
 
-import BaseCommand from '../../base'
-import {Accounts} from '../../completions'
+import BaseCommand from '../../../base'
+import {Accounts} from '../../../completions'
 
-export default class Usage extends BaseCommand {
-  static description = 'list the usage for an enterprise account'
+export default class Monthly extends BaseCommand {
+  static description = 'list the monthly usage for an enterprise account or team'
 
   static examples = [
-    '$ heroku enterprises:usage --enterprise-account=account-name',
-    '$ heroku enterprises:usage --enterprise-account=account-name --team=team-name',
-    '$ heroku enterprises:usage --enterprise-account=account-name --columns=\'account,team,app,dyno\'',
-    '$ heroku enterprises:usage --enterprise-account=account-name --columns=\'account,team,app,dyno\' --csv',
-    '$ heroku enterprises:usage --enterprise-account=account-name --columns=\'account,team,app,addon\' --sort=\'-addon\'',
-    '$ heroku enterprises:usage --enterprise-account=account-name --columns=\'account,team,app,addon\' --filter=\'app=myapp\'',
-    '$ heroku enterprises:usage --enterprise-account=account-name --columns=\'account,team,app,data\' --sort=\'-data,app\''
+    '$ heroku enterprises:usage:monthly --enterprise-account=account-name',
+    '$ heroku enterprises:usage:monthly --enterprise-account=account-name --team=team-name',
+    '$ heroku enterprises:usage:monthly --enterprise-account=account-name --columns=\'account,team,app,dyno\'',
+    '$ heroku enterprises:usage:monthly --enterprise-account=account-name --columns=\'account,team,app,dyno\' --csv',
+    '$ heroku enterprises:usage:monthly --enterprise-account=account-name --columns=\'account,team,app,addon\' --sort=\'-addon\'',
+    '$ heroku enterprises:usage:monthly --enterprise-account=account-name --columns=\'account,team,app,addon\' --filter=\'app=myapp\'',
+    '$ heroku enterprises:usage:monthly --enterprise-account=account-name --columns=\'account,team,app,data\' --sort=\'-data,app\''
   ]
 
   static flags = {
@@ -53,7 +53,7 @@ export default class Usage extends BaseCommand {
   private _flags: any
 
   async run() {
-    const {flags} = this.parse(Usage)
+    const {flags} = this.parse(Monthly)
     this._flags = flags
     const startDate = flags['start-date']
     const endDate = flags['end-date']
@@ -92,7 +92,7 @@ export default class Usage extends BaseCommand {
 
     if (usageData.length === 0) return this.warn('No usage data to list')
     cli.table(usageData,
-      Usage.tableHeaders,
+      Monthly.tableHeaders,
       {
         printLine: this.log,
         ...this._flags,
@@ -134,7 +134,7 @@ export default class Usage extends BaseCommand {
       {
         accountName: {header: 'Account'},
         teamName: {header: 'Team'},
-        ...Usage.tableHeaders
+        ...Monthly.tableHeaders
       },
       {
         printLine: this.log,

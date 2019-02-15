@@ -6,8 +6,8 @@ export default abstract class extends Command {
   static async run(argv?: string[], config?: LoadOptions) {
     // TODO: remove after GA
     cli.warn(`heroku-enterprise is part of the Heroku Enterprise Account Beta program.
-For more info, please see "http://github.com/heroku/heroku-enterprise" or contact your CSA.`)
-    cli.log()
+For more info, please see "http://github.com/heroku/heroku-enterprise" or contact your CSA.
+`)
 
     return super.run(argv, config)
   }

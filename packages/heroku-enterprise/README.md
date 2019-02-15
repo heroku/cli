@@ -38,7 +38,8 @@ USAGE
 * [`heroku enterprises:teams`](#heroku-enterprisesteams)
 * [`heroku enterprises:teams:create [TEAM]`](#heroku-enterprisesteamscreate-team)
 * [`heroku enterprises:teams:remove TEAM`](#heroku-enterprisesteamsremove-team)
-* [`heroku enterprises:usage`](#heroku-enterprisesusage)
+* [`heroku enterprises:usage:daily`](#heroku-enterprisesusagedaily)
+* [`heroku enterprises:usage:monthly`](#heroku-enterprisesusagemonthly)
 
 ## `heroku enterprises`
 
@@ -258,13 +259,41 @@ EXAMPLE
 
 _See code: [src/commands/enterprises/teams/remove.ts](https://github.com/heroku/heroku-enterprise/blob/v2.1.0/src/commands/enterprises/teams/remove.ts)_
 
-## `heroku enterprises:usage`
+## `heroku enterprises:usage:daily`
 
-list the usage for an enterprise account
+list the daily usage for an enterprise account or team
 
 ```
 USAGE
-  $ heroku enterprises:usage
+  $ heroku enterprises:usage:daily
+
+OPTIONS
+  -e, --enterprise-account=enterprise-account  enterprise account name
+  -t, --team=team                              team name
+  --csv                                        (required) output is csv format
+
+  --end-date=end-date                          (required) end date of the usage period (must be no more than 30 days
+                                               from --start-date)
+
+  --start-date=start-date                      (required) start date of the usage period (must be no more than 90 days
+                                               ago)
+
+EXAMPLES
+  $ heroku enterprises:usage:daily --enterprise-account=account-name --start-date=2018-12-15 --end-date=2019-01-15 --csv
+  $ heroku enterprises:usage:daily --team=team-name --start-date=2018-12-15 --end-date=2019-01-15 --csv
+  $ heroku enterprises:usage:daily --team=team-name --start-date=2018-12-15 --end-date=2019-01-15 --csv | less
+  $ heroku enterprises:usage:daily --team=team-name --start-date=2018-12-15 --end-date=2019-01-15 --csv > /tmp/usage.csv
+```
+
+_See code: [src/commands/enterprises/usage/daily.ts](https://github.com/heroku/heroku-enterprise/blob/v2.1.0/src/commands/enterprises/usage/daily.ts)_
+
+## `heroku enterprises:usage:monthly`
+
+list the monthly usage for an enterprise account or team
+
+```
+USAGE
+  $ heroku enterprises:usage:monthly
 
 OPTIONS
   -e, --enterprise-account=enterprise-account  (required) enterprise account name
@@ -279,14 +308,17 @@ OPTIONS
   --start-date=start-date                      start date of the usage period
 
 EXAMPLES
-  $ heroku enterprises:usage --enterprise-account=account-name
-  $ heroku enterprises:usage --enterprise-account=account-name --team=team-name
-  $ heroku enterprises:usage --enterprise-account=account-name --columns='account,team,app,dyno'
-  $ heroku enterprises:usage --enterprise-account=account-name --columns='account,team,app,dyno' --csv
-  $ heroku enterprises:usage --enterprise-account=account-name --columns='account,team,app,addon' --sort='-addon'
-  $ heroku enterprises:usage --enterprise-account=account-name --columns='account,team,app,addon' --filter='app=myapp'
-  $ heroku enterprises:usage --enterprise-account=account-name --columns='account,team,app,data' --sort='-data,app'
+  $ heroku enterprises:usage:monthly --enterprise-account=account-name
+  $ heroku enterprises:usage:monthly --enterprise-account=account-name --team=team-name
+  $ heroku enterprises:usage:monthly --enterprise-account=account-name --columns='account,team,app,dyno'
+  $ heroku enterprises:usage:monthly --enterprise-account=account-name --columns='account,team,app,dyno' --csv
+  $ heroku enterprises:usage:monthly --enterprise-account=account-name --columns='account,team,app,addon' 
+  --sort='-addon'
+  $ heroku enterprises:usage:monthly --enterprise-account=account-name --columns='account,team,app,addon' 
+  --filter='app=myapp'
+  $ heroku enterprises:usage:monthly --enterprise-account=account-name --columns='account,team,app,data' 
+  --sort='-data,app'
 ```
 
-_See code: [src/commands/enterprises/usage.ts](https://github.com/heroku/heroku-enterprise/blob/v2.1.0/src/commands/enterprises/usage.ts)_
+_See code: [src/commands/enterprises/usage/monthly.ts](https://github.com/heroku/heroku-enterprise/blob/v2.1.0/src/commands/enterprises/usage/monthly.ts)_
 <!-- commandsstop -->

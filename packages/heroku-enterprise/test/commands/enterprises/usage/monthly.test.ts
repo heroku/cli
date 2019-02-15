@@ -1,7 +1,7 @@
 /* tslint:disable:number-literal-format */
 import {expect, test} from '@oclif/test'
 
-describe('enterprises:usage', () => {
+describe('enterprises:usage:monthly', () => {
   const enterpriseAccountUsageResponse = [{
     addons: 25000,
     teams: [
@@ -103,7 +103,7 @@ describe('enterprises:usage', () => {
       .get('/enterprise-accounts/wallyworld/usage')
       .reply(200, enterpriseAccountUsageResponse)
     )
-    .command(['enterprises:usage', '--enterprise-account', 'wallyworld'])
+    .command(['enterprises:usage:monthly', '--enterprise-account', 'wallyworld'])
     .it('lists the usage for an enterprise account', ctx => {
       expect(ctx.stdout).to.contain('Account      Team App        Date       Dyno  Connect Addon Partner Data ')
       expect(ctx.stdout).to.contain('my-test-team ops  exampleapp 2017-01-01 1.548 0       25000 1234    3489 ')
@@ -115,7 +115,7 @@ describe('enterprises:usage', () => {
       .get('/enterprise-accounts/wallyworld/usage?start_date=2018-09-01&end_date=2018-10-01')
       .reply(200, enterpriseAccountUsageResponse)
     )
-    .command(['enterprises:usage', '--enterprise-account', 'wallyworld', '--start-date', '2018-09-01', '--end-date', '2018-10-01'])
+    .command(['enterprises:usage:monthly', '--enterprise-account', 'wallyworld', '--start-date', '2018-09-01', '--end-date', '2018-10-01'])
     .it('lists the usage for an enterprise account using start and end dates', ctx => {
       expect(ctx.stdout).to.contain('Account      Team App        Date       Dyno  Connect Addon Partner Data ')
       expect(ctx.stdout).to.contain('my-test-team ops  exampleapp 2017-01-01 1.548 0       25000 1234    3489 ')
@@ -127,7 +127,7 @@ describe('enterprises:usage', () => {
       .get('/enterprise-accounts/wallyworld/usage')
       .reply(200, [])
     )
-    .command(['enterprises:usage', '--enterprise-account', 'wallyworld'])
+    .command(['enterprises:usage:monthly', '--enterprise-account', 'wallyworld'])
     .it('warns when no usage data is available', ctx => {
       expect(ctx.stderr).to.contain('Warning: No usage data to list')
     })
@@ -138,7 +138,7 @@ describe('enterprises:usage', () => {
       .get('/enterprise-accounts/wallyworld/teams/grumpy/usage')
       .reply(200, enterpriseTeamUsageResponse)
     )
-    .command(['enterprises:usage', '--enterprise-account', 'wallyworld', '--team', 'grumpy'])
+    .command(['enterprises:usage:monthly', '--enterprise-account', 'wallyworld', '--team', 'grumpy'])
     .it('lists the usage for an enterprise team', ctx => {
       expect(ctx.stdout).to.contain('App               Date       Dyno  Connect Addon Partner Data ')
       expect(ctx.stdout).to.contain('froyo-expcore     2017-01-01 1.548 0       19941 4457    15484 ')
@@ -153,7 +153,7 @@ describe('enterprises:usage', () => {
       .get('/enterprise-accounts/wallyworld/teams/grumpy/usage?start_date=2018-09-01&end_date=2018-10-01')
       .reply(200, enterpriseTeamUsageResponse)
     )
-    .command(['enterprises:usage', '--enterprise-account', 'wallyworld', '--start-date', '2018-09-01', '--end-date', '2018-10-01', '--team', 'grumpy'])
+    .command(['enterprises:usage:monthly', '--enterprise-account', 'wallyworld', '--start-date', '2018-09-01', '--end-date', '2018-10-01', '--team', 'grumpy'])
     .it('lists the usage for an enterprise team using start and end dates', ctx => {
       expect(ctx.stdout).to.contain('App               Date       Dyno  Connect Addon Partner Data ')
       expect(ctx.stdout).to.contain('froyo-expcore     2017-01-01 1.548 0       19941 4457    15484 ')
@@ -168,7 +168,7 @@ describe('enterprises:usage', () => {
       .get('/enterprise-accounts/wallyworld/teams/grumpy/usage')
       .reply(200, [])
     )
-    .command(['enterprises:usage', '--enterprise-account', 'wallyworld', '--team', 'grumpy'])
+    .command(['enterprises:usage:monthly', '--enterprise-account', 'wallyworld', '--team', 'grumpy'])
     .it('warns when no team usage data is available', ctx => {
       expect(ctx.stderr).to.contain('Warning: No usage data to list')
     })
