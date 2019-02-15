@@ -22,6 +22,13 @@ const otherAddon = {
   config_vars: ['DATABASE_URL', 'HEROKU_POSTGRESQL_BLUE_URL'],
   plan: { name: 'heroku-postgresql:standard-0' }
 }
+const lowercaseAddon = {
+  id: 2,
+  name: 'postgres-3',
+  app: { name: 'mylowercaseapp' },
+  config_vars: ['LOWERCASE_DATABASE_URL'],
+  plan: { name: 'heroku-postgresql:standard-0' }
+}
 const attachment = {
   name: 'HEROKU_POSTGRESQL_RED',
   app: { name: 'myapp' },
@@ -31,6 +38,11 @@ const otherAttachment = {
   name: 'HEROKU_POSTGRESQL_BLUE',
   app: { name: 'myotherapp' },
   addon: otherAddon
+}
+const lowercaseAttachment = {
+  name: 'lowercase_database',
+  app: { name: 'mylowercaseapp' },
+  addon: lowercaseAddon
 }
 const attachedBlueAttachment = {
   name: 'ATTACHED_BLUE',
@@ -46,6 +58,9 @@ const myappConfig = {
 const myotherappConfig = {
   DATABASE_URL: 'postgres://heroku/otherdb',
   HEROKU_POSTGRESQL_BLUE_URL: 'postgres://heroku/otherdb'
+}
+const mylowercaseappConfig = {
+  LOWERCASE_DATABASE_URL: 'postgres://heroku/lowercasedb'
 }
 
 let copyingText = () => {
@@ -174,6 +189,38 @@ describe('pg:copy', () => {
       return cmd.run({ app: 'myapp', args: { source: 'HEROKU_POSTGRESQL_RED_URL', target: 'ATTACHED_BLUE' }, flags: { confirm: 'myapp' } })
         .then(() => expect(cli.stdout, 'to equal', ''))
         .then(() => expect(cli.stderr, 'to equal', `Starting copy of RED to ATTACHED_BLUE... done\n${copyingText()}`))
+    })
+  })
+
+  context('heroku to heroku with lower case attachment name', () => {
+    beforeEach(() => {
+      api.get('/addons/postgres-3').reply(200, lowercaseAddon)
+      api.get('/addons/postgres-2').reply(200, otherAddon)
+      api.post('/actions/addon-attachments/resolve', {
+        app: 'mylowercaseapp',
+        addon_attachment: 'lowercase_database_URL',
+        addon_service: 'heroku-postgresql'
+      }).reply(200, [lowercaseAttachment])
+      api.post('/actions/addon-attachments/resolve', {
+        app: 'mylowercaseapp',
+        addon_attachment: 'myotherapp::DATABASE_URL',
+        addon_service: 'heroku-postgresql'
+      }).reply(200, [otherAttachment])
+      api.get('/apps/mylowercaseapp/config-vars').reply(200, mylowercaseappConfig)
+      api.get('/apps/myotherapp/config-vars').reply(200, myotherappConfig)
+      pg.get('/postgres/v0/databases/postgres-3/credentials').reply(200, ['one'])
+      pg.post('/client/v11/databases/2/transfers', {
+        from_name: 'lowercase_database',
+        from_url: 'postgres://heroku/lowercasedb',
+        to_name: 'BLUE',
+        to_url: 'postgres://heroku/otherdb'
+      }).reply(200, { uuid: '100-001' })
+      pg.get('/client/v11/apps/myotherapp/transfers/100-001').reply(200, { finished_at: '100', succeeded: true })
+    })
+    it('copies', () => {
+      return cmd.run({ app: 'mylowercaseapp', args: { source: 'lowercase_database_URL', target: 'myotherapp::DATABASE_URL' }, flags: { confirm: 'mylowercaseapp' } })
+        .then(() => expect(cli.stdout, 'to equal', ''))
+        .then(() => expect(unwrap(cli.stderr), 'to equal', `Starting copy of lowercase_database to BLUE... done\n${copyingText()}`))
     })
   })
 
