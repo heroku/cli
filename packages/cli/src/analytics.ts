@@ -52,7 +52,7 @@ export default class AnalyticsCommand {
     }
 
     const data = Buffer.from(JSON.stringify(analyticsData)).toString('base64')
-    this.http.get(`${this.url}?data=${data}`)
+    return this.http.get(`${this.url}?data=${data}`)
   }
 
   get url(): string {
