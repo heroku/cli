@@ -38,7 +38,6 @@ export default class AnalyticsCommand {
     const analyticsData = {
       source: 'cli',
       event: opts.Command.id,
-      userId: this.userConfig.install,
       properties: {
         command: opts.Command.id,
         completion: await this._acAnalytics(opts.Command.id),
@@ -53,8 +52,10 @@ export default class AnalyticsCommand {
       }
     }
 
-    let data = Buffer.from(JSON.stringify(analyticsData)).toString('base64')
-    this.http.get(`${this.url}?data=${data}`)
+    console.log(analyticsData)
+
+    const data = Buffer.from(JSON.stringify(analyticsData)).toString('base64')
+    return this.http.get(`${this.url}?data=${data}`)
   }
 
   get url(): string {
