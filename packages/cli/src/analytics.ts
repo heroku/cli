@@ -1,6 +1,5 @@
 import {vars} from '@heroku-cli/command'
 import * as Config from '@oclif/config'
-import ux from 'cli-ux'
 import netrc from 'netrc-parser'
 import * as path from 'path'
 
@@ -52,10 +51,8 @@ export default class AnalyticsCommand {
       }
     }
 
-    console.log(analyticsData)
-
     const data = Buffer.from(JSON.stringify(analyticsData)).toString('base64')
-    return this.http.get(`${this.url}?data=${data}`)
+    this.http.get(`${this.url}?data=${data}`)
   }
 
   get url(): string {
