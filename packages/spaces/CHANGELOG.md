@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.22.0](https://github.com/heroku/cli/compare/v7.21.0...v7.22.0) (2019-02-20)
+
+
+### Bug Fixes
+
+* **spaces:** remove owner_pool from space creation ([#1194](https://github.com/heroku/cli/issues/1194)) ([fee69fa](https://github.com/heroku/cli/commit/fee69fa))
+
+
+
+
+
 # [7.21.0](https://github.com/heroku/cli/compare/v7.20.1...v7.21.0) (2019-02-11)
 
 **Note:** Version bump only for package @heroku-cli/plugin-spaces

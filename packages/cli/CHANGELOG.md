@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.22.0](https://github.com/heroku/cli/compare/v7.21.0...v7.22.0) (2019-02-20)
+
+
+### Bug Fixes
+
+* blacklist ps-wait as it is in core now ([#1195](https://github.com/heroku/cli/issues/1195)) ([c0c64bd](https://github.com/heroku/cli/commit/c0c64bd))
+
+
+### Features
+
+* **cli:** Use backboard for analytics ([#1188](https://github.com/heroku/cli/issues/1188)) ([a31cf08](https://github.com/heroku/cli/commit/a31cf08))
+
+
+
+
+
 # [7.21.0](https://github.com/heroku/cli/compare/v7.20.1...v7.21.0) (2019-02-11)
 
 **Note:** Version bump only for package heroku

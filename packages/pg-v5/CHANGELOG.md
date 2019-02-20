@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.22.0](https://github.com/heroku/cli/compare/v7.21.0...v7.22.0) (2019-02-20)
+
+
+### Bug Fixes
+
+* **pg-v5:** normalise casing for pg:copy ([7d547b5](https://github.com/heroku/cli/commit/7d547b5))
+
+
+
+
+
 # [7.21.0](https://github.com/heroku/cli/compare/v7.20.1...v7.21.0) (2019-02-11)
 
 
