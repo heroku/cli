@@ -52,11 +52,23 @@ export default class AnalyticsCommand {
     }
 
     const data = Buffer.from(JSON.stringify(analyticsData)).toString('base64')
-    return this.http.get(`${this.url}?data=${data}`)
+    if (this.authorizationToken) {
+      return this.http.get(`${this.url}?data=${data}`, {headers: {authorization: `Bearer ${this.authorizationToken}`}})
+    } else {
+      return this.http.get(`${this.url}?data=${data}`)
+    }
   }
 
   get url(): string {
     return process.env.HEROKU_ANALYTICS_URL || 'https://backboard.heroku.com/hamurai'
+  }
+
+  get authorizationToken(): string | undefined {
+    return process.env.HEROKU_API_KEY || this.netrcToken
+  }
+
+  get netrcToken(): string | undefined {
+    return netrc.machines[vars.apiHost] && netrc.machines[vars.apiHost].password
   }
 
   get usingHerokuAPIKey(): boolean {

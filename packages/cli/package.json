@@ -222,7 +222,6 @@
     },
     "hooks": {
       "init": [
-        "./lib/hooks/init/refresh",
         "./lib/hooks/init/version"
       ],
       "prerun": [
