@@ -260,6 +260,7 @@
       "heroku-container-registry": null,
       "heroku-event-log": "@heroku/event-log",
       "heroku-pipelines": null,
+      "heroku-ps-wait": null,
       "heroku-skynet-cli": "@heroku/skynet",
       "heroku-splunk": "@heroku/splunk",
       "heroku-sudo": "@heroku/sudo",
