@@ -1,37 +1,11 @@
 import {vars} from '@heroku-cli/command'
 import * as Config from '@oclif/config'
-import ux from 'cli-ux'
 import netrc from 'netrc-parser'
 import * as path from 'path'
 
 import deps from './deps'
 
 const debug = require('debug')('heroku:analytics')
-
-export interface AnalyticsJSONCommand {
-  command: string
-  completion: number
-  version: string
-  plugin: string
-  plugin_version: string
-  os: string
-  shell: string
-  language: string
-  valid: true
-}
-
-export interface AnalyticsJSON {
-  schema: 1
-  commands: AnalyticsJSONCommand[]
-}
-
-export interface AnalyticsJSONPost {
-  schema: 1
-  commands: AnalyticsJSONCommand[]
-  install: string
-  cli: string
-  user: string
-}
 
 export interface RecordOpts {
   Command: Config.Command.Class
@@ -50,13 +24,6 @@ export default class AnalyticsCommand {
     })
   }
 
-  _initialAnalyticsJSON(): AnalyticsJSON {
-    return {
-      schema: 1,
-      commands: [],
-    }
-  }
-
   async record(opts: RecordOpts) {
     await this.init()
     const plugin = opts.Command.plugin
@@ -65,56 +32,43 @@ export default class AnalyticsCommand {
       return
     }
 
-    if (!this.user) return
+    if (this.userConfig.skipAnalytics) return
 
-    let analyticsJSON = await this._readJSON()
-
-    analyticsJSON.commands.push({
-      command: opts.Command.id,
-      completion: await this._acAnalytics(opts.Command.id),
-      version: this.config.version,
-      plugin: plugin.name,
-      plugin_version: plugin.version,
-      os: this.config.platform,
-      shell: this.config.shell,
-      valid: true,
-      language: 'node',
-    })
-
-    await this._writeJSON(analyticsJSON)
-  }
-
-  async submit() {
-    try {
-      await this.init()
-      let user = this.user
-      if (!user) return
-
-      const local: AnalyticsJSON = await this._readJSON()
-      if (local.commands.length === 0) return
-      await deps.file.remove(this.analyticsPath)
-
-      const body: AnalyticsJSONPost = {
-        schema: local.schema,
-        commands: local.commands,
-        user,
-        install: this.userConfig.install,
-        cli: this.config.name,
+    const analyticsData = {
+      source: 'cli',
+      event: opts.Command.id,
+      properties: {
+        command: opts.Command.id,
+        completion: await this._acAnalytics(opts.Command.id),
+        version: this.config.version,
+        plugin: plugin.name,
+        plugin_version: plugin.version,
+        os: this.config.platform,
+        shell: this.config.shell,
+        valid: true,
+        language: 'node',
+        install_id: this.userConfig.install,
       }
+    }
 
-      await this.http.post(this.url, {body})
-    } catch (err) {
-      debug(err)
-      await deps.file.remove(this.analyticsPath).catch(err => ux.warn(err))
+    const data = Buffer.from(JSON.stringify(analyticsData)).toString('base64')
+    if (this.authorizationToken) {
+      return this.http.get(`${this.url}?data=${data}`, {headers: {authorization: `Bearer ${this.authorizationToken}`}})
+    } else {
+      return this.http.get(`${this.url}?data=${data}`)
     }
   }
 
   get url(): string {
-    return process.env.HEROKU_ANALYTICS_URL || 'https://cli-analytics.heroku.com/record'
+    return process.env.HEROKU_ANALYTICS_URL || 'https://backboard.heroku.com/hamurai'
   }
 
-  get analyticsPath(): string {
-    return path.join(this.config.cacheDir, 'analytics.json')
+  get authorizationToken(): string | undefined {
+    return process.env.HEROKU_API_KEY || this.netrcToken
+  }
+
+  get netrcToken(): string | undefined {
+    return netrc.machines[vars.apiHost] && netrc.machines[vars.apiHost].password
   }
 
   get usingHerokuAPIKey(): boolean {
@@ -127,23 +81,8 @@ export default class AnalyticsCommand {
   }
 
   get user(): string | undefined {
-    if (this.userConfig.skipAnalytics || this.usingHerokuAPIKey) return
+    if (this.usingHerokuAPIKey) return
     return this.netrcLogin
-  }
-
-  async _readJSON(): Promise<AnalyticsJSON> {
-    try {
-      let analytics = await deps.file.readJSON(this.analyticsPath)
-      analytics.commands = analytics.commands || []
-      return analytics
-    } catch (err) {
-      if (err.code !== 'ENOENT') debug(err)
-      return this._initialAnalyticsJSON()
-    }
-  }
-
-  async _writeJSON(analyticsJSON: AnalyticsJSON) {
-    return deps.file.outputJSON(this.analyticsPath, analyticsJSON)
   }
 
   async _acAnalytics(id: string): Promise<number> {
