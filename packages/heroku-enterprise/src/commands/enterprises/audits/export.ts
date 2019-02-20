@@ -8,6 +8,7 @@ import * as _ from 'lodash'
 import * as Path from 'path'
 
 import BaseCommand from '../../../base'
+import {CoreService} from '../../../core-service'
 import Utils from '../../../utils'
 
 export default class Export extends BaseCommand {
@@ -41,7 +42,9 @@ export default class Export extends BaseCommand {
 
   async run() {
     const {args, flags} = this.parse(Export)
-    const accountId = await this.getAccountId(flags['enterprise-account'])
+    const coreService: CoreService = new CoreService(this.heroku)
+
+    const accountId = await coreService.getEnterpriseAccountId(flags['enterprise-account'])
     const logYearMonth = await this.getAuditLogYearMonth(args, accountId)
     const headers: any = {headers: {Accept: 'application/vnd.heroku+json; version=3.audit-trail'}}
     const {body: archive} = await this.heroku.get<any>(`/enterprise-accounts/${accountId}/archives/${logYearMonth[0]}/${logYearMonth[1]}`, headers)
@@ -149,10 +152,5 @@ export default class Export extends BaseCommand {
     }))
 
     return auditChoices
-  }
-
-  private async getAccountId(enterpriseAccount: string): Promise<string> {
-    const {body} = await this.heroku.get<any>(`/enterprise-accounts/${enterpriseAccount}`)
-    return body.id
   }
 }

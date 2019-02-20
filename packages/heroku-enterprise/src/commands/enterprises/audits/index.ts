@@ -3,6 +3,7 @@ import {cli} from 'cli-ux'
 
 import BaseCommand from '../../../base'
 import {Accounts} from '../../../completions'
+import {CoreService} from '../../../core-service'
 
 export default class Audits extends BaseCommand {
   static description = 'list available audit logs for an enterprise account'
@@ -24,7 +25,9 @@ export default class Audits extends BaseCommand {
 
   async run() {
     const {flags} = this.parse(Audits)
-    const enterpriseAccountId = await this.getEnterpriseAccountId(flags['enterprise-account'])
+    const coreService: CoreService = new CoreService(this.heroku)
+
+    const enterpriseAccountId = await coreService.getEnterpriseAccountId(flags['enterprise-account'])
     const headers = {headers: {Accept: 'application/vnd.heroku+json; version=3.audit-trail'}}
     const {body: archives} = await this.heroku.get<any[]>(`/enterprise-accounts/${enterpriseAccountId}/archives`, headers)
 
@@ -54,10 +57,5 @@ export default class Audits extends BaseCommand {
         ...flags
       }
     )
-  }
-
-  async getEnterpriseAccountId(enterpriseAccountName: string): Promise<string> {
-    const {body: enterpriseAccount} = await this.heroku.get<any>(`/enterprise-accounts/${enterpriseAccountName}`)
-    return enterpriseAccount.id
   }
 }

@@ -69,13 +69,13 @@ export default class Daily extends BaseCommand {
     const endDate = flags['end-date']
     const query = `?${QueryString.stringify({start: startDate, end: endDate})}`
 
-    const coreServices: CoreService = new CoreService(this.heroku)
+    const coreService: CoreService = new CoreService(this.heroku)
     if (flags.team) {
-      const teamId = await coreServices.getTeamId(flags.team)
+      const teamId = await coreService.getTeamId(flags.team)
       await this.displayCsvUsageData(`/teams/${teamId}/usage/daily${query}`, flags.team)
     } else {
       const enterpriseAccountName = flags['enterprise-account'] as string
-      const accountId = await coreServices.getEnterpriseAccountId(enterpriseAccountName)
+      const accountId = await coreService.getEnterpriseAccountId(enterpriseAccountName)
       await this.displayCsvUsageData(`/enterprise-accounts/${accountId}/usage/daily${query}`, enterpriseAccountName)
     }
   }
