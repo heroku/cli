@@ -276,7 +276,13 @@ OPTIONS
                                                from --start-date)
 
   --start-date=start-date                      (required) start date of the usage period (must be no more than 90 days
-                                               ago)
+                                               ago, starting 2019-01-01)
+
+DESCRIPTION
+  Displays the daily usage data for an enterprise account or team.
+
+  NOTE: While we strive to provide the most accurate usage information, the data
+  presented here may not reflect license usage or billing for your account.
 
 EXAMPLES
   $ heroku enterprises:usage:daily --enterprise-account=account-name --start-date=2018-12-15 --end-date=2019-01-15 --csv
@@ -306,6 +312,12 @@ OPTIONS
   --no-truncate                                do not truncate output to fit screen
   --sort=sort                                  property to sort by (prepend '-' for descending)
   --start-date=start-date                      start date of the usage period
+
+DESCRIPTION
+  Displays the monthly usage data for an enterprise account or team.
+
+  NOTE: While we strive to provide the most accurate usage information, the data
+  presented here may not reflect license usage or billing for your account.
 
 EXAMPLES
   $ heroku enterprises:usage:monthly --enterprise-account=account-name

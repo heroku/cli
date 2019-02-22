@@ -6,7 +6,11 @@ import BaseCommand from '../../../base'
 import {Accounts} from '../../../completions'
 
 export default class Monthly extends BaseCommand {
-  static description = 'list the monthly usage for an enterprise account or team'
+  static description = `list the monthly usage for an enterprise account or team
+Displays the monthly usage data for an enterprise account or team.
+
+NOTE: While we strive to provide the most accurate usage information, the data
+presented here may not reflect license usage or billing for your account.`
 
   static examples = [
     '$ heroku enterprises:usage:monthly --enterprise-account=account-name',

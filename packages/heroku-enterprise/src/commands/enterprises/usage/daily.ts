@@ -8,7 +8,11 @@ import {Accounts} from '../../../completions'
 import {CoreService} from '../../../core-service'
 
 export default class Daily extends BaseCommand {
-  static description = 'list the daily usage for an enterprise account or team'
+  static description = `list the daily usage for an enterprise account or team
+Displays the daily usage data for an enterprise account or team.
+
+NOTE: While we strive to provide the most accurate usage information, the data
+presented here may not reflect license usage or billing for your account.`
 
   static examples = [
     '$ heroku enterprises:usage:daily --enterprise-account=account-name --start-date=2018-12-15 --end-date=2019-01-15 --csv',
@@ -31,7 +35,7 @@ export default class Daily extends BaseCommand {
       required: false
     }),
     'start-date': Flags.string({
-      description: 'start date of the usage period (must be no more than 90 days ago)',
+      description: 'start date of the usage period (must be no more than 90 days ago, starting 2019-01-01)',
       required: true
     }),
     'end-date': Flags.string({
@@ -66,6 +70,12 @@ export default class Daily extends BaseCommand {
 
     this._flags = flags
     const startDate = flags['start-date']
+
+    // TODO: remove this on 2019-04-01
+    if (new Date(startDate) < new Date('2019-01-01')) {
+      this.error('Invalid --start-date. Usage data not available before 2019-01-01')
+    }
+
     const endDate = flags['end-date']
     const query = `?${QueryString.stringify({start: startDate, end: endDate})}`
 
