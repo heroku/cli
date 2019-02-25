@@ -15,10 +15,10 @@ NOTE: While we strive to provide the most accurate usage information, the data
 presented here may not reflect license usage or billing for your account.`
 
   static examples = [
-    '$ heroku enterprises:usage:daily --enterprise-account=account-name --start-date=2018-12-15 --end-date=2019-01-15 --csv',
-    '$ heroku enterprises:usage:daily --team=team-name --start-date=2018-12-15 --end-date=2019-01-15 --csv',
-    '$ heroku enterprises:usage:daily --team=team-name --start-date=2018-12-15 --end-date=2019-01-15 --csv | less',
-    '$ heroku enterprises:usage:daily --team=team-name --start-date=2018-12-15 --end-date=2019-01-15 --csv > /tmp/usage.csv',
+    '$ heroku enterprises:usage:daily --enterprise-account=account-name --start-date=2019-01-01 --end-date=2019-01-15 --csv',
+    '$ heroku enterprises:usage:daily --team=team-name --start-date=2019-01-01 --end-date=2019-01-15 --csv',
+    '$ heroku enterprises:usage:daily --team=team-name --start-date=2019-01-01 --end-date=2019-01-15 --csv | less',
+    '$ heroku enterprises:usage:daily --team=team-name --start-date=2019-01-01 --end-date=2019-01-15 --csv > /tmp/usage.csv',
   ]
 
   static flags = {
@@ -35,11 +35,11 @@ presented here may not reflect license usage or billing for your account.`
       required: false
     }),
     'start-date': Flags.string({
-      description: 'start date of the usage period (must be no more than 90 days ago, starting 2019-01-01)',
+      description: 'start date of the usage period, cannot be more than 3 months prior to today (starting 2019-01-01)',
       required: true
     }),
     'end-date': Flags.string({
-      description: 'end date of the usage period (must be no more than 30 days from --start-date)',
+      description: 'end date of the usage period, cannot be more than 31 days after the start date',
       dependsOn: ['start-date'],
       required: true
     }),

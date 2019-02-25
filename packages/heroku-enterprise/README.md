@@ -272,11 +272,11 @@ OPTIONS
   -t, --team=team                              team name
   --csv                                        (required) output is csv format
 
-  --end-date=end-date                          (required) end date of the usage period (must be no more than 30 days
-                                               from --start-date)
+  --end-date=end-date                          (required) end date of the usage period, cannot be more than 31 days
+                                               after the start date
 
-  --start-date=start-date                      (required) start date of the usage period (must be no more than 90 days
-                                               ago, starting 2019-01-01)
+  --start-date=start-date                      (required) start date of the usage period, cannot be more than 3 months
+                                               prior to today (starting 2019-01-01)
 
 DESCRIPTION
   Displays the daily usage data for an enterprise account or team.
@@ -285,10 +285,10 @@ DESCRIPTION
   presented here may not reflect license usage or billing for your account.
 
 EXAMPLES
-  $ heroku enterprises:usage:daily --enterprise-account=account-name --start-date=2018-12-15 --end-date=2019-01-15 --csv
-  $ heroku enterprises:usage:daily --team=team-name --start-date=2018-12-15 --end-date=2019-01-15 --csv
-  $ heroku enterprises:usage:daily --team=team-name --start-date=2018-12-15 --end-date=2019-01-15 --csv | less
-  $ heroku enterprises:usage:daily --team=team-name --start-date=2018-12-15 --end-date=2019-01-15 --csv > /tmp/usage.csv
+  $ heroku enterprises:usage:daily --enterprise-account=account-name --start-date=2019-01-01 --end-date=2019-01-15 --csv
+  $ heroku enterprises:usage:daily --team=team-name --start-date=2019-01-01 --end-date=2019-01-15 --csv
+  $ heroku enterprises:usage:daily --team=team-name --start-date=2019-01-01 --end-date=2019-01-15 --csv | less
+  $ heroku enterprises:usage:daily --team=team-name --start-date=2019-01-01 --end-date=2019-01-15 --csv > /tmp/usage.csv
 ```
 
 _See code: [src/commands/enterprises/usage/daily.ts](https://github.com/heroku/heroku-enterprise/blob/v2.1.0/src/commands/enterprises/usage/daily.ts)_
