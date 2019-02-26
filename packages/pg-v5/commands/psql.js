@@ -10,8 +10,15 @@ function * run (context, heroku) {
   const { app, args, flags } = context
 
   let namespace = flags.credential ? `credential:${flags.credential}` : null
-
-  let db = yield fetcher.database(app, args.database, namespace)
+  let db
+  try {
+    db = yield fetcher.database(app, args.database, namespace)
+  } catch (err) {
+    if (namespace && err.message === `Couldn't find that addon.`) {
+      throw new Error(`Credential doesn't match, make sure credential is attached`)
+    }
+    throw err
+  }
   cli.console.error(`--> Connecting to ${cli.color.addon(db.attachment.addon.name)}`)
   if (flags.command) {
     process.stdout.write(yield psql.exec(db, flags.command))
