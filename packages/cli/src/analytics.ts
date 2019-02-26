@@ -1,4 +1,4 @@
-import { vars } from '@heroku-cli/command'
+import {vars} from '@heroku-cli/command'
 import * as Config from '@oclif/config'
 import netrc from 'netrc-parser'
 import * as path from 'path'
@@ -38,7 +38,7 @@ export default class AnalyticsCommand {
   constructor(config: Config.IConfig) {
     this.config = config
     this.http = deps.HTTP.create({
-      headers: { 'user-agent': config.userAgent },
+      headers: {'user-agent': config.userAgent},
     })
   }
 
@@ -72,7 +72,7 @@ export default class AnalyticsCommand {
 
     const data = Buffer.from(JSON.stringify(analyticsData)).toString('base64')
     if (this.authorizationToken) {
-      return this.http.get(`${this.url}?data=${data}`, { headers: { authorization: `Bearer ${this.authorizationToken}` } })
+      return this.http.get(`${this.url}?data=${data}`, {headers: {authorization: `Bearer ${this.authorizationToken}`}})
     } else {
       return this.http.get(`${this.url}?data=${data}`)
     }

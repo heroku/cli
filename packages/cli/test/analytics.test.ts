@@ -2,10 +2,9 @@ import Login from '@heroku-cli/plugin-auth/src/commands/auth/login'
 import * as Config from '@oclif/config'
 import nock from 'nock'
 import sinon from 'sinon'
-import { expect } from 'chai'
+import {expect} from 'chai'
 
-import AnalyticsCommand from '../src/analytics'
-import { AnalyticsInterface } from '../src/analytics'
+import AnalyticsCommand, {AnalyticsInterface} from '../src/analytics'
 import UserConfig from '../src/user-config'
 
 describe('analytics', () => {
@@ -17,7 +16,7 @@ describe('analytics', () => {
       }
     })
       .get('/hamurai')
-      .query(({ data: analyticsData }: { data: string }) => {
+      .query(({data: analyticsData}: {data: string}) => {
         const data: AnalyticsInterface = JSON.parse(Buffer.from(analyticsData, 'base64').toString())
 
         expect(data.source).to.eq('cli')
@@ -47,7 +46,7 @@ describe('analytics', () => {
     config.version = '1'
     config.userAgent = '@oclif/command/1.5.6 darwin-x64 node-v10.2.1'
     const analytics = new AnalyticsCommand(config)
-    Login.plugin = { name: 'foo', version: '123' } as any
+    Login.plugin = {name: 'foo', version: '123'} as any
     Login.id = 'login'
 
     await analytics.record({
