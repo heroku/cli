@@ -1,4 +1,4 @@
-import {vars} from '@heroku-cli/command'
+import { vars } from '@heroku-cli/command'
 import * as Config from '@oclif/config'
 import netrc from 'netrc-parser'
 import * as path from 'path'
@@ -12,6 +12,24 @@ export interface RecordOpts {
   argv: string[]
 }
 
+export interface AnalyticsInterface {
+  source: string,
+  event: string,
+  properties: {
+    cli: string,
+    command: string,
+    completion: number,
+    version: string,
+    plugin: string,
+    plugin_version: string,
+    os: string,
+    shell: string,
+    valid: boolean,
+    language: string,
+    install_id: string,
+  }
+}
+
 export default class AnalyticsCommand {
   config: Config.IConfig
   userConfig!: typeof deps.UserConfig.prototype
@@ -20,7 +38,7 @@ export default class AnalyticsCommand {
   constructor(config: Config.IConfig) {
     this.config = config
     this.http = deps.HTTP.create({
-      headers: {'user-agent': config.userAgent},
+      headers: { 'user-agent': config.userAgent },
     })
   }
 
@@ -34,10 +52,11 @@ export default class AnalyticsCommand {
 
     if (this.userConfig.skipAnalytics) return
 
-    const analyticsData = {
+    const analyticsData: AnalyticsInterface = {
       source: 'cli',
       event: opts.Command.id,
       properties: {
+        cli: this.config.name,
         command: opts.Command.id,
         completion: await this._acAnalytics(opts.Command.id),
         version: this.config.version,
@@ -53,7 +72,7 @@ export default class AnalyticsCommand {
 
     const data = Buffer.from(JSON.stringify(analyticsData)).toString('base64')
     if (this.authorizationToken) {
-      return this.http.get(`${this.url}?data=${data}`, {headers: {authorization: `Bearer ${this.authorizationToken}`}})
+      return this.http.get(`${this.url}?data=${data}`, { headers: { authorization: `Bearer ${this.authorizationToken}` } })
     } else {
       return this.http.get(`${this.url}?data=${data}`)
     }
