@@ -20,7 +20,7 @@ describe('analytics', () => {
 
         expect(data.source).to.eq('cli')
         expect(data.event).to.eq('login')
-        expect(data.properties.cli).to.eq('@oclif/command')
+        expect(data.properties.cli).to.eq('heroku')
         expect(data.properties.command).to.eq('login')
         expect(data.properties.completion).to.eq(0)
         expect(data.properties.version).to.eq('1')
@@ -44,6 +44,7 @@ describe('analytics', () => {
     config.shell = 'fish'
     config.version = '1'
     config.userAgent = '@oclif/command/1.5.6 darwin-x64 node-v10.2.1'
+    config.name = 'heroku'
     const analytics = new AnalyticsCommand(config)
     Login.plugin = {name: 'foo', version: '123'} as any
     Login.id = 'login'
