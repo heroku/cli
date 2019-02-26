@@ -1,11 +1,10 @@
-import Login from '@heroku-cli/plugin-auth/src/commands/auth/login'
 import * as Config from '@oclif/config'
+import AnalyticsCommand, {AnalyticsInterface} from '../src/analytics'
+import Login from '@heroku-cli/plugin-auth/src/commands/auth/login'
+import UserConfig from '../src/user-config'
 import nock from 'nock'
 import sinon from 'sinon'
 import {expect} from 'chai'
-
-import AnalyticsCommand, {AnalyticsInterface} from '../src/analytics'
-import UserConfig from '../src/user-config'
 
 describe('analytics', () => {
   it('emits analytics event', async () => {
