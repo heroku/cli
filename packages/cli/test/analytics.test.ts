@@ -7,6 +7,9 @@ import sinon from 'sinon'
 import AnalyticsCommand, {AnalyticsInterface} from '../src/analytics'
 import UserConfig from '../src/user-config'
 
+import AnalyticsCommand, {AnalyticsInterface} from '../src/analytics'
+import UserConfig from '../src/user-config'
+
 function createBackboardMock(expectedGetter: (data: AnalyticsInterface) => any, actual: any) {
   let backboard = nock('https://backboard.heroku.com/', {
     reqheaders: {
