@@ -97,17 +97,7 @@ presented here may not reflect license usage or billing for your account.`
     const {response} = await this.heroku.stream(`${url}`)
     cli.action.stop()
 
-    await new Promise((resolve, reject) => {
-      response.on('data', (data: any) => {
-        process.stdout.write(data.toString())
-      })
-      response.on('end', () => {
-        resolve()
-      })
-      response.on('error', () => {
-        reject()
-      })
-    })
+    response.pipe(process.stdout)
   }
 
   private setHttpHeadersForCSV() {
