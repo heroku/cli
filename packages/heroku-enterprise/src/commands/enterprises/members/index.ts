@@ -11,7 +11,7 @@ export default class Members extends BaseCommand {
     '$ heroku enterprises:members --enterprise-account=account-name',
   ]
 
-  static flags = {
+  static flags: any = {
     'enterprise-account': flags.string({
       completion: Accounts,
       char: 'e',

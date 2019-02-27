@@ -1,4 +1,4 @@
-import {flags as Flags} from '@heroku-cli/command'
+import {flags} from '@heroku-cli/command'
 import cli from 'cli-ux'
 import * as QueryString from 'querystring'
 
@@ -22,22 +22,22 @@ presented here may not reflect license usage or billing for your account.`
     '$ heroku enterprises:usage:monthly --enterprise-account=account-name --columns=\'account,team,app,data\' --sort=\'-data,app\''
   ]
 
-  static flags = {
-    'enterprise-account': Flags.string({
+  static flags: any = {
+    'enterprise-account': flags.string({
       completion: Accounts,
       char: 'e',
       description: 'enterprise account name',
       required: true
     }),
-    team: Flags.string({
+    team: flags.string({
       char: 't',
       description: 'team name',
       required: false
     }),
-    'start-date': Flags.string({
+    'start-date': flags.string({
       description: 'start date of the usage period'
     }),
-    'end-date': Flags.string({
+    'end-date': flags.string({
       description: 'end date of the usage period',
       dependsOn: ['start-date']
     }),

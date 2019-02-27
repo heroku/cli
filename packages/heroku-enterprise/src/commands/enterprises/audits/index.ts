@@ -1,4 +1,4 @@
-import * as flags from '@heroku-cli/command/lib/flags'
+import {flags} from '@heroku-cli/command'
 import {cli} from 'cli-ux'
 
 import BaseCommand from '../../../base'
@@ -10,7 +10,8 @@ export default class Audits extends BaseCommand {
   static examples = [
     '$ heroku enterprises:audits --enterprise-account=account-name',
   ]
-  static flags = {
+
+  static flags: any = {
     'enterprise-account': flags.string({
       completion: Accounts,
       char: 'e',

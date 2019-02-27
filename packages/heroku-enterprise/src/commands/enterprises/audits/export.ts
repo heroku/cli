@@ -1,5 +1,5 @@
 import {color} from '@heroku-cli/color'
-import {flags as Flags} from '@heroku-cli/command'
+import {flags} from '@heroku-cli/command'
 import axios from 'axios'
 import cli from 'cli-ux'
 import * as fs from 'fs'
@@ -23,17 +23,17 @@ export default class Export extends BaseCommand {
     {name: 'log', description: 'audit log date (YYYY-MM)', required: false},
   ]
   static flags = {
-    'enterprise-account': Flags.string({
+    'enterprise-account': flags.string({
       char: 'e',
       description: 'enterprise account name',
       required: true
     }),
-    dest: Flags.string({
+    dest: flags.string({
       char: 'd',
       description: 'download destination for the exported audit log',
       required: false
     }),
-    force: Flags.boolean({
+    force: flags.boolean({
       char: 'f',
       description: 'overwrite existing file during download',
       required: false

@@ -1,5 +1,5 @@
 import color from '@heroku-cli/color'
-import {flags as Flags} from '@heroku-cli/command'
+import {flags} from '@heroku-cli/command'
 import cli from 'cli-ux'
 import * as QueryString from 'querystring'
 
@@ -22,28 +22,28 @@ presented here may not reflect license usage or billing for your account.`
   ]
 
   static flags = {
-    'enterprise-account': Flags.string({
+    'enterprise-account': flags.string({
       completion: Accounts,
       char: 'e',
       description: 'enterprise account name',
       exclusive: ['team'],
       required: false
     }),
-    team: Flags.string({
+    team: flags.string({
       char: 't',
       description: 'team name',
       required: false
     }),
-    'start-date': Flags.string({
+    'start-date': flags.string({
       description: 'start date of the usage period, cannot be more than 3 months prior to today (starting 2019-01-01)',
       required: true
     }),
-    'end-date': Flags.string({
+    'end-date': flags.string({
       description: 'end date of the usage period, cannot be more than 31 days after the start date',
       dependsOn: ['start-date'],
       required: true
     }),
-    csv: Flags.boolean({
+    csv: flags.boolean({
       description: 'output is csv format',
       required: true
     })
