@@ -53,7 +53,7 @@ EXAMPLE
   $ heroku enterprises
 ```
 
-_See code: [src/commands/enterprises/index.ts](https://github.com/heroku/heroku-enterprise/blob/v2.1.1/src/commands/enterprises/index.ts)_
+_See code: [src/commands/enterprises/index.ts](https://github.com/heroku/heroku-enterprise/blob/v2.1.2/src/commands/enterprises/index.ts)_
 
 ## `heroku enterprises:audits`
 
@@ -72,7 +72,7 @@ EXAMPLE
   $ heroku enterprises:audits --enterprise-account=account-name
 ```
 
-_See code: [src/commands/enterprises/audits/index.ts](https://github.com/heroku/heroku-enterprise/blob/v2.1.1/src/commands/enterprises/audits/index.ts)_
+_See code: [src/commands/enterprises/audits/index.ts](https://github.com/heroku/heroku-enterprise/blob/v2.1.2/src/commands/enterprises/audits/index.ts)_
 
 ## `heroku enterprises:audits:export [LOG]`
 
@@ -97,7 +97,7 @@ EXAMPLES
   $ heroku enterprises:audits:export 2018-11 --enterprise-account=account-name --dest=/tmp/audit_report.json.gz --force
 ```
 
-_See code: [src/commands/enterprises/audits/export.ts](https://github.com/heroku/heroku-enterprise/blob/v2.1.1/src/commands/enterprises/audits/export.ts)_
+_See code: [src/commands/enterprises/audits/export.ts](https://github.com/heroku/heroku-enterprise/blob/v2.1.2/src/commands/enterprises/audits/export.ts)_
 
 ## `heroku enterprises:members`
 
@@ -120,7 +120,7 @@ EXAMPLE
   $ heroku enterprises:members --enterprise-account=account-name
 ```
 
-_See code: [src/commands/enterprises/members/index.ts](https://github.com/heroku/heroku-enterprise/blob/v2.1.1/src/commands/enterprises/members/index.ts)_
+_See code: [src/commands/enterprises/members/index.ts](https://github.com/heroku/heroku-enterprise/blob/v2.1.2/src/commands/enterprises/members/index.ts)_
 
 ## `heroku enterprises:members:add EMAIL`
 
@@ -142,7 +142,7 @@ EXAMPLE
   --permissions=billing,create,manage,view
 ```
 
-_See code: [src/commands/enterprises/members/add.ts](https://github.com/heroku/heroku-enterprise/blob/v2.1.1/src/commands/enterprises/members/add.ts)_
+_See code: [src/commands/enterprises/members/add.ts](https://github.com/heroku/heroku-enterprise/blob/v2.1.2/src/commands/enterprises/members/add.ts)_
 
 ## `heroku enterprises:members:permissions:add EMAIL`
 
@@ -161,7 +161,7 @@ EXAMPLE
   --permissions=billing,create,manage,view
 ```
 
-_See code: [src/commands/enterprises/members/permissions/add.ts](https://github.com/heroku/heroku-enterprise/blob/v2.1.1/src/commands/enterprises/members/permissions/add.ts)_
+_See code: [src/commands/enterprises/members/permissions/add.ts](https://github.com/heroku/heroku-enterprise/blob/v2.1.2/src/commands/enterprises/members/permissions/add.ts)_
 
 ## `heroku enterprises:members:permissions:remove EMAIL`
 
@@ -180,7 +180,7 @@ EXAMPLE
   --permissions=billing,create,manage,view
 ```
 
-_See code: [src/commands/enterprises/members/permissions/remove.ts](https://github.com/heroku/heroku-enterprise/blob/v2.1.1/src/commands/enterprises/members/permissions/remove.ts)_
+_See code: [src/commands/enterprises/members/permissions/remove.ts](https://github.com/heroku/heroku-enterprise/blob/v2.1.2/src/commands/enterprises/members/permissions/remove.ts)_
 
 ## `heroku enterprises:members:remove EMAIL`
 
@@ -200,7 +200,7 @@ EXAMPLE
   $ heroku enterprises:members:remove member-name --enterprise-account=account-name
 ```
 
-_See code: [src/commands/enterprises/members/remove.ts](https://github.com/heroku/heroku-enterprise/blob/v2.1.1/src/commands/enterprises/members/remove.ts)_
+_See code: [src/commands/enterprises/members/remove.ts](https://github.com/heroku/heroku-enterprise/blob/v2.1.2/src/commands/enterprises/members/remove.ts)_
 
 ## `heroku enterprises:teams`
 
@@ -223,7 +223,7 @@ EXAMPLE
   $ heroku enterprises:teams --enterprise-account=account-name
 ```
 
-_See code: [src/commands/enterprises/teams/index.ts](https://github.com/heroku/heroku-enterprise/blob/v2.1.1/src/commands/enterprises/teams/index.ts)_
+_See code: [src/commands/enterprises/teams/index.ts](https://github.com/heroku/heroku-enterprise/blob/v2.1.2/src/commands/enterprises/teams/index.ts)_
 
 ## `heroku enterprises:teams:create [TEAM]`
 
@@ -243,7 +243,7 @@ EXAMPLE
   $ heroku enterprise:teams:create team-name --enterprise-account=account-name
 ```
 
-_See code: [src/commands/enterprises/teams/create.ts](https://github.com/heroku/heroku-enterprise/blob/v2.1.1/src/commands/enterprises/teams/create.ts)_
+_See code: [src/commands/enterprises/teams/create.ts](https://github.com/heroku/heroku-enterprise/blob/v2.1.2/src/commands/enterprises/teams/create.ts)_
 
 ## `heroku enterprises:teams:remove TEAM`
 
@@ -257,7 +257,7 @@ EXAMPLE
   $ heroku enterprises:teams:remove team-name
 ```
 
-_See code: [src/commands/enterprises/teams/remove.ts](https://github.com/heroku/heroku-enterprise/blob/v2.1.1/src/commands/enterprises/teams/remove.ts)_
+_See code: [src/commands/enterprises/teams/remove.ts](https://github.com/heroku/heroku-enterprise/blob/v2.1.2/src/commands/enterprises/teams/remove.ts)_
 
 ## `heroku enterprises:usage:daily`
 
@@ -291,7 +291,7 @@ EXAMPLES
   $ heroku enterprises:usage:daily --team=team-name --start-date=2019-01-01 --end-date=2019-01-15 --csv > /tmp/usage.csv
 ```
 
-_See code: [src/commands/enterprises/usage/daily.ts](https://github.com/heroku/heroku-enterprise/blob/v2.1.1/src/commands/enterprises/usage/daily.ts)_
+_See code: [src/commands/enterprises/usage/daily.ts](https://github.com/heroku/heroku-enterprise/blob/v2.1.2/src/commands/enterprises/usage/daily.ts)_
 
 ## `heroku enterprises:usage:monthly`
 
@@ -332,5 +332,5 @@ EXAMPLES
   --sort='-data,app'
 ```
 
-_See code: [src/commands/enterprises/usage/monthly.ts](https://github.com/heroku/heroku-enterprise/blob/v2.1.1/src/commands/enterprises/usage/monthly.ts)_
+_See code: [src/commands/enterprises/usage/monthly.ts](https://github.com/heroku/heroku-enterprise/blob/v2.1.2/src/commands/enterprises/usage/monthly.ts)_
 <!-- commandsstop -->
