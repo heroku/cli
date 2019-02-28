@@ -59,7 +59,7 @@ presented here may not reflect license usage or billing for your account.`
     data: {header: 'Data'}
   }
 
-  private _flags: any
+  private readonly MAX_DAYS = 31 * 24 * 60 * 60 * 1000
 
   async run() {
     const {flags} = this.parse(Daily)
@@ -68,17 +68,18 @@ presented here may not reflect license usage or billing for your account.`
       this.error(`You must specify usage for either ${'--enterprise-account(-e)'} or ${'--team(-t)'}`)
     }
 
-    this._flags = flags
-    const startDate = flags['start-date']
+    const startDate: any = new Date(flags['start-date'])
+    const endDate: any = new Date(flags['end-date'])
 
-    // TODO: remove this on 2019-04-01
-    if (new Date(startDate) < new Date('2019-01-01')) {
+    // TODO: change this to be dynamic on 2019-04-01
+    if (startDate < new Date('2019-01-01')) {
       this.error('Invalid --start-date. Usage data not available before 2019-01-01')
     }
+    if (Math.abs(endDate - startDate) > this.MAX_DAYS) {
+      this.error('Cannot request more than 31 days of usage')
+    }
 
-    const endDate = flags['end-date']
-    const query = `?${QueryString.stringify({start: startDate, end: endDate})}`
-
+    const query = `?${QueryString.stringify({start: flags['start-date'], end: flags['end-date']})}`
     const coreService: CoreService = new CoreService(this.heroku)
     if (flags.team) {
       const teamId = await coreService.getTeamId(flags.team)
