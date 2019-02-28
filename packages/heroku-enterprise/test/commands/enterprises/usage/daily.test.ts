@@ -45,12 +45,12 @@ describe('enterprises:usage:daily', () => {
   test
     .stdout()
     .nock('https://api.heroku.com', (api: any) => api
-      .get('/teams/grumpy')
+      .get('/teams/lausanne')
       .reply(200, accountsTeamsResponse)
       .get('/teams/98765432-10ab-cdef-3210-456789fedcba/usage/daily?start=2019-09-01&end=2019-09-28')
       .reply(200, enterpriseTeamUsageResponse)
     )
-    .command(['enterprises:usage:daily', '--team', 'grumpy', '--start-date', '2019-09-01', '--end-date', '2019-09-28', '--csv'])
+    .command(['enterprises:usage:daily', '--team', 'lausanne', '--start-date', '2019-09-01', '--end-date', '2019-09-28', '--csv'])
     .it('lists the usage for an enterprise team', ctx => {
       expect(ctx.stdout).to.contain('account name,team name,app name,date,dyno units used,data add-on usage,third party add-on usage,third party add-on and data usage,spaces\n')
       expect(ctx.stdout).to.contain('wallyworld,lausanne,agile-fortress-36232,2019-01-01,0.0322580633333333,0,0,0,\n')
@@ -64,12 +64,12 @@ describe('enterprises:usage:daily', () => {
     .it('should give an error if neither an account or team is specified')
 
   test
-    .command(['enterprises:usage:daily', '--team', 'grumpy', '--start-date', '2018-09-01', '--end-date', '2018-09-28', '--csv'])
+    .command(['enterprises:usage:daily', '--team', 'lausanne', '--start-date', '2018-09-01', '--end-date', '2018-09-28', '--csv'])
     .catch(err => expect(err.message).to.equal('Invalid --start-date. Usage data not available before 2019-01-01'))
     .it('should give an error when start date is less than 2019-01-01')
 
   test
-    .command(['enterprises:usage:daily', '--team', 'grumpy', '--start-date', '2019-01-01', '--end-date', '2019-02-02', '--csv'])
+    .command(['enterprises:usage:daily', '--team', 'lausanne', '--start-date', '2019-01-01', '--end-date', '2019-02-02', '--csv'])
     .catch(err => expect(err.message).to.equal('Cannot request more than 31 days of usage'))
     .it('should give an error when start date is less than 2019-01-01')
 })
