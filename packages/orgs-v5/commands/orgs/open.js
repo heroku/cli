@@ -16,6 +16,7 @@ module.exports = {
   command: 'open',
   description: 'open the team interface in a browser window',
   needsAuth: true,
+  wantsOrg: true,
   flags: [
     flags.team({ name: 'team', hasValue: true, hidden: true })
   ],

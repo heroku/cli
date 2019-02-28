@@ -103,6 +103,7 @@ example2
 === Collaborated Apps
 theirapp   other@owner.name`,
   needsAuth: true,
+  wantsOrg: true,
   flags: [
     { name: 'all', char: 'A', description: 'include apps in all teams' },
     { name: 'json', description: 'output in json format' },

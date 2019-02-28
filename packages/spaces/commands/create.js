@@ -68,6 +68,7 @@ module.exports = {
   `,
   needsApp: false,
   needsAuth: true,
+  wantsOrg: true,
   args: [{ name: 'space', optional: true, hidden: true }],
   flags: [
     { name: 'space', char: 's', hasValue: true, description: 'name of space to create' },

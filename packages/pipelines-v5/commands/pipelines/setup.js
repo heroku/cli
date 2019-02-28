@@ -35,6 +35,7 @@ Configuring pipeline... done
 View your new pipeline by running \`heroku pipelines:open e5a55ffa-de3f-11e6-a245-3c15c2e6bc1e\``,
   needsApp: false,
   needsAuth: true,
+  wantsOrg: true,
   args: [
     {
       name: 'name',

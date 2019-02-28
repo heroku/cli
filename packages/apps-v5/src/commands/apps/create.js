@@ -172,6 +172,7 @@ $ heroku apps:create example-staging --remote staging
 # create an app in the eu region
 $ heroku apps:create --region eu`,
   needsAuth: true,
+  wantsOrg: true,
   args: [{ name: 'app', optional: true, description: 'name of app to create' }],
   flags: [
     { name: 'app', char: 'a', hasValue: true, hidden: true },

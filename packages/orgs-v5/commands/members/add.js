@@ -43,6 +43,7 @@ let add = {
   command: 'add',
   description: 'adds a user to a team',
   needsAuth: true,
+  wantsOrg: true,
   args: [{ name: 'email' }],
   flags: [
     { name: 'role', char: 'r', hasValue: true, required: true, description: 'member role (admin, collaborator, member, owner)', completion: RoleCompletion },

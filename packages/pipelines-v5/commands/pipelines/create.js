@@ -73,6 +73,7 @@ Creating example pipeline... done
 Adding example-staging to example pipeline as staging... done`,
   needsApp: true,
   needsAuth: true,
+  wantsOrg: true,
   args: [
     { name: 'name', description: 'name of pipeline, defaults to basename of app', optional: true }
   ],
