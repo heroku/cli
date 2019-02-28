@@ -143,7 +143,7 @@ OPTIONS
   -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
   -s, --stage=stage    stage of first app in pipeline
-  -t, --team=team      the team which will own the apps (can also use --org)
+  -t, --team=team      team to use
 
 DESCRIPTION
   An existing app must be specified as the first app in the pipeline.
@@ -326,7 +326,7 @@ ARGUMENTS
   REPO  a GitHub repository to connect the pipeline to
 
 OPTIONS
-  -t, --team=team  the team which will own the apps (can also use --org)
+  -t, --team=team  team to use
   -y, --yes        accept all default settings without prompting
 
 EXAMPLES

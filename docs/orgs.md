@@ -26,4 +26,7 @@ open the team interface in a browser window
 ```
 USAGE
   $ heroku orgs:open
+
+OPTIONS
+  -t, --team=team  team to use
 ```

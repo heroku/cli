@@ -33,7 +33,7 @@ OPTIONS
   -A, --all          include apps in all teams
   -p, --personal     list apps in personal account when a default team is set
   -s, --space=space  filter by space
-  -t, --team=team    [default: kathmandu] team to use
+  -t, --team=team    team to use
   --json             output in json format
 
 EXAMPLES
@@ -62,7 +62,7 @@ OPTIONS
   -n, --no-remote            do not create a git remote
   -r, --remote=remote        the git remote to create, default "heroku"
   -s, --stack=stack          the stack to create the app on
-  -t, --team=team            [default: kathmandu] team to use
+  -t, --team=team            team to use
   --addons=addons            comma-delimited list of addons to install
   --json                     output in json format
   --region=region            specify region for the app to run in

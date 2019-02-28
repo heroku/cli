@@ -31,7 +31,7 @@ USAGE
   $ heroku spaces
 
 OPTIONS
-  -t, --team=team  [default: kathmandu] team to use
+  -t, --team=team  team to use
   --json           output in json format
 ```
 
@@ -45,7 +45,7 @@ USAGE
 
 OPTIONS
   -s, --space=space      name of space to create
-  -t, --team=team        [default: kathmandu] team to use
+  -t, --team=team        team to use
   --cidr=cidr            RFC-1918 CIDR the space will use
   --data-cidr=data-cidr  RFC-1918 CIDR used by Heroku Data resources for the space
   --region=region        region name
