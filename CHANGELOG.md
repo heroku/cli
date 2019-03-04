@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.22.3](https://github.com/heroku/cli/compare/v7.22.2...v7.22.3) (2019-03-04)
+
+
+### Bug Fixes
+
+* upgrade node to 11.10.1 ([e02635c](https://github.com/heroku/cli/commit/e02635c))
+
+
+
+
+
 <a name="7.22.2"></a>
 ## [7.22.2](https://github.com/heroku/cli/compare/v7.22.1...v7.22.2) (2019-02-28)
 
