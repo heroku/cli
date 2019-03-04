@@ -280,6 +280,7 @@ class Dyno extends Duplex {
 
   _readData (c) {
     let firstLine = true
+    process.stdout.uncork()
     return data => {
       debug('input: %o', data)
       // discard first line
