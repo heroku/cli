@@ -59,7 +59,7 @@ module.exports = {
   args: [{ name: 'database', optional: true }],
   flags: [
     { name: 'wait-interval', hasValue: true },
-    { name: 'snapshot' },
+    { name: 'snapshot', hidden: true },
     { name: 'verbose', char: 'v' }
   ],
   run: cli.command({ preauth: true }, co.wrap(run))
