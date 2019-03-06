@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.22.4](https://github.com/heroku/cli/compare/v7.22.3...v7.22.4) (2019-03-06)
+
+
+### Bug Fixes
+
+* hide snapshot flag ([b3487e5](https://github.com/heroku/cli/commit/b3487e5))
+
+
+
+
+
 ## [7.22.1](https://github.com/heroku/cli/compare/v7.22.0...v7.22.1) (2019-02-26)
 
 

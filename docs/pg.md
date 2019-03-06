@@ -103,7 +103,6 @@ OPTIONS
   -a, --app=app                  (required) app to run command against
   -r, --remote=remote            git remote of app to use
   -v, --verbose
-  --snapshot
   --wait-interval=wait-interval
 ```
 
