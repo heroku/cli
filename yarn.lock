@@ -165,7 +165,7 @@
     supports-color "^5.5.0"
     tslib "^1.9.3"
 
-"@heroku-cli/command@^8.1.17", "@heroku-cli/command@^8.2.0", "@heroku-cli/command@^8.2.6":
+"@heroku-cli/command@^8.1.17", "@heroku-cli/command@^8.2.0":
   version "8.2.6"
   resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.2.6.tgz#9bb957e4a43e1a9d71afe689d408acdbab8fce64"
   integrity sha512-zavEQKM2oAXLMeBUlSGYAL+61b10qvehzvc/s4gJjE0sxRPupKhW3ENsSK3VOCqxNWR9ncKSXJvsXIn/IvQkUg==
@@ -177,6 +177,21 @@
     fs-extra "^7.0.1"
     heroku-client "^3.0.6"
     http-call "^5.2.2"
+    netrc-parser "^3.1.6"
+    opn "^5.4.0"
+
+"@heroku-cli/command@^8.2.8":
+  version "8.2.8"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.2.8.tgz#8668ce49a5ec791eb0bbd5a862badafcd33fcec4"
+  integrity sha512-2gcuKouQsOPv8DSQiNg3eTaNzCX5kIQNWf1f/7Hj6rV8sDRUdvlV4CanJRcyPox6aZfGQDaWIqxnjTgAn9GJ/w==
+  dependencies:
+    "@heroku-cli/color" "^1.1.14"
+    "@oclif/errors" "^1.2.2"
+    cli-ux "^4.9.3"
+    debug "^4.1.1"
+    fs-extra "^7.0.1"
+    heroku-client "^3.0.7"
+    http-call "^5.2.3"
     netrc-parser "^3.1.6"
     opn "^5.4.0"
 
@@ -900,7 +915,17 @@
     supports-color "^5.4.0"
     tslib "^1"
 
-"@oclif/command@1.5.10", "@oclif/command@^1.5.1", "@oclif/command@^1.5.10", "@oclif/command@^1.5.6", "@oclif/command@^1.5.8":
+"@oclif/command@1.5.11", "@oclif/command@^1.5.11":
+  version "1.5.11"
+  resolved "https://registry.yarnpkg.com/@oclif/command/-/command-1.5.11.tgz#5f540b2eba234cfda9bd8102076ba99b9e821e85"
+  integrity sha512-jcdCmaShB7k7Lfr+rGvBeTzcCbprTF690n0dv/cB4PmXESfOx/5P4/scDR75mToht+VxOADI0aXMGQJz3T4uMg==
+  dependencies:
+    "@oclif/errors" "^1.2.2"
+    "@oclif/parser" "^3.7.2"
+    debug "^4.1.1"
+    semver "^5.6.0"
+
+"@oclif/command@^1.5.1", "@oclif/command@^1.5.10", "@oclif/command@^1.5.6", "@oclif/command@^1.5.8":
   version "1.5.10"
   resolved "https://registry.yarnpkg.com/@oclif/command/-/command-1.5.10.tgz#74696d9d76e1b83c13ec21df98e90ecc99f8482a"
   integrity sha512-zZdPHKj7u7d50XIcWer0x/YriL8c3NHPZCNhqA/RP62Bg9BgmvLAdn1dJ8YuxxNrhFCv+DmTyukyCYGLle+eNQ==
@@ -920,7 +945,15 @@
     debug "^4.1.0"
     semver "^5.6.0"
 
-"@oclif/config@1.12.6", "@oclif/config@^1.10.2", "@oclif/config@^1.12.6":
+"@oclif/config@1.12.9", "@oclif/config@^1.12.8", "@oclif/config@^1.12.9":
+  version "1.12.9"
+  resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.12.9.tgz#60e666135938e5c9159fbd60675606546d2d7c30"
+  integrity sha512-kirFdwOPHmcKPJWcTvM8Xhz30i/usC0rITfENshIvFZySWigpWaj3nLWMbu482EOcxzUqjaz55kSHv6jDFjc5w==
+  dependencies:
+    debug "^4.1.1"
+    tslib "^1.9.3"
+
+"@oclif/config@^1.10.2":
   version "1.12.6"
   resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.12.6.tgz#dacdb8fdf4eeb3d7fde22bc5d45b5b7b8ba3fc35"
   integrity sha512-1xrLZkx6v/g+9FCYiyqfqikn4MtlQMH5+REZ2BOfwmcj43TBStHXylp9JtMWDvoYZpJLK/wSbBSzAxMum8LJRQ==
@@ -1026,7 +1059,7 @@
     widest-line "^2.0.1"
     wrap-ansi "^4.0.0"
 
-"@oclif/plugin-legacy@1.1.4":
+"@oclif/plugin-legacy@1.1.4", "@oclif/plugin-legacy@^1.1.4":
   version "1.1.4"
   resolved "https://registry.yarnpkg.com/@oclif/plugin-legacy/-/plugin-legacy-1.1.4.tgz#d0933d13f610af529b557a2f3671b7cd0073172d"
   integrity sha512-/oJGRcM7VaSGJ9Eodi/kl0avAKDlJvdYA8jmh4bhBHrCsaPqM61P7LUH2w2PUIccnM82mPPCp3PoUEM85PAIdw==
@@ -1102,18 +1135,19 @@
     semver "^5.6.0"
     tar-fs "^1.16.3"
 
-"@oclif/plugin-warn-if-update-available@1.5.4":
-  version "1.5.4"
-  resolved "https://registry.yarnpkg.com/@oclif/plugin-warn-if-update-available/-/plugin-warn-if-update-available-1.5.4.tgz#f590c5bfbe2a8196d5b3285f367912fb9125dea0"
-  integrity sha512-WRLofKh7eejSlHx6N10kOddAzdftgBYRI7SwzEznDe67AijJo8uboUQUh3Emk8g3iLV77GkXP8FU49W5klmrdg==
+"@oclif/plugin-warn-if-update-available@1.7.0":
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-warn-if-update-available/-/plugin-warn-if-update-available-1.7.0.tgz#5a72abe39ce0b831eb4ae81cb64eb4b9f3ea424a"
+  integrity sha512-Nwyz3BJ8RhsfQ+OmFSsJSPIfn5YJqMrCzPh72Zgo2jqIjKIBWD8N9vTTe4kZlpeUUn77SyXFfwlBQbNCL5OEuQ==
   dependencies:
-    "@oclif/command" "^1.5.3"
-    "@oclif/config" "^1.8.7"
+    "@oclif/command" "^1.5.10"
+    "@oclif/config" "^1.12.8"
     "@oclif/errors" "^1.2.2"
     chalk "^2.4.1"
     debug "^4.1.0"
     fs-extra "^7.0.0"
     http-call "^5.2.2"
+    lodash.template "^4.4.0"
     semver "^5.6.0"
 
 "@oclif/plugin-which@1.0.3":

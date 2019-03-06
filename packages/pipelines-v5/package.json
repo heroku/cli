@@ -17,7 +17,7 @@
     "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/pipelines-v5/<%- commandPath %>"
   },
   "dependencies": {
-    "@heroku-cli/command": "^8.2.6",
+    "@heroku-cli/command": "^8.2.8",
     "bluebird": "^3.5.3",
     "co": "^4.6.0",
     "heroku-cli-util": "^8.0.11",
