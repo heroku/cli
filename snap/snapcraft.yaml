@@ -9,6 +9,9 @@ apps:
   heroku:
     command: bin/run
 
+architectures:
+  - build-on: [amd64, armhf]
+
 parts:
   heroku:
     plugin: nil
