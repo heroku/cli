@@ -67,7 +67,7 @@ exports.topic = {
     heroku-postgresql (postgresql-deep-6913)   hobby-dev  free
     └─ as DATABASE
 
-  For more information, read [https://devcenter.heroku.com/articles/add-ons](https://devcenter.heroku.com/articles/add-ons).`
+  For more information, read https://devcenter.heroku.com/articles/add-ons`
 }
 
 exports.commands = _.flatten([
