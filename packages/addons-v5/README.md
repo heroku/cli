@@ -141,7 +141,7 @@ DESCRIPTION
   Note that `heroku addons:upgrade` and `heroku addons:downgrade` are the same.
   Either one can be used to change an add-on plan up or down.
 
-  [https://devcenter.heroku.com/articles/managing-add-ons](https://devcenter.heroku.com/articles/managing-add-ons)
+  https://devcenter.heroku.com/articles/managing-add-ons
 
 EXAMPLE
   Upgrade an add-on by service name:
@@ -233,7 +233,7 @@ DESCRIPTION
   Note that `heroku addons:upgrade` and `heroku addons:downgrade` are the same.
   Either one can be used to change an add-on plan up or down.
 
-  [https://devcenter.heroku.com/articles/managing-add-ons](https://devcenter.heroku.com/articles/managing-add-ons)
+  https://devcenter.heroku.com/articles/managing-add-ons
 
 EXAMPLE
   Upgrade an add-on by service name:

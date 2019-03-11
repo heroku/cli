@@ -106,7 +106,7 @@ let cmd = {
 Note that \`heroku addons:upgrade\` and \`heroku addons:downgrade\` are the same.
 Either one can be used to change an add-on plan up or down.
 
-[https://devcenter.heroku.com/articles/managing-add-ons](https://devcenter.heroku.com/articles/managing-add-ons)`,
+https://devcenter.heroku.com/articles/managing-add-ons`,
   examples: [
     `Upgrade an add-on by service name:
 $ heroku addons:upgrade heroku-redis:premium-2
