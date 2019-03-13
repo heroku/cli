@@ -3,17 +3,17 @@
 
 tools and services for developing, extending, and operating your app
 
-* [`heroku addons [--all|--app APP]`](#heroku-addons-all-app-app)
-* [`heroku addons:attach ADDON_NAME`](#heroku-addonsattach-addon-name)
+* [`heroku addons [--all|--app APP]`](#heroku-addons---all--app-app)
+* [`heroku addons:attach ADDON_NAME`](#heroku-addonsattach-addon_name)
 * [`heroku addons:create SERVICE:PLAN`](#heroku-addonscreate-serviceplan)
 * [`heroku addons:destroy [ADDON]... [flags]`](#heroku-addonsdestroy-addon-flags)
-* [`heroku addons:detach ATTACHMENT_NAME`](#heroku-addonsdetach-attachment-name)
+* [`heroku addons:detach ATTACHMENT_NAME`](#heroku-addonsdetach-attachment_name)
 * [`heroku addons:docs ADDON`](#heroku-addonsdocs-addon)
 * [`heroku addons:downgrade ADDON [PLAN]`](#heroku-addonsdowngrade-addon-plan)
 * [`heroku addons:info ADDON`](#heroku-addonsinfo-addon)
 * [`heroku addons:open ADDON`](#heroku-addonsopen-addon)
 * [`heroku addons:plans SERVICE`](#heroku-addonsplans-service)
-* [`heroku addons:rename ADDON NEW_NAME`](#heroku-addonsrename-addon-new-name)
+* [`heroku addons:rename ADDON NEW_NAME`](#heroku-addonsrename-addon-new_name)
 * [`heroku addons:services`](#heroku-addonsservices)
 * [`heroku addons:upgrade ADDON [PLAN]`](#heroku-addonsupgrade-addon-plan)
 * [`heroku addons:wait ADDON`](#heroku-addonswait-addon)
@@ -136,7 +136,7 @@ DESCRIPTION
   Note that `heroku addons:upgrade` and `heroku addons:downgrade` are the same.
   Either one can be used to change an add-on plan up or down.
 
-  [https://devcenter.heroku.com/articles/managing-add-ons](https://devcenter.heroku.com/articles/managing-add-ons)
+  https://devcenter.heroku.com/articles/managing-add-ons
 
 EXAMPLE
   Upgrade an add-on by service name:
@@ -228,7 +228,7 @@ DESCRIPTION
   Note that `heroku addons:upgrade` and `heroku addons:downgrade` are the same.
   Either one can be used to change an add-on plan up or down.
 
-  [https://devcenter.heroku.com/articles/managing-add-ons](https://devcenter.heroku.com/articles/managing-add-ons)
+  https://devcenter.heroku.com/articles/managing-add-ons
 
 EXAMPLE
   Upgrade an add-on by service name:

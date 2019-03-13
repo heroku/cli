@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.22.5](https://github.com/heroku/cli/compare/v7.22.4...v7.22.5) (2019-03-13)
+
+
+### Bug Fixes
+
+* **addons-v5:** remove md from help ([593b4b8](https://github.com/heroku/cli/commit/593b4b8))
+
+
+
+
+
 # [7.21.0](https://github.com/heroku/cli/compare/v7.20.1...v7.21.0) (2019-02-11)
 
 **Note:** Version bump only for package @heroku-cli/plugin-addons-v5

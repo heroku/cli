@@ -15,7 +15,7 @@ $ npm install -g @heroku-cli/plugin-apps-v5
 $ heroku COMMAND
 running command...
 $ heroku (-v|--version|version)
-@heroku-cli/plugin-apps-v5/7.22.4 darwin-x64 node-v11.9.0
+@heroku-cli/plugin-apps-v5/7.22.5 darwin-x64 node-v11.11.0
 $ heroku --help [COMMAND]
 USAGE
   $ heroku COMMAND
@@ -43,7 +43,7 @@ USAGE
 * [`heroku domains:wait [HOSTNAME]`](#heroku-domainswait-hostname)
 * [`heroku drains`](#heroku-drains)
 * [`heroku drains:add URL`](#heroku-drainsadd-url)
-* [`heroku drains:remove [URL|TOKEN]`](#heroku-drainsremove-url-token)
+* [`heroku drains:remove [URL|TOKEN]`](#heroku-drainsremove-urltoken)
 * [`heroku dyno:kill DYNO`](#heroku-dynokill-dyno)
 * [`heroku dyno:resize`](#heroku-dynoresize)
 * [`heroku dyno:restart [DYNO]`](#heroku-dynorestart-dyno)
@@ -64,7 +64,7 @@ USAGE
 * [`heroku maintenance:off`](#heroku-maintenanceoff)
 * [`heroku maintenance:on`](#heroku-maintenanceon)
 * [`heroku notifications`](#heroku-notifications)
-* [`heroku ps [TYPE [TYPE ...]]`](#heroku-ps-type-type)
+* [`heroku ps [TYPE [TYPE ...]]`](#heroku-ps-type-type-)
 * [`heroku ps:kill DYNO`](#heroku-pskill-dyno)
 * [`heroku ps:resize`](#heroku-psresize)
 * [`heroku ps:restart [DYNO]`](#heroku-psrestart-dyno)

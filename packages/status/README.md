@@ -60,7 +60,7 @@ $ npm install -g @heroku-cli/plugin-status
 $ @heroku-cli/plugin-status COMMAND
 running command...
 $ @heroku-cli/plugin-status (-v|--version|version)
-@heroku-cli/plugin-status/7.22.4 darwin-x64 node-v11.9.0
+@heroku-cli/plugin-status/7.22.5 darwin-x64 node-v11.11.0
 $ @heroku-cli/plugin-status --help [COMMAND]
 USAGE
   $ @heroku-cli/plugin-status COMMAND
@@ -68,7 +68,7 @@ USAGE
 ```
 <!-- usagestop -->
 <!-- commands -->
-* [`@heroku-cli/plugin-status status`](#heroku-cli-plugin-status-status)
+* [`@heroku-cli/plugin-status status`](#heroku-cliplugin-status-status)
 
 ## `@heroku-cli/plugin-status status`
 
@@ -82,5 +82,5 @@ OPTIONS
   --json  output in json format
 ```
 
-_See code: [src/commands/status.ts](https://github.com/heroku/cli/blob/v7.22.4/packages/status/src/commands/status.ts)_
+_See code: [src/commands/status.ts](https://github.com/heroku/cli/blob/v7.22.5/packages/status/src/commands/status.ts)_
 <!-- commandsstop -->

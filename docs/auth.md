@@ -3,9 +3,9 @@
 
 check 2fa status
 
-* [`heroku auth:2fa`](#heroku-auth-2-fa)
-* [`heroku auth:2fa:disable`](#heroku-auth-2-fadisable)
-* [`heroku auth:2fa:generate-recovery-codes`](#heroku-auth-2-fagenerate-recovery-codes)
+* [`heroku auth:2fa`](#heroku-auth2fa)
+* [`heroku auth:2fa:disable`](#heroku-auth2fadisable)
+* [`heroku auth:2fa:generate-recovery-codes`](#heroku-auth2fagenerate-recovery-codes)
 * [`heroku auth:login`](#heroku-authlogin)
 * [`heroku auth:logout`](#heroku-authlogout)
 * [`heroku auth:token`](#heroku-authtoken)
@@ -24,7 +24,7 @@ ALIASES
   $ heroku twofactor
 ```
 
-_See code: [@heroku-cli/plugin-auth](https://github.com/heroku/cli/blob/v7.22.4/packages/auth/src/commands/auth/2fa/index.ts)_
+_See code: [@heroku-cli/plugin-auth](https://github.com/heroku/cli/blob/v7.22.5/packages/auth/src/commands/auth/2fa/index.ts)_
 
 ## `heroku auth:2fa:disable`
 
@@ -43,7 +43,7 @@ EXAMPLES
   Disabling 2fa on me@example.com... done
 ```
 
-_See code: [@heroku-cli/plugin-auth](https://github.com/heroku/cli/blob/v7.22.4/packages/auth/src/commands/auth/2fa/disable.ts)_
+_See code: [@heroku-cli/plugin-auth](https://github.com/heroku/cli/blob/v7.22.5/packages/auth/src/commands/auth/2fa/disable.ts)_
 
 ## `heroku auth:2fa:generate-recovery-codes`
 
@@ -82,7 +82,7 @@ EXAMPLES
   f82e7c2a50737494
 ```
 
-_See code: [@heroku-cli/plugin-auth](https://github.com/heroku/cli/blob/v7.22.4/packages/auth/src/commands/auth/2fa/generate-recovery-codes.ts)_
+_See code: [@heroku-cli/plugin-auth](https://github.com/heroku/cli/blob/v7.22.5/packages/auth/src/commands/auth/2fa/generate-recovery-codes.ts)_
 
 ## `heroku auth:login`
 
@@ -101,7 +101,7 @@ ALIASES
   $ heroku login
 ```
 
-_See code: [@heroku-cli/plugin-auth](https://github.com/heroku/cli/blob/v7.22.4/packages/auth/src/commands/auth/login.ts)_
+_See code: [@heroku-cli/plugin-auth](https://github.com/heroku/cli/blob/v7.22.5/packages/auth/src/commands/auth/login.ts)_
 
 ## `heroku auth:logout`
 
@@ -115,7 +115,7 @@ ALIASES
   $ heroku logout
 ```
 
-_See code: [@heroku-cli/plugin-auth](https://github.com/heroku/cli/blob/v7.22.4/packages/auth/src/commands/auth/logout.ts)_
+_See code: [@heroku-cli/plugin-auth](https://github.com/heroku/cli/blob/v7.22.5/packages/auth/src/commands/auth/logout.ts)_
 
 ## `heroku auth:token`
 
@@ -133,7 +133,7 @@ DESCRIPTION
   authorizations:create
 ```
 
-_See code: [@heroku-cli/plugin-auth](https://github.com/heroku/cli/blob/v7.22.4/packages/auth/src/commands/auth/token.ts)_
+_See code: [@heroku-cli/plugin-auth](https://github.com/heroku/cli/blob/v7.22.5/packages/auth/src/commands/auth/token.ts)_
 
 ## `heroku auth:whoami`
 
@@ -147,4 +147,4 @@ ALIASES
   $ heroku whoami
 ```
 
-_See code: [@heroku-cli/plugin-auth](https://github.com/heroku/cli/blob/v7.22.4/packages/auth/src/commands/auth/whoami.ts)_
+_See code: [@heroku-cli/plugin-auth](https://github.com/heroku/cli/blob/v7.22.5/packages/auth/src/commands/auth/whoami.ts)_

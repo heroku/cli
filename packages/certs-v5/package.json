@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-certs-v5",
   "description": "heroku ssl plugin",
-  "version": "7.21.0",
+  "version": "7.22.5",
   "author": "Ransom Briggs rbriggs@heroku.com",
   "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {

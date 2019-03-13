@@ -3,7 +3,7 @@
 
 Client tools for Heroku Exec
 
-* [`heroku ps [TYPE [TYPE ...]]`](#heroku-ps-type-type)
+* [`heroku ps [TYPE [TYPE ...]]`](#heroku-ps-type-type-)
 * [`heroku ps:autoscale:disable`](#heroku-psautoscaledisable)
 * [`heroku ps:autoscale:enable`](#heroku-psautoscaleenable)
 * [`heroku ps:copy FILE`](#heroku-pscopy-file)
@@ -57,7 +57,7 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
 ```
 
-_See code: [@heroku-cli/plugin-ps](https://github.com/heroku/cli/blob/v7.22.4/packages/ps/src/commands/ps/autoscale/disable.ts)_
+_See code: [@heroku-cli/plugin-ps](https://github.com/heroku/cli/blob/v7.22.5/packages/ps/src/commands/ps/autoscale/disable.ts)_
 
 ## `heroku ps:autoscale:enable`
 
@@ -76,7 +76,7 @@ OPTIONS
   --p95=p95            desired p95 response time
 ```
 
-_See code: [@heroku-cli/plugin-ps](https://github.com/heroku/cli/blob/v7.22.4/packages/ps/src/commands/ps/autoscale/enable.ts)_
+_See code: [@heroku-cli/plugin-ps](https://github.com/heroku/cli/blob/v7.22.5/packages/ps/src/commands/ps/autoscale/enable.ts)_
 
 ## `heroku ps:copy FILE`
 
@@ -319,4 +319,4 @@ OPTIONS
                                      limits)
 ```
 
-_See code: [@heroku-cli/plugin-ps](https://github.com/heroku/cli/blob/v7.22.4/packages/ps/src/commands/ps/wait.ts)_
+_See code: [@heroku-cli/plugin-ps](https://github.com/heroku/cli/blob/v7.22.5/packages/ps/src/commands/ps/wait.ts)_

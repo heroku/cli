@@ -5,7 +5,7 @@ forward logs to syslog or HTTPS
 
 * [`heroku drains`](#heroku-drains)
 * [`heroku drains:add URL`](#heroku-drainsadd-url)
-* [`heroku drains:remove [URL|TOKEN]`](#heroku-drainsremove-url-token)
+* [`heroku drains:remove [URL|TOKEN]`](#heroku-drainsremove-urltoken)
 
 ## `heroku drains`
 
