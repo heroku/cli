@@ -7,7 +7,7 @@
     "@heroku-cli/color": "^1.1.14",
     "@heroku-cli/command": "^8.2.8",
     "@oclif/command": "^1.5.11",
-    "@oclif/config": "^1.12.9",
+    "@oclif/config": "^1.12.10",
     "cli-ux": "^4.9.3",
     "edit-string": "^1.1.6",
     "lodash": "^4.17.11",
@@ -16,14 +16,14 @@
   "devDependencies": {
     "@fancy-test/nock": "^0.1.1",
     "@heroku-cli/schema": "^1.0.25",
-    "@oclif/dev-cli": "^1.21.0",
+    "@oclif/dev-cli": "^1.21.3",
     "@oclif/plugin-help": "^2.1.6",
     "@oclif/test": "^1.2.4",
     "@oclif/tslint": "^3.1.1",
     "@types/chai": "^4.1.7",
-    "@types/fs-extra": "^5.0.4",
-    "@types/lodash": "^4.14.120",
-    "@types/mocha": "^5.2.5",
+    "@types/fs-extra": "^5.0.5",
+    "@types/lodash": "^4.14.123",
+    "@types/mocha": "^5.2.6",
     "@types/nock": "^9.3.1",
     "@types/node": "^10.12.24",
     "@types/supports-color": "^5.3.0",
@@ -35,7 +35,7 @@
     "ts-node": "^8.0.2",
     "tslib": "^1.9.3",
     "tslint": "^5.11.0",
-    "typescript": "3.3.3"
+    "typescript": "3.3.3333"
   },
   "engines": {
     "node": ">=8.0.0"
