@@ -180,10 +180,25 @@
     netrc-parser "^3.1.6"
     opn "^5.4.0"
 
-"@heroku-cli/command@^8.2.0", "@heroku-cli/command@^8.2.8":
+"@heroku-cli/command@^8.2.0":
   version "8.2.8"
   resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.2.8.tgz#8668ce49a5ec791eb0bbd5a862badafcd33fcec4"
   integrity sha512-2gcuKouQsOPv8DSQiNg3eTaNzCX5kIQNWf1f/7Hj6rV8sDRUdvlV4CanJRcyPox6aZfGQDaWIqxnjTgAn9GJ/w==
+  dependencies:
+    "@heroku-cli/color" "^1.1.14"
+    "@oclif/errors" "^1.2.2"
+    cli-ux "^4.9.3"
+    debug "^4.1.1"
+    fs-extra "^7.0.1"
+    heroku-client "^3.0.7"
+    http-call "^5.2.3"
+    netrc-parser "^3.1.6"
+    opn "^5.4.0"
+
+"@heroku-cli/command@^8.2.9":
+  version "8.2.9"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.2.9.tgz#19061ac4a6aed771ba67c5155570478096f0131b"
+  integrity sha512-oEtYQKiUULqd8vEBPfp6XwcZYLKmcWrhk8NKYp3SWYj8qMn6q1Ay3GiGaYKHMIoPsHfDuZJXsDfe0crHd+wxRg==
   dependencies:
     "@heroku-cli/color" "^1.1.14"
     "@oclif/errors" "^1.2.2"

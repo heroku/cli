@@ -5,7 +5,7 @@
   "author": "Ransom Briggs (@ransombriggs)",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
-    "@heroku-cli/command": "^8.2.8",
+    "@heroku-cli/command": "^8.2.9",
     "heroku-cli-util": "^8.0.11"
   },
   "devDependencies": {
