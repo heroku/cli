@@ -6,7 +6,7 @@
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
     "@heroku-cli/color": "^1.1.14",
-    "@heroku-cli/command": "^8.2.9",
+    "@heroku-cli/command": "^8.2.10",
     "@oclif/command": "^1.5.11",
     "@oclif/config": "^1.12.10",
     "ansi-escapes": "3.2.0",
