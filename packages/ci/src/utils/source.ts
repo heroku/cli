@@ -2,7 +2,6 @@
 const got = require('got')
 const git = require('./git')
 import {Command} from '@heroku-cli/command'
-
 import * as fs from 'async-file'
 import {ux} from 'cli-ux'
 

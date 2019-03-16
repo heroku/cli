@@ -1,7 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
-import {cli} from 'cli-ux'
-
 import {Dyno, Release} from '@heroku-cli/schema'
+import {cli} from 'cli-ux'
 
 export default class Wait extends Command {
   static description = 'wait for all dynos to be running latest version after a release'
