@@ -14,7 +14,7 @@ export default class Index extends AutocompleteBase {
 
   static args = [{name: 'shell', description: 'shell type', required: false}]
 
-  static flags = {
+  static flags: any = {
     'refresh-cache': flags.boolean({description: 'refresh cache only (ignores displaying instructions)', char: 'r'}),
   }
 

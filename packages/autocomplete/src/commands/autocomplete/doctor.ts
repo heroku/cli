@@ -11,7 +11,7 @@ export default class Doctor extends AutocompleteBase {
   static args = [
     {name: 'shell', description: 'shell type', required: false},
   ]
-  static flags = {
+  static flags: any = {
     verbose: flags.boolean({description: 'list completable commands'}),
   }
 

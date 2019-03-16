@@ -4,7 +4,7 @@ export default class CertsAutoWait extends Command {
   static description = 'waits for the certificate to be activated'
   static hidden = true
 
-  static flags = {
+  static flags: any = {
     help: flags.help({char: 'h'}),
   }
 
