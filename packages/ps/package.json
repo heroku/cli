@@ -7,7 +7,7 @@
   "dependencies": {
     "@heroku-cli/color": "^1.1.14",
     "@heroku-cli/command": "^8.2.10",
-    "@oclif/command": "^1.5.11",
+    "@oclif/command": "^1.5.12",
     "@oclif/config": "^1.12.10",
     "cli-ux": "^4.9.3",
     "lodash": "^4.17.11"
@@ -31,7 +31,7 @@
     "nock": "^10.0.6",
     "ts-node": "8.0.2",
     "tslib": "^1.9.3",
-    "tslint": "^5.11.0",
+    "tslint": "^5.14.0",
     "typescript": "3.3.3333"
   },
   "engines": {

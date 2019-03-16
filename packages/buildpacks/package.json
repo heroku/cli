@@ -38,7 +38,7 @@
     "tmp": "^0.0.33",
     "ts-node": "^8.0.2",
     "tslib": "^1",
-    "tslint": "^5",
+    "tslint": "^5.14.0",
     "typescript": "3.3.3333"
   },
   "engines": {

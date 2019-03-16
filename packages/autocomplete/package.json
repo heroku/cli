@@ -5,7 +5,7 @@
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
     "@heroku-cli/command": "^8.2.10",
-    "@oclif/command": "1.5.11",
+    "@oclif/command": "1.5.12",
     "@oclif/config": "1.12.10",
     "chalk": "^2.4.2",
     "cli-ux": "^4.9.3",
@@ -32,7 +32,7 @@
     "nock": "^10.0.6",
     "nyc": "13.2.0",
     "ts-node": "8.0.2",
-    "tslint": "5.11.0",
+    "tslint": "5.14.0",
     "typescript": "3.3.3333"
   },
   "engines": {
