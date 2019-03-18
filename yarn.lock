@@ -930,7 +930,7 @@
     supports-color "^5.4.0"
     tslib "^1"
 
-"@oclif/command@1.5.11", "@oclif/command@^1.5.11", "@oclif/command@^1.5.4":
+"@oclif/command@1.5.11", "@oclif/command@^1.5.4":
   version "1.5.11"
   resolved "https://registry.yarnpkg.com/@oclif/command/-/command-1.5.11.tgz#5f540b2eba234cfda9bd8102076ba99b9e821e85"
   integrity sha512-jcdCmaShB7k7Lfr+rGvBeTzcCbprTF690n0dv/cB4PmXESfOx/5P4/scDR75mToht+VxOADI0aXMGQJz3T4uMg==
