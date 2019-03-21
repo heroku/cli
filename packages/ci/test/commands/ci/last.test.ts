@@ -16,6 +16,45 @@ describe('ci:last', () => {
     })
     .it('errors when not specifying a pipeline or an app')
 
+  describe('when specifying an application', () => {
+    const application = {id: '14402644-c207-43aa-9bc1-974a34914010', name: 'pipeline'}
+    const pipeline = {id: '45450264-b207-467a-Abc1-999c34883645', name: 'aquafresh'}
+
+    test
+      .stderr()
+      .nock('https://api.heroku.com', api => {
+        api.get(`/apps/${application.name}/pipeline-couplings`)
+          .reply(200, {
+            id: '01234567-89ab-cdef-0123-456789abcdef',
+            app: {
+              id: `${application.id}`
+            },
+            pipeline: {
+              id: `${pipeline.id}`
+            },
+            stage: 'production',
+          })
+        api.get(`/pipelines/${pipeline.id}/test-runs`)
+          .reply(200, [])
+      })
+      .command(['ci:last', '--app', `${application.name}`])
+      .it('warns the user that there are no CI runs', ctx => {
+        expect(ctx.stderr).to.contain('No Heroku CI runs found for the specified app and/or pipeline.')
+      })
+
+    test
+      .stderr()
+      .nock('https://api.heroku.com', api => {
+        api.get(`/apps/${application.name}/pipeline-couplings`)
+          .reply(200, {})
+      })
+      .command(['ci:last', '--app', `${application.name}`])
+      .catch(error => {
+        expect(error.message).to.contain(`No pipeline found with application ${application.name}`)
+      })
+      .it('errors when no pipelines exist')
+  })
+
   describe('when specifying a pipeline', () => {
     const pipeline = {id: '14402644-c207-43aa-9bc1-974a34914010', name: 'pipeline'}
 
