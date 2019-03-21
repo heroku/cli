@@ -21,6 +21,7 @@ export default class CiRun extends Command {
   ]
 
   static flags = {
+    app: flags.string({char: 'a', description: 'app name'}),
     pipeline: flags.pipeline({required: false})
   }
 

@@ -1,6 +1,7 @@
 import * as Heroku from '@heroku-cli/schema'
 
 import {Command, flags} from '@heroku-cli/command'
+import {cli} from 'cli-ux'
 
 import {getPipeline} from '../../utils/pipelines'
 import {displayTestRunInfo} from '../../utils/test-run'
@@ -14,6 +15,7 @@ export default class CiLast extends Command {
   ]
 
   static flags = {
+    app: flags.string({char: 'a', description: 'app name'}),
     node: flags.string({description: 'the node number to show its setup and output', required: false}),
     pipeline: flags.pipeline({required: false})
   }
@@ -23,6 +25,11 @@ export default class CiLast extends Command {
     const pipeline = await getPipeline(flags, this)
     const headers = {Range: 'number ..; order=desc,max=1'}
     const {body: latestTestRuns} = await this.heroku.get<Heroku.TestRun[]>(`/pipelines/${pipeline.id}/test-runs`, {headers})
+
+    if (latestTestRuns.length === 0) {
+      return cli.warn('No Heroku CI runs found for the specified app and/or pipeline.')
+    }
+
     const {body: testRun} = await this.heroku.get<Heroku.TestRun>(`/pipelines/${pipeline.id}/test-runs/${latestTestRuns[0].number}`)
     const {body: testNodes} = await this.heroku.get<Heroku.TestNode[]>(`/test-runs/${testRun.id}/test-nodes`)
 
