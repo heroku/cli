@@ -35,7 +35,7 @@ USAGE
 * [`heroku enterprises:members:permissions:add EMAIL`](#heroku-enterprisesmemberspermissionsadd-email)
 * [`heroku enterprises:members:permissions:remove EMAIL`](#heroku-enterprisesmemberspermissionsremove-email)
 * [`heroku enterprises:members:remove EMAIL`](#heroku-enterprisesmembersremove-email)
-* [`heroku enterprises:rename ACCOUNTNAME NEWACCOUNTNAME`](#heroku-enterprisesrename-accountname-newaccountname)
+* [`heroku enterprises:rename NEWACCOUNTNAME`](#heroku-enterprisesrename-newaccountname)
 * [`heroku enterprises:teams`](#heroku-enterprisesteams)
 * [`heroku enterprises:teams:create [TEAM]`](#heroku-enterprisesteamscreate-team)
 * [`heroku enterprises:teams:remove TEAM`](#heroku-enterprisesteamsremove-team)
@@ -203,20 +203,22 @@ EXAMPLE
 
 _See code: [src/commands/enterprises/members/remove.ts](https://github.com/heroku/heroku-enterprise/blob/v2.1.3/src/commands/enterprises/members/remove.ts)_
 
-## `heroku enterprises:rename ACCOUNTNAME NEWACCOUNTNAME`
+## `heroku enterprises:rename NEWACCOUNTNAME`
 
-rename the enterprise account name
+rename the enterprise account
 
 ```
 USAGE
-  $ heroku enterprises:rename ACCOUNTNAME NEWACCOUNTNAME
+  $ heroku enterprises:rename NEWACCOUNTNAME
 
 ARGUMENTS
-  ACCOUNTNAME     enterprise account name
   NEWACCOUNTNAME  new enterprise account name
 
+OPTIONS
+  -e, --enterprise-account=enterprise-account  (required) enterprise account name
+
 EXAMPLE
-  $ heroku enterprises:rename account_name new_account_name
+  $ heroku enterprises:rename new-account-name --enterprise-account=account-name
 ```
 
 _See code: [src/commands/enterprises/rename.ts](https://github.com/heroku/heroku-enterprise/blob/v2.1.3/src/commands/enterprises/rename.ts)_
