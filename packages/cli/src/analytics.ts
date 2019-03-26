@@ -12,6 +12,24 @@ export interface RecordOpts {
   argv: string[]
 }
 
+export interface AnalyticsInterface {
+  source: string,
+  event: string,
+  properties: {
+    cli: string,
+    command: string,
+    completion: number,
+    version: string,
+    plugin: string,
+    plugin_version: string,
+    os: string,
+    shell: string,
+    valid: boolean,
+    language: string,
+    install_id: string,
+  }
+}
+
 export default class AnalyticsCommand {
   config: Config.IConfig
   userConfig!: typeof deps.UserConfig.prototype
@@ -34,10 +52,11 @@ export default class AnalyticsCommand {
 
     if (this.userConfig.skipAnalytics) return
 
-    const analyticsData = {
+    const analyticsData: AnalyticsInterface = {
       source: 'cli',
       event: opts.Command.id,
       properties: {
+        cli: this.config.name,
         command: opts.Command.id,
         completion: await this._acAnalytics(opts.Command.id),
         version: this.config.version,
