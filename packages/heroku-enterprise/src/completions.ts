@@ -32,7 +32,7 @@ export const AccountMembers: flags.ICompletion = {
     if (!ea) return []
     const emailsCbk = (m: any): string => m.user && m.user.email
     return herokuGet(`/enterprise-accounts/${ea}/members`, ctx.config, emailsCbk)
-  },
+  }
 }
 
 export const Permissions: flags.ICompletion = {
@@ -49,5 +49,18 @@ export const Teams: flags.ICompletion = {
     const ea = ctx.flags && ctx.flags['enterprise-account']
     if (!ea) return []
     return herokuGet(`/enterprise-accounts/${ea}/teams`, ctx.config)
+  }
+}
+
+export const Archives: flags.ICompletion = {
+  cacheDuration: oneDay * 30, // one month
+  cacheKey: async ctx => {
+    return ctx.flags && ctx.flags['enterprise-account'] ? `${ctx.flags['enterprise-account']}_archives` : ''
   },
+  options: async ctx => {
+    const ea = ctx.flags && ctx.flags['enterprise-account']
+    if (!ea) return []
+    const archiveCbk = (archive: any): string => `${archive.year}-${archive.month}`
+    return herokuGet(`/enterprise-accounts/${ea}/archives`, ctx.config, archiveCbk)
+  }
 }

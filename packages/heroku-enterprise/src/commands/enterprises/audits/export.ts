@@ -8,6 +8,7 @@ import * as _ from 'lodash'
 import * as Path from 'path'
 
 import BaseCommand from '../../../base'
+import {Accounts, Archives} from '../../../completions'
 import {CoreService} from '../../../core-service'
 import Utils from '../../../utils'
 
@@ -20,13 +21,14 @@ export default class Export extends BaseCommand {
     '$ heroku enterprises:audits:export 2018-11 --enterprise-account=account-name --dest=/tmp/audit_report.json.gz --force',
   ]
   static args = [
-    {name: 'log', description: 'audit log date (YYYY-MM)', required: false},
+    {name: 'log', description: 'audit log date (YYYY-MM)', required: false, completion: Archives},
   ]
   static flags = {
     'enterprise-account': flags.string({
       char: 'e',
       description: 'enterprise account name',
-      required: true
+      required: true,
+      completion: Accounts
     }),
     dest: flags.string({
       char: 'd',

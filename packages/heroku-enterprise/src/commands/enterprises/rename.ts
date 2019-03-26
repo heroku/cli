@@ -14,7 +14,6 @@ export default class Rename extends BaseCommand {
   static args = [
     {name: 'newAccountName', description: 'new enterprise account name', required: true}
   ]
-
   static flags: any = {
     'enterprise-account': flags.string({
       completion: Accounts,
