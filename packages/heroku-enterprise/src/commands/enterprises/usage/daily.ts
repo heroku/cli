@@ -95,10 +95,14 @@ presented here may not reflect license usage or billing for your account.`
     this.setHttpHeadersForCSV()
 
     cli.action.start(`Getting daily usage data for ${color.cyan(usageType)}`)
-    const {response} = await this.heroku.stream(`${url}`)
+    const {response} = await this.heroku.stream(url)
     cli.action.stop()
 
-    response.pipe(process.stdout)
+    await new Promise((resolve, reject) => {
+      response.on('end', () => resolve())
+      response.on('error', (e: Error) => reject(e))
+      response.pipe(process.stdout)
+    })
   }
 
   private setHttpHeadersForCSV() {
