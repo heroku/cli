@@ -33,7 +33,7 @@ let lineRegex = /^(.*?\[([\w-]+)([\d.]+)?]:)(.*)?$/
 const red = c.red
 const dim = i => c.dim(i)
 const other = dim
-const path = i => c.blue(i)
+const path = i => c.green(i)
 const method = i => c.bold.magenta(i)
 const status = code => {
   if (code < 200) return code
