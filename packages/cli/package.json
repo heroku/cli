@@ -11,6 +11,7 @@
     "@heroku-cli/color": "1.1.14",
     "@heroku-cli/command": "^8.2.10",
     "@heroku-cli/plugin-addons-v5": "^7.22.5",
+    "@heroku-cli/plugin-apps": "*",
     "@heroku-cli/plugin-apps-v5": "^7.22.7",
     "@heroku-cli/plugin-auth": "^7.22.7",
     "@heroku-cli/plugin-autocomplete": "^7.22.7",
@@ -106,6 +107,7 @@
     "plugins": [
       "@oclif/plugin-legacy",
       "@heroku-cli/plugin-addons-v5",
+      "@heroku-cli/plugin-apps",
       "@heroku-cli/plugin-apps-v5",
       "@heroku-cli/plugin-auth",
       "@heroku-cli/plugin-autocomplete",
