@@ -38,10 +38,19 @@ describe('heroku redis:promote', function () {
       .then(() => expect(cli.stderr).to.equal(''))
   })
 
-  it('# promotes and attaches existing REDIS_URL', function () {
+  it('# promotes and replaces attachment of existing REDIS_URL if necessary', function () {
     let app = nock('https://api.heroku.com:443')
       .get('/apps/example/addons').reply(200, [
-        { name: 'redis-silver-haiku', addon_service: { name: 'heroku-redis' }, config_vars: ['REDIS_URL'] },
+        {
+          name: 'redis-silver-haiku',
+          addon_service: { name: 'heroku-redis' },
+          config_vars: [
+            'REDIS_URL',
+            'REDIS_BASTIONS',
+            'REDIS_BASTION_KEY',
+            'REDIS_BASTION_REKEYS_AFTER'
+          ]
+        },
         { name: 'redis-gold-haiku', addon_service: { name: 'heroku-redis' }, config_vars: ['HEROKU_REDIS_GOLD_URL'] }
       ])
 

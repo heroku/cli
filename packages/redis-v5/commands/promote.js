@@ -17,9 +17,15 @@ module.exports = {
 
     let redisFilter = api.makeAddonsFilter('REDIS_URL')
     let redis = redisFilter(await addonsList)
-
-    // Check if REDIS_URL is singlehandly assigned
-    if (redis.length === 1 && redis[0].config_vars.length === 1) {
+    // Check if REDIS_URL is the last attachment--if so, we need
+    // to replace it before we promote, because that implicitly
+    // detaches whatever is currently at REDIS_URL, and if it is
+    // the last attachment, the API will refuse. Note that we
+    // filter for _URL config vars to ensure we correctly handle
+    // private Redis plans which may have bastion config vars.
+    // (the right way to do this is check attachments for the
+    // current REDIS_URL but that's a bigger refactor).
+    if (redis.length === 1 && redis[0].config_vars.filter(c => /_URL$/.test(c)).length === 1) {
       let attachment = redis[0]
       await heroku.post('/addon-attachments', { body: {
         app: { name: context.app },
