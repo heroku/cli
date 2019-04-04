@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.22.8](https://github.com/heroku/cli/compare/v7.22.7...v7.22.8) (2019-04-04)
+
+
+### Bug Fixes
+
+* **ci:** add support for app flag and error handling ([3a7799e](https://github.com/heroku/cli/commit/3a7799e))
+
+
+
+
+
 ## [7.22.7](https://github.com/heroku/cli/compare/v7.22.6...v7.22.7) (2019-03-14)
 
 **Note:** Version bump only for package @heroku-cli/plugin-ci

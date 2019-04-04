@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.22.8](https://github.com/heroku/cli/compare/v7.22.7...v7.22.8) (2019-04-04)
+
+
+### Bug Fixes
+
+* Change path color in request log from blue to green for better visibility on both dark and light terminal backgrounds ([#1225](https://github.com/heroku/cli/issues/1225)) ([e59c783](https://github.com/heroku/cli/commit/e59c783))
+
+
+
+
+
 ## [7.22.7](https://github.com/heroku/cli/compare/v7.22.6...v7.22.7) (2019-03-14)
 
 **Note:** Version bump only for package @heroku-cli/plugin-run-v5

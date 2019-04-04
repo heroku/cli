@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.22.8](https://github.com/heroku/cli/compare/v7.22.7...v7.22.8) (2019-04-04)
+
+
+### Bug Fixes
+
+* Fix redis:promote for private plans ([#1228](https://github.com/heroku/cli/issues/1228)) ([7ba1194](https://github.com/heroku/cli/commit/7ba1194))
+
+
+
+
+
 ## [7.22.5](https://github.com/heroku/cli/compare/v7.22.4...v7.22.5) (2019-03-13)
 
 **Note:** Version bump only for package @heroku-cli/plugin-redis-v5
