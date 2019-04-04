@@ -1,7 +1,7 @@
 {
   "name": "heroku",
   "description": "CLI to interact with Heroku",
-  "version": "7.22.8",
+  "version": "7.22.9",
   "author": "Jeff Dickey @jdxcode",
   "bin": {
     "heroku": "./bin/run"
