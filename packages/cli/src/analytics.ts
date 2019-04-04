@@ -72,9 +72,9 @@ export default class AnalyticsCommand {
 
     const data = Buffer.from(JSON.stringify(analyticsData)).toString('base64')
     if (this.authorizationToken) {
-      return this.http.get(`${this.url}?data=${data}`, {headers: {authorization: `Bearer ${this.authorizationToken}`}})
+      return this.http.get(`${this.url}?data=${data}`, {headers: {authorization: `Bearer ${this.authorizationToken}`}}).catch(error => debug(error))
     } else {
-      return this.http.get(`${this.url}?data=${data}`)
+      return this.http.get(`${this.url}?data=${data}`).catch(error => debug(error))
     }
   }
 

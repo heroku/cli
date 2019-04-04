@@ -43,6 +43,42 @@ async function runAnalyticsTest(expectedCbk: (data: AnalyticsInterface) => any, 
   backboard.done()
 }
 
+describe('analytics (backboard has an error)', () => {
+  let sandbox: any
+
+  before(async () => {
+    sandbox = sinon.createSandbox()
+    sandbox.stub(UserConfig.prototype, 'install').get(() => 'abcde')
+  })
+
+  it('does not show an error on console', async () => {
+    let backboard = nock('https://backboard.heroku.com/')
+      .get('/hamurai')
+      .query(() => true)
+      .reply(500)
+
+    const config = await Config.load()
+    config.platform = 'win32'
+    config.shell = 'fish'
+    config.version = '1'
+    config.userAgent = '@oclif/command/1.5.6 darwin-x64 node-v10.2.1'
+    config.name = 'heroku'
+    const analytics = new AnalyticsCommand(config)
+    Login.plugin = {name: 'foo', version: '123'} as any
+    Login.id = 'login'
+
+    try {
+      await analytics.record({
+        Command: Login, argv: ['foo', 'bar']
+      })
+    } catch {
+      throw new Error('Expected analytics hook to 🦃 error')
+    } finally {
+      backboard.done()
+    }
+  })
+})
+
 describe('analytics', () => {
   let sandbox: any
 
