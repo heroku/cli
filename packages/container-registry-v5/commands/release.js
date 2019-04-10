@@ -74,6 +74,13 @@ let release = async function (context, heroku) {
       'Accept': 'application/vnd.heroku+json; version=3.docker-releases'
     }
   })
+
+  let oldRelease = await heroku.request({
+    path: `/apps/${context.app}/releases`,
+    partial: true,
+    headers: { 'Range': 'version ..; max=2, order=desc' }
+  }).then((releases) => releases[0])
+
   await cli.action(`Releasing images ${context.args.join(',')} to ${context.app}`, req)
 
   let release = await heroku.request({
@@ -82,8 +89,22 @@ let release = async function (context, heroku) {
     headers: { 'Range': 'version ..; max=2, order=desc' }
   }).then((releases) => releases[0])
 
-  if (release.output_stream_url && release.status === 'pending') {
+  if ((!oldRelease && !release) || (oldRelease && (oldRelease.id === release.id))) {
+    return
+  }
+
+  if (release.status === 'failed') {
+    cli.exit(1, 'Error: release command failed')
+  } else if ((release.status === 'pending') && release.output_stream_url) {
     cli.log('Running release command...')
     await streamer(release.output_stream_url, process.stdout)
+
+    let finishedRelease = await heroku.request({
+      path: `/apps/${context.app}/releases/${release.id}`
+    })
+
+    if (finishedRelease.status === 'failed') {
+      cli.exit(1, 'Error: release command failed')
+    }
   }
 }
