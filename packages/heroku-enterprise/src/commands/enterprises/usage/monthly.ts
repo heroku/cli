@@ -14,12 +14,13 @@ presented here may not reflect license usage or billing for your account.`
 
   static examples = [
     '$ heroku enterprises:usage:monthly --enterprise-account=account-name',
-    '$ heroku enterprises:usage:monthly --enterprise-account=account-name --team=team-name',
     '$ heroku enterprises:usage:monthly --enterprise-account=account-name --columns=\'account,team,app,dyno\'',
     '$ heroku enterprises:usage:monthly --enterprise-account=account-name --columns=\'account,team,app,dyno\' --csv',
     '$ heroku enterprises:usage:monthly --enterprise-account=account-name --columns=\'account,team,app,addon\' --sort=\'-addon\'',
     '$ heroku enterprises:usage:monthly --enterprise-account=account-name --columns=\'account,team,app,addon\' --filter=\'app=myapp\'',
-    '$ heroku enterprises:usage:monthly --enterprise-account=account-name --columns=\'account,team,app,data\' --sort=\'-data,app\''
+    '$ heroku enterprises:usage:monthly --enterprise-account=account-name --columns=\'account,team,app,data\' --sort=\'-data,app\'',
+    '$ heroku enterprises:usage:monthly --team=team-name --start-date 2019-01-15 --end-date 2019-03-01',
+    '$ heroku enterprises:usage:monthly --team-team-name --columns=\'account,team,app,data\' --sort=\'-data,app\''
   ]
 
   static flags: any = {
@@ -27,12 +28,10 @@ presented here may not reflect license usage or billing for your account.`
       completion: Accounts,
       char: 'e',
       description: 'enterprise account name',
-      required: true
     }),
     team: flags.string({
       char: 't',
       description: 'team name',
-      required: false
     }),
     'start-date': flags.string({
       description: 'start date of the usage period'
@@ -58,6 +57,10 @@ presented here may not reflect license usage or billing for your account.`
 
   async run() {
     const {flags} = this.parse(Monthly)
+    if (!flags['enterprise-account'] && !flags.team) {
+      this.error(`You must specify usage for either ${'--enterprise-account(-e)'} or ${'--team(-t)'}`)
+    }
+
     this._flags = flags
     const startDate = flags['start-date']
     const endDate = flags['end-date']
@@ -67,7 +70,7 @@ presented here may not reflect license usage or billing for your account.`
     else if (startDate && !endDate) query = `?${QueryString.stringify({start_date: startDate})}`
 
     if (flags.team) {
-      const {body: teamUsages} = await this.heroku.get<any[]>(`/enterprise-accounts/${flags['enterprise-account']}/teams/${flags.team}/usage${query}`)
+      const {body: teamUsages} = await this.heroku.get<any[]>(`/teams/${flags.team}/usage/monthly${query}`)
       this.displayTeamUsage(teamUsages)
     } else {
       const {body: accountUsages} = await this.heroku.get<any[]>(`/enterprise-accounts/${flags['enterprise-account']}/usage${query}`)

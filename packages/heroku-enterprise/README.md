@@ -323,7 +323,7 @@ USAGE
   $ heroku enterprises:usage:monthly
 
 OPTIONS
-  -e, --enterprise-account=enterprise-account  (required) enterprise account name
+  -e, --enterprise-account=enterprise-account  enterprise account name
   -t, --team=team                              team name
   --columns=columns                            only show provided columns (comma-separated)
   --csv                                        output is csv format
@@ -342,7 +342,6 @@ DESCRIPTION
 
 EXAMPLES
   $ heroku enterprises:usage:monthly --enterprise-account=account-name
-  $ heroku enterprises:usage:monthly --enterprise-account=account-name --team=team-name
   $ heroku enterprises:usage:monthly --enterprise-account=account-name --columns='account,team,app,dyno'
   $ heroku enterprises:usage:monthly --enterprise-account=account-name --columns='account,team,app,dyno' --csv
   $ heroku enterprises:usage:monthly --enterprise-account=account-name --columns='account,team,app,addon' 
@@ -351,6 +350,8 @@ EXAMPLES
   --filter='app=myapp'
   $ heroku enterprises:usage:monthly --enterprise-account=account-name --columns='account,team,app,data' 
   --sort='-data,app'
+  $ heroku enterprises:usage:monthly --team=team-name --start-date 2019-01-15 --end-date 2019-03-01
+  $ heroku enterprises:usage:monthly --team-team-name --columns='account,team,app,data' --sort='-data,app'
 ```
 
 _See code: [src/commands/enterprises/usage/monthly.ts](https://github.com/heroku/heroku-enterprise/blob/v2.1.5/src/commands/enterprises/usage/monthly.ts)_
