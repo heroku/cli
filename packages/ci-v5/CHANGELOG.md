@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.22.10](https://github.com/heroku/cli/compare/v7.22.9...v7.22.10) (2019-04-19)
+
+
+### Bug Fixes
+
+* **ci:** simi migration ([#1231](https://github.com/heroku/cli/issues/1231)) ([bca1252](https://github.com/heroku/cli/commit/bca1252))
+
+
+
+
+
 ## [7.22.8](https://github.com/heroku/cli/compare/v7.22.7...v7.22.8) (2019-04-04)
 
 **Note:** Version bump only for package @heroku-cli/plugin-ci-v5
