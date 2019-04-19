@@ -8,7 +8,6 @@ import {Command} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import * as http from 'http'
 import {Socket} from 'phoenix'
-import * as io from 'socket.io-client'
 import {inspect} from 'util'
 import WebSocket = require('ws')
 
@@ -16,8 +15,7 @@ const debug = require('debug')('ci')
 
 const ansiEscapes = require('ansi-escapes')
 
-const HEROKU_CI_WEBSOCKET_URL = process.env.HEROKU_CI_WEBSOCKET_URL || 'https://simi.heroku.com'
-const HEROKU_CI_WEBSOCKET_PHOENIX = ['1', 'true'].includes(process.env.HEROKU_CI_WEBSOCKET_PHOENIX || '')
+const HEROKU_CI_WEBSOCKET_URL = process.env.HEROKU_CI_WEBSOCKET_URL || 'wss://particleboard.heroku.com/socket'
 
 function logStream(url: RequestOptions | string, fn: (res: http.IncomingMessage) => void) {
   return get(url, fn)
@@ -155,58 +153,29 @@ export async function renderList(command: Command, testRuns: Heroku.TestRun[], p
     cli.styledHeader(header)
   }
 
-  // if (watchable) {
-  //   process.stdout.write(ansiEscapes.cursorHide)
-  // }
-
   draw(testRuns, watchOption, jsonOption)
 
   if (!watchable) { return }
 
-  if (HEROKU_CI_WEBSOCKET_PHOENIX) {
-    const socket = new Socket(HEROKU_CI_WEBSOCKET_URL, {
-      transport: WebSocket,
-      logger: (kind: any, msg: any, data: any) => debug(`${kind}: ${msg}\n${inspect(data)}`),
-    })
-    socket.connect()
+  const socket = new Socket(HEROKU_CI_WEBSOCKET_URL, {
+    transport: WebSocket,
+    logger: (kind: any, msg: any, data: any) => debug(`${kind}: ${msg}\n${inspect(data)}`),
+  })
+  socket.connect()
 
-    const channel = socket.channel(`events:pipelines/${pipeline.id}/test-runs`, {token: command.heroku.auth})
-    channel.join()
+  const channel = socket.channel(`events:pipelines/${pipeline.id}/test-runs`, {token: command.heroku.auth})
 
-    channel.on('create', ({data}: any) => {
-      testRuns = handleTestRunEvent(data, testRuns)
-      draw(testRuns, watchOption)
-    })
+  channel.on('create', ({data}: any) => {
+    testRuns = handleTestRunEvent(data, testRuns)
+    draw(testRuns, watchOption)
+  })
 
-    channel.on('update', ({data}: any) => {
-      testRuns = handleTestRunEvent(data, testRuns)
-      draw(testRuns, watchOption)
-    })
-  } else {
-    let socket = io.connect(HEROKU_CI_WEBSOCKET_URL, {transports: ['websocket']})
+  channel.on('update', ({data}: any) => {
+    testRuns = handleTestRunEvent(data, testRuns)
+    draw(testRuns, watchOption)
+  })
 
-    socket.on('connect', function () {
-      socket.emit('joinRoom', {room: `pipelines/${pipeline.id}/test-runs`, token: command.heroku.auth})
-    })
-
-    socket.on('disconnect', function () {
-      process.stdout.write(ansiEscapes.cursorShow)
-    })
-
-    socket.on('create', ({resource, data}: any) => {
-      if (resource === 'test-run') {
-        testRuns = handleTestRunEvent(data, testRuns)
-        draw(testRuns, watchOption)
-      }
-    })
-
-    socket.on('update', ({resource, data}: any) => {
-      if (resource === 'test-run') {
-        testRuns = handleTestRunEvent(data, testRuns)
-        draw(testRuns, watchOption)
-      }
-    })
-  }
+  channel.join()
 }
 
 async function renderNodeOutput(command: Command, testRun: Heroku.TestRun, testNode: Heroku.TestNode) {
