@@ -35,7 +35,7 @@ describe('buildpacks:add', () => {
       .stderr()
       .command(['buildpacks:add', 'hone/test', '-a', 'example'])
       .it('# maps buildpack names', ctx => {
-        // expect(ctx.stderr).to.equal('')
+        expect(ctx.stderr).to.equal('')
         expect(ctx.stdout).to.equal(
           `Buildpack added. Next release on example will use hone/test.
 Run git push heroku master to create a new release using this buildpack.
