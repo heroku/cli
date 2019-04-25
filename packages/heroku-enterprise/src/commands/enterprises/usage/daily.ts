@@ -35,7 +35,7 @@ presented here may not reflect license usage or billing for your account.`
       required: false
     }),
     'start-date': flags.string({
-      description: 'start date of the usage period, cannot be more than 3 months prior to today (starting 2019-01-01)',
+      description: 'start date of the usage period, cannot be more than 6 months prior to today (starting 2019-01-01)',
       required: true
     }),
     'end-date': flags.string({
@@ -59,24 +59,11 @@ presented here may not reflect license usage or billing for your account.`
     data: {header: 'Data'}
   }
 
-  private readonly MAX_DAYS = 31 * 24 * 60 * 60 * 1000
-
   async run() {
     const {flags} = this.parse(Daily)
 
     if (!flags['enterprise-account'] && !flags.team) {
       this.error(`You must specify usage for either ${'--enterprise-account(-e)'} or ${'--team(-t)'}`)
-    }
-
-    const startDate: any = new Date(flags['start-date'])
-    const endDate: any = new Date(flags['end-date'])
-
-    // TODO: change this to be dynamic on 2019-04-01
-    if (startDate < new Date('2019-01-01')) {
-      this.error('Invalid --start-date. Usage data not available before 2019-01-01')
-    }
-    if (Math.abs(endDate - startDate) > this.MAX_DAYS) {
-      this.error('Cannot request more than 31 days of usage')
     }
 
     const query = `?${QueryString.stringify({start: flags['start-date'], end: flags['end-date']})}`
@@ -94,15 +81,20 @@ presented here may not reflect license usage or billing for your account.`
   private async displayCsvUsageData(url: string, usageType: string) {
     this.setHttpHeadersForCSV()
 
-    cli.action.start(`Getting daily usage data for ${color.cyan(usageType)}`)
-    const {response} = await this.heroku.stream(url)
-    cli.action.stop()
+    try {
+      cli.action.start(`Getting daily usage data for ${color.cyan(usageType)}`)
+      const {response} = await this.heroku.stream(url)
+      cli.action.stop()
 
-    await new Promise((resolve, reject) => {
-      response.on('end', () => resolve())
-      response.on('error', (e: Error) => reject(e))
-      response.pipe(process.stdout)
-    })
+      await new Promise((resolve, reject) => {
+        response.on('end', () => resolve())
+        response.on('error', (e: Error) => reject(e))
+        response.pipe(process.stdout)
+      })
+    } catch (error) {
+      if (error.body && error.body.error) this.error(error.body.error)
+      throw error
+    }
   }
 
   private setHttpHeadersForCSV() {

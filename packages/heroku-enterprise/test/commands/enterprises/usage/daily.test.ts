@@ -62,14 +62,4 @@ describe('enterprises:usage:daily', () => {
     .command(['enterprises:usage:daily', '--start-date', '2018-09-01', '--end-date', '2018-09-28', '--csv'])
     .catch(err => expect(err.message).to.equal('You must specify usage for either --enterprise-account(-e) or --team(-t)'))
     .it('should give an error if neither an account or team is specified')
-
-  test
-    .command(['enterprises:usage:daily', '--team', 'lausanne', '--start-date', '2018-09-01', '--end-date', '2018-09-28', '--csv'])
-    .catch(err => expect(err.message).to.equal('Invalid --start-date. Usage data not available before 2019-01-01'))
-    .it('should give an error when start date is less than 2019-01-01')
-
-  test
-    .command(['enterprises:usage:daily', '--team', 'lausanne', '--start-date', '2019-01-01', '--end-date', '2019-02-02', '--csv'])
-    .catch(err => expect(err.message).to.equal('Cannot request more than 31 days of usage'))
-    .it('should give an error when start date is less than 2019-01-01')
 })
