@@ -3,17 +3,6 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-# [7.23.0](https://github.com/heroku/cli/compare/v7.22.10...v7.23.0) (2019-04-25)
-
-
-### Features
-
-* node 12.0.0 ([06eabcc](https://github.com/heroku/cli/commit/06eabcc))
-
-
-
-
-
 ## [7.22.9](https://github.com/heroku/cli/compare/v7.22.8...v7.22.9) (2019-04-04)
 
 

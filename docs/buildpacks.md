@@ -25,7 +25,7 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
 ```
 
-_See code: [@heroku-cli/plugin-buildpacks](https://github.com/heroku/cli/blob/v7.23.0/packages/buildpacks/src/commands/buildpacks/index.ts)_
+_See code: [@heroku-cli/plugin-buildpacks](https://github.com/heroku/cli/blob/v7.22.7/packages/buildpacks/src/commands/buildpacks/index.ts)_
 
 ## `heroku buildpacks:add BUILDPACK`
 
@@ -44,7 +44,7 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
 ```
 
-_See code: [@heroku-cli/plugin-buildpacks](https://github.com/heroku/cli/blob/v7.23.0/packages/buildpacks/src/commands/buildpacks/add.ts)_
+_See code: [@heroku-cli/plugin-buildpacks](https://github.com/heroku/cli/blob/v7.22.7/packages/buildpacks/src/commands/buildpacks/add.ts)_
 
 ## `heroku buildpacks:clear`
 
@@ -59,7 +59,7 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
 ```
 
-_See code: [@heroku-cli/plugin-buildpacks](https://github.com/heroku/cli/blob/v7.23.0/packages/buildpacks/src/commands/buildpacks/clear.ts)_
+_See code: [@heroku-cli/plugin-buildpacks](https://github.com/heroku/cli/blob/v7.22.7/packages/buildpacks/src/commands/buildpacks/clear.ts)_
 
 ## `heroku buildpacks:info BUILDPACK`
 
@@ -73,7 +73,7 @@ ARGUMENTS
   BUILDPACK  namespace/name of the buildpack
 ```
 
-_See code: [@heroku-cli/plugin-buildpacks](https://github.com/heroku/cli/blob/v7.23.0/packages/buildpacks/src/commands/buildpacks/info.ts)_
+_See code: [@heroku-cli/plugin-buildpacks](https://github.com/heroku/cli/blob/v7.22.7/packages/buildpacks/src/commands/buildpacks/info.ts)_
 
 ## `heroku buildpacks:remove [BUILDPACK]`
 
@@ -92,7 +92,7 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
 ```
 
-_See code: [@heroku-cli/plugin-buildpacks](https://github.com/heroku/cli/blob/v7.23.0/packages/buildpacks/src/commands/buildpacks/remove.ts)_
+_See code: [@heroku-cli/plugin-buildpacks](https://github.com/heroku/cli/blob/v7.22.7/packages/buildpacks/src/commands/buildpacks/remove.ts)_
 
 ## `heroku buildpacks:search [TERM]`
 
@@ -111,7 +111,7 @@ OPTIONS
   --namespace=namespace      buildpack namespaces to filter on using a comma separated list
 ```
 
-_See code: [@heroku-cli/plugin-buildpacks](https://github.com/heroku/cli/blob/v7.23.0/packages/buildpacks/src/commands/buildpacks/search.ts)_
+_See code: [@heroku-cli/plugin-buildpacks](https://github.com/heroku/cli/blob/v7.22.7/packages/buildpacks/src/commands/buildpacks/search.ts)_
 
 ## `heroku buildpacks:set BUILDPACK`
 
@@ -128,7 +128,7 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
 ```
 
-_See code: [@heroku-cli/plugin-buildpacks](https://github.com/heroku/cli/blob/v7.23.0/packages/buildpacks/src/commands/buildpacks/set.ts)_
+_See code: [@heroku-cli/plugin-buildpacks](https://github.com/heroku/cli/blob/v7.22.7/packages/buildpacks/src/commands/buildpacks/set.ts)_
 
 ## `heroku buildpacks:versions BUILDPACK`
 
@@ -142,4 +142,4 @@ ARGUMENTS
   BUILDPACK  namespace/name of the buildpack
 ```
 
-_See code: [@heroku-cli/plugin-buildpacks](https://github.com/heroku/cli/blob/v7.23.0/packages/buildpacks/src/commands/buildpacks/versions.ts)_
+_See code: [@heroku-cli/plugin-buildpacks](https://github.com/heroku/cli/blob/v7.22.7/packages/buildpacks/src/commands/buildpacks/versions.ts)_
