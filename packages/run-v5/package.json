@@ -28,7 +28,7 @@
     "shellwords": "^0.1.1"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.22.0",
+    "@oclif/dev-cli": "^1.21.3",
     "@oclif/plugin-legacy": "^1.1.4",
     "fixture-stdout": "0.2.1",
     "mocha": "^5.2.0",
