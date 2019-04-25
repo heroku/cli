@@ -210,6 +210,21 @@
     netrc-parser "^3.1.6"
     opn "^5.4.0"
 
+"@heroku-cli/command@^8.2.11":
+  version "8.2.11"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.2.11.tgz#80a92dae7b4afe1da26bb6b8116f7f7f0837e73d"
+  integrity sha512-eZo4Tln1Fr2wql6WE5Z2ckGsHLwXeBE+JA+ibc8UBlLHprX6JVstufPpTKtgcZw+Y5II54ChdRx/e/ExflPBCg==
+  dependencies:
+    "@heroku-cli/color" "^1.1.14"
+    "@oclif/errors" "^1.2.2"
+    cli-ux "^4.9.3"
+    debug "^4.1.1"
+    fs-extra "^7.0.1"
+    heroku-client "^3.0.7"
+    http-call "^5.2.4"
+    netrc-parser "^3.1.6"
+    open "^6.2.0"
+
 "@heroku-cli/notifications@^1.2.2":
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/@heroku-cli/notifications/-/notifications-1.2.2.tgz#46e2a8c0b678b83d46d9347dccbf3f5c31744e80"
@@ -4510,6 +4525,18 @@ http-call@5.2.3, http-call@^5.1.2, http-call@^5.2.2, http-call@^5.2.3:
     is-stream "^1.1.0"
     tunnel-agent "^0.6.0"
 
+http-call@^5.2.4:
+  version "5.2.4"
+  resolved "https://registry.yarnpkg.com/http-call/-/http-call-5.2.4.tgz#42303c02db40cba29f94304be97102067ea34d06"
+  integrity sha512-VqnjJPcscbnPzuE9qpFj6a6KibDRQHfz4daszFH5s0FBg6+xncSiTNzvIAgz7mc2rzKC4Ncz4iQ4T4brWoccEw==
+  dependencies:
+    content-type "^1.0.4"
+    debug "^4.1.1"
+    is-retry-allowed "^1.1.0"
+    is-stream "^2.0.0"
+    parse-json "^4.0.0"
+    tunnel-agent "^0.6.0"
+
 http-proxy-agent@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/http-proxy-agent/-/http-proxy-agent-2.1.0.tgz#e4821beef5b2142a2026bd73926fe537631c5405"
@@ -4978,6 +5005,11 @@ is-stream@^1.0.1, is-stream@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/is-stream/-/is-stream-1.1.0.tgz#12d4a3dd4e68e0b79ceb8dbc84173ae80d91ca44"
   integrity sha1-EtSj3U5o4Lec6428hBc66A2RykQ=
+
+is-stream@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/is-stream/-/is-stream-2.0.0.tgz#bde9c32680d6fae04129d6ac9d921ce7815f78e3"
+  integrity sha512-XCoy+WlUr7d1+Z8GgSuXmpuUFC9fOhRXglJMx+dwLKTkL44Cjd4W1Z5P+BQZpr+cR93aGP4S/s7Ftw6Nd/kiEw==
 
 is-subset@^0.1.1:
   version "0.1.1"
@@ -6366,6 +6398,13 @@ onetime@^2.0.0:
   integrity sha1-BnQoIw/WdEOyeUsiu6UotoZ5YtQ=
   dependencies:
     mimic-fn "^1.0.0"
+
+open@^6.2.0:
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/open/-/open-6.2.0.tgz#7cf92cb961b5d8498b071e64098bf5e27f57230c"
+  integrity sha512-Vxf6HJkwrqmvh9UAID3MnMYXntbTxKLOSfOnO7LJdzPf3NE3KQYFNV0/Lcz2VAndbRFil58XVCyh8tiX11fiYw==
+  dependencies:
+    is-wsl "^1.1.0"
 
 opn@^3.0.3:
   version "3.0.3"
