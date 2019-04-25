@@ -19,7 +19,7 @@
     "inquirer": "^6.2.2"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.21.3",
+    "@oclif/dev-cli": "^1.22.0",
     "@oclif/plugin-legacy": "^1.1.4",
     "chai": "^4.2.0",
     "cross-env": "^5.2.0",
