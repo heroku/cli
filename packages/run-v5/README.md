@@ -37,7 +37,7 @@ EXAMPLES
   2012-01-01T12:00:01+00:00 heroku[api]: Release v1 created by email@example.com
 ```
 
-_See code: [commands/logs.js](https://github.com/heroku/cli/blob/v7.22.8/packages/run-v5/commands/logs.js)_
+_See code: [commands/logs.js](https://github.com/heroku/cli/blob/v7.24.0/packages/run-v5/commands/logs.js)_
 
 ## `heroku run`
 
@@ -69,7 +69,7 @@ EXAMPLES
   Running myscript.sh -a arg1 -s arg2 on app.... up, run.1
 ```
 
-_See code: [commands/run.js](https://github.com/heroku/cli/blob/v7.22.8/packages/run-v5/commands/run.js)_
+_See code: [commands/run.js](https://github.com/heroku/cli/blob/v7.24.0/packages/run-v5/commands/run.js)_
 
 ## `heroku run:detached`
 
@@ -93,5 +93,5 @@ EXAMPLES
   Run heroku logs -a app -p run.1 to view the output.
 ```
 
-_See code: [commands/run/detached.js](https://github.com/heroku/cli/blob/v7.22.8/packages/run-v5/commands/run/detached.js)_
+_See code: [commands/run/detached.js](https://github.com/heroku/cli/blob/v7.24.0/packages/run-v5/commands/run/detached.js)_
 <!-- commandsstop -->

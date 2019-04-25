@@ -68,7 +68,7 @@ EXAMPLES
   $ heroku local:run bin/migrate
 ```
 
-_See code: [lib/commands/local/run.js](https://github.com/heroku/cli/blob/v7.22.7/packages/local-v5/lib/commands/local/run.js)_
+_See code: [lib/commands/local/run.js](https://github.com/heroku/cli/blob/v7.24.0/packages/local-v5/lib/commands/local/run.js)_
 
 ## `heroku local:version`
 
@@ -79,5 +79,5 @@ USAGE
   $ heroku local:version
 ```
 
-_See code: [lib/commands/local/version.js](https://github.com/heroku/cli/blob/v7.22.7/packages/local-v5/lib/commands/local/version.js)_
+_See code: [lib/commands/local/version.js](https://github.com/heroku/cli/blob/v7.24.0/packages/local-v5/lib/commands/local/version.js)_
 <!-- commandsstop -->

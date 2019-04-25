@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.24.0](https://github.com/heroku/cli/compare/v7.23.0...v7.24.0) (2019-04-25)
+
+
+### Bug Fixes
+
+* updated http-call for auth ([bec5dbf](https://github.com/heroku/cli/commit/bec5dbf))
+
+
+
+
+
 ## [7.22.7](https://github.com/heroku/cli/compare/v7.22.6...v7.22.7) (2019-03-14)
 
 **Note:** Version bump only for package @heroku-cli/plugin-auth
