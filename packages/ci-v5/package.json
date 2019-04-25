@@ -13,7 +13,7 @@
     "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/ci-v5/<%- commandPath %>"
   },
   "dependencies": {
-    "@heroku-cli/command": "^8.2.11",
+    "@heroku-cli/command": "^8.2.10",
     "@heroku-cli/plugin-pipelines": "^2.5.8",
     "@heroku-cli/plugin-run-v5": "^7.22.8",
     "ansi-escapes": "3.2.0",
