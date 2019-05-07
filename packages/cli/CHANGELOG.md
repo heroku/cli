@@ -3,89 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-## [7.24.1](https://github.com/heroku/cli/compare/v7.24.0...v7.24.1) (2019-04-25)
-
-
-### Bug Fixes
-
-* downgrade node to 11.14.0 ([0fe519d](https://github.com/heroku/cli/commit/0fe519d))
+<a name="7.24.2"></a>
+## [7.24.2](https://github.com/heroku/cli/compare/v7.24.1...v7.24.2) (2019-05-07)
 
 
 
-
-
-# [7.24.0](https://github.com/heroku/cli/compare/v7.23.0...v7.24.0) (2019-04-25)
 
 **Note:** Version bump only for package heroku
-
-
-
-
-
-## [7.22.9](https://github.com/heroku/cli/compare/v7.22.8...v7.22.9) (2019-04-04)
-
-
-### Bug Fixes
-
-* **cli:** Do not display backboard errors ([27d0793](https://github.com/heroku/cli/commit/27d0793))
-
-
-
-
-
-## [7.22.8](https://github.com/heroku/cli/compare/v7.22.7...v7.22.8) (2019-04-04)
-
-
-### Bug Fixes
-
-* **cli:** Add cli name to analytics properties ([#1201](https://github.com/heroku/cli/issues/1201)) ([03ab294](https://github.com/heroku/cli/commit/03ab294)), closes [#1202](https://github.com/heroku/cli/issues/1202)
-
-
-
-
-
-## [7.22.7](https://github.com/heroku/cli/compare/v7.22.6...v7.22.7) (2019-03-14)
-
-**Note:** Version bump only for package heroku
-
-
-
-
-
-## [7.22.6](https://github.com/heroku/cli/compare/v7.22.5...v7.22.6) (2019-03-14)
-
-**Note:** Version bump only for package heroku
-
-
-
-
-
-## [7.22.5](https://github.com/heroku/cli/compare/v7.22.4...v7.22.5) (2019-03-13)
-
-**Note:** Version bump only for package heroku
-
-
-
-
-
-## [7.22.4](https://github.com/heroku/cli/compare/v7.22.3...v7.22.4) (2019-03-06)
-
-**Note:** Version bump only for package heroku
-
-
-
-
-
-## [7.22.3](https://github.com/heroku/cli/compare/v7.22.2...v7.22.3) (2019-03-04)
-
-
-### Bug Fixes
-
-* upgrade node to 11.10.1 ([e02635c](https://github.com/heroku/cli/commit/e02635c))
-
-
-
-
 
 <a name="7.22.2"></a>
 ## [7.22.2](https://github.com/heroku/cli/compare/v7.22.1...v7.22.2) (2019-02-28)

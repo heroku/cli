@@ -3,38 +3,13 @@
 
 run an application test suite on Heroku
 
-* [`heroku ci`](#heroku-ci)
 * [`heroku ci:config`](#heroku-ciconfig)
 * [`heroku ci:config:get KEY`](#heroku-ciconfigget-key)
 * [`heroku ci:config:set`](#heroku-ciconfigset)
 * [`heroku ci:config:unset`](#heroku-ciconfigunset)
 * [`heroku ci:debug`](#heroku-cidebug)
-* [`heroku ci:info TEST-RUN`](#heroku-ciinfo-test-run)
-* [`heroku ci:last`](#heroku-cilast)
 * [`heroku ci:migrate-manifest`](#heroku-cimigrate-manifest)
 * [`heroku ci:open`](#heroku-ciopen)
-* [`heroku ci:rerun [NUMBER]`](#heroku-cirerun-number)
-* [`heroku ci:run`](#heroku-cirun)
-
-## `heroku ci`
-
-display the most recent CI runs for the given pipeline
-
-```
-USAGE
-  $ heroku ci
-
-OPTIONS
-  -a, --app=app            app name
-  -p, --pipeline=pipeline  name of pipeline
-  --json                   output in json format
-  --watch                  keep running and watch for new and update tests
-
-EXAMPLE
-  $ heroku ci --app murmuring-headland-14719
-```
-
-_See code: [@heroku-cli/plugin-ci](https://github.com/heroku/cli/blob/v7.24.0/packages/ci/src/commands/ci/index.ts)_
 
 ## `heroku ci:config`
 
@@ -146,44 +121,6 @@ DESCRIPTION
   ~ $
 ```
 
-## `heroku ci:info TEST-RUN`
-
-show the status of a specific test run
-
-```
-USAGE
-  $ heroku ci:info TEST-RUN
-
-OPTIONS
-  -a, --app=app            app name
-  -p, --pipeline=pipeline  name of pipeline
-  --node=node              the node number to show its setup and output
-
-EXAMPLE
-  $ heroku ci:info 1288 --app murmuring-headland-14719
-```
-
-_See code: [@heroku-cli/plugin-ci](https://github.com/heroku/cli/blob/v7.24.0/packages/ci/src/commands/ci/info.ts)_
-
-## `heroku ci:last`
-
-looks for the most recent run and returns the output of that run
-
-```
-USAGE
-  $ heroku ci:last
-
-OPTIONS
-  -a, --app=app            app name
-  -p, --pipeline=pipeline  name of pipeline
-  --node=node              the node number to show its setup and output
-
-EXAMPLE
-  $ heroku ci:last --app murmuring-headland-14719 --node 100
-```
-
-_See code: [@heroku-cli/plugin-ci](https://github.com/heroku/cli/blob/v7.24.0/packages/ci/src/commands/ci/last.ts)_
-
 ## `heroku ci:migrate-manifest`
 
 app-ci.json is deprecated. Run this command to migrate to app.json with an environments key.
@@ -222,39 +159,3 @@ DESCRIPTION
 
        $ heroku ci:open --app murmuring-headland-14719
 ```
-
-## `heroku ci:rerun [NUMBER]`
-
-rerun tests against current directory
-
-```
-USAGE
-  $ heroku ci:rerun [NUMBER]
-
-OPTIONS
-  -a, --app=app            app name
-  -p, --pipeline=pipeline  name of pipeline
-
-EXAMPLE
-  $ heroku ci:rerun 985 --app murmuring-headland-14719
-```
-
-_See code: [@heroku-cli/plugin-ci](https://github.com/heroku/cli/blob/v7.24.0/packages/ci/src/commands/ci/rerun.ts)_
-
-## `heroku ci:run`
-
-run tests against current directory
-
-```
-USAGE
-  $ heroku ci:run
-
-OPTIONS
-  -a, --app=app            app name
-  -p, --pipeline=pipeline  name of pipeline
-
-EXAMPLE
-  $ heroku ci:run --app murmuring-headland-14719
-```
-
-_See code: [@heroku-cli/plugin-ci](https://github.com/heroku/cli/blob/v7.24.0/packages/ci/src/commands/ci/run.ts)_

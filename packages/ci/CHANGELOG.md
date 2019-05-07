@@ -3,121 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-# [7.24.0](https://github.com/heroku/cli/compare/v7.23.0...v7.24.0) (2019-04-25)
-
-**Note:** Version bump only for package @heroku-cli/plugin-ci
-
-
-
-
-
-## [7.22.8](https://github.com/heroku/cli/compare/v7.22.7...v7.22.8) (2019-04-04)
+<a name="7.24.2"></a>
+## [7.24.2](https://github.com/heroku/cli/compare/v7.24.1...v7.24.2) (2019-05-07)
 
 
 ### Bug Fixes
 
-* **ci:** add support for app flag and error handling ([3a7799e](https://github.com/heroku/cli/commit/3a7799e))
-
-
-
-
-
-## [7.22.7](https://github.com/heroku/cli/compare/v7.22.6...v7.22.7) (2019-03-14)
-
-**Note:** Version bump only for package @heroku-cli/plugin-ci
-
-
-
-
-
-## [7.22.6](https://github.com/heroku/cli/compare/v7.22.5...v7.22.6) (2019-03-14)
-
-**Note:** Version bump only for package @heroku-cli/plugin-ci
-
-
-
-
-
-## [7.22.5](https://github.com/heroku/cli/compare/v7.22.4...v7.22.5) (2019-03-13)
-
-**Note:** Version bump only for package @heroku-cli/plugin-ci
-
-
-
-
-
-## [7.22.4](https://github.com/heroku/cli/compare/v7.22.3...v7.22.4) (2019-03-06)
-
-**Note:** Version bump only for package @heroku-cli/plugin-ci
-
-
-
-
-
-# [7.21.0](https://github.com/heroku/cli/compare/v7.20.1...v7.21.0) (2019-02-11)
-
-**Note:** Version bump only for package @heroku-cli/plugin-ci
-
-
-
-
-
-# [7.20.0](https://github.com/heroku/cli/compare/v7.19.4...v7.20.0) (2019-02-05)
-
-
-### Bug Fixes
-
-* increase mocha timeouts ([7d31bc1](https://github.com/heroku/cli/commit/7d31bc1))
-
-
-
-
-
-## [7.19.3](https://github.com/heroku/cli/compare/v7.19.2...v7.19.3) (2018-12-04)
-
-
-### Bug Fixes
-
-* remove login warnings ([39d8c47](https://github.com/heroku/cli/commit/39d8c47))
-
-
-
-
-
-## [7.19.1](https://github.com/heroku/cli/compare/v7.19.0...v7.19.1) (2018-12-04)
-
-**Note:** Version bump only for package @heroku-cli/plugin-ci
-
-
-
-
-
-# [7.19.0](https://github.com/heroku/cli/compare/v7.18.10...v7.19.0) (2018-12-03)
-
-
-### Bug Fixes
-
-* updated command ([1c49051](https://github.com/heroku/cli/commit/1c49051))
-
-
-
-
-
-## [7.18.10](https://github.com/heroku/cli/compare/v7.18.9...v7.18.10) (2018-11-26)
-
-
-### Bug Fixes
-
-* updated deps ([576c85a](https://github.com/heroku/cli/commit/576c85a))
-
-
-
-
-
-## [7.18.9](https://github.com/heroku/cli/compare/v7.18.8...v7.18.9) (2018-11-15)
-
-**Note:** Version bump only for package @heroku-cli/plugin-ci
-
+* **ci:** remove simi completely ([#1235](https://github.com/heroku/cli/issues/1235)) ([7f74b61](https://github.com/heroku/cli/commit/7f74b61))
 
 
 
