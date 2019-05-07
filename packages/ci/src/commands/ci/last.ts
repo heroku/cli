@@ -1,6 +1,5 @@
-import * as Heroku from '@heroku-cli/schema'
-
 import {Command, flags} from '@heroku-cli/command'
+import * as Heroku from '@heroku-cli/schema'
 import {cli} from 'cli-ux'
 
 import {getPipeline} from '../../utils/pipelines'

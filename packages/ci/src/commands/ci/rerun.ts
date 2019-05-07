@@ -1,15 +1,12 @@
 
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-
 import cli from 'cli-ux'
 
 import * as Kolkrabbi from '../../interfaces/kolkrabbi'
-
 import {getPipeline} from '../../utils/pipelines'
-import {displayAndExit} from '../../utils/test-run'
-
 import {createSourceBlob} from '../../utils/source'
+import {displayAndExit} from '../../utils/test-run'
 
 export default class CiReRun extends Command {
   static description = 'rerun tests against current directory'
