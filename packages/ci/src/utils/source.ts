@@ -1,10 +1,9 @@
-'use strict'
-const got = require('got')
-const git = require('./git')
 import {Command} from '@heroku-cli/command'
-
 import * as fs from 'async-file'
 import {ux} from 'cli-ux'
+
+const got = require('got')
+const git = require('./git')
 
 async function uploadArchive(url: string, filePath: string) {
   const request = got.stream.put(url, {

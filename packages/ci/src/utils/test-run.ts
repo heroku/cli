@@ -1,18 +1,14 @@
 import color from '@heroku-cli/color'
-import {get, RequestOptions} from 'https'
-
-import cli from 'cli-ux'
-
 import {Command} from '@heroku-cli/command'
-
 import * as Heroku from '@heroku-cli/schema'
+import cli from 'cli-ux'
 import * as http from 'http'
+import {get, RequestOptions} from 'https'
 import {Socket} from 'phoenix'
 import {inspect} from 'util'
 import WebSocket = require('ws')
 
 const debug = require('debug')('ci')
-
 const ansiEscapes = require('ansi-escapes')
 
 const HEROKU_CI_WEBSOCKET_URL = process.env.HEROKU_CI_WEBSOCKET_URL || 'wss://particleboard.heroku.com/socket'
