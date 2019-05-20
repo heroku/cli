@@ -44,6 +44,7 @@ exports.commands = flatten([
   require('./commands/ps'),
   require('./commands/psql'),
   require('./commands/pull'),
+  require('./commands/repoint'),
   require('./commands/reset'),
   require('./commands/settings'),
   require('./commands/settings/log_lock_waits'),
