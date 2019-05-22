@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.24.4](https://github.com/heroku/cli/compare/v7.24.3...v7.24.4) (2019-05-22)
+
+
+### Bug Fixes
+
+* **container-registry-v5:** return error code on exit when container:release fails ([960d10a](https://github.com/heroku/cli/commit/960d10a))
+
+
+
+
+
 # [7.24.0](https://github.com/heroku/cli/compare/v7.23.0...v7.24.0) (2019-04-25)
 
 **Note:** Version bump only for package @heroku-cli/plugin-container-registry-v5

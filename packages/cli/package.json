@@ -1,7 +1,7 @@
 {
   "name": "heroku",
   "description": "CLI to interact with Heroku",
-  "version": "7.24.3",
+  "version": "7.24.4",
   "author": "Jeff Dickey @jdxcode",
   "bin": {
     "heroku": "./bin/run"
@@ -20,7 +20,7 @@
     "@heroku-cli/plugin-ci": "^7.24.3",
     "@heroku-cli/plugin-ci-v5": "^7.24.0",
     "@heroku-cli/plugin-config": "^7.24.0",
-    "@heroku-cli/plugin-container-registry-v5": "^7.24.0",
+    "@heroku-cli/plugin-container-registry-v5": "^7.24.4",
     "@heroku-cli/plugin-git": "^7.24.0",
     "@heroku-cli/plugin-local-v5": "^7.24.0",
     "@heroku-cli/plugin-oauth-v5": "^7.24.0",
