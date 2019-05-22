@@ -28,6 +28,7 @@ presented here may not reflect license usage or billing for your account.`
       completion: Accounts,
       char: 'e',
       description: 'enterprise account name',
+      exclusive: ['team']
     }),
     team: flags.string({
       char: 't',

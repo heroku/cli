@@ -161,7 +161,7 @@ describe('enterprises:usage:monthly', () => {
         .get('/teams/grumpy/usage/monthly?start_date=2018-09-01&end_date=2018-10-01')
         .reply(200, enterpriseTeamUsageResponse)
       )
-      .command(['enterprises:usage:monthly', '--enterprise-account', 'wallyworld', '--start-date', '2018-09-01', '--end-date', '2018-10-01', '--team', 'grumpy'])
+      .command(['enterprises:usage:monthly', '--start-date', '2018-09-01', '--end-date', '2018-10-01', '--team', 'grumpy'])
       .it('lists the usage for an enterprise team using start and end dates', ctx => {
         expect(ctx.stdout).to.contain('App               Date       Dyno  Connect Addon Partner Data ')
         expect(ctx.stdout).to.contain('froyo-expcore     2017-01-01 1.548 0       19941 4457    15484 ')
@@ -176,9 +176,15 @@ describe('enterprises:usage:monthly', () => {
         .get('/teams/grumpy/usage/monthly')
         .reply(200, [])
       )
-      .command(['enterprises:usage:monthly', '--enterprise-account', 'wallyworld', '--team', 'grumpy'])
+      .command(['enterprises:usage:monthly', '--team', 'grumpy'])
       .it('warns when no team usage data is available', ctx => {
         expect(ctx.stderr).to.contain('Warning: No usage data to list')
       })
   })
+
+  test
+    .stderr()
+    .command(['enterprises:usage:monthly', '-e', 'suisse', '--team', 'lausanne'])
+    .catch(err => expect(err.message).to.equal('--team= cannot also be provided when using --enterprise-account='))
+    .it('should give an error when using exclusive flags')
 })
