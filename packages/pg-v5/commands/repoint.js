@@ -20,14 +20,14 @@ function * run (context, heroku) {
 
   let origin = util.databaseNameFromUrl(replica.following, yield heroku.get(`/apps/${app}/config-vars`))
 
-  let new_leader = yield fetcher.addon(app, flags.follow)
+  let newLeader = yield fetcher.addon(app, flags.follow)
 
   yield cli.confirmApp(app, flags.confirm, `WARNING: Destructive action
-${cli.color.addon(db.name)} will be repointed to follow ${new_leader.name}, and stop following ${origin}.
+${cli.color.addon(db.name)} will be repointed to follow ${newLeader.name}, and stop following ${origin}.
 
 This cannot be undone.`)
 
-  let data = { follow: new_leader.id }
+  let data = { follow: newLeader.id }
   yield cli.action(`Starting repoint of ${cli.color.addon(db.name)}`, co(function * () {
     yield heroku.post(`/client/v11/databases/${db.id}/repoint`, { host: host(db), body: data })
     cli.action.done(`${cli.color.cmd('heroku pg:wait')} to track status`)
