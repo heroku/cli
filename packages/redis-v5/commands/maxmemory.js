@@ -13,6 +13,8 @@ module.exports = {
   help: `Set the key eviction policy when instance reaches its storage limit. Available policies for key eviction include:
 
     noeviction      # returns errors when memory limit is reached
+    allkeys-lfu     # removes less frequently used keys first
+    volatile-lfu    # removes less frequently used keys first that have an expiry set
     allkeys-lru     # removes less recently used keys first
     volatile-lru    # removes less recently used keys first that have an expiry set
     allkeys-random  # evicts random keys
