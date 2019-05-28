@@ -1,9 +1,6 @@
 import {Command, flags} from '@oclif/command'
+import  { FileCompletion } from '@heroku-cli/command/lib/completions';
 import foreman from '../../fork_foreman';
-
-// TODO:
-//   * AutoCompletion, previously imported in v5:
-//     require('@heroku-cli/command/lib/completions')
 
 export default class Run extends Command {
   static description = 'run a one-off command'
@@ -16,7 +13,8 @@ export default class Run extends Command {
 
   static flags = {
     env: flags.string({
-      char: 'e'
+      char: 'e',
+      completion: FileCompletion
     }),
     port: flags.string({
       char: 'p'
