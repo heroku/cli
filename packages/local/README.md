@@ -32,6 +32,7 @@ USAGE
 # Commands
 <!-- commands -->
 * [`oclif-example hello [FILE]`](#oclif-example-hello-file)
+* [`oclif-example local [FILE]`](#oclif-example-local-file)
 
 ## `oclif-example hello [FILE]`
 
@@ -52,4 +53,20 @@ EXAMPLE
 ```
 
 _See code: [src/commands/hello.ts](https://github.com/chadian/local/blob/v0.0.0/src/commands/hello.ts)_
+
+## `oclif-example local [FILE]`
+
+describe the command here
+
+```
+USAGE
+  $ oclif-example local [FILE]
+
+OPTIONS
+  -f, --force
+  -h, --help       show CLI help
+  -n, --name=name  name to print
+```
+
+_See code: [src/commands/local.ts](https://github.com/chadian/local/blob/v0.0.0/src/commands/local.ts)_
 <!-- commandsstop -->
