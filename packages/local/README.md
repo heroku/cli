@@ -31,36 +31,16 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`oclif-example hello [FILE]`](#oclif-example-hello-file)
-* [`oclif-example local [FILE]`](#oclif-example-local-file)
+* [`oclif-example local:run [FILE]`](#oclif-example-localrun-file)
+* [`oclif-example local:version`](#oclif-example-localversion)
 
-## `oclif-example hello [FILE]`
-
-describe the command here
-
-```
-USAGE
-  $ oclif-example hello [FILE]
-
-OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
-
-EXAMPLE
-  $ oclif-example hello
-  hello world from ./src/hello.ts!
-```
-
-_See code: [src/commands/hello.ts](https://github.com/chadian/local/blob/v0.0.0/src/commands/hello.ts)_
-
-## `oclif-example local [FILE]`
+## `oclif-example local:run [FILE]`
 
 describe the command here
 
 ```
 USAGE
-  $ oclif-example local [FILE]
+  $ oclif-example local:run [FILE]
 
 OPTIONS
   -f, --force
@@ -68,5 +48,16 @@ OPTIONS
   -n, --name=name  name to print
 ```
 
-_See code: [src/commands/local.ts](https://github.com/chadian/local/blob/v0.0.0/src/commands/local.ts)_
+_See code: [src/commands/local/run.ts](https://github.com/chadian/local/blob/v0.0.0/src/commands/local/run.ts)_
+
+## `oclif-example local:version`
+
+display node-foreman version
+
+```
+USAGE
+  $ oclif-example local:version
+```
+
+_See code: [src/commands/local/version.ts](https://github.com/chadian/local/blob/v0.0.0/src/commands/local/version.ts)_
 <!-- commandsstop -->
