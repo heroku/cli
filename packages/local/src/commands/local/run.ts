@@ -1,25 +1,43 @@
 import {Command, flags} from '@oclif/command'
+import foreman from '../../fork_foreman';
 
-export default class LocalRun extends Command {
-  static description = 'describe the command here'
+// TODO:
+//   * AutoCompletion, previously imported in v5:
+//     require('@heroku-cli/command/lib/completions')
+
+export default class Run extends Command {
+  static description = 'run a one-off command'
+
+  static examples = [
+    '$ heroku local:run bin/migrate'
+  ]
+
+  static strict = false
 
   static flags = {
-    help: flags.help({char: 'h'}),
-    // flag with a value (-n, --name=VALUE)
-    name: flags.string({char: 'n', description: 'name to print'}),
-    // flag with no value (-f, --force)
-    force: flags.boolean({char: 'f'}),
+    env: flags.string({
+      char: 'e'
+    }),
+    port: flags.string({
+      char: 'p'
+    })
   }
 
-  static args = [{name: 'file'}]
-
   async run() {
-    const {args, flags} = this.parse(LocalRun)
+    const execArgv: string[] = ['run']
+    const {argv, flags} = this.parse(Run)
 
-    const name = flags.name || 'world'
-    this.log(`hello ${name} from /Users/ccarbert/projects/heroku/local-v7/src/commands/local/run.ts`)
-    if (args.file && flags.force) {
-      this.log(`you input --force and --file: ${args.file}`)
+    if (argv.length < 1) {
+      const errorMessage = 'Usage: heroku local:run [COMMAND]\nMust specify command to run';
+      this.error(errorMessage, { exit: -1 })
     }
+
+    if (flags.env) execArgv.push('--env', flags.env)
+    if (flags.port) execArgv.push('--port', flags.port)
+
+    execArgv.push('--') // disable node-foreman flag parsing
+    execArgv.push(...argv)
+
+    await foreman(execArgv);
   }
 }
