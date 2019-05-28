@@ -6,6 +6,7 @@
   "dependencies": {
     "@oclif/command": "^1",
     "@oclif/config": "^1",
+    "foreman": "^3.0.1",
     "tslib": "^1"
   },
   "devDependencies": {
@@ -16,6 +17,7 @@
     "@types/chai": "^4",
     "@types/mocha": "^5",
     "@types/node": "^10",
+    "bats": "^1.1.0",
     "chai": "^4",
     "globby": "^8",
     "mocha": "^5",
