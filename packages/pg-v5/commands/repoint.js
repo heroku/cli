@@ -38,7 +38,10 @@ module.exports = {
   topic: 'pg',
   command: 'repoint',
   description: 'changes which leader a follower is following',
-  help: 'TODO',
+  help: `Example:
+
+    heroku pg:repoint postgresql-transparent-56874 --follow postgresql-lucid-59103 -a woodstock-production
+`,
   needsApp: true,
   needsAuth: true,
   args: [{ name: 'database', optional: true }],
