@@ -4,13 +4,6 @@ import {expect, test} from '@oclif/test'
 
 import * as foreman from '../../../src/fork-foreman'
 
-// all foreman `run` commands should be passed to foreman with
-// `run`, then `--` which separates foreman args from run args.
-// fork(['run', '--', 'echo', 'hello'])
-// is the same as passing foreman:
-// foreman run -- echo hello
-const foremanRunWithArgv = (...args: string[]) => ['run', '--', ...args]
-
 describe('local:run', () => {
   describe('when no arguments are given', function () {
     test
@@ -27,6 +20,50 @@ describe('local:run', () => {
         expect(argv).is.eql(['run', '--', 'echo', 'hello'])
       })
       .command(['local:run', 'echo', 'hello'])
-      .it('they are passed to foreman after the -- argument seperator')
+      .it('can handle one argument passed to foreman after the -- argument separator')
+
+    test
+      .stdout()
+      .stub(foreman, 'fork', (argv: string[]) => {
+        expect(argv).is.eql(['run', '--', 'echo', 'hello', 'world'])
+      })
+      .command(['local:run', 'echo', 'hello', 'world'])
+      .it('can handle multiple argument passed to foreman after the `--` argument separator')
+  })
+
+  describe('when the environemnt flag is given', function () {
+    test
+      .stdout()
+      .stub(foreman, 'fork', (argv: string[]) => {
+        expect(argv).is.eql(['run', '--env', 'env-file', '--', 'bin/migrate'])
+      })
+      .command(['local:run', 'bin/migrate', '--env', 'env-file'])
+      .it('is passed to foreman an an --env flag before the `--` argument separator')
+
+    test
+      .stdout()
+      .stub(foreman, 'fork', (argv: string[]) => {
+        expect(argv).is.eql(['run', '--env', 'env-file', '--', 'bin/migrate'])
+      })
+      .command(['local:run', 'bin/migrate', '-e', 'env-file'])
+      .it('is can pass the `-e` shorthand to foreman an an --env flag before the `--` argument separator')
+  })
+
+  describe('when the port flag is given', function () {
+    test
+      .stdout()
+      .stub(foreman, 'fork', (argv: string[]) => {
+        expect(argv).is.eql(['run', '--port', '4200', '--', 'bin/serve'])
+      })
+      .command(['local:run', 'bin/serve', '--port', '4200'])
+      .it('is passed to foreman an an --port flag before the `--` argument separator')
+
+    test
+      .stdout()
+      .stub(foreman, 'fork', (argv: string[]) => {
+        expect(argv).is.eql(['run', '--port', '4200', '--', 'bin/serve'])
+      })
+      .command(['local:run', 'bin/serve', '-p', '4200'])
+      .it('is can pass the `-e` shorthand to foreman an an --env flag before the `--` argument separator')
   })
 })
