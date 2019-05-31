@@ -1,9 +1,8 @@
 import {FileCompletion} from '@heroku-cli/command/lib/completions'
 import {Command, flags} from '@oclif/command'
+import {loadProc} from 'foreman/lib/procfile'
 
 import foreman from '../../fork-foreman'
-// import procLoader from 'foreman/lib/procfile.js';
-const procLoader = require('foreman/lib/procfile.js')
 
 export default class Start extends Command {
   static description = 'run heroku app locally'
@@ -58,7 +57,7 @@ export default class Start extends Command {
       execArgv.push(args.processname)
     } else {
       let procfile = flags.procfile || 'Procfile'
-      let procHash = procLoader.loadProc(procfile)
+      let procHash = loadProc(procfile)
       let processes = Object.keys(procHash).filter(x => x !== 'release')
       execArgv.push(processes.join(','))
     }
