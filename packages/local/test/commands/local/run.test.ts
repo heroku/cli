@@ -56,7 +56,7 @@ describe('local:run', () => {
         expect(argv).is.eql(['run', '--port', '4200', '--', 'bin/serve'])
       })
       .command(['local:run', 'bin/serve', '--port', '4200'])
-      .it('is passed to foreman an an --port flag before the `--` argument separator')
+      .it('is passed to foreman an a --port flag before the `--` argument separator')
 
     test
       .stdout()
@@ -64,6 +64,6 @@ describe('local:run', () => {
         expect(argv).is.eql(['run', '--port', '4200', '--', 'bin/serve'])
       })
       .command(['local:run', 'bin/serve', '-p', '4200'])
-      .it('is can pass the `-e` shorthand to foreman an an --env flag before the `--` argument separator')
+      .it('is can pass the `-p` shorthand to foreman an a --port flag before the `--` argument separator')
   })
 })
