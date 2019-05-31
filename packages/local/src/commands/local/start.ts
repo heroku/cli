@@ -2,15 +2,15 @@ import {FileCompletion} from '@heroku-cli/command/lib/completions'
 import {Command, flags} from '@oclif/command'
 import {loadProc} from 'foreman/lib/procfile'
 
-import foreman from '../../fork-foreman'
+import {fork as foreman} from '../../fork-foreman'
 
 export default class Start extends Command {
   static description = 'run heroku app locally'
   static examples = [
     `$ heroku local
-    $ heroku local web
-    $ heroku local web=2
-    $ heroku local web=1,worker=2`
+$ heroku local web
+$ heroku local web=2
+$ heroku local web=1,worker=2`
   ]
 
   static args = [{name: 'processname', required: false}]
@@ -49,6 +49,7 @@ export default class Start extends Command {
     if (flags.restart) {
       this.error('--restart is no longer available\nUse forego instead: https://github.com/ddollar/forego')
     }
+
     if (flags.concurrency) {
       this.error('--concurrency is no longer available\nUse forego instead: https://github.com/ddollar/forego')
     }
