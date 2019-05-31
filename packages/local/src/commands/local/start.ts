@@ -12,7 +12,9 @@ export default class Start extends Command {
     $ heroku local web=2
     $ heroku local web=1,worker=2`
   ]
-  static strict = false
+
+  static args = [{name: 'processname', required: false}]
+
   static flags = {
     procfile: flags.string({
       char: 'f',
@@ -39,6 +41,7 @@ export default class Start extends Command {
       hidden: true
     })
   }
+
   async run() {
     const execArgv = ['start']
     const {args, flags} = this.parse(Start)
