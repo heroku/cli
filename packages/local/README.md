@@ -31,24 +31,49 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`oclif-example local:run [FILE]`](#oclif-example-localrun-file)
+* [`oclif-example local:run`](#oclif-example-localrun)
+* [`oclif-example local:start`](#oclif-example-localstart)
 * [`oclif-example local:version`](#oclif-example-localversion)
 
-## `oclif-example local:run [FILE]`
+## `oclif-example local:run`
 
-describe the command here
+run a one-off command
 
 ```
 USAGE
-  $ oclif-example local:run [FILE]
+  $ oclif-example local:run
 
 OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
+  -e, --env=env
+  -p, --port=port
+
+EXAMPLE
+  $ heroku local:run bin/migrate
 ```
 
 _See code: [src/commands/local/run.ts](https://github.com/chadian/local/blob/v0.0.0/src/commands/local/run.ts)_
+
+## `oclif-example local:start`
+
+run heroku app locally
+
+```
+USAGE
+  $ oclif-example local:start
+
+OPTIONS
+  -e, --env=env            location of env file (defaults to .env)
+  -f, --procfile=procfile  use a different Procfile
+  -p, --port=port          port to listen on
+
+EXAMPLE
+  $ heroku local
+       $ heroku local web
+       $ heroku local web=2
+       $ heroku local web=1,worker=2
+```
+
+_See code: [src/commands/local/start.ts](https://github.com/chadian/local/blob/v0.0.0/src/commands/local/start.ts)_
 
 ## `oclif-example local:version`
 
