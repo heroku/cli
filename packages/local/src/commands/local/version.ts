@@ -1,5 +1,6 @@
-import {Command, flags} from '@oclif/command'
-import fork from '../../fork_foreman';
+import {Command} from '@oclif/command'
+
+import fork from '../../fork-foreman'
 
 export default class Local extends Command {
   static description = 'display node-foreman version'

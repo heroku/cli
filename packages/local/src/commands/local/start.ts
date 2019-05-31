@@ -1,6 +1,7 @@
-import {Command, flags} from '@oclif/command';
-import { FileCompletion } from '@heroku-cli/command/lib/completions';
-import foreman from '../../fork_foreman';
+import {FileCompletion} from '@heroku-cli/command/lib/completions'
+import {Command, flags} from '@oclif/command'
+
+import foreman from '../../fork-foreman'
 // import procLoader from 'foreman/lib/procfile.js';
 const procLoader = require('foreman/lib/procfile.js')
 
@@ -43,10 +44,10 @@ export default class Start extends Command {
     const execArgv = ['start']
     const {args, flags} = this.parse(Start)
 
-    if (flags.restart){
+    if (flags.restart) {
       this.error('--restart is no longer available\nUse forego instead: https://github.com/ddollar/forego')
     }
-    if (flags.concurrency){
+    if (flags.concurrency) {
       this.error('--concurrency is no longer available\nUse forego instead: https://github.com/ddollar/forego')
     }
 
@@ -58,7 +59,7 @@ export default class Start extends Command {
     } else {
       let procfile = flags.procfile || 'Procfile'
       let procHash = procLoader.loadProc(procfile)
-      let processes = Object.keys(procHash).filter((x) => x !== 'release')
+      let processes = Object.keys(procHash).filter(x => x !== 'release')
       execArgv.push(processes.join(','))
     }
     await foreman(execArgv)
