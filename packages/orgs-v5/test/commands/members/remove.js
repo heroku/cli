@@ -10,6 +10,10 @@ describe('heroku members:remove', () => {
   beforeEach(() => cli.mockConsole())
   afterEach(() => nock.cleanAll())
 
+  it('is is configured for an optional team/org flag', function () {
+    expect(cmd).to.have.own.property('wantsOrg', true)
+  })
+
   context('from an org', () => {
     beforeEach(() => {
       stubGet.teamInfo('enterprise')

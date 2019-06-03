@@ -12,6 +12,10 @@ let features = [ 'one', 'two' ]
 describe('spaces:create', function () {
   beforeEach(() => cli.mockConsole())
 
+  it('is is configured for an optional team/org flag', function () {
+    expect(cmd).to.have.own.property('wantsOrg', true)
+  })
+
   it('creates a Standard space', function () {
     let api = nock('https://api.heroku.com:443')
       .post('/spaces', {

@@ -16,6 +16,10 @@ describe('apps:create', function () {
     nock.cleanAll()
   })
 
+  it('is is configured for an optional team/org flag', function () {
+    expect(apps).to.have.own.property('wantsOrg', true)
+  })
+
   it('creates an app', function () {
     let mock = nock('https://api.heroku.com')
       .post('/apps', {

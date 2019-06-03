@@ -3,6 +3,7 @@
 let cli = require('heroku-cli-util')
 let nock = require('nock')
 let cmd = require('../../../commands/pipelines/create')
+const expect = require('chai').expect
 
 describe('pipelines:create', function () {
   let heroku, coupling, pipeline
@@ -46,6 +47,10 @@ describe('pipelines:create', function () {
         .reply(200, { id: '89-0123-456' })
         .post('/pipelines')
         .reply(201, pipeline)
+    })
+
+    it('is is configured for an optional team/org flag', function () {
+      expect(cmd).to.have.own.property('wantsOrg', true)
     })
 
     it('displays the pipeline name and app stage', function () {

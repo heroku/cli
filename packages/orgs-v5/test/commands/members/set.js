@@ -15,6 +15,10 @@ describe('heroku members:set', () => {
   })
   afterEach(() => nock.cleanAll())
 
+  it('is is configured for an optional team/org flag', function () {
+    expect(cmd).to.have.own.property('wantsOrg', true)
+  })
+
   context('and group is a team', () => {
     beforeEach(() => {
       stubGet.teamInfo('team')

@@ -17,6 +17,10 @@ let now = new Date()
 describe('spaces', function () {
   beforeEach(() => cli.mockConsole())
 
+  it('is is configured for an optional team/org flag', function () {
+    expect(cmd).to.have.own.property('wantsOrg', true)
+  })
+
   it('shows spaces', function () {
     let api = nock('https://api.heroku.com:443')
       .get('/spaces')

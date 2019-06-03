@@ -257,6 +257,11 @@ internal-app [internal/locked] (eu)
   })
 
   describe('with team', function () {
+
+    it('is configured for an optional team/org flag', function () {
+      expect(apps).to.have.own.property('wantsOrg', true)
+    })
+
     it('displays a message when the team has no apps', function () {
       let mock = stubteamApps('test-team', [])
       return apps.run({ org: 'test-team', flags: {}, args: {} }).then(function () {

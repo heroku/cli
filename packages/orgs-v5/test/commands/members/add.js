@@ -12,6 +12,10 @@ describe('heroku members:add', () => {
   beforeEach(() => cli.mockConsole())
   afterEach(() => nock.cleanAll())
 
+  it('is is configured for an optional team/org flag', function () {
+    expect(cmd).to.have.own.property('wantsOrg', true)
+  })
+
   context('without the feature flag team-invite-acceptance', () => {
     beforeEach(() => {
       stubGet.teamFeatures([])
