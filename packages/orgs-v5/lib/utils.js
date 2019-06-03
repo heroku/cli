@@ -38,12 +38,6 @@ let teamInfo = function * (context, heroku) {
   return yield heroku.get(`/teams/${teamName}`)
 }
 
-let warnUsingOrgFlagInTeams = function (teamInfo, context) {
-  if ((teamInfo.type === 'team') && (!context.flags.team)) {
-    cli.warn(`${cli.color.cmd(context.org)} is a Heroku Team\nHeroku CLI now supports Heroku Teams.\nUse ${cli.color.cmd('-t')} or ${cli.color.cmd('--team')} for teams like ${cli.color.cmd(context.org)}`)
-  }
-}
-
 let addMemberToTeam = function * (email, role, groupName, heroku, method = 'PUT') {
   let request = heroku.request({
     method: method,
@@ -81,6 +75,5 @@ module.exports = {
   teamInfo,
   printGroups,
   printGroupsJSON,
-  warnIfAtTeamMemberLimit,
-  warnUsingOrgFlagInTeams
+  warnIfAtTeamMemberLimit
 }

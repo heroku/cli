@@ -85,22 +85,6 @@ b@heroku.com  collaborator
       beforeEach(() => {
         stubGet.teamFeatures([])
       })
-
-      context('using --org instead of --team', () => {
-        it('shows members either way including a warning', () => {
-          apiGetOrgMembers = stubGet.teamMembers([
-            { email: 'a@heroku.com', role: 'admin' }, { email: 'b@heroku.com', role: 'collaborator' }
-          ])
-          return cmd.run({ org: 'myteam', flags: {} })
-            .then(() => expect(
-              `a@heroku.com  admin
-b@heroku.com  collaborator\n`).to.eq(cli.stdout))
-            .then(() => expect(unwrap(cli.stderr)).to.equal(`myteam is a Heroku Team Heroku CLI now supports Heroku Teams. \
-Use -t or --team for teams like myteam
-`))
-            .then(() => apiGetOrgMembers.done())
-        })
-      })
     })
 
     context('with the feature flag team-invite-acceptance', () => {

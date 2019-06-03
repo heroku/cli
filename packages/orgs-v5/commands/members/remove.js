@@ -53,8 +53,6 @@ function * run (context, heroku) {
   } else {
     yield removeUserMembership()
   }
-
-  Utils.warnUsingOrgFlagInTeams(teamInfo, context)
 }
 
 module.exports = {

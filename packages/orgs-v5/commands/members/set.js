@@ -14,7 +14,6 @@ function * run (context, heroku) {
 
   yield Utils.addMemberToTeam(email, role, groupName, heroku, 'PATCH')
   yield Utils.warnIfAtTeamMemberLimit(teamInfo, groupName, context, heroku)
-  Utils.warnUsingOrgFlagInTeams(teamInfo, context)
 }
 
 let set = {

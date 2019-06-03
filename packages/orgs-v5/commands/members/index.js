@@ -51,8 +51,6 @@ function * run (context, heroku) {
       ]
     })
   }
-
-  Utils.warnUsingOrgFlagInTeams(teamInfo, context)
 }
 
 module.exports = {

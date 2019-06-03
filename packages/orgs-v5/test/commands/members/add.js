@@ -62,21 +62,6 @@ You'll be billed monthly for teams over 5 members.
 `))
           .then(() => apiUpdateMemberRole.done())
       })
-
-      context('using --org instead of --team', () => {
-        it('adds the member, but it shows a warning about the usage of -t instead', () => {
-          stubGet.variableSizeTeamMembers(1)
-          stubGet.variableSizeTeamInvites(0)
-
-          apiUpdateMemberRole = stubPut.updateMemberRole('foo@foo.com', 'admin')
-          return cmd.run({ org: 'myteam', args: { email: 'foo@foo.com' }, flags: { role: 'admin' } })
-            .then(() => expect('').to.eq(cli.stdout))
-            .then(() => expect(unwrap(cli.stderr)).to.equal(`Adding foo@foo.com to myteam as admin... done myteam is a \
-Heroku Team Heroku CLI now supports Heroku Teams. Use -t or --team for teams like myteam
-`))
-            .then(() => apiUpdateMemberRole.done())
-        })
-      })
     })
 
     context('and group is an enterprise org', () => {

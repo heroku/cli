@@ -38,18 +38,6 @@ describe('heroku members:remove', () => {
         stubGet.teamFeatures([])
       })
 
-      context('using --org instead of --team', () => {
-        it('removes the member, but it shows a warning about the usage of -t instead', () => {
-          let apiRemoveMemberFromOrg = stubDelete.memberFromTeam()
-          return cmd.run({ org: 'myteam', args: { email: 'foo@foo.com' }, flags: {} })
-            .then(() => expect('').to.eq(cli.stdout))
-            .then(() => expect(unwrap(cli.stderr)).to.equal(`Removing foo@foo.com from myteam... done \
-myteam is a Heroku Team Heroku CLI now supports Heroku Teams. Use -t or --team for teams like myteam
-`))
-            .then(() => apiRemoveMemberFromOrg.done())
-        })
-      })
-
       it('removes a member from an org', () => {
         let apiRemoveMemberFromOrg = stubDelete.memberFromTeam()
         return cmd.run({ args: { email: 'foo@foo.com' }, flags: { team: 'myteam' } })
