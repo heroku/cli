@@ -50,6 +50,9 @@ describe('pipelines:create', function () {
     })
 
     it('is is configured for an optional team/org flag', function () {
+      // skip nock assertions
+      nock.cleanAll()
+
       expect(cmd).to.have.own.property('wantsOrg', true)
     })
 
