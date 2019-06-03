@@ -86,7 +86,7 @@ myteam is a Heroku Team Heroku CLI now supports Heroku Teams. Use -t or --team f
     it('adds a member to an org', () => {
       apiUpdateMemberRole = stubPatch.updateMemberRole('foo@foo.com', 'admin')
 
-      return cmd.run({ org: 'myteam', args: { email: 'foo@foo.com' }, flags: { role: 'admin' } })
+      return cmd.run({ args: { email: 'foo@foo.com' }, flags: { team: 'myteam', role: 'admin' } })
         .then(() => expect('').to.eq(cli.stdout))
         .then(() => expect(`Adding foo@foo.com to myteam as admin... done
 `).to.eq(cli.stderr))

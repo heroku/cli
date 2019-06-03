@@ -22,7 +22,7 @@ describe('heroku members', () => {
 
     it('shows there are not team members if it is an orphan team', () => {
       apiGetOrgMembers = stubGet.teamMembers([])
-      return cmd.run({ org: 'myteam', flags: {} })
+      return cmd.run({ flags: { team: 'myteam' } })
         .then(() => expect(
           `No members in myteam
 `).to.eq(cli.stdout))
@@ -34,7 +34,7 @@ describe('heroku members', () => {
       apiGetOrgMembers = stubGet.teamMembers([
         { email: 'a@heroku.com', role: 'admin' }, { email: 'b@heroku.com', role: 'collaborator' }
       ])
-      return cmd.run({ org: 'myteam', flags: {} })
+      return cmd.run({ flags: { team: 'myteam' } })
         .then(() => expect(
           `a@heroku.com  admin
 b@heroku.com  collaborator
@@ -47,7 +47,7 @@ b@heroku.com  collaborator
 
     it('filters members by role', () => {
       apiGetOrgMembers = stubGet.teamMembers(expectedOrgMembers)
-      return cmd.run({ org: 'myteam', flags: { role: 'member' } })
+      return cmd.run({ flags: { team: 'myteam', role: 'member' } })
         .then(() => expect(
           `b@heroku.com  member
 `).to.eq(cli.stdout))
@@ -57,7 +57,7 @@ b@heroku.com  collaborator
 
     it("shows the right message when filter doesn't return results", () => {
       apiGetOrgMembers = stubGet.teamMembers(expectedOrgMembers)
-      return cmd.run({ org: 'myteam', flags: { role: 'collaborator' } })
+      return cmd.run({ flags: { team: 'myteam', role: 'collaborator' } })
         .then(() => expect(
           `No members in myteam with role collaborator
 `).to.eq(cli.stdout))
@@ -67,7 +67,7 @@ b@heroku.com  collaborator
 
     it('filters members by role', () => {
       apiGetOrgMembers = stubGet.teamMembers(expectedOrgMembers)
-      return cmd.run({ org: 'myteam', flags: { role: 'member' } })
+      return cmd.run({ flags: { team: 'myteam', role: 'member' } })
         .then(() => expect(
           `b@heroku.com  member
 `).to.eq(cli.stdout))

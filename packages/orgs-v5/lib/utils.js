@@ -33,9 +33,9 @@ let printGroupsJSON = function (group) {
 }
 
 let teamInfo = function * (context, heroku) {
-  let teamOrOrgName = context.org || context.flags.team
-  if (!teamOrOrgName) error.exit(1, 'No team or org specified.\nRun this command with --team or --org')
-  return yield heroku.get(`/teams/${context.org || context.flags.team}`)
+  let teamName = context.flags.team
+  if (!teamName) error.exit(1, 'No team or org specified.\nRun this command with --team')
+  return yield heroku.get(`/teams/${teamName}`)
 }
 
 let warnUsingOrgFlagInTeams = function (teamInfo, context) {

@@ -7,7 +7,7 @@ const { flags } = require('@heroku-cli/command')
 
 function * run (context, heroku) {
   let teamInfo = yield Utils.teamInfo(context, heroku)
-  let groupName = context.org || context.team || context.flags.team
+  let groupName = context.flags.team
   let teamInviteFeatureEnabled = false
   let isInvitedUser = false
   let email = context.args.email

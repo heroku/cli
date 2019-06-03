@@ -21,7 +21,7 @@ describe('heroku members:remove', () => {
 
     it('removes a member from an org', () => {
       let apiRemoveMemberFromOrg = stubDelete.memberFromTeam()
-      return cmd.run({ org: 'myteam', args: { email: 'foo@foo.com' } })
+      return cmd.run({ flags: { team: 'myteam' }, args: { email: 'foo@foo.com' } })
         .then(() => expect('').to.eq(cli.stdout))
         .then(() => expect(`Removing foo@foo.com from myteam... done\n`).to.eq(cli.stderr))
         .then(() => apiRemoveMemberFromOrg.done())
