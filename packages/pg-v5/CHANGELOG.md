@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.25.0](https://github.com/heroku/cli/compare/v7.24.4...v7.25.0) (2019-06-03)
+
+
+### Features
+
+* **pg-v5:** add pg:repoint command ([#1243](https://github.com/heroku/cli/issues/1243)) ([eedb3ed](https://github.com/heroku/cli/commit/eedb3ed))
+
+
+
+
+
 # [7.24.0](https://github.com/heroku/cli/compare/v7.23.0...v7.24.0) (2019-04-25)
 
 **Note:** Version bump only for package @heroku-cli/plugin-pg-v5
