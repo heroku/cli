@@ -3,7 +3,6 @@
 
 let cmd = require('../../../commands/members')
 let stubGet = require('../../stub/get')
-const unwrap = require('../../unwrap')
 
 describe('heroku members', () => {
   beforeEach(() => cli.mockConsole())

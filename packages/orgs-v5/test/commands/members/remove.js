@@ -4,7 +4,6 @@
 let cmd = require('../../../commands/members/remove')
 let stubDelete = require('../../stub/delete')
 let stubGet = require('../../stub/get')
-const unwrap = require('../../unwrap')
 
 describe('heroku members:remove', () => {
   beforeEach(() => cli.mockConsole())

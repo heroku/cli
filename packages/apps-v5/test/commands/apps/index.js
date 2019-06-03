@@ -257,7 +257,6 @@ internal-app [internal/locked] (eu)
   })
 
   describe('with team', function () {
-
     it('is configured for an optional team/org flag', function () {
       expect(apps).to.have.own.property('wantsOrg', true)
     })
