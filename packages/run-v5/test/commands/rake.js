@@ -15,9 +15,9 @@ describe('rake', () => {
     })
   })
 
-  it('runs rake', () => {
-    return cmd.run({ app: 'heroku-run-test-app', flags: {}, args: ['test'] })
-      .then(() => expect(dynoOpts.command, 'to equal', 'rake test'))
+  it('runs rake', async () => {
+    await cmd.run({ app: 'heroku-run-test-app', flags: {}, args: ['test'] })
+    expect(dynoOpts.command, 'to equal', 'rake test')
   })
 
   afterEach(() => {
