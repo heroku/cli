@@ -1,4 +1,4 @@
-let cmd = require('../../../commands/orgs/open')
+const cmd = require('../../../commands/orgs/open')
 const expect = require('chai').expect
 
 describe('heroku org:open', () => {
