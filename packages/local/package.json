@@ -1,8 +1,9 @@
 {
-  "name": "local",
+  "name": "@heroku-cli/plugin-local",
+  "description": "run heroku apps locally",
   "version": "0.0.0",
   "author": "Chad Carbert @chadian",
-  "bugs": "https://github.com/chadian/local/issues",
+  "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
     "@heroku-cli/command": "^8.2.11",
     "@oclif/command": "^1",
@@ -36,19 +37,19 @@
     "/oclif.manifest.json",
     "/yarn.lock"
   ],
-  "homepage": "https://github.com/chadian/local",
+  "homepage": "https://github.com/heroku/cli",
   "keywords": [
     "oclif-plugin"
   ],
   "license": "MIT",
   "oclif": {
     "commands": "./lib/commands",
-    "bin": "oclif-example",
+    "bin": "heroku",
     "devPlugins": [
       "@oclif/plugin-help"
     ]
   },
-  "repository": "chadian/local",
+  "repository": "heroku/cli",
   "scripts": {
     "postpack": "rm -f oclif.manifest.json",
     "posttest": "tslint -p test -t stylish",
