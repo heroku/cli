@@ -12,7 +12,7 @@ let features = [ 'one', 'two' ]
 describe('spaces:create', function () {
   beforeEach(() => cli.mockConsole())
 
-  it('is is configured for an optional team/org flag', function () {
+  it('is configured for an optional team flag', function () {
     expect(cmd).to.have.own.property('wantsOrg', true)
   })
 

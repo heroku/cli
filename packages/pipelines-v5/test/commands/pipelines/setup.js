@@ -162,7 +162,7 @@ describe('pipelines:setup', function () {
           stubCI({ name: pipeline.name, repo: repo.name, organization: team, ci: true })
         })
 
-        it('is is configured for an optional team/org flag', function () {
+        it('is configured for an optional team flag', function () {
           expect(cmd).to.have.own.property('wantsOrg', true)
         })
 

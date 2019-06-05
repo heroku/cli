@@ -16,7 +16,7 @@ describe('apps:create', function () {
     nock.cleanAll()
   })
 
-  it('is is configured for an optional team/org flag', function () {
+  it('is configured for an optional team flag', function () {
     expect(apps).to.have.own.property('wantsOrg', true)
   })
 

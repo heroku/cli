@@ -49,7 +49,7 @@ describe('pipelines:create', function () {
         .reply(201, pipeline)
     })
 
-    it('is is configured for an optional team/org flag', function () {
+    it('is configured for an optional team flag', function () {
       // skip nock assertions
       nock.cleanAll()
 
