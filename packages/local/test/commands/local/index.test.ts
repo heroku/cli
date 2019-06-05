@@ -101,7 +101,7 @@ describe('local', () => {
         .it('can call foreman start with only arguments')
     })
 
-    describe('with --port, --env and --prcofile flags', function() {
+    describe('with --port, --env and --procfile flags', function() {
       test
         .stdout()
         .stub(procfile, 'loadProc', loadProcMock)
@@ -118,7 +118,15 @@ describe('local', () => {
           ])
         })
         .command(['local', '--port', '4600', '--env', 'DEBUG=true', '--procfile', 'Procfile.other'])
-        .it('can call foreman start')
+        .it('can call foreman start with arguments and --port, --env and --procfile flags')
+    })
+
+    describe('with too many arguments', function() {
+      test
+        .stdout()
+        .command(['local', 'Procfile.other', 'extra-argument'])
+        .catch(e => expect(e.message).to.contain('Unexpected argument: extra-argument'))
+        .it('will display an error')
     })
   })
 

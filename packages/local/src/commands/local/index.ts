@@ -14,7 +14,6 @@ $ heroku local web=1,worker=2`
   ]
 
   static aliases = ['local:start']
-
   static args = [{name: 'processname', required: false}]
 
   static flags = {
