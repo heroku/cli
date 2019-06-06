@@ -56,7 +56,7 @@
     "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
     "test": "npm run test:unit && npm run test:integration",
     "test:unit": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
-    "test:integration": "bats test/integration/*.bats",
+    "test:integration": "node ./bin/bats-test-runner",
     "version": "oclif-dev readme && git add README.md"
   }
 }
