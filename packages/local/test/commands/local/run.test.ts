@@ -7,7 +7,6 @@ import * as foreman from '../../../src/fork-foreman'
 describe('local:run', () => {
   describe('when no arguments are given', function () {
     test
-      .stdout()
       .command(['local:run'])
       .catch(/Usage: heroku local:run \[COMMAND\]/)
       .it('errors with proper usage suggestion')
@@ -15,7 +14,6 @@ describe('local:run', () => {
 
   describe('when arguments are given', function () {
     test
-      .stdout()
       .stub(foreman, 'fork', (argv: string[]) => {
         expect(argv).is.eql(['run', '--', 'echo', 'hello'])
       })
@@ -23,7 +21,6 @@ describe('local:run', () => {
       .it('can handle one argument passed to foreman after the -- argument separator')
 
     test
-      .stdout()
       .stub(foreman, 'fork', (argv: string[]) => {
         expect(argv).is.eql(['run', '--', 'echo', 'hello', 'world'])
       })
@@ -33,7 +30,6 @@ describe('local:run', () => {
 
   describe('when the environemnt flag is given', function () {
     test
-      .stdout()
       .stub(foreman, 'fork', (argv: string[]) => {
         expect(argv).is.eql(['run', '--env', 'env-file', '--', 'bin/migrate'])
       })
@@ -41,7 +37,6 @@ describe('local:run', () => {
       .it('is passed to foreman an an --env flag before the `--` argument separator')
 
     test
-      .stdout()
       .stub(foreman, 'fork', (argv: string[]) => {
         expect(argv).is.eql(['run', '--env', 'env-file', '--', 'bin/migrate'])
       })
@@ -51,7 +46,6 @@ describe('local:run', () => {
 
   describe('when the port flag is given', function () {
     test
-      .stdout()
       .stub(foreman, 'fork', (argv: string[]) => {
         expect(argv).is.eql(['run', '--port', '4200', '--', 'bin/serve'])
       })
@@ -59,7 +53,6 @@ describe('local:run', () => {
       .it('is passed to foreman an a --port flag before the `--` argument separator')
 
     test
-      .stdout()
       .stub(foreman, 'fork', (argv: string[]) => {
         expect(argv).is.eql(['run', '--port', '4200', '--', 'bin/serve'])
       })

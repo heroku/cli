@@ -13,7 +13,6 @@ describe('local', () => {
 
   describe('with the local:start alias', function () {
     test
-      .stdout()
       .stub(procfile, 'loadProc', loadProcMock)
       .stub(foreman, 'fork', (argv: string[]) => {
         expect(argv).is.eql(['start', 'web,other'])
@@ -25,7 +24,6 @@ describe('local', () => {
   describe('without arguments', function () {
     describe('without flags', function () {
       test
-        .stdout()
         .stub(procfile, 'loadProc', function(procfile: any) {
           expect(procfile).is.equal('Procfile', 'it defaults to loading `Procfile`')
 
@@ -43,7 +41,6 @@ describe('local', () => {
 
     describe('with a --procfile flag', function () {
       test
-        .stdout()
         .stub(procfile, 'loadProc', (procfile: string) => {
           expect(procfile).is.equal('Procfile.other')
 
@@ -63,7 +60,6 @@ describe('local', () => {
 
     describe('with --procfile, --env, --port flags together', function() {
       test
-        .stdout()
         .stub(procfile, 'loadProc', loadProcMock)
         .stub(foreman, 'fork', (argv: string[]) => {
           expect(argv).is.eql([
@@ -85,7 +81,6 @@ describe('local', () => {
   describe('with arguments', function () {
     describe('without flags', function () {
       test
-        .stdout()
         .stub(procfile, 'loadProc', function(procfile: any) {
           expect(procfile).is.equal('Procfile', 'it defaults to loading `Procfile`')
 
@@ -103,7 +98,6 @@ describe('local', () => {
 
     describe('with --port, --env and --procfile flags', function() {
       test
-        .stdout()
         .stub(procfile, 'loadProc', loadProcMock)
         .stub(foreman, 'fork', (argv: string[]) => {
           expect(argv).is.eql([
@@ -123,7 +117,6 @@ describe('local', () => {
 
     describe('with too many arguments', function() {
       test
-        .stdout()
         .command(['local', 'Procfile.other', 'extra-argument'])
         .catch(e => expect(e.message).to.contain('Unexpected argument: extra-argument'))
         .it('will display an error')
@@ -132,7 +125,6 @@ describe('local', () => {
 
   describe('with deprecated flags', function() {
     test
-      .stdout()
       .command(['local', '--restart'])
       .catch(e => {
         expect(e.message).to.equal('--restart is no longer available\nUse forego instead: https://github.com/ddollar/forego')
@@ -140,7 +132,6 @@ describe('local', () => {
       .it('errors with deprecated restart flag message')
 
     test
-      .stdout()
       .command(['local', '--concurrency', 'web=2'])
       .catch(e => {
         expect(e.message).to.equal('--concurrency is no longer available\nUse forego instead: https://github.com/ddollar/forego')
