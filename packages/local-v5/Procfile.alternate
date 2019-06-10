@@ -1,2 +1,0 @@
-web: echo "it works (web) (alternate)!"
-worker: echo "it works (worker) (alternate)!"

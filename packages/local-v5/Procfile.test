@@ -1,4 +1,0 @@
-web: echo "it works (web)! port: $PORT"
-worker: echo "it works (worker)!"
-test: echo "it works (test)!"
-release: echo "it works (release)!"
