@@ -18,11 +18,11 @@ webhooks
 # Usage
 <!-- usage -->
 ```sh-session
-$ npm install -g webhooks
+$ npm install -g @heroku-cli/plugin-webhooks
 $ oclif-example COMMAND
 running command...
 $ oclif-example (-v|--version|version)
-webhooks/0.0.0 darwin-x64 node-v10.15.3
+@heroku-cli/plugin-webhooks/0.0.0 darwin-x64 node-v10.15.3
 $ oclif-example --help [COMMAND]
 USAGE
   $ oclif-example COMMAND
@@ -32,6 +32,7 @@ USAGE
 # Commands
 <!-- commands -->
 * [`oclif-example hello [FILE]`](#oclif-example-hello-file)
+* [`oclif-example webhooks [FILE]`](#oclif-example-webhooks-file)
 
 ## `oclif-example hello [FILE]`
 
@@ -51,5 +52,21 @@ EXAMPLE
   hello world from ./src/hello.ts!
 ```
 
-_See code: [src/commands/hello.ts](https://github.com/chadian/webhooks/blob/v0.0.0/src/commands/hello.ts)_
+_See code: [src/commands/hello.ts](https://github.com/heroku/cli/blob/v0.0.0/src/commands/hello.ts)_
+
+## `oclif-example webhooks [FILE]`
+
+describe the command here
+
+```
+USAGE
+  $ oclif-example webhooks [FILE]
+
+OPTIONS
+  -f, --force
+  -h, --help       show CLI help
+  -n, --name=name  name to print
+```
+
+_See code: [src/commands/webhooks/index.ts](https://github.com/heroku/cli/blob/v0.0.0/src/commands/webhooks/index.ts)_
 <!-- commandsstop -->

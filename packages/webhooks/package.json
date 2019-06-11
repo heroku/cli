@@ -5,8 +5,11 @@
   "author": "Chad Carbert @chadian",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
+    "@heroku-cli/color": "^1.1.14",
+    "@heroku-cli/command": "^8.2.11",
     "@oclif/command": "^1",
     "@oclif/config": "^1",
+    "cli-ux": "^5.2.1",
     "tslib": "^1"
   },
   "devDependencies": {
