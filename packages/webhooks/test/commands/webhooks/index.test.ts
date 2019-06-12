@@ -1,5 +1,5 @@
 import { expect, test } from '@oclif/test'
-import { parse, addDays } from 'date-fns'
+import { addDays, parse } from 'date-fns'
 
 describe('webhooks:index', () => {
   describe('app webhooks', () => {

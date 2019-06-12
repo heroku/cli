@@ -33,6 +33,7 @@ USAGE
 <!-- commands -->
 * [`oclif-example hello [FILE]`](#oclif-example-hello-file)
 * [`oclif-example webhooks [FILE]`](#oclif-example-webhooks-file)
+* [`oclif-example webhooks:info [FILE]`](#oclif-example-webhooksinfo-file)
 
 ## `oclif-example hello [FILE]`
 
@@ -56,11 +57,29 @@ _See code: [src/commands/hello.ts](https://github.com/heroku/cli/blob/v0.0.0/src
 
 ## `oclif-example webhooks [FILE]`
 
-describe the command here
+list webhooks on an app
 
 ```
 USAGE
   $ oclif-example webhooks [FILE]
+
+OPTIONS
+  -a, --app=app        app to run command against
+  -r, --remote=remote  git remote of app to use
+
+EXAMPLE
+  $ heroku webhooks
+```
+
+_See code: [src/commands/webhooks/index.ts](https://github.com/heroku/cli/blob/v0.0.0/src/commands/webhooks/index.ts)_
+
+## `oclif-example webhooks:info [FILE]`
+
+describe the command here
+
+```
+USAGE
+  $ oclif-example webhooks:info [FILE]
 
 OPTIONS
   -f, --force
@@ -68,5 +87,5 @@ OPTIONS
   -n, --name=name  name to print
 ```
 
-_See code: [src/commands/webhooks/index.ts](https://github.com/heroku/cli/blob/v0.0.0/src/commands/webhooks/index.ts)_
+_See code: [src/commands/webhooks/info.ts](https://github.com/heroku/cli/blob/v0.0.0/src/commands/webhooks/info.ts)_
 <!-- commandsstop -->
