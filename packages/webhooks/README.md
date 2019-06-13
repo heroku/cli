@@ -19,30 +19,31 @@ webhooks
 <!-- usage -->
 ```sh-session
 $ npm install -g @heroku-cli/plugin-webhooks
-$ oclif-example COMMAND
+$ heroku COMMAND
 running command...
-$ oclif-example (-v|--version|version)
+$ heroku (-v|--version|version)
 @heroku-cli/plugin-webhooks/0.0.0 darwin-x64 node-v10.15.3
-$ oclif-example --help [COMMAND]
+$ heroku --help [COMMAND]
 USAGE
-  $ oclif-example COMMAND
+  $ heroku COMMAND
 ...
 ```
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`oclif-example webhooks [FILE]`](#oclif-example-webhooks-file)
-* [`oclif-example webhooks:add [FILE]`](#oclif-example-webhooksadd-file)
-* [`oclif-example webhooks:info [ID]`](#oclif-example-webhooksinfo-id)
-* [`oclif-example webhooks:remove [ID]`](#oclif-example-webhooksremove-id)
+* [`heroku webhooks [FILE]`](#heroku-webhooks-file)
+* [`heroku webhooks:add`](#heroku-webhooksadd)
+* [`heroku webhooks:info [ID]`](#heroku-webhooksinfo-id)
+* [`heroku webhooks:remove [ID]`](#heroku-webhooksremove-id)
+* [`heroku webhooks:update [FILE]`](#heroku-webhooksupdate-file)
 
-## `oclif-example webhooks [FILE]`
+## `heroku webhooks [FILE]`
 
 list webhooks on an app
 
 ```
 USAGE
-  $ oclif-example webhooks [FILE]
+  $ heroku webhooks [FILE]
 
 OPTIONS
   -a, --app=app        app to run command against
@@ -54,29 +55,36 @@ EXAMPLE
 
 _See code: [src/commands/webhooks/index.ts](https://github.com/heroku/cli/blob/v0.0.0/src/commands/webhooks/index.ts)_
 
-## `oclif-example webhooks:add [FILE]`
+## `heroku webhooks:add`
 
-describe the command here
+add a webhook to an app
 
 ```
 USAGE
-  $ oclif-example webhooks:add [FILE]
+  $ heroku webhooks:add
 
 OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
+  -a, --app=app                      app to run command against
+  -i, --include=include              (required) comma delimited event types your server will receive
+  -l, --level=level                  (required) notify does not retry, sync will retry until successful or timeout
+  -r, --remote=remote                git remote of app to use
+  -s, --secret=secret                value to sign delivery with in Heroku-Webhook-Hmac-SHA256 header
+  -t, --authorization=authorization  authoriation header to send with webhooks
+  -u, --url=url                      (required) URL for receiver
+
+EXAMPLE
+  $ heroku webhooks:add -i api:dyno -l notify -u https://example.com/hooks
 ```
 
 _See code: [src/commands/webhooks/add.ts](https://github.com/heroku/cli/blob/v0.0.0/src/commands/webhooks/add.ts)_
 
-## `oclif-example webhooks:info [ID]`
+## `heroku webhooks:info [ID]`
 
 info for a webhook on an app
 
 ```
 USAGE
-  $ oclif-example webhooks:info [ID]
+  $ heroku webhooks:info [ID]
 
 OPTIONS
   -a, --app=app        app to run command against
@@ -88,13 +96,13 @@ EXAMPLE
 
 _See code: [src/commands/webhooks/info.ts](https://github.com/heroku/cli/blob/v0.0.0/src/commands/webhooks/info.ts)_
 
-## `oclif-example webhooks:remove [ID]`
+## `heroku webhooks:remove [ID]`
 
 removes a webhook from an app
 
 ```
 USAGE
-  $ oclif-example webhooks:remove [ID]
+  $ heroku webhooks:remove [ID]
 
 ARGUMENTS
   ID  id of webhook to remove
@@ -108,4 +116,20 @@ EXAMPLE
 ```
 
 _See code: [src/commands/webhooks/remove.ts](https://github.com/heroku/cli/blob/v0.0.0/src/commands/webhooks/remove.ts)_
+
+## `heroku webhooks:update [FILE]`
+
+describe the command here
+
+```
+USAGE
+  $ heroku webhooks:update [FILE]
+
+OPTIONS
+  -f, --force
+  -h, --help       show CLI help
+  -n, --name=name  name to print
+```
+
+_See code: [src/commands/webhooks/update.ts](https://github.com/heroku/cli/blob/v0.0.0/src/commands/webhooks/update.ts)_
 <!-- commandsstop -->
