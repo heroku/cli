@@ -33,9 +33,10 @@ USAGE
 <!-- commands -->
 * [`heroku webhooks [FILE]`](#heroku-webhooks-file)
 * [`heroku webhooks:add`](#heroku-webhooksadd)
+* [`heroku webhooks:events [FILE]`](#heroku-webhooksevents-file)
 * [`heroku webhooks:info [ID]`](#heroku-webhooksinfo-id)
 * [`heroku webhooks:remove [ID]`](#heroku-webhooksremove-id)
-* [`heroku webhooks:update [FILE]`](#heroku-webhooksupdate-file)
+* [`heroku webhooks:update [ID]`](#heroku-webhooksupdate-id)
 
 ## `heroku webhooks [FILE]`
 
@@ -78,6 +79,22 @@ EXAMPLE
 
 _See code: [src/commands/webhooks/add.ts](https://github.com/heroku/cli/blob/v0.0.0/src/commands/webhooks/add.ts)_
 
+## `heroku webhooks:events [FILE]`
+
+describe the command here
+
+```
+USAGE
+  $ heroku webhooks:events [FILE]
+
+OPTIONS
+  -f, --force
+  -h, --help       show CLI help
+  -n, --name=name  name to print
+```
+
+_See code: [src/commands/webhooks/events/index.ts](https://github.com/heroku/cli/blob/v0.0.0/src/commands/webhooks/events/index.ts)_
+
 ## `heroku webhooks:info [ID]`
 
 info for a webhook on an app
@@ -117,18 +134,26 @@ EXAMPLE
 
 _See code: [src/commands/webhooks/remove.ts](https://github.com/heroku/cli/blob/v0.0.0/src/commands/webhooks/remove.ts)_
 
-## `heroku webhooks:update [FILE]`
+## `heroku webhooks:update [ID]`
 
-describe the command here
+updates a webhook in an app
 
 ```
 USAGE
-  $ heroku webhooks:update [FILE]
+  $ heroku webhooks:update [ID]
 
 OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
+  -a, --app=app                      app to run command against
+  -i, --include=include              (required) comma delimited event types your server will receive
+  -l, --level=level                  (required) notify does not retry, sync will retry until successful or timeout
+  -r, --remote=remote                git remote of app to use
+  -s, --secret=secret                value to sign delivery with in Heroku-Webhook-Hmac-SHA256 header
+  -t, --authorization=authorization  authoriation header to send with webhooks
+  -u, --url=url                      (required) URL for receiver
+
+EXAMPLE
+  $ heroku webhooks:update 99999999-9999-9999-9999-999999999999 -i dyno -l notify -s 
+  09928c40bf1b191b645174a19f7053d16a180da37332e719ef0998f4c0a2 -u https://example.com/hooks
 ```
 
 _See code: [src/commands/webhooks/update.ts](https://github.com/heroku/cli/blob/v0.0.0/src/commands/webhooks/update.ts)_
