@@ -76,55 +76,57 @@ describe('webhooks:index', () => {
       })
   })
 
-  let firstDate = parse('2019-06-11T14:20:42Z')
-  let secondDate = addDays(parse(firstDate), 1)
-  let thirdDate = addDays(parse(firstDate), 2)
+  describe('by default the table is sorted by `created_at`', () => {
+    let firstDate = parse('2019-06-11T14:20:42Z')
+    let secondDate = addDays(parse(firstDate), 1)
+    let thirdDate = addDays(parse(firstDate), 2)
 
-  test
-    .stdout()
-    .stderr()
-    .nock('https://api.heroku.com', api => api
-      .get('/apps/example/webhooks')
-      .reply(200, [
-        // the returned ordered from the api is not ordered by
-        // `created_at` but the results displayed by the cli
-        // in thae table *are* ordered by `created_at`
+    test
+      .stdout()
+      .stderr()
+      .nock('https://api.heroku.com', api => api
+        .get('/apps/example/webhooks')
+        .reply(200, [
+          // the returned ordered from the api is not ordered by
+          // `created_at` but the results displayed by the cli
+          // in thae table *are* ordered by `created_at`
 
-        // first date
-        {
-          created_at: firstDate.toISOString(),
-          id: '00000000-0000-0000-0000-000000000000',
-          include: ['api:release'],
-          level: 'sync',
-          url: 'https://test.com/hook'
-        },
+          // first date
+          {
+            created_at: firstDate.toISOString(),
+            id: '00000000-0000-0000-0000-000000000000',
+            include: ['api:release'],
+            level: 'sync',
+            url: 'https://test.com/hook'
+          },
 
-        // third date
-        {
-          created_at: thirdDate.toISOString(),
-          id: '11111111-1111-1111-1111-111111111111',
-          include: ['api:release'],
-          level: 'sync',
-          url: 'https://test.com/hook'
-        },
+          // third date
+          {
+            created_at: thirdDate.toISOString(),
+            id: '11111111-1111-1111-1111-111111111111',
+            include: ['api:release'],
+            level: 'sync',
+            url: 'https://test.com/hook'
+          },
 
-        // second date
-        {
-          created_at: secondDate.toISOString(),
-          id: '22222222-2222-2222-2222-222222222222',
-          include: ['api:release'],
-          level: 'sync',
-          url: 'https://test.com/hook'
-        }
-      ])
-    )
-    .command(['webhooks', '--app', 'example'])
-    .it('displays webhooks sorted by `created_at`', ctx => {
-      expect(ctx.stderr).to.equal('')
-      expect(ctx.stdout).to.equal(`Webhook ID                           URL                   Include     Level 
+          // second date
+          {
+            created_at: secondDate.toISOString(),
+            id: '22222222-2222-2222-2222-222222222222',
+            include: ['api:release'],
+            level: 'sync',
+            url: 'https://test.com/hook'
+          }
+        ])
+      )
+      .command(['webhooks', '--app', 'example'])
+      .it('displays webhooks sorted by `created_at`', ctx => {
+        expect(ctx.stderr).to.equal('')
+        expect(ctx.stdout).to.equal(`Webhook ID                           URL                   Include     Level 
 00000000-0000-0000-0000-000000000000 https://test.com/hook api:release sync  
 22222222-2222-2222-2222-222222222222 https://test.com/hook api:release sync  
 11111111-1111-1111-1111-111111111111 https://test.com/hook api:release sync  
 `)
-    })
+      })
+  })
 })
