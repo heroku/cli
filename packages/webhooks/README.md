@@ -33,7 +33,8 @@ USAGE
 <!-- commands -->
 * [`heroku webhooks [FILE]`](#heroku-webhooks-file)
 * [`heroku webhooks:add`](#heroku-webhooksadd)
-* [`heroku webhooks:events [FILE]`](#heroku-webhooksevents-file)
+* [`heroku webhooks:events`](#heroku-webhooksevents)
+* [`heroku webhooks:events:info [FILE]`](#heroku-webhookseventsinfo-file)
 * [`heroku webhooks:info [ID]`](#heroku-webhooksinfo-id)
 * [`heroku webhooks:remove [ID]`](#heroku-webhooksremove-id)
 * [`heroku webhooks:update [ID]`](#heroku-webhooksupdate-id)
@@ -79,13 +80,31 @@ EXAMPLE
 
 _See code: [src/commands/webhooks/add.ts](https://github.com/heroku/cli/blob/v0.0.0/src/commands/webhooks/add.ts)_
 
-## `heroku webhooks:events [FILE]`
+## `heroku webhooks:events`
+
+list webhook events on an app
+
+```
+USAGE
+  $ heroku webhooks:events
+
+OPTIONS
+  -a, --app=app        app to run command against
+  -r, --remote=remote  git remote of app to use
+
+EXAMPLE
+  $ heroku webhooks:events
+```
+
+_See code: [src/commands/webhooks/events/index.ts](https://github.com/heroku/cli/blob/v0.0.0/src/commands/webhooks/events/index.ts)_
+
+## `heroku webhooks:events:info [FILE]`
 
 describe the command here
 
 ```
 USAGE
-  $ heroku webhooks:events [FILE]
+  $ heroku webhooks:events:info [FILE]
 
 OPTIONS
   -f, --force
@@ -93,7 +112,7 @@ OPTIONS
   -n, --name=name  name to print
 ```
 
-_See code: [src/commands/webhooks/events/index.ts](https://github.com/heroku/cli/blob/v0.0.0/src/commands/webhooks/events/index.ts)_
+_See code: [src/commands/webhooks/events/info.ts](https://github.com/heroku/cli/blob/v0.0.0/src/commands/webhooks/events/info.ts)_
 
 ## `heroku webhooks:info [ID]`
 
