@@ -33,8 +33,9 @@ USAGE
 <!-- commands -->
 * [`heroku webhooks [FILE]`](#heroku-webhooks-file)
 * [`heroku webhooks:add`](#heroku-webhooksadd)
+* [`heroku webhooks:deliveries [FILE]`](#heroku-webhooksdeliveries-file)
 * [`heroku webhooks:events`](#heroku-webhooksevents)
-* [`heroku webhooks:events:info [FILE]`](#heroku-webhookseventsinfo-file)
+* [`heroku webhooks:events:info [ID]`](#heroku-webhookseventsinfo-id)
 * [`heroku webhooks:info [ID]`](#heroku-webhooksinfo-id)
 * [`heroku webhooks:remove [ID]`](#heroku-webhooksremove-id)
 * [`heroku webhooks:update [ID]`](#heroku-webhooksupdate-id)
@@ -80,6 +81,22 @@ EXAMPLE
 
 _See code: [src/commands/webhooks/add.ts](https://github.com/heroku/cli/blob/v0.0.0/src/commands/webhooks/add.ts)_
 
+## `heroku webhooks:deliveries [FILE]`
+
+describe the command here
+
+```
+USAGE
+  $ heroku webhooks:deliveries [FILE]
+
+OPTIONS
+  -f, --force
+  -h, --help       show CLI help
+  -n, --name=name  name to print
+```
+
+_See code: [src/commands/webhooks/deliveries/index.ts](https://github.com/heroku/cli/blob/v0.0.0/src/commands/webhooks/deliveries/index.ts)_
+
 ## `heroku webhooks:events`
 
 list webhook events on an app
@@ -98,18 +115,20 @@ EXAMPLE
 
 _See code: [src/commands/webhooks/events/index.ts](https://github.com/heroku/cli/blob/v0.0.0/src/commands/webhooks/events/index.ts)_
 
-## `heroku webhooks:events:info [FILE]`
+## `heroku webhooks:events:info [ID]`
 
-describe the command here
+info for a webhook event on an app
 
 ```
 USAGE
-  $ heroku webhooks:events:info [FILE]
+  $ heroku webhooks:events:info [ID]
 
 OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
+  -a, --app=app        app to run command against
+  -r, --remote=remote  git remote of app to use
+
+EXAMPLE
+  $ heroku webhooks:events:info 99999999-9999-9999-9999-999999999999
 ```
 
 _See code: [src/commands/webhooks/events/info.ts](https://github.com/heroku/cli/blob/v0.0.0/src/commands/webhooks/events/info.ts)_
