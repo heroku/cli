@@ -40,7 +40,8 @@
   ],
   "homepage": "https://github.com/heroku/cli/tree/master/packages/webhooks",
   "keywords": [
-    "oclif-plugin"
+    "oclif-plugin",
+    "heroku-plugin"
   ],
   "license": "MIT",
   "oclif": {
