@@ -31,22 +31,23 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`heroku webhooks [FILE]`](#heroku-webhooks-file)
+* [`heroku webhooks`](#heroku-webhooks)
 * [`heroku webhooks:add`](#heroku-webhooksadd)
-* [`heroku webhooks:deliveries [FILE]`](#heroku-webhooksdeliveries-file)
+* [`heroku webhooks:deliveries`](#heroku-webhooksdeliveries)
+* [`heroku webhooks:deliveries:info [FILE]`](#heroku-webhooksdeliveriesinfo-file)
 * [`heroku webhooks:events`](#heroku-webhooksevents)
 * [`heroku webhooks:events:info [ID]`](#heroku-webhookseventsinfo-id)
 * [`heroku webhooks:info [ID]`](#heroku-webhooksinfo-id)
 * [`heroku webhooks:remove [ID]`](#heroku-webhooksremove-id)
 * [`heroku webhooks:update [ID]`](#heroku-webhooksupdate-id)
 
-## `heroku webhooks [FILE]`
+## `heroku webhooks`
 
 list webhooks on an app
 
 ```
 USAGE
-  $ heroku webhooks [FILE]
+  $ heroku webhooks
 
 OPTIONS
   -a, --app=app        app to run command against
@@ -81,13 +82,32 @@ EXAMPLE
 
 _See code: [src/commands/webhooks/add.ts](https://github.com/heroku/cli/blob/v0.0.0/src/commands/webhooks/add.ts)_
 
-## `heroku webhooks:deliveries [FILE]`
+## `heroku webhooks:deliveries`
+
+list webhook deliveries on an app
+
+```
+USAGE
+  $ heroku webhooks:deliveries
+
+OPTIONS
+  -a, --app=app        app to run command against
+  -r, --remote=remote  git remote of app to use
+  -s, --status=status  filter deliveries by status
+
+EXAMPLE
+  $ heroku webhooks:deliveries
+```
+
+_See code: [src/commands/webhooks/deliveries/index.ts](https://github.com/heroku/cli/blob/v0.0.0/src/commands/webhooks/deliveries/index.ts)_
+
+## `heroku webhooks:deliveries:info [FILE]`
 
 describe the command here
 
 ```
 USAGE
-  $ heroku webhooks:deliveries [FILE]
+  $ heroku webhooks:deliveries:info [FILE]
 
 OPTIONS
   -f, --force
@@ -95,7 +115,7 @@ OPTIONS
   -n, --name=name  name to print
 ```
 
-_See code: [src/commands/webhooks/deliveries/index.ts](https://github.com/heroku/cli/blob/v0.0.0/src/commands/webhooks/deliveries/index.ts)_
+_See code: [src/commands/webhooks/deliveries/info.ts](https://github.com/heroku/cli/blob/v0.0.0/src/commands/webhooks/deliveries/info.ts)_
 
 ## `heroku webhooks:events`
 
