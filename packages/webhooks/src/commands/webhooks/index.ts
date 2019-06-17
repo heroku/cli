@@ -20,8 +20,6 @@ export default class Webhooks extends Command {
     })
   }
 
-  static args = [{name: 'file'}]
-
   async run() {
     const {flags} = this.parse(Webhooks)
     let {path, display} = webhookType(flags)
