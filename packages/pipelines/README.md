@@ -1,15 +1,13 @@
-reviewapps
-==========
+=======
+pipelines
+=========
 
 
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
-[![Version](https://img.shields.io/npm/v/reviewapps.svg)](https://npmjs.org/package/reviewapps)
-[![CircleCI](https://circleci.com/gh/jmar910/reviewapps/tree/master.svg?style=shield)](https://circleci.com/gh/jmar910/reviewapps/tree/master)
-[![Appveyor CI](https://ci.appveyor.com/api/projects/status/github/jmar910/reviewapps?branch=master&svg=true)](https://ci.appveyor.com/project/jmar910/reviewapps/branch/master)
-[![Codecov](https://codecov.io/gh/jmar910/reviewapps/branch/master/graph/badge.svg)](https://codecov.io/gh/jmar910/reviewapps)
-[![Downloads/week](https://img.shields.io/npm/dw/reviewapps.svg)](https://npmjs.org/package/reviewapps)
-[![License](https://img.shields.io/npm/l/reviewapps.svg)](https://github.com/jmar910/reviewapps/blob/master/package.json)
+[![Version](https://img.shields.io/npm/v/pipelines.svg)](https://npmjs.org/package/pipelines)
+[![Downloads/week](https://img.shields.io/npm/dw/pipelines.svg)](https://npmjs.org/package/pipelines)
+[![License](https://img.shields.io/npm/l/pipelines.svg)](https://github.com/chadian/pipelines/blob/master/package.json)
 
 <!-- toc -->
 * [Usage](#usage)
@@ -18,14 +16,14 @@ reviewapps
 # Usage
 <!-- usage -->
 ```sh-session
-$ npm install -g @heroku-cli/plugin-pipelines
-$ heroku COMMAND
+$ npm install -g pipelines
+$ oclif-example COMMAND
 running command...
 $ heroku (-v|--version|version)
 @heroku-cli/plugin-pipelines/7.28.0 darwin-x64 node-v10.2.1
 $ heroku --help [COMMAND]
 USAGE
-  $ heroku COMMAND
+  $ oclif-example COMMAND
 ...
 ```
 <!-- usagestop -->
@@ -57,20 +55,20 @@ _See code: [src/commands/reviewapps/disable.ts](https://github.com/heroku/heroku
 
 ## `heroku reviewapps:enable`
 
-enable review apps and/or settings on an existing pipeline
+describe the command here
 
 ```
 USAGE
-  $ heroku reviewapps:enable
+  $ oclif-example hello [FILE]
 
 OPTIONS
-  -a, --app=app            (required) parent app used by review apps
-  -p, --pipeline=pipeline  (required) name of pipeline
-  --autodeploy             autodeploy the review app
-  --autodestroy            autodestroy the review app
+  -f, --force
+  -h, --help       show CLI help
+  -n, --name=name  name to print
 
 EXAMPLE
-  $ heroku reviewapps:enable -p mypipeline -a myapp --autodeploy --autodestroy
+  $ oclif-example hello
+  hello world from ./src/hello.ts!
 ```
 
 _See code: [src/commands/reviewapps/enable.ts](https://github.com/heroku/heroku-cli-plugin-pipelines/blob/v7.28.0/src/commands/reviewapps/enable.ts)_

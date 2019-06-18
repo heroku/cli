@@ -36,9 +36,10 @@
     "/oclif.manifest.json",
     "/yarn.lock"
   ],
-  "homepage": "https://github.com/heroku/heroku-cli-plugin-pipelines",
+  "homepage": "https://github.com/heroku/cli",
   "keywords": [
-    "heroku-plugin"
+    "heroku-plugin",
+    "oclif-plugin"
   ],
   "license": "MIT",
   "oclif": {
