@@ -7,7 +7,7 @@ import {fork as foreman} from '../../fork-foreman'
 export default class Index extends Command {
   // \n splits the description between the title shown in the help
   // and the DESCRIPTION section shown in the help
-  static description = 'run heroku app locally\nStart the application specified by a Procfile (defaults to ./Procfile'
+  static description = 'run heroku app locally\nStart the application specified by a Procfile (defaults to ./Procfile)'
   static aliases = ['local:start']
   static args = [{name: 'processname', required: false}]
 
