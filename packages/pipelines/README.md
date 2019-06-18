@@ -16,7 +16,7 @@ pipelines
 # Usage
 <!-- usage -->
 ```sh-session
-$ npm install -g pipelines
+$ npm install -g @heroku-cli/plugin-pipelines
 $ oclif-example COMMAND
 running command...
 $ heroku (-v|--version|version)
