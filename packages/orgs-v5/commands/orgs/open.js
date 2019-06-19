@@ -5,7 +5,7 @@ let co = require('co')
 const { flags } = require('@heroku-cli/command')
 
 function * run (context, heroku) {
-  let team = context.org || context.team || context.flags.team
+  let team = context.flags.team
   if (!team) throw new Error('No team specified')
   let org = yield heroku.get(`/teams/${team}`)
   yield cli.open(`https://dashboard.heroku.com/teams/${org.name}`)

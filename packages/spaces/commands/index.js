@@ -22,7 +22,7 @@ function displayJSON (spaces) {
 }
 
 function * run (context, heroku) {
-  let team = context.org || context.team || context.flags.team
+  let team = context.flags.team
 
   let spaces = yield heroku.get('/spaces')
   if (team) {

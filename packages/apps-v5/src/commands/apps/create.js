@@ -17,7 +17,7 @@ function createText (name, space) {
 async function createApp (context, heroku, name, stack) {
   let params = {
     name,
-    team: context.org || context.team || context.flags.team,
+    team: context.flags.team,
     region: context.flags.region,
     space: context.flags.space,
     stack,

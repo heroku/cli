@@ -39,7 +39,7 @@ function * run (context, heroku) {
     })
   }
 
-  const teamName = context.org || context.team || context.flags.team
+  const teamName = context.flags.team
   ownerType = teamName ? 'team' : 'user'
 
   // If team or org is not specified, we assign ownership to the user creating

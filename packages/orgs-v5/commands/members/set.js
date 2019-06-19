@@ -8,13 +8,12 @@ const { RoleCompletion } = require('@heroku-cli/command/lib/completions')
 
 function * run (context, heroku) {
   let teamInfo = yield Utils.teamInfo(context, heroku)
-  let groupName = context.org || context.team || context.flags.team
+  let groupName = context.flags.team
   let email = context.args.email
   let role = context.flags.role
 
   yield Utils.addMemberToTeam(email, role, groupName, heroku, 'PATCH')
   yield Utils.warnIfAtTeamMemberLimit(teamInfo, groupName, context, heroku)
-  Utils.warnUsingOrgFlagInTeams(teamInfo, context)
 }
 
 let set = {

@@ -162,6 +162,10 @@ describe('pipelines:setup', function () {
           stubCI({ name: pipeline.name, repo: repo.name, organization: team, ci: true })
         })
 
+        it('is configured for an optional team flag', function () {
+          expect(cmd).to.have.own.property('wantsOrg', true)
+        })
+
         it('creates apps in a team with CI enabled', function * () {
           return cmd.run({ args: {}, flags: { team } }).then(() => { nockDone() })
         })

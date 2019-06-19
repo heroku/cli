@@ -68,17 +68,17 @@ View your new pipeline by running \`heroku pipelines:open e5a55ffa-de3f-11e6-a24
     const kolkrabbi = new KolkrabbiAPI(context.version, heroku.options.token)
     const github = new GitHubAPI(context.version, yield getGitHubToken(kolkrabbi))
 
-    const organization = context.org || context.team || context.flags.team || context.flags.organization
+    const team = context.flags.team
     const { name: pipelineName, repo: repoName } = yield getNameAndRepo(context.args)
     const stagingAppName = pipelineName + Validate.STAGING_APP_INDICATOR
     const repo = yield getRepo(github, repoName)
     const settings = yield getSettings(context.flags.yes, repo.default_branch)
 
-    let ciSettings = yield getCISettings(context.flags.yes, organization)
-    let ownerType = organization ? 'team' : 'user'
+    let ciSettings = yield getCISettings(context.flags.yes, team)
+    let ownerType = team ? 'team' : 'user'
 
     // If team or org is not specified, we assign ownership to the user creating
-    let owner = organization ? yield api.getTeam(heroku, organization) : yield api.getAccountInfo(heroku)
+    let owner = team ? yield api.getTeam(heroku, team) : yield api.getAccountInfo(heroku)
     let ownerID = owner.id
 
     owner = { id: ownerID, type: ownerType }
@@ -94,7 +94,7 @@ View your new pipeline by running \`heroku pipelines:open e5a55ffa-de3f-11e6-a24
     )
 
     const archiveURL = yield kolkrabbi.getArchiveURL(repoName, repo.default_branch)
-    const appSetups = yield createApps(heroku, archiveURL, pipeline, pipelineName, stagingAppName, organization)
+    const appSetups = yield createApps(heroku, archiveURL, pipeline, pipelineName, stagingAppName, team)
 
     yield cli.action(
       `Creating production and staging apps (${cli.color.app(pipelineName)} and ${cli.color.app(stagingAppName)})`,

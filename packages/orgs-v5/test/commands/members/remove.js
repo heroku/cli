@@ -4,11 +4,14 @@
 let cmd = require('../../../commands/members/remove')
 let stubDelete = require('../../stub/delete')
 let stubGet = require('../../stub/get')
-const unwrap = require('../../unwrap')
 
 describe('heroku members:remove', () => {
   beforeEach(() => cli.mockConsole())
   afterEach(() => nock.cleanAll())
+
+  it('is configured for an optional team flag', function () {
+    expect(cmd).to.have.own.property('wantsOrg', true)
+  })
 
   context('from an org', () => {
     beforeEach(() => {
@@ -17,7 +20,7 @@ describe('heroku members:remove', () => {
 
     it('removes a member from an org', () => {
       let apiRemoveMemberFromOrg = stubDelete.memberFromTeam()
-      return cmd.run({ org: 'myteam', args: { email: 'foo@foo.com' } })
+      return cmd.run({ flags: { team: 'myteam' }, args: { email: 'foo@foo.com' } })
         .then(() => expect('').to.eq(cli.stdout))
         .then(() => expect(`Removing foo@foo.com from myteam... done\n`).to.eq(cli.stderr))
         .then(() => apiRemoveMemberFromOrg.done())
@@ -32,18 +35,6 @@ describe('heroku members:remove', () => {
     context('without the feature flag team-invite-acceptance', () => {
       beforeEach(() => {
         stubGet.teamFeatures([])
-      })
-
-      context('using --org instead of --team', () => {
-        it('removes the member, but it shows a warning about the usage of -t instead', () => {
-          let apiRemoveMemberFromOrg = stubDelete.memberFromTeam()
-          return cmd.run({ org: 'myteam', args: { email: 'foo@foo.com' }, flags: {} })
-            .then(() => expect('').to.eq(cli.stdout))
-            .then(() => expect(unwrap(cli.stderr)).to.equal(`Removing foo@foo.com from myteam... done \
-myteam is a Heroku Team Heroku CLI now supports Heroku Teams. Use -t or --team for teams like myteam
-`))
-            .then(() => apiRemoveMemberFromOrg.done())
-        })
       })
 
       it('removes a member from an org', () => {

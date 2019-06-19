@@ -17,6 +17,10 @@ let now = new Date()
 describe('spaces', function () {
   beforeEach(() => cli.mockConsole())
 
+  it('is configured for an optional team flag', function () {
+    expect(cmd).to.have.own.property('wantsOrg', true)
+  })
+
   it('shows spaces', function () {
     let api = nock('https://api.heroku.com:443')
       .get('/spaces')
@@ -49,7 +53,7 @@ my-space  my-team  my-region  enabled  ${now.toISOString()}
         { name: 'my-space', team: { name: 'my-team' }, region: { name: 'my-region' }, state: 'enabled', created_at: now },
         { name: 'other-space', team: { name: 'other-team' }, region: { name: 'my-region' }, state: 'enabled', created_at: now }
       ])
-    return cmd.run({ flags: {}, team: 'my-team' })
+    return cmd.run({ flags: { team: 'my-team' } })
       .then(() => expect(cli.stdout).to.equal(
         `Name      Team     Region     State    Created At
 ────────  ───────  ─────────  ───────  ────────────────────────
@@ -65,7 +69,7 @@ my-space  my-team  my-region  enabled  ${now.toISOString()}
         { name: 'my-space', team: { name: 'my-team' }, region: { name: 'my-region' }, state: 'enabled', created_at: now },
         { name: 'other-space', team: { name: 'other-team' }, region: { name: 'my-region' }, state: 'enabled', created_at: now }
       ])
-    return cmd.run({ flags: {}, org: 'my-team' })
+    return cmd.run({ flags: { team: 'my-team' } })
       .then(() => expect(cli.stdout).to.equal(
         `Name      Team     Region     State    Created At
 ────────  ───────  ─────────  ───────  ────────────────────────
@@ -78,7 +82,7 @@ my-space  my-team  my-region  enabled  ${now.toISOString()}
     nock('https://api.heroku.com:443')
       .get('/spaces')
       .reply(200, [])
-    return chai.assert.isRejected(cmd.run({ flags: {}, team: 'my-team' }), /^No spaces in my-team.$/)
+    return chai.assert.isRejected(cmd.run({ flags: { team: 'my-team' } }), /^No spaces in my-team.$/)
   })
 
   it('shows spaces error message', function () {

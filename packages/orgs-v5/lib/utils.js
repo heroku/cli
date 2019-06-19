@@ -33,15 +33,9 @@ let printGroupsJSON = function (group) {
 }
 
 let teamInfo = function * (context, heroku) {
-  let teamOrOrgName = context.org || context.flags.team
-  if (!teamOrOrgName) error.exit(1, 'No team or org specified.\nRun this command with --team or --org')
-  return yield heroku.get(`/teams/${context.org || context.flags.team}`)
-}
-
-let warnUsingOrgFlagInTeams = function (teamInfo, context) {
-  if ((teamInfo.type === 'team') && (!context.flags.team)) {
-    cli.warn(`${cli.color.cmd(context.org)} is a Heroku Team\nHeroku CLI now supports Heroku Teams.\nUse ${cli.color.cmd('-t')} or ${cli.color.cmd('--team')} for teams like ${cli.color.cmd(context.org)}`)
-  }
+  let teamName = context.flags.team
+  if (!teamName) error.exit(1, 'No team or org specified.\nRun this command with --team')
+  return yield heroku.get(`/teams/${teamName}`)
 }
 
 let addMemberToTeam = function * (email, role, groupName, heroku, method = 'PUT') {
@@ -81,6 +75,5 @@ module.exports = {
   teamInfo,
   printGroups,
   printGroupsJSON,
-  warnIfAtTeamMemberLimit,
-  warnUsingOrgFlagInTeams
+  warnIfAtTeamMemberLimit
 }

@@ -13,7 +13,7 @@ function * run (context, heroku) {
   let spaceType = 'Standard'
   if (context.flags['shield']) { dollarAmount = '$3000'; spaceType = 'Shield' }
   if (!space) throw new Error('Space name required.\nUSAGE: heroku spaces:create --space my-space --team my-team')
-  let team = context.org || context.team || context.flags.team
+  let team = context.flags.team
   if (!team) throw new Error('No team specified')
   let request = heroku.request({
     method: 'POST',

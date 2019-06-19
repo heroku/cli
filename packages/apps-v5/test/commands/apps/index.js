@@ -257,9 +257,13 @@ internal-app [internal/locked] (eu)
   })
 
   describe('with team', function () {
+    it('is configured for an optional team/org flag', function () {
+      expect(apps).to.have.own.property('wantsOrg', true)
+    })
+
     it('displays a message when the team has no apps', function () {
       let mock = stubteamApps('test-team', [])
-      return apps.run({ org: 'test-team', flags: {}, args: {} }).then(function () {
+      return apps.run({ flags: { team: 'test-team' }, args: {} }).then(function () {
         mock.done()
         expect(cli.stderr).to.equal('')
         expect(cli.stdout).to.equal(`There are no apps in team test-team.
@@ -269,7 +273,7 @@ internal-app [internal/locked] (eu)
 
     it('list all in a team', function () {
       let mock = stubteamApps('test-team', [teamApp1, teamApp2])
-      return apps.run({ org: 'test-team', flags: {}, args: {} }).then(function () {
+      return apps.run({ flags: { team: 'test-team' }, args: {} }).then(function () {
         mock.done()
         expect(cli.stderr).to.equal('')
         expect(cli.stdout).to.equal(
@@ -285,7 +289,7 @@ team-app-2
   describe('with team', function () {
     it('displays a message when the team has no apps', function () {
       let mock = stubteamApps('test-team', [])
-      return apps.run({ team: 'test-team', flags: {}, args: {} }).then(function () {
+      return apps.run({ flags: { team: 'test-team' }, args: {} }).then(function () {
         mock.done()
         expect(cli.stderr).to.equal('')
         expect(cli.stdout).to.equal(`There are no apps in team test-team.
@@ -295,7 +299,7 @@ team-app-2
 
     it('list all in an team', function () {
       let mock = stubteamApps('test-team', [teamApp1, teamApp2])
-      return apps.run({ team: 'test-team', flags: {}, args: {} }).then(function () {
+      return apps.run({ flags: { team: 'test-team' }, args: {} }).then(function () {
         mock.done()
         expect(cli.stderr).to.equal('')
         expect(cli.stdout).to.equal(
