@@ -89,8 +89,6 @@ presented here may not reflect license usage or billing for your account.`
   }
 
   private async displayUsageData(url: string, usageType: string, isTeam: boolean) {
-    this.setHttpHeadersForJSON()
-
     try {
       cli.action.start(`Getting daily usage data for ${color.cyan(usageType)}`)
       const {body: usageData} = await this.heroku.get<any[]>(url)
@@ -194,13 +192,6 @@ presented here may not reflect license usage or billing for your account.`
     this.heroku.defaults.headers = {
       ...this.heroku.defaults.headers,
       Accept: 'text/csv; version=3.enterprise-accounts',
-    }
-  }
-
-  private setHttpHeadersForJSON() {
-    this.heroku.defaults.headers = {
-      ...this.heroku.defaults.headers,
-      Accept: 'application/json; version=3.enterprise-accounts',
     }
   }
 }
