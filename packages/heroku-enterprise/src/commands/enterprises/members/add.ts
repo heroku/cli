@@ -9,7 +9,7 @@ export default class Add extends BaseCommand {
   static description = 'add a member to an enterprise account'
 
   static examples = [
-    '$ heroku enterprises:members:add member-name --enterprise-account=account-name --permissions=billing,create,manage,view',
+    '$ heroku enterprises:members:add member-email --enterprise-account=account-name --permissions=billing,create,manage,view',
   ]
 
   static aliases = ['enterprises:members-add']
@@ -24,6 +24,9 @@ export default class Add extends BaseCommand {
       char: 'e',
       description: 'enterprise account name',
       required: true
+    }),
+    help: flags.help({
+      char: 'h'
     }),
     permissions: flags.string({
       char: 'p',
