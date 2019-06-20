@@ -25,9 +25,6 @@ export default class Add extends BaseCommand {
       description: 'enterprise account name',
       required: true
     }),
-    help: flags.help({
-      char: 'h'
-    }),
     permissions: flags.string({
       char: 'p',
       description: 'permissions to grant the member (comma-separated)',
