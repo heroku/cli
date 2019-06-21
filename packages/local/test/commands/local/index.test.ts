@@ -1,9 +1,8 @@
-/// <reference types="../../../typings/foreman/lib/procfile" />
-
-import { expect, test } from '@oclif/test'
-import * as procfile from 'foreman/lib/procfile'
+import {expect, test} from '@oclif/test'
 
 import * as foreman from '../../../src/fork-foreman'
+
+const procfile = require('../../../src/load-foreman-procfile')
 
 describe('local', () => {
   let loadProcMock = () => ({
