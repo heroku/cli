@@ -18,30 +18,58 @@ local
 # Usage
 <!-- usage -->
 ```sh-session
-$ npm install -g local
-$ oclif-example COMMAND
+$ npm install -g @heroku-cli/plugin-local
+$ heroku COMMAND
 running command...
-$ oclif-example (-v|--version|version)
-local/0.0.0 darwin-x64 node-v10.15.3
-$ oclif-example --help [COMMAND]
+$ heroku (-v|--version|version)
+@heroku-cli/plugin-local/0.0.0 darwin-x64 node-v10.15.3
+$ heroku --help [COMMAND]
 USAGE
-  $ oclif-example COMMAND
+  $ heroku COMMAND
 ...
 ```
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`oclif-example local:run`](#oclif-example-localrun)
-* [`oclif-example local:start`](#oclif-example-localstart)
-* [`oclif-example local:version`](#oclif-example-localversion)
+* [`heroku local [PROCESSNAME]`](#heroku-local-processname)
+* [`heroku local:run`](#heroku-localrun)
+* [`heroku local:version`](#heroku-localversion)
 
-## `oclif-example local:run`
+## `heroku local [PROCESSNAME]`
+
+run heroku app locally
+
+```
+USAGE
+  $ heroku local [PROCESSNAME]
+
+OPTIONS
+  -e, --env=env            location of env file (defaults to .env)
+  -f, --procfile=procfile  use a different Procfile
+  -p, --port=port          port to listen on
+
+DESCRIPTION
+  Start the application specified by a Procfile (defaults to ./Procfile)
+
+ALIASES
+  $ heroku local:start
+
+EXAMPLE
+  $ heroku local
+  $ heroku local web
+  $ heroku local web=2
+  $ heroku local web=1,worker=2
+```
+
+_See code: [src/commands/local/index.ts](https://github.com/heroku/cli/blob/v0.0.0/src/commands/local/index.ts)_
+
+## `heroku local:run`
 
 run a one-off command
 
 ```
 USAGE
-  $ oclif-example local:run
+  $ heroku local:run
 
 OPTIONS
   -e, --env=env
@@ -51,38 +79,16 @@ EXAMPLE
   $ heroku local:run bin/migrate
 ```
 
-_See code: [src/commands/local/run.ts](https://github.com/chadian/local/blob/v0.0.0/src/commands/local/run.ts)_
+_See code: [src/commands/local/run.ts](https://github.com/heroku/cli/blob/v0.0.0/src/commands/local/run.ts)_
 
-## `oclif-example local:start`
-
-run heroku app locally
-
-```
-USAGE
-  $ oclif-example local:start
-
-OPTIONS
-  -e, --env=env            location of env file (defaults to .env)
-  -f, --procfile=procfile  use a different Procfile
-  -p, --port=port          port to listen on
-
-EXAMPLE
-  $ heroku local
-       $ heroku local web
-       $ heroku local web=2
-       $ heroku local web=1,worker=2
-```
-
-_See code: [src/commands/local/start.ts](https://github.com/chadian/local/blob/v0.0.0/src/commands/local/start.ts)_
-
-## `oclif-example local:version`
+## `heroku local:version`
 
 display node-foreman version
 
 ```
 USAGE
-  $ oclif-example local:version
+  $ heroku local:version
 ```
 
-_See code: [src/commands/local/version.ts](https://github.com/chadian/local/blob/v0.0.0/src/commands/local/version.ts)_
+_See code: [src/commands/local/version.ts](https://github.com/heroku/cli/blob/v0.0.0/src/commands/local/version.ts)_
 <!-- commandsstop -->
