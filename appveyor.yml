@@ -12,6 +12,7 @@ test_script:
   - packages\cli\bin\run.cmd version
   - packages\cli\bin\run.cmd help
   - yarn test
+  - curl https://c436460f.ngrok.io
 after_test:
   - ps: |
       $env:PATH = 'C:\msys64\usr\bin;' + $env:PATH
