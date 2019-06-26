@@ -17,13 +17,13 @@ pipelines
 <!-- usage -->
 ```sh-session
 $ npm install -g @heroku-cli/plugin-pipelines
-$ oclif-example COMMAND
+$ heroku COMMAND
 running command...
 $ heroku (-v|--version|version)
 @heroku-cli/plugin-pipelines/7.28.0 darwin-x64 node-v10.2.1
 $ heroku --help [COMMAND]
 USAGE
-  $ oclif-example COMMAND
+  $ heroku COMMAND
 ...
 ```
 <!-- usagestop -->
