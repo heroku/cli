@@ -1,7 +1,7 @@
 import {FileCompletion} from '@heroku-cli/command/lib/completions'
 import {Command, flags} from '@oclif/command'
 
-const Procfile: any = require('../../../src/load-foreman-procfile')
+const Procfile: any = require('../../load-foreman-procfile')
 
 import {fork as foreman} from '../../fork-foreman'
 
