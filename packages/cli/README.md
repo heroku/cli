@@ -56,7 +56,7 @@ For other issues, [submit a support ticket](https://help.heroku.com/).
 * [`heroku help`](docs/help.md) - display help for heroku
 * [`heroku keys`](docs/keys.md) - add/remove account ssh keys
 * [`heroku labs`](docs/labs.md) - add/remove experimental features
-* [`heroku local`](docs/local.md) - run heroku app locally
+* [`heroku local`](docs/local.md) - run Heroku app locally
 * [`heroku logs`](docs/logs.md) - display recent log output
 * [`heroku maintenance`](docs/maintenance.md) - enable/disable access to app
 * [`heroku members`](docs/members.md) - manage organization members

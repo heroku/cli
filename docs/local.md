@@ -1,7 +1,7 @@
 `heroku local`
 ==============
 
-run heroku app locally
+run Heroku app locally
 
 * [`heroku local [PROCESSNAME]`](#heroku-local-processname)
 * [`heroku local:run`](#heroku-localrun)
@@ -26,12 +26,14 @@ DESCRIPTION
 ALIASES
   $ heroku local:start
 
-EXAMPLES
+EXAMPLE
   $ heroku local
   $ heroku local web
   $ heroku local web=2
   $ heroku local web=1,worker=2
 ```
+
+_See code: [@heroku-cli/plugin-local](https://github.com/heroku/cli/blob/v7.26.0/src/commands/local/index.ts)_
 
 ## `heroku local:run`
 
@@ -45,11 +47,11 @@ OPTIONS
   -e, --env=env
   -p, --port=port
 
-EXAMPLES
+EXAMPLE
   $ heroku local:run bin/migrate
 ```
 
-_See code: [@heroku-cli/plugin-local-v5](https://github.com/heroku/cli/blob/v7.24.0/packages/local-v5/lib/commands/local/run.js)_
+_See code: [@heroku-cli/plugin-local](https://github.com/heroku/cli/blob/v7.26.0/src/commands/local/run.ts)_
 
 ## `heroku local:version`
 
@@ -60,4 +62,4 @@ USAGE
   $ heroku local:version
 ```
 
-_See code: [@heroku-cli/plugin-local-v5](https://github.com/heroku/cli/blob/v7.24.0/packages/local-v5/lib/commands/local/version.js)_
+_See code: [@heroku-cli/plugin-local](https://github.com/heroku/cli/blob/v7.26.0/src/commands/local/version.ts)_

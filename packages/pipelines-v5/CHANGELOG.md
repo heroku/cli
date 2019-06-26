@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.26.0](https://github.com/heroku/cli/compare/v7.25.0...v7.26.0) (2019-06-26)
+
+
+### Bug Fixes
+
+* team flag prioritized over org flag ([#1250](https://github.com/heroku/cli/issues/1250)) ([9eda2e6](https://github.com/heroku/cli/commit/9eda2e6))
+
+
+
+
+
 # [7.24.0](https://github.com/heroku/cli/compare/v7.23.0...v7.24.0) (2019-04-25)
 
 **Note:** Version bump only for package @heroku-cli/plugin-pipelines-v5
