@@ -84,7 +84,7 @@ describe('pipelines:setup', () => {
             repo: repo.name,
             ci: true
           }))
-          .stub(Open, 'default', () => ({open: () => Promise.resolve()}))
+          .stub(Open, 'default', () => Promise.resolve())
           .command(['pipelines:setup'])
           .it('creates apps in the personal account with CI enabled')
 
@@ -109,7 +109,7 @@ describe('pipelines:setup', () => {
             repo: repo.name,
             ci: true
           }))
-          .stub(Open, 'default', () => ({open: () => Promise.resolve()}))
+          .stub(Open, 'default', () => Promise.resolve())
           .command(['pipelines:setup', pipeline.name.toUpperCase()])
           .it('downcases capitalised pipeline names')
 
@@ -136,7 +136,7 @@ describe('pipelines:setup', () => {
 
             return Promise.resolve({})
           })
-          .stub(Open, 'default', () => ({open: () => Promise.resolve()}))
+          .stub(Open, 'default', () => Promise.resolve())
           .command(['pipelines:setup', '--yes', pipeline.name, repo.name])
           .it('does not prompt for options with the -y flag')
       })
@@ -184,7 +184,7 @@ describe('pipelines:setup', () => {
             repo: repo.name,
             ci: true
           }))
-          .stub(Open, 'default', () => ({open: () => Promise.resolve()}))
+          .stub(Open, 'default', () => Promise.resolve())
           .command(['pipelines:setup', '--team', team])
           .it('creates apps in a team with CI enabled')
       })
