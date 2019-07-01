@@ -11,7 +11,8 @@ export default async function disambiguate(heroku: APIClient, pipelineIDOrName: 
   let pipeline
 
   if (isUUID(pipelineIDOrName)) {
-    pipeline = await getPipeline(heroku, pipelineIDOrName)
+    const result = (await getPipeline(heroku, pipelineIDOrName))
+    pipeline = result.body
   } else {
     let {body: pipelines} = await findPipelineByName(heroku, pipelineIDOrName)
 
