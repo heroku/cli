@@ -20,9 +20,9 @@ describe('pipelines:connect', function () {
     github.done()
   })
 
-  it('errors if the user is not linked to GitHub', function * () {
+  it('errors if the user is not linked to GitHub', async function () {
     try {
-      yield cmd.run({
+      await cmd.run({
         args: {},
         flags: {}
       })

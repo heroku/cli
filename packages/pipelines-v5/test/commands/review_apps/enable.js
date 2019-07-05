@@ -39,7 +39,7 @@ describe('reviewapps:enable', function () {
     nock.cleanAll()
   })
 
-  it('it succeeds with defaults', function * () {
+  it('it succeeds with defaults', function () {
     return cmd.run({
       flags: {
         pipeline: pipeline.name,
@@ -50,7 +50,7 @@ describe('reviewapps:enable', function () {
     })
   })
 
-  it('it succeeds with autodeploy', function * () {
+  it('it succeeds with autodeploy', function () {
     return cmd.run({
       flags: {
         pipeline: pipeline.name,
@@ -63,7 +63,7 @@ describe('reviewapps:enable', function () {
     })
   })
 
-  it('it succeeds with autodestroy', function * () {
+  it('it succeeds with autodestroy', function () {
     return cmd.run({
       flags: {
         pipeline: pipeline.name,
@@ -76,7 +76,7 @@ describe('reviewapps:enable', function () {
     })
   })
 
-  it('it succeeds with autodeploy and autodestroy', function * () {
+  it('it succeeds with autodeploy and autodestroy', function () {
     return cmd.run({
       flags: {
         pipeline: pipeline.name,
