@@ -18,7 +18,7 @@ describe('pipelines:setup', function () {
     cli.open.restore()
   })
 
-  it('this test should fail', function * () {
+  it('this test should fail', function () {
     expect(true).to.be.false()
   })
 
