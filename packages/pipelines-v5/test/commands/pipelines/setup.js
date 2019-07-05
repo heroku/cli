@@ -18,6 +18,10 @@ describe('pipelines:setup', function () {
     cli.open.restore()
   })
 
+  it('this test should fail', function * () {
+    expect(true).to.be.false()
+  })
+
   it('errors if the user is not linked to GitHub', async () => {
     try {
       await cmd.run({ args: {}, flags: {} })
