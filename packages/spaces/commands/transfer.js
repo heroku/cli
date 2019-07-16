@@ -11,7 +11,11 @@ function * run (context, heroku) {
     path: `/spaces/${space}/transfer`,
     body: { 'new_owner': team }
   })
-  yield cli.action(`Transferring Space ${space} to Team ${cli.color.green(team)}`, request)
+  try {
+    yield cli.action(`Transferring Space ${cli.color.yellow(space)} to Team ${cli.color.green(team)}`, request)
+  } catch (err) {
+    cli.error(err.body.message)
+  }
 }
 
 module.exports = {
