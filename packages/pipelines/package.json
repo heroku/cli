@@ -2,7 +2,7 @@
   "name": "@heroku-cli/plugin-pipelines",
   "version": "0.0.0",
   "author": "James Martinez @jmar910",
-  "bugs": "https://github.com/jmar910/reviewapps/issues",
+  "bugs": "https://github.com/heroku/heroku-cli-plugin-pipelines/issues",
   "dependencies": {
     "@heroku-cli/command": "^8.2.12",
     "@heroku-cli/schema": "^1.0.25",
