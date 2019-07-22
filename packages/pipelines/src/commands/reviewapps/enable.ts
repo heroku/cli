@@ -10,14 +10,14 @@ export default class ReviewappsEnable extends Command {
   ]
 
   static flags = {
-    app: flags.string({ char: 'a', description: 'parent app used by review apps' }),
-    pipeline: flags.string({ char: 'p', description: 'name of pipeline' }),
-    autodeploy: flags.boolean({ description: 'autodeploy the review app', required: false }),
-    autodestroy: flags.boolean({ description: 'autodestroy the review app', required: false }),
+    app: flags.string({char: 'a', description: 'parent app used by review apps'}),
+    pipeline: flags.string({char: 'p', description: 'name of pipeline'}),
+    autodeploy: flags.boolean({description: 'autodeploy the review app', required: false}),
+    autodestroy: flags.boolean({description: 'autodestroy the review app', required: false}),
   }
 
   async run() {
-    const {args, flags} = this.parse(ReviewappsEnable)
+    const {flags} = this.parse(ReviewappsEnable)
 
     const settings = {
       pull_requests: {
@@ -38,7 +38,7 @@ export default class ReviewappsEnable extends Command {
     }
     this.cli.action.start('Configuring pipeline')
 
-    let { body: app } = await this.heroku.get<Heroku.App>(`/apps/${flags.app}`)
+    let {body: app} = await this.heroku.get<Heroku.App>(`/apps/${flags.app}`)
 
     await this.heroku.patch(`/apps/${app.id}/github`, {
       hostname: 'kolkrabbi.heroku.com',
