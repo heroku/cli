@@ -10,8 +10,8 @@ export default class ReviewappsEnable extends Command {
   ]
 
   static flags = {
-    app: flags.string({char: 'a', description: 'parent app used by review apps'}),
-    pipeline: flags.string({char: 'p', description: 'name of pipeline'}),
+    app: flags.string({char: 'a', description: 'parent app used by review apps', required: true}),
+    pipeline: flags.string({char: 'p', description: 'name of pipeline', required: true}),
     autodeploy: flags.boolean({description: 'autodeploy the review app'}),
     autodestroy: flags.boolean({description: 'autodestroy the review app'}),
   }
