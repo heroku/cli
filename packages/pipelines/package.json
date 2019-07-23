@@ -2,12 +2,13 @@
   "name": "@heroku-cli/plugin-pipelines",
   "version": "0.0.0",
   "author": "James Martinez @jmar910",
-  "bugs": "https://github.com/jmar910/reviewapps/issues",
+  "bugs": "https://github.com/heroku/heroku-cli-plugin-pipelines/issues",
   "dependencies": {
     "@heroku-cli/command": "^8.2.12",
     "@heroku-cli/schema": "^1.0.25",
     "@oclif/command": "^1",
-    "@oclif/config": "^1"
+    "@oclif/config": "^1",
+    "cli-ux": "^5.3.1"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1",
@@ -32,23 +33,22 @@
   },
   "files": [
     "/lib",
-    "/npm-shrinkwrap.json",
     "/oclif.manifest.json",
     "/yarn.lock"
   ],
-  "homepage": "https://github.com/jmar910/reviewapps",
+  "homepage": "https://github.com/heroku/heroku-cli-plugin-pipelines",
   "keywords": [
-    "oclif-plugin"
+    "heroku-plugin"
   ],
   "license": "MIT",
   "oclif": {
     "commands": "./lib/commands",
-    "bin": "oclif-example",
+    "bin": "heroku",
     "devPlugins": [
       "@oclif/plugin-help"
     ]
   },
-  "repository": "jmar910/reviewapps",
+  "repository": "heroku/heroku-cli-plugin-pipelines",
   "scripts": {
     "postpack": "rm -f oclif.manifest.json",
     "posttest": "tslint -p test -t stylish",
