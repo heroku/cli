@@ -281,6 +281,21 @@
     netrc-parser "^3.1.6"
     open "^6.2.0"
 
+"@heroku-cli/command@^8.2.12":
+  version "8.2.12"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.2.12.tgz#5d9d79245b82df543d8e8e5b8066388b1b32ecc1"
+  integrity sha512-EpBwa7Hb4egCZDRerwLNJQeYFAPVwOT+5z6oiyXwn+A+QwsfkUyN+c2+yEyHGduXcPN0722Hi8FNIVLC5KEQnw==
+  dependencies:
+    "@heroku-cli/color" "^1.1.14"
+    "@oclif/errors" "^1.2.2"
+    cli-ux "^4.9.3"
+    debug "^4.1.1"
+    fs-extra "^7.0.1"
+    heroku-client "^3.0.7"
+    http-call "^5.2.4"
+    netrc-parser "^3.1.6"
+    open "^6.2.0"
+
 "@heroku-cli/notifications@^1.2.2":
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/@heroku-cli/notifications/-/notifications-1.2.2.tgz#46e2a8c0b678b83d46d9347dccbf3f5c31744e80"
@@ -2562,6 +2577,36 @@ cli-ux@^5.2.0, cli-ux@^5.2.1:
   version "5.2.1"
   resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-5.2.1.tgz#6e677c90d18ed3efd84745da46221c7d1b1fada5"
   integrity sha512-zG1012o7U4ZsCuIST1t2yrHPADv16J81RAGYjY9X1yABEFK40oyjRchD5ffVZaG44BjizmLvu677zbVIypRuxw==
+  dependencies:
+    "@oclif/command" "^1.5.1"
+    "@oclif/errors" "^1.2.1"
+    "@oclif/linewrap" "^1.0.0"
+    "@oclif/screen" "^1.0.3"
+    ansi-escapes "^3.1.0"
+    ansi-styles "^3.2.1"
+    cardinal "^2.1.1"
+    chalk "^2.4.1"
+    clean-stack "^2.0.0"
+    extract-stack "^1.0.0"
+    fs-extra "^7.0.1"
+    hyperlinker "^1.0.0"
+    indent-string "^3.2.0"
+    is-wsl "^1.1.0"
+    lodash "^4.17.11"
+    natural-orderby "^2.0.1"
+    password-prompt "^1.1.2"
+    semver "^5.6.0"
+    string-width "^3.1.0"
+    strip-ansi "^5.1.0"
+    supports-color "^5.5.0"
+    supports-hyperlinks "^1.0.1"
+    treeify "^1.1.0"
+    tslib "^1.9.3"
+
+cli-ux@^5.3.1:
+  version "5.3.1"
+  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-5.3.1.tgz#3bed8b37c44b03a5d1b9d71d39a69a919a101835"
+  integrity sha512-l2MXbitx0FjtHKSbHytuxfxWv6MdWBRh23ItRJjU17cjj0dqZxfAL863tzbR1FIs7jccPllPUvn3QWK6BQg3Pg==
   dependencies:
     "@oclif/command" "^1.5.1"
     "@oclif/errors" "^1.2.1"
