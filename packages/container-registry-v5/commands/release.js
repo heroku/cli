@@ -103,12 +103,12 @@ let release = async function (context, heroku) {
 
     let finishedReleaseStatus = 'pending'
 
-    while (finishedReleaseStatus == 'pending') {
+    while (finishedReleaseStatus === 'pending') {
       finishedReleaseStatus = await heroku.request({
         path: `/apps/${context.app}/releases/${release.id}`
-      }).then(release => finishedReleaseStatus = release.status)
+      }).then(release => { finishedReleaseStatus = release.status })
 
-      if (finishedReleaseStatus == 'pending') { await wait(500) }
+      if (finishedReleaseStatus === 'pending') { await wait(500) }
     }
 
     if (finishedReleaseStatus === 'failed') {
