@@ -95,23 +95,23 @@ let release = async function (context, heroku) {
     return
   }
 
-  if (release.status === 'failed') {
+  let releaseStatus = release.status
+
+  if (releaseStatus === 'failed') {
     cli.exit(1, 'Error: release command failed')
-  } else if ((release.status === 'pending') && release.output_stream_url) {
+  } else if ((releaseStatus === 'pending') && release.output_stream_url) {
     cli.log('Running release command...')
     await streamer(release.output_stream_url, process.stdout)
 
-    let finishedReleaseStatus = 'pending'
-
-    while (finishedReleaseStatus === 'pending') {
-      finishedReleaseStatus = await heroku.request({
+    while (releaseStatus === 'pending') {
+      releaseStatus = await heroku.request({
         path: `/apps/${context.app}/releases/${release.id}`
-      }).then(release => { finishedReleaseStatus = release.status })
+      }).then(release => release.status)
 
-      if (finishedReleaseStatus === 'pending') { await wait(500) }
+      if (releaseStatus === 'pending') { await wait(200) }
     }
 
-    if (finishedReleaseStatus === 'failed') {
+    if (releaseStatus === 'failed') {
       cli.exit(1, 'Error: release command failed')
     }
   }
