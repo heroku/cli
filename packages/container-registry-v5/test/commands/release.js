@@ -246,6 +246,43 @@ describe('container release', () => {
       .catch(() => stdMocks.restore())
   })
 
+  it('releases with previous release and pending then still pending then successful release phase', () => {
+    stdMocks.use()
+    let busl = nock('https://busl.test:443')
+      .get('/streams/release.log')
+      .reply(200, 'Release Output Content')
+    let api = nock('https://api.heroku.com:443')
+      .get('/apps/testapp')
+      .reply(200, { name: 'testapp' })
+      .patch('/apps/testapp/formation', {
+        updates: [
+          { type: 'web', docker_image: 'image_id' }
+        ]
+      })
+      .reply(200, {})
+      .get('/apps/testapp/releases')
+      .reply(200, [{ id: 'old_release_id', status: 'failed' }])
+      .get('/apps/testapp/releases')
+      .reply(200, [{ id: 'release_id', output_stream_url: 'https://busl.test/streams/release.log', status: 'pending' }])
+      .get('/apps/testapp/releases/release_id')
+      .reply(200, [{ status: 'pending' }])
+      .get('/apps/testapp/releases/release_id')
+      .reply(200, [{ status: 'succeeded' }])
+    let registry = nock('https://registry.heroku.com:443')
+      .get('/v2/testapp/web/manifests/latest')
+      .reply(200, { schemaVersion: 2, config: { digest: 'image_id' } })
+
+    return cmd.run({ app: 'testapp', args: ['web'], flags: {} })
+      .then(() => expect(stdMocks.flush().stdout.join('')).to.equal('Release Output Content'))
+      .then(() => expect(cli.stderr, 'to contain', 'Runnning release command...'))
+      .then(() => expect(cli.stdout, 'to be empty'))
+      .then(() => api.done())
+      .then(() => registry.done())
+      .then(() => busl.done())
+      .then(() => stdMocks.restore())
+      .catch(() => stdMocks.restore())
+  })
+
   it('releases with previous release and immediately failed release phase', () => {
     sandbox.stub(process, 'exit')
 
@@ -299,6 +336,47 @@ describe('container release', () => {
       .reply(200, [{ id: 'old_release_id', status: 'succeeded' }])
       .get('/apps/testapp/releases')
       .reply(200, [{ id: 'release_id', output_stream_url: 'https://busl.test/streams/release.log', status: 'pending' }])
+      .get('/apps/testapp/releases/release_id')
+      .reply(200, [{ status: 'failed' }])
+    let registry = nock('https://registry.heroku.com:443')
+      .get('/v2/testapp/web/manifests/latest')
+      .reply(200, { schemaVersion: 2, config: { digest: 'image_id' } })
+
+    return cmd.run({ app: 'testapp', args: ['web'], flags: {} })
+      .then(() => expect(stdMocks.flush().stdout.join('')).to.equal('Release Output Content'))
+      .then(() => expect(cli.stderr, 'to contain', 'Runnning release command...'))
+      .then(() => expect(cli.stderr, 'to contain', 'Error: release command failed'))
+      .then(() => expect(cli.stdout, 'to be empty'))
+      .then(() => expect(process.exit.calledWith(1), 'to equal', true))
+      .then(() => api.done())
+      .then(() => registry.done())
+      .then(() => busl.done())
+      .then(() => stdMocks.restore())
+      .catch(() => stdMocks.restore())
+  })
+
+  it('releases with previous release and pending then still pending then failed release phase', () => {
+    sandbox.stub(process, 'exit')
+
+    stdMocks.use()
+    let busl = nock('https://busl.test:443')
+      .get('/streams/release.log')
+      .reply(200, 'Release Output Content')
+    let api = nock('https://api.heroku.com:443')
+      .get('/apps/testapp')
+      .reply(200, { name: 'testapp' })
+      .patch('/apps/testapp/formation', {
+        updates: [
+          { type: 'web', docker_image: 'image_id' }
+        ]
+      })
+      .reply(200, {})
+      .get('/apps/testapp/releases')
+      .reply(200, [{ id: 'old_release_id', status: 'succeeded' }])
+      .get('/apps/testapp/releases')
+      .reply(200, [{ id: 'release_id', output_stream_url: 'https://busl.test/streams/release.log', status: 'pending' }])
+      .get('/apps/testapp/releases/release_id')
+      .reply(200, [{ status: 'pending' }])
       .get('/apps/testapp/releases/release_id')
       .reply(200, [{ status: 'failed' }])
     let registry = nock('https://registry.heroku.com:443')
@@ -380,6 +458,43 @@ describe('container release', () => {
       .catch(() => stdMocks.restore())
   })
 
+  it('releases with no previous release and pending then still pending then successful release phase', () => {
+    stdMocks.use()
+    let busl = nock('https://busl.test:443')
+      .get('/streams/release.log')
+      .reply(200, 'Release Output Content')
+    let api = nock('https://api.heroku.com:443')
+      .get('/apps/testapp')
+      .reply(200, { name: 'testapp' })
+      .patch('/apps/testapp/formation', {
+        updates: [
+          { type: 'web', docker_image: 'image_id' }
+        ]
+      })
+      .reply(200, {})
+      .get('/apps/testapp/releases')
+      .reply(200, [])
+      .get('/apps/testapp/releases')
+      .reply(200, [{ id: 'release_id', output_stream_url: 'https://busl.test/streams/release.log', status: 'pending' }])
+      .get('/apps/testapp/releases/release_id')
+      .reply(200, [{ status: 'pending' }])
+      .get('/apps/testapp/releases/release_id')
+      .reply(200, [{ status: 'succeeded' }])
+    let registry = nock('https://registry.heroku.com:443')
+      .get('/v2/testapp/web/manifests/latest')
+      .reply(200, { schemaVersion: 2, config: { digest: 'image_id' } })
+
+    return cmd.run({ app: 'testapp', args: ['web'], flags: {} })
+      .then(() => expect(stdMocks.flush().stdout.join('')).to.equal('Release Output Content'))
+      .then(() => expect(cli.stderr, 'to contain', 'Runnning release command...'))
+      .then(() => expect(cli.stdout, 'to be empty'))
+      .then(() => api.done())
+      .then(() => registry.done())
+      .then(() => busl.done())
+      .then(() => stdMocks.restore())
+      .catch(() => stdMocks.restore())
+  })
+
   it('releases with no previous release and immediately failed release phase', () => {
     sandbox.stub(process, 'exit')
 
@@ -433,6 +548,47 @@ describe('container release', () => {
       .reply(200, [])
       .get('/apps/testapp/releases')
       .reply(200, [{ id: 'release_id', output_stream_url: 'https://busl.test/streams/release.log', status: 'pending' }])
+      .get('/apps/testapp/releases/release_id')
+      .reply(200, [{ status: 'failed' }])
+    let registry = nock('https://registry.heroku.com:443')
+      .get('/v2/testapp/web/manifests/latest')
+      .reply(200, { schemaVersion: 2, config: { digest: 'image_id' } })
+
+    return cmd.run({ app: 'testapp', args: ['web'], flags: {} })
+      .then(() => expect(stdMocks.flush().stdout.join('')).to.equal('Release Output Content'))
+      .then(() => expect(cli.stderr, 'to contain', 'Runnning release command...'))
+      .then(() => expect(cli.stderr, 'to contain', 'Error: release command failed'))
+      .then(() => expect(cli.stdout, 'to be empty'))
+      .then(() => expect(process.exit.calledWith(1), 'to equal', true))
+      .then(() => api.done())
+      .then(() => registry.done())
+      .then(() => busl.done())
+      .then(() => stdMocks.restore())
+      .catch(() => stdMocks.restore())
+  })
+
+  it('releases with no previous release and pending then still pending then failed release phase', () => {
+    sandbox.stub(process, 'exit')
+
+    stdMocks.use()
+    let busl = nock('https://busl.test:443')
+      .get('/streams/release.log')
+      .reply(200, 'Release Output Content')
+    let api = nock('https://api.heroku.com:443')
+      .get('/apps/testapp')
+      .reply(200, { name: 'testapp' })
+      .patch('/apps/testapp/formation', {
+        updates: [
+          { type: 'web', docker_image: 'image_id' }
+        ]
+      })
+      .reply(200, {})
+      .get('/apps/testapp/releases')
+      .reply(200, [])
+      .get('/apps/testapp/releases')
+      .reply(200, [{ id: 'release_id', output_stream_url: 'https://busl.test/streams/release.log', status: 'pending' }])
+      .get('/apps/testapp/releases/release_id')
+      .reply(200, [{ status: 'pending' }])
       .get('/apps/testapp/releases/release_id')
       .reply(200, [{ status: 'failed' }])
     let registry = nock('https://registry.heroku.com:443')
