@@ -1,10 +1,10 @@
 'use strict'
 /* globals describe beforeEach it */
 
-let nock = require('nock')
-let cmd = require('../../commands/transfer')
-let expect = require('chai').expect
-let cli = require('heroku-cli-util')
+const nock = require('nock')
+const cmd = require('../../commands/transfer')
+const expect = require('chai').expect
+const cli = require('heroku-cli-util')
 
 describe('spaces:transfer', function () {
   beforeEach(() => cli.mockConsole())
@@ -12,8 +12,7 @@ describe('spaces:transfer', function () {
   it('yields success when the API succeeds', function () {
     const space = 'dimension-c137'
     const team = 'jerry'
-
-    let api = nock('https://api.heroku.com:443')
+    const api = nock('https://api.heroku.com:443')
       .post(`/spaces/${space}/transfer`, {
         'new_owner': team
       })
@@ -43,7 +42,7 @@ describe('spaces:transfer', function () {
     const message = 'rikki tikki tavi!'
     const id = 'oops'
 
-    let api = nock('https://api.heroku.com:443')
+    const api = nock('https://api.heroku.com:443')
       .post(`/spaces/${space}/transfer`, { 'new_owner': team })
       .reply(500, { id, message })
 

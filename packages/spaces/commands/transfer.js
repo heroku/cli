@@ -1,12 +1,12 @@
 'use strict'
 
-let cli = require('heroku-cli-util')
-let co = require('co')
+const cli = require('heroku-cli-util')
+const co = require('co')
 
 function * run (context, heroku) {
-  let space = context.flags.space
-  let team = context.flags.team
-  let request = heroku.request({
+  const space = context.flags.space
+  const team = context.flags.team
+  const request = heroku.request({
     method: 'POST',
     path: `/spaces/${space}/transfer`,
     body: { 'new_owner': team }
