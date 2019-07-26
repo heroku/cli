@@ -32,7 +32,7 @@ describe('spaces:transfer', function () {
         }
       )
     return cmd.run({ flags: { team, space } })
-      .then(() => expect(cli.stdout).to.equal(``))
+      .then(() => expect(cli.stderr).to.contain('done'))
       .then(() => api.done())
   })
 
