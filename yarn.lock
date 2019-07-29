@@ -252,9 +252,9 @@
     opn "^5.4.0"
 
 "@heroku-cli/command@^8.2.10", "@heroku-cli/command@^8.2.11", "@heroku-cli/command@^8.2.12":
-  version "8.2.12"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.2.12.tgz#5d9d79245b82df543d8e8e5b8066388b1b32ecc1"
-  integrity sha512-EpBwa7Hb4egCZDRerwLNJQeYFAPVwOT+5z6oiyXwn+A+QwsfkUyN+c2+yEyHGduXcPN0722Hi8FNIVLC5KEQnw==
+  version "8.2.13"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.2.13.tgz#8d6ac394b0c39be253692df82e4896678165cc37"
+  integrity sha512-2L/0LFsF9jknRhnkz4Xjd/gAmcf3f2TB8Yke7kdOUj5O2s8YUCz7dwmrgu8CYbrhfrrHiBpLskdrOlKP3BXcUg==
   dependencies:
     "@heroku-cli/color" "^1.1.14"
     "@oclif/errors" "^1.2.2"
@@ -4681,10 +4681,22 @@ http-call@5.2.3, http-call@^5.2.2:
     is-stream "^1.1.0"
     tunnel-agent "^0.6.0"
 
-http-call@^5.1.2, http-call@^5.2.3, http-call@^5.2.4:
+http-call@^5.1.2, http-call@^5.2.3:
   version "5.2.4"
   resolved "https://registry.yarnpkg.com/http-call/-/http-call-5.2.4.tgz#42303c02db40cba29f94304be97102067ea34d06"
   integrity sha512-VqnjJPcscbnPzuE9qpFj6a6KibDRQHfz4daszFH5s0FBg6+xncSiTNzvIAgz7mc2rzKC4Ncz4iQ4T4brWoccEw==
+  dependencies:
+    content-type "^1.0.4"
+    debug "^4.1.1"
+    is-retry-allowed "^1.1.0"
+    is-stream "^2.0.0"
+    parse-json "^4.0.0"
+    tunnel-agent "^0.6.0"
+
+http-call@^5.2.4:
+  version "5.2.5"
+  resolved "https://registry.yarnpkg.com/http-call/-/http-call-5.2.5.tgz#cccb144230dd2f379cf61800fd4461e24571c1be"
+  integrity sha512-SfJ9j2xfi8zhQuJxcBCN1AhPCUAvPhipNaoeHWHfHiV0gz4uf9RUt2kl+xu9mxJLKxhNP7We87aRGbaSGPjr8A==
   dependencies:
     content-type "^1.0.4"
     debug "^4.1.1"
