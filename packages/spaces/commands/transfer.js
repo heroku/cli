@@ -12,7 +12,7 @@ function * run (context, heroku) {
     body: { 'new_owner': team }
   })
   try {
-    yield cli.action(`Transferring Space ${cli.color.yellow(space)} to Team ${cli.color.green(team)}`, request)
+    yield cli.action(`Transferring space ${cli.color.yellow(space)} to team ${cli.color.green(team)}`, request)
   } catch (err) {
     cli.error(err.body.message)
   }
@@ -21,11 +21,11 @@ function * run (context, heroku) {
 module.exports = {
   topic: 'spaces',
   command: 'transfer',
-  description: 'transfers a space',
+  description: 'transfer a space to another team',
   help: `Example:
 
     $ heroku spaces:transfer --space=space-name --team=team-name
-    Transferring Space space-name to Team team-name... done
+    Transferring space-name to team-name... done
 `,
   needsApp: false,
   needsAuth: true,
