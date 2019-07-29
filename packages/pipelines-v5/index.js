@@ -18,8 +18,7 @@ exports.commands = flatten([
   require('./commands/pipelines/remove.js'),
   require('./commands/pipelines/rename.js'),
   require('./commands/pipelines/setup.js'),
-  require('./commands/pipelines/transfer.js'),
-  require('./commands/review_apps/disable.js')
+  require('./commands/pipelines/transfer.js')
 ])
 
 exports.disambiguatePipeline = require('./lib/disambiguate')
