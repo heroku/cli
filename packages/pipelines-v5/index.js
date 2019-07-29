@@ -1,8 +1,7 @@
 var flatten = require('lodash.flatten')
 
 exports.topic = [
-  { name: 'pipelines', description: 'manage collections of apps in pipelines' },
-  { name: 'reviewapps', description: 'manage reviewapps in pipelines' }
+  { name: 'pipelines', description: 'manage collections of apps in pipelines' }
 ]
 
 exports.commands = flatten([
