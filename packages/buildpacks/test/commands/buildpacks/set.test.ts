@@ -211,7 +211,7 @@ Run git push heroku master to create a new release using these buildpacks.
 
     test
       .command(['buildpacks:set', 'https://github.com/bar/bar', '-i', '-1', '-a', 'example'])
-      .catch('Expected an integer but received: -1')
+      .catch('Invalid index. Must be greater than 0.')
       .it('# returns an error message when i < 0')
 
     test
