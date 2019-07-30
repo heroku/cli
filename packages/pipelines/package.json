@@ -1,0 +1,59 @@
+{
+  "name": "@heroku-cli/plugin-pipelines",
+  "version": "7.27.0",
+  "author": "James Martinez @jmar910",
+  "bugs": "https://github.com/heroku/heroku-cli-plugin-pipelines/issues",
+  "dependencies": {
+    "@heroku-cli/command": "^8.2.12",
+    "@heroku-cli/schema": "^1.0.25",
+    "@oclif/command": "^1",
+    "@oclif/config": "^1",
+    "cli-ux": "^5.3.1"
+  },
+  "devDependencies": {
+    "@oclif/dev-cli": "^1",
+    "@oclif/plugin-help": "^2",
+    "@oclif/test": "^1",
+    "@oclif/tslint": "^3",
+    "@types/chai": "^4",
+    "@types/mocha": "^5",
+    "@types/node": "^10",
+    "chai": "^4",
+    "globby": "^8",
+    "mocha": "^5",
+    "nock": "^10.0.6",
+    "nyc": "^13",
+    "ts-node": "^8",
+    "tslib": "^1",
+    "tslint": "^5",
+    "typescript": "^3.3"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "files": [
+    "/lib",
+    "/oclif.manifest.json",
+    "/yarn.lock"
+  ],
+  "homepage": "https://github.com/heroku/heroku-cli-plugin-pipelines",
+  "keywords": [
+    "heroku-plugin"
+  ],
+  "license": "MIT",
+  "oclif": {
+    "commands": "./lib/commands",
+    "bin": "heroku",
+    "devPlugins": [
+      "@oclif/plugin-help"
+    ]
+  },
+  "repository": "heroku/heroku-cli-plugin-pipelines",
+  "scripts": {
+    "postpack": "rm -f oclif.manifest.json",
+    "posttest": "tslint -p test -t stylish",
+    "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
+    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
+    "version": "oclif-dev readme && git add README.md"
+  }
+}

@@ -2,7 +2,6 @@ import color from '@heroku-cli/color'
 import {APIClient} from '@heroku-cli/command'
 import {BuildpackRegistry} from '@heroku/buildpack-registry'
 import {cli} from 'cli-ux'
-import {HTTP} from 'http-call'
 import {findIndex as lodashFindIndex} from 'lodash'
 import {Result} from 'true-myth'
 
@@ -31,7 +30,7 @@ export class BuildpackCommand {
     return this.mapBuildpackResponse(buildpacks)
   }
 
-  mapBuildpackResponse(buildpacks: HTTP<any>): BuildpackResponse[] {
+  mapBuildpackResponse(buildpacks: {body: any}): BuildpackResponse[] {
     let body = buildpacks.body
     return body.map((bp: BuildpackResponse) => {
       bp.buildpack.url = bp.buildpack.url.replace(/^urn:buildpack:/, '')

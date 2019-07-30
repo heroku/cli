@@ -22,6 +22,11 @@ export default class Set extends Command {
 
   async run() {
     let {args, flags} = this.parse(Set)
+
+    if (flags.index && flags.index < 0) {
+      this.error('Invalid index. Must be greater than 0.')
+    }
+
     let buildpackCommand = new BuildpackCommand(this.heroku)
     let buildpacks = await buildpackCommand.fetch(flags.app)
 

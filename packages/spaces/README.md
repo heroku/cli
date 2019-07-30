@@ -15,6 +15,7 @@ heroku-spaces CLI plugin [![Circle CI](https://circleci.com/gh/heroku/heroku-spa
 * [`heroku spaces:ps`](#heroku-spacesps)
 * [`heroku spaces:rename`](#heroku-spacesrename)
 * [`heroku spaces:topology`](#heroku-spacestopology)
+* [`heroku spaces:transfer`](#heroku-spacestransfer)
 * [`heroku spaces:vpn:config`](#heroku-spacesvpnconfig)
 * [`heroku spaces:vpn:connect`](#heroku-spacesvpnconnect)
 * [`heroku spaces:vpn:connections`](#heroku-spacesvpnconnections)
@@ -233,6 +234,25 @@ USAGE
 OPTIONS
   -s, --space=space  space to get topology of
   --json             output in json format
+```
+
+## `heroku spaces:transfer`
+
+transfer a space to another team
+
+```
+USAGE
+  $ heroku spaces:transfer
+
+OPTIONS
+  --space=space  (required) name of space
+  --team=team    (required) desired owner of space
+
+DESCRIPTION
+  Example:
+
+       $ heroku spaces:transfer --space=space-name --team=team-name
+       Transferring space-name to team-name... done
 ```
 
 ## `heroku spaces:vpn:config`
