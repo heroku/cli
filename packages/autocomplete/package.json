@@ -1,6 +1,6 @@
 {
   "name": "@heroku-cli/plugin-autocomplete",
-  "version": "7.24.0",
+  "version": "7.27.0",
   "author": "Philipe Navarro @RasPhilCo",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {

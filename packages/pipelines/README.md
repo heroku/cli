@@ -18,38 +18,38 @@ reviewapps
 # Usage
 <!-- usage -->
 ```sh-session
-$ npm install -g reviewapps
-$ oclif-example COMMAND
+$ npm install -g @heroku-cli/plugin-pipelines
+$ heroku COMMAND
 running command...
-$ oclif-example (-v|--version|version)
-reviewapps/0.0.0 darwin-x64 node-v10.13.0
-$ oclif-example --help [COMMAND]
+$ heroku (-v|--version|version)
+@heroku-cli/plugin-pipelines/7.27.0 darwin-x64 node-v10.2.1
+$ heroku --help [COMMAND]
 USAGE
-  $ oclif-example COMMAND
+  $ heroku COMMAND
 ...
 ```
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`oclif-example hello [FILE]`](#oclif-example-hello-file)
+* [`heroku reviewapps:enable`](#heroku-reviewappsenable)
 
-## `oclif-example hello [FILE]`
+## `heroku reviewapps:enable`
 
-describe the command here
+enable review apps and/or settings on an existing pipeline
 
 ```
 USAGE
-  $ oclif-example hello [FILE]
+  $ heroku reviewapps:enable
 
 OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
+  -a, --app=app            (required) parent app used by review apps
+  -p, --pipeline=pipeline  (required) name of pipeline
+  --autodeploy             autodeploy the review app
+  --autodestroy            autodestroy the review app
 
 EXAMPLE
-  $ oclif-example hello
-  hello world from ./src/hello.ts!
+  $ heroku reviewapps:enable -p mypipeline -a myapp --autodeploy --autodestroy
 ```
 
-_See code: [src/commands/hello.ts](https://github.com/jmar910/reviewapps/blob/v0.0.0/src/commands/hello.ts)_
+_See code: [src/commands/reviewapps/enable.ts](https://github.com/heroku/heroku-cli-plugin-pipelines/blob/v7.27.0/src/commands/reviewapps/enable.ts)_
 <!-- commandsstop -->
