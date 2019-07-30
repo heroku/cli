@@ -46,7 +46,12 @@
     "bin": "heroku",
     "devPlugins": [
       "@oclif/plugin-help"
-    ]
+    ],
+    "topics": {
+      "reviewapps": {
+        "description": "manage reviewapps in pipelines"
+      }
+    }
   },
   "repository": "heroku/heroku-cli-plugin-pipelines",
   "scripts": {
