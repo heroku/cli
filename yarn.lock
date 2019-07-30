@@ -284,17 +284,6 @@
     lodash "^4.17.10"
     printf "0.3.0"
 
-"@heroku-cli/plugin-pipelines@3.0.0-alpha.1":
-  version "3.0.0-alpha.1"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-pipelines/-/plugin-pipelines-3.0.0-alpha.1.tgz#d0484a0fb75c93082b5c043675715a3366d441fc"
-  integrity sha512-Jigx2qFwYloGgKcaCYWT+yRQDKmvlrwfOdtYpUfHWxBa8/UFyqnVE9CtB3cOBQTj5WAbqV/lE/fEYE4ES1BrPw==
-  dependencies:
-    "@heroku-cli/command" "^8.2.12"
-    "@heroku-cli/schema" "^1.0.25"
-    "@oclif/command" "^1"
-    "@oclif/config" "^1"
-    cli-ux "^5.3.1"
-
 "@heroku-cli/plugin-pipelines@^2.5.8":
   version "2.5.10"
   resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-pipelines/-/plugin-pipelines-2.5.10.tgz#ba1a3adab4d4039326a699757ce02d5e2ba89a3c"
