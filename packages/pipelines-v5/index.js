@@ -1,8 +1,7 @@
 var flatten = require('lodash.flatten')
 
 exports.topic = [
-  { name: 'pipelines', description: 'manage collections of apps in pipelines' },
-  { name: 'reviewapps', description: 'manage reviewapps in pipelines' }
+  { name: 'pipelines', description: 'manage collections of apps in pipelines' }
 ]
 
 exports.commands = flatten([
@@ -18,8 +17,7 @@ exports.commands = flatten([
   require('./commands/pipelines/remove.js'),
   require('./commands/pipelines/rename.js'),
   require('./commands/pipelines/setup.js'),
-  require('./commands/pipelines/transfer.js'),
-  require('./commands/review_apps/disable.js')
+  require('./commands/pipelines/transfer.js')
 ])
 
 exports.disambiguatePipeline = require('./lib/disambiguate')
