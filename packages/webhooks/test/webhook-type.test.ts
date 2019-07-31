@@ -14,7 +14,7 @@ describe('webhooks type', () => {
     .stdout()
     .do(function () {
       const webhookInfo = webhookType({pipeline: '', app: 'randomApp'})
-      expect(webhookInfo).to.deep.equal({path: '/apps/randomApp', display: '\u001b[38;5;104m⬢ randomApp\u001b[0m'})
+      expect(webhookInfo).to.deep.equal({path: '/apps/randomApp', display: 'randomApp'})
     })
     .it('returns correct app path and display info')
 

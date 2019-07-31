@@ -4,3 +4,7 @@
 // see: https://github.com/oclif/screen
 
 global.columns = 140
+
+// disable color for tests
+const { color } = require('@heroku-cli/color')
+color.enabled = false
