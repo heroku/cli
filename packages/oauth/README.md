@@ -28,43 +28,21 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`heroku hello [FILE]`](#heroku-hello-file)
-* [`heroku help [COMMAND]`](#heroku-help-command)
+* [`heroku clients`](#heroku-clients)
 
-## `heroku hello [FILE]`
+## `heroku clients`
 
-describe the command here
-
-```
-USAGE
-  $ heroku hello [FILE]
-
-OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
-
-EXAMPLE
-  $ heroku hello
-  hello world from ./src/hello.ts!
-```
-
-_See code: [src/commands/hello.ts](https://github.com/heroku/cli/blob/v8.0.0/src/commands/hello.ts)_
-
-## `heroku help [COMMAND]`
-
-display help for heroku
+list your OAuth clients
 
 ```
 USAGE
-  $ heroku help [COMMAND]
-
-ARGUMENTS
-  COMMAND  command to show help for
+  $ heroku clients
 
 OPTIONS
-  --all  see all commands in CLI
+  -h, --help  show CLI help
+  -j, --json  output in json format
 ```
 
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.2.0/src/commands/help.ts)_
+_See code: [src/commands/clients/index.ts](https://github.com/heroku/cli/blob/v8.0.0/src/commands/clients/index.ts)_
+
 <!-- commandsstop -->
