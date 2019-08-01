@@ -29,6 +29,7 @@ USAGE
 # Commands
 <!-- commands -->
 * [`heroku clients`](#heroku-clients)
+* [`heroku clients:create NAME REDIRECT_URI`](#heroku-clientscreate-name-redirect_uri)
 
 ## `heroku clients`
 
@@ -45,4 +46,22 @@ OPTIONS
 
 _See code: [src/commands/clients/index.ts](https://github.com/heroku/cli/blob/v8.0.0/src/commands/clients/index.ts)_
 
+## `heroku clients:create NAME REDIRECT_URI`
+
+create a new OAuth client
+
+```
+USAGE
+  $ heroku clients:create NAME REDIRECT_URI
+
+OPTIONS
+  -h, --help   show CLI help
+  -j, --json   output in json format
+  -s, --shell  output in shell format
+
+EXAMPLE
+  $ heroku clients:create "Amazing" https://amazing-client.herokuapp.com/auth/heroku/callback
+```
+
+_See code: [src/commands/clients/create.ts](https://github.com/heroku/cli/blob/v8.0.0/src/commands/clients/create.ts)_
 <!-- commandsstop -->
