@@ -42,9 +42,9 @@ const shouldSchedules = function (cmdRun) {
       pg.get('/client/v11/databases/1/transfer-schedules').reply(200, [])
       return cmd.run({ app: 'myapp' }).then(() => {
         expect(
-          cli.stdout,
-          'to equal',
-          'No backup schedules found on myapp\nUse heroku pg:backups:schedule to set one up\n'
+          cli.stderr,
+          'to contain',
+          ' ▸    No backup schedules found on myapp\n ▸    Use heroku pg:backups:schedule to set one up\n'
         )
       })
     })
