@@ -44,7 +44,13 @@ const shouldSchedules = function (cmdRun) {
         expect(
           cli.stderr,
           'to contain',
-          ' ▸    No backup schedules found on myapp\n ▸    Use heroku pg:backups:schedule to set one up\n'
+          'No backup schedules found on myapp\n'
+        )
+
+        expect(
+          cli.stderr,
+          'to contain',
+          'Use heroku pg:backups:schedule to set one up\n'
         )
       })
     })
