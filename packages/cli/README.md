@@ -96,8 +96,9 @@ Tips & Discoveries
 Below is an ongoing list of new discoveries and tips found through the nuances of the heroku cli.
 
 * Lerna tests will strip the color symbol from apps whereas the local tests per package don't. If you’re using @heroku-cli/color, remember to update your init.js file in your local helpers directory with
-> // disable color for tests
-> const { color } = require('@heroku-cli/color')
-> color.enabled = false
-to strip the color.
-Otherwise, your tests will pass locally and fail lerna’s test
+   ```
+   // disable color for tests
+   const { color } = require('@heroku-cli/color')
+   color.enabled = false
+   ```
+   to strip the color. Otherwise, your tests will pass locally and fail lerna’s test
