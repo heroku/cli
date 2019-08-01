@@ -69,6 +69,6 @@ describe('enterprises:members:permissions:add', () => {
       .reply(200, membersGetResponse)
     )
     .command(['enterprises:members:permissions:add', 'bob@acme.com', '-e', 'acme', '-p', 'create'])
-    .catch((err: any) => expect(err.message).to.contain('\u001b[36mbob@acme.com\u001b[39m is not a member of \u001b[32macme\u001b[39m'))
+    .catch((err: any) => expect(err.message).to.contain('bob@acme.com is not a member of acme'))
     .it('should handle invalid members')
 })
