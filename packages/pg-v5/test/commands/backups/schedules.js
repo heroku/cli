@@ -28,33 +28,46 @@ const shouldSchedules = function (cmdRun) {
 
   context('with databases', () => {
     beforeEach(() => {
-      api.get('/apps/myapp/addons').reply(200, [{
-        id: 1,
-        name: 'postgres-1',
-        plan: { name: 'heroku-postgresql:standard-0' },
-        app: { name: 'myapp' }
-      }])
+      api.get('/apps/myapp/addons').reply(200, [
+        {
+          id: 1,
+          name: 'postgres-1',
+          plan: { name: 'heroku-postgresql:standard-0' },
+          app: { name: 'myapp' }
+        }
+      ])
     })
 
     it('shows empty message with no schedules', () => {
       pg.get('/client/v11/databases/1/transfer-schedules').reply(200, [])
-      return expect(cmdRun({ app: 'myapp' }), 'to be rejected with', 'No backup schedules found on myapp\nUse heroku pg:backups:schedule to set one up')
+      return cmd.run({ app: 'myapp' }).then(() => {
+        expect(
+          cli.stdout,
+          'to equal',
+          'No backup schedules found on myapp\nUse heroku pg:backups:schedule to set one up\n'
+        )
+      })
     })
 
     it('shows schedule', () => {
       pg.get('/client/v11/databases/1/transfer-schedules').reply(200, [
         { name: 'DATABASE_URL', hour: 5, timezone: 'UTC' }
       ])
-      return cmdRun({ app: 'myapp' })
-        .then(() => expect(cli.stdout, 'to equal', `=== Backup Schedules
+      return cmdRun({ app: 'myapp' }).then(() =>
+        expect(
+          cli.stdout,
+          'to equal',
+          `=== Backup Schedules
 DATABASE_URL: daily at 5:00 UTC
-`))
+`
+        )
+      )
     })
   })
 }
 
 describe('pg:backups:schedules', () => {
-  shouldSchedules((args) => cmd.run(args))
+  shouldSchedules(args => cmd.run(args))
 })
 
 describe('pg:backups schedules', () => {
