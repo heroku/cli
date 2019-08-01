@@ -89,3 +89,8 @@ This project is built with [lerna](http://lernajs.io). The core plugins are loca
 To cut a release, simply run `lerna publish` and it will create a CHANGELOG from the pending commits using [Conventional Commits](http://conventionalcommits.org). CircleCI will run the jobs to publish the CLI once it receives the git tag.
 
 Review our [PR guidelines](./.github/PULL_REQUEST_TEMPLATE.md).
+
+Tips & Discoveries
+==================
+
+Below is an ongoing list of new discoveries and tips found through the nuances of the heroku cli.
