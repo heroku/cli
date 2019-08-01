@@ -30,6 +30,7 @@ USAGE
 <!-- commands -->
 * [`heroku clients`](#heroku-clients)
 * [`heroku clients:create NAME REDIRECT_URI`](#heroku-clientscreate-name-redirect_uri)
+* [`heroku help [COMMAND]`](#heroku-help-command)
 
 ## `heroku clients`
 
@@ -64,4 +65,21 @@ EXAMPLE
 ```
 
 _See code: [src/commands/clients/create.ts](https://github.com/heroku/cli/blob/v8.0.0/src/commands/clients/create.ts)_
+
+## `heroku help [COMMAND]`
+
+display help for heroku
+
+```
+USAGE
+  $ heroku help [COMMAND]
+
+ARGUMENTS
+  COMMAND  command to show help for
+
+OPTIONS
+  --all  see all commands in CLI
+```
+
+_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.2.0/src/commands/help.ts)_
 <!-- commandsstop -->
