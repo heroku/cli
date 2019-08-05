@@ -30,6 +30,7 @@ USAGE
 <!-- commands -->
 * [`heroku clients`](#heroku-clients)
 * [`heroku clients:create NAME REDIRECT_URI`](#heroku-clientscreate-name-redirect_uri)
+* [`heroku clients:update ID`](#heroku-clientsupdate-id)
 * [`heroku help [COMMAND]`](#heroku-help-command)
 
 ## `heroku clients`
@@ -65,6 +66,26 @@ EXAMPLE
 ```
 
 _See code: [src/commands/clients/create.ts](https://github.com/heroku/cli/blob/v8.0.0/src/commands/clients/create.ts)_
+
+## `heroku clients:update ID`
+
+update OAuth client
+
+```
+USAGE
+  $ heroku clients:update ID
+
+OPTIONS
+  -h, --help       show CLI help
+  -n, --name=name  change the client name
+  --url=url        change the client redirect URL
+
+EXAMPLE
+  $ heroku clients:update 3e304bda-d376-4278-bdea-6d6c08aa1359 --url 
+  https://amazing-client.herokuapp.com/auth/heroku/callback
+```
+
+_See code: [src/commands/clients/update.ts](https://github.com/heroku/cli/blob/v8.0.0/src/commands/clients/update.ts)_
 
 ## `heroku help [COMMAND]`
 
