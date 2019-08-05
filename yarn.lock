@@ -301,13 +301,14 @@
     string-just "^0.0.2"
     validator "^10.2.0"
 
-"@heroku-cli/plugin-ps-exec@2.3.5":
-  version "2.3.5"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-ps-exec/-/plugin-ps-exec-2.3.5.tgz#9302b57f3f7a3ac2d97280c65014bc6d3db97f38"
-  integrity sha512-DuzhKXlG/XO5l8xvUWs626sRk68bAM0Nu/nN35TW1t0cdgPFF8iXBcqji1sJllMiF3nEqMyXmQO68Tb9HVnddQ==
+"@heroku-cli/plugin-ps-exec@2.3.6":
+  version "2.3.6"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-ps-exec/-/plugin-ps-exec-2.3.6.tgz#ee46a5c1ac6138da155cd6ccad81b7b2af4ace6b"
+  integrity sha512-JNUScmzHqYExlsYueb1HA0em3T8IppAFs7PTKC3iIinlKYlf7Nn75iZt7iRJJGSX0wHf9kycD68qw7gT2VNQ9g==
   dependencies:
     heroku-cli-util "^8.0.8"
     heroku-exec-util "0.7.3"
+    lodash "^4.17.13"
 
 "@heroku-cli/schema@^1.0.25":
   version "1.0.25"
@@ -5723,12 +5724,12 @@ lodash.uniq@^4.5.0:
   resolved "https://registry.yarnpkg.com/lodash.uniq/-/lodash.uniq-4.5.0.tgz#d0225373aeb652adc1bc82e4945339a842754773"
   integrity sha1-0CJTc662Uq3BvILklFM5qEJ1R3M=
 
-lodash@4.17.11, lodash@^4.11.1, lodash@^4.17.10, lodash@^4.17.2, lodash@^4.17.4, lodash@^4.17.5, lodash@^4.2.1, lodash@^4.3.0, lodash@~4.17.2:
+lodash@^4.11.1, lodash@^4.17.10, lodash@^4.17.2, lodash@^4.17.4, lodash@^4.17.5, lodash@^4.2.1, lodash@^4.3.0, lodash@~4.17.2:
   version "4.17.11"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.11.tgz#b39ea6229ef607ecd89e2c8df12536891cac9b8d"
   integrity sha512-cQKh8igo5QUhZ7lg38DYWAxMvjSAKG0A8wGSVimP07SIUEK2UO+arSRKbRZWtelMtN5V0Hkwh5ryOto/SshYIg==
 
-lodash@^4.17.11:
+lodash@^4.17.11, lodash@^4.17.13:
   version "4.17.15"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.15.tgz#b447f6670a0455bbfeedd11392eff330ea097548"
   integrity sha512-8xOcRHvCjnocdS5cpwXQXVzmmh5e5+saE2QGoeQmbKmRS6J3VQppPOIt0MnmE+4xlZoumy0GPG0D0MVIQbNA1A==
