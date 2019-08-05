@@ -251,7 +251,7 @@
     netrc-parser "^3.1.6"
     opn "^5.4.0"
 
-"@heroku-cli/command@^8.2.10", "@heroku-cli/command@^8.2.11", "@heroku-cli/command@^8.2.12":
+"@heroku-cli/command@^8.2.10", "@heroku-cli/command@^8.2.11", "@heroku-cli/command@^8.2.12", "@heroku-cli/command@^8.2.13":
   version "8.2.13"
   resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.2.13.tgz#8d6ac394b0c39be253692df82e4896678165cc37"
   integrity sha512-2L/0LFsF9jknRhnkz4Xjd/gAmcf3f2TB8Yke7kdOUj5O2s8YUCz7dwmrgu8CYbrhfrrHiBpLskdrOlKP3BXcUg==
@@ -1489,6 +1489,13 @@
   version "2.1.6"
   resolved "https://registry.yarnpkg.com/@types/node-fetch/-/node-fetch-2.1.6.tgz#4326288b49f352a142f03c63526ebce0f4c50877"
   integrity sha512-Hv1jgh3pfpUEl2F2mqUd1AfLSk1YbUCeBJFaP36t7esAO617dErqdxWb5cdG2NfJGOofkmBW36fdx0dVewxDRg==
+  dependencies:
+    "@types/node" "*"
+
+"@types/node-notifier@^5.4.0":
+  version "5.4.0"
+  resolved "https://registry.yarnpkg.com/@types/node-notifier/-/node-notifier-5.4.0.tgz#4e66c85eb41cce8387b4cd9c6c67852be41a99db"
+  integrity sha512-M1XvCG6Rwej6+W0+kWultE46YS7erOy+W7suRmXtKwLGT3ytj6YEe9lqo47nRfL1xILzg9xJpKeNczIsWR8ymw==
   dependencies:
     "@types/node" "*"
 
@@ -4649,7 +4656,7 @@ http-call@^5.1.2, http-call@^5.2.3:
     parse-json "^4.0.0"
     tunnel-agent "^0.6.0"
 
-http-call@^5.2.4:
+http-call@^5.2.4, http-call@^5.2.5:
   version "5.2.5"
   resolved "https://registry.yarnpkg.com/http-call/-/http-call-5.2.5.tgz#cccb144230dd2f379cf61800fd4461e24571c1be"
   integrity sha512-SfJ9j2xfi8zhQuJxcBCN1AhPCUAvPhipNaoeHWHfHiV0gz4uf9RUt2kl+xu9mxJLKxhNP7We87aRGbaSGPjr8A==
