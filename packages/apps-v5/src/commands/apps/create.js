@@ -151,7 +151,7 @@ function run (context, heroku) {
 let cmd = {
   description: 'creates a new app',
   examples: `$ heroku apps:create
-Creating app... done, stack is cedar-14
+Creating app... done, stack is heroku-18
 https://floating-dragon-42.heroku.com/ | https://git.heroku.com/floating-dragon-42.git
 
 # or just
