@@ -30,6 +30,7 @@ USAGE
 <!-- commands -->
 * [`heroku clients`](#heroku-clients)
 * [`heroku clients:create NAME REDIRECT_URI`](#heroku-clientscreate-name-redirect_uri)
+* [`heroku clients:destroy ID`](#heroku-clientsdestroy-id)
 * [`heroku clients:update ID`](#heroku-clientsupdate-id)
 * [`heroku help [COMMAND]`](#heroku-help-command)
 
@@ -66,6 +67,17 @@ EXAMPLE
 ```
 
 _See code: [src/commands/clients/create.ts](https://github.com/heroku/cli/blob/v8.0.0/src/commands/clients/create.ts)_
+
+## `heroku clients:destroy ID`
+
+delete client by ID
+
+```
+USAGE
+  $ heroku clients:destroy ID
+```
+
+_See code: [src/commands/clients/destroy.ts](https://github.com/heroku/cli/blob/v8.0.0/src/commands/clients/destroy.ts)_
 
 ## `heroku clients:update ID`
 
