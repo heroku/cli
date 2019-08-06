@@ -32,6 +32,7 @@ USAGE
 * [`heroku clients:create NAME REDIRECT_URI`](#heroku-clientscreate-name-redirect_uri)
 * [`heroku clients:destroy ID`](#heroku-clientsdestroy-id)
 * [`heroku clients:info ID`](#heroku-clientsinfo-id)
+* [`heroku clients:rotate ID`](#heroku-clientsrotate-id)
 * [`heroku clients:update ID`](#heroku-clientsupdate-id)
 * [`heroku help [COMMAND]`](#heroku-help-command)
 
@@ -98,6 +99,22 @@ EXAMPLE
 ```
 
 _See code: [src/commands/clients/info.ts](https://github.com/heroku/cli/blob/v8.0.0/src/commands/clients/info.ts)_
+
+## `heroku clients:rotate ID`
+
+rotate OAuth client secret
+
+```
+USAGE
+  $ heroku clients:rotate ID
+
+OPTIONS
+  -h, --help   show CLI help
+  -j, --json   output in json format
+  -s, --shell  output in shell format
+```
+
+_See code: [src/commands/clients/rotate.ts](https://github.com/heroku/cli/blob/v8.0.0/src/commands/clients/rotate.ts)_
 
 ## `heroku clients:update ID`
 
