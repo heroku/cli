@@ -31,6 +31,7 @@ USAGE
 * [`heroku clients`](#heroku-clients)
 * [`heroku clients:create NAME REDIRECT_URI`](#heroku-clientscreate-name-redirect_uri)
 * [`heroku clients:destroy ID`](#heroku-clientsdestroy-id)
+* [`heroku clients:info ID`](#heroku-clientsinfo-id)
 * [`heroku clients:update ID`](#heroku-clientsupdate-id)
 * [`heroku help [COMMAND]`](#heroku-help-command)
 
@@ -78,6 +79,25 @@ USAGE
 ```
 
 _See code: [src/commands/clients/destroy.ts](https://github.com/heroku/cli/blob/v8.0.0/src/commands/clients/destroy.ts)_
+
+## `heroku clients:info ID`
+
+show details of an oauth client
+
+```
+USAGE
+  $ heroku clients:info ID
+
+OPTIONS
+  -h, --help   show CLI help
+  -j, --json   output in json format
+  -s, --shell  output in shell format
+
+EXAMPLE
+  $ heroku clients:info 36120128-fee7-455e-8b7f-807aee130946
+```
+
+_See code: [src/commands/clients/info.ts](https://github.com/heroku/cli/blob/v8.0.0/src/commands/clients/info.ts)_
 
 ## `heroku clients:update ID`
 
