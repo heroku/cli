@@ -1,3 +1,6 @@
 {
-  "extends": "@oclif/tslint"
+  "extends": "@oclif/tslint",
+  "rules": {
+    "no-http-string": false
+  }
 }
