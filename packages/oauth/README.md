@@ -28,6 +28,7 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
+* [`heroku authorizations:create`](#heroku-authorizationscreate)
 * [`heroku clients`](#heroku-clients)
 * [`heroku clients:create NAME REDIRECT_URI`](#heroku-clientscreate-name-redirect_uri)
 * [`heroku clients:destroy ID`](#heroku-clientsdestroy-id)
@@ -35,6 +36,28 @@ USAGE
 * [`heroku clients:rotate ID`](#heroku-clientsrotate-id)
 * [`heroku clients:update ID`](#heroku-clientsupdate-id)
 * [`heroku help [COMMAND]`](#heroku-help-command)
+
+## `heroku authorizations:create`
+
+create a new OAuth authorization
+
+```
+USAGE
+  $ heroku authorizations:create
+
+OPTIONS
+  -S, --short                    only output token
+  -d, --description=description  set a custom authorization
+  -e, --expires-in=expires-in    set expiration in seconds (default no expiration)
+  -h, --help                     show CLI help
+  -j, --json                     output in json format
+  -s, --scope=scope              set custom OAuth scopes
+
+EXAMPLE
+  $ heroku authorizations:create --description "For use with Anvil"
+```
+
+_See code: [src/commands/authorizations/create.ts](https://github.com/heroku/cli/blob/v8.0.0/src/commands/authorizations/create.ts)_
 
 ## `heroku clients`
 
