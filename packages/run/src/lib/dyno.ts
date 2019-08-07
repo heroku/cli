@@ -336,8 +336,10 @@ export default class Dyno extends Duplex {
       this._notify()
 
       // carriage returns break json parsing of output
-      // tslint:disable-next-line
-      if (!process.stdout.isTTY) data = data.replace(new RegExp('\r\n', 'g'), '\n')
+      if (!process.stdout.isTTY) {
+        // tslint:disable-next-line
+        data = data.replace(new RegExp('\r\n', 'g'), '\n')
+      }
 
       let exitCode = data.match(/\uFFFF heroku-command-exit-status: (\d+)/m)
       if (exitCode) {
