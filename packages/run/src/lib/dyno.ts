@@ -218,7 +218,7 @@ export default class Dyno extends Duplex {
       r.end()
 
       r.on('error', this.reject)
-      r.on('upgrade', (_, remote, head) => {
+      r.on('upgrade', (_, remote) => {
         let s = net.createServer(client => {
           client.on('end', () => {
             s.close()
@@ -282,7 +282,7 @@ export default class Dyno extends Duplex {
           process.stderr.write(data)
         }
       })
-      sshProc.on('close', (code, signal) => {
+      sshProc.on('close', () => {
         // there was a problem connecting with the ssh key
         if (lastErr.length > 0 && lastErr.includes('Permission denied')) {
           cli.error('There was a problem connecting to the dyno.')
@@ -336,16 +336,17 @@ export default class Dyno extends Duplex {
       this._notify()
 
       // carriage returns break json parsing of output
-      // eslint-disable-next-line
+      // tslint:disable-next-line
       if (!process.stdout.isTTY) data = data.replace(new RegExp('\r\n', 'g'), '\n')
 
       let exitCode = data.match(/\uFFFF heroku-command-exit-status: (\d+)/m)
       if (exitCode) {
         debug('got exit code: %d', exitCode[1])
         this.push(data.replace(/^\uFFFF heroku-command-exit-status: \d+$\n?/m, ''))
-        let code = parseInt(exitCode[1])
-        if (code === 0) this.resolve()
-        else {
+        let code = parseInt(exitCode[1], 10)
+        if (code === 0) {
+          this.resolve()
+        } else {
           let err: { exitCode?: number } & Error = new Error(`Process exited with code ${color.red(code.toString())}`)
           err.exitCode = code
           this.reject(err)

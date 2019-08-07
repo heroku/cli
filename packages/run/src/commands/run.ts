@@ -4,7 +4,7 @@ import cli from 'cli-ux'
 import DebugFactory from 'debug'
 
 import Dyno from '../lib/dyno'
-import {buildCommand, buildEnvFromFlag} from '../lib/helpers'
+import {buildCommand} from '../lib/helpers'
 
 const debug = DebugFactory('heroku:run')
 
