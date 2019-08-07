@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-webhooks",
   "description": "Heroku CLI plugin to manage webhooks",
-  "version": "0.0.0",
+  "version": "7.0.0",
   "author": "Chad Carbert @chadian",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
@@ -34,13 +34,11 @@
   },
   "files": [
     "/lib",
-    "/npm-shrinkwrap.json",
     "/oclif.manifest.json",
     "/yarn.lock"
   ],
   "homepage": "https://github.com/heroku/cli/tree/master/packages/webhooks",
   "keywords": [
-    "oclif-plugin",
     "heroku-plugin"
   ],
   "license": "MIT",
