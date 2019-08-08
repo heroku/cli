@@ -26,16 +26,16 @@ interface HerokuApiClientRun extends APIClient {
 }
 
 interface DynoOpts {
-  'exit-code': boolean
-  'no-tty': boolean
+  'exit-code'?: boolean
+  'no-tty'?: boolean
   app: string
   attach: boolean
   command: string
   dyno?: string
   env?: string
   heroku: APIClient
-  listen: boolean
-  notify: boolean
+  listen?: boolean
+  notify?: boolean
   showStatus?: boolean
   size?: string
   type?: string
