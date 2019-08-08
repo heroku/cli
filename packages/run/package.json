@@ -7,6 +7,7 @@
     "@heroku-cli/color": "^1.1.14",
     "@heroku-cli/command": "^8.2.13",
     "@heroku-cli/notifications": "^1.2.2",
+    "@heroku/eventsource": "^1.0.7",
     "@oclif/command": "^1",
     "@oclif/config": "^1",
     "cli-ux": "^5.3.1",
@@ -37,13 +38,12 @@
   },
   "files": [
     "/lib",
-    "/npm-shrinkwrap.json",
     "/oclif.manifest.json",
     "/yarn.lock"
   ],
   "homepage": "https://github.com/heroku/heroku-cli-plugin-run",
   "keywords": [
-    "oclif-plugin"
+    "heroku-plugin"
   ],
   "license": "MIT",
   "oclif": {
@@ -58,7 +58,7 @@
     "postpack": "rm -f oclif.manifest.json",
     "posttest": "tslint -p test -t stylish",
     "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
-    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
+    "test": "nyc --extension .ts mocha \"test/**/*.test.ts\"",
     "version": "oclif-dev readme && git add README.md"
   }
 }

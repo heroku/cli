@@ -1,6 +1,6 @@
 import {expect, test} from '@oclif/test'
 
-describe('run', () => {
+describe.skip('run', () => {
   const testFactory = () => {
     return test
       .stdout()

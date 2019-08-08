@@ -16,7 +16,7 @@ export function buildCommand(args: Array<string>) {
   return cmd.trim()
 }
 
-export function buildEnvFromFlag(flag) {
+export function buildEnvFromFlag(flag: string) {
   let env = {}
   for (let v of flag.split(';')) {
     let m = v.match(/^\s*([\w.-]+)\s*=\s*(.*)?\s*$/)
