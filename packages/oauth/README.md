@@ -30,6 +30,7 @@ USAGE
 <!-- commands -->
 * [`heroku authorizations`](#heroku-authorizations)
 * [`heroku authorizations:create`](#heroku-authorizationscreate)
+* [`heroku authorizations:revoke ID`](#heroku-authorizationsrevoke-id)
 * [`heroku clients`](#heroku-clients)
 * [`heroku clients:create NAME REDIRECT_URI`](#heroku-clientscreate-name-redirect_uri)
 * [`heroku clients:destroy ID`](#heroku-clientsdestroy-id)
@@ -77,6 +78,20 @@ EXAMPLE
 ```
 
 _See code: [src/commands/authorizations/create.ts](https://github.com/heroku/cli/blob/v8.0.0/src/commands/authorizations/create.ts)_
+
+## `heroku authorizations:revoke ID`
+
+revoke OAuth authorization
+
+```
+USAGE
+  $ heroku authorizations:revoke ID
+
+EXAMPLE
+  $ heroku authorizations:revoke 105a7bfa-34c3-476e-873a-b1ac3fdc12fb
+```
+
+_See code: [src/commands/authorizations/revoke.ts](https://github.com/heroku/cli/blob/v8.0.0/src/commands/authorizations/revoke.ts)_
 
 ## `heroku clients`
 
