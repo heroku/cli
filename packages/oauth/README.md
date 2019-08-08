@@ -28,6 +28,7 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
+* [`heroku authorizations`](#heroku-authorizations)
 * [`heroku authorizations:create`](#heroku-authorizationscreate)
 * [`heroku clients`](#heroku-clients)
 * [`heroku clients:create NAME REDIRECT_URI`](#heroku-clientscreate-name-redirect_uri)
@@ -36,6 +37,24 @@ USAGE
 * [`heroku clients:rotate ID`](#heroku-clientsrotate-id)
 * [`heroku clients:update ID`](#heroku-clientsupdate-id)
 * [`heroku help [COMMAND]`](#heroku-help-command)
+
+## `heroku authorizations`
+
+list OAuth authorizations
+
+```
+USAGE
+  $ heroku authorizations
+
+OPTIONS
+  -h, --help  show CLI help
+  -j, --json  output in json format
+
+EXAMPLE
+  $ heroku authorizations
+```
+
+_See code: [src/commands/authorizations/index.ts](https://github.com/heroku/cli/blob/v8.0.0/src/commands/authorizations/index.ts)_
 
 ## `heroku authorizations:create`
 
