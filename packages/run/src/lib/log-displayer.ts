@@ -10,9 +10,9 @@ import liner from './line-transform'
 interface LogDisplayerOptions {
   app: string,
   dyno: string,
-  lines: number
+  lines?: number
   tail: boolean,
-  source: string
+  source?: string
 }
 
 function readLogs(logplexURL: string) {
