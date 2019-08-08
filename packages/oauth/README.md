@@ -31,6 +31,7 @@ USAGE
 * [`heroku authorizations`](#heroku-authorizations)
 * [`heroku authorizations:create`](#heroku-authorizationscreate)
 * [`heroku authorizations:revoke ID`](#heroku-authorizationsrevoke-id)
+* [`heroku authorizations:rotate ID`](#heroku-authorizationsrotate-id)
 * [`heroku clients`](#heroku-clients)
 * [`heroku clients:create NAME REDIRECT_URI`](#heroku-clientscreate-name-redirect_uri)
 * [`heroku clients:destroy ID`](#heroku-clientsdestroy-id)
@@ -92,6 +93,17 @@ EXAMPLE
 ```
 
 _See code: [src/commands/authorizations/revoke.ts](https://github.com/heroku/cli/blob/v8.0.0/src/commands/authorizations/revoke.ts)_
+
+## `heroku authorizations:rotate ID`
+
+updates an OAuth authorization token
+
+```
+USAGE
+  $ heroku authorizations:rotate ID
+```
+
+_See code: [src/commands/authorizations/rotate.ts](https://github.com/heroku/cli/blob/v8.0.0/src/commands/authorizations/rotate.ts)_
 
 ## `heroku clients`
 
