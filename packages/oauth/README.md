@@ -41,6 +41,7 @@ USAGE
 * [`heroku clients:rotate ID`](#heroku-clientsrotate-id)
 * [`heroku clients:update ID`](#heroku-clientsupdate-id)
 * [`heroku help [COMMAND]`](#heroku-help-command)
+* [`heroku sessions`](#heroku-sessions)
 
 ## `heroku authorizations`
 
@@ -254,4 +255,18 @@ OPTIONS
 ```
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.2.0/src/commands/help.ts)_
+
+## `heroku sessions`
+
+list your OAuth sessions
+
+```
+USAGE
+  $ heroku sessions
+
+OPTIONS
+  -j, --json  output in json format
+```
+
+_See code: [src/commands/sessions/index.ts](https://github.com/heroku/cli/blob/v8.0.0/src/commands/sessions/index.ts)_
 <!-- commandsstop -->
