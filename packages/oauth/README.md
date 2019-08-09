@@ -33,6 +33,7 @@ USAGE
 * [`heroku authorizations:info ID`](#heroku-authorizationsinfo-id)
 * [`heroku authorizations:revoke ID`](#heroku-authorizationsrevoke-id)
 * [`heroku authorizations:rotate ID`](#heroku-authorizationsrotate-id)
+* [`heroku authorizations:update ID`](#heroku-authorizationsupdate-id)
 * [`heroku clients`](#heroku-clients)
 * [`heroku clients:create NAME REDIRECT_URI`](#heroku-clientscreate-name-redirect_uri)
 * [`heroku clients:destroy ID`](#heroku-clientsdestroy-id)
@@ -120,6 +121,22 @@ USAGE
 ```
 
 _See code: [src/commands/authorizations/rotate.ts](https://github.com/heroku/cli/blob/v8.0.0/src/commands/authorizations/rotate.ts)_
+
+## `heroku authorizations:update ID`
+
+updates an OAuth authorization
+
+```
+USAGE
+  $ heroku authorizations:update ID
+
+OPTIONS
+  -d, --description=description  set a custom authorization description
+  --client-id=client-id          identifier of OAuth client to set
+  --client-secret=client-secret  secret of OAuth client to set
+```
+
+_See code: [src/commands/authorizations/update.ts](https://github.com/heroku/cli/blob/v8.0.0/src/commands/authorizations/update.ts)_
 
 ## `heroku clients`
 
