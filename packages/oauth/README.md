@@ -42,6 +42,7 @@ USAGE
 * [`heroku clients:update ID`](#heroku-clientsupdate-id)
 * [`heroku help [COMMAND]`](#heroku-help-command)
 * [`heroku sessions`](#heroku-sessions)
+* [`heroku sessions:destroy ID`](#heroku-sessionsdestroy-id)
 
 ## `heroku authorizations`
 
@@ -269,4 +270,15 @@ OPTIONS
 ```
 
 _See code: [src/commands/sessions/index.ts](https://github.com/heroku/cli/blob/v8.0.0/src/commands/sessions/index.ts)_
+
+## `heroku sessions:destroy ID`
+
+delete (logout) OAuth session by ID
+
+```
+USAGE
+  $ heroku sessions:destroy ID
+```
+
+_See code: [src/commands/sessions/destroy.ts](https://github.com/heroku/cli/blob/v8.0.0/src/commands/sessions/destroy.ts)_
 <!-- commandsstop -->

@@ -2,13 +2,7 @@ import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {cli} from 'cli-ux'
 
-interface OAuthSession {
-  created_at?: string,
-  description?: null | string,
-  expires_in?: null | number,
-  id?: string,
-  updated_at?: string
-}
+import {OAuthSession} from '../../lib/sessions'
 
 export default class SessionsIndex extends Command {
   static description = 'list your OAuth sessions'
