@@ -29,7 +29,7 @@ interface DynoOpts {
   'exit-code'?: boolean
   'no-tty'?: boolean
   app: string
-  attach: boolean
+  attach?: boolean
   command: string
   dyno?: string
   env?: string
@@ -121,6 +121,9 @@ export default class Dyno extends Duplex {
         } else {
           throw err
         }
+      })
+      .finally(() => {
+        cli.action.stop()
       })
   }
 
