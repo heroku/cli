@@ -1,6 +1,6 @@
 {
   "name": "@heroku-cli/plugin-run",
-  "version": "0.0.0",
+  "version": "7.24.0",
   "author": "Chris Freeman @cafreeman",
   "bugs": "https://github.com/heroku/heroku-cli-plugin-run/issues",
   "dependencies": {
@@ -49,17 +49,25 @@
   "license": "MIT",
   "oclif": {
     "commands": "./lib/commands",
-    "bin": "oclif-example",
+    "bin": "heroku",
     "devPlugins": [
       "@oclif/plugin-help"
-    ]
+    ],
+    "topics": {
+      "run": {
+        "description": "run a one-off process inside a Heroku dyno"
+      },
+      "logs": {
+        "description": "display recent log output"
+      }
+    }
   },
   "repository": "heroku/heroku-cli-plugin-run",
   "scripts": {
     "postpack": "rm -f oclif.manifest.json",
     "posttest": "tslint -p test -t stylish",
     "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
-    "test": "nyc --extension .ts mocha \"test/**/*.test.ts\"",
+    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
     "version": "oclif-dev readme && git add README.md"
   }
 }

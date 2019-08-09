@@ -18,54 +18,89 @@
 <!-- usage -->
 ```sh-session
 $ npm install -g @heroku-cli/plugin-run
-$ oclif-example COMMAND
+$ heroku COMMAND
 running command...
-$ oclif-example (-v|--version|version)
-@heroku-cli/plugin-run/0.0.0 darwin-x64 node-v10.16.0
-$ oclif-example --help [COMMAND]
+$ heroku (-v|--version|version)
+@heroku-cli/plugin-run/7.24.0 darwin-x64 node-v10.16.0
+$ heroku --help [COMMAND]
 USAGE
-  $ oclif-example COMMAND
+  $ heroku COMMAND
 ...
 ```
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`oclif-example hello [FILE]`](#oclif-example-hello-file)
-* [`oclif-example run [FILE]`](#oclif-example-run-file)
+* [`heroku logs`](#heroku-logs)
+* [`heroku run`](#heroku-run)
+* [`heroku run:detached`](#heroku-rundetached)
 
-## `oclif-example hello [FILE]`
+## `heroku logs`
 
-describe the command here
+display recent log output
 
 ```
 USAGE
-  $ oclif-example hello [FILE]
+  $ heroku logs
 
 OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
+  -a, --app=app        app to run command against
+  -d, --dyno=dyno      only show output from this dyno type (such as "web" or "worker")
+  -n, --num=num        number of lines to display
+  -s, --source=source  only show output from this source (such as "app" or "heroku")
+  -t, --tail           continually stream logs
+  --force-colors       force use of colors (even on non-tty output)
+
+DESCRIPTION
+  disable colors with --no-color, HEROKU_LOGS_COLOR=0, or HEROKU_COLOR=0
 
 EXAMPLE
-  $ oclif-example hello
-  hello world from ./src/hello.ts!
+  $ heroku logs
 ```
 
-_See code: [src/commands/hello.ts](https://github.com/heroku/heroku-cli-plugin-run/blob/v0.0.0/src/commands/hello.ts)_
+_See code: [src/commands/logs.ts](https://github.com/heroku/heroku-cli-plugin-run/blob/v7.24.0/src/commands/logs.ts)_
 
-## `oclif-example run [FILE]`
+## `heroku run`
 
-describe the command here
+run a one-off process inside a heroku dyno
 
 ```
 USAGE
-  $ oclif-example run [FILE]
+  $ heroku run
 
 OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
+  -a, --app=app    (required) parent app used by review apps
+  -e, --env=env    environment variables to set (use ';' to split multiple vars)
+  -s, --size=size  dyno size
+  -x, --exit-code  passthrough the exit code of the remote command
+  --no-notify      disables notification when dyno is up (alternatively use HEROKU_NOTIFICATIONS=0)
+  --no-tty         force the command to not run in a tty
+  --type=type      process type
+
+EXAMPLES
+  $ heroku run bash
+  $ heroku run -s hobby -- myscript.sh -a arg1 -s arg2
 ```
 
-_See code: [src/commands/run.ts](https://github.com/heroku/heroku-cli-plugin-run/blob/v0.0.0/src/commands/run.ts)_
+_See code: [src/commands/run.ts](https://github.com/heroku/heroku-cli-plugin-run/blob/v7.24.0/src/commands/run.ts)_
+
+## `heroku run:detached`
+
+run a detached dyno, where output is sent to your logs
+
+```
+USAGE
+  $ heroku run:detached
+
+OPTIONS
+  -a, --app=app    app to run command against
+  -e, --env=env    environment variables to set (use ';' to split multiple vars)
+  -s, --size=size  dyno size
+  -t, --tail       continually stream logs
+  --type=type      process type
+
+EXAMPLE
+  $ heroku run:detached ls
+```
+
+_See code: [src/commands/run/detached.ts](https://github.com/heroku/heroku-cli-plugin-run/blob/v7.24.0/src/commands/run/detached.ts)_
 <!-- commandsstop -->
