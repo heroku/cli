@@ -95,7 +95,7 @@ module.exports = (context, heroku) => ({
         } catch (err) {
           if (failures++ > 20) throw err
         }
-        if (verbose) {
+        if (backup && verbose) {
           displayLogs(backup.logs)
         } else if (tty) {
           let msg = backup.started_at ? pgbackups.filesize(backup.processed_bytes) : 'pending'
