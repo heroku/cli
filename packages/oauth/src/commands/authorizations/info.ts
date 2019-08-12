@@ -8,7 +8,6 @@ export default class AuthorizationsInfo extends Command {
   static description = 'show an existing OAuth authorization'
 
   static flags = {
-    help: flags.help({char: 'h'}),
     json: flags.boolean({char: 'j', description: 'output in json format'}),
   }
 

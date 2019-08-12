@@ -13,7 +13,6 @@ export default class AuthorizationsCreate extends Command {
   ]
 
   static flags = {
-    help: flags.help({char: 'h'}),
     description: flags.string({char: 'd', description: 'set a custom authorization'}),
     short: flags.boolean({char: 'S', description: 'only output token'}),
     json: flags.boolean({char: 'j', description: 'output in json format'}),

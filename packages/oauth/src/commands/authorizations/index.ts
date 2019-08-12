@@ -11,7 +11,6 @@ export default class AuthorizationsIndex extends Command {
   ]
 
   static flags = {
-    help: flags.help({char: 'h'}),
     json: flags.boolean({char: 'j', description: 'output in json format'}),
   }
 

@@ -7,7 +7,6 @@ export default class ClientsRotate extends Command {
   static description = 'rotate OAuth client secret'
 
   static flags = {
-    help: flags.help({char: 'h'}),
     json: flags.boolean({char: 'j', description: 'output in json format'}),
     shell: flags.boolean({char: 's', description: 'output in shell format'})
   }

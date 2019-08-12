@@ -7,7 +7,6 @@ export default class ClientsIndex extends Command {
   static description = 'list your OAuth clients'
 
   static flags = {
-    help: flags.help({char: 'h'}),
     json: flags.boolean({char: 'j', name: 'json', description: 'output in json format'}),
   }
 

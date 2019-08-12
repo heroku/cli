@@ -29,7 +29,6 @@ export default class ClientsUpdate extends Command {
   ]
 
   static flags = {
-    help: flags.help({char: 'h'}),
     name: flags.string({char: 'n', description: 'change the client name'}),
     url: flags.string({description: 'change the client redirect URL'})
   }

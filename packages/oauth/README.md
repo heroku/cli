@@ -53,7 +53,6 @@ USAGE
   $ heroku authorizations
 
 OPTIONS
-  -h, --help  show CLI help
   -j, --json  output in json format
 
 EXAMPLE
@@ -74,7 +73,6 @@ OPTIONS
   -S, --short                    only output token
   -d, --description=description  set a custom authorization
   -e, --expires-in=expires-in    set expiration in seconds (default no expiration)
-  -h, --help                     show CLI help
   -j, --json                     output in json format
   -s, --scope=scope              set custom OAuth scopes
 
@@ -93,7 +91,6 @@ USAGE
   $ heroku authorizations:info ID
 
 OPTIONS
-  -h, --help  show CLI help
   -j, --json  output in json format
 ```
 
@@ -149,7 +146,6 @@ USAGE
   $ heroku clients
 
 OPTIONS
-  -h, --help  show CLI help
   -j, --json  output in json format
 ```
 
@@ -164,7 +160,6 @@ USAGE
   $ heroku clients:create NAME REDIRECT_URI
 
 OPTIONS
-  -h, --help   show CLI help
   -j, --json   output in json format
   -s, --shell  output in shell format
 
@@ -194,7 +189,6 @@ USAGE
   $ heroku clients:info ID
 
 OPTIONS
-  -h, --help   show CLI help
   -j, --json   output in json format
   -s, --shell  output in shell format
 
@@ -213,7 +207,6 @@ USAGE
   $ heroku clients:rotate ID
 
 OPTIONS
-  -h, --help   show CLI help
   -j, --json   output in json format
   -s, --shell  output in shell format
 ```
@@ -229,7 +222,6 @@ USAGE
   $ heroku clients:update ID
 
 OPTIONS
-  -h, --help       show CLI help
   -n, --name=name  change the client name
   --url=url        change the client redirect URL
 

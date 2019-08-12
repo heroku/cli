@@ -12,7 +12,6 @@ export default class ClientsCreate extends Command {
   ]
 
   static flags = {
-    help: flags.help({char: 'h'}),
     json: flags.boolean({char: 'j', description: 'output in json format'}),
     shell: flags.boolean({char: 's', description: 'output in shell format'})
   }
