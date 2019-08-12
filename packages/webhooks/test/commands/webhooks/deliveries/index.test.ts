@@ -116,6 +116,7 @@ describe('webhooks:deliveries', () => {
       .it('only shows 1000 webhook deliveries', ctx => {
         let expectedHeader = 'Delivery ID                          Created              Status  Include   Level  Attempts Code Error Next Attempt'
         let expectedRow = '66666666-6666-6666-6666-666666666666 2017-08-17T20:22:38Z pending api:build notify 4'
+        let angleBrackets = process.platform === 'win32' ? '»' : '›'
         const rows = ctx.stdout.split('\n')
 
         const headerRowCount = 1
@@ -126,7 +127,7 @@ describe('webhooks:deliveries', () => {
         expect(rows[0].trim()).to.equal(expectedHeader)
         expect(rows[1].trim()).to.equal(expectedRow)
 
-        expect(ctx.stderr).to.equal(' ›   Warning: Only showing the 1000 most recent deliveries\n ›   Warning: It is possible to filter deliveries by using the --status flag\n')
+        expect(ctx.stderr).to.include(` ${angleBrackets}   Warning: Only showing the 1000 most recent deliveries\n ${angleBrackets}   Warning: It is possible to filter deliveries by using the --status flag\n`)
       })
 
     test

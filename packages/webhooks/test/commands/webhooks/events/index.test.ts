@@ -2,7 +2,7 @@ import {expect, test} from '@oclif/test'
 import { addDays, parse } from 'date-fns'
 
 describe('webhooks:events', () => {
-  const deprecationWarning = ' ›   Warning: heroku webhooks:event is deprecated, please use heroku webhooks:deliveries\n'
+  const deprecationWarning = 'Warning: heroku webhooks:event is deprecated, please use heroku webhooks:deliveries\n'
 
   describe('app webhooks', () => {
     const appWebhookEventsPath = '/apps/example-app/webhook-events'
@@ -23,7 +23,7 @@ describe('webhooks:events', () => {
       )
       .command(['webhooks:events', '--app', 'example-app'])
       .it('lists app webhook events', ctx => {
-        expect(ctx.stderr).to.equal(deprecationWarning)
+        expect(ctx.stderr).to.include(deprecationWarning)
         expect(ctx.stdout).to.equal(`Event ID                             Resource    Action Published At         
 99999999-9999-9999-9999-999999999999 api:release create 2016-08-31T21:55:06Z 
 `)
@@ -38,7 +38,7 @@ describe('webhooks:events', () => {
       )
       .command(['webhooks:events', '--app', 'example-app'])
       .it('displays an empty events message', ctx => {
-        expect(ctx.stderr).to.equal(deprecationWarning)
+        expect(ctx.stderr).to.include(deprecationWarning)
         expect(ctx.stdout).to.equal('example-app has no events\n')
       })
   })
@@ -62,7 +62,7 @@ describe('webhooks:events', () => {
       )
       .command(['webhooks:events', '--pipeline', 'example-pipeline'])
       .it('lists pipeline webhook events', ctx => {
-        expect(ctx.stderr).to.equal(deprecationWarning)
+        expect(ctx.stderr).to.include(deprecationWarning)
         expect(ctx.stdout).to.equal(`Event ID                             Resource    Action Published At         
 99999999-9999-9999-9999-999999999999 api:release create 2016-08-31T21:55:06Z 
 `)
@@ -77,7 +77,7 @@ describe('webhooks:events', () => {
       )
       .command(['webhooks:events', '--pipeline', 'example-pipeline'])
       .it('displays an empty events message', ctx => {
-        expect(ctx.stderr).to.equal(deprecationWarning)
+        expect(ctx.stderr).to.include(deprecationWarning)
         expect(ctx.stdout).to.equal('example-pipeline has no events\n')
       })
   })
@@ -133,7 +133,7 @@ describe('webhooks:events', () => {
       )
       .command(['webhooks:events', '--app', 'example-app'])
       .it('displays webhooks sorted by `created_at`', ctx => {
-        expect(ctx.stderr).to.equal(deprecationWarning)
+        expect(ctx.stderr).to.include(deprecationWarning)
 
         // Note: The table is sorted by `created_at` date even though
         // it is not displayed in the table
