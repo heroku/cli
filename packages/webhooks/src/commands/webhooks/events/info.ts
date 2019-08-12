@@ -13,7 +13,7 @@ export default class Info extends Command {
   static flags = {
     app: flags.app(),
     remote: flags.remote(),
-    pipeline: flags.string({char: 'p', description: 'pipeline on which to list', hidden: true})
+    pipeline: flags.pipeline({char: 'p', description: 'pipeline on which to list', hidden: true})
   }
 
   static args = [

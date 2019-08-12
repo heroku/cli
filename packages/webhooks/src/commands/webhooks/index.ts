@@ -12,7 +12,7 @@ export default class Webhooks extends Command {
   static flags = {
     app: flags.app(),
     remote: flags.remote(),
-    pipeline: flags.string({
+    pipeline: flags.pipeline({
       char: 'p',
       description:
       'pipeline on which to list',

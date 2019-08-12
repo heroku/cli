@@ -14,7 +14,7 @@ export default class Deliveries extends Command {
     app: flags.app(),
     remote: flags.remote(),
     status: flags.string({char: 's', description: 'filter deliveries by status'}),
-    pipeline: flags.string({char: 'p', description: 'pipeline on which to list', hidden: true})
+    pipeline: flags.pipeline({char: 'p', description: 'pipeline on which to list', hidden: true})
   }
 
   async run() {

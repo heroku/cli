@@ -13,7 +13,7 @@ export default class WebhooksAdd extends Command {
   static flags = {
     app: flags.app(),
     remote: flags.remote(),
-    pipeline: flags.string({char: 'p', description: 'pipeline on which to list', hidden: true}),
+    pipeline: flags.pipeline({char: 'p', description: 'pipeline on which to list', hidden: true}),
     include: flags.string({char: 'i', description: 'comma delimited event types your server will receive ', required: true}),
     level: flags.string({char: 'l', description: 'notify does not retry, sync will retry until successful or timeout', required: true}),
     secret: flags.string({char: 's', description: 'value to sign delivery with in Heroku-Webhook-Hmac-SHA256 header'}),
