@@ -17,7 +17,7 @@ export default class Info extends Command {
   }
 
   static args = [
-    {name: 'id'}
+    {name: 'id', required: true}
   ]
 
   async run() {

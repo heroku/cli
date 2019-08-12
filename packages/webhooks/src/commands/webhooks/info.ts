@@ -14,7 +14,7 @@ export default class WebhooksInfo extends Command {
     pipeline: flags.string({char: 'p', description: 'pipeline on which to list', hidden: true})
   }
 
-  static args = [{name: 'id'}]
+  static args = [{name: 'id', required: true}]
 
   async run() {
     const {flags, args} = this.parse(WebhooksInfo)
