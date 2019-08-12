@@ -126,7 +126,7 @@ describe('webhooks:deliveries', () => {
         expect(rows[0].trim()).to.equal(expectedHeader)
         expect(rows[1].trim()).to.equal(expectedRow)
 
-        expect(ctx.stderr).to.equal(' ›   Warning: Only showing the 1000 most recent deliveries\n ›   Warning: It is possible to filter deliveries by using the --status flag\n')
+        expect(ctx.stderr).to.include('Warning: Only showing the 1000 most recent deliveries\n ›   Warning: It is possible to filter deliveries by using the --status flag\n')
       })
 
     test
