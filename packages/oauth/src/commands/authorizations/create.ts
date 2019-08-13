@@ -33,6 +33,8 @@ export default class AuthorizationsCreate extends Command {
       }
     })
 
+    cli.action.stop()
+
     if (flags.short) {
       cli.log(auth.access_token && auth.access_token.token)
     } else if (flags.json) {
@@ -40,7 +42,5 @@ export default class AuthorizationsCreate extends Command {
     } else {
       display(auth)
     }
-
-    cli.action.stop()
   }
 }

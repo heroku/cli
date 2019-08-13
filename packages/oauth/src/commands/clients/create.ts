@@ -33,13 +33,13 @@ export default class ClientsCreate extends Command {
       body: {name, redirect_uri}
     })
 
+    cli.action.stop()
+
     if (flags.json) {
       cli.styledJSON(client)
     } else {
       cli.log(`HEROKU_OAUTH_ID=${client.id}`)
       cli.log(`HEROKU_OAUTH_SECRET=${client.secret}`)
     }
-
-    cli.action.stop()
   }
 }
