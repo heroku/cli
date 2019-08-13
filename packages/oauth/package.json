@@ -43,7 +43,7 @@
     "/npm-shrinkwrap.json",
     "/oclif.manifest.json"
   ],
-  "homepage": "https://github.com/heroku/cli",
+  "homepage": "https://github.com/heroku/cli/tree/master/packages/oauth",
   "keywords": [
     "oclif"
   ],
