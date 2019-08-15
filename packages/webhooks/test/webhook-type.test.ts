@@ -1,4 +1,5 @@
 import {expect, test} from '@oclif/test'
+
 import webhookType from '../src/webhook-type'
 
 describe('webhooks type', () => {

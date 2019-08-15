@@ -1,7 +1,6 @@
 import {flags} from '@heroku-cli/command'
 import {cli} from 'cli-ux'
 
-import webhookType from '../../webhook-type'
 import BaseCommand from '../base'
 
 export default class WebhooksAdd extends BaseCommand {
@@ -24,7 +23,7 @@ export default class WebhooksAdd extends BaseCommand {
 
   async run() {
     const {flags} = this.parse(WebhooksAdd)
-    const {path, display} = webhookType(flags)
+    const {path, display} = this.webhookType(flags)
 
     cli.action.start(`Adding webhook to ${display}`, undefined)
 

@@ -1,7 +1,6 @@
 import {flags} from '@heroku-cli/command'
 import {cli} from 'cli-ux'
 
-import webhookType from '../../../webhook-type'
 import BaseCommand from '../../base'
 
 export default class EventsIndex extends BaseCommand {
@@ -19,7 +18,7 @@ export default class EventsIndex extends BaseCommand {
 
   async run() {
     const {flags} = this.parse(EventsIndex)
-    const {path, display} = webhookType(flags)
+    const {path, display} = this.webhookType(flags)
 
     cli.warn('heroku webhooks:event is deprecated, please use heroku webhooks:deliveries')
 

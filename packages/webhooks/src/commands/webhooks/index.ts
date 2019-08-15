@@ -2,7 +2,6 @@ import color from '@heroku-cli/color'
 import {flags} from '@heroku-cli/command'
 import {cli} from 'cli-ux'
 
-import webhookType from '../../webhook-type'
 import BaseCommand from '../base'
 
 export default class Webhooks extends BaseCommand {
@@ -23,7 +22,7 @@ export default class Webhooks extends BaseCommand {
 
   async run() {
     const {flags} = this.parse(Webhooks)
-    const {path, display} = webhookType(flags)
+    const {path, display} = this.webhookType(flags)
 
     const {body} = await this.httpClient.get(`${path}/webhooks`)
     const webhooks = body

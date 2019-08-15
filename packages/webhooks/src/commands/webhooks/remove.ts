@@ -1,7 +1,6 @@
 import {flags} from '@heroku-cli/command'
 import {cli} from 'cli-ux'
 
-import webhookType from '../../webhook-type'
 import BaseCommand from '../base'
 export default class WebhooksRemove extends BaseCommand {
   static description = 'removes a webhook from an app'
@@ -22,7 +21,7 @@ export default class WebhooksRemove extends BaseCommand {
 
   async run() {
     const {flags, args} = this.parse(WebhooksRemove)
-    const {path, display} = webhookType(flags)
+    const {path, display} = this.webhookType(flags)
 
     cli.action.start(`Removing webhook ${args.id} from ${display}`)
 

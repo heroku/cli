@@ -1,7 +1,6 @@
 import {flags} from '@heroku-cli/command'
 import {cli} from 'cli-ux'
 
-import webhookType from '../../../webhook-type'
 import BaseCommand from '../../base'
 
 export default class DeliveriesInfo extends BaseCommand {
@@ -23,7 +22,7 @@ export default class DeliveriesInfo extends BaseCommand {
 
   async run() {
     const {flags, args} = this.parse(DeliveriesInfo)
-    const {path} = webhookType(flags)
+    const {path} = this.webhookType(flags)
 
     const {body} = await this.httpClient.get(`${path}/webhook-deliveries/${args.id}`)
     const delivery = body

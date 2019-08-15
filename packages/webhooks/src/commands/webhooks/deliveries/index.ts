@@ -1,7 +1,6 @@
 import {flags} from '@heroku-cli/command'
 import {cli} from 'cli-ux'
 
-import webhookType from '../../../webhook-type'
 import BaseCommand from '../../base'
 
 export default class Deliveries extends BaseCommand {
@@ -20,7 +19,7 @@ export default class Deliveries extends BaseCommand {
 
   async run() {
     const {flags} = this.parse(Deliveries)
-    let {path, display} = webhookType(flags)
+    let {path, display} = this.webhookType(flags)
     const max = 1000
 
     path = `${path}/webhook-deliveries`
