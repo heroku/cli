@@ -16,6 +16,7 @@ describe('authorizations:create', () => {
       expect(ctx.stdout).to.contain('Client:      <none>\n')
       expect(ctx.stdout).to.contain('Scope:       global\n')
       expect(ctx.stdout).to.contain('Token:       secrettoken\n')
+      expect(ctx.stderr).to.contain('Creating OAuth Authorization... done')
     })
 
   context('with short flag', () => {
