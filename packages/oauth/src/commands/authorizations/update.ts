@@ -38,8 +38,8 @@ export default class AuthorizationsUpdate extends Command {
       }
     )
 
-    display(authentication)
-
     cli.action.stop()
+
+    display(authentication)
   }
 }

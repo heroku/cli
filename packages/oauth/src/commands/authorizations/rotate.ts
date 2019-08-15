@@ -18,8 +18,8 @@ export default class AuthorizationsRotate extends Command {
       `/oauth/authorizations/${encodeURIComponent(args.id)}/actions/regenerate-tokens`
     )
 
-    display(authorization)
-
     cli.action.stop()
+
+    display(authorization)
   }
 }

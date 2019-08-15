@@ -22,6 +22,8 @@ export default class ClientsRotate extends Command {
       `/oauth/clients/${encodeURIComponent(args.id)}/actions/rotate-credentials`
     )
 
+    cli.action.stop()
+
     if (flags.json) {
       cli.styledJSON(client)
     } else if (flags.shell) {
@@ -31,7 +33,5 @@ export default class ClientsRotate extends Command {
       cli.styledHeader(`${client.name}`)
       cli.styledObject(client)
     }
-
-    cli.action.stop()
   }
 }
