@@ -2,6 +2,7 @@ import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {cli} from 'cli-ux'
+const sortBy = require('lodash.sortby')
 
 export default class ClientsIndex extends Command {
   static description = 'list your OAuth clients'
@@ -15,7 +16,6 @@ export default class ClientsIndex extends Command {
 
     let {body: clients} = await this.heroku.get<Array<Heroku.OAuthClient>>('/oauth/clients')
 
-    let sortBy = require('lodash.sortby')
     clients = sortBy(clients, 'name')
 
     if (flags.json) {

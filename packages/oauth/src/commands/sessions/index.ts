@@ -3,6 +3,7 @@ import {Command, flags} from '@heroku-cli/command'
 import {cli} from 'cli-ux'
 
 import {OAuthSession} from '../../lib/sessions'
+const sortBy = require('lodash.sortby')
 
 export default class SessionsIndex extends Command {
   static description = 'list your OAuth sessions'
@@ -16,7 +17,6 @@ export default class SessionsIndex extends Command {
 
     let {body: sessions} = await this.heroku.get<Array<OAuthSession>>('/oauth/sessions')
 
-    let sortBy = require('lodash.sortby')
     sessions = sortBy(sessions, 'description')
 
     if (flags.json) {
