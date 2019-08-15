@@ -21,7 +21,7 @@ export default class WebhooksRemove extends Command {
 
   async run() {
     const {flags, args} = this.parse(WebhooksRemove)
-    let {path, display} = webhookType(flags)
+    const {path, display} = webhookType(flags)
 
     cli.action.start(`Removing webhook ${args.id} from ${display}`)
 

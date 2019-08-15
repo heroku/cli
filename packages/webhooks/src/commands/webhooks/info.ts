@@ -18,14 +18,14 @@ export default class WebhooksInfo extends Command {
 
   async run() {
     const {flags, args} = this.parse(WebhooksInfo)
-    let {path} = webhookType(flags)
+    const {path} = webhookType(flags)
 
-    let {body} = await this.heroku.get(`${path}/webhooks/${args.id}`, {
+    const {body} = await this.heroku.get(`${path}/webhooks/${args.id}`, {
       headers: {Accept: 'application/vnd.heroku+json; version=3.webhooks'}
     })
-    let webhook = body
+    const webhook = body
 
-    let obj = {
+    const obj = {
       'Webhook ID': webhook.id,
       URL: webhook.url,
       Include: webhook.include.join(','),

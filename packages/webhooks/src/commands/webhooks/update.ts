@@ -27,7 +27,7 @@ export default class WebhooksUpdate extends Command {
 
   async run() {
     const {flags, args} = this.parse(WebhooksUpdate)
-    let {path, display} = webhookType(flags)
+    const {path, display} = webhookType(flags)
 
     cli.action.start(`Updating webhook ${args.id} for ${display}`)
 

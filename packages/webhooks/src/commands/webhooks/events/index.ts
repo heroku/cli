@@ -18,14 +18,14 @@ export default class EventsIndex extends Command {
 
   async run() {
     const {flags} = this.parse(EventsIndex)
-    let {path, display} = webhookType(flags)
+    const {path, display} = webhookType(flags)
 
     cli.warn('heroku webhooks:event is deprecated, please use heroku webhooks:deliveries')
 
-    let {body} = await this.heroku.get(`${path}/webhook-events`, {
+    const {body} = await this.heroku.get(`${path}/webhook-events`, {
       headers: {Accept: 'application/vnd.heroku+json; version=3.webhooks'}
     })
-    let events = body
+    const events = body
 
     if (events.length === 0) {
       cli.log(`${display} has no events`)
@@ -37,6 +37,8 @@ export default class EventsIndex extends Command {
         resource: {header: 'Resource', get: (w: any) => w.payload.resource},
         action: {header: 'Action', get: (w: any) => w.payload.action},
         published_at: {header: 'Published At', get: (w: any) => w.payload.published_at}
+      }, {
+        printLine: this.log
       })
     }
   }

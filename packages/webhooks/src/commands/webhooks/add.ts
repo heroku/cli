@@ -23,11 +23,11 @@ export default class WebhooksAdd extends Command {
 
   async run() {
     const {flags} = this.parse(WebhooksAdd)
-    let {path, display} = webhookType(flags)
+    const {path, display} = webhookType(flags)
 
     cli.action.start(`Adding webhook to ${display}`, undefined)
 
-    let secret = await this.heroku.post(`${path}/webhooks`, {
+    const secret = await this.heroku.post(`${path}/webhooks`, {
         headers: {Accept: 'application/vnd.heroku+json; version=3.webhooks'},
         body: {
           include: flags.include.split(',').map(s => s.trim()),

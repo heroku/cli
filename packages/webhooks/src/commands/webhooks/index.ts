@@ -22,12 +22,12 @@ export default class Webhooks extends Command {
 
   async run() {
     const {flags} = this.parse(Webhooks)
-    let {path, display} = webhookType(flags)
+    const {path, display} = webhookType(flags)
 
-    let {body} = await this.heroku.get(`${path}/webhooks`, {
+    const {body} = await this.heroku.get(`${path}/webhooks`, {
       headers: {Accept: 'application/vnd.heroku+json; version=3.webhooks'}
     })
-    let webhooks = body
+    const webhooks = body
 
     if (webhooks.length === 0) {
       cli.log(`${display} has no webhooks\nUse ${color.cmd('heroku webhooks:add')} to add one.`)
@@ -41,6 +41,8 @@ export default class Webhooks extends Command {
       url: {header: 'URL'},
       include: {header: 'Include', get: (row: any) => row.include.join(',')},
       level: {header: 'Level'}
+    }, {
+      printLine: this.log
     })
   }
 }

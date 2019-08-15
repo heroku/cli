@@ -22,19 +22,19 @@ export default class DeliveriesInfo extends Command {
 
   async run() {
     const {flags, args} = this.parse(DeliveriesInfo)
-    let {path} = webhookType(flags)
+    const {path} = webhookType(flags)
 
-    let {body} = await this.heroku.get(`${path}/webhook-deliveries/${args.id}`, {
+    const {body} = await this.heroku.get(`${path}/webhook-deliveries/${args.id}`, {
       headers: {Accept: 'application/vnd.heroku+json; version=3.webhooks'}
     })
-    let delivery = body
+    const delivery = body
 
-    let res = await this.heroku.get(`${path}/webhook-events/${delivery.event.id}`, {
+    const res = await this.heroku.get(`${path}/webhook-events/${delivery.event.id}`, {
       headers: {Accept: 'application/vnd.heroku+json; version=3.webhooks'}
     })
-    let event: any = res.body
+    const event: any = res.body
 
-    let obj = {
+    const obj = {
       Created: delivery.created_at,
       Event: delivery.event.id,
       Webhook: delivery.webhook.id,

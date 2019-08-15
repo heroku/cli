@@ -20,21 +20,21 @@ export default class Deliveries extends Command {
   async run() {
     const {flags} = this.parse(Deliveries)
     let {path, display} = webhookType(flags)
-    let max = 1000
+    const max = 1000
 
     path = `${path}/webhook-deliveries`
     if (flags.status) {
       path += `?eq[status]=${encodeURIComponent(flags.status)}`
     }
 
-    let {body} = await this.heroku.get(path, {
+    const {body} = await this.heroku.get(path, {
       headers: {
         Accept: 'application/vnd.heroku+json; version=3.webhooks',
         Range: `seq ..; order=desc,max=${max}`
       },
       partial: true
     })
-    let deliveries = body
+    const deliveries = body
 
     if (deliveries.length === 0) {
       cli.log(`${display} has no deliveries`)
@@ -59,7 +59,9 @@ export default class Deliveries extends Command {
         num_attempts: {header: 'Attempts', get: (w: any) => String(w.num_attempts)},
         last_code: {header: 'Code', get: code},
         last_error: {header: 'Error', get: (w: any) => (w.last_attempt && w.last_attempt.error_class) || ''},
-        next_attempt_at: {header: 'Next Attempt', get: (w: any) => w.next_attempt_at || ''}
+        next_attempt_at: {header: 'Next Attempt', get: (w: any) => w.next_attempt_at || ''},
+      }, {
+        printLine: this.log
       })
     }
   }
