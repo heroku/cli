@@ -1,9 +1,10 @@
-import {Command, flags} from '@heroku-cli/command'
+import {flags} from '@heroku-cli/command'
 import {cli} from 'cli-ux'
 
 import webhookType from '../../webhook-type'
+import BaseCommand from '../base'
 
-export default class WebhooksInfo extends Command {
+export default class WebhooksInfo extends BaseCommand {
   static description = 'info for a webhook on an app'
 
   static example = ['$ heroku webhooks:info 99999999-9999-9999-9999-999999999999']
@@ -20,9 +21,7 @@ export default class WebhooksInfo extends Command {
     const {flags, args} = this.parse(WebhooksInfo)
     const {path} = webhookType(flags)
 
-    const {body} = await this.heroku.get(`${path}/webhooks/${args.id}`, {
-      headers: {Accept: 'application/vnd.heroku+json; version=3.webhooks'}
-    })
+    const {body} = await this.httpClient.get(`${path}/webhooks/${args.id}`)
     const webhook = body
 
     const obj = {

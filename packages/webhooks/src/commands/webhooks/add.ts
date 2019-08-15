@@ -1,9 +1,10 @@
-import {Command, flags} from '@heroku-cli/command'
+import {flags} from '@heroku-cli/command'
 import {cli} from 'cli-ux'
 
 import webhookType from '../../webhook-type'
+import BaseCommand from '../base'
 
-export default class WebhooksAdd extends Command {
+export default class WebhooksAdd extends BaseCommand {
   static description = 'add a webhook to an app'
 
   static examples = [
@@ -27,8 +28,7 @@ export default class WebhooksAdd extends Command {
 
     cli.action.start(`Adding webhook to ${display}`, undefined)
 
-    const secret = await this.heroku.post(`${path}/webhooks`, {
-        headers: {Accept: 'application/vnd.heroku+json; version=3.webhooks'},
+    const secret = await this.httpClient.post(`${path}/webhooks`, {
         body: {
           include: flags.include.split(',').map(s => s.trim()),
           level: flags.level,

@@ -1,9 +1,10 @@
-import {Command, flags} from '@heroku-cli/command'
+import {flags} from '@heroku-cli/command'
 import {cli} from 'cli-ux'
 
 import webhookType from '../../../webhook-type'
+import BaseCommand from '../../base'
 
-export default class DeliveriesInfo extends Command {
+export default class DeliveriesInfo extends BaseCommand {
   static description = 'info for a webhook event on an app'
 
   static examples = [
@@ -24,14 +25,10 @@ export default class DeliveriesInfo extends Command {
     const {flags, args} = this.parse(DeliveriesInfo)
     const {path} = webhookType(flags)
 
-    const {body} = await this.heroku.get(`${path}/webhook-deliveries/${args.id}`, {
-      headers: {Accept: 'application/vnd.heroku+json; version=3.webhooks'}
-    })
+    const {body} = await this.httpClient.get(`${path}/webhook-deliveries/${args.id}`)
     const delivery = body
 
-    const res = await this.heroku.get(`${path}/webhook-events/${delivery.event.id}`, {
-      headers: {Accept: 'application/vnd.heroku+json; version=3.webhooks'}
-    })
+    const res = await this.httpClient.get(`${path}/webhook-events/${delivery.event.id}`)
     const event: any = res.body
 
     const obj = {

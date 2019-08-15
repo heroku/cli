@@ -1,9 +1,10 @@
-import {Command, flags} from '@heroku-cli/command'
+import {flags} from '@heroku-cli/command'
 import {cli} from 'cli-ux'
 
 import webhookType from '../../../webhook-type'
+import BaseCommand from '../../base'
 
-export default class Deliveries extends Command {
+export default class Deliveries extends BaseCommand {
   static description = 'list webhook deliveries on an app'
 
   static examples = [
@@ -27,9 +28,8 @@ export default class Deliveries extends Command {
       path += `?eq[status]=${encodeURIComponent(flags.status)}`
     }
 
-    const {body} = await this.heroku.get(path, {
+    const {body} = await this.httpClient.get(path, {
       headers: {
-        Accept: 'application/vnd.heroku+json; version=3.webhooks',
         Range: `seq ..; order=desc,max=${max}`
       },
       partial: true

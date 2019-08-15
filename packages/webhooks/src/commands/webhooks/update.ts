@@ -1,9 +1,10 @@
-import {Command, flags} from '@heroku-cli/command'
+import {flags} from '@heroku-cli/command'
 import {cli} from 'cli-ux'
 
 import webhookType from '../../webhook-type'
+import BaseCommand from '../base'
 
-export default class WebhooksUpdate extends Command {
+export default class WebhooksUpdate extends BaseCommand {
   static description = 'updates a webhook in an app'
 
   static examples = [
@@ -31,8 +32,7 @@ export default class WebhooksUpdate extends Command {
 
     cli.action.start(`Updating webhook ${args.id} for ${display}`)
 
-    await this.heroku.patch(`${path}/webhooks/${args.id}`, {
-      headers: {Accept: 'application/vnd.heroku+json; version=3.webhooks'},
+    await this.httpClient.patch(`${path}/webhooks/${args.id}`, {
       body: {
         include: flags.include && flags.include.split(',').map(s => s.trim()),
         level: flags.level,

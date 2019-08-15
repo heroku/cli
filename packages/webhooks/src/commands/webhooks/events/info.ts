@@ -1,9 +1,10 @@
-import {Command, flags} from '@heroku-cli/command'
+import {flags} from '@heroku-cli/command'
 import {cli} from 'cli-ux'
 
 import webhookType from '../../../webhook-type'
+import BaseCommand from '../../base'
 
-export default class Info extends Command {
+export default class Info extends BaseCommand {
   static description = 'info for a webhook event on an app'
 
   static examples = [
@@ -26,9 +27,7 @@ export default class Info extends Command {
 
     cli.warn('heroku webhooks:event:info is deprecated, please use heroku webhooks:deliveries:info')
 
-    const {body} = await this.heroku.get(`${path}/webhook-events/${args.id}`, {
-      headers: {Accept: 'application/vnd.heroku+json; version=3.webhooks'}
-    })
+    const {body} = await this.httpClient.get(`${path}/webhook-events/${args.id}`)
     const webhookEvent = body
 
     const obj = {

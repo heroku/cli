@@ -1,8 +1,9 @@
-import {Command, flags} from '@heroku-cli/command'
+import {flags} from '@heroku-cli/command'
 import {cli} from 'cli-ux'
 
 import webhookType from '../../webhook-type'
-export default class WebhooksRemove extends Command {
+import BaseCommand from '../base'
+export default class WebhooksRemove extends BaseCommand {
   static description = 'removes a webhook from an app'
 
   static examples = [
@@ -25,9 +26,7 @@ export default class WebhooksRemove extends Command {
 
     cli.action.start(`Removing webhook ${args.id} from ${display}`)
 
-    await this.heroku.delete(`${path}/webhooks/${args.id}`, {
-      headers: {Accept: 'application/vnd.heroku+json; version=3.webhooks'}
-    })
+    await this.httpClient.delete(`${path}/webhooks/${args.id}`)
 
     cli.action.stop()
   }
