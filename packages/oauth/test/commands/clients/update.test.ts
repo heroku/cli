@@ -3,7 +3,6 @@ import {expect, test} from '@oclif/test'
 describe('clients:update', () => {
   context('with a name flag', () => {
     test
-      .stdout()
       .stderr()
       .nock('https://api.heroku.com', api => {
         api.patch('/oauth/clients/f6e8d969-129f-42d2-854b-c2eca9d5a42e', {name: 'newname'})
@@ -22,7 +21,6 @@ describe('clients:update', () => {
 
   context('with a url flag', () => {
     test
-      .stdout()
       .stderr()
       .nock('https://api.heroku.com', api => {
         api.patch('/oauth/clients/f6e8d969-129f-42d2-854b-c2eca9d5a42e', {redirect_uri: 'https://heroku.com'})

@@ -17,7 +17,6 @@ describe('authorizations:revoke', () => {
 
   context('without an ID argument', () => {
     test
-      .stderr()
       .command(['authorizations:revoke'])
       .catch(e => expect(e.message).to.equal(
         'Missing 1 required arg:\nid\nSee more help with --help'

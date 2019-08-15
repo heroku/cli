@@ -4,7 +4,6 @@ describe('authorizations:create', () => {
   const testWithAuthorizationsCreate = (requestBody = {}) =>
     test
       .stdout()
-      .stderr()
       .nock('https://api.heroku.com:443', api => {
         api
           .post('/oauth/authorizations', requestBody)
