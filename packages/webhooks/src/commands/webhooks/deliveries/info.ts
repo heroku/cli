@@ -24,11 +24,9 @@ export default class DeliveriesInfo extends BaseCommand {
     const {flags, args} = this.parse(DeliveriesInfo)
     const {path} = this.webhookType(flags)
 
-    const {body} = await this.httpClient.get(`${path}/webhook-deliveries/${args.id}`)
-    const delivery = body
+    const {body: delivery} = await this.webhooksClient.get(`${path}/webhook-deliveries/${args.id}`)
 
-    const res = await this.httpClient.get(`${path}/webhook-events/${delivery.event.id}`)
-    const event: any = res.body
+    const {body: event} = await this.webhooksClient.get(`${path}/webhook-events/${delivery.event.id}`)
 
     const obj = {
       Created: delivery.created_at,

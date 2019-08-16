@@ -7,7 +7,7 @@ type ContextArgument = {pipeline: string | undefined; app: string | undefined}
 type WebhookType = {path: string, display: string}
 
 export default abstract class extends Command {
-  httpClient: APIClient
+  webhooksClient: APIClient
 
   protected constructor(argv: string[], config: IConfig) {
     super(argv, config)
@@ -18,7 +18,7 @@ export default abstract class extends Command {
       Accept: 'application/vnd.heroku+json; version=3.webhooks',
       authorization: `Basic ${Buffer.from(':' + this.heroku.auth).toString('base64')}`
     }
-    this.httpClient = client
+    this.webhooksClient = client
   }
 
   webhookType(context: ContextArgument): WebhookType {

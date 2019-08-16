@@ -24,8 +24,7 @@ export default class Webhooks extends BaseCommand {
     const {flags} = this.parse(Webhooks)
     const {path, display} = this.webhookType(flags)
 
-    const {body} = await this.httpClient.get(`${path}/webhooks`)
-    const webhooks = body
+    const {body: webhooks} = await this.webhooksClient.get(`${path}/webhooks`)
 
     if (webhooks.length === 0) {
       cli.log(`${display} has no webhooks\nUse ${color.cmd('heroku webhooks:add')} to add one.`)

@@ -25,7 +25,7 @@ export default class WebhooksRemove extends BaseCommand {
 
     cli.action.start(`Removing webhook ${args.id} from ${display}`)
 
-    await this.httpClient.delete(`${path}/webhooks/${args.id}`)
+    await this.webhooksClient.delete(`${path}/webhooks/${args.id}`)
 
     cli.action.stop()
   }

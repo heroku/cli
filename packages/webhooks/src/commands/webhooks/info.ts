@@ -20,8 +20,7 @@ export default class WebhooksInfo extends BaseCommand {
     const {flags, args} = this.parse(WebhooksInfo)
     const {path} = this.webhookType(flags)
 
-    const {body} = await this.httpClient.get(`${path}/webhooks/${args.id}`)
-    const webhook = body
+    const {body: webhook} = await this.webhooksClient.get(`${path}/webhooks/${args.id}`)
 
     const obj = {
       'Webhook ID': webhook.id,

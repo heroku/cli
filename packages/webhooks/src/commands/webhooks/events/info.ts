@@ -26,8 +26,7 @@ export default class Info extends BaseCommand {
 
     cli.warn('heroku webhooks:event:info is deprecated, please use heroku webhooks:deliveries:info')
 
-    const {body} = await this.httpClient.get(`${path}/webhook-events/${args.id}`)
-    const webhookEvent = body
+    const {body: webhookEvent} = await this.webhooksClient.get(`${path}/webhook-events/${args.id}`)
 
     const obj = {
       payload: JSON.stringify(webhookEvent.payload, null, 2)

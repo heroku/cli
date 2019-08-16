@@ -27,7 +27,7 @@ export default class WebhooksAdd extends BaseCommand {
 
     cli.action.start(`Adding webhook to ${display}`, undefined)
 
-    const secret = await this.httpClient.post(`${path}/webhooks`, {
+    const secret = await this.webhooksClient.post(`${path}/webhooks`, {
         body: {
           include: flags.include.split(',').map(s => s.trim()),
           level: flags.level,

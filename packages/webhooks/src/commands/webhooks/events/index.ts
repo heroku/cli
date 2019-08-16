@@ -22,8 +22,7 @@ export default class EventsIndex extends BaseCommand {
 
     cli.warn('heroku webhooks:event is deprecated, please use heroku webhooks:deliveries')
 
-    const {body} = await this.httpClient.get(`${path}/webhook-events`)
-    const events = body
+    const {body: events} = await this.webhooksClient.get(`${path}/webhook-events`)
 
     if (events.length === 0) {
       cli.log(`${display} has no events`)

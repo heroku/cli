@@ -27,13 +27,12 @@ export default class Deliveries extends BaseCommand {
       path += `?eq[status]=${encodeURIComponent(flags.status)}`
     }
 
-    const {body} = await this.httpClient.get(path, {
+    const {body: deliveries} = await this.webhooksClient.get(path, {
       headers: {
         Range: `seq ..; order=desc,max=${max}`
       },
       partial: true
     })
-    const deliveries = body
 
     if (deliveries.length === 0) {
       cli.log(`${display} has no deliveries`)

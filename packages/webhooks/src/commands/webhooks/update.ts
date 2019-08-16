@@ -31,7 +31,7 @@ export default class WebhooksUpdate extends BaseCommand {
 
     cli.action.start(`Updating webhook ${args.id} for ${display}`)
 
-    await this.httpClient.patch(`${path}/webhooks/${args.id}`, {
+    await this.webhooksClient.patch(`${path}/webhooks/${args.id}`, {
       body: {
         include: flags.include && flags.include.split(',').map(s => s.trim()),
         level: flags.level,
