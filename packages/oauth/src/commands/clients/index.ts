@@ -27,7 +27,7 @@ export default class ClientsIndex extends Command {
         name: {get: (w: any) => color.green(w.name)},
         id: {},
         redirect_uri: {},
-      }, {'no-header': true})
+      }, {'no-header': true, printLine: this.log})
     }
   }
 }

@@ -27,7 +27,7 @@ export default class SessionsIndex extends Command {
       cli.table(sessions, {
         description: {get: (v: any) => color.green(v.description)},
         id: {},
-      }, {'no-header': true})
+      }, {'no-header': true, printLine: this.log})
     }
   }
 }

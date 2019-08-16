@@ -31,7 +31,7 @@ export default class AuthorizationsIndex extends Command {
         description: {get: (v: any) => color.green(v.description)},
         id: {},
         scope: {get: (v: any) => v.scope.join(',')}
-      }, {'no-header': true})
+      }, {'no-header': true, printLine: this.log})
     }
   }
 }
