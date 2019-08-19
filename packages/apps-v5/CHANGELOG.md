@@ -3,58 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-# [7.26.0](https://github.com/heroku/cli/compare/v7.25.0...v7.26.0) (2019-06-26)
-
-
-### Bug Fixes
-
-* team flag prioritized over org flag ([#1250](https://github.com/heroku/cli/issues/1250)) ([9eda2e6](https://github.com/heroku/cli/commit/9eda2e6))
+      <a name="7.28.0"></a>
+# [7.28.0](https://github.com/heroku/cli/compare/v7.27.1...v7.28.0) (2019-08-19)
 
 
 
-
-
-# [7.24.0](https://github.com/heroku/cli/compare/v7.23.0...v7.24.0) (2019-04-25)
 
 **Note:** Version bump only for package @heroku-cli/plugin-apps-v5
 
-
-
-
-
-## [7.22.7](https://github.com/heroku/cli/compare/v7.22.6...v7.22.7) (2019-03-14)
-
-**Note:** Version bump only for package @heroku-cli/plugin-apps-v5
-
-
-
-
-
-## [7.22.6](https://github.com/heroku/cli/compare/v7.22.5...v7.22.6) (2019-03-14)
-
-**Note:** Version bump only for package @heroku-cli/plugin-apps-v5
-
-
-
-
-
-## [7.22.5](https://github.com/heroku/cli/compare/v7.22.4...v7.22.5) (2019-03-13)
-
-**Note:** Version bump only for package @heroku-cli/plugin-apps-v5
-
-
-
-
-
-## [7.22.4](https://github.com/heroku/cli/compare/v7.22.3...v7.22.4) (2019-03-06)
-
-**Note:** Version bump only for package @heroku-cli/plugin-apps-v5
-
-
-
-
-
-    <a name="7.22.2"></a>
+      <a name="7.22.2"></a>
 ## [7.22.2](https://github.com/heroku/cli/compare/v7.22.1...v7.22.2) (2019-02-28)
 
 
@@ -65,7 +22,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-    <a name="7.16.2"></a>
+  <a name="7.16.2"></a>
 ## [7.16.2](https://github.com/heroku/cli/compare/v7.16.1...v7.16.2) (2018-10-02)
 
 
@@ -110,7 +67,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-  <a name="7.13.0"></a>
+<a name="7.13.0"></a>
 # [7.13.0](https://github.com/heroku/cli/compare/v7.12.6...v7.13.0) (2018-08-30)
 
 

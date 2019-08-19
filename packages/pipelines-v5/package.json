@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-pipelines-v5",
   "description": "pipelines heroku plugin",
-  "version": "7.27.0",
+  "version": "7.28.0",
   "author": "Heroku Developer Experience team",
   "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
