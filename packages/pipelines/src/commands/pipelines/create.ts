@@ -83,6 +83,7 @@ Adding example-staging to example pipeline as staging... done`
 
     // If team or org is not specified, we assign ownership to the user creating
     owner = teamName ? await api.getTeam(this.heroku, teamName) : await api.getAccountInfo(this.heroku)
+    owner = owner.body
     ownerID = owner.id
 
     owner = {id: ownerID, type: ownerType}
