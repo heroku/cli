@@ -25,15 +25,23 @@ export default class EventsIndex extends BaseCommand {
     const {body: events} = await this.webhooksClient.get(`${path}/webhook-events`)
 
     if (events.length === 0) {
-      cli.log(`${display} has no events`)
+      this.log(`${display} has no events`)
     } else {
       events.sort((a: any, b: any) => Date.parse(a.created_at) - Date.parse(b.created_at))
 
       cli.table(events, {
-        id: {header: 'Event ID'},
-        resource: {header: 'Resource', get: (w: any) => w.payload.resource},
-        action: {header: 'Action', get: (w: any) => w.payload.action},
-        published_at: {header: 'Published At', get: (w: any) => w.payload.published_at}
+        id: {
+          header: 'Event ID'
+        },
+        resource: {
+          get: (w: any) => w.payload.resource
+        },
+        action: {
+          get: (w: any) => w.payload.action
+        },
+        published_at: {
+          header: 'Published At', get: (w: any) => w.payload.published_at
+        }
       }, {
         printLine: this.log
       })

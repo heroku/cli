@@ -25,7 +25,7 @@ export default class WebhooksAdd extends BaseCommand {
     const {flags} = this.parse(WebhooksAdd)
     const {path, display} = this.webhookType(flags)
 
-    cli.action.start(`Adding webhook to ${display}`, undefined)
+    cli.action.start(`Adding webhook to ${display}`)
 
     const secret = await this.webhooksClient.post(`${path}/webhooks`, {
         body: {
@@ -43,7 +43,7 @@ export default class WebhooksAdd extends BaseCommand {
 
     if (secret) {
       cli.styledHeader('Webhooks Signing Secret')
-      cli.log(secret)
+      this.log(secret)
     }
   }
 }

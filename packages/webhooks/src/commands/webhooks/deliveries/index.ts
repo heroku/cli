@@ -35,7 +35,7 @@ export default class Deliveries extends BaseCommand {
     })
 
     if (deliveries.length === 0) {
-      cli.log(`${display} has no deliveries`)
+      this.log(`${display} has no deliveries`)
     } else {
       let code = (w: any) => {
         return (w.last_attempt && w.last_attempt.code && String(w.last_attempt.code)) || ''
@@ -49,15 +49,33 @@ export default class Deliveries extends BaseCommand {
       }
 
       cli.table(deliveries, {
-        id: {header: 'Delivery ID'},
-        created_at: {header: 'Created', get: (w: any) => w.created_at},
-        status: {header: 'Status', get: (w: any) => w.status},
-        include: {header: 'Include', get: (w: any) => w.event.include},
-        level: {header: 'Level', get: (w: any) => w.webhook.level},
-        num_attempts: {header: 'Attempts', get: (w: any) => String(w.num_attempts)},
-        last_code: {header: 'Code', get: code},
-        last_error: {header: 'Error', get: (w: any) => (w.last_attempt && w.last_attempt.error_class) || ''},
-        next_attempt_at: {header: 'Next Attempt', get: (w: any) => w.next_attempt_at || ''},
+        id: {
+          header: 'Delivery ID'
+        },
+        created_at: {
+          header: 'Created', get: (w: any) => w.created_at
+        },
+        status: {
+          get: (w: any) => w.status
+        },
+        include: {
+          get: (w: any) => w.event.include
+        },
+        level: {
+          get: (w: any) => w.webhook.level
+        },
+        num_attempts: {
+          header: 'Attempts', get: (w: any) => String(w.num_attempts)
+        },
+        last_code: {
+          header: 'Code', get: code
+        },
+        last_error: {
+          header: 'Error', get: (w: any) => (w.last_attempt && w.last_attempt.error_class) || ''
+        },
+        next_attempt_at: {
+          header: 'Next Attempt', get: (w: any) => w.next_attempt_at || ''
+        },
       }, {
         printLine: this.log
       })

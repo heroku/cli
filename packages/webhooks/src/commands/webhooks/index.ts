@@ -27,17 +27,23 @@ export default class Webhooks extends BaseCommand {
     const {body: webhooks} = await this.webhooksClient.get(`${path}/webhooks`)
 
     if (webhooks.length === 0) {
-      cli.log(`${display} has no webhooks\nUse ${color.cmd('heroku webhooks:add')} to add one.`)
+      this.log(`${display} has no webhooks\nUse ${color.cmd('heroku webhooks:add')} to add one.`)
       return
     }
 
     webhooks.sort((a: any, b: any) => Date.parse(a.created_at) - Date.parse(b.created_at))
 
     cli.table(webhooks, {
-      id: {header: 'Webhook ID'},
-      url: {header: 'URL'},
-      include: {header: 'Include', get: (row: any) => row.include.join(',')},
-      level: {header: 'Level'}
+      id: {
+        header: 'Webhook ID'
+      },
+      url: {
+        header: 'URL'
+      },
+      include: {
+        get: (row: any) => row.include.join(',')
+      },
+      level: {}
     }, {
       printLine: this.log
     })
