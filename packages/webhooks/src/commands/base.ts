@@ -3,8 +3,8 @@ import {APIClient, Command} from '@heroku-cli/command'
 
 import {IConfig} from '@oclif/config'
 
-type ContextArgument = {pipeline: string | undefined; app: string | undefined}
-type WebhookType = {path: string, display: string}
+type ContextArgument = {pipeline?: string; app?: string}
+type WebhookType = {path?: string, display?: string}
 
 export default abstract class extends Command {
   webhooksClient: APIClient

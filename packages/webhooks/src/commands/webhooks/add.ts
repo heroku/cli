@@ -27,23 +27,25 @@ export default class WebhooksAdd extends BaseCommand {
 
     cli.action.start(`Adding webhook to ${display}`)
 
-    const secret = await this.webhooksClient.post(`${path}/webhooks`, {
-        body: {
-          include: flags.include.split(',').map(s => s.trim()),
-          level: flags.level,
-          secret: flags.secret,
-          url: flags.url,
-          authorization: flags.authorization
-        }
-      }).then(({response}) => {
-        return response.headers ? response.headers['heroku-webhook-secret'] as string : null
-      })
+    const response = await this.webhooksClient.post(`${path}/webhooks`, {
+      body: {
+        include: flags.include.split(',').map(s => s.trim()),
+        level: flags.level,
+        secret: flags.secret,
+        url: flags.url,
+        authorization: flags.authorization
+      }
+    })
+
+    const secret = response.headers && response.headers['heroku-webhook-secret'] as string
 
     cli.action.stop()
 
     if (secret) {
       cli.styledHeader('Webhooks Signing Secret')
       this.log(secret)
+    } else {
+      cli.warn('no secret found')
     }
   }
 }
