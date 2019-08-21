@@ -9,14 +9,15 @@ export default class Logs extends Command {
 disable colors with --no-color, HEROKU_LOGS_COLOR=0, or HEROKU_COLOR=0`
 
   static examples = [
-    '$ heroku logs --app=your-app',
+    '$ heroku logs --app=my-app',
     '$ heroku logs --num=50',
-    '$ heroku logs --dyno=some-dyno --app=your-app',
-    '$ heroku logs --app=your-app --tail'
+    '$ heroku logs --dyno=web --app=my-app',
+    '$ heroku logs --app=my-app --tail'
   ]
 
   static flags = {
-    app: flags.app(),
+    app: flags.app({required: true}),
+    remote: flags.remote(),
     num: flags.integer({char: 'n', description: 'number of lines to display'}),
     ps: flags.string({char: 'p', description: 'hidden alias for dyno', hidden: true}),
     dyno: flags.string({

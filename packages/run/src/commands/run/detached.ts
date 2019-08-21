@@ -15,11 +15,12 @@ export default class RunDetached extends Command {
   static strict = false
 
   static flags = {
-    app: flags.app(),
+    app: flags.app({required: true}),
+    remote: flags.remote(),
     env: flags.string({char: 'e', description: "environment variables to set (use ';' to split multiple vars)"}),
     size: flags.string({char: 's', description: 'dyno size', completion: DynoSizeCompletion}),
     tail: flags.boolean({char: 't', description: 'continually stream logs'}),
-    type: flags.string({description: 'process type', completion: ProcessTypeCompletion}),
+    type: flags.string({description: 'process type', completion: ProcessTypeCompletion})
   }
 
   async run() {

@@ -10,6 +10,7 @@ export default class RunRake extends Command {
   static strict = false
   static flags = {
     app: flags.app({description: 'parent app used by review apps', required: true}),
+    remote: flags.remote(),
     size: flags.string({char: 's', description: 'dyno size', completion: DynoSizeCompletion}),
     'exit-code': flags.boolean({char: 'x', description: 'passthrough the exit code of the remote command'}),
     env: flags.string({char: 'e', description: "environment variables to set (use ';' to split multiple vars)"}),

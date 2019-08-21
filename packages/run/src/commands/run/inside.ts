@@ -13,10 +13,11 @@ export default class RunInside extends Command {
     '$ heroku run:inside web.1 bash'
   ]
   static flags = {
-    app: flags.app(),
+    app: flags.app({required: true}),
+    remote: flags.remote(),
     'exit-code': flags.boolean({char: 'x', description: 'passthrough the exit code of the remote command'}),
     env: flags.string({char: 'e', description: "environment variables to set (use ';' to split multiple vars)"}),
-    listen: flags.boolean({description: 'listen on a local port', hidden: true}),
+    listen: flags.boolean({description: 'listen on a local port', hidden: true})
   }
   static hidden = true
   static strict = false

@@ -9,7 +9,7 @@ import {buildCommand} from '../lib/helpers'
 const debug = DebugFactory('heroku:run')
 
 export default class Run extends Command {
-  static description = 'run a one-off process inside a heroku dyno'
+  static description = 'run a one-off process inside a heroku dyno\nShows a notification if the dyno takes more than 20 seconds to start.'
 
   static examples = [
     '$ heroku run bash',
@@ -21,6 +21,7 @@ export default class Run extends Command {
 
   static flags = {
     app: flags.app({description: 'parent app used by review apps', required: true}),
+    remote: flags.remote(),
     size: flags.string({char: 's', description: 'dyno size', completion: DynoSizeCompletion}),
     type: flags.string({description: 'process type', completion: ProcessTypeCompletion}),
     'exit-code': flags.boolean({char: 'x', description: 'passthrough the exit code of the remote command'}),

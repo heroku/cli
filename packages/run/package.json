@@ -2,7 +2,7 @@
   "name": "@heroku-cli/plugin-run",
   "version": "7.24.0",
   "author": "Chris Freeman @cafreeman",
-  "bugs": "https://github.com/heroku/heroku-cli-plugin-run/issues",
+  "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
     "@heroku-cli/color": "^1.1.14",
     "@heroku-cli/command": "^8.2.13",
@@ -42,7 +42,7 @@
     "/oclif.manifest.json",
     "/yarn.lock"
   ],
-  "homepage": "https://github.com/heroku/heroku-cli-plugin-run",
+  "homepage": "https://github.com/heroku/cli",
   "keywords": [
     "heroku-plugin"
   ],
@@ -62,7 +62,7 @@
       }
     }
   },
-  "repository": "heroku/heroku-cli-plugin-run",
+  "repository": "heroku/cli",
   "scripts": {
     "postpack": "rm -f oclif.manifest.json",
     "posttest": "tslint -p test -t stylish",

@@ -9,6 +9,7 @@ export default class RunConsole extends Command {
 
   static flags = {
     app: flags.app({required: true}),
+    remote: flags.remote(),
     size: flags.string({char: 's', description: 'dyno size', completion:  DynoSizeCompletion}),
     env: flags.string({char: 'e', description: 'environment variables to set (use \';\' to split multiple vars)'})
   }
