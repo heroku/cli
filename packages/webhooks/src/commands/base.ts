@@ -3,9 +3,6 @@ import {APIClient, Command} from '@heroku-cli/command'
 
 import {IConfig} from '@oclif/config'
 
-type ContextArgument = {pipeline?: string; app?: string}
-type WebhookType = {path?: string, display?: string}
-
 export default abstract class extends Command {
   webhooksClient: APIClient
 
@@ -21,7 +18,7 @@ export default abstract class extends Command {
     this.webhooksClient = client
   }
 
-  webhookType(context: ContextArgument): WebhookType {
+  webhookType(context: {pipeline?: string, app?: string}): {path: string, display: string} {
     if (context.pipeline) {
       return {
         path: `/pipelines/${context.pipeline}`,
@@ -34,6 +31,6 @@ export default abstract class extends Command {
         display: color.app(context.app)
       }
     }
-    throw new Error('No app specified')
+    return this.error('No app specified')
   }
 }
