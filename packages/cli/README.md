@@ -77,7 +77,6 @@ For other issues, [submit a support ticket](https://help.heroku.com/).
 * [`heroku status`](docs/status.md) - status of the Heroku platform
 * [`heroku teams`](docs/teams.md) - manage teams
 * [`heroku update`](docs/update.md) - update the Heroku CLI
-* [`heroku webhooks`](docs/webhooks.md) - setup HTTP notifications of app activity
 
 <!-- commandsstop -->
 
