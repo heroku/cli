@@ -1,3 +1,4 @@
+// tslint:disable:file-name-casing
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {DynoSizeCompletion, ProcessTypeCompletion} from '@heroku-cli/command/lib/completions'
@@ -8,6 +9,7 @@ import {buildCommand} from '../../lib/helpers'
 import logDisplayer from '../../lib/log-displayer'
 
 export default class RunDetached extends Command {
+  static hidden = true
   static description = 'run a detached dyno, where output is sent to your logs'
   static examples = [
     '$ heroku run:detached ls'

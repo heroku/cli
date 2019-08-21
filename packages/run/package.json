@@ -54,10 +54,10 @@
       "@oclif/plugin-help"
     ],
     "topics": {
-      "run": {
+      "_run": {
         "description": "run a one-off process inside a Heroku dyno"
       },
-      "logs": {
+      "_logs": {
         "description": "display recent log output"
       }
     }
