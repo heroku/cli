@@ -21,7 +21,6 @@ export default class RunInside extends Command {
     env: flags.string({char: 'e', description: "environment variables to set (use ';' to split multiple vars)"}),
     listen: flags.boolean({description: 'listen on a local port', hidden: true})
   }
-  static hidden = true
   static strict = false
 
   async run() {
