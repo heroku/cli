@@ -3,12 +3,13 @@ import {DynoSizeCompletion, ProcessTypeCompletion} from '@heroku-cli/command/lib
 import cli from 'cli-ux'
 import DebugFactory from 'debug'
 
-import Dyno from '../lib/dyno'
-import {buildCommand} from '../lib/helpers'
+import Dyno from '../../lib/dyno'
+import {buildCommand} from '../../lib/helpers'
 
 const debug = DebugFactory('heroku:run')
 
 export default class Run extends Command {
+  static hidden = true
   static description = 'run a one-off process inside a heroku dyno\nShows a notification if the dyno takes more than 20 seconds to start.'
 
   static examples = [

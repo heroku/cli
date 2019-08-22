@@ -11,7 +11,7 @@ describe('console', () => {
       dynoOpts = this.opts
       return Promise.resolve()
     }))
-    .command(['console', '--app=heroku-run-test-app'])
+    .command(['_console', '--app=heroku-run-test-app'])
     .it('runs console', () => {
       expect(dynoOpts.command).to.equal('console')
     })

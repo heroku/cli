@@ -1,3 +1,4 @@
+// tslint:disable:file-name-casing
 import {Command, flags} from '@heroku-cli/command'
 import cli from 'cli-ux'
 import DebugFactory from 'debug'
@@ -8,6 +9,7 @@ import {buildCommand} from '../../lib/helpers'
 const debug = DebugFactory('heroku:run:inside')
 
 export default class RunInside extends Command {
+  static hidden = true
   static description = 'run a one-off process inside an existing heroku dyno'
   static examples = [
     '$ heroku run:inside web.1 bash'
@@ -19,7 +21,6 @@ export default class RunInside extends Command {
     env: flags.string({char: 'e', description: "environment variables to set (use ';' to split multiple vars)"}),
     listen: flags.boolean({description: 'listen on a local port', hidden: true})
   }
-  static hidden = true
   static strict = false
 
   async run() {

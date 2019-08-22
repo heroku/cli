@@ -11,7 +11,7 @@ describe('rake', () => {
       dynoOpts = this.opts
       return Promise.resolve()
     }))
-    .command(['rake', '--app=heroku-run-test-app', 'test'])
+    .command(['_rake', '--app=heroku-run-test-app', 'test'])
     .it('runs rake', () => {
       expect(dynoOpts.command).to.equal('rake test')
     })
