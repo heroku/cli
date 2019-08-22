@@ -9,3 +9,5 @@
 /package-lock.json
 /tmp
 /packages/cli/docs/*
+
+.vscode
