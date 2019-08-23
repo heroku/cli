@@ -27,7 +27,7 @@ function repoName(repo: any) {
   return isValid ? [isValid] : [isValid, ERR_REPO_FORMAT]
 }
 
-export {
+export default {
   nameAndRepo,
   pipelineName,
   repoName,
