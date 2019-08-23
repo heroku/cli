@@ -1,6 +1,6 @@
 import {prompt} from 'inquirer'
 
-import Validate from './validate'
+import {pipelineName, repoName} from './validate'
 
 function filter(obj: any) {
   const ret: any = {}
@@ -15,7 +15,7 @@ export default async function getNameAndRepo(args: any) {
     message: 'Pipeline name',
     when() { return !args.name },
     validate(input) {
-      const [valid, msg] = Validate.pipelineName(input)
+      const [valid, msg] = pipelineName(input)
       return valid || msg
     }
   }, {
@@ -24,7 +24,7 @@ export default async function getNameAndRepo(args: any) {
     message: 'GitHub repository to connect to (e.g. rails/rails)',
     when() { return !args.repo },
     validate(input) {
-      const [valid, msg] = Validate.repoName(input)
+      const [valid, msg] = repoName(input)
       return valid || msg
     }
   }])

@@ -1,5 +1,6 @@
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import http from 'http-call'
 
 import keyBy from './key-by'
 
@@ -7,15 +8,15 @@ const V3_HEADER = 'application/vnd.heroku+json; version=3'
 const FILTERS_HEADER = `${V3_HEADER}.filters`
 const PIPELINES_HEADER = `${V3_HEADER}.pipelines`
 
-function createAppSetup(heroku: APIClient, body: {body: any}) {
+export function createAppSetup(heroku: APIClient, body: {body: any}) {
   return heroku.post('/app-setups', {body})
 }
 
-function createCoupling(heroku: APIClient, pipeline: any, app: string, stage: string) {
+export function createCoupling(heroku: APIClient, pipeline: any, app: string, stage: string) {
   return postCoupling(heroku, pipeline.id, app, stage)
 }
 
-function createPipeline(heroku: APIClient, name: any, owner: any) {
+export function createPipeline(heroku: APIClient, name: any, owner: any) {
   return heroku.request('/pipelines', {
     method: 'POST',
     headers: {Accept: PIPELINES_HEADER},
@@ -27,7 +28,7 @@ function createPipeline(heroku: APIClient, name: any, owner: any) {
 //   return heroku.delete(`/pipeline-couplings/${id}`)
 // }
 
-function findPipelineByName(heroku: APIClient, idOrName: string) {
+export function findPipelineByName(heroku: APIClient, idOrName: string) {
   return heroku.request<Heroku.Pipeline[]>(`/pipelines?eq[name]=${idOrName}`, {
     method: 'GET',
     headers: {Accept: PIPELINES_HEADER}
@@ -38,7 +39,7 @@ function findPipelineByName(heroku: APIClient, idOrName: string) {
 //   return heroku.get(`/apps/${app}/pipeline-couplings`)
 // }
 
-function getPipeline(heroku: APIClient, id: string) {
+export function getPipeline(heroku: APIClient, id: string) {
   return heroku.request<Heroku.Pipeline>(`/pipelines/${id}`, {
     method: 'GET',
     headers: {Accept: PIPELINES_HEADER}
@@ -49,7 +50,7 @@ function getPipeline(heroku: APIClient, id: string) {
 //   return heroku.get(`/apps/${app}`)
 // }
 
-function getTeam(heroku: APIClient, teamId: any) {
+export function getTeam(heroku: APIClient, teamId: any) {
   return heroku.get(`/teams/${teamId}`)
 }
 
@@ -61,11 +62,11 @@ function getTeam(heroku: APIClient, teamId: any) {
 //   })
 // }
 
-function getAccountInfo(heroku: APIClient, id = '~') {
+export function getAccountInfo(heroku: APIClient, id = '~') {
   return heroku.get(`/users/${id}`)
 }
 
-function getAppSetup(heroku: APIClient, buildId: any) {
+export function getAppSetup(heroku: APIClient, buildId: any) {
   return heroku.get(`/app-setups/${buildId}`)
 }
 
@@ -90,7 +91,7 @@ function getAppSetup(heroku: APIClient, buildId: any) {
 //   return heroku.patch(`/pipeline-couplings/${id}`, {body: {stage}})
 // }
 
-function postCoupling(heroku: APIClient, pipeline: any, app: any, stage: string) {
+export function postCoupling(heroku: APIClient, pipeline: any, app: any, stage: string) {
   return heroku.post('/pipeline-couplings', {
     body: {app, pipeline, stage}
   })
@@ -105,25 +106,3 @@ function postCoupling(heroku: APIClient, pipeline: any, app: any, stage: string)
 //   return getCoupling(heroku, app)
 //     .then(coupling => patchCoupling(heroku, coupling.id, stage))
 // }
-
-export default {
-  createAppSetup,
-  createCoupling,
-  createPipeline,
-  // deleteCoupling,
-  findPipelineByName,
-  getAccountInfo,
-  // getAppFilter,
-  getAppSetup,
-  // getApp,
-  // getCoupling,
-  getPipeline,
-  getTeam,
-  // listCouplings,
-  // listPipelineApps,
-  // patchCoupling,
-  postCoupling,
-  // removeCoupling,
-  // updateCoupling,
-  V3_HEADER
-}

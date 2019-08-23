@@ -1,14 +1,14 @@
 import {Command, flags} from '@heroku-cli/command'
 import cli from 'cli-ux'
+import debugFactory from 'debug'
 
-import api from '../../api'
+import {getPipeline} from '../../api'
 import GitHubAPI from '../../github-api'
 import KolkrabbiAPI from '../../kolkrabbi-api'
 import getGitHubToken from '../../setup/get-github-token'
 import getNameAndRepo from '../../setup/get-name-and-repo'
 import getRepo from '../../setup/get-repo'
-import Validate from '../../setup/validate'
-import debugFactory from 'debug'
+import {nameAndRepo} from '../../setup/validate'
 
 const debug = debugFactory('heroku pipelines:connect')
 
@@ -32,13 +32,11 @@ export default class Connect extends Command {
     optional: true
   }]
 
-
   async run() {
     debug('after after parsing')
-    const {flags, args} = this.parse(Connect)
-    const errors = Validate.nameAndRepo(args)
+    const {args} = this.parse(Connect)
+    const errors = nameAndRepo(args)
 
-    
     if (errors.length) {
       this.error(errors.join(', '))
       return
@@ -53,7 +51,7 @@ export default class Connect extends Command {
       } = await getNameAndRepo(args)
     const repo = await getRepo(github, repoName)
 
-    const pipeline = await api.getPipeline(this.heroku, pipelineName)
+    const pipeline = await getPipeline(this.heroku, pipelineName)
 
     cli.action.start('Linking to repo')
     await kolkrabbi.createPipelineRepository(pipeline.body.id, repo.id)
