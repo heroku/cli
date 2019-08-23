@@ -1,7 +1,7 @@
 import {expect, test} from '@oclif/test'
 import * as nock from 'nock'
 
-describe('pipelines:connect', () => {
+describe.only('pipelines:connect', () => {
   nock.disableNetConnect()
   describe('when the user is not linked to GitHub', () => {
     test

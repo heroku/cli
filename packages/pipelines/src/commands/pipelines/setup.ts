@@ -2,7 +2,7 @@ import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import cli from 'cli-ux'
 
-import * as api from '../../api'
+import {createPipeline, getAccountInfo, getTeam} from '../../api'
 import GitHubAPI from '../../github-api'
 import KolkrabbiAPI from '../../kolkrabbi-api'
 import createApps from '../../setup/create-apps'
@@ -13,7 +13,7 @@ import getRepo from '../../setup/get-repo'
 import getSettings from '../../setup/get-settings'
 import pollAppSetups from '../../setup/poll-app-setups'
 import setupPipeline from '../../setup/setup-pipeline'
-import * as Validate from '../../setup/validate'
+import {nameAndRepo, STAGING_APP_INDICATOR} from '../../setup/validate'
 
 export default class Setup extends Command {
   static description = 'bootstrap a new pipeline with common settings and create a production and staging app (requires a fully formed app.json in the repo)'
@@ -58,7 +58,7 @@ View your new pipeline by running \`heroku pipelines:open e5a55ffa-de3f-11e6-a24
   async run() {
     const {args, flags} = this.parse(Setup)
 
-    const errors = Validate.nameAndRepo(args)
+    const errors = nameAndRepo(args)
 
     if (errors.length) {
       this.error(errors.join(', '))
@@ -71,7 +71,7 @@ View your new pipeline by running \`heroku pipelines:open e5a55ffa-de3f-11e6-a24
     const team = flags.team
 
     const {name: pipelineName, repo: repoName} = await getNameAndRepo(args)
-    const stagingAppName = pipelineName + Validate.STAGING_APP_INDICATOR
+    const stagingAppName = pipelineName + STAGING_APP_INDICATOR
     const repo = await getRepo(github, repoName)
     const settings = await getSettings(flags.yes, repo.default_branch)
 
@@ -79,11 +79,11 @@ View your new pipeline by running \`heroku pipelines:open e5a55ffa-de3f-11e6-a24
     const ownerType = team ? 'team' : 'user'
 
     // If team or org is not specified, we assign ownership to the user creating
-    const {body: {id: ownerID}}: any = team ? await api.getTeam(this.heroku, team) : await api.getAccountInfo(this.heroku)
+    const {body: {id: ownerID}}: any = team ? await getTeam(this.heroku, team) : await getAccountInfo(this.heroku)
     const owner = {id: ownerID, type: ownerType}
 
     cli.action.start('Creating pipeline')
-    const {body: pipeline}: any = await api.createPipeline(this.heroku, pipelineName, owner)
+    const {body: pipeline}: any = await createPipeline(this.heroku, pipelineName, owner)
     cli.action.stop()
 
     cli.action.start('Linking to repo')

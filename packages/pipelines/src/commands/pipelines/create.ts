@@ -4,7 +4,7 @@ import {StageCompletion} from '@heroku-cli/command/lib/completions'
 import cli from 'cli-ux'
 import {prompt} from 'inquirer'
 
-import api from '../../api'
+import {createCoupling, createPipeline, getAccountInfo, getTeam} from '../../api'
 import infer from '../../infer'
 import {inferrableStageNames as stages} from '../../stages'
 
@@ -82,7 +82,7 @@ Adding example-staging to example pipeline as staging... done`
     ownerType = teamName ? 'team' : 'user'
 
     // If team or org is not specified, we assign ownership to the user creating
-    owner = teamName ? await api.getTeam(this.heroku, teamName) : await api.getAccountInfo(this.heroku)
+    owner = teamName ? await getTeam(this.heroku, teamName) : await getAccountInfo(this.heroku)
     owner = owner.body
     ownerID = owner.id
 
@@ -93,11 +93,11 @@ Adding example-staging to example pipeline as staging... done`
     if (answers.stage) stage = answers.stage
 
     cli.action.start(`Creating ${name} pipeline`)
-    let {body: pipeline}: any = await api.createPipeline(this.heroku, name, owner)
+    let {body: pipeline}: any = await createPipeline(this.heroku, name, owner)
     cli.action.stop()
 
     cli.action.start(`Adding ${color.app(app)} to ${color.pipeline(pipeline.name)} pipeline as ${stage}`)
-    await api.createCoupling(this.heroku, pipeline, app, stage)
+    await createCoupling(this.heroku, pipeline, app, stage)
     cli.action.stop()
   }
 }
