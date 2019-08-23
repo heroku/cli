@@ -4,7 +4,7 @@ import {StageCompletion} from '@heroku-cli/command/lib/completions'
 import cli from 'cli-ux'
 import {prompt} from 'inquirer'
 
-import * as api from '../../api'
+import api from '../../api'
 import infer from '../../infer'
 import {inferrableStageNames as stages} from '../../stages'
 

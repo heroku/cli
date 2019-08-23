@@ -1,6 +1,6 @@
 import {prompt} from 'inquirer'
 
-import * as Validate from './validate'
+import Validate from './validate'
 
 function filter(obj: any) {
   const ret: any = {}

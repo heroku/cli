@@ -4,7 +4,7 @@ import {StageCompletion} from '@heroku-cli/command/lib/completions'
 import cli from 'cli-ux'
 import {prompt} from 'inquirer'
 
-import {createCoupling} from '../../api'
+import api from '../../api'
 import disambiguate from '../../disambiguate'
 import infer from '../../infer'
 import {inferrableStageNames as stageNames} from '../../stages'
@@ -61,7 +61,7 @@ Adding example-admin to example pipeline as production... done`
     if (answers.stage) stage = answers.stage
 
     cli.action.start(`Adding ${color.app(app)} to ${color.pipeline(pipeline.name)} pipeline as ${stage}`)
-    await createCoupling(this.heroku, pipeline, app, stage)
+    await api.createCoupling(this.heroku, pipeline, app, stage)
     cli.action.stop()
   }
 }

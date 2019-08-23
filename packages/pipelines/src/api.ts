@@ -106,7 +106,7 @@ function postCoupling(heroku: APIClient, pipeline: any, app: any, stage: string)
 //     .then(coupling => patchCoupling(heroku, coupling.id, stage))
 // }
 
-export {
+export default {
   createAppSetup,
   createCoupling,
   createPipeline,
