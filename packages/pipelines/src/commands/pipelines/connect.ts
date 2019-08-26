@@ -1,6 +1,5 @@
 import {Command, flags} from '@heroku-cli/command'
 import cli from 'cli-ux'
-import debugFactory from 'debug'
 
 import {getPipeline} from '../../api'
 import GitHubAPI from '../../github-api'
@@ -9,8 +8,6 @@ import getGitHubToken from '../../setup/get-github-token'
 import getNameAndRepo from '../../setup/get-name-and-repo'
 import getRepo from '../../setup/get-repo'
 import {nameAndRepo} from '../../setup/validate'
-
-const debug = debugFactory('heroku pipelines:connect')
 
 export default class Connect extends Command {
   static description = 'connect a github repo to an existing pipeline'
@@ -33,9 +30,14 @@ export default class Connect extends Command {
   }]
 
   async run() {
-    debug('after after parsing')
-    const {args} = this.parse(Connect)
-    const errors = nameAndRepo(args)
+    const {args, flags} = this.parse(Connect)
+
+    let combinedInputs = {
+      name: args.name,
+      repo: flags.repo
+    }
+
+    const errors = nameAndRepo(combinedInputs)
 
     if (errors.length) {
       this.error(errors.join(', '))
@@ -48,7 +50,8 @@ export default class Connect extends Command {
     const {
         name: pipelineName,
         repo: repoName
-      } = await getNameAndRepo(args)
+      } = await getNameAndRepo(combinedInputs)
+
     const repo = await getRepo(github, repoName)
 
     const pipeline = await getPipeline(this.heroku, pipelineName)

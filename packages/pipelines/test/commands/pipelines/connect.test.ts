@@ -1,8 +1,6 @@
 import {expect, test} from '@oclif/test'
-import * as nock from 'nock'
 
-describe.only('pipelines:connect', () => {
-  nock.disableNetConnect()
+describe('pipelines:connect', () => {
   describe('when the user is not linked to GitHub', () => {
     test
       .stderr()
@@ -10,7 +8,7 @@ describe.only('pipelines:connect', () => {
       .nock('https://kolkrabbi.heroku.com', kolkrabbi => {
         kolkrabbi.get('/account/github/token').reply(401, {})
       })
-      .command(['pipelines:connect', '--repo=my-repo'])
+      .command(['pipelines:connect', '--repo=my-org/my-repo'])
       .catch('Account not connected to GitHub.')
       .it('displays an error')
   })
@@ -50,13 +48,12 @@ describe.only('pipelines:connect', () => {
             name: pipeline.name
           })
       })
-      // .stderr()
-      // .stdout()
+      .stderr()
+      .stdout()
       .command(['pipelines:connect', 'my-pipeline', '--repo=my-org/my-repo'])
       .it('shows success', ctx => {
-        console.log('hello')
-        // expect(ctx.stderr).to.include('Linking to repo...')
-        // // expect(ctx.stdout).to.equal('')
+        expect(ctx.stderr).to.include('Linking to repo...')
+        expect(ctx.stdout).to.equal('')
       })
   })
 })
