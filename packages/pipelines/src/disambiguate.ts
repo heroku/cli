@@ -38,8 +38,11 @@ export default async function disambiguate(heroku: APIClient, pipelineIDOrName: 
 
       pipeline = await new Promise(async function (resolve, reject) {
         let answers: any = await prompt(questions)
-        if (answers.pipeline) resolve(answers.pipeline)
-        else reject('Must pick a pipeline')
+        if (answers.pipeline) {
+          resolve(answers.pipeline)
+        } else {
+          reject('Must pick a pipeline')
+        }
       })
     }
   }
