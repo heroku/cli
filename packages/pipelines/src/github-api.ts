@@ -1,4 +1,4 @@
-const {HTTP} = require('http-call')
+import HTTP from 'http-call'
 const GITHUB_API = 'https://api.github.com'
 
 export default class GitHubAPI {
