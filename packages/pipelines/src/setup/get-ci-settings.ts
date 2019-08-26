@@ -1,11 +1,17 @@
-import {prompt} from 'inquirer'
+import cli from 'cli-ux'
 
 export default async function getCISettings(yes: any, organization: any) {
-  const settings: any = yes ? {ci: true} : await prompt([{
-    type: 'confirm',
-    name: 'ci',
-    message: 'Enable automatic Heroku CI test runs?'
-  }])
+  let settings = {
+    ci: true,
+    organization: undefined
+  }
+
+  if (yes) {
+    delete settings.organization
+    return settings
+  }
+
+  settings.ci = await cli.confirm('Enable automatic Heroku CI test runs?')
 
   if (settings.ci && organization) {
     settings.organization = organization
