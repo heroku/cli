@@ -12,6 +12,7 @@
     "cli-ux": "^5.2.1",
     "heroku-cli-util": "^8.0.11",
     "http-call": "^5.2.4",
+    "inquirer": "^7.0.0",
     "validator": "^10.11.0"
   },
   "devDependencies": {
