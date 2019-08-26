@@ -15,14 +15,16 @@ export function nameAndRepo({name, repo}: {name: any, repo: any}) {
   return errors
 }
 
-export function pipelineName(name: any) {
+type ValidatedResponse = [true] | [false, string]
+
+export function pipelineName(name: any): ValidatedResponse {
   const isValid = name.length >= PIPELINE_MIN_LENGTH &&
     name.length <= PIPELINE_MAX_LENGTH
 
   return isValid ? [isValid] : [isValid, ERR_PIPELINE_NAME_LENGTH]
 }
 
-export function repoName(repo: any) {
+export function repoName(repo: any): ValidatedResponse {
   const isValid = !!repo.match(REPO_REGEX)
   return isValid ? [isValid] : [isValid, ERR_REPO_FORMAT]
 }
