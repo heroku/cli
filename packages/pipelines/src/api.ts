@@ -24,6 +24,14 @@ export function createPipeline(heroku: APIClient, name: any, owner: any) {
   })
 }
 
+export function destroyPipeline(heroku: APIClient, name: any, pipelineId: any) {
+  return heroku.request(`/pipelines/${pipelineId}`, {
+    method: 'DELETE',
+    headers: {Accept: PIPELINES_HEADER},
+    body: {name}
+  })
+}
+
 // function deleteCoupling(heroku: APIClient, id) {
 //   return heroku.delete(`/pipeline-couplings/${id}`)
 // }

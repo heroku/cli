@@ -1,35 +1,29 @@
-import {Command, flags} from '@heroku-cli/command'
+import color from '@heroku-cli/color'
+import {Command} from '@heroku-cli/command'
 import cli from 'cli-ux'
-import {prompt} from 'inquirer'
 
+import {destroyPipeline} from '../../api'
 import disambiguate from '../../disambiguate'
 
-export default class PipelinesAdd extends Command {
-  static description = `add this app to a pipeline
-The app and pipeline names must be specified.
-The stage of the app will be guessed based on its name if not specified.`
+export default class PipelinesDestroy extends Command {
+  static description = 'destroy a pipeline'
 
   static examples = [
-    '$ heroku pipelines:add example -a example-admin -s production'
+    '$ heroku pipelines:destroy example'
   ]
-
-  static flags = {
-    app: flags.app(),
-    remote: flags.remote(),
-    stage: flags.string({
-      char: 's',
-      description: 'stage of first app in pipeline',
-    })
-  }
 
   static args = [{
     name: 'pipeline',
     description: 'name of pipeline',
+    optional: false
   }]
 
   async run() {
-    const {args, flags} = this.parse(PipelinesAdd)
-    const app = flags.app
-    
+    const {args} = this.parse(PipelinesDestroy)
+    const pipeline: any = await disambiguate(this.heroku, args.pipeline)
+
+    cli.action.start(`Destroying ${color.pipeline(pipeline.name)} pipeline`)
+    await destroyPipeline(this.heroku, pipeline.name, pipeline.id)
+    cli.action.stop()
   }
 }
