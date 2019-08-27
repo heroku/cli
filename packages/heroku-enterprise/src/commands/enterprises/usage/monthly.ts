@@ -57,10 +57,10 @@ presented here may not reflect license usage or billing for your account.`
     appName: {header: 'App'},
     month: {header: 'Month'},
     dynos: {header: 'Dyno'},
+    connect: {header: 'Connect'},
     addons: {header: 'Addon'},
     partner: {header: 'Partner'},
     data: {header: 'Data'},
-    connect: {header: 'Connect'},
     space: {header: 'Space'}
   }
 
