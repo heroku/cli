@@ -46,6 +46,12 @@ export function getPipeline(heroku: APIClient, id: string) {
   })
 }
 
+export function updatePipeline(heroku: APIClient, id: string, body: Heroku.Pipeline) {
+  return heroku.patch<Heroku.Pipeline>(`/pipelines/${id}`, {
+    body
+  })
+}
+
 // function getApp(heroku: APIClient, app) {
 //   return heroku.get(`/apps/${app}`)
 // }
