@@ -24,9 +24,9 @@ export function createPipeline(heroku: APIClient, name: any, owner: any) {
   })
 }
 
-// function deleteCoupling(heroku: APIClient, id) {
-//   return heroku.delete(`/pipeline-couplings/${id}`)
-// }
+function deleteCoupling(heroku: APIClient, id: string) {
+  return heroku.delete(`/pipeline-couplings/${id}`)
+}
 
 export function findPipelineByName(heroku: APIClient, idOrName: string) {
   return heroku.request<Heroku.Pipeline[]>(`/pipelines?eq[name]=${idOrName}`, {
@@ -35,9 +35,9 @@ export function findPipelineByName(heroku: APIClient, idOrName: string) {
   })
 }
 
-// function getCoupling(heroku: APIClient, app) {
-//   return heroku.get(`/apps/${app}/pipeline-couplings`)
-// }
+export function getCoupling(heroku: APIClient, app: string) {
+  return heroku.get<Heroku.PipelineCoupling>(`/apps/${app}/pipeline-couplings`)
+}
 
 export function getPipeline(heroku: APIClient, id: string) {
   return heroku.request<Heroku.Pipeline>(`/pipelines/${id}`, {
@@ -97,10 +97,12 @@ export function postCoupling(heroku: APIClient, pipeline: any, app: any, stage: 
   })
 }
 
-// function removeCoupling(heroku: APIClient, app) {
-//   return getCoupling(heroku, app)
-//     .then(coupling => deleteCoupling(heroku, coupling.id))
-// }
+export function removeCoupling(heroku: APIClient, app: string) {
+  return getCoupling(heroku, app)
+    .then(({body}) => {
+      return deleteCoupling(heroku, body.id!)
+    })
+}
 
 // function updateCoupling(heroku: APIClient, app, stage) {
 //   return getCoupling(heroku, app)
