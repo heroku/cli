@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-enterprise",
   "description": "CLI to manage Heroku Enterprise Accounts",
-  "version": "2.2.4",
+  "version": "2.3.0",
   "author": "Philipe Navarro @RasPhilCo",
   "bugs": "https://github.com/heroku/heroku-enterprise/issues",
   "dependencies": {
