@@ -1,14 +1,15 @@
 import {APIClient} from '@heroku-cli/command'
 import {prompt} from 'inquirer'
 import {isUUID} from 'validator'
+import * as Heroku from '@heroku-cli/schema'
 
 import {
   findPipelineByName,
   getPipeline
 } from './api'
 
-export default async function disambiguate(heroku: APIClient, pipelineIDOrName: string) {
-  let pipeline
+export default async function disambiguate(heroku: APIClient, pipelineIDOrName: string): Promise<Heroku.Pipeline> {
+  let pipeline: Heroku.Pipeline
 
   if (isUUID(pipelineIDOrName)) {
     const result = (await getPipeline(heroku, pipelineIDOrName))
