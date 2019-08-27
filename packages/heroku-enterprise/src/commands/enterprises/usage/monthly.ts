@@ -1,9 +1,11 @@
+import color from '@heroku-cli/color'
 import {flags} from '@heroku-cli/command'
 import cli from 'cli-ux'
 import * as QueryString from 'querystring'
 
 import BaseCommand from '../../../base'
 import {Accounts} from '../../../completions'
+import {CoreService} from '../../../core-service'
 
 export default class Monthly extends BaseCommand {
   static description = `list the monthly usage for an enterprise account or team
@@ -14,13 +16,14 @@ presented here may not reflect license usage or billing for your account.`
 
   static examples = [
     '$ heroku enterprises:usage:monthly --enterprise-account=account-name',
-    '$ heroku enterprises:usage:monthly --enterprise-account=account-name --columns=\'account,team,app,dyno\'',
-    '$ heroku enterprises:usage:monthly --enterprise-account=account-name --columns=\'account,team,app,dyno\' --csv',
-    '$ heroku enterprises:usage:monthly --enterprise-account=account-name --columns=\'account,team,app,addon\' --sort=\'-addon\'',
-    '$ heroku enterprises:usage:monthly --enterprise-account=account-name --columns=\'account,team,app,addon\' --filter=\'app=myapp\'',
-    '$ heroku enterprises:usage:monthly --enterprise-account=account-name --columns=\'account,team,app,data\' --sort=\'-data,app\'',
-    '$ heroku enterprises:usage:monthly --team=team-name --start-date 2019-01-15 --end-date 2019-03-01',
-    '$ heroku enterprises:usage:monthly --team-team-name --columns=\'account,team,app,data\' --sort=\'-data,app\''
+    '$ heroku enterprises:usage:monthly --enterprise-account=account-name --columns=\'team,app,dyno,data\'',
+    '$ heroku enterprises:usage:monthly --enterprise-account=account-name --columns=\'team,app,dyno,data\' --sort=\'-data,app\'',
+    '$ heroku enterprises:usage:monthly --enterprise-account=account-name --columns=\'team,app,dyno,data\' --filter=\'app=myapp\'',
+    '$ heroku enterprises:usage:monthly --enterprise-account=account-name --csv',
+    '$ heroku enterprises:usage:monthly --team=team-name --start-date 2019-01',
+    '$ heroku enterprises:usage:monthly --team=team-name --start-date 2019-01 --end-date 2019-03',
+    '$ heroku enterprises:usage:monthly --team=team-name --columns=\'app,dyno,data\' --sort=\'-data,app\'',
+    '$ heroku enterprises:usage:monthly --team=team-name --csv',
   ]
 
   static flags: any = {
@@ -30,28 +33,35 @@ presented here may not reflect license usage or billing for your account.`
       description: 'enterprise account name',
       exclusive: ['team']
     }),
-    team: flags.string({
-      char: 't',
+    team: flags.team({
       description: 'team name',
     }),
     'start-date': flags.string({
-      description: 'start date of the usage period'
+      description: 'start date of the usage period, defaults to current month if not provided (YYYY-MM)'
     }),
     'end-date': flags.string({
-      description: 'end date of the usage period',
+      description: 'end date of the usage period, inclusive (YYYY-MM)',
       dependsOn: ['start-date']
     }),
-    ...cli.table.flags({except: 'extended'})
+
+    // NOTE: We're getting csv format directly from the API due to better performance and
+    //       streaming support.
+    csv: flags.boolean({
+      description: 'output is csv format',
+      required: false
+    }),
+    ...cli.table.flags({except: ['extended', 'csv']})
   }
 
   static tableHeaders = {
     appName: {header: 'App'},
-    date: {header: 'Date'},
+    month: {header: 'Month'},
     dynos: {header: 'Dyno'},
-    connect: {header: 'Connect'},
     addons: {header: 'Addon'},
     partner: {header: 'Partner'},
-    data: {header: 'Data'}
+    data: {header: 'Data'},
+    connect: {header: 'Connect'},
+    space: {header: 'Space'}
   }
 
   private _flags: any
@@ -63,20 +73,65 @@ presented here may not reflect license usage or billing for your account.`
     }
 
     this._flags = flags
-    const startDate = flags['start-date']
+    const startDate = flags['start-date'] || this.defaultStartDate()
     const endDate = flags['end-date']
     let query = ''
 
-    if (startDate && endDate) query = `?${QueryString.stringify({start_date: startDate, end_date: endDate})}`
-    else if (startDate && !endDate) query = `?${QueryString.stringify({start_date: startDate})}`
-
+    if (startDate && endDate) query = `?${QueryString.stringify({start: startDate, end: endDate})}`
+    else if (startDate && !endDate) query = `?${QueryString.stringify({start: startDate})}`
+    const coreService: CoreService = new CoreService(this.heroku)
     if (flags.team) {
-      const {body: teamUsages} = await this.heroku.get<any[]>(`/teams/${flags.team}/usage/monthly${query}`)
-      this.displayTeamUsage(teamUsages)
+      const teamId = await coreService.getTeamId(flags.team)
+      const teamEndpoint = `/teams/${teamId}/usage/monthly/alpha${query}`
+
+      flags.csv ? await this.displayCsvUsageData(teamEndpoint, flags.team)
+                : await this.displayUsageData(teamEndpoint, flags.team, true)
     } else {
-      const {body: accountUsages} = await this.heroku.get<any[]>(`/enterprise-accounts/${flags['enterprise-account']}/usage${query}`)
-      this.displayEnterpriseAccoutUsage(accountUsages)
+      const enterpriseAccountName = flags['enterprise-account'] as string
+      const accountId = await coreService.getEnterpriseAccountId(enterpriseAccountName)
+      const accountEndpoint = `/enterprise-accounts/${accountId}/usage/monthly${query}`
+
+      flags.csv ? await this.displayCsvUsageData(accountEndpoint, enterpriseAccountName)
+                : await this.displayUsageData(accountEndpoint, enterpriseAccountName, false)
     }
+  }
+
+  private async displayUsageData(url: string, usageType: string, isTeam: boolean) {
+    cli.action.start(`Getting monthly usage data for ${color.cyan(usageType)}`)
+    const {body: usageData} = await this.heroku.get<any[]>(url)
+    cli.action.stop()
+    isTeam ? this.displayTeamUsage(usageData) : this.displayEnterpriseAccoutUsage(usageData)
+  }
+
+  private async displayCsvUsageData(url: string, usageType: string) {
+    this.setHttpHeadersForCSV()
+
+    try {
+      cli.action.start(`Getting monthly usage data for ${color.cyan(usageType)}`)
+      const {response} = await this.heroku.stream(url)
+      cli.action.stop()
+
+      await new Promise((resolve, reject) => {
+        response.on('end', () => resolve())
+        response.on('error', (e: Error) => reject(e))
+        response.pipe(process.stdout)
+      })
+    } catch (error) {
+      if (error.body && error.body.error) this.error(error.body.error)
+      throw error
+    }
+  }
+
+  private setHttpHeadersForCSV() {
+    this.heroku.defaults.headers = {
+      ...this.heroku.defaults.headers,
+      Accept: 'text/csv; version=3.enterprise-accounts',
+    }
+  }
+
+  private defaultStartDate() {
+    // YYYY-MM
+    return new Date().toISOString().substring(0, 7)
   }
 
   private displayTeamUsage(allTeamUsage: any[]) {
@@ -86,13 +141,14 @@ presented here may not reflect license usage or billing for your account.`
       if (teamUsage.apps) {
         teamUsage.apps.forEach((teamApp: any) => {
           usageData.push({
-            date: teamUsage.date,
+            month: teamUsage.month,
             appName: teamApp.app_name,
             addons: teamApp.addons,
-            connect: teamApp.connect,
             data: teamApp.data,
             dynos: teamApp.dynos,
-            partner: teamApp.partner
+            partner: teamApp.partner,
+            connect: teamApp.connect,
+            space: teamUsage.space
           })
         })
       }
@@ -116,7 +172,7 @@ presented here may not reflect license usage or billing for your account.`
         const teamInfo = {
           accountName: usage.name,
           teamName: team.name,
-          date: usage.date
+          month: usage.month
         }
 
         if (team.apps) {
@@ -125,10 +181,11 @@ presented here may not reflect license usage or billing for your account.`
               ...teamInfo,
               appName: teamApp.app_name,
               addons: teamApp.addons,
-              connect: teamApp.connect,
               data: teamApp.data,
               dynos: teamApp.dynos,
-              partner: teamApp.partner
+              partner: teamApp.partner,
+              connect: teamApp.connect,
+              space: team.space
             })
           })
         } else {

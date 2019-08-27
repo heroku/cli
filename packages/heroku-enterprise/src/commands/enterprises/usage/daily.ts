@@ -15,10 +15,14 @@ NOTE: While we strive to provide the most accurate usage information, the data
 presented here may not reflect license usage or billing for your account.`
 
   static examples = [
+    '$ heroku enterprises:usage:daily --enterprise-account=account-name --start-date=2019-01-01 --end-date=2019-01-15',
+    '$ heroku enterprises:usage:daily --enterprise-account=account-name --start-date=2019-01-01 --end-date=2019-01-15 --columns=\'team,app,dyno,data\'',
+    '$ heroku enterprises:usage:daily --enterprise-account=account-name --start-date=2019-01-01 --end-date=2019-01-15 --columns=\'team,app,dyno,data\' --sort=\'-data,app\'',
+    '$ heroku enterprises:usage:daily --enterprise-account=account-name --start-date=2019-01-01 --end-date=2019-01-15 --columns=\'team,app,dyno,data\' --filter=\'app=myapp\'',
     '$ heroku enterprises:usage:daily --enterprise-account=account-name --start-date=2019-01-01 --end-date=2019-01-15 --csv',
+    '$ heroku enterprises:usage:daily --team=team-name --start-date=2019-01-01 --end-date=2019-01-15',
+    '$ heroku enterprises:usage:daily --team=team-name --start-date=2019-01-01 --end-date=2019-01-15 --columns=\'app,dyno,data\' --sort=\'-data,app\'',
     '$ heroku enterprises:usage:daily --team=team-name --start-date=2019-01-01 --end-date=2019-01-15 --csv',
-    '$ heroku enterprises:usage:daily --team=team-name --start-date=2019-01-01 --end-date=2019-01-15 --csv | less',
-    '$ heroku enterprises:usage:daily --team=team-name --start-date=2019-01-01 --end-date=2019-01-15 --csv > /tmp/usage.csv',
   ]
 
   static flags = {
@@ -28,16 +32,15 @@ presented here may not reflect license usage or billing for your account.`
       description: 'enterprise account name',
       exclusive: ['team']
     }),
-    team: flags.string({
-      char: 't',
+    team: flags.team({
       description: 'team name'
     }),
     'start-date': flags.string({
-      description: 'start date of the usage period, cannot be more than 6 months prior to today (starting 2019-01-01)',
+      description: 'start date of the usage period, cannot be more than 6 months prior to today (YYYY-MM-DD)',
       required: true
     }),
     'end-date': flags.string({
-      description: 'end date of the usage period, cannot be more than 31 days after the start date',
+      description: 'end date of the usage period, inclusive, cannot be more than 31 days after the start date (YYYY-MM-DD)',
       dependsOn: ['start-date'],
       required: true
     }),
@@ -57,7 +60,8 @@ presented here may not reflect license usage or billing for your account.`
     dynos: {header: 'Dyno'},
     addons: {header: 'Addon'},
     partner: {header: 'Partner'},
-    data: {header: 'Data'}
+    data: {header: 'Data'},
+    space: {header: 'Space'}
   }
 
   private _flags: any
@@ -130,7 +134,8 @@ presented here may not reflect license usage or billing for your account.`
             addons: teamApp.addons,
             data: teamApp.data,
             dynos: teamApp.dynos,
-            partner: teamApp.partner
+            partner: teamApp.partner,
+            space: teamUsage.space
           })
         })
       }
@@ -165,7 +170,8 @@ presented here may not reflect license usage or billing for your account.`
               addons: teamApp.addons,
               data: teamApp.data,
               dynos: teamApp.dynos,
-              partner: teamApp.partner
+              partner: teamApp.partner,
+              space: team.space
             })
           })
         } else {
