@@ -2,7 +2,7 @@ import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import http from 'http-call'
 
-import keyBy from './key-by'
+import keyBy from 'lodash.keyby'
 
 const V3_HEADER = 'application/vnd.heroku+json; version=3'
 const FILTERS_HEADER = `${V3_HEADER}.filters`
@@ -51,41 +51,41 @@ export function getPipeline(heroku: APIClient, id: string) {
 // }
 
 export function getTeam(heroku: APIClient, teamId: any) {
-  return heroku.get(`/teams/${teamId}`)
+  return heroku.get<Heroku.Team>(`/teams/${teamId}`)
 }
 
-// function getAppFilter(heroku: APIClient, appIds) {
-//   return heroku.request('/filters/apps', {
-//     method: 'POST',
-//     headers: {Accept: FILTERS_HEADER},
-//     body: {in: {id: appIds}}
-//   })
-// }
+function getAppFilter(heroku: APIClient, appIds: Array<string>) {
+  return heroku.request<Array<Heroku.App>>('/filters/apps', {
+    method: 'POST',
+    headers: {Accept: FILTERS_HEADER},
+    body: {in: {id: appIds}}
+  })
+}
 
 export function getAccountInfo(heroku: APIClient, id = '~') {
-  return heroku.get(`/users/${id}`)
+  return heroku.get<Heroku.Account>(`/users/${id}`)
 }
 
 export function getAppSetup(heroku: APIClient, buildId: any) {
   return heroku.get(`/app-setups/${buildId}`)
 }
 
-// function listPipelineApps(heroku: APIClient, pipelineId) {
-//   return listCouplings(heroku, pipelineId).then(couplings => {
-//     const appIds = couplings.map(coupling => coupling.app.id)
+export function listPipelineApps(heroku: APIClient, pipelineId: string) {
+  return listCouplings(heroku, pipelineId).then(({body: couplings}) => {
+    const appIds = couplings.map(coupling => coupling.app && coupling.app.id || '')
 
-//     return getAppFilter(heroku, appIds).then(apps => {
-//       const couplingsByAppId = keyBy(couplings,coupling => coupling.app.id)
-//       apps.forEach(app => { app.coupling = couplingsByAppId[app.id] })
+    return getAppFilter(heroku, appIds).then(({body: apps}) => {
+      const couplingsByAppId = keyBy(couplings, coupling => coupling.app && coupling.app.id)
+      apps.forEach(app => { app.coupling = couplingsByAppId[app.id!] })
 
-//       return apps
-//     })
-//   })
-// }
+      return apps
+    })
+  })
+}
 
-// function listCouplings(heroku: APIClient, pipelineId) {
-//   return heroku.get(`/pipelines/${pipelineId}/pipeline-couplings`)
-// }
+function listCouplings(heroku: APIClient, pipelineId: string) {
+  return heroku.get<Array<Heroku.PipelineCoupling>>(`/pipelines/${pipelineId}/pipeline-couplings`)
+}
 
 // function patchCoupling(heroku: APIClient, id, stage) {
 //   return heroku.patch(`/pipeline-couplings/${id}`, {body: {stage}})
