@@ -54,6 +54,7 @@ presented here may not reflect license usage or billing for your account.`
   }
 
   static tableHeaders = {
+    teamName: {header: 'Team'},
     appName: {header: 'App'},
     month: {header: 'Month'},
     dynos: {header: 'Dyno'},
@@ -141,6 +142,7 @@ presented here may not reflect license usage or billing for your account.`
       if (teamUsage.apps) {
         teamUsage.apps.forEach((teamApp: any) => {
           usageData.push({
+            teamName: teamUsage.name,
             month: teamUsage.month,
             appName: teamApp.app_name,
             addons: teamApp.addons,
@@ -148,8 +150,20 @@ presented here may not reflect license usage or billing for your account.`
             dynos: teamApp.dynos,
             partner: teamApp.partner,
             connect: teamApp.connect,
-            space: teamUsage.space
+            space: ''
           })
+        })
+
+        usageData.push({
+          teamName: teamUsage.name,
+          month: teamUsage.month,
+          appName: '',
+          addons: '',
+          data: '',
+          dynos: '',
+          partner: '',
+          connect: '',
+          space: teamUsage.space
         })
       }
     })
@@ -166,6 +180,7 @@ presented here may not reflect license usage or billing for your account.`
 
   private displayEnterpriseAccoutUsage(allUsage: any[]) {
     const usageData: Array<any> = []
+    let spaceUsageData: Array<any> = []
 
     allUsage.forEach((usage: any) => {
       usage.teams.forEach((team: any) => {
@@ -185,13 +200,25 @@ presented here may not reflect license usage or billing for your account.`
               dynos: teamApp.dynos,
               partner: teamApp.partner,
               connect: teamApp.connect,
-              space: team.space
+              space: ''
             })
           })
-        } else {
-          usageData.push(teamInfo)
         }
+
+        spaceUsageData.push({
+          ...teamInfo,
+          space: team.space,
+          appName: '',
+          addons: '',
+          data: '',
+          dynos: '',
+          partner: '',
+          connect: ''
+        })
       })
+
+      usageData.push(...spaceUsageData)
+      spaceUsageData = []
     })
 
     if (usageData.length === 0) return this.warn('No usage data to list')

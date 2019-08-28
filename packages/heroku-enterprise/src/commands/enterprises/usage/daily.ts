@@ -55,6 +55,7 @@ presented here may not reflect license usage or billing for your account.`
   }
 
   static tableHeaders = {
+    teamName: {header: 'Team'},
     appName: {header: 'App'},
     date: {header: 'Date'},
     dynos: {header: 'Dyno'},
@@ -129,16 +130,28 @@ presented here may not reflect license usage or billing for your account.`
       if (teamUsage.apps) {
         teamUsage.apps.forEach((teamApp: any) => {
           usageData.push({
+            teamName: teamUsage.name,
             date: teamUsage.date,
             appName: teamApp.app_name,
             addons: teamApp.addons,
             data: teamApp.data,
             dynos: teamApp.dynos,
             partner: teamApp.partner,
-            space: teamUsage.space
+            space: ''
           })
         })
       }
+
+      usageData.push({
+        teamName: teamUsage.name,
+        date: teamUsage.date,
+        appName: '',
+        addons: '',
+        data: '',
+        dynos: '',
+        partner: '',
+        space: teamUsage.space
+      })
     })
 
     if (usageData.length === 0) return this.warn('No usage data to list')
@@ -153,6 +166,7 @@ presented here may not reflect license usage or billing for your account.`
 
   private displayEnterpriseAccoutUsage(allUsage: any[]) {
     const usageData: Array<any> = []
+    let spaceUsageData: Array<any> = []
 
     allUsage.forEach((usage: any) => {
       usage.teams.forEach((team: any) => {
@@ -171,13 +185,24 @@ presented here may not reflect license usage or billing for your account.`
               data: teamApp.data,
               dynos: teamApp.dynos,
               partner: teamApp.partner,
-              space: team.space
+              space: ''
             })
           })
-        } else {
-          usageData.push(teamInfo)
         }
+
+        spaceUsageData.push({
+          ...teamInfo,
+          space: team.space,
+          appName: '',
+          addons: '',
+          data: '',
+          dynos: '',
+          partner: '',
+        })
       })
+
+      usageData.push(...spaceUsageData)
+      spaceUsageData = []
     })
 
     if (usageData.length === 0) return this.warn('No usage data to list')

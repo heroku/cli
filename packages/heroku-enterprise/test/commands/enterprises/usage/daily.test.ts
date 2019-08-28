@@ -157,8 +157,9 @@ describe('enterprises:usage:daily', () => {
     )
     .command(['enterprises:usage:daily', '--enterprise-account', 'wallyworld', '--start-date', '2018-09-01', '--end-date', '2018-10-01'])
     .it('lists the usage for an enterprise account', ctx => {
-      expect(ctx.stdout).to.contain('Account      Team App        Date       Dyno  Addon Partner Data Space ')
-      expect(ctx.stdout).to.contain('my-test-team ops  exampleapp 2017-01-01 1.548 25000 1234    3489 1.548 ')
+      expect(ctx.stdout).to.contain('Account      Team App        Date       Dyno  Addon Partner Data Space')
+      expect(ctx.stdout).to.contain('my-test-team ops  exampleapp 2017-01-01 1.548 25000 1234    3489')
+      expect(ctx.stdout).to.contain('my-test-team ops             2017-01-01                          1.548')
     })
 
   test
@@ -186,11 +187,13 @@ describe('enterprises:usage:daily', () => {
     )
     .command(['enterprises:usage:daily', '--start-date', '2018-09-01', '--end-date', '2018-10-01', '--team', 'lausanne'])
     .it('lists the usage for an enterprise team using start and end dates', ctx => {
-      expect(ctx.stdout).to.contain('App               Date       Dyno  Addon Partner Data  Space ')
-      expect(ctx.stdout).to.contain('froyo-expcore     2017-01-01 1.548 19941 4457    15484 3.87095 ')
-      expect(ctx.stdout).to.contain('froyo-expcore-dev 2017-01-01 3.853 1075  12      1075  3.87095 ')
-      expect(ctx.stdout).to.contain('froyo-expcore     2017-02-01 0     19941 4457    15484 3.87095 ')
-      expect(ctx.stdout).to.contain('froyo-expcore-dev 2017-02-01 3.853 1075  0       1075  3.87095 ')
+      expect(ctx.stdout).to.contain('Team      App               Date       Dyno  Addon Partner Data  Space ')
+      expect(ctx.stdout).to.contain('team-0001 froyo-expcore     2017-01-01 1.548 19941 4457    15484')
+      expect(ctx.stdout).to.contain('team-0001 froyo-expcore-dev 2017-01-01 3.853 1075  12      1075 ')
+      expect(ctx.stdout).to.contain('team-0001                   2017-01-01                           3.87095')
+      expect(ctx.stdout).to.contain('team-0001 froyo-expcore     2017-02-01 0     19941 4457    15484')
+      expect(ctx.stdout).to.contain('team-0001 froyo-expcore-dev 2017-02-01 3.853 1075  0       1075 ')
+      expect(ctx.stdout).to.contain('team-0001                   2017-02-01                           3.87095')
     })
 
   test
