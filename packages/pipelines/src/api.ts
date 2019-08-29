@@ -1,7 +1,6 @@
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import http from 'http-call'
-
 import keyBy from 'lodash.keyby'
 
 const V3_HEADER = 'application/vnd.heroku+json; version=3'
@@ -21,6 +20,12 @@ export function createPipeline(heroku: APIClient, name: any, owner: any) {
     method: 'POST',
     headers: {Accept: PIPELINES_HEADER},
     body: {name, owner}
+  })
+}
+
+export function createPipelineTransfer(heroku: APIClient, pipeline: Heroku.Pipeline) {
+  return heroku.post('/pipeline-transfers', {
+    body: pipeline
   })
 }
 
