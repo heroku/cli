@@ -1,5 +1,5 @@
 import {expect, test} from '@oclif/test'
-import Open from 'cli-ux/lib/open'
+import cli from 'cli-ux'
 
 describe('pipelines:open', () => {
   const pipeline = {id: '0123', name: 'Rigel'}
@@ -15,7 +15,7 @@ describe('pipelines:open', () => {
         .query({eq: {name: pipeline.name}})
         .reply(200, [pipeline])
     )
-    .stub(Open, 'default', (urlToOpen: string) => {
+    .stub(cli, 'open', () => (urlToOpen: string) => {
       openWasCalled = true
       openedUrl = urlToOpen
       return Promise.resolve()

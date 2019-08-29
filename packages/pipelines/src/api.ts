@@ -1,6 +1,6 @@
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import http from 'http-call'
+import {HTTP} from 'http-call'
 import keyBy from 'lodash.keyby'
 
 const V3_HEADER = 'application/vnd.heroku+json; version=3'
@@ -98,9 +98,9 @@ function listCouplings(heroku: APIClient, pipelineId: string) {
   return heroku.get<Array<Heroku.PipelineCoupling>>(`/pipelines/${pipelineId}/pipeline-couplings`)
 }
 
-// function patchCoupling(heroku: APIClient, id, stage) {
-//   return heroku.patch(`/pipeline-couplings/${id}`, {body: {stage}})
-// }
+export function patchCoupling(heroku: APIClient, id: string, stage: string) {
+  return heroku.patch(`/pipeline-couplings/${id}`, {body: {stage}})
+}
 
 export function postCoupling(heroku: APIClient, pipeline: any, app: any, stage: string) {
   return heroku.post('/pipeline-couplings', {
@@ -115,7 +115,7 @@ export function removeCoupling(heroku: APIClient, app: string) {
     })
 }
 
-// function updateCoupling(heroku: APIClient, app, stage) {
-//   return getCoupling(heroku, app)
-//     .then(coupling => patchCoupling(heroku, coupling.id, stage))
-// }
+export function updateCoupling(heroku: APIClient, app: string, stage: string) {
+  return getCoupling(heroku, app)
+    .then(({body: coupling}) => patchCoupling(heroku, coupling.id!, stage))
+}
