@@ -1,9 +1,9 @@
 import {Command, flags} from '@heroku-cli/command'
 import cli from 'cli-ux'
 
-// import {listPipelineApps} from '../../api'
-// import disambiguate from '../../disambiguate'
-// import renderPipeline from '../../render-pipeline'
+import {listPipelineApps} from '../../api'
+import disambiguate from '../../disambiguate'
+import renderPipeline from '../../render-pipeline'
 
 export default class PipelinesInfo extends Command {
   static description = 'show list of apps in a pipeline'
@@ -24,12 +24,10 @@ export default class PipelinesInfo extends Command {
   ]
 
   static flags = {
-    format: flags.string({
-      name: 'json',
+    json: flags.boolean({
       description: 'output in json format',
     }),
-    owner: flags.string({
-      name: 'with-owners',
+    'with-owners': flags.boolean({
       description: 'shows owner of every app',
       hidden: true
     })
@@ -42,17 +40,17 @@ export default class PipelinesInfo extends Command {
   }]
 
   async run() {
-    // const {args, flags} = this.parse(PipelinesInfo)
-    // const pipeline: any = await disambiguate(this.heroku, args.pipeline)
-    // const pipelineApps = await listPipelineApps(this.heroku, pipeline.id)
+    const {args, flags} = this.parse(PipelinesInfo)
+    const pipeline: any = await disambiguate(this.heroku, args.pipeline)
+    const pipelineApps = await listPipelineApps(this.heroku, pipeline.id)
 
-    // if (flags.format) {
-    //   cli.styledJSON({pipeline, apps: pipelineApps})
-    // } else {
-    //     await renderPipeline(this.heroku, pipeline, pipelineApps, {
-    //         withOwners: true,
-    //         showOwnerWarning: true
-    //     })
-    // }
+    if (flags.json) {
+      cli.styledJSON({pipeline, apps: pipelineApps})
+    } else {
+      await renderPipeline(this.heroku, pipeline, pipelineApps, {
+        withOwners: flags['with-owners'],
+        showOwnerWarning: true
+      })
+    }
   }
 }
