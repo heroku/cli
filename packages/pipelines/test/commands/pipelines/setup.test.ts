@@ -1,6 +1,6 @@
 import {expect, test} from '@oclif/test'
 import {cli} from 'cli-ux'
-import * as sinon from 'sinon'
+import sinon from 'sinon'
 
 describe('pipelines:setup', () => {
   test
