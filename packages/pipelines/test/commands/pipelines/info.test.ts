@@ -90,4 +90,25 @@ describe('pipelines:info', () => {
     .it('displays the pipeline info and apps', ctx => {
       itShowsPipelineApps(ctx)
     })
+
+  describe(`when pipeline doesn't have an owner`, () => {
+    test
+      .stderr()
+      .stderr()
+      .command(['pipelines:info', 'example'])
+      .it(`doesn't display the owner`, ctx => {
+        expect(ctx.stderr).to.not.contain('owner: foo@user.com')
+      })
+
+      // describe(`when pipeline doesn't have an owner`, () => {
+      //   test
+      //     .stderr()
+      //     .stderr()
+      //     .command(['pipeline:info', 'example', '--json'])
+      //     .it('displays json format', ctx => {
+      //       JSON.parse(ctx.stderr).pipeline.name.to.eq('example')
+      //       JSON.parse(ctx.stderr).apps.length.to.eq(9)
+      //       itShowsPipelineApps(ctx)
+      //     })
+  })
 })
