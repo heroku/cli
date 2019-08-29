@@ -10,7 +10,7 @@ describe('auth:token', () => {
         {access_token: {token: 'foobar', expires_in: 60}},
         {},
       ])
-  )
+    )
     .stdout()
     .stderr()
     .command(['auth:token'])
