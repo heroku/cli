@@ -1,5 +1,5 @@
 import {expect, test} from '@oclif/test'
-import * as Open from 'cli-ux/lib/open'
+import Open from 'cli-ux/lib/open'
 
 describe('pipelines:open', () => {
   const pipeline = {id: '0123', name: 'Rigel'}
