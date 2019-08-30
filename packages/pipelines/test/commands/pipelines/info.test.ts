@@ -93,23 +93,23 @@ app name            stage
       itShowsPipelineApps(ctx)
     })
 
-  // describe(`when pipeline doesn't have an owner`, () => {
-  //   test
-  //     .stderr()
-  //     .stderr()
-  //     .command(['pipelines:info', 'example'])
-  //     .it(`doesn't display the owner`, ctx => {
-  //       expect(ctx.stderr).to.not.contain('owner: foo@user.com')
-  //     })
+  describe(`when pipeline doesn't have an owner`, () => {
+    addMocks(test)
+      .stderr()
+      .stderr()
+      .command(['pipelines:info', 'example'])
+      .it(`doesn't display the owner`, ctx => {
+        expect(ctx.stderr).to.not.contain('owner: foo@user.com')
+      })
 
-  //   test
-  //     .stderr()
-  //     .stderr()
-  //     .command(['pipeline:info', 'example'])
-  //     .it('displays json format', ctx => {
-  //       JSON.parse(ctx.stderr).pipeline.name.to.eq('example')
-  //       JSON.parse(ctx.stderr).apps.length.to.eq(9)
-  //       itShowsPipelineApps(ctx)
-  //     })
-  // })
+    addMocks(test)
+      .stderr()
+      .stdout()
+      .command(['pipelines:info', 'example', '--json'])
+      .it('displays json format', ctx => {
+        JSON.parse(ctx.stdout).pipeline.name.to.eq('example')
+        JSON.parse(ctx.stdout).apps.length.to.eq(9)
+        itShowsPipelineApps(ctx)
+      })
+  })
 })
