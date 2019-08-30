@@ -107,9 +107,8 @@ app name            stage
       .stdout()
       .command(['pipelines:info', 'example', '--json'])
       .it('displays json format', ctx => {
-        JSON.parse(ctx.stdout).pipeline.name.to.eq('example')
-        JSON.parse(ctx.stdout).apps.length.to.eq(9)
-        itShowsPipelineApps(ctx)
+        expect(JSON.parse(ctx.stdout).pipeline.name).to.equal('example')
+        expect(JSON.parse(ctx.stdout).apps.length).to.equal(9)
       })
   })
 })
