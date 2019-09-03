@@ -29,8 +29,8 @@ describe('pipelines:add', () => {
     })
 
   test
-    // .stderr()
-    // .stdout()
+    .stderr()
+    .stdout()
     // this `stub` overrides the prompt function on
     // the inqurier package to simulate what would be
     // returned from answering if "development" was
@@ -58,8 +58,8 @@ describe('pipelines:add', () => {
       'example-pipeline'
     ])
     .it('adds a pipeline with stage specified from prompt', ctx => {
-      // expect(ctx.stdout).to.equal('')
-      // expect(ctx.stderr).to.contain('Adding ⬢ example-app to example-pipeline pipeline as development... done')
+      expect(ctx.stdout).to.equal('')
+      expect(ctx.stderr).to.contain('Adding ⬢ example-app to example-pipeline pipeline as development... done')
     })
 
   test

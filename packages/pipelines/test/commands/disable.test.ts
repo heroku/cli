@@ -1,4 +1,4 @@
-import { expect, test } from '@oclif/test'
+import {expect, test} from '@oclif/test'
 
 describe('reviewapps:disable', function () {
   const pipeline = {
