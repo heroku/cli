@@ -1,5 +1,6 @@
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+// tslint:disable-next-line: no-unused
 import http from 'http-call'
 
 import keyBy from 'lodash.keyby'

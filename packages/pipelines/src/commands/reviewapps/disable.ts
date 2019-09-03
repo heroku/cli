@@ -1,5 +1,5 @@
 import {Command, flags as HerokuFlags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
+import Heroku from '@heroku-cli/schema'
 import cli from 'cli-ux'
 
 export default class ReviewappsDisable extends Command {

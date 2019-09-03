@@ -1,7 +1,7 @@
 import {APIClient} from '@heroku-cli/command'
+import Heroku from '@heroku-cli/schema'
 import {prompt} from 'inquirer'
 import {isUUID} from 'validator'
-import * as Heroku from '@heroku-cli/schema'
 
 import {
   findPipelineByName,
