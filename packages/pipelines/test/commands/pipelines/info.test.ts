@@ -1,5 +1,8 @@
-import {expect, test} from '@oclif/test'
 import Heroku from '@heroku-cli/schema'
+import {expect, test} from '@oclif/test'
+import cli from 'cli-ux'
+
+import unwrap from '../unwrap'
 
 describe('pipelines:info', () => {
   type Stage = 'test' | 'review' | 'development' | 'staging' | 'production'
@@ -79,7 +82,22 @@ app name            stage
 ⬢ review-app-4      review      
 ⬢ staging-app-1     staging     
 ⬢ staging-app-2     staging     
-⬢ production-app-1  production  `)
+⬢ production-app-1  production `)
+  }
+
+  function itShowsMixedOwnershipWarning(owner: any, ctx: any) {
+    const warningMessage = ` ›   Warning: Some apps in this pipeline do not belong to ${owner}.
+ ›
+ ›   All apps in a pipeline must have the same owner as the pipeline owner.
+ ›   Transfer these apps or change the pipeline owner in pipeline settings.
+ ›   See https://devcenter.heroku.com/articles/pipeline-ownership-transition for more info.
+`
+    expect(unwrap(ctx.stderr)).to.contain(warningMessage)
+  }
+
+  function itDoesNotShowMixedOwnershipWarning(ctx: any) {
+    const warningMessage = 'Some apps in this pipeline do not belong'
+    expect(ctx.stderr).to.not.contain(warningMessage)
   }
 
   addMocks(test)
@@ -93,12 +111,12 @@ app name            stage
       itShowsPipelineApps(ctx)
     })
 
-  describe(`when pipeline doesn't have an owner`, () => {
+  describe("when pipeline doesn't have an owner", () => {
     addMocks(test)
       .stderr()
       .stderr()
       .command(['pipelines:info', 'example'])
-      .it(`doesn't display the owner`, ctx => {
+      .it("doesn't display the owner", ctx => {
         expect(ctx.stderr).to.not.contain('owner: foo@user.com')
       })
 
@@ -111,4 +129,32 @@ app name            stage
         expect(JSON.parse(ctx.stdout).apps.length).to.equal(9)
       })
   })
+
+  describe('when it has an owner', () => {
+    owner = {id: '5678', type: 'user'}
+    pipeline = {...pipeline, owner}
+    pipelines = [pipeline]
+    addMocks(test)
+      .stderr()
+      .stdout()
+      .command(['pipelines:info', 'example'])
+      .it('displays mixed ownership warning', ctx => {
+        // console.log(pipeline)
+        itShowsMixedOwnershipWarning(owner.id, ctx)
+      })
+
+  })
+
+  // describe('testing', () => {
+  //   owner = {id: '1234', type: 'user'}
+  //   pipeline = {...pipeline, owner}
+  //   pipelines = [pipeline]
+  //   addMocks(test)
+  //     .stderr()
+  //     .stdout()
+  //     .command(['pipelines:info', 'example'])
+  //     .it(`doesn't display mixed ownership warning`, ctx => {
+  //       itDoesNotShowMixedOwnershipWarning(ctx)
+  //     })
+  // })
 })
