@@ -48,6 +48,7 @@ describe('pipelines:transfer', function () {
         }).reply(200, {})
     })
     .command(['pipelines:transfer', `--pipeline=${pipeline.id}`, `--confirm=${pipeline.name}`, team.name])
+    .retries(2)
     .it('transfers to a team', ctx => {
       expect(ctx.stderr).to.include(`Transferring ${pipeline.name} pipeline to the ${team.name} team... done`)
       expect(update.isDone()).to.be.true
