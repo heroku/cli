@@ -1,4 +1,5 @@
 import {Command, flags} from '@heroku-cli/command'
+import Heroku from '@heroku-cli/schema'
 import cli from 'cli-ux'
 
 import {listPipelineApps} from '../../api'
@@ -9,18 +10,7 @@ export default class PipelinesInfo extends Command {
   static description = 'show list of apps in a pipeline'
 
   static examples = [
-    `$ heroku pipelines:info example
-    === example
-    owner: my-team (team)
-
-    app name                     stage
-    ───────────────────────────  ──────────
-    ⬢ example-pr-16              review
-    ⬢ example-pr-19              review
-    ⬢ example-pr-23              review
-    ⬢ example-staging            staging
-    ⬢ example-staging-2          staging
-    ⬢ example-production         production`
+    '$ heroku pipelines:info example'
   ]
 
   static flags = {
@@ -33,7 +23,6 @@ export default class PipelinesInfo extends Command {
     })
   }
 
-
   static args = [{
     name: 'pipeline',
     description: 'pipeline to show',
@@ -42,8 +31,8 @@ export default class PipelinesInfo extends Command {
 
   async run() {
     const {args, flags} = this.parse(PipelinesInfo)
-    const pipeline: any = await disambiguate(this.heroku, args.pipeline)
-    const pipelineApps = await listPipelineApps(this.heroku, pipeline.id)
+    const pipeline: Heroku.Pipeline = await disambiguate(this.heroku, args.pipeline)
+    const pipelineApps = await listPipelineApps(this.heroku, pipeline.id!)
 
     if (flags.json) {
       cli.styledJSON({pipeline, apps: pipelineApps})

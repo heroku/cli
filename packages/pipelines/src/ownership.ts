@@ -25,7 +25,7 @@ export function getOwner(heroku: APIClient, apps: Array<Heroku.App>, pipeline: H
   let ownerPromise
 
   if (pipeline.owner.type === 'team') {
-    ownerPromise = getTeam(heroku, pipeline.owner.id)
+    ownerPromise = getTeam(heroku, pipeline.owner.id).then(response => response.body)
   } else {
     const app = apps.find(app => {
       return app.owner && app.owner.id === pipeline.owner.id
