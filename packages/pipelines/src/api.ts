@@ -4,9 +4,9 @@ import * as Heroku from '@heroku-cli/schema'
 import http from 'http-call'
 import keyBy from 'lodash.keyby'
 
-const V3_HEADER = 'application/vnd.heroku+json; version=3'
-const FILTERS_HEADER = `${V3_HEADER}.filters`
-const PIPELINES_HEADER = `${V3_HEADER}.pipelines`
+export const V3_HEADER = 'application/vnd.heroku+json; version=3'
+export const FILTERS_HEADER = `${V3_HEADER}.filters`
+export const PIPELINES_HEADER = `${V3_HEADER}.pipelines`
 
 export function createAppSetup(heroku: APIClient, body: {body: any}) {
   return heroku.post('/app-setups', {body})
@@ -119,4 +119,11 @@ export function removeCoupling(heroku: APIClient, app: string) {
 export function updateCoupling(heroku: APIClient, app: string, stage: string) {
   return getCoupling(heroku, app)
     .then(({body: coupling}) => patchCoupling(heroku, coupling.id!, stage))
+}
+
+export function getReleases(heroku: APIClient, appId: string) {
+  return heroku.get<Array<Heroku.Release>>(`/apps/${appId}/releases`, {
+    headers: {Accept: V3_HEADER, Range: 'version ..; order=desc'},
+    partial: true
+  })
 }
