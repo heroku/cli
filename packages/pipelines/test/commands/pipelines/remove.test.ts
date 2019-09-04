@@ -16,6 +16,7 @@ describe('pipelines:remove', () => {
         .reply(200, coupling)
     })
     .command(['pipelines:remove', '--app=example'])
+    .retries(3)
     .it('displays the right messages', ctx => {
       expect(ctx.stderr).to.contain(`Removing ⬢ ${app}... done\n`)
     })
