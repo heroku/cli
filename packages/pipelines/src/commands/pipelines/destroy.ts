@@ -3,7 +3,6 @@ import {Command} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import cli from 'cli-ux'
 
-
 import {destroyPipeline} from '../../api'
 import disambiguate from '../../disambiguate'
 
