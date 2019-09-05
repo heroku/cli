@@ -1,9 +1,7 @@
 import {expect, test} from '@oclif/test'
-import cli from 'cli-ux'
-import nock = require('nock')
 
-describe('pipelines:promote', () => {
-  const api = 'https://api.heroku.com'
+describe.only('pipelines:promote', () => {
+  const apiUrl = 'https://api.heroku.com'
 
   const pipeline = {
     id: '123-pipeline-456',
@@ -60,24 +58,33 @@ describe('pipelines:promote', () => {
     status: 'pending'
   }
 
-  function mockPromotionTargets() {
+  function mockPromotionTargets(testInstance: typeof test) {
     let pollCount = 0
-    return nock(api)
-      .get(`/pipeline-promotions/${promotion.id}/promotion-targets`)
-      .thrice()
-      .reply(200, function () {
-        pollCount++
+    return testInstance
+      .nock(apiUrl, api => {
+        api
+          .get(`/pipeline-promotions/${promotion.id}/promotion-targets`)
+          .thrice()
+          .reply(function () {
+            pollCount++
 
-        return [{
-          app: {id: targetApp1.id},
-          status: 'successful',
-          error_message: null
-        }, {
-          app: {id: targetApp2.id},
-        // Return failed on the second poll loop
-          status: pollCount > 1 ? 'failed' : 'pending',
-          error_message: pollCount > 1 ? 'Because reasons' : null
-        }]
+            return [
+              200,
+              [
+                {
+                  app: {id: targetApp1.id},
+                  status: 'successful',
+                  error_message: null
+                },
+                {
+                  app: {id: targetApp2.id},
+                // Return failed on the second poll loop
+                  status: pollCount > 1 ? 'failed' : 'pending',
+                  error_message: pollCount > 1 ? 'Because reasons' : null
+                },
+              ]
+            ]
+          })
       })
   }
 
@@ -95,10 +102,9 @@ describe('pipelines:promote', () => {
 
   }
 
-  setup(test)
+  setup(mockPromotionTargets(test))
     .stdout()
     .stderr()
-    .command(['pipelines:promote'])
     .nock('https://api.heroku.com', api => {
       api.post('/pipeline-promotions', {
         pipeline: {id: pipeline.id},
@@ -109,8 +115,8 @@ describe('pipelines:promote', () => {
         ]
       }).reply(201, promotion)
     })
+    .command(['pipelines:promote', `--app=${sourceApp.name}`])
     .it('promotes to all apps in the next stage', ctx => {
-      mockPromotionTargets()
       expect(ctx.stdout).to.contain('failed')
       expect(ctx.stdout).to.contain('Because reasons')
     })

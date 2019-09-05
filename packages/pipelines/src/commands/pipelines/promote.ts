@@ -40,28 +40,23 @@ function pollPromotionStatus(heroku: APIClient, id: string, needsReleaseCommand:
   return heroku.get<Array<Heroku.PipelinePromotionTarget>>(`/pipeline-promotions/${id}/promotion-targets`).then(function ({body: targets}) {
     if (targets.every(isComplete)) { return targets }
 
-          //
-          // With only one target, we can return as soon as the release is created.
-          // The command will then read the release phase output
-          //
-          // `needsReleaseCommand` allows us to keep polling, as it can take a few
-          // seconds to get the release to succeeded after the release command
-          // finished.
-          //
+    //
+    // With only one target, we can return as soon as the release is created.
+    // The command will then read the release phase output
+    //
+    // `needsReleaseCommand` allows us to keep polling, as it can take a few
+    // seconds to get the release to succeeded after the release command
+    // finished.
+    //
     if (needsReleaseCommand && targets.length === 1 && targets[0].release !== null) { return targets }
 
-    const delay = new Promise(resolve => {
-      setTimeout(() => {
-        resolve()
-      }, 1000)
-    })
-    return delay.then(pollPromotionStatus.bind(null, heroku, id, needsReleaseCommand))
+    return wait(1000).then(pollPromotionStatus.bind(null, heroku, id, needsReleaseCommand))
   })
 }
 
 async function getCoupling(heroku: APIClient, app: string): Promise<Heroku.PipelineCoupling> {
   cli.action.start('Fetching app info')
-  const {body: coupling} = await heroku.get<Heroku.PipelineCoupling>(`/>apps/${app}/pipeline-couplings`)
+  const {body: coupling} = await heroku.get<Heroku.PipelineCoupling>(`/apps/${app}/pipeline-couplings`)
   cli.action.stop()
   return coupling
 }
