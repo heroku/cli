@@ -140,16 +140,9 @@ async function streamReleaseCommand(heroku: APIClient, targets: Array<Heroku.App
 export default class Promote extends Command {
   static description = 'promote the latest release of this app to its downstream app(s)'
 
-  static examples = [`$ heroku pipelines:promote -a example-staging
-  Promoting example-staging to example (production)... done, v23
-  Promoting example-staging to example-admin (production)... done, v54
-
-  $ heroku pipelines:promote -a example-staging --to my-production-app1,my-production-app2
-  Starting promotion to apps: my-production-app1,my-production-app2... done
-  Waiting for promotion to complete... done
-  Promotion successful
-  my-production-app1: succeeded
-  my-production-app2: succeeded`]
+  static examples = [
+    '$ heroku pipelines:promote -a example-staging'
+  ]
 
   static flags = {
     app: flags.app({

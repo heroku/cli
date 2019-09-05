@@ -1,6 +1,6 @@
 import {expect, test} from '@oclif/test'
 
-describe.only('pipelines:promote', () => {
+describe('pipelines:promote', () => {
   const apiUrl = 'https://api.heroku.com'
 
   const pipeline = {
@@ -78,7 +78,7 @@ describe.only('pipelines:promote', () => {
                 },
                 {
                   app: {id: targetApp2.id},
-                // Return failed on the second poll loop
+                  // Return failed on the second poll loop
                   status: pollCount > 1 ? 'failed' : 'pending',
                   error_message: pollCount > 1 ? 'Because reasons' : null
                 },
@@ -121,24 +121,91 @@ describe.only('pipelines:promote', () => {
       expect(ctx.stdout).to.contain('Because reasons')
     })
 
-  // context('passing a `to` flag', () => {
-  //   test
-  //     .stdout()
-  //     .stderr()
-  //     .command(['pipelines:promote'])
-  //     .nock('https://api.heroku.com', api => {
-  //       api.post('/pipeline-promotions', {
-  //         pipeline: {id: pipeline.id},
-  //         source: {app: {id: sourceApp.id}},
-  //         targets: [
-  //           {app: {id: targetApp1.id}}
-  //         ]
-  //       }).reply(201, promotion)
-  //     })
-  //     .it('can promote by app name', ctx => {
-  //       mockPromotionTargets()
-  //       expect(ctx.stdout).to.contain('failed')
-  //       expect(ctx.stdout).to.contain('Because reasons')
-  //     })
-  // })
+  context('passing a `to` flag', function () {
+    setup(mockPromotionTargets(test))
+      .stdout()
+      .stderr()
+      .nock('https://api.heroku.com', api => {
+        api
+          .post('/pipeline-promotions', {
+            pipeline: {id: pipeline.id},
+            source: {app: {id: sourceApp.id}},
+            targets: [
+              {app: {id: targetApp1.id}}
+            ]
+          }).reply(201, promotion)
+      })
+      .command(['pipelines:promote', `--app=${sourceApp.name}`, `--to=${targetApp1.name}`])
+      .it('can promote by app name', ctx => {
+        expect(ctx.stdout).to.contain('failed')
+        expect(ctx.stdout).to.contain('Because reasons')
+      })
+
+    setup(mockPromotionTargets(test))
+      .stdout()
+      .stderr()
+      .nock('https://api.heroku.com', api => {
+        api
+          .post('/pipeline-promotions', {
+            pipeline: {id: pipeline.id},
+            source: {app: {id: sourceApp.id}},
+            targets: [
+              {app: {id: targetApp1.id}}
+            ]
+          }).reply(201, promotion)
+      })
+      .command(['pipelines:promote', `--app=${sourceApp.name}`, `--to=${targetApp1.id}`])
+      .it('can promote by app name', ctx => {
+        expect(ctx.stdout).to.contain('failed')
+        expect(ctx.stdout).to.contain('Because reasons')
+      })
+  })
+
+  context('with release phase', function () {
+    function mockPromotionTargetsWithRelease(testInstance: typeof test, release: any) {
+      let pollCount = 0
+
+      return testInstance
+        .nock(apiUrl, api => {
+          api
+            .post('/pipeline-promotions', {
+              pipeline: {id: pipeline.id},
+              source: {app: {id: sourceApp.id}},
+              targets: [
+              {app: {id: targetApp1.id}},
+              {app: {id: targetApp2.id}}
+              ]
+            })
+            .reply(201, promotion)
+            .get(`/apps/${targetApp1.id}/releases/${release.id}`)
+            .reply(200, targetReleaseWithOutput)
+            .get(`/pipeline-promotions/${promotion.id}/promotion-targets`)
+            .twice()
+            .reply(200, function () {
+              pollCount++
+
+              return [{
+                app: {id: targetApp1.id},
+                release: {id: release.id},
+                status: pollCount > 1 ? 'successful' : 'pending',
+                error_message: null
+              }]
+            })
+        })
+        .nock('https://busl.example', api => {
+          api
+            .get('/release')
+            .reply(200, 'Release Command Output')
+        })
+    }
+
+    mockPromotionTargetsWithRelease(setup(test), targetReleaseWithOutput)
+      .stdout()
+      .stderr()
+      .command(['pipelines:promote', `--app=${sourceApp.name}`])
+      .it('streams the release command output', ctx => {
+        expect(ctx.stdout).to.contain('Running release command')
+        expect(ctx.stdout).to.contain('successful')
+      })
+  })
 })
