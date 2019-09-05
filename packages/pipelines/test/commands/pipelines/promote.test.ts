@@ -81,20 +81,23 @@ describe('pipelines:promote', () => {
       })
   }
 
-  function setup() {
-    nock(api)
-      .get(`/apps/${sourceApp.name}/pipeline-couplings`)
-      .reply(200, sourceCoupling)
-      .get(`/pipelines/${pipeline.id}/pipeline-couplings`)
-      .reply(200, [sourceCoupling, targetCoupling1, targetCoupling2])
-      .post('/filters/apps')
-      .reply(200, [sourceApp, targetApp1, targetApp2])
+  function setup(setupTest: typeof test) {
+    return setupTest
+      .nock('https://api.heroku.com', api => {
+        api
+          .get(`/apps/${sourceApp.name}/pipeline-couplings`)
+          .reply(200, sourceCoupling)
+          .get(`/pipelines/${pipeline.id}/pipeline-couplings`)
+          .reply(200, [sourceCoupling, targetCoupling1, targetCoupling2])
+          .post('/filters/apps')
+          .reply(200, [sourceApp, targetApp1, targetApp2])
+      })
+
   }
 
-  setup()
-  test
-    // .stdout()
-    // .stderr()
+  setup(test)
+    .stdout()
+    .stderr()
     .command(['pipelines:promote'])
     .nock('https://api.heroku.com', api => {
       api.post('/pipeline-promotions', {
@@ -108,8 +111,8 @@ describe('pipelines:promote', () => {
     })
     .it('promotes to all apps in the next stage', ctx => {
       mockPromotionTargets()
-      // expect(ctx.stdout).to.contain('failed')
-      // expect(ctx.stdout).to.contain('Because reasons')
+      expect(ctx.stdout).to.contain('failed')
+      expect(ctx.stdout).to.contain('Because reasons')
     })
 
   // context('passing a `to` flag', () => {
