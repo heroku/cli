@@ -1,51 +1,43 @@
+import color from '@heroku-cli/color'
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import Heroku from '@heroku-cli/schema'
 import {assert} from 'chai'
 import cli from 'cli-ux'
-import color from '@heroku-cli/color'
+import got from 'got'
 
-import {getApps, listPipelineApps} from '../../api'
+import {listPipelineApps} from '../../api'
 import keyBy from '../../key-by'
 
-function assertNotPromotingToSelf(source, target) {
+function assertNotPromotingToSelf(source: string, target: string) {
   assert.notStrictEqual(source, target, `Cannot promote from an app to itself: ${target}. Specify a different target app.`)
 }
 
-function findAppInPipeline(apps, target) {
+function findAppInPipeline(apps: Array<Heroku.App>, target: string) {
   const found = apps.find(app => (app.name === target) || (app.id === target))
-  assert(found, `Cannot find app ${cli.color.app(target)}`)
+  assert(found, `Cannot find app ${color.app(target)}`)
 
   return found
 }
 
 const PROMOTION_ORDER = ['development', 'staging', 'production']
 
+// tslint:disable-next-line: no-string-based-set-timeout
 const wait = (ms = 100) => new Promise(resolve => setTimeout(resolve, ms))
 
-function isComplete(promotionTarget) {
+function isComplete(promotionTarget: Heroku.PipelinePromotionTarget) {
   return promotionTarget.status !== 'pending'
 }
 
-function isSucceeded(promotionTarget) {
+function isSucceeded(promotionTarget: Heroku.PipelinePromotionTarget) {
   return promotionTarget.status === 'succeeded'
 }
 
-function isFailed(promotionTarget) {
+function isFailed(promotionTarget: Heroku.PipelinePromotionTarget) {
   return promotionTarget.status === 'failed'
 }
 
-async function getSecondFactor() {
-  cli.yubikey.enable()
-  const secondFactor = await cli.prompt('Two-factor code', {mask: true})
-  cli.yubikey.disable()
-  return secondFactor
-}
-
-function pollPromotionStatus(heroku, id, needsReleaseCommand) {
-  return heroku.request({
-    method: 'GET',
-    path: `/pipeline-promotions/${id}/promotion-targets`
-  }).then(function (targets) {
+function pollPromotionStatus(heroku: APIClient, id: string, needsReleaseCommand: boolean): Promise<Array<Heroku.PipelinePromotionTarget>> {
+  return heroku.get<Array<Heroku.PipelinePromotionTarget>>(`/pipeline-promotions/${id}/promotion-targets`).then(function ({body: targets}) {
     if (targets.every(isComplete)) { return targets }
 
           //
@@ -67,19 +59,14 @@ function pollPromotionStatus(heroku, id, needsReleaseCommand) {
   })
 }
 
-async function getCoupling(heroku, app) {
-  return cli.action('Fetching app info', heroku.request({
-    method: 'GET',
-    path: `/apps/${app}/pipeline-couplings`
-  }))
+async function getCoupling(heroku: APIClient, app: string): Promise<Heroku.PipelineCoupling> {
+  cli.action.start('Fetching app info')
+  const {body: coupling} = await heroku.get<Heroku.PipelineCoupling>(`/>apps/${app}/pipeline-couplings`)
+  cli.action.stop()
+  return coupling
 }
 
-// async function getApps(heroku, pipeline) {
-//   return cli.action(`Fetching apps from ${cli.color.pipeline(pipeline.name)}`,
-//           listPipelineApps(heroku, pipeline.id))
-// }
-
-async function promote(heroku: APIClient, label: string, id: string, sourceAppId: string, targetApps: Array<Heroku.App>, secondFactor?: string) {
+async function promote(heroku: APIClient, label: string, id: string, sourceAppId: string, targetApps: Array<Heroku.App>, secondFactor?: string): Promise<Heroku.PipelinePromotion> {
   const options = {
     headers: {},
     body: {
@@ -94,52 +81,55 @@ async function promote(heroku: APIClient, label: string, id: string, sourceAppId
   }
 
   try {
-    return await cli.action(label, heroku.post('/pipeline-promotions', options))
+    cli.action.start(label)
+    const {body: promotions} = await heroku.post<Heroku.PipelinePromotion>('/pipeline-promotions', options)
+    cli.action.stop()
+    return promotions
   } catch (error) {
     if (!error.body || error.body.id !== 'two_factor') {
       throw error
     }
-    const secondFactor = await getSecondFactor()
+    const secondFactor = await heroku.twoFactorPrompt()
     return promote(heroku, label, id, sourceAppId, targetApps, secondFactor)
   }
 }
 
-function assertValidPromotion(app, source, target) {
-  if (target === null || PROMOTION_ORDER.indexOf(source) < 0) {
+function assertValidPromotion(app: string, source: string, target?: string) {
+  if (!target || PROMOTION_ORDER.indexOf(source) < 0) {
     throw new Error(`Cannot promote ${app} from '${source}' stage`)
   }
 }
 
-function assertApps(app, targetApps, targetStage) {
+function assertApps(app: string, targetApps: Array<Heroku.App>, targetStage: string) {
   if (targetApps.length < 1) {
-    throw new Error(`Cannot promote from ${cli.color.app(app)} as there are no downstream apps in ${targetStage} stage`)
+    throw new Error(`Cannot promote from ${color.app(app)} as there are no downstream apps in ${targetStage} stage`)
   }
 }
 
-function * getRelease(heroku, app, release) {
-  return yield cli.action('Fetching release info', heroku.request({
-    method: 'GET',
-    path: `/apps/${app}/releases/${release}`
-  }))
+async function getRelease(heroku: APIClient, app: string, releaseId: string): Promise<Heroku.Release> {
+  cli.action.start('Fetching release info')
+  const {body: release} = await heroku.get<Heroku.Release>(`/apps/${app}/releases/${releaseId}`)
+  cli.action.stop()
+  return release
 }
 
-function * streamReleaseCommand(heroku, targets, promotion) {
+async function streamReleaseCommand(heroku: APIClient, targets: Array<Heroku.App>, promotion: any) {
   if (targets.length !== 1 || targets.every(isComplete)) {
-    return yield pollPromotionStatus(heroku, promotion.id, false)
+    return pollPromotionStatus(heroku, promotion.id, false)
   }
   const target = targets[0]
-  const release = yield getRelease(heroku, target.app.id, target.release.id)
+  const release = await getRelease(heroku, target.app.id, target.release.id)
 
   if (!release.output_stream_url) {
-    return yield pollPromotionStatus(heroku, promotion.id, false)
+    return pollPromotionStatus(heroku, promotion.id, false)
   }
 
   cli.log('Running release command...')
   const fetch = (retry = 100) => new Promise((resolve, reject) => {
-    const stream = cli.got.stream(release.output_stream_url)
+    const stream = got.stream(release.output_stream_url!)
     stream.on('error', async err => {
       await wait(100)
-      if (retry && err.statusCode === 404) {
+      if (retry && err.code === '404') {
         fetch(retry - 1).then(resolve).catch(reject)
       } else reject(err)
     })
@@ -147,9 +137,9 @@ function * streamReleaseCommand(heroku, targets, promotion) {
     const piped = stream.pipe(process.stdout)
     piped.on('error', reject)
   })
-  yield fetch()
+  await fetch()
 
-  return yield pollPromotionStatus(heroku, promotion.id, false)
+  return pollPromotionStatus(heroku, promotion.id, false)
 }
 
 export default class Promote extends Command {
@@ -179,15 +169,15 @@ export default class Promote extends Command {
 
   async run() {
     const {flags} = this.parse(Promote)
-    const app = flags.app
-    const coupling = await getCoupling(this.heroku, app)
-    cli.action.start(`Fetching apps from ${color.pipeline(coupling.pipeline.name)}`)
-    const allApps = await listPipelineApps(this.heroku, coupling.pipeline.id)
+    const appNameOrId = flags.app
+    const coupling = await getCoupling(this.heroku, appNameOrId)
+    cli.action.start(`Fetching apps from ${color.pipeline(coupling.pipeline!.name)}`)
+    const allApps = await listPipelineApps(this.heroku, coupling.pipeline!.id!)
     cli.action.stop()
     const sourceStage = coupling.stage
 
     let promotionActionName = ''
-    let targetApps = []
+    let targetApps: Array<Heroku.App> = []
     if (flags.to) {
       // The user specified a specific set of apps they want to target
       // We don't have to infer the apps or the stage they want to promote to
@@ -197,29 +187,33 @@ export default class Promote extends Command {
 
       // Now let's make sure that we can find every target app they specified
       // The only requirement is that the app be in this pipeline. They can be at any stage.
-      targetApps = targetAppNames.map(targetAppNameOrId => {
-        assertNotPromotingToSelf(app, targetAppNameOrId)
-        return findAppInPipeline(allApps, targetAppNameOrId)
-      })
+      targetApps = targetAppNames.reduce((acc: Array<Heroku.App>, targetAppNameOrId) => {
+        assertNotPromotingToSelf(appNameOrId, targetAppNameOrId)
+        const app = findAppInPipeline(allApps, targetAppNameOrId)
+        if (app) {
+          acc.push(app)
+        }
+        return acc
+      }, [])
 
       promotionActionName = `Starting promotion to apps: ${targetAppNames.toString()}`
     } else {
-      const targetStage = PROMOTION_ORDER[PROMOTION_ORDER.indexOf(sourceStage) + 1]
+      const targetStage = PROMOTION_ORDER[PROMOTION_ORDER.indexOf(sourceStage!) + 1]
 
-      assertValidPromotion(app, sourceStage, targetStage)
+      assertValidPromotion(appNameOrId, sourceStage!, targetStage)
 
       targetApps = allApps.filter(app => app.coupling.stage === targetStage)
 
-      assertApps(app, targetApps, targetStage)
+      assertApps(appNameOrId, targetApps, targetStage)
 
       promotionActionName = `Starting promotion to ${targetStage}`
     }
 
     const promotion = await promote(
-      this.heroku, promotionActionName, coupling.pipeline.id, coupling.app.id, targetApps
+      this.heroku, promotionActionName, coupling.pipeline!.id!, coupling.app!.id!, targetApps
     )
 
-    const pollLoop = pollPromotionStatus(this.heroku, promotion.id, true)
+    const pollLoop = pollPromotionStatus(this.heroku, promotion.id!, true)
     cli.action.start('Waiting for promotion to complete')
     let promotionTargets = await pollLoop
     promotionTargets = await streamReleaseCommand(this.heroku, promotionTargets, promotion)
@@ -227,7 +221,7 @@ export default class Promote extends Command {
 
     const appsByID = keyBy(allApps, 'id')
 
-    const styledTargets = promotionTargets.reduce(function (memo, target) {
+    const styledTargets = promotionTargets.reduce(function (memo: Heroku.App , target: Heroku.App) {
       const app = appsByID[target.app.id]
       const details = [target.status]
 
@@ -243,6 +237,6 @@ export default class Promote extends Command {
       cli.warn('\nPromotion to some apps failed')
     }
 
-    cli.styledHash(styledTargets)
+    cli.styledObject(styledTargets)
   }
 }
