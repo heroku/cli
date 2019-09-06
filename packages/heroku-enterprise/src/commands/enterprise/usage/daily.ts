@@ -15,14 +15,14 @@ NOTE: While we strive to provide the most accurate usage information, the data
 presented here may not reflect license usage or billing for your account.`
 
   static examples = [
-    '$ heroku enterprises:usage:daily --enterprise-account=account-name --start-date=2019-01-01 --end-date=2019-01-15',
-    '$ heroku enterprises:usage:daily --enterprise-account=account-name --start-date=2019-01-01 --end-date=2019-01-15 --columns=\'team,app,dyno,data\'',
-    '$ heroku enterprises:usage:daily --enterprise-account=account-name --start-date=2019-01-01 --end-date=2019-01-15 --columns=\'team,app,dyno,data\' --sort=\'-data,app\'',
-    '$ heroku enterprises:usage:daily --enterprise-account=account-name --start-date=2019-01-01 --end-date=2019-01-15 --columns=\'team,app,dyno,data\' --filter=\'app=myapp\'',
-    '$ heroku enterprises:usage:daily --enterprise-account=account-name --start-date=2019-01-01 --end-date=2019-01-15 --csv',
-    '$ heroku enterprises:usage:daily --team=team-name --start-date=2019-01-01 --end-date=2019-01-15',
-    '$ heroku enterprises:usage:daily --team=team-name --start-date=2019-01-01 --end-date=2019-01-15 --columns=\'app,dyno,data\' --sort=\'-data,app\'',
-    '$ heroku enterprises:usage:daily --team=team-name --start-date=2019-01-01 --end-date=2019-01-15 --csv',
+    '$ heroku enterprise:usage:daily --enterprise-account=account-name --start-date=2019-01-01 --end-date=2019-01-15',
+    '$ heroku enterprise:usage:daily --enterprise-account=account-name --start-date=2019-01-01 --end-date=2019-01-15 --columns=\'team,app,dyno,data\'',
+    '$ heroku enterprise:usage:daily --enterprise-account=account-name --start-date=2019-01-01 --end-date=2019-01-15 --columns=\'team,app,dyno,data\' --sort=\'-data,app\'',
+    '$ heroku enterprise:usage:daily --enterprise-account=account-name --start-date=2019-01-01 --end-date=2019-01-15 --columns=\'team,app,dyno,data\' --filter=\'app=myapp\'',
+    '$ heroku enterprise:usage:daily --enterprise-account=account-name --start-date=2019-01-01 --end-date=2019-01-15 --csv',
+    '$ heroku enterprise:usage:daily --team=team-name --start-date=2019-01-01 --end-date=2019-01-15',
+    '$ heroku enterprise:usage:daily --team=team-name --start-date=2019-01-01 --end-date=2019-01-15 --columns=\'app,dyno,data\' --sort=\'-data,app\'',
+    '$ heroku enterprise:usage:daily --team=team-name --start-date=2019-01-01 --end-date=2019-01-15 --csv',
   ]
 
   static flags = {

@@ -9,7 +9,7 @@ import {CoreService} from '../../core-service'
 export default class Rename extends BaseCommand {
   static description = 'rename the enterprise account'
   static examples = [
-    '$ heroku enterprises:rename new-account-name --enterprise-account=account-name'
+    '$ heroku enterprise:rename new-account-name --enterprise-account=account-name'
   ]
   static args = [
     {name: 'newAccountName', description: 'new enterprise account name', required: true}

@@ -4,11 +4,12 @@ import {cli} from 'cli-ux'
 
 import BaseCommand from '../../../../base'
 import {Accounts} from '../../../../completions'
-export default class Remove extends BaseCommand {
-  static description = 'removes permissions from the member of an enterprise account'
+
+export default class Add extends BaseCommand {
+  static description = 'adds permissions to the member of an enterprise account'
 
   static examples = [
-    '$ heroku enterprises:members:permissions:remove member-name --enterprise-account=account-name --permissions=billing,create,manage,view',
+    '$ heroku enterprise:members:permissions:add member-email --enterprise-account=account-name --permissions=billing,create,manage,view',
   ]
 
   static args = [
@@ -22,15 +23,16 @@ export default class Remove extends BaseCommand {
       description: 'enterprise account name',
       required: true
     }),
+
     permissions: flags.string({
       char: 'p',
-      description: 'permissions to remove from the member (comma-separated)',
+      description: 'permissions to grant the member (comma-separated)',
       required: true
     }),
   }
 
   async run() {
-    const {args, flags} = this.parse(Remove)
+    const {args, flags} = this.parse(Add)
     const enterpriseAccount = flags['enterprise-account']
     const member = args.email
     const permissions = flags.permissions.split(',')
@@ -50,8 +52,8 @@ export default class Remove extends BaseCommand {
     }
   }
 
-  async getUpdatedPermissions(enterpriseAccount: string, memberEmail: string, removePermissions: string[]): Promise<({original: string[], modified: string[]})> {
-    const permissions: string[] = []
+  async getUpdatedPermissions(enterpriseAccount: string, memberEmail: string, newPermissions: string[]): Promise<({original: string[], modified: string[]})> {
+    const permissions: Set<string> = new Set(newPermissions)
     const originalPermissions: string[] = []
 
     const {body: members} = await this.heroku.get<any[]>(`/enterprise-accounts/${enterpriseAccount}/members`)
@@ -62,12 +64,10 @@ export default class Remove extends BaseCommand {
 
     member[0].permissions.forEach((permission: any) => {
       originalPermissions.push(permission.name)
-      if (!removePermissions.includes(permission.name)) {
-        permissions.push(permission.name)
-      }
+      permissions.add(permission.name)
     })
 
-    return {original: originalPermissions, modified: permissions}
+    return {original: originalPermissions, modified: [...permissions]}
   }
 
   getUnknownUserErrorMessage(memberEmail: string, enterpriseAccount: string): string {
@@ -75,6 +75,6 @@ export default class Remove extends BaseCommand {
     const formattedAccount = color.green(enterpriseAccount)
 
     return `${formattedEmail} is not a member of ${formattedAccount}
-First add the member: heroku enterprises:members:add ${memberEmail} --enterprise-account=${enterpriseAccount} --permissions=billing,create,manage,view`
+First add the member: heroku enterprise:members:add ${memberEmail} --enterprise-account=${enterpriseAccount} --permissions=billing,create,manage,view`
   }
 }

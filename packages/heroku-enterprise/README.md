@@ -27,42 +27,42 @@ USAGE
 ```
 # Commands
 <!-- commands -->
-* [`heroku enterprises`](#heroku-enterprises)
-* [`heroku enterprises:audits`](#heroku-enterprisesaudits)
-* [`heroku enterprises:audits:export [LOG]`](#heroku-enterprisesauditsexport-log)
-* [`heroku enterprises:members`](#heroku-enterprisesmembers)
-* [`heroku enterprises:members:add EMAIL`](#heroku-enterprisesmembersadd-email)
-* [`heroku enterprises:members:permissions:add EMAIL`](#heroku-enterprisesmemberspermissionsadd-email)
-* [`heroku enterprises:members:permissions:remove EMAIL`](#heroku-enterprisesmemberspermissionsremove-email)
-* [`heroku enterprises:members:remove EMAIL`](#heroku-enterprisesmembersremove-email)
-* [`heroku enterprises:rename NEWACCOUNTNAME`](#heroku-enterprisesrename-newaccountname)
-* [`heroku enterprises:teams`](#heroku-enterprisesteams)
-* [`heroku enterprises:teams:create [TEAM]`](#heroku-enterprisesteamscreate-team)
-* [`heroku enterprises:teams:remove TEAM`](#heroku-enterprisesteamsremove-team)
-* [`heroku enterprises:usage:daily`](#heroku-enterprisesusagedaily)
-* [`heroku enterprises:usage:monthly`](#heroku-enterprisesusagemonthly)
+* [`heroku enterprise`](#heroku-enterprise)
+* [`heroku enterprise:audits`](#heroku-enterpriseaudits)
+* [`heroku enterprise:audits:export [LOG]`](#heroku-enterpriseauditsexport-log)
+* [`heroku enterprise:members`](#heroku-enterprisemembers)
+* [`heroku enterprise:members:add EMAIL`](#heroku-enterprisemembersadd-email)
+* [`heroku enterprise:members:permissions:add EMAIL`](#heroku-enterprisememberspermissionsadd-email)
+* [`heroku enterprise:members:permissions:remove EMAIL`](#heroku-enterprisememberspermissionsremove-email)
+* [`heroku enterprise:members:remove EMAIL`](#heroku-enterprisemembersremove-email)
+* [`heroku enterprise:rename NEWACCOUNTNAME`](#heroku-enterpriserename-newaccountname)
+* [`heroku enterprise:teams`](#heroku-enterpriseteams)
+* [`heroku enterprise:teams:create [TEAM]`](#heroku-enterpriseteamscreate-team)
+* [`heroku enterprise:teams:remove TEAM`](#heroku-enterpriseteamsremove-team)
+* [`heroku enterprise:usage:daily`](#heroku-enterpriseusagedaily)
+* [`heroku enterprise:usage:monthly`](#heroku-enterpriseusagemonthly)
 
-## `heroku enterprises`
+## `heroku enterprise`
 
 list your enterprise accounts
 
 ```
 USAGE
-  $ heroku enterprises
+  $ heroku enterprise
 
 EXAMPLE
-  $ heroku enterprises
+  $ heroku enterprise
 ```
 
-_See code: [src/commands/enterprises/index.ts](https://github.com/heroku/heroku-enterprise/blob/v2.4.0/src/commands/enterprises/index.ts)_
+_See code: [src/commands/enterprise/index.ts](https://github.com/heroku/heroku-enterprise/blob/v2.4.0/src/commands/enterprise/index.ts)_
 
-## `heroku enterprises:audits`
+## `heroku enterprise:audits`
 
 list available audit logs for an enterprise account
 
 ```
 USAGE
-  $ heroku enterprises:audits
+  $ heroku enterprise:audits
 
 OPTIONS
   -e, --enterprise-account=enterprise-account  (required) enterprise account name
@@ -70,18 +70,18 @@ OPTIONS
   --json                                       display as json
 
 EXAMPLE
-  $ heroku enterprises:audits --enterprise-account=account-name
+  $ heroku enterprise:audits --enterprise-account=account-name
 ```
 
-_See code: [src/commands/enterprises/audits/index.ts](https://github.com/heroku/heroku-enterprise/blob/v2.4.0/src/commands/enterprises/audits/index.ts)_
+_See code: [src/commands/enterprise/audits/index.ts](https://github.com/heroku/heroku-enterprise/blob/v2.4.0/src/commands/enterprise/audits/index.ts)_
 
-## `heroku enterprises:audits:export [LOG]`
+## `heroku enterprise:audits:export [LOG]`
 
 export an audit log for an enterprise account
 
 ```
 USAGE
-  $ heroku enterprises:audits:export [LOG]
+  $ heroku enterprise:audits:export [LOG]
 
 ARGUMENTS
   LOG  audit log date (YYYY-MM)
@@ -92,21 +92,21 @@ OPTIONS
   -f, --force                                  overwrite existing file during download
 
 EXAMPLES
-  $ heroku enterprises:audits:export 2018-11 --enterprise-account=account-name
-  $ heroku enterprises:audits:export 2018-11 --enterprise-account=account-name --dest=/tmp
-  $ heroku enterprises:audits:export 2018-11 --enterprise-account=account-name --dest=/tmp/audit_report.json.gz
-  $ heroku enterprises:audits:export 2018-11 --enterprise-account=account-name --dest=/tmp/audit_report.json.gz --force
+  $ heroku enterprise:audits:export 2018-11 --enterprise-account=account-name
+  $ heroku enterprise:audits:export 2018-11 --enterprise-account=account-name --dest=/tmp
+  $ heroku enterprise:audits:export 2018-11 --enterprise-account=account-name --dest=/tmp/audit_report.json.gz
+  $ heroku enterprise:audits:export 2018-11 --enterprise-account=account-name --dest=/tmp/audit_report.json.gz --force
 ```
 
-_See code: [src/commands/enterprises/audits/export.ts](https://github.com/heroku/heroku-enterprise/blob/v2.4.0/src/commands/enterprises/audits/export.ts)_
+_See code: [src/commands/enterprise/audits/export.ts](https://github.com/heroku/heroku-enterprise/blob/v2.4.0/src/commands/enterprise/audits/export.ts)_
 
-## `heroku enterprises:members`
+## `heroku enterprise:members`
 
 list members of the enterprise account and their permissions
 
 ```
 USAGE
-  $ heroku enterprises:members
+  $ heroku enterprise:members
 
 OPTIONS
   -e, --enterprise-account=enterprise-account  (required) enterprise account name
@@ -118,98 +118,98 @@ OPTIONS
   --sort=sort                                  property to sort by (prepend '-' for descending)
 
 EXAMPLE
-  $ heroku enterprises:members --enterprise-account=account-name
+  $ heroku enterprise:members --enterprise-account=account-name
 ```
 
-_See code: [src/commands/enterprises/members/index.ts](https://github.com/heroku/heroku-enterprise/blob/v2.4.0/src/commands/enterprises/members/index.ts)_
+_See code: [src/commands/enterprise/members/index.ts](https://github.com/heroku/heroku-enterprise/blob/v2.4.0/src/commands/enterprise/members/index.ts)_
 
-## `heroku enterprises:members:add EMAIL`
+## `heroku enterprise:members:add EMAIL`
 
 add a member to an enterprise account
 
 ```
 USAGE
-  $ heroku enterprises:members:add EMAIL
+  $ heroku enterprise:members:add EMAIL
 
 OPTIONS
   -e, --enterprise-account=enterprise-account  (required) enterprise account name
   -p, --permissions=permissions                (required) permissions to grant the member (comma-separated)
 
 ALIASES
-  $ heroku enterprises:members-add
+  $ heroku enterprise:members-add
 
 EXAMPLE
-  $ heroku enterprises:members:add member-email --enterprise-account=account-name 
+  $ heroku enterprise:members:add member-email --enterprise-account=account-name
   --permissions=billing,create,manage,view
 ```
 
-_See code: [src/commands/enterprises/members/add.ts](https://github.com/heroku/heroku-enterprise/blob/v2.4.0/src/commands/enterprises/members/add.ts)_
+_See code: [src/commands/enterprise/members/add.ts](https://github.com/heroku/heroku-enterprise/blob/v2.4.0/src/commands/enterprise/members/add.ts)_
 
-## `heroku enterprises:members:permissions:add EMAIL`
+## `heroku enterprise:members:permissions:add EMAIL`
 
 adds permissions to the member of an enterprise account
 
 ```
 USAGE
-  $ heroku enterprises:members:permissions:add EMAIL
+  $ heroku enterprise:members:permissions:add EMAIL
 
 OPTIONS
   -e, --enterprise-account=enterprise-account  (required) enterprise account name
   -p, --permissions=permissions                (required) permissions to grant the member (comma-separated)
 
 EXAMPLE
-  $ heroku enterprises:members:permissions:add member-email --enterprise-account=account-name 
+  $ heroku enterprise:members:permissions:add member-email --enterprise-account=account-name
   --permissions=billing,create,manage,view
 ```
 
-_See code: [src/commands/enterprises/members/permissions/add.ts](https://github.com/heroku/heroku-enterprise/blob/v2.4.0/src/commands/enterprises/members/permissions/add.ts)_
+_See code: [src/commands/enterprise/members/permissions/add.ts](https://github.com/heroku/heroku-enterprise/blob/v2.4.0/src/commands/enterprise/members/permissions/add.ts)_
 
-## `heroku enterprises:members:permissions:remove EMAIL`
+## `heroku enterprise:members:permissions:remove EMAIL`
 
 removes permissions from the member of an enterprise account
 
 ```
 USAGE
-  $ heroku enterprises:members:permissions:remove EMAIL
+  $ heroku enterprise:members:permissions:remove EMAIL
 
 OPTIONS
   -e, --enterprise-account=enterprise-account  (required) enterprise account name
   -p, --permissions=permissions                (required) permissions to remove from the member (comma-separated)
 
 EXAMPLE
-  $ heroku enterprises:members:permissions:remove member-name --enterprise-account=account-name 
+  $ heroku enterprise:members:permissions:remove member-name --enterprise-account=account-name
   --permissions=billing,create,manage,view
 ```
 
-_See code: [src/commands/enterprises/members/permissions/remove.ts](https://github.com/heroku/heroku-enterprise/blob/v2.4.0/src/commands/enterprises/members/permissions/remove.ts)_
+_See code: [src/commands/enterprise/members/permissions/remove.ts](https://github.com/heroku/heroku-enterprise/blob/v2.4.0/src/commands/enterprise/members/permissions/remove.ts)_
 
-## `heroku enterprises:members:remove EMAIL`
+## `heroku enterprise:members:remove EMAIL`
 
 remove a member from an enterprise account
 
 ```
 USAGE
-  $ heroku enterprises:members:remove EMAIL
+  $ heroku enterprise:members:remove EMAIL
 
 OPTIONS
   -e, --enterprise-account=enterprise-account  (required) enterprise account name
 
 ALIASES
-  $ heroku enterprises:members-remove
+  $ heroku enterprise:members-remove
 
 EXAMPLE
-  $ heroku enterprises:members:remove member-name --enterprise-account=account-name
+  $ heroku enterprise:members:remove member-name --enterprise-account=account-name
 ```
 
-_See code: [src/commands/enterprises/members/remove.ts](https://github.com/heroku/heroku-enterprise/blob/v2.4.0/src/commands/enterprises/members/remove.ts)_
+_See code: [src/commands/enterprise/members/remove.ts](https://github.com/heroku/heroku-enterprise/blob/v2.4.0/src/commands/enterprise/members/remove.ts)_
 
-## `heroku enterprises:rename NEWACCOUNTNAME`
+## `heroku enterprise:rename NEWACCOUNTNAME`
 
 rename the enterprise account
 
 ```
 USAGE
-  $ heroku enterprises:rename NEWACCOUNTNAME
+  $ heroku enterprise:rename NEWACCOUNTNAME
 
 ARGUMENTS
   NEWACCOUNTNAME  new enterprise account name
@@ -218,18 +218,18 @@ OPTIONS
   -e, --enterprise-account=enterprise-account  (required) enterprise account name
 
 EXAMPLE
-  $ heroku enterprises:rename new-account-name --enterprise-account=account-name
+  $ heroku enterprise:rename new-account-name --enterprise-account=account-name
 ```
 
-_See code: [src/commands/enterprises/rename.ts](https://github.com/heroku/heroku-enterprise/blob/v2.4.0/src/commands/enterprises/rename.ts)_
+_See code: [src/commands/enterprise/rename.ts](https://github.com/heroku/heroku-enterprise/blob/v2.4.0/src/commands/enterprise/rename.ts)_
 
-## `heroku enterprises:teams`
+## `heroku enterprise:teams`
 
 list teams within an enterprise account
 
 ```
 USAGE
-  $ heroku enterprises:teams
+  $ heroku enterprise:teams
 
 OPTIONS
   -e, --enterprise-account=enterprise-account  (required) enterprise account name
@@ -241,18 +241,18 @@ OPTIONS
   --sort=sort                                  property to sort by (prepend '-' for descending)
 
 EXAMPLE
-  $ heroku enterprises:teams --enterprise-account=account-name
+  $ heroku enterprise:teams --enterprise-account=account-name
 ```
 
-_See code: [src/commands/enterprises/teams/index.ts](https://github.com/heroku/heroku-enterprise/blob/v2.4.0/src/commands/enterprises/teams/index.ts)_
+_See code: [src/commands/enterprise/teams/index.ts](https://github.com/heroku/heroku-enterprise/blob/v2.4.0/src/commands/enterprise/teams/index.ts)_
 
-## `heroku enterprises:teams:create [TEAM]`
+## `heroku enterprise:teams:create [TEAM]`
 
 create a team in an enterprise account
 
 ```
 USAGE
-  $ heroku enterprises:teams:create [TEAM]
+  $ heroku enterprise:teams:create [TEAM]
 
 ARGUMENTS
   TEAM  name of the team to create
@@ -264,29 +264,29 @@ EXAMPLE
   $ heroku enterprise:teams:create team-name --enterprise-account=account-name
 ```
 
-_See code: [src/commands/enterprises/teams/create.ts](https://github.com/heroku/heroku-enterprise/blob/v2.4.0/src/commands/enterprises/teams/create.ts)_
+_See code: [src/commands/enterprise/teams/create.ts](https://github.com/heroku/heroku-enterprise/blob/v2.4.0/src/commands/enterprise/teams/create.ts)_
 
-## `heroku enterprises:teams:remove TEAM`
+## `heroku enterprise:teams:remove TEAM`
 
 remove a team from an enterprise account
 
 ```
 USAGE
-  $ heroku enterprises:teams:remove TEAM
+  $ heroku enterprise:teams:remove TEAM
 
 EXAMPLE
-  $ heroku enterprises:teams:remove team-name
+  $ heroku enterprise:teams:remove team-name
 ```
 
-_See code: [src/commands/enterprises/teams/remove.ts](https://github.com/heroku/heroku-enterprise/blob/v2.4.0/src/commands/enterprises/teams/remove.ts)_
+_See code: [src/commands/enterprise/teams/remove.ts](https://github.com/heroku/heroku-enterprise/blob/v2.4.0/src/commands/enterprise/teams/remove.ts)_
 
-## `heroku enterprises:usage:daily`
+## `heroku enterprise:usage:daily`
 
 list the daily usage for an enterprise account or team
 
 ```
 USAGE
-  $ heroku enterprises:usage:daily
+  $ heroku enterprise:usage:daily
 
 OPTIONS
   -e, --enterprise-account=enterprise-account  enterprise account name
@@ -315,29 +315,29 @@ DESCRIPTION
   presented here may not reflect license usage or billing for your account.
 
 EXAMPLES
-  $ heroku enterprises:usage:daily --enterprise-account=account-name --start-date=2019-01-01 --end-date=2019-01-15
-  $ heroku enterprises:usage:daily --enterprise-account=account-name --start-date=2019-01-01 --end-date=2019-01-15 
+  $ heroku enterprise:usage:daily --enterprise-account=account-name --start-date=2019-01-01 --end-date=2019-01-15
+  $ heroku enterprise:usage:daily --enterprise-account=account-name --start-date=2019-01-01 --end-date=2019-01-15
   --columns='team,app,dyno,data'
-  $ heroku enterprises:usage:daily --enterprise-account=account-name --start-date=2019-01-01 --end-date=2019-01-15 
+  $ heroku enterprise:usage:daily --enterprise-account=account-name --start-date=2019-01-01 --end-date=2019-01-15
   --columns='team,app,dyno,data' --sort='-data,app'
-  $ heroku enterprises:usage:daily --enterprise-account=account-name --start-date=2019-01-01 --end-date=2019-01-15 
+  $ heroku enterprise:usage:daily --enterprise-account=account-name --start-date=2019-01-01 --end-date=2019-01-15
   --columns='team,app,dyno,data' --filter='app=myapp'
-  $ heroku enterprises:usage:daily --enterprise-account=account-name --start-date=2019-01-01 --end-date=2019-01-15 --csv
-  $ heroku enterprises:usage:daily --team=team-name --start-date=2019-01-01 --end-date=2019-01-15
-  $ heroku enterprises:usage:daily --team=team-name --start-date=2019-01-01 --end-date=2019-01-15 
+  $ heroku enterprise:usage:daily --enterprise-account=account-name --start-date=2019-01-01 --end-date=2019-01-15 --csv
+  $ heroku enterprise:usage:daily --team=team-name --start-date=2019-01-01 --end-date=2019-01-15
+  $ heroku enterprise:usage:daily --team=team-name --start-date=2019-01-01 --end-date=2019-01-15
   --columns='app,dyno,data' --sort='-data,app'
-  $ heroku enterprises:usage:daily --team=team-name --start-date=2019-01-01 --end-date=2019-01-15 --csv
+  $ heroku enterprise:usage:daily --team=team-name --start-date=2019-01-01 --end-date=2019-01-15 --csv
 ```
 
-_See code: [src/commands/enterprises/usage/daily.ts](https://github.com/heroku/heroku-enterprise/blob/v2.4.0/src/commands/enterprises/usage/daily.ts)_
+_See code: [src/commands/enterprise/usage/daily.ts](https://github.com/heroku/heroku-enterprise/blob/v2.4.0/src/commands/enterprise/usage/daily.ts)_
 
-## `heroku enterprises:usage:monthly`
+## `heroku enterprise:usage:monthly`
 
 list the monthly usage for an enterprise account or team
 
 ```
 USAGE
-  $ heroku enterprises:usage:monthly
+  $ heroku enterprise:usage:monthly
 
 OPTIONS
   -e, --enterprise-account=enterprise-account  enterprise account name
@@ -360,17 +360,17 @@ DESCRIPTION
   presented here may not reflect license usage or billing for your account.
 
 EXAMPLES
-  $ heroku enterprises:usage:monthly --enterprise-account=account-name
-  $ heroku enterprises:usage:monthly --enterprise-account=account-name --columns='team,app,dyno,data'
-  $ heroku enterprises:usage:monthly --enterprise-account=account-name --columns='team,app,dyno,data' --sort='-data,app'
-  $ heroku enterprises:usage:monthly --enterprise-account=account-name --columns='team,app,dyno,data' 
+  $ heroku enterprise:usage:monthly --enterprise-account=account-name
+  $ heroku enterprise:usage:monthly --enterprise-account=account-name --columns='team,app,dyno,data'
+  $ heroku enterprise:usage:monthly --enterprise-account=account-name --columns='team,app,dyno,data' --sort='-data,app'
+  $ heroku enterprise:usage:monthly --enterprise-account=account-name --columns='team,app,dyno,data'
   --filter='app=myapp'
-  $ heroku enterprises:usage:monthly --enterprise-account=account-name --csv
-  $ heroku enterprises:usage:monthly --team=team-name --start-date 2019-01
-  $ heroku enterprises:usage:monthly --team=team-name --start-date 2019-01 --end-date 2019-03
-  $ heroku enterprises:usage:monthly --team=team-name --columns='app,dyno,data' --sort='-data,app'
-  $ heroku enterprises:usage:monthly --team=team-name --csv
+  $ heroku enterprise:usage:monthly --enterprise-account=account-name --csv
+  $ heroku enterprise:usage:monthly --team=team-name --start-date 2019-01
+  $ heroku enterprise:usage:monthly --team=team-name --start-date 2019-01 --end-date 2019-03
+  $ heroku enterprise:usage:monthly --team=team-name --columns='app,dyno,data' --sort='-data,app'
+  $ heroku enterprise:usage:monthly --team=team-name --csv
 ```
 
-_See code: [src/commands/enterprises/usage/monthly.ts](https://github.com/heroku/heroku-enterprise/blob/v2.4.0/src/commands/enterprises/usage/monthly.ts)_
+_See code: [src/commands/enterprise/usage/monthly.ts](https://github.com/heroku/heroku-enterprise/blob/v2.4.0/src/commands/enterprise/usage/monthly.ts)_
 <!-- commandsstop -->

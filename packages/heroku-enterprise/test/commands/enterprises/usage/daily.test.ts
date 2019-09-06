@@ -1,7 +1,7 @@
 /* tslint:disable:number-literal-format */
 import {expect, test} from '@oclif/test'
 
-describe('enterprises:usage:daily', () => {
+describe('enterprise:usage:daily', () => {
   const accountsResponse = {id: '01234567-89ab-cdef-0123-456789abcdef'}
   const accountsTeamsResponse = {id: '98765432-10ab-cdef-3210-456789fedcba'}
 
@@ -121,7 +121,7 @@ describe('enterprises:usage:daily', () => {
       .matchHeader('Accept', 'text/csv; version=3.enterprise-accounts')
       .reply(200, accountCSVUsageResponse)
     )
-    .command(['enterprises:usage:daily', '-e', 'wallyworld', '--start-date', '2019-09-01', '--end-date', '2019-09-28', '--csv'])
+    .command(['enterprise:usage:daily', '-e', 'wallyworld', '--start-date', '2019-09-01', '--end-date', '2019-09-28', '--csv'])
     .it('lists the usage for an enterprise account using start and end dates', ctx => {
       expect(ctx.stdout).to.contain('account name,team name,app name,date,dyno units used,data add-on usage,third party add-on usage,third party add-on and data usage,spaces\n')
       expect(ctx.stdout).to.contain('wallyworld,stanley-team,aastanley,2019-01-01,0,0,0,0')
@@ -138,7 +138,7 @@ describe('enterprises:usage:daily', () => {
       .matchHeader('Accept', 'text/csv; version=3.enterprise-accounts')
       .reply(200, teamCSVResponse)
     )
-    .command(['enterprises:usage:daily', '--team', 'lausanne', '--start-date', '2019-09-01', '--end-date', '2019-09-28', '--csv'])
+    .command(['enterprise:usage:daily', '--team', 'lausanne', '--start-date', '2019-09-01', '--end-date', '2019-09-28', '--csv'])
     .it('lists the usage for an enterprise team', ctx => {
       expect(ctx.stdout).to.contain('account name,team name,app name,date,dyno units used,data add-on usage,third party add-on usage,third party add-on and data usage,spaces\n')
       expect(ctx.stdout).to.contain('wallyworld,lausanne,agile-fortress-36232,2019-01-01,0.0322580633333333,0,0,0,\n')
@@ -155,7 +155,7 @@ describe('enterprises:usage:daily', () => {
       .matchHeader('Accept', 'application/vnd.heroku+json; version=3.enterprise-accounts')
       .reply(200, accountJSONUsageResponse)
     )
-    .command(['enterprises:usage:daily', '--enterprise-account', 'wallyworld', '--start-date', '2018-09-01', '--end-date', '2018-10-01'])
+    .command(['enterprise:usage:daily', '--enterprise-account', 'wallyworld', '--start-date', '2018-09-01', '--end-date', '2018-10-01'])
     .it('lists the usage for an enterprise account', ctx => {
       expect(ctx.stdout).to.contain('Account      Team App        Date       Dyno  Addon Partner Data Space')
       expect(ctx.stdout).to.contain('my-test-team ops  exampleapp 2017-01-01 1.548 25000 1234    3489')
@@ -171,7 +171,7 @@ describe('enterprises:usage:daily', () => {
       .matchHeader('Accept', 'application/vnd.heroku+json; version=3.enterprise-accounts')
       .reply(200, [])
     )
-    .command(['enterprises:usage:daily', '--enterprise-account', 'wallyworld', '--start-date', '2018-09-01', '--end-date', '2018-10-01'])
+    .command(['enterprise:usage:daily', '--enterprise-account', 'wallyworld', '--start-date', '2018-09-01', '--end-date', '2018-10-01'])
     .it('warns when no enterprise usage data is available', ctx => {
       expect(ctx.stderr).to.contain('Warning: No usage data to list')
     })
@@ -185,7 +185,7 @@ describe('enterprises:usage:daily', () => {
       .matchHeader('Accept', 'application/vnd.heroku+json; version=3.enterprise-accounts')
       .reply(200, teamJSONUsageResponse)
     )
-    .command(['enterprises:usage:daily', '--start-date', '2018-09-01', '--end-date', '2018-10-01', '--team', 'lausanne'])
+    .command(['enterprise:usage:daily', '--start-date', '2018-09-01', '--end-date', '2018-10-01', '--team', 'lausanne'])
     .it('lists the usage for an enterprise team using start and end dates', ctx => {
       expect(ctx.stdout).to.contain('Team      App               Date       Dyno  Addon Partner Data  Space ')
       expect(ctx.stdout).to.contain('team-0001 froyo-expcore     2017-01-01 1.548 19941 4457    15484')
@@ -205,19 +205,19 @@ describe('enterprises:usage:daily', () => {
       .matchHeader('Accept', 'application/vnd.heroku+json; version=3.enterprise-accounts')
       .reply(200, [])
     )
-    .command(['enterprises:usage:daily', '--start-date', '2018-09-01', '--end-date', '2018-10-01', '--team', 'lausanne'])
+    .command(['enterprise:usage:daily', '--start-date', '2018-09-01', '--end-date', '2018-10-01', '--team', 'lausanne'])
     .it('warns when no team usage data is available', ctx => {
       expect(ctx.stderr).to.contain('Warning: No usage data to list')
     })
 
   test
-    .command(['enterprises:usage:daily', '--start-date', '2018-09-01', '--end-date', '2018-09-28', '--csv'])
+    .command(['enterprise:usage:daily', '--start-date', '2018-09-01', '--end-date', '2018-09-28', '--csv'])
     .catch(err => expect(err.message).to.equal('You must specify usage for either --enterprise-account(-e) or --team(-t)'))
     .it('should give an error if neither an account or team is specified')
 
   test
     .stderr()
-    .command(['enterprises:usage:daily', '-e', 'suisse', '--team', 'lausanne'])
+    .command(['enterprise:usage:daily', '-e', 'suisse', '--team', 'lausanne'])
     .catch(err => expect(err.message).to.equal('--team= cannot also be provided when using --enterprise-account='))
     .it('should give an error when using exclusive flags')
 })

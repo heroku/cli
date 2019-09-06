@@ -6,7 +6,7 @@ import * as sinon from 'sinon'
 
 import Utils from '../../../../src/utils'
 
-describe('enterprises:audits:export', () => {
+describe('enterprise:audits:export', () => {
   const accountsResponse = {
     id: '01234567-89ab-cdef-0123-456789abcdef',
     created_at: '2012-01-01T12:00:00Z',
@@ -42,7 +42,7 @@ describe('enterprises:audits:export', () => {
       .get('/aY5d996MH3MdNSiFKNv5oQTz')
       .replyWithFile(200, fixtureArchive)
     )
-    .command(['enterprises:audits:export', '2018-11', '--enterprise-account', 'dingo'])
+    .command(['enterprise:audits:export', '2018-11', '--enterprise-account', 'dingo'])
     .it('exports the specified audit log', (ctx: any) => {
       expect(createWriteStreamStub.calledOnceWithExactly('enterprise-audit-log-dingo-201811.json.gz')).to.equal(true)
       expect(ctx.stderr).to.contain('done')
@@ -64,7 +64,7 @@ describe('enterprises:audits:export', () => {
       .get('/aY5d996MH3MdNSiFKNv5oQTz')
       .replyWithFile(200, fixtureArchive)
     )
-    .command(['enterprises:audits:export', '2018-11', '--enterprise-account', 'dingo'])
+    .command(['enterprise:audits:export', '2018-11', '--enterprise-account', 'dingo'])
     .catch(error => {
       expect(error.message).to.contain('Invalid checksum, please try again.')
     })
@@ -90,7 +90,7 @@ describe('enterprises:audits:export', () => {
       .get('/aY5d996MH3MdNSiFKNv5oQTz')
       .replyWithFile(200, fixtureArchive)
     )
-    .command(['enterprises:audits:export', '2018-11', '--enterprise-account', 'dingo', '--dest', path.join('/tmp'), '--force'])
+    .command(['enterprise:audits:export', '2018-11', '--enterprise-account', 'dingo', '--dest', path.join('/tmp'), '--force'])
     .it('exports the audit log to a specified directory location', (ctx: any) => {
       expect(createWriteStreamOutputDirStub.calledOnceWithExactly(path.join('/tmp/enterprise-audit-log-dingo-201811.json.gz'))).to.equal(true)
       expect(ctx.stderr).to.contain('done')
@@ -116,7 +116,7 @@ describe('enterprises:audits:export', () => {
       .get('/aY5d996MH3MdNSiFKNv5oQTz')
       .replyWithFile(200, fixtureArchive)
     )
-    .command(['enterprises:audits:export', '2018-11', '--enterprise-account', 'dingo', '-d', './myauditlog.json.gz', '--force'])
+    .command(['enterprise:audits:export', '2018-11', '--enterprise-account', 'dingo', '-d', './myauditlog.json.gz', '--force'])
     .it('exports the audit log to a specified file location', (ctx: any) => {
       expect(createWriteStreamOutputFileStub.calledOnceWithExactly('./myauditlog.json.gz')).to.equal(true)
       expect(ctx.stderr).to.contain('done')

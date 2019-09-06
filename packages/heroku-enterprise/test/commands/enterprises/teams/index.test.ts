@@ -1,6 +1,6 @@
 import {expect, test} from '@oclif/test'
 
-describe('enterprises:teams', () => {
+describe('enterprise:teams', () => {
   const getTeamsResponse = [
     {
       id: '01234567-89ab-cdef-0123-456789abcdef',
@@ -50,7 +50,7 @@ describe('enterprises:teams', () => {
       .get('/enterprise-accounts/ch/teams')
       .reply(200, getTeamsResponse)
     )
-    .command(['enterprises:teams', '--enterprise-account', 'ch'])
+    .command(['enterprise:teams', '--enterprise-account', 'ch'])
     .it('lists all the teams of the enterprise account', ctx => {
       expect(ctx.stdout).to.contain(`Team Name My Roles${''.padEnd(1)}
 Luzern    admin${''.padEnd(4)}
@@ -63,7 +63,7 @@ Lausanne${''.padEnd(11)}\n`)
       .get('/enterprise-accounts/ch/teams')
       .reply(200, getTeamsResponse)
     )
-    .command(['enterprises:teams', '--enterprise-account', 'ch', '--filter=my roles=.'])
+    .command(['enterprise:teams', '--enterprise-account', 'ch', '--filter=my roles=.'])
     .it('lists all the teams you are a member of for the enterprise account', ctx => {
       expect(ctx.stdout).to.contain(`Team Name My Roles${''.padEnd(1)}
 Luzern    admin${''.padEnd(4)}\n`)
@@ -75,7 +75,7 @@ Luzern    admin${''.padEnd(4)}\n`)
       .get('/enterprise-accounts/ch/teams')
       .reply(200, [])
     )
-    .command(['enterprises:teams', '--enterprise-account', 'ch', '--filter=my roles=.'])
+    .command(['enterprise:teams', '--enterprise-account', 'ch', '--filter=my roles=.'])
     .it('warns there are no enterprise teams to list', ctx => {
       expect(ctx.stderr).to.contain('No enterprise teams to list')
     })

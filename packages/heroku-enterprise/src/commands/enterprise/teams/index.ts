@@ -8,7 +8,7 @@ export default class Teams extends BaseCommand {
   static description = 'list teams within an enterprise account'
 
   static examples = [
-    '$ heroku enterprises:teams --enterprise-account=account-name',
+    '$ heroku enterprise:teams --enterprise-account=account-name',
   ]
 
   static flags: any = {

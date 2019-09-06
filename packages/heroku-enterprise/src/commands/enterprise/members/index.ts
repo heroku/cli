@@ -8,7 +8,7 @@ export default class Members extends BaseCommand {
   static description = 'list members of the enterprise account and their permissions'
 
   static examples = [
-    '$ heroku enterprises:members --enterprise-account=account-name',
+    '$ heroku enterprise:members --enterprise-account=account-name',
   ]
 
   static flags: any = {

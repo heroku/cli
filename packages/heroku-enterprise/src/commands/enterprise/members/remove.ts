@@ -9,10 +9,10 @@ export default class Remove extends BaseCommand {
   static description = 'remove a member from an enterprise account'
 
   static examples = [
-    '$ heroku enterprises:members:remove member-name --enterprise-account=account-name',
+    '$ heroku enterprise:members:remove member-name --enterprise-account=account-name',
   ]
 
-  static aliases = ['enterprises:members-remove']
+  static aliases = ['enterprise:members-remove']
 
   static args = [
     {name: 'email', required: true, completion: AccountMembers},

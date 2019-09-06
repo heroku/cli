@@ -13,7 +13,7 @@ describe('enterprise:rename', () => {
       .patch('/enterprise-accounts/01234567-89ab-cdef-0123-456789abcdef', {name: 'prettyname'})
       .reply(200, enterpriseAccountRenameResponse)
     )
-    .command(['enterprises:rename', 'prettyname', '-e', 'uglyname'])
+    .command(['enterprise:rename', 'prettyname', '-e', 'uglyname'])
     .it('renames the enterprise account', ctx => {
       expect(ctx.stderr).to.contain('Renaming enterprise account from uglyname to prettyname')
     })

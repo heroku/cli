@@ -1,6 +1,6 @@
 import {expect, test} from '@oclif/test'
 
-describe('enterprises:members:permissions:add', () => {
+describe('enterprise:members:permissions:add', () => {
   const membersGetResponse = [
     {
       enterprise_account: {
@@ -44,7 +44,7 @@ describe('enterprises:members:permissions:add', () => {
       .patch('/enterprise-accounts/acme/members/sally@acme.com', {permissions: ['billing', 'create', 'view', 'manage']})
       .reply(200)
     )
-    .command(['enterprises:members:permissions:add', 'sally@acme.com', '-e', 'acme', '--permissions', 'billing,create'])
+    .command(['enterprise:members:permissions:add', 'sally@acme.com', '-e', 'acme', '--permissions', 'billing,create'])
     .it('should add additional permissions to an existing member', ctx => {
       expect(ctx.stderr).to.contain('Updating permissions for sally@acme.com from view,manage to billing,create,view,manage')
     })
@@ -57,7 +57,7 @@ describe('enterprises:members:permissions:add', () => {
       .patch('/enterprise-accounts/acme/members/sally@acme.com', {permissions: ['billing', 'create', 'view', 'manage']})
       .reply(200)
     )
-    .command(['enterprises:members:permissions:add', 'sally@acme.com', '-e', 'acme', '--permissions', 'billing,create,view,manage'])
+    .command(['enterprise:members:permissions:add', 'sally@acme.com', '-e', 'acme', '--permissions', 'billing,create,view,manage'])
     .it('should add additional permissions to an existing member ignoring duplicates', ctx => {
       expect(ctx.stderr).to.contain('Updating permissions for sally@acme.com from view,manage to billing,create,view,manage')
     })
@@ -68,7 +68,7 @@ describe('enterprises:members:permissions:add', () => {
       .get('/enterprise-accounts/acme/members')
       .reply(200, membersGetResponse)
     )
-    .command(['enterprises:members:permissions:add', 'bob@acme.com', '-e', 'acme', '-p', 'create'])
+    .command(['enterprise:members:permissions:add', 'bob@acme.com', '-e', 'acme', '-p', 'create'])
     .catch((err: any) => expect(err.message).to.contain('bob@acme.com is not a member of acme'))
     .it('should handle invalid members')
 })

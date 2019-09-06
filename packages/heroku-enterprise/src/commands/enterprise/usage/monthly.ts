@@ -15,15 +15,15 @@ NOTE: While we strive to provide the most accurate usage information, the data
 presented here may not reflect license usage or billing for your account.`
 
   static examples = [
-    '$ heroku enterprises:usage:monthly --enterprise-account=account-name',
-    '$ heroku enterprises:usage:monthly --enterprise-account=account-name --columns=\'team,app,dyno,data\'',
-    '$ heroku enterprises:usage:monthly --enterprise-account=account-name --columns=\'team,app,dyno,data\' --sort=\'-data,app\'',
-    '$ heroku enterprises:usage:monthly --enterprise-account=account-name --columns=\'team,app,dyno,data\' --filter=\'app=myapp\'',
-    '$ heroku enterprises:usage:monthly --enterprise-account=account-name --csv',
-    '$ heroku enterprises:usage:monthly --team=team-name --start-date 2019-01',
-    '$ heroku enterprises:usage:monthly --team=team-name --start-date 2019-01 --end-date 2019-03',
-    '$ heroku enterprises:usage:monthly --team=team-name --columns=\'app,dyno,data\' --sort=\'-data,app\'',
-    '$ heroku enterprises:usage:monthly --team=team-name --csv',
+    '$ heroku enterprise:usage:monthly --enterprise-account=account-name',
+    '$ heroku enterprise:usage:monthly --enterprise-account=account-name --columns=\'team,app,dyno,data\'',
+    '$ heroku enterprise:usage:monthly --enterprise-account=account-name --columns=\'team,app,dyno,data\' --sort=\'-data,app\'',
+    '$ heroku enterprise:usage:monthly --enterprise-account=account-name --columns=\'team,app,dyno,data\' --filter=\'app=myapp\'',
+    '$ heroku enterprise:usage:monthly --enterprise-account=account-name --csv',
+    '$ heroku enterprise:usage:monthly --team=team-name --start-date 2019-01',
+    '$ heroku enterprise:usage:monthly --team=team-name --start-date 2019-01 --end-date 2019-03',
+    '$ heroku enterprise:usage:monthly --team=team-name --columns=\'app,dyno,data\' --sort=\'-data,app\'',
+    '$ heroku enterprise:usage:monthly --team=team-name --csv',
   ]
 
   static flags: any = {

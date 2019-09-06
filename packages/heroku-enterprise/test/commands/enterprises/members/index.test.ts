@@ -1,6 +1,6 @@
 import {expect, test} from '@oclif/test'
 
-describe('enterprises:members', () => {
+describe('enterprise:members', () => {
   const membersResponse = [{
     enterprise_account: {
       id: '01234567-89ab-cdef-0123-456789abcdef',
@@ -40,7 +40,7 @@ describe('enterprises:members', () => {
       .get('/enterprise-accounts/runnersroost/members')
       .reply(200, membersResponse)
     )
-    .command(['enterprises:members', '--enterprise-account', 'runnersroost'])
+    .command(['enterprise:members', '--enterprise-account', 'runnersroost'])
     .it('lists members in a enterprise account', ctx => {
       expect(ctx.stdout.trim()).to.eq(`Email                       Permissions${''.padEnd(2)}
 roadrunner@runnersroost.com view,billing`)
@@ -52,7 +52,7 @@ roadrunner@runnersroost.com view,billing`)
       .get('/enterprise-accounts/runnersroost/members')
       .reply(200, [])
     )
-    .command(['enterprises:members', '--enterprise-account', 'runnersroost'])
+    .command(['enterprise:members', '--enterprise-account', 'runnersroost'])
     .it('warns there are no enterprise members to list', ctx => {
       expect(ctx.stderr).to.contain('No enterprise members to list')
     })

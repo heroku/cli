@@ -1,6 +1,6 @@
 import {expect, test} from '@oclif/test'
 
-describe('enterprises:members:permissions:remove', () => {
+describe('enterprise:members:permissions:remove', () => {
   const membersGetResponse = [
     {
       enterprise_account: {
@@ -48,7 +48,7 @@ describe('enterprises:members:permissions:remove', () => {
       .patch('/enterprise-accounts/acme/members/sally@acme.com', {permissions: ['view']})
       .reply(200)
     )
-    .command(['enterprises:members:permissions:remove', 'sally@acme.com', '-e', 'acme', '--permissions', 'billing,manage'])
+    .command(['enterprise:members:permissions:remove', 'sally@acme.com', '-e', 'acme', '--permissions', 'billing,manage'])
     .it('should remove permissions from an existing member', ctx => {
       expect(ctx.stderr).to.contain('Updating permissions for sally@acme.com from view,billing,manage to view')
     })
@@ -59,7 +59,7 @@ describe('enterprises:members:permissions:remove', () => {
       .get('/enterprise-accounts/acme/members')
       .reply(200, membersGetResponse)
     )
-    .command(['enterprises:members:permissions:remove', 'bob@acme.com', '-e', 'acme', '-p', 'create'])
+    .command(['enterprise:members:permissions:remove', 'bob@acme.com', '-e', 'acme', '-p', 'create'])
     .catch((err: any) => expect(err.message).to.contain('bob@acme.com is not a member of acme'))
     .it('should handle invalid members')
 })

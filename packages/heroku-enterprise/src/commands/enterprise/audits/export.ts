@@ -15,10 +15,10 @@ import Utils from '../../../utils'
 export default class Export extends BaseCommand {
   static description = 'export an audit log for an enterprise account'
   static examples = [
-    '$ heroku enterprises:audits:export 2018-11 --enterprise-account=account-name',
-    '$ heroku enterprises:audits:export 2018-11 --enterprise-account=account-name --dest=/tmp',
-    '$ heroku enterprises:audits:export 2018-11 --enterprise-account=account-name --dest=/tmp/audit_report.json.gz',
-    '$ heroku enterprises:audits:export 2018-11 --enterprise-account=account-name --dest=/tmp/audit_report.json.gz --force',
+    '$ heroku enterprise:audits:export 2018-11 --enterprise-account=account-name',
+    '$ heroku enterprise:audits:export 2018-11 --enterprise-account=account-name --dest=/tmp',
+    '$ heroku enterprise:audits:export 2018-11 --enterprise-account=account-name --dest=/tmp/audit_report.json.gz',
+    '$ heroku enterprise:audits:export 2018-11 --enterprise-account=account-name --dest=/tmp/audit_report.json.gz --force',
   ]
   static args = [
     {name: 'log', description: 'audit log date (YYYY-MM)', required: false, completion: Archives},

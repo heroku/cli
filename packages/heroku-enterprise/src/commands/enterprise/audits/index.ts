@@ -8,7 +8,7 @@ import {CoreService} from '../../../core-service'
 export default class Audits extends BaseCommand {
   static description = 'list available audit logs for an enterprise account'
   static examples = [
-    '$ heroku enterprises:audits --enterprise-account=account-name',
+    '$ heroku enterprise:audits --enterprise-account=account-name',
   ]
 
   static flags: any = {

@@ -6,7 +6,7 @@ export default class Enterprises extends BaseCommand {
   static description = 'list your enterprise accounts'
 
   static examples = [
-    '$ heroku enterprises',
+    '$ heroku enterprise',
   ]
 
   async run() {
