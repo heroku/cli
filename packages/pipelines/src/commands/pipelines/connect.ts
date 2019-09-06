@@ -26,7 +26,6 @@ export default class Connect extends Command {
   static args = [{
     name: 'name',
     description: 'name of pipeline',
-    optional: true
   }]
 
   async run() {

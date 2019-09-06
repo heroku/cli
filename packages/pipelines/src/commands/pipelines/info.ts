@@ -26,7 +26,7 @@ export default class PipelinesInfo extends Command {
   static args = [{
     name: 'pipeline',
     description: 'pipeline to show',
-    optional: false
+    required: true
   }]
 
   async run() {
