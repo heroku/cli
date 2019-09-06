@@ -9,7 +9,6 @@ import {buildCommand} from '../../lib/helpers'
 const debug = DebugFactory('heroku:run:inside')
 
 export default class RunInside extends Command {
-  static hidden = true
   static description = 'run a one-off process inside an existing heroku dyno'
   static examples = [
     '$ heroku run:inside web.1 bash'
