@@ -88,9 +88,12 @@ export function listPipelineApps(heroku: APIClient, pipelineId: string) {
 
     return getAppFilter(heroku, appIds).then(({body: apps}) => {
       const couplingsByAppId = keyBy(couplings, coupling => coupling.app && coupling.app.id)
-      apps.forEach(app => { app.coupling = couplingsByAppId[app.id!] })
-
-      return apps
+      return apps.map(app => {
+        return {
+          ...app,
+          coupling: couplingsByAppId[app.id!]
+        }
+      })
     })
   })
 }
