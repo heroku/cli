@@ -1,13 +1,16 @@
-import * as api from '../api'
+import Heroku from '@heroku-cli/schema'
+import cli from 'cli-ux'
+// tslint:disable-next-line: no-unused
+import http from 'http-call'
 
-const cli = require('heroku-cli-util')
+import {createAppSetup} from '../api'
 
-type CreateAppOptions = {
-  archiveURL: any,
-  name: any,
-  organization: any,
-  pipeline: any,
-  stage: any
+interface CreateAppOptions {
+  archiveURL: string
+  name: string
+  organization: string
+  pipeline: Heroku.Pipeline
+  stage: string
 }
 
 function createApp(heroku: any, {archiveURL, name, organization, pipeline, stage}: CreateAppOptions) {
@@ -26,7 +29,7 @@ function createApp(heroku: any, {archiveURL, name, organization, pipeline, stage
     params.app.personal = true
   }
 
-  return api.createAppSetup(heroku, params).then(setup => setup)
+  return createAppSetup(heroku, params).then(setup => setup)
 }
 
 export default function createApps(heroku: any, archiveURL: any, pipeline: any, pipelineName: any, stagingAppName: any, organization: any) {
@@ -51,6 +54,6 @@ export default function createApps(heroku: any, archiveURL: any, pipeline: any, 
   return Promise.all(promises).then(appSetups => {
     return appSetups
   }, error => {
-    cli.exit(1, error)
+    cli.error(error, {exit: 1})
   })
 }

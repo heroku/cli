@@ -82,7 +82,7 @@ export function getAppSetup(heroku: APIClient, buildId: any) {
   return heroku.get(`/app-setups/${buildId}`)
 }
 
-export function listPipelineApps(heroku: APIClient, pipelineId: string) {
+export function listPipelineApps(heroku: APIClient, pipelineId: string): Promise<Array<Heroku.App>> {
   return listCouplings(heroku, pipelineId).then(({body: couplings}) => {
     const appIds = couplings.map(coupling => coupling.app && coupling.app.id || '')
 
