@@ -16,7 +16,7 @@ export default class PipelinesDestroy extends Command {
   static args = [{
     name: 'pipeline',
     description: 'name of pipeline',
-    optional: false
+    required: true
   }]
 
   async run() {
