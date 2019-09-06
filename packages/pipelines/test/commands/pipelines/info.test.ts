@@ -1,8 +1,6 @@
 import Heroku from '@heroku-cli/schema'
 import {expect, FancyTypes, test} from '@oclif/test'
 
-import unwrap from '../unwrap'
-
 const appNames = [
   'development-app-1',
   'development-app-2',
@@ -113,13 +111,15 @@ describe('pipelines:info', function () {
   describe('when it has an owner', () => {
     function itShowsMixedOwnershipWarning(owner: string, ctx: TestContext) {
       const warningMessage = [
-        ` ›   Warning: Some apps in this pipeline do not belong to ${owner}.`,
-        '›',
-        '›   All apps in a pipeline must have the same owner as the pipeline owner.',
-        '›   Transfer these apps or change the pipeline owner in pipeline settings.',
-        '›   See https://devcenter.heroku.com/articles/pipeline-ownership-transition for more info.'
-      ].join('\n ')
-      expect(unwrap(ctx.stderr)).to.contain(warningMessage)
+        `Warning: Some apps in this pipeline do not belong to ${owner}.`,
+        'All apps in a pipeline must have the same owner as the pipeline owner.',
+        'Transfer these apps or change the pipeline owner in pipeline settings.',
+        'See https://devcenter.heroku.com/articles/pipeline-ownership-transition for more info.'
+      ]
+
+      warningMessage.forEach(message => {
+        expect(ctx.stderr).to.contain(message)
+      })
     }
 
     function itDoesNotShowMixedOwnershipWarning(ctx: TestContext) {
