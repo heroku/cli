@@ -60,7 +60,7 @@ export default class Run extends Command {
     } catch (err) {
       debug(err)
       if (err.exitCode) {
-        cli.exit(err.exitCode)
+        cli.error(err.message)
       } else {
         throw err
       }
