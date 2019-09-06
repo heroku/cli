@@ -1,15 +1,14 @@
-reviewapps
-==========
+@heroku-cli/plugin-pipelines
+============================
 
 
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
-[![Version](https://img.shields.io/npm/v/reviewapps.svg)](https://npmjs.org/package/reviewapps)
-[![CircleCI](https://circleci.com/gh/jmar910/reviewapps/tree/master.svg?style=shield)](https://circleci.com/gh/jmar910/reviewapps/tree/master)
-[![Appveyor CI](https://ci.appveyor.com/api/projects/status/github/jmar910/reviewapps?branch=master&svg=true)](https://ci.appveyor.com/project/jmar910/reviewapps/branch/master)
-[![Codecov](https://codecov.io/gh/jmar910/reviewapps/branch/master/graph/badge.svg)](https://codecov.io/gh/jmar910/reviewapps)
-[![Downloads/week](https://img.shields.io/npm/dw/reviewapps.svg)](https://npmjs.org/package/reviewapps)
-[![License](https://img.shields.io/npm/l/reviewapps.svg)](https://github.com/jmar910/reviewapps/blob/master/package.json)
+[![Version](https://img.shields.io/npm/v/@heroku-cli/plugin-pipelines.svg)](https://npmjs.org/package/@heroku-cli/plugin-pipelines)
+[![CircleCI](https://circleci.com/gh/heroku/cli/tree/master.svg?style=shield)](https://circleci.com/gh/heroku/cli/tree/master)
+[![Appveyor CI](https://ci.appveyor.com/api/projects/status/github/heroku/cli?branch=master&svg=true)](https://ci.appveyor.com/project/heroku/cli/branch/master)
+[![Downloads/week](https://img.shields.io/npm/dw/@heroku-cli/plugin-pipelines.svg)](https://npmjs.org/package/@heroku-cli/plugin-pipelines)
+[![License](https://img.shields.io/npm/l/@heroku-cli/plugin-pipelines.svg)](https://github.com/heroku/cli/blob/master/package.json)
 
 <!-- toc -->
 * [Usage](#usage)
