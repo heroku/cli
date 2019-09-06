@@ -34,6 +34,14 @@ function deleteCoupling(heroku: APIClient, id: string) {
   return heroku.delete(`/pipeline-couplings/${id}`)
 }
 
+export function destroyPipeline(heroku: APIClient, name: any, pipelineId: any) {
+  return heroku.request(`/pipelines/${pipelineId}`, {
+    method: 'DELETE',
+    headers: {Accept: PIPELINES_HEADER},
+    body: {name}
+  })
+}
+
 export function findPipelineByName(heroku: APIClient, idOrName: string) {
   return heroku.request<Heroku.Pipeline[]>(`/pipelines?eq[name]=${idOrName}`, {
     method: 'GET',
