@@ -83,7 +83,7 @@ presented here may not reflect license usage or billing for your account.`
     const coreService: CoreService = new CoreService(this.heroku)
     if (flags.team) {
       const teamId = await coreService.getTeamId(flags.team)
-      const teamEndpoint = `/teams/${teamId}/usage/monthly/alpha${query}`
+      const teamEndpoint = `/teams/${teamId}/usage/monthly${query}`
 
       flags.csv ? await this.displayCsvUsageData(teamEndpoint, flags.team)
                 : await this.displayUsageData(teamEndpoint, flags.team, true)

@@ -157,7 +157,7 @@ describe('enterprise:usage:monthly', () => {
       .nock('https://api.heroku.com', (api: any) => api
         .get('/teams/grumpy')
         .reply(200, accountsTeamsResponse)
-        .get('/teams/98765432-10ab-cdef-3210-456789fedcba/usage/monthly/alpha?start=2019-02')
+        .get('/teams/98765432-10ab-cdef-3210-456789fedcba/usage/monthly?start=2019-02')
         .reply(200, enterpriseTeamUsageResponse)
       )
       .do(() => MockDate.set('2019-02-20'))
@@ -178,7 +178,7 @@ describe('enterprise:usage:monthly', () => {
       .nock('https://api.heroku.com', (api: any) => api
         .get('/teams/grumpy')
         .reply(200, accountsTeamsResponse)
-        .get('/teams/98765432-10ab-cdef-3210-456789fedcba/usage/monthly/alpha?start=2018-09&end=2018-10')
+        .get('/teams/98765432-10ab-cdef-3210-456789fedcba/usage/monthly?start=2018-09&end=2018-10')
         .reply(200, enterpriseTeamUsageResponse)
       )
       .command(['enterprise:usage:monthly', '--start-date', '2018-09', '--end-date', '2018-10', '--team', 'grumpy'])
@@ -197,7 +197,7 @@ describe('enterprise:usage:monthly', () => {
       .nock('https://api.heroku.com', (api: any) => api
         .get('/teams/grumpy')
         .reply(200, accountsTeamsResponse)
-        .get('/teams/98765432-10ab-cdef-3210-456789fedcba/usage/monthly/alpha?start=2019-02')
+        .get('/teams/98765432-10ab-cdef-3210-456789fedcba/usage/monthly?start=2019-02')
         .reply(200, [])
       )
       .do(() => MockDate.set('2019-02-20'))
