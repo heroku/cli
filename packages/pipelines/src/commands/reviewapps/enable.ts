@@ -6,7 +6,7 @@ export default class ReviewappsEnable2 extends Command {
   static description = 'enable review apps and/or settings on an existing pipeline'
 
   static examples = [
-    `$ heroku reviewapps:_enable -p mypipeline --autodeploy --autodestroy
+    `$ heroku reviewapps:enable -p mypipeline --autodeploy --autodestroy
 `,
   ]
 

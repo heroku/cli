@@ -1,7 +1,7 @@
 import {expect, test} from '@oclif/test'
 // tslint:disable-next-line:no-duplicate-imports
 
-describe('reviewapps:_enable', () => {
+describe('reviewapps:enable', () => {
   const pipeline = {
     id: '123-pipeline',
     name: 'my-pipeline'
@@ -34,7 +34,7 @@ describe('reviewapps:_enable', () => {
           .reply(200, {})
       })
       .stderr()
-      .command(['reviewapps:_enable', `--pipeline=${pipeline.name}`])
+      .command(['reviewapps:enable', `--pipeline=${pipeline.name}`])
       .it('succeeds with defaults', ctx => {
         expect(ctx.stderr).to.include('Configuring pipeline')
       })
@@ -57,7 +57,7 @@ describe('reviewapps:_enable', () => {
       })
       .stdout()
       .stderr()
-      .command(['reviewapps:_enable', `--pipeline=${pipeline.name}`, '--autodeploy'])
+      .command(['reviewapps:enable', `--pipeline=${pipeline.name}`, '--autodeploy'])
       .it('succeeds with autodeploy', ctx => {
         expect(ctx.stdout).to.include('Enabling auto deployment')
         expect(ctx.stderr).to.include('Configuring pipeline')
@@ -81,7 +81,7 @@ describe('reviewapps:_enable', () => {
       })
       .stdout()
       .stderr()
-      .command(['reviewapps:_enable', `--pipeline=${pipeline.name}`, '--autodestroy'])
+      .command(['reviewapps:enable', `--pipeline=${pipeline.name}`, '--autodestroy'])
       .it('it succeeds with autodestroy', ctx => {
         expect(ctx.stdout).to.include('Enabling auto destroy')
         expect(ctx.stderr).to.include('Configuring pipeline')
@@ -105,7 +105,7 @@ describe('reviewapps:_enable', () => {
       })
       .stdout()
       .stderr()
-      .command(['reviewapps:_enable', `--pipeline=${pipeline.name}`, '--autodeploy', '--autodestroy'])
+      .command(['reviewapps:enable', `--pipeline=${pipeline.name}`, '--autodeploy', '--autodestroy'])
       .it('it succeeds with autodeploy and autodestroy', ctx => {
         expect(ctx.stdout).to.include('Enabling auto deployment')
         expect(ctx.stdout).to.include('Enabling auto destroy')
@@ -142,7 +142,7 @@ describe('reviewapps:_enable', () => {
           .reply(200, {})
       })
       .stderr()
-      .command(['reviewapps:_enable', `--pipeline=${pipeline.name}`])
+      .command(['reviewapps:enable', `--pipeline=${pipeline.name}`])
       .it('succeeds with defaults', ctx => {
         expect(ctx.stderr).to.include('Configuring pipeline')
       })
@@ -165,7 +165,7 @@ describe('reviewapps:_enable', () => {
       })
       .stdout()
       .stderr()
-      .command(['reviewapps:_enable', `--pipeline=${pipeline.name}`, '--autodeploy'])
+      .command(['reviewapps:enable', `--pipeline=${pipeline.name}`, '--autodeploy'])
       .it('succeeds with autodeploy', ctx => {
         expect(ctx.stdout).to.include('Enabling auto deployment')
         expect(ctx.stderr).to.include('Configuring pipeline')
@@ -189,7 +189,7 @@ describe('reviewapps:_enable', () => {
       })
       .stdout()
       .stderr()
-      .command(['reviewapps:_enable', `--pipeline=${pipeline.name}`, '--autodestroy'])
+      .command(['reviewapps:enable', `--pipeline=${pipeline.name}`, '--autodestroy'])
       .it('it succeeds with autodestroy', ctx => {
         expect(ctx.stdout).to.include('Enabling auto destroy')
         expect(ctx.stderr).to.include('Configuring pipeline')
@@ -213,7 +213,7 @@ describe('reviewapps:_enable', () => {
       })
       .stdout()
       .stderr()
-      .command(['reviewapps:_enable', `--pipeline=${pipeline.name}`, '--autodeploy', '--autodestroy'])
+      .command(['reviewapps:enable', `--pipeline=${pipeline.name}`, '--autodeploy', '--autodestroy'])
       .it('it succeeds with autodeploy and autodestroy', ctx => {
         expect(ctx.stdout).to.include('Enabling auto deployment')
         expect(ctx.stdout).to.include('Enabling auto destroy')
