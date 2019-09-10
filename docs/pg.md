@@ -729,6 +729,22 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
 ```
 
+## `heroku pg:settings:log-connections [VALUE] [DATABASE]`
+
+Controls whether a log message is produced when a login attempt is made. Default is true.
+
+```
+USAGE
+  $ heroku pg:settings:log-connections [VALUE] [DATABASE]
+
+OPTIONS
+  -a, --app=app        (required) app to run command against
+  -r, --remote=remote  git remote of app to use
+
+DESCRIPTION
+  Setting log_connections to false stops emitting log messages for all attempts to login to the database.
+```
+
 ## `heroku pg:settings:log-lock-waits [VALUE] [DATABASE]`
 
 Controls whether a log message is produced when a session waits longer than the deadlock_timeout to acquire a lock. deadlock_timeout is set to 1 second
