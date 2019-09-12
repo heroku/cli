@@ -2,12 +2,11 @@ import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import cli from 'cli-ux'
 
-export default class ReviewappsEnable2 extends Command {
+export default class ReviewappsEnable extends Command {
   static description = 'enable review apps and/or settings on an existing pipeline'
 
   static examples = [
-    `$ heroku reviewapps:enable -p mypipeline --autodeploy --autodestroy
-`,
+    '$ heroku reviewapps:enable -p mypipeline --autodeploy --autodestroy',
   ]
 
   static flags = {
@@ -17,13 +16,13 @@ export default class ReviewappsEnable2 extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(ReviewappsEnable2)
+    const {flags} = this.parse(ReviewappsEnable)
 
     let settings: {
       automatic_review_apps: boolean,
       destroy_stale_apps: boolean,
-      pipeline: string | undefined,
-      repo: string | undefined
+      pipeline?: string,
+      repo?: string
     } = {
       automatic_review_apps: false,
       destroy_stale_apps: false,
