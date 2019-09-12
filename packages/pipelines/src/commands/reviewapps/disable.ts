@@ -2,7 +2,7 @@ import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import cli from 'cli-ux'
 
-export default class ReviewappsDisable2 extends Command {
+export default class ReviewappsDisable extends Command {
   static description = 'disable review apps and/or settings on an existing pipeline'
 
   static examples = [
@@ -17,13 +17,13 @@ export default class ReviewappsDisable2 extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(ReviewappsDisable2)
+    const {flags} = this.parse(ReviewappsDisable)
 
     let settings: {
       automatic_review_apps: boolean,
       destroy_stale_apps: boolean,
-      pipeline: string | undefined,
-      repo: string | undefined
+      pipeline?: string,
+      repo?: string
     } = {
       automatic_review_apps: true,
       destroy_stale_apps: true,
