@@ -1,13 +1,12 @@
 import color from '@heroku-cli/color'
-import {flags} from '@heroku-cli/command'
+import {Command, flags} from '@heroku-cli/command'
 import cli from 'cli-ux'
 import * as QueryString from 'querystring'
 
-import BaseCommand from '../../../base'
 import {Accounts} from '../../../completions'
 import {CoreService} from '../../../core-service'
 
-export default class Monthly extends BaseCommand {
+export default class Monthly extends Command {
   static description = `list the monthly usage for an enterprise account or team
 Displays the monthly usage data for an enterprise account or team.
 
@@ -126,7 +125,7 @@ presented here may not reflect license usage or billing for your account.`
   private setHttpHeadersForCSV() {
     this.heroku.defaults.headers = {
       ...this.heroku.defaults.headers,
-      Accept: 'text/csv; version=3.enterprise-accounts',
+      Accept: 'text/csv; version=3',
     }
   }
 

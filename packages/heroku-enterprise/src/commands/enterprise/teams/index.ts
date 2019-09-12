@@ -1,10 +1,9 @@
-import {flags} from '@heroku-cli/command'
+import {Command, flags} from '@heroku-cli/command'
 import {cli} from 'cli-ux'
 
-import BaseCommand from '../../../base'
 import {Accounts} from '../../../completions'
 
-export default class Teams extends BaseCommand {
+export default class Teams extends Command {
   static description = 'list teams within an enterprise account'
 
   static examples = [

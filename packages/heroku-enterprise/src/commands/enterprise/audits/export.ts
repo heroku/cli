@@ -1,5 +1,5 @@
 import {color} from '@heroku-cli/color'
-import {flags} from '@heroku-cli/command'
+import {Command, flags} from '@heroku-cli/command'
 import axios from 'axios'
 import cli from 'cli-ux'
 import * as fs from 'fs'
@@ -7,12 +7,11 @@ import * as inquirer from 'inquirer'
 import * as _ from 'lodash'
 import * as Path from 'path'
 
-import BaseCommand from '../../../base'
 import {Accounts, Archives} from '../../../completions'
 import {CoreService} from '../../../core-service'
 import Utils from '../../../utils'
 
-export default class Export extends BaseCommand {
+export default class Export extends Command {
   static description = 'export an audit log for an enterprise account'
   static examples = [
     '$ heroku enterprise:audits:export 2018-11 --enterprise-account=account-name',
@@ -48,8 +47,7 @@ export default class Export extends BaseCommand {
 
     const accountId = await coreService.getEnterpriseAccountId(flags['enterprise-account'])
     const logYearMonth = await this.getAuditLogYearMonth(args, accountId)
-    const headers: any = {headers: {Accept: 'application/vnd.heroku+json; version=3.audit-trail'}}
-    const {body: archive} = await this.heroku.get<any>(`/enterprise-accounts/${accountId}/archives/${logYearMonth[0]}/${logYearMonth[1]}`, headers)
+    const {body: archive} = await this.heroku.get<any>(`/enterprise-accounts/${accountId}/archives/${logYearMonth[0]}/${logYearMonth[1]}`)
 
     const filePath = await this.getFilePath(flags, logYearMonth)
     const formattedFilePath = color.cyan(filePath)
@@ -146,8 +144,7 @@ export default class Export extends BaseCommand {
   }
 
   private async getAuditLogChoices(enterpriseAccountId: string): Promise<{ name: string }[]> {
-    const headers = {headers: {Accept: 'application/vnd.heroku+json; version=3.audit-trail'}}
-    const {body: archives} = await this.heroku.get<any[]>(`/enterprise-accounts/${enterpriseAccountId}/archives`, headers)
+    const {body: archives} = await this.heroku.get<any[]>(`/enterprise-accounts/${enterpriseAccountId}/archives`)
     const auditChoices: { name: string }[] = []
     archives.forEach(archives => auditChoices.push({
       name: `${archives.year}-${archives.month}`

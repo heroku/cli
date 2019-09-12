@@ -5,10 +5,6 @@ export const oneDay = 60 * 60 * 24
 
 const herokuGet = async (resource: string, config: IConfig, cbk?: (d: any) => string): Promise<string[]> => {
   const heroku = new APIClient(config)
-  heroku.defaults.headers = {
-    ...heroku.defaults.headers,
-    Accept: 'application/vnd.heroku+json; version=3.enterprise-accounts',
-  }
   let {body} = await heroku.get<any[]>(resource, {retryAuth: false})
   // tslint:disable-next-line:strict-type-predicates
   if (typeof body === 'string') body = JSON.parse(body)

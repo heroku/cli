@@ -1,8 +1,7 @@
+import {Command} from '@heroku-cli/command'
 import {cli} from 'cli-ux'
 
-import BaseCommand from '../../base'
-
-export default class Enterprises extends BaseCommand {
+export default class Enterprises extends Command {
   static description = 'list your enterprise accounts'
 
   static examples = [

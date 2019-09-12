@@ -1,11 +1,10 @@
-import {flags} from '@heroku-cli/command'
+import {Command, flags} from '@heroku-cli/command'
 import {cli} from 'cli-ux'
 
-import BaseCommand from '../../../base'
 import {Accounts} from '../../../completions'
 import {CoreService} from '../../../core-service'
 
-export default class Audits extends BaseCommand {
+export default class Audits extends Command {
   static description = 'list available audit logs for an enterprise account'
   static examples = [
     '$ heroku enterprise:audits --enterprise-account=account-name',
@@ -29,8 +28,7 @@ export default class Audits extends BaseCommand {
     const coreService: CoreService = new CoreService(this.heroku)
 
     const enterpriseAccountId = await coreService.getEnterpriseAccountId(flags['enterprise-account'])
-    const headers = {headers: {Accept: 'application/vnd.heroku+json; version=3.audit-trail'}}
-    const {body: archives} = await this.heroku.get<any[]>(`/enterprise-accounts/${enterpriseAccountId}/archives`, headers)
+    const {body: archives} = await this.heroku.get<any[]>(`/enterprise-accounts/${enterpriseAccountId}/archives`)
 
     if (!archives || archives.length === 0) return this.warn('No enterprise audit logs to list')
     if (flags.json) return this.log(JSON.stringify(archives))

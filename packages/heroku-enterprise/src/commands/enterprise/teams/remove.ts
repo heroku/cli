@@ -1,9 +1,8 @@
 import {color} from '@heroku-cli/color'
+import {Command} from '@heroku-cli/command'
 import {cli} from 'cli-ux'
 
-import BaseCommand from '../../../base'
-
-export default class Remove extends BaseCommand {
+export default class Remove extends Command {
   static description = 'remove a team from an enterprise account'
 
   static examples = [

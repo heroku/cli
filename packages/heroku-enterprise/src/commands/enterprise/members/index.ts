@@ -1,10 +1,9 @@
-import {flags} from '@heroku-cli/command'
+import {Command, flags} from '@heroku-cli/command'
 import {cli} from 'cli-ux'
 
-import BaseCommand from '../../../base'
 import {Accounts} from '../../../completions'
 
-export default class Members extends BaseCommand {
+export default class Members extends Command {
   static description = 'list members of the enterprise account and their permissions'
 
   static examples = [

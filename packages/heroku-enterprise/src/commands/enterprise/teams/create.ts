@@ -1,11 +1,10 @@
 import {color} from '@heroku-cli/color'
-import {flags} from '@heroku-cli/command'
+import {Command, flags} from '@heroku-cli/command'
 import {cli} from 'cli-ux'
 
-import BaseCommand from '../../../base'
 import {Accounts} from '../../../completions'
 
-export default class Create extends BaseCommand {
+export default class Create extends Command {
   static description = 'create a team in an enterprise account'
 
   static examples = [
