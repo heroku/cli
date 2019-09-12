@@ -24,7 +24,7 @@ function configToString(config: Config): string {
     .join('\n')
 }
 
-function stringToConfig(s: string): Config {
+export function stringToConfig(s: string): Config {
   return s.split('\n').reduce((config: Config, line: string): Config => {
     const error = () => {
       throw new Error(`Invalid line: ${line}`)
@@ -32,7 +32,7 @@ function stringToConfig(s: string): Config {
     if (!line) return config
     let i = line.indexOf('=')
     if (i === -1) error()
-    config[line.slice(0, i)] = parse(line.slice(i + 1))
+    config[line.slice(0, i)] = parse(line.slice(i + 1)) || ''
     return config
   }, {})
 }
