@@ -74,6 +74,20 @@ describe('with a Performance-L dyno', () => {
     })
 })
 
+describe('with a Private dyno type', () => {
+  dynoTest('private-s')
+    .it('runs successfully', ctx => {
+      expect(ctx.stderr).to.contain('Enabling dyno autoscaling... done')
+    })
+})
+
+describe('with a Shield dyno type', () => {
+  dynoTest('shield-s')
+    .it('runs successfully', ctx => {
+      expect(ctx.stderr).to.contain('Enabling dyno autoscaling... done')
+    })
+})
+
 describe('with a Hobby dyno', () => {
   commonSetup()
     .nock(API_HOST, api => api
@@ -81,7 +95,7 @@ describe('with a Hobby dyno', () => {
       .reply(200, [{id: FORMATION_ID, type: 'web', size: 'Hobby'}])
   )
     .command(['ps:autoscale:enable', '--min', '1', '--max', '2', '--app', APP_NAME])
-    .catch(err => expect(err.message).to.contain('Autoscaling is only available with Performance dynos'))
+    .catch(err => expect(err.message).to.contain('Autoscaling is only available with Performance or Private dynos'))
     .it('rejected non-performance dynos')
 })
 
