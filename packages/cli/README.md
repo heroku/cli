@@ -43,6 +43,7 @@ For other issues, [submit a support ticket](https://help.heroku.com/).
 * [`heroku auth`](docs/auth.md) - check 2fa status
 * [`heroku authorizations`](docs/authorizations.md) - OAuth authorizations
 * [`heroku autocomplete`](docs/autocomplete.md) - display autocomplete installation instructions
+* [`heroku base`](docs/base.md)
 * [`heroku buildpacks`](docs/buildpacks.md) - scripts used to compile apps
 * [`heroku certs`](docs/certs.md) - a topic for the ssl plugin
 * [`heroku ci`](docs/ci.md) - run an application test suite on Heroku
@@ -77,6 +78,7 @@ For other issues, [submit a support ticket](https://help.heroku.com/).
 * [`heroku status`](docs/status.md) - status of the Heroku platform
 * [`heroku teams`](docs/teams.md) - manage teams
 * [`heroku update`](docs/update.md) - update the Heroku CLI
+* [`heroku webhooks`](docs/webhooks.md) - list webhooks on an app
 
 <!-- commandsstop -->
 
