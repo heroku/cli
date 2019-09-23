@@ -19,7 +19,7 @@ function execPsql (query, dbEnv) {
   return new Promise((resolve, reject) => {
     let result = ''
     debug('Running query: %s', query.trim())
-    let psql = spawn('psql', ['-c', query], { env: dbEnv, encoding: 'utf8', stdio: [ 'ignore', 'pipe', 'inherit' ] })
+    let psql = spawn('psql', ['-c', query, '--set', 'sslmode=require'], { env: dbEnv, encoding: 'utf8', stdio: [ 'ignore', 'pipe', 'inherit' ] })
     psql.stdout.on('data', function (data) {
       result += data.toString()
     })
@@ -35,7 +35,7 @@ function execPsqlWithFile (file, dbEnv) {
   return new Promise((resolve, reject) => {
     let result = ''
     debug('Running sql file: %s', file.trim())
-    let psql = spawn('psql', ['-f', file], { env: dbEnv, encoding: 'utf8', stdio: [ 'ignore', 'pipe', 'inherit' ] })
+    let psql = spawn('psql', ['-f', file, '--set', 'sslmode=require'], { env: dbEnv, encoding: 'utf8', stdio: [ 'ignore', 'pipe', 'inherit' ] })
     psql.stdout.on('data', function (data) {
       result += data.toString()
     })
@@ -49,7 +49,7 @@ function execPsqlWithFile (file, dbEnv) {
 function psqlInteractive (dbEnv, prompt) {
   const { spawn } = require('child_process')
   return new Promise((resolve, reject) => {
-    let psqlArgs = ['--set', `PROMPT1=${prompt}`, '--set', `PROMPT2=${prompt}`]
+    let psqlArgs = ['--set', `PROMPT1=${prompt}`, '--set', `PROMPT2=${prompt}`, '--set', 'sslmode=require']
     let psqlHistoryPath = process.env.HEROKU_PSQL_HISTORY
     if (psqlHistoryPath) {
       const fs = require('fs')
