@@ -34,10 +34,10 @@ Configuring pipeline... done`,
   ],
   run: cli.command(co.wrap(function * (context, heroku) {
     const args = { name: context.args.name, repo: context.flags.repo }
-    const errors = Validate.nameAndRepo(args)
+    const error = Validate.repoName(args.repo)
 
-    if (errors.length) {
-      cli.error(errors.join(', '))
+    if (!error[0]) {
+      cli.error(error[1])
       return
     }
 
