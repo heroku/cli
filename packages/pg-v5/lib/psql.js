@@ -19,7 +19,7 @@ function execPsql (query, dbEnv) {
   return new Promise((resolve, reject) => {
     let result = ''
     debug('Running query: %s', query.trim())
-    let psql = spawn('psql', ['-c', query], { env: dbEnv, encoding: 'utf8', stdio: [ 'ignore', 'pipe', 'inherit' ] })
+    let psql = spawn('psql', ['-c', query, '--set', 'sslmode=require'], { env: dbEnv, encoding: 'utf8', stdio: [ 'ignore', 'pipe', 'inherit' ] })
     psql.stdout.on('data', function (data) {
       result += data.toString()
     })
@@ -35,7 +35,7 @@ function execPsqlWithFile (file, dbEnv) {
   return new Promise((resolve, reject) => {
     let result = ''
     debug('Running sql file: %s', file.trim())
-    let psql = spawn('psql', ['-f', file], { env: dbEnv, encoding: 'utf8', stdio: [ 'ignore', 'pipe', 'inherit' ] })
+    let psql = spawn('psql', ['-f', file, '--set', 'sslmode=require'], { env: dbEnv, encoding: 'utf8', stdio: [ 'ignore', 'pipe', 'inherit' ] })
     psql.stdout.on('data', function (data) {
       result += data.toString()
     })
@@ -66,6 +66,7 @@ function psqlInteractive (dbEnv, prompt) {
         cli.warn(`HEROKU_PSQL_HISTORY is set but is not a valid path (${psqlHistoryPath})`)
       }
     }
+    psqlArgs = psqlArgs.concat(['--set', 'sslmode=require'])
 
     let psql = spawn('psql', psqlArgs, { env: dbEnv, stdio: 'inherit' })
     handlePsqlError(reject, psql)
