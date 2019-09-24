@@ -49,7 +49,7 @@ function execPsqlWithFile (file, dbEnv) {
 function psqlInteractive (dbEnv, prompt) {
   const { spawn } = require('child_process')
   return new Promise((resolve, reject) => {
-    let psqlArgs = ['--set', `PROMPT1=${prompt}`, '--set', `PROMPT2=${prompt}`, '--set', 'sslmode=require']
+    let psqlArgs = ['--set', `PROMPT1=${prompt}`, '--set', `PROMPT2=${prompt}`]
     let psqlHistoryPath = process.env.HEROKU_PSQL_HISTORY
     if (psqlHistoryPath) {
       const fs = require('fs')
@@ -66,6 +66,7 @@ function psqlInteractive (dbEnv, prompt) {
         cli.warn(`HEROKU_PSQL_HISTORY is set but is not a valid path (${psqlHistoryPath})`)
       }
     }
+    psqlArgs = psqlArgs.concat(['--set', 'sslmode=require'])
 
     let psql = spawn('psql', psqlArgs, { env: dbEnv, stdio: 'inherit' })
     handlePsqlError(reject, psql)
