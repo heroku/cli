@@ -5,8 +5,9 @@ import {cli} from 'cli-ux'
 import * as _ from 'lodash'
 
 import {parse, quote} from '../../quote'
+import {Editor} from '../../util'
 
-const edit = require('edit-string')
+const editor = new Editor()
 
 interface Config {
   [key: string]: string
@@ -96,10 +97,10 @@ $ VISUAL="atom --wait" heroku config:edit`,
     let newConfig = {...original}
     const prefix = `heroku-${app}-config-`
     if (key) {
-      newConfig[key] = await edit(original[key], {prefix})
+      newConfig[key] = await editor.edit(original[key], {prefix})
       if (!original[key].endsWith('\n') && newConfig[key].endsWith('\n')) newConfig[key] = newConfig[key].slice(0, -1)
     } else {
-      const s = await edit(configToString(original), {prefix, postfix: '.sh'})
+      const s = await editor.edit(configToString(original), {prefix, postfix: '.sh'})
       newConfig = stringToConfig(s)
     }
     if (!await this.diffPrompt(original, newConfig)) return
