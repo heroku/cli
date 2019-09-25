@@ -29,8 +29,8 @@ export default class ReviewappsDisable extends Command {
     const {flags} = this.parse(ReviewappsDisable)
 
     if (flags.app) {
-      // drop app/remote when Review Apps 1.0 is deprecated
-      this.warn('--app and --remote are no longer needed for this command')
+      // remove app & remote flags when Review Apps 1.0 is deprecated
+      this.warn('Specifying an app via --app or --remote is no longer needed for this command')
     }
 
     let settings: {

@@ -46,6 +46,7 @@ describe('reviewapps:disable', () => {
           .reply(200, {})
       })
       .stderr()
+      .stdout()
       .command(['reviewapps:disable', `--pipeline=${pipeline.name}`])
       .it('succeeds with defaults', ctx => {
         expect(ctx.stderr).to.include('Configuring pipeline')
