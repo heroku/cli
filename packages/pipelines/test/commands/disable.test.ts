@@ -1,5 +1,4 @@
 import {expect, test} from '@oclif/test'
-// tslint:disable-next-line:no-duplicate-imports
 
 describe('reviewapps:disable', () => {
   const pipeline = {
@@ -219,5 +218,5 @@ describe('reviewapps:disable', () => {
         expect(ctx.stdout).to.include('Disabling auto destroy')
         expect(ctx.stderr).to.include('Configuring pipeline')
       })
-  })
+  })  
 })

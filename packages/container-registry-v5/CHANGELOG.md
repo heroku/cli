@@ -3,117 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-## [7.24.4](https://github.com/heroku/cli/compare/v7.24.3...v7.24.4) (2019-05-22)
-
-
-### Bug Fixes
-
-* **container-registry-v5:** return error code on exit when container:release fails ([960d10a](https://github.com/heroku/cli/commit/960d10a))
+<a name="7.28.0"></a>
+# [7.28.0](https://github.com/heroku/cli/compare/v7.27.1...v7.28.0) (2019-08-19)
 
 
 
-
-
-# [7.24.0](https://github.com/heroku/cli/compare/v7.23.0...v7.24.0) (2019-04-25)
 
 **Note:** Version bump only for package @heroku-cli/plugin-container-registry-v5
-
-
-
-
-
-## [7.22.5](https://github.com/heroku/cli/compare/v7.22.4...v7.22.5) (2019-03-13)
-
-**Note:** Version bump only for package @heroku-cli/plugin-container-registry-v5
-
-
-
-
-
-# [7.21.0](https://github.com/heroku/cli/compare/v7.20.1...v7.21.0) (2019-02-11)
-
-**Note:** Version bump only for package @heroku-cli/plugin-container-registry-v5
-
-
-
-
-
-# [7.20.0](https://github.com/heroku/cli/compare/v7.19.4...v7.20.0) (2019-02-05)
-
-
-### Bug Fixes
-
-* increase mocha timeouts ([7d31bc1](https://github.com/heroku/cli/commit/7d31bc1))
-
-
-
-
-
-## [7.19.4](https://github.com/heroku/cli/compare/v7.19.3...v7.19.4) (2018-12-19)
-
-
-### Bug Fixes
-
-* upgrade dependencies ([f1b3886](https://github.com/heroku/cli/commit/f1b3886))
-
-
-
-
-
-# [7.19.0](https://github.com/heroku/cli/compare/v7.18.10...v7.19.0) (2018-12-03)
-
-**Note:** Version bump only for package @heroku-cli/plugin-container-registry-v5
-
-
-
-
-
-## [7.18.10](https://github.com/heroku/cli/compare/v7.18.9...v7.18.10) (2018-11-26)
-
-
-### Bug Fixes
-
-* updated deps ([576c85a](https://github.com/heroku/cli/commit/576c85a))
-
-
-
-
-
-## [7.18.6](https://github.com/heroku/cli/compare/v7.18.5...v7.18.6) (2018-11-12)
-
-**Note:** Version bump only for package @heroku-cli/plugin-container-registry-v5
-
-
-
-
-
-## [7.18.4](https://github.com/heroku/cli/compare/v7.18.3...v7.18.4) (2018-11-02)
-
-
-### Bug Fixes
-
-* **container:** exit with status code 1 for errors ([52c2f4a](https://github.com/heroku/cli/commit/52c2f4a))
-* **container:** handle missing docker install ([cf45581](https://github.com/heroku/cli/commit/cf45581))
-
-
-
-
-
-# [7.18.0](https://github.com/heroku/cli/compare/v7.17.2...v7.18.0) (2018-10-17)
-
-**Note:** Version bump only for package @heroku-cli/plugin-container-registry-v5
-
-
-
-
-
-## [7.17.1](https://github.com/heroku/cli/compare/v7.17.0...v7.17.1) (2018-10-16)
-
-**Note:** Version bump only for package @heroku-cli/plugin-container-registry-v5
-
-
-
-
 
 <a name="7.16.2"></a>
 ## [7.16.2](https://github.com/heroku/cli/compare/v7.16.1...v7.16.2) (2018-10-02)

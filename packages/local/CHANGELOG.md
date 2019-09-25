@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="7.28.0"></a>
+# [7.28.0](https://github.com/heroku/cli/compare/v7.27.1...v7.28.0) (2019-08-19)
+
+
+### Bug Fixes
+
+* **local:** remove composite flag from tsconfig.json ([#1263](https://github.com/heroku/cli/issues/1263)) ([be9cdfb](https://github.com/heroku/cli/commit/be9cdfb))
+
+
+
+
+# Change Log
+
+All notable changes to this project will be documented in this file.
+See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## [7.26.2](https://github.com/heroku/cli/compare/v7.26.1...v7.26.2) (2019-06-27)
 
 

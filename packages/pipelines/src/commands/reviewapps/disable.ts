@@ -1,4 +1,4 @@
-import {Command, flags} from '@heroku-cli/command'
+import {Command, flags as HerokuFlags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import cli from 'cli-ux'
 
@@ -6,16 +6,24 @@ export default class ReviewappsDisable extends Command {
   static description = 'disable review apps and/or settings on an existing pipeline'
 
   static examples = [
-    `$ heroku reviewapps:disable -p mypipeline --autodeploy --autodestroy
-`,
+    '$ heroku reviewapps:disable -p my-pipeline -a my-app --autodeploy'
   ]
 
   static flags = {
-    pipeline: flags.string({char: 'p', description: 'name of pipeline', required: true}),
-    autodeploy: flags.boolean({description: 'disable autodeployments', required: false}),
-    autodestroy: flags.boolean({description: 'disable automatically destroying review apps', required: false}),
-    app: flags.app({description: 'parent app used by review apps', required: false}),
-    remote: flags.remote({description: 'git remote of app to use', required: false}),
+    app: HerokuFlags.app({
+      description: 'parent app used by review apps',
+      required: true,
+    }),
+    pipeline: HerokuFlags.pipeline({
+      required: true,
+    }),
+    remote: HerokuFlags.remote(),
+    autodeploy: HerokuFlags.boolean({
+      description: 'disable autodeployments'
+    }),
+    autodestroy: HerokuFlags.boolean({
+      description: 'disable automatically destroying review apps'
+    }),
   }
 
   async run() {

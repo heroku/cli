@@ -1,14 +1,22 @@
 {
   "name": "@heroku-cli/plugin-pipelines",
-  "version": "7.27.0",
+  "version": "7.28.0",
   "author": "James Martinez @jmar910",
-  "bugs": "https://github.com/heroku/heroku-cli-plugin-pipelines/issues",
+  "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
+    "@heroku-cli/color": "^1.1.14",
     "@heroku-cli/command": "^8.2.12",
     "@heroku-cli/schema": "^1.0.25",
     "@oclif/command": "^1",
     "@oclif/config": "^1",
-    "cli-ux": "^5.3.1"
+    "cli-ux": "^5.2.1",
+    "got": "^9.6.0",
+    "heroku-cli-util": "^8.0.11",
+    "http-call": "^5.2.4",
+    "inquirer": "^7.0.0",
+    "lodash.keyby": "^4.6.0",
+    "lodash.sortby": "^4.7.0",
+    "validator": "^10.11.0"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1",
@@ -16,13 +24,18 @@
     "@oclif/test": "^1",
     "@oclif/tslint": "^3",
     "@types/chai": "^4",
+    "@types/got": "^9.6.7",
+    "@types/lodash.keyby": "^4.6.6",
+    "@types/lodash.sortby": "^4.7.6",
     "@types/mocha": "^5",
     "@types/node": "^10",
     "chai": "^4",
+    "debug": "^4.1.1",
     "globby": "^8",
     "mocha": "^5",
     "nock": "^10.0.6",
     "nyc": "^13",
+    "sinon": "^7.4.1",
     "ts-node": "^8",
     "tslib": "^1",
     "tslint": "^5",
@@ -36,7 +49,7 @@
     "/oclif.manifest.json",
     "/yarn.lock"
   ],
-  "homepage": "https://github.com/heroku/heroku-cli-plugin-pipelines",
+  "homepage": "https://github.com/heroku/cli",
   "keywords": [
     "heroku-plugin"
   ],
@@ -48,17 +61,20 @@
       "@oclif/plugin-help"
     ],
     "topics": {
+      "pipelines": {
+        "description": "manage pipelines"
+      },
       "reviewapps": {
         "description": "manage reviewapps in pipelines"
       }
     }
   },
-  "repository": "heroku/heroku-cli-plugin-pipelines",
+  "repository": "heroku/cli",
   "scripts": {
     "postpack": "rm -f oclif.manifest.json",
     "posttest": "tslint -p test -t stylish",
     "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
-    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
+    "test": "nyc --extension .ts mocha \"test/**/*.test.ts\"",
     "version": "oclif-dev readme && git add README.md"
   }
 }

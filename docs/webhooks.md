@@ -1,17 +1,17 @@
 `heroku webhooks`
 =================
 
-setup HTTP notifications of app activity
+list webhooks on an app
 
 * [`heroku webhooks`](#heroku-webhooks)
 * [`heroku webhooks:add`](#heroku-webhooksadd)
 * [`heroku webhooks:deliveries`](#heroku-webhooksdeliveries)
-* [`heroku webhooks:deliveries:info [ID]`](#heroku-webhooksdeliveriesinfo-id)
+* [`heroku webhooks:deliveries:info ID`](#heroku-webhooksdeliveriesinfo-id)
 * [`heroku webhooks:events`](#heroku-webhooksevents)
-* [`heroku webhooks:events:info [ID]`](#heroku-webhookseventsinfo-id)
-* [`heroku webhooks:info [ID]`](#heroku-webhooksinfo-id)
-* [`heroku webhooks:remove [ID]`](#heroku-webhooksremove-id)
-* [`heroku webhooks:update [ID]`](#heroku-webhooksupdate-id)
+* [`heroku webhooks:events:info ID`](#heroku-webhookseventsinfo-id)
+* [`heroku webhooks:info ID`](#heroku-webhooksinfo-id)
+* [`heroku webhooks:remove ID`](#heroku-webhooksremove-id)
+* [`heroku webhooks:update ID`](#heroku-webhooksupdate-id)
 
 ## `heroku webhooks`
 
@@ -29,7 +29,7 @@ EXAMPLE
   $ heroku webhooks
 ```
 
-_See code: [@heroku-cli/plugin-webhooks-v5](https://github.com/heroku/cli/blob/v7.24.0/packages/webhooks-v5/commands/webhooks/index.js)_
+_See code: [@heroku-cli/plugin-webhooks](https://github.com/heroku/cli/blob/v7.29.0/src/commands/webhooks/index.ts)_
 
 ## `heroku webhooks:add`
 
@@ -52,7 +52,7 @@ EXAMPLE
   $ heroku webhooks:add -i api:dyno -l notify -u https://example.com/hooks
 ```
 
-_See code: [@heroku-cli/plugin-webhooks-v5](https://github.com/heroku/cli/blob/v7.24.0/packages/webhooks-v5/commands/webhooks/add.js)_
+_See code: [@heroku-cli/plugin-webhooks](https://github.com/heroku/cli/blob/v7.29.0/src/commands/webhooks/add.ts)_
 
 ## `heroku webhooks:deliveries`
 
@@ -71,15 +71,15 @@ EXAMPLE
   $ heroku webhooks:deliveries
 ```
 
-_See code: [@heroku-cli/plugin-webhooks-v5](https://github.com/heroku/cli/blob/v7.24.0/packages/webhooks-v5/commands/webhooks/deliveries/index.js)_
+_See code: [@heroku-cli/plugin-webhooks](https://github.com/heroku/cli/blob/v7.29.0/src/commands/webhooks/deliveries/index.ts)_
 
-## `heroku webhooks:deliveries:info [ID]`
+## `heroku webhooks:deliveries:info ID`
 
 info for a webhook event on an app
 
 ```
 USAGE
-  $ heroku webhooks:deliveries:info [ID]
+  $ heroku webhooks:deliveries:info ID
 
 OPTIONS
   -a, --app=app        app to run command against
@@ -89,7 +89,7 @@ EXAMPLE
   $ heroku webhooks:deliveries:info 99999999-9999-9999-9999-999999999999
 ```
 
-_See code: [@heroku-cli/plugin-webhooks-v5](https://github.com/heroku/cli/blob/v7.24.0/packages/webhooks-v5/commands/webhooks/deliveries/info.js)_
+_See code: [@heroku-cli/plugin-webhooks](https://github.com/heroku/cli/blob/v7.29.0/src/commands/webhooks/deliveries/info.ts)_
 
 ## `heroku webhooks:events`
 
@@ -107,15 +107,15 @@ EXAMPLE
   $ heroku webhooks:events
 ```
 
-_See code: [@heroku-cli/plugin-webhooks-v5](https://github.com/heroku/cli/blob/v7.24.0/packages/webhooks-v5/commands/webhooks/events/index.js)_
+_See code: [@heroku-cli/plugin-webhooks](https://github.com/heroku/cli/blob/v7.29.0/src/commands/webhooks/events/index.ts)_
 
-## `heroku webhooks:events:info [ID]`
+## `heroku webhooks:events:info ID`
 
 info for a webhook event on an app
 
 ```
 USAGE
-  $ heroku webhooks:events:info [ID]
+  $ heroku webhooks:events:info ID
 
 OPTIONS
   -a, --app=app        app to run command against
@@ -125,15 +125,15 @@ EXAMPLE
   $ heroku webhooks:events:info 99999999-9999-9999-9999-999999999999
 ```
 
-_See code: [@heroku-cli/plugin-webhooks-v5](https://github.com/heroku/cli/blob/v7.24.0/packages/webhooks-v5/commands/webhooks/events/info.js)_
+_See code: [@heroku-cli/plugin-webhooks](https://github.com/heroku/cli/blob/v7.29.0/src/commands/webhooks/events/info.ts)_
 
-## `heroku webhooks:info [ID]`
+## `heroku webhooks:info ID`
 
 info for a webhook on an app
 
 ```
 USAGE
-  $ heroku webhooks:info [ID]
+  $ heroku webhooks:info ID
 
 OPTIONS
   -a, --app=app        app to run command against
@@ -143,15 +143,15 @@ EXAMPLE
   $ heroku webhooks:info 99999999-9999-9999-9999-999999999999
 ```
 
-_See code: [@heroku-cli/plugin-webhooks-v5](https://github.com/heroku/cli/blob/v7.24.0/packages/webhooks-v5/commands/webhooks/info.js)_
+_See code: [@heroku-cli/plugin-webhooks](https://github.com/heroku/cli/blob/v7.29.0/src/commands/webhooks/info.ts)_
 
-## `heroku webhooks:remove [ID]`
+## `heroku webhooks:remove ID`
 
 removes a webhook from an app
 
 ```
 USAGE
-  $ heroku webhooks:remove [ID]
+  $ heroku webhooks:remove ID
 
 ARGUMENTS
   ID  id of webhook to remove
@@ -164,15 +164,15 @@ EXAMPLE
   $ heroku webhooks:remove 99999999-9999-9999-9999-999999999999
 ```
 
-_See code: [@heroku-cli/plugin-webhooks-v5](https://github.com/heroku/cli/blob/v7.24.0/packages/webhooks-v5/commands/webhooks/remove.js)_
+_See code: [@heroku-cli/plugin-webhooks](https://github.com/heroku/cli/blob/v7.29.0/src/commands/webhooks/remove.ts)_
 
-## `heroku webhooks:update [ID]`
+## `heroku webhooks:update ID`
 
 updates a webhook in an app
 
 ```
 USAGE
-  $ heroku webhooks:update [ID]
+  $ heroku webhooks:update ID
 
 OPTIONS
   -a, --app=app                      app to run command against
@@ -188,4 +188,4 @@ EXAMPLE
   09928c40bf1b191b645174a19f7053d16a180da37332e719ef0998f4c0a2 -u https://example.com/hooks
 ```
 
-_See code: [@heroku-cli/plugin-webhooks-v5](https://github.com/heroku/cli/blob/v7.24.0/packages/webhooks-v5/commands/webhooks/update.js)_
+_See code: [@heroku-cli/plugin-webhooks](https://github.com/heroku/cli/blob/v7.29.0/src/commands/webhooks/update.ts)_
