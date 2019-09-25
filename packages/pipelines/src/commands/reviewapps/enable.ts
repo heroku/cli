@@ -13,10 +13,16 @@ export default class ReviewappsEnable extends Command {
     pipeline: flags.string({char: 'p', description: 'name of pipeline', required: true}),
     autodeploy: flags.boolean({description: 'autodeploy the review app', required: false}),
     autodestroy: flags.boolean({description: 'autodestroy the review app', required: false}),
+    app: flags.string({description: 'parent app used by review apps', required: false}),
   }
 
   async run() {
     const {flags} = this.parse(ReviewappsEnable)
+
+    if (flags.app) {
+      // drop app when Review Apps 1.0 is deprecated
+      this.warn('--app is no longer needed for this command')
+    }
 
     let settings: {
       automatic_review_apps: boolean,
