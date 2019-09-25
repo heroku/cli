@@ -21,7 +21,7 @@ $ npm install -g @heroku-cli/plugin-run
 $ heroku COMMAND
 running command...
 $ heroku (-v|--version|version)
-@heroku-cli/plugin-run/7.25.0 darwin-x64 node-v10.16.3
+@heroku-cli/plugin-run/7.30.0 darwin-x64 node-v10.13.0
 $ heroku --help [COMMAND]
 USAGE
   $ heroku COMMAND

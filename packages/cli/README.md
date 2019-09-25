@@ -43,6 +43,7 @@ For other issues, [submit a support ticket](https://help.heroku.com/).
 * [`heroku auth`](docs/auth.md) - check 2fa status
 * [`heroku authorizations`](docs/authorizations.md) - OAuth authorizations
 * [`heroku autocomplete`](docs/autocomplete.md) - display autocomplete installation instructions
+* [`heroku base`](docs/base.md)
 * [`heroku buildpacks`](docs/buildpacks.md) - scripts used to compile apps
 * [`heroku certs`](docs/certs.md) - a topic for the ssl plugin
 * [`heroku ci`](docs/ci.md) - run an application test suite on Heroku
@@ -70,13 +71,14 @@ For other issues, [submit a support ticket](https://help.heroku.com/).
 * [`heroku redis`](docs/redis.md) - manage heroku redis instances
 * [`heroku regions`](docs/regions.md) - list available regions for deployment
 * [`heroku releases`](docs/releases.md) - display the releases for an app
-* [`heroku reviewapps`](docs/reviewapps.md) - disposable apps built on GitHub pull requests
+* [`heroku reviewapps`](docs/reviewapps.md) - manage reviewapps in pipelines
 * [`heroku run`](docs/run.md) - run a one-off process inside a Heroku dyno
 * [`heroku sessions`](docs/sessions.md) - OAuth sessions
 * [`heroku spaces`](docs/spaces.md) - manage heroku private spaces
 * [`heroku status`](docs/status.md) - status of the Heroku platform
 * [`heroku teams`](docs/teams.md) - manage teams
 * [`heroku update`](docs/update.md) - update the Heroku CLI
+* [`heroku webhooks`](docs/webhooks.md) - list webhooks on an app
 
 <!-- commandsstop -->
 

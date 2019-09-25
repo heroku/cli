@@ -4,6 +4,11 @@ import {cli} from 'cli-ux'
 
 const METRICS_HOST = 'api.metrics.heroku.com'
 
+const isPerfOrPrivateTier = (size: string) => {
+  const applicableTiers = ['performance', 'private', 'shield']
+  return applicableTiers.some(tier => size.toLowerCase().includes(tier))
+}
+
 export default class Enable extends Command {
   static description = 'enable web dyno autoscaling'
   static flags = {
@@ -28,9 +33,11 @@ export default class Enable extends Command {
     const webFormation = formations.find((f: any) => f.type === 'web')
     if (!webFormation) throw new Error(`${flags.app} does not have any web dynos to scale`)
 
-    // we only allow this feature with Performance dynos
     const {size} = webFormation
-    if (!/^Performance/.test(size || '')) throw new Error('Autoscaling is only available with Performance dynos')
+
+    if (!isPerfOrPrivateTier(size || '')) {
+      throw new Error('Autoscaling is only available with Performance or Private dynos')
+    }
 
     const {body} = await this.heroku.get<Heroku.Formation[]>(`/apps/${app.id}/formation/web/monitors`, {
       hostname: METRICS_HOST

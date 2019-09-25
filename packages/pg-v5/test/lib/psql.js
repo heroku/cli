@@ -70,7 +70,7 @@ describe('psql', () => {
         PGHOST: 'localhost'
       })
       let opts = { env: env, encoding: 'utf8', stdio: [ 'ignore', 'pipe', 'inherit' ] }
-      cp.expects('spawn').withExactArgs('psql', ['-c', 'SELECT NOW();'], opts).once().returns(
+      cp.expects('spawn').withExactArgs('psql', ['-c', 'SELECT NOW();', '--set', 'sslmode=require'], opts).once().returns(
         {
           stdout: {
             on: (key, callback) => {
@@ -103,7 +103,7 @@ describe('psql', () => {
         localHost: '127.0.0.1',
         localPort: 49152
       }
-      cp.expects('spawn').withArgs('psql', ['-c', 'SELECT NOW();']).once().returns(
+      cp.expects('spawn').withArgs('psql', ['-c', 'SELECT NOW();', '--set', 'sslmode=require']).once().returns(
         {
           stdout: {
             on: (key, callback) => {
@@ -162,7 +162,7 @@ describe('psql', () => {
         PGHOST: 'localhost'
       })
       let opts = { env: env, encoding: 'utf8', stdio: [ 'ignore', 'pipe', 'inherit' ] }
-      cp.expects('spawn').withExactArgs('psql', ['-f', 'test.sql'], opts).once().returns(
+      cp.expects('spawn').withExactArgs('psql', ['-f', 'test.sql', '--set', 'sslmode=require'], opts).once().returns(
         {
           stdout: {
             on: (key, callback) => {
@@ -195,7 +195,7 @@ describe('psql', () => {
         localHost: '127.0.0.1',
         localPort: 49152
       }
-      cp.expects('spawn').withArgs('psql', ['-f', 'test.sql']).once().returns(
+      cp.expects('spawn').withArgs('psql', ['-f', 'test.sql', '--set', 'sslmode=require']).once().returns(
         {
           stdout: {
             on: (key, callback) => {
@@ -258,7 +258,9 @@ describe('psql', () => {
             '--set',
             'PROMPT2=sleepy-hollow-9876::DATABASE%R%# ',
             '--set',
-            `HISTFILE=${process.env.HEROKU_PSQL_HISTORY}/sleepy-hollow-9876`
+            `HISTFILE=${process.env.HEROKU_PSQL_HISTORY}/sleepy-hollow-9876`,
+            '--set',
+            'sslmode=require'
           ]
 
           cpMock.expects('spawn').withExactArgs('psql', args, opts).once().returns(
@@ -299,7 +301,9 @@ describe('psql', () => {
             '--set',
             'PROMPT2=sleepy-hollow-9876::DATABASE%R%# ',
             '--set',
-            `HISTFILE=${process.env.HEROKU_PSQL_HISTORY}`
+            `HISTFILE=${process.env.HEROKU_PSQL_HISTORY}`,
+            '--set',
+            'sslmode=require'
           ]
 
           cpMock.expects('spawn').withExactArgs('psql', args, opts).once().returns(
@@ -339,7 +343,9 @@ describe('psql', () => {
             '--set',
             'PROMPT1=sleepy-hollow-9876::DATABASE%R%# ',
             '--set',
-            'PROMPT2=sleepy-hollow-9876::DATABASE%R%# '
+            'PROMPT2=sleepy-hollow-9876::DATABASE%R%# ',
+            '--set',
+            'sslmode=require'
           ]
 
           cpMock.expects('spawn').withExactArgs('psql', args, opts).once().returns(

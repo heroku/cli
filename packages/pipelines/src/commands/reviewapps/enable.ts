@@ -6,14 +6,26 @@ export default class ReviewappsEnable extends Command {
   static description = 'enable review apps and/or settings on an existing pipeline'
 
   static examples = [
-    '$ heroku reviewapps:enable -p mypipeline --autodeploy --autodestroy',
+    '$ heroku reviewapps:enable -p my-pipeline -a my-app --autodeploy --autodestroy',
   ]
 
   static flags = {
-    pipeline: flags.string({char: 'p', description: 'name of pipeline', required: true}),
-    autodeploy: flags.boolean({description: 'autodeploy the review app', required: false}),
-    autodestroy: flags.boolean({description: 'autodestroy the review app', required: false}),
-    app: flags.string({description: 'parent app used by review apps', required: false}),
+    app: flags.app({
+      description: 'parent app used by review apps',
+      required: true,
+    }),
+    remote: flags.remote(),
+    pipeline: flags.string({
+      char: 'p',
+      description: 'name of pipeline',
+      required: true,
+    }),
+    autodeploy: flags.boolean({
+      description: 'autodeploy the review app',
+    }),
+    autodestroy: flags.boolean({
+      description: 'autodestroy the review app',
+    }),
   }
 
   async run() {
