@@ -1,4 +1,4 @@
-import { expect, test } from '@oclif/test'
+import {expect, test} from '@oclif/test'
 
 describe('reviewapps:disable', function () {
   const pipeline = {
@@ -24,6 +24,7 @@ describe('reviewapps:disable', function () {
   testWithMocks()
     .stderr()
     .command(['reviewapps:disable', `--pipeline=${pipeline.name}`, `--app=${app.name}`])
+    .retries(3)
     .it('succeeds with defaults', ctx => {
       expect(ctx.stderr).to.include('Configuring pipeline')
     })
@@ -33,8 +34,8 @@ describe('reviewapps:disable', function () {
     .stdout()
     .command(['reviewapps:disable', `--pipeline=${pipeline.name}`, `--app=${app.name}`, '--autodeploy'])
     .it('it disables autodeploys', ctx => {
-      expect(ctx.stdout).to.include('Disabling auto deployment')
       expect(ctx.stderr).to.include('Configuring pipeline')
+      expect(ctx.stdout).to.include('Disabling auto deployment')
     })
 
   testWithMocks()
