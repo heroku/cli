@@ -8,7 +8,7 @@ describe('pipelines:connect', () => {
       .nock('https://kolkrabbi.heroku.com', kolkrabbi => {
         kolkrabbi.get('/account/github/token').reply(401, {})
       })
-      .command(['pipelines:connect', '--repo=my-org/my-repo'])
+      .command(['pipelines:connect', 'my-pipeline', '--repo=my-org/my-repo'])
       .catch('Account not connected to GitHub.')
       .it('displays an error')
   })
