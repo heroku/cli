@@ -36,7 +36,7 @@ export default class Connect extends Command {
       repo: flags.repo
     }
 
-    const errors = nameAndRepo(combinedInputs)
+    const errors = nameAndRepo({repo: flags.repo})
 
     if (errors.length) {
       this.error(errors.join(', '))
