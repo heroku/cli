@@ -16,11 +16,8 @@ export default class Create extends Command {
   The pipeline owner will be the user creating the pipeline if not specified with -t for teams or -o for orgs.`
 
   static examples = [
-    `$ heroku pipelines:create -a example-staging
-? Pipeline name: example
-? Stage of example-staging: staging
-Creating example pipeline... done
-Adding example-staging to example pipeline as staging... done`
+    '$ heroku pipelines:create -a my-app-staging',
+    '$ heroku pipelines:create my-pipeline -a my-app-staging'
   ]
 
   static flags = {
@@ -33,13 +30,13 @@ Adding example-staging to example pipeline as staging... done`
       completion: StageCompletion
     }),
     team: flags.team({
-      description: 'the team which will own the apps (can also use --org)'
+      description: 'the team which will own the apps'
     })
   }
 
   static args = [{
     name: 'name',
-    description: 'name of pipeline, defaults to basename of app',
+    description: 'name of pipeline (defaults to basename of the app)',
     required: false
   }]
 

@@ -6,28 +6,24 @@ import cli from 'cli-ux'
 import {updateCoupling} from '../../api'
 
 export default class PipelinesUpdate extends Command {
-  static description = 'update this app\'s stage in a pipeline'
+  static description = 'update the app\'s stage in a pipeline'
 
   static examples = [
-    '$ heroku pipelines:update -s staging -a example-admin'
+    '$ heroku pipelines:update -s staging -a my-app'
   ]
 
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
     stage: flags.string({
-      char: 's', description: 'new stage of app', completion: StageCompletion
+      char: 's',
+      description: 'new stage of app', completion: StageCompletion,
+      required: true,
     })
   }
 
   async run() {
     let {flags} = this.parse(PipelinesUpdate)
-
-    if (!flags.stage) {
-      cli.error('Stage must be specified with -s')
-      process.exit(1)
-      return
-    }
 
     const app = flags.app
     const stage = flags.stage

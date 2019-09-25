@@ -6,10 +6,7 @@ export default class Pipelines extends Command {
   static description = 'list pipelines you have access to'
 
   static examples = [
-    `$ heroku pipelines
-=== My Pipelines
-example
-sushi`
+    '$ heroku pipelines',
   ]
 
   static flags = {

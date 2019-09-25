@@ -10,7 +10,7 @@ export default class PipelinesInfo extends Command {
   static description = 'show list of apps in a pipeline'
 
   static examples = [
-    '$ heroku pipelines:info example'
+    '$ heroku pipelines:info my-pipeline'
   ]
 
   static flags = {
@@ -25,7 +25,7 @@ export default class PipelinesInfo extends Command {
 
   static args = [{
     name: 'pipeline',
-    description: 'pipeline to show',
+    description: 'pipeline to show list of apps for',
     required: true
   }]
 

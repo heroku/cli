@@ -19,12 +19,12 @@ export default class Setup extends Command {
   static description = 'bootstrap a new pipeline with common settings and create a production and staging app (requires a fully formed app.json in the repo)'
 
   static examples = [
-    '$ heroku pipelines:setup example githuborg/reponame -o example-org'
+    '$ heroku pipelines:setup my-pipeline githuborg/reponame -t my-team'
   ]
 
   static flags = {
     team: flags.team({
-      description: 'the team which will own the apps (can also use --org)'
+      description: 'the team to assign pipeline ownership to (defaults to current user)'
     }),
 
     yes: flags.boolean({

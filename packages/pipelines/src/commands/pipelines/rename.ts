@@ -9,7 +9,7 @@ export default class PipelinesRename extends Command {
   static description = 'rename a pipeline'
 
   static examples = [
-    '$ heroku pipelines:rename example www'
+    '$ heroku pipelines:rename my-pipeline new-pipeline-name'
   ]
 
   static args = [

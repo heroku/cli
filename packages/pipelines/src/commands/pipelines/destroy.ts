@@ -10,7 +10,7 @@ export default class PipelinesDestroy extends Command {
   static description = 'destroy a pipeline'
 
   static examples = [
-    '$ heroku pipelines:destroy example'
+    '$ heroku pipelines:destroy my-pipeline'
   ]
 
   static args = [{

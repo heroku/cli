@@ -15,7 +15,7 @@ The app and pipeline names must be specified.
 The stage of the app will be guessed based on its name if not specified.`
 
   static examples = [
-    '$ heroku pipelines:add example -a example-admin -s production'
+    '$ heroku pipelines:add my-pipeline -a my-app -s production'
   ]
 
   static flags = {

@@ -68,7 +68,7 @@ interface AppInfo {
 export default class PipelinesDiff extends Command {
   static description = 'compares the latest release of this app to its downstream app(s)'
   static examples = [
-    '$ heroku pipelines:diff --app murmuring-headland-14719'
+    '$ heroku pipelines:diff -a my-app-staging'
   ]
 
   static flags = {

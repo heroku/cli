@@ -29,8 +29,8 @@ function getOwner(heroku: APIClient, name: string) {
 export default class PipelinesTransfer extends Command {
   static description = 'transfer ownership of a pipeline'
   static examples = [
-    '$ heroku pipelines:transfer me@example.com -p example',
-    '$ heroku pipelines:transfer acme-widgets -p example'
+    '$ heroku pipelines:transfer admin@example.com -p my-pipeline',
+    '$ heroku pipelines:transfer admin-team -p my-pipeline'
   ]
 
   static args = [

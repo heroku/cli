@@ -12,20 +12,22 @@ import {nameAndRepo} from '../../setup/validate'
 export default class Connect extends Command {
   static description = 'connect a github repo to an existing pipeline'
 
-  static examples = [`$ heroku pipelines:connect example -r githuborg/reponame
-  Configuring pipeline... done`]
+  static examples = [
+    '$ heroku pipelines:connect my-pipeline -r githuborg/reponame'
+  ]
 
   static flags = {
     repo: flags.string({
       name: 'repo',
       char: 'r',
-      description: 'the GitHub repository to connect',
+      description: 'the GitHub repository to connect to',
       required: true
     })
   }
   static args = [{
     name: 'name',
     description: 'name of pipeline',
+    required: true,
   }]
 
   async run() {
