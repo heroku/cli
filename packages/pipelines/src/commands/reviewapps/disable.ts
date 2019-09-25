@@ -14,7 +14,7 @@ export default class ReviewappsDisable extends Command {
     pipeline: flags.string({char: 'p', description: 'name of pipeline', required: true}),
     autodeploy: flags.boolean({description: 'disable autodeployments', required: false}),
     autodestroy: flags.boolean({description: 'disable automatically destroying review apps', required: false}),
-    app: flags.string({description: 'parent app used by review apps', required: false}),
+    app: flags.app({description: 'parent app used by review apps', required: false}),
     remote: flags.remote({description: 'git remote of app to use', required: false}),
   }
 
@@ -22,13 +22,8 @@ export default class ReviewappsDisable extends Command {
     const {flags} = this.parse(ReviewappsDisable)
 
     if (flags.app) {
-      // drop app when Review Apps 1.0 is deprecated
-      this.warn('--app is no longer needed for this command')
-    }
-
-    if (flags.remote) {
-      // drop remote when Review Apps 1.0 is deprecated
-      this.warn('--remote is no longer needed for this command')
+      // drop app/remote when Review Apps 1.0 is deprecated
+      this.warn('--app and --remote are no longer needed for this command')
     }
 
     let settings: {
