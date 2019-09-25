@@ -24,6 +24,15 @@ function configToString(config: Config): string {
     .join('\n')
 }
 
+function removeDeleted(newConfig: UploadConfig, original: Config) {
+  for (let k of Object.keys(original)) {
+    // The api accepts empty strings
+    // as valid env var values
+    // In JS an empty string is falsey
+    if (!newConfig[k] && newConfig[k] !== '') newConfig[k] = null
+  }
+}
+
 export function stringToConfig(s: string): Config {
   return s.split('\n').reduce((config: Config, line: string): Config => {
     const error = () => {
@@ -103,7 +112,8 @@ $ VISUAL="atom --wait" heroku config:edit`,
     cli.action.start('Verifying new config')
     await this.verifyUnchanged(original)
     cli.action.start('Updating config')
-    await this.updateConfig(original, newConfig)
+    removeDeleted(newConfig, original)
+    await this.updateConfig(newConfig)
     cli.action.stop()
   }
 
@@ -131,13 +141,7 @@ $ VISUAL="atom --wait" heroku config:edit`,
     }
   }
 
-  private async updateConfig(original: Config, newConfig: UploadConfig) {
-    for (let k of Object.keys(original)) {
-      // The api accepts empty strings
-      // as valid env var values
-      // In JS an empty string is falsey
-      if (!newConfig[k] && newConfig[k] !== '') newConfig[k] = null
-    }
+  private async updateConfig(newConfig: UploadConfig) {
     await this.heroku.patch(`/apps/${this.app}/config-vars`, {
       body: newConfig,
     })
