@@ -16,19 +16,6 @@ describe('reviewapps:disable', () => {
       full_name: 'james/repo'
     }
 
-    // this is a workaround to
-    // a fancy-test & stdout mocking error
-    // it mocks them & runs an empty test
-    // then resets the mocks after the test
-    // setting up correctly for the tests below
-    test
-      .stderr()
-      .stdout()
-      .it('passes', ctx => {
-        expect(ctx.stderr).to.include('')
-        expect(ctx.stdout).to.include('')
-      })
-
     test
       .nock('https://api.heroku.com', api => {
         api
@@ -49,7 +36,7 @@ describe('reviewapps:disable', () => {
       .stdout()
       .command(['reviewapps:disable', `--pipeline=${pipeline.name}`])
       .it('succeeds with defaults', ctx => {
-        expect(ctx.stderr).to.include('Configuring pipeline')
+        expect(ctx.stderr).to.include('done\n')
       })
 
     test
