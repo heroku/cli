@@ -57,7 +57,7 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
 ```
 
-_See code: [@heroku-cli/plugin-ps](https://github.com/heroku/cli/blob/v7.24.0/packages/ps/src/commands/ps/autoscale/disable.ts)_
+_See code: [@heroku-cli/plugin-ps](https://github.com/heroku/cli/blob/v7.30.0/packages/ps/src/commands/ps/autoscale/disable.ts)_
 
 ## `heroku ps:autoscale:enable`
 
@@ -76,7 +76,7 @@ OPTIONS
   --p95=p95            desired p95 response time
 ```
 
-_See code: [@heroku-cli/plugin-ps](https://github.com/heroku/cli/blob/v7.24.0/packages/ps/src/commands/ps/autoscale/enable.ts)_
+_See code: [@heroku-cli/plugin-ps](https://github.com/heroku/cli/blob/v7.30.0/packages/ps/src/commands/ps/autoscale/enable.ts)_
 
 ## `heroku ps:copy FILE`
 
@@ -128,13 +128,17 @@ USAGE
   $ heroku ps:forward PORT
 
 OPTIONS
-  -a, --app=app              (required) app to run command against
-  -d, --dyno=dyno            specify the dyno to connect to
-  -p, --localPort=localPort  the local port to use
-  -r, --remote=remote        git remote of app to use
+  -a, --app=app        (required) app to run command against
+  -d, --dyno=dyno      specify the dyno to connect to
+  -r, --remote=remote  git remote of app to use
 
 DESCRIPTION
-  Example:
+  Provide a port or comma-separated list of ports to forward.
+
+       For example, "4000,9000:9001" will forward port 4000 to port 4000 and
+       port 9000 to port 9001.
+
+       Example:
 
        $ heroku ps:forward 8080 --app murmuring-headland-14719
 ```
@@ -319,4 +323,4 @@ OPTIONS
                                      limits)
 ```
 
-_See code: [@heroku-cli/plugin-ps](https://github.com/heroku/cli/blob/v7.24.0/packages/ps/src/commands/ps/wait.ts)_
+_See code: [@heroku-cli/plugin-ps](https://github.com/heroku/cli/blob/v7.30.0/packages/ps/src/commands/ps/wait.ts)_

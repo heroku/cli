@@ -12,13 +12,13 @@ function * run (context, heroku) {
   let schedules = yield heroku.get(`/client/v11/databases/${db.id}/transfer-schedules`, { host: host(db) })
 
   if (!schedules.length) {
-    throw new Error(`No backup schedules found on ${cli.color.app(app)}
+    cli.warn(`No backup schedules found on ${cli.color.app(app)}
 Use ${cli.color.cmd('heroku pg:backups:schedule')} to set one up`)
-  }
-
-  cli.styledHeader('Backup Schedules')
-  for (let s of schedules) {
-    cli.log(`${cli.color.configVar(s.name)}: daily at ${s.hour}:00 ${s.timezone}`)
+  } else {
+    cli.styledHeader('Backup Schedules')
+    for (let s of schedules) {
+      cli.log(`${cli.color.configVar(s.name)}: daily at ${s.hour}:00 ${s.timezone}`)
+    }
   }
 }
 

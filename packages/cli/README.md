@@ -43,6 +43,7 @@ For other issues, [submit a support ticket](https://help.heroku.com/).
 * [`heroku auth`](docs/auth.md) - check 2fa status
 * [`heroku authorizations`](docs/authorizations.md) - OAuth authorizations
 * [`heroku autocomplete`](docs/autocomplete.md) - display autocomplete installation instructions
+* [`heroku base`](docs/base.md)
 * [`heroku buildpacks`](docs/buildpacks.md) - scripts used to compile apps
 * [`heroku certs`](docs/certs.md) - a topic for the ssl plugin
 * [`heroku ci`](docs/ci.md) - run an application test suite on Heroku
@@ -70,21 +71,21 @@ For other issues, [submit a support ticket](https://help.heroku.com/).
 * [`heroku redis`](docs/redis.md) - manage heroku redis instances
 * [`heroku regions`](docs/regions.md) - list available regions for deployment
 * [`heroku releases`](docs/releases.md) - display the releases for an app
-* [`heroku reviewapps`](docs/reviewapps.md) - disposable apps built on GitHub pull requests
+* [`heroku reviewapps`](docs/reviewapps.md) - manage reviewapps in pipelines
 * [`heroku run`](docs/run.md) - run a one-off process inside a Heroku dyno
 * [`heroku sessions`](docs/sessions.md) - OAuth sessions
 * [`heroku spaces`](docs/spaces.md) - manage heroku private spaces
 * [`heroku status`](docs/status.md) - status of the Heroku platform
 * [`heroku teams`](docs/teams.md) - manage teams
 * [`heroku update`](docs/update.md) - update the Heroku CLI
-* [`heroku webhooks`](docs/webhooks.md) - setup HTTP notifications of app activity
+* [`heroku webhooks`](docs/webhooks.md) - list webhooks on an app
 
 <!-- commandsstop -->
 
 Developing
 ==========
 
-This project is built with [lerna](http://lernajs.io). The core plugins are located in [./packages](./packages). Run `lerna bootstrap` after cloning the repository to set it up.
+This project is built with [lerna](https://lerna.js.org/). The core plugins are located in [./packages](./packages). Run `lerna bootstrap` after cloning the repository to set it up.
 
 To cut a release, simply run `lerna publish` and it will create a CHANGELOG from the pending commits using [Conventional Commits](http://conventionalcommits.org). CircleCI will run the jobs to publish the CLI once it receives the git tag.
 
