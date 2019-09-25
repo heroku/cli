@@ -12,7 +12,6 @@ export default class ReviewappsEnable extends Command {
   static flags = {
     app: flags.app({
       description: 'parent app used by review apps',
-      required: true,
     }),
     remote: flags.remote(),
     pipeline: flags.string({
