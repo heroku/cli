@@ -102,12 +102,6 @@ $ VISUAL="atom --wait" heroku config:edit`,
       const s = await edit(configToString(original), {prefix, postfix: '.sh'})
       newConfig = stringToConfig(s)
     }
-    for (let k of Object.keys(newConfig)) {
-      // The api accepts empty strings
-      // as valid env var values
-      // In JS an empty string is falsey
-      if (!newConfig[k] && newConfig[k] !== '') delete newConfig[k]
-    }
     if (!await this.diffPrompt(original, newConfig)) return
     cli.action.start('Verifying new config')
     await this.verifyUnchanged(original)
