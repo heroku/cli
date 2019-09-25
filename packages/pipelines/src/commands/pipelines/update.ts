@@ -15,7 +15,9 @@ export default class PipelinesUpdate extends Command {
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
-    stage: flags.string({char: 's', description: 'new stage of app', completion: StageCompletion})
+    stage: flags.string({
+      char: 's', description: 'new stage of app', completion: StageCompletion
+    })
   }
 
   async run() {
