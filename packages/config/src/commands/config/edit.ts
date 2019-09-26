@@ -5,8 +5,9 @@ import {cli} from 'cli-ux'
 import * as _ from 'lodash'
 
 import {parse, quote} from '../../quote'
+import {Editor} from '../../util'
 
-const edit = require('edit-string')
+const editor = new Editor()
 
 interface Config {
   [key: string]: string
@@ -22,6 +23,15 @@ function configToString(config: Config): string {
       return `${key}=${quote(config[key])}`
     })
     .join('\n')
+}
+
+function removeDeleted(newConfig: UploadConfig, original: Config) {
+  for (let k of Object.keys(original)) {
+    // The api accepts empty strings
+    // as valid env var values
+    // In JS an empty string is falsey
+    if (!newConfig[k] && newConfig[k] !== '') newConfig[k] = null
+  }
 }
 
 export function stringToConfig(s: string): Config {
@@ -87,20 +97,18 @@ $ VISUAL="atom --wait" heroku config:edit`,
     let newConfig = {...original}
     const prefix = `heroku-${app}-config-`
     if (key) {
-      newConfig[key] = await edit(original[key] || '', {prefix})
+      newConfig[key] = await editor.edit(original[key], {prefix})
       if (!original[key].endsWith('\n') && newConfig[key].endsWith('\n')) newConfig[key] = newConfig[key].slice(0, -1)
     } else {
-      const s = await edit(configToString(original), {prefix, postfix: '.sh'})
+      const s = await editor.edit(configToString(original), {prefix, postfix: '.sh'})
       newConfig = stringToConfig(s)
-    }
-    for (let k of Object.keys(newConfig)) {
-      if (!newConfig[k]) delete newConfig[k]
     }
     if (!await this.diffPrompt(original, newConfig)) return
     cli.action.start('Verifying new config')
     await this.verifyUnchanged(original)
     cli.action.start('Updating config')
-    await this.updateConfig(original, newConfig)
+    removeDeleted(newConfig, original)
+    await this.updateConfig(newConfig)
     cli.action.stop()
   }
 
@@ -128,10 +136,7 @@ $ VISUAL="atom --wait" heroku config:edit`,
     }
   }
 
-  private async updateConfig(original: Config, newConfig: UploadConfig) {
-    for (let k of Object.keys(original)) {
-      if (!newConfig[k]) newConfig[k] = null
-    }
+  private async updateConfig(newConfig: UploadConfig) {
     await this.heroku.patch(`/apps/${this.app}/config-vars`, {
       body: newConfig,
     })
