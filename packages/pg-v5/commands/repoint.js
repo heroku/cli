@@ -4,7 +4,7 @@ const cli = require('heroku-cli-util')
 const co = require('co')
 
 function * run (context, heroku) {
-  this.warn('This is a beta command and is not considered reliable or complete. Use with caution.')
+  cli.warn('This is a beta command and is not considered reliable or complete. Use with caution.')
   const host = require('../lib/host')
   const util = require('../lib/util')
   const fetcher = require('../lib/fetcher')(heroku)
