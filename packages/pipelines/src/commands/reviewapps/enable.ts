@@ -42,12 +42,14 @@ export default class ReviewappsEnable extends Command {
       automatic_review_apps: boolean,
       destroy_stale_apps: boolean,
       pipeline?: string,
-      repo?: string
+      repo?: string,
+      pull_requests: {enabled: boolean}
     } = {
       automatic_review_apps: false,
       destroy_stale_apps: false,
       pipeline: undefined,
-      repo: undefined
+      repo: undefined,
+      pull_requests: {enabled: false}
     }
 
     if (flags.autodeploy) {
@@ -85,6 +87,8 @@ export default class ReviewappsEnable extends Command {
       })
     } else {
       let {body: app} = await this.heroku.get<Heroku.App>(`/apps/${flags.app}`)
+
+      settings.pull_requests = {enabled: true}
 
       await this.heroku.patch(`/apps/${app.id}/github`, {
         hostname: 'kolkrabbi.heroku.com',
