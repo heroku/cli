@@ -6,7 +6,7 @@ export default class ReviewappsEnable extends Command {
   static description = 'enable review apps and/or settings on an existing pipeline'
 
   static examples = [
-    '$ heroku reviewapps:enable -p my-pipeline -a my-app --autodeploy --autodestroy',
+    '$ heroku reviewapps:enable -p my-pipeline -a my-app --autodeploy --autodestroy --beta',
   ]
 
   static flags = {
@@ -25,14 +25,17 @@ export default class ReviewappsEnable extends Command {
     autodestroy: flags.boolean({
       description: 'autodestroy the review app',
     }),
+    beta: flags.boolean({
+      description: 'use Review Apps Beta',
+    })
   }
 
   async run() {
     const {flags} = this.parse(ReviewappsEnable)
 
-    if (flags.app) {
+    if (flags.app && flags.beta) {
       // remove app & remote flags when Review Apps 1.0 is deprecated
-      this.warn('Specifying an app via --app or --remote is no longer needed for this command')
+      this.warn('Specifying an app via --app or --remote is no longer needed when using --beta')
     }
 
     let settings: {
@@ -75,10 +78,19 @@ export default class ReviewappsEnable extends Command {
       settings.repo = repo.repository.name
     }
 
-    await this.heroku.post(`/pipelines/${pipeline.id}/review-app-config`, {
-      body: settings,
-      headers: {Accept: 'application/vnd.heroku+json; version=3.review-apps'}
-    })
+    if (flags.beta) {
+      await this.heroku.post(`/pipelines/${pipeline.id}/review-app-config`, {
+        body: settings,
+        headers: {Accept: 'application/vnd.heroku+json; version=3.review-apps'}
+      })
+    } else {
+      let {body: app} = await this.heroku.get<Heroku.App>(`/apps/${flags.app}`)
+
+      await this.heroku.patch(`/apps/${app.id}/github`, {
+        hostname: 'kolkrabbi.heroku.com',
+        body: settings
+      })
+    }
 
     cli.action.stop()
   }
