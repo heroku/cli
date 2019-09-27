@@ -23,26 +23,31 @@ export default class ReviewappsDisable extends Command {
     autodestroy: flags.boolean({
       description: 'disable automatically destroying review apps'
     }),
+    beta: flags.boolean({
+      description: 'use Review Apps Beta',
+    })
   }
 
   async run() {
     const {flags} = this.parse(ReviewappsDisable)
 
-    if (flags.app) {
+    if (flags.app && flags.beta) {
       // remove app & remote flags when Review Apps 1.0 is deprecated
-      this.warn('Specifying an app via --app or --remote is no longer needed for this command')
+      this.warn('Specifying an app via --app or --remote is no longer needed when using --beta')
     }
 
     let settings: {
       automatic_review_apps: boolean,
       destroy_stale_apps: boolean,
       pipeline?: string,
-      repo?: string
+      repo?: string,
+      pull_requests: { enabled: boolean }
     } = {
       automatic_review_apps: true,
       destroy_stale_apps: true,
       pipeline: undefined,
-      repo: undefined
+      repo: undefined,
+      pull_requests: { enabled: true }
     }
 
     if (flags.autodeploy) {
@@ -72,11 +77,24 @@ export default class ReviewappsDisable extends Command {
       let {body: repo} = await this.heroku.get(`/pipelines/${pipeline.id}/repository`)
       settings.repo = repo.repository.name
     }
+    if (flags.beta && !flags.autodeploy && !flags.autodestroy) {
+      // if no flags are passed then the user is disabling review apps
+      await this.heroku.delete(`/pipelines/${pipeline.id}/review-app-config`, {
+        body: settings,
+        headers: {Accept: 'application/vnd.heroku+json; version=3.review-apps'}
+      })
+    } else {
+      let {body: app} = await this.heroku.get<Heroku.App>(`/apps/${flags.app}`)
 
-    await this.heroku.post(`/pipelines/${pipeline.id}/review-app-config`, {
-      body: settings,
-      headers: {Accept: 'application/vnd.heroku+json; version=3.review-apps'}
-    })
+      // if no flags are passed then the user is disabling review apps
+      let disable = !flags.autodeploy && !flags.autodestroy
+      settings.pull_requests = { enabled: !disable }
+
+      await this.heroku.patch(`/apps/${app.id}/github`, {
+        hostname: 'kolkrabbi.heroku.com',
+        body: settings
+      })
+    }
 
     cli.action.stop()
   }
