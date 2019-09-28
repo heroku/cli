@@ -5,7 +5,7 @@ exports.topic = [
 ]
 
 exports.commands = flatten([
-  require('./commands/pipelines/setup.js'),
+  require('./commands/pipelines/setup.js')
 ])
 
 exports.disambiguatePipeline = require('./lib/disambiguate')
