@@ -49,5 +49,36 @@ $ npm test
 #### Commands
 
 <!-- commands -->
+* [`heroku pipelines:setup [NAME] [REPO]`](#heroku-pipelinessetup-name-repo)
 
+## `heroku pipelines:setup [NAME] [REPO]`
+
+bootstrap a new pipeline with common settings and create a production and staging app (requires a fully formed app.json in the repo)
+
+```
+USAGE
+  $ heroku pipelines:setup [NAME] [REPO]
+
+ARGUMENTS
+  NAME  name of pipeline
+  REPO  a GitHub repository to connect the pipeline to
+
+OPTIONS
+  -t, --team=team  team to use
+  -y, --yes        accept all default settings without prompting
+
+EXAMPLES
+  $ heroku pipelines:setup example githuborg/reponame -o example-org
+  ? Automatically deploy the master branch to staging? Yes
+  ? Wait for CI to pass before deploying the master branch to staging? Yes
+  ? Enable review apps? Yes
+  ? Automatically create review apps for every PR? Yes
+  ? Automatically destroy idle review apps after 5 days? Yes
+  ? Enable automatic Heroku CI test runs? Yes
+  Creating pipeline... done
+  Linking to repo... done
+  Creating production and staging apps (⬢ example and ⬢ example-staging)
+  Configuring pipeline... done
+  View your new pipeline by running `heroku pipelines:open e5a55ffa-de3f-11e6-a245-3c15c2e6bc1e`
+```
 <!-- commandsstop -->
