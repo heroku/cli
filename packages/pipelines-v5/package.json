@@ -1,0 +1,64 @@
+{
+  "name": "@heroku-cli/plugin-pipelines-v5",
+  "description": "pipelines heroku plugin",
+  "version": "7.28.0",
+  "author": "Heroku Developer Experience team",
+  "bugs": "https://github.com/heroku/cli/issues",
+  "cli-engine": {
+    "bin": "heroku",
+    "topics": {
+      "pipelines": {
+        "description": "groups of apps that share the same codebase"
+      },
+      "reviewapps": {
+        "description": "disposable apps built on GitHub pull requests"
+      }
+    },
+    "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/pipelines-v5/<%- commandPath %>"
+  },
+  "dependencies": {
+    "@heroku-cli/command": "^8.2.10",
+    "bluebird": "^3.5.3",
+    "co": "^4.6.0",
+    "heroku-cli-util": "^8.0.11",
+    "http-call": "^5.2.3",
+    "inflection": "^1.12.0",
+    "inquirer": "^6.2.2",
+    "lodash.flatten": "^4.4.0",
+    "lodash.sortby": "^4.7.0",
+    "string-just": "^0.0.2",
+    "validator": "^10.11.0"
+  },
+  "devDependencies": {
+    "@oclif/dev-cli": "^1.21.3",
+    "@oclif/plugin-legacy": "^1.1.4",
+    "chai": "^4.2.0",
+    "mocha": "^5.1.1",
+    "nock": "^9.2.6",
+    "nyc": "^13.2.0",
+    "sinon": "^4.5.0",
+    "sinon-chai": "^3.3.0",
+    "std-mocks": "^1.0.1",
+    "supervisor": "^0.12.0"
+  },
+  "files": [
+    "oclif.manifest.json",
+    "/index.js",
+    "/commands",
+    "/lib"
+  ],
+  "homepage": "https://github.com/heroku/cli/tree/master/packages/pipelines-v5",
+  "keywords": [
+    "heroku-plugin"
+  ],
+  "license": "ISC",
+  "main": "index.js",
+  "repository": "heroku/cli",
+  "scripts": {
+    "autotest": "./node_modules/.bin/supervisor -q -n exit -x ./node_modules/.bin/mocha -- -b",
+    "postpublish": "rm oclif.manifest.json",
+    "prepack": "oclif-dev manifest",
+    "test": "nyc mocha",
+    "version": "oclif-dev readme && git add README.md"
+  }
+}
