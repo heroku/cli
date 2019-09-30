@@ -255,7 +255,7 @@
       "heroku-api-plugin": "api",
       "heroku-certs-acm": null,
       "heroku-cli-api": "api",
-      "heroku-cli-autocomplete": "autocomplete",
+      "heroku-cli-autocomplete": null,
       "heroku-cli-buildpacks": "buildpack-registry",
       "heroku-cli-config-edit": null,
       "heroku-cli-deploy": "java",
