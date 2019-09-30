@@ -24,7 +24,7 @@ OPTIONS
   -s, --shell          output config vars in shell format
 ```
 
-_See code: [@heroku-cli/plugin-config](https://github.com/heroku/cli/blob/v7.30.0/packages/config/src/commands/config/index.ts)_
+_See code: [@heroku-cli/plugin-config](https://github.com/heroku/cli/blob/v7.31.0/packages/config/src/commands/config/index.ts)_
 
 ## `heroku config:edit [KEY]`
 
@@ -56,7 +56,7 @@ EXAMPLES
   $ VISUAL="atom --wait" heroku config:edit
 ```
 
-_See code: [@heroku-cli/plugin-config](https://github.com/heroku/cli/blob/v7.30.0/packages/config/src/commands/config/edit.ts)_
+_See code: [@heroku-cli/plugin-config](https://github.com/heroku/cli/blob/v7.31.0/packages/config/src/commands/config/edit.ts)_
 
 ## `heroku config:get KEY...`
 
@@ -76,7 +76,7 @@ EXAMPLES
   production
 ```
 
-_See code: [@heroku-cli/plugin-config](https://github.com/heroku/cli/blob/v7.30.0/packages/config/src/commands/config/get.ts)_
+_See code: [@heroku-cli/plugin-config](https://github.com/heroku/cli/blob/v7.31.0/packages/config/src/commands/config/get.ts)_
 
 ## `heroku config:set`
 
@@ -123,4 +123,4 @@ EXAMPLES
   Unsetting RAILS_ENV, RACK_ENV and restarting example... done, v10
 ```
 
-_See code: [@heroku-cli/plugin-config](https://github.com/heroku/cli/blob/v7.30.0/packages/config/src/commands/config/unset.ts)_
+_See code: [@heroku-cli/plugin-config](https://github.com/heroku/cli/blob/v7.31.0/packages/config/src/commands/config/unset.ts)_

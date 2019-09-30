@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.31.0](https://github.com/heroku/cli/compare/v7.30.1...v7.31.0) (2019-09-30)
+
+
+### Bug Fixes
+
+* **config:** accept empty strings as valid env var values in config:edit ([#1333](https://github.com/heroku/cli/issues/1333)) ([6133e54](https://github.com/heroku/cli/commit/6133e54))
+
+
+
+
+
 # [7.30.0](https://github.com/heroku/cli/compare/v7.29.0...v7.30.0) (2019-09-16)
 
 

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.31.0](https://github.com/heroku/cli/compare/v7.30.1...v7.31.0) (2019-09-30)
+
+
+### Bug Fixes
+
+* **pg-v5:** hide pg:repoint with warning ([#1335](https://github.com/heroku/cli/issues/1335)) ([15dbaa4](https://github.com/heroku/cli/commit/15dbaa4))
+
+
+
+
+
 ## [7.30.1](https://github.com/heroku/cli/compare/v7.30.0...v7.30.1) (2019-09-24)
 
 

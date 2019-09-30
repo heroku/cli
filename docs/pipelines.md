@@ -5,18 +5,18 @@ groups of apps that share the same codebase
 
 * [`heroku pipelines`](#heroku-pipelines)
 * [`heroku pipelines:add PIPELINE`](#heroku-pipelinesadd-pipeline)
-* [`heroku pipelines:connect [NAME]`](#heroku-pipelinesconnect-name)
+* [`heroku pipelines:connect NAME`](#heroku-pipelinesconnect-name)
 * [`heroku pipelines:create [NAME]`](#heroku-pipelinescreate-name)
 * [`heroku pipelines:destroy PIPELINE`](#heroku-pipelinesdestroy-pipeline)
 * [`heroku pipelines:diff`](#heroku-pipelinesdiff)
 * [`heroku pipelines:info PIPELINE`](#heroku-pipelinesinfo-pipeline)
-* [`heroku pipelines:list`](#heroku-pipelineslist)
 * [`heroku pipelines:open PIPELINE`](#heroku-pipelinesopen-pipeline)
 * [`heroku pipelines:promote`](#heroku-pipelinespromote)
 * [`heroku pipelines:remove`](#heroku-pipelinesremove)
 * [`heroku pipelines:rename PIPELINE NAME`](#heroku-pipelinesrename-pipeline-name)
 * [`heroku pipelines:setup [NAME] [REPO]`](#heroku-pipelinessetup-name-repo)
 * [`heroku pipelines:transfer OWNER`](#heroku-pipelinestransfer-owner)
+* [`heroku pipelines:update`](#heroku-pipelinesupdate)
 
 ## `heroku pipelines`
 
@@ -29,12 +29,11 @@ USAGE
 OPTIONS
   --json  output in json format
 
-EXAMPLES
+EXAMPLE
   $ heroku pipelines
-  === My Pipelines
-  example
-  sushi
 ```
+
+_See code: [@heroku-cli/plugin-pipelines](https://github.com/heroku/cli/blob/v7.31.0/src/commands/pipelines/index.ts)_
 
 ## `heroku pipelines:add PIPELINE`
 
@@ -56,60 +55,61 @@ DESCRIPTION
   The app and pipeline names must be specified.
   The stage of the app will be guessed based on its name if not specified.
 
-EXAMPLES
-  $ heroku pipelines:add example -a example-admin -s production
-  Adding example-admin to example pipeline as production... done
+EXAMPLE
+  $ heroku pipelines:add my-pipeline -a my-app -s production
 ```
 
-## `heroku pipelines:connect [NAME]`
+_See code: [@heroku-cli/plugin-pipelines](https://github.com/heroku/cli/blob/v7.31.0/src/commands/pipelines/add.ts)_
+
+## `heroku pipelines:connect NAME`
 
 connect a github repo to an existing pipeline
 
 ```
 USAGE
-  $ heroku pipelines:connect [NAME]
+  $ heroku pipelines:connect NAME
 
 ARGUMENTS
   NAME  name of pipeline
 
 OPTIONS
-  -r, --repo=repo  (required) the GitHub repository to connect
+  -r, --repo=repo  (required) the GitHub repository to connect to
 
-EXAMPLES
-  $ heroku pipelines:connect example -r githuborg/reponame
-  Configuring pipeline... done
+EXAMPLE
+  $ heroku pipelines:connect my-pipeline -r githuborg/reponame
 ```
+
+_See code: [@heroku-cli/plugin-pipelines](https://github.com/heroku/cli/blob/v7.31.0/src/commands/pipelines/connect.ts)_
 
 ## `heroku pipelines:create [NAME]`
 
-create a new pipeline
+'create a new pipeline
 
 ```
 USAGE
   $ heroku pipelines:create [NAME]
 
 ARGUMENTS
-  NAME  name of pipeline, defaults to basename of app
+  NAME  name of pipeline (defaults to basename of the app)
 
 OPTIONS
   -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
   -s, --stage=stage    stage of first app in pipeline
-  -t, --team=team      team to use
+  -t, --team=team      the team which will own the apps
 
 DESCRIPTION
   An existing app must be specified as the first app in the pipeline.
-  The pipeline name will be inferred from the app name if not specified.
-  The stage of the app will be guessed based on its name if not specified.
-  The pipeline owner will be the user creating the pipeline if not specified with -t for teams or -o for orgs.
+     The pipeline name will be inferred from the app name if not specified.
+     The stage of the app will be guessed based on its name if not specified.
+     The pipeline owner will be the user creating the pipeline if not specified with -t for teams or -o for orgs.
 
 EXAMPLES
-  $ heroku pipelines:create -a example-staging
-  ? Pipeline name: example
-  ? Stage of example-staging: staging
-  Creating example pipeline... done
-  Adding example-staging to example pipeline as staging... done
+  $ heroku pipelines:create -a my-app-staging
+  $ heroku pipelines:create my-pipeline -a my-app-staging
 ```
+
+_See code: [@heroku-cli/plugin-pipelines](https://github.com/heroku/cli/blob/v7.31.0/src/commands/pipelines/create.ts)_
 
 ## `heroku pipelines:destroy PIPELINE`
 
@@ -122,10 +122,11 @@ USAGE
 ARGUMENTS
   PIPELINE  name of pipeline
 
-EXAMPLES
-  $ heroku pipelines:destroy example
-  Destroying example pipeline... done
+EXAMPLE
+  $ heroku pipelines:destroy my-pipeline
 ```
+
+_See code: [@heroku-cli/plugin-pipelines](https://github.com/heroku/cli/blob/v7.31.0/src/commands/pipelines/destroy.ts)_
 
 ## `heroku pipelines:diff`
 
@@ -139,9 +140,11 @@ OPTIONS
   -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 
-EXAMPLES
-  $ heroku pipelines:diff --app murmuring-headland-14719
+EXAMPLE
+  $ heroku pipelines:diff -a my-app-staging
 ```
+
+_See code: [@heroku-cli/plugin-pipelines](https://github.com/heroku/cli/blob/v7.31.0/src/commands/pipelines/diff.ts)_
 
 ## `heroku pipelines:info PIPELINE`
 
@@ -152,43 +155,16 @@ USAGE
   $ heroku pipelines:info PIPELINE
 
 ARGUMENTS
-  PIPELINE  pipeline to show
+  PIPELINE  pipeline to show list of apps for
 
 OPTIONS
   --json  output in json format
 
-EXAMPLES
-  $ heroku pipelines:info example
-  === example
-  owner: my-team (team)
-
-  app name                     stage
-  ───────────────────────────  ──────────
-  ⬢ example-pr-16              review
-  ⬢ example-pr-19              review
-  ⬢ example-pr-23              review
-  ⬢ example-staging            staging
-  ⬢ example-staging-2          staging
-  ⬢ example-production         production
+EXAMPLE
+  $ heroku pipelines:info my-pipeline
 ```
 
-## `heroku pipelines:list`
-
-list pipelines you have access to
-
-```
-USAGE
-  $ heroku pipelines:list
-
-OPTIONS
-  --json  output in json format
-
-EXAMPLES
-  $ heroku pipelines
-  === My Pipelines
-  example
-  sushi
-```
+_See code: [@heroku-cli/plugin-pipelines](https://github.com/heroku/cli/blob/v7.31.0/src/commands/pipelines/info.ts)_
 
 ## `heroku pipelines:open PIPELINE`
 
@@ -201,9 +177,11 @@ USAGE
 ARGUMENTS
   PIPELINE  name of pipeline
 
-EXAMPLES
-  $ heroku pipelines:open example
+EXAMPLE
+  $ heroku pipelines:open my-pipeline
 ```
+
+_See code: [@heroku-cli/plugin-pipelines](https://github.com/heroku/cli/blob/v7.31.0/src/commands/pipelines/open.ts)_
 
 ## `heroku pipelines:promote`
 
@@ -218,18 +196,11 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
   -t, --to=to          comma separated list of apps to promote to
 
-EXAMPLES
-  $ heroku pipelines:promote -a example-staging
-  Promoting example-staging to example (production)... done, v23
-  Promoting example-staging to example-admin (production)... done, v54
-
-  $ heroku pipelines:promote -a example-staging --to my-production-app1,my-production-app2
-  Starting promotion to apps: my-production-app1,my-production-app2... done
-  Waiting for promotion to complete... done
-  Promotion successful
-  my-production-app1: succeeded
-  my-production-app2: succeeded
+EXAMPLE
+  $ heroku pipelines:promote -a my-app-staging
 ```
+
+_See code: [@heroku-cli/plugin-pipelines](https://github.com/heroku/cli/blob/v7.31.0/src/commands/pipelines/promote.ts)_
 
 ## `heroku pipelines:remove`
 
@@ -243,10 +214,11 @@ OPTIONS
   -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
 
-EXAMPLES
-  $ heroku pipelines:remove -a example-admin
-  Removing example-admin... done
+EXAMPLE
+  $ heroku pipelines:remove -a my-app
 ```
+
+_See code: [@heroku-cli/plugin-pipelines](https://github.com/heroku/cli/blob/v7.31.0/src/commands/pipelines/remove.ts)_
 
 ## `heroku pipelines:rename PIPELINE NAME`
 
@@ -260,10 +232,11 @@ ARGUMENTS
   PIPELINE  current name of pipeline
   NAME      new name of pipeline
 
-EXAMPLES
-  $ heroku pipelines:rename example www
-  Renaming example pipeline to www... done
+EXAMPLE
+  $ heroku pipelines:rename my-pipeline new-pipeline-name
 ```
+
+_See code: [@heroku-cli/plugin-pipelines](https://github.com/heroku/cli/blob/v7.31.0/src/commands/pipelines/rename.ts)_
 
 ## `heroku pipelines:setup [NAME] [REPO]`
 
@@ -312,32 +285,27 @@ OPTIONS
   -p, --pipeline=pipeline  (required) name of pipeline
 
 EXAMPLES
-  $ heroku pipelines:transfer me@example.com -p example
-  === example
-
-  app name              stage
-  ────────────────────  ───────────
-  ⬢ example-dev         development
-  ⬢ example-staging     staging
-  ⬢ example-prod        production
-
-    ▸    This will transfer example and all of the listed apps to the me@example.com account
-    ▸    to proceed, type example or re-run this command with --confirm example
-  > example
-  Transferring example pipeline to the me@example.com account... done
-
-  $ heroku pipelines:transfer acme-widgets -p example
-  === example
-
-  app name              stage
-  ────────────────────  ───────────
-  ⬢ example-dev         development
-  ⬢ example-staging     staging
-  ⬢ example-prod        production
-
-    ▸    This will transfer example and all of the listed apps to the acme-widgets team
-    ▸    to proceed, type example or re-run this command with --confirm example
-  > example
-
-  Transferring example pipeline to the acme-widgets team... done
+  $ heroku pipelines:transfer admin@example.com -p my-pipeline
+  $ heroku pipelines:transfer admin-team -p my-pipeline
 ```
+
+_See code: [@heroku-cli/plugin-pipelines](https://github.com/heroku/cli/blob/v7.31.0/src/commands/pipelines/transfer.ts)_
+
+## `heroku pipelines:update`
+
+update the app's stage in a pipeline
+
+```
+USAGE
+  $ heroku pipelines:update
+
+OPTIONS
+  -a, --app=app        (required) app to run command against
+  -r, --remote=remote  git remote of app to use
+  -s, --stage=stage    (required) new stage of app
+
+EXAMPLE
+  $ heroku pipelines:update -s staging -a my-app
+```
+
+_See code: [@heroku-cli/plugin-pipelines](https://github.com/heroku/cli/blob/v7.31.0/src/commands/pipelines/update.ts)_
