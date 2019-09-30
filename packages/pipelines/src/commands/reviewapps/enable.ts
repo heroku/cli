@@ -6,7 +6,7 @@ export default class ReviewappsEnable extends Command {
   static description = 'enable review apps and/or settings on an existing pipeline'
 
   static examples = [
-    '$ heroku reviewapps:enable -p my-pipeline -a my-app --autodeploy --autodestroy --beta',
+    '$ heroku reviewapps:enable -p my-pipeline -a my-app --autodeploy --autodestroy',
   ]
 
   static flags = {
@@ -36,6 +36,10 @@ export default class ReviewappsEnable extends Command {
     if (flags.app && flags.beta) {
       // remove app & remote flags when Review Apps 1.0 is deprecated
       this.warn('Specifying an app via --app or --remote is no longer needed when using --beta')
+    }
+
+    if (flags.beta) {
+      this.warn('The review apps beta is currently in limited private beta testing. You may request an invite to the program by opening a support ticket.')
     }
 
     let settings: {
