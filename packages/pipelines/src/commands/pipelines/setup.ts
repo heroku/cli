@@ -1,6 +1,7 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import cli from 'cli-ux'
+import Debug from 'debug'
 
 import {createPipeline, getAccountInfo, getTeam} from '../../api'
 import GitHubAPI from '../../github-api'
@@ -14,6 +15,8 @@ import getSettings from '../../setup/get-settings'
 import pollAppSetups from '../../setup/poll-app-setups'
 import setupPipeline from '../../setup/setup-pipeline'
 import {nameAndRepo, STAGING_APP_INDICATOR} from '../../setup/validate'
+
+const debug = Debug('pipelines:setup')
 
 export default class Setup extends Command {
   static description =
@@ -98,7 +101,12 @@ export default class Setup extends Command {
     const setup = setupPipeline(kolkrabbi, stagingApp.id, settings, pipeline.id, ciSettings)
 
     cli.action.start('Configuring pipeline')
-    await setup.then(() => cli.open(`https://dashboard.heroku.com/pipelines/${pipeline.id}`))
+    try {
+      await setup.then(() => cli.open(`https://dashboard.heroku.com/pipelines/${pipeline.id}`))
+    } catch (e) {
+      debug(e)
+      cli.error(e)
+    }
     cli.action.stop()
   }
 }
