@@ -41,27 +41,43 @@ export default class ReviewappsDisable extends Command {
     }
 
     let settings: {
-      automatic_review_apps: boolean,
-      destroy_stale_apps: boolean,
+      automatic_review_apps?: boolean,
+      destroy_stale_apps?: boolean,
       pipeline?: string,
       repo?: string,
-      pull_requests: {enabled: boolean}
+      pull_requests: {
+        enabled?: boolean,
+        auto_deploy?: boolean,
+        auto_destroy?: boolean
+      }
     } = {
-      automatic_review_apps: true,
-      destroy_stale_apps: true,
+      automatic_review_apps: undefined,
+      destroy_stale_apps: undefined,
       pipeline: undefined,
       repo: undefined,
-      pull_requests: {enabled: true}
+      pull_requests: {
+        enabled: undefined,
+        auto_deploy: undefined,
+        auto_destroy: undefined
+      }
     }
 
     if (flags.autodeploy) {
       this.log('Disabling auto deployment...')
-      settings.automatic_review_apps = false
+      if (flags.beta) {
+        settings.automatic_review_apps = false
+      } else {
+        settings.pull_requests.auto_deploy = false
+      }
     }
 
     if (flags.autodestroy) {
       this.log('Disabling auto destroy...')
-      settings.destroy_stale_apps = false
+      if (flags.beta) {
+        settings.destroy_stale_apps = false
+      } else {
+        settings.pull_requests.auto_destroy = false
+      }
     }
 
     cli.action.start('Configuring pipeline')
@@ -84,7 +100,7 @@ export default class ReviewappsDisable extends Command {
 
     if (flags.autodeploy || flags.autodestroy) {
       if (flags.beta) {
-        await this.heroku.post(`/pipelines/${pipeline.id}/review-app-config`, {
+        await this.heroku.patch(`/pipelines/${pipeline.id}/review-app-config`, {
           body: settings,
           headers: {Accept: 'application/vnd.heroku+json; version=3.review-apps'}
         })
