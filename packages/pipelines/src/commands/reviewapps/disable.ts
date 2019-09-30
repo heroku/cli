@@ -36,6 +36,10 @@ export default class ReviewappsDisable extends Command {
       this.warn('Specifying an app via --app or --remote is no longer needed when using --beta')
     }
 
+    if (flags.beta) {
+      this.warn('The review apps beta is currently in limited private beta testing. You may request an invite to the program by opening a support ticket.')
+    }
+
     let settings: {
       automatic_review_apps: boolean,
       destroy_stale_apps: boolean,
