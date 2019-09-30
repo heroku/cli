@@ -25,7 +25,7 @@ EXAMPLE
   $ heroku reviewapps:disable -p my-pipeline -a my-app --autodeploy
 ```
 
-_See code: [@heroku-cli/plugin-pipelines](https://github.com/heroku/cli/blob/v7.31.0/src/commands/reviewapps/disable.ts)_
+_See code: [@heroku-cli/plugin-pipelines](https://github.com/heroku/cli/blob/v7.31.1/src/commands/reviewapps/disable.ts)_
 
 ## `heroku reviewapps:enable`
 
@@ -46,4 +46,4 @@ EXAMPLE
   $ heroku reviewapps:enable -p my-pipeline -a my-app --autodeploy --autodestroy
 ```
 
-_See code: [@heroku-cli/plugin-pipelines](https://github.com/heroku/cli/blob/v7.31.0/src/commands/reviewapps/enable.ts)_
+_See code: [@heroku-cli/plugin-pipelines](https://github.com/heroku/cli/blob/v7.31.1/src/commands/reviewapps/enable.ts)_

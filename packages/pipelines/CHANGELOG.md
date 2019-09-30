@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.31.1](https://github.com/heroku/cli/compare/v7.31.0...v7.31.1) (2019-09-30)
+
+
+### Bug Fixes
+
+* **pipelines:** Use assert from node instead of chai ([#1342](https://github.com/heroku/cli/issues/1342)) ([d9b5bc1](https://github.com/heroku/cli/commit/d9b5bc1))
+
+
+
+
+
 # [7.31.0](https://github.com/heroku/cli/compare/v7.30.1...v7.31.0) (2019-09-30)
 
 
