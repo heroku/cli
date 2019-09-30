@@ -1,7 +1,7 @@
 import color from '@heroku-cli/color'
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import Heroku from '@heroku-cli/schema'
-import {assert} from 'chai'
+import assert from 'assert'
 import cli from 'cli-ux'
 import got from 'got'
 
