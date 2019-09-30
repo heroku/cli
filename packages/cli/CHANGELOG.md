@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.31.2](https://github.com/heroku/cli/compare/v7.31.1...v7.31.2) (2019-09-30)
+
+
+### Bug Fixes
+
+* **cli:** uninstall old autocomplete plugin ([#1345](https://github.com/heroku/cli/issues/1345)) ([8dc20e7](https://github.com/heroku/cli/commit/8dc20e7))
+
+
+
+
+
 ## [7.31.1](https://github.com/heroku/cli/compare/v7.31.0...v7.31.1) (2019-09-30)
 
 **Note:** Version bump only for package heroku
