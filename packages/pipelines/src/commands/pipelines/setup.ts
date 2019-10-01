@@ -102,11 +102,13 @@ export default class Setup extends Command {
 
     cli.action.start('Configuring pipeline')
     try {
-      await setup.then(() => cli.open(`https://dashboard.heroku.com/pipelines/${pipeline.id}`))
+      await setup
+      await cli.open(`https://dashboard.heroku.com/pipelines/${pipeline.id}`)
     } catch (e) {
       debug(e)
       cli.error(e)
+    } finally {
+      cli.action.stop()
     }
-    cli.action.stop()
   }
 }
