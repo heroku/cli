@@ -9,7 +9,7 @@ export default class CiLast extends Command {
   static description = 'looks for the most recent run and returns the output of that run'
 
   static examples = [
-    `$ heroku ci:last --app murmuring-headland-14719 --node 100
+    `$ heroku ci:last --pipeline=my-pipeline --node 100
 `,
   ]
 

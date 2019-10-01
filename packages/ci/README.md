@@ -92,7 +92,7 @@ OPTIONS
   --node=node              the node number to show its setup and output
 
 EXAMPLE
-  $ heroku ci:last --app murmuring-headland-14719 --node 100
+  $ heroku ci:last --pipeline=my-pipeline --node 100
 ```
 
 _See code: [src/commands/ci/last.ts](https://github.com/heroku/cli/blob/v7.24.3/packages/ci/src/commands/ci/last.ts)_
