@@ -43,27 +43,43 @@ export default class ReviewappsEnable extends Command {
     }
 
     let settings: {
-      automatic_review_apps: boolean,
-      destroy_stale_apps: boolean,
+      automatic_review_apps?: boolean,
+      destroy_stale_apps?: boolean,
       pipeline?: string,
       repo?: string,
-      pull_requests: {enabled: boolean}
+      pull_requests: {
+        enabled?: boolean
+        auto_deploy?: boolean,
+        auto_destroy?: boolean
+      }
     } = {
-      automatic_review_apps: false,
-      destroy_stale_apps: false,
+      automatic_review_apps: undefined,
+      destroy_stale_apps: undefined,
       pipeline: undefined,
       repo: undefined,
-      pull_requests: {enabled: false}
+      pull_requests: {
+        enabled: undefined,
+        auto_deploy: undefined,
+        auto_destroy: undefined
+      }
     }
 
     if (flags.autodeploy) {
       this.log('Enabling auto deployment...')
-      settings.automatic_review_apps = true
+      if (flags.beta) {
+        settings.automatic_review_apps = true
+      } else {
+        settings.pull_requests.auto_deploy = true
+      }
     }
 
     if (flags.autodestroy) {
       this.log('Enabling auto destroy...')
-      settings.destroy_stale_apps = true
+      if (flags.beta) {
+        settings.destroy_stale_apps = true
+      } else {
+        settings.pull_requests.auto_destroy = true
+      }
     }
 
     cli.action.start('Configuring pipeline')
@@ -84,20 +100,37 @@ export default class ReviewappsEnable extends Command {
       settings.repo = repo.repository.name
     }
 
-    if (flags.beta) {
-      await this.heroku.post(`/pipelines/${pipeline.id}/review-app-config`, {
-        body: settings,
-        headers: {Accept: 'application/vnd.heroku+json; version=3.review-apps'}
-      })
+    if (flags.autodeploy || flags.autodestroy) {
+      if (flags.beta) {
+        await this.heroku.patch(`/pipelines/${pipeline.id}/review-app-config`, {
+          body: settings,
+          headers: {Accept: 'application/vnd.heroku+json; version=3.review-apps'}
+        })
+      } else {
+        let {body: app} = await this.heroku.get<Heroku.App>(`/apps/${flags.app}`)
+
+        await this.heroku.patch(`/apps/${app.id}/github`, {
+          hostname: 'kolkrabbi.heroku.com',
+          body: settings
+        })
+      }
     } else {
-      let {body: app} = await this.heroku.get<Heroku.App>(`/apps/${flags.app}`)
+      // if no flags are passed then the user is enabling review apps
+      if (flags.beta) {
+        await this.heroku.post(`/pipelines/${pipeline.id}/review-app-config`, {
+          body: settings,
+          headers: {Accept: 'application/vnd.heroku+json; version=3.review-apps'}
+        })
+      } else {
+        let {body: app} = await this.heroku.get<Heroku.App>(`/apps/${flags.app}`)
 
-      settings.pull_requests = {enabled: true}
+        settings.pull_requests = {enabled: true}
 
-      await this.heroku.patch(`/apps/${app.id}/github`, {
-        hostname: 'kolkrabbi.heroku.com',
-        body: settings
-      })
+        await this.heroku.patch(`/apps/${app.id}/github`, {
+          hostname: 'kolkrabbi.heroku.com',
+          body: settings
+        })
+      }
     }
 
     cli.action.stop()

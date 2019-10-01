@@ -165,7 +165,7 @@ describe('reviewapps:enable', () => {
           .get(`/pipelines/${pipeline.id}/repo`)
           .reply(200, repo)
         api
-          .post(`/pipelines/${pipeline.id}/review-app-config`)
+          .patch(`/pipelines/${pipeline.id}/review-app-config`)
           .reply(200, {})
       })
       .stdout()
@@ -189,7 +189,7 @@ describe('reviewapps:enable', () => {
           .get(`/pipelines/${pipeline.id}/repo`)
           .reply(200, repo)
         api
-          .post(`/pipelines/${pipeline.id}/review-app-config`)
+          .patch(`/pipelines/${pipeline.id}/review-app-config`)
           .reply(200, {})
       })
       .stdout()
@@ -213,7 +213,7 @@ describe('reviewapps:enable', () => {
           .get(`/pipelines/${pipeline.id}/repo`)
           .reply(200, repo)
         api
-          .post(`/pipelines/${pipeline.id}/review-app-config`)
+          .patch(`/pipelines/${pipeline.id}/review-app-config`)
           .reply(200, {})
       })
       .stdout()
@@ -384,7 +384,7 @@ describe('reviewapps:enable', () => {
           .get(`/pipelines/${pipeline.id}/repository`)
           .reply(200, repo)
         api
-          .post(`/pipelines/${pipeline.id}/review-app-config`)
+          .patch(`/pipelines/${pipeline.id}/review-app-config`)
           .reply(200, {})
       })
       .stdout()
@@ -408,7 +408,7 @@ describe('reviewapps:enable', () => {
           .get(`/pipelines/${pipeline.id}/repository`)
           .reply(200, repo)
         api
-          .post(`/pipelines/${pipeline.id}/review-app-config`)
+          .patch(`/pipelines/${pipeline.id}/review-app-config`)
           .reply(200, {})
       })
       .stdout()
@@ -432,7 +432,7 @@ describe('reviewapps:enable', () => {
           .get(`/pipelines/${pipeline.id}/repository`)
           .reply(200, repo)
         api
-          .post(`/pipelines/${pipeline.id}/review-app-config`)
+          .patch(`/pipelines/${pipeline.id}/review-app-config`)
           .reply(200, {})
       })
       .stdout()
