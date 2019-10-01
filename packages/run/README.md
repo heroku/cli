@@ -8,37 +8,34 @@
 [![License](https://img.shields.io/npm/l/@heroku-cli/plugin-run.svg)](https://github.com/heroku/heroku-cli-plugin-run/blob/master/package.json)
 
 <!-- toc -->
-
-- [Usage](#usage)
-- [Commands](#commands)
-  <!-- tocstop -->
+* [@heroku-cli/plugin-run](#heroku-cliplugin-run)
+* [Usage](#usage)
+* [Commands](#commands)
+<!-- tocstop -->
 
 # Usage
 
 <!-- usage -->
-
 ```sh-session
 $ npm install -g @heroku-cli/plugin-run
 $ heroku COMMAND
 running command...
 $ heroku (-v|--version|version)
-@heroku-cli/plugin-run/7.30.0 darwin-x64 node-v10.13.0
+@heroku-cli/plugin-run/7.31.0 darwin-x64 node-v10.16.0
 $ heroku --help [COMMAND]
 USAGE
   $ heroku COMMAND
 ...
 ```
-
 <!-- usagestop -->
 
 # Commands
 
 <!-- commands -->
-
-- [`heroku logs`](#heroku-logs)
-- [`heroku run`](#heroku-run)
-- [`heroku run:detached`](#heroku-rundetached)
-- [`heroku run:inside`](#heroku-runinside)
+* [`heroku logs`](#heroku-logs)
+* [`heroku run`](#heroku-run)
+* [`heroku run:detached`](#heroku-rundetached)
+* [`heroku run:inside`](#heroku-runinside)
 
 ## `heroku logs`
 
@@ -67,7 +64,7 @@ EXAMPLES
   $ heroku logs --app=my-app --tail
 ```
 
-_See code: [src/commands/logs.ts](https://github.com/heroku/cli/blob/v7.25.0/src/commands/logs.ts)_
+_See code: [src/commands/logs.ts](https://github.com/heroku/cli/blob/v7.31.0/src/commands/logs.ts)_
 
 ## `heroku run`
 
@@ -95,7 +92,7 @@ EXAMPLES
   $ heroku run -s hobby -- myscript.sh -a arg1 -s arg2
 ```
 
-_See code: [src/commands/run/index.ts](https://github.com/heroku/cli/blob/v7.25.0/src/commands/run/index.ts)_
+_See code: [src/commands/run/index.ts](https://github.com/heroku/cli/blob/v7.31.0/src/commands/run/index.ts)_
 
 ## `heroku run:detached`
 
@@ -117,7 +114,7 @@ EXAMPLE
   $ heroku run:detached ls
 ```
 
-_See code: [src/commands/run/detached.ts](https://github.com/heroku/cli/blob/v7.25.0/src/commands/run/detached.ts)_
+_See code: [src/commands/run/detached.ts](https://github.com/heroku/cli/blob/v7.31.0/src/commands/run/detached.ts)_
 
 ## `heroku run:inside`
 
@@ -137,6 +134,5 @@ EXAMPLE
   $ heroku run:inside web.1 bash
 ```
 
-_See code: [src/commands/run/inside.ts](https://github.com/heroku/cli/blob/v7.25.0/src/commands/run/inside.ts)_
-
+_See code: [src/commands/run/inside.ts](https://github.com/heroku/cli/blob/v7.31.0/src/commands/run/inside.ts)_
 <!-- commandsstop -->
