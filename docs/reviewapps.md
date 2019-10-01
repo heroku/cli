@@ -1,7 +1,7 @@
 `heroku reviewapps`
 ===================
 
-disposable apps built on GitHub pull requests
+manage reviewapps in pipelines
 
 * [`heroku reviewapps:disable`](#heroku-reviewappsdisable)
 * [`heroku reviewapps:enable`](#heroku-reviewappsenable)

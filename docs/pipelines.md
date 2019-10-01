@@ -1,7 +1,7 @@
 `heroku pipelines`
 ==================
 
-groups of apps that share the same codebase
+manage pipelines
 
 * [`heroku pipelines`](#heroku-pipelines)
 * [`heroku pipelines:add PIPELINE`](#heroku-pipelinesadd-pipeline)
@@ -14,7 +14,6 @@ groups of apps that share the same codebase
 * [`heroku pipelines:promote`](#heroku-pipelinespromote)
 * [`heroku pipelines:remove`](#heroku-pipelinesremove)
 * [`heroku pipelines:rename PIPELINE NAME`](#heroku-pipelinesrename-pipeline-name)
-* [`heroku pipelines:setup [NAME] [REPO]`](#heroku-pipelinessetup-name-repo)
 * [`heroku pipelines:transfer OWNER`](#heroku-pipelinestransfer-owner)
 * [`heroku pipelines:update`](#heroku-pipelinesupdate)
 
@@ -237,37 +236,6 @@ EXAMPLE
 ```
 
 _See code: [@heroku-cli/plugin-pipelines](https://github.com/heroku/cli/blob/v7.31.1/src/commands/pipelines/rename.ts)_
-
-## `heroku pipelines:setup [NAME] [REPO]`
-
-bootstrap a new pipeline with common settings and create a production and staging app (requires a fully formed app.json in the repo)
-
-```
-USAGE
-  $ heroku pipelines:setup [NAME] [REPO]
-
-ARGUMENTS
-  NAME  name of pipeline
-  REPO  a GitHub repository to connect the pipeline to
-
-OPTIONS
-  -t, --team=team  team to use
-  -y, --yes        accept all default settings without prompting
-
-EXAMPLES
-  $ heroku pipelines:setup example githuborg/reponame -o example-org
-  ? Automatically deploy the master branch to staging? Yes
-  ? Wait for CI to pass before deploying the master branch to staging? Yes
-  ? Enable review apps? Yes
-  ? Automatically create review apps for every PR? Yes
-  ? Automatically destroy idle review apps after 5 days? Yes
-  ? Enable automatic Heroku CI test runs? Yes
-  Creating pipeline... done
-  Linking to repo... done
-  Creating production and staging apps (⬢ example and ⬢ example-staging)
-  Configuring pipeline... done
-  View your new pipeline by running `heroku pipelines:open e5a55ffa-de3f-11e6-a245-3c15c2e6bc1e`
-```
 
 ## `heroku pipelines:transfer OWNER`
 
