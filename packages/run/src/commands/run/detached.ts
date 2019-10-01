@@ -9,7 +9,6 @@ import {buildCommand} from '../../lib/helpers'
 import logDisplayer from '../../lib/log-displayer'
 
 export default class RunDetached extends Command {
-  static hidden = true
   static description = 'run a detached dyno, where output is sent to your logs'
   static examples = [
     '$ heroku run:detached ls'

@@ -6,7 +6,6 @@ import {ProcessTypeCompletion} from '@heroku-cli/command/lib/completions'
 import logDisplayer from '../lib/log-displayer'
 
 export default class Logs extends Command {
-  static hidden = true
   static description = `display recent log output
 disable colors with --no-color, HEROKU_LOGS_COLOR=0, or HEROKU_COLOR=0`
 
