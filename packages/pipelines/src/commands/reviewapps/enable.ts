@@ -26,7 +26,7 @@ export default class ReviewappsEnable extends Command {
       description: 'autodestroy the review app',
     }),
     beta: flags.boolean({
-      description: 'use Review Apps Beta',
+      description: 'use Review Apps 2.0 Beta',
     })
   }
 
@@ -39,7 +39,7 @@ export default class ReviewappsEnable extends Command {
     }
 
     if (flags.beta) {
-      this.warn('The review apps beta is currently in limited private beta testing. You may request an invite to the program by opening a support ticket.')
+      this.warn('Review Apps 2.0 is currently in limited beta testing. You may request an invite to the program by opening a support ticket.')
     }
 
     let settings: {
