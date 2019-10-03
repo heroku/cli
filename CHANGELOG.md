@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.33.1](https://github.com/heroku/cli/compare/v7.33.0...v7.33.1) (2019-10-03)
+
+
+### Bug Fixes
+
+* **cli:** bring back v5 run plugin ([#1349](https://github.com/heroku/cli/issues/1349)) ([15234fe](https://github.com/heroku/cli/commit/15234fe))
+
+
+
+
+
 # [7.33.0](https://github.com/heroku/cli/compare/v7.32.0...v7.33.0) (2019-10-01)
 
 
