@@ -6,8 +6,8 @@ import {Dyno as APIDyno} from '@heroku-cli/schema'
 import {spawn} from 'child_process'
 import cli from 'cli-ux'
 import DebugFactory from 'debug'
-import * as http from 'http'
 import {HTTP} from 'http-call'
+import * as https from 'https'
 import * as net from 'net'
 import {Duplex, Transform} from 'stream'
 import * as tls from 'tls'
@@ -84,49 +84,47 @@ export default class Dyno extends Duplex {
     await this._doStart()
   }
 
-  _doStart(retries = 2): Promise<HTTP<unknown>> {
+  async _doStart(retries = 2): Promise<HTTP<unknown>> {
     let command = this.opts['exit-code'] ? `${this.opts.command}; echo "\uFFFF heroku-command-exit-status: $?"` : this.opts.command
 
-    return this.heroku.post(this.opts.dyno ? `/apps/${this.opts.app}/dynos/${this.opts.dyno}` : `/apps/${this.opts.app}/dynos`, {
-      headers: {
-        Accept: this.opts.dyno ? 'application/vnd.heroku+json; version=3.run-inside' : 'application/vnd.heroku+json; version=3'
-      },
-      body: {
-        command,
-        attach: this.opts.attach,
-        size: this.opts.size,
-        type: this.opts.type,
-        env: this._env(),
-        force_no_tty: this.opts['no-tty']
+    try {
+      let dyno = await this.heroku.post(this.opts.dyno ? `/apps/${this.opts.app}/dynos/${this.opts.dyno}` : `/apps/${this.opts.app}/dynos`, {
+        headers: {
+          Accept: this.opts.dyno ? 'application/vnd.heroku+json; version=3.run-inside' : 'application/vnd.heroku+json; version=3'
+        },
+        body: {
+          command,
+          attach: this.opts.attach,
+          size: this.opts.size,
+          type: this.opts.type,
+          env: this._env(),
+          force_no_tty: this.opts['no-tty']
+        }
+      })
+      this.dyno = dyno.body
+      if (this.opts.attach || this.opts.dyno) {
+        if (this.dyno.name && this.opts.dyno === undefined) {
+          this.opts.dyno = this.dyno.name
+        }
+        await this.attach()
+      } else if (this.opts.showStatus) {
+        cli.action.stop(this._status('done'))
       }
-    })
-      .then(dyno => {
-        this.dyno = dyno.body
-        if (this.opts.attach || this.opts.dyno) {
-          if (this.dyno.name && this.opts.dyno === undefined) {
-            this.opts.dyno = this.dyno.name
-          }
-          return this.attach()
-        } else if (this.opts.showStatus) {
-          cli.action.stop(this._status('done'))
-        }
-      })
-      .catch(err => {
-        // Currently the runtime API sends back a 409 in the event the
-        // release isn't found yet. API just forwards this response back to
-        // the client, so we'll need to retry these. This usually
-        // happens when you create an app and immediately try to run a
-        // one-off dyno. No pause between attempts since this is
-        // typically a very short-lived condition.
-        if (err.statusCode === 409 && retries > 0) {
-          return this._doStart(retries - 1)
-        } else {
-          throw err
-        }
-      })
-      .finally(() => {
-        cli.action.stop()
-      })
+    } catch (err) {
+      // Currently the runtime API sends back a 409 in the event the
+      // release isn't found yet. API just forwards this response back to
+      // the client, so we'll need to retry these. This usually
+      // happens when you create an app and immediately try to run a
+      // one-off dyno. No pause between attempts since this is
+      // typically a very short-lived condition.
+      if (err.statusCode === 409 && retries > 0) {
+        return this._doStart(retries - 1)
+      } else {
+        throw err
+      }
+    } finally {
+      cli.action.stop()
+    }
   }
 
   /**
@@ -191,7 +189,7 @@ export default class Dyno extends Duplex {
     const interval = 1000
 
     try {
-      const dyno = await this.heroku.get(`/apps/${this.opts.app}/dynos/${this.opts.dyno}`)
+      const {body: dyno} = await this.heroku.get(`/apps/${this.opts.app}/dynos/${this.opts.dyno}`)
       this.dyno = dyno
       cli.action.stop(this._status(this.dyno.state))
 
@@ -203,7 +201,7 @@ export default class Dyno extends Duplex {
       }
     } catch (err) {
       // the API sometimes responds with a 404 when the dyno is not yet ready
-      if (err.statusCode === 404 && retries > 0) {
+      if (err.http.statusCode === 404 && retries > 0) {
         return this._ssh(retries - 1)
       } else {
         throw err
@@ -216,10 +214,10 @@ export default class Dyno extends Duplex {
       this.resolve = resolve
       this.reject = reject
 
-      let options: http.RequestOptions & { rejectUnauthorized?: boolean } = this.uri
+      let options: https.RequestOptions & { rejectUnauthorized?: boolean } = this.uri
       options.headers = {Connection: 'Upgrade', Upgrade: 'tcp'}
       options.rejectUnauthorized = false
-      let r = http.request(options)
+      let r = https.request(options)
       r.end()
 
       r.on('error', this.reject)
