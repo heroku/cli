@@ -110,6 +110,8 @@ jobs:
         environment:
           LC_ALL: C.UTF-8
     steps:
+      # the snapcraft image does not include git
+      - run: apt-get -qq update; apt-get -y install git
       - checkout
       - run: ./scripts/snap
 workflows:

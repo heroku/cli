@@ -42,7 +42,6 @@ manage postgresql databases
 * [`heroku pg:psql [DATABASE]`](#heroku-pgpsql-database)
 * [`heroku pg:pull SOURCE TARGET`](#heroku-pgpull-source-target)
 * [`heroku pg:push SOURCE TARGET`](#heroku-pgpush-source-target)
-* [`heroku pg:repoint [DATABASE]`](#heroku-pgrepoint-database)
 * [`heroku pg:reset [DATABASE]`](#heroku-pgreset-database)
 * [`heroku pg:settings [DATABASE]`](#heroku-pgsettings-database)
 * [`heroku pg:settings:log-lock-waits [VALUE] [DATABASE]`](#heroku-pgsettingslog-lock-waits-value-database)
@@ -680,26 +679,6 @@ DESCRIPTION
 
        # push remote DB at postgres://myhost/mydb into a Heroku DB named postgresql-swimmingly-100
        $ heroku pg:push postgres://myhost/mydb postgresql-swimmingly-100
-```
-
-## `heroku pg:repoint [DATABASE]`
-
-changes which leader a follower is following
-
-```
-USAGE
-  $ heroku pg:repoint [DATABASE]
-
-OPTIONS
-  -a, --app=app          (required) app to run command against
-  -c, --confirm=confirm
-  -r, --remote=remote    git remote of app to use
-  --follow=follow        leader database to follow
-
-DESCRIPTION
-  Example:
-
-       heroku pg:repoint postgresql-transparent-56874 --follow postgresql-lucid-59103 -a woodstock-production
 ```
 
 ## `heroku pg:reset [DATABASE]`

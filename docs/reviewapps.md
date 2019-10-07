@@ -1,7 +1,7 @@
 `heroku reviewapps`
 ===================
 
-disposable apps built on GitHub pull requests
+manage reviewapps in pipelines
 
 * [`heroku reviewapps:disable`](#heroku-reviewappsdisable)
 * [`heroku reviewapps:enable`](#heroku-reviewappsenable)
@@ -17,15 +17,15 @@ USAGE
 OPTIONS
   -a, --app=app            (required) parent app used by review apps
   -p, --pipeline=pipeline  (required) name of pipeline
-  -r, --remote=remote      git remote of parent app used by review apps
+  -r, --remote=remote      git remote of app to use
   --autodeploy             disable autodeployments
   --autodestroy            disable automatically destroying review apps
 
-EXAMPLES
-  $ heroku reviewapps:disable -p mypipeline -a myapp --autodeploy
-  Disabling auto deployment ...
-  Configuring pipeline... done
+EXAMPLE
+  $ heroku reviewapps:disable -p my-pipeline -a my-app --autodeploy
 ```
+
+_See code: [@heroku-cli/plugin-pipelines](https://github.com/heroku/cli/blob/v7.33.0/src/commands/reviewapps/disable.ts)_
 
 ## `heroku reviewapps:enable`
 
@@ -38,14 +38,12 @@ USAGE
 OPTIONS
   -a, --app=app            (required) parent app used by review apps
   -p, --pipeline=pipeline  (required) name of pipeline
-  -r, --remote=remote      git remote of parent app used by review apps
+  -r, --remote=remote      git remote of app to use
   --autodeploy             autodeploy the review app
   --autodestroy            autodestroy the review app
 
-EXAMPLES
-  $ heroku reviewapps:enable -p mypipeline --a myapp --autodeploy --autodestroy
-  Enabling review apps ...
-  Enabling auto deployment ...
-  Enabling auto destroy ...
-  Configuring pipeline... done
+EXAMPLE
+  $ heroku reviewapps:enable -p my-pipeline -a my-app --autodeploy --autodestroy
 ```
+
+_See code: [@heroku-cli/plugin-pipelines](https://github.com/heroku/cli/blob/v7.33.0/src/commands/reviewapps/enable.ts)_

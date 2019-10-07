@@ -24,7 +24,7 @@ $ npm install -g @heroku-cli/plugin-ci
 $ heroku COMMAND
 running command...
 $ heroku (-v|--version|version)
-@heroku-cli/plugin-ci/7.24.3 darwin-x64 node-v10.2.1
+@heroku-cli/plugin-ci/7.33.0 darwin-x64 node-v10.16.0
 $ heroku --help [COMMAND]
 USAGE
   $ heroku COMMAND
@@ -57,7 +57,7 @@ EXAMPLE
   $ heroku ci --app murmuring-headland-14719
 ```
 
-_See code: [src/commands/ci/index.ts](https://github.com/heroku/cli/blob/v7.24.3/packages/ci/src/commands/ci/index.ts)_
+_See code: [src/commands/ci/index.ts](https://github.com/heroku/cli/blob/v7.33.0/packages/ci/src/commands/ci/index.ts)_
 
 ## `heroku ci:info TEST-RUN`
 
@@ -76,7 +76,7 @@ EXAMPLE
   $ heroku ci:info 1288 --app murmuring-headland-14719
 ```
 
-_See code: [src/commands/ci/info.ts](https://github.com/heroku/cli/blob/v7.24.3/packages/ci/src/commands/ci/info.ts)_
+_See code: [src/commands/ci/info.ts](https://github.com/heroku/cli/blob/v7.33.0/packages/ci/src/commands/ci/info.ts)_
 
 ## `heroku ci:last`
 
@@ -92,10 +92,10 @@ OPTIONS
   --node=node              the node number to show its setup and output
 
 EXAMPLE
-  $ heroku ci:last --app murmuring-headland-14719 --node 100
+  $ heroku ci:last --pipeline=my-pipeline --node 100
 ```
 
-_See code: [src/commands/ci/last.ts](https://github.com/heroku/cli/blob/v7.24.3/packages/ci/src/commands/ci/last.ts)_
+_See code: [src/commands/ci/last.ts](https://github.com/heroku/cli/blob/v7.33.0/packages/ci/src/commands/ci/last.ts)_
 
 ## `heroku ci:rerun [NUMBER]`
 
@@ -113,7 +113,7 @@ EXAMPLE
   $ heroku ci:rerun 985 --app murmuring-headland-14719
 ```
 
-_See code: [src/commands/ci/rerun.ts](https://github.com/heroku/cli/blob/v7.24.3/packages/ci/src/commands/ci/rerun.ts)_
+_See code: [src/commands/ci/rerun.ts](https://github.com/heroku/cli/blob/v7.33.0/packages/ci/src/commands/ci/rerun.ts)_
 
 ## `heroku ci:run`
 
@@ -131,7 +131,7 @@ EXAMPLE
   $ heroku ci:run --app murmuring-headland-14719
 ```
 
-_See code: [src/commands/ci/run.ts](https://github.com/heroku/cli/blob/v7.24.3/packages/ci/src/commands/ci/run.ts)_
+_See code: [src/commands/ci/run.ts](https://github.com/heroku/cli/blob/v7.33.0/packages/ci/src/commands/ci/run.ts)_
 <!-- commandsstop -->
 * [`heroku ci:info`](#heroku-ci-info)
 * [`heroku ci:last`](#heroku-ci-last)

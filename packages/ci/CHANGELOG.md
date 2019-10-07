@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.33.0](https://github.com/heroku/cli/compare/v7.32.0...v7.33.0) (2019-10-01)
+
+
+### Bug Fixes
+
+* **ci:** update ci:last documentation ([#1153](https://github.com/heroku/cli/issues/1153)) ([3acf546](https://github.com/heroku/cli/commit/3acf546))
+
+
+
+
+
 <a name="7.24.3"></a>
 ## [7.24.3](https://github.com/heroku/cli/compare/v7.24.2...v7.24.3) (2019-05-07)
 
