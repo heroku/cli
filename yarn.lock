@@ -301,13 +301,13 @@
     string-just "^0.0.2"
     validator "^10.2.0"
 
-"@heroku-cli/plugin-ps-exec@2.3.6":
-  version "2.3.6"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-ps-exec/-/plugin-ps-exec-2.3.6.tgz#ee46a5c1ac6138da155cd6ccad81b7b2af4ace6b"
-  integrity sha512-JNUScmzHqYExlsYueb1HA0em3T8IppAFs7PTKC3iIinlKYlf7Nn75iZt7iRJJGSX0wHf9kycD68qw7gT2VNQ9g==
+"@heroku-cli/plugin-ps-exec@2.3.7":
+  version "2.3.7"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-ps-exec/-/plugin-ps-exec-2.3.7.tgz#ae6fdb7522865298f9640e748abcc56dcfd75946"
+  integrity sha512-zlIz/hRRrv2GKNgTzc84vhrg+nJT19JyImpz+GQg2UhDFx19tCadgOsIcs8oUf0mjAiMGyUyhubuokXDLtgozw==
   dependencies:
     heroku-cli-util "^8.0.8"
-    heroku-exec-util "0.7.3"
+    heroku-exec-util "0.7.4"
     lodash "^4.17.13"
 
 "@heroku-cli/plugin-run-v5@7.24.0", "@heroku-cli/plugin-run-v5@^7.24.0":
@@ -4688,10 +4688,10 @@ heroku-client@^3.0.6, heroku-client@^3.0.7:
     is-retry-allowed "^1.0.0"
     tunnel-agent "^0.6.0"
 
-heroku-exec-util@0.7.3:
-  version "0.7.3"
-  resolved "https://registry.yarnpkg.com/heroku-exec-util/-/heroku-exec-util-0.7.3.tgz#38ac58c1afe128af8b9b7a206cdf105e627c52a0"
-  integrity sha512-fRYqhBJKJhZ21zjMVEYAK6oFp+fMUXvQs5L8+l7d6QEjOX/jYTxvFEgEY3Ome9Wxbe/790fZA8ca7T86JUO3Ow==
+heroku-exec-util@0.7.4:
+  version "0.7.4"
+  resolved "https://registry.yarnpkg.com/heroku-exec-util/-/heroku-exec-util-0.7.4.tgz#a52e0521995521b231c64b928529e97b0426c0a1"
+  integrity sha512-QTMINfIl5FLGyKQSiAl1Q08FUB9XlhmMx5PdBvFWBmA8++gSTDA2aNIhxvpAQcdrKcuRoC5mGtzDuTYuk299dw==
   dependencies:
     "@heroku/socksv5" "^0.0.9"
     co-wait "0.0.0"
