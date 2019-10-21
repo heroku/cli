@@ -9084,7 +9084,7 @@ unexpected-bluebird@2.9.34-longstack2:
   resolved "https://registry.yarnpkg.com/unexpected-bluebird/-/unexpected-bluebird-2.9.34-longstack2.tgz#49acac753b0556ded6025210ee96182307d2b2c9"
   integrity sha1-SaysdTsFVt7WAlIQ7pYYIwfSssk=
 
-unexpected@^11.0.1:
+unexpected@11.0.1, unexpected@^11.0.1:
   version "11.0.1"
   resolved "https://registry.yarnpkg.com/unexpected/-/unexpected-11.0.1.tgz#88e1d8fd23f8762a9afe4217d4a773fe6b05546f"
   integrity sha512-INflDVZTLwqvHQk/g4huzEU7/AIZwkK7ezNbt1Nb3CFeCbgtPPr69Lxb5FW1RydrLQ1Ua18P6LpPvO1oCDHfGw==
