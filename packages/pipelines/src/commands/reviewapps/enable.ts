@@ -24,62 +24,37 @@ export default class ReviewappsEnable extends Command {
     }),
     autodestroy: flags.boolean({
       description: 'autodestroy the review app',
-    }),
-    beta: flags.boolean({
-      description: 'use Review Apps 2.0 Beta',
     })
   }
 
   async run() {
     const {flags} = this.parse(ReviewappsEnable)
 
-    if (flags.app && flags.beta) {
+    if (flags.app) {
       // remove app & remote flags when Review Apps 1.0 is deprecated
-      this.warn('Specifying an app via --app or --remote is no longer needed when using --beta')
-    }
-
-    if (flags.beta) {
-      this.warn('Review Apps 2.0 is currently in limited beta testing. You may request an invite to the program by opening a support ticket.')
+      this.warn('Specifying an app via --app or --remote is no longer needed with Review Apps')
     }
 
     let settings: {
       automatic_review_apps?: boolean,
       destroy_stale_apps?: boolean,
       pipeline?: string,
-      repo?: string,
-      pull_requests: {
-        enabled?: boolean
-        auto_deploy?: boolean,
-        auto_destroy?: boolean
-      }
+      repo?: string
     } = {
       automatic_review_apps: undefined,
       destroy_stale_apps: undefined,
       pipeline: undefined,
-      repo: undefined,
-      pull_requests: {
-        enabled: undefined,
-        auto_deploy: undefined,
-        auto_destroy: undefined
-      }
+      repo: undefined
     }
 
     if (flags.autodeploy) {
       this.log('Enabling auto deployment...')
-      if (flags.beta) {
-        settings.automatic_review_apps = true
-      } else {
-        settings.pull_requests.auto_deploy = true
-      }
+      settings.automatic_review_apps = true
     }
 
     if (flags.autodestroy) {
       this.log('Enabling auto destroy...')
-      if (flags.beta) {
-        settings.destroy_stale_apps = true
-      } else {
-        settings.pull_requests.auto_destroy = true
-      }
+      settings.destroy_stale_apps = true
     }
 
     cli.action.start('Configuring pipeline')
@@ -101,36 +76,16 @@ export default class ReviewappsEnable extends Command {
     }
 
     if (flags.autodeploy || flags.autodestroy) {
-      if (flags.beta) {
-        await this.heroku.patch(`/pipelines/${pipeline.id}/review-app-config`, {
-          body: settings,
-          headers: {Accept: 'application/vnd.heroku+json; version=3.review-apps'}
-        })
-      } else {
-        let {body: app} = await this.heroku.get<Heroku.App>(`/apps/${flags.app}`)
-
-        await this.heroku.patch(`/apps/${app.id}/github`, {
-          hostname: 'kolkrabbi.heroku.com',
-          body: settings
-        })
-      }
+      await this.heroku.patch(`/pipelines/${pipeline.id}/review-app-config`, {
+        body: settings,
+        headers: {Accept: 'application/vnd.heroku+json; version=3.review-apps'}
+      })
     } else {
       // if no flags are passed then the user is enabling review apps
-      if (flags.beta) {
-        await this.heroku.post(`/pipelines/${pipeline.id}/review-app-config`, {
-          body: settings,
-          headers: {Accept: 'application/vnd.heroku+json; version=3.review-apps'}
-        })
-      } else {
-        let {body: app} = await this.heroku.get<Heroku.App>(`/apps/${flags.app}`)
-
-        settings.pull_requests = {enabled: true}
-
-        await this.heroku.patch(`/apps/${app.id}/github`, {
-          hostname: 'kolkrabbi.heroku.com',
-          body: settings
-        })
-      }
+      await this.heroku.post(`/pipelines/${pipeline.id}/review-app-config`, {
+        body: settings,
+        headers: {Accept: 'application/vnd.heroku+json; version=3.review-apps'}
+      })
     }
 
     cli.action.stop()

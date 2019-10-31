@@ -21,118 +21,7 @@ describe('reviewapps:disable', () => {
       full_name: 'james/repo'
     }
 
-    describe('with review apps 1.0', () => {
-      test
-      .nock('https://api.heroku.com', api => {
-        api
-          .get(`/account/features/${feature.name}`)
-          .reply(200, feature)
-
-        api
-          .get(`/pipelines/${pipeline.name}`)
-          .reply(200, pipeline)
-        api
-          .get(`/pipelines/${pipeline.id}/repo`)
-          .reply(200, repo)
-      })
-      .nock('https://kolkrabbi.heroku.com', api => {
-        api.patch(`/apps/${app.id}/github`).reply(200, {})
-      })
-      .nock('https://api.heroku.com', api => {
-        api.get(`/apps/${app.name}`).reply(200, app)
-      })
-      .stderr()
-      .stdout()
-      .command(['reviewapps:disable', `--pipeline=${pipeline.name}`, `--app=${app.name}`])
-      .it('succeeds with defaults', ctx => {
-        expect(ctx.stderr).to.include('done\n')
-      })
-
     test
-      .nock('https://api.heroku.com', api => {
-        api
-          .get(`/account/features/${feature.name}`)
-          .reply(200, feature)
-
-        api
-          .get(`/pipelines/${pipeline.name}`)
-          .reply(200, pipeline)
-        api
-          .get(`/pipelines/${pipeline.id}/repo`)
-          .reply(200, repo)
-      })
-      .nock('https://kolkrabbi.heroku.com', api => {
-        api.patch(`/apps/${app.id}/github`).reply(200, {})
-      })
-      .nock('https://api.heroku.com', api => {
-        api.get(`/apps/${app.name}`).reply(200, app)
-      })
-      .stdout()
-      .stderr()
-      .command(['reviewapps:disable', `--pipeline=${pipeline.name}`, '--autodeploy', `--app=${app.name}`])
-      .it('disables autodeploy', ctx => {
-        expect(ctx.stdout).to.include('Disabling auto deployment')
-        expect(ctx.stderr).to.include('Configuring pipeline')
-      })
-
-    test
-      .nock('https://api.heroku.com', api => {
-        api
-          .get(`/account/features/${feature.name}`)
-          .reply(200, feature)
-
-        api
-          .get(`/pipelines/${pipeline.name}`)
-          .reply(200, pipeline)
-        api
-          .get(`/pipelines/${pipeline.id}/repo`)
-          .reply(200, repo)
-      })
-      .nock('https://kolkrabbi.heroku.com', api => {
-        api.patch(`/apps/${app.id}/github`).reply(200, {})
-      })
-      .nock('https://api.heroku.com', api => {
-        api.get(`/apps/${app.name}`).reply(200, app)
-      })
-      .stdout()
-      .stderr()
-      .command(['reviewapps:disable', `--pipeline=${pipeline.name}`, '--autodestroy', `--app=${app.name}`])
-      .it('disables autodestroy', ctx => {
-        expect(ctx.stdout).to.include('Disabling auto destroy')
-        expect(ctx.stderr).to.include('Configuring pipeline')
-      })
-
-    test
-      .nock('https://api.heroku.com', api => {
-        api
-          .get(`/account/features/${feature.name}`)
-          .reply(200, feature)
-
-        api
-          .get(`/pipelines/${pipeline.name}`)
-          .reply(200, pipeline)
-        api
-          .get(`/pipelines/${pipeline.id}/repo`)
-          .reply(200, repo)
-      })
-      .nock('https://kolkrabbi.heroku.com', api => {
-        api.patch(`/apps/${app.id}/github`).reply(200, {})
-      })
-      .nock('https://api.heroku.com', api => {
-        api.get(`/apps/${app.name}`).reply(200, app)
-      })
-      .stdout()
-      .stderr()
-      .command(['reviewapps:disable', `--pipeline=${pipeline.name}`, '--autodeploy', '--autodestroy', `--app=${app.name}`])
-      .it('disables autodeploy and autodestroy', ctx => {
-        expect(ctx.stdout).to.include('Disabling auto deployment')
-        expect(ctx.stdout).to.include('Disabling auto destroy')
-        expect(ctx.stderr).to.include('Configuring pipeline')
-      })
-    })
-
-    describe('with review apps 2.0', () => {
-      test
       .nock('https://api.heroku.com', api => {
         api
           .get(`/account/features/${feature.name}`)
@@ -150,7 +39,7 @@ describe('reviewapps:disable', () => {
       })
       .stderr()
       .stdout()
-      .command(['reviewapps:disable', `--pipeline=${pipeline.name}`, '--beta'])
+      .command(['reviewapps:disable', `--pipeline=${pipeline.name}`])
       .it('succeeds with defaults', ctx => {
         expect(ctx.stderr).to.include('done\n')
       })
@@ -173,7 +62,7 @@ describe('reviewapps:disable', () => {
       })
       .stdout()
       .stderr()
-      .command(['reviewapps:disable', `--pipeline=${pipeline.name}`, '--autodeploy', '--beta'])
+      .command(['reviewapps:disable', `--pipeline=${pipeline.name}`, '--autodeploy'])
       .it('disables autodeploy', ctx => {
         expect(ctx.stdout).to.include('Disabling auto deployment')
         expect(ctx.stderr).to.include('Configuring pipeline')
@@ -197,7 +86,7 @@ describe('reviewapps:disable', () => {
       })
       .stdout()
       .stderr()
-      .command(['reviewapps:disable', `--pipeline=${pipeline.name}`, '--autodestroy', '--beta'])
+      .command(['reviewapps:disable', `--pipeline=${pipeline.name}`, '--autodestroy'])
       .it('disables autodestroy', ctx => {
         expect(ctx.stdout).to.include('Disabling auto destroy')
         expect(ctx.stderr).to.include('Configuring pipeline')
@@ -221,13 +110,12 @@ describe('reviewapps:disable', () => {
       })
       .stdout()
       .stderr()
-      .command(['reviewapps:disable', `--pipeline=${pipeline.name}`, '--autodeploy', '--autodestroy', '--beta'])
+      .command(['reviewapps:disable', `--pipeline=${pipeline.name}`, '--autodeploy', '--autodestroy'])
       .it('disables autodeploy and autodestroy', ctx => {
         expect(ctx.stdout).to.include('Disabling auto deployment')
         expect(ctx.stdout).to.include('Disabling auto destroy')
         expect(ctx.stderr).to.include('Configuring pipeline')
       })
-    })
   })
 
   describe('with repos api disabled', () => {
@@ -242,117 +130,7 @@ describe('reviewapps:disable', () => {
       }
     }
 
-    describe('with review apps 1.0', () => {
-      test
-      .nock('https://api.heroku.com', api => {
-        api
-          .get(`/account/features/${feature.name}`)
-          .reply(200, feature)
-
-        api
-          .get(`/pipelines/${pipeline.name}`)
-          .reply(200, pipeline)
-        api
-          .get(`/pipelines/${pipeline.id}/repository`)
-          .reply(200, repo)
-      })
-      .nock('https://kolkrabbi.heroku.com', api => {
-        api.patch(`/apps/${app.id}/github`).reply(200, {})
-      })
-      .nock('https://api.heroku.com', api => {
-        api.get(`/apps/${app.name}`).reply(200, app)
-      })
-      .stderr()
-      .command(['reviewapps:disable', `--pipeline=${pipeline.name}`, `--app=${app.name}`])
-      .it('succeeds with defaults', ctx => {
-        expect(ctx.stderr).to.include('Configuring pipeline')
-      })
-
     test
-      .nock('https://api.heroku.com', api => {
-        api
-          .get(`/account/features/${feature.name}`)
-          .reply(200, feature)
-
-        api
-          .get(`/pipelines/${pipeline.name}`)
-          .reply(200, pipeline)
-        api
-          .get(`/pipelines/${pipeline.id}/repository`)
-          .reply(200, repo)
-      })
-      .nock('https://kolkrabbi.heroku.com', api => {
-        api.patch(`/apps/${app.id}/github`).reply(200, {})
-      })
-      .nock('https://api.heroku.com', api => {
-        api.get(`/apps/${app.name}`).reply(200, app)
-      })
-      .stdout()
-      .stderr()
-      .command(['reviewapps:disable', `--pipeline=${pipeline.name}`, '--autodeploy', `--app=${app.name}`])
-      .it('disables autodeploy', ctx => {
-        expect(ctx.stdout).to.include('Disabling auto deployment')
-        expect(ctx.stderr).to.include('Configuring pipeline')
-      })
-
-    test
-      .nock('https://api.heroku.com', api => {
-        api
-          .get(`/account/features/${feature.name}`)
-          .reply(200, feature)
-
-        api
-          .get(`/pipelines/${pipeline.name}`)
-          .reply(200, pipeline)
-        api
-          .get(`/pipelines/${pipeline.id}/repository`)
-          .reply(200, repo)
-      })
-      .nock('https://kolkrabbi.heroku.com', api => {
-        api.patch(`/apps/${app.id}/github`).reply(200, {})
-      })
-      .nock('https://api.heroku.com', api => {
-        api.get(`/apps/${app.name}`).reply(200, app)
-      })
-      .stdout()
-      .stderr()
-      .command(['reviewapps:disable', `--pipeline=${pipeline.name}`, '--autodestroy', `--app=${app.name}`])
-      .it('disables autodestroy', ctx => {
-        expect(ctx.stdout).to.include('Disabling auto destroy')
-        expect(ctx.stderr).to.include('Configuring pipeline')
-      })
-
-    test
-      .nock('https://api.heroku.com', api => {
-        api
-          .get(`/account/features/${feature.name}`)
-          .reply(200, feature)
-
-        api
-          .get(`/pipelines/${pipeline.name}`)
-          .reply(200, pipeline)
-        api
-          .get(`/pipelines/${pipeline.id}/repository`)
-          .reply(200, repo)
-      })
-      .nock('https://kolkrabbi.heroku.com', api => {
-        api.patch(`/apps/${app.id}/github`).reply(200, {})
-      })
-      .nock('https://api.heroku.com', api => {
-        api.get(`/apps/${app.name}`).reply(200, app)
-      })
-      .stdout()
-      .stderr()
-      .command(['reviewapps:disable', `--pipeline=${pipeline.name}`, '--autodeploy', '--autodestroy', `--app=${app.name}`])
-      .it('disables autodeploy and autodestroy', ctx => {
-        expect(ctx.stdout).to.include('Disabling auto deployment')
-        expect(ctx.stdout).to.include('Disabling auto destroy')
-        expect(ctx.stderr).to.include('Configuring pipeline')
-      })
-    })
-
-    describe('with review apps 2.0', () => {
-      test
       .nock('https://api.heroku.com', api => {
         api
           .get(`/account/features/${feature.name}`)
@@ -369,7 +147,7 @@ describe('reviewapps:disable', () => {
           .reply(200, {})
       })
       .stderr()
-      .command(['reviewapps:disable', `--pipeline=${pipeline.name}`, '--beta'])
+      .command(['reviewapps:disable', `--pipeline=${pipeline.name}`])
       .it('succeeds with defaults', ctx => {
         expect(ctx.stderr).to.include('Configuring pipeline')
       })
@@ -392,7 +170,7 @@ describe('reviewapps:disable', () => {
       })
       .stdout()
       .stderr()
-      .command(['reviewapps:disable', `--pipeline=${pipeline.name}`, '--autodeploy', '--beta'])
+      .command(['reviewapps:disable', `--pipeline=${pipeline.name}`, '--autodeploy'])
       .it('disables autodeploy', ctx => {
         expect(ctx.stdout).to.include('Disabling auto deployment')
         expect(ctx.stderr).to.include('Configuring pipeline')
@@ -416,7 +194,7 @@ describe('reviewapps:disable', () => {
       })
       .stdout()
       .stderr()
-      .command(['reviewapps:disable', `--pipeline=${pipeline.name}`, '--autodestroy', '--beta'])
+      .command(['reviewapps:disable', `--pipeline=${pipeline.name}`, '--autodestroy'])
       .it('disables autodestroy', ctx => {
         expect(ctx.stdout).to.include('Disabling auto destroy')
         expect(ctx.stderr).to.include('Configuring pipeline')
@@ -440,12 +218,11 @@ describe('reviewapps:disable', () => {
       })
       .stdout()
       .stderr()
-      .command(['reviewapps:disable', `--pipeline=${pipeline.name}`, '--autodeploy', '--autodestroy', '--beta'])
+      .command(['reviewapps:disable', `--pipeline=${pipeline.name}`, '--autodeploy', '--autodestroy'])
       .it('disables autodeploy and autodestroy', ctx => {
         expect(ctx.stdout).to.include('Disabling auto deployment')
         expect(ctx.stdout).to.include('Disabling auto destroy')
         expect(ctx.stderr).to.include('Configuring pipeline')
       })
-    })
   })
 })
