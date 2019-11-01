@@ -1,7 +1,6 @@
 // tslint:disable no-console
 
 import {expect} from 'chai'
-// import * as _ from 'lodash'
 import * as path from 'path'
 import * as qq from 'qqjs'
 
@@ -34,9 +33,10 @@ describe('smoke', () => {
     expect((await run(['info', appFlag].join(' '))).stdout).to.contain(`=== ${app}`)
   })
 
-  // it('heroku run', async () => {
-  //   const app = 'heroku-cli-ci-smoke-test-app'
-  //   const appFlag = `-a=${app}`
-  //   expect((await run(['run', '--exit-code', appFlag, 'echo', 'it works!'].join(' '))).stdout).to.contain(/^it works!/)
-  // })
+  it('heroku run', async () => {
+    const app = 'heroku-cli-ci-smoke-test-app'
+    const appFlag = `-a=${app}`
+    const {stdout} = await run(['run', '--exit-code', appFlag, 'echo', 'it works!'].join(' '))
+    expect(stdout).to.contain(/^it works!/)
+  })
 })
