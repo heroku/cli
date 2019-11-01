@@ -23,22 +23,12 @@ describe('smoke', () => {
     expect(stdout).to.contain('$ heroku [COMMAND]')
   })
 
-  it('heroku apps && heroku apps info && heroku run', async () => {
-    const {stdout} = await run('whoami')
-    console.log(stdout)
-    expect(stdout).to.exist
-    // let cmd = await run('apps')
-    // expect(cmd.stdout).to.match(/^===.*Apps/)
-    // let apps = cmd.stdout
-    //   .split('\n')
-    //   .slice(1, -1)
-    //   .filter(a => !a.match(/===/) && a)
-    // let app = _.sample(apps)
-    // if (!app) throw new Error(`no app found, got ${cmd.stdout}`)
-    // app = app.split(' ')[0]
-    // const appFlag = `-a=${app}`
-    // expect((await run(['info', appFlag].join(' '))).stdout).to.contain(`=== ${app}`)
-    // TODO: enable this later
-    // expect((await run(['run', '--exit-code', appFlag, 'echo', 'it works!'].join(' '))).stdout).to.match(/^it works!/)
+  it('heroku apps && heroku apps:info && heroku run', async () => {
+    let cmd = await run('apps')
+    expect(cmd.stdout).to.match(/^===.*Apps/)
+    const app = 'heroku-cli-ci-smoke-test-app'
+    const appFlag = `-a=${app}`
+    expect((await run(['info', appFlag].join(' '))).stdout).to.contain(`=== ${app}`)
+    expect((await run(['run', '--exit-code', appFlag, 'echo', 'it works!'].join(' '))).stdout).to.match(/^it works!/)
   })
 })
