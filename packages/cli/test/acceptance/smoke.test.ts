@@ -23,7 +23,10 @@ describe('smoke', () => {
     expect(stdout).to.contain('$ heroku [COMMAND]')
   })
 
-  it('heroku apps && heroku apps info && heroku run', async () => {
+  it('heroku apps && heroku apps info', async () => {
+    console.log('******')
+    console.log('run apps')
+    console.log('******')
     let cmd = await run('apps')
     expect(cmd.stdout).to.match(/^===.*Apps/)
     let apps = cmd.stdout
@@ -34,8 +37,10 @@ describe('smoke', () => {
     if (!app) throw new Error(`no app found, got ${cmd.stdout}`)
     app = app.split(' ')[0]
     const appFlag = `-a=${app}`
+
+    console.log('******')
+    console.log('run info and check containing')
+    console.log('******')
     expect((await run(['info', appFlag].join(' '))).stdout).to.contain(`=== ${app}`)
-    // TODO: enable this later
-    // expect((await run(['run', '--exit-code', appFlag, 'echo', 'it works!'].join(' '))).stdout).to.match(/^it works!/)
   })
 })
