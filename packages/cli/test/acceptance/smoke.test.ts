@@ -23,12 +23,20 @@ describe('smoke', () => {
     expect(stdout).to.contain('$ heroku [COMMAND]')
   })
 
-  it('heroku apps && heroku apps:info && heroku run', async () => {
+  it('heroku apps', async () => {
     let cmd = await run('apps')
     expect(cmd.stdout).to.match(/^===.*Apps/)
+  })
+
+  it('heroku apps:info', async () => {
     const app = 'heroku-cli-ci-smoke-test-app'
     const appFlag = `-a=${app}`
     expect((await run(['info', appFlag].join(' '))).stdout).to.contain(`=== ${app}`)
-    expect((await run(['run', '--exit-code', appFlag, 'echo', 'it works!'].join(' '))).stdout).to.match(/^it works!/)
   })
+
+  // it('heroku run', async () => {
+  //   const app = 'heroku-cli-ci-smoke-test-app'
+  //   const appFlag = `-a=${app}`
+  //   expect((await run(['run', '--exit-code', appFlag, 'echo', 'it works!'].join(' '))).stdout).to.contain(/^it works!/)
+  // })
 })
