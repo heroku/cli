@@ -37,6 +37,6 @@ describe('smoke', () => {
     const app = 'heroku-cli-ci-smoke-test-app'
     const appFlag = `-a=${app}`
     const {stdout} = await run(['run', '--exit-code', appFlag, 'echo', 'it works!'].join(' '))
-    expect(stdout).to.contain(/it works!/)
+    expect(stdout).to.contain('it works!')
   })
 })
