@@ -28,7 +28,7 @@ export function getOwner(heroku: APIClient, apps: Array<Heroku.App>, pipeline: H
     ownerPromise = getTeam(heroku, pipeline.owner.id).then(response => response.body)
   } else {
     const app = apps.find(app => {
-      return app.owner && app.owner.id === pipeline.owner.id
+      return app.owner ? app.owner.id === pipeline.owner.id : false
     })
 
     // If pipeline owner doesn't own any application and type is user (unlikely)

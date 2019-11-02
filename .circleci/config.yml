@@ -4,7 +4,7 @@ defaults: &defaults
   environment:
     HEROKU_AUTHOR: Heroku
   docker:
-    - image: oclif/nsis:11.3.0-16
+    - image: oclif/nsis:12.0.0-16
       environment: &env
         LANG: en_US.UTF-8
         LANGUAGE: en_US.UTF-8
@@ -14,7 +14,7 @@ defaults: &defaults
 version: 2
 executorType: docker
 jobs:
-  test:
+  node12-test: &test
     <<: *defaults
     steps:
       - checkout
@@ -46,6 +46,10 @@ jobs:
           command: ./scripts/bundlesize
       - store_artifacts:
           path: ./bundlesize.tar
+  node10-test:
+    <<: *test
+    docker:
+      - image: chadian/nsis:10-2
   release:
     <<: *defaults
     steps:
@@ -118,7 +122,11 @@ workflows:
   version: 2
   heroku_cli:
     jobs:
-      - test:
+      - node12-test:
+          filters: &all_pushes
+            tags: &version_tags
+              only: /^v.*/
+      - node10-test:
           filters: &all_pushes
             tags: &version_tags
               only: /^v.*/
@@ -131,7 +139,8 @@ workflows:
                 - master
                 - dev
           requires:
-            - test
+            - node12-test
+            - node10-test
       - release_deb: *release_workflow
       - release_win: *release_workflow
       - postrelease:
@@ -148,7 +157,8 @@ workflows:
                 - dev
       - dev_center_docs:
           requires:
-            - test
+            - node12-test
+            - node10-test
           filters:
             branches:
               ignore: /.*/

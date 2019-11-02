@@ -27,17 +27,13 @@ async function prepareSource(ref: any, command: Command) {
   return Promise.resolve(source)
 }
 
-async function urlExists(url: any) {
-  return got.head(url)
-}
-
 export async function createSourceBlob(ref: any, command: Command) {
   try {
     const githubRepository = await git.githubRepository()
     const {user, repo} = githubRepository
 
     let {body: archiveLink} = await command.heroku.get<any>(`https://kolkrabbi.heroku.com/github/repos/${user}/${repo}/tarball/${ref}`)
-    if (await urlExists(archiveLink.archive_link)) {
+    if (await command.heroku.request(archiveLink.archive_link, {method: 'HEAD'})) {
       return archiveLink.archive_link
     }
   } catch (ex) {
