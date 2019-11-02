@@ -1,7 +1,6 @@
 // tslint:disable no-console
 
 import {expect} from 'chai'
-import * as _ from 'lodash'
 import * as path from 'path'
 import * as qq from 'qqjs'
 
@@ -23,19 +22,21 @@ describe('smoke', () => {
     expect(stdout).to.contain('$ heroku [COMMAND]')
   })
 
-  it('heroku apps && heroku apps info && heroku run', async () => {
+  it('heroku apps', async () => {
     let cmd = await run('apps')
     expect(cmd.stdout).to.match(/^===.*Apps/)
-    let apps = cmd.stdout
-      .split('\n')
-      .slice(1, -1)
-      .filter(a => !a.match(/===/) && a)
-    let app = _.sample(apps)
-    if (!app) throw new Error(`no app found, got ${cmd.stdout}`)
-    app = app.split(' ')[0]
+  })
+
+  it('heroku apps:info', async () => {
+    const app = 'heroku-cli-ci-smoke-test-app'
     const appFlag = `-a=${app}`
     expect((await run(['info', appFlag].join(' '))).stdout).to.contain(`=== ${app}`)
-    // TODO: enable this later
-    // expect((await run(['run', '--exit-code', appFlag, 'echo', 'it works!'].join(' '))).stdout).to.match(/^it works!/)
+  })
+
+  it('heroku run', async () => {
+    const app = 'heroku-cli-ci-smoke-test-app'
+    const appFlag = `-a=${app}`
+    const {stdout} = await run(['run', '--exit-code', appFlag, 'echo', 'it works!'].join(' '))
+    expect(stdout).to.contain('it works!')
   })
 })
