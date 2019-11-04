@@ -221,21 +221,6 @@
     supports-color "^5.5.0"
     tslib "^1.9.3"
 
-"@heroku-cli/command@^8.1.17":
-  version "8.2.6"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.2.6.tgz#9bb957e4a43e1a9d71afe689d408acdbab8fce64"
-  integrity sha512-zavEQKM2oAXLMeBUlSGYAL+61b10qvehzvc/s4gJjE0sxRPupKhW3ENsSK3VOCqxNWR9ncKSXJvsXIn/IvQkUg==
-  dependencies:
-    "@heroku-cli/color" "^1.1.14"
-    "@oclif/errors" "^1.2.2"
-    cli-ux "^4.9.3"
-    debug "^4.1.0"
-    fs-extra "^7.0.1"
-    heroku-client "^3.0.6"
-    http-call "^5.2.2"
-    netrc-parser "^3.1.6"
-    opn "^5.4.0"
-
 "@heroku-cli/command@^8.2.0":
   version "8.2.8"
   resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.2.8.tgz#8668ce49a5ec791eb0bbd5a862badafcd33fcec4"
@@ -283,23 +268,6 @@
     heroku-cli-util "^8.0.9"
     lodash "^4.17.10"
     printf "0.3.0"
-
-"@heroku-cli/plugin-pipelines@^2.5.8":
-  version "2.5.10"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-pipelines/-/plugin-pipelines-2.5.10.tgz#ba1a3adab4d4039326a699757ce02d5e2ba89a3c"
-  integrity sha1-uho62rTUA5Mmppl1fOAtXiuomjw=
-  dependencies:
-    "@heroku-cli/command" "^8.1.17"
-    bluebird "^3.5.1"
-    co "^4.6.0"
-    heroku-cli-util "^8.0.9"
-    http-call "^5.1.2"
-    inflection "^1.12.0"
-    inquirer "^5.2.0"
-    lodash.flatten "^4.4.0"
-    lodash.sortby "^4.7.0"
-    string-just "^0.0.2"
-    validator "^10.2.0"
 
 "@heroku-cli/plugin-ps-exec@2.3.8":
   version "2.3.8"
@@ -4725,14 +4693,6 @@ heroku-cli-util@^8.0.11, heroku-cli-util@^8.0.8, heroku-cli-util@^8.0.9:
     tslib "^1.9.0"
     tunnel-agent "^0.6.0"
 
-heroku-client@^3.0.6:
-  version "3.0.7"
-  resolved "https://registry.yarnpkg.com/heroku-client/-/heroku-client-3.0.7.tgz#abf4fe47cf88814ba1e16a1409999b92a5f6f99d"
-  integrity sha512-wL8d3ufIWGzL8B2U7oPzN+SdcMt6LPqA/x4nb9pDG45IXpr8KO+N4dvX4Vycgn0WrJVDfQnQ1juctJsUwuoeww==
-  dependencies:
-    is-retry-allowed "^1.0.0"
-    tunnel-agent "^0.6.0"
-
 heroku-client@^3.0.7, heroku-client@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/heroku-client/-/heroku-client-3.1.0.tgz#7e3f6804d18a6ee9e3a774ff8bc9861b9b1a4725"
@@ -4941,11 +4901,6 @@ indent-string@^3.0.0, indent-string@^3.2.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/indent-string/-/indent-string-3.2.0.tgz#4a5fd6d27cc332f37e5419a504dbb837105c9289"
   integrity sha1-Sl/W0nzDMvN+VBmlBNu4NxBckok=
-
-inflection@^1.12.0:
-  version "1.12.0"
-  resolved "https://registry.yarnpkg.com/inflection/-/inflection-1.12.0.tgz#a200935656d6f5f6bc4dc7502e1aecb703228416"
-  integrity sha1-ogCTVlbW9fa8TcdQLhrstwMihBY=
 
 inflight@^1.0.4:
   version "1.0.6"
@@ -8566,11 +8521,6 @@ strict-uri-encode@^1.0.0:
   resolved "https://registry.yarnpkg.com/strict-uri-encode/-/strict-uri-encode-1.1.0.tgz#279b225df1d582b1f54e65addd4352e18faa0713"
   integrity sha1-J5siXfHVgrH1TmWt3UNS4Y+qBxM=
 
-string-just@^0.0.2:
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/string-just/-/string-just-0.0.2.tgz#8793188cba0b72892bffb74cc0e299cea6045b71"
-  integrity sha1-h5MYjLoLcokr/7dMwOKZzqYEW3E=
-
 string-width@^1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/string-width/-/string-width-1.0.2.tgz#118bdf5b8cdc51a2a7e70d211e07e2b0b9b107d3"
@@ -9426,10 +9376,10 @@ validator@^10.11.0:
   resolved "https://registry.yarnpkg.com/validator/-/validator-10.11.0.tgz#003108ea6e9a9874d31ccc9e5006856ccd76b228"
   integrity sha512-X/p3UZerAIsbBfN/IwahhYaBbY68EN/UQBWHtsbXGT5bfrH/p4NQzUCG1kF/rtKaNpnJ7jAu6NGTdSNtyNIXMw==
 
-validator@^10.2.0:
-  version "10.9.0"
-  resolved "https://registry.yarnpkg.com/validator/-/validator-10.9.0.tgz#d10c11673b5061fb7ccf4c1114412411b2bac2a8"
-  integrity sha512-hZJcZSWz9poXBlAkjjcsNAdrZ6JbjD3kWlNjq/+vE7RLLS/+8PAj3qVVwrwsOz/WL8jPmZ1hYkRvtlUeZAm4ug==
+validator@^12.0.0:
+  version "12.0.0"
+  resolved "https://registry.yarnpkg.com/validator/-/validator-12.0.0.tgz#fb33221f5320abe2422cda2f517dc3838064e813"
+  integrity sha512-r5zA1cQBEOgYlesRmSEwc9LkbfNLTtji+vWyaHzRZUxCTHdsX3bd+sdHfs5tGZ2W6ILGGsxWxCNwT/h3IY/3ng==
 
 verror@1.10.0:
   version "1.10.0"
