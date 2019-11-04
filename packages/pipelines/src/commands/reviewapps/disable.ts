@@ -61,15 +61,17 @@ export default class ReviewappsDisable extends Command {
 
     settings.pipeline = pipeline.id
 
-    let {body: feature} = await this.heroku.get<Heroku.AccountFeature>('/account/features/dashboard-repositories-api')
+    try {
+      let {body: feature} = await this.heroku.get<Heroku.AccountFeature>('/account/features/dashboard-repositories-api')
 
-    if (feature.enabled) {
-      let {body: repo} = await this.heroku.get(`/pipelines/${pipeline.id}/repo`, {
-        headers: {Accept: 'application/vnd.heroku+json; version=3.repositories-api'}
-      })
-      settings.repo = repo.full_name
-    } else {
-      let {body: repo} = await this.heroku.get(`/pipelines/${pipeline.id}/repository`)
+      if (feature.enabled) {
+        let {body: repo} = await this.heroku.get(`/pipelines/${pipeline.id}/repo`, {
+          headers: {Accept: 'application/vnd.heroku+json; version=3.repositories-api'}
+        })
+        settings.repo = repo.full_name
+      }
+    } catch {
+      let {body: repo} = await this.heroku.get<Kolkrabbi.KolkrabbiApiPipelineRepositories>(`https://kolkrabbi.heroku.com/pipelines/${pipeline.id}/repository`)
       settings.repo = repo.repository.name
     }
 
