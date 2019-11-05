@@ -1,6 +1,7 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import cli from 'cli-ux'
+import KolkrabbiAPI from '../../kolkrabbi-api'
 
 export default class ReviewappsEnable extends Command {
   static description = 'enable review apps and/or settings on an existing pipeline'
@@ -24,6 +25,9 @@ export default class ReviewappsEnable extends Command {
     }),
     autodestroy: flags.boolean({
       description: 'autodestroy the review app',
+    }),
+    'wait-for-ci': flags.boolean({
+      description: 'wait for CI to pass before deploying',
     })
   }
 
@@ -38,11 +42,13 @@ export default class ReviewappsEnable extends Command {
     let settings: {
       automatic_review_apps?: boolean,
       destroy_stale_apps?: boolean,
+      wait_for_ci?: boolean,
       pipeline?: string,
       repo?: string
     } = {
       automatic_review_apps: undefined,
       destroy_stale_apps: undefined,
+      wait_for_ci: undefined,
       pipeline: undefined,
       repo: undefined
     }
@@ -56,6 +62,13 @@ export default class ReviewappsEnable extends Command {
       this.log('Enabling auto destroy...')
       settings.destroy_stale_apps = true
     }
+
+    if (flags['wait-for-ci']) {
+      this.log('Enabling wait for CI...')
+      settings.wait_for_ci = true
+    }
+
+    const kolkrabbi = new KolkrabbiAPI(this.config.userAgent, this.heroku.auth)
 
     cli.action.start('Configuring pipeline')
 
@@ -73,11 +86,11 @@ export default class ReviewappsEnable extends Command {
         settings.repo = repo.full_name
       }
     } catch {
-      let {body: repo} = await this.heroku.get<Kolkrabbi.KolkrabbiApiPipelineRepositories>(`https://kolkrabbi.heroku.com/pipelines/${pipeline.id}/repository`)
-      settings.repo = repo.repository.name
+      let {repository} = await kolkrabbi.getPipelineRepository(pipeline.id)
+      settings.repo = repository.name
     }
 
-    if (flags.autodeploy || flags.autodestroy) {
+    if (flags.autodeploy || flags.autodestroy || flags['wait-for-ci']) {
       await this.heroku.patch(`/pipelines/${pipeline.id}/review-app-config`, {
         body: settings,
         headers: {Accept: 'application/vnd.heroku+json; version=3.review-apps'}
