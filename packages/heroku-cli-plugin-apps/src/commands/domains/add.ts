@@ -14,7 +14,7 @@ export default class DomainsAdd extends Command {
   static flags = {
     help: flags.help({char: 'h'}),
     app: flags.app({required: true}),
-    json: flags.string({description: 'output in json format', char: 'j'}),
+    json: flags.boolean({description: 'output in json format', char: 'j'}),
     wait: flags.boolean()
   }
 
