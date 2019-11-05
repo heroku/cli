@@ -4,6 +4,8 @@ import {expect} from 'chai'
 import * as path from 'path'
 import * as qq from 'qqjs'
 
+const globby = require('globby')
+
 const bin = path.join(__dirname, '../../bin/run')
 
 function run(args = '') {
@@ -38,5 +40,28 @@ describe('smoke', () => {
     const appFlag = `-a=${app}`
     const {stdout} = await run(['run', '--exit-code', appFlag, 'echo', 'it works!'].join(' '))
     expect(stdout).to.contain('it works!')
+  })
+
+  it('asserts oclif plugins are in core', async () => {
+    let cmd = await run('plugins --core')
+    expect(cmd.stdout).to.contain('@oclif/plugin-commands')
+    expect(cmd.stdout).to.contain('@oclif/plugin-help')
+    expect(cmd.stdout).to.contain('@oclif/plugin-legacy')
+    expect(cmd.stdout).to.contain('@oclif/plugin-not-found')
+    expect(cmd.stdout).to.contain('@oclif/plugin-plugins')
+    expect(cmd.stdout).to.contain('@oclif/plugin-update')
+    expect(cmd.stdout).to.contain('@oclif/plugin-warn-if-update-available')
+    expect(cmd.stdout).to.contain('@oclif/plugin-which')
+  })
+
+  it('asserts monorepo plugins are in core', async () => {
+    let paths = await globby(['packages/*/package.json'])
+    let cmd = await run('plugins --core')
+    paths = paths.map((p: string) => p.replace('packages/', '').replace('/package.json', ''))
+    console.log(path)
+    path = paths.filter((p: string) => p === 'cli')
+    paths.map((plugin: string) => {
+      expect(cmd.stdout).to.contain(plugin)
+    })
   })
 })
