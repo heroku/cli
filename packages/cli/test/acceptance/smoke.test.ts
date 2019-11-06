@@ -58,8 +58,8 @@ describe('smoke', () => {
     let paths = await globby(['packages/*/package.json'])
     let cmd = await run('plugins --core')
     paths = paths.map((p: string) => p.replace('packages/', '').replace('/package.json', ''))
-    console.log(path)
-    path = paths.filter((p: string) => p === 'cli')
+    console.log(paths)
+    paths = paths.filter((p: string) => p === 'cli')
     paths.map((plugin: string) => {
       expect(cmd.stdout).to.contain(plugin)
     })
