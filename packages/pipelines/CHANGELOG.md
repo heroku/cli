@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.34.0](https://github.com/heroku/cli/compare/v7.33.3...v7.34.0) (2019-11-05)
+
+
+### Bug Fixes
+
+* **cli:** pin to typescript 3.3.3333 ([#1369](https://github.com/heroku/cli/issues/1369)) ([0488680](https://github.com/heroku/cli/commit/0488680))
+* **pipelines:** return type error ([#1371](https://github.com/heroku/cli/issues/1371)) ([488aed5](https://github.com/heroku/cli/commit/488aed5))
+
+
+### Features
+
+* **pipelines:** add review apps 2 beta to pipelines:disable ([#1339](https://github.com/heroku/cli/issues/1339)) ([6491d89](https://github.com/heroku/cli/commit/6491d89))
+* **pipelines:** add review apps 2 beta to pipelines:enable ([#1338](https://github.com/heroku/cli/issues/1338)) ([f46e097](https://github.com/heroku/cli/commit/f46e097))
+
+
+
+
+
 # [7.33.0](https://github.com/heroku/cli/compare/v7.32.0...v7.33.0) (2019-10-01)
 
 

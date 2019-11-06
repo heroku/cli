@@ -15,7 +15,7 @@ $ npm install -g @heroku-cli/plugin-apps-v5
 $ heroku COMMAND
 running command...
 $ heroku (-v|--version|version)
-@heroku-cli/plugin-apps-v5/7.28.0 darwin-x64 node-v10.2.1
+@heroku-cli/plugin-apps-v5/7.34.0 darwin-x64 node-v12.12.0
 $ heroku --help [COMMAND]
 USAGE
   $ heroku COMMAND
@@ -36,11 +36,6 @@ USAGE
 * [`heroku apps:stacks`](#heroku-appsstacks)
 * [`heroku apps:stacks:set STACK`](#heroku-appsstacksset-stack)
 * [`heroku config:set`](#heroku-configset)
-* [`heroku domains`](#heroku-domains)
-* [`heroku domains:add HOSTNAME`](#heroku-domainsadd-hostname)
-* [`heroku domains:clear`](#heroku-domainsclear)
-* [`heroku domains:remove HOSTNAME`](#heroku-domainsremove-hostname)
-* [`heroku domains:wait [HOSTNAME]`](#heroku-domainswait-hostname)
 * [`heroku drains`](#heroku-drains)
 * [`heroku drains:add URL`](#heroku-drainsadd-url)
 * [`heroku drains:remove [URL|TOKEN]`](#heroku-drainsremove-urltoken)
@@ -341,84 +336,6 @@ EXAMPLES
   Setting config vars and restarting example... done, v11
   RAILS_ENV: staging
   RACK_ENV:  staging
-```
-
-## `heroku domains`
-
-list domains for an app
-
-```
-USAGE
-  $ heroku domains
-
-OPTIONS
-  -a, --app=app        (required) app to run command against
-  -r, --remote=remote  git remote of app to use
-  --json               output in json format
-
-EXAMPLES
-  $ heroku domains
-  === example Heroku Domain
-  example.herokuapp.com
-
-  === example Custom Domains
-  Domain Name      DNS Record Type  DNS Target
-  ───────────      ───────────────  ──────────
-  www.example.com  CNAME            www.example.herokudns.com
-```
-
-## `heroku domains:add HOSTNAME`
-
-add domain to an app
-
-```
-USAGE
-  $ heroku domains:add HOSTNAME
-
-OPTIONS
-  -a, --app=app        (required) app to run command against
-  -j, --json           output in json format
-  -r, --remote=remote  git remote of app to use
-  --wait
-```
-
-## `heroku domains:clear`
-
-remove all domains from an app
-
-```
-USAGE
-  $ heroku domains:clear
-
-OPTIONS
-  -a, --app=app        (required) app to run command against
-  -r, --remote=remote  git remote of app to use
-```
-
-## `heroku domains:remove HOSTNAME`
-
-remove domain from an app
-
-```
-USAGE
-  $ heroku domains:remove HOSTNAME
-
-OPTIONS
-  -a, --app=app        (required) app to run command against
-  -r, --remote=remote  git remote of app to use
-```
-
-## `heroku domains:wait [HOSTNAME]`
-
-wait for domain to be active for an app
-
-```
-USAGE
-  $ heroku domains:wait [HOSTNAME]
-
-OPTIONS
-  -a, --app=app        (required) app to run command against
-  -r, --remote=remote  git remote of app to use
 ```
 
 ## `heroku drains`

@@ -1,6 +1,6 @@
 {
   "name": "@heroku-cli/plugin-pipelines",
-  "version": "7.33.0",
+  "version": "7.34.0",
   "author": "James Martinez @jmar910",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
@@ -39,7 +39,7 @@
     "ts-node": "^8",
     "tslib": "^1",
     "tslint": "^5",
-    "typescript": "^3.3"
+    "typescript": "3.3.3333"
   },
   "engines": {
     "node": ">=8.0.0"

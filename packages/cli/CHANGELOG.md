@@ -3,6 +3,69 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.34.2](https://github.com/heroku/cli/compare/v7.34.1...v7.34.2) (2019-11-05)
+
+**Note:** Version bump only for package heroku
+
+
+
+
+
+## [7.34.1](https://github.com/heroku/cli/compare/v7.34.0...v7.34.1) (2019-11-05)
+
+
+### Bug Fixes
+
+* **cli:** missing apps plugin in oclif plugins list ([81db582](https://github.com/heroku/cli/commit/81db582))
+
+
+
+
+
+# [7.34.0](https://github.com/heroku/cli/compare/v7.33.3...v7.34.0) (2019-11-05)
+
+
+### Bug Fixes
+
+* **cli:** remove heroku-redis user installs ([#1357](https://github.com/heroku/cli/issues/1357)) ([6d409e2](https://github.com/heroku/cli/commit/6d409e2))
+
+
+### Features
+
+* **apps:** add oclif version of domains cmds  ([#1361](https://github.com/heroku/cli/issues/1361)) ([66c7c4e](https://github.com/heroku/cli/commit/66c7c4e))
+* **cli:** bump node version for oclif.update.node.version to node 12 ([#1368](https://github.com/heroku/cli/issues/1368)) ([72668ba](https://github.com/heroku/cli/commit/72668ba))
+
+
+
+
+
+## [7.33.3](https://github.com/heroku/cli/compare/v7.33.2...v7.33.3) (2019-10-09)
+
+**Note:** Version bump only for package heroku
+
+
+
+
+
+## [7.33.2](https://github.com/heroku/cli/compare/v7.33.1...v7.33.2) (2019-10-09)
+
+**Note:** Version bump only for package heroku
+
+
+
+
+
+## [7.33.1](https://github.com/heroku/cli/compare/v7.33.0...v7.33.1) (2019-10-03)
+
+
+### Bug Fixes
+
+* **cli:** bring back v5 run plugin ([#1349](https://github.com/heroku/cli/issues/1349)) ([15234fe](https://github.com/heroku/cli/commit/15234fe))
+
+
+
+
+
 # [7.33.0](https://github.com/heroku/cli/compare/v7.32.0...v7.33.0) (2019-10-01)
 
 
