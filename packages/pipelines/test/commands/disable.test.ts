@@ -62,7 +62,7 @@ describe('reviewapps:disable', () => {
       })
       .stdout()
       .stderr()
-      .command(['reviewapps:disable', `--pipeline=${pipeline.name}`, '--autodeploy'])
+      .command(['reviewapps:disable', `--pipeline=${pipeline.name}`, '--no-autodeploy'])
       .it('disables autodeploy', ctx => {
         expect(ctx.stdout).to.include('Disabling auto deployment')
         expect(ctx.stderr).to.include('Configuring pipeline')
@@ -86,7 +86,7 @@ describe('reviewapps:disable', () => {
       })
       .stdout()
       .stderr()
-      .command(['reviewapps:disable', `--pipeline=${pipeline.name}`, '--autodestroy'])
+      .command(['reviewapps:disable', `--pipeline=${pipeline.name}`, '--no-autodestroy'])
       .it('disables autodestroy', ctx => {
         expect(ctx.stdout).to.include('Disabling auto destroy')
         expect(ctx.stderr).to.include('Configuring pipeline')
@@ -110,7 +110,7 @@ describe('reviewapps:disable', () => {
       })
       .stdout()
       .stderr()
-      .command(['reviewapps:disable', `--pipeline=${pipeline.name}`, '--wait-for-ci'])
+      .command(['reviewapps:disable', `--pipeline=${pipeline.name}`, '--no-wait-for-ci'])
       .it('disables wait-for-ci', ctx => {
         expect(ctx.stdout).to.include('Disabling wait for CI')
         expect(ctx.stderr).to.include('Configuring pipeline')
@@ -134,7 +134,7 @@ describe('reviewapps:disable', () => {
       })
       .stdout()
       .stderr()
-      .command(['reviewapps:disable', `--pipeline=${pipeline.name}`, '--autodeploy', '--autodestroy', '--wait-for-ci'])
+      .command(['reviewapps:disable', `--pipeline=${pipeline.name}`, '--no-autodeploy', '--no-autodestroy', '--no-wait-for-ci'])
       .it('disables autodeploy and autodestroy and wait-for-ci', ctx => {
         expect(ctx.stdout).to.include('Disabling auto deployment')
         expect(ctx.stdout).to.include('Disabling auto destroy')
@@ -199,7 +199,7 @@ describe('reviewapps:disable', () => {
       })
       .stdout()
       .stderr()
-      .command(['reviewapps:disable', `--pipeline=${pipeline.name}`, '--autodeploy'])
+      .command(['reviewapps:disable', `--pipeline=${pipeline.name}`, '--no-autodeploy'])
       .it('disables autodeploy', ctx => {
         expect(ctx.stdout).to.include('Disabling auto deployment')
         expect(ctx.stderr).to.include('Configuring pipeline')
@@ -225,7 +225,7 @@ describe('reviewapps:disable', () => {
       })
       .stdout()
       .stderr()
-      .command(['reviewapps:disable', `--pipeline=${pipeline.name}`, '--autodestroy'])
+      .command(['reviewapps:disable', `--pipeline=${pipeline.name}`, '--no-autodestroy'])
       .it('disables autodestroy', ctx => {
         expect(ctx.stdout).to.include('Disabling auto destroy')
         expect(ctx.stderr).to.include('Configuring pipeline')
@@ -251,7 +251,7 @@ describe('reviewapps:disable', () => {
       })
       .stdout()
       .stderr()
-      .command(['reviewapps:disable', `--pipeline=${pipeline.name}`, '--wait-for-ci'])
+      .command(['reviewapps:disable', `--pipeline=${pipeline.name}`, '--no-wait-for-ci'])
       .it('disables wait-for-ci', ctx => {
         expect(ctx.stdout).to.include('Disabling wait for CI')
         expect(ctx.stderr).to.include('Configuring pipeline')
@@ -277,7 +277,7 @@ describe('reviewapps:disable', () => {
       })
       .stdout()
       .stderr()
-      .command(['reviewapps:disable', `--pipeline=${pipeline.name}`, '--autodeploy', '--autodestroy', '--wait-for-ci'])
+      .command(['reviewapps:disable', `--pipeline=${pipeline.name}`, '--no-autodeploy', '--no-autodestroy', '--no-wait-for-ci'])
       .it('disables autodeploy and autodestroy and wait-for-ci', ctx => {
         expect(ctx.stdout).to.include('Disabling auto deployment')
         expect(ctx.stdout).to.include('Disabling auto destroy')
