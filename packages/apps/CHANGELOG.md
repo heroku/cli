@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.35.0](https://github.com/heroku/heroku-cli-plugin-apps/compare/v7.34.2...v7.35.0) (2019-11-07)
+
+
+### Bug Fixes
+
+* **apps:** domains:wait status fetch ([#1381](https://github.com/heroku/heroku-cli-plugin-apps/issues/1381)) ([14c16ad](https://github.com/heroku/heroku-cli-plugin-apps/commit/14c16ad))
+
+
+
+
+
 ## [7.34.2](https://github.com/heroku/heroku-cli-plugin-apps/compare/v7.34.1...v7.34.2) (2019-11-05)
 
 

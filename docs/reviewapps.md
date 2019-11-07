@@ -18,15 +18,15 @@ OPTIONS
   -a, --app=app            parent app used by review apps
   -p, --pipeline=pipeline  (required) name of pipeline
   -r, --remote=remote      git remote of app to use
-  --autodeploy             disable autodeployments
-  --autodestroy            disable automatically destroying review apps
-  --beta                   use Review Apps 2.0 Beta
+  --no-autodeploy          disable autodeployments
+  --no-autodestroy         disable automatically destroying review apps
+  --no-wait-for-ci         disable wait for CI
 
 EXAMPLE
-  $ heroku reviewapps:disable -p my-pipeline -a my-app --autodeploy
+  $ heroku reviewapps:disable -p my-pipeline -a my-app --no-autodeploy
 ```
 
-_See code: [@heroku-cli/plugin-pipelines](https://github.com/heroku/cli/blob/v7.34.0/src/commands/reviewapps/disable.ts)_
+_See code: [@heroku-cli/plugin-pipelines](https://github.com/heroku/cli/blob/v7.35.0/src/commands/reviewapps/disable.ts)_
 
 ## `heroku reviewapps:enable`
 
@@ -42,10 +42,10 @@ OPTIONS
   -r, --remote=remote      git remote of app to use
   --autodeploy             autodeploy the review app
   --autodestroy            autodestroy the review app
-  --beta                   use Review Apps 2.0 Beta
+  --wait-for-ci            wait for CI to pass before deploying
 
 EXAMPLE
   $ heroku reviewapps:enable -p my-pipeline -a my-app --autodeploy --autodestroy
 ```
 
-_See code: [@heroku-cli/plugin-pipelines](https://github.com/heroku/cli/blob/v7.34.0/src/commands/reviewapps/enable.ts)_
+_See code: [@heroku-cli/plugin-pipelines](https://github.com/heroku/cli/blob/v7.35.0/src/commands/reviewapps/enable.ts)_

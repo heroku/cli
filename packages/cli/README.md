@@ -50,7 +50,6 @@ For other issues, [submit a support ticket](https://help.heroku.com/).
 * [`heroku clients`](docs/clients.md) - OAuth clients on the platform
 * [`heroku config`](docs/config.md) - environment variables of apps
 * [`heroku container`](docs/container.md) - Use containers to build and deploy Heroku apps
-* [`heroku domains`](docs/domains.md) - custom domains for apps
 * [`heroku drains`](docs/drains.md) - forward logs to syslog or HTTPS
 * [`heroku features`](docs/features.md) - add/remove app features
 * [`heroku git`](docs/git.md) - manage local git repository for app
