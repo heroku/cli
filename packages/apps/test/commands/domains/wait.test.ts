@@ -5,10 +5,14 @@ describe('domains:wait', () => {
     .stderr()
     .nock('https://api.heroku.com', api => api
       .get('/apps/myapp/domains/example.com')
+      .reply(200, {id: 123, hostname: 'example.com', status: 'pending'})
+    )
+    .nock('https://api.heroku.com', api => api
+      .get('/apps/myapp/domains/123')
       .reply(200, {id: 123, hostname: 'example.com', status: 'succeeded'})
     )
     .command(['domains:wait', 'example.com', '--app', 'myapp'])
-    .it('removes a single domain provided by an argument', ctx => {
+    .it('waits on domain status succeeded', ctx => {
       expect(ctx.stderr).to.contain('Waiting for example.com... done')
     })
 })
