@@ -5,6 +5,7 @@ const co = require('co')
 
 function * run (context, heroku) {
   const fetcher = require('../lib/fetcher')(heroku)
+  const host = require('../lib/host')
   const { app, args } = context
   const attachment = yield fetcher.attachment(app, args.database)
   let current
@@ -44,6 +45,16 @@ function * run (context, heroku) {
     })
     cli.action.done(cli.color.configVar(backup.name + '_URL'))
   }))
+
+  let db = yield fetcher.addon(app, args.database)
+  let replica = yield heroku.get(`/client/v11/databases/${db.id}`, { host: host(db) })
+
+  if (replica.following) {
+    yield cli.confirmApp(app, flags.confirm, `WARNING:
+      ${cli.color.addon(db.name)} is a follower and not writeable at this time.
+      `)
+  }
+
 
   let promotionMessage
   if (attachment.namespace) {
@@ -121,5 +132,6 @@ module.exports = {
   needsApp: true,
   needsAuth: true,
   args: [{ name: 'database' }],
+  flags: [{ name: 'confirm', char: 'c', hasValue: true }],
   run: cli.command({ preauth: true }, co.wrap(run))
 }

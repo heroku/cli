@@ -8,6 +8,7 @@ const proxyquire = require('proxyquire')
 
 describe('pg:promote when argument is database', () => {
   let api
+  let postgresApi
 
   const attachment = {
     addon: {
@@ -16,9 +17,17 @@ describe('pg:promote when argument is database', () => {
     namespace: null
   }
 
+  const addon = {
+    id: '12345',
+    plan: {
+      name: 'hobby-dev'
+    }
+  }
+
   const fetcher = () => {
     return {
-      attachment: () => attachment
+      attachment: () => attachment,
+      addon:      () => addon
     }
   }
 
@@ -30,11 +39,14 @@ describe('pg:promote when argument is database', () => {
     api = nock('https://api.heroku.com:443')
     api.get('/apps/myapp/formation').reply(200, [])
     cli.mockConsole()
+    postgresApi = nock('postgres-starter-api.heroku.com:443')
+    postgresApi.get('/client/v11/databases/12345').reply(200, {following: false})
   })
 
   afterEach(() => {
     nock.cleanAll()
     api.done()
+    postgresApi.done()
   })
 
   it('promotes the db and creates another attachment if current DATABASE does not have another', () => {
