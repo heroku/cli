@@ -5,136 +5,136 @@ import * as foreman from '../../../src/fork-foreman'
 const procfile = require('../../../src/load-foreman-procfile')
 
 describe('local', () => {
-  let loadProcMock = () => ({
+  const loadProcMock = () => ({
     web: './web-command',
-    other: './other-command'
+    other: './other-command',
   })
 
   describe('with the local:start alias', function () {
     test
-      .stub(procfile, 'loadProc', loadProcMock)
-      .stub(foreman, 'fork', (argv: string[]) => {
-        expect(argv).is.eql(['start', 'web,other'])
-      })
-      .command(['local:start'])
-      .it('can call foreman start via the local:start alias')
+    .stub(procfile, 'loadProc', loadProcMock)
+    .stub(foreman, 'fork', (argv: string[]) => {
+      expect(argv).is.eql(['start', 'web,other'])
+    })
+    .command(['local:start'])
+    .it('can call foreman start via the local:start alias')
   })
 
   describe('without arguments', function () {
     describe('without flags', function () {
       test
-        .stub(procfile, 'loadProc', function(procfile: any) {
-          expect(procfile).is.equal('Procfile', 'it defaults to loading `Procfile`')
+      .stub(procfile, 'loadProc', function (procfile: any) {
+        expect(procfile).is.equal('Procfile', 'it defaults to loading `Procfile`')
 
-          return {
-            web: './web-command',
-            other: './other-command'
-          }
-        })
-        .stub(foreman, 'fork', (argv: string[]) => {
-          expect(argv).is.eql(['start', 'web,other'])
-        })
-        .command(['local'])
-        .it('can call foreman start with no arguments')
+        return {
+          web: './web-command',
+          other: './other-command',
+        }
+      })
+      .stub(foreman, 'fork', (argv: string[]) => {
+        expect(argv).is.eql(['start', 'web,other'])
+      })
+      .command(['local'])
+      .it('can call foreman start with no arguments')
     })
 
     describe('with a --procfile flag', function () {
       test
-        .stub(procfile, 'loadProc', (procfile: string) => {
-          expect(procfile).is.equal('Procfile.other')
+      .stub(procfile, 'loadProc', (procfile: string) => {
+        expect(procfile).is.equal('Procfile.other')
 
-          return {
-            release: './release',
-            web: './web-command',
-            background: './background'
-          }
-        })
-        .stub(foreman, 'fork', (argv: string[]) => {
-          expect(argv).is.eql(['start', '--procfile', 'Procfile.other', 'web,background'])
-          expect(argv).to.not.include('release', 'the release process is not included')
-        })
-        .command(['local', '--procfile', 'Procfile.other'])
-        .it('can call foreman start with procfile arguments and procfile non-release processes')
+        return {
+          release: './release',
+          web: './web-command',
+          background: './background',
+        }
+      })
+      .stub(foreman, 'fork', (argv: string[]) => {
+        expect(argv).is.eql(['start', '--procfile', 'Procfile.other', 'web,background'])
+        expect(argv).to.not.include('release', 'the release process is not included')
+      })
+      .command(['local', '--procfile', 'Procfile.other'])
+      .it('can call foreman start with procfile arguments and procfile non-release processes')
     })
 
-    describe('with --procfile, --env, --port flags together', function() {
+    describe('with --procfile, --env, --port flags together', function () {
       test
-        .stub(procfile, 'loadProc', loadProcMock)
-        .stub(foreman, 'fork', (argv: string[]) => {
-          expect(argv).is.eql([
-            'start',
-            '--procfile',
-            'Procfile.other',
-            '--env',
-            'DEBUG=true',
-            '--port',
-            '4600',
-            'web,other'
-          ])
-        })
-        .command(['local', '--port', '4600', '--env', 'DEBUG=true', '--procfile', 'Procfile.other'])
-        .it('can call foreman start')
+      .stub(procfile, 'loadProc', loadProcMock)
+      .stub(foreman, 'fork', (argv: string[]) => {
+        expect(argv).is.eql([
+          'start',
+          '--procfile',
+          'Procfile.other',
+          '--env',
+          'DEBUG=true',
+          '--port',
+          '4600',
+          'web,other',
+        ])
+      })
+      .command(['local', '--port', '4600', '--env', 'DEBUG=true', '--procfile', 'Procfile.other'])
+      .it('can call foreman start')
     })
   })
 
   describe('with arguments', function () {
     describe('without flags', function () {
       test
-        .stub(procfile, 'loadProc', function(procfile: any) {
-          expect(procfile).is.equal('Procfile', 'it defaults to loading `Procfile`')
+      .stub(procfile, 'loadProc', function (procfile: any) {
+        expect(procfile).is.equal('Procfile', 'it defaults to loading `Procfile`')
 
-          return {
-            web: './web-command',
-            other: './other-command'
-          }
-        })
-        .stub(foreman, 'fork', (argv: string[]) => {
-          expect(argv).is.eql(['start', 'web,other'])
-        })
-        .command(['local', 'web,other'])
-        .it('can call foreman start with only arguments')
+        return {
+          web: './web-command',
+          other: './other-command',
+        }
+      })
+      .stub(foreman, 'fork', (argv: string[]) => {
+        expect(argv).is.eql(['start', 'web,other'])
+      })
+      .command(['local', 'web,other'])
+      .it('can call foreman start with only arguments')
     })
 
-    describe('with --port, --env and --procfile flags', function() {
+    describe('with --port, --env and --procfile flags', function () {
       test
-        .stub(procfile, 'loadProc', loadProcMock)
-        .stub(foreman, 'fork', (argv: string[]) => {
-          expect(argv).is.eql([
-            'start',
-            '--procfile',
-            'Procfile.other',
-            '--env',
-            'DEBUG=true',
-            '--port',
-            '4600',
-            'web,other'
-          ])
-        })
-        .command(['local', '--port', '4600', '--env', 'DEBUG=true', '--procfile', 'Procfile.other'])
-        .it('can call foreman start with arguments and --port, --env and --procfile flags')
+      .stub(procfile, 'loadProc', loadProcMock)
+      .stub(foreman, 'fork', (argv: string[]) => {
+        expect(argv).is.eql([
+          'start',
+          '--procfile',
+          'Procfile.other',
+          '--env',
+          'DEBUG=true',
+          '--port',
+          '4600',
+          'web,other',
+        ])
+      })
+      .command(['local', '--port', '4600', '--env', 'DEBUG=true', '--procfile', 'Procfile.other'])
+      .it('can call foreman start with arguments and --port, --env and --procfile flags')
     })
 
-    describe('with too many arguments', function() {
+    describe('with too many arguments', function () {
       test
-        .command(['local', 'Procfile.other', 'extra-argument'])
-        .catch(e => expect(e.message).to.contain('Unexpected argument: extra-argument'))
-        .it('will display an error')
+      .command(['local', 'Procfile.other', 'extra-argument'])
+      .catch(e => expect(e.message).to.contain('Unexpected argument: extra-argument'))
+      .it('will display an error')
     })
   })
 
-  describe('with deprecated flags', function() {
+  describe('with deprecated flags', function () {
     test
-      .command(['local', '--restart'])
-      .catch(e => {
-        expect(e.message).to.equal('--restart is no longer available\nUse forego instead: https://github.com/ddollar/forego')
-      })
-      .it('errors with deprecated restart flag message')
+    .command(['local', '--restart'])
+    .catch(e => {
+      expect(e.message).to.equal('--restart is no longer available\nUse forego instead: https://github.com/ddollar/forego')
+    })
+    .it('errors with deprecated restart flag message')
 
     test
-      .command(['local', '--concurrency', 'web=2'])
-      .catch(e => {
-        expect(e.message).to.equal('--concurrency is no longer available\nUse forego instead: https://github.com/ddollar/forego')
-      })
-      .it('errors with deprecated concurrency flag')
+    .command(['local', '--concurrency', 'web=2'])
+    .catch(e => {
+      expect(e.message).to.equal('--concurrency is no longer available\nUse forego instead: https://github.com/ddollar/forego')
+    })
+    .it('errors with deprecated concurrency flag')
   })
 })

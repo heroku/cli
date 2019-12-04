@@ -1,49 +1,51 @@
 import {FileCompletion} from '@heroku-cli/command/lib/completions'
 import {Command, flags} from '@oclif/command'
 
-const Procfile: any = require('../../load-foreman-procfile')
-
 import {fork as foreman} from '../../fork-foreman'
+
+const Procfile: any = require('../../load-foreman-procfile')
 
 export default class Index extends Command {
   // \n splits the description between the title shown in the help
   // and the DESCRIPTION section shown in the help
   static description = 'run heroku app locally\nStart the application specified by a Procfile (defaults to ./Procfile)'
+
   static aliases = ['local:start']
+
   static args = [{name: 'processname', required: false}]
 
   static examples = [
     `$ heroku local
 $ heroku local web
 $ heroku local web=2
-$ heroku local web=1,worker=2`
+$ heroku local web=1,worker=2`,
   ]
 
   static flags = {
     procfile: flags.string({
       char: 'f',
       description: 'use a different Procfile',
-      completion: FileCompletion
+      completion: FileCompletion,
     }),
     env: flags.string({
       char: 'e',
       description: 'location of env file (defaults to .env)',
-      completion: FileCompletion
+      completion: FileCompletion,
     }),
     port: flags.string({
       char: 'p',
-      description: 'port to listen on'
+      description: 'port to listen on',
     }),
     restart: flags.boolean({
       char: 'r',
       description: 'restart process if it dies',
-      hidden: true
+      hidden: true,
     }),
     concurrency: flags.string({
       char: 'c',
       description: 'number of processes to start',
-      hidden: true
-    })
+      hidden: true,
+    }),
   }
 
   async run() {
@@ -65,9 +67,9 @@ $ heroku local web=1,worker=2`
     if (args.processname) {
       execArgv.push(args.processname)
     } else {
-      let procfile = flags.procfile || 'Procfile'
-      let procHash = Procfile.loadProc(procfile)
-      let processes = Object.keys(procHash).filter(x => x !== 'release')
+      const procfile = flags.procfile || 'Procfile'
+      const procHash = Procfile.loadProc(procfile)
+      const processes = Object.keys(procHash).filter(x => x !== 'release')
       execArgv.push(processes.join(','))
     }
 

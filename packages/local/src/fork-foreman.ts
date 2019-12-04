@@ -24,7 +24,7 @@ function getForemanScriptPath() {
 
   if (fs.existsSync(withJsExtension)) {
     return withJsExtension
-  } else if (fs.existsSync(withTsExtension)) {
+  } if (fs.existsSync(withTsExtension)) {
     return withTsExtension
   }
 
