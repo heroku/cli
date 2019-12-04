@@ -19,7 +19,9 @@ export default class Deliveries extends BaseCommand {
 
   async run() {
     const {flags} = this.parse(Deliveries)
-    let {path, display} = this.webhookType(flags)
+    const webhookType = this.webhookType(flags)
+    let {path} = webhookType
+    const {display} = webhookType
     const max = 1000
 
     path = `${path}/webhook-deliveries`

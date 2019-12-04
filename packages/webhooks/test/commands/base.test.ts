@@ -5,11 +5,14 @@ import * as path from 'path'
 import webhooksAbstractClass from '../../src/commands/base'
 
 class Webhooks extends webhooksAbstractClass {
+  // eslint-disable-next-line no-useless-constructor
   constructor(argv: string[], config: IConfig) {
     super(argv, config)
   }
 
-  async run() {}
+  async run() {
+    'empty run function'
+  }
 }
 const root = path.resolve(__dirname, '../package.json')
 const config = new Config({root})
@@ -37,6 +40,6 @@ describe('webhooks type', () => {
   .do(function () {
     webhookObject.webhookType({pipeline: '', app: ''})
   })
-  .catch(e => expect(e.message).to.equal('No app specified'))
+  .catch(error => expect(error.message).to.equal('No app specified'))
   .it('returns error if no arguments are given')
 })
