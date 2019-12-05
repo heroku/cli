@@ -59,9 +59,10 @@
   "scripts": {
     "build": "rm -rf lib && tsc",
     "clean": "rm -f oclif.manifest.json",
-    "lint": "tsc -p test --noEmit && tslint -p test -t stylish",
+    "pretest": "tsc -p test --noEmit",
+    "lint": "eslint . --ext .ts --config .eslintrc",
+    "posttest": "yarn lint",
     "postpublish": "yarn run clean",
-    "posttest": "yarn run lint",
     "prepack": "yarn run build && oclif-dev manifest && oclif-dev readme",
     "preversion": "yarn run clean",
     "test": "mocha --forbid-only \"test/**/*.test.ts\"",
