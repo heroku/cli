@@ -8,6 +8,7 @@ import {maxBy} from '../util'
 
 export default class Status extends Command {
   static description = 'display current status of the Heroku platform'
+
   static flags = {
     json: flags.boolean({description: 'output in json format'}),
   }
@@ -27,26 +28,26 @@ export default class Status extends Command {
       return colorize(message)
     }
 
-    let host = process.env.HEROKU_STATUS_HOST || 'https://status.heroku.com'
-    let {body} = await HTTP.get<any>(host + apiPath)
+    const host = process.env.HEROKU_STATUS_HOST || 'https://status.heroku.com'
+    const {body} = await HTTP.get<any>(host + apiPath)
 
     if (flags.json) {
       cli.styledJSON(body)
       return
     }
 
-    for (let item of body.status) {
-      let message = printStatus(item.status)
+    for (const item of body.status) {
+      const message = printStatus(item.status)
 
       this.log(`${(item.system + ':').padEnd(11)}${message}`)
     }
 
-    for (let incident of body.incidents) {
+    for (const incident of body.incidents) {
       cli.log()
       cli.styledHeader(`${incident.title} ${color.yellow(incident.created_at)} ${color.cyan(incident.full_url)}`)
 
-      let padding = maxBy(incident.updates, (i: any) => i.update_type.length).update_type.length + 0
-      for (let u of incident.updates) {
+      const padding = maxBy(incident.updates, (i: any) => i.update_type.length).update_type.length + 0
+      for (const u of incident.updates) {
         cli.log(`${color.yellow(u.update_type.padEnd(padding))} ${new Date(u.updated_at).toISOString()} (${distanceInWordsToNow(new Date(u.updated_at))} ago)`)
         cli.log(`${u.contents}\n`)
       }
