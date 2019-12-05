@@ -18,7 +18,7 @@ describe('ps:autoscale:disable without a web dyno/monitor', () => {
   .reply(200, []),
   )
   .command(['ps:autoscale:disable', '--app', APP_NAME])
-  .catch(err => expect(err.message).to.contain(`${APP_NAME} does not have autoscale enabled`))
+  .catch(error => expect(error.message).to.contain(`${APP_NAME} does not have autoscale enabled`))
   .it('throws an error')
 })
 

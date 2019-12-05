@@ -53,6 +53,7 @@ export default class Wait extends Command {
     const interval = flags['wait-interval'] as number
 
     while (1 as any) {
+      // eslint-disable-next-line no-await-in-loop
       const {body: dynos} = await this.heroku.get<Dyno[]>(`/apps/${flags.app}/dynos`)
       const relevantDynos = dynos
       .filter(dyno => dyno.type !== 'release')
@@ -81,6 +82,7 @@ export default class Wait extends Command {
 
       cli.action.status = releasedFraction
 
+      // eslint-disable-next-line no-await-in-loop
       await cli.wait(interval * 1000)
     }
   }
