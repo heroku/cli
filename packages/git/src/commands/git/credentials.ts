@@ -2,10 +2,13 @@ import {Command} from '@heroku-cli/command'
 
 export class GitCredentials extends Command {
   static hidden = true
+
   static description = 'internal command for git-credentials'
+
   static args = [
-    {name: 'command', required: true}
+    {name: 'command', required: true},
   ]
+
   async run() {
     const {args} = this.parse(GitCredentials)
     switch (args.command) {
@@ -18,7 +21,7 @@ password=${this.heroku.auth}`)
       break
     case 'erase':
     case 'store':
-        // ignore
+      // ignore
       break
     default:
       throw new Error(`unknown command: ${args.command}`)
