@@ -13,11 +13,11 @@ export default class Git {
       const {stdout, stderr} = await execFile('git', args)
       if (stderr) process.stderr.write(stderr)
       return stdout.trim()
-    } catch (err) {
-      if (err.code === 'ENOENT') {
+    } catch (error) {
+      if (error.code === 'ENOENT') {
         ux.error('Git must be installed to use the Heroku CLI.  See instructions here: http://git-scm.com')
       }
-      throw err
+      throw error
     }
   }
 
@@ -35,7 +35,8 @@ export default class Git {
   }
 
   remoteFromGitConfig() {
-    return this.exec(['config', 'heroku.remote']).catch(function () {})
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    return this.exec(['config', 'heroku.remote']).catch(() => {})
   }
 
   sshGitUrl(app: string) {
