@@ -6,7 +6,7 @@ const cli = require('heroku-cli-util')
 function dropboxURL (url) {
   // Force a dump file to download instead of rendering as HTML
   // file by specifying the dl=1 param for Dropbox URL
-  if (url.match(/https?:\/\/www.dropbox.com/) && !url.endsWith('dl=1')) {
+  if (url.match(/^https?:\/\/www\.dropbox\.com/) && !url.endsWith('dl=1')) {
     if (url.endsWith('dl=0')) url = url.replace('dl=0', 'dl=1')
     else if (url.includes('?')) url += '&dl=1'
     else url += '?dl=1'
