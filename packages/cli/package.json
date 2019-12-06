@@ -275,11 +275,13 @@
   },
   "repository": "heroku/cli",
   "scripts": {
+    "lint": "eslint . --ext .ts --config .eslintrc",
     "build": "rm -rf lib && tsc",
     "postpublish": "rm -f oclif.manifest.json",
-    "posttest": "tsc -p test --noEmit && tslint -p test -t stylish",
     "prepack": "yarn run build && oclif-dev manifest",
+    "pretest": "tsc -p test --noEmit",
     "test": "mocha --forbid-only \"test/**/*.test.ts\"",
+    "posttest": "yarn lint",
     "version": "oclif-dev readme --multi && git add README.md ../../docs"
   },
   "types": "lib/index.d.ts"
