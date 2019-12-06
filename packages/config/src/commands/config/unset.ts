@@ -45,7 +45,8 @@ Unsetting RAILS_ENV, RACK_ENV and restarting example... done, v10`,
     await this.heroku.patch(`/apps/${flags.app}/config-vars`, {
       // body will be like {FOO: null, BAR: null}
       body: _.reduce(argv, (vars, v) => {
-        vars[v] = null; return vars
+        vars[v] = null
+        return vars
       }, {} as {[k: string]: null}),
     })
     const release = await lastRelease()

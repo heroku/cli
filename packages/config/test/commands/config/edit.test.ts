@@ -34,8 +34,10 @@ describe('config:edit', () => {
         return Promise.resolve()
       })
       sandbox.stub(cli.action, 'start')
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       .value(() => {})
       sandbox.stub(cli.action, 'stop')
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       .value(() => {})
     })
 
