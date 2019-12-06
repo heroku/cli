@@ -28,7 +28,7 @@ export const migrate: Hook<'init'> = async function () {
       const p = path.join(pluginsDir, 'user.json')
       if (await fs.pathExists(p)) {
         const {manifest} = await fs.readJSON(p)
-        for (let plugin of Object.keys(manifest.plugins)) {
+        for (const plugin of Object.keys(manifest.plugins)) {
           process.stderr.write(`heroku-cli: migrating ${plugin}\n`)
           await exec('heroku', ['plugins:install', plugin])
         }
@@ -40,7 +40,7 @@ export const migrate: Hook<'init'> = async function () {
       const p = path.join(pluginsDir, 'link.json')
       if (await fs.pathExists(p)) {
         const {manifest} = await fs.readJSON(path.join(pluginsDir, 'link.json'))
-        for (let {root} of Object.values(manifest.plugins) as any) {
+        for (const {root} of Object.values(manifest.plugins) as any) {
           process.stderr.write(`heroku-cli: migrating ${root}\n`)
           await exec('heroku', ['plugins:link', root])
         }

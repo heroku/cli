@@ -5,7 +5,7 @@ import deps from '../../deps'
 
 export const tidy: Hook<'update'> = async function () {
   const cleanupPlugins = async () => {
-    let pluginsDir = path.join(this.config.dataDir, 'plugins')
+    const pluginsDir = path.join(this.config.dataDir, 'plugins')
     if (await deps.file.exists(path.join(pluginsDir, 'plugins.json'))) return
     let pjson
     try {

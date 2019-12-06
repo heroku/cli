@@ -25,7 +25,7 @@ describe('smoke', () => {
   })
 
   it('heroku apps', async () => {
-    let cmd = await run('apps')
+    const cmd = await run('apps')
     expect(cmd.stdout).to.match(/^===.*Apps/)
   })
 
@@ -43,7 +43,7 @@ describe('smoke', () => {
   })
 
   it('asserts oclif plugins are in core', async () => {
-    let cmd = await run('plugins --core')
+    const cmd = await run('plugins --core')
     expect(cmd.stdout).to.contain('@oclif/plugin-commands')
     expect(cmd.stdout).to.contain('@oclif/plugin-help')
     expect(cmd.stdout).to.contain('@oclif/plugin-legacy')
@@ -56,7 +56,7 @@ describe('smoke', () => {
 
   it('asserts monorepo plugins are in core', async () => {
     let paths = await globby(['packages/*/package.json'])
-    let cmd = await run('plugins --core')
+    const cmd = await run('plugins --core')
     paths = paths.map((p: string) => p.replace('packages/', '').replace('/package.json', ''))
     console.log(paths)
     paths = paths.filter((p: string) => p === 'cli')

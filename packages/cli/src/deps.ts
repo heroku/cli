@@ -1,8 +1,8 @@
-import FS = require('fs-extra')
 import {HTTP} from 'http-call'
+import UserConfig from './user-config'
+import FS = require('fs-extra')
 
 import file = require('./file')
-import UserConfig from './user-config'
 
 export default {
   get fs(): typeof FS {

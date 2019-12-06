@@ -4,16 +4,20 @@ import * as path from 'path'
 import deps from './deps'
 
 export interface ConfigJSON {
-  schema: 1
-  install?: string
-  skipAnalytics?: boolean
+  schema: 1;
+  install?: string;
+  skipAnalytics?: boolean;
 }
 
 export default class UserConfig {
   private needsSave = false
+
   private body!: ConfigJSON
+
   private mtime?: number
+
   private saving?: Promise<void>
+
   private _init!: Promise<void>
 
   constructor(private readonly config: Config.IConfig) {}
@@ -21,10 +25,12 @@ export default class UserConfig {
   public get install() {
     return this.body.install || this.genInstall()
   }
+
   public set install(install: string) {
     this.body.install = install
     this.needsSave = true
   }
+
   public get skipAnalytics() {
     if (this.config.scopedEnvVar('SKIP_ANALYTICS') === '1') return true
     if (typeof this.body.skipAnalytics !== 'boolean') {
@@ -78,7 +84,7 @@ export default class UserConfig {
     await this.migrate()
     try {
       this.mtime = await this.getLastUpdated()
-      let body = await deps.file.readJSON(this.file)
+      const body = await deps.file.readJSON(this.file)
       return body
     } catch (err) {
       if (err.code !== 'ENOENT') throw err
@@ -88,7 +94,7 @@ export default class UserConfig {
 
   private async migrate() {
     if (await deps.file.exists(this.file)) return
-    let old = path.join(this.config.configDir, 'config.json')
+    const old = path.join(this.config.configDir, 'config.json')
     if (!await deps.file.exists(old)) return
     this.debug('moving config into new place')
     await deps.file.rename(old, this.file)
