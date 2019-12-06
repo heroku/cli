@@ -24,9 +24,9 @@ export const brewHook: Hook<'update'> = async function () {
   let binPath
   try {
     binPath = fs.realpathSync(path.join(brewRoot, 'bin/heroku'))
-  } catch (err) {
-    if (err.code === 'ENOENT') return
-    throw err
+  } catch (error) {
+    if (error.code === 'ENOENT') return
+    throw error
   }
   let cellarPath: string
   if (binPath && binPath.startsWith(path.join(brewRoot, 'Cellar'))) {

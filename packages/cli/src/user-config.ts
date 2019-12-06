@@ -20,6 +20,7 @@ export default class UserConfig {
 
   private _init!: Promise<void>
 
+  // eslint-disable-next-line no-useless-constructor
   constructor(private readonly config: Config.IConfig) {}
 
   public get install() {
@@ -43,7 +44,8 @@ export default class UserConfig {
   public async init() {
     await this.saving
     if (this._init) return this._init
-    return (this._init = (async () => {
+
+    this._init = (async () => {
       this.debug('init')
       this.body = (await this.read()) || {schema: 1}
 
@@ -57,7 +59,9 @@ export default class UserConfig {
       this.skipAnalytics
 
       if (this.needsSave) await this.save()
-    })())
+    })()
+
+    return this._init
   }
 
   private get debug() {
@@ -86,8 +90,8 @@ export default class UserConfig {
       this.mtime = await this.getLastUpdated()
       const body = await deps.file.readJSON(this.file)
       return body
-    } catch (err) {
-      if (err.code !== 'ENOENT') throw err
+    } catch (error) {
+      if (error.code !== 'ENOENT') throw error
       this.debug('not found')
     }
   }
@@ -109,8 +113,8 @@ export default class UserConfig {
     try {
       const stat = await deps.file.stat(this.file)
       return stat.mtime.getTime()
-    } catch (err) {
-      if (err.code !== 'ENOENT') throw err
+    } catch (error) {
+      if (error.code !== 'ENOENT') throw error
     }
   }
 

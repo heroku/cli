@@ -10,8 +10,8 @@ export const tidy: Hook<'update'> = async function () {
     let pjson
     try {
       pjson = await deps.file.readJSON(path.join(pluginsDir, 'package.json'))
-    } catch (err) {
-      if (err.code !== 'ENOENT') throw err
+    } catch (error) {
+      if (error.code !== 'ENOENT') throw error
       return
     }
     if (!pjson.dependencies || pjson.dependencies === {}) {

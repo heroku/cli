@@ -4,6 +4,14 @@ import FS = require('fs-extra')
 
 import file = require('./file')
 
+const cache: any = {}
+function fetch(s: string) {
+  if (!cache[s]) {
+    cache[s] = require(s)
+  }
+  return cache[s]
+}
+
 export default {
   get fs(): typeof FS {
     return fetch('fs-extra')
@@ -17,13 +25,4 @@ export default {
   get UserConfig(): typeof UserConfig {
     return fetch('./user-config').default
   },
-}
-
-const cache: any = {}
-
-function fetch(s: string) {
-  if (!cache[s]) {
-    cache[s] = require(s)
-  }
-  return cache[s]
 }

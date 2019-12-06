@@ -60,7 +60,7 @@ describe('smoke', () => {
     paths = paths.map((p: string) => p.replace('packages/', '').replace('/package.json', ''))
     console.log(paths)
     paths = paths.filter((p: string) => p === 'cli')
-    paths.map((plugin: string) => {
+    paths.forEach((plugin: string) => {
       expect(cmd.stdout).to.contain(plugin)
     })
   })
