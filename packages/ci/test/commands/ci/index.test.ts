@@ -7,8 +7,8 @@ const expect = Test.expect
 describe('ci', () => {
   test
   .command(['ci'])
-  .catch(e => {
-    expect(e.message).to.contain('Required flag:  --pipeline PIPELINE or --app APP')
+  .catch(error => {
+    expect(error.message).to.contain('Required flag:  --pipeline PIPELINE or --app APP')
   })
   .it('errors when not specifying a pipeline or an app')
 

@@ -11,8 +11,8 @@ describe('ci:last', () => {
 
   test
   .command(['ci:last'])
-  .catch(e => {
-    expect(e.message).to.contain('Required flag:  --pipeline PIPELINE or --app APP')
+  .catch(error => {
+    expect(error.message).to.contain('Required flag:  --pipeline PIPELINE or --app APP')
   })
   .it('errors when not specifying a pipeline or an app')
 
@@ -171,8 +171,8 @@ describe('ci:last', () => {
       .reply(200, [])
     })
     .command(['ci:last', `--pipeline=${pipeline.name}`])
-    .catch(e => {
-      expect(e.message).to.contain(`Test run ${testRunNumber} was cancelled. No Heroku CI runs found for this pipeline.`)
+    .catch(error => {
+      expect(error.message).to.contain(`Test run ${testRunNumber} was cancelled. No Heroku CI runs found for this pipeline.`)
     })
     .it('shows an error about not test nodes found')
   })

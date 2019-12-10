@@ -193,6 +193,7 @@ async function waitForStates(states: string[], testRun: Heroku.TestRun, command:
   let newTestRun = testRun
 
   while (!states.includes(newTestRun.status!.toString())) {
+    // eslint-disable-next-line no-await-in-loop
     const {body: bodyTestRun} = await command.heroku.get<Heroku.TestRun>(`/pipelines/${testRun.pipeline!.id}/test-runs/${testRun.number}`)
     newTestRun = bodyTestRun
   }

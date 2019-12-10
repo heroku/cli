@@ -12,8 +12,8 @@ const expect = Test.expect
 describe('ci:run', () => {
   test
   .command(['ci:run'])
-  .catch(e => {
-    expect(e.message).to.contain('Required flag:  --pipeline PIPELINE or --app APP')
+  .catch(error => {
+    expect(error.message).to.contain('Required flag:  --pipeline PIPELINE or --app APP')
   })
   .it('errors when not specifying a pipeline or an app')
 
@@ -54,6 +54,7 @@ describe('ci:run', () => {
 
     const fsFake = {
       stat: () => Promise.resolve({size: 500}),
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       createReadStream: () => ({pipe: () => {}}),
     }
 

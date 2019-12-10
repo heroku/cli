@@ -11,15 +11,15 @@ describe('ci:info', () => {
 
   test
   .command(['ci:info'])
-  .catch(e => {
-    expect(e.message).to.contain('Missing 1 required arg:\ntest-run\nSee more help with --help')
+  .catch(error => {
+    expect(error.message).to.contain('Missing 1 required arg:\ntest-run\nSee more help with --help')
   })
   .it('errors when not specifying a test run')
 
   test
   .command(['ci:info', `${testRun.number}`])
-  .catch(e => {
-    expect(e.message).to.contain('Required flag:  --pipeline PIPELINE or --app APP')
+  .catch(error => {
+    expect(error.message).to.contain('Required flag:  --pipeline PIPELINE or --app APP')
   })
   .it('errors when not specifying a pipeline or an app')
 
