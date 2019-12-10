@@ -2,6 +2,7 @@ import {expect, test} from '@oclif/test'
 
 import * as foreman from '../../../src/fork-foreman'
 
+// eslint-disable-next-line node/no-missing-require
 const procfile = require('../../../src/load-foreman-procfile')
 
 describe('local', () => {
@@ -117,7 +118,7 @@ describe('local', () => {
     describe('with too many arguments', function () {
       test
       .command(['local', 'Procfile.other', 'extra-argument'])
-      .catch(e => expect(e.message).to.contain('Unexpected argument: extra-argument'))
+      .catch(error => expect(error.message).to.contain('Unexpected argument: extra-argument'))
       .it('will display an error')
     })
   })
@@ -125,15 +126,15 @@ describe('local', () => {
   describe('with deprecated flags', function () {
     test
     .command(['local', '--restart'])
-    .catch(e => {
-      expect(e.message).to.equal('--restart is no longer available\nUse forego instead: https://github.com/ddollar/forego')
+    .catch(error => {
+      expect(error.message).to.equal('--restart is no longer available\nUse forego instead: https://github.com/ddollar/forego')
     })
     .it('errors with deprecated restart flag message')
 
     test
     .command(['local', '--concurrency', 'web=2'])
-    .catch(e => {
-      expect(e.message).to.equal('--concurrency is no longer available\nUse forego instead: https://github.com/ddollar/forego')
+    .catch(error => {
+      expect(error.message).to.equal('--concurrency is no longer available\nUse forego instead: https://github.com/ddollar/forego')
     })
     .it('errors with deprecated concurrency flag')
   })

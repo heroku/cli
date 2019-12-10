@@ -2,18 +2,6 @@ import {fork as forkChildProcess} from 'child_process'
 import * as fs from 'fs'
 import * as path from 'path'
 
-export function fork(argv: string[]): Promise<void> {
-  const script = getForemanScriptPath()
-  const nf = forkChildProcess(script, argv, {stdio: 'inherit'})
-
-  return new Promise(resolve => {
-    nf.on('exit', function (code: number) {
-      if (code !== 0) process.exit(code)
-      resolve()
-    })
-  })
-}
-
 // depending if this is being ran before or after compilation
 // we need to check for `.ts` and `.js` extensions and use
 // the appropriate one.
@@ -24,9 +12,24 @@ function getForemanScriptPath() {
 
   if (fs.existsSync(withJsExtension)) {
     return withJsExtension
-  } if (fs.existsSync(withTsExtension)) {
+  }
+
+  if (fs.existsSync(withTsExtension)) {
     return withTsExtension
   }
 
   throw new Error(`Path to ${file} not found`)
+}
+
+export function fork(argv: string[]): Promise<void> {
+  const script = getForemanScriptPath()
+  const nf = forkChildProcess(script, argv, {stdio: 'inherit'})
+
+  return new Promise(resolve => {
+    nf.on('exit', function (code: number) {
+      // eslint-disable-next-line unicorn/no-process-exit, no-process-exit
+      if (code !== 0) process.exit(code)
+      resolve()
+    })
+  })
 }

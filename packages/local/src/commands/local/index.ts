@@ -3,6 +3,7 @@ import {Command, flags} from '@oclif/command'
 
 import {fork as foreman} from '../../fork-foreman'
 
+// eslint-disable-next-line node/no-missing-require
 const Procfile: any = require('../../load-foreman-procfile')
 
 export default class Index extends Command {
