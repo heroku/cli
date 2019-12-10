@@ -13,7 +13,9 @@ export async function getPipeline(flags: any, command: Command) {
   if (flags && flags.pipeline) {
     pipeline = await disambiguatePipeline(flags.pipeline, command)
 
-    if (pipeline.pipeline) { pipeline = pipeline.pipeline } // in case prompt returns an object like { pipeline: { ... } }
+    if (pipeline.pipeline) {
+      pipeline = pipeline.pipeline
+    } // in case prompt returns an object like { pipeline: { ... } }
   } else {
     const {body: coupling} = await command.heroku.get<Heroku.PipelineCoupling>(`/apps/${flags.app}/pipeline-couplings`)
     if ((coupling) && (coupling.pipeline)) {
@@ -31,25 +33,26 @@ export async function disambiguatePipeline(pipelineIDOrName: any, command: Comma
   if (isUUID(pipelineIDOrName)) {
     const {body: pipeline} = await command.heroku.get<Heroku.Pipeline>(`/pipelines/${pipelineIDOrName}`, {headers})
     return pipeline
-  } else {
-    const {body: pipelines} = await command.heroku.get<Heroku.Pipeline>(`/pipelines?eq[name]=${pipelineIDOrName}`, {headers})
+  }
+  const {body: pipelines} = await command.heroku.get<Heroku.Pipeline>(`/pipelines?eq[name]=${pipelineIDOrName}`, {headers})
 
-    switch (pipelines.length) {
-    case 0:
-      command.error('Pipeline not found')
-      break
-    case 1:
-      return pipelines[0]
-    default:
-      let choices = pipelines.map(function (x: Heroku.Pipeline) { return {name: new Date(x.created_at!), value: x} })
-      let questions = [{
-        type: 'list',
-        name: 'pipeline',
-        message: `Which ${pipelineIDOrName} pipeline?`,
-        choices
-      }]
+  switch (pipelines.length) {
+  case 0:
+    command.error('Pipeline not found')
+    break
+  case 1:
+    return pipelines[0]
+  default:
+    const choices = pipelines.map(function (x: Heroku.Pipeline) {
+      return {name: new Date(x.created_at!), value: x}
+    })
+    const questions = [{
+      type: 'list',
+      name: 'pipeline',
+      message: `Which ${pipelineIDOrName} pipeline?`,
+      choices,
+    }]
 
-      return prompt(questions)
-    }
+    return prompt(questions)
   }
 }
