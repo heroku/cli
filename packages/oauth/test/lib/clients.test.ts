@@ -2,8 +2,6 @@ import {expect, test} from '@oclif/test'
 
 import {validateURL} from '../../src/lib/clients'
 
-// tslint:disable:no-http-string
-
 describe('validateURL', () => {
   describe('secure URLs', () => {
     [
@@ -35,7 +33,7 @@ describe('validateURL', () => {
       ].forEach(({uri}) => {
         test
         .do(() => validateURL(uri))
-        .catch(e => expect(e.message).to.equal(
+        .catch(error => expect(error.message).to.equal(
           'Unsupported callback URL. Clients have to use HTTPS for non-local addresses.',
         ))
         .it(`fails when insecure (${uri})`)
@@ -45,7 +43,7 @@ describe('validateURL', () => {
     describe('invalid URLs', () => {
       test
       .do(() => validateURL('foo'))
-      .catch(e => expect(e.message).to.equal('Invalid URL'))
+      .catch(error => expect(error.message).to.equal('Invalid URL'))
       .it('fails when invalid')
     })
   })

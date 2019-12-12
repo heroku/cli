@@ -41,7 +41,7 @@ describe('clients:update', () => {
     test
     .stdout()
     .command(['clients:update', 'f6e8d969-129f-42d2-854b-c2eca9d5a42e'])
-    .catch(e => expect(e.message).to.equal(
+    .catch(error => expect(error.message).to.equal(
       'No changes provided.',
     ))
     .it('errors with no changes provided')
