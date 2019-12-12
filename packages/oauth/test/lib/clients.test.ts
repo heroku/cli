@@ -18,12 +18,12 @@ describe('validateURL', () => {
       {uri: 'http://127.0.0.1'},
       {uri: 'http://127.0.0.1:8080/foo'},
       {uri: 'http://192.168.0.1'},
-      {uri: 'http://192.168.0.1:8080/foo'}
+      {uri: 'http://192.168.0.1:8080/foo'},
     ].forEach(({uri}) => {
       test
-        .it(`passes when secure (${uri})`, () => {
-          expect(validateURL(uri))
-        })
+      .it(`passes when secure (${uri})`, () => {
+        expect(validateURL(uri))
+      })
     })
 
     describe('insecure URLs', () => {
@@ -31,22 +31,22 @@ describe('validateURL', () => {
         {uri: 'http://heroku.com'},
         {uri: 'http://10.foo.com'},
         {uri: 'http://127.foo.com'},
-        {uri: 'http://192.foo.com'}
+        {uri: 'http://192.foo.com'},
       ].forEach(({uri}) => {
         test
-          .do(() => validateURL(uri))
-          .catch(e => expect(e.message).to.equal(
-            'Unsupported callback URL. Clients have to use HTTPS for non-local addresses.'
-          ))
-          .it(`fails when insecure (${uri})`)
+        .do(() => validateURL(uri))
+        .catch(e => expect(e.message).to.equal(
+          'Unsupported callback URL. Clients have to use HTTPS for non-local addresses.',
+        ))
+        .it(`fails when insecure (${uri})`)
       })
     })
 
     describe('invalid URLs', () => {
       test
-        .do(() => validateURL('foo'))
-        .catch(e => expect(e.message).to.equal('Invalid URL'))
-        .it('fails when invalid')
+      .do(() => validateURL('foo'))
+      .catch(e => expect(e.message).to.equal('Invalid URL'))
+      .it('fails when invalid')
     })
   })
 })

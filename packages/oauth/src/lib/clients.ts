@@ -1,6 +1,6 @@
 'use strict'
 
-let url = require('url')
+const url = require('url')
 
 function insecureURL(uri: any): boolean {
   if (uri.protocol === 'https:') return false
@@ -12,7 +12,7 @@ function insecureURL(uri: any): boolean {
 }
 
 export function validateURL(uri: string): string {
-  let u = url.parse(uri)
+  const u = url.parse(uri)
   if (!u.protocol) throw new Error('Invalid URL')
   if (insecureURL(u)) throw new Error('Unsupported callback URL. Clients have to use HTTPS for non-local addresses.')
   return uri

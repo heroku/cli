@@ -8,7 +8,7 @@ export default class ClientsRotate extends Command {
 
   static flags = {
     json: flags.boolean({char: 'j', description: 'output in json format'}),
-    shell: flags.boolean({char: 's', description: 'output in shell format'})
+    shell: flags.boolean({char: 's', description: 'output in shell format'}),
   }
 
   static args = [{name: 'id', required: true}]
@@ -18,8 +18,8 @@ export default class ClientsRotate extends Command {
 
     cli.action.start(`Updating ${color.cyan(args.id)}`)
 
-    let {body: client} = await this.heroku.post<Heroku.OAuthClient>(
-      `/oauth/clients/${encodeURIComponent(args.id)}/actions/rotate-credentials`
+    const {body: client} = await this.heroku.post<Heroku.OAuthClient>(
+      `/oauth/clients/${encodeURIComponent(args.id)}/actions/rotate-credentials`,
     )
 
     cli.action.stop()
