@@ -22,16 +22,17 @@
   "devDependencies": {
     "@oclif/dev-cli": "^1",
     "@oclif/test": "^1",
-    "@oclif/tslint": "^3",
     "@types/chai": "^4",
     "@types/mocha": "^5",
     "@types/node": "^10",
     "chai": "^4",
+    "eslint": "^6.7.2",
+    "eslint-config-oclif": "^3.1.0",
+    "eslint-config-oclif-typescript": "^0.1.0",
     "globby": "^10",
     "mocha": "^5",
     "nyc": "^13",
     "ts-node": "^8",
-    "tslint": "^5",
     "typescript": "3.3.3333"
   },
   "engines": {
