@@ -46,8 +46,6 @@ export default class Create extends Command {
     let name
     let stage
     let owner: any
-    let ownerID
-    let ownerType
     const guesses = infer(flags.app)
     const questions: any = []
 
@@ -76,12 +74,12 @@ export default class Create extends Command {
     }
 
     const teamName = flags.team
-    ownerType = teamName ? 'team' : 'user'
+    const ownerType = teamName ? 'team' : 'user'
 
     // If team or org is not specified, we assign ownership to the user creating
     owner = teamName ? await getTeam(this.heroku, teamName) : await getAccountInfo(this.heroku)
     owner = owner.body
-    ownerID = owner.id
+    const ownerID = owner.id
 
     owner = {id: ownerID, type: ownerType}
 

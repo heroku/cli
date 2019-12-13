@@ -5,10 +5,6 @@ describe('reviewapps:enable', () => {
     id: '123-pipeline',
     name: 'my-pipeline',
   }
-  const app = {
-    id: '123-app',
-    name: 'my-app',
-  }
 
   describe('with repos api enabled', () => {
     const feature = {

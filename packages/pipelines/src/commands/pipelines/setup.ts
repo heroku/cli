@@ -1,3 +1,4 @@
+
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import cli from 'cli-ux'
@@ -16,6 +17,7 @@ import pollAppSetups from '../../setup/poll-app-setups'
 import setupPipeline from '../../setup/setup-pipeline'
 import {nameAndRepo, STAGING_APP_INDICATOR} from '../../setup/validate'
 
+// eslint-disable-next-line new-cap
 const debug = Debug('pipelines:setup')
 
 export default class Setup extends Command {
@@ -53,7 +55,7 @@ export default class Setup extends Command {
 
     const errors = nameAndRepo(args)
 
-    if (errors.length) {
+    if (errors.length !== 0) {
       this.error(errors.join(', '))
       return
     }
@@ -104,9 +106,9 @@ export default class Setup extends Command {
     try {
       await setup
       await cli.open(`https://dashboard.heroku.com/pipelines/${pipeline.id}`)
-    } catch (e) {
-      debug(e)
-      cli.error(e)
+    } catch (error) {
+      debug(error)
+      cli.error(error)
     } finally {
       cli.action.stop()
     }

@@ -1,6 +1,8 @@
+
 import Heroku from '@heroku-cli/schema'
 import cli from 'cli-ux'
-// tslint:disable-next-line: no-unused
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import http from 'http-call'
 
 import {createAppSetup} from '../api'

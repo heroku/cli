@@ -1,6 +1,6 @@
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-// tslint:disable-next-line: no-unused
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import http from 'http-call'
 import keyBy from 'lodash.keyby'
 
@@ -10,6 +10,12 @@ export const PIPELINES_HEADER = `${V3_HEADER}.pipelines`
 
 export function createAppSetup(heroku: APIClient, body: {body: any}) {
   return heroku.post('/app-setups', {body})
+}
+
+export function postCoupling(heroku: APIClient, pipeline: any, app: any, stage: string) {
+  return heroku.post('/pipeline-couplings', {
+    body: {app, pipeline, stage},
+  })
 }
 
 export function createCoupling(heroku: APIClient, pipeline: any, app: string, stage: string) {
@@ -90,9 +96,13 @@ export function getAppSetup(heroku: APIClient, buildId: any) {
   return heroku.get(`/app-setups/${buildId}`)
 }
 
+function listCouplings(heroku: APIClient, pipelineId: string) {
+  return heroku.get<Array<Heroku.PipelineCoupling>>(`/pipelines/${pipelineId}/pipeline-couplings`)
+}
+
 export function listPipelineApps(heroku: APIClient, pipelineId: string): Promise<Array<Heroku.App>> {
   return listCouplings(heroku, pipelineId).then(({body: couplings}) => {
-    const appIds = couplings.map(coupling => coupling.app && coupling.app.id || '')
+    const appIds = couplings.map(coupling => (coupling.app && coupling.app.id) || '')
 
     return getAppFilter(heroku, appIds).then(({body: apps}) => {
       const couplingsByAppId = keyBy(couplings, coupling => coupling.app && coupling.app.id)
@@ -106,18 +116,8 @@ export function listPipelineApps(heroku: APIClient, pipelineId: string): Promise
   })
 }
 
-function listCouplings(heroku: APIClient, pipelineId: string) {
-  return heroku.get<Array<Heroku.PipelineCoupling>>(`/pipelines/${pipelineId}/pipeline-couplings`)
-}
-
 export function patchCoupling(heroku: APIClient, id: string, stage: string) {
   return heroku.patch(`/pipeline-couplings/${id}`, {body: {stage}})
-}
-
-export function postCoupling(heroku: APIClient, pipeline: any, app: any, stage: string) {
-  return heroku.post('/pipeline-couplings', {
-    body: {app, pipeline, stage},
-  })
 }
 
 export function removeCoupling(heroku: APIClient, app: string) {

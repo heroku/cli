@@ -37,11 +37,13 @@ export default async function disambiguate(heroku: APIClient, pipelineIDOrName: 
         choices,
       }]
 
+      // eslint-disable-next-line no-async-promise-executor
       pipeline = await new Promise(async function (resolve, reject) {
         const answers: any = await prompt(questions)
         if (answers.pipeline) {
           resolve(answers.pipeline)
         } else {
+          // eslint-disable-next-line prefer-promise-reject-errors
           reject('Must pick a pipeline')
         }
       })

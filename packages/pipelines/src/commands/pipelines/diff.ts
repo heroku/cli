@@ -12,11 +12,17 @@ const PROMOTION_ORDER = ['development', 'staging', 'production']
 async function diff(targetApp: AppInfo, downstreamApp: AppInfo, githubToken: string, herokuUserAgent: string) {
   if (!downstreamApp.repo) {
     return cli.log(`\n${color.app(targetApp.name)} was not compared to ${color.app(downstreamApp.name)} as ${color.app(downstreamApp.name)} is not connected to GitHub`)
-  } if (downstreamApp.repo !== targetApp.repo) {
+  }
+
+  if (downstreamApp.repo !== targetApp.repo) {
     return cli.log(`\n${color.app(targetApp.name)} was not compared to ${color.app(downstreamApp.name)} as ${color.app(downstreamApp.name)} is not connected to the same GitHub repo as ${color.app(targetApp.name)}`)
-  } if (!downstreamApp.hash) {
+  }
+
+  if (!downstreamApp.hash) {
     return cli.log(`\n${color.app(targetApp.name)} was not compared to ${color.app(downstreamApp.name)} as ${color.app(downstreamApp.name)} does not have any releases`)
-  } if (downstreamApp.hash === targetApp.hash) {
+  }
+
+  if (downstreamApp.hash === targetApp.hash) {
     return cli.log(`\n${color.app(targetApp.name)} is up to date with ${color.app(downstreamApp.name)}`)
   }
 
@@ -53,7 +59,7 @@ async function diff(targetApp: AppInfo, downstreamApp: AppInfo, githubToken: str
     })
     cli.log(`\nhttps://github.com/${path}`)
   // tslint:disable-next-line: no-unused
-  } catch (err) {
+  } catch (error) {
     cli.log(`\n${color.app(targetApp.name)} was not compared to ${color.app(downstreamApp.name)} because we were unable to perform a diff`)
     cli.log('are you sure you have pushed your latest commits to GitHub?')
   }
@@ -98,7 +104,7 @@ export default class PipelinesDiff extends Command {
         headers: {Accept: V3_HEADER},
       }).then(res => res.body)
     // tslint:disable-next-line: no-unused
-    } catch (err) {
+    } catch (error) {
       return {name: appName, repo: githubApp.repo, hash: undefined}
     }
     return {name: appName, repo: githubApp.repo, hash: slug.commit!}
@@ -158,7 +164,9 @@ export default class PipelinesDiff extends Command {
     if (!targetAppInfo.repo) {
       const command = `heroku pipelines:open ${coupling.pipeline!.name}`
       return cli.error(`${targetAppName} does not seem to be connected to GitHub!\nRun ${color.cyan(command)} and "Connect to GitHub".`)
-    } if (!targetAppInfo.hash) {
+    }
+
+    if (!targetAppInfo.hash) {
       return cli.error(`No release was found for ${targetAppName}, unable to diff`)
     }
 
@@ -167,6 +175,7 @@ export default class PipelinesDiff extends Command {
     // Diff [{target, downstream[0]}, {target, downstream[1]}, .., {target, downstream[n]}]
     const downstreamAppsInfo = appInfo.slice(1)
     for (const downstreamAppInfo of downstreamAppsInfo) {
+      // eslint-disable-next-line no-await-in-loop
       await diff(
         targetAppInfo, downstreamAppInfo, githubAccount.github.token, this.config.userAgent,
       )

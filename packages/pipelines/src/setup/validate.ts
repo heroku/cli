@@ -6,17 +6,6 @@ const ERR_REPO_FORMAT = 'Repository name must be in the format organization/repo
 
 const REPO_REGEX = /.+\/.+/
 
-export function nameAndRepo({name, repo}: {name?: string; repo?: string}) {
-  const errors = []
-  const [nameIsValid, nameMsg] = pipelineName(name || '')
-  const [repoIsValid, repoMsg] = repoName(repo || '')
-  if (name && !nameIsValid) errors.push(nameMsg)
-  if (repo && !repoIsValid) errors.push(repoMsg)
-  return errors
-}
-
-type ValidatedResponse = [true] | [false, string]
-
 export function pipelineName(name: any): ValidatedResponse {
   const isValid = name.length >= PIPELINE_MIN_LENGTH &&
     name.length <= PIPELINE_MAX_LENGTH
@@ -28,3 +17,14 @@ export function repoName(repo: any): ValidatedResponse {
   const isValid = Boolean(repo.match(REPO_REGEX))
   return isValid ? [isValid] : [isValid, ERR_REPO_FORMAT]
 }
+
+export function nameAndRepo({name, repo}: {name?: string; repo?: string}) {
+  const errors = []
+  const [nameIsValid, nameMsg] = pipelineName(name || '')
+  const [repoIsValid, repoMsg] = repoName(repo || '')
+  if (name && !nameIsValid) errors.push(nameMsg)
+  if (repo && !repoIsValid) errors.push(repoMsg)
+  return errors
+}
+
+type ValidatedResponse = [true] | [false, string]

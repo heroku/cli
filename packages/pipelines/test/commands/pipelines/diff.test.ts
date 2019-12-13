@@ -91,8 +91,8 @@ describe('pipelines:diff', function () {
       .reply(404, {message: 'Not found.'})
     })
     .command(['pipelines:diff', `--app=${targetApp.name}`])
-    .catch(err => {
-      expect(err.message).to.contain('to be a part of any pipeline')
+    .catch(error => {
+      expect(error.message).to.contain('to be a part of any pipeline')
     })
     .it('should return an error')
   })
@@ -107,8 +107,8 @@ describe('pipelines:diff', function () {
       .reply(200, [targetApp])
     })
     .command(['pipelines:diff', `--app=${targetApp.name}`])
-    .catch(err => {
-      expect(err.message).to.contain('no downstream apps')
+    .catch(error => {
+      expect(error.message).to.contain('no downstream apps')
     })
     .it('should return an error')
   })
@@ -134,8 +134,8 @@ describe('pipelines:diff', function () {
       .reply(404, {message: 'Not found.'})
     })
     .command(['pipelines:diff', `--app=${targetApp.name}`])
-    .catch(err => {
-      expect(err.message).to.contain('connected to GitHub')
+    .catch(error => {
+      expect(error.message).to.contain('connected to GitHub')
     })
     .it('should return an error if the target app is not connected to GitHub')
 
@@ -146,8 +146,8 @@ describe('pipelines:diff', function () {
       .reply(200, targetGithubApp)
     })
     .command(['pipelines:diff', `--app=${targetApp.name}`])
-    .catch(err => {
-      expect(err.message).to.contain('No release was found')
+    .catch(error => {
+      expect(error.message).to.contain('No release was found')
     })
     .it('should return an error if the target app has a release with no slug')
 
@@ -163,8 +163,8 @@ describe('pipelines:diff', function () {
       .reply(200, [])
     })
     .command(['pipelines:diff', `--app=${targetApp.name}`])
-    .catch(err => {
-      expect(err.message).to.contain('No release was found')
+    .catch(error => {
+      expect(error.message).to.contain('No release was found')
     })
     .it('should return an error if the target app has no release')
   })
