@@ -12,44 +12,44 @@ const PROMOTION_ORDER = ['development', 'staging', 'production']
 async function diff(targetApp: AppInfo, downstreamApp: AppInfo, githubToken: string, herokuUserAgent: string) {
   if (!downstreamApp.repo) {
     return cli.log(`\n${color.app(targetApp.name)} was not compared to ${color.app(downstreamApp.name)} as ${color.app(downstreamApp.name)} is not connected to GitHub`)
-  } else if (downstreamApp.repo !== targetApp.repo) {
+  } if (downstreamApp.repo !== targetApp.repo) {
     return cli.log(`\n${color.app(targetApp.name)} was not compared to ${color.app(downstreamApp.name)} as ${color.app(downstreamApp.name)} is not connected to the same GitHub repo as ${color.app(targetApp.name)}`)
-  } else if (!downstreamApp.hash) {
+  } if (!downstreamApp.hash) {
     return cli.log(`\n${color.app(targetApp.name)} was not compared to ${color.app(downstreamApp.name)} as ${color.app(downstreamApp.name)} does not have any releases`)
-  } else if (downstreamApp.hash === targetApp.hash) {
+  } if (downstreamApp.hash === targetApp.hash) {
     return cli.log(`\n${color.app(targetApp.name)} is up to date with ${color.app(downstreamApp.name)}`)
   }
 
   // Do the actual Github diff
   try {
     const path = `${targetApp.repo}/compare/${downstreamApp.hash}...${targetApp.hash}`
-    const headers: { authorization: string, 'user-agent'?: string} = {authorization: 'token ' + githubToken}
+    const headers: { authorization: string; 'user-agent'?: string} = {authorization: 'token ' + githubToken}
 
     if (herokuUserAgent) {
       headers['user-agent'] = herokuUserAgent
     }
 
     const githubDiff: any = await HTTP.get(`https://api.github.com/repos/${path}`, {
-      headers
+      headers,
     }).then(res => res.body)
 
     cli.log('')
     cli.styledHeader(`${color.app(targetApp.name)} is ahead of ${color.app(downstreamApp.name)} by ${githubDiff.ahead_by} commit${githubDiff.ahead_by === 1 ? '' : 's'}`)
-    let mapped = githubDiff.commits.map((commit: any) => {
+    const mapped = githubDiff.commits.map((commit: any) => {
       return {
         sha: commit.sha.substring(0, 7),
         date: commit.commit.author.date,
         author: commit.commit.author.name,
-        message: commit.commit.message.split('\n')[0]
+        message: commit.commit.message.split('\n')[0],
       }
     }).reverse()
     cli.table(mapped, {
       sha: {
-        header: 'SHA'
+        header: 'SHA',
       },
       date: {},
       author: {},
-      message: {}
+      message: {},
     })
     cli.log(`\nhttps://github.com/${path}`)
   // tslint:disable-next-line: no-unused
@@ -60,30 +60,31 @@ async function diff(targetApp: AppInfo, downstreamApp: AppInfo, githubToken: str
 }
 
 interface AppInfo {
-  name: string
-  repo?: string
-  hash?: string
+  name: string;
+  repo?: string;
+  hash?: string;
 }
 
 export default class PipelinesDiff extends Command {
   static description = 'compares the latest release of this app to its downstream app(s)'
+
   static examples = [
-    '$ heroku pipelines:diff -a my-app-staging'
+    '$ heroku pipelines:diff -a my-app-staging',
   ]
 
   static flags = {
     app: flags.app({required: true}),
-    remote: flags.remote()
+    remote: flags.remote(),
   }
 
   kolkrabbi = new KolkrabbiAPI(this.config.userAgent, this.heroku.auth)
 
   getAppInfo = async (appName: string, appId: string): Promise<AppInfo> => {
     // Find GitHub connection for the app
-    let githubApp = await this.kolkrabbi.getAppLink(appId)
-      .catch(() => {
-        return {name: appName, repo: null, hash: null}
-      })
+    const githubApp = await this.kolkrabbi.getAppLink(appId)
+    .catch(() => {
+      return {name: appName, repo: null, hash: null}
+    })
 
     // Find the commit hash of the latest release for this app
     let slug: Heroku.Slug
@@ -94,7 +95,7 @@ export default class PipelinesDiff extends Command {
         throw new Error(`no release found for ${appName}`)
       }
       slug = await this.heroku.get<Heroku.Slug>(`/apps/${appId}/slugs/${release.slug.id}`, {
-        headers: {Accept: V3_HEADER}
+        headers: {Accept: V3_HEADER},
       }).then(res => res.body)
     // tslint:disable-next-line: no-unused
     } catch (err) {
@@ -108,8 +109,8 @@ export default class PipelinesDiff extends Command {
     const targetAppName = flags.app
 
     const coupling = await getCoupling(this.heroku, targetAppName)
-      .then(res => res.body)
-      .catch(() => undefined)
+    .then(res => res.body)
+    .catch(() => undefined)
 
     if (!coupling) {
       cli.error(`This app (${targetAppName}) does not seem to be a part of any pipeline`)
@@ -137,7 +138,7 @@ export default class PipelinesDiff extends Command {
       return app.coupling.stage === downstreamStage
     })
 
-    if (downstreamApps.length < 1) {
+    if (downstreamApps.length === 0) {
       return cli.error(`Cannot diff ${targetAppName} as there are no downstream apps configured`)
     }
 
@@ -153,11 +154,11 @@ export default class PipelinesDiff extends Command {
     cli.action.stop()
 
     // Verify the target app
-    let targetAppInfo = appInfo[0]
+    const targetAppInfo = appInfo[0]
     if (!targetAppInfo.repo) {
-      let command = `heroku pipelines:open ${coupling.pipeline!.name}`
+      const command = `heroku pipelines:open ${coupling.pipeline!.name}`
       return cli.error(`${targetAppName} does not seem to be connected to GitHub!\nRun ${color.cyan(command)} and "Connect to GitHub".`)
-    } else if (!targetAppInfo.hash) {
+    } if (!targetAppInfo.hash) {
       return cli.error(`No release was found for ${targetAppName}, unable to diff`)
     }
 
@@ -165,9 +166,9 @@ export default class PipelinesDiff extends Command {
     const githubAccount = await this.kolkrabbi.getAccount()
     // Diff [{target, downstream[0]}, {target, downstream[1]}, .., {target, downstream[n]}]
     const downstreamAppsInfo = appInfo.slice(1)
-    for (let downstreamAppInfo of downstreamAppsInfo) {
+    for (const downstreamAppInfo of downstreamAppsInfo) {
       await diff(
-        targetAppInfo, downstreamAppInfo, githubAccount.github.token, this.config.userAgent
+        targetAppInfo, downstreamAppInfo, githubAccount.github.token, this.config.userAgent,
       )
     }
   }

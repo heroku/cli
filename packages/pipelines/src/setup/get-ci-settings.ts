@@ -1,9 +1,9 @@
 import cli from 'cli-ux'
 
 export default async function getCISettings(yes: any, organization: any) {
-  let settings = {
+  const settings = {
     ci: true,
-    organization: undefined
+    organization: undefined,
   }
 
   if (yes) {

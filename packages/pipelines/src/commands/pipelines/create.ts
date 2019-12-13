@@ -17,7 +17,7 @@ export default class Create extends Command {
 
   static examples = [
     '$ heroku pipelines:create -a my-app-staging',
-    '$ heroku pipelines:create my-pipeline -a my-app-staging'
+    '$ heroku pipelines:create my-pipeline -a my-app-staging',
   ]
 
   static flags = {
@@ -27,17 +27,17 @@ export default class Create extends Command {
       name: 'stage',
       char: 's',
       description: 'stage of first app in pipeline',
-      completion: StageCompletion
+      completion: StageCompletion,
     }),
     team: flags.team({
-      description: 'the team which will own the apps'
-    })
+      description: 'the team which will own the apps',
+    }),
   }
 
   static args = [{
     name: 'name',
     description: 'name of pipeline (defaults to basename of the app)',
-    required: false
+    required: false,
   }]
 
   async run() {
@@ -48,8 +48,8 @@ export default class Create extends Command {
     let owner: any
     let ownerID
     let ownerType
-    let guesses = infer(flags.app)
-    let questions: any = []
+    const guesses = infer(flags.app)
+    const questions: any = []
 
     const app = flags.app
 
@@ -60,7 +60,7 @@ export default class Create extends Command {
         type: 'input',
         name: 'name',
         message: 'Pipeline name',
-        default: guesses[0]
+        default: guesses[0],
       })
     }
     if (flags.stage) {
@@ -71,7 +71,7 @@ export default class Create extends Command {
         name: 'stage',
         message: `Stage of ${app}`,
         choices: stages,
-        default: guesses[1]
+        default: guesses[1],
       })
     }
 
@@ -85,12 +85,12 @@ export default class Create extends Command {
 
     owner = {id: ownerID, type: ownerType}
 
-    let answers: any = await prompt(questions)
+    const answers: any = await prompt(questions)
     if (answers.name) name = answers.name
     if (answers.stage) stage = answers.stage
 
     cli.action.start(`Creating ${name} pipeline`)
-    let {body: pipeline}: any = await createPipeline(this.heroku, name, owner)
+    const {body: pipeline}: any = await createPipeline(this.heroku, name, owner)
     cli.action.stop()
 
     cli.action.start(`Adding ${color.app(app)} to ${color.pipeline(pipeline.name)} pipeline as ${stage}`)

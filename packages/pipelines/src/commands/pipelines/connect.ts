@@ -13,7 +13,7 @@ export default class Connect extends Command {
   static description = 'connect a github repo to an existing pipeline'
 
   static examples = [
-    '$ heroku pipelines:connect my-pipeline -r githuborg/reponame'
+    '$ heroku pipelines:connect my-pipeline -r githuborg/reponame',
   ]
 
   static flags = {
@@ -21,9 +21,10 @@ export default class Connect extends Command {
       name: 'repo',
       char: 'r',
       description: 'the GitHub repository to connect to',
-      required: true
-    })
+      required: true,
+    }),
   }
+
   static args = [{
     name: 'name',
     description: 'name of pipeline',
@@ -33,9 +34,9 @@ export default class Connect extends Command {
   async run() {
     const {args, flags} = this.parse(Connect)
 
-    let combinedInputs = {
+    const combinedInputs = {
       name: args.name,
-      repo: flags.repo
+      repo: flags.repo,
     }
 
     const errors = nameAndRepo({repo: flags.repo})
@@ -49,9 +50,9 @@ export default class Connect extends Command {
     const github = new GitHubAPI(this.config.userAgent, await getGitHubToken(kolkrabbi))
 
     const {
-        name: pipelineName,
-        repo: repoName
-      } = await getNameAndRepo(combinedInputs)
+      name: pipelineName,
+      repo: repoName,
+    } = await getNameAndRepo(combinedInputs)
 
     const repo = await getRepo(github, repoName)
 

@@ -18,32 +18,33 @@ async function getAccountOwner(heroku: APIClient, name: string) {
 
 function getOwner(heroku: APIClient, name: string) {
   return getTeamOwner(heroku, name)
-    .catch(() => {
-      return getAccountOwner(heroku, name)
-    })
-    .catch(() => {
-      throw new Error(`Cannot find a team or account for "${name}"`)
-    })
+  .catch(() => {
+    return getAccountOwner(heroku, name)
+  })
+  .catch(() => {
+    throw new Error(`Cannot find a team or account for "${name}"`)
+  })
 }
 
 export default class PipelinesTransfer extends Command {
   static description = 'transfer ownership of a pipeline'
+
   static examples = [
     '$ heroku pipelines:transfer admin@example.com -p my-pipeline',
-    '$ heroku pipelines:transfer admin-team -p my-pipeline'
+    '$ heroku pipelines:transfer admin-team -p my-pipeline',
   ]
 
   static args = [
     {
       name: 'owner',
       description: 'the owner to transfer the pipeline to',
-      required: true
-    }
+      required: true,
+    },
   ]
 
   static flags = {
     pipeline: flags.pipeline({required: true}),
-    confirm: flags.string({char: 'c'})
+    confirm: flags.string({char: 'c'}),
   }
 
   async run() {

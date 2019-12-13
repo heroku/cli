@@ -5,7 +5,7 @@ import {isUUID} from 'validator'
 
 import {
   findPipelineByName,
-  getPipeline
+  getPipeline,
 } from './api'
 
 export default async function disambiguate(heroku: APIClient, pipelineIDOrName: string): Promise<Heroku.Pipeline> {
@@ -15,7 +15,7 @@ export default async function disambiguate(heroku: APIClient, pipelineIDOrName: 
     const result = (await getPipeline(heroku, pipelineIDOrName))
     pipeline = result.body
   } else {
-    let {body: pipelines} = await findPipelineByName(heroku, pipelineIDOrName)
+    const {body: pipelines} = await findPipelineByName(heroku, pipelineIDOrName)
 
     if (pipelines.length === 0) {
       throw new Error('Pipeline not found')
@@ -23,22 +23,22 @@ export default async function disambiguate(heroku: APIClient, pipelineIDOrName: 
       pipeline = pipelines[0]
     } else {
       // Disambiguate
-      let choices = pipelines.map(x => {
+      const choices = pipelines.map(x => {
         return {
           name: new Date(x.created_at!).toString(),
-          value: x
+          value: x,
         }
       })
 
-      let questions = [{
+      const questions = [{
         type: 'list',
         name: 'pipeline',
         message: `Which ${pipelineIDOrName} pipeline?`,
-        choices
+        choices,
       }]
 
       pipeline = await new Promise(async function (resolve, reject) {
-        let answers: any = await prompt(questions)
+        const answers: any = await prompt(questions)
         if (answers.pipeline) {
           resolve(answers.pipeline)
         } else {
