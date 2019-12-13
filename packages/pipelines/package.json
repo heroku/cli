@@ -22,7 +22,6 @@
     "@oclif/dev-cli": "^1",
     "@oclif/plugin-help": "^2",
     "@oclif/test": "^1",
-    "@oclif/tslint": "^3",
     "@types/chai": "^4",
     "@types/got": "^9.6.7",
     "@types/lodash.keyby": "^4.6.6",
@@ -31,6 +30,9 @@
     "@types/node": "^10",
     "chai": "^4",
     "debug": "^4.1.1",
+    "eslint": "^6.7.2",
+    "eslint-config-oclif": "^3.1.0",
+    "eslint-config-oclif-typescript": "^0.1.0",
     "globby": "^8",
     "mocha": "^5",
     "nock": "^10.0.6",
@@ -38,7 +40,6 @@
     "sinon": "^7.4.1",
     "ts-node": "^8",
     "tslib": "^1",
-    "tslint": "^5",
     "typescript": "3.3.3333"
   },
   "engines": {
