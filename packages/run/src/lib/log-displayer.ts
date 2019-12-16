@@ -8,24 +8,23 @@ import colorize from './colorize'
 import liner from './line-transform'
 
 interface LogDisplayerOptions {
-  app: string,
-  dyno: string,
-  lines?: number
-  tail: boolean,
-  source?: string
+  app: string;
+  dyno: string;
+  lines?: number;
+  tail: boolean;
+  source?: string;
 }
 
 function readLogs(logplexURL: string) {
-  let u = url.parse(logplexURL)
+  const u = url.parse(logplexURL)
   if (u.query && u.query.includes('srv')) {
     return readLogsV1(logplexURL)
-  } else {
-    return readLogsV2(logplexURL)
   }
+  return readLogsV2(logplexURL)
 }
 
 async function readLogsV1(logplexURL: string) {
-  let {response} = await HTTP.stream(logplexURL)
+  const {response} = await HTTP.stream(logplexURL)
   return new Promise(function (resolve, reject) {
     response.setEncoding('utf8')
     liner.setEncoding('utf8')
@@ -45,11 +44,11 @@ function readLogsV2(logplexURL: string) {
     const es = new EventSource(logplexURL, {
       proxy,
       headers: {
-        'User-Agent': userAgent
-      }
+        'User-Agent': userAgent,
+      },
     })
 
-    es.onerror = function (err) {
+    es.addEventListener('error', function (err) {
       if (err && (err.status || err.message)) {
         const msg = (isTail && (err.status === 404 || err.status === 403)) ?
           'Log stream timed out. Please try again.' :
@@ -64,13 +63,13 @@ function readLogsV2(logplexURL: string) {
       }
 
       // should only land here if --tail and no error status or message
-    }
+    })
 
-    es.onmessage = function (e) {
+    es.addEventListener('message', function (e) {
       e.data.trim().split(/\n+/).forEach(line => {
         cli.log(colorize(line))
       })
-    }
+    })
   })
 }
 
@@ -89,8 +88,8 @@ async function logDisplayer(heroku: APIClient, options: LogDisplayerOptions) {
       tail: options.tail,
       dyno: options.dyno,
       source: options.source,
-      lines: options.lines
-    }
+      lines: options.lines,
+    },
   })
 
   return readLogs(response.body.logplex_url)

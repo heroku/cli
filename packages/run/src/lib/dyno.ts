@@ -21,24 +21,24 @@ const wait = (ms: number) => new Promise(resolve => setTimeout(() => resolve(), 
 
 interface HerokuApiClientRun extends APIClient {
   options: IOptions & {
-    rejectUnauthorized?: boolean
-  }
+    rejectUnauthorized?: boolean;
+  };
 }
 
 interface DynoOpts {
-  'exit-code'?: boolean
-  'no-tty'?: boolean
-  app: string
-  attach?: boolean
-  command: string
-  dyno?: string
-  env?: string
-  heroku: APIClient
-  listen?: boolean
-  notify?: boolean
-  showStatus?: boolean
-  size?: string
-  type?: string
+  'exit-code'?: boolean;
+  'no-tty'?: boolean;
+  app: string;
+  attach?: boolean;
+  command: string;
+  dyno?: string;
+  env?: string;
+  heroku: APIClient;
+  listen?: boolean;
+  notify?: boolean;
+  showStatus?: boolean;
+  size?: string;
+  type?: string;
 }
 
 export default class Dyno extends Duplex {
@@ -49,16 +49,27 @@ export default class Dyno extends Duplex {
       /* tslint:enable:no-http-string */
     }
   }
+
   dyno?: APIDyno
+
   heroku: HerokuApiClientRun
+
   input: any
+
   p: any
+
   reject?: (reason?: any) => void
+
   resolve?: (value?: unknown) => void
+
   uri?: url.UrlWithStringQuery
+
   unpipeStdin: any
+
   useSSH: any
+
   private _notified?: boolean
+
   private _startedAt?: number
 
   constructor(public opts: DynoOpts) {
@@ -85,11 +96,11 @@ export default class Dyno extends Duplex {
   }
 
   _doStart(retries = 2): Promise<HTTP<unknown>> {
-    let command = this.opts['exit-code'] ? `${this.opts.command}; echo "\uFFFF heroku-command-exit-status: $?"` : this.opts.command
+    const command = this.opts['exit-code'] ? `${this.opts.command}; echo "\uFFFF heroku-command-exit-status: $?"` : this.opts.command
 
     return this.heroku.post(this.opts.dyno ? `/apps/${this.opts.app}/dynos/${this.opts.dyno}` : `/apps/${this.opts.app}/dynos`, {
       headers: {
-        Accept: this.opts.dyno ? 'application/vnd.heroku+json; version=3.run-inside' : 'application/vnd.heroku+json; version=3'
+        Accept: this.opts.dyno ? 'application/vnd.heroku+json; version=3.run-inside' : 'application/vnd.heroku+json; version=3',
       },
       body: {
         command,
@@ -97,36 +108,36 @@ export default class Dyno extends Duplex {
         size: this.opts.size,
         type: this.opts.type,
         env: this._env(),
-        force_no_tty: this.opts['no-tty']
+        force_no_tty: this.opts['no-tty'],
+      },
+    })
+    .then(dyno => {
+      this.dyno = dyno.body
+      if (this.opts.attach || this.opts.dyno) {
+        if (this.dyno.name && this.opts.dyno === undefined) {
+          this.opts.dyno = this.dyno.name
+        }
+        return this.attach()
+      } else if (this.opts.showStatus) {
+        cli.action.stop(this._status('done'))
       }
     })
-      .then(dyno => {
-        this.dyno = dyno.body
-        if (this.opts.attach || this.opts.dyno) {
-          if (this.dyno.name && this.opts.dyno === undefined) {
-            this.opts.dyno = this.dyno.name
-          }
-          return this.attach()
-        } else if (this.opts.showStatus) {
-          cli.action.stop(this._status('done'))
-        }
-      })
-      .catch(err => {
-        // Currently the runtime API sends back a 409 in the event the
-        // release isn't found yet. API just forwards this response back to
-        // the client, so we'll need to retry these. This usually
-        // happens when you create an app and immediately try to run a
-        // one-off dyno. No pause between attempts since this is
-        // typically a very short-lived condition.
-        if (err.statusCode === 409 && retries > 0) {
-          return this._doStart(retries - 1)
-        } else {
-          throw err
-        }
-      })
-      .finally(() => {
-        cli.action.stop()
-      })
+    .catch(err => {
+      // Currently the runtime API sends back a 409 in the event the
+      // release isn't found yet. API just forwards this response back to
+      // the client, so we'll need to retry these. This usually
+      // happens when you create an app and immediately try to run a
+      // one-off dyno. No pause between attempts since this is
+      // typically a very short-lived condition.
+      if (err.statusCode === 409 && retries > 0) {
+        return this._doStart(retries - 1)
+      } else {
+        throw err
+      }
+    })
+    .finally(() => {
+      cli.action.stop()
+    })
   }
 
   /**
@@ -156,8 +167,8 @@ export default class Dyno extends Duplex {
         cli.action.status = this._status('starting')
       }
 
-      let c = tls.connect(parseInt(this.uri.port, 10), this.uri.hostname, {
-        rejectUnauthorized: this.heroku.options.rejectUnauthorized
+      const c = tls.connect(parseInt(this.uri.port, 10), this.uri.hostname, {
+        rejectUnauthorized: this.heroku.options.rejectUnauthorized,
       })
       c.setTimeout(1000 * 60 * 60)
       c.setEncoding('utf8')
@@ -216,15 +227,15 @@ export default class Dyno extends Duplex {
       this.resolve = resolve
       this.reject = reject
 
-      let options: http.RequestOptions & { rejectUnauthorized?: boolean } = this.uri
+      const options: http.RequestOptions & { rejectUnauthorized?: boolean } = this.uri
       options.headers = {Connection: 'Upgrade', Upgrade: 'tcp'}
       options.rejectUnauthorized = false
-      let r = http.request(options)
+      const r = http.request(options)
       r.end()
 
       r.on('error', this.reject)
       r.on('upgrade', (_, remote) => {
-        let s = net.createServer(client => {
+        const s = net.createServer(client => {
           client.on('end', () => {
             s.close()
             this.resolve()
@@ -251,9 +262,9 @@ export default class Dyno extends Duplex {
   }
 
   _handle(localServer: net.Server) {
-    let addr = localServer.address() as net.AddressInfo
-    let host = addr.address
-    let port = addr.port
+    const addr = localServer.address() as net.AddressInfo
+    const host = addr.address
+    const port = addr.port
     let lastErr = ''
 
     // does not actually uncork but allows error to be displayed when attempting to read
@@ -261,7 +272,7 @@ export default class Dyno extends Duplex {
     if (this.opts.listen) {
       cli.log(`listening on port ${host}:${port} for ssh client`)
     } else {
-      let params = [host, '-p', port.toString(), '-oStrictHostKeyChecking=no', '-oUserKnownHostsFile=/dev/null', '-oServerAliveInterval=20']
+      const params = [host, '-p', port.toString(), '-oStrictHostKeyChecking=no', '-oUserKnownHostsFile=/dev/null', '-oServerAliveInterval=20']
 
       const stdio: Array<(number | 'pipe')> = [0, 1, 'pipe']
       if (this.opts['exit-code']) {
@@ -271,7 +282,7 @@ export default class Dyno extends Duplex {
           params.push('-t')
         }
       }
-      let sshProc = spawn('ssh', params, {stdio})
+      const sshProc = spawn('ssh', params, {stdio})
 
       // only receives stdout with --exit-code
       if (sshProc.stdout) {
@@ -301,19 +312,19 @@ export default class Dyno extends Duplex {
         localServer.close()
       })
       this.p
-        .then(() => sshProc.kill())
-        .catch(() => sshProc.kill())
+      .then(() => sshProc.kill())
+      .catch(() => sshProc.kill())
     }
     this._notify()
   }
 
   _isDebug() {
-    let debug = process.env.HEROKU_DEBUG
+    const debug = process.env.HEROKU_DEBUG
     return debug && (debug === '1' || debug.toUpperCase() === 'TRUE')
   }
 
   _env() {
-    let c: {[key: string]: any} = this.opts.env ? buildEnvFromFlag(this.opts.env) : {}
+    const c: {[key: string]: any} = this.opts.env ? buildEnvFromFlag(this.opts.env) : {}
     c.TERM = process.env.TERM
     if (tty.isatty(1)) {
       c.COLUMNS = process.stdout.columns
@@ -323,7 +334,7 @@ export default class Dyno extends Duplex {
   }
 
   _status(status) {
-    let size = this.dyno.size ? ` (${this.dyno.size})` : ''
+    const size = this.dyno.size ? ` (${this.dyno.size})` : ''
     return `${status}, ${this.dyno.name || this.opts.dyno}${size}`
   }
 
@@ -346,15 +357,15 @@ export default class Dyno extends Duplex {
         data = data.replace(new RegExp('\r\n', 'g'), '\n')
       }
 
-      let exitCode = data.match(/\uFFFF heroku-command-exit-status: (\d+)/m)
+      const exitCode = data.match(/\uFFFF heroku-command-exit-status: (\d+)/m)
       if (exitCode) {
         debug('got exit code: %d', exitCode[1])
         this.push(data.replace(/^\uFFFF heroku-command-exit-status: \d+$\n?/m, ''))
-        let code = parseInt(exitCode[1], 10)
+        const code = parseInt(exitCode[1], 10)
         if (code === 0) {
           this.resolve()
         } else {
-          let err: { exitCode?: number } & Error = new Error(`Process exited with code ${color.red(code.toString())}`)
+          const err: { exitCode?: number } & Error = new Error(`Process exited with code ${color.red(code.toString())}`)
           err.exitCode = code
           this.reject(err)
         }
@@ -366,7 +377,7 @@ export default class Dyno extends Duplex {
 
   _readStdin(c) {
     this.input = c
-    let stdin: NodeJS.ReadStream & { unref?(): any } = process.stdin
+    const stdin: NodeJS.ReadStream & { unref?(): any } = process.stdin
     stdin.setEncoding('utf8')
 
     // without this the CLI will hang on rake db:migrate
@@ -395,7 +406,7 @@ export default class Dyno extends Duplex {
       stdin.pipe(new Transform({
         objectMode: true,
         transform: (chunk, _, next) => c.write(chunk, next),
-        flush: done => c.write('\x04', done)
+        flush: done => c.write('\x04', done),
       }))
     }
     this.uncork()
@@ -424,10 +435,10 @@ export default class Dyno extends Duplex {
       // only show notifications if dyno took longer than 20 seconds to start
       if (Date.now() - this._startedAt < 1000 * 20) return
 
-      let notification: Notification & { subtitle?: string } = {
+      const notification: Notification & { subtitle?: string } = {
         title: this.opts.app,
         subtitle: `heroku run ${this.opts.command}`,
-        message: 'dyno is up'
+        message: 'dyno is up',
         // sound: true
       }
 

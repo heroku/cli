@@ -8,7 +8,9 @@ import {buildCommand} from '../lib/helpers'
 
 export default class RunRake extends Command {
   static hidden = true
+
   static strict = false
+
   static flags = {
     app: flags.app({description: 'parent app used by review apps', required: true}),
     remote: flags.remote(),
@@ -19,9 +21,9 @@ export default class RunRake extends Command {
   }
 
   async run() {
-    let {flags, argv} = this.parse(RunRake)
+    const {flags, argv} = this.parse(RunRake)
 
-    let opts = {
+    const opts = {
       heroku: this.heroku,
       app: flags.app,
       command: buildCommand(['rake', ...argv]),
@@ -29,10 +31,10 @@ export default class RunRake extends Command {
       'exit-code': flags['exit-code'],
       env: flags.env,
       'no-tty': flags['no-tty'],
-      attach: true
+      attach: true,
     }
 
-    let dyno = new Dyno(opts)
+    const dyno = new Dyno(opts)
     try {
       await dyno.start()
     } catch (err) {
