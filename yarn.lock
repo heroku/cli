@@ -352,20 +352,6 @@
     heroku-exec-util "0.7.5"
     lodash "^4.17.13"
 
-"@heroku-cli/plugin-run-v5@7.24.0", "@heroku-cli/plugin-run-v5@^7.24.0":
-  version "7.24.0"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-run-v5/-/plugin-run-v5-7.24.0.tgz#78a9852118ee8fd5ddac8e06a789df92c1ccda10"
-  integrity sha512-BqwSPaRl17mQiYM3TN9rzq1GMGaVTPuIQceArA++Q6SqofCo5pSMHgejEtOX5FXsCJMb2qYpkdvijhCEM/+z/A==
-  dependencies:
-    "@heroku-cli/color" "^1.1.14"
-    "@heroku-cli/command" "^8.2.10"
-    "@heroku-cli/notifications" "^1.2.2"
-    "@heroku/eventsource" "^1.0.7"
-    co "4.6.0"
-    fs-extra "^7.0.1"
-    heroku-cli-util "^8.0.11"
-    shellwords "^0.1.1"
-
 "@heroku-cli/schema@^1.0.25":
   version "1.0.25"
   resolved "https://registry.yarnpkg.com/@heroku-cli/schema/-/schema-1.0.25.tgz#175d489d82c2ff0be700fe9fab8590b64c7e4f39"
@@ -4236,6 +4222,11 @@ find-up@^4.0.0:
     locate-path "^5.0.0"
     path-exists "^4.0.0"
 
+fixture-stdout@0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/fixture-stdout/-/fixture-stdout-0.2.1.tgz#0b7966535ab87cf03f8dcbefabdac3effe195a24"
+  integrity sha1-C3lmU1q4fPA/jcvvq9rD7/4ZWiQ=
+
 flat-cache@^1.2.1:
   version "1.3.4"
   resolved "https://registry.yarnpkg.com/flat-cache/-/flat-cache-1.3.4.tgz#2c2ef77525cc2929007dfffa1dd314aa9c9dee6f"
@@ -5242,6 +5233,25 @@ inquirer@^7.0.0:
     mute-stream "0.0.8"
     run-async "^2.2.0"
     rxjs "^6.4.0"
+    string-width "^4.1.0"
+    strip-ansi "^5.1.0"
+    through "^2.3.6"
+
+inquirer@^7.0.1:
+  version "7.0.1"
+  resolved "https://registry.yarnpkg.com/inquirer/-/inquirer-7.0.1.tgz#13f7980eedc73c689feff3994b109c4e799c6ebb"
+  integrity sha512-V1FFQ3TIO15det8PijPLFR9M9baSlnRs9nL7zWu1MNVA2T9YVl9ZbrHJhYs7e9X8jeMZ3lr2JH/rdHFgNCBdYw==
+  dependencies:
+    ansi-escapes "^4.2.1"
+    chalk "^2.4.2"
+    cli-cursor "^3.1.0"
+    cli-width "^2.0.0"
+    external-editor "^3.0.3"
+    figures "^3.0.0"
+    lodash "^4.17.15"
+    mute-stream "0.0.8"
+    run-async "^2.2.0"
+    rxjs "^6.5.3"
     string-width "^4.1.0"
     strip-ansi "^5.1.0"
     through "^2.3.6"
@@ -6562,6 +6572,11 @@ netrc-parser@3.1.6, netrc-parser@^3.1.4, netrc-parser@^3.1.6:
   dependencies:
     debug "^3.1.0"
     execa "^0.10.0"
+
+netrc@0.1.4:
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/netrc/-/netrc-0.1.4.tgz#6be94fcaca8d77ade0a9670dc460914c94472444"
+  integrity sha1-a+lPysqNd63gqWcNxGCRTJRHJEQ=
 
 nice-try@^1.0.4:
   version "1.0.5"
@@ -8149,7 +8164,7 @@ rxjs@^5.5.2:
   dependencies:
     symbol-observable "1.0.1"
 
-rxjs@^6.1.0:
+rxjs@^6.1.0, rxjs@^6.5.3:
   version "6.5.3"
   resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-6.5.3.tgz#510e26317f4db91a7eb1de77d9dd9ba0a4899a3a"
   integrity sha512-wuYsAYYFdWTAnAaPoKGNhfpWwKZbJW+HgAJ+mImp+Epl7BG8oNWBCTyRM8gba9k4lk8BgWdoYm21Mo/RYhhbgA==
