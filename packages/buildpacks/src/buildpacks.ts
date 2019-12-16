@@ -10,14 +10,15 @@ const validUrl = require('valid-url')
 
 export type BuildpackResponse = {
   buildpack: {
-    url: string,
-    name: string,
-  },
-  ordinal: number
+    url: string;
+    name: string;
+  };
+  ordinal: number;
 }
 
 export class BuildpackCommand {
   heroku: APIClient
+
   registry: BuildpackRegistry
 
   constructor(heroku: APIClient) {
@@ -26,12 +27,12 @@ export class BuildpackCommand {
   }
 
   async fetch(app: string): Promise<any[]> {
-    let buildpacks = await this.heroku.get(`/apps/${app}/buildpack-installations`)
+    const buildpacks = await this.heroku.get(`/apps/${app}/buildpack-installations`)
     return this.mapBuildpackResponse(buildpacks)
   }
 
   mapBuildpackResponse(buildpacks: {body: any}): BuildpackResponse[] {
-    let body = buildpacks.body
+    const body = buildpacks.body
     return body.map((bp: BuildpackResponse) => {
       bp.buildpack.url = bp.buildpack.url.replace(/^urn:buildpack:/, '')
       return bp
@@ -61,8 +62,8 @@ export class BuildpackCommand {
     }, BuildpackRegistry.isValidBuildpackSlug(buildpack))
 
     try {
-      let response = await this.registry.buildpackExists(buildpack)
-      let body = await response.json()
+      const response = await this.registry.buildpackExists(buildpack)
+      const body = await response.json()
       return body.blob_url
     } catch (err) {
       if (err.statusCode === 404) {
@@ -78,7 +79,7 @@ export class BuildpackCommand {
   }
 
   async findUrl(buildpacks: BuildpackResponse[], buildpack: string): Promise<number> {
-    let mappedUrl = await this.registryNameToUrl(buildpack)
+    const mappedUrl = await this.registryNameToUrl(buildpack)
     return lodashFindIndex(buildpacks, (b: BuildpackResponse) => {
       return b.buildpack.url === buildpack || b.buildpack.url === mappedUrl
     })
@@ -95,30 +96,29 @@ export class BuildpackCommand {
       return lodashFindIndex(buildpacks, function (b: BuildpackResponse) {
         return b.ordinal + 1 === index
       })
-    } else {
-      return -1
     }
+    return -1
   }
 
   async mutate(app: string, buildpacks: BuildpackResponse[], spliceIndex: number, buildpack: string, command: 'add' | 'set' | 'remove'): Promise<BuildpackResponse[]> {
-    let buildpackUpdates = buildpacks.map(function (b: BuildpackResponse) {
+    const buildpackUpdates = buildpacks.map(function (b: BuildpackResponse) {
       return {buildpack: b.buildpack.url}
     })
 
-    let howmany = (command === 'add') ? 0 : 1
-    let urls = (command === 'remove') ? [] : [{buildpack: await this.registryNameToUrl(buildpack)}]
+    const howmany = (command === 'add') ? 0 : 1
+    const urls = (command === 'remove') ? [] : [{buildpack: await this.registryNameToUrl(buildpack)}]
 
-    let indexes: any[] = [spliceIndex, howmany]
-    let array: any[] = indexes.concat(urls)
+    const indexes: any[] = [spliceIndex, howmany]
+    const array: any[] = indexes.concat(urls)
     Array.prototype.splice.apply(buildpackUpdates, array as any)
 
     return this.put(app, buildpackUpdates)
   }
 
   async put(app: string, buildpackUpdates: {buildpack: string}[]): Promise<BuildpackResponse[]> {
-    let buildpacks = await this.heroku.put(`/apps/${app}/buildpack-installations`, {
+    const buildpacks = await this.heroku.put(`/apps/${app}/buildpack-installations`, {
       headers: {Range: ''},
-      body: {updates: buildpackUpdates}
+      body: {updates: buildpackUpdates},
     })
 
     return this.mapBuildpackResponse(buildpacks)
@@ -154,8 +154,8 @@ export class BuildpackCommand {
   async clear(app: string, command: 'clear' | 'remove', action: 'cleared' | 'removed') {
     await this.put(app, [])
 
-    let configVars: any = await this.heroku.get(`/apps/${app}/config-vars`)
-    let message = `Buildpack${command === 'clear' ? 's' : ''} ${action}.`
+    const configVars: any = await this.heroku.get(`/apps/${app}/config-vars`)
+    const message = `Buildpack${command === 'clear' ? 's' : ''} ${action}.`
     if (configVars.body.BUILDPACK_URL) {
       cli.log(message)
       cli.warn('The BUILDPACK_URL config var is still set and will be used for the next release')

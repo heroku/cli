@@ -6,33 +6,35 @@ import {BuildpackBody, BuildpackRegistry, Category} from '@heroku/buildpack-regi
 
 export default class Search extends Command {
   static description = 'search for buildpacks'
+
   static flags = {
     namespace: Flags.string({description: 'buildpack namespaces to filter on using a comma separated list'}),
     name: Flags.string({description: 'buildpack names to filter on using a comma separated list '}),
-    description: Flags.string({description: 'buildpack description to filter on'})
+    description: Flags.string({description: 'buildpack description to filter on'}),
   }
+
   static args = [
     {
       name: 'term',
-      description: 'search term that searches across name, namespace, and description'
-    }
+      description: 'search term that searches across name, namespace, and description',
+    },
   ]
 
   async run() {
-    let {args, flags} = this.parse(Search)
+    const {args, flags} = this.parse(Search)
     let registry: BuildpackRegistry
     let searchResults: BuildpackBody[]
     registry = new BuildpackRegistry()
 
     if (args.term) {
-      let uniqueBuildpacks = new Map<string, BuildpackBody>()
-      let array = ((await registry.search(args.term, undefined, undefined)).unwrapOr([]))
-        .concat((await registry.search(undefined, args.term, undefined)).unwrapOr([]))
-        .concat((await registry.search(undefined, undefined, args.term)).unwrapOr([]))
+      const uniqueBuildpacks = new Map<string, BuildpackBody>()
+      const array = ((await registry.search(args.term, undefined, undefined)).unwrapOr([]))
+      .concat((await registry.search(undefined, args.term, undefined)).unwrapOr([]))
+      .concat((await registry.search(undefined, undefined, args.term)).unwrapOr([]))
       array
-        .forEach((element: BuildpackBody) => {
-          uniqueBuildpacks.set(`${element.namespace}/${element.name}`, element)
-        })
+      .forEach((element: BuildpackBody) => {
+        uniqueBuildpacks.set(`${element.namespace}/${element.name}`, element)
+      })
 
       searchResults = [...uniqueBuildpacks.values()]
     } else {
@@ -40,25 +42,25 @@ export default class Search extends Command {
     }
 
     type TableRow = {
-      buildpack: string,
-      category: Category,
-      description: string,
+      buildpack: string;
+      category: Category;
+      description: string;
     }
-    let buildpacks: TableRow[] = searchResults.map((buildpack: BuildpackBody) => {
+    const buildpacks: TableRow[] = searchResults.map((buildpack: BuildpackBody) => {
       return {
         buildpack: `${buildpack.namespace}/${buildpack.name}`,
         category: buildpack.category,
-        description: buildpack.description
+        description: buildpack.description,
       }
     })
     const trunc = (value: string, _: string) => truncate(value, {length: 35, omission: '…'})
-    let displayTable = (buildpacks: TableRow[]) => {
+    const displayTable = (buildpacks: TableRow[]) => {
       cli.table(buildpacks, {
         columns: [
           {key: 'buildpack', label: 'Buildpack'},
           {key: 'category', label: 'Category'},
-          {key: 'description', label: 'Description', format: trunc}
-        ]
+          {key: 'description', label: 'Description', format: trunc},
+        ],
       })
     }
 

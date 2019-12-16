@@ -1,11 +1,11 @@
 import {Scope} from 'nock'
 
 export namespace BuildpackInstallationsStub {
-  export function get(nock: Scope, buildpacks?: Array<string | {url: string, name: string}>) {
+  export function get(nock: Scope, buildpacks?: Array<string | {url: string; name: string}>) {
     let response: any
 
     if (buildpacks && buildpacks.length > 0) {
-      if (typeof(buildpacks[0]) === 'string') {
+      if (typeof (buildpacks[0]) === 'string') {
         response = buildpacks.map((b, i) => {
           return {
             buildpack: {url: b},
@@ -25,18 +25,18 @@ export namespace BuildpackInstallationsStub {
     }
 
     nock
-      .get('/apps/example/buildpack-installations')
-      .reply(200, response)
+    .get('/apps/example/buildpack-installations')
+    .reply(200, response)
   }
 
-  export function put(nock: Scope, buildpacks?: Array<string>, registry?: Map<string, {url: string, name: string}>) {
+  export function put(nock: Scope, buildpacks?: Array<string>, registry?: Map<string, {url: string; name: string}>) {
     let updates: Array<{buildpack: string}> = []
     let response: Array<{
       buildpack: {
-        url: string,
-        name?: string,
-      },
-      ordinal: number,
+        url: string;
+        name?: string;
+      };
+      ordinal: number;
     }> = []
 
     if (buildpacks) {
@@ -44,7 +44,7 @@ export namespace BuildpackInstallationsStub {
         return {buildpack: b}
       })
       response = buildpacks.map((b, index) => {
-        let buildpack: {url: string, name?: string} = {url: b}
+        let buildpack: {url: string; name?: string} = {url: b}
 
         if (registry) {
           buildpack = registry.get(b) || {url: b}
@@ -55,7 +55,7 @@ export namespace BuildpackInstallationsStub {
     }
 
     nock
-      .put('/apps/example/buildpack-installations', {updates})
-      .reply(200, response)
+    .put('/apps/example/buildpack-installations', {updates})
+    .reply(200, response)
   }
 }
