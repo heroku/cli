@@ -12,7 +12,7 @@ export default class DomainsUpdate extends Command {
     help: flags.help({char: 'h'}),
     app: flags.app({required: true}),
     remote: flags.remote(),
-    'cert-id': flags.string({required: true})
+    'cert-id': flags.string({required: true}),
   }
 
   static args = [{name: 'hostname'}]

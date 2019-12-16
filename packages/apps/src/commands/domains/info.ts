@@ -12,6 +12,7 @@ export default class DomainsInfo extends Command {
   static flags = {
     help: flags.help({char: 'h'}),
     app: flags.app({required: true}),
+    remote: flags.remote(),
   }
 
   static args = [{name: 'hostname'}]
