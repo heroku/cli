@@ -5,6 +5,7 @@ import {cli} from 'cli-ux'
 import {findIndex as lodashFindIndex} from 'lodash'
 import {Result} from 'true-myth'
 
+// eslint-disable-next-line node/no-missing-require
 const push = require('./push')
 const validUrl = require('valid-url')
 
@@ -55,6 +56,7 @@ export class BuildpackCommand {
     }
 
     Result.match({
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       Ok: _ => {},
       Err: err => {
         cli.error(`Could not find the buildpack: ${buildpack}. ${err}`, {exit: 1})
@@ -65,13 +67,13 @@ export class BuildpackCommand {
       const response = await this.registry.buildpackExists(buildpack)
       const body = await response.json()
       return body.blob_url
-    } catch (err) {
-      if (err.statusCode === 404) {
+    } catch (error) {
+      if (error.statusCode === 404) {
         cli.error(`${buildpack} is not in the buildpack registry.`, {exit: 1})
-      } else if (err.statusCode) {
-        cli.error(`${err.statusCode}: ${err.message}`, {exit: 1})
+      } else if (error.statusCode) {
+        cli.error(`${error.statusCode}: ${error.message}`, {exit: 1})
       } else {
-        cli.error(err.message, {exit: 1})
+        cli.error(error.message, {exit: 1})
       }
     }
 
@@ -136,12 +138,14 @@ export class BuildpackCommand {
   }
 
   registryUrlToName(buildpack: string, registryOnly = false): string {
+    // eslint-disable-next-line no-useless-escape
     let match = /^https:\/\/buildpack\-registry\.s3\.amazonaws\.com\/buildpacks\/([\w\-]+\/[\w\-]+).tgz$/.exec(buildpack)
     if (match) {
       return match[1]
     }
 
     if (!registryOnly) {
+      // eslint-disable-next-line no-useless-escape
       match = /^https:\/\/codon\-buildpacks\.s3\.amazonaws\.com\/buildpacks\/heroku\/([\w\-]+).tgz$/.exec(buildpack)
       if (match) {
         return `heroku/${match[1]}`

@@ -17,14 +17,14 @@ export default class Versions extends Command {
 
   async run() {
     const {args} = this.parse(Versions)
-    let registry: BuildpackRegistry
     const herokuAuth = this.heroku.auth || ''
     if (herokuAuth === '') {
       this.error('You need to be logged in to run this command.')
     }
-    registry = new BuildpackRegistry()
+    const registry = new BuildpackRegistry()
 
     Result.match({
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       Ok: _ => {},
       Err: err => {
         this.error(`Could not find the buildpack.\n${err}`)

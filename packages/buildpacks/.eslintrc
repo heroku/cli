@@ -4,5 +4,14 @@
     "oclif-typescript"
   ],
   "rules": {
-  }
+    "unicorn/no-abusive-eslint-disable": "off"
+  },
+  "overrides": [
+    {
+      "files": ["test/helpers/buildpack-installations-stub.ts"],
+      "rules": {
+        "no-inner-declarations": "off"
+      }
+    }
+  ]
 }

@@ -2,8 +2,6 @@ import Nock from '@fancy-test/nock'
 import {Fixture} from '@heroku/buildpack-registry'
 import {expect, test as otest} from '@oclif/test'
 import * as nock from 'nock'
-// tslint:disable-next-line:no-duplicate-imports
-import {Scope} from 'nock'
 
 import {BuildpackInstallationsStub as Stubber} from '../../helpers/buildpack-installations-stub'
 import {unwrap} from '../../unwrap'
@@ -13,7 +11,7 @@ const test = otest.register('nock', Nock)
 describe('buildpacks:remove', () => {
   describe('-i INDEX', () => {
     test
-    .nock('https://api.heroku.com', (api: Scope) => {
+    .nock('https://api.heroku.com', (api: nock.Scope) => {
       Stubber.get(api, ['https://github.com/heroku/heroku-buildpack-ruby'])
       Stubber.put(api)
       api
@@ -30,7 +28,7 @@ describe('buildpacks:remove', () => {
     })
 
     test
-    .nock('https://api.heroku.com', (api: Scope) => {
+    .nock('https://api.heroku.com', (api: nock.Scope) => {
       Stubber.get(api, [
         'https://github.com/heroku/heroku-buildpack-ruby',
       ])
@@ -50,7 +48,7 @@ describe('buildpacks:remove', () => {
     })
 
     test
-    .nock('https://api.heroku.com', (api: Scope) => {
+    .nock('https://api.heroku.com', (api: nock.Scope) => {
       Stubber.get(api, [
         'https://github.com/heroku/heroku-buildpack-ruby',
       ])
@@ -70,7 +68,7 @@ describe('buildpacks:remove', () => {
     })
 
     test
-    .nock('https://api.heroku.com', (api: Scope) => {
+    .nock('https://api.heroku.com', (api: nock.Scope) => {
       Stubber.get(api, [
         'https://github.com/heroku/heroku-buildpack-java',
         'https://github.com/heroku/heroku-buildpack-ruby',
@@ -89,7 +87,7 @@ Run git push heroku master to create a new release using this buildpack.
     })
 
     test
-    .nock('https://api.heroku.com', (api: Scope) => {
+    .nock('https://api.heroku.com', (api: nock.Scope) => {
       Stubber.get(api, [
         'https://github.com/heroku/heroku-buildpack-java',
         'https://github.com/heroku/heroku-buildpack-ruby',
@@ -108,7 +106,7 @@ Run git push heroku master to create a new release using this buildpack.
     })
 
     test
-    .nock('https://api.heroku.com', (api: Scope) => {
+    .nock('https://api.heroku.com', (api: nock.Scope) => {
       Stubber.get(api, [
         'https://github.com/heroku/heroku-buildpack-java',
         'https://github.com/heroku/heroku-buildpack-nodejs',
@@ -136,7 +134,7 @@ Run git push heroku master to create a new release using these buildpacks.
     .it('# returns an error message when i is not an integer')
 
     test
-    .nock('https://api.heroku.com', (api: Scope) => {
+    .nock('https://api.heroku.com', (api: nock.Scope) => {
       Stubber.get(api)
     })
     .command(['buildpacks:remove', '-i', '1', '-a', 'example'])
@@ -144,7 +142,7 @@ Run git push heroku master to create a new release using these buildpacks.
     .it('# with no buildpacks reports an error removing index')
 
     test
-    .nock('https://api.heroku.com', (api: Scope) => {
+    .nock('https://api.heroku.com', (api: nock.Scope) => {
       Stubber.get(api, [
         'https://github.com/foo/foo',
       ])
@@ -154,7 +152,7 @@ Run git push heroku master to create a new release using these buildpacks.
     .it('# returns an error when the index > 1 and the size is one')
 
     test
-    .nock('https://api.heroku.com', (api: Scope) => {
+    .nock('https://api.heroku.com', (api: nock.Scope) => {
       Stubber.get(api, [
         'https://github.com/foo/foo',
         'https://github.com/bar/bar',
@@ -167,7 +165,7 @@ Run git push heroku master to create a new release using these buildpacks.
 
   describe('URL', () => {
     test
-    .nock('https://api.heroku.com', (api: Scope) => {
+    .nock('https://api.heroku.com', (api: nock.Scope) => {
       Stubber.get(api, [
         'https://github.com/heroku/heroku-buildpack-ruby',
       ])
@@ -185,7 +183,7 @@ Run git push heroku master to create a new release using these buildpacks.
     })
 
     test
-    .nock('https://api.heroku.com', (api: Scope) => {
+    .nock('https://api.heroku.com', (api: nock.Scope) => {
       Stubber.get(api, [
         'https://github.com/heroku/heroku-buildpack-java',
         'https://github.com/heroku/heroku-buildpack-ruby',
@@ -206,7 +204,7 @@ Run git push heroku master to create a new release using this buildpack.
     })
 
     test
-    .nock('https://api.heroku.com', (api: Scope) => {
+    .nock('https://api.heroku.com', (api: nock.Scope) => {
       Stubber.get(api, [
         {url: 'urn:buildpack:heroku/ruby', name: 'heroku/ruby'},
       ])
@@ -215,7 +213,7 @@ Run git push heroku master to create a new release using this buildpack.
       .get('/apps/example/config-vars')
       .reply(200, {})
     })
-    .nock('https://buildpack-registry.heroku.com', (api: Scope) => {
+    .nock('https://buildpack-registry.heroku.com', (api: nock.Scope) => {
       const buildpack = Fixture.buildpack({
         name: 'ruby',
       })
@@ -234,7 +232,7 @@ Run git push heroku master to create a new release using this buildpack.
     })
 
     test
-    .nock('https://api.heroku.com', (api: Scope) => {
+    .nock('https://api.heroku.com', (api: nock.Scope) => {
       Stubber.get(api)
     })
     .command(['buildpacks:remove', 'https://github.com/bar/bar', '-a', 'example'])
@@ -242,7 +240,7 @@ Run git push heroku master to create a new release using this buildpack.
     .it('# with no buildpacks reports an error removing buildpack_url')
 
     test
-    .nock('https://api.heroku.com', (api: Scope) => {
+    .nock('https://api.heroku.com', (api: nock.Scope) => {
       Stubber.get(api, [
         'https://github.com/foo/foo',
       ])
@@ -252,7 +250,7 @@ Run git push heroku master to create a new release using this buildpack.
     .it('# returns an error when the url is not found')
 
     test
-    .nock('https://api.heroku.com', (api: Scope) => {
+    .nock('https://api.heroku.com', (api: nock.Scope) => {
       Stubber.get(api, [
         'https://github.com/heroku/heroku-buildpack-java',
         'https://github.com/heroku/heroku-buildpack-nodejs',

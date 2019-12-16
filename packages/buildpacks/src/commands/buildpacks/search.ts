@@ -22,9 +22,8 @@ export default class Search extends Command {
 
   async run() {
     const {args, flags} = this.parse(Search)
-    let registry: BuildpackRegistry
     let searchResults: BuildpackBody[]
-    registry = new BuildpackRegistry()
+    const registry = new BuildpackRegistry()
 
     if (args.term) {
       const uniqueBuildpacks = new Map<string, BuildpackBody>()

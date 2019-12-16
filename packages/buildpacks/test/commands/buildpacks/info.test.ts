@@ -2,14 +2,12 @@ import Nock from '@fancy-test/nock'
 import {Fixture} from '@heroku/buildpack-registry'
 import {expect, test as otest} from '@oclif/test'
 import * as nock from 'nock'
-// tslint:disable-next-line:no-duplicate-imports
-import {Scope} from 'nock'
 nock.disableNetConnect()
 const test = otest.register('nock', Nock)
 
 describe('buildpacks:info', () => {
   test
-  .nock('https://buildpack-registry.heroku.com', (api: Scope) => {
+  .nock('https://buildpack-registry.heroku.com', (api: nock.Scope) => {
     api
     .get('/buildpacks/heroku%2Fruby')
     .reply(200, Fixture.buildpack({
@@ -34,7 +32,7 @@ describe('buildpacks:info', () => {
   })
 
   test
-  .nock('https://buildpack-registry.heroku.com', (api: Scope) => {
+  .nock('https://buildpack-registry.heroku.com', (api: nock.Scope) => {
     api
     .get('/buildpacks/hone%2Ftest')
     .reply(404, {})
@@ -44,7 +42,7 @@ describe('buildpacks:info', () => {
   .it("handles if the buildpack doesn't exist")
 
   test
-  .nock('https://buildpack-registry.heroku.com', (api: Scope) => {
+  .nock('https://buildpack-registry.heroku.com', (api: nock.Scope) => {
     api
     .get('/buildpacks/hone%2Ftest')
     .reply(500, 'some error')
