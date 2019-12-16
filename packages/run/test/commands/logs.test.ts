@@ -7,6 +7,6 @@ describe('logs', () => {
   .it('shows the logs', ctx => {
     // This is asserting that logs are returned by checking for the presence of the first two
     // digits of the year in the timetstamp
-    expect(ctx.stdout).to.match(/^20/)
+    expect(ctx.stdout.startsWith('20')).to.be.true
   })
 })

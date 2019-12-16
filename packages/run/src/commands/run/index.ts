@@ -1,12 +1,12 @@
 import {Command, flags} from '@heroku-cli/command'
 import {DynoSizeCompletion, ProcessTypeCompletion} from '@heroku-cli/command/lib/completions'
 import cli from 'cli-ux'
-import DebugFactory from 'debug'
+import debugFactory from 'debug'
 
 import Dyno from '../../lib/dyno'
 import {buildCommand} from '../../lib/helpers'
 
-const debug = DebugFactory('heroku:run')
+const debug = debugFactory('heroku:run')
 
 export default class Run extends Command {
   static description = 'run a one-off process inside a heroku dyno\nShows a notification if the dyno takes more than 20 seconds to start.'
@@ -56,12 +56,12 @@ export default class Run extends Command {
     try {
       await dyno.start()
       debug('done running')
-    } catch (err) {
-      debug(err)
-      if (err.exitCode) {
-        cli.error(err.message, {code: err.exitCode, exit: err.exitCode})
+    } catch (error) {
+      debug(error)
+      if (error.exitCode) {
+        cli.error(error.message, {code: error.exitCode, exit: error.exitCode})
       } else {
-        throw err
+        throw error
       }
     }
   }

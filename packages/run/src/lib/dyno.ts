@@ -5,7 +5,7 @@ import {Notification, notify} from '@heroku-cli/notifications'
 import {Dyno as APIDyno} from '@heroku-cli/schema'
 import {spawn} from 'child_process'
 import cli from 'cli-ux'
-import DebugFactory from 'debug'
+import debugFactory from 'debug'
 import * as http from 'http'
 import {HTTP} from 'http-call'
 import * as net from 'net'
@@ -16,7 +16,7 @@ import * as url from 'url'
 
 import {buildEnvFromFlag} from '../lib/helpers'
 
-const debug = DebugFactory('heroku:run')
+const debug = debugFactory('heroku:run')
 const wait = (ms: number) => new Promise(resolve => setTimeout(() => resolve(), ms))
 
 interface HerokuApiClientRun extends APIClient {
@@ -117,23 +117,26 @@ export default class Dyno extends Duplex {
         if (this.dyno.name && this.opts.dyno === undefined) {
           this.opts.dyno = this.dyno.name
         }
+
         return this.attach()
-      } else if (this.opts.showStatus) {
+      }
+
+      if (this.opts.showStatus) {
         cli.action.stop(this._status('done'))
       }
     })
-    .catch(err => {
+    .catch(error => {
       // Currently the runtime API sends back a 409 in the event the
       // release isn't found yet. API just forwards this response back to
       // the client, so we'll need to retry these. This usually
       // happens when you create an app and immediately try to run a
       // one-off dyno. No pause between attempts since this is
       // typically a very short-lived condition.
-      if (err.statusCode === 409 && retries > 0) {
+      if (error.statusCode === 409 && retries > 0) {
         return this._doStart(retries - 1)
-      } else {
-        throw err
       }
+
+      throw error
     })
     .finally(() => {
       cli.action.stop()
@@ -208,17 +211,17 @@ export default class Dyno extends Duplex {
 
       if (this.dyno.state === 'starting' || this.dyno.state === 'up') {
         return this._connect()
-      } else {
-        await wait(interval)
-        return this._ssh()
       }
-    } catch (err) {
+
+      await wait(interval)
+      return this._ssh()
+    } catch (error) {
       // the API sometimes responds with a 404 when the dyno is not yet ready
-      if (err.statusCode === 404 && retries > 0) {
+      if (error.statusCode === 404 && retries > 0) {
         return this._ssh(retries - 1)
-      } else {
-        throw err
       }
+
+      throw error
     }
   }
 
@@ -353,7 +356,7 @@ export default class Dyno extends Duplex {
 
       // carriage returns break json parsing of output
       if (!process.stdout.isTTY) {
-        // tslint:disable-next-line
+        // eslint-disable-next-line no-control-regex
         data = data.replace(new RegExp('\r\n', 'g'), '\n')
       }
 
@@ -399,6 +402,7 @@ export default class Dyno extends Duplex {
 
         if (sigints.length >= 4) {
           cli.error('forcing dyno disconnect')
+          // eslint-disable-next-line unicorn/no-process-exit, no-process-exit
           process.exit(1)
         }
       })
@@ -406,6 +410,7 @@ export default class Dyno extends Duplex {
       stdin.pipe(new Transform({
         objectMode: true,
         transform: (chunk, _, next) => c.write(chunk, next),
+        // eslint-disable-next-line unicorn/no-hex-escape
         flush: done => c.write('\x04', done),
       }))
     }
@@ -443,8 +448,8 @@ export default class Dyno extends Duplex {
       }
 
       notify(notification)
-    } catch (err) {
-      cli.warn(err)
+    } catch (error) {
+      cli.warn(error)
     }
   }
 }

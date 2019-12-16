@@ -37,12 +37,13 @@ export default class RunRake extends Command {
     const dyno = new Dyno(opts)
     try {
       await dyno.start()
-    } catch (err) {
-      if (err.exitCode) {
-        cli.error(err)
-        process.exit(err.exitCode)
+    } catch (error) {
+      if (error.exitCode) {
+        cli.error(error)
+        // eslint-disable-next-line unicorn/no-process-exit, no-process-exit
+        process.exit(error.exitCode)
       } else {
-        throw err
+        throw error
       }
     }
   }

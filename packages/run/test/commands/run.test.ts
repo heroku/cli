@@ -5,6 +5,7 @@ describe('run', () => {
     return test
     .stdout()
     .do(() => {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
       // @ts-ignore
       process.stdout.isTTY = false
     })

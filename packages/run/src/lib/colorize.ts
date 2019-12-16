@@ -73,7 +73,9 @@ function colorizeRouter(body: string) {
       const parts = sub.split('=')
       if (parts.length === 1) {
         return parts
-      } if (parts.length === 2) {
+      }
+
+      if (parts.length === 2) {
         return encodeColor(parts as [string, string])
       }
       return encodeColor([parts[0], parts.splice(1).join('=')])
@@ -85,8 +87,8 @@ function colorizeRouter(body: string) {
       }
       return other(k + '=') + v
     }).join(' ')
-  } catch (err) {
-    ux.warn(err)
+  } catch (error) {
+    ux.warn(error)
     return body
   }
 }
@@ -129,8 +131,8 @@ function colorizeRun(body: string) {
         exited[2] === '0' ? c.greenBright(exited[2]) : c.red(exited[2]),
       ].join('')
     }
-  } catch (err) {
-    ux.warn(err)
+  } catch (error) {
+    ux.warn(error)
   }
   return body
 }
@@ -187,14 +189,15 @@ function colorizeWeb(body: string) {
         route[4],
       ].join('')
     }
-  } catch (err) {
-    ux.warn(err)
+  } catch (error) {
+    ux.warn(error)
   }
   return body
 }
 
 function colorizeAPI(body: string) {
   if (body.match(/^Build succeeded$/)) return c.greenBright(body)
+  // eslint-disable-next-line unicorn/prefer-starts-ends-with
   if (body.match(/^Build failed/)) return c.red(body)
   const build = body.match(/^(Build started by user )(.+)$/)
   if (build) {

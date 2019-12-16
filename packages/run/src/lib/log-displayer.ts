@@ -15,14 +15,6 @@ interface LogDisplayerOptions {
   source?: string;
 }
 
-function readLogs(logplexURL: string) {
-  const u = url.parse(logplexURL)
-  if (u.query && u.query.includes('srv')) {
-    return readLogsV1(logplexURL)
-  }
-  return readLogsV2(logplexURL)
-}
-
 async function readLogsV1(logplexURL: string) {
   const {response} = await HTTP.stream(logplexURL)
   return new Promise(function (resolve, reject) {
@@ -73,12 +65,22 @@ function readLogsV2(logplexURL: string) {
   })
 }
 
+function readLogs(logplexURL: string) {
+  const u = url.parse(logplexURL)
+  if (u.query && u.query.includes('srv')) {
+    return readLogsV1(logplexURL)
+  }
+  return readLogsV2(logplexURL)
+}
+
 async function logDisplayer(heroku: APIClient, options: LogDisplayerOptions) {
   process.stdout.on('error', err => {
     if (err.code === 'EPIPE') {
+      // eslint-disable-next-line unicorn/no-process-exit, no-process-exit
       process.exit(0)
     } else {
       cli.error(err.stack)
+      // eslint-disable-next-line unicorn/no-process-exit, no-process-exit
       process.exit(1)
     }
   })

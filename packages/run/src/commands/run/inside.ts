@@ -1,12 +1,12 @@
 // tslint:disable:file-name-casing
 import {Command, flags} from '@heroku-cli/command'
 import cli from 'cli-ux'
-import DebugFactory from 'debug'
+import debugFactory from 'debug'
 
 import Dyno from '../../lib/dyno'
 import {buildCommand} from '../../lib/helpers'
 
-const debug = DebugFactory('heroku:run:inside')
+const debug = debugFactory('heroku:run:inside')
 
 export default class RunInside extends Command {
   static description = 'run a one-off process inside an existing heroku dyno'
@@ -46,12 +46,12 @@ export default class RunInside extends Command {
 
     try {
       await dyno.start()
-    } catch (err) {
-      debug(err)
-      if (err.exitCode) {
-        cli.exit(err.exitCode)
+    } catch (error) {
+      debug(error)
+      if (error.exitCode) {
+        cli.exit(error.exitCode)
       } else {
-        throw err
+        throw error
       }
     }
   }
