@@ -12,7 +12,7 @@ import * as net from 'net'
 import {Duplex, Transform} from 'stream'
 import * as tls from 'tls'
 import * as tty from 'tty'
-import * as url from 'url'
+import {URL} from 'url'
 
 import {buildEnvFromFlag} from '../lib/helpers'
 
@@ -62,7 +62,7 @@ export default class Dyno extends Duplex {
 
   resolve?: (value?: unknown) => void
 
-  uri?: url.UrlWithStringQuery
+  uri?: URL
 
   unpipeStdin: any
 
@@ -149,7 +149,7 @@ export default class Dyno extends Duplex {
   attach() {
     this.pipe(process.stdout)
     if (this.dyno && this.dyno.attach_url) {
-      this.uri = url.parse(this.dyno.attach_url)
+      this.uri = new URL(this.dyno.attach_url)
     }
     if (this._useSSH) {
       this.p = this._ssh()
@@ -177,7 +177,8 @@ export default class Dyno extends Duplex {
       c.setEncoding('utf8')
       c.on('connect', () => {
         debug('connect')
-        c.write(this.uri.path.substr(1) + '\r\n', () => {
+        const pathnameWithSearchParams = this.uri.pathname + this.uri.search
+        c.write(pathnameWithSearchParams.substr(1) + '\r\n', () => {
           if (this.opts.showStatus) {
             cli.action.status = this._status('connecting')
           }

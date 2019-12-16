@@ -2,7 +2,7 @@ import {APIClient} from '@heroku-cli/command'
 import * as EventSource from '@heroku/eventsource'
 import cli from 'cli-ux'
 import HTTP from 'http-call'
-import * as url from 'url'
+import {URL} from 'url'
 
 import colorize from './colorize'
 import liner from './line-transform'
@@ -29,8 +29,8 @@ async function readLogsV1(logplexURL: string) {
 
 function readLogsV2(logplexURL: string) {
   return new Promise(function (resolve, reject) {
-    const u = url.parse(logplexURL, true)
-    const isTail = u.query.tail && u.query.tail === 'true'
+    const u = new URL(logplexURL)
+    const isTail = u.searchParams.get('tail') === 'true'
     const userAgent = process.env.HEROKU_DEBUG_USER_AGENT || 'heroku-run'
     const proxy = process.env.https_proxy || process.env.HTTPS_PROXY
     const es = new EventSource(logplexURL, {
@@ -66,10 +66,12 @@ function readLogsV2(logplexURL: string) {
 }
 
 function readLogs(logplexURL: string) {
-  const u = url.parse(logplexURL)
-  if (u.query && u.query.includes('srv')) {
+  const u = new URL(logplexURL)
+
+  if (u.searchParams.has('srv')) {
     return readLogsV1(logplexURL)
   }
+
   return readLogsV2(logplexURL)
 }
 
