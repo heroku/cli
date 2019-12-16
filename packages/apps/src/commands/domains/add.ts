@@ -28,7 +28,7 @@ export default class DomainsAdd extends Command {
     remote: flags.remote(),
   }
 
-  static args = [{name: 'hostname'}]
+  static args = [{name: 'hostname', required: true}]
 
   createDomain = async (appName: string, payload: DomainCreatePayload): Promise<Heroku.Domain> => {
     cli.action.start(`Adding ${color.green(payload.hostname)} to ${color.app(appName)}`)
