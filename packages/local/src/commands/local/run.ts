@@ -7,7 +7,7 @@ export default class Run extends Command {
   static description = 'run a one-off command'
 
   static examples = [
-    '$ heroku local:run bin/migrate'
+    '$ heroku local:run bin/migrate',
   ]
 
   static strict = false
@@ -15,18 +15,18 @@ export default class Run extends Command {
   static flags = {
     env: flags.string({
       char: 'e',
-      completion: FileCompletion
+      completion: FileCompletion,
     }),
     port: flags.string({
-      char: 'p'
-    })
+      char: 'p',
+    }),
   }
 
   async run() {
     const execArgv: string[] = ['run']
     const {argv, flags} = this.parse(Run)
 
-    if (argv.length < 1) {
+    if (argv.length === 0) {
       const errorMessage = 'Usage: heroku local:run [COMMAND]\nMust specify command to run'
       this.error(errorMessage, {exit: -1})
     }
