@@ -8,8 +8,8 @@ import * as shellescape from 'shell-escape'
 import waitForDomain from '../../lib/wait-for-domain'
 
 interface DomainCreatePayload {
-  hostname: string
-  sni_endpoint?: string
+  hostname: string;
+  sni_endpoint?: string;
 }
 
 const MULTIPLE_SNI_ENDPOINT_FLAG = 'allow-multiple-sni-endpoints'
@@ -24,7 +24,7 @@ export default class DomainsAdd extends Command {
     app: flags.app({required: true}),
     cert: flags.string({description: 'the name of the SSL cert you want to use for this domain', char: 'c'}),
     json: flags.boolean({description: 'output in json format', char: 'j'}),
-    wait: flags.boolean()
+    wait: flags.boolean(),
   }
 
   static args = [{name: 'hostname'}]
@@ -34,16 +34,16 @@ export default class DomainsAdd extends Command {
     try {
       const response = await this.heroku.post<Heroku.Domain>(`/apps/${appName}/domains`, {
         headers: {Accept: 'application/vnd.heroku+json; version=3.allow_multiple_sni_endpoints'},
-        body: payload
+        body: payload,
       })
       return response.body
-    } catch (err) {
+    } catch (error) {
       // If the error indicates that the app has multiple certs needs the user to specify which one
       // to use, we ask them which cert to use, otherwise we rethrow the error and handle it like usual
-      if (err.body.id === 'invalid_params' && err.body.message.includes('sni_endpoint')) {
+      if (error.body.id === 'invalid_params' && error.body.message.includes('sni_endpoint')) {
         cli.action.stop('resolving SNI endpoint')
         const {body: certs} = await this.heroku.get<Heroku.SniEndpoint>(`/apps/${appName}/sni-endpoints`, {
-          headers: {Accept: 'application/vnd.heroku+json; version=3.allow_multiple_sni_endpoints'}
+          headers: {Accept: 'application/vnd.heroku+json; version=3.allow_multiple_sni_endpoints'},
         })
 
         const certChoices = certs.map((cert: Heroku.SniEndpoint) => {
@@ -61,31 +61,31 @@ export default class DomainsAdd extends Command {
 
             return {
               name: domainsList,
-              value: cert.name
+              value: cert.name,
             }
           }
 
           return {
             name: certName,
-            value: cert.name
+            value: cert.name,
           }
         })
 
-        const selection = await prompt<{cert: string}>([
+        const selection = await prompt<{ cert: string }>([
           {
             type: 'list',
             name: 'cert',
             message: 'Choose an SNI endpoint to associate with this domain',
-            choices: certChoices
-          }
+            choices: certChoices,
+          },
         ])
 
+        // eslint-disable-next-line require-atomic-updates
         payload.sni_endpoint = selection.cert
 
         return this.createDomain(appName, payload)
-      } else {
-        throw err
       }
+      throw error
     }
   }
 
@@ -98,7 +98,7 @@ export default class DomainsAdd extends Command {
     const multipleSniEndpointFeature = featureList.find(feature => feature.name === MULTIPLE_SNI_ENDPOINT_FLAG)
 
     const domainCreatePayload: DomainCreatePayload = {
-      hostname
+      hostname,
     }
 
     if (multipleSniEndpointFeature && multipleSniEndpointFeature.enabled) {
@@ -121,13 +121,13 @@ export default class DomainsAdd extends Command {
           } else {
             cli.log('')
             cli.log(`The domain ${color.green(hostname)} has been enqueued for addition`)
-            let command = `heroku domains:wait ${shellescape([hostname])}`
+            const command = `heroku domains:wait ${shellescape([hostname])}`
             cli.log(`Run ${color.cmd(command)} to wait for completion`)
           }
         }
       }
-    } catch (err) {
-      cli.error(err)
+    } catch (error) {
+      cli.error(error)
     } finally {
       cli.action.stop()
     }
