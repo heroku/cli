@@ -65,7 +65,9 @@
   "repository": "heroku/cli",
   "scripts": {
     "postpublish": "rm -f oclif.manifest.json",
-    "posttest": "tsc -p test --noEmit && tslint -p test -t stylish",
+    "pretest": "tsc -p test --noEmit",
+    "posttest": "yarn lint",
+    "lint": "eslint . --ext .ts --config .eslintrc",
     "prepack": "rm -rf lib && tsc && oclif-dev manifest",
     "test": "nyc mocha --forbid-only \"test/**/*.test.ts\""
   }
