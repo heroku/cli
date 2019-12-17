@@ -18,7 +18,7 @@ describe('labs:disable', () => {
   .stderr()
   .command(['labs:disable', 'feature-a'])
   .it('disables a user lab feature', () => {
-    // TODO: make this work on CI
+    // to-do: make this work on CI
     // expect(stderr).to.contain('Disabling feature-a for jeff@heroku.com...')
   })
 

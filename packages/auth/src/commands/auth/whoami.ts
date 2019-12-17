@@ -12,9 +12,9 @@ export default class AuthWhoami extends Command {
     try {
       const {body: account} = await this.heroku.get<Heroku.Account>('/account', {retryAuth: false})
       this.log(account.email)
-    } catch (err) {
-      if (err.statusCode === 401) this.notloggedin()
-      throw err
+    } catch (error) {
+      if (error.statusCode === 401) this.notloggedin()
+      throw error
     }
   }
 
