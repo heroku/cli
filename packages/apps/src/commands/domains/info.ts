@@ -11,7 +11,7 @@ export default class DomainsInfo extends Command {
 
   static flags = {
     help: flags.help({char: 'h'}),
-    app: flags.app({required: true})
+    app: flags.app({required: true}),
   }
 
   static args = [{name: 'hostname'}]
@@ -19,9 +19,9 @@ export default class DomainsInfo extends Command {
   async run() {
     const {args, flags} = this.parse(DomainsInfo)
     const {body: res} = await this.heroku.get<Heroku.Domain>(`/apps/${flags.app}/domains/${args.hostname}`)
-    let domain = {
+    const domain = {
       ...res,
-      app: res.app && res.app.name
+      app: res.app && res.app.name,
     }
     cli.styledObject(domain)
   }
