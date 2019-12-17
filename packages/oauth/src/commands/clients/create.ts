@@ -8,17 +8,17 @@ export default class ClientsCreate extends Command {
   static description = 'create a new OAuth client'
 
   static examples = [
-    '$ heroku clients:create "Amazing" https://amazing-client.herokuapp.com/auth/heroku/callback'
+    '$ heroku clients:create "Amazing" https://amazing-client.herokuapp.com/auth/heroku/callback',
   ]
 
   static flags = {
     json: flags.boolean({char: 'j', description: 'output in json format'}),
-    shell: flags.boolean({char: 's', description: 'output in shell format'})
+    shell: flags.boolean({char: 's', description: 'output in shell format'}),
   }
 
   static args = [
     {name: 'name', required: true},
-    {name: 'redirect_uri', required: true}
+    {name: 'redirect_uri', required: true},
   ]
 
   async run() {
@@ -29,8 +29,8 @@ export default class ClientsCreate extends Command {
 
     cli.action.start(`Creating ${args.name}`)
 
-    let {body: client} = await this.heroku.post<Heroku.OAuthClient>('/oauth/clients', {
-      body: {name, redirect_uri}
+    const {body: client} = await this.heroku.post<Heroku.OAuthClient>('/oauth/clients', {
+      body: {name, redirect_uri},
     })
 
     cli.action.stop()

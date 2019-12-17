@@ -6,11 +6,13 @@ import * as _ from 'lodash'
 
 export default class Regions extends Command {
   static topic = 'regions'
+
   static description = 'list available regions for deployment'
+
   static flags = {
     json: flags.boolean({description: 'output in json format'}),
     private: flags.boolean({description: 'show regions for private spaces'}),
-    common: flags.boolean({description: 'show regions for common runtime'})
+    common: flags.boolean({description: 'show regions for common runtime'}),
   }
 
   async run() {
@@ -30,8 +32,8 @@ export default class Regions extends Command {
         columns: [
           {key: 'name', label: 'ID', format: (n: any) => color.green(n)},
           {key: 'description', label: 'Location'},
-          {key: 'private_capable', label: 'Runtime', format: (c: any) => c ? 'Private Spaces' : 'Common Runtime'}
-        ]
+          {key: 'private_capable', label: 'Runtime', format: (c: any) => c ? 'Private Spaces' : 'Common Runtime'},
+        ],
       })
     }
   }

@@ -15,7 +15,7 @@ The app and pipeline names must be specified.
 The stage of the app will be guessed based on its name if not specified.`
 
   static examples = [
-    '$ heroku pipelines:add my-pipeline -a my-app -s production'
+    '$ heroku pipelines:add my-pipeline -a my-app -s production',
   ]
 
   static flags = {
@@ -24,14 +24,14 @@ The stage of the app will be guessed based on its name if not specified.`
     stage: flags.string({
       char: 's',
       description: 'stage of first app in pipeline',
-      completion: StageCompletion
-    })
+      completion: StageCompletion,
+    }),
   }
 
   static args = [{
     name: 'pipeline',
     description: 'name of pipeline',
-    required: true
+    required: true,
   }]
 
   async run() {
@@ -39,10 +39,10 @@ The stage of the app will be guessed based on its name if not specified.`
     const app = flags.app
 
     let stage
-    let guesses = infer(app)
-    let questions = []
+    const guesses = infer(app)
+    const questions = []
 
-    let pipeline: any = await disambiguate(this.heroku, args.pipeline)
+    const pipeline: any = await disambiguate(this.heroku, args.pipeline)
 
     if (flags.stage) {
       stage = flags.stage
@@ -52,11 +52,11 @@ The stage of the app will be guessed based on its name if not specified.`
         name: 'stage',
         message: `Stage of ${app}`,
         choices: stageNames,
-        default: guesses[1]
+        default: guesses[1],
       })
     }
 
-    let answers: any = await prompt(questions)
+    const answers: any = await prompt(questions)
     if (answers.stage) stage = answers.stage
 
     cli.action.start(`Adding ${color.app(app)} to ${color.pipeline(pipeline.name)} pipeline as ${stage}`)

@@ -11,7 +11,7 @@ export default class Wait extends Command {
     remote: flags.remote(),
     type: flags.string({
       char: 't',
-      description: 'wait for one specific dyno type'
+      description: 'wait for one specific dyno type',
     }),
     'wait-interval': flags.integer({
       char: 'w',
@@ -23,13 +23,13 @@ export default class Wait extends Command {
         }
         return w
       },
-      default: 10
+      default: 10,
     }),
     'with-run': flags.boolean({
       char: 'R',
       description: 'whether to wait for one-off run dynos',
-      exclusive: ['type']
-    })
+      exclusive: ['type'],
+    }),
   }
 
   async run() {
@@ -38,8 +38,8 @@ export default class Wait extends Command {
     const {body: releases} = await this.heroku.request<Release[]>(`/apps/${flags.app}/releases`, {
       partial: true,
       headers: {
-        Range: 'version ..; max=1, order=desc'
-      }
+        Range: 'version ..; max=1, order=desc',
+      },
     })
 
     if (releases.length === 0) {
@@ -53,11 +53,12 @@ export default class Wait extends Command {
     const interval = flags['wait-interval'] as number
 
     while (1 as any) {
+      // eslint-disable-next-line no-await-in-loop
       const {body: dynos} = await this.heroku.get<Dyno[]>(`/apps/${flags.app}/dynos`)
       const relevantDynos = dynos
-        .filter(dyno => dyno.type !== 'release')
-        .filter(dyno => flags['with-run'] || dyno.type !== 'run')
-        .filter(dyno => !flags.type || dyno.type === flags.type)
+      .filter(dyno => dyno.type !== 'release')
+      .filter(dyno => flags['with-run'] || dyno.type !== 'run')
+      .filter(dyno => !flags.type || dyno.type === flags.type)
 
       const onLatest = relevantDynos.filter((dyno: Dyno) => {
         return dyno.state === 'up' &&
@@ -81,6 +82,7 @@ export default class Wait extends Command {
 
       cli.action.status = releasedFraction
 
+      // eslint-disable-next-line no-await-in-loop
       await cli.wait(interval * 1000)
     }
   }

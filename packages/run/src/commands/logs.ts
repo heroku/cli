@@ -13,7 +13,7 @@ disable colors with --no-color, HEROKU_LOGS_COLOR=0, or HEROKU_COLOR=0`
     '$ heroku logs --app=my-app',
     '$ heroku logs --num=50',
     '$ heroku logs --dyno=web --app=my-app',
-    '$ heroku logs --app=my-app --tail'
+    '$ heroku logs --app=my-app --tail',
   ]
 
   static flags = {
@@ -24,15 +24,15 @@ disable colors with --no-color, HEROKU_LOGS_COLOR=0, or HEROKU_COLOR=0`
     dyno: flags.string({
       char: 'd',
       description: 'only show output from this dyno type (such as "web" or "worker")',
-      completion: ProcessTypeCompletion
+      completion: ProcessTypeCompletion,
     }),
     source: flags.string({char: 's', description: 'only show output from this source (such as "app" or "heroku")'}),
     tail: flags.boolean({char: 't', description: 'continually stream logs'}),
-    'force-colors': flags.boolean({description: 'force use of colors (even on non-tty output)'})
+    'force-colors': flags.boolean({description: 'force use of colors (even on non-tty output)'}),
   }
 
   async run() {
-    let {flags} = this.parse(Logs)
+    const {flags} = this.parse(Logs)
 
     color.enabled = flags['force-colors'] || color.enabled
 
@@ -41,7 +41,7 @@ disable colors with --no-color, HEROKU_LOGS_COLOR=0, or HEROKU_COLOR=0`
       dyno: flags.dyno || flags.ps,
       lines: flags.num || 100,
       tail: flags.tail,
-      source: flags.source
+      source: flags.source,
     })
   }
 }

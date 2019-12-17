@@ -17,9 +17,9 @@ export function buildCommand(args: Array<string>) {
 }
 
 export function buildEnvFromFlag(flag: string) {
-  let env = {}
-  for (let v of flag.split(';')) {
-    let m = v.match(/^\s*([\w.-]+)\s*=\s*(.*)?\s*$/)
+  const env = {}
+  for (const v of flag.split(';')) {
+    const m = v.match(/^\s*([\w.-]+)\s*=\s*(.*)?\s*$/)
     if (m) env[m[1]] = m[2]
     else cli.warn(`env flag ${v} appears invalid. Avoid using ';' in values.`)
   }
