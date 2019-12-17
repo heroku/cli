@@ -5,9 +5,11 @@ import disambiguate from '../../disambiguate'
 
 export default class Open extends Command {
   static description = 'open a pipeline in dashboard'
+
   static examples = ['$ heroku pipelines:open my-pipeline']
+
   static args = [{
-    name: 'pipeline', description: 'name of pipeline', required: true
+    name: 'pipeline', description: 'name of pipeline', required: true,
   }]
 
   async run() {

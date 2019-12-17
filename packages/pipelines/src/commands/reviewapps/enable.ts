@@ -29,7 +29,7 @@ export default class ReviewappsEnable extends Command {
     }),
     'wait-for-ci': flags.boolean({
       description: 'wait for CI to pass before deploying',
-    })
+    }),
   }
 
   async run() {
@@ -40,18 +40,18 @@ export default class ReviewappsEnable extends Command {
       this.warn('Specifying an app via --app or --remote is no longer needed with Review Apps')
     }
 
-    let settings: {
-      automatic_review_apps?: boolean,
-      destroy_stale_apps?: boolean,
-      wait_for_ci?: boolean,
-      pipeline?: string,
-      repo?: string
+    const settings: {
+      automatic_review_apps?: boolean;
+      destroy_stale_apps?: boolean;
+      wait_for_ci?: boolean;
+      pipeline?: string;
+      repo?: string;
     } = {
       automatic_review_apps: undefined,
       destroy_stale_apps: undefined,
       wait_for_ci: undefined,
       pipeline: undefined,
-      repo: undefined
+      repo: undefined,
     }
 
     if (flags.autodeploy) {
@@ -73,34 +73,34 @@ export default class ReviewappsEnable extends Command {
 
     cli.action.start('Configuring pipeline')
 
-    let {body: pipeline} = await this.heroku.get<Heroku.Pipeline>(`/pipelines/${flags.pipeline}`)
+    const {body: pipeline} = await this.heroku.get<Heroku.Pipeline>(`/pipelines/${flags.pipeline}`)
 
     settings.pipeline = pipeline.id
 
     try {
-      let {body: feature} = await this.heroku.get<Heroku.AccountFeature>('/account/features/dashboard-repositories-api')
+      const {body: feature} = await this.heroku.get<Heroku.AccountFeature>('/account/features/dashboard-repositories-api')
 
       if (feature.enabled) {
-        let {body: repo} = await this.heroku.get(`/pipelines/${pipeline.id}/repo`, {
-          headers: {Accept: 'application/vnd.heroku+json; version=3.repositories-api'}
+        const {body: repo} = await this.heroku.get(`/pipelines/${pipeline.id}/repo`, {
+          headers: {Accept: 'application/vnd.heroku+json; version=3.repositories-api'},
         })
         settings.repo = repo.full_name
       }
     } catch {
-      let {repository} = await kolkrabbi.getPipelineRepository(pipeline.id)
+      const {repository} = await kolkrabbi.getPipelineRepository(pipeline.id)
       settings.repo = repository.name
     }
 
     if (flags.autodeploy || flags.autodestroy || flags['wait-for-ci']) {
       await this.heroku.patch(`/pipelines/${pipeline.id}/review-app-config`, {
         body: settings,
-        headers: {Accept: 'application/vnd.heroku+json; version=3.review-apps'}
+        headers: {Accept: 'application/vnd.heroku+json; version=3.review-apps'},
       })
     } else {
       // if no flags are passed then the user is enabling review apps
       await this.heroku.post(`/pipelines/${pipeline.id}/review-app-config`, {
         body: settings,
-        headers: {Accept: 'application/vnd.heroku+json; version=3.review-apps'}
+        headers: {Accept: 'application/vnd.heroku+json; version=3.review-apps'},
       })
     }
 

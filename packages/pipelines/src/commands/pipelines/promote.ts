@@ -38,7 +38,9 @@ function isFailed(promotionTarget: Heroku.PipelinePromotionTarget) {
 
 function pollPromotionStatus(heroku: APIClient, id: string, needsReleaseCommand: boolean): Promise<Array<Heroku.PipelinePromotionTarget>> {
   return heroku.get<Array<Heroku.PipelinePromotionTarget>>(`/pipeline-promotions/${id}/promotion-targets`).then(function ({body: targets}) {
-    if (targets.every(isComplete)) { return targets }
+    if (targets.every(isComplete)) {
+      return targets
+    }
 
     //
     // With only one target, we can return as soon as the release is created.
@@ -48,7 +50,9 @@ function pollPromotionStatus(heroku: APIClient, id: string, needsReleaseCommand:
     // seconds to get the release to succeeded after the release command
     // finished.
     //
-    if (needsReleaseCommand && targets.length === 1 && targets[0].release !== null) { return targets }
+    if (needsReleaseCommand && targets.length === 1 && targets[0].release !== null) {
+      return targets
+    }
 
     return wait(1000).then(pollPromotionStatus.bind(null, heroku, id, needsReleaseCommand))
   })
@@ -67,8 +71,8 @@ async function promote(heroku: APIClient, label: string, id: string, sourceAppId
     body: {
       pipeline: {id},
       source: {app: {id: sourceAppId}},
-      targets: targetApps.map(app => ({app: {id: app.id}}))
-    }
+      targets: targetApps.map(app => ({app: {id: app.id}})),
+    },
   }
 
   if (secondFactor) {
@@ -96,7 +100,7 @@ function assertValidPromotion(app: string, source: string, target?: string) {
 }
 
 function assertApps(app: string, targetApps: Array<Heroku.App>, targetStage: string) {
-  if (targetApps.length < 1) {
+  if (targetApps.length === 0) {
     throw new Error(`Cannot promote from ${color.app(app)} as there are no downstream apps in ${targetStage} stage`)
   }
 }
@@ -141,18 +145,18 @@ export default class Promote extends Command {
   static description = 'promote the latest release of this app to its downstream app(s)'
 
   static examples = [
-    '$ heroku pipelines:promote -a my-app-staging'
+    '$ heroku pipelines:promote -a my-app-staging',
   ]
 
   static flags = {
     app: flags.app({
-      required: true
+      required: true,
     }),
     remote: flags.remote(),
     to: flags.string({
       char: 't',
       description: 'comma separated list of apps to promote to',
-    })
+    }),
   }
 
   async run() {
@@ -198,7 +202,7 @@ export default class Promote extends Command {
     }
 
     const promotion = await promote(
-      this.heroku, promotionActionName, coupling.pipeline!.id!, coupling.app!.id!, targetApps
+      this.heroku, promotionActionName, coupling.pipeline!.id!, coupling.app!.id!, targetApps,
     )
 
     const pollLoop = pollPromotionStatus(this.heroku, promotion.id!, true)
@@ -209,11 +213,13 @@ export default class Promote extends Command {
 
     const appsByID = keyBy(allApps, 'id')
 
-    const styledTargets = promotionTargets.reduce(function (memo: Heroku.App , target: Heroku.App) {
+    const styledTargets = promotionTargets.reduce(function (memo: Heroku.App, target: Heroku.App) {
       const app = appsByID[target.app.id]
       const details = [target.status]
 
-      if (isFailed(target)) { details.push(target.error_message) }
+      if (isFailed(target)) {
+        details.push(target.error_message)
+      }
 
       memo[app.name] = details
       return memo

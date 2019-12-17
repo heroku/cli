@@ -9,20 +9,20 @@ export default class PipelinesRename extends Command {
   static description = 'rename a pipeline'
 
   static examples = [
-    '$ heroku pipelines:rename my-pipeline new-pipeline-name'
+    '$ heroku pipelines:rename my-pipeline new-pipeline-name',
   ]
 
   static args = [
     {
       name: 'pipeline',
       description: 'current name of pipeline',
-      required: true
+      required: true,
     },
     {
       name: 'name',
       description: 'new name of pipeline',
-      required: true
-    }
+      required: true,
+    },
   ]
 
   async run() {
@@ -33,10 +33,9 @@ export default class PipelinesRename extends Command {
     cli.action.start(`Renaming ${color.pipeline(pipeline.name!)} pipeline to ${color.pipeline(args.name)}`)
 
     await updatePipeline(this.heroku, pipeline.id!, {
-      name: args.name
+      name: args.name,
     })
 
     cli.action.stop()
-
   }
 }
