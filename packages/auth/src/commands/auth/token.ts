@@ -22,8 +22,8 @@ By default, the CLI auth token is only valid for 1 year. To generate a long-live
         d.setSeconds(d.getSeconds() + token.access_token.expires_in)
         this.warn(`token will expire ${formatRelative(d, new Date())}\nUse ${color.cmd('heroku authorizations:create')} to generate a long-term token`)
       }
-    } catch (err) {
-      this.warn(err)
+    } catch (error) {
+      this.warn(error)
     }
     this.log(this.heroku.auth)
   }
