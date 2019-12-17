@@ -7,14 +7,14 @@ import * as distanceInWordsToNow from 'date-fns/distance_in_words_to_now'
 
 export function display(auth: Heroku.OAuthAuthorization) {
   interface StyledObject {
-    ID: string | undefined,
-    Description: string | undefined,
-    Scope: string | undefined,
-    Client?: string,
-    Token?: string,
-    'Redirect URI'?: string,
-    'Updated at'?: string,
-    'Expires at'?: string
+    ID: string | undefined;
+    Description: string | undefined;
+    Scope: string | undefined;
+    Client?: string;
+    Token?: string;
+    'Redirect URI'?: string;
+    'Updated at'?: string;
+    'Expires at'?: string;
   }
 
   const obj: StyledObject = {
@@ -48,6 +48,6 @@ export function display(auth: Heroku.OAuthAuthorization) {
     'Scope',
     'Token',
     'Expires at',
-    'Updated at'
+    'Updated at',
   ])
 }

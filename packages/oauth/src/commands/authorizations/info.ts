@@ -16,8 +16,8 @@ export default class AuthorizationsInfo extends Command {
   async run() {
     const {args, flags} = this.parse(AuthorizationsInfo)
 
-    let {body: authentication} = await this.heroku.get<Heroku.OAuthClient>(
-      `/oauth/authorizations/${args.id}`
+    const {body: authentication} = await this.heroku.get<Heroku.OAuthClient>(
+      `/oauth/authorizations/${args.id}`,
     )
 
     if (flags.json) {
