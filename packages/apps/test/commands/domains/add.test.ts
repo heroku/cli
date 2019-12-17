@@ -6,7 +6,7 @@ describe('domains:add', () => {
     acm_status_reason: null,
     app: {
       name: 'myapp',
-      id: '01234567-89ab-cdef-0123-456789abcdef'
+      id: '01234567-89ab-cdef-0123-456789abcdef',
     },
     cname: null,
     created_at: '2012-01-01T12:00:00Z',
@@ -14,17 +14,17 @@ describe('domains:add', () => {
     id: '01234567-89ab-cdef-0123-456789abcdef',
     kind: 'custom',
     updated_at: '2012-01-01T12:00:00Z',
-    status: 'pending'
+    status: 'pending',
   }
 
   test
-    .stderr()
-    .nock('https://api.heroku.com', api => api
-      .post('/apps/myapp/domains', {hostname: 'example.com'})
-      .reply(200, domainsResponse)
-    )
-    .command(['domains:add', 'example.com', '--app', 'myapp'])
-    .it('adds the domain to the app', ctx => {
-      expect(ctx.stderr).to.contain('Adding example.com to myapp... done')
-    })
+  .stderr()
+  .nock('https://api.heroku.com', api => api
+  .post('/apps/myapp/domains', {hostname: 'example.com'})
+  .reply(200, domainsResponse),
+  )
+  .command(['domains:add', 'example.com', '--app', 'myapp'])
+  .it('adds the domain to the app', ctx => {
+    expect(ctx.stderr).to.contain('Adding example.com to myapp... done')
+  })
 })

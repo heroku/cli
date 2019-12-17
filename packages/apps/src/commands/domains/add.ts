@@ -15,7 +15,7 @@ export default class DomainsAdd extends Command {
     help: flags.help({char: 'h'}),
     app: flags.app({required: true}),
     json: flags.boolean({description: 'output in json format', char: 'j'}),
-    wait: flags.boolean()
+    wait: flags.boolean(),
   }
 
   static args = [{name: 'hostname'}]
@@ -25,7 +25,7 @@ export default class DomainsAdd extends Command {
     const {hostname} = args
     cli.action.start(`Adding ${color.green(args.hostname)} to ${color.app(flags.app)}`)
     const {body: domain} = await this.heroku.post<Heroku.Domain>(`/apps/${flags.app}/domains`, {
-      body: {hostname}
+      body: {hostname},
     })
     cli.action.stop()
     if (flags.json) {
@@ -39,7 +39,7 @@ For help, see https://devcenter.heroku.com/articles/custom-domains`)
         } else {
           cli.log('')
           cli.log(`The domain ${color.green(hostname)} has been enqueued for addition`)
-          let command = `heroku domains:wait ${shellescape([hostname])}`
+          const command = `heroku domains:wait ${shellescape([hostname])}`
           cli.log(`Run ${color.cmd(command)} to wait for completion`)
         }
       }

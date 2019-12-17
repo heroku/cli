@@ -5,7 +5,7 @@ import * as Uri from 'urijs'
 
 function isApexDomain(hostname: string) {
   if (hostname.includes('*')) return false
-  let a = new Uri({protocol: 'http', hostname})
+  const a = new Uri({protocol: 'http', hostname})
   return a.subdomain() === ''
 }
 
@@ -20,12 +20,13 @@ example.herokuapp.com
 === example Custom Domains
 Domain Name      DNS Record Type  DNS Target
 www.example.com  CNAME            www.example.herokudns.com
-`, "$ heroku domains --filter 'Domain Name=www.example.com'"]
+`, "$ heroku domains --filter 'Domain Name=www.example.com'",
+  ]
 
   static flags = {
     help: flags.help({char: 'h'}),
     app: flags.app({required: true}),
-    ...cli.table.flags({except: 'no-truncate'})
+    ...cli.table.flags({except: 'no-truncate'}),
   }
 
   async run() {
@@ -41,17 +42,18 @@ www.example.com  CNAME            www.example.herokudns.com
       cli.styledHeader(`${flags.app} Custom Domains`)
       cli.table(customDomains, {
         hostname: {header: 'Domain Name'},
-        kind: {header: 'DNS Record Type', get: domain => {
-          if (domain.hostname) {
-            return isApexDomain(domain.hostname) ? 'ALIAS or ANAME' : 'CNAME'
-          }
-        }},
+        kind: {header: 'DNS Record Type',
+          get: domain => {
+            if (domain.hostname) {
+              return isApexDomain(domain.hostname) ? 'ALIAS or ANAME' : 'CNAME'
+            }
+          }},
         cname: {header: 'DNS Target'},
         acm_status: {header: 'ACM Status', extended: true},
-        acm_status_reason: {header: 'ACM Status', extended: true}
+        acm_status_reason: {header: 'ACM Status', extended: true},
       }, {
         ...flags,
-        'no-truncate': true
+        'no-truncate': true,
       })
     }
   }
