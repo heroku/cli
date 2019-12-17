@@ -31,7 +31,7 @@ f82e7c2a50737494`
     const password = await ux.prompt('Password', {type: 'hide'})
     const headers = {'Heroku-Password': password}
     const {body: codes} = await this.heroku.post<string[]>('/account/recovery-codes', {headers})
-    for (let code of codes) {
+    for (const code of codes) {
       ux.log(code)
     }
   }
