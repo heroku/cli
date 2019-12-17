@@ -4,7 +4,9 @@ import {AutocompleteBase} from '../../base'
 
 export default class Script extends AutocompleteBase {
   static description = 'display autocomplete setup script for shell'
+
   static hidden = true
+
   static args = [{name: 'shell', description: 'shell type', required: true}]
 
   async run() {
@@ -12,7 +14,7 @@ export default class Script extends AutocompleteBase {
     const shell = args.shell || this.config.shell
     this.errorIfNotSupportedShell(shell)
 
-    let shellUpcase = shell.toUpperCase()
+    const shellUpcase = shell.toUpperCase()
     this.log(
       `${this.prefix}HEROKU_AC_${shellUpcase}_SETUP_PATH=${path.join(
         this.autocompleteCacheDir,

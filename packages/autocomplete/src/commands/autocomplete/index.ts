@@ -22,7 +22,7 @@ export default class Index extends AutocompleteBase {
     '$ heroku autocomplete',
     '$ heroku autocomplete bash',
     '$ heroku autocomplete zsh',
-    '$ heroku autocomplete --refresh-cache'
+    '$ heroku autocomplete --refresh-cache',
   ]
 
   async run() {
