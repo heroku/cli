@@ -11,23 +11,23 @@ export default class RunConsole extends Command {
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
-    size: flags.string({char: 's', description: 'dyno size', completion:  DynoSizeCompletion}),
-    env: flags.string({char: 'e', description: 'environment variables to set (use \';\' to split multiple vars)'})
+    size: flags.string({char: 's', description: 'dyno size', completion: DynoSizeCompletion}),
+    env: flags.string({char: 'e', description: 'environment variables to set (use \';\' to split multiple vars)'}),
   }
 
   async run() {
-    let {flags} = this.parse(RunConsole)
+    const {flags} = this.parse(RunConsole)
 
-    let opts = {
+    const opts = {
       heroku: this.heroku,
       app: flags.app,
       command: buildCommand(['console']),
       size: flags.size,
       env: flags.env,
-      attach: true
+      attach: true,
     }
 
-    let dyno = new Dyno(opts)
+    const dyno = new Dyno(opts)
     await dyno.start()
   }
 }
