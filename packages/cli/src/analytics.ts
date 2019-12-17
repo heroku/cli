@@ -8,31 +8,33 @@ import deps from './deps'
 const debug = require('debug')('heroku:analytics')
 
 export interface RecordOpts {
-  Command: Config.Command.Class
-  argv: string[]
+  Command: Config.Command.Class;
+  argv: string[];
 }
 
 export interface AnalyticsInterface {
-  source: string,
-  event: string,
+  source: string;
+  event: string;
   properties: {
-    cli: string,
-    command: string,
-    completion: number,
-    version: string,
-    plugin: string,
-    plugin_version: string,
-    os: string,
-    shell: string,
-    valid: boolean,
-    language: string,
-    install_id: string,
-  }
+    cli: string;
+    command: string;
+    completion: number;
+    version: string;
+    plugin: string;
+    plugin_version: string;
+    os: string;
+    shell: string;
+    valid: boolean;
+    language: string;
+    install_id: string;
+  };
 }
 
 export default class AnalyticsCommand {
   config: Config.IConfig
+
   userConfig!: typeof deps.UserConfig.prototype
+
   http: typeof deps.HTTP
 
   constructor(config: Config.IConfig) {
@@ -67,15 +69,14 @@ export default class AnalyticsCommand {
         valid: true,
         language: 'node',
         install_id: this.userConfig.install,
-      }
+      },
     }
 
     const data = Buffer.from(JSON.stringify(analyticsData)).toString('base64')
     if (this.authorizationToken) {
       return this.http.get(`${this.url}?data=${data}`, {headers: {authorization: `Bearer ${this.authorizationToken}`}}).catch(error => debug(error))
-    } else {
-      return this.http.get(`${this.url}?data=${data}`).catch(error => debug(error))
     }
+    return this.http.get(`${this.url}?data=${data}`).catch(error => debug(error))
   }
 
   get url(): string {
@@ -92,7 +93,7 @@ export default class AnalyticsCommand {
 
   get usingHerokuAPIKey(): boolean {
     const k = process.env.HEROKU_API_KEY
-    return !!(k && k.length > 0)
+    return Boolean(k && k.length > 0)
   }
 
   get netrcLogin(): string | undefined {
@@ -106,8 +107,8 @@ export default class AnalyticsCommand {
 
   async _acAnalytics(id: string): Promise<number> {
     if (id === 'autocomplete:options') return 0
-    let root = path.join(this.config.cacheDir, 'autocomplete', 'completion_analytics')
-    let meta = {
+    const root = path.join(this.config.cacheDir, 'autocomplete', 'completion_analytics')
+    const meta = {
       cmd: deps.file.exists(path.join(root, 'command')),
       flag: deps.file.exists(path.join(root, 'flag')),
       value: deps.file.exists(path.join(root, 'value')),
