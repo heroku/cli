@@ -6,6 +6,7 @@ const METRICS_HOST = 'api.metrics.heroku.com'
 
 export default class Disable extends Command {
   static description = 'disable web dyno autoscaling'
+
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
@@ -18,7 +19,7 @@ export default class Disable extends Command {
     const appResponse = await this.heroku.get<Heroku.App>(`/apps/${flags.app}`)
     const app = appResponse.body
     const monitorsResponse = await this.heroku.get<Heroku.Formation>(`/apps/${app.id}/formation/web/monitors`, {
-      hostname: METRICS_HOST
+      hostname: METRICS_HOST,
     })
     const monitors = monitorsResponse.body
     const scaleMonitor = monitors.find((m: any) => m.action_type === 'scale')
@@ -30,8 +31,8 @@ export default class Disable extends Command {
       body: {
         is_active: false,
         period: 1,
-        op: 'GREATER_OR_EQUAL'
-      }
+        op: 'GREATER_OR_EQUAL',
+      },
     })
 
     cli.action.stop()
