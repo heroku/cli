@@ -1,19 +1,19 @@
 import {Command, flags} from '@heroku-cli/command'
 import {DynoSizeCompletion, ProcessTypeCompletion} from '@heroku-cli/command/lib/completions'
 import cli from 'cli-ux'
-import DebugFactory from 'debug'
+import debugFactory from 'debug'
 
 import Dyno from '../../lib/dyno'
 import {buildCommand} from '../../lib/helpers'
 
-const debug = DebugFactory('heroku:run')
+const debug = debugFactory('heroku:run')
 
 export default class Run extends Command {
   static description = 'run a one-off process inside a heroku dyno\nShows a notification if the dyno takes more than 20 seconds to start.'
 
   static examples = [
     '$ heroku run bash',
-    '$ heroku run -s hobby -- myscript.sh -a arg1 -s arg2'
+    '$ heroku run -s hobby -- myscript.sh -a arg1 -s arg2',
   ]
 
   // This is to allow for variable length arguments
@@ -28,13 +28,13 @@ export default class Run extends Command {
     env: flags.string({char: 'e', description: "environment variables to set (use ';' to split multiple vars)"}),
     'no-tty': flags.boolean({description: 'force the command to not run in a tty'}),
     listen: flags.boolean({description: 'listen on a local port', hidden: true}),
-    'no-notify': flags.boolean({description: 'disables notification when dyno is up (alternatively use HEROKU_NOTIFICATIONS=0)'})
+    'no-notify': flags.boolean({description: 'disables notification when dyno is up (alternatively use HEROKU_NOTIFICATIONS=0)'}),
   }
 
   async run() {
     const {argv, flags} = this.parse(Run)
 
-    let opts = {
+    const opts = {
       'exit-code': flags['exit-code'],
       'no-tty': flags['no-tty'],
       app: flags.app,
@@ -45,23 +45,23 @@ export default class Run extends Command {
       listen: flags.listen,
       notify: !flags['no-notify'],
       size: flags.size,
-      type: flags.type
+      type: flags.type,
     }
 
     if (!opts.command) {
       throw new Error('Usage: heroku run COMMAND\n\nExample: heroku run bash')
     }
 
-    let dyno = new Dyno(opts)
+    const dyno = new Dyno(opts)
     try {
       await dyno.start()
       debug('done running')
-    } catch (err) {
-      debug(err)
-      if (err.exitCode) {
-        cli.error(err.message, {code: err.exitCode, exit: err.exitCode})
+    } catch (error) {
+      debug(error)
+      if (error.exitCode) {
+        cli.error(error.message, {code: error.exitCode, exit: error.exitCode})
       } else {
-        throw err
+        throw error
       }
     }
   }
