@@ -1,3 +1,4 @@
+/* eslint-disable no-inner-declarations */
 import {Scope} from 'nock'
 
 export namespace BuildpackInstallationsStub {
