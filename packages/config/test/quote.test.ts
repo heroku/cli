@@ -9,7 +9,7 @@ describe('quote', () => {
     ['a\'bc', '"a\'bc"'],
     ['a\nb\nc', '"a\\nb\\nc"'],
     ['foo\\nb:ar\\bz', "'foo\\\\nb:ar\\\\bz'"],
-  ].map(([a, b]) => {
+  ].forEach(([a, b]) => {
     it(`${a}===${b}`, () => {
       expect(quote(a)).to.eq(b)
     })
@@ -21,7 +21,7 @@ describe('quote', () => {
     'a\'bc',
     'a\nb\nc',
     'foo\\nb:ar\\bz',
-  ].map(s => {
+  ].forEach(s => {
     it(`parses "${s}"`, () => {
       expect(parse(quote(s))).to.eq(s)
     })
