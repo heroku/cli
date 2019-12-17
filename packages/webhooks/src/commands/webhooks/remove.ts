@@ -6,17 +6,17 @@ export default class WebhooksRemove extends BaseCommand {
   static description = 'removes a webhook from an app'
 
   static examples = [
-    '$ heroku webhooks:remove 99999999-9999-9999-9999-999999999999'
+    '$ heroku webhooks:remove 99999999-9999-9999-9999-999999999999',
   ]
 
   static flags = {
     app: flags.app(),
     remote: flags.remote(),
-    pipeline: flags.pipeline({char: 'p', description: 'pipeline on which to list', hidden: true})
+    pipeline: flags.pipeline({char: 'p', description: 'pipeline on which to list', hidden: true}),
   }
 
   static args = [
-    {name: 'id', description: 'id of webhook to remove', required: true}
+    {name: 'id', description: 'id of webhook to remove', required: true},
   ]
 
   async run() {
