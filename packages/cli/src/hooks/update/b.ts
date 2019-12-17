@@ -13,8 +13,8 @@ function brew(args: string[], opts: SpawnSyncOptions = {}) {
 
 interface InstallReceipt {
   source: {
-    tap: string
-  }
+    tap: string;
+  };
 }
 
 export const brewHook: Hook<'update'> = async function () {
@@ -24,9 +24,9 @@ export const brewHook: Hook<'update'> = async function () {
   let binPath
   try {
     binPath = fs.realpathSync(path.join(brewRoot, 'bin/heroku'))
-  } catch (err) {
-    if (err.code === 'ENOENT') return
-    throw err
+  } catch (error) {
+    if (error.code === 'ENOENT') return
+    throw error
   }
   let cellarPath: string
   if (binPath && binPath.startsWith(path.join(brewRoot, 'Cellar'))) {
@@ -39,7 +39,7 @@ export const brewHook: Hook<'update'> = async function () {
   }
 
   const needsMigrate = async (): Promise<boolean> => {
-    let receipt = await fetchInstallReceipt()
+    const receipt = await fetchInstallReceipt()
     if (!receipt) return false
     return receipt.source.tap === 'homebrew/core'
   }
