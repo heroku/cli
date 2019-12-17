@@ -24,7 +24,7 @@ export default class DomainsAdd extends Command {
     app: flags.app({required: true}),
     cert: flags.string({description: 'the name of the SSL cert you want to use for this domain', char: 'c'}),
     json: flags.boolean({description: 'output in json format', char: 'j'}),
-    wait: flags.boolean()
+    wait: flags.boolean(),
   }
 
   static args = [{name: 'hostname'}]
@@ -92,38 +92,24 @@ export default class DomainsAdd extends Command {
   async run() {
     const {args, flags} = this.parse(DomainsAdd)
     const {hostname} = args
-
-    const {body: featureList} = await this.heroku.get<Array<Heroku.AppFeature>>(`/apps/${flags.app}/features`)
-
-    const multipleSniEndpointFeature = featureList.find(feature => feature.name === MULTIPLE_SNI_ENDPOINT_FLAG)
-
-    const domainCreatePayload: DomainCreatePayload = {
-      hostname
-    }
-
-    if (multipleSniEndpointFeature && multipleSniEndpointFeature.enabled) {
-      // multiple SNI endpoints is enabled
-      if (flags.cert) {
-        domainCreatePayload.sni_endpoint = flags.cert
-      }
-    }
-
-    try {
-      const domain = await this.createDomain(flags.app, domainCreatePayload)
-      if (flags.json) {
-        cli.styledJSON(domain)
-      } else {
-        cli.log(`Configure your app's DNS provider to point to the DNS Target ${color.green(domain.cname || '')}.
-  For help, see https://devcenter.heroku.com/articles/custom-domains`)
-        if (domain.status !== 'none') {
-          if (flags.wait) {
-            await waitForDomain(flags.app, this.heroku, domain)
-          } else {
-            cli.log('')
-            cli.log(`The domain ${color.green(hostname)} has been enqueued for addition`)
-            let command = `heroku domains:wait ${shellescape([hostname])}`
-            cli.log(`Run ${color.cmd(command)} to wait for completion`)
-          }
+    cli.action.start(`Adding ${color.green(args.hostname)} to ${color.app(flags.app)}`)
+    const {body: domain} = await this.heroku.post<Heroku.Domain>(`/apps/${flags.app}/domains`, {
+      body: {hostname},
+    })
+    cli.action.stop()
+    if (flags.json) {
+      cli.styledJSON(domain)
+    } else {
+      cli.log(`Configure your app's DNS provider to point to the DNS Target ${color.green(domain.cname || '')}.
+For help, see https://devcenter.heroku.com/articles/custom-domains`)
+      if (domain.status !== 'none') {
+        if (flags.wait) {
+          await waitForDomain(flags.app, this.heroku, domain)
+        } else {
+          cli.log('')
+          cli.log(`The domain ${color.green(hostname)} has been enqueued for addition`)
+          const command = `heroku domains:wait ${shellescape([hostname])}`
+          cli.log(`Run ${color.cmd(command)} to wait for completion`)
         }
       }
     } catch (err) {

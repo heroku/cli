@@ -18,14 +18,15 @@ export default class DomainsWait extends Command {
 
     let domains
     if (args.hostname) {
-      let {body: domain} = await this.heroku.get<Heroku.Domain>(`/apps/${flags.app}/domains/${args.hostname}`)
+      const {body: domain} = await this.heroku.get<Heroku.Domain>(`/apps/${flags.app}/domains/${args.hostname}`)
       domains = [domain]
     } else {
-      let {body: apiDomains} = await this.heroku.get<Array<Heroku.Domain>>(`/apps/${flags.app}/domains`)
+      const {body: apiDomains} = await this.heroku.get<Array<Heroku.Domain>>(`/apps/${flags.app}/domains`)
       domains = apiDomains.filter(domain => domain.status === 'pending')
     }
 
-    for (let domain of domains) {
+    for (const domain of domains) {
+      // eslint-disable-next-line no-await-in-loop
       await waitForDomain(flags.app, this.heroku, domain)
     }
   }
