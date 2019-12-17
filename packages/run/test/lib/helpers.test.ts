@@ -8,11 +8,11 @@ describe('helpers.buildCommand()', () => {
     {args: ['echo', 'foo bar'], expected: 'echo "foo bar"'},
     {args: ['echo', 'foo', 'bar'], expected: 'echo foo bar'},
     {args: ['echo', '{"foo": "bar"}'], expected: 'echo "{\\"foo\\": \\"bar\\"}"'},
-    {args: ['echo', '{"foo":"bar"}'], expected: 'echo "{\\"foo\\":\\"bar\\"}"'}
+    {args: ['echo', '{"foo":"bar"}'], expected: 'echo "{\\"foo\\":\\"bar\\"}"'},
   ].forEach(example => {
     test
-      .it(`parses \`${example.args.join(' ')}\` as ${example.expected}`, () => {
-        expect(buildCommand(example.args)).to.equal(example.expected)
-      })
+    .it(`parses \`${example.args.join(' ')}\` as ${example.expected}`, () => {
+      expect(buildCommand(example.args)).to.equal(example.expected)
+    })
   })
 })

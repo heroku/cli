@@ -10,7 +10,7 @@ const appNames = [
   'review-app-4',
   'staging-app-1',
   'staging-app-2',
-  'production-app-1'
+  'production-app-1',
 ]
 
 type Stage = 'test' | 'review' | 'development' | 'staging' | 'production'
@@ -23,7 +23,7 @@ function itShowsPipelineApps(ctx: TestContext) {
     expect(ctx.stdout).to.contain(name)
   })
 
-  let expectedTable = [
+  const expectedTable = [
     'app name            stage       ',
     '⬢ development-app-1 development ',
     '⬢ development-app-2 development ',
@@ -33,7 +33,7 @@ function itShowsPipelineApps(ctx: TestContext) {
     '⬢ review-app-4      review      ',
     '⬢ staging-app-1     staging     ',
     '⬢ staging-app-2     staging     ',
-    '⬢ production-app-1  production '
+    '⬢ production-app-1  production ',
   ].join('\n')
 
   expect(ctx.stdout).to.contain(expectedTable)
@@ -41,17 +41,17 @@ function itShowsPipelineApps(ctx: TestContext) {
 
 describe('pipelines:info', function () {
   function setup(testInstance: typeof test, owner?: Heroku.Account) {
-    let pipeline = {name: 'example', id: '0123', owner}
-    let pipelines = [pipeline]
-    let apps: Array<Heroku.App> = []
-    let couplings: Array<Heroku.PipelineCoupling> = []
+    const pipeline = {name: 'example', id: '0123', owner}
+    const pipelines = [pipeline]
+    const apps: Array<Heroku.App> = []
+    const couplings: Array<Heroku.PipelineCoupling> = []
 
     // Build couplings
     appNames.forEach((name, id) => {
-      let stage: Stage = name.split('-')[0] as Stage
+      const stage: Stage = name.split('-')[0] as Stage
       couplings.push({
         stage,
-        app: {id: `app-${id + 1}`}
+        app: {id: `app-${id + 1}`},
       })
     })
 
@@ -62,50 +62,50 @@ describe('pipelines:info', function () {
           id: `app-${id + 1}`,
           name,
           pipeline,
-          owner: {id: '1234', email: 'foo@user.com'}
-        }
+          owner: {id: '1234', email: 'foo@user.com'},
+        },
       )
     })
 
     return testInstance
-      .nock('https://api.heroku.com', api => {
-        api
-          .get('/pipelines')
-          .query(true)
-          .reply(200, pipelines)
-          .get('/pipelines/0123/pipeline-couplings')
-          .reply(200, couplings)
-          .post('/filters/apps')
-          .reply(200, apps)
+    .nock('https://api.heroku.com', api => {
+      api
+      .get('/pipelines')
+      .query(true)
+      .reply(200, pipelines)
+      .get('/pipelines/0123/pipeline-couplings')
+      .reply(200, couplings)
+      .post('/filters/apps')
+      .reply(200, apps)
 
-        if (owner && owner.type === 'team') {
-          api.get(`/teams/${owner.id}`).reply(200, {
-            id: owner.id,
-            name: 'my-team'
-          })
-        }
-      })
+      if (owner && owner.type === 'team') {
+        api.get(`/teams/${owner.id}`).reply(200, {
+          id: owner.id,
+          name: 'my-team',
+        })
+      }
+    })
   }
 
   describe("when pipeline doesn't have an owner", function () {
     setup(test)
-      .stdout()
-      .stderr()
-      .command(['pipelines:info', 'example'])
-      .it('doesn\'t display the owner', ctx => {
-        expect(ctx.stdout).to.not.contain('owner: foo@user.com')
-      })
+    .stdout()
+    .stderr()
+    .command(['pipelines:info', 'example'])
+    .it('doesn\'t display the owner', ctx => {
+      expect(ctx.stdout).to.not.contain('owner: foo@user.com')
+    })
 
     setup(test)
-      .stdout()
-      .stderr()
-      .command(['pipelines:info', 'example', '--json'])
-      .it('displays json format', ctx => {
-        expect(ctx.stdout).to.not.contain('owner: foo@user.com')
-        let parsedOutput = JSON.parse(ctx.stdout)
-        expect(parsedOutput.pipeline.name).to.equal('example')
-        expect(parsedOutput.apps.length).to.equal(9)
-      })
+    .stdout()
+    .stderr()
+    .command(['pipelines:info', 'example', '--json'])
+    .it('displays json format', ctx => {
+      expect(ctx.stdout).to.not.contain('owner: foo@user.com')
+      const parsedOutput = JSON.parse(ctx.stdout)
+      expect(parsedOutput.pipeline.name).to.equal('example')
+      expect(parsedOutput.apps.length).to.equal(9)
+    })
   })
 
   describe('when it has an owner', () => {
@@ -114,7 +114,7 @@ describe('pipelines:info', function () {
         `Warning: Some apps in this pipeline do not belong to ${owner}.`,
         'All apps in a pipeline must have the same owner as the pipeline owner.',
         'Transfer these apps or change the pipeline owner in pipeline settings.',
-        'See https://devcenter.heroku.com/articles/pipeline-ownership-transition for more info.'
+        'See https://devcenter.heroku.com/articles/pipeline-ownership-transition for more info.',
       ]
 
       warningMessage.forEach(message => {
@@ -132,34 +132,34 @@ describe('pipelines:info', function () {
         const pipelineOwner = {id: '5678', type: 'user'}
 
         setup(test, pipelineOwner)
-          .stdout()
-          .stderr()
-          .command(['pipelines:info', 'example'])
-          .retries(3)
-          .it('shows uuid instead of email', ctx => {
-            const warningMessage = 'Some apps in this pipeline do not belong'
-            expect(ctx.stdout).to.not.contain(warningMessage)
+        .stdout()
+        .stderr()
+        .command(['pipelines:info', 'example'])
+        .retries(3)
+        .it('shows uuid instead of email', ctx => {
+          const warningMessage = 'Some apps in this pipeline do not belong'
+          expect(ctx.stdout).to.not.contain(warningMessage)
 
-            expect(ctx.stdout).to.include('owner: 5678')
+          expect(ctx.stdout).to.include('owner: 5678')
 
-            itShowsMixedOwnershipWarning('5678', ctx)
-            itShowsPipelineApps(ctx)
-          })
+          itShowsMixedOwnershipWarning('5678', ctx)
+          itShowsPipelineApps(ctx)
+        })
       })
 
       describe('with same pipeline ownership', () => {
         const pipelineOwner = {id: '1234', type: 'user'}
 
         setup(test, pipelineOwner)
-          .stdout()
-          .stderr()
-          .command(['pipelines:info', 'example'])
-          .it('displays the owner email', ctx => {
-            expect(ctx.stdout).to.contain('owner: foo@user.com')
+        .stdout()
+        .stderr()
+        .command(['pipelines:info', 'example'])
+        .it('displays the owner email', ctx => {
+          expect(ctx.stdout).to.contain('owner: foo@user.com')
 
-            itDoesNotShowMixedOwnershipWarning(ctx)
-            itShowsPipelineApps(ctx)
-          })
+          itDoesNotShowMixedOwnershipWarning(ctx)
+          itShowsPipelineApps(ctx)
+        })
       })
     })
 
@@ -168,28 +168,28 @@ describe('pipelines:info', function () {
         const pipelineOwner = {id: '5678', type: 'team'}
 
         setup(test, pipelineOwner)
-          .stderr()
-          .stdout()
-          .command(['pipelines:info', 'example'])
-          .it('displays the owner', ctx => {
-            expect(ctx.stdout).to.contain('owner: my-team (team)')
-            itShowsPipelineApps(ctx)
-            itShowsMixedOwnershipWarning('my-team (team)', ctx)
-          })
+        .stderr()
+        .stdout()
+        .command(['pipelines:info', 'example'])
+        .it('displays the owner', ctx => {
+          expect(ctx.stdout).to.contain('owner: my-team (team)')
+          itShowsPipelineApps(ctx)
+          itShowsMixedOwnershipWarning('my-team (team)', ctx)
+        })
       })
 
       describe('with homogeneous ownership', function () {
         const pipelineOwner = {id: '1234', type: 'team'}
 
         setup(test, pipelineOwner)
-          .stderr()
-          .stdout()
-          .command(['pipelines:info', 'example'])
-          .it('displays the owner', ctx => {
-            expect(ctx.stdout).to.contain('owner: my-team (team)')
-            itShowsPipelineApps(ctx)
-            itDoesNotShowMixedOwnershipWarning(ctx)
-          })
+        .stderr()
+        .stdout()
+        .command(['pipelines:info', 'example'])
+        .it('displays the owner', ctx => {
+          expect(ctx.stdout).to.contain('owner: my-team (team)')
+          itShowsPipelineApps(ctx)
+          itDoesNotShowMixedOwnershipWarning(ctx)
+        })
       })
     })
   })
