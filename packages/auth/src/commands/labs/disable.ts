@@ -7,32 +7,34 @@ const SecurityExceptionFeatures: any = {
   'spaces-strict-tls': {
     async prompt(out: any, app: string): Promise<string> {
       out.warn('Insecure Action')
-      let name = await cli.prompt(`You are enabling an older security protocol, TLS 1.0, which some organizations may not deem secure.
+      const name = await cli.prompt(`You are enabling an older security protocol, TLS 1.0, which some organizations may not deem secure.
 To proceed, type ${app} or re-run this command with --confirm ${app}`)
       return name
-    }
-  }
+    },
+  },
 }
 
 export default class LabsDisable extends Command {
   static description = 'disables an experimental feature'
+
   static args = [{name: 'feature'}]
+
   static flags = {
     app: flags.app(),
     remote: flags.remote(),
-    confirm: flags.string({required: false})
+    confirm: flags.string({required: false}),
   }
 
   async run() {
     const {args, flags} = this.parse(LabsDisable)
-    let feature = args.feature
+    const feature = args.feature
     let request
     let target
 
     if (SecurityExceptionFeatures[feature]) {
       if (flags.confirm !== flags.app) {
-        let prompt = SecurityExceptionFeatures[feature].prompt
-        let confirm = await prompt(cli, flags.app)
+        const prompt = SecurityExceptionFeatures[feature].prompt
+        const confirm = await prompt(cli, flags.app)
         if (confirm !== flags.app) {
           this.error('Confirmation name did not match app name. Try again.')
         }
@@ -43,10 +45,10 @@ export default class LabsDisable extends Command {
       await this.heroku.get(`/account/features/${feature}`)
       request = this.disableFeature(feature)
       target = (await this.heroku.get<Heroku.Account>('/account')).body.email
-    } catch (err) {
-      if (err.http.statusCode !== 404) throw err
+    } catch (error) {
+      if (error.http.statusCode !== 404) throw error
       // might be an app feature
-      if (!flags.app) throw err
+      if (!flags.app) throw error
       await this.heroku.get<Heroku.AppFeature>(`/apps/${flags.app}/features/${feature}`)
       request = this.disableFeature(feature, flags.app)
       target = flags.app
@@ -59,7 +61,7 @@ export default class LabsDisable extends Command {
 
   disableFeature(feature: string, app?: string): Promise<any> {
     return this.heroku.patch(app ? `/apps/${app}/features/${feature}` : `/account/features/${feature}`, {
-      body: {enabled: false}
+      body: {enabled: false},
     })
   }
 }
