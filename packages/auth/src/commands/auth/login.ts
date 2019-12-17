@@ -4,7 +4,9 @@ import * as Heroku from '@heroku-cli/schema'
 
 export default class Login extends Command {
   static description = 'login with your Heroku credentials'
+
   static aliases = ['login']
+
   static flags = {
     browser: flags.string({description: 'browser to open SSO with (example: "firefox", "safari")'}),
     sso: flags.boolean({hidden: true, char: 's', description: 'login for enterprise users under SSO'}),
