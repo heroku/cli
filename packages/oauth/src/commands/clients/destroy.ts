@@ -14,7 +14,7 @@ export default class ClientsDestroy extends Command {
     cli.action.start(`Destroying ${color.cyan(args.id)}`)
 
     await this.heroku.delete<Heroku.OAuthClient>(
-      `/oauth/clients/${args.id}`
+      `/oauth/clients/${args.id}`,
     )
 
     cli.action.stop()
