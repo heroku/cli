@@ -15,7 +15,7 @@ export default class CiInfo extends Command {
   static flags = {
     app: flags.string({char: 'a', description: 'app name'}),
     node: flags.string({description: 'the node number to show its setup and output', required: false}),
-    pipeline: flags.pipeline({required: false})
+    pipeline: flags.pipeline({required: false}),
   }
 
   static args = [{name: 'test-run', required: true}]

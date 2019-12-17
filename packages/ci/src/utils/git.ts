@@ -77,12 +77,12 @@ async function readCommit(commit: string) {
   return Promise.resolve({
     branch,
     ref,
-    message
+    message,
   })
 }
 
 export {
   createArchive,
   githubRepository,
-  readCommit
+  readCommit,
 }
