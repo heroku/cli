@@ -11,7 +11,7 @@ const plugins = ['heroku-ps-exec']
 const skipOnWindows = process.platform === 'win32' ? it.skip : it
 
 describe.skip('plugins', () => {
-  plugins.map(plugin => {
+  plugins.forEach(plugin => {
     skipOnWindows(plugin, async () => {
       const cwd = path.join(__dirname, '../../tmp/plugin', plugin)
       await fs.remove(cwd)

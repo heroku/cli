@@ -4,6 +4,7 @@ const KOLKRABBI_BASE_URL = 'https://kolkrabbi.heroku.com'
 
 export default class {
   version: any
+
   token: any
 
   constructor(version: any, token: any) {
@@ -14,7 +15,7 @@ export default class {
   request(url: string, options: any = {}) {
     options.headers = {
       Authorization: `Bearer ${this.token}`,
-      'User-Agent': this.version
+      'User-Agent': this.version,
     }
 
     if (['POST', 'PATCH', 'DELETE'].includes(options.method)) {
@@ -31,45 +32,45 @@ export default class {
   createPipelineRepository(pipeline: any, repository: any) {
     return this.request(`/pipelines/${pipeline}/repository`, {
       method: 'POST',
-      body: {repository}
+      body: {repository},
     })
   }
 
   updatePipelineRepository(pipeline: any, body: any) {
     return this.request(`/pipelines/${pipeline}/repository`, {
       method: 'PATCH',
-      body
+      body,
     })
   }
 
   updateAppLink(app: any, body: any) {
     return this.request(`/apps/${app}/github`, {
       method: 'PATCH',
-      body
+      body,
     })
   }
 
   getAppLink(app: any) {
     return this.request(`/apps/${app}/github`, {
-      method: 'GET'
+      method: 'GET',
     })
   }
 
   getPipelineRepository(pipeline: any) {
     return this.request(`/pipelines/${pipeline}/repository`, {
-      method: 'GET'
+      method: 'GET',
     })
   }
 
   getPipelineGithub(pipeline: any) {
     return this.request(`/pipelines/${pipeline}/github`, {
-      method: 'GET'
+      method: 'GET',
     })
   }
 
   getArchiveURL(repo: any, ref: any) {
     return this.request(`/github/repos/${repo}/tarball/${ref}`, {
-      followRedirect: false
+      followRedirect: false,
     }).then(res => res.archive_link)
   }
 }

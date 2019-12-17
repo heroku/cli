@@ -1,16 +1,18 @@
+
 import Heroku from '@heroku-cli/schema'
 import cli from 'cli-ux'
-// tslint:disable-next-line: no-unused
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import http from 'http-call'
 
 import {createAppSetup} from '../api'
 
 interface CreateAppOptions {
-  archiveURL: string
-  name: string
-  organization: string
-  pipeline: Heroku.Pipeline
-  stage: string
+  archiveURL: string;
+  name: string;
+  organization: string;
+  pipeline: Heroku.Pipeline;
+  stage: string;
 }
 
 function createApp(heroku: any, {archiveURL, name, organization, pipeline, stage}: CreateAppOptions) {
@@ -19,8 +21,8 @@ function createApp(heroku: any, {archiveURL, name, organization, pipeline, stage
     app: {name},
     pipeline_coupling: {
       stage,
-      pipeline: pipeline.id
-    }
+      pipeline: pipeline.id,
+    },
   }
 
   if (organization) {
@@ -38,7 +40,7 @@ export default function createApps(heroku: any, archiveURL: any, pipeline: any, 
     pipeline,
     name: pipelineName,
     stage: 'production',
-    organization
+    organization,
   })
 
   const stagingAppSetupPromise = createApp(heroku, {
@@ -46,7 +48,7 @@ export default function createApps(heroku: any, archiveURL: any, pipeline: any, 
     pipeline,
     name: stagingAppName,
     stage: 'staging',
-    organization
+    organization,
   })
 
   const promises = [prodAppSetupPromise, stagingAppSetupPromise]

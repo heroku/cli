@@ -8,7 +8,7 @@ export default class AuthorizationsIndex extends Command {
   static description = 'list OAuth authorizations'
 
   static examples = [
-    '$ heroku authorizations'
+    '$ heroku authorizations',
   ]
 
   static flags = {
@@ -30,7 +30,7 @@ export default class AuthorizationsIndex extends Command {
       cli.table(authorizations, {
         description: {get: (v: any) => color.green(v.description)},
         id: {},
-        scope: {get: (v: any) => v.scope.join(',')}
+        scope: {get: (v: any) => v.scope.join(',')},
       }, {'no-header': true, printLine: this.log})
     }
   }

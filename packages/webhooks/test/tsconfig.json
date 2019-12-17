@@ -4,6 +4,5 @@
     "noEmit": true
   },
   "references": [
-    {"path": ".."}
   ]
 }
