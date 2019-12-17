@@ -10,7 +10,7 @@ export default class DomainsClear extends Command {
 
   static flags = {
     help: flags.help({char: 'h'}),
-    app: flags.app({required: true})
+    app: flags.app({required: true}),
   }
 
   async run() {
@@ -19,6 +19,7 @@ export default class DomainsClear extends Command {
     let {body: domains} = await this.heroku.get<Array<Heroku.Domain>>(`/apps/${flags.app}/domains`)
     domains = domains.filter((d: Heroku.Domain) => d.kind === 'custom')
     for (const domain of domains) {
+      // eslint-disable-next-line no-await-in-loop
       await this.heroku.delete(`/apps/${flags.app}/domains/${domain.hostname}`)
     }
     cli.action.stop()
