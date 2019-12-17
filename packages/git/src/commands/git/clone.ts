@@ -5,18 +5,22 @@ import Git from '../../git'
 
 export class GitClone extends Command {
   static description = 'clones a heroku app to your local machine at DIRECTORY (defaults to app name)'
+
   static example = `$ heroku git:clone -a example
 Cloning into 'example'...
 remote: Counting objects: 42, done.
 ...`
+
   static args = [
-    {name: 'DIRECTORY', optional: true, description: 'where to clone the app'}
+    {name: 'DIRECTORY', optional: true, description: 'where to clone the app'},
   ]
+
   static flags = {
     app: flags.string({char: 'a', env: 'HEROKU_APP', required: true, description: 'the Heroku app to use'}),
     remote: flags.string({char: 'r', description: 'the git remote to create, default "heroku"'}),
     'ssh-git': flags.boolean({description: 'use SSH git protocol'}),
   }
+
   async run() {
     const git = new Git()
     const {flags, args} = this.parse(GitClone)

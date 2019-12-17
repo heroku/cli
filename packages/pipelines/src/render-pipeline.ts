@@ -22,31 +22,31 @@ export default async function renderPipeline(
 
   cli.log('')
 
-  let columns: Table.table.Columns<Heroku.App> = {
+  const columns: Table.table.Columns<Heroku.App> = {
     name: {
       header: 'app name',
       get(row) {
         return color.app(row.name || '')
-      }
+      },
     },
     'coupling.stage': {
       header: 'stage',
       get(row) {
         return row.coupling.stage
-      }
-    }
+      },
+    },
   }
 
   if (withOwners) {
     columns['owner.email'] = {
       header: 'owner',
       get(row) {
-        let email = row.owner && row.owner.email
+        const email = row.owner && row.owner.email
 
         if (email) {
           return email.endsWith('@herokumanager.com') ? `${row.split('@')[0]} (team)` : email
         }
-      }
+      },
     }
   }
 

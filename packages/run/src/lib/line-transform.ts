@@ -1,13 +1,13 @@
 import * as stream from 'stream'
 
 // this splits a stream into lines
-let transform = new stream.Transform({decodeStrings: false})
+const transform = new stream.Transform({decodeStrings: false})
 
 transform._transform = function (chunk, _encoding, next) {
   let data = chunk
   if (this._lastLineData) data = this._lastLineData + data
 
-  let lines = data.split('\n')
+  const lines = data.split('\n')
   this._lastLineData = lines.splice(lines.length - 1, 1)[0]
 
   lines.forEach(this.push.bind(this))

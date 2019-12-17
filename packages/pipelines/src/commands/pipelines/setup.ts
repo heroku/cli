@@ -1,3 +1,4 @@
+
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import cli from 'cli-ux'
@@ -16,6 +17,7 @@ import pollAppSetups from '../../setup/poll-app-setups'
 import setupPipeline from '../../setup/setup-pipeline'
 import {nameAndRepo, STAGING_APP_INDICATOR} from '../../setup/validate'
 
+// eslint-disable-next-line new-cap
 const debug = Debug('pipelines:setup')
 
 export default class Setup extends Command {
@@ -26,26 +28,26 @@ export default class Setup extends Command {
 
   static flags = {
     team: flags.team({
-      description: 'the team to assign pipeline ownership to (defaults to current user)'
+      description: 'the team to assign pipeline ownership to (defaults to current user)',
     }),
 
     yes: flags.boolean({
       char: 'y',
-      description: 'accept all default settings without prompting'
-    })
+      description: 'accept all default settings without prompting',
+    }),
   }
 
   static args = [
     {
       name: 'name',
       description: 'name of pipeline',
-      required: false
+      required: false,
     },
     {
       name: 'repo',
       description: 'a GitHub repository to connect the pipeline to',
-      required: false
-    }
+      required: false,
+    },
   ]
 
   async run() {
@@ -53,7 +55,7 @@ export default class Setup extends Command {
 
     const errors = nameAndRepo(args)
 
-    if (errors.length) {
+    if (errors.length !== 0) {
       this.error(errors.join(', '))
       return
     }
@@ -73,7 +75,7 @@ export default class Setup extends Command {
 
     // If team or org is not specified, we assign ownership to the user creating
     const {
-      body: {id: ownerID}
+      body: {id: ownerID},
     }: any = team ? await getTeam(this.heroku, team) : await getAccountInfo(this.heroku)
     const owner = {id: ownerID, type: ownerType}
 
@@ -91,7 +93,7 @@ export default class Setup extends Command {
     const appSetups = appSetupsResult.map((result: any) => result.body)
 
     cli.action.start(
-      `Creating production and staging apps (${color.app(pipelineName)} and ${color.app(stagingAppName)})`
+      `Creating production and staging apps (${color.app(pipelineName)} and ${color.app(stagingAppName)})`,
     )
     await pollAppSetups(this.heroku, appSetups)
     cli.action.stop()
@@ -104,9 +106,9 @@ export default class Setup extends Command {
     try {
       await setup
       await cli.open(`https://dashboard.heroku.com/pipelines/${pipeline.id}`)
-    } catch (e) {
-      debug(e)
-      cli.error(e)
+    } catch (error) {
+      debug(error)
+      cli.error(error)
     } finally {
       cli.action.stop()
     }

@@ -33,7 +33,6 @@
     "@oclif/plugin-help": "^2.1.6",
     "@oclif/plugin-legacy": "^1.1.4",
     "@oclif/test": "^1.2.4",
-    "@oclif/tslint": "^3.1.1",
     "@types/ansi-styles": "^3.2.1",
     "@types/chai": "^4.1.7",
     "@types/mocha": "^5.2.6",
@@ -41,11 +40,13 @@
     "@types/node": "^10.12.24",
     "@types/supports-color": "^5.3.0",
     "chai": "^4.2.0",
+    "eslint": "^6.7.2",
+    "eslint-config-oclif": "^3.1.0",
+    "eslint-config-oclif-typescript": "^0.1.0",
     "globby": "^9.0.0",
     "mocha": "^5.1.1",
     "nock": "^10.0.6",
     "ts-node": "^8.0.2",
-    "tslint": "5.11.0",
     "typescript": "3.3.3333"
   },
   "engines": {
@@ -63,12 +64,13 @@
   "repository": "heroku/cli",
   "scripts": {
     "build": "rm -rf lib && tsc",
-    "lint": "tsc -p test --noEmit && tslint -p test -t stylish",
+    "lint": "eslint . --ext .ts --config .eslintrc",
     "postpublish": "rm -f oclif.manifest.json",
-    "posttest": "yarn run lint",
     "prepack": "yarn run build && oclif-dev manifest",
     "preversion": "yarn run postpublish",
+    "pretest": "tsc -p test --noEmit",
     "test": "mocha --forbid-only \"test/**/*.test.ts\"",
+    "posttest": "yarn lint",
     "version": "oclif-dev readme && git add README.md"
   }
 }

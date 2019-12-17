@@ -16,7 +16,7 @@ export default class CiIndex extends Command {
     app: flags.string({char: 'a', description: 'app name'}),
     watch: flags.boolean({description: 'keep running and watch for new and update tests', required: false}),
     pipeline: flags.pipeline({required: false}),
-    json: flags.boolean({description: 'output in json format', required: false})
+    json: flags.boolean({description: 'output in json format', required: false}),
   }
 
   async run() {

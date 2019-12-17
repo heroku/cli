@@ -5,13 +5,13 @@ import deps from '../../deps'
 
 export const tidy: Hook<'update'> = async function () {
   const cleanupPlugins = async () => {
-    let pluginsDir = path.join(this.config.dataDir, 'plugins')
+    const pluginsDir = path.join(this.config.dataDir, 'plugins')
     if (await deps.file.exists(path.join(pluginsDir, 'plugins.json'))) return
     let pjson
     try {
       pjson = await deps.file.readJSON(path.join(pluginsDir, 'package.json'))
-    } catch (err) {
-      if (err.code !== 'ENOENT') throw err
+    } catch (error) {
+      if (error.code !== 'ENOENT') throw error
       return
     }
     if (!pjson.dependencies || pjson.dependencies === {}) {

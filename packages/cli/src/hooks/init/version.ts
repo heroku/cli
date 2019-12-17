@@ -13,9 +13,9 @@ const Whitelist = [
 
 export const version: Hook.Init = async function () {
   if (['-v', '--version', 'version'].includes(process.argv[2])) {
-    for (let env of Whitelist) {
+    for (const env of Whitelist) {
       if (process.env[env]) {
-        let value = env === 'HEROKU_API_KEY' ? 'to [REDACTED]' : `to ${process.env[env]}`
+        const value = env === 'HEROKU_API_KEY' ? 'to [REDACTED]' : `to ${process.env[env]}`
         this.warn(`${env} set ${value}`)
       }
     }

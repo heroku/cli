@@ -9,7 +9,7 @@ export default class PipelinesUpdate extends Command {
   static description = 'update the app\'s stage in a pipeline'
 
   static examples = [
-    '$ heroku pipelines:update -s staging -a my-app'
+    '$ heroku pipelines:update -s staging -a my-app',
   ]
 
   static flags = {
@@ -17,13 +17,14 @@ export default class PipelinesUpdate extends Command {
     remote: flags.remote(),
     stage: flags.string({
       char: 's',
-      description: 'new stage of app', completion: StageCompletion,
+      description: 'new stage of app',
+      completion: StageCompletion,
       required: true,
-    })
+    }),
   }
 
   async run() {
-    let {flags} = this.parse(PipelinesUpdate)
+    const {flags} = this.parse(PipelinesUpdate)
 
     const app = flags.app
     const stage = flags.stage
