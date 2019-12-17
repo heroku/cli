@@ -11,7 +11,7 @@ export default class WebhooksInfo extends BaseCommand {
   static flags = {
     app: flags.app(),
     remote: flags.remote(),
-    pipeline: flags.pipeline({char: 'p', description: 'pipeline on which to list', hidden: true})
+    pipeline: flags.pipeline({char: 'p', description: 'pipeline on which to list', hidden: true}),
   }
 
   static args = [{name: 'id', required: true}]
@@ -26,7 +26,7 @@ export default class WebhooksInfo extends BaseCommand {
       'Webhook ID': webhook.id,
       URL: webhook.url,
       Include: webhook.include.join(','),
-      Level: webhook.level
+      Level: webhook.level,
     }
 
     cli.styledHeader(webhook.id)

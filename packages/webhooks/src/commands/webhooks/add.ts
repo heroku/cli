@@ -7,7 +7,7 @@ export default class WebhooksAdd extends BaseCommand {
   static description = 'add a webhook to an app'
 
   static examples = [
-    '$ heroku webhooks:add -i api:dyno -l notify -u https://example.com/hooks'
+    '$ heroku webhooks:add -i api:dyno -l notify -u https://example.com/hooks',
   ]
 
   static flags = {
@@ -18,7 +18,7 @@ export default class WebhooksAdd extends BaseCommand {
     level: flags.string({char: 'l', description: 'notify does not retry, sync will retry until successful or timeout', required: true}),
     secret: flags.string({char: 's', description: 'value to sign delivery with in Heroku-Webhook-Hmac-SHA256 header'}),
     authorization: flags.string({char: 't', description: 'authoriation header to send with webhooks'}),
-    url: flags.string({char: 'u', description: 'URL for receiver', required: true})
+    url: flags.string({char: 'u', description: 'URL for receiver', required: true}),
   }
 
   async run() {
@@ -33,8 +33,8 @@ export default class WebhooksAdd extends BaseCommand {
         level: flags.level,
         secret: flags.secret,
         url: flags.url,
-        authorization: flags.authorization
-      }
+        authorization: flags.authorization,
+      },
     })
 
     const secret = response.headers && response.headers['heroku-webhook-secret'] as string
