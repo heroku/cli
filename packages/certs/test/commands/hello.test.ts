@@ -2,6 +2,7 @@ import {test} from '@oclif/test'
 
 describe('certs:auto:wait', () => {
   test
-    .stdout()
-    .it('runs certs:auto:wait', () => { })
+  .stdout()
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  .it('runs certs:auto:wait', () => {})
 })
