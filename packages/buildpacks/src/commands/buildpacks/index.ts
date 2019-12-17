@@ -5,16 +5,17 @@ import {BuildpackCommand} from '../../buildpacks'
 
 export default class Index extends Command {
   static description = 'display the buildpacks for an app'
+
   static flags = {
     app: Flags.app({required: true}),
-    remote: Flags.remote()
+    remote: Flags.remote(),
   }
 
   async run() {
-    let {flags} = this.parse(Index)
-    let buildpacksCommand = new BuildpackCommand(this.heroku)
+    const {flags} = this.parse(Index)
+    const buildpacksCommand = new BuildpackCommand(this.heroku)
 
-    let buildpacks = await buildpacksCommand.fetch(flags.app)
+    const buildpacks = await buildpacksCommand.fetch(flags.app)
     if (buildpacks.length === 0) {
       this.log(`${flags.app} has no Buildpack URL set.`)
     } else {
