@@ -1353,7 +1353,7 @@
   dependencies:
     fancy-test "^1.4.3"
 
-"@oclif/tslint@3.1.1", "@oclif/tslint@^3", "@oclif/tslint@^3.1.1":
+"@oclif/tslint@^3", "@oclif/tslint@^3.1.1":
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/@oclif/tslint/-/tslint-3.1.1.tgz#e055cdf158630862fd44546f6b8fb1266c9778e7"
   integrity sha512-B1ZWbgzwxDhNZLzVnn+JjyFf9u+J9wNwsz/ZX9YvA9edRYcdiJz9JikCttGPi35V0NU0TUV4UqTqo/q/wQ06jQ==

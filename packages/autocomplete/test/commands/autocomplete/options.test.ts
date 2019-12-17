@@ -10,13 +10,20 @@ const config = new Config({root})
 
 class TestCommand extends Command {
   static topic = 'foo'
+
   static command = 'bar'
+
   static description = 'baz'
+
   static flags = {
     app: flags.app(),
   }
+
   static args = [{name: 'app', required: false}]
-  async run() {}
+
+  async run() {
+    'do work!'
+  }
 }
 
 describe('AutocompleteOptions', () => {
@@ -65,62 +72,62 @@ describe('AutocompleteOptions', () => {
     // foo:bar -a my-app | false false
 
     it('finds current state is neither a flag or flag value', () => {
-      let [index, isFlag, isFlagValue] = cmd.determineCmdState(['arg1'], TestCommand)
+      const [index, isFlag, isFlagValue] = cmd.determineCmdState(['arg1'], TestCommand)
       expect([index, isFlag, isFlagValue]).to.include.members([false, false])
-      let [index2, isFlag2, isFlagValue2] = cmd.determineCmdState(['arg1', ''], TestCommand)
+      const [index2, isFlag2, isFlagValue2] = cmd.determineCmdState(['arg1', ''], TestCommand)
       expect([index2, isFlag2, isFlagValue2]).to.include.members([false, false])
-      let [index3, isFlag3, isFlagValue3] = cmd.determineCmdState(['arg1', '--app=my-app', ''], TestCommand)
+      const [index3, isFlag3, isFlagValue3] = cmd.determineCmdState(['arg1', '--app=my-app', ''], TestCommand)
       expect([index3, isFlag3, isFlagValue3]).to.include.members([false, false])
     })
 
     describe('short flag', () => {
       it('finds current state is a flag', () => {
-        let [index, isFlag, isFlagValue] = cmd.determineCmdState(['arg1', '-'], TestCommand)
+        const [index, isFlag, isFlagValue] = cmd.determineCmdState(['arg1', '-'], TestCommand)
         expect([index, isFlag, isFlagValue]).to.include.members([true, false])
-        let [index2, isFlag2, isFlagValue2] = cmd.determineCmdState(['arg1', '-a'], TestCommand)
+        const [index2, isFlag2, isFlagValue2] = cmd.determineCmdState(['arg1', '-a'], TestCommand)
         expect([index2, isFlag2, isFlagValue2]).to.include.members([true, false])
       })
 
       it('finds current state is a flag value', () => {
-        let [index, isFlag, isFlagValue] = cmd.determineCmdState(['arg1', '-a', ''], TestCommand)
+        const [index, isFlag, isFlagValue] = cmd.determineCmdState(['arg1', '-a', ''], TestCommand)
         expect([index, isFlag, isFlagValue]).to.include.members([false, true])
       })
     })
 
     describe('long flag', () => {
       it('finds current state is a flag', () => {
-        let [index, isFlag, isFlagValue] = cmd.determineCmdState(['arg1', '--'], TestCommand)
+        const [index, isFlag, isFlagValue] = cmd.determineCmdState(['arg1', '--'], TestCommand)
         expect([index, isFlag, isFlagValue]).to.include.members([0, true, false])
-        let [index2, isFlag2, isFlagValue2] = cmd.determineCmdState(['arg1', '--a'], TestCommand)
+        const [index2, isFlag2, isFlagValue2] = cmd.determineCmdState(['arg1', '--a'], TestCommand)
         expect([index2, isFlag2, isFlagValue2]).to.include.members([0, true, false])
-        let [index3, isFlag3, isFlagValue3] = cmd.determineCmdState(['arg1', '--app'], TestCommand)
+        const [index3, isFlag3, isFlagValue3] = cmd.determineCmdState(['arg1', '--app'], TestCommand)
         expect([index3, isFlag3, isFlagValue3]).to.include.members([0, true, false])
       })
 
       it('finds current state is a flag value', () => {
-        let [index, isFlag, isFlagValue] = cmd.determineCmdState(['arg1', '--app', ''], TestCommand)
+        const [index, isFlag, isFlagValue] = cmd.determineCmdState(['arg1', '--app', ''], TestCommand)
         expect([index, isFlag, isFlagValue]).to.include.members([0, false, true])
-        let [index2, isFlag2, isFlagValue2] = cmd.determineCmdState(['arg1', '--app', 'my'], TestCommand)
+        const [index2, isFlag2, isFlagValue2] = cmd.determineCmdState(['arg1', '--app', 'my'], TestCommand)
         expect([index2, isFlag2, isFlagValue2]).to.include.members([0, false, true])
       })
 
       it('finds current state is a flag (special case)', () => {
-        let [index, isFlag, isFlagValue] = cmd.determineCmdState(['arg1', '--app='], TestCommand)
+        const [index, isFlag, isFlagValue] = cmd.determineCmdState(['arg1', '--app='], TestCommand)
         expect([index, isFlag, isFlagValue]).to.include.members([0, true, false])
-        let [index2, isFlag2, isFlagValue2] = cmd.determineCmdState(['arg1', '--app=my'], TestCommand)
+        const [index2, isFlag2, isFlagValue2] = cmd.determineCmdState(['arg1', '--app=my'], TestCommand)
         expect([index2, isFlag2, isFlagValue2]).to.include.members([0, true, false])
       })
     })
 
     describe('args index', () => {
       it('argsIndex is 0', () => {
-        let [index, isFlag, isFlagValue] = cmd.determineCmdState(['-a', 'my-app', ''], TestCommand)
+        const [index, isFlag, isFlagValue] = cmd.determineCmdState(['-a', 'my-app', ''], TestCommand)
         expect([index, isFlag, isFlagValue]).to.include.members([0, false, false])
         expect(cmd.parsedArgs).to.deep.equal({app: ''})
       })
 
       it('argsIndex is 1', () => {
-        let [index, isFlag, isFlagValue] = cmd.determineCmdState(['foo', '-a', 'my-app', ''], TestCommand)
+        const [index, isFlag, isFlagValue] = cmd.determineCmdState(['foo', '-a', 'my-app', ''], TestCommand)
         expect([index, isFlag, isFlagValue]).to.include.members([1, false, false])
         expect(cmd.parsedArgs).to.deep.equal({app: 'foo'})
       })
