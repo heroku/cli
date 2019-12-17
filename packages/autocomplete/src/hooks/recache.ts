@@ -8,7 +8,7 @@ import * as path from 'path'
 import {updateCache} from '../cache'
 import acCreate from '../commands/autocomplete/create'
 
-export const completions: Hook<any> = async function ({type, app}: {type?: 'app' | 'addon' | 'config' | 'login' | 'logout', app?: string}) {
+export const completions: Hook<any> = async function ({type, app}: {type?: 'app' | 'addon' | 'config' | 'login' | 'logout'; app?: string}) {
   // autocomplete is now in core, skip windows
   if (this.config.windows) return
   const logInOut = type === 'login' || type === 'logout'

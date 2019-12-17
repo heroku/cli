@@ -16,7 +16,7 @@ function _mtime(f: any): Date {
 }
 
 export async function fetchCache(cachePath: string, cacheDuration: number, options: any): Promise<Array<string>> {
-  let cachePresent = fs.existsSync(cachePath)
+  const cachePresent = fs.existsSync(cachePath)
   if (cachePresent && !_isStale(cachePath, cacheDuration)) {
     return fs.readJSON(cachePath)
   }

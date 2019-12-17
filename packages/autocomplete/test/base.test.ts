@@ -10,10 +10,12 @@ const {default: runtest} = require('./helpers/runtest')
 
 class AutocompleteTest extends AutocompleteBase {
   static id = 'test:foo'
+
   static flags = {
     app: flags.app(),
     bar: flags.boolean(),
   }
+
   async run() {}
 }
 

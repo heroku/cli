@@ -7,10 +7,13 @@ import {AutocompleteBase} from '../../base'
 
 export default class Doctor extends AutocompleteBase {
   static hidden = true
+
   static description = 'autocomplete diagnostic'
+
   static args = [
     {name: 'shell', description: 'shell type', required: false},
   ]
+
   static flags = {
     verbose: flags.boolean({description: 'list completable commands'}),
   }
@@ -20,7 +23,7 @@ export default class Doctor extends AutocompleteBase {
     const shell = args.shell || this.config.shell
     this.errorIfNotSupportedShell(shell)
 
-    let data = []
+    const data = []
 
     // cli version
     data.push({name: 'cli version', value: this.config.version})
@@ -51,8 +54,8 @@ export default class Doctor extends AutocompleteBase {
     const appsCache = path.join(this.completionsCacheDir, 'app')
     let appsCacheValue
     if (fs.existsSync(appsCache)) {
-      let length = fs.readJSONSync(appsCache).length
-      appsCacheValue = length ? length : 'empty'
+      const length = fs.readJSONSync(appsCache).length
+      appsCacheValue = length || 'empty'
     } else {
       appsCacheValue = 'missing'
     }
@@ -62,9 +65,9 @@ export default class Doctor extends AutocompleteBase {
     ux.table(data, {
       printHeader: undefined,
       columns: [
-          {key: 'name'},
-          {key: 'value'},
-      ]
+        {key: 'name'},
+        {key: 'value'},
+      ],
     })
 
     if (flags.verbose) this.printList()
@@ -81,9 +84,9 @@ export default class Doctor extends AutocompleteBase {
           if (c.hidden) {
             this.log(`${c.id} (hidden)`)
           } else {
-            let results = Object.keys(c.flags).map((f: string) => {
+            const results = Object.keys(c.flags).map((f: string) => {
               let out = `--${f}`
-              let flag = c.flags[f]
+              const flag = c.flags[f]
               if (flag.type === 'option') out += '='
               if (flag.hasOwnProperty('completion') || this.findCompletion(c.id, f, flag.description)) {
                 out += '(c)'

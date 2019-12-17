@@ -16,7 +16,7 @@ const AC_PLUGIN_PATH = path.resolve(__dirname, '..', '..', '..')
 const CacheBuildFlagsTest = {
   id: 'autocomplete:create',
   flags:
-  { app: {name: 'app', type: 'option', description: 'app to use'},
+  {app: {name: 'app', type: 'option', description: 'app to use'},
     visable: {name: 'visable', type: 'boolean', description: 'visable flag'},
     hidden: {name: 'hidden', type: 'boolean', description: 'hidden flag', hidden: true},
   },
@@ -100,7 +100,7 @@ bindkey "^I" expand-or-complete-with-dots`)
     })
 
     it('#bashSetupScript', () => {
-      let shellSetup = cmd.bashSetupScript
+      const shellSetup = cmd.bashSetupScript
       expect(shellSetup).to.eq(`HEROKU_AC_ANALYTICS_DIR=${cmd.config.cacheDir}/autocomplete/completion_analytics;
 HEROKU_AC_COMMANDS_PATH=${cmd.config.cacheDir}/autocomplete/commands;
 HEROKU_AC_BASH_COMPFUNC_PATH=${AC_PLUGIN_PATH}/autocomplete/bash/heroku.bash && test -f $HEROKU_AC_BASH_COMPFUNC_PATH && source $HEROKU_AC_BASH_COMPFUNC_PATH;
@@ -108,7 +108,7 @@ HEROKU_AC_BASH_COMPFUNC_PATH=${AC_PLUGIN_PATH}/autocomplete/bash/heroku.bash && 
     })
 
     it('#zshSetupScript', () => {
-      let shellSetup = cmd.zshSetupScript
+      const shellSetup = cmd.zshSetupScript
       expect(shellSetup).to.eq(`expand-or-complete-with-dots() {
   echo -n "..."
   zle expand-or-complete
@@ -131,7 +131,7 @@ compinit;
     it('#zshSetupScript (w/o ellipsis)', () => {
       const oldEnv = process.env
       process.env.HEROKU_AC_ZSH_SKIP_ELLIPSIS = '1'
-      let shellSetup = cmd.zshSetupScript
+      const shellSetup = cmd.zshSetupScript
 
       expect(shellSetup).to.eq(`
 HEROKU_AC_ANALYTICS_DIR=${cmd.config.cacheDir}/autocomplete/completion_analytics;
@@ -148,7 +148,7 @@ compinit;
     })
 
     it('#genZshAllCmdsListSetter', () => {
-      let cmdsWithDesc = ['"foo\\:alpha":"foo:alpha description"', '"foo\\:beta":"foo:beta description"']
+      const cmdsWithDesc = ['"foo\\:alpha":"foo:alpha description"', '"foo\\:beta":"foo:beta description"']
       expect(cmd.genZshAllCmdsListSetter(cmdsWithDesc)).to.eq(`
 _set_all_commands_list () {
 _all_commands_list=(

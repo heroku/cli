@@ -8,6 +8,7 @@ const debug = require('debug')('autocomplete:create')
 
 export default class Create extends AutocompleteBase {
   static hidden = true
+
   static description = 'create autocomplete setup scripts and completion functions'
 
   private _commands?: Command[]
@@ -62,7 +63,7 @@ export default class Create extends AutocompleteBase {
     if (this._commands) return this._commands
 
     const plugins = this.config.plugins
-    let commands: Command[] = []
+    const commands: Command[] = []
 
     plugins.map(p => {
       p.commands.map(c => {
@@ -130,17 +131,17 @@ export default class Create extends AutocompleteBase {
   }
 
   private genCmdPublicFlags(Command: Command): string {
-    let Flags = Command.flags || {}
+    const Flags = Command.flags || {}
     return Object.keys(Flags)
-      .filter(flag => !Flags[flag].hidden)
-      .map(flag => `--${flag}`)
-      .join(' ')
+    .filter(flag => !Flags[flag].hidden)
+    .map(flag => `--${flag}`)
+    .join(' ')
   }
 
   private genCmdWithDescription(Command: Command): string {
     let description = ''
     if (Command.description) {
-      let text = Command.description.split('\n')[0]
+      const text = Command.description.split('\n')[0]
       description = `:"${text}"`
     }
     return `"${Command.id.replace(/:/g, '\\:')}"${description}`
@@ -149,20 +150,24 @@ export default class Create extends AutocompleteBase {
   private genZshCmdFlagsSetter(Command: Command): string {
     const id = Command.id
     const flagscompletions = Object.keys(Command.flags || {})
-      .filter(flag => Command.flags && !Command.flags[flag].hidden)
-      .map(flag => {
-        const f = (Command.flags && Command.flags[flag]) || {description: ''}
-        const isBoolean = f.type === 'boolean'
-        const hasCompletion = f.hasOwnProperty('completion') || this.findCompletion(id, flag, f.description)
-        const name = isBoolean ? flag : `${flag}=-`
-        let cachecompl = ''
-        if (hasCompletion) { cachecompl = ': :_compadd_flag_options' }
-        if (this.wantsLocalFiles(flag)) { cachecompl = ': :_files' }
-        const help = isBoolean ? '(switch) ' : (hasCompletion ? '(autocomplete) ' : '')
-        const completion = `--${name}[${help}${f.description}]${cachecompl}`
-        return `"${completion}"`
-      })
-      .join('\n')
+    .filter(flag => Command.flags && !Command.flags[flag].hidden)
+    .map(flag => {
+      const f = (Command.flags && Command.flags[flag]) || {description: ''}
+      const isBoolean = f.type === 'boolean'
+      const hasCompletion = f.hasOwnProperty('completion') || this.findCompletion(id, flag, f.description)
+      const name = isBoolean ? flag : `${flag}=-`
+      let cachecompl = ''
+      if (hasCompletion) {
+        cachecompl = ': :_compadd_flag_options'
+      }
+      if (this.wantsLocalFiles(flag)) {
+        cachecompl = ': :_files'
+      }
+      const help = isBoolean ? '(switch) ' : (hasCompletion ? '(autocomplete) ' : '')
+      const completion = `--${name}[${help}${f.description}]${cachecompl}`
+      return `"${completion}"`
+    })
+    .join('\n')
 
     if (flagscompletions) {
       return `_set_${id.replace(/:/g, '_')}_flags () {
@@ -200,14 +205,14 @@ ${cmdsWithDesc.join('\n')}
     return `${this.envAnalyticsDir}
 ${this.envCommandsPath}
 HEROKU_AC_BASH_COMPFUNC_PATH=${path.join(
-      __dirname,
-      '..',
-      '..',
-      '..',
-      'autocomplete',
-      'bash',
-      'heroku.bash',
-    )} && test -f $HEROKU_AC_BASH_COMPFUNC_PATH && source $HEROKU_AC_BASH_COMPFUNC_PATH;
+    __dirname,
+    '..',
+    '..',
+    '..',
+    'autocomplete',
+    'bash',
+    'heroku.bash',
+  )} && test -f $HEROKU_AC_BASH_COMPFUNC_PATH && source $HEROKU_AC_BASH_COMPFUNC_PATH;
 `
   }
 
@@ -238,7 +243,7 @@ bindkey "^I" expand-or-complete-with-dots`
   private wantsLocalFiles(flag: string): boolean {
     return [
       'file',
-      'procfile'
+      'procfile',
     ].includes(flag)
   }
 }
