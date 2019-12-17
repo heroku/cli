@@ -6,8 +6,8 @@ const DEFAULT_SETTINGS = {
   pull_requests: {
     enabled: true,
     auto_deploy: true,
-    auto_destroy: true
-  }
+    auto_destroy: true,
+  },
 }
 
 export default async function getSettings(yes: any, branch: any) {
@@ -15,14 +15,14 @@ export default async function getSettings(yes: any, branch: any) {
     return DEFAULT_SETTINGS
   }
 
-  let settings = {
+  const settings = {
     auto_deploy: true,
     wait_for_ci: true,
     pull_requests: {
       enabled: true,
       auto_deploy: true,
-      auto_destroy: true
-    }
+      auto_destroy: true,
+    },
   }
 
   settings.auto_deploy = await cli.confirm(`Automatically deploy the ${branch} branch to staging?`)

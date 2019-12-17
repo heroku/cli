@@ -5,25 +5,27 @@ import {pipelineName, repoName} from './validate'
 function filter(obj: any) {
   const ret: any = {}
   Object.keys(obj)
-    .filter((key: any) => obj[key] !== undefined)
-    .forEach((key: string) => { ret[key] = obj[key] })
+  .filter((key: any) => obj[key] !== undefined)
+  .forEach((key: string) => {
+    ret[key] = obj[key]
+  })
   return ret
 }
 
 interface GetNameAndRepoAnswer {
-  name: string | boolean
-  repo: string | boolean
+  name: string | boolean;
+  repo: string | boolean;
 }
 
 export default async function getNameAndRepo(args: any) {
-  let answer: GetNameAndRepoAnswer = {
+  const answer: GetNameAndRepoAnswer = {
     name: '',
-    repo: ''
+    repo: '',
   }
 
   if (!args.name) {
-    let name = await cli.prompt('Pipeline name', {
-      required: true
+    const name = await cli.prompt('Pipeline name', {
+      required: true,
     })
 
     const [valid, msg] = pipelineName(name)
@@ -36,8 +38,8 @@ export default async function getNameAndRepo(args: any) {
   }
 
   if (!args.repo) {
-    let repo = await cli.prompt('GitHub repository to connect to (e.g. rails/rails)', {
-      required: true
+    const repo = await cli.prompt('GitHub repository to connect to (e.g. rails/rails)', {
+      required: true,
     })
 
     const [valid, msg] = repoName(repo)

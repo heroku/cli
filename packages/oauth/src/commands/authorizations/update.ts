@@ -10,7 +10,7 @@ export default class AuthorizationsUpdate extends Command {
   static flags = {
     description: flags.string({char: 'd', description: 'set a custom authorization description'}),
     'client-id': flags.string({description: 'identifier of OAuth client to set', dependsOn: ['client-secret']}),
-    'client-secret': flags.string({description: 'secret of OAuth client to set', dependsOn: ['client-id']})
+    'client-secret': flags.string({description: 'secret of OAuth client to set', dependsOn: ['client-id']}),
   }
 
   static args = [{name: 'id', required: true}]
@@ -24,18 +24,18 @@ export default class AuthorizationsUpdate extends Command {
     if (flags['client-id']) {
       client = {
         id: flags['client-id'],
-        secret: flags['client-secret']
+        secret: flags['client-secret'],
       }
     }
 
-    let {body: authentication} = await this.heroku.patch<Heroku.OAuthAuthorization>(
+    const {body: authentication} = await this.heroku.patch<Heroku.OAuthAuthorization>(
       `/oauth/authorizations/${args.id}`,
       {
         body: {
           description: flags.description,
-          client
-        }
-      }
+          client,
+        },
+      },
     )
 
     cli.action.stop()
