@@ -35,7 +35,9 @@ runtest('Create', () => {
       plugin = new Plugin({root})
       cmd.config.plugins = [plugin]
       await plugin.load()
+      // eslint-disable-next-line require-atomic-updates
       plugin.manifest = await loadJSON(path.resolve(__dirname, '../../test.oclif.manifest.json'))
+      // eslint-disable-next-line require-atomic-updates
       plugin.commands = Object.entries(plugin.manifest.commands).map(([id, c]) => ({...c, load: () => plugin.findCommand(id, {must: true})}))
       Klass = plugin.commands[1]
     })

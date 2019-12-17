@@ -37,6 +37,7 @@ export abstract class AutocompleteBase extends Command {
     const now = new Date()
     const entry = `[${now}] ${msg}\n`
     const fd = fs.openSync(this.acLogfilePath, 'a')
+    // eslint-disable-next-line
     // @ts-ignore
     fs.write(fd, entry)
   }

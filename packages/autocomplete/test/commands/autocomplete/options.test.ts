@@ -21,7 +21,9 @@ class TestCommand extends Command {
 
   static args = [{name: 'app', required: false}]
 
-  async run() {}
+  async run() {
+    'do work!'
+  }
 }
 
 describe('AutocompleteOptions', () => {

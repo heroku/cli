@@ -65,15 +65,15 @@ export default class Create extends AutocompleteBase {
     const plugins = this.config.plugins
     const commands: Command[] = []
 
-    plugins.map(p => {
-      p.commands.map(c => {
+    plugins.forEach(p => {
+      p.commands.forEach(c => {
         if (c.hidden) return
         try {
           commands.push(c)
-        } catch (err) {
+        } catch (error) {
           debug(`Error creating completions for command ${c.id}`)
-          debug(err.message)
-          this.writeLogFile(err.message)
+          debug(error.message)
+          this.writeLogFile(error.message)
         }
       })
     })
@@ -87,10 +87,10 @@ export default class Create extends AutocompleteBase {
       try {
         const publicFlags = this.genCmdPublicFlags(c).trim()
         return `${c.id} ${publicFlags}`
-      } catch (err) {
+      } catch (error) {
         debug(`Error creating bash completion for command ${c.id}, moving on...`)
-        debug(err.message)
-        this.writeLogFile(err.message)
+        debug(error.message)
+        this.writeLogFile(error.message)
         return ''
       }
     }).join('\n')
@@ -106,10 +106,10 @@ export default class Create extends AutocompleteBase {
     const cmdsWithDescriptions = this.commands.map(c => {
       try {
         return this.genCmdWithDescription(c)
-      } catch (err) {
+      } catch (error) {
         debug(`Error creating zsh autocomplete for command ${c.id}, moving on...`)
-        debug(err.message)
-        this.writeLogFile(err.message)
+        debug(error.message)
+        this.writeLogFile(error.message)
         return ''
       }
     })
@@ -121,10 +121,10 @@ export default class Create extends AutocompleteBase {
     return this.commands.map(c => {
       try {
         return this.genZshCmdFlagsSetter(c)
-      } catch (err) {
+      } catch (error) {
         debug(`Error creating zsh autocomplete for command ${c.id}, moving on...`)
-        debug(err.message)
-        this.writeLogFile(err.message)
+        debug(error.message)
+        this.writeLogFile(error.message)
         return ''
       }
     }).join('\n')
@@ -154,7 +154,7 @@ export default class Create extends AutocompleteBase {
     .map(flag => {
       const f = (Command.flags && Command.flags[flag]) || {description: ''}
       const isBoolean = f.type === 'boolean'
-      const hasCompletion = f.hasOwnProperty('completion') || this.findCompletion(id, flag, f.description)
+      const hasCompletion = 'completion' in f || this.findCompletion(id, flag, f.description)
       const name = isBoolean ? flag : `${flag}=-`
       let cachecompl = ''
       if (hasCompletion) {

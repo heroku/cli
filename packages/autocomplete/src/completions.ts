@@ -7,55 +7,6 @@ import flatten = require('lodash.flatten')
 
 export const oneDay = 60 * 60 * 24
 
-export class CompletionLookup {
-  private get key(): string {
-    return this.argAlias() || this.keyAlias() || this.descriptionAlias() || this.name
-  }
-
-  private readonly blacklistMap: { [key: string]: string[] } = {
-    app: ['apps:create'],
-    space: ['spaces:create'],
-  }
-
-  private readonly keyAliasMap: { [key: string]: { [key: string]: string } } = {
-    key: {
-      'config:get': 'config',
-    },
-  }
-
-  private readonly commandArgsMap: { [key: string]: { [key: string]: string} } = {
-    key: {
-      'config:set': 'configSet',
-    },
-  }
-
-  constructor(private readonly cmdId: string, private readonly name: string, private readonly description?: string) {
-  }
-
-  run(): flags.ICompletion | undefined {
-    if (this.blacklisted()) return
-    return CompletionMapping[this.key]
-  }
-
-  private argAlias(): string | undefined {
-    return this.commandArgsMap[this.name] && this.commandArgsMap[this.name][this.cmdId]
-  }
-
-  private keyAlias(): string | undefined {
-    return this.keyAliasMap[this.name] && this.keyAliasMap[this.name][this.cmdId]
-  }
-
-  private descriptionAlias(): string | undefined {
-    const d = this.description!
-    if (d.match(/^dyno size/)) return 'dynosize'
-    if (d.match(/^process type/)) return 'processtype'
-  }
-
-  private blacklisted(): boolean {
-    return this.blacklistMap[this.name] && this.blacklistMap[this.name].includes(this.cmdId)
-  }
-}
-
 export const herokuGet = async (resource: string, ctx: { config: Config.IConfig }): Promise<string[]> => {
   const heroku = new APIClient(ctx.config)
   let {body} = await heroku.get(`/${resource}`, {retryAuth: false})
@@ -188,8 +139,8 @@ export const ProcessTypeCompletion: flags.ICompletion = {
         return m ? m[0] : false
       })
       .filter(t => t) as string[]
-    } catch (err) {
-      if (err.code !== 'ENOENT') throw err
+    } catch (error) {
+      if (error.code !== 'ENOENT') throw error
     }
     return types
   },
@@ -278,4 +229,56 @@ export const CompletionMapping: { [key: string]: flags.ICompletion } = {
   stack: StackCompletion,
   stage: StageCompletion,
   team: TeamCompletion,
+}
+
+export class CompletionLookup {
+  private get key(): string {
+    return this.argAlias() || this.keyAlias() || this.descriptionAlias() || this.name
+  }
+
+  private readonly blacklistMap: { [key: string]: string[] } = {
+    app: ['apps:create'],
+    space: ['spaces:create'],
+  }
+
+  private readonly keyAliasMap: { [key: string]: { [key: string]: string } } = {
+    key: {
+      'config:get': 'config',
+    },
+  }
+
+  private readonly commandArgsMap: { [key: string]: { [key: string]: string } } = {
+    key: {
+      'config:set': 'configSet',
+    },
+  }
+
+  // eslint-disable-next-line no-useless-constructor
+  constructor(private readonly cmdId: string, private readonly name: string, private readonly description?: string) {
+  }
+
+  run(): flags.ICompletion | undefined {
+    if (this.blacklisted()) return
+    return CompletionMapping[this.key]
+  }
+
+  private argAlias(): string | undefined {
+    return this.commandArgsMap[this.name] && this.commandArgsMap[this.name][this.cmdId]
+  }
+
+  private keyAlias(): string | undefined {
+    return this.keyAliasMap[this.name] && this.keyAliasMap[this.name][this.cmdId]
+  }
+
+  private descriptionAlias(): string | undefined {
+    const d = this.description!
+    // eslint-disable-next-line unicorn/prefer-starts-ends-with
+    if (d.match(/^dyno size/)) return 'dynosize'
+    // eslint-disable-next-line unicorn/prefer-starts-ends-with
+    if (d.match(/^process type/)) return 'processtype'
+  }
+
+  private blacklisted(): boolean {
+    return this.blacklistMap[this.name] && this.blacklistMap[this.name].includes(this.cmdId)
+  }
 }

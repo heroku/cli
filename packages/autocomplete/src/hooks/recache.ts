@@ -32,8 +32,8 @@ export const completions: Hook<any> = async function ({type, app}: {type?: 'app'
     const heroku = new APIClient(this.config)
     if (!heroku.auth) return
     await heroku.get('/account', {retryAuth: false})
-  } catch (err) {
-    this.debug(err.message)
+  } catch (error) {
+    this.debug(error.message)
     return
   }
 
@@ -46,8 +46,8 @@ export const completions: Hook<any> = async function ({type, app}: {type?: 'app'
     await update(PipelineCompletion, 'pipeline')
     await update(SpaceCompletion, 'space')
     await update(TeamCompletion, 'team')
-  } catch (err) {
-    this.debug(err.message)
+  } catch (error) {
+    this.debug(error.message)
   }
   cli.action.stop()
 }

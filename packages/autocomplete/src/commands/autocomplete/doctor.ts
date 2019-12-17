@@ -78,8 +78,8 @@ export default class Doctor extends AutocompleteBase {
     const header = 'Completable Commands'
     this.log(header)
     this.log('='.repeat(header.length))
-    this.config.plugins.map(p => {
-      p.commands.map(c => {
+    this.config.plugins.forEach(p => {
+      p.commands.forEach(c => {
         try {
           if (c.hidden) {
             this.log(`${c.id} (hidden)`)
@@ -88,13 +88,14 @@ export default class Doctor extends AutocompleteBase {
               let out = `--${f}`
               const flag = c.flags[f]
               if (flag.type === 'option') out += '='
-              if (flag.hasOwnProperty('completion') || this.findCompletion(c.id, f, flag.description)) {
+              const hasCompletion = 'completion' in flag || this.findCompletion(c.id, f, flag.description)
+              if (hasCompletion) {
                 out += '(c)'
               }
               if (flag.hidden) out += '(h)'
               return out
             })
-            if (results.length) this.log(`${c.id} -> ${results}`)
+            if (results.length > 0) this.log(`${c.id} -> ${results}`)
           }
         } catch {
           this.log(`Error creating autocomplete for command ${c.id}`)
