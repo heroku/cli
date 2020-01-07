@@ -2,18 +2,14 @@ import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import cli from 'cli-ux'
+import {prompt} from 'inquirer'
 import * as shellescape from 'shell-escape'
-import { prompt } from 'inquirer'
 
 import waitForDomain from '../../lib/wait-for-domain'
 
-import Debug from 'debug';
-
-const debug = Debug('domains:add')
-
 interface DomainCreatePayload {
-  hostname: string;
-  sni_endpoint?: string;
+  hostname: string
+  sni_endpoint?: string
 }
 
 const MULTIPLE_SNI_ENDPOINT_FLAG = 'allow-multiple-sni-endpoints'
@@ -46,14 +42,41 @@ export default class DomainsAdd extends Command {
       // to use, we ask them which cert to use, otherwise we rethrow the error and handle it like usual
       if (err.body.id === 'invalid_params' && err.body.message.includes('sni_endpoint')) {
         cli.action.stop('resolving SNI endpoint')
-        const {body: certs} = await this.heroku.get<Heroku.SniEndpoint>(`/apps/${appName}/sni-endpoints`)
+        const {body: certs} = await this.heroku.get<Heroku.SniEndpoint>(`/apps/${appName}/sni-endpoints`, {
+          headers: {Accept: 'application/vnd.heroku+json; version=3.allow_multiple_sni_endpoints'}
+        })
+
+        const certChoices = certs.map((cert: Heroku.SniEndpoint) => {
+          const certName = cert.displayName || cert.name
+          const domainsLength = cert.ssl_cert.cert_domains.length
+
+          if (domainsLength) {
+            let domainsList = cert.ssl_cert.cert_domains.slice(0, 4).join(', ')
+
+            if (domainsLength > 5) {
+              domainsList = `${domainsList} (...and ${domainsLength - 4} more)`
+            }
+
+            domainsList = `${certName} -> ${domainsList}`
+
+            return {
+              name: domainsList,
+              value: cert.name
+            }
+          }
+
+          return {
+            name: certName,
+            value: cert.name
+          }
+        })
 
         const selection = await prompt<{cert: string}>([
           {
             type: 'list',
             name: 'cert',
             message: 'Choose an SNI endpoint to associate with this domain',
-            choices: certs.map((cert: any) => ({name: cert.name, value: cert.name}))
+            choices: certChoices
           }
         ])
 
@@ -85,31 +108,28 @@ export default class DomainsAdd extends Command {
       }
     }
 
-    let domain
-
     try {
-      domain = await this.createDomain(flags.app, domainCreatePayload)
+      const domain = await this.createDomain(flags.app, domainCreatePayload)
+      if (flags.json) {
+        cli.styledJSON(domain)
+      } else {
+        cli.log(`Configure your app's DNS provider to point to the DNS Target ${color.green(domain.cname || '')}.
+  For help, see https://devcenter.heroku.com/articles/custom-domains`)
+        if (domain.status !== 'none') {
+          if (flags.wait) {
+            await waitForDomain(flags.app, this.heroku, domain)
+          } else {
+            cli.log('')
+            cli.log(`The domain ${color.green(hostname)} has been enqueued for addition`)
+            let command = `heroku domains:wait ${shellescape([hostname])}`
+            cli.log(`Run ${color.cmd(command)} to wait for completion`)
+          }
+        }
+      }
     } catch (err) {
       cli.error(err)
     } finally {
       cli.action.stop()
-    }
-
-    if (flags.json) {
-      cli.styledJSON(domain)
-    } else {
-      cli.log(`Configure your app's DNS provider to point to the DNS Target ${color.green(domain.cname || '')}.
-For help, see https://devcenter.heroku.com/articles/custom-domains`)
-      if (domain.status !== 'none') {
-        if (flags.wait) {
-          await waitForDomain(flags.app, this.heroku, domain)
-        } else {
-          cli.log('')
-          cli.log(`The domain ${color.green(hostname)} has been enqueued for addition`)
-          let command = `heroku domains:wait ${shellescape([hostname])}`
-          cli.log(`Run ${color.cmd(command)} to wait for completion`)
-        }
-      }
     }
   }
 }
