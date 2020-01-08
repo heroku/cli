@@ -24,10 +24,11 @@ export default class DomainsAdd extends Command {
     app: flags.app({required: true}),
     cert: flags.string({description: 'the name of the SSL cert you want to use for this domain', char: 'c'}),
     json: flags.boolean({description: 'output in json format', char: 'j'}),
+    remote: flags.remote(),
     wait: flags.boolean()
   }
 
-  static args = [{name: 'hostname'}]
+  static args = [{name: 'hostname', required: true}]
 
   createDomain = async (appName: string, payload: DomainCreatePayload): Promise<Heroku.Domain> => {
     cli.action.start(`Adding ${color.green(payload.hostname)} to ${color.app(appName)}`)

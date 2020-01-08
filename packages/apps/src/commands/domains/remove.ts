@@ -10,9 +10,10 @@ export default class DomainsRemove extends Command {
   static flags = {
     help: flags.help({char: 'h'}),
     app: flags.app({required: true}),
+    remote: flags.remote(),
   }
 
-  static args = [{name: 'hostname'}]
+  static args = [{name: 'hostname', required: true}]
 
   async run() {
     const {args, flags} = this.parse(DomainsRemove)
