@@ -1,0 +1,120 @@
+#!/usr/bin/env node
+
+// JS template strings are incompatible with inline CF templates
+// because they both use the same interpolation syntax
+const AWS = require('aws-sdk')
+const REQUEST_PROMISE = require('promise-request-retry')
+
+const NOTIFICATION_API_URL_PARAM = 'DeployNotificationURL'
+const NOTIFICATION_API_TOKEN_PARAM = 'DeployNotificationToken'
+const NOTIFICATION_API_STAGE = 'Stage'
+
+async function fetchParam (paramName) {
+  const ssm = new AWS.SSM()
+  const data = await ssm.getParameter({ Name: paramName }).promise()
+  return data.Parameter.Value
+}
+
+// Fetch the URI to send deploy notifications to
+// URI: https://tps.heroku.tools/api/component/public-cloud-security-kernel/releases
+//
+exports.fetchDeployNotificationURL = () =>
+  fetchParam(NOTIFICATION_API_URL_PARAM)
+
+// Fetch the stage of the deployment (staging/production)
+//
+function fetchDeployStage () {
+  return fetchParam(NOTIFICATION_API_STAGE)
+}
+
+// Fetch the auth token for sending deploy notifications
+//
+function fetchDeployNotificationToken () {
+  return fetchParam(NOTIFICATION_API_TOKEN_PARAM)
+}
+
+async function getActor (repositoryName, commitId) {
+  try {
+    const codeCommit = new AWS.CodeCommit()
+    const {
+      data: {
+        commit: {
+          author: { email }
+        }
+      }
+    } = await codeCommit
+      .getCommit({
+        commitId,
+        repositoryName
+      })
+      .promise()
+
+    return email
+  } catch (error) {
+    console.log(error)
+  }
+
+  return null
+}
+
+function getUserParams (jobData) {
+  return jobData.actionConfiguration.configuration.UserParameters
+}
+
+function getRevision (jobData) {
+  return jobData.inputArtifacts[0].revision
+}
+
+async function sendDeployNotification (sha, actorEmail, repositoryName) {
+  const uri = await exports.fetchDeployNotificationURL()
+  const token = await fetchDeployNotificationToken()
+  const stage = await fetchDeployStage()
+
+  const body = {
+    release: {
+      actor_email: actorEmail,
+      app_id: '2e46e7ce-a970-4472-92b5-3a117bf01f5f',
+      sha,
+      stage,
+      description: `Deploy ${sha} of ${repositoryName} in ${stage}`
+    }
+  }
+
+  try {
+    // Retry up to 6 (~2m) doubling the delay each time
+    //
+    const options = {
+      method: 'POST',
+      headers: {
+        Authorization: `Authorization ${token}`
+      },
+      uri,
+      body,
+      accepted: [401, 403, 404],
+      retry: 6,
+      delay: 1000,
+      factor: 2,
+      json: true
+    }
+
+    const resp = await REQUEST_PROMISE(options)
+    console.log(resp)
+  } catch (error) {
+    // Send to Rollbar
+    console.log(error)
+    console.log(body)
+  }
+}
+
+exports.NOTIFICATION_API_URL_PARAM = NOTIFICATION_API_URL_PARAM
+exports.NOTIFICATION_API_TOKEN_PARAM = NOTIFICATION_API_TOKEN_PARAM
+exports.NOTIFICATION_API_STAGE = NOTIFICATION_API_STAGE
+
+exports.handler = async (event, context) => {
+  const jobData = event['CodePipeline.job'].data
+  const userParams = getUserParams(jobData)
+  const sha = getRevision(jobData)
+  const actorEmail = await getActor(userParams.Repository, sha)
+
+  sendDeployNotification(sha, actorEmail, userParams.Repository)
+}
