@@ -61,7 +61,7 @@ function * run (context, heroku) {
 
   yield cli.confirmApp(target.confirm, flags.confirm, `WARNING: Destructive action
 This command will remove all data from ${cli.color.yellow(target.name)}
-Data from ${cli.color.yellow(source.name)} will then be transferred to ${cli.color.yellow(target.name)}`)
+Data from ${cli.color.yellow(source.name)} on ${cli.color.app(source.confirm)} will then be transferred to ${cli.color.yellow(target.name)} on ${cli.color.app(target.confirm)}`)
 
   let copy
   let attachment
