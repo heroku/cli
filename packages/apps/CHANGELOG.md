@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.36.0](https://github.com/heroku/heroku-cli-plugin-apps/compare/v7.35.1...v7.36.0) (2020-01-20)
+
+
+### Features
+
+* **apps:** add domains:update command ([#1407](https://github.com/heroku/heroku-cli-plugin-apps/issues/1407)) ([d89f16c](https://github.com/heroku/heroku-cli-plugin-apps/commit/d89f16cf98ebfb236d882859b3eb1f6adaa209da))
+* **domains:** add multiple SNI endpoint support to `domains:add` ([#1412](https://github.com/heroku/heroku-cli-plugin-apps/issues/1412)) ([5d87d99](https://github.com/heroku/heroku-cli-plugin-apps/commit/5d87d9964d703439c1b8f5fb200225b02f50b1c5))
+
+
+
+
+
 # [7.35.0](https://github.com/heroku/heroku-cli-plugin-apps/compare/v7.34.2...v7.35.0) (2019-11-07)
 
 
