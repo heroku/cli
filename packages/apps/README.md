@@ -1,8 +1,6 @@
 heroku-cli-plugin-apps
 ======================
 
-
-
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/heroku-cli-plugin-apps.svg)](https://npmjs.org/package/heroku-cli-plugin-apps)
 [![CircleCI](https://circleci.com/gh/brettgoulder/heroku-cli-plugin-apps/tree/master.svg?style=shield)](https://circleci.com/gh/brettgoulder/heroku-cli-plugin-apps/tree/master)
