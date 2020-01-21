@@ -93,15 +93,15 @@ export default class DomainsAdd extends Command {
     const {args, flags} = this.parse(DomainsAdd)
     const {hostname} = args
 
-    const {body: featureFlag} = await this.heroku.get<Heroku.AppFeature>(
-      `/apps/${flags.app}/features/${MULTIPLE_SNI_ENDPOINT_FLAG}`
-    )
+    const {body: featureList} = await this.heroku.get<Array<Heroku.AppFeature>>(`/apps/${flags.app}/features`)
+
+    const multipleSniEndpointFeature = featureList.find(feature => feature.name === MULTIPLE_SNI_ENDPOINT_FLAG)
 
     const domainCreatePayload: DomainCreatePayload = {
       hostname
     }
 
-    if (featureFlag.enabled) {
+    if (multipleSniEndpointFeature && multipleSniEndpointFeature.enabled) {
       // multiple SNI endpoints is enabled
       if (flags.cert) {
         domainCreatePayload.sni_endpoint = flags.cert
