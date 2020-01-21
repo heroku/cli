@@ -12,7 +12,7 @@ export default class DomainsWait extends Command {
     remote: flags.remote(),
   }
 
-  static args = [{name: 'hostname', required: true}]
+  static args = [{name: 'hostname'}]
 
   async run() {
     const {args, flags} = this.parse(DomainsWait)
