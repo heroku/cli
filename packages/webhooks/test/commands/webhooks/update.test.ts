@@ -4,7 +4,7 @@ describe('webhooks:update', () => {
   test
     .stdout()
     .stderr()
-    .nock('https://api.heroku.com', api => api
+    .nock('https://api.heroku.com', (api: any) => api
       .patch('/apps/example-app/webhooks/99999999-9999-9999-9999-999999999999', {
         include: ['foo', 'bar'],
         level: 'notify',
@@ -30,7 +30,7 @@ describe('webhooks:update', () => {
   test
     .stdout()
     .stderr()
-    .nock('https://api.heroku.com', api => api
+    .nock('https://api.heroku.com', (api: any) => api
       .patch('/pipelines/example-pipeline/webhooks/99999999-9999-9999-9999-999999999999', {
         include: ['foo', 'bar'],
         level: 'notify',

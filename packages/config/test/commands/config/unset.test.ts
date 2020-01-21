@@ -2,7 +2,7 @@ import {test} from '../../test'
 
 describe('config', () => {
   test
-    .nock('https://api.heroku.com', api => api
+    .nock('https://api.heroku.com', (api: any) => api
       .patch('/apps/myapp/config-vars', {
         FOO: null,
         RACK_ENV: null,

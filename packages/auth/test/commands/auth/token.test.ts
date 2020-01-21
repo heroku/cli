@@ -3,7 +3,7 @@ import {expect, test} from '../../test'
 describe('auth:token', () => {
   test
     .env({HEROKU_API_KEY: 'foobar'})
-    .nock('https://api.heroku.com', api => api
+    .nock('https://api.heroku.com', (api: any) => api
       .get('/oauth/authorizations')
       .reply(200, [
         {access_token: {token: 'somethingelse'}},

@@ -3,7 +3,7 @@ import {expect, test} from '../../test'
 describe('auth:whoami', () => {
   test
     .env({HEROKU_API_KEY: 'foobar'})
-    .nock('https://api.heroku.com', api => api
+    .nock('https://api.heroku.com', (api: any) => api
       .get('/account')
       .reply(200, {email: 'jeff@example.com'})
   )
@@ -17,7 +17,7 @@ describe('auth:whoami', () => {
 
   test
     .env({HEROKU_API_KEY: 'foobar'})
-    .nock('https://api.heroku.com', api => api
+    .nock('https://api.heroku.com', (api: any) => api
       .get('/account')
       .reply(401)
   )

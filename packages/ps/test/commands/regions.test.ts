@@ -1,7 +1,7 @@
 import {expect, test} from '../test'
 
 const withRegions = test
-.nock('https://api.heroku.com', api => api
+.nock('https://api.heroku.com', (api: any) => api
   .get('/regions')
   .reply(200, [
     {name: 'eu', description: 'Europe', private_capable: false},

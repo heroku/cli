@@ -3,11 +3,11 @@ import {expect, test} from '../../test'
 describe('domains:clear', () => {
   test
     .stderr()
-    .nock('https://api.heroku.com', api => api
+    .nock('https://api.heroku.com', (api: any) => api
       .get('/apps/myapp/domains')
       .reply(200, [{hostname: 'example.com', kind: 'custom'}])
     )
-    .nock('https://api.heroku.com', api => api
+    .nock('https://api.heroku.com', (api: any) => api
       .delete('/apps/myapp/domains/example.com')
       .reply(200, {})
     )

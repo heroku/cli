@@ -15,7 +15,7 @@ describe('domains:update', () => {
 
   test
     .stderr()
-    .nock('https://api.heroku.com', api => api
+    .nock('https://api.heroku.com', (api: any) => api
       .patch('/apps/myapp/domains/example.com', {sni_endpoint: 'sniendpoint-id'})
       .reply(200, responseBody)
     )

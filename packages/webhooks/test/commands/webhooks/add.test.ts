@@ -4,7 +4,7 @@ describe('webhooks:add', () => {
   test
     .stdout()
     .stderr()
-    .nock('https://api.heroku.com', api => api
+    .nock('https://api.heroku.com', (api: any) => api
       .post('/apps/example-app/webhooks', {
         include: ['foo', 'bar'],
         level: 'notify',
@@ -29,7 +29,7 @@ describe('webhooks:add', () => {
   test
     .stdout()
     .stderr()
-    .nock('https://api.heroku.com', api => api
+    .nock('https://api.heroku.com', (api: any) => api
       .post('/pipelines/example-pipeline/webhooks', {
         include: ['foo', 'bar'],
         level: 'notify',
@@ -54,7 +54,7 @@ describe('webhooks:add', () => {
   test
     .stdout()
     .stderr()
-    .nock('https://api.heroku.com', api => api
+    .nock('https://api.heroku.com', (api: any) => api
       .post('/pipelines/example-pipeline/webhooks', {
         include: ['foo', 'bar'],
         level: 'notify',

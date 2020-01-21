@@ -18,7 +18,7 @@ describe('domains:info', () => {
   }
 
   test
-    .nock('https://api.heroku.com', api => api
+    .nock('https://api.heroku.com', (api: any) => api
       .get('/apps/myapp/domains/www.example.com')
       .reply(200, domainInfoResponse)
     )

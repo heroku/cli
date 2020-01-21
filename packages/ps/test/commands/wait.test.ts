@@ -15,14 +15,14 @@ const PREVIOUS = {
 }
 
 const withRelease = test
-  .nock(API_HOST, api => api
+  .nock(API_HOST, (api: any) => api
     .get(`/apps/${APP_NAME}/releases`)
     .reply(200, [CURRENT])
   )
 
 describe('heroku ps:wait', () => {
   test
-    .nock(API_HOST, api => api
+    .nock(API_HOST, (api: any) => api
       .get(`/apps/${APP_NAME}/releases`)
       .reply(200, [])
   )
@@ -34,7 +34,7 @@ describe('heroku ps:wait', () => {
 
   withRelease
     .stderr()
-    .nock(API_HOST, api => api
+    .nock(API_HOST, (api: any) => api
       .get(`/apps/${APP_NAME}/dynos`)
       .reply(200, [
         {release: CURRENT, state: 'up', type: 'web'}
@@ -47,7 +47,7 @@ describe('heroku ps:wait', () => {
 
   withRelease
     .stderr()
-    .nock(API_HOST, api => api
+    .nock(API_HOST, (api: any) => api
       .get(`/apps/${APP_NAME}/dynos`)
       .reply(200, [
         {release: PREVIOUS, state: 'up', type: 'web'},
@@ -72,7 +72,7 @@ describe('heroku ps:wait', () => {
 
   withRelease
     .stderr()
-    .nock(API_HOST, api => api
+    .nock(API_HOST, (api: any) => api
       .get(`/apps/${APP_NAME}/dynos`)
       .reply(200, [
         {release: CURRENT, state: 'up', type: 'web'},
@@ -86,7 +86,7 @@ describe('heroku ps:wait', () => {
 
   withRelease
     .stderr()
-    .nock(API_HOST, api => api
+    .nock(API_HOST, (api: any) => api
       .get(`/apps/${APP_NAME}/dynos`)
       .reply(200, [
         {release: CURRENT, state: 'up', type: 'web'},
@@ -100,7 +100,7 @@ describe('heroku ps:wait', () => {
 
   withRelease
     .stderr()
-    .nock(API_HOST, api => api
+    .nock(API_HOST, (api: any) => api
       .get(`/apps/${APP_NAME}/dynos`)
       .reply(200, [
         {release: CURRENT, state: 'up', type: 'web'},
@@ -120,7 +120,7 @@ describe('heroku ps:wait', () => {
 
   withRelease
     .stderr()
-    .nock(API_HOST, api => api
+    .nock(API_HOST, (api: any) => api
       .get(`/apps/${APP_NAME}/dynos`)
       .reply(200, [
         {release: CURRENT, state: 'up', type: 'worker'},

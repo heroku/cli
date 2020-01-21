@@ -4,7 +4,7 @@ describe('webhooks:remove', () => {
   test
     .stderr()
     .stdout()
-    .nock('https://api.heroku.com', api => api
+    .nock('https://api.heroku.com', (api: any) => api
       .delete('/apps/example-app/webhooks/99999999-9999-9999-9999-999999999999')
       .reply(200, {})
     )
@@ -17,7 +17,7 @@ describe('webhooks:remove', () => {
   test
     .stderr()
     .stdout()
-    .nock('https://api.heroku.com', api => api
+    .nock('https://api.heroku.com', (api: any) => api
       .delete('/pipelines/example-pipeline/webhooks/99999999-9999-9999-9999-999999999999')
       .reply(200, {})
     )

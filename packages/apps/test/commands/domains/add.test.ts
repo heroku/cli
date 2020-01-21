@@ -22,7 +22,7 @@ describe('domains:add', () => {
   describe('adding a domain without the feature flag on (the old way)', () => {
     test
       .stderr()
-      .nock('https://api.heroku.com', api => api
+      .nock('https://api.heroku.com', (api: any) => api
         .get('/apps/myapp/features/allow-multiple-sni-endpoints')
         .reply(200, {
           enabled: false
@@ -40,7 +40,7 @@ describe('domains:add', () => {
     describe('using the --cert flag', () => {
       test
         .stderr()
-        .nock('https://api.heroku.com', api => api
+        .nock('https://api.heroku.com', (api: any) => api
           .get('/apps/myapp/features/allow-multiple-sni-endpoints')
           .reply(200, {
             enabled: true
@@ -85,7 +85,7 @@ describe('domains:add', () => {
         .stub(inquirer, 'prompt', () => {
           return Promise.resolve({cert: 'my-cert'})
         })
-        .nock('https://api.heroku.com', api => api
+        .nock('https://api.heroku.com', (api: any) => api
           .get('/apps/myapp/features/allow-multiple-sni-endpoints')
           .reply(200, {
             enabled: true

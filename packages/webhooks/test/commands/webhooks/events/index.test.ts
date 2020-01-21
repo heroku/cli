@@ -10,7 +10,7 @@ describe('webhooks:events', () => {
     test
       .stdout()
       .stderr()
-      .nock('https://api.heroku.com', api => api
+      .nock('https://api.heroku.com', (api: any) => api
         .get(appWebhookEventsPath)
         .reply(200, [{
           id: '99999999-9999-9999-9999-999999999999',
@@ -32,7 +32,7 @@ describe('webhooks:events', () => {
     test
       .stdout()
       .stderr()
-      .nock('https://api.heroku.com', api => api
+      .nock('https://api.heroku.com', (api: any) => api
         .get(appWebhookEventsPath)
         .reply(200, [])
       )
@@ -49,7 +49,7 @@ describe('webhooks:events', () => {
     test
       .stdout()
       .stderr()
-      .nock('https://api.heroku.com', api => api
+      .nock('https://api.heroku.com', (api: any) => api
         .get(pipelineWebhookEventsPath)
         .reply(200, [{
           id: '99999999-9999-9999-9999-999999999999',
@@ -71,7 +71,7 @@ describe('webhooks:events', () => {
     test
       .stdout()
       .stderr()
-      .nock('https://api.heroku.com', api => api
+      .nock('https://api.heroku.com', (api: any) => api
         .get(pipelineWebhookEventsPath)
         .reply(200, [])
       )
@@ -90,7 +90,7 @@ describe('webhooks:events', () => {
     test
       .stdout()
       .stderr()
-      .nock('https://api.heroku.com', api => api
+      .nock('https://api.heroku.com', (api: any) => api
         .get('/apps/example-app/webhook-events')
         .reply(200, [
           // the returned ordered from the api is not ordered by

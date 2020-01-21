@@ -33,7 +33,7 @@ describe('without specify a maximum', () => {
 
 describe('without an existing web dyno', () => {
   commonSetup()
-    .nock(API_HOST, api => api
+    .nock(API_HOST, (api: any) => api
       .get(`/apps/${APP_NAME}/formation`)
       .reply(200, [])
   )
@@ -44,15 +44,15 @@ describe('without an existing web dyno', () => {
 
 describe('without an existing metrics monitor', () => {
   commonSetup()
-    .nock(API_HOST, api => api
+    .nock(API_HOST, (api: any) => api
       .get(`/apps/${APP_NAME}/formation`)
       .reply(200, [{id: FORMATION_ID, type: 'web', size: 'Performance-L'}])
   )
-    .nock(METRICS_HOST, api => api
+    .nock(METRICS_HOST, (api: any) => api
       .post(`/apps/${APP_ID}/formation/web/monitors`)
       .reply(201, [])
   )
-    .nock(METRICS_HOST, api => api
+    .nock(METRICS_HOST, (api: any) => api
       .get(`/apps/${APP_ID}/formation/web/monitors`)
       .reply(200)
   )
@@ -90,7 +90,7 @@ describe('with a Shield dyno type', () => {
 
 describe('with a Hobby dyno', () => {
   commonSetup()
-    .nock(API_HOST, api => api
+    .nock(API_HOST, (api: any) => api
       .get(`/apps/${APP_NAME}/formation`)
       .reply(200, [{id: FORMATION_ID, type: 'web', size: 'Hobby'}])
   )
@@ -101,11 +101,11 @@ describe('with a Hobby dyno', () => {
 
 function dynoTest(dynoType: string) {
   return commonSetup()
-    .nock(API_HOST, api => api
+    .nock(API_HOST, (api: any) => api
       .get(`/apps/${APP_NAME}/formation`)
       .reply(200, [{id: FORMATION_ID, type: 'web', size: dynoType}])
     )
-    .nock(METRICS_HOST, api => api
+    .nock(METRICS_HOST, (api: any) => api
       .get(`/apps/${APP_ID}/formation/web/monitors`)
       .reply(200, [{
         id: MONITOR_ID,
@@ -116,7 +116,7 @@ function dynoTest(dynoType: string) {
       }]
       )
     )
-    .nock(METRICS_HOST, api => api
+    .nock(METRICS_HOST, (api: any) => api
       .patch(`/apps/${APP_ID}/formation/web/monitors/${MONITOR_ID}`)
       .reply(202, {})
     )
@@ -126,7 +126,7 @@ function dynoTest(dynoType: string) {
 function commonSetup() {
   return test
     .stderr()
-    .nock(API_HOST, api => api
+    .nock(API_HOST, (api: any) => api
       .get(`/apps/${APP_NAME}`)
       .reply(200, {id: APP_ID, name: APP_NAME})
   )

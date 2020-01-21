@@ -8,7 +8,7 @@ describe('webhooks:index', () => {
     test
       .stdout()
       .stderr()
-      .nock('https://api.heroku.com', api => api
+      .nock('https://api.heroku.com', (api: any) => api
         .get(appWebhooksUrl)
         .reply(200, [{
           id: '99999999-9999-9999-9999-999999999999',
@@ -28,7 +28,7 @@ describe('webhooks:index', () => {
     test
       .stdout()
       .stderr()
-      .nock('https://api.heroku.com', api => api
+      .nock('https://api.heroku.com', (api: any) => api
         .get(appWebhooksUrl)
         .reply(200, [])
       )
@@ -45,7 +45,7 @@ describe('webhooks:index', () => {
     test
       .stdout()
       .stderr()
-      .nock('https://api.heroku.com', api => api
+      .nock('https://api.heroku.com', (api: any) => api
         .get(pipelinesWebhooksUrl)
         .reply(200, [{
           id: '99999999-9999-9999-9999-999999999999',
@@ -65,7 +65,7 @@ describe('webhooks:index', () => {
     test
       .stdout()
       .stderr()
-      .nock('https://api.heroku.com', api => api
+      .nock('https://api.heroku.com', (api: any) => api
         .get(pipelinesWebhooksUrl)
         .reply(200, [])
       )
@@ -84,7 +84,7 @@ describe('webhooks:index', () => {
     test
       .stdout()
       .stderr()
-      .nock('https://api.heroku.com', api => api
+      .nock('https://api.heroku.com', (api: any) => api
         .get('/apps/example/webhooks')
         .reply(200, [
           // the returned ordered from the api is not ordered by

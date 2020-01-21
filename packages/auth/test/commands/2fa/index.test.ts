@@ -2,7 +2,7 @@ import {expect, test} from '../../test'
 
 describe('2fa', () => {
   test
-    .nock('https://api.heroku.com', api => api
+    .nock('https://api.heroku.com', (api: any) => api
       .get('/account')
       .reply(200, {two_factor_authentication: true})
   )
@@ -13,7 +13,7 @@ describe('2fa', () => {
     })
 
   test
-    .nock('https://api.heroku.com', api => api
+    .nock('https://api.heroku.com', (api: any) => api
       .get('/account')
       .reply(200, {two_factor_authentication: false})
   )

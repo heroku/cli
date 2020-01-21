@@ -63,7 +63,7 @@ describe('domains', () => {
 ]
 
   test
-    .nock('https://api.heroku.com', api => api
+    .nock('https://api.heroku.com', (api: any) => api
       .get('/apps/myapp/domains')
       .reply(200, herokuOnlyDomainsResponse)
     )
@@ -76,7 +76,7 @@ describe('domains', () => {
     })
 
   test
-    .nock('https://api.heroku.com', api => api
+    .nock('https://api.heroku.com', (api: any) => api
       .get('/apps/myapp/domains')
       .reply(200, herokuAndCustomDomainsResponse)
     )

@@ -2,7 +2,7 @@ import {expect, test} from '../../test'
 
 describe('config', () => {
   test
-    .nock('https://api.heroku.com', api => api
+    .nock('https://api.heroku.com', (api: any) => api
       .get('/apps/myapp/config-vars')
       .reply(200, {LANG: 'en_US.UTF-8', RACK_ENV: 'production'})
   )
@@ -13,7 +13,7 @@ describe('config', () => {
     })
 
   test
-    .nock('https://api.heroku.com', api => api
+    .nock('https://api.heroku.com', (api: any) => api
       .get('/apps/myapp/config-vars')
       .reply(200, {LANG: 'en_US.UTF-8', RACK_ENV: 'production'})
   )
@@ -24,7 +24,7 @@ describe('config', () => {
     })
 
   test
-    .nock('https://api.heroku.com', api => api
+    .nock('https://api.heroku.com', (api: any) => api
       .get('/apps/myapp/config-vars')
       .reply(200, {LANG: 'en_US.UTF-8', RACK_ENV: 'production'})
   )

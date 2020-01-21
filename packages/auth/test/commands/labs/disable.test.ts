@@ -2,7 +2,7 @@ import {expect, test} from '../../test'
 
 describe('labs:disable', () => {
   test
-    .nock('https://api.heroku.com', api => api
+    .nock('https://api.heroku.com', (api: any) => api
       .get('/account')
       .reply(200, {email: 'jeff@heroku.com'})
       .get('/account/features/feature-a')
@@ -23,7 +23,7 @@ describe('labs:disable', () => {
     })
 
   test
-    .nock('https://api.heroku.com', api => api
+    .nock('https://api.heroku.com', (api: any) => api
       .get('/account/features/feature-a').reply(404)
       .get('/apps/myapp/features/feature-a')
       .reply(200, {

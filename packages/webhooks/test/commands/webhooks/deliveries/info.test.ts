@@ -4,7 +4,7 @@ describe('webhooks:deliveries:info', () => {
   test
     .stdout()
     .stderr()
-    .nock('https://api.heroku.com', api => api
+    .nock('https://api.heroku.com', (api: any) => api
       .get('/apps/example-app/webhook-deliveries/99999999-9999-9999-9999-999999999999')
       .reply(200, {
         id: '99999999-9999-9999-9999-999999999999',
@@ -17,7 +17,7 @@ describe('webhooks:deliveries:info', () => {
         status: 'pending'
       })
     )
-    .nock('https://api.heroku.com', api => api
+    .nock('https://api.heroku.com', (api: any) => api
       .get('/apps/example-app/webhook-events/88888888-8888-8888-8888-888888888888')
       .reply(200, {
         id: '88888888-8888-8888-8888-888888888888',
@@ -58,7 +58,7 @@ Webhook:      77777777-7777-7777-7777-777777777777
   test
     .stdout()
     .stderr()
-    .nock('https://api.heroku.com', api => api
+    .nock('https://api.heroku.com', (api: any) => api
       .get('/pipelines/example-pipeline/webhook-deliveries/99999999-9999-9999-9999-999999999999')
       .reply(200, {
         id: '99999999-9999-9999-9999-999999999999',
@@ -71,7 +71,7 @@ Webhook:      77777777-7777-7777-7777-777777777777
         status: 'pending'
       })
     )
-    .nock('https://api.heroku.com', api => api
+    .nock('https://api.heroku.com', (api: any) => api
       .get('/pipelines/example-pipeline/webhook-events/88888888-8888-8888-8888-888888888888')
       .reply(200, {
         id: '88888888-8888-8888-8888-888888888888',

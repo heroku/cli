@@ -49,13 +49,13 @@ describe('config:edit', () => {
       })
 
       test
-        .nock('https://api.heroku.com', api => api
+        .nock('https://api.heroku.com', (api: any) => api
           .get('/apps/myapp/config-vars')
           .reply(200, {NOT_BLANK: 'not blank'})
           .get('/apps/myapp/config-vars')
           .reply(200, {NOT_BLANK: 'not blank'})
         )
-        .nock('https://api.heroku.com', api => api
+        .nock('https://api.heroku.com', (api: any) => api
           .patch('/apps/myapp/config-vars')
           .reply(function (_uri: string, requestBody: {}) {
             updated = requestBody
@@ -74,13 +74,13 @@ describe('config:edit', () => {
       })
 
       test
-        .nock('https://api.heroku.com', api => api
+        .nock('https://api.heroku.com', (api: any) => api
           .get('/apps/myapp/config-vars')
           .reply(200, {NOT_BLANK: 'not blank'})
           .get('/apps/myapp/config-vars')
           .reply(200, {NOT_BLANK: 'not blank'})
         )
-        .nock('https://api.heroku.com', api => api
+        .nock('https://api.heroku.com', (api: any) => api
           .patch('/apps/myapp/config-vars')
           .reply(function (_uri: string, requestBody: {}) {
             updated = requestBody

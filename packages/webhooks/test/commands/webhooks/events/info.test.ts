@@ -6,7 +6,7 @@ describe('webhooks:events:info', () => {
   test
     .stdout()
     .stderr()
-    .nock('https://api.heroku.com', api => api
+    .nock('https://api.heroku.com', (api: any) => api
       .get('/apps/example-app/webhook-events/99999999-9999-9999-9999-999999999999')
       .reply(200, {
         id: '99999999-9999-9999-9999-999999999999',
@@ -42,7 +42,7 @@ payload: {
   test
     .stdout()
     .stderr()
-    .nock('https://api.heroku.com', api => api
+    .nock('https://api.heroku.com', (api: any) => api
       .get('/pipelines/example-pipeline/webhook-events/99999999-9999-9999-9999-999999999999')
       .reply(200, {
         id: '99999999-9999-9999-9999-999999999999',

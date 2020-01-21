@@ -3,7 +3,7 @@ import {expect, test} from '../../test'
 describe('domains:remove', () => {
   test
     .stderr()
-    .nock('https://api.heroku.com', api => api
+    .nock('https://api.heroku.com', (api: any) => api
       .delete('/apps/myapp/domains/example.com')
       .reply(200, {})
     )

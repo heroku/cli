@@ -7,7 +7,7 @@ describe('webhooks:deliveries', () => {
       .stderr()
       .nock('https://api.heroku.com', {
         reqheaders: {range: 'seq ..; order=desc,max=1000'}
-      }, api => api
+      }, (api: any) => api
         .get('/apps/example-app/webhook-deliveries')
         .reply(206, [
           {
@@ -59,7 +59,7 @@ describe('webhooks:deliveries', () => {
       .stderr()
       .nock('https://api.heroku.com', {
         reqheaders: {range: 'seq ..; order=desc,max=1000'}
-      }, api => api
+      }, (api: any) => api
         .get('/apps/example-app/webhook-deliveries?eq[status]=pending')
         .reply(206, [
           {
@@ -91,7 +91,7 @@ describe('webhooks:deliveries', () => {
       .stdout()
       .nock('https://api.heroku.com', {
         reqheaders: {range: 'seq ..; order=desc,max=1000'}
-      }, api => api
+      }, (api: any) => api
         .get('/apps/example-app/webhook-deliveries')
         .reply(206, () => {
           let delivery = {
@@ -135,7 +135,7 @@ describe('webhooks:deliveries', () => {
       .stderr()
       .nock('https://api.heroku.com', {
         reqheaders: {range: 'seq ..; order=desc,max=1000'}
-      }, api => api
+      }, (api: any) => api
         .get('/apps/example-app/webhook-deliveries')
         .reply(200, [])
       )
@@ -152,7 +152,7 @@ describe('webhooks:deliveries', () => {
       .stderr()
       .nock('https://api.heroku.com', {
         reqheaders: {range: 'seq ..; order=desc,max=1000'}
-      }, api => api
+      }, (api: any) => api
         .get('/pipelines/example-pipeline/webhook-deliveries')
         .reply(206, [
           {
@@ -204,7 +204,7 @@ describe('webhooks:deliveries', () => {
       .stderr()
       .nock('https://api.heroku.com', {
         reqheaders: {range: 'seq ..; order=desc,max=1000'}
-      }, api => api
+      }, (api: any) => api
         .get('/pipelines/example-pipeline/webhook-deliveries')
         .reply(200, [])
       )
