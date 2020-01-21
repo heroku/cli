@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.36.2](https://github.com/heroku/heroku-cli-plugin-apps/compare/v7.36.1...v7.36.2) (2020-01-21)
+
+
+### Bug Fixes
+
+* clean up whitespace ([#1426](https://github.com/heroku/heroku-cli-plugin-apps/issues/1426)) ([def4ba3](https://github.com/heroku/heroku-cli-plugin-apps/commit/def4ba316d8e04de63421f47905934b9342ad5cd))
+
+
+
+
+
 ## [7.36.1](https://github.com/heroku/heroku-cli-plugin-apps/compare/v7.36.0...v7.36.1) (2020-01-21)
 
 
