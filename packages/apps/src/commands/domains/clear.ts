@@ -10,8 +10,7 @@ export default class DomainsClear extends Command {
 
   static flags = {
     help: flags.help({char: 'h'}),
-    app: flags.app({required: true}),
-    remote: flags.remote()
+    app: flags.app({required: true})
   }
 
   async run() {
