@@ -25,8 +25,6 @@ www.example.com  CNAME            www.example.herokudns.com
   static flags = {
     help: flags.help({char: 'h'}),
     app: flags.app({required: true}),
-    remote: flags.remote(),
-    json: flags.boolean({description: 'output in json format', char: 'j'}),
     ...cli.table.flags({except: 'no-truncate'})
   }
 
@@ -36,30 +34,25 @@ www.example.com  CNAME            www.example.herokudns.com
     const herokuDomain = domains.find(domain => domain.kind === 'heroku')
     const customDomains = domains.filter(domain => domain.kind === 'custom')
 
-    if (flags.json) {
-      cli.styledJSON(domains)
-    } else {
-      cli.styledHeader(`${flags.app} Heroku Domain`)
-      cli.log(herokuDomain && herokuDomain.hostname)
-      if (customDomains && customDomains.length > 0) {
-        cli.log()
-        cli.styledHeader(`${flags.app} Custom Domains`)
-        cli.table(customDomains, {
-          hostname: {header: 'Domain Name'},
-          kind: {header: 'DNS Record Type', get: domain => {
-            if (domain.hostname) {
-              return isApexDomain(domain.hostname) ? 'ALIAS or ANAME' : 'CNAME'
-            }
-          }},
-          cname: {header: 'DNS Target'},
-          acm_status: {header: 'ACM Status', extended: true},
-          acm_status_reason: {header: 'ACM Status', extended: true}
-        }, {
-          ...flags,
-          'no-truncate': true
-        })
-      }
+    cli.styledHeader(`${flags.app} Heroku Domain`)
+    cli.log(herokuDomain && herokuDomain.hostname)
+    if (customDomains && customDomains.length > 0) {
+      cli.log()
+      cli.styledHeader(`${flags.app} Custom Domains`)
+      cli.table(customDomains, {
+        hostname: {header: 'Domain Name'},
+        kind: {header: 'DNS Record Type', get: domain => {
+          if (domain.hostname) {
+            return isApexDomain(domain.hostname) ? 'ALIAS or ANAME' : 'CNAME'
+          }
+        }},
+        cname: {header: 'DNS Target'},
+        acm_status: {header: 'ACM Status', extended: true},
+        acm_status_reason: {header: 'ACM Status', extended: true}
+      }, {
+        ...flags,
+        'no-truncate': true
+      })
     }
-
   }
 }
