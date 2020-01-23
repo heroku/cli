@@ -4,11 +4,11 @@ const REQUEST_PROMISE = require('promise-request-retry')
 
 // Set these in CircleCI in the heroku/cli project
 //
-const TPS_API_URL_PARAM = process.env.TPS_API_URL_PARAM
-const TPS_API_TOKEN_PARAM = process.env.TPS_API_TOKEN_PARAM
-const TPS_API_STAGE = process.env.TPS_API_STAGE || 'production'
-const TPS_API_APP_ID = process.env.TPS_API_APP_ID
 const RELEASE_ACTOR_EMAIL = process.env.TPS_API_RELEASE_ACTOR_EMAIL
+const TPS_API_APP_ID = process.env.TPS_API_APP_ID
+const TPS_API_STAGE = process.env.TPS_API_STAGE || 'production'
+const TPS_API_TOKEN_PARAM = process.env.TPS_API_TOKEN_PARAM
+const TPS_API_URL_PARAM = process.env.TPS_API_URL_PARAM
 
 // This is set by CircleCI automagically
 //
