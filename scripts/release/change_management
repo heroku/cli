@@ -2,22 +2,24 @@
 
 const REQUEST_PROMISE = require('promise-request-retry')
 
-const NOTIFICATION_API_URL_PARAM = process.env.NOTIFICATION_API_URL_PARAM
-const NOTIFICATION_API_TOKEN_PARAM = process.env.NOTIFICATION_API_TOKEN_PARAM
-const NOTIFICATION_API_STAGE = process.env.NOTIFICATION_API_STAGE || 'production'
-const NOTIFICATION_API_APP_ID = process.env.NOTIFICATION_API_APP_ID
+const TPS_API_URL_PARAM = process.env.TPS_API_URL_PARAM
+const TPS_API_TOKEN_PARAM = process.env.TPS_API_TOKEN_PARAM
+const TPS_API_STAGE = process.env.TPS_API_STAGE || 'production'
+const TPS_API_APP_ID = process.env.TPS_API_APP_ID
+const RELEASE_ACTOR_EMAIL = process.env.TPS_API_RELEASE_ACTOR_EMAIL
 const RELEASE_COMMIT_SHA = process.env.CIRCLE_SHA1
 
 async function sendDeployNotification () {
-  const uri = NOTIFICATION_API_URL_PARAM
-  const token = NOTIFICATION_API_TOKEN_PARAM
-  const stage = NOTIFICATION_API_STAGE
+  const uri = TPS_API_URL_PARAM
+  const token = TPS_API_TOKEN_PARAM
+  const stage = TPS_API_STAGE
   const sha = RELEASE_COMMIT_SHA
-  const appId = NOTIFICATION_API_APP_ID
+  const appId = TPS_API_APP_ID
+  const email = RELEASE_ACTOR_EMAIL
 
   const body = {
     release: {
-      actor_email: 'heroku-cli@heroku.com',
+      actor_email: email,
       app_id: appId,
       sha,
       stage,
