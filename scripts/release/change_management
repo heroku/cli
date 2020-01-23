@@ -10,7 +10,7 @@ const TPS_API_STAGE = process.env.TPS_API_STAGE || 'production'
 const TPS_API_APP_ID = process.env.TPS_API_APP_ID
 const RELEASE_ACTOR_EMAIL = process.env.TPS_API_RELEASE_ACTOR_EMAIL
 
-// Do not set, this is set by CircleCI automagically
+// This is set by CircleCI automagically
 //
 const RELEASE_COMMIT_SHA = process.env.CIRCLE_SHA1
 
