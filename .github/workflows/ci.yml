@@ -1,0 +1,23 @@
+name: CI
+
+on: [push]
+
+jobs:
+  windows:
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x]
+        platform: [windows-latest]
+    runs-on: ${{ matrix.platform }}
+    steps:
+    - uses: actions/checkout@v1
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: yarn install & test
+      run: |
+        yarn
+        yarn test
+      env:
+        CI: true
