@@ -101,7 +101,7 @@ jobs:
       - add_ssh_keys
       - checkout
       - run: |
-          cd packages/cli
+          yarn
           ./scripts/release/change_management
   dev_center_docs:
     docker: &devdocs_docker
@@ -164,16 +164,14 @@ workflows:
                 - master
                 - dev
       - change_management:
-          context: org-global
           requires:
             - release
             - release_deb
             - release_win
           filters:
-            tags: *version_tags
             branches:
-              only:
-                - master
+              ignore: /.*/
+            tags: *version_tags
       - dev_center_docs:
           requires:
             - node12-test
@@ -181,8 +179,7 @@ workflows:
           filters:
             branches:
               ignore: /.*/
-            tags:
-              only: /^v.*/
+            tags: *version_tags
   nightly:
     triggers:
       - schedule:

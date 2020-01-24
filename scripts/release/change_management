@@ -4,8 +4,8 @@ const REQUEST_PROMISE = require('promise-request-retry')
 
 // Set these in CircleCI in the heroku/cli project
 //
-const RELEASE_ACTOR_EMAIL = process.env.TPS_API_RELEASE_ACTOR_EMAIL
 const TPS_API_APP_ID = process.env.TPS_API_APP_ID
+const TPS_API_RELEASE_ACTOR_EMAIL = process.env.TPS_API_RELEASE_ACTOR_EMAIL
 const TPS_API_STAGE = process.env.TPS_API_STAGE || 'production'
 const TPS_API_TOKEN_PARAM = process.env.TPS_API_TOKEN_PARAM
 const TPS_API_URL_PARAM = process.env.TPS_API_URL_PARAM
@@ -14,21 +14,33 @@ const TPS_API_URL_PARAM = process.env.TPS_API_URL_PARAM
 //
 const RELEASE_COMMIT_SHA = process.env.CIRCLE_SHA1
 
+if (TPS_API_APP_ID &&
+  TPS_API_RELEASE_ACTOR_EMAIL &&
+  TPS_API_STAGE &&
+  TPS_API_TOKEN_PARAM &&
+  TPS_API_URL_PARAM &&
+  RELEASE_COMMIT_SHA
+) {
+  // continue
+} else {
+  throw(new Error('Unset env var(s). Check CI settings.'))
+}
+
 async function sendDeployNotification () {
-  const uri = TPS_API_URL_PARAM
-  const token = TPS_API_TOKEN_PARAM
-  const stage = TPS_API_STAGE
-  const sha = RELEASE_COMMIT_SHA
+  const actorEmail = TPS_API_RELEASE_ACTOR_EMAIL
   const appId = TPS_API_APP_ID
-  const email = RELEASE_ACTOR_EMAIL
+  const sha = RELEASE_COMMIT_SHA
+  const stage = TPS_API_STAGE
+  const token = TPS_API_TOKEN_PARAM
+  const uri = TPS_API_URL_PARAM
 
   const body = {
     release: {
-      actor_email: email,
+      actor_email: actorEmail,
       app_id: appId,
+      description: `Deploy ${sha} of heroku/cli in ${stage}`,
       sha,
-      stage,
-      description: `Deploy ${sha} of heroku/cli in ${stage}`
+      stage
     }
   }
 
