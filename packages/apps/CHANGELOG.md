@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.37.0](https://github.com/heroku/heroku-cli-plugin-apps/compare/v7.36.3...v7.37.0) (2020-01-25)
+
+
+### Features
+
+* **domains:add:** fix feature flag usage ([#1428](https://github.com/heroku/heroku-cli-plugin-apps/issues/1428)) ([b73318d](https://github.com/heroku/heroku-cli-plugin-apps/commit/b73318d03a8049bef7852e60dacc875c6c7b55ac))
+
+
+
+
+
 ## [7.36.3](https://github.com/heroku/heroku-cli-plugin-apps/compare/v7.36.2...v7.36.3) (2020-01-21)
 
 **Note:** Version bump only for package @heroku-cli/plugin-apps
