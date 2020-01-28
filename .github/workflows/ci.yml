@@ -18,6 +18,6 @@ jobs:
     - name: yarn install & test
       run: |
         yarn
-        yarn test
+        yarn wintest
       env:
         CI: true

@@ -22,6 +22,7 @@
   "private": true,
   "scripts": {
     "test": "lerna run test --concurrency 1",
+    "wintest": "lerna run test --concurrency 3",
     "version": "cp packages/cli/CHANGELOG.md CHANGELOG.md && git add CHANGELOG.md",
     "posttest": "standard"
   },
