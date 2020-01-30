@@ -16,6 +16,7 @@ executorType: docker
 jobs:
   node12-test: &test
     <<: *defaults
+    resource_class: large
     steps:
       - checkout
       - restore_cache: &yarn_restore_cache
@@ -50,6 +51,7 @@ jobs:
     <<: *test
     docker:
       - image: chadian/nsis:10-2
+    resource_class: large
   release:
     <<: *defaults
     steps:
