@@ -217,8 +217,8 @@ function * configureDomains (context, heroku, meta, cert) {
     }])).domains
 
     if (selectedDomains.length > 0) {
-      selectedDomains.forEach(async domain => {
-        await heroku.request({
+      selectedDomains.forEach(function * (domain) {
+        yield heroku.request({
           method: 'PATCH',
           path: `/apps/${context.app}/domains/${domain}`,
           headers: { Accept: 'application/vnd.heroku+json; version=3.allow_multiple_sni_endpoints' },
