@@ -47,11 +47,12 @@ www.example.com  CNAME            www.example.herokudns.com
         cli.styledHeader(`${flags.app} Custom Domains`)
         cli.table(customDomains, {
           hostname: {header: 'Domain Name'},
-          kind: {header: 'DNS Record Type', get: domain => {
-            if (domain.hostname) {
-              return isApexDomain(domain.hostname) ? 'ALIAS or ANAME' : 'CNAME'
-            }
-          }},
+          kind: {header: 'DNS Record Type',
+            get: domain => {
+              if (domain.hostname) {
+                return isApexDomain(domain.hostname) ? 'ALIAS or ANAME' : 'CNAME'
+              }
+            }},
           cname: {header: 'DNS Target'},
           acm_status: {header: 'ACM Status', extended: true},
           acm_status_reason: {header: 'ACM Status', extended: true},
@@ -61,6 +62,5 @@ www.example.com  CNAME            www.example.herokudns.com
         })
       }
     }
-
   }
 }

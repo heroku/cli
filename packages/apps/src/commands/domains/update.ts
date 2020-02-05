@@ -6,6 +6,7 @@ export default class DomainsUpdate extends Command {
   static description = 'update a domain to use a different SSL certificate on an app'
 
   static examples = ['heroku domains:update www.example.com --cert-id mycert']
+
   static hidden = true
 
   static flags = {
@@ -24,12 +25,12 @@ export default class DomainsUpdate extends Command {
       cli.action.start(`Updating ${color.cyan(hostname)} to use ${color.cyan(flags['cert-id'])} certificate`)
       await this.heroku.patch<string>(`/apps/${flags.app}/domains/${hostname}`, {
         headers: {
-          Accept: 'application/vnd.heroku+json; version=3.allow_multiple_sni_endpoints'
+          Accept: 'application/vnd.heroku+json; version=3.allow_multiple_sni_endpoints',
         },
-        body: {sni_endpoint: flags['cert-id']}
+        body: {sni_endpoint: flags['cert-id']},
       })
-    } catch (e) {
-      cli.error(e)
+    } catch (error) {
+      cli.error(error)
     } finally {
       cli.action.stop()
     }

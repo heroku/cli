@@ -11,16 +11,16 @@ describe('domains:update', () => {
     id: '7ac15e30-6460-48e1-919a-e794bf3512ac',
     kind: 'custom',
     status: 'succeeded',
-    sni_endpoint_id: '8cae023a-d8f1-4aca-9929-e516dc011694' }
+    sni_endpoint_id: '8cae023a-d8f1-4aca-9929-e516dc011694'}
 
   test
-    .stderr()
-    .nock('https://api.heroku.com', api => api
-      .patch('/apps/myapp/domains/example.com', {sni_endpoint: 'sniendpoint-id'})
-      .reply(200, responseBody)
-    )
-    .command(['domains:update', 'example.com', '--cert-id', 'sniendpoint-id', '--app', 'myapp'])
-    .it('updates the domain to use a different certificate', ctx => {
-      expect(ctx.stderr).to.contain('Updating example.com to use sniendpoint-id certificate... done')
-    })
+  .stderr()
+  .nock('https://api.heroku.com', api => api
+  .patch('/apps/myapp/domains/example.com', {sni_endpoint: 'sniendpoint-id'})
+  .reply(200, responseBody),
+  )
+  .command(['domains:update', 'example.com', '--cert-id', 'sniendpoint-id', '--app', 'myapp'])
+  .it('updates the domain to use a different certificate', ctx => {
+    expect(ctx.stderr).to.contain('Updating example.com to use sniendpoint-id certificate... done')
+  })
 })
