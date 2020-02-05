@@ -13,6 +13,7 @@ let certificateDetails = require('../../lib/certificate_details.js')
 let isWildcard = require('../../lib/is_wildcard.js')
 let isWildcardMatch = require('../../lib/is_wildcard_match.js')
 let getCertAndKey = require('../../lib/get_cert_and_key.js')
+let matchDomains = require('../../lib/match_domains.js')
 
 let { waitForDomains, printDomains } = require('../../lib/domains')
 
@@ -199,10 +200,41 @@ function * addDomains (context, heroku, meta, cert) {
   }
 }
 
+function * configureDomains (context, heroku, meta, cert) {
+  let certDomains = cert.ssl_cert.cert_domains
+  let apiDomains = yield waitForDomains(context, heroku)
+  let appDomains = apiDomains.map(domain => domain.hostname)
+  let matchedDomains = matchDomains(certDomains, appDomains)
+
+  if (matchedDomains.length > 0) {
+    cli.styledHeader('Almost done! Which of these domains on this application would you like this certificate associated with?')
+
+    let selectedDomains = (yield inquirer.prompt([{
+      type: 'checkbox',
+      name: 'domains',
+      message: 'Select domains',
+      choices: matchedDomains
+    }])).domains
+
+    if (selectedDomains.length > 0) {
+      yield Promise.all(selectedDomains.map(domain => {
+        return heroku.request({
+          method: 'PATCH',
+          path: `/apps/${context.app}/domains/${domain}`,
+          headers: { Accept: 'application/vnd.heroku+json; version=3.allow_multiple_sni_endpoints' },
+          body: { sni_endpoint: cert.name }
+        })
+      }))
+    }
+  }
+}
+
 function * run (context, heroku) {
   let meta = yield getMeta(context, heroku)
 
   let files = yield getCertAndKey(context)
+  let features = yield heroku.get(`/apps/${context.app}/features`)
+  let canMultiSni = features.find(feature => feature.name === 'allow-multiple-sni-endpoints' && feature.enabled === true)
 
   let cert = yield cli.action(`Adding SSL certificate to ${cli.color.app(context.app)}`, {}, heroku.request({
     path: meta.path,
@@ -224,7 +256,11 @@ function * run (context, heroku) {
 
   certificateDetails(cert)
 
-  yield addDomains(context, heroku, meta, cert)
+  if (canMultiSni) {
+    yield configureDomains(context, heroku, meta, cert)
+  } else {
+    yield addDomains(context, heroku, meta, cert)
+  }
 
   displayWarnings(cert)
 }
