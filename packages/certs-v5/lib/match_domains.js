@@ -9,7 +9,7 @@ function splitDomains(domains) {
 function createMatcherFromSplitDomain([firstChar, rest]) {
   const matcherContents = [];
   if (firstChar === '*') {
-    matcherContents.push('^\\w*');
+    matcherContents.push('^[\\w\\-]+');
   } else {
     matcherContents.push(firstChar);
   }

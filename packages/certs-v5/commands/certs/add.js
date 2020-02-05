@@ -218,7 +218,7 @@ function * configureDomains (context, heroku, meta, cert) {
 
     if (selectedDomains.length > 0) {
       yield Promise.all(selectedDomains.map(domain => {
-        heroku.request({
+        return heroku.request({
           method: 'PATCH',
           path: `/apps/${context.app}/domains/${domain}`,
           headers: { Accept: 'application/vnd.heroku+json; version=3.allow_multiple_sni_endpoints' },
