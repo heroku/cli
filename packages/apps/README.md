@@ -43,17 +43,16 @@ USAGE
   $ heroku domains
 
 OPTIONS
-  -a, --app=app           (required) app to run command against
-  -h, --help              show CLI help
-  -j, --json              output in json format
-  -r, --remote=remote     git remote of app to use
-  -x, --extended          show extra columns
-  --columns=columns       only show provided columns (comma-separated)
-  --csv                   output is csv format [alias: --output=csv]
-  --filter=filter         filter property by partial string matching, ex: name=foo
-  --no-header             hide table header from output
-  --output=csv|json|yaml  output in a more machine friendly format
-  --sort=sort             property to sort by (prepend '-' for descending)
+  -a, --app=app        (required) app to run command against
+  -h, --help           show CLI help
+  -j, --json           output in json format
+  -r, --remote=remote  git remote of app to use
+  -x, --extended       show extra columns
+  --columns=columns    only show provided columns (comma-separated)
+  --csv                output is csv format
+  --filter=filter      filter property by partial string matching, ex: name=foo
+  --no-header          hide table header from output
+  --sort=sort          property to sort by (prepend '-' for descending)
 
 EXAMPLES
   $ heroku domains
