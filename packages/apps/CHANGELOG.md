@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.38.0](https://github.com/heroku/heroku-cli-plugin-apps/compare/v7.37.0...v7.38.0) (2020-02-06)
+
+
+### Features
+
+* **apps:** add domains:update command ([#1429](https://github.com/heroku/heroku-cli-plugin-apps/issues/1429)) ([630331e](https://github.com/heroku/heroku-cli-plugin-apps/commit/630331e4a62fa582a48d17a37266ff7215809e53))
+
+
+
+
+
 # [7.37.0](https://github.com/heroku/heroku-cli-plugin-apps/compare/v7.36.3...v7.37.0) (2020-01-25)
 
 

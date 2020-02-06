@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.38.0](https://github.com/heroku/cli/compare/v7.37.0...v7.38.0) (2020-02-06)
+
+
+### Features
+
+* **cert-v5:** New certification configuration workflow for multi cert UI ([#1430](https://github.com/heroku/cli/issues/1430)) ([50414f1](https://github.com/heroku/cli/commit/50414f1fc5b205636c0d387b4f028787beaa4bc7))
+
+
+
+
+
 <a name="7.28.0"></a>
 # [7.28.0](https://github.com/heroku/cli/compare/v7.27.1...v7.28.0) (2019-08-19)
 

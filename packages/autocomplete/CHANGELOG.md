@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.38.0](https://github.com/heroku/cli/compare/v7.37.0...v7.38.0) (2020-02-06)
+
+**Note:** Version bump only for package @heroku-cli/plugin-autocomplete
+
+
+
+
+
 # [7.36.0](https://github.com/heroku/cli/compare/v7.35.1...v7.36.0) (2020-01-20)
 
 **Note:** Version bump only for package @heroku-cli/plugin-autocomplete
