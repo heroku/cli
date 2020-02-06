@@ -40,7 +40,7 @@
     "sinon": "^7.4.1",
     "ts-node": "^8",
     "tslib": "^1",
-    "typescript": "3.3.3333"
+    "typescript": "3.7.5"
   },
   "engines": {
     "node": ">=8.0.0"

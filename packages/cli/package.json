@@ -85,7 +85,7 @@
     "read-pkg": "^4.0.1",
     "sinon": "^7.2.4",
     "ts-node": "^8.0.2",
-    "typescript": "3.3.3333"
+    "typescript": "3.7.5"
   },
   "engines": {
     "node": ">=8.3.0"
