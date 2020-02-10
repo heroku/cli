@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.38.1](https://github.com/heroku/cli/compare/v7.38.0...v7.38.1) (2020-02-10)
+
+**Note:** Version bump only for package @heroku-cli/plugin-spaces
+
+
+
+
+
 <a name="7.27.0"></a>
 # [7.27.0](https://github.com/heroku/cli/compare/v7.26.2...v7.27.0) (2019-07-30)
 

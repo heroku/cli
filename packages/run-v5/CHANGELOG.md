@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.38.1](https://github.com/heroku/cli/compare/v7.38.0...v7.38.1) (2020-02-10)
+
+**Note:** Version bump only for package @heroku-cli/plugin-run-v5
+
+
+
+
+
 # [7.35.0](https://github.com/heroku/cli/compare/v7.34.2...v7.35.0) (2019-11-07)
 
 **Note:** Version bump only for package @heroku-cli/plugin-run-v5

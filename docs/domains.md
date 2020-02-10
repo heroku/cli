@@ -19,17 +19,16 @@ USAGE
   $ heroku domains
 
 OPTIONS
-  -a, --app=app           (required) app to run command against
-  -h, --help              show CLI help
-  -j, --json              output in json format
-  -r, --remote=remote     git remote of app to use
-  -x, --extended          show extra columns
-  --columns=columns       only show provided columns (comma-separated)
-  --csv                   output is csv format [alias: --output=csv]
-  --filter=filter         filter property by partial string matching, ex: name=foo
-  --no-header             hide table header from output
-  --output=csv|json|yaml  output in a more machine friendly format
-  --sort=sort             property to sort by (prepend '-' for descending)
+  -a, --app=app        (required) app to run command against
+  -h, --help           show CLI help
+  -j, --json           output in json format
+  -r, --remote=remote  git remote of app to use
+  -x, --extended       show extra columns
+  --columns=columns    only show provided columns (comma-separated)
+  --csv                output is csv format
+  --filter=filter      filter property by partial string matching, ex: name=foo
+  --no-header          hide table header from output
+  --sort=sort          property to sort by (prepend '-' for descending)
 
 EXAMPLES
   $ heroku domains
@@ -43,7 +42,7 @@ EXAMPLES
   $ heroku domains --filter 'Domain Name=www.example.com'
 ```
 
-_See code: [@heroku-cli/plugin-apps](https://github.com/heroku/heroku-cli-plugin-apps/blob/v7.38.0/src/commands/domains/index.ts)_
+_See code: [@heroku-cli/plugin-apps](https://github.com/heroku/heroku-cli-plugin-apps/blob/v7.38.1/src/commands/domains/index.ts)_
 
 ## `heroku domains:add HOSTNAME`
 
@@ -65,7 +64,7 @@ EXAMPLE
   heroku domains:add www.example.com
 ```
 
-_See code: [@heroku-cli/plugin-apps](https://github.com/heroku/heroku-cli-plugin-apps/blob/v7.38.0/src/commands/domains/add.ts)_
+_See code: [@heroku-cli/plugin-apps](https://github.com/heroku/heroku-cli-plugin-apps/blob/v7.38.1/src/commands/domains/add.ts)_
 
 ## `heroku domains:clear`
 
@@ -84,7 +83,7 @@ EXAMPLE
   heroku domains:clear
 ```
 
-_See code: [@heroku-cli/plugin-apps](https://github.com/heroku/heroku-cli-plugin-apps/blob/v7.38.0/src/commands/domains/clear.ts)_
+_See code: [@heroku-cli/plugin-apps](https://github.com/heroku/heroku-cli-plugin-apps/blob/v7.38.1/src/commands/domains/clear.ts)_
 
 ## `heroku domains:info HOSTNAME`
 
@@ -103,7 +102,7 @@ EXAMPLE
   $ heroku domains:info www.example.com
 ```
 
-_See code: [@heroku-cli/plugin-apps](https://github.com/heroku/heroku-cli-plugin-apps/blob/v7.38.0/src/commands/domains/info.ts)_
+_See code: [@heroku-cli/plugin-apps](https://github.com/heroku/heroku-cli-plugin-apps/blob/v7.38.1/src/commands/domains/info.ts)_
 
 ## `heroku domains:remove HOSTNAME`
 
@@ -122,7 +121,7 @@ EXAMPLE
   heroku domains:remove www.example.com
 ```
 
-_See code: [@heroku-cli/plugin-apps](https://github.com/heroku/heroku-cli-plugin-apps/blob/v7.38.0/src/commands/domains/remove.ts)_
+_See code: [@heroku-cli/plugin-apps](https://github.com/heroku/heroku-cli-plugin-apps/blob/v7.38.1/src/commands/domains/remove.ts)_
 
 ## `heroku domains:wait [HOSTNAME]`
 
@@ -138,4 +137,4 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
 ```
 
-_See code: [@heroku-cli/plugin-apps](https://github.com/heroku/heroku-cli-plugin-apps/blob/v7.38.0/src/commands/domains/wait.ts)_
+_See code: [@heroku-cli/plugin-apps](https://github.com/heroku/heroku-cli-plugin-apps/blob/v7.38.1/src/commands/domains/wait.ts)_
