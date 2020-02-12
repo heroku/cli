@@ -291,7 +291,7 @@
     netrc-parser "^3.1.6"
     opn "^5.4.0"
 
-"@heroku-cli/command@^8.3.0":
+"@heroku-cli/command@^8.2.10", "@heroku-cli/command@^8.3.0":
   version "8.3.0"
   resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.3.0.tgz#bc3920454fcce7e1cc94a78614f2fa1379e977ce"
   integrity sha512-gQoe6KnIr8q+JCYvO/6STRBsJXHw+UwwtNs5me5Zx/020u2S1I4oqi3KamcTeRTC7ZVORH3DfE30aA3HNgYXsA==
@@ -323,6 +323,23 @@
     heroku-cli-util "^8.0.9"
     lodash "^4.17.10"
     printf "0.3.0"
+
+"@heroku-cli/plugin-enterprise@^3.0.1":
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-enterprise/-/plugin-enterprise-3.0.1.tgz#236e622a96ece2417aea9d8913c95ea8737fc4e6"
+  integrity sha512-caekvmXg5WTVFVHD5is/9/IJkYe2ypbsDaMn0NM/8GxEMsCU95cFv3BD9fcwlcnUvtcBQuNQES9VtON4RIbkGg==
+  dependencies:
+    "@heroku-cli/color" "^1.1.14"
+    "@heroku-cli/command" "^8.2.10"
+    "@heroku-cli/schema" "^1.0.25"
+    "@oclif/config" "^1.12.10"
+    "@types/inquirer" "^0.0.44"
+    axios "^0.18.0"
+    cli-ux "^5.2.1"
+    filesize "^4.1.2"
+    inquirer "^6.2.2"
+    lodash "^4.17.11"
+    tslib "^1"
 
 "@heroku-cli/plugin-ps-exec@2.3.8":
   version "2.3.8"
@@ -1541,7 +1558,7 @@
     "@types/tough-cookie" "*"
     form-data "^2.5.0"
 
-"@types/inquirer@0.0.44":
+"@types/inquirer@0.0.44", "@types/inquirer@^0.0.44":
   version "0.0.44"
   resolved "https://registry.yarnpkg.com/@types/inquirer/-/inquirer-0.0.44.tgz#60ce954581cfdf44ad3899ec4cdc5fbe3fef1694"
   integrity sha512-ugbhy1yBtCz5iTWYF+AGRS/UcMcWicdyHhxl9VaeFYc3ueg0CCssthQLB3rIcIOeGtfG6WPEvHdLu/IjKYfefg==
@@ -2260,6 +2277,14 @@ aws4@^1.8.0:
   version "1.8.0"
   resolved "https://registry.yarnpkg.com/aws4/-/aws4-1.8.0.tgz#f0e003d9ca9e7f59c7a508945d7b2ef9a04a542f"
   integrity sha512-ReZxvNHIOv88FlT7rxcXIIC0fPt4KZqZbOlivyWtXLt8ESx84zd3kMC6iK5jVeS2qt+g7ftS7ye4fi06X5rtRQ==
+
+axios@^0.18.0:
+  version "0.18.1"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-0.18.1.tgz#ff3f0de2e7b5d180e757ad98000f1081b87bcea3"
+  integrity sha512-0BfJq4NSfQXd+SkFdrvFbG7addhYSBA2mQwISr46pD6E5iqkWg02RAs8vyTT/j0RTnoYmeXauBuSv1qKwR179g==
+  dependencies:
+    follow-redirects "1.5.10"
+    is-buffer "^2.0.2"
 
 babel-code-frame@^6.22.0, babel-code-frame@^6.26.0:
   version "6.26.0"
@@ -4402,6 +4427,11 @@ filesize@^4.0.0:
   resolved "https://registry.yarnpkg.com/filesize/-/filesize-4.0.0.tgz#edd45b16247c815ac3bc7265c34cf3dab6b41234"
   integrity sha512-IGrOTisl83FmbpiL5KCpfF7+6CRcmndNaWxwYWcnSqXtoNUhVO+1l8rKK4GVE7A8f4fEDkSocS9X6+eXHkEhGA==
 
+filesize@^4.1.2:
+  version "4.2.1"
+  resolved "https://registry.yarnpkg.com/filesize/-/filesize-4.2.1.tgz#ab1cb2069db5d415911c1a13e144c0e743bc89bc"
+  integrity sha512-bP82Hi8VRZX/TUBKfE24iiUGsB/sfm2WUrwTQyAzQrhO3V9IhcBBNBXMyzLY5orACxRyYJ3d2HeRVX+eFv4lmA==
+
 fill-keys@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/fill-keys/-/fill-keys-1.0.2.tgz#9a8fa36f4e8ad634e3bf6b4f3c8882551452eb20"
@@ -4513,7 +4543,7 @@ flush-write-stream@^1.0.0:
     inherits "^2.0.3"
     readable-stream "^2.3.6"
 
-follow-redirects@^1.0.0:
+follow-redirects@1.5.10, follow-redirects@^1.0.0:
   version "1.5.10"
   resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.5.10.tgz#7b7a9f9aea2fdff36786a94ff643ed07f4ff5e2a"
   integrity sha512-0V5l4Cizzvqt5D44aTXbFZz+FtyXV1vrDN6qrelxtfYQKW0KO0W2T/hkE8xvGa/540LkZlkaUjO4ailYTFtHVQ==
@@ -5618,6 +5648,11 @@ is-buffer@^1.1.5, is-buffer@~1.1.1:
   version "1.1.6"
   resolved "https://registry.yarnpkg.com/is-buffer/-/is-buffer-1.1.6.tgz#efaa2ea9daa0d7ab2ea13a97b2b8ad51fefbe8be"
   integrity sha512-NcdALwpXkTm5Zvvbk7owOUSvVvBKDgKP5/ewfXEznmQFfs4ZRmanOeKBTjRVjka3QFoN6XJ+9F3USqfHqTaU5w==
+
+is-buffer@^2.0.2:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/is-buffer/-/is-buffer-2.0.4.tgz#3e572f23c8411a5cfd9557c849e3665e0b290623"
+  integrity sha512-Kq1rokWXOPXWuaMAqZiJW4XxsmD9zGx9q4aePabbn3qCRGedtH7Cm+zV8WETitMfu1wdh+Rvd6w5egwSngUX2A==
 
 is-callable@^1.1.3, is-callable@^1.1.4:
   version "1.1.4"
