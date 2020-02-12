@@ -11,7 +11,10 @@ describe('domains:update', () => {
     id: '7ac15e30-6460-48e1-919a-e794bf3512ac',
     kind: 'custom',
     status: 'succeeded',
-    sni_endpoint_id: '8cae023a-d8f1-4aca-9929-e516dc011694'}
+    sni_endpoint: {
+      id: '8cae023a-d8f1-4aca-9929-e516dc011694',
+    },
+  }
 
   test
   .stderr()
