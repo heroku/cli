@@ -55,6 +55,13 @@ describe('domains:add', () => {
   })
 
   describe('adding a domain to an app with multiple certs', () => {
+    const domainsResponseWithEndpoint = {
+      ...domainsResponse,
+      sni_endpoint: {
+        name: 'my-cert',
+      },
+    }
+
     describe('using the --cert flag', () => {
       test
       .stderr()
@@ -70,7 +77,7 @@ describe('domains:add', () => {
         hostname: 'example.com',
         sni_endpoint: 'my-cert',
       })
-      .reply(200, domainsResponse),
+      .reply(200, domainsResponseWithEndpoint),
       )
       .command(['domains:add', 'example.com', '--app', 'myapp', '--cert', 'my-cert'])
       .it('adds the domain to the app', ctx => {
@@ -125,7 +132,7 @@ describe('domains:add', () => {
         hostname: 'example.com',
         sni_endpoint: 'my-cert',
       })
-      .reply(200, domainsResponse)
+      .reply(200, domainsResponseWithEndpoint)
       .get('/apps/myapp/sni-endpoints')
       .reply(200, certsResponse),
       )
