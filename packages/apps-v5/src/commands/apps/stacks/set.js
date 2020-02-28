@@ -10,13 +10,18 @@ function map (stack) {
 
 function * run (context, heroku) {
   let stack = map(context.args.stack)
-  yield heroku.request({
+  const request = heroku.request({
     method: 'PATCH',
     path: `/apps/${context.app}`,
     body: { build_stack: stack }
   })
-  cli.log(`Stack set. Next release on ${cli.color.app(context.app)} will use ${cli.color.green(stack)}.`)
-  cli.log(`Run ${cli.color.cmd(push(context.flags.remote))} to create a new release on ${cli.color.app(context.app)}.`)
+  const app = yield cli.action(`Setting stack to ${cli.color.green(stack)}`, request)
+  // A redeploy is not required for apps that have never been deployed, since
+  // API updates the app's `stack` to match `build_stack` immediately.
+  if (app.stack.name !== app.build_stack.name) {
+    cli.log(`You will need to redeploy ${cli.color.app(context.app)} for the change to take effect.`)
+    cli.log(`Run ${cli.color.cmd(push(context.flags.remote))} to create a new release on ${cli.color.app(context.app)}.`)
+  }
 }
 
 let cmd = {
