@@ -18,7 +18,6 @@ heroku-certs
 * [`heroku certs:info`](#heroku-certsinfo)
 * [`heroku certs:key`](#heroku-certskey)
 * [`heroku certs:remove`](#heroku-certsremove)
-* [`heroku certs:rollback`](#heroku-certsrollback)
 * [`heroku certs:update CRT KEY`](#heroku-certsupdate-crt-key)
 
 ## `heroku certs`
@@ -225,23 +224,6 @@ OPTIONS
 ```
 
 _See code: [commands/certs/remove.js](https://github.com/heroku/cli/blob/v7.38.0/packages/certs-v5/commands/certs/remove.js)_
-
-## `heroku certs:rollback`
-
-rollback an SSL certificate from an app
-
-```
-USAGE
-  $ heroku certs:rollback
-
-OPTIONS
-  -a, --app=app        (required) app to run command against
-  -r, --remote=remote  git remote of app to use
-  --endpoint=endpoint  endpoint to rollback
-  --name=name          name to rollback
-```
-
-_See code: [commands/certs/rollback.js](https://github.com/heroku/cli/blob/v7.38.0/packages/certs-v5/commands/certs/rollback.js)_
 
 ## `heroku certs:update CRT KEY`
 
