@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.39.0](https://github.com/heroku/cli/compare/v7.38.2...v7.39.0) (2020-03-02)
+
+
+### Features
+
+* **certs:** remove deprecated `certs:rollback` command ([#1453](https://github.com/heroku/cli/issues/1453)) ([2997525](https://github.com/heroku/cli/commit/29975252c68b6ed55e1fb592ed39833f7043a63b))
+
+
+
+
+
 # [7.38.0](https://github.com/heroku/cli/compare/v7.37.0...v7.38.0) (2020-02-06)
 
 

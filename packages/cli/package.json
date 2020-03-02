@@ -1,7 +1,7 @@
 {
   "name": "heroku",
   "description": "CLI to interact with Heroku",
-  "version": "7.38.2",
+  "version": "7.39.0",
   "author": "Jeff Dickey @jdxcode",
   "bin": {
     "heroku": "./bin/run"
@@ -12,12 +12,12 @@
     "@heroku-cli/command": "^8.3.0",
     "@heroku-cli/plugin-addons-v5": "^7.24.0",
     "@heroku-cli/plugin-apps": "^7.38.2",
-    "@heroku-cli/plugin-apps-v5": "^7.38.1",
+    "@heroku-cli/plugin-apps-v5": "^7.39.0",
     "@heroku-cli/plugin-auth": "^7.38.1",
     "@heroku-cli/plugin-autocomplete": "^7.38.1",
     "@heroku-cli/plugin-buildpacks": "^7.38.1",
     "@heroku-cli/plugin-certs": "^7.38.1",
-    "@heroku-cli/plugin-certs-v5": "^7.38.0",
+    "@heroku-cli/plugin-certs-v5": "^7.39.0",
     "@heroku-cli/plugin-ci": "^7.38.1",
     "@heroku-cli/plugin-ci-v5": "^7.38.1",
     "@heroku-cli/plugin-config": "^7.38.1",
