@@ -26,6 +26,7 @@ let certificateDetails = require('../../stubs/sni-endpoints.js').certificate_det
 let error = require('../../../lib/error.js')
 let assertExit = require('../../assert_exit.js')
 let unwrap = require('../../unwrap.js')
+const mockSniFeatureFlag = require('../../lib/mock_sni_feature')
 
 let lolex = require('lolex')
 
@@ -207,6 +208,7 @@ ${certificateDetails}
   })
 
   it('# errors out when args < 2', function () {
+    mockSniFeatureFlag(nock, 'example')
     nock('https://api.heroku.com')
       .get('/apps/example')
       .reply(200, { 'space': null })
@@ -455,13 +457,10 @@ ${certificateDetails}
   })
 
   it('# shows the configure prompt when flagged in', function () {
+    mockSniFeatureFlag(nock, 'example', true)
     nock('https://api.heroku.com')
       .get('/apps/example')
       .reply(200, { 'space': null })
-
-    nock('https://api.heroku.com')
-      .get('/apps/example/features')
-      .reply(200, [{ name: 'allow-multiple-sni-endpoints', enabled: true }])
 
     nock('https://api.heroku.com')
       .get('/apps/example/addons/ssl%3Aendpoint')
@@ -1274,6 +1273,7 @@ SSL certificate is self signed.
   })
 
   it('# errors out if there is an SSL addon and no flags set', function () {
+    mockSniFeatureFlag(nock, 'example')
     nock('https://api.heroku.com')
       .get('/apps/example')
       .reply(200, { 'space': null })
@@ -1290,6 +1290,7 @@ SSL certificate is self signed.
   })
 
   it('# errors out if type is not known', function () {
+    mockSniFeatureFlag(nock, 'example')
     return assertExit(1, certs.run({ app: 'example', args: ['pem_file', 'key_file'], flags: { bypass: true, type: 'foo' } })).then(function () {
       expect(unwrap(cli.stderr)).to.equal("Must pass --type with either 'endpoint' or 'sni'\n")
       expect(cli.stdout).to.equal('')

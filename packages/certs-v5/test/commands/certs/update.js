@@ -18,6 +18,7 @@ let endpointStable = require('../../stubs/sni-endpoints.js').endpoint_stable
 let endpointWarning = require('../../stubs/sni-endpoints.js').endpoint_warning
 let certificateDetails = require('../../stubs/sni-endpoints.js').certificate_details
 let unwrap = require('../../unwrap.js')
+const mockSniFeatureFlag = require('../../lib/mock_sni_feature')
 
 function mockFile (fs, file, content) {
   fs.readFile
@@ -39,6 +40,8 @@ describe('heroku certs:update', function () {
     nock('https://api.heroku.com')
       .get('/apps/example/sni-endpoints')
       .reply(200, [endpointStable])
+
+    mockSniFeatureFlag(nock, 'example')
   })
 
   afterEach(function () {
@@ -250,6 +253,7 @@ describe('heroku certs:update (dogwood)', function () {
     cli.mockConsole()
     sinon.stub(fs, 'readFile')
     nock.cleanAll()
+    mockSniFeatureFlag(nock, 'example')
   })
 
   afterEach(function () {
