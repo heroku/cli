@@ -173,7 +173,8 @@ workflows:
           filters:
             branches:
               ignore: /.*/
-            tags: *version_tags
+            tags:
+              only: /^v.*/
       - dev_center_docs:
           requires:
             - node12-test
@@ -181,7 +182,8 @@ workflows:
           filters:
             branches:
               ignore: /.*/
-            tags: *version_tags
+            tags:
+              only: /^v.*/
   nightly:
     triggers:
       - schedule:
