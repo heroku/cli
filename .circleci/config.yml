@@ -137,9 +137,8 @@ workflows:
             tags: &version_tags
               only: /^v.*/
       - node10-test:
-          filters: &all_pushes
-            tags: &version_tags
-              only: /^v.*/
+          filters:
+            <<: *version_tags
       - release: &release_workflow
           context: org-global
           filters:
