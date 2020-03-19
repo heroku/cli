@@ -22,7 +22,7 @@ $ npm install -g @heroku-cli/plugin-local
 $ heroku COMMAND
 running command...
 $ heroku (-v|--version|version)
-@heroku-cli/plugin-local/7.38.0 darwin-x64 node-v10.18.1
+@heroku-cli/plugin-local/7.38.1 darwin-x64 node-v12.14.1
 $ heroku --help [COMMAND]
 USAGE
   $ heroku COMMAND
@@ -61,7 +61,7 @@ EXAMPLE
   $ heroku local web=1,worker=2
 ```
 
-_See code: [src/commands/local/index.ts](https://github.com/heroku/cli/blob/v7.38.0/src/commands/local/index.ts)_
+_See code: [src/commands/local/index.ts](https://github.com/heroku/cli/blob/v7.38.1/src/commands/local/index.ts)_
 
 ## `heroku local:run`
 
@@ -79,7 +79,7 @@ EXAMPLE
   $ heroku local:run bin/migrate
 ```
 
-_See code: [src/commands/local/run.ts](https://github.com/heroku/cli/blob/v7.38.0/src/commands/local/run.ts)_
+_See code: [src/commands/local/run.ts](https://github.com/heroku/cli/blob/v7.38.1/src/commands/local/run.ts)_
 
 ## `heroku local:version`
 
@@ -90,5 +90,5 @@ USAGE
   $ heroku local:version
 ```
 
-_See code: [src/commands/local/version.ts](https://github.com/heroku/cli/blob/v7.38.0/src/commands/local/version.ts)_
+_See code: [src/commands/local/version.ts](https://github.com/heroku/cli/blob/v7.38.1/src/commands/local/version.ts)_
 <!-- commandsstop -->

@@ -1,12 +1,12 @@
 {
   "name": "@heroku-cli/plugin-ci",
   "description": "Heroku CLI plugin for Heroku CI",
-  "version": "7.38.0",
+  "version": "7.39.1",
   "author": "Raúl Barroso @raulb",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
     "@heroku-cli/color": "^1.1.14",
-    "@heroku-cli/command": "^8.2.10",
+    "@heroku-cli/command": "^8.3.0",
     "@oclif/command": "^1.5.11",
     "@oclif/config": "^1.12.10",
     "ansi-escapes": "3.2.0",
@@ -46,7 +46,7 @@
     "nock": "^9.6.1",
     "nyc": "^13.2.0",
     "ts-node": "^8.0.2",
-    "typescript": "3.3.3333"
+    "typescript": "3.7.5"
   },
   "engines": {
     "node": ">=8.0.0"

@@ -1,11 +1,11 @@
 {
   "name": "@heroku-cli/plugin-local",
   "description": "run heroku apps locally",
-  "version": "7.38.0",
+  "version": "7.38.1",
   "author": "Chad Carbert @chadian",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
-    "@heroku-cli/command": "^8.2.11",
+    "@heroku-cli/command": "^8.3.0",
     "@oclif/command": "^1",
     "@oclif/config": "^1",
     "foreman": "^3.0.1",

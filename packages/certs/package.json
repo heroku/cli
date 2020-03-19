@@ -1,10 +1,10 @@
 {
   "name": "@heroku-cli/plugin-certs",
-  "version": "7.38.0",
+  "version": "7.39.1",
   "author": "Jeff Dickey @jdxcode",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
-    "@heroku-cli/command": "^8.2.10",
+    "@heroku-cli/command": "^8.3.0",
     "@oclif/command": "^1.5.11",
     "@oclif/config": "^1.12.10",
     "tslib": "^1.9.3"

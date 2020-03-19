@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-orgs-v5",
   "description": "CLI to manage Heroku Organizations",
-  "version": "7.26.0",
+  "version": "7.38.1",
   "author": "Raul Barroso @raulb",
   "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
@@ -38,7 +38,7 @@
     "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/orgs-v5/<%- commandPath %>"
   },
   "dependencies": {
-    "@heroku-cli/command": "^8.2.10",
+    "@heroku-cli/command": "^8.3.0",
     "co": "^4.6.0",
     "heroku-cli-util": "^8.0.11",
     "inquirer": "^6.2.2",

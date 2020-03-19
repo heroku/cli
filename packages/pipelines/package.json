@@ -1,11 +1,11 @@
 {
   "name": "@heroku-cli/plugin-pipelines",
-  "version": "7.38.0",
+  "version": "7.38.1",
   "author": "James Martinez @jmar910",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
     "@heroku-cli/color": "^1.1.14",
-    "@heroku-cli/command": "^8.2.12",
+    "@heroku-cli/command": "^8.3.0",
     "@heroku-cli/schema": "^1.0.25",
     "@oclif/command": "^1",
     "@oclif/config": "^1",
@@ -40,7 +40,7 @@
     "sinon": "^7.4.1",
     "ts-node": "^8",
     "tslib": "^1",
-    "typescript": "3.3.3333"
+    "typescript": "3.7.5"
   },
   "engines": {
     "node": ">=8.0.0"

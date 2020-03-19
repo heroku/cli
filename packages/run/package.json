@@ -1,11 +1,11 @@
 {
   "name": "@heroku-cli/plugin-run",
-  "version": "7.38.0",
+  "version": "7.38.1",
   "author": "Chris Freeman @cafreeman",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
     "@heroku-cli/color": "^1.1.14",
-    "@heroku-cli/command": "^8.2.13",
+    "@heroku-cli/command": "^8.3.0",
     "@heroku-cli/notifications": "^1.2.2",
     "@heroku/eventsource": "^1.0.7",
     "@oclif/command": "^1",
@@ -33,7 +33,7 @@
     "nyc": "^13",
     "sinon": "^7.4.1",
     "ts-node": "^8",
-    "typescript": "3.3.3333"
+    "typescript": "3.7.5"
   },
   "engines": {
     "node": ">=8.0.0"
