@@ -133,17 +133,18 @@ workflows:
   heroku_cli:
     jobs:
       - node12-test:
-          filters: &all_pushes
+          filters:
             tags: &version_tags
               only: /^v.*/
       - node10-test:
-          filters: &all_pushes
-            tags: &version_tags
-              only: /^v.*/
+          filters:
+            tags:
+              <<: *version_tags
       - release: &release_workflow
           context: org-global
           filters:
-            tags: *version_tags
+            tags: 
+              <<: *version_tags
             branches:
               only:
                 - master
@@ -160,7 +161,8 @@ workflows:
             - release_deb
             - release_win
           filters:
-            tags: *version_tags
+            tags: 
+              <<: *version_tags
             branches:
               only:
                 - master
@@ -173,7 +175,8 @@ workflows:
           filters:
             branches:
               ignore: /.*/
-            tags: *version_tags
+            tags:
+              <<: *version_tags
       - dev_center_docs:
           requires:
             - node12-test
@@ -181,7 +184,8 @@ workflows:
           filters:
             branches:
               ignore: /.*/
-            tags: *version_tags
+            tags:
+              <<: *version_tags
   nightly:
     triggers:
       - schedule:
