@@ -24,7 +24,7 @@ $ npm install -g @heroku-cli/plugin-buildpacks
 $ heroku COMMAND
 running command...
 $ heroku (-v|--version|version)
-@heroku-cli/plugin-buildpacks/7.38.1 darwin-x64 node-v12.14.1
+@heroku-cli/plugin-buildpacks/7.39.1 darwin-x64 node-v10.18.1
 $ heroku --help [COMMAND]
 USAGE
   $ heroku COMMAND
@@ -55,7 +55,7 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
 ```
 
-_See code: [src/commands/buildpacks/index.ts](https://github.com/heroku/cli/blob/v7.38.1/packages/buildpacks/src/commands/buildpacks/index.ts)_
+_See code: [src/commands/buildpacks/index.ts](https://github.com/heroku/cli/blob/v7.39.1/packages/buildpacks/src/commands/buildpacks/index.ts)_
 
 ## `heroku buildpacks:add BUILDPACK`
 
@@ -74,7 +74,7 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
 ```
 
-_See code: [src/commands/buildpacks/add.ts](https://github.com/heroku/cli/blob/v7.38.1/packages/buildpacks/src/commands/buildpacks/add.ts)_
+_See code: [src/commands/buildpacks/add.ts](https://github.com/heroku/cli/blob/v7.39.1/packages/buildpacks/src/commands/buildpacks/add.ts)_
 
 ## `heroku buildpacks:clear`
 
@@ -89,7 +89,7 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
 ```
 
-_See code: [src/commands/buildpacks/clear.ts](https://github.com/heroku/cli/blob/v7.38.1/packages/buildpacks/src/commands/buildpacks/clear.ts)_
+_See code: [src/commands/buildpacks/clear.ts](https://github.com/heroku/cli/blob/v7.39.1/packages/buildpacks/src/commands/buildpacks/clear.ts)_
 
 ## `heroku buildpacks:info BUILDPACK`
 
@@ -103,7 +103,7 @@ ARGUMENTS
   BUILDPACK  namespace/name of the buildpack
 ```
 
-_See code: [src/commands/buildpacks/info.ts](https://github.com/heroku/cli/blob/v7.38.1/packages/buildpacks/src/commands/buildpacks/info.ts)_
+_See code: [src/commands/buildpacks/info.ts](https://github.com/heroku/cli/blob/v7.39.1/packages/buildpacks/src/commands/buildpacks/info.ts)_
 
 ## `heroku buildpacks:remove [BUILDPACK]`
 
@@ -122,7 +122,7 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
 ```
 
-_See code: [src/commands/buildpacks/remove.ts](https://github.com/heroku/cli/blob/v7.38.1/packages/buildpacks/src/commands/buildpacks/remove.ts)_
+_See code: [src/commands/buildpacks/remove.ts](https://github.com/heroku/cli/blob/v7.39.1/packages/buildpacks/src/commands/buildpacks/remove.ts)_
 
 ## `heroku buildpacks:search [TERM]`
 
@@ -141,7 +141,7 @@ OPTIONS
   --namespace=namespace      buildpack namespaces to filter on using a comma separated list
 ```
 
-_See code: [src/commands/buildpacks/search.ts](https://github.com/heroku/cli/blob/v7.38.1/packages/buildpacks/src/commands/buildpacks/search.ts)_
+_See code: [src/commands/buildpacks/search.ts](https://github.com/heroku/cli/blob/v7.39.1/packages/buildpacks/src/commands/buildpacks/search.ts)_
 
 ## `heroku buildpacks:set BUILDPACK`
 
@@ -158,7 +158,7 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
 ```
 
-_See code: [src/commands/buildpacks/set.ts](https://github.com/heroku/cli/blob/v7.38.1/packages/buildpacks/src/commands/buildpacks/set.ts)_
+_See code: [src/commands/buildpacks/set.ts](https://github.com/heroku/cli/blob/v7.39.1/packages/buildpacks/src/commands/buildpacks/set.ts)_
 
 ## `heroku buildpacks:versions BUILDPACK`
 
@@ -172,5 +172,5 @@ ARGUMENTS
   BUILDPACK  namespace/name of the buildpack
 ```
 
-_See code: [src/commands/buildpacks/versions.ts](https://github.com/heroku/cli/blob/v7.38.1/packages/buildpacks/src/commands/buildpacks/versions.ts)_
+_See code: [src/commands/buildpacks/versions.ts](https://github.com/heroku/cli/blob/v7.39.1/packages/buildpacks/src/commands/buildpacks/versions.ts)_
 <!-- commandsstop -->
