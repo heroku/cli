@@ -11,9 +11,41 @@ defaults: &defaults
         LC_TYPE: en_US.UTF-8
         NODE_OPTIONS: --max_old_space_size=4096
 
-version: 2
+version: 2.1
+orbs:
+  win: circleci/windows@2.4.0
 executorType: docker
 jobs:
+  windows-test:
+    executor: win/default
+    steps:
+      - checkout
+      - run:
+          name: Install latest yarn
+          command: |
+            (New-Object Net.WebClient).DownloadFile("https://yarnpkg.com/latest.msi", "$env:temp\yarn.msi")
+            cmd /c start /wait msiexec.exe /i $env:temp\yarn.msi /quiet /qn /norestart /log install.log
+      - run:
+          name: Verify yarn installation
+          command: |
+            if (!(Test-Path -Path "C:\Program Files (x86)\Yarn\bin\yarn" -PathType Leaf)) {
+              Write-Host "> Installation failed." -ForegroundColor Red
+              Write-Host "" -ForegroundColor Red
+              exit 1
+            }
+      - restore_cache:
+          keys:
+            - node-modules-v1-win-{{ checksum "yarn.lock" }}
+      - run:
+          name: Install dependencies
+          command: yarn install
+      - save_cache:
+          paths:
+            - ./node_modules
+          key: node-modules-v1-win-{{ checksum "yarn.lock" }}
+      - run:
+          name: Test and Lint
+          command: yarn test
   node12-test: &test
     <<: *defaults
     resource_class: large
@@ -132,6 +164,10 @@ workflows:
   version: 2
   heroku_cli:
     jobs:
+      - windows-test:
+          filters:
+            tags: &version_tags
+              only: /^v.*/
       - node12-test:
           filters:
             tags: &version_tags
