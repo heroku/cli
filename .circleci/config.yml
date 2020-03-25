@@ -107,7 +107,7 @@ jobs:
           ./scripts/release/change_management
   dev_center_docs:
     docker: &devdocs_docker
-      - image: rasphilco/cli-engine-devcenter:v0.1.3
+      - image: chadian/devcenter
         environment:
           LANG: en_US.UTF-8
           LANGUAGE: en_US.UTF-8
