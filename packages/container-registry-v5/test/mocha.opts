@@ -1,4 +1,4 @@
 --require ./test/helpers.js
 --reporter list
 --recursive
---timeout 50000
+--timeout 60000

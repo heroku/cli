@@ -2,4 +2,4 @@
 --recursive
 --check-leaks
 --require ./test/init.js
---timeout 50000
+--timeout 60000
