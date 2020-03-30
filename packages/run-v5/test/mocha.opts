@@ -1,4 +1,4 @@
 --require ./test/init.js
 --recursive
---timeout 100000
+--timeout 60000
 --exit
