@@ -19,7 +19,7 @@ function execPsql (query, dbEnv) {
   return new Promise((resolve, reject) => {
     let result = ''
     debug('Running query: %s', query.trim())
-    let psql = spawn('psql', ['-c', query, '--set', 'sslmode=require'], { env: dbEnv, encoding: 'utf8', stdio: [ 'ignore', 'pipe', 'inherit' ] })
+    let psql = spawn('psql', ['-X', '-c', query, '--set', 'sslmode=require'], { env: dbEnv, encoding: 'utf8', stdio: [ 'ignore', 'pipe', 'inherit' ] })
     psql.stdout.on('data', function (data) {
       result += data.toString()
     })
