@@ -77,7 +77,7 @@ jobs:
   node10-test:
     <<: *test
     docker:
-      - image: chadian/nsis:10-2
+      - image: heroku/nsis:10-2
     resource_class: large
   release:
     <<: *defaults
@@ -134,7 +134,7 @@ jobs:
           ./scripts/release/change_management
   dev_center_docs:
     docker: &devdocs_docker
-      - image: chadian/devcenter
+      - image: heroku/devcenter
         environment:
           LANG: en_US.UTF-8
           LANGUAGE: en_US.UTF-8
