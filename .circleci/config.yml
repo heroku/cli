@@ -74,11 +74,6 @@ jobs:
       - run:
           name: Uploading code coverage to codecov
           command: ./node_modules/.bin/lerna exec "curl -s https://codecov.io/bash | bash"
-      - run:
-          name: Build tarball for BundleSize
-          command: ./scripts/bundlesize
-      - store_artifacts:
-          path: ./bundlesize.tar
   node10-test:
     <<: *test
     docker:
