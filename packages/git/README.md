@@ -21,7 +21,7 @@ $ npm install -g @heroku-cli/plugin-git
 $ oclif-example COMMAND
 running command...
 $ oclif-example (-v|--version|version)
-@heroku-cli/plugin-git/7.39.2 darwin-x64 node-v12.12.0
+@heroku-cli/plugin-git/7.39.3 darwin-x64 node-v10.18.1
 $ oclif-example --help [COMMAND]
 USAGE
   $ oclif-example COMMAND
@@ -56,7 +56,7 @@ EXAMPLES
   ...
 ```
 
-_See code: [src/commands/git/clone.ts](https://github.com/heroku/cli/blob/v7.39.2/packages/git/src/commands/git/clone.ts)_
+_See code: [src/commands/git/clone.ts](https://github.com/heroku/cli/blob/v7.39.3/packages/git/src/commands/git/clone.ts)_
 
 ## `oclif-example git:remote`
 
@@ -82,5 +82,5 @@ EXAMPLES
        $ heroku git:remote --remote heroku-staging -a example
 ```
 
-_See code: [src/commands/git/remote.ts](https://github.com/heroku/cli/blob/v7.39.2/packages/git/src/commands/git/remote.ts)_
+_See code: [src/commands/git/remote.ts](https://github.com/heroku/cli/blob/v7.39.3/packages/git/src/commands/git/remote.ts)_
 <!-- commandsstop -->

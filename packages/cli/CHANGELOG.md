@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.39.3](https://github.com/heroku/cli/compare/v7.39.2...v7.39.3) (2020-04-15)
+
+
+### Bug Fixes
+
+* update to a notarized version of node ([#1481](https://github.com/heroku/cli/issues/1481)) ([a01c03c](https://github.com/heroku/cli/commit/a01c03cf45b8d02477754da382112c4905d91ecc))
+
+
+
+
+
 ## [7.39.2](https://github.com/heroku/cli/compare/v7.39.1...v7.39.2) (2020-03-30)
 
 **Note:** Version bump only for package heroku
