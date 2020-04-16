@@ -79,7 +79,7 @@ jobs:
     docker:
       - image: heroku/nsis:10-2
     resource_class: large
-  release:
+  release_tarballs:
     <<: *defaults
     steps:
       - add_ssh_keys
@@ -194,7 +194,7 @@ workflows:
           filters:
             tags:
               <<: *version_tags
-      - release: &release_workflow
+      - release_tarballs: &release_tarballs
           filters:
             tags: 
               <<: *version_tags
@@ -205,13 +205,13 @@ workflows:
           requires:
             - node12-test
             - node10-test
-      - release_deb: *release_workflow
-      - release_win: *release_workflow
-      - release_homebrew: *release_workflow
-      - trigger_macos: *release_workflow
+      - release_deb: *release_tarballs
+      - release_win: *release_tarballs
+      - release_homebrew: *release_tarballs
+      - trigger_macos: *release_tarballs
       - invalidate_cdn_cache:
           requires:
-            - release
+            - release_tarballs
             - release_deb
             - release_win
           filters:
@@ -223,7 +223,7 @@ workflows:
                 - dev
       - install_scripts:
           requires:
-            - release
+            - release_tarballs
             - release_deb
             - release_win
           filters:
@@ -233,7 +233,7 @@ workflows:
               <<: *version_tags
       - change_management:
           requires:
-            - release
+            - release_tarballs
             - release_deb
             - release_win
           filters:
@@ -243,7 +243,7 @@ workflows:
               <<: *version_tags
       - dev_center_docs:
           requires:
-            - release
+            - release_tarballs
             - release_deb
             - release_win
           filters:

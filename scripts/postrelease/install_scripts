@@ -2,8 +2,6 @@
 
 set -ex
 
-./scripts/release/_github_setup
-
 if [[ ! -z "${CIRCLE_TAG}" ]]; then
   aws s3 cp --content-type text/plain --cache-control "max-age: 604800" ./install-standalone.sh s3://heroku-cli-assets/install-standalone.sh
   aws s3 cp --content-type text/plain --cache-control "max-age: 604800" ./install-standalone.sh s3://heroku-cli-assets/install.sh
