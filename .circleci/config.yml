@@ -117,13 +117,27 @@ jobs:
           cd packages/cli
           yarn
           ./scripts/release/deb
-  postrelease:
+  trigger_macos:
     <<: *defaults
     steps:
       - add_ssh_keys
       - checkout
       - run: yarn
-      - run: ./scripts/release/postrelease
+      - run: ./scripts/release/macos_installer_trigger
+  invalidate_cdn_cache:
+    <<: *defaults
+    steps:
+      - add_ssh_keys
+      - checkout
+      - run: yarn
+      - run: ./scripts/postrelease/invalidate_cdn_cache
+  install_scripts:
+    <<: *defaults
+    steps:
+      - add_ssh_keys
+      - checkout
+      - run: yarn
+      - run: ./scripts/postrelease/install_scripts
   change_management:
     <<: *defaults
     steps:
@@ -131,7 +145,7 @@ jobs:
       - checkout
       - run: |
           yarn
-          ./scripts/release/change_management
+          ./scripts/postrelease/change_management
   dev_center_docs:
     docker: &devdocs_docker
       - image: heroku/devcenter
@@ -142,7 +156,7 @@ jobs:
           LC_ALL: C.UTF-8
     steps:
       - checkout
-      - run: cd packages/cli && ./scripts/release/dev_center_docs
+      - run: cd packages/cli && ./scripts/postrelease/dev_center_docs
       - store_artifacts:
           path: /tmp/heroku-cli-commands.md
   snap:
@@ -184,7 +198,8 @@ workflows:
             - node10-test
       - release_deb: *release_workflow
       - release_win: *release_workflow
-      - postrelease:
+      - trigger_macos: *release_workflow
+      - invalidate_cdn_cache:
           requires:
             - release
             - release_deb
@@ -196,6 +211,16 @@ workflows:
               only:
                 - master
                 - dev
+      - install_scripts:
+          requires:
+            - release
+            - release_deb
+            - release_win
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              <<: *version_tags
       - change_management:
           requires:
             - release
