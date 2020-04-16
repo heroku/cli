@@ -208,8 +208,9 @@ workflows:
               <<: *version_tags
       - dev_center_docs:
           requires:
-            - node12-test
-            - node10-test
+            - release
+            - release_deb
+            - release_win
           filters:
             branches:
               ignore: /.*/
