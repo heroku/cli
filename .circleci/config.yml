@@ -90,7 +90,6 @@ jobs:
           yarn
           ./scripts/release/_github_setup
           ./scripts/release/tarballs
-          ./scripts/release/homebrew
       - save_cache:
           key: v4-yarn-{{ checksum ".circleci/config.yml" }}-{{ checksum "yarn.lock" }}
           paths:
@@ -124,6 +123,16 @@ jobs:
       - checkout
       - run: yarn
       - run: ./scripts/release/macos_installer_trigger
+  release_homebrew:
+    <<: *defaults
+    steps:
+      - add_ssh_keys
+      - checkout
+      - run: |
+          cp yarn.lock packages/cli
+          cd packages/cli
+          yarn
+          ./scripts/release/homebrew
   invalidate_cdn_cache:
     <<: *defaults
     steps:
@@ -198,6 +207,7 @@ workflows:
             - node10-test
       - release_deb: *release_workflow
       - release_win: *release_workflow
+      - release_homebrew: *release_workflow
       - trigger_macos: *release_workflow
       - invalidate_cdn_cache:
           requires:
