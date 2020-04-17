@@ -1,6 +1,6 @@
 'use strict'
 
-const MULTIPLE_SNI_ENDPOINT_FLAG = 'allow-multiple-sni-endpoints'
+let checkMultiSniFeature = require('./features.js')
 
 function sslCertsPromise (app, heroku) {
   return heroku.request({
@@ -58,7 +58,7 @@ function tagAndSort (app, allCerts) {
 
 function * all (app, heroku) {
   const featureList = yield heroku.get(`/apps/${app}/features`)
-  const multipleSniEndpointFeature = featureList.find(feature => feature.name === MULTIPLE_SNI_ENDPOINT_FLAG)
+  const multipleSniEndpointFeature = checkMultiSniFeature(featureList)
 
   let allCerts;
 

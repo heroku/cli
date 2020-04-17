@@ -14,7 +14,7 @@ let isWildcard = require('../../lib/is_wildcard.js')
 let isWildcardMatch = require('../../lib/is_wildcard_match.js')
 let getCertAndKey = require('../../lib/get_cert_and_key.js')
 let matchDomains = require('../../lib/match_domains.js')
-
+let checkMultiSniFeature = require('../../lib/features.js')
 let { waitForDomains, printDomains } = require('../../lib/domains')
 
 function Domains (domains) {
@@ -231,7 +231,7 @@ function * configureDomains (context, heroku, meta, cert) {
 
 function * run (context, heroku) {
   let features = yield heroku.get(`/apps/${context.app}/features`)
-  let canMultiSni = !!features.find(feature => feature.name === 'allow-multiple-sni-endpoints' && feature.enabled === true)
+  let canMultiSni = checkMultiSniFeature(features)
   context.canMultiSni = canMultiSni
 
   let meta = yield getMeta(context, heroku)
