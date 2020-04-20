@@ -79,18 +79,15 @@ jobs:
     docker:
       - image: heroku/nsis:10-2
     resource_class: large
-  release:
+  release_tarballs:
     <<: *defaults
     steps:
-      - add_ssh_keys
       - checkout
       - run: |
           cp yarn.lock packages/cli
           cd packages/cli
           yarn
-          ./scripts/release/_github_setup
           ./scripts/release/tarballs
-          ./scripts/release/homebrew
       - save_cache:
           key: v4-yarn-{{ checksum ".circleci/config.yml" }}-{{ checksum "yarn.lock" }}
           paths:
@@ -100,7 +97,6 @@ jobs:
   release_win:
     <<: *defaults
     steps:
-      - add_ssh_keys
       - checkout
       - run: |
           cp yarn.lock packages/cli
@@ -110,28 +106,48 @@ jobs:
   release_deb:
     <<: *defaults
     steps:
-      - add_ssh_keys
       - checkout
       - run: |
           cp yarn.lock packages/cli
           cd packages/cli
           yarn
           ./scripts/release/deb
-  postrelease:
+  trigger_macos:
     <<: *defaults
     steps:
       - add_ssh_keys
       - checkout
       - run: yarn
-      - run: ./scripts/release/postrelease
-  change_management:
+      - run: ./scripts/release/macos_installer_trigger
+  release_homebrew:
     <<: *defaults
     steps:
       - add_ssh_keys
       - checkout
       - run: |
+          cp yarn.lock packages/cli
+          cd packages/cli
           yarn
-          ./scripts/release/change_management
+          ./scripts/release/homebrew
+  invalidate_cdn_cache:
+    <<: *defaults
+    steps:
+      - checkout
+      - run: yarn
+      - run: ./scripts/postrelease/invalidate_cdn_cache
+  install_scripts:
+    <<: *defaults
+    steps:
+      - checkout
+      - run: yarn
+      - run: ./scripts/postrelease/install_scripts
+  change_management:
+    <<: *defaults
+    steps:
+      - checkout
+      - run: |
+          yarn
+          ./scripts/postrelease/change_management
   dev_center_docs:
     docker: &devdocs_docker
       - image: heroku/devcenter
@@ -142,7 +158,7 @@ jobs:
           LC_ALL: C.UTF-8
     steps:
       - checkout
-      - run: cd packages/cli && ./scripts/release/dev_center_docs
+      - run: cd packages/cli && ./scripts/postrelease/dev_center_docs
       - store_artifacts:
           path: /tmp/heroku-cli-commands.md
   snap:
@@ -171,7 +187,7 @@ workflows:
           filters:
             tags:
               <<: *version_tags
-      - release: &release_workflow
+      - release_tarballs: &release_tarballs
           filters:
             tags: 
               <<: *version_tags
@@ -182,11 +198,13 @@ workflows:
           requires:
             - node12-test
             - node10-test
-      - release_deb: *release_workflow
-      - release_win: *release_workflow
-      - postrelease:
+      - release_deb: *release_tarballs
+      - release_win: *release_tarballs
+      - release_homebrew: *release_tarballs
+      - trigger_macos: *release_tarballs
+      - invalidate_cdn_cache:
           requires:
-            - release
+            - release_tarballs
             - release_deb
             - release_win
           filters:
@@ -196,9 +214,19 @@ workflows:
               only:
                 - master
                 - dev
+      - install_scripts:
+          requires:
+            - release_tarballs
+            - release_deb
+            - release_win
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              <<: *version_tags
       - change_management:
           requires:
-            - release
+            - release_tarballs
             - release_deb
             - release_win
           filters:
@@ -208,8 +236,9 @@ workflows:
               <<: *version_tags
       - dev_center_docs:
           requires:
-            - node12-test
-            - node10-test
+            - release_tarballs
+            - release_deb
+            - release_win
           filters:
             branches:
               ignore: /.*/

@@ -1,5 +1,10 @@
 #!/usr/bin/env node
 
+if (!process.env.CIRCLE_TAG) {
+  console.log('not on stable, skipping change management trigger')
+  process.exit(0)
+}
+
 const REQUEST_PROMISE = require('promise-request-retry')
 
 // Set these in CircleCI in the heroku/cli project
