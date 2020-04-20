@@ -1,7 +1,7 @@
 import {flags} from '@heroku-cli/command'
 import {cli} from 'cli-ux'
 
-import BaseCommand from '../base'
+import BaseCommand from '../../base'
 
 export default class WebhooksUpdate extends BaseCommand {
   static description = 'updates a webhook in an app'
