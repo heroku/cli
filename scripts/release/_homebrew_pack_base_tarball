@@ -8,7 +8,7 @@ qq.config.silent = false
 qq.run(async () => {
   await require('./update_channel')()
   // this darwin target isn't used
-  // but dev-cli requires at least 1 target
-  // to build the base target we need from homebrew
+  // but oclif-dev pack needs at least 1 target
+  // to build the base tarball we need for updating homebrew
   await qq.x('./node_modules/.bin/oclif-dev pack --targets darwin-x64')
 })
