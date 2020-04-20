@@ -4,6 +4,11 @@ set -ex
 
 ./scripts/release/_github_setup
 
+if [[ -z "${CIRCLE_TAG}" ]]; then
+  echo "not on stable, skipping homebrew"
+  exit
+fi
+
 rm -rf tmp/homebrew-brew
 git config --global core.pager cat
 
@@ -52,11 +57,6 @@ sed -i "s/heroku-v.*\\/heroku-v.*\\.tar\\.xz/heroku-v${SHORT_VERSION}\\/${TARBAL
 sed -i "s/sha256 \".*\"/sha256 \"${SHA256XZ}\"/" Formula/heroku.rb
 git add Formula/heroku.rb
 git diff --cached
-
-if [[ -z "${CIRCLE_TAG}" ]]; then
-  echo "not on stable, skipping homebrew"
-  exit
-fi
 
 git commit -m "heroku v${SHORT_VERSION}"
 git push origin master
