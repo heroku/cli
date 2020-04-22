@@ -1,5 +1,7 @@
 'use strict'
 
+let checkMultiSniFeature = require('./features.js')
+
 function sslCertsPromise (app, heroku) {
   return heroku.request({
     path: `/apps/${app}/ssl-endpoints`,
@@ -55,21 +57,25 @@ function tagAndSort (app, allCerts) {
 }
 
 function * all (app, heroku) {
-  let allCerts = yield {
-    ssl_certs: sslCertsPromise(app, heroku),
-    sni_certs: sniCertsPromise(app, heroku)
+  const featureList = yield heroku.get(`/apps/${app}/features`)
+  const multipleSniEndpointFeature = checkMultiSniFeature(featureList)
+
+  let allCerts;
+
+  if (multipleSniEndpointFeature && multipleSniEndpointFeature.enabled) {
+    // use SNI endpoints only
+    allCerts = yield {
+      ssl_certs: [],
+      sni_certs: sniCertsPromise(app, heroku),
+    }
+  } else {
+    allCerts = yield {
+      ssl_certs: sslCertsPromise(app, heroku),
+      sni_certs: sniCertsPromise(app, heroku)
+    }
   }
 
   return tagAndSort(app, allCerts)
-}
-
-function * certsAndDomains (app, heroku) {
-  let requests = yield {
-    ssl_certs: sslCertsPromise(app, heroku),
-    sni_certs: sniCertsPromise(app, heroku)
-  }
-
-  return {certs: tagAndSort(app, requests), domains: requests.domains}
 }
 
 function * hasAddon (app, heroku) {
@@ -98,6 +104,5 @@ module.exports = {
   hasSpace,
   hasAddon,
   meta,
-  all,
-  certsAndDomains
+  all
 }

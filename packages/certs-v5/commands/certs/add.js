@@ -14,7 +14,7 @@ let isWildcard = require('../../lib/is_wildcard.js')
 let isWildcardMatch = require('../../lib/is_wildcard_match.js')
 let getCertAndKey = require('../../lib/get_cert_and_key.js')
 let matchDomains = require('../../lib/match_domains.js')
-
+let checkMultiSniFeature = require('../../lib/features.js')
 let { waitForDomains, printDomains } = require('../../lib/domains')
 
 function Domains (domains) {
@@ -45,7 +45,7 @@ function * getMeta (context, heroku) {
     hasAddon: endpoints.hasAddon(context.app, heroku)
   }
 
-  if (hasSpace) {
+  if (hasSpace && !context.canMultiSni) {
     return endpoints.meta(context.app, 'ssl')
   } else if (!hasAddon) {
     return endpoints.meta(context.app, 'sni')
@@ -230,11 +230,13 @@ function * configureDomains (context, heroku, meta, cert) {
 }
 
 function * run (context, heroku) {
+  let features = yield heroku.get(`/apps/${context.app}/features`)
+  let canMultiSni = checkMultiSniFeature(features)
+  context.canMultiSni = canMultiSni
+
   let meta = yield getMeta(context, heroku)
 
   let files = yield getCertAndKey(context)
-  let features = yield heroku.get(`/apps/${context.app}/features`)
-  let canMultiSni = features.find(feature => feature.name === 'allow-multiple-sni-endpoints' && feature.enabled === true)
 
   let cert = yield cli.action(`Adding SSL certificate to ${cli.color.app(context.app)}`, {}, heroku.request({
     path: meta.path,
