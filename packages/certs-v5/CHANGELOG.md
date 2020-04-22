@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.39.4](https://github.com/heroku/cli/compare/v7.39.3...v7.39.4) (2020-04-22)
+
+
+### Bug Fixes
+
+* **certs-v5:** handle private spaces sni migrated apps ([#1456](https://github.com/heroku/cli/issues/1456)) ([039fcf4](https://github.com/heroku/cli/commit/039fcf4e5479ff6231bfe329b482d23f38bd4634))
+
+
+
+
+
 ## [7.39.2](https://github.com/heroku/cli/compare/v7.39.1...v7.39.2) (2020-03-30)
 
 **Note:** Version bump only for package @heroku-cli/plugin-certs-v5

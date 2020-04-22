@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.39.4](https://github.com/heroku/cli/compare/v7.39.3...v7.39.4) (2020-04-22)
+
+
+### Bug Fixes
+
+* **webhooks:** rm base cmd from cmds dir ([#1486](https://github.com/heroku/cli/issues/1486)) ([baacf9b](https://github.com/heroku/cli/commit/baacf9b222a0b5c0976f0f26f842d9bbe041252f))
+
+
+
+
+
 ## [7.39.2](https://github.com/heroku/cli/compare/v7.39.1...v7.39.2) (2020-03-30)
 
 **Note:** Version bump only for package @heroku-cli/plugin-webhooks

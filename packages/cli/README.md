@@ -42,7 +42,6 @@ For other issues, [submit a support ticket](https://help.heroku.com/).
 * [`heroku auth`](docs/auth.md) - check 2fa status
 * [`heroku authorizations`](docs/authorizations.md) - OAuth authorizations
 * [`heroku autocomplete`](docs/autocomplete.md) - display autocomplete installation instructions
-* [`heroku base`](docs/base.md)
 * [`heroku buildpacks`](docs/buildpacks.md) - scripts used to compile apps
 * [`heroku certs`](docs/certs.md) - a topic for the ssl plugin
 * [`heroku ci`](docs/ci.md) - run an application test suite on Heroku
