@@ -82,12 +82,14 @@ jobs:
   release_tarballs:
     <<: *defaults
     steps:
+      - add_ssh_keys
       - checkout
       - run: |
           cp yarn.lock packages/cli
           cd packages/cli
           yarn
           ./scripts/release/tarballs
+          ./scripts/release/homebrew
       - save_cache:
           key: v4-yarn-{{ checksum ".circleci/config.yml" }}-{{ checksum "yarn.lock" }}
           paths:
@@ -119,16 +121,16 @@ jobs:
       - checkout
       - run: yarn
       - run: ./scripts/release/macos_installer_trigger
-  release_homebrew:
-    <<: *defaults
-    steps:
-      - add_ssh_keys
-      - checkout
-      - run: |
-          cp yarn.lock packages/cli
-          cd packages/cli
-          yarn
-          ./scripts/release/homebrew
+  # release_homebrew:
+  #   <<: *defaults
+  #   steps:
+  #     - add_ssh_keys
+  #     - checkout
+  #     - run: |
+  #         cp yarn.lock packages/cli
+  #         cd packages/cli
+  #         yarn
+  #         ./scripts/release/homebrew
   invalidate_cdn_cache:
     <<: *defaults
     steps:
@@ -200,7 +202,7 @@ workflows:
             - node10-test
       - release_deb: *release_tarballs
       - release_win: *release_tarballs
-      - release_homebrew: *release_tarballs
+      # - release_homebrew: *release_tarballs
       - trigger_macos: *release_tarballs
       - invalidate_cdn_cache:
           requires:
