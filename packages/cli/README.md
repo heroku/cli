@@ -96,3 +96,4 @@ Releasing
 7. Monitor CircleCI, Appveyor and Snapcraft jobs to ensure that all the builds are successful.
 
 Review our [PR guidelines](./.github/PULL_REQUEST_TEMPLATE.md).
+
