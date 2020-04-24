@@ -2,6 +2,7 @@
 
 const cli = require('heroku-cli-util')
 const co = require('co')
+const host = require('../lib/host')
 
 function * run (context, heroku) {
   const fetcher = require('../lib/fetcher')(heroku)
@@ -44,6 +45,19 @@ function * run (context, heroku) {
     })
     cli.action.done(cli.color.configVar(backup.name + '_URL'))
   }))
+
+  cli.action.start('Ensuring database is in \'available\' state for promotion')
+
+  let status = yield heroku.request({
+    host: host(attachment.addon),
+    path: `/client/v11/databases/${attachment.addon.id}/wait_status`
+  })
+
+  if (status['waiting?']) {
+    throw new Error(`Database cannot be promoted while in state: ${status['message']}`)
+  }
+
+  cli.action.done(`database in ${status['message']}, continuing with promotion.`)
 
   let promotionMessage
   if (attachment.namespace) {
