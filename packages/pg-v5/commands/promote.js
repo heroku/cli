@@ -6,8 +6,10 @@ const host = require('../lib/host')
 
 function * run (context, heroku) {
   const fetcher = require('../lib/fetcher')(heroku)
-  const { app, args } = context
+  const { app, args, flags } = context
+  const { force } = flags
   const attachment = yield fetcher.attachment(app, args.database)
+  
   let current
 
   yield cli.action(`Ensuring an alternate alias for existing ${cli.color.configVar('DATABASE_URL')}`, co(function * () {
@@ -46,18 +48,22 @@ function * run (context, heroku) {
     cli.action.done(cli.color.configVar(backup.name + '_URL'))
   }))
 
-  cli.action.start('Ensuring database is in \'available\' state for promotion')
+  if (!force) {
 
-  let status = yield heroku.request({
-    host: host(attachment.addon),
-    path: `/client/v11/databases/${attachment.addon.id}/wait_status`
-  })
+    cli.action.start('Ensuring database is in \'available\' state for promotion')
 
-  if (status['waiting?']) {
-    throw new Error(`Database cannot be promoted while in state: ${status['message']}`)
+    let status = yield heroku.request({
+      host: host(attachment.addon),
+      path: `/client/v11/databases/${attachment.addon.id}/wait_status`
+    })
+
+    if (status['waiting?']) {
+      throw new Error(`Database cannot be promoted while in state: ${status['message']}
+\nIf you would line to promote this database while it is in state: ${status['message']}, please rerun with '--force'.`)
+    }
+
+    cli.action.done(`database in ${status['message']}, continuing with promotion.`)
   }
-
-  cli.action.done(`database in ${status['message']}, continuing with promotion.`)
 
   let promotionMessage
   if (attachment.namespace) {
@@ -134,6 +140,7 @@ module.exports = {
   description: 'sets DATABASE as your DATABASE_URL',
   needsApp: true,
   needsAuth: true,
+  flags: [{ name: 'force', char: 'f' }],
   args: [{ name: 'database' }],
   run: cli.command({ preauth: true }, co.wrap(run))
 }
