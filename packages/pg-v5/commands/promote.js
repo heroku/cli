@@ -49,9 +49,6 @@ function * run (context, heroku) {
   }))
 
   if (!force) {
-
-    cli.action.start('Ensuring database is in \'available\' state for promotion')
-
     let status = yield heroku.request({
       host: host(attachment.addon),
       path: `/client/v11/databases/${attachment.addon.id}/wait_status`
@@ -61,8 +58,6 @@ function * run (context, heroku) {
       throw new Error(`Database cannot be promoted while in state: ${status['message']}
 \nIf you would line to promote this database while it is in state: ${status['message']}, please rerun with '--force'.`)
     }
-
-    cli.action.done(`database in ${status['message']}, continuing with promotion.`)
   }
 
   let promotionMessage
