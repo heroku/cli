@@ -8,10 +8,12 @@ const proxyquire = require('proxyquire')
 
 describe('pg:promote when argument is database', () => {
   let api
+  let pg
 
   const attachment = {
-    addon: {
-      name: 'postgres-1'
+    addon: { 
+      name: 'postgres-1',
+      id: 'c667bce0-3238-4202-8550-e1dc323a02a2' 
     },
     namespace: null
   }
@@ -22,19 +24,27 @@ describe('pg:promote when argument is database', () => {
     }
   }
 
+  const host = () => {
+    return 'https://postgres-api.heroku.com'
+  }
+
   const cmd = proxyquire('../../commands/promote', {
-    '../lib/fetcher': fetcher
+    '../lib/fetcher': fetcher,
+    '../lib/host': host
   })
 
   beforeEach(() => {
     api = nock('https://api.heroku.com:443')
     api.get('/apps/myapp/formation').reply(200, [])
+    pg = nock('https://postgres-api.heroku.com')
+    pg.get(`/client/v11/databases/${attachment.addon.id}/wait_status`).reply(200, { message: 'available', 'waiting?': false })
     cli.mockConsole()
   })
 
   afterEach(() => {
     nock.cleanAll()
     api.done()
+    pg.done()
   })
 
   it('promotes the db and creates another attachment if current DATABASE does not have another', () => {
@@ -91,7 +101,10 @@ Promoting postgres-1 to DATABASE_URL on myapp... done
 describe('pg:promote when argument is a credential attachment', () => {
   const credentialAttachment = {
     name: 'PURPLE',
-    addon: { name: 'postgres-1' },
+    addon: { 
+      name: 'postgres-1',
+      id: 'c667bce0-3238-4202-8550-e1dc323a02a2'
+    },
     namespace: 'credential:hello'
   }
 
@@ -101,21 +114,30 @@ describe('pg:promote when argument is a credential attachment', () => {
     }
   }
 
+  const host = () => {
+    return 'https://postgres-api.heroku.com'
+  }
+
   const cmd = proxyquire('../../commands/promote', {
-    '../lib/fetcher': fetcher
+    '../lib/fetcher': fetcher,
+    '../lib/host': host
   })
 
   let api
+  let pg
 
   beforeEach(() => {
     api = nock('https://api.heroku.com:443')
     api.get('/apps/myapp/formation').reply(200, [])
+    pg = nock('https://postgres-api.heroku.com')
+    pg.get(`/client/v11/databases/${credentialAttachment.addon.id}/wait_status`).reply(200, { message: 'available', 'waiting?': false })
     cli.mockConsole()
   })
 
   afterEach(() => {
     nock.cleanAll()
     api.done()
+    pg.done()
   })
 
   it('promotes the credential and creates another attachment if current DATABASE does not have another', () => {
@@ -254,8 +276,16 @@ Promoting PURPLE to DATABASE_URL on myapp... done
 
 describe('pg:promote when release phase is present', () => {
   let api
+  let pg
 
-  const cmd = proxyquire('../../commands/promote', {})
+  const addon_id = 'c667bce0-3238-4202-8550-e1dc323a02a2'
+  const host = () => {
+    return 'https://postgres-api.heroku.com'
+  }
+
+  const cmd = proxyquire('../../commands/promote', {
+    '../lib/host': host
+  })
 
   beforeEach(() => {
     api = nock('https://api.heroku.com:443')
@@ -285,15 +315,19 @@ describe('pg:promote when release phase is present', () => {
       addon_service: 'heroku-postgresql'
     }).reply(201, [{
       name: 'PURPLE',
-      addon: { name: 'postgres-1' },
+      addon: { name: 'postgres-1', id: addon_id },
       namespace: 'credential:hello'
     }])
+
+    pg = nock('https://postgres-api.heroku.com')
+    pg.get(`/client/v11/databases/${addon_id}/wait_status`).reply(200, { message: 'available', 'waiting?': false })
 
     cli.mockConsole()
   })
 
   afterEach(() => {
     nock.cleanAll()
+    pg.done()
     api.done()
   })
 
