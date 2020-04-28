@@ -203,7 +203,15 @@ workflows:
       - release_deb: *release_tarballs
       - release_win: *release_tarballs
       # - release_homebrew: *release_tarballs
-      - trigger_macos: *release_tarballs
+      - trigger_macos: &trigger_macos
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              <<: *version_tags
+          requires:
+            - node12-test
+            - node10-test
       - invalidate_cdn_cache:
           requires:
             - release_tarballs
@@ -216,7 +224,7 @@ workflows:
               only:
                 - master
                 - dev
-      - install_scripts:
+      - install_scripts: &install_scripts
           requires:
             - release_tarballs
             - release_deb
@@ -226,26 +234,8 @@ workflows:
               ignore: /.*/
             tags:
               <<: *version_tags
-      - change_management:
-          requires:
-            - release_tarballs
-            - release_deb
-            - release_win
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              <<: *version_tags
-      - dev_center_docs:
-          requires:
-            - release_tarballs
-            - release_deb
-            - release_win
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              <<: *version_tags
+      - change_management: *install_scripts
+      - dev_center_docs: *install_scripts
   nightly:
     triggers:
       - schedule:
