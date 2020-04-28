@@ -212,7 +212,7 @@ workflows:
           requires:
             - node12-test
             - node10-test
-      - release_snap: &trigger_macos
+      - release_snap: *trigger_macos
       - invalidate_cdn_cache:
           requires:
             - release_tarballs
