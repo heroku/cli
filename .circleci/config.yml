@@ -163,7 +163,7 @@ jobs:
       - run: cd packages/cli && ./scripts/postrelease/dev_center_docs
       - store_artifacts:
           path: /tmp/heroku-cli-commands.md
-  snap:
+  release_snap:
     docker:
       - image: snapcore/snapcraft:stable
         environment:
@@ -172,7 +172,7 @@ jobs:
       # the snapcraft image does not include git
       - run: apt-get -qq update; apt-get -y install git
       - checkout
-      - run: ./scripts/snap
+      - run: ./scripts/release_snap
 workflows:
   version: 2
   heroku_cli:
@@ -212,6 +212,7 @@ workflows:
           requires:
             - node12-test
             - node10-test
+      - release_snap: &trigger_macos
       - invalidate_cdn_cache:
           requires:
             - release_tarballs
@@ -236,13 +237,4 @@ workflows:
               <<: *version_tags
       - change_management: *install_scripts
       - dev_center_docs: *install_scripts
-  nightly:
-    triggers:
-      - schedule:
-          cron: "0 8,20 * * *"
-          filters:
-            branches:
-              only:
-                - master
-    jobs:
-      - snap
+
