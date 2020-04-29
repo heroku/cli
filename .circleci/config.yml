@@ -96,6 +96,10 @@ jobs:
             - /cli/node_modules
             - /cli/tmp/cache
             - /usr/local/share/.cache/yarn
+      - persist_to_workspace:
+          root: /cli/packages/cli
+          paths:
+            - dist
   release_win:
     <<: *defaults
     steps:
@@ -121,16 +125,18 @@ jobs:
       - checkout
       - run: yarn
       - run: ./scripts/release/macos_installer_trigger
-  # release_homebrew:
-  #   <<: *defaults
-  #   steps:
-  #     - add_ssh_keys
-  #     - checkout
-  #     - run: |
-  #         cp yarn.lock packages/cli
-  #         cd packages/cli
-  #         yarn
-  #         ./scripts/release/homebrew
+  release_homebrew:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: /cli/packages/cli
+      - add_ssh_keys
+      - checkout
+      - run: |
+          cp yarn.lock packages/cli
+          cd packages/cli
+          yarn
+          ./scripts/release/homebrew
   invalidate_cdn_cache:
     <<: *defaults
     steps:
@@ -202,7 +208,14 @@ workflows:
             - node10-test
       - release_deb: *release_tarballs
       - release_win: *release_tarballs
-      # - release_homebrew: *release_tarballs
+      - release_homebrew:
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              <<: *version_tags
+          requires:
+            - release_tarballs
       - trigger_macos: &trigger_macos
           filters:
             branches:
