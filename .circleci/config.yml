@@ -183,48 +183,39 @@ workflows:
   version: 2
   heroku_cli:
     jobs:
-      - windows-test:
+      - windows-test: &windows_test
           filters:
             tags: &version_tags
               only: /^v.*/
-      - node12-test:
-          filters:
-            tags: &version_tags
-              only: /^v.*/
-      - node10-test:
-          filters:
-            tags:
-              <<: *version_tags
+      - node12-test: *windows_test
+      - node10-test: *windows_test
       - release_tarballs: &release_tarballs
-          filters:
+          requires:
+            - node12-test
+            - node10-test
+          filters: &master_dev_and_version_tags
             tags: 
               <<: *version_tags
             branches:
               only:
                 - master
                 - dev
-          requires:
-            - node12-test
-            - node10-test
       - release_deb: *release_tarballs
       - release_win: *release_tarballs
       - release_homebrew:
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              <<: *version_tags
           requires:
             - release_tarballs
-      - trigger_macos: &trigger_macos
-          filters:
+          filters: &only_version_tags
             branches:
               ignore: /.*/
             tags:
               <<: *version_tags
+      - trigger_macos: &trigger_macos
           requires:
             - node12-test
             - node10-test
+          filters:
+            <<: *only_version_tags
       - release_snap: *trigger_macos
       - invalidate_cdn_cache:
           requires:
@@ -232,22 +223,13 @@ workflows:
             - release_deb
             - release_win
           filters:
-            tags: 
-              <<: *version_tags
-            branches:
-              only:
-                - master
-                - dev
+            <<: *master_dev_and_version_tags
       - install_scripts: &install_scripts
           requires:
             - release_tarballs
             - release_deb
             - release_win
           filters:
-            branches:
-              ignore: /.*/
-            tags:
-              <<: *version_tags
+            <<: *only_version_tags
       - change_management: *install_scripts
       - dev_center_docs: *install_scripts
-
