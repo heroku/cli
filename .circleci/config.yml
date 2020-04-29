@@ -18,6 +18,7 @@ executorType: docker
 jobs:
   windows-test:
     executor: win/default
+    resource_class: large
     steps:
       - checkout
       - run:
