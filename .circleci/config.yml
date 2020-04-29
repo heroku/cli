@@ -17,8 +17,9 @@ orbs:
 executorType: docker
 jobs:
   windows-test:
-    executor: win/default
-    resource_class: large
+    executor:
+      name: win/default
+      size: large
     steps:
       - checkout
       - run:
