@@ -380,3 +380,100 @@ Checking release phase... pg:promote failed because Attach DATABASE release was 
     return expect(cmd.run({ app: 'myapp', args: {}, flags: {} }), 'to be rejected')
   })
 })
+
+describe('pg:promote when database is not available or force flag is present', () => {
+  let api
+  let pg
+
+  const attachment = {
+    addon: { 
+      name: 'postgres-1',
+      id: 'c667bce0-3238-4202-8550-e1dc323a02a2' 
+    },
+    namespace: null
+  }
+
+  const fetcher = () => {
+    return {
+      attachment: () => attachment
+    }
+  }
+
+  const host = () => {
+    return 'https://postgres-api.heroku.com'
+  }
+
+  const cmd = proxyquire('../../commands/promote', {
+    '../lib/fetcher': fetcher,
+    '../lib/host': host
+  })
+
+  beforeEach(() => {
+    api = nock('https://api.heroku.com:443')
+    api.get('/apps/myapp/formation').reply(200, [])
+    pg = nock('https://postgres-api.heroku.com')
+    cli.mockConsole()
+  })
+
+  afterEach(() => {
+    nock.cleanAll()
+    api.done()
+    pg.done()
+  })
+
+  it('warns user if database is unavailable', () => {
+    api.get('/apps/myapp/addon-attachments').reply(200, [
+      { name: 'DATABASE', addon: { name: 'postgres-2' }, namespace: null },
+      { name: 'RED', addon: { name: 'postgres-2' }, namespace: null }
+    ])
+
+    pg.get(`/client/v11/databases/${attachment.addon.id}/wait_status`).reply(200, { 'waiting?': true, message: 'pending' })
+    
+    const err = new Error(`Database cannot be promoted while in state: pending
+\nPromoting this database can lead to application errors and outage. Please run pg:wait to wait for database to become available.
+\nTo ignore this error, you can pass the --force flag to promote the database and risk application issues.`)
+    return expect(cmd.run({ app: 'myapp', args: {}, flags: {} }), 'to be rejected with', err)    
+  })
+
+  it('promotes database in unavailable state if --force flag is present', () => {
+    api.get('/apps/myapp/addon-attachments').reply(200, [
+      { name: 'DATABASE', addon: { name: 'postgres-2' }, namespace: null },
+      { name: 'RED', addon: { name: 'postgres-2' }, namespace: null }
+    ])
+
+    api.post('/addon-attachments', {
+      name: 'DATABASE',
+      app: { name: 'myapp' },
+      addon: { name: 'postgres-1' },
+      namespace: null,
+      confirm: 'myapp'
+    }).reply(201)
+
+    pg.get(`/client/v11/databases/${attachment.addon.id}/wait_status`).reply(200, { 'waiting?': true, message: 'pending' })
+    
+    return cmd.run({ app: 'myapp', args: {}, flags: {force: true} })
+      .then(() => expect(cli.stderr, 'to equal', `Ensuring an alternate alias for existing DATABASE_URL... RED_URL
+Promoting postgres-1 to DATABASE_URL on myapp... done\n`))
+  })
+
+  it('promotes database in available state if --force flag is present', () => {
+    api.get('/apps/myapp/addon-attachments').reply(200, [
+      { name: 'DATABASE', addon: { name: 'postgres-2' }, namespace: null },
+      { name: 'RED', addon: { name: 'postgres-2' }, namespace: null }
+    ])
+    
+    pg.get(`/client/v11/databases/${attachment.addon.id}/wait_status`).reply(200, { 'waiting?': false, message: 'available' })
+
+    api.post('/addon-attachments', {
+      name: 'DATABASE',
+      app: { name: 'myapp' },
+      addon: { name: 'postgres-1' },
+      namespace: null,
+      confirm: 'myapp'
+    }).reply(201)
+    
+    return cmd.run({ app: 'myapp', args: {}, flags: {force: true} })
+      .then(() => expect(cli.stderr, 'to equal', `Ensuring an alternate alias for existing DATABASE_URL... RED_URL
+Promoting postgres-1 to DATABASE_URL on myapp... done\n`))
+  })
+})
