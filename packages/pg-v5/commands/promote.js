@@ -9,7 +9,7 @@ function * run (context, heroku) {
   const { app, args, flags } = context
   const { force } = flags
   const attachment = yield fetcher.attachment(app, args.database)
-  
+
   let current
 
   yield cli.action(`Ensuring an alternate alias for existing ${cli.color.configVar('DATABASE_URL')}`, co(function * () {
