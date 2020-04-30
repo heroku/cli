@@ -182,7 +182,7 @@ jobs:
       - checkout
       - run: ./scripts/release_snap
 workflows:
-  version: 2
+  version: 2.1
   heroku_cli:
     jobs:
       - windows-test: &windows_test
@@ -221,9 +221,7 @@ workflows:
       - release_snap: *trigger_macos
       - invalidate_cdn_cache:
           requires:
-            - release_tarballs
-            - release_deb
-            - release_win
+            - install_scripts
           filters:
             <<: *master_dev_and_version_tags
       - install_scripts: &install_scripts
@@ -232,6 +230,12 @@ workflows:
             - release_deb
             - release_win
           filters:
+            <<: *master_dev_and_version_tags
+      - change_management: *change_management
+          requires:
+            - release_tarballs
+            - release_deb
+            - release_win
+          filters:
             <<: *only_version_tags
-      - change_management: *install_scripts
-      - dev_center_docs: *install_scripts
+      - dev_center_docs: *change_management
