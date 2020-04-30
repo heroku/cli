@@ -17,7 +17,9 @@ orbs:
 executorType: docker
 jobs:
   windows-test:
-    executor: win/default
+    executor:
+      name: win/default
+      size: large
     steps:
       - checkout
       - run:
@@ -96,6 +98,10 @@ jobs:
             - /cli/node_modules
             - /cli/tmp/cache
             - /usr/local/share/.cache/yarn
+      - persist_to_workspace:
+          root: /cli/packages/cli
+          paths:
+            - dist
   release_win:
     <<: *defaults
     steps:
@@ -121,16 +127,18 @@ jobs:
       - checkout
       - run: yarn
       - run: ./scripts/release/macos_installer_trigger
-  # release_homebrew:
-  #   <<: *defaults
-  #   steps:
-  #     - add_ssh_keys
-  #     - checkout
-  #     - run: |
-  #         cp yarn.lock packages/cli
-  #         cd packages/cli
-  #         yarn
-  #         ./scripts/release/homebrew
+  release_homebrew:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: /cli/packages/cli
+      - add_ssh_keys
+      - checkout
+      - run: |
+          cp yarn.lock packages/cli
+          cd packages/cli
+          yarn
+          ./scripts/release/homebrew
   invalidate_cdn_cache:
     <<: *defaults
     steps:
@@ -163,7 +171,7 @@ jobs:
       - run: cd packages/cli && ./scripts/postrelease/dev_center_docs
       - store_artifacts:
           path: /tmp/heroku-cli-commands.md
-  snap:
+  release_snap:
     docker:
       - image: snapcore/snapcraft:stable
         environment:
@@ -172,87 +180,62 @@ jobs:
       # the snapcraft image does not include git
       - run: apt-get -qq update; apt-get -y install git
       - checkout
-      - run: ./scripts/snap
+      - run: ./scripts/release_snap
 workflows:
-  version: 2
+  version: 2.1
   heroku_cli:
     jobs:
-      - windows-test:
+      - windows-test: &windows_test
           filters:
             tags: &version_tags
               only: /^v.*/
-      - node12-test:
-          filters:
-            tags: &version_tags
-              only: /^v.*/
-      - node10-test:
-          filters:
-            tags:
-              <<: *version_tags
+      - node12-test: *windows_test
+      - node10-test: *windows_test
       - release_tarballs: &release_tarballs
-          filters:
-            tags: 
-              <<: *version_tags
-            branches:
-              only:
-                - master
-                - dev
           requires:
             - node12-test
             - node10-test
-      - release_deb: *release_tarballs
-      - release_win: *release_tarballs
-      # - release_homebrew: *release_tarballs
-      - trigger_macos: *release_tarballs
-      - invalidate_cdn_cache:
-          requires:
-            - release_tarballs
-            - release_deb
-            - release_win
-          filters:
+          filters: &master_dev_and_version_tags
             tags: 
               <<: *version_tags
             branches:
               only:
                 - master
                 - dev
-      - install_scripts:
+      - release_deb: *release_tarballs
+      - release_win: *release_tarballs
+      - release_homebrew:
+          requires:
+            - release_tarballs
+          filters: &only_version_tags
+            branches:
+              ignore: /.*/
+            tags:
+              <<: *version_tags
+      - trigger_macos: &trigger_macos
+          requires:
+            - node12-test
+            - node10-test
+          filters:
+            <<: *only_version_tags
+      - release_snap: *trigger_macos
+      - invalidate_cdn_cache:
+          requires:
+            - install_scripts
+          filters:
+            <<: *master_dev_and_version_tags
+      - install_scripts: &install_scripts
           requires:
             - release_tarballs
             - release_deb
             - release_win
           filters:
-            branches:
-              ignore: /.*/
-            tags:
-              <<: *version_tags
-      - change_management:
+            <<: *master_dev_and_version_tags
+      - change_management: &change_management
           requires:
             - release_tarballs
             - release_deb
             - release_win
           filters:
-            branches:
-              ignore: /.*/
-            tags:
-              <<: *version_tags
-      - dev_center_docs:
-          requires:
-            - release_tarballs
-            - release_deb
-            - release_win
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              <<: *version_tags
-  nightly:
-    triggers:
-      - schedule:
-          cron: "0 8,20 * * *"
-          filters:
-            branches:
-              only:
-                - master
-    jobs:
-      - snap
+            <<: *only_version_tags
+      - dev_center_docs: *change_management
