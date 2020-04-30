@@ -231,7 +231,7 @@ workflows:
             - release_win
           filters:
             <<: *master_dev_and_version_tags
-      - change_management: *change_management
+      - change_management: &change_management
           requires:
             - release_tarballs
             - release_deb
