@@ -56,7 +56,8 @@ function * run (context, heroku) {
 
     if (status['waiting?']) {
       throw new Error(`Database cannot be promoted while in state: ${status['message']}
-\nIf you would line to promote this database while it is in state: ${status['message']}, please rerun with '--force'.`)
+\nPromoting this database can lead to application errors and outage. Please run pg:wait to wait for database to become available.
+\nTo ignore this error, you can pass the --force flag to promote the database and risk application issues.`)
     }
   }
 
