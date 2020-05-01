@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 if (!process.env.CIRCLE_TAG) {
-  console.log('not on stable, skipping change management trigger')
+  console.log('Not on stable release, skipping change management trigger')
   process.exit(0)
 }
 

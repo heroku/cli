@@ -6,7 +6,7 @@ const qq = require('qqjs')
 
 qq.config.silent = false
 qq.run(async () => {
-  await require('./update_channel')()
+  await require('../utils/_update_channel')()
   // this darwin target isn't used
   // but oclif-dev pack needs at least 1 target
   // to build the base tarball we need for updating homebrew

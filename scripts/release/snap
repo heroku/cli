@@ -3,7 +3,7 @@
 set -eux
 
 if [[ -z "${CIRCLE_TAG}" ]]; then
-  echo "not on stable, skipping snap release"
+  echo "Not on stable release, skipping snap release"
   exit
 fi
 

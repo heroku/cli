@@ -2,13 +2,13 @@
 
 set -ex
 
-./scripts/release/_github_setup
-# ./scripts/release/_homebrew_pack_base_tarball
-
 if [[ -z "${CIRCLE_TAG}" ]]; then
-  echo "not on stable, skipping homebrew"
+  echo "Not on stable release, skipping releasing homebrew"
   exit
 fi
+
+./scripts/utils/_github_setup
+# ./scripts/utils/_homebrew_pack_base_tarball
 
 rm -rf tmp/homebrew-brew
 git config --global core.pager cat
