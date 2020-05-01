@@ -2,9 +2,11 @@
 
 set -ex
 
-# skip if not a version tag, ex: v7.39.5
 if [[ ! -z "${CIRCLE_TAG}" ]]; then
+  echo "Pushing install scripts to s3..."
   aws s3 cp --content-type text/plain --cache-control "max-age: 604800" ./install-standalone.sh s3://heroku-cli-assets/install-standalone.sh
   aws s3 cp --content-type text/plain --cache-control "max-age: 604800" ./install-standalone.sh s3://heroku-cli-assets/install.sh
   aws s3 cp --content-type text/plain --cache-control "max-age: 604800" ./install-ubuntu.sh s3://heroku-cli-assets/install-ubuntu.sh
+else
+  echo "CI workflow is not from a git version tag, skipping install scripts"
 fi
