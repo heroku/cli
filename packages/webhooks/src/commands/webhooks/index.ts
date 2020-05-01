@@ -2,7 +2,7 @@ import color from '@heroku-cli/color'
 import {flags} from '@heroku-cli/command'
 import {cli} from 'cli-ux'
 
-import BaseCommand from '../base'
+import BaseCommand from '../../base'
 
 export default class Webhooks extends BaseCommand {
   static description = 'list webhooks on an app'
@@ -16,8 +16,8 @@ export default class Webhooks extends BaseCommand {
       char: 'p',
       description:
       'pipeline on which to list',
-      hidden: true
-    })
+      hidden: true,
+    }),
   }
 
   async run() {
@@ -35,17 +35,17 @@ export default class Webhooks extends BaseCommand {
 
     cli.table(webhooks, {
       id: {
-        header: 'Webhook ID'
+        header: 'Webhook ID',
       },
       url: {
-        header: 'URL'
+        header: 'URL',
       },
       include: {
-        get: (row: any) => row.include.join(',')
+        get: (row: any) => row.include.join(','),
       },
-      level: {}
+      level: {},
     }, {
-      printLine: this.log
+      printLine: this.log,
     })
   }
 }

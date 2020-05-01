@@ -11,11 +11,12 @@ let endpointStables = require('../../stubs/sni-endpoints.js').endpoint_stables
 let endpointWildcard = require('../../stubs/sni-endpoints.js').endpoint_wildcard
 let endpointWildcardBug = require('../../stubs/sni-endpoints.js').endpoint_wildcard_bug
 let endpointAcm = require('../../stubs/sni-endpoints.js').endpoint_acm
-
 let endpointSpace = require('../../stubs/ssl-endpoints.js').endpoint_space
+const mockSniFeatureFlag = require('../../lib/mock_sni_feature')
 
 describe('heroku certs', function () {
   beforeEach(function () {
+    mockSniFeatureFlag(nock, 'example')
     cli.mockConsole()
   })
 

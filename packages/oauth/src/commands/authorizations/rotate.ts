@@ -14,8 +14,8 @@ export default class AuthorizationsRotate extends Command {
 
     cli.action.start('Rotating OAuth Authorization')
 
-    let {body: authorization} = await this.heroku.post<Heroku.OAuthAuthorization>(
-      `/oauth/authorizations/${encodeURIComponent(args.id)}/actions/regenerate-tokens`
+    const {body: authorization} = await this.heroku.post<Heroku.OAuthAuthorization>(
+      `/oauth/authorizations/${encodeURIComponent(args.id)}/actions/regenerate-tokens`,
     )
 
     cli.action.stop()

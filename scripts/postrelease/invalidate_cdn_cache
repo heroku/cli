@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+set -ex
+
+if [[ ! -z "${CIRCLE_TAG}" ]]; then
+  aws cloudfront create-invalidation --distribution-id "$CLOUDFRONT_DISTRIBUTION" --paths "/*"
+elif [[ "$CIRCLE_BRANCH" == "master" ]]; then
+  aws cloudfront create-invalidation --distribution-id "$CLOUDFRONT_DISTRIBUTION" --paths "/channels/beta/*"
+fi

@@ -3,6 +3,47 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.39.4](https://github.com/heroku/cli/compare/v7.39.3...v7.39.4) (2020-04-22)
+
+
+### Bug Fixes
+
+* **certs-v5:** handle private spaces sni migrated apps ([#1456](https://github.com/heroku/cli/issues/1456)) ([039fcf4](https://github.com/heroku/cli/commit/039fcf4e5479ff6231bfe329b482d23f38bd4634))
+
+
+
+
+
+## [7.39.2](https://github.com/heroku/cli/compare/v7.39.1...v7.39.2) (2020-03-30)
+
+**Note:** Version bump only for package @heroku-cli/plugin-certs-v5
+
+
+
+
+
+# [7.39.0](https://github.com/heroku/cli/compare/v7.38.2...v7.39.0) (2020-03-02)
+
+
+### Features
+
+* **certs:** remove deprecated `certs:rollback` command ([#1453](https://github.com/heroku/cli/issues/1453)) ([2997525](https://github.com/heroku/cli/commit/29975252c68b6ed55e1fb592ed39833f7043a63b))
+
+
+
+
+
+# [7.38.0](https://github.com/heroku/cli/compare/v7.37.0...v7.38.0) (2020-02-06)
+
+
+### Features
+
+* **cert-v5:** New certification configuration workflow for multi cert UI ([#1430](https://github.com/heroku/cli/issues/1430)) ([50414f1](https://github.com/heroku/cli/commit/50414f1fc5b205636c0d387b4f028787beaa4bc7))
+
+
+
+
+
 <a name="7.28.0"></a>
 # [7.28.0](https://github.com/heroku/cli/compare/v7.27.1...v7.28.0) (2019-08-19)
 

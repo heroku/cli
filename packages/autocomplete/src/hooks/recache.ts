@@ -8,7 +8,7 @@ import * as path from 'path'
 import {updateCache} from '../cache'
 import acCreate from '../commands/autocomplete/create'
 
-export const completions: Hook<any> = async function ({type, app}: {type?: 'app' | 'addon' | 'config' | 'login' | 'logout', app?: string}) {
+export const completions: Hook<any> = async function ({type, app}: {type?: 'app' | 'addon' | 'config' | 'login' | 'logout'; app?: string}) {
   // autocomplete is now in core, skip windows
   if (this.config.windows) return
   const logInOut = type === 'login' || type === 'logout'
@@ -32,8 +32,8 @@ export const completions: Hook<any> = async function ({type, app}: {type?: 'app'
     const heroku = new APIClient(this.config)
     if (!heroku.auth) return
     await heroku.get('/account', {retryAuth: false})
-  } catch (err) {
-    this.debug(err.message)
+  } catch (error) {
+    this.debug(error.message)
     return
   }
 
@@ -46,8 +46,8 @@ export const completions: Hook<any> = async function ({type, app}: {type?: 'app'
     await update(PipelineCompletion, 'pipeline')
     await update(SpaceCompletion, 'space')
     await update(TeamCompletion, 'team')
-  } catch (err) {
-    this.debug(err.message)
+  } catch (error) {
+    this.debug(error.message)
   }
   cli.action.stop()
 }

@@ -6,14 +6,14 @@ import {cli} from 'cli-ux'
 import {validateURL} from '../../lib/clients'
 
 interface Updates {
-  redirect_uri?: string,
-  name?: string
+  redirect_uri?: string;
+  name?: string;
 }
 
-let isEmpty = (o: Updates) => Object.keys(o).length === 0
+const isEmpty = (o: Updates) => Object.keys(o).length === 0
 
 const getUpdates = (flags: any) => {
-  let updates: Updates = {}
+  const updates: Updates = {}
 
   if (flags.url) updates.redirect_uri = validateURL(flags.url)
   if (flags.name) updates.name = flags.name
@@ -25,12 +25,12 @@ export default class ClientsUpdate extends Command {
   static description = 'update OAuth client'
 
   static examples = [
-    '$ heroku clients:update 3e304bda-d376-4278-bdea-6d6c08aa1359 --url https://amazing-client.herokuapp.com/auth/heroku/callback'
+    '$ heroku clients:update 3e304bda-d376-4278-bdea-6d6c08aa1359 --url https://amazing-client.herokuapp.com/auth/heroku/callback',
   ]
 
   static flags = {
     name: flags.string({char: 'n', description: 'change the client name'}),
-    url: flags.string({description: 'change the client redirect URL'})
+    url: flags.string({description: 'change the client redirect URL'}),
   }
 
   static args = [{name: 'id', required: true}]
@@ -45,7 +45,7 @@ export default class ClientsUpdate extends Command {
 
     await this.heroku.patch<Heroku.OAuthClient>(
       `/oauth/clients/${encodeURIComponent(args.id)}`,
-      {body}
+      {body},
     )
 
     cli.action.stop()

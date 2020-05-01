@@ -35,7 +35,9 @@ function stream(url: string) {
 }
 
 function statusIcon({status}: Heroku.TestRun | Heroku.TestNode) {
-  if (!status) { return color.yellow('-') }
+  if (!status) {
+    return color.yellow('-')
+  }
 
   switch (status) {
   case 'pending':
@@ -54,7 +56,6 @@ function statusIcon({status}: Heroku.TestRun | Heroku.TestNode) {
     return color.yellow('!')
   default:
     return color.yellow('?')
-
   }
 }
 
@@ -111,7 +112,7 @@ function draw(testRuns: Heroku.TestRun[], watchOption = false, jsonOption = fals
     process.stdout.write(ansiEscapes.eraseDown)
   }
 
-  let data: any = []
+  const data: any = []
 
   latestTestRuns.forEach(testRun => {
     data.push(
@@ -120,8 +121,8 @@ function draw(testRuns: Heroku.TestRun[], watchOption = false, jsonOption = fals
         number: testRun.number,
         branch: testRun.commit_branch,
         sha: testRun.commit_sha!.slice(0, 7),
-        status: testRun.status
-      }
+        status: testRun.status,
+      },
     )
   })
 
@@ -132,8 +133,8 @@ function draw(testRuns: Heroku.TestRun[], watchOption = false, jsonOption = fals
       {key: 'number', label: ''},
       {key: 'branch'},
       {key: 'sha'},
-      {key: 'status'}
-    ]
+      {key: 'status'},
+    ],
   })
 
   if (watchOption) {
@@ -142,7 +143,7 @@ function draw(testRuns: Heroku.TestRun[], watchOption = false, jsonOption = fals
 }
 
 export async function renderList(command: Command, testRuns: Heroku.TestRun[], pipeline: Heroku.Pipeline, watchOption: boolean, jsonOption: boolean) {
-  const watchable = (watchOption && !jsonOption ? true : false)
+  const watchable = (Boolean(watchOption && !jsonOption))
 
   if (!jsonOption) {
     const header = `${watchOption ? 'Watching' : 'Showing'} latest test runs for the ${pipeline.name} pipeline`
@@ -151,7 +152,9 @@ export async function renderList(command: Command, testRuns: Heroku.TestRun[], p
 
   draw(testRuns, watchOption, jsonOption)
 
-  if (!watchable) { return }
+  if (!watchable) {
+    return
+  }
 
   const socket = new Socket(HEROKU_CI_WEBSOCKET_URL, {
     transport: WebSocket,
@@ -190,7 +193,8 @@ async function waitForStates(states: string[], testRun: Heroku.TestRun, command:
   let newTestRun = testRun
 
   while (!states.includes(newTestRun.status!.toString())) {
-    let {body: bodyTestRun} = await command.heroku.get<Heroku.TestRun>(`/pipelines/${testRun.pipeline!.id}/test-runs/${testRun.number}`)
+    // eslint-disable-next-line no-await-in-loop
+    const {body: bodyTestRun} = await command.heroku.get<Heroku.TestRun>(`/pipelines/${testRun.pipeline!.id}/test-runs/${testRun.number}`)
     newTestRun = bodyTestRun
   }
   return newTestRun
@@ -203,20 +207,28 @@ async function display(pipeline: Heroku.Pipeline, number: number, command: Comma
     testRun = await waitForStates(BUILDING_STATES, testRun, command)
     cli.action.stop()
 
-    let {body: testNodes} = await command.heroku.get<Heroku.TestNode[]>(`/test-runs/${testRun.id}/test-nodes`)
+    const {body: testNodes} = await command.heroku.get<Heroku.TestNode[]>(`/test-runs/${testRun.id}/test-nodes`)
     let firstTestNode = testNodes[0]
 
-    if (firstTestNode) { await stream(firstTestNode.setup_stream_url!) }
+    if (firstTestNode) {
+      await stream(firstTestNode.setup_stream_url!)
+    }
 
-    if (testRun) { testRun = await waitForStates(RUNNING_STATES, testRun, command) }
-    if (firstTestNode) { await stream(firstTestNode.output_stream_url!) }
+    if (testRun) {
+      testRun = await waitForStates(RUNNING_STATES, testRun, command)
+    }
+    if (firstTestNode) {
+      await stream(firstTestNode.output_stream_url!)
+    }
 
-    if (testRun) { testRun = await waitForStates(TERMINAL_STATES, testRun, command) }
+    if (testRun) {
+      testRun = await waitForStates(TERMINAL_STATES, testRun, command)
+    }
 
     // At this point, we know that testRun has a finished status,
     // and we can check for exit_code from firstTestNode
     if (testRun) {
-      let {body: newTestNodes} = await command.heroku.get<Heroku.TestNode[]>(`/test-runs/${testRun.id}/test-nodes`)
+      const {body: newTestNodes} = await command.heroku.get<Heroku.TestNode[]>(`/test-runs/${testRun.id}/test-nodes`)
       firstTestNode = newTestNodes[0]
 
       command.log()
@@ -227,7 +239,7 @@ async function display(pipeline: Heroku.Pipeline, number: number, command: Comma
 }
 
 export async function displayAndExit(pipeline: Heroku.Pipeline, number: number, command: Command) {
-  let testNode = await display(pipeline, number, command)
+  const testNode = await display(pipeline, number, command)
 
   testNode ? processExitCode(command, testNode) : command.exit(1)
 }
@@ -247,18 +259,16 @@ export async function displayTestRunInfo(command: Command, testRun: Heroku.TestR
       command.warn('See https://devcenter.heroku.com/articles/heroku-ci-parallel-test-runs for more info')
     }
     processExitCode(command, testNode)
-  } else {
-    if (testNodes.length > 1) {
-      command.log(printLine(testRun))
-      command.log()
+  } else if (testNodes.length > 1) {
+    command.log(printLine(testRun))
+    command.log()
 
-      testNodes.forEach(testNode => {
-        command.log(printLineTestNode(testNode))
-      })
-    } else {
-      testNode = testNodes[0]
-      await renderNodeOutput(command, testRun, testNode)
-      processExitCode(command, testNode)
-    }
+    testNodes.forEach(testNode => {
+      command.log(printLineTestNode(testNode))
+    })
+  } else {
+    testNode = testNodes[0]
+    await renderNodeOutput(command, testRun, testNode)
+    processExitCode(command, testNode)
   }
 }

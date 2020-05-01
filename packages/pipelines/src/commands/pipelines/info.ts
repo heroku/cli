@@ -10,7 +10,7 @@ export default class PipelinesInfo extends Command {
   static description = 'show list of apps in a pipeline'
 
   static examples = [
-    '$ heroku pipelines:info my-pipeline'
+    '$ heroku pipelines:info my-pipeline',
   ]
 
   static flags = {
@@ -19,14 +19,14 @@ export default class PipelinesInfo extends Command {
     }),
     'with-owners': flags.boolean({
       description: 'shows owner of every app',
-      hidden: true
-    })
+      hidden: true,
+    }),
   }
 
   static args = [{
     name: 'pipeline',
     description: 'pipeline to show list of apps for',
-    required: true
+    required: true,
   }]
 
   async run() {
@@ -39,7 +39,7 @@ export default class PipelinesInfo extends Command {
     } else {
       await renderPipeline(this.heroku, pipeline, pipelineApps, {
         withOwners: flags['with-owners'],
-        showOwnerWarning: true
+        showOwnerWarning: true,
       })
     }
   }

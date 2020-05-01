@@ -4,6 +4,8 @@ import {expect} from 'chai'
 import * as path from 'path'
 import * as qq from 'qqjs'
 
+const globby = require('globby')
+
 const bin = path.join(__dirname, '../../bin/run')
 
 function run(args = '') {
@@ -23,7 +25,7 @@ describe('smoke', () => {
   })
 
   it('heroku apps', async () => {
-    let cmd = await run('apps')
+    const cmd = await run('apps')
     expect(cmd.stdout).to.match(/^===.*Apps/)
   })
 
@@ -38,5 +40,28 @@ describe('smoke', () => {
     const appFlag = `-a=${app}`
     const {stdout} = await run(['run', '--exit-code', appFlag, 'echo', 'it works!'].join(' '))
     expect(stdout).to.contain('it works!')
+  })
+
+  it('asserts oclif plugins are in core', async () => {
+    const cmd = await run('plugins --core')
+    expect(cmd.stdout).to.contain('@oclif/plugin-commands')
+    expect(cmd.stdout).to.contain('@oclif/plugin-help')
+    expect(cmd.stdout).to.contain('@oclif/plugin-legacy')
+    expect(cmd.stdout).to.contain('@oclif/plugin-not-found')
+    expect(cmd.stdout).to.contain('@oclif/plugin-plugins')
+    expect(cmd.stdout).to.contain('@oclif/plugin-update')
+    expect(cmd.stdout).to.contain('@oclif/plugin-warn-if-update-available')
+    expect(cmd.stdout).to.contain('@oclif/plugin-which')
+  })
+
+  it('asserts monorepo plugins are in core', async () => {
+    let paths = await globby(['packages/*/package.json'])
+    const cmd = await run('plugins --core')
+    paths = paths.map((p: string) => p.replace('packages/', '').replace('/package.json', ''))
+    console.log(paths)
+    paths = paths.filter((p: string) => p === 'cli')
+    paths.forEach((plugin: string) => {
+      expect(cmd.stdout).to.contain(plugin)
+    })
   })
 })

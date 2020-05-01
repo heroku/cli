@@ -10,23 +10,23 @@ import {Editor} from '../../util'
 const editor = new Editor()
 
 interface Config {
-  [key: string]: string
+  [key: string]: string;
 }
 interface UploadConfig {
-  [key: string]: string | null
+  [key: string]: string | null;
 }
 
 function configToString(config: Config): string {
   return Object.keys(config)
-    .sort()
-    .map(key => {
-      return `${key}=${quote(config[key])}`
-    })
-    .join('\n')
+  .sort()
+  .map(key => {
+    return `${key}=${quote(config[key])}`
+  })
+  .join('\n')
 }
 
 function removeDeleted(newConfig: UploadConfig, original: Config) {
-  for (let k of Object.keys(original)) {
+  for (const k of Object.keys(original)) {
     // The api accepts empty strings
     // as valid env var values
     // In JS an empty string is falsey
@@ -40,7 +40,7 @@ export function stringToConfig(s: string): Config {
       throw new Error(`Invalid line: ${line}`)
     }
     if (!line) return config
-    let i = line.indexOf('=')
+    const i = line.indexOf('=')
     if (i === -1) error()
     config[line.slice(0, i)] = parse(line.slice(i + 1)) || ''
     return config
@@ -52,7 +52,7 @@ function allKeys(a: Config, b: Config): string[] {
 }
 
 function showDiff(from: Config, to: Config) {
-  for (let k of allKeys(from, to)) {
+  for (const k of allKeys(from, to)) {
     if (from[k] === to[k]) continue
     if (k in from) {
       cli.log(color.red(`${k}=${quote(from[k])}`))
@@ -67,6 +67,7 @@ export default class ConfigEdit extends Command {
   static description = `interactively edit config vars
 This command opens the app config in a text editor set by $VISUAL or $EDITOR.
 Any variables added/removed/changed will be updated on the app after saving and closing the file.`
+
   static examples = [
     `# edit with vim
 $ EDITOR="vim" heroku config:edit`,
@@ -77,6 +78,7 @@ $ EDITOR="pico" heroku config:edit`,
     `# edit with atom editor
 $ VISUAL="atom --wait" heroku config:edit`,
   ]
+
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),

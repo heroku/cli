@@ -8,7 +8,7 @@ export default class Version extends Command {
   async run() {
     this.parse(Version)
 
-    let execArgv = ['--version']
+    const execArgv = ['--version']
     await foreman(execArgv)
   }
 }
