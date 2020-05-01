@@ -2,6 +2,8 @@
 
 set -ex
 
+./scripts/release/_github_setup
+
 VERSION=$(node -p "require('./packages/cli/package.json').version")
 
 # trigger a macos installer by committing and tagging to the repo

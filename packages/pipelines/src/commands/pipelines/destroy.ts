@@ -10,13 +10,13 @@ export default class PipelinesDestroy extends Command {
   static description = 'destroy a pipeline'
 
   static examples = [
-    '$ heroku pipelines:destroy my-pipeline'
+    '$ heroku pipelines:destroy my-pipeline',
   ]
 
   static args = [{
     name: 'pipeline',
     description: 'name of pipeline',
-    required: true
+    required: true,
   }]
 
   async run() {
@@ -26,6 +26,5 @@ export default class PipelinesDestroy extends Command {
     cli.action.start(`Destroying ${color.pipeline(pipeline.name!)} pipeline`)
     await destroyPipeline(this.heroku, pipeline.name, pipeline.id)
     cli.action.stop()
-
   }
 }

@@ -18,7 +18,7 @@ export default class CiReRun extends Command {
 
   static flags = {
     app: flags.string({char: 'a', description: 'app name'}),
-    pipeline: flags.pipeline({required: false})
+    pipeline: flags.pipeline({required: false}),
   }
 
   static args = [{name: 'number', required: false}]
@@ -53,8 +53,8 @@ export default class CiReRun extends Command {
       commit_sha: sourceTestRun.commit_sha,
       pipeline: pipeline.id,
       organization,
-      source_blob_url: sourceBlobUrl
-    }
+      source_blob_url: sourceBlobUrl,
+    },
     })
     cli.action.stop()
 

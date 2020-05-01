@@ -2,14 +2,15 @@ import {Command} from '@heroku-cli/command'
 import * as fs from 'async-file'
 import {ux} from 'cli-ux'
 
+import * as git from './git'
+
 const got = require('got')
-const git = require('./git')
 
 async function uploadArchive(url: string, filePath: string) {
   const request = got.stream.put(url, {
     headers: {
-      'content-length': (await fs.stat(filePath)).size
-    }
+      'content-length': (await fs.stat(filePath)).size,
+    },
   })
 
   fs.createReadStream(filePath).pipe(request)
@@ -32,13 +33,13 @@ export async function createSourceBlob(ref: any, command: Command) {
     const githubRepository = await git.githubRepository()
     const {user, repo} = githubRepository
 
-    let {body: archiveLink} = await command.heroku.get<any>(`https://kolkrabbi.heroku.com/github/repos/${user}/${repo}/tarball/${ref}`)
+    const {body: archiveLink} = await command.heroku.get<any>(`https://kolkrabbi.heroku.com/github/repos/${user}/${repo}/tarball/${ref}`)
     if (await command.heroku.request(archiveLink.archive_link, {method: 'HEAD'})) {
       return archiveLink.archive_link
     }
-  } catch (ex) {
+  } catch (error) {
     // the commit isn't in the repo, we will package the local git commit instead
-    ux.debug(`Commit not found in pipeline repository: ${ex}`)
+    ux.debug(`Commit not found in pipeline repository: ${error}`)
   }
 
   const sourceBlob = await prepareSource(ref, command)

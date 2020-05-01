@@ -15,7 +15,7 @@ export default class SessionsDestroy extends Command {
     cli.action.start(`Destroying ${color.cyan(id)}`)
 
     await this.heroku.delete<OAuthSession>(
-      `/oauth/sessions/${encodeURIComponent(id)}`
+      `/oauth/sessions/${encodeURIComponent(id)}`,
     )
 
     cli.action.stop()

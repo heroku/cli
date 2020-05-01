@@ -2,7 +2,7 @@
 
 declare namespace NodeJS {
   interface Global {
-    columns?: number
-    testing?: boolean
+    columns?: number;
+    testing?: boolean;
   }
 }

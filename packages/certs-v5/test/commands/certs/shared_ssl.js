@@ -10,6 +10,7 @@ let endpoint2 = require('../../stubs/sni-endpoints.js').endpoint2
 let assertExit = require('../../assert_exit.js')
 let certificateDetails = require('../../stubs/sni-endpoints.js').certificate_details
 const unwrap = require('../../unwrap')
+const mockSniFeatureFlag = require('../../lib/mock_sni_feature')
 
 exports.shouldHandleArgs = function (command, txt, certs, callback, options) {
   let args = options.args || {}
@@ -22,6 +23,7 @@ exports.shouldHandleArgs = function (command, txt, certs, callback, options) {
       cli.mockConsole()
       error.exit.mock()
       nock.cleanAll()
+      mockSniFeatureFlag(nock, 'example')
     })
 
     it('allows an SSL certificate to be specified using --name', function () {

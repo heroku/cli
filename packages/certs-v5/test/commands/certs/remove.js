@@ -10,12 +10,14 @@ let endpoint = require('../../stubs/sni-endpoints.js').endpoint
 let shared = require('./shared.js')
 let sharedSsl = require('./shared_ssl.js')
 let sharedSni = require('./shared_sni.js')
+const mockSniFeatureFlag = require('../../lib/mock_sni_feature')
 
 describe('heroku certs:remove', function () {
   beforeEach(function () {
     cli.mockConsole()
     error.exit.mock()
     nock.cleanAll()
+    mockSniFeatureFlag(nock, 'example')
   })
 
   it('# requires confirmation', function () {

@@ -1,8 +1,16 @@
-import FS = require('fs-extra')
 import {HTTP} from 'http-call'
+import UserConfig from './user-config'
+import FS = require('fs-extra')
 
 import file = require('./file')
-import UserConfig from './user-config'
+
+const cache: any = {}
+function fetch(s: string) {
+  if (!cache[s]) {
+    cache[s] = require(s)
+  }
+  return cache[s]
+}
 
 export default {
   get fs(): typeof FS {
@@ -17,13 +25,4 @@ export default {
   get UserConfig(): typeof UserConfig {
     return fetch('./user-config').default
   },
-}
-
-const cache: any = {}
-
-function fetch(s: string) {
-  if (!cache[s]) {
-    cache[s] = require(s)
-  }
-  return cache[s]
 }

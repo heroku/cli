@@ -1,23 +1,23 @@
 import {flags} from '@heroku-cli/command'
 import {cli} from 'cli-ux'
 
-import BaseCommand from '../../base'
+import BaseCommand from '../../../base'
 
 export default class DeliveriesInfo extends BaseCommand {
   static description = 'info for a webhook event on an app'
 
   static examples = [
-    '$ heroku webhooks:deliveries:info 99999999-9999-9999-9999-999999999999'
+    '$ heroku webhooks:deliveries:info 99999999-9999-9999-9999-999999999999',
   ]
 
   static flags = {
     app: flags.app(),
     remote: flags.remote(),
-    pipeline: flags.pipeline({char: 'p', description: 'pipeline on which to list', hidden: true})
+    pipeline: flags.pipeline({char: 'p', description: 'pipeline on which to list', hidden: true}),
   }
 
   static args = [
-    {name: 'id', required: true}
+    {name: 'id', required: true},
   ]
 
   async run() {
@@ -38,7 +38,7 @@ export default class DeliveriesInfo extends BaseCommand {
       Attempts: delivery.num_attempts,
       Code: delivery.last_attempt && delivery.last_attempt.code,
       Error: delivery.last_attempt && delivery.last_attempt.error_class,
-      'Next Attempt': delivery.next_attempt_at
+      'Next Attempt': delivery.next_attempt_at,
     }
 
     cli.styledHeader(delivery.id)

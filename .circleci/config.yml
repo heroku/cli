@@ -11,11 +11,46 @@ defaults: &defaults
         LC_TYPE: en_US.UTF-8
         NODE_OPTIONS: --max_old_space_size=4096
 
-version: 2
+version: 2.1
+orbs:
+  win: circleci/windows@2.4.0
 executorType: docker
 jobs:
+  windows-test:
+    executor:
+      name: win/default
+      size: large
+    steps:
+      - checkout
+      - run:
+          name: Install latest yarn
+          command: |
+            (New-Object Net.WebClient).DownloadFile("https://yarnpkg.com/latest.msi", "$env:temp\yarn.msi")
+            cmd /c start /wait msiexec.exe /i $env:temp\yarn.msi /quiet /qn /norestart /log install.log
+      - run:
+          name: Verify yarn installation
+          command: |
+            if (!(Test-Path -Path "C:\Program Files (x86)\Yarn\bin\yarn" -PathType Leaf)) {
+              Write-Host "> Installation failed." -ForegroundColor Red
+              Write-Host "" -ForegroundColor Red
+              exit 1
+            }
+      - restore_cache:
+          keys:
+            - node-modules-v1-win-{{ checksum "yarn.lock" }}
+      - run:
+          name: Install dependencies
+          command: yarn install
+      - save_cache:
+          paths:
+            - ./node_modules
+          key: node-modules-v1-win-{{ checksum "yarn.lock" }}
+      - run:
+          name: Test and Lint
+          command: yarn test
   node12-test: &test
     <<: *defaults
+    resource_class: large
     steps:
       - checkout
       - restore_cache: &yarn_restore_cache
@@ -41,16 +76,12 @@ jobs:
       - run:
           name: Uploading code coverage to codecov
           command: ./node_modules/.bin/lerna exec "curl -s https://codecov.io/bash | bash"
-      - run:
-          name: Build tarball for BundleSize
-          command: ./scripts/bundlesize
-      - store_artifacts:
-          path: ./bundlesize.tar
   node10-test:
     <<: *test
     docker:
-      - image: chadian/nsis:10-2
-  release:
+      - image: heroku/nsis:10-2
+    resource_class: large
+  release_tarballs:
     <<: *defaults
     steps:
       - add_ssh_keys
@@ -59,7 +90,6 @@ jobs:
           cp yarn.lock packages/cli
           cd packages/cli
           yarn
-          ./scripts/release/_github_setup
           ./scripts/release/tarballs
           ./scripts/release/homebrew
       - save_cache:
@@ -68,10 +98,13 @@ jobs:
             - /cli/node_modules
             - /cli/tmp/cache
             - /usr/local/share/.cache/yarn
+      - persist_to_workspace:
+          root: /cli/packages/cli
+          paths:
+            - dist
   release_win:
     <<: *defaults
     steps:
-      - add_ssh_keys
       - checkout
       - run: |
           cp yarn.lock packages/cli
@@ -81,23 +114,53 @@ jobs:
   release_deb:
     <<: *defaults
     steps:
-      - add_ssh_keys
       - checkout
       - run: |
           cp yarn.lock packages/cli
           cd packages/cli
           yarn
           ./scripts/release/deb
-  postrelease:
+  trigger_macos:
     <<: *defaults
     steps:
       - add_ssh_keys
       - checkout
       - run: yarn
-      - run: ./scripts/release/postrelease
+      - run: ./scripts/release/macos_installer_trigger
+  release_homebrew:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: /cli/packages/cli
+      - add_ssh_keys
+      - checkout
+      - run: |
+          cp yarn.lock packages/cli
+          cd packages/cli
+          yarn
+          ./scripts/release/homebrew
+  invalidate_cdn_cache:
+    <<: *defaults
+    steps:
+      - checkout
+      - run: yarn
+      - run: ./scripts/postrelease/invalidate_cdn_cache
+  install_scripts:
+    <<: *defaults
+    steps:
+      - checkout
+      - run: yarn
+      - run: ./scripts/postrelease/install_scripts
+  change_management:
+    <<: *defaults
+    steps:
+      - checkout
+      - run: |
+          yarn
+          ./scripts/postrelease/change_management
   dev_center_docs:
     docker: &devdocs_docker
-      - image: rasphilco/cli-engine-devcenter:v0.1.3
+      - image: heroku/devcenter
         environment:
           LANG: en_US.UTF-8
           LANGUAGE: en_US.UTF-8
@@ -105,10 +168,10 @@ jobs:
           LC_ALL: C.UTF-8
     steps:
       - checkout
-      - run: cd packages/cli && ./scripts/release/dev_center_docs
+      - run: cd packages/cli && ./scripts/postrelease/dev_center_docs
       - store_artifacts:
           path: /tmp/heroku-cli-commands.md
-  snap:
+  release_snap:
     docker:
       - image: snapcore/snapcraft:stable
         environment:
@@ -117,60 +180,62 @@ jobs:
       # the snapcraft image does not include git
       - run: apt-get -qq update; apt-get -y install git
       - checkout
-      - run: ./scripts/snap
+      - run: ./scripts/release_snap
 workflows:
-  version: 2
+  version: 2.1
   heroku_cli:
     jobs:
-      - node12-test:
-          filters: &all_pushes
-            tags: &version_tags
-              only: /^v.*/
-      - node10-test:
-          filters: &all_pushes
-            tags: &version_tags
-              only: /^v.*/
-      - release: &release_workflow
-          context: org-global
+      - windows-test: &windows_test
           filters:
-            tags: *version_tags
+            tags: &version_tags
+              only: /^v.*/
+      - node12-test: *windows_test
+      - node10-test: *windows_test
+      - release_tarballs: &release_tarballs
+          requires:
+            - node12-test
+            - node10-test
+          filters: &master_dev_and_version_tags
+            tags: 
+              <<: *version_tags
             branches:
               only:
                 - master
                 - dev
+      - release_deb: *release_tarballs
+      - release_win: *release_tarballs
+      - release_homebrew:
           requires:
-            - node12-test
-            - node10-test
-      - release_deb: *release_workflow
-      - release_win: *release_workflow
-      - postrelease:
-          context: org-global
-          requires:
-            - release
-            - release_deb
-            - release_win
-          filters:
-            tags: *version_tags
-            branches:
-              only:
-                - master
-                - dev
-      - dev_center_docs:
-          requires:
-            - node12-test
-            - node10-test
-          filters:
+            - release_tarballs
+          filters: &only_version_tags
             branches:
               ignore: /.*/
             tags:
-              only: /^v.*/
-  nightly:
-    triggers:
-      - schedule:
-          cron: "0 8,20 * * *"
+              <<: *version_tags
+      - trigger_macos: &trigger_macos
+          requires:
+            - node12-test
+            - node10-test
           filters:
-            branches:
-              only:
-                - master
-    jobs:
-      - snap
+            <<: *only_version_tags
+      - release_snap: *trigger_macos
+      - invalidate_cdn_cache:
+          requires:
+            - install_scripts
+          filters:
+            <<: *master_dev_and_version_tags
+      - install_scripts: &install_scripts
+          requires:
+            - release_tarballs
+            - release_deb
+            - release_win
+          filters:
+            <<: *master_dev_and_version_tags
+      - change_management: &change_management
+          requires:
+            - release_tarballs
+            - release_deb
+            - release_win
+          filters:
+            <<: *only_version_tags
+      - dev_center_docs: *change_management

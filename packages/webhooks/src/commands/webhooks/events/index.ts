@@ -1,19 +1,19 @@
 import {flags} from '@heroku-cli/command'
 import {cli} from 'cli-ux'
 
-import BaseCommand from '../../base'
+import BaseCommand from '../../../base'
 
 export default class EventsIndex extends BaseCommand {
   static description = 'list webhook events on an app'
 
   static examples = [
-    '$ heroku webhooks:events'
+    '$ heroku webhooks:events',
   ]
 
   static flags = {
     app: flags.app(),
     remote: flags.remote(),
-    pipeline: flags.pipeline({char: 'p', description: 'pipeline on which to list', hidden: true})
+    pipeline: flags.pipeline({char: 'p', description: 'pipeline on which to list', hidden: true}),
   }
 
   async run() {
@@ -31,19 +31,19 @@ export default class EventsIndex extends BaseCommand {
 
       cli.table(events, {
         id: {
-          header: 'Event ID'
+          header: 'Event ID',
         },
         resource: {
-          get: (w: any) => w.payload.resource
+          get: (w: any) => w.payload.resource,
         },
         action: {
-          get: (w: any) => w.payload.action
+          get: (w: any) => w.payload.action,
         },
         published_at: {
-          header: 'Published At', get: (w: any) => w.payload.published_at
-        }
+          header: 'Published At', get: (w: any) => w.payload.published_at,
+        },
       }, {
-        printLine: this.log
+        printLine: this.log,
       })
     }
   }

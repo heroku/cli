@@ -6,8 +6,6 @@ import deps from './deps'
 const debug = require('debug')('heroku-cli:file')
 
 export function exists(f: string): Promise<boolean> {
-  // debug('exists', f)
-  // @ts-ignore
   return deps.fs.pathExists(f)
 }
 
@@ -28,8 +26,8 @@ export async function remove(file: string) {
 }
 
 export async function ls(dir: string): Promise<{ path: string; stat: FS.Stats }[]> {
-  let files = await deps.fs.readdir(dir)
-  let paths = files.map(f => path.join(dir, f))
+  const files = await deps.fs.readdir(dir)
+  const paths = files.map(f => path.join(dir, f))
   return Promise.all(paths.map(path => deps.fs.stat(path).then(stat => ({path, stat}))))
 }
 
@@ -37,14 +35,15 @@ export async function removeEmptyDirs(dir: string): Promise<void> {
   let files
   try {
     files = await ls(dir)
-  } catch (err) {
-    if (err.code === 'ENOENT') return
-    throw err
+  } catch (error) {
+    if (error.code === 'ENOENT') return
+    throw error
   }
-  let dirs = files.filter(f => f.stat.isDirectory()).map(f => f.path)
-  for (let p of dirs.map(removeEmptyDirs)) await p
+  const dirs = files.filter(f => f.stat.isDirectory()).map(f => f.path)
+  // eslint-disable-next-line no-await-in-loop
+  for (const p of dirs.map(removeEmptyDirs)) await p
   files = await ls(dir)
-  if (!files.length) await remove(dir)
+  if (files.length === 0) await remove(dir)
 }
 
 export async function readJSON(file: string) {

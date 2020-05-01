@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-apps-v5",
   "description": "Heroku CLI plugin to manage apps.",
-  "version": "7.34.0",
+  "version": "7.39.3",
   "author": "Jeff Dickey (@jdxcode)",
   "bugs": "https://github.com/heroku/cli/issues",
   "cli-engine": {
@@ -15,7 +15,7 @@
     "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/apps-v5/<%- commandPath %>"
   },
   "dependencies": {
-    "@heroku-cli/command": "^8.2.10",
+    "@heroku-cli/command": "^8.3.0",
     "co": "^4.6.0",
     "filesize": "^4.0.0",
     "fs-extra": "^7.0.1",

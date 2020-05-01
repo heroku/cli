@@ -3,6 +3,167 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.39.6](https://github.com/heroku/cli/compare/v7.39.5...v7.39.6) (2020-05-01)
+
+**Note:** Version bump only for package heroku
+
+
+
+
+
+## [7.39.5](https://github.com/heroku/cli/compare/v7.39.4...v7.39.5) (2020-04-22)
+
+
+### Bug Fixes
+
+* **cli:** dummy fix to trigger lerna ([40c0281](https://github.com/heroku/cli/commit/40c0281c5808e3f15bedfd0bd279ce56c0eb4a4d))
+
+
+
+
+
+## [7.39.4](https://github.com/heroku/cli/compare/v7.39.3...v7.39.4) (2020-04-22)
+
+**Note:** Version bump only for package heroku
+
+
+
+
+
+## [7.39.3](https://github.com/heroku/cli/compare/v7.39.2...v7.39.3) (2020-04-15)
+
+
+### Bug Fixes
+
+* update to a notarized version of node ([#1481](https://github.com/heroku/cli/issues/1481)) ([a01c03c](https://github.com/heroku/cli/commit/a01c03cf45b8d02477754da382112c4905d91ecc))
+
+
+
+
+
+## [7.39.2](https://github.com/heroku/cli/compare/v7.39.1...v7.39.2) (2020-03-30)
+
+**Note:** Version bump only for package heroku
+
+
+
+
+
+## [7.39.1](https://github.com/heroku/cli/compare/v7.39.0...v7.39.1) (2020-03-19)
+
+**Note:** Version bump only for package heroku
+
+
+
+
+
+# [7.39.0](https://github.com/heroku/cli/compare/v7.38.2...v7.39.0) (2020-03-02)
+
+**Note:** Version bump only for package heroku
+
+
+
+
+
+## [7.38.2](https://github.com/heroku/cli/compare/v7.38.1...v7.38.2) (2020-02-19)
+
+**Note:** Version bump only for package heroku
+
+
+
+
+
+## [7.38.1](https://github.com/heroku/cli/compare/v7.38.0...v7.38.1) (2020-02-10)
+
+**Note:** Version bump only for package heroku
+
+
+
+
+
+# [7.38.0](https://github.com/heroku/cli/compare/v7.37.0...v7.38.0) (2020-02-06)
+
+**Note:** Version bump only for package heroku
+
+
+
+
+
+# [7.37.0](https://github.com/heroku/cli/compare/v7.36.3...v7.37.0) (2020-01-25)
+
+**Note:** Version bump only for package heroku
+
+
+
+
+
+## [7.36.3](https://github.com/heroku/cli/compare/v7.36.2...v7.36.3) (2020-01-21)
+
+**Note:** Version bump only for package heroku
+
+
+
+
+
+## [7.36.2](https://github.com/heroku/cli/compare/v7.36.1...v7.36.2) (2020-01-21)
+
+**Note:** Version bump only for package heroku
+
+
+
+
+
+## [7.36.1](https://github.com/heroku/cli/compare/v7.36.0...v7.36.1) (2020-01-21)
+
+**Note:** Version bump only for package heroku
+
+
+
+
+
+# [7.36.0](https://github.com/heroku/cli/compare/v7.35.1...v7.36.0) (2020-01-20)
+
+**Note:** Version bump only for package heroku
+
+
+
+
+
+## [7.35.1](https://github.com/heroku/cli/compare/v7.35.0...v7.35.1) (2019-12-19)
+
+**Note:** Version bump only for package heroku
+
+
+
+
+
+# [7.35.0](https://github.com/heroku/cli/compare/v7.34.2...v7.35.0) (2019-11-07)
+
+**Note:** Version bump only for package heroku
+
+
+
+
+
+## [7.34.2](https://github.com/heroku/cli/compare/v7.34.1...v7.34.2) (2019-11-05)
+
+**Note:** Version bump only for package heroku
+
+
+
+
+
+## [7.34.1](https://github.com/heroku/cli/compare/v7.34.0...v7.34.1) (2019-11-05)
+
+
+### Bug Fixes
+
+* **cli:** missing apps plugin in oclif plugins list ([81db582](https://github.com/heroku/cli/commit/81db582))
+
+
+
+
+
 # [7.34.0](https://github.com/heroku/cli/compare/v7.33.3...v7.34.0) (2019-11-05)
 
 

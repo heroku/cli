@@ -1,25 +1,27 @@
 import {flags} from '@heroku-cli/command'
 import {cli} from 'cli-ux'
 
-import BaseCommand from '../../base'
+import BaseCommand from '../../../base'
 
 export default class Deliveries extends BaseCommand {
   static description = 'list webhook deliveries on an app'
 
   static examples = [
-    '$ heroku webhooks:deliveries'
+    '$ heroku webhooks:deliveries',
   ]
 
   static flags = {
     app: flags.app(),
     remote: flags.remote(),
     status: flags.string({char: 's', description: 'filter deliveries by status'}),
-    pipeline: flags.pipeline({char: 'p', description: 'pipeline on which to list', hidden: true})
+    pipeline: flags.pipeline({char: 'p', description: 'pipeline on which to list', hidden: true}),
   }
 
   async run() {
     const {flags} = this.parse(Deliveries)
-    let {path, display} = this.webhookType(flags)
+    const webhookType = this.webhookType(flags)
+    let {path} = webhookType
+    const {display} = webhookType
     const max = 1000
 
     path = `${path}/webhook-deliveries`
@@ -29,15 +31,15 @@ export default class Deliveries extends BaseCommand {
 
     const {body: deliveries} = await this.webhooksClient.get(path, {
       headers: {
-        Range: `seq ..; order=desc,max=${max}`
+        Range: `seq ..; order=desc,max=${max}`,
       },
-      partial: true
+      partial: true,
     })
 
     if (deliveries.length === 0) {
       this.log(`${display} has no deliveries`)
     } else {
-      let code = (w: any) => {
+      const code = (w: any) => {
         return (w.last_attempt && w.last_attempt.code && String(w.last_attempt.code)) || ''
       }
 
@@ -50,34 +52,34 @@ export default class Deliveries extends BaseCommand {
 
       cli.table(deliveries, {
         id: {
-          header: 'Delivery ID'
+          header: 'Delivery ID',
         },
         created_at: {
-          header: 'Created', get: (w: any) => w.created_at
+          header: 'Created', get: (w: any) => w.created_at,
         },
         status: {
-          get: (w: any) => w.status
+          get: (w: any) => w.status,
         },
         include: {
-          get: (w: any) => w.event.include
+          get: (w: any) => w.event.include,
         },
         level: {
-          get: (w: any) => w.webhook.level
+          get: (w: any) => w.webhook.level,
         },
         num_attempts: {
-          header: 'Attempts', get: (w: any) => String(w.num_attempts)
+          header: 'Attempts', get: (w: any) => String(w.num_attempts),
         },
         last_code: {
-          header: 'Code', get: code
+          header: 'Code', get: code,
         },
         last_error: {
-          header: 'Error', get: (w: any) => (w.last_attempt && w.last_attempt.error_class) || ''
+          header: 'Error', get: (w: any) => (w.last_attempt && w.last_attempt.error_class) || '',
         },
         next_attempt_at: {
-          header: 'Next Attempt', get: (w: any) => w.next_attempt_at || ''
+          header: 'Next Attempt', get: (w: any) => w.next_attempt_at || '',
         },
       }, {
-        printLine: this.log
+        printLine: this.log,
       })
     }
   }

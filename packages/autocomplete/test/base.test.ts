@@ -10,11 +10,15 @@ const {default: runtest} = require('./helpers/runtest')
 
 class AutocompleteTest extends AutocompleteBase {
   static id = 'test:foo'
+
   static flags = {
     app: flags.app(),
     bar: flags.boolean(),
   }
-  async run() {}
+
+  async run() {
+    'do work!'
+  }
 }
 
 const root = path.resolve(__dirname, '../package.json')
@@ -30,8 +34,8 @@ runtest('AutocompleteBase', () => {
   it('#errorIfWindows', async () => {
     try {
       new AutocompleteTest([], config).errorIfWindows()
-    } catch (e) {
-      expect(e.message).to.eq('Autocomplete is not currently supported in Windows')
+    } catch (error) {
+      expect(error.message).to.eq('Autocomplete is not currently supported in Windows')
     }
   })
 

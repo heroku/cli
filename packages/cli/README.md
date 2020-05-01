@@ -3,12 +3,11 @@ Heroku CLI
 
 ![Heroku logo](https://d4yt8xl9b7in.cloudfront.net/assets/home/logotype-heroku.png)
 
-[![Circle CI](https://circleci.com/gh/heroku/cli/tree/master.svg?style=svg)](https://circleci.com/gh/heroku/cli/tree/master)
-[![Build status](https://ci.appveyor.com/api/projects/status/ouee3b9d7jwkjcr1/branch/master?svg=true)](https://ci.appveyor.com/project/Heroku/cli/branch/master)
+[![CircleCI](https://circleci.com/gh/heroku/cli.svg?style=svg&circle-token=40b6a6c06ece93bccf45e2c648b39e1db3763c97)](https://circleci.com/gh/heroku/cli/tree/master)
 [![CircleCI](https://circleci.com/gh/heroku/cli-macos-installer/tree/master.svg?style=svg&circle-token=90b3b4392dc1668e97108edabdfc2c6baddc3a17)](https://circleci.com/gh/heroku/cli-macos-installer/tree/master)
 [![Snap Status](https://build.snapcraft.io/badge/heroku/cli.svg)](https://build.snapcraft.io/user/heroku/cli)
-[![ISC License](https://img.shields.io/github/license/heroku/cli.svg)](https://github.com/heroku/cli/blob/master/LICENSE)
 [![npm](https://img.shields.io/npm/v/heroku.svg)](https://www.npmjs.com/package/heroku)
+[![ISC License](https://img.shields.io/github/license/heroku/cli.svg)](https://github.com/heroku/cli/blob/master/LICENSE)
 
 The Heroku CLI is used to manage Heroku apps from the command line. It is built using [oclif](https://oclif.io).
 
@@ -43,13 +42,13 @@ For other issues, [submit a support ticket](https://help.heroku.com/).
 * [`heroku auth`](docs/auth.md) - check 2fa status
 * [`heroku authorizations`](docs/authorizations.md) - OAuth authorizations
 * [`heroku autocomplete`](docs/autocomplete.md) - display autocomplete installation instructions
-* [`heroku base`](docs/base.md)
 * [`heroku buildpacks`](docs/buildpacks.md) - scripts used to compile apps
 * [`heroku certs`](docs/certs.md) - a topic for the ssl plugin
 * [`heroku ci`](docs/ci.md) - run an application test suite on Heroku
 * [`heroku clients`](docs/clients.md) - OAuth clients on the platform
 * [`heroku config`](docs/config.md) - environment variables of apps
 * [`heroku container`](docs/container.md) - Use containers to build and deploy Heroku apps
+* [`heroku domains`](docs/domains.md) - custom domains for apps
 * [`heroku drains`](docs/drains.md) - forward logs to syslog or HTTPS
 * [`heroku features`](docs/features.md) - add/remove app features
 * [`heroku git`](docs/git.md) - manage local git repository for app
@@ -92,7 +91,8 @@ Releasing
 2. Ensure your current working directory is clean.
 3. Run `lerna bootstrap` to ensure that all dependencies and are installed and linked.
 4. Make sure you are logged in with the correct user by running: `npm whoami`.
-5. Run `lerna publish`. It will create a CHANGELOG from the pending commits using [Conventional Commits](http://conventionalcommits.org), and also take care of bumping packages, tagging and pushing the commit. Upon the git tag being pushed a series of CI release jobs will start.
-6. Monitor CircleCI, Appveyor and Snapcraft jobs to ensure that all the builds are successful.
+5. Run `npm org ls heroku-cli YOUR_ACCOUNT_NAME` and ensure that your npm account has appropriate access for publishing.
+6. Releasing directly to master is not allowed, please follow [these workaround steps](https://salesforce.quip.com/WnEiAedAj6E2).
+7. Monitor CircleCI, Appveyor and Snapcraft jobs to ensure that all the builds are successful.
 
 Review our [PR guidelines](./.github/PULL_REQUEST_TEMPLATE.md).

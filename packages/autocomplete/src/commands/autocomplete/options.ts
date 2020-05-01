@@ -7,15 +7,19 @@ import {fetchCache} from '../../cache'
 
 export default class Options extends AutocompleteBase {
   static hidden = true
+
   static description = 'display arg or flag completion options (used internally by completion fuctions)'
+
   static flags = {
     app: flags.app({required: false, hidden: true}),
   }
+
   static args = [
-    {name: 'completion', strict: false}
+    {name: 'completion', strict: false},
   ]
 
   parsedArgs: { [name: string]: string } = {}
+
   parsedFlags: { [name: string]: string } = {}
 
   // helpful dictionary
@@ -36,49 +40,48 @@ export default class Options extends AutocompleteBase {
       const completion = this.determineCompletion(commandStateVars)
       const options = await this.fetchOptions(completion)
       if (options) this.log(options)
-    } catch (err) {
+    } catch (error) {
       // write to ac log
-      this.writeLogFile(err.message)
+      this.writeLogFile(error.message)
     }
   }
 
   private async processCommandLine() {
-      // find command id
+    // find command id
     const commandLineToComplete = this.argv[0].split(' ')
     const id = commandLineToComplete[1]
-      // find Command
+    // find Command
     const C = this.config.findCommand(id)
     let Klass
     if (C) {
       Klass = C.load()
-        // process Command state from command line data
+      // process Command state from command line data
       const slicedArgv = commandLineToComplete.slice(2)
       const [argsIndex, curPositionIsFlag, curPositionIsFlagValue] = this.determineCmdState(slicedArgv, (Klass as Command))
       return {id, Klass, argsIndex, curPositionIsFlag, curPositionIsFlagValue, slicedArgv}
-    } else {
-      this.throwError(`Command ${id} not found`)
     }
+    this.throwError(`Command ${id} not found`)
   }
 
   private determineCompletion(commandStateVars: any) {
     const {id, Klass, argsIndex, curPositionIsFlag, curPositionIsFlagValue, slicedArgv} = commandStateVars
-      // setup empty cache completion vars to assign
+    // setup empty cache completion vars to assign
     let cacheKey: any
     let cacheCompletion: any
 
-      // completing a flag/value? else completing an arg
+    // completing a flag/value? else completing an arg
     if (curPositionIsFlag || curPositionIsFlagValue) {
       const slicedArgvCount = slicedArgv.length
       const lastArgvArg = slicedArgv[slicedArgvCount - 1]
       const previousArgvArg = slicedArgv[slicedArgvCount - 2]
       const argvFlag = curPositionIsFlagValue ? previousArgvArg : lastArgvArg
-      let {name, flag} = this.findFlagFromWildArg(argvFlag, Klass)
+      const {name, flag} = this.findFlagFromWildArg(argvFlag, Klass)
       if (!flag) this.throwError(`${argvFlag} is not a valid flag for ${id}`)
       cacheKey = name || flag.name
       cacheCompletion = flag.completion
     } else {
       const cmdArgs = Klass.args || []
-        // variable arg (strict: false)
+      // variable arg (strict: false)
       if (!Klass.strict) {
         cacheKey = cmdArgs[0] && cmdArgs[0].name.toLowerCase()
         cacheCompletion = this.findCompletion(cacheKey, id)
@@ -91,7 +94,7 @@ export default class Options extends AutocompleteBase {
       }
     }
 
-      // try to auto-populate the completion object
+    // try to auto-populate the completion object
     if (!cacheCompletion) {
       cacheCompletion = this.findCompletion(cacheKey, id)
     }
@@ -100,26 +103,26 @@ export default class Options extends AutocompleteBase {
 
   private async fetchOptions(cache: any) {
     const {cacheCompletion, cacheKey} = cache
-      // build/retrieve & return options cache
+    // build/retrieve & return options cache
     if (cacheCompletion && cacheCompletion.options) {
       const ctx = {
         args: this.parsedArgs,
-          // special case for app & team env vars
+        // special case for app & team env vars
         flags: this.parsedFlagsWithEnvVars,
         argv: this.argv,
         config: this.config,
       }
-        // use cacheKey function or fallback to arg/flag name
+      // use cacheKey function or fallback to arg/flag name
       const ckey = cacheCompletion.cacheKey ? await cacheCompletion.cacheKey(ctx) : null
       const key: string = ckey || cacheKey || 'unknown_key_error'
       const flagCachePath = path.join(this.completionsCacheDir, key)
 
-        // build/retrieve cache
+      // build/retrieve cache
       const duration = cacheCompletion.cacheDuration || 60 * 60 * 24 // 1 day
       const opts = {cacheFn: () => cacheCompletion.options(ctx)}
       const options = await fetchCache(flagCachePath, duration, opts)
 
-        // return options cache
+      // return options cache
       return (options || []).join('\n')
     }
   }
@@ -139,9 +142,9 @@ export default class Options extends AutocompleteBase {
 
   private findFlagFromWildArg(wild: string, Klass: Command): { flag: any; name: any } {
     let name = wild.replace(/^-+/, '')
-    name = name.replace(/=(.+)?$/, '')
+    name = name.replace(/[=](.+)?$/, '')
 
-    let unknown = {flag: undefined, name: undefined}
+    const unknown = {flag: undefined, name: undefined}
     if (!Klass.flags) return unknown
     const CFlags = Klass.flags
 
@@ -155,7 +158,7 @@ export default class Options extends AutocompleteBase {
   }
 
   private determineCmdState(argv: string[], Klass: Command): [number, boolean, boolean] {
-    let Args = Klass.args || []
+    const Args = Klass.args || []
     let needFlagValueSatisfied = false
     let argIsFlag = false
     let argIsFlagValue = false
@@ -164,46 +167,46 @@ export default class Options extends AutocompleteBase {
 
     argv.filter(wild => {
       if (wild.match(/^-(-)?/)) {
-          // we're a flag
+        // we're a flag
         argIsFlag = true
 
-          // ignore me
+        // ignore me
         const wildSplit = wild.split('=')
         const key = wildSplit.length === 1 ? wild : wildSplit[0]
         const {name, flag} = this.findFlagFromWildArg(key, Klass)
         flagName = name
-          // end ignore me
+        // end ignore me
 
         if (wildSplit.length === 1) {
-            // we're a flag w/o a '=value'
-            // (find flag & see if flag needs a value)
+          // we're a flag w/o a '=value'
+          // (find flag & see if flag needs a value)
           if (flag && flag.type !== 'boolean') {
-              // we're a flag who needs our value to be next
+            // we're a flag who needs our value to be next
             argIsFlagValue = false
             needFlagValueSatisfied = true
             return false
           }
         }
 
-          // --app=my-app is consided a flag & not a flag value
-          // the shell's autocomplete handles partial value matching
+        // --app=my-app is consided a flag & not a flag value
+        // the shell's autocomplete handles partial value matching
 
-          // add parsedFlag
+        // add parsedFlag
         if (wildSplit.length === 2 && name) this.parsedFlags[name] = wildSplit[1]
 
-          // we're a flag who is satisfied
+        // we're a flag who is satisfied
         argIsFlagValue = false
         needFlagValueSatisfied = false
         return false
       }
 
-        // we're not a flag
+      // we're not a flag
       argIsFlag = false
 
       if (needFlagValueSatisfied) {
-          // we're a flag value
+        // we're a flag value
 
-          // add parsedFlag
+        // add parsedFlag
         if (flagName) this.parsedFlags[flagName] = wild
 
         argIsFlagValue = true
@@ -211,10 +214,10 @@ export default class Options extends AutocompleteBase {
         return false
       }
 
-        // we're an arg!
+      // we're an arg!
 
-        // add parsedArgs
-        // TO-DO: how to handle variableArgs?
+      // add parsedArgs
+      // TO-DO: how to handle variableArgs?
       argsIndex += 1
       if (argsIndex < Args.length) {
         this.parsedArgs[Args[argsIndex].name] = wild

@@ -3,6 +3,7 @@ const GITHUB_API = 'https://api.github.com'
 
 export default class GitHubAPI {
   version: any
+
   token: any
 
   constructor(version: any, token: any) {
@@ -14,7 +15,7 @@ export default class GitHubAPI {
     options.headers = {
       Authorization: `Token ${this.token}`,
       'User-Agent': this.version,
-      ...options.headers
+      ...options.headers,
     }
 
     return HTTP.get(`${GITHUB_API}${url}`, options)

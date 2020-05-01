@@ -5,7 +5,7 @@ export default function setupPipeline(kolkrabbi: any, app: any, settings: any, p
 
   if (ciSettings.ci) {
     promises.push(
-      kolkrabbi.updatePipelineRepository(pipelineID, ciSettings)
+      kolkrabbi.updatePipelineRepository(pipelineID, ciSettings),
     )
   }
 
