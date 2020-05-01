@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.39.6](https://github.com/heroku/cli/compare/v7.39.5...v7.39.6) (2020-05-01)
+
+
+### Bug Fixes
+
+* **pg-v5:** dropbox regex ([#1399](https://github.com/heroku/cli/issues/1399)) ([9a6c7ab](https://github.com/heroku/cli/commit/9a6c7ab0e55f089d9ecf9f85ea34ac18d51de89f))
+
+
+
+
+
 ## [7.39.2](https://github.com/heroku/cli/compare/v7.39.1...v7.39.2) (2020-03-30)
 
 **Note:** Version bump only for package @heroku-cli/plugin-pg-v5
