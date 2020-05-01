@@ -92,7 +92,7 @@ Releasing
 3. Run `lerna bootstrap` to ensure that all dependencies and are installed and linked.
 4. Make sure you are logged in with the correct user by running: `npm whoami`.
 5. Run `npm org ls heroku-cli YOUR_ACCOUNT_NAME` and ensure that your npm account has appropriate access for publishing.
-6. Run `lerna publish`. It will create a CHANGELOG from the pending commits using [Conventional Commits](http://conventionalcommits.org), and also take care of bumping packages, tagging and pushing the commit. Upon the git tag being pushed a series of CI release jobs will start.
+6. Releasing directly to master is not allowed, please follow [these workaround steps](https://salesforce.quip.com/WnEiAedAj6E2).
 7. Monitor CircleCI, Appveyor and Snapcraft jobs to ensure that all the builds are successful.
 
 Review our [PR guidelines](./.github/PULL_REQUEST_TEMPLATE.md).
