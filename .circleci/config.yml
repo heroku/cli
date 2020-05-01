@@ -98,8 +98,11 @@ jobs:
             - /cli/node_modules
             - /cli/tmp/cache
             - /usr/local/share/.cache/yarn
+      - run: |
+          mkdir /persisted
+          cp -r /cli/packages/cli/dist /persisted
       - persist_to_workspace:
-          root: /cli/packages/cli
+          root: /persisted
           paths:
             - dist
   release_win:
@@ -131,13 +134,14 @@ jobs:
     <<: *defaults
     steps:
       - attach_workspace:
-          at: /cli/packages/cli
+          at: /persisted
       - add_ssh_keys
       - checkout
       - run: |
           cp yarn.lock packages/cli
           cd packages/cli
           yarn
+          cp -r /persisted/dist /cli/packages/cli
           ./scripts/release/homebrew
   invalidate_cdn_cache:
     <<: *defaults
