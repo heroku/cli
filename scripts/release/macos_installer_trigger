@@ -7,7 +7,7 @@ if [[ -z "${CIRCLE_TAG}" ]]; then
   exit
 fi
 
-./scripts/utils/_github_setup
+./scripts/release/utils/_github_setup
 
 VERSION=$(node -p "require('./packages/cli/package.json').version")
 

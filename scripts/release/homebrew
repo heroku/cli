@@ -7,7 +7,7 @@ if [[ -z "${CIRCLE_TAG}" ]]; then
   exit
 fi
 
-./scripts/utils/_github_setup
+./scripts/release/utils/_github_setup
 
 rm -rf tmp/homebrew-brew
 git config --global core.pager cat
