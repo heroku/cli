@@ -101,10 +101,12 @@ jobs:
       - run: |
           mkdir /persisted
           cp -r /cli/packages/cli/dist /persisted
+          cp -r /cli/packages/cli/tmp /persisted
       - persist_to_workspace:
           root: /persisted
           paths:
             - dist
+            - tmp
   release_win:
     <<: *defaults
     steps:
@@ -142,6 +144,7 @@ jobs:
           cd packages/cli
           yarn
           cp -r /persisted/dist /cli/packages/cli
+          cp -r /persisted/tmp /cli/packages/cli
           ./scripts/release/homebrew
   invalidate_cdn_cache:
     <<: *defaults
