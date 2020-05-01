@@ -91,7 +91,6 @@ jobs:
           cd packages/cli
           yarn
           ./scripts/release/tarballs
-          ./scripts/release/homebrew
       - save_cache:
           key: v4-yarn-{{ checksum ".circleci/config.yml" }}-{{ checksum "yarn.lock" }}
           paths:
