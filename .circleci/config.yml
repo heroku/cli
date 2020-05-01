@@ -98,10 +98,15 @@ jobs:
             - /cli/node_modules
             - /cli/tmp/cache
             - /usr/local/share/.cache/yarn
+      - run: |
+          mkdir /persisted
+          cp -r /cli/packages/cli/dist /persisted
+          cp -r /cli/packages/cli/tmp /persisted
       - persist_to_workspace:
-          root: /cli/packages/cli
+          root: /persisted
           paths:
             - dist
+            - tmp
   release_win:
     <<: *defaults
     steps:
@@ -131,13 +136,15 @@ jobs:
     <<: *defaults
     steps:
       - attach_workspace:
-          at: /cli/packages/cli
+          at: /persisted
       - add_ssh_keys
       - checkout
       - run: |
           cp yarn.lock packages/cli
           cd packages/cli
           yarn
+          cp -r /persisted/dist /cli/packages/cli
+          cp -r /persisted/tmp /cli/packages/cli
           ./scripts/release/homebrew
   invalidate_cdn_cache:
     <<: *defaults
@@ -180,7 +187,7 @@ jobs:
       # the snapcraft image does not include git
       - run: apt-get -qq update; apt-get -y install git
       - checkout
-      - run: ./scripts/release_snap
+      - run: ./scripts/release/snap
 workflows:
   version: 2.1
   heroku_cli:
@@ -207,17 +214,18 @@ workflows:
       - release_homebrew:
           requires:
             - release_tarballs
+          # test in master for now
+          filters:
+            <<: *master_dev_and_version_tags
+      - trigger_macos: &trigger_macos
+          requires:
+            - node12-test
+            - node10-test
           filters: &only_version_tags
             branches:
               ignore: /.*/
             tags:
               <<: *version_tags
-      - trigger_macos: &trigger_macos
-          requires:
-            - node12-test
-            - node10-test
-          filters:
-            <<: *only_version_tags
       - release_snap: *trigger_macos
       - invalidate_cdn_cache:
           requires:
