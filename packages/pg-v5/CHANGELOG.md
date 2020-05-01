@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.40.0](https://github.com/heroku/cli/compare/v7.39.6...v7.40.0) (2020-05-01)
+
+
+### Features
+
+* **pg-v5:** support overriding the postgres hobby tier host ([#1372](https://github.com/heroku/cli/issues/1372)) ([c815b4f](https://github.com/heroku/cli/commit/c815b4fdb7c1488ea643cb8bad1e791e77336b69))
+
+
+
+
+
 ## [7.39.6](https://github.com/heroku/cli/compare/v7.39.5...v7.39.6) (2020-05-01)
 
 
