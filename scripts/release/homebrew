@@ -8,7 +8,6 @@ if [[ -z "${CIRCLE_TAG}" ]]; then
 fi
 
 ./scripts/utils/_github_setup
-# ./scripts/utils/_homebrew_pack_base_tarball
 
 rm -rf tmp/homebrew-brew
 git config --global core.pager cat
