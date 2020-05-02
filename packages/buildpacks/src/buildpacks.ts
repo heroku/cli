@@ -138,15 +138,13 @@ export class BuildpackCommand {
   }
 
   registryUrlToName(buildpack: string, registryOnly = false): string {
-    // eslint-disable-next-line no-useless-escape
-    let match = /^https:\/\/buildpack\-registry\.s3\.amazonaws\.com\/buildpacks\/([\w\-]+\/[\w\-]+).tgz$/.exec(buildpack)
+    let match = /^https:\/\/buildpack-registry\.s3\.amazonaws\.com\/buildpacks\/([\w-]+\/[\w-]+).tgz$/.exec(buildpack)
     if (match) {
       return match[1]
     }
 
     if (!registryOnly) {
-      // eslint-disable-next-line no-useless-escape
-      match = /^https:\/\/codon\-buildpacks\.s3\.amazonaws\.com\/buildpacks\/heroku\/([\w\-]+).tgz$/.exec(buildpack)
+      match = /^https:\/\/codon-buildpacks\.s3\.amazonaws\.com\/buildpacks\/heroku\/([\w-]+).tgz$/.exec(buildpack)
       if (match) {
         return `heroku/${match[1]}`
       }
