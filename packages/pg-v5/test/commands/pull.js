@@ -6,8 +6,8 @@ const cli = require('heroku-cli-util')
 const sinon = require('sinon')
 const proxyquire = require('proxyquire')
 const expect = require('unexpected')
-const env = require('process').env
 
+const env = process.env
 let db
 
 const fetcher = () => ({

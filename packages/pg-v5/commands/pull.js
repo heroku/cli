@@ -4,10 +4,11 @@ const cli = require('heroku-cli-util')
 const co = require('co')
 const debug = require('debug')('push')
 const psql = require('../lib/psql')
-const env = require('process').env
 const bastion = require('../lib/bastion')
 const cp = require('child_process')
 const util = require('../lib/util')
+
+const env = process.env
 
 function parseExclusions (rawExcludeList) {
   return (rawExcludeList || '').split(';').map(function (tname) {
