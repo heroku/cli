@@ -19,7 +19,7 @@ jobs:
   windows-test:
     executor:
       name: win/default
-      size: large
+      size: 2xlarge
     steps:
       - checkout
       - run:
@@ -50,7 +50,7 @@ jobs:
           command: yarn test
   node12-test: &test
     <<: *defaults
-    resource_class: large
+    resource_class: 2xlarge
     steps:
       - checkout
       - restore_cache: &yarn_restore_cache
@@ -80,7 +80,7 @@ jobs:
     <<: *test
     docker:
       - image: heroku/nsis:10-2
-    resource_class: large
+    resource_class: 2xlarge
   release_tarballs:
     <<: *defaults
     steps:
