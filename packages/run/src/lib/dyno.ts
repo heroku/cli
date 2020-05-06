@@ -101,7 +101,7 @@ export default class Dyno extends Duplex {
     try {
       const dyno = await this.heroku.post(this.opts.dyno ? `/apps/${this.opts.app}/dynos/${this.opts.dyno}` : `/apps/${this.opts.app}/dynos`, {
         headers: {
-          Accept: this.opts.dyno ? 'application/vnd.heroku+json; version=3.run-inside' : 'application/vnd.heroku+json; version=3'
+          Accept: this.opts.dyno ? 'application/vnd.heroku+json; version=3.run-inside' : 'application/vnd.heroku+json; version=3',
         },
         body: {
           command,
@@ -109,7 +109,7 @@ export default class Dyno extends Duplex {
           size: this.opts.size,
           type: this.opts.type,
           env: this._env(),
-          force_no_tty: this.opts['no-tty']
+          force_no_tty: this.opts['no-tty'],
         },
       })
       this.dyno = dyno.body
@@ -137,9 +137,7 @@ export default class Dyno extends Duplex {
     }
   }
 
-  /**
-   * Attaches stdin/stdout to dyno
-   */
+  // Attaches stdin/stdout to dyno
   attach() {
     this.pipe(process.stdout)
     if (this.dyno && this.dyno.attach_url) {
