@@ -70,7 +70,7 @@
     "postpack": "rm -f oclif.manifest.json",
     "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
     "pretest": "tsc -p test --noEmit",
-    "test": "npm run test:unit && npm run test:integration",
+    "test": "npm run test:unit",
     "test:unit": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
     "test:integration": "node ./bin/bats-test-runner",
     "posttest": "yarn lint",
