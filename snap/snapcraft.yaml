@@ -35,7 +35,7 @@ parts:
       tar xvzf heroku.tar.gz
       rmdir ../install
       mv package ../install
-      OS=linux ./scripts/fetch_node_binary ../install/bin
+      OS=linux ./scripts/utils/_fetch_node_binary ../install/bin
       cd ../install && yarn --prod
       cd ../install && bin/run -v
       sed -i 's/#!\/usr\/bin\/env node/#!\/snap\/heroku\/current\/bin\/node/' ../install/bin/run

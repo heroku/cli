@@ -8,10 +8,12 @@ const proxyquire = require('proxyquire')
 
 describe('pg:promote when argument is database', () => {
   let api
+  let pg
 
   const attachment = {
     addon: {
-      name: 'postgres-1'
+      name: 'postgres-1',
+      id: 'c667bce0-3238-4202-8550-e1dc323a02a2'
     },
     namespace: null
   }
@@ -22,19 +24,27 @@ describe('pg:promote when argument is database', () => {
     }
   }
 
+  const host = () => {
+    return 'https://postgres-api.heroku.com'
+  }
+
   const cmd = proxyquire('../../commands/promote', {
-    '../lib/fetcher': fetcher
+    '../lib/fetcher': fetcher,
+    '../lib/host': host
   })
 
   beforeEach(() => {
     api = nock('https://api.heroku.com:443')
     api.get('/apps/myapp/formation').reply(200, [])
+    pg = nock('https://postgres-api.heroku.com')
+    pg.get(`/client/v11/databases/${attachment.addon.id}/wait_status`).reply(200, { message: 'available', 'waiting?': false })
     cli.mockConsole()
   })
 
   afterEach(() => {
     nock.cleanAll()
     api.done()
+    pg.done()
   })
 
   it('promotes the db and creates another attachment if current DATABASE does not have another', () => {
@@ -91,7 +101,10 @@ Promoting postgres-1 to DATABASE_URL on myapp... done
 describe('pg:promote when argument is a credential attachment', () => {
   const credentialAttachment = {
     name: 'PURPLE',
-    addon: { name: 'postgres-1' },
+    addon: {
+      name: 'postgres-1',
+      id: 'c667bce0-3238-4202-8550-e1dc323a02a2'
+    },
     namespace: 'credential:hello'
   }
 
@@ -101,21 +114,30 @@ describe('pg:promote when argument is a credential attachment', () => {
     }
   }
 
+  const host = () => {
+    return 'https://postgres-api.heroku.com'
+  }
+
   const cmd = proxyquire('../../commands/promote', {
-    '../lib/fetcher': fetcher
+    '../lib/fetcher': fetcher,
+    '../lib/host': host
   })
 
   let api
+  let pg
 
   beforeEach(() => {
     api = nock('https://api.heroku.com:443')
     api.get('/apps/myapp/formation').reply(200, [])
+    pg = nock('https://postgres-api.heroku.com')
+    pg.get(`/client/v11/databases/${credentialAttachment.addon.id}/wait_status`).reply(200, { message: 'available', 'waiting?': false })
     cli.mockConsole()
   })
 
   afterEach(() => {
     nock.cleanAll()
     api.done()
+    pg.done()
   })
 
   it('promotes the credential and creates another attachment if current DATABASE does not have another', () => {
@@ -254,8 +276,16 @@ Promoting PURPLE to DATABASE_URL on myapp... done
 
 describe('pg:promote when release phase is present', () => {
   let api
+  let pg
 
-  const cmd = proxyquire('../../commands/promote', {})
+  const addonID = 'c667bce0-3238-4202-8550-e1dc323a02a2'
+  const host = () => {
+    return 'https://postgres-api.heroku.com'
+  }
+
+  const cmd = proxyquire('../../commands/promote', {
+    '../lib/host': host
+  })
 
   beforeEach(() => {
     api = nock('https://api.heroku.com:443')
@@ -285,15 +315,19 @@ describe('pg:promote when release phase is present', () => {
       addon_service: 'heroku-postgresql'
     }).reply(201, [{
       name: 'PURPLE',
-      addon: { name: 'postgres-1' },
+      addon: { name: 'postgres-1', id: addonID },
       namespace: 'credential:hello'
     }])
+
+    pg = nock('https://postgres-api.heroku.com')
+    pg.get(`/client/v11/databases/${addonID}/wait_status`).reply(200, { message: 'available', 'waiting?': false })
 
     cli.mockConsole()
   })
 
   afterEach(() => {
     nock.cleanAll()
+    pg.done()
     api.done()
   })
 
@@ -344,5 +378,102 @@ Checking release phase... pg:promote failed because Attach DATABASE release was 
   it('checks release phase for attach failure and detach success', () => {
     api.get('/apps/myapp/releases').reply(200, [])
     return expect(cmd.run({ app: 'myapp', args: {}, flags: {} }), 'to be rejected')
+  })
+})
+
+describe('pg:promote when database is not available or force flag is present', () => {
+  let api
+  let pg
+
+  const attachment = {
+    addon: {
+      name: 'postgres-1',
+      id: 'c667bce0-3238-4202-8550-e1dc323a02a2'
+    },
+    namespace: null
+  }
+
+  const fetcher = () => {
+    return {
+      attachment: () => attachment
+    }
+  }
+
+  const host = () => {
+    return 'https://postgres-api.heroku.com'
+  }
+
+  const cmd = proxyquire('../../commands/promote', {
+    '../lib/fetcher': fetcher,
+    '../lib/host': host
+  })
+
+  beforeEach(() => {
+    api = nock('https://api.heroku.com:443')
+    api.get('/apps/myapp/formation').reply(200, [])
+    pg = nock('https://postgres-api.heroku.com')
+    cli.mockConsole()
+  })
+
+  afterEach(() => {
+    nock.cleanAll()
+    api.done()
+    pg.done()
+  })
+
+  it('warns user if database is unavailable', () => {
+    api.get('/apps/myapp/addon-attachments').reply(200, [
+      { name: 'DATABASE', addon: { name: 'postgres-2' }, namespace: null },
+      { name: 'RED', addon: { name: 'postgres-2' }, namespace: null }
+    ])
+
+    pg.get(`/client/v11/databases/${attachment.addon.id}/wait_status`).reply(200, { 'waiting?': true, message: 'pending' })
+
+    const err = new Error(`Database cannot be promoted while in state: pending
+\nPromoting this database can lead to application errors and outage. Please run pg:wait to wait for database to become available.
+\nTo ignore this error, you can pass the --force flag to promote the database and risk application issues.`)
+    return expect(cmd.run({ app: 'myapp', args: {}, flags: {} }), 'to be rejected with', err)
+  })
+
+  it('promotes database in unavailable state if --force flag is present', () => {
+    api.get('/apps/myapp/addon-attachments').reply(200, [
+      { name: 'DATABASE', addon: { name: 'postgres-2' }, namespace: null },
+      { name: 'RED', addon: { name: 'postgres-2' }, namespace: null }
+    ])
+
+    api.post('/addon-attachments', {
+      name: 'DATABASE',
+      app: { name: 'myapp' },
+      addon: { name: 'postgres-1' },
+      namespace: null,
+      confirm: 'myapp'
+    }).reply(201)
+
+    pg.get(`/client/v11/databases/${attachment.addon.id}/wait_status`).reply(200, { 'waiting?': true, message: 'pending' })
+
+    return cmd.run({ app: 'myapp', args: {}, flags: { force: true } })
+      .then(() => expect(cli.stderr, 'to equal', `Ensuring an alternate alias for existing DATABASE_URL... RED_URL
+Promoting postgres-1 to DATABASE_URL on myapp... done\n`))
+  })
+
+  it('promotes database in available state if --force flag is present', () => {
+    api.get('/apps/myapp/addon-attachments').reply(200, [
+      { name: 'DATABASE', addon: { name: 'postgres-2' }, namespace: null },
+      { name: 'RED', addon: { name: 'postgres-2' }, namespace: null }
+    ])
+
+    pg.get(`/client/v11/databases/${attachment.addon.id}/wait_status`).reply(200, { 'waiting?': false, message: 'available' })
+
+    api.post('/addon-attachments', {
+      name: 'DATABASE',
+      app: { name: 'myapp' },
+      addon: { name: 'postgres-1' },
+      namespace: null,
+      confirm: 'myapp'
+    }).reply(201)
+
+    return cmd.run({ app: 'myapp', args: {}, flags: { force: true } })
+      .then(() => expect(cli.stderr, 'to equal', `Ensuring an alternate alias for existing DATABASE_URL... RED_URL
+Promoting postgres-1 to DATABASE_URL on myapp... done\n`))
   })
 })

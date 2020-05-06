@@ -85,6 +85,8 @@ Developing
 
 This project is built with [lerna](https://lerna.js.org/). The core plugins are located in [./packages](./packages). Run `lerna bootstrap` after cloning the repository to set it up.
 
+The standard `oclif` `./bin/run` script serves as your entry point to the CLI in your local development environment.
+
 Releasing
 =========
 1. Checkout the master branch and double-check you're on latest commit that you would like to release from.

@@ -2,11 +2,14 @@
 
 const cli = require('heroku-cli-util')
 const co = require('co')
+const host = require('../lib/host')
 
 function * run (context, heroku) {
   const fetcher = require('../lib/fetcher')(heroku)
-  const { app, args } = context
+  const { app, args, flags } = context
+  const { force } = flags
   const attachment = yield fetcher.attachment(app, args.database)
+
   let current
 
   yield cli.action(`Ensuring an alternate alias for existing ${cli.color.configVar('DATABASE_URL')}`, co(function * () {
@@ -44,6 +47,19 @@ function * run (context, heroku) {
     })
     cli.action.done(cli.color.configVar(backup.name + '_URL'))
   }))
+
+  if (!force) {
+    let status = yield heroku.request({
+      host: host(attachment.addon),
+      path: `/client/v11/databases/${attachment.addon.id}/wait_status`
+    })
+
+    if (status['waiting?']) {
+      throw new Error(`Database cannot be promoted while in state: ${status['message']}
+\nPromoting this database can lead to application errors and outage. Please run pg:wait to wait for database to become available.
+\nTo ignore this error, you can pass the --force flag to promote the database and risk application issues.`)
+    }
+  }
 
   let promotionMessage
   if (attachment.namespace) {
@@ -120,6 +136,7 @@ module.exports = {
   description: 'sets DATABASE as your DATABASE_URL',
   needsApp: true,
   needsAuth: true,
+  flags: [{ name: 'force', char: 'f' }],
   args: [{ name: 'database' }],
   run: cli.command({ preauth: true }, co.wrap(run))
 }
