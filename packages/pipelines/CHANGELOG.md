@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.41.0](https://github.com/heroku/cli/compare/v7.40.0...v7.41.0) (2020-05-11)
+
+
+### Bug Fixes
+
+* use cli.log in pipelines:promote ([#1509](https://github.com/heroku/cli/issues/1509)) ([3899d50](https://github.com/heroku/cli/commit/3899d5031a10a4802f12ed37b88ec6f9675d25dd))
+
+
+
+
+
 ## [7.38.1](https://github.com/heroku/cli/compare/v7.38.0...v7.38.1) (2020-02-10)
 
 **Note:** Version bump only for package @heroku-cli/plugin-pipelines

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.41.0](https://github.com/heroku/cli/compare/v7.40.0...v7.41.0) (2020-05-11)
+
+
+### Bug Fixes
+
+* **run:** fix run status code and use https ([#1351](https://github.com/heroku/cli/issues/1351)) ([ca8127f](https://github.com/heroku/cli/commit/ca8127fd5811d9f9c87aea891d33b36a6835a2ec))
+
+
+
+
+
 ## [7.38.1](https://github.com/heroku/cli/compare/v7.38.0...v7.38.1) (2020-02-10)
 
 **Note:** Version bump only for package @heroku-cli/plugin-run
