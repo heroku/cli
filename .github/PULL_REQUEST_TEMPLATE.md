@@ -13,5 +13,5 @@ Examples:
 
 `chore(cli): edit README`
 
-Learn more about [Conventional Commits](http://conventionalcommits.org).
+Learn more about [Conventional Commits](https://www.conventionalcommits.org/).
 -->
