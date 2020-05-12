@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.41.1](https://github.com/heroku/cli/compare/v7.41.0...v7.41.1) (2020-05-12)
+
+**Note:** Version bump only for package heroku
+
+
+
+
+
 # [7.41.0](https://github.com/heroku/cli/compare/v7.40.0...v7.41.0) (2020-05-11)
 
 

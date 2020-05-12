@@ -1,7 +1,7 @@
 {
   "name": "heroku",
   "description": "CLI to interact with Heroku",
-  "version": "7.41.0",
+  "version": "7.41.1",
   "author": "Jeff Dickey @jdxcode",
   "bin": {
     "heroku": "./bin/run"
@@ -31,7 +31,7 @@
     "@heroku-cli/plugin-ps": "^7.39.3",
     "@heroku-cli/plugin-ps-exec": "2.3.8",
     "@heroku-cli/plugin-redis-v5": "^7.39.2",
-    "@heroku-cli/plugin-run": "^7.41.0",
+    "@heroku-cli/plugin-run": "^7.41.1",
     "@heroku-cli/plugin-spaces": "^7.39.2",
     "@heroku-cli/plugin-status": "^7.39.2",
     "@heroku-cli/plugin-webhooks": "^7.39.4",
