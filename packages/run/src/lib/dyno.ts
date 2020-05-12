@@ -12,7 +12,8 @@ import * as net from 'net'
 import {Duplex, Transform} from 'stream'
 import * as tls from 'tls'
 import * as tty from 'tty'
-import {URL} from 'url'
+// eslint-disable-next-line node/no-deprecated-api
+import {URL, parse} from 'url'
 
 import {buildEnvFromFlag} from '../lib/helpers'
 
@@ -62,7 +63,9 @@ export default class Dyno extends Duplex {
 
   resolve?: (value?: unknown) => void
 
-  uri?: URL & {auth?: string}
+  uri?: URL
+
+  legacyUri?: {[key: string]: any}
 
   unpipeStdin: any
 
@@ -142,7 +145,7 @@ export default class Dyno extends Duplex {
     this.pipe(process.stdout)
     if (this.dyno && this.dyno.attach_url) {
       this.uri = new URL(this.dyno.attach_url)
-      this.uri.auth = `${this.uri.username}:${this.uri.password}`
+      this.legacyUri = parse(this.dyno.attach_url)
     }
     if (this._useSSH) {
       this.p = this._ssh()
@@ -224,7 +227,7 @@ export default class Dyno extends Duplex {
       this.resolve = resolve
       this.reject = reject
 
-      const options: https.RequestOptions & { rejectUnauthorized?: boolean } = this.uri
+      const options: https.RequestOptions & { rejectUnauthorized?: boolean } = this.legacyUri
       options.headers = {Connection: 'Upgrade', Upgrade: 'tcp'}
       options.rejectUnauthorized = false
       const r = https.request(options)
