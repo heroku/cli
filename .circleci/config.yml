@@ -213,18 +213,17 @@ workflows:
       - release_homebrew:
           requires:
             - release_tarballs
-          # test in master for now
-          filters:
-            <<: *master_dev_and_version_tags
-      - trigger_macos: &trigger_macos
-          requires:
-            - node12-test
-            - node10-test
           filters: &only_version_tags
             branches:
               ignore: /.*/
             tags:
               <<: *version_tags
+      - trigger_macos: &trigger_macos
+          requires:
+            - node12-test
+            - node10-test
+          filters:
+            <<: *only_version_tags
       - release_snap: *trigger_macos
       - invalidate_cdn_cache:
           requires:
