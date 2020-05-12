@@ -12,8 +12,7 @@ import * as net from 'net'
 import {Duplex, Transform} from 'stream'
 import * as tls from 'tls'
 import * as tty from 'tty'
-// eslint-disable-next-line node/no-deprecated-api
-import {parse as urlparse} from 'url'
+import {URL} from 'url'
 
 import {buildEnvFromFlag} from '../lib/helpers'
 
@@ -63,7 +62,7 @@ export default class Dyno extends Duplex {
 
   resolve?: (value?: unknown) => void
 
-  uri?: any
+  uri?: URL & {auth?: string}
 
   unpipeStdin: any
 
@@ -142,7 +141,8 @@ export default class Dyno extends Duplex {
   attach() {
     this.pipe(process.stdout)
     if (this.dyno && this.dyno.attach_url) {
-      this.uri = urlparse(this.dyno.attach_url)
+      this.uri = new URL(this.dyno.attach_url)
+      this.uri.auth = `${this.uri.username}:${this.uri.password}`
     }
     if (this._useSSH) {
       this.p = this._ssh()
