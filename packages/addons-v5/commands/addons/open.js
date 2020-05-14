@@ -3,13 +3,14 @@
 let cli = require('heroku-cli-util')
 let co = require('co')
 let fs = require('fs')
+let os = require('os')
 
 function open (url) {
   cli.log(`Opening ${cli.color.cyan(url)}...`)
   return cli.open(url)
 }
 
-const ssoPath = '/tmp/heroku-sso.html'
+const ssoPath = os.tmpdir() + '/heroku-sso.html'
 
 function writeSudoTemplate (ctx, sso, path) {
   return new Promise(function (resolve, reject) {
