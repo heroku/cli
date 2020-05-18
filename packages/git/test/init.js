@@ -1,4 +1,4 @@
 'use strict'
 
-let cli = require('heroku-cli-util')
+const cli = require('heroku-cli-util')
 cli.raiseErrors = true

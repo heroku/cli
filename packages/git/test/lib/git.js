@@ -1,11 +1,11 @@
 'use strict'
 /* global describe it beforeEach afterEach */
 
-let sinon = require('sinon')
-let expect = require('unexpected')
-let git = require('../../lib/git')({ httpGitHost: 'git.heroku.com', gitHost: 'heroku.com' })
-let cp = require('child_process')
-let EventEmitter = require('events')
+const sinon = require('sinon')
+const expect = require('unexpected')
+const git = require('../../lib/git')({httpGitHost: 'git.heroku.com', gitHost: 'heroku.com'})
+const cp = require('child_process')
+const EventEmitter = require('events')
 
 describe('git', function () {
   let mock
@@ -17,14 +17,14 @@ describe('git', function () {
   it('runs exec', function () {
     mock.expects('execFile').withArgs('git', ['remote']).yieldsAsync(null, 'foo')
     return git.exec(['remote'])
-      .then((data) => {
-        expect(data, 'to equal', 'foo')
-        mock.verify()
-      })
+    .then(data => {
+      expect(data, 'to equal', 'foo')
+      mock.verify()
+    })
   })
 
   it('translates exec Errno::ENOENT to a friendlier error message', function () {
-    let err = new Error()
+    const err = new Error()
     err.code = 'ENOENT'
 
     mock.expects('execFile').withArgs('git', ['remote']).yieldsAsync(err, null)
@@ -33,7 +33,7 @@ describe('git', function () {
   })
 
   it('exec passes through all other errors', function () {
-    let err = new Error('Some other error message')
+    const err = new Error('Some other error message')
 
     mock.expects('execFile').withArgs('git', ['remote']).yieldsAsync(err, null)
 
@@ -41,29 +41,29 @@ describe('git', function () {
   })
 
   it('runs spawn', function () {
-    let emitter = new EventEmitter()
-    mock.expects('spawn').withExactArgs('git', ['remote'], { stdio: [0, 1, 2] }).returns(emitter)
+    const emitter = new EventEmitter()
+    mock.expects('spawn').withExactArgs('git', ['remote'], {stdio: [0, 1, 2]}).returns(emitter)
     process.nextTick(() => emitter.emit('close'))
     return git.spawn(['remote'])
-      .then(() => mock.verify())
+    .then(() => mock.verify())
   })
 
   it('translates spawn Errno::ENOENT to a friendlier error message', function () {
-    let err = new Error()
+    const err = new Error()
     err.code = 'ENOENT'
 
-    let emitter = new EventEmitter()
-    mock.expects('spawn').withExactArgs('git', ['remote'], { stdio: [0, 1, 2] }).returns(emitter)
+    const emitter = new EventEmitter()
+    mock.expects('spawn').withExactArgs('git', ['remote'], {stdio: [0, 1, 2]}).returns(emitter)
     process.nextTick(() => emitter.emit('error', err))
 
     return expect(git.spawn(['remote']), 'to be rejected with', 'Git must be installed to use the Heroku CLI.  See instructions here: http://git-scm.com')
   })
 
   it('spawn passes through all other errors', function () {
-    let err = new Error('Some other error message')
+    const err = new Error('Some other error message')
 
-    let emitter = new EventEmitter()
-    mock.expects('spawn').withExactArgs('git', ['remote'], { stdio: [0, 1, 2] }).returns(emitter)
+    const emitter = new EventEmitter()
+    mock.expects('spawn').withExactArgs('git', ['remote'], {stdio: [0, 1, 2]}).returns(emitter)
     process.nextTick(() => emitter.emit('error', err))
 
     return expect(git.spawn(['remote']), 'to be rejected with', err.message)
@@ -72,8 +72,8 @@ describe('git', function () {
   it('gets heroku git remote config', function () {
     mock.expects('execFile').withArgs('git', ['config', 'heroku.remote']).yieldsAsync(null, 'staging')
     return git.remoteFromGitConfig()
-      .then((remote) => expect(remote, 'to equal', 'staging'))
-      .then(() => mock.verify())
+    .then(remote => expect(remote, 'to equal', 'staging'))
+    .then(() => mock.verify())
   })
 
   it('returns an http git url', function () {
