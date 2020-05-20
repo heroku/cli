@@ -6,7 +6,7 @@
   "dependencies": {
     "@heroku-cli/command": "^8.3.0",
     "@oclif/command": "^1.5.11",
-    "@oclif/config": "^1.12.10",
+    "@oclif/config": "^1.15.1",
     "chalk": "^2.4.2",
     "cli-ux": "^4.9.3",
     "debug": "^4.1.1",
