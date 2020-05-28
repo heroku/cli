@@ -16,7 +16,8 @@
     "inquirer": "^7.0.0",
     "lodash.keyby": "^4.6.0",
     "lodash.sortby": "^4.7.0",
-    "validator": "^10.11.0"
+    "validator": "^10.11.0",
+    "snyk": "^1.332.0"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1",
@@ -78,6 +79,9 @@
     "pretest": "tsc -p test --noEmit",
     "test": "nyc --extension .ts mocha \"test/**/*.test.ts\"",
     "posttest": "yarn lint",
-    "version": "oclif-dev readme && git add README.md"
-  }
+    "version": "oclif-dev readme && git add README.md",
+    "snyk-protect": "snyk protect",
+    "prepare": "yarn run snyk-protect"
+  },
+  "snyk": true
 }
