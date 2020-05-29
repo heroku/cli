@@ -50,7 +50,7 @@
     "debug": "4.1.1",
     "execa": "1.0.0",
     "fs-extra": "7.0.1",
-    "http-call": "5.2.3",
+    "http-call": "5.3.0",
     "netrc-parser": "3.1.6",
     "semver": "5.6.0",
     "tslib": "1.9.3",
