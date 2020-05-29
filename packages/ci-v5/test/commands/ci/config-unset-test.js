@@ -14,14 +14,14 @@ describe('heroku ci:config:unset', function () {
     pipeline = Factory.pipeline
   })
 
-  it('unsets config', function * () {
+  it('unsets config', async function () {
     const api = nock('https://api.heroku.com')
       .get(`/pipelines/${pipeline.id}`)
       .reply(200, pipeline)
       .patch(`/pipelines/${pipeline.id}/stage/test/config-vars`)
       .reply(200, { [key]: null })
 
-    yield cmd.run({ args: [ key ], flags: { pipeline: pipeline.id } })
+    await cmd.run({ args: [ key ], flags: { pipeline: pipeline.id } })
     api.done()
   })
 })
