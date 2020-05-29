@@ -53,7 +53,7 @@ TARBALL_PATH=$DIST_DIR/heroku-v${SHORT_VERSION}/$TARBALL_BASE
 SHA256XZ=$(shasum -a 256 "$TARBALL_PATH" | awk \{'print $1'\})
 
 cd tmp/homebrew-brew
-sed -i "s/heroku-v.*\\/heroku-v.*\\.tar\\.xz/heroku-v${SHORT_VERSION}\\/${TARBALL_BASE}/" Formula/heroku.rb
+sed -i "s/^\(\s*version: \"\).*\(\".*\)$/\1${SHORT_VERSION}\2/" Formula/heroku.rb
 sed -i "s/sha256 \".*\"/sha256 \"${SHA256XZ}\"/" Formula/heroku.rb
 git add Formula/heroku.rb
 git diff --cached
