@@ -48,10 +48,42 @@ module.exports = function () {
     }
   }
 
+  function HostStatus (s) {
+    switch (s) {
+      case 'available':
+        return `${cli.color.green(s)}`
+      case 'under-assessment':
+        return `${cli.color.yellow(s)}`
+      case 'permanent-failure':
+      case 'released-permanent-failure':
+        return `${cli.color.red(s)}`
+      case 'released':
+        return `${cli.color.gray(s)}`
+      default:
+        return s
+    }
+  }
+
+  function Percent (v) {
+    const fmt = () => `${v}%`
+
+    switch (typeof v) {
+      case 'number':
+      case 'bigint':
+        return fmt()
+      case 'string':
+        return v.length > 0 ? fmt() : v
+      default:
+        return v
+    }
+  }
+
   return {
     CIDR,
     CIDRBlocksOrCIDRBlock,
     PeeringStatus,
-    VPNStatus
+    VPNStatus,
+    HostStatus,
+    Percent
   }
 }
