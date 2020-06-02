@@ -14,46 +14,38 @@ module.exports = function () {
   }
 
   function VPNStatus (s) {
-    let colored = s
     switch (s) {
       case 'UP':
       case 'available':
-        colored = `${cli.color.green(colored)}`
-        break
+        return `${cli.color.green(s)}`
       case 'pending':
       case 'provisioning':
       case 'deprovisioning':
-        colored = `${cli.color.yellow(colored)}`
-        break
+        return `${cli.color.yellow(s)}`
       case 'DOWN':
       case 'deleting':
       case 'deleted':
-        colored = `${cli.color.red(colored)}`
-        break
+        return `${cli.color.red(s)}`
+      default:
+        return s
     }
-
-    return colored
   }
 
   function PeeringStatus (s) {
-    var colored = s
     switch (s) {
       case 'active':
-        colored = `${cli.color.green(colored)}`
-        break
+        return `${cli.color.green(s)}`
       case 'pending-acceptance':
       case 'provisioning':
-        colored = `${cli.color.yellow(colored)}`
-        break
+        return `${cli.color.yellow(s)}`
       case 'expired':
       case 'failed':
       case 'deleted':
       case 'rejected':
-        colored = `${cli.color.red(colored)}`
-        break
+        return `${cli.color.red(s)}`
+      default:
+        return s
     }
-
-    return colored
   }
 
   return {
