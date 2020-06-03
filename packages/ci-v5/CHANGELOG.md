@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.42.0](https://github.com/heroku/cli/compare/v7.41.1...v7.42.0) (2020-06-03)
+
+
+### Bug Fixes
+
+* **ci-v5:** update tests using generator functions ([#1265](https://github.com/heroku/cli/issues/1265)) ([010c851](https://github.com/heroku/cli/commit/010c8511c5ad42b1ab206be3c1a21960f04a824f))
+
+
+
+
+
 # [7.41.0](https://github.com/heroku/cli/compare/v7.40.0...v7.41.0) (2020-05-11)
 
 **Note:** Version bump only for package @heroku-cli/plugin-ci-v5

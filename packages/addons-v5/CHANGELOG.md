@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.42.0](https://github.com/heroku/cli/compare/v7.41.1...v7.42.0) (2020-06-03)
+
+
+### Bug Fixes
+
+* **addons-v5:** Use os.tmpdir() rather than /tmp for cross-platform support - fixes [#1506](https://github.com/heroku/cli/issues/1506) ([#1518](https://github.com/heroku/cli/issues/1518)) ([23f45d9](https://github.com/heroku/cli/commit/23f45d94eaefc67e9610b42cc78df849bef4f8d0))
+
+
+
+
+
 ## [7.39.2](https://github.com/heroku/cli/compare/v7.39.1...v7.39.2) (2020-03-30)
 
 **Note:** Version bump only for package @heroku-cli/plugin-addons-v5
