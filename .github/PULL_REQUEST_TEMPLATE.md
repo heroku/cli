@@ -1,5 +1,5 @@
 <!--
-Note: Windows jobs on CircleCI will sometimes fail to exit (a bug in their containers), if this happens simply re-run the test.
+Note: Windows jobs on CircleCI will sometimes fail to exit (a bug in their containers), if this happens simply re-run the job or workflow.
 
 When creating a PR, be sure to prepend the PR title with the Conventional Commit type (`feat`, `fix`, or `chore`) and the package name.
 
