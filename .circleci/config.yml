@@ -191,13 +191,13 @@ workflows:
   version: 2.1
   heroku_cli_tests:
     jobs:
-      - node12-test: &node12_test
+      - windows-test: &windows_test
           filters:
             tags: &version_tags
               only: /^v.*/
-      - node10-test: *node12_test
-      - windows-test: *node12_test
-  heroku_cli_releases:
+      - node12-test: *windows_test
+      - node10-test: *windows_test
+  heroku_cli_release:
     jobs:
       - node12-test: &node12_test
           filters:
