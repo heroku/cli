@@ -189,7 +189,7 @@ jobs:
       - run: ./scripts/release/snap
 workflows:
   version: 2.1
-  heroku_cli:
+  heroku_cli_tests:
     jobs:
       - windows-test: &windows_test
           filters:
@@ -197,6 +197,16 @@ workflows:
               only: /^v.*/
       - node12-test: *windows_test
       - node10-test: *windows_test
+  heroku_cli_release:
+    jobs:
+      - node12-test: &node12_test
+          filters:
+            branches:
+              only:
+                - master
+            tags: &version_tags
+              only: /^v.*/
+      - node10-test: *node12_test
       - release_tarballs: &release_tarballs
           requires:
             - node12-test
