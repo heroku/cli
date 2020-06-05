@@ -3,6 +3,44 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.42.1](https://github.com/heroku/cli/compare/v7.42.0...v7.42.1) (2020-06-05)
+
+**Note:** Version bump only for package heroku
+
+
+
+
+
+# [7.42.0](https://github.com/heroku/cli/compare/v7.41.1...v7.42.0) (2020-06-03)
+
+
+### Bug Fixes
+
+* upgrade http-call from 5.2.3 to 5.3.0 ([#1525](https://github.com/heroku/cli/issues/1525)) ([ffd81cd](https://github.com/heroku/cli/commit/ffd81cdce6f32d57a59db758733f908519d15594))
+
+
+
+
+
+## [7.41.1](https://github.com/heroku/cli/compare/v7.41.0...v7.41.1) (2020-05-12)
+
+**Note:** Version bump only for package heroku
+
+
+
+
+
+# [7.41.0](https://github.com/heroku/cli/compare/v7.40.0...v7.41.0) (2020-05-11)
+
+
+### Features
+
+* v7 plugin run ([#1507](https://github.com/heroku/cli/issues/1507)) ([6a77f5a](https://github.com/heroku/cli/commit/6a77f5a716ddada766ce9184b59cbaebe48e2953))
+
+
+
+
+
 # [7.40.0](https://github.com/heroku/cli/compare/v7.39.6...v7.40.0) (2020-05-01)
 
 **Note:** Version bump only for package heroku

@@ -29,7 +29,7 @@ describe('git', function () {
 
     mock.expects('execFile').withArgs('git', ['remote']).yieldsAsync(err, null)
 
-    return expect(git.exec(['remote']), 'to be rejected with', 'Git must be installed to use the Heroku CLI.  See instructions here: http://git-scm.com')
+    return expect(git.exec(['remote']), 'to be rejected with', 'Git must be installed to use the Heroku CLI.  See instructions here: https://git-scm.com')
   })
 
   it('exec passes through all other errors', function () {
@@ -56,7 +56,7 @@ describe('git', function () {
     mock.expects('spawn').withExactArgs('git', ['remote'], { stdio: [0, 1, 2] }).returns(emitter)
     process.nextTick(() => emitter.emit('error', err))
 
-    return expect(git.spawn(['remote']), 'to be rejected with', 'Git must be installed to use the Heroku CLI.  See instructions here: http://git-scm.com')
+    return expect(git.spawn(['remote']), 'to be rejected with', 'Git must be installed to use the Heroku CLI.  See instructions here: https://git-scm.com')
   })
 
   it('spawn passes through all other errors', function () {

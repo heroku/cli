@@ -584,6 +584,7 @@ USAGE
 
 OPTIONS
   -a, --app=app        (required) app to run command against
+  -f, --force
   -r, --remote=remote  git remote of app to use
 ```
 

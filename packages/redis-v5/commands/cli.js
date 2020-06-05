@@ -128,13 +128,24 @@ function maybeTunnel (redis, config) {
   let bastions = match(config, /_BASTIONS/)
   let hobby = redis.plan.indexOf('hobby') === 0
   let uri = url.parse(redis.resource_url)
+  let prefer_native_tls = redis.prefer_native_tls
 
   if (bastions != null) {
     return bastionConnect({ uri, bastions, config })
   } else {
     let client
-    if (!hobby) {
-      client = tls.connect({ port: parseInt(uri.port, 10) + 1, host: uri.hostname, rejectUnauthorized: false })
+    if (prefer_native_tls) {
+      client = tls.connect({
+        port: parseInt(uri.port, 10),
+        host: uri.hostname,
+        rejectUnauthorized: false
+      })
+    } else if (!hobby) {
+      client = tls.connect({
+        port: parseInt(uri.port, 10) + 1,
+        host: uri.hostname,
+        rejectUnauthorized: false
+      })
     } else {
       client = net.connect({ port: uri.port, host: uri.hostname })
     }

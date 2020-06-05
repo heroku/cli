@@ -1,6 +1,6 @@
 {
   "name": "@heroku-cli/plugin-run",
-  "version": "7.38.1",
+  "version": "7.41.1",
   "author": "Chris Freeman @cafreeman",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
@@ -23,6 +23,7 @@
     "@types/mocha": "^5",
     "@types/node": "^10",
     "@types/node-notifier": "^5.4.0",
+    "bats": "^1.1.0",
     "chai": "^4",
     "eslint": "^6.7.2",
     "eslint-config-oclif": "^3.1.0",
@@ -69,7 +70,9 @@
     "postpack": "rm -f oclif.manifest.json",
     "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
     "pretest": "tsc -p test --noEmit",
-    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
+    "test": "npm run test:unit",
+    "test:unit": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
+    "test:integration": "node ./bin/bats-test-runner",
     "posttest": "yarn lint",
     "version": "oclif-dev readme && git add README.md"
   }

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.42.0](https://github.com/heroku/cli/compare/v7.41.1...v7.42.0) (2020-06-03)
+
+
+### Bug Fixes
+
+* upgrade urijs from 1.19.1 to 1.19.2 ([#1521](https://github.com/heroku/cli/issues/1521)) ([4326e72](https://github.com/heroku/cli/commit/4326e72a388251a829789e330865e170f5575b48))
+
+
+
+
+
 # [7.40.0](https://github.com/heroku/cli/compare/v7.39.6...v7.40.0) (2020-05-01)
 
 **Note:** Version bump only for package @heroku-cli/plugin-apps-v5

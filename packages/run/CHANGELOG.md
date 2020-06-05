@@ -3,6 +3,30 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.41.1](https://github.com/heroku/cli/compare/v7.41.0...v7.41.1) (2020-05-12)
+
+
+### Bug Fixes
+
+* **run:** add legacyUri property to dyno class ([6a8aea3](https://github.com/heroku/cli/commit/6a8aea399c0f4dd94dc0535453559bdba8426488))
+* **run:** add url.auth property to https request options ([#1517](https://github.com/heroku/cli/issues/1517)) ([6918933](https://github.com/heroku/cli/commit/6918933867624760c6b10a9237528ae7b897844b))
+* **run:** use URL.parse to backsupport ssh ([#1515](https://github.com/heroku/cli/issues/1515)) ([fe11325](https://github.com/heroku/cli/commit/fe113255a4f1b59bc27cef16dbe2ff4434f64237))
+
+
+
+
+
+# [7.41.0](https://github.com/heroku/cli/compare/v7.40.0...v7.41.0) (2020-05-11)
+
+
+### Bug Fixes
+
+* **run:** fix run status code and use https ([#1351](https://github.com/heroku/cli/issues/1351)) ([ca8127f](https://github.com/heroku/cli/commit/ca8127fd5811d9f9c87aea891d33b36a6835a2ec))
+
+
+
+
+
 ## [7.38.1](https://github.com/heroku/cli/compare/v7.38.0...v7.38.1) (2020-02-10)
 
 **Note:** Version bump only for package @heroku-cli/plugin-run

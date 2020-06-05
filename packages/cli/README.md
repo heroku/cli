@@ -85,14 +85,10 @@ Developing
 
 This project is built with [lerna](https://lerna.js.org/). The core plugins are located in [./packages](./packages). Run `lerna bootstrap` after cloning the repository to set it up.
 
+The standard `oclif` `./bin/run` script serves as your entry point to the CLI in your local development environment.
+
 Releasing
 =========
-1. Checkout the master branch and double-check you're on latest commit that you would like to release from.
-2. Ensure your current working directory is clean.
-3. Run `lerna bootstrap` to ensure that all dependencies and are installed and linked.
-4. Make sure you are logged in with the correct user by running: `npm whoami`.
-5. Run `npm org ls heroku-cli YOUR_ACCOUNT_NAME` and ensure that your npm account has appropriate access for publishing.
-6. Releasing directly to master is not allowed, please follow [these workaround steps](https://salesforce.quip.com/WnEiAedAj6E2).
-7. Monitor CircleCI, Appveyor and Snapcraft jobs to ensure that all the builds are successful.
+See the [Heroku CLI Release Steps](https://salesforce.quip.com/aPLDA1ZwjNlW).
 
 Review our [PR guidelines](./.github/PULL_REQUEST_TEMPLATE.md).

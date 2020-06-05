@@ -6,13 +6,14 @@ import {Dyno as APIDyno} from '@heroku-cli/schema'
 import {spawn} from 'child_process'
 import cli from 'cli-ux'
 import debugFactory from 'debug'
-import * as http from 'http'
 import {HTTP} from 'http-call'
+import * as https from 'https'
 import * as net from 'net'
 import {Duplex, Transform} from 'stream'
 import * as tls from 'tls'
 import * as tty from 'tty'
-import {URL} from 'url'
+// eslint-disable-next-line node/no-deprecated-api
+import {URL, parse} from 'url'
 
 import {buildEnvFromFlag} from '../lib/helpers'
 
@@ -64,6 +65,8 @@ export default class Dyno extends Duplex {
 
   uri?: URL
 
+  legacyUri?: {[key: string]: any}
+
   unpipeStdin: any
 
   useSSH: any
@@ -95,37 +98,33 @@ export default class Dyno extends Duplex {
     await this._doStart()
   }
 
-  _doStart(retries = 2): Promise<HTTP<unknown>> {
+  async _doStart(retries = 2): Promise<HTTP<unknown>> {
     const command = this.opts['exit-code'] ? `${this.opts.command}; echo "\uFFFF heroku-command-exit-status: $?"` : this.opts.command
 
-    return this.heroku.post(this.opts.dyno ? `/apps/${this.opts.app}/dynos/${this.opts.dyno}` : `/apps/${this.opts.app}/dynos`, {
-      headers: {
-        Accept: this.opts.dyno ? 'application/vnd.heroku+json; version=3.run-inside' : 'application/vnd.heroku+json; version=3',
-      },
-      body: {
-        command,
-        attach: this.opts.attach,
-        size: this.opts.size,
-        type: this.opts.type,
-        env: this._env(),
-        force_no_tty: this.opts['no-tty'],
-      },
-    })
-    .then(dyno => {
+    try {
+      const dyno = await this.heroku.post(this.opts.dyno ? `/apps/${this.opts.app}/dynos/${this.opts.dyno}` : `/apps/${this.opts.app}/dynos`, {
+        headers: {
+          Accept: this.opts.dyno ? 'application/vnd.heroku+json; version=3.run-inside' : 'application/vnd.heroku+json; version=3',
+        },
+        body: {
+          command,
+          attach: this.opts.attach,
+          size: this.opts.size,
+          type: this.opts.type,
+          env: this._env(),
+          force_no_tty: this.opts['no-tty'],
+        },
+      })
       this.dyno = dyno.body
       if (this.opts.attach || this.opts.dyno) {
         if (this.dyno.name && this.opts.dyno === undefined) {
           this.opts.dyno = this.dyno.name
         }
-
-        return this.attach()
-      }
-
-      if (this.opts.showStatus) {
+        await this.attach()
+      } else if (this.opts.showStatus) {
         cli.action.stop(this._status('done'))
       }
-    })
-    .catch(error => {
+    } catch (error) {
       // Currently the runtime API sends back a 409 in the event the
       // release isn't found yet. API just forwards this response back to
       // the client, so we'll need to retry these. This usually
@@ -135,21 +134,18 @@ export default class Dyno extends Duplex {
       if (error.statusCode === 409 && retries > 0) {
         return this._doStart(retries - 1)
       }
-
       throw error
-    })
-    .finally(() => {
+    } finally {
       cli.action.stop()
-    })
+    }
   }
 
-  /**
-   * Attaches stdin/stdout to dyno
-   */
+  // Attaches stdin/stdout to dyno
   attach() {
     this.pipe(process.stdout)
     if (this.dyno && this.dyno.attach_url) {
       this.uri = new URL(this.dyno.attach_url)
+      this.legacyUri = parse(this.dyno.attach_url)
     }
     if (this._useSSH) {
       this.p = this._ssh()
@@ -206,7 +202,7 @@ export default class Dyno extends Duplex {
     const interval = 1000
 
     try {
-      const dyno = await this.heroku.get(`/apps/${this.opts.app}/dynos/${this.opts.dyno}`)
+      const {body: dyno} = await this.heroku.get(`/apps/${this.opts.app}/dynos/${this.opts.dyno}`)
       this.dyno = dyno
       cli.action.stop(this._status(this.dyno.state))
 
@@ -218,7 +214,7 @@ export default class Dyno extends Duplex {
       return this._ssh()
     } catch (error) {
       // the API sometimes responds with a 404 when the dyno is not yet ready
-      if (error.statusCode === 404 && retries > 0) {
+      if (error.http.statusCode === 404 && retries > 0) {
         return this._ssh(retries - 1)
       }
 
@@ -231,10 +227,10 @@ export default class Dyno extends Duplex {
       this.resolve = resolve
       this.reject = reject
 
-      const options: http.RequestOptions & { rejectUnauthorized?: boolean } = this.uri
+      const options: https.RequestOptions & { rejectUnauthorized?: boolean } = this.legacyUri
       options.headers = {Connection: 'Upgrade', Upgrade: 'tcp'}
       options.rejectUnauthorized = false
-      const r = http.request(options)
+      const r = https.request(options)
       r.end()
 
       r.on('error', this.reject)
