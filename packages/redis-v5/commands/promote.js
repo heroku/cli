@@ -25,7 +25,7 @@ module.exports = {
     // private Redis plans which may have bastion config vars.
     // (the right way to do this is check attachments for the
     // current REDIS_URL but that's a bigger refactor).
-    if (redis.length === 1 && redis[0].config_vars.filter(c => /_URL$/.test(c)).length === 1) {
+    if (redis.length === 1 && redis[0].config_vars.filter(c => c.endsWith('_URL')).length === 1) {
       let attachment = redis[0]
       await heroku.post('/addon-attachments', { body: {
         app: { name: context.app },
