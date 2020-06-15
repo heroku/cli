@@ -47,7 +47,7 @@ jobs:
           key: node-modules-v1-win-{{ checksum "yarn.lock" }}
       - run:
           name: Test and Lint
-          command: yarn test
+          command: lerna run test --concurrency 1
   node12-test: &test
     <<: *defaults
     resource_class: xlarge
