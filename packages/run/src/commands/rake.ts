@@ -5,6 +5,7 @@ import cli from 'cli-ux'
 
 import Dyno from '../lib/dyno'
 import {buildCommand} from '../lib/helpers'
+import {EROFS} from 'constants'
 
 export default class RunRake extends Command {
   static hidden = true
@@ -39,9 +40,7 @@ export default class RunRake extends Command {
       await dyno.start()
     } catch (error) {
       if (error.exitCode) {
-        cli.error(error)
-        // eslint-disable-next-line unicorn/no-process-exit, no-process-exit
-        process.exit(error.exitCode)
+        cli.error(error, {exit: error.exitCode})
       } else {
         throw error
       }

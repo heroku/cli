@@ -81,9 +81,7 @@ async function logDisplayer(heroku: APIClient, options: LogDisplayerOptions) {
       // eslint-disable-next-line unicorn/no-process-exit, no-process-exit
       process.exit(0)
     } else {
-      cli.error(err.stack)
-      // eslint-disable-next-line unicorn/no-process-exit, no-process-exit
-      process.exit(1)
+      cli.error(err.stack, {exit: 1})
     }
   })
 

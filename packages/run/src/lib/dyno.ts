@@ -301,12 +301,13 @@ export default class Dyno extends Duplex {
       sshProc.on('close', () => {
         // there was a problem connecting with the ssh key
         if (lastErr.length > 0 && lastErr.includes('Permission denied')) {
-          cli.error('There was a problem connecting to the dyno.')
+          const msgs = ['There was a problem connecting to the dyno.']
           if (process.env.SSH_AUTH_SOCK) {
-            cli.error('Confirm that your ssh key is added to your agent by running `ssh-add`.')
+            msgs.push('Confirm that your ssh key is added to your agent by running `ssh-add`.')
           }
-          cli.error('Check that your ssh key has been uploaded to heroku with `heroku keys:add`.')
-          cli.error(`See ${color.cyan('https://devcenter.heroku.com/articles/one-off-dynos#shield-private-spaces')}`)
+          msgs.push('Check that your ssh key has been uploaded to heroku with `heroku keys:add`.')
+          msgs.push(`See ${color.cyan('https://devcenter.heroku.com/articles/one-off-dynos#shield-private-spaces')}`)
+          cli.error(msgs.join('\n'))
         }
         // cleanup local server
         localServer.close()
@@ -398,9 +399,7 @@ export default class Dyno extends Duplex {
         sigints = sigints.filter(d => d > Date.now() - 1000)
 
         if (sigints.length >= 4) {
-          cli.error('forcing dyno disconnect')
-          // eslint-disable-next-line unicorn/no-process-exit, no-process-exit
-          process.exit(1)
+          cli.error('forcing dyno disconnect', {exit: 1})
         }
       })
     } else {
