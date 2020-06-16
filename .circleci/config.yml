@@ -47,7 +47,9 @@ jobs:
           key: node-modules-v1-win-{{ checksum "yarn.lock" }}
       - run:
           name: Test and Lint
-          command: yarn test
+          # using node directly here instead of yarn;
+          # yarn seems to not exit on windows after tests are done running
+          command: node scripts/test-all.js
   node12-test: &test
     <<: *defaults
     resource_class: xlarge
@@ -212,7 +214,7 @@ workflows:
             - node12-test
             - node10-test
           filters: &master_dev_and_version_tags
-            tags: 
+            tags:
               <<: *version_tags
             branches:
               only:
