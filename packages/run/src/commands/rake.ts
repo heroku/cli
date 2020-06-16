@@ -5,7 +5,6 @@ import cli from 'cli-ux'
 
 import Dyno from '../lib/dyno'
 import {buildCommand} from '../lib/helpers'
-import {EROFS} from 'constants'
 
 export default class RunRake extends Command {
   static hidden = true
