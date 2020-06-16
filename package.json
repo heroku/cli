@@ -1,11 +1,13 @@
 {
   "devDependencies": {
+    "concurrently": "^5.2.0",
     "eslint": "5.13.0",
     "eslint-config-standard": "12.0.0",
     "eslint-plugin-import": "^2.16.0",
     "eslint-plugin-node": "^8.0.1",
     "eslint-plugin-promise": "^4.0.1",
     "eslint-plugin-standard": "^4.0.0",
+    "glob": "^7.1.6",
     "promise-request-retry": "^1.0.2",
     "standard": "12.0.1"
   },
@@ -21,7 +23,7 @@
   },
   "private": true,
   "scripts": {
-    "test": "lerna run test --concurrency 4",
+    "test": "node scripts/test-all",
     "version": "cp packages/cli/CHANGELOG.md CHANGELOG.md && git add CHANGELOG.md"
   },
   "workspaces": [
