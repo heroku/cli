@@ -3,6 +3,7 @@
     "oclif",
     "oclif-typescript"
   ],
+  "ignorePatterns": "lib/**/*",
   "rules": {
   }
 }

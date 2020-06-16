@@ -108,12 +108,16 @@ class Dyno extends Duplex {
   }
 
   _rendezvous () {
-    return new Promise((resolve, reject) => {
+    let c;
+    const end = () => {
+      c.end();
+    }
+    const promise = new Promise((resolve, reject) => {
       this.resolve = resolve
       this.reject = reject
 
       if (this.opts.showStatus) cli.action.status(this._status('starting'))
-      let c = tls.connect(this.uri.port, this.uri.hostname, {rejectUnauthorized: this.heroku.options.rejectUnauthorized})
+      c = tls.connect(this.uri.port, this.uri.hostname, {rejectUnauthorized: this.heroku.options.rejectUnauthorized})
       c.setTimeout(1000 * 60 * 60)
       c.setEncoding('utf8')
       c.on('connect', () => {
@@ -134,7 +138,10 @@ class Dyno extends Duplex {
         c.end()
         this.reject(new Error('timed out'))
       })
-      process.once('SIGINT', () => c.end())
+      process.once('SIGINT', end);
+    })
+    return promise.finally(() => {
+      process.removeListener('SIGINT', end)
     })
   }
 

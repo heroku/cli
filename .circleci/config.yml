@@ -22,6 +22,9 @@ jobs:
       size: xlarge
     steps:
       - checkout
+      - run: nvm install 12.18.1
+      - run: nvm use 12.18.1
+      - run: node -v
       - run:
           name: Install latest yarn
           command: |
@@ -37,95 +40,23 @@ jobs:
             }
       - restore_cache:
           keys:
-            - node-modules-v1-win-{{ checksum "yarn.lock" }}
+            - node-modules-v2-win-{{ checksum "yarn.lock" }}
       - run:
           name: Install dependencies
           command: yarn install --frozen-lockfile
       - save_cache:
           paths:
             - ./node_modules
-          key: node-modules-v1-win-{{ checksum "yarn.lock" }}
+            - ./packages/*/node_modules
+          key: node-modules-v2-win-{{ checksum "yarn.lock" }}
+      - run:
+          name: Prepack
+          command: node scripts/prepack-all.js
       - run:
           name: Test and Lint
-          command: yarn --cwd packages/addons-v5 test
-      - run:
-          name: Test and Lint
-          command: yarn --cwd packages/apps-v5 test
-      - run:
-          name: Test and Lint
-          command: yarn --cwd packages/apps test
-      - run:
-          name: Test and Lint
-          command: yarn --cwd packages/auth test
-      - run:
-          name: Test and Lint
-          command: yarn --cwd packages/autocomplete test
-      - run:
-          name: Test and Lint
-          command: yarn --cwd packages/buildpacks test
-      - run:
-          name: Test and Lint
-          command: yarn --cwd packages/certs-v5 test
-      - run:
-          name: Test and Lint
-          command: yarn --cwd packages/certs test
-      - run:
-          name: Test and Lint
-          command: yarn --cwd packages/ci-v5 test
-      - run:
-          name: Test and Lint
-          command: yarn --cwd packages/ci test
-      # - run:
-      #     name: Test and Lint
-      #     command: yarn --cwd packages/cli test
-      - run:
-          name: Test and Lint
-          command: yarn --cwd packages/config test
-      - run:
-          name: Test and Lint
-          command: yarn --cwd packages/container-registry-v5 test
-      - run:
-          name: Test and Lint
-          command: yarn --cwd packages/git test
-      - run:
-          name: Test and Lint
-          command: yarn --cwd packages/local test
-      - run:
-          name: Test and Lint
-          command: yarn --cwd packages/oauth-v5 test
-      - run:
-          name: Test and Lint
-          command: yarn --cwd packages/oauth test
-      - run:
-          name: Test and Lint
-          command: yarn --cwd packages/orgs-v5 test
-      - run:
-          name: Test and Lint
-          command: yarn --cwd packages/pg-v5 test
-      - run:
-          name: Test and Lint
-          command: yarn --cwd packages/pipelines test
-      - run:
-          name: Test and Lint
-          command: yarn --cwd packages/ps test
-      - run:
-          name: Test and Lint
-          command: yarn --cwd packages/redis-v5 test
-      - run:
-          name: Test and Lint
-          command: yarn --cwd packages/run-v5 test
-      - run:
-          name: Test and Lint
-          command: yarn --cwd packages/run test
-      - run:
-          name: Test and Lint
-          command: yarn --cwd packages/spaces test
-      - run:
-          name: Test and Lint
-          command: yarn --cwd packages/status test
-      - run:
-          name: Test and Lint
-          command: yarn --cwd packages/webhooks test
+          # using node directly here instead of yarn;
+          # yarn seems to not exit on windows after tests are done running
+          command: node scripts/test-all.js
   node12-test: &test
     <<: *defaults
     docker:
@@ -141,6 +72,9 @@ jobs:
       - run:
           name: Installing dependencies
           command: yarn --frozen-lockfile
+      - run:
+          name: Prepack
+          command: node scripts/prepack-all.js
       - run:
           name: heroku whoami
           command: ./bin/run whoami
