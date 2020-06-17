@@ -17,10 +17,15 @@ const commands = packages.map(packagePath => {
 });
 
 async function run() {
-  await concurrently(commands, {
-    maxProcesses: process.env.CI ? os.cpus() : 4,
-    killOthers: ['failure']
-  })
+  try {
+    await concurrently(commands, {
+      maxProcesses: process.env.CI ? os.cpus() : 4,
+      killOthers: ['failure']
+    })
+  } catch (err) {
+    console.log('Error running tests: ', err);
+    process.exit(1);
+  }
 }
 
 run()
