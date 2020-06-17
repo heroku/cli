@@ -17,18 +17,23 @@ const commands = packages.map(packagePath => {
 });
 
 async function run() {
+  const SIGINT_HANDLER = () => {
+    console.log('Received ctrl+c. Stopping scripts/test-all.js');
+    process.stdout.write('\n');
+    process.exit(1)
+  }
   try {
-    process.once('SIGINT', () => {
-      console.log('Received ctrl+c. Stopping scripts/test-all.js');
-      process.exit(1)
-    })
+    process.once('SIGINT', SIGINT_HANDLER);
     await concurrently(commands, {
       maxProcesses: process.env.CI ? os.cpus() : 4,
-      killOthers: ['failure']
+      killOthers: ['failure'],
+      raw: true
     })
   } catch (err) {
     console.log('Error running tests: ', err);
     process.exit(1);
+  } finally {
+    process.removeEventListener('SIGINT', SIGINT_HANDLER);
   }
 }
 
