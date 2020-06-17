@@ -32,6 +32,7 @@ async function run() {
       maxProcesses: process.env.CI ? os.cpus() : 4,
       killOthers: ['failure']
     })
+    process.exit();
   } catch (err) {
     console.log('Error running tests: ', err);
     process.exit(1);
