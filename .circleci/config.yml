@@ -37,14 +37,15 @@ jobs:
             }
       - restore_cache:
           keys:
-            - node-modules-v1-win-{{ checksum "yarn.lock" }}
+            - node-modules-v2-win-{{ checksum "yarn.lock" }}
       - run:
           name: Install dependencies
           command: yarn install
       - save_cache:
           paths:
             - ./node_modules
-          key: node-modules-v1-win-{{ checksum "yarn.lock" }}
+            - ./packages/*/node_modules
+          key: node-modules-v2-win-{{ checksum "yarn.lock" }}
       - run:
           name: Prepack
           command: node scripts/prepack-all.js
@@ -73,11 +74,11 @@ jobs:
           name: Installing dependencies
           command: yarn
       - run:
-          name: heroku whoami
-          command: ./bin/run whoami
-      - run:
           name: Prepack
           command: node scripts/prepack-all.js
+      - run:
+          name: heroku whoami
+          command: ./bin/run whoami
       - run:
           name: Running all tests
           command: yarn test
