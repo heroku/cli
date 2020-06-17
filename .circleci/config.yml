@@ -47,7 +47,85 @@ jobs:
           key: node-modules-v1-win-{{ checksum "yarn.lock" }}
       - run:
           name: Test and Lint
-          command: yarn test
+          command: yarn --cwd packages/addons-v5 test
+      - run:
+          name: Test and Lint
+          command: yarn --cwd packages/apps-v5 test
+      - run:
+          name: Test and Lint
+          command: yarn --cwd packages/apps test
+      - run:
+          name: Test and Lint
+          command: yarn --cwd packages/auth test
+      - run:
+          name: Test and Lint
+          command: yarn --cwd packages/autocomplete test
+      - run:
+          name: Test and Lint
+          command: yarn --cwd packages/buildpacks test
+      - run:
+          name: Test and Lint
+          command: yarn --cwd packages/certs-v5 test
+      - run:
+          name: Test and Lint
+          command: yarn --cwd packages/certs test
+      - run:
+          name: Test and Lint
+          command: yarn --cwd packages/ci-v5 test
+      - run:
+          name: Test and Lint
+          command: yarn --cwd packages/ci test
+      - run:
+          name: Test and Lint
+          command: yarn --cwd packages/cli test
+      - run:
+          name: Test and Lint
+          command: yarn --cwd packages/config test
+      - run:
+          name: Test and Lint
+          command: yarn --cwd packages/container-registry-v5 test
+      - run:
+          name: Test and Lint
+          command: yarn --cwd packages/git test
+      - run:
+          name: Test and Lint
+          command: yarn --cwd packages/local test
+      - run:
+          name: Test and Lint
+          command: yarn --cwd packages/oauth-v5 test
+      - run:
+          name: Test and Lint
+          command: yarn --cwd packages/oauth test
+      - run:
+          name: Test and Lint
+          command: yarn --cwd packages/orgs-v5 test
+      - run:
+          name: Test and Lint
+          command: yarn --cwd packages/pg-v5 test
+      - run:
+          name: Test and Lint
+          command: yarn --cwd packages/pipelines test
+      - run:
+          name: Test and Lint
+          command: yarn --cwd packages/ps test
+      - run:
+          name: Test and Lint
+          command: yarn --cwd packages/redis-v5 test
+      - run:
+          name: Test and Lint
+          command: yarn --cwd packages/run-v5 test
+      - run:
+          name: Test and Lint
+          command: yarn --cwd packages/run test
+      - run:
+          name: Test and Lint
+          command: yarn --cwd packages/spaces test
+      - run:
+          name: Test and Lint
+          command: yarn --cwd packages/status test
+      - run:
+          name: Test and Lint
+          command: yarn --cwd packages/webhooks test
   node12-test: &test
     <<: *defaults
     resource_class: xlarge
