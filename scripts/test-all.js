@@ -26,18 +26,19 @@ async function run() {
     process.stdout.write('\n');
     process.exit(1)
   }
+  let exitCode = 0;
   try {
     process.once('SIGINT', SIGINT_HANDLER);
     await concurrently(commands, {
       maxProcesses: process.env.CI ? os.cpus() : 4,
       killOthers: ['failure']
     })
-    process.exit();
   } catch (err) {
     console.log('Error running tests: ', err);
-    process.exit(1);
+    exitCode = 1;
   } finally {
     process.removeListener('SIGINT', SIGINT_HANDLER);
+    process.exit(exitCode);
   }
 }
 
