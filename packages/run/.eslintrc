@@ -3,6 +3,7 @@
     "oclif",
     "oclif-typescript"
   ],
+  "ignorePatterns": "lib/**/*",
   "rules": {
     "unicorn/no-abusive-eslint-disable": "off"
   }
