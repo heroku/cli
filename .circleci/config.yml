@@ -44,6 +44,7 @@ jobs:
       - save_cache:
           paths:
             - ./node_modules
+            - ./packages/*/node_modules
           key: node-modules-v1-win-{{ checksum "yarn.lock" }}
       - run:
           name: Test and Lint
@@ -68,7 +69,7 @@ jobs:
             ./install.sh /usr/local
       - run:
           name: Installing dependencies
-          command: yarn
+          command: yarn --frozen-lockfile
       - run:
           name: heroku whoami
           command: ./bin/run whoami
@@ -97,6 +98,7 @@ jobs:
           key: v4-yarn-{{ checksum ".circleci/config.yml" }}-{{ checksum "yarn.lock" }}
           paths:
             - /cli/node_modules
+            - /cli/packages/*/node_modules
             - /cli/tmp/cache
             - /usr/local/share/.cache/yarn
       - run: |
@@ -131,7 +133,7 @@ jobs:
     steps:
       - add_ssh_keys
       - checkout
-      - run: yarn
+      - run: yarn --frozen-lockfile
       - run: ./scripts/release/macos_installer_trigger
   release_homebrew:
     <<: *defaults
@@ -151,20 +153,20 @@ jobs:
     <<: *defaults
     steps:
       - checkout
-      - run: yarn
+      - run: yarn --frozen-lockfile
       - run: ./scripts/postrelease/invalidate_cdn_cache
   install_scripts:
     <<: *defaults
     steps:
       - checkout
-      - run: yarn
+      - run: yarn --frozen-lockfile
       - run: ./scripts/postrelease/install_scripts
   change_management:
     <<: *defaults
     steps:
       - checkout
       - run: |
-          yarn
+          yarn --frozen-lockfile
           ./scripts/postrelease/change_management
   dev_center_docs:
     docker: &devdocs_docker
