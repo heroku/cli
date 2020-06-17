@@ -18,6 +18,10 @@ const commands = packages.map(packagePath => {
 
 async function run() {
   try {
+    process.once('SIGINT', () => {
+      console.log('Received ctrl+c. Stopping scripts/test-all.js');
+      process.exit(1)
+    })
     await concurrently(commands, {
       maxProcesses: process.env.CI ? os.cpus() : 4,
       killOthers: ['failure']
