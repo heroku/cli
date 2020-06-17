@@ -20,11 +20,20 @@ const commands = packages.map(packagePath => {
   }
 });
 
+function exit(exitCode) {
+  process.nextTick(() => {
+    whyIsNodeRunning()
+    process.nextTick(() => {
+      process.exit(exitCode)
+    })
+  })
+}
+
 async function run() {
   const SIGINT_HANDLER = () => {
     console.log('Received ctrl+c. Stopping scripts/test-all.js');
     process.stdout.write('\n');
-    process.exit(1)
+    exit(1);
   }
   let exitCode = 0;
   try {
@@ -43,8 +52,8 @@ async function run() {
   } finally {
     console.log('scripts/test-all: finally')
     process.removeListener('SIGINT', SIGINT_HANDLER);
-    process.exit(exitCode);
     whyIsNodeRunning()
+    exit(exitCode)
   }
 }
 
