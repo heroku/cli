@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-
+const whyIsNodeRunning = require('why-is-node-running')
 const glob = require('glob')
 const concurrently = require('concurrently')
 const path = require('path')
@@ -33,12 +33,18 @@ async function run() {
       maxProcesses: process.env.CI ? os.cpus() : 4,
       killOthers: ['failure']
     })
+    console.log('scripts/test-all: done running concurrently')
+    whyIsNodeRunning()
   } catch (err) {
+    console.log('scripts/test-all: catch')
     console.log('Error running tests: ', err);
     exitCode = 1;
+    whyIsNodeRunning()
   } finally {
+    console.log('scripts/test-all: finally')
     process.removeListener('SIGINT', SIGINT_HANDLER);
     process.exit(exitCode);
+    whyIsNodeRunning()
   }
 }
 
