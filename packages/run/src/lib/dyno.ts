@@ -157,8 +157,12 @@ export default class Dyno extends Duplex {
     })
   }
 
-  _rendezvous() {
-    return new Promise((resolve, reject) => {
+  async _rendezvous() {
+    let c
+    const end = () => {
+      c.end()
+    }
+    const promise = new Promise((resolve, reject) => {
       this.resolve = resolve
       this.reject = reject
 
@@ -166,7 +170,7 @@ export default class Dyno extends Duplex {
         cli.action.status = this._status('starting')
       }
 
-      const c = tls.connect(parseInt(this.uri.port, 10), this.uri.hostname, {
+      c = tls.connect(parseInt(this.uri.port, 10), this.uri.hostname, {
         rejectUnauthorized: this.heroku.options.rejectUnauthorized,
       })
       c.setTimeout(1000 * 60 * 60)
@@ -194,8 +198,13 @@ export default class Dyno extends Duplex {
         c.end()
         this.reject(new Error('timed out'))
       })
-      process.once('SIGINT', () => c.end())
+      process.once('SIGINT', end)
     })
+    try {
+      return await promise
+    } finally {
+      process.removeListener('SIGINT', end)
+    }
   }
 
   async _ssh(retries = 20): Promise<unknown> {
