@@ -76,40 +76,45 @@ function psqlInteractive (dbEnv, prompt) {
   })
 }
 
-function handleSignals () {
-  process.removeAllListeners('SIGINT')
-  process.on('SIGINT', () => {})
+function handleSignals (callback) {
+  const no_op = () => {};
+
+  return async function(...args) {
+    try {
+      process.on('SIGINT', no_op);
+      return await callback(...args);
+    } finally {
+      process.removeListener('SIGINT', no_op);
+    }
+  }
 }
 
-function * exec (db, query) {
-  handleSignals()
+async function exec (db, query) {
   let configs = bastion.getConfigs(db)
 
-  yield bastion.sshTunnel(db, configs.dbTunnelConfig)
-  return yield execPsql(query, configs.dbEnv)
+  await bastion.sshTunnel(db, configs.dbTunnelConfig)
+  return execPsql(query, configs.dbEnv)
 }
 
 async function execFile (db, file) {
-  handleSignals()
   let configs = bastion.getConfigs(db)
 
   await bastion.sshTunnel(db, configs.dbTunnelConfig)
   return execPsqlWithFile(file, configs.dbEnv)
 }
 
-function * interactive (db) {
+async function interactive (db) {
   let name = db.attachment.name
   let prompt = `${db.attachment.app.name}::${name}%R%# `
-  handleSignals()
   let configs = bastion.getConfigs(db)
   configs.dbEnv.PGAPPNAME = 'psql interactive' // default was 'psql non-interactive`
 
-  yield bastion.sshTunnel(db, configs.dbTunnelConfig)
-  return yield psqlInteractive(configs.dbEnv, prompt)
+  await bastion.sshTunnel(db, configs.dbTunnelConfig)
+  return psqlInteractive(configs.dbEnv, prompt)
 }
 
 module.exports = {
-  exec: co.wrap(exec),
-  execFile: execFile,
-  interactive: co.wrap(interactive)
+  exec: handleSignals(exec),
+  execFile: handleSignals(execFile),
+  interactive: handleSignals(interactive)
 }
