@@ -22,10 +22,10 @@ const commands = packages.map(packagePath => {
 
 function exit(exitCode) {
   process.nextTick(() => {
-    whyIsNodeRunning()
-    process.nextTick(() => {
-      process.exit(exitCode)
-    })
+    setTimeout(function() {
+      process.abort(exitCode)
+    }, process.env.CI ? 5000: 1000)
+    process.exit(exitCode);
   })
 }
 
