@@ -18,7 +18,7 @@ function writeSudoTemplate (ctx, sso, path) {
     let html = `<!DOCTYPE HTML>
 <html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8">
     <title>Heroku Add-ons SSO</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
   </head>
@@ -28,7 +28,7 @@ function writeSudoTemplate (ctx, sso, path) {
     <form method="POST" action="${sso.action}">
     </form>
 
-    <script type="text/javascript">
+    <script>
       var params = ${JSON.stringify(sso.params)}
       var form = document.forms[0]
       $(document).ready(function() {
