@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.42.2](https://github.com/heroku/cli/compare/v7.42.1...v7.42.2) (2020-06-22)
+
+
+### Bug Fixes
+
+* **run:** error messages & exiting ([#1547](https://github.com/heroku/cli/issues/1547)) ([9e3e2f6](https://github.com/heroku/cli/commit/9e3e2f60b16c5f710820e7860749f28d066ce9d0))
+
+
+
+
+
 ## [7.41.1](https://github.com/heroku/cli/compare/v7.41.0...v7.41.1) (2020-05-12)
 
 

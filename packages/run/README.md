@@ -21,7 +21,7 @@ $ npm install -g @heroku-cli/plugin-run
 $ heroku COMMAND
 running command...
 $ heroku (-v|--version|version)
-@heroku-cli/plugin-run/7.41.1 darwin-x64 node-v10.18.1
+@heroku-cli/plugin-run/7.42.2 darwin-x64 node-v10.18.1
 $ heroku --help [COMMAND]
 USAGE
   $ heroku COMMAND
@@ -64,7 +64,7 @@ EXAMPLES
   $ heroku logs --app=my-app --tail
 ```
 
-_See code: [src/commands/logs.ts](https://github.com/heroku/cli/blob/v7.41.1/src/commands/logs.ts)_
+_See code: [src/commands/logs.ts](https://github.com/heroku/cli/blob/v7.42.2/src/commands/logs.ts)_
 
 ## `heroku run`
 
@@ -92,7 +92,7 @@ EXAMPLES
   $ heroku run -s hobby -- myscript.sh -a arg1 -s arg2
 ```
 
-_See code: [src/commands/run/index.ts](https://github.com/heroku/cli/blob/v7.41.1/src/commands/run/index.ts)_
+_See code: [src/commands/run/index.ts](https://github.com/heroku/cli/blob/v7.42.2/src/commands/run/index.ts)_
 
 ## `heroku run:detached`
 
@@ -114,7 +114,7 @@ EXAMPLE
   $ heroku run:detached ls
 ```
 
-_See code: [src/commands/run/detached.ts](https://github.com/heroku/cli/blob/v7.41.1/src/commands/run/detached.ts)_
+_See code: [src/commands/run/detached.ts](https://github.com/heroku/cli/blob/v7.42.2/src/commands/run/detached.ts)_
 
 ## `heroku run:inside`
 
@@ -134,5 +134,5 @@ EXAMPLE
   $ heroku run:inside web.1 bash
 ```
 
-_See code: [src/commands/run/inside.ts](https://github.com/heroku/cli/blob/v7.41.1/src/commands/run/inside.ts)_
+_See code: [src/commands/run/inside.ts](https://github.com/heroku/cli/blob/v7.42.2/src/commands/run/inside.ts)_
 <!-- commandsstop -->
