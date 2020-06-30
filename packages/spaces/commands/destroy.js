@@ -15,7 +15,7 @@ function * run (context, heroku) {
     if (space.outbound_ips && space.outbound_ips.state === 'enabled') {
       natWarning = `
 The Outbound IPs for this space will be reused!
-Ensure that external services no longer trust (whitelist) these Outbound IPs: ${lib.displayNat(space.outbound_ips)}`
+Ensure that external services no longer allow these Outbound IPs: ${lib.displayNat(space.outbound_ips)}`
     }
   }
 

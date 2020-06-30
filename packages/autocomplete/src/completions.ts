@@ -236,7 +236,7 @@ export class CompletionLookup {
     return this.argAlias() || this.keyAlias() || this.descriptionAlias() || this.name
   }
 
-  private readonly blacklistMap: { [key: string]: string[] } = {
+  private readonly blocklistMap: { [key: string]: string[] } = {
     app: ['apps:create'],
     space: ['spaces:create'],
   }
@@ -258,7 +258,7 @@ export class CompletionLookup {
   }
 
   run(): flags.ICompletion | undefined {
-    if (this.blacklisted()) return
+    if (this.blocklisted()) return
     return CompletionMapping[this.key]
   }
 
@@ -278,7 +278,7 @@ export class CompletionLookup {
     if (d.match(/^process type/)) return 'processtype'
   }
 
-  private blacklisted(): boolean {
-    return this.blacklistMap[this.name] && this.blacklistMap[this.name].includes(this.cmdId)
+  private blocklisted(): boolean {
+    return this.blocklistMap[this.name] && this.blocklistMap[this.name].includes(this.cmdId)
   }
 }
