@@ -1,6 +1,6 @@
 import {Hook} from '@oclif/config'
 
-const Whitelist = [
+const allowlist = [
   'HEROKU_API_KEY',
   'HEROKU_APP',
   'HTTPS_PROXY',
@@ -13,7 +13,7 @@ const Whitelist = [
 
 export const version: Hook.Init = async function () {
   if (['-v', '--version', 'version'].includes(process.argv[2])) {
-    for (const env of Whitelist) {
+    for (const env of allowlist) {
       if (process.env[env]) {
         const value = env === 'HEROKU_API_KEY' ? 'to [REDACTED]' : `to ${process.env[env]}`
         this.warn(`${env} set ${value}`)

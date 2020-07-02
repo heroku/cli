@@ -422,7 +422,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Bug Fixes
 
-* **cli:** whitelist version env var warnings ([#1057](https://github.com/heroku/cli/issues/1057)) ([e71214d](https://github.com/heroku/cli/commit/e71214d))
+* **cli:** allow list of version env var warnings ([#1057](https://github.com/heroku/cli/issues/1057)) ([e71214d](https://github.com/heroku/cli/commit/e71214d))
 
 
 
