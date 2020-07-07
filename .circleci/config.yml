@@ -75,9 +75,9 @@ jobs:
       - run:
           name: Test and Lint
           command: yarn --cwd packages/ci test
-      - run:
-          name: Test and Lint
-          command: yarn --cwd packages/cli test
+      # - run:
+      #     name: Test and Lint
+      #     command: yarn --cwd packages/cli test
       - run:
           name: Test and Lint
           command: yarn --cwd packages/config test
