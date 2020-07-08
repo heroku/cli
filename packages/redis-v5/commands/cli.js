@@ -96,7 +96,7 @@ function redisCLI (uri, client) {
   })
 }
 
-function bastionConnect ({ uri, bastions, config, prefer_native_tls}) {
+function bastionConnect ({ uri, bastions, config, prefer_native_tls }) {
   return new Promise((resolve, reject) => {
     let tunnel = new Client()
     tunnel.on('ready', function () {
@@ -143,7 +143,7 @@ function maybeTunnel (redis, config) {
   let prefer_native_tls = redis.prefer_native_tls
 
   if (bastions != null) {
-    return bastionConnect({ uri, bastions, config, prefer_native_tls})
+    return bastionConnect({ uri, bastions, config, prefer_native_tls })
   } else {
     let client
     if (prefer_native_tls) {
