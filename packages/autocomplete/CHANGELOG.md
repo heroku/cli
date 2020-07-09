@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.42.3](https://github.com/heroku/cli/compare/v7.42.2...v7.42.3) (2020-07-09)
+
+
+### Bug Fixes
+
+* use inclusive terms ([#1553](https://github.com/heroku/cli/issues/1553)) ([3639297](https://github.com/heroku/cli/commit/36392971cba2a4e4e9077c4575626bfb89c5005a))
+
+
+
+
+
 # [7.42.0](https://github.com/heroku/cli/compare/v7.41.1...v7.42.0) (2020-06-03)
 
 **Note:** Version bump only for package @heroku-cli/plugin-autocomplete

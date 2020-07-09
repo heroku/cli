@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.42.3](https://github.com/heroku/cli/compare/v7.42.2...v7.42.3) (2020-07-09)
+
+
+### Bug Fixes
+
+* **redis-v5:** update bastionConnect function to use prefer_native_tls when true ([#1558](https://github.com/heroku/cli/issues/1558)) ([791ad0d](https://github.com/heroku/cli/commit/791ad0d7e732f20cb25b39602d2b58e624555421))
+
+
+
+
+
 ## [7.42.2](https://github.com/heroku/cli/compare/v7.42.1...v7.42.2) (2020-06-22)
 
 **Note:** Version bump only for package @heroku-cli/plugin-redis-v5
