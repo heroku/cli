@@ -96,7 +96,7 @@ function redisCLI (uri, client) {
   })
 }
 
-function bastionConnect ({ uri, bastions, config }) {
+function bastionConnect ({ uri, bastions, config, prefer_native_tls }) {
   return new Promise((resolve, reject) => {
     let tunnel = new Client()
     tunnel.on('ready', function () {
@@ -104,10 +104,22 @@ function bastionConnect ({ uri, bastions, config }) {
       tunnel.forwardOut('localhost', localPort, uri.hostname, uri.port, function (err, stream) {
         if (err) return reject(err)
         stream.on('close', () => tunnel.end())
-        redisCLI(uri, stream).then(resolve).catch(reject)
+
+        let client
+        if (prefer_native_tls) {
+          client = tls.connect({
+            socket: stream,
+            port: parseInt(uri.port, 10),
+            host: uri.hostname,
+            rejectUnauthorized: false
+          })
+        } else {
+          client = stream
+        }
+
+        redisCLI(uri, client).then(resolve).catch(reject)
       })
-    })
-    tunnel.connect({
+    }).connect({
       host: bastions.split(',')[0],
       username: 'bastion',
       privateKey: match(config, /_BASTION_KEY/)
@@ -131,7 +143,7 @@ function maybeTunnel (redis, config) {
   let prefer_native_tls = redis.prefer_native_tls
 
   if (bastions != null) {
-    return bastionConnect({ uri, bastions, config })
+    return bastionConnect({ uri, bastions, config, prefer_native_tls })
   } else {
     let client
     if (prefer_native_tls) {
