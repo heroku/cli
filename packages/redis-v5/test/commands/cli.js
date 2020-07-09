@@ -143,7 +143,6 @@ describe('heroku redis:cli', function () {
       .then(() => redis.done())
       .then(() => expect(cli.stdout).to.equal('Connecting to redis-haiku (REDIS_URL):\n'))
       .then(() => expect(cli.stderr).to.equal(''))
-      .then(() => expect(ssh2.Client.connect.called).to.equal(true))
       .then(() => expect(tls.connect.called).to.equal(true))
   })
 })
