@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.42.4](https://github.com/heroku/cli/compare/v7.42.3...v7.42.4) (2020-07-13)
+
+
+### Bug Fixes
+
+* **certs-v5:** fix logic for checking multiple sni flag ([#1560](https://github.com/heroku/cli/issues/1560)) ([7e615b5](https://github.com/heroku/cli/commit/7e615b5e7922c9cbb4b651d3e98d9275bfcd0820))
+
+
+
+
+
 ## [7.39.4](https://github.com/heroku/cli/compare/v7.39.3...v7.39.4) (2020-04-22)
 
 
