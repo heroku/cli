@@ -12,7 +12,7 @@ describe.only('pipelines:setup', () => {
   context('with an account connected to GitHub', function () {
     const archiveURL = 'https://example.com/archive.tar.gz'
     const pipeline = {id: '123-pipeline', name: 'my-pipeline'}
-    const repo = {id: 123, default_branch: 'master', name: 'my-org/my-repo'}
+    const repo = {id: 123, default_branch: 'main', name: 'my-org/my-repo'}
     const kolkrabbiAccount = {github: {token: '123-abc'}}
     const prodApp = {id: '123-prod-app', name: pipeline.name}
     const stagingApp = {id: '123-staging-app', name: `${pipeline.name}-staging`}
