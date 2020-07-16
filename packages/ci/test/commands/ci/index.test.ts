@@ -18,7 +18,7 @@ describe('ci', () => {
     let testRuns: any = []
     const statusIcon = ['✓', '!', '✗', '-']
     const statuses = ['succeeded', 'errored', 'failed', 'creating']
-    const commit_branch = 'master'
+    const commit_branch = 'main'
     const commit_sha = ['d2e177a', '14a0a11', '40d9717', 'f2e574e']
 
     beforeEach(() => {
@@ -53,10 +53,10 @@ describe('ci', () => {
       expect(stdout).to.contain(`=== Showing latest test runs for the ${pipeline.name} pipeline`)
 
       for (let i = 5; i < 10; i++) {
-        expect(stdout).to.contain(`${statusIcon[i % 4]}  ${testRuns[i].number}   master  ${testRuns[i].commit_sha}  ${testRuns[i].status}\n`)
+        expect(stdout).to.contain(`${statusIcon[i % 4]}  ${testRuns[i].number}   main    ${testRuns[i].commit_sha}  ${testRuns[i].status}\n`)
       }
       for (let i = 10; i < 20; i++) {
-        expect(stdout).to.contain(`${statusIcon[i % 4]}  ${testRuns[i].number}  master  ${testRuns[i].commit_sha}  ${testRuns[i].status}\n`)
+        expect(stdout).to.contain(`${statusIcon[i % 4]}  ${testRuns[i].number}  main    ${testRuns[i].commit_sha}  ${testRuns[i].status}\n`)
       }
 
       expect(stdout).not.to.contain(`${testRuns[4].number} ${testRuns[4].commit_sha}`)
@@ -80,7 +80,7 @@ describe('ci', () => {
       expect(stdout).not.to.contain(`=== Showing latest test runs for the ${pipeline.name} pipeline`)
       const jsonOut = JSON.parse(stdout)
       for (let i = 0; i < 4; i++) {
-        expect(jsonOut[i].commit_branch).to.equal('master')
+        expect(jsonOut[i].commit_branch).to.equal('main')
         expect(jsonOut[i].commit_sha).to.equal(commit_sha[3 - i])
         expect(jsonOut[i].status).to.equal(statuses[3 - i])
         expect(jsonOut[i].pipeline.id).to.equal(pipeline.id)
