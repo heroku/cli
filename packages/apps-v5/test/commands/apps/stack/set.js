@@ -37,7 +37,7 @@ describe('stack:set', function () {
     return cmd.run({ app: 'myapp', args: { stack: 'heroku-18' }, flags: {} })
       .then(() => expect(cli.stderr).to.equal('Setting stack to heroku-18... done\n'))
       .then(() => expect(cli.stdout).to.equal(`You will need to redeploy myapp for the change to take effect.
-Run git push heroku master to create a new release on myapp.
+Run git push heroku main to create a new release on myapp.
 `))
       .then(() => api.done())
   })
@@ -50,7 +50,7 @@ Run git push heroku master to create a new release on myapp.
     return cmd.run({ app: 'myapp', args: { stack: 'heroku-18' }, flags: { remote: 'staging' } })
       .then(() => expect(cli.stderr).to.equal('Setting stack to heroku-18... done\n'))
       .then(() => expect(cli.stdout).to.equal(`You will need to redeploy myapp for the change to take effect.
-Run git push staging master to create a new release on myapp.
+Run git push staging main to create a new release on myapp.
 `))
       .then(() => api.done())
   })
