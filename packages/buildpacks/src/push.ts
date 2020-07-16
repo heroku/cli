@@ -1,3 +1,3 @@
 module.exports = function (remote?: string) {
-  return `git push ${remote || 'heroku'} master`
+  return `git push ${remote || 'heroku'} main`
 }

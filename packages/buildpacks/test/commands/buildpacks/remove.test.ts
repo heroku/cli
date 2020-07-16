@@ -82,7 +82,7 @@ describe('buildpacks:remove', () => {
     .it('# with two buildpacks successfully removes index - java', ctx => {
       expect(ctx.stdout).to.equal(
         `Buildpack removed. Next release on example will use https://github.com/heroku/heroku-buildpack-java.
-Run git push heroku master to create a new release using this buildpack.
+Run git push heroku main to create a new release using this buildpack.
 `)
     })
 
@@ -101,7 +101,7 @@ Run git push heroku master to create a new release using this buildpack.
     .it('# with two buildpacks successfully removes index - ruby', ctx => {
       expect(ctx.stdout).to.equal(
         `Buildpack removed. Next release on example will use https://github.com/heroku/heroku-buildpack-ruby.
-Run git push heroku master to create a new release using this buildpack.
+Run git push heroku main to create a new release using this buildpack.
 `)
     })
 
@@ -124,7 +124,7 @@ Run git push heroku master to create a new release using this buildpack.
         `Buildpack removed. Next release on example will use:
   1. https://github.com/heroku/heroku-buildpack-java
   2. https://github.com/heroku/heroku-buildpack-ruby
-Run git push heroku master to create a new release using these buildpacks.
+Run git push heroku main to create a new release using these buildpacks.
 `)
     })
 
@@ -199,7 +199,7 @@ Run git push heroku master to create a new release using these buildpacks.
       expect(ctx.stderr).to.equal('')
       expect(ctx.stdout).to.equal(
         `Buildpack removed. Next release on example will use https://github.com/heroku/heroku-buildpack-java.
-Run git push heroku master to create a new release using this buildpack.
+Run git push heroku main to create a new release using this buildpack.
 `)
     })
 
@@ -268,7 +268,7 @@ Run git push heroku master to create a new release using this buildpack.
         `Buildpack removed. Next release on example will use:
   1. https://github.com/heroku/heroku-buildpack-java
   2. https://github.com/heroku/heroku-buildpack-nodejs
-Run git push heroku master to create a new release using these buildpacks.
+Run git push heroku main to create a new release using these buildpacks.
 `)
     })
   })
