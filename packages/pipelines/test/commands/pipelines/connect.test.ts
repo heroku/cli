@@ -31,7 +31,7 @@ describe('pipelines:connect', () => {
     .nock('https://api.github.com', github => {
       const repo = {
         id: 1235,
-        default_branch: 'master',
+        default_branch: 'main',
         name: 'my-org/my-repo',
       }
       github.get(`/repos/${repo.name}`).reply(200, {repo})
