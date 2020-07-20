@@ -306,13 +306,18 @@ workflows:
               ignore: /.*/
             tags:
               <<: *version_tags
-      - trigger_macos: &trigger_macos
+#       - trigger_macos: &trigger_macos
+#           requires:
+#             - node12-test
+#             - node10-test
+#           filters:
+#             <<: *only_version_tags
+      - release_snap:
           requires:
             - node12-test
             - node10-test
           filters:
-            <<: *only_version_tags
-      - release_snap: *trigger_macos
+            <<: *only_version_tags 
       - invalidate_cdn_cache:
           requires:
             - install_scripts
