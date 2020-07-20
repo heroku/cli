@@ -1,6 +1,6 @@
 {
   "name": "@heroku-cli/plugin-run",
-  "version": "7.42.2",
+  "version": "7.42.5",
   "author": "Chris Freeman @cafreeman",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {

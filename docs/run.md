@@ -33,7 +33,7 @@ EXAMPLES
   $ heroku run -s hobby -- myscript.sh -a arg1 -s arg2
 ```
 
-_See code: [@heroku-cli/plugin-run](https://github.com/heroku/cli/blob/v7.42.2/src/commands/run/index.ts)_
+_See code: [@heroku-cli/plugin-run](https://github.com/heroku/cli/blob/v7.42.5/src/commands/run/index.ts)_
 
 ## `heroku run:detached`
 
@@ -55,7 +55,7 @@ EXAMPLE
   $ heroku run:detached ls
 ```
 
-_See code: [@heroku-cli/plugin-run](https://github.com/heroku/cli/blob/v7.42.2/src/commands/run/detached.ts)_
+_See code: [@heroku-cli/plugin-run](https://github.com/heroku/cli/blob/v7.42.5/src/commands/run/detached.ts)_
 
 ## `heroku run:inside`
 
@@ -75,4 +75,4 @@ EXAMPLE
   $ heroku run:inside web.1 bash
 ```
 
-_See code: [@heroku-cli/plugin-run](https://github.com/heroku/cli/blob/v7.42.2/src/commands/run/inside.ts)_
+_See code: [@heroku-cli/plugin-run](https://github.com/heroku/cli/blob/v7.42.5/src/commands/run/inside.ts)_

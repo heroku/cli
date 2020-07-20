@@ -301,7 +301,7 @@ OPTIONS
 EXAMPLES
   $ heroku stack:set heroku-18 -a myapp
   Stack set. Next release on myapp will use heroku-18.
-  Run git push heroku master to create a new release on myapp.
+  Run git push heroku main to create a new release on myapp.
 ```
 
 ## `heroku apps:transfer RECIPIENT`
