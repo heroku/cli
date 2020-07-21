@@ -15,6 +15,13 @@ architectures:
 parts:
   heroku:
     plugin: nil
+    override-pull: |
+      snapcraftctl pull
+      COMMIT_MSG=$(git log --pretty=oneline --abbrev-commit | head -n 1 | awk '{print $2}')
+      CLI_VERSION=$(grep \"version\": packages/cli/package.json | head -n 1 | awk '{print $2}' | tr -d \" | tr -d \,)
+      if [ "$COMMIT_MSG" == "v$CLI_VERSION" ]; then
+        git tag "$COMMIT_MSG" -m "$COMMIT_MSG"
+      ; fi
     override-build: |
       set -ex
 
