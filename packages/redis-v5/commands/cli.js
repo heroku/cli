@@ -176,8 +176,7 @@ module.exports = {
   run: cli.command({ preauth: true }, async (context, heroku) => {
     const api = require('../lib/shared')(context, heroku)
     let addon = await api.getRedisAddon()
-
-    let config = await heroku.get(`/apps/${context.app}/config-vars`)
+    let configVars = await getRedisConfigVars(addon, heroku)
 
     let redis = await api.request(`/redis/v0/databases/${addon.name}`)
     let hobby = redis.plan.indexOf('hobby') === 0
@@ -186,13 +185,21 @@ module.exports = {
       await cli.confirmApp(context.app, context.flags.confirm, 'WARNING: Insecure action.\nAll data, including the Redis password, will not be encrypted.')
     }
 
-    let vars = {}
-    addon.config_vars.forEach(function (key) { vars[key] = config[key] })
-    let nonBastionVars = addon.config_vars.filter(function (configVar) {
+    let nonBastionVars = Object.keys(configVars).filter(function (configVar) {
       return !(/(?:BASTIONS|BASTION_KEY|BASTION_REKEYS_AFTER)$/.test(configVar))
     }).join(', ')
 
     cli.log(`Connecting to ${addon.name} (${nonBastionVars}):`)
-    return maybeTunnel(redis, vars)
+    return maybeTunnel(redis, configVars)
   })
+}
+
+// try to lookup the right config vars from the billing app
+async function getRedisConfigVars (addon, heroku) {
+  let config = await heroku.get(`/apps/${addon.billing_entity.name}/config-vars`)
+
+  return addon.config_vars.reduce((memo, configVar) => {
+    memo[configVar] = config[configVar]
+    return memo
+  }, {})
 }
