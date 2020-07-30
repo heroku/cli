@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.42.6](https://github.com/heroku/cli/compare/v7.42.5...v7.42.6) (2020-07-30)
+
+
+### Bug Fixes
+
+* **redis-v5:** use billing entity to look up config vars ([#1572](https://github.com/heroku/cli/issues/1572)) ([8ee4bb9](https://github.com/heroku/cli/commit/8ee4bb9bcc8b3f078c53c9a535077b5518588bef))
+
+
+
+
+
 ## [7.42.3](https://github.com/heroku/cli/compare/v7.42.2...v7.42.3) (2020-07-09)
 
 
