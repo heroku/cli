@@ -137,12 +137,6 @@ jobs:
             - v4-yarn-{{ checksum ".circleci/config.yml" }}
             - v4-yarn
       - run:
-          name: Installing bats
-          command: |
-            git clone https://github.com/sstephenson/bats.git
-            cd bats
-            ./install.sh /usr/local
-      - run:
           name: Installing dependencies
           command: yarn
       - run:
@@ -290,7 +284,7 @@ workflows:
             - node12-test
             - node10-test
           filters: &master_dev_and_version_tags
-            tags: 
+            tags:
               <<: *version_tags
             branches:
               only:
@@ -317,7 +311,7 @@ workflows:
             - node12-test
             - node10-test
           filters:
-            <<: *only_version_tags 
+            <<: *only_version_tags
       - invalidate_cdn_cache:
           requires:
             - install_scripts
