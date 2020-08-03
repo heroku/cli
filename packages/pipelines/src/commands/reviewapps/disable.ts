@@ -82,7 +82,7 @@ export default class ReviewappsDisable extends Command {
       settings.wait_for_ci = false
     }
 
-    const kolkrabbi = new KolkrabbiAPI(this.config.userAgent, this.heroku.auth)
+    const kolkrabbi = new KolkrabbiAPI(this.config.userAgent, () => this.heroku.auth)
 
     cli.action.start('Configuring pipeline')
 

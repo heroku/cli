@@ -5,16 +5,16 @@ const KOLKRABBI_BASE_URL = 'https://kolkrabbi.heroku.com'
 export default class {
   version: any
 
-  token: any
+  getToken: () => any
 
-  constructor(version: any, token: any) {
+  constructor(version: any, getToken: () => any) {
     this.version = version
-    this.token = token
+    this.getToken = getToken
   }
 
   request(url: string, options: any = {}) {
     options.headers = {
-      Authorization: `Bearer ${this.token}`,
+      Authorization: `Bearer ${this.getToken()}`,
       'User-Agent': this.version,
     }
 
