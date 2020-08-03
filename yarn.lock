@@ -1794,10 +1794,12 @@
   resolved "https://registry.yarnpkg.com/@types/validator/-/validator-10.9.0.tgz#747f36c7ad281da769458ab4c3b8837aee1578b6"
   integrity sha512-mf0VpXk+NoTmkUmuJCsdwBYxjYZW41amCSzd4t/fABMKl+qGMViwFP0pR7ukFdZRXWI1LIkca3VIbXVBmWZ4kQ==
 
-"@types/write-json-file@^2.2.1":
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/@types/write-json-file/-/write-json-file-2.2.1.tgz#74155aaccbb0d532be21f9d66bebc4ea875a5a62"
-  integrity sha512-JdO/UpPm9RrtQBNVcZdt3M7j3mHO/kXaea9LBGx3UgWJd1f9BkIWP7jObLBG6ZtRyqp7KzLFEsaPhWcidVittA==
+"@types/write-json-file@^3.2.1":
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/@types/write-json-file/-/write-json-file-3.2.1.tgz#50b3d8f09b74e5abd18a0be5580e03ef40d8d8ec"
+  integrity sha512-3vX7/kpNX3+FbGfV8wbONVsT6A1czgUjUjRCvbQyMu3TyjkHoCDH3caJz6JTHRziqQdy6M5+F7YRi14FV8eRSw==
+  dependencies:
+    write-json-file "*"
 
 "@types/ws@^6.0.1":
   version "6.0.1"
@@ -8881,10 +8883,10 @@ sort-keys@^2.0.0:
   dependencies:
     is-plain-obj "^1.0.0"
 
-sort-keys@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/sort-keys/-/sort-keys-3.0.0.tgz#fa751737e3da363ef80632d4fd78e324d661fe9a"
-  integrity sha512-77XUKMiZN5LvQXZ9sgWfJza19AvYIDwaDGwGiULM+B5XYru8Z90Oh06JvqDlJczvjjYvssrV0aK1GI6+YXvn5A==
+sort-keys@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/sort-keys/-/sort-keys-4.0.0.tgz#56dc5e256637bfe3fec8db0dc57c08b1a2be22d6"
+  integrity sha512-hlJLzrn/VN49uyNkZ8+9b+0q9DjmmYcYOnbMQtpkLrYpPwRApDPZfmqbUfJnAA3sb/nRib+nDot7Zi/1ER1fuA==
   dependencies:
     is-plain-obj "^2.0.0"
 
@@ -10165,6 +10167,18 @@ write-file-atomic@^3.0.0:
     signal-exit "^3.0.2"
     typedarray-to-buffer "^3.1.5"
 
+write-json-file@*, write-json-file@^4.1.1:
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/write-json-file/-/write-json-file-4.3.0.tgz#908493d6fd23225344af324016e4ca8f702dd12d"
+  integrity sha512-PxiShnxf0IlnQuMYOPPhPkhExoCQuTUNPOa/2JWCYTmBquU9njyyDuwRKN26IZBlp4yn1nt+Agh2HOOBl+55HQ==
+  dependencies:
+    detect-indent "^6.0.0"
+    graceful-fs "^4.1.15"
+    is-plain-obj "^2.0.0"
+    make-dir "^3.0.0"
+    sort-keys "^4.0.0"
+    write-file-atomic "^3.0.0"
+
 write-json-file@^2.2.0, write-json-file@^2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/write-json-file/-/write-json-file-2.3.0.tgz#2b64c8a33004d54b8698c76d585a77ceb61da32f"
@@ -10188,18 +10202,6 @@ write-json-file@^3.2.0:
     pify "^4.0.1"
     sort-keys "^2.0.0"
     write-file-atomic "^2.4.2"
-
-write-json-file@^4.1.1:
-  version "4.1.1"
-  resolved "https://registry.yarnpkg.com/write-json-file/-/write-json-file-4.1.1.tgz#d527936d9f32696ac5a0448c6d424db3724036c4"
-  integrity sha512-wHI383JJbaZeaxWAk57LeX8iq7od/nfDbp/Hkk31al5rmYvc0gtt4lkw+nt8KJW8u9Uy9GcoHeYE3v6BUl0ZUw==
-  dependencies:
-    detect-indent "^6.0.0"
-    graceful-fs "^4.1.15"
-    is-plain-obj "^2.0.0"
-    make-dir "^3.0.0"
-    sort-keys "^3.0.0"
-    write-file-atomic "^3.0.0"
 
 write-pkg@^3.1.0:
   version "3.2.0"
