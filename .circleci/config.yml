@@ -3,13 +3,6 @@ defaults: &defaults
   working_directory: /cli
   environment:
     HEROKU_AUTHOR: Heroku
-  docker:
-    - image: oclif/nsis:12.0.0-16
-      environment: &env
-        LANG: en_US.UTF-8
-        LANGUAGE: en_US.UTF-8
-        LC_TYPE: en_US.UTF-8
-        NODE_OPTIONS: --max_old_space_size=4096
 
 version: 2.1
 orbs:
@@ -75,6 +68,11 @@ jobs:
       - run:
           name: Test and Lint
           command: yarn --cwd packages/ci test
+      # this test suite runs smoke tests
+      # but constantly fails on windows
+      # we are suspending running it
+      # on windows for now as it also
+      # run in the *nix CI images
       # - run:
       #     name: Test and Lint
       #     command: yarn --cwd packages/cli test
@@ -154,12 +152,10 @@ jobs:
     <<: *test
     docker:
       - image: node:10
-    resource_class: xlarge
   node14-test:
     <<: *test
     docker:
       - image: node:14
-    resource_class: xlarge
   release_tarballs:
     <<: *defaults
     steps:
