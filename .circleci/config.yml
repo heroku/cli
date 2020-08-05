@@ -128,8 +128,6 @@ jobs:
           command: yarn --cwd packages/webhooks test
   node12-test: &test
     <<: *defaults
-    docker:
-      - image: node:12
     resource_class: xlarge
     steps:
       - checkout
@@ -152,8 +150,6 @@ jobs:
           command: ./node_modules/.bin/lerna exec "curl -s https://codecov.io/bash | bash"
   node10-test:
     <<: *test
-    docker:
-      - image: node:10
     resource_class: xlarge
   node14-test:
     <<: *test
@@ -279,14 +275,15 @@ workflows:
       - node10-test: *windows_test
   heroku_cli_release:
     jobs:
-      - node12-test: &node12_test
+      - node14-test: &node14_test
           filters:
             branches:
               only:
                 - master
             tags: &version_tags
               only: /^v.*/
-      - node10-test: *node12_test
+      - node12-test: *node14_test
+      - node10-test: *node14_test
       - release_tarballs: &release_tarballs
           requires:
             - node12-test
