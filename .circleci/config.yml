@@ -155,11 +155,6 @@ jobs:
     docker:
       - image: node:10
     resource_class: xlarge
-  node14-test:
-    <<: *test
-    docker:
-      - image: node:14
-    resource_class: xlarge
   release_tarballs:
     <<: *defaults
     steps:
