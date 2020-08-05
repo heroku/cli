@@ -155,6 +155,11 @@ jobs:
     docker:
       - image: node:10
     resource_class: xlarge
+  node14-test:
+    <<: *test
+    docker:
+      - image: node:14
+    resource_class: xlarge
   release_tarballs:
     <<: *defaults
     steps:
@@ -272,19 +277,21 @@ workflows:
             branches:
               ignore:
                 - master
+      - node14-test: *windows_test
       - node12-test: *windows_test
       - node10-test: *windows_test
   heroku_cli_release:
     jobs:
-      - node12-test: &node12_test
+      - node14-test: &node14_test
           filters:
             branches:
               only:
                 - master
             tags: &version_tags
               only: /^v.*/
-      - node10-test: *node12_test
-      - windows-test: *node12_test
+      - node12-test: *node14_test
+      - node10-test: *node14_test
+      - windows-test: *node14_test
       - release_tarballs: &release_tarballs
           requires:
             - node12-test
