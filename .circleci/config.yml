@@ -150,6 +150,8 @@ jobs:
           command: ./node_modules/.bin/lerna exec "curl -s https://codecov.io/bash | bash"
   node10-test:
     <<: *test
+    docker:
+      - image: heroku/nsis:10-2
     resource_class: xlarge
   node14-test:
     <<: *test
