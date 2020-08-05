@@ -269,7 +269,6 @@ workflows:
           filters:
             tags: &version_tags
               only: /^v.*/
-      - node14-test: *windows_test
       - node12-test: *windows_test
       - node10-test: *windows_test
   heroku_cli_release:
