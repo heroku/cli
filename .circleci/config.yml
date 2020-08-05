@@ -272,6 +272,9 @@ workflows:
           filters:
             tags: &version_tags
               only: /^v.*/
+            branches:
+              ignore:
+                - master
       - node14-test: *windows_test
       - node12-test: *windows_test
       - node10-test: *windows_test
@@ -286,10 +289,12 @@ workflows:
               only: /^v.*/
       - node12-test: *node14_test
       - node10-test: *node14_test
+      - windows-test: *node14_test
       - release_tarballs: &release_tarballs
           requires:
             - node12-test
             - node10-test
+            - windows-test
           filters: &master_dev_and_version_tags
             tags:
               <<: *version_tags
@@ -311,12 +316,14 @@ workflows:
 #           requires:
 #             - node12-test
 #             - node10-test
+#             - windows-test
 #           filters:
 #             <<: *only_version_tags
       - release_snap:
           requires:
             - node12-test
             - node10-test
+            - windows-test
           filters:
             <<: *only_version_tags
       - invalidate_cdn_cache:
