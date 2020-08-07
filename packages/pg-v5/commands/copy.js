@@ -58,14 +58,20 @@ function * run (context, heroku) {
   //  * app name + color/config: myapp::ORANGE
   let [source, target] = yield [resolve(args.source), resolve(args.target)]
   if (source.url === target.url) throw new Error('Cannot copy database onto itself')
-
+  
+  let sourceName = source.name
+  let targetName = target.name
+  if (sourceName === targetName) {
+    sourceName = args.source
+    targetName = args.target
+  }
   yield cli.confirmApp(target.confirm, flags.confirm, `WARNING: Destructive action
-This command will remove all data from ${cli.color.yellow(target.name)}
-Data from ${cli.color.yellow(source.name)} will then be transferred to ${cli.color.yellow(target.name)}`)
+This command will remove all data from ${cli.color.yellow(targetName)}
+Data from ${cli.color.yellow(sourceName)} will then be transferred to ${cli.color.yellow(targetName)}`)
 
   let copy
   let attachment
-  yield cli.action(`Starting copy of ${cli.color.yellow(source.name)} to ${cli.color.yellow(target.name)}`, co(function * () {
+  yield cli.action(`Starting copy of ${cli.color.yellow(sourceName)} to ${cli.color.yellow(targetName)}`, co(function * () {
     attachment = target.attachment || source.attachment
     if (!attachment) throw new Error('Heroku PostgreSQL database must be source or target')
     copy = yield heroku.post(`/client/v11/databases/${attachment.addon.id}/transfers`, {
