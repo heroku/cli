@@ -34,7 +34,7 @@
   ARCH="\$(uname -m)"
   if [ "\$ARCH" == "x86_64" ]; then
     ARCH=x64
-  elif [[ "\$ARCH" == arm* ]]; then
+  elif [[ "\$ARCH" == aarch* ]]; then
     ARCH=arm
   else
     echoerr "unsupported arch: \$ARCH"
