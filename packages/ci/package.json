@@ -30,7 +30,7 @@
     "@oclif/plugin-help": "^2.1.6",
     "@oclif/test": "^1.2.4",
     "@types/chai": "^4.1.7",
-    "@types/inquirer": "0.0.44",
+    "@types/inquirer": "7.3.0",
     "@types/mocha": "^5.2.6",
     "@types/nock": "^9.3.1",
     "@types/node": "^10.12.24",
