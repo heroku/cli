@@ -30,7 +30,7 @@
   "devDependencies": {
     "@oclif/dev-cli": "^1.21.3",
     "@oclif/plugin-legacy": "^1.1.4",
-    "cross-env": "^5.2.0",
+    "cross-env": "^7.0.2",
     "heroku-client": "^3.0.7",
     "mocha": "^5.1.1",
     "nock": "9.2.6",
