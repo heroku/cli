@@ -56,23 +56,3 @@ EXAMPLE
 ```
 
 _See code: [@heroku-cli/plugin-run](https://github.com/heroku/cli/blob/v7.42.5/src/commands/run/detached.ts)_
-
-## `heroku run:inside`
-
-run a one-off process inside an existing heroku dyno
-
-```
-USAGE
-  $ heroku run:inside
-
-OPTIONS
-  -a, --app=app        (required) app to run command against
-  -e, --env=env        environment variables to set (use ';' to split multiple vars)
-  -r, --remote=remote  git remote of app to use
-  -x, --exit-code      passthrough the exit code of the remote command
-
-EXAMPLE
-  $ heroku run:inside web.1 bash
-```
-
-_See code: [@heroku-cli/plugin-run](https://github.com/heroku/cli/blob/v7.42.5/src/commands/run/inside.ts)_
