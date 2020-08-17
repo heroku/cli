@@ -5,7 +5,7 @@
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
     "@heroku-cli/color": "^1.1.14",
-    "@heroku-cli/command": "^8.3.0",
+    "@heroku-cli/command": "^8.3.1",
     "@heroku-cli/notifications": "^1.2.2",
     "@heroku/eventsource": "^1.0.7",
     "@oclif/command": "^1",
