@@ -40,7 +40,7 @@ jobs:
             - node-modules-v1-win-{{ checksum "yarn.lock" }}
       - run:
           name: Install dependencies
-          command: yarn install
+          command: yarn install --frozen-lockfile
       - save_cache:
           paths:
             - ./node_modules
@@ -140,7 +140,7 @@ jobs:
             - v4-yarn
       - run:
           name: Installing dependencies
-          command: yarn
+          command: yarn --frozen-lockfile
       - run:
           name: heroku whoami
           command: ./bin/run whoami
@@ -168,7 +168,7 @@ jobs:
       - run: |
           cp yarn.lock packages/cli
           cd packages/cli
-          yarn
+          yarn --frozen-lockfile
           ./scripts/release/tarballs
       - save_cache:
           key: v4-yarn-{{ checksum ".circleci/config.yml" }}-{{ checksum "yarn.lock" }}
@@ -192,7 +192,7 @@ jobs:
       - run: |
           cp yarn.lock packages/cli
           cd packages/cli
-          yarn
+          yarn --frozen-lockfile
           ./scripts/release/win
   release_deb:
     <<: *defaults
@@ -201,14 +201,14 @@ jobs:
       - run: |
           cp yarn.lock packages/cli
           cd packages/cli
-          yarn
+          yarn --frozen-lockfile
           ./scripts/release/deb
   trigger_macos:
     <<: *defaults
     steps:
       - add_ssh_keys
       - checkout
-      - run: yarn
+      - run: yarn --frozen-lockfile
       - run: ./scripts/release/macos_installer_trigger
   release_homebrew:
     <<: *defaults
@@ -220,7 +220,7 @@ jobs:
       - run: |
           cp yarn.lock packages/cli
           cd packages/cli
-          yarn
+          yarn --frozen-lockfile
           cp -r /persisted/dist /cli/packages/cli
           cp -r /persisted/tmp /cli/packages/cli
           ./scripts/release/homebrew
@@ -228,20 +228,20 @@ jobs:
     <<: *defaults
     steps:
       - checkout
-      - run: yarn
+      - run: yarn --frozen-lockfile
       - run: ./scripts/postrelease/invalidate_cdn_cache
   install_scripts:
     <<: *defaults
     steps:
       - checkout
-      - run: yarn
+      - run: yarn --frozen-lockfile
       - run: ./scripts/postrelease/install_scripts
   change_management:
     <<: *defaults
     steps:
       - checkout
       - run: |
-          yarn
+          yarn --frozen-lockfile
           ./scripts/postrelease/change_management
   dev_center_docs:
     docker: &devdocs_docker
