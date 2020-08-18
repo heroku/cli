@@ -60,7 +60,7 @@ $ npm install -g @heroku-cli/plugin-status
 $ @heroku-cli/plugin-status COMMAND
 running command...
 $ @heroku-cli/plugin-status (-v|--version|version)
-@heroku-cli/plugin-status/7.39.2 darwin-x64 node-v12.12.0
+@heroku-cli/plugin-status/7.42.8 darwin-x64 node-v12.12.0
 $ @heroku-cli/plugin-status --help [COMMAND]
 USAGE
   $ @heroku-cli/plugin-status COMMAND
@@ -82,5 +82,5 @@ OPTIONS
   --json  output in json format
 ```
 
-_See code: [src/commands/status.ts](https://github.com/heroku/cli/blob/v7.39.2/packages/status/src/commands/status.ts)_
+_See code: [src/commands/status.ts](https://github.com/heroku/cli/blob/v7.42.8/packages/status/src/commands/status.ts)_
 <!-- commandsstop -->

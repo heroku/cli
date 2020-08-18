@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.42.8](https://github.com/heroku/cli/compare/v7.42.7...v7.42.8) (2020-08-17)
+
+**Note:** Version bump only for package @heroku-cli/plugin-auth
+
+
+
+
+
 ## [7.39.3](https://github.com/heroku/cli/compare/v7.39.2...v7.39.3) (2020-04-15)
 
 **Note:** Version bump only for package @heroku-cli/plugin-auth
