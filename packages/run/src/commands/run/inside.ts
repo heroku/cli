@@ -11,6 +11,8 @@ const debug = debugFactory('heroku:run:inside')
 export default class RunInside extends Command {
   static description = 'run a one-off process inside an existing heroku dyno'
 
+  static hidden = true;
+
   static examples = [
     '$ heroku run:inside web.1 bash',
   ]
