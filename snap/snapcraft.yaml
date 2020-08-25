@@ -17,11 +17,17 @@ parts:
     plugin: nil
     override-pull: |
       snapcraftctl pull
-      COMMIT_MSG=$(git log --max-count 1 --pretty="format:%s"m | awk '{print $1}')
+      COMMIT_MSG=$(git log --max-count 1 --pretty="format:%s" | awk '{print $1}')
       CLI_VERSION=$(grep \"version\": packages/cli/package.json | head -n 1 | awk '{print $2}' | tr -d \" | tr -d \,)
+
+      echo "COMMIT_MSG"
+      echo $COMMIT_MSG
+      echo "CLI_VERSION"
+      echo $CLI_VERSION
+
       if [ "$COMMIT_MSG" == "v$CLI_VERSION" ]; then
         git tag "$COMMIT_MSG" -m "$COMMIT_MSG"
-      ; fi
+      fi
     override-build: |
       set -ex
 
