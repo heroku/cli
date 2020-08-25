@@ -5,7 +5,6 @@ run a one-off process inside a Heroku dyno
 
 * [`heroku run`](#heroku-run)
 * [`heroku run:detached`](#heroku-rundetached)
-* [`heroku run:inside`](#heroku-runinside)
 
 ## `heroku run`
 
@@ -33,7 +32,7 @@ EXAMPLES
   $ heroku run -s hobby -- myscript.sh -a arg1 -s arg2
 ```
 
-_See code: [@heroku-cli/plugin-run](https://github.com/heroku/cli/blob/v7.42.8/src/commands/run/index.ts)_
+_See code: [@heroku-cli/plugin-run](https://github.com/heroku/cli/blob/v7.42.9/src/commands/run/index.ts)_
 
 ## `heroku run:detached`
 
@@ -55,24 +54,4 @@ EXAMPLE
   $ heroku run:detached ls
 ```
 
-_See code: [@heroku-cli/plugin-run](https://github.com/heroku/cli/blob/v7.42.8/src/commands/run/detached.ts)_
-
-## `heroku run:inside`
-
-run a one-off process inside an existing heroku dyno
-
-```
-USAGE
-  $ heroku run:inside
-
-OPTIONS
-  -a, --app=app        (required) app to run command against
-  -e, --env=env        environment variables to set (use ';' to split multiple vars)
-  -r, --remote=remote  git remote of app to use
-  -x, --exit-code      passthrough the exit code of the remote command
-
-EXAMPLE
-  $ heroku run:inside web.1 bash
-```
-
-_See code: [@heroku-cli/plugin-run](https://github.com/heroku/cli/blob/v7.42.8/src/commands/run/inside.ts)_
+_See code: [@heroku-cli/plugin-run](https://github.com/heroku/cli/blob/v7.42.9/src/commands/run/detached.ts)_
