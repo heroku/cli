@@ -27,7 +27,6 @@ parts:
 
       if test "$COMMIT_MSG" = "v$CLI_VERSION"; then
         echo "Setting snapcraft version to $COMMIT_MSG"
-        git tag "$COMMIT_MSG" -m "$COMMIT_MSG"
         snapcraftctl set-version $COMMIT_MSG
       fi
     override-build: |
