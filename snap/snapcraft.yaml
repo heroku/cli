@@ -25,7 +25,7 @@ parts:
       echo "CLI_VERSION"
       echo $CLI_VERSION
 
-      if [ "$COMMIT_MSG" == "v$CLI_VERSION" ]; then
+      if test "$COMMIT_MSG" = "v$CLI_VERSION"; then
         git tag "$COMMIT_MSG" -m "$COMMIT_MSG"
       fi
     override-build: |
