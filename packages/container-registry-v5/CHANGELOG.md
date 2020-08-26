@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.42.12](https://github.com/heroku/cli/compare/v7.42.11...v7.42.12) (2020-08-26)
+
+
+### Bug Fixes
+
+* bump cross-env from 5.2.0 to 7.0.2 ([#1597](https://github.com/heroku/cli/issues/1597)) ([33b2aba](https://github.com/heroku/cli/commit/33b2aba842993053f035e732871e19f2a35156a8))
+
+
+
+
+
 ## [7.39.2](https://github.com/heroku/cli/compare/v7.39.1...v7.39.2) (2020-03-30)
 
 **Note:** Version bump only for package @heroku-cli/plugin-container-registry-v5
