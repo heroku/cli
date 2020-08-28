@@ -321,13 +321,13 @@ workflows:
 #             - windows-test
 #           filters:
 #             <<: *only_version_tags
-      - release_snap:
-          requires:
-            - node12-test
-            - node10-test
-            - windows-test
-          filters:
-            <<: *only_version_tags
+#      - release_snap:
+#          requires:
+#            - node12-test
+#            - node10-test
+#            - windows-test
+#          filters:
+#            <<: *only_version_tags
       - invalidate_cdn_cache:
           requires:
             - install_scripts
