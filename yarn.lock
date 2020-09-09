@@ -291,10 +291,10 @@
     netrc-parser "^3.1.6"
     opn "^5.4.0"
 
-"@heroku-cli/command@^8.3.2":
-  version "8.3.2"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.3.2.tgz#6057fbb905d7d471b5c4e33c07a0acf0b0968cf7"
-  integrity sha512-fRkdy9fU5+ZaZHAvMG32uNACyeA0zenmhvH3b6cScQGfPZEmOm66VfVOPy8jZjVZYtZQrS9VqxabbeYtPx8XwQ==
+"@heroku-cli/command@^8.4.0":
+  version "8.4.0"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.4.0.tgz#3f977eeadfb3aacbe79172644f1fee8040893cae"
+  integrity sha512-TN4v5VYIJeLizhNBwP3bDKrUQLdriGVSDRT55/Il2Dyg9i8hkoUQURckcGv0H/MS2oissqCGXfNzNZu2VRbC2Q==
   dependencies:
     "@heroku-cli/color" "^1.1.14"
     "@oclif/errors" "^1.2.2"
@@ -305,6 +305,7 @@
     http-call "^5.2.4"
     netrc-parser "^3.1.6"
     open "^6.2.0"
+    uuid "^8.3.0"
 
 "@heroku-cli/notifications@^1.2.2":
   version "1.2.2"
@@ -10245,6 +10246,11 @@ uuid@^3.0.1, uuid@^3.3.2:
   version "3.3.3"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.3.3.tgz#4568f0216e78760ee1dbf3a4d2cf53e224112866"
   integrity sha512-pW0No1RGHgzlpHJO1nsVrHKpOEIxkGg1xB+v0ZmdNH5OAeAwzAVrCnI2/6Mtx+Uys6iaylxa+D3g4j63IKKjSQ==
+
+uuid@^8.3.0:
+  version "8.3.0"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.0.tgz#ab738085ca22dc9a8c92725e459b1d507df5d6ea"
+  integrity sha512-fX6Z5o4m6XsXBdli9g7DtWgAx+osMsRRZFKma1mIUsLCz6vRvv+pz5VNbyu9UEDzpMWulZfvpgb/cmDXVulYFQ==
 
 v8-compile-cache@^2.0.3:
   version "2.1.0"
