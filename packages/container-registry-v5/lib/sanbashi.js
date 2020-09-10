@@ -80,7 +80,7 @@ Sanbashi.filterByProcessType = function (jobs, procs) {
   return filteredJobs
 }
 
-Sanbashi.buildImage = function (dockerfile, resource, buildArg, path) {
+Sanbashi.buildImage = function (dockerfile, resource, buildArg, target, path) {
   let cwd = path || Path.dirname(dockerfile)
   let args = ['build', '-f', dockerfile, '-t', resource]
 
@@ -91,7 +91,13 @@ Sanbashi.buildImage = function (dockerfile, resource, buildArg, path) {
     }
   }
 
+  if (target !== undefined) {
+    args.push('--target')
+    args.push(target)
+  }
+
   args.push(cwd)
+
   return Sanbashi.cmd('docker', args)
 }
 

@@ -83,6 +83,7 @@ OPTIONS
   -r, --remote=remote          git remote of app to use
   -v, --verbose
   --arg=arg                    set build-time variables
+  --target=production          target build stage in Dockerfile
   --context-path=context-path  path to use as build context (defaults to Dockerfile dir)
 
 EXAMPLES
@@ -91,6 +92,7 @@ EXAMPLES
   heroku container:push web worker --recursive       # Pushes Dockerfile.web and Dockerfile.worker
   heroku container:push --recursive                  # Pushes Dockerfile.*
   heroku container:push web --arg ENV=live,HTTPS=on  # Build-time variables
+  heroku container:push web --target production      # Target build stage in Dockerfile
   heroku container:push --recursive --context-path . # Pushes Dockerfile.* using current dir as build context
 ```
 

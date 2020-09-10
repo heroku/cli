@@ -110,6 +110,24 @@ describe('Sanbashi', () => {
       Sinon.assert.calledWith(cmd, 'docker', dockerArg)
     })
 
+    it('set the build target', () => {
+      let buildArg = ['']
+      let targetArg = 'production'
+      let cmd = Sinon.stub(Sanbashi, 'cmd')
+      Sanbashi.buildImage(dockerfile, resource, buildArg, targetArg)
+      let dockerArg = ['build', '-f', dockerfile, '-t', 'web', '--target', 'production', path]
+      Sinon.assert.calledWith(cmd, 'docker', dockerArg)
+    })
+
+    it('skip the build target if empty', () => {
+      let buildArg = ['ENV=live', 'HTTPS=on']
+      let targetArg = ''
+      let cmd = Sinon.stub(Sanbashi, 'cmd')
+      Sanbashi.buildImage(dockerfile, resource, buildArg, targetArg)
+      let dockerArg = ['build', '-f', dockerfile, '-t', 'web', '--build-arg', 'ENV=live', '--build-arg', 'HTTPS=on', path]
+      Sinon.assert.calledWith(cmd, 'docker', dockerArg)
+    })
+
     it('set build path', () => {
       let buildArg = ['']
       let buildPath = 'build/context'

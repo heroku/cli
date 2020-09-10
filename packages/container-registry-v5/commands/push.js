@@ -16,6 +16,7 @@ module.exports = function (topic) {
       `${cli.color.cmd('heroku container:push web worker --recursive')}       # Pushes Dockerfile.web and Dockerfile.worker`,
       `${cli.color.cmd('heroku container:push --recursive')}                  # Pushes Dockerfile.*`,
       `${cli.color.cmd('heroku container:push web --arg ENV=live,HTTPS=on')}  # Build-time variables`,
+      `${cli.color.cmd('heroku container:push web --target production')}      # Target build stage in Dockerfile`,
       `${cli.color.cmd('heroku container:push --recursive --context-path .')} # Pushes Dockerfile.* using current dir as build context`
     ],
     flags: [
@@ -34,6 +35,11 @@ module.exports = function (topic) {
         name: 'arg',
         hasValue: true,
         description: 'set build-time variables'
+      },
+      {
+        name: 'target',
+        hasValue: true,
+        description: 'set the target build stage to build'
       },
       {
         name: 'context-path',
@@ -88,7 +94,7 @@ let push = async function (context, heroku) {
       } else {
         cli.styledHeader(`Building ${job.name} (${job.dockerfile})`)
       }
-      await Sanbashi.buildImage(job.dockerfile, job.resource, buildArg, context.flags['context-path'])
+      await Sanbashi.buildImage(job.dockerfile, job.resource, buildArg, context.flags['target'], context.flags['context-path'])
     }
   } catch (err) {
     cli.exit(1, `Error: docker build exited with ${err}`)
