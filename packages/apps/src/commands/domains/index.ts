@@ -2,6 +2,7 @@ import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import cli from 'cli-ux'
 import * as Uri from 'urijs'
+import checkMultiSni from '../../lib/multiple-sni-feature'
 
 function isApexDomain(hostname: string) {
   if (hostname.includes('*')) return false
@@ -31,8 +32,49 @@ www.example.com  CNAME            www.example.herokudns.com
     ...cli.table.flags({except: 'no-truncate'}),
   }
 
+  tableConfig = (needsEndpoints: boolean) => {
+    const tableConfig = {
+      hostname: {
+        header: 'Domain Name',
+      },
+      kind: {
+        header: 'DNS Record Type',
+        get: (domain: Heroku.Domain) => {
+          if (domain.hostname) {
+            return isApexDomain(domain.hostname) ? 'ALIAS or ANAME' : 'CNAME'
+          }
+        },
+      },
+      cname: {header: 'DNS Target'},
+      acm_status: {header: 'ACM Status', extended: true},
+      acm_status_reason: {header: 'ACM Status', extended: true},
+
+    }
+
+    const sniConfig = {
+      sni_endpoint: {
+        header: 'SNI Endpoint',
+        get: (domain: Heroku.Domain) => {
+          if (domain.sni_endpoint) {
+            return domain.sni_endpoint.name
+          }
+        },
+      },
+    }
+
+    if (needsEndpoints) {
+      return {
+        ...tableConfig,
+        ...sniConfig,
+      }
+    }
+
+    return tableConfig
+  }
+
   async run() {
     const {flags} = this.parse(DomainsIndex)
+    const multipleSniEndpointsEnabled = await checkMultiSni(this.heroku, flags.app)
     const {body: domains} = await this.heroku.get<Array<Heroku.Domain>>(`/apps/${flags.app}/domains`)
     const herokuDomain = domains.find(domain => domain.kind === 'heroku')
     const customDomains = domains.filter(domain => domain.kind === 'custom')
@@ -45,18 +87,7 @@ www.example.com  CNAME            www.example.herokudns.com
       if (customDomains && customDomains.length > 0) {
         cli.log()
         cli.styledHeader(`${flags.app} Custom Domains`)
-        cli.table(customDomains, {
-          hostname: {header: 'Domain Name'},
-          kind: {header: 'DNS Record Type',
-            get: domain => {
-              if (domain.hostname) {
-                return isApexDomain(domain.hostname) ? 'ALIAS or ANAME' : 'CNAME'
-              }
-            }},
-          cname: {header: 'DNS Target'},
-          acm_status: {header: 'ACM Status', extended: true},
-          acm_status_reason: {header: 'ACM Status', extended: true},
-        }, {
+        cli.table(customDomains, this.tableConfig(multipleSniEndpointsEnabled), {
           ...flags,
           'no-truncate': true,
         })
