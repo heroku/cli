@@ -48,7 +48,6 @@ www.example.com  CNAME            www.example.herokudns.com
       cname: {header: 'DNS Target'},
       acm_status: {header: 'ACM Status', extended: true},
       acm_status_reason: {header: 'ACM Status', extended: true},
-
     }
 
     const sniConfig = {
