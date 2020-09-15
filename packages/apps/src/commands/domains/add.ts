@@ -4,15 +4,13 @@ import * as Heroku from '@heroku-cli/schema'
 import cli from 'cli-ux'
 import {prompt} from 'inquirer'
 import * as shellescape from 'shell-escape'
-
+import checkMultiSni from '../../lib/multiple-sni-feature'
 import waitForDomain from '../../lib/wait-for-domain'
 
 interface DomainCreatePayload {
   hostname: string;
   sni_endpoint?: string;
 }
-
-const MULTIPLE_SNI_ENDPOINT_FLAG = 'allow-multiple-sni-endpoints'
 
 export default class DomainsAdd extends Command {
   static description = 'add a domain to an app'
@@ -94,15 +92,13 @@ export default class DomainsAdd extends Command {
     const {args, flags} = this.parse(DomainsAdd)
     const {hostname} = args
 
-    const {body: featureList} = await this.heroku.get<Array<Heroku.AppFeature>>(`/apps/${flags.app}/features`)
-
-    const multipleSniEndpointFeature = featureList.find(feature => feature.name === MULTIPLE_SNI_ENDPOINT_FLAG)
+    const multipleSniEndpointsEnabled = await checkMultiSni(this.heroku, flags.app)
 
     const domainCreatePayload: DomainCreatePayload = {
       hostname,
     }
 
-    if (multipleSniEndpointFeature && multipleSniEndpointFeature.enabled) {
+    if (multipleSniEndpointsEnabled) {
       // multiple SNI endpoints is enabled
       if (flags.cert) {
         domainCreatePayload.sni_endpoint = flags.cert
