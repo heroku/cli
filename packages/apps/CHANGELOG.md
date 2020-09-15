@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.43.0](https://github.com/heroku/heroku-cli-plugin-apps/compare/v7.42.13...v7.43.0) (2020-09-15)
+
+
+### Features
+
+* **domains:** show SNI endpoints in domains list ([#1640](https://github.com/heroku/heroku-cli-plugin-apps/issues/1640)) ([689f055](https://github.com/heroku/heroku-cli-plugin-apps/commit/689f0554bd00fd8d226642c1fb4fe5ffdc9695ee))
+
+
+
+
+
 ## [7.42.8](https://github.com/heroku/heroku-cli-plugin-apps/compare/v7.42.7...v7.42.8) (2020-08-17)
 
 **Note:** Version bump only for package @heroku-cli/plugin-apps
