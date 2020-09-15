@@ -18,7 +18,7 @@ $ npm install -g @heroku-cli/plugin-apps
 $ heroku COMMAND
 running command...
 $ heroku (-v|--version|version)
-@heroku-cli/plugin-apps/7.42.8 darwin-x64 node-v12.12.0
+@heroku-cli/plugin-apps/7.43.0 darwin-x64 node-v12.15.0
 $ heroku --help [COMMAND]
 USAGE
   $ heroku COMMAND
@@ -66,7 +66,7 @@ EXAMPLES
   $ heroku domains --filter 'Domain Name=www.example.com'
 ```
 
-_See code: [src/commands/domains/index.ts](https://github.com/heroku/heroku-cli-plugin-apps/blob/v7.42.8/src/commands/domains/index.ts)_
+_See code: [src/commands/domains/index.ts](https://github.com/heroku/heroku-cli-plugin-apps/blob/v7.43.0/src/commands/domains/index.ts)_
 
 ## `heroku domains:add HOSTNAME`
 
@@ -88,7 +88,7 @@ EXAMPLE
   heroku domains:add www.example.com
 ```
 
-_See code: [src/commands/domains/add.ts](https://github.com/heroku/heroku-cli-plugin-apps/blob/v7.42.8/src/commands/domains/add.ts)_
+_See code: [src/commands/domains/add.ts](https://github.com/heroku/heroku-cli-plugin-apps/blob/v7.43.0/src/commands/domains/add.ts)_
 
 ## `heroku domains:clear`
 
@@ -107,7 +107,7 @@ EXAMPLE
   heroku domains:clear
 ```
 
-_See code: [src/commands/domains/clear.ts](https://github.com/heroku/heroku-cli-plugin-apps/blob/v7.42.8/src/commands/domains/clear.ts)_
+_See code: [src/commands/domains/clear.ts](https://github.com/heroku/heroku-cli-plugin-apps/blob/v7.43.0/src/commands/domains/clear.ts)_
 
 ## `heroku domains:info HOSTNAME`
 
@@ -126,7 +126,7 @@ EXAMPLE
   $ heroku domains:info www.example.com
 ```
 
-_See code: [src/commands/domains/info.ts](https://github.com/heroku/heroku-cli-plugin-apps/blob/v7.42.8/src/commands/domains/info.ts)_
+_See code: [src/commands/domains/info.ts](https://github.com/heroku/heroku-cli-plugin-apps/blob/v7.43.0/src/commands/domains/info.ts)_
 
 ## `heroku domains:remove HOSTNAME`
 
@@ -145,7 +145,7 @@ EXAMPLE
   heroku domains:remove www.example.com
 ```
 
-_See code: [src/commands/domains/remove.ts](https://github.com/heroku/heroku-cli-plugin-apps/blob/v7.42.8/src/commands/domains/remove.ts)_
+_See code: [src/commands/domains/remove.ts](https://github.com/heroku/heroku-cli-plugin-apps/blob/v7.43.0/src/commands/domains/remove.ts)_
 
 ## `heroku domains:wait [HOSTNAME]`
 
@@ -161,5 +161,5 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
 ```
 
-_See code: [src/commands/domains/wait.ts](https://github.com/heroku/heroku-cli-plugin-apps/blob/v7.42.8/src/commands/domains/wait.ts)_
+_See code: [src/commands/domains/wait.ts](https://github.com/heroku/heroku-cli-plugin-apps/blob/v7.43.0/src/commands/domains/wait.ts)_
 <!-- commandsstop -->
