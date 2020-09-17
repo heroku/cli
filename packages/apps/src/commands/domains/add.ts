@@ -104,6 +104,8 @@ export default class DomainsAdd extends Command {
       if (certSelection) {
         domainCreatePayload.sni_endpoint = certSelection
       }
+
+      cli.action.start(`Adding ${color.green(domainCreatePayload.hostname)} to ${color.app(flags.app)}`)
     }
 
     try {
