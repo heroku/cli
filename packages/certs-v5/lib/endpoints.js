@@ -67,16 +67,16 @@ function * all (appName, heroku) {
     // use SNI endpoints only
     allCerts = yield {
       ssl_certs: [],
-      sni_certs: sniCertsPromise(app, heroku),
+      sni_certs: sniCertsPromise(appName, heroku),
     }
   } else {
     allCerts = yield {
-      ssl_certs: sslCertsPromise(app, heroku),
-      sni_certs: sniCertsPromise(app, heroku)
+      ssl_certs: sslCertsPromise(appName, heroku),
+      sni_certs: sniCertsPromise(appName, heroku)
     }
   }
 
-  return tagAndSort(app, allCerts)
+  return tagAndSort(appName, allCerts)
 }
 
 function * hasAddon (app, heroku) {
