@@ -11,6 +11,15 @@ function sslCertsPromise (app, heroku) {
   })
 }
 
+function appInfo (app, heroku) {
+  return heroku.request({
+    path: `/apps/${app}`,
+    headers: { Accept: 'application/vnd.heroku+json; version=3.process-tier' }
+  }).then(function (data) {
+    return data
+  })
+}
+
 function sniCertsPromise (app, heroku) {
   return heroku.request({
     path: `/apps/${app}/sni-endpoints`,
@@ -57,12 +66,10 @@ function tagAndSort (app, allCerts) {
 }
 
 function * all (app, heroku) {
-  const featureList = yield heroku.get(`/apps/${app}/features`)
-  const multipleSniEndpointFeatureEnabled = checkMultiSniFeature(featureList)
-
+  const privateSpace = appInfo(app, heroku).space
   let allCerts;
 
-  if (multipleSniEndpointFeatureEnabled) {
+  if (privateSpace) {
     // use SNI endpoints only
     allCerts = yield {
       ssl_certs: [],
