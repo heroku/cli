@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.43.1](https://github.com/heroku/cli/compare/v7.43.0...v7.43.1) (2020-09-21)
+
+
+### Bug Fixes
+
+* **certs-v5:** check if an app is a private space app when using SNI endpoints ([#1644](https://github.com/heroku/cli/issues/1644)) ([34c2ece](https://github.com/heroku/cli/commit/34c2ece4c5ebd48f37a3a0793c7735f52fb49a15))
+
+
+
+
+
 ## [7.42.4](https://github.com/heroku/cli/compare/v7.42.3...v7.42.4) (2020-07-13)
 
 
