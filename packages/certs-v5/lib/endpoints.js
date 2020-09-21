@@ -58,12 +58,12 @@ function tagAndSort (app, allCerts) {
 
 function * all (appName, heroku) {
   const featureList = yield heroku.get(`/apps/${appName}/features`)
-  const app = yield heroku.get(`/apps/${appName}`)
   const multipleSniEndpointFeatureEnabled = checkMultiSniFeature(featureList)
+  const isSpaceApp = yield hasSpace(appName, heroku)
 
   let allCerts;
 
-  if (multipleSniEndpointFeatureEnabled && !!app.space) {
+  if (multipleSniEndpointFeatureEnabled && isSpaceApp) {
     // use SNI endpoints only
     allCerts = yield {
       ssl_certs: [],
