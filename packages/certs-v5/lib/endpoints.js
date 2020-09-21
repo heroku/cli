@@ -56,26 +56,27 @@ function tagAndSort (app, allCerts) {
   })
 }
 
-function * all (app, heroku) {
-  const featureList = yield heroku.get(`/apps/${app}/features`)
+function * all (appName, heroku) {
+  const featureList = yield heroku.get(`/apps/${appName}/features`)
   const multipleSniEndpointFeatureEnabled = checkMultiSniFeature(featureList)
+  const isSpaceApp = yield hasSpace(appName, heroku)
 
   let allCerts;
 
-  if (multipleSniEndpointFeatureEnabled) {
+  if (multipleSniEndpointFeatureEnabled && isSpaceApp) {
     // use SNI endpoints only
     allCerts = yield {
       ssl_certs: [],
-      sni_certs: sniCertsPromise(app, heroku),
+      sni_certs: sniCertsPromise(appName, heroku),
     }
   } else {
     allCerts = yield {
-      ssl_certs: sslCertsPromise(app, heroku),
-      sni_certs: sniCertsPromise(app, heroku)
+      ssl_certs: sslCertsPromise(appName, heroku),
+      sni_certs: sniCertsPromise(appName, heroku)
     }
   }
 
-  return tagAndSort(app, allCerts)
+  return tagAndSort(appName, allCerts)
 }
 
 function * hasAddon (app, heroku) {
