@@ -123,13 +123,6 @@ describe('domains:add', () => {
       ])
       .post('/apps/myapp/domains', {
         hostname: 'example.com',
-      })
-      .reply(422, {
-        id: 'invalid_params',
-        message: '\'sni_endpoint\' param is required when adding a domain to an app with multiple SSL certs.',
-      })
-      .post('/apps/myapp/domains', {
-        hostname: 'example.com',
         sni_endpoint: 'my-cert',
       })
       .reply(200, domainsResponseWithEndpoint)
