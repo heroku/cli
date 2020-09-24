@@ -108,7 +108,7 @@ describe('pg', () => {
     })
 
     it('pushes out a db', () => {
-      const dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', 'localdb']
+      const dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', '-N', '_heroku', 'localdb']
       const restoreFlags = ['--verbose', '-F', 'c', '--no-acl', '--no-owner', '-U', 'jeff', '-h', 'herokai.com', '-p', '5432', '-d', 'mydb']
 
       spawnStub.withArgs('pg_dump', dumpFlags, dumpOpts).returns({
@@ -131,7 +131,7 @@ describe('pg', () => {
     })
 
     it('pushes out a db using url port', () => {
-      const dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', '-h', 'localhost', '-p', '5433', 'localdb']
+      const dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', '-N', '_heroku', '-h', 'localhost', '-p', '5433', 'localdb']
       const restoreFlags = ['--verbose', '-F', 'c', '--no-acl', '--no-owner', '-U', 'jeff', '-h', 'herokai.com', '-p', '5432', '-d', 'mydb']
 
       spawnStub.withArgs('pg_dump', dumpFlags, dumpOpts).returns({
@@ -157,7 +157,7 @@ describe('pg', () => {
       env.PGPORT = dumpOpts.env.PGPORT = '5433'
       restoreOpts.env.PGPORT = '5433'
 
-      const dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', '-p', '5433', 'localdb']
+      const dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', '-N', '_heroku', '-p', '5433', 'localdb']
       const restoreFlags = ['--verbose', '-F', 'c', '--no-acl', '--no-owner', '-U', 'jeff', '-h', 'herokai.com', '-p', '5432', '-d', 'mydb']
 
       spawnStub.withArgs('pg_dump', dumpFlags, dumpOpts).returns({
@@ -193,7 +193,7 @@ describe('pg', () => {
         localPort: 49152
       }
 
-      const dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', 'localdb']
+      const dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', '-N', '_heroku', 'localdb']
       const restoreFlags = ['--verbose', '-F', 'c', '--no-acl', '--no-owner', '-U', 'jeff', '-h', 'herokai.com', '-p', '5432', '-d', 'mydb']
 
       spawnStub.withArgs('pg_dump', dumpFlags, dumpOpts).returns({
@@ -217,7 +217,7 @@ describe('pg', () => {
     })
 
     it('exits non-zero when there is an error', () => {
-      const dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', 'localdb']
+      const dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', '-N', '_heroku', 'localdb']
       const restoreFlags = ['--verbose', '-F', 'c', '--no-acl', '--no-owner', '-U', 'jeff', '-h', 'herokai.com', '-p', '5432', '-d', 'mydb']
 
       spawnStub.withArgs('pg_dump', dumpFlags, dumpOpts).returns({
@@ -245,7 +245,7 @@ describe('pg', () => {
   })
 
   describe('pull', () => {
-    const dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', '-U', 'jeff', '-h', 'herokai.com', '-p', '5432', 'mydb']
+    const dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', '-N', '_heroku', '-U', 'jeff', '-h', 'herokai.com', '-p', '5432', 'mydb']
     const dumpOpts = {
       env: {
         PGPASSWORD: 'pass',

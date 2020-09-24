@@ -114,7 +114,7 @@ const run = co.wrap(function * (sourceIn, targetIn, exclusions) {
   const target = yield maybeTunnel(targetIn)
   const exclude = exclusions.map(function (e) { return '--exclude-table-data=' + e }).join(' ')
 
-  let dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', ...connArgs(source, true)]
+  let dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', '-N', '_heroku', ...connArgs(source, true)]
   if (exclude !== '') dumpFlags.push(exclude)
 
   const dumpOptions = {
