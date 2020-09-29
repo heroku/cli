@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.43.3](https://github.com/heroku/cli/compare/v7.43.2...v7.43.3) (2020-09-29)
+
+
+### Bug Fixes
+
+* **pg-v5:** exclude the internal _heroku schema from pg dump ([#1648](https://github.com/heroku/cli/issues/1648)) ([c4e390c](https://github.com/heroku/cli/commit/c4e390c98f7dde3903d43ba2f185fa729f2b4633))
+
+
+
+
+
 ## [7.42.12](https://github.com/heroku/cli/compare/v7.42.11...v7.42.12) (2020-08-26)
 
 
