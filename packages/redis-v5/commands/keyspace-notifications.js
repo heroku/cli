@@ -29,13 +29,13 @@ module.exports = {
   `,
   run: cli.command(async (context, heroku) => {
     let api = require('../lib/shared')(context, heroku)
-    if (!context.flags.config) {
+    if (context.flags.config !== '' && !context.flags.config) {
       cli.exit(1, 'Please specify a valid keyspace notification configuration.')
     }
 
     let addon = await api.getRedisAddon()
 
     let config = await api.request(`/redis/v0/databases/${addon.name}/config`, 'PATCH', { notify_keyspace_events: context.flags.config })
-    cli.log(`Keyspace notifcations for ${addon.name} (${addon.config_vars.join(', ')}) set to ${config.notify_keyspace_events.value}.`)
+    cli.log(`Keyspace notifications for ${addon.name} (${addon.config_vars.join(', ')}) set to '${config.notify_keyspace_events.value}'.`)
   })
 }
