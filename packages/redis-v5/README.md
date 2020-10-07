@@ -25,6 +25,7 @@ To publish new versions, see
 * [`heroku redis:cli [DATABASE]`](#heroku-rediscli-database)
 * [`heroku redis:credentials [DATABASE]`](#heroku-rediscredentials-database)
 * [`heroku redis:info [DATABASE]`](#heroku-redisinfo-database)
+* [`heroku redis:keyspace-notifications [DATABASE]`](#heroku-rediskeyspace-notifications-database)
 * [`heroku redis:maintenance [DATABASE]`](#heroku-redismaintenance-database)
 * [`heroku redis:maxmemory [DATABASE]`](#heroku-redismaxmemory-database)
 * [`heroku redis:promote DATABASE`](#heroku-redispromote-database)
@@ -83,6 +84,38 @@ USAGE
 OPTIONS
   -a, --app=app        (required) app to run command against
   -r, --remote=remote  git remote of app to use
+```
+
+## `heroku redis:keyspace-notifications [DATABASE]`
+
+set the keyspace notifications configuration
+
+```
+USAGE
+  $ heroku redis:keyspace-notifications [DATABASE]
+
+OPTIONS
+  -a, --app=app        (required) app to run command against
+  -c, --config=config  (required) set keyspace notifications configuration
+  -r, --remote=remote  git remote of app to use
+
+DESCRIPTION
+  Set the configuration to enable keyspace notification events:
+       K     Keyspace events, published with __keyspace@<db>__ prefix.
+       E     Keyevent events, published with __keyevent@<db>__ prefix.
+       g     Generic commands (non-type specific) like DEL, EXPIRE, RENAME, ...
+       $     String commands
+       l     List commands
+       s     Set commands
+       h     Hash commands
+       z     Sorted set commands
+       t     Stream commands
+       x     Expired events (events generated every time a key expires)
+       e     Evicted events (events generated when a key is evicted for maxmemory)
+       m     Key miss events (events generated when a key that doesn't exist is accessed)
+       A     Alias for "g$lshztxe", so that the "AKE" string means all the events except "m".
+
+       pass an empty string ('') to disable keyspace notifications
 ```
 
 ## `heroku redis:maintenance [DATABASE]`
