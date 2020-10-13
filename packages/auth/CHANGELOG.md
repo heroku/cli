@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.46.0](https://github.com/heroku/cli/compare/v7.45.0...v7.46.0) (2020-10-13)
+
+
+### Features
+
+* **auth:** add a deprecation warning to generate-recovery-codes ([#1656](https://github.com/heroku/cli/issues/1656)) ([d9cfe49](https://github.com/heroku/cli/commit/d9cfe499b4fe43daa774816bfd1ca31d29ab2ec1))
+
+
+
+
+
 # [7.43.0](https://github.com/heroku/cli/compare/v7.42.13...v7.43.0) (2020-09-15)
 
 **Note:** Version bump only for package @heroku-cli/plugin-auth
