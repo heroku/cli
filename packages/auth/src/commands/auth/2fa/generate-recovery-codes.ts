@@ -1,5 +1,5 @@
 import {Command} from '@heroku-cli/command'
-import ux from 'cli-ux'
+import cli from 'cli-ux'
 
 export default class Auth2faGenerate extends Command {
   static description = `generates 2fa recovery codes
@@ -28,11 +28,12 @@ a37c5c6985f56e66
 f82e7c2a50737494`
 
   async run() {
-    const password = await ux.prompt('Password', {type: 'hide'})
+    cli.warn('DEPRECATION WARNING: this command will be removed soon, in favor of generating recovery codes in your Account Settings in a browser.')
+    const password = await cli.prompt('Password', {type: 'hide'})
     const headers = {'Heroku-Password': password}
     const {body: codes} = await this.heroku.post<string[]>('/account/recovery-codes', {headers})
     for (const code of codes) {
-      ux.log(code)
+      cli.log(code)
     }
   }
 }
