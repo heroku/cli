@@ -15,7 +15,7 @@ Disabling 2fa on me@example.com... done`
 
   async run() {
     cli.action.start('Disabling 2fa')
-    const headers = { 'Accept': 'application/vnd.heroku+json; version=3.with_vaas_info' }
+    const headers = {Accept: 'application/vnd.heroku+json; version=3.with_vaas_info'}
     const {body: account} = await this.heroku.get<Heroku.Account>('/account', {headers})
     cli.action.start(`Disabling 2fa on ${account.email}`)
     if (account.vaas_enrolled) this.error('Cannot disable 2fa via CLI\nPlease visit your Account page on the Heroku Dashboad to manage 2fa')
