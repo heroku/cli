@@ -31,7 +31,8 @@ module.exports = function (certs) {
       expires_at: f.ssl_cert.expires_at,
       ca_signed: f.ssl_cert['ca_signed?'],
       type: type(f),
-      common_names: f.ssl_cert.cert_domains.join(', ')
+      common_names: f.ssl_cert.cert_domains.join(', '),
+      associated_domains: String(f.domains.length)
     }
   })
 
@@ -47,7 +48,8 @@ module.exports = function (certs) {
     {label: 'Common Name(s)', key: 'common_names'},
     {label: 'Expires', key: 'expires_at', format: function (f) { return f ? formatDate(f) : '' }},
     {label: 'Trusted', key: 'ca_signed', format: function (f) { return f === undefined ? '' : (f ? 'True' : 'False') }},
-    {label: 'Type', key: 'type'}
+    {label: 'Type', key: 'type'},
+    {label: 'Domains', key: 'associated_domains'}
   ])
 
   cli.table(mapped, { columns })
