@@ -25,15 +25,17 @@ function type (f) {
 
 module.exports = function (certs) {
   let mapped = certs.filter(function (f) { return f.ssl_cert }).map(function (f) {
-    return {
+    let tableContents = {
       name: f.name,
       cname: f.cname,
       expires_at: f.ssl_cert.expires_at,
       ca_signed: f.ssl_cert['ca_signed?'],
       type: type(f),
       common_names: f.ssl_cert.cert_domains.join(', '),
-      associated_domains: String(f.domains.length)
+      associated_domains: (f.domains && f.domains.length) ? f.domains.length : '0'
     }
+
+    return tableContents
   })
 
   let columns = [
