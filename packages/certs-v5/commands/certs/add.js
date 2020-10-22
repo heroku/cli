@@ -14,7 +14,7 @@ let isWildcard = require('../../lib/is_wildcard.js')
 let isWildcardMatch = require('../../lib/is_wildcard_match.js')
 let getCertAndKey = require('../../lib/get_cert_and_key.js')
 let matchDomains = require('../../lib/match_domains.js')
-let checkMultiSniFeature = require('../../lib/features.js')
+let { checkMultiSniFeature } = require('../../lib/features.js')
 let { waitForDomains, printDomains } = require('../../lib/domains')
 
 function Domains (domains) {

@@ -1,6 +1,6 @@
 'use strict'
 
-let checkMultiSniFeature = require('./features.js')
+const { checkPrivateSniFeature } = require('./features.js')
 
 function sslCertsPromise (app, heroku) {
   return heroku.request({
@@ -58,12 +58,11 @@ function tagAndSort (app, allCerts) {
 
 function * all (appName, heroku) {
   const featureList = yield heroku.get(`/apps/${appName}/features`)
-  const multipleSniEndpointFeatureEnabled = checkMultiSniFeature(featureList)
-  const isSpaceApp = yield hasSpace(appName, heroku)
+  const privateSniFeatureEnabled = checkPrivateSniFeature(featureList)
 
   let allCerts;
 
-  if (multipleSniEndpointFeatureEnabled && isSpaceApp) {
+  if (privateSniFeatureEnabled) {
     // use SNI endpoints only
     allCerts = yield {
       ssl_certs: [],
