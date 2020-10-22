@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.46.2](https://github.com/heroku/cli/compare/v7.46.1...v7.46.2) (2020-10-22)
+
+
+### Bug Fixes
+
+* **certs-v5:** fix logic for requesting all cert resources ([#1661](https://github.com/heroku/cli/issues/1661)) ([46187e5](https://github.com/heroku/cli/commit/46187e5aef89b6d8d152ceb63653c62b49021e84))
+
+
+
+
+
 ## [7.43.1](https://github.com/heroku/cli/compare/v7.43.0...v7.43.1) (2020-09-21)
 
 
