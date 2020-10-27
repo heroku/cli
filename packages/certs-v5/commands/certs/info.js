@@ -14,10 +14,8 @@ function * run (context, heroku) {
     headers: { 'Accept': `application/vnd.heroku+json; version=3.${endpoint._meta.variant}` }
   }))
 
-  let domains;
-
   if (context.flags['show-domains']) {
-    domains = yield Promise.all(endpoint.domains.map(domain => {
+    let domains = yield Promise.all(endpoint.domains.map(domain => {
       return heroku.request({
         path: `/apps/${context.flags.app}/domains/${domain}`,
         headers: { 'Accept': `application/vnd.heroku+json; version=3.allow_multiple_sni_endpoints` }
@@ -37,7 +35,7 @@ module.exports = {
   flags: [
     { name: 'name', hasValue: true, description: 'name to check info on' },
     { name: 'endpoint', hasValue: true, description: 'endpoint to check info on' },
-    { name: 'show-domains', hasValue: false, description: 'show associated domains'}
+    { name: 'show-domains', hasValue: false, description: 'show associated domains' }
   ],
   description: 'show certificate information for an SSL certificate',
   needsApp: true,

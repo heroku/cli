@@ -56,8 +56,11 @@ module.exports = function (certs) {
     {label: 'Expires', key: 'expires_at', format: function (f) { return f ? formatDate(f) : '' }},
     {label: 'Trusted', key: 'ca_signed', format: function (f) { return f === undefined ? '' : (f ? 'True' : 'False') }},
     {label: 'Type', key: 'type'},
-    {label: 'Domains', key: 'associated_domains'}
   ])
+
+  if (certs.some(cert => !cert.ssl_cert || !cert.ssl_cert.acm)) {
+    columns.push({label: 'Domains', key: 'associated_domains'})
+  }
 
   cli.table(mapped, { columns })
 }

@@ -138,9 +138,9 @@ tokyo-1050  tokyo-1050.japan-4321.herokuspace.com  heroku.com      2013-08-01 21
       expect(cli.stderr).to.equal('')
       /* eslint-disable no-trailing-spaces */
       expect(cli.stdout).to.equal(
-        `Name        Common Name(s)  Expires               Trusted  Type  Domains
-──────────  ──────────────  ────────────────────  ───────  ────  ───────
-tokyo-1050  heroku.com      2013-08-01 21:34 UTC  True     ACM   0
+        `Name        Common Name(s)  Expires               Trusted  Type
+──────────  ──────────────  ────────────────────  ───────  ────
+tokyo-1050  heroku.com      2013-08-01 21:34 UTC  True     ACM
 `)
       /* eslint-enable no-trailing-spaces */
     })
