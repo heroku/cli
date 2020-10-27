@@ -32,7 +32,12 @@ module.exports = function (certs) {
       ca_signed: f.ssl_cert['ca_signed?'],
       type: type(f),
       common_names: f.ssl_cert.cert_domains.join(', '),
-      associated_domains: (f.domains && f.domains.length) ? f.domains.length : '0'
+    }
+
+    // If they're using ACM it's not really worth showing the number of associated domains since
+    // it'll always be 1 and is entirely outside the user's control
+    if (!f.ssl_cert.acm) {
+      tableContents.associated_domains = (f.domains && f.domains.length) ? f.domains.length : '0'
     }
 
     return tableContents
