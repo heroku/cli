@@ -25,14 +25,22 @@ function type (f) {
 
 module.exports = function (certs) {
   let mapped = certs.filter(function (f) { return f.ssl_cert }).map(function (f) {
-    return {
+    let tableContents = {
       name: f.name,
       cname: f.cname,
       expires_at: f.ssl_cert.expires_at,
       ca_signed: f.ssl_cert['ca_signed?'],
       type: type(f),
-      common_names: f.ssl_cert.cert_domains.join(', ')
+      common_names: f.ssl_cert.cert_domains.join(', '),
     }
+
+    // If they're using ACM it's not really worth showing the number of associated domains since
+    // it'll always be 1 and is entirely outside the user's control
+    if (!f.ssl_cert.acm) {
+      tableContents.associated_domains = (f.domains && f.domains.length) ? f.domains.length : '0'
+    }
+
+    return tableContents
   })
 
   let columns = [
@@ -47,8 +55,12 @@ module.exports = function (certs) {
     {label: 'Common Name(s)', key: 'common_names'},
     {label: 'Expires', key: 'expires_at', format: function (f) { return f ? formatDate(f) : '' }},
     {label: 'Trusted', key: 'ca_signed', format: function (f) { return f === undefined ? '' : (f ? 'True' : 'False') }},
-    {label: 'Type', key: 'type'}
+    {label: 'Type', key: 'type'},
   ])
+
+  if (certs.some(cert => !cert.ssl_cert || !cert.ssl_cert.acm)) {
+    columns.push({label: 'Domains', key: 'associated_domains'})
+  }
 
   cli.table(mapped, { columns })
 }

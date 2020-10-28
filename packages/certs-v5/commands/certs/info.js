@@ -14,6 +14,18 @@ function * run (context, heroku) {
     headers: { 'Accept': `application/vnd.heroku+json; version=3.${endpoint._meta.variant}` }
   }))
 
+  if (context.flags['show-domains']) {
+    let domains = yield Promise.all(endpoint.domains.map(domain => {
+      return heroku.request({
+        path: `/apps/${context.flags.app}/domains/${domain}`,
+        headers: { 'Accept': `application/vnd.heroku+json; version=3.allow_multiple_sni_endpoints` }
+      }).then(response => response.hostname)
+    }))
+    cert.domains = domains
+  } else {
+    delete cert.domains
+  }
+
   certificateDetails(cert)
 }
 
@@ -22,7 +34,8 @@ module.exports = {
   command: 'info',
   flags: [
     { name: 'name', hasValue: true, description: 'name to check info on' },
-    { name: 'endpoint', hasValue: true, description: 'endpoint to check info on' }
+    { name: 'endpoint', hasValue: true, description: 'endpoint to check info on' },
+    { name: 'show-domains', hasValue: false, description: 'show associated domains' }
   ],
   description: 'show certificate information for an SSL certificate',
   needsApp: true,
