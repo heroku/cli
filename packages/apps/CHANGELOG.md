@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.47.0](https://github.com/heroku/heroku-cli-plugin-apps/compare/v7.46.2...v7.47.0) (2020-10-29)
+
+
+### Features
+
+* **domains:** make `domains:update` public ([#1665](https://github.com/heroku/heroku-cli-plugin-apps/issues/1665)) ([03acac3](https://github.com/heroku/heroku-cli-plugin-apps/commit/03acac3c19922c10e8d07d8e29afe6ca3134ab2a))
+
+
+
+
+
 ## [7.43.2](https://github.com/heroku/heroku-cli-plugin-apps/compare/v7.43.1...v7.43.2) (2020-09-22)
 
 **Note:** Version bump only for package @heroku-cli/plugin-apps

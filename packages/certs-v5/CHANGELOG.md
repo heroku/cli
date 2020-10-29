@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.47.0](https://github.com/heroku/cli/compare/v7.46.2...v7.47.0) (2020-10-29)
+
+
+### Features
+
+* **certs-v5:** add domain info in certs list and info ([#1660](https://github.com/heroku/cli/issues/1660)) ([1920ff5](https://github.com/heroku/cli/commit/1920ff559f7ceeab3c1e60d34ce863166fe62854))
+
+
+
+
+
 ## [7.46.2](https://github.com/heroku/cli/compare/v7.46.1...v7.46.2) (2020-10-22)
 
 
