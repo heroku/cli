@@ -8,6 +8,7 @@ custom domains for apps
 * [`heroku domains:clear`](#heroku-domainsclear)
 * [`heroku domains:info HOSTNAME`](#heroku-domainsinfo-hostname)
 * [`heroku domains:remove HOSTNAME`](#heroku-domainsremove-hostname)
+* [`heroku domains:update [HOSTNAME]`](#heroku-domainsupdate-hostname)
 * [`heroku domains:wait [HOSTNAME]`](#heroku-domainswait-hostname)
 
 ## `heroku domains`
@@ -42,7 +43,7 @@ EXAMPLES
   $ heroku domains --filter 'Domain Name=www.example.com'
 ```
 
-_See code: [@heroku-cli/plugin-apps](https://github.com/heroku/heroku-cli-plugin-apps/blob/v7.43.2/src/commands/domains/index.ts)_
+_See code: [@heroku-cli/plugin-apps](https://github.com/heroku/heroku-cli-plugin-apps/blob/v7.47.0/src/commands/domains/index.ts)_
 
 ## `heroku domains:add HOSTNAME`
 
@@ -64,7 +65,7 @@ EXAMPLE
   heroku domains:add www.example.com
 ```
 
-_See code: [@heroku-cli/plugin-apps](https://github.com/heroku/heroku-cli-plugin-apps/blob/v7.43.2/src/commands/domains/add.ts)_
+_See code: [@heroku-cli/plugin-apps](https://github.com/heroku/heroku-cli-plugin-apps/blob/v7.47.0/src/commands/domains/add.ts)_
 
 ## `heroku domains:clear`
 
@@ -83,7 +84,7 @@ EXAMPLE
   heroku domains:clear
 ```
 
-_See code: [@heroku-cli/plugin-apps](https://github.com/heroku/heroku-cli-plugin-apps/blob/v7.43.2/src/commands/domains/clear.ts)_
+_See code: [@heroku-cli/plugin-apps](https://github.com/heroku/heroku-cli-plugin-apps/blob/v7.47.0/src/commands/domains/clear.ts)_
 
 ## `heroku domains:info HOSTNAME`
 
@@ -102,7 +103,7 @@ EXAMPLE
   $ heroku domains:info www.example.com
 ```
 
-_See code: [@heroku-cli/plugin-apps](https://github.com/heroku/heroku-cli-plugin-apps/blob/v7.43.2/src/commands/domains/info.ts)_
+_See code: [@heroku-cli/plugin-apps](https://github.com/heroku/heroku-cli-plugin-apps/blob/v7.47.0/src/commands/domains/info.ts)_
 
 ## `heroku domains:remove HOSTNAME`
 
@@ -121,7 +122,27 @@ EXAMPLE
   heroku domains:remove www.example.com
 ```
 
-_See code: [@heroku-cli/plugin-apps](https://github.com/heroku/heroku-cli-plugin-apps/blob/v7.43.2/src/commands/domains/remove.ts)_
+_See code: [@heroku-cli/plugin-apps](https://github.com/heroku/heroku-cli-plugin-apps/blob/v7.47.0/src/commands/domains/remove.ts)_
+
+## `heroku domains:update [HOSTNAME]`
+
+update a domain to use a different SSL certificate on an app
+
+```
+USAGE
+  $ heroku domains:update [HOSTNAME]
+
+OPTIONS
+  -a, --app=app        (required) app to run command against
+  -h, --help           show CLI help
+  -r, --remote=remote  git remote of app to use
+  --cert=cert          (required) the name or id of the certificate you want to use for this domain
+
+EXAMPLE
+  heroku domains:update www.example.com --cert mycert
+```
+
+_See code: [@heroku-cli/plugin-apps](https://github.com/heroku/heroku-cli-plugin-apps/blob/v7.47.0/src/commands/domains/update.ts)_
 
 ## `heroku domains:wait [HOSTNAME]`
 
@@ -137,4 +158,4 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
 ```
 
-_See code: [@heroku-cli/plugin-apps](https://github.com/heroku/heroku-cli-plugin-apps/blob/v7.43.2/src/commands/domains/wait.ts)_
+_See code: [@heroku-cli/plugin-apps](https://github.com/heroku/heroku-cli-plugin-apps/blob/v7.47.0/src/commands/domains/wait.ts)_

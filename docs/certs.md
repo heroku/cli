@@ -29,7 +29,7 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
 ```
 
-_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v7.46.2/packages/certs-v5/commands/certs/index.js)_
+_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v7.47.0/packages/certs-v5/commands/certs/index.js)_
 
 ## `heroku certs:add CRT KEY`
 
@@ -56,7 +56,7 @@ EXAMPLES
   $ heroku certs:add intermediary.crt example.com.crt example.com.key
 ```
 
-_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v7.46.2/packages/certs-v5/commands/certs/add.js)_
+_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v7.47.0/packages/certs-v5/commands/certs/add.js)_
 
 ## `heroku certs:auto`
 
@@ -71,7 +71,7 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
 ```
 
-_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v7.46.2/packages/certs-v5/commands/certs/auto/index.js)_
+_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v7.47.0/packages/certs-v5/commands/certs/auto/index.js)_
 
 ## `heroku certs:auto:disable`
 
@@ -86,7 +86,7 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
 ```
 
-_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v7.46.2/packages/certs-v5/commands/certs/auto/disable.js)_
+_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v7.47.0/packages/certs-v5/commands/certs/auto/disable.js)_
 
 ## `heroku certs:auto:enable`
 
@@ -101,7 +101,7 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
 ```
 
-_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v7.46.2/packages/certs-v5/commands/certs/auto/enable.js)_
+_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v7.47.0/packages/certs-v5/commands/certs/auto/enable.js)_
 
 ## `heroku certs:auto:refresh`
 
@@ -116,7 +116,7 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
 ```
 
-_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v7.46.2/packages/certs-v5/commands/certs/auto/refresh.js)_
+_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v7.47.0/packages/certs-v5/commands/certs/auto/refresh.js)_
 
 ## `heroku certs:chain`
 
@@ -131,7 +131,7 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
 ```
 
-_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v7.46.2/packages/certs-v5/commands/certs/chain.js)_
+_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v7.47.0/packages/certs-v5/commands/certs/chain.js)_
 
 ## `heroku certs:generate DOMAIN`
 
@@ -163,7 +163,7 @@ EXAMPLES
   $ heroku certs:generate example.com
 ```
 
-_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v7.46.2/packages/certs-v5/commands/certs/generate.js)_
+_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v7.47.0/packages/certs-v5/commands/certs/generate.js)_
 
 ## `heroku certs:info`
 
@@ -178,9 +178,10 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
   --endpoint=endpoint  endpoint to check info on
   --name=name          name to check info on
+  --show-domains       show associated domains
 ```
 
-_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v7.46.2/packages/certs-v5/commands/certs/info.js)_
+_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v7.47.0/packages/certs-v5/commands/certs/info.js)_
 
 ## `heroku certs:key`
 
@@ -202,7 +203,7 @@ EXAMPLES
   $ heroku certs:key example.com.crt example.com.key
 ```
 
-_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v7.46.2/packages/certs-v5/commands/certs/key.js)_
+_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v7.47.0/packages/certs-v5/commands/certs/key.js)_
 
 ## `heroku certs:remove`
 
@@ -219,7 +220,7 @@ OPTIONS
   --name=name          name to remove
 ```
 
-_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v7.46.2/packages/certs-v5/commands/certs/remove.js)_
+_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v7.47.0/packages/certs-v5/commands/certs/remove.js)_
 
 ## `heroku certs:update CRT KEY`
 
@@ -246,4 +247,4 @@ EXAMPLES
   $ heroku certs:update intermediary.crt example.com.crt example.com.key
 ```
 
-_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v7.46.2/packages/certs-v5/commands/certs/update.js)_
+_See code: [@heroku-cli/plugin-certs-v5](https://github.com/heroku/cli/blob/v7.47.0/packages/certs-v5/commands/certs/update.js)_
