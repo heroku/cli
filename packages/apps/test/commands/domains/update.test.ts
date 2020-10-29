@@ -22,7 +22,7 @@ describe('domains:update', () => {
   .patch('/apps/myapp/domains/example.com', {sni_endpoint: 'sniendpoint-id'})
   .reply(200, responseBody),
   )
-  .command(['domains:update', 'example.com', '--cert-id', 'sniendpoint-id', '--app', 'myapp'])
+  .command(['domains:update', 'example.com', '--cert', 'sniendpoint-id', '--app', 'myapp'])
   .it('updates the domain to use a different certificate', ctx => {
     expect(ctx.stderr).to.contain('Updating example.com to use sniendpoint-id certificate... done')
   })
