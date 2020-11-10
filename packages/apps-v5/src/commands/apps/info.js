@@ -19,8 +19,7 @@ function * run (context, heroku) {
       }),
       dynos: heroku.get(`/apps/${app}/dynos`).catch(() => []),
       collaborators: heroku.get(`/apps/${app}/collaborators`).catch(() => []),
-      pipeline_coupling: pipelineCouplings,
-      pipeline: pipelineCouplings // TODO: Remove this key once we feel comfortable with https://github.com/heroku/heroku-apps/pull/207#issuecomment-335775852.
+      pipeline_coupling: pipelineCouplings
     }
 
     if (context.flags.extended) {
@@ -117,7 +116,6 @@ function * run (context, heroku) {
     shell()
   } else if (context.flags.json) {
     cli.styledJSON(info)
-    cli.warn('DEPRECATION WARNING: `pipeline` key will be removed in favor of `pipeline_coupling`')
   } else {
     print()
   }
