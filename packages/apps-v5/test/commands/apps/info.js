@@ -232,7 +232,6 @@ stack=cedar-14
       .get('/apps/myapp/collaborators').reply(200, collaborators)
       .get('/apps/myapp/dynos').reply(200, [{ type: 'web', size: 'Standard-1X', quantity: 2 }])
     return cmd.run({ args: { app: 'myapp' }, flags: { json: true, extended: true } })
-      .then(() => expect(unwrap(cli.stderr)).to.equal('DEPRECATION WARNING: `pipeline` key will be removed in favor of `pipeline_coupling`\n'))
       .then(() => {
         let json = JSON.parse(cli.stdout)
         expect(json.appExtended).to.equal(undefined)
@@ -254,7 +253,6 @@ stack=cedar-14
       .get('/apps/myapp/dynos').reply(200, [{ type: 'web', size: 'Standard-1X', quantity: 2 }])
       .get('/apps/myapp/pipeline-couplings').reply(200, { app: { id: appAcm.id }, pipeline: { name: 'my-pipeline' } })
     return cmd.run({ args: { app: 'myapp' }, flags: { json: true } })
-      .then(() => expect(unwrap(cli.stderr)).to.equal('DEPRECATION WARNING: `pipeline` key will be removed in favor of `pipeline_coupling`\n'))
       .then(() => {
         let json = JSON.parse(cli.stdout)
         expect(json.appExtended).to.equal(undefined)
