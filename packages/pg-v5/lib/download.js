@@ -6,6 +6,7 @@ function download (url, path, opts) {
   const https = require('https')
   const fs = require('fs')
   const mkdirp = require('mkdirp')
+  const tunnel = require('tunnel-agent')
   const tty = process.stderr.isTTY && process.env.TERM !== 'dumb'
 
   function showProgress (rsp) {
@@ -21,10 +22,28 @@ function download (url, path, opts) {
     })
   }
 
+  function makeAgent() {
+    const proxy = process.env.HTTPS_PROXY || process.env.https_proxy
+
+    if (!proxy) {
+      return
+    }
+
+    const proxyUrl = new URL(proxy)
+    return tunnel.httpsOverHttp({
+      proxy: {
+        host: proxyUrl.hostname,
+        port: proxyUrl.port || 8080,
+        proxyAuth: proxyUrl.auth
+      }
+    })
+  }
+
   return new Promise(function (resolve, reject) {
     mkdirp.sync(require('path').dirname(path))
+    let agent = makeAgent()
     let file = fs.createWriteStream(path)
-    https.get(url, function (rsp) {
+    https.get(url, { agent }, function (rsp) {
       if (tty && opts.progress) showProgress(rsp)
       rsp.pipe(file)
         .on('error', reject)

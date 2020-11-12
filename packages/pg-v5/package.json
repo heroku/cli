@@ -25,6 +25,7 @@
     "node-notifier": "^5.4.0",
     "smooth-progress": "^1.1.0",
     "strip-eof": "^1.0.0",
+    "tunnel-agent": "^0.6.0",
     "tunnel-ssh": "^4.1.4"
   },
   "devDependencies": {
