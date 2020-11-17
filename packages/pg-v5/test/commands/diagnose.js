@@ -5,29 +5,62 @@ const cli = require('heroku-cli-util')
 const expect = require('unexpected')
 const nock = require('nock')
 const proxyquire = require('proxyquire')
-
-const db = {
-  id: 1,
-  name: 'postgres-1',
-  plan: { name: 'heroku-postgresql:standard-0' },
-  config_vars: ['DATABASE_ENDPOINT_042EExxx_URL', 'DATABASE_URL', 'HEROKU_POSTGRESQL_SILVER_URL'],
-  app: { name: 'myapp' }
-}
-
-const fetcher = () => {
-  return {
-    addon: () => db
-  }
-}
-
-const cmd = proxyquire('../../commands/diagnose', {
-  '../lib/fetcher': fetcher
-})
+const uuid = require('uuid')
 
 describe('pg:diagnose', () => {
-  let api, pg, diagnose
+
+  let api, pg, diagnose, db
+  let app, addon, config_vars, plan, attachment
+
+  const fetcher = (_heroku) => {
+    return {
+      attachment: async () => {
+        return {
+          ...attachment,
+          addon,
+          app,
+        }
+      }
+    }
+  }
+
+  const cmd = proxyquire('../../commands/diagnose', {
+    '../lib/fetcher': fetcher
+  })
 
   beforeEach(() => {
+    plan = {
+      name: 'heroku-postgresql:standard-0',
+      id: uuid.v4()
+    }
+    db = {
+      id: 1,
+      name: 'DATABASE',
+      get plan() { return plan },
+      config_vars: ['DATABASE_ENDPOINT_042EExxx_URL', 'DATABASE_URL', 'HEROKU_POSTGRESQL_SILVER_URL'],
+      app: { name: 'myapp' }
+    }
+    attachment = {
+      id: 1,
+      get name() {
+        return db.name
+      },
+      get config_vars() {
+        return db.config_vars
+      },
+      namespace: null
+    }
+    app = {
+      name: 'myapp',
+      id: 1
+    }
+    addon = {
+      name: 'postgres-1',
+      id: 1,
+      plan,
+      app
+    }
+
     api = nock('https://api.heroku.com')
     pg = nock('https://postgres-api.heroku.com')
     diagnose = nock('https://pgdiagnose.herokai.com')
@@ -42,15 +75,16 @@ describe('pg:diagnose', () => {
 
   describe('when not passing arguments', () => {
     it('generates a report', () => {
+      const dbURL = 'postgres://user:password@herokupostgres.com/db'
       api.get('/addons/postgres-1').reply(200, db)
       api.get('/apps/myapp/config-vars').reply(200, {
-        DATABASE_ENDPOINT_042EExxx_URL: 'postgres://db',
-        DATABASE_URL: 'postgres://db',
-        HEROKU_POSTGRESQL_SILVER_URL: 'postgres://db'
+        DATABASE_ENDPOINT_042EExxx_URL: 'postgres://user:password@herokupostgres.com/db',
+        DATABASE_URL: 'postgres://user:password@herokupostgres.com/db',
+        HEROKU_POSTGRESQL_SILVER_URL: 'postgres://user:password@herokupostgres.com/db'
       })
       pg.get('/client/v11/databases/1/metrics').reply(200, [])
       diagnose.post('/reports', {
-        url: 'postgres://db',
+        url: dbURL,
         plan: 'standard-0',
         app: 'myapp',
         database: 'DATABASE_URL',
@@ -237,7 +271,7 @@ SKIPPED: Load
 Error Load check not supported on this plan
 `))
     })
-  
+
     it('converts underscores to spaces', () => {
       diagnose.get('/reports/697c8bd7-dbba-4f2d-83b6-789c58cc3a9c').reply(200, {
         'id': 'abc123',
