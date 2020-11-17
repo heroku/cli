@@ -5,38 +5,27 @@ const co = require('co')
 const { capitalize } = require('lodash')
 const PGDIAGNOSE_HOST = process.env.PGDIAGNOSE_URL || 'https://pgdiagnose.herokai.com'
 
-function getDBUrlName (configVars, args) {
-  let urls = [];
-
-  configVars.map((cv) => {
-    if (cv === args['DATABASE|REPORT_ID']) {
-      urls[0] = cv;
-    } else if (cv === 'DATABASE_URL') {
-      urls[1] = cv;
-    }
-  })
-
-  if (urls.length === 0) throw new Error('Database URL not found for this addon')
-
-  return urls[0] ? urls[0] : urls[1]
-}
-
 function * run (context, heroku) {
   const fetcher = require('../lib/fetcher')(heroku)
   const host = require('../lib/host')
   const util = require('../lib/util')
+  const URL = require('url')
+
   const { app, args } = context
 
   let generateReport = co.wrap(function * (database) {
-    let db = yield fetcher.addon(app, database)
-    db = yield heroku.get(`/addons/${db.name}`)
+    let attachment = yield fetcher.attachment(app, database)
+    const { addon: db } = attachment
     let config = yield heroku.get(`/apps/${app}/config-vars`)
 
+    const { url } = util.getConnectionDetails(attachment, config)
+    const dbName = util.getConfigVarNameFromAttachment(attachment, config)
+
     let params = {
-      url: config[getDBUrlName(db.config_vars, args)],
+      url: URL.format(url),
       plan: db.plan.name.split(':')[1],
       app: db.app.name,
-      database: getDBUrlName(db.config_vars, args)
+      database: dbName
     }
     if (!util.starterPlan(db)) {
       params.metrics = yield heroku.get(`/client/v11/databases/${db.id}/metrics`, { host: host(db) })
