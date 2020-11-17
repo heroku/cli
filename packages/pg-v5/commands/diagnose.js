@@ -5,6 +5,22 @@ const co = require('co')
 const { capitalize } = require('lodash')
 const PGDIAGNOSE_HOST = process.env.PGDIAGNOSE_URL || 'https://pgdiagnose.herokai.com'
 
+function getDBUrlName (configVars, args) {
+  let urls = [];
+
+  configVars.map((cv) => {
+    if (cv === args['DATABASE|REPORT_ID']) {
+      urls[0] = cv;
+    } else if (cv === 'DATABASE_URL') {
+      urls[1] = cv;
+    }
+  })
+
+  if (urls.length === 0) throw new Error('Database URL not found for this addon')
+
+  return urls[0] ? urls[0] : urls[1]
+}
+
 function * run (context, heroku) {
   const fetcher = require('../lib/fetcher')(heroku)
   const host = require('../lib/host')
@@ -15,15 +31,12 @@ function * run (context, heroku) {
     let db = yield fetcher.addon(app, database)
     db = yield heroku.get(`/addons/${db.name}`)
     let config = yield heroku.get(`/apps/${app}/config-vars`)
-    // TODO: util.getConfigVarName is only providing one of config vars of that
-    // addon, we should make sure that we either use the default cred or any
-    // cred that associated with the attachment name that was provided to
-    // pg:diagnose command
+
     let params = {
-      url: config[util.getConfigVarName(db.config_vars)],
+      url: config[getDBUrlName(db.config_vars, args)],
       plan: db.plan.name.split(':')[1],
       app: db.app.name,
-      database: util.getConfigVarName(db.config_vars)
+      database: getDBUrlName(db.config_vars, args)
     }
     if (!util.starterPlan(db)) {
       params.metrics = yield heroku.get(`/client/v11/databases/${db.id}/metrics`, { host: host(db) })
