@@ -15,6 +15,23 @@ function getConfigVarName (configVars) {
 
 exports.getConfigVarName = getConfigVarName
 
+function getConfigVarNameFromAttachment (attachment, config) {
+  const configVars = attachment.config_vars.filter((cv) => {
+    return config[cv] && config[cv].startsWith('postgres://')
+  })
+  if (configVars.length === 0) {
+    throw new Error(`No config vars found for ${attachment.name}; perhaps they were removed as a side effect of ${cli.color.cmd('heroku rollback')}? Use ${cli.color.cmd('heroku addons:attach')} to create a new attachment and then ${cli.color.cmd('heroku addons:detach')} to remove the current attachment.`)
+  }
+
+  let configVarName = `${attachment.name}_URL`
+  if (configVars.includes(configVarName) && configVarName in config) {
+    return configVarName
+  }
+  return getConfigVarName(configVars)
+}
+
+exports.getConfigVarNameFromAttachment  = getConfigVarNameFromAttachment;
+
 function formatAttachment (attachment) {
   let attName = cli.color.addon(attachment.name)
 
@@ -77,13 +94,8 @@ exports.presentCredentialAttachments = presentCredentialAttachments
 exports.getConnectionDetails = function (attachment, config) {
   const {getBastion} = require('./bastion')
   const url = require('url')
-  const configVars = attachment.config_vars.filter((cv) => {
-    return config[cv] && config[cv].startsWith('postgres://')
-  })
-  if (configVars.length === 0) {
-    throw new Error(`No config vars found for ${attachment.name}; perhaps they were removed as a side effect of ${cli.color.cmd('heroku rollback')}? Use ${cli.color.cmd('heroku addons:attach')} to create a new attachment and then ${cli.color.cmd('heroku addons:detach')} to remove the current attachment.`)
-  }
-  const connstringVar = getConfigVarName(configVars)
+
+  const connstringVar = getConfigVarNameFromAttachment(attachment, config)
 
   // remove _URL from the end of the config var name
   const baseName = connstringVar.slice(0, -4)

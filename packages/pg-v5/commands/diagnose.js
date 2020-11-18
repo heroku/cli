@@ -9,21 +9,24 @@ function * run (context, heroku) {
   const fetcher = require('../lib/fetcher')(heroku)
   const host = require('../lib/host')
   const util = require('../lib/util')
+  const URL = require('url')
+  const uuid = require('uuid')
+
   const { app, args } = context
 
   let generateReport = co.wrap(function * (database) {
-    let db = yield fetcher.addon(app, database)
-    db = yield heroku.get(`/addons/${db.name}`)
+    let attachment = yield fetcher.attachment(app, database)
+    const { addon: db } = attachment
     let config = yield heroku.get(`/apps/${app}/config-vars`)
-    // TODO: util.getConfigVarName is only providing one of config vars of that
-    // addon, we should make sure that we either use the default cred or any
-    // cred that associated with the attachment name that was provided to
-    // pg:diagnose command
+
+    const { url } = util.getConnectionDetails(attachment, config)
+    const dbName = util.getConfigVarNameFromAttachment(attachment, config)
+
     let params = {
-      url: config[util.getConfigVarName(db.config_vars)],
+      url: URL.format(url),
       plan: db.plan.name.split(':')[1],
       app: db.app.name,
-      database: util.getConfigVarName(db.config_vars)
+      database: dbName
     }
     if (!util.starterPlan(db)) {
       params.metrics = yield heroku.get(`/client/v11/databases/${db.id}/metrics`, { host: host(db) })
@@ -69,7 +72,7 @@ available for one month after creation on ${report.created_at}
 
   let report
   let id = args['DATABASE|REPORT_ID']
-  if (id && id.match(/^[a-z0-9-]{36}$/)) {
+  if (id && uuid.validate(id)) {
     report = yield heroku.get(`/reports/${encodeURIComponent(id)}`, { host: PGDIAGNOSE_HOST })
   } else {
     report = yield generateReport(id)
