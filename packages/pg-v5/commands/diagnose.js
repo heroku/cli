@@ -10,6 +10,7 @@ function * run (context, heroku) {
   const host = require('../lib/host')
   const util = require('../lib/util')
   const URL = require('url')
+  const uuid = require('uuid')
 
   const { app, args } = context
 
@@ -71,7 +72,7 @@ available for one month after creation on ${report.created_at}
 
   let report
   let id = args['DATABASE|REPORT_ID']
-  if (id && id.match(/^[a-z0-9-]{36}$/)) {
+  if (id && uuid.validate(id)) {
     report = yield heroku.get(`/reports/${encodeURIComponent(id)}`, { host: PGDIAGNOSE_HOST })
   } else {
     report = yield generateReport(id)
