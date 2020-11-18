@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.47.3](https://github.com/heroku/cli/compare/v7.47.2...v7.47.3) (2020-11-18)
+
+
+### Bug Fixes
+
+* **pg-v5:** Running diagnose on not default DBs ([#1680](https://github.com/heroku/cli/issues/1680)) ([0af72b7](https://github.com/heroku/cli/commit/0af72b7b2929689b5f35b43a09690890443d97c0))
+
+
+
+
+
 ## [7.43.3](https://github.com/heroku/cli/compare/v7.43.2...v7.43.3) (2020-09-29)
 
 
