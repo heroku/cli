@@ -102,17 +102,17 @@ exports.getConnectionDetails = function (attachment, config) {
 
   // build the default payload for non-bastion dbs
   debug(`Using "${connstringVar}" to connect to your database…`)
-  const target = new url.URL(config[connstringVar])
-  let {username: user, password} = target
+  const target = url.parse(config[connstringVar])
+  let [user, password] = target.auth.split(':')
 
   let payload = {
     user,
     password,
-    database: target.pathname.split('/', 2)[1],
+    database: target.path.split('/', 2)[1],
     host: target.hostname,
-    port: target.port || null,
+    port: target.port,
     attachment,
-    url: url.parse(target.toString())
+    url: target
   }
 
   // If bastion creds exist, graft it into the payload
