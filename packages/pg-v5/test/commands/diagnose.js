@@ -10,9 +10,10 @@ const uuid = require('uuid')
 describe('pg:diagnose', () => {
 
   let api, pg, diagnose, db
-  let app, addon, config_vars, plan, attachment
+  let app, addon, plan, attachment
+  let reportID
 
-  const fetcher = (_heroku) => {
+  const fetcher = () => {
     return {
       attachment: async () => {
         return {
@@ -34,7 +35,7 @@ describe('pg:diagnose', () => {
       id: uuid.v4()
     }
     db = {
-      id: 1,
+      id: uuid.v4(),
       name: 'DATABASE',
       get plan() { return plan },
       config_vars: ['DATABASE_ENDPOINT_042EExxx_URL', 'DATABASE_URL', 'HEROKU_POSTGRESQL_SILVER_URL'],
@@ -52,14 +53,15 @@ describe('pg:diagnose', () => {
     }
     app = {
       name: 'myapp',
-      id: 1
+      id: uuid.v4()
     }
     addon = {
       name: 'postgres-1',
-      id: 1,
+      get id() { return db.id },
       plan,
       app
     }
+    reportID = uuid.v4()
 
     api = nock('https://api.heroku.com')
     pg = nock('https://postgres-api.heroku.com')
@@ -76,23 +78,17 @@ describe('pg:diagnose', () => {
   describe('when not passing arguments', () => {
     it('generates a report', () => {
       const dbURL = 'postgres://user:password@herokupostgres.com/db'
-      api.get('/addons/postgres-1').reply(200, db)
-      api.get('/apps/myapp/config-vars').reply(200, {
-        DATABASE_ENDPOINT_042EExxx_URL: 'postgres://user:password@herokupostgres.com/db',
-        DATABASE_URL: 'postgres://user:password@herokupostgres.com/db',
-        HEROKU_POSTGRESQL_SILVER_URL: 'postgres://user:password@herokupostgres.com/db'
+      api.get(`/addons/${addon.name}`).reply(200, db)
+      api.get(`/apps/${app.name}/config-vars`).reply(200, {
+        DATABASE_ENDPOINT_042EExxx_URL: dbURL,
+        DATABASE_URL: dbURL,
+        HEROKU_POSTGRESQL_SILVER_URL: dbURL,
       })
-      pg.get('/client/v11/databases/1/metrics').reply(200, [])
-      diagnose.post('/reports', {
-        url: dbURL,
-        plan: 'standard-0',
-        app: 'myapp',
+      pg.get(`/client/v11/databases/${db.id}/metrics`).reply(200, [])
+      const report = {
+        id: reportID,
+        app: app.name,
         database: 'DATABASE_URL',
-        metrics: []
-      }).reply(200, {
-        id: '697c8bd7-dbba-4f2d-83b6-789c58cc3a9c',
-        app: 'myapp',
-        database: 'postgres-1',
         created_at: '101',
         checks: [
           {
@@ -106,9 +102,16 @@ describe('pg:diagnose', () => {
             results: { load: 100 }
           }
         ]
-      })
-      return cmd.run({ app: 'myapp', args: {} })
-        .then(() => expect(cli.stdout, 'to equal', `Report 697c8bd7-dbba-4f2d-83b6-789c58cc3a9c for myapp::postgres-1
+      }
+      diagnose.post('/reports', {
+        url: dbURL,
+        plan: 'standard-0',
+        app: app.name,
+        database: 'DATABASE_URL',
+        metrics: []
+      }).reply(200, report)
+      return cmd.run({ app: app.name, args: {} })
+        .then(() => expect(cli.stdout, 'to equal', `Report ${reportID} for ${app.name}::${report.database}
 available for one month after creation on 101
 
 RED: Connection count
@@ -124,10 +127,10 @@ Load 100
   describe('when passing arguments', () => {
     context('and this argument is a report ID', () => {
       it('displays an existing report', () => {
-        diagnose.get('/reports/697c8bd7-dbba-4f2d-83b6-789c58cc3a9c').reply(200, {
-          id: '697c8bd7-dbba-4f2d-83b6-789c58cc3a9c',
-          app: 'myapp',
-          database: 'postgres-1',
+        const report = {
+          id: reportID,
+          app: app.name,
+          database: addon.name,
           created_at: '101',
           checks: [
             {
@@ -141,9 +144,10 @@ Load 100
               results: { load: 100 }
             }
           ]
-        })
-        return cmd.run({ app: 'myapp', args: { 'DATABASE|REPORT_ID': '697c8bd7-dbba-4f2d-83b6-789c58cc3a9c' } })
-          .then(() => expect(cli.stdout, 'to equal', `Report 697c8bd7-dbba-4f2d-83b6-789c58cc3a9c for myapp::postgres-1
+        }
+        diagnose.get(`/reports/${reportID}`).reply(200, report)
+        return cmd.run({ app: app.name, args: { 'DATABASE|REPORT_ID': reportID } })
+          .then(() => expect(cli.stdout, 'to equal', `Report ${reportID} for ${app.name}::${report.database}
 available for one month after creation on 101
 
 RED: Connection count
@@ -158,19 +162,13 @@ Load 100
 
     context('and this argument is a HEROKU_POSTGRESQL_SILVER_URL', () => {
       it('generates a report for that DB', () => {
-        api.get('/addons/postgres-1').reply(200, db)
-        api.get('/apps/myapp/config-vars').reply(200, { HEROKU_POSTGRESQL_SILVER_URL: 'postgres://db' })
-        pg.get('/client/v11/databases/1/metrics').reply(200, [])
-        diagnose.post('/reports', {
-          url: 'postgres://db',
-          plan: 'standard-0',
-          app: 'myapp',
+        api.get(`/addons/${addon.name}`).reply(200, db)
+        api.get(`/apps/${app.name}/config-vars`).reply(200, { HEROKU_POSTGRESQL_SILVER_URL: 'postgres://db' })
+        pg.get(`/client/v11/databases/${db.id}/metrics`).reply(200, [])
+        const report = {
+          id: reportID,
+          app: app.name,
           database: 'HEROKU_POSTGRESQL_SILVER_URL',
-          metrics: []
-        }).reply(200, {
-          id: '697c8bd7-dbba-4f2d-83b6-789c58cc3a9c',
-          app: 'myapp',
-          database: 'postgres-1',
           created_at: '101',
           checks: [
             {
@@ -184,9 +182,16 @@ Load 100
               results: { load: 100 }
             }
           ]
-        })
+        }
+        diagnose.post('/reports', {
+          url: 'postgres://db',
+          plan: 'standard-0',
+          app: app.name,
+          database: 'HEROKU_POSTGRESQL_SILVER_URL',
+          metrics: []
+        }).reply(200, report)
         return cmd.run({ app: 'myapp', args: { 'DATABASE|REPORT_ID': 'HEROKU_POSTGRESQL_SILVER_URL' } })
-          .then(() => expect(cli.stdout, 'to equal', `Report 697c8bd7-dbba-4f2d-83b6-789c58cc3a9c for myapp::postgres-1
+          .then(() => expect(cli.stdout, 'to equal', `Report ${reportID} for ${app.name}::${report.database}
 available for one month after creation on 101
 
 RED: Connection count
