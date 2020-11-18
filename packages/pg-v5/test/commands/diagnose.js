@@ -9,9 +9,10 @@ const uuid = require('uuid')
 
 describe('pg:diagnose', () => {
 
-  let api, pg, diagnose, db
+  let api, pg, diagnose, db, dbName
   let app, addon, plan, attachment
   let reportID
+  const dbURL = 'postgres://user:password@herokupostgres.com/db'
 
   const fetcher = () => {
     return {
@@ -36,7 +37,7 @@ describe('pg:diagnose', () => {
     }
     db = {
       id: uuid.v4(),
-      name: 'DATABASE',
+      name: dbName || 'DATABASE',
       get plan() { return plan },
       config_vars: ['DATABASE_ENDPOINT_042EExxx_URL', 'DATABASE_URL', 'HEROKU_POSTGRESQL_SILVER_URL'],
       app: { name: 'myapp' }
@@ -77,7 +78,6 @@ describe('pg:diagnose', () => {
 
   describe('when not passing arguments', () => {
     it('generates a report', () => {
-      const dbURL = 'postgres://user:password@herokupostgres.com/db'
       api.get(`/addons/${addon.name}`).reply(200, db)
       api.get(`/apps/${app.name}/config-vars`).reply(200, {
         DATABASE_ENDPOINT_042EExxx_URL: dbURL,
@@ -127,6 +127,8 @@ Load 100
   describe('when passing arguments', () => {
     context('and this argument is a report ID', () => {
       it('displays an existing report', () => {
+        dbName = 'HEROKU_POSTGRESQL_SILVER'
+
         const report = {
           id: reportID,
           app: app.name,
@@ -157,13 +159,20 @@ Count
 RED: Load
 Load 100
 `))
+        // This is to ensure that each test sets up its own db name when that's their interest. 
+        // Otherwise, it'll default to `DATABASE`
+        dbName = undefined
       })
     })
 
     context('and this argument is a HEROKU_POSTGRESQL_SILVER_URL', () => {
       it('generates a report for that DB', () => {
         api.get(`/addons/${addon.name}`).reply(200, db)
-        api.get(`/apps/${app.name}/config-vars`).reply(200, { HEROKU_POSTGRESQL_SILVER_URL: 'postgres://db' })
+        api.get(`/apps/${app.name}/config-vars`).reply(200, {
+          DATABASE_ENDPOINT_042EExxx_URL: dbURL,
+          DATABASE_URL: dbURL,
+          HEROKU_POSTGRESQL_SILVER_URL: dbURL
+        })
         pg.get(`/client/v11/databases/${db.id}/metrics`).reply(200, [])
         const report = {
           id: reportID,
@@ -184,7 +193,7 @@ Load 100
           ]
         }
         diagnose.post('/reports', {
-          url: 'postgres://db',
+          url: dbURL,
           plan: 'standard-0',
           app: app.name,
           database: 'HEROKU_POSTGRESQL_SILVER_URL',
