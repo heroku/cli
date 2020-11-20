@@ -4,6 +4,7 @@ summary: Heroku CLI
 description: Heroku CLI
 grade: stable
 confinement: classic
+base: core18
 
 apps:
   heroku:
@@ -14,9 +15,12 @@ architectures:
 
 parts:
   heroku:
-    plugin: nil
+    source: ../
+    plugin: dump
     override-pull: |
       snapcraftctl pull
+      cd project
+      ls -al .
       COMMIT_MSG=$(git log --max-count 1 --pretty="format:%s" | awk '{print $1}')
       CLI_VERSION=$(grep \"version\": packages/cli/package.json | head -n 1 | awk '{print $2}' | tr -d \" | tr -d \,)
 
@@ -41,24 +45,27 @@ parts:
       apt-get update
       apt-get install -y nodejs yarn
 
+      cd project
       cd packages/cli
       yarn
       yarn pack --filename heroku.tar.gz
-      mv heroku.tar.gz ../..
-      cd ../..
-      tar xvzf heroku.tar.gz
-      rmdir ../install
-      mv package ../install
-      OS=linux ./scripts/utils/_fetch_node_binary ../install/bin
-      cd ../install && yarn --prod
-      cd ../install && bin/run -v
-      sed -i 's/#!\/usr\/bin\/env node/#!\/snap\/heroku\/current\/bin\/node/' ../install/bin/run
-      sed -i "s/^process\.env\.HEROKU_UPDATE_INSTRUCTIONS.*$/process.env.HEROKU_UPDATE_INSTRUCTIONS = 'update with: snap refresh heroku'/" ../install/bin/run
-      mkdir -p snap/hooks
-      cat << EOF > snap/hooks/configure
+      # extract into the SNAPCRAFT_PART_INSTALL directory, but remove
+      # the first `project` folder that yarn crates in the archive
+      tar xvzf heroku.tar.gz -C $SNAPCRAFT_PART_INSTALL --strip-components=1
+      ls -al $SNAPCRAFT_PART_INSTALL
+      OS=linux ./scripts/utils/_fetch_node_binary $SNAPCRAFT_PART_INSTALL/bin
+      cd $SNAPCRAFT_PART_INSTALL && yarn --prod
+      cd $SNAPCRAFT_PART_INSTALL && bin/run -v
+      mkdir -p $SNAPCRAFT_PART_INSTALL/hooks
+      cat << EOF > $SNAPCRAFT_PART_INSTALL/hooks/configure
       #!/bin/sh
       set -e
       export PATH="$SNAP_DATA/bin:$PATH"
       heroku update
       EOF
-      chmod +x snap/hooks/configure
+      chmod +x $SNAPCRAFT_PART_INSTALL/hooks/configure
+    override-stage: |
+      set -ex
+      snapcraftctl stage
+      # sed -i "s/#!\/usr\/bin\/env node/#!\/$SNAP\/heroku\/current\/bin\/node/" bin/run
+      sed -i "s/^process\.env\.HEROKU_UPDATE_INSTRUCTIONS.*$/process.env.HEROKU_UPDATE_INSTRUCTIONS = 'update with: snap refresh heroku'/" bin/run
