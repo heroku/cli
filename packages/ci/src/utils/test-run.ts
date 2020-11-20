@@ -6,6 +6,7 @@ import * as http from 'http'
 import {get, RequestOptions} from 'https'
 import {Socket} from 'phoenix'
 import {inspect} from 'util'
+import {v4 as uuid} from 'uuid'
 import WebSocket = require('ws')
 
 const debug = require('debug')('ci')
@@ -158,11 +159,15 @@ export async function renderList(command: Command, testRuns: Heroku.TestRun[], p
 
   const socket = new Socket(HEROKU_CI_WEBSOCKET_URL, {
     transport: WebSocket,
+    params: {
+      token: command.heroku.auth,
+      tab_id: `heroku-cli-${uuid()}`,
+    },
     logger: (kind: any, msg: any, data: any) => debug(`${kind}: ${msg}\n${inspect(data)}`),
   })
   socket.connect()
 
-  const channel = socket.channel(`events:pipelines/${pipeline.id}/test-runs`, {token: command.heroku.auth})
+  const channel = socket.channel(`events:pipelines/${pipeline.id}/test-runs`, {})
 
   channel.on('create', ({data}: any) => {
     testRuns = handleTestRunEvent(data, testRuns)
