@@ -35,7 +35,7 @@
     "estraverse": "^4.2.0",
     "mocha": "^5.1.1",
     "nock": "^9.2.5",
-    "sinon": "^1.17.6",
+    "sinon": "^9.2.1",
     "std-mocks": "^1.0.1"
   },
   "engines": {
