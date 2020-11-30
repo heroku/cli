@@ -76,13 +76,7 @@ function psqlInteractive (dbEnv, prompt) {
   })
 }
 
-function handleSignals () {
-  process.removeAllListeners('SIGINT')
-  process.on('SIGINT', () => {})
-}
-
 function * exec (db, query) {
-  handleSignals()
   let configs = bastion.getConfigs(db)
 
   yield bastion.sshTunnel(db, configs.dbTunnelConfig)
@@ -90,7 +84,6 @@ function * exec (db, query) {
 }
 
 async function execFile (db, file) {
-  handleSignals()
   let configs = bastion.getConfigs(db)
 
   await bastion.sshTunnel(db, configs.dbTunnelConfig)
@@ -100,7 +93,6 @@ async function execFile (db, file) {
 function * interactive (db) {
   let name = db.attachment.name
   let prompt = `${db.attachment.app.name}::${name}%R%# `
-  handleSignals()
   let configs = bastion.getConfigs(db)
   configs.dbEnv.PGAPPNAME = 'psql interactive' // default was 'psql non-interactive`
 
