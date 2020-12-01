@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.47.4](https://github.com/heroku/cli/compare/v7.47.3...v7.47.4) (2020-12-01)
+
+
+### Bug Fixes
+
+* **pg:** Remove SIGINT capture and allow default node clean up ([#1687](https://github.com/heroku/cli/issues/1687)) ([2b278f0](https://github.com/heroku/cli/commit/2b278f0bbda3664d92de38656d76ab4dfef97e1b))
+
+
+
+
+
 ## [7.47.3](https://github.com/heroku/cli/compare/v7.47.2...v7.47.3) (2020-11-18)
 
 
