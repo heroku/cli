@@ -75,10 +75,7 @@ function * run (context, heroku) {
     // DATABASE_CONNECTION_POOL already attached to new leader
     if (current_pgbouncer.addon.name == attachment.addon.name && current_pgbouncer.namespace === attachment.namespace) return
     // detach DATABASE_CONNECTION_POOL
-    heroku.request({
-      path: `/addon-attachments/${current_pgbouncer.id}`,
-      method: 'DELETE'
-    })
+    heroku.delete('/addon-attachments/${current_pgbouncer.id}')
     // attach DATABASE_CONNECTION_POOL to new database
     heroku.post('/addon-attachments', {
       body: {
