@@ -11,6 +11,8 @@ function * run (context, heroku) {
   const attachment = yield fetcher.attachment(app, args.database)
 
   let current
+  let current_pgbouncer
+  let attachments
 
   yield cli.action(`Ensuring an alternate alias for existing ${cli.color.configVar('DATABASE_URL')}`, co(function * () {
     // Finds or creates a non-DATABASE attachment for the DB currently
@@ -19,7 +21,7 @@ function * run (context, heroku) {
     // If current DATABASE is attached by other names, return one of them.
     // If current DATABASE is only attachment, create a new one and return it.
     // If no current DATABASE, return nil.
-    let attachments = yield heroku.get(`/apps/${app}/addon-attachments`)
+    attachments = yield heroku.get(`/apps/${app}/addon-attachments`)
     current = attachments.find(a => a.name === 'DATABASE')
     if (!current) return
 
@@ -68,26 +70,6 @@ function * run (context, heroku) {
     promotionMessage = `Promoting ${cli.color.addon(attachment.addon.name)} to ${cli.color.configVar('DATABASE_URL')} on ${cli.color.app(app)}`
   }
 
-  yield cli.action(`Ensuring pgbouncer reattached if exists`, co(function * () {
-    current_pgbouncer = attachments.find(a => a.name === 'DATABASE_CONNECTION_POOL')
-    // There is no pgbouncer to reattach
-    if (!current_pgbouncer) return
-    // DATABASE_CONNECTION_POOL already attached to new leader
-    if (current_pgbouncer.addon.name == attachment.addon.name && current_pgbouncer.namespace === attachment.namespace) return
-    // detach DATABASE_CONNECTION_POOL
-    heroku.delete('/addon-attachments/${current_pgbouncer.id}')
-    // attach DATABASE_CONNECTION_POOL to new database
-    heroku.post('/addon-attachments', {
-      body: {
-        name: 'DATABASE_CONNECTION_POOL',
-        app: { name: app },
-        addon: { name: attachment.addon.name },
-        namespace: attachment.namespace,
-        confirm: app
-      }
-    })
-  }))
-
   yield cli.action(promotionMessage, co(function * () {
     yield heroku.post('/addon-attachments', {
       body: {
@@ -98,6 +80,27 @@ function * run (context, heroku) {
         confirm: app
       }
     })
+  }))
+
+  yield cli.action(`Ensuring pgbouncer reattached if exists`, co(function * () {
+    // let attachments = yield heroku.get(`/apps/${app}/addon-attachments`)
+    current_pgbouncer = attachments.find(a => a.name === 'DATABASE_CONNECTION_POOL')
+    // There is no pgbouncer to reattach
+    if (!current_pgbouncer) return
+    // DATABASE_CONNECTION_POOL already attached to new leader
+    if (current_pgbouncer.addon.name == attachment.addon.name && current_pgbouncer.namespace === attachment.namespace) return
+    // detach DATABASE_CONNECTION_POOL
+    //heroku.delete('/addon-attachments/${current_pgbouncer.id}')
+    // attach DATABASE_CONNECTION_POOL to new database
+    // heroku.post('/addon-attachments', {
+    //   body: {
+    //     name: 'DATABASE_CONNECTION_POOL',
+    //     app: { name: app },
+    //     addon: { name: attachment.addon.name },
+    //     namespace: attachment.namespace,
+    //     confirm: app
+    //   }
+    // })
   }))
 
   let releasePhase = (yield heroku.get(`/apps/${app}/formation`))
