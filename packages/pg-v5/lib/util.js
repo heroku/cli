@@ -30,7 +30,7 @@ function getConfigVarNameFromAttachment (attachment, config) {
   return getConfigVarName(configVars)
 }
 
-exports.getConfigVarNameFromAttachment  = getConfigVarNameFromAttachment;
+exports.getConfigVarNameFromAttachment = getConfigVarNameFromAttachment
 
 function formatAttachment (attachment) {
   let attName = cli.color.addon(attachment.name)
@@ -92,7 +92,7 @@ function presentCredentialAttachments (app, credAttachments, credentials, cred) 
 exports.presentCredentialAttachments = presentCredentialAttachments
 
 exports.getConnectionDetails = function (attachment, config) {
-  const {getBastion} = require('./bastion')
+  const { getBastion } = require('./bastion')
   const url = require('url')
 
   const connstringVar = getConfigVarNameFromAttachment(attachment, config)

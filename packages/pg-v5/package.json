@@ -25,7 +25,7 @@
     "node-notifier": "^5.4.0",
     "smooth-progress": "^1.1.0",
     "strip-eof": "^1.0.0",
-    "tunnel-ssh": "^4.1.4",
+    "tunnel-ssh": "github:agebrock/tunnel-ssh#f88fc8ea6de3156806e272ecf7326aad54ff1a77",
     "uuid": "^8.3.1"
   },
   "devDependencies": {
@@ -37,7 +37,7 @@
     "nock": "9.2.6",
     "nyc": "^13.2.0",
     "proxyquire": "^2.1.0",
-    "sinon": "^7.2.3",
+    "sinon": "^9.2.1",
     "standard": "^12.0.1",
     "unexpected": "^11.0.1"
   },

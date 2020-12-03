@@ -8,7 +8,6 @@ const proxyquire = require('proxyquire')
 const uuid = require('uuid')
 
 describe('pg:diagnose', () => {
-
   let api, pg, diagnose, db, dbName
   let app, addon, plan, attachment
   let reportID
@@ -20,7 +19,7 @@ describe('pg:diagnose', () => {
         return {
           ...attachment,
           addon,
-          app,
+          app
         }
       }
     }
@@ -38,16 +37,16 @@ describe('pg:diagnose', () => {
     db = {
       id: uuid.v4(),
       name: dbName || 'DATABASE',
-      get plan() { return plan },
+      get plan () { return plan },
       config_vars: ['DATABASE_ENDPOINT_042EExxx_URL', 'DATABASE_URL', 'HEROKU_POSTGRESQL_SILVER_URL'],
       app: { name: 'myapp' }
     }
     attachment = {
       id: 1,
-      get name() {
+      get name () {
         return db.name
       },
-      get config_vars() {
+      get config_vars () {
         return db.config_vars
       },
       namespace: null
@@ -58,7 +57,7 @@ describe('pg:diagnose', () => {
     }
     addon = {
       name: 'postgres-1',
-      get id() { return db.id },
+      get id () { return db.id },
       plan,
       app
     }
@@ -82,7 +81,7 @@ describe('pg:diagnose', () => {
       api.get(`/apps/${app.name}/config-vars`).reply(200, {
         DATABASE_ENDPOINT_042EExxx_URL: dbURL,
         DATABASE_URL: dbURL,
-        HEROKU_POSTGRESQL_SILVER_URL: dbURL,
+        HEROKU_POSTGRESQL_SILVER_URL: dbURL
       })
       pg.get(`/client/v11/databases/${db.id}/metrics`).reply(200, [])
       const report = {
@@ -159,7 +158,7 @@ Count
 RED: Load
 Load 100
 `))
-        // This is to ensure that each test sets up its own db name when that's their interest. 
+        // This is to ensure that each test sets up its own db name when that's their interest.
         // Otherwise, it'll default to `DATABASE`
         dbName = undefined
       })
@@ -310,5 +309,5 @@ SKIPPED: Load
 Error Thing Load check not supported on this plan
 `))
     })
-  });
+  })
 })
