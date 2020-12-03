@@ -8,7 +8,8 @@
     "eslint-plugin-standard": "^4.0.0",
     "lerna": "^3.22.1",
     "promise-request-retry": "^1.0.2",
-    "standard": "12.0.1"
+    "standard": "12.0.1",
+    "tmp": "^0.2.1"
   },
   "standard": {
     "env": "mocha",
