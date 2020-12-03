@@ -129,8 +129,8 @@ async function sshTunnel (db, dbTunnelConfig, timeout = 10000) {
 
 exports.sshTunnel = sshTunnel
 
-function * fetchConfig (heroku, db) {
-  return yield heroku.get(
+async function fetchConfig (heroku, db) {
+  return heroku.get(
     `/client/v11/databases/${encodeURIComponent(db.id)}/bastion`,
     {
       host: host(db)
