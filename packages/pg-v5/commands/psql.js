@@ -21,9 +21,9 @@ function * run (context, heroku) {
   }
   cli.console.error(`--> Connecting to ${cli.color.addon(db.attachment.addon.name)}`)
   if (flags.command) {
-    process.stdout.write(yield psql.exec(db, flags.command))
+    yield psql.exec(db, flags.command)
   } else if (flags.file) {
-    process.stdout.write(yield psql.execFile(db, flags.file))
+    yield psql.execFile(db, flags.file)
   } else {
     yield psql.interactive(db)
   }
