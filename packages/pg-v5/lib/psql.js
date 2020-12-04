@@ -1,8 +1,9 @@
 'use strict'
 
+const { once, EventEmitter } = require('events')
+
 const bastion = require('./bastion')
 const debug = require('./debug')
-const { once, EventEmitter } = require('events')
 
 function psqlQueryOptions (query, dbEnv) {
   debug('Running query: %s', query.trim())
@@ -79,7 +80,9 @@ function execPSQL ({ dbEnv, psqlArgs, childProcessOptions, pipeToStdout }) {
     ...childProcessOptions
   }
 
+  debug('opening psql process')
   const psql = spawn('psql', psqlArgs, options)
+  psql.once('spawn', () => debug('psql process spawned'))
 
   if (pipeToStdout) {
     psql.stdout.pipe(process.stdout)
@@ -91,12 +94,11 @@ function execPSQL ({ dbEnv, psqlArgs, childProcessOptions, pipeToStdout }) {
 async function waitForPSQLExit (psql) {
   try {
     const exitCode = await once(psql, 'close')
-    debug(`psql exited with code ${exitCode}`)
     if (exitCode > 0) {
       throw new Error(`psql exited with code ${exitCode}`)
     }
   } catch (err) {
-    debug('psql error', err)
+    debug('psql process error', err)
     let error = err
 
     if (error.code === 'ENOENT') {
@@ -111,8 +113,9 @@ async function waitForPSQLExit (psql) {
 // but could have unintended consequences if the PID gets reassigned:
 // https://nodejs.org/docs/latest-v14.x/api/child_process.html#child_process_subprocess_kill_signal
 // To be on the safe side, check if the process was already killed before sending the signal
-function killUnlessDead (childProcess, signal) {
+function kill (childProcess, signal) {
   if (!childProcess.killed) {
+    psql('killing psql child process')
     childProcess.kill(signal)
   }
 }
@@ -128,11 +131,12 @@ const trapAndForwardSignalsToChildProcess = (childProcess) => {
   const signalsToTrap = ['SIGINT']
   const signalTraps = signalsToTrap.map((signal) => {
     process.removeAllListeners(signal);
-    const listener = () => killUnlessDead(childProcess, signal)
+    const listener = () => kill(childProcess, signal)
     process.on(signal, listener)
     return [signal, listener]
   });
 
+  // restores the built-in node ctrl+c and other handlers
   const cleanup = () => {
     signalTraps.forEach(([signal, listener]) => {
       process.removeListener(signal, listener)
@@ -144,45 +148,63 @@ const trapAndForwardSignalsToChildProcess = (childProcess) => {
 
 async function runWithTunnel (db, tunnelConfig, options) {
   const tunnel = await Tunnel.connect(db, tunnelConfig)
+  debug('after create tunnel')
 
   const psql = execPSQL(options)
   const cleanupSignalTraps = trapAndForwardSignalsToChildProcess(psql)
 
   try {
+    debug('waiting for psql or tunnel to exit')
+    // wait for either psql or tunnel to exit;
+    // the important bit is that we ensure both processes are
+    // always cleaned up in the `finally` block below
     await Promise.race([
       waitForPSQLExit(psql),
       tunnel.waitForClose()
     ])
+  } catch (err) {
+    debug('wait for psql or tunnel error', err)
+    throw err
   } finally {
+    debug('begin tunnel cleanup')
     cleanupSignalTraps()
     tunnel.close()
-    killUnlessDead(psql, 'SIGKILL')
+    kill(psql, 'SIGKILL')
+    debug('end tunnel cleanup')
   }
 }
 
+// a small wrapper around tunnel-ssh
+// so that other code doesn't have to worry about
+// whether there is or is not a tunnel
 class Tunnel {
-  constructor (tunnel) {
-    this.tunnel = tunnel
+  constructor (bastionTunnel) {
+    this.bastionTunnel = bastionTunnel
     this.events = new EventEmitter()
   }
 
   async waitForClose () {
-    if (this.tunnel) {
+    if (this.bastionTunnel) {
       try {
-        await once(this.tunnel, 'close')
+        debug('wait for tunnel close')
+        await once(this.bastionTunnel, 'close')
+        debug('tunnel closed')
       } catch (err) {
-        debug(err)
+        debug('tunnel close error', err)
         throw new Error('Secure tunnel to your database failed')
       }
     } else {
+      debug('no bastion required; waiting for fake close event')
       await once(this.events, 'close')
     }
   }
 
   close () {
-    if (this.tunnel) {
-      this.tunnel.close()
+    if (this.bastionTunnel) {
+      debug('close tunnel')
+      this.bastionTunnel.close()
     } else {
+      debug('no tunnel necessary; sending fake close event')
       this.events.emit('close', 0)
     }
   }
@@ -194,7 +216,7 @@ class Tunnel {
 }
 
 async function exec (db, query) {
-  let configs = bastion.getConfigs(db)
+  const configs = bastion.getConfigs(db)
   const options = psqlQueryOptions(query, configs.dbEnv)
 
   return runWithTunnel(db, configs.dbTunnelConfig, options)
@@ -208,9 +230,9 @@ async function execFile (db, file) {
 }
 
 async function interactive (db) {
-  let name = db.attachment.name
-  let prompt = `${db.attachment.app.name}::${name}%R%# `
-  let configs = bastion.getConfigs(db)
+  const name = db.attachment.name
+  const prompt = `${db.attachment.app.name}::${name}%R%# `
+  const configs = bastion.getConfigs(db)
   configs.dbEnv.PGAPPNAME = 'psql interactive' // default was 'psql non-interactive`
   const options = psqlInteractiveOptions(prompt, configs.dbEnv)
 
