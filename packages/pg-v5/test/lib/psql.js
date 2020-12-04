@@ -282,29 +282,17 @@ describe('psql', () => {
 
     context('when HEROKU_PSQL_HISTORY is set', () => {
       let historyPath
-      let envStub
 
       function mockHerokuPSQLHistory (path) {
-        envStub = sandbox.stub()
-        const envProxy = new Proxy(process.env, {
-          get (target, prop, receiver) {
-            if (prop === 'HEROKU_PSQL_HISTORY') {
-              envStub()
-              return path
-            }
-            return target[prop]
-          }
-        })
-        sandbox.stub(process, 'env').value(envProxy)
-        return envStub
+        process.env.HEROKU_PSQL_HISTORY = path
       }
 
-      afterEach(() => {
-        if (envStub) {
-          expect(envStub.callCount, 'to be greater than or equal to', 1)
-          envStub = undefined
-        }
+      before(function () {
         tmp.setGracefulCleanup()
+      })
+
+      afterEach(() => {
+        delete process.env.HEROKU_PSQL_HISTORY
       })
 
       context('when HEROKU_PSQL_HISTORY is a valid directory path', () => {
