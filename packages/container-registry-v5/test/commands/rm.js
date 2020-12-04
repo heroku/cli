@@ -3,7 +3,7 @@
 
 const cli = require('heroku-cli-util')
 const cmd = require('../..').commands.find(c => c.topic === 'container' && c.command === 'rm')
-const expect = require('unexpected')
+const { expect } = require('chai')
 const nock = require('nock')
 const sinon = require('sinon')
 
@@ -17,7 +17,7 @@ describe('container removal', () => {
 
     return cmd.run({ app: 'testapp', args: ['web'], flags: {} })
       .then(() => expect(cli.stdout, 'to be empty'))
-      .then(() => expect(cli.stderr, 'to contain', 'Removing container web for testapp... done'))
+      .then(() => expect(cli.stderr).to.contain('Removing container web for testapp... done'))
       .then(() => api.done())
   })
 
@@ -30,8 +30,8 @@ describe('container removal', () => {
 
     return cmd.run({ app: 'testapp', args: ['web', 'worker'], flags: {} })
       .then(() => expect(cli.stdout, 'to be empty'))
-      .then(() => expect(cli.stderr, 'to contain', 'Removing container web for testapp... done'))
-      .then(() => expect(cli.stderr, 'to contain', 'Removing container worker for testapp... done'))
+      .then(() => expect(cli.stderr).to.contain('Removing container web for testapp... done'))
+      .then(() => expect(cli.stderr).to.contain('Removing container worker for testapp... done'))
       .then(() => api.done())
   })
 
@@ -41,8 +41,8 @@ describe('container removal', () => {
 
     return cmd.run({ app: 'testapp', args: [], flags: {} })
       .then(() => expect(cli.stdout, 'to be empty'))
-      .then(() => expect(cli.stderr, 'to contain', 'Please specify at least one target process type'))
-      .then(() => expect(process.exit.calledWith(1), 'to equal', true))
+      .then(() => expect(cli.stderr).to.contain('Please specify at least one target process type'))
+      .then(() => expect(process.exit.calledWith(1)).to.equal(true))
       .finally(() => sandbox.restore())
   })
 })

@@ -1,7 +1,7 @@
 'use strict'
 /* globals describe it */
 
-const expect = require('unexpected')
+const { expect } = require('chai')
 let clients = require('../lib/clients')
 
 describe('clients', () => {

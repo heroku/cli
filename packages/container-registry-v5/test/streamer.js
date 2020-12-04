@@ -1,4 +1,4 @@
-const expect = require('unexpected')
+const { expect } = require('chai')
 const nock = require('nock')
 var stream = require('stream')
 
@@ -26,7 +26,7 @@ describe('streaming', () => {
       .reply(200, 'My data')
 
     return streamer('https://streamer.test/streams/data.log', ws)
-      .then(() => expect(ws.data.join(''), 'to equal', 'My data'))
+      .then(() => expect(ws.data.join('')).to.equal('My data'))
       .then(() => api.done())
   })
 
@@ -47,7 +47,7 @@ describe('streaming', () => {
       })
 
     return streamer('https://streamer.test/streams/data.log', ws)
-      .then(() => expect(ws.data.join(''), 'to equal', 'My retried data'))
+      .then(() => expect(ws.data.join('')).to.equal('My retried data'))
       .then(() => api.done())
   }).timeout(5 * 1000 * 1.2)
 

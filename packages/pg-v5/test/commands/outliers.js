@@ -2,7 +2,7 @@
 /* global describe it beforeEach afterEach */
 
 const cli = require('heroku-cli-util')
-const expect = require('unexpected')
+const { expect } = require('chai')
 const nock = require('nock')
 const proxyquire = require('proxyquire')
 
@@ -40,11 +40,11 @@ describe('pg:outliers', () => {
 
   it('reset queries stats', () => {
     return cmd.run({ app: 'myapp', args: {}, flags: { reset: true } })
-      .then(() => expect(psql._query.trim(), 'to equal', 'SELECT pg_stat_statements_reset()'))
+      .then(() => expect(psql._query.trim()).to.equal('SELECT pg_stat_statements_reset()'))
   })
 
   it('returns queries outliers', () => {
     return cmd.run({ app: 'myapp', args: {}, flags: {} })
-      .then(() => expect(psql._query.trim(), 'to contain', 'FROM pg_stat_statements'))
+      .then(() => expect(psql._query.trim()).to.contain('FROM pg_stat_statements'))
   })
 })

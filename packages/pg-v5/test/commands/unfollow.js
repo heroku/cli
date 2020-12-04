@@ -2,7 +2,7 @@
 /* global describe it beforeEach afterEach */
 
 const cli = require('heroku-cli-util')
-const expect = require('unexpected')
+const { expect } = require('chai')
 const nock = require('nock')
 const proxyquire = require('proxyquire')
 
@@ -41,6 +41,6 @@ describe('pg:unfollow', () => {
     pg.get('/client/v11/databases/1').reply(200, { following: 'postgres://db1' })
     pg.put('/client/v11/databases/1/unfollow').reply(200)
     return cmd.run({ app: 'myapp', args: {}, flags: { confirm: 'myapp' } })
-      .then(() => expect(cli.stderr, 'to equal', 'postgres-1 unfollowing... done\n'))
+      .then(() => expect(cli.stderr).to.equal('postgres-1 unfollowing... done\n'))
   })
 })

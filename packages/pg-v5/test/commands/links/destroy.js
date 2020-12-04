@@ -2,7 +2,7 @@
 /* global describe it beforeEach afterEach */
 
 const cli = require('heroku-cli-util')
-const expect = require('unexpected')
+const { expect } = require('chai')
 const nock = require('nock')
 const proxyquire = require('proxyquire')
 
@@ -40,7 +40,7 @@ describe('pg:links:destroy', () => {
   it('destroys a link', () => {
     pg.delete('/client/v11/databases/1/links/redis').reply(200)
     return cmd.run({ app: 'myapp', args: { link: 'redis' }, flags: { confirm: 'myapp' } })
-      .then(() => expect(cli.stdout, 'to equal', ''))
-      .then(() => expect(cli.stderr, 'to equal', 'Destroying link redis from postgres-1... done\n'))
+      .then(() => expect(cli.stdout).to.equal(''))
+      .then(() => expect(cli.stderr).to.equal('Destroying link redis from postgres-1... done\n'))
   })
 })

@@ -42,8 +42,7 @@
     "set-tz": "^0.1.0",
     "std-mocks": "1.0.1",
     "testdouble": "^3.10.0",
-    "time-require": "0.1.2",
-    "unexpected": "^11.0.1"
+    "time-require": "0.1.2"
   },
   "files": [
     "/oclif.manifest.json",

@@ -4,7 +4,7 @@
 const cli = require('heroku-cli-util')
 const nock = require('nock')
 const cmd = commands.find((c) => c.topic === 'ps' && c.command === 'scale')
-const expect = require('unexpected')
+const { expect } = require('chai')
 
 describe('ps:scale', () => {
   beforeEach(() => cli.mockConsole())
@@ -19,7 +19,7 @@ describe('ps:scale', () => {
       .reply(200, { name: 'myapp' })
 
     return cmd.run({ app: 'myapp', args: [] })
-      .then(() => expect(cli.stdout, 'to equal', 'web=1:Free worker=2:Free\n'))
+      .then(() => expect(cli.stdout).to.equal('web=1:Free worker=2:Free\n'))
       .then(() => expect(cli.stderr, 'to be empty'))
       .then(() => api.done())
   })
@@ -32,7 +32,7 @@ describe('ps:scale', () => {
       .reply(200, { name: 'myapp', space: { shield: true } })
 
     return cmd.run({ app: 'myapp', args: [] })
-      .then(() => expect(cli.stdout, 'to equal', 'web=1:Shield-L worker=2:Shield-M\n'))
+      .then(() => expect(cli.stdout).to.equal('web=1:Shield-L worker=2:Shield-M\n'))
       .then(() => expect(cli.stderr, 'to be empty'))
       .then(() => api.done())
   })
@@ -60,7 +60,7 @@ describe('ps:scale', () => {
 
     return cmd.run({ app: 'myapp', args: ['web=1', 'worker=2'] })
       .then(() => expect(cli.stdout, 'to be empty'))
-      .then(() => expect(cli.stderr, 'to equal', 'Scaling dynos... done, now running web at 1:Free, worker at 2:Free\n'))
+      .then(() => expect(cli.stderr).to.equal('Scaling dynos... done, now running web at 1:Free, worker at 2:Free\n'))
       .then(() => api.done())
   })
 
@@ -73,7 +73,7 @@ describe('ps:scale', () => {
 
     return cmd.run({ app: 'myapp', args: ['web=1:Shield-L'] })
       .then(() => expect(cli.stdout, 'to be empty'))
-      .then(() => expect(cli.stderr, 'to equal', 'Scaling dynos... done, now running web at 1:Shield-L\n'))
+      .then(() => expect(cli.stderr).to.equal('Scaling dynos... done, now running web at 1:Shield-L\n'))
       .then(() => api.done())
   })
 
@@ -86,7 +86,7 @@ describe('ps:scale', () => {
 
     return cmd.run({ app: 'myapp', args: ['web+1'] })
       .then(() => expect(cli.stdout, 'to be empty'))
-      .then(() => expect(cli.stderr, 'to equal', 'Scaling dynos... done, now running web at 2:Free\n'))
+      .then(() => expect(cli.stderr).to.equal('Scaling dynos... done, now running web at 2:Free\n'))
       .then(() => api.done())
   })
 })

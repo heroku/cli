@@ -2,7 +2,7 @@
 /* globals commands it describe beforeEach afterEach cli nock */
 
 let cmd = commands.find((c) => c.topic === 'addons' && c.command === 'upgrade')
-let expect = require('unexpected')
+const { expect } = require('chai')
 let cache = require('../../../lib/resolve').addon.cache
 
 describe('addons:upgrade', () => {
@@ -21,8 +21,8 @@ describe('addons:upgrade', () => {
       .patch('/apps/myapp/addons/kafka-swiftly-123', { plan: { name: 'heroku-kafka:hobby' } })
       .reply(200, { plan: { price: { cents: 0 } }, provision_message: 'provision msg' })
     return cmd.run({ app: 'myapp', args: { addon: 'heroku-kafka', plan: 'heroku-kafka:hobby' } })
-      .then(() => expect(cli.stdout, 'to equal', 'provision msg\n'))
-      .then(() => expect(cli.stderr, 'to equal', 'Changing kafka-swiftly-123 on myapp from premium-0 to heroku-kafka:hobby... done, free\n'))
+      .then(() => expect(cli.stdout).to.equal('provision msg\n'))
+      .then(() => expect(cli.stderr).to.equal('Changing kafka-swiftly-123 on myapp from premium-0 to heroku-kafka:hobby... done, free\n'))
       .then(() => api.done())
   })
 
@@ -34,8 +34,8 @@ describe('addons:upgrade', () => {
       .patch('/apps/myapp/addons/connect-swiftly-123', { plan: { name: 'heroku-connect:contract' } })
       .reply(200, { plan: { price: { cents: 0, contract: true } }, provision_message: 'provision msg' })
     return cmd.run({ app: 'myapp', args: { addon: 'heroku-connect', plan: 'heroku-connect:contract' } })
-      .then(() => expect(cli.stdout, 'to equal', 'provision msg\n'))
-      .then(() => expect(cli.stderr, 'to equal', 'Changing connect-swiftly-123 on myapp from free to heroku-connect:contract... done, contract\n'))
+      .then(() => expect(cli.stdout).to.equal('provision msg\n'))
+      .then(() => expect(cli.stderr).to.equal('Changing connect-swiftly-123 on myapp from free to heroku-connect:contract... done, contract\n'))
       .then(() => api.done())
   })
 
@@ -48,7 +48,7 @@ describe('addons:upgrade', () => {
       .reply(200, { plan: { price: { cents: 0 } } })
     return cmd.run({ app: 'myapp', args: { addon: 'heroku-postgresql:hobby' } })
       .then(() => expect(cli.stdout, 'to be empty'))
-      .then(() => expect(cli.stderr, 'to equal', 'Changing postgresql-swiftly-123 on myapp from premium-0 to heroku-postgresql:hobby... done, free\n'))
+      .then(() => expect(cli.stderr).to.equal('Changing postgresql-swiftly-123 on myapp from premium-0 to heroku-postgresql:hobby... done, free\n'))
       .then(() => api.done())
   })
 
@@ -71,7 +71,7 @@ describe('addons:upgrade', () => {
       .reply(422, { message: 'Couldn\'t find either the add-on service or the add-on plan of "heroku-db1:invalid".' })
     return cmd.run({ app: 'myapp', args: { addon: 'heroku-db1:invalid' } })
       .then(() => { throw new Error('unreachable') })
-      .catch((err) => expect(err.message, 'to equal', `Couldn't find either the add-on service or the add-on plan of "heroku-db1:invalid".
+      .catch((err) => expect(err.message).to.equal(`Couldn't find either the add-on service or the add-on plan of "heroku-db1:invalid".
 
 Here are the available plans for heroku-db1:
 heroku-db1:free

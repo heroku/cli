@@ -2,7 +2,7 @@
 /* global describe afterEach beforeEach it commands cli nock */
 
 let cmd = commands.find((c) => c.topic === 'addons' && c.command === 'attach')
-let expect = require('unexpected')
+const { expect } = require('chai')
 
 let confirmApp
 
@@ -27,7 +27,7 @@ describe('addons:attach', function () {
       .reply(200, [{ version: 10 }])
     return cmd.run({ app: 'myapp', args: { addon_name: 'redis-123' }, flags: {} })
       .then(() => expect(cli.stdout, 'to be empty'))
-      .then(() => expect(cli.stderr, 'to equal', `Attaching redis-123 to myapp... done
+      .then(() => expect(cli.stderr).to.equal(`Attaching redis-123 to myapp... done
 Setting REDIS config vars and restarting myapp... done, v10
 `))
       .then(() => api.done())
@@ -43,7 +43,7 @@ Setting REDIS config vars and restarting myapp... done, v10
       .reply(200, [{ version: 10 }])
     return cmd.run({ app: 'myapp', args: { addon_name: 'redis-123' }, flags: { as: 'foo' } })
       .then(() => expect(cli.stdout, 'to be empty'))
-      .then(() => expect(cli.stderr, 'to equal', `Attaching redis-123 as foo to myapp... done
+      .then(() => expect(cli.stderr).to.equal(`Attaching redis-123 as foo to myapp... done
 Setting foo config vars and restarting myapp... done, v10
 `))
       .then(() => api.done())
@@ -61,7 +61,7 @@ Setting foo config vars and restarting myapp... done, v10
       .reply(200, [{ version: 10 }])
     return cmd.run({ app: 'myapp', args: { addon_name: 'redis-123' }, flags: { as: 'foo' } })
       .then(() => expect(cli.stdout, 'to be empty'))
-      .then(() => expect(cli.stderr, 'to equal', `Attaching redis-123 as foo to myapp... !
+      .then(() => expect(cli.stderr).to.equal(`Attaching redis-123 as foo to myapp... !
 Attaching redis-123 as foo to myapp... done
 Setting foo config vars and restarting myapp... done, v10
 `))
@@ -78,7 +78,7 @@ Setting foo config vars and restarting myapp... done, v10
       .reply(200, [{ version: 10 }])
     return cmd.run({ app: 'myapp', args: { addon_name: 'postgres-123' }, flags: { credential: 'default' } })
       .then(() => expect(cli.stdout, 'to be empty'))
-      .then(() => expect(cli.stderr, 'to equal', `Attaching default of postgres-123 to myapp... done
+      .then(() => expect(cli.stderr).to.equal(`Attaching default of postgres-123 to myapp... done
 Setting POSTGRES_HELLO config vars and restarting myapp... done, v10
 `))
       .then(() => api.done())
@@ -96,7 +96,7 @@ Setting POSTGRES_HELLO config vars and restarting myapp... done, v10
       .reply(200, [{ version: 10 }])
     return cmd.run({ app: 'myapp', args: { addon_name: 'postgres-123' }, flags: { credential: 'hello' } })
       .then(() => expect(cli.stdout, 'to be empty'))
-      .then(() => expect(cli.stderr, 'to equal', `Attaching hello of postgres-123 to myapp... done
+      .then(() => expect(cli.stderr).to.equal(`Attaching hello of postgres-123 to myapp... done
 Setting POSTGRES_HELLO config vars and restarting myapp... done, v10
 `))
       .then(() => api.done())
@@ -115,6 +115,6 @@ Setting POSTGRES_HELLO config vars and restarting myapp... done, v10
       flags: { credential: 'hello' }
     })
       .then(() => { throw new Error('unreachable') })
-      .catch((err) => expect(err.message, 'to equal', 'Could not find credential hello for database postgres-123'))
+      .catch((err) => expect(err.message).to.equal('Could not find credential hello for database postgres-123'))
   })
 })

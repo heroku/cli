@@ -3,7 +3,7 @@
 
 const cli = require('heroku-cli-util')
 const cmd = require('../..').commands.find(c => c.topic === 'container' && c.command === 'login')
-const expect = require('unexpected')
+const { expect } = require('chai')
 const sinon = require('sinon')
 
 const Sanbashi = require('../../lib/sanbashi')

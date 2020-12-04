@@ -3,7 +3,7 @@
 
 const cli = require('heroku-cli-util')
 const cmd = require('../..').commands.find(c => c.topic === 'container' && c.command === 'pull')
-const expect = require('unexpected')
+const { expect } = require('chai')
 const sinon = require('sinon')
 
 const Sanbashi = require('../../lib/sanbashi')
@@ -20,9 +20,9 @@ describe('container pull', () => {
     sandbox.stub(process, 'exit')
 
     await cmd.run({ app: 'testapp', args: [], flags: {} })
-      .then(() => expect(cli.stderr, 'to contain', 'Requires one or more process types'))
+      .then(() => expect(cli.stderr).to.contain('Requires one or more process types'))
       .then(() => expect(cli.stdout, 'to be empty'))
-      .then(() => expect(process.exit.calledWith(1), 'to equal', true))
+      .then(() => expect(process.exit.calledWith(1)).to.equal(true))
   })
 
   it('pulls from the docker registry', () => {
@@ -31,7 +31,7 @@ describe('container pull', () => {
 
     return cmd.run({ app: 'testapp', args: ['web'], flags: {} })
       .then(() => expect(cli.stderr, 'to be empty'))
-      .then(() => expect(cli.stdout, 'to contain', 'Pulling web as registry.heroku.com/testapp/web'))
+      .then(() => expect(cli.stdout).to.contain('Pulling web as registry.heroku.com/testapp/web'))
       .then(() => sandbox.assert.calledOnce(pull))
   })
 })

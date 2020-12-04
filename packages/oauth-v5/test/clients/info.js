@@ -2,7 +2,7 @@
 /* globals describe it beforeEach afterEach */
 
 const cli = require('heroku-cli-util')
-const expect = require('unexpected')
+const { expect } = require('chai')
 let nock = require('nock')
 let cmd = require('../../lib/commands/clients/info')
 
@@ -22,7 +22,7 @@ describe('clients:info', function () {
 
   it('gets the client info', function () {
     return cmd.run({ args: { id }, flags: {} })
-      .then(() => expect(cli.stdout, 'to equal', `=== awesome
+      .then(() => expect(cli.stdout).to.equal(`=== awesome
 id:           f6e8d969-129f-42d2-854b-c2eca9d5a42e
 name:         awesome
 redirect_uri: https://myapp.com
@@ -37,7 +37,7 @@ secret:       supersecretkey
 
   it('gets the client info as shell', function () {
     return cmd.run({ args: { id }, flags: { shell: true } })
-      .then(() => expect(cli.stdout, 'to equal', `HEROKU_OAUTH_ID=f6e8d969-129f-42d2-854b-c2eca9d5a42e
+      .then(() => expect(cli.stdout).to.equal(`HEROKU_OAUTH_ID=f6e8d969-129f-42d2-854b-c2eca9d5a42e
 HEROKU_OAUTH_SECRET=supersecretkey
 `))
   })

@@ -28,8 +28,7 @@
     "mocha": "^5.2.0",
     "nock": "9.0.13",
     "nyc": "^13.2.0",
-    "sinon": "^6.3.5",
-    "unexpected": "^11.0.1"
+    "sinon": "^6.3.5"
   },
   "files": [
     "oclif.manifest.json",

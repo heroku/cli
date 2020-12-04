@@ -2,7 +2,7 @@
 /* global describe it beforeEach afterEach */
 
 const cli = require('heroku-cli-util')
-const expect = require('unexpected')
+const { expect } = require('chai')
 const nock = require('nock')
 const cmd = require('../../..').commands.find(c => c.topic === 'pg' && c.command === 'backups:schedule')
 
@@ -48,7 +48,7 @@ const shouldSchedule = function (cmdRun) {
     ] }
     pg.get('/client/v11/databases/1').reply(200, dbA)
     return cmdRun({ app: 'myapp', args: {}, flags: { at: '06:00 EDT', confirm: 'myapp' } })
-      .then(() => expect(cli.stdout, 'to equal', ''))
+      .then(() => expect(cli.stdout).to.equal(''))
       .then(() => expect(cli.stderr, 'to match', /Scheduling automatic daily backups of postgres-1 at 06:00 America\/New_York... done\n/))
   })
 

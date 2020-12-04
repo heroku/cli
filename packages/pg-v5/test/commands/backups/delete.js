@@ -2,7 +2,7 @@
 /* global describe it beforeEach afterEach */
 
 const cli = require('heroku-cli-util')
-const expect = require('unexpected')
+const { expect } = require('chai')
 const nock = require('nock')
 const cmd = require('../../..').commands.find(c => c.topic === 'pg' && c.command === 'backups:delete')
 
@@ -24,7 +24,7 @@ const shouldDelete = function (cmdRun) {
 
   it('shows URL', () => {
     return cmd.run({ app: 'myapp', args: { backup_id: 'b003' }, flags: { confirm: 'myapp' } })
-      .then(() => expect(cli.stderr, 'to equal', 'Deleting backup b003 on myapp... done\n'))
+      .then(() => expect(cli.stderr).to.equal('Deleting backup b003 on myapp... done\n'))
   })
 }
 

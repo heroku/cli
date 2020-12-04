@@ -3,7 +3,7 @@
 
 let sinon = require('sinon')
 let nock = require('nock')
-let expect = require('unexpected')
+const { expect } = require('chai')
 let proxyquire = require('proxyquire')
 
 describe('git:clone', function () {

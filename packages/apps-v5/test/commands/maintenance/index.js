@@ -6,7 +6,7 @@ const nock = require('nock')
 
 // get command from index.js
 const cmd = commands.find((c) => c.topic === 'maintenance' && !c.command)
-const expect = require('unexpected')
+const { expect } = require('chai')
 
 describe('maintenance', () => {
   // prevent stdout/stderr from displaying
@@ -26,7 +26,7 @@ describe('maintenance', () => {
     // run the command
     return cmd.run({ app: 'myapp' })
       // check stdout
-      .then(() => expect(cli.stdout, 'to equal', 'on\n'))
+      .then(() => expect(cli.stdout).to.equal('on\n'))
       // check stderr
       .then(() => expect(cli.stderr, 'to be empty'))
       // ensure all nock HTTP expectations are met
@@ -38,7 +38,7 @@ describe('maintenance', () => {
       .get('/apps/myapp')
       .reply(200, { maintenance: false })
     return cmd.run({ app: 'myapp' })
-      .then(() => expect(cli.stdout, 'to equal', 'off\n'))
+      .then(() => expect(cli.stdout).to.equal('off\n'))
       .then(() => expect(cli.stderr, 'to be empty'))
       .then(() => api.done())
   })

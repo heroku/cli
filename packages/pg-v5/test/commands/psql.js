@@ -5,7 +5,7 @@
 const cli = require('heroku-cli-util')
 const sinon = require('sinon')
 const proxyquire = require('proxyquire')
-const expect = require('unexpected')
+const { expect } = require('chai')
 
 const db = {
   user: 'jeff',
@@ -38,8 +38,8 @@ describe('psql', () => {
     let psql = require('../../lib/psql')
     sinon.stub(psql, 'exec').returns(Promise.resolve(''))
     return cmd.run({ args: {}, flags: { command: 'SELECT 1' } })
-      .then(() => expect(cli.stdout, 'to equal', ''))
-      .then(() => expect(cli.stderr, 'to equal', '--> Connecting to postgres-1\n'))
+      .then(() => expect(cli.stdout).to.equal(''))
+      .then(() => expect(cli.stderr).to.equal('--> Connecting to postgres-1\n'))
       .then(() => psql.exec.restore())
   })
 
@@ -47,8 +47,8 @@ describe('psql', () => {
     let psql = require('../../lib/psql')
     sinon.stub(psql, 'execFile').returns(Promise.resolve(''))
     return cmd.run({ args: {}, flags: { file: 'test.sql' } })
-      .then(() => expect(cli.stdout, 'to equal', ''))
-      .then(() => expect(cli.stderr, 'to equal', '--> Connecting to postgres-1\n'))
+      .then(() => expect(cli.stdout).to.equal(''))
+      .then(() => expect(cli.stderr).to.equal('--> Connecting to postgres-1\n'))
       .then(() => psql.execFile.restore())
   })
 })

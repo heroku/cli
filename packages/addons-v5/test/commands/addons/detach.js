@@ -2,7 +2,7 @@
 /* globals describe beforeEach afterEach it nock cli commands */
 
 let cmd = commands.find((c) => c.topic === 'addons' && c.command === 'detach')
-let expect = require('unexpected')
+const { expect } = require('chai')
 
 describe('addons:detach', () => {
   beforeEach(() => cli.mockConsole())
@@ -18,7 +18,7 @@ describe('addons:detach', () => {
       .reply(200, [{ version: 10 }])
     return cmd.run({ app: 'myapp', args: { attachment_name: 'redis-123' } })
       .then(() => expect(cli.stdout, 'to be empty'))
-      .then(() => expect(cli.stderr, 'to equal', `Detaching redis-123 to redis from myapp... done
+      .then(() => expect(cli.stderr).to.equal(`Detaching redis-123 to redis from myapp... done
 Unsetting redis-123 config vars and restarting myapp... done, v10
 `))
       .then(() => api.done())
