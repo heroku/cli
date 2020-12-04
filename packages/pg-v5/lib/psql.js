@@ -94,6 +94,7 @@ function execPSQL ({ dbEnv, psqlArgs, childProcessOptions, pipeToStdout }) {
 async function waitForPSQLExit (psql) {
   try {
     const exitCode = await once(psql, 'close')
+    debug(`psql exited with code ${exitCode}`)
     if (exitCode > 0) {
       throw new Error(`psql exited with code ${exitCode}`)
     }
@@ -115,7 +116,7 @@ async function waitForPSQLExit (psql) {
 // To be on the safe side, check if the process was already killed before sending the signal
 function kill (childProcess, signal) {
   if (!childProcess.killed) {
-    psql('killing psql child process')
+    debug('killing psql child process')
     childProcess.kill(signal)
   }
 }
