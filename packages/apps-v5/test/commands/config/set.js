@@ -4,7 +4,7 @@
 const cli = require('heroku-cli-util')
 const nock = require('nock')
 const cmd = commands.find((c) => c.topic === 'config' && c.command === 'set')
-const expect = require('unexpected')
+const { expect } = require('chai')
 const unwrap = require('../../unwrap')
 let config
 
@@ -25,8 +25,8 @@ describe('config:set', () => {
       .get('/apps/myapp/releases')
       .reply(200, [{ version: 10 }])
     return cmd.run({ config, app: 'myapp', args: ['RACK_ENV=production'] })
-      .then(() => expect(cli.stdout, 'to equal', 'RACK_ENV: production\n'))
-      .then(() => expect(cli.stderr, 'to equal', 'Setting RACK_ENV and restarting myapp... done, v10\n'))
+      .then(() => expect(cli.stdout).to.equal('RACK_ENV: production\n'))
+      .then(() => expect(cli.stderr).to.equal('Setting RACK_ENV and restarting myapp... done, v10\n'))
       .then(() => api.done())
   })
 
@@ -38,13 +38,13 @@ describe('config:set', () => {
       .reply(200, [{ version: 10 }])
     return cmd.run({ config, app: 'myapp', args: ['RACK_ENV=production=foo'] })
       .then(() => expect(cli.stdout, 'to be empty'))
-      .then(() => expect(cli.stderr, 'to equal', 'Setting RACK_ENV and restarting myapp... done, v10\n'))
+      .then(() => expect(cli.stderr).to.equal('Setting RACK_ENV and restarting myapp... done, v10\n'))
       .then(() => api.done())
   })
 
   it('errors out on empty', () => {
     return assertExit(1, cmd.run({ config, app: 'myapp', args: [] }))
-      .then(() => expect(cli.stdout, 'to equal', ''))
+      .then(() => expect(cli.stdout).to.equal(''))
       .then(() => expect(unwrap(cli.stderr), 'to equal',
         'Usage: heroku config:set KEY1=VALUE1 [KEY2=VALUE2 ...] Must specify KEY and VALUE to set.\n'))
   })

@@ -4,7 +4,7 @@
 const cli = require('heroku-cli-util')
 const nock = require('nock')
 const cmd = require('../../../src/commands/ps')
-const expect = require('unexpected')
+const { expect } = require('chai')
 const strftime = require('strftime')
 
 const hourAgo = new Date(new Date() - 60 * 60 * 1000)
@@ -65,7 +65,7 @@ describe('ps', function () {
     stubAppAndAccount()
 
     return cmd.run({ app: 'myapp', args: [], flags: {} })
-      .then(() => expect(cli.stdout, 'to equal', `=== run: one-off processes (1)
+      .then(() => expect(cli.stdout).to.equal(`=== run: one-off processes (1)
 run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
 
 === web (Free): npm start (1)
@@ -89,7 +89,7 @@ web.1: up ${hourAgoStr} (~ 1h ago)
     stubAppAndAccount()
 
     return cmd.run({ app: 'myapp', args: [], flags: {} })
-      .then(() => expect(cli.stdout, 'to equal', `=== run: one-off processes (1)
+      .then(() => expect(cli.stdout).to.equal(`=== run: one-off processes (1)
 run.1 (Shield-L): up ${hourAgoStr} (~ 1h ago): bash
 
 === web (Shield-M): npm start (1)
@@ -110,7 +110,7 @@ web.1: up ${hourAgoStr} (~ 1h ago)
 
     stubAppAndAccount()
 
-    return expect(cmd.run({ app: 'myapp', args: ['foo'], flags: {} }), 'to be rejected with', 'No foo dynos on myapp')
+    return expect(cmd.run({ app: 'myapp', args: ['foo'], flags: {} })).to.be.rejectedWith('No foo dynos on myapp')
   })
 
   it('shows dyno list as json', function () {
@@ -143,7 +143,7 @@ web.1: up ${hourAgoStr} (~ 1h ago)
       ])
 
     return cmd.run({ app: 'myapp', args: [], flags: { extended: true } })
-      .then(() => expect(cli.stdout, 'to equal', `ID   Process  State                                    Region  Instance  IP        Port  AZ       Release  Command    Route     Size
+      .then(() => expect(cli.stdout).to.equal(`ID   Process  State                                    Region  Instance  IP        Port  AZ       Release  Command    Route     Size
 ───  ───────  ───────────────────────────────────────  ──────  ────────  ────────  ────  ───────  ───────  ─────────  ────────  ────
 101  run.1    up ${hourAgoStr} (~ 1h ago)  us      instance  10.0.0.2  8000  us-east           bash       da route  Free
 100  web.1    up ${hourAgoStr} (~ 1h ago)  us      instance  10.0.0.1  8000  us-east           npm start  da route  Free
@@ -165,7 +165,7 @@ web.1: up ${hourAgoStr} (~ 1h ago)
       ])
 
     return cmd.run({ app: 'myapp', args: [], flags: { extended: true } })
-      .then(() => expect(cli.stdout, 'to equal', `ID   Process  State                                    Region  Instance  IP        Port  AZ       Release  Command    Route     Size
+      .then(() => expect(cli.stdout).to.equal(`ID   Process  State                                    Region  Instance  IP        Port  AZ       Release  Command    Route     Size
 ───  ───────  ───────────────────────────────────────  ──────  ────────  ────────  ────  ───────  ───────  ─────────  ────────  ────────
 101  run.1    up ${hourAgoStr} (~ 1h ago)  us      instance  10.0.0.2  8000  us-east           bash       da route  Shield-L
 100  web.1    up ${hourAgoStr} (~ 1h ago)  us      instance  10.0.0.1  8000  us-east           npm start  da route  Shield-M
@@ -188,7 +188,7 @@ run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
 
 `
     return cmd.run({ app: 'myapp', args: [], flags: {} })
-      .then(() => expect(cli.stdout, 'to equal', freeExpression))
+      .then(() => expect(cli.stdout).to.equal(freeExpression))
       .then(() => expect(cli.stderr, 'to be empty'))
   })
 
@@ -206,7 +206,7 @@ run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
 
 `
     return cmd.run({ app: 'myapp', args: [], flags: {} })
-      .then(() => expect(cli.stdout, 'to equal', freeExpression))
+      .then(() => expect(cli.stdout).to.equal(freeExpression))
       .then(() => expect(cli.stderr, 'to be empty'))
   })
 
@@ -224,7 +224,7 @@ run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
 
 `
     return cmd.run({ app: 'myapp', args: [], flags: {} })
-      .then(() => expect(cli.stdout, 'to equal', freeExpression))
+      .then(() => expect(cli.stdout).to.equal(freeExpression))
       .then(() => expect(cli.stderr, 'to be empty'))
   })
 
@@ -242,7 +242,7 @@ run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
 
 `
     return cmd.run({ app: 'myapp', args: [], flags: {} })
-      .then(() => expect(cli.stdout, 'to equal', freeExpression))
+      .then(() => expect(cli.stdout).to.equal(freeExpression))
       .then(() => expect(cli.stderr, 'to be empty'))
   })
 
@@ -255,7 +255,7 @@ run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
 `
 
     return cmd.run({ app: 'myapp', args: [], flags: {} })
-      .then(() => expect(cli.stdout, 'to equal', freeExpression))
+      .then(() => expect(cli.stdout).to.equal(freeExpression))
       .then(() => expect(cli.stderr, 'to be empty'))
   })
 
@@ -267,7 +267,7 @@ run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
 
 `
     return cmd.run({ app: 'myapp', args: [], flags: {} })
-      .then(() => expect(cli.stdout, 'to equal', freeExpression))
+      .then(() => expect(cli.stdout).to.equal(freeExpression))
       .then(() => expect(cli.stderr, 'to be empty'))
   })
 
@@ -300,7 +300,7 @@ run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
 
 `
     return cmd.run({ app: 'myapp', args: [], flags: {} })
-      .then(() => expect(cli.stdout, 'to equal', freeExpression))
+      .then(() => expect(cli.stdout).to.equal(freeExpression))
       .then(() => expect(cli.stderr, 'to be empty'))
       .then(() => dynos.done())
   })
@@ -325,7 +325,7 @@ run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
 
 `
     return cmd.run({ app: 'myapp', args: [], flags: {} })
-      .then(() => expect(cli.stdout, 'to equal', freeExpression))
+      .then(() => expect(cli.stdout).to.equal(freeExpression))
       .then(() => expect(cli.stderr, 'to be empty'))
       .then(() => dynos.done())
   })
@@ -339,7 +339,7 @@ run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
 `
 
     return cmd.run({ app: 'myapp', args: [], flags: {} })
-      .then(() => expect(cli.stdout, 'to equal', freeExpression))
+      .then(() => expect(cli.stdout).to.equal(freeExpression))
       .then(() => expect(cli.stderr, 'to be empty'))
   })
 
@@ -351,7 +351,7 @@ run.1 (Free): up ${hourAgoStr} (~ 1h ago): bash
     stubAppAndAccount()
 
     return cmd.run({ app: 'myapp', args: [], flags: {} })
-      .then(() => expect(cli.stdout, 'to equal', 'No dynos on myapp\n'))
+      .then(() => expect(cli.stdout).to.equal('No dynos on myapp\n'))
       .then(() => expect(cli.stderr, 'to be empty'))
       .then(() => dynos.done())
   })

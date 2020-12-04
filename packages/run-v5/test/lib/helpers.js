@@ -2,7 +2,7 @@
 /* globals describe it */
 
 const helpers = require('../../lib/helpers')
-const expect = require('unexpected')
+const { expect } = require('chai')
 
 describe('helpers.buildCommand()', () => {
   [
@@ -13,7 +13,7 @@ describe('helpers.buildCommand()', () => {
     { args: ['echo', '{"foo":"bar"}'], expected: 'echo "{\\"foo\\":\\"bar\\"}"' }
   ].forEach(example => {
     it(`parses \`${example.args.join(' ')}\` as ${example.expected}`, () => {
-      expect(helpers.buildCommand(example.args), 'to equal', example.expected)
+      expect(helpers.buildCommand(example.args)).to.equal(example.expected)
     })
   })
 })

@@ -2,7 +2,7 @@
 /* global describe it beforeEach afterEach context */
 
 const cli = require('heroku-cli-util')
-const expect = require('unexpected')
+const { expect } = require('chai')
 const nock = require('nock')
 const cmd = require('../../..').commands.find(c => c.topic === 'pg' && c.command === 'backups:download')
 const fs = require('fs')
@@ -32,14 +32,14 @@ describe('pg:backups:download', () => {
     })
     it('downloads to latest.dump', () => {
       return cmd.run({ app: 'myapp', args: {}, flags: { output: './tmp/latest.dump' } })
-        .then(() => expect(fs.readFileSync('./tmp/latest.dump', 'utf8'), 'to equal', '{}'))
+        .then(() => expect(fs.readFileSync('./tmp/latest.dump', 'utf8')).to.equal('{}'))
     })
   })
 
   context('with id', () => {
     it('downloads to latest.dump', () => {
       return cmd.run({ app: 'myapp', args: { backup_id: 'b003' }, flags: { output: './tmp/latest.dump' } })
-        .then(() => expect(fs.readFileSync('./tmp/latest.dump', 'utf8'), 'to equal', '{}'))
+        .then(() => expect(fs.readFileSync('./tmp/latest.dump', 'utf8')).to.equal('{}'))
     })
   })
 })

@@ -3,7 +3,7 @@
 
 const cli = require('heroku-cli-util')
 const nock = require('nock')
-const expect = require('unexpected')
+const { expect } = require('chai')
 const proxyquire = require('proxyquire')
 const rimraf = require('rimraf')
 const fs = require('fs-extra')
@@ -43,7 +43,7 @@ describe('keys:add', () => {
 
     return cmd.run({ args: { key: path.join('test', 'fixtures', 'id_rsa.pub') } })
       .then(() => expect(cli.stdout, 'to be empty'))
-      .then(() => expect(cli.stderr, 'to equal', `Uploading ${path.join('.', 'test', 'fixtures', 'id_rsa.pub')} SSH key... done
+      .then(() => expect(cli.stderr).to.equal(`Uploading ${path.join('.', 'test', 'fixtures', 'id_rsa.pub')} SSH key... done
 `))
       .then(() => api.done())
   })
@@ -69,7 +69,7 @@ describe('keys:add', () => {
 
     return cmd.run({ args: {}, flags: { quiet: true } })
       .then(() => expect(cli.stdout, 'to be empty'))
-      .then(() => expect(cli.stderr, 'to equal', `Could not find an existing SSH key at ${path.join('~', '.ssh', 'id_rsa.pub')}
+      .then(() => expect(cli.stderr).to.equal(`Could not find an existing SSH key at ${path.join('~', '.ssh', 'id_rsa.pub')}
 Uploading ${path.join('tmp', 'home', '.ssh', 'id_rsa.pub')} SSH key... done
 `))
       .then(() => api.done())
@@ -90,7 +90,7 @@ Uploading ${path.join('tmp', 'home', '.ssh', 'id_rsa.pub')} SSH key... done
 
     return cmd.run({ args: {}, flags: { quiet: true, yes: true } })
       .then(() => expect(cli.stdout, 'to be empty'))
-      .then(() => expect(cli.stderr, 'to equal', `Could not find an existing SSH key at ${path.join('~', '.ssh', 'id_rsa.pub')}
+      .then(() => expect(cli.stderr).to.equal(`Could not find an existing SSH key at ${path.join('~', '.ssh', 'id_rsa.pub')}
 Uploading ${path.join('tmp', 'home', '.ssh', 'id_rsa.pub')} SSH key... done
 `))
       .then(() => api.done())
@@ -118,7 +118,7 @@ Uploading ${path.join('tmp', 'home', '.ssh', 'id_rsa.pub')} SSH key... done
     return fs.copy('./test/fixtures/id_rsa.pub', home + '/.ssh/id_rsa.pub')
       .then(() => cmd.run({ args: {}, flags: {} }))
       .then(() => expect(cli.stdout, 'to be empty'))
-      .then(() => expect(cli.stderr, 'to equal', `Found an SSH public key at ${path.join('tmp', 'home', '.ssh', 'id_rsa.pub')}
+      .then(() => expect(cli.stderr).to.equal(`Found an SSH public key at ${path.join('tmp', 'home', '.ssh', 'id_rsa.pub')}
 Uploading ${path.join('tmp', 'home', '.ssh/id_rsa.pub')} SSH key... done
 `))
       .then(() => api.done())
@@ -140,7 +140,7 @@ Uploading ${path.join('tmp', 'home', '.ssh/id_rsa.pub')} SSH key... done
     return fs.copy('./test/fixtures/id_rsa.pub', home + '/.ssh/id_rsa.pub')
       .then(() => cmd.run({ args: {}, flags: { yes: true } }))
       .then(() => expect(cli.stdout, 'to be empty'))
-      .then(() => expect(cli.stderr, 'to equal', `Found an SSH public key at ${path.join('tmp', 'home', '.ssh', 'id_rsa.pub')}
+      .then(() => expect(cli.stderr).to.equal(`Found an SSH public key at ${path.join('tmp', 'home', '.ssh', 'id_rsa.pub')}
 Uploading ${path.join('tmp', 'home', '.ssh', 'id_rsa.pub')} SSH key... done
 `))
       .then(() => api.done())
@@ -165,7 +165,7 @@ Uploading ${path.join('tmp', 'home', '.ssh', 'id_rsa.pub')} SSH key... done
       .then(() => fs.copy(path.join('test', 'fixtures', 'id_rsa.pub'), path.join(home, '.ssh', 'id_rsa2.pub')))
       .then(() => cmd.run({ args: {} }))
       .then(() => expect(cli.stdout, 'to be empty'))
-      .then(() => expect(cli.stderr, 'to equal', `Uploading ${path.join('tmp', 'home', '.ssh', 'id_rsa.pub')} SSH key... done
+      .then(() => expect(cli.stderr).to.equal(`Uploading ${path.join('tmp', 'home', '.ssh', 'id_rsa.pub')} SSH key... done
 `))
       .then(() => api.done())
   })

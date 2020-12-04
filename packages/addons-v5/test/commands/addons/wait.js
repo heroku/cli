@@ -1,5 +1,5 @@
 'use strict'
-/* globals describe context it expect beforeEach afterEach */
+/* globals describe context it beforeEach afterEach */
 
 let fixtures = require('../../fixtures')
 let cli = require('heroku-cli-util')
@@ -8,6 +8,7 @@ let cmd = require('../../../commands/addons/wait')
 let _ = require('lodash')
 const lolex = require('lolex')
 const sinon = require('sinon')
+const { expect } = require('chai')
 
 let clock
 const expansionHeaders = { 'Accept-Expansion': 'addon_service,plan' }
@@ -20,7 +21,7 @@ describe('addons:wait', () => {
     cli.exit.mock()
     nock.cleanAll()
     clock = lolex.install()
-    clock.setTimeout = function (fn, timeout) { fn() }
+    clock.setTimeout = function (fn, timeout) { process.nextTick(fn) }
   })
 
   afterEach(() => {
@@ -31,15 +32,15 @@ describe('addons:wait', () => {
   context('waiting for an individual add-on', () => {
     context('when the add-on is provisioned', () => {
       beforeEach(() => {
-        nock('https://api.heroku.com', { reqheaders: expansionHeaders })
+        this.nockExpectation = nock('https://api.heroku.com', { reqheaders: expansionHeaders })
           .post('/actions/addons/resolve', { 'app': null, 'addon': 'www-db' })
           .reply(200, [fixtures.addons['www-db']]) // provisioned
       })
 
       it('prints output indicating that it is done', () => {
         return cmd.run({ flags: {}, args: { addon: 'www-db' } })
-          .then(() => expect(cli.stdout, 'to equal', ''))
-          .then(() => expect(cli.stderr, 'to equal', 'Done! www-db is provisioned'))
+          .then(() => expect(cli.stdout).to.equal(''))
+          .then(() => expect(cli.stderr).to.equal(''))
       })
     })
 
@@ -159,7 +160,7 @@ describe('addons:wait', () => {
           .reply(200, deprovisionedAddon)
         return cmd.run({ flags: {}, args: { addon: 'www-redis' } })
           .then(() => { throw new Error('unreachable') })
-          .catch((err) => expect(err.message, 'to equal', 'The add-on was unable to be created, with status deprovisioned'))
+          .catch((err) => expect(err.message).to.equal('The add-on was unable to be created, with status deprovisioned'))
       })
     })
   })

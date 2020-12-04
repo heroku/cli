@@ -1,7 +1,7 @@
 'use strict'
 
 const cli = require('heroku-cli-util')
-const expect = require('unexpected')
+const { expect } = require('chai')
 const nock = require('nock')
 const cmd = require('../../lib/commands/sessions')
 
@@ -25,7 +25,7 @@ describe('clients', () => {
 
     it('lists the sessions', () => {
       return cmd.run({ flags: {} })
-        .then(() => expect(cli.stdout, 'to equal', 'Session @ 166.176.184.223  f6e8d969-129f-42d2-854b-c2eca9d5a42e\n'))
+        .then(() => expect(cli.stdout).to.equal('Session @ 166.176.184.223  f6e8d969-129f-42d2-854b-c2eca9d5a42e\n'))
     })
 
     it('lists the sessions as json', () => {
@@ -43,7 +43,7 @@ describe('clients', () => {
 
     it('shows no clients message', () => {
       return cmd.run({ flags: {} })
-        .then(() => expect(cli.stdout, 'to equal', 'No OAuth sessions.\n'))
+        .then(() => expect(cli.stdout).to.equal('No OAuth sessions.\n'))
     })
   })
 })

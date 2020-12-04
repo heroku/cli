@@ -29,12 +29,12 @@
   "devDependencies": {
     "@oclif/dev-cli": "^1.21.3",
     "@oclif/plugin-legacy": "^1.1.4",
+    "chai": "^4.2.0",
     "cross-env": "^7.0.2",
     "mocha": "^5.2.0",
     "mocha-junit-reporter": "1.18.0",
     "nock": "10.0.6",
-    "nyc": "^13.2.0",
-    "unexpected": "11.0.1"
+    "nyc": "^13.2.0"
   },
   "files": [
     "oclif.manifest.json",

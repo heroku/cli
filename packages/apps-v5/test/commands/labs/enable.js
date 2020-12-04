@@ -39,7 +39,7 @@ describe('labs:enable', function () {
       .patch('/apps/myapp/features/feature-a', { enabled: true }).reply(200)
     return cmd.run({ app: 'myapp', args: { feature: 'feature-a' } })
       .then(() => expect(cli.stdout, 'to be empty'))
-      .then(() => expect(cli.stderr, 'to equal', 'Disabling feature-a for myapp... done\n'))
+      .then(() => expect(cli.stderr).to.equal('Disabling feature-a for myapp... done\n'))
       .then(() => api.done())
   })
 })

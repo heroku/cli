@@ -2,7 +2,7 @@
 
 const cli = require('heroku-cli-util')
 const cmd = require('../../commands/run')
-const expect = require('unexpected')
+const { expect } = require('chai')
 const StdOutFixture = require('fixture-stdout')
 const assertExit = require('../assert_exit')
 
@@ -15,7 +15,7 @@ describe('run', () => {
     fixture.capture(s => { stdout += s })
     return cmd.run({ app: 'heroku-cli-ci-smoke-test-app', flags: {}, auth: { password: global.apikey }, args: ['echo', '1', '2', '3'] })
       .then(() => fixture.release())
-      .then(() => expect(stdout, 'to contain', '1 2 3\n'))
+      .then(() => expect(stdout).to.contain('1 2 3\n'))
   })
 
   it('runs a command with spaces', () => {
@@ -24,7 +24,7 @@ describe('run', () => {
     fixture.capture(s => { stdout += s })
     return cmd.run({ app: 'heroku-cli-ci-smoke-test-app', flags: {}, auth: { password: global.apikey }, args: ['ruby', '-e', 'puts ARGV[0]', '{"foo": "bar"} '] })
       .then(() => fixture.release())
-      .then(() => expect(stdout, 'to equal', '{"foo": "bar"} \n'))
+      .then(() => expect(stdout).to.equal('{"foo": "bar"} \n'))
   })
 
   it('runs a command with quotes', () => {
@@ -33,7 +33,7 @@ describe('run', () => {
     fixture.capture(s => { stdout += s })
     return cmd.run({ app: 'heroku-cli-ci-smoke-test-app', flags: {}, auth: { password: global.apikey }, args: ['ruby', '-e', 'puts ARGV[0]', '{"foo":"bar"}'] })
       .then(() => fixture.release())
-      .then(() => expect(stdout, 'to equal', '{"foo":"bar"}\n'))
+      .then(() => expect(stdout).to.equal('{"foo":"bar"}\n'))
   })
 
   it('runs a command with env vars', () => {
@@ -42,7 +42,7 @@ describe('run', () => {
     fixture.capture(s => { stdout += s })
     return cmd.run({ app: 'heroku-cli-ci-smoke-test-app', flags: { env: 'FOO=bar' }, auth: { password: global.apikey }, args: ['env'] })
       .then(() => fixture.release())
-      .then(() => expect(stdout, 'to contain', 'FOO=bar'))
+      .then(() => expect(stdout).to.contain('FOO=bar'))
   })
 
   it('gets 127 status for invalid command', () => {

@@ -2,7 +2,7 @@
 /* global describe it before beforeEach afterEach context */
 
 const cli = require('heroku-cli-util')
-const expect = require('unexpected')
+const { expect } = require('chai')
 const nock = require('nock')
 const cmd = require('../../..').commands.find(c => c.topic === 'pg' && c.command === 'backups')
 
@@ -27,7 +27,7 @@ describe('pg:backups', () => {
 
     it('shows empty message', () => {
       return cmd.run({ app: 'myapp', args: [] })
-        .then(() => expect(cli.stdout, 'to equal', `=== Backups
+        .then(() => expect(cli.stdout).to.equal(`=== Backups
 No backups. Capture one with heroku pg:backups:capture
 
 === Restores
@@ -98,7 +98,7 @@ No copies found. Use heroku pg:copy to copy a database to another
 
     it('shows backups', () => {
       return cmd.run({ app: 'myapp', args: [] })
-        .then(() => expect(cli.stdout, 'to equal', `=== Backups
+        .then(() => expect(cli.stdout).to.equal(`=== Backups
 ID    Created at                 Status                               Size    Database
 ────  ─────────────────────────  ───────────────────────────────────  ──────  ────────
 b006  2016-10-08 00:42:54 +0000  Running (processed 1.40KB)           1.40KB  DATABASE
@@ -136,7 +136,7 @@ No copies found. Use heroku pg:copy to copy a database to another
 
     it('shows restore', () => {
       return cmd.run({ app: 'myapp', args: [] })
-        .then(() => expect(cli.stdout, 'to equal', `=== Backups
+        .then(() => expect(cli.stdout).to.equal(`=== Backups
 No backups. Capture one with heroku pg:backups:capture
 
 === Restores
@@ -172,7 +172,7 @@ No copies found. Use heroku pg:copy to copy a database to another
 
     it('shows copy', () => {
       return cmd.run({ app: 'myapp', args: [] })
-        .then(() => expect(cli.stdout, 'to equal', `=== Backups
+        .then(() => expect(cli.stdout).to.equal(`=== Backups
 No backups. Capture one with heroku pg:backups:capture
 
 === Restores
@@ -192,6 +192,6 @@ describe('pg:backups', () => {
   const infoCmd = require('../../..').commands.find((c) => c.topic === 'pg' && c.command === 'backups:info')
 
   it('errors out when subcommand not found', () => {
-    return expect(require('./helpers.js').dup('foobar', infoCmd)({}), 'to be rejected with', 'Unknown pg:backups command: foobar')
+    return expect(require('./helpers.js').dup('foobar', infoCmd)({})).to.be.rejectedWith('Unknown pg:backups command: foobar')
   })
 })

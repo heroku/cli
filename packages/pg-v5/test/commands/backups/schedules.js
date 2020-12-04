@@ -2,7 +2,7 @@
 /* global describe it beforeEach afterEach context */
 
 const cli = require('heroku-cli-util')
-const expect = require('unexpected')
+const { expect } = require('chai')
 const nock = require('nock')
 const cmd = require('../../..').commands.find(c => c.topic === 'pg' && c.command === 'backups:schedules')
 
@@ -23,7 +23,7 @@ const shouldSchedules = function (cmdRun) {
 
   it('shows empty message with no databases', () => {
     api.get('/apps/myapp/addons').reply(200, [])
-    return expect(cmdRun({ app: 'myapp' }), 'to be rejected with', 'No heroku-postgresql databases on myapp')
+    return expect(cmdRun({ app: 'myapp' })).to.be.rejectedWith('No heroku-postgresql databases on myapp')
   })
 
   context('with databases', () => {
@@ -41,17 +41,9 @@ const shouldSchedules = function (cmdRun) {
     it('shows empty message with no schedules', () => {
       pg.get('/client/v11/databases/1/transfer-schedules').reply(200, [])
       return cmd.run({ app: 'myapp' }).then(() => {
-        expect(
-          cli.stderr,
-          'to contain',
-          'No backup schedules found on myapp\n'
-        )
+        expect(cli.stderr).to.contain('No backup schedules found on myapp\n')
 
-        expect(
-          cli.stderr,
-          'to contain',
-          'Use heroku pg:backups:schedule to set one up\n'
-        )
+        expect(cli.stderr).to.contain('Use heroku pg:backups:schedule to set one up\n')
       })
     })
 
@@ -60,9 +52,7 @@ const shouldSchedules = function (cmdRun) {
         { name: 'DATABASE_URL', hour: 5, timezone: 'UTC' }
       ])
       return cmdRun({ app: 'myapp' }).then(() =>
-        expect(
-          cli.stdout,
-          'to equal',
+        expect(cli.stdout).to.equal(
           `=== Backup Schedules
 DATABASE_URL: daily at 5:00 UTC
 `
