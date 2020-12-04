@@ -4,7 +4,7 @@
 const cli = require('heroku-cli-util')
 const nock = require('nock')
 const cmd = require('../../../src/commands/labs/info')
-const expect = require('unexpected')
+const { expect } = require('chai')
 
 describe('labs:info', function () {
   beforeEach(() => cli.mockConsole())
@@ -19,7 +19,7 @@ describe('labs:info', function () {
         doc_url: 'https://devcenter.heroku.com'
       })
     return cmd.run({ args: { feature: 'feature-a' }, flags: {} })
-      .then(() => expect(cli.stdout, 'to equal', `=== feature-a
+      .then(() => expect(cli.stdout).to.equal(`=== feature-a
 Description: a user lab feature
 Docs:        https://devcenter.heroku.com
 Enabled:     true
@@ -54,7 +54,7 @@ Enabled:     true
         doc_url: 'https://devcenter.heroku.com'
       })
     return cmd.run({ app: 'myapp', args: { feature: 'feature-a' }, flags: {} })
-      .then(() => expect(cli.stdout, 'to equal', `=== feature-a
+      .then(() => expect(cli.stdout).to.equal(`=== feature-a
 Description: an app labs feature
 Docs:        https://devcenter.heroku.com
 Enabled:     true

@@ -2,7 +2,7 @@
 /* global describe it beforeEach afterEach context */
 
 const cli = require('heroku-cli-util')
-const expect = require('unexpected')
+const { expect } = require('chai')
 const nock = require('nock')
 const cmd = require('../../..').commands.find(c => c.topic === 'pg' && c.command === 'backups:cancel')
 
@@ -29,7 +29,7 @@ const shouldCancel = function (cmdRun) {
 
     it('cancels backup', () => {
       return cmdRun({ app: 'myapp', args: {} })
-        .then(() => expect(cli.stderr, 'to equal', 'Cancelling b003... done\n'))
+        .then(() => expect(cli.stderr).to.equal('Cancelling b003... done\n'))
     })
   })
 
@@ -42,7 +42,7 @@ const shouldCancel = function (cmdRun) {
 
     it('cancels backup', () => {
       return cmdRun({ app: 'myapp', args: { backup_id: 'b003' } })
-        .then(() => expect(cli.stderr, 'to equal', 'Cancelling b003... done\n'))
+        .then(() => expect(cli.stderr).to.equal('Cancelling b003... done\n'))
     })
   })
 }

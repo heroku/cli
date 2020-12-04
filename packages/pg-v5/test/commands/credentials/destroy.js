@@ -2,7 +2,7 @@
 /* global describe it beforeEach afterEach */
 
 const cli = require('heroku-cli-util')
-const expect = require('unexpected')
+const { expect } = require('chai')
 const nock = require('nock')
 const proxyquire = require('proxyquire')
 
@@ -55,8 +55,8 @@ describe('pg:credentials:destroy', () => {
     ]
     api.get('/addons/postgres-1/addon-attachments').reply(200, attachments)
     return cmd.run({ app: 'myapp', args: {}, flags: { name: 'credname', confirm: 'myapp' } })
-      .then(() => expect(cli.stderr, 'to equal', 'Destroying credential credname... done\n'))
-      .then(() => expect(cli.stdout, 'to equal', `The credential has been destroyed within postgres-1.
+      .then(() => expect(cli.stderr).to.equal('Destroying credential credname... done\n'))
+      .then(() => expect(cli.stdout).to.equal(`The credential has been destroyed within postgres-1.
 Database objects owned by credname will be assigned to the default credential.
 `))
   })
@@ -78,8 +78,8 @@ Database objects owned by credname will be assigned to the default credential.
       '../../lib/fetcher': fetcher
     })
 
-    const err = new Error(`Only one default credential is supported for Hobby tier databases.`)
-    return expect(cmd.run({ app: 'myapp', args: {}, flags: { name: 'jeff' } }), 'to be rejected with', err)
+    const err = `Only one default credential is supported for Hobby tier databases.`
+    return expect(cmd.run({ app: 'myapp', args: {}, flags: { name: 'jeff' } })).to.be.rejectedWith(Error, err)
   })
 
   it('throws an error when the credential is still used for an attachment', () => {
@@ -98,8 +98,8 @@ Database objects owned by credname will be assigned to the default credential.
     ]
     api.get('/addons/postgres-1/addon-attachments').reply(200, attachments)
 
-    const err = new Error('Credential jeff must be detached from the app otherapp before destroying.')
-    return expect(cmd.run({ app: 'myapp', args: {}, flags: { name: 'jeff' } }), 'to be rejected with', err)
+    const err = 'Credential jeff must be detached from the app otherapp before destroying.'
+    return expect(cmd.run({ app: 'myapp', args: {}, flags: { name: 'jeff' } })).to.be.rejectedWith(Error, err)
   })
 
   it('only mentions an app with multiple attachments once', () => {
@@ -130,7 +130,7 @@ Database objects owned by credname will be assigned to the default credential.
     ]
     api.get('/addons/postgres-1/addon-attachments').reply(200, attachments)
 
-    const err = new Error('Credential jeff must be detached from the apps otherapp, yetanotherapp before destroying.')
-    return expect(cmd.run({ app: 'myapp', args: {}, flags: { name: 'jeff' } }), 'to be rejected with', err)
+    const err = 'Credential jeff must be detached from the apps otherapp, yetanotherapp before destroying.'
+    return expect(cmd.run({ app: 'myapp', args: {}, flags: { name: 'jeff' } })).to.be.rejectedWith(Error, err)
   })
 })

@@ -2,7 +2,7 @@
 /* global describe it beforeEach afterEach */
 
 const cli = require('heroku-cli-util')
-const expect = require('unexpected')
+const { expect } = require('chai')
 const nock = require('nock')
 const proxyquire = require('proxyquire')
 
@@ -40,6 +40,6 @@ describe('pg:settings', () => {
     pg.get('/postgres/v0/databases/1/config').reply(200,
       { log_statement: { value: 'none' } })
     return cmd.run({ app: 'myapp', args: {}, flags: {} })
-      .then(() => expect(cli.stdout, 'to equal', '=== postgres-1\nlog-statement: none\n'))
+      .then(() => expect(cli.stdout).to.equal('=== postgres-1\nlog-statement: none\n'))
   })
 })

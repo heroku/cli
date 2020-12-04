@@ -2,7 +2,7 @@
 /* global describe it beforeEach afterEach */
 
 const cli = require('heroku-cli-util')
-const expect = require('unexpected')
+const { expect } = require('chai')
 const nock = require('nock')
 const proxyquire = require('proxyquire')
 const uuid = require('uuid')
@@ -111,7 +111,7 @@ describe('pg:diagnose', () => {
         metrics: []
       }).reply(200, report)
       return cmd.run({ app: app.name, args: {} })
-        .then(() => expect(cli.stdout, 'to equal', `Report ${reportID} for ${app.name}::${report.database}
+        .then(() => expect(cli.stdout).to.equal(`Report ${reportID} for ${app.name}::${report.database}
 available for one month after creation on 101
 
 RED: Connection count
@@ -149,7 +149,7 @@ Load 100
         }
         diagnose.get(`/reports/${reportID}`).reply(200, report)
         return cmd.run({ app: app.name, args: { 'DATABASE|REPORT_ID': reportID } })
-          .then(() => expect(cli.stdout, 'to equal', `Report ${reportID} for ${app.name}::${report.database}
+          .then(() => expect(cli.stdout).to.equal(`Report ${reportID} for ${app.name}::${report.database}
 available for one month after creation on 101
 
 RED: Connection count
@@ -200,7 +200,7 @@ Load 100
           metrics: []
         }).reply(200, report)
         return cmd.run({ app: 'myapp', args: { 'DATABASE|REPORT_ID': 'HEROKU_POSTGRESQL_SILVER_URL' } })
-          .then(() => expect(cli.stdout, 'to equal', `Report ${reportID} for ${app.name}::${report.database}
+          .then(() => expect(cli.stdout).to.equal(`Report ${reportID} for ${app.name}::${report.database}
 available for one month after creation on 101
 
 RED: Connection count
@@ -233,7 +233,7 @@ Load 100
         ]
       })
       return cmd.run({ app: 'myapp', args: { 'DATABASE|REPORT_ID': '697c8bd7-dbba-4f2d-83b6-789c58cc3a9c' } })
-        .then(() => expect(cli.stdout, 'to equal', `Report 697c8bd7-dbba-4f2d-83b6-789c58cc3a9c for myapp::postgres-1
+        .then(() => expect(cli.stdout).to.equal(`Report 697c8bd7-dbba-4f2d-83b6-789c58cc3a9c for myapp::postgres-1
 available for one month after creation on 101
 
 RED: Connection count
@@ -268,7 +268,7 @@ RED: Load
         ]
       })
       return cmd.run({ app: 'myapp', args: { 'DATABASE|REPORT_ID': '697c8bd7-dbba-4f2d-83b6-789c58cc3a9c' } })
-        .then(() => expect(cli.stdout, 'to equal', `Report abc123 for appname::dbcolor
+        .then(() => expect(cli.stdout).to.equal(`Report abc123 for appname::dbcolor
 available for one month after creation on 2014-06-24 01:26:11.941197+00
 
 RED: Connection Count
@@ -303,7 +303,7 @@ Error Load check not supported on this plan
         ]
       })
       return cmd.run({ app: 'myapp', args: { 'DATABASE|REPORT_ID': '697c8bd7-dbba-4f2d-83b6-789c58cc3a9c' } })
-        .then(() => expect(cli.stdout, 'to equal', `Report abc123 for appname::dbcolor
+        .then(() => expect(cli.stdout).to.equal(`Report abc123 for appname::dbcolor
 available for one month after creation on 2014-06-24 01:26:11.941197+00
 
 SKIPPED: Load

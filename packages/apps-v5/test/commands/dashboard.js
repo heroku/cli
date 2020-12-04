@@ -4,7 +4,7 @@
 const cli = require('heroku-cli-util')
 const nock = require('nock')
 const cmd = commands.find((c) => c.topic === 'dashboard')
-const expect = require('unexpected')
+const { expect } = require('chai')
 const time = require('../../src/time')
 const unwrap = require('../unwrap')
 

@@ -2,7 +2,7 @@
 /* global describe it beforeEach afterEach */
 
 const cli = require('heroku-cli-util')
-const expect = require('unexpected')
+const { expect } = require('chai')
 const nock = require('nock')
 const proxyquire = require('proxyquire')
 
@@ -120,9 +120,7 @@ ransom                                                                         a
 `
 
     return cmd.run({ app: 'myapp', args: {}, flags: { name: 'jeff' } })
-      .then(() => expect(cli.stdout,
-        'to equal',
-        displayed))
+      .then(() => expect(cli.stdout).to.equal(displayed))
   })
 
   it('shows the correct rotation information if no connection information is available yet', () => {
@@ -195,8 +193,6 @@ ransom                                                active
 `
 
     return cmd.run({ app: 'myapp', args: {}, flags: { name: 'jeff' } })
-      .then(() => expect(cli.stdout,
-        'to equal',
-        displayed))
+      .then(() => expect(cli.stdout).to.equal(displayed))
   })
 })

@@ -2,7 +2,7 @@
 /* global describe it beforeEach afterEach */
 
 const cli = require('heroku-cli-util')
-const expect = require('unexpected')
+const { expect } = require('chai')
 const nock = require('nock')
 const proxyquire = require('proxyquire')
 
@@ -36,7 +36,7 @@ describe('pg:killall', () => {
       .post('/client/v11/databases/1/connection_reset').reply(200)
 
     return cmd.run({ app: 'myapp', args: {}, flags: {} })
-      .then(() => expect(cli.stdout, 'to equal', ''))
-      .then(() => expect(cli.stderr, 'to equal', 'Terminating connections for all credentials... done\n'))
+      .then(() => expect(cli.stdout).to.equal(''))
+      .then(() => expect(cli.stderr).to.equal('Terminating connections for all credentials... done\n'))
   })
 })

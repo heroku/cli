@@ -2,7 +2,7 @@
 /* global describe it beforeEach afterEach */
 
 const cli = require('heroku-cli-util')
-const expect = require('unexpected')
+const { expect } = require('chai')
 const nock = require('nock')
 const proxyquire = require('proxyquire')
 
@@ -41,17 +41,15 @@ describe('pg:repoint', () => {
   it('refuses to repoint hobby dbs', () => {
     addon.plan = { name: 'heroku-postgresql:hobby-dev' }
 
-    return expect(cmd.run({ app: 'myapp', args: {}, flags: { confirm: 'myapp' } }),
-      'to be rejected with',
-      new Error('pg:repoint is only available for follower production databases'))
+    return expect(cmd.run({ app: 'myapp', args: {}, flags: { confirm: 'myapp' } }))
+      .to.be.rejectedWith(Error, 'pg:repoint is only available for follower production databases')
   })
 
   it('refuses to repoint non-follower dbs', () => {
     pg.get('/client/v11/databases/1').reply(200, { forked_from: 'postgres://db1' })
 
-    return expect(cmd.run({ app: 'myapp', args: {}, flags: { confirm: 'myapp' } }),
-      'to be rejected with',
-      new Error('pg:repoint is only available for follower production databases'))
+    return expect(cmd.run({ app: 'myapp', args: {}, flags: { confirm: 'myapp' } }))
+      .to.be.rejectedWith(Error, 'pg:repoint is only available for follower production databases')
   })
 
   it('repoints db', () => {
@@ -59,6 +57,6 @@ describe('pg:repoint', () => {
     pg.get('/client/v11/databases/1').reply(200, { following: 'postgres://db1' })
     pg.post('/client/v11/databases/1/repoint').reply(200)
     return cmd.run({ app: 'myapp', args: {}, flags: { confirm: 'myapp', follow: 'NEW_LEADER' } })
-      .then(() => expect(cli.stderr, 'to contain', 'Starting repoint of postgres-1... heroku pg:wait to track status\n'))
+      .then(() => expect(cli.stderr).to.contain('Starting repoint of postgres-1... heroku pg:wait to track status\n'))
   })
 })

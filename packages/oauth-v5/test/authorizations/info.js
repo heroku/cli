@@ -2,7 +2,7 @@
 
 const cli = require('heroku-cli-util')
 const nock = require('nock')
-const expect = require('unexpected')
+const { expect } = require('chai')
 const cmd = require('../../lib/commands/authorizations/info')
 
 const distanceInWordsToNow = require('date-fns/distance_in_words_to_now')
@@ -29,7 +29,7 @@ describe('authorizations:info', () => {
         updated_at: new Date(0)
       })
     return cmd.run({ args: { id: '10' }, flags: {} })
-      .then(() => expect(cli.stdout, 'to equal', `Client:      <none>
+      .then(() => expect(cli.stdout).to.equal(`Client:      <none>
 ID:          10
 Description: desc
 Scope:       global
@@ -61,6 +61,6 @@ Updated at:  ${new Date(0)} (${distanceInWordsToNow(new Date(0))} ago)
         access_token: { token: 'secrettoken', expires_in: 100000 }
       })
     return cmd.run({ args: { id: '10' }, flags: {} })
-      .then(() => expect(cli.stdout, 'to contain', '(in 1 day)'))
+      .then(() => expect(cli.stdout).to.contain('(in 1 day)'))
   })
 })

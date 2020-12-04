@@ -2,7 +2,7 @@
 /* globals commands it describe beforeEach afterEach cli nock */
 
 const cmd = commands.find((c) => c.topic === 'addons' && c.command === 'destroy')
-const expect = require('unexpected')
+const { expect } = require('chai')
 
 describe('addons:destroy', () => {
   beforeEach(() => cli.mockConsole())
@@ -17,8 +17,8 @@ describe('addons:destroy', () => {
       .reply(200, { plan: { price: { cents: 0 } }, provision_message: 'provision msg' })
 
     return cmd.run({ app: 'myapp', args: ['heroku-db3'], flags: { confirm: 'myapp' } })
-      .then(() => expect(cli.stdout, 'to equal', ''))
-      .then(() => expect(cli.stderr, 'to equal', 'Destroying db3-swiftly-123 on myapp... done\n'))
+      .then(() => expect(cli.stdout).to.equal(''))
+      .then(() => expect(cli.stderr).to.equal('Destroying db3-swiftly-123 on myapp... done\n'))
       .then(() => api.done())
   })
 
@@ -32,7 +32,7 @@ describe('addons:destroy', () => {
       .then(() => { throw new Error('unreachable') })
       .catch((err) => {
         api.done()
-        expect(err.message, 'to equal', 'db4-swiftly-123 is on myotherapp not myapp')
+        expect(err.message).to.equal('db4-swiftly-123 is on myotherapp not myapp')
       })
   })
 })

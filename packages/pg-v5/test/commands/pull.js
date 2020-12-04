@@ -5,7 +5,7 @@
 const cli = require('heroku-cli-util')
 const sinon = require('sinon')
 const proxyquire = require('proxyquire')
-const expect = require('unexpected')
+const { expect } = require('chai')
 
 const env = process.env
 let db
@@ -125,9 +125,9 @@ describe('pg', () => {
       })
 
       return push.run({ args: { source: 'localdb', target: 'postgres-1' }, flags: {} })
-        .then(() => expect(spawnStub.callCount, 'to equal', 2))
-        .then(() => expect(cli.stdout, 'to equal', 'heroku-cli: Pushing localdb ---> postgres-1\nheroku-cli: Pushing complete.\n'))
-        .then(() => expect(cli.stderr, 'to equal', ''))
+        .then(() => expect(spawnStub.callCount).to.equal(2))
+        .then(() => expect(cli.stdout).to.equal('heroku-cli: Pushing localdb ---> postgres-1\nheroku-cli: Pushing complete.\n'))
+        .then(() => expect(cli.stderr).to.equal(''))
     })
 
     it('pushes out a db using url port', () => {
@@ -148,9 +148,9 @@ describe('pg', () => {
       })
 
       return push.run({ args: { source: 'postgres://localhost:5433/localdb', target: 'postgres-1' }, flags: {} })
-        .then(() => expect(spawnStub.callCount, 'to equal', 2))
-        .then(() => expect(cli.stdout, 'to equal', 'heroku-cli: Pushing postgres://localhost:5433/localdb ---> postgres-1\nheroku-cli: Pushing complete.\n'))
-        .then(() => expect(cli.stderr, 'to equal', ''))
+        .then(() => expect(spawnStub.callCount).to.equal(2))
+        .then(() => expect(cli.stdout).to.equal('heroku-cli: Pushing postgres://localhost:5433/localdb ---> postgres-1\nheroku-cli: Pushing complete.\n'))
+        .then(() => expect(cli.stderr).to.equal(''))
     })
 
     it('pushes out a db using PGPORT', () => {
@@ -174,9 +174,9 @@ describe('pg', () => {
       })
 
       return push.run({ args: { source: 'localdb', target: 'postgres-1' }, flags: {} })
-        .then(() => expect(spawnStub.callCount, 'to equal', 2))
-        .then(() => expect(cli.stdout, 'to equal', 'heroku-cli: Pushing localdb ---> postgres-1\nheroku-cli: Pushing complete.\n'))
-        .then(() => expect(cli.stderr, 'to equal', ''))
+        .then(() => expect(spawnStub.callCount).to.equal(2))
+        .then(() => expect(cli.stdout).to.equal('heroku-cli: Pushing localdb ---> postgres-1\nheroku-cli: Pushing complete.\n'))
+        .then(() => expect(cli.stderr).to.equal(''))
     })
 
     it('opens an SSH tunnel and runs pg_dump for bastion databases', () => {
@@ -210,10 +210,10 @@ describe('pg', () => {
       })
 
       return push.run({ args: { source: 'localdb', target: 'postgres-1' }, flags: {} })
-        .then(() => expect(spawnStub.callCount, 'to equal', 2))
-        .then(() => expect(cli.stdout, 'to equal', 'heroku-cli: Pushing localdb ---> postgres-1\nheroku-cli: Pushing complete.\n'))
-        .then(() => expect(cli.stderr, 'to equal', ''))
-        .then(() => expect(tunnelStub.withArgs(tunnelConf).calledOnce, 'to equal', true))
+        .then(() => expect(spawnStub.callCount).to.equal(2))
+        .then(() => expect(cli.stdout).to.equal('heroku-cli: Pushing localdb ---> postgres-1\nheroku-cli: Pushing complete.\n'))
+        .then(() => expect(cli.stderr).to.equal(''))
+        .then(() => expect(tunnelStub.withArgs(tunnelConf).calledOnce).to.equal(true))
     })
 
     it('exits non-zero when there is an error', () => {
@@ -236,10 +236,10 @@ describe('pg', () => {
 
       return push.run({ args: { source: 'localdb', target: 'postgres-1' }, flags: {} })
         .catch((error) => {
-          expect(error.message, 'to equal', 'pg_dump errored with 1')
-          expect(spawnStub.callCount, 'to equal', 2)
-          expect(cli.stdout, 'to equal', 'heroku-cli: Pushing localdb ---> postgres-1\n')
-          expect(cli.stderr, 'to equal', '')
+          expect(error.message).to.equal('pg_dump errored with 1')
+          expect(spawnStub.callCount).to.equal(2)
+          expect(cli.stdout).to.equal('heroku-cli: Pushing localdb ---> postgres-1\n')
+          expect(cli.stderr).to.equal('')
         })
     })
   })
@@ -297,11 +297,11 @@ describe('pg', () => {
 
     it('pulls a db in', () => {
       return pull.run({ args: { source: 'postgres-1', target: 'localdb' }, flags: {} })
-        .then(() => expect(createDbStub.calledOnce, 'to equal', true))
-        .then(() => expect(createDbStub.calledWithExactly('createdb localdb', { stdio: 'inherit' }), 'to equal', true))
-        .then(() => expect(spawnStub.callCount, 'to equal', 2))
-        .then(() => expect(cli.stdout, 'to equal', 'heroku-cli: Pulling postgres-1 ---> localdb\nheroku-cli: Pulling complete.\n'))
-        .then(() => expect(cli.stderr, 'to equal', ''))
+        .then(() => expect(createDbStub.calledOnce).to.equal(true))
+        .then(() => expect(createDbStub.calledWithExactly('createdb localdb', { stdio: 'inherit' })).to.equal(true))
+        .then(() => expect(spawnStub.callCount).to.equal(2))
+        .then(() => expect(cli.stdout).to.equal('heroku-cli: Pulling postgres-1 ---> localdb\nheroku-cli: Pulling complete.\n'))
+        .then(() => expect(cli.stderr).to.equal(''))
     })
 
     it('opens an SSH tunnel and runs pg_dump for bastion databases', () => {
@@ -319,12 +319,12 @@ describe('pg', () => {
       }
 
       return pull.run({ args: { source: 'postgres-1', target: 'localdb' }, flags: {} })
-        .then(() => expect(createDbStub.calledOnce, 'to equal', true))
-        .then(() => expect(createDbStub.calledWithExactly('createdb localdb', { stdio: 'inherit' }), 'to equal', true))
-        .then(() => expect(spawnStub.callCount, 'to equal', 2))
-        .then(() => expect(cli.stdout, 'to equal', 'heroku-cli: Pulling postgres-1 ---> localdb\nheroku-cli: Pulling complete.\n'))
-        .then(() => expect(cli.stderr, 'to equal', ''))
-        .then(() => expect(tunnelStub.withArgs(tunnelConf).calledOnce, 'to equal', true))
+        .then(() => expect(createDbStub.calledOnce).to.equal(true))
+        .then(() => expect(createDbStub.calledWithExactly('createdb localdb', { stdio: 'inherit' })).to.equal(true))
+        .then(() => expect(spawnStub.callCount).to.equal(2))
+        .then(() => expect(cli.stdout).to.equal('heroku-cli: Pulling postgres-1 ---> localdb\nheroku-cli: Pulling complete.\n'))
+        .then(() => expect(cli.stderr).to.equal(''))
+        .then(() => expect(tunnelStub.withArgs(tunnelConf).calledOnce).to.equal(true))
     })
   })
 })

@@ -1,8 +1,7 @@
 'use strict'
-/* global describe it beforeEach afterEach */
 
 const cli = require('heroku-cli-util')
-const expect = require('unexpected')
+const { expect } = require('chai')
 const nock = require('nock')
 const proxyquire = require('proxyquire')
 const { stdout } = require('stdout-stderr')
@@ -14,13 +13,13 @@ const fetcher = () => {
   }
 }
 
-const FAKE_OUTPUT_TEXT = `
+const FAKE_OUTPUT_TEXT = removeEmptyLines(`
 pid  | state  | source  | username | running_for | transaction_start | waiting | query
 -------+--------+---------+----------+-------------+-------------------+---------+-------
  17496 | active | standby | postgres |             |                   | t       |
 (1 row)
 
-`
+`)
 
 const psql = {
   exec: function (db, query) {
@@ -51,7 +50,7 @@ describe('pg:ps', () => {
 
   it('runs query', async () => {
     await cmd.run({ app: 'myapp', args: {}, flags: {} })
-    expect(removeEmptyLines(psql._query.trim()), 'to equal', removeEmptyLines(`SELECT
+    expect(removeEmptyLines(psql._query.trim())).to.equal(removeEmptyLines(`SELECT
  pid,
  state,
  application_name AS source,
@@ -67,12 +66,12 @@ WHERE
  AND pid <> pg_backend_pid()
  ORDER BY query_start DESC`))
 
-    expect(stdout.output, 'to equal', FAKE_OUTPUT_TEXT)
+    expect(removeEmptyLines(stdout.output)).to.equal(FAKE_OUTPUT_TEXT)
   })
 
   it('runs verbose query', async () => {
     await cmd.run({ app: 'myapp', args: {}, flags: { verbose: true } })
-    expect(removeEmptyLines(psql._query.trim()), 'to equal', removeEmptyLines(`SELECT
+    expect(removeEmptyLines(psql._query.trim())).to.equal(removeEmptyLines(`SELECT
  pid,
  state,
  application_name AS source,
@@ -87,7 +86,7 @@ WHERE
  AND pid <> pg_backend_pid()
  ORDER BY query_start DESC`))
 
-    expect(stdout.output, 'to equal', FAKE_OUTPUT_TEXT)
+    expect(removeEmptyLines(stdout.output)).to.equal(FAKE_OUTPUT_TEXT)
   })
 })
 

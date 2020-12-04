@@ -4,7 +4,7 @@
 const cli = require('heroku-cli-util')
 const nock = require('nock')
 const cmd = commands.find((c) => c.topic === 'stack' && !c.command)
-const expect = require('unexpected')
+const { expect } = require('chai')
 
 describe('stack', () => {
   beforeEach(() => cli.mockConsole())
@@ -23,7 +23,7 @@ describe('stack', () => {
         { name: 'cedar-14' }
       ])
     return cmd.run({ app: 'myapp', flags: {} })
-      .then(() => expect(cli.stdout, 'to equal', `=== myapp Available Stacks
+      .then(() => expect(cli.stdout).to.equal(`=== myapp Available Stacks
   cedar-10
 * cedar-14
 `))
@@ -44,7 +44,7 @@ describe('stack', () => {
         { name: 'cedar-14' }
       ])
     return cmd.run({ app: 'myapp', flags: {} })
-      .then(() => expect(cli.stdout, 'to equal', `=== myapp Available Stacks
+      .then(() => expect(cli.stdout).to.equal(`=== myapp Available Stacks
   cedar-10 (active on next deploy)
 * cedar-14
 `))

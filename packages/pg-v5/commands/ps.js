@@ -29,24 +29,23 @@ SELECT '${num}' || '${num}' WHERE EXISTS (
     : 'wait_event IS NOT NULL AS waiting'
   let query = `
 SELECT
- pid,
- state,
- application_name AS source,
- usename AS username,
- age(now(),xact_start) AS running_for,
- xact_start AS transaction_start,
- ${waiting},
- query
+  pid,
+  state,
+  application_name AS source,
+  usename AS username,
+  age(now(),xact_start) AS running_for,
+  xact_start AS transaction_start,
+  ${waiting},
+  query
 FROM pg_stat_activity
 WHERE
- query <> '<insufficient privilege>'
- ${verbose ? '' : "AND state <> 'idle'"}
- AND pid <> pg_backend_pid()
- ORDER BY query_start DESC
-`
+  query <> '<insufficient privilege>'
+  ${verbose ? '' : "AND state <> 'idle'"}
+  AND pid <> pg_backend_pid()
+  ORDER BY query_start DESC
+  `
 
-  let output = yield psql.exec(db, query)
-  process.stdout.write(output)
+  yield psql.exec(db, query)
 }
 
 module.exports = {

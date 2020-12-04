@@ -2,7 +2,7 @@
 /* global describe it afterEach */
 
 const cli = require('heroku-cli-util')
-const expect = require('unexpected')
+const { expect } = require('chai')
 const nock = require('nock')
 
 const addon = { id: 1, name: 'postgres-1', plan: { name: 'heroku-postgresql:standard-0' }, app: { name: 'myapp' } }
@@ -54,7 +54,7 @@ const shouldCapture = function (cmdRun) {
     cli.mockConsole()
 
     return cmdRun({ app: 'myapp', args: {}, flags: {} })
-      .then(() => expect(cli.stdout, 'to equal', `
+      .then(() => expect(cli.stdout).to.equal(`
 Use Ctrl-C at any time to stop monitoring progress; the backup will continue running.
 Use heroku pg:backups:info to check progress.
 Stop a running backup with heroku pg:backups:cancel.
@@ -93,7 +93,7 @@ Stop a running backup with heroku pg:backups:cancel.
     cli.mockConsole()
 
     return cmdRun({ app: 'myapp', args: {}, flags: { verbose: true } })
-      .then(() => expect(cli.stdout, 'to equal', `
+      .then(() => expect(cli.stdout).to.equal(`
 Use Ctrl-C at any time to stop monitoring progress; the backup will continue running.
 Use heroku pg:backups:info to check progress.
 Stop a running backup with heroku pg:backups:cancel.
@@ -134,7 +134,7 @@ Backing up DATABASE to b005...
     cli.mockConsole()
 
     return cmdRun({ app: 'myapp', args: {}, flags: { verbose: true } })
-      .then(() => expect(cli.stdout, 'to equal', `
+      .then(() => expect(cli.stdout).to.equal(`
 Use Ctrl-C at any time to stop monitoring progress; the backup will continue running.
 Use heroku pg:backups:info to check progress.
 Stop a running backup with heroku pg:backups:cancel.
@@ -164,7 +164,7 @@ Backing up DATABASE to b005...
     cli.mockConsole()
 
     return cmdRun({ app: 'myapp', args: {}, flags: { snapshot: true } })
-      .then(() => expect(cli.stderr, 'to equal', `Taking snapshot of postgres-1... done
+      .then(() => expect(cli.stderr).to.equal(`Taking snapshot of postgres-1... done
 `))
   })
 }

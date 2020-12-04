@@ -2,7 +2,7 @@
 /* global describe it beforeEach afterEach */
 
 const cli = require('heroku-cli-util')
-const expect = require('unexpected')
+const { expect } = require('chai')
 const nock = require('nock')
 const proxyquire = require('proxyquire')
 const unwrap = require('../unwrap')
@@ -42,8 +42,8 @@ describe('pg:wait', () => {
       .get('/client/v11/databases/1/wait_status').reply(200, { 'waiting?': false, message: 'available' })
 
     return cmd.run({ app: 'myapp', args: { database: 'DATABASE_URL' }, flags: { 'wait-interval': '1' } })
-      .then(() => expect(cli.stdout, 'to equal', ''))
-      .then(() => expect(cli.stderr, 'to equal', `Waiting for database postgres-1... pending
+      .then(() => expect(cli.stdout).to.equal(''))
+      .then(() => expect(cli.stderr).to.equal(`Waiting for database postgres-1... pending
 Waiting for database postgres-1... available
 `))
   })
@@ -54,8 +54,8 @@ Waiting for database postgres-1... available
       .get('/client/v11/databases/2/wait_status').reply(200, { 'waiting?': false })
 
     return cmd.run({ app: 'myapp', args: {}, flags: {} })
-      .then(() => expect(cli.stdout, 'to equal', ''))
-      .then(() => expect(cli.stderr, 'to equal', ''))
+      .then(() => expect(cli.stdout).to.equal(''))
+      .then(() => expect(cli.stderr).to.equal(''))
   })
 
   it('displays errors', () => {
@@ -65,8 +65,8 @@ Waiting for database postgres-1... available
     return cmd.run({ app: 'myapp', args: {}, flags: {} })
       .catch(err => {
         if (err.code !== 1) throw err
-        expect(cli.stdout, 'to equal', '')
-        expect(unwrap(cli.stderr), 'to equal', 'this is an error message\n')
+        expect(cli.stdout).to.equal('')
+        expect(unwrap(cli.stderr)).to.equal('this is an error message\n')
       })
   })
 })

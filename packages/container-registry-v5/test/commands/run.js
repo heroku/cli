@@ -3,7 +3,7 @@
 
 const cli = require('heroku-cli-util')
 const cmd = require('../..').commands.find(c => c.topic === 'container' && c.command === 'run')
-const expect = require('unexpected')
+const { expect } = require('chai')
 const sinon = require('sinon')
 
 const Sanbashi = require('../../lib/sanbashi')
@@ -22,8 +22,8 @@ describe('container run', () => {
 
     return cmd.run({ app: 'testapp', args: [], flags: {} })
       .then(() => expect(cli.stdout, 'to be empty'))
-      .then(() => expect(cli.stderr, 'to contain', 'Requires one process type'))
-      .then(() => expect(process.exit.calledWith(1), 'to equal', true))
+      .then(() => expect(cli.stderr).to.contain('Requires one process type'))
+      .then(() => expect(process.exit.calledWith(1)).to.equal(true))
   })
 
   it('runs a container', () => {
@@ -33,7 +33,7 @@ describe('container run', () => {
       .withArgs('registry.heroku.com/testapp/web', [])
 
     return cmd.run({ app: 'testapp', args: ['web'], flags: {} })
-      .then(() => expect(cli.stdout, 'to contain', 'Running registry.heroku.com/testapp/web'))
+      .then(() => expect(cli.stdout).to.contain('Running registry.heroku.com/testapp/web'))
       .then(() => expect(cli.stderr, 'to be empty'))
       .then(() => sandbox.assert.calledOnce(dockerfiles))
       .then(() => sandbox.assert.calledOnce(run))
@@ -46,7 +46,7 @@ describe('container run', () => {
       .withArgs('registry.heroku.com/testapp/web', ['bash'])
 
     return cmd.run({ app: 'testapp', args: ['web', 'bash'], flags: {} })
-      .then(() => expect(cli.stdout, 'to contain', 'Running \'bash\' on registry.heroku.com/testapp/web'))
+      .then(() => expect(cli.stdout).to.contain('Running \'bash\' on registry.heroku.com/testapp/web'))
       .then(() => expect(cli.stderr, 'to be empty'))
       .then(() => sandbox.assert.calledOnce(dockerfiles))
       .then(() => sandbox.assert.calledOnce(run))
@@ -58,7 +58,7 @@ describe('container run', () => {
 
     return cmd.run({ app: 'testapp', args: ['worker'], flags: {} })
       .then(() => expect(cli.stdout, 'to be empty'))
-      .then(() => expect(cli.stderr, 'to contain', 'No images to run'))
+      .then(() => expect(cli.stderr).to.contain('No images to run'))
       .then(() => sandbox.assert.calledOnce(dockerfiles))
   })
 })

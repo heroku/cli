@@ -4,7 +4,7 @@
 const nock = require('nock')
 const cli = require('heroku-cli-util')
 const cmd = commands.find((c) => c.topic === 'keys' && !c.command)
-const expect = require('unexpected')
+const { expect } = require('chai')
 const unwrap = require('../../unwrap')
 
 describe('heroku keys', () => {
@@ -16,7 +16,7 @@ describe('heroku keys', () => {
       .get('/account/keys').reply(200, [])
     return cmd.run({ flags: {} })
       .then(() => expect(cli.stdout, 'to be empty'))
-      .then(() => expect(unwrap(cli.stderr), 'to equal', 'You have no SSH keys.\n'))
+      .then(() => expect(unwrap(cli.stderr)).to.equal('You have no SSH keys.\n'))
       .then(() => api.done())
   })
 
@@ -27,7 +27,7 @@ describe('heroku keys', () => {
         { email: 'user@example.com', public_key: 'ssh-rsa AAAAB3NzxCXXXXXXXXXXXXXXXXXXXV7iHuYrZxd user@machine' }
       ])
     return cmd.run({ flags: {} })
-      .then(() => expect(cli.stdout, 'to equal', `=== user@example.com keys
+      .then(() => expect(cli.stdout).to.equal(`=== user@example.com keys
 ssh-rsa AAAAB3NzxC...V7iHuYrZxd user@machine
 `))
       .then(() => expect(cli.stderr, 'to be empty'))
@@ -53,7 +53,7 @@ ssh-rsa AAAAB3NzxC...V7iHuYrZxd user@machine
         { email: 'user@example.com', public_key: 'ssh-rsa AAAAB3NzxCXXXXXXXXXXXXXXXXXXXV7iHuYrZxd user@machine' }
       ])
     return cmd.run({ flags: { long: true } })
-      .then(() => expect(cli.stdout, 'to equal', `=== user@example.com keys
+      .then(() => expect(cli.stdout).to.equal(`=== user@example.com keys
 ssh-rsa AAAAB3NzxCXXXXXXXXXXXXXXXXXXXV7iHuYrZxd user@machine
 `))
       .then(() => expect(cli.stderr, 'to be empty'))

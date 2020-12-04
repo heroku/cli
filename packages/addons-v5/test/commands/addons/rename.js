@@ -5,7 +5,7 @@ let fixtures = require('../../fixtures')
 let util = require('../../util')
 let cli = require('heroku-cli-util')
 let nock = require('nock')
-let expect = require('unexpected')
+const { expect } = require('chai')
 let cmd = require('../../../commands/addons/rename')
 
 describe('addons:rename', () => {
@@ -26,7 +26,7 @@ describe('addons:rename', () => {
         .reply(201, '')
 
       return cmd.run({ flags: {}, args: { addon: redis.name, name: 'cache-redis' } }).then(() => {
-        expect(renameRequest.isDone(), 'to equal', true)
+        expect(renameRequest.isDone()).to.equal(true)
         util.expectOutput(cli.stdout, `${redis.name} successfully renamed to cache-redis.`)
       })
     })

@@ -2,7 +2,7 @@
 
 const cli = require('heroku-cli-util')
 const nock = require('nock')
-const expect = require('unexpected')
+const { expect } = require('chai')
 const cmd = require('../../lib/commands/authorizations/create')
 
 describe('authorizations:create', () => {
@@ -28,6 +28,6 @@ describe('authorizations:create', () => {
 
   it('creates the authorization and just shows the token', () => {
     return cmd.run({ flags: { description: 'awesome', short: true } })
-      .then(() => expect(cli.stdout, 'to equal', 'secrettoken\n'))
+      .then(() => expect(cli.stdout).to.equal('secrettoken\n'))
   })
 })

@@ -2,7 +2,7 @@
 /* globals describe it beforeEach afterEach */
 
 const cli = require('heroku-cli-util')
-const expect = require('unexpected')
+const { expect } = require('chai')
 const nock = require('nock')
 const cmd = require('../../lib/commands/clients/index')
 
@@ -26,7 +26,7 @@ describe('clients', () => {
 
     it('lists the clients', () => {
       return cmd.run({ flags: {} })
-        .then(() => expect(cli.stdout, 'to equal', 'awesome  f6e8d969-129f-42d2-854b-c2eca9d5a42e  https://myapp.com\n'))
+        .then(() => expect(cli.stdout).to.equal('awesome  f6e8d969-129f-42d2-854b-c2eca9d5a42e  https://myapp.com\n'))
     })
 
     it('lists the clients as json', () => {
@@ -44,7 +44,7 @@ describe('clients', () => {
 
     it('shows no clients message', () => {
       return cmd.run({ flags: {} })
-        .then(() => expect(cli.stdout, 'to equal', 'No OAuth clients.\n'))
+        .then(() => expect(cli.stdout).to.equal('No OAuth clients.\n'))
     })
   })
 })

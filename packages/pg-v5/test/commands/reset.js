@@ -2,7 +2,7 @@
 /* global describe it beforeEach afterEach */
 
 const cli = require('heroku-cli-util')
-const expect = require('unexpected')
+const { expect } = require('chai')
 const nock = require('nock')
 const proxyquire = require('proxyquire')
 
@@ -39,6 +39,6 @@ describe('pg:reset', () => {
   it('reset db', () => {
     pg.put('/client/v11/databases/1/reset').reply(200)
     return cmd.run({ app: 'myapp', args: {}, flags: { confirm: 'myapp' } })
-      .then(() => expect(cli.stderr, 'to equal', 'Resetting postgres-1... done\n'))
+      .then(() => expect(cli.stderr).to.equal('Resetting postgres-1... done\n'))
   })
 })
