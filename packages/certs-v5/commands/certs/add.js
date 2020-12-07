@@ -221,7 +221,6 @@ function * configureDomains (context, heroku, meta, cert) {
         return heroku.request({
           method: 'PATCH',
           path: `/apps/${context.app}/domains/${domain}`,
-          headers: { Accept: 'application/vnd.heroku+json; version=3.allow_multiple_sni_endpoints' },
           body: { sni_endpoint: cert.name }
         })
       }))

@@ -89,9 +89,7 @@ export default class DomainsAdd extends Command {
       if (flags.cert) {
         domainCreatePayload.sni_endpoint = flags.cert
       } else {
-        const {body} = await this.heroku.get<Array<Heroku.SniEndpoint>>(`/apps/${flags.app}/sni-endpoints`, {
-          headers: {Accept: 'application/vnd.heroku+json; version=3.allow_multiple_sni_endpoints'},
-        })
+        const {body} = await this.heroku.get<Array<Heroku.SniEndpoint>>(`/apps/${flags.app}/sni-endpoints`)
 
         certs = [...body]
       }
@@ -110,7 +108,6 @@ export default class DomainsAdd extends Command {
 
     try {
       const {body: domain} = await this.heroku.post<Heroku.Domain>(`/apps/${flags.app}/domains`, {
-        headers: {Accept: 'application/vnd.heroku+json; version=3.allow_multiple_sni_endpoints'},
         body: domainCreatePayload,
       })
 

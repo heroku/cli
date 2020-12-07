@@ -25,9 +25,6 @@ export default class DomainsUpdate extends Command {
     try {
       cli.action.start(`Updating ${color.cyan(hostname)} to use ${color.cyan(flags.cert)} certificate`)
       await this.heroku.patch<string>(`/apps/${flags.app}/domains/${hostname}`, {
-        headers: {
-          Accept: 'application/vnd.heroku+json; version=3.allow_multiple_sni_endpoints',
-        },
         body: {sni_endpoint: flags.cert},
       })
     } catch (error) {
