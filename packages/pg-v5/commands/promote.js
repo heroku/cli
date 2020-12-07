@@ -11,7 +11,6 @@ function * run (context, heroku) {
   const attachment = yield fetcher.attachment(app, args.database)
 
   let current
-  let current_pgbouncer
   let attachments
 
   yield cli.action(`Ensuring an alternate alias for existing ${cli.color.configVar('DATABASE_URL')}`, co(function * () {
@@ -83,13 +82,11 @@ function * run (context, heroku) {
   }))
 
   yield cli.action(`Ensuring pgbouncer reattached if exists`, co(function * () {
-    // let attachments = yield heroku.get(`/apps/${app}/addon-attachments`)
-    current_pgbouncer = attachments.find(a => a.name === 'DATABASE_CONNECTION_POOL')
-    // There is no pgbouncer to reattach
+    let current_pgbouncer = attachments.find(a => a.name === 'DATABASE_CONNECTION_POOL')
     if (!current_pgbouncer) return
     // DATABASE_CONNECTION_POOL already attached to new leader
     if (current_pgbouncer.addon.name == attachment.addon.name && current_pgbouncer.namespace === attachment.namespace) return
-    // detach DATABASE_CONNECTION_POOL
+    // detach DATABASE_CONNECTION_POOL from old leader
     yield heroku.delete(`/addon-attachments/${current_pgbouncer.id}`)
     // attach DATABASE_CONNECTION_POOL to new database
     let attachmentMessage = `Attaching DATABASE_CONNECTION_POOL to ${cli.color.configVar('DATABASE_URL')} on ${cli.color.app(app)}`
@@ -104,8 +101,6 @@ function * run (context, heroku) {
         }
       })
     }))
-    // TODO(vera): add done actions and yield
-    //cli.action.done(cli.color.configVar(backup.name + '_URL'))
   }))
 
   let releasePhase = (yield heroku.get(`/apps/${app}/formation`))
