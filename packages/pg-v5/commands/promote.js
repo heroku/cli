@@ -90,17 +90,22 @@ function * run (context, heroku) {
     // DATABASE_CONNECTION_POOL already attached to new leader
     if (current_pgbouncer.addon.name == attachment.addon.name && current_pgbouncer.namespace === attachment.namespace) return
     // detach DATABASE_CONNECTION_POOL
-    //heroku.delete('/addon-attachments/${current_pgbouncer.id}')
+    yield heroku.delete('/addon-attachments/${current_pgbouncer.id}')
     // attach DATABASE_CONNECTION_POOL to new database
-    // heroku.post('/addon-attachments', {
-    //   body: {
-    //     name: 'DATABASE_CONNECTION_POOL',
-    //     app: { name: app },
-    //     addon: { name: attachment.addon.name },
-    //     namespace: attachment.namespace,
-    //     confirm: app
-    //   }
-    // })
+    let attachmentMessage = `Attaching DATABASE_CONNECTION_POOL to to ${cli.color.configVar('DATABASE_URL')} on ${cli.color.app(app)}`
+    yield cli.action(attachmentMessage, co(function * (){
+      yield heroku.post('/addon-attachments', {
+        body: {
+          name: 'DATABASE_CONNECTION_POOL',
+          app: { name: app },
+          addon: { name: attachment.addon.name },
+          namespace: attachment.namespace,
+          confirm: app
+        }
+      })
+    }))
+    // TODO(vera): add done actions and yield
+    //cli.action.done(cli.color.configVar(backup.name + '_URL'))
   }))
 
   let releasePhase = (yield heroku.get(`/apps/${app}/formation`))

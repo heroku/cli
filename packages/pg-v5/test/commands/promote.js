@@ -67,6 +67,7 @@ describe('pg:promote when argument is database', () => {
     return cmd.run({ app: 'myapp', args: {}, flags: {} })
       .then(() => expect(cli.stderr, 'to equal', `Ensuring an alternate alias for existing DATABASE_URL... RED_URL
 Promoting postgres-1 to DATABASE_URL on myapp... done
+Ensuring pgbouncer reattached if exists... done
 `))
   })
 
@@ -85,6 +86,7 @@ Promoting postgres-1 to DATABASE_URL on myapp... done
     return cmd.run({ app: 'myapp', args: {}, flags: {} })
       .then(() => expect(cli.stderr, 'to equal', `Ensuring an alternate alias for existing DATABASE_URL... RED_URL
 Promoting postgres-1 to DATABASE_URL on myapp... done
+Ensuring pgbouncer reattached if exists... done
 `))
   })
 
@@ -160,6 +162,7 @@ describe('pg:promote when argument is a credential attachment', () => {
     return cmd.run({ app: 'myapp', args: {}, flags: {} })
       .then(() => expect(cli.stderr, 'to equal', `Ensuring an alternate alias for existing DATABASE_URL... RED_URL
 Promoting PURPLE to DATABASE_URL on myapp... done
+Ensuring pgbouncer reattached if exists... done
 `))
   })
 
@@ -184,6 +187,7 @@ Promoting PURPLE to DATABASE_URL on myapp... done
     return cmd.run({ app: 'myapp', args: {}, flags: {} })
       .then(() => expect(cli.stderr, 'to equal', `Ensuring an alternate alias for existing DATABASE_URL... RED_URL
 Promoting PURPLE to DATABASE_URL on myapp... done
+Ensuring pgbouncer reattached if exists... done
 `))
   })
 
@@ -203,6 +207,7 @@ Promoting PURPLE to DATABASE_URL on myapp... done
     return cmd.run({ app: 'myapp', args: {}, flags: {} })
       .then(() => expect(cli.stderr, 'to equal', `Ensuring an alternate alias for existing DATABASE_URL... RED_URL
 Promoting PURPLE to DATABASE_URL on myapp... done
+Ensuring pgbouncer reattached if exists... done
 `))
   })
 
@@ -222,25 +227,7 @@ Promoting PURPLE to DATABASE_URL on myapp... done
     return cmd.run({ app: 'myapp', args: {}, flags: {} })
       .then(() => expect(cli.stderr, 'to equal', `Ensuring an alternate alias for existing DATABASE_URL... RED_URL
 Promoting PURPLE to DATABASE_URL on myapp... done
-`))
-  })
-
-  it('promotes the credential if the current promoted database is for the same addon, but the default credential', () => {
-    api.get('/apps/myapp/addon-attachments').reply(200, [
-      { name: 'DATABASE', addon: { name: 'postgres-1' }, namespace: null },
-      { name: 'RED', addon: { name: 'postgres-1' }, namespace: null },
-      { name: 'PURPLE', addon: { name: 'postgres-1' }, namespace: 'credential:hello' }
-    ])
-    api.post('/addon-attachments', {
-      name: 'DATABASE',
-      app: { name: 'myapp' },
-      addon: { name: 'postgres-1' },
-      namespace: 'credential:hello',
-      confirm: 'myapp'
-    }).reply(201)
-    return cmd.run({ app: 'myapp', args: {}, flags: {} })
-      .then(() => expect(cli.stderr, 'to equal', `Ensuring an alternate alias for existing DATABASE_URL... RED_URL
-Promoting PURPLE to DATABASE_URL on myapp... done
+Ensuring pgbouncer reattached if exists... done
 `))
   })
 
@@ -260,6 +247,7 @@ Promoting PURPLE to DATABASE_URL on myapp... done
     return cmd.run({ app: 'myapp', args: {}, flags: {} })
       .then(() => expect(cli.stderr, 'to equal', `Ensuring an alternate alias for existing DATABASE_URL... RED_URL
 Promoting PURPLE to DATABASE_URL on myapp... done
+Ensuring pgbouncer reattached if exists... done
 `))
   })
 
@@ -338,6 +326,7 @@ describe('pg:promote when release phase is present', () => {
     return cmd.run({ app: 'myapp', args: {}, flags: {} })
       .then(() => expect(cli.stderr, 'to equal', `Ensuring an alternate alias for existing DATABASE_URL... RED_URL
 Promoting PURPLE to DATABASE_URL on myapp... done
+Ensuring pgbouncer reattached if exists... done
 Checking release phase... pg:promote succeeded.
 `))
   })
@@ -349,6 +338,7 @@ Checking release phase... pg:promote succeeded.
     return cmd.run({ app: 'myapp', args: {}, flags: {} })
       .then(() => expect(cli.stderr, 'to equal', `Ensuring an alternate alias for existing DATABASE_URL... RED_URL
 Promoting PURPLE to DATABASE_URL on myapp... done
+Ensuring pgbouncer reattached if exists... done
 Checking release phase... pg:promote succeeded. It is safe to ignore the failed Detach DATABASE release.
 `))
   })
@@ -360,6 +350,7 @@ Checking release phase... pg:promote succeeded. It is safe to ignore the failed 
     return cmd.run({ app: 'myapp', args: {}, flags: {} })
       .then(() => expect(cli.stderr, 'to equal', `Ensuring an alternate alias for existing DATABASE_URL... RED_URL
 Promoting PURPLE to DATABASE_URL on myapp... done
+Ensuring pgbouncer reattached if exists... done
 Checking release phase... pg:promote failed because Attach DATABASE release was unsuccessful. Your application is currently running with postgres-1 attached as DATABASE_URL. Check your release phase logs for failure causes.
 `))
   })
@@ -371,6 +362,7 @@ Checking release phase... pg:promote failed because Attach DATABASE release was 
     return cmd.run({ app: 'myapp', args: {}, flags: {} })
       .then(() => expect(cli.stderr, 'to equal', `Ensuring an alternate alias for existing DATABASE_URL... RED_URL
 Promoting PURPLE to DATABASE_URL on myapp... done
+Ensuring pgbouncer reattached if exists... done
 Checking release phase... pg:promote failed because Attach DATABASE release was unsuccessful. Your application is currently running without an attached DATABASE_URL. Check your release phase logs for failure causes.
 `))
   })
@@ -453,7 +445,7 @@ describe('pg:promote when database is not available or force flag is present', (
 
     return cmd.run({ app: 'myapp', args: {}, flags: { force: true } })
       .then(() => expect(cli.stderr, 'to equal', `Ensuring an alternate alias for existing DATABASE_URL... RED_URL
-Promoting postgres-1 to DATABASE_URL on myapp... done\n`))
+Promoting postgres-1 to DATABASE_URL on myapp... done\nEnsuring pgbouncer reattached if exists... done\n`))
   })
 
   it('promotes database in available state if --force flag is present', () => {
@@ -474,6 +466,6 @@ Promoting postgres-1 to DATABASE_URL on myapp... done\n`))
 
     return cmd.run({ app: 'myapp', args: {}, flags: { force: true } })
       .then(() => expect(cli.stderr, 'to equal', `Ensuring an alternate alias for existing DATABASE_URL... RED_URL
-Promoting postgres-1 to DATABASE_URL on myapp... done\n`))
+Promoting postgres-1 to DATABASE_URL on myapp... done\nEnsuring pgbouncer reattached if exists... done\n`))
   })
 })
