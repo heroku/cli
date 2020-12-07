@@ -19,7 +19,6 @@ function * run (context, heroku) {
     let attachments = yield heroku.get(`/apps/${addon.app.name}/addon-attachments`)
     let existing = attachments.find(a => a.name === flags.as.toUpperCase())
     if (existing) {
-      console.log('EXISTING')
       throw new Error(`Attachment named ${cli.color.attachment(flags.as.toUpperCase())} already exists`)
     }
   }
