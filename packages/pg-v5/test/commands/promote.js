@@ -93,8 +93,8 @@ Promoting postgres-1 to DATABASE_URL on myapp... done
       { name: 'DATABASE', addon: { name: 'postgres-1' }, namespace: null },
       { name: 'PURPLE', addon: { name: 'postgres-1' }, namespace: null }
     ])
-    const err = new Error(`postgres-1 is already promoted on myapp`)
-    return expect(cmd.run({ app: 'myapp', args: {}, flags: {} })).to.be.rejectedWith(err)
+    const err = `postgres-1 is already promoted on myapp`
+    return expect(cmd.run({ app: 'myapp', args: {}, flags: {} })).to.be.rejectedWith(Error, err)
   })
 })
 
@@ -269,8 +269,8 @@ Promoting PURPLE to DATABASE_URL on myapp... done
       { name: 'DATABASE', addon: { name: 'postgres-1' }, namespace: 'credential:hello' },
       { name: 'PURPLE', addon: { name: 'postgres-1' }, namespace: 'credential:hello' }
     ])
-    const err = new Error(`PURPLE is already promoted on myapp`)
-    return expect(cmd.run({ app: 'myapp', args: {}, flags: {} })).to.be.rejectedWith(err)
+    const err = `PURPLE is already promoted on myapp`
+    return expect(cmd.run({ app: 'myapp', args: {}, flags: {} })).to.be.rejectedWith(Error, err)
   })
 })
 
@@ -429,10 +429,10 @@ describe('pg:promote when database is not available or force flag is present', (
 
     pg.get(`/client/v11/databases/${attachment.addon.id}/wait_status`).reply(200, { 'waiting?': true, message: 'pending' })
 
-    const err = new Error(`Database cannot be promoted while in state: pending
+    const err = `Database cannot be promoted while in state: pending
 \nPromoting this database can lead to application errors and outage. Please run pg:wait to wait for database to become available.
-\nTo ignore this error, you can pass the --force flag to promote the database and risk application issues.`)
-    return expect(cmd.run({ app: 'myapp', args: {}, flags: {} })).to.be.rejectedWith(err)
+\nTo ignore this error, you can pass the --force flag to promote the database and risk application issues.`
+    return expect(cmd.run({ app: 'myapp', args: {}, flags: {} })).to.be.rejectedWith(Error, err)
   })
 
   it('promotes database in unavailable state if --force flag is present', () => {
