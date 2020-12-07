@@ -10,6 +10,8 @@ describe('pg:promote when argument is database', () => {
   let api
   let pg
 
+  const pgbouncerAddonID = 'c667bce0-3238-4202-8550-e1dc323a02a2'
+
   const attachment = {
     addon: {
       name: 'postgres-1',
@@ -38,6 +40,7 @@ describe('pg:promote when argument is database', () => {
     api.get('/apps/myapp/formation').reply(200, [])
     pg = nock('https://postgres-api.heroku.com')
     pg.get(`/client/v11/databases/${attachment.addon.id}/wait_status`).reply(200, { message: 'available', 'waiting?': false })
+    api.delete(`/addon-attachments/${pgbouncerAddonID}`).reply(200)
     cli.mockConsole()
   })
 
@@ -45,6 +48,39 @@ describe('pg:promote when argument is database', () => {
     nock.cleanAll()
     api.done()
     pg.done()
+  })
+
+  it('promotes db and and attaches pgbouncer if DATABASE_CONNECTION_POOL is an attachemnt', () => {
+    api.get('/apps/myapp/addon-attachments').reply(200, [
+      { name: 'DATABASE', addon: { name: 'postgres-2' }, namespace: null },
+      { name: 'DATABASE_CONNECTION_POOL', id: pgbouncerAddonID, addon: { name: 'postgres-2' }, namespace: null }
+    ])
+    api.post('/addon-attachments', {
+      app: { name: 'myapp' },
+      addon: { name: 'postgres-2' },
+      namespace: null,
+      confirm: 'myapp'
+    }).reply(201, { name: 'RED' })
+    api.post('/addon-attachments', {
+      name: 'DATABASE',
+      app: { name: 'myapp' },
+      addon: { name: 'postgres-1' },
+      namespace: null,
+      confirm: 'myapp'
+    }).reply(201)
+    api.delete(`/addon-attachments/${pgbouncerAddonID}`).reply(200)
+    api.post('/addon-attachments', {
+      name: 'DATABASE_CONNECTION_POOL',
+      app: { name: 'myapp' },
+      addon: { name: 'postgres-1' },
+      namespace: null,
+      confirm: 'myapp'
+    }).reply(201)
+    return cmd.run({ app: 'myapp', args: {}, flags: {} })
+      .then(() => expect(cli.stderr, 'to equal', `Ensuring an alternate alias for existing DATABASE_URL... RED_URL
+Promoting postgres-1 to DATABASE_URL on myapp... done
+Ensuring pgbouncer reattached if exists...Attaching DATABASE_CONNECTION_POOL to DATABASE_URL on myapp... done
+`))
   })
 
   it('promotes the db and creates another attachment if current DATABASE does not have another', () => {

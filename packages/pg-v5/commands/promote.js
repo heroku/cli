@@ -32,7 +32,7 @@ function * run (context, heroku) {
         throw new Error(`${cli.color.addon(attachment.addon.name)} is already promoted on ${cli.color.app(app)}`)
       }
     }
-    let existing = attachments.filter(a => a.addon.id === current.addon.id && a.namespace === current.namespace).find(a => a.name !== 'DATABASE')
+    let existing = attachments.filter(a => a.addon.id === current.addon.id && a.namespace === current.namespace).find(a => a.name !== 'DATABASE' && a.name !== 'DATABASE_CONNECTION_POOL')
     if (existing) return cli.action.done(cli.color.configVar(existing.name + '_URL'))
 
     // The current add-on occupying the DATABASE attachment has no
@@ -90,9 +90,9 @@ function * run (context, heroku) {
     // DATABASE_CONNECTION_POOL already attached to new leader
     if (current_pgbouncer.addon.name == attachment.addon.name && current_pgbouncer.namespace === attachment.namespace) return
     // detach DATABASE_CONNECTION_POOL
-    yield heroku.delete('/addon-attachments/${current_pgbouncer.id}')
+    yield heroku.delete(`/addon-attachments/${current_pgbouncer.id}`)
     // attach DATABASE_CONNECTION_POOL to new database
-    let attachmentMessage = `Attaching DATABASE_CONNECTION_POOL to to ${cli.color.configVar('DATABASE_URL')} on ${cli.color.app(app)}`
+    let attachmentMessage = `Attaching DATABASE_CONNECTION_POOL to ${cli.color.configVar('DATABASE_URL')} on ${cli.color.app(app)}`
     yield cli.action(attachmentMessage, co(function * (){
       yield heroku.post('/addon-attachments', {
         body: {
