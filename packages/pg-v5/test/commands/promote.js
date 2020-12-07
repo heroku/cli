@@ -53,7 +53,7 @@ describe('pg:promote when argument is database', () => {
   it('promotes db and attaches pgbouncer if DATABASE_CONNECTION_POOL is an attachemnt', () => {
     api.get('/apps/myapp/addon-attachments').reply(200, [
       { name: 'DATABASE', addon: { name: 'postgres-2' }, namespace: null },
-      { name: 'DATABASE_CONNECTION_POOL', id: pgbouncerAddonID, addon: { name: 'postgres-2' }, namespace: null }
+      { name: 'DATABASE_CONNECTION_POOL', id: pgbouncerAddonID, addon: { name: 'postgres-2' }, namespace: "connection-pooling:default" }
     ])
     api.post('/addon-attachments', {
       app: { name: 'myapp' },

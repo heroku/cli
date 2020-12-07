@@ -31,7 +31,7 @@ function * run (context, heroku) {
         throw new Error(`${cli.color.addon(attachment.addon.name)} is already promoted on ${cli.color.app(app)}`)
       }
     }
-    let existing = attachments.filter(a => a.addon.id === current.addon.id && a.namespace === current.namespace).find(a => a.name !== 'DATABASE' && a.name !== 'DATABASE_CONNECTION_POOL')
+    let existing = attachments.filter(a => a.addon.id === current.addon.id && a.namespace === current.namespace).find(a => a.name !== 'DATABASE')
     if (existing) return cli.action.done(cli.color.configVar(existing.name + '_URL'))
 
     // The current add-on occupying the DATABASE attachment has no
@@ -82,7 +82,13 @@ function * run (context, heroku) {
   }))
 
   yield cli.action(`Ensuring pgbouncer reattached if exists`, co(function * () {
-    let current_pgbouncer = attachments.find(a => a.name === 'DATABASE_CONNECTION_POOL')
+    // Did the old leader have connection pooling? does the new leader have connection pooling? 4 holes in metrics.
+    // old leader
+    // we can also print out info
+    // filter on namespace
+    // let current_pgbouncer = attachments.find(a => a.name === 'DATABASE_CONNECTION_POOL')
+    // requires certainty about namespace if other than default name
+    let current_pgbouncer = attachments.find(a => a.namespace === "connection-pooling:default" && a.addon.id == current.addon.id)
     if (!current_pgbouncer) return
     // DATABASE_CONNECTION_POOL already attached to new leader
     if (current_pgbouncer.addon.name == attachment.addon.name && current_pgbouncer.namespace === attachment.namespace) return
@@ -91,12 +97,13 @@ function * run (context, heroku) {
     // attach DATABASE_CONNECTION_POOL to new database
     let attachmentMessage = `Attaching DATABASE_CONNECTION_POOL to ${cli.color.configVar('DATABASE_URL')} on ${cli.color.app(app)}`
     yield cli.action(attachmentMessage, co(function * (){
+      // TODO: ensure in dev testing that this new attachment is actually pgb
       yield heroku.post('/addon-attachments', {
         body: {
           name: 'DATABASE_CONNECTION_POOL',
           app: { name: app },
           addon: { name: attachment.addon.name },
-          namespace: attachment.namespace,
+          namespace: "connection-pooling:default",
           confirm: app
         }
       })
