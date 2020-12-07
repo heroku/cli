@@ -17,7 +17,10 @@ const db = {
 const addon = {
   name: 'postgres-1',
   id: '1234',
-  plan: { name: 'heroku-postgresql:standard-0' }
+  plan: { name: 'heroku-postgresql:standard-0' },
+  app: {
+    name: 'myapp'
+  }
 }
 
 const fetcher = () => {
@@ -42,6 +45,7 @@ describe('pg:connection-polling:attach', () => {
     pg = nock('https://postgres-api.heroku.com')
     api.get('/addons/postgres-1').reply(200, addon)
     api.get('/apps/myapp/releases').reply(200, [{ version: 0 }])
+    api.get(`/apps/${addon.app.name}/addon-attachments`).reply(200, [])
 
     cli.mockConsole()
   })
@@ -65,6 +69,21 @@ describe('pg:connection-polling:attach', () => {
         .then(() => expect(cli.stdout, 'to equal', ``))
         .then(() => expect(cli.stderr, 'to contain', 'Enabling Connection Pooling for credential ' + readonlyCredential))
         .then(() => expect(cli.stderr, 'to contain', 'Setting HEROKU_COLOR config vars and restarting myapp... done, v0\n'))
+    })
+  })
+
+  context('with an existing attachment', () => {
+    beforeEach(() => {
+      nock.cleanAll()
+      api.get(`/addons/${addon.name}`).reply(200, addon)
+      api.get(`/apps/${addon.app.name}/addon-attachments`).reply(200, [{
+        name: attachmentName
+      }])
+    })
+
+    it('shows an error', () => {
+      const err = new Error(`Attachment named ${attachmentName} already exists`)
+      return expect(cmd.run({ app: 'myapp', args: { database: addon.name }, flags: { as: attachmentName } }), 'to be rejected with', err)
     })
   })
 
