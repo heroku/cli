@@ -71,7 +71,7 @@ Please define the new grants for the credential within Postgres: heroku pg:psql 
       '../../lib/fetcher': fetcher
     })
 
-    const err = new Error('This operation is not supported by Hobby tier databases.')
-    return expect(cmd.run({ app: 'myapp', args: {}, flags: { name: 'jeff' } })).to.be.rejectedWith(err)
+    const err = 'This operation is not supported by Hobby tier databases.'
+    return expect(cmd.run({ app: 'myapp', args: {}, flags: { name: 'jeff' } })).to.be.rejectedWith(Error, err)
   })
 })
