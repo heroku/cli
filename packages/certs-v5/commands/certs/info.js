@@ -17,8 +17,7 @@ function * run (context, heroku) {
   if (context.flags['show-domains']) {
     let domains = yield Promise.all(endpoint.domains.map(domain => {
       return heroku.request({
-        path: `/apps/${context.flags.app}/domains/${domain}`,
-        headers: { 'Accept': `application/vnd.heroku+json; version=3.allow_multiple_sni_endpoints` }
+        path: `/apps/${context.flags.app}/domains/${domain}`
       }).then(response => response.hostname)
     }))
     cert.domains = domains
