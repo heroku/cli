@@ -44,8 +44,8 @@ describe('ps:scale', () => {
       .get('/apps/myapp')
       .reply(200, { name: 'myapp' })
 
-    return expect(cmd.run({ app: 'myapp', args: [] }),
-      'to be rejected with', { message: /^No process types on myapp./ })
+    return expect(cmd.run({ app: 'myapp', args: [] }))
+      .to.be.rejectedWith(Error, /^No process types on myapp./)
       .then(() => expect(cli.stdout, 'to be empty'))
       .then(() => expect(cli.stderr, 'to be empty'))
       .then(() => api.done())
