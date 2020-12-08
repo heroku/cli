@@ -93,7 +93,8 @@ function execPSQL ({ dbEnv, psqlArgs, childProcessOptions, pipeToStdout }) {
 
 async function waitForPSQLExit (psql) {
   try {
-    const exitCode = await once(psql, 'close')
+    const [exitCode] = await once(psql, 'close')
+
     debug(`psql exited with code ${exitCode}`)
     if (exitCode > 0) {
       throw new Error(`psql exited with code ${exitCode}`)
