@@ -73,7 +73,7 @@ describe('pg:promote when argument is database', () => {
       name: 'DATABASE_CONNECTION_POOL',
       app: { name: 'myapp' },
       addon: { name: 'postgres-1' },
-      namespace: null,
+      namespace: "connection-pooling:default",
       confirm: 'myapp'
     }).reply(201)
     return cmd.run({ app: 'myapp', args: {}, flags: {} })

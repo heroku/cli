@@ -82,7 +82,7 @@ function * run (context, heroku) {
   }))
 
   yield cli.action(`Ensuring pgbouncer reattached if exists`, co(function * () {
-    attachments = yield heroku.get(`/apps/${app}/addon-attachments`)
+    // attachments = yield heroku.get(`/apps/${app}/addon-attachments`)
     let current_pgbouncer = attachments.find(a => a.namespace === "connection-pooling:default" && a.addon.id == current.addon.id)
     let attachment_pgbouncer = attachments.find(a => a.namespace === "connection-pooling:default" && a.addon.id == attachment.addon.id)
     // current (old leader) and attachment (prooted) has no pgb, nothing to do
