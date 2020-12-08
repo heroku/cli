@@ -66,14 +66,17 @@ describe('psql', () => {
   })
 
   async function ensureFinished (promise) {
-    await promise
-    if (fakeTunnel) {
-      if (!fakeTunnel.exited) {
-        throw new Error('tunnel was not closed')
+    try {
+      await promise
+    } finally {
+      if (fakeTunnel) {
+        if (!fakeTunnel.exited) {
+          throw new Error('tunnel was not closed')
+        }
       }
-    }
-    if (!fakePsqlProcess.exited) {
-      throw new Error('psql process did not close')
+      if (!fakePsqlProcess.exited) {
+        throw new Error('psql process did not close')
+      }
     }
   }
 
@@ -109,6 +112,46 @@ describe('psql', () => {
       mock.verify()
       await fakePsqlProcess.simulateExit(0)
       await ensureFinished(promise)
+    })
+
+    it('runs psql and throws an error if psql exits with exit code > 0', async () => {
+      const expectedEnv = Object.freeze({
+        PGAPPNAME: 'psql non-interactive',
+        PGSSLMODE: 'prefer',
+        PGUSER: 'jeff',
+        PGPASSWORD: 'pass',
+        PGDATABASE: 'mydb',
+        PGPORT: 5432,
+        PGHOST: 'localhost'
+      })
+
+      const mock = mockSpawn(
+        'psql',
+        ['-c', 'SELECT NOW();', '--set', 'sslmode=require'],
+        {
+          encoding: 'utf8',
+          stdio: ['ignore', 'pipe', 'inherit'],
+          env: expectedEnv
+        }
+      )
+
+      mock.callsFake(() => {
+        fakePsqlProcess.start()
+        return fakePsqlProcess
+      })
+
+      const promise = psql.exec(db, 'SELECT NOW();')
+      await fakePsqlProcess.waitForStart()
+      mock.verify()
+
+      try {
+        expect(fakePsqlProcess.exited, 'to equal', false)
+        await fakePsqlProcess.simulateExit(1)
+        await ensureFinished(promise);
+        throw new Error('psql.exec should have thrown')
+      } catch (err) {
+        expect(err.message, 'to equal', 'psql exited with code 1')
+      }
     })
 
     describe('private databases (not shield)', () => {
@@ -205,7 +248,7 @@ describe('psql', () => {
   })
 
   describe('execFile', () => {
-    it('runs psql', async () => {
+    it('runs psql with file as input', async () => {
       const expectedEnv = Object.freeze({
         PGAPPNAME: 'psql non-interactive',
         PGSSLMODE: 'prefer',
@@ -490,8 +533,13 @@ class FakeChildProcess extends EventEmitter {
       return new Promise((resolve) => {
         this.exited = true
         this.stdout.end()
-        this.emit('close', code)
-        resolve()
+        process.nextTick(() => {
+          try {
+            this.emit('close', code)
+          } finally {
+            resolve()
+          }
+        })
       })
     }
   }
