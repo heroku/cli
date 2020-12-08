@@ -88,19 +88,35 @@ function * run (context, heroku) {
     // filter on namespace
     // let current_pgbouncer = attachments.find(a => a.name === 'DATABASE_CONNECTION_POOL')
     // requires certainty about namespace if other than default name
+    /*
+    4 scenarious:
+    1. current + attachment both no PGB --> return
+    2. current has PGB + attachment no PGB --> attach current's PGB to new leader -- same name
+    3. current has no PGB + attachment has PGB --> do nothing. Nothing to do here.
+    4. both current + attachment has PGB attachment --> presumably under different names so we do nothing?
+    */
     let current_pgbouncer = attachments.find(a => a.namespace === "connection-pooling:default" && a.addon.id == current.addon.id)
+    let attachment_pgbouncer = attachments.find(a => a.namespace === "connection-pooling:default" && a.addon.id == attachment.addon.id)
+    // current has no pgbouncer so we return. Nothing to do
     if (!current_pgbouncer) return
+    // TODO: print a message
+    // if (current_pgbouncer && attachment_pgbouncer) return
+    // TODO(vera): at least print a message here.
+    // if (current_pgbouncer && attachment_pgbouncer && current_pgbouncer.name == attachment_pgbouncer.name) return
     // DATABASE_CONNECTION_POOL already attached to new leader
-    if (current_pgbouncer.addon.name == attachment.addon.name && current_pgbouncer.namespace === attachment.namespace) return
+    // if (current_pgbouncer.addon.name == attachment.addon.name && current_pgbouncer.namespace === attachment.namespace) return
     // detach DATABASE_CONNECTION_POOL from old leader
-    yield heroku.delete(`/addon-attachments/${current_pgbouncer.id}`)
+    let detachMessage = `Detaching ${current_pgbouncer.name} from ${cli.color.attachment(current.name)}`
+    yield cli.action(detachMessage, co(function * (){
+      yield heroku.delete(`/addon-attachments/${current_pgbouncer.id}`)
+    }))
     // attach DATABASE_CONNECTION_POOL to new database
-    let attachmentMessage = `Attaching DATABASE_CONNECTION_POOL to ${cli.color.configVar('DATABASE_URL')} on ${cli.color.app(app)}`
+    let attachmentMessage = `Attaching ${current_pgbouncer.name} to ${cli.color.configVar('DATABASE_URL')} on ${cli.color.app(app)}`
     yield cli.action(attachmentMessage, co(function * (){
       // TODO: ensure in dev testing that this new attachment is actually pgb
       yield heroku.post('/addon-attachments', {
         body: {
-          name: 'DATABASE_CONNECTION_POOL',
+          name: current_pgbouncer.name,
           app: { name: app },
           addon: { name: attachment.addon.name },
           namespace: "connection-pooling:default",
