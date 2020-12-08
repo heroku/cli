@@ -82,15 +82,16 @@ function * run (context, heroku) {
   }))
 
   yield cli.action(`Ensuring pgbouncer reattached if exists`, co(function * () {
+    attachments = yield heroku.get(`/apps/${app}/addon-attachments`)
     let current_pgbouncer = attachments.find(a => a.namespace === "connection-pooling:default" && a.addon.id == current.addon.id)
     let attachment_pgbouncer = attachments.find(a => a.namespace === "connection-pooling:default" && a.addon.id == attachment.addon.id)
     // current (old leader) and attachment (prooted) has no pgb, nothing to do
-    if (!current_pgbouncer && !attachment_pgbouncer) return cli.action.done('Nothing TODO')
-    // pgbouncer already attached to promoted db, nothing to do. We could reattach the other attachment too in this case?
+    if (!current_pgbouncer && !attachment_pgbouncer) return
+    // pgbouncer already attached to promoted db, nothing to do.
     if (!current_pgbouncer && attachment_pgbouncer) return cli.action.done(`${attachment_pgbouncer.name} is already attached to promoted leader.`)
     // pgbouncer already attached to promoted db, nothing to do. We could reattach the attachment on current too in this case?
-    let infoMessage= `Both new and old DATABASE have PgBouncer attached. Ensure you use the correct attachment name. ${attachment_pgbouncer.name} is attached to promoted DATABASE on ${cli.color.addon(attachment.addon.name)}`
-    if (current_pgbouncer && attachment_pgbouncer) return cli.action.done(cli.color.configVar(infoMessage))
+    let infoMessage = `Both new and old DATABASE have PgBouncer attached. Ensure you use the correct attachment name. ${attachment_pgbouncer.name} is attached to promoted DATABASE on ${cli.color.addon(attachment.addon.name)}`
+    if (current_pgbouncer && attachment_pgbouncer) return cli.action.done(infoMessage)
 
     // deattach pgbouncer from current, and attach with same name to promoted.
     let detachMessage = `Detaching ${current_pgbouncer.name} from ${cli.color.attachment(current.addon.name)}...`
