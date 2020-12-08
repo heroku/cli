@@ -89,12 +89,13 @@ function * run (context, heroku) {
     // pgbouncer already attached to promoted db, nothing to do. We could reattach the other attachment too in this case?
     if (!current_pgbouncer && attachment_pgbouncer) return cli.action.done(`${attachment_pgbouncer.name} is already attached to promoted leader.`)
     // pgbouncer already attached to promoted db, nothing to do. We could reattach the attachment on current too in this case?
-    if (current_pgbouncer && attachment_pgbouncer) return cli.action.done(`Both new and old DATABASE have pg boucner attached. Ensure you use the correct attachment. ${attachment_pgbouncer.name} is attached to promoted DATABASE`)
+    if (current_pgbouncer && attachment_pgbouncer) return cli.action.done(
+      `Both new and old DATABASE have pg bouncer attached. Ensure you use the correct attachment. ${attachment_pgbouncer.name} is attached to promoted DATABASE on ${cli.color.addon(attachment.addon.name)}`)
 
     // deattach pgbouncer from current, and attach with same name to promoted.
     let detachMessage = `Detaching ${current_pgbouncer.name} from ${current.addon.name}...`
     yield heroku.delete(`/addon-attachments/${current_pgbouncer.id}`)
-    let attachmentMessage = ` Attaching ${current_pgbouncer.name} to promoted database ${cli.color.configVar('DATABASE_URL')} on ${cli.color.app(app)}`
+    let attachmentMessage = ` Attaching ${current_pgbouncer.name} to promoted database ${cli.color.configVar('DATABASE_URL')} on ${cli.color.attachment(attachment.name)} on ${cli.color.app(app)}`
     yield heroku.post('/addon-attachments', {
       body: {
         name: current_pgbouncer.name,
