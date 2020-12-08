@@ -96,8 +96,8 @@ function * run (context, heroku) {
     }  
     // deattach pgbouncer from current, and attach with same name to promoted.
     let detachMessage = `Detaching ${current_pgbouncer.name} from ${cli.color.attachment(current.addon.name)}...`
-    yield heroku.delete(`/addon-attachments/${current_pgbouncer.id}`)
     let attachmentMessage = ` Attaching ${current_pgbouncer.name} to promoted database ${cli.color.configVar('DATABASE_URL')} on ${cli.color.attachment(attachment.addon.name)} on ${cli.color.app(app)}`
+    yield heroku.delete(`/addon-attachments/${current_pgbouncer.id}`)
     yield heroku.post('/addon-attachments', {
       body: {
         name: current_pgbouncer.name,
