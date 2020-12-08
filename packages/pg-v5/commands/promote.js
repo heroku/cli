@@ -82,12 +82,6 @@ function * run (context, heroku) {
   }))
 
   yield cli.action(`Ensuring pgbouncer reattached if exists`, co(function * () {
-    // Did the old leader have connection pooling? does the new leader have connection pooling? 4 holes in metrics.
-    // old leader
-    // we can also print out info
-    // filter on namespace
-    // let current_pgbouncer = attachments.find(a => a.name === 'DATABASE_CONNECTION_POOL')
-    // requires certainty about namespace if other than default name
     /*
     4 scenarious:
     1. current + attachment both no PGB --> return
@@ -106,13 +100,12 @@ function * run (context, heroku) {
     // DATABASE_CONNECTION_POOL already attached to new leader
     // if (current_pgbouncer.addon.name == attachment.addon.name && current_pgbouncer.namespace === attachment.namespace) return
     // detach DATABASE_CONNECTION_POOL from old leader
-    let detachMessage = `Detaching ${current_pgbouncer.name} from ${cli.color.attachment(current.name)}`
-    yield cli.action(detachMessage, co(function * (){
-      yield heroku.delete(`/addon-attachments/${current_pgbouncer.id}`)
-    }))
+
+    // if 
+    // let detachMessage = `Detaching ${current_pgbouncer.name} from ${current.addon.name }`
+    yield heroku.delete(`/addon-attachments/${current_pgbouncer.id}`)
     // attach DATABASE_CONNECTION_POOL to new database
-    let attachmentMessage = `Attaching ${current_pgbouncer.name} to ${cli.color.configVar('DATABASE_URL')} on ${cli.color.app(app)}`
-    yield cli.action(attachmentMessage, co(function * (){
+    //let attachmentMessage = `Attaching ${current_pgbouncer.name} to promted database ${cli.color.configVar('DATABASE_URL')} on ${cli.color.app(app)}`
       // TODO: ensure in dev testing that this new attachment is actually pgb
       yield heroku.post('/addon-attachments', {
         body: {
@@ -123,7 +116,7 @@ function * run (context, heroku) {
           confirm: app
         }
       })
-    }))
+    return cli.action.done("DONE")
   }))
 
   let releasePhase = (yield heroku.get(`/apps/${app}/formation`))
