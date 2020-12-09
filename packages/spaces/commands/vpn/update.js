@@ -4,17 +4,17 @@ const cli = require('heroku-cli-util')
 const co = require('co')
 const parsers = require('../../lib/parsers')()
 
-function check(val, message) {
+function check (val, message) {
   if (!val) throw new Error(`${message}.\nUSAGE: heroku spaces:vpn:update --name office --cidrs 172.16.0.0/16,10.0.0.0/24 --space example-space`)
 }
 
-function* run(context, heroku) {
-  let lib = require('../../lib/vpn-connections')(heroku)
+function * run (context, heroku) {
+  const lib = require('../../lib/vpn-connections')(heroku)
 
-  let space = context.flags.space
+  const space = context.flags.space
   check(space, 'Space name required')
 
-  let name = context.flags.name || context.args.name
+  const name = context.flags.name || context.args.name
   check(name, 'VPN name required')
 
   let cidrs = context.flags.cidrs
