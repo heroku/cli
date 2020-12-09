@@ -37,6 +37,7 @@ module.exports = function (heroku) {
 
   return {
     postVPNConnections,
+    patchVPNConnections,
     getVPNConnections,
     getVPNConnection,
     deleteVPNConnection
