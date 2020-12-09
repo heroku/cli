@@ -83,7 +83,6 @@ function * run (context, heroku) {
 
   let current_pgbouncer = attachments.find(a => a.namespace === "connection-pooling:default" && a.addon.id == current.addon.id)
   let attachment_pgbouncer = attachments.find(a => a.namespace === "connection-pooling:default" && a.addon.id == attachment.addon.id)
-  // if (!current_pgbouncer && !attachment_pgbouncer) return cli.action.done()
   if (!current_pgbouncer && attachment_pgbouncer) {
     cli.log(`${attachment_pgbouncer.name} is already attached to ${cli.color.addon(attachment.name)}.`)
   } else if (current_pgbouncer && attachment_pgbouncer) {
