@@ -11,14 +11,13 @@ function * run (context, heroku) {
 
   let db = yield fetcher.addon(app, args.database)
   let addon = yield heroku.get(`/addons/${encodeURIComponent(db.name)}`)
-  let credential = flags.credential || 'default'
 
   if (util.starterPlan(db)) throw new Error('This operation is not supported by Hobby tier databases.')
 
   let attachment = yield cli.action(
-    `Enabling Connection Pooling${credential === 'default' ? '' : ' for credential ' + cli.color.addon(credential)} on ${cli.color.addon(addon.name)} to ${cli.color.app(app)}`,
+    `Enabling Connection Pooling on ${cli.color.addon(addon.name)} to ${cli.color.app(app)}`,
     heroku.post(`/client/v11/databases/${encodeURIComponent(db.name)}/connection-pooling`, {
-      body: { name: flags.as, credential: credential, app: app },
+      body: { name: flags.as, credential: 'default', app: app },
       host: host(db)
     })
   )
@@ -44,12 +43,11 @@ module.exports = {
   needsAuth: true,
   help: `Example:
 
-  heroku pg:connection-pooling:attach postgresql-something-12345 --credential cred-name
+  heroku pg:connection-pooling:attach postgresql-something-12345
 `,
   args: [{ name: 'database', optional: true }],
   flags: [
-    { name: 'as', description: 'name for add-on attachment', hasValue: true },
-    { name: 'credential', char: 'n', hasValue: true, required: false, description: 'name of the credential within the database' }
+    { name: 'as', description: 'name for add-on attachment', hasValue: true }
   ],
   run: cli.command({ preauth: true }, co.wrap(run))
 }
