@@ -79,7 +79,7 @@ describe('pg:promote when argument is database', () => {
     return cmd.run({ app: 'myapp', args: {}, flags: {} })
       .then(() => expect(cli.stderr, 'to equal', `Ensuring an alternate alias for existing DATABASE_URL... RED_URL
 Promoting postgres-1 to DATABASE_URL on myapp... done
-Ensuring pgbouncer reattached... Detaching DATABASE_CONNECTION_POOL from postgres-2... Attaching DATABASE_CONNECTION_POOL to promoted database DATABASE_URL on postgres-1 on myapp...done
+Reattaching pooler to new leader... done
 `))
   })
 
