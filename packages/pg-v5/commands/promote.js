@@ -81,30 +81,20 @@ function * run (context, heroku) {
     })
   }))
 
-  let current_pgbouncer = attachments.find(a => a.namespace === "connection-pooling:default" && a.addon.id == current.addon.id)
-  let attachment_pgbouncer = attachments.find(a => a.namespace === "connection-pooling:default" && a.addon.id == attachment.addon.id)
-  if (!current_pgbouncer && attachment_pgbouncer) {
-    cli.log(`${attachment_pgbouncer.name} is already attached to ${cli.color.addon(attachment.name)}.`)
-  } else if (current_pgbouncer && attachment_pgbouncer) {
-    let infoMessage = `Both new and old DATABASE have PgBouncer attached. Ensure you use the correct attachment name. ${attachment_pgbouncer.name} is attached to promoted DATABASE on ${cli.color.addon(attachment.addon.name)}`
-    return cli.log(infoMessage)
-  } else if (current_pgbouncer && !attachment_pgbouncer) {
-    yield cli.action(`Ensuring pgbouncer reattached`, co(function * () {
-      // deattach pgbouncer from current, and attach with same name to promoted.
-      let detachMessage = `Detaching ${current_pgbouncer.name} from ${cli.color.attachment(current.addon.name)}...`
-      let attachmentMessage = ` Attaching ${current_pgbouncer.name} to promoted database ${cli.color.configVar('DATABASE_URL')} on ${cli.color.attachment(attachment.addon.name)} on ${cli.color.app(app)}`
-      yield heroku.delete(`/addon-attachments/${current_pgbouncer.id}`)
+  let currentPooler = attachments.find(a => a.namespace === "connection-pooling:default" && a.addon.id == current.addon.id && a.name == "DATABASE_CONNECTION_POOL")
+  if (currentPooler) {
+    yield cli.action(`Reattaching pooler to new leader`, co(function * () {
       yield heroku.post('/addon-attachments', {
         body: {
-          name: current_pgbouncer.name,
+          name: currentPooler.name,
           app: { name: app },
           addon: { name: attachment.addon.name },
           namespace: "connection-pooling:default",
           confirm: app
         }
       })
-      return cli.action.done(detachMessage + attachmentMessage + "...done")
     }))
+    return cli.action.done()
   }
 
   let releasePhase = (yield heroku.get(`/apps/${app}/formation`))
