@@ -42,5 +42,5 @@ The connection is established over the public Internet but all traffic is encryp
     { name: 'cidrs', char: 'c', hasValue: true, description: 'a list of routable CIDRs separated by commas' },
     { name: 'space', char: 's', hasValue: true, description: 'space name' }
   ],
-  run
+  run: cli.command(run)
 }
