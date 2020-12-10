@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.47.5](https://github.com/heroku/cli/compare/v7.47.4...v7.47.5) (2020-12-10)
+
+
+### Bug Fixes
+
+* **pg-v5:** ensure ssh tunnel properly gets cleaned up ([6eb7962](https://github.com/heroku/cli/commit/6eb7962281016099d372db312e1e92a6109135db))
+* **pg-v5:** once returns array of arguments, add test ([67bfa61](https://github.com/heroku/cli/commit/67bfa61faf351534d1f837bc372d0984140fc972))
+
+
+
+
+
 ## [7.47.4](https://github.com/heroku/cli/compare/v7.47.3...v7.47.4) (2020-12-01)
 
 
