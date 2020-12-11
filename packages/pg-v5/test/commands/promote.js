@@ -83,10 +83,10 @@ Reattaching pooler to new leader... done
 `))
   })
 
-  it('promotes db and does not reattach pgbouncer if already attached to new and old leader', () => {
+  it('promotes db and does not detach pgbouncers attached to new leader under other name than DATABASE_CONNECTION_POOL', () => {
     api.get('/apps/myapp/addon-attachments').reply(200, [
       { name: 'DATABASE', addon: { name: 'postgres-2' }, namespace: null },
-      { name: 'DATABASE_CONNECTION_POOL', id: pgbouncerAddonID, addon: { name: 'postgres-2', id: '2' }, namespace: "connection-pooling:default" },
+      // { name: 'DATABASE_CONNECTION_POOL', id: pgbouncerAddonID, addon: { name: 'postgres-2', id: '2' }, namespace: "connection-pooling:default" },
       { name: 'DATABASE_CONNECTION_POOL2', id: '12345', addon: { name: 'postgres-1', id: '1' }, namespace: "connection-pooling:default" }
     ])
     api.post('/addon-attachments', {
@@ -108,7 +108,7 @@ Promoting postgres-1 to DATABASE_URL on myapp... done
 `))
   })
 
-  it('promotes db and does not reattach pgbouncer if attached to database being promoted, but not old leader', () => {
+  it('promotes db and does not reattach pgbouncer if DATABASE_CONNECTION_POOL attached to database being promoted, but not old leader', () => {
     api.get('/apps/myapp/addon-attachments').reply(200, [
       { name: 'DATABASE', addon: { name: 'postgres-2' }, namespace: null },
       { name: 'DATABASE_CONNECTION_POOL', id: '12345', addon: { name: 'postgres-1', id: '1' }, namespace: "connection-pooling:default" }
