@@ -18,7 +18,9 @@ parts:
     source: ../
     plugin: dump
     override-pull: |
+      echo "start snapcraftctl pull"
       snapcraftctl pull
+      echo "done snapcraftctl pull"
       cd project
       ls -al .
       COMMIT_MSG=$(git log --max-count 1 --pretty="format:%s" | awk '{print $1}')
@@ -57,15 +59,21 @@ parts:
       cd $SNAPCRAFT_PART_INSTALL && yarn --prod
       cd $SNAPCRAFT_PART_INSTALL && bin/run -v
       mkdir -p $SNAPCRAFT_PART_INSTALL/hooks
-      cat << EOF > $SNAPCRAFT_PART_INSTALL/hooks/configure
+      cat << "EOF" > $SNAPCRAFT_PART_INSTALL/hooks/configure
       #!/bin/sh
       set -e
       export PATH="$SNAP_DATA/bin:$PATH"
       heroku update
       EOF
+      cat $SNAPCRAFT_PART_INSTALL/hooks/configure
       chmod +x $SNAPCRAFT_PART_INSTALL/hooks/configure
     override-stage: |
       set -ex
       snapcraftctl stage
-      # sed -i "s/#!\/usr\/bin\/env node/#!\/$SNAP\/heroku\/current\/bin\/node/" bin/run
-      sed -i "s/^process\.env\.HEROKU_UPDATE_INSTRUCTIONS.*$/process.env.HEROKU_UPDATE_INSTRUCTIONS = 'update with: snap refresh heroku'/" bin/run
+      ls -al $SNAPCRAFT_PART_INSTALL
+      # using | instead of / for this sed command
+      # so we don't have to escape the value of $SNAP
+      # which is a path with slashes
+      sed -i "s|#!/usr/bin/env node|#!$SNAP/heroku/current/bin node|" $SNAPCRAFT_PART_INSTALL/bin/run
+      # sed -i "s/#!\/usr\/bin\/env node/#!$SNAP/heroku/current/bin/node/" $SNAPCRAFT_PART_INSTALL/run
+      sed -i "s/^process\.env\.HEROKU_UPDATE_INSTRUCTIONS.*$/process.env.HEROKU_UPDATE_INSTRUCTIONS = 'update with: snap refresh heroku'/" $SNAPCRAFT_PART_INSTALL/bin/run
