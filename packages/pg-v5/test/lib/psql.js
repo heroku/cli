@@ -145,18 +145,18 @@ describe('psql', () => {
       mock.verify()
 
       try {
-        expect(fakePsqlProcess.exited, 'to equal', false)
+        expect(fakePsqlProcess.exited).to.equal(false)
         await fakePsqlProcess.simulateExit(1)
-        await ensureFinished(promise);
+        await ensureFinished(promise)
         throw new Error('psql.exec should have thrown')
       } catch (err) {
-        expect(err.message, 'to equal', 'psql exited with code 1')
+        expect(err.message).to.equal('psql exited with code 1')
       }
     })
 
     describe('private databases (not shield)', () => {
       it('opens an SSH tunnel and runs psql for bastion databases', async () => {
-        let tunnelConf = {
+        const tunnelConf = {
           username: 'bastion',
           host: 'bastion-host',
           privateKey: 'super-private-key',
@@ -184,7 +184,7 @@ describe('psql', () => {
       })
 
       it('closes the tunnel manually if psql exits and the tunnel does not close on its own', async () => {
-        let tunnelConf = {
+        const tunnelConf = {
           username: 'bastion',
           host: 'bastion-host',
           privateKey: 'super-private-key',
@@ -215,7 +215,7 @@ describe('psql', () => {
       })
 
       it('closes psql manually if the tunnel exits and psql does not close on its own', async () => {
-        let tunnelConf = {
+        const tunnelConf = {
           username: 'bastion',
           host: 'bastion-host',
           privateKey: 'super-private-key',
@@ -280,7 +280,7 @@ describe('psql', () => {
       await ensureFinished(promise)
     })
     it('opens an SSH tunnel and runs psql for bastion databases', async () => {
-      let tunnelConf = {
+      const tunnelConf = {
         username: 'bastion',
         host: 'bastion-host',
         privateKey: 'super-private-key',
@@ -519,15 +519,18 @@ class FakeChildProcess extends EventEmitter {
     this.killed = false
     this.stdout = new PassThrough()
   }
+
   async waitForStart () {
     if (!this.ready) {
       await once(this, 'ready')
     }
   }
+
   start () {
     this.ready = true
     this.emit('ready')
   }
+
   simulateExit (code) {
     if (!this.exited) {
       return new Promise((resolve) => {
@@ -543,15 +546,18 @@ class FakeChildProcess extends EventEmitter {
       })
     }
   }
+
   kill (signal) {
     this.killed = true
     this._killedWithSignal = signal
     const killedWithCode = signals[signal]
     this.simulateExit(killedWithCode)
   }
+
   get killedWithSignal () {
     return this._killedWithSignal
   }
+
   async teardown () {
     await this.simulateExit(0)
     this.removeAllListeners()
@@ -563,6 +569,7 @@ class TunnelStub extends EventEmitter {
     super(...args)
     this.exited = false
   }
+
   close () {
     this.exited = true
     process.nextTick(() => {
