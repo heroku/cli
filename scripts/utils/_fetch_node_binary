@@ -59,7 +59,7 @@ else
   if [ ! -f "$TMP_DIR/cache/node/${node_base}" ]; then
     echo "fetching ${node_base}"
     url=https://nodejs.org/dist/v${NODE_VERSION}/${node_base}.tar.xz
-    curl -fSsL "${url}" | tar -C "${TMP_DIR}/node" -xJ
+    curl -L "${url}" | tar -C "${TMP_DIR}/node" -xJ
     mv "$TMP_DIR/node/${node_base}/bin/node" "$TMP_DIR/cache/node/${node_base}"
   fi
 fi
