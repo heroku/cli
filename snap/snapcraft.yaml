@@ -39,13 +39,13 @@ parts:
       set -ex
 
       # install yarn
-      apt-get update
-      apt-get install -y curl
+      sudo apt-get update
+      sudo apt-get install -y curl
       curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
       curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
       echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-      apt-get update
-      apt-get install -y nodejs yarn
+      sudo apt-get update
+      sudo apt-get install -y nodejs yarn
 
       cd project
       cd packages/cli
