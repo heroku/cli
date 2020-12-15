@@ -8,6 +8,11 @@ base: core18
 
 apps:
   heroku:
+    plugs:
+      - home
+      - network-bind
+      - network
+
     command: bin/run
 
 architectures:
