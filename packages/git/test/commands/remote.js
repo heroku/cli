@@ -15,10 +15,8 @@ describe('git:remote', function () {
     let git = require('../mock/git')
     let remote = proxyquire('../../commands/git/remote', { '../../lib/git': () => git })
 
-    return expect(
-      remote.run({ flags: {}, args: [] }),
-      'to be rejected with',
-      { message: 'Specify an app with --app' })
+    return expect(remote.run({ flags: {}, args: [] }))
+      .to.be.rejectedWith(Error, 'Specify an app with --app')
   })
 
   it('replaces an http-git remote', function () {
