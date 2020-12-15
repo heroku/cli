@@ -19,7 +19,7 @@ describe('config:set', () => {
   afterEach(() => nock.cleanAll())
 
   it('sets a config var', () => {
-    let api = nock('https://api.heroku.com:443')
+    const api = nock('https://api.heroku.com:443')
       .patch('/apps/myapp/config-vars', { RACK_ENV: 'production' })
       .reply(200, { RACK_ENV: 'production', RAILS_ENV: 'production' })
       .get('/apps/myapp/releases')
@@ -31,7 +31,7 @@ describe('config:set', () => {
   })
 
   it('sets a config var with an "=" in it', () => {
-    let api = nock('https://api.heroku.com:443')
+    const api = nock('https://api.heroku.com:443')
       .patch('/apps/myapp/config-vars', { RACK_ENV: 'production=foo' })
       .reply(200)
       .get('/apps/myapp/releases')
@@ -45,7 +45,7 @@ describe('config:set', () => {
   it('errors out on empty', () => {
     return assertExit(1, cmd.run({ config, app: 'myapp', args: [] }))
       .then(() => expect(cli.stdout).to.equal(''))
-      .then(() => expect(unwrap(cli.stderr), 'to equal',
+      .then(() => expect(unwrap(cli.stderr)).to.equal(
         'Usage: heroku config:set KEY1=VALUE1 [KEY2=VALUE2 ...] Must specify KEY and VALUE to set.\n'))
   })
 })
