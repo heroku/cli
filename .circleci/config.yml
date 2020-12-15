@@ -18,7 +18,7 @@ executorType: docker
 jobs:
   snap-build:
     docker:
-      - image: cibuilds/snapcraft:core18
+      - image: snapcore/snapcraft:stable
     resource_class: xlarge
     steps:
       - checkout
