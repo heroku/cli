@@ -178,7 +178,7 @@ Promoting postgres-1 to DATABASE_URL on myapp... done
       { name: 'DATABASE', addon: { name: 'postgres-1' }, namespace: null },
       { name: 'PURPLE', addon: { name: 'postgres-1' }, namespace: null }
     ])
-    const err = `postgres-1 is already promoted on myapp`
+    const err = 'postgres-1 is already promoted on myapp'
     return expect(cmd.run({ app: 'myapp', args: {}, flags: {} })).to.be.rejectedWith(Error, err)
   })
 })
@@ -335,7 +335,7 @@ Promoting PURPLE to DATABASE_URL on myapp... done
       { name: 'DATABASE', addon: { name: 'postgres-1' }, namespace: 'credential:hello' },
       { name: 'PURPLE', addon: { name: 'postgres-1' }, namespace: 'credential:hello' }
     ])
-    const err = `PURPLE is already promoted on myapp`
+    const err = 'PURPLE is already promoted on myapp'
     return expect(cmd.run({ app: 'myapp', args: {}, flags: {} })).to.be.rejectedWith(Error, err)
   })
 })
@@ -443,7 +443,7 @@ Checking release phase... pg:promote failed because Attach DATABASE release was 
 
   it('checks release phase for attach failure and detach success', () => {
     api.get('/apps/myapp/releases').reply(200, [])
-    return expect(cmd.run({ app: 'myapp', args: {}, flags: {} }), 'to be rejected')
+    return expect(cmd.run({ app: 'myapp', args: {}, flags: {} })).to.be.rejected
   })
 })
 
