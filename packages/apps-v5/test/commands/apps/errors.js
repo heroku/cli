@@ -26,19 +26,23 @@ describe('apps:errors', () => {
     }
   ]
   const errors = {
-    router: { start_time: '2016-04-17T19:00:00Z',
+    router: {
+      start_time: '2016-04-17T19:00:00Z',
       end_time: '2016-04-18T19:00:00Z',
       step: '1h0m0s',
-      data: { H12: [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 1, null, null, 1, null, null, null ],
-        H25: [ null, null, null, null, 1, null, null, 1, null, null, null, null, 1, null, null, null, null, null, null, null, null, null, null, null, null ],
-        H27: [ null, null, null, null, null, null, null, null, null, 1, 1, null, null, null, null, null, null, null, null, 4, null, null, null, 3, null ] } }
+      data: {
+        H12: [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 1, null, null, 1, null, null, null],
+        H25: [null, null, null, null, 1, null, null, 1, null, null, null, null, 1, null, null, null, null, null, null, null, null, null, null, null, null],
+        H27: [null, null, null, null, null, null, null, null, null, 1, 1, null, null, null, null, null, null, null, null, 4, null, null, null, 3, null]
+      }
+    }
   }
 
   it('shows no errors', () => {
-    let heroku = nock('https://api.heroku.com:443')
+    const heroku = nock('https://api.heroku.com:443')
       .get('/apps/myapp/formation')
       .reply(200, formation)
-    let metrics = nock('https://api.metrics.herokai.com:443')
+    const metrics = nock('https://api.metrics.herokai.com:443')
       .get(`/apps/myapp/router-metrics/errors?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h&process_type=web`)
       .reply(200, { data: {} })
       .get(`/apps/myapp/formation/node/metrics/errors?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h`)
@@ -55,16 +59,16 @@ describe('apps:errors', () => {
   })
 
   it('traps bad request', () => {
-    let heroku = nock('https://api.heroku.com:443')
+    const heroku = nock('https://api.heroku.com:443')
       .get('/apps/myapp/formation')
       .reply(200, formation)
-    let metrics = nock('https://api.metrics.herokai.com:443')
+    const metrics = nock('https://api.metrics.herokai.com:443')
       .get(`/apps/myapp/router-metrics/errors?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h&process_type=web`)
       .reply(200, { data: {} })
       .get(`/apps/myapp/formation/node/metrics/errors?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h`)
       .reply(200, { data: {} })
       .get(`/apps/myapp/formation/web/metrics/errors?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h`)
-      .reply(400, { 'id': 'bad_request', 'message': 'invalid process_type provided (valid examples: web, worker, etc); ' })
+      .reply(400, { id: 'bad_request', message: 'invalid process_type provided (valid examples: web, worker, etc); ' })
 
     return cmd.run({ app: 'myapp', flags: { json: false } })
       .then(() => expect(cli.stdout, 'to be', `No errors on myapp in the last 24 hours
@@ -84,16 +88,16 @@ describe('apps:errors', () => {
       .get(`/apps/myapp/formation/node/metrics/errors?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h`)
       .reply(200, { data: {} })
       .get(`/apps/myapp/formation/web/metrics/errors?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h`)
-      .reply(400, { 'id': 'bad_request', 'message': 'ack!' })
+      .reply(400, { id: 'bad_request', message: 'ack!' })
 
-    return expect(cmd.run({ app: 'myapp', flags: { json: false } }), 'to be rejected')
+    return expect(cmd.run({ app: 'myapp', flags: { json: false } })).to.be.rejected
   })
 
   it('shows errors', () => {
-    let heroku = nock('https://api.heroku.com:443')
+    const heroku = nock('https://api.heroku.com:443')
       .get('/apps/myapp/formation')
       .reply(200, formation)
-    let metrics = nock('https://api.metrics.herokai.com:443')
+    const metrics = nock('https://api.metrics.herokai.com:443')
       .get(`/apps/myapp/router-metrics/errors?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h&process_type=web`)
       .reply(200, errors.router)
       .get(`/apps/myapp/formation/node/metrics/errors?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h`)
@@ -116,10 +120,10 @@ web     R14   critical  Memory quota exceeded       1
   })
 
   it('shows errors as json', () => {
-    let heroku = nock('https://api.heroku.com:443')
+    const heroku = nock('https://api.heroku.com:443')
       .get('/apps/myapp/formation')
       .reply(200, formation)
-    let metrics = nock('https://api.metrics.herokai.com:443')
+    const metrics = nock('https://api.metrics.herokai.com:443')
       .get(`/apps/myapp/router-metrics/errors?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h&process_type=web`)
       .reply(200, errors.router)
       .get(`/apps/myapp/formation/node/metrics/errors?start_time=${yesterday.toISOString()}&end_time=${now.toISOString()}&step=1h`)
