@@ -1,6 +1,6 @@
 const { expect } = require('chai')
 const nock = require('nock')
-var stream = require('stream')
+const stream = require('stream')
 
 const streamer = require('../lib/streamer')
 
@@ -20,8 +20,8 @@ MockOut.prototype._write = function (d) {
 
 describe('streaming', () => {
   it('streams data', () => {
-    var ws = new MockOut()
-    let api = nock('https://streamer.test:443')
+    const ws = new MockOut()
+    const api = nock('https://streamer.test:443')
       .get('/streams/data.log')
       .reply(200, 'My data')
 
@@ -31,10 +31,10 @@ describe('streaming', () => {
   })
 
   it('retries a missing stream', () => {
-    var ws = new MockOut()
-    var attempts = 0
+    const ws = new MockOut()
+    let attempts = 0
 
-    let api = nock('https://streamer.test:443')
+    const api = nock('https://streamer.test:443')
       .get('/streams/data.log')
       .times(5)
       .reply(function () {
@@ -51,24 +51,24 @@ describe('streaming', () => {
       .then(() => api.done())
   }).timeout(5 * 1000 * 1.2)
 
-  it('errors on too many retries', () => {
-    var ws = new MockOut()
-    let api = nock('https://streamer.test:443')
+  it('errors on too many retries', async () => {
+    const ws = new MockOut()
+    const api = nock('https://streamer.test:443')
       .get('/streams/data.log')
       .times(10)
       .reply(404, '')
 
-    return expect(streamer('https://streamer.test/streams/data.log', ws), 'to be rejected')
-      .then(() => api.done())
+    await expect(streamer('https://streamer.test/streams/data.log', ws)).to.be.rejected
+    await api.done()
   }).timeout(10 * 1000 * 1.2)
 
-  it('does not retry on non-404 errors', () => {
-    var ws = new MockOut()
-    let api = nock('https://streamer.test:443')
+  it('does not retry on non-404 errors', async () => {
+    const ws = new MockOut()
+    const api = nock('https://streamer.test:443')
       .get('/streams/data.log')
       .reply(504, '')
 
-    return expect(streamer('https://streamer.test/streams/data.log', ws), 'to be rejected')
-      .then(() => api.done())
+    await expect(streamer('https://streamer.test/streams/data.log', ws)).to.be.rejected
+    await api.done()
   })
 })
