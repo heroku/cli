@@ -22,6 +22,7 @@
     "@oclif/dev-cli": "^1.21.3",
     "@oclif/plugin-legacy": "^1.1.4",
     "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
     "cross-env": "^7.0.2",
     "depcheck": "^0.7.2",
     "mocha": "^5.0.4",
