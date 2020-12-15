@@ -16,6 +16,22 @@ orbs:
   win: circleci/windows@2.4.0
 executorType: docker
 jobs:
+  snap-build:
+    docker:
+      - image: cibuilds/snapcraft:core18
+    resource_class: xlarge
+    steps:
+      - checkout
+      - run:
+          name: update apt-get
+          command: sudo apt-get update
+      - run:
+          name: Build Snap
+          command: snapcraft
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ./*.snap
   windows-test:
     executor:
       name: win/default
@@ -280,6 +296,9 @@ workflows:
       - node14-test: *windows_test
       - node12-test: *windows_test
       - node10-test: *windows_test
+  snap-build:
+    jobs:
+      - snap-build
   heroku_cli_release:
     jobs:
       - node14-test: &node14_test
