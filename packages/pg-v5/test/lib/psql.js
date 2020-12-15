@@ -154,12 +154,12 @@ describe('psql', () => {
       mock.verify()
 
       try {
-        expect(fakePsqlProcess.exited, 'to equal', false)
+        expect(fakePsqlProcess.exited).to.equal(false)
         await fakePsqlProcess.simulateExit(1)
         await ensureFinished(promise)
         throw new Error('psql.exec should have thrown')
       } catch (err) {
-        expect(err.message, 'to equal', 'psql exited with code 1')
+        expect(err.message).to.equal('psql exited with code 1')
       }
     })
 
