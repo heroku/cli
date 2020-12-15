@@ -6,7 +6,7 @@
 # $ARCH
 # $NODE_VERSION
 
-set -ex
+set -ex -o pipefail
 
 if [[ $# -ne 1 ]]; then
   echo "USAGE: $0 OUTPUT_DIR"
