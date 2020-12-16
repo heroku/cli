@@ -11,6 +11,7 @@ function * run (context, heroku) {
   const attachment = yield fetcher.attachment(app, args.database)
 
   let current
+  let attachments
 
   yield cli.action(`Ensuring an alternate alias for existing ${cli.color.configVar('DATABASE_URL')}`, co(function * () {
     // Finds or creates a non-DATABASE attachment for the DB currently
@@ -19,7 +20,7 @@ function * run (context, heroku) {
     // If current DATABASE is attached by other names, return one of them.
     // If current DATABASE is only attachment, create a new one and return it.
     // If no current DATABASE, return nil.
-    let attachments = yield heroku.get(`/apps/${app}/addon-attachments`)
+    attachments = yield heroku.get(`/apps/${app}/addon-attachments`)
     current = attachments.find(a => a.name === 'DATABASE')
     if (!current) return
 
@@ -79,6 +80,22 @@ function * run (context, heroku) {
       }
     })
   }))
+
+  let currentPooler = attachments.find(a => a.namespace === "connection-pooling:default" && a.addon.id == current.addon.id && a.name == "DATABASE_CONNECTION_POOL")
+  if (currentPooler) {
+    yield cli.action(`Reattaching pooler to new leader`, co(function * () {
+      yield heroku.post('/addon-attachments', {
+        body: {
+          name: currentPooler.name,
+          app: { name: app },
+          addon: { name: attachment.addon.name },
+          namespace: "connection-pooling:default",
+          confirm: app
+        }
+      })
+    }))
+    return cli.action.done()
+  }
 
   let releasePhase = (yield heroku.get(`/apps/${app}/formation`))
     .find((formation) => formation.type === 'release')

@@ -10,6 +10,8 @@ describe('pg:promote when argument is database', () => {
   let api
   let pg
 
+  const pgbouncerAddonID = 'c667bce0-3238-4202-8550-e1dc323a02a2'
+
   const attachment = {
     addon: {
       name: 'postgres-1',
@@ -38,6 +40,7 @@ describe('pg:promote when argument is database', () => {
     api.get('/apps/myapp/formation').reply(200, [])
     pg = nock('https://postgres-api.heroku.com')
     pg.get(`/client/v11/databases/${attachment.addon.id}/wait_status`).reply(200, { message: 'available', 'waiting?': false })
+    api.delete(`/addon-attachments/${pgbouncerAddonID}`).reply(200)
     cli.mockConsole()
   })
 
@@ -45,6 +48,88 @@ describe('pg:promote when argument is database', () => {
     nock.cleanAll()
     api.done()
     pg.done()
+  })
+
+  it('promotes db and attaches pgbouncer if DATABASE_CONNECTION_POOL is an attachemnt', () => {
+    api.get('/apps/myapp/addon-attachments').reply(200, [
+      { name: 'DATABASE', addon: { name: 'postgres-2' }, namespace: null },
+      { name: 'DATABASE_CONNECTION_POOL', id: pgbouncerAddonID, addon: { name: 'postgres-2' }, namespace: "connection-pooling:default" }
+    ])
+    api.post('/addon-attachments', {
+      app: { name: 'myapp' },
+      addon: { name: 'postgres-2' },
+      namespace: null,
+      confirm: 'myapp'
+    }).reply(201, { name: 'RED' })
+    api.post('/addon-attachments', {
+      name: 'DATABASE',
+      app: { name: 'myapp' },
+      addon: { name: 'postgres-1' },
+      namespace: null,
+      confirm: 'myapp'
+    }).reply(201)
+    api.delete(`/addon-attachments/${pgbouncerAddonID}`).reply(200)
+    api.post('/addon-attachments', {
+      name: 'DATABASE_CONNECTION_POOL',
+      app: { name: 'myapp' },
+      addon: { name: 'postgres-1' },
+      namespace: "connection-pooling:default",
+      confirm: 'myapp'
+    }).reply(201)
+    return cmd.run({ app: 'myapp', args: {}, flags: {} })
+      .then(() => expect(cli.stderr, 'to equal', `Ensuring an alternate alias for existing DATABASE_URL... RED_URL
+Promoting postgres-1 to DATABASE_URL on myapp... done
+Reattaching pooler to new leader... done
+`))
+  })
+
+  it('promotes db and does not detach pgbouncers attached to new leader under other name than DATABASE_CONNECTION_POOL', () => {
+    api.get('/apps/myapp/addon-attachments').reply(200, [
+      { name: 'DATABASE', addon: { name: 'postgres-2' }, namespace: null },
+      // { name: 'DATABASE_CONNECTION_POOL', id: pgbouncerAddonID, addon: { name: 'postgres-2', id: '2' }, namespace: "connection-pooling:default" },
+      { name: 'DATABASE_CONNECTION_POOL2', id: '12345', addon: { name: 'postgres-1', id: '1' }, namespace: "connection-pooling:default" }
+    ])
+    api.post('/addon-attachments', {
+      app: { name: 'myapp' },
+      addon: { name: 'postgres-2'},
+      namespace: null,
+      confirm: 'myapp'
+    }).reply(201, { name: 'RED' })
+    api.post('/addon-attachments', {
+      name: 'DATABASE',
+      app: { name: 'myapp' },
+      addon: { name: 'postgres-1'},
+      namespace: null,
+      confirm: 'myapp'
+    }).reply(201)
+    return cmd.run({ app: 'myapp', args: {}, flags: {} })
+      .then(() => expect(cli.stderr, 'to equal', `Ensuring an alternate alias for existing DATABASE_URL... RED_URL
+Promoting postgres-1 to DATABASE_URL on myapp... done
+`))
+  })
+
+  it('promotes db and does not reattach pgbouncer if DATABASE_CONNECTION_POOL attached to database being promoted, but not old leader', () => {
+    api.get('/apps/myapp/addon-attachments').reply(200, [
+      { name: 'DATABASE', addon: { name: 'postgres-2' }, namespace: null },
+      { name: 'DATABASE_CONNECTION_POOL', id: '12345', addon: { name: 'postgres-1', id: '1' }, namespace: "connection-pooling:default" }
+    ])
+    api.post('/addon-attachments', {
+      app: { name: 'myapp' },
+      addon: { name: 'postgres-2' },
+      namespace: null,
+      confirm: 'myapp'
+    }).reply(201, { name: 'RED' })
+    api.post('/addon-attachments', {
+      name: 'DATABASE',
+      app: { name: 'myapp' },
+      addon: { name: 'postgres-1' },
+      namespace: null,
+      confirm: 'myapp'
+    }).reply(201)
+    return cmd.run({ app: 'myapp', args: {}, flags: {} })
+      .then(() => expect(cli.stderr, 'to equal', `Ensuring an alternate alias for existing DATABASE_URL... RED_URL
+Promoting postgres-1 to DATABASE_URL on myapp... done
+`))
   })
 
   it('promotes the db and creates another attachment if current DATABASE does not have another', () => {
@@ -191,25 +276,6 @@ Promoting PURPLE to DATABASE_URL on myapp... done
     api.get('/apps/myapp/addon-attachments').reply(200, [
       { name: 'DATABASE', addon: { name: 'postgres-2' } },
       { name: 'RED', addon: { name: 'postgres-2' } },
-      { name: 'PURPLE', addon: { name: 'postgres-1' }, namespace: 'credential:hello' }
-    ])
-    api.post('/addon-attachments', {
-      name: 'DATABASE',
-      app: { name: 'myapp' },
-      addon: { name: 'postgres-1' },
-      namespace: 'credential:hello',
-      confirm: 'myapp'
-    }).reply(201)
-    return cmd.run({ app: 'myapp', args: {}, flags: {} })
-      .then(() => expect(cli.stderr, 'to equal', `Ensuring an alternate alias for existing DATABASE_URL... RED_URL
-Promoting PURPLE to DATABASE_URL on myapp... done
-`))
-  })
-
-  it('promotes the credential if the current promoted database is for the same addon, but the default credential', () => {
-    api.get('/apps/myapp/addon-attachments').reply(200, [
-      { name: 'DATABASE', addon: { name: 'postgres-1' }, namespace: null },
-      { name: 'RED', addon: { name: 'postgres-1' }, namespace: null },
       { name: 'PURPLE', addon: { name: 'postgres-1' }, namespace: 'credential:hello' }
     ])
     api.post('/addon-attachments', {
