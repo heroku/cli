@@ -55,10 +55,10 @@ function showDiff(from: Config, to: Config) {
   for (const k of allKeys(from, to)) {
     if (from[k] === to[k]) continue
     if (k in from) {
-      cli.log(color.red(`${k}=${quote(from[k])}`))
+      cli.log(color.red(`- ${k}=${quote(from[k])}`))
     }
     if (k in to) {
-      cli.log(color.green(`${k}=${quote(to[k])}`))
+      cli.log(color.green(`+ ${k}=${quote(to[k])}`))
     }
   }
 }
