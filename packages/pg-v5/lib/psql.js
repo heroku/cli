@@ -1,6 +1,9 @@
 'use strict'
 
 const { once, EventEmitter } = require('events')
+const Stream = require('stream')
+const util = require('util')
+const finished = util.promisify(Stream.finished)
 
 const bastion = require('./bastion')
 const debug = require('./debug')
@@ -18,8 +21,7 @@ function psqlQueryOptions (query, dbEnv) {
   return {
     dbEnv,
     psqlArgs,
-    childProcessOptions,
-    pipeToStdout: true
+    childProcessOptions
   }
 }
 
@@ -36,8 +38,7 @@ function psqlFileOptions (file, dbEnv) {
   return {
     dbEnv,
     psqlArgs,
-    childProcessOptions,
-    pipeToStdout: true
+    childProcessOptions
   }
 }
 
@@ -72,7 +73,7 @@ function psqlInteractiveOptions (prompt, dbEnv) {
   }
 }
 
-function execPSQL ({ dbEnv, psqlArgs, childProcessOptions, pipeToStdout }) {
+function execPSQL ({ dbEnv, psqlArgs, childProcessOptions}) {
   const { spawn } = require('child_process')
 
   const options = {
@@ -83,10 +84,6 @@ function execPSQL ({ dbEnv, psqlArgs, childProcessOptions, pipeToStdout }) {
   debug('opening psql process')
   const psql = spawn('psql', psqlArgs, options)
   psql.once('spawn', () => debug('psql process spawned'))
-
-  if (pipeToStdout) {
-    psql.stdout.pipe(process.stdout)
-  }
 
   return psql
 }
@@ -148,11 +145,30 @@ const trapAndForwardSignalsToChildProcess = (childProcess) => {
   return cleanup
 }
 
+function consumeStream(inputStream) {
+  let result = ''
+  const throughStream = new Stream.PassThrough()
+
+  const promise = new Promise(async (resolve, reject) => {
+    try {
+      await finished(throughStream)
+      resolve(result)
+    } catch (err) {
+      reject(err)
+    }
+  })
+
+  throughStream.on('data', (chunk) => result += chunk.toString())
+  inputStream.pipe(throughStream)
+  return promise;
+}
+
 async function runWithTunnel (db, tunnelConfig, options) {
   const tunnel = await Tunnel.connect(db, tunnelConfig)
   debug('after create tunnel')
 
   const psql = execPSQL(options)
+  const stdoutPromise = consumeStream(psql.stdout)
   const cleanupSignalTraps = trapAndForwardSignalsToChildProcess(psql)
 
   try {
@@ -174,6 +190,7 @@ async function runWithTunnel (db, tunnelConfig, options) {
     kill(psql, 'SIGKILL')
     debug('end tunnel cleanup')
   }
+  return stdoutPromise
 }
 
 // a small wrapper around tunnel-ssh
