@@ -1,13 +1,16 @@
 import {cli} from 'cli-ux'
 import sinon from 'sinon'
 
-import {stringToConfig} from '../../../src/commands/config/edit'
+import {stringToConfig, showDiff} from '../../../src/commands/config/edit'
 import {Editor} from '../../../src/util'
 import {expect, test} from '../../test'
 
 let sandbox: any
 let updated: {}
 let editedConfig = ''
+let beforeConfigString = ''
+let afterConfigString = ''
+let logSpy: any
 
 describe('config:edit', () => {
   describe('stringToConfig', () => {
@@ -15,6 +18,42 @@ describe('config:edit', () => {
       expect(stringToConfig("foo=''")).to.deep.equal({foo: ''})
       expect(stringToConfig('foo=""')).to.deep.equal({foo: ''})
       expect(stringToConfig('foo=')).to.deep.equal({foo: ''})
+    })
+  })
+
+  describe('showDiff', () => {
+    beforeEach(() => {
+      sandbox = sinon.createSandbox()
+      logSpy = sandbox.spy(cli, 'log')
+    })
+
+    afterEach(() => {
+      sandbox.restore()
+    })
+
+    describe('key diff', () => {
+      beforeEach(() => {
+        beforeConfigString = "foo='bar'"
+        afterConfigString = "foo='baz'"
+      })
+
+      it('renders the diff with + and -', ()  => {
+        showDiff(stringToConfig(beforeConfigString), stringToConfig(afterConfigString))
+        expect(logSpy.withArgs("- foo='bar'").calledOnce)
+        expect(logSpy.withArgs("+ foo='baz'").calledOnce)
+      })
+    })
+
+    describe('no key diff', () => {
+      beforeEach(() => {
+        beforeConfigString = "foo='bar'"
+        afterConfigString = "foo='bar'"
+      })
+
+      it('does not log', ()  => {
+        showDiff(stringToConfig(beforeConfigString), stringToConfig(afterConfigString))
+        expect(logSpy.notCalled)
+      })
     })
   })
 
