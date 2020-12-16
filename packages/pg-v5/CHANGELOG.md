@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.47.6](https://github.com/heroku/cli/compare/v7.47.5...v7.47.6) (2020-12-16)
+
+
+### Bug Fixes
+
+* **pg-v5:** return child process stdout ([#1701](https://github.com/heroku/cli/issues/1701)) ([7f86c49](https://github.com/heroku/cli/commit/7f86c49df77dfed6bfe4297b59a6f939385dc151)), closes [#1691](https://github.com/heroku/cli/issues/1691) [#1691](https://github.com/heroku/cli/issues/1691) [/github.com/heroku/cli/blob/729acd6382b424649c51bff7f4afb02df99d46ac/packages/pg-v5/commands/ps.js#L27](https://github.com//github.com/heroku/cli/blob/729acd6382b424649c51bff7f4afb02df99d46ac/packages/pg-v5/commands/ps.js/issues/L27)
+
+
+
+
+
 ## [7.47.5](https://github.com/heroku/cli/compare/v7.47.4...v7.47.5) (2020-12-10)
 
 

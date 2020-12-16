@@ -256,15 +256,14 @@ USAGE
   $ heroku pg:connection-pooling:attach [DATABASE]
 
 OPTIONS
-  -a, --app=app                (required) app to run command against
-  -n, --credential=credential  name of the credential within the database
-  -r, --remote=remote          git remote of app to use
-  --as=as                      name for add-on attachment
+  -a, --app=app        (required) app to run command against
+  -r, --remote=remote  git remote of app to use
+  --as=as              name for add-on attachment
 
 DESCRIPTION
   Example:
 
-     heroku pg:connection-pooling:attach postgresql-something-12345 --credential cred-name
+     heroku pg:connection-pooling:attach postgresql-something-12345
 ```
 
 ## `heroku pg:copy SOURCE TARGET`
