@@ -45,7 +45,8 @@ WHERE
   ORDER BY query_start DESC
   `
 
-  yield psql.exec(db, query)
+  const output = yield psql.exec(db, query)
+  process.stdout.write(output)
 }
 
 module.exports = {

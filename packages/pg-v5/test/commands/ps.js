@@ -50,7 +50,7 @@ describe('pg:ps', () => {
 
   it('runs query', async () => {
     await cmd.run({ app: 'myapp', args: {}, flags: {} })
-    expect(removeEmptyLines(psql._query.trim())).to.equal(removeEmptyLines(`SELECT
+    expect(removeEmptyLines(psql._query)).to.equal(removeEmptyLines(`SELECT
  pid,
  state,
  application_name AS source,
@@ -71,7 +71,7 @@ WHERE
 
   it('runs verbose query', async () => {
     await cmd.run({ app: 'myapp', args: {}, flags: { verbose: true } })
-    expect(removeEmptyLines(psql._query.trim())).to.equal(removeEmptyLines(`SELECT
+    expect(removeEmptyLines(psql._query)).to.equal(removeEmptyLines(`SELECT
  pid,
  state,
  application_name AS source,
@@ -91,5 +91,5 @@ WHERE
 })
 
 function removeEmptyLines (string) {
-  return string.split('\n').filter(str => str.trim().length > 0).join('\n')
+  return string.toString().split('\n').map(str => str.trim()).filter(str => str.length > 0).join('\n')
 }
