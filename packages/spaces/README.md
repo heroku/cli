@@ -21,6 +21,7 @@ heroku-spaces CLI plugin [![Circle CI](https://circleci.com/gh/heroku/heroku-spa
 * [`heroku spaces:vpn:connections`](#heroku-spacesvpnconnections)
 * [`heroku spaces:vpn:destroy`](#heroku-spacesvpndestroy)
 * [`heroku spaces:vpn:info`](#heroku-spacesvpninfo)
+* [`heroku spaces:vpn:update`](#heroku-spacesvpnupdate)
 * [`heroku spaces:vpn:wait`](#heroku-spacesvpnwait)
 * [`heroku spaces:wait`](#heroku-spaceswait)
 * [`heroku trusted-ips`](#heroku-trusted-ips)
@@ -382,6 +383,29 @@ DESCRIPTION
        ──────────  ─────────────  ──────  ────────────────────  ──────────────
        Tunnel 1    52.44.146.197  UP      2016-10-25T22:09:05Z  status message
        Tunnel 2    52.44.146.197  UP      2016-10-25T22:09:05Z  status message
+```
+
+## `heroku spaces:vpn:update`
+
+update VPN
+
+```
+USAGE
+  $ heroku spaces:vpn:update
+
+OPTIONS
+  -c, --cidrs=cidrs  a list of routable CIDRs separated by commas
+  -n, --name=name    VPN name
+  -s, --space=space  space name
+
+DESCRIPTION
+  Private Spaces can be connected to another private network via an IPSec VPN connection allowing dynos to connect to 
+  hosts on your private networks and vice versa.
+  The connection is established over the public Internet but all traffic is encrypted using IPSec.
+
+EXAMPLES
+  $ heroku spaces:vpn:update --name office --cidrs 172.16.0.0/16,10.0.0.0/24 --space my-space
+       Updating VPN Connection in space my-space... done
 ```
 
 ## `heroku spaces:vpn:wait`
