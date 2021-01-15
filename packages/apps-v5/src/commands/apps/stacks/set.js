@@ -28,8 +28,8 @@ let cmd = {
   needsApp: true,
   needsAuth: true,
   description: 'set the stack of an app',
-  examples: `$ heroku stack:set heroku-18 -a myapp
-Stack set. Next release on myapp will use heroku-18.
+  examples: `$ heroku stack:set heroku-20 -a myapp
+Stack set. Next release on myapp will use heroku-20.
 Run git push heroku main to create a new release on myapp.`,
   args: [{ name: 'stack' }],
   run: cli.command(co.wrap(run))

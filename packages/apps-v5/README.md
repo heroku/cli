@@ -121,7 +121,7 @@ OPTIONS
 
 EXAMPLES
   $ heroku apps:create
-  Creating app... done, stack is heroku-18
+  Creating app... done, stack is heroku-20
   https://floating-dragon-42.heroku.com/ | https://git.heroku.com/floating-dragon-42.git
 
   # or just
@@ -310,8 +310,8 @@ OPTIONS
   -r, --remote=remote  git remote of app to use
 
 EXAMPLES
-  $ heroku stack:set heroku-18 -a myapp
-  Stack set. Next release on myapp will use heroku-18.
+  $ heroku stack:set heroku-20 -a myapp
+  Stack set. Next release on myapp will use heroku-20.
   Run git push heroku main to create a new release on myapp.
 ```
 
