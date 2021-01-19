@@ -2,7 +2,7 @@
 
 set -e -o pipefail
 
-CURRENT_BRANCH=`git branch --show-current`
+CURRENT_BRANCH=`git rev-parse --abbrev-ref HEAD`
 MAIN_BRANCH="master"
 
 if [[ "${CURRENT_BRANCH}" != "${MAIN_BRANCH}" ]]; then
