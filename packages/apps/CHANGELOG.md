@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.47.8](https://github.com/heroku/heroku-cli-plugin-apps/compare/v7.47.2...v7.47.8) (2021-01-19)
+
+**Note:** Version bump only for package @heroku-cli/plugin-apps
+
+
+
+
+
 ## [7.47.5](https://github.com/heroku/heroku-cli-plugin-apps/compare/v7.47.4...v7.47.5) (2020-12-10)
 
 **Note:** Version bump only for package @heroku-cli/plugin-apps

@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.47.8](https://github.com/heroku/cli/compare/v7.47.2...v7.47.8) (2021-01-19)
+
+
+### Bug Fixes
+
+* **pg:** Remove SIGINT capture and allow default node clean up ([#1687](https://github.com/heroku/cli/issues/1687)) ([2b278f0](https://github.com/heroku/cli/commit/2b278f0bbda3664d92de38656d76ab4dfef97e1b))
+* **pg-v5:** ensure ssh tunnel properly gets cleaned up ([6eb7962](https://github.com/heroku/cli/commit/6eb7962281016099d372db312e1e92a6109135db))
+* **pg-v5:** once returns array of arguments, add test ([67bfa61](https://github.com/heroku/cli/commit/67bfa61faf351534d1f837bc372d0984140fc972))
+* **pg-v5:** return child process stdout ([#1701](https://github.com/heroku/cli/issues/1701)) ([7f86c49](https://github.com/heroku/cli/commit/7f86c49df77dfed6bfe4297b59a6f939385dc151)), closes [#1691](https://github.com/heroku/cli/issues/1691) [#1691](https://github.com/heroku/cli/issues/1691) [/github.com/heroku/cli/blob/729acd6382b424649c51bff7f4afb02df99d46ac/packages/pg-v5/commands/ps.js#L27](https://github.com//github.com/heroku/cli/blob/729acd6382b424649c51bff7f4afb02df99d46ac/packages/pg-v5/commands/ps.js/issues/L27)
+* **pg-v5:** Running diagnose on not default DBs ([#1680](https://github.com/heroku/cli/issues/1680)) ([0af72b7](https://github.com/heroku/cli/commit/0af72b7b2929689b5f35b43a09690890443d97c0))
+
+
+
+
+
 ## [7.47.6](https://github.com/heroku/cli/compare/v7.47.5...v7.47.6) (2020-12-16)
 
 
