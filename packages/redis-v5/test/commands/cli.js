@@ -83,6 +83,39 @@ describe('heroku redis:cli', function () {
       .then(() => expect(net.connect.called).to.equal(true))
   })
 
+  it('# for hobby it uses TLS if prefer_native_tls', function () {
+    let app = nock('https://api.heroku.com:443')
+      .get('/apps/example/addons').reply(200, [
+        {
+          id: addonId,
+          name: 'redis-haiku',
+          addon_service: { name: 'heroku-redis' },
+          config_vars: ['REDIS_FOO', 'REDIS_BAR', 'REDIS_TLS_URL'],
+          billing_entity: {
+            id: appId,
+            name: 'example'
+          }
+        }
+      ])
+
+    let configVars = nock('https://api.heroku.com:443')
+      .get('/apps/example/config-vars').reply(200, { 'REDIS_TLS_URL': 'rediss://foobar:password@example.com:8649' })
+
+    let redis = nock('https://redis-api.heroku.com:443')
+      .get('/redis/v0/databases/redis-haiku').reply(200, {
+        resource_url: 'redis://foobar:password@example.com:8649',
+        plan: 'hobby',
+        prefer_native_tls: true
+      })
+    return command.run({ app: 'example', flags: { confirm: 'example' }, args: {}, auth: { username: 'foobar', password: 'password' } })
+      .then(() => app.done())
+      .then(() => configVars.done())
+      .then(() => redis.done())
+      .then(() => expect(cli.stdout).to.equal('Connecting to redis-haiku (REDIS_FOO, REDIS_BAR, REDIS_TLS_URL):\n'))
+      .then(() => expect(cli.stderr).to.equal(''))
+      .then(() => expect(tls.connect.called).to.equal(true))
+  })
+
   it('# for premium it uses tls.connect', function () {
     let app = nock('https://api.heroku.com:443')
       .get('/apps/example/addons').reply(200, [

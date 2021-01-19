@@ -142,6 +142,10 @@ function maybeTunnel (redis, config) {
   let uri = url.parse(redis.resource_url)
   let prefer_native_tls = redis.prefer_native_tls
 
+  if (prefer_native_tls && hobby) {
+    uri = url.parse(match(config, /_TLS_URL/))
+  }
+
   if (bastions != null) {
     return bastionConnect({ uri, bastions, config, prefer_native_tls })
   } else {
