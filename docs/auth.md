@@ -24,7 +24,7 @@ ALIASES
   $ heroku twofactor
 ```
 
-_See code: [@heroku-cli/plugin-auth](https://github.com/heroku/cli/blob/v7.47.8/packages/auth/src/commands/auth/2fa/index.ts)_
+_See code: [@heroku-cli/plugin-auth](https://github.com/heroku/cli/blob/v7.47.9/packages/auth/src/commands/auth/2fa/index.ts)_
 
 ## `heroku auth:2fa:disable`
 
@@ -43,7 +43,7 @@ EXAMPLES
   Disabling 2fa on me@example.com... done
 ```
 
-_See code: [@heroku-cli/plugin-auth](https://github.com/heroku/cli/blob/v7.47.8/packages/auth/src/commands/auth/2fa/disable.ts)_
+_See code: [@heroku-cli/plugin-auth](https://github.com/heroku/cli/blob/v7.47.9/packages/auth/src/commands/auth/2fa/disable.ts)_
 
 ## `heroku auth:2fa:generate-recovery-codes`
 
@@ -67,7 +67,7 @@ ALIASES
   $ heroku auth:2fa:generate
 ```
 
-_See code: [@heroku-cli/plugin-auth](https://github.com/heroku/cli/blob/v7.47.8/packages/auth/src/commands/auth/2fa/generate-recovery-codes.ts)_
+_See code: [@heroku-cli/plugin-auth](https://github.com/heroku/cli/blob/v7.47.9/packages/auth/src/commands/auth/2fa/generate-recovery-codes.ts)_
 
 ## `heroku auth:login`
 
@@ -86,7 +86,7 @@ ALIASES
   $ heroku login
 ```
 
-_See code: [@heroku-cli/plugin-auth](https://github.com/heroku/cli/blob/v7.47.8/packages/auth/src/commands/auth/login.ts)_
+_See code: [@heroku-cli/plugin-auth](https://github.com/heroku/cli/blob/v7.47.9/packages/auth/src/commands/auth/login.ts)_
 
 ## `heroku auth:logout`
 
@@ -100,7 +100,7 @@ ALIASES
   $ heroku logout
 ```
 
-_See code: [@heroku-cli/plugin-auth](https://github.com/heroku/cli/blob/v7.47.8/packages/auth/src/commands/auth/logout.ts)_
+_See code: [@heroku-cli/plugin-auth](https://github.com/heroku/cli/blob/v7.47.9/packages/auth/src/commands/auth/logout.ts)_
 
 ## `heroku auth:token`
 
@@ -118,7 +118,7 @@ DESCRIPTION
   authorizations:create
 ```
 
-_See code: [@heroku-cli/plugin-auth](https://github.com/heroku/cli/blob/v7.47.8/packages/auth/src/commands/auth/token.ts)_
+_See code: [@heroku-cli/plugin-auth](https://github.com/heroku/cli/blob/v7.47.9/packages/auth/src/commands/auth/token.ts)_
 
 ## `heroku auth:whoami`
 
@@ -132,4 +132,4 @@ ALIASES
   $ heroku whoami
 ```
 
-_See code: [@heroku-cli/plugin-auth](https://github.com/heroku/cli/blob/v7.47.8/packages/auth/src/commands/auth/whoami.ts)_
+_See code: [@heroku-cli/plugin-auth](https://github.com/heroku/cli/blob/v7.47.9/packages/auth/src/commands/auth/whoami.ts)_
