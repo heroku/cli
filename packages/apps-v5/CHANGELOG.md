@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.47.11](https://github.com/heroku/cli/compare/v7.47.10...v7.47.11) (2021-01-22)
+
+
+### Bug Fixes
+
+* **apps-v5:** get pipeline stage from `pipeline_coupling` ([fbb68c1](https://github.com/heroku/cli/commit/fbb68c1de00cae64f07e2324c3fcb097ca6016a4))
+
+
+
+
+
 ## [7.47.10](https://github.com/heroku/cli/compare/v7.47.7...v7.47.10) (2021-01-21)
 
 **Note:** Version bump only for package @heroku-cli/plugin-apps-v5
