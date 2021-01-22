@@ -193,6 +193,42 @@ Web URL:          https://myapp.herokuapp.com
       .then(() => expect(context.app).to.equal('myapp'))
   })
 
+  it('shows app info via arg when the app is in a pipeline', () => {
+    let appApi = nock('https://api.heroku.com', {
+      reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3.cedar-acm' }
+    }).get('/apps/myapp').reply(200, appAcm)
+
+    let api = nock('https://api.heroku.com:443')
+      .get('/apps/myapp/pipeline-couplings').reply(200, { app: { id: appAcm.id }, pipeline: { name: 'my-pipeline' }, stage: 'production' })
+      .get('/apps/myapp/addons').reply(200, addons)
+      .get('/apps/myapp/collaborators').reply(200, collaborators)
+      .get('/apps/myapp/dynos').reply(200, [{ type: 'web', size: 'Standard-1X', quantity: 2 }])
+    let context = { args: { app: 'myapp' }, flags: {} }
+    return cmd.run(context)
+      .then(() => expect(cli.stderr).to.equal(''))
+      .then(() => expect(cli.stdout).to.equal(`=== myapp
+Addons:           heroku-redis
+                  papertrail
+Auto Cert Mgmt:   true
+Collaborators:    foo2@foo.com
+Database Size:    1000 B
+Dynos:            web: 1
+Git URL:          https://git.heroku.com/myapp
+Internal Routing: true
+Owner:            foo@foo.com
+Pipeline:         my-pipeline - production
+Region:           eu
+Repo Size:        1000 B
+Slug Size:        1000 B
+Space:            myspace
+Stack:            cedar-14
+Web URL:          https://myapp.herokuapp.com
+`))
+      .then(() => appApi.done())
+      .then(() => api.done())
+      .then(() => expect(context.app).to.equal('myapp'))
+  })
+
   it('shows app info in shell format', () => {
     let appApi = nock('https://api.heroku.com', {
       reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3.cedar-acm' }
@@ -208,6 +244,36 @@ Web URL:          https://myapp.herokuapp.com
 addons=heroku-redis,papertrail
 collaborators=foo2@foo.com
 database_size=1000 B
+git_url=https://git.heroku.com/myapp
+web_url=https://myapp.herokuapp.com
+repo_size=1000 B
+slug_size=1000 B
+owner=foo@foo.com
+region=eu
+dynos={ web: 1 }
+stack=cedar-14
+`))
+      .then(() => appApi.done())
+      .then(() => api.done())
+  })
+
+  it('shows app info in shell format when the app is in pipeline', () => {
+    let appApi = nock('https://api.heroku.com', {
+      reqheaders: { 'Accept': 'application/vnd.heroku+json; version=3.cedar-acm' }
+    }).get('/apps/myapp').reply(200, appAcm)
+
+    let api = nock('https://api.heroku.com:443')
+      .get('/apps/myapp/pipeline-couplings').reply(200, { app: { id: appAcm.id }, pipeline: { name: 'my-pipeline' }, stage: 'production' })
+      .get('/apps/myapp/addons').reply(200, addons)
+      .get('/apps/myapp/collaborators').reply(200, collaborators)
+      .get('/apps/myapp/dynos').reply(200, [{ type: 'web', size: 'Standard-1X', quantity: 2 }])
+    return cmd.run({ args: { app: 'myapp' }, flags: { shell: true } })
+      .then(() => expect(cli.stderr).to.equal(''))
+      .then(() => expect(cli.stdout).to.equal(`auto_cert_mgmt=true
+addons=heroku-redis,papertrail
+collaborators=foo2@foo.com
+database_size=1000 B
+pipeline=my-pipeline:production
 git_url=https://git.heroku.com/myapp
 web_url=https://myapp.herokuapp.com
 repo_size=1000 B
