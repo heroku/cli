@@ -58,7 +58,7 @@ function * run (context, heroku) {
     if (info.app.create_status !== 'complete') data['Create Status'] = info.app.create_status
     if (info.app.space) data['Space'] = info.app.space.name
     if (info.app.space && info.app.internal_routing) data['Internal Routing'] = info.app.internal_routing
-    if (info.pipeline_coupling) data['Pipeline'] = `${info.pipeline_coupling.pipeline.name} - ${info.pipeline.stage}`
+    if (info.pipeline_coupling) data['Pipeline'] = `${info.pipeline_coupling.pipeline.name} - ${info.pipeline_coupling.stage}`
 
     data['Auto Cert Mgmt'] = info.app.acm
     data['Git URL'] = info.app.git_url
@@ -100,7 +100,7 @@ function * run (context, heroku) {
     if (info.app.cron_next_run) print('cron_next_run', cli.formatDate(new Date(info.app.cron_next_run)))
     if (info.app.database_size) print('database_size', filesize(info.app.database_size, { round: 0 }))
     if (info.app.create_status !== 'complete') print('create_status', info.app.create_status)
-    if (info.pipeline_coupling) print('pipeline', `${info.pipeline_coupling.pipeline.name}:${info.pipeline.stage}`)
+    if (info.pipeline_coupling) print('pipeline', `${info.pipeline_coupling.pipeline.name}:${info.pipeline_coupling.stage}`)
 
     print('git_url', info.app.git_url)
     print('web_url', info.app.web_url)
