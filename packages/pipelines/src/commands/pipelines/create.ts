@@ -9,7 +9,7 @@ import infer from '../../infer'
 import {inferrableStageNames as stages} from '../../stages'
 
 export default class Create extends Command {
-  static description = `'create a new pipeline
+  static description = `create a new pipeline
   An existing app must be specified as the first app in the pipeline.
   The pipeline name will be inferred from the app name if not specified.
   The stage of the app will be guessed based on its name if not specified.
