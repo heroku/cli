@@ -17,7 +17,6 @@ auth core plugin for Heroku CLI
 <!-- commands -->
 * [`heroku auth:2fa`](#heroku-auth2fa)
 * [`heroku auth:2fa:disable`](#heroku-auth2fadisable)
-* [`heroku auth:2fa:generate-recovery-codes`](#heroku-auth2fagenerate-recovery-codes)
 * [`heroku auth:login`](#heroku-authlogin)
 * [`heroku auth:logout`](#heroku-authlogout)
 * [`heroku auth:token`](#heroku-authtoken)
@@ -57,30 +56,6 @@ EXAMPLES
 ```
 
 _See code: [src/commands/auth/2fa/disable.ts](https://github.com/heroku/cli/blob/v7.47.10/packages/auth/src/commands/auth/2fa/disable.ts)_
-
-## `heroku auth:2fa:generate-recovery-codes`
-
-generates 2fa recovery codes
-
-```
-USAGE
-  $ heroku auth:2fa:generate-recovery-codes
-
-DESCRIPTION
-  If you lose access to your two-factor device, e.g. you lose your phone or it is wiped, you can still log in to your 
-  account. When prompted for the second factor after entering your account password, choose "Enter a Recovery Code.” You 
-  can then enter one of your recovery codes instead of a token from your two-factor device. Note that each recovery code 
-  can only be used once.
-
-  Running this command will replace existing codes.
-
-ALIASES
-  $ heroku twofactor:generate-recovery-codes
-  $ heroku 2fa:generate-recovery-codes
-  $ heroku auth:2fa:generate
-```
-
-_See code: [src/commands/auth/2fa/generate-recovery-codes.ts](https://github.com/heroku/cli/blob/v7.47.10/packages/auth/src/commands/auth/2fa/generate-recovery-codes.ts)_
 
 ## `heroku auth:login`
 
