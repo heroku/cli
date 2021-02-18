@@ -19,4 +19,4 @@ OPTIONS
   --private  show regions for private spaces
 ```
 
-_See code: [@heroku-cli/plugin-ps](https://github.com/heroku/cli/blob/v7.43.0/packages/ps/src/commands/regions.ts)_
+_See code: [@heroku-cli/plugin-ps](https://github.com/heroku/cli/blob/v7.47.13/packages/ps/src/commands/regions.ts)_
