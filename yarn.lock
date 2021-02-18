@@ -291,10 +291,10 @@
     netrc-parser "^3.1.6"
     opn "^5.4.0"
 
-"@heroku-cli/command@^8.4.0":
-  version "8.4.0"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.4.0.tgz#3f977eeadfb3aacbe79172644f1fee8040893cae"
-  integrity sha512-TN4v5VYIJeLizhNBwP3bDKrUQLdriGVSDRT55/Il2Dyg9i8hkoUQURckcGv0H/MS2oissqCGXfNzNZu2VRbC2Q==
+"@heroku-cli/command@^8.4.1":
+  version "8.4.1"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.4.1.tgz#7efe7f7f2a368369108f12540760fe67405a517c"
+  integrity sha512-B8Jg0FtlxNnkRYepzMcAsq17uTxQlg8NubiQKKtlertJmvBUJ2QoBczhsHCc4wuXSlraVhTgRnfT77fZ8bqROw==
   dependencies:
     "@heroku-cli/color" "^1.1.14"
     "@oclif/errors" "^1.2.2"
