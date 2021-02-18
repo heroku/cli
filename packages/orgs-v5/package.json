@@ -47,7 +47,7 @@
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.21.3",
-    "@oclif/plugin-legacy": "^1.1.4",
+    "@oclif/plugin-legacy": "^1.2.0",
     "chai": "^4.2.0",
     "mocha": "^5.2.0",
     "nock": "^10.0.6",

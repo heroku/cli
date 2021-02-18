@@ -276,21 +276,6 @@
     supports-color "^5.5.0"
     tslib "^1.9.3"
 
-"@heroku-cli/command@^8.2.0":
-  version "8.2.8"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.2.8.tgz#8668ce49a5ec791eb0bbd5a862badafcd33fcec4"
-  integrity sha512-2gcuKouQsOPv8DSQiNg3eTaNzCX5kIQNWf1f/7Hj6rV8sDRUdvlV4CanJRcyPox6aZfGQDaWIqxnjTgAn9GJ/w==
-  dependencies:
-    "@heroku-cli/color" "^1.1.14"
-    "@oclif/errors" "^1.2.2"
-    cli-ux "^4.9.3"
-    debug "^4.1.1"
-    fs-extra "^7.0.1"
-    heroku-client "^3.0.7"
-    http-call "^5.2.3"
-    netrc-parser "^3.1.6"
-    opn "^5.4.0"
-
 "@heroku-cli/command@^8.4.1":
   version "8.4.1"
   resolved "https://registry.yarnpkg.com/@heroku-cli/command/-/command-8.4.1.tgz#7efe7f7f2a368369108f12540760fe67405a517c"
@@ -1315,18 +1300,18 @@
     widest-line "^3.1.0"
     wrap-ansi "^4.0.0"
 
-"@oclif/plugin-legacy@1.1.4", "@oclif/plugin-legacy@^1.1.4":
-  version "1.1.4"
-  resolved "https://registry.yarnpkg.com/@oclif/plugin-legacy/-/plugin-legacy-1.1.4.tgz#d0933d13f610af529b557a2f3671b7cd0073172d"
-  integrity sha512-/oJGRcM7VaSGJ9Eodi/kl0avAKDlJvdYA8jmh4bhBHrCsaPqM61P7LUH2w2PUIccnM82mPPCp3PoUEM85PAIdw==
+"@oclif/plugin-legacy@1.2.0", "@oclif/plugin-legacy@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-legacy/-/plugin-legacy-1.2.0.tgz#67ef471b5ad0e39b7821112c8b622754e9b78cb9"
+  integrity sha512-rxKDIqDgEvEvSEyXZS5kyzZb+yd/hAYwTzKHKjFrmTIrUok/kRC5xMtg1uvIGk7Xt9hWmsqaNhIrvSqvEYYk/w==
   dependencies:
-    "@heroku-cli/command" "^8.2.0"
+    "@heroku-cli/command" "^8.4.1"
     "@oclif/color" "^0.0.0"
     "@oclif/command" "^1.5.4"
-    ansi-escapes "^3.1.0"
+    ansi-escapes "^4.3.1"
     debug "^4.1.0"
-    semver "^5.6.0"
-    tslib "^1.9.3"
+    semver "^7.3.2"
+    tslib "^2.0.0"
 
 "@oclif/plugin-not-found@1.2.2":
   version "1.2.2"
@@ -1954,7 +1939,7 @@ ansi-escapes@^4.2.1:
   dependencies:
     type-fest "^0.5.2"
 
-ansi-escapes@^4.3.0:
+ansi-escapes@^4.3.0, ansi-escapes@^4.3.1:
   version "4.3.1"
   resolved "https://registry.yarnpkg.com/ansi-escapes/-/ansi-escapes-4.3.1.tgz#a5c47cc43181f1f38ffd7076837700d395522a61"
   integrity sha512-JWF7ocqNrp8u9oqpgV+wH5ftbt+cfvv+PTjOvKLT3AdYly/LmORARfEVT1iyjwN+4MqE5UmVKoAdIBqeoCHgLA==
@@ -7434,13 +7419,6 @@ opn@^3.0.3:
   integrity sha1-ttmec5n3jWXDuq/+8fsojpuFJDo=
   dependencies:
     object-assign "^4.0.1"
-
-opn@^5.4.0:
-  version "5.5.0"
-  resolved "https://registry.yarnpkg.com/opn/-/opn-5.5.0.tgz#fc7164fab56d235904c51c3b27da6758ca3b9bfc"
-  integrity sha512-PqHpggC9bLV0VeWcdKhkpxY+3JTzetLSqTCWL/z/tFIbI6G8JCjondXklT1JinczLz2Xib62sSp0T/gKT4KksA==
-  dependencies:
-    is-wsl "^1.1.0"
 
 optionator@^0.8.2:
   version "0.8.2"

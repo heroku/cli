@@ -8,7 +8,7 @@
     "@heroku-cli/command": "^8.4.1",
     "@heroku/buildpack-registry": "^1.0.1",
     "@oclif/config": "^1.12.10",
-    "@oclif/plugin-legacy": "^1.1.4",
+    "@oclif/plugin-legacy": "^1.2.0",
     "cli-ux": "^4.9.3",
     "heroku-cli-util": "^8.0.11",
     "http-call": "^5.2.3",
