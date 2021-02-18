@@ -13,7 +13,7 @@
     "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/ci-v5/<%- commandPath %>"
   },
   "dependencies": {
-    "@heroku-cli/command": "^8.4.0",
+    "@heroku-cli/command": "^8.4.1",
     "@heroku-cli/plugin-run-v5": "^7.47.10",
     "ansi-escapes": "3.2.0",
     "bluebird": "^3.5.3",
@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.21.3",
-    "@oclif/plugin-legacy": "^1.1.4",
+    "@oclif/plugin-legacy": "^1.2.0",
     "chai": "^4.2.0",
     "estraverse": "^4.2.0",
     "mocha": "^5.1.1",

@@ -15,7 +15,7 @@
     "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/packages/apps-v5/<%- commandPath %>"
   },
   "dependencies": {
-    "@heroku-cli/command": "^8.4.0",
+    "@heroku-cli/command": "^8.4.1",
     "co": "^4.6.0",
     "filesize": "^4.0.0",
     "fs-extra": "^7.0.1",
@@ -31,7 +31,7 @@
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.21.3",
-    "@oclif/plugin-legacy": "^1.1.4",
+    "@oclif/plugin-legacy": "^1.2.0",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "lolex": "^3.1.0",
