@@ -184,8 +184,9 @@ module.exports = {
 
     let redis = await api.request(`/redis/v0/databases/${addon.name}`)
     let hobby = redis.plan.indexOf('hobby') === 0
+    let prefer_native_tls = redis.prefer_native_tls
 
-    if (hobby) {
+    if (!prefer_native_tls && hobby) {
       await cli.confirmApp(context.app, context.flags.confirm, 'WARNING: Insecure action.\nAll data, including the Redis password, will not be encrypted.')
     }
 
