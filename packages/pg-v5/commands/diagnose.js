@@ -5,16 +5,36 @@ const co = require('co')
 const { capitalize } = require('lodash')
 const PGDIAGNOSE_HOST = process.env.PGDIAGNOSE_URL || 'https://pgdiagnose.herokai.com'
 
-function * run (context, heroku) {
+function* run(context, heroku) {
   const fetcher = require('../lib/fetcher')(heroku)
   const host = require('../lib/host')
   const util = require('../lib/util')
   const URL = require('url')
   const uuid = require('uuid')
 
-  const { app, args } = context
+  const { app, args, flags } = context
 
-  let generateReport = co.wrap(function * (database) {
+  let generateParams = co.wrap(function* (url, db, dbName) {
+    let base_params = {
+      url: URL.format(url),
+      plan: db.plan.name.split(':')[1],
+      app: db.app.name,
+      database: dbName,
+    }
+
+    if (!util.starterPlan(db)) {
+      base_params.metrics = yield heroku.get(`/client/v11/databases/${db.id}/metrics`, { host: host(db) })
+      let burstData = yield heroku.get(`/client/v11/databases/${db.id}/burst_status`, { host: host(db) })
+      if (burstData && Object.keys(burstData).length !== 0) {
+        base_params.burst_data_present = true
+        base_params.burst_status = burstData.burst_status
+      }
+    }
+
+    return base_params
+  })
+
+  let generateReport = co.wrap(function* (database) {
     let attachment = yield fetcher.attachment(app, database)
     const { addon: db } = attachment
     let config = yield heroku.get(`/apps/${app}/config-vars`)
@@ -22,26 +42,23 @@ function * run (context, heroku) {
     const { url } = util.getConnectionDetails(attachment, config)
     const dbName = util.getConfigVarNameFromAttachment(attachment, config)
 
-    let params = {
-      url: URL.format(url),
-      plan: db.plan.name.split(':')[1],
-      app: db.app.name,
-      database: dbName
-    }
-    if (!util.starterPlan(db)) {
-      params.metrics = yield heroku.get(`/client/v11/databases/${db.id}/metrics`, { host: host(db) })
-    }
+    let params = yield generateParams(url, db, dbName)
     return yield heroku.post('/reports', {
       host: PGDIAGNOSE_HOST,
-      body: params
+      body: params,
     })
   })
 
-  let displayReport = report => {
+  let displayReport = (report) => {
+    if (flags.json) {
+      cli.styledJSON(report)
+      return
+    }
+
     cli.log(`Report ${report.id} for ${report.app}::${report.database}
 available for one month after creation on ${report.created_at}
 `)
-    let display = checks => {
+    let display = (checks) => {
       checks.forEach((check) => {
         let color = cli.color[check.status] || ((txt) => txt)
         cli.log(color(`${check.status.toUpperCase()}: ${check.name}`))
@@ -54,20 +71,25 @@ available for one month after creation on ${report.created_at}
 
           let keys = Object.keys(check.results[0])
           cli.table(check.results, {
-            columns: keys.map(key => ({ label: capitalize(key), key: key }))
+            columns: keys.map((key) => ({ label: capitalize(key), key: key })),
           })
         } else {
           if (!Object.keys(check.results).length) return
 
           let key = Object.keys(check.results)[0]
-          cli.log(`${key.split('_').map((s) => capitalize(s)).join(' ')} ${check.results[key]}`)
+          cli.log(
+            `${key
+              .split('_')
+              .map((s) => capitalize(s))
+              .join(' ')} ${check.results[key]}`,
+          )
         }
       })
     }
-    display(report.checks.filter(c => c.status === 'red'))
-    display(report.checks.filter(c => c.status === 'yellow'))
-    display(report.checks.filter(c => c.status === 'green'))
-    display(report.checks.filter(c => !['red', 'yellow', 'green'].find(d => d === c.status)))
+    display(report.checks.filter((c) => c.status === 'red'))
+    display(report.checks.filter((c) => c.status === 'yellow'))
+    display(report.checks.filter((c) => c.status === 'green'))
+    display(report.checks.filter((c) => !['red', 'yellow', 'green'].find((d) => d === c.status)))
   }
 
   let report
@@ -92,5 +114,6 @@ if REPORT_ID is specified instead, a previous report is displayed
   needsApp: true,
   needsAuth: true,
   args: [{ name: 'DATABASE|REPORT_ID', optional: true }],
-  run: cli.command({ preauth: true }, co.wrap(run))
+  flags: [{ name: 'json', description: "format output as JSON", hasValue: false }],
+  run: cli.command({ preauth: true }, co.wrap(run)),
 }
